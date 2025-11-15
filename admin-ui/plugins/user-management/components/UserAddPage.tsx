@@ -2,16 +2,19 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Container, CardBody, Card } from '../../../app/components'
 import UserForm from './UserForm'
-import GluuAlert from '../../../app/routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import moment from 'moment'
-import {
-  PersonAttribute,
-  UserManagementRootState,
-} from 'Plugins/user-management/types/UserApiTypes'
+import { BIRTHDATE_ATTR } from '../common/Constants'
+import { PersonAttribute } from 'Plugins/user-management/types/UserApiTypes'
 import { UserEditFormValues } from '../types/ComponentTypes'
-import { usePostUser, getGetUserQueryKey, CustomUser, CustomObjectAttribute } from 'JansConfigApi'
+import {
+  usePostUser,
+  getGetUserQueryKey,
+  CustomUser,
+  CustomObjectAttribute,
+  useGetAttributes,
+} from 'JansConfigApi'
 import { useQueryClient } from '@tanstack/react-query'
 import { updateToast } from 'Redux/features/toastSlice'
 import { logUserCreation, getErrorMessage } from '../helper/userAuditHelpers'
@@ -22,9 +25,11 @@ function UserAddPage() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const { t } = useTranslation()
-  const personAttributes = useSelector(
-    (state: UserManagementRootState) => state.attributesReducerRoot.items,
-  )
+  const { data: attributesData } = useGetAttributes({
+    limit: 200,
+    status: 'ACTIVE',
+  })
+  const personAttributes = (attributesData?.entries || []) as PersonAttribute[]
   const createUserMutation = usePostUser({
     mutation: {
       onSuccess: async (data, variables) => {
@@ -63,7 +68,7 @@ function UserAddPage() {
     }
 
     const normalizeValues = (key: string, rawValue: unknown, multiValued: boolean): string[] => {
-      if (!multiValued && key === 'birthdate' && typeof rawValue === 'string') {
+      if (!multiValued && key === BIRTHDATE_ATTR && typeof rawValue === 'string') {
         const m = moment(rawValue, 'YYYY-MM-DD', true)
         return m.isValid() ? [m.format('YYYY-MM-DD')] : []
       }
@@ -96,10 +101,10 @@ function UserAddPage() {
   const submitData = (
     values: UserEditFormValues,
     _modifiedFields: Record<string, string | string[]>,
-    _message: string,
+    message: string,
   ) => {
     const customAttributes = createCustomAttributes(values)
-    const submitableValues: CustomUser = {
+    const submitableValues: Record<string, unknown> = {
       userId: values.userId || '',
       mail: values.mail,
       displayName: values.displayName || '',
@@ -107,25 +112,19 @@ function UserAddPage() {
       userPassword: values.userPassword as string | undefined,
       givenName: values.givenName || '',
       customAttributes: customAttributes,
+      action_message: message,
     }
     createUserMutation.mutate({ data: submitableValues })
   }
 
   return (
-    <React.Fragment>
-      <GluuAlert
-        severity={t('titles.error')}
-        message={t('messages.error_in_saving')}
-        show={false}
-      />
-      <Container>
-        <Card type="border" color={null} className="mb-3">
-          <CardBody>
-            <UserForm onSubmitData={submitData} />
-          </CardBody>
-        </Card>
-      </Container>
-    </React.Fragment>
+    <Container>
+      <Card type="border" color={null} className="mb-3">
+        <CardBody>
+          <UserForm onSubmitData={submitData} />
+        </CardBody>
+      </Card>
+    </Container>
   )
 }
 export default UserAddPage

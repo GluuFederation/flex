@@ -2,20 +2,19 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Container, CardBody, Card } from 'Components'
 import UserForm from './UserForm'
-import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
-import { getAttributesRoot } from 'Redux/features/attributesSlice'
 import moment from 'moment'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { getPersistenceType } from 'Plugins/services/redux/features/persistenceTypeSlice'
+import { BIRTHDATE_ATTR } from '../common/Constants'
 import { UserEditPageState, UserEditFormValues } from '../types/ComponentTypes'
 import { PersonAttribute, CustomUser } from '../types/UserApiTypes'
 import {
   usePutUser,
   getGetUserQueryKey,
-  GetAttributesParams,
   CustomObjectAttribute,
+  useGetAttributes,
 } from 'JansConfigApi'
 import { useQueryClient } from '@tanstack/react-query'
 import { updateToast } from 'Redux/features/toastSlice'
@@ -36,14 +35,12 @@ function UserEditPage() {
     }
   }, [userDetails, navigate])
 
-  const personAttributes = useSelector(
-    (state: UserEditPageState) => state.attributesReducerRoot.items,
-  )
-  const loadingAttributes = useSelector(
-    (state: UserEditPageState) => state.attributesReducerRoot.initLoading,
-  )
+  const { data: attributesData, isLoading: loadingAttributes } = useGetAttributes({
+    limit: 200,
+    status: 'ACTIVE',
+  })
+  const personAttributes = (attributesData?.entries || []) as PersonAttribute[]
 
-  const options: Partial<GetAttributesParams> = {}
   useEffect(() => {
     dispatch(getPersistenceType())
   }, [dispatch])
@@ -74,11 +71,10 @@ function UserEditPage() {
     }
 
     const result: CustomObjectAttribute[] = []
+    const attributeMap = new Map(personAttributes.map((attr) => [attr.name, attr]))
 
     Object.keys(values).forEach((attributeName) => {
-      const attributeDefinition = personAttributes.find(
-        (attribute: PersonAttribute) => attribute.name === attributeName,
-      )
+      const attributeDefinition = attributeMap.get(attributeName)
 
       if (!attributeDefinition) {
         return
@@ -96,7 +92,7 @@ function UserEditPage() {
         }
 
         const singleValue =
-          attributeName === 'birthdate' && normalized
+          attributeName === BIRTHDATE_ATTR && normalized
             ? moment(normalized, 'YYYY-MM-DD').format('YYYY-MM-DD')
             : (normalized ?? '')
 
@@ -178,32 +174,18 @@ function UserEditPage() {
     updateUserMutation.mutate({ data: submittableValues })
   }
 
-  useEffect(() => {
-    if (!personAttributes?.length) {
-      options['limit'] = 100
-      dispatch(getAttributesRoot({ options, init: true }))
-    }
-  }, [personAttributes, dispatch])
-
   return (
-    <React.Fragment>
-      <GluuAlert
-        severity={t('titles.error')}
-        message={t('messages.error_in_saving')}
-        show={false}
-      />
-      <Container>
-        <Card type="border" color={null} className="mb-3">
-          <CardBody>
-            {loadingAttributes ? (
-              <GluuLoader blocking={loadingAttributes} />
-            ) : (
-              <UserForm onSubmitData={submitData} userDetails={userDetails} />
-            )}
-          </CardBody>
-        </Card>
-      </Container>
-    </React.Fragment>
+    <Container>
+      <Card type="border" color={null} className="mb-3">
+        <CardBody>
+          {loadingAttributes ? (
+            <GluuLoader blocking={loadingAttributes} />
+          ) : (
+            <UserForm onSubmitData={submitData} userDetails={userDetails} />
+          )}
+        </CardBody>
+      </Card>
+    </Container>
   )
 }
 export default UserEditPage

@@ -5,16 +5,20 @@
 
 import store from 'Redux/store'
 
+interface WebhookAction {
+  type: string
+  payload: {
+    createdFeatureValue: Record<string, unknown>
+  }
+}
+
+interface StoreWithDispatch {
+  dispatch: (action: WebhookAction) => void
+}
+
 export async function triggerUserWebhook(data: Record<string, unknown>): Promise<void> {
   try {
-    const dispatch = (
-      store as {
-        dispatch: (action: {
-          type: string
-          payload: { createdFeatureValue: Record<string, unknown> }
-        }) => void
-      }
-    ).dispatch
+    const dispatch = (store as StoreWithDispatch).dispatch
     dispatch({
       type: 'webhook/triggerWebhook',
       payload: {

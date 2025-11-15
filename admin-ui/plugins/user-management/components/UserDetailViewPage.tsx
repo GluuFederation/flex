@@ -1,27 +1,28 @@
 import { Fragment } from 'react'
 import { Container, Row, Col } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
-import { useSelector } from 'react-redux'
 import moment from 'moment'
+import DOMPurify from 'dompurify'
 import customColors from '@/customColors'
-import { RowProps, UserDetailState } from 'Plugins/user-management/types/UserApiTypes'
-import { CustomObjectAttribute } from 'JansConfigApi'
+import { BIRTHDATE_ATTR } from '../common/Constants'
+import { RowProps } from 'Plugins/user-management/types/UserApiTypes'
+import { CustomObjectAttribute, useGetAttributes } from 'JansConfigApi'
 
 const UserDetailViewPage = ({ row }: RowProps) => {
   const { rowData } = row
   const DOC_SECTION = 'user'
-  const personAttributes = useSelector(
-    (state: UserDetailState) => state.attributesReducerRoot.items,
-  )
+  const { data: attributesData } = useGetAttributes({
+    limit: 200,
+    status: 'ACTIVE',
+  })
+  const personAttributes = attributesData?.entries || []
 
   const getCustomAttributeById = (id: string) => {
-    let claimData = null
-    for (const i in personAttributes) {
-      if (personAttributes[i].name === id) {
-        claimData = personAttributes[i]
-      }
-    }
-    return claimData
+    return personAttributes.find((attr) => attr.name === id) || null
+  }
+
+  const sanitizeValue = (value: string): string => {
+    return DOMPurify.sanitize(value, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] })
   }
 
   return (
@@ -30,7 +31,7 @@ const UserDetailViewPage = ({ row }: RowProps) => {
         <Col sm={6} xl={4}>
           <GluuFormDetailRow
             label="fields.name"
-            value={rowData.displayName}
+            value={sanitizeValue(rowData.displayName || '')}
             doc_category={DOC_SECTION}
             doc_entry="displayName"
           />
@@ -38,7 +39,7 @@ const UserDetailViewPage = ({ row }: RowProps) => {
         <Col sm={6} xl={4}>
           <GluuFormDetailRow
             label="fields.givenName"
-            value={rowData.givenName}
+            value={sanitizeValue(rowData.givenName || '')}
             doc_category={DOC_SECTION}
             doc_entry="givenName"
           />
@@ -46,7 +47,7 @@ const UserDetailViewPage = ({ row }: RowProps) => {
         <Col sm={6} xl={4}>
           <GluuFormDetailRow
             label="fields.userName"
-            value={rowData.userId}
+            value={sanitizeValue(rowData.userId || '')}
             doc_category={DOC_SECTION}
             doc_entry="userId"
           />
@@ -55,13 +56,13 @@ const UserDetailViewPage = ({ row }: RowProps) => {
           <GluuFormDetailRow
             label="fields.email"
             doc_entry="mail"
-            value={rowData?.mail}
+            value={sanitizeValue(rowData?.mail || '')}
             doc_category={DOC_SECTION}
           />
         </Col>
         {rowData.customAttributes?.map((data: CustomObjectAttribute, key: number) => {
           let valueToShow = ''
-          if (data.name === 'birthdate') {
+          if (data.name === BIRTHDATE_ATTR) {
             valueToShow = moment(data?.values?.[0]).format('YYYY-MM-DD') || ''
           } else {
             valueToShow = data.multiValued
@@ -74,16 +75,16 @@ const UserDetailViewPage = ({ row }: RowProps) => {
               {valueToShow !== '' ? (
                 <Col sm={6} xl={4} key={'customAttributes' + key}>
                   <GluuFormDetailRow
-                    label={
-                      getCustomAttributeById(data?.name || '')?.displayName || data?.name || ''
-                    }
-                    doc_category={
-                      getCustomAttributeById(data?.name || '')?.description || data?.name || ''
-                    }
+                    label={sanitizeValue(
+                      getCustomAttributeById(data?.name || '')?.displayName || data?.name || '',
+                    )}
+                    doc_category={sanitizeValue(
+                      getCustomAttributeById(data?.name || '')?.description || data?.name || '',
+                    )}
                     isDirect={true}
-                    value={
-                      typeof valueToShow === 'boolean' ? JSON.stringify(valueToShow) : valueToShow
-                    }
+                    value={sanitizeValue(
+                      typeof valueToShow === 'boolean' ? JSON.stringify(valueToShow) : valueToShow,
+                    )}
                   />
                 </Col>
               ) : null}

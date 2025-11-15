@@ -2,9 +2,20 @@ import React, { useEffect, useState, useContext, useCallback, useRef } from 'rea
 import MaterialTable, { Action } from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import LockOpenIcon from '@mui/icons-material/LockOpen'
-import { Paper, TablePagination } from '@mui/material'
+import SearchIcon from '@mui/icons-material/Search'
+import RefreshIcon from '@mui/icons-material/Refresh'
+import ClearIcon from '@mui/icons-material/Clear'
+import SwapVertIcon from '@mui/icons-material/SwapVert'
+import {
+  Paper,
+  TablePagination,
+  Box,
+  TextField,
+  Button,
+  IconButton,
+  InputAdornment,
+} from '@mui/material'
 import UserDetailViewPage from './UserDetailViewPage'
-import { getAttributesRoot } from 'Redux/features/attributesSlice'
 import { useDispatch } from 'react-redux'
 import { Card, CardBody } from '../../../app/components'
 import { useTranslation } from 'react-i18next'
@@ -13,10 +24,8 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useNavigate } from 'react-router-dom'
 import { USER_WRITE, USER_READ, USER_DELETE } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
-import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import SetTitle from 'Utils/SetTitle'
-import { getRoles } from 'Plugins/admin/redux/features/apiRoleSlice'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
@@ -32,6 +41,8 @@ import {
   usePutUser,
   useGetRegistrationEntriesFido2,
   getGetUserQueryKey,
+  useGetAttributes,
+  useGetAllAdminuiRoles,
 } from 'JansConfigApi'
 import { useQueryClient } from '@tanstack/react-query'
 import UserDeviceDetailViewPage from './UserDeviceDetailViewPage'
@@ -64,18 +75,23 @@ function UserList(): JSX.Element {
 
   const [pageNumber, setPageNumber] = useState<number>(0)
   const [limit, setLimit] = useState<number>(10)
-  const [pattern, setPattern] = useState<string | undefined>(undefined)
+  const [pattern, setPattern] = useState<string | null>(null)
+  const [sortBy, setSortBy] = useState<string | undefined>(undefined)
+  const [sortOrder, setSortOrder] = useState<'ascending' | 'descending'>('ascending')
 
   // React Query hooks for data fetching
   const {
     data: usersData,
     isLoading: loadingUsers,
     refetch: refetchUsers,
+    error: usersError,
   } = useGetUser(
     {
       limit,
-      pattern,
+      pattern: pattern || undefined,
       startIndex: pageNumber * limit,
+      sortBy,
+      sortOrder: sortBy ? sortOrder : undefined,
     },
     {
       query: {
@@ -83,6 +99,13 @@ function UserList(): JSX.Element {
       },
     },
   )
+
+  useEffect(() => {
+    if (usersError) {
+      const errorMessage = getErrorMessage(usersError)
+      dispatch(updateToast(true, 'error', errorMessage))
+    }
+  }, [usersError, dispatch])
 
   const usersList: UserTableRowData[] = (usersData?.entries as UserTableRowData[]) ?? []
   const totalItems = usersData?.totalEntriesCount || 0
@@ -116,12 +139,6 @@ function UserList(): JSX.Element {
 
   const deleteUserMutation = useDeleteUser({
     mutation: {
-      onSuccess: async (_data, variables) => {
-        dispatch(updateToast(true, 'success', t('messages.user_deleted_successfully')))
-        await logUserDeletion(variables.inum, (deleteData as CustomUser) || undefined)
-        await triggerUserWebhook(deleteData as Record<string, unknown>)
-        queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
-      },
       onError: (error: unknown) => {
         const errMsg = getErrorMessage(error)
         dispatch(updateToast(true, 'error', errMsg))
@@ -143,6 +160,9 @@ function UserList(): JSX.Element {
     },
   })
 
+  // Fetch roles and attributes using Orval hooks
+  useGetAllAdminuiRoles()
+
   // Permission initialization
   useEffect(() => {
     const authorizePermissions = async (): Promise<void> => {
@@ -158,16 +178,22 @@ function UserList(): JSX.Element {
 
     authorizePermissions()
   }, [authorize])
-
-  useEffect(() => {
-    dispatch(getRoles({}))
-  }, [dispatch])
   const toggle = (): void => setModal(!modal)
   const submitForm = (message: string): void => {
     toggle()
     if (deleteData?.inum) {
-      deleteData.action_message = message
-      deleteUserMutation.mutate({ inum: deleteData.inum })
+      const deletePayload = { ...deleteData, action_message: message }
+      deleteUserMutation.mutate(
+        { inum: deletePayload.inum },
+        {
+          onSuccess: async () => {
+            dispatch(updateToast(true, 'success', t('messages.user_deleted_successfully')))
+            await logUserDeletion(deletePayload.inum, deletePayload as CustomUser)
+            await triggerUserWebhook(deletePayload as Record<string, unknown>)
+            queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
+          },
+        },
+      )
     }
   }
   const theme = useContext(ThemeContext)
@@ -227,63 +253,41 @@ function UserList(): JSX.Element {
     })
   }
 
-  let memoLimit = limit
-  let memoPattern = pattern
+  // Event handlers for search
+  const handlePatternChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPattern(event.target.value)
+  }
 
-  function handleOptionsChange(
-    event: React.ChangeEvent<HTMLInputElement> & { keyCode?: number },
-  ): void {
-    if (event.target.name === 'limit') {
-      memoLimit = parseInt(event.target.value, 10)
-    } else if (event.target.name === 'pattern') {
-      memoPattern = event.target.value
-      if (event.keyCode === 13) {
-        setLimit(memoLimit)
-        setPattern(memoPattern)
-        // Refetch with new parameters - React Query will handle it automatically
-      }
+  const handlePatternKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      setPageNumber(0)
     }
   }
 
-  const GluuSearch = useCallback(() => {
-    return (
-      <GluuAdvancedSearch
-        limitId={LIMIT_ID}
-        patternId={PATTERN_ID}
-        limit={limit}
-        pattern={pattern}
-        handler={handleOptionsChange}
-        showLimit={false}
-      />
-    )
-  }, [limit, pattern, handleOptionsChange])
+  const handleSortByChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value
+    setSortBy(value === 'none' ? undefined : value)
+    setPageNumber(0)
+  }
+
+  const handleSortOrderToggle = () => {
+    setSortOrder((prev) => (prev === 'ascending' ? 'descending' : 'ascending'))
+  }
+
+  const handleClearFilters = () => {
+    setPattern(null)
+    setSortBy(undefined)
+    setSortOrder('ascending')
+    setPageNumber(0)
+  }
+
+  const handleRefresh = () => {
+    setPageNumber(0)
+    refetchUsers()
+  }
 
   const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
   const LockedOpenIcon = useCallback(() => <LockOpenIcon />, [])
-
-  if (hasCedarPermission(USER_READ)) {
-    myActions.push({
-      icon: GluuSearch,
-      tooltip: `${t('messages.advanced_search')}`,
-      iconProps: {
-        color: 'primary',
-        style: {
-          borderColor: customColors.lightBlue,
-        },
-      },
-      isFreeAction: true,
-      onClick: () => {},
-    })
-    myActions.push({
-      icon: 'refresh',
-      tooltip: `${t('messages.refresh')}`,
-      iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
-      isFreeAction: true,
-      onClick: () => {
-        refetchUsers()
-      },
-    })
-  }
 
   if (hasCedarPermission(USER_WRITE)) {
     myActions.push({
@@ -398,6 +402,7 @@ function UserList(): JSX.Element {
     }
   }
 
+  // Fetch attributes for custom attributes display
   useEffect(() => {
     if (!usersList?.length || renders.current >= 1) return
     renders.current = 1
@@ -411,14 +416,8 @@ function UserList(): JSX.Element {
       })
     }
 
-    if (usedAttributes.size > 0) {
-      dispatch(
-        getAttributesRoot({
-          options: { pattern: Array.from(usedAttributes).toString(), limit: 100 },
-        }),
-      )
-    }
-  }, [usersList, dispatch])
+    // Attributes will be fetched by UserDetailViewPage component when needed
+  }, [usersList])
 
   useEffect(() => {
     let removeNullValue: DeviceData[] = []
@@ -528,6 +527,98 @@ function UserList(): JSX.Element {
       <Card style={applicationStyle.mainCard}>
         <CardBody>
           <GluuViewWrapper canShow={hasCedarPermission(USER_READ)}>
+            {/* Modern Search Bar */}
+            <Box
+              sx={{
+                mb: '10px',
+                p: 1,
+                backgroundColor: '#fff',
+                borderRadius: 1,
+                border: '1px solid #e0e0e0',
+              }}
+            >
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: 2,
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+                  {/* Pattern Search */}
+                  <TextField
+                    size="small"
+                    placeholder={t('placeholders.search_pattern')}
+                    value={pattern ?? ''}
+                    onChange={handlePatternChange}
+                    onKeyDown={handlePatternKeyDown}
+                    sx={{ width: '250px' }}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <SearchIcon fontSize="small" sx={{ color: customColors.lightBlue }} />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+
+                  {/* Sort By Dropdown */}
+                  <TextField
+                    select
+                    size="small"
+                    label={t('fields.sort_by')}
+                    value={sortBy || 'none'}
+                    onChange={handleSortByChange}
+                    sx={{ width: '180px' }}
+                    SelectProps={{
+                      native: true,
+                    }}
+                  >
+                    <option value="none">{t('options.none')}</option>
+                    <option value="uid">{t('fields.userName')}</option>
+                    <option value="displayName">{t('fields.name')}</option>
+                    <option value="mail">{t('fields.email')}</option>
+                    <option value="givenName">{t('fields.givenName')}</option>
+                  </TextField>
+
+                  {/* Sort Order Toggle */}
+                  {sortBy && (
+                    <IconButton
+                      size="small"
+                      onClick={handleSortOrderToggle}
+                      title={
+                        sortOrder === 'ascending' ? t('options.ascending') : t('options.descending')
+                      }
+                      sx={{ color: customColors.lightBlue }}
+                    >
+                      <SwapVertIcon />
+                    </IconButton>
+                  )}
+
+                  {/* Clear Filters Button */}
+                  <Button
+                    size="small"
+                    startIcon={<ClearIcon />}
+                    onClick={handleClearFilters}
+                    sx={{ color: customColors.lightBlue }}
+                  >
+                    {t('actions.clear')}
+                  </Button>
+                </Box>
+
+                {/* Refresh Button */}
+                <IconButton
+                  size="small"
+                  onClick={handleRefresh}
+                  title={t('messages.refresh')}
+                  sx={{ color: customColors.lightBlue }}
+                >
+                  <RefreshIcon />
+                </IconButton>
+              </Box>
+            </Box>
+
             <MaterialTable<UserTableRowData>
               key={limit}
               components={{

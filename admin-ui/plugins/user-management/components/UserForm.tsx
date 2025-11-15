@@ -1,6 +1,7 @@
 // React and React-related imports
-import React, { useEffect, useState, useContext } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React, { useEffect, useState, useContext, useMemo } from 'react'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useFormik, FormikProps } from 'formik'
 import { useQueryClient, QueryClient } from '@tanstack/react-query'
@@ -22,31 +23,35 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 
 // Context and Redux
 import { ThemeContext } from 'Context/theme/themeContext'
-import { getAttributesRoot } from 'Redux/features/attributesSlice'
 import { updateToast } from 'Redux/features/toastSlice'
 
 // API and Services
 import {
   usePatchUserByInum,
   getGetUserQueryKey,
-  GetAttributesParams,
   UserPatchRequest,
   CustomObjectAttribute,
+  useGetAttributes,
 } from 'JansConfigApi'
 import UserClaimEntry from './UserClaimEntry'
 import { logPasswordChange, getErrorMessage } from '../helper/userAuditHelpers'
 import { triggerUserWebhook } from '../helper/userWebhookHelpers'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { BIRTHDATE_ATTR, USER_PASSWORD_ATTR } from '../common/Constants'
 
 // Types
-import {
-  UserFormProps,
-  UserFormState,
-  FormOperation,
-  UserEditFormValues,
-} from '../types/ComponentTypes'
+import { UserFormProps, FormOperation, UserEditFormValues } from '../types/ComponentTypes'
 import { ThemeContext as ThemeContextType } from '../types/CommonTypes'
 import { PersonAttribute, CustomUser } from '../types/UserApiTypes'
+
+const validatePassword = (password: string): boolean => {
+  if (!password || password.length < 8) return false
+  if (!/[A-Z]/.test(password)) return false
+  if (!/[a-z]/.test(password)) return false
+  if (!/[0-9]/.test(password)) return false
+  if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) return false
+  return true
+}
 
 const usePasswordChange = (
   userDetails: CustomUser | null,
@@ -73,7 +78,7 @@ const usePasswordChange = (
   const submitChangePassword = (usermessage: string) => {
     if (!userDetails?.inum || !formik.values.userPassword) return
     const passwordAttrIndex = userDetails?.customAttributes?.findIndex(
-      (attr) => attr.name === 'userPassword',
+      (attr) => attr.name === USER_PASSWORD_ATTR,
     )
     let patchOperations: any
     if (passwordAttrIndex !== undefined && passwordAttrIndex >= 0) {
@@ -93,7 +98,7 @@ const usePasswordChange = (
             op: 'add',
             path: '/customAttributes/-',
             value: {
-              name: 'userPassword',
+              name: USER_PASSWORD_ATTR,
               multiValued: false,
               values: [formik.values.userPassword],
             },
@@ -105,7 +110,7 @@ const usePasswordChange = (
     patchOperations['inum'] = userDetails.inum
     patchOperations['customAttributes'] = [
       {
-        name: 'userPassword',
+        name: USER_PASSWORD_ATTR,
         multiValued: false,
       },
     ]
@@ -182,12 +187,13 @@ const initializeCustomAttributes = (
   }
 
   if (userDetails?.customAttributes) {
+    const attributeMap = new Map(personAttributes.map((attr) => [attr.name, attr]))
     for (const customAttr of userDetails.customAttributes) {
-      const attributeDef = personAttributes.find((e: PersonAttribute) => e.name === customAttr.name)
-      if (customAttr.name === 'birthdate') {
+      if (customAttr.name === BIRTHDATE_ATTR) {
         processBirthdateAttribute(customAttr, initialValues)
         continue
       }
+      const attributeDef = attributeMap.get(customAttr.name)
       if (attributeDef?.oxMultiValuedAttribute) {
         processMultiValuedAttribute(customAttr, initialValues)
       } else {
@@ -212,21 +218,18 @@ const setupCustomAttributes = (
     'displayName',
     'mail',
     'status',
-    'userPassword',
+    USER_PASSWORD_ATTR,
     'givenName',
     'middleName',
     'sn',
   ])
 
-  const getCustomAttributeById = (id: string) => {
-    const match = personAttributes.find((attr) => attr.name === id)
-    return match || null
-  }
+  const attributeMap = new Map(personAttributes.map((attr) => [attr.name, attr]))
 
   const tempList = [...selectedClaims]
   for (const customAttr of userDetails.customAttributes) {
     if (customAttr.values && customAttr.values.length > 0 && customAttr.name) {
-      const attributeData = getCustomAttributeById(customAttr.name)
+      const attributeData = attributeMap.get(customAttr.name)
       if (attributeData && !usedClaims.has(customAttr.name)) {
         const data = { ...attributeData, options: customAttr.values } as PersonAttribute
         tempList.push(data)
@@ -271,6 +274,10 @@ const PasswordChangeModal = ({
               lsize={3}
               rsize={9}
             />
+            <div className="text-muted small mb-2">
+              Password must be at least 8 characters with uppercase, lowercase, number, and special
+              character.
+            </div>
             <GluuInputRow
               doc_category={DOC_SECTION}
               label="Confirm Password"
@@ -281,13 +288,13 @@ const PasswordChangeModal = ({
               lsize={3}
               rsize={9}
             />
-            {passwordError != '' && <span className="text-danger">{passwordError}</span>}
+            {passwordError !== '' && <span className="text-danger">{passwordError}</span>}
           </Col>
         </FormGroup>
       </ModalBody>
       <ModalFooter>
         {formik.values?.userPassword &&
-          formik.values.userPassword.length > 3 &&
+          validatePassword(formik.values.userPassword) &&
           formik.values?.userPassword === formik.values.userConfirmPassword && (
             <Button color={`primary-${selectedTheme}`} type="button" onClick={onPasswordChange}>
               {t('actions.change_password')}
@@ -308,27 +315,34 @@ const AvailableClaimsPanel = ({
   personAttributes,
   selectedClaims,
   setSelectedClaimsToState,
-  dispatch,
-  options,
+  setSearchPattern,
 }: {
   searchClaims: string
   setSearchClaims: (value: string) => void
   personAttributes: PersonAttribute[]
   selectedClaims: PersonAttribute[]
   setSelectedClaimsToState: (data: PersonAttribute) => void
-  dispatch: Dispatch
-  options: Partial<GetAttributesParams>
+  setSearchPattern: (pattern: string | undefined) => void
 }) => {
   const usedClaims = new Set([
     'userId',
     'displayName',
     'mail',
     'status',
-    'userPassword',
+    USER_PASSWORD_ATTR,
     'givenName',
     'middleName',
     'sn',
   ])
+
+  // Create debounced search function
+  const debouncedSetPattern = useMemo(
+    () =>
+      debounce((value: string) => {
+        setSearchPattern(value || undefined)
+      }, 500),
+    [setSearchPattern],
+  )
 
   return (
     <div className="border border-light ">
@@ -339,25 +353,17 @@ const AvailableClaimsPanel = ({
         placeholder="Search Claims Here "
         onChange={(e) => {
           setSearchClaims(e.target.value)
-          const delayDebounceFn = debounce(function () {
-            options['pattern'] = e.target.value
-            dispatch(getAttributesRoot({ options }))
-          }, 500)
-          delayDebounceFn()
+          debouncedSetPattern(e.target.value)
         }}
         value={searchClaims}
       />
       <ul className="list-group">
         {personAttributes.map((data: PersonAttribute, key: number) => {
-          const name = data.displayName?.toLowerCase() || ''
           const alreadyAddedClaim = selectedClaims.some(
             (el: PersonAttribute) => el.name === data.name,
           )
-          if (data.status && data.status.toLowerCase() == 'active' && !usedClaims.has(data.name)) {
-            if (
-              (name.includes(searchClaims.toLowerCase()) || searchClaims == '') &&
-              !alreadyAddedClaim
-            ) {
+          if (data.status && data.status.toLowerCase() === 'active' && !usedClaims.has(data.name)) {
+            if (!alreadyAddedClaim) {
               return (
                 <li className="list-group-item" key={'list' + key} title="Click to add to the form">
                   <button
@@ -379,10 +385,12 @@ const AvailableClaimsPanel = ({
 
 function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const queryClient = useQueryClient()
   const { t } = useTranslation()
   const DOC_SECTION = 'user'
   const [searchClaims, setSearchClaims] = useState('')
+  const [searchPattern, setSearchPattern] = useState<string | undefined>(undefined)
   const [selectedClaims, setSelectedClaims] = useState<PersonAttribute[]>([])
   const [passwordError, setPasswordError] = useState('')
   const [showButtons, setShowButtons] = useState(false)
@@ -392,10 +400,16 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
   const [modifiedFields, setModifiedFields] = useState<Record<string, string | string[]>>({})
   const [operations, setOperations] = useState<FormOperation[]>([])
 
-  const personAttributes = useSelector((state: UserFormState) => state.attributesReducerRoot.items)
+  // Fetch attributes using Orval hook
+  const { data: attributesData } = useGetAttributes({
+    limit: 200,
+    pattern: searchPattern,
+    status: 'ACTIVE',
+  })
+  const personAttributes = (attributesData?.entries || []) as PersonAttribute[]
+
   const theme = useContext(ThemeContext) as ThemeContextType
   const selectedTheme = theme.state.theme
-  const options: Partial<GetAttributesParams> = {}
   const initialValues = initializeCustomAttributes(userDetails || null, personAttributes)
   const formik = useFormik({
     initialValues: initialValues,
@@ -483,7 +497,7 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
   }
 
   const goBack = () => {
-    globalThis.history.back()
+    navigate(-1)
   }
 
   const toggleChangePasswordModal = () => {
@@ -720,8 +734,7 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
               personAttributes={personAttributes}
               selectedClaims={selectedClaims}
               setSelectedClaimsToState={setSelectedClaimsToState}
-              dispatch={dispatch}
-              options={options}
+              setSearchPattern={setSearchPattern}
             />
           </Col>
         </FormGroup>
