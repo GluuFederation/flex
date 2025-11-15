@@ -37,15 +37,6 @@ export interface FidoRegistrationEntry {
   }
 }
 
-// Type definitions for Redux state
-export interface RootState {
-  authReducer: AuthState
-  apiRoleReducer: {
-    items: Array<{ role: string; inum?: string }>
-    loading: boolean
-  }
-}
-
 export interface UserData {
   displayName?: string
   givenName?: string
@@ -58,39 +49,4 @@ export interface RowProps {
   row: {
     rowData: UserData
   }
-}
-
-export interface UserDetailState {
-  attributesReducerRoot: {
-    items: Array<{
-      name: string
-      displayName: string
-      description: string
-    }>
-  }
-}
-
-// PersonAttribute is now aliased to JansAttribute from the generated API
-
-interface AttributesState {
-  items: PersonAttribute[]
-  loading: boolean
-  initLoading: boolean
-}
-
-export interface UserManagementRootState {
-  userReducer: UserState
-  attributesReducerRoot: AttributesState
-}
-
-// Define the state interface
-export interface UserState {
-  items: CustomUser[]
-  selectedUserData: CustomUser | null
-  loading: boolean
-  redirectToUserListPage: boolean
-  totalItems: number
-  entriesCount: number
-  fidoDetails: FidoRegistrationEntry[] | Record<string, never>
-  isUserLogout: boolean
 }

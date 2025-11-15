@@ -1,11 +1,10 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
 import GluuRemovableInputRow from 'Routes/Apps/Gluu/GluuRemovableInputRow'
 import GluuRemovableSelectRow from 'Routes/Apps/Gluu/GluuRemovableSelectRow'
 import GluuRemovableTypeAhead from 'Routes/Apps/Gluu/GluuRemovableTypeAhead'
 import { countries } from 'Plugins/user-management/common/countries'
-import { RootState } from '../types/UserApiTypes'
-import { Role } from '../types/CommonTypes'
+import { JANS_ADMIN_UI_ROLE_ATTR, COUNTRY_ATTR } from '../common/Constants'
+import { useGetAllAdminuiRoles } from 'JansConfigApi'
 import { UserClaimEntryProps } from '../types/ComponentTypes'
 
 function UserClaimEntry({
@@ -20,8 +19,13 @@ function UserClaimEntry({
     handler(data.name)
   }
 
-  const roles = useSelector((state: RootState) => state.apiRoleReducer.items)
-  const rolesToBeShown: string[] = roles.map((roleItem: Role) => roleItem.role)
+  const { data: rolesData, isLoading: rolesLoading, isError: rolesError } = useGetAllAdminuiRoles()
+  const rolesToBeShown: string[] = (rolesData ?? [])
+    .map((roleItem) => roleItem.role)
+    .filter((role): role is string => Boolean(role))
+
+  const isRoleField = data.name === JANS_ADMIN_UI_ROLE_ATTR
+  const isRolesUnavailable = isRoleField && (rolesLoading || rolesError)
 
   return (
     <div key={entry}>
@@ -29,20 +33,28 @@ function UserClaimEntry({
         <GluuRemovableTypeAhead
           label={data.displayName}
           name={data.name}
-          allowNew={data.name != 'jansAdminUIRole'}
+          allowNew={data.name !== JANS_ADMIN_UI_ROLE_ATTR}
           value={formik.values[data.name] || []}
           formik={formik}
           isDirect={true}
-          options={data.name == 'jansAdminUIRole' ? rolesToBeShown : formik.values[data.name] || []}
+          options={isRoleField ? rolesToBeShown : formik.values[data.name] || []}
           handler={doHandle}
           modifiedFields={modifiedFields}
           setModifiedFields={setModifiedFields}
           doc_category={data.description}
           lsize={3}
           rsize={9}
+          disabled={isRolesUnavailable}
+          placeholder={
+            isRolesUnavailable
+              ? rolesLoading
+                ? 'Loading roles...'
+                : 'Failed to load roles'
+              : undefined
+          }
         />
       )}
-      {data.name != 'c' && !data.oxMultiValuedAttribute && (
+      {data.name !== COUNTRY_ATTR && !data.oxMultiValuedAttribute && (
         <GluuRemovableInputRow
           label={data.displayName}
           name={data.name}
@@ -58,7 +70,7 @@ function UserClaimEntry({
           isBoolean={data?.dataType?.toLowerCase() === 'boolean'}
         />
       )}
-      {data.name == 'c' && !data.oxMultiValuedAttribute && (
+      {data.name === COUNTRY_ATTR && !data.oxMultiValuedAttribute && (
         <GluuRemovableSelectRow
           label={data.displayName}
           name={data.name}
