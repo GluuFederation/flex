@@ -6,6 +6,24 @@ import { Typeahead } from 'react-bootstrap-typeahead'
 import applicationstyle from './styles/applicationstyle'
 import customColors from '@/customColors'
 
+interface GluuRemovableTypeAheadProps {
+  label: string
+  name: string
+  value: any
+  formik?: any
+  lsize?: number
+  rsize?: number
+  handler: () => void
+  doc_category?: string
+  options?: any[]
+  isDirect?: boolean
+  allowNew?: boolean
+  modifiedFields?: any
+  setModifiedFields?: (fields: any) => void
+  disabled?: boolean
+  placeholder?: string
+}
+
 function GluuRemovableTypeAhead({
   label,
   name,
@@ -22,7 +40,7 @@ function GluuRemovableTypeAhead({
   setModifiedFields,
   disabled = false,
   placeholder,
-}: any) {
+}: GluuRemovableTypeAheadProps) {
   const { t } = useTranslation()
   return (
     <GluuTooltip doc_category={doc_category} isDirect={isDirect} doc_entry={name}>
@@ -39,11 +57,11 @@ function GluuRemovableTypeAhead({
                   const names = selected
                     .map((item: any) => {
                       if (typeof item === 'string') {
-                        return item // String element (from stringArray)
+                        return item
                       } else if (typeof item === 'object' && item.role) {
-                        return item.role // Role property from objectArray
+                        return item.role
                       }
-                      return null // Ignore if not matching criteria
+                      return null
                     })
                     .filter(Boolean)
 

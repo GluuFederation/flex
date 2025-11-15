@@ -47,7 +47,6 @@ export interface AuditPayload extends CustomUser {
   message?: string
   userPassword?: string
   userConfirmPassword?: string
-  customAttributes?: Array<{ name?: string; values?: unknown }>
   jsonPatchString?: string
 }
 
@@ -66,7 +65,7 @@ function redactSensitiveData(payload: AuditPayload): void {
 
   if (Array.isArray(payload.customAttributes)) {
     payload.customAttributes = payload.customAttributes.map((attr) => {
-      if (attr.name === USER_PASSWORD_ATTR || attr.name === 'userPassword') {
+      if (attr.name === USER_PASSWORD_ATTR) {
         const redactedValues = Array.isArray(attr.values)
           ? attr.values.map(() => '[REDACTED]')
           : ['[REDACTED]']
@@ -109,15 +108,10 @@ export async function logUserCreation(data: CustomUser, payload: CustomUser): Pr
     const auditPayload: AuditPayload = { ...payload }
     redactSensitiveData(auditPayload)
 
-    const extendedPayload = payload as AuditPayload
-    if (extendedPayload.modifiedFields && !auditPayload.modifiedFields) {
-      auditPayload.modifiedFields = extendedPayload.modifiedFields
-    }
-    if (extendedPayload.performedOn && !auditPayload.performedOn) {
-      auditPayload.performedOn = extendedPayload.performedOn
-    }
-
-    const message = extendedPayload.action_message || extendedPayload.message || 'Created user'
+    const message =
+      (payload as AuditPayload).action_message ||
+      (payload as AuditPayload).message ||
+      'Created user'
 
     await logAuditUserAction({
       token,
@@ -144,15 +138,10 @@ export async function logUserUpdate(data: CustomUser, payload: CustomUser): Prom
     const auditPayload: AuditPayload = { ...payload }
     redactSensitiveData(auditPayload)
 
-    const extendedPayload = payload as AuditPayload
-    if (extendedPayload.modifiedFields && !auditPayload.modifiedFields) {
-      auditPayload.modifiedFields = extendedPayload.modifiedFields
-    }
-    if (extendedPayload.performedOn && !auditPayload.performedOn) {
-      auditPayload.performedOn = extendedPayload.performedOn
-    }
-
-    const message = extendedPayload.action_message || extendedPayload.message || 'Updated user'
+    const message =
+      (payload as AuditPayload).action_message ||
+      (payload as AuditPayload).message ||
+      'Updated user'
 
     await logAuditUserAction({
       token,
@@ -228,15 +217,10 @@ export async function logPasswordChange(
     const auditPayload: AuditPayload = { ...payload }
     redactSensitiveData(auditPayload)
 
-    const extendedPayload = payload as AuditPayload
-    if (extendedPayload.modifiedFields && !auditPayload.modifiedFields) {
-      auditPayload.modifiedFields = extendedPayload.modifiedFields
-    }
-    if (extendedPayload.performedOn && !auditPayload.performedOn) {
-      auditPayload.performedOn = extendedPayload.performedOn
-    }
-
-    const message = extendedPayload.action_message || extendedPayload.message || 'Password changed'
+    const message =
+      (payload as AuditPayload).action_message ||
+      (payload as AuditPayload).message ||
+      'Password changed'
 
     await logAuditUserAction({
       token,
@@ -268,6 +252,9 @@ interface ErrorResponse {
 }
 
 export function getErrorMessage(error: unknown): string {
+  if (typeof error === 'string') {
+    return error
+  }
   if (typeof error === 'object' && error !== null) {
     const err = error as ErrorResponse
     return (

@@ -1,7 +1,7 @@
 import store from 'Redux/store'
 
 interface WebhookAction {
-  type: string
+  type: 'webhook/triggerWebhook'
   payload: {
     createdFeatureValue: Record<string, unknown>
   }
