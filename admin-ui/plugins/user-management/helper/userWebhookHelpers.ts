@@ -16,7 +16,7 @@ interface StoreWithDispatch {
   dispatch: (action: WebhookAction) => void
 }
 
-export async function triggerUserWebhook(data: Record<string, unknown>): Promise<void> {
+export function triggerUserWebhook(data: Record<string, unknown>): void {
   try {
     const dispatch = (store as StoreWithDispatch).dispatch
     dispatch({

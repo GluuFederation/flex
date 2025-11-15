@@ -5,6 +5,7 @@ import UserForm from './UserForm'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import moment from 'moment'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { BIRTHDATE_ATTR } from '../common/Constants'
 import { PersonAttribute } from 'Plugins/user-management/types/UserApiTypes'
 import { UserEditFormValues } from '../types/ComponentTypes'
@@ -25,7 +26,7 @@ function UserAddPage() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const { t } = useTranslation()
-  const { data: attributesData } = useGetAttributes({
+  const { data: attributesData, isLoading: loadingAttributes } = useGetAttributes({
     limit: 200,
     status: 'ACTIVE',
   })
@@ -35,7 +36,7 @@ function UserAddPage() {
       onSuccess: async (data, variables) => {
         dispatch(updateToast(true, 'success', t('messages.user_created_successfully')))
         await logUserCreation(data, variables.data)
-        await triggerUserWebhook(data as Record<string, unknown>)
+        triggerUserWebhook(data as Record<string, unknown>)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
         navigate('/user/usersmanagement')
       },
@@ -121,7 +122,11 @@ function UserAddPage() {
     <Container>
       <Card type="border" color={null} className="mb-3">
         <CardBody>
-          <UserForm onSubmitData={submitData} />
+          {loadingAttributes ? (
+            <GluuLoader blocking={loadingAttributes} />
+          ) : (
+            <UserForm onSubmitData={submitData} />
+          )}
         </CardBody>
       </Card>
     </Container>

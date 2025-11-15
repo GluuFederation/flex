@@ -65,7 +65,7 @@ const usePasswordChange = (
       onSuccess: async (data: CustomUser, variables: { inum: string; data: UserPatchRequest }) => {
         dispatch(updateToast(true, 'success', t('messages.password_changed_successfully')))
         await logPasswordChange(variables.inum, variables.data as Record<string, unknown>)
-        await triggerUserWebhook(data as Record<string, unknown>)
+        triggerUserWebhook(data as Record<string, unknown>)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
       },
       onError: (error: unknown) => {
@@ -424,10 +424,20 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
       sn: Yup.string().required('Last name is required.'),
       userId: Yup.string().required('User name is required.'),
       mail: Yup.string().required('Email is required.'),
-      userPassword: userDetails ? Yup.string() : Yup.string().required('Password is required.'),
+      userPassword: userDetails
+        ? Yup.string()
+        : Yup.string()
+            .required('Password is required.')
+            .test(
+              'password-strength',
+              'Password must be at least 8 characters with uppercase, lowercase, number, and special character.',
+              (value) => (value ? validatePassword(value) : false),
+            ),
       userConfirmPassword: userDetails
         ? Yup.string()
-        : Yup.string().required('Confirm password is required.'),
+        : Yup.string()
+            .required('Confirm password is required.')
+            .oneOf([Yup.ref('userPassword')], 'Passwords must match.'),
     }),
   })
 
@@ -497,7 +507,11 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
   }
 
   const goBack = () => {
-    navigate(-1)
+    if (window.history.length > 1) {
+      navigate(-1)
+    } else {
+      navigate('/user/usersmanagement')
+    }
   }
 
   const toggleChangePasswordModal = () => {

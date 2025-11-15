@@ -3,6 +3,7 @@ import { logAuditUserAction } from 'Utils/AuditLogger'
 import { FETCH, DELETION, UPDATE, CREATE } from '../../../app/audit/UserActionType'
 import { API_USERS } from '../../../app/audit/Resources'
 import { CustomUser } from '../types/UserApiTypes'
+import { USER_PASSWORD_ATTR } from '../common/Constants'
 
 export interface AuditLog {
   headers: {
@@ -37,7 +38,7 @@ export interface AuthState {
 }
 
 export interface AuditPayload extends CustomUser {
-  modifiedFields?: Record<string, unknown>[]
+  modifiedFields?: Record<string, unknown>
   performedOn?: {
     user_inum?: string
     userId?: string
@@ -46,8 +47,37 @@ export interface AuditPayload extends CustomUser {
   message?: string
   userPassword?: string
   userConfirmPassword?: string
-  customAttributes?: Array<{ values?: unknown }>
+  customAttributes?: Array<{ name?: string; values?: unknown }>
   jsonPatchString?: string
+}
+
+/**
+ * Redact sensitive data from audit payload to prevent password/secret leakage
+ */
+function redactSensitiveData(payload: AuditPayload): void {
+  // Redact top-level password fields
+  if (payload.userPassword) {
+    payload.userPassword = '[REDACTED]'
+  }
+  if (payload.userConfirmPassword) {
+    payload.userConfirmPassword = '[REDACTED]'
+  }
+
+  // Redact password in jsonPatchString
+  if (payload.jsonPatchString) {
+    payload.jsonPatchString =
+      '[{\"op\":\"replace\",\"path\":\"/userPassword\",\"value\":\"[REDACTED]\"}]'
+  }
+
+  // Redact password values in customAttributes by attribute name
+  if (Array.isArray(payload.customAttributes)) {
+    payload.customAttributes = payload.customAttributes.map((attr) => {
+      if (attr.name === USER_PASSWORD_ATTR || attr.name === 'userPassword') {
+        return { ...attr, values: '[REDACTED]' }
+      }
+      return attr
+    })
+  }
 }
 
 /**
@@ -83,9 +113,8 @@ export async function logUserCreation(data: CustomUser, payload: CustomUser): Pr
     const userinfo = authReducer.userinfo
 
     const auditPayload: AuditPayload = { ...payload }
-    if (auditPayload.userPassword) {
-      auditPayload.userPassword = '[REDACTED]'
-    }
+    redactSensitiveData(auditPayload)
+
     const extendedPayload = payload as AuditPayload
     if (extendedPayload.modifiedFields && !auditPayload.modifiedFields) {
       auditPayload.modifiedFields = extendedPayload.modifiedFields
@@ -117,12 +146,10 @@ export async function logUserUpdate(data: CustomUser, payload: CustomUser): Prom
     const token = authReducer.token?.access_token || ''
     const client_id = authReducer.config?.clientId || ''
     const userinfo = authReducer.userinfo
+
     const auditPayload: AuditPayload = { ...payload }
-    delete auditPayload.userPassword
-    delete auditPayload.userConfirmPassword
-    if (auditPayload.customAttributes?.[0]) {
-      delete auditPayload.customAttributes[0].values
-    }
+    redactSensitiveData(auditPayload)
+
     const extendedPayload = payload as AuditPayload
     if (extendedPayload.modifiedFields && !auditPayload.modifiedFields) {
       auditPayload.modifiedFields = extendedPayload.modifiedFields
@@ -130,7 +157,9 @@ export async function logUserUpdate(data: CustomUser, payload: CustomUser): Prom
     if (extendedPayload.performedOn && !auditPayload.performedOn) {
       auditPayload.performedOn = extendedPayload.performedOn
     }
+
     const message = extendedPayload.action_message || extendedPayload.message || 'Updated user'
+
     await logAuditUserAction({
       token,
       userinfo,
@@ -201,21 +230,10 @@ export async function logPasswordChange(
     const token = authReducer.token?.access_token || ''
     const client_id = authReducer.config?.clientId || ''
     const userinfo = authReducer.userinfo
+
     const auditPayload: AuditPayload = { ...payload }
-    if (auditPayload.jsonPatchString) {
-      auditPayload.jsonPatchString =
-        '[{"op":"replace","path":"/userPassword","value":"[REDACTED]"}]'
-    }
-    if (Array.isArray(payload)) {
-      for (const op of payload) {
-        if ((op as Record<string, unknown>).path === '/userPassword') {
-          ;(op as Record<string, unknown>).value = '[REDACTED]'
-        }
-      }
-    }
-    if (auditPayload.customAttributes?.[0]) {
-      delete auditPayload.customAttributes[0].values
-    }
+    redactSensitiveData(auditPayload)
+
     const extendedPayload = payload as AuditPayload
     if (extendedPayload.modifiedFields && !auditPayload.modifiedFields) {
       auditPayload.modifiedFields = extendedPayload.modifiedFields

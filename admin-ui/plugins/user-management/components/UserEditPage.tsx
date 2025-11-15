@@ -54,7 +54,7 @@ function UserEditPage() {
       onSuccess: async (data, variables) => {
         dispatch(updateToast(true, 'success', t('messages.user_updated_successfully')))
         await logUserUpdate(data, variables.data)
-        await triggerUserWebhook(data as Record<string, unknown>)
+        triggerUserWebhook(data as Record<string, unknown>)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
         navigate('/user/usersmanagement')
       },
@@ -93,7 +93,10 @@ function UserEditPage() {
 
         const singleValue =
           attributeName === BIRTHDATE_ATTR && normalized
-            ? moment(normalized, 'YYYY-MM-DD').format('YYYY-MM-DD')
+            ? (() => {
+                const m = moment(normalized, 'YYYY-MM-DD', true)
+                return m.isValid() ? m.format('YYYY-MM-DD') : ''
+              })()
             : (normalized ?? '')
 
         const customAttribute: CustomObjectAttribute = {

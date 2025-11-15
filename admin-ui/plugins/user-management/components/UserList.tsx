@@ -63,7 +63,6 @@ function UserList(): JSX.Element {
   const { hasCedarPermission, authorize } = useCedarling()
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
-  const renders = useRef(0)
 
   const { t } = useTranslation()
   const [modal, setModal] = useState<boolean>(false)
@@ -189,7 +188,7 @@ function UserList(): JSX.Element {
           onSuccess: async () => {
             dispatch(updateToast(true, 'success', t('messages.user_deleted_successfully')))
             await logUserDeletion(deletePayload.inum, deletePayload as CustomUser)
-            await triggerUserWebhook(deletePayload as Record<string, unknown>)
+            triggerUserWebhook(deletePayload as Record<string, unknown>)
             queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
           },
         },
@@ -401,23 +400,6 @@ function UserList(): JSX.Element {
       }
     }
   }
-
-  // Fetch attributes for custom attributes display
-  useEffect(() => {
-    if (!usersList?.length || renders.current >= 1) return
-    renders.current = 1
-
-    const usedAttributes = new Set<string>()
-    for (const user of usersList) {
-      user.customAttributes?.forEach((attribute) => {
-        if (attribute.name) {
-          usedAttributes.add(attribute.name)
-        }
-      })
-    }
-
-    // Attributes will be fetched by UserDetailViewPage component when needed
-  }, [usersList])
 
   useEffect(() => {
     let removeNullValue: DeviceData[] = []

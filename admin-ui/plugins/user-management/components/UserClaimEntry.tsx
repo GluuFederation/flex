@@ -20,7 +20,9 @@ function UserClaimEntry({
   }
 
   const { data: rolesData } = useGetAllAdminuiRoles()
-  const rolesToBeShown: string[] = rolesData?.map((roleItem) => roleItem.role || '') || []
+  const rolesToBeShown: string[] = (rolesData ?? [])
+    .map((roleItem) => roleItem.role)
+    .filter((role): role is string => Boolean(role))
 
   return (
     <div key={entry}>

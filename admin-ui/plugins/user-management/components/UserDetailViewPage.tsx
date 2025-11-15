@@ -63,7 +63,8 @@ const UserDetailViewPage = ({ row }: RowProps) => {
         {rowData.customAttributes?.map((data: CustomObjectAttribute, key: number) => {
           let valueToShow = ''
           if (data.name === BIRTHDATE_ATTR) {
-            valueToShow = moment(data?.values?.[0]).format('YYYY-MM-DD') || ''
+            const m = moment(data?.values?.[0], 'YYYY-MM-DD', true)
+            valueToShow = m.isValid() ? m.format('YYYY-MM-DD') : ''
           } else {
             valueToShow = data.multiValued
               ? data?.values?.join(', ') || ''
