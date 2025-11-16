@@ -11,7 +11,6 @@ import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { getLicenseDetails } from 'Redux/features/licenseDetailsSlice'
-import { getHealthStatus } from 'Redux/features/healthSlice'
 import DashboardChart from './Chart/DashboardChart'
 import DateRange from './DateRange'
 import CheckIcon from 'Images/svg/check.svg'
@@ -24,12 +23,9 @@ import Administrator from '@/components/SVG/menu/Administrator'
 import OAuthIcon from '@/components/SVG/menu/OAuth'
 import JansLockUsers from '@/components/SVG/menu/JansLockUsers'
 import JansLockClients from '@/components/SVG/menu/JansLockClients'
-import { getHealthServerStatus } from '../../redux/features/healthSlice'
 import GluuPermissionModal from 'Routes/Apps/Gluu/GluuPermissionModal'
 import { auditLogoutLogs } from 'Redux/features/sessionSlice'
 import { useNavigate } from 'react-router'
-import { getLockStatus } from 'Redux/features/lockSlice'
-import moment from 'moment'
 import customColors from '@/customColors'
 import { useCedarling } from '@/cedarling'
 
@@ -51,7 +47,6 @@ function DashboardPage() {
   const [requestStates, setRequestStates] = useState({
     licenseRequested: false,
     clientsRequested: false,
-    serverStatusRequested: false,
   })
   const statData = useSelector((state: any) => state.mauReducer.stat)
   const loading = useSelector((state: any) => state.mauReducer.loading)
@@ -163,31 +158,6 @@ function DashboardPage() {
     requestStates.clientsRequested,
     dispatch,
     userAction,
-  ])
-
-  useEffect(() => {
-    if (access_token && hasViewPermissions && !requestStates.serverStatusRequested) {
-      setRequestStates((prev) => ({ ...prev, serverStatusRequested: true }))
-      buildPayload(userAction as any, 'GET Health Status', options as any)
-      dispatch(getHealthStatus({ action: userAction } as any))
-
-      const months = []
-      for (let i = 0; i < 12; i++) {
-        months.push(moment().subtract(i, 'months').format('YYYYMM'))
-      }
-      const startMonth = months[months.length - 1]
-      const endMonth = months[0]
-      dispatch(getLockStatus({ startMonth, endMonth } as any))
-      buildPayload(userAction as any, 'GET Health Status', { service: 'all' } as any)
-      dispatch(getHealthServerStatus({ action: userAction } as any))
-    }
-  }, [
-    access_token,
-    hasViewPermissions,
-    requestStates.serverStatusRequested,
-    dispatch,
-    userAction,
-    options,
   ])
 
   const isUp = useCallback((status: any) => {

@@ -11,6 +11,7 @@ import type {
 } from '@/cedarling'
 import { findPermissionByUrl } from '@/cedarling/utility'
 import { OPENID, REVOKE_SESSION, SCIM_BULK, SSA_ADMIN, SSA_DEVELOPER } from '@/utils/PermChecker'
+import { updateToast } from '@/redux/features/toastSlice'
 
 export function useCedarling(): UseCedarlingReturn {
   const { ACTION_TYPE, RESOURCE_TYPE } = CEDARLING_CONSTANTS
@@ -159,10 +160,6 @@ export function useCedarling(): UseCedarlingReturn {
         const response = await cedarlingClient.token_authorize(request)
 
         const isAuthorized = response?.decision === true
-        if (!isAuthorized) {
-          console.log('request', request)
-          console.log('permissionsWithTags', permissionsWithTags)
-        }
 
         dispatch(
           setCedarlingPermission({
@@ -172,6 +169,11 @@ export function useCedarling(): UseCedarlingReturn {
         )
         return { isAuthorized, response }
       } catch (error) {
+        const toMessage = (err: unknown): string =>
+          err instanceof Error ? err.message : typeof err === 'string' ? err : 'Unknown error'
+        const rawMessage = toMessage(error)
+        const truncated = rawMessage.length > 25 ? rawMessage.slice(0, 25) + '…' : rawMessage
+        dispatch(updateToast(true, 'error', `Authorization error: ${truncated}`))
         return {
           isAuthorized: false,
           error: error instanceof Error ? error.message : 'Unknown error',

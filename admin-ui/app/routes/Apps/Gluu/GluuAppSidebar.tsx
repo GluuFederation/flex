@@ -135,13 +135,6 @@ function GluuAppSidebar(): JSX.Element {
           const { isAuthorized, error } = await authorize([
             { permission: item.permission, resourceId: item.resourceKey },
           ])
-          if (!isAuthorized) {
-            console.warn(
-              `[Sidebar] Menu item "${item.title}" (${item.path}) is not authorized.`,
-              error ? `Error: ${error}` : 'User does not have required permission.',
-              `Permission: ${item.permission}, Resource: ${item.resourceKey}`,
-            )
-          }
           if (isAuthorized) {
             result.push(item)
           }
