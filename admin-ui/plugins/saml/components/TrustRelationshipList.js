@@ -81,6 +81,64 @@ const TrustRelationshipList = () => {
 
   const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
 
+  const tableActions = useMemo(
+    () => [
+      ...(canWriteTrustRelationships
+        ? [
+            {
+              icon: 'edit',
+              tooltip: `${t('messages.edit_service_provider')}`,
+              iconProps: { color: 'primary', style: { color: customColors.darkGray } },
+              onClick: (event, rowData) => {
+                const data = { ...rowData }
+                delete data.tableData
+                handleGoToEditPage(data)
+              },
+            },
+          ]
+        : []),
+      ...(canReadTrustRelationships
+        ? [
+            {
+              icon: 'visibility',
+              iconProps: { style: { color: customColors.darkGray } },
+              tooltip: `${t('messages.view_service_provider')}`,
+              onClick: (event, rowData) => handleGoToEditPage(rowData, true),
+            },
+          ]
+        : []),
+      ...(canWriteTrustRelationships
+        ? [
+            {
+              icon: DeleteOutlinedIcon,
+              iconProps: { color: 'secondary' },
+              tooltip: `${t('messages.delete_service_provider')}`,
+              onClick: (event, rowData) => handleDelete(rowData),
+            },
+          ]
+        : []),
+      ...(canWriteTrustRelationships
+        ? [
+            {
+              icon: 'add',
+              tooltip: `${t('messages.add_service_provider')}`,
+              iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
+              isFreeAction: true,
+              onClick: () => handleGoToAddPage(),
+            },
+          ]
+        : []),
+    ],
+    [
+      canReadTrustRelationships,
+      canWriteTrustRelationships,
+      t,
+      handleGoToEditPage,
+      handleGoToAddPage,
+      handleDelete,
+    ],
+  )
+
   return (
     <>
       <GluuViewWrapper canShow={canReadTrustRelationships}>
@@ -92,45 +150,7 @@ const TrustRelationshipList = () => {
           data={trustRelationships}
           isLoading={loadingTrustRelationship}
           title=""
-          actions={[
-            {
-              icon: 'edit',
-              tooltip: `${t('messages.edit_service_provider')}`,
-              iconProps: { color: 'primary', style: { color: customColors.darkGray } },
-              onClick: (event, rowData) => {
-                const data = { ...rowData }
-                delete data.tableData
-                handleGoToEditPage(data)
-              },
-              disabled: !canWriteTrustRelationships,
-            },
-            {
-              icon: 'visibility',
-              iconProps: {
-                style: { color: customColors.darkGray },
-              },
-              tooltip: `${t('messages.view_service_provider')}`,
-              onClick: (event, rowData) => handleGoToEditPage(rowData, true),
-              disabled: !canReadTrustRelationships,
-            },
-            {
-              icon: DeleteOutlinedIcon,
-              iconProps: {
-                color: 'secondary',
-              },
-              tooltip: `${t('messages.delete_service_provider')}`,
-              onClick: (event, rowData) => handleDelete(rowData),
-              disabled: !canWriteTrustRelationships,
-            },
-            {
-              icon: 'add',
-              tooltip: `${t('messages.add_service_provider')}`,
-              iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
-              isFreeAction: true,
-              onClick: () => handleGoToAddPage(),
-              disabled: !canWriteTrustRelationships,
-            },
-          ]}
+          actions={tableActions}
           options={{
             search: true,
             searchFieldAlignment: 'left',

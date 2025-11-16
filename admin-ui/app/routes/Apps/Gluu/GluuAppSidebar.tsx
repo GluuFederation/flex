@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useMemo, useCallback } from 'react'
+import React, { useState, useEffect, useContext, useMemo, useCallback, useRef } from 'react'
 import { SidebarMenu, SidebarMenuItem } from 'Components'
 import { useSelector } from 'react-redux'
 import { ErrorBoundary } from 'react-error-boundary'
@@ -82,7 +82,8 @@ function GluuAppSidebar(): JSX.Element {
   const health = useSelector(selectHealth)
   const logoutAuditSucceeded = useSelector(selectLogoutAuditSucceeded)
   const [pluginMenus, setPluginMenus] = useState<PluginMenu[]>([])
-  const [loading, setLoading] = useState<boolean>(false)
+  const didAnimateMenusRef = useRef<boolean>(false)
+  const isReady = pluginMenus.length > 0
   const { t } = useTranslation()
   const theme = useContext(ThemeContext) as ThemeContextState
   const selectedTheme = theme.state.theme
@@ -114,35 +115,32 @@ function GluuAppSidebar(): JSX.Element {
 
   const filterMenuItems = useCallback(
     async (menus: MenuItem[]): Promise<MenuItem[]> => {
-      const result: MenuItem[] = []
-
-      for (const item of menus) {
-        if (hasChildren(item)) {
-          const filteredChildren = await filterMenuItems(item.children!)
-
-          if (filteredChildren.length > 0) {
-            result.push({ ...item, children: filteredChildren })
+      const evaluations = await Promise.all(
+        menus.map(async (item): Promise<MenuItem | null> => {
+          if (hasChildren(item)) {
+            const filteredChildren = await filterMenuItems(item.children!)
+            if (filteredChildren.length > 0) {
+              return { ...item, children: filteredChildren }
+            }
+            return null
           }
-        } else if (item.permission) {
-          if (item.resourceKey === CEDARLING_BYPASS) {
-            result.push(item)
-            continue
+          if (item.permission) {
+            if (item.resourceKey === CEDARLING_BYPASS) {
+              return item
+            }
+            if (!item.resourceKey) {
+              console.warn('[Sidebar] Missing resourceKey for menu item', item.path ?? item.title)
+              return null
+            }
+            const { isAuthorized } = await authorize([
+              { permission: item.permission, resourceId: item.resourceKey },
+            ])
+            return isAuthorized ? item : null
           }
-          if (!item.resourceKey) {
-            console.warn('[Sidebar] Missing resourceKey for menu item', item.path ?? item.title)
-            continue
-          }
-          const { isAuthorized } = await authorize([
-            { permission: item.permission, resourceId: item.resourceKey },
-          ])
-          if (isAuthorized) {
-            result.push(item)
-          }
-        } else {
-          result.push(item)
-        }
-      }
-      return result
+          return item
+        }),
+      )
+      return evaluations.filter((x): x is MenuItem => !!x)
     },
     [hasChildren, authorize],
   )
@@ -165,7 +163,9 @@ function GluuAppSidebar(): JSX.Element {
       const filteredMenus = await filterMenuItems(await memoizedFilteredMenus)
       setPluginMenus(filteredMenus)
     } finally {
-      !loading && setLoading(true)
+      if (!didAnimateMenusRef.current) {
+        didAnimateMenusRef.current = true
+      }
     }
   }
 
@@ -182,55 +182,63 @@ function GluuAppSidebar(): JSX.Element {
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
       <SidebarMenu>
-        {loading ? (
-          <MenuContext.Consumer>
-            {(ctx: SidebarMenuContext) =>
-              pluginMenus.map((plugin, key) => (
-                <SidebarMenuItem
-                  key={key}
-                  icon={getMenuIcon(plugin.icon)}
-                  to={getMenuPath(plugin)}
-                  title={t(`${plugin.title}`)}
-                  textStyle={{ fontSize: '18px' }}
-                  sidebarMenuActiveClass={sidebarMenuActiveClass}
-                  {...ctx}
-                >
-                  {hasChildren(plugin) &&
-                    plugin.children!.map((item, idx) => (
-                      <SidebarMenuItem
-                        key={idx}
-                        title={t(`${item.title}`)}
-                        to={getMenuPath(item)}
-                        icon={getMenuIcon(item.icon)}
-                        textStyle={{ fontSize: '15px' }}
-                        exact
-                        {...ctx}
-                      >
-                        {hasChildren(item) &&
-                          item.children!.map((sub, id) => (
-                            <SidebarMenuItem
-                              key={id}
-                              title={t(`${sub.title}`)}
-                              to={getMenuPath(sub)}
-                              icon={getMenuIcon(sub.icon)}
-                              textStyle={{ fontSize: '15px' }}
-                              exact
-                              {...ctx}
-                            ></SidebarMenuItem>
-                          ))}
-                      </SidebarMenuItem>
-                    ))}
-                </SidebarMenuItem>
-              ))
-            }
-          </MenuContext.Consumer>
+        {isReady ? (
+          <div
+            className={`${!didAnimateMenusRef.current ? classes.menuFadeIn : ''} ${classes.menuContainer}`}
+          >
+            <MenuContext.Consumer>
+              {(ctx: SidebarMenuContext) =>
+                pluginMenus.map((plugin, key) => (
+                  <SidebarMenuItem
+                    key={key}
+                    icon={getMenuIcon(plugin.icon)}
+                    to={getMenuPath(plugin)}
+                    title={t(`${plugin.title}`)}
+                    textStyle={{ fontSize: '18px' }}
+                    sidebarMenuActiveClass={sidebarMenuActiveClass}
+                    {...ctx}
+                  >
+                    {hasChildren(plugin) &&
+                      plugin.children!.map((item, idx) => (
+                        <SidebarMenuItem
+                          key={idx}
+                          title={t(`${item.title}`)}
+                          to={getMenuPath(item)}
+                          icon={getMenuIcon(item.icon)}
+                          textStyle={{ fontSize: '15px' }}
+                          exact
+                          {...ctx}
+                        >
+                          {hasChildren(item) &&
+                            item.children!.map((sub, id) => (
+                              <SidebarMenuItem
+                                key={id}
+                                title={t(`${sub.title}`)}
+                                to={getMenuPath(sub)}
+                                icon={getMenuIcon(sub.icon)}
+                                textStyle={{ fontSize: '15px' }}
+                                exact
+                                {...ctx}
+                              ></SidebarMenuItem>
+                            ))}
+                        </SidebarMenuItem>
+                      ))}
+                  </SidebarMenuItem>
+                ))
+              }
+            </MenuContext.Consumer>
+          </div>
         ) : (
-          <div style={{ marginTop: '20vh' }}>
-            <GluuLoader blocking={!loading} />
+          <div className={classes.loaderRoot}>
+            <GluuLoader blocking />
           </div>
         )}
 
-        <div className={loading ? classes.waveContainer : classes.waveContainerFixed}>
+        <div
+          className={
+            isReady ? `${classes.waveContainer} ${classes.waveFadeIn}` : classes.waveContainerFixed
+          }
+        >
           <WaveIcon className={classes.wave} fill={themeColors.menu.background} />
           <div className={classes.powered}>Powered by Gluu</div>
         </div>

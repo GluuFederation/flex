@@ -95,7 +95,8 @@ const ScimPage: React.FC = () => {
                   case 'add':
                     return { ...updated, [key]: patch.value }
                   case 'remove': {
-                    const { [key]: _removed, ...rest } = updated
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    const { [key]: _omit, ...rest } = updated
                     return rest
                   }
                   default:
@@ -145,10 +146,6 @@ const ScimPage: React.FC = () => {
 
   const handleSubmit = useCallback(
     (formValues: ScimFormValues): void => {
-      if (canWriteScim) {
-        dispatch(updateToast(true, 'error', t('messages.insufficient_permissions_to_modify')))
-        return
-      }
       if (!scimConfiguration) {
         dispatch(updateToast(true, 'error', t('messages.no_configuration_loaded')))
         return
@@ -162,7 +159,7 @@ const ScimPage: React.FC = () => {
       userMessageRef.current = action_message || ''
       patchScimMutation.mutate({ data: patches })
     },
-    [scimConfiguration, patchScimMutation, dispatch, t, canWriteScim],
+    [scimConfiguration, patchScimMutation, dispatch, t],
   )
 
   return (
@@ -174,6 +171,7 @@ const ScimPage: React.FC = () => {
               scimConfiguration={scimConfiguration}
               handleSubmit={handleSubmit}
               isSubmitting={patchScimMutation.isPending}
+              canWriteScim={canWriteScim}
             />
           </GluuViewWrapper>
         </CardBody>

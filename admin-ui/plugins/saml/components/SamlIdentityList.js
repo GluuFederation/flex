@@ -43,7 +43,6 @@ const SamlIdentityList = () => {
     hasCedarWritePermission,
     hasCedarDeletePermission,
   } = useCedarling()
-  const options = {}
   const [modal, setModal] = useState(false)
   const [limit, setLimit] = useState(10)
   const [pattern, setPattern] = useState(null)
@@ -53,8 +52,6 @@ const SamlIdentityList = () => {
   const selectedTheme = theme?.state.theme
   const themeColors = getThemeColor(selectedTheme)
 
-  let memoLimit = limit
-  let memoPattern = pattern
   const toggle = () => setModal(!modal)
 
   const { t } = useTranslation()
@@ -82,12 +79,9 @@ const SamlIdentityList = () => {
   }, [authorizeHelper, samlScopes])
 
   useEffect(() => {
-    if (!canReadIdentities) {
-      return
-    }
-    makeOptions()
-    dispatch(getSamlIdentites(options))
-  }, [dispatch, canReadIdentities])
+    if (!canReadIdentities) return
+    dispatch(getSamlIdentites({ limit, ...(pattern ? { pattern } : {}) }))
+  }, [dispatch, canReadIdentities, limit, pattern])
 
   const handleGoToEditPage = useCallback((rowData, viewOnly) => {
     navigate('/saml/identity-providers/edit', { state: { rowData: rowData, viewOnly: viewOnly } })
@@ -109,44 +103,32 @@ const SamlIdentityList = () => {
     toggle()
   }
 
-  function makeOptions() {
-    setLimit(memoLimit)
-    setPattern(memoPattern)
-    options['limit'] = memoLimit
-    if (memoPattern) {
-      options['pattern'] = memoPattern
-    }
-  }
-
   const onRowCountChangeClick = (count) => {
-    makeOptions()
-    options['startIndex'] = 0
-    options['limit'] = count
     setPageNumber(0)
     setLimit(count)
-    dispatch(getSamlIdentites(options))
+    dispatch(getSamlIdentites({ startIndex: 0, limit: count, ...(pattern ? { pattern } : {}) }))
   }
 
   const onPageChangeClick = (page) => {
-    makeOptions()
     const startCount = page * limit
-    options['startIndex'] = parseInt(startCount)
-    options['limit'] = limit
     setPageNumber(page)
-    dispatch(getSamlIdentites(options))
+    dispatch(
+      getSamlIdentites({
+        startIndex: parseInt(startCount),
+        limit,
+        ...(pattern ? { pattern } : {}),
+      }),
+    )
   }
 
   const handleOptionsChange = useCallback((event) => {
     if (event.target.name == 'limit') {
-      memoLimit = event.target.value
+      setLimit(event.target.value)
     } else if (event.target.name == 'pattern') {
-      memoPattern = event.target.value
+      const nextPattern = event.target.value
+      setPattern(nextPattern)
       if (event.keyCode === 13) {
-        const newOptions = {
-          limit: limit,
-          pattern: memoPattern,
-        }
-        dispatch(getSamlIdentites({ action: newOptions }))
+        dispatch(getSamlIdentites({ limit, pattern: nextPattern }))
       }
     }
   }, [])
@@ -181,6 +163,83 @@ const SamlIdentityList = () => {
     )
   }, [limit, pattern, handleOptionsChange])
 
+  const tableActions = useMemo(
+    () => [
+      ...(canWriteIdentities
+        ? [
+            {
+              icon: 'edit',
+              tooltip: `${t('messages.edit_identity_provider')}`,
+              iconProps: { style: { color: customColors.darkGray } },
+              onClick: (event, rowData) => {
+                const data = { ...rowData }
+                delete data.tableData
+                handleGoToEditPage(data)
+              },
+            },
+          ]
+        : []),
+      ...(canReadIdentities
+        ? [
+            {
+              icon: 'visibility',
+              tooltip: `${t('messages.view_identity_provider')}`,
+              onClick: (event, rowData) => handleGoToEditPage(rowData, true),
+            },
+          ]
+        : []),
+      ...(canDeleteIdentities
+        ? [
+            {
+              icon: DeleteOutlinedIcon,
+              iconProps: { color: 'secondary' },
+              tooltip: `${t('messages.delete_identity_provider')}`,
+              onClick: (event, rowData) => handleDelete(rowData),
+            },
+          ]
+        : []),
+      {
+        icon: GluuSearch,
+        tooltip: `${t('messages.advanced_search')}`,
+        iconProps: { color: 'primary' },
+        isFreeAction: true,
+        onClick: () => {},
+      },
+      {
+        icon: 'refresh',
+        tooltip: `${t('messages.refresh')}`,
+        iconProps: { color: 'primary' },
+        ['data-testid']: `${t('messages.refresh')}`,
+        isFreeAction: true,
+        onClick: () => {
+          dispatch(getSamlIdentites({ limit, ...(pattern ? { pattern } : {}) }))
+        },
+      },
+      ...(canWriteIdentities
+        ? [
+            {
+              icon: 'add',
+              tooltip: `${t('messages.add_identity_provider')}`,
+              iconProps: { color: 'primary' },
+              isFreeAction: true,
+              onClick: () => handleGoToAddPage(),
+            },
+          ]
+        : []),
+    ],
+    [
+      canWriteIdentities,
+      canReadIdentities,
+      canDeleteIdentities,
+      t,
+      dispatch,
+      handleGoToEditPage,
+      handleGoToAddPage,
+      limit,
+      pattern,
+    ],
+  )
+
   return (
     <>
       <GluuViewWrapper canShow={canReadIdentities}>
@@ -193,60 +252,7 @@ const SamlIdentityList = () => {
           data={items}
           isLoading={loadingSamlIdp}
           title=""
-          actions={[
-            {
-              icon: 'edit',
-              tooltip: `${t('messages.edit_identity_provider')}`,
-              iconProps: { style: { color: customColors.darkGray } },
-              onClick: (event, rowData) => {
-                const data = { ...rowData }
-                delete data.tableData
-                handleGoToEditPage(data)
-              },
-              disabled: !canWriteIdentities,
-            },
-            {
-              icon: 'visibility',
-              tooltip: `${t('messages.view_identity_provider')}`,
-              onClick: (event, rowData) => handleGoToEditPage(rowData, true),
-              disabled: !canReadIdentities,
-            },
-            {
-              icon: DeleteOutlinedIcon,
-              iconProps: {
-                color: 'secondary',
-              },
-              tooltip: `${t('messages.delete_identity_provider')}`,
-              onClick: (event, rowData) => handleDelete(rowData),
-              disabled: !canDeleteIdentities,
-            },
-            {
-              icon: GluuSearch,
-              tooltip: `${t('messages.advanced_search')}`,
-              iconProps: { color: 'primary' },
-              isFreeAction: true,
-              onClick: () => {},
-            },
-            {
-              icon: 'refresh',
-              tooltip: `${t('messages.refresh')}`,
-              iconProps: { color: 'primary' },
-              ['data-testid']: `${t('messages.refresh')}`,
-              isFreeAction: true,
-              onClick: () => {
-                makeOptions()
-                dispatch(getSamlIdentites(options))
-              },
-            },
-            {
-              icon: 'add',
-              tooltip: `${t('messages.add_identity_provider')}`,
-              iconProps: { color: 'primary' },
-              isFreeAction: true,
-              onClick: () => handleGoToAddPage(),
-              disabled: !canWriteIdentities,
-            },
-          ]}
+          actions={tableActions}
           options={{
             search: false,
             selection: false,
