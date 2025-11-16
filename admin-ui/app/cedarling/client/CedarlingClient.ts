@@ -24,7 +24,6 @@ const initialize = async (bootStrapConfig: BootStrapConfig): Promise<void> => {
       await initWasm()
       cedarling = await init(bootStrapConfig)
       cedarlingInitialized = true
-      console.log('WASM Cedarling successfully initialized')
     } catch (err) {
       console.error('Error during Cedarling init:', err)
       initializationPromise = null // Reset on error to allow retry

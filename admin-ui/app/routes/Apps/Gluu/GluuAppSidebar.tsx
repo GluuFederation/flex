@@ -132,7 +132,7 @@ function GluuAppSidebar(): JSX.Element {
             console.warn('[Sidebar] Missing resourceKey for menu item', item.path ?? item.title)
             continue
           }
-          const { isAuthorized, error } = await authorize([
+          const { isAuthorized } = await authorize([
             { permission: item.permission, resourceId: item.resourceKey },
           ])
           if (isAuthorized) {
