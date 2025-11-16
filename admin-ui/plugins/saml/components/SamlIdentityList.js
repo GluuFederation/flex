@@ -163,82 +163,71 @@ const SamlIdentityList = () => {
     )
   }, [limit, pattern, handleOptionsChange])
 
-  const tableActions = useMemo(
-    () => [
-      ...(canWriteIdentities
-        ? [
-            {
-              icon: 'edit',
-              tooltip: `${t('messages.edit_identity_provider')}`,
-              iconProps: { style: { color: customColors.darkGray } },
-              onClick: (event, rowData) => {
-                const data = { ...rowData }
-                delete data.tableData
-                handleGoToEditPage(data)
-              },
-            },
-          ]
-        : []),
-      ...(canReadIdentities
-        ? [
-            {
-              icon: 'visibility',
-              tooltip: `${t('messages.view_identity_provider')}`,
-              onClick: (event, rowData) => handleGoToEditPage(rowData, true),
-            },
-          ]
-        : []),
-      ...(canDeleteIdentities
-        ? [
-            {
-              icon: DeleteOutlinedIcon,
-              iconProps: { color: 'secondary' },
-              tooltip: `${t('messages.delete_identity_provider')}`,
-              onClick: (event, rowData) => handleDelete(rowData),
-            },
-          ]
-        : []),
-      {
-        icon: GluuSearch,
-        tooltip: `${t('messages.advanced_search')}`,
-        iconProps: { color: 'primary' },
-        isFreeAction: true,
-        onClick: () => {},
-      },
-      {
-        icon: 'refresh',
-        tooltip: `${t('messages.refresh')}`,
-        iconProps: { color: 'primary' },
-        ['data-testid']: `${t('messages.refresh')}`,
-        isFreeAction: true,
-        onClick: () => {
-          dispatch(getSamlIdentites({ limit, ...(pattern ? { pattern } : {}) }))
+  const tableActions = useMemo(() => {
+    const actions = []
+    if (canWriteIdentities) {
+      actions.push({
+        icon: 'edit',
+        tooltip: `${t('messages.edit_identity_provider')}`,
+        iconProps: { style: { color: customColors.darkGray } },
+        onClick: (event, rowData) => {
+          const data = { ...rowData }
+          delete data.tableData
+          handleGoToEditPage(data)
         },
+      })
+      actions.push({
+        icon: 'add',
+        tooltip: `${t('messages.add_identity_provider')}`,
+        iconProps: { color: 'primary' },
+        isFreeAction: true,
+        onClick: () => handleGoToAddPage(),
+      })
+    }
+    if (canReadIdentities) {
+      actions.push({
+        icon: 'visibility',
+        tooltip: `${t('messages.view_identity_provider')}`,
+        onClick: (event, rowData) => handleGoToEditPage(rowData, true),
+      })
+    }
+    if (canDeleteIdentities) {
+      actions.push({
+        icon: DeleteOutlinedIcon,
+        iconProps: { color: 'secondary' },
+        tooltip: `${t('messages.delete_identity_provider')}`,
+        onClick: (event, rowData) => handleDelete(rowData),
+      })
+    }
+    actions.push({
+      icon: GluuSearch,
+      tooltip: `${t('messages.advanced_search')}`,
+      iconProps: { color: 'primary' },
+      isFreeAction: true,
+      onClick: () => {},
+    })
+    actions.push({
+      icon: 'refresh',
+      tooltip: `${t('messages.refresh')}`,
+      iconProps: { color: 'primary' },
+      ['data-testid']: `${t('messages.refresh')}`,
+      isFreeAction: true,
+      onClick: () => {
+        dispatch(getSamlIdentites({ limit, ...(pattern ? { pattern } : {}) }))
       },
-      ...(canWriteIdentities
-        ? [
-            {
-              icon: 'add',
-              tooltip: `${t('messages.add_identity_provider')}`,
-              iconProps: { color: 'primary' },
-              isFreeAction: true,
-              onClick: () => handleGoToAddPage(),
-            },
-          ]
-        : []),
-    ],
-    [
-      canWriteIdentities,
-      canReadIdentities,
-      canDeleteIdentities,
-      t,
-      dispatch,
-      handleGoToEditPage,
-      handleGoToAddPage,
-      limit,
-      pattern,
-    ],
-  )
+    })
+    return actions
+  }, [
+    canWriteIdentities,
+    canReadIdentities,
+    canDeleteIdentities,
+    t,
+    dispatch,
+    handleGoToEditPage,
+    handleGoToAddPage,
+    limit,
+    pattern,
+  ])
 
   return (
     <>

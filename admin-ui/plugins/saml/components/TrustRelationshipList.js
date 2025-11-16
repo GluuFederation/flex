@@ -81,63 +81,52 @@ const TrustRelationshipList = () => {
 
   const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
 
-  const tableActions = useMemo(
-    () => [
-      ...(canWriteTrustRelationships
-        ? [
-            {
-              icon: 'edit',
-              tooltip: `${t('messages.edit_service_provider')}`,
-              iconProps: { color: 'primary', style: { color: customColors.darkGray } },
-              onClick: (event, rowData) => {
-                const data = { ...rowData }
-                delete data.tableData
-                handleGoToEditPage(data)
-              },
-            },
-          ]
-        : []),
-      ...(canReadTrustRelationships
-        ? [
-            {
-              icon: 'visibility',
-              iconProps: { style: { color: customColors.darkGray } },
-              tooltip: `${t('messages.view_service_provider')}`,
-              onClick: (event, rowData) => handleGoToEditPage(rowData, true),
-            },
-          ]
-        : []),
-      ...(canWriteTrustRelationships
-        ? [
-            {
-              icon: DeleteOutlinedIcon,
-              iconProps: { color: 'secondary' },
-              tooltip: `${t('messages.delete_service_provider')}`,
-              onClick: (event, rowData) => handleDelete(rowData),
-            },
-          ]
-        : []),
-      ...(canWriteTrustRelationships
-        ? [
-            {
-              icon: 'add',
-              tooltip: `${t('messages.add_service_provider')}`,
-              iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
-              isFreeAction: true,
-              onClick: () => handleGoToAddPage(),
-            },
-          ]
-        : []),
-    ],
-    [
-      canReadTrustRelationships,
-      canWriteTrustRelationships,
-      t,
-      handleGoToEditPage,
-      handleGoToAddPage,
-      handleDelete,
-    ],
-  )
+  const tableActions = useMemo(() => {
+    const actions = []
+    if (canWriteTrustRelationships) {
+      actions.push(
+        {
+          icon: 'edit',
+          tooltip: `${t('messages.edit_service_provider')}`,
+          iconProps: { color: 'primary', style: { color: customColors.darkGray } },
+          onClick: (event, rowData) => {
+            const data = { ...rowData }
+            delete data.tableData
+            handleGoToEditPage(data)
+          },
+        },
+        actions.push({
+          icon: DeleteOutlinedIcon,
+          iconProps: { color: 'secondary' },
+          tooltip: `${t('messages.delete_service_provider')}`,
+          onClick: (event, rowData) => handleDelete(rowData),
+        }),
+        actions.push({
+          icon: 'add',
+          tooltip: `${t('messages.add_service_provider')}`,
+          iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
+          isFreeAction: true,
+          onClick: () => handleGoToAddPage(),
+        }),
+      )
+    }
+    if (canReadTrustRelationships) {
+      actions.push({
+        icon: 'visibility',
+        iconProps: { style: { color: customColors.darkGray } },
+        tooltip: `${t('messages.view_service_provider')}`,
+        onClick: (event, rowData) => handleGoToEditPage(rowData, true),
+      })
+    }
+    return actions
+  }, [
+    canReadTrustRelationships,
+    canWriteTrustRelationships,
+    t,
+    handleGoToEditPage,
+    handleGoToAddPage,
+    handleDelete,
+  ])
 
   return (
     <>
