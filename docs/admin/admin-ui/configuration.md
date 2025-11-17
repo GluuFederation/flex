@@ -27,7 +27,7 @@ This feature is useful for setting PRP. It helps to prevent MITM attacks in prod
 
 2. `Default`: It is recommended to set it to Default for production. If set to Default, it will use the Admin-UI storage for Cedarling authorization. Enable Default mode and use the refresh button to store or update GitHub policies on the Admin-UI Server.
 
-#### Steps to configure Remote Policy Store URL 
+#### Steps to configure Remote Policy Store URL
 
  1. Fork the project [GluuFlexAdminUIPolicyStore](https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/tree/agama-lab-policy-designer).
  2. Open the forked repository using [Agama Lab's](https://cloud.gluu.org/agama-lab) Policy Designer.
