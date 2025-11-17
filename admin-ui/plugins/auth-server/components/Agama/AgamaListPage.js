@@ -98,7 +98,9 @@ function AgamaListPage() {
   )
 
   useEffect(() => {
-    authorizeHelper(authScopes)
+    if (authScopes && authScopes.length > 0) {
+      authorizeHelper(authScopes)
+    }
   }, [authorizeHelper, authScopes])
 
   function convertFileToByteArray(file) {
