@@ -229,6 +229,7 @@ const pluginMetadata = {
       component: AgamaListPageWrapper,
       path: PLUGIN_BASE_APTH + '/agama',
       permission: AGAMA_READ,
+      resourceKey: ADMIN_UI_RESOURCES.Authentication,
     },
     {
       component: SsaListPage,
