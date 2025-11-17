@@ -35,7 +35,7 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: a
     [webhookResourceId],
   )
   const canReadWebhooks = useMemo(
-    () => hasCedarReadPermission(webhookResourceId) === true,
+    () => hasCedarReadPermission(webhookResourceId),
     [hasCedarReadPermission, webhookResourceId],
   )
 

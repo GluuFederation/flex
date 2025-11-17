@@ -34,7 +34,7 @@ function LicenseDetailsPage() {
   const licenseResourceId = useMemo(() => ADMIN_UI_RESOURCES.License, [])
   const licenseScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[licenseResourceId], [licenseResourceId])
   const canWriteLicense = useMemo(
-    () => hasCedarWritePermission(licenseResourceId) === true,
+    () => hasCedarWritePermission(licenseResourceId),
     [hasCedarWritePermission, licenseResourceId],
   )
 

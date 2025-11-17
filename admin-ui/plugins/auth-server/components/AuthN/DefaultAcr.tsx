@@ -78,11 +78,11 @@ function DefaultAcr(): React.ReactElement {
   const authScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[authResourceId] || [], [authResourceId])
 
   const canReadAuth = useMemo(
-    () => hasCedarReadPermission(authResourceId) === true,
+    () => hasCedarReadPermission(authResourceId),
     [hasCedarReadPermission, authResourceId],
   )
   const canWriteAuth = useMemo(
-    () => hasCedarWritePermission(authResourceId) === true,
+    () => hasCedarWritePermission(authResourceId),
     [hasCedarWritePermission, authResourceId],
   )
 

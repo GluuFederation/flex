@@ -40,11 +40,11 @@ const TrustRelationshipList = () => {
   const samlResourceId = useMemo(() => ADMIN_UI_RESOURCES.SAML, [])
   const samlScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[samlResourceId], [samlResourceId])
   const canReadTrustRelationships = useMemo(
-    () => hasCedarReadPermission(samlResourceId) === true,
+    () => hasCedarReadPermission(samlResourceId),
     [hasCedarReadPermission, samlResourceId],
   )
   const canWriteTrustRelationships = useMemo(
-    () => hasCedarWritePermission(samlResourceId) === true,
+    () => hasCedarWritePermission(samlResourceId),
     [hasCedarWritePermission, samlResourceId],
   )
 

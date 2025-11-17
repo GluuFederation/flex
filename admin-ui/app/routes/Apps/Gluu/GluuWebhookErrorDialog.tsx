@@ -28,7 +28,7 @@ const GluuWebhookErrorDialog = () => {
   const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
   const webhookScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[webhookResourceId], [webhookResourceId])
   const canReadWebhooks = useMemo(
-    () => hasCedarReadPermission(webhookResourceId) === true,
+    () => hasCedarReadPermission(webhookResourceId),
     [hasCedarReadPermission, webhookResourceId],
   )
 

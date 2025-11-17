@@ -87,15 +87,15 @@ export interface SetCedarlingPermissionPayload {
 // Hook Types
 export type ResourceScopeEntry = {
   permission: string
-  resourceId: string
+  resourceId: AdminUiFeatureResource
 }
 
 export interface UseCedarlingReturn {
   authorize: (resourceScope: ResourceScopeEntry[]) => Promise<AuthorizationResult>
   authorizeHelper: (resourceScopes: ResourceScopeEntry[]) => Promise<AuthorizationResult[]>
-  hasCedarReadPermission: (resourceId: string) => boolean | undefined
-  hasCedarWritePermission: (resourceId: string) => boolean | undefined
-  hasCedarDeletePermission: (resourceId: string) => boolean | undefined
+  hasCedarReadPermission: (resourceId: AdminUiFeatureResource) => boolean | undefined
+  hasCedarWritePermission: (resourceId: AdminUiFeatureResource) => boolean | undefined
+  hasCedarDeletePermission: (resourceId: AdminUiFeatureResource) => boolean | undefined
   isLoading: boolean
   error: string | null
 }

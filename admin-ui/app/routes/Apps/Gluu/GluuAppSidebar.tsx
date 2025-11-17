@@ -28,7 +28,7 @@ import {
   JansKcLinkIcon,
   StmpZoneIcon,
 } from '../../../components/SVG'
-import { useCedarling } from '@/cedarling'
+import { AdminUiFeatureResource, useCedarling } from '@/cedarling'
 import { CEDARLING_BYPASS } from '@/cedarling/utility'
 import type {
   MenuItem,
@@ -133,7 +133,10 @@ function GluuAppSidebar(): JSX.Element {
               return null
             }
             const { isAuthorized } = await authorize([
-              { permission: item.permission, resourceId: item.resourceKey },
+              {
+                permission: item.permission,
+                resourceId: item.resourceKey as AdminUiFeatureResource,
+              },
             ])
             return isAuthorized ? item : null
           }

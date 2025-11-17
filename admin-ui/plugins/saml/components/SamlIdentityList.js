@@ -61,15 +61,15 @@ const SamlIdentityList = () => {
   const samlResourceId = useMemo(() => ADMIN_UI_RESOURCES.SAML, [])
   const samlScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[samlResourceId], [samlResourceId])
   const canReadIdentities = useMemo(
-    () => hasCedarReadPermission(samlResourceId) === true,
+    () => hasCedarReadPermission(samlResourceId),
     [hasCedarReadPermission, samlResourceId],
   )
   const canWriteIdentities = useMemo(
-    () => hasCedarWritePermission(samlResourceId) === true,
+    () => hasCedarWritePermission(samlResourceId),
     [hasCedarWritePermission, samlResourceId],
   )
   const canDeleteIdentities = useMemo(
-    () => hasCedarDeletePermission(samlResourceId) === true,
+    () => hasCedarDeletePermission(samlResourceId),
     [hasCedarDeletePermission, samlResourceId],
   )
 

@@ -55,7 +55,7 @@ function LoggingPage() {
   }, [authorizeHelper, loggingScopes])
 
   useEffect(() => {
-    if (canReadLogging === true) {
+    if (canReadLogging) {
       dispatch(getLoggingConfig())
     }
   }, [canReadLogging, dispatch])

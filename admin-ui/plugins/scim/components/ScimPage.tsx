@@ -62,11 +62,11 @@ const ScimPage: React.FC = () => {
   const scimResourceId = useMemo(() => ADMIN_UI_RESOURCES.SCIM, [])
   const scimScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[scimResourceId], [scimResourceId])
   const canReadScim = useMemo(
-    () => hasCedarReadPermission(scimResourceId) === true,
+    () => hasCedarReadPermission(scimResourceId),
     [hasCedarReadPermission, scimResourceId],
   )
   const canWriteScim = useMemo(
-    () => hasCedarWritePermission(scimResourceId) === true,
+    () => hasCedarWritePermission(scimResourceId),
     [hasCedarWritePermission, scimResourceId],
   )
 

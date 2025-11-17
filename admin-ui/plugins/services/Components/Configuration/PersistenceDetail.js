@@ -28,7 +28,7 @@ function PersistenceDetail() {
     [persistenceResourceId],
   )
   const canReadPersistence = useMemo(
-    () => hasCedarReadPermission(persistenceResourceId) === true,
+    () => hasCedarReadPermission(persistenceResourceId),
     [hasCedarReadPermission, persistenceResourceId],
   )
 

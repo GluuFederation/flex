@@ -35,7 +35,7 @@ function MappingPage() {
     [mappingResourceId],
   )
   const canReadMapping = useMemo(
-    () => hasCedarReadPermission(mappingResourceId) === true,
+    () => hasCedarReadPermission(mappingResourceId),
     [hasCedarReadPermission, mappingResourceId],
   )
 

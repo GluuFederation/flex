@@ -39,7 +39,7 @@ const ProfileDetails: React.FC = () => {
   const usersResourceId = useMemo(() => ADMIN_UI_RESOURCES.Users, [])
   const usersScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[usersResourceId], [usersResourceId])
   const canEditProfile = useMemo(
-    () => hasCedarWritePermission(usersResourceId) === true,
+    () => hasCedarWritePermission(usersResourceId),
     [hasCedarWritePermission, usersResourceId],
   )
 

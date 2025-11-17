@@ -38,7 +38,7 @@ function MauGraph() {
   const mauScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[mauResourceId], [mauResourceId])
 
   const canViewMau = useMemo(
-    () => hasCedarReadPermission(mauResourceId) === true,
+    () => hasCedarReadPermission(mauResourceId),
     [hasCedarReadPermission, mauResourceId],
   )
 

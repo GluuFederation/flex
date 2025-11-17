@@ -60,15 +60,15 @@ function ScriptListTable(): JSX.Element {
   const scriptScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[scriptsResourceId], [scriptsResourceId])
 
   const canReadScripts = useMemo(
-    () => hasCedarReadPermission(scriptsResourceId) === true,
+    () => hasCedarReadPermission(scriptsResourceId),
     [hasCedarReadPermission, scriptsResourceId],
   )
   const canWriteScripts = useMemo(
-    () => hasCedarWritePermission(scriptsResourceId) === true,
+    () => hasCedarWritePermission(scriptsResourceId),
     [hasCedarWritePermission, scriptsResourceId],
   )
   const canDeleteScripts = useMemo(
-    () => hasCedarDeletePermission(scriptsResourceId) === true,
+    () => hasCedarDeletePermission(scriptsResourceId),
     [hasCedarDeletePermission, scriptsResourceId],
   )
 

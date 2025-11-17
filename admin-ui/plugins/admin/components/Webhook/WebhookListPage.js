@@ -77,15 +77,15 @@ const WebhookListPage = () => {
   }, [authorizeHelper, dispatch, webhookScopes])
 
   const canReadWebhooks = useMemo(
-    () => hasCedarReadPermission(webhookResourceId) === true,
+    () => hasCedarReadPermission(webhookResourceId),
     [hasCedarReadPermission, webhookResourceId],
   )
   const canWriteWebhooks = useMemo(
-    () => hasCedarWritePermission(webhookResourceId) === true,
+    () => hasCedarWritePermission(webhookResourceId),
     [hasCedarWritePermission, webhookResourceId],
   )
   const canDeleteWebhooks = useMemo(
-    () => hasCedarDeletePermission(webhookResourceId) === true,
+    () => hasCedarDeletePermission(webhookResourceId),
     [hasCedarDeletePermission, webhookResourceId],
   )
 

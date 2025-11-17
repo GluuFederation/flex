@@ -48,11 +48,11 @@ function CachePage() {
   const cacheResourceId = useMemo(() => ADMIN_UI_RESOURCES.Cache, [])
   const cacheScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[cacheResourceId], [cacheResourceId])
   const canReadCache = useMemo(
-    () => hasCedarReadPermission(cacheResourceId) === true,
+    () => hasCedarReadPermission(cacheResourceId),
     [hasCedarReadPermission, cacheResourceId],
   )
   const canWriteCache = useMemo(
-    () => hasCedarWritePermission(cacheResourceId) === true,
+    () => hasCedarWritePermission(cacheResourceId),
     [hasCedarWritePermission, cacheResourceId],
   )
 

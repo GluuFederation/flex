@@ -76,15 +76,15 @@ function UserList(): JSX.Element {
   const usersResourceId = useMemo(() => ADMIN_UI_RESOURCES.Users, [])
   const usersScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[usersResourceId], [usersResourceId])
   const canReadUsers = useMemo(
-    () => hasCedarReadPermission(usersResourceId) === true,
+    () => hasCedarReadPermission(usersResourceId),
     [hasCedarReadPermission, usersResourceId],
   )
   const canWriteUsers = useMemo(
-    () => hasCedarWritePermission(usersResourceId) === true,
+    () => hasCedarWritePermission(usersResourceId),
     [hasCedarWritePermission, usersResourceId],
   )
   const canDeleteUsers = useMemo(
-    () => hasCedarDeletePermission(usersResourceId) === true,
+    () => hasCedarDeletePermission(usersResourceId),
     [hasCedarDeletePermission, usersResourceId],
   )
 

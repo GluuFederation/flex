@@ -106,15 +106,15 @@ const JansAssetListPage: React.FC = () => {
   }, [dispatch, authorizeHelper, assetScopes])
 
   const canReadAssets = useMemo(
-    () => hasCedarReadPermission(assetsResourceId) === true,
+    () => hasCedarReadPermission(assetsResourceId),
     [hasCedarReadPermission, assetsResourceId],
   )
   const canWriteAssets = useMemo(
-    () => hasCedarWritePermission(assetsResourceId) === true,
+    () => hasCedarWritePermission(assetsResourceId),
     [hasCedarWritePermission, assetsResourceId],
   )
   const canDeleteAssets = useMemo(
-    () => hasCedarDeletePermission(assetsResourceId) === true,
+    () => hasCedarDeletePermission(assetsResourceId),
     [hasCedarDeletePermission, assetsResourceId],
   )
 

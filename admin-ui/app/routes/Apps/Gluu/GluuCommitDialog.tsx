@@ -53,7 +53,7 @@ const GluuCommitDialog = ({
     [webhookResourceId],
   )
   const canReadWebhooks = useMemo(
-    () => hasCedarReadPermission(webhookResourceId) === true,
+    () => hasCedarReadPermission(webhookResourceId),
     [hasCedarReadPermission, webhookResourceId],
   )
 

@@ -27,7 +27,7 @@ const SamlConfigurationForm = () => {
   const samlResourceId = useMemo(() => ADMIN_UI_RESOURCES.SAML, [])
   const samlScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[samlResourceId], [samlResourceId])
   const canWriteConfig = useMemo(
-    () => hasCedarWritePermission(samlResourceId) === true,
+    () => hasCedarWritePermission(samlResourceId),
     [hasCedarWritePermission, samlResourceId],
   )
 

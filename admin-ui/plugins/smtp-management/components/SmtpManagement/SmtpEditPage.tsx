@@ -95,11 +95,11 @@ function SmtpEditPage() {
   const smtpResourceId = useMemo(() => ADMIN_UI_RESOURCES.SMTP, [])
   const smtpScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[smtpResourceId], [smtpResourceId])
   const canReadSmtp = useMemo(
-    () => hasCedarReadPermission(smtpResourceId) === true,
+    () => hasCedarReadPermission(smtpResourceId),
     [hasCedarReadPermission, smtpResourceId],
   )
   const canWriteSmtp = useMemo(
-    () => hasCedarWritePermission(smtpResourceId) === true,
+    () => hasCedarWritePermission(smtpResourceId),
     [hasCedarWritePermission, smtpResourceId],
   )
 

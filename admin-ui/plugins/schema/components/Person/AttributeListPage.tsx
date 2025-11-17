@@ -116,15 +116,15 @@ function AttributeListPage(): JSX.Element {
   const attributeResourceId = useMemo(() => ADMIN_UI_RESOURCES.Attributes, [])
   const attributeScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[ADMIN_UI_RESOURCES.Attributes], [])
   const canReadAttributes = useMemo(
-    () => hasCedarReadPermission(attributeResourceId) === true,
+    () => hasCedarReadPermission(attributeResourceId),
     [hasCedarReadPermission, attributeResourceId],
   )
   const canWriteAttributes = useMemo(
-    () => hasCedarWritePermission(attributeResourceId) === true,
+    () => hasCedarWritePermission(attributeResourceId),
     [hasCedarWritePermission, attributeResourceId],
   )
   const canDeleteAttributes = useMemo(
-    () => hasCedarDeletePermission(attributeResourceId) === true,
+    () => hasCedarDeletePermission(attributeResourceId),
     [hasCedarDeletePermission, attributeResourceId],
   )
 

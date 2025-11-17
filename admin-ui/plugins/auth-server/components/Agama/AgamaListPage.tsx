@@ -112,10 +112,24 @@ function AgamaListPage(): React.ReactElement {
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
 
-  const { data: projectsResponse, isLoading: loading } = useGetAgamaPrj({
-    count: limit,
-    start: pageNumber * limit,
-  })
+  const authResourceId = useMemo(() => ADMIN_UI_RESOURCES.Authentication, [])
+  const authScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[authResourceId] || [], [authResourceId])
+  const canReadAuth = useMemo(
+    () => hasCedarReadPermission(authResourceId),
+    [hasCedarReadPermission, authResourceId],
+  )
+
+  const { data: projectsResponse, isLoading: loading } = useGetAgamaPrj(
+    {
+      count: limit,
+      start: pageNumber * limit,
+    },
+    {
+      query: {
+        enabled: canReadAuth,
+      },
+    },
+  )
 
   const deleteProjectMutation = useDeleteAgamaPrj({
     mutation: {
@@ -184,18 +198,12 @@ function AgamaListPage(): React.ReactElement {
     },
   })
 
-  const authResourceId = useMemo(() => ADMIN_UI_RESOURCES.Authentication, [])
-  const authScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[authResourceId] || [], [authResourceId])
-  const canReadAuth = useMemo(
-    () => hasCedarReadPermission(authResourceId) === true,
-    [hasCedarReadPermission, authResourceId],
-  )
   const canWriteAuth = useMemo(
-    () => hasCedarWritePermission(authResourceId) === true,
+    () => hasCedarWritePermission(authResourceId),
     [hasCedarWritePermission, authResourceId],
   )
   const canDeleteAuth = useMemo(
-    () => hasCedarDeletePermission(authResourceId) === true,
+    () => hasCedarDeletePermission(authResourceId),
     [hasCedarDeletePermission, authResourceId],
   )
 

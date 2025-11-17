@@ -37,11 +37,11 @@ const Fido: React.FC = () => {
   const fidoResourceId = useMemo(() => ADMIN_UI_RESOURCES.FIDO, [])
   const fidoScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[fidoResourceId], [fidoResourceId])
   const canReadFido = useMemo(
-    () => hasCedarReadPermission(fidoResourceId) === true,
+    () => hasCedarReadPermission(fidoResourceId),
     [hasCedarReadPermission, fidoResourceId],
   )
   const canWriteFido = useMemo(
-    () => hasCedarWritePermission(fidoResourceId) === true,
+    () => hasCedarWritePermission(fidoResourceId),
     [hasCedarWritePermission, fidoResourceId],
   )
 
