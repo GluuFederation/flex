@@ -81,8 +81,8 @@ uiConfig
 
 |Attribute Name|Description|
 |--------------|-----------|
-|sessionTimeoutInMins|Admin UI Frontend sesiion out time|
-|allowSmtpKeystoreEdit|Allow to edit SMTP keystore fileds. The default value is `true`.|
+|sessionTimeoutInMins|Admin UI Frontend session out time|
+|allowSmtpKeystoreEdit|Allow to edit SMTP keystore fields. The default value is `true`.|
 |cedarlingLogType|Set embeded Cedarling log-type in Admin UI. The allowed values are `off` and `std_out`.|
 |auiPolicyStoreUrl|The remote Policy Store URL|
 |auiDefaultPolicyStorePath|The path of the default Policy Store json file on Config Api pod.|

@@ -9,7 +9,7 @@ tags:
 
 # Access Control in Admin UI
 
-The role of the user logged-in to Gluu Flex Admin UI decides if the user will have access to a certain Admin UI's feature or not. After user authentication the user's role and other claims are packed in bundle of tokens (access_token, id_token and userinfo_token). [Cedarling](https://docs.jans.io/stable/cedarling) PDP embedded with GUI, processes the tokens and decides if the action (like Read, Write or Delete) is allowed on this resource (feature). The Cedarling's Token Based Access Control (TBAC) is used for managing access control in Gluu Flex Admin UI.
+The role of the user logged-in to Gluu Flex Admin UI decides if the user will have access to a certain Admin UI's feature or not. After user authentication the user's role and other claims are packed in bundle of tokens (access_token, id_token and userinfo_token). [Cedarling](https://docs.jans.io/stable/cedarling) PDP embedded with GUI, processes the tokens and decides if the action (like Read, Write or Delete) is allowed on this resource (feature). The Cedarling's Token-based Access Control (TBAC) is used for managing access control in Gluu Flex Admin UI.
 
 ## Admin UI Features (Resources)
 
@@ -23,7 +23,7 @@ The Admin UI features (or resources) are categorised into following parent group
     - Settings
     - Security
     - Webhooks
-    - Assests
+    - Assets
     - AuditLogs
 - AuthServer and configuration
     - Clients
@@ -33,15 +33,15 @@ The Admin UI features (or resources) are categorised into following parent group
     - Logging
     - SSA
     - Authn
-    - ConfigAPIPropeties
-    - Sesisons
+    - ConfigAPIProperties
+    - Sessions
 - Identity and Access
     - Users
     - Scripts
     - UserClaims
 - Service
     - Cache
-    - Persistance
+    - Persistence
     - SMTP
     - SCIM
     - FIDO
@@ -165,9 +165,9 @@ The Cedar policies in the Policy Store empowers the administrator with following
 
 ### Manage the access control in Admin UI
 
-The Cedar policies are rules which decides if the logged in user can perform Read, Write or Delete action on a feature or not. By writing the appropriate cedar policies the administrator can manage access control in Admin UI. For e.g the below policy allows the user with role **admin** to perform **Read**, **Write** or **Delete** actions on all the features under the parent group **AuthServerAndConfiguration**.
+The Cedar policies are rules which decide if the logged-in user can perform Read, Write or Delete action on a feature or not. By writing the appropriate cedar policies the administrator can manage access control in Admin UI. For e.g the below policy allows the user with role **admin** to perform **Read**, **Write** or **Delete** actions on all the features under the parent group **AuthServerAndConfiguration**.
 
-```
+```cedar
 @id("AdminCanManageAuthServerConfiguration")
 permit (
   principal in Gluu::Flex::AdminUI::Role::"admin",
@@ -180,7 +180,7 @@ permit (
 
 Below policy gives the users with role **viewer** the **Read** access to all the features under the **IdentityAndAccess** parent group.
 
-```
+```cedar
 @id("ViewerCanViewUserIdentityAndAccess")
 permit (
   principal in Gluu::Flex::AdminUI::Role::"viewer",
@@ -191,7 +191,7 @@ permit (
 
 Below policy gives the users with role **auditor** the **Read**, **Write** and **Delete** access to only the **Clients** feature of Admin UI.
 
-```
+```cedar
 @id("AuditorCanManageClients")
 permit (
   principal in Gluu::Flex::AdminUI::Role::"auditor",
@@ -210,7 +210,7 @@ To add new Admin UI user roles, the administrator just need to introduce the pol
 
 The principal element in a [Cedar policy](https://docs.cedarpolicy.com/) represents a user, service, or other identity that can make a request to perform an action on a resource in your application. We will learn how to write an Admin UI policy using a sample scenario: a logged-in user with the **admin** role can manage the **Auth Server and its configuration**.
 
-```
+```cedar
 @id("AdminCanManageAuthServerConfiguration")
 permit (
   principal in Gluu::Flex::AdminUI::Role::"admin",
@@ -233,7 +233,7 @@ As we have categorised Admin UI features (or resources) into the parent groups, 
 
 To define policies for a specific Admin UI feature (e.g., Clients, Scopes, Users), use the format `Gluu::Flex::AdminUI::Resources::Features` followed by the resource’s Entity ID enclosed in quotation marks in resource clause. For e.g. below policy allows **Read**, **Write** and **Delete** action to the user with role **auditor** on **Clients** resource.
 
-```
+```cedar
 @id("AuditorCanManageClients")
 permit (
   principal in Gluu::Flex::AdminUI::Role::"auditor",

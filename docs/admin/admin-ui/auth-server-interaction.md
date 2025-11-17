@@ -100,7 +100,7 @@ To ensure security and access control, Gluu Flex Admin UI leverages API protecti
 3. The Token Server employs an update-token script that validates the UJWT and refers to the role-scope mapping in the Token Server persistence.
 4. The update-token script validates the UJWT and includes the appropriate scopes in AT2 based on the user's role.
 5. The frontend receives AT2 and associated scopes from the backend.
-6. The scopes provided in AT2 determine which Config API–protected endpoints the Admin UI can access. Refer this [doc](./admin-menu.md/#gui-access-control) for GUI access control.
+6. The scopes provided in AT2 determine which Config API–protected endpoints the Admin UI can access. Refer this [doc](./access-control.md) for GUI access control.
 
 ```mermaid
 
