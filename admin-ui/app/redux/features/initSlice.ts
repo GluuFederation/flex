@@ -26,7 +26,7 @@ const initSlice = createSlice({
   name: 'init',
   initialState,
   reducers: {
-    getScripts: (state) => {
+    getScripts: (state, _action: PayloadAction<{ action?: Record<string, unknown> }>) => {
       state.loadingScripts = true
     },
     getScriptsResponse: (state, action: PayloadAction<{ data?: { entries?: any[] } }>) => {

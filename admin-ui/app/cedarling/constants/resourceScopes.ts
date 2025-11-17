@@ -73,6 +73,7 @@ import {
   ROLE_READ,
   PERMISSION_READ,
   MAPPING_READ,
+  MAPPING_WRITE,
 } from '@/utils/PermChecker'
 
 // Type ensures all AdminUiFeatureResource keys are present at compile time
@@ -203,6 +204,7 @@ export const CEDAR_RESOURCE_SCOPES: Record<AdminUiFeatureResource, ResourceScope
     { permission: ROLE_READ, resourceId: ADMIN_UI_RESOURCES.Security },
     { permission: PERMISSION_READ, resourceId: ADMIN_UI_RESOURCES.Security },
     { permission: MAPPING_READ, resourceId: ADMIN_UI_RESOURCES.Security },
+    { permission: MAPPING_WRITE, resourceId: ADMIN_UI_RESOURCES.Security },
   ],
   [ADMIN_UI_RESOURCES.Settings]: [
     { permission: ACR_READ, resourceId: ADMIN_UI_RESOURCES.Settings },

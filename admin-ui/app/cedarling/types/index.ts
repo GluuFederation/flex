@@ -93,7 +93,6 @@ export type ResourceScopeEntry = {
 export interface UseCedarlingReturn {
   authorize: (resourceScope: ResourceScopeEntry[]) => Promise<AuthorizationResult>
   authorizeHelper: (resourceScopes: ResourceScopeEntry[]) => Promise<AuthorizationResult[]>
-  hasCedarPermission: (resourceId: string, permission?: string) => boolean | undefined
   hasCedarReadPermission: (resourceId: string) => boolean | undefined
   hasCedarWritePermission: (resourceId: string) => boolean | undefined
   hasCedarDeletePermission: (resourceId: string) => boolean | undefined

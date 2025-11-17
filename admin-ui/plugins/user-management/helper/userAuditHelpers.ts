@@ -3,6 +3,7 @@ import { logAuditUserAction } from 'Utils/AuditLogger'
 import { FETCH, DELETION, UPDATE, CREATE } from '../../../app/audit/UserActionType'
 import { API_USERS } from '../../../app/audit/Resources'
 import { CustomUser } from '../types/UserApiTypes'
+import { USER_PASSWORD_ATTR } from '../common/Constants'
 
 export interface AuditLog {
   headers: {
@@ -36,9 +37,45 @@ export interface AuthState {
   }
 }
 
-/**
- * Initialize audit log with user information from Redux store
- */
+export interface AuditPayload extends CustomUser {
+  modifiedFields?: Record<string, unknown>
+  performedOn?: {
+    user_inum?: string
+    userId?: string
+  }
+  action_message?: string
+  message?: string
+  userPassword?: string
+  userConfirmPassword?: string
+  jsonPatchString?: string
+}
+
+function redactSensitiveData(payload: AuditPayload): void {
+  if (payload.userPassword) {
+    payload.userPassword = '[REDACTED]'
+  }
+  if (payload.userConfirmPassword) {
+    payload.userConfirmPassword = '[REDACTED]'
+  }
+
+  if (payload.jsonPatchString) {
+    payload.jsonPatchString =
+      '[{\"op\":\"replace\",\"path\":\"/userPassword\",\"value\":\"[REDACTED]\"}]'
+  }
+
+  if (Array.isArray(payload.customAttributes)) {
+    payload.customAttributes = payload.customAttributes.map((attr) => {
+      if (attr.name === USER_PASSWORD_ATTR) {
+        const redactedValues = Array.isArray(attr.values)
+          ? attr.values.map(() => '[REDACTED]')
+          : ['[REDACTED]']
+        return { ...attr, values: redactedValues }
+      }
+      return attr
+    })
+  }
+}
+
 export function initAudit(): AuditLog {
   const state = store.getState() as unknown as { authReducer: AuthState }
   const authReducer: AuthState = state.authReducer
@@ -68,19 +105,12 @@ export async function logUserCreation(data: CustomUser, payload: CustomUser): Pr
     const client_id = authReducer.config?.clientId || ''
     const userinfo = authReducer.userinfo
 
-    const auditPayload = { ...payload } as any
-    delete auditPayload.userPassword
-    if ((payload as any)?.modifiedFields && !auditPayload.modifiedFields) {
-      auditPayload.modifiedFields = (payload as any).modifiedFields
-    }
-    if ((payload as any)?.performedOn && !auditPayload.performedOn) {
-      auditPayload.performedOn = (payload as any).performedOn
-    }
+    const auditPayload: AuditPayload = { ...payload }
+    redactSensitiveData(auditPayload)
 
     const message =
-      (payload as any)?.action?.action_message ||
-      (payload as any)?.action_message ||
-      (payload as any)?.message ||
+      (payload as AuditPayload).action_message ||
+      (payload as AuditPayload).message ||
       'Created user'
 
     await logAuditUserAction({
@@ -104,23 +134,15 @@ export async function logUserUpdate(data: CustomUser, payload: CustomUser): Prom
     const token = authReducer.token?.access_token || ''
     const client_id = authReducer.config?.clientId || ''
     const userinfo = authReducer.userinfo
-    const auditPayload = { ...payload } as any
-    delete auditPayload.userPassword
-    delete auditPayload.userConfirmPassword
-    if ((auditPayload as any).customAttributes?.[0]) {
-      delete (auditPayload as any).customAttributes[0].values
-    }
-    if ((payload as any)?.modifiedFields && !auditPayload.modifiedFields) {
-      auditPayload.modifiedFields = (payload as any).modifiedFields
-    }
-    if ((payload as any)?.performedOn && !auditPayload.performedOn) {
-      auditPayload.performedOn = (payload as any).performedOn
-    }
+
+    const auditPayload: AuditPayload = { ...payload }
+    redactSensitiveData(auditPayload)
+
     const message =
-      (payload as any)?.action?.action_message ||
-      (payload as any)?.action_message ||
-      (payload as any)?.message ||
+      (payload as AuditPayload).action_message ||
+      (payload as AuditPayload).message ||
       'Updated user'
+
     await logAuditUserAction({
       token,
       userinfo,
@@ -143,12 +165,14 @@ export async function logUserDeletion(inum: string, userData?: CustomUser): Prom
     const client_id = authReducer.config?.clientId || ''
     const userinfo = authReducer.userinfo
     const payload = userData || { inum }
+    const extendedPayload = userData as AuditPayload | undefined
+    const message = extendedPayload?.action_message || extendedPayload?.message || 'Deleted user'
     await logAuditUserAction({
       token,
       userinfo,
       action: DELETION,
       resource: API_USERS,
-      message: 'Deleted user',
+      message,
       client_id,
       payload,
     })
@@ -189,32 +213,13 @@ export async function logPasswordChange(
     const token = authReducer.token?.access_token || ''
     const client_id = authReducer.config?.clientId || ''
     const userinfo = authReducer.userinfo
-    const auditPayload = { ...payload }
-    if ((auditPayload as any).jsonPatchString) {
-      ;(auditPayload as any).jsonPatchString =
-        '[{"op":"replace","path":"/userPassword","value":"[REDACTED]"}]'
-    }
-    if (Array.isArray(payload)) {
-      for (const op of payload) {
-        if ((op as Record<string, unknown>).path === '/userPassword') {
-          ;(op as Record<string, unknown>).value = '[REDACTED]'
-        }
-      }
-    }
-    if ((auditPayload as any).customAttributes?.[0]) {
-      delete (auditPayload as any).customAttributes[0].values
-    }
-    if ((payload as any)?.modifiedFields && !auditPayload.modifiedFields) {
-      auditPayload.modifiedFields = (payload as any).modifiedFields
-    }
-    if ((payload as any)?.performedOn && !auditPayload.performedOn) {
-      auditPayload.performedOn = (payload as any).performedOn
-    }
+
+    const auditPayload: AuditPayload = { ...payload }
+    redactSensitiveData(auditPayload)
 
     const message =
-      (payload as any)?.action?.action_message ||
-      (payload as any)?.action_message ||
-      (payload as any)?.message ||
+      (payload as AuditPayload).action_message ||
+      (payload as AuditPayload).message ||
       'Password changed'
 
     await logAuditUserAction({
@@ -231,9 +236,27 @@ export async function logPasswordChange(
   }
 }
 
+interface ErrorResponse {
+  response?: {
+    data?: {
+      message?: string
+      description?: string
+    }
+    body?: {
+      description?: string
+      message?: string
+    }
+    text?: string
+  }
+  message?: string
+}
+
 export function getErrorMessage(error: unknown): string {
+  if (typeof error === 'string') {
+    return error
+  }
   if (typeof error === 'object' && error !== null) {
-    const err = error as any
+    const err = error as ErrorResponse
     return (
       err?.response?.data?.message ||
       err?.response?.data?.description ||

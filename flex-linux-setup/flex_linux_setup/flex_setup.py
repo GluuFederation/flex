@@ -58,7 +58,7 @@ if '--remove-flex' in sys.argv and '--flex-non-interactive' not in sys.argv:
 def get_flex_setup_parser():
     parser = argparse.ArgumentParser(description="This script downloads Gluu Admin UI components and installs")
     parser.add_argument('--jans-setup-branch', help="Jannsen setup github branch", default='main')
-    parser.add_argument('--flex-branch', help="Jannsen flex setup github branch", default='main')
+    parser.add_argument('--flex-branch', help="Gluu flex setup github branch", default='main')
     parser.add_argument('--jans-branch', help="Jannsen github branch", default='main')
     parser.add_argument('--node-modules-branch', help="Node modules branch. Default to flex setup github branch")
     parser.add_argument('--flex-non-interactive', help="Non interactive setup mode", action='store_true')
@@ -369,6 +369,9 @@ class flex_installer(JettyInstaller):
                 'https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/plugins/admin-ui-plugin/config/log4j2-adminui.xml'.format(
                     app_versions['JANS_BRANCH']), self.log4j2_adminui_path),
                 (self.adimin_ui_bin_url, os.path.join(Config.dist_jans_dir, os.path.basename(self.adimin_ui_bin_url))),
+                ('https://raw.githubusercontent.com/GluuFederation/GluuFlexAdminUIPolicyStore/refs/heads/main/2fb50e468d9dfefa142d1fce4fa9747efbd3a0f08de5.json',
+                    self.policy_store_path
+                ),
             ]
 
             if argsp.update_admin_ui:
@@ -516,7 +519,7 @@ class flex_installer(JettyInstaller):
             print("\033[1mAdmin UI Web Client ID:\033[0m", Config.admin_ui_client_id)
             print("\033[1mAdmin UI Web Client Secret:\033[0m", Config.admin_ui_client_pw)
 
-            self.dbUtils.import_ldif([client_tmp_fn])
+            self.dbUtils.import_ldif([client_tmp_fn, self.admin_ui_web_hook_ldif_fn])
 
         client_check_result = config_api_installer.check_clients([('admin_ui_web_client_id', '2002.')])
         if client_check_result['2002.'] == -1:
@@ -570,7 +573,19 @@ class flex_installer(JettyInstaller):
 
         #cedarling integration
         admin_ui_config_dir = os.path.join(config_api_installer.custom_config_dir, 'adminUI')
-        config_api_installer.renderTemplateInOut(self.policy_store_path, self.templates_dir, admin_ui_config_dir)
+        if os.path.exists(self.policy_store_path):
+            # before rendering template we need to 'replace your-openid-provider.server' with current hostname
+            policy_store_content = self.readFile(self.policy_store_path)
+            policy_store_content = policy_store_content.replace('your-openid-provider.server', Config.hostname)
+            self.writeFile(self.policy_store_path, policy_store_content)
+
+            try:
+                with open(self.policy_store_path) as f:
+                    json.load(f)  # Validates JSON format
+                    config_api_installer.renderTemplateInOut(self.policy_store_path, self.templates_dir, admin_ui_config_dir)
+            except json.JSONDecodeError as e:
+                print(f"Warning: Downloaded policy store is not valid JSON: {e}")
+
         config_api_installer.chown(admin_ui_config_dir, Config.jetty_user, Config.jetty_group)
         resource_scopes_mapping_lidf_fn = os.path.join(self.templates_dir, 'adminUIResourceScopesMapping.ldif')
 

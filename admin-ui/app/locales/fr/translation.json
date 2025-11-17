@@ -61,7 +61,8 @@
     "securityDropdown": {
       "adminUiRoles": "Rôles de l'interface utilisateur d'administration",
       "capabilities": "Capacités",
-      "mapping": "Mapping"
+      "mapping": "Mapping",
+      "cedarlingConfig": "Cedarling"
     },
     "lock": "Verrouillage",
     "cache": "Cacher",
@@ -654,7 +655,10 @@
     "noMatchingOptions": "Aucune option correspondante",
     "nothingToShowInTheList": "Rien à montrer dans la liste",
     "disable_logger_timer": "Désactiver le Minuteur du Journal",
-    "skip_defined_password_validation": "Ignorer la Validation du Mot de Passe Défini"
+    "skip_defined_password_validation": "Ignorer la Validation du Mot de Passe Défini",
+    "auiPolicyStoreUrl": "Magasin de politiques à distance de l'interface d'administration",
+    "configApiPolicyStoreUrl": "Magasin de politiques de configuration de l'API",
+    "cedarlingPolicyStoreRetrievalPoint": "Point de récupération des politiques"
   },
   "messages": {
     "add_permission": "Ajouter une autorisation",
@@ -865,6 +869,7 @@
     "loading_database_information": "Chargement des informations de la base de données...",
     "jans_json_property": "Propriétés",
     "all_oidc_clients": "Tous les clients OIDC",
+    "cedarling_config": "Configuration Cedarling",
     "jans_kc_link": "Lien KC Jans",
     "all_scopes": "Toutes les portées",
     "idp": "IDP",
@@ -1590,6 +1595,18 @@
       "description": "Description de la permission",
       "tag": "Nom-de-la-balise pour identifier l'autorisation à inclure dans le jeton d'accès à l'API.",
       "default_permission_in_token": "Si défini sur vrai, l'autorisation sera disponible par défaut dans le jeton d'autorisation pour accéder à l'API (avant l'authentification)."
+    },
+    "cedarlingConfig": {
+      "title": "Configurer un contrôle précis à l'aide de Cedarling",
+      "point1": "1. Créer un magasin de politiques avec Agama Lab. Dupliquez le projet",
+      "point2": "2. Copiez l'URL de PolicyStore et configurez-la.",
+      "note": "Remarque : Ceci vous aidera à créer votre propre projet Cedarling. Vous pouvez mettre à jour les rôles et les autorisations via le bouton d'actualisation ou Agama Lab.",
+      "useRemotePolicyStore": "Il est recommandé de définir cette option sur « Par défaut » en production. Si cette option est définie, le stockage de l’interface d’administration sera utilisé pour l’autorisation Cedarling. Activez le mode « Par défaut » et utilisez le bouton d’actualisation pour enregistrer ou mettre à jour les politiques GitHub sur le serveur de l’interface d’administration.",
+      "updateRemotePolicyStoreOnServer": "Cliquez ici pour mettre à jour le fichier JSON du magasin de politiques par défaut avec la version disponible à partir de l'URL distante configurée."
+    },
+    "mappings": {
+      "note_prefix": "Configure",
+      "note_suffix": "Pour gérer les rôles et les permissions. Une fois la configuration Cedarling enregistrée, les rôles et les permissions seront automatiquement synchronisés à partir du référentiel de stratégies."
     }
   },
   "script": {

@@ -1,74 +1,62 @@
-import React, { useEffect, useState, useContext } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import MappingAddDialogForm from './MappingAddDialogForm'
-import { Card, Col, CardBody, FormGroup, Button } from 'Components'
-import Box from '@mui/material/Box'
+import { Card, CardBody } from 'Components'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import { getMapping, addNewRolePermissions } from 'Plugins/admin/redux/features/mappingSlice'
+import { getMapping } from 'Plugins/admin/redux/features/mappingSlice'
 import { getRoles } from 'Plugins/admin/redux/features/apiRoleSlice'
 import { getPermissions } from 'Plugins/admin/redux/features/apiPermissionSlice'
 import MappingItem from './MappingItem'
-import { buildPayload, MAPPING_WRITE, MAPPING_READ } from 'Utils/PermChecker'
+import { buildPayload } from 'Utils/PermChecker'
 import SetTitle from 'Utils/SetTitle'
-import { ThemeContext } from 'Context/theme/themeContext'
 import { useCedarling } from '@/cedarling'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { Link } from 'react-router-dom'
+import { StickyNote2Outlined } from '@mui/icons-material'
 
 function MappingPage() {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   SetTitle(t('titles.mapping'))
-  const { hasCedarPermission, authorize } = useCedarling()
+  const { hasCedarReadPermission, authorizeHelper } = useCedarling()
 
   const { items: mapping, loading } = useSelector((state) => state.mappingReducer)
   const apiRoles = useSelector((state) => state.apiRoleReducer.items)
   const permissionLoading = useSelector((state) => state.apiPermissionReducer.loading)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
-
-  const [modal, setModal] = useState(false)
-
-  const toggle = () => setModal(!modal)
   const options = []
   const userAction = {}
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
 
-  const authorizePermissions = async () => {
-    const permissions = [MAPPING_READ, MAPPING_WRITE]
-    try {
-      for (const permission of permissions) {
-        await authorize([permission])
-      }
-    } catch (error) {
-      console.error('Error authorizing mapping permissions:', error)
-    }
-  }
+  const mappingResourceId = useMemo(() => ADMIN_UI_RESOURCES.Security, [])
+  const mappingScopes = useMemo(
+    () => CEDAR_RESOURCE_SCOPES[mappingResourceId] || [],
+    [mappingResourceId],
+  )
+  const canReadMapping = useMemo(
+    () => hasCedarReadPermission(mappingResourceId) === true,
+    [hasCedarReadPermission, mappingResourceId],
+  )
 
   useEffect(() => {
-    authorizePermissions()
+    if (mappingScopes && mappingScopes.length > 0) {
+      authorizeHelper(mappingScopes)
+    }
+  }, [authorizeHelper, mappingScopes])
+
+  useEffect(() => {
+    if (!canReadMapping) {
+      return
+    }
     doFetchList()
     doFetchRoles()
     doFetchPermissionsList()
-  }, [])
-
-  useEffect(() => {}, [cedarPermissions])
+  }, [canReadMapping])
 
   function doFetchPermissionsList() {
     buildPayload(userAction, 'PERMISSIONS', options)
     dispatch(getPermissions({ payload: userAction }))
-  }
-
-  function onAddConfirmed(mappingData) {
-    const existing = (mapping || []).find((m) => m?.role === mappingData.role)
-    const mergedPermissions = Array.from(
-      new Set([...(existing?.permissions || []), ...(mappingData?.permissions || [])]),
-    )
-    const payload = { role: mappingData.role, permissions: mergedPermissions }
-    buildPayload(userAction, 'Add new mapping', payload)
-    dispatch(addNewRolePermissions({ data: payload }))
-    toggle()
   }
 
   function doFetchList() {
@@ -80,44 +68,23 @@ function MappingPage() {
     dispatch(getRoles({ action: userAction }))
   }
 
-  function showMappingDialog() {
-    toggle()
-  }
   return (
     <GluuLoader blocking={loading || permissionLoading}>
       <Card style={applicationStyle.mainCard}>
         <CardBody>
-          <GluuViewWrapper canShow={hasCedarPermission(MAPPING_READ)}>
-            {hasCedarPermission(MAPPING_WRITE) && (
-              <FormGroup row>
-                <Col sm={10}></Col>
-                <Col sm={2}>
-                  <Box display="flex" justifyContent="flex-end">
-                    <Button
-                      type="button"
-                      color={`primary-${selectedTheme}`}
-                      style={applicationStyle.buttonStyle}
-                      onClick={showMappingDialog}
-                    >
-                      <i className="fa fa-plus me-2"></i>
-                      {t('actions.add_mapping')}
-                    </Button>
-                  </Box>
-                </Col>
-              </FormGroup>
-            )}
+          <GluuViewWrapper canShow={canReadMapping}>
             {mapping.map((candidate, idx) => (
               <MappingItem key={idx} candidate={candidate} roles={apiRoles} />
             ))}
           </GluuViewWrapper>
-          <FormGroup row />
-          <MappingAddDialogForm
-            roles={apiRoles}
-            handler={toggle}
-            modal={modal}
-            mapping={mapping}
-            onAccept={onAddConfirmed}
-          />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '16px' }}>
+            <StickyNote2Outlined aria-label="Note" />
+            <span>
+              {t('documentation.mappings.note_prefix')}{' '}
+              <Link to="/adm/cedarlingconfig">Cedarling</Link>{' '}
+              {t('documentation.mappings.note_suffix')}
+            </span>
+          </div>
         </CardBody>
       </Card>
     </GluuLoader>

@@ -220,17 +220,6 @@ export function useCedarling(): UseCedarlingReturn {
     [authorize],
   )
 
-  const hasCedarPermission = useCallback(
-    (resourceId: string, permission?: string) => {
-      if (permission) {
-        const actionLabel = getActionLabelFromUrl(permission)
-        return getCachedDecisionByAction(resourceId, actionLabel)
-      }
-      return getCachedPermission(resourceId)
-    },
-    [getCachedDecisionByAction, getCachedPermission],
-  )
-
   const hasCedarReadPermission = useCallback(
     (resourceId: string) =>
       getCachedDecisionByAction(resourceId, 'read') ?? getCachedPermission(resourceId),
@@ -250,7 +239,6 @@ export function useCedarling(): UseCedarlingReturn {
   return {
     authorize,
     authorizeHelper,
-    hasCedarPermission,
     hasCedarReadPermission,
     hasCedarWritePermission,
     hasCedarDeletePermission,

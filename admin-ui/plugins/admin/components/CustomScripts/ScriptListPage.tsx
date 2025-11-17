@@ -128,6 +128,8 @@ function ScriptListTable(): JSX.Element {
         }
       } else if (name === 'type') {
         memoType = event.target.value
+        setPageNumber(0)
+        delete options['startIndex']
         makeOptions()
         dispatch(getCustomScriptByType({ action: options } as any))
       }

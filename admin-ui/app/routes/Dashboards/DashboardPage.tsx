@@ -64,6 +64,9 @@ function DashboardPage() {
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
   const cedarInitialized = useSelector((state: any) => state.cedarPermissions?.initialized)
   const cedarIsInitializing = useSelector((state: any) => state.cedarPermissions?.isInitializing)
+  const cedarPermissions = useSelector((state: any) => state.cedarPermissions?.permissions)
+
+  console.log('cedarPermissions', cedarPermissions)
 
   const dashboardResourceId = useMemo(() => ADMIN_UI_RESOURCES.Dashboard, [])
   const dashboardScopes = useMemo(

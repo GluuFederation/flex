@@ -4,14 +4,14 @@ import UserEditPage from './components/UserEditPage'
 import { USER_READ, USER_WRITE } from 'Utils/PermChecker'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 
-const PLUGIN_BASE_APTH = '/user'
+const PLUGIN_BASE_PATH = '/user'
 
 const pluginMetadata = {
   menus: [
     {
       title: 'menus.users',
       icon: 'usersmanagement',
-      path: PLUGIN_BASE_APTH + '/usersmanagement',
+      path: PLUGIN_BASE_PATH + '/usersmanagement',
       permission: USER_READ,
       resourceKey: ADMIN_UI_RESOURCES.Users,
     },
@@ -19,19 +19,19 @@ const pluginMetadata = {
   routes: [
     {
       component: UserList,
-      path: PLUGIN_BASE_APTH + '/usersmanagement',
+      path: PLUGIN_BASE_PATH + '/usersmanagement',
       permission: USER_READ,
       resourceKey: ADMIN_UI_RESOURCES.Users,
     },
     {
       component: UserAddPage,
-      path: PLUGIN_BASE_APTH + '/usermanagement/add',
+      path: PLUGIN_BASE_PATH + '/usermanagement/add',
       permission: USER_WRITE,
       resourceKey: ADMIN_UI_RESOURCES.Users,
     },
     {
       component: UserEditPage,
-      path: PLUGIN_BASE_APTH + '/usermanagement/edit/:id',
+      path: PLUGIN_BASE_PATH + '/usermanagement/edit/:id',
       permission: USER_WRITE,
       resourceKey: ADMIN_UI_RESOURCES.Users,
     },

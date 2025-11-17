@@ -621,7 +621,10 @@
     "reloginToViewCedarlingChanges": "Por favor, vuelve a iniciar sesión para ver los cambios de Cedarling.",
     "allAvailableHintsSelected": "Todas las opciones de sugerencia disponibles están seleccionadas",
     "noMatchingOptions": "No hay opciones coincidentes",
-    "nothingToShowInTheList": "Nada que mostrar en la lista"
+    "nothingToShowInTheList": "Nada que mostrar en la lista",
+    "auiPolicyStoreUrl": "Almacén de políticas remotas de la interfaz de administración",
+    "configApiPolicyStoreUrl": "Almacén de políticas de la API de configuración",
+    "cedarlingPolicyStoreRetrievalPoint": "Punto de recuperación de políticas"
   },
   "languages": {
     "french": "Frances",
@@ -654,7 +657,8 @@
     "securityDropdown": {
       "adminUiRoles": "Roles de la Interfaz de Administración",
       "capabilities": "Capacidades",
-      "mapping": "Mapeo"
+      "mapping": "Mapeo",
+      "cedarlingConfig": "Cedarling"
     },
     "basic_configuration": "Configuración Básica",
     "inum_configuration": "Configuración Inum",
@@ -967,6 +971,7 @@
     "jwk_keys": "Claves JWK",
     "jans_json_property": "Propiedades",
     "mapping": "Mapeo Rol/Permiso",
+    "cedarling_config": "Configuración de Cedarling",
     "modules_properties": "Propiedades del módulo",
     "oauth_server_status_title": "Estado del servidor OAuth",
     "oidc_clients": "Clientes OpenID Connect",
@@ -1735,6 +1740,18 @@
       "enabled": "Funcionalidad SAML habilitada",
       "selectedIdp": "Servidor SAML seleccionado",
       "ignoreValidation": "Valor booleano para habilitar/deshabilitar validación SAML"
+    },
+    "cedarlingConfig": {
+      "title": "Configurar un control detallado mediante Cedarling",
+      "point1": "1. Crear un almacén de políticas con Agama Lab. Bifurcar proyecto.",
+      "point2": "2. Copie la URL de PolicyStore y configúrela.",
+      "note": "Nota: Esto te ayudará a crear tu propio proyecto de Cedarling. Puedes actualizar roles y permisos a través de Agama Lab.",
+      "useRemotePolicyStore": "Se recomienda establecerlo en Predeterminado para producción. Si se establece en Predeterminado, utilizará el almacenamiento de la interfaz de administración para la autorización de Cedarling. Active el modo Predeterminado y utilice el botón de actualización para guardar o actualizar las políticas de GitHub en el servidor de la interfaz de administración.",
+      "updateRemotePolicyStoreOnServer": "Haga clic aquí para actualizar el JSON del almacén de políticas predeterminado con la versión disponible en la URL remota configurada."
+    },
+    "mappings": {
+      "note_prefix": "Configurar",
+      "note_suffix": "Para administrar roles y permisos. Una vez que guarde la configuración de Cedarling, los roles y permisos se sincronizarán automáticamente desde el almacén de políticas."
     }
   },
   "validations": {

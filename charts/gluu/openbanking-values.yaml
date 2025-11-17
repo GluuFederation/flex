@@ -346,10 +346,10 @@ global:
       webdiscoveryEnabled: true
       # -- Enable endpoint /.well-known/fido-configuration
       u2fConfigEnabled: true
-      # -- Enable mTLS on Auth server endpoint /jans-auth/restv1/token . Currently not working in Istio.
+      # -- Enable mTLS on Auth server endpoint /jans-auth/restv1/token
       authServerProtectedToken: false
-    # -- Enable mTLS onn Auth server endpoint /jans-auth/restv1/register. Currently not working in Istio.
-    authServerProtectedRegister: false
+      # -- Enable mTLS on Auth server endpoint /jans-auth/restv1/register
+      authServerProtectedRegister: false
   auth-server-key-rotation:
     # -- Boolean flag to enable/disable the auth-server-key rotation cronjob chart.
     enabled: false

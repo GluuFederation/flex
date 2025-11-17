@@ -1,6 +1,4 @@
 import HealthPage from './components/Health/HealthPage'
-import UiRoleListPage from './components/Roles/UiRoleListPage'
-import UiPermListPage from './components/Permissions/UiPermListPage'
 import MappingPage from './components/Mapping/MappingPage'
 
 import SettingsPage from './components/Settings/SettingsPage'
@@ -16,6 +14,7 @@ import assetSaga from './redux/sagas/AssetSaga'
 import auditSaga from '../admin/redux/sagas/AuditSaga'
 
 import { reducer as apiRoleReducer } from 'Plugins/admin/redux/features/apiRoleSlice'
+import { reducer as apiConfigReducer } from 'Plugins/admin/redux/features/apiConfigSlice'
 import { reducer as apiPermissionReducer } from 'Plugins/admin/redux/features/apiPermissionSlice'
 import { reducer as mappingReducer } from 'Plugins/admin/redux/features/mappingSlice'
 import webhookReducer from 'Plugins/admin/redux/features/WebhookSlice'
@@ -24,8 +23,6 @@ import auditReducer from '../admin/redux/features/auditSlice'
 
 import {
   ACR_READ,
-  ROLE_READ,
-  PERMISSION_READ,
   MAPPING_READ,
   WEBHOOK_READ,
   WEBHOOK_WRITE,
@@ -44,6 +41,7 @@ import JansAssetEditPage from './components/Assets/JansAssetEditPage'
 import JansAssetAddPage from './components/Assets/JansAssetAddPage'
 import DashboardPage from '../../app/routes/Dashboards/DashboardPage'
 import LicenseDetailsPage from '../../app/routes/License/LicenseDetailsPage'
+import CedarlingConfigPage from './components/Cedarling/CedarlingConfigPage'
 
 const PLUGIN_BASE_PATH = '/adm'
 
@@ -87,20 +85,14 @@ const pluginMetadata = {
           title: 'menus.security',
           children: [
             {
-              title: 'menus.securityDropdown.adminUiRoles',
-              path: PLUGIN_BASE_PATH + '/roles',
-              permission: ROLE_READ,
-              resourceKey: ADMIN_UI_RESOURCES.Security,
-            },
-            {
-              title: 'menus.securityDropdown.capabilities',
-              path: PLUGIN_BASE_PATH + '/capabilities',
-              permission: PERMISSION_READ,
-              resourceKey: ADMIN_UI_RESOURCES.Security,
-            },
-            {
               title: 'menus.securityDropdown.mapping',
               path: PLUGIN_BASE_PATH + '/mapping',
+              permission: MAPPING_READ,
+              resourceKey: ADMIN_UI_RESOURCES.Security,
+            },
+            {
+              title: 'menus.securityDropdown.cedarlingConfig',
+              path: PLUGIN_BASE_PATH + '/cedarlingconfig',
               permission: MAPPING_READ,
               resourceKey: ADMIN_UI_RESOURCES.Security,
             },
@@ -161,22 +153,14 @@ const pluginMetadata = {
     },
 
     {
-      component: UiRoleListPage,
-      path: PLUGIN_BASE_PATH + '/roles',
-      permission: ROLE_READ,
-      resourceKey: ADMIN_UI_RESOURCES.Security,
-    },
-    {
-      component: UiPermListPage,
-      path: PLUGIN_BASE_PATH + '/capabilities',
-      permission: PERMISSION_READ,
-      resourceKey: ADMIN_UI_RESOURCES.Security,
-    },
-    {
       component: MappingPage,
       path: PLUGIN_BASE_PATH + '/mapping',
       permission: MAPPING_READ,
-      resourceKey: ADMIN_UI_RESOURCES.Security,
+    },
+    {
+      component: CedarlingConfigPage,
+      path: PLUGIN_BASE_PATH + '/cedarlingconfig',
+      permission: PROPERTIES_READ,
     },
 
     {
@@ -223,6 +207,7 @@ const pluginMetadata = {
     },
   ],
   reducers: [
+    { name: 'apiConfigReducer', reducer: apiConfigReducer },
     { name: 'apiRoleReducer', reducer: apiRoleReducer },
     { name: 'apiPermissionReducer', reducer: apiPermissionReducer },
     { name: 'mappingReducer', reducer: mappingReducer },

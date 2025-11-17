@@ -7,7 +7,7 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { getAcrsConfig, editAcrs } from 'Plugins/auth-server/redux/features/acrSlice'
-import { getAgama } from 'Plugins/auth-server/redux/features/agamaSlice'
+import { useGetAgamaPrj } from 'JansConfigApi'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { buildPayload } from 'Utils/PermChecker'
 import { Button, Form } from 'Components'
@@ -15,85 +15,137 @@ import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 import { ThemeContext } from '@/context/theme/themeContext'
 import DefaultAcrInput from '../Configuration/DefaultAcrInput'
 import { getScripts } from 'Redux/features/initSlice'
-import { buildAgamaFlowsArray, buildDropdownOptions } from './helper/acrUtils'
+import { buildAgamaFlowsArray, buildDropdownOptions, type DropdownOption } from './helper/acrUtils'
+import { updateToast } from 'Redux/features/toastSlice'
 
-function DefaultAcr() {
+interface CustomScript {
+  name: string
+  scriptType: string
+  enabled: boolean
+  [key: string]: unknown
+}
+
+interface RootState {
+  acrReducer: {
+    acrReponse?: {
+      defaultAcr?: string
+    }
+    loading: boolean
+    error: string | null
+  }
+  initReducer: {
+    scripts: CustomScript[]
+    loadingScripts: boolean
+  }
+}
+
+interface PutData {
+  value: string
+  path?: string
+  op?: string
+}
+
+const MAX_AGAMA_PROJECTS_FOR_ACR = 500
+
+function DefaultAcr(): React.ReactElement {
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
   const dispatch = useDispatch()
 
-  const { acrReponse: acrs } = useSelector((state) => state.acrReducer)
-  const scripts = useSelector((state) => state.initReducer.scripts)
-  const loadingScripts = useSelector((state) => state.initReducer.loadingScripts)
-  const { agamaList, loading: agamaLoading } = useSelector((state) => state.agamaReducer)
+  const { acrReponse: acrs } = useSelector((state: RootState) => state.acrReducer)
+  const scripts = useSelector((state: RootState) => state.initReducer.scripts)
+  const loadingScripts = useSelector((state: RootState) => state.initReducer.loadingScripts)
+
+  // Fetch Agama projects using React Query
+  const {
+    data: projectsResponse,
+    isLoading: agamaLoading,
+    error,
+  } = useGetAgamaPrj({
+    count: MAX_AGAMA_PROJECTS_FOR_ACR,
+    start: 0,
+  })
 
   const { t } = useTranslation()
 
-  const [modal, setModal] = useState(false)
-  const [put, setPut] = useState(null)
+  const [modal, setModal] = useState<boolean>(false)
+  const [put, setPut] = useState<PutData | null>(null)
   SetTitle(t('titles.authentication'))
 
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
-
-  const userAction = {}
+  const selectedTheme = theme?.state?.theme || 'light'
 
   const authResourceId = ADMIN_UI_RESOURCES.Authentication
-  const authScopes = React.useMemo(
-    () => CEDAR_RESOURCE_SCOPES[authResourceId] || [],
-    [authResourceId],
-  )
+  const authScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[authResourceId] || [], [authResourceId])
 
-  const canReadAuth = React.useMemo(
-    () => hasCedarReadPermission(authResourceId),
+  const canReadAuth = useMemo(
+    () => hasCedarReadPermission(authResourceId) === true,
     [hasCedarReadPermission, authResourceId],
   )
-  const canWriteAuth = React.useMemo(
-    () => hasCedarWritePermission(authResourceId),
+  const canWriteAuth = useMemo(
+    () => hasCedarWritePermission(authResourceId) === true,
     [hasCedarWritePermission, authResourceId],
   )
 
   useEffect(() => {
-    authorizeHelper(authScopes)
+    if (authScopes && authScopes.length > 0) {
+      authorizeHelper(authScopes)
+    }
+  }, [authorizeHelper, authScopes])
+
+  useEffect(() => {
+    const userAction: Record<string, unknown> = {}
     buildPayload(userAction, 'Fetch custom scripts', {})
     dispatch(getScripts({ action: userAction }))
-    dispatch(getAgama())
     dispatch(getAcrsConfig())
-  }, [authorizeHelper, authScopes, dispatch])
+  }, [dispatch])
 
-  const authScripts = useMemo(() => {
+  // Surface Agama fetch failures
+  useEffect(() => {
+    if (error) {
+      const errorMessage =
+        (error as Error)?.message ||
+        'Failed to fetch Agama projects. Only showing authentication scripts.'
+      console.error('Error fetching Agama projects:', error)
+      dispatch(updateToast(true, 'error', errorMessage))
+    }
+  }, [error, dispatch])
+
+  const authScripts = useMemo<DropdownOption[]>(() => {
     const filteredScripts = (scripts || [])
       .filter((item) => item?.scriptType === 'person_authentication' && item?.enabled)
       .map((item) => ({ key: item.name, value: item.name }))
+    const agamaList = projectsResponse?.entries || []
     const agamaFlows = buildAgamaFlowsArray(agamaList)
     const dropdownOptions = buildDropdownOptions(filteredScripts, agamaFlows)
 
     return dropdownOptions
-  }, [scripts, agamaList])
+  }, [scripts, projectsResponse])
 
-  const toggle = () => {
+  const toggle = (): void => {
     setModal(!modal)
   }
 
-  const putHandler = (putData) => {
+  const putHandler = (putData: PutData): void => {
     setPut(putData)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault()
     setModal(true)
   }
 
-  const handleSaveClick = () => {
+  const handleSaveClick = (): void => {
     setModal(true)
   }
 
-  const submitForm = (userMessage) => {
+  const submitForm = (userMessage: string): void => {
     toggle()
 
     if (put?.value) {
-      const opts = {}
-      opts['authenticationMethod'] = { defaultAcr: put.value }
-
+      const opts: Record<string, unknown> = {
+        authenticationMethod: { defaultAcr: put.value },
+      }
+      const userAction: Record<string, unknown> = {}
       buildPayload(userAction, userMessage, opts)
       dispatch(editAcrs({ data: opts, action: userAction }))
     }
@@ -106,16 +158,15 @@ function DefaultAcr() {
         <div style={{ padding: '3vh' }}>
           <GluuViewWrapper canShow={canReadAuth}>
             <DefaultAcrInput
-              id="defaultAcr"
               name="defaultAcr"
               lsize={6}
               rsize={6}
-              type="select"
               label={t('fields.default_acr')}
               handler={putHandler}
               value={acrs?.defaultAcr}
               options={authScripts}
-              path={'/ACR'}
+              path="/ACR"
+              isArray={false}
               showSaveButtons={false}
             />
           </GluuViewWrapper>

@@ -26,6 +26,7 @@ export interface FormValues {
   locationPath?: string
   location_type: string
   enabled?: boolean | string[]
+  action_message?: string
 }
 
 // Utility type for property option mapping
