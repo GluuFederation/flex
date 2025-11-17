@@ -656,7 +656,7 @@
     "nothingToShowInTheList": "Rien à montrer dans la liste",
     "disable_logger_timer": "Désactiver le Minuteur du Journal",
     "skip_defined_password_validation": "Ignorer la Validation du Mot de Passe Défini",
-    "auiPolicyStoreUrl": "Interface utilisateur d'administration Magasin de politiques à distance",
+    "auiPolicyStoreUrl": "Magasin de politiques à distance de l'interface d'administration",
     "configApiPolicyStoreUrl": "Magasin de politiques de configuration de l'API",
     "cedarlingPolicyStoreRetrievalPoint": "Point de récupération des politiques"
   },
