@@ -39,7 +39,7 @@ const JansAssetListPage: React.FC = () => {
     hasCedarDeletePermission,
     authorizeHelper,
   } = useCedarling()
-  const assetsResourceId = useMemo(() => ADMIN_UI_RESOURCES.Assests, [])
+  const assetsResourceId = useMemo(() => ADMIN_UI_RESOURCES.Assets, [])
   const assetScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[assetsResourceId], [assetsResourceId])
 
   const { t } = useTranslation()
@@ -169,7 +169,6 @@ const JansAssetListPage: React.FC = () => {
             navigateToEditPage(rowData)
           }
         },
-        disabled: !canWriteAssets,
       })
     }
 
