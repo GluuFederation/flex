@@ -21,7 +21,7 @@ The Cedarling Policy Store configuration screen helps to configure the Policy St
 
 #### Policy Retrieval Point
 
-This feature is useful for setting PRP. It helps to prevent MITM attacks in production. There are 2 mods.
+This feature is useful for setting PRP. It helps to prevent MITM attacks in production. There are 2 modes.
 
 1. `Remote`: In this mode, Admin UI will always use the remote policy store URL to initialize Cedarling, fetch policies, and schema.
 
