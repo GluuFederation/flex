@@ -163,7 +163,7 @@ C4Context
 
 The Cedar policies in the Policy Store empowers the administrator with following:
 
-### MAnage the access control in Admin UI
+### Manage the access control in Admin UI
 
 The Cedar policies are rules which decides if the logged in user can perform Read, Write or Delete action on a feature or not. By writing the appropriate cedar policies the administrator can manage access control in Admin UI. For e.g the below policy allows the user with role **admin** to perform **Read**, **Write** or **Delete** actions on all the features under the parent group **AuthServerAndConfiguration**.
 
@@ -206,7 +206,7 @@ permit (
 
 To add new Admin UI user roles, the administrator just need to introduce the policies associated with those roles in the Policy Store. On saving the Policy Store the Admin UI parses it and aggregates the roles and role-to-scope mapping. The aggregated data is saved into the persistence.
 
-### Writing policies for Admin UI
+### Writing policies: Parent Groups as resources
 
 The principal element in a [Cedar policy](https://docs.cedarpolicy.com/) represents a user, service, or other identity that can make a request to perform an action on a resource in your application. We will learn how to write an Admin UI policy using a sample scenario: a logged-in user with the **admin** role can manage the **Auth Server and its configuration**.
 
@@ -228,3 +228,26 @@ In this policy, we are allowing **Read**, **Write** and **Delete** actions on th
 
 **Resource :**
 As we have categorised Admin UI features (or resources) into the parent groups, `resource in Gluu::Flex::AdminUI::Resources::ParentResource::"AuthServerAndConfiguration"` allows the user with role **admin** to perform **Read**, **Write** and **Delete** actions on all the features under **AuthServerAndConfiguration** parent group. Here `Gluu::Flex::AdminUI::Resources::` is the namespace where **ParentResource** entity resides. The **ParentResource** entity represents the parent group and **AuthServerAndConfiguration** in inverted commas is the entity id representing name of the parent group.
+
+### Writing policies: Specific Admin UI Feature
+
+To define policies for a specific Admin UI feature (e.g., Clients, Scopes, Users), use the format `Gluu::Flex::AdminUI::Resources::Features` followed by the resource’s Entity ID enclosed in quotation marks in resource clause. For e.g. below policy allows **Read**, **Write** and **Delete** action to the user with role **auditor** on **Clients** resource.
+
+```
+@id("AuditorCanManageClients")
+permit (
+  principal in Gluu::Flex::AdminUI::Role::"auditor",
+  action in [Gluu::Flex::AdminUI::Action::"read",
+  Gluu::Flex::AdminUI::Action::"write",
+  Gluu::Flex::AdminUI::Action::"delete"],
+  resource in Gluu::Flex::AdminUI::Resources::Features::"Clients"
+);
+```
+Please see the Entity Ids of the Parent Groups and their underlying features in this table:
+
+|Parent Group|Features|
+|------------|--------|
+|AuthServerAndConfiguration|Clients, Scopes, Keys, AuthenticationServerConfiguration, Logging, SSA, Authentication, ConfigApiConfiguration, Session|
+|IdentityAndAccess|Users, Scripts, Attributes|
+|SystemAndMonitoring|Dashboard, License, MAU, Security, Settings, Webhooks, Assets, AuditLogs|
+|Service|Persistence, SMTP, SCIM, FIDO, SAML, Lock|

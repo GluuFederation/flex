@@ -30,7 +30,7 @@ This feature is useful for setting PRP. It helps to prevent MITM attacks in prod
 #### Steps to configure Remote Policy Store URL 
 
  1. Fork the project [GluuFlexAdminUIPolicyStore](https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/tree/agama-lab-policy-designer).
- 2. Open the forked repository using [Agama Lab](https://cloud.gluu.org/agama-lab).
+ 2. Open the forked repository using [Agama Lab's](https://cloud.gluu.org/agama-lab) Policy Designer.
  3. Make the required modifications in the policies for Admin UI access control and save the changes.
  4. Copy the Policy Store URL.
  ![image](../../assets/admin-ui/admin-ui-policy-store.png)
