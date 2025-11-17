@@ -48,14 +48,19 @@ const GluuCommitDialog = ({
   const { loadingWebhooks, webhookModal } = useSelector((state: any) => state.webhookReducer)
 
   const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
-  const webhookScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[webhookResourceId], [webhookResourceId])
+  const webhookScopes = useMemo(
+    () => CEDAR_RESOURCE_SCOPES[webhookResourceId] || [],
+    [webhookResourceId],
+  )
   const canReadWebhooks = useMemo(
     () => hasCedarReadPermission(webhookResourceId) === true,
     [hasCedarReadPermission, webhookResourceId],
   )
 
   useEffect(() => {
-    authorizeHelper(webhookScopes)
+    if (webhookScopes && webhookScopes.length > 0) {
+      authorizeHelper(webhookScopes)
+    }
   }, [authorizeHelper, webhookScopes])
 
   const { webhookTriggerModal, onCloseModal } = useWebhookDialogAction({

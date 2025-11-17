@@ -42,7 +42,9 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({
   const viewOnly = !canWriteLock
 
   useEffect(() => {
-    authorizeHelper(lockScopes)
+    if (lockScopes && lockScopes.length > 0) {
+      authorizeHelper(lockScopes)
+    }
   }, [authorizeHelper, lockScopes])
 
   const toggle = useCallback(() => {

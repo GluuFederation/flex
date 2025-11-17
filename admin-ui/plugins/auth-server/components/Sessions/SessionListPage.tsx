@@ -46,23 +46,13 @@ import {
   useSearchSession,
 } from 'JansConfigApi'
 import type { SessionId, SearchSessionParams } from 'JansConfigApi'
-import type {
-  Session,
-  RootState,
-  TableColumn,
-  SessionListPageProps,
-  FilterState,
-  ColumnState,
-} from './types'
+import type { Session, TableColumn, SessionListPageProps, FilterState, ColumnState } from './types'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import { DELETION } from '../../../../app/audit/UserActionType'
 import { SESSION } from '../../redux/audit/Resources'
 
 const SessionListPage: React.FC<SessionListPageProps> = () => {
   const { hasCedarDeletePermission, authorizeHelper } = useCedarling()
-  const { permissions: cedarPermissions } = useSelector(
-    (state: RootState) => state.cedarPermissions || { permissions: [] },
-  )
   const { t } = useTranslation()
   const {
     data: sessionsData,
@@ -191,10 +181,10 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
   )
 
   useEffect(() => {
-    authorizeHelper(sessionScopes)
+    if (sessionScopes && sessionScopes.length > 0) {
+      authorizeHelper(sessionScopes)
+    }
   }, [authorizeHelper, sessionScopes])
-
-  useEffect(() => {}, [cedarPermissions])
 
   const handleDeleteSession = useCallback((rowData: Session) => {
     setItem(rowData)

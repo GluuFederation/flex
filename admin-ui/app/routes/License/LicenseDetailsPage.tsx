@@ -9,7 +9,6 @@ import getThemeColor from 'Context/theme/config'
 import customColors from '@/customColors'
 import { getLicenseDetails } from 'Redux/features/licenseDetailsSlice'
 import { Card, CardBody, Container, Row, Col, Button } from 'Components'
-import { buildPayload } from 'Utils/PermChecker'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import Alert from '@mui/material/Alert'
 import SetTitle from 'Utils/SetTitle'
@@ -22,15 +21,12 @@ import { useNavigate } from 'react-router'
 import type { LicenseField } from './types'
 import type { LicenseDetailsState } from 'Redux/features/licenseDetailsSlice'
 
-const FETCHING_LICENSE_DETAILS = 'Fetch license details'
-
 function LicenseDetailsPage() {
   const { item, loading } = useSelector(
     (state: { licenseDetailsReducer: LicenseDetailsState }) => state.licenseDetailsReducer,
   )
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const userAction: Record<string, unknown> = {}
   const { t } = useTranslation()
   const { hasCedarWritePermission, authorizeHelper } = useCedarling()
   const [modal, setModal] = useState(false)
@@ -47,7 +43,6 @@ function LicenseDetailsPage() {
   }
   useEffect(() => {
     initPermissions()
-    buildPayload(userAction, FETCHING_LICENSE_DETAILS, null)
     dispatch(getLicenseDetails())
   }, [authorizeHelper, dispatch, licenseScopes])
   useEffect(() => {

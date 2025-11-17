@@ -1,4 +1,4 @@
-import type { ResourceScopeEntry } from '@/cedarling'
+import type { AdminUiFeatureResource, ResourceScopeEntry } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import {
   ASSETS_DELETE,
@@ -70,9 +70,13 @@ import {
   AGAMA_READ,
   AGAMA_WRITE,
   AGAMA_DELETE,
+  ROLE_READ,
+  PERMISSION_READ,
+  MAPPING_READ,
 } from '@/utils/PermChecker'
 
-export const CEDAR_RESOURCE_SCOPES: Record<string, ResourceScopeEntry[]> = {
+// Type ensures all AdminUiFeatureResource keys are present at compile time
+export const CEDAR_RESOURCE_SCOPES: Record<AdminUiFeatureResource, ResourceScopeEntry[]> = {
   [ADMIN_UI_RESOURCES.Dashboard]: [
     { permission: STAT_READ, resourceId: ADMIN_UI_RESOURCES.Dashboard },
     { permission: STAT_JANS_READ, resourceId: ADMIN_UI_RESOURCES.Dashboard },
@@ -195,7 +199,18 @@ export const CEDAR_RESOURCE_SCOPES: Record<string, ResourceScopeEntry[]> = {
     { permission: JWKS_READ, resourceId: ADMIN_UI_RESOURCES.Keys },
     { permission: JWKS_WRITE, resourceId: ADMIN_UI_RESOURCES.Keys },
   ],
-} as const
+  [ADMIN_UI_RESOURCES.Security]: [
+    { permission: ROLE_READ, resourceId: ADMIN_UI_RESOURCES.Security },
+    { permission: PERMISSION_READ, resourceId: ADMIN_UI_RESOURCES.Security },
+    { permission: MAPPING_READ, resourceId: ADMIN_UI_RESOURCES.Security },
+  ],
+  [ADMIN_UI_RESOURCES.Settings]: [
+    { permission: ACR_READ, resourceId: ADMIN_UI_RESOURCES.Settings },
+  ],
+  [ADMIN_UI_RESOURCES.AuditLogs]: [
+    { permission: LOGGING_READ, resourceId: ADMIN_UI_RESOURCES.AuditLogs },
+  ],
+} as const satisfies Record<AdminUiFeatureResource, ResourceScopeEntry[]>
 
 export const CEDARLING_CONSTANTS = {
   ACTION_TYPE: 'Gluu::Flex::AdminUI::Action::',

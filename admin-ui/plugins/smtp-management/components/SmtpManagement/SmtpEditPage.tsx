@@ -1,6 +1,7 @@
 import React, { useCallback, useState, useRef, useEffect, useMemo } from 'react'
 import { FormikProps } from 'formik'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { CardBody, Card } from 'Components'
 import SetTitle from 'Utils/SetTitle'
 import { useTranslation } from 'react-i18next'
@@ -194,12 +195,6 @@ function SmtpEditPage() {
     setTestStatus(null)
   }, [])
 
-  if (!canReadSmtp) {
-    return (
-      <GluuLoader blocking={isLoading || putSmtpMutation.isPending || testSmtpMutation.isPending} />
-    )
-  }
-
   return (
     <GluuLoader blocking={isLoading || putSmtpMutation.isPending || testSmtpMutation.isPending}>
       {showTestModal && (
@@ -207,16 +202,18 @@ function SmtpEditPage() {
       )}
       <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
-          {!isLoading && smtpConfiguration && (
-            <SmtpForm
-              item={smtpConfiguration}
-              allowSmtpKeystoreEdit={allowSmtpKeystoreEdit}
-              handleSubmit={handleSubmit}
-              onTestSmtp={handleTestSmtp}
-              formikRef={formikRef}
-              readOnly={!canWriteSmtp}
-            />
-          )}
+          <GluuViewWrapper canShow={canReadSmtp}>
+            {!isLoading && smtpConfiguration && (
+              <SmtpForm
+                item={smtpConfiguration}
+                allowSmtpKeystoreEdit={allowSmtpKeystoreEdit}
+                handleSubmit={handleSubmit}
+                onTestSmtp={handleTestSmtp}
+                formikRef={formikRef}
+                readOnly={!canWriteSmtp}
+              />
+            )}
+          </GluuViewWrapper>
         </CardBody>
       </Card>
     </GluuLoader>

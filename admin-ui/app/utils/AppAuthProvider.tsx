@@ -174,7 +174,7 @@ export default function AppAuthProvider(props) {
             }
             return fetchApiAccessToken(ujwt)
           })
-          .then((tokenResponse: string) => {
+          .then((tokenResponse: { access_token: string }) => {
             // fetch policy store and set in redux
             return fetchPolicyStore(tokenResponse.access_token)
           })

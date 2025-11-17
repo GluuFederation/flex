@@ -129,8 +129,10 @@ function AttributeListPage(): JSX.Element {
   )
 
   useEffect(() => {
-    authorizeHelper(attributeScopes)
-  }, [authorizeHelper, attributeScopes])
+    if (attributeScopes && attributeScopes.length > 0) {
+      authorizeHelper(attributeScopes)
+    }
+  }, [authorizeHelper])
 
   SetTitle(t('fields.attributes'))
 

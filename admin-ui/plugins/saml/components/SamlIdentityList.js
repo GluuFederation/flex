@@ -121,17 +121,20 @@ const SamlIdentityList = () => {
     )
   }
 
-  const handleOptionsChange = useCallback((event) => {
-    if (event.target.name == 'limit') {
-      setLimit(event.target.value)
-    } else if (event.target.name == 'pattern') {
-      const nextPattern = event.target.value
-      setPattern(nextPattern)
-      if (event.keyCode === 13) {
-        dispatch(getSamlIdentites({ limit, pattern: nextPattern }))
+  const handleOptionsChange = useCallback(
+    (event) => {
+      if (event.target.name == 'limit') {
+        setLimit(event.target.value)
+      } else if (event.target.name == 'pattern') {
+        const nextPattern = event.target.value
+        setPattern(nextPattern)
+        if (event.keyCode === 13) {
+          dispatch(getSamlIdentites({ limit, pattern: nextPattern }))
+        }
       }
-    }
-  }, [])
+    },
+    [limit, dispatch],
+  )
 
   const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
 

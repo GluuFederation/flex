@@ -1,4 +1,4 @@
-import { AdminUiFeatureResource, ApiPermissionType, CedarAction } from '@/cedarling'
+import type { AdminUiFeatureResource, ApiPermissionType, CedarAction } from '@/cedarling'
 
 export const CEDARLING_BYPASS = 'CEDARLING_BYPASS' as const
 
@@ -36,6 +36,9 @@ export const findPermissionByUrl = (apiPermissions: ApiPermissionType[], url: st
   return apiPermissions.find((perm) => perm.permission === url)
 }
 
-export const buildCedarPermissionKey = (resourceId: string, action: CedarAction) => {
-  return `${resourceId}::${action}` as const
+export const buildCedarPermissionKey = (
+  resourceId: AdminUiFeatureResource,
+  action: CedarAction,
+): `${AdminUiFeatureResource}::${CedarAction}` => {
+  return `${resourceId}::${action}`
 }

@@ -22,6 +22,7 @@ import { AuthRootState } from 'Utils/types'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import GluuViewWrapper from '@/routes/Apps/Gluu/GluuViewWrapper'
 
 const Fido: React.FC = () => {
   const { t } = useTranslation()
@@ -159,17 +160,15 @@ const Fido: React.FC = () => {
     [t, handleConfigSubmit, fidoConfiguration, isLoading, putFidoMutation.isPending, canWriteFido],
   )
 
-  if (!canReadFido) {
-    return <GluuLoader blocking={isLoading} />
-  }
-
   return (
     <GluuLoader blocking={isLoading}>
       <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
-          {!isLoading && (
-            <GluuTabs tabNames={tabNames} tabToShow={tabToShow} withNavigation={true} />
-          )}
+          <GluuViewWrapper canShow={canReadFido}>
+            {!isLoading && (
+              <GluuTabs tabNames={tabNames} tabToShow={tabToShow} withNavigation={true} />
+            )}
+          </GluuViewWrapper>
         </CardBody>
       </Card>
     </GluuLoader>

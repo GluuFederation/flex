@@ -99,11 +99,7 @@ function AgamaListPage() {
 
   useEffect(() => {
     authorizeHelper(authScopes)
-    if (isEmpty(configuration)) {
-      dispatch(getJsonConfig({ action: {} }))
-    }
-    dispatch(getAgama())
-  }, [authorizeHelper, authScopes, dispatch, configuration])
+  }, [authorizeHelper, authScopes])
 
   function convertFileToByteArray(file) {
     return new Promise((resolve, reject) => {
@@ -140,10 +136,15 @@ function AgamaListPage() {
   }, [dispatch])
 
   useEffect(() => {
+    if (!canReadAuth) {
+      return
+    }
     if (isEmpty(configuration)) {
       dispatch(getJsonConfig({ action: {} }))
     }
-  }, [])
+    dispatch(getAgama())
+  }, [canReadAuth, configuration, dispatch])
+
   useEffect(() => {
     if (agamaFileResponse) {
       const byteArray = convertFileFrombase64(agamaFileResponse)
@@ -232,10 +233,6 @@ function AgamaListPage() {
 
   const agamaList = useSelector((state) => state.agamaReducer.agamaList)
   SetTitle(t('titles.authentication'))
-
-  useEffect(() => {
-    dispatch(getAgama())
-  }, [])
 
   useEffect(() => {
     formDeploymentDetailsData()

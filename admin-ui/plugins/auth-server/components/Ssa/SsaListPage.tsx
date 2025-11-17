@@ -112,7 +112,6 @@ const SSAListPage: React.FC = () => {
       iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
       isFreeAction: true,
       onClick: () => handleGoToSsaAddPage(),
-      disabled: !canWriteSsa,
     })
   }
 
@@ -128,7 +127,6 @@ const SSAListPage: React.FC = () => {
           handleSsaDelete(rowData)
         }
       },
-      disabled: !canWriteSsa && !canDeleteSsa,
     }))
   }
 

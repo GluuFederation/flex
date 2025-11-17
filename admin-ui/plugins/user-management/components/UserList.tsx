@@ -89,7 +89,9 @@ function UserList(): JSX.Element {
   )
 
   useEffect(() => {
-    authorizeHelper(usersScopes)
+    if (usersScopes && usersScopes.length > 0) {
+      authorizeHelper(usersScopes)
+    }
   }, [authorizeHelper, usersScopes])
 
   const {

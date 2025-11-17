@@ -272,7 +272,7 @@ const JansAssetListPage: React.FC = () => {
     <GluuLoader blocking={loadingAssets}>
       <Card style={applicationStyle.mainCard}>
         <CardBody>
-          <GluuViewWrapper canShow={hasCedarReadPermission(assetsResourceId) === true}>
+          <GluuViewWrapper canShow={canReadAssets}>
             <MaterialTable<Document>
               components={{
                 Container: PaperContainer,

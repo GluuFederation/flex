@@ -8,6 +8,7 @@ import type {
   AuthorizationResult,
   ResourceScopeEntry,
   CedarAction,
+  AdminUiFeatureResource,
 } from '@/cedarling'
 import { findPermissionByUrl } from '@/cedarling/utility'
 import { OPENID, REVOKE_SESSION, SCIM_BULK, SSA_ADMIN, SSA_DEVELOPER } from '@/utils/PermChecker'
@@ -37,8 +38,8 @@ export function useCedarling(): UseCedarlingReturn {
   const getActionLabelFromUrl = (url: string): CedarAction => {
     const lowerUrl = url.toLowerCase()
 
-    if (executeUrls.has(url)) {
-      return `write` // Matched known action-based endpoint
+    if (executeUrls.has(lowerUrl)) {
+      return `write`
     }
 
     if (lowerUrl.includes('write')) {
@@ -53,7 +54,7 @@ export function useCedarling(): UseCedarlingReturn {
   }
   const buildAuthorizationRequest = useCallback(
     (resourceId: string, actionLabel: CedarAction) => {
-      const cacheKey = buildCedarPermissionKey(resourceId, actionLabel)
+      const cacheKey = buildCedarPermissionKey(resourceId as AdminUiFeatureResource, actionLabel)
       const cachedDecision = permissionsByResourceId[cacheKey]
       if (cachedDecision !== undefined) {
         return { cacheKey, cachedDecision }
@@ -95,13 +96,15 @@ export function useCedarling(): UseCedarlingReturn {
 
   const getCachedDecisionByAction = useCallback(
     (resourceId: string, action: CedarAction): boolean | undefined =>
-      permissionsByResourceId[buildCedarPermissionKey(resourceId, action)],
+      permissionsByResourceId[
+        buildCedarPermissionKey(resourceId as AdminUiFeatureResource, action)
+      ],
     [permissionsByResourceId],
   )
 
   const getCachedPermission = useCallback(
     (resourceId: string): boolean | undefined => {
-      const readKey = buildCedarPermissionKey(resourceId, 'read')
+      const readKey = buildCedarPermissionKey(resourceId as AdminUiFeatureResource, 'read')
       if (readKey in permissionsByResourceId) {
         return permissionsByResourceId[readKey]
       }

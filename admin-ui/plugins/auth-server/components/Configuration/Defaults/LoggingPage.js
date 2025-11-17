@@ -26,8 +26,6 @@ function LoggingPage() {
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
   const logging = useSelector((state) => state.loggingReducer.logging)
   const loading = useSelector((state) => state.loggingReducer.loading)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
-
   const dispatch = useDispatch()
 
   const loggingResourceId = ADMIN_UI_RESOURCES.Logging
@@ -37,12 +35,12 @@ function LoggingPage() {
   )
 
   const canReadLogging = useMemo(
-    () => hasCedarReadPermission(loggingResourceId),
+    () => !!hasCedarReadPermission(loggingResourceId),
     [hasCedarReadPermission, loggingResourceId],
   )
 
   const canWriteLogging = useMemo(
-    () => hasCedarWritePermission(loggingResourceId),
+    () => !!hasCedarWritePermission(loggingResourceId),
     [hasCedarWritePermission, loggingResourceId],
   )
 
@@ -51,17 +49,22 @@ function LoggingPage() {
   const [localLogging, setLocalLogging] = useState(null)
 
   useEffect(() => {
-    authorizeHelper(loggingScopes)
-    dispatch(getLoggingConfig())
-  }, [dispatch, authorizeHelper, loggingScopes])
+    if (loggingScopes && loggingScopes.length > 0) {
+      authorizeHelper(loggingScopes)
+    }
+  }, [authorizeHelper, loggingScopes])
+
+  useEffect(() => {
+    if (canReadLogging === true) {
+      dispatch(getLoggingConfig())
+    }
+  }, [canReadLogging, dispatch])
 
   useEffect(() => {
     if (logging) {
       setLocalLogging(logging)
     }
   }, [logging])
-
-  useEffect(() => {}, [cedarPermissions])
 
   const initialValues = useMemo(
     () => ({
