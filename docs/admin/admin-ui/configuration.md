@@ -11,464 +11,70 @@ This document outlines the configuration process for Gluu Flex Admin UI, with a 
 
 ## Configuration Components
 
-### Cedarling Configuration
+### Role-Permission Mapping
 
-Gluu Flex Admin UI uses [Cedarling](https://docs.jans.io/stable/cedarling/) for GUI access control. The role of the user is mapped with specific permissions to ensure that the user can only access and modify functionalities relevant to their roles.
+[Role-permission](./admin-menu.md/) mapping defines which administrative roles are granted specific permissions within the Gluu Flex Admin UI. This mapping ensures that administrators can only access and modify functionalities relevant to their roles.
 
-The cedarling configuration helps to manage roles and permissions for Admin UI. You need to configure Cedarling, and it automatically syncs roles and permissions as per the schema and policies.
+The mapping is stored in json format with following attributes.
 
-#### Cedarling Configuration
+**Roles**
 
-Use the Cedarling configuration section for policy store configuration:
+|Attribute Name|Description|
+|--------------|-----------|
+|roles|Array of all roles|
+|role|Role name|
+|description| Role description|
+|deletable|If set to `true` then entire role-permission mapping with respect to the role can be deleted. Default value: `false`|
 
-![image](../../assets/admin-ui/cedarling-config.png)
+**Permissions**
 
-Admin UI comes with [Default policy store](https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/tree/agama-lab-policy-designer). You can simply fork the [GluuFlexAdminUIPolicyStore](https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/tree/agama-lab-policy-designer) repository, view, add, and update roles and policies using [Agama Lab](https://cloud.gluu.org/agama-lab) and configure it in Admin UI.
+|Attribute Name|Description|
+|--------------|-----------|
+|permissions|Array of all available permissions|
+|permission|Permission name|
+|description| Permission description|
+|defaultPermissionInToken|If set to `true`, it indicates that permission will need authentication and valid role during `/token` request to include in token|
 
-To add a new role, open your policy store in [Agama Lab](https://cloud.gluu.org/agama-lab), create a policy with the role, and configure it in the Admin UI Cedarling. Once you apply, Admin UI parses your policy store schema, finds all roles from policies, and adds them to Admin UI.
+**Mapping**
 
-#### Set policy retrieval point
+|Attribute Name|Description|
+|--------------|-----------|
+|rolePermissionMapping| List of all role-permission mapping|
+|role|Role name|
+|permission|Array of all permission mapped to the role|
 
-This feature is useful for setting PRP. It helps to prevent MITM attacks in production. There are 2 mods.
+**Sample role-permission mapping stored in persistence**
 
-1. `Remote`: In this mode, Admin UI will always use the remote policy store URL to initialize Cedarling, fetch policies, and schema.
-
-2. `Default`: It is recommended to set it to Default for production. If set to Default, it will use the Admin-UI storage for Cedarling authorization. Enable Default mode and use the refresh button to store or update GitHub policies on the Admin-UI Server.
-
-#### Policy store
-
-Admin UI comes with [Default policy store](https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/tree/agama-lab-policy-designer). These details will help you add or update the policies. It has the following policies:
-
-**Admin Role policies:**
-
-```cedar
-@id("AdminCanManageAuthServerConfiguration")
-permit (
-  principal in Gluu::Flex::AdminUI::Role::"admin",
-  action in [Gluu::Flex::AdminUI::Action::"read",
-  Gluu::Flex::AdminUI::Action::"write",
-  Gluu::Flex::AdminUI::Action::"delete"],
-  resource in Gluu::Flex::AdminUI::Resources::ParentResource::"AuthServerAndConfiguration"
-);
-
-@id("AdminCanManageUserIdentityAndAccess")
-permit (
-  principal in Gluu::Flex::AdminUI::Role::"admin",
-  action in [Gluu::Flex::AdminUI::Action::"read",
-  Gluu::Flex::AdminUI::Action::"write",
-  Gluu::Flex::AdminUI::Action::"delete"],
-  resource in Gluu::Flex::AdminUI::Resources::ParentResource::"IdentityAndAccess"
-);
-
-@id("AdminCanManageSystemMonitoring")
-permit (
-  principal in Gluu::Flex::AdminUI::Role::"admin",
-  action in [Gluu::Flex::AdminUI::Action::"read",
-  Gluu::Flex::AdminUI::Action::"write",
-  Gluu::Flex::AdminUI::Action::"delete"],
-  resource in Gluu::Flex::AdminUI::Resources::ParentResource::"SystemAndMonitoring"
-);
-
-@id("AdminCanManageService")
-permit (
-  principal in Gluu::Flex::AdminUI::Role::"admin",
-  action in [Gluu::Flex::AdminUI::Action::"read",
-  Gluu::Flex::AdminUI::Action::"write",
-  Gluu::Flex::AdminUI::Action::"delete"],
-  resource in Gluu::Flex::AdminUI::Resources::ParentResource::"Service"
-);
-```
-
-**Auditor Policies**
-
-```cedar
-@id("AuditorCanManageClients")
-permit (
-  principal in Gluu::Flex::AdminUI::Role::"auditor",
-  action in [Gluu::Flex::AdminUI::Action::"read",
-  Gluu::Flex::AdminUI::Action::"write",
-  Gluu::Flex::AdminUI::Action::"delete"],
-  resource in Gluu::Flex::AdminUI::Resources::Features::"Clients"
-);
-```
-
-**Viewer Policies**
-
-```cedar
-@id("ViewerCanViewUserIdentityAndAccess")
-permit (
-  principal in Gluu::Flex::AdminUI::Role::"viewer",
-  action in Gluu::Flex::AdminUI::Action::"read",
-  resource in Gluu::Flex::AdminUI::Resources::ParentResource::"IdentityAndAccess"
-);
-```
-
-**Parent and child resources**
-
-| Parent Resource | Child resources |
-|-----------------|-----------------|
-|`AuthServerAndConfiguration`|`Clients`, `Scopes`, `Keys`, `AuthenticationServerConfiguration`, `Logging`, `SSA`, `Authentication`, `ConfigApiConfiguration`, `Session`|
-|`IdentityAndAccess`|`Users`, `Scripts`, `UserClaims`|
-|`SystemAndMonitoring`|`Dashboard`, `License`, `MAU`, `Security`, `Settings`, `Webhooks`, `Assets`, `AuditLogs`|
-|`Service`|`Cache`, `Persistence`, `SMTP`, `SCIM`, `FIDO`, `SAML`, `Lock`|
-
-**Default entities**
-
-Default entities helps to make a parent-child relation in entities. In Admin UI case, it helps to manage resources.
-
-```json
+```text
 {
-  "1694c954f8d9": {
-    "uid": {
-      "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "Dashboard"
+  "roles": [
+    {
+      "role": "sample-role",
+      "description": "role description",
+      "deletable": false
+    }
+  ],
+  "permissions": [
+    {
+      "permission": "sample-permission1",
+      "description": "permission1 description",
+      "defaultPermissionInToken": false
     },
-    "attrs": {},
-    "parents": [
-      {
-        "type": "Gluu::Flex::AdminUI::Resources::ParentResource",
-        "id": "SystemAndMonitoring"
-      }
-    ]
-  },
-  "2694c954f8d8": {
-    "uid": {
-      "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "License"
-    },
-    "attrs": {},
-    "parents": [
-      {
-        "type": "Gluu::Flex::AdminUI::Resources::ParentResource",
-        "id": "SystemAndMonitoring"
-      }
-    ]
-  },
-  "3694c954f8d7": {
-    "uid": {
-      "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "MAU"
-    },
-    "attrs": {},
-    "parents": [
-      {
-        "type": "Gluu::Flex::AdminUI::Resources::ParentResource",
-        "id": "SystemAndMonitoring"
-      }
-    ]
-  },
-  "4694c954f8d6": {
-    "uid": {
-      "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "Security"
-    },
-    "attrs": {},
-    "parents": [
-      {
-        "type": "Gluu::Flex::AdminUI::Resources::ParentResource",
-        "id": "SystemAndMonitoring"
-      }
-    ]
-  },
-  "6494c954f8d6": {
-    "uid": {
-      "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "Settings"
-    },
-    "attrs": {},
-    "parents": [
-      {
-        "type": "Gluu::Flex::AdminUI::Resources::ParentResource",
-        "id": "SystemAndMonitoring"
-      }
-    ]
-  },
-  "5694c954f8d5": {
-    "uid": {
-      "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "Webhooks"
-    },
-    "attrs": {},
-    "parents": [
-      {
-        "type": "Gluu::Flex::AdminUI::Resources::ParentResource",
-        "id": "SystemAndMonitoring"
-      }
-    ]
-  },
-  "6694c954f8d4": {
-    "uid": {
-      "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "Assets"
-    },
-    "attrs": {},
-    "parents": [
-      {
-        "type": "Gluu::Flex::AdminUI::Resources::ParentResource",
-        "id": "SystemAndMonitoring"
-      }
-    ]
-  },
-  "7694c954f8d3": {
-    "uid": {
-      "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "AuditLogs"
-    },
-    "attrs": {},
-    "parents": [
-      {
-        "type": "Gluu::Flex::AdminUI::Resources::ParentResource",
-        "id": "SystemAndMonitoring"
-      }
-    ]
-  },
-  "8694c954f8d2": {
-    "uid": {
-      "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "Clients"
-    },
-    "attrs": {},
-    "parents": [
-      {
-        "type": "Gluu::Flex::AdminUI::Resources::ParentResource",
-        "id": "AuthServerAndConfiguration"
-      }
-    ]
-  },
-  "9694c954f8d1": {
-    "uid": {
-      "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "Scopes"
-    },
-    "attrs": {},
-    "parents": [
-      {
-        "type": "Gluu::Flex::AdminUI::Resources::ParentResource",
-        "id": "AuthServerAndConfiguration"
-      }
-    ]
-  },
-  "a694c954f8d0": {
-    "uid": {
-      "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "Keys"
-    },
-    "attrs": {},
-    "parents": [
-      {
-        "type": "Gluu::Flex::AdminUI::Resources::ParentResource",
-        "id": "AuthServerAndConfiguration"
-      }
-    ]
-  },
-  "b694c954f8cf": {
-    "uid": {
-      "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "AuthenticationServerConfiguration"
-    },
-    "attrs": {},
-    "parents": [
-      {
-        "type": "Gluu::Flex::AdminUI::Resources::ParentResource",
-        "id": "AuthServerAndConfiguration"
-      }
-    ]
-  },
-  "c694c954f8ce": {
-    "uid": {
-      "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "Logging"
-    },
-    "attrs": {},
-    "parents": [
-      {
-        "type": "Gluu::Flex::AdminUI::Resources::ParentResource",
-        "id": "AuthServerAndConfiguration"
-      }
-    ]
-  },
-  "d694c954f8cd": {
-    "uid": {
-      "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "SSA"
-    },
-    "attrs": {},
-    "parents": [
-      {
-        "type": "Gluu::Flex::AdminUI::Resources::ParentResource",
-        "id": "AuthServerAndConfiguration"
-      }
-    ]
-  },
-  "e694c954f8cc": {
-    "uid": {
-      "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "Authentication"
-    },
-    "attrs": {},
-    "parents": [
-      {
-        "type": "Gluu::Flex::AdminUI::Resources::ParentResource",
-        "id": "AuthServerAndConfiguration"
-      }
-    ]
-  },
-  "f694c954f8cb": {
-    "uid": {
-      "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "ConfigApiConfiguration"
-    },
-    "attrs": {},
-    "parents": [
-      {
-        "type": "Gluu::Flex::AdminUI::Resources::ParentResource",
-        "id": "AuthServerAndConfiguration"
-      }
-    ]
-  },
-  "1694c954f8ca": {
-    "uid": {
-      "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "Session"
-    },
-    "attrs": {},
-    "parents": [
-      {
-        "type": "Gluu::Flex::AdminUI::Resources::ParentResource",
-        "id": "AuthServerAndConfiguration"
-      }
-    ]
-  },
-  "2694c954f8c9": {
-    "uid": {
-      "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "Users"
-    },
-    "attrs": {},
-    "parents": [
-      {
-        "type": "Gluu::Flex::AdminUI::Resources::ParentResource",
-        "id": "IdentityAndAccess"
-      }
-    ]
-  },
-  "3694c954f8c8": {
-    "uid": {
-      "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "Scripts"
-    },
-    "attrs": {},
-    "parents": [
-      {
-        "type": "Gluu::Flex::AdminUI::Resources::ParentResource",
-        "id": "IdentityAndAccess"
-      }
-    ]
-  },
-  "4694c954f8c7": {
-    "uid": {
-      "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "UserClaims"
-    },
-    "attrs": {},
-    "parents": [
-      {
-        "type": "Gluu::Flex::AdminUI::Resources::ParentResource",
-        "id": "IdentityAndAccess"
-      }
-    ]
-  },
-  "5694c954f8c6": {
-    "uid": {
-      "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "Cache"
-    },
-    "attrs": {},
-    "parents": [
-      {
-        "type": "Gluu::Flex::AdminUI::Resources::ParentResource",
-        "id": "Service"
-      }
-    ]
-  },
-  "6694c954f8c5": {
-    "uid": {
-      "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "Persistence"
-    },
-    "attrs": {},
-    "parents": [
-      {
-        "type": "Gluu::Flex::AdminUI::Resources::ParentResource",
-        "id": "Service"
-      }
-    ]
-  },
-  "7694c954f8c4": {
-    "uid": {
-      "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "SMTP"
-    },
-    "attrs": {},
-    "parents": [
-      {
-        "type": "Gluu::Flex::AdminUI::Resources::ParentResource",
-        "id": "Service"
-      }
-    ]
-  },
-  "8694c954f8c3": {
-    "uid": {
-      "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "SCIM"
-    },
-    "attrs": {},
-    "parents": [
-      {
-        "type": "Gluu::Flex::AdminUI::Resources::ParentResource",
-        "id": "Service"
-      }
-    ]
-  },
-  "9694c954f8c2": {
-    "uid": {
-      "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "FIDO"
-    },
-    "attrs": {},
-    "parents": [
-      {
-        "type": "Gluu::Flex::AdminUI::Resources::ParentResource",
-        "id": "Service"
-      }
-    ]
-  },
-  "a694c954f8c1": {
-    "uid": {
-      "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "SAML"
-    },
-    "attrs": {},
-    "parents": [
-      {
-        "type": "Gluu::Flex::AdminUI::Resources::ParentResource",
-        "id": "Service"
-      }
-    ]
-  },
-  "b694c954f8c0": {
-    "uid": {
-      "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "Lock"
-    },
-    "attrs": {},
-    "parents": [
-      {
-        "type": "Gluu::Flex::AdminUI::Resources::ParentResource",
-        "id": "Service"
-      }
-    ]
-  }
+    {
+      "permission": "sample-permission2",
+      "description": "permission2 description",
+      "defaultPermissionInToken": true
+    }
+  ],
+  "rolePermissionMapping": [
+    {
+      "role": "sample-role",
+      "permissions": [
+        "sample-permission1",
+        "sample-permission2"
+      ]
+    }
+  ]
 }
 ```
 
