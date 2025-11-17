@@ -9,6 +9,7 @@ import { UPDATE } from '@/audit/UserActionType'
 import { API_LOGGING } from '../../../../app/audit/Resources'
 import { initAudit } from '@/redux/sagas/SagaUtils'
 import { postUserAction } from '@/redux/api/backend-api'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {
@@ -38,11 +39,11 @@ export function* editLogging({ payload }) {
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, UPDATE, API_LOGGING, {
+      omitPayload: true,
       action: {
         action_message: payload?.otherFields?.userMessage,
         action_data: {
           modifiedFields: payload?.otherFields?.changedFields,
-          performedOn: 'logging-config',
         },
       },
     })

@@ -1,4 +1,4 @@
-import { PublicKeyCredentialHints } from '../types'
+import { PublicKeyCredentialHints, AttestationMode } from '../types'
 import { fidoConstants } from './constants'
 import { AppConfiguration1, Fido2Configuration } from 'JansConfigApi'
 import {
@@ -6,7 +6,7 @@ import {
   StaticConfigFormValues,
   CreateFidoConfigPayloadParams,
   PutPropertiesFido2Params,
-} from '../types/fido-types'
+} from '../types/fido'
 
 const isStaticConfigType = (type?: string): type is typeof fidoConstants.STATIC => {
   return type === fidoConstants.STATIC
@@ -68,7 +68,11 @@ const transformStaticConfigToFormValues = (
     disableMetadataService: toBooleanValue(config?.disableMetadataService),
     hints: arrayValidationWithSchema(config?.hints || [], PublicKeyCredentialHints),
     enterpriseAttestation: toBooleanValue(config?.enterpriseAttestation),
-    attestationMode: config?.attestationMode || '',
+    attestationMode: (() => {
+      const mode = (config?.attestationMode as string) || ''
+      const validModes = Object.values(AttestationMode)
+      return validModes.includes(mode as AttestationMode) ? mode : ''
+    })(),
   }
 }
 

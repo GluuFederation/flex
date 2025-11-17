@@ -7,7 +7,7 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
+import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
@@ -20,7 +20,12 @@ import {
   getAvailableHintOptions,
   getEmptyDropdownMessage,
 } from '../helper'
-import { StaticConfigurationProps, StaticConfigFormValues } from '../types/fido-types'
+import {
+  StaticConfigurationProps,
+  StaticConfigFormValues,
+  MinimalFormik,
+  FormikSetFieldValue,
+} from '../types/fido'
 import { AttestationMode } from '../types'
 
 const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
@@ -46,6 +51,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
     onSubmit: toggle,
     validationSchema: validationSchema[fidoConstants.VALIDATION_SCHEMAS.STATIC_CONFIG],
     enableReinitialize: true,
+    validateOnMount: true,
   })
 
   const submitForm = useCallback(
@@ -86,25 +92,30 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
   }, [formik.values.metadataServers])
 
   // Create a wrapper formik that transforms metadata servers between key/value and url/rootCert
-  const metadataServersFormik = useMemo(() => {
-    const setFieldValueWrapper = (name: string, value: any) => {
+  const metadataServersFormik = useMemo<MinimalFormik<StaticConfigFormValues>>(() => {
+    const setFieldValueWrapper: FormikSetFieldValue<StaticConfigFormValues> = (
+      name,
+      value,
+      shouldValidate,
+    ) => {
       if (name === fidoConstants.FORM_FIELDS.METADATA_SERVERS) {
         // Transform {key, value} back to {url, rootCert}
-        const transformedValue = value.map((item: any) => ({
+        const arr = Array.isArray(value) ? (value as Array<{ key?: string; value?: string }>) : []
+        const transformedValue = arr.map((item) => ({
           url: item.key || '',
           rootCert: item.value || '',
         }))
-        formik.setFieldValue(name, transformedValue)
+        formik.setFieldValue(name, transformedValue, shouldValidate)
       } else {
-        formik.setFieldValue(name, value)
+        formik.setFieldValue(name, value, shouldValidate)
       }
     }
 
     return {
-      ...formik,
+      values: formik.values,
       setFieldValue: setFieldValueWrapper,
     }
-  }, [formik.values, formik.errors, formik.touched])
+  }, [formik.values, formik.setFieldValue])
 
   const availableHintOptions = useMemo(() => {
     return getAvailableHintOptions(formik.values.hints)
@@ -133,6 +144,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
             formik={formik}
             lsize={4}
             rsize={8}
+            required
             showError={
               !!(formik.errors.authenticatorCertsFolder && formik.touched.authenticatorCertsFolder)
             }
@@ -147,6 +159,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
             formik={formik}
             lsize={4}
             rsize={8}
+            required
             showError={!!(formik.errors.mdsCertsFolder && formik.touched.mdsCertsFolder)}
             errorMessage={formik.errors.mdsCertsFolder}
           />
@@ -159,6 +172,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
             formik={formik}
             lsize={4}
             rsize={8}
+            required
             showError={!!(formik.errors.mdsTocsFolder && formik.touched.mdsTocsFolder)}
             errorMessage={formik.errors.mdsTocsFolder}
           />
@@ -173,6 +187,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
             formik={formik}
             lsize={4}
             rsize={8}
+            required
             showError={
               !!(
                 formik.errors.unfinishedRequestExpiration &&
@@ -192,6 +207,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
             formik={formik}
             lsize={4}
             rsize={8}
+            required
             showError={
               !!(
                 formik.errors.authenticationHistoryExpiration &&
@@ -210,6 +226,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
             formik={formik}
             lsize={4}
             rsize={8}
+            required
             showError={
               !!(formik.errors.serverMetadataFolder && formik.touched.serverMetadataFolder)
             }
@@ -224,6 +241,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
             formik={formik}
             lsize={4}
             rsize={8}
+            required
             doc_category={fidoConstants.DOC_CATEGORY}
           />
         </Col>
@@ -297,16 +315,20 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
           <GluuTypeAhead
             name={fidoConstants.FORM_FIELDS.HINTS}
             label={fidoConstants.LABELS.HINTS}
-            formik={formik}
             value={formik.values.hints || []}
             options={availableHintOptions}
             lsize={4}
             rsize={8}
+            required
             showError={!!(formik.errors.hints && formik.touched.hints)}
-            errorMessage={formik.errors.hints}
+            errorMessage={formik.errors.hints as string}
             doc_category={fidoConstants.DOC_CATEGORY}
             emptyLabel={emptyDropdownMessage}
             allowNew={false}
+            onChange={(selected) => {
+              const next = (selected || []).filter((v): v is string => typeof v === 'string')
+              formik.setFieldValue(fidoConstants.FORM_FIELDS.HINTS, next)
+            }}
           />
         </Col>
 
@@ -317,6 +339,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
             formik={formik}
             lsize={4}
             rsize={8}
+            required
             doc_category={fidoConstants.DOC_CATEGORY}
           />
         </Col>
@@ -342,13 +365,17 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
 
       <Row>
         <Col>
-          <GluuCommitFooter
-            saveHandler={toggle}
-            hideButtons={{ save: true, back: true }}
-            extraLabel="Cancel"
-            extraOnClick={handleCancel}
-            type="submit"
-            disabled={isSubmitting}
+          <GluuFormFooter
+            showBack={true}
+            showCancel={true}
+            showApply={true}
+            onApply={toggle}
+            onCancel={handleCancel}
+            disableBack={false}
+            disableCancel={!formik.dirty}
+            disableApply={!formik.isValid || !formik.dirty}
+            applyButtonType="button"
+            isLoading={isSubmitting ?? false}
           />
         </Col>
       </Row>

@@ -138,7 +138,7 @@ class PersistenceSetup:
 
     @cached_property
     def ldif_files(self):
-        filenames = ["clients.ldif", "aui_webhook.ldif"]
+        filenames = ["clients.ldif", "aui_webhook.ldif", "adminUIResourceScopesMapping.ldif"]
         return [f"/app/templates/admin-ui/{filename}" for filename in filenames]
 
     def import_ldif_files(self):
@@ -242,18 +242,24 @@ def resolve_conf_app(old_conf, new_conf):
                 should_update = True
 
         # add missing uiConfig
-        if "uiConfig" not in old_conf:
-            old_conf["uiConfig"] = {"sessionTimeoutInMins": 30}
-            should_update = True
+        ui_conf = old_conf.get("uiConfig", {})
 
-        # add missing config under uiConfig
-        if "allowSmtpKeystoreEdit" not in old_conf["uiConfig"]:
-            old_conf["uiConfig"]["allowSmtpKeystoreEdit"] = True
-            should_update = True
+        # add top-level config under uiConfig (if missing)
+        ui_conf_attrs = {
+            "sessionTimeoutInMins": 30,
+            "allowSmtpKeystoreEdit": True,
+            "cedarlingLogType": "off",
+            "auiPolicyStoreUrl": "",
+            "auiDefaultPolicyStorePath": "./custom/config/adminUI/policy-store.json",
+            "cedarlingPolicyStoreRetrievalPoint": "default"
+        }
+        for k, v in ui_conf_attrs.items():
+            if k not in ui_conf:
+                ui_conf[k] = v
+                should_update = True
 
-        if "cedarlingLogType" not in old_conf["uiConfig"]:
-            old_conf["uiConfig"]["cedarlingLogType"] = "off"
-            should_update = True
+        # update/add uiConfig
+        old_conf["uiConfig"] = ui_conf
 
     # finalized status and conf
     return should_update, old_conf

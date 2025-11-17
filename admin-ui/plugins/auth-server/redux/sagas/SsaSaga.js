@@ -14,6 +14,7 @@ import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
 import { updateToast } from 'Redux/features/toastSlice'
 import { getClient } from '@/redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const JansConfigApi = require('jans_config_api')
 
 function* createSsaApi() {
@@ -68,7 +69,18 @@ export function* getSsaJwt({ payload }) {
 
 export function* addSsaConfig({ payload }) {
   const audit = yield* initAudit()
+  const creationData = { ...(payload?.action?.action_data || {}) }
   addAdditionalData(audit, CREATE, 'post-register-ssa', payload)
+  audit.modifiedFields = {
+    ...(audit.modifiedFields || {}),
+    ...creationData,
+  }
+  if (audit.payload && 'modifiedFields' in audit.payload) {
+    delete audit.payload.modifiedFields
+    if (Object.keys(audit.payload).length === 0) {
+      delete audit.payload
+    }
+  }
   const token = yield select((state) => state.authReducer.token.access_token)
   const { authServerHost } = yield select((state) => state.authReducer.config)
   try {
@@ -81,6 +93,7 @@ export function* addSsaConfig({ payload }) {
       createAndDownloadJSONFile(data)
       yield put(toggleSaveConfig(true))
       yield put(updateToast(true, 'success', data?.error))
+      yield call(postUserAction, audit)
     }
     return payload.action.action_data
   } catch (e) {

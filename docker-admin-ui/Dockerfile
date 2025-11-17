@@ -1,4 +1,4 @@
-FROM alpine:3.20@sha256:beefdbd8a1da6d2915566fde36db9db0b524eb737fc57cd1367effd16dc0d06d
+FROM alpine:3.22@sha256:4b7ce07002c69e8f3d704a9c5d6fd3053be500b7f1c69fc0d80990c2ad8dd412
 
 # ======
 # alpine
@@ -20,24 +20,21 @@ EXPOSE 8080
 # Assets sync
 # ===========
 
-ENV JANS_SOURCE_VERSION=408db95b458691c2b307b51fe180f9cc61b4eb95
+RUN mkdir -p /app/static/rdbm /app/schema /app/templates/admin-ui
 
+ENV JANS_SOURCE_VERSION=04d297c046dd9d8ef54c0544e6187153b7ed87cf
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the assets
 ARG GIT_CLONE_DEPTH=100
-RUN git clone --depth ${GIT_CLONE_DEPTH} --filter blob:none --no-checkout https://github.com/janssenproject/jans /tmp/jans \
-    && cd /tmp/jans \
+WORKDIR /tmp/jans
+
+RUN git clone --depth ${GIT_CLONE_DEPTH} --filter blob:none --no-checkout https://github.com/janssenproject/jans . \
     && git sparse-checkout init --cone \
-    && git checkout ${JANS_SOURCE_VERSION} \
     && git sparse-checkout add ${JANS_SETUP_DIR} \
-    && git sparse-checkout add jans-pycloudlib
-
-RUN mkdir -p /app/static/rdbm /app/schema
-
-# sync static files from linux-setup
-RUN cd /tmp/jans \
+    && git sparse-checkout add jans-pycloudlib \
+    && git checkout ${JANS_SOURCE_VERSION} \
     && cp -R ${JANS_SETUP_DIR}/static/rdbm/sql_data_types.json /app/static/rdbm/ \
     && cp -R ${JANS_SETUP_DIR}/static/rdbm/ldap_sql_data_type_mapping.json /app/static/rdbm/ \
     && cp -R ${JANS_SETUP_DIR}/static/rdbm/opendj_attributes_syntax.json /app/static/rdbm/ \
@@ -45,24 +42,26 @@ RUN cd /tmp/jans \
     && cp ${JANS_SETUP_DIR}/schema/custom_schema.json /app/schema/ \
     && cp ${JANS_SETUP_DIR}/schema/opendj_types.json /app/schema/
 
-ENV FLEX_SOURCE_VERSION=8f89839be812eb535929efd4088c8c7825103fca
+WORKDIR /tmp/flex
 
-RUN mkdir -p /app/templates/admin-ui
+ENV FLEX_SOURCE_VERSION=dc807c4e8678477258e730206ab89da412b13594
+ARG FLEX_SETUP_DIR=flex-linux-setup/flex_linux_setup
 
- RUN git clone --depth ${GIT_CLONE_DEPTH} --filter blob:none --no-checkout https://github.com/GluuFederation/flex /tmp/flex \
-     && cd /tmp/flex \
+RUN git clone --depth ${GIT_CLONE_DEPTH} --filter blob:none --no-checkout https://github.com/GluuFederation/flex . \
      && git sparse-checkout init --cone \
      && git checkout ${FLEX_SOURCE_VERSION} \
      && git sparse-checkout add admin-ui \
-     && git sparse-checkout add flex-linux-setup/flex_linux_setup/templates \
-     && cp flex-linux-setup/flex_linux_setup/templates/aui_webhook.ldif /app/templates/admin-ui
+     && git sparse-checkout add ${FLEX_SETUP_DIR}/templates \
+     && cp ${FLEX_SETUP_DIR}/templates/*.ldif /app/templates/admin-ui
+
+WORKDIR /
 
 # ========
 # Admin UI
 # ========
 
 ENV ADMIN_UI_VERSION=main
-ENV GLUU_BUILD_DATE='2024-12-30 17:20'
+ENV GLUU_BUILD_DATE='2025-11-06 18:51'
 
 RUN wget -q https://jenkins.gluu.org/npm/admin_ui/${ADMIN_UI_VERSION}/built/admin-ui-${ADMIN_UI_VERSION}-built.tar.gz -O /tmp/admin-ui.tar.gz \
     && mkdir -p /opt/flex/admin-ui \

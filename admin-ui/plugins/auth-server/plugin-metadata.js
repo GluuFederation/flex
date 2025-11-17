@@ -35,7 +35,6 @@ import acrSaga from './redux/sagas/AcrsSaga'
 import loggingSaga from './redux/sagas/LoggingSaga'
 import umaResourceSaga from './redux/sagas/UMAResourceSaga'
 import sessionSaga from './redux/sagas/SessionSaga'
-import agamaSaga from './redux/sagas/AgamaSaga'
 import authnSaga from './redux/sagas/AuthnSaga'
 import ssaSaga from './redux/sagas/SsaSaga'
 import messageSaga from './redux/sagas/MessageSaga'
@@ -56,7 +55,6 @@ import {
   MESSAGE_READ,
   API_CONFIG_READ,
 } from 'Utils/PermChecker'
-import { reducer as agamaReducer } from './redux/features/agamaSlice'
 import configApiReducer from 'Plugins/auth-server/redux/features/configApiSlice'
 import { reducer as authNReducer } from './redux/features/authNSlice'
 import AuthNEditPage from './components/AuthN/AuthNEditPage'
@@ -240,7 +238,6 @@ const pluginMetadata = {
     { name: 'loggingReducer', reducer: loggingReducer },
     { name: 'umaResourceReducer', reducer: umaResourceReducer },
     { name: 'sessionReducer', reducer: sessionReducer },
-    { name: 'agamaReducer', reducer: agamaReducer },
     { name: 'authNReducer', reducer: authNReducer },
     { name: 'SsaReducer', reducer: ssaReducer },
     { name: 'messageReducer', reducer: messageReducer },
@@ -255,7 +252,6 @@ const pluginMetadata = {
     loggingSaga(),
     umaResourceSaga(),
     sessionSaga(),
-    agamaSaga(),
     authnSaga(),
     ssaSaga(),
     messageSaga(),
