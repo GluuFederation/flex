@@ -166,14 +166,14 @@ const CedarlingConfigPage: React.FC = () => {
   return (
     <GluuLoader blocking={isFetching || isLoading}>
       <Card className="shadow-sm align-items-center">
-        <Col sm="9">
+        <Col sm="7">
           <CardBody>
             <CardTitle tag="h4" className="text-center fw-bold mb-4">
               {t('documentation.cedarlingConfig.title')}
             </CardTitle>
 
             <Card className="bg-light border-0 p-3 mb-4">
-              <CardText className="text-center text-secondary">
+              <CardText className="text-secondary">
                 {t('documentation.cedarlingConfig.point1')}{' '}
                 <a
                   href="https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/tree/agama-lab-policy-designer"
@@ -186,7 +186,7 @@ const CedarlingConfigPage: React.FC = () => {
                 <br />
                 {t('documentation.cedarlingConfig.point2')}
               </CardText>
-              <CardText className="text-center text-muted small">
+              <CardText className="text-muted small">
                 {t('documentation.cedarlingConfig.note')}{' '}
                 <a
                   href="https://cloud.gluu.org/agama-lab"
@@ -198,7 +198,10 @@ const CedarlingConfigPage: React.FC = () => {
                 .
               </CardText>
             </Card>
-
+          </CardBody>
+        </Col>
+        <Col sm="9">
+          <CardBody>
             <Form onSubmit={handleSubmit}>
               <FormGroup row>
                 <GluuLabel label={'fields.auiPolicyStoreUrl'} />
