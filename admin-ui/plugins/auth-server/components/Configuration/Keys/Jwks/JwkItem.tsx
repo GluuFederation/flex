@@ -3,16 +3,21 @@ import { Col, FormGroup, Input, Card, CardBody, Accordion } from 'Components'
 import moment from 'moment'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import customColors from '@/customColors'
-function JwkItem({ item, index }) {
+import type { JwkItemProps } from '../types'
+import type { AccordionComponent } from '@/components/Accordion/Accordion.d'
+import { DATE_FORMAT } from '../constants'
+
+const AccordionTyped = Accordion as unknown as AccordionComponent
+
+const JwkItem = React.memo(function JwkItem({ item, index }: JwkItemProps): React.ReactElement {
   return (
     <div>
-      <FormGroup row />
-      <Accordion className="mb-12">
-        <Accordion.Header className="text-info">
-          <Accordion.Indicator className="me-2" />
-          {item.name}
-        </Accordion.Header>
-        <Accordion.Body>
+      <AccordionTyped className="mb-12">
+        <AccordionTyped.Header className="text-info">
+          <AccordionTyped.Indicator className="me-2" />
+          {item.name ?? 'Unnamed Key'}
+        </AccordionTyped.Header>
+        <AccordionTyped.Body>
           <Card
             style={{
               marginBottom: '5px',
@@ -28,8 +33,8 @@ function JwkItem({ item, index }) {
                     type="textarea"
                     data-testid="description"
                     name="description"
-                    disabled={true}
-                    defaultValue={item.descr}
+                    readOnly
+                    defaultValue={item.descr ?? ''}
                   />
                 </Col>
               </FormGroup>
@@ -40,8 +45,8 @@ function JwkItem({ item, index }) {
                     id="crv"
                     data-testid="crv"
                     name="crv"
-                    disabled={true}
-                    defaultValue={item.crv}
+                    readOnly
+                    defaultValue={item.crv ?? ''}
                   />
                 </Col>
                 <GluuLabel label="exp" size={1} />
@@ -50,8 +55,8 @@ function JwkItem({ item, index }) {
                     id="exp"
                     data-testid="exp"
                     name="exp"
-                    disabled={true}
-                    defaultValue={moment(item.exp).format('YYYY-MMM-DD')}
+                    readOnly
+                    defaultValue={item.exp != null ? moment(item.exp).format(DATE_FORMAT) : ''}
                   />
                 </Col>
                 <GluuLabel label="use" size={1} />
@@ -60,8 +65,8 @@ function JwkItem({ item, index }) {
                     id="use"
                     data-testid="use"
                     name="use"
-                    disabled={true}
-                    defaultValue={item.use}
+                    readOnly
+                    defaultValue={item.use ?? ''}
                   />
                 </Col>
               </FormGroup>
@@ -72,8 +77,8 @@ function JwkItem({ item, index }) {
                     id="kty"
                     data-testid="kty"
                     name="kty"
-                    disabled={true}
-                    defaultValue={item.kty}
+                    readOnly
+                    defaultValue={item.kty ?? ''}
                   />
                 </Col>
                 <GluuLabel label="alg" size={1} />
@@ -82,13 +87,13 @@ function JwkItem({ item, index }) {
                     id="alg"
                     data-testid="alg"
                     name="alg"
-                    disabled={true}
-                    defaultValue={item.alg}
+                    readOnly
+                    defaultValue={item.alg ?? ''}
                   />
                 </Col>
                 <GluuLabel label="e" size={1} />
                 <Col sm={2}>
-                  <Input id="e" data-testid="e" name="e" disabled={true} defaultValue={item.e} />
+                  <Input id="e" data-testid="e" name="e" readOnly defaultValue={item.e ?? ''} />
                 </Col>
               </FormGroup>
               <FormGroup row>
@@ -98,8 +103,8 @@ function JwkItem({ item, index }) {
                     id="kid"
                     data-testid="kid"
                     name="kid"
-                    disabled={true}
-                    defaultValue={item.kid}
+                    readOnly
+                    defaultValue={item.kid ?? ''}
                   />
                 </Col>
               </FormGroup>
@@ -111,8 +116,8 @@ function JwkItem({ item, index }) {
                     type="textarea"
                     data-testid="x5c"
                     name="x5c"
-                    disabled={true}
-                    defaultValue={item.x5c}
+                    readOnly
+                    defaultValue={item.x5c ?? ''}
                   />
                 </Col>
               </FormGroup>
@@ -125,7 +130,7 @@ function JwkItem({ item, index }) {
                       data-testid="x"
                       type="textarea"
                       name="x"
-                      disabled={true}
+                      readOnly
                       defaultValue={item.x}
                     />
                   </Col>
@@ -136,7 +141,7 @@ function JwkItem({ item, index }) {
                       data-testid="y"
                       type="textarea"
                       name="y"
-                      disabled={true}
+                      readOnly
                       defaultValue={item.y}
                     />
                   </Col>
@@ -151,7 +156,7 @@ function JwkItem({ item, index }) {
                       data-testid="n"
                       type="textarea"
                       name="n"
-                      disabled={true}
+                      readOnly
                       defaultValue={item.n}
                     />
                   </Col>
@@ -159,10 +164,12 @@ function JwkItem({ item, index }) {
               )}
             </CardBody>
           </Card>
-        </Accordion.Body>
-      </Accordion>
+        </AccordionTyped.Body>
+      </AccordionTyped>
     </div>
   )
-}
+})
+
+JwkItem.displayName = 'JwkItem'
 
 export default JwkItem
