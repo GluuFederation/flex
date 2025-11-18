@@ -66,20 +66,23 @@ const WebhookListPage = () => {
   const [limit, setLimit] = useState(10)
   const [pattern, setPattern] = useState(null)
 
-  // Initialize Cedar permissions
-  useEffect(() => {
-    const initPermissions = async () => {
-      await authorizeHelper(webhookScopes)
-    }
-    initPermissions()
-    options['limit'] = 10
-    dispatch(getWebhook({ action: options }))
-  }, [authorizeHelper, dispatch, webhookScopes])
-
   const canReadWebhooks = useMemo(
     () => hasCedarReadPermission(webhookResourceId),
     [hasCedarReadPermission, webhookResourceId],
   )
+
+  useEffect(() => {
+    if (webhookScopes && webhookScopes.length > 0) {
+      authorizeHelper(webhookScopes)
+    }
+  }, [authorizeHelper, webhookScopes])
+
+  useEffect(() => {
+    if (canReadWebhooks) {
+      options['limit'] = 10
+      dispatch(getWebhook({ action: options }))
+    }
+  }, [canReadWebhooks, dispatch])
   const canWriteWebhooks = useMemo(
     () => hasCedarWritePermission(webhookResourceId),
     [hasCedarWritePermission, webhookResourceId],

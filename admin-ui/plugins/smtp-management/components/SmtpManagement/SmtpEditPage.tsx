@@ -104,7 +104,9 @@ function SmtpEditPage() {
   )
 
   useEffect(() => {
-    authorizeHelper(smtpScopes)
+    if (smtpScopes && smtpScopes.length > 0) {
+      authorizeHelper(smtpScopes)
+    }
   }, [authorizeHelper, smtpScopes])
   const putSmtpMutation = usePutConfigSmtp({
     mutation: {

@@ -71,7 +71,9 @@ const ScimPage: React.FC = () => {
   )
 
   useEffect(() => {
-    authorizeHelper(scimScopes)
+    if (scimScopes && scimScopes.length > 0) {
+      authorizeHelper(scimScopes)
+    }
   }, [authorizeHelper, scimScopes])
 
   const { data: scimConfiguration, isLoading } = useGetScimConfig()

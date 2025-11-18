@@ -38,13 +38,15 @@ function LicenseDetailsPage() {
     [hasCedarWritePermission, licenseResourceId],
   )
 
-  const initPermissions = async () => {
-    await authorizeHelper(licenseScopes)
-  }
   useEffect(() => {
-    initPermissions()
+    if (licenseScopes && licenseScopes.length > 0) {
+      authorizeHelper(licenseScopes)
+    }
+  }, [authorizeHelper, licenseScopes])
+
+  useEffect(() => {
     dispatch(getLicenseDetails())
-  }, [authorizeHelper, dispatch, licenseScopes])
+  }, [dispatch])
   useEffect(() => {
     item.licenseExpired && navigate('/logout')
   }, [item.licenseExpired, navigate])

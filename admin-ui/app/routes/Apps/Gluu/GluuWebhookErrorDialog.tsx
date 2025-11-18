@@ -33,7 +33,9 @@ const GluuWebhookErrorDialog = () => {
   )
 
   useEffect(() => {
-    authorizeHelper(webhookScopes)
+    if (webhookScopes && webhookScopes.length > 0) {
+      authorizeHelper(webhookScopes)
+    }
   }, [authorizeHelper, webhookScopes])
 
   const closeModal = () => {
