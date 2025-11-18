@@ -1676,6 +1676,7 @@
       "connectionUri": "URI de conexión a la base de datos"
     },
     "user": {
+      "passwordRequirements": "La contraseña debe tener al menos 8 caracteres e incluir mayúsculas, minúsculas, números y un carácter especial.",
       "userId": "ID de usuario",
       "userName": "Nombre de usuario",
       "givenName": "Nombre",

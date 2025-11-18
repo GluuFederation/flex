@@ -1622,6 +1622,7 @@
     "revision": "Update revision number of the script."
   },
   "user": {
+    "passwordRequirements": "A senha deve ter pelo menos 8 caracteres e incluir letras maiúsculas, minúsculas, número e caractere especial.",
     "userId": "ID do usuário",
     "userName": "Nome de usuário",
     "givenName": "Nome dado",

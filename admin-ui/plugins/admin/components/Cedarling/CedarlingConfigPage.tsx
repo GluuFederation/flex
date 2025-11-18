@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Card, CardBody, FormGroup, CardTitle, CardText, Form, Input, Col } from 'Components'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
@@ -26,11 +26,19 @@ import { getErrorMessage } from 'Plugins/schema/utils/errorHandler'
 import { logAudit } from '@/utils/AuditLogger'
 import type { RootState as AuditRootState } from '@/redux/sagas/types/audit'
 import { UPDATE } from '@/audit/UserActionType'
-import { FormControlLabel, IconButton, Radio, RadioGroup } from '@mui/material'
+import {
+  FormControlLabel,
+  IconButton,
+  Radio,
+  RadioGroup,
+  ThemeProvider,
+  createTheme,
+} from '@mui/material'
 import { RefreshOutlined, StickyNote2Outlined } from '@mui/icons-material'
 import GluuTooltip from '@/routes/Apps/Gluu/GluuTooltip'
 import { ADMIN_UI_CEDARLING_CONFIG } from 'Plugins/admin/redux/audit/Resources'
 import { useQueryClient } from '@tanstack/react-query'
+import customColors from '@/customColors'
 
 const CedarlingConfigPage: React.FC = () => {
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
@@ -40,6 +48,18 @@ const CedarlingConfigPage: React.FC = () => {
   const { data: auiConfig, isSuccess, isFetching } = useGetAdminuiConf()
   const [isLoading, setIsLoading] = useState(false)
   const queryClient = useQueryClient()
+
+  // Create Material-UI theme with primary color matching app theme
+  const muiTheme = useMemo(() => {
+    const primaryColor = customColors.logo // Use logo green as primary for all themes
+    return createTheme({
+      palette: {
+        primary: {
+          main: primaryColor,
+        },
+      },
+    })
+  }, [])
 
   const editAdminuiConfMutation = useEditAdminuiConf()
   const syncRoleToScopesMappingsMutation = useSyncRoleToScopesMappings()
@@ -58,91 +78,119 @@ const CedarlingConfigPage: React.FC = () => {
 
   const dispatch = useDispatch()
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
 
-    if (auiPolicyStoreUrl.trim() === '') {
-      const errorMessage = `${t('messages.error_in_saving')} field: ${t('fields.auiPolicyStoreUrl')} ${t('messages.is_required')}`
-      dispatch(updateToast(true, 'error', errorMessage))
-      return
-    }
+      if (auiPolicyStoreUrl.trim() === '') {
+        const errorMessage = `${t('messages.error_in_saving')} field: ${t('fields.auiPolicyStoreUrl')} ${t('messages.is_required')}`
+        dispatch(updateToast(true, 'error', errorMessage))
+        return
+      }
 
-    const requestData = {
+      const requestData = {
+        auiPolicyStoreUrl,
+        cedarlingPolicyStoreRetrievalPoint,
+      }
+
+      try {
+        setIsLoading(true)
+        const editAppConfigResponse: AppConfigResponse = await editAdminuiConfMutation.mutateAsync({
+          data: { ...auiConfig, ...requestData },
+        })
+        setAuiPolicyStoreUrl(editAppConfigResponse?.auiPolicyStoreUrl || '')
+        setCedarlingPolicyRetrievalPoint(
+          editAppConfigResponse?.cedarlingPolicyStoreRetrievalPoint || 'remote',
+        )
+
+        let userMessage: string = 'Policy Store URL configuration updated'
+        await logAudit({
+          token: token ?? undefined,
+          userinfo: userinfo ?? undefined,
+          action: UPDATE,
+          resource: ADMIN_UI_CEDARLING_CONFIG,
+          message: userMessage,
+          client_id: client_id,
+          payload: requestData,
+        })
+
+        await syncRoleToScopesMappingsMutation.mutateAsync()
+
+        userMessage = 'sync role to scopes mappings'
+        await logAudit({
+          token: token ?? undefined,
+          userinfo: userinfo ?? undefined,
+          action: UPDATE,
+          resource: ADMIN_UI_CEDARLING_CONFIG,
+          message: userMessage,
+          client_id: client_id,
+          payload: requestData,
+        })
+        dispatch(updateToast(true, 'success'))
+      } catch (error) {
+        console.error('Error updating Cedarling configuration:', error)
+        const errorMessage = getErrorMessage(error, 'messages.error_in_saving', t)
+        dispatch(updateToast(true, 'error', errorMessage))
+      } finally {
+        queryClient.invalidateQueries({ queryKey: getGetAdminuiConfQueryKey() })
+        setIsLoading(false)
+      }
+    },
+    [
       auiPolicyStoreUrl,
       cedarlingPolicyStoreRetrievalPoint,
-    }
+      t,
+      dispatch,
+      editAdminuiConfMutation,
+      auiConfig,
+      token,
+      userinfo,
+      client_id,
+      syncRoleToScopesMappingsMutation,
+      queryClient,
+    ],
+  )
 
-    try {
-      setIsLoading(true)
-      const editAppConfigResponse: AppConfigResponse = await editAdminuiConfMutation.mutateAsync({
-        data: { ...auiConfig, ...requestData },
-      })
-      setAuiPolicyStoreUrl(editAppConfigResponse?.auiPolicyStoreUrl || '')
-      setCedarlingPolicyRetrievalPoint(
-        editAppConfigResponse?.cedarlingPolicyStoreRetrievalPoint || 'remote',
-      )
+  const handleSetRemotePolicyStoreAsDefault = useCallback(
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault()
 
-      let userMessage: string = 'Policy Store URL configuration updated'
-      await logAudit({
-        token: token ?? undefined,
-        userinfo: userinfo ?? undefined,
-        action: UPDATE,
-        resource: ADMIN_UI_CEDARLING_CONFIG,
-        message: userMessage,
-        client_id: client_id,
-        payload: requestData,
-      })
+      try {
+        setIsLoading(true)
+        await setRemotePolicyStoreAsDefaultMutation.mutateAsync()
 
-      await syncRoleToScopesMappingsMutation.mutateAsync()
+        dispatch(updateToast(true, 'success'))
 
-      userMessage = 'sync role to scopes mappings'
-      await logAudit({
-        token: token ?? undefined,
-        userinfo: userinfo ?? undefined,
-        action: UPDATE,
-        resource: ADMIN_UI_CEDARLING_CONFIG,
-        message: userMessage,
-        client_id: client_id,
-        payload: requestData,
-      })
-      dispatch(updateToast(true, 'success'))
-    } catch (error) {
-      console.error('Error updating Cedarling configuration:', error)
-      const errorMessage = getErrorMessage(error, 'messages.error_in_saving', t)
-      dispatch(updateToast(true, 'error', errorMessage))
-    } finally {
-      queryClient.invalidateQueries({ queryKey: getGetAdminuiConfQueryKey() })
-      setIsLoading(false)
-    }
-  }
+        const userMessage: string = 'Set policy store as default'
+        await logAudit({
+          token: token ?? undefined,
+          userinfo: userinfo ?? undefined,
+          action: UPDATE,
+          resource: ADMIN_UI_CEDARLING_CONFIG,
+          message: userMessage,
+          client_id: client_id,
+          payload: {},
+        })
+      } catch (error) {
+        console.error('Error updating Cedarling configuration:', error)
+        const errorMessage = getErrorMessage(error, 'messages.error_in_saving', t)
+        dispatch(updateToast(true, 'error', errorMessage))
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [dispatch, setRemotePolicyStoreAsDefaultMutation, token, userinfo, client_id, t],
+  )
 
-  const handleSetRemotePolicyStoreAsDefault = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setAuiPolicyStoreUrl(e.target.value)
+  }, [])
 
-    try {
-      setIsLoading(true)
-      await setRemotePolicyStoreAsDefaultMutation.mutateAsync()
-
-      dispatch(updateToast(true, 'success'))
-
-      const userMessage: string = 'Set policy store as default'
-      await logAudit({
-        token: token ?? undefined,
-        userinfo: userinfo ?? undefined,
-        action: UPDATE,
-        resource: ADMIN_UI_CEDARLING_CONFIG,
-        message: userMessage,
-        client_id: client_id,
-        payload: {},
-      })
-    } catch (error) {
-      console.error('Error updating Cedarling configuration:', error)
-      const errorMessage = getErrorMessage(error, 'messages.error_in_saving', t)
-      dispatch(updateToast(true, 'error', errorMessage))
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  const handleRadioChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setCedarlingPolicyRetrievalPoint(
+      e.target.value as AppConfigResponseCedarlingPolicyStoreRetrievalPoint,
+    )
+  }, [])
 
   const securityResourceId = useMemo(() => ADMIN_UI_RESOURCES.Security, [])
   const securityScopes = useMemo(() => {
@@ -157,6 +205,16 @@ const CedarlingConfigPage: React.FC = () => {
     [hasCedarWritePermission, securityResourceId],
   )
 
+  const isRefreshButtonHidden = useMemo(
+    () => cedarlingPolicyStoreRetrievalPoint === 'remote' || auiPolicyStoreUrl.trim() === '',
+    [cedarlingPolicyStoreRetrievalPoint, auiPolicyStoreUrl],
+  )
+
+  const isInputDisabled = useMemo(
+    () => !canWriteSecurity || isLoading,
+    [canWriteSecurity, isLoading],
+  )
+
   useEffect(() => {
     if (securityScopes && securityScopes.length > 0) {
       authorizeHelper(securityScopes)
@@ -164,11 +222,11 @@ const CedarlingConfigPage: React.FC = () => {
   }, [authorizeHelper, securityScopes])
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess && auiConfig) {
       setAuiPolicyStoreUrl(auiConfig?.auiPolicyStoreUrl || '')
       setCedarlingPolicyRetrievalPoint(auiConfig?.cedarlingPolicyStoreRetrievalPoint || 'remote')
     }
-  }, [isSuccess])
+  }, [isSuccess, auiConfig])
 
   return (
     <GluuLoader blocking={isFetching || isLoading}>
@@ -219,8 +277,8 @@ const CedarlingConfigPage: React.FC = () => {
                       type="url"
                       name="auiPolicyStoreUrl"
                       value={auiPolicyStoreUrl}
-                      onChange={(e) => setAuiPolicyStoreUrl(e.target.value)}
-                      disabled={!canWriteSecurity || isLoading}
+                      onChange={handleInputChange}
+                      disabled={isInputDisabled}
                     />
                   </Col>
                   <Col sm={1}>
@@ -229,14 +287,11 @@ const CedarlingConfigPage: React.FC = () => {
                       doc_entry={'updateRemotePolicyStoreOnServer'}
                     >
                       <IconButton
-                        hidden={
-                          cedarlingPolicyStoreRetrievalPoint === 'remote' ||
-                          auiPolicyStoreUrl.trim() === ''
-                        }
+                        hidden={isRefreshButtonHidden}
                         type="button"
                         aria-label="search"
                         onClick={handleSetRemotePolicyStoreAsDefault}
-                        disabled={!canWriteSecurity || isLoading}
+                        disabled={isInputDisabled}
                       >
                         <RefreshOutlined />
                       </IconButton>
@@ -246,29 +301,27 @@ const CedarlingConfigPage: React.FC = () => {
                 <FormGroup row>
                   <GluuLabel label={'fields.cedarlingPolicyStoreRetrievalPoint'} size={3} />
                   <Col sm={9} className="top-5">
-                    <RadioGroup
-                      row
-                      name="cedarlingPolicyStoreRetrievalPoint"
-                      value={cedarlingPolicyStoreRetrievalPoint}
-                      onChange={(e) =>
-                        setCedarlingPolicyRetrievalPoint(
-                          e.target.value as AppConfigResponseCedarlingPolicyStoreRetrievalPoint,
-                        )
-                      }
-                    >
-                      <FormControlLabel
-                        value={'remote'}
-                        control={<Radio color="primary" />}
-                        label="Remote"
-                        disabled={!canWriteSecurity || isLoading}
-                      />
-                      <FormControlLabel
-                        value={'default'}
-                        control={<Radio color="primary" />}
-                        label={'Default'}
-                        disabled={!canWriteSecurity || isLoading}
-                      />
-                    </RadioGroup>
+                    <ThemeProvider theme={muiTheme}>
+                      <RadioGroup
+                        row
+                        name="cedarlingPolicyStoreRetrievalPoint"
+                        value={cedarlingPolicyStoreRetrievalPoint}
+                        onChange={handleRadioChange}
+                      >
+                        <FormControlLabel
+                          value={'remote'}
+                          control={<Radio color="primary" />}
+                          label="Remote"
+                          disabled={isInputDisabled}
+                        />
+                        <FormControlLabel
+                          value={'default'}
+                          control={<Radio color="primary" />}
+                          label={'Default'}
+                          disabled={isInputDisabled}
+                        />
+                      </RadioGroup>
+                    </ThemeProvider>
                   </Col>
                   <Col>
                     <StickyNote2Outlined />
@@ -290,4 +343,4 @@ const CedarlingConfigPage: React.FC = () => {
   )
 }
 
-export default CedarlingConfigPage
+export default React.memo(CedarlingConfigPage)

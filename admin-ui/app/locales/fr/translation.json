@@ -1004,6 +1004,7 @@
       "connectionUri": "URI de connexion de la base de données."
     },
     "user": {
+      "passwordRequirements": "Le mot de passe doit comporter au moins 8 caractères et inclure des majuscules, des minuscules, un chiffre et un caractère spécial.",
       "userId": "Identifiant utilisateur",
       "userName": "Nom d'utilisateur",
       "givenName": "Prénom",
