@@ -1,4 +1,4 @@
-import type { JsonPatch } from 'JansConfigApi'
+import type { JsonPatch } from './configApiTypes'
 
 export interface SchemaProperty {
   type?: string

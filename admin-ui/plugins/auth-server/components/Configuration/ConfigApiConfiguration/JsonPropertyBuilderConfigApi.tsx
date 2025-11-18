@@ -58,6 +58,8 @@ function JsonPropertyBuilderConfigApi({
     path = path + '/' + propKey
   }
 
+  const uniqueId = path.replace(/\//g, '-').substring(1) || propKey
+
   const removeHandler = () => {
     const patch: JsonPatch = {
       path,
@@ -71,7 +73,7 @@ function JsonPropertyBuilderConfigApi({
   if (_isBoolean(propValue, schema)) {
     return (
       <GluuInlineInput
-        id={propKey}
+        id={uniqueId}
         name={tooltipPropKey || propKey}
         lsize={lSize}
         rsize={lSize}
@@ -89,7 +91,7 @@ function JsonPropertyBuilderConfigApi({
   if (_isString(propValue, schema)) {
     return (
       <GluuInlineInput
-        id={propKey}
+        id={uniqueId}
         name={tooltipPropKey || propKey}
         lsize={lSize}
         rsize={lSize}
@@ -106,7 +108,7 @@ function JsonPropertyBuilderConfigApi({
   if (_isNumber(propValue)) {
     return (
       <GluuInlineInput
-        id={propKey}
+        id={uniqueId}
         name={tooltipPropKey || propKey}
         lsize={lSize}
         type="number"
@@ -124,7 +126,7 @@ function JsonPropertyBuilderConfigApi({
   if (isStringArray(propValue, schema)) {
     return (
       <GluuInlineInput
-        id={propKey}
+        id={uniqueId}
         name={tooltipPropKey || propKey}
         label={generateLabel(propKey)}
         value={propValue || []}

@@ -25,14 +25,16 @@ interface SpecSchema {
   }
 }
 
-const schema = (spec as unknown as SpecSchema).components.schemas.ApiAppConfiguration.properties
+const { properties: schema } = (spec as unknown as SpecSchema).components?.schemas
+  ?.ApiAppConfiguration ?? { properties: {} }
 
 const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }) => {
   const { hasCedarPermission, authorize } = useCedarling()
   const navigate = useNavigate()
   const [modal, setModal] = useState(false)
   const [patches, setPatches] = useState<JsonPatch[]>([])
-  const [operations, setOperations] = useState<JsonPatch[]>([])
+
+  const operations = patches
 
   useEffect(() => {
     const authorizePermissions = async () => {
@@ -48,11 +50,11 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
 
   const toggle = useCallback(() => {
     if (patches?.length > 0) {
-      setModal(!modal)
+      setModal((prev) => !prev)
     } else {
       toast.error('No changes to update')
     }
-  }, [modal, patches])
+  }, [patches])
 
   const submitForm = useCallback(
     async (userMessage: string) => {
@@ -69,7 +71,6 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
 
   const patchHandler = (patch: JsonPatch) => {
     setPatches((existingPatches) => [...existingPatches, patch])
-    setOperations((existingOps) => [...existingOps, patch])
   }
 
   const handleBack = () => {
@@ -78,24 +79,17 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
 
   return (
     <>
-      {Object.keys(configuration).map((propKey) => {
-        if (generateLabel(propKey)) {
-          return (
-            <JsonPropertyBuilderConfigApi
-              key={propKey}
-              propKey={propKey}
-              propValue={configuration[propKey as keyof ApiAppConfiguration]}
-              lSize={6}
-              handler={patchHandler}
-              schema={
-                schema[propKey] as { type?: string; items?: { type?: string; enum?: string[] } }
-              }
-              doc_category="config_api_properties"
-            />
-          )
-        }
-        return null
-      })}
+      {Object.keys(configuration).map((propKey) => (
+        <JsonPropertyBuilderConfigApi
+          key={propKey}
+          propKey={propKey}
+          propValue={configuration[propKey as keyof ApiAppConfiguration]}
+          lSize={6}
+          handler={patchHandler}
+          schema={schema[propKey] as { type?: string; items?: { type?: string; enum?: string[] } }}
+          doc_category="config_api_properties"
+        />
+      ))}
 
       <FormGroup row></FormGroup>
       {hasCedarPermission(API_CONFIG_WRITE) && (

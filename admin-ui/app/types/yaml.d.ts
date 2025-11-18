@@ -1,20 +1,16 @@
-// app/types/yaml.d.ts
-declare module '*.yaml' {
-  const content: {
-    components?: {
-      schemas?: Record<string, unknown>
-    }
-    [key: string]: unknown
+interface YamlModuleContent {
+  components?: {
+    schemas?: Record<string, unknown>
   }
+  [key: string]: unknown
+}
+
+declare module '*.yaml' {
+  const content: YamlModuleContent
   export default content
 }
 
 declare module '*.yml' {
-  const content: {
-    components?: {
-      schemas?: Record<string, unknown>
-    }
-    [key: string]: unknown
-  }
+  const content: YamlModuleContent
   export default content
 }
