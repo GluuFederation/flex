@@ -117,7 +117,7 @@ const JwkItem = React.memo(function JwkItem({ item, index }: JwkItemProps): Reac
                     data-testid="x5c"
                     name="x5c"
                     readOnly
-                    defaultValue={item.x5c ?? ''}
+                    defaultValue={item.x5c?.[0] ?? ''}
                   />
                 </Col>
               </FormGroup>

@@ -6,13 +6,13 @@ import JwkItem from './JwkItem'
 import { useJwkApi } from '../hooks'
 import { useTranslation } from 'react-i18next'
 
+const generateStableKey = (kid: string | undefined, index: number): string => {
+  return kid || `jwk-${index}`
+}
+
 function JwkListPage(): React.ReactElement {
   const { t } = useTranslation()
   const { jwks, isLoading, error } = useJwkApi()
-
-  const generateStableKey = (kid: string | undefined, index: number): string => {
-    return kid || `jwk-${index}`
-  }
 
   const jwkItems = useMemo(() => {
     if (!jwks?.keys || jwks.keys.length === 0) {

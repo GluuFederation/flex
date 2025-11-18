@@ -49,4 +49,36 @@ describe('JwkListPage', () => {
       expect(screen.getByTestId('exp')).toHaveValue(moment(firstKey.exp).format(DATE_FORMAT))
     }
   })
+
+  it('should handle undefined exp gracefully', () => {
+    const { useJwkApi } = require('../hooks')
+    useJwkApi.mockReturnValue({
+      jwks: {
+        keys: [{ ...mockJwksConfig.keys[0], exp: undefined }],
+      },
+      isLoading: false,
+      error: null,
+      refetch: jest.fn(),
+    })
+
+    render(<JwkListPage />, { wrapper: Wrapper })
+
+    expect(screen.getByTestId('exp')).toHaveValue('')
+  })
+
+  it('should handle null exp gracefully', () => {
+    const { useJwkApi } = require('../hooks')
+    useJwkApi.mockReturnValue({
+      jwks: {
+        keys: [{ ...mockJwksConfig.keys[0], exp: null }],
+      },
+      isLoading: false,
+      error: null,
+      refetch: jest.fn(),
+    })
+
+    render(<JwkListPage />, { wrapper: Wrapper })
+
+    expect(screen.getByTestId('exp')).toHaveValue('')
+  })
 })

@@ -101,4 +101,36 @@ describe('KeysPage', () => {
 
     expect(screen.getByText(/error/i)).toBeInTheDocument()
   })
+
+  it('should handle undefined exp gracefully', () => {
+    const { useJwkApi } = require('./hooks')
+    useJwkApi.mockReturnValue({
+      jwks: {
+        keys: [{ ...mockJwksConfig.keys[0], exp: undefined }],
+      },
+      isLoading: false,
+      error: null,
+      refetch: jest.fn(),
+    })
+
+    render(<KeysPage />, { wrapper: Wrapper })
+
+    expect(screen.getByTestId('exp')).toHaveValue('')
+  })
+
+  it('should handle null exp gracefully', () => {
+    const { useJwkApi } = require('./hooks')
+    useJwkApi.mockReturnValue({
+      jwks: {
+        keys: [{ ...mockJwksConfig.keys[0], exp: null }],
+      },
+      isLoading: false,
+      error: null,
+      refetch: jest.fn(),
+    })
+
+    render(<KeysPage />, { wrapper: Wrapper })
+
+    expect(screen.getByTestId('exp')).toHaveValue('')
+  })
 })
