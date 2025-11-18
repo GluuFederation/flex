@@ -713,6 +713,7 @@
     "http_method_error": "Veuillez sélectionner une méthode HTTP.",
     "display_name_error": "Veuillez entrer un nom d'affichage.",
     "url_error": "Veuillez entrer une URL.",
+    "missing_required_permission": "Permission requise manquante",
     "invalid_json_error": "Valeur JSON invalide.",
     "action_commit_question": "Journal d'audit : vous souhaitez appliquer les modifications apportées sur cette page ?",
     "licenseAuditLog": "Voulez-vous vraiment réinitialiser la licence existante ?",

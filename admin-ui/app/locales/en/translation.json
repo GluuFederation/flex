@@ -743,6 +743,7 @@
     "request_body_error": "HTTP Request Body is required for selected HTTP Method",
     "display_name_error": "Please enter display name.",
     "url_error": "Please enter URL.",
+    "missing_required_permission": "Missing required permission",
     "session_timeout_error": "Session timeout must be at least 1 minute",
     "session_timeout_required_error": "Session timeout is required",
     "invalid_json_error": "Invalid JSON value.",
