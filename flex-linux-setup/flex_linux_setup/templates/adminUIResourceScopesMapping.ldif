@@ -550,6 +550,7 @@ jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermis
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/security.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
 jansScope: https://jans.io/oauth/config/data.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/properties.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -562,6 +563,7 @@ jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/user/permission
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.write
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/security.write
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/properties.write
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
