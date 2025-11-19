@@ -49,7 +49,7 @@ function ConfigApiPage(): JSX.Element {
     return (
       <Card style={applicationStyle.mainCard}>
         <div className="p-4 text-danger">
-          {t('messages.error_in_loading')}: {String(error)}
+          {t('messages.error_in_loading')}: {error instanceof Error ? error.message : String(error)}
         </div>
       </Card>
     )
