@@ -32,8 +32,9 @@ const ProfileDetails: React.FC = () => {
   const { loading, profileDetails } = useSelector(
     (state: ProfileRootState) => state.profileDetailsReducer,
   )
-  const userinfo = useSelector((state: ProfileRootState) => state.authReducer.userinfo)
+  const { userinfo, token: authToken } = useSelector((state: ProfileRootState) => state.authReducer)
   const userInum = useMemo(() => userinfo?.inum, [userinfo?.inum])
+  const apiAccessToken = authToken?.access_token ?? null
 
   const { authorizeHelper, hasCedarWritePermission } = useCedarling()
   const usersResourceId = useMemo(() => ADMIN_UI_RESOURCES.Users, [])
@@ -54,13 +55,16 @@ const ProfileDetails: React.FC = () => {
   const avatarSrc = useMemo(() => randomAvatar(), [])
 
   useEffect(() => {
-    if (userInum) {
-      dispatch(getProfileDetails({ action: { pattern: userInum } }))
+    if (!apiAccessToken || !userInum) {
+      return
     }
-  }, [dispatch, userInum])
+    dispatch(getProfileDetails({ pattern: userInum }))
+  }, [apiAccessToken, dispatch, userInum])
 
   useEffect(() => {
-    authorizeHelper(usersScopes)
+    if (usersScopes && usersScopes.length > 0) {
+      authorizeHelper(usersScopes)
+    }
   }, [authorizeHelper, usersScopes])
 
   const navigateToUserManagement = useCallback((): void => {
@@ -222,4 +226,4 @@ const ProfileDetails: React.FC = () => {
   )
 }
 
-export default ProfileDetails
+export default React.memo(ProfileDetails)

@@ -25,8 +25,15 @@ export interface ProfileDetailsState {
   profileDetails: ProfileDetails | null
 }
 
+export interface AuthToken {
+  access_token?: string
+  [key: string]: unknown
+}
+
 export interface AuthState {
   userinfo?: UserInfo
+  token?: AuthToken | null
+  issuer?: string | null
 }
 
 export interface ProfileRootState {

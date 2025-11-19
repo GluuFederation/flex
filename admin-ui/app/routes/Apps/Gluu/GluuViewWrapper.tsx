@@ -14,7 +14,7 @@ const GluuViewWrapper = ({ canShow, children }: GluuViewWrapperProps) => {
   }
 
   return (
-    <div data-testid="MISSING" className="alert alert-warning" role="alert">
+    <div data-testid="MISSING" role="alert" style={{ backgroundColor: 'transparent' }}>
       {t('messages.missing_required_permission')}
     </div>
   )
