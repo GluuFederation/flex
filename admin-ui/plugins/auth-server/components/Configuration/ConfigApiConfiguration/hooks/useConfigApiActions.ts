@@ -2,8 +2,6 @@ import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import { UPDATE } from '@/audit/UserActionType'
-import { JSON_CONFIG } from '../../../../redux/audit/Resources.js'
-import type { ApiAppConfiguration } from 'JansConfigApi'
 import type { RootState } from '@/redux/sagas/types/audit'
 
 export interface ModifiedFields {
@@ -17,7 +15,7 @@ export function useConfigApiActions() {
   const userinfo = authState?.userinfo
 
   const logConfigApiUpdate = useCallback(
-    async (config: ApiAppConfiguration, message: string, modifiedFields?: ModifiedFields) => {
+    async (message: string, modifiedFields?: ModifiedFields) => {
       await logAuditUserAction({
         token,
         userinfo,
@@ -27,7 +25,6 @@ export function useConfigApiActions() {
         modifiedFields,
         performedOn: 'config-api',
         client_id,
-        payload: modifiedFields,
       })
     },
     [token, userinfo, client_id],

@@ -31,7 +31,7 @@ function ConfigApiPage(): JSX.Element {
 
       try {
         if (updatedConfig) {
-          await logConfigApiUpdate(updatedConfig, message, { requestBody: patches })
+          await logConfigApiUpdate(message, { requestBody: patches })
         }
       } catch (auditError) {
         console.error('Error logging audit:', auditError)
