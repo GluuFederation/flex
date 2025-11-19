@@ -27,14 +27,19 @@ function ConfigApiPage(): JSX.Element {
 
       await patchConfigMutation.mutateAsync({ data: patches })
 
+      let auditSuccess = true
       try {
         await logConfigApiUpdate(message, { requestBody: patches })
       } catch (auditError) {
         console.error('Error logging audit:', auditError)
-        toast.warning(t('messages.audit_log_failed'))
+        auditSuccess = false
       }
 
-      toast.success(t('messages.success_in_saving'))
+      if (auditSuccess) {
+        toast.success(t('messages.success_in_saving'))
+      } else {
+        toast.warning(t('messages.success_in_saving_audit_failed'))
+      }
     } catch (err) {
       console.error('Error updating config:', err)
       const errorMsg = err instanceof Error ? err.message : t('messages.error_in_saving')
