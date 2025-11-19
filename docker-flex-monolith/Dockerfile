@@ -41,7 +41,7 @@ EXPOSE 443 8080 1636
 # flex-linux-setup
 # =====================
 
-ENV FLEX_SOURCE_VERSION=8f89839be812eb535929efd4088c8c7825103fca
+ENV FLEX_SOURCE_VERSION=5c40fb132e6bb14cf3ce22848d316c089ee6e5e3
 
 # cleanup
 RUN rm -rf /tmp/jans
@@ -90,7 +90,7 @@ ENV CN_HOSTNAME="demoexample.gluu.org" \
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/monolith" \
     org.opencontainers.image.authors="GluuFederation <team@gluu.org>" \
     org.opencontainers.image.vendor="GluuFederation" \
-    org.opencontainers.image.version="0.0.0-nightly" \
+    org.opencontainers.image.version="5.14.0-1" \
     org.opencontainers.image.title="GluuFederation Flex Monolith Image" \
     org.opencontainers.image.description="Janssen Authorization server + Casa + AdminUI"
 
