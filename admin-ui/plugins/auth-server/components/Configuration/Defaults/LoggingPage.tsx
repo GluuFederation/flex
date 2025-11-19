@@ -99,6 +99,10 @@ function LoggingPage(): React.ReactElement {
       const mergedValues = getMergedValues(localLogging, values)
       const changedFields = getChangedFields(localLogging, mergedValues)
 
+      if (Object.keys(changedFields).length === 0) {
+        return
+      }
+
       setPendingValues({ mergedValues, changedFields })
       setShowCommitDialog(true)
     },
@@ -116,9 +120,11 @@ function LoggingPage(): React.ReactElement {
 
         setLocalLogging(result)
 
-        logLoggingUpdate(userMessage, changedFields).catch((error) =>
-          console.error('Audit logging failed:', error),
-        )
+        if (Object.keys(changedFields).length > 0) {
+          logLoggingUpdate(userMessage, changedFields).catch((error) =>
+            console.error('Audit logging failed:', error),
+          )
+        }
 
         setShowCommitDialog(false)
         setPendingValues(null)

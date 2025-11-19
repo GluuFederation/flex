@@ -71,7 +71,12 @@ export function useLoggingActions() {
       })
 
       try {
-        await postUserAction(audit)
+        const result = await postUserAction(audit)
+        if (result === -1) {
+          const error = new Error('Audit action failed: backend returned -1')
+          console.error('Failed to post audit action:', error)
+          throw error
+        }
       } catch (error) {
         console.error('Failed to post audit action:', error)
         throw error
