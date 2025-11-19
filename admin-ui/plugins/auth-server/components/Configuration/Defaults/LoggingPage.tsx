@@ -7,46 +7,100 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import { JSON_CONFIG } from 'Utils/ApiResources'
 import { loggingValidationSchema } from './validations'
-import { LOG_LEVELS, LOG_LAYOUTS, getLoggingInitialValues } from './utils'
+import {
+  LOG_LEVELS,
+  LOG_LAYOUTS,
+  getLoggingInitialValues,
+  getMergedValues,
+  getChangedFields,
+} from './utils'
+import type { LoggingFormValues } from './utils'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Formik } from 'formik'
 import { useNavigate } from 'react-router-dom'
-import {
-  getLoggingConfig,
-  editLoggingConfig,
-} from 'Plugins/auth-server/redux/features/loggingSlice'
+import { useGetConfigLogging, usePutConfigLogging, type Logging } from 'JansConfigApi'
 import { LOGGING_READ, LOGGING_WRITE } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
-import { getChangedFields, getMergedValues } from '@/helpers'
+import { useLoggingActions, type ModifiedFields } from './hooks/useLoggingActions'
 
-function LoggingPage() {
+interface CedarPermissionsState {
+  cedarPermissions: {
+    permissions: Record<string, boolean>
+  }
+}
+
+interface RootState extends CedarPermissionsState {
+  authReducer: {
+    token?: {
+      access_token: string
+    }
+    config?: {
+      clientId: string
+    }
+    userinfo?: {
+      inum: string
+      name: string
+    }
+  }
+}
+
+interface PendingValues {
+  mergedValues: Logging
+  changedFields: ModifiedFields
+}
+
+function LoggingPage(): React.ReactElement {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { hasCedarPermission, authorize } = useCedarling()
-  const logging = useSelector((state) => state.loggingReducer.logging)
-  const loading = useSelector((state) => state.loggingReducer.loading)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
-
-  const dispatch = useDispatch()
+  const { permissions: cedarPermissions } = useSelector(
+    (state: RootState) => state.cedarPermissions,
+  )
+  const { logLoggingUpdate } = useLoggingActions()
 
   const [showCommitDialog, setShowCommitDialog] = useState(false)
-  const [pendingValues, setPendingValues] = useState(null)
-  const [localLogging, setLocalLogging] = useState(null)
+  const [pendingValues, setPendingValues] = useState<PendingValues | null>(null)
+  const [localLogging, setLocalLogging] = useState<Logging | null>(null)
+  const [permissionsInitialized, setPermissionsInitialized] = useState(false)
+
+  // React Query hooks for data fetching and mutation
+  // Only fetch data after permissions are initialized and user has read permission
+  const { data: logging, isLoading: isLoadingData } = useGetConfigLogging({
+    query: {
+      enabled: permissionsInitialized && hasCedarPermission(LOGGING_READ),
+    },
+  })
+  const updateLogging = usePutConfigLogging()
 
   useEffect(() => {
-    const initPermissions = async () => {
-      const permissions = [LOGGING_READ, LOGGING_WRITE]
-      for (const permission of permissions) {
-        await authorize([permission])
+    let isMounted = true
+
+    const initPermissions = async (): Promise<void> => {
+      try {
+        // Run permission checks in parallel for better performance
+        await Promise.all([authorize([LOGGING_READ]), authorize([LOGGING_WRITE])])
+
+        if (isMounted) {
+          setPermissionsInitialized(true)
+        }
+      } catch (error) {
+        if (isMounted) {
+          console.error('Failed to authorize permissions:', error)
+          setPermissionsInitialized(true) // Set anyway to unblock UI
+        }
       }
     }
+
     initPermissions()
-    dispatch(getLoggingConfig())
-  }, [dispatch, authorize])
+
+    return () => {
+      isMounted = false
+    }
+  }, [authorize])
 
   useEffect(() => {
     if (logging) {
@@ -54,16 +108,22 @@ function LoggingPage() {
     }
   }, [logging])
 
-  useEffect(() => {}, [cedarPermissions])
+  const initialValues: LoggingFormValues = useMemo(
+    () => getLoggingInitialValues(localLogging),
+    [localLogging],
+  )
 
-  const initialValues = useMemo(() => getLoggingInitialValues(localLogging), [localLogging])
-
-  const levels = useMemo(() => [...LOG_LEVELS], [])
-  const logLayouts = useMemo(() => [...LOG_LAYOUTS], [])
+  const levels = LOG_LEVELS
+  const logLayouts = LOG_LAYOUTS
   SetTitle('Logging')
 
   const handleSubmit = useCallback(
-    (values) => {
+    (values: LoggingFormValues): void => {
+      if (!localLogging) {
+        console.error('Cannot submit: logging data not loaded')
+        return
+      }
+
       const mergedValues = getMergedValues(localLogging, values)
       const changedFields = getChangedFields(localLogging, mergedValues)
 
@@ -74,28 +134,39 @@ function LoggingPage() {
   )
 
   const handleAccept = useCallback(
-    (userMessage) => {
-      if (pendingValues) {
-        const { mergedValues, changedFields } = pendingValues
+    async (userMessage: string): Promise<void> => {
+      if (!pendingValues) return
 
-        const opts = {}
-        opts['logging'] = JSON.stringify(mergedValues)
+      const { mergedValues, changedFields } = pendingValues
 
-        dispatch(
-          editLoggingConfig({
-            data: opts,
-            otherFields: { userMessage, changedFields },
-          }),
+      try {
+        // Update API first
+        const result = await updateLogging.mutateAsync({ data: mergedValues })
+
+        // Update local state with server response
+        setLocalLogging(result)
+
+        // Log audit action (non-blocking - errors are logged but don't fail the operation)
+        logLoggingUpdate(mergedValues, userMessage, changedFields).catch((error) =>
+          console.error('Audit logging failed:', error),
         )
+
+        // Success: close dialog and clear pending
         setShowCommitDialog(false)
         setPendingValues(null)
+      } catch (error) {
+        // Keep dialog open on error so user can retry or cancel
+        console.error('Failed to update logging configuration:', error)
+        // Note: React Query mutation will handle showing error toast if configured
       }
     },
-    [pendingValues, dispatch],
+    [pendingValues, updateLogging, logLoggingUpdate],
   )
 
+  const isLoading = isLoadingData || updateLogging.isPending
+
   return (
-    <GluuLoader blocking={loading}>
+    <GluuLoader blocking={isLoading}>
       <Card style={applicationStyle.mainCard}>
         <CardBody style={{ minHeight: 500 }}>
           <GluuViewWrapper canShow={hasCedarPermission(LOGGING_READ)}>
@@ -121,7 +192,9 @@ function LoggingPage() {
                         name="loggingLevel"
                         data-testid="loggingLevel"
                         value={formik.values.loggingLevel}
-                        onChange={(e) => formik.setFieldValue('loggingLevel', e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          formik.setFieldValue('loggingLevel', e.target.value)
+                        }
                       >
                         <option value="">{t('actions.choose')}...</option>
                         {levels.map((item, key) => (
@@ -147,7 +220,9 @@ function LoggingPage() {
                         name="loggingLayout"
                         data-testid="loggingLayout"
                         value={formik.values.loggingLayout}
-                        onChange={(e) => formik.setFieldValue('loggingLayout', e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          formik.setFieldValue('loggingLayout', e.target.value)
+                        }
                       >
                         <option value="">{t('actions.choose')}...</option>
                         {logLayouts.map((item, key) => (
@@ -162,7 +237,9 @@ function LoggingPage() {
                   <GluuToogleRow
                     label="fields.http_logging_enabled"
                     name="httpLoggingEnabled"
-                    handler={(e) => formik.setFieldValue('httpLoggingEnabled', e.target.checked)}
+                    handler={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      formik.setFieldValue('httpLoggingEnabled', e.target.checked)
+                    }
                     lsize={5}
                     rsize={7}
                     value={formik.values.httpLoggingEnabled}
@@ -171,7 +248,9 @@ function LoggingPage() {
                   <GluuToogleRow
                     label="fields.disable_jdk_logger"
                     name="disableJdkLogger"
-                    handler={(e) => formik.setFieldValue('disableJdkLogger', e.target.checked)}
+                    handler={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      formik.setFieldValue('disableJdkLogger', e.target.checked)
+                    }
                     lsize={5}
                     rsize={7}
                     doc_category={JSON_CONFIG}
@@ -180,7 +259,7 @@ function LoggingPage() {
                   <GluuToogleRow
                     label="fields.enabled_oAuth_audit_logging"
                     name="enabledOAuthAuditLogging"
-                    handler={(e) =>
+                    handler={(e: React.ChangeEvent<HTMLInputElement>) =>
                       formik.setFieldValue('enabledOAuthAuditLogging', e.target.checked)
                     }
                     lsize={5}
@@ -206,7 +285,7 @@ function LoggingPage() {
                       onApply={formik.handleSubmit}
                       disableApply={!formik.isValid || !formik.dirty}
                       applyButtonType="button"
-                      isLoading={loading}
+                      isLoading={isLoading}
                     />
                   )}
                 </Form>
