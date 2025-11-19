@@ -60,7 +60,7 @@ function LoggingPage(): React.ReactElement {
 
     const initPermissions = async (): Promise<void> => {
       const readResult = await authorize([LOGGING_READ])
-      const writeResult = await authorize([LOGGING_WRITE])
+      await authorize([LOGGING_WRITE])
 
       if (!isMounted) return
 
