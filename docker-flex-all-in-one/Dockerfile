@@ -65,16 +65,19 @@ RUN ln -sf /app/flex_aio/admin_ui/entrypoint.sh /app/bin/admin-ui-entrypoint.sh
 # Assets sync
 # ===========
 
-ENV JANS_SOURCE_VERSION=408db95b458691c2b307b51fe180f9cc61b4eb95
+ENV JANS_SOURCE_VERSION=88d8e89acc598b9ddf68659b0a51c3c9e3b712f0
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the assets
 ARG GIT_CLONE_DEPTH=100
-RUN git clone --depth ${GIT_CLONE_DEPTH} --filter blob:none --no-checkout https://github.com/janssenproject/jans /tmp/jans \
-    && cd /tmp/jans \
+WORKDIR /tmp/jans
+
+RUN git clone --depth ${GIT_CLONE_DEPTH} --filter blob:none --no-checkout https://github.com/janssenproject/jans . \
     && git sparse-checkout init --cone \
-    && git checkout ${JANS_SOURCE_VERSION} \
-    && git sparse-checkout add jans-pycloudlib
+    && git sparse-checkout add jans-pycloudlib \
+    && git checkout ${JANS_SOURCE_VERSION}
+
+WORKDIR /
 
 # ------
 # Python
