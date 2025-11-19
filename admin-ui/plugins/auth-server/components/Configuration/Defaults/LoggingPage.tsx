@@ -144,6 +144,7 @@ function LoggingPage(): React.ReactElement {
   const isLoading = !permissionsInitialized || isLoadingData || updateLogging.isPending
 
   if (loggingError) {
+    console.error('Failed to load logging configuration:', loggingError)
     return (
       <GluuLoader blocking={false}>
         <Card style={applicationStyle.mainCard}>
