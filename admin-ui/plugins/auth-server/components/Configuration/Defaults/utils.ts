@@ -20,21 +20,12 @@ export interface LoggingFormValues {
   enabledOAuthAuditLogging: boolean
 }
 
-/**
- * Type guard to check if a value is a valid LoggingLevel
- */
 const isValidLevel = (val: unknown): val is LoggingLevel =>
   typeof val === 'string' && LOG_LEVELS.includes(val as LoggingLevel)
 
-/**
- * Type guard to check if a value is a valid LoggingLayout
- */
 const isValidLayout = (val: unknown): val is LoggingLayout =>
   typeof val === 'string' && LOG_LAYOUTS.includes(val as LoggingLayout)
 
-/**
- * Converts logging configuration to form initial values with proper validation
- */
 export const getLoggingInitialValues = (logging?: LoggingConfigLike | null): LoggingFormValues => {
   if (!logging) {
     return {
@@ -55,12 +46,6 @@ export const getLoggingInitialValues = (logging?: LoggingConfigLike | null): Log
   }
 }
 
-/**
- * Merges original and updated values, with updated values taking precedence
- * @param original - The original values (must be non-null)
- * @param updated - The updated values
- * @returns Merged object with updated values taking precedence
- */
 export function getMergedValues<T extends Record<string, unknown>>(
   original: T,
   updated: Partial<T>,
@@ -68,20 +53,16 @@ export function getMergedValues<T extends Record<string, unknown>>(
   return { ...original, ...updated }
 }
 
-/**
- * Gets the fields that changed between original and updated values
- * @param original - The original values (must be non-null)
- * @param updated - The updated values
- * @returns Object containing only the changed fields
- */
 export function getChangedFields<T extends Record<string, unknown>>(
   original: T,
   updated: Partial<T>,
-): Partial<T> {
-  const changed: Partial<T> = {}
+): Partial<Record<keyof T, { oldValue: unknown; newValue: unknown }>> {
+  const changed: Partial<Record<keyof T, { oldValue: unknown; newValue: unknown }>> = {}
   ;(Object.keys(updated) as Array<keyof T>).forEach((key) => {
-    if (updated[key] !== original[key] && updated[key] !== undefined) {
-      changed[key] = updated[key]
+    const newValue = updated[key]
+    const oldValue = original[key]
+    if (newValue !== undefined && newValue !== oldValue) {
+      changed[key] = { oldValue, newValue }
     }
   })
   return changed

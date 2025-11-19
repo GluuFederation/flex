@@ -16,7 +16,6 @@ import {
 } from './utils'
 import type { LoggingFormValues } from './utils'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { useSelector } from 'react-redux'
 import { Formik } from 'formik'
 import { useNavigate } from 'react-router-dom'
 import { useGetConfigLogging, usePutConfigLogging, type Logging } from 'JansConfigApi'
@@ -26,7 +25,6 @@ import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import { useLoggingActions, type ModifiedFields } from './hooks/useLoggingActions'
-import type { RootState } from '@/cedarling/types'
 
 interface PendingValues {
   mergedValues: Logging
@@ -37,9 +35,6 @@ function LoggingPage(): React.ReactElement {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { hasCedarPermission, authorize } = useCedarling()
-  const { permissions: cedarPermissions } = useSelector(
-    (state: RootState) => state.cedarPermissions,
-  )
   const { logLoggingUpdate } = useLoggingActions()
 
   const [showCommitDialog, setShowCommitDialog] = useState(false)
@@ -47,8 +42,6 @@ function LoggingPage(): React.ReactElement {
   const [localLogging, setLocalLogging] = useState<Logging | null>(null)
   const [permissionsInitialized, setPermissionsInitialized] = useState(false)
 
-  // React Query hooks for data fetching and mutation
-  // Only fetch data after permissions are initialized and user has read permission
   const { data: logging, isLoading: isLoadingData } = useGetConfigLogging({
     query: {
       enabled: permissionsInitialized && hasCedarPermission(LOGGING_READ),
@@ -61,7 +54,6 @@ function LoggingPage(): React.ReactElement {
 
     const initPermissions = async (): Promise<void> => {
       try {
-        // Run permission checks in parallel for better performance
         await Promise.all([authorize([LOGGING_READ]), authorize([LOGGING_WRITE])])
 
         if (isMounted) {
@@ -70,7 +62,7 @@ function LoggingPage(): React.ReactElement {
       } catch (error) {
         if (isMounted) {
           console.error('Failed to authorize permissions:', error)
-          setPermissionsInitialized(true) // Set anyway to unblock UI
+          setPermissionsInitialized(true)
         }
       }
     }
@@ -120,30 +112,24 @@ function LoggingPage(): React.ReactElement {
       const { mergedValues, changedFields } = pendingValues
 
       try {
-        // Update API first
         const result = await updateLogging.mutateAsync({ data: mergedValues })
 
-        // Update local state with server response
         setLocalLogging(result)
 
-        // Log audit action (non-blocking - errors are logged but don't fail the operation)
-        logLoggingUpdate(mergedValues, userMessage, changedFields).catch((error) =>
+        logLoggingUpdate(userMessage, changedFields).catch((error) =>
           console.error('Audit logging failed:', error),
         )
 
-        // Success: close dialog and clear pending
         setShowCommitDialog(false)
         setPendingValues(null)
       } catch (error) {
-        // Keep dialog open on error so user can retry or cancel
         console.error('Failed to update logging configuration:', error)
-        // Note: React Query mutation will handle showing error toast if configured
       }
     },
     [pendingValues, updateLogging, logLoggingUpdate],
   )
 
-  const isLoading = isLoadingData || updateLogging.isPending
+  const isLoading = !permissionsInitialized || isLoadingData || updateLogging.isPending
 
   return (
     <GluuLoader blocking={isLoading}>
@@ -172,7 +158,7 @@ function LoggingPage(): React.ReactElement {
                         name="loggingLevel"
                         data-testid="loggingLevel"
                         value={formik.values.loggingLevel}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                           formik.setFieldValue('loggingLevel', e.target.value)
                         }
                       >
@@ -200,7 +186,7 @@ function LoggingPage(): React.ReactElement {
                         name="loggingLayout"
                         data-testid="loggingLayout"
                         value={formik.values.loggingLayout}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                           formik.setFieldValue('loggingLayout', e.target.value)
                         }
                       >

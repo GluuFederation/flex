@@ -1,15 +1,9 @@
-/**
- * Custom hooks for Logging configuration actions
- * Handles audit logging for logging configuration updates
- */
-
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { addAdditionalData } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
 import { UPDATE } from '@/audit/UserActionType'
 import { API_LOGGING } from '@/audit/Resources'
-import type { Logging } from 'JansConfigApi'
 import type { RootState } from '@/redux/sagas/types/audit'
 
 export interface ModifiedFields {
@@ -19,10 +13,6 @@ export interface ModifiedFields {
   }
 }
 
-/**
- * Strongly-typed AuditLog interface for logging configuration updates
- * Note: Using local interface instead of shared one for better type safety
- */
 interface AuditLog {
   headers: {
     Authorization: string
@@ -40,24 +30,14 @@ interface AuditLog {
   date?: Date
 }
 
-/**
- * Hook for logging configuration actions with audit logging
- */
 export function useLoggingActions() {
   const authState = useSelector((state: RootState) => state.authReducer)
   const token = authState?.token?.access_token
   const client_id = authState?.config?.clientId
   const userinfo = authState?.userinfo
 
-  /**
-   * Log audit action for logging configuration update
-   * Matches the exact behavior of the original saga implementation:
-   * - Uses omitPayload: true (no payload in audit)
-   * - Only sends modifiedFields in action_data
-   */
   const logLoggingUpdate = useCallback(
-    async (logging: Logging, message: string, modifiedFields?: ModifiedFields) => {
-      // Validate required audit fields
+    async (message: string, modifiedFields?: ModifiedFields) => {
       if (!token) {
         console.error('Cannot log audit action: Missing authorization token')
         throw new Error('Authorization token required for audit logging')
@@ -68,7 +48,6 @@ export function useLoggingActions() {
         throw new Error('User information required for audit logging')
       }
 
-      // Build audit log matching the original saga pattern
       const audit: AuditLog = {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -81,7 +60,6 @@ export function useLoggingActions() {
         client_id,
       }
 
-      // Use addAdditionalData exactly as the saga did
       addAdditionalData(audit, UPDATE, API_LOGGING, {
         omitPayload: true,
         action: {
@@ -92,7 +70,6 @@ export function useLoggingActions() {
         },
       })
 
-      // Post the audit action with error handling
       try {
         await postUserAction(audit)
       } catch (error) {
