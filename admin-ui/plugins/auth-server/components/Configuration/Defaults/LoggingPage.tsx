@@ -59,20 +59,17 @@ function LoggingPage(): React.ReactElement {
     let isMounted = true
 
     const initPermissions = async (): Promise<void> => {
-      try {
-        await Promise.all([authorize([LOGGING_READ]), authorize([LOGGING_WRITE])])
+      const readResult = await authorize([LOGGING_READ])
+      const writeResult = await authorize([LOGGING_WRITE])
 
-        if (isMounted) {
-          setPermissionsInitialized(true)
-          setPermissionError(false)
-        }
-      } catch (error) {
-        if (isMounted) {
-          console.error('Failed to authorize permissions:', error)
-          setPermissionError(true)
-          setPermissionsInitialized(true)
-        }
+      if (!isMounted) return
+
+      if (!readResult.isAuthorized) {
+        console.error('Failed to authorize READ permission:', readResult.error)
+        setPermissionError(true)
       }
+
+      setPermissionsInitialized(true)
     }
 
     initPermissions()
