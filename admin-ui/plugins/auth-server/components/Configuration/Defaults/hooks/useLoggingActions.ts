@@ -10,7 +10,19 @@ import { postUserAction } from 'Redux/api/backend-api'
 import { UPDATE } from '@/audit/UserActionType'
 import { API_LOGGING } from '@/audit/Resources'
 import type { Logging } from 'JansConfigApi'
+import type { RootState } from '@/redux/sagas/types/audit'
 
+export interface ModifiedFields {
+  [key: string]: {
+    oldValue: unknown
+    newValue: unknown
+  }
+}
+
+/**
+ * Strongly-typed AuditLog interface for logging configuration updates
+ * Note: Using local interface instead of shared one for better type safety
+ */
 interface AuditLog {
   headers: {
     Authorization: string
@@ -26,30 +38,6 @@ interface AuditLog {
   message?: string
   modifiedFields?: ModifiedFields
   date?: Date
-}
-
-export interface ModifiedFields {
-  [key: string]: {
-    oldValue: unknown
-    newValue: unknown
-  }
-}
-
-interface AuthState {
-  token?: {
-    access_token: string
-  }
-  config?: {
-    clientId: string
-  }
-  userinfo?: {
-    inum: string
-    name: string
-  }
-}
-
-interface RootState {
-  authReducer: AuthState
 }
 
 /**

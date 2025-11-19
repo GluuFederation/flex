@@ -57,30 +57,27 @@ export const getLoggingInitialValues = (logging?: LoggingConfigLike | null): Log
 
 /**
  * Merges original and updated values, with updated values taking precedence
- * @param original - The original values
+ * @param original - The original values (must be non-null)
  * @param updated - The updated values
  * @returns Merged object with updated values taking precedence
  */
 export function getMergedValues<T extends Record<string, unknown>>(
-  original: T | null,
+  original: T,
   updated: Partial<T>,
 ): T {
-  if (!original) return updated as T
   return { ...original, ...updated }
 }
 
 /**
  * Gets the fields that changed between original and updated values
- * @param original - The original values
+ * @param original - The original values (must be non-null)
  * @param updated - The updated values
  * @returns Object containing only the changed fields
  */
 export function getChangedFields<T extends Record<string, unknown>>(
-  original: T | null,
+  original: T,
   updated: Partial<T>,
 ): Partial<T> {
-  if (!original) return updated
-
   const changed: Partial<T> = {}
   ;(Object.keys(updated) as Array<keyof T>).forEach((key) => {
     if (updated[key] !== original[key] && updated[key] !== undefined) {

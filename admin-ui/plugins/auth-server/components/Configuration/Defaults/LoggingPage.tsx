@@ -26,27 +26,7 @@ import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import { useLoggingActions, type ModifiedFields } from './hooks/useLoggingActions'
-
-interface CedarPermissionsState {
-  cedarPermissions: {
-    permissions: Record<string, boolean>
-  }
-}
-
-interface RootState extends CedarPermissionsState {
-  authReducer: {
-    token?: {
-      access_token: string
-    }
-    config?: {
-      clientId: string
-    }
-    userinfo?: {
-      inum: string
-      name: string
-    }
-  }
-}
+import type { RootState } from '@/cedarling/types'
 
 interface PendingValues {
   mergedValues: Logging
