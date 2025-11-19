@@ -1,5 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
+import type { ProfileDetails } from 'Routes/Apps/Profile/types'
 
 export interface ProfileDetailsRequestPayload extends Record<string, unknown> {
   pattern: string
@@ -7,7 +8,7 @@ export interface ProfileDetailsRequestPayload extends Record<string, unknown> {
 }
 
 interface ProfileDetailsState {
-  profileDetails: Record<string, unknown> | null
+  profileDetails: ProfileDetails | null
   loading: boolean
 }
 
@@ -23,7 +24,7 @@ const profileDetailsSlice = createSlice({
     checkIsLoadingDetails: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload
     },
-    setUserProfileDetails: (state, action: PayloadAction<Record<string, unknown> | null>) => {
+    setUserProfileDetails: (state, action: PayloadAction<ProfileDetails | null>) => {
       state.profileDetails = action.payload
     },
     getProfileDetails: (state, _action: PayloadAction<ProfileDetailsRequestPayload>) => {

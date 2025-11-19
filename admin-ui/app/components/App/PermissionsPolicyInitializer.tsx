@@ -1,7 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect, useCallback, useState, useRef } from 'react'
-import { getMapping } from 'Plugins/admin/redux/features/mappingSlice'
-import { getPermissions } from 'Plugins/admin/redux/features/apiPermissionSlice'
+import { useEffect, useState, useRef } from 'react'
 import {
   setCedarFailedStatusAfterMaxTries,
   setCedarlingInitialized,
@@ -9,10 +7,6 @@ import {
 } from '../../redux/features/cedarPermissionsSlice'
 import { cedarlingClient, CedarlingLogType } from '@/cedarling'
 import bootstrap from '@/cedarling/config/cedarling-bootstrap-TBAC.json'
-import { buildPayload } from '@/utils/PermChecker'
-
-type Option = { [key: string]: string }
-
 // Extended state interface for this component
 interface ExtendedRootState {
   authReducer: {
@@ -27,9 +21,6 @@ interface ExtendedRootState {
   mappingReducer: {
     items: unknown[]
   }
-  apiPermissionReducer: {
-    items: unknown[]
-  }
   cedarPermissions: {
     initialized: boolean
     isInitializing: boolean
@@ -37,15 +28,8 @@ interface ExtendedRootState {
   }
 }
 
-const applicableToCall = (array: unknown[]) => Array.isArray(array) && array.length > 0
-
 const PermissionsPolicyInitializer = () => {
   const dispatch = useDispatch()
-  const rolePermissionMapping = useSelector(
-    (state: ExtendedRootState) => state.mappingReducer.items,
-  )
-
-  const apiPermission = useSelector((state: ExtendedRootState) => state.apiPermissionReducer.items)
 
   const retryCount = useRef({
     tryCount: 0,
@@ -61,31 +45,6 @@ const PermissionsPolicyInitializer = () => {
   const cedarlingLogType =
     useSelector((state: ExtendedRootState) => state.authReducer?.config?.cedarlingLogType) ||
     CedarlingLogType.OFF
-
-  const doFetchPermissionsList = useCallback(() => {
-    const userAction = {}
-    const options: Option[] = []
-    buildPayload(userAction, 'PERMISSIONS', options)
-    dispatch(getPermissions({ payload: userAction }))
-  }, [dispatch])
-
-  const doFetchList = useCallback(() => {
-    const userAction = {}
-    const options: Option[] = []
-    buildPayload(userAction, 'ROLES_MAPPING', options)
-    dispatch(getMapping({ action: userAction }))
-  }, [dispatch])
-
-  const initializations = useCallback(() => {
-    doFetchPermissionsList()
-    doFetchList()
-  }, [doFetchPermissionsList, doFetchList])
-
-  useEffect(() => {
-    if (token && token?.access_token && !initialized) {
-      initializations()
-    }
-  }, [token, initialized, initializations])
 
   useEffect(() => {
     // Helper function to check if policyStoreJson is valid
@@ -119,8 +78,6 @@ const PermissionsPolicyInitializer = () => {
     const shouldTryInit =
       token &&
       token.access_token &&
-      applicableToCall(rolePermissionMapping) &&
-      applicableToCall(apiPermission) &&
       !initialized &&
       !isInitializing &&
       cedarlingLogType &&
@@ -175,16 +132,7 @@ const PermissionsPolicyInitializer = () => {
           dispatch(setCedarFailedStatusAfterMaxTries())
         }
       })
-  }, [
-    token,
-    initialized,
-    isInitializing,
-    rolePermissionMapping,
-    apiPermission,
-    cedarlingLogType,
-    policyStoreJson,
-    dispatch,
-  ])
+  }, [token, initialized, isInitializing, cedarlingLogType, policyStoreJson, dispatch])
 
   return null
 }

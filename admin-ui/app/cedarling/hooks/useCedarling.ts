@@ -10,7 +10,6 @@ import type {
   CedarAction,
   AdminUiFeatureResource,
 } from '@/cedarling'
-import { findPermissionByUrl } from '@/cedarling/utility'
 import { OPENID, REVOKE_SESSION, SCIM_BULK, SSA_ADMIN, SSA_DEVELOPER } from '@/utils/PermChecker'
 import { updateToast } from '@/redux/features/toastSlice'
 
@@ -24,7 +23,6 @@ export function useCedarling(): UseCedarlingReturn {
     idToken: id_token,
     JwtToken: access_token,
   } = useSelector((state: RootState) => state.authReducer)
-  const apiPermission = useSelector((state: RootState) => state.apiPermissionReducer.items)
 
   const {
     permissions: permissionsByResourceId,
@@ -142,14 +140,6 @@ export function useCedarling(): UseCedarlingReturn {
 
       const actionLabel = getActionLabelFromUrl(url)
 
-      const permissionsWithTags = findPermissionByUrl(apiPermission, url)
-      if (!permissionsWithTags) {
-        return {
-          isAuthorized: false,
-          error: 'Permission not found for the given URL',
-        }
-      }
-
       try {
         const { request, cacheKey, cachedDecision } = buildAuthorizationRequest(
           resolvedResourceId,
@@ -183,7 +173,6 @@ export function useCedarling(): UseCedarlingReturn {
     },
     [
       permissionsByResourceId,
-      apiPermission,
       buildAuthorizationRequest,
       dispatch,
       access_token,

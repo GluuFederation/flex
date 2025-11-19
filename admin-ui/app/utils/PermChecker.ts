@@ -158,26 +158,3 @@ export const buildPayload = (
   userAction['action_message'] = message
   userAction['action_data'] = payload
 }
-
-export const hasAny = (
-  scopes: string[] | null | undefined,
-  scope1: string,
-  scope2: string,
-  scope3: string,
-): boolean => {
-  if (scopes) {
-    return scopes.includes(scope1, 0) || scopes.includes(scope2, 0) || scopes.includes(scope3, 0)
-  }
-  return false
-}
-
-export const hasBoth = (
-  scopes: string[] | null | undefined,
-  scope1: string,
-  scope2: string,
-): boolean => {
-  if (scopes) {
-    return scopes.includes(scope1, 0) && scopes.includes(scope2, 0)
-  }
-  return false
-}
