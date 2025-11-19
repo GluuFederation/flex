@@ -25,6 +25,7 @@ import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import { useLoggingActions, type ModifiedFields } from './hooks/useLoggingActions'
+import { toast } from 'react-toastify'
 
 interface PendingValues {
   mergedValues: Logging
@@ -41,6 +42,7 @@ function LoggingPage(): React.ReactElement {
   const [pendingValues, setPendingValues] = useState<PendingValues | null>(null)
   const [localLogging, setLocalLogging] = useState<Logging | null>(null)
   const [permissionsInitialized, setPermissionsInitialized] = useState(false)
+  const [permissionError, setPermissionError] = useState(false)
 
   const { data: logging, isLoading: isLoadingData } = useGetConfigLogging({
     query: {
@@ -58,10 +60,12 @@ function LoggingPage(): React.ReactElement {
 
         if (isMounted) {
           setPermissionsInitialized(true)
+          setPermissionError(false)
         }
       } catch (error) {
         if (isMounted) {
           console.error('Failed to authorize permissions:', error)
+          setPermissionError(true)
           setPermissionsInitialized(true)
         }
       }
@@ -126,16 +130,33 @@ function LoggingPage(): React.ReactElement {
           )
         }
 
+        toast.success(t('messages.success_in_saving'))
+
         setShowCommitDialog(false)
         setPendingValues(null)
       } catch (error) {
         console.error('Failed to update logging configuration:', error)
+        toast.error(t('messages.error_in_saving'))
       }
     },
-    [pendingValues, updateLogging, logLoggingUpdate],
+    [pendingValues, updateLogging, logLoggingUpdate, t],
   )
 
   const isLoading = !permissionsInitialized || isLoadingData || updateLogging.isPending
+
+  if (permissionError) {
+    return (
+      <GluuLoader blocking={false}>
+        <Card style={applicationStyle.mainCard}>
+          <CardBody style={{ minHeight: 500 }}>
+            <div className="alert alert-danger" role="alert">
+              {t('messages.permission_error')}
+            </div>
+          </CardBody>
+        </Card>
+      </GluuLoader>
+    )
+  }
 
   return (
     <GluuLoader blocking={isLoading}>
