@@ -44,7 +44,11 @@ function LoggingPage(): React.ReactElement {
   const [permissionsInitialized, setPermissionsInitialized] = useState(false)
   const [permissionError, setPermissionError] = useState(false)
 
-  const { data: logging, isLoading: isLoadingData } = useGetConfigLogging({
+  const {
+    data: logging,
+    isLoading: isLoadingData,
+    error: loggingError,
+  } = useGetConfigLogging({
     query: {
       enabled: permissionsInitialized && hasCedarPermission(LOGGING_READ),
     },
@@ -124,11 +128,9 @@ function LoggingPage(): React.ReactElement {
 
         setLocalLogging(result)
 
-        if (Object.keys(changedFields).length > 0) {
-          logLoggingUpdate(userMessage, changedFields).catch((error) =>
-            console.error('Audit logging failed:', error),
-          )
-        }
+        logLoggingUpdate(userMessage, changedFields).catch((error) =>
+          console.error('Audit logging failed:', error),
+        )
 
         toast.success(t('messages.success_in_saving'))
 
@@ -143,6 +145,20 @@ function LoggingPage(): React.ReactElement {
   )
 
   const isLoading = !permissionsInitialized || isLoadingData || updateLogging.isPending
+
+  if (loggingError) {
+    return (
+      <GluuLoader blocking={false}>
+        <Card style={applicationStyle.mainCard}>
+          <CardBody style={{ minHeight: 500 }}>
+            <div className="alert alert-danger" role="alert">
+              {t('messages.error_loading_logging')}
+            </div>
+          </CardBody>
+        </Card>
+      </GluuLoader>
+    )
+  }
 
   if (permissionError) {
     return (
