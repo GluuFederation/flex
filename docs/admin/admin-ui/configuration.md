@@ -7,76 +7,35 @@ tags:
 
 # Gluu Flex Admin UI Configuration
 
-This document outlines the configuration process for Gluu Flex Admin UI, with a focus on essential components stored in the Auth Server's persistence layer. These components include role-permission mapping, OIDC client details for accessing the Auth Server, OIDC client details for accessing the Token Server, OIDC client details for accessing the License APIs, and license metadata.
+This document outlines the configuration process for Gluu Flex Admin UI, with a focus on essential components stored in the Auth Server's persistence layer. These components include Cedarling Configuration, OIDC client details for accessing the Auth Server, OIDC client details for accessing the Token Server, OIDC client details for accessing the License APIs, and license metadata.
 
 ## Configuration Components
 
-### Role-Permission Mapping
+### Cedarling Configuration
 
-[Role-permission](./admin-menu.md/) mapping defines which administrative roles are granted specific permissions within the Gluu Flex Admin UI. This mapping ensures that administrators can only access and modify functionalities relevant to their roles.
+Gluu Flex Admin UI uses [Cedarling](https://docs.jans.io/stable/cedarling/) for GUI access control. The role of the user is mapped with specific permissions (scopes) to ensure that the user can only access and modify functionalities relevant to their roles.
 
-The mapping is stored in json format with following attributes.
+The Cedarling Policy Store configuration screen helps to configure the Policy Store used for the Admin UI access control. The Gluu Flex Admin UI uses a default Policy Store after installation for GUI access control. You need to configure a remote Cedarling Policy Store using its URL and Admin UI backend will automatically synchronize roles and role-to-scope mapping as per the schema and policies defined in the Policy Store.
 
-**Roles**
+![image](../../assets/admin-ui/cedarling-config.png)
 
-|Attribute Name|Description|
-|--------------|-----------|
-|roles|Array of all roles|
-|role|Role name|
-|description| Role description|
-|deletable|If set to `true` then entire role-permission mapping with respect to the role can be deleted. Default value: `false`|
+#### Policy Retrieval Point
 
-**Permissions**
+This feature is useful for setting PRP. It helps to prevent MITM attacks in production. There are 2 modes.
 
-|Attribute Name|Description|
-|--------------|-----------|
-|permissions|Array of all available permissions|
-|permission|Permission name|
-|description| Permission description|
-|defaultPermissionInToken|If set to `true`, it indicates that permission will need authentication and valid role during `/token` request to include in token|
+1. `Remote`: In this mode, Admin UI will always use the remote policy store URL to initialize Cedarling, fetch policies, and schema.
 
-**Mapping**
+2. `Default`: It is recommended to set it to Default for production. If set to Default, it will use the Admin-UI storage for Cedarling authorization. Enable Default mode and use the refresh button to store or update GitHub policies on the Admin-UI Server.
 
-|Attribute Name|Description|
-|--------------|-----------|
-|rolePermissionMapping| List of all role-permission mapping|
-|role|Role name|
-|permission|Array of all permission mapped to the role|
+#### Steps to configure Remote Policy Store URL
 
-**Sample role-permission mapping stored in persistence**
-
-```text
-{
-  "roles": [
-    {
-      "role": "sample-role",
-      "description": "role description",
-      "deletable": false
-    }
-  ],
-  "permissions": [
-    {
-      "permission": "sample-permission1",
-      "description": "permission1 description",
-      "defaultPermissionInToken": false
-    },
-    {
-      "permission": "sample-permission2",
-      "description": "permission2 description",
-      "defaultPermissionInToken": true
-    }
-  ],
-  "rolePermissionMapping": [
-    {
-      "role": "sample-role",
-      "permissions": [
-        "sample-permission1",
-        "sample-permission2"
-      ]
-    }
-  ]
-}
-```
+ 1. Fork the project [GluuFlexAdminUIPolicyStore](https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/tree/agama-lab-policy-designer).
+ 2. Open the forked repository using [Agama Lab's](https://cloud.gluu.org/agama-lab) Policy Designer.
+ 3. Make the required modifications in the policies for Admin UI access control and save the changes.
+ 4. Copy the Policy Store URL.
+ ![image](../../assets/admin-ui/admin-ui-policy-store.png)
+ 5. Open Cedarling Policy Store configuration screen on Admin UI and add the copied Policy Store URL in `Admin UI Remote Policy Store` field.
+ 6. Set `Policy Retrieval Point` field to `Remote` to use the remote Policy Store URL for the GUI access control.
 
 ### OIDC Client Details for Auth Server
 
@@ -117,6 +76,17 @@ The information is stored in json format with following attributes.
 |--------------|-----------|
 |uiConfig|Object with UI configuration attributes|
 |sessionTimeoutInMins|The admin UI will auto-logout after a period of inactivity defined in this field.|  
+
+uiConfig 
+
+|Attribute Name|Description|
+|--------------|-----------|
+|sessionTimeoutInMins|Admin UI Frontend session out time|
+|allowSmtpKeystoreEdit|Allow to edit SMTP keystore fields. The default value is `true`.|
+|cedarlingLogType|Set embeded Cedarling log-type in Admin UI. The allowed values are `off` and `std_out`.|
+|auiPolicyStoreUrl|The remote Policy Store URL|
+|auiDefaultPolicyStorePath|The path of the default Policy Store json file on Config Api pod.|
+|cedarlingPolicyStoreRetrievalPoint|The retrieval point of the Policy Store. The allowed values are `default` and `remote`.|
 
 ### OIDC Client Details for License Server
 
@@ -181,7 +151,12 @@ The information is stored in json format with following attributes.
     }
   },
   "uiConfig": {
-    "sessionTimeoutInMins": 30
+    "sessionTimeoutInMins": 30,
+    "allowSmtpKeystoreEdit": true,
+    "cedarlingLogType":"off",
+    "auiPolicyStoreUrl": "",
+    "auiDefaultPolicyStorePath": "./custom/config/adminUI/policy-store.json",
+    "cedarlingPolicyStoreRetrievalPoint": "default"
   },
   "licenseConfig": {
     "ssa": "...ssa in jwt format...",
