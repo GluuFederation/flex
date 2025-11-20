@@ -12,13 +12,13 @@
         <meta name="author" content="Gluu, Inc.">
       
       
-        <link rel="canonical" href="https://docs.gluu.org/head/install/agama/prerequisites/">
+        <link rel="canonical" href="https://docs.gluu.org/head/admin/admin-ui/access-control/">
       
       
-        <link rel="prev" href="../../">
+        <link rel="prev" href="../auth-server-interaction/">
       
       
-        <link rel="next" href="../../helm-install/">
+        <link rel="next" href="../configuration/">
       
       
       <link rel="icon" href="../../../assets/logo/favicon.ico">
@@ -26,7 +26,7 @@
     
     
       
-        <title>Prerequisites - Gluu Flex Documentation</title>
+        <title>Access Control - Gluu Flex Documentation</title>
       
     
     
@@ -84,7 +84,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#prerequisites" class="md-skip">
+        <a href="#access-control-in-admin-ui" class="md-skip">
           Skip to content
         </a>
       
@@ -123,7 +123,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Prerequisites
+              Access Control
             
           </span>
         </div>
@@ -255,13 +255,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../../" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../../install/" class="md-tabs__link">
           
   
   
@@ -279,11 +277,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../../admin/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
           
   
   
@@ -439,8 +439,6 @@
       
   
   
-    
-  
   
   
     
@@ -462,21 +460,18 @@
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../" class="md-nav__link ">
+            <a href="../../../install/" class="md-nav__link ">
               
   
   
@@ -489,13 +484,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Installation
@@ -508,32 +503,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Prerequisites
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../install/agama/prerequisites/" class="md-nav__link">
         
   
   
@@ -544,68 +517,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#agama-lab" class="md-nav__link">
-    <span class="md-ellipsis">
-      Agama Lab
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#software-statement-assertions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Software Statement Assertions
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Software Statement Assertions">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#obtaining-an-ssa" class="md-nav__link">
-    <span class="md-ellipsis">
-      Obtaining an SSA
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#license" class="md-nav__link">
-    <span class="md-ellipsis">
-      License
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -649,7 +560,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../helm-install/" class="md-nav__link ">
+            <a href="../../../install/helm-install/" class="md-nav__link ">
               
   
   
@@ -684,7 +595,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../helm-install/local/" class="md-nav__link">
+      <a href="../../../install/helm-install/local/" class="md-nav__link">
         
   
   
@@ -707,7 +618,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../helm-install/amazon-eks/" class="md-nav__link">
+      <a href="../../../install/helm-install/amazon-eks/" class="md-nav__link">
         
   
   
@@ -730,7 +641,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../helm-install/google-gke/" class="md-nav__link">
+      <a href="../../../install/helm-install/google-gke/" class="md-nav__link">
         
   
   
@@ -753,7 +664,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../helm-install/microsoft-azure/" class="md-nav__link">
+      <a href="../../../install/helm-install/microsoft-azure/" class="md-nav__link">
         
   
   
@@ -776,7 +687,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../helm-install/rancher/" class="md-nav__link">
+      <a href="../../../install/helm-install/rancher/" class="md-nav__link">
         
   
   
@@ -854,7 +765,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../docker-install/quick-start/" class="md-nav__link">
+      <a href="../../../install/docker-install/quick-start/" class="md-nav__link">
         
   
   
@@ -877,7 +788,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../docker-install/compose/" class="md-nav__link">
+      <a href="../../../install/docker-install/compose/" class="md-nav__link">
         
   
   
@@ -959,7 +870,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../vm-install/vm-requirements/" class="md-nav__link">
+      <a href="../../../install/vm-install/vm-requirements/" class="md-nav__link">
         
   
   
@@ -982,7 +893,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../vm-install/ubuntu/" class="md-nav__link">
+      <a href="../../../install/vm-install/ubuntu/" class="md-nav__link">
         
   
   
@@ -1005,7 +916,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../vm-install/rhel/" class="md-nav__link">
+      <a href="../../../install/vm-install/rhel/" class="md-nav__link">
         
   
   
@@ -1028,7 +939,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../vm-install/suse/" class="md-nav__link">
+      <a href="../../../install/vm-install/suse/" class="md-nav__link">
         
   
   
@@ -1063,6 +974,8 @@
       
   
   
+    
+  
   
   
     
@@ -1086,18 +999,21 @@
     
     
       
+        
+        
+      
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../../admin/" class="md-nav__link ">
+            <a href="../../" class="md-nav__link ">
               
   
   
@@ -1110,13 +1026,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Administration
@@ -1132,7 +1048,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/config/" class="md-nav__link">
+      <a href="../../config/" class="md-nav__link">
         
   
   
@@ -1180,7 +1096,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../../admin/kubernetes-ops/" class="md-nav__link ">
+            <a href="../../kubernetes-ops/" class="md-nav__link ">
               
   
   
@@ -1215,7 +1131,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/kubernetes-ops/upgrade/" class="md-nav__link">
+      <a href="../../kubernetes-ops/upgrade/" class="md-nav__link">
         
   
   
@@ -1238,7 +1154,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/kubernetes-ops/admin-ui-private/" class="md-nav__link">
+      <a href="../../kubernetes-ops/admin-ui-private/" class="md-nav__link">
         
   
   
@@ -1266,8 +1182,10 @@
                 
   
   
+    
   
   
+  
     
     
       
@@ -1290,11 +1208,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" checked>
         
           
           <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
@@ -1310,7 +1228,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3_4">
             <span class="md-nav__icon md-icon"></span>
             Admin UI
@@ -1324,7 +1242,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/introduction/" class="md-nav__link">
+      <a href="../introduction/" class="md-nav__link">
         
   
   
@@ -1344,8 +1262,10 @@
                 
   
   
+    
   
   
+  
     
     
       
@@ -1360,11 +1280,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_2" checked>
         
           
           <label class="md-nav__link" for="__nav_3_4_2" id="__nav_3_4_2_label" tabindex="0">
@@ -1380,7 +1300,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3_4_2">
             <span class="md-nav__icon md-icon"></span>
             Design & Implementation
@@ -1394,7 +1314,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/auth-server-interaction/" class="md-nav__link">
+      <a href="../auth-server-interaction/" class="md-nav__link">
         
   
   
@@ -1414,10 +1334,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/access-control/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Access Control
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1428,6 +1370,95 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#admin-ui-features-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      Admin UI Features (Resources)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#managing-admin-uis-policy-store" class="md-nav__link">
+    <span class="md-ellipsis">
+      Managing Admin UI's Policy Store
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#policies" class="md-nav__link">
+    <span class="md-ellipsis">
+      Policies
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Policies">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#manage-the-access-control-in-admin-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      Manage the access control in Admin UI
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#adding-new-roles-in-admin-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      Adding new Roles in Admin UI
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#writing-policies-parent-groups-as-resource" class="md-nav__link">
+    <span class="md-ellipsis">
+      Writing policies: Parent Groups as Resource
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#writing-policies-specific-admin-ui-feature-as-resource" class="md-nav__link">
+    <span class="md-ellipsis">
+      Writing policies: Specific Admin UI Feature as Resource
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1448,7 +1479,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/configuration/" class="md-nav__link">
+      <a href="../configuration/" class="md-nav__link">
         
   
   
@@ -1471,7 +1502,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/logs/" class="md-nav__link">
+      <a href="../logs/" class="md-nav__link">
         
   
   
@@ -1561,7 +1592,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/left-nav-menu/" class="md-nav__link">
+      <a href="../left-nav-menu/" class="md-nav__link">
         
   
   
@@ -1584,7 +1615,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/home/" class="md-nav__link">
+      <a href="../home/" class="md-nav__link">
         
   
   
@@ -1607,7 +1638,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/auth-server-menu/" class="md-nav__link">
+      <a href="../auth-server-menu/" class="md-nav__link">
         
   
   
@@ -1630,7 +1661,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/user-management-menu/" class="md-nav__link">
+      <a href="../user-management-menu/" class="md-nav__link">
         
   
   
@@ -1653,7 +1684,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/scripts/" class="md-nav__link">
+      <a href="../scripts/" class="md-nav__link">
         
   
   
@@ -1676,7 +1707,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/user-claims/" class="md-nav__link">
+      <a href="../user-claims/" class="md-nav__link">
         
   
   
@@ -1699,7 +1730,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/services-menu/" class="md-nav__link">
+      <a href="../services-menu/" class="md-nav__link">
         
   
   
@@ -1722,7 +1753,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/smtp-menu/" class="md-nav__link">
+      <a href="../smtp-menu/" class="md-nav__link">
         
   
   
@@ -1745,7 +1776,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/scim-menu/" class="md-nav__link">
+      <a href="../scim-menu/" class="md-nav__link">
         
   
   
@@ -1768,7 +1799,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/fido-menu/" class="md-nav__link">
+      <a href="../fido-menu/" class="md-nav__link">
         
   
   
@@ -1791,7 +1822,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/saml-menu/" class="md-nav__link">
+      <a href="../saml-menu/" class="md-nav__link">
         
   
   
@@ -1814,7 +1845,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/jans-lock-menu/" class="md-nav__link">
+      <a href="../jans-lock-menu/" class="md-nav__link">
         
   
   
@@ -1845,7 +1876,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/faq/" class="md-nav__link">
+      <a href="../faq/" class="md-nav__link">
         
   
   
@@ -1903,7 +1934,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../../admin/recipes/" class="md-nav__link ">
+            <a href="../../recipes/" class="md-nav__link ">
               
   
   
@@ -1938,7 +1969,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/recipes/getting-started-rancher/" class="md-nav__link">
+      <a href="../../recipes/getting-started-rancher/" class="md-nav__link">
         
   
   
@@ -1961,7 +1992,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/recipes/testing-flex-saml-sso-sptest/" class="md-nav__link">
+      <a href="../../recipes/testing-flex-saml-sso-sptest/" class="md-nav__link">
         
   
   
@@ -1984,7 +2015,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/recipes/add-claims-to-token/" class="md-nav__link">
+      <a href="../../recipes/add-claims-to-token/" class="md-nav__link">
         
   
   
@@ -2015,7 +2046,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/gluu-migration/" class="md-nav__link">
+      <a href="../../gluu-migration/" class="md-nav__link">
         
   
   
@@ -2647,28 +2678,64 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#agama-lab" class="md-nav__link">
+  <a href="#admin-ui-features-resources" class="md-nav__link">
     <span class="md-ellipsis">
-      Agama Lab
+      Admin UI Features (Resources)
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#software-statement-assertions" class="md-nav__link">
+  <a href="#managing-admin-uis-policy-store" class="md-nav__link">
     <span class="md-ellipsis">
-      Software Statement Assertions
+      Managing Admin UI's Policy Store
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Software Statement Assertions">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#policies" class="md-nav__link">
+    <span class="md-ellipsis">
+      Policies
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Policies">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#obtaining-an-ssa" class="md-nav__link">
+  <a href="#manage-the-access-control-in-admin-ui" class="md-nav__link">
     <span class="md-ellipsis">
-      Obtaining an SSA
+      Manage the access control in Admin UI
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#adding-new-roles-in-admin-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      Adding new Roles in Admin UI
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#writing-policies-parent-groups-as-resource" class="md-nav__link">
+    <span class="md-ellipsis">
+      Writing policies: Parent Groups as Resource
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#writing-policies-specific-admin-ui-feature-as-resource" class="md-nav__link">
+    <span class="md-ellipsis">
+      Writing policies: Specific Admin UI Feature as Resource
     </span>
   </a>
   
@@ -2676,15 +2743,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#license" class="md-nav__link">
-    <span class="md-ellipsis">
-      License
-    </span>
-  </a>
   
 </li>
       
@@ -2707,13 +2765,31 @@
       
       
       
+        <span class="md-tag">access control</span>
+      
+    
+      
+      
+      
+        <span class="md-tag">admin-ui</span>
+      
+    
+      
+      
+      
         <span class="md-tag">administration</span>
       
     
       
       
       
-        <span class="md-tag">installation</span>
+        <span class="md-tag">cedarling</span>
+      
+    
+      
+      
+      
+        <span class="md-tag">security</span>
       
     
   </nav>
@@ -2723,49 +2799,243 @@
   
 
 
-<h1 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">#</a></h1>
-<h2 id="agama-lab">Agama Lab<a class="headerlink" href="#agama-lab" title="Permanent link">#</a></h2>
-<p><a href="https://gluu.org/agama-lab/">Agama Lab</a> is a platform to manage your Gluu license. This is where you may subscribe to Gluu Flex or obtain credentials for your enterprise license.</p>
+<h1 id="access-control-in-admin-ui">Access Control in Admin UI<a class="headerlink" href="#access-control-in-admin-ui" title="Permanent link">#</a></h1>
+<p>The role of the user logged-in to Gluu Flex Admin UI decides if the user will have access to a certain Admin UI's feature or not. After user authentication the user's role and other claims are packed in bundle of tokens (access_token, id_token and userinfo_token). <a href="https://docs.jans.io/stable/cedarling">Cedarling</a> PDP embedded with GUI, processes the tokens and decides if the action (like Read, Write or Delete) is allowed on this resource (feature). The Cedarling's Token-based Access Control (TBAC) is used for managing access control in Gluu Flex Admin UI.</p>
+<h2 id="admin-ui-features-resources">Admin UI Features (Resources)<a class="headerlink" href="#admin-ui-features-resources" title="Permanent link">#</a></h2>
+<p>The Admin UI features (or resources) are categorised into following parent groups. This categorization is done for resource grouping in cedar policies used for governing the authorization decision taken by Cedarling.</p>
 <ul>
-<li>To begin, please visit <a href="https://cloud.gluu.org/agama-lab">Agama Lab</a></li>
-<li>You may register via email or login via GitHub<ul>
-<li>If you want to author or test <a href="https://docs.jans.io/head/agama/introduction/">Agama</a> or <a href="https://docs.jans.io/head/cedarling/cedarling-getting-started/">Cedarling</a> projects, you will need to login via GitHub</li>
+<li>System and monitoring<ul>
+<li>Dashboard</li>
+<li>Health</li>
+<li>License</li>
+<li>MAU</li>
+<li>Settings</li>
+<li>Security</li>
+<li>Webhooks</li>
+<li>Assets</li>
+<li>AuditLogs</li>
 </ul>
 </li>
-<li>Once you have logged in, please navigate to <code>Market</code> &gt; <code>Flex</code></li>
+<li>AuthServer and configuration<ul>
+<li>Clients</li>
+<li>Scopes</li>
+<li>Keys</li>
+<li>AuthServerProperties</li>
+<li>Logging</li>
+<li>SSA</li>
+<li>Authn</li>
+<li>ConfigAPIProperties</li>
+<li>Sessions</li>
 </ul>
-<h2 id="software-statement-assertions">Software Statement Assertions<a class="headerlink" href="#software-statement-assertions" title="Permanent link">#</a></h2>
-<p>In order to install Flex, you will need a Software Statement Assertion (SSA). An SSA is a signed JSON Web Token (JWT) that is required by the Flex install script to validate your license.</p>
-<h3 id="obtaining-an-ssa">Obtaining an SSA<a class="headerlink" href="#obtaining-an-ssa" title="Permanent link">#</a></h3>
-<p>Gluu issues SSAs through the Agama Lab web interface. You can obtain an SSA for use with Flex by following these steps:</p>
-<ul>
-<li>Login to Agama Lab</li>
-<li>On the left navigation bar, select <code>Market</code></li>
-<li>Navigate to the tab named <code>Flex</code>.
-<img alt="ssa-management" src="../../../assets/agama-lab/ssa-management.png" /></li>
-<li>
-<p>Click on <code>Create New SSA</code></p>
-<ul>
-<li>On <code>Software Name</code>, fill in a unique identifier for this SSA</li>
-<li><code>Description</code> is optional</li>
-<li>Under <code>Software Roles</code>, tick <code>license</code></li>
-<li>Under <code>Expiration Date</code>, select an appropriate date. Your SSA will not be useable after that date.</li>
-<li>Under <code>SSA Lifetime</code>, choose an appropriate lifetime for the Flex client. One month or longer is recommended.</li>
-<li>Deselect <code>One time use</code> and <code>Rotate SSA</code></li>
-<li>Click <code>Create</code></li>
-</ul>
-<p><img alt="ssa-creation" src="../../../assets/agama-lab/ssa-creation.png" />
-- Click on <code>Detail</code> of the newly issued SSA, then click on <code>Show JWT</code>
-<img alt="ssa-details" src="../../../assets/agama-lab/ssa-details.png" /></p>
 </li>
-<li>
-<p>You will be shown a long string of characters. Copy this and save it to a file.</p>
-</li>
-<li>You may now use this file during Flex installation.</li>
+<li>Identity and Access<ul>
+<li>Users</li>
+<li>Scripts</li>
+<li>UserClaims</li>
 </ul>
-<h2 id="license">License<a class="headerlink" href="#license" title="Permanent link">#</a></h2>
-<p>Gluu Flex uses the SSA obtained in the above step to either request a 30 day trial license or verify presence of a license tied to your Agama Lab account. One account may request one trial license in its lifetime. To purchase a full license, please navigate to the <code>Flex</code> tab of the marketplace where you may purchase licenses for up to 1600 MAU (monthly active users). To purchase an enterprise license for more MAU, please contact <a href="mailto:sales@gluu.org">Sales</a>.</p>
-<p>If you have subscribed to Flex via Agama Lab, the SSA obtained in the step before will automatically link your license to your installation. For enterprise licenses, please open a support ticket so that we can issue a license against your account. Once this is done, you may use the SSA obtained to proceed to installation.</p>
+</li>
+<li>Service<ul>
+<li>Cache</li>
+<li>Persistence</li>
+<li>SMTP</li>
+<li>SCIM</li>
+<li>FIDO</li>
+<li>SAML</li>
+<li>Lock</li>
+</ul>
+</li>
+</ul>
+<p>In the Policy Store we use <a href="https://docs.jans.io/stable/cedarling/cedarling-policy-store/#default-entities">default_entities</a> to map the parent group with the sub features. For e.g. here we are showing the default entity json to map the features under <code>System and monitoring</code> parent group.</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;1694c954f8d9&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;uid&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gluu::Flex::AdminUI::Resources::Features&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Dashboard&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;attrs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">        </span><span class="nt">&quot;parents&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gluu::Flex::AdminUI::Resources::ParentResource&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SystemAndMonitoring&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;2694c954f8d8&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;uid&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gluu::Flex::AdminUI::Resources::Features&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;License&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;attrs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">        </span><span class="nt">&quot;parents&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gluu::Flex::AdminUI::Resources::ParentResource&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SystemAndMonitoring&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;3694c954f8d7&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;uid&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gluu::Flex::AdminUI::Resources::Features&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MAU&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;attrs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">        </span><span class="nt">&quot;parents&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gluu::Flex::AdminUI::Resources::ParentResource&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SystemAndMonitoring&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;4694c954f8d6&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;uid&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gluu::Flex::AdminUI::Resources::Features&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Security&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;attrs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">        </span><span class="nt">&quot;parents&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gluu::Flex::AdminUI::Resources::ParentResource&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SystemAndMonitoring&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;6494c954f8d6&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;uid&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gluu::Flex::AdminUI::Resources::Features&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Settings&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;attrs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">        </span><span class="nt">&quot;parents&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gluu::Flex::AdminUI::Resources::ParentResource&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SystemAndMonitoring&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="err">...</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="managing-admin-uis-policy-store">Managing Admin UI's Policy Store<a class="headerlink" href="#managing-admin-uis-policy-store" title="Permanent link">#</a></h2>
+<p>After installation, Admin UI uses a default Policy Store for GUI access control. The logged-in user can use the <a href="../configuration/#cedarling-configuration">Cedarling configuration screen</a> to configure a remote Policy Store generated by <a href="https://cloud.gluu.org/agama-lab">Agama-Lab</a> using its URL. When the Policy Store URL is configured, the backend parses the Policy Store to determine the roles and the role-to-scope mappings. The Policy Store is used for managing GUI access control. The aggregated role-to-scope mapping (obtained by parsing the Policy Store) ensures that only the mapped scopes are added in the authorization tokens to access the appropriate protected Config API endpoints.</p>
+<pre class="mermaid"><code>C4Context
+    title Access Control in Gluu Flex Admin UI
+
+    Enterprise_Boundary(flex, "Gluu Flex") {
+        Container(JansAuthServer, "Janssen Authentication Server", "Auth Server and OpenID Provider")
+
+        Container_Boundary(ConfigApiBoundary, "Config API") {
+            Container(AdminUIBackend, "Admin UI Backend", "The backend used by Admin UI")
+        }
+
+        Container_Boundary(AdminUIBoundary, "Admin UI") {
+            Container(Cedarling, "Cedarling", "PDP")
+            Container(Frontend, "Admin UI Frontend", "Web Interface")
+        }
+
+        ContainerDb(PolicyStore, "Default Policy Store", "Default Policy Store JSON File")
+    }
+
+    Enterprise_Boundary(AgamaLab, "Agama Lab") {
+        Container(PolicyDesigner, "Policy Designer", "Policy Designer for Cedarling")
+    }
+
+    Enterprise_Boundary(GitHub, "GitHub") {
+        ContainerDb(PolicyStoreProject, "Policy Store Project", "GitHub repository for storing remote Policy Stores")
+    }
+
+    Rel(AdminUIBackend, PolicyStore, "Use default Policy Store if &lt;br&gt;remote Policy Store URL not configured")
+    Rel(AdminUIBackend, PolicyStoreProject, "Use remote Policy Store if &lt;br&gt; remote Policy Store URL is configured")
+    Rel(AdminUIBackend, Cedarling, "Request Policy &lt;br&gt;Store for initialization")
+    Rel(PolicyDesigner, PolicyStoreProject, "Save Policy Store project to GitHub")
+    Rel(Frontend, Cedarling, "Check user permissions&lt;br&gt;for UI features and actions", "TBAC Authorization")</code></pre>
+<h2 id="policies">Policies<a class="headerlink" href="#policies" title="Permanent link">#</a></h2>
+<p>The Cedar policies in the Policy Store empowers the administrator with following:</p>
+<h3 id="manage-the-access-control-in-admin-ui">Manage the access control in Admin UI<a class="headerlink" href="#manage-the-access-control-in-admin-ui" title="Permanent link">#</a></h3>
+<p>The Cedar policies are rules which decide if the logged-in user can perform Read, Write or Delete action on a feature or not. By writing the appropriate cedar policies the administrator can manage access control in Admin UI. For e.g the below policy allows the user with role <strong>admin</strong> to perform <strong>Read</strong>, <strong>Write</strong> or <strong>Delete</strong> actions on all the features under the parent group <strong>AuthServerAndConfiguration</strong>.</p>
+<div class="highlight"><pre><span></span><code>@id(&quot;AdminCanManageAuthServerConfiguration&quot;)
+permit (
+  principal in Gluu::Flex::AdminUI::Role::&quot;admin&quot;,
+  action in [Gluu::Flex::AdminUI::Action::&quot;read&quot;,
+  Gluu::Flex::AdminUI::Action::&quot;write&quot;,
+  Gluu::Flex::AdminUI::Action::&quot;delete&quot;],
+  resource in Gluu::Flex::AdminUI::Resources::ParentResource::&quot;AuthServerAndConfiguration&quot;
+);
+</code></pre></div>
+<p>Below policy gives the users with role <strong>viewer</strong> the <strong>Read</strong> access to all the features under the <strong>IdentityAndAccess</strong> parent group.</p>
+<div class="highlight"><pre><span></span><code>@id(&quot;ViewerCanViewUserIdentityAndAccess&quot;)
+permit (
+  principal in Gluu::Flex::AdminUI::Role::&quot;viewer&quot;,
+  action in Gluu::Flex::AdminUI::Action::&quot;read&quot;,
+  resource in Gluu::Flex::AdminUI::Resources::ParentResource::&quot;IdentityAndAccess&quot;
+);
+</code></pre></div>
+<p>Below policy gives the users with role <strong>auditor</strong> the <strong>Read</strong>, <strong>Write</strong> and <strong>Delete</strong> access to only the <strong>Clients</strong> feature of Admin UI.</p>
+<div class="highlight"><pre><span></span><code>@id(&quot;AuditorCanManageClients&quot;)
+permit (
+  principal in Gluu::Flex::AdminUI::Role::&quot;auditor&quot;,
+  action in [Gluu::Flex::AdminUI::Action::&quot;read&quot;,
+  Gluu::Flex::AdminUI::Action::&quot;write&quot;,
+  Gluu::Flex::AdminUI::Action::&quot;delete&quot;],
+  resource in Gluu::Flex::AdminUI::Resources::Features::&quot;Clients&quot;
+);
+</code></pre></div>
+<h3 id="adding-new-roles-in-admin-ui">Adding new Roles in Admin UI<a class="headerlink" href="#adding-new-roles-in-admin-ui" title="Permanent link">#</a></h3>
+<p>To add new Admin UI user roles, the administrator just need to introduce the policies associated with those roles in the Policy Store. On saving the Policy Store the Admin UI parses it and aggregates the roles and role-to-scope mapping. The aggregated data is saved into the persistence.</p>
+<h3 id="writing-policies-parent-groups-as-resource">Writing policies: Parent Groups as Resource<a class="headerlink" href="#writing-policies-parent-groups-as-resource" title="Permanent link">#</a></h3>
+<p>The principal element in a <a href="https://docs.cedarpolicy.com/">Cedar policy</a> represents a user, service, or other identity that can make a request to perform an action on a resource in your application. We will learn how to write an Admin UI policy using a sample scenario: a logged-in user with the <strong>admin</strong> role can manage the <strong>Auth Server and its configuration</strong>.</p>
+<p><div class="highlight"><pre><span></span><code>@id(&quot;AdminCanManageAuthServerConfiguration&quot;)
+permit (
+  principal in Gluu::Flex::AdminUI::Role::&quot;admin&quot;,
+  action in [Gluu::Flex::AdminUI::Action::&quot;read&quot;,
+  Gluu::Flex::AdminUI::Action::&quot;write&quot;,
+  Gluu::Flex::AdminUI::Action::&quot;delete&quot;],
+  resource in Gluu::Flex::AdminUI::Resources::ParentResource::&quot;AuthServerAndConfiguration&quot;
+);
+</code></pre></div>
+<strong>Principal :</strong>
+We are using the administrator's <strong>role</strong> as principal while writing the policies for Admin UI. Here <code>Gluu::Flex::AdminUI::</code> is the namespace in cedar schema where the <code>Role</code> entity resides. The <strong>admin</strong> surrounded by inverted commas is the Entity Id of the <strong>Role</strong> entity and is basically the role name.</p>
+<p><strong>Action :</strong>
+In this policy, we are allowing <strong>Read</strong>, <strong>Write</strong> and <strong>Delete</strong> actions on the resource. Here we have <code>action in [Gluu::Flex::AdminUI::Action::"read", Gluu::Flex::AdminUI::Action::"write", Gluu::Flex::AdminUI::Action::"delete"]</code>. The <code>Gluu::Flex::AdminUI::</code> is the namespace where all action entities reside.</p>
+<p><strong>Resource :</strong>
+As we have categorised Admin UI features (or resources) into the parent groups, <code>resource in Gluu::Flex::AdminUI::Resources::ParentResource::"AuthServerAndConfiguration"</code> allows the user with role <strong>admin</strong> to perform <strong>Read</strong>, <strong>Write</strong> and <strong>Delete</strong> actions on all the features under <strong>AuthServerAndConfiguration</strong> parent group. Here <code>Gluu::Flex::AdminUI::Resources::</code> is the namespace where <strong>ParentResource</strong> entity resides. The <strong>ParentResource</strong> entity represents the parent group and <strong>AuthServerAndConfiguration</strong> in inverted commas is the entity id representing name of the parent group.</p>
+<h3 id="writing-policies-specific-admin-ui-feature-as-resource">Writing policies: Specific Admin UI Feature as Resource<a class="headerlink" href="#writing-policies-specific-admin-ui-feature-as-resource" title="Permanent link">#</a></h3>
+<p>To define policies for a specific Admin UI feature (e.g., Clients, Scopes, Users), use the format <code>Gluu::Flex::AdminUI::Resources::Features</code> followed by the resource’s Entity ID enclosed in quotation marks in resource clause. For e.g. below policy allows <strong>Read</strong>, <strong>Write</strong> and <strong>Delete</strong> action to the user with role <strong>auditor</strong> on <strong>Clients</strong> resource.</p>
+<p><div class="highlight"><pre><span></span><code>@id(&quot;AuditorCanManageClients&quot;)
+permit (
+  principal in Gluu::Flex::AdminUI::Role::&quot;auditor&quot;,
+  action in [Gluu::Flex::AdminUI::Action::&quot;read&quot;,
+  Gluu::Flex::AdminUI::Action::&quot;write&quot;,
+  Gluu::Flex::AdminUI::Action::&quot;delete&quot;],
+  resource in Gluu::Flex::AdminUI::Resources::Features::&quot;Clients&quot;
+);
+</code></pre></div>
+Please see the Entity Ids of the Parent Groups and their underlying features in this table:</p>
+<table>
+<thead>
+<tr>
+<th>Parent Group</th>
+<th>Features</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AuthServerAndConfiguration</td>
+<td>Clients, Scopes, Keys, AuthenticationServerConfiguration, Logging, SSA, Authentication, ConfigApiConfiguration, Session</td>
+</tr>
+<tr>
+<td>IdentityAndAccess</td>
+<td>Users, Scripts, Attributes</td>
+</tr>
+<tr>
+<td>SystemAndMonitoring</td>
+<td>Dashboard, License, MAU, Security, Settings, Webhooks, Assets, AuditLogs</td>
+</tr>
+<tr>
+<td>Service</td>
+<td>Persistence, SMTP, SCIM, FIDO, SAML, Lock</td>
+</tr>
+</tbody>
+</table>
 
 
 
@@ -2788,7 +3058,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="July 11, 2025 08:46:16 UTC"><span class="timeago" datetime="2025-07-11T08:46:16+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="July 11, 2025 08:46:16 UTC">2025-07-11</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="November 20, 2025 08:59:14 UTC"><span class="timeago" datetime="2025-11-20T08:59:14+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="November 20, 2025 08:59:14 UTC">2025-11-20</span>
   </span>
 
     
@@ -2798,7 +3068,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="May 18, 2023 09:06:26 UTC"><span class="timeago" datetime="2023-05-18T09:06:26+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="May 18, 2023 09:06:26 UTC">2023-05-18</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="November 20, 2025 08:59:14 UTC"><span class="timeago" datetime="2025-11-20T08:59:14+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="November 20, 2025 08:59:14 UTC">2025-11-20</span>
   </span>
 
     

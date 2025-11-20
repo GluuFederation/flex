@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://docs.gluu.org/head/admin/admin-ui/configuration/">
       
       
-        <link rel="prev" href="../auth-server-interaction/">
+        <link rel="prev" href="../access-control/">
       
       
         <link rel="next" href="../logs/">
@@ -1269,6 +1269,8 @@
       
         
       
+        
+      
     
     
     
@@ -1316,6 +1318,29 @@
   
   <span class="md-ellipsis">
     Auth Server Interaction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../access-control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Access Control
     
   </span>
   
@@ -1401,11 +1426,35 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#role-permission-mapping" class="md-nav__link">
+  <a href="#cedarling-configuration" class="md-nav__link">
     <span class="md-ellipsis">
-      Role-Permission Mapping
+      Cedarling Configuration
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Cedarling Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#policy-retrieval-point" class="md-nav__link">
+    <span class="md-ellipsis">
+      Policy Retrieval Point
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steps-to-configure-remote-policy-store-url" class="md-nav__link">
+    <span class="md-ellipsis">
+      Steps to configure Remote Policy Store URL
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -2661,11 +2710,35 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#role-permission-mapping" class="md-nav__link">
+  <a href="#cedarling-configuration" class="md-nav__link">
     <span class="md-ellipsis">
-      Role-Permission Mapping
+      Cedarling Configuration
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Cedarling Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#policy-retrieval-point" class="md-nav__link">
+    <span class="md-ellipsis">
+      Policy Retrieval Point
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steps-to-configure-remote-policy-store-url" class="md-nav__link">
+    <span class="md-ellipsis">
+      Steps to configure Remote Policy Store URL
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -2761,120 +2834,32 @@
 
 
 <h1 id="gluu-flex-admin-ui-configuration">Gluu Flex Admin UI Configuration<a class="headerlink" href="#gluu-flex-admin-ui-configuration" title="Permanent link">#</a></h1>
-<p>This document outlines the configuration process for Gluu Flex Admin UI, with a focus on essential components stored in the Auth Server's persistence layer. These components include role-permission mapping, OIDC client details for accessing the Auth Server, OIDC client details for accessing the Token Server, OIDC client details for accessing the License APIs, and license metadata.</p>
+<p>This document outlines the configuration process for Gluu Flex Admin UI, with a focus on essential components stored in the Auth Server's persistence layer. These components include Cedarling Configuration, OIDC client details for accessing the Auth Server, OIDC client details for accessing the Token Server, OIDC client details for accessing the License APIs, and license metadata.</p>
 <h2 id="configuration-components">Configuration Components<a class="headerlink" href="#configuration-components" title="Permanent link">#</a></h2>
-<h3 id="role-permission-mapping">Role-Permission Mapping<a class="headerlink" href="#role-permission-mapping" title="Permanent link">#</a></h3>
-<p><a href="../admin-menu/">Role-permission</a> mapping defines which administrative roles are granted specific permissions within the Gluu Flex Admin UI. This mapping ensures that administrators can only access and modify functionalities relevant to their roles.</p>
-<p>The mapping is stored in json format with following attributes.</p>
-<p><strong>Roles</strong></p>
-<table>
-<thead>
-<tr>
-<th>Attribute Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>roles</td>
-<td>Array of all roles</td>
-</tr>
-<tr>
-<td>role</td>
-<td>Role name</td>
-</tr>
-<tr>
-<td>description</td>
-<td>Role description</td>
-</tr>
-<tr>
-<td>deletable</td>
-<td>If set to <code>true</code> then entire role-permission mapping with respect to the role can be deleted. Default value: <code>false</code></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Permissions</strong></p>
-<table>
-<thead>
-<tr>
-<th>Attribute Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>permissions</td>
-<td>Array of all available permissions</td>
-</tr>
-<tr>
-<td>permission</td>
-<td>Permission name</td>
-</tr>
-<tr>
-<td>description</td>
-<td>Permission description</td>
-</tr>
-<tr>
-<td>defaultPermissionInToken</td>
-<td>If set to <code>true</code>, it indicates that permission will need authentication and valid role during <code>/token</code> request to include in token</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Mapping</strong></p>
-<table>
-<thead>
-<tr>
-<th>Attribute Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>rolePermissionMapping</td>
-<td>List of all role-permission mapping</td>
-</tr>
-<tr>
-<td>role</td>
-<td>Role name</td>
-</tr>
-<tr>
-<td>permission</td>
-<td>Array of all permission mapped to the role</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Sample role-permission mapping stored in persistence</strong></p>
-<div class="highlight"><pre><span></span><code>{
-  &quot;roles&quot;: [
-    {
-      &quot;role&quot;: &quot;sample-role&quot;,
-      &quot;description&quot;: &quot;role description&quot;,
-      &quot;deletable&quot;: false
-    }
-  ],
-  &quot;permissions&quot;: [
-    {
-      &quot;permission&quot;: &quot;sample-permission1&quot;,
-      &quot;description&quot;: &quot;permission1 description&quot;,
-      &quot;defaultPermissionInToken&quot;: false
-    },
-    {
-      &quot;permission&quot;: &quot;sample-permission2&quot;,
-      &quot;description&quot;: &quot;permission2 description&quot;,
-      &quot;defaultPermissionInToken&quot;: true
-    }
-  ],
-  &quot;rolePermissionMapping&quot;: [
-    {
-      &quot;role&quot;: &quot;sample-role&quot;,
-      &quot;permissions&quot;: [
-        &quot;sample-permission1&quot;,
-        &quot;sample-permission2&quot;
-      ]
-    }
-  ]
-}
-</code></pre></div>
+<h3 id="cedarling-configuration">Cedarling Configuration<a class="headerlink" href="#cedarling-configuration" title="Permanent link">#</a></h3>
+<p>Gluu Flex Admin UI uses <a href="https://docs.jans.io/stable/cedarling/">Cedarling</a> for GUI access control. The role of the user is mapped with specific permissions (scopes) to ensure that the user can only access and modify functionalities relevant to their roles.</p>
+<p>The Cedarling Policy Store configuration screen helps to configure the Policy Store used for the Admin UI access control. The Gluu Flex Admin UI uses a default Policy Store after installation for GUI access control. You need to configure a remote Cedarling Policy Store using its URL and Admin UI backend will automatically synchronize roles and role-to-scope mapping as per the schema and policies defined in the Policy Store.</p>
+<p><img alt="image" src="../../../assets/admin-ui/cedarling-config.png" /></p>
+<h4 id="policy-retrieval-point">Policy Retrieval Point<a class="headerlink" href="#policy-retrieval-point" title="Permanent link">#</a></h4>
+<p>This feature is useful for setting PRP. It helps to prevent MITM attacks in production. There are 2 modes.</p>
+<ol>
+<li>
+<p><code>Remote</code>: In this mode, Admin UI will always use the remote policy store URL to initialize Cedarling, fetch policies, and schema.</p>
+</li>
+<li>
+<p><code>Default</code>: It is recommended to set it to Default for production. If set to Default, it will use the Admin-UI storage for Cedarling authorization. Enable Default mode and use the refresh button to store or update GitHub policies on the Admin-UI Server.</p>
+</li>
+</ol>
+<h4 id="steps-to-configure-remote-policy-store-url">Steps to configure Remote Policy Store URL<a class="headerlink" href="#steps-to-configure-remote-policy-store-url" title="Permanent link">#</a></h4>
+<ol>
+<li>Fork the project <a href="https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/tree/agama-lab-policy-designer">GluuFlexAdminUIPolicyStore</a>.</li>
+<li>Open the forked repository using <a href="https://cloud.gluu.org/agama-lab">Agama Lab's</a> Policy Designer.</li>
+<li>Make the required modifications in the policies for Admin UI access control and save the changes.</li>
+<li>Copy the Policy Store URL.
+ <img alt="image" src="../../../assets/admin-ui/admin-ui-policy-store.png" /></li>
+<li>Open Cedarling Policy Store configuration screen on Admin UI and add the copied Policy Store URL in <code>Admin UI Remote Policy Store</code> field.</li>
+<li>Set <code>Policy Retrieval Point</code> field to <code>Remote</code> to use the remote Policy Store URL for the GUI access control.</li>
+</ol>
 <h3 id="oidc-client-details-for-auth-server">OIDC Client Details for Auth Server<a class="headerlink" href="#oidc-client-details-for-auth-server" title="Permanent link">#</a></h3>
 <p>To establish secure communication with the Auth Server, Gluu Flex Admin UI requires the OIDC client details, including client ID and client secret. These details are used for authentication and authorization purposes.</p>
 <p>The information is stored in json format with following attributes.</p>
@@ -2980,6 +2965,41 @@
 </tr>
 </tbody>
 </table>
+<p>uiConfig </p>
+<table>
+<thead>
+<tr>
+<th>Attribute Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sessionTimeoutInMins</td>
+<td>Admin UI Frontend session out time</td>
+</tr>
+<tr>
+<td>allowSmtpKeystoreEdit</td>
+<td>Allow to edit SMTP keystore fields. The default value is <code>true</code>.</td>
+</tr>
+<tr>
+<td>cedarlingLogType</td>
+<td>Set embeded Cedarling log-type in Admin UI. The allowed values are <code>off</code> and <code>std_out</code>.</td>
+</tr>
+<tr>
+<td>auiPolicyStoreUrl</td>
+<td>The remote Policy Store URL</td>
+</tr>
+<tr>
+<td>auiDefaultPolicyStorePath</td>
+<td>The path of the default Policy Store json file on Config Api pod.</td>
+</tr>
+<tr>
+<td>cedarlingPolicyStoreRetrievalPoint</td>
+<td>The retrieval point of the Policy Store. The allowed values are <code>default</code> and <code>remote</code>.</td>
+</tr>
+</tbody>
+</table>
 <h3 id="oidc-client-details-for-license-server">OIDC Client Details for License Server<a class="headerlink" href="#oidc-client-details-for-license-server" title="Permanent link">#</a></h3>
 <p>Access to the License APIs is managed through OIDC client details. These details allows the Gluu Flex Admin UI Backend to generated access token to allow the retrieval of license-related information using license APIs.</p>
 <p>The information is stored in json format with following attributes.</p>
@@ -3073,7 +3093,12 @@
     }
   },
   &quot;uiConfig&quot;: {
-    &quot;sessionTimeoutInMins&quot;: 30
+    &quot;sessionTimeoutInMins&quot;: 30,
+    &quot;allowSmtpKeystoreEdit&quot;: true,
+    &quot;cedarlingLogType&quot;:&quot;off&quot;,
+    &quot;auiPolicyStoreUrl&quot;: &quot;&quot;,
+    &quot;auiDefaultPolicyStorePath&quot;: &quot;./custom/config/adminUI/policy-store.json&quot;,
+    &quot;cedarlingPolicyStoreRetrievalPoint&quot;: &quot;default&quot;
   },
   &quot;licenseConfig&quot;: {
     &quot;ssa&quot;: &quot;...ssa in jwt format...&quot;,
@@ -3110,7 +3135,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="November 17, 2025 12:23:05 UTC"><span class="timeago" datetime="2025-11-17T12:23:05+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="November 17, 2025 12:23:05 UTC">2025-11-17</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="November 20, 2025 08:59:14 UTC"><span class="timeago" datetime="2025-11-20T08:59:14+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="November 20, 2025 08:59:14 UTC">2025-11-20</span>
   </span>
 
     
