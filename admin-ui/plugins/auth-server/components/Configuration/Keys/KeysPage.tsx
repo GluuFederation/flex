@@ -6,6 +6,11 @@ import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
+/**
+ * Render the public keys configuration page, set the page title, and display the JWK list inside a tab.
+ *
+ * @returns A React element containing a Card with a tabbed JWK list and the page title set to the localized "public keys" title.
+ */
 function KeysPage(): React.ReactElement {
   const { t } = useTranslation()
   SetTitle(t('titles.public_keys'))
