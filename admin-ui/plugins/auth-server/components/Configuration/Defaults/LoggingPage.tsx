@@ -32,11 +32,12 @@ import { loggingValidationSchema } from './validations'
 import type {
   LoggingModuleRootState,
   EditLoggingPayload,
+  ChangedFields,
 } from 'Plugins/auth-server/redux/features/types/loggingTypes'
 
 interface PendingValues {
   mergedValues: Logging
-  changedFields: Record<string, { oldValue: unknown; newValue: unknown }>
+  changedFields: ChangedFields<Logging>
 }
 
 function LoggingPage(): React.ReactElement {
@@ -100,21 +101,8 @@ function LoggingPage(): React.ReactElement {
         return
       }
 
-      const mergedValues = getMergedValues(
-        localLogging as unknown as Record<string, unknown>,
-        values as unknown as Record<string, unknown>,
-      ) as unknown as Logging
-      const changedFieldsResult = getChangedFields(
-        localLogging as unknown as Record<string, unknown>,
-        mergedValues as unknown as Record<string, unknown>,
-      )
-      const changedFields: Record<string, { oldValue: unknown; newValue: unknown }> = {}
-      Object.keys(changedFieldsResult).forEach((key) => {
-        const fieldChange = changedFieldsResult[key]
-        if (fieldChange) {
-          changedFields[key] = fieldChange
-        }
-      })
+      const mergedValues = getMergedValues(localLogging, values)
+      const changedFields = getChangedFields(localLogging, mergedValues)
 
       setPendingValues({ mergedValues, changedFields })
       setShowCommitDialog(true)
@@ -136,11 +124,7 @@ function LoggingPage(): React.ReactElement {
         otherFields: { userMessage, changedFields },
       }
 
-      // Create action object directly since the reducer doesn't use payload but saga does
-      dispatch({
-        type: editLoggingConfig.type,
-        payload,
-      })
+      dispatch(editLoggingConfig(payload))
       setShowCommitDialog(false)
       setPendingValues(null)
     },

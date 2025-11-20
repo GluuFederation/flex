@@ -1,5 +1,9 @@
 import type { Logging } from 'JansConfigApi'
 
+export type ChangedFields<T extends object> = {
+  [K in keyof T]?: { oldValue: T[K]; newValue: T[K] }
+}
+
 // Redux state interface for logging
 export interface LoggingReducerState {
   logging: Logging | null
@@ -11,11 +15,10 @@ export interface LoggingModuleRootState {
   loggingReducer: LoggingReducerState
 }
 
-// Payload type for editLoggingConfig action
 export interface EditLoggingPayload {
   data: Record<string, string>
   otherFields: {
     userMessage: string
-    changedFields: Record<string, { oldValue: unknown; newValue: unknown }>
+    changedFields: ChangedFields<Logging>
   }
 }

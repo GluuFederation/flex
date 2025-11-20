@@ -1,3 +1,5 @@
+import type { ChangedFields } from 'Plugins/auth-server/redux/features/types/loggingTypes'
+
 export const LOG_LEVELS = ['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR'] as const
 export const LOG_LAYOUTS = ['text', 'json'] as const
 
@@ -46,18 +48,12 @@ export const getLoggingInitialValues = (logging?: LoggingConfigLike | null): Log
   }
 }
 
-export function getMergedValues<T extends Record<string, unknown>>(
-  original: T,
-  updated: Partial<T>,
-): T {
+export function getMergedValues<T extends object>(original: T, updated: Partial<T>): T {
   return { ...original, ...updated }
 }
 
-export function getChangedFields<T extends Record<string, unknown>>(
-  original: T,
-  updated: Partial<T>,
-): Partial<Record<keyof T, { oldValue: unknown; newValue: unknown }>> {
-  const changed: Partial<Record<keyof T, { oldValue: unknown; newValue: unknown }>> = {}
+export function getChangedFields<T extends object>(original: T, updated: T): ChangedFields<T> {
+  const changed: ChangedFields<T> = {}
   ;(Object.keys(updated) as Array<keyof T>).forEach((key) => {
     const newValue = updated[key]
     const oldValue = original[key]
