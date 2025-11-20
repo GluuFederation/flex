@@ -6,7 +6,6 @@ import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import PropertyBuilder from './JsonPropertyBuilder'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 import RefreshIcon from '@mui/icons-material/Refresh'
 import spec from '../../../../configApiSpecs.yaml'
 import { buildPayload } from 'Utils/PermChecker'
@@ -23,16 +22,17 @@ import {
 import { getAcrsConfig, editAcrs } from 'Plugins/auth-server/redux/features/acrSlice'
 import { getScripts } from 'Redux/features/initSlice'
 import customColors from '@/customColors'
+import { useAppNavigation } from '@/helpers/navigation'
 
 function ConfigPage() {
   const { hasCedarWritePermission, authorizeHelper } = useCedarling()
+  const { navigateToHome } = useAppNavigation()
   const configuration = useSelector((state) => state.jsonConfigReducer.configuration)
   const acrs = useSelector((state) => state.acrReducer.acrReponse)
   const scripts = useSelector((state) => state.initReducer.scripts)
   const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   const dispatch = useDispatch()
-  const navigate = useNavigate()
 
   const { t } = useTranslation()
   const lSize = 6
@@ -136,7 +136,7 @@ function ConfigPage() {
   }
 
   const handleBack = () => {
-    navigate('/home/dashboard')
+    navigateToHome()
   }
 
   return (

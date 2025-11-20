@@ -1,7 +1,6 @@
 import React, { useCallback, useState, useEffect, useMemo } from 'react'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { FormGroup } from 'Components'
-import { useNavigate } from 'react-router-dom'
 import spec from '../../../../../configApiSpecs.yaml'
 import { useCedarling } from '@/cedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
@@ -10,6 +9,7 @@ import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import JsonPropertyBuilderConfigApi from './JsonPropertyBuilderConfigApi'
 import { toast } from 'react-toastify'
 import type { ApiAppConfiguration, JsonPatch } from './types'
+import { useAppNavigation } from '@/helpers/navigation'
 
 interface ApiConfigFormProps {
   configuration: ApiAppConfiguration
@@ -31,7 +31,7 @@ const { properties: schema } = (spec as unknown as SpecSchema).components?.schem
 
 const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }) => {
   const { authorizeHelper, hasCedarWritePermission } = useCedarling()
-  const navigate = useNavigate()
+  const { navigateToHome } = useAppNavigation()
   const [modal, setModal] = useState(false)
   const [patches, setPatches] = useState<JsonPatch[]>([])
 
@@ -69,17 +69,12 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
     [toggle, onSubmit, patches],
   )
 
-  function generateLabel(name: string): string {
-    const result = name.replace(/([A-Z])/g, ' $1')
-    return result.charAt(0).toUpperCase() + result.slice(1)
-  }
-
   const patchHandler = (patch: JsonPatch) => {
     setPatches((existingPatches) => [...existingPatches, patch])
   }
 
   const handleBack = () => {
-    navigate('/home/dashboard')
+    navigateToHome()
   }
 
   return (
@@ -96,7 +91,7 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
         />
       ))}
 
-      <FormGroup row></FormGroup>
+      <FormGroup row />
       {canWriteConfigApi && (
         <GluuCommitFooter
           saveHandler={toggle}

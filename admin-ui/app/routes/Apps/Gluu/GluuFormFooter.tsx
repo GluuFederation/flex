@@ -1,10 +1,10 @@
 import { useContext, useMemo, useCallback, memo } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { Button, Divider } from 'Components'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { Box } from '@mui/material'
+import { useAppNavigation } from '@/helpers/navigation'
 
 interface ButtonLabelProps {
   isLoading: boolean
@@ -69,15 +69,15 @@ const GluuFormFooter = ({
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = useMemo(() => theme?.state.theme || 'darkBlack', [theme?.state.theme])
-  const navigate = useNavigate()
+  const { navigateToHome } = useAppNavigation()
 
   const handleBackClick = useCallback(() => {
     if (onBack) {
       onBack()
       return
     }
-    navigate('/home/dashboard')
-  }, [onBack, navigate])
+    navigateToHome()
+  }, [onBack, navigateToHome])
 
   const handleCancelClick = useCallback(() => {
     if (onCancel) {

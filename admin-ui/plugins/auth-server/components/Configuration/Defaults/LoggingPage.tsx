@@ -28,9 +28,11 @@ import SetTitle from 'Utils/SetTitle'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import type { Logging } from 'JansConfigApi'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
-import { useNavigate } from 'react-router'
 import { loggingValidationSchema } from './validations'
-import type { RootState } from 'Plugins/auth-server/redux/features/types/loggingTypes'
+import type {
+  LoggingModuleRootState,
+  EditLoggingPayload,
+} from 'Plugins/auth-server/redux/features/types/loggingTypes'
 
 interface PendingValues {
   mergedValues: Logging
@@ -40,10 +42,9 @@ interface PendingValues {
 function LoggingPage(): React.ReactElement {
   const { t } = useTranslation()
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
-  const logging = useSelector((state: RootState) => state.loggingReducer.logging)
-  const loading = useSelector((state: RootState) => state.loggingReducer.loading)
+  const logging = useSelector((state: LoggingModuleRootState) => state.loggingReducer.logging)
+  const loading = useSelector((state: LoggingModuleRootState) => state.loggingReducer.loading)
   const dispatch = useDispatch()
-  const navigate = useNavigate()
 
   const loggingResourceId = ADMIN_UI_RESOURCES.Logging
   const loggingScopes = useMemo(
@@ -130,25 +131,16 @@ function LoggingPage(): React.ReactElement {
       const opts: Record<string, string> = {}
       opts['logging'] = JSON.stringify(mergedValues)
 
-      type EditLoggingPayload = {
-        data: Record<string, string>
-        otherFields: {
-          userMessage: string
-          changedFields: Record<string, { oldValue: unknown; newValue: unknown }>
-        }
+      const payload: EditLoggingPayload = {
+        data: opts,
+        otherFields: { userMessage, changedFields },
       }
 
-      dispatch(
-        (
-          editLoggingConfig as unknown as (payload: EditLoggingPayload) => {
-            type: string
-            payload: EditLoggingPayload
-          }
-        )({
-          data: opts,
-          otherFields: { userMessage, changedFields },
-        }),
-      )
+      // Create action object directly since the reducer doesn't use payload but saga does
+      dispatch({
+        type: editLoggingConfig.type,
+        payload,
+      })
       setShowCommitDialog(false)
       setPendingValues(null)
     },
@@ -263,7 +255,6 @@ function LoggingPage(): React.ReactElement {
                       <Col>
                         <GluuFormFooter
                           showBack={true}
-                          onBack={() => navigate('/home/dashboard')}
                           showCancel={true}
                           onCancel={() => formik.resetForm()}
                           disableCancel={!formik.dirty}
