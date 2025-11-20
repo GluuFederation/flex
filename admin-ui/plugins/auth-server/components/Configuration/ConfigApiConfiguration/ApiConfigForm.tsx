@@ -1,32 +1,41 @@
 import React, { useCallback, useState, useEffect, useMemo } from 'react'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { FormGroup } from 'Components'
-import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import spec from '../../../../../configApiSpecs.yaml'
-import { buildPayload } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
-import { patchApiConfigConfiguration } from 'Plugins/auth-server/redux/features/configApiSlice'
 import JsonPropertyBuilderConfigApi from './JsonPropertyBuilderConfigApi'
 import { toast } from 'react-toastify'
+import type { ApiAppConfiguration, JsonPatch } from './types'
 
-const schema = spec.components.schemas.ApiAppConfiguration.properties
+interface ApiConfigFormProps {
+  configuration: ApiAppConfiguration
+  onSubmit: (patches: JsonPatch[], message: string) => Promise<void>
+}
 
-const ApiConfigForm = () => {
-  const { hasCedarWritePermission, authorizeHelper } = useCedarling()
-  const dispatch = useDispatch()
+interface SpecSchema {
+  components: {
+    schemas: {
+      ApiAppConfiguration: {
+        properties: Record<string, unknown>
+      }
+    }
+  }
+}
+
+const { properties: schema } = (spec as unknown as SpecSchema).components?.schemas
+  ?.ApiAppConfiguration ?? { properties: {} }
+
+const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }) => {
+  const { authorizeHelper, hasCedarWritePermission } = useCedarling()
   const navigate = useNavigate()
   const [modal, setModal] = useState(false)
-  const [patches, setPatches] = useState([])
-  const [operations, setOperations] = useState([])
+  const [patches, setPatches] = useState<JsonPatch[]>([])
 
-  const configuration = useSelector((state) => state.configApiReducer.configuration)
-
-  const userAction = {}
-
+  const operations = patches
   const configApiResourceId = ADMIN_UI_RESOURCES.ConfigApiConfiguration
   const configApiScopes = useMemo(
     () => CEDAR_RESOURCE_SCOPES[configApiResourceId] || [],
@@ -38,44 +47,33 @@ const ApiConfigForm = () => {
     [hasCedarWritePermission, configApiResourceId],
   )
 
-  // Permission initialization
   useEffect(() => {
     authorizeHelper(configApiScopes)
   }, [authorizeHelper, configApiScopes])
 
   const toggle = useCallback(() => {
     if (patches?.length > 0) {
-      setModal(!modal)
-    } else toast.error('No changes to update')
-  }, [modal])
-
-  const submitForm = useCallback((userMessage) => {
-    toggle()
-
-    handleSubmit(userMessage)
-  }, [])
-
-  const handleSubmit = (message) => {
-    if (patches.length) {
-      const postBody = {}
-      postBody['requestBody'] = patches
-      buildPayload(userAction, message, postBody)
-
-      dispatch(patchApiConfigConfiguration({ action: userAction }))
+      setModal((prev) => !prev)
+    } else {
+      toast.error('No changes to update')
     }
-  }
+  }, [patches])
 
-  function generateLabel(name) {
+  const submitForm = useCallback(
+    async (userMessage: string) => {
+      toggle()
+      await onSubmit(patches, userMessage)
+    },
+    [toggle, onSubmit, patches],
+  )
+
+  function generateLabel(name: string): string {
     const result = name.replace(/([A-Z])/g, ' $1')
-    return result.toLowerCase()
+    return result.charAt(0).toUpperCase() + result.slice(1)
   }
 
-  const patchHandler = (patch) => {
+  const patchHandler = (patch: JsonPatch) => {
     setPatches((existingPatches) => [...existingPatches, patch])
-    const newPatches = patches
-    newPatches.push(patch)
-    setPatches(newPatches)
-    setOperations(newPatches)
   }
 
   const handleBack = () => {
@@ -84,21 +82,17 @@ const ApiConfigForm = () => {
 
   return (
     <>
-      {Object.keys(configuration).map((propKey) => {
-        if (generateLabel(propKey)) {
-          return (
-            <JsonPropertyBuilderConfigApi
-              key={propKey}
-              propKey={propKey}
-              propValue={configuration[propKey]}
-              lSize={6}
-              handler={patchHandler}
-              schema={schema[propKey]}
-              doc_category="config_api_properties"
-            />
-          )
-        }
-      })}
+      {Object.keys(configuration).map((propKey) => (
+        <JsonPropertyBuilderConfigApi
+          key={propKey}
+          propKey={propKey}
+          propValue={configuration[propKey as keyof ApiAppConfiguration]}
+          lSize={6}
+          handler={patchHandler}
+          schema={schema[propKey] as { type?: string; items?: { type?: string; enum?: string[] } }}
+          doc_category="config_api_properties"
+        />
+      ))}
 
       <FormGroup row></FormGroup>
       {canWriteConfigApi && (

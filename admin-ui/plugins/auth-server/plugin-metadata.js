@@ -19,7 +19,6 @@ import ConfigApiPage from './components/Configuration/ConfigApiConfiguration/Con
 import { reducer as oidcReducer } from './redux/features/oidcSlice'
 import { reducer as scopeReducer } from './redux/features/scopeSlice'
 import { reducer as jsonReducer } from './redux/features/jsonConfigSlice'
-import { reducer as jwksReducer } from './redux/features/jwksSlice'
 import { reducer as acrReducer } from './redux/features/acrSlice'
 import { reducer as loggingReducer } from './redux/features/loggingSlice'
 import { reducer as umaResourceReducer } from './redux/features/umaResourceSlice'
@@ -30,7 +29,6 @@ import messageReducer from './redux/features/MessageSlice'
 import scopesSaga from './redux/sagas/OAuthScopeSaga'
 import oidcSaga from './redux/sagas/OIDCSaga'
 import jsonSaga from './redux/sagas/JsonConfigSaga'
-import jwksSaga from './redux/sagas/JwksSaga'
 import acrSaga from './redux/sagas/AcrsSaga'
 import loggingSaga from './redux/sagas/LoggingSaga'
 import umaResourceSaga from './redux/sagas/UMAResourceSaga'
@@ -38,7 +36,6 @@ import sessionSaga from './redux/sagas/SessionSaga'
 import authnSaga from './redux/sagas/AuthnSaga'
 import ssaSaga from './redux/sagas/SsaSaga'
 import messageSaga from './redux/sagas/MessageSaga'
-import configApiSaga from './redux/sagas/configApiSaga'
 
 import {
   ACR_READ,
@@ -55,7 +52,6 @@ import {
   MESSAGE_READ,
   API_CONFIG_READ,
 } from 'Utils/PermChecker'
-import configApiReducer from 'Plugins/auth-server/redux/features/configApiSlice'
 import { reducer as authNReducer } from './redux/features/authNSlice'
 import AuthNEditPage from './components/AuthN/AuthNEditPage'
 import SsaListPage from './components/Ssa/SsaListPage'
@@ -260,7 +256,6 @@ const pluginMetadata = {
     { name: 'scopeReducer', reducer: scopeReducer },
     { name: 'oidcReducer', reducer: oidcReducer },
     { name: 'authPropertiesReducer', reducer: jsonReducer },
-    { name: 'jwksReducer', reducer: jwksReducer },
     { name: 'acrReducer', reducer: acrReducer },
     { name: 'loggingReducer', reducer: loggingReducer },
     { name: 'umaResourceReducer', reducer: umaResourceReducer },
@@ -268,13 +263,11 @@ const pluginMetadata = {
     { name: 'authNReducer', reducer: authNReducer },
     { name: 'SsaReducer', reducer: ssaReducer },
     { name: 'messageReducer', reducer: messageReducer },
-    { name: 'configApiReducer', reducer: configApiReducer },
   ],
   sagas: [
     scopesSaga(),
     oidcSaga(),
     jsonSaga(),
-    jwksSaga(),
     acrSaga(),
     loggingSaga(),
     umaResourceSaga(),
@@ -282,7 +275,6 @@ const pluginMetadata = {
     authnSaga(),
     ssaSaga(),
     messageSaga(),
-    configApiSaga(),
   ],
 }
 

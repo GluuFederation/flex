@@ -6,6 +6,14 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import { JSON_CONFIG } from 'Utils/ApiResources'
+import {
+  LOG_LEVELS,
+  LOG_LAYOUTS,
+  getLoggingInitialValues,
+  getMergedValues,
+  getChangedFields,
+} from './utils'
+import type { LoggingFormValues } from './utils'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useDispatch, useSelector } from 'react-redux'
 import { Formik } from 'formik'
@@ -19,14 +27,32 @@ import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
-import { getChangedFields, getMergedValues } from '@/helpers'
+import type { Logging } from 'JansConfigApi'
+import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
+import { useNavigate } from 'react-router'
+import { loggingValidationSchema } from './validations'
 
-function LoggingPage() {
+interface LoggingReducerState {
+  logging: Logging | null
+  loading: boolean
+}
+
+interface RootState {
+  loggingReducer: LoggingReducerState
+}
+
+interface PendingValues {
+  mergedValues: Logging
+  changedFields: Record<string, { oldValue: unknown; newValue: unknown }>
+}
+
+function LoggingPage(): React.ReactElement {
   const { t } = useTranslation()
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
-  const logging = useSelector((state) => state.loggingReducer.logging)
-  const loading = useSelector((state) => state.loggingReducer.loading)
+  const logging = useSelector((state: RootState) => state.loggingReducer.logging)
+  const loading = useSelector((state: RootState) => state.loggingReducer.loading)
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const loggingResourceId = ADMIN_UI_RESOURCES.Logging
   const loggingScopes = useMemo(
@@ -45,8 +71,8 @@ function LoggingPage() {
   )
 
   const [showCommitDialog, setShowCommitDialog] = useState(false)
-  const [pendingValues, setPendingValues] = useState(null)
-  const [localLogging, setLocalLogging] = useState(null)
+  const [pendingValues, setPendingValues] = useState<PendingValues | null>(null)
+  const [localLogging, setLocalLogging] = useState<Logging | null>(null)
 
   useEffect(() => {
     if (loggingScopes && loggingScopes.length > 0) {
@@ -66,25 +92,37 @@ function LoggingPage() {
     }
   }, [logging])
 
-  const initialValues = useMemo(
-    () => ({
-      loggingLevel: localLogging?.loggingLevel,
-      loggingLayout: localLogging?.loggingLayout,
-      httpLoggingEnabled: localLogging?.httpLoggingEnabled,
-      disableJdkLogger: localLogging?.disableJdkLogger,
-      enabledOAuthAuditLogging: localLogging?.enabledOAuthAuditLogging,
-    }),
+  const initialValues: LoggingFormValues = useMemo(
+    () => getLoggingInitialValues(localLogging),
     [localLogging],
   )
 
-  const levels = useMemo(() => ['TRACE', 'DEBUG', 'INFO', 'ERROR', 'WARN'], [])
-  const logLayouts = useMemo(() => ['text', 'json'], [])
+  const levels = useMemo(() => [...LOG_LEVELS], [])
+  const logLayouts = useMemo(() => [...LOG_LAYOUTS], [])
   SetTitle('Logging')
 
   const handleSubmit = useCallback(
-    (values) => {
-      const mergedValues = getMergedValues(localLogging, values)
-      const changedFields = getChangedFields(localLogging, mergedValues)
+    (values: LoggingFormValues): void => {
+      if (!localLogging) {
+        console.error('Cannot submit: logging data not loaded')
+        return
+      }
+
+      const mergedValues = getMergedValues(
+        localLogging as unknown as Record<string, unknown>,
+        values as unknown as Record<string, unknown>,
+      ) as unknown as Logging
+      const changedFieldsResult = getChangedFields(
+        localLogging as unknown as Record<string, unknown>,
+        mergedValues as unknown as Record<string, unknown>,
+      )
+      const changedFields: Record<string, { oldValue: unknown; newValue: unknown }> = {}
+      Object.keys(changedFieldsResult).forEach((key) => {
+        const fieldChange = changedFieldsResult[key]
+        if (fieldChange) {
+          changedFields[key] = fieldChange
+        }
+      })
 
       setPendingValues({ mergedValues, changedFields })
       setShowCommitDialog(true)
@@ -93,22 +131,35 @@ function LoggingPage() {
   )
 
   const handleAccept = useCallback(
-    (userMessage) => {
-      if (pendingValues) {
-        const { mergedValues, changedFields } = pendingValues
+    (userMessage: string): void => {
+      if (!pendingValues) return
 
-        const opts = {}
-        opts['logging'] = JSON.stringify(mergedValues)
+      const { mergedValues, changedFields } = pendingValues
 
-        dispatch(
-          editLoggingConfig({
-            data: opts,
-            otherFields: { userMessage, changedFields },
-          }),
-        )
-        setShowCommitDialog(false)
-        setPendingValues(null)
+      const opts: Record<string, string> = {}
+      opts['logging'] = JSON.stringify(mergedValues)
+
+      type EditLoggingPayload = {
+        data: Record<string, string>
+        otherFields: {
+          userMessage: string
+          changedFields: Record<string, { oldValue: unknown; newValue: unknown }>
+        }
       }
+
+      dispatch(
+        (
+          editLoggingConfig as unknown as (payload: EditLoggingPayload) => {
+            type: string
+            payload: EditLoggingPayload
+          }
+        )({
+          data: opts,
+          otherFields: { userMessage, changedFields },
+        }),
+      )
+      setShowCommitDialog(false)
+      setPendingValues(null)
     },
     [pendingValues, dispatch],
   )
@@ -118,7 +169,12 @@ function LoggingPage() {
       <Card style={applicationStyle.mainCard}>
         <CardBody style={{ minHeight: 500 }}>
           <GluuViewWrapper canShow={canReadLogging}>
-            <Formik initialValues={initialValues} enableReinitialize onSubmit={handleSubmit}>
+            <Formik
+              initialValues={initialValues}
+              validationSchema={loggingValidationSchema}
+              enableReinitialize
+              onSubmit={handleSubmit}
+            >
               {(formik) => (
                 <Form onSubmit={formik.handleSubmit}>
                   <FormGroup row>
@@ -135,7 +191,9 @@ function LoggingPage() {
                         name="loggingLevel"
                         data-testid="loggingLevel"
                         value={formik.values.loggingLevel}
-                        onChange={(e) => formik.setFieldValue('loggingLevel', e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                          formik.setFieldValue('loggingLevel', e.target.value)
+                        }
                       >
                         <option value="">{t('actions.choose')}...</option>
                         {levels.map((item, key) => (
@@ -161,7 +219,9 @@ function LoggingPage() {
                         name="loggingLayout"
                         data-testid="loggingLayout"
                         value={formik.values.loggingLayout}
-                        onChange={(e) => formik.setFieldValue('loggingLayout', e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                          formik.setFieldValue('loggingLayout', e.target.value)
+                        }
                       >
                         <option value="">{t('actions.choose')}...</option>
                         {logLayouts.map((item, key) => (
@@ -176,7 +236,9 @@ function LoggingPage() {
                   <GluuToogleRow
                     label="fields.http_logging_enabled"
                     name="httpLoggingEnabled"
-                    handler={(e) => formik.setFieldValue('httpLoggingEnabled', e.target.checked)}
+                    handler={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      formik.setFieldValue('httpLoggingEnabled', e.target.checked)
+                    }
                     lsize={5}
                     rsize={7}
                     value={formik.values.httpLoggingEnabled}
@@ -185,7 +247,9 @@ function LoggingPage() {
                   <GluuToogleRow
                     label="fields.disable_jdk_logger"
                     name="disableJdkLogger"
-                    handler={(e) => formik.setFieldValue('disableJdkLogger', e.target.checked)}
+                    handler={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      formik.setFieldValue('disableJdkLogger', e.target.checked)
+                    }
                     lsize={5}
                     rsize={7}
                     doc_category={JSON_CONFIG}
@@ -194,7 +258,7 @@ function LoggingPage() {
                   <GluuToogleRow
                     label="fields.enabled_oAuth_audit_logging"
                     name="enabledOAuthAuditLogging"
-                    handler={(e) =>
+                    handler={(e: React.ChangeEvent<HTMLInputElement>) =>
                       formik.setFieldValue('enabledOAuthAuditLogging', e.target.checked)
                     }
                     lsize={5}
@@ -206,12 +270,23 @@ function LoggingPage() {
                   {canWriteLogging && (
                     <Row>
                       <Col>
-                        <GluuCommitFooter
-                          saveHandler={formik.handleSubmit}
-                          extraLabel={t('actions.cancel')}
-                          extraOnClick={() => formik.resetForm()}
-                          hideButtons={{ save: true, back: true }}
-                          type="submit"
+                        <GluuFormFooter
+                          showBack={true}
+                          onBack={() => {
+                            if (window.history.length > 1) {
+                              navigate(-1)
+                            } else {
+                              navigate('/auth-server/config/logging')
+                            }
+                          }}
+                          showCancel={true}
+                          onCancel={() => formik.resetForm()}
+                          disableCancel={!formik.dirty}
+                          showApply={true}
+                          onApply={formik.handleSubmit}
+                          disableApply={!formik.isValid || !formik.dirty}
+                          applyButtonType="button"
+                          isLoading={loading}
                         />
                       </Col>
                     </Row>
