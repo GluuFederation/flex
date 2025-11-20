@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useMemo } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -20,8 +20,10 @@ import {
   deleteClient,
   viewOnly,
 } from 'Plugins/auth-server/redux/features/oidcSlice'
-import { buildPayload, CLIENT_WRITE, CLIENT_READ, CLIENT_DELETE } from 'Utils/PermChecker'
+import { buildPayload } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import ClientShowScopes from './ClientShowScopes'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -31,7 +33,12 @@ import customColors from '@/customColors'
 
 function ClientListPage() {
   const { t } = useTranslation()
-  const { hasCedarPermission, authorize } = useCedarling()
+  const {
+    hasCedarReadPermission,
+    hasCedarWritePermission,
+    hasCedarDeletePermission,
+    authorizeHelper,
+  } = useCedarling()
   const dispatch = useDispatch()
   const nonExtensibleClients = useSelector((state) => state.oidcReducer.items)
   const { totalItems } = useSelector((state) => state.oidcReducer)
@@ -50,6 +57,28 @@ function ClientListPage() {
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
+
+  const clientResourceId = ADMIN_UI_RESOURCES.Clients
+  const clientScopes = useMemo(
+    () => CEDAR_RESOURCE_SCOPES[clientResourceId] || [],
+    [clientResourceId],
+  )
+
+  const canReadClient = useMemo(
+    () => hasCedarReadPermission(clientResourceId),
+    [hasCedarReadPermission, clientResourceId],
+  )
+
+  const canWriteClient = useMemo(
+    () => hasCedarWritePermission(clientResourceId),
+    [hasCedarWritePermission, clientResourceId],
+  )
+
+  const canDeleteClient = useMemo(
+    () => hasCedarDeletePermission(clientResourceId),
+    [hasCedarDeletePermission, clientResourceId],
+  )
+
   const [scopeClients, setScopeClients] = useState([])
   const [haveScopeINUMParam] = useState(search.indexOf('?scopeInum=') > -1)
   const [isPageLoading, setIsPageLoading] = useState(loading)
@@ -58,19 +87,8 @@ function ClientListPage() {
 
   // Permission initialization
   useEffect(() => {
-    const authorizePermissions = async () => {
-      const permissions = [CLIENT_READ, CLIENT_WRITE, CLIENT_DELETE]
-      try {
-        for (const permission of permissions) {
-          await authorize([permission])
-        }
-      } catch (error) {
-        console.error('Error authorizing LDAP permissions:', error)
-      }
-    }
-
-    authorizePermissions()
-  }, [])
+    authorizeHelper(clientScopes)
+  }, [authorizeHelper, clientScopes])
 
   const [scopesModal, setScopesModal] = useState({
     data: [],
@@ -253,7 +271,7 @@ function ClientListPage() {
     toggle()
   }
 
-  if (hasCedarPermission(CLIENT_WRITE)) {
+  if (canWriteClient) {
     myActions.push({
       icon: 'add',
       tooltip: `${t('messages.add_client')}`,
@@ -274,7 +292,7 @@ function ClientListPage() {
     }))
   }
 
-  if (hasCedarPermission(CLIENT_READ)) {
+  if (canReadClient) {
     myActions.push({
       icon: () => (
         <GluuAdvancedSearch
@@ -319,7 +337,7 @@ function ClientListPage() {
       disabled: false,
     }))
   }
-  if (hasCedarPermission(CLIENT_DELETE)) {
+  if (canDeleteClient) {
     myActions.push((rowData) => ({
       icon: () => <DeleteOutlined />,
       iconProps: {
@@ -364,7 +382,7 @@ function ClientListPage() {
     <Card style={applicationStyle.mainCard}>
       <ClientShowScopes handler={handler} isOpen={scopesModal?.show} data={scopesModal?.data} />
       <CardBody>
-        <GluuViewWrapper canShow={hasCedarPermission(CLIENT_READ)}>
+        <GluuViewWrapper canShow={canReadClient}>
           <MaterialTable
             key={limit ? limit : 0}
             components={{
@@ -403,7 +421,7 @@ function ClientListPage() {
             }}
           />
         </GluuViewWrapper>
-        {hasCedarPermission(CLIENT_DELETE) && (
+        {canDeleteClient && (
           <GluuDialog
             row={item}
             name={item?.clientName?.value || ''}

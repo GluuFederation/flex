@@ -709,9 +709,11 @@
     "smtp_test_message": "Ceci est un e-mail de test pour vérifier que votre configuration SMTP fonctionne correctement.",
     "save_before_test": "Veuillez enregistrer la configuration avant de tester",
     "no_configuration_loaded": "Aucune configuration chargée",
+    "insufficient_permissions_to_modify": "Vous n'avez pas la permission de modifier cette configuration",
     "http_method_error": "Veuillez sélectionner une méthode HTTP.",
     "display_name_error": "Veuillez entrer un nom d'affichage.",
     "url_error": "Veuillez entrer une URL.",
+    "missing_required_permission": "Permission requise manquante",
     "invalid_json_error": "Valeur JSON invalide.",
     "action_commit_question": "Journal d'audit : vous souhaitez appliquer les modifications apportées sur cette page ?",
     "licenseAuditLog": "Voulez-vous vraiment réinitialiser la licence existante ?",
@@ -1002,6 +1004,7 @@
       "connectionUri": "URI de connexion de la base de données."
     },
     "user": {
+      "passwordRequirements": "Le mot de passe doit comporter au moins 8 caractères et inclure des majuscules, des minuscules, un chiffre et un caractère spécial.",
       "userId": "Identifiant utilisateur",
       "userName": "Nom d'utilisateur",
       "givenName": "Prénom",

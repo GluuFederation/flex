@@ -33,6 +33,7 @@ import {
   PROPERTIES_READ,
   STAT_READ,
 } from 'Utils/PermChecker'
+import { ADMIN_UI_RESOURCES, CEDARLING_BYPASS } from '@/cedarling/utility'
 import WebhookAddPage from './components/Webhook/WebhookAddPage'
 import WebhookEditPage from './components/Webhook/WebhookEditPage'
 import JansAssetListPage from './components/Assets/JansAssetListPage'
@@ -54,26 +55,31 @@ const pluginMetadata = {
           title: 'menus.dashboard',
           path: PLUGIN_BASE_PATH + '/dashboard',
           permission: STAT_READ,
+          resourceKey: ADMIN_UI_RESOURCES.Dashboard,
         },
         {
           title: 'menus.health',
           path: PLUGIN_BASE_PATH + '/health',
           permission: PROPERTIES_READ,
+          resourceKey: CEDARLING_BYPASS,
         },
         {
           title: 'menus.licenseDetails',
           path: PLUGIN_BASE_PATH + '/licenseDetails',
           permission: LICENSE_DETAILS_READ,
+          resourceKey: ADMIN_UI_RESOURCES.License,
         },
         {
           title: 'menus.maugraph',
           path: PLUGIN_BASE_PATH + '/maugraph',
           permission: ACR_READ,
+          resourceKey: ADMIN_UI_RESOURCES.MAU,
         },
         {
           title: 'menus.settings',
           path: PLUGIN_BASE_PATH + '/settings',
           permission: ACR_READ,
+          resourceKey: ADMIN_UI_RESOURCES.Settings,
         },
         {
           title: 'menus.security',
@@ -82,11 +88,13 @@ const pluginMetadata = {
               title: 'menus.securityDropdown.mapping',
               path: PLUGIN_BASE_PATH + '/mapping',
               permission: MAPPING_READ,
+              resourceKey: ADMIN_UI_RESOURCES.Security,
             },
             {
               title: 'menus.securityDropdown.cedarlingConfig',
               path: PLUGIN_BASE_PATH + '/cedarlingconfig',
               permission: MAPPING_READ,
+              resourceKey: ADMIN_UI_RESOURCES.Security,
             },
           ],
         },
@@ -95,16 +103,19 @@ const pluginMetadata = {
           title: 'menus.webhooks',
           path: PLUGIN_BASE_PATH + '/webhook',
           permission: WEBHOOK_READ,
+          resourceKey: ADMIN_UI_RESOURCES.Webhooks,
         },
         {
           title: 'menus.assets',
           path: PLUGIN_BASE_PATH + '/assets',
           permission: ASSETS_READ,
+          resourceKey: ADMIN_UI_RESOURCES.Assets,
         },
         {
           title: 'menus.audit_logs',
           path: PLUGIN_BASE_PATH + '/audit-logs',
           permission: LOGGING_READ,
+          resourceKey: ADMIN_UI_RESOURCES.AuditLogs,
         },
       ],
     },
@@ -114,26 +125,31 @@ const pluginMetadata = {
       component: DashboardPage,
       path: PLUGIN_BASE_PATH + '/dashboard',
       permission: STAT_READ,
+      resourceKey: ADMIN_UI_RESOURCES.Dashboard,
     },
     {
       component: HealthPage,
       path: PLUGIN_BASE_PATH + '/health',
       permission: PROPERTIES_READ,
+      resourceKey: CEDARLING_BYPASS,
     },
     {
       component: LicenseDetailsPage,
       path: PLUGIN_BASE_PATH + '/licenseDetails',
       permission: LICENSE_DETAILS_READ,
+      resourceKey: ADMIN_UI_RESOURCES.License,
     },
     {
       component: MauGraph,
       path: PLUGIN_BASE_PATH + '/maugraph',
       permission: ACR_READ,
+      resourceKey: ADMIN_UI_RESOURCES.MAU,
     },
     {
       component: SettingsPage,
       path: PLUGIN_BASE_PATH + '/settings',
       permission: ACR_READ,
+      resourceKey: ADMIN_UI_RESOURCES.Settings,
     },
 
     {
@@ -151,36 +167,43 @@ const pluginMetadata = {
       component: WebhookListPage,
       path: PLUGIN_BASE_PATH + '/webhook',
       permission: WEBHOOK_READ,
+      resourceKey: ADMIN_UI_RESOURCES.Webhooks,
     },
     {
       component: WebhookAddPage,
       path: PLUGIN_BASE_PATH + '/webhook/add',
       permission: WEBHOOK_WRITE,
+      resourceKey: ADMIN_UI_RESOURCES.Webhooks,
     },
     {
       component: WebhookEditPage,
       path: PLUGIN_BASE_PATH + '/webhook/edit/:id',
       permission: WEBHOOK_WRITE,
+      resourceKey: ADMIN_UI_RESOURCES.Webhooks,
     },
     {
       component: JansAssetListPage,
       path: PLUGIN_BASE_PATH + '/assets',
       permission: ASSETS_READ,
+      resourceKey: ADMIN_UI_RESOURCES.Assets,
     },
     {
       component: JansAssetAddPage,
       path: PLUGIN_BASE_PATH + '/asset/add',
       permission: ASSETS_WRITE,
+      resourceKey: ADMIN_UI_RESOURCES.Assets,
     },
     {
       component: JansAssetEditPage,
       path: PLUGIN_BASE_PATH + '/asset/edit/:id',
       permission: ASSETS_WRITE,
+      resourceKey: ADMIN_UI_RESOURCES.Assets,
     },
     {
       component: AuditListPage,
       path: PLUGIN_BASE_PATH + '/audit-logs',
       permission: LOGGING_READ,
+      resourceKey: ADMIN_UI_RESOURCES.AuditLogs,
     },
   ],
   reducers: [

@@ -1,18 +1,18 @@
-import React, { useState, useEffect, useContext, useCallback, useMemo, useRef } from 'react'
+import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Card, Input } from 'Components'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
 import useSetTitle from 'Utils/SetTitle'
 import { useAgamaActions } from './hooks/useAgamaActions'
-import { CREATE, DELETION } from '@/audit/UserActionType'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import TablePagination from '@mui/material/TablePagination'
 import Paper from '@mui/material/Paper'
 import type { Column, Action } from '@material-table/core'
-import { AGAMA_READ, AGAMA_WRITE, AGAMA_DELETE } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import MaterialTable from '@material-table/core'
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
@@ -50,22 +50,15 @@ import type {
   AgamaTableRow,
 } from './types'
 
-interface JsonConfigState {
-  configuration: {
-    agamaConfiguration?: {
-      enabled?: boolean
-    }
-  }
-  loading: boolean
-}
-
-interface CedarPermissionsState {
-  permissions: string[]
-}
-
 interface RootState {
-  jsonConfigReducer: JsonConfigState
-  cedarPermissions: CedarPermissionsState
+  jsonConfigReducer: {
+    configuration: {
+      agamaConfiguration?: {
+        enabled?: boolean
+      }
+    }
+    loading: boolean
+  }
 }
 
 const dateTimeFormatOptions: Intl.DateTimeFormatOptions = {
@@ -77,7 +70,12 @@ const dateTimeFormatOptions: Intl.DateTimeFormatOptions = {
 }
 
 function AgamaListPage(): React.ReactElement {
-  const { hasCedarPermission, authorize } = useCedarling()
+  const {
+    hasCedarReadPermission,
+    hasCedarWritePermission,
+    hasCedarDeletePermission,
+    authorizeHelper,
+  } = useCedarling()
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
@@ -105,28 +103,33 @@ function AgamaListPage(): React.ReactElement {
   const [fileLoading, setFileLoading] = useState<boolean>(false)
   const [uploadLoading, setUploadLoading] = useState<boolean>(false)
 
-  const hasAuthorizedRef = useRef(false)
-
   const configuration = useSelector((state: RootState) => state.jsonConfigReducer.configuration)
   const isAgamaEnabled = configuration?.agamaConfiguration?.enabled
   const isConfigLoading = useSelector((state: RootState) => state.jsonConfigReducer.loading)
-  const { permissions: cedarPermissions } = useSelector(
-    (state: RootState) => state.cedarPermissions,
-  )
 
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme || 'dark'
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
 
-  const {
-    data: projectsResponse,
-    isLoading: loading,
-    refetch: refetchProjects,
-  } = useGetAgamaPrj({
-    count: limit,
-    start: pageNumber * limit,
-  })
+  const authResourceId = useMemo(() => ADMIN_UI_RESOURCES.Authentication, [])
+  const authScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[authResourceId] || [], [authResourceId])
+  const canReadAuth = useMemo(
+    () => hasCedarReadPermission(authResourceId),
+    [hasCedarReadPermission, authResourceId],
+  )
+
+  const { data: projectsResponse, isLoading: loading } = useGetAgamaPrj(
+    {
+      count: limit,
+      start: pageNumber * limit,
+    },
+    {
+      query: {
+        enabled: canReadAuth,
+      },
+    },
+  )
 
   const deleteProjectMutation = useDeleteAgamaPrj({
     mutation: {
@@ -153,7 +156,7 @@ function AgamaListPage(): React.ReactElement {
 
   const uploadProjectMutation = usePostAgamaPrj({
     mutation: {
-      onSuccess: async (response: string) => {
+      onSuccess: async (_response: string) => {
         dispatch(updateToast(true, 'success'))
         await queryClient.invalidateQueries({ queryKey: getGetAgamaPrjQueryKey() })
         await logAgamaCreation({} as Deployment, `Uploaded Agama project: ${projectName}`)
@@ -175,7 +178,7 @@ function AgamaListPage(): React.ReactElement {
 
   const deployProjectMutation = usePostAgamaPrj({
     mutation: {
-      onSuccess: async (response: string) => {
+      onSuccess: async (_response: string) => {
         dispatch(updateToast(true, 'success'))
         await queryClient.invalidateQueries({ queryKey: getGetAgamaPrjQueryKey() })
         await logAgamaCreation(
@@ -195,26 +198,29 @@ function AgamaListPage(): React.ReactElement {
     },
   })
 
+  const canWriteAuth = useMemo(
+    () => hasCedarWritePermission(authResourceId),
+    [hasCedarWritePermission, authResourceId],
+  )
+  const canDeleteAuth = useMemo(
+    () => hasCedarDeletePermission(authResourceId),
+    [hasCedarDeletePermission, authResourceId],
+  )
+
   useEffect(() => {
-    const authorizePermissions = async (): Promise<void> => {
-      if (hasAuthorizedRef.current) return
-
-      const permissions = [AGAMA_READ, AGAMA_WRITE, AGAMA_DELETE]
-      try {
-        for (const permission of permissions) {
-          await authorize([permission])
-        }
-        hasAuthorizedRef.current = true
-      } catch (error) {
-        console.error('Error authorizing Agama permissions:', error)
-      }
+    if (authScopes && authScopes.length > 0) {
+      authorizeHelper(authScopes)
     }
+  }, [authorizeHelper, authScopes])
 
-    authorizePermissions()
+  useEffect(() => {
+    if (!canReadAuth) {
+      return
+    }
     if (isEmpty(configuration)) {
       dispatch(getJsonConfig())
     }
-  }, [dispatch, authorize])
+  }, [dispatch, configuration, canReadAuth])
 
   function convertFileToByteArray(file: File): Promise<Uint8Array> {
     return new Promise((resolve, reject) => {
@@ -230,16 +236,6 @@ function AgamaListPage(): React.ReactElement {
     })
   }
 
-  const convertFileFrombase64 = (base64String: string): Uint8Array => {
-    const byteCharacters = atob(base64String)
-    const byteArray = new Uint8Array(byteCharacters.length)
-
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteArray[i] = byteCharacters.charCodeAt(i)
-    }
-    return byteArray
-  }
-
   const convertByteArrayToBase64 = (byteArray: Uint8Array): string => {
     let binary = ''
     for (let i = 0; i < byteArray.length; i++) {
@@ -250,7 +246,9 @@ function AgamaListPage(): React.ReactElement {
 
   useEffect(() => {
     if (agamaRepositoriesData) {
-      setAgamaRepositoriesList(agamaRepositoriesData as AgamaRepositoriesResponse)
+      setAgamaRepositoriesList(
+        (agamaRepositoriesData as unknown as AgamaRepositoriesResponse) ?? { projects: [] },
+      )
       setFileLoading(false)
     }
   }, [agamaRepositoriesData])
@@ -407,7 +405,7 @@ function AgamaListPage(): React.ReactElement {
   const myActionsComputed = useMemo(() => {
     const newActions: Action<AgamaTableRow>[] = []
 
-    if (hasCedarPermission(AGAMA_WRITE)) {
+    if (canWriteAuth) {
       newActions.push({
         icon: 'add',
         tooltip: `${t('titles.add_new_agama_project')}`,
@@ -455,10 +453,9 @@ function AgamaListPage(): React.ReactElement {
 
     return newActions
   }, [
-    hasCedarPermission,
+    canWriteAuth,
     t,
     isAgamaEnabled,
-    cedarPermissions,
     dispatch,
     refetchRepositories,
     setShowAddModal,
@@ -870,7 +867,7 @@ function AgamaListPage(): React.ReactElement {
           }}
         />
       )}
-      <GluuViewWrapper canShow={hasCedarPermission(AGAMA_READ)}>
+      <GluuViewWrapper canShow={canReadAuth}>
         <MaterialTable
           key={limit}
           components={{
@@ -910,7 +907,7 @@ function AgamaListPage(): React.ReactElement {
             actionsColumnIndex: -1,
           }}
           editable={{
-            isDeleteHidden: () => !hasCedarPermission(AGAMA_DELETE),
+            isDeleteHidden: () => !canDeleteAuth,
             onRowDelete: handleDeleteProject,
           }}
         />

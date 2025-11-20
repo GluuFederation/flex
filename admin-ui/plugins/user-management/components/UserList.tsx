@@ -1,31 +1,21 @@
-import React, { useEffect, useState, useContext, useCallback, useRef } from 'react'
+import React, { useEffect, useState, useContext, useCallback, useRef, useMemo } from 'react'
 import MaterialTable, { Action } from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import LockOpenIcon from '@mui/icons-material/LockOpen'
-import SearchIcon from '@mui/icons-material/Search'
-import RefreshIcon from '@mui/icons-material/Refresh'
-import ClearIcon from '@mui/icons-material/Clear'
-import SwapVertIcon from '@mui/icons-material/SwapVert'
-import {
-  Paper,
-  TablePagination,
-  Box,
-  TextField,
-  Button,
-  IconButton,
-  InputAdornment,
-} from '@mui/material'
+import { Paper, TablePagination } from '@mui/material'
 import UserDetailViewPage from './UserDetailViewPage'
+import { getAttributesRoot } from 'Redux/features/attributesSlice'
 import { useDispatch } from 'react-redux'
 import { Card, CardBody } from '../../../app/components'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useNavigate } from 'react-router-dom'
-import { USER_WRITE, USER_READ, USER_DELETE } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
+import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import SetTitle from 'Utils/SetTitle'
+import { getRoles } from 'Plugins/admin/redux/features/apiRoleSlice'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
@@ -41,8 +31,6 @@ import {
   usePutUser,
   useGetRegistrationEntriesFido2,
   getGetUserQueryKey,
-  useGetAttributes,
-  useGetAllAdminuiRoles,
 } from 'JansConfigApi'
 import { useQueryClient } from '@tanstack/react-query'
 import UserDeviceDetailViewPage from './UserDeviceDetailViewPage'
@@ -58,11 +46,19 @@ import {
 import { updateToast } from 'Redux/features/toastSlice'
 import { logUserDeletion, logUserUpdate, getErrorMessage } from '../helper/userAuditHelpers'
 import { triggerUserWebhook } from '../helper/userWebhookHelpers'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 
 function UserList(): JSX.Element {
-  const { hasCedarPermission, authorize } = useCedarling()
+  const {
+    authorizeHelper,
+    hasCedarReadPermission,
+    hasCedarWritePermission,
+    hasCedarDeletePermission,
+  } = useCedarling()
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
+  const renders = useRef(0)
 
   const { t } = useTranslation()
   const [modal, setModal] = useState<boolean>(false)
@@ -74,37 +70,46 @@ function UserList(): JSX.Element {
 
   const [pageNumber, setPageNumber] = useState<number>(0)
   const [limit, setLimit] = useState<number>(10)
-  const [pattern, setPattern] = useState<string | null>(null)
-  const [sortBy, setSortBy] = useState<string | undefined>(undefined)
-  const [sortOrder, setSortOrder] = useState<'ascending' | 'descending'>('ascending')
+  const [pattern, setPattern] = useState<string | undefined>(undefined)
 
   // React Query hooks for data fetching
+  const usersResourceId = useMemo(() => ADMIN_UI_RESOURCES.Users, [])
+  const usersScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[usersResourceId], [usersResourceId])
+  const canReadUsers = useMemo(
+    () => hasCedarReadPermission(usersResourceId),
+    [hasCedarReadPermission, usersResourceId],
+  )
+  const canWriteUsers = useMemo(
+    () => hasCedarWritePermission(usersResourceId),
+    [hasCedarWritePermission, usersResourceId],
+  )
+  const canDeleteUsers = useMemo(
+    () => hasCedarDeletePermission(usersResourceId),
+    [hasCedarDeletePermission, usersResourceId],
+  )
+
+  useEffect(() => {
+    if (usersScopes && usersScopes.length > 0) {
+      authorizeHelper(usersScopes)
+    }
+  }, [authorizeHelper, usersScopes])
+
   const {
     data: usersData,
     isLoading: loadingUsers,
     refetch: refetchUsers,
-    error: usersError,
   } = useGetUser(
     {
       limit,
-      pattern: pattern || undefined,
+      pattern,
       startIndex: pageNumber * limit,
-      sortBy,
-      sortOrder: sortBy ? sortOrder : undefined,
     },
     {
       query: {
-        enabled: hasCedarPermission(USER_READ),
+        enabled: canReadUsers,
       },
     },
   )
-
-  useEffect(() => {
-    if (usersError) {
-      const errorMessage = getErrorMessage(usersError)
-      dispatch(updateToast(true, 'error', errorMessage))
-    }
-  }, [usersError, dispatch])
 
   const usersList: UserTableRowData[] = (usersData?.entries as UserTableRowData[]) ?? []
   const totalItems = usersData?.totalEntriesCount || 0
@@ -138,6 +143,12 @@ function UserList(): JSX.Element {
 
   const deleteUserMutation = useDeleteUser({
     mutation: {
+      onSuccess: async (_data, variables) => {
+        dispatch(updateToast(true, 'success', t('messages.user_deleted_successfully')))
+        await logUserDeletion(variables.inum, (deleteData as CustomUser) || undefined)
+        await triggerUserWebhook(deleteData as Record<string, unknown>)
+        queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
+      },
       onError: (error: unknown) => {
         const errMsg = getErrorMessage(error)
         dispatch(updateToast(true, 'error', errMsg))
@@ -159,40 +170,15 @@ function UserList(): JSX.Element {
     },
   })
 
-  // Fetch roles and attributes using Orval hooks
-  useGetAllAdminuiRoles()
-
-  // Permission initialization
   useEffect(() => {
-    const authorizePermissions = async (): Promise<void> => {
-      const permissions = [USER_READ, USER_WRITE, USER_DELETE]
-      try {
-        for (const permission of permissions) {
-          await authorize([permission])
-        }
-      } catch (error) {
-        console.error('Error authorizing User permissions:', error)
-      }
-    }
-
-    authorizePermissions()
-  }, [authorize])
+    dispatch(getRoles({}))
+  }, [dispatch])
   const toggle = (): void => setModal(!modal)
   const submitForm = (message: string): void => {
     toggle()
     if (deleteData?.inum) {
-      const deletePayload = { ...deleteData, action_message: message }
-      deleteUserMutation.mutate(
-        { inum: deletePayload.inum },
-        {
-          onSuccess: async () => {
-            dispatch(updateToast(true, 'success', t('messages.user_deleted_successfully')))
-            await logUserDeletion(deletePayload.inum, deletePayload as CustomUser)
-            triggerUserWebhook(deletePayload as Record<string, unknown>)
-            queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
-          },
-        },
-      )
+      deleteData.action_message = message
+      deleteUserMutation.mutate({ inum: deleteData.inum })
     }
   }
   const theme = useContext(ThemeContext)
@@ -252,43 +238,65 @@ function UserList(): JSX.Element {
     })
   }
 
-  // Event handlers for search
-  const handlePatternChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPattern(event.target.value)
-  }
+  let memoLimit = limit
+  let memoPattern = pattern
 
-  const handlePatternKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      setPageNumber(0)
+  function handleOptionsChange(
+    event: React.ChangeEvent<HTMLInputElement> & { keyCode?: number },
+  ): void {
+    if (event.target.name === 'limit') {
+      memoLimit = parseInt(event.target.value, 10)
+    } else if (event.target.name === 'pattern') {
+      memoPattern = event.target.value
+      if (event.keyCode === 13) {
+        setLimit(memoLimit)
+        setPattern(memoPattern)
+        // Refetch with new parameters - React Query will handle it automatically
+      }
     }
   }
 
-  const handleSortByChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value
-    setSortBy(value === 'none' ? undefined : value)
-    setPageNumber(0)
-  }
-
-  const handleSortOrderToggle = () => {
-    setSortOrder((prev) => (prev === 'ascending' ? 'descending' : 'ascending'))
-  }
-
-  const handleClearFilters = () => {
-    setPattern(null)
-    setSortBy(undefined)
-    setSortOrder('ascending')
-    setPageNumber(0)
-  }
-
-  const handleRefresh = () => {
-    setPageNumber(0)
-    refetchUsers()
-  }
+  const GluuSearch = useCallback(() => {
+    return (
+      <GluuAdvancedSearch
+        limitId={LIMIT_ID}
+        patternId={PATTERN_ID}
+        limit={limit}
+        pattern={pattern}
+        handler={handleOptionsChange}
+        showLimit={false}
+      />
+    )
+  }, [limit, pattern, handleOptionsChange])
 
   const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
   const LockedOpenIcon = useCallback(() => <LockOpenIcon />, [])
 
-  if (hasCedarPermission(USER_WRITE)) {
+  if (canReadUsers) {
+    myActions.push({
+      icon: GluuSearch,
+      tooltip: `${t('messages.advanced_search')}`,
+      iconProps: {
+        color: 'primary',
+        style: {
+          borderColor: customColors.lightBlue,
+        },
+      },
+      isFreeAction: true,
+      onClick: () => {},
+    })
+    myActions.push({
+      icon: 'refresh',
+      tooltip: `${t('messages.refresh')}`,
+      iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
+      isFreeAction: true,
+      onClick: () => {
+        refetchUsers()
+      },
+    })
+  }
+
+  if (canWriteUsers) {
     myActions.push({
       icon: 'add',
       tooltip: `${t('tooltips.add_user')}`,
@@ -310,7 +318,7 @@ function UserList(): JSX.Element {
         const rowData = Array.isArray(data) ? data[0] : data
         if (rowData) handleGoToUserEditPage(rowData)
       },
-      disabled: !hasCedarPermission(USER_WRITE),
+      disabled: !canWriteUsers,
     }))
     myActions.push((rowData: UserTableRowData) => ({
       icon: LockedOpenIcon,
@@ -326,11 +334,11 @@ function UserList(): JSX.Element {
         const rowData = Array.isArray(data) ? data[0] : data
         if (rowData) handleView2FADetails(rowData)
       },
-      disabled: !hasCedarPermission(USER_WRITE),
+      disabled: !canWriteUsers,
     }))
   }
 
-  if (hasCedarPermission(USER_DELETE)) {
+  if (canDeleteUsers) {
     myActions.push((rowData: UserTableRowData) => ({
       icon: DeleteOutlinedIcon,
       tooltip: `${t('tooltips.delete_user')}`,
@@ -400,6 +408,28 @@ function UserList(): JSX.Element {
       }
     }
   }
+
+  useEffect(() => {
+    if (!usersList?.length || renders.current >= 1) return
+    renders.current = 1
+
+    const usedAttributes = new Set<string>()
+    for (const user of usersList) {
+      user.customAttributes?.forEach((attribute) => {
+        if (attribute.name) {
+          usedAttributes.add(attribute.name)
+        }
+      })
+    }
+
+    if (usedAttributes.size > 0) {
+      dispatch(
+        getAttributesRoot({
+          options: { pattern: Array.from(usedAttributes).toString(), limit: 100 },
+        }),
+      )
+    }
+  }, [usersList, dispatch])
 
   useEffect(() => {
     let removeNullValue: DeviceData[] = []
@@ -508,99 +538,7 @@ function UserList(): JSX.Element {
 
       <Card style={applicationStyle.mainCard}>
         <CardBody>
-          <GluuViewWrapper canShow={hasCedarPermission(USER_READ)}>
-            {/* Modern Search Bar */}
-            <Box
-              sx={{
-                mb: '10px',
-                p: 1,
-                backgroundColor: '#fff',
-                borderRadius: 1,
-                border: '1px solid #e0e0e0',
-              }}
-            >
-              <Box
-                sx={{
-                  display: 'flex',
-                  gap: 2,
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
-                  {/* Pattern Search */}
-                  <TextField
-                    size="small"
-                    placeholder={t('placeholders.search_pattern')}
-                    value={pattern ?? ''}
-                    onChange={handlePatternChange}
-                    onKeyDown={handlePatternKeyDown}
-                    sx={{ width: '250px' }}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <SearchIcon fontSize="small" sx={{ color: customColors.lightBlue }} />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-
-                  {/* Sort By Dropdown */}
-                  <TextField
-                    select
-                    size="small"
-                    label={t('fields.sort_by')}
-                    value={sortBy || 'none'}
-                    onChange={handleSortByChange}
-                    sx={{ width: '180px' }}
-                    SelectProps={{
-                      native: true,
-                    }}
-                  >
-                    <option value="none">{t('options.none')}</option>
-                    <option value="uid">{t('fields.userName')}</option>
-                    <option value="displayName">{t('fields.name')}</option>
-                    <option value="mail">{t('fields.email')}</option>
-                    <option value="givenName">{t('fields.givenName')}</option>
-                  </TextField>
-
-                  {/* Sort Order Toggle */}
-                  {sortBy && (
-                    <IconButton
-                      size="small"
-                      onClick={handleSortOrderToggle}
-                      title={
-                        sortOrder === 'ascending' ? t('options.ascending') : t('options.descending')
-                      }
-                      sx={{ color: customColors.lightBlue }}
-                    >
-                      <SwapVertIcon />
-                    </IconButton>
-                  )}
-
-                  {/* Clear Filters Button */}
-                  <Button
-                    size="small"
-                    startIcon={<ClearIcon />}
-                    onClick={handleClearFilters}
-                    sx={{ color: customColors.lightBlue }}
-                  >
-                    {t('actions.clear')}
-                  </Button>
-                </Box>
-
-                {/* Refresh Button */}
-                <IconButton
-                  size="small"
-                  onClick={handleRefresh}
-                  title={t('messages.refresh')}
-                  sx={{ color: customColors.lightBlue }}
-                >
-                  <RefreshIcon />
-                </IconButton>
-              </Box>
-            </Box>
-
+          <GluuViewWrapper canShow={canReadUsers}>
             <MaterialTable<UserTableRowData>
               key={limit}
               components={{

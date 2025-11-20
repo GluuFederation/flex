@@ -5,29 +5,27 @@ import { useMediaQuery } from 'react-responsive'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { getClients } from 'Redux/features/initSlice'
-import { hasBoth, buildPayload, STAT_READ, STAT_JANS_READ } from 'Utils/PermChecker'
+import { buildPayload } from 'Utils/PermChecker'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { getLicenseDetails } from 'Redux/features/licenseDetailsSlice'
-import { getHealthStatus } from 'Redux/features/healthSlice'
 import DashboardChart from './Chart/DashboardChart'
 import DateRange from './DateRange'
-import CheckIcon from '../../images/svg/check.svg'
-import CrossIcon from '../../images/svg/cross.svg'
+import CheckIcon from 'Images/svg/check.svg'
+import CrossIcon from 'Images/svg/cross.svg'
 import SetTitle from 'Utils/SetTitle'
 import styles from './styles'
 import { formatDate } from 'Utils/Util'
-import UsersIcon from 'components/SVG/menu/Users'
-import Administrator from 'components/SVG/menu/Administrator'
-import OAuthIcon from 'components/SVG/menu/OAuth'
-import JansLockUsers from 'components/SVG/menu/JansLockUsers'
-import JansLockClients from 'components/SVG/menu/JansLockClients'
-import { getHealthServerStatus } from '../../redux/features/healthSlice'
+import UsersIcon from '@/components/SVG/menu/Users'
+import Administrator from '@/components/SVG/menu/Administrator'
+import OAuthIcon from '@/components/SVG/menu/OAuth'
+import JansLockUsers from '@/components/SVG/menu/JansLockUsers'
+import JansLockClients from '@/components/SVG/menu/JansLockClients'
 import GluuPermissionModal from 'Routes/Apps/Gluu/GluuPermissionModal'
 import { auditLogoutLogs } from 'Redux/features/sessionSlice'
 import { useNavigate } from 'react-router'
-import { getLockStatus } from 'Redux/features/lockSlice'
-import moment from 'moment'
 import customColors from '@/customColors'
 import { useCedarling } from '@/cedarling'
 
@@ -49,7 +47,6 @@ function DashboardPage() {
   const [requestStates, setRequestStates] = useState({
     licenseRequested: false,
     clientsRequested: false,
-    serverStatusRequested: false,
   })
   const statData = useSelector((state: any) => state.mauReducer.stat)
   const loading = useSelector((state: any) => state.mauReducer.loading)
@@ -64,25 +61,30 @@ function DashboardPage() {
   const access_token = useSelector((state: any) => state.authReducer.token?.access_token)
   const permissions = useSelector((state: any) => state.authReducer.permissions)
 
-  const { hasCedarPermission, authorize } = useCedarling()
+  const { hasCedarReadPermission, authorizeHelper } = useCedarling()
   const cedarInitialized = useSelector((state: any) => state.cedarPermissions?.initialized)
   const cedarIsInitializing = useSelector((state: any) => state.cedarPermissions?.isInitializing)
+
+  const dashboardResourceId = useMemo(() => ADMIN_UI_RESOURCES.Dashboard, [])
+  const dashboardScopes = useMemo(
+    () => CEDAR_RESOURCE_SCOPES[dashboardResourceId],
+    [dashboardResourceId],
+  )
+
   const hasViewPermissions = useMemo(() => {
-    if (cedarInitialized && !cedarIsInitializing) {
-      const hasStatRead = hasCedarPermission(STAT_READ)
-      const hasStatJansRead = hasCedarPermission(STAT_JANS_READ)
-      return hasStatRead === true && hasStatJansRead === true
+    if (!cedarInitialized || cedarIsInitializing) {
+      return false
     }
-    return hasBoth(permissions, STAT_READ, STAT_JANS_READ)
-  }, [cedarInitialized, cedarIsInitializing, hasCedarPermission, permissions])
+    return Boolean(hasCedarReadPermission(dashboardResourceId))
+  }, [cedarInitialized, cedarIsInitializing, hasCedarReadPermission, dashboardResourceId])
 
   SetTitle(t('menus.dashboard'))
 
   const initPermissions = useCallback(async () => {
     if (!access_token || !cedarInitialized) return
 
-    await Promise.allSettled([authorize([STAT_READ]), authorize([STAT_JANS_READ])])
-  }, [access_token, cedarInitialized, authorize])
+    await authorizeHelper(dashboardScopes)
+  }, [access_token, cedarInitialized, authorizeHelper, dashboardScopes])
 
   useEffect(() => {
     if (access_token && cedarInitialized && !cedarIsInitializing) {
@@ -156,31 +158,6 @@ function DashboardPage() {
     requestStates.clientsRequested,
     dispatch,
     userAction,
-  ])
-
-  useEffect(() => {
-    if (access_token && hasViewPermissions && !requestStates.serverStatusRequested) {
-      setRequestStates((prev) => ({ ...prev, serverStatusRequested: true }))
-      buildPayload(userAction as any, 'GET Health Status', options as any)
-      dispatch(getHealthStatus({ action: userAction } as any))
-
-      const months = []
-      for (let i = 0; i < 12; i++) {
-        months.push(moment().subtract(i, 'months').format('YYYYMM'))
-      }
-      const startMonth = months[months.length - 1]
-      const endMonth = months[0]
-      dispatch(getLockStatus({ startMonth, endMonth } as any))
-      buildPayload(userAction as any, 'GET Health Status', { service: 'all' } as any)
-      dispatch(getHealthServerStatus({ action: userAction } as any))
-    }
-  }, [
-    access_token,
-    hasViewPermissions,
-    requestStates.serverStatusRequested,
-    dispatch,
-    userAction,
-    options,
   ])
 
   const isUp = useCallback((status: any) => {

@@ -15,6 +15,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
   fidoConfiguration,
   handleSubmit,
   isSubmitting,
+  readOnly,
 }) => {
   const [modal, setModal] = useState(false)
 
@@ -27,7 +28,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
       fidoConfiguration,
       fidoConstants.DYNAMIC,
     ) as DynamicConfigFormValues,
-    onSubmit: toggle,
+    onSubmit: readOnly ? () => undefined : toggle,
     validationSchema: validationSchema[fidoConstants.VALIDATION_SCHEMAS.DYNAMIC_CONFIG],
     enableReinitialize: true,
     validateOnMount: true,
@@ -35,10 +36,13 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
 
   const submitForm = useCallback(
     (userMessage: string) => {
+      if (readOnly) {
+        return
+      }
       toggle()
       handleSubmit(formik.values, userMessage)
     },
-    [handleSubmit, toggle, formik.values],
+    [handleSubmit, toggle, formik.values, readOnly],
   )
 
   const handleCancel = useCallback(() => {
@@ -52,9 +56,12 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
   const handleFormSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
+      if (readOnly) {
+        return
+      }
       formik.handleSubmit()
     },
-    [formik],
+    [formik, readOnly],
   )
 
   const personCustomObjectClassOptions = useMemo(() => {
@@ -308,7 +315,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
           <GluuFormFooter
             showBack={true}
             showCancel={true}
-            showApply={true}
+            showApply={!readOnly}
             onApply={toggle}
             onCancel={handleCancel}
             disableBack={false}
@@ -319,7 +326,9 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
           />
         </Col>
       </Row>
-      <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} formik={formik} />
+      {!readOnly && (
+        <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} formik={formik} />
+      )}
     </Form>
   )
 }

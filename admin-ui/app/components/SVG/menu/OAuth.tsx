@@ -3,11 +3,12 @@ import React from 'react'
 interface OAuthProps {
   fill?: string
   className: string
+  style?: React.CSSProperties
 }
 
-const OAuthIcon: React.FC<OAuthProps> = ({ fill, className }) => {
+const OAuthIcon: React.FC<OAuthProps> = ({ fill = '#000', className, style }) => {
   return (
-    <div className={className}>
+    <div className={className} style={style}>
       <svg xmlns="http://www.w3.org/2000/svg" fill={fill} viewBox="0 0 22.95 22.95">
         <g>
           <g>

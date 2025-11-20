@@ -27,6 +27,7 @@ export interface ScimConfigurationProps {
   scimConfiguration: AppConfiguration3 | undefined
   handleSubmit: (formValues: ScimFormValues) => void
   isSubmitting: boolean
+  canWriteScim?: boolean
 }
 
 // Re-export AppConfiguration3 for convenience

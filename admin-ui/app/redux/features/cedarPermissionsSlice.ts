@@ -9,6 +9,7 @@ const initialState: CedarPermissionsState = {
   initialized: null,
   isInitializing: false,
   cedarFailedStatusAfterMaxTries: null,
+  policyStoreJson: '',
 }
 
 const cedarPermissionsSlice = createSlice({
@@ -16,8 +17,8 @@ const cedarPermissionsSlice = createSlice({
   initialState,
   reducers: {
     setCedarlingPermission: (state, action: PayloadAction<SetCedarlingPermissionPayload>) => {
-      const { url, isAuthorized } = action.payload
-      state.permissions[url] = isAuthorized
+      const { resourceId, isAuthorized } = action.payload
+      state.permissions[resourceId] = isAuthorized
       state.loading = false
       state.error = null
     },
@@ -31,6 +32,9 @@ const cedarPermissionsSlice = createSlice({
     setCedarFailedStatusAfterMaxTries: (state) => {
       state.cedarFailedStatusAfterMaxTries = true
     },
+    setPolicyStoreJson: (state, action: PayloadAction<string>) => {
+      state.policyStoreJson = action.payload
+    },
   },
 })
 
@@ -40,5 +44,6 @@ export const {
   setCedarlingInitialized,
   setCedarlingInitializing,
   setCedarFailedStatusAfterMaxTries,
+  setPolicyStoreJson,
 } = cedarPermissionsSlice.actions
 export default cedarPermissionsSlice.reducer

@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect, useContext, useMemo } from 'react'
 import {
   FormGroup,
   Col,
@@ -14,19 +14,36 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { useSelector } from 'react-redux'
 import useWebhookDialogAction from 'Utils/hooks/useWebhookDialogAction'
-import { WEBHOOK_READ } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
 
 const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: any) => {
   const [active, setActive] = useState(false)
   const { t } = useTranslation()
-  const { hasCedarPermission } = useCedarling()
+  const { hasCedarReadPermission, authorizeHelper } = useCedarling()
 
   const [userMessage, setUserMessage] = useState('')
   const { loadingWebhooks, webhookModal } = useSelector((state: any) => state.webhookReducer)
   const theme: any = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
+
+  const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
+  const webhookScopes = useMemo(
+    () => CEDAR_RESOURCE_SCOPES[webhookResourceId] || [],
+    [webhookResourceId],
+  )
+  const canReadWebhooks = useMemo(
+    () => hasCedarReadPermission(webhookResourceId),
+    [hasCedarReadPermission, webhookResourceId],
+  )
+
+  useEffect(() => {
+    if (webhookScopes && webhookScopes.length > 0) {
+      authorizeHelper(webhookScopes)
+    }
+  }, [authorizeHelper, webhookScopes])
 
   const { webhookTriggerModal, onCloseModal } = useWebhookDialogAction({
     feature,
@@ -63,7 +80,7 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: a
 
   return (
     <>
-      {(webhookModal || loadingWebhooks) && hasCedarPermission(WEBHOOK_READ) ? (
+      {(webhookModal || loadingWebhooks) && canReadWebhooks ? (
         <>{webhookTriggerModal({ closeModal })}</>
       ) : (
         <Modal isOpen={modal} toggle={closeModal} className="modal-outline-primary">

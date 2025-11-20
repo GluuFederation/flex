@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Root Sagas
  */
@@ -17,25 +16,24 @@ import attributes from './AttributesSaga'
 import profileDetails from './ProfileDetailsSaga'
 import lockSaga from './LockSaga'
 import sessionSaga from './SessionSaga'
+import appInitSaga from './AppInitSaga'
 
 export default function* rootSaga() {
   const pluginSagaArr = process()
-  yield all(
-    [].concat(
-      [
-        authSagas(),
-        initSaga(),
-        licenseSaga(),
-        oidcDiscoverySaga(),
-        mauSaga(),
-        healthSaga(),
-        licenseDetailsSaga(),
-        attributes(),
-        profileDetails(),
-        lockSaga(),
-        sessionSaga(),
-      ],
-      pluginSagaArr,
-    ),
-  )
+  yield all([
+    authSagas(),
+    initSaga(),
+    licenseSaga(),
+    oidcDiscoverySaga(),
+    mauSaga(),
+    healthSaga(),
+    licenseDetailsSaga(),
+    attributes(),
+    profileDetails(),
+    lockSaga(),
+    sessionSaga(),
+    appInitSaga(),
+
+    ...(pluginSagaArr as unknown[]),
+  ] as unknown[])
 }

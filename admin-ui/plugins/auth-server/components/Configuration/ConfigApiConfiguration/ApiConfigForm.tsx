@@ -1,14 +1,15 @@
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect, useMemo } from 'react'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { FormGroup } from 'Components'
-import { useNavigate } from 'react-router-dom'
 import spec from '../../../../../configApiSpecs.yaml'
-import { API_CONFIG_WRITE } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import JsonPropertyBuilderConfigApi from './JsonPropertyBuilderConfigApi'
 import { toast } from 'react-toastify'
 import type { ApiAppConfiguration, JsonPatch } from './types'
+import { useAppNavigation } from '@/helpers/navigation'
 
 interface ApiConfigFormProps {
   configuration: ApiAppConfiguration
@@ -29,24 +30,28 @@ const { properties: schema } = (spec as unknown as SpecSchema).components?.schem
   ?.ApiAppConfiguration ?? { properties: {} }
 
 const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }) => {
-  const { hasCedarPermission, authorize } = useCedarling()
-  const navigate = useNavigate()
+  const { authorizeHelper, hasCedarWritePermission } = useCedarling()
+  const { navigateToHome } = useAppNavigation()
   const [modal, setModal] = useState(false)
   const [patches, setPatches] = useState<JsonPatch[]>([])
 
   const operations = patches
+  const configApiResourceId = ADMIN_UI_RESOURCES.ConfigApiConfiguration
+  const configApiScopes = useMemo(
+    () => CEDAR_RESOURCE_SCOPES[configApiResourceId] || [],
+    [configApiResourceId],
+  )
+
+  const canWriteConfigApi = useMemo(
+    () => hasCedarWritePermission(configApiResourceId),
+    [hasCedarWritePermission, configApiResourceId],
+  )
 
   useEffect(() => {
-    const authorizePermissions = async () => {
-      try {
-        await authorize([API_CONFIG_WRITE])
-      } catch (error) {
-        console.error('Error authorizing API config permissions:', error)
-      }
+    if (configApiScopes && configApiScopes.length > 0) {
+      authorizeHelper(configApiScopes)
     }
-
-    authorizePermissions()
-  }, [authorize])
+  }, [authorizeHelper, configApiScopes])
 
   const toggle = useCallback(() => {
     if (patches?.length > 0) {
@@ -64,17 +69,12 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
     [toggle, onSubmit, patches],
   )
 
-  function generateLabel(name: string): string {
-    const result = name.replace(/([A-Z])/g, ' $1')
-    return result.charAt(0).toUpperCase() + result.slice(1)
-  }
-
   const patchHandler = (patch: JsonPatch) => {
     setPatches((existingPatches) => [...existingPatches, patch])
   }
 
   const handleBack = () => {
-    navigate('/home/dashboard')
+    navigateToHome()
   }
 
   return (
@@ -91,8 +91,8 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
         />
       ))}
 
-      <FormGroup row></FormGroup>
-      {hasCedarPermission(API_CONFIG_WRITE) && (
+      <FormGroup row />
+      {canWriteConfigApi && (
         <GluuCommitFooter
           saveHandler={toggle}
           hideButtons={{ back: false }}
@@ -101,7 +101,7 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
         />
       )}
 
-      {hasCedarPermission(API_CONFIG_WRITE) && (
+      {canWriteConfigApi && (
         <GluuCommitDialog
           handler={toggle}
           modal={modal}

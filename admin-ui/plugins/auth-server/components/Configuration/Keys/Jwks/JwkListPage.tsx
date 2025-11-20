@@ -10,11 +10,6 @@ const generateStableKey = (kid: string | undefined, index: number): string => {
   return kid || `jwk-${index}`
 }
 
-/**
- * Render the JSON Web Key Set (JWKS) section, handling loading, error, and empty states.
- *
- * @returns The component's React element containing the JWKS section: a loading wrapper while fetching, an error alert if loading fails, the list of JWK items when present, or an informational alert when no keys are found.
- */
 function JwkListPage(): React.ReactElement {
   const { t } = useTranslation()
   const { jwks, isLoading, error } = useJwkApi()

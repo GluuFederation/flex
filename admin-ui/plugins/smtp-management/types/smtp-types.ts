@@ -26,4 +26,5 @@ export interface SmtpFormProps {
   allowSmtpKeystoreEdit: boolean
   onTestSmtp: (testData: SmtpTest) => void
   formikRef?: React.MutableRefObject<any>
+  readOnly: boolean
 }

@@ -743,6 +743,7 @@
     "request_body_error": "El cuerpo de la solicitud HTTP es obligatorio para el método HTTP seleccionado",
     "display_name_error": "Ingrese el nombre para mostrar.",
     "url_error": "Ingrese la URL.",
+    "missing_required_permission": "Falta el permiso requerido",
     "session_timeout_error": "El tiempo de espera de sesión debe ser de al menos 1 minuto",
     "session_timeout_required_error": "El tiempo de espera de sesión es obligatorio",
     "invalid_json_error": "Valor JSON inválido.",
@@ -770,6 +771,7 @@
     "smtp_test_message": "Este es un correo electrónico de prueba para verificar que su configuración SMTP funciona correctamente.",
     "save_before_test": "Por favor, guarde la configuración antes de probar",
     "no_configuration_loaded": "No se cargó ninguna configuración",
+    "insufficient_permissions_to_modify": "No tiene permiso para modificar esta configuración",
     "action_commit_question": "Registro de auditoría: ¿Desea aplicar los cambios realizados en esta página?",
     "licenseAuditLog": "¿Realmente desea restablecer la licencia existente?",
     "action_deletion_question": "¿Realmente desea eliminar este elemento?",
@@ -1674,6 +1676,7 @@
       "connectionUri": "URI de conexión a la base de datos"
     },
     "user": {
+      "passwordRequirements": "La contraseña debe tener al menos 8 caracteres e incluir mayúsculas, minúsculas, números y un carácter especial.",
       "userId": "ID de usuario",
       "userName": "Nombre de usuario",
       "givenName": "Nombre",

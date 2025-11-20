@@ -5,8 +5,9 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import MaterialTable, { type Action } from '@material-table/core'
 import { Paper } from '@mui/material'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { SSA_PORTAL, SSA_ADMIN, SSA_DELETE } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { useTranslation } from 'react-i18next'
@@ -27,7 +28,12 @@ import { SSA as SSA_RESOURCE } from '../../redux/audit/Resources'
 import { updateToast } from 'Redux/features/toastSlice'
 
 const SSAListPage: React.FC = () => {
-  const { hasCedarPermission, authorize } = useCedarling()
+  const {
+    hasCedarReadPermission,
+    hasCedarWritePermission,
+    hasCedarDeletePermission,
+    authorizeHelper,
+  } = useCedarling()
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -45,34 +51,32 @@ const SSAListPage: React.FC = () => {
   const [loadingJti, setLoadingJti] = useState<string | null>(null)
   const [isDeleting, setIsDeleting] = useState<boolean>(false)
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const selectedTheme = theme?.state?.theme || 'light'
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
   SetTitle(t('titles.ssa_management'))
   const [ssaDialogOpen, setSsaDialogOpen] = useState<boolean>(false)
   const [jwtData, setJwtData] = useState<SsaJwtResponse | null>(null)
 
+  const ssaResourceId = ADMIN_UI_RESOURCES.SSA
+  const ssaScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[ssaResourceId] || [], [ssaResourceId])
+
+  const canReadSsa = useMemo(
+    () => hasCedarReadPermission(ssaResourceId),
+    [hasCedarReadPermission, ssaResourceId],
+  )
+  const canWriteSsa = useMemo(
+    () => hasCedarWritePermission(ssaResourceId),
+    [hasCedarWritePermission, ssaResourceId],
+  )
+  const canDeleteSsa = useMemo(
+    () => hasCedarDeletePermission(ssaResourceId),
+    [hasCedarDeletePermission, ssaResourceId],
+  )
+
   useEffect(() => {
-    let cancelled = false
-
-    const authorizePermissions = async (): Promise<void> => {
-      const permissions = [SSA_PORTAL, SSA_ADMIN, SSA_DELETE]
-      try {
-        await Promise.all(permissions.map((permission) => authorize([permission])))
-      } catch (error) {
-        if (!cancelled) {
-          console.error('Error authorizing SSA permissions:', error)
-          dispatch(updateToast(true, 'error', 'Failed to authorize permissions'))
-        }
-      }
-    }
-
-    authorizePermissions()
-
-    return () => {
-      cancelled = true
-    }
-  }, [authorize, dispatch])
+    authorizeHelper(ssaScopes)
+  }, [authorizeHelper, ssaScopes])
 
   const PaperContainer = useCallback(
     (props: React.ComponentProps<typeof Paper>) => <Paper {...props} elevation={0} />,
@@ -99,63 +103,60 @@ const SSAListPage: React.FC = () => {
     [t],
   )
 
-  const DeleteIcon = useCallback(
-    () => <DeleteOutlined style={{ color: customColors.darkGray }} />,
-    [],
-  )
-  const DownloadIcon = useCallback(
-    () => <DownloadOutlined style={{ color: customColors.darkGray }} />,
-    [],
-  )
-  const ViewIcon = useCallback(
-    () => <VisibilityOutlined style={{ color: customColors.darkGray }} />,
-    [],
-  )
+  const myActions: Array<Action<SsaData> | ((rowData: SsaData) => Action<SsaData>)> = []
 
-  const myActions: Action<SsaData>[] = []
-
-  if (hasCedarPermission(SSA_ADMIN)) {
+  if (canWriteSsa) {
     myActions.push({
       icon: 'add',
       tooltip: `${t('messages.add_ssa')}`,
       iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
       isFreeAction: true,
       onClick: () => handleGoToSsaAddPage(),
-      disabled: !hasCedarPermission(SSA_ADMIN),
     })
   }
 
-  if (hasCedarPermission(SSA_ADMIN) || hasCedarPermission(SSA_DELETE)) {
+  if (canWriteSsa || canDeleteSsa) {
     myActions.push((rowData: SsaData) => ({
-      icon: DeleteIcon,
+      icon: () => <DeleteOutlined />,
       iconProps: {
         sx: { color: customColors.accentRed },
         id: rowData.ssa.org_id,
       },
-      onClick: () => handleSsaDelete(rowData),
-      disabled: !hasCedarPermission(SSA_ADMIN) && !hasCedarPermission(SSA_DELETE),
+      onClick: (_event: unknown, rowData: SsaData | SsaData[]) => {
+        if (rowData && !Array.isArray(rowData)) {
+          handleSsaDelete(rowData)
+        }
+      },
     }))
   }
 
-  if (hasCedarPermission(SSA_PORTAL) || hasCedarPermission(SSA_ADMIN)) {
+  if (canReadSsa || canWriteSsa) {
     myActions.push((rowData: SsaData) => ({
-      icon: ViewIcon,
+      icon: () => <VisibilityOutlined />,
       iconProps: {
         color: 'primary',
         id: rowData.ssa.org_id,
         style: { color: customColors.lightBlue },
       },
-      onClick: () => handleViewSsa(rowData),
+      onClick: (_event: unknown, rowData: SsaData | SsaData[]) => {
+        if (rowData && !Array.isArray(rowData)) {
+          handleViewSsa(rowData)
+        }
+      },
       disabled: loadingJti === rowData.ssa.jti,
     }))
     myActions.push((rowData: SsaData) => ({
-      icon: DownloadIcon,
+      icon: () => <DownloadOutlined />,
       iconProps: {
         color: 'primary',
         id: rowData.ssa.org_id,
         style: { color: customColors.lightBlue },
       },
-      onClick: () => handleDownloadSsa(rowData),
+      onClick: (_event: unknown, rowData: SsaData | SsaData[]) => {
+        if (rowData && !Array.isArray(rowData)) {
+          handleDownloadSsa(rowData)
+        }
+      },
       disabled: loadingJti === rowData.ssa.jti,
     }))
   }
@@ -235,7 +236,7 @@ const SSAListPage: React.FC = () => {
           second: '2-digit',
           hour12: false,
         })
-        .replace(/[\/:,]/g, '-')
+        .replace(/[/:,]/g, '-')
         .replace(/\s/g, '_')
       link.download = `ssa-${row.ssa.software_id}-${dateStr}.jwt`
       document.body.appendChild(link)
@@ -253,7 +254,7 @@ const SSAListPage: React.FC = () => {
   return (
     <Card style={applicationStyle.mainCard}>
       <CardBody>
-        <GluuViewWrapper canShow={hasCedarPermission(SSA_PORTAL)}>
+        <GluuViewWrapper canShow={canReadSsa}>
           <MaterialTable
             key={limit || 0}
             components={{
@@ -272,6 +273,10 @@ const SSAListPage: React.FC = () => {
               headerStyle: {
                 ...applicationStyle.tableHeaderStyle,
                 ...bgThemeColor,
+                textTransform: applicationStyle.tableHeaderStyle.textTransform as
+                  | 'uppercase'
+                  | 'lowercase'
+                  | 'none',
               },
               actionsColumnIndex: -1,
             }}
@@ -280,7 +285,7 @@ const SSAListPage: React.FC = () => {
             }}
           />
         </GluuViewWrapper>
-        {(hasCedarPermission(SSA_ADMIN) || hasCedarPermission(SSA_DELETE)) && item && (
+        {(canWriteSsa || canDeleteSsa) && item && (
           <GluuDialog
             row={item}
             name={item.ssa.org_id || ''}

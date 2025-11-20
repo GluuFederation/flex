@@ -3,8 +3,10 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Form, FormGroup, Col } from 'Components'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
-import { buildPayload, SCOPE_READ, SCOPE_WRITE } from 'Utils/PermChecker'
+import { buildPayload } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import MaterialTable from '@material-table/core'
 import type { Column, Action } from '@material-table/core'
@@ -24,20 +26,13 @@ import type { AcrMapping, AcrMappingFormValues } from './types'
 import { useAgamaActions } from './hooks'
 import { DEFAULT_PAGE_SIZE } from './constants'
 
-interface JsonConfigState {
-  configuration: {
-    acrMappings?: Record<string, string>
-  }
-  loading: boolean
-}
-
-interface CedarPermissionsState {
-  permissions: string[]
-}
-
 interface RootState {
-  jsonConfigReducer: JsonConfigState
-  cedarPermissions: CedarPermissionsState
+  jsonConfigReducer: {
+    configuration: {
+      acrMappings?: Record<string, string>
+    }
+    loading: boolean
+  }
 }
 
 interface AcrMappingTableRow extends AcrMapping {
@@ -47,7 +42,7 @@ interface AcrMappingTableRow extends AcrMapping {
 }
 
 function AliasesListPage(): React.ReactElement {
-  const { hasCedarPermission, authorize } = useCedarling()
+  const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme || 'dark'
   const themeColors = getThemeColor(selectedTheme)
@@ -55,9 +50,6 @@ function AliasesListPage(): React.ReactElement {
   const bgThemeColor = { background: themeColors.background }
   const { loading } = useSelector((state: RootState) => state.jsonConfigReducer)
   const configuration = useSelector((state: RootState) => state.jsonConfigReducer.configuration)
-  const { permissions: cedarPermissions } = useSelector(
-    (state: RootState) => state.cedarPermissions,
-  )
 
   const initialFormValues: AcrMappingFormValues = {
     source: '',
@@ -77,20 +69,30 @@ function AliasesListPage(): React.ReactElement {
 
   SetTitle(t('titles.authentication'))
 
+  const authResourceId = useMemo(() => ADMIN_UI_RESOURCES.Authentication, [])
+  const authScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[authResourceId], [authResourceId])
+  const canReadAuth = useMemo(
+    () => hasCedarReadPermission(authResourceId),
+    [hasCedarReadPermission, authResourceId],
+  )
+  const canWriteAuth = useMemo(
+    () => hasCedarWritePermission(authResourceId),
+    [hasCedarWritePermission, authResourceId],
+  )
+
   // Permission initialization and data fetching
   useEffect(() => {
-    const authorizePermissions = async (): Promise<void> => {
-      const permissions = [SCOPE_READ, SCOPE_WRITE]
-      try {
-        await Promise.all(permissions.map((permission) => authorize([permission])))
-      } catch (error) {
-        console.error('Error authorizing scope permissions:', error)
-      }
+    if (authScopes && authScopes.length > 0) {
+      authorizeHelper(authScopes)
     }
+  }, [authorizeHelper, authScopes])
 
-    authorizePermissions()
+  useEffect(() => {
+    if (!canReadAuth) {
+      return
+    }
     dispatch(getJsonConfig())
-  }, [dispatch, authorize])
+  }, [dispatch, canReadAuth])
 
   const validationSchema = Yup.object().shape({
     source: Yup.string().required(`${t('fields.source')} is Required!`),
@@ -109,7 +111,7 @@ function AliasesListPage(): React.ReactElement {
   useEffect(() => {
     const actions: Action<AcrMappingTableRow>[] = []
 
-    if (hasCedarPermission(SCOPE_WRITE)) {
+    if (canWriteAuth) {
       actions.push({
         icon: 'add',
         tooltip: `${t('actions.add_mapping')}`,
@@ -137,7 +139,7 @@ function AliasesListPage(): React.ReactElement {
     }
 
     setMyActions(actions)
-  }, [cedarPermissions, hasCedarPermission, t, formik])
+  }, [canWriteAuth, t, formik])
 
   const handleSubmit = useCallback(
     async (values: AcrMappingFormValues): Promise<void> => {
@@ -218,7 +220,7 @@ function AliasesListPage(): React.ReactElement {
 
   return (
     <>
-      <GluuViewWrapper canShow={hasCedarPermission(SCOPE_READ)}>
+      <GluuViewWrapper canShow={canReadAuth}>
         <MaterialTable
           components={{
             Container: (props) => <Paper {...props} elevation={0} />,
@@ -240,7 +242,7 @@ function AliasesListPage(): React.ReactElement {
           options={{
             search: false,
             paging: false,
-            rowStyle: (rowData) => ({
+            rowStyle: () => ({
               backgroundColor: customColors.white,
             }),
             headerStyle: {
@@ -250,7 +252,7 @@ function AliasesListPage(): React.ReactElement {
             actionsColumnIndex: -1,
           }}
           editable={{
-            isDeleteHidden: () => !hasCedarPermission(SCOPE_WRITE),
+            isDeleteHidden: () => !canWriteAuth,
             onRowDelete: async (oldData: AcrMappingTableRow): Promise<void> => {
               try {
                 const userAction: Record<string, unknown> = {}

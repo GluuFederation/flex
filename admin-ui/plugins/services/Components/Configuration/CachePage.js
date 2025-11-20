@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import BlockUi from '../../../../app/components/BlockUi/BlockUi'
 import { Formik } from 'formik'
 import { Form, FormGroup, Card, Col, CardBody, InputGroup, CustomInput } from 'Components'
@@ -27,6 +27,9 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import { useCedarling } from '@/cedarling'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 
 function CachePage() {
   const cacheData = useSelector((state) => state.cacheReducer.cache)
@@ -41,15 +44,33 @@ function CachePage() {
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
   const [cacheProviderType, setCacheProviderType] = useState(cacheData.cacheProviderType)
+  const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
+  const cacheResourceId = useMemo(() => ADMIN_UI_RESOURCES.Cache, [])
+  const cacheScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[cacheResourceId], [cacheResourceId])
+  const canReadCache = useMemo(
+    () => hasCedarReadPermission(cacheResourceId),
+    [hasCedarReadPermission, cacheResourceId],
+  )
+  const canWriteCache = useMemo(
+    () => hasCedarWritePermission(cacheResourceId),
+    [hasCedarWritePermission, cacheResourceId],
+  )
+
   SetTitle(t('fields.cache_configuration'))
 
   useEffect(() => {
-    dispatch(getCacheConfig())
-    dispatch(getMemoryCacheConfig())
-    dispatch(getMemCacheConfig())
-    dispatch(getNativeCacheConfig())
-    dispatch(getRedisCacheConfig())
-  }, [])
+    authorizeHelper(cacheScopes)
+  }, [authorizeHelper, cacheScopes])
+
+  useEffect(() => {
+    if (canReadCache) {
+      dispatch(getCacheConfig())
+      dispatch(getMemoryCacheConfig())
+      dispatch(getMemCacheConfig())
+      dispatch(getNativeCacheConfig())
+      dispatch(getRedisCacheConfig())
+    }
+  }, [canReadCache, dispatch])
 
   useEffect(() => {
     setCacheProviderType(cacheData.cacheProviderType)
@@ -94,6 +115,10 @@ function CachePage() {
     }
   }
 
+  if (!canReadCache) {
+    return null
+  }
+
   return (
     <React.Fragment>
       <BlockUi
@@ -109,6 +134,9 @@ function CachePage() {
               initialValues={INITIAL_VALUES}
               enableReinitialize
               onSubmit={(values) => {
+                if (!canWriteCache) {
+                  return
+                }
                 const cache = [
                   {
                     op: 'replace',
@@ -223,12 +251,12 @@ function CachePage() {
                   <GluuFormFooter
                     showBack={true}
                     showCancel={true}
-                    showApply={true}
+                    showApply={canWriteCache}
                     onApply={toggle}
                     onCancel={handleCancel(formik)}
                     disableBack={false}
                     disableCancel={!formik.dirty}
-                    disableApply={!formik.isValid || !formik.dirty}
+                    disableApply={!formik.isValid || !formik.dirty || !canWriteCache}
                     applyButtonType="button"
                     isLoading={loading}
                   />

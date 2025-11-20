@@ -694,6 +694,7 @@
     "http_method_error": "Por favor, selecione um método HTTP.",
     "display_name_error": "Por favor, insira um nome de exibição.",
     "url_error": "Por favor, insira uma URL.",
+    "missing_required_permission": "Permissão necessária ausente",
     "invalid_json_error": "Valor JSON inválido.",
     "license_api_not_enabled": "A API de licença não está habilitada para este aplicativo.",
     "adding_new_permission": "Adicionando nova permissão",
@@ -708,6 +709,7 @@
     "smtp_test_message": "Este é um e-mail de teste para verificar se sua configuração SMTP está funcionando corretamente.",
     "save_before_test": "Por favor, salve a configuração antes de testar",
     "no_configuration_loaded": "Nenhuma configuração carregada",
+    "insufficient_permissions_to_modify": "Você não tem permissão para modificar esta configuração",
     "action_commit_question": "Registro de auditoria: deseja aplicar as alterações feitas nesta página?",
     "licenseAuditLog": "Você realmente deseja redefinir a licença existente?",
     "action_deletion_question": "Tem certeza que quer deletar este item?",
@@ -1620,6 +1622,7 @@
     "revision": "Update revision number of the script."
   },
   "user": {
+    "passwordRequirements": "A senha deve ter pelo menos 8 caracteres e incluir letras maiúsculas, minúsculas, número e caractere especial.",
     "userId": "ID do usuário",
     "userName": "Nome de usuário",
     "givenName": "Nome dado",

@@ -58,6 +58,7 @@ import SsaListPage from './components/Ssa/SsaListPage'
 import SsaAddPage from './components/Ssa/SsaAddPage'
 import LockPage from './components/Message/LockPage'
 import AuthNPage from './components/AuthN'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 
 const AgamaListPage = lazy(() => import('./components/Agama/AgamaListPage'))
 function AgamaListPageWrapper() {
@@ -80,41 +81,49 @@ const pluginMetadata = {
           title: 'menus.clients',
           path: PLUGIN_BASE_APTH + '/clients',
           permission: CLIENT_READ,
+          resourceKey: ADMIN_UI_RESOURCES.Clients,
         },
         {
           title: 'menus.scopes',
           path: PLUGIN_BASE_APTH + '/scopes',
           permission: SCOPE_READ,
+          resourceKey: ADMIN_UI_RESOURCES.Scopes,
         },
         {
           title: 'menus.keys',
           path: PLUGIN_BASE_APTH + '/config/keys',
           permission: JWKS_READ,
+          resourceKey: ADMIN_UI_RESOURCES.Keys,
         },
         {
           title: 'menus.properties',
           path: PLUGIN_BASE_APTH + '/config/properties',
           permission: PROPERTIES_READ,
+          resourceKey: ADMIN_UI_RESOURCES.AuthenticationServerConfiguration,
         },
         {
           title: 'menus.logging',
           path: PLUGIN_BASE_APTH + '/config/logging',
           permission: LOGGING_READ,
+          resourceKey: ADMIN_UI_RESOURCES.Logging,
         },
         {
           title: 'menus.ssa',
           path: PLUGIN_BASE_APTH + '/config/ssa',
           permission: SSA_PORTAL,
+          resourceKey: ADMIN_UI_RESOURCES.SSA,
         },
         {
           title: 'menus.authentication',
           path: PLUGIN_BASE_APTH + '/authn',
           permission: SCOPE_READ,
+          resourceKey: ADMIN_UI_RESOURCES.Authentication,
         },
         {
           title: 'menus.api_config',
           path: PLUGIN_BASE_APTH + '/config-api-configuration',
           permission: API_CONFIG_READ,
+          resourceKey: ADMIN_UI_RESOURCES.ConfigApiConfiguration,
         },
         // {
         //   title: 'menus.configuration',
@@ -124,6 +133,7 @@ const pluginMetadata = {
           title: 'menus.sessions',
           path: PLUGIN_BASE_APTH + '/sessions',
           permission: SESSION_READ,
+          resourceKey: ADMIN_UI_RESOURCES.Session,
         },
         // {
         //   title: 'menus.lock ',
@@ -138,61 +148,73 @@ const pluginMetadata = {
       component: SessionListPage,
       path: PLUGIN_BASE_APTH + '/sessions',
       permission: SESSION_READ,
+      resourceKey: ADMIN_UI_RESOURCES.Session,
     },
     {
       component: ClientListPage,
       path: PLUGIN_BASE_APTH + '/clients',
       permission: CLIENT_READ,
+      resourceKey: ADMIN_UI_RESOURCES.Clients,
     },
     {
       component: ClientAddPage,
       path: PLUGIN_BASE_APTH + '/client/new',
       permission: CLIENT_WRITE,
+      resourceKey: ADMIN_UI_RESOURCES.Clients,
     },
     {
       component: ClientEditPage,
       path: PLUGIN_BASE_APTH + '/client/edit/:id',
       permission: CLIENT_WRITE,
+      resourceKey: ADMIN_UI_RESOURCES.Clients,
     },
     {
       component: ScopeListPage,
       path: PLUGIN_BASE_APTH + '/scopes',
       permission: SCOPE_READ,
+      resourceKey: ADMIN_UI_RESOURCES.Scopes,
     },
     {
       component: AuthNEditPage,
       path: PLUGIN_BASE_APTH + '/authn/edit/:id',
       permission: SCOPE_READ,
+      resourceKey: ADMIN_UI_RESOURCES.Authentication,
     },
     {
       component: AuthNPage,
       path: PLUGIN_BASE_APTH + '/authn',
       permission: SCOPE_READ,
+      resourceKey: ADMIN_UI_RESOURCES.Authentication,
     },
     {
       component: ScopeAddPage,
       path: PLUGIN_BASE_APTH + '/scope/new',
       permission: SCOPE_WRITE,
+      resourceKey: ADMIN_UI_RESOURCES.Scopes,
     },
     {
       component: ScopeEditPage,
       path: PLUGIN_BASE_APTH + '/scope/edit/:id',
       permission: SCOPE_WRITE,
+      resourceKey: ADMIN_UI_RESOURCES.Scopes,
     },
     {
       component: PropertiesPage,
       path: PLUGIN_BASE_APTH + '/config/properties',
       permission: ACR_READ,
+      resourceKey: ADMIN_UI_RESOURCES.AuthenticationServerConfiguration,
     },
     {
       component: KeysPage,
       path: PLUGIN_BASE_APTH + '/config/keys',
       permission: JWKS_READ,
+      resourceKey: ADMIN_UI_RESOURCES.Keys,
     },
     {
       component: LoggingPage,
       path: PLUGIN_BASE_APTH + '/config/logging',
       permission: ACR_READ,
+      resourceKey: ADMIN_UI_RESOURCES.Logging,
     },
     {
       component: ReportPage,
@@ -203,26 +225,31 @@ const pluginMetadata = {
       component: AgamaListPageWrapper,
       path: PLUGIN_BASE_APTH + '/agama',
       permission: AGAMA_READ,
+      resourceKey: ADMIN_UI_RESOURCES.Authentication,
     },
     {
       component: SsaListPage,
       path: PLUGIN_BASE_APTH + '/config/ssa',
       permission: SSA_PORTAL,
+      resourceKey: ADMIN_UI_RESOURCES.SSA,
     },
     {
       component: SsaAddPage,
       path: PLUGIN_BASE_APTH + '/config/ssa/new',
       permission: SSA_PORTAL,
+      resourceKey: ADMIN_UI_RESOURCES.SSA,
     },
     {
       component: LockPage,
       path: PLUGIN_BASE_APTH + '/lock',
       permission: MESSAGE_READ,
+      resourceKey: ADMIN_UI_RESOURCES.Lock,
     },
     {
       component: ConfigApiPage,
       path: PLUGIN_BASE_APTH + '/config-api-configuration',
       permission: API_CONFIG_READ,
+      resourceKey: ADMIN_UI_RESOURCES.ConfigApiConfiguration,
     },
   ],
   reducers: [
