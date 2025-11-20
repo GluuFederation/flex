@@ -48,7 +48,9 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
   )
 
   useEffect(() => {
-    authorizeHelper(configApiScopes)
+    if (configApiScopes && configApiScopes.length > 0) {
+      authorizeHelper(configApiScopes)
+    }
   }, [authorizeHelper, configApiScopes])
 
   const toggle = useCallback(() => {

@@ -30,15 +30,7 @@ import type { Logging } from 'JansConfigApi'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import { useNavigate } from 'react-router'
 import { loggingValidationSchema } from './validations'
-
-interface LoggingReducerState {
-  logging: Logging | null
-  loading: boolean
-}
-
-interface RootState {
-  loggingReducer: LoggingReducerState
-}
+import type { RootState } from 'Plugins/auth-server/redux/features/types/loggingTypes'
 
 interface PendingValues {
   mergedValues: Logging
@@ -271,13 +263,7 @@ function LoggingPage(): React.ReactElement {
                       <Col>
                         <GluuFormFooter
                           showBack={true}
-                          onBack={() => {
-                            if (window.history.length > 1) {
-                              navigate(-1)
-                            } else {
-                              navigate('/auth-server/config/logging')
-                            }
-                          }}
+                          onBack={() => navigate('/home/dashboard')}
                           showCancel={true}
                           onCancel={() => formik.resetForm()}
                           disableCancel={!formik.dirty}
