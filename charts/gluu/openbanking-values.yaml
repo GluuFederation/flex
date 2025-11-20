@@ -28,7 +28,7 @@ auth-server:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/auth-server
     # -- Image  tag to use for deploying.
-    tag: 1.14.0-1
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -161,7 +161,7 @@ config:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/configurator
     # -- Image  tag to use for deploying.
-    tag: 1.14.0-1
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Organization name. Used for certificate creation.
@@ -225,7 +225,7 @@ config-api:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/config-api
     # -- Image  tag to use for deploying.
-    tag: 1.14.0-1
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -625,7 +625,7 @@ persistence:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/persistence-loader
     # -- Image  tag to use for deploying.
-    tag: 1.14.0-1
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Resource specs.
