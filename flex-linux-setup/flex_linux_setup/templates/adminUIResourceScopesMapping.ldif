@@ -6,6 +6,7 @@ jansScope: https://jans.io/oauth/config/stats.readonly
 jansScope: jans_stat
 jansScope: https://jans.io/oauth/config/data.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/license.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -15,6 +16,7 @@ jansAccessType: READ
 jansResource: license
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/license.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+jansScope: https://jans.io/oauth/config/data.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -33,6 +35,7 @@ jansAccessType: READ
 jansResource: mau
 jansScope: https://jans.io/oauth/config/stats.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+jansScope: https://jans.io/oauth/config/data.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -43,6 +46,7 @@ jansResource: settings
 jansScope: https://jans.io/oauth/config/scripts.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/properties.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+jansScope: https://jans.io/oauth/config/data.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -61,6 +65,7 @@ jansAccessType: READ
 jansResource: webhooks
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/webhook.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+jansScope: https://jans.io/oauth/config/data.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -88,6 +93,7 @@ jansAccessType: READ
 jansResource: assets
 jansScope: https://jans.io/oauth/config/jans_asset-read
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+jansScope: https://jans.io/oauth/config/data.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -115,6 +121,7 @@ jansAccessType: READ
 jansResource: auditLogs
 jansScope: https://jans.io/oauth/config/logging.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+jansScope: https://jans.io/oauth/config/data.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -126,18 +133,7 @@ jansScope: https://jans.io/oauth/config/openid/clients.readonly
 jansScope: https://jans.io/oauth/config/scopes.readonly
 jansScope: https://jans.io/oauth/config/scripts.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
-objectClass: top
-objectClass: adminUIResourceScopesMapping
-
-dn: inum=fbf1e29b-369c-4fc9-8ab6-197ee9ed257c,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
-inum: fbf1e29b-369c-4fc9-8ab6-197ee9ed257c
-jansAccessType: READ
-jansResource: clients
-jansScope: https://jans.io/oauth/config/openid/clients.readonly
-jansScope: https://jans.io/oauth/config/scopes.readonly
-jansScope: https://jans.io/oauth/config/scripts.readonly
-jansScope: https://jans.io/oauth/jans-auth-server/config/properties.readonly
-jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+jansScope: https://jans.io/oauth/config/data.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -171,6 +167,7 @@ jansResource: scopes
 jansScope: https://jans.io/oauth/config/scopes.readonly
 jansScope: https://jans.io/oauth/config/attributes.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+jansScope: https://jans.io/oauth/config/data.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -200,6 +197,7 @@ jansAccessType: READ
 jansResource: keys
 jansScope: https://jans.io/oauth/config/jwks.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+jansScope: https://jans.io/oauth/config/data.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -211,6 +209,7 @@ jansScope: https://jans.io/oauth/jans-auth-server/config/properties.readonly
 jansScope: https://jans.io/oauth/config/acrs.readonly
 jansScope: https://jans.io/oauth/config/scripts.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+jansScope: https://jans.io/oauth/config/data.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -230,6 +229,7 @@ jansAccessType: READ
 jansResource: logging
 jansScope: https://jans.io/oauth/config/logging.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+jansScope: https://jans.io/oauth/config/data.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -253,6 +253,7 @@ jansScope: https://jans.io/oauth/jans-auth-server/config/properties.readonly
 jansScope: https://jans.io/oauth/config/agama.readonly
 jansScope: https://jans.io/oauth/config/agama-repo.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+jansScope: https://jans.io/oauth/config/data.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -274,6 +275,7 @@ jansAccessType: READ
 jansResource: configApiConfiguration
 jansScope: https://jans.io/oauth/config/properties.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+jansScope: https://jans.io/oauth/config/data.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -293,6 +295,7 @@ jansResource: session
 jansScope: https://jans.io/oauth/jans-auth-server/session.readonly
 jansScope: revoke_session
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+jansScope: https://jans.io/oauth/config/data.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -314,6 +317,7 @@ jansScope: https://jans.io/oauth/config/user.readonly
 jansScope: https://jans.io/oauth/config/attributes.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/properties.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+jansScope: https://jans.io/oauth/config/data.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -343,6 +347,7 @@ jansAccessType: READ
 jansResource: scripts
 jansScope: https://jans.io/oauth/config/scripts.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+jansScope: https://jans.io/oauth/config/data.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -372,6 +377,7 @@ jansAccessType: READ
 jansResource: attributes
 jansScope: https://jans.io/oauth/config/attributes.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+jansScope: https://jans.io/oauth/config/data.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -400,6 +406,7 @@ inum: 45e1e36f-6225-4701-93a4-33b5afac2ed8
 jansAccessType: READ
 jansResource: cache
 jansScope: https://jans.io/oauth/config/cache.readonly
+jansScope: https://jans.io/oauth/config/data.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -416,6 +423,7 @@ inum: a315242a-2eac-42cf-8d67-63072f1465bf
 jansAccessType: READ
 jansResource: persistence
 jansScope: https://jans.io/oauth/jans-auth-server/config/properties.readonly
+jansScope: https://jans.io/oauth/config/data.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -425,6 +433,7 @@ jansAccessType: READ
 jansResource: smtp
 jansScope: https://jans.io/oauth/config/smtp.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+jansScope: https://jans.io/oauth/config/data.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -443,6 +452,7 @@ jansAccessType: READ
 jansResource: scim
 jansScope: https://jans.io/scim/config.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+jansScope: https://jans.io/oauth/config/data.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -461,6 +471,7 @@ jansAccessType: READ
 jansResource: fido
 jansScope: https://jans.io/oauth/config/fido2.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+jansScope: https://jans.io/oauth/config/data.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -481,6 +492,7 @@ jansScope: https://jans.io/oauth/config/saml-config.readonly
 jansScope: https://jans.io/oauth/config/saml.readonly
 jansScope: https://jans.io/idp/saml.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+jansScope: https://jans.io/oauth/config/data.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -513,6 +525,7 @@ jansScope: https://jans.io/oauth/lock-config.readonly
 jansScope: https://jans.io/oauth/lock/read-all
 jansScope: jans_stat
 jansScope: https://jans.io/oauth/lock/telemetry.readonly
+jansScope: https://jans.io/oauth/config/data.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -536,6 +549,8 @@ jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/user/permission
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/security.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+jansScope: https://jans.io/oauth/config/data.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/properties.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -548,6 +563,7 @@ jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/user/permission
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.write
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/security.write
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/properties.write
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -570,6 +586,7 @@ jansScope: https://jans.io/auth/ssa.developer
 jansScope: https://jans.io/auth/ssa.portal
 jansScope: https://jans.io/oauth/jans-auth-server/config/properties.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+jansScope: https://jans.io/oauth/config/data.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 

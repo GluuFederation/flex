@@ -62,7 +62,8 @@
     "securityDropdown": {
       "adminUiRoles": "Funções da interface do administrador",
       "capabilities": "Capacidades",
-      "mapping": "Mapeamento"
+      "mapping": "Mapeamento",
+      "cedarlingConfig": "Cedarling"
     },
     "lock": "Trancar",
     "cache": "Cache",
@@ -649,7 +650,10 @@
     "noMatchingOptions": "Nenhuma opção correspondente",
     "nothingToShowInTheList": "Nada a mostrar na lista",
     "disable_logger_timer": "Desativar Temporizador de Logs",
-    "skip_defined_password_validation": "Pular Validação de Senha Definida"
+    "skip_defined_password_validation": "Pular Validação de Senha Definida",
+    "auiPolicyStoreUrl": "Repositório de políticas remotas da interface de administração",
+    "configApiPolicyStoreUrl": "Política de armazenamento da API de configuração",
+    "cedarlingPolicyStoreRetrievalPoint": "Ponto de Recuperação de Políticas"
   },
   "messages": {
     "add_permission": "Adicionar permissão",
@@ -852,6 +856,7 @@
     "all_attributes": "Todos os Atributos",
     "all_custom_scripts": "Todos os scripts personalizados",
     "jans_json_property": "Propriedades",
+    "cedarling_config": "Configuração Cedarling",
     "jans_lock": "Trava Jans",
     "config_api_configuration": "Configuração da API de Configuração",
     "database_information": "Informações do Banco de Dados",
@@ -1583,6 +1588,18 @@
     },
     "authn": {
       "acr": "Référence de classe de contexte d'authentification"
+    },
+    "cedarlingConfig": {
+      "title": "Configurar o controlo refinado usando Cedarling",
+      "point1": "1. Crie um repositório de políticas utilizando o Agama Lab. Duplique o projeto",
+      "point2": "2.º Copie o URL do PolicyStore e configure.",
+      "note": "Nota: isto irá ajudá-lo a criar o seu próprio projeto cedarling. Pode atualizar funções e permissões através do Agama Lab.",
+      "useRemotePolicyStore": "Recomenda-se definir como Padrão para a produção. Se definido como Padrão, será utilizado o armazenamento da interface administrativa para a autorização do Cedarling. Ative o modo Padrão e utilize o botão de atualização para armazenar ou atualizar as políticas do GitHub no servidor da interface administrativa.",
+      "updateRemotePolicyStoreOnServer": "Clique aqui para atualizar o JSON do repositório de políticas padrão com a versão disponível no URL remoto configurado."
+    },
+    "mappings": {
+      "note_prefix": "Configurar",
+      "note_suffix": "Para gerir funções e permissões. Depois de guardar a configuração do Cedarling, as funções e permissões serão sincronizadas automaticamente a partir do repositório de políticas."
     }
   },
   "script": {

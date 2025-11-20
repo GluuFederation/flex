@@ -3,31 +3,31 @@ import UserAddPage from './components/UserAddPage'
 import UserEditPage from './components/UserEditPage'
 import { USER_READ, USER_WRITE } from 'Utils/PermChecker'
 
-const PLUGIN_BASE_APTH = '/user'
+const PLUGIN_BASE_PATH = '/user'
 
 const pluginMetadata = {
   menus: [
     {
       title: 'menus.users',
       icon: 'usersmanagement',
-      path: PLUGIN_BASE_APTH + '/usersmanagement',
+      path: PLUGIN_BASE_PATH + '/usersmanagement',
       permission: USER_READ,
     },
   ],
   routes: [
     {
       component: UserList,
-      path: PLUGIN_BASE_APTH + '/usersmanagement',
+      path: PLUGIN_BASE_PATH + '/usersmanagement',
       permission: USER_READ,
     },
     {
       component: UserAddPage,
-      path: PLUGIN_BASE_APTH + '/usermanagement/add',
+      path: PLUGIN_BASE_PATH + '/usermanagement/add',
       permission: USER_WRITE,
     },
     {
       component: UserEditPage,
-      path: PLUGIN_BASE_APTH + '/usermanagement/edit/:id',
+      path: PLUGIN_BASE_PATH + '/usermanagement/edit/:id',
       permission: USER_WRITE,
     },
   ],
