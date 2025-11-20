@@ -1,49 +1,33 @@
-// Core Custom Script Types
+// Core Custom Script Types - using orval generated types
 
-export interface ModuleProperty {
-  value1: string
-  value2: string
-  description?: string
-  hide?: boolean
-  key?: string
-  value?: string
+import type {
+  CustomScript,
+  SimpleCustomProperty,
+  SimpleExtendedCustomProperty,
+  ScriptError,
+  CustomScriptScriptType,
+  CustomScriptProgrammingLanguage,
+  CustomScriptLocationType,
+} from 'JansConfigApi'
+
+// Re-export orval types
+export type {
+  CustomScript,
+  SimpleCustomProperty,
+  SimpleExtendedCustomProperty,
+  ScriptError,
+  CustomScriptScriptType,
+  CustomScriptProgrammingLanguage,
+  CustomScriptLocationType,
 }
 
-export interface ConfigurationProperty {
-  key?: string
-  value?: string
-  value1?: string
-  value2?: string
-  hide?: boolean
-}
+// Legacy type aliases for backward compatibility during migration
+export type ModuleProperty = SimpleCustomProperty
+export type ConfigurationProperty = SimpleExtendedCustomProperty
+export type CustomScriptItem = CustomScript
 
-export interface ScriptError {
-  stackTrace?: string
-}
-
-export interface ScriptType {
+// Type for script type dropdown options
+export interface ScriptTypeOption {
   value: string
   name: string
-}
-
-export interface CustomScriptItem {
-  inum?: string
-  name?: string
-  description?: string
-  scriptType?: string
-  programmingLanguage?: string
-  level?: number
-  script?: string
-  aliases?: string[]
-  moduleProperties?: ModuleProperty[]
-  configurationProperties?: ConfigurationProperty[]
-  locationPath?: string
-  locationType?: string
-  enabled?: boolean
-  internal?: boolean
-  revision?: number
-  scriptError?: ScriptError
-  action_message?: string
-  script_path?: string
-  location_type?: string
 }

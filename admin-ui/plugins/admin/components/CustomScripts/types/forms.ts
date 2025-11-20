@@ -1,6 +1,15 @@
 // Form Types
 
-import { CustomScriptItem, ModuleProperty, ConfigurationProperty } from './customScript'
+import type {
+  CustomScript,
+  SimpleCustomProperty,
+  SimpleExtendedCustomProperty,
+} from 'JansConfigApi'
+
+// Legacy type aliases for backward compatibility
+type CustomScriptItem = CustomScript
+type ModuleProperty = SimpleCustomProperty
+type ConfigurationProperty = SimpleExtendedCustomProperty
 
 export interface CustomScriptFormProps {
   item: CustomScriptItem

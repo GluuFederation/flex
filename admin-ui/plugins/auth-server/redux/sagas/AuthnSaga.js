@@ -10,8 +10,7 @@ import {
   setSuccess,
 } from '../features/authNSlice'
 import LdapApi from '../../../services/redux/api/LdapApi'
-import ScriptApi from '../../../admin/redux/api/ScriptApi'
-const JansConfigApi = require('jans_config_api')
+import * as JansConfigApi from 'jans_config_api'
 
 function* newACRFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
@@ -29,13 +28,6 @@ function* newLDAPFunction() {
     getClient(JansConfigApi, token, issuer),
   )
   return new LdapApi(api)
-}
-
-function* newScriptFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
-  const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.CustomScriptsApi(getClient(JansConfigApi, token, issuer))
-  return new ScriptApi(api)
 }
 
 export function* editSimpleAuthAcr({ payload }) {
@@ -74,8 +66,13 @@ export function* editLDAPAuthAcr({ payload }) {
 
 export function* editScriptAuthAcr({ payload }) {
   try {
-    const api = yield* newScriptFunction()
-    const data = yield call(api.editCustomScript, payload.data)
+    // Use JansConfigApi directly instead of ScriptApi wrapper
+    const token = yield select((state) => state.authReducer.token.access_token)
+    const issuer = yield select((state) => state.authReducer.issuer)
+    const scriptApi = new JansConfigApi.CustomScriptsApi(getClient(JansConfigApi, token, issuer))
+
+    // Call putConfigScripts directly (orval-compatible method)
+    const data = yield call([scriptApi, scriptApi.putConfigScripts], payload.data)
     yield put(setScriptAuthAcrResponse({ data }))
     yield put(setSuccess({ data: true }))
   } catch (e) {

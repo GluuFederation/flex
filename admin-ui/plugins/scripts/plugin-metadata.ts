@@ -1,9 +1,5 @@
 import { SCRIPT_READ, SCRIPT_WRITE } from '../../app/utils/PermChecker'
-import { reducer as scriptReducer } from 'Plugins/admin/redux/features/customScriptSlice'
-import ScriptListPage from '../admin/components/CustomScripts/ScriptListPage'
-import CustomScriptAddPage from '../admin/components/CustomScripts/CustomScriptAddPage'
-import CustomScriptEditPage from '../admin/components/CustomScripts/CustomScriptEditPage'
-import scriptSaga from '../admin/redux/sagas/CustomScriptSaga'
+import { ScriptListPage, ScriptAddPage, ScriptEditPage } from '../admin/components/CustomScripts'
 
 const BASE_PLUGIN_PATH = '/adm'
 
@@ -23,18 +19,23 @@ const pluginMetadata = {
       permission: SCRIPT_READ,
     },
     {
-      component: CustomScriptAddPage,
+      component: ScriptAddPage,
       path: BASE_PLUGIN_PATH + '/script/new',
       permission: SCRIPT_WRITE,
     },
     {
-      component: CustomScriptEditPage,
+      component: ScriptEditPage,
       path: BASE_PLUGIN_PATH + '/script/edit/:id',
+      permission: SCRIPT_WRITE,
+    },
+    {
+      component: ScriptEditPage,
+      path: BASE_PLUGIN_PATH + '/script/view/:id',
       permission: SCRIPT_READ,
     },
   ],
-  reducers: [{ name: 'scriptReducer', reducer: scriptReducer }],
-  sagas: [scriptSaga()],
+  reducers: [],
+  sagas: [],
 }
 
 export default pluginMetadata

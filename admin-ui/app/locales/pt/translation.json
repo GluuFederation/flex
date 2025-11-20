@@ -388,6 +388,7 @@
     "computation_pool_size": "Tamanho do pool de computação",
     "config_api_url": "Config API URL",
     "configuration_id": "Id de configuração",
+    "configuration_properties": "Propriedades de Configuração",
     "connection_factory_type": "Tipo de conexão de fábrica",
     "connection_timeout": "Tempo limite de conexão",
     "consent_gathering_scripts": "Scripts de coleta de consentimento",
@@ -656,6 +657,7 @@
     "cedarlingPolicyStoreRetrievalPoint": "Ponto de Recuperação de Políticas"
   },
   "messages": {
+    "error": "Erro",
     "add_permission": "Adicionar permissão",
     "add_asset": "Add Jans Asset",
     "asset_document_error": "Document is mandatory.",
@@ -914,7 +916,10 @@
     "newPermission": "Nova Permissão",
     "addingNewApiPermission": "Adicionando nova permissão de API",
     "followingPermissionRequiredToBeAdded": "É necessária a permissão seguinte para ser adicionado!",
-    "authentication": "Autenticação"
+    "authentication": "Autenticação",
+    "hold_ctrl_to_select_multiple": "Mantenha pressionado Ctrl/Cmd para selecionar múltiplas opções",
+    "interactive_required": "O tipo de uso é obrigatório para scripts de autenticação de pessoa",
+    "script_path_description": "Caminho completo para o arquivo de script no sistema de arquivos do servidor"
   },
   "links": {
     "support": "https://support.gluu.org/"
@@ -952,7 +957,12 @@
     "string": "CORDA",
     "true": "verdadeiro",
     "user": "DO UTILIZADOR",
-    "yes": "sim"
+    "yes": "sim",
+    "both": "Ambos",
+    "database": "Banco de dados",
+    "file": "Arquivo",
+    "interactive": "Interativo",
+    "service": "Serviço"
   },
   "documentation": {
     "asset": {

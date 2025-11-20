@@ -1,16 +1,16 @@
-import { CustomScriptItem, ModuleProperty } from '../types/customScript'
-import { FormValues } from '../types/forms'
+import type { CustomScript, SimpleCustomProperty } from 'JansConfigApi'
+import type { FormValues } from '../types/forms'
 import { filterEmptyObjects } from 'Utils/Util'
 
 export const getModuleProperty = (
   key: string,
-  properties?: ModuleProperty[],
+  properties?: SimpleCustomProperty[],
 ): string | undefined => {
   const moduleProps = properties || []
   return moduleProps.find((p) => p.value1 === key)?.value2
 }
 
-export const transformToFormValues = (item: CustomScriptItem): FormValues => {
+export const transformToFormValues = (item: CustomScript): FormValues => {
   const defaultScriptPathValue = getModuleProperty('location_path', item.moduleProperties)
 
   return {

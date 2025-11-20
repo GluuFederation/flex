@@ -5,7 +5,11 @@ import { SCRIPT } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import customColors from '@/customColors'
-import { CustomScriptDetailPageProps } from './types'
+import type { CustomScript } from 'JansConfigApi'
+
+interface CustomScriptDetailPageProps {
+  row: CustomScript
+}
 
 const CustomScriptDetailPage: React.FC<CustomScriptDetailPageProps> = ({ row }) => {
   const { t } = useTranslation()

@@ -1,5 +1,4 @@
 export * from './asset'
-export * from './customScript'
 export * from './userAction'
 export * from './audit'
 export * from './state'
