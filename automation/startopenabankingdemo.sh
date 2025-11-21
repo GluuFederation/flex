@@ -21,7 +21,7 @@ KUBECONFIG="$PWD"/config
 sudo microk8s.kubectl create namespace gluu --kubeconfig="$KUBECONFIG" || echo "namespace exists"
 sudo helm repo add bitnami https://charts.bitnami.com/bitnami
 sudo microk8s.kubectl get po --kubeconfig="$KUBECONFIG"
-sudo helm install my-release --set auth.rootPassword=Test1234#,auth.database=gluu -n gluu oci://registry-1.docker.io/bitnamicharts/mysql --kubeconfig="$KUBECONFIG"
+sudo helm install my-release --set auth.rootPassword=Test1234#,auth.database=gluu,image.repository=bitnamilegacy/mysql,image.tag=9.4.0-debian-12-r1 -n gluu oci://registry-1.docker.io/bitnamicharts/mysql --kubeconfig="$KUBECONFIG"
 EXT_IP=$(curl ipinfo.io/ip)
 sudo echo "$EXT_IP $GLUU_FQDN" >> /etc/hosts
 cat << EOF > override.yaml
