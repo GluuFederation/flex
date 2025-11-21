@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { CardBody, Card } from 'Components'
 import ScopeForm from './ScopeForm'
@@ -40,12 +40,18 @@ const ScopeAddPage: React.FC = () => {
     if (attributes.length === 0) {
       const attributeOptions: Record<string, unknown> = {}
       buildPayload(attributeOptions, 'Fetch attributes', { limit: 100 })
-      dispatch(getAttributes({ options: attributeOptions }))
+      dispatch({
+        type: getAttributes.type,
+        payload: { options: attributeOptions },
+      })
     }
     if (scripts.length === 0) {
       const scriptAction: Record<string, unknown> = {}
       buildPayload(scriptAction, 'Fetch custom scripts', {})
-      dispatch(getScripts({ action: scriptAction }))
+      dispatch({
+        type: getScripts.type,
+        payload: { action: scriptAction },
+      })
     }
   }, [dispatch, attributes.length, scripts.length])
 
@@ -82,24 +88,30 @@ const ScopeAddPage: React.FC = () => {
     }
   }
 
-  const handleSearch = (value: string) => {
-    const option = {
-      pattern: value,
-    }
-    dispatch(getAttributes({ options: option }))
-  }
-
-  const scope: ExtendedScope = {
-    ...EMPTY_SCOPE,
-    claims: [],
-    dynamicScopeScripts: [],
-    defaultScope: false,
-    attributes: {
-      spontaneousClientId: undefined,
-      spontaneousClientScopes: [],
-      showInConfigurationEndpoint: false,
+  const handleSearch = useCallback(
+    (value: string) => {
+      dispatch({
+        type: getAttributes.type,
+        payload: { options: { pattern: value } },
+      })
     },
-  }
+    [dispatch],
+  )
+
+  const scope: ExtendedScope = useMemo(
+    () => ({
+      ...EMPTY_SCOPE,
+      claims: [],
+      dynamicScopeScripts: [],
+      defaultScope: false,
+      attributes: {
+        spontaneousClientId: undefined,
+        spontaneousClientScopes: [],
+        showInConfigurationEndpoint: false,
+      },
+    }),
+    [],
+  )
 
   return (
     <GluuLoader blocking={createScope.isPending}>

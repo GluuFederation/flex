@@ -1,59 +1,84 @@
 import React from 'react'
+import { useFormik } from 'formik'
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
-
-import { Button, Col, FormGroup } from 'Components'
+import { Col, FormGroup, Button } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
-import { PasswordChangeModalProps } from '../types/UserFormTypes'
-import { getStringValue, validatePassword } from '../utils/userFormUtils'
+import { TFunction } from 'i18next'
+import { passwordChangeValidationSchema } from '../helper/validations'
 
-const DOC_SECTION = 'user'
+interface PasswordChangeFormValues {
+  userPassword: string
+  userConfirmPassword: string
+}
+
+interface PasswordChangeModalProps {
+  isOpen: boolean
+  toggle: () => void
+  selectedTheme: string
+  t: TFunction
+  onPasswordChange: (password: string) => void
+}
 
 const PasswordChangeModal = ({
   isOpen,
   toggle,
-  formik,
-  passwordError,
   selectedTheme,
   t,
   onPasswordChange,
 }: PasswordChangeModalProps) => {
-  const passwordValue = getStringValue(formik.values?.userPassword)
-  const confirmPasswordValue = getStringValue(formik.values?.userConfirmPassword)
+  const DOC_SECTION = 'user'
+  const passwordFormik = useFormik<PasswordChangeFormValues>({
+    initialValues: {
+      userPassword: '',
+      userConfirmPassword: '',
+    },
+    validationSchema: passwordChangeValidationSchema,
+    onSubmit: (values) => {
+      onPasswordChange(values.userPassword)
+      passwordFormik.resetForm()
+    },
+  })
 
-  const isChangePasswordEnabled =
-    Boolean(passwordValue) &&
-    validatePassword(passwordValue) &&
-    passwordValue === confirmPasswordValue
+  const handleCancel = () => {
+    passwordFormik.resetForm()
+    toggle()
+  }
 
   return (
-    <Modal isOpen={isOpen} toggle={toggle} className="modal-outline-primary">
-      <ModalHeader>{t('actions.change_password')}</ModalHeader>
+    <Modal isOpen={isOpen} toggle={handleCancel} className="modal-outline-primary">
+      <ModalHeader>Change Password</ModalHeader>
       <ModalBody>
         <FormGroup row>
           <Col>
             <GluuInputRow
               doc_category={DOC_SECTION}
-              doc_entry="passwordRequirements"
               label="Password"
               name="userPassword"
               type="password"
-              value={passwordValue}
-              formik={formik}
+              value={passwordFormik.values.userPassword || ''}
+              formik={passwordFormik}
               lsize={3}
               rsize={9}
+              showError={
+                !!passwordFormik.errors.userPassword && passwordFormik.touched.userPassword
+              }
+              errorMessage={passwordFormik.errors.userPassword}
             />
             <GluuInputRow
               doc_category={DOC_SECTION}
-              doc_entry="passwordRequirements"
               label="Confirm Password"
               name="userConfirmPassword"
               type="password"
-              value={confirmPasswordValue}
-              formik={formik}
+              value={passwordFormik.values.userConfirmPassword || ''}
+              formik={passwordFormik}
               lsize={3}
               rsize={9}
+              showError={
+                !!passwordFormik.errors.userConfirmPassword &&
+                passwordFormik.touched.userConfirmPassword
+              }
+              errorMessage={passwordFormik.errors.userConfirmPassword}
             />
-            {passwordError && <span className="text-danger">{passwordError}</span>}
           </Col>
         </FormGroup>
       </ModalBody>
@@ -61,13 +86,13 @@ const PasswordChangeModal = ({
         <Button
           color={`primary-${selectedTheme}`}
           type="button"
-          disabled={!isChangePasswordEnabled}
-          onClick={onPasswordChange}
+          onClick={() => passwordFormik.handleSubmit()}
+          disabled={!passwordFormik.isValid || !passwordFormik.dirty}
         >
           {t('actions.change_password')}
         </Button>
         &nbsp;
-        <Button color={`primary-${selectedTheme}`} onClick={toggle}>
+        <Button color={`primary-${selectedTheme}`} onClick={handleCancel}>
           {t('actions.cancel')}
         </Button>
       </ModalFooter>
