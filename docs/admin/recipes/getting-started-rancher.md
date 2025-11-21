@@ -197,7 +197,7 @@ kubectl get secret cn -o json -n <namespace>
     - Pass in a custom password for the database. Here we used `Test1234#`. The admin user will be left as `root`. Notice we are installing in the `gluu` namespace. Run 
 
         ```
-        helm install my-release --set auth.rootPassword=Test1234#,auth.database=jans bitnami/mysql -n gluu
+        helm install my-release --set auth.rootPassword=Test1234#,auth.database=gluu,image.repository=bitnamilegacy/mysql,image.tag=9.4.0-debian-12-r1 -n gluu oci://registry-1.docker.io/bitnamicharts/mysql
         ```
 
     ### Successful Installation    

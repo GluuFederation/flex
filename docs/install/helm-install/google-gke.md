@@ -98,7 +98,7 @@ tags:
         For testing purposes, you can deploy it on the GKE cluster using the following command:
 
         ```
-        helm install my-release --set auth.postgresPassword=Test1234#,auth.database=gluu -n gluu oci://registry-1.docker.io/bitnamicharts/postgresql
+        helm install my-release --set auth.postgresPassword=Test1234#,auth.database=gluu,image.repository=bitnamilegacy/postgresql,image.tag=16.4.0-debian-12-r0 -n gluu oci://registry-1.docker.io/bitnamicharts/postgresql
         ```
 
         Add the following yaml snippet to your `override.yaml` file:
@@ -125,7 +125,7 @@ tags:
         For testing purposes, you can deploy it on the GKE cluster using the following command:
 
         ```
-        helm install my-release --set auth.rootPassword=Test1234#,auth.database=gluu -n gluu oci://registry-1.docker.io/bitnamicharts/mysql
+        helm install my-release --set auth.rootPassword=Test1234#,auth.database=gluu,image.repository=bitnamilegacy/mysql,image.tag=9.4.0-debian-12-r1 -n gluu oci://registry-1.docker.io/bitnamicharts/mysql
         ```
 
         Add the following yaml snippet to your `override.yaml` file:
