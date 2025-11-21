@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useCallback } from 'react'
+import React, { useEffect, useState, useContext, useCallback, useMemo } from 'react'
 import MaterialTable, { Action, Column } from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { Paper, TablePagination } from '@mui/material'
@@ -7,7 +7,6 @@ import { useCedarling } from '@/cedarling'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
-import { ASSETS_WRITE, ASSETS_READ, ASSETS_DELETE } from 'Utils/PermChecker'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useDispatch, useSelector } from 'react-redux'
@@ -28,11 +27,21 @@ import customColors from '../../../../app/customColors'
 import moment from 'moment'
 import { Document, RootState, SearchEvent } from './types'
 import { DeleteAssetSagaPayload } from 'Plugins/admin/redux/features/types'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 
 const JansAssetListPage: React.FC = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { hasCedarPermission, authorize } = useCedarling()
+  const {
+    hasCedarReadPermission,
+    hasCedarWritePermission,
+    hasCedarDeletePermission,
+    authorizeHelper,
+  } = useCedarling()
+  const assetsResourceId = useMemo(() => ADMIN_UI_RESOURCES.Assets, [])
+  const assetScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[assetsResourceId], [assetsResourceId])
+
   const { t } = useTranslation()
   SetTitle(t('titles.assets'))
   const [pageNumber, setPageNumber] = useState<number>(0)
@@ -87,26 +96,32 @@ const JansAssetListPage: React.FC = () => {
   // Initialize Cedar permissions
   useEffect(() => {
     const initPermissions = async () => {
-      const permissions = [ASSETS_READ, ASSETS_WRITE, ASSETS_DELETE]
-      for (const permission of permissions) {
-        await authorize([permission])
-      }
+      await authorizeHelper(assetScopes)
     }
     initPermissions()
     dispatch(getAssetTypes())
     options['limit'] = 10
     dispatch(fetchJansAssets(options))
     dispatch(getAssetServices())
-  }, [dispatch, authorize])
+  }, [dispatch, authorizeHelper, assetScopes])
+
+  const canReadAssets = useMemo(
+    () => hasCedarReadPermission(assetsResourceId),
+    [hasCedarReadPermission, assetsResourceId],
+  )
+  const canWriteAssets = useMemo(
+    () => hasCedarWritePermission(assetsResourceId),
+    [hasCedarWritePermission, assetsResourceId],
+  )
+  const canDeleteAssets = useMemo(
+    () => hasCedarDeletePermission(assetsResourceId),
+    [hasCedarDeletePermission, assetsResourceId],
+  )
 
   useEffect(() => {
     const actions: Action<Document>[] = []
 
-    const canRead = hasCedarPermission(ASSETS_READ) as boolean
-    const canWrite = hasCedarPermission(ASSETS_WRITE) as boolean
-    const canDelete = hasCedarPermission(ASSETS_DELETE) as boolean
-
-    if (canRead) {
+    if (canReadAssets) {
       actions.push({
         icon: () => (
           <GluuAdvancedSearch
@@ -137,7 +152,7 @@ const JansAssetListPage: React.FC = () => {
       })
     }
 
-    if (canWrite) {
+    if (canWriteAssets) {
       actions.push({
         icon: 'add',
         tooltip: `${t('messages.add_asset')}`,
@@ -154,11 +169,10 @@ const JansAssetListPage: React.FC = () => {
             navigateToEditPage(rowData)
           }
         },
-        disabled: !canWrite,
       })
     }
 
-    if (canDelete) {
+    if (canDeleteAssets) {
       actions.push({
         icon: () => <DeleteOutlined />,
         tooltip: `${t('messages.delete')}`,
@@ -180,7 +194,9 @@ const JansAssetListPage: React.FC = () => {
     t,
     navigateToAddPage,
     navigateToEditPage,
-    hasCedarPermission,
+    hasCedarReadPermission,
+    hasCedarWritePermission,
+    hasCedarDeletePermission,
     handleOptionsChange,
     dispatch,
   ])
@@ -256,7 +272,7 @@ const JansAssetListPage: React.FC = () => {
     <GluuLoader blocking={loadingAssets}>
       <Card style={applicationStyle.mainCard}>
         <CardBody>
-          <GluuViewWrapper canShow={hasCedarPermission(ASSETS_READ)}>
+          <GluuViewWrapper canShow={canReadAssets}>
             <MaterialTable<Document>
               components={{
                 Container: PaperContainer,

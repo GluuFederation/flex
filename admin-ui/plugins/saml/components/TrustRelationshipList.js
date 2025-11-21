@@ -1,9 +1,9 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import MaterialTable from '@material-table/core'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import { SAML_TR_READ, SAML_TR_WRITE, buildPayload } from 'Utils/PermChecker'
+import { buildPayload } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -17,11 +17,14 @@ import {
 } from 'Plugins/saml/redux/features/SamlSlice'
 import { PaperContainer, getTableCols } from './SamlIdentityList'
 import customColors from '@/customColors'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 
 const TrustRelationshipList = () => {
-  const { hasCedarPermission, authorize } = useCedarling()
+  const { authorizeHelper, hasCedarReadPermission, hasCedarWritePermission } = useCedarling()
   const theme = useContext(ThemeContext)
-  const themeColors = getThemeColor(theme.state.theme)
+  const selectedTheme = theme?.state?.theme ?? 'light'
+  const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
   const [modal, setModal] = useState(false)
   const [item, setItem] = useState({})
@@ -34,23 +37,27 @@ const TrustRelationshipList = () => {
   const { trustRelationships, loadingTrustRelationship } = useSelector(
     (state) => state.idpSamlReducer,
   )
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
+  const samlResourceId = useMemo(() => ADMIN_UI_RESOURCES.SAML, [])
+  const samlScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[samlResourceId], [samlResourceId])
+  const canReadTrustRelationships = useMemo(
+    () => hasCedarReadPermission(samlResourceId),
+    [hasCedarReadPermission, samlResourceId],
+  )
+  const canWriteTrustRelationships = useMemo(
+    () => hasCedarWritePermission(samlResourceId),
+    [hasCedarWritePermission, samlResourceId],
+  )
 
-  // Permission initialization
   useEffect(() => {
-    const initPermissions = async () => {
-      const permissions = [SAML_TR_READ, SAML_TR_WRITE]
-      for (const permission of permissions) {
-        await authorize([permission])
-      }
+    authorizeHelper(samlScopes)
+  }, [authorizeHelper, samlScopes])
+
+  useEffect(() => {
+    if (!canReadTrustRelationships) {
+      return
     }
-    initPermissions()
-  }, [])
-
-  useEffect(() => {
     dispatch(getTrustRelationship())
-  }, [])
-  useEffect(() => {}, [cedarPermissions])
+  }, [dispatch, canReadTrustRelationships])
 
   const handleGoToEditPage = useCallback((rowData, viewOnly) => {
     navigate('/saml/service-providers/edit', { state: { rowData: rowData, viewOnly: viewOnly } })
@@ -74,9 +81,54 @@ const TrustRelationshipList = () => {
 
   const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
 
+  const tableActions = useMemo(() => {
+    const actions = []
+    if (canWriteTrustRelationships) {
+      actions.push({
+        icon: 'edit',
+        tooltip: `${t('messages.edit_service_provider')}`,
+        iconProps: { color: 'primary', style: { color: customColors.darkGray } },
+        onClick: (event, rowData) => {
+          const data = { ...rowData }
+          delete data.tableData
+          handleGoToEditPage(data)
+        },
+      })
+      actions.push({
+        icon: DeleteOutlinedIcon,
+        iconProps: { color: 'secondary' },
+        tooltip: `${t('messages.delete_service_provider')}`,
+        onClick: (event, rowData) => handleDelete(rowData),
+      })
+      actions.push({
+        icon: 'add',
+        tooltip: `${t('messages.add_service_provider')}`,
+        iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
+        isFreeAction: true,
+        onClick: () => handleGoToAddPage(),
+      })
+    }
+    if (canReadTrustRelationships) {
+      actions.push({
+        icon: 'visibility',
+        iconProps: { style: { color: customColors.darkGray } },
+        tooltip: `${t('messages.view_service_provider')}`,
+        onClick: (event, rowData) => handleGoToEditPage(rowData, true),
+      })
+    }
+    return actions
+  }, [
+    canReadTrustRelationships,
+    canWriteTrustRelationships,
+    t,
+    handleGoToEditPage,
+    handleGoToAddPage,
+    handleDelete,
+  ])
+
   return (
     <>
-      <GluuViewWrapper canShow={hasCedarPermission(SAML_TR_READ)}>
+      <GluuViewWrapper canShow={canReadTrustRelationships}>
         <MaterialTable
           components={{
             Container: PaperContainer,
@@ -85,45 +137,7 @@ const TrustRelationshipList = () => {
           data={trustRelationships}
           isLoading={loadingTrustRelationship}
           title=""
-          actions={[
-            {
-              icon: 'edit',
-              tooltip: `${t('messages.edit_service_provider')}`,
-              iconProps: { color: 'primary', style: { color: customColors.darkGray } },
-              onClick: (event, rowData) => {
-                const data = { ...rowData }
-                delete data.tableData
-                handleGoToEditPage(data)
-              },
-              disabled: !hasCedarPermission(SAML_TR_WRITE),
-            },
-            {
-              icon: 'visibility',
-              iconProps: {
-                style: { color: customColors.darkGray },
-              },
-              tooltip: `${t('messages.view_service_provider')}`,
-              onClick: (event, rowData) => handleGoToEditPage(rowData, true),
-              disabled: !hasCedarPermission(SAML_TR_READ),
-            },
-            {
-              icon: DeleteOutlinedIcon,
-              iconProps: {
-                color: 'secondary',
-              },
-              tooltip: `${t('messages.delete_service_provider')}`,
-              onClick: (event, rowData) => handleDelete(rowData),
-              disabled: !hasCedarPermission(SAML_TR_WRITE),
-            },
-            {
-              icon: 'add',
-              tooltip: `${t('messages.add_service_provider')}`,
-              iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
-              isFreeAction: true,
-              onClick: () => handleGoToAddPage(),
-              disabled: !hasCedarPermission(SAML_TR_WRITE),
-            },
-          ]}
+          actions={tableActions}
           options={{
             search: true,
             searchFieldAlignment: 'left',
@@ -137,7 +151,7 @@ const TrustRelationshipList = () => {
           }}
         />
       </GluuViewWrapper>
-      {hasCedarPermission(SAML_TR_WRITE) && (
+      {canWriteTrustRelationships && (
         <GluuDialog
           row={item}
           name={item?.displayName || ''}

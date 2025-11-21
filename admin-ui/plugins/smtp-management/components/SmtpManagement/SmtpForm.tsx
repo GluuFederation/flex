@@ -27,7 +27,7 @@ import {
 } from 'Plugins/smtp-management/helper'
 
 function SmtpForm(props: Readonly<SmtpFormProps>) {
-  const { item, handleSubmit, allowSmtpKeystoreEdit, onTestSmtp, formikRef } = props
+  const { item, handleSubmit, allowSmtpKeystoreEdit, onTestSmtp, formikRef, readOnly } = props
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const [modal, setModal] = useState(false)
@@ -44,6 +44,9 @@ function SmtpForm(props: Readonly<SmtpFormProps>) {
   }, [dispatch, testButtonEnabled])
 
   const toggle = () => {
+    if (readOnly) {
+      return
+    }
     setModal(!modal)
   }
 
@@ -52,7 +55,9 @@ function SmtpForm(props: Readonly<SmtpFormProps>) {
   const formik = useFormik<SmtpFormValues>({
     initialValues,
     onSubmit: () => {
-      toggle()
+      if (!readOnly) {
+        toggle()
+      }
     },
     validationSchema,
     validateOnMount: true,
@@ -69,6 +74,9 @@ function SmtpForm(props: Readonly<SmtpFormProps>) {
   }
 
   const submitForm = async (userMessage: string) => {
+    if (readOnly) {
+      return
+    }
     const errors = await formik.validateForm()
     if (Object.keys(errors).length > 0) {
       // mark all fields as touched to reveal validation messages
@@ -88,6 +96,9 @@ function SmtpForm(props: Readonly<SmtpFormProps>) {
   }
 
   const testSmtpConfig = () => {
+    if (readOnly) {
+      return
+    }
     if (formik.isValid) {
       onTestSmtp({
         sign: true,
@@ -339,7 +350,7 @@ function SmtpForm(props: Readonly<SmtpFormProps>) {
           />
         </Col>
       </FormGroup>
-      {testButtonEnabled && (
+      {testButtonEnabled && !readOnly && (
         <Row className="mb-2">
           <Col>
             <button type="button" className="btn btn-secondary" onClick={testSmtpConfig}>
@@ -354,7 +365,7 @@ function SmtpForm(props: Readonly<SmtpFormProps>) {
           <GluuFormFooter
             showBack={true}
             showCancel={true}
-            showApply={true}
+            showApply={!readOnly}
             onApply={toggle}
             onCancel={handleCancel}
             disableCancel={!formik.dirty}
@@ -364,13 +375,15 @@ function SmtpForm(props: Readonly<SmtpFormProps>) {
           />
         </Col>
       </Row>
-      <GluuCommitDialog
-        feature={adminUiFeatures.smtp_configuration_edit}
-        handler={toggle}
-        modal={modal}
-        onAccept={submitForm}
-        formik={formik}
-      />
+      {!readOnly && (
+        <GluuCommitDialog
+          feature={adminUiFeatures.smtp_configuration_edit}
+          handler={toggle}
+          modal={modal}
+          onAccept={submitForm}
+          formik={formik}
+        />
+      )}
     </Form>
   )
 }

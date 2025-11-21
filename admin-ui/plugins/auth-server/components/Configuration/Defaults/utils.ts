@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash'
+import type { ChangedFields } from 'Plugins/auth-server/redux/features/types/loggingTypes'
 
 export const LOG_LEVELS = ['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR'] as const
 export const LOG_LAYOUTS = ['text', 'json'] as const
@@ -22,21 +22,44 @@ export interface LoggingFormValues {
   enabledOAuthAuditLogging: boolean
 }
 
-export const getLoggingInitialValues = (logging?: LoggingConfigLike | null): LoggingFormValues => {
-  const safeLogging = cloneDeep(logging) ?? {}
+const isValidLevel = (val: unknown): val is LoggingLevel =>
+  typeof val === 'string' && LOG_LEVELS.includes(val as LoggingLevel)
 
-  const level = safeLogging.loggingLevel || LOG_LEVELS[0]
-  const layout = safeLogging.loggingLayout || LOG_LAYOUTS[0]
+const isValidLayout = (val: unknown): val is LoggingLayout =>
+  typeof val === 'string' && LOG_LAYOUTS.includes(val as LoggingLayout)
+
+export const getLoggingInitialValues = (logging?: LoggingConfigLike | null): LoggingFormValues => {
+  if (!logging) {
+    return {
+      loggingLevel: LOG_LEVELS[0],
+      loggingLayout: LOG_LAYOUTS[0],
+      httpLoggingEnabled: false,
+      disableJdkLogger: false,
+      enabledOAuthAuditLogging: false,
+    }
+  }
 
   return {
-    loggingLevel: LOG_LEVELS.includes(level as LoggingLevel)
-      ? (level as LoggingLevel)
-      : LOG_LEVELS[0],
-    loggingLayout: LOG_LAYOUTS.includes(layout as LoggingLayout)
-      ? (layout as LoggingLayout)
-      : LOG_LAYOUTS[0],
-    httpLoggingEnabled: Boolean(safeLogging.httpLoggingEnabled),
-    disableJdkLogger: Boolean(safeLogging.disableJdkLogger),
-    enabledOAuthAuditLogging: Boolean(safeLogging.enabledOAuthAuditLogging),
+    loggingLevel: isValidLevel(logging.loggingLevel) ? logging.loggingLevel : LOG_LEVELS[0],
+    loggingLayout: isValidLayout(logging.loggingLayout) ? logging.loggingLayout : LOG_LAYOUTS[0],
+    httpLoggingEnabled: Boolean(logging.httpLoggingEnabled),
+    disableJdkLogger: Boolean(logging.disableJdkLogger),
+    enabledOAuthAuditLogging: Boolean(logging.enabledOAuthAuditLogging),
   }
+}
+
+export function getMergedValues<T extends object>(original: T, updated: Partial<T>): T {
+  return { ...original, ...updated }
+}
+
+export function getChangedFields<T extends object>(original: T, updated: T): ChangedFields<T> {
+  const changed: ChangedFields<T> = {}
+  ;(Object.keys(updated) as Array<keyof T>).forEach((key) => {
+    const newValue = updated[key]
+    const oldValue = original[key]
+    if (newValue !== undefined && newValue !== oldValue) {
+      changed[key] = { oldValue, newValue }
+    }
+  })
+  return changed
 }

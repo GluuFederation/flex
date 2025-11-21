@@ -14,17 +14,19 @@
   "CEDARLING_LOCK_SSA_JWT": null,
   "CEDARLING_LOG_LEVEL": "DEBUG",
   "CEDARLING_LOG_TYPE": "off",
-  "CEDARLING_POLICY_STORE_ID": "1d927bd9e20810be41fbac38529efaede03287207442",
   "CEDARLING_POLICY_STORE_LOCAL": "",
+  "CEDARLING_MAPPING_ROLE": "Gluu::Flex::AdminUI::Role",
+  "CEDARLING_MAPPING_TRUSTED_ISSUER": "Gluu::Flex::AdminUI::TrustedIssuer",
+  "CEDARLING_MAPPING_USER": "Gluu::Flex::AdminUI::User",
+  "CEDARLING_MAPPING_WORKLOAD": "Gluu::Flex::AdminUI::Workload",
   "CEDARLING_PRINCIPAL_BOOLEAN_OPERATION": {
     "===": [
       {
-        "var": "Jans::User"
+        "var": "Gluu::Flex::AdminUI::User"
       },
       "ALLOW"
     ]
   },
   "CEDARLING_USER_AUTHZ": "enabled",
-  "CEDARLING_WORKLOAD_AUTHZ": "disabled",
-  "id": "6a0925ee-cb35-434d-9d73-0b3b0042c2ff"
+  "CEDARLING_WORKLOAD_AUTHZ": "disabled"
 }

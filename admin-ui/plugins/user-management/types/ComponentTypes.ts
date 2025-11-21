@@ -1,6 +1,6 @@
 // Component-specific type definitions
 import { FormikProps } from 'formik'
-import { CustomUser, PersonAttribute, UserState, CustomAttribute } from './UserApiTypes'
+import { CustomUser, PersonAttribute, CustomAttribute } from './UserApiTypes'
 import { UserFormValues } from './CommonTypes'
 
 export interface UserClaimEntryProps {
@@ -21,16 +21,8 @@ export interface UserFormProps {
   userDetails?: CustomUser | null
 }
 
+// Note: persistenceTypeReducer is still used in UserEditPage for system configuration
 export interface UserEditPageState {
-  userReducer: {
-    selectedUserData: CustomUser | null
-    redirectToUserListPage: boolean
-    loading: boolean
-  }
-  attributesReducerRoot: {
-    items: PersonAttribute[]
-    initLoading: boolean
-  }
   persistenceTypeReducer: {
     type: string
   }
@@ -47,16 +39,6 @@ export interface UserEditFormValues {
   [key: string]: string | string[] | null | undefined
 }
 
-export interface UserFormState {
-  userReducer: {
-    selectedUserData: CustomUser | null
-    loading: boolean
-  }
-  attributesReducerRoot: {
-    items: PersonAttribute[]
-  }
-}
-
 export interface FormOperation {
   path: string
   value: string | string[]
@@ -66,23 +48,6 @@ export interface FormOperation {
 export interface UserDeviceDetailViewPageProps {
   row: {
     rowData: DeviceData
-  }
-}
-
-// Extended interfaces for this component
-export interface UserListRootState {
-  userReducer: UserState
-  authReducer: {
-    token: {
-      access_token: string
-    }
-    issuer: string
-    userinfo_jwt: string
-  }
-  attributesReducerRoot: {
-    items: PersonAttribute[]
-    loading: boolean
-    initLoading: boolean
   }
 }
 

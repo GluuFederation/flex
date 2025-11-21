@@ -86,10 +86,10 @@ Kubernetes: `>=v1.23.0-0`
 | auth-server.ingress.authServerAdditionalAnnotations | object | `{}` | Auth server ingress resource additional annotations. |
 | auth-server.ingress.authServerEnabled | bool | `true` | Enable Auth server endpoints /jans-auth |
 | auth-server.ingress.authServerLabels | object | `{}` | Auth server ingress resource labels. key app is taken |
-| auth-server.ingress.authServerProtectedRegister | bool | `false` | Enable mTLS onn Auth server endpoint /jans-auth/restv1/register. Currently not working in Istio. |
+| auth-server.ingress.authServerProtectedRegister | bool | `false` | Enable mTLS on Auth server endpoint /jans-auth/restv1/register. |
 | auth-server.ingress.authServerProtectedRegisterAdditionalAnnotations | object | `{}` | Auth server protected register ingress resource additional annotations. |
 | auth-server.ingress.authServerProtectedRegisterLabels | object | `{}` | Auth server protected token ingress resource labels. key app is taken |
-| auth-server.ingress.authServerProtectedToken | bool | `false` | Enable mTLS on Auth server endpoint /jans-auth/restv1/token. Currently not working in Istio. |
+| auth-server.ingress.authServerProtectedToken | bool | `false` | Enable mTLS on Auth server endpoint /jans-auth/restv1/token. |
 | auth-server.ingress.authServerProtectedTokenAdditionalAnnotations | object | `{}` | Auth server protected token ingress resource additional annotations. |
 | auth-server.ingress.authServerProtectedTokenLabels | object | `{}` | Auth server protected token ingress resource labels. key app is taken |
 | auth-server.ingress.authzenAdditionalAnnotations | object | `{}` | authzen config ingress resource additional annotations. |

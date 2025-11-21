@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react'
+import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { useCedarling } from '@/cedarling'
+import { useCedarling, ADMIN_UI_RESOURCES, CEDAR_RESOURCE_SCOPES } from '@/cedarling'
 import { Badge } from 'reactstrap'
 import { Paper } from '@mui/material'
 import { Card, CardBody } from 'Components'
@@ -13,7 +13,7 @@ import LdapDetailPage from './LdapDetailPage'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import Alert from '@mui/material/Alert'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
-import { buildPayload, LDAP_READ, LDAP_WRITE, LDAP_DELETE } from 'Utils/PermChecker'
+import { buildPayload } from 'Utils/PermChecker'
 import {
   getLdapConfig,
   setCurrentItem,
@@ -30,17 +30,49 @@ import customColors from '@/customColors'
 import { getPagingSize } from '@/utils/pagingUtils'
 
 function LdapListPage() {
-  const { hasCedarPermission, authorize } = useCedarling()
+  const {
+    hasCedarReadPermission,
+    hasCedarWritePermission,
+    hasCedarDeletePermission,
+    authorizeHelper,
+  } = useCedarling()
   const ldapConfigurations = useSelector((state) => state.ldapReducer.ldap)
   const loading = useSelector((state) => state.ldapReducer.loading)
   const testStatus = useSelector((state) => state.ldapReducer.testStatus)
   const persistenceType = useSelector((state) => state.persistenceTypeReducer.type)
   const persistenceTypeLoading = useSelector((state) => state.persistenceTypeReducer.loading)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { t } = useTranslation()
+
+  const persistenceResourceId = useMemo(() => ADMIN_UI_RESOURCES.Persistence, [])
+  const persistenceScopes = useMemo(
+    () => CEDAR_RESOURCE_SCOPES[persistenceResourceId],
+    [persistenceResourceId],
+  )
+
+  const canReadLdap = useMemo(
+    () => hasCedarReadPermission(persistenceResourceId),
+    [hasCedarReadPermission, persistenceResourceId],
+  )
+  const canWriteLdap = useMemo(
+    () => hasCedarWritePermission(persistenceResourceId),
+    [hasCedarWritePermission, persistenceResourceId],
+  )
+  const canDeleteLdap = useMemo(
+    () => hasCedarDeletePermission(persistenceResourceId),
+    [hasCedarDeletePermission, persistenceResourceId],
+  )
+
+  useEffect(() => {
+    authorizeHelper(persistenceScopes)
+  }, [authorizeHelper, persistenceScopes])
+
+  useEffect(() => {
+    dispatch(getLdapConfig())
+    dispatch(getPersistenceType())
+  }, [dispatch])
 
   // State for managing actions and UI
   const [myActions, setMyActions] = useState([])
@@ -64,24 +96,6 @@ function LdapListPage() {
   const pageSize = getPagingSize()
 
   SetTitle(t('titles.ldap_authentication'))
-
-  // Permission initialization
-  useEffect(() => {
-    const authorizePermissions = async () => {
-      const permissions = [LDAP_READ, LDAP_WRITE, LDAP_DELETE]
-      try {
-        for (const permission of permissions) {
-          await authorize([permission])
-        }
-      } catch (error) {
-        console.error('Error authorizing LDAP permissions:', error)
-      }
-    }
-
-    authorizePermissions()
-    dispatch(getLdapConfig())
-    dispatch(getPersistenceType())
-  }, [dispatch])
 
   // Navigation handlers
   const handleGoToLdapEditPage = useCallback(
@@ -107,7 +121,7 @@ function LdapListPage() {
   useEffect(() => {
     const actions = []
 
-    if (hasCedarPermission(LDAP_WRITE)) {
+    if (canWriteLdap) {
       actions.push((rowData) => ({
         icon: 'edit',
         iconProps: {
@@ -116,11 +130,11 @@ function LdapListPage() {
         },
         tooltip: `${t('tooltips.edit_ldap')}`,
         onClick: (event, rowData) => handleGoToLdapEditPage(rowData),
-        disabled: false,
+        disabled: !canWriteLdap,
       }))
     }
 
-    if (hasCedarPermission(LDAP_READ)) {
+    if (canReadLdap) {
       actions.push({
         icon: 'refresh',
         tooltip: `${t('tooltips.refresh_data')}`,
@@ -132,7 +146,7 @@ function LdapListPage() {
       })
     }
 
-    if (hasCedarPermission(LDAP_DELETE)) {
+    if (canDeleteLdap) {
       actions.push((rowData) => ({
         icon: () => <DeleteOutlined />,
         iconProps: {
@@ -142,11 +156,11 @@ function LdapListPage() {
         },
         tooltip: `${t('tooltips.delete_record')}`,
         onClick: (event, rowData) => handleLdapDelete(rowData),
-        disabled: false,
+        disabled: !canDeleteLdap,
       }))
     }
 
-    if (hasCedarPermission(LDAP_WRITE)) {
+    if (canWriteLdap) {
       actions.push({
         icon: 'add',
         tooltip: `${t('tooltips.add_ldap')}`,
@@ -158,7 +172,9 @@ function LdapListPage() {
 
     setMyActions(actions)
   }, [
-    hasCedarPermission,
+    canReadLdap,
+    canWriteLdap,
+    canDeleteLdap,
     t,
     dispatch,
     handleGoToLdapEditPage,
@@ -229,7 +245,6 @@ function LdapListPage() {
       })
     }
   }, [testStatus])
-  useEffect(() => {}, [cedarPermissions])
 
   // MaterialTable options
   const tableOptions = {

@@ -28,6 +28,7 @@ import {
   SQL_WRITE,
   PERSISTENCE_DETAIL,
 } from 'Utils/PermChecker'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 
 const pluginMetadata = {
   menus: [
@@ -39,22 +40,14 @@ const pluginMetadata = {
           title: 'menus.cache',
           path: '/config/cache',
           permission: CACHE_READ,
+          resourceKey: ADMIN_UI_RESOURCES.Cache,
         },
         {
           title: 'menus.persistence',
           path: '/config/persistence',
           permission: PERSISTENCE_DETAIL,
+          resourceKey: ADMIN_UI_RESOURCES.Persistence,
         },
-        // {
-        //   title: 'menus.persistence',
-        //   children: [
-        //     {
-        //       title: 'menus.ldap',
-        //       path: '/config/ldap',
-        //       permission: LDAP_READ,
-        //     },
-        //   ],
-        // },
       ],
     },
   ],
@@ -63,11 +56,13 @@ const pluginMetadata = {
       component: CachePage,
       path: '/config/cache',
       permission: CACHE_READ,
+      resourceKey: ADMIN_UI_RESOURCES.Cache,
     },
     {
       component: PersistenceDetail,
       path: '/config/persistence',
       permission: PERSISTENCE_DETAIL,
+      resourceKey: ADMIN_UI_RESOURCES.Persistence,
     },
     {
       component: LdapEditPage,

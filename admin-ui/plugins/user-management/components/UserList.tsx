@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useCallback, useRef } from 'react'
+import React, { useEffect, useState, useContext, useCallback, useRef, useMemo } from 'react'
 import MaterialTable, { Action } from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import LockOpenIcon from '@mui/icons-material/LockOpen'
@@ -11,7 +11,6 @@ import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useNavigate } from 'react-router-dom'
-import { USER_WRITE, USER_READ, USER_DELETE } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
@@ -47,9 +46,16 @@ import {
 import { updateToast } from 'Redux/features/toastSlice'
 import { logUserDeletion, logUserUpdate, getErrorMessage } from '../helper/userAuditHelpers'
 import { triggerUserWebhook } from '../helper/userWebhookHelpers'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 
 function UserList(): JSX.Element {
-  const { hasCedarPermission, authorize } = useCedarling()
+  const {
+    authorizeHelper,
+    hasCedarReadPermission,
+    hasCedarWritePermission,
+    hasCedarDeletePermission,
+  } = useCedarling()
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
   const renders = useRef(0)
@@ -67,6 +73,27 @@ function UserList(): JSX.Element {
   const [pattern, setPattern] = useState<string | undefined>(undefined)
 
   // React Query hooks for data fetching
+  const usersResourceId = useMemo(() => ADMIN_UI_RESOURCES.Users, [])
+  const usersScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[usersResourceId], [usersResourceId])
+  const canReadUsers = useMemo(
+    () => hasCedarReadPermission(usersResourceId),
+    [hasCedarReadPermission, usersResourceId],
+  )
+  const canWriteUsers = useMemo(
+    () => hasCedarWritePermission(usersResourceId),
+    [hasCedarWritePermission, usersResourceId],
+  )
+  const canDeleteUsers = useMemo(
+    () => hasCedarDeletePermission(usersResourceId),
+    [hasCedarDeletePermission, usersResourceId],
+  )
+
+  useEffect(() => {
+    if (usersScopes && usersScopes.length > 0) {
+      authorizeHelper(usersScopes)
+    }
+  }, [authorizeHelper, usersScopes])
+
   const {
     data: usersData,
     isLoading: loadingUsers,
@@ -79,7 +106,7 @@ function UserList(): JSX.Element {
     },
     {
       query: {
-        enabled: hasCedarPermission(USER_READ),
+        enabled: canReadUsers,
       },
     },
   )
@@ -142,22 +169,6 @@ function UserList(): JSX.Element {
       },
     },
   })
-
-  // Permission initialization
-  useEffect(() => {
-    const authorizePermissions = async (): Promise<void> => {
-      const permissions = [USER_READ, USER_WRITE, USER_DELETE]
-      try {
-        for (const permission of permissions) {
-          await authorize([permission])
-        }
-      } catch (error) {
-        console.error('Error authorizing User permissions:', error)
-      }
-    }
-
-    authorizePermissions()
-  }, [authorize])
 
   useEffect(() => {
     dispatch(getRoles({}))
@@ -261,7 +272,7 @@ function UserList(): JSX.Element {
   const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
   const LockedOpenIcon = useCallback(() => <LockOpenIcon />, [])
 
-  if (hasCedarPermission(USER_READ)) {
+  if (canReadUsers) {
     myActions.push({
       icon: GluuSearch,
       tooltip: `${t('messages.advanced_search')}`,
@@ -285,7 +296,7 @@ function UserList(): JSX.Element {
     })
   }
 
-  if (hasCedarPermission(USER_WRITE)) {
+  if (canWriteUsers) {
     myActions.push({
       icon: 'add',
       tooltip: `${t('tooltips.add_user')}`,
@@ -307,7 +318,7 @@ function UserList(): JSX.Element {
         const rowData = Array.isArray(data) ? data[0] : data
         if (rowData) handleGoToUserEditPage(rowData)
       },
-      disabled: !hasCedarPermission(USER_WRITE),
+      disabled: !canWriteUsers,
     }))
     myActions.push((rowData: UserTableRowData) => ({
       icon: LockedOpenIcon,
@@ -323,11 +334,11 @@ function UserList(): JSX.Element {
         const rowData = Array.isArray(data) ? data[0] : data
         if (rowData) handleView2FADetails(rowData)
       },
-      disabled: !hasCedarPermission(USER_WRITE),
+      disabled: !canWriteUsers,
     }))
   }
 
-  if (hasCedarPermission(USER_DELETE)) {
+  if (canDeleteUsers) {
     myActions.push((rowData: UserTableRowData) => ({
       icon: DeleteOutlinedIcon,
       tooltip: `${t('tooltips.delete_user')}`,
@@ -527,7 +538,7 @@ function UserList(): JSX.Element {
 
       <Card style={applicationStyle.mainCard}>
         <CardBody>
-          <GluuViewWrapper canShow={hasCedarPermission(USER_READ)}>
+          <GluuViewWrapper canShow={canReadUsers}>
             <MaterialTable<UserTableRowData>
               key={limit}
               components={{

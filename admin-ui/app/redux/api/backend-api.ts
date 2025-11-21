@@ -91,3 +91,8 @@ export const fetchApiTokenWithDefaultScopes = () => {
       return error
     })
 }
+
+export const fetchPolicyStore = (access_token: string) => {
+  const headers = { Authorization: `Bearer ${access_token}` }
+  return axios.get('/admin-ui/security/policyStore', { headers })
+}

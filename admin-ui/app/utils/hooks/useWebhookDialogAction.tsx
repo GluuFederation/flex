@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useCallback, useContext, useEffect } from 'react'
+import React, { useCallback, useContext, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import {
@@ -20,13 +20,14 @@ import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Box from '@mui/material/Box'
-import { WEBHOOK_READ } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
 
 const useWebhookDialogAction = ({ feature, modal }) => {
   const dispatch = useDispatch()
-  const { hasCedarPermission, authorize } = useCedarling()
+  const { hasCedarReadPermission, authorizeHelper } = useCedarling()
 
   const { t } = useTranslation()
 
@@ -39,6 +40,17 @@ const useWebhookDialogAction = ({ feature, modal }) => {
 
   const enabledFeatureWebhooks = featureWebhooks.filter((item) => item.jansEnabled)
 
+  const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
+  const webhookScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[webhookResourceId], [webhookResourceId])
+  const canReadWebhooks = useMemo(
+    () => hasCedarReadPermission(webhookResourceId),
+    [hasCedarReadPermission, webhookResourceId],
+  )
+
+  useEffect(() => {
+    authorizeHelper(webhookScopes)
+  }, [authorizeHelper, webhookScopes])
+
   const onCloseModal = useCallback(() => {
     dispatch(setWebhookModal(enabledFeatureWebhooks?.length > 0))
     dispatch(setWebhookTriggerErrors([]))
@@ -47,14 +59,7 @@ const useWebhookDialogAction = ({ feature, modal }) => {
   }, [dispatch, enabledFeatureWebhooks])
 
   useEffect(() => {
-    authorize([WEBHOOK_READ]).catch(console.error)
-  }, [authorize])
-  const { permissions: cedarPermissions } = useSelector(
-    (state: RootStateOfRedux) => state.cedarPermissions,
-  )
-
-  useEffect(() => {
-    if (hasCedarPermission(WEBHOOK_READ)) {
+    if (canReadWebhooks) {
       if (modal) {
         if (feature) {
           dispatch(getWebhooksByFeatureId(feature))
@@ -63,7 +68,7 @@ const useWebhookDialogAction = ({ feature, modal }) => {
         }
       }
     }
-  }, [cedarPermissions, modal])
+  }, [canReadWebhooks, modal, feature, dispatch])
 
   useEffect(() => {
     dispatch(setWebhookModal(enabledFeatureWebhooks?.length > 0))
@@ -81,7 +86,7 @@ const useWebhookDialogAction = ({ feature, modal }) => {
     }
     return (
       <Modal
-        isOpen={(webhookModal || loadingWebhooks) && hasCedarPermission(WEBHOOK_READ)}
+        isOpen={(webhookModal || loadingWebhooks) && canReadWebhooks}
         size={'lg'}
         toggle={() => {
           if (!loadingWebhooks) {

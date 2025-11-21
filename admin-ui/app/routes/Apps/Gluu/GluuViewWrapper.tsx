@@ -1,8 +1,22 @@
-function GluuViewWrapper(props: any) {
-  return props.canShow ? (
-    <div data-testid="WRAPPER">{props.children}</div>
-  ) : (
-    <div data-testid="MISSING">Missing required permission</div>
+import type { ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
+
+interface GluuViewWrapperProps {
+  canShow?: boolean | null
+  children: ReactNode
+}
+
+const GluuViewWrapper = ({ canShow, children }: GluuViewWrapperProps) => {
+  const { t } = useTranslation()
+
+  if (canShow === true) {
+    return <div data-testid="WRAPPER">{children}</div>
+  }
+
+  return (
+    <div data-testid="MISSING" role="alert" style={{ backgroundColor: 'transparent' }}>
+      {t('messages.missing_required_permission')}
+    </div>
   )
 }
 
