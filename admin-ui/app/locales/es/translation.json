@@ -747,6 +747,7 @@
     "missing_required_permission": "Falta el permiso requerido",
     "session_timeout_error": "El tiempo de espera de sesión debe ser de al menos 1 minuto",
     "session_timeout_required_error": "El tiempo de espera de sesión es obligatorio",
+    "additional_parameters_required": "Both key and value are required for each custom parameter.",
     "invalid_json_error": "Valor JSON inválido.",
     "add_identity_provider": "Agregar Proveedor de Identidad",
     "view_idp_details": "Ver Detalles del IdP",

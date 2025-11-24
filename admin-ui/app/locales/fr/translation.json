@@ -677,6 +677,7 @@
     "role_name_error": "Veuillez vous assurer que le nom du rôle comporte au moins 5 caractères.",
     "session_timeout_error": "La durée de la session doit être d'au moins 1 minute",
     "session_timeout_required_error": "La durée de la session est requise",
+    "additional_parameters_required": "Both key and value are required for each custom parameter.",
     "webhook_execution_information": "Informations sur l'exécution du webhook",
     "error_message": "Message d'erreur",
     "add_service_provider": "Ajouter un fournisseur de services",
