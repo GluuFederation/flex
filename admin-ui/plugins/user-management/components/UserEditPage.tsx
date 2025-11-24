@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
+import { useAppNavigation, NAVIGATION_ROUTES } from '@/helpers/navigation'
 import { Container, CardBody, Card } from 'Components'
 import UserForm from './UserForm'
 import { useTranslation } from 'react-i18next'
@@ -23,7 +24,7 @@ import { triggerUserWebhook } from '../helper/userWebhookHelpers'
 
 function UserEditPage() {
   const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const { navigateToRoute } = useAppNavigation()
   const location = useLocation()
   const queryClient = useQueryClient()
   const { t } = useTranslation()
@@ -31,15 +32,15 @@ function UserEditPage() {
   const [userDetails] = useState<CustomUser | null>(location.state?.selectedUser ?? null)
   useEffect(() => {
     if (!userDetails) {
-      navigate('/user/usersmanagement')
+      navigateToRoute(NAVIGATION_ROUTES.USER_MANAGEMENT)
     }
-  }, [userDetails, navigate])
+  }, [userDetails?.inum, navigateToRoute])
 
   const { data: attributesData, isLoading: loadingAttributes } = useGetAttributes({
     limit: 200,
     status: 'ACTIVE',
   })
-  const personAttributes = (attributesData?.entries || []) as PersonAttribute[]
+  const personAttributes = (attributesData?.entries || []) as unknown as PersonAttribute[]
 
   useEffect(() => {
     dispatch(getPersistenceType())
@@ -56,7 +57,7 @@ function UserEditPage() {
         await logUserUpdate(data, variables.data)
         triggerUserWebhook(data as Record<string, unknown>)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
-        navigate('/user/usersmanagement')
+        navigateToRoute(NAVIGATION_ROUTES.USER_MANAGEMENT)
       },
       onError: (error: unknown) => {
         const errMsg = getErrorMessage(error)
@@ -181,11 +182,9 @@ function UserEditPage() {
     <Container>
       <Card type="border" color={null} className="mb-3">
         <CardBody>
-          {loadingAttributes ? (
-            <GluuLoader blocking={loadingAttributes} />
-          ) : (
+          <GluuLoader blocking={loadingAttributes}>
             <UserForm onSubmitData={submitData} userDetails={userDetails} />
-          )}
+          </GluuLoader>
         </CardBody>
       </Card>
     </Container>

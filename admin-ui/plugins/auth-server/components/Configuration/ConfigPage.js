@@ -22,11 +22,11 @@ import {
 import { getAcrsConfig, editAcrs } from 'Plugins/auth-server/redux/features/acrSlice'
 import { getScripts } from 'Redux/features/initSlice'
 import customColors from '@/customColors'
-import { useAppNavigation } from '@/helpers/navigation'
+import { useAppNavigation, NAVIGATION_ROUTES } from '@/helpers/navigation'
 
 function ConfigPage() {
   const { hasCedarWritePermission, authorizeHelper } = useCedarling()
-  const { navigateToHome } = useAppNavigation()
+  const { navigateToRoute } = useAppNavigation()
   const configuration = useSelector((state) => state.jsonConfigReducer.configuration)
   const acrs = useSelector((state) => state.acrReducer.acrReponse)
   const scripts = useSelector((state) => state.initReducer.scripts)
@@ -136,7 +136,7 @@ function ConfigPage() {
   }
 
   const handleBack = () => {
-    navigateToHome()
+    navigateToRoute(NAVIGATION_ROUTES.HOME_DASHBOARD)
   }
 
   return (

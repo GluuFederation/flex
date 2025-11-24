@@ -370,6 +370,7 @@
     "oxauth_claim_name": "oxAuth claim name",
     "ox_attributes": "oxAttributes",
     "password": "Password",
+    "confirm_password": "Confirm Password",
     "software_roles": "Software Roles",
     "authorization_code": "Authorization Code",
     "refresh_token": "Refresh Token",

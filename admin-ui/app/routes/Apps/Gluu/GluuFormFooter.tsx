@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { Box } from '@mui/material'
-import { useAppNavigation } from '@/helpers/navigation'
+import { useAppNavigation, NAVIGATION_ROUTES } from '@/helpers/navigation'
 
 interface ButtonLabelProps {
   isLoading: boolean
@@ -71,15 +71,15 @@ const GluuFormFooter = ({
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = useMemo(() => theme?.state.theme || 'darkBlack', [theme?.state.theme])
-  const { navigateToHome } = useAppNavigation()
+  const { navigateToRoute } = useAppNavigation()
 
   const handleBackClick = useCallback(() => {
     if (onBack) {
       onBack()
       return
     }
-    navigateToHome()
-  }, [onBack, navigateToHome])
+    navigateToRoute(NAVIGATION_ROUTES.HOME_DASHBOARD)
+  }, [onBack, navigateToRoute])
 
   const handleCancelClick = useCallback(() => {
     if (onCancel) {

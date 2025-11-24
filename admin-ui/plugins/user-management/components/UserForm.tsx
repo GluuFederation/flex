@@ -1,15 +1,11 @@
 // React and React-related imports
-import React, { useEffect, useState, useContext, useCallback, useMemo } from 'react'
+import React, { useEffect, useState, useContext, useCallback, useMemo, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
-import { useQueryClient, QueryClient } from '@tanstack/react-query'
-import { useNavigate } from 'react-router-dom'
+import { useAppNavigation, NAVIGATION_ROUTES } from '@/helpers/navigation'
 
 // Third-party libraries
-import { debounce } from 'lodash'
-import { Dispatch } from '@reduxjs/toolkit'
-import { TFunction } from 'i18next'
 
 // UI Components
 import { Button, Col, Form, FormGroup } from 'Components'
@@ -21,121 +17,29 @@ import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 
 // Context and Redux
 import { ThemeContext } from 'Context/theme/themeContext'
-import { getAttributesRoot } from 'Redux/features/attributesSlice'
-import { updateToast } from 'Redux/features/toastSlice'
 
 // API and Services
-import {
-  usePatchUserByInum,
-  getGetUserQueryKey,
-  GetAttributesParams,
-  UserPatchRequest,
-} from 'JansConfigApi'
+import { GetAttributesParams } from 'JansConfigApi'
 import UserClaimEntry from './UserClaimEntry'
 import PasswordChangeModal from './PasswordChangeModal'
-import { logPasswordChange, getErrorMessage } from '../helper/userAuditHelpers'
-import { triggerUserWebhook } from '../helper/userWebhookHelpers'
+import AvailableClaimsPanel from './AvailableClaimsPanel'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { getUserValidationSchema, initializeCustomAttributes } from '../helper/validations'
 
 // Types
-import {
-  UserFormProps,
-  UserFormState,
-  FormOperation,
-  UserEditFormValues,
-} from '../types/ComponentTypes'
+import { UserFormProps, FormOperation } from '../types/ComponentTypes'
 import { ThemeContext as ThemeContextType } from '../types/CommonTypes'
 import { PersonAttribute, CustomUser } from '../types/UserApiTypes'
-
-const usePasswordChange = (
-  userDetails: CustomUser | null,
-  password: string,
-  queryClient: QueryClient,
-  dispatch: Dispatch,
-  t: TFunction,
-) => {
-  const changePasswordMutation = usePatchUserByInum({
-    mutation: {
-      onSuccess: async (data: CustomUser) => {
-        dispatch(updateToast(true, 'success', t('messages.password_changed_successfully')))
-        await triggerUserWebhook(data as Record<string, unknown>)
-        queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
-      },
-      onError: (error: unknown) => {
-        const errorMessage = getErrorMessage(error)
-        dispatch(updateToast(true, 'error', errorMessage))
-      },
-    },
-  })
-
-  const submitChangePassword = (usermessage: string) => {
-    if (!userDetails?.inum || !password) return
-    const passwordAttrIndex = userDetails?.customAttributes?.findIndex(
-      (attr) => attr.name === 'userPassword',
-    )
-    const patchOperations: UserPatchRequest =
-      passwordAttrIndex !== undefined && passwordAttrIndex >= 0
-        ? {
-            jsonPatchString: JSON.stringify([
-              {
-                op: 'replace',
-                path: `/customAttributes/${passwordAttrIndex}/values/0`,
-                value: password,
-              },
-            ]),
-          }
-        : {
-            jsonPatchString: JSON.stringify([
-              {
-                op: 'add',
-                path: '/customAttributes/-',
-                value: {
-                  name: 'userPassword',
-                  multiValued: false,
-                  values: [password],
-                },
-              },
-            ]),
-          }
-
-    // Create audit payload for logging (separate from API request)
-    const auditPayload: Record<string, unknown> = {
-      ...patchOperations,
-      inum: userDetails.inum,
-      customAttributes: [
-        {
-          name: 'userPassword',
-          multiValued: false,
-        },
-      ],
-      performedOn: {
-        user_inum: userDetails.inum,
-        userId: userDetails.userId || userDetails.displayName,
-      },
-      message: usermessage,
-    }
-
-    changePasswordMutation.mutate({
-      inum: userDetails.inum,
-      data: patchOperations,
-    })
-
-    // Log audit separately with full payload
-    logPasswordChange(userDetails.inum, auditPayload).catch((error) => {
-      console.error('Failed to log password change:', error)
-    })
-  }
-  return { changePasswordMutation, submitChangePassword }
-}
 
 const setupCustomAttributes = (
   userDetails: CustomUser | null,
   personAttributes: PersonAttribute[],
-  selectedClaims: PersonAttribute[],
-  setSelectedClaims: (claims: PersonAttribute[]) => void,
+  setSelectedClaims: React.Dispatch<React.SetStateAction<PersonAttribute[]>>,
 ) => {
-  if (!userDetails?.customAttributes) return
+  if (!userDetails?.customAttributes) {
+    setSelectedClaims([])
+    return
+  }
 
   const usedClaims = new Set([
     'userId',
@@ -153,186 +57,117 @@ const setupCustomAttributes = (
     return match || null
   }
 
-  const tempList = [...selectedClaims]
-  for (const customAttr of userDetails.customAttributes) {
-    if (customAttr.values && customAttr.values.length > 0 && customAttr.name) {
-      const attributeData = getCustomAttributeById(customAttr.name)
-      if (attributeData && !usedClaims.has(customAttr.name)) {
-        const data = { ...attributeData, options: customAttr.values } as PersonAttribute
-        tempList.push(data)
+  setSelectedClaims((prevSelectedClaims) => {
+    const existingClaimNames = new Set(prevSelectedClaims.map((claim) => claim.name))
+    const tempList = [...prevSelectedClaims]
+
+    for (const customAttr of userDetails.customAttributes || []) {
+      if (customAttr.values && customAttr.values.length > 0 && customAttr.name) {
+        const attributeData = getCustomAttributeById(customAttr.name)
+        if (
+          attributeData &&
+          !usedClaims.has(customAttr.name) &&
+          !existingClaimNames.has(customAttr.name)
+        ) {
+          const data = { ...attributeData, options: customAttr.values } as PersonAttribute
+          tempList.push(data)
+        }
       }
     }
-  }
-  setSelectedClaims(tempList)
-}
-
-const AvailableClaimsPanel = ({
-  searchClaims,
-  setSearchClaims,
-  personAttributes,
-  selectedClaims,
-  setSelectedClaimsToState,
-  dispatch,
-  options,
-}: {
-  searchClaims: string
-  setSearchClaims: (value: string) => void
-  personAttributes: PersonAttribute[]
-  selectedClaims: PersonAttribute[]
-  setSelectedClaimsToState: (data: PersonAttribute) => void
-  dispatch: Dispatch
-  options: Partial<GetAttributesParams>
-}) => {
-  const usedClaims = new Set([
-    'userId',
-    'displayName',
-    'mail',
-    'status',
-    'userPassword',
-    'givenName',
-    'middleName',
-    'sn',
-  ])
-
-  return (
-    <div className="border border-light ">
-      <div className="bg-light text-bold p-2">Available Claims</div>
-      <input
-        type="search"
-        className="form-control mb-2"
-        placeholder="Search Claims Here "
-        onChange={(e) => {
-          setSearchClaims(e.target.value)
-          const delayDebounceFn = debounce(function () {
-            options['pattern'] = e.target.value
-            dispatch(getAttributesRoot({ options }))
-          }, 500)
-          delayDebounceFn()
-        }}
-        value={searchClaims}
-      />
-      <ul className="list-group">
-        {personAttributes.map((data: PersonAttribute, key: number) => {
-          const name = data.displayName?.toLowerCase() || ''
-          const alreadyAddedClaim = selectedClaims.some(
-            (el: PersonAttribute) => el.name === data.name,
-          )
-          if (data.status && data.status.toLowerCase() == 'active' && !usedClaims.has(data.name)) {
-            if (
-              (name.includes(searchClaims.toLowerCase()) || searchClaims == '') &&
-              !alreadyAddedClaim
-            ) {
-              return (
-                <li className="list-group-item" key={'list' + key} title="Click to add to the form">
-                  <button
-                    type="button"
-                    className="btn btn-link p-0 text-start"
-                    onClick={() => setSelectedClaimsToState(data)}
-                  >
-                    {data.displayName}
-                  </button>
-                </li>
-              )
-            }
-          }
-        })}
-      </ul>
-    </div>
-  )
+    return tempList
+  })
 }
 
 function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
   const dispatch = useDispatch()
-  const queryClient = useQueryClient()
-  const navigate = useNavigate()
+  const { navigateBack } = useAppNavigation()
   const { t } = useTranslation()
   const DOC_SECTION = 'user'
   const [searchClaims, setSearchClaims] = useState('')
   const [selectedClaims, setSelectedClaims] = useState<PersonAttribute[]>([])
   const [modal, setModal] = useState(false)
-  const [passwordModal, setPasswordModal] = useState(false)
   const [changePasswordModal, setChangePasswordModal] = useState(false)
   const [modifiedFields, setModifiedFields] = useState<Record<string, string | string[]>>({})
   const [operations, setOperations] = useState<FormOperation[]>([])
-  const [passwordToChange, setPasswordToChange] = useState<string>('')
 
-  const personAttributes = useSelector((state: UserFormState) => state.attributesReducerRoot.items)
+  const personAttributes = useSelector(
+    (state: { attributesReducerRoot: { items: PersonAttribute[] } }) =>
+      state.attributesReducerRoot.items,
+  )
+
+  // Memoize personAttributes based on length and first few items to prevent unnecessary re-renders
+  const personAttributesKey = useMemo(
+    () =>
+      personAttributes.length > 0
+        ? `${personAttributes.length}-${personAttributes[0]?.name || ''}`
+        : 'empty',
+    [personAttributes.length, personAttributes[0]?.name],
+  )
+  const memoizedPersonAttributes = useMemo(() => personAttributes, [personAttributesKey])
+
   const theme = useContext(ThemeContext) as ThemeContextType
   const selectedTheme = theme.state.theme
-  const options: Partial<GetAttributesParams> = {}
+  const options = useMemo<Partial<GetAttributesParams>>(() => ({}), [])
   const initialValues = useMemo(
-    () => initializeCustomAttributes(userDetails || null, personAttributes),
-    [userDetails, personAttributes],
+    () => initializeCustomAttributes(userDetails || null, memoizedPersonAttributes),
+    [userDetails, memoizedPersonAttributes],
   )
+  const validationSchema = useMemo(
+    () => getUserValidationSchema(userDetails || null),
+    [userDetails],
+  )
+
+  // Track if we've initialized to prevent infinite loops
+  const initializedRef = useRef<string | null>(null)
   const formik = useFormik({
     initialValues: initialValues,
     enableReinitialize: true,
-    onSubmit: (values: UserEditFormValues) => {
-      if (values) {
-        toggle()
-      }
+    validationSchema: validationSchema,
+    validateOnChange: true,
+    validateOnBlur: true,
+    validateOnMount: false,
+    onSubmit: () => {
+      // Form submission is handled by GluuCommitDialog onAccept
     },
-    validationSchema: getUserValidationSchema(userDetails || null),
   })
-
-  const { changePasswordMutation, submitChangePassword } = usePasswordChange(
-    userDetails || null,
-    passwordToChange,
-    queryClient,
-    dispatch,
-    t,
-  )
 
   const toggle = useCallback(() => {
     setModal(!modal)
   }, [modal])
 
+  const handleApply = useCallback(() => {
+    // Prepare operations from modifiedFields before opening modal
+    const values = Object.keys(modifiedFields).map((key) => {
+      return {
+        path: key,
+        value: modifiedFields[key],
+        op: 'replace' as const,
+      }
+    })
+    setOperations(values)
+    toggle()
+  }, [modifiedFields, toggle])
+
   const handleNavigateBack = useCallback(() => {
-    if (window.history.length > 1) {
-      navigate(-1)
-    } else {
-      navigate('/user/usersmanagement')
-    }
-  }, [navigate])
+    navigateBack(NAVIGATION_ROUTES.USER_MANAGEMENT)
+  }, [navigateBack])
 
   const handleCancel = useCallback(() => {
-    const resetValues = initializeCustomAttributes(userDetails || null, personAttributes)
+    const resetValues = initializeCustomAttributes(userDetails || null, memoizedPersonAttributes)
     formik.resetForm({ values: resetValues })
     setModifiedFields({})
     if (userDetails) {
-      const tempSelectedClaims: PersonAttribute[] = []
-      setupCustomAttributes(
-        userDetails,
-        personAttributes,
-        tempSelectedClaims,
-        (claims: PersonAttribute[]) => setSelectedClaims(claims),
-      )
+      setupCustomAttributes(userDetails, memoizedPersonAttributes, setSelectedClaims)
+      initializedRef.current = userDetails.inum || 'new'
     } else {
       setSelectedClaims([])
+      initializedRef.current = 'new'
     }
-  }, [formik, userDetails, personAttributes])
+  }, [formik, userDetails, memoizedPersonAttributes, setSelectedClaims])
 
   const toggleChangePasswordModal = useCallback(() => {
     setChangePasswordModal(!changePasswordModal)
   }, [changePasswordModal])
-
-  const handlePasswordChange = useCallback(
-    (password: string) => {
-      setPasswordToChange(password)
-      setPasswordModal(!passwordModal)
-    },
-    [passwordModal],
-  )
-
-  const handleSubmitChangePassword = useCallback(
-    (usermessage: string) => {
-      submitChangePassword(usermessage)
-      setPasswordModal(!passwordModal)
-      toggleChangePasswordModal()
-      setPasswordToChange('')
-    },
-    [submitChangePassword, passwordModal, toggleChangePasswordModal],
-  )
 
   const submitForm = useCallback(
     (usermessage: string) => {
@@ -342,69 +177,69 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
     [toggle, onSubmitData, formik.values, modifiedFields],
   )
 
-  const loading = changePasswordMutation.isPending
+  const loading = false
 
-  const setSelectedClaimsToState = (data: PersonAttribute) => {
-    const tempList = [...selectedClaims]
-    tempList.push(data)
-    setSelectedClaims(tempList)
-  }
+  const setSelectedClaimsToState = useCallback((data: PersonAttribute) => {
+    setSelectedClaims((prev) => [...prev, data])
+  }, [])
 
   useEffect(() => {
+    const userKey = userDetails?.inum || 'new'
+    const attrsKey = personAttributesKey
+
+    // Only run if we haven't initialized for this user+attributes combination yet
+    if (initializedRef.current === `${userKey}-${attrsKey}`) {
+      return
+    }
+
     if (userDetails) {
-      setupCustomAttributes(userDetails, personAttributes, selectedClaims, setSelectedClaims)
+      setupCustomAttributes(userDetails, memoizedPersonAttributes, setSelectedClaims)
     } else {
       setSelectedClaims([])
     }
-  }, [userDetails])
 
-  const removeSelectedClaimsFromState = (id: string) => {
-    const tempList = [...selectedClaims]
-    formik.setFieldValue(id, '')
-    const newModifiedFields = { ...modifiedFields }
-    delete newModifiedFields[id]
-    setModifiedFields(newModifiedFields)
-    const newList = tempList.filter((data) => data.name !== id)
-    setSelectedClaims(newList)
-  }
+    initializedRef.current = `${userKey}-${attrsKey}`
+  }, [userDetails?.inum, personAttributesKey, memoizedPersonAttributes, setSelectedClaims])
 
-  const handleChange = (
-    e:
-      | React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-      | { target: { name: string; value: unknown } },
-  ) => {
-    setModifiedFields({
-      ...modifiedFields,
-      [e.target.name]: e.target.value as string | string[],
-    })
-  }
+  const removeSelectedClaimsFromState = useCallback(
+    (id: string) => {
+      formik.setFieldValue(id, '')
+      setModifiedFields((prev) => {
+        const newModifiedFields = { ...prev }
+        delete newModifiedFields[id]
+        return newModifiedFields
+      })
+      setSelectedClaims((prev) => prev.filter((data) => data.name !== id))
+    },
+    [formik],
+  )
+
+  const handleChange = useCallback(
+    (
+      e:
+        | React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+        | { target: { name: string; value: unknown } },
+    ) => {
+      setModifiedFields((prev) => ({
+        ...prev,
+        [e.target.name]: e.target.value as string | string[],
+      }))
+    },
+    [],
+  )
 
   return (
     <GluuLoader blocking={loading}>
-      <GluuCommitDialog
-        handler={() => setPasswordModal(!passwordModal)}
-        modal={passwordModal}
-        onAccept={handleSubmitChangePassword}
-      />
       <PasswordChangeModal
         isOpen={changePasswordModal}
         toggle={toggleChangePasswordModal}
         selectedTheme={selectedTheme}
-        t={t}
-        onPasswordChange={handlePasswordChange}
+        userDetails={userDetails || null}
       />
       <Form
         onSubmit={(e) => {
           e.preventDefault()
-          const values = Object.keys(modifiedFields).map((key) => {
-            return {
-              path: key,
-              value: modifiedFields[key],
-              op: 'replace' as const,
-            }
-          })
-          setOperations(values)
-          formik.handleSubmit()
+          handleApply()
         }}
       >
         <FormGroup row>
@@ -412,7 +247,7 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
             {userDetails && (
               <GluuInputRow
                 label="INUM"
-                name="INUM"
+                name="inum"
                 doc_category={DOC_SECTION}
                 value={userDetails.inum || ''}
                 lsize={3}
@@ -562,7 +397,7 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
               <AvailableClaimsPanel
                 searchClaims={searchClaims}
                 setSearchClaims={setSearchClaims}
-                personAttributes={personAttributes}
+                personAttributes={memoizedPersonAttributes}
                 selectedClaims={selectedClaims}
                 setSelectedClaimsToState={setSelectedClaimsToState}
                 dispatch={dispatch}
@@ -586,17 +421,7 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
           onCancel={handleCancel}
           disableCancel={!formik.dirty}
           showApply={true}
-          onApply={() => {
-            const values = Object.keys(modifiedFields).map((key) => {
-              return {
-                path: key,
-                value: modifiedFields[key],
-                op: 'replace' as const,
-              }
-            })
-            setOperations(values)
-            formik.handleSubmit()
-          }}
+          onApply={handleApply}
           disableApply={!formik.dirty || !formik.isValid}
           applyButtonType="button"
           isLoading={loading}
@@ -614,4 +439,4 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
   )
 }
 
-export default UserForm
+export default React.memo(UserForm)

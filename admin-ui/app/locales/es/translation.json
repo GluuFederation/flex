@@ -370,6 +370,7 @@
     "oxauth_claim_name": "Nombre de Claim de oxAuth",
     "ox_attributes": "Atributos ox",
     "password": "Contraseña",
+    "confirm_password": "Confirmar Contraseña",
     "software_roles": "Roles de Software",
     "authorization_code": "Código de Autorización",
     "refresh_token": "Token de Refresco",

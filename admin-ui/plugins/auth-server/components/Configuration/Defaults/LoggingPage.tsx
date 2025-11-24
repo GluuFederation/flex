@@ -66,7 +66,14 @@ function LoggingPage(): React.ReactElement {
   const [showCommitDialog, setShowCommitDialog] = useState(false)
   const [pendingValues, setPendingValues] = useState<PendingValues | null>(null)
   const [localLogging, setLocalLogging] = useState<Logging | null>(null)
-  const toggleCommitDialog = useCallback(() => setShowCommitDialog((prev) => !prev), [])
+
+  const openCommitDialog = useCallback(() => {
+    setShowCommitDialog(true)
+  }, [])
+
+  const closeCommitDialog = useCallback(() => {
+    setShowCommitDialog(false)
+  }, [])
 
   useEffect(() => {
     if (loggingScopes && loggingScopes.length > 0) {
@@ -106,9 +113,9 @@ function LoggingPage(): React.ReactElement {
       const changedFields = getChangedFields(localLogging, mergedValues)
 
       setPendingValues({ mergedValues, changedFields })
-      setShowCommitDialog(true)
+      openCommitDialog()
     },
-    [localLogging],
+    [localLogging, openCommitDialog],
   )
 
   const handleAccept = useCallback(
@@ -126,10 +133,10 @@ function LoggingPage(): React.ReactElement {
       }
 
       dispatch(editLoggingConfig(payload))
-      setShowCommitDialog(false)
+      closeCommitDialog()
       setPendingValues(null)
     },
-    [pendingValues, dispatch],
+    [pendingValues, dispatch, closeCommitDialog],
   )
 
   return (
@@ -151,7 +158,6 @@ function LoggingPage(): React.ReactElement {
                       size={4}
                       doc_category={JSON_CONFIG}
                       doc_entry="loggingLevel"
-                      required
                     />
                     <Col sm={8}>
                       <CustomInput
@@ -163,9 +169,6 @@ function LoggingPage(): React.ReactElement {
                         onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                           formik.setFieldValue('loggingLevel', e.target.value)
                         }
-                        onBlur={() => formik.setFieldTouched('loggingLevel', true)}
-                        required
-                        aria-required="true"
                       >
                         <option value="">{t('actions.choose')}...</option>
                         {levels.map((item, key) => (
@@ -174,9 +177,6 @@ function LoggingPage(): React.ReactElement {
                           </option>
                         ))}
                       </CustomInput>
-                      {formik.touched.loggingLevel && formik.errors.loggingLevel && (
-                        <div className="text-danger mt-1">{formik.errors.loggingLevel}</div>
-                      )}
                     </Col>
                   </FormGroup>
 
@@ -186,7 +186,6 @@ function LoggingPage(): React.ReactElement {
                       size={4}
                       doc_category={JSON_CONFIG}
                       doc_entry="loggingLayout"
-                      required
                     />
                     <Col sm={8}>
                       <CustomInput
@@ -198,9 +197,6 @@ function LoggingPage(): React.ReactElement {
                         onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                           formik.setFieldValue('loggingLayout', e.target.value)
                         }
-                        onBlur={() => formik.setFieldTouched('loggingLayout', true)}
-                        required
-                        aria-required="true"
                       >
                         <option value="">{t('actions.choose')}...</option>
                         {logLayouts.map((item, key) => (
@@ -209,9 +205,6 @@ function LoggingPage(): React.ReactElement {
                           </option>
                         ))}
                       </CustomInput>
-                      {formik.touched.loggingLayout && formik.errors.loggingLayout && (
-                        <div className="text-danger mt-1">{formik.errors.loggingLayout}</div>
-                      )}
                     </Col>
                   </FormGroup>
 
@@ -271,7 +264,7 @@ function LoggingPage(): React.ReactElement {
             </Formik>
 
             <GluuCommitDialog
-              handler={toggleCommitDialog}
+              handler={closeCommitDialog}
               modal={showCommitDialog}
               onAccept={handleAccept}
               isLicenseLabel={false}

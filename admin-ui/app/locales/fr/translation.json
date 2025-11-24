@@ -490,6 +490,7 @@
     "oxauth_claim_name": "Nom de la revendication oxAuth",
     "ox_attributes": "oxAttributs",
     "password": "Mot de passe",
+    "confirm_password": "Confirmer le mot de passe",
     "software_roles": "Rôles logiciels",
     "authorization_code": "Code d'autorisation",
     "refresh_token": "Actualiser le jeton",
