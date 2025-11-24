@@ -11,7 +11,7 @@ import { Card, CardBody } from '../../../app/components'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { useAppNavigation, ROUTES, NAVIGATION_ROUTES } from '@/helpers/navigation'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useCedarling } from '@/cedarling'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
@@ -130,7 +130,7 @@ function UserList(): JSX.Element {
   const { navigateToRoute } = useAppNavigation()
 
   const handleGoToUserAddPage = useCallback((): void => {
-    navigateToRoute(NAVIGATION_ROUTES.USER_ADD)
+    navigateToRoute(ROUTES.USER_ADD)
   }, [navigateToRoute])
 
   const handleView2FADetails = useCallback((row: UserTableRowData): void => {

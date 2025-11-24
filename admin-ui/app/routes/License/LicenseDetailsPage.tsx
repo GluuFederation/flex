@@ -17,19 +17,19 @@ import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import GluuCommitDialog from '../Apps/Gluu/GluuCommitDialog'
-import { useNavigate } from 'react-router'
 import type { LicenseField } from './types'
 import type { LicenseDetailsState } from 'Redux/features/licenseDetailsSlice'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 function LicenseDetailsPage() {
   const { item, loading } = useSelector(
     (state: { licenseDetailsReducer: LicenseDetailsState }) => state.licenseDetailsReducer,
   )
-  const navigate = useNavigate()
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { hasCedarWritePermission, authorizeHelper } = useCedarling()
   const [modal, setModal] = useState(false)
+  const { navigateToRoute } = useAppNavigation()
 
   const licenseResourceId = useMemo(() => ADMIN_UI_RESOURCES.License, [])
   const licenseScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[licenseResourceId], [licenseResourceId])
@@ -48,8 +48,10 @@ function LicenseDetailsPage() {
     dispatch(getLicenseDetails())
   }, [dispatch])
   useEffect(() => {
-    item.licenseExpired && navigate('/logout')
-  }, [item.licenseExpired, navigate])
+    if (item.licenseExpired) {
+      navigateToRoute(ROUTES.LOGOUT)
+    }
+  }, [item.licenseExpired, navigateToRoute])
 
   SetTitle(t('menus.licenseDetails'))
   const theme = useContext(ThemeContext)

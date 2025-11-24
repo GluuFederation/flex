@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { Box } from '@mui/material'
-import { useAppNavigation, NAVIGATION_ROUTES } from '@/helpers/navigation'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 interface ButtonLabelProps {
   isLoading: boolean
@@ -78,7 +78,7 @@ const GluuFormFooter = ({
       onBack()
       return
     }
-    navigateToRoute(NAVIGATION_ROUTES.HOME_DASHBOARD)
+    navigateToRoute(ROUTES.HOME_DASHBOARD)
   }, [onBack, navigateToRoute])
 
   const handleCancelClick = useCallback(() => {

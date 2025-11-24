@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
-import { useNavigate } from 'react-router-dom'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useDispatch, useSelector } from 'react-redux'
 import { useCedarling, ADMIN_UI_RESOURCES, CEDAR_RESOURCE_SCOPES } from '@/cedarling'
 import { Paper } from '@mui/material'
@@ -73,7 +73,7 @@ function SqlListPage() {
   const { t } = useTranslation()
   const userAction = {}
   const [myActions, setMyActions] = useState([])
-  const navigate = useNavigate()
+  const { navigateToRoute, navigateBack } = useAppNavigation()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const pageSize = getPagingSize()
@@ -153,10 +153,11 @@ function SqlListPage() {
 
   const handleGoToSqlEditPage = useCallback(
     (row) => {
+      if (!row?.configId) return
       dispatch(setCurrentItem(row))
-      navigate(`/config/sql/edit/:` + row.configId)
+      navigateToRoute(ROUTES.SQL_EDIT(row.configId))
     },
-    [dispatch, navigate],
+    [dispatch, navigateToRoute],
   )
 
   const handleSqlDelete = useCallback((row) => {
@@ -165,17 +166,17 @@ function SqlListPage() {
   }, [])
 
   const handleGoToSqlAddPage = useCallback(() => {
-    navigate('/config/sql/new')
-  }, [navigate])
+    navigateToRoute(ROUTES.SQL_ADD)
+  }, [navigateToRoute])
 
   const onDeletionConfirmed = useCallback(
     (message) => {
       buildPayload(userAction, message, item.configId)
       dispatch(deleteSql(item.configId))
-      navigate('/config/sql')
+      navigateBack(ROUTES.SQL_LIST)
       toggle()
     },
-    [item.configId, dispatch, navigate],
+    [item.configId, dispatch, navigateBack],
   )
 
   const testSqlConnect = useCallback(

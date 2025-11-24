@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { useAppNavigation, NAVIGATION_ROUTES } from '@/helpers/navigation'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { Container, CardBody, Card } from 'Components'
 import UserForm from './UserForm'
 import { useTranslation } from 'react-i18next'
@@ -32,7 +32,7 @@ function UserEditPage() {
   const [userDetails] = useState<CustomUser | null>(location.state?.selectedUser ?? null)
   useEffect(() => {
     if (!userDetails) {
-      navigateToRoute(NAVIGATION_ROUTES.USER_MANAGEMENT)
+      navigateToRoute(ROUTES.USER_MANAGEMENT)
     }
   }, [userDetails?.inum, navigateToRoute])
 
@@ -57,7 +57,7 @@ function UserEditPage() {
         await logUserUpdate(data, variables.data)
         triggerUserWebhook(data as Record<string, unknown>)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
-        navigateToRoute(NAVIGATION_ROUTES.USER_MANAGEMENT)
+        navigateToRoute(ROUTES.USER_MANAGEMENT)
       },
       onError: (error: unknown) => {
         const errMsg = getErrorMessage(error)

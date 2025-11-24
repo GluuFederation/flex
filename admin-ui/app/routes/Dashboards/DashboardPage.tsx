@@ -25,16 +25,15 @@ import JansLockUsers from '@/components/SVG/menu/JansLockUsers'
 import JansLockClients from '@/components/SVG/menu/JansLockClients'
 import GluuPermissionModal from 'Routes/Apps/Gluu/GluuPermissionModal'
 import { auditLogoutLogs } from 'Redux/features/sessionSlice'
-import { useNavigate } from 'react-router'
 import customColors from '@/customColors'
 import { useCedarling } from '@/cedarling'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 // Constants moved outside component for better performance
 const FETCHING_LICENSE_DETAILS = 'Fetch license details'
 
 function DashboardPage() {
   const { t } = useTranslation()
-  const navigate = useNavigate()
   const dispatch = useDispatch()
   const userAction = useMemo(() => ({}), [])
   const options = useMemo(() => ({}), [])
@@ -62,6 +61,7 @@ function DashboardPage() {
   const permissions = useSelector((state: any) => state.authReducer.permissions)
 
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
+  const { navigateToRoute } = useAppNavigation()
   const cedarInitialized = useSelector((state: any) => state.cedarPermissions?.initialized)
   const cedarIsInitializing = useSelector((state: any) => state.cedarPermissions?.isInitializing)
 
@@ -347,9 +347,9 @@ function DashboardPage() {
         } as any),
       )
     } else {
-      navigate('/logout')
+      navigateToRoute(ROUTES.LOGOUT)
     }
-  }, [access_token, dispatch, navigate])
+  }, [access_token, dispatch, navigateToRoute])
 
   const showModal = useMemo(() => {
     const shouldShowModal = !isUserInfoFetched && (!access_token || !hasViewPermissions)

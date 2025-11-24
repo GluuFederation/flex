@@ -7,7 +7,6 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { buildPayload } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { useNavigate } from 'react-router'
 import { DeleteOutlined } from '@mui/icons-material'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import { Paper, TablePagination } from '@mui/material'
@@ -18,6 +17,7 @@ import getThemeColor from 'Context/theme/config'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 export const getTableCols = (t) => {
   return [
@@ -56,7 +56,7 @@ const SamlIdentityList = () => {
 
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const { navigateToRoute } = useAppNavigation()
   const { items, loadingSamlIdp, totalItems } = useSelector((state) => state.idpSamlReducer)
   const samlResourceId = useMemo(() => ADMIN_UI_RESOURCES.SAML, [])
   const samlScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[samlResourceId], [samlResourceId])
@@ -83,13 +83,16 @@ const SamlIdentityList = () => {
     dispatch(getSamlIdentites({ limit, ...(pattern ? { pattern } : {}) }))
   }, [dispatch, canReadIdentities, limit, pattern])
 
-  const handleGoToEditPage = useCallback((rowData, viewOnly) => {
-    navigate('/saml/identity-providers/edit', { state: { rowData: rowData, viewOnly: viewOnly } })
-  }, [])
+  const handleGoToEditPage = useCallback(
+    (rowData, viewOnly) => {
+      navigateToRoute(ROUTES.SAML_IDP_EDIT, { state: { rowData: rowData, viewOnly: viewOnly } })
+    },
+    [navigateToRoute],
+  )
 
   const handleGoToAddPage = useCallback(() => {
-    navigate('/saml/identity-providers/add')
-  }, [])
+    navigateToRoute(ROUTES.SAML_IDP_ADD)
+  }, [navigateToRoute])
 
   function handleDelete(row) {
     setItem(row)

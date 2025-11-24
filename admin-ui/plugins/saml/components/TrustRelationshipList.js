@@ -8,7 +8,6 @@ import { useCedarling } from '@/cedarling'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
-import { useNavigate } from 'react-router'
 import { DeleteOutlined } from '@mui/icons-material'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import {
@@ -19,6 +18,7 @@ import { PaperContainer, getTableCols } from './SamlIdentityList'
 import customColors from '@/customColors'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 const TrustRelationshipList = () => {
   const { authorizeHelper, hasCedarReadPermission, hasCedarWritePermission } = useCedarling()
@@ -33,7 +33,7 @@ const TrustRelationshipList = () => {
 
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const { navigateToRoute } = useAppNavigation()
   const { trustRelationships, loadingTrustRelationship } = useSelector(
     (state) => state.idpSamlReducer,
   )
@@ -59,13 +59,16 @@ const TrustRelationshipList = () => {
     dispatch(getTrustRelationship())
   }, [dispatch, canReadTrustRelationships])
 
-  const handleGoToEditPage = useCallback((rowData, viewOnly) => {
-    navigate('/saml/service-providers/edit', { state: { rowData: rowData, viewOnly: viewOnly } })
-  }, [])
+  const handleGoToEditPage = useCallback(
+    (rowData, viewOnly) => {
+      navigateToRoute(ROUTES.SAML_SP_EDIT, { state: { rowData: rowData, viewOnly: viewOnly } })
+    },
+    [navigateToRoute],
+  )
 
   const handleGoToAddPage = useCallback(() => {
-    navigate('/saml/service-providers/add')
-  }, [])
+    navigateToRoute(ROUTES.SAML_SP_ADD)
+  }, [navigateToRoute])
 
   function handleDelete(row) {
     setItem(row)

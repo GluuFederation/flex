@@ -8,23 +8,23 @@ import { ThemeContext } from '../../../context/theme/themeContext'
 import SetTitle from 'Utils/SetTitle'
 import styles from './styles'
 import { Box, Divider, Skeleton } from '@mui/material'
-import { useNavigate } from 'react-router'
 import { getProfileDetails } from 'Redux/features/ProfileDetailsSlice'
 import { randomAvatar } from '../../../utilities'
 import getThemeColor from '../../../context/theme/config'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import type { AppDispatch, ProfileRootState, ThemeContextValue, CustomAttribute } from './types'
 
 const ProfileDetails: React.FC = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch<AppDispatch>()
-  const navigate = useNavigate()
   const theme = useContext(ThemeContext) as ThemeContextValue
   const selectedTheme = useMemo(() => theme?.state?.theme ?? 'light', [theme?.state?.theme])
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { classes } = styles()
+  const { navigateToRoute } = useAppNavigation()
 
   // Set page title
   SetTitle(t('titles.profile_detail'))
@@ -69,10 +69,10 @@ const ProfileDetails: React.FC = () => {
 
   const navigateToUserManagement = useCallback((): void => {
     if (!profileDetails?.inum) return
-    navigate(`/user/usermanagement/edit/${encodeURIComponent(profileDetails.inum)}`, {
+    navigateToRoute(ROUTES.USER_EDIT(profileDetails.inum), {
       state: { selectedUser: profileDetails },
     })
-  }, [profileDetails?.inum, navigate, profileDetails])
+  }, [profileDetails?.inum, profileDetails, navigateToRoute])
 
   const roleBadges = useMemo(() => {
     if (!jansAdminUIRole?.values?.length) return null

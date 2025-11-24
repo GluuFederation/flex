@@ -9,7 +9,7 @@ import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import JsonPropertyBuilderConfigApi from './JsonPropertyBuilderConfigApi'
 import { toast } from 'react-toastify'
 import type { ApiAppConfiguration, JsonPatch } from './types'
-import { useAppNavigation, NAVIGATION_ROUTES } from '@/helpers/navigation'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 interface ApiConfigFormProps {
   configuration: ApiAppConfiguration
@@ -74,7 +74,7 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
   }
 
   const handleBack = () => {
-    navigateToRoute(NAVIGATION_ROUTES.HOME_DASHBOARD)
+    navigateToRoute(ROUTES.HOME_DASHBOARD)
   }
 
   return (

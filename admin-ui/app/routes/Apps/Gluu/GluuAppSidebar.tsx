@@ -5,7 +5,6 @@ import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
 import { processMenus } from 'Plugins/PluginMenuResolver'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import CachedIcon from '@mui/icons-material/Cached'
@@ -30,6 +29,7 @@ import {
 } from '../../../components/SVG'
 import { AdminUiFeatureResource, useCedarling } from '@/cedarling'
 import { CEDARLING_BYPASS } from '@/cedarling/utility'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import type {
   MenuItem,
   PluginMenu,
@@ -88,8 +88,8 @@ function GluuAppSidebar(): JSX.Element {
   const theme = useContext(ThemeContext) as ThemeContextState
   const selectedTheme = theme.state.theme
   const { classes } = styles()
-  const navigate = useNavigate()
   const { authorize } = useCedarling()
+  const { navigateToRoute } = useAppNavigation()
 
   const fetchedServersLength = useMemo((): boolean => Object.keys(health).length > 0, [health])
 
@@ -178,9 +178,9 @@ function GluuAppSidebar(): JSX.Element {
 
   useEffect(() => {
     if (logoutAuditSucceeded === true) {
-      navigate('/logout')
+      navigateToRoute(ROUTES.LOGOUT)
     }
-  }, [logoutAuditSucceeded, navigate])
+  }, [logoutAuditSucceeded, navigateToRoute])
 
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>

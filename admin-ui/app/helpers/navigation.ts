@@ -2,110 +2,86 @@ import { useNavigate, NavigateOptions } from 'react-router-dom'
 import { useCallback, useMemo } from 'react'
 
 const ROUTES = {
+  // Home & Dashboard
   HOME_DASHBOARD: '/home/dashboard',
+
+  // User Management
   USER_MANAGEMENT: '/user/usersmanagement',
   USER_ADD: '/user/usermanagement/add',
   USER_EDIT: (id: string) => `/user/usermanagement/edit/${encodeURIComponent(id)}`,
+
+  // Admin Console - Assets
   ASSETS_LIST: '/adm/assets',
   ASSET_ADD: '/adm/asset/add',
   ASSET_EDIT: (inum: string) => `/adm/asset/edit/${encodeURIComponent(inum)}`,
+
+  // Admin Console - Webhooks
   WEBHOOK_LIST: '/adm/webhook',
   WEBHOOK_ADD: '/adm/webhook/add',
   WEBHOOK_EDIT: (inum: string) => `/adm/webhook/edit/${encodeURIComponent(inum)}`,
+
+  // Admin Console - Custom Scripts
   CUSTOM_SCRIPT_LIST: '/adm/scripts',
   CUSTOM_SCRIPT_ADD: '/adm/script/new',
   CUSTOM_SCRIPT_EDIT: (inum: string) => `/adm/script/edit/${encodeURIComponent(inum)}`,
+
+  // Schema / User Claims
+  ATTRIBUTES_LIST: '/attributes',
+  ATTRIBUTE_ADD: '/attribute/new',
+  ATTRIBUTE_EDIT: (inum: string) => `/attribute/edit/${encodeURIComponent(inum)}`,
+  ATTRIBUTE_VIEW: (inum: string) => `/attribute/view/${encodeURIComponent(inum)}`,
+
+  // Service Configuration
+  SQL_LIST: '/config/sql',
+  SQL_ADD: '/config/sql/new',
+  SQL_EDIT: (configId: string) => `/config/sql/edit/${encodeURIComponent(configId)}`,
+  LDAP_LIST: '/config/ldap',
+  LDAP_ADD: '/config/ldap/new',
+  LDAP_EDIT: (configId: string) => `/config/ldap/edit/${encodeURIComponent(configId)}`,
+
+  // SAML
+  SAML_SP_LIST: '/saml/service-providers',
+  SAML_SP_ADD: '/saml/service-providers/add',
+  SAML_SP_EDIT: '/saml/service-providers/edit',
+  SAML_IDP_LIST: '/saml/identity-providers',
+  SAML_IDP_ADD: '/saml/identity-providers/add',
+  SAML_IDP_EDIT: '/saml/identity-providers/edit',
+
   // Layout routes
   LAYOUT_NAVBAR: '/layouts/navbar',
   LAYOUT_SIDEBAR: '/layouts/sidebar',
   LAYOUT_SIDEBAR_A: '/layouts/sidebar-a',
   LAYOUT_SIDEBAR_WITH_NAVBAR: '/layouts/sidebar-with-navbar',
-  // Page routes
+
+  // Core app pages
   PROFILE: '/profile',
   LOGOUT: '/logout',
   ERROR_404: '/error-404',
+
   // Wildcard routes
   WILDCARD: '/*',
   ROOT: '/',
 } as const
 
-export const NAVIGATION_ROUTES = {
-  HOME_DASHBOARD: 'HOME_DASHBOARD',
-  USER_MANAGEMENT: 'USER_MANAGEMENT',
-  USER_ADD: 'USER_ADD',
-  USER_EDIT: 'USER_EDIT',
-  ASSETS_LIST: 'ASSETS_LIST',
-  ASSET_ADD: 'ASSET_ADD',
-  WEBHOOK_LIST: 'WEBHOOK_LIST',
-  WEBHOOK_ADD: 'WEBHOOK_ADD',
-  CUSTOM_SCRIPT_LIST: 'CUSTOM_SCRIPT_LIST',
-  CUSTOM_SCRIPT_ADD: 'CUSTOM_SCRIPT_ADD',
-  // Layout routes
-  LAYOUT_NAVBAR: 'LAYOUT_NAVBAR',
-  LAYOUT_SIDEBAR: 'LAYOUT_SIDEBAR',
-  LAYOUT_SIDEBAR_A: 'LAYOUT_SIDEBAR_A',
-  LAYOUT_SIDEBAR_WITH_NAVBAR: 'LAYOUT_SIDEBAR_WITH_NAVBAR',
-  // Page routes
-  PROFILE: 'PROFILE',
-  LOGOUT: 'LOGOUT',
-  ERROR_404: 'ERROR_404',
-  // Wildcard routes
-  WILDCARD: 'WILDCARD',
-  ROOT: 'ROOT',
-} as const
-
-export type RouteKey = keyof typeof ROUTES
-export type RouteValue = (typeof ROUTES)[RouteKey]
-export type NavigationRouteKey = keyof typeof NAVIGATION_ROUTES
-
 export const useAppNavigation = () => {
   const navigate = useNavigate()
 
-  /**
-   * Generic navigation function that accepts a route path or route key
-   * @param route - Can be a route key (e.g., 'USER_MANAGEMENT'), a route path string, or a route function result
-   * @param options - Optional navigation options (state, replace, etc.)
-   */
   const navigateToRoute = useCallback(
-    (route: RouteKey | string | RouteValue, options?: NavigateOptions): void => {
-      let path: string
-
-      if (typeof route === 'string') {
-        // If it's a route key, get the route value
-        if (route in ROUTES) {
-          const routeValue = ROUTES[route as RouteKey]
-          // Check if route value is a function (like USER_EDIT)
-          path = typeof routeValue === 'function' ? routeValue('') : routeValue
-        } else {
-          // It's already a path string
-          path = route
-        }
-      } else if (typeof route === 'function') {
-        // This shouldn't happen with current implementation, but handle it
-        throw new Error(
-          'Route function must be called with parameters before passing to navigateToRoute',
-        )
-      } else {
-        path = route
-      }
-
-      navigate(path, options)
+    (route: string, options?: NavigateOptions): void => {
+      navigate(route, options)
     },
     [navigate],
   )
 
-  /**
-   * Navigate back in history, or to a fallback route if no history
-   */
   const navigateBack = useCallback(
-    (fallbackRoute?: RouteKey | string): void => {
+    (fallbackRoute?: string): void => {
       if (window.history.length > 1) {
-        window.history.back()
+        navigate(-1)
       } else if (fallbackRoute) {
         navigateToRoute(fallbackRoute)
       }
     },
-    [navigateToRoute],
+    [navigate, navigateToRoute],
   )
 
   return useMemo(

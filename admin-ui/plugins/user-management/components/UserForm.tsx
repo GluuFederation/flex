@@ -3,7 +3,7 @@ import React, { useEffect, useState, useContext, useCallback, useMemo, useRef } 
 import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
-import { useAppNavigation, NAVIGATION_ROUTES } from '@/helpers/navigation'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 // Third-party libraries
 
@@ -149,7 +149,7 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
   }, [modifiedFields, toggle])
 
   const handleNavigateBack = useCallback(() => {
-    navigateBack(NAVIGATION_ROUTES.USER_MANAGEMENT)
+    navigateBack(ROUTES.USER_MANAGEMENT)
   }, [navigateBack])
 
   const handleCancel = useCallback(() => {

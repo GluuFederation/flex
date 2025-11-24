@@ -1,5 +1,5 @@
 import React from 'react'
-import { useAppNavigation, NAVIGATION_ROUTES } from '@/helpers/navigation'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { Container, CardBody, Card } from '../../../app/components'
 import UserForm from './UserForm'
 import { useTranslation } from 'react-i18next'
@@ -37,7 +37,7 @@ function UserAddPage() {
         await logUserCreation(data, variables.data)
         triggerUserWebhook(data as Record<string, unknown>)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
-        navigateToRoute(NAVIGATION_ROUTES.USER_MANAGEMENT)
+        navigateToRoute(ROUTES.USER_MANAGEMENT)
       },
       onError: (error: unknown) => {
         const errMsg = getErrorMessage(error)

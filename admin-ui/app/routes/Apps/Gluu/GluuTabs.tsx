@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import Box from '@mui/material/Box'
@@ -13,7 +13,7 @@ interface TabPanelProps {
   index: number
 }
 
-const TabPanel = (props: TabPanelProps) => {
+const TabPanel = React.memo((props: TabPanelProps) => {
   const { children, value, px, py, index, ...other } = props
   return (
     <div
@@ -30,7 +30,9 @@ const TabPanel = (props: TabPanelProps) => {
       )}
     </div>
   )
-}
+})
+
+TabPanel.displayName = 'TabPanel'
 
 const a11yProps = (index: number) => {
   return {
@@ -39,104 +41,129 @@ const a11yProps = (index: number) => {
   }
 }
 
-const initTabValue = (tabNames: any[], path: any) => {
-  const tab = tabNames
-    .map((tab: any, index: number) => {
-      if (tab.path === path.pathname) {
-        return { ...tab, index: index }
-      }
-    })
-    ?.filter((tab: any) => tab)?.[0]
+interface NavigationTab {
+  name: string
+  path: string
+}
 
-  return tab?.index || 0
+type TabItem = string | NavigationTab
+
+const isNavigationTab = (tab: TabItem | undefined): tab is NavigationTab => {
+  return Boolean(tab && typeof tab === 'object' && 'name' in tab && 'path' in tab)
+}
+
+const initTabValue = (tabNames: NavigationTab[], pathname: string) => {
+  const tabIndex = tabNames.findIndex((tab) => tab.path === pathname)
+  return tabIndex >= 0 ? tabIndex : 0
 }
 
 interface GluuTabsProps {
-  tabNames: any[]
-  tabToShow: (tabName: any) => React.ReactNode
+  tabNames: TabItem[]
+  tabToShow: (tabName: string) => React.ReactNode
   withNavigation?: boolean
 }
 
 export default function GluuTabs({ tabNames, tabToShow, withNavigation = false }: GluuTabsProps) {
   const path = useLocation()
-  const [value, setValue] = useState(withNavigation ? initTabValue(tabNames, path) : 0)
   const navigate = useNavigate()
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue)
-    if (withNavigation) {
-      const tab = tabNames.find((tab: any, index: number) => index === newValue)
-      navigate(tab.path, { replace: true })
-    }
-  }
+  // Memoize navigation tabs extraction
+  const navigationTabs = useMemo(() => tabNames.filter(isNavigationTab), [tabNames])
 
-  useEffect(() => {
-    if (withNavigation) {
-      const tab = tabNames
-        .map((tab: any, index: number) => {
-          if (tab.path === path.pathname) {
-            return { ...tab, index: index }
-          }
-        })
-        ?.filter((tab: any) => tab)?.[0]
+  // Calculate initial value (only used on mount by useState)
+  const [value, setValue] = useState(() =>
+    withNavigation ? initTabValue(navigationTabs, path.pathname) : 0,
+  )
 
-      if (!tab) {
-        navigate(tabNames[0].path, { replace: true })
-        setValue(0)
-        return
+  // Memoize tab label getter
+  const getTabLabel = useCallback((tab: TabItem) => (isNavigationTab(tab) ? tab.name : tab), [])
+
+  // Memoize tab change handler
+  const handleChange = useCallback(
+    (event: React.SyntheticEvent, newValue: number) => {
+      setValue(newValue)
+      if (withNavigation) {
+        const tab = navigationTabs[newValue]
+        if (tab) {
+          navigate(tab.path, { replace: true })
+        }
       }
+    },
+    [withNavigation, navigationTabs, navigate],
+  )
 
-      navigate(tab.path, { replace: true })
-      setValue(tab.index)
+  // Memoize tabs styling
+  const tabsSx = useMemo(
+    () => ({
+      '& .MuiTab-root.Mui-selected': {
+        color: customColors.lightBlue,
+        fontWeight: 600,
+        background: customColors.lightBlue,
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text',
+        position: 'relative',
+      },
+      '& .MuiTabs-indicator': {
+        background: customColors.lightBlue,
+        height: 3,
+        borderRadius: '2px',
+        boxShadow: `0 2px 4px ${customColors.logo}`,
+      },
+    }),
+    [],
+  )
+
+  // Memoize tab labels array
+  const tabLabels = useMemo(() => tabNames.map(getTabLabel), [tabNames, getTabLabel])
+
+  // Sync tab value with URL pathname
+  useEffect(() => {
+    if (!withNavigation) {
+      return
     }
-  }, [])
+
+    const activeIndex = navigationTabs.findIndex((tab) => tab.path === path.pathname)
+    if (activeIndex === -1) {
+      if (navigationTabs[0]) {
+        navigate(navigationTabs[0].path, { replace: true })
+      }
+      setValue(0)
+      return
+    }
+
+    navigate(navigationTabs[activeIndex].path, { replace: true })
+    setValue(activeIndex)
+  }, [withNavigation, navigationTabs, path.pathname, navigate])
+
+  // Memoize tab elements
+  const tabElements = useMemo(
+    () =>
+      tabLabels.map((label, index) => (
+        <Tab data-testid={label} key={`${label}-${index}`} label={label} {...a11yProps(index)} />
+      )),
+    [tabLabels],
+  )
+
+  // Memoize tab panel elements
+  const tabPanels = useMemo(
+    () =>
+      tabLabels.map((label, index) => (
+        <TabPanel value={value} key={`${label}-${index}-panel`} index={index} px={0} py={2}>
+          {tabToShow(label)}
+        </TabPanel>
+      )),
+    [tabLabels, value, tabToShow],
+  )
 
   return (
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs
-          value={value}
-          variant="scrollable"
-          onChange={handleChange}
-          sx={{
-            '& .MuiTab-root.Mui-selected': {
-              color: customColors.lightBlue,
-              fontWeight: 600,
-              background: customColors.lightBlue,
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              position: 'relative',
-            },
-            '& .MuiTabs-indicator': {
-              background: customColors.lightBlue,
-              height: 3,
-              borderRadius: '2px',
-              boxShadow: `0 2px 4px ${customColors.logo}`,
-            },
-          }}
-        >
-          {tabNames?.map((tab: any, index: number) => (
-            <Tab
-              data-testid={withNavigation ? tab.name : tab}
-              key={(withNavigation ? tab.name : tab) + index.toString()}
-              label={withNavigation ? tab.name : tab}
-              {...a11yProps(index)}
-            />
-          ))}
+        <Tabs value={value} variant="scrollable" onChange={handleChange} sx={tabsSx}>
+          {tabElements}
         </Tabs>
       </Box>
-      {tabNames?.map((tab: any, index: number) => (
-        <TabPanel
-          value={value}
-          key={(withNavigation ? tab.name : tab) + index.toString()}
-          index={index}
-          px={0}
-          py={2}
-        >
-          {tabToShow(withNavigation ? tab.name : tab)}
-        </TabPanel>
-      ))}
+      {tabPanels}
     </Box>
   )
 }
