@@ -1,21 +1,20 @@
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useState, useMemo } from 'react'
 import { Col, Form, Row, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import { useFormik } from 'formik'
-import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
+import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuUploadFile from 'Routes/Apps/Gluu/GluuUploadFile'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
-import * as Yup from 'yup'
 import {
   createJansAsset,
   updateJansAsset,
   resetFlags,
 } from 'Plugins/admin/redux/features/AssetSlice'
 import { buildPayload } from 'Utils/PermChecker'
-import { useNavigate, useParams } from 'react-router'
+import { useParams } from 'react-router'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import Toggle from 'react-toggle'
 import { ASSET } from 'Utils/ApiResources'
@@ -34,23 +33,25 @@ import {
   CreateAssetActionPayload,
   UpdateAssetActionPayload,
 } from '../../redux/features/types/asset'
+import { getAssetValidationSchema } from 'Plugins/admin/helper/validations/assetValidation'
+import { buildAssetInitialValues } from 'Plugins/admin/helper/assets'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 const AssetForm: React.FC = () => {
   const { id } = useParams<RouteParams>()
-  const userAction: Record<string, unknown> = {}
-  const { selectedAsset, services } = useSelector(
+  interface AssetUserAction {
+    action_message?: string
+    action_data?: AssetFormData
+    [key: string]: AssetFormData | string | undefined
+  }
+  const userAction: AssetUserAction = {}
+  const { selectedAsset, services, saveOperationFlag, errorInSaveOperationFlag } = useSelector(
     (state: RootStateForAssetForm) => state.assetReducer,
   )
   const { t } = useTranslation()
-  const navigate = useNavigate()
-  const saveOperationFlag = useSelector(
-    (state: RootStateForAssetForm) => state.assetReducer.saveOperationFlag,
-  )
-  const errorInSaveOperationFlag = useSelector(
-    (state: RootStateForAssetForm) => state.assetReducer.errorInSaveOperationFlag,
-  )
   const dispatch = useDispatch()
-  const [modal, setModal] = useState<boolean>(false)
+  const { navigateBack } = useAppNavigation()
+  const [showCommitDialog, setShowCommitDialog] = useState<boolean>(false)
 
   const buildAcceptFileTypes = (): AcceptFileTypes => {
     return {
@@ -78,34 +79,30 @@ const AssetForm: React.FC = () => {
     formik.setFieldValue('fileName', '')
   }
 
+  const initialValues = useMemo(() => buildAssetInitialValues(selectedAsset), [selectedAsset])
+
   const formik = useFormik<AssetFormValues>({
-    initialValues: {
-      creationDate: selectedAsset?.creationDate || '',
-      document: selectedAsset?.document || '',
-      fileName: selectedAsset?.fileName || '',
-      enabled: selectedAsset?.enabled || false,
-      description: selectedAsset?.description || '',
-      service: selectedAsset?.service ? [selectedAsset?.service] : [],
-    },
+    initialValues,
+    enableReinitialize: true,
     onSubmit: (values: AssetFormValues) => {
       if (values.fileName) {
-        toggle()
+        openCommitDialog()
       }
     },
-    validationSchema: Yup.object().shape({
-      fileName: Yup.string()
-        .required(t('messages.display_name_error'))
-        .matches(/^\S*$/, `${t('fields.asset_name')} ${t('messages.no_spaces')}`),
-    }),
+    validationSchema: getAssetValidationSchema(t),
   })
 
-  const toggle: ToggleHandler = (): void => {
-    setModal(!modal)
-  }
+  const openCommitDialog: ToggleHandler = useCallback(() => {
+    setShowCommitDialog(true)
+  }, [])
+
+  const closeCommitDialog: ToggleHandler = useCallback(() => {
+    setShowCommitDialog(false)
+  }, [])
 
   const submitForm: SubmitFormCallback = useCallback(
     (userMessage: string): void => {
-      toggle()
+      closeCommitDialog()
       const payload: AssetFormData = {
         ...formik.values,
         service: formik.values.service[0],
@@ -122,15 +119,22 @@ const AssetForm: React.FC = () => {
         dispatch(createJansAsset({ action: userAction } as CreateAssetActionPayload))
       }
     },
-    [formik, id, selectedAsset, userAction, dispatch],
+    [closeCommitDialog, formik, id, selectedAsset, userAction, dispatch],
   )
 
-  useEffect(() => {
-    if (saveOperationFlag && !errorInSaveOperationFlag) navigate('/adm/assets')
-    return function cleanup() {
-      dispatch(resetFlags())
-    }
-  }, [saveOperationFlag, errorInSaveOperationFlag, navigate, dispatch])
+  if (saveOperationFlag && !errorInSaveOperationFlag) {
+    navigateBack(ROUTES.USER_MANAGEMENT)
+    dispatch(resetFlags())
+  }
+
+  const handleCancel = useCallback(() => {
+    formik.resetForm({ values: initialValues })
+  }, [formik, initialValues])
+
+  const isFormChanged = formik.dirty
+  const handleBack = useCallback(() => {
+    navigateBack(ROUTES.USER_MANAGEMENT)
+  }, [navigateBack])
 
   return (
     <>
@@ -205,21 +209,31 @@ const AssetForm: React.FC = () => {
               id="enabled"
               name="enabled"
               onChange={formik.handleChange}
-              defaultChecked={formik.values.enabled}
+              checked={formik.values.enabled}
             />
           </Col>
         </FormGroup>
         <Row>
           <Col>
-            <GluuCommitFooter
-              saveHandler={toggle}
-              hideButtons={{ save: true, back: false }}
-              type="submit"
+            <GluuFormFooter
+              showBack={true}
+              onBack={handleBack}
+              showCancel={true}
+              onCancel={handleCancel}
+              disableCancel={!isFormChanged}
+              showApply={true}
+              onApply={formik.handleSubmit}
+              disableApply={!isFormChanged || !formik.isValid}
+              applyButtonType="button"
             />
           </Col>
         </Row>
       </Form>
-      <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} />
+      <GluuCommitDialog
+        handler={closeCommitDialog}
+        modal={showCommitDialog}
+        onAccept={submitForm}
+      />
     </>
   )
 }

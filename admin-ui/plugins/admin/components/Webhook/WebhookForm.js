@@ -16,7 +16,7 @@ import {
 } from 'Plugins/admin/redux/features/WebhookSlice'
 const GluuInputEditor = lazy(() => import('Routes/Apps/Gluu/GluuInputEditor'))
 import { buildPayload } from 'Utils/PermChecker'
-import { useNavigate, useParams } from 'react-router'
+import { useParams } from 'react-router'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import Toggle from 'react-toggle'
 import { WEBHOOK } from 'Utils/ApiResources'
@@ -28,12 +28,13 @@ import { isValid } from './WebhookURLChecker'
 import isEqual from 'lodash/isEqual'
 import { getWebhookValidationSchema } from 'Plugins/admin/helper/validations/webhookValidation'
 import { buildWebhookInitialValues } from 'Plugins/admin/helper/webhook'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 const WebhookForm = () => {
   const { id } = useParams()
-  const navigate = useNavigate()
   const dispatch = useDispatch()
   const { t } = useTranslation()
+  const { navigateBack } = useAppNavigation()
 
   const {
     selectedWebhook,
@@ -44,10 +45,12 @@ const WebhookForm = () => {
     errorInSaveOperationFlag,
   } = useSelector((state) => state.webhookReducer)
 
-  const initialSelectedFeatures = useMemo(
-    () => (Array.isArray(webhookFeatures) ? [...webhookFeatures] : []),
-    [webhookFeatures],
-  )
+  const initialSelectedFeatures = useMemo(() => {
+    if (Array.isArray(webhookFeatures) && webhookFeatures.length > 0) {
+      return [webhookFeatures[0]]
+    }
+    return []
+  }, [webhookFeatures])
   const initialFormValues = useMemo(
     () => buildWebhookInitialValues(selectedWebhook),
     [selectedWebhook],
@@ -71,6 +74,11 @@ const WebhookForm = () => {
   const [showCommitDialog, setShowCommitDialog] = useState(false)
   const [selectedFeatures, setSelectedFeatures] = useState(initialSelectedFeatures)
   const [baselineSelectedFeatures, setBaselineSelectedFeatures] = useState(initialSelectedFeatures)
+
+  useEffect(() => {
+    setSelectedFeatures(initialSelectedFeatures)
+    setBaselineSelectedFeatures(initialSelectedFeatures)
+  }, [initialSelectedFeatures])
 
   const userAction = useMemo(() => ({}), [])
   const openCommitDialog = useCallback(() => setShowCommitDialog(true), [])
@@ -138,12 +146,15 @@ const WebhookForm = () => {
 
   useEffect(() => {
     if (!features?.length) dispatch(getFeatures()) // cache features response using redux store
-    if (saveOperationFlag && !errorInSaveOperationFlag) navigate('/adm/webhook')
+    if (saveOperationFlag && !errorInSaveOperationFlag) {
+      navigateBack(ROUTES.WEBHOOK_LIST)
+      dispatch(resetFlags())
+    }
 
     return function cleanup() {
       dispatch(resetFlags())
     }
-  }, [saveOperationFlag, errorInSaveOperationFlag])
+  }, [saveOperationFlag, errorInSaveOperationFlag, navigateBack, dispatch])
 
   const featureShortcodes = selectedFeatures?.[0]?.auiFeatureId
     ? shortCodes?.[selectedFeatures?.[0]?.auiFeatureId]?.fields || []
@@ -160,6 +171,9 @@ const WebhookForm = () => {
   )
 
   const isFormChanged = formik.dirty || isFeatureSelectionChanged
+  const handleBack = useCallback(() => {
+    navigateBack(ROUTES.WEBHOOK_LIST)
+  }, [navigateBack])
 
   const handleSelectShortcode = (code, name, withString = false) => {
     const _code = withString ? '"${' + `${code}` + '}"' : '${' + `${code}` + '}'
@@ -218,7 +232,7 @@ const WebhookForm = () => {
             value={selectedFeatures}
             options={features}
             onChange={(options) => {
-              setSelectedFeatures(options || [])
+              setSelectedFeatures(options && options.length > 0 ? [options[0]] : [])
             }}
             lsize={4}
             doc_category={WEBHOOK}
@@ -389,7 +403,7 @@ const WebhookForm = () => {
           <Col>
             <GluuFormFooter
               showBack={true}
-              onBack={() => navigate('/adm/webhook')}
+              onBack={handleBack}
               showCancel={true}
               onCancel={handleCancel}
               disableCancel={!isFormChanged}

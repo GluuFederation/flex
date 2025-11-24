@@ -17,7 +17,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { LIMIT_ID, PATTERN_ID } from 'Plugins/admin/common/Constants'
 import SetTitle from 'Utils/SetTitle'
-import { useNavigate } from 'react-router'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import {
   getWebhook,
   deleteWebhook,
@@ -28,7 +28,7 @@ import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 
 const WebhookListPage = () => {
   const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const { navigateToRoute } = useAppNavigation()
   const {
     hasCedarReadPermission,
     hasCedarWritePermission,
@@ -227,15 +227,16 @@ const WebhookListPage = () => {
 
   const navigateToAddPage = useCallback(() => {
     dispatch(setSelectedWebhook({}))
-    navigate('/adm/webhook/add')
-  }, [dispatch, navigate])
+    navigateToRoute(ROUTES.WEBHOOK_ADD)
+  }, [dispatch, navigateToRoute])
 
   const navigateToEditPage = useCallback(
     (data) => {
+      if (!data?.inum) return
       dispatch(setSelectedWebhook(data))
-      navigate(`/adm/webhook/edit/${data.inum}`)
+      navigateToRoute(ROUTES.WEBHOOK_EDIT(data.inum))
     },
-    [dispatch, navigate],
+    [dispatch, navigateToRoute],
   )
 
   return (

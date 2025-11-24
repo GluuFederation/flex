@@ -1,5 +1,4 @@
 import React, { Suspense, lazy, useState, ChangeEvent, useMemo, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useFormik } from 'formik'
 import Toggle from 'react-toggle'
 import { Col, InputGroup, CustomInput, Form, FormGroup, Input } from 'Components'
@@ -29,12 +28,13 @@ import { CustomScriptItem } from './types/customScript'
 import { filterEmptyObjects, mapPropertyToKeyValue } from 'Utils/Util'
 import { customScriptValidationSchema } from './helper/validations'
 import { transformToFormValues, getModuleProperty } from './helper/utils'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 const GluuScriptErrorModal = lazy(() => import('Routes/Apps/Gluu/GluuScriptErrorModal'))
 const Counter = lazy(() => import('@/components/Widgets/GroupedButtons/Counter'))
 const GluuInputEditor = lazy(() => import('Routes/Apps/Gluu/GluuInputEditor'))
 
 function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScriptFormProps) {
-  const navigate = useNavigate()
+  const { navigateBack } = useAppNavigation()
   const { scriptTypes, loadingScriptTypes } = useSelector(
     (state: RootState) => state.customScriptReducer,
   )
@@ -52,11 +52,8 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
   }, [])
 
   const handleNavigateBack = useCallback(() => {
-    if (window.history.length > 1) {
-      navigate(-1)
-    }
-    return
-  }, [navigate])
+    navigateBack(ROUTES.CUSTOM_SCRIPT_LIST)
+  }, [navigateBack])
 
   const transformPropertyForApi = (
     prop: ModuleProperty | ConfigurationProperty,

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
-import { useNavigate } from 'react-router-dom'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { Paper, Skeleton, TablePagination } from '@mui/material'
 import { Badge } from 'reactstrap'
 import { useSelector, useDispatch } from 'react-redux'
@@ -33,7 +33,7 @@ import { RootState, UserAction } from './types'
 function ScriptListTable(): JSX.Element {
   const { t } = useTranslation()
   const dispatch = useDispatch<any>()
-  const navigate = useNavigate()
+  const { navigateToRoute } = useAppNavigation()
   const {
     hasCedarReadPermission,
     hasCedarWritePermission,
@@ -138,16 +138,17 @@ function ScriptListTable(): JSX.Element {
   )
 
   const handleGoToCustomScriptAddPage = useCallback(() => {
-    return navigate('/adm/script/new')
-  }, [navigate])
+    navigateToRoute(ROUTES.CUSTOM_SCRIPT_ADD)
+  }, [navigateToRoute])
 
   const handleGoToCustomScriptEditPage = useCallback(
     (row: any, edition?: boolean) => {
+      if (!row?.inum) return
       dispatch(viewOnly({ view: edition || false }))
       dispatch(setCurrentItem({ item: row }))
-      return navigate(`/adm/script/edit/:` + row.inum)
+      navigateToRoute(ROUTES.CUSTOM_SCRIPT_EDIT(row.inum))
     },
-    [dispatch, navigate],
+    [dispatch, navigateToRoute],
   )
 
   const toggle = useCallback(() => setModal(!modal), [modal])
@@ -164,10 +165,10 @@ function ScriptListTable(): JSX.Element {
     (message: string) => {
       buildPayload(userAction, message, item.inum)
       dispatch(deleteCustomScript({ action: userAction } as any))
-      navigate('/adm/scripts')
+      navigateToRoute(ROUTES.CUSTOM_SCRIPT_LIST)
       toggle()
     },
-    [item.inum, dispatch, navigate, toggle],
+    [item.inum, dispatch, navigateToRoute, toggle],
   )
 
   const onPageChangeClick = useCallback(
