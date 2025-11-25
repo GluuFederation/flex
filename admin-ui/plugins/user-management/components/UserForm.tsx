@@ -132,7 +132,12 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
   }, [])
 
   const handleApply = useCallback(() => {
-    if (isSubmitting) {
+    if (
+      isSubmitting ||
+      !formik.dirty ||
+      !formik.isValid ||
+      Object.keys(modifiedFields).length === 0
+    ) {
       return
     }
     const values = Object.keys(modifiedFields).reduce<FormOperation[]>((acc, key) => {
@@ -150,7 +155,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
     }, [])
     setOperations(values)
     toggle()
-  }, [isSubmitting, modifiedFields, toggle])
+  }, [isSubmitting, formik.dirty, formik.isValid, modifiedFields, toggle])
 
   const handleNavigateBack = useCallback(() => {
     navigateBack(ROUTES.USER_MANAGEMENT)
@@ -480,7 +485,6 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
           onBack={handleNavigateBack}
           showCancel={true}
           onCancel={handleCancel}
-          disableBack={isSubmitting}
           disableCancel={isSubmitting || !formik.dirty}
           showApply={true}
           onApply={handleApply}
