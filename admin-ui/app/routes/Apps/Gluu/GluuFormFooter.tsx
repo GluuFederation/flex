@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { Box } from '@mui/material'
-import { useAppNavigation } from '@/helpers/navigation'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 interface ButtonLabelProps {
   isLoading: boolean
@@ -18,6 +18,7 @@ interface GluuFormFooterBaseProps {
   backButtonLabel?: string
   onBack?: () => void
   disableBack?: boolean
+  backIconClass?: string
   showCancel?: boolean
   cancelButtonLabel?: string
   onCancel?: () => void
@@ -54,6 +55,7 @@ const GluuFormFooter = ({
   backButtonLabel,
   onBack,
   disableBack = false,
+  backIconClass = 'fa fa-arrow-circle-left',
   showCancel,
   cancelButtonLabel,
   onCancel,
@@ -69,15 +71,15 @@ const GluuFormFooter = ({
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = useMemo(() => theme?.state.theme || 'darkBlack', [theme?.state.theme])
-  const { navigateToHome } = useAppNavigation()
+  const { navigateToRoute } = useAppNavigation()
 
   const handleBackClick = useCallback(() => {
     if (onBack) {
       onBack()
       return
     }
-    navigateToHome()
-  }, [onBack, navigateToHome])
+    navigateToRoute(ROUTES.HOME_DASHBOARD)
+  }, [onBack, navigateToRoute])
 
   const handleCancelClick = useCallback(() => {
     if (onCancel) {
@@ -157,7 +159,7 @@ const GluuFormFooter = ({
             disabled={disableBack}
             aria-label={backLabel}
           >
-            <ButtonLabel isLoading={false} iconClass="fa fa-arrow-circle-left" label={backLabel} />
+            <ButtonLabel isLoading={false} iconClass={backIconClass} label={backLabel} />
           </Button>
         )}
 

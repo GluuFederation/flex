@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
 import MaterialTable, { Action, Column, Options } from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
-import { useNavigate } from 'react-router-dom'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import {
   Paper,
   TablePagination,
@@ -136,7 +136,7 @@ function AttributeListPage(): JSX.Element {
 
   SetTitle(t('fields.attributes'))
 
-  const navigate = useNavigate()
+  const { navigateToRoute } = useAppNavigation()
   const [item, setItem] = useState<JansAttribute>({} as JansAttribute)
   const [modal, setModal] = useState<boolean>(false)
   const toggle = (): void => setModal(!modal)
@@ -194,16 +194,18 @@ function AttributeListPage(): JSX.Element {
 
   const handleGoToAttributeEditPage = useCallback(
     (row: JansAttribute): void => {
-      navigate(`/attribute/edit/:${row.inum}`)
+      if (!row?.inum) return
+      navigateToRoute(ROUTES.ATTRIBUTE_EDIT(row.inum))
     },
-    [navigate],
+    [navigateToRoute],
   )
 
   const handleGoToAttributeViewPage = useCallback(
     (row: JansAttribute): void => {
-      navigate(`/attribute/view/:${row.inum}`)
+      if (!row?.inum) return
+      navigateToRoute(ROUTES.ATTRIBUTE_VIEW(row.inum))
     },
-    [navigate],
+    [navigateToRoute],
   )
 
   const handleAttribueDelete = useCallback(
@@ -215,8 +217,8 @@ function AttributeListPage(): JSX.Element {
   )
 
   const handleGoToAttributeAddPage = useCallback((): void => {
-    navigate('/attribute/new')
-  }, [navigate])
+    navigateToRoute(ROUTES.ATTRIBUTE_ADD)
+  }, [navigateToRoute])
 
   const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
 

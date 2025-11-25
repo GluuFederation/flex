@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
-import { useNavigate } from 'react-router-dom'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useDispatch, useSelector } from 'react-redux'
 import { useCedarling, ADMIN_UI_RESOURCES, CEDAR_RESOURCE_SCOPES } from '@/cedarling'
 import { Badge } from 'reactstrap'
@@ -43,7 +43,7 @@ function LdapListPage() {
   const persistenceTypeLoading = useSelector((state) => state.persistenceTypeReducer.loading)
 
   const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const { navigateToRoute, navigateBack } = useAppNavigation()
   const { t } = useTranslation()
 
   const persistenceResourceId = useMemo(() => ADMIN_UI_RESOURCES.Persistence, [])
@@ -100,10 +100,11 @@ function LdapListPage() {
   // Navigation handlers
   const handleGoToLdapEditPage = useCallback(
     (row) => {
+      if (!row?.configId) return
       dispatch(setCurrentItem({ item: row }))
-      return navigate(`/config/ldap/edit/:` + row.configId)
+      navigateToRoute(ROUTES.LDAP_EDIT(row.configId))
     },
-    [dispatch, navigate],
+    [dispatch, navigateToRoute],
   )
 
   const handleLdapDelete = useCallback((row) => {
@@ -112,8 +113,8 @@ function LdapListPage() {
   }, [])
 
   const handleGoToLdapAddPage = useCallback(() => {
-    return navigate('/config/ldap/new')
-  }, [navigate])
+    navigateToRoute(ROUTES.LDAP_ADD)
+  }, [navigateToRoute])
 
   const toggle = useCallback(() => setModal(!modal), [modal])
 
@@ -197,10 +198,10 @@ function LdapListPage() {
     (message) => {
       buildPayload(userAction, message, item.configId)
       dispatch(deleteLdap({ configId: item.configId }))
-      navigate('/config/ldap')
+      navigateBack(ROUTES.LDAP_LIST)
       toggle()
     },
-    [item.configId, navigate, toggle, dispatch],
+    [item.configId, navigateBack, toggle, dispatch],
   )
 
   const testLdapConnect = useCallback(

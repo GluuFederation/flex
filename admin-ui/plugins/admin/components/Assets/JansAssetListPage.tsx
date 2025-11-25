@@ -15,7 +15,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { LIMIT_ID, PATTERN_ID } from 'Plugins/admin/common/Constants'
 import SetTitle from 'Utils/SetTitle'
-import { useNavigate } from 'react-router'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import {
   fetchJansAssets,
   deleteJansAsset,
@@ -32,7 +32,7 @@ import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 
 const JansAssetListPage: React.FC = () => {
   const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const { navigateToRoute } = useAppNavigation()
   const {
     hasCedarReadPermission,
     hasCedarWritePermission,
@@ -64,15 +64,16 @@ const JansAssetListPage: React.FC = () => {
 
   const navigateToAddPage = useCallback((): void => {
     dispatch(setSelectedAsset({}))
-    navigate('/adm/asset/add')
-  }, [dispatch, navigate])
+    navigateToRoute(ROUTES.ASSET_ADD)
+  }, [dispatch, navigateToRoute])
 
   const navigateToEditPage = useCallback(
     (data: Document): void => {
+      if (!data?.inum) return
       dispatch(setSelectedAsset(data))
-      navigate(`/adm/asset/edit/${data.inum}`)
+      navigateToRoute(ROUTES.ASSET_EDIT(data.inum))
     },
-    [dispatch, navigate],
+    [dispatch, navigateToRoute],
   )
 
   const handleOptionsChange = useCallback(

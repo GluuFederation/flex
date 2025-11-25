@@ -67,6 +67,14 @@ function LoggingPage(): React.ReactElement {
   const [pendingValues, setPendingValues] = useState<PendingValues | null>(null)
   const [localLogging, setLocalLogging] = useState<Logging | null>(null)
 
+  const openCommitDialog = useCallback(() => {
+    setShowCommitDialog(true)
+  }, [])
+
+  const closeCommitDialog = useCallback(() => {
+    setShowCommitDialog(false)
+  }, [])
+
   useEffect(() => {
     if (loggingScopes && loggingScopes.length > 0) {
       authorizeHelper(loggingScopes)
@@ -105,9 +113,9 @@ function LoggingPage(): React.ReactElement {
       const changedFields = getChangedFields(localLogging, mergedValues)
 
       setPendingValues({ mergedValues, changedFields })
-      setShowCommitDialog(true)
+      openCommitDialog()
     },
-    [localLogging],
+    [localLogging, openCommitDialog],
   )
 
   const handleAccept = useCallback(
@@ -125,10 +133,10 @@ function LoggingPage(): React.ReactElement {
       }
 
       dispatch(editLoggingConfig(payload))
-      setShowCommitDialog(false)
+      closeCommitDialog()
       setPendingValues(null)
     },
-    [pendingValues, dispatch],
+    [pendingValues, dispatch, closeCommitDialog],
   )
 
   return (
@@ -256,7 +264,7 @@ function LoggingPage(): React.ReactElement {
             </Formik>
 
             <GluuCommitDialog
-              handler={() => setShowCommitDialog(false)}
+              handler={closeCommitDialog}
               modal={showCommitDialog}
               onAccept={handleAccept}
               isLicenseLabel={false}

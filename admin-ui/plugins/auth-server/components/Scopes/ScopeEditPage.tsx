@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { CardBody, Card } from 'Components'
@@ -11,7 +11,8 @@ import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useGetOauthScopesByInum, usePutOauthScopes } from 'JansConfigApi'
 import type { Scope } from 'JansConfigApi'
-import type { ExtendedScope, ScopeScript, ScopeClaim, ModifiedFields } from './types'
+import type { ExtendedScope, ScopeScript, ScopeClaim, ModifiedFields, ScopeClient } from './types'
+import { EMPTY_SCOPE } from './types'
 import { useScopeActions } from './hooks'
 
 interface InitState {
@@ -28,16 +29,14 @@ const ScopeEditPage: React.FC = () => {
   const dispatch = useDispatch()
   const { id } = useParams<{ id: string }>()
   const { logScopeUpdate, navigateToScopeList } = useScopeActions()
-
-  const inum = id?.replace(/^:/, '') || ''
-
   const scripts = useSelector((state: RootState) => state.initReducer.scripts)
   const attributes = useSelector((state: RootState) => state.initReducer.attributes)
+  const inum = id?.replace(/^:/, '') || ''
 
   const [modifiedFields, setModifiedFields] = useState<ModifiedFields>({})
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-  const { data: scopeData, isLoading: scopeLoading } = useGetOauthScopesByInum(inum, {
+  const { data: scopeData, isLoading: scopeLoading } = useGetOauthScopesByInum(inum, undefined, {
     query: {
       enabled: !!inum,
     },
@@ -51,14 +50,30 @@ const ScopeEditPage: React.FC = () => {
     if (attributes.length === 0) {
       const attributeOptions: Record<string, unknown> = {}
       buildPayload(attributeOptions, 'Fetch attributes', {})
-      dispatch(getAttributes({ options: attributeOptions }))
+      dispatch({
+        type: getAttributes.type,
+        payload: { options: attributeOptions },
+      })
     }
     if (scripts.length === 0) {
       const scriptAction: Record<string, unknown> = {}
       buildPayload(scriptAction, 'Fetch custom scripts', {})
-      dispatch(getScripts({ action: scriptAction }))
+      dispatch({
+        type: getScripts.type,
+        payload: { action: scriptAction },
+      })
     }
   }, [dispatch, attributes.length, scripts.length])
+
+  const handleSearch = useCallback(
+    (value: string) => {
+      dispatch({
+        type: getAttributes.type,
+        payload: { options: { pattern: value } },
+      })
+    },
+    [dispatch],
+  )
 
   async function handleSubmit(data: string) {
     if (!data) return
@@ -93,17 +108,26 @@ const ScopeEditPage: React.FC = () => {
     }
   }
 
-  const extensibleScope: ExtendedScope | null = scope
+  const extensibleScope: ExtendedScope = scope
     ? {
         ...scope,
-        clients: scope.clients,
+        clients: scope.clients as ScopeClient[] | undefined,
         attributes: scope.attributes || {
           spontaneousClientId: undefined,
           spontaneousClientScopes: [],
           showInConfigurationEndpoint: false,
         },
       }
-    : null
+    : {
+        ...EMPTY_SCOPE,
+        inum,
+        clients: [],
+        attributes: {
+          spontaneousClientId: undefined,
+          spontaneousClientScopes: [],
+          showInConfigurationEndpoint: false,
+        },
+      }
 
   const loading = updateScope.isPending || scopeLoading
 
@@ -114,22 +138,19 @@ const ScopeEditPage: React.FC = () => {
         message={errorMessage || t('messages.error_in_saving')}
         show={!!errorMessage}
       />
-      {scopeLoading ? (
-        <div>{t('messages.loading')}</div>
-      ) : extensibleScope ? (
-        <Card className="mb-3" style={applicationStyle.mainCard}>
-          <CardBody>
-            <ScopeForm
-              scope={extensibleScope}
-              attributes={attributes}
-              scripts={scripts}
-              handleSubmit={handleSubmit}
-              modifiedFields={modifiedFields}
-              setModifiedFields={setModifiedFields}
-            />
-          </CardBody>
-        </Card>
-      ) : null}
+      <Card className="mb-3" style={applicationStyle.mainCard}>
+        <CardBody>
+          <ScopeForm
+            scope={extensibleScope}
+            attributes={attributes}
+            scripts={scripts}
+            handleSubmit={handleSubmit}
+            onSearch={handleSearch}
+            modifiedFields={modifiedFields}
+            setModifiedFields={setModifiedFields}
+          />
+        </CardBody>
+      </Card>
     </GluuLoader>
   )
 }

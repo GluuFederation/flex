@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container, Row, Col } from 'Components'
+import { Row, Col } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import customColors from '@/customColors'
 import { UserDeviceDetailViewPageProps } from '../types/ComponentTypes'
@@ -10,7 +10,7 @@ const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
   const DOC_SECTION = 'user'
 
   return (
-    <Container style={{ backgroundColor: customColors.whiteSmoke, minWidth: '100%' }}>
+    <div style={{ backgroundColor: customColors.whiteSmoke, padding: '16px', width: '100%' }}>
       <Row>
         <Col sm={6} xl={4}>
           <GluuFormDetailRow
@@ -83,7 +83,7 @@ const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
           </Col>
         </Row>
       )}
-    </Container>
+    </div>
   )
 }
 export default UserDeviceDetailViewPage

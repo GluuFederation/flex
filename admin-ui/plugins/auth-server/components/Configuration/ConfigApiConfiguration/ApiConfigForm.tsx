@@ -9,7 +9,7 @@ import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import JsonPropertyBuilderConfigApi from './JsonPropertyBuilderConfigApi'
 import { toast } from 'react-toastify'
 import type { ApiAppConfiguration, JsonPatch } from './types'
-import { useAppNavigation } from '@/helpers/navigation'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 interface ApiConfigFormProps {
   configuration: ApiAppConfiguration
@@ -31,7 +31,7 @@ const { properties: schema } = (spec as unknown as SpecSchema).components?.schem
 
 const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }) => {
   const { authorizeHelper, hasCedarWritePermission } = useCedarling()
-  const { navigateToHome } = useAppNavigation()
+  const { navigateToRoute } = useAppNavigation()
   const [modal, setModal] = useState(false)
   const [patches, setPatches] = useState<JsonPatch[]>([])
 
@@ -74,7 +74,7 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
   }
 
   const handleBack = () => {
-    navigateToHome()
+    navigateToRoute(ROUTES.HOME_DASHBOARD)
   }
 
   return (
