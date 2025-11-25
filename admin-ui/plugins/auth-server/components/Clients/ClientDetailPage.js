@@ -24,6 +24,9 @@ function ClientDetailPage({ row, scopes }) {
     }
     return ''
   }
+
+  const description = row.description || extractDescription(row.customAttributes || []) || dash
+  const displayName = row.clientName || row.displayName || dash
   const dash = '-'
   return (
     <React.Fragment>
@@ -50,7 +53,7 @@ function ClientDetailPage({ row, scopes }) {
           <Col sm={6}>
             <GluuFormDetailRow
               label="fields.name"
-              value={row.displayName ? row.displayName : dash}
+              value={displayName}
               doc_category={DOC_CATEGORY}
               doc_entry="displayName"
             />
@@ -58,7 +61,7 @@ function ClientDetailPage({ row, scopes }) {
           <Col sm={6}>
             <GluuFormDetailRow
               label="fields.description"
-              value={extractDescription(row.customAttributes || []) || dash}
+              value={description}
               doc_category={DOC_CATEGORY}
               doc_entry="description"
             />
