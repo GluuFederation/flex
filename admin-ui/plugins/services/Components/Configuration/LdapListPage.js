@@ -201,7 +201,7 @@ function LdapListPage() {
       navigateBack(ROUTES.LDAP_LIST)
       toggle()
     },
-    [item.configId, navigate, toggle, dispatch],
+    [item.configId, navigateBack, toggle, dispatch],
   )
 
   const testLdapConnect = useCallback(

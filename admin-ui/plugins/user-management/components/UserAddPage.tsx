@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { Container, CardBody, Card } from '../../../app/components'
 import UserForm from './UserForm'
@@ -19,6 +19,9 @@ import { useQueryClient } from '@tanstack/react-query'
 import { updateToast } from 'Redux/features/toastSlice'
 import { logUserCreation, getErrorMessage } from '../helper/userAuditHelpers'
 import { triggerUserWebhook } from '../helper/userWebhookHelpers'
+import { mapToPersonAttributes } from '../utils/userFormUtils'
+import type { FormValueEntry } from '../types/ComponentTypes'
+import type { CustomUser } from '../types/UserApiTypes'
 
 function UserAddPage() {
   const dispatch = useDispatch()
@@ -29,13 +32,16 @@ function UserAddPage() {
     limit: 200,
     status: 'ACTIVE',
   })
-  const personAttributes = (attributesData?.entries || []) as unknown as PersonAttribute[]
+  const personAttributes = useMemo<PersonAttribute[]>(
+    () => mapToPersonAttributes(attributesData?.entries),
+    [attributesData?.entries],
+  )
   const createUserMutation = usePostUser({
     mutation: {
       onSuccess: async (data, variables) => {
         dispatch(updateToast(true, 'success', t('messages.user_created_successfully')))
         await logUserCreation(data, variables.data)
-        triggerUserWebhook(data as Record<string, unknown>)
+        triggerUserWebhook(data)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
         navigateToRoute(ROUTES.USER_MANAGEMENT)
       },
@@ -54,12 +60,15 @@ function UserAddPage() {
     const attributeByName = new Map(
       personAttributes.map((attr: PersonAttribute) => [attr.name, attr]),
     )
-    const toStringValue = (key: string, value: unknown): string | undefined => {
+    const toStringValue = (key: string, value: FormValueEntry): string | undefined => {
       if (typeof value === 'string') {
         return value
       }
-      if (value && typeof value === 'object') {
-        const obj = value as Record<string, unknown>
+      if (Array.isArray(value)) {
+        return value[0] as string | undefined
+      }
+      if (value && typeof value === 'object' && !Array.isArray(value)) {
+        const obj = value as { value?: string; label?: string; [key: string]: string | undefined }
         if (typeof obj[key] === 'string') return obj[key]
         if (typeof obj.value === 'string') return obj.value
         if (typeof obj.label === 'string') return obj.label
@@ -67,14 +76,22 @@ function UserAddPage() {
       return undefined
     }
 
-    const normalizeValues = (key: string, rawValue: unknown, multiValued: boolean): string[] => {
+    const normalizeValues = (
+      key: string,
+      rawValue: string | string[] | null | undefined,
+      multiValued: boolean,
+    ): string[] => {
       if (!multiValued && key === BIRTHDATE_ATTR && typeof rawValue === 'string') {
         const m = moment(rawValue, 'YYYY-MM-DD', true)
         return m.isValid() ? [m.format('YYYY-MM-DD')] : []
       }
+      if (rawValue === null || rawValue === undefined) {
+        return []
+      }
       const items = Array.isArray(rawValue) ? rawValue : [rawValue]
       const result: string[] = []
       for (const item of items) {
+        if (item === null || item === undefined) continue
         const str = toStringValue(key, item)
         if (typeof str === 'string' && str.length > 0) {
           result.push(str)
@@ -104,7 +121,7 @@ function UserAddPage() {
     message: string,
   ) => {
     const customAttributes = createCustomAttributes(values)
-    const submitableValues: Record<string, unknown> = {
+    const submitableValues = {
       userId: values.userId || '',
       mail: values.mail,
       displayName: values.displayName || '',
@@ -114,7 +131,7 @@ function UserAddPage() {
       customAttributes: customAttributes,
       action_message: message,
     }
-    createUserMutation.mutate({ data: submitableValues })
+    createUserMutation.mutate({ data: submitableValues as CustomUser })
   }
 
   return (

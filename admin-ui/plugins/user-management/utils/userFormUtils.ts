@@ -138,14 +138,7 @@ const isPersonAttribute = (entry: unknown): entry is PersonAttribute => {
     return false
   }
   const candidate = entry as Partial<PersonAttribute>
-  return (
-    typeof candidate.name === 'string' &&
-    typeof candidate.displayName === 'string' &&
-    typeof candidate.description === 'string' &&
-    Array.isArray(candidate.editType) &&
-    Array.isArray(candidate.viewType) &&
-    candidate.dataType !== undefined
-  )
+  return typeof candidate.name === 'string' && candidate.name.trim().length > 0
 }
 
 export const mapToPersonAttributes = (entries?: PagedResultEntriesItem[]): PersonAttribute[] => {

@@ -72,7 +72,7 @@ const ProfileDetails: React.FC = () => {
     navigateToRoute(ROUTES.USER_EDIT(profileDetails.inum), {
       state: { selectedUser: profileDetails },
     })
-  }, [profileDetails?.inum, profileDetails, navigateToRoute])
+  }, [profileDetails, navigateToRoute])
 
   const roleBadges = useMemo(() => {
     if (!jansAdminUIRole?.values?.length) return null

@@ -113,3 +113,10 @@ export interface OTPDevice {
 export interface OTPDevicesData {
   devices: OTPDevice[]
 }
+
+export type FormValueEntry =
+  | string
+  | string[]
+  | null
+  | undefined
+  | { value?: string; label?: string; [key: string]: string | undefined }

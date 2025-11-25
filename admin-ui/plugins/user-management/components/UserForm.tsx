@@ -359,7 +359,10 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
                 formik={formik}
                 lsize={3}
                 rsize={9}
-                showError={formik.errors.userPassword && formik.touched.userPassword}
+                showError={
+                  !!formik.errors.userPassword &&
+                  (formik.touched.userPassword || !!formik.values.userPassword)
+                }
                 errorMessage={formik.errors.userPassword}
                 handleChange={handleChange}
               />
@@ -375,7 +378,10 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
                 formik={formik}
                 lsize={3}
                 rsize={9}
-                showError={formik.errors.userConfirmPassword && formik.touched.userConfirmPassword}
+                showError={
+                  !!formik.errors.userConfirmPassword &&
+                  (formik.touched.userConfirmPassword || !!formik.values.userConfirmPassword)
+                }
                 errorMessage={formik.errors.userConfirmPassword}
                 handleChange={handleChange}
               />

@@ -330,6 +330,7 @@ const CedarlingConfigPage: React.FC = () => {
                 </FormGroup>
 
                 <GluuFormFooter
+                  showBack={true}
                   showApply={canWriteSecurity}
                   disableApply={isLoading}
                   isLoading={isLoading}

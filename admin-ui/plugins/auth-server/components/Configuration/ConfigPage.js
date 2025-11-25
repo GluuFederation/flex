@@ -26,7 +26,7 @@ import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 function ConfigPage() {
   const { hasCedarWritePermission, authorizeHelper } = useCedarling()
-  const { navigateToRoute } = useAppNavigation()
+  const { navigateBack } = useAppNavigation()
   const configuration = useSelector((state) => state.jsonConfigReducer.configuration)
   const acrs = useSelector((state) => state.acrReducer.acrReponse)
   const scripts = useSelector((state) => state.initReducer.scripts)
@@ -136,7 +136,7 @@ function ConfigPage() {
   }
 
   const handleBack = () => {
-    navigateToRoute(ROUTES.HOME_DASHBOARD)
+    navigateBack(ROUTES.HOME_DASHBOARD)
   }
 
   return (

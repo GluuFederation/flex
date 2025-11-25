@@ -59,8 +59,7 @@ function redactSensitiveData(payload: AuditPayload): void {
   }
 
   if (payload.jsonPatchString) {
-    payload.jsonPatchString =
-      '[{\"op\":\"replace\",\"path\":\"/userPassword\",\"value\":\"[REDACTED]\"}]'
+    payload.jsonPatchString = '[{"op":"replace","path":"/userPassword","value":"[REDACTED]"}]'
   }
 
   if (Array.isArray(payload.customAttributes)) {
@@ -72,7 +71,7 @@ function redactSensitiveData(payload: AuditPayload): void {
         return { ...attr, values: redactedValues }
       }
       return attr
-    })
+    }) as typeof payload.customAttributes
   }
 }
 
@@ -236,7 +235,7 @@ export async function logPasswordChange(
   }
 }
 
-interface ErrorResponse {
+export interface ErrorResponse {
   response?: {
     data?: {
       message?: string

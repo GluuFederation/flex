@@ -3,39 +3,56 @@ import moment from 'moment/moment'
 import { CustomUser, PersonAttribute } from '../types/UserApiTypes'
 import { UserEditFormValues } from '../types/ComponentTypes'
 import { CustomObjectAttribute } from 'JansConfigApi'
+import { validatePassword } from '../utils/userFormUtils'
 
 export const getUserValidationSchema = (userDetails: CustomUser | null) => {
   const isEdit = Boolean(userDetails)
-  const passwordSchemaBase = Yup.string()
-    .nullable()
-    .transform((value) => (typeof value === 'string' && value.trim() === '' ? null : value))
-    .min(4, 'Password must be at least 4 characters')
 
-  const passwordSchema = isEdit
-    ? passwordSchemaBase
-    : passwordSchemaBase.required('Password is required.')
-
-  const confirmPasswordSchemaBase = Yup.string()
-    .nullable()
-    .transform((value) => (typeof value === 'string' && value.trim() === '' ? null : value))
-    .when('userPassword', {
-      is: (val: string | null | undefined) => {
-        if (val === null || val === undefined) return false
-        if (typeof val === 'string') {
-          return val.trim() !== ''
-        }
-        return true
-      },
-      then: (schema) =>
-        schema
-          .required('Confirm password is required when password is provided')
-          .oneOf([Yup.ref('userPassword')], 'Passwords must match'),
-      otherwise: (schema) => schema.oneOf([Yup.ref('userPassword'), null], 'Passwords must match'),
-    })
+  const passwordSchemaBase = isEdit
+    ? Yup.string()
+        .nullable()
+        .transform((value) => (typeof value === 'string' && value.trim() === '' ? null : value))
+        .test(
+          'password-validation',
+          'Password must be at least 8 characters and contain uppercase, lowercase, number, and special character',
+          (value) => {
+            if (!value) return true
+            return validatePassword(value)
+          },
+        )
+    : Yup.string()
+        .required('Password is required.')
+        .test(
+          'password-validation',
+          'Password must be at least 8 characters and contain uppercase, lowercase, number, and special character',
+          (value) => {
+            if (!value) return false
+            return validatePassword(value)
+          },
+        )
 
   const confirmPasswordSchema = isEdit
-    ? confirmPasswordSchemaBase
-    : confirmPasswordSchemaBase.required('Confirm password is required.')
+    ? Yup.string()
+        .nullable()
+        .transform((value) => (typeof value === 'string' && value.trim() === '' ? null : value))
+        .when('userPassword', {
+          is: (val: string | null | undefined) => {
+            if (val === null || val === undefined) return false
+            if (typeof val === 'string') {
+              return val.trim() !== ''
+            }
+            return true
+          },
+          then: (schema) =>
+            schema
+              .required('Confirm password is required when password is provided')
+              .oneOf([Yup.ref('userPassword')], 'Passwords must match'),
+          otherwise: (schema) =>
+            schema.oneOf([Yup.ref('userPassword'), null], 'Passwords must match'),
+        })
+    : Yup.string()
+        .oneOf([Yup.ref('userPassword')], 'Passwords must match')
+        .required('Confirm password is required.')
 
   return Yup.object({
     displayName: Yup.string().required('Display name is required.'),
@@ -43,14 +60,21 @@ export const getUserValidationSchema = (userDetails: CustomUser | null) => {
     sn: Yup.string().required('Last name is required.'),
     userId: Yup.string().required('User name is required.'),
     mail: Yup.string().email('Invalid email address').required('Email is required.'),
-    userPassword: passwordSchema,
+    userPassword: passwordSchemaBase,
     userConfirmPassword: confirmPasswordSchema,
   })
 }
 
 export const passwordChangeValidationSchema = Yup.object({
   userPassword: Yup.string()
-    .min(4, 'Password must be at least 4 characters')
+    .test(
+      'password-validation',
+      'Password must be at least 8 characters and contain uppercase, lowercase, number, and special character',
+      (value) => {
+        if (!value) return false
+        return validatePassword(value)
+      },
+    )
     .required('Password is required.'),
   userConfirmPassword: Yup.string()
     .oneOf([Yup.ref('userPassword')], 'Passwords must match')

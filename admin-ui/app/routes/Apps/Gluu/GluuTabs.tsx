@@ -52,8 +52,8 @@ const isNavigationTab = (tab: TabItem | undefined): tab is NavigationTab => {
   return Boolean(tab && typeof tab === 'object' && 'name' in tab && 'path' in tab)
 }
 
-const initTabValue = (tabNames: NavigationTab[], pathname: string) => {
-  const tabIndex = tabNames.findIndex((tab) => tab.path === pathname)
+const initTabValue = (tabNames: TabItem[], pathname: string) => {
+  const tabIndex = tabNames.findIndex((tab) => isNavigationTab(tab) && tab.path === pathname)
   return tabIndex >= 0 ? tabIndex : 0
 }
 
@@ -67,12 +67,9 @@ export default function GluuTabs({ tabNames, tabToShow, withNavigation = false }
   const path = useLocation()
   const navigate = useNavigate()
 
-  // Memoize navigation tabs extraction
-  const navigationTabs = useMemo(() => tabNames.filter(isNavigationTab), [tabNames])
-
   // Calculate initial value (only used on mount by useState)
   const [value, setValue] = useState(() =>
-    withNavigation ? initTabValue(navigationTabs, path.pathname) : 0,
+    withNavigation ? initTabValue(tabNames, path.pathname) : 0,
   )
 
   // Memoize tab label getter
@@ -83,13 +80,13 @@ export default function GluuTabs({ tabNames, tabToShow, withNavigation = false }
     (event: React.SyntheticEvent, newValue: number) => {
       setValue(newValue)
       if (withNavigation) {
-        const tab = navigationTabs[newValue]
-        if (tab) {
+        const tab = tabNames[newValue]
+        if (isNavigationTab(tab)) {
           navigate(tab.path, { replace: true })
         }
       }
     },
-    [withNavigation, navigationTabs, navigate],
+    [withNavigation, tabNames, navigate],
   )
 
   // Memoize tabs styling
@@ -123,18 +120,28 @@ export default function GluuTabs({ tabNames, tabToShow, withNavigation = false }
       return
     }
 
-    const activeIndex = navigationTabs.findIndex((tab) => tab.path === path.pathname)
+    const activeIndex = tabNames.findIndex(
+      (tab) => isNavigationTab(tab) && tab.path === path.pathname,
+    )
+
     if (activeIndex === -1) {
-      if (navigationTabs[0]) {
-        navigate(navigationTabs[0].path, { replace: true })
+      const firstNavIndex = tabNames.findIndex(isNavigationTab)
+      if (firstNavIndex !== -1) {
+        const firstNavTab = tabNames[firstNavIndex] as NavigationTab
+        navigate(firstNavTab.path, { replace: true })
+        setValue(firstNavIndex)
+      } else {
+        setValue(0)
       }
-      setValue(0)
       return
     }
 
-    navigate(navigationTabs[activeIndex].path, { replace: true })
+    const activeTab = tabNames[activeIndex] as NavigationTab
+    if (activeTab.path !== path.pathname) {
+      navigate(activeTab.path, { replace: true })
+    }
     setValue(activeIndex)
-  }, [withNavigation, navigationTabs, path.pathname, navigate])
+  }, [withNavigation, tabNames, path.pathname, navigate])
 
   // Memoize tab elements
   const tabElements = useMemo(
