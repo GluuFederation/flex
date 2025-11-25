@@ -128,8 +128,8 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
   })
 
   const toggle = useCallback(() => {
-    setModal(!modal)
-  }, [modal])
+    setModal((prev) => !prev)
+  }, [])
 
   const handleApply = useCallback(() => {
     if (isSubmitting) {
@@ -171,8 +171,8 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
   }, [formik, userDetails, memoizedPersonAttributes, setSelectedClaims])
 
   const toggleChangePasswordModal = useCallback(() => {
-    setChangePasswordModal(!changePasswordModal)
-  }, [changePasswordModal])
+    setChangePasswordModal((prev) => !prev)
+  }, [])
 
   const submitForm = useCallback(
     (usermessage: string) => {

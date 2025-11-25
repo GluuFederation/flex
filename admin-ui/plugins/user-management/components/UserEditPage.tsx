@@ -172,7 +172,7 @@ function UserEditPage() {
       })),
       performedOn: {
         user_inum: userDetails?.inum,
-        useId: userDetails?.displayName,
+        userId: userDetails?.displayName,
       },
       action_message: userMessage,
     }
