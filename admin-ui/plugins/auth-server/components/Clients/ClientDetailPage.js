@@ -43,18 +43,17 @@ function ClientDetailPage({ row, scopes }) {
     alignItems: 'center',
   }
 
-  const renderBadgeList = (items) =>
-    items?.length ? (
-      <div style={detailValueStyle}>
-        {items.map((item, key) => (
-          <Badge key={key} color={`primary-${selectedTheme}`}>
-            {item}
-          </Badge>
-        ))}
-      </div>
-    ) : (
-      dash
-    )
+  const renderBadgeList = (items) => (
+    <div style={detailValueStyle}>
+      {items?.length
+        ? items.map((item, key) => (
+            <Badge key={key} color={`primary-${selectedTheme}`}>
+              {item}
+            </Badge>
+          ))
+        : dash}
+    </div>
+  )
 
   return (
     <React.Fragment>

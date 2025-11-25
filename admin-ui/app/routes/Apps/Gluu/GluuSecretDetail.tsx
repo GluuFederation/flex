@@ -23,7 +23,7 @@ function GluuSecretDetail({ label, value, doc_category, doc_entry, lsize = 6, rs
           style={{ gap: '0.5rem', wordBreak: 'break-all' }}
         >
           {value !== '-' && <Toggle defaultChecked={false} onChange={handleSecret} />}
-          {up && (
+          {(value === '-' || up) && (
             <span style={{ fontWeight: 'bold' }} data-testid="secret-value">
               {value}
             </span>
