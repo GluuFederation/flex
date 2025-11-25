@@ -4,7 +4,7 @@ import Toggle from 'react-toggle'
 import GluuTooltip from './GluuTooltip'
 import { useTranslation } from 'react-i18next'
 
-function GluuSecretDetail({ label, value, doc_category, doc_entry }: any) {
+function GluuSecretDetail({ label, value, doc_category, doc_entry, lsize = 6, rsize = 6 }: any) {
   const { t } = useTranslation()
   const [up, setUp] = useState(false)
   function handleSecret() {
@@ -13,22 +13,22 @@ function GluuSecretDetail({ label, value, doc_category, doc_entry }: any) {
 
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={doc_entry || label}>
-      <FormGroup row>
-        <Label for="input" sm={2}>
+      <FormGroup row className="align-items-center mb-2">
+        <Label for="input" sm={lsize} style={{ fontWeight: 'bold' }}>
           {t(label)}:
         </Label>
-        {value !== '-' && (
-          <Label for="input" sm={1}>
-            <Toggle defaultChecked={false} onChange={handleSecret} />
-          </Label>
-        )}
-        {up && (
-          <Col sm={9}>
-            <Label for="input" style={{ fontWeight: 'bold' }}>
+        <Col
+          sm={rsize}
+          className="d-flex align-items-center"
+          style={{ gap: '0.5rem', wordBreak: 'break-all' }}
+        >
+          {value !== '-' && <Toggle defaultChecked={false} onChange={handleSecret} />}
+          {up && (
+            <span style={{ fontWeight: 'bold' }} data-testid="secret-value">
               {value}
-            </Label>
-          </Col>
-        )}
+            </span>
+          )}
+        </Col>
       </FormGroup>
     </GluuTooltip>
   )
