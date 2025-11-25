@@ -90,9 +90,9 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
   const [modifiedFields, setModifiedFields] = useState<Record<string, string | string[]>>({})
   const [operations, setOperations] = useState<FormOperation[]>([])
 
-  const personAttributes = useSelector(
-    (state: { attributesReducerRoot: { items: PersonAttribute[] } }) =>
-      state.attributesReducerRoot.items,
+  const { items: personAttributes, loading } = useSelector(
+    (state: { attributesReducerRoot: { items: PersonAttribute[]; loading: boolean } }) =>
+      state.attributesReducerRoot,
   )
 
   // Memoize personAttributes based on length and first few items to prevent unnecessary re-renders
@@ -176,8 +176,6 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
     },
     [toggle, onSubmitData, formik.values, modifiedFields],
   )
-
-  const loading = false
 
   const setSelectedClaimsToState = useCallback((data: PersonAttribute) => {
     setSelectedClaims((prev) => [...prev, data])

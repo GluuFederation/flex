@@ -78,7 +78,7 @@ function UserAddPage() {
 
     const normalizeValues = (
       key: string,
-      rawValue: string | string[] | null | undefined,
+      rawValue: FormValueEntry | FormValueEntry[] | null | undefined,
       multiValued: boolean,
     ): string[] => {
       if (!multiValued && key === BIRTHDATE_ATTR && typeof rawValue === 'string') {
