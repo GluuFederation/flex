@@ -19,6 +19,7 @@ export interface UserFormProps {
     usermessage: string,
   ) => void
   userDetails?: CustomUser | null
+  isSubmitting?: boolean
 }
 
 // Note: persistenceTypeReducer is still used in UserEditPage for system configuration

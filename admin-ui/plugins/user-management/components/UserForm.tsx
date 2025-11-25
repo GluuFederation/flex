@@ -72,7 +72,7 @@ const setupCustomAttributes = (
   setSelectedClaims(hydratedClaims)
 }
 
-function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
+function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<UserFormProps>) {
   const dispatch = useDispatch()
   const { navigateBack } = useAppNavigation()
   const { t } = useTranslation()
@@ -132,6 +132,9 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
   }, [modal])
 
   const handleApply = useCallback(() => {
+    if (isSubmitting) {
+      return
+    }
     const values = Object.keys(modifiedFields).reduce<FormOperation[]>((acc, key) => {
       const value = modifiedFields[key]
 
@@ -147,7 +150,7 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
     }, [])
     setOperations(values)
     toggle()
-  }, [modifiedFields, toggle])
+  }, [isSubmitting, modifiedFields, toggle])
 
   const handleNavigateBack = useCallback(() => {
     navigateBack(ROUTES.USER_MANAGEMENT)
@@ -173,10 +176,13 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
 
   const submitForm = useCallback(
     (usermessage: string) => {
+      if (isSubmitting) {
+        return
+      }
       toggle()
       onSubmitData(formik.values, modifiedFields, usermessage)
     },
-    [toggle, onSubmitData, formik.values, modifiedFields],
+    [toggle, onSubmitData, formik.values, modifiedFields, isSubmitting],
   )
 
   const setSelectedClaimsToState = useCallback((data: PersonAttribute) => {
@@ -261,8 +267,10 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
     }
   }, [])
 
+  const blockingLoader = loading || isSubmitting
+
   return (
-    <GluuLoader blocking={loading}>
+    <GluuLoader blocking={blockingLoader}>
       <PasswordChangeModal
         isOpen={changePasswordModal}
         toggle={toggleChangePasswordModal}
@@ -472,12 +480,13 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
           onBack={handleNavigateBack}
           showCancel={true}
           onCancel={handleCancel}
-          disableCancel={!formik.dirty}
+          disableBack={isSubmitting}
+          disableCancel={isSubmitting || !formik.dirty}
           showApply={true}
           onApply={handleApply}
-          disableApply={!formik.dirty || !formik.isValid}
+          disableApply={isSubmitting || !formik.dirty || !formik.isValid}
           applyButtonType="button"
-          isLoading={loading}
+          isLoading={isSubmitting}
         />
         <GluuCommitDialog
           handler={toggle}

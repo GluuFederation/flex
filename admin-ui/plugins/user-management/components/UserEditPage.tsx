@@ -70,6 +70,7 @@ function UserEditPage() {
       },
     },
   })
+  const isSubmitting = updateUserMutation.isPending
 
   const createCustomAttributes = (values: UserEditFormValues): CustomObjectAttribute[] => {
     if (!values) {
@@ -183,8 +184,12 @@ function UserEditPage() {
     <Container>
       <Card type="border" color={null} className="mb-3">
         <CardBody>
-          <GluuLoader blocking={loadingAttributes}>
-            <UserForm onSubmitData={submitData} userDetails={userDetails} />
+          <GluuLoader blocking={loadingAttributes || isSubmitting}>
+            <UserForm
+              onSubmitData={submitData}
+              userDetails={userDetails}
+              isSubmitting={isSubmitting}
+            />
           </GluuLoader>
         </CardBody>
       </Card>

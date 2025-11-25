@@ -237,17 +237,29 @@ export async function logPasswordChange(
 
 export interface ErrorResponse {
   response?: {
+    status?: number
     data?: {
       message?: string
       description?: string
+      error_description?: string
     }
     body?: {
       description?: string
       message?: string
+      error_description?: string
     }
     text?: string
   }
   message?: string
+}
+
+const pickFirstString = (...values: Array<string | undefined>): string | undefined => {
+  for (const value of values) {
+    if (typeof value === 'string' && value.trim().length > 0) {
+      return value.trim()
+    }
+  }
+  return undefined
 }
 
 export function getErrorMessage(error: unknown): string {
@@ -256,15 +268,24 @@ export function getErrorMessage(error: unknown): string {
   }
   if (typeof error === 'object' && error !== null) {
     const err = error as ErrorResponse
-    return (
-      err?.response?.data?.message ||
-      err?.response?.data?.description ||
-      err?.response?.body?.description ||
-      err?.response?.body?.message ||
-      err?.response?.text ||
-      err?.message ||
-      'An error occurred'
+    const status = err.response?.status
+    const data = err.response?.data
+    const body = err.response?.body
+
+    const description = pickFirstString(
+      data?.description,
+      data?.error_description,
+      body?.description,
+      body?.error_description,
     )
+
+    const message = pickFirstString(data?.message, body?.message)
+
+    if (status && status >= 400 && status < 500 && description) {
+      return description
+    }
+
+    return message || description || err?.response?.text || err?.message || 'An error occurred'
   }
   return 'An unknown error occurred'
 }
