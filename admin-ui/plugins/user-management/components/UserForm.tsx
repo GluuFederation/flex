@@ -132,14 +132,19 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
   }, [modal])
 
   const handleApply = useCallback(() => {
-    // Prepare operations from modifiedFields before opening modal
-    const values = Object.keys(modifiedFields).map((key) => {
-      return {
-        path: key,
-        value: modifiedFields[key],
-        op: 'replace' as const,
+    const values = Object.keys(modifiedFields).reduce<FormOperation[]>((acc, key) => {
+      const value = modifiedFields[key]
+
+      if (Array.isArray(value) && value.length === 0) {
+        return acc
       }
-    })
+      acc.push({
+        path: key,
+        value,
+        op: 'replace' as const,
+      })
+      return acc
+    }, [])
     setOperations(values)
     toggle()
   }, [modifiedFields, toggle])

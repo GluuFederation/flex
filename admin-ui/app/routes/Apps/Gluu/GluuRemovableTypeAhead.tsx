@@ -7,9 +7,18 @@ import customColors from '@/customColors'
 import { FormikProps } from 'formik'
 import React from 'react'
 
+type FormikFieldValue = string | string[] | boolean | null | undefined
 type ModifiedFieldValue = string | string[] | boolean
-type TypeaheadOption = string | { role?: string } | Record<string, unknown>
-type FormikValues = Record<string, unknown>
+
+type TypeaheadOptionObject = {
+  role?: string
+  customOption?: boolean
+  label?: string
+  [key: string]: string | number | boolean | null | undefined | string[]
+}
+
+type TypeaheadOption = string | TypeaheadOptionObject
+type FormikValues = Record<string, FormikFieldValue>
 
 interface GluuRemovableTypeAheadProps {
   label: string
@@ -27,6 +36,31 @@ interface GluuRemovableTypeAheadProps {
   setModifiedFields?: React.Dispatch<React.SetStateAction<Record<string, ModifiedFieldValue>>>
   disabled?: boolean
   placeholder?: string
+}
+
+const extractValueFromOption = (item: TypeaheadOption, fieldName: string): string | null => {
+  if (typeof item === 'string') {
+    return item
+  }
+
+  if (!item || typeof item !== 'object') {
+    return null
+  }
+
+  if ('role' in item && typeof item.role === 'string') {
+    return item.role
+  }
+
+  if ('label' in item && typeof item.label === 'string') {
+    return item.label
+  }
+
+  const fieldValue = item[fieldName]
+  if (typeof fieldValue === 'string') {
+    return fieldValue
+  }
+
+  return null
 }
 
 function GluuRemovableTypeAhead({
@@ -61,20 +95,7 @@ function GluuRemovableTypeAhead({
               selected={selectedValue}
               onChange={(selected: TypeaheadOption[]) => {
                 const names = selected
-                  .map((item) => {
-                    if (typeof item === 'string') {
-                      return item
-                    }
-                    if (
-                      item &&
-                      typeof item === 'object' &&
-                      'role' in item &&
-                      typeof item.role === 'string'
-                    ) {
-                      return item.role
-                    }
-                    return null
-                  })
+                  .map((item) => extractValueFromOption(item, name))
                   .filter((entry): entry is string => Boolean(entry))
 
                 if (setModifiedFields) {
