@@ -74,7 +74,7 @@ const AvailableClaimsPanel = ({
   )
 
   return (
-    <div className="border border-light ">
+    <div className="border border-light d-flex flex-column h-100" style={{ minHeight: 0 }}>
       <div className="bg-light text-bold p-2">Available Claims</div>
       <input
         type="search"
@@ -87,7 +87,7 @@ const AvailableClaimsPanel = ({
         }}
         value={searchClaims}
       />
-      <ul className="list-group">
+      <ul className="list-group flex-grow-1 overflow-auto mb-0" style={{ minHeight: 0 }}>
         {personAttributes.map((data: PersonAttribute, key: number) => {
           const name = data.displayName?.toLowerCase() || ''
           const alreadyAddedClaim = selectedClaims.some(
