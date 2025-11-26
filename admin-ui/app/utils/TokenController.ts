@@ -7,7 +7,7 @@ type AdditionalActionData = GenericRecord & {
   performedOn?: unknown
 }
 
-type AdditionalPayload = GenericRecord & {
+export type AdditionalPayload = GenericRecord & {
   action?: {
     action_message?: string
     action_data?: AdditionalActionData

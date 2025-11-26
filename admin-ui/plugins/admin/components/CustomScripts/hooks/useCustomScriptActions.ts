@@ -1,21 +1,14 @@
-import { useDispatch } from 'react-redux'
 import { useQueryClient } from '@tanstack/react-query'
 import {
   getGetConfigScriptsQueryKey,
   getGetConfigScriptsByTypeQueryKey,
   type CustomScript,
-  type GetConfigScriptsParams,
-  type GetConfigScriptsByTypeParams,
 } from 'JansConfigApi'
 import {
-  useCustomScripts,
-  useCustomScriptsByType,
-  useCustomScript,
   useCreateCustomScript,
   useUpdateCustomScript,
   useDeleteCustomScript,
   useCustomScriptTypes,
-  type ScriptType,
 } from './useCustomScriptApi'
 
 export function useCustomScriptActions() {
@@ -26,31 +19,16 @@ export function useCustomScriptActions() {
   const deleteMutation = useDeleteCustomScript()
   const scriptTypesQuery = useCustomScriptTypes()
 
-  const fetchScripts = (params?: GetConfigScriptsParams) => {
-    return useCustomScripts(params)
+  const createScript = async (scriptData: CustomScript, actionMessage?: string) => {
+    return await createMutation.mutateAsync({ data: scriptData, actionMessage })
   }
 
-  const fetchScriptsByType = (
-    type: string,
-    params?: Omit<GetConfigScriptsByTypeParams, 'type'>,
-  ) => {
-    return useCustomScriptsByType(type, params)
+  const updateScript = async (scriptData: CustomScript, actionMessage?: string) => {
+    return await updateMutation.mutateAsync({ data: scriptData, actionMessage })
   }
 
-  const fetchScript = (inum: string) => {
-    return useCustomScript(inum)
-  }
-
-  const createScript = async (scriptData: CustomScript) => {
-    return await createMutation.mutateAsync({ data: scriptData })
-  }
-
-  const updateScript = async (scriptData: CustomScript) => {
-    return await updateMutation.mutateAsync({ data: scriptData })
-  }
-
-  const deleteScript = async (inum: string) => {
-    return await deleteMutation.mutateAsync({ inum })
+  const deleteScript = async (inum: string, actionMessage?: string) => {
+    return await deleteMutation.mutateAsync({ inum, actionMessage })
   }
 
   const refetchScripts = () => {
@@ -66,9 +44,6 @@ export function useCustomScriptActions() {
   }
 
   return {
-    fetchScripts,
-    fetchScriptsByType,
-    fetchScript,
     createScript,
     updateScript,
     deleteScript,

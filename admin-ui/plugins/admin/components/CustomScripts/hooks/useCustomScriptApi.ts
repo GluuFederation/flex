@@ -53,12 +53,6 @@ export function useCustomScripts(params?: GetConfigScriptsParams) {
   return useGetConfigScripts(params, {
     query: {
       enabled: !!authToken,
-      onSuccess: async () => {
-        await logAuditAction(FETCH, SCRIPT, { action: { action_data: params } })
-      },
-      onError: (error: unknown) => {
-        console.error('Failed to fetch custom scripts:', error)
-      },
       staleTime: SCRIPT_CACHE_CONFIG.STALE_TIME,
       gcTime: SCRIPT_CACHE_CONFIG.GC_TIME,
     },
@@ -74,9 +68,6 @@ export function useCustomScriptsByType(
   return useGetConfigScriptsByType(type, params, {
     query: {
       enabled: !!type && !!authToken,
-      onSuccess: async () => {
-        await logAuditAction(FETCH, SCRIPT, { action: { action_data: { type, ...params } } })
-      },
       staleTime: SCRIPT_CACHE_CONFIG.STALE_TIME,
       gcTime: SCRIPT_CACHE_CONFIG.GC_TIME,
     },
@@ -97,94 +88,93 @@ export function useCustomScript(inum: string) {
 export function useCreateCustomScript() {
   const queryClient = useQueryClient()
   const triggerWebhook = useWebhookTrigger()
+  const baseMutation = usePostConfigScripts()
 
-  return usePostConfigScripts({
-    mutation: {
-      onSuccess: async (
-        data: CustomScript,
-        variables: { data: CustomScript; actionMessage?: string },
-      ) => {
-        queryClient.invalidateQueries({ queryKey: getGetConfigScriptsQueryKey() })
-        triggerWebhook({ createdFeatureValue: data })
-        await logAuditAction(CREATE, SCRIPT, {
-          action: {
-            action_data: JSON.parse(JSON.stringify(variables.data)) as Record<string, unknown>,
-          },
-          message: variables.actionMessage,
-        })
-      },
-      onError: (error: unknown) => {
-        console.error('Failed to create custom script:', error)
-      },
+  return {
+    ...baseMutation,
+    mutateAsync: async (variables: { data: CustomScript; actionMessage?: string }) => {
+      const { actionMessage, ...baseVariables } = variables
+      const result = await baseMutation.mutateAsync(baseVariables)
+
+      queryClient.invalidateQueries({ queryKey: getGetConfigScriptsQueryKey() })
+      triggerWebhook({ createdFeatureValue: result })
+      await logAuditAction(CREATE, SCRIPT, {
+        action: {
+          action_data: JSON.parse(JSON.stringify(variables.data)) as Record<string, unknown>,
+        },
+        message: actionMessage,
+      })
+
+      return result
     },
-  })
+  }
 }
 
 export function useUpdateCustomScript() {
   const queryClient = useQueryClient()
   const triggerWebhook = useWebhookTrigger()
+  const baseMutation = usePutConfigScripts()
 
-  return usePutConfigScripts({
-    mutation: {
-      onSuccess: async (
-        data: CustomScript,
-        variables: { data: CustomScript; actionMessage?: string },
-      ) => {
-        queryClient.invalidateQueries({ queryKey: getGetConfigScriptsQueryKey() })
-        if (data.inum) {
-          queryClient.invalidateQueries({
-            queryKey: ['getConfigScriptsByInum', data.inum],
-          })
-        }
+  return {
+    ...baseMutation,
+    mutateAsync: async (variables: { data: CustomScript; actionMessage?: string }) => {
+      const { actionMessage, ...baseVariables } = variables
+      const result = await baseMutation.mutateAsync(baseVariables)
 
-        triggerWebhook({ createdFeatureValue: data })
-        await logAuditAction(UPDATE, SCRIPT, {
-          action: {
-            action_data: JSON.parse(JSON.stringify(variables.data)) as Record<string, unknown>,
-          },
-          message: variables.actionMessage,
+      queryClient.invalidateQueries({ queryKey: getGetConfigScriptsQueryKey() })
+      if (result.inum) {
+        queryClient.invalidateQueries({
+          queryKey: ['getConfigScriptsByInum', result.inum],
         })
-      },
-      onError: (error: unknown) => {
-        console.error('Failed to update custom script:', error)
-      },
+      }
+
+      triggerWebhook({ createdFeatureValue: result })
+      await logAuditAction(UPDATE, SCRIPT, {
+        action: {
+          action_data: JSON.parse(JSON.stringify(variables.data)) as Record<string, unknown>,
+        },
+        message: actionMessage,
+      })
+
+      return result
     },
-  })
+  }
 }
 
 export function useDeleteCustomScript() {
   const queryClient = useQueryClient()
   const triggerWebhook = useWebhookTrigger()
+  const baseMutation = useDeleteConfigScriptsByInum()
 
-  return useDeleteConfigScriptsByInum({
-    mutation: {
-      onSuccess: async (_data, variables: { inum: string; actionMessage?: string }) => {
-        queryClient.invalidateQueries({ queryKey: getGetConfigScriptsQueryKey() })
+  return {
+    ...baseMutation,
+    mutateAsync: async (variables: { inum: string; actionMessage?: string }) => {
+      const { actionMessage, ...baseVariables } = variables
+      const result = await baseMutation.mutateAsync(baseVariables)
+
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: getGetConfigScriptsQueryKey() }),
         queryClient.invalidateQueries({
           predicate: (query) => {
             const queryKey = query.queryKey as string[]
+            const key = queryKey[0] as string
             return (
-              queryKey[0] === 'getConfigScriptsByType' || queryKey[0] === 'getConfigScriptsByInum'
+              key?.startsWith('/api/v1/config/scripts/type/') ||
+              key?.startsWith('/api/v1/config/scripts/')
             )
           },
-        })
-        await queryClient.refetchQueries({
-          predicate: (query) => {
-            const queryKey = query.queryKey as string[]
-            return queryKey[0] === 'getConfigScriptsByType'
-          },
-        })
-        triggerWebhook({ createdFeatureValue: { inum: variables.inum } })
-        await logAuditAction(DELETION, SCRIPT, {
-          action: { action_data: { inum: variables.inum } },
-          message: variables.actionMessage,
-        })
-      },
-      onError: (error: unknown) => {
-        console.error('Failed to delete custom script:', error)
-      },
+        }),
+      ])
+
+      triggerWebhook({ createdFeatureValue: { inum: variables.inum } })
+      await logAuditAction(DELETION, SCRIPT, {
+        action: { action_data: { inum: variables.inum } },
+        message: actionMessage,
+      })
+
+      return result
     },
-  })
+  }
 }
 
 export function useCustomScriptTypes() {

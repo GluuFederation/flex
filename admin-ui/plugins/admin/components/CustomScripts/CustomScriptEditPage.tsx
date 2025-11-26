@@ -1,58 +1,33 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useDispatch } from 'react-redux'
-import { useParams } from 'react-router-dom'
-import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { useParams, useSearchParams } from 'react-router-dom'
 import { CardBody, Card } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import CustomScriptForm from './CustomScriptForm'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useTranslation } from 'react-i18next'
 import { Alert, Box } from '@mui/material'
-import { useCustomScript, useUpdateCustomScript } from './hooks'
+import { useCustomScript, useUpdateCustomScript, useMutationEffects } from './hooks'
 import type { CustomScript } from 'JansConfigApi'
 import type { SubmitData } from './types'
 
 function CustomScriptEditPage() {
   const { id: inum } = useParams<{ id: string }>()
   const dispatch = useDispatch()
-  const { navigateBack } = useAppNavigation()
   const { t } = useTranslation()
+  const [searchParams] = useSearchParams()
 
-  const searchParams = new URLSearchParams(window.location.search)
   const viewOnly = searchParams.get('view') === 'true'
 
   const { data: script, isLoading: loadingScript, error: fetchError } = useCustomScript(inum || '')
 
   const updateMutation = useUpdateCustomScript()
 
-  useEffect(() => {
-    let mounted = true
-
-    if (updateMutation.isSuccess && mounted) {
-      dispatch(updateToast(true, 'success', t('messages.script_updated_successfully')))
-      navigateBack(ROUTES.CUSTOM_SCRIPT_LIST)
-    }
-
-    return () => {
-      mounted = false
-    }
-  }, [updateMutation.isSuccess, navigateBack, dispatch, t])
-
-  useEffect(() => {
-    let mounted = true
-
-    if (updateMutation.isError && mounted) {
-      const errorMessage =
-        updateMutation.error instanceof Error
-          ? updateMutation.error.message
-          : t('messages.error_updating_script')
-      dispatch(updateToast(true, 'error', errorMessage))
-    }
-
-    return () => {
-      mounted = false
-    }
-  }, [updateMutation.isError, updateMutation.error, dispatch, t])
+  useMutationEffects({
+    mutation: updateMutation,
+    successMessage: 'messages.script_updated_successfully',
+    errorMessage: 'messages.error_updating_script',
+  })
 
   const handleSubmit = async (data: SubmitData) => {
     if (!data?.customScript) {
@@ -61,13 +36,11 @@ function CustomScriptEditPage() {
     }
 
     try {
-      const scriptData = { ...data.customScript }
-      const actionMessage = scriptData.action_message
-      delete scriptData.action_message
+      const { action_message, script_path, location_type, ...scriptData } = data.customScript
 
       await updateMutation.mutateAsync({
         data: scriptData as CustomScript,
-        actionMessage,
+        actionMessage: action_message,
       })
     } catch (error) {
       console.error('Failed to update script:', error)
@@ -109,12 +82,7 @@ function CustomScriptEditPage() {
     <GluuLoader blocking={updateMutation.isPending}>
       <Card className="mb-3" type="border" color={null}>
         <CardBody>
-          <CustomScriptForm
-            item={script}
-            viewOnly={viewOnly}
-            handleSubmit={handleSubmit}
-            isSubmitting={updateMutation.isPending}
-          />
+          <CustomScriptForm item={script} viewOnly={viewOnly} handleSubmit={handleSubmit} />
         </CardBody>
       </Card>
     </GluuLoader>

@@ -1,51 +1,25 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useDispatch } from 'react-redux'
-import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { CardBody, Card } from 'Components'
 import CustomScriptForm from './CustomScriptForm'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useTranslation } from 'react-i18next'
-import { useCreateCustomScript } from './hooks'
-import { DEFAULT_SCRIPT_TYPE } from './constants'
+import { useCreateCustomScript, useMutationEffects } from './hooks'
 import type { CustomScript } from 'JansConfigApi'
 import type { SubmitData } from './types'
 
 function CustomScriptAddPage() {
   const dispatch = useDispatch()
-  const { navigateBack } = useAppNavigation()
   const { t } = useTranslation()
 
   const createMutation = useCreateCustomScript()
 
-  useEffect(() => {
-    let mounted = true
-
-    if (createMutation.isSuccess && mounted) {
-      dispatch(updateToast(true, 'success', t('messages.script_added_successfully')))
-      navigateBack(ROUTES.CUSTOM_SCRIPT_LIST)
-    }
-
-    return () => {
-      mounted = false
-    }
-  }, [createMutation.isSuccess, navigateBack, dispatch, t])
-
-  useEffect(() => {
-    let mounted = true
-
-    if (createMutation.isError && mounted) {
-      const errorMessage =
-        createMutation.error instanceof Error
-          ? createMutation.error.message
-          : t('messages.error_adding_script')
-      dispatch(updateToast(true, 'error', errorMessage))
-    }
-
-    return () => {
-      mounted = false
-    }
-  }, [createMutation.isError, createMutation.error, dispatch, t])
+  useMutationEffects({
+    mutation: createMutation,
+    successMessage: 'messages.script_added_successfully',
+    errorMessage: 'messages.error_adding_script',
+  })
 
   const handleSubmit = async (data: SubmitData) => {
     if (!data?.customScript) {
@@ -54,13 +28,11 @@ function CustomScriptAddPage() {
     }
 
     try {
-      const scriptData = { ...data.customScript }
-      const actionMessage = scriptData.action_message
-      delete scriptData.action_message
+      const { action_message, script_path, location_type, ...scriptData } = data.customScript
 
       await createMutation.mutateAsync({
         data: scriptData as CustomScript,
-        actionMessage,
+        actionMessage: action_message,
       })
     } catch (error) {
       console.error('Failed to create script:', error)
@@ -71,11 +43,7 @@ function CustomScriptAddPage() {
     <GluuLoader blocking={createMutation.isPending}>
       <Card className="mb-3" type="border" color={null}>
         <CardBody>
-          <CustomScriptForm
-            item={{}}
-            handleSubmit={handleSubmit}
-            isSubmitting={createMutation.isPending}
-          />
+          <CustomScriptForm item={{}} handleSubmit={handleSubmit} />
         </CardBody>
       </Card>
     </GluuLoader>

@@ -1,4 +1,4 @@
-import { CustomScriptItem, ModuleProperty } from '../types/customScript'
+import { CustomScriptItem, ModuleProperty, ConfigurationProperty } from '../types/customScript'
 import { FormValues } from '../types/forms'
 import { filterEmptyObjects } from 'Utils/Util'
 import type { CustomScript, SimpleCustomProperty } from 'JansConfigApi'
@@ -25,12 +25,12 @@ export const transformToFormValues = (
     description: item.description || '',
     scriptType: item.scriptType || '',
     programmingLanguage: item.programmingLanguage || 'python',
-    level: item.level || 1,
+    level: item.level ?? 1,
     script: item.script || '',
     aliases: item.aliases || [],
     moduleProperties: (filterEmptyObjects(item.moduleProperties) || []) as ModuleProperty[],
     configurationProperties: (filterEmptyObjects(item.configurationProperties) ||
-      []) as ModuleProperty[],
+      []) as ConfigurationProperty[],
     script_path: scriptPath,
     locationPath: item.locationPath,
     location_type: locationType,

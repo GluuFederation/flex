@@ -342,7 +342,7 @@ const CustomScriptListPage: React.FC = () => {
           </Tooltip>
         ),
         tooltip: t('messages.edit_script'),
-        onClick: (_event, rowData) => handleEdit(rowData as ScriptTableRow),
+        onClick: (_event, rowData) => handleEdit(rowData as CustomScript),
       })
     }
 
@@ -354,7 +354,7 @@ const CustomScriptListPage: React.FC = () => {
           </Tooltip>
         ),
         tooltip: t('messages.view_script_details'),
-        onClick: (_event, rowData) => handleView(rowData as ScriptTableRow),
+        onClick: (_event, rowData) => handleView(rowData as CustomScript),
       })
     }
 
@@ -366,7 +366,7 @@ const CustomScriptListPage: React.FC = () => {
           </Tooltip>
         ),
         tooltip: t('messages.delete_script'),
-        onClick: (_event, rowData) => handleDeleteClick(rowData as ScriptTableRow),
+        onClick: (_event, rowData) => handleDeleteClick(rowData as CustomScript),
       })
     }
 
@@ -558,7 +558,7 @@ const CustomScriptListPage: React.FC = () => {
                 `${from}-${to} ${t('fields.of')} ${count !== -1 ? count : `${t('fields.more_than')} ${to}`}`
               }
               sx={{
-                borderTop: `1px solid ${themeColors.borderColor}`,
+                borderTop: `1px solid ${(themeColors as Record<string, unknown>).borderColor || '#e0e0e0'}`,
                 backgroundColor: themeColors.background,
               }}
             />

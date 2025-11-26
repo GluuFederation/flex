@@ -7,7 +7,6 @@ export interface CustomScriptFormProps {
   item: CustomScriptItem | CustomScript
   handleSubmit: (data: { customScript: CustomScriptItem }) => void | Promise<void>
   viewOnly?: boolean
-  isSubmitting?: boolean
 }
 
 export interface CustomScriptDetailPageProps {

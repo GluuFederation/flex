@@ -35,12 +35,7 @@ const GluuScriptErrorModal = lazy(() => import('Routes/Apps/Gluu/GluuScriptError
 const Counter = lazy(() => import('@/components/Widgets/GroupedButtons/Counter'))
 const GluuInputEditor = lazy(() => import('Routes/Apps/Gluu/GluuInputEditor'))
 
-function CustomScriptForm({
-  item,
-  handleSubmit,
-  viewOnly = false,
-  isSubmitting = false,
-}: CustomScriptFormProps) {
+function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScriptFormProps) {
   const { navigateBack } = useAppNavigation()
   const { t } = useTranslation()
   const [init, setInit] = useState<boolean>(false)

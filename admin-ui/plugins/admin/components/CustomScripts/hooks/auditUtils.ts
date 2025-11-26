@@ -1,4 +1,4 @@
-import { addAdditionalData } from 'Utils/TokenController'
+import { addAdditionalData, type AdditionalPayload } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
 import store from 'Redux/store'
 import type { RootState, AuditLog } from 'Redux/sagas/types/audit'
@@ -25,19 +25,6 @@ const createAuditLog = (state: RootState): AuditLog | null => {
   }
 }
 
-type AdditionalPayload = Record<string, unknown> & {
-  action?: {
-    action_message?: string
-    action_data?: Record<string, unknown>
-  }
-  action_message?: string
-  message?: string
-  modifiedFields?: unknown
-  performedOn?: unknown
-  tableData?: unknown
-  omitPayload?: boolean
-}
-
 export const logAuditAction = async (
   actionType: string,
   resource: string,
@@ -52,9 +39,9 @@ export const logAuditAction = async (
 
   addAdditionalData(audit, actionType, resource, data)
 
-  try {
-    await postUserAction(audit)
-  } catch (e) {
-    console.error(`Audit logging failed for ${actionType}:`, e)
+  const result = await postUserAction(audit)
+
+  if (result === -1) {
+    console.error(`Audit logging failed for ${actionType}: postUserAction returned -1`)
   }
 }
