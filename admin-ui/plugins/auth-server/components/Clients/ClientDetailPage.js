@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { Container, Badge, Row, Col, FormGroup, Label } from 'Components'
+import { Container, Badge, Col, FormGroup, Label } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import GluuSecretDetail from 'Routes/Apps/Gluu/GluuSecretDetail'
 import { useTranslation } from 'react-i18next'
@@ -15,7 +15,14 @@ const detailContainerStyle = {
   overflowY: 'auto',
   padding: '1rem',
 }
-const detailRowStyle = { marginBottom: '0.75rem' }
+const detailGridStyle = {
+  columnCount: 2,
+  columnGap: '1.5rem',
+}
+const detailFieldStyle = {
+  breakInside: 'avoid',
+  marginBottom: '0.75rem',
+}
 const detailLabelStyle = {
   fontWeight: 600,
   wordWrap: 'break-word',
@@ -65,8 +72,8 @@ function ClientDetailPage({ row, scopes }) {
   return (
     <React.Fragment>
       <Container style={detailContainerStyle}>
-        <Row style={detailRowStyle}>
-          <Col sm={6}>
+        <div style={detailGridStyle}>
+          <div style={detailFieldStyle}>
             <GluuFormDetailRow
               label="fields.client_id"
               value={row.inum}
@@ -77,8 +84,8 @@ function ClientDetailPage({ row, scopes }) {
               doc_category={DOC_CATEGORY}
               doc_entry="clientId"
             />
-          </Col>
-          <Col sm={6}>
+          </div>
+          <div style={detailFieldStyle}>
             <GluuSecretDetail
               label="fields.client_secret"
               value={row.clientSecret ? row.clientSecret : dash}
@@ -89,10 +96,8 @@ function ClientDetailPage({ row, scopes }) {
               doc_category={DOC_CATEGORY}
               doc_entry="clientSecret"
             />
-          </Col>
-        </Row>
-        <Row style={detailRowStyle}>
-          <Col sm={6}>
+          </div>
+          <div style={detailFieldStyle}>
             <GluuFormDetailRow
               label="fields.name"
               value={displayName}
@@ -103,8 +108,8 @@ function ClientDetailPage({ row, scopes }) {
               doc_category={DOC_CATEGORY}
               doc_entry="displayName"
             />
-          </Col>
-          <Col sm={6}>
+          </div>
+          <div style={detailFieldStyle}>
             <GluuFormDetailRow
               label="fields.description"
               value={description}
@@ -115,10 +120,8 @@ function ClientDetailPage({ row, scopes }) {
               doc_category={DOC_CATEGORY}
               doc_entry="description"
             />
-          </Col>
-        </Row>
-        <Row style={detailRowStyle}>
-          <Col sm={6}>
+          </div>
+          <div style={detailFieldStyle}>
             <GluuFormDetailRow
               label="fields.subject_type"
               value={row.subjectType ? row.subjectType : dash}
@@ -129,8 +132,8 @@ function ClientDetailPage({ row, scopes }) {
               doc_category={DOC_CATEGORY}
               doc_entry="subjectType"
             />
-          </Col>
-          <Col sm={6}>
+          </div>
+          <div style={detailFieldStyle}>
             <GluuFormDetailRow
               label="fields.application_type"
               value={row.applicationType}
@@ -141,10 +144,8 @@ function ClientDetailPage({ row, scopes }) {
               doc_category={DOC_CATEGORY}
               doc_entry="applicationType"
             />
-          </Col>
-        </Row>
-        <Row style={detailRowStyle}>
-          <Col sm={6}>
+          </div>
+          <div style={detailFieldStyle}>
             <FormGroup row className="align-items-start mb-2">
               <Label sm={4} style={detailLabelStyle}>
                 {t('fields.is_trusted_client')}:
@@ -159,8 +160,8 @@ function ClientDetailPage({ row, scopes }) {
                 </div>
               </Col>
             </FormGroup>
-          </Col>
-          <Col sm={6}>
+          </div>
+          <div style={detailFieldStyle}>
             <FormGroup row className="align-items-start mb-2">
               <Label sm={4} style={detailLabelStyle}>
                 {t('fields.status')}:
@@ -175,55 +176,48 @@ function ClientDetailPage({ row, scopes }) {
                 </div>
               </Col>
             </FormGroup>
-          </Col>
-        </Row>
-
-        <Row style={detailRowStyle}>
-          <Col sm={6}>
+          </div>
+          <div style={detailFieldStyle}>
             <FormGroup row className="align-items-start mb-2">
               <Label sm={4} style={detailLabelStyle}>
                 {t('fields.scopes')}:
               </Label>
               <Col sm={8}>{renderBadgeList(clientScopes)}</Col>
             </FormGroup>
-          </Col>
-          <Col sm={6}>
+          </div>
+          <div style={detailFieldStyle}>
             <FormGroup row className="align-items-start mb-2">
               <Label sm={4} style={detailLabelStyle}>
                 {t('fields.grant_types')}:
               </Label>
               <Col sm={8}>{renderBadgeList(row.grantTypes)}</Col>
             </FormGroup>
-          </Col>
-        </Row>
-        <Row style={detailRowStyle}>
-          <Col sm={6}>
+          </div>
+          <div style={detailFieldStyle}>
             <FormGroup row className="align-items-start mb-2">
               <Label sm={4} style={detailLabelStyle}>
                 {t('fields.response_types')}:
               </Label>
               <Col sm={8}>{renderBadgeList(row.responseTypes)}</Col>
             </FormGroup>
-          </Col>
-          <Col sm={6}>
+          </div>
+          <div style={detailFieldStyle}>
             <FormGroup row className="align-items-start mb-2">
               <Label sm={4} style={detailLabelStyle}>
                 {t('fields.login_uris')}:
               </Label>
               <Col sm={8}>{renderBadgeList(row.redirectUris)}</Col>
             </FormGroup>
-          </Col>
-        </Row>
-        <Row style={detailRowStyle}>
-          <Col sm={6}>
+          </div>
+          <div style={detailFieldStyle}>
             <FormGroup row className="align-items-start mb-2">
               <Label sm={4} style={detailLabelStyle}>
                 {t('fields.logout_redirect_uris')}:
               </Label>
               <Col sm={8}>{renderBadgeList(row.postLogoutRedirectUris)}</Col>
             </FormGroup>
-          </Col>
-          <Col sm={6}>
+          </div>
+          <div style={detailFieldStyle}>
             <FormGroup row className="align-items-start mb-2">
               <Label sm={4} style={detailLabelStyle}>
                 {t('fields.authentication_method')}:
@@ -238,8 +232,8 @@ function ClientDetailPage({ row, scopes }) {
                 </div>
               </Col>
             </FormGroup>
-          </Col>
-        </Row>
+          </div>
+        </div>
       </Container>
     </React.Fragment>
   )

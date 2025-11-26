@@ -34,7 +34,7 @@ function GluuSecretDetail({
     setUp((prev) => !prev)
   }, [])
 
-  const appliedLabelStyle = labelStyle || defaultLabelStyle
+  const appliedLabelStyle: CSSProperties = { ...defaultLabelStyle, ...labelStyle }
   const appliedRowClassName = rowClassName || 'align-items-center mb-2'
 
   return (

@@ -35,9 +35,9 @@ function GluuFormDetailRow({
 }: GluuFormDetailRowProps) {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme
+  const selectedTheme = theme?.state?.theme ?? 'light'
 
-  const appliedLabelStyle = labelStyle || defaultLabelStyle
+  const appliedLabelStyle: CSSProperties = { ...defaultLabelStyle, ...labelStyle }
 
   return (
     <GluuTooltip doc_category={doc_category} isDirect={isDirect} doc_entry={doc_entry || label}>
