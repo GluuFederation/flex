@@ -8,6 +8,27 @@ import customColors from '@/customColors'
 
 const DOC_CATEGORY = 'openid_client'
 
+// Static style objects instantiated once at module scope
+const detailContainerStyle = {
+  backgroundColor: customColors.whiteSmoke,
+  maxHeight: '420px',
+  overflowY: 'auto',
+  padding: '1rem',
+}
+const detailRowStyle = { marginBottom: '0.75rem' }
+const detailLabelStyle = {
+  fontWeight: 600,
+  wordWrap: 'break-word',
+  whiteSpace: 'normal',
+  paddingRight: '0.5rem',
+}
+const detailValueStyle = {
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: '0.35rem',
+  alignItems: 'center',
+}
+
 function ClientDetailPage({ row, scopes }) {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
@@ -28,20 +49,6 @@ function ClientDetailPage({ row, scopes }) {
   const dash = '-'
   const description = row.description || extractDescription(row.customAttributes || []) || dash
   const displayName = row.clientName || row.displayName || dash
-  const detailContainerStyle = {
-    backgroundColor: customColors.whiteSmoke,
-    maxHeight: '420px',
-    overflowY: 'auto',
-    padding: '1rem',
-  }
-  const detailRowStyle = { marginBottom: '0.75rem' }
-  const detailLabelStyle = { fontWeight: 600 }
-  const detailValueStyle = {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: '0.35rem',
-    alignItems: 'center',
-  }
 
   const renderBadgeList = (items) => (
     <div style={detailValueStyle}>
@@ -63,6 +70,10 @@ function ClientDetailPage({ row, scopes }) {
             <GluuFormDetailRow
               label="fields.client_id"
               value={row.inum}
+              lsize={4}
+              rsize={8}
+              labelStyle={detailLabelStyle}
+              rowClassName="align-items-start"
               doc_category={DOC_CATEGORY}
               doc_entry="clientId"
             />
@@ -71,6 +82,10 @@ function ClientDetailPage({ row, scopes }) {
             <GluuSecretDetail
               label="fields.client_secret"
               value={row.clientSecret ? row.clientSecret : dash}
+              lsize={4}
+              rsize={8}
+              labelStyle={detailLabelStyle}
+              rowClassName="align-items-start mb-2"
               doc_category={DOC_CATEGORY}
               doc_entry="clientSecret"
             />
@@ -81,6 +96,10 @@ function ClientDetailPage({ row, scopes }) {
             <GluuFormDetailRow
               label="fields.name"
               value={displayName}
+              lsize={4}
+              rsize={8}
+              labelStyle={detailLabelStyle}
+              rowClassName="align-items-start"
               doc_category={DOC_CATEGORY}
               doc_entry="displayName"
             />
@@ -89,6 +108,10 @@ function ClientDetailPage({ row, scopes }) {
             <GluuFormDetailRow
               label="fields.description"
               value={description}
+              lsize={4}
+              rsize={8}
+              labelStyle={detailLabelStyle}
+              rowClassName="align-items-start"
               doc_category={DOC_CATEGORY}
               doc_entry="description"
             />
@@ -99,6 +122,10 @@ function ClientDetailPage({ row, scopes }) {
             <GluuFormDetailRow
               label="fields.subject_type"
               value={row.subjectType ? row.subjectType : dash}
+              lsize={4}
+              rsize={8}
+              labelStyle={detailLabelStyle}
+              rowClassName="align-items-start"
               doc_category={DOC_CATEGORY}
               doc_entry="subjectType"
             />
@@ -107,6 +134,10 @@ function ClientDetailPage({ row, scopes }) {
             <GluuFormDetailRow
               label="fields.application_type"
               value={row.applicationType}
+              lsize={4}
+              rsize={8}
+              labelStyle={detailLabelStyle}
+              rowClassName="align-items-start"
               doc_category={DOC_CATEGORY}
               doc_entry="applicationType"
             />
@@ -114,11 +145,11 @@ function ClientDetailPage({ row, scopes }) {
         </Row>
         <Row style={detailRowStyle}>
           <Col sm={6}>
-            <FormGroup row className="align-items-center mb-2">
-              <Label sm={6} style={detailLabelStyle}>
+            <FormGroup row className="align-items-start mb-2">
+              <Label sm={4} style={detailLabelStyle}>
                 {t('fields.is_trusted_client')}:
               </Label>
-              <Col sm={6}>
+              <Col sm={8}>
                 <div style={detailValueStyle}>
                   {row.trustedClient ? (
                     <Badge color={`primary-${selectedTheme}`}>{t('options.yes')}</Badge>
@@ -130,11 +161,11 @@ function ClientDetailPage({ row, scopes }) {
             </FormGroup>
           </Col>
           <Col sm={6}>
-            <FormGroup row className="align-items-center mb-2">
-              <Label sm={6} style={detailLabelStyle}>
+            <FormGroup row className="align-items-start mb-2">
+              <Label sm={4} style={detailLabelStyle}>
                 {t('fields.status')}:
               </Label>
-              <Col sm={6}>
+              <Col sm={8}>
                 <div style={detailValueStyle}>
                   {!row.disabled ? (
                     <Badge color={`primary-${selectedTheme}`}>{t('options.enabled')}</Badge>
@@ -149,7 +180,7 @@ function ClientDetailPage({ row, scopes }) {
 
         <Row style={detailRowStyle}>
           <Col sm={6}>
-            <FormGroup row className="align-items-center mb-2">
+            <FormGroup row className="align-items-start mb-2">
               <Label sm={4} style={detailLabelStyle}>
                 {t('fields.scopes')}:
               </Label>
@@ -157,7 +188,7 @@ function ClientDetailPage({ row, scopes }) {
             </FormGroup>
           </Col>
           <Col sm={6}>
-            <FormGroup row className="align-items-center mb-2">
+            <FormGroup row className="align-items-start mb-2">
               <Label sm={4} style={detailLabelStyle}>
                 {t('fields.grant_types')}:
               </Label>
@@ -167,7 +198,7 @@ function ClientDetailPage({ row, scopes }) {
         </Row>
         <Row style={detailRowStyle}>
           <Col sm={6}>
-            <FormGroup row className="align-items-center mb-2">
+            <FormGroup row className="align-items-start mb-2">
               <Label sm={4} style={detailLabelStyle}>
                 {t('fields.response_types')}:
               </Label>
@@ -175,7 +206,7 @@ function ClientDetailPage({ row, scopes }) {
             </FormGroup>
           </Col>
           <Col sm={6}>
-            <FormGroup row className="align-items-center mb-2">
+            <FormGroup row className="align-items-start mb-2">
               <Label sm={4} style={detailLabelStyle}>
                 {t('fields.login_uris')}:
               </Label>
@@ -185,7 +216,7 @@ function ClientDetailPage({ row, scopes }) {
         </Row>
         <Row style={detailRowStyle}>
           <Col sm={6}>
-            <FormGroup row className="align-items-center mb-2">
+            <FormGroup row className="align-items-start mb-2">
               <Label sm={4} style={detailLabelStyle}>
                 {t('fields.logout_redirect_uris')}:
               </Label>
@@ -193,11 +224,11 @@ function ClientDetailPage({ row, scopes }) {
             </FormGroup>
           </Col>
           <Col sm={6}>
-            <FormGroup row className="align-items-center mb-2">
-              <Label sm={6} style={detailLabelStyle}>
+            <FormGroup row className="align-items-start mb-2">
+              <Label sm={4} style={detailLabelStyle}>
                 {t('fields.authentication_method')}:
               </Label>
-              <Col sm={6}>
+              <Col sm={8}>
                 <div style={detailValueStyle}>
                   {row.authenticationMethod ? (
                     <Badge color={`primary-${selectedTheme}`}>{row.authenticationMethod}</Badge>
