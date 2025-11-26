@@ -1,37 +1,63 @@
-import { useState } from 'react'
+import { useState, memo, useCallback, CSSProperties } from 'react'
 import { FormGroup, Label, Col } from 'Components'
 import Toggle from 'react-toggle'
 import GluuTooltip from './GluuTooltip'
 import { useTranslation } from 'react-i18next'
 
-function GluuSecretDetail({ label, value, doc_category, doc_entry }: any) {
+interface GluuSecretDetailProps {
+  label: string
+  value: string
+  doc_category?: string
+  doc_entry?: string
+  lsize?: number
+  rsize?: number
+  labelStyle?: CSSProperties
+  rowClassName?: string
+}
+
+const defaultLabelStyle: CSSProperties = { fontWeight: 'bold' }
+
+function GluuSecretDetail({
+  label,
+  value,
+  doc_category,
+  doc_entry,
+  lsize = 6,
+  rsize = 6,
+  labelStyle,
+  rowClassName,
+}: GluuSecretDetailProps) {
   const { t } = useTranslation()
   const [up, setUp] = useState(false)
-  function handleSecret() {
-    setUp(!up)
-  }
+
+  const handleSecret = useCallback(() => {
+    setUp((prev) => !prev)
+  }, [])
+
+  const appliedLabelStyle: CSSProperties = { ...defaultLabelStyle, ...labelStyle }
+  const appliedRowClassName = rowClassName || 'align-items-center mb-2'
 
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={doc_entry || label}>
-      <FormGroup row>
-        <Label for="input" sm={2}>
+      <FormGroup row className={appliedRowClassName}>
+        <Label for="input" sm={lsize} style={appliedLabelStyle}>
           {t(label)}:
         </Label>
-        {value !== '-' && (
-          <Label for="input" sm={1}>
-            <Toggle defaultChecked={false} onChange={handleSecret} />
-          </Label>
-        )}
-        {up && (
-          <Col sm={9}>
-            <Label for="input" style={{ fontWeight: 'bold' }}>
+        <Col
+          sm={rsize}
+          className="d-flex align-items-center"
+          style={{ gap: '0.5rem', wordBreak: 'break-all' }}
+        >
+          {value !== '-' && <Toggle defaultChecked={false} onChange={handleSecret} />}
+          {(value === '-' || up) && (
+            <span style={{ fontWeight: 'bold' }} data-testid="secret-value">
               {value}
-            </Label>
-          </Col>
-        )}
+            </span>
+          )}
+        </Col>
       </FormGroup>
     </GluuTooltip>
   )
 }
 
-export default GluuSecretDetail
+export default memo(GluuSecretDetail)
