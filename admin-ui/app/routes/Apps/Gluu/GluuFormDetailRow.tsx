@@ -42,10 +42,10 @@ function GluuFormDetailRow({
   return (
     <GluuTooltip doc_category={doc_category} isDirect={isDirect} doc_entry={doc_entry || label}>
       <FormGroup row className={rowClassName}>
-        <Label for={label} style={appliedLabelStyle} sm={lsize || 6}>
+        <Label for={label} style={appliedLabelStyle} sm={lsize}>
           {t(label)}:
         </Label>
-        <Label for={value?.toString()} sm={rsize || 6}>
+        <Label for={value?.toString()} sm={rsize}>
           {!isBadge ? (
             value
           ) : (
