@@ -23,7 +23,7 @@ export const isValid = (url) => {
 
 const isAllowed = (url) => {
   let result = true
-  for (let extention in NOT_ALLOWED) {
+  for (const extention in NOT_ALLOWED) {
     if (url.startsWith(NOT_ALLOWED[extention])) {
       result = false
       break

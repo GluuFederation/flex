@@ -1,19 +1,19 @@
 // @ts-nocheck
 // Default import fix
-var anime = require('animejs').default ? require('animejs').default : require('animejs')
+const anime = require('animejs').default ? require('animejs').default : require('animejs')
 
-var ANIMATION_DURATION = 150
-var ANIMATION_STEP_OFFSET = 0.1
+const ANIMATION_DURATION = 150
+const ANIMATION_STEP_OFFSET = 0.1
 
 function SlimMenuAnimate(config) {
-  var _this = this
+  const _this = this
 
   this.mouseInHandler = function () {
     if (_this._animationsEnabled()) {
-      var triggerElement = this
-      var subMenuElement = triggerElement.querySelector(':scope > .sidebar-submenu')
+      const triggerElement = this
+      const subMenuElement = triggerElement.querySelector(':scope > .sidebar-submenu')
 
-      var timeline = anime
+      const timeline = anime
         .timeline({
           targets: subMenuElement,
           duration: ANIMATION_DURATION,
@@ -45,10 +45,10 @@ function SlimMenuAnimate(config) {
   }
   this.mouseOutHandler = function () {
     if (_this._animationsEnabled()) {
-      var triggerElement = this
-      var subMenuElement = triggerElement.querySelector(':scope > .sidebar-submenu')
+      const triggerElement = this
+      const subMenuElement = triggerElement.querySelector(':scope > .sidebar-submenu')
       return
-      var timeline = anime
+      const timeline = anime
         .timeline({
           targets: subMenuElement,
           duration: ANIMATION_DURATION,
@@ -98,7 +98,7 @@ SlimMenuAnimate.prototype._animationsEnabled = function () {
  * @param {HTMLElement} parentElement SidebarMenu parent
  */
 SlimMenuAnimate.prototype.assignSidebarElement = function (sidebarElement) {
-  var _this = this
+  const _this = this
   _this._sidebarElement = sidebarElement
   _this._triggerElements = Array.from(
     _this._sidebarElement.querySelectorAll(
@@ -115,7 +115,7 @@ SlimMenuAnimate.prototype.assignSidebarElement = function (sidebarElement) {
  * Disconnects the listeners
  */
 SlimMenuAnimate.prototype.destroy = function () {
-  var _this = this
+  const _this = this
   _this._triggerElements.forEach(function (triggerElement) {
     triggerElement.removeEventListener('mouseenter', _this.mouseInHandler)
     triggerElement.removeEventListener('mouseleave', _this.mouseOutHandler)

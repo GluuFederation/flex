@@ -1,6 +1,6 @@
 // @ts-nocheck
 // Default import fix
-var anime = require('animejs').default ? require('animejs').default : require('animejs')
+const anime = require('animejs').default ? require('animejs').default : require('animejs')
 
 function SidebarEntryAnimate(options) {
   // Flag to ensure the animation is fired only once
@@ -17,20 +17,20 @@ function SidebarEntryAnimate(options) {
 }
 
 SidebarEntryAnimate.prototype.executeAnimation = function () {
-  var config = this.config
+  const config = this.config
 
-  var sidebarElement = this.sidebarElement
+  const sidebarElement = this.sidebarElement
 
   if (!this.wasAnimated && sidebarElement) {
-    var isSlim =
+    const isSlim =
       sidebarElement.classList.contains('sidebar--slim') &&
       sidebarElement.classList.contains('sidebar--collapsed')
-    var sidebarMenu = sidebarElement.querySelector('.sidebar-menu')
+    const sidebarMenu = sidebarElement.querySelector('.sidebar-menu')
 
-    var sidebarSectionsPreMenu = []
-    var sidebarMenuSection = null
-    var sideMenuEntries = []
-    var sidebarSectionsPostMenu = []
+    const sidebarSectionsPreMenu = []
+    let sidebarMenuSection = null
+    let sideMenuEntries = []
+    const sidebarSectionsPostMenu = []
 
     sidebarElement.querySelectorAll('.sidebar__section').forEach(function (sectionElement) {
       // Ommit sections which arent visible
@@ -44,7 +44,7 @@ SidebarEntryAnimate.prototype.executeAnimation = function () {
       if (sectionElement.contains(sidebarMenu)) {
         sidebarMenuSection = sectionElement
         // Add sidemenu entries
-        var sidebarMenuEntriesNodes = sectionElement.querySelectorAll(
+        const sidebarMenuEntriesNodes = sectionElement.querySelectorAll(
           '.sidebar-menu > .sidebar-menu__entry',
         )
         sideMenuEntries = sideMenuEntries.concat(Array.from(sidebarMenuEntriesNodes))
@@ -59,7 +59,7 @@ SidebarEntryAnimate.prototype.executeAnimation = function () {
       }
     })
 
-    var timeline = anime.timeline({
+    const timeline = anime.timeline({
       easing: config.easing,
       duration: config.duration,
       complete: function () {
@@ -71,7 +71,7 @@ SidebarEntryAnimate.prototype.executeAnimation = function () {
           })
       },
     })
-    var staggerDelay =
+    const staggerDelay =
       config.duration /
       (sidebarSectionsPreMenu.length + sidebarSectionsPostMenu.length) /
       sideMenuEntries.length

@@ -1,10 +1,10 @@
 // @ts-nocheck
-var anime = require('animejs').default ? require('animejs').default : require('animejs')
+const anime = require('animejs').default ? require('animejs').default : require('animejs')
 
 function SlimSidebarAnimate(options) {
-  var timelineStage1, timelineStage2
-  var isAnimating = false
-  var config = Object.assign(
+  let timelineStage1, timelineStage2
+  let isAnimating = false
+  const config = Object.assign(
     {},
     {
       sidebarWidth: 250,
@@ -26,22 +26,22 @@ function SlimSidebarAnimate(options) {
   }
 
   this._nodesObserver = new MutationObserver(function (mutations) {
-    var mutation = mutations[0]
-    var animationHalfTime = config.animationDuration / 2
-    var sidebarElement = mutation.target
-    var layoutSidebarWrap = sidebarElement.closest('.layout__sidebar')
-    var sidebarMenu = sidebarElement.querySelector('.sidebar-menu')
-    var sidebarLabels = document.querySelectorAll(
+    const mutation = mutations[0]
+    const animationHalfTime = config.animationDuration / 2
+    const sidebarElement = mutation.target
+    const layoutSidebarWrap = sidebarElement.closest('.layout__sidebar')
+    const sidebarMenu = sidebarElement.querySelector('.sidebar-menu')
+    const sidebarLabels = document.querySelectorAll(
       '.sidebar-menu__entry__link > span, ' + '.sidebar-submenu__entry__link > span',
     )
-    var sidebarIcons = document.querySelectorAll('.sidebar-menu__entry__icon')
-    var sidebarHideSlim = document.querySelectorAll('.sidebar__hide-slim')
-    var sidebarShowSlim = document.querySelectorAll('.sidebar__show-slim')
+    const sidebarIcons = document.querySelectorAll('.sidebar-menu__entry__icon')
+    const sidebarHideSlim = document.querySelectorAll('.sidebar__hide-slim')
+    const sidebarShowSlim = document.querySelectorAll('.sidebar__show-slim')
 
-    var isSidebarSlim = sidebarElement.classList.contains('sidebar--slim')
-    var isSidebarCollapsed = sidebarElement.classList.contains('sidebar--collapsed')
-    var lastSidebarSlim = mutation.oldValue.indexOf('sidebar--slim') >= 0
-    var lastSidebarCollapsed = mutation.oldValue.indexOf('sidebar--collapsed') >= 0
+    const isSidebarSlim = sidebarElement.classList.contains('sidebar--slim')
+    const isSidebarCollapsed = sidebarElement.classList.contains('sidebar--collapsed')
+    const lastSidebarSlim = mutation.oldValue.indexOf('sidebar--slim') >= 0
+    const lastSidebarCollapsed = mutation.oldValue.indexOf('sidebar--collapsed') >= 0
 
     // Finish previous animations if they exist
     if (timelineStage1 && timelineStage1.isAnimating) {

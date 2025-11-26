@@ -1,11 +1,11 @@
 // @ts-nocheck
 // Default import fix
-var anime = require('animejs').default ? require('animejs').default : require('animejs')
+const anime = require('animejs').default ? require('animejs').default : require('animejs')
 
 function SideMenuAnimate(config) {
-  var activeAnimation
+  let activeAnimation
 
-  var option = Object.assign(
+  const option = Object.assign(
     {},
     {
       easing: 'easeInOutCubic',
@@ -15,7 +15,7 @@ function SideMenuAnimate(config) {
   )
 
   this._nodesObserver = new MutationObserver(function (mutations) {
-    var changedNodes = mutations
+    const changedNodes = mutations
       .filter(function (mutation) {
         return (
           mutation.target.classList.contains('sidebar-menu__entry--nested') ||
@@ -30,10 +30,10 @@ function SideMenuAnimate(config) {
       })
 
     changedNodes.forEach(function (node) {
-      var isOpen = node.target.classList.contains('open')
+      const isOpen = node.target.classList.contains('open')
 
       if (isOpen !== node.wasOpen) {
-        var menu = node.target.querySelector('.sidebar-submenu')
+        const menu = node.target.querySelector('.sidebar-submenu')
 
         if (activeAnimation && !activeAnimation.completed) {
           activeAnimation.reset()

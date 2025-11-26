@@ -15,7 +15,8 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import AuthNDetailPage from './AuthNDetailPage'
 import { getLdapConfig } from 'Plugins/services/redux/features/ldapSlice'
-import { getCustomScriptByType } from 'Plugins/admin/redux/features/customScriptSlice'
+import { useCustomScriptsByType } from 'Plugins/admin/components/CustomScripts/hooks'
+import { DEFAULT_SCRIPT_TYPE } from 'Plugins/admin/components/CustomScripts/constants'
 import { setCurrentItem } from '../../redux/features/authNSlice'
 import { getAcrsConfig } from 'Plugins/auth-server/redux/features/acrSlice'
 
@@ -38,11 +39,14 @@ function AuthNListPage({ isBuiltIn = false }) {
 
   const authN = useSelector((state) => state.authNReducer.acrs)
   const ldap = useSelector((state) => state.ldapReducer.ldap)
-  const scripts = useSelector((state) => state.customScriptReducer.items)
-  const scriptsLoading = useSelector((state) => state.customScriptReducer.loading)
   const loading = useSelector((state) => state.ldapReducer.loading)
   const acrs = useSelector((state) => state.acrReducer.acrReponse)
-  const customScriptloading = useSelector((state) => state.customScriptReducer.loading)
+
+  // Use React Query hook for custom scripts
+  const { data: scriptsResponse, isLoading: scriptsLoading } =
+    useCustomScriptsByType(DEFAULT_SCRIPT_TYPE)
+  const scripts = scriptsResponse?.entries || []
+  const customScriptloading = scriptsLoading
 
   SetTitle(t('titles.authentication'))
 
@@ -65,7 +69,6 @@ function AuthNListPage({ isBuiltIn = false }) {
   useEffect(() => {
     authorizeHelper(authNScopes)
     dispatch(getLdapConfig())
-    dispatch(getCustomScriptByType({ action: { type: 'person_authentication' } }))
     dispatch(getAcrsConfig())
 
     return () => {

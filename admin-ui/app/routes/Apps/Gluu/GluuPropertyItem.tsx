@@ -74,7 +74,7 @@ function GluuPropertyItem({
         )}
       </Col>
       {isRemoveButton && (
-        <Col sm={2} className="mt-4">
+        <Col sm={2} className={isInputLables ? 'mt-4' : ''}>
           <Button
             type="button"
             color="danger"

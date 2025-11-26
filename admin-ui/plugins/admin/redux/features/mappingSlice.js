@@ -21,10 +21,10 @@ const mappingSlice = createSlice({
     },
     addPermissionsToRole: (state, action) => {
       const { data, userRole } = action.payload.data
-      let roleIndex = state.items.findIndex((element) => element.role === userRole)
-      let existingPermissions = state.items[roleIndex].permissions
-      let newArr = existingPermissions.concat(data)
-      let addedPermissions = state.items
+      const roleIndex = state.items.findIndex((element) => element.role === userRole)
+      const existingPermissions = state.items[roleIndex].permissions
+      const newArr = existingPermissions.concat(data)
+      const addedPermissions = state.items
       addedPermissions[roleIndex].permissions = newArr
       state.items = [...addedPermissions]
     },
@@ -33,10 +33,10 @@ const mappingSlice = createSlice({
       loading: action.payload.data,
     }),
     updatePermissionsServerResponse: (state, action) => {
-      let indexToUpdatePermissions = state.items.findIndex(
+      const indexToUpdatePermissions = state.items.findIndex(
         (element) => element.role === action.payload?.data?.role,
       )
-      let changedData = state.items
+      const changedData = state.items
       changedData[indexToUpdatePermissions] = action.payload?.data
       state.items = [...changedData]
       state.loading = false
@@ -44,10 +44,10 @@ const mappingSlice = createSlice({
     updateMapping: (state, action) => {
       if (action.payload?.data) {
         const { id, role } = action.payload.data
-        let index = state.items.findIndex((element) => element.role === role)
-        let permissions = state.items[index].permissions
+        const index = state.items.findIndex((element) => element.role === role)
+        const permissions = state.items[index].permissions
         permissions.splice(id, 1)
-        let changedPermissions = state.items
+        const changedPermissions = state.items
         changedPermissions[index].permissions = permissions
         state.items = [...changedPermissions]
       }
