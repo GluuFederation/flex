@@ -127,6 +127,8 @@ function AgamaListPage(): React.ReactElement {
     {
       query: {
         enabled: canReadAuth,
+        staleTime: 0,
+        gcTime: 0,
       },
     },
   )
