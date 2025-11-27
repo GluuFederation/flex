@@ -144,7 +144,7 @@ const ScopeListPage: React.FC = () => {
   const loading = isLoading || isFetching
 
   const handleDeleteSuccess = useCallback(() => {
-    dispatch(updateToast(true, 'success'))
+    dispatch(updateToast(true, 'success', 'Scope deleted successfully'))
     queryClient.invalidateQueries({
       predicate: (query) => {
         const queryKey = query.queryKey[0] as string
