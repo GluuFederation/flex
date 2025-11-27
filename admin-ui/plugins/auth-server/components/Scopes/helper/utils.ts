@@ -71,11 +71,13 @@ export const applyScopeTypeDefaults = (
   }
 }
 
-const compareArrays = (arr1?: unknown[], arr2?: unknown[]): boolean => {
+const compareArrays = (arr1?: string[], arr2?: string[]): boolean => {
   if (!arr1 && !arr2) return true
   if (!arr1 || !arr2) return false
   if (arr1.length !== arr2.length) return false
-  return JSON.stringify([...arr1].sort()) === JSON.stringify([...arr2].sort())
+  const sorted1 = [...arr1].sort()
+  const sorted2 = [...arr2].sort()
+  return sorted1.every((value, index) => value === sorted2[index])
 }
 
 const compareAttributes = (
@@ -86,6 +88,7 @@ const compareAttributes = (
   if (!attr1 || !attr2) return false
   return (
     attr1.showInConfigurationEndpoint === attr2.showInConfigurationEndpoint &&
+    attr1.spontaneousClientId === attr2.spontaneousClientId &&
     compareArrays(attr1.spontaneousClientScopes, attr2.spontaneousClientScopes)
   )
 }

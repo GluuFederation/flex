@@ -20,6 +20,7 @@ import type { Scope } from 'JansConfigApi'
 import type { ExtendedScope, ScopeScript, ScopeClaim, ModifiedFields, ScopeClient } from './types'
 import { EMPTY_SCOPE } from './types'
 import { useScopeActions } from './hooks'
+import { ScopeWithMessage, DEFAULT_SCOPE_ATTRIBUTES } from './constants'
 
 interface InitState {
   scripts: ScopeScript[]
@@ -28,16 +29,6 @@ interface InitState {
 
 interface RootState {
   initReducer: InitState
-}
-
-interface ScopeWithMessage extends Scope {
-  action_message?: string
-}
-
-const DEFAULT_SCOPE_ATTRIBUTES = {
-  spontaneousClientId: undefined,
-  spontaneousClientScopes: [] as string[],
-  showInConfigurationEndpoint: false,
 }
 
 const ScopeEditPage: React.FC = () => {
@@ -160,7 +151,7 @@ const ScopeEditPage: React.FC = () => {
         setErrorMessage(error instanceof Error ? error.message : t('messages.error_in_saving'))
       }
     },
-    [updateScope, logScopeUpdate, modifiedFields, navigateToScopeList, t, queryClient],
+    [updateScope, logScopeUpdate, modifiedFields, navigateToScopeList, t, queryClient, dispatch],
   )
 
   useEffect(() => {

@@ -12,9 +12,9 @@ import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { usePostOauthScopes, getGetOauthScopesQueryKey } from 'JansConfigApi'
 import type { Scope } from 'JansConfigApi'
-import type { ExtendedScope, ScopeScript, ScopeClaim, ModifiedFields } from './types'
-import { EMPTY_SCOPE } from './types'
+import type { ScopeScript, ScopeClaim, ModifiedFields } from './types'
 import { useScopeActions } from './hooks'
+import { ScopeWithMessage, INITIAL_SCOPE } from './constants'
 
 interface InitState {
   scripts: ScopeScript[]
@@ -23,24 +23,6 @@ interface InitState {
 
 interface RootState {
   initReducer: InitState
-}
-
-interface ScopeWithMessage extends Scope {
-  action_message?: string
-}
-
-const DEFAULT_SCOPE_ATTRIBUTES = {
-  spontaneousClientId: undefined,
-  spontaneousClientScopes: [] as string[],
-  showInConfigurationEndpoint: false,
-}
-
-const INITIAL_SCOPE: ExtendedScope = {
-  ...EMPTY_SCOPE,
-  claims: [],
-  dynamicScopeScripts: [],
-  defaultScope: false,
-  attributes: DEFAULT_SCOPE_ATTRIBUTES,
 }
 
 const ScopeAddPage: React.FC = () => {
@@ -108,7 +90,7 @@ const ScopeAddPage: React.FC = () => {
         setErrorMessage(error instanceof Error ? error.message : t('messages.error_in_saving'))
       }
     },
-    [createScope, logScopeCreation, modifiedFields, navigateToScopeList, t, queryClient],
+    [createScope, logScopeCreation, modifiedFields, navigateToScopeList, t, queryClient, dispatch],
   )
 
   useEffect(() => {

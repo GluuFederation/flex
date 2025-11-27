@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useContext, useCallback, useMemo, useRef } from 'react'
 import MaterialTable from '@material-table/core'
 import type { Column, Action } from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
@@ -108,6 +108,7 @@ const ScopeListPage: React.FC = () => {
   const [sortOrder, setSortOrder] = useState<'ascending' | 'descending'>('ascending')
   const [item, setItem] = useState<Scope | null>(null)
   const [modal, setModal] = useState(false)
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   const scopesQueryParams = useMemo(
     () => ({
@@ -126,10 +127,9 @@ const ScopeListPage: React.FC = () => {
     () => ({
       query: {
         refetchOnMount: 'always' as const,
-        refetchOnWindowFocus: true,
+        refetchOnWindowFocus: false,
         refetchOnReconnect: true,
-        staleTime: 0,
-        gcTime: 0,
+        staleTime: 30000, // 30 seconds
       },
     }),
     [],
@@ -240,6 +240,10 @@ const ScopeListPage: React.FC = () => {
   const handlePatternKeyDown = useCallback(
     (event: React.KeyboardEvent): void => {
       if (event.key === 'Enter') {
+        if (debounceTimerRef.current) {
+          clearTimeout(debounceTimerRef.current)
+          debounceTimerRef.current = null
+        }
         setPattern(searchInput || null)
         setPageNumber(0)
         setStartIndex(0)
@@ -374,7 +378,7 @@ const ScopeListPage: React.FC = () => {
     [handleScopeDelete],
   )
 
-  const DeleteIcon = useCallback(() => <DeleteOutlined />, [])
+  const DeleteIcon = () => <DeleteOutlined />
 
   const detailPanel = useCallback(
     (props: DetailPanelProps): React.ReactElement => (
@@ -499,15 +503,21 @@ const ScopeListPage: React.FC = () => {
   }, [authorizeHelper, scopesScopes])
 
   useEffect(() => {
-    const debounceTimer = setTimeout(() => {
+    debounceTimerRef.current = setTimeout(() => {
       setPattern(searchInput || null)
       if (searchInput !== (pattern || '')) {
         setPageNumber(0)
         setStartIndex(0)
       }
+      debounceTimerRef.current = null
     }, 500)
 
-    return () => clearTimeout(debounceTimer)
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current)
+        debounceTimerRef.current = null
+      }
+    }
   }, [searchInput, pattern])
 
   return (
