@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { MESSAGE_WRITE, buildPayload } from 'Utils/PermChecker'
-import { useCedarling } from '@/cedarling'
+import { buildPayload } from 'Utils/PermChecker'
 import { Col, Form, Row } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
@@ -23,9 +22,8 @@ const DISABLED = 'DISABLED'
 
 const MessageForm = () => {
   const { t } = useTranslation()
-  const { hasCedarPermission, authorize } = useCedarling()
+
   const config = useSelector((state) => state.messageReducer.config)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   const dispatch = useDispatch()
   const [modal, setModal] = useState(false)
@@ -34,21 +32,7 @@ const MessageForm = () => {
     setModal(!modal)
   }
 
-  // Permission initialization
-  useEffect(() => {
-    const authorizePermissions = async () => {
-      try {
-        await authorize([MESSAGE_WRITE])
-      } catch (error) {
-        console.error('Error authorizing message permissions:', error)
-      }
-    }
-
-    authorizePermissions()
-  }, [])
-  useEffect(() => {}, [cedarPermissions])
-
-  const isDisabled = !hasCedarPermission(MESSAGE_WRITE)
+  const isDisabled = false
 
   const formik = useFormik({
     initialValues: config,

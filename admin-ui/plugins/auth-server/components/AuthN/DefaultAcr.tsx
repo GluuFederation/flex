@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useCedarling } from '@/cedarling'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { useTranslation } from 'react-i18next'
-import { ACR_READ, ACR_WRITE } from 'Utils/PermChecker'
 import SetTitle from 'Utils/SetTitle'
 import { getAcrsConfig, editAcrs } from 'Plugins/auth-server/redux/features/acrSlice'
-import { useGetAgamaPrj, type Deployment } from 'JansConfigApi'
+import { useGetAgamaPrj } from 'JansConfigApi'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { buildPayload } from 'Utils/PermChecker'
 import { Button, Form } from 'Components'
@@ -17,31 +18,25 @@ import { getScripts } from 'Redux/features/initSlice'
 import { buildAgamaFlowsArray, buildDropdownOptions, type DropdownOption } from './helper/acrUtils'
 import { updateToast } from 'Redux/features/toastSlice'
 
-const MAX_AGAMA_PROJECTS_FOR_ACR = 500
-
 interface CustomScript {
   name: string
   scriptType: string
   enabled: boolean
-  [key: string]: any
-}
-
-interface AcrState {
-  acrReponse?: {
-    defaultAcr?: string
-  }
-  loading: boolean
-  error: string | null
-}
-
-interface InitState {
-  scripts: CustomScript[]
-  loadingScripts: boolean
+  [key: string]: unknown
 }
 
 interface RootState {
-  acrReducer: AcrState
-  initReducer: InitState
+  acrReducer: {
+    acrReponse?: {
+      defaultAcr?: string
+    }
+    loading: boolean
+    error: string | null
+  }
+  initReducer: {
+    scripts: CustomScript[]
+    loadingScripts: boolean
+  }
 }
 
 interface PutData {
@@ -50,8 +45,10 @@ interface PutData {
   op?: string
 }
 
+const MAX_AGAMA_PROJECTS_FOR_ACR = 500
+
 function DefaultAcr(): React.ReactElement {
-  const { hasCedarPermission, authorize } = useCedarling()
+  const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
   const dispatch = useDispatch()
 
   const { acrReponse: acrs } = useSelector((state: RootState) => state.acrReducer)
@@ -75,24 +72,32 @@ function DefaultAcr(): React.ReactElement {
   SetTitle(t('titles.authentication'))
 
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const selectedTheme = theme?.state?.theme || 'light'
 
-  const userAction: Record<string, unknown> = {}
+  const authResourceId = ADMIN_UI_RESOURCES.Authentication
+  const authScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[authResourceId] || [], [authResourceId])
+
+  const canReadAuth = useMemo(
+    () => hasCedarReadPermission(authResourceId),
+    [hasCedarReadPermission, authResourceId],
+  )
+  const canWriteAuth = useMemo(
+    () => hasCedarWritePermission(authResourceId),
+    [hasCedarWritePermission, authResourceId],
+  )
 
   useEffect(() => {
-    const initializeAcr = async (): Promise<void> => {
-      try {
-        await authorize([ACR_WRITE, ACR_READ])
-      } catch (error) {
-        console.error('Error authorizing ACR permissions:', error)
-      }
+    if (authScopes && authScopes.length > 0) {
+      authorizeHelper(authScopes)
     }
+  }, [authorizeHelper, authScopes])
 
-    initializeAcr()
+  useEffect(() => {
+    const userAction: Record<string, unknown> = {}
     buildPayload(userAction, 'Fetch custom scripts', {})
     dispatch(getScripts({ action: userAction }))
     dispatch(getAcrsConfig())
-  }, [authorize, dispatch])
+  }, [dispatch])
 
   // Surface Agama fetch failures
   useEffect(() => {
@@ -137,9 +142,10 @@ function DefaultAcr(): React.ReactElement {
     toggle()
 
     if (put?.value) {
-      const opts: Record<string, unknown> = {}
-      opts['authenticationMethod'] = { defaultAcr: put.value }
-
+      const opts: Record<string, unknown> = {
+        authenticationMethod: { defaultAcr: put.value },
+      }
+      const userAction: Record<string, unknown> = {}
       buildPayload(userAction, userMessage, opts)
       dispatch(editAcrs({ data: opts, action: userAction }))
     }
@@ -150,22 +156,21 @@ function DefaultAcr(): React.ReactElement {
       <Form onSubmit={handleSubmit}>
         <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} />
         <div style={{ padding: '3vh' }}>
-          <GluuViewWrapper canShow={hasCedarPermission(ACR_READ)}>
+          <GluuViewWrapper canShow={canReadAuth}>
             <DefaultAcrInput
-              id="defaultAcr"
               name="defaultAcr"
               lsize={6}
               rsize={6}
-              type="select"
               label={t('fields.default_acr')}
               handler={putHandler}
               value={acrs?.defaultAcr}
               options={authScripts}
-              path={'/ACR'}
+              path="/ACR"
+              isArray={false}
               showSaveButtons={false}
             />
           </GluuViewWrapper>
-          {hasCedarPermission(ACR_WRITE) && (
+          {canWriteAuth && (
             <Button
               color={`primary-${selectedTheme}`}
               onClick={handleSaveClick}

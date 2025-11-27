@@ -1,27 +1,20 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useCallback } from 'react'
-import { setCedarlingPermission } from '../../redux/features/cedarPermissionsSlice'
-import { cedarlingClient } from '../client/CedarlingClient'
-import { constants } from '../../cedarling/constants'
+import { setCedarlingPermission } from '@/redux/features/cedarPermissionsSlice'
+import { cedarlingClient, buildCedarPermissionKey, CEDARLING_CONSTANTS } from '@/cedarling'
 import type {
   RootState,
   UseCedarlingReturn,
   AuthorizationResult,
-  IPermissionWithTags,
-} from '../types'
-import { findPermissionByUrl } from '../utility/mapRolePermissions'
-import { uuidv4 } from '@/utils/Util'
-import {
-  OPENID,
-  REVOKE_SESSION,
-  SCIM_BULK,
-  SSA_ADMIN,
-  SSA_DEVELOPER,
-  SSA_PORTAL,
-} from '@/utils/PermChecker'
+  ResourceScopeEntry,
+  CedarAction,
+  AdminUiFeatureResource,
+} from '@/cedarling'
+import { OPENID, REVOKE_SESSION, SCIM_BULK, SSA_ADMIN, SSA_DEVELOPER } from '@/utils/PermChecker'
+import { updateToast } from '@/redux/features/toastSlice'
 
 export function useCedarling(): UseCedarlingReturn {
-  const { ACTION_TYPE, RESOURCE_TYPE } = constants
+  const { ACTION_TYPE, RESOURCE_TYPE } = CEDARLING_CONSTANTS
 
   const dispatch = useDispatch()
 
@@ -30,64 +23,40 @@ export function useCedarling(): UseCedarlingReturn {
     idToken: id_token,
     JwtToken: access_token,
   } = useSelector((state: RootState) => state.authReducer)
-  const apiPermission = useSelector((state: RootState) => state.apiPermissionReducer.items)
 
   const {
-    permissions,
+    permissions: permissionsByResourceId,
     loading: isLoading,
     error,
     initialized: cedarlingInitialized,
     isInitializing,
   } = useSelector((state: RootState) => state.cedarPermissions)
+  const executeUrls = new Set([SSA_ADMIN, SSA_DEVELOPER, SCIM_BULK, REVOKE_SESSION, OPENID])
 
-  const executeUrls = new Set([
-    SSA_ADMIN,
-    SSA_PORTAL,
-    SSA_DEVELOPER,
-    SCIM_BULK,
-    REVOKE_SESSION,
-    OPENID,
-  ])
-  const getActionFromUrl = useCallback(
-    (url: string): string => {
-      const lowerUrl = url.toLowerCase()
+  const getActionLabelFromUrl = useCallback((url: string): CedarAction => {
+    const lowerUrl = url.toLowerCase()
 
-      if (executeUrls.has(url)) {
-        return `${ACTION_TYPE}"Execute"` // Matched known action-based endpoint
+    if (executeUrls.has(lowerUrl)) {
+      return `write`
+    }
+
+    if (lowerUrl.includes('write')) {
+      return 'write'
+    }
+
+    if (lowerUrl.includes('delete')) {
+      return 'delete'
+    }
+
+    return 'read'
+  }, [])
+  const buildAuthorizationRequest = useCallback(
+    (resourceId: AdminUiFeatureResource, actionLabel: CedarAction) => {
+      const cacheKey = buildCedarPermissionKey(resourceId, actionLabel)
+      const cachedDecision = permissionsByResourceId[cacheKey]
+      if (cachedDecision !== undefined) {
+        return { cacheKey, cachedDecision }
       }
-
-      if (lowerUrl.includes('write')) {
-        return `${ACTION_TYPE}"Write"` // Detected write operation
-      }
-
-      if (lowerUrl.includes('delete')) {
-        return `${ACTION_TYPE}"Delete"` // Detected delete operation
-      }
-
-      if (lowerUrl.includes('read')) {
-        return `${ACTION_TYPE}"Read"` // Detected read operation
-      }
-
-      // Default fallback if no specific match — still safe to proceed
-      return `${ACTION_TYPE}"Read"`
-    },
-    [ACTION_TYPE],
-  )
-
-  const hasReduxPermission = useCallback(
-    (url: string): boolean | undefined => {
-      if (url in permissions) {
-        return permissions[url]
-      } else {
-        return undefined
-      }
-    },
-    [permissions],
-  )
-
-  const token_authorizeCedarRequestBuilder = useCallback(
-    (permissionsWithTags: IPermissionWithTags) => {
-      const { permission, tag: id } = permissionsWithTags
 
       // Ensure all tokens are available
       if (!access_token || !id_token || !userinfo_token) {
@@ -100,30 +69,53 @@ export function useCedarling(): UseCedarlingReturn {
         userinfo_token,
       }
 
-      const resource = {
-        app_id: uuidv4(),
-        id,
-        type: RESOURCE_TYPE,
+      if (!resourceId) {
+        throw new Error('Resource id is missing for Cedar authorization request')
       }
 
-      const action = getActionFromUrl(permission)
+      const resource = {
+        cedar_entity_mapping: {
+          entity_type: RESOURCE_TYPE,
+          id: resourceId,
+        },
+      }
 
-      const req = {
+      const requestPayload = {
         tokens,
-        action,
+        action: `${ACTION_TYPE}"${actionLabel}"`,
         resource,
         context: {},
       }
 
-      return req
+      return { request: requestPayload, cacheKey }
     },
-    [access_token, id_token, userinfo_token, RESOURCE_TYPE, getActionFromUrl],
+    [access_token, id_token, userinfo_token, RESOURCE_TYPE, permissionsByResourceId, ACTION_TYPE],
+  )
+
+  const getCachedDecisionByAction = useCallback(
+    (resourceId: AdminUiFeatureResource, action: CedarAction): boolean | undefined =>
+      permissionsByResourceId[buildCedarPermissionKey(resourceId, action)],
+    [permissionsByResourceId],
+  )
+
+  const getCachedPermission = useCallback(
+    (resourceId: AdminUiFeatureResource): boolean | undefined => {
+      const readKey = buildCedarPermissionKey(resourceId, 'read')
+      if (readKey in permissionsByResourceId) {
+        return permissionsByResourceId[readKey]
+      }
+      return permissionsByResourceId[resourceId]
+    },
+    [permissionsByResourceId],
   )
 
   const authorize = useCallback(
-    async (resourceScope: string[]): Promise<AuthorizationResult> => {
-      const url = resourceScope[0]
-      if (!url) return { isAuthorized: false }
+    async (resourceScope: ResourceScopeEntry[]): Promise<AuthorizationResult> => {
+      const scopeEntry = resourceScope[0]
+      if (!scopeEntry) return { isAuthorized: false }
+
+      const url = scopeEntry.permission
+      const resolvedResourceId = scopeEntry.resourceId
 
       if (!cedarlingInitialized || isInitializing) {
         return {
@@ -139,33 +131,40 @@ export function useCedarling(): UseCedarlingReturn {
         }
       }
 
-      const existingPermission = hasReduxPermission(url)
-      if (existingPermission !== undefined) {
-        return { isAuthorized: existingPermission }
-      }
-
-      const permissionsWithTags = findPermissionByUrl(apiPermission, url)
-      if (!permissionsWithTags) {
+      if (!resolvedResourceId) {
         return {
           isAuthorized: false,
-          error: 'Permission not found for the given URL',
+          error: 'Resource id is missing for the given permission',
         }
       }
 
+      const actionLabel = getActionLabelFromUrl(url)
+
       try {
-        const request = token_authorizeCedarRequestBuilder(permissionsWithTags)
+        const { request, cacheKey, cachedDecision } = buildAuthorizationRequest(
+          resolvedResourceId,
+          actionLabel,
+        )
+        if (cachedDecision !== undefined) {
+          return { isAuthorized: cachedDecision }
+        }
         const response = await cedarlingClient.token_authorize(request)
 
         const isAuthorized = response?.decision === true
 
         dispatch(
           setCedarlingPermission({
-            url,
+            resourceId: cacheKey,
             isAuthorized,
           }),
         )
         return { isAuthorized, response }
       } catch (error) {
+        const toMessage = (err: unknown): string =>
+          err instanceof Error ? err.message : typeof err === 'string' ? err : 'Unknown error'
+        const rawMessage = toMessage(error)
+        const truncated = rawMessage.length > 25 ? rawMessage.slice(0, 25) + '…' : rawMessage
+        dispatch(updateToast(true, 'error', `Authorization error: ${truncated}`))
         return {
           isAuthorized: false,
           error: error instanceof Error ? error.message : 'Unknown error',
@@ -173,9 +172,8 @@ export function useCedarling(): UseCedarlingReturn {
       }
     },
     [
-      hasReduxPermission,
-      apiPermission,
-      token_authorizeCedarRequestBuilder,
+      permissionsByResourceId,
+      buildAuthorizationRequest,
       dispatch,
       access_token,
       id_token,
@@ -185,9 +183,85 @@ export function useCedarling(): UseCedarlingReturn {
     ],
   )
 
+  const authorizeHelper = useCallback(
+    async (resourceScopes: ResourceScopeEntry[]): Promise<AuthorizationResult[]> => {
+      if (!resourceScopes || resourceScopes.length === 0) {
+        return []
+      }
+
+      // Deduplicate by (resourceId, action) to avoid redundant API calls
+      // Map structure: key -> { entry, indices[] }
+      const uniqueMap = new Map<string, { entry: ResourceScopeEntry; indices: number[] }>()
+
+      resourceScopes.forEach((entry, index) => {
+        const actionLabel = getActionLabelFromUrl(entry.permission)
+        const key = `${entry.resourceId}::${actionLabel}`
+        const existing = uniqueMap.get(key)
+        if (existing) {
+          existing.indices.push(index)
+        } else {
+          uniqueMap.set(key, { entry, indices: [index] })
+        }
+      })
+
+      // Create promises only for unique (resourceId, action) combinations
+      const uniqueEntries = Array.from(uniqueMap.values())
+      const uniquePromises = uniqueEntries.map(({ entry }) => authorize([entry]))
+
+      // Wait for all unique authorizations
+      const settledResults = await Promise.allSettled(uniquePromises)
+
+      // Map results back to original order
+      const results: AuthorizationResult[] = new Array(resourceScopes.length)
+
+      uniqueEntries.forEach(({ indices }, uniqueIndex) => {
+        const result = settledResults[uniqueIndex]
+        const authorizationResult: AuthorizationResult =
+          result.status === 'fulfilled'
+            ? result.value
+            : {
+                isAuthorized: false,
+                error:
+                  result.reason instanceof Error
+                    ? result.reason.message
+                    : typeof result.reason === 'string'
+                      ? result.reason
+                      : 'Unknown error',
+              }
+
+        // Assign the same result to all entries that share this key
+        indices.forEach((originalIndex) => {
+          results[originalIndex] = authorizationResult
+        })
+      })
+
+      return results
+    },
+    [authorize, getActionLabelFromUrl],
+  )
+
+  const hasCedarReadPermission = useCallback(
+    (resourceId: AdminUiFeatureResource) =>
+      getCachedDecisionByAction(resourceId, 'read') ?? getCachedPermission(resourceId),
+    [getCachedDecisionByAction, getCachedPermission],
+  )
+
+  const hasCedarWritePermission = useCallback(
+    (resourceId: AdminUiFeatureResource) => getCachedDecisionByAction(resourceId, 'write'),
+    [getCachedDecisionByAction],
+  )
+
+  const hasCedarDeletePermission = useCallback(
+    (resourceId: AdminUiFeatureResource) => getCachedDecisionByAction(resourceId, 'delete'),
+    [getCachedDecisionByAction],
+  )
+
   return {
     authorize,
-    hasCedarPermission: hasReduxPermission,
+    authorizeHelper,
+    hasCedarReadPermission,
+    hasCedarWritePermission,
+    hasCedarDeletePermission,
     isLoading,
     error,
   }

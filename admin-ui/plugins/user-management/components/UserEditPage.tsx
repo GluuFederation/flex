@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import React, { useEffect, useState, useMemo } from 'react'
+import { useLocation } from 'react-router-dom'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { Container, CardBody, Card } from 'Components'
 import UserForm from './UserForm'
 import { useTranslation } from 'react-i18next'
@@ -20,10 +21,12 @@ import { useQueryClient } from '@tanstack/react-query'
 import { updateToast } from 'Redux/features/toastSlice'
 import { logUserUpdate, getErrorMessage } from '../helper/userAuditHelpers'
 import { triggerUserWebhook } from '../helper/userWebhookHelpers'
+import { mapToPersonAttributes } from '../utils/userFormUtils'
+import type { FormValueEntry } from '../types/ComponentTypes'
 
 function UserEditPage() {
   const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const { navigateToRoute } = useAppNavigation()
   const location = useLocation()
   const queryClient = useQueryClient()
   const { t } = useTranslation()
@@ -31,15 +34,18 @@ function UserEditPage() {
   const [userDetails] = useState<CustomUser | null>(location.state?.selectedUser ?? null)
   useEffect(() => {
     if (!userDetails) {
-      navigate('/user/usersmanagement')
+      navigateToRoute(ROUTES.USER_MANAGEMENT)
     }
-  }, [userDetails, navigate])
+  }, [userDetails, navigateToRoute])
 
   const { data: attributesData, isLoading: loadingAttributes } = useGetAttributes({
     limit: 200,
     status: 'ACTIVE',
   })
-  const personAttributes = (attributesData?.entries || []) as PersonAttribute[]
+  const personAttributes = useMemo<PersonAttribute[]>(
+    () => mapToPersonAttributes(attributesData?.entries),
+    [attributesData?.entries],
+  )
 
   useEffect(() => {
     dispatch(getPersistenceType())
@@ -54,9 +60,9 @@ function UserEditPage() {
       onSuccess: async (data, variables) => {
         dispatch(updateToast(true, 'success', t('messages.user_updated_successfully')))
         await logUserUpdate(data, variables.data)
-        triggerUserWebhook(data as Record<string, unknown>)
+        triggerUserWebhook(data)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
-        navigate('/user/usersmanagement')
+        navigateToRoute(ROUTES.USER_MANAGEMENT)
       },
       onError: (error: unknown) => {
         const errMsg = getErrorMessage(error)
@@ -64,6 +70,7 @@ function UserEditPage() {
       },
     },
   })
+  const isSubmitting = updateUserMutation.isPending
 
   const createCustomAttributes = (values: UserEditFormValues): CustomObjectAttribute[] => {
     if (!values) {
@@ -108,13 +115,13 @@ function UserEditPage() {
       } else {
         let multiValues: string[] = []
         if (Array.isArray(rawValue)) {
-          multiValues = (rawValue as unknown[])
-            .map((entry) => {
+          multiValues = rawValue
+            .map((entry: FormValueEntry) => {
               if (typeof entry === 'string') {
                 return entry.trim()
               }
-              if (entry && typeof entry === 'object') {
-                const record = entry as Record<string, unknown>
+              if (entry && typeof entry === 'object' && !Array.isArray(entry)) {
+                const record = entry as { value?: string; [key: string]: string | undefined }
                 const maybe = record.value ?? record[attributeName]
                 return typeof maybe === 'string' ? maybe.trim() : ''
               }
@@ -140,13 +147,13 @@ function UserEditPage() {
 
   const submitData = (
     values: UserEditFormValues,
-    modifiedFields: Record<string, unknown>,
+    modifiedFields: Record<string, string | string[]>,
     userMessage: string,
   ) => {
     const customAttributes = createCustomAttributes(values)
     const userInum = userDetails?.inum
 
-    const submittableValues: Record<string, unknown> = {
+    const submittableValues = {
       inum: userInum,
       userId: Array.isArray(values.userId) ? values.userId[0] : values.userId || '',
       mail: Array.isArray(values.mail) ? values.mail[0] : values.mail,
@@ -157,35 +164,33 @@ function UserEditPage() {
       givenName: Array.isArray(values.givenName) ? values.givenName[0] : values.givenName || '',
       customAttributes,
       dn: userDetails?.dn || '',
-    }
-    if (persistenceType === 'ldap') {
-      submittableValues['customObjectClasses'] = ['top', 'jansPerson', 'jansCustomPerson']
-    }
-
-    const postValue = Object.keys(modifiedFields).map((key) => {
-      return {
+      ...(persistenceType === 'ldap' && {
+        customObjectClasses: ['top', 'jansPerson', 'jansCustomPerson'],
+      }),
+      modifiedFields: Object.keys(modifiedFields).map((key) => ({
         [key]: modifiedFields[key],
-      }
-    })
-    submittableValues['modifiedFields'] = postValue
-    submittableValues['performedOn'] = {
-      user_inum: userDetails?.inum,
-      useId: userDetails?.displayName,
+      })),
+      performedOn: {
+        user_inum: userDetails?.inum,
+        userId: userDetails?.displayName,
+      },
+      action_message: userMessage,
     }
-    submittableValues['action_message'] = userMessage
 
-    updateUserMutation.mutate({ data: submittableValues })
+    updateUserMutation.mutate({ data: submittableValues as CustomUser })
   }
 
   return (
     <Container>
       <Card type="border" color={null} className="mb-3">
         <CardBody>
-          {loadingAttributes ? (
-            <GluuLoader blocking={loadingAttributes} />
-          ) : (
-            <UserForm onSubmitData={submitData} userDetails={userDetails} />
-          )}
+          <GluuLoader blocking={loadingAttributes || isSubmitting}>
+            <UserForm
+              onSubmitData={submitData}
+              userDetails={userDetails}
+              isSubmitting={isSubmitting}
+            />
+          </GluuLoader>
         </CardBody>
       </Card>
     </Container>

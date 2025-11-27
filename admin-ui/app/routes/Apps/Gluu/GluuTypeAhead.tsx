@@ -25,7 +25,7 @@ interface GluuTypeAheadProps {
   name: string
   value?: Option[]
   options: Option[]
-  formik?: FormikContextType<Record<string, unknown>> | null
+  formik?: FormikContextType<any> | null
   required?: boolean
   doc_category?: string
   doc_entry?: string

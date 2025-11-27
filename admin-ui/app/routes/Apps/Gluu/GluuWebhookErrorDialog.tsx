@@ -1,7 +1,6 @@
-import { useContext } from 'react'
+import { useContext, useMemo, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
-import { WEBHOOK_READ } from 'Utils/PermChecker'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import {
   setShowErrorModal,
@@ -12,6 +11,8 @@ import { Box } from '@mui/material'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { useCedarling } from '@/cedarling'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
 
 const GluuWebhookErrorDialog = () => {
@@ -19,10 +20,23 @@ const GluuWebhookErrorDialog = () => {
   const dispatch = useDispatch()
   const { triggerWebhookMessage, webhookTriggerErrors, triggerWebhookInProgress, showErrorModal } =
     useSelector((state: any) => state.webhookReducer)
-  const { hasCedarPermission } = useCedarling()
+  const { hasCedarReadPermission, authorizeHelper } = useCedarling()
 
   const theme: any = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
+
+  const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
+  const webhookScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[webhookResourceId], [webhookResourceId])
+  const canReadWebhooks = useMemo(
+    () => hasCedarReadPermission(webhookResourceId),
+    [hasCedarReadPermission, webhookResourceId],
+  )
+
+  useEffect(() => {
+    if (webhookScopes && webhookScopes.length > 0) {
+      authorizeHelper(webhookScopes)
+    }
+  }, [authorizeHelper, webhookScopes])
 
   const closeModal = () => {
     dispatch(setShowErrorModal(!showErrorModal))
@@ -32,7 +46,7 @@ const GluuWebhookErrorDialog = () => {
 
   return (
     <Modal
-      isOpen={showErrorModal && hasCedarPermission(WEBHOOK_READ)}
+      isOpen={showErrorModal && canReadWebhooks}
       size={'lg'}
       toggle={closeModal}
       className="modal-outline-primary"

@@ -14,6 +14,7 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
   scimConfiguration,
   handleSubmit,
   isSubmitting,
+  canWriteScim = false,
 }) => {
   const [modal, setModal] = useState<boolean>(false)
 
@@ -81,7 +82,7 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
           <GluuFormFooter
             showBack={true}
             showCancel={true}
-            showApply={true}
+            showApply={canWriteScim}
             onApply={toggle}
             onCancel={handleCancel}
             disableBack={false}

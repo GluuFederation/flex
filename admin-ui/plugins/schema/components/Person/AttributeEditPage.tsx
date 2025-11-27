@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { useQueryClient } from '@tanstack/react-query'
 import { CardBody, Card } from 'Components'
@@ -25,15 +25,16 @@ import { useSchemaWebhook } from '../../hooks/useSchemaWebhook'
 import { API_ATTRIBUTE } from '../../constants'
 import { useTranslation } from 'react-i18next'
 import { getErrorMessage } from '../../utils/errorHandler'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 function AttributeEditPage(): JSX.Element {
-  const navigate = useNavigate()
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
   const { gid } = useParams<{ gid: string }>()
   const { t } = useTranslation()
   const { logAudit } = useSchemaAuditLogger()
   const { triggerAttributeWebhook } = useSchemaWebhook()
+  const { navigateBack } = useAppNavigation()
 
   const inum = gid?.replace(':', '') || ''
 
@@ -91,13 +92,13 @@ function AttributeEditPage(): JSX.Element {
               })
 
               triggerAttributeWebhook(updatedAttribute)
-              navigate('/attributes')
+              navigateBack(ROUTES.ATTRIBUTES_LIST)
             },
           },
         )
       }
     },
-    [putAttributeMutation, logAudit, triggerAttributeWebhook, navigate],
+    [putAttributeMutation, logAudit, triggerAttributeWebhook, navigateBack],
   )
 
   if (queryError) {

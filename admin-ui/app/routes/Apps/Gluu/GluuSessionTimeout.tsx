@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 import SessionTimeoutDialog from './GluuSessionTimeoutDialog'
-import { useNavigate } from 'react-router-dom'
 import { withIdleTimer } from 'react-idle-timer'
 import { useDispatch, useSelector } from 'react-redux'
 import { auditLogoutLogs } from 'Redux/features/sessionSlice'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 let countdownInterval: any
 let timeout: any
@@ -19,8 +19,8 @@ const SessionTimeout = ({ isAuthenticated }: any) => {
     useSelector((state: any) => state.authReducer?.config?.sessionTimeoutInMins) || 5
   const { logoutAuditSucceeded } = useSelector((state: any) => state.logoutAuditReducer)
 
-  const navigate = useNavigate()
   const dispatch = useDispatch()
+  const { navigateToRoute } = useAppNavigation()
 
   const clearSessionTimeout = () => {
     clearTimeout(timeout)
@@ -78,9 +78,9 @@ const SessionTimeout = ({ isAuthenticated }: any) => {
 
   useEffect(() => {
     if (logoutAuditSucceeded === true) {
-      navigate('/logout')
+      navigateToRoute(ROUTES.LOGOUT)
     }
-  }, [logoutAuditSucceeded])
+  }, [logoutAuditSucceeded, navigateToRoute])
 
   return (
     <>

@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react'
+import React, { useEffect, useContext, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Container, Row, Col, Card, CardBody } from 'Components'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
@@ -10,6 +10,9 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import SetTitle from 'Utils/SetTitle'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import customColors from '@/customColors'
+import { useCedarling } from '@/cedarling'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 
 function PersistenceDetail() {
   const { databaseInfo, databaseInfoLoading } = useSelector((state) => state.persistenceTypeReducer)
@@ -18,6 +21,17 @@ function PersistenceDetail() {
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
+  const { hasCedarReadPermission, authorizeHelper } = useCedarling()
+  const persistenceResourceId = useMemo(() => ADMIN_UI_RESOURCES.Persistence, [])
+  const persistenceScopes = useMemo(
+    () => CEDAR_RESOURCE_SCOPES[persistenceResourceId],
+    [persistenceResourceId],
+  )
+  const canReadPersistence = useMemo(
+    () => hasCedarReadPermission(persistenceResourceId),
+    [hasCedarReadPermission, persistenceResourceId],
+  )
+
   SetTitle(t('menus.persistence'))
 
   const labelStyle = {
@@ -83,8 +97,18 @@ function PersistenceDetail() {
   )
 
   useEffect(() => {
-    dispatch(getDatabaseInfo())
-  }, [dispatch])
+    authorizeHelper(persistenceScopes)
+  }, [authorizeHelper, persistenceScopes])
+
+  useEffect(() => {
+    if (canReadPersistence) {
+      dispatch(getDatabaseInfo())
+    }
+  }, [canReadPersistence, dispatch])
+
+  if (!canReadPersistence) {
+    return null
+  }
 
   if (databaseInfoLoading) {
     return (

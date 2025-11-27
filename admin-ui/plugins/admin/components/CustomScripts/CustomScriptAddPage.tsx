@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { CardBody, Card } from 'Components'
 import CustomScriptForm from './CustomScriptForm'
 import { addCustomScript } from 'Plugins/admin/redux/features/customScriptSlice'
@@ -18,11 +18,11 @@ function CustomScriptAddPage() {
   const errorInSaveOperationFlag = useSelector(
     (state: RootState) => state.customScriptReducer.errorInSaveOperationFlag,
   )
-  const navigate = useNavigate()
+  const { navigateBack } = useAppNavigation()
 
   useEffect(() => {
-    if (saveOperationFlag && !errorInSaveOperationFlag) navigate('/adm/scripts')
-  }, [saveOperationFlag, errorInSaveOperationFlag, navigate])
+    if (saveOperationFlag && !errorInSaveOperationFlag) navigateBack(ROUTES.CUSTOM_SCRIPT_LIST)
+  }, [saveOperationFlag, errorInSaveOperationFlag, navigateBack])
 
   function handleSubmit(data: SubmitData) {
     if (data) {

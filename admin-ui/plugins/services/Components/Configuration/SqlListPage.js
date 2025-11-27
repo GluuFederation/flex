@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react'
+import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
-import { useNavigate } from 'react-router-dom'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useDispatch, useSelector } from 'react-redux'
-import { useCedarling } from '@/cedarling'
+import { useCedarling, ADMIN_UI_RESOURCES, CEDAR_RESOURCE_SCOPES } from '@/cedarling'
 import { Paper } from '@mui/material'
 import { Card, CardBody } from 'Components'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
@@ -13,7 +13,7 @@ import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import Alert from '@mui/material/Alert'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { getPersistenceType } from 'Plugins/services/redux/features/persistenceTypeSlice'
-import { buildPayload, SQL_READ, SQL_WRITE, SQL_DELETE } from 'Utils/PermChecker'
+import { buildPayload } from 'Utils/PermChecker'
 import {
   getSqlConfig,
   setCurrentItem,
@@ -28,25 +28,44 @@ import customColors from '@/customColors'
 import { getPagingSize } from '@/utils/pagingUtils'
 
 function SqlListPage() {
-  const { hasCedarPermission, authorize } = useCedarling()
+  const {
+    hasCedarReadPermission,
+    hasCedarWritePermission,
+    hasCedarDeletePermission,
+    authorizeHelper,
+  } = useCedarling()
   const sqlConfigurations = useSelector((state) => state.sqlReducer.sql)
   const loading = useSelector((state) => state.sqlReducer.loading)
   const testStatus = useSelector((state) => state.sqlReducer.testStatus)
   const persistenceType = useSelector((state) => state.persistenceTypeReducer.type)
   const persistenceTypeLoading = useSelector((state) => state.persistenceTypeReducer.loading)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   const dispatch = useDispatch()
 
-  // Initialize Cedar permissions
+  const persistenceResourceId = useMemo(() => ADMIN_UI_RESOURCES.Persistence, [])
+  const persistenceScopes = useMemo(
+    () => CEDAR_RESOURCE_SCOPES[persistenceResourceId],
+    [persistenceResourceId],
+  )
+
+  const canReadSql = useMemo(
+    () => hasCedarReadPermission(persistenceResourceId),
+    [hasCedarReadPermission, persistenceResourceId],
+  )
+  const canWriteSql = useMemo(
+    () => hasCedarWritePermission(persistenceResourceId),
+    [hasCedarWritePermission, persistenceResourceId],
+  )
+  const canDeleteSql = useMemo(
+    () => hasCedarDeletePermission(persistenceResourceId),
+    [hasCedarDeletePermission, persistenceResourceId],
+  )
+
   useEffect(() => {
-    const initPermissions = async () => {
-      const permissions = [SQL_READ, SQL_WRITE, SQL_DELETE]
-      for (const permission of permissions) {
-        await authorize([permission])
-      }
-    }
-    initPermissions()
+    authorizeHelper(persistenceScopes)
+  }, [authorizeHelper, persistenceScopes])
+
+  useEffect(() => {
     dispatch(getSqlConfig())
     dispatch(getPersistenceType())
   }, [dispatch])
@@ -54,7 +73,7 @@ function SqlListPage() {
   const { t } = useTranslation()
   const userAction = {}
   const [myActions, setMyActions] = useState([])
-  const navigate = useNavigate()
+  const { navigateToRoute, navigateBack } = useAppNavigation()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const pageSize = getPagingSize()
@@ -74,11 +93,7 @@ function SqlListPage() {
   useEffect(() => {
     const actions = []
 
-    const canRead = hasCedarPermission(SQL_READ)
-    const canWrite = hasCedarPermission(SQL_WRITE)
-    const canDelete = hasCedarPermission(SQL_DELETE)
-
-    if (canWrite) {
+    if (canWriteSql) {
       actions.push({
         icon: 'add',
         tooltip: `${t('tooltips.add_sql')}`,
@@ -94,11 +109,11 @@ function SqlListPage() {
         },
         tooltip: `${t('tooltips.edit_sql')}`,
         onClick: (event, rowData) => handleGoToSqlEditPage(rowData),
-        disabled: !canWrite,
+        disabled: !canWriteSql,
       }))
     }
 
-    if (canRead) {
+    if (canReadSql) {
       actions.push({
         icon: 'refresh',
         tooltip: `${t('tooltips.refresh_data')}`,
@@ -110,7 +125,7 @@ function SqlListPage() {
       })
     }
 
-    if (canDelete) {
+    if (canDeleteSql) {
       actions.push((rowData) => ({
         icon: () => <DeleteOutlined />,
         iconProps: {
@@ -120,19 +135,29 @@ function SqlListPage() {
         },
         tooltip: `${t('tooltips.delete_record')}`,
         onClick: (event, rowData) => handleSqlDelete(rowData),
-        disabled: !canDelete,
+        disabled: !canDeleteSql,
       }))
     }
 
     setMyActions(actions)
-  }, [cedarPermissions, t, dispatch])
+  }, [
+    canReadSql,
+    canWriteSql,
+    canDeleteSql,
+    t,
+    dispatch,
+    handleGoToSqlAddPage,
+    handleGoToSqlEditPage,
+    handleSqlDelete,
+  ])
 
   const handleGoToSqlEditPage = useCallback(
     (row) => {
+      if (!row?.configId) return
       dispatch(setCurrentItem(row))
-      navigate(`/config/sql/edit/:` + row.configId)
+      navigateToRoute(ROUTES.SQL_EDIT(row.configId))
     },
-    [dispatch, navigate],
+    [dispatch, navigateToRoute],
   )
 
   const handleSqlDelete = useCallback((row) => {
@@ -141,17 +166,17 @@ function SqlListPage() {
   }, [])
 
   const handleGoToSqlAddPage = useCallback(() => {
-    navigate('/config/sql/new')
-  }, [navigate])
+    navigateToRoute(ROUTES.SQL_ADD)
+  }, [navigateToRoute])
 
   const onDeletionConfirmed = useCallback(
     (message) => {
       buildPayload(userAction, message, item.configId)
       dispatch(deleteSql(item.configId))
-      navigate('/config/sql')
+      navigateBack(ROUTES.SQL_LIST)
       toggle()
     },
-    [item.configId, dispatch, navigate],
+    [item.configId, dispatch, navigateBack],
   )
 
   const testSqlConnect = useCallback(

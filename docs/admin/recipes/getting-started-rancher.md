@@ -167,18 +167,12 @@ kubectl get secret cn -o json -n <namespace>
     To install a quick setup with `PostgreSQL` as the backend, you need to provide the connection parameters of a fresh setup. 
     For a test setup, you can follow the below instructions:
 
-    - `Apps` --> `Charts` and search for `Postgres`.
-    - Click on `Install` on the right side of the window.
-    - Create a new namespace called `postgres` and hit `Next`.
-    - You should be on the `Edit YAML` page. Modify the below keys as desired. These values will be inputted in the installation of `Gluu Flex`
-
-    | Key             |
-    |-----------------|
-    | `auth.database` |
-    | `auth.username` |
-    | `auth.password` |
-
-    - Click `Install` at the bottom right of the page.
+    - Open a kubectl shell from the top right navigation menu `>_`. 
+    - Run:
+        ```bash
+        wget https://raw.githubusercontent.com/GluuFederation/flex/nightly/automation/pgsql.yaml 
+        kubectl apply -f pgsql.yaml #adjust values as preferred
+        ```
 
     ###  Install MySQL database
     !!! Note
@@ -189,21 +183,11 @@ kubectl get secret cn -o json -n <namespace>
 
     - Open a kubectl shell from the top right navigation menu `>_`. 
     - Run:
-        ```
-        helm repo add bitnami https://charts.bitnami.com/bitnami
-        helm repo update
-        kubectl create ns gluu #Create gluu namespace
-        ```
-    - Pass in a custom password for the database. Here we used `Test1234#`. The admin user will be left as `root`. Notice we are installing in the `gluu` namespace. Run 
-
-        ```
-        helm install my-release --set auth.rootPassword=Test1234#,auth.database=jans bitnami/mysql -n gluu
+        ```bash
+        wget https://raw.githubusercontent.com/GluuFederation/flex/nightly/automation/mysql.yaml 
+        kubectl apply -f mysql.yaml #adjust values as preferred
         ```
 
-    ### Successful Installation    
-    After the installation is successful, you should have a `Statefulset` active in the rancher UI as shown in the screenshot below.
-
-    <img width="1504" alt="Screenshot 2022-07-05 at 14 54 26" src="https://user-images.githubusercontent.com/17182751/177326700-9215436c-f1c2-467f-94ff-601ff7fbdbfb.png">
 
 
 2. Install [Nginx-Ingress](https://github.com/kubernetes/ingress-nginx), if you are not using Istio ingress
@@ -227,7 +211,7 @@ kubectl get secret cn -o json -n <namespace>
     - Change the namespace from `default` to `gluu`, then click on `Next`.
     - Scroll through the sections to get familiar with the options. For minimal setup follow with the next instructions.
     - Add `License SSA`. Before initiating the setup, please obtain an [SSA](https://docs.gluu.org/vreplace-flex-version/install/agama/prerequisites/#obtaining-an-ssa) for Flex trial, after which you will issued a JWT.
-    - Click on the `Persistence` section. Change `SQL database host uri` to `postgresql.postgres.svc.cluster.local` in the case of `PostgreSQL` or `my-release-mysql.gluu.svc.cluster.local` in the case of `MySQL`. Also set `SQL database username`,`SQL password`, and `SQL database name` to the values you used during the database installation.
+    - Click on the `Persistence` section. Change `SQL database host uri` to `postgresql.gluu.svc` in the case of `PostgreSQL` or `mysql.gluu.svc` in the case of `MySQL`. Also set `SQL database username`,`SQL password`, and `SQL database name` to the values you used during the database installation.
     - To enable Casa and the Admin UI, navigate to the `Optional Services` section and check the `Enable casa` and `boolean flag to enable admin UI` boxes. You can also enable different services like `Client API` and `Jackrabbit`.
     - Click on the  section named `Ingress` and enable all the endpoints. You might add LB IP or address if you don't have `FQDN` for `Gluu`. 
     - To pass your `FQDN` or `Domain` that is intended to serve the Gluu Flex IDP, head to the `Configuration` section:

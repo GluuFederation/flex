@@ -1,8 +1,24 @@
-import { useContext } from 'react'
+import { useContext, memo, CSSProperties } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FormGroup, Label, Badge } from 'Components'
 import GluuTooltip from './GluuTooltip'
 import { ThemeContext } from 'Context/theme/themeContext'
+
+interface GluuFormDetailRowProps {
+  label: string
+  value?: string | number | boolean | null
+  isBadge?: boolean
+  badgeColor?: string
+  lsize?: number
+  rsize?: number
+  doc_category?: string
+  doc_entry?: string
+  isDirect?: boolean
+  labelStyle?: CSSProperties
+  rowClassName?: string
+}
+
+const defaultLabelStyle: CSSProperties = { fontWeight: 'bold' }
 
 function GluuFormDetailRow({
   label,
@@ -14,18 +30,22 @@ function GluuFormDetailRow({
   doc_category,
   doc_entry,
   isDirect = false,
-}: any) {
+  labelStyle,
+  rowClassName,
+}: GluuFormDetailRowProps) {
   const { t } = useTranslation()
-  const theme: any = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme?.state?.theme ?? 'light'
+
+  const appliedLabelStyle: CSSProperties = { ...defaultLabelStyle, ...labelStyle }
 
   return (
     <GluuTooltip doc_category={doc_category} isDirect={isDirect} doc_entry={doc_entry || label}>
-      <FormGroup row>
-        <Label for={label} style={{ fontWeight: 'bold' }} sm={lsize || 6}>
+      <FormGroup row className={rowClassName}>
+        <Label for={label} style={appliedLabelStyle} sm={lsize}>
           {t(label)}:
         </Label>
-        <Label for={value?.toString()} sm={rsize || 6}>
+        <Label for={value?.toString()} sm={rsize}>
           {!isBadge ? (
             value
           ) : (
@@ -36,4 +56,4 @@ function GluuFormDetailRow({
     </GluuTooltip>
   )
 }
-export default GluuFormDetailRow
+export default memo(GluuFormDetailRow)

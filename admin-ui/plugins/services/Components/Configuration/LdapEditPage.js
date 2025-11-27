@@ -1,28 +1,28 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 import { Container, CardBody, Card } from 'Components'
 import LdapForm from './LdapForm'
 import { editLdap, toggleSavedFormFlag } from 'Plugins/services/redux/features/ldapSlice'
 import { buildPayload } from 'Utils/PermChecker'
 import { cloneDeep, isEmpty } from 'lodash'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 function LdapEditPage() {
   const item = useSelector((state) => state.ldapReducer.item)
   const dispatch = useDispatch()
   const userAction = {}
-  const navigate = useNavigate()
+  const { navigateBack } = useAppNavigation()
   const { savedForm } = useSelector((state) => state.ldapReducer)
 
   useEffect(() => {
     if (savedForm) {
-      navigate('/config/ldap')
+      navigateBack(ROUTES.LDAP_LIST)
     }
 
     return () => {
       dispatch(toggleSavedFormFlag(false))
     }
-  }, [savedForm])
+  }, [savedForm, navigateBack, dispatch])
 
   function handleSubmit(data) {
     if (!isEmpty(data)) {
