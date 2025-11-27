@@ -95,7 +95,13 @@ export function useCreateCustomScript() {
       const { actionMessage, ...baseVariables } = variables
       const result = await baseMutation.mutateAsync(baseVariables)
 
-      queryClient.invalidateQueries({ queryKey: getGetConfigScriptsQueryKey() })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: getGetConfigScriptsQueryKey() }),
+        queryClient.invalidateQueries({
+          queryKey: getGetConfigScriptsByTypeQueryKey(variables.data.scriptType || ''),
+        }),
+      ])
+
       webhookTrigger({ createdFeatureValue: result })
       await logAuditAction(CREATE, SCRIPT, {
         action: {
@@ -120,12 +126,17 @@ export function useUpdateCustomScript() {
       const { actionMessage, ...baseVariables } = variables
       const result = await baseMutation.mutateAsync(baseVariables)
 
-      queryClient.invalidateQueries({ queryKey: getGetConfigScriptsQueryKey() })
-      if (result.inum) {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: getGetConfigScriptsQueryKey() }),
         queryClient.invalidateQueries({
-          queryKey: getGetConfigScriptsByInumQueryKey(result.inum),
-        })
-      }
+          queryKey: getGetConfigScriptsByTypeQueryKey(variables.data.scriptType || ''),
+        }),
+        result.inum
+          ? queryClient.invalidateQueries({
+              queryKey: getGetConfigScriptsByInumQueryKey(result.inum),
+            })
+          : Promise.resolve(),
+      ])
 
       webhookTrigger({ createdFeatureValue: result })
       await logAuditAction(UPDATE, SCRIPT, {

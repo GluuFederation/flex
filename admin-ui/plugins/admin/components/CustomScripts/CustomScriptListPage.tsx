@@ -317,7 +317,7 @@ const CustomScriptListPage: React.FC = () => {
             size="small"
             sx={{
               'textTransform': 'none',
-              'backgroundColor': customColors.logo,
+              'backgroundColor': themeColors.background,
               'color': customColors.white,
               '&:hover': {
                 backgroundColor: customColors.darkGray,
@@ -378,6 +378,7 @@ const CustomScriptListPage: React.FC = () => {
       pageSize: limit,
       headerStyle: {
         backgroundColor: themeColors.background,
+        color: customColors.white,
         fontWeight: 600,
         fontSize: '0.875rem',
         borderBottom: '2px solid #e0e0e0',
@@ -388,6 +389,8 @@ const CustomScriptListPage: React.FC = () => {
 
         return {
           backgroundColor: hasError ? `${customColors.accentRed}15` : baseColor,
+          color: customColors.darkGray,
+          fontSize: '0.875rem',
         }
       },
       actionsColumnIndex: -1,
@@ -555,8 +558,13 @@ const CustomScriptListPage: React.FC = () => {
                 `${from}-${to} ${t('fields.of')} ${count !== -1 ? count : `${t('fields.more_than')} ${to}`}`
               }
               sx={{
-                borderTop: `1px solid ${themeColors.borderColor ?? '#e0e0e0'}`,
-                backgroundColor: themeColors.background,
+                'borderTop': `1px solid ${themeColors.borderColor ?? '#e0e0e0'}`,
+                'backgroundColor': themeColors.background,
+                'color': customColors.white,
+                '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows, & .MuiTablePagination-select, & .MuiSelect-icon, & .MuiIconButton-root':
+                  {
+                    color: customColors.white,
+                  },
               }}
             />
           </Box>
