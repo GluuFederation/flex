@@ -2016,15 +2016,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#successful-installation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Successful Installation
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -2949,15 +2940,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#successful-installation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Successful Installation
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -3414,31 +3396,11 @@
 <p>To install a quick setup with <code>PostgreSQL</code> as the backend, you need to provide the connection parameters of a fresh setup. 
 For a test setup, you can follow the below instructions:</p>
 <ul>
-<li><code>Apps</code> --&gt; <code>Charts</code> and search for <code>Postgres</code>.</li>
-<li>Click on <code>Install</code> on the right side of the window.</li>
-<li>Create a new namespace called <code>postgres</code> and hit <code>Next</code>.</li>
-<li>You should be on the <code>Edit YAML</code> page. Modify the below keys as desired. These values will be inputted in the installation of <code>Gluu Flex</code></li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>Key</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>auth.database</code></td>
-</tr>
-<tr>
-<td><code>auth.username</code></td>
-</tr>
-<tr>
-<td><code>auth.password</code></td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>Click <code>Install</code> at the bottom right of the page.</li>
+<li>Open a kubectl shell from the top right navigation menu <code>&gt;_</code>. </li>
+<li>Run:
+    <div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://raw.githubusercontent.com/GluuFederation/flex/nightly/automation/pgsql.yaml<span class="w"> </span>
+kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>pgsql.yaml<span class="w"> </span><span class="c1">#adjust values as preferred</span>
+</code></pre></div></li>
 </ul>
 <h3 id="install-mysql-database">Install MySQL database<a class="headerlink" href="#install-mysql-database" title="Permanent link">#</a></h3>
 <div class="admonition note">
@@ -3450,19 +3412,10 @@ For a test setup, you can follow the below instructions:</p>
 <ul>
 <li>Open a kubectl shell from the top right navigation menu <code>&gt;_</code>. </li>
 <li>Run:
-    <div class="highlight"><pre><span></span><code>helm repo add bitnami https://charts.bitnami.com/bitnami
-helm repo update
-kubectl create ns gluu #Create gluu namespace
+    <div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://raw.githubusercontent.com/GluuFederation/flex/nightly/automation/mysql.yaml<span class="w"> </span>
+kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>mysql.yaml<span class="w"> </span><span class="c1">#adjust values as preferred</span>
 </code></pre></div></li>
-<li>
-<p>Pass in a custom password for the database. Here we used <code>Test1234#</code>. The admin user will be left as <code>root</code>. Notice we are installing in the <code>gluu</code> namespace. Run </p>
-<div class="highlight"><pre><span></span><code>helm install my-release --set auth.rootPassword=Test1234#,auth.database=jans bitnami/mysql -n gluu
-</code></pre></div>
-</li>
 </ul>
-<h3 id="successful-installation">Successful Installation<a class="headerlink" href="#successful-installation" title="Permanent link">#</a></h3>
-<p>After the installation is successful, you should have a <code>Statefulset</code> active in the rancher UI as shown in the screenshot below.</p>
-<p><img width="1504" alt="Screenshot 2022-07-05 at 14 54 26" src="https://user-images.githubusercontent.com/17182751/177326700-9215436c-f1c2-467f-94ff-601ff7fbdbfb.png"></p>
 </li>
 <li>
 <p>Install <a href="https://github.com/kubernetes/ingress-nginx">Nginx-Ingress</a>, if you are not using Istio ingress</p>
@@ -3483,7 +3436,7 @@ helm install nginx ingress-nginx/ingress-nginx
 <li>Change the namespace from <code>default</code> to <code>gluu</code>, then click on <code>Next</code>.</li>
 <li>Scroll through the sections to get familiar with the options. For minimal setup follow with the next instructions.</li>
 <li>Add <code>License SSA</code>. Before initiating the setup, please obtain an <a href="https://docs.gluu.org/vreplace-flex-version/install/agama/prerequisites/#obtaining-an-ssa">SSA</a> for Flex trial, after which you will issued a JWT.</li>
-<li>Click on the <code>Persistence</code> section. Change <code>SQL database host uri</code> to <code>postgresql.postgres.svc.cluster.local</code> in the case of <code>PostgreSQL</code> or <code>my-release-mysql.gluu.svc.cluster.local</code> in the case of <code>MySQL</code>. Also set <code>SQL database username</code>,<code>SQL password</code>, and <code>SQL database name</code> to the values you used during the database installation.</li>
+<li>Click on the <code>Persistence</code> section. Change <code>SQL database host uri</code> to <code>postgresql.gluu.svc</code> in the case of <code>PostgreSQL</code> or <code>mysql.gluu.svc</code> in the case of <code>MySQL</code>. Also set <code>SQL database username</code>,<code>SQL password</code>, and <code>SQL database name</code> to the values you used during the database installation.</li>
 <li>To enable Casa and the Admin UI, navigate to the <code>Optional Services</code> section and check the <code>Enable casa</code> and <code>boolean flag to enable admin UI</code> boxes. You can also enable different services like <code>Client API</code> and <code>Jackrabbit</code>.</li>
 <li>Click on the  section named <code>Ingress</code> and enable all the endpoints. You might add LB IP or address if you don't have <code>FQDN</code> for <code>Gluu</code>. </li>
 <li>To pass your <code>FQDN</code> or <code>Domain</code> that is intended to serve the Gluu Flex IDP, head to the <code>Configuration</code> section:<ol>
@@ -4038,7 +3991,7 @@ docker run -dit -p 8111:80 \
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="April 29, 2025 13:48:57 UTC"><span class="timeago" datetime="2025-04-29T13:48:57+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="April 29, 2025 13:48:57 UTC">2025-04-29</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="November 27, 2025 09:01:44 UTC"><span class="timeago" datetime="2025-11-27T09:01:44+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="November 27, 2025 09:01:44 UTC">2025-11-27</span>
   </span>
 
     
