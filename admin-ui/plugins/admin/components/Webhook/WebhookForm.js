@@ -1,13 +1,12 @@
-import React, { Suspense, lazy, useCallback, useState, useEffect } from 'react'
+import React, { Suspense, lazy, useCallback, useState, useEffect, useMemo } from 'react'
 import { Col, Form, Row, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { useFormik } from 'formik'
-import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
+import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
-import * as Yup from 'yup'
 import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
 import {
   createWebhook,
@@ -17,7 +16,7 @@ import {
 } from 'Plugins/admin/redux/features/WebhookSlice'
 const GluuInputEditor = lazy(() => import('Routes/Apps/Gluu/GluuInputEditor'))
 import { buildPayload } from 'Utils/PermChecker'
-import { useNavigate, useParams } from 'react-router'
+import { useParams } from 'react-router'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import Toggle from 'react-toggle'
 import { WEBHOOK } from 'Utils/ApiResources'
@@ -26,101 +25,97 @@ import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import ShortcodePopover from './ShortcodePopover'
 import shortCodes from 'Plugins/admin/helper/shortCodes.json'
 import { isValid } from './WebhookURLChecker'
+import isEqual from 'lodash/isEqual'
+import { getWebhookValidationSchema } from 'Plugins/admin/helper/validations/webhookValidation'
+import { buildWebhookInitialValues } from 'Plugins/admin/helper/webhook'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 const WebhookForm = () => {
   const { id } = useParams()
-  const userAction = {}
-  const { selectedWebhook, features, webhookFeatures, loadingFeatures } = useSelector(
-    (state) => state.webhookReducer,
+  const dispatch = useDispatch()
+  const { t } = useTranslation()
+  const { navigateBack } = useAppNavigation()
+
+  const {
+    selectedWebhook,
+    features,
+    webhookFeatures,
+    loadingFeatures,
+    saveOperationFlag,
+    errorInSaveOperationFlag,
+  } = useSelector((state) => state.webhookReducer)
+
+  const initialSelectedFeatures = useMemo(() => {
+    if (Array.isArray(webhookFeatures) && webhookFeatures.length > 0) {
+      return [webhookFeatures[0]]
+    }
+    return []
+  }, [webhookFeatures])
+  const initialFormValues = useMemo(
+    () => buildWebhookInitialValues(selectedWebhook),
+    [selectedWebhook],
   )
-  const [selectedFeatures, setSelectedFeatures] = useState(webhookFeatures || {})
+
+  const formik = useFormik({
+    initialValues: initialFormValues,
+    enableReinitialize: true,
+    validationSchema: getWebhookValidationSchema(t),
+    onSubmit: (values, formikHelpers) => {
+      const isInvalid = validatePayload(values, formikHelpers.setFieldError)
+      if (isInvalid) return
+      openCommitDialog()
+    },
+  })
+
   const [cursorPosition, setCursorPosition] = useState({
     url: 0,
     httpRequestBody: 0,
   })
+  const [showCommitDialog, setShowCommitDialog] = useState(false)
+  const [selectedFeatures, setSelectedFeatures] = useState(initialSelectedFeatures)
+  const [baselineSelectedFeatures, setBaselineSelectedFeatures] = useState(initialSelectedFeatures)
 
-  const { t } = useTranslation()
-  const navigate = useNavigate()
-  const saveOperationFlag = useSelector((state) => state.webhookReducer.saveOperationFlag)
-  const errorInSaveOperationFlag = useSelector(
-    (state) => state.webhookReducer.errorInSaveOperationFlag,
+  useEffect(() => {
+    setSelectedFeatures(initialSelectedFeatures)
+    setBaselineSelectedFeatures(initialSelectedFeatures)
+  }, [initialSelectedFeatures])
+
+  const userAction = useMemo(() => ({}), [])
+  const openCommitDialog = useCallback(() => setShowCommitDialog(true), [])
+  const closeCommitDialog = useCallback(() => setShowCommitDialog(false), [])
+
+  const validatePayload = useCallback(
+    (values, setFieldError) => {
+      let hasError = false
+      if (values.httpRequestBody) {
+        try {
+          JSON.parse(values.httpRequestBody)
+        } catch (error) {
+          hasError = true
+          setFieldError('httpRequestBody', t('messages.invalid_json_error'))
+        }
+      }
+      if (!isValid(values.url)) {
+        hasError = true
+        setFieldError('url', 'Invalid url or url not allowed.')
+      }
+
+      return hasError
+    },
+    [t],
   )
-  const dispatch = useDispatch()
-  const [modal, setModal] = useState(false)
-  const validatePayload = (values) => {
-    let faulty = false
-    if (values.httpRequestBody) {
-      try {
-        JSON.parse(values.httpRequestBody)
-      } catch (error) {
-        faulty = true
-        formik.setFieldError('httpRequestBody', t('messages.invalid_json_error'))
-      }
-    }
-    if (!isValid(values.url)) {
-      faulty = true
-      formik.setFieldError('url', 'Invalid url or url not allowed.')
-    }
-
-    return faulty
-  }
-
-  const getHttpHeaders = () => {
-    return selectedWebhook?.httpHeaders || []
-  }
-
-  const formik = useFormik({
-    initialValues: {
-      httpRequestBody: selectedWebhook?.httpRequestBody
-        ? JSON.stringify(selectedWebhook.httpRequestBody, null, 2)
-        : '',
-      httpMethod: selectedWebhook?.httpMethod || '',
-      url: selectedWebhook?.url || '',
-      displayName: selectedWebhook?.displayName || '',
-      httpHeaders: getHttpHeaders(),
-      jansEnabled: selectedWebhook?.jansEnabled || false,
-      description: selectedWebhook?.description || '',
-    },
-    onSubmit: (values) => {
-      const faulty = validatePayload(values)
-      if (faulty) {
-        return
-      }
-      toggle()
-    },
-    validationSchema: Yup.object().shape({
-      httpMethod: Yup.string().required(t('messages.http_method_error')),
-      displayName: Yup.string()
-        .required(t('messages.display_name_error'))
-        .matches(/^\S*$/, `${t('fields.webhook_name')} ${t('messages.no_spaces')}`),
-      url: Yup.string().required(t('messages.url_error')),
-      httpRequestBody: Yup.string().when('httpMethod', {
-        is: (value) => {
-          return !(value === 'GET' || value === 'DELETE')
-        },
-        then: () => Yup.string().required(t('messages.request_body_error')),
-      }),
-    }),
-  })
-
-  const toggle = () => {
-    setModal(!modal)
-  }
 
   const submitForm = useCallback(
     (userMessage) => {
-      toggle()
-
-      const httpHeaders = formik.values.httpHeaders?.map((header) => {
-        return {
-          key: header.key || header.source,
-          value: header.value || header.destination,
-        }
-      })
+      closeCommitDialog()
 
       const payload = {
         ...formik.values,
-        httpHeaders: httpHeaders || [],
+        httpHeaders:
+          formik.values.httpHeaders?.map((header) => ({
+            key: header.key || header.source,
+            value: header.value || header.destination,
+          })) || [],
         auiFeatureIds: selectedFeatures?.map((feature) => feature.auiFeatureId) || [],
       }
 
@@ -142,33 +137,43 @@ const WebhookForm = () => {
       } else {
         dispatch(createWebhook({ action: userAction }))
       }
+
+      formik.resetForm({ values: formik.values })
+      setBaselineSelectedFeatures([...selectedFeatures])
     },
-    [formik],
+    [closeCommitDialog, formik, selectedFeatures, id, selectedWebhook, userAction, dispatch],
   )
 
   useEffect(() => {
     if (!features?.length) dispatch(getFeatures()) // cache features response using redux store
-    if (saveOperationFlag && !errorInSaveOperationFlag) navigate('/adm/webhook')
+    if (saveOperationFlag && !errorInSaveOperationFlag) {
+      navigateBack(ROUTES.WEBHOOK_LIST)
+      dispatch(resetFlags())
+    }
 
     return function cleanup() {
       dispatch(resetFlags())
     }
-  }, [saveOperationFlag, errorInSaveOperationFlag])
-
-  function getPropertiesConfig(entry, key) {
-    if (entry[key] && Array.isArray(entry[key])) {
-      return entry[key].map((e) => ({
-        source: e.key,
-        destination: e.value,
-      }))
-    } else {
-      return []
-    }
-  }
+  }, [saveOperationFlag, errorInSaveOperationFlag, navigateBack, dispatch])
 
   const featureShortcodes = selectedFeatures?.[0]?.auiFeatureId
     ? shortCodes?.[selectedFeatures?.[0]?.auiFeatureId]?.fields || []
     : []
+
+  const handleCancel = useCallback(() => {
+    formik.resetForm({ values: initialFormValues })
+    setSelectedFeatures([...baselineSelectedFeatures])
+  }, [formik, baselineSelectedFeatures, initialFormValues])
+
+  const isFeatureSelectionChanged = useMemo(
+    () => !isEqual(selectedFeatures, baselineSelectedFeatures),
+    [selectedFeatures, baselineSelectedFeatures],
+  )
+
+  const isFormChanged = formik.dirty || isFeatureSelectionChanged
+  const handleBack = useCallback(() => {
+    navigateBack(ROUTES.WEBHOOK_LIST)
+  }, [navigateBack])
 
   const handleSelectShortcode = (code, name, withString = false) => {
     const _code = withString ? '"${' + `${code}` + '}"' : '${' + `${code}` + '}'
@@ -227,7 +232,7 @@ const WebhookForm = () => {
             value={selectedFeatures}
             options={features}
             onChange={(options) => {
-              setSelectedFeatures(options || [])
+              setSelectedFeatures(options && options.length > 0 ? [options[0]] : [])
             }}
             lsize={4}
             doc_category={WEBHOOK}
@@ -321,7 +326,7 @@ const WebhookForm = () => {
                 inputSm={10}
                 destinationPlaceholder={'placeholders.enter_key_value'}
                 sourcePlaceholder={'placeholders.enter_header_key'}
-                options={getPropertiesConfig(selectedWebhook, 'httpHeaders')}
+                options={formik.values.httpHeaders || []}
                 isKeys={false}
                 buttonText="actions.add_header"
                 showError={formik.errors.httpHeaders && formik.touched.httpHeaders}
@@ -389,22 +394,32 @@ const WebhookForm = () => {
               id="jansEnabled"
               name="jansEnabled"
               onChange={formik.handleChange}
-              defaultChecked={formik.values.jansEnabled}
+              checked={formik.values.jansEnabled}
             />
           </Col>
         </FormGroup>
 
         <Row>
           <Col>
-            <GluuCommitFooter
-              saveHandler={toggle}
-              hideButtons={{ save: true, back: false }}
-              type="submit"
+            <GluuFormFooter
+              showBack={true}
+              onBack={handleBack}
+              showCancel={true}
+              onCancel={handleCancel}
+              disableCancel={!isFormChanged}
+              showApply={true}
+              onApply={formik.handleSubmit}
+              disableApply={!isFormChanged || !formik.isValid}
+              applyButtonType="button"
             />
           </Col>
         </Row>
       </Form>
-      <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} />
+      <GluuCommitDialog
+        handler={closeCommitDialog}
+        modal={showCommitDialog}
+        onAccept={submitForm}
+      />
     </>
   )
 }

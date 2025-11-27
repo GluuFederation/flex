@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Route, Routes, Navigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import { ROUTES } from '@/helpers/navigation'
 
 // ----------- Layout Imports ---------------
 import { processRoutes, processRoutesSync } from 'Plugins/PluginMenuResolver'
-
-import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
 
 import { uuidv4 } from 'Utils/Util'
 import ProtectedRoute from './Pages/ProtectRoutes'
@@ -44,20 +43,20 @@ export const RoutedContent = () => {
   return (
     <Routes>
       <Route
-        path="/home/dashboard"
+        path={ROUTES.HOME_DASHBOARD}
         element={
           <ProtectedRoute>
             <LazyRoutes.DashboardPage />
           </ProtectedRoute>
         }
       />
-      <Route path="/" element={<Navigate to="/home/dashboard" />} />
+      <Route path={ROUTES.ROOT} element={<Navigate to={ROUTES.HOME_DASHBOARD} />} />
 
       {/*    Layouts     */}
-      <Route path="/layouts/navbar" element={<LazyRoutes.NavbarOnly />} />
-      <Route path="/layouts/sidebar" element={<LazyRoutes.SidebarDefault />} />
-      <Route path="/layouts/sidebar-a" element={<LazyRoutes.SidebarA />} />
-      <Route path="/layouts/sidebar-with-navbar" element={<LazyRoutes.SidebarWithNavbar />} />
+      <Route path={ROUTES.LAYOUT_NAVBAR} element={<LazyRoutes.NavbarOnly />} />
+      <Route path={ROUTES.LAYOUT_SIDEBAR} element={<LazyRoutes.SidebarDefault />} />
+      <Route path={ROUTES.LAYOUT_SIDEBAR_A} element={<LazyRoutes.SidebarA />} />
+      <Route path={ROUTES.LAYOUT_SIDEBAR_WITH_NAVBAR} element={<LazyRoutes.SidebarWithNavbar />} />
 
       {/* -------- Plugins ---------*/}
       {pluginMenus.map((item, key) => (
@@ -65,20 +64,20 @@ export const RoutedContent = () => {
       ))}
 
       {/*    Pages Routes    */}
-      <Route element={<LazyRoutes.ProfilePage />} path="/profile" />
+      <Route element={<LazyRoutes.ProfilePage />} path={ROUTES.PROFILE} />
 
       <Route
-        path="/logout"
+        path={ROUTES.LOGOUT}
         element={
           <ProtectedRoute>
             <LazyRoutes.ByeBye />
           </ProtectedRoute>
         }
       />
-      <Route element={<LazyRoutes.Gluu404Error />} path="/error-404" />
+      <Route element={<LazyRoutes.Gluu404Error />} path={ROUTES.ERROR_404} />
 
       {/*    404    */}
-      <Route path="*" element={<Navigate to="/error-404" />} />
+      <Route path={ROUTES.WILDCARD} element={<Navigate to={ROUTES.ERROR_404} />} />
     </Routes>
   )
 }
@@ -86,12 +85,12 @@ export const RoutedContent = () => {
 //------ Custom Layout Parts --------
 export const RoutedNavbars = () => (
   <Routes>
-    <Route path="/*" element={<LazyRoutes.GluuNavBar />} />
+    <Route path={ROUTES.WILDCARD} element={<LazyRoutes.GluuNavBar />} />
   </Routes>
 )
 
 export const RoutedSidebars = () => (
   <Routes>
-    <Route path="/*" element={<LazyRoutes.DefaultSidebar />} />
+    <Route path={ROUTES.WILDCARD} element={<LazyRoutes.DefaultSidebar />} />
   </Routes>
 )

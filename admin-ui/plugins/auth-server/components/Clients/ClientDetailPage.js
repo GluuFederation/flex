@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { Container, Badge, Row, Col, FormGroup, Label } from 'Components'
+import { Container, Badge, Col, FormGroup, Label } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import GluuSecretDetail from 'Routes/Apps/Gluu/GluuSecretDetail'
 import { useTranslation } from 'react-i18next'
@@ -7,6 +7,37 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import customColors from '@/customColors'
 
 const DOC_CATEGORY = 'openid_client'
+
+// Static style objects instantiated once at module scope
+const detailContainerStyle = {
+  backgroundColor: customColors.whiteSmoke,
+  maxHeight: '420px',
+  overflowY: 'auto',
+  padding: '1rem',
+}
+const detailGridStyle = {
+  display: 'grid',
+  gridTemplateColumns: '1fr 1fr',
+  gap: '1.5rem',
+  alignItems: 'start',
+}
+const detailColumnStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '0.75rem',
+}
+const detailLabelStyle = {
+  fontWeight: 600,
+  wordWrap: 'break-word',
+  whiteSpace: 'normal',
+  paddingRight: '0.5rem',
+}
+const detailValueStyle = {
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: '0.35rem',
+  alignItems: 'center',
+}
 
 function ClientDetailPage({ row, scopes }) {
   const { t } = useTranslation()
@@ -24,172 +55,167 @@ function ClientDetailPage({ row, scopes }) {
     }
     return ''
   }
+
   const dash = '-'
+  const description = row.description || extractDescription(row.customAttributes || []) || dash
+  const displayName = row.clientName || row.displayName || dash
+
+  const renderBadgeList = (items) => (
+    <div style={detailValueStyle}>
+      {items?.length
+        ? items.map((item, key) => (
+            <Badge key={key} color={`primary-${selectedTheme}`}>
+              {item}
+            </Badge>
+          ))
+        : dash}
+    </div>
+  )
+
   return (
     <React.Fragment>
-      <Container style={{ backgroundColor: customColors.whiteSmoke }}>
-        <Row>
-          <Col sm={6}>
+      <Container style={detailContainerStyle}>
+        <div style={detailGridStyle}>
+          {/* Column 1 */}
+          <div style={detailColumnStyle}>
             <GluuFormDetailRow
               label="fields.client_id"
               value={row.inum}
+              lsize={4}
+              rsize={8}
+              labelStyle={detailLabelStyle}
+              rowClassName="align-items-start"
               doc_category={DOC_CATEGORY}
               doc_entry="clientId"
             />
-          </Col>
-          <Col sm={6}>
-            <GluuSecretDetail
-              label="fields.client_secret"
-              value={row.clientSecret ? row.clientSecret : dash}
-              doc_category={DOC_CATEGORY}
-              doc_entry="clientSecret"
-            />
-          </Col>
-        </Row>
-        <Row>
-          <Col sm={6}>
             <GluuFormDetailRow
               label="fields.name"
-              value={row.displayName ? row.displayName : dash}
+              value={displayName}
+              lsize={4}
+              rsize={8}
+              labelStyle={detailLabelStyle}
+              rowClassName="align-items-start"
               doc_category={DOC_CATEGORY}
               doc_entry="displayName"
             />
-          </Col>
-          <Col sm={6}>
-            <GluuFormDetailRow
-              label="fields.description"
-              value={extractDescription(row.customAttributes || []) || dash}
-              doc_category={DOC_CATEGORY}
-              doc_entry="description"
-            />
-          </Col>
-        </Row>
-        <Row>
-          <Col sm={6}>
             <GluuFormDetailRow
               label="fields.subject_type"
               value={row.subjectType ? row.subjectType : dash}
+              lsize={4}
+              rsize={8}
+              labelStyle={detailLabelStyle}
+              rowClassName="align-items-start"
               doc_category={DOC_CATEGORY}
               doc_entry="subjectType"
             />
-          </Col>
-          <Col sm={6}>
+            <FormGroup row className="align-items-start mb-2">
+              <Label sm={4} style={detailLabelStyle}>
+                {t('fields.is_trusted_client')}:
+              </Label>
+              <Col sm={8}>
+                <div style={detailValueStyle}>
+                  {row.trustedClient ? (
+                    <Badge color={`primary-${selectedTheme}`}>{t('options.yes')}</Badge>
+                  ) : (
+                    <Badge color="secondary">{t('options.no')}</Badge>
+                  )}
+                </div>
+              </Col>
+            </FormGroup>
+            <FormGroup row className="align-items-start mb-2">
+              <Label sm={4} style={detailLabelStyle}>
+                {t('fields.scopes')}:
+              </Label>
+              <Col sm={8}>{renderBadgeList(clientScopes)}</Col>
+            </FormGroup>
+            <FormGroup row className="align-items-start mb-2">
+              <Label sm={4} style={detailLabelStyle}>
+                {t('fields.response_types')}:
+              </Label>
+              <Col sm={8}>{renderBadgeList(row.responseTypes)}</Col>
+            </FormGroup>
+            <FormGroup row className="align-items-start mb-2">
+              <Label sm={4} style={detailLabelStyle}>
+                {t('fields.logout_redirect_uris')}:
+              </Label>
+              <Col sm={8}>{renderBadgeList(row.postLogoutRedirectUris)}</Col>
+            </FormGroup>
+          </div>
+
+          {/* Column 2 */}
+          <div style={detailColumnStyle}>
+            <GluuSecretDetail
+              label="fields.client_secret"
+              value={row.clientSecret ? row.clientSecret : dash}
+              lsize={4}
+              rsize={8}
+              labelStyle={detailLabelStyle}
+              rowClassName="align-items-start mb-2"
+              doc_category={DOC_CATEGORY}
+              doc_entry="clientSecret"
+            />
+            <GluuFormDetailRow
+              label="fields.description"
+              value={description}
+              lsize={4}
+              rsize={8}
+              labelStyle={detailLabelStyle}
+              rowClassName="align-items-start"
+              doc_category={DOC_CATEGORY}
+              doc_entry="description"
+            />
             <GluuFormDetailRow
               label="fields.application_type"
               value={row.applicationType}
+              lsize={4}
+              rsize={8}
+              labelStyle={detailLabelStyle}
+              rowClassName="align-items-start"
               doc_category={DOC_CATEGORY}
               doc_entry="applicationType"
             />
-          </Col>
-        </Row>
-        <Row>
-          <Col sm={6}>
-            <FormGroup row>
-              <Label sm={6}>{t('fields.is_trusted_client')}:</Label>
-              <Label sm={6}>
-                {row.trustedClient ? (
-                  <Badge color={`primary-${selectedTheme}`}>{t('options.yes')}</Badge>
-                ) : (
-                  <Badge color="secondary">{t('options.no')}</Badge>
-                )}
+            <FormGroup row className="align-items-start mb-2">
+              <Label sm={4} style={detailLabelStyle}>
+                {t('fields.status')}:
               </Label>
+              <Col sm={8}>
+                <div style={detailValueStyle}>
+                  {!row.disabled ? (
+                    <Badge color={`primary-${selectedTheme}`}>{t('options.enabled')}</Badge>
+                  ) : (
+                    <Badge color="danger">{t('options.disabled')}</Badge>
+                  )}
+                </div>
+              </Col>
             </FormGroup>
-          </Col>
-          <Col sm={6}>
-            <FormGroup row>
-              <Label sm={6}>{t('fields.status')}:</Label>
-              <Label sm={6}>
-                {!row.disabled ? (
-                  <Badge color={`primary-${selectedTheme}`}>{t('options.enabled')}</Badge>
-                ) : (
-                  <Badge color="danger">{t('options.disabled')}</Badge>
-                )}
+            <FormGroup row className="align-items-start mb-2">
+              <Label sm={4} style={detailLabelStyle}>
+                {t('fields.grant_types')}:
               </Label>
+              <Col sm={8}>{renderBadgeList(row.grantTypes)}</Col>
             </FormGroup>
-          </Col>
-        </Row>
-
-        <Row>
-          <Col sm={6}>
-            <FormGroup row>
-              <Label sm={4}>{t('fields.scopes')}:</Label>
-              <Label sm={8}>
-                {clientScopes &&
-                  clientScopes.map((item, key) => (
-                    <Badge key={key} color={`primary-${selectedTheme}`}>
-                      {item}
-                    </Badge>
-                  ))}
+            <FormGroup row className="align-items-start mb-2">
+              <Label sm={4} style={detailLabelStyle}>
+                {t('fields.login_uris')}:
               </Label>
+              <Col sm={8}>{renderBadgeList(row.redirectUris)}</Col>
             </FormGroup>
-          </Col>
-          <Col sm={6}>
-            <FormGroup row>
-              <Label sm={4}>{t('fields.grant_types')}:</Label>
-              <Label sm={8}>
-                {row.grantTypes &&
-                  row.grantTypes.map((item, key) => (
-                    <Badge key={key} color={`primary-${selectedTheme}`}>
-                      {item}
-                    </Badge>
-                  ))}
+            <FormGroup row className="align-items-start mb-2">
+              <Label sm={4} style={detailLabelStyle}>
+                {t('fields.authentication_method')}:
               </Label>
+              <Col sm={8}>
+                <div style={detailValueStyle}>
+                  {row.authenticationMethod ? (
+                    <Badge color={`primary-${selectedTheme}`}>{row.authenticationMethod}</Badge>
+                  ) : (
+                    dash
+                  )}
+                </div>
+              </Col>
             </FormGroup>
-          </Col>
-        </Row>
-        <Row>
-          <Col sm={6}>
-            <FormGroup row>
-              <Label sm={4}>{t('fields.response_types')}:</Label>
-              <Label sm={8}>
-                {row.responseTypes &&
-                  row.responseTypes.map((item, key) => (
-                    <Badge key={key} color={`primary-${selectedTheme}`}>
-                      {item}
-                    </Badge>
-                  ))}
-              </Label>
-            </FormGroup>
-          </Col>
-          <Col sm={6}>
-            <FormGroup row>
-              <Label sm={4}>{t('fields.login_uris')}:</Label>
-              <Label sm={8}>
-                {row.redirectUris &&
-                  row.redirectUris.map((item, key) => (
-                    <Badge key={key} color={`primary-${selectedTheme}`}>
-                      {item}
-                    </Badge>
-                  ))}
-              </Label>
-            </FormGroup>
-          </Col>
-        </Row>
-        <Row>
-          <Col sm={6}>
-            <FormGroup row>
-              <Label sm={4}>{t('fields.logout_redirect_uris')}: </Label>
-              <Label sm={8}>
-                {row.postLogoutRedirectUris &&
-                  row.postLogoutRedirectUris.map((item, key) => (
-                    <Badge key={key} color={`primary-${selectedTheme}`}>
-                      {item}
-                    </Badge>
-                  ))}
-              </Label>
-            </FormGroup>
-          </Col>
-          <Col sm={6}>
-            <FormGroup row>
-              <Label sm={6}>{t('fields.authentication_method')}:</Label>
-              <Label sm={6}>
-                {row.authenticationMethod && (
-                  <Badge color={`primary-${selectedTheme}`}>{row.authenticationMethod}</Badge>
-                )}
-              </Label>
-            </FormGroup>
-          </Col>
-        </Row>
+          </div>
+        </div>
       </Container>
     </React.Fragment>
   )

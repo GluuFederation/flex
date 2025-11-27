@@ -6,6 +6,7 @@ import samlSaga from './redux/sagas/SamlSaga'
 import samlReducer from './redux/features/SamlSlice'
 import TrustRelationshipEditPage from './components/TrustRelationshipEditPage'
 import TrustRelationshipAddPage from './components/TrustRelationshipAddPage'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 
 const PLUGIN_BASE_APTH = '/saml'
 
@@ -16,6 +17,7 @@ const pluginMetadata = {
       icon: 'saml',
       path: PLUGIN_BASE_APTH,
       permission: SAML_READ,
+      resourceKey: ADMIN_UI_RESOURCES.SAML,
     },
   ],
   routes: [
@@ -23,41 +25,49 @@ const pluginMetadata = {
       component: SamlPage,
       path: PLUGIN_BASE_APTH,
       permission: SAML_READ,
+      resourceKey: ADMIN_UI_RESOURCES.SAML,
     },
     {
       component: SamlPage,
       path: PLUGIN_BASE_APTH + '/config',
       permission: SAML_CONFIG_READ,
+      resourceKey: ADMIN_UI_RESOURCES.SAML,
     },
     {
       component: SamlPage,
       path: PLUGIN_BASE_APTH + '/service-providers',
       permission: SAML_TR_READ,
+      resourceKey: ADMIN_UI_RESOURCES.SAML,
     },
     {
       component: SamlPage,
       path: PLUGIN_BASE_APTH + '/identity-providers',
       permission: SAML_READ,
+      resourceKey: ADMIN_UI_RESOURCES.SAML,
     },
     {
       component: SamlIdpEditPage,
       path: PLUGIN_BASE_APTH + '/identity-providers/edit',
       permission: SAML_WRITE,
+      resourceKey: ADMIN_UI_RESOURCES.SAML,
     },
     {
       component: SamlIdpAddPage,
       path: PLUGIN_BASE_APTH + '/identity-providers/add',
       permission: SAML_WRITE,
+      resourceKey: ADMIN_UI_RESOURCES.SAML,
     },
     {
       component: TrustRelationshipEditPage,
       path: PLUGIN_BASE_APTH + '/service-providers/edit',
       permission: SAML_WRITE,
+      resourceKey: ADMIN_UI_RESOURCES.SAML,
     },
     {
       component: TrustRelationshipAddPage,
       path: PLUGIN_BASE_APTH + '/service-providers/add',
       permission: SAML_WRITE,
+      resourceKey: ADMIN_UI_RESOURCES.SAML,
     },
   ],
   reducers: [{ name: 'idpSamlReducer', reducer: samlReducer }],

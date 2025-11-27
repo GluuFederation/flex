@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useCallback } from 'react'
+import React, { useEffect, useState, useContext, useCallback, useMemo } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { Paper, TablePagination } from '@mui/material'
@@ -8,7 +8,7 @@ import { useCedarling } from '@/cedarling'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
-import { WEBHOOK_WRITE, WEBHOOK_READ, WEBHOOK_DELETE, buildPayload } from 'Utils/PermChecker'
+import { buildPayload } from 'Utils/PermChecker'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useDispatch, useSelector } from 'react-redux'
@@ -17,17 +17,27 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { LIMIT_ID, PATTERN_ID } from 'Plugins/admin/common/Constants'
 import SetTitle from 'Utils/SetTitle'
-import { useNavigate } from 'react-router'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import {
   getWebhook,
   deleteWebhook,
   setSelectedWebhook,
 } from 'Plugins/admin/redux/features/WebhookSlice'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 
 const WebhookListPage = () => {
   const dispatch = useDispatch()
-  const navigate = useNavigate()
-  const { hasCedarPermission, authorize } = useCedarling()
+  const { navigateToRoute } = useAppNavigation()
+  const {
+    hasCedarReadPermission,
+    hasCedarWritePermission,
+    hasCedarDeletePermission,
+    authorizeHelper,
+  } = useCedarling()
+  const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
+  const webhookScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[webhookResourceId], [webhookResourceId])
+
   const { t } = useTranslation()
   const [pageNumber, setPageNumber] = useState(0)
   const { totalItems, webhooks } = useSelector((state) => state.webhookReducer)
@@ -56,28 +66,37 @@ const WebhookListPage = () => {
   const [limit, setLimit] = useState(10)
   const [pattern, setPattern] = useState(null)
 
-  // Initialize Cedar permissions
+  const canReadWebhooks = useMemo(
+    () => hasCedarReadPermission(webhookResourceId),
+    [hasCedarReadPermission, webhookResourceId],
+  )
+
   useEffect(() => {
-    const initPermissions = async () => {
-      const permissions = [WEBHOOK_READ, WEBHOOK_WRITE, WEBHOOK_DELETE]
-      for (const permission of permissions) {
-        await authorize([permission])
-      }
+    if (webhookScopes && webhookScopes.length > 0) {
+      authorizeHelper(webhookScopes)
     }
-    initPermissions()
-    options['limit'] = 10
-    dispatch(getWebhook({ action: options }))
-  }, [])
+  }, [authorizeHelper, webhookScopes])
+
+  useEffect(() => {
+    if (canReadWebhooks) {
+      options['limit'] = 10
+      dispatch(getWebhook({ action: options }))
+    }
+  }, [canReadWebhooks, dispatch])
+  const canWriteWebhooks = useMemo(
+    () => hasCedarWritePermission(webhookResourceId),
+    [hasCedarWritePermission, webhookResourceId],
+  )
+  const canDeleteWebhooks = useMemo(
+    () => hasCedarDeletePermission(webhookResourceId),
+    [hasCedarDeletePermission, webhookResourceId],
+  )
 
   // Build actions only when permissions change
   useEffect(() => {
     const actions = []
 
-    const canRead = hasCedarPermission(WEBHOOK_READ)
-    const canWrite = hasCedarPermission(WEBHOOK_WRITE)
-    const canDelete = hasCedarPermission(WEBHOOK_DELETE)
-
-    if (canRead) {
+    if (canReadWebhooks) {
       actions.push({
         icon: () => (
           <GluuAdvancedSearch
@@ -108,7 +127,7 @@ const WebhookListPage = () => {
       })
     }
 
-    if (canWrite) {
+    if (canWriteWebhooks) {
       actions.push({
         icon: 'add',
         tooltip: `${t('messages.add_webhook')}`,
@@ -125,11 +144,11 @@ const WebhookListPage = () => {
           style: { color: customColors.darkGray },
         },
         onClick: (event, rowData) => navigateToEditPage(rowData),
-        disabled: !canWrite,
+        disabled: !canWriteWebhooks,
       }))
     }
 
-    if (canDelete) {
+    if (canDeleteWebhooks) {
       actions.push((rowData) => ({
         icon: () => <DeleteOutlined />,
         iconProps: {
@@ -145,7 +164,17 @@ const WebhookListPage = () => {
     }
 
     setMyActions(actions)
-  }, [cedarPermissions, limit, pattern, t, navigateToAddPage, navigateToEditPage])
+  }, [
+    cedarPermissions,
+    limit,
+    pattern,
+    t,
+    navigateToAddPage,
+    navigateToEditPage,
+    canReadWebhooks,
+    canWriteWebhooks,
+    canDeleteWebhooks,
+  ])
 
   let memoLimit = limit
   let memoPattern = pattern
@@ -198,22 +227,23 @@ const WebhookListPage = () => {
 
   const navigateToAddPage = useCallback(() => {
     dispatch(setSelectedWebhook({}))
-    navigate('/adm/webhook/add')
-  }, [dispatch, navigate])
+    navigateToRoute(ROUTES.WEBHOOK_ADD)
+  }, [dispatch, navigateToRoute])
 
   const navigateToEditPage = useCallback(
     (data) => {
+      if (!data?.inum) return
       dispatch(setSelectedWebhook(data))
-      navigate(`/adm/webhook/edit/${data.inum}`)
+      navigateToRoute(ROUTES.WEBHOOK_EDIT(data.inum))
     },
-    [dispatch, navigate],
+    [dispatch, navigateToRoute],
   )
 
   return (
     <GluuLoader blocking={loading}>
       <Card style={applicationStyle.mainCard}>
         <CardBody>
-          <GluuViewWrapper canShow={hasCedarPermission(WEBHOOK_READ)}>
+          <GluuViewWrapper canShow={canReadWebhooks}>
             <MaterialTable
               components={{
                 Container: PaperContainer,

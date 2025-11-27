@@ -14,7 +14,6 @@ import {
   updateSamlIdentity,
 } from 'Plugins/saml/redux/features/SamlSlice'
 import PropTypes from 'prop-types'
-import { useNavigate } from 'react-router'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuUploadFile from 'Routes/Apps/Gluu/GluuUploadFile'
@@ -25,6 +24,7 @@ import { nameIDPolicyFormat } from '../helper'
 import SetTitle from 'Utils/SetTitle'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 const SamlIdpForm = ({ configs, viewOnly }) => {
   const [showUploadBtn, setShowUploadBtn] = useState(false)
@@ -34,7 +34,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const [modal, setModal] = useState(false)
-  const navigate = useNavigate()
+  const { navigateBack } = useAppNavigation()
   const DOC_SECTION = 'samlIDP'
 
   if (viewOnly) {
@@ -161,13 +161,13 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
 
   useEffect(() => {
     if (savedForm) {
-      navigate('/saml/identity-providers')
+      navigateBack(ROUTES.SAML_IDP_LIST)
     }
 
     return () => {
       dispatch(toggleSavedFormFlag(false))
     }
-  }, [savedForm])
+  }, [savedForm, navigateBack, dispatch])
 
   return (
     <GluuLoader blocking={loading}>

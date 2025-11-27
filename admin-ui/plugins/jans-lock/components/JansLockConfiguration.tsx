@@ -1,7 +1,7 @@
 import { useFormik } from 'formik'
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
-import { buildPayload, JANS_LOCK_WRITE } from 'Utils/PermChecker'
-import { useCedarling } from '@/cedarling'
+import { buildPayload } from 'Utils/PermChecker'
+import { useCedarling, ADMIN_UI_RESOURCES, CEDAR_RESOURCE_SCOPES } from '@/cedarling'
 import { Row, Col, Form, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
@@ -28,21 +28,24 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({
   onUpdate,
   isSubmitting,
 }) => {
-  const { hasCedarPermission, authorize } = useCedarling()
-  const viewOnly = !hasCedarPermission(JANS_LOCK_WRITE)
+  const { hasCedarWritePermission, authorizeHelper } = useCedarling()
   const [modal, setModal] = useState(false)
 
-  useEffect(() => {
-    const authorizePermissions = async () => {
-      try {
-        await authorize([JANS_LOCK_WRITE])
-      } catch (error) {
-        console.error('Error authorizing Jans Lock permissions:', error)
-      }
-    }
+  const lockResourceId = useMemo(() => ADMIN_UI_RESOURCES.Lock, [])
+  const lockScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[lockResourceId], [lockResourceId])
 
-    authorizePermissions()
-  }, [authorize])
+  const canWriteLock = useMemo(
+    () => hasCedarWritePermission(lockResourceId),
+    [hasCedarWritePermission, lockResourceId],
+  )
+
+  const viewOnly = !canWriteLock
+
+  useEffect(() => {
+    if (lockScopes && lockScopes.length > 0) {
+      authorizeHelper(lockScopes)
+    }
+  }, [authorizeHelper, lockScopes])
 
   const toggle = useCallback(() => {
     setModal(!modal)

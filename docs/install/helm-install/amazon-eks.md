@@ -68,8 +68,6 @@ tags:
         Add the following yaml snippet to your `override.yaml` file:
 
         ```yaml
-        global:
-            isFqdnRegistered: false
         config:
             configmap:
                 lbAddr: http:// #Add LB address from previous command
@@ -81,7 +79,6 @@ tags:
 
         ```yaml
         global:
-            isFqdnRegistered: true
             fqdn: demoexample.gluu.org #CHANGE-THIS to the FQDN used for Gluu
         config:
             configmap:
@@ -102,24 +99,22 @@ tags:
 
         In a production environment, a production grade PostgreSQL server should be used such as `Amazon RDS`
 
-        For testing purposes, you can deploy it on the EKS cluster using the following command:
+        For testing purposes, you can deploy it on the EKS cluster using the following commands:
 
-        ```
-        helm install my-release --set auth.postgresPassword=Test1234#,auth.database=gluu -n gluu oci://registry-1.docker.io/bitnamicharts/postgresql
+        ```bash
+        wget https://raw.githubusercontent.com/GluuFederation/flex/vreplace-flex-version/automation/pgsql.yaml
+        kubectl apply -f pgsql.yaml
         ```
 
         Add the following yaml snippet to your `override.yaml` file:
         
         ```yaml
-        
-        global:
-          cnPersistenceType: sql
         config:
           configmap:
             cnSqlDbName: gluu
             cnSqlDbPort: 5432
             cnSqlDbDialect: pgsql
-            cnSqlDbHost: my-release-postgresql.gluu.svc
+            cnSqlDbHost: postgresql.gluu.svc
             cnSqlDbUser: postgres
             cnSqlDbTimezone: UTC
             cnSqldbUserPassword: Test1234#
@@ -129,24 +124,22 @@ tags:
 
         In a production environment, a production grade MySQL server should be used such as `Amazon RDS`
 
-        For testing purposes, you can deploy it on the EKS cluster using the following command:
+        For testing purposes, you can deploy it on the EKS cluster using the following commands:
 
-        ```
-        helm install my-release --set auth.rootPassword=Test1234#,auth.database=gluu -n gluu oci://registry-1.docker.io/bitnamicharts/mysql
+        ```bash
+        wget https://raw.githubusercontent.com/GluuFederation/flex/vreplace-flex-version/automation/mysql.yaml
+        kubectl apply -f mysql.yaml
         ```
 
         Add the following yaml snippet to your `override.yaml` file:
         
         ```yaml
-        
-        global:
-          cnPersistenceType: sql
         config:
           configmap:
             cnSqlDbName: gluu
             cnSqlDbPort: 3306
             cnSqlDbDialect: mysql
-            cnSqlDbHost: my-release-mysql.gluu.svc
+            cnSqlDbHost: mysql.gluu.svc
             cnSqlDbUser: root
             cnSqlDbTimezone: UTC
             cnSqldbUserPassword: Test1234#
@@ -156,8 +149,6 @@ tags:
 
         ```yaml
         global:
-          cnPersistenceType: sql
-          isFqdnRegistered: true
           fqdn: demoexample.gluu.org #CHANGE-THIS to the FQDN used for Gluu
         nginx-ingress:
           ingress:
@@ -174,7 +165,7 @@ tags:
             cnSqlDbName: gluu
             cnSqlDbPort: 3306
             cnSqlDbDialect: mysql
-            cnSqlDbHost: my-release-mysql.gluu.svc
+            cnSqlDbHost: mysql.gluu.svc
             cnSqlDbUser: root
             cnSqlDbTimezone: UTC
             cnSqldbUserPassword: Test1234#

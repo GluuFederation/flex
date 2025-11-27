@@ -4,7 +4,9 @@ export interface MenuItem {
   path?: string
   title?: string
   permission?: string
+  resourceKey?: string
   children?: MenuItem[]
+  cedarlingPassed?: boolean
 }
 
 export interface PluginMenu extends MenuItem {}

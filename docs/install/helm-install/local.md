@@ -31,14 +31,15 @@ Use the listing below for a detailed estimation of minimum required resources. T
 | admin-ui          | 2        | 2GB   | N/A        | 64 Bit         | No                                 |
 | link              | 0.5      | 1GB   | N/A        | 64 Bit         | No                                 |
 | saml              | 0.5      | 1GB   | N/A        | 64 Bit         | No                                 |
+| cleanup - job     | 0.3      | 0.3GB | N/A        | 64 Bit         | Yes                                |
 
-Releases of images are in style 1.0.0-beta.0, 1.0.0-0
+Releases of images are in style 0.0.0-nightly or x.y-z-1
 
 ## Installation Steps
 
 Before initiating the setup, please obtain an [SSA](https://docs.gluu.org/vreplace-flex-version/install/agama/prerequisites/#obtaining-an-ssa) for Flex trial, after which you will issued a JWT.
 
-Start a fresh Ubuntu `18.04`/`20.04`/`22.04` VM with ports `443` and `80` open. Then execute the following:
+Start a fresh Ubuntu VM with ports `443` and `80` open. Then execute the following:
 
 ```bash
 sudo su -

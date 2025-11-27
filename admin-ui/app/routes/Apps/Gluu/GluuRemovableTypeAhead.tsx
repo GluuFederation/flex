@@ -1,27 +1,66 @@
 import GluuLabel from './GluuLabel'
 import { Col, FormGroup, InputGroup } from 'Components'
-import { useTranslation } from 'react-i18next'
 import GluuTooltip from './GluuTooltip'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import applicationstyle from './styles/applicationstyle'
 import customColors from '@/customColors'
+import { FormikProps } from 'formik'
+import React from 'react'
+
+type FormikFieldValue = string | string[] | boolean | null | undefined
+type ModifiedFieldValue = string | string[] | boolean
+
+type TypeaheadOptionObject = {
+  role?: string
+  customOption?: boolean
+  label?: string
+  [key: string]: string | number | boolean | null | undefined | string[]
+}
+
+type TypeaheadOption = string | TypeaheadOptionObject
+type FormikValues = Record<string, FormikFieldValue>
 
 interface GluuRemovableTypeAheadProps {
   label: string
   name: string
-  value: any
-  formik?: any
+  value?: TypeaheadOption[]
+  formik: FormikProps<FormikValues>
   lsize?: number
   rsize?: number
   handler: () => void
   doc_category?: string
-  options?: any[]
+  options?: TypeaheadOption[]
   isDirect?: boolean
   allowNew?: boolean
-  modifiedFields?: any
-  setModifiedFields?: (fields: any) => void
+  modifiedFields?: Record<string, ModifiedFieldValue>
+  setModifiedFields?: React.Dispatch<React.SetStateAction<Record<string, ModifiedFieldValue>>>
   disabled?: boolean
   placeholder?: string
+}
+
+const extractValueFromOption = (item: TypeaheadOption, fieldName: string): string | null => {
+  if (typeof item === 'string') {
+    return item
+  }
+
+  if (!item || typeof item !== 'object') {
+    return null
+  }
+
+  if ('role' in item && typeof item.role === 'string') {
+    return item.role
+  }
+
+  if ('label' in item && typeof item.label === 'string') {
+    return item.label
+  }
+
+  const fieldValue = item[fieldName]
+  if (typeof fieldValue === 'string') {
+    return fieldValue
+  }
+
+  return null
 }
 
 function GluuRemovableTypeAhead({
@@ -41,7 +80,8 @@ function GluuRemovableTypeAhead({
   disabled = false,
   placeholder,
 }: GluuRemovableTypeAheadProps) {
-  const { t } = useTranslation()
+  const selectedValue = (formik.values[name] as TypeaheadOption[] | undefined) ?? value ?? []
+
   return (
     <GluuTooltip doc_category={doc_category} isDirect={isDirect} doc_entry={name}>
       <FormGroup row>
@@ -52,34 +92,34 @@ function GluuRemovableTypeAhead({
               allowNew={allowNew}
               emptyLabel=""
               labelKey={name}
-              onChange={(selected: any) => {
-                if (formik) {
-                  const names = selected
-                    .map((item: any) => {
-                      if (typeof item === 'string') {
-                        return item
-                      } else if (typeof item === 'object' && item.role) {
-                        return item.role
-                      }
-                      return null
-                    })
-                    .filter(Boolean)
+              selected={selectedValue}
+              onChange={(selected: TypeaheadOption[]) => {
+                const names = selected
+                  .map((item) => extractValueFromOption(item, name))
+                  .filter((entry): entry is string => Boolean(entry))
 
-                  setModifiedFields({ ...modifiedFields, [name]: names })
-                  formik.setFieldValue(name, selected)
+                if (setModifiedFields) {
+                  setModifiedFields({
+                    ...(modifiedFields || {}),
+                    [name]: names,
+                  })
                 }
+
+                formik.setFieldValue(name, selected)
               }}
               id={name}
               data-testid={name}
               multiple={true}
-              defaultSelected={value}
               options={options}
               disabled={disabled}
               placeholder={placeholder}
             />
           </InputGroup>
         </Col>
-        <div style={applicationstyle.removableInputRow as any} onClick={handler}>
+        <div
+          style={applicationstyle.removableInputRow as React.CSSProperties}
+          onClick={() => handler()}
+        >
           <i className={'fa fa-fw fa-close'} style={{ color: customColors.accentRed }}></i>
         </div>
       </FormGroup>

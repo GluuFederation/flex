@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { CardBody, Card } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import CustomScriptForm from './CustomScriptForm'
@@ -23,12 +23,12 @@ function CustomScriptEditPage() {
   const viewOnly = useSelector((state: RootState) => state.customScriptReducer.view)
 
   const userAction: UserAction = {}
-  const navigate = useNavigate()
+  const { navigateBack } = useAppNavigation()
   const { t } = useTranslation()
 
   useEffect(() => {
-    if (saveOperationFlag && !errorInSaveOperationFlag) navigate('/adm/scripts')
-  }, [saveOperationFlag, errorInSaveOperationFlag, navigate])
+    if (saveOperationFlag && !errorInSaveOperationFlag) navigateBack(ROUTES.CUSTOM_SCRIPT_LIST)
+  }, [saveOperationFlag, errorInSaveOperationFlag, navigateBack])
 
   function handleSubmit(data: SubmitData) {
     if (data) {

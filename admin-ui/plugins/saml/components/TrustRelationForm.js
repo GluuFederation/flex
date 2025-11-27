@@ -20,12 +20,12 @@ import PropTypes from 'prop-types'
 import { setClientSelectedScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
 import _debounce from 'lodash/debounce'
-import { useNavigate } from 'react-router'
 import { nameIDPolicyFormat } from '../helper'
 import GluuUploadFile from 'Routes/Apps/Gluu/GluuUploadFile'
 import SetTitle from 'Utils/SetTitle'
 import { useGetAttributes } from 'JansConfigApi'
 import GluuStatusMessage from 'Routes/Apps/Gluu/GluuStatusMessage'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 // Maximum number of attributes to fetch for trust relationship configuration
 const MAX_ATTRIBUTES_FOR_TRUST_RELATION = 100
@@ -41,10 +41,10 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
     SetTitle(t('titles.create_sp'))
   }
 
-  const navigate = useNavigate()
   const loading = useSelector((state) => state.idpSamlReducer.loading)
   const dispatch = useDispatch()
   const DOC_SECTION = 'saml'
+  const { navigateBack } = useAppNavigation()
 
   const savedForm = useSelector((state) => state.idpSamlReducer.savedForm)
   const [metaDataFile, setMetaDataFile] = useState(null)
@@ -213,14 +213,14 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
 
   useEffect(() => {
     if (savedForm) {
-      navigate('/saml/service-providers')
+      navigateBack(ROUTES.SAML_SP_LIST)
     }
 
     return () => {
       dispatch(toggleSavedFormFlag(false))
       dispatch(setClientSelectedScopes([]))
     }
-  }, [savedForm])
+  }, [savedForm, navigateBack, dispatch])
 
   // Attributes are now fetched automatically by useGetAttributes hook
 

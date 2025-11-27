@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import { Container, Row, Col } from 'Components'
+import { Row, Col } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import moment from 'moment'
 import DOMPurify from 'dompurify'
@@ -26,7 +26,7 @@ const UserDetailViewPage = ({ row }: RowProps) => {
   }
 
   return (
-    <Container style={{ backgroundColor: customColors.whiteSmoke, minWidth: '100%' }}>
+    <div style={{ backgroundColor: customColors.whiteSmoke, padding: '16px', width: '100%' }}>
       <Row>
         <Col sm={6} xl={4}>
           <GluuFormDetailRow
@@ -93,7 +93,7 @@ const UserDetailViewPage = ({ row }: RowProps) => {
           )
         })}
       </Row>
-    </Container>
+    </div>
   )
 }
 

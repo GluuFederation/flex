@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
 import { CardBody, Card } from 'Components'
 import AttributeForm from 'Plugins/schema/components/Person/AttributeForm'
@@ -14,9 +13,10 @@ import { useSchemaWebhook } from '../../hooks/useSchemaWebhook'
 import { API_ATTRIBUTE } from '../../constants'
 import { useTranslation } from 'react-i18next'
 import { getErrorMessage } from '../../utils/errorHandler'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 function AttributeAddPage(): JSX.Element {
-  const navigate = useNavigate()
+  const { navigateBack } = useAppNavigation()
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
   const { t } = useTranslation()
@@ -28,7 +28,7 @@ function AttributeAddPage(): JSX.Element {
       onSuccess: () => {
         dispatch(updateToast(true, 'success'))
         queryClient.invalidateQueries({ queryKey: getGetAttributesQueryKey() })
-        navigate('/attributes')
+        navigateBack(ROUTES.ATTRIBUTES_LIST)
       },
       onError: (error: unknown) => {
         const errorMessage = getErrorMessage(error, 'errors.attribute_create_failed', t)

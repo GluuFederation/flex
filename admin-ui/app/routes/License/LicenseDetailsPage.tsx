@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
@@ -9,40 +9,49 @@ import getThemeColor from 'Context/theme/config'
 import customColors from '@/customColors'
 import { getLicenseDetails } from 'Redux/features/licenseDetailsSlice'
 import { Card, CardBody, Container, Row, Col, Button } from 'Components'
-import { buildPayload, LICENSE_DETAILS_WRITE } from 'Utils/PermChecker'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import Alert from '@mui/material/Alert'
 import SetTitle from 'Utils/SetTitle'
 import { formatDate } from 'Utils/Util'
 import { useCedarling } from '@/cedarling'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import GluuCommitDialog from '../Apps/Gluu/GluuCommitDialog'
-import { useNavigate } from 'react-router'
-
-const FETCHING_LICENSE_DETAILS = 'Fetch license details'
+import type { LicenseField } from './types'
+import type { LicenseDetailsState } from 'Redux/features/licenseDetailsSlice'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 function LicenseDetailsPage() {
-  const item = useSelector((state) => state.licenseDetailsReducer.item)
-  const loading = useSelector((state) => state.licenseDetailsReducer.loading)
-  const navigate = useNavigate()
+  const { item, loading } = useSelector(
+    (state: { licenseDetailsReducer: LicenseDetailsState }) => state.licenseDetailsReducer,
+  )
   const dispatch = useDispatch()
-  const userAction = {}
-  const options = {}
   const { t } = useTranslation()
-  const { hasCedarPermission, authorize } = useCedarling()
+  const { hasCedarWritePermission, authorizeHelper } = useCedarling()
   const [modal, setModal] = useState(false)
+  const { navigateToRoute } = useAppNavigation()
 
-  const initPermissions = async () => {
-    await authorize([LICENSE_DETAILS_WRITE])
-  }
+  const licenseResourceId = useMemo(() => ADMIN_UI_RESOURCES.License, [])
+  const licenseScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[licenseResourceId], [licenseResourceId])
+  const canWriteLicense = useMemo(
+    () => hasCedarWritePermission(licenseResourceId),
+    [hasCedarWritePermission, licenseResourceId],
+  )
 
   useEffect(() => {
-    initPermissions()
-    buildPayload(userAction, FETCHING_LICENSE_DETAILS, options)
-    dispatch(getLicenseDetails({}))
-  }, [])
+    if (licenseScopes && licenseScopes.length > 0) {
+      authorizeHelper(licenseScopes)
+    }
+  }, [authorizeHelper, licenseScopes])
+
   useEffect(() => {
-    item.licenseExpired && navigate('/logout')
-  }, [item.licenseExpired, navigate])
+    dispatch(getLicenseDetails())
+  }, [dispatch])
+  useEffect(() => {
+    if (item.licenseExpired) {
+      navigateToRoute(ROUTES.LOGOUT)
+    }
+  }, [item.licenseExpired, navigateToRoute])
 
   SetTitle(t('menus.licenseDetails'))
   const theme = useContext(ThemeContext)
@@ -59,7 +68,7 @@ function LicenseDetailsPage() {
     borderColor: themeColors.fontColor + '40',
   }
 
-  const licenseFields = [
+  const licenseFields: LicenseField[] = [
     { key: 'productName', label: 'fields.productName', value: item.productName },
     { key: 'productCode', label: 'fields.productCode', value: item.productCode },
     { key: 'licenseType', label: 'fields.licenseType', value: item.licenseType },
@@ -77,7 +86,7 @@ function LicenseDetailsPage() {
     {
       key: 'validityPeriod',
       label: 'fields.validityPeriod',
-      value: formatDate(item.validityPeriod),
+      value: item.validityPeriod ? formatDate(item.validityPeriod) : null,
     },
     {
       key: 'isLicenseActive',
@@ -91,7 +100,7 @@ function LicenseDetailsPage() {
     },
   ]
 
-  const renderLicenseField = (field) => (
+  const renderLicenseField = (field: LicenseField) => (
     <Col sm={6} xs={12} key={field.key}>
       <div className="mb-3">
         <strong style={labelStyle}>{t(field.label)}:</strong>
@@ -136,7 +145,7 @@ function LicenseDetailsPage() {
                   return null
                 })}
               </Container>
-              {hasCedarPermission(LICENSE_DETAILS_WRITE) && (
+              {canWriteLicense && (
                 <Container>
                   <Row className="mt-4">
                     <Col xs={12} sm={6} md={4} lg={3}>

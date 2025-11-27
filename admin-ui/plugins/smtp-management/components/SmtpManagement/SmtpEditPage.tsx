@@ -1,6 +1,7 @@
-import React, { useCallback, useState, useRef } from 'react'
+import React, { useCallback, useState, useRef, useEffect, useMemo } from 'react'
 import { FormikProps } from 'formik'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { CardBody, Card } from 'Components'
 import SetTitle from 'Utils/SetTitle'
 import { useTranslation } from 'react-i18next'
@@ -23,6 +24,9 @@ import { logAuditUserAction } from '@/utils/AuditLogger'
 import store from 'Redux/store'
 import { SmtpRootState } from 'Plugins/smtp-management/redux/types/SmtpApi.type'
 import { SmtpFormValues } from 'Plugins/smtp-management/types'
+import { useCedarling } from '@/cedarling'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 
 const API_SMTP = 'api-smtp-configuration'
 
@@ -87,6 +91,23 @@ function SmtpEditPage() {
   const [showTestModal, setShowTestModal] = useState(false)
   const formikRef = useRef<FormikProps<SmtpFormValues> | null>(null)
   const { data: smtpConfiguration, isLoading } = useGetConfigSmtp()
+  const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
+  const smtpResourceId = useMemo(() => ADMIN_UI_RESOURCES.SMTP, [])
+  const smtpScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[smtpResourceId], [smtpResourceId])
+  const canReadSmtp = useMemo(
+    () => hasCedarReadPermission(smtpResourceId),
+    [hasCedarReadPermission, smtpResourceId],
+  )
+  const canWriteSmtp = useMemo(
+    () => hasCedarWritePermission(smtpResourceId),
+    [hasCedarWritePermission, smtpResourceId],
+  )
+
+  useEffect(() => {
+    if (smtpScopes && smtpScopes.length > 0) {
+      authorizeHelper(smtpScopes)
+    }
+  }, [authorizeHelper, smtpScopes])
   const putSmtpMutation = usePutConfigSmtp({
     mutation: {
       onSuccess: () => {
@@ -129,6 +150,9 @@ function SmtpEditPage() {
 
   const handleSubmit = useCallback(
     async (data: SmtpConfiguration, userMessage: string) => {
+      if (!canWriteSmtp) {
+        return
+      }
       const state = store.getState() as unknown as SmtpEditPageRootState
       putSmtpMutation.mutate(
         { data },
@@ -155,14 +179,17 @@ function SmtpEditPage() {
         },
       )
     },
-    [putSmtpMutation, smtpConfiguration],
+    [putSmtpMutation, smtpConfiguration, canWriteSmtp],
   )
 
   const handleTestSmtp = useCallback(
     (testData: SmtpTest) => {
+      if (!canWriteSmtp) {
+        return
+      }
       testSmtpMutation.mutate({ data: testData })
     },
-    [testSmtpMutation],
+    [testSmtpMutation, canWriteSmtp],
   )
 
   const handleCloseTestModal = useCallback(() => {
@@ -177,15 +204,18 @@ function SmtpEditPage() {
       )}
       <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
-          {!isLoading && smtpConfiguration && (
-            <SmtpForm
-              item={smtpConfiguration}
-              allowSmtpKeystoreEdit={allowSmtpKeystoreEdit}
-              handleSubmit={handleSubmit}
-              onTestSmtp={handleTestSmtp}
-              formikRef={formikRef}
-            />
-          )}
+          <GluuViewWrapper canShow={canReadSmtp}>
+            {!isLoading && smtpConfiguration && (
+              <SmtpForm
+                item={smtpConfiguration}
+                allowSmtpKeystoreEdit={allowSmtpKeystoreEdit}
+                handleSubmit={handleSubmit}
+                onTestSmtp={handleTestSmtp}
+                formikRef={formikRef}
+                readOnly={!canWriteSmtp}
+              />
+            )}
+          </GluuViewWrapper>
         </CardBody>
       </Card>
     </GluuLoader>

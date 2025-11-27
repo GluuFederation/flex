@@ -97,10 +97,10 @@ To ensure security and access control, Gluu Flex Admin UI leverages API protecti
 
 1. The Jans Config API's endpoints are protected and can only be accessed using a token (`AT2`) with the required scopes.
 2. To generate an AT2, the frontend requests the Token Server via the backend. **The Token Server and Authorization Server can be the same or different.**
-3. The Token Server employs an introspection script that validates the UJWT and refers to the role-scope mapping in the Token Server persistence.
-4. The introspection script validates the UJWT and includes the appropriate scopes in AT2 based on the user's role.
+3. The Token Server employs an update-token script that validates the UJWT and refers to the role-scope mapping in the Token Server persistence.
+4. The update-token script validates the UJWT and includes the appropriate scopes in AT2 based on the user's role.
 5. The frontend receives AT2 and associated scopes from the backend.
-6. Features in the frontend are enabled or disabled based on the scopes provided in AT2. Refer this [doc](./admin-menu.md/#gui-access-control) for GUI access control.
+6. The scopes provided in AT2 determine which Config API–protected endpoints the Admin UI can access. Refer this [doc](./access-control.md) for GUI access control.
 
 ```mermaid
 
@@ -116,9 +116,8 @@ Jans Token Server->>Jans Token Server: Add scopes to token based on role (AT2)
 Jans Token Server->>Admin UI Backend: AT2
 Admin UI Backend->>Gluu Flex Admin UI: AT2
 Gluu Flex Admin UI->>Gluu Flex Admin UI:extracts scopes from AT2
-Gluu Flex Admin UI->>Gluu Flex Admin UI: GUI access control based on scopes from AT2
+Gluu Flex Admin UI->>Gluu Flex Admin UI: AT2 determine which Config API–protected endpoints the Admin UI can access
 ```
-
 ## Accessing Config-API Endpoints
 
 To access config-api endpoints, the following steps are taken:

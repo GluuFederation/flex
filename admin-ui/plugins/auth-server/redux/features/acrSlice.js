@@ -28,7 +28,7 @@ const acrSlice = createSlice({
       state.loading = false
       state.error = action?.payload?.error || action?.error || 'Failed to load ACRs configuration'
     },
-    editAcrs: (state) => {
+    editAcrs: (state, _action) => {
       state.loading = true
       state.error = null
     },

@@ -19,7 +19,7 @@ const loggingSlice = createSlice({
         state.logging = action.payload.data
       }
     },
-    editLoggingConfig: (state) => {
+    editLoggingConfig: (state, _action) => {
       state.loading = true
     },
     editLoggingResponse: (state, action) => {

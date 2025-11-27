@@ -32,6 +32,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
   fidoConfiguration,
   handleSubmit,
   isSubmitting,
+  readOnly,
 }) => {
   const staticConfiguration = fidoConfiguration?.fido2Configuration
 
@@ -48,7 +49,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
       staticConfiguration,
       fidoConstants.STATIC,
     ) as StaticConfigFormValues,
-    onSubmit: toggle,
+    onSubmit: readOnly ? () => undefined : toggle,
     validationSchema: validationSchema[fidoConstants.VALIDATION_SCHEMAS.STATIC_CONFIG],
     enableReinitialize: true,
     validateOnMount: true,
@@ -56,10 +57,13 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
 
   const submitForm = useCallback(
     (userMessage: string) => {
+      if (readOnly) {
+        return
+      }
       toggle()
       handleSubmit(formik.values, userMessage)
     },
-    [handleSubmit, toggle, formik.values],
+    [handleSubmit, toggle, formik.values, readOnly],
   )
 
   const handleCancel = useCallback(() => {
@@ -128,9 +132,12 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
   const handleFormSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
+      if (readOnly) {
+        return
+      }
       formik.handleSubmit()
     },
-    [formik],
+    [formik, readOnly],
   )
 
   return (
@@ -368,7 +375,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
           <GluuFormFooter
             showBack={true}
             showCancel={true}
-            showApply={true}
+            showApply={!readOnly}
             onApply={toggle}
             onCancel={handleCancel}
             disableBack={false}
@@ -379,13 +386,15 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
           />
         </Col>
       </Row>
-      <GluuCommitDialog
-        handler={toggle}
-        modal={modal}
-        feature={adminUiFeatures.fido_configuration_write}
-        onAccept={submitForm}
-        formik={formik}
-      />
+      {!readOnly && (
+        <GluuCommitDialog
+          handler={toggle}
+          modal={modal}
+          feature={adminUiFeatures.fido_configuration_write}
+          onAccept={submitForm}
+          formik={formik}
+        />
+      )}
     </Form>
   )
 }
