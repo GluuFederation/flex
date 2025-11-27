@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
 import MaterialTable from '@material-table/core'
+import type { Column, Action } from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import {
   Paper,
@@ -22,6 +23,7 @@ import { Link } from 'react-router-dom'
 import { Card, CardBody } from 'Components'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import ScopeDetailPage from './ScopeDetailPage'
 import { useTranslation } from 'react-i18next'
@@ -43,19 +45,53 @@ import {
 import type { Scope } from 'JansConfigApi'
 import type { ScopeWithClients, ScopeTableRow } from './types'
 import { useScopeActions } from './hooks'
-import type { Column, Action } from '@material-table/core'
+
+interface DetailPanelProps {
+  rowData: ScopeTableRow
+}
+
+const FILTER_BOX_STYLES = {
+  mb: '10px',
+  p: 1,
+  backgroundColor: customColors.white,
+  borderRadius: 1,
+  border: `1px solid ${customColors.lightGray}`,
+} as const
+
+const FILTER_CONTAINER_STYLES = {
+  display: 'flex',
+  gap: 2,
+  alignItems: 'center',
+  justifyContent: 'space-between',
+} as const
+
+const FILTER_ITEMS_STYLES = {
+  display: 'flex',
+  gap: 2,
+  alignItems: 'center',
+  flexWrap: 'wrap',
+} as const
+
+const ICON_BUTTON_STYLES = { color: customColors.lightBlue } as const
+
+const TEXT_FIELD_WIDTH = { width: '250px' } as const
+
+const SELECT_FIELD_WIDTH = { width: '180px' } as const
 
 const ScopeListPage: React.FC = () => {
   const { t } = useTranslation()
+  const navigate = useNavigate()
+  const theme = useContext(ThemeContext)
+  const dispatch = useDispatch()
+  const queryClient = useQueryClient()
+
   const {
     hasCedarReadPermission,
     hasCedarWritePermission,
     hasCedarDeletePermission,
     authorizeHelper,
   } = useCedarling()
-  const navigate = useNavigate()
-  const queryClient = useQueryClient()
-  const dispatch = useDispatch()
+  const { logScopeDeletion } = useScopeActions()
 
   const getInitialPageSize = (): number => {
     const stored = localStorage.getItem('paggingSize')
@@ -64,6 +100,7 @@ const ScopeListPage: React.FC = () => {
 
   const [limit, setLimit] = useState<number>(getInitialPageSize())
   const [pageNumber, setPageNumber] = useState<number>(0)
+  const [searchInput, setSearchInput] = useState<string>('')
   const [pattern, setPattern] = useState<string | null>(null)
   const [startIndex, setStartIndex] = useState<number>(0)
   const [scopeType, setScopeType] = useState<string | undefined>(undefined)
@@ -71,48 +108,77 @@ const ScopeListPage: React.FC = () => {
   const [sortOrder, setSortOrder] = useState<'ascending' | 'descending'>('ascending')
   const [item, setItem] = useState<Scope | null>(null)
   const [modal, setModal] = useState(false)
-  const [myActions, setMyActions] = useState<
-    Array<Action<ScopeTableRow> | ((rowData: ScopeTableRow) => Action<ScopeTableRow>)>
-  >([])
 
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'light'
-  const themeColors = getThemeColor(selectedTheme)
-  const bgThemeColor = { background: themeColors.background }
+  const scopesQueryParams = useMemo(
+    () => ({
+      limit,
+      pattern: pattern || undefined,
+      startIndex,
+      type: scopeType || undefined,
+      sortBy: sortBy || undefined,
+      sortOrder: sortBy ? sortOrder : undefined,
+      withAssociatedClients: true as const,
+    }),
+    [limit, pattern, startIndex, scopeType, sortBy, sortOrder],
+  )
 
-  const { logScopeDeletion } = useScopeActions()
+  const scopesQueryOptions = useMemo(
+    () => ({
+      query: {
+        refetchOnMount: 'always' as const,
+        refetchOnWindowFocus: true,
+        refetchOnReconnect: true,
+        staleTime: 0,
+        gcTime: 0,
+      },
+    }),
+    [],
+  )
 
-  const { data: scopesResponse, isLoading: loading } = useGetOauthScopes({
-    limit,
-    pattern: pattern || undefined,
-    startIndex,
-    type: scopeType || undefined,
-    sortBy: sortBy || undefined,
-    sortOrder: sortBy ? sortOrder : undefined,
-    withAssociatedClients: true,
-  })
+  const {
+    data: scopesResponse,
+    isLoading,
+    isFetching,
+  } = useGetOauthScopes(scopesQueryParams, scopesQueryOptions)
 
-  const scopes = (scopesResponse?.entries || []) as ScopeWithClients[]
-  const totalItems = scopesResponse?.totalEntriesCount || 0
+  const loading = isLoading || isFetching
+
+  const handleDeleteSuccess = useCallback(() => {
+    dispatch(updateToast(true, 'success'))
+    queryClient.invalidateQueries({
+      predicate: (query) => {
+        const queryKey = query.queryKey[0] as string
+        return queryKey === getGetOauthScopesQueryKey()[0] || queryKey === 'getOauthScopesByInum'
+      },
+    })
+  }, [dispatch, queryClient])
+
+  const handleDeleteError = useCallback(
+    (error: Error) => {
+      const errorMessage = error?.message || 'Failed to delete scope'
+      dispatch(updateToast(true, 'error', errorMessage))
+    },
+    [dispatch],
+  )
 
   const deleteScope = useDeleteOauthScopesByInum({
     mutation: {
-      onSuccess: () => {
-        dispatch(updateToast(true, 'success'))
-        queryClient.invalidateQueries({ queryKey: getGetOauthScopesQueryKey() })
-      },
-      onError: (error: unknown) => {
-        const errorMessage = (error as Error)?.message || 'Failed to delete scope'
-        dispatch(updateToast(true, 'error', errorMessage))
-      },
+      onSuccess: handleDeleteSuccess,
+      onError: handleDeleteError,
     },
   })
 
-  const toggle = useCallback(() => setModal((prev) => !prev), [])
-
-  SetTitle(t('titles.scopes'))
-
   const scopesResourceId = ADMIN_UI_RESOURCES.Scopes
+
+  const selectedTheme = useMemo(() => theme?.state?.theme || 'light', [theme?.state?.theme])
+
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+
+  const bgThemeColor = useMemo(
+    () => ({ background: themeColors.background }),
+    [themeColors.background],
+  )
+
   const scopesScopes = useMemo(
     () => CEDAR_RESOURCE_SCOPES[scopesResourceId] || [],
     [scopesResourceId],
@@ -122,87 +188,123 @@ const ScopeListPage: React.FC = () => {
     () => hasCedarReadPermission(scopesResourceId),
     [hasCedarReadPermission, scopesResourceId],
   )
+
   const canWriteScopes = useMemo(
     () => hasCedarWritePermission(scopesResourceId),
     [hasCedarWritePermission, scopesResourceId],
   )
+
   const canDeleteScopes = useMemo(
     () => hasCedarDeletePermission(scopesResourceId),
     [hasCedarDeletePermission, scopesResourceId],
   )
 
-  useEffect(() => {
-    authorizeHelper(scopesScopes)
-  }, [authorizeHelper, scopesScopes])
+  const scopes = useMemo<ScopeWithClients[]>(
+    () => (scopesResponse?.entries || []) as ScopeWithClients[],
+    [scopesResponse?.entries],
+  )
 
-  const handlePatternChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    const value = event.target.value
-    setPattern(value)
-  }
+  const totalItems = useMemo(
+    () => scopesResponse?.totalEntriesCount || 0,
+    [scopesResponse?.totalEntriesCount],
+  )
 
-  const handlePatternKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
-    if (event.key === 'Enter') {
-      setPageNumber(0)
-      setStartIndex(0)
-    }
-  }
+  const tableOptions = useMemo(
+    () => ({
+      idSynonym: 'inum',
+      columnsButton: true,
+      search: false,
+      selection: false,
+      pageSize: limit,
+      headerStyle: {
+        ...applicationStyle.tableHeaderStyle,
+        ...bgThemeColor,
+        textTransform: applicationStyle.tableHeaderStyle.textTransform as
+          | 'uppercase'
+          | 'lowercase'
+          | 'none'
+          | 'capitalize'
+          | undefined,
+      },
+      actionsColumnIndex: -1,
+    }),
+    [limit, bgThemeColor],
+  )
 
-  const handleScopeTypeChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const toggle = useCallback(() => setModal((prev) => !prev), [])
+
+  const handlePatternChange = useCallback((event: React.ChangeEvent<HTMLInputElement>): void => {
+    setSearchInput(event.target.value)
+  }, [])
+
+  const handlePatternKeyDown = useCallback(
+    (event: React.KeyboardEvent): void => {
+      if (event.key === 'Enter') {
+        setPattern(searchInput || null)
+        setPageNumber(0)
+        setStartIndex(0)
+      }
+    },
+    [searchInput],
+  )
+
+  const handleScopeTypeChange = useCallback((event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = event.target.value
     setScopeType(value === 'all' ? undefined : value)
     setPageNumber(0)
     setStartIndex(0)
-  }
+  }, [])
 
-  const handleSortByChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleSortByChange = useCallback((event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = event.target.value
     setSortBy(value === 'none' ? undefined : value)
     setPageNumber(0)
     setStartIndex(0)
-  }
+  }, [])
 
-  const handleSortOrderToggle = (): void => {
-    setSortOrder(sortOrder === 'ascending' ? 'descending' : 'ascending')
-  }
+  const handleSortOrderToggle = useCallback((): void => {
+    setSortOrder((prev) => (prev === 'ascending' ? 'descending' : 'ascending'))
+  }, [])
 
-  const handleClearFilters = (): void => {
+  const handleClearFilters = useCallback((): void => {
+    setSearchInput('')
     setPattern(null)
     setScopeType(undefined)
     setSortBy(undefined)
     setSortOrder('ascending')
     setPageNumber(0)
     setStartIndex(0)
-  }
+  }, [])
 
-  const tableColumns = useMemo<Column<ScopeTableRow>[]>(
-    () => [
-      { title: `${t('fields.id')}`, field: 'id' },
-      {
-        title: `${t('menus.clients')}`,
-        field: 'dn',
-        render: (rowData) => {
-          if (!rowData.clients) {
-            return 0
-          }
-          return (
-            <Link to={`/auth-server/clients?scopeInum=${rowData.inum}`} className="common-link">
-              {rowData.clients?.length}
-            </Link>
-          )
-        },
+  const handleRefresh = useCallback((): void => {
+    setStartIndex(0)
+    setPageNumber(0)
+    queryClient.invalidateQueries({
+      predicate: (query) => {
+        const queryKey = query.queryKey[0] as string
+        return queryKey === getGetOauthScopesQueryKey()[0] || queryKey === 'getOauthScopesByInum'
       },
-      { title: `${t('fields.description')}`, field: 'description' },
-      {
-        title: `${t('fields.scope_type')}`,
-        field: 'scopeType',
-        render: (rowData) => (
-          <Badge key={rowData.inum} color={`primary-${selectedTheme}`}>
-            {rowData.scopeType}
-          </Badge>
-        ),
-      },
-    ],
-    [t, selectedTheme],
+    })
+  }, [queryClient])
+
+  const renderClientsColumn = useCallback((rowData: ScopeTableRow) => {
+    if (!rowData.clients) {
+      return 0
+    }
+    return (
+      <Link to={`/auth-server/clients?scopeInum=${rowData.inum}`} className="common-link">
+        {rowData.clients.length}
+      </Link>
+    )
+  }, [])
+
+  const renderScopeTypeColumn = useCallback(
+    (rowData: ScopeTableRow) => (
+      <Badge key={rowData.inum} color={`primary-${selectedTheme}`}>
+        {rowData.scopeType}
+      </Badge>
+    ),
+    [selectedTheme],
   )
 
   const handleGoToScopeAddPage = useCallback(() => {
@@ -254,7 +356,86 @@ const ScopeListPage: React.FC = () => {
     setLimit(count)
   }, [])
 
-  useEffect(() => {
+  const handleEditClick = useCallback(
+    (data: ScopeTableRow | ScopeTableRow[]) => {
+      if (data && !Array.isArray(data)) {
+        handleGoToScopeEditPage(data)
+      }
+    },
+    [handleGoToScopeEditPage],
+  )
+
+  const handleDeleteClick = useCallback(
+    (data: ScopeTableRow | ScopeTableRow[]) => {
+      if (data && !Array.isArray(data)) {
+        handleScopeDelete(data)
+      }
+    },
+    [handleScopeDelete],
+  )
+
+  const DeleteIcon = useCallback(() => <DeleteOutlined />, [])
+
+  const detailPanel = useCallback(
+    (props: DetailPanelProps): React.ReactElement => (
+      <ScopeDetailPage row={props.rowData as Scope} />
+    ),
+    [],
+  )
+
+  const PaperContainer = useCallback(
+    (props: React.ComponentProps<typeof Paper>) => <Paper {...props} elevation={0} />,
+    [],
+  )
+
+  const handlePageChange = useCallback(
+    (_event: React.MouseEvent<HTMLButtonElement> | null, page: number) => {
+      onPageChangeClick(page)
+    },
+    [onPageChangeClick],
+  )
+
+  const handleRowsPerPageChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onRowCountChangeClick(parseInt(event.target.value, 10))
+    },
+    [onRowCountChangeClick],
+  )
+
+  const PaginationComponent = useCallback(
+    () => (
+      <TablePagination
+        count={totalItems}
+        page={pageNumber}
+        onPageChange={handlePageChange}
+        rowsPerPage={limit}
+        onRowsPerPageChange={handleRowsPerPageChange}
+      />
+    ),
+    [totalItems, pageNumber, handlePageChange, limit, handleRowsPerPageChange],
+  )
+
+  const tableColumns = useMemo<Column<ScopeTableRow>[]>(
+    () => [
+      { title: `${t('fields.id')}`, field: 'id' },
+      {
+        title: `${t('menus.clients')}`,
+        field: 'dn',
+        render: renderClientsColumn,
+      },
+      { title: `${t('fields.description')}`, field: 'description' },
+      {
+        title: `${t('fields.scope_type')}`,
+        field: 'scopeType',
+        render: renderScopeTypeColumn,
+      },
+    ],
+    [t, renderClientsColumn, renderScopeTypeColumn],
+  )
+
+  const myActions = useMemo<
+    Array<Action<ScopeTableRow> | ((rowData: ScopeTableRow) => Action<ScopeTableRow>)>
+  >(() => {
     const actions: Array<
       Action<ScopeTableRow> | ((rowData: ScopeTableRow) => Action<ScopeTableRow>)
     > = []
@@ -263,14 +444,10 @@ const ScopeListPage: React.FC = () => {
       actions.push((rowData: ScopeTableRow) => ({
         icon: 'edit',
         iconProps: {
-          id: 'editScope' + rowData.inum,
+          id: `editScope${rowData.inum}`,
         },
         tooltip: `${t('messages.edit_scope')}`,
-        onClick: (_event: unknown, rowData: ScopeTableRow | ScopeTableRow[]) => {
-          if (rowData && !Array.isArray(rowData)) {
-            handleGoToScopeEditPage(rowData)
-          }
-        },
+        onClick: (_event, data) => handleEditClick(data),
         disabled: !canWriteScopes,
       }))
       actions.push({
@@ -278,220 +455,186 @@ const ScopeListPage: React.FC = () => {
         tooltip: `${t('messages.add_scope')}`,
         iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
         isFreeAction: true,
-        onClick: () => handleGoToScopeAddPage(),
+        onClick: handleGoToScopeAddPage,
         disabled: !canWriteScopes,
       })
     }
 
     if (canDeleteScopes) {
       actions.push((rowData: ScopeTableRow) => ({
-        icon: () => <DeleteOutlined />,
+        icon: DeleteIcon,
         iconProps: {
           color: 'secondary',
-          id: 'deleteScope' + rowData.inum,
+          id: `deleteScope${rowData.inum}`,
         },
         tooltip: `${t('Delete Scope')}`,
-        onClick: (_event: unknown, rowData: ScopeTableRow | ScopeTableRow[]) => {
-          if (rowData && !Array.isArray(rowData)) {
-            handleScopeDelete(rowData)
-          }
-        },
+        onClick: (_event, data) => handleDeleteClick(data),
         disabled: !canDeleteScopes,
       }))
     }
 
-    setMyActions(actions)
+    return actions
   }, [
     canWriteScopes,
     canDeleteScopes,
     t,
+    handleEditClick,
     handleGoToScopeAddPage,
-    handleGoToScopeEditPage,
-    handleScopeDelete,
+    handleDeleteClick,
+    DeleteIcon,
   ])
 
-  const tableOptions = useMemo(
+  const tableComponents = useMemo(
     () => ({
-      idSynonym: 'inum',
-      columnsButton: true,
-      search: false,
-      selection: false,
-      pageSize: limit,
-      headerStyle: {
-        ...applicationStyle.tableHeaderStyle,
-        ...bgThemeColor,
-        textTransform: applicationStyle.tableHeaderStyle.textTransform as
-          | 'uppercase'
-          | 'lowercase'
-          | 'none'
-          | 'capitalize'
-          | undefined,
-      },
-      actionsColumnIndex: -1,
+      Container: PaperContainer,
+      Pagination: PaginationComponent,
     }),
-    [limit, bgThemeColor],
+    [PaperContainer, PaginationComponent],
   )
 
-  const detailPanel = useCallback((rowData: { rowData: ScopeTableRow }) => {
-    return <ScopeDetailPage row={rowData.rowData as Scope} />
-  }, [])
+  SetTitle(t('titles.scopes'))
+
+  useEffect(() => {
+    authorizeHelper(scopesScopes)
+  }, [authorizeHelper, scopesScopes])
+
+  useEffect(() => {
+    const debounceTimer = setTimeout(() => {
+      setPattern(searchInput || null)
+      if (searchInput !== (pattern || '')) {
+        setPageNumber(0)
+        setStartIndex(0)
+      }
+    }, 500)
+
+    return () => clearTimeout(debounceTimer)
+  }, [searchInput, pattern])
 
   return (
-    <Card style={applicationStyle.mainCard}>
-      <CardBody>
-        <GluuViewWrapper canShow={canReadScopes}>
-          <Box
-            sx={{
-              mb: '10px',
-              p: 1,
-              backgroundColor: '#fff',
-              borderRadius: 1,
-              border: '1px solid #e0e0e0',
-            }}
-          >
-            <Box
-              sx={{
-                display: 'flex',
-                gap: 2,
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
-                <TextField
-                  size="small"
-                  placeholder={t('placeholders.search_pattern')}
-                  name="pattern"
-                  value={pattern ?? ''}
-                  onChange={handlePatternChange}
-                  onKeyDown={handlePatternKeyDown}
-                  sx={{ width: '250px' }}
-                  inputProps={{ 'aria-label': t('placeholders.search_pattern') }}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <SearchIcon
-                          fontSize="small"
-                          sx={{ color: customColors.lightBlue, pointerEvents: 'none' }}
-                        />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-
-                <TextField
-                  select
-                  size="small"
-                  value={scopeType || 'all'}
-                  onChange={handleScopeTypeChange}
-                  sx={{ width: '180px' }}
-                  label={t('fields.scope_type')}
-                >
-                  <MenuItem value="all">{t('options.all')}</MenuItem>
-                  <MenuItem value="oauth">OAuth</MenuItem>
-                  <MenuItem value="openid">OpenID</MenuItem>
-                  <MenuItem value="dynamic">Dynamic</MenuItem>
-                  <MenuItem value="spontaneous">Spontaneous</MenuItem>
-                  <MenuItem value="uma">UMA</MenuItem>
-                </TextField>
-
-                <TextField
-                  select
-                  size="small"
-                  value={sortBy || 'none'}
-                  onChange={handleSortByChange}
-                  sx={{ width: '180px' }}
-                  label={t('fields.sort_by')}
-                >
-                  <MenuItem value="none">{t('options.none')}</MenuItem>
-                  <MenuItem value="inum">{t('fields.inum')}</MenuItem>
-                  <MenuItem value="displayName">{t('fields.displayname')}</MenuItem>
-                </TextField>
-
-                {sortBy && sortBy !== 'none' && (
-                  <IconButton
+    <GluuLoader blocking={loading}>
+      <Card style={applicationStyle.mainCard}>
+        <CardBody>
+          <GluuViewWrapper canShow={canReadScopes}>
+            <Box sx={FILTER_BOX_STYLES}>
+              <Box sx={FILTER_CONTAINER_STYLES}>
+                <Box sx={FILTER_ITEMS_STYLES}>
+                  <TextField
                     size="small"
-                    onClick={handleSortOrderToggle}
-                    title={
-                      sortOrder === 'ascending' ? t('options.ascending') : t('options.descending')
-                    }
-                    aria-label={
-                      sortOrder === 'ascending'
-                        ? t('tooltips.sort_descending')
-                        : t('tooltips.sort_ascending')
-                    }
-                    sx={{ color: customColors.lightBlue }}
+                    placeholder={t('placeholders.search_pattern')}
+                    name="pattern"
+                    value={searchInput}
+                    onChange={handlePatternChange}
+                    onKeyDown={handlePatternKeyDown}
+                    sx={TEXT_FIELD_WIDTH}
+                    inputProps={{ 'aria-label': t('placeholders.search_pattern') }}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <SearchIcon
+                            fontSize="small"
+                            sx={{ color: customColors.lightBlue, pointerEvents: 'none' }}
+                          />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+
+                  <TextField
+                    select
+                    size="small"
+                    value={scopeType || 'all'}
+                    onChange={handleScopeTypeChange}
+                    sx={SELECT_FIELD_WIDTH}
+                    label={t('fields.scope_type')}
                   >
-                    <SwapVertIcon />
-                  </IconButton>
-                )}
+                    <MenuItem value="all">{t('options.all')}</MenuItem>
+                    <MenuItem value="oauth">OAuth</MenuItem>
+                    <MenuItem value="openid">OpenID</MenuItem>
+                    <MenuItem value="dynamic">Dynamic</MenuItem>
+                    <MenuItem value="spontaneous">Spontaneous</MenuItem>
+                    <MenuItem value="uma">UMA</MenuItem>
+                  </TextField>
 
-                <Button
+                  <TextField
+                    select
+                    size="small"
+                    value={sortBy || 'none'}
+                    onChange={handleSortByChange}
+                    sx={SELECT_FIELD_WIDTH}
+                    label={t('fields.sort_by')}
+                  >
+                    <MenuItem value="none">{t('options.none')}</MenuItem>
+                    <MenuItem value="inum">{t('fields.inum')}</MenuItem>
+                    <MenuItem value="displayName">{t('fields.displayname')}</MenuItem>
+                  </TextField>
+
+                  {sortBy && sortBy !== 'none' && (
+                    <IconButton
+                      size="small"
+                      onClick={handleSortOrderToggle}
+                      title={
+                        sortOrder === 'ascending' ? t('options.ascending') : t('options.descending')
+                      }
+                      aria-label={
+                        sortOrder === 'ascending'
+                          ? t('tooltips.sort_descending')
+                          : t('tooltips.sort_ascending')
+                      }
+                      sx={ICON_BUTTON_STYLES}
+                    >
+                      <SwapVertIcon />
+                    </IconButton>
+                  )}
+
+                  <Button
+                    size="small"
+                    startIcon={<ClearIcon />}
+                    onClick={handleClearFilters}
+                    aria-label={t('tooltips.clear_filters')}
+                    sx={ICON_BUTTON_STYLES}
+                  >
+                    {t('actions.clear')}
+                  </Button>
+                </Box>
+
+                <IconButton
                   size="small"
-                  startIcon={<ClearIcon />}
-                  onClick={handleClearFilters}
-                  aria-label={t('tooltips.clear_filters')}
-                  sx={{ color: customColors.lightBlue }}
+                  onClick={handleRefresh}
+                  title={t('tooltips.refresh_data')}
+                  aria-label={t('tooltips.refresh_data')}
+                  sx={ICON_BUTTON_STYLES}
                 >
-                  {t('actions.clear')}
-                </Button>
+                  <RefreshIcon />
+                </IconButton>
               </Box>
-
-              <IconButton
-                size="small"
-                onClick={() => {
-                  setStartIndex(0)
-                  setPageNumber(0)
-                }}
-                title={t('tooltips.refresh_data')}
-                aria-label={t('tooltips.refresh_data')}
-                sx={{ color: customColors.lightBlue }}
-              >
-                <RefreshIcon />
-              </IconButton>
             </Box>
-          </Box>
 
-          <MaterialTable
-            key={limit ? limit : 0}
-            components={{
-              Container: (props) => <Paper {...props} elevation={0} />,
-              Pagination: () => (
-                <TablePagination
-                  count={totalItems}
-                  page={pageNumber}
-                  onPageChange={(prop, page) => {
-                    onPageChangeClick(page)
-                  }}
-                  rowsPerPage={limit}
-                  onRowsPerPageChange={(event) =>
-                    onRowCountChangeClick(parseInt(event.target.value, 10))
-                  }
-                />
-              ),
-            }}
-            columns={tableColumns}
-            data={scopes}
-            isLoading={loading}
-            title=""
-            actions={myActions}
-            options={tableOptions}
-            detailPanel={detailPanel}
-          />
-        </GluuViewWrapper>
-        {canDeleteScopes && item && (
-          <GluuDialog
-            row={item}
-            name={item.id}
-            handler={toggle}
-            modal={modal}
-            subject="scope"
-            onAccept={onDeletionConfirmed}
-            feature={adminUiFeatures.scopes_delete}
-          />
-        )}
-      </CardBody>
-    </Card>
+            <MaterialTable
+              key={limit || 0}
+              components={tableComponents}
+              columns={tableColumns}
+              data={scopes}
+              isLoading={loading}
+              title=""
+              actions={myActions}
+              options={tableOptions}
+              detailPanel={detailPanel}
+            />
+          </GluuViewWrapper>
+          {canDeleteScopes && item && (
+            <GluuDialog
+              row={item}
+              name={item.id}
+              handler={toggle}
+              modal={modal}
+              subject="scope"
+              onAccept={onDeletionConfirmed}
+              feature={adminUiFeatures.scopes_delete}
+            />
+          )}
+        </CardBody>
+      </Card>
+    </GluuLoader>
   )
 }
 

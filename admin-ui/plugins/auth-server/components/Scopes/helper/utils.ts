@@ -70,3 +70,43 @@ export const applyScopeTypeDefaults = (
     attributes: clonedAttributes,
   }
 }
+
+const compareArrays = (arr1?: unknown[], arr2?: unknown[]): boolean => {
+  if (!arr1 && !arr2) return true
+  if (!arr1 || !arr2) return false
+  if (arr1.length !== arr2.length) return false
+  return JSON.stringify([...arr1].sort()) === JSON.stringify([...arr2].sort())
+}
+
+const compareAttributes = (
+  attr1?: ExtendedScopeAttributes,
+  attr2?: ExtendedScopeAttributes,
+): boolean => {
+  if (!attr1 && !attr2) return true
+  if (!attr1 || !attr2) return false
+  return (
+    attr1.showInConfigurationEndpoint === attr2.showInConfigurationEndpoint &&
+    compareArrays(attr1.spontaneousClientScopes, attr2.spontaneousClientScopes)
+  )
+}
+
+export const hasActualChanges = (
+  currentValues: ScopeFormValues,
+  initialFormValues: ScopeFormValues,
+): boolean => {
+  return (
+    currentValues.id !== initialFormValues.id ||
+    currentValues.displayName !== initialFormValues.displayName ||
+    currentValues.description !== initialFormValues.description ||
+    currentValues.scopeType !== initialFormValues.scopeType ||
+    currentValues.defaultScope !== initialFormValues.defaultScope ||
+    currentValues.iconUrl !== initialFormValues.iconUrl ||
+    !compareArrays(currentValues.claims, initialFormValues.claims) ||
+    !compareArrays(currentValues.dynamicScopeScripts, initialFormValues.dynamicScopeScripts) ||
+    !compareArrays(
+      currentValues.umaAuthorizationPolicies,
+      initialFormValues.umaAuthorizationPolicies,
+    ) ||
+    !compareAttributes(currentValues.attributes, initialFormValues.attributes)
+  )
+}

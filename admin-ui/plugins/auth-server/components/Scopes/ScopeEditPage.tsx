@@ -1,15 +1,21 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import { useQueryClient } from '@tanstack/react-query'
 import { CardBody, Card } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import ScopeForm from './ScopeForm'
 import { getAttributes, getScripts } from 'Redux/features/initSlice'
 import { buildPayload } from 'Utils/PermChecker'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
+import { updateToast } from 'Redux/features/toastSlice'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { useGetOauthScopesByInum, usePutOauthScopes } from 'JansConfigApi'
+import {
+  useGetOauthScopesByInum,
+  usePutOauthScopes,
+  getGetOauthScopesQueryKey,
+} from 'JansConfigApi'
 import type { Scope } from 'JansConfigApi'
 import type { ExtendedScope, ScopeScript, ScopeClaim, ModifiedFields, ScopeClient } from './types'
 import { EMPTY_SCOPE } from './types'
@@ -24,27 +30,138 @@ interface RootState {
   initReducer: InitState
 }
 
+interface ScopeWithMessage extends Scope {
+  action_message?: string
+}
+
+const DEFAULT_SCOPE_ATTRIBUTES = {
+  spontaneousClientId: undefined,
+  spontaneousClientScopes: [] as string[],
+  showInConfigurationEndpoint: false,
+}
+
 const ScopeEditPage: React.FC = () => {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+
   const { id } = useParams<{ id: string }>()
-  const { logScopeUpdate, navigateToScopeList } = useScopeActions()
+
+  const dispatch = useDispatch()
+  const queryClient = useQueryClient()
+
   const scripts = useSelector((state: RootState) => state.initReducer.scripts)
   const attributes = useSelector((state: RootState) => state.initReducer.attributes)
-  const inum = id?.replace(/^:/, '') || ''
+
+  const { logScopeUpdate, navigateToScopeList } = useScopeActions()
 
   const [modifiedFields, setModifiedFields] = useState<ModifiedFields>({})
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-  const { data: scopeData, isLoading: scopeLoading } = useGetOauthScopesByInum(inum, undefined, {
-    query: {
-      enabled: !!inum,
-    },
-  })
+  const inum = useMemo(() => id?.replace(/^:/, '') || '', [id])
 
-  const scope = scopeData
+  const scopeQueryOptions = useMemo(
+    () => ({
+      query: {
+        enabled: !!inum,
+        refetchOnMount: 'always' as const,
+        refetchOnWindowFocus: true,
+        refetchOnReconnect: true,
+        staleTime: 0,
+        gcTime: 0,
+      },
+    }),
+    [inum],
+  )
+
+  const { data: scopeData, isLoading: scopeLoading } = useGetOauthScopesByInum(
+    inum,
+    undefined,
+    scopeQueryOptions,
+  )
 
   const updateScope = usePutOauthScopes()
+
+  const extensibleScope = useMemo<ExtendedScope>(() => {
+    if (scopeData) {
+      return {
+        ...scopeData,
+        clients: scopeData.clients as ScopeClient[] | undefined,
+        attributes: scopeData.attributes || DEFAULT_SCOPE_ATTRIBUTES,
+      }
+    }
+    return {
+      ...EMPTY_SCOPE,
+      inum,
+      clients: [],
+      attributes: DEFAULT_SCOPE_ATTRIBUTES,
+    }
+  }, [scopeData, inum])
+
+  const loading = useMemo(
+    () => updateScope.isPending || scopeLoading,
+    [updateScope.isPending, scopeLoading],
+  )
+
+  const handleSearch = useCallback(
+    (value: string) => {
+      dispatch({
+        type: getAttributes.type,
+        payload: { options: { pattern: value } },
+      })
+    },
+    [dispatch],
+  )
+
+  const handleSubmit = useCallback(
+    async (data: string) => {
+      if (!data) return
+
+      setErrorMessage(null)
+
+      let parsedData: ScopeWithMessage
+      try {
+        parsedData = JSON.parse(data) as ScopeWithMessage
+      } catch (error) {
+        console.error('Error parsing scope data:', error)
+        setErrorMessage(t('messages.error_in_parsing_data'))
+        return
+      }
+
+      try {
+        const message = parsedData.action_message || ''
+        delete parsedData.action_message
+
+        const response = await updateScope.mutateAsync({ data: parsedData as Scope })
+
+        queryClient.invalidateQueries({
+          predicate: (query) => {
+            const queryKey = query.queryKey[0] as string
+            return (
+              queryKey === getGetOauthScopesQueryKey()[0] || queryKey === 'getOauthScopesByInum'
+            )
+          },
+        })
+
+        const successMessage =
+          response?.displayName || response?.id
+            ? `Scope '${response.displayName || response.id}' updated successfully`
+            : t('messages.scope_updated_successfully')
+
+        dispatch(updateToast(true, 'success', successMessage))
+
+        try {
+          await logScopeUpdate(parsedData as Scope, message, modifiedFields)
+        } catch (auditError) {
+          console.error('Error logging audit:', auditError)
+        }
+
+        navigateToScopeList()
+      } catch (error) {
+        console.error('Error updating scope:', error)
+        setErrorMessage(error instanceof Error ? error.message : t('messages.error_in_saving'))
+      }
+    },
+    [updateScope, logScopeUpdate, modifiedFields, navigateToScopeList, t, queryClient],
+  )
 
   useEffect(() => {
     if (attributes.length === 0) {
@@ -64,72 +181,6 @@ const ScopeEditPage: React.FC = () => {
       })
     }
   }, [dispatch, attributes.length, scripts.length])
-
-  const handleSearch = useCallback(
-    (value: string) => {
-      dispatch({
-        type: getAttributes.type,
-        payload: { options: { pattern: value } },
-      })
-    },
-    [dispatch],
-  )
-
-  async function handleSubmit(data: string) {
-    if (!data) return
-
-    setErrorMessage(null)
-
-    let parsedData: Scope
-    try {
-      parsedData = JSON.parse(data) as Scope
-    } catch (error) {
-      console.error('Error parsing scope data:', error)
-      setErrorMessage(t('messages.error_in_parsing_data'))
-      return
-    }
-
-    try {
-      const message = (parsedData as Record<string, unknown>).action_message as string
-      delete (parsedData as Record<string, unknown>).action_message
-
-      await updateScope.mutateAsync({ data: parsedData })
-
-      try {
-        await logScopeUpdate(parsedData, message, modifiedFields)
-      } catch (auditError) {
-        console.error('Error logging audit:', auditError)
-      }
-
-      navigateToScopeList()
-    } catch (error) {
-      console.error('Error updating scope:', error)
-      setErrorMessage(error instanceof Error ? error.message : t('messages.error_in_saving'))
-    }
-  }
-
-  const extensibleScope: ExtendedScope = scope
-    ? {
-        ...scope,
-        clients: scope.clients as ScopeClient[] | undefined,
-        attributes: scope.attributes || {
-          spontaneousClientId: undefined,
-          spontaneousClientScopes: [],
-          showInConfigurationEndpoint: false,
-        },
-      }
-    : {
-        ...EMPTY_SCOPE,
-        inum,
-        clients: [],
-        attributes: {
-          spontaneousClientId: undefined,
-          spontaneousClientScopes: [],
-          showInConfigurationEndpoint: false,
-        },
-      }
-
-  const loading = updateScope.isPending || scopeLoading
 
   return (
     <GluuLoader blocking={loading}>
