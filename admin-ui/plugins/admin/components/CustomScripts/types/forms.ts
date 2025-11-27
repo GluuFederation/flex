@@ -1,5 +1,3 @@
-// Form Types
-
 import { CustomScriptItem, ModuleProperty, ConfigurationProperty } from './customScript'
 import type { CustomScript } from 'JansConfigApi'
 
@@ -30,7 +28,6 @@ export interface FormValues {
   action_message?: string
 }
 
-// Utility type for property option mapping
 export type PropertyOptionMap = (
   properties: Array<ModuleProperty | ConfigurationProperty> | undefined,
 ) => Array<{ key: string; value: string }>

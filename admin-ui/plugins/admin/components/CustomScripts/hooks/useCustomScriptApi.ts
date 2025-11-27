@@ -156,11 +156,14 @@ export function useDeleteCustomScript() {
         queryClient.invalidateQueries({ queryKey: getGetConfigScriptsQueryKey() }),
         queryClient.invalidateQueries({
           predicate: (query) => {
-            const queryKey = query.queryKey as string[]
-            const key = queryKey[0] as string
+            const queryKey = query.queryKey
+            if (!Array.isArray(queryKey) || typeof queryKey[0] !== 'string') {
+              return false
+            }
+            const key = queryKey[0]
             return (
-              key?.startsWith('/api/v1/config/scripts/type/') ||
-              key?.startsWith('/api/v1/config/scripts/')
+              key.startsWith('/api/v1/config/scripts/type/') ||
+              key.startsWith('/api/v1/config/scripts/')
             )
           },
         }),

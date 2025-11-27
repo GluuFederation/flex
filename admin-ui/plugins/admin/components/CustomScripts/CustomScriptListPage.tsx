@@ -76,11 +76,8 @@ const CustomScriptListPage: React.FC = () => {
   const selectedTheme = theme?.state?.theme || 'light'
   const themeColors = getThemeColor(selectedTheme)
 
-  const scriptsResourceId = useMemo(() => ADMIN_UI_RESOURCES.Scripts, [])
-  const scriptScopes = useMemo(
-    () => CEDAR_RESOURCE_SCOPES[scriptsResourceId] || [],
-    [scriptsResourceId],
-  )
+  const scriptsResourceId = ADMIN_UI_RESOURCES.Scripts
+  const scriptScopes = CEDAR_RESOURCE_SCOPES[scriptsResourceId] || []
 
   const canRead = useMemo(
     () => hasCedarReadPermission(scriptsResourceId),
@@ -558,7 +555,7 @@ const CustomScriptListPage: React.FC = () => {
                 `${from}-${to} ${t('fields.of')} ${count !== -1 ? count : `${t('fields.more_than')} ${to}`}`
               }
               sx={{
-                borderTop: `1px solid ${(themeColors as Record<string, unknown>).borderColor || '#e0e0e0'}`,
+                borderTop: `1px solid ${themeColors.borderColor ?? '#e0e0e0'}`,
                 backgroundColor: themeColors.background,
               }}
             />

@@ -36,7 +36,12 @@ function CustomScriptEditPage() {
     }
 
     try {
-      const { action_message, script_path, location_type, ...scriptData } = data.customScript
+      const {
+        action_message,
+        script_path: _scriptPath,
+        location_type: _locationType,
+        ...scriptData
+      } = data.customScript
 
       await updateMutation.mutateAsync({
         data: scriptData as CustomScript,

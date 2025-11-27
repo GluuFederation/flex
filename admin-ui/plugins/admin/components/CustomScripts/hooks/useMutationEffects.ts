@@ -23,30 +23,24 @@ export function useMutationEffects<TData = unknown, TError = unknown, TVariables
   const { t } = useTranslation()
 
   useEffect(() => {
-    let mounted = true
-
-    if (mutation.isSuccess && mounted) {
+    if (mutation.isSuccess) {
       dispatch(updateToast(true, 'success', t(successMessage)))
       if (navigateOnSuccess) {
         navigateBack(ROUTES.CUSTOM_SCRIPT_LIST)
       }
     }
-
-    return () => {
-      mounted = false
-    }
   }, [mutation.isSuccess, navigateBack, dispatch, t, successMessage, navigateOnSuccess])
 
   useEffect(() => {
-    let mounted = true
-
-    if (mutation.isError && mounted) {
-      const errorMsg = mutation.error instanceof Error ? mutation.error.message : t(errorMessage)
+    if (mutation.isError) {
+      const error = mutation.error
+      const errorMsg =
+        error instanceof Error
+          ? error.message
+          : error && typeof error === 'object' && 'message' in error
+            ? String((error as { message: unknown }).message)
+            : t(errorMessage)
       dispatch(updateToast(true, 'error', errorMsg))
-    }
-
-    return () => {
-      mounted = false
     }
   }, [mutation.isError, mutation.error, dispatch, t, errorMessage])
 }

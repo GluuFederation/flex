@@ -1,5 +1,3 @@
-// Action Types
-
 import { CustomScriptItem } from './customScript'
 
 export interface SubmitData {

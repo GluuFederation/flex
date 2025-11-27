@@ -36,8 +36,8 @@ export const PersonAuthenticationFields: React.FC<PersonAuthenticationFieldsProp
             multiple
             disabled={viewOnly}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
-              const selectElement = e.target as unknown as HTMLSelectElement
-              const values = Array.from(selectElement.selectedOptions).map((o) => o.value)
+              const target = e.target as unknown as HTMLSelectElement
+              const values = Array.from(target.selectedOptions).map((o) => o.value)
               formik.setFieldValue('aliases', values)
             }}
           >
