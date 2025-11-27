@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { updateToast } from 'Redux/features/toastSlice'
@@ -21,18 +21,33 @@ export function useMutationEffects<TData = unknown, TError = unknown, TVariables
   const dispatch = useDispatch()
   const { navigateBack } = useAppNavigation()
   const { t } = useTranslation()
+  const successHandledRef = useRef(false)
+  const errorHandledRef = useRef(false)
 
   useEffect(() => {
-    if (mutation.isSuccess) {
+    if (mutation.isSuccess && !successHandledRef.current) {
+      successHandledRef.current = true
       dispatch(updateToast(true, 'success', t(successMessage)))
       if (navigateOnSuccess) {
         navigateBack(ROUTES.CUSTOM_SCRIPT_LIST)
       }
     }
-  }, [mutation.isSuccess, navigateBack, dispatch, t, successMessage, navigateOnSuccess])
+    if (mutation.isIdle) {
+      successHandledRef.current = false
+    }
+  }, [
+    mutation.isSuccess,
+    mutation.isIdle,
+    navigateBack,
+    dispatch,
+    t,
+    successMessage,
+    navigateOnSuccess,
+  ])
 
   useEffect(() => {
-    if (mutation.isError) {
+    if (mutation.isError && !errorHandledRef.current) {
+      errorHandledRef.current = true
       const error = mutation.error
       const errorMsg =
         error instanceof Error
@@ -42,5 +57,8 @@ export function useMutationEffects<TData = unknown, TError = unknown, TVariables
             : t(errorMessage)
       dispatch(updateToast(true, 'error', errorMsg))
     }
-  }, [mutation.isError, mutation.error, dispatch, t, errorMessage])
+    if (mutation.isIdle) {
+      errorHandledRef.current = false
+    }
+  }, [mutation.isError, mutation.isIdle, mutation.error, dispatch, t, errorMessage])
 }

@@ -12,6 +12,7 @@ import {
   useGetCustomScriptType,
   getGetConfigScriptsQueryKey,
   getGetConfigScriptsByTypeQueryKey,
+  getGetConfigScriptsByInumQueryKey,
   type CustomScript,
   type GetConfigScriptsParams,
   type GetConfigScriptsByTypeParams,
@@ -22,11 +23,9 @@ import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
 import { logAuditAction } from './auditUtils'
 import { SCRIPT_CACHE_CONFIG } from '../constants'
 import type { RootState } from 'Redux/sagas/types/audit'
+import type { ScriptType } from '../types/customScript'
 
-export interface ScriptType {
-  value: string
-  name: string
-}
+export type { ScriptType }
 
 interface WebhookPayload {
   createdFeatureValue: CustomScript | { inum: string }
@@ -124,7 +123,7 @@ export function useUpdateCustomScript() {
       queryClient.invalidateQueries({ queryKey: getGetConfigScriptsQueryKey() })
       if (result.inum) {
         queryClient.invalidateQueries({
-          queryKey: ['getConfigScriptsByInum', result.inum],
+          queryKey: getGetConfigScriptsByInumQueryKey(result.inum),
         })
       }
 
