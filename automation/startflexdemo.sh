@@ -62,10 +62,9 @@ if [[ $INSTALL_ISTIO == "true" ]]; then
   cd ..
 fi
 
-PERSISTENCE_TYPE="sql"
 if [[ $GLUU_PERSISTENCE == "MYSQL" ]]; then
-  sudo microk8s.kubectl get po --kubeconfig="$KUBECONFIG"
-  sudo helm install my-release --set auth.rootPassword=Test1234#,auth.database=gluu -n gluu oci://registry-1.docker.io/bitnamicharts/mysql --kubeconfig="$KUBECONFIG"
+  sudo wget https://raw.githubusercontent.com/GluuFederation/flex/nightly/automation/mysql.yaml
+  sudo microk8s.kubectl apply -f mysql.yaml --kubeconfig="$KUBECONFIG"
   cat << EOF > override.yaml
 config:
   countryCode: US
@@ -76,15 +75,14 @@ config:
     cnSqlDbName: gluu
     cnSqlDbPort: 3306
     cnSqlDbDialect: mysql
-    cnSqlDbHost: my-release-mysql.gluu.svc
+    cnSqlDbHost: mysql.gluu.svc
     cnSqlDbUser: root
     cnSqlDbTimezone: UTC
     cnSqldbUserPassword: Test1234#
 EOF
-fi
-if [[ $GLUU_PERSISTENCE == "PGSQL" ]]; then
-  sudo microk8s.kubectl get po --kubeconfig="$KUBECONFIG"
-  sudo helm install my-release --set auth.postgresPassword=Test1234#,auth.database=gluu -n gluu oci://registry-1.docker.io/bitnamicharts/postgresql --kubeconfig="$KUBECONFIG"
+else
+  sudo wget https://raw.githubusercontent.com/GluuFederation/flex/nightly/automation/pgsql.yaml
+  sudo microk8s.kubectl apply -f pgsql.yaml --kubeconfig="$KUBECONFIG"
   cat << EOF > override.yaml
 config:
   countryCode: US
@@ -95,7 +93,7 @@ config:
     cnSqlDbName: gluu
     cnSqlDbPort: 5432
     cnSqlDbDialect: pgsql
-    cnSqlDbHost: my-release-postgresql.gluu.svc
+    cnSqlDbHost: postgresql.gluu.svc
     cnSqlDbUser: postgres
     cnSqlDbTimezone: UTC
     cnSqldbUserPassword: Test1234#
@@ -108,7 +106,6 @@ global:
     testEnviroment: true
   istio:
     enable: $INSTALL_ISTIO
-  cnPersistenceType: $PERSISTENCE_TYPE
   admin-ui:
     ingress:
       adminUiEnabled: true
