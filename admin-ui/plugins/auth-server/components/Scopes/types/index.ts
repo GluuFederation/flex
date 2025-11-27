@@ -1,9 +1,3 @@
-/**
- * Central export file for all Scope types
- * Provides a single import point for consumers
- */
-
-// Core domain types
 export type {
   Scope,
   ScopeAttributes,
@@ -23,7 +17,6 @@ export type {
 
 export { EMPTY_SCOPE } from './scopeTypes'
 
-// Form types
 export type {
   ScopeFormValues,
   ModifiedFields,
@@ -31,7 +24,6 @@ export type {
   UserActionPayload,
 } from './formTypes'
 
-// Component types
 export type {
   ScopeDetailPageProps,
   ScopeListPageProps,

@@ -1,18 +1,20 @@
-import React, { useEffect, useState, useMemo, useCallback } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useQueryClient } from '@tanstack/react-query'
 import { CardBody, Card } from 'Components'
 import ScopeForm from './ScopeForm'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { getAttributes, getScripts } from 'Redux/features/initSlice'
 import { buildPayload } from 'Utils/PermChecker'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
+import { updateToast } from 'Redux/features/toastSlice'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { usePostOauthScopes } from 'JansConfigApi'
+import { usePostOauthScopes, getGetOauthScopesQueryKey } from 'JansConfigApi'
 import type { Scope } from 'JansConfigApi'
-import type { ExtendedScope, ScopeScript, ScopeClaim, ModifiedFields } from './types'
-import { EMPTY_SCOPE } from './types'
+import type { ScopeScript, ScopeClaim, ModifiedFields } from './types'
 import { useScopeActions } from './hooks'
+import { ScopeWithMessage, INITIAL_SCOPE } from './constants'
 
 interface InitState {
   scripts: ScopeScript[]
@@ -25,16 +27,71 @@ interface RootState {
 
 const ScopeAddPage: React.FC = () => {
   const { t } = useTranslation()
+
   const dispatch = useDispatch()
-  const { logScopeCreation, navigateToScopeList } = useScopeActions()
+  const queryClient = useQueryClient()
 
   const scripts = useSelector((state: RootState) => state.initReducer.scripts)
   const attributes = useSelector((state: RootState) => state.initReducer.attributes)
+
+  const { logScopeCreation, navigateToScopeList } = useScopeActions()
 
   const [modifiedFields, setModifiedFields] = useState<ModifiedFields>({})
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const createScope = usePostOauthScopes()
+
+  const handleSubmit = useCallback(
+    async (data: string) => {
+      if (!data) return
+
+      setErrorMessage(null)
+
+      let parsedData: ScopeWithMessage
+      try {
+        parsedData = JSON.parse(data) as ScopeWithMessage
+      } catch (error) {
+        console.error('Error parsing scope data:', error)
+        setErrorMessage(t('messages.error_in_parsing_data'))
+        return
+      }
+
+      try {
+        const message = parsedData.action_message || ''
+        delete parsedData.action_message
+
+        const response = await createScope.mutateAsync({ data: parsedData as Scope })
+
+        queryClient.invalidateQueries({
+          predicate: (query) => {
+            const queryKey = query.queryKey[0] as string
+            return (
+              queryKey === getGetOauthScopesQueryKey()[0] || queryKey === 'getOauthScopesByInum'
+            )
+          },
+        })
+
+        const successMessage =
+          response?.id || response?.displayName
+            ? `Scope '${response.id || response.displayName}' created successfully`
+            : t('messages.scope_created_successfully')
+
+        dispatch(updateToast(true, 'success', successMessage))
+
+        try {
+          await logScopeCreation(parsedData as Scope, message, modifiedFields)
+        } catch (auditError) {
+          console.error('Error logging audit:', auditError)
+        }
+
+        navigateToScopeList()
+      } catch (error) {
+        console.error('Error creating scope:', error)
+        setErrorMessage(error instanceof Error ? error.message : t('messages.error_in_saving'))
+      }
+    },
+    [createScope, logScopeCreation, modifiedFields, navigateToScopeList, t, queryClient, dispatch],
+  )
 
   useEffect(() => {
     if (attributes.length === 0) {
@@ -55,39 +112,6 @@ const ScopeAddPage: React.FC = () => {
     }
   }, [dispatch, attributes.length, scripts.length])
 
-  async function handleSubmit(data: string) {
-    if (!data) return
-
-    setErrorMessage(null)
-
-    let parsedData: Scope
-    try {
-      parsedData = JSON.parse(data) as Scope
-    } catch (error) {
-      console.error('Error parsing scope data:', error)
-      setErrorMessage(t('messages.error_in_parsing_data'))
-      return
-    }
-
-    try {
-      const message = (parsedData as Record<string, unknown>).action_message as string
-      delete (parsedData as Record<string, unknown>).action_message
-
-      await createScope.mutateAsync({ data: parsedData })
-
-      try {
-        await logScopeCreation(parsedData, message, modifiedFields)
-      } catch (auditError) {
-        console.error('Error logging audit:', auditError)
-      }
-
-      navigateToScopeList()
-    } catch (error) {
-      console.error('Error creating scope:', error)
-      setErrorMessage(error instanceof Error ? error.message : t('messages.error_in_saving'))
-    }
-  }
-
   const handleSearch = useCallback(
     (value: string) => {
       dispatch({
@@ -96,21 +120,6 @@ const ScopeAddPage: React.FC = () => {
       })
     },
     [dispatch],
-  )
-
-  const scope: ExtendedScope = useMemo(
-    () => ({
-      ...EMPTY_SCOPE,
-      claims: [],
-      dynamicScopeScripts: [],
-      defaultScope: false,
-      attributes: {
-        spontaneousClientId: undefined,
-        spontaneousClientScopes: [],
-        showInConfigurationEndpoint: false,
-      },
-    }),
-    [],
   )
 
   return (
@@ -123,7 +132,7 @@ const ScopeAddPage: React.FC = () => {
       <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
           <ScopeForm
-            scope={scope}
+            scope={INITIAL_SCOPE}
             scripts={scripts}
             attributes={attributes}
             handleSubmit={handleSubmit}
