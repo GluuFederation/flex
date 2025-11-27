@@ -133,8 +133,8 @@ const ScopeEditPage: React.FC = () => {
         })
 
         const successMessage =
-          response?.displayName || response?.id
-            ? `Scope '${response.displayName || response.id}' updated successfully`
+          response?.id || response?.displayName
+            ? `Scope '${response.id || response.displayName}' updated successfully`
             : t('messages.scope_updated_successfully')
 
         dispatch(updateToast(true, 'success', successMessage))

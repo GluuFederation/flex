@@ -72,8 +72,8 @@ const ScopeAddPage: React.FC = () => {
         })
 
         const successMessage =
-          response?.displayName || response?.id
-            ? `Scope '${response.displayName || response.id}' created successfully`
+          response?.id || response?.displayName
+            ? `Scope '${response.id || response.displayName}' created successfully`
             : t('messages.scope_created_successfully')
 
         dispatch(updateToast(true, 'success', successMessage))

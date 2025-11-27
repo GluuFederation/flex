@@ -485,7 +485,6 @@ const ScopeListPage: React.FC = () => {
     handleEditClick,
     handleGoToScopeAddPage,
     handleDeleteClick,
-    DeleteIcon,
   ])
 
   const tableComponents = useMemo(
