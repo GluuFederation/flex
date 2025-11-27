@@ -29,11 +29,12 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import moment from 'moment'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
-import type { ScopeFormProps, ScopeFormValues, ScopeClient } from './types'
+import type { ScopeFormProps, ScopeFormValues, ScopeClient, ExtendedScope } from './types'
 import {
   buildScopeInitialValues,
   derivePanelVisibility,
   applyScopeTypeDefaults,
+  hasActualChanges,
 } from './helper/utils'
 import { getScopeValidationSchema } from './helper/validations'
 
@@ -93,7 +94,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
 
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)
-  const [pendingScope, setPendingScope] = useState<Record<string, unknown> | null>(null)
+  const [pendingScope, setPendingScope] = useState<Partial<ExtendedScope> | null>(null)
 
   const [showClaimsPanel, handleClaimsPanel] = useState(initialFormValues.scopeType === 'openid')
   const [showDynamicPanel, handleDynamicPanel] = useState(initialFormValues.scopeType === 'dynamic')
@@ -186,22 +187,20 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
         validateOnMount
         validationSchema={getScopeValidationSchema({ isExistingScope })}
         onSubmit={(values: ScopeFormValues, helpers: FormikHelpers<ScopeFormValues>) => {
-          const result: Record<string, unknown> = {
+          const result = {
             ...scope,
             ...values,
             attributes: {
               ...scope.attributes,
               ...values.attributes,
             },
-          }
-
-          result['creatorType'] = 'user'
-          result['creatorId'] = authReducer.userinfo.inum
+            creatorType: 'user',
+            creatorId: authReducer.userinfo.inum,
+          } as Partial<ExtendedScope>
 
           if (result.attributes && scope.attributes) {
-            const attrs = result.attributes as Record<string, unknown>
-            attrs.spontaneousClientId = scope.attributes.spontaneousClientId
-            attrs.spontaneousClientScopes =
+            result.attributes.spontaneousClientId = scope.attributes.spontaneousClientId
+            result.attributes.spontaneousClientScopes =
               scope.spontaneousClientScopes || scope.attributes.spontaneousClientScopes
           }
 
@@ -214,9 +213,12 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
           const handleScopeTypeChangeInternal = (type: string) => {
             applyScopeTypeVisibility(type)
             const updatedValues = applyScopeTypeDefaults(formikProps.values, type)
-            formikProps.setValues(updatedValues, true)
+            formikProps.setValues(updatedValues, false)
 
-            const updatedTouched: Partial<Record<keyof ScopeFormValues, boolean>> = {}
+            const updatedTouched: Partial<Record<keyof ScopeFormValues, boolean>> = {
+              scopeType: true,
+            }
+
             if (type === 'dynamic') {
               updatedTouched.dynamicScopeScripts = true
               updatedTouched.claims = true
@@ -229,17 +231,17 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
               }
             }
 
-            if (Object.keys(updatedTouched).length > 0) {
-              formikProps.setTouched(
-                {
-                  ...formikProps.touched,
-                  ...updatedTouched,
-                },
-                true,
-              )
-            } else {
+            formikProps.setTouched(
+              {
+                ...formikProps.touched,
+                ...updatedTouched,
+              },
+              false,
+            )
+
+            setTimeout(() => {
               formikProps.validateForm()
-            }
+            }, 0)
           }
 
           const handleCancel = () => {
@@ -403,6 +405,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                   <GluuLabel
                     label="fields.scope_type"
                     size={4}
+                    required
                     doc_category={SCOPE}
                     doc_entry="scopeType"
                   />
@@ -676,11 +679,13 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                 onBack={handleNavigateBack}
                 showCancel={true}
                 onCancel={handleCancel}
-                disableCancel={!formikProps.dirty}
+                disableCancel={!hasActualChanges(formikProps.values, initialFormValues)}
                 showApply={true}
                 onApply={() => formikProps.submitForm()}
                 disableApply={
-                  !formikProps.isValid || !formikProps.dirty || formikProps.isSubmitting
+                  !formikProps.isValid ||
+                  !hasActualChanges(formikProps.values, initialFormValues) ||
+                  formikProps.isSubmitting
                 }
                 applyButtonType="button"
               />

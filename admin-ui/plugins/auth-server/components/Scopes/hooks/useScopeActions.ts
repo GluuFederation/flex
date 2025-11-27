@@ -1,8 +1,3 @@
-/**
- * Custom hooks for Scope actions
- * Handles audit logging and common scope operations
- */
-
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -28,9 +23,6 @@ interface RootState {
   authReducer: AuthState
 }
 
-/**
- * Hook for scope actions with audit logging
- */
 export function useScopeActions() {
   const navigate = useNavigate()
   const authState = useSelector((state: RootState) => state.authReducer)
@@ -38,9 +30,6 @@ export function useScopeActions() {
   const client_id = authState?.config?.clientId
   const userinfo = authState?.userinfo
 
-  /**
-   * Log audit action for scope creation
-   */
   const logScopeCreation = useCallback(
     async (scope: Scope, message: string, modifiedFields?: ModifiedFields) => {
       await logAuditUserAction({
@@ -58,9 +47,6 @@ export function useScopeActions() {
     [token, userinfo, client_id],
   )
 
-  /**
-   * Log audit action for scope update
-   */
   const logScopeUpdate = useCallback(
     async (scope: Scope, message: string, modifiedFields?: ModifiedFields) => {
       await logAuditUserAction({
@@ -78,9 +64,6 @@ export function useScopeActions() {
     [token, userinfo, client_id],
   )
 
-  /**
-   * Log audit action for scope deletion
-   */
   const logScopeDeletion = useCallback(
     async (scope: Scope, message: string) => {
       await logAuditUserAction({
@@ -97,23 +80,14 @@ export function useScopeActions() {
     [token, userinfo, client_id],
   )
 
-  /**
-   * Navigate to scope list page
-   */
   const navigateToScopeList = useCallback(() => {
     navigate('/auth-server/scopes')
   }, [navigate])
 
-  /**
-   * Navigate to scope add page
-   */
   const navigateToScopeAdd = useCallback(() => {
     navigate('/auth-server/scope/new')
   }, [navigate])
 
-  /**
-   * Navigate to scope edit page
-   */
   const navigateToScopeEdit = useCallback(
     (inum: string) => {
       navigate(`/auth-server/scope/edit/${inum}`)
