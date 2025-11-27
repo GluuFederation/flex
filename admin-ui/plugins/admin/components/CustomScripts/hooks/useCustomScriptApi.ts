@@ -86,7 +86,7 @@ export function useCustomScript(inum: string) {
 
 export function useCreateCustomScript() {
   const queryClient = useQueryClient()
-  const triggerWebhook = useWebhookTrigger()
+  const webhookTrigger = useWebhookTrigger()
   const baseMutation = usePostConfigScripts()
 
   return {
@@ -96,10 +96,10 @@ export function useCreateCustomScript() {
       const result = await baseMutation.mutateAsync(baseVariables)
 
       queryClient.invalidateQueries({ queryKey: getGetConfigScriptsQueryKey() })
-      triggerWebhook({ createdFeatureValue: result })
+      webhookTrigger({ createdFeatureValue: result })
       await logAuditAction(CREATE, SCRIPT, {
         action: {
-          action_data: JSON.parse(JSON.stringify(variables.data)) as Record<string, unknown>,
+          action_data: structuredClone(variables.data) as Record<string, unknown>,
         },
         message: actionMessage,
       })
@@ -111,7 +111,7 @@ export function useCreateCustomScript() {
 
 export function useUpdateCustomScript() {
   const queryClient = useQueryClient()
-  const triggerWebhook = useWebhookTrigger()
+  const webhookTrigger = useWebhookTrigger()
   const baseMutation = usePutConfigScripts()
 
   return {
@@ -127,10 +127,10 @@ export function useUpdateCustomScript() {
         })
       }
 
-      triggerWebhook({ createdFeatureValue: result })
+      webhookTrigger({ createdFeatureValue: result })
       await logAuditAction(UPDATE, SCRIPT, {
         action: {
-          action_data: JSON.parse(JSON.stringify(variables.data)) as Record<string, unknown>,
+          action_data: structuredClone(variables.data) as Record<string, unknown>,
         },
         message: actionMessage,
       })
@@ -142,7 +142,7 @@ export function useUpdateCustomScript() {
 
 export function useDeleteCustomScript() {
   const queryClient = useQueryClient()
-  const triggerWebhook = useWebhookTrigger()
+  const webhookTrigger = useWebhookTrigger()
   const baseMutation = useDeleteConfigScriptsByInum()
 
   return {
@@ -168,7 +168,7 @@ export function useDeleteCustomScript() {
         }),
       ])
 
-      triggerWebhook({ createdFeatureValue: { inum: variables.inum } })
+      webhookTrigger({ createdFeatureValue: { inum: variables.inum } })
       await logAuditAction(DELETION, SCRIPT, {
         action: { action_data: { inum: variables.inum } },
         message: actionMessage,
@@ -223,10 +223,6 @@ export function useCustomScriptOperations() {
   const scriptTypesQuery = useCustomScriptTypes()
 
   return {
-    useScripts: useCustomScripts,
-    useScriptsByType: useCustomScriptsByType,
-    useScript: useCustomScript,
-    useScriptTypes: useCustomScriptTypes,
     createScript: createMutation,
     updateScript: updateMutation,
     deleteScript: deleteMutation,
