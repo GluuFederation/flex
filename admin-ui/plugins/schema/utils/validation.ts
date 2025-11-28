@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useMemo } from 'react'
 import type { AttributeFormValues } from '../components/types/AttributeListPage.types'
 
-const buildAttributeSchemaParts = (t: (key: string) => string) => {
+const buildAttributeSchemaParts = (t: (key: string) => string, validationEnabled = true) => {
   return {
     name: Yup.string()
       .trim()
@@ -36,45 +36,55 @@ const buildAttributeSchemaParts = (t: (key: string) => string) => {
       .of(Yup.string())
       .min(1, t('errors.required') || 'Required!')
       .required(t('errors.required') || 'Required!'),
-    maxLength: Yup.number()
-      .nullable()
-      .transform((value, originalValue) => {
-        if (originalValue === '' || originalValue === null) {
-          return null
-        }
-        return value
-      })
-      .positive(t('errors.positive_number') || 'Must be a positive number'),
-    minLength: Yup.number()
-      .nullable()
-      .transform((value, originalValue) => {
-        if (originalValue === '' || originalValue === null) {
-          return null
-        }
-        return value
-      })
-      .positive(t('errors.positive_number') || 'Must be a positive number')
-      .when('maxLength', {
-        is: (maxLength: number | null) => maxLength !== null,
-        then: (schema) =>
-          schema.test(
-            'min-max',
-            t('errors.min_greater_than_max') || 'Min length must be less than max length',
-            function (value: number | null | undefined) {
-              const maxLength = this.parent.maxLength as number | null | undefined
-              if (
-                value === null ||
-                value === undefined ||
-                maxLength === null ||
-                maxLength === undefined
-              ) {
-                return true
-              }
-              return value < maxLength
-            },
-          ),
-        otherwise: (schema) => schema,
-      }),
+    maxLength: validationEnabled
+      ? Yup.number()
+          .nullable()
+          .transform((value, originalValue) => {
+            if (originalValue === '' || originalValue === null) {
+              return null
+            }
+            return value
+          })
+          .positive(t('errors.positive_number') || 'Must be a positive number')
+      : Yup.number()
+          .nullable()
+          .transform((value) => (value === '' ? null : value)),
+    minLength: validationEnabled
+      ? Yup.number()
+          .nullable()
+          .transform((value, originalValue) => {
+            if (originalValue === '' || originalValue === null) {
+              return null
+            }
+            return value
+          })
+          .positive(t('errors.positive_number') || 'Must be a positive number')
+          .when('maxLength', (values: AttributeFormValues | AttributeFormValues[], schema) => {
+            const formValues = Array.isArray(values) ? values[0] : values
+            const maxLengthValue = formValues?.maxLength as number | null | undefined
+            if (maxLengthValue !== null && maxLengthValue !== undefined) {
+              return schema.test(
+                'min-max',
+                t('errors.min_greater_than_max') || 'Min length must be less than max length',
+                function (value: number | null | undefined) {
+                  const maxLength = this.parent.maxLength as number | null | undefined
+                  if (
+                    value === null ||
+                    value === undefined ||
+                    maxLength === null ||
+                    maxLength === undefined
+                  ) {
+                    return true
+                  }
+                  return value < maxLength
+                },
+              )
+            }
+            return schema
+          })
+      : Yup.number()
+          .nullable()
+          .transform((value) => (value === '' ? null : value)),
     regexp: Yup.string()
       .nullable()
       .transform((value) => (value === '' ? null : value)),
@@ -94,12 +104,18 @@ const buildAttributeSchemaParts = (t: (key: string) => string) => {
   }
 }
 
-export const useAttributeValidationSchema = () => {
+export const useAttributeValidationSchema = (validationEnabled = true) => {
   const { t } = useTranslation()
 
-  return useMemo(() => Yup.object<AttributeFormValues>(buildAttributeSchemaParts(t)), [t])
+  return useMemo(
+    () => Yup.object<AttributeFormValues>(buildAttributeSchemaParts(t, validationEnabled)),
+    [t, validationEnabled],
+  )
 }
 
-export const getAttributeValidationSchema = (t: (key: string) => string) => {
-  return Yup.object<AttributeFormValues>(buildAttributeSchemaParts(t))
+export const getAttributeValidationSchema = (
+  t: (key: string) => string,
+  validationEnabled = true,
+) => {
+  return Yup.object<AttributeFormValues>(buildAttributeSchemaParts(t, validationEnabled))
 }

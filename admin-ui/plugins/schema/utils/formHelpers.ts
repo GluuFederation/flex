@@ -84,19 +84,12 @@ export const transformFormValuesToAttribute = (
       result.attributeValidation.regexp = values.regexp
     }
   } else {
-    // Remove validation fields if validation is disabled
-    delete result.attributeValidation.regexp
-    delete result.attributeValidation.maxLength
-    delete result.attributeValidation.minLength
-    // Remove top-level validation fields if they exist
-    const resultWithValidation = result as AttributeItem & {
-      regexp?: string | null
-      maxLength?: number | null
-      minLength?: number | null
+    // Normalize attributeValidation to consistent shape when validation is disabled
+    result.attributeValidation = {
+      maxLength: null,
+      minLength: null,
+      regexp: null,
     }
-    delete resultWithValidation.regexp
-    delete resultWithValidation.maxLength
-    delete resultWithValidation.minLength
   }
 
   return result

@@ -29,15 +29,27 @@ export const transformToFormValues = (attribute: JansAttribute | null): Partial<
 }
 
 export const toJansAttribute = (values: JansAttribute, validation: boolean): JansAttribute => {
-  const result = {
+  const result: JansAttribute = {
     ...values,
-    attributeValidation: values.attributeValidation ? { ...values.attributeValidation } : undefined,
   }
 
-  if (!validation && result.attributeValidation) {
-    delete result.attributeValidation.regexp
-    delete result.attributeValidation.maxLength
-    delete result.attributeValidation.minLength
+  if (!result.attributeValidation) {
+    result.attributeValidation = {
+      maxLength: undefined,
+      regexp: undefined,
+      minLength: undefined,
+    }
+  } else {
+    result.attributeValidation = { ...result.attributeValidation }
+  }
+
+  if (!validation) {
+    // Normalize attributeValidation to consistent shape when validation is disabled
+    result.attributeValidation = {
+      maxLength: undefined,
+      minLength: undefined,
+      regexp: undefined,
+    }
   }
 
   return result

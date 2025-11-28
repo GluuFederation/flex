@@ -48,9 +48,6 @@ const AttributeForm = memo(function AttributeForm(props: AttributeFormProps) {
   const [init, setInit] = useState<boolean>(false)
   const [modal, setModal] = useState<boolean>(false)
 
-  // Memoized validation schema
-  const validationSchema = useAttributeValidationSchema()
-
   // Memoized initial values
   const initialValues = useInitialAttributeValues(item)
 
@@ -64,6 +61,9 @@ const AttributeForm = memo(function AttributeForm(props: AttributeFormProps) {
   const initialValidationState = useMemo(() => getInitialValidationState(item), [item])
   const [validation, setValidation] = useState<boolean>(initialValidationState)
 
+  // Memoized validation schema - conditionally validates based on validation toggle
+  const validationSchema = useAttributeValidationSchema(validation)
+
   // Determine if this is view mode (when hideButtons is set with save and back)
   const isViewMode = useMemo(
     () => hideButtons?.save === true && hideButtons?.back === true,
@@ -75,8 +75,20 @@ const AttributeForm = memo(function AttributeForm(props: AttributeFormProps) {
     setModal((prev) => !prev)
   }, [])
 
-  const handleValidation = useCallback(() => {
-    setValidation((prev) => !prev)
+  const handleValidation = useCallback((formik: FormikProps<AttributeFormValues>) => {
+    setValidation((prev) => {
+      const newValue = !prev
+      if (!newValue) {
+        // Clear validation fields when validation is disabled
+        formik.setFieldValue('regexp', null)
+        formik.setFieldValue('maxLength', null)
+        formik.setFieldValue('minLength', null)
+        formik.setFieldTouched('regexp', false)
+        formik.setFieldTouched('maxLength', false)
+        formik.setFieldTouched('minLength', false)
+      }
+      return newValue
+    })
   }, [])
 
   const toggle = useCallback(() => {
@@ -97,6 +109,7 @@ const AttributeForm = memo(function AttributeForm(props: AttributeFormProps) {
   )
 
   // Memoized navigation handlers
+  // Uses navigateBack with explicit fallback to attributes list (conforms to global navigation policy)
   const handleBack = useCallback(() => {
     navigateBack(ROUTES.ATTRIBUTES_LIST)
   }, [navigateBack])
@@ -127,6 +140,7 @@ const AttributeForm = memo(function AttributeForm(props: AttributeFormProps) {
         toggleModal()
       }}
       enableReinitialize={true}
+      key={item.inum || 'new'}
     >
       {(formik: FormikProps<AttributeFormValues>) => {
         const valuesChanged = hasFormChanged(initialValues, formik.values)
@@ -407,7 +421,7 @@ const AttributeForm = memo(function AttributeForm(props: AttributeFormProps) {
               name="validation"
               label="fields.enable_custom_validation_for_this_attribute"
               value={validation}
-              handler={handleValidation}
+              handler={() => handleValidation(formik)}
               doc_category={ATTRIBUTE}
             />
             {validation && (
