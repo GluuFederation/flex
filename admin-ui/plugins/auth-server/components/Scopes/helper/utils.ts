@@ -70,3 +70,46 @@ export const applyScopeTypeDefaults = (
     attributes: clonedAttributes,
   }
 }
+
+const compareArrays = (arr1?: string[], arr2?: string[]): boolean => {
+  if (!arr1 && !arr2) return true
+  if (!arr1 || !arr2) return false
+  if (arr1.length !== arr2.length) return false
+  const sorted1 = [...arr1].sort()
+  const sorted2 = [...arr2].sort()
+  return sorted1.every((value, index) => value === sorted2[index])
+}
+
+const compareAttributes = (
+  attr1?: ExtendedScopeAttributes,
+  attr2?: ExtendedScopeAttributes,
+): boolean => {
+  if (!attr1 && !attr2) return true
+  if (!attr1 || !attr2) return false
+  return (
+    attr1.showInConfigurationEndpoint === attr2.showInConfigurationEndpoint &&
+    attr1.spontaneousClientId === attr2.spontaneousClientId &&
+    compareArrays(attr1.spontaneousClientScopes, attr2.spontaneousClientScopes)
+  )
+}
+
+export const hasActualChanges = (
+  currentValues: ScopeFormValues,
+  initialFormValues: ScopeFormValues,
+): boolean => {
+  return (
+    currentValues.id !== initialFormValues.id ||
+    currentValues.displayName !== initialFormValues.displayName ||
+    currentValues.description !== initialFormValues.description ||
+    currentValues.scopeType !== initialFormValues.scopeType ||
+    currentValues.defaultScope !== initialFormValues.defaultScope ||
+    currentValues.iconUrl !== initialFormValues.iconUrl ||
+    !compareArrays(currentValues.claims, initialFormValues.claims) ||
+    !compareArrays(currentValues.dynamicScopeScripts, initialFormValues.dynamicScopeScripts) ||
+    !compareArrays(
+      currentValues.umaAuthorizationPolicies,
+      initialFormValues.umaAuthorizationPolicies,
+    ) ||
+    !compareAttributes(currentValues.attributes, initialFormValues.attributes)
+  )
+}
