@@ -9,6 +9,13 @@ import type {
   ModifiedFields,
 } from '../components/types/AttributeListPage.types'
 
+// Shared constant for form-level attributeValidation default (uses null for form values)
+export const DEFAULT_FORM_ATTRIBUTE_VALIDATION = {
+  maxLength: null,
+  regexp: null,
+  minLength: null,
+} as const
+
 const buildInitialAttributeValues = (item: AttributeItem): AttributeFormValues => {
   return {
     ...item,
@@ -22,11 +29,7 @@ const buildInitialAttributeValues = (item: AttributeItem): AttributeFormValues =
     usageType: item.usageType || [],
     jansHideOnDiscovery: item.jansHideOnDiscovery ?? false,
     oxMultiValuedAttribute: item.oxMultiValuedAttribute ?? false,
-    attributeValidation: item.attributeValidation || {
-      maxLength: null,
-      regexp: null,
-      minLength: null,
-    },
+    attributeValidation: item.attributeValidation || { ...DEFAULT_FORM_ATTRIBUTE_VALIDATION },
     scimCustomAttr: item.scimCustomAttr ?? false,
     claimName: item.claimName || '',
     saml1Uri: item.saml1Uri || '',
@@ -63,11 +66,7 @@ export const transformFormValuesToAttribute = (
 
   // Handle attributeValidation object
   if (!result.attributeValidation) {
-    result.attributeValidation = {
-      maxLength: null,
-      regexp: null,
-      minLength: null,
-    }
+    result.attributeValidation = { ...DEFAULT_FORM_ATTRIBUTE_VALIDATION }
   } else {
     result.attributeValidation = { ...result.attributeValidation }
   }
@@ -84,11 +83,7 @@ export const transformFormValuesToAttribute = (
       result.attributeValidation.regexp = values.regexp
     }
   } else {
-    result.attributeValidation = {
-      maxLength: null,
-      minLength: null,
-      regexp: null,
-    }
+    result.attributeValidation = { ...DEFAULT_FORM_ATTRIBUTE_VALIDATION }
   }
 
   return result
@@ -230,11 +225,7 @@ export const getDefaultFormValues = (): AttributeFormValues => {
     usageType: [],
     jansHideOnDiscovery: false,
     oxMultiValuedAttribute: false,
-    attributeValidation: {
-      maxLength: null,
-      regexp: null,
-      minLength: null,
-    },
+    attributeValidation: { ...DEFAULT_FORM_ATTRIBUTE_VALIDATION },
     scimCustomAttr: false,
     claimName: '',
     saml1Uri: '',
@@ -260,11 +251,7 @@ export const getDefaultAttributeItem = (): AttributeItem => {
     oxMultiValuedAttribute: false,
     custom: false,
     required: false,
-    attributeValidation: {
-      maxLength: null,
-      regexp: null,
-      minLength: null,
-    },
+    attributeValidation: { ...DEFAULT_FORM_ATTRIBUTE_VALIDATION },
     claimName: '',
     saml1Uri: '',
     saml2Uri: '',
