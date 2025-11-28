@@ -59,29 +59,32 @@ const buildAttributeSchemaParts = (t: (key: string) => string, validationEnabled
             return value
           })
           .positive(t('errors.positive_number') || 'Must be a positive number')
-          .when('maxLength', (values: AttributeFormValues | AttributeFormValues[], schema) => {
-            const formValues = Array.isArray(values) ? values[0] : values
-            const maxLengthValue = formValues?.maxLength as number | null | undefined
-            if (maxLengthValue !== null && maxLengthValue !== undefined) {
-              return schema.test(
-                'min-max',
-                t('errors.min_greater_than_max') || 'Min length must be less than max length',
-                function (value: number | null | undefined) {
-                  const maxLength = this.parent.maxLength as number | null | undefined
-                  if (
-                    value === null ||
-                    value === undefined ||
-                    maxLength === null ||
-                    maxLength === undefined
-                  ) {
-                    return true
-                  }
-                  return value < maxLength
-                },
-              )
-            }
-            return schema
-          })
+          .when(
+            'maxLength',
+            (maxLengthValue: number | null | undefined | (number | null | undefined)[], schema) => {
+              // Handle both direct value and array-wrapped value per Yup types
+              const maxLength = Array.isArray(maxLengthValue) ? maxLengthValue[0] : maxLengthValue
+              if (maxLength !== null && maxLength !== undefined) {
+                return schema.test(
+                  'min-max',
+                  t('errors.min_greater_than_max') || 'Min length must be less than max length',
+                  function (value: number | null | undefined) {
+                    const maxLengthFromParent = this.parent.maxLength as number | null | undefined
+                    if (
+                      value === null ||
+                      value === undefined ||
+                      maxLengthFromParent === null ||
+                      maxLengthFromParent === undefined
+                    ) {
+                      return true
+                    }
+                    return value < maxLengthFromParent
+                  },
+                )
+              }
+              return schema
+            },
+          )
       : Yup.number()
           .nullable()
           .transform((value) => (value === '' ? null : value)),

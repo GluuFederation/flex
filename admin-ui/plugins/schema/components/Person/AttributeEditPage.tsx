@@ -12,6 +12,7 @@ import type {
   SubmitData,
 } from 'Plugins/schema/components/types/AttributeListPage.types'
 import { getDefaultAttributeItem } from '../../utils/formHelpers'
+import { DEFAULT_ATTRIBUTE_VALIDATION } from '../../helper/utils'
 import {
   JansAttribute,
   useGetAttributesByInum,
@@ -70,11 +71,7 @@ function AttributeEditPage(): JSX.Element {
     const cloned = cloneDeep(attribute) as JansAttribute
 
     if (!cloned.attributeValidation) {
-      cloned.attributeValidation = {
-        maxLength: undefined,
-        regexp: undefined,
-        minLength: undefined,
-      }
+      cloned.attributeValidation = { ...DEFAULT_ATTRIBUTE_VALIDATION }
     }
 
     return cloned

@@ -84,7 +84,6 @@ export const transformFormValuesToAttribute = (
       result.attributeValidation.regexp = values.regexp
     }
   } else {
-    // Normalize attributeValidation to consistent shape when validation is disabled
     result.attributeValidation = {
       maxLength: null,
       minLength: null,
