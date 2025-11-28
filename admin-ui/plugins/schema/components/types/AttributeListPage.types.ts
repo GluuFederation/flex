@@ -14,7 +14,6 @@ export type ModifiedFieldValue =
   | number[]
   | AttributeValidation
   | null
-  | undefined
 
 export interface ModifiedFields {
   [key: string]: ModifiedFieldValue

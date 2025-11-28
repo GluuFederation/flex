@@ -7,81 +7,48 @@ import type {
   SubmitData,
   HandleAttributeSubmitParams,
   ModifiedFields,
-  ModifiedFieldValue,
 } from '../components/types/AttributeListPage.types'
 
+const buildInitialAttributeValues = (item: AttributeItem): AttributeFormValues => {
+  return {
+    ...item,
+    name: item.name || '',
+    displayName: item.displayName || '',
+    description: item.description || '',
+    status: item.status || '',
+    dataType: item.dataType || '',
+    editType: item.editType || [],
+    viewType: item.viewType || [],
+    usageType: item.usageType || [],
+    jansHideOnDiscovery: item.jansHideOnDiscovery ?? false,
+    oxMultiValuedAttribute: item.oxMultiValuedAttribute ?? false,
+    attributeValidation: item.attributeValidation || {
+      maxLength: null,
+      regexp: null,
+      minLength: null,
+    },
+    scimCustomAttr: item.scimCustomAttr ?? false,
+    claimName: item.claimName || '',
+    saml1Uri: item.saml1Uri || '',
+    saml2Uri: item.saml2Uri || '',
+    maxLength: item.attributeValidation?.maxLength ?? null,
+    minLength: item.attributeValidation?.minLength ?? null,
+    regexp: item.attributeValidation?.regexp ?? null,
+  }
+}
+
 export const useInitialAttributeValues = (item: AttributeItem): AttributeFormValues => {
-  return useMemo(
-    () => ({
-      ...item,
-      name: item.name || '',
-      displayName: item.displayName || '',
-      description: item.description || '',
-      status: item.status || '',
-      dataType: item.dataType || '',
-      editType: item.editType || [],
-      viewType: item.viewType || [],
-      usageType: item.usageType || [],
-      jansHideOnDiscovery: item.jansHideOnDiscovery ?? false,
-      oxMultiValuedAttribute: item.oxMultiValuedAttribute ?? false,
-      attributeValidation: item.attributeValidation || {
-        maxLength: null,
-        regexp: null,
-        minLength: null,
-      },
-      scimCustomAttr: item.scimCustomAttr ?? false,
-      claimName: item.claimName || '',
-      saml1Uri: item.saml1Uri || '',
-      saml2Uri: item.saml2Uri || '',
-      maxLength: item.attributeValidation?.maxLength ?? null,
-      minLength: item.attributeValidation?.minLength ?? null,
-      regexp: item.attributeValidation?.regexp ?? null,
-    }),
-    [item],
-  )
+  return useMemo(() => buildInitialAttributeValues(item), [item])
 }
 
 export const useComputeModifiedFields = (
   initialValues: AttributeFormValues,
   updatedValues: AttributeFormValues,
 ): ModifiedFields => {
-  return useMemo(() => {
-    const modifiedFields: ModifiedFields = {}
-
-    // Compare each field
-    Object.keys(updatedValues).forEach((key) => {
-      const initialValue = initialValues[key as keyof AttributeFormValues]
-      const updatedValue = updatedValues[key as keyof AttributeFormValues]
-
-      // Handle arrays (editType, viewType, usageType)
-      if (Array.isArray(initialValue) && Array.isArray(updatedValue)) {
-        const arraysEqual =
-          initialValue.length === updatedValue.length &&
-          initialValue.every((val, index) => val === updatedValue[index])
-        if (!arraysEqual) {
-          modifiedFields[key] = updatedValue as ModifiedFieldValue
-        }
-      }
-      // Handle objects (attributeValidation)
-      else if (
-        typeof initialValue === 'object' &&
-        initialValue !== null &&
-        typeof updatedValue === 'object' &&
-        updatedValue !== null
-      ) {
-        if (JSON.stringify(initialValue) !== JSON.stringify(updatedValue)) {
-          modifiedFields[key] = updatedValue as ModifiedFieldValue
-        }
-      }
-      // Handle primitive values
-      else if (initialValue !== updatedValue) {
-        const fieldValue: ModifiedFieldValue = updatedValue ?? null
-        modifiedFields[key] = fieldValue
-      }
-    })
-
-    return modifiedFields
-  }, [initialValues, updatedValues])
+  return useMemo(
+    () => computeModifiedFields(initialValues, updatedValues),
+    [initialValues, updatedValues],
+  )
 }
 
 export const transformFormValuesToAttribute = (
@@ -168,40 +135,15 @@ export const computeModifiedFields = (
     }
     // Handle primitive values
     else if (initialValue !== updatedValue) {
-      modifiedFields[key] = updatedValue
+      const fieldValue = updatedValue === undefined ? null : updatedValue
+      modifiedFields[key] = fieldValue
     }
   })
 
   return modifiedFields
 }
 
-export const getInitialAttributeValues = (item: AttributeItem): AttributeFormValues => {
-  return {
-    ...item,
-    name: item.name || '',
-    displayName: item.displayName || '',
-    description: item.description || '',
-    status: item.status || '',
-    dataType: item.dataType || '',
-    editType: item.editType || [],
-    viewType: item.viewType || [],
-    usageType: item.usageType || [],
-    jansHideOnDiscovery: item.jansHideOnDiscovery ?? false,
-    oxMultiValuedAttribute: item.oxMultiValuedAttribute ?? false,
-    attributeValidation: item.attributeValidation || {
-      maxLength: null,
-      regexp: null,
-      minLength: null,
-    },
-    scimCustomAttr: item.scimCustomAttr ?? false,
-    claimName: item.claimName || '',
-    saml1Uri: item.saml1Uri || '',
-    saml2Uri: item.saml2Uri || '',
-    maxLength: item.attributeValidation?.maxLength ?? null,
-    minLength: item.attributeValidation?.minLength ?? null,
-    regexp: item.attributeValidation?.regexp ?? null,
-  }
-}
+export const getInitialAttributeValues = buildInitialAttributeValues
 
 export const handleAttributeSubmit = ({
   item,

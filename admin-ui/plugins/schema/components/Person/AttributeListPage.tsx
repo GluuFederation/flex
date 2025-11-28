@@ -97,7 +97,7 @@ function AttributeListPage(): JSX.Element {
     ...(sortBy && sortOrder && { sortOrder }),
   })
 
-  const attributes = attributesData?.entries || []
+  const attributes = (attributesData?.entries || []) as unknown as JansAttribute[]
   const totalItems = attributesData?.totalEntriesCount || 0
 
   const deleteAttributeMutation = useDeleteAttributesByInum({

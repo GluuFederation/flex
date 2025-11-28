@@ -13,6 +13,7 @@ import { useSchemaWebhook } from '../../hooks/useSchemaWebhook'
 import { API_ATTRIBUTE } from '../../constants'
 import { useTranslation } from 'react-i18next'
 import { getErrorMessage } from '../../utils/errorHandler'
+import type { ApiError } from '../../utils/errorHandler'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 function AttributeAddPage(): JSX.Element {
@@ -30,7 +31,7 @@ function AttributeAddPage(): JSX.Element {
         queryClient.invalidateQueries({ queryKey: getGetAttributesQueryKey() })
         navigateBack(ROUTES.ATTRIBUTES_LIST)
       },
-      onError: (error: Error | Record<string, never>) => {
+      onError: (error: Error | ApiError | Record<string, never>) => {
         const errorMessage = getErrorMessage(error, 'errors.attribute_create_failed', t)
         dispatch(updateToast(true, 'error', errorMessage))
       },

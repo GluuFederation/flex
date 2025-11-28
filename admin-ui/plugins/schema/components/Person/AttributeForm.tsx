@@ -23,6 +23,24 @@ import {
 } from '../../utils/formHelpers'
 import type { AttributeFormProps, AttributeFormValues } from '../types/AttributeListPage.types'
 
+const createMultiSelectHandler = (
+  fieldName: 'editType' | 'viewType' | 'usageType',
+  setFieldValue: (field: string, value: string[]) => void,
+) => {
+  return (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target instanceof HTMLSelectElement) {
+      const options = e.target.options
+      const selectedValues: string[] = []
+      for (let i = 0; i < options.length; i++) {
+        if (options[i].selected) {
+          selectedValues.push(options[i].value)
+        }
+      }
+      setFieldValue(fieldName, selectedValues)
+    }
+  }
+}
+
 const AttributeForm = memo(function AttributeForm(props: AttributeFormProps) {
   const { item, customOnSubmit, hideButtons } = props
   const { t } = useTranslation()
@@ -61,8 +79,8 @@ const AttributeForm = memo(function AttributeForm(props: AttributeFormProps) {
     setValidation((prev) => !prev)
   }, [])
 
-  const toogle = useCallback(() => {
-    setInit((prev) => prev || true)
+  const toggle = useCallback(() => {
+    setInit(true)
   }, [])
 
   const submitForm = useCallback(
@@ -119,44 +137,9 @@ const AttributeForm = memo(function AttributeForm(props: AttributeFormProps) {
 
         const canApply = formValid && (isCreateMode || formHasChanged)
 
-        const handleEditTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-          if (e.target instanceof HTMLSelectElement) {
-            const options = e.target.options
-            const selectedValues: string[] = []
-            for (let i = 0; i < options.length; i++) {
-              if (options[i].selected) {
-                selectedValues.push(options[i].value)
-              }
-            }
-            formik.setFieldValue('editType', selectedValues)
-          }
-        }
-
-        const handleViewTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-          if (e.target instanceof HTMLSelectElement) {
-            const options = e.target.options
-            const selectedValues: string[] = []
-            for (let i = 0; i < options.length; i++) {
-              if (options[i].selected) {
-                selectedValues.push(options[i].value)
-              }
-            }
-            formik.setFieldValue('viewType', selectedValues)
-          }
-        }
-
-        const handleUsageTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-          if (e.target instanceof HTMLSelectElement) {
-            const options = e.target.options
-            const selectedValues: string[] = []
-            for (let i = 0; i < options.length; i++) {
-              if (options[i].selected) {
-                selectedValues.push(options[i].value)
-              }
-            }
-            formik.setFieldValue('usageType', selectedValues)
-          }
-        }
+        const handleEditTypeChange = createMultiSelectHandler('editType', formik.setFieldValue)
+        const handleViewTypeChange = createMultiSelectHandler('viewType', formik.setFieldValue)
+        const handleUsageTypeChange = createMultiSelectHandler('usageType', formik.setFieldValue)
 
         return (
           <Form onSubmit={formik.handleSubmit}>
@@ -178,8 +161,8 @@ const AttributeForm = memo(function AttributeForm(props: AttributeFormProps) {
                   id="name"
                   valid={!formik.errors.name && !formik.touched.name && init}
                   name="name"
-                  defaultValue={item.name}
-                  onKeyUp={toogle}
+                  value={formik.values.name}
+                  onKeyUp={toggle}
                   onChange={formik.handleChange}
                 />
                 <ErrorMessage name="name">
@@ -202,7 +185,7 @@ const AttributeForm = memo(function AttributeForm(props: AttributeFormProps) {
                     valid={!formik.errors.displayName && !formik.touched.displayName && init}
                     id="displayName"
                     name="displayName"
-                    defaultValue={item.displayName}
+                    value={formik.values.displayName}
                     onChange={formik.handleChange}
                   />
                 </InputGroup>
@@ -227,7 +210,7 @@ const AttributeForm = memo(function AttributeForm(props: AttributeFormProps) {
                     placeholder={t('placeholders.enter_the_attribute_description')}
                     id="description"
                     name="description"
-                    defaultValue={item.description}
+                    value={formik.values.description}
                     onChange={formik.handleChange}
                   />
                 </InputGroup>
@@ -250,7 +233,7 @@ const AttributeForm = memo(function AttributeForm(props: AttributeFormProps) {
                     type="select"
                     id="status"
                     name="status"
-                    defaultValue={item.status}
+                    value={formik.values.status}
                     onChange={formik.handleChange}
                   >
                     <option value="">{t('options.choose')}...</option>
@@ -277,7 +260,7 @@ const AttributeForm = memo(function AttributeForm(props: AttributeFormProps) {
                     type="select"
                     id="dataType"
                     name="dataType"
-                    defaultValue={item.dataType}
+                    value={formik.values.dataType}
                     onChange={formik.handleChange}
                   >
                     <option value="">{t('options.choose')}...</option>
