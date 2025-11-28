@@ -159,7 +159,7 @@ export default function GluuTabs({ tabNames, tabToShow, withNavigation = false }
     }
 
     const activeTab = tabNames[activeIndex] ?? null
-    if (isNavigationTab(activeTab) && activeTab.path !== path.pathname) {
+    if (isNavigationTab(activeTab)) {
       navigateToRoute(activeTab.path, { replace: true })
     }
     setValue(activeIndex)
