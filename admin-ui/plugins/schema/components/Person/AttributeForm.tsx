@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo, useCallback, memo } from 'react'
 import { Formik, ErrorMessage, FormikProps } from 'formik'
 import { Col, InputGroup, CustomInput, Form, FormGroup, Input } from 'Components'
-import GluuFooter from 'Routes/Apps/Gluu/GluuFooter'
+import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuInumInput from 'Routes/Apps/Gluu/GluuInumInput'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
@@ -9,536 +9,500 @@ import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import { ATTRIBUTE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import * as Yup from 'yup'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
-import type {
-  AttributeFormProps,
-  AttributeFormValues,
-  AttributeItem,
-  HandleAttributeSubmitParams,
-} from '../types/AttributeListPage.types'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { useAttributeValidationSchema } from '../../utils/validation'
+import {
+  useInitialAttributeValues,
+  getInitialValidationState,
+  handleAttributeSubmit,
+  hasFormChanged,
+  getDefaultFormValues,
+  isFormValid,
+} from '../../utils/formHelpers'
+import type { AttributeFormProps, AttributeFormValues } from '../types/AttributeListPage.types'
 
-function AttributeForm(props: AttributeFormProps) {
+const AttributeForm = memo(function AttributeForm(props: AttributeFormProps) {
   const { item, customOnSubmit, hideButtons } = props
   const { t } = useTranslation()
+  const { navigateBack } = useAppNavigation()
   const [init, setInit] = useState<boolean>(false)
-  const [values, setValues] = useState<AttributeFormValues>({} as AttributeFormValues)
   const [modal, setModal] = useState<boolean>(false)
-  const toggleModal = () => {
-    setModal(!modal)
-  }
 
-  const getInitialState = (item: AttributeItem): boolean => {
-    return (
-      item.attributeValidation?.regexp != null ||
-      item.attributeValidation?.minLength != null ||
-      item.attributeValidation?.maxLength != null
-    )
-  }
+  // Memoized validation schema
+  const validationSchema = useAttributeValidationSchema()
 
-  const [validation, setValidation] = useState<boolean>(getInitialState(item))
+  // Memoized initial values
+  const initialValues = useInitialAttributeValues(item)
 
-  function handleValidation(): void {
-    setValidation(!validation)
-  }
+  // Memoized default empty values for create mode
+  const defaultFormValues = useMemo(() => getDefaultFormValues(), [])
 
-  function toogle(): void {
-    if (!init) {
-      setInit(true)
-    }
-  }
+  // Determine if we're in create mode (no inum) or edit mode (has inum)
+  const isCreateMode = useMemo(() => !item.inum, [item.inum])
 
-  const submitForm = (userMessage?: string): void => {
-    handleAttributeSubmit({ values, item, customOnSubmit, userMessage })
-  }
+  // Memoized initial validation state
+  const initialValidationState = useMemo(() => getInitialValidationState(item), [item])
+  const [validation, setValidation] = useState<boolean>(initialValidationState)
 
-  const computeModifiedFields = (
-    initial: AttributeFormValues,
-    updated: AttributeFormValues,
-  ): Record<string, unknown> => {
-    const modifiedFields: Record<string, unknown> = {}
-    const initialValues = getInitialAttributeValues(item)
+  // Determine if this is view mode (when hideButtons is set with save and back)
+  const isViewMode = useMemo(
+    () => hideButtons?.save === true && hideButtons?.back === true,
+    [hideButtons],
+  )
 
-    // Compare each field
-    Object.keys(updated).forEach((key) => {
-      const initialValue = initialValues[key as keyof AttributeFormValues]
-      const updatedValue = updated[key as keyof AttributeFormValues]
+  // Memoized handlers
+  const toggleModal = useCallback(() => {
+    setModal((prev) => !prev)
+  }, [])
 
-      // Handle arrays (editType, viewType, usageType)
-      if (Array.isArray(initialValue) && Array.isArray(updatedValue)) {
-        const arraysEqual =
-          initialValue.length === updatedValue.length &&
-          initialValue.every((val, index) => val === updatedValue[index])
-        if (!arraysEqual) {
-          modifiedFields[key] = updatedValue
-        }
+  const handleValidation = useCallback(() => {
+    setValidation((prev) => !prev)
+  }, [])
+
+  const toogle = useCallback(() => {
+    setInit((prev) => prev || true)
+  }, [])
+
+  const submitForm = useCallback(
+    (userMessage: string, formikValues: AttributeFormValues): void => {
+      handleAttributeSubmit({
+        values: formikValues,
+        item,
+        customOnSubmit,
+        userMessage,
+        validationEnabled: validation,
+      })
+    },
+    [item, customOnSubmit, validation],
+  )
+
+  // Memoized navigation handlers
+  const handleBack = useCallback(() => {
+    navigateBack(ROUTES.ATTRIBUTES_LIST)
+  }, [navigateBack])
+
+  const handleCancel = useCallback(
+    (formik: FormikProps<AttributeFormValues>) => {
+      if (isCreateMode) {
+        // In create mode: clear all fields to default/empty state
+        formik.resetForm({ values: defaultFormValues })
+        setValidation(false)
+      } else {
+        // In edit mode: reset to original values
+        formik.resetForm({ values: initialValues })
+        setValidation(initialValidationState)
       }
-      // Handle objects (attributeValidation)
-      else if (
-        typeof initialValue === 'object' &&
-        initialValue !== null &&
-        typeof updatedValue === 'object' &&
-        updatedValue !== null
-      ) {
-        if (JSON.stringify(initialValue) !== JSON.stringify(updatedValue)) {
-          modifiedFields[key] = updatedValue
-        }
-      }
-      // Handle primitive values
-      else if (initialValue !== updatedValue) {
-        modifiedFields[key] = updatedValue
-      }
-    })
-
-    return modifiedFields
-  }
-
-  const handleAttributeSubmit = ({
-    item,
-    values,
-    customOnSubmit,
-    userMessage,
-  }: HandleAttributeSubmitParams): void => {
-    const result = { ...item, ...values }
-    const initialValues = getInitialAttributeValues(item)
-    const modifiedFields = computeModifiedFields(initialValues, values)
-
-    if (!result.attributeValidation) {
-      result.attributeValidation = {}
-    } else {
-      result.attributeValidation = { ...result.attributeValidation }
-    }
-
-    if (result.maxLength !== null) {
-      result.attributeValidation.maxLength = result.maxLength
-    }
-    if (result.minLength !== null) {
-      result.attributeValidation.minLength = result.minLength
-    }
-    if (result.regexp !== null) {
-      result.attributeValidation.regexp = result.regexp
-    }
-
-    if (!validation) {
-      delete result.attributeValidation.regexp
-      delete result.regexp
-
-      delete result.attributeValidation.maxLength
-      delete result.maxLength
-
-      delete result.attributeValidation.minLength
-      delete result.minLength
-    }
-
-    customOnSubmit({
-      data: result as AttributeItem,
-      userMessage,
-      modifiedFields,
-      performedOn: {
-        attribute_inum: item.inum,
-        attributeName: item.name,
-      },
-    })
-  }
-
-  const attributeValidationSchema = Yup.object({
-    name: Yup.string()
-      .matches(/^[^\s]+$/, 'Name must not contain spaces')
-      .required('Required!'),
-    displayName: Yup.string().required('Required!'),
-    description: Yup.string().required('Required!'),
-    status: Yup.string().required('Required!'),
-    dataType: Yup.string().required('Required!'),
-    editType: Yup.array().required('Required!'),
-    usageType: Yup.array().required('Required!'),
-    viewType: Yup.array().required('Required!'),
-  })
-
-  const getInitialAttributeValues = (item: AttributeItem): AttributeFormValues => {
-    return {
-      ...item,
-      name: item.name,
-      displayName: item.displayName,
-      description: item.description,
-      status: item.status,
-      dataType: item.dataType,
-      editType: item.editType,
-      viewType: item.viewType,
-      usageType: item.usageType || [],
-      jansHideOnDiscovery: item.jansHideOnDiscovery,
-      oxMultiValuedAttribute: item.oxMultiValuedAttribute,
-      attributeValidation: item.attributeValidation,
-      scimCustomAttr: item.scimCustomAttr,
-      maxLength: item.attributeValidation.maxLength,
-      minLength: item.attributeValidation.minLength,
-      regexp: item.attributeValidation.regexp,
-    }
-  }
+    },
+    [isCreateMode, defaultFormValues, initialValues, initialValidationState],
+  )
 
   return (
     <Formik
-      initialValues={getInitialAttributeValues(item)}
-      validationSchema={attributeValidationSchema}
-      onSubmit={(values: AttributeFormValues) => {
-        setValues(values)
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      validateOnMount={true}
+      validateOnChange={true}
+      validateOnBlur={true}
+      onSubmit={() => {
         toggleModal()
       }}
+      enableReinitialize={true}
     >
-      {(formik: FormikProps<AttributeFormValues>) => (
-        <Form onSubmit={formik.handleSubmit}>
-          {item.inum && (
-            <GluuInumInput
-              label="fields.inum"
-              name="inum"
-              lsize={3}
-              rsize={9}
-              value={item.inum}
-              doc_category={ATTRIBUTE}
-            />
-          )}
-          <FormGroup row>
-            <GluuLabel label="fields.name" required doc_category={ATTRIBUTE} doc_entry="name" />
-            <Col sm={9}>
-              <Input
-                placeholder={t('placeholders.enter_the_attribute_name')}
-                id="name"
-                valid={!formik.errors.name && !formik.touched.name && init}
-                name="name"
-                defaultValue={item.name}
-                onKeyUp={toogle}
-                onChange={formik.handleChange}
-              />
-              <ErrorMessage name="name">
-                {(msg: string) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
-              </ErrorMessage>
-            </Col>
-          </FormGroup>
+      {(formik: FormikProps<AttributeFormValues>) => {
+        const valuesChanged = hasFormChanged(initialValues, formik.values)
+        const validationStateChanged = validation !== initialValidationState
+        const formHasChanged = valuesChanged || validationStateChanged
 
-          <FormGroup row>
-            <GluuLabel
-              label="fields.displayname"
-              required
-              doc_category={ATTRIBUTE}
-              doc_entry="displayName"
-            />
-            <Col sm={9}>
-              <InputGroup>
-                <Input
-                  placeholder={t('placeholders.enter_the_attribute_display_name')}
-                  valid={!formik.errors.displayName && !formik.touched.displayName && init}
-                  id="displayName"
-                  name="displayName"
-                  defaultValue={item.displayName}
-                  onChange={formik.handleChange}
-                />
-              </InputGroup>
-              <ErrorMessage name="displayName">
-                {(msg: string) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
-              </ErrorMessage>
-            </Col>
-          </FormGroup>
+        const formValid = isFormValid(formik.values, formik.errors, formik.isValid)
 
-          <FormGroup row>
-            <GluuLabel
-              label="fields.description"
-              required
-              doc_category={ATTRIBUTE}
-              doc_entry="description"
-            />
-            <Col sm={9}>
-              <InputGroup>
-                <Input
-                  type="textarea"
-                  rows="3"
-                  placeholder={t('placeholders.enter_the_attribute_description')}
-                  id="description"
-                  name="description"
-                  defaultValue={item.description}
-                  onChange={formik.handleChange}
-                />
-              </InputGroup>
-              <ErrorMessage name="description">
-                {(msg: string) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
-              </ErrorMessage>
-            </Col>
-          </FormGroup>
+        const canApply = formValid && (isCreateMode || formHasChanged)
 
-          <FormGroup row>
-            <GluuLabel label="fields.status" required doc_category={ATTRIBUTE} doc_entry="status" />
-            <Col sm={9}>
-              <InputGroup>
-                <CustomInput
-                  type="select"
-                  id="status"
-                  name="status"
-                  defaultValue={item.status}
-                  onChange={formik.handleChange}
-                >
-                  <option value="">{t('options.choose')}...</option>
-                  <option value="active">{t('options.active')}</option>
-                  <option value="inactive">{t('options.inactive')}</option>
-                </CustomInput>
-              </InputGroup>
-              <ErrorMessage name="status">
-                {(msg: string) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
-              </ErrorMessage>
-            </Col>
-          </FormGroup>
+        const handleEditTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+          if (e.target instanceof HTMLSelectElement) {
+            const options = e.target.options
+            const selectedValues: string[] = []
+            for (let i = 0; i < options.length; i++) {
+              if (options[i].selected) {
+                selectedValues.push(options[i].value)
+              }
+            }
+            formik.setFieldValue('editType', selectedValues)
+          }
+        }
 
-          <FormGroup row>
-            <GluuLabel
-              label="fields.data_type"
-              required
-              doc_category={ATTRIBUTE}
-              doc_entry="dataType"
-            />
-            <Col sm={9}>
-              <InputGroup>
-                <CustomInput
-                  type="select"
-                  id="dataType"
-                  name="dataType"
-                  defaultValue={item.dataType}
-                  onChange={formik.handleChange}
-                >
-                  <option value="">{t('options.choose')}...</option>
-                  <option value="string">{t('options.string')}</option>
-                  <option value="json">{t('options.json')}</option>
-                  <option value="numeric">{t('options.numeric')}</option>
-                  <option value="binary">{t('options.binary')}</option>
-                  <option value="certificate">{t('options.certificate')}</option>
-                  <option value="date">{t('options.date')}</option>
-                  <option value="boolean">{t('options.boolean')}</option>
-                </CustomInput>
-              </InputGroup>
-              <ErrorMessage name="dataType">
-                {(msg: string) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
-              </ErrorMessage>
-            </Col>
-          </FormGroup>
+        const handleViewTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+          if (e.target instanceof HTMLSelectElement) {
+            const options = e.target.options
+            const selectedValues: string[] = []
+            for (let i = 0; i < options.length; i++) {
+              if (options[i].selected) {
+                selectedValues.push(options[i].value)
+              }
+            }
+            formik.setFieldValue('viewType', selectedValues)
+          }
+        }
 
-          <FormGroup row>
-            <GluuLabel
-              label="fields.edit_type"
-              required
-              doc_category={ATTRIBUTE}
-              doc_entry="editType"
-            />
-            <Col sm={9}>
-              <Input
-                type="select"
-                name="editType"
-                id="editType"
-                value={formik.values.editType}
-                multiple
-                onChange={(e: any) => {
-                  const options = e.target.options
-                  const selectedValues: string[] = []
-                  for (let i = 0; i < options.length; i++) {
-                    if (options[i].selected) {
-                      selectedValues.push(options[i].value)
-                    }
-                  }
-                  formik.setFieldValue('editType', selectedValues)
-                }}
-              >
-                <option value="admin">{t('options.admin')}</option>
-                <option value="user">{t('options.user')}</option>
-              </Input>
-              <ErrorMessage name="editType">
-                {(msg: string) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
-              </ErrorMessage>
-            </Col>
-          </FormGroup>
+        const handleUsageTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+          if (e.target instanceof HTMLSelectElement) {
+            const options = e.target.options
+            const selectedValues: string[] = []
+            for (let i = 0; i < options.length; i++) {
+              if (options[i].selected) {
+                selectedValues.push(options[i].value)
+              }
+            }
+            formik.setFieldValue('usageType', selectedValues)
+          }
+        }
 
-          <FormGroup row>
-            <GluuLabel
-              label="fields.view_type"
-              doc_category={ATTRIBUTE}
-              doc_entry="viewType"
-              required
-            />
-            <Col sm={9}>
-              <Input
-                type="select"
-                name="viewType"
-                id="viewType"
-                value={formik.values.viewType}
-                multiple
-                onChange={(e: any) => {
-                  const options = e.target.options
-                  const selectedValues: string[] = []
-                  for (let i = 0; i < options.length; i++) {
-                    if (options[i].selected) {
-                      selectedValues.push(options[i].value)
-                    }
-                  }
-                  formik.setFieldValue('viewType', selectedValues)
-                }}
-              >
-                <option value="admin">{t('options.admin')}</option>
-                <option value="user">{t('options.user')}</option>
-              </Input>
-              <ErrorMessage name="viewType">
-                {(msg: string) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
-              </ErrorMessage>
-            </Col>
-          </FormGroup>
-
-          <FormGroup row>
-            <GluuLabel
-              label="fields.usage_type"
-              required
-              doc_category={ATTRIBUTE}
-              doc_entry="usageType"
-            />
-            <Col sm={9}>
-              <Input
-                type="select"
-                name="usageType"
-                id="usageType"
-                value={formik.values.usageType}
-                multiple
-                onChange={(e: any) => {
-                  const options = e.target.options
-                  const selectedValues: string[] = []
-                  for (let i = 0; i < options.length; i++) {
-                    if (options[i].selected) {
-                      selectedValues.push(options[i].value)
-                    }
-                  }
-                  formik.setFieldValue('usageType', selectedValues)
-                }}
-              >
-                <option value="openid">{t('options.openid')}</option>
-              </Input>
-              <ErrorMessage name="usageType">
-                {(msg: string) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
-              </ErrorMessage>
-            </Col>
-          </FormGroup>
-          <GluuInputRow
-            label="fields.oxauth_claim_name"
-            name="claimName"
-            formik={formik}
-            value={formik.values?.claimName}
-            doc_category={ATTRIBUTE}
-          />
-          <FormGroup row>
-            <Col sm={4}>
-              <GluuToogleRow
-                name="oxMultiValuedAttribute"
-                formik={formik}
-                lsize={6}
-                rsize={6}
-                label="fields.multivalued"
-                value={formik.values?.oxMultiValuedAttribute}
-                handler={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  formik.setFieldValue('oxMultiValuedAttribute', e.target.checked)
-                }}
+        return (
+          <Form onSubmit={formik.handleSubmit}>
+            {item.inum && (
+              <GluuInumInput
+                label="fields.inum"
+                name="inum"
+                lsize={3}
+                rsize={9}
+                value={item.inum}
                 doc_category={ATTRIBUTE}
               />
-            </Col>
-            <Col sm={4}>
-              <GluuToogleRow
-                name="jansHideOnDiscovery"
-                formik={formik}
-                lsize={6}
-                rsize={6}
-                label="fields.hide_on_discovery"
-                value={formik.values?.jansHideOnDiscovery}
-                doc_category={ATTRIBUTE}
-                handler={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  formik.setFieldValue('jansHideOnDiscovery', e.target.checked)
-                }}
-              />
-            </Col>
-            <Col sm={4}>
-              <GluuToogleRow
-                name="scimCustomAttr"
-                formik={formik}
-                lsize={6}
-                rsize={6}
-                label="fields.include_in_scim_extension"
-                value={formik.values?.scimCustomAttr}
-                doc_category={ATTRIBUTE}
-                handler={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  formik.setFieldValue('scimCustomAttr', e.target.checked)
-                }}
-              />
-            </Col>
-          </FormGroup>
-          <GluuToogleRow
-            name="validation"
-            label="fields.enable_custom_validation_for_this_attribute"
-            value={validation}
-            handler={handleValidation}
-            doc_category={ATTRIBUTE}
-          />
-          {validation && (
-            <GluuInputRow
-              label="fields.regular_expression"
-              name="regexp"
-              formik={formik}
-              value={formik.values?.regexp}
-              doc_category={ATTRIBUTE}
-            />
-          )}
-          {validation && (
+            )}
             <FormGroup row>
-              <Col sm={6}>
-                <GluuInputRow
-                  label="fields.minimum_length"
-                  name="minLength"
+              <GluuLabel label="fields.name" required doc_category={ATTRIBUTE} doc_entry="name" />
+              <Col sm={9}>
+                <Input
+                  placeholder={t('placeholders.enter_the_attribute_name')}
+                  id="name"
+                  valid={!formik.errors.name && !formik.touched.name && init}
+                  name="name"
+                  defaultValue={item.name}
+                  onKeyUp={toogle}
+                  onChange={formik.handleChange}
+                />
+                <ErrorMessage name="name">
+                  {(msg: string) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
+                </ErrorMessage>
+              </Col>
+            </FormGroup>
+
+            <FormGroup row>
+              <GluuLabel
+                label="fields.displayname"
+                required
+                doc_category={ATTRIBUTE}
+                doc_entry="displayName"
+              />
+              <Col sm={9}>
+                <InputGroup>
+                  <Input
+                    placeholder={t('placeholders.enter_the_attribute_display_name')}
+                    valid={!formik.errors.displayName && !formik.touched.displayName && init}
+                    id="displayName"
+                    name="displayName"
+                    defaultValue={item.displayName}
+                    onChange={formik.handleChange}
+                  />
+                </InputGroup>
+                <ErrorMessage name="displayName">
+                  {(msg: string) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
+                </ErrorMessage>
+              </Col>
+            </FormGroup>
+
+            <FormGroup row>
+              <GluuLabel
+                label="fields.description"
+                required
+                doc_category={ATTRIBUTE}
+                doc_entry="description"
+              />
+              <Col sm={9}>
+                <InputGroup>
+                  <Input
+                    type="textarea"
+                    rows="3"
+                    placeholder={t('placeholders.enter_the_attribute_description')}
+                    id="description"
+                    name="description"
+                    defaultValue={item.description}
+                    onChange={formik.handleChange}
+                  />
+                </InputGroup>
+                <ErrorMessage name="description">
+                  {(msg: string) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
+                </ErrorMessage>
+              </Col>
+            </FormGroup>
+
+            <FormGroup row>
+              <GluuLabel
+                label="fields.status"
+                required
+                doc_category={ATTRIBUTE}
+                doc_entry="status"
+              />
+              <Col sm={9}>
+                <InputGroup>
+                  <CustomInput
+                    type="select"
+                    id="status"
+                    name="status"
+                    defaultValue={item.status}
+                    onChange={formik.handleChange}
+                  >
+                    <option value="">{t('options.choose')}...</option>
+                    <option value="active">{t('options.active')}</option>
+                    <option value="inactive">{t('options.inactive')}</option>
+                  </CustomInput>
+                </InputGroup>
+                <ErrorMessage name="status">
+                  {(msg: string) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
+                </ErrorMessage>
+              </Col>
+            </FormGroup>
+
+            <FormGroup row>
+              <GluuLabel
+                label="fields.data_type"
+                required
+                doc_category={ATTRIBUTE}
+                doc_entry="dataType"
+              />
+              <Col sm={9}>
+                <InputGroup>
+                  <CustomInput
+                    type="select"
+                    id="dataType"
+                    name="dataType"
+                    defaultValue={item.dataType}
+                    onChange={formik.handleChange}
+                  >
+                    <option value="">{t('options.choose')}...</option>
+                    <option value="string">{t('options.string')}</option>
+                    <option value="json">{t('options.json')}</option>
+                    <option value="numeric">{t('options.numeric')}</option>
+                    <option value="binary">{t('options.binary')}</option>
+                    <option value="certificate">{t('options.certificate')}</option>
+                    <option value="date">{t('options.date')}</option>
+                    <option value="boolean">{t('options.boolean')}</option>
+                  </CustomInput>
+                </InputGroup>
+                <ErrorMessage name="dataType">
+                  {(msg: string) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
+                </ErrorMessage>
+              </Col>
+            </FormGroup>
+
+            <FormGroup row>
+              <GluuLabel
+                label="fields.edit_type"
+                required
+                doc_category={ATTRIBUTE}
+                doc_entry="editType"
+              />
+              <Col sm={9}>
+                <Input
+                  type="select"
+                  name="editType"
+                  id="editType"
+                  value={formik.values.editType}
+                  multiple
+                  onChange={handleEditTypeChange}
+                >
+                  <option value="admin">{t('options.admin')}</option>
+                  <option value="user">{t('options.user')}</option>
+                </Input>
+                <ErrorMessage name="editType">
+                  {(msg: string) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
+                </ErrorMessage>
+              </Col>
+            </FormGroup>
+
+            <FormGroup row>
+              <GluuLabel
+                label="fields.view_type"
+                doc_category={ATTRIBUTE}
+                doc_entry="viewType"
+                required
+              />
+              <Col sm={9}>
+                <Input
+                  type="select"
+                  name="viewType"
+                  id="viewType"
+                  value={formik.values.viewType}
+                  multiple
+                  onChange={handleViewTypeChange}
+                >
+                  <option value="admin">{t('options.admin')}</option>
+                  <option value="user">{t('options.user')}</option>
+                </Input>
+                <ErrorMessage name="viewType">
+                  {(msg: string) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
+                </ErrorMessage>
+              </Col>
+            </FormGroup>
+
+            <FormGroup row>
+              <GluuLabel
+                label="fields.usage_type"
+                required
+                doc_category={ATTRIBUTE}
+                doc_entry="usageType"
+              />
+              <Col sm={9}>
+                <Input
+                  type="select"
+                  name="usageType"
+                  id="usageType"
+                  value={formik.values.usageType}
+                  multiple
+                  onChange={handleUsageTypeChange}
+                >
+                  <option value="openid">{t('options.openid')}</option>
+                </Input>
+                <ErrorMessage name="usageType">
+                  {(msg: string) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
+                </ErrorMessage>
+              </Col>
+            </FormGroup>
+            <GluuInputRow
+              label="fields.oxauth_claim_name"
+              name="claimName"
+              formik={formik}
+              value={formik.values?.claimName}
+              doc_category={ATTRIBUTE}
+            />
+            <FormGroup row>
+              <Col sm={4}>
+                <GluuToogleRow
+                  name="oxMultiValuedAttribute"
                   formik={formik}
-                  type="number"
                   lsize={6}
                   rsize={6}
-                  value={formik.values?.minLength}
+                  label="fields.multivalued"
+                  value={formik.values?.oxMultiValuedAttribute}
+                  handler={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    formik.setFieldValue('oxMultiValuedAttribute', e.target.checked)
+                  }}
                   doc_category={ATTRIBUTE}
                 />
               </Col>
-              <Col sm={6}>
-                <GluuInputRow
-                  label="fields.maximum_length"
-                  name="maxLength"
+              <Col sm={4}>
+                <GluuToogleRow
+                  name="jansHideOnDiscovery"
                   formik={formik}
-                  type="number"
-                  lsize={4}
+                  lsize={6}
                   rsize={6}
-                  value={formik.values?.maxLength}
+                  label="fields.hide_on_discovery"
+                  value={formik.values?.jansHideOnDiscovery}
                   doc_category={ATTRIBUTE}
+                  handler={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    formik.setFieldValue('jansHideOnDiscovery', e.target.checked)
+                  }}
+                />
+              </Col>
+              <Col sm={4}>
+                <GluuToogleRow
+                  name="scimCustomAttr"
+                  formik={formik}
+                  lsize={6}
+                  rsize={6}
+                  label="fields.include_in_scim_extension"
+                  value={formik.values?.scimCustomAttr}
+                  doc_category={ATTRIBUTE}
+                  handler={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    formik.setFieldValue('scimCustomAttr', e.target.checked)
+                  }}
                 />
               </Col>
             </FormGroup>
-          )}
-          <GluuInputRow
-            label="fields.saml1_uri"
-            name="saml1Uri"
-            formik={formik}
-            value={formik.values?.saml1Uri}
-            doc_category={ATTRIBUTE}
-          />
-          <GluuInputRow
-            label="fields.saml2_uri"
-            name="saml2Uri"
-            formik={formik}
-            value={formik.values?.saml2Uri}
-            doc_category={ATTRIBUTE}
-          />
-          <GluuFooter hideButtons={hideButtons} />
-          <GluuCommitDialog
-            handler={toggleModal}
-            modal={modal}
-            onAccept={submitForm}
-            feature={adminUiFeatures.attributes_write}
-            formik={formik}
-          />
-        </Form>
-      )}
+            <GluuToogleRow
+              name="validation"
+              label="fields.enable_custom_validation_for_this_attribute"
+              value={validation}
+              handler={handleValidation}
+              doc_category={ATTRIBUTE}
+            />
+            {validation && (
+              <GluuInputRow
+                label="fields.regular_expression"
+                name="regexp"
+                formik={formik}
+                value={formik.values?.regexp}
+                doc_category={ATTRIBUTE}
+              />
+            )}
+            {validation && (
+              <FormGroup row>
+                <Col sm={6}>
+                  <GluuInputRow
+                    label="fields.minimum_length"
+                    name="minLength"
+                    formik={formik}
+                    type="number"
+                    lsize={6}
+                    rsize={6}
+                    value={formik.values?.minLength}
+                    doc_category={ATTRIBUTE}
+                  />
+                </Col>
+                <Col sm={6}>
+                  <GluuInputRow
+                    label="fields.maximum_length"
+                    name="maxLength"
+                    formik={formik}
+                    type="number"
+                    lsize={4}
+                    rsize={6}
+                    value={formik.values?.maxLength}
+                    doc_category={ATTRIBUTE}
+                  />
+                </Col>
+              </FormGroup>
+            )}
+            <GluuInputRow
+              label="fields.saml1_uri"
+              name="saml1Uri"
+              formik={formik}
+              value={formik.values?.saml1Uri}
+              doc_category={ATTRIBUTE}
+            />
+            <GluuInputRow
+              label="fields.saml2_uri"
+              name="saml2Uri"
+              formik={formik}
+              value={formik.values?.saml2Uri}
+              doc_category={ATTRIBUTE}
+            />
+            <GluuFormFooter
+              showBack={true}
+              onBack={handleBack}
+              showCancel={!isViewMode}
+              onCancel={() => handleCancel(formik)}
+              disableCancel={!formHasChanged}
+              showApply={!isViewMode}
+              applyButtonType="submit"
+              disableApply={!canApply}
+              isLoading={false}
+            />
+            <GluuCommitDialog
+              handler={toggleModal}
+              modal={modal}
+              onAccept={(userMessage: string) => submitForm(userMessage, formik.values)}
+              feature={adminUiFeatures.attributes_write}
+              formik={formik}
+            />
+          </Form>
+        )
+      }}
     </Formik>
   )
-}
+})
+
+AttributeForm.displayName = 'AttributeForm'
 
 export default AttributeForm

@@ -30,7 +30,7 @@ function AttributeAddPage(): JSX.Element {
         queryClient.invalidateQueries({ queryKey: getGetAttributesQueryKey() })
         navigateBack(ROUTES.ATTRIBUTES_LIST)
       },
-      onError: (error: unknown) => {
+      onError: (error: Error | Record<string, never>) => {
         const errorMessage = getErrorMessage(error, 'errors.attribute_create_failed', t)
         dispatch(updateToast(true, 'error', errorMessage))
       },

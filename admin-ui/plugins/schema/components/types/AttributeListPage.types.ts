@@ -6,15 +6,25 @@ export interface AttributeListPageState {
   cedarPermissions: CedarPermissionsState
 }
 
+export type ModifiedFieldValue =
+  | string
+  | number
+  | boolean
+  | string[]
+  | number[]
+  | AttributeValidation
+  | null
+  | undefined
+
+export interface ModifiedFields {
+  [key: string]: ModifiedFieldValue
+}
+
 // Define the form submission data interface
 export interface SubmitData {
   data: AttributeItem
   userMessage?: string
-  modifiedFields?: Record<string, unknown>
-  performedOn?: {
-    attribute_inum?: string
-    attributeName?: string
-  }
+  modifiedFields?: ModifiedFields
 }
 
 export interface ThemeState {

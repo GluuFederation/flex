@@ -1,8 +1,6 @@
 import { JansAttribute } from 'JansConfigApi'
 
-export const transformToFormValues = (
-  attribute: JansAttribute | undefined,
-): Partial<JansAttribute> => {
+export const transformToFormValues = (attribute: JansAttribute | null): Partial<JansAttribute> => {
   if (!attribute) {
     return {
       jansHideOnDiscovery: false,
