@@ -2,8 +2,20 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import Box from '@mui/material/Box'
-import { useLocation, useNavigate } from 'react-router'
+import { useLocation } from 'react-router'
 import customColors from '@/customColors'
+import { useAppNavigation } from '@/helpers/navigation'
+
+interface NamedTab {
+  name: string
+  path?: string | null
+}
+
+interface NavigationTab extends NamedTab {
+  path: string
+}
+
+type TabItem = string | NamedTab
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -11,6 +23,13 @@ interface TabPanelProps {
   px?: number
   py?: number
   index: number
+}
+
+const a11yProps = (index: number) => {
+  return {
+    'id': `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  }
 }
 
 const TabPanel = React.memo((props: TabPanelProps) => {
@@ -34,22 +53,15 @@ const TabPanel = React.memo((props: TabPanelProps) => {
 
 TabPanel.displayName = 'TabPanel'
 
-const a11yProps = (index: number) => {
-  return {
-    'id': `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  }
-}
-
-interface NavigationTab {
-  name: string
-  path: string
-}
-
-type TabItem = string | NavigationTab
-
-const isNavigationTab = (tab: TabItem | undefined): tab is NavigationTab => {
-  return Boolean(tab && typeof tab === 'object' && 'name' in tab && 'path' in tab)
+const isNavigationTab = (tab: TabItem | null): tab is NavigationTab => {
+  return Boolean(
+    tab &&
+      typeof tab === 'object' &&
+      'name' in tab &&
+      'path' in tab &&
+      typeof tab.path === 'string' &&
+      tab.path.trim().length > 0,
+  )
 }
 
 const initTabValue = (tabNames: TabItem[], pathname: string) => {
@@ -65,31 +77,33 @@ interface GluuTabsProps {
 
 export default function GluuTabs({ tabNames, tabToShow, withNavigation = false }: GluuTabsProps) {
   const path = useLocation()
-  const navigate = useNavigate()
+  const { navigateToRoute } = useAppNavigation()
 
-  // Calculate initial value (only used on mount by useState)
   const [value, setValue] = useState(() =>
     withNavigation ? initTabValue(tabNames, path.pathname) : 0,
   )
 
-  // Memoize tab label getter
-  const getTabLabel = useCallback((tab: TabItem) => (isNavigationTab(tab) ? tab.name : tab), [])
+  const getTabLabel = useCallback((tab: TabItem) => {
+    if (typeof tab === 'string') {
+      return tab
+    }
 
-  // Memoize tab change handler
+    return tab.name
+  }, [])
+
   const handleChange = useCallback(
     (event: React.SyntheticEvent, newValue: number) => {
       setValue(newValue)
       if (withNavigation) {
-        const tab = tabNames[newValue]
-        if (isNavigationTab(tab)) {
-          navigate(tab.path, { replace: true })
+        const tab = tabNames[newValue] ?? null
+        if (isNavigationTab(tab) && tab.path !== path.pathname) {
+          navigateToRoute(tab.path, { replace: true })
         }
       }
     },
-    [withNavigation, tabNames, navigate],
+    [withNavigation, tabNames, navigateToRoute, path.pathname],
   )
 
-  // Memoize tabs styling
   const tabsSx = useMemo(
     () => ({
       '& .MuiTab-root.Mui-selected': {
@@ -111,10 +125,16 @@ export default function GluuTabs({ tabNames, tabToShow, withNavigation = false }
     [],
   )
 
-  // Memoize tab labels array
+  const tabsContainerSx = useMemo(
+    () => ({
+      borderBottom: 1,
+      borderColor: 'divider',
+    }),
+    [],
+  )
+
   const tabLabels = useMemo(() => tabNames.map(getTabLabel), [tabNames, getTabLabel])
 
-  // Sync tab value with URL pathname
   useEffect(() => {
     if (!withNavigation) {
       return
@@ -127,8 +147,10 @@ export default function GluuTabs({ tabNames, tabToShow, withNavigation = false }
     if (activeIndex === -1) {
       const firstNavIndex = tabNames.findIndex(isNavigationTab)
       if (firstNavIndex !== -1) {
-        const firstNavTab = tabNames[firstNavIndex] as NavigationTab
-        navigate(firstNavTab.path, { replace: true })
+        const firstNavTab = tabNames[firstNavIndex] ?? null
+        if (isNavigationTab(firstNavTab) && firstNavTab.path !== path.pathname) {
+          navigateToRoute(firstNavTab.path, { replace: true })
+        }
         setValue(firstNavIndex)
       } else {
         setValue(0)
@@ -136,14 +158,13 @@ export default function GluuTabs({ tabNames, tabToShow, withNavigation = false }
       return
     }
 
-    const activeTab = tabNames[activeIndex] as NavigationTab
-    if (activeTab.path !== path.pathname) {
-      navigate(activeTab.path, { replace: true })
+    const activeTab = tabNames[activeIndex] ?? null
+    if (isNavigationTab(activeTab) && activeTab.path !== path.pathname) {
+      navigateToRoute(activeTab.path, { replace: true })
     }
     setValue(activeIndex)
-  }, [withNavigation, tabNames, path.pathname, navigate])
+  }, [withNavigation, tabNames, path.pathname, navigateToRoute])
 
-  // Memoize tab elements
   const tabElements = useMemo(
     () =>
       tabLabels.map((label, index) => (
@@ -152,7 +173,6 @@ export default function GluuTabs({ tabNames, tabToShow, withNavigation = false }
     [tabLabels],
   )
 
-  // Memoize tab panel elements
   const tabPanels = useMemo(
     () =>
       tabLabels.map((label, index) => (
@@ -165,7 +185,7 @@ export default function GluuTabs({ tabNames, tabToShow, withNavigation = false }
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+      <Box sx={tabsContainerSx}>
         <Tabs value={value} variant="scrollable" onChange={handleChange} sx={tabsSx}>
           {tabElements}
         </Tabs>
