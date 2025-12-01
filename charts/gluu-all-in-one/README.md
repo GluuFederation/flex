@@ -27,10 +27,10 @@ Kubernetes: `>=v1.23.0-0`
 |-----|------|---------|-------------|
 | additionalAnnotations | object | `{}` | Additional annotations that will be added across the gateway in the format of {cert-manager.io/issuer: "letsencrypt-prod"} |
 | additionalLabels | object | `{}` | Additional labels that will be added across the gateway in the format of {mylabel: "myapp"} |
-| admin-ui | object | `{"enabled":true,"ingress":{"adminUiAdditionalAnnotations":{},"adminUiEnabled":false,"adminUiLabels":{}}}` | Admin GUI for configuration of the auth-server |
+| admin-ui | object | `{"enabled":true,"ingress":{"adminUiAdditionalAnnotations":{},"adminUiEnabled":true,"adminUiLabels":{}}}` | Admin GUI for configuration of the auth-server |
 | admin-ui.enabled | bool | `true` | Boolean flag to enable/disable the admin-ui chart and admin ui config api plugin. |
 | admin-ui.ingress.adminUiAdditionalAnnotations | object | `{}` | Admin UI ingress resource additional annotations. |
-| admin-ui.ingress.adminUiEnabled | bool | `false` | Enable Admin UI endpoints in either istio or nginx ingress depending on users choice |
+| admin-ui.ingress.adminUiEnabled | bool | `true` | Enable Admin UI endpoints in either istio or nginx ingress depending on users choice |
 | admin-ui.ingress.adminUiLabels | object | `{}` | Admin UI ingress resource labels. key app is taken. |
 | adminPassword | string | `"Test1234#"` | Admin password to log in to the UI. |
 | alb.ingress | bool | `false` | switches the service to Nodeport for ALB ingress |
@@ -123,6 +123,7 @@ Kubernetes: `>=v1.23.0-0`
 | auth-server.ingress.webfingerEnabled | bool | `true` | Enable endpoint /.well-known/webfinger |
 | auth-server.ingress.webfingerLabels | object | `{}` | webfinger ingress resource labels. key app is taken |
 | auth-server.lockEnabled | bool | `false` | Enable jans-lock as service running inside auth-server |
+| casa.adminEnabled | bool | `true` | Boolean flag to enable/disable the casa admin console. |
 | casa.appLoggers | object | `{"casaLogLevel":"INFO","casaLogTarget":"STDOUT","enableStdoutLogPrefix":"true","timerLogLevel":"INFO","timerLogTarget":"FILE"}` | App loggers can be configured to define where the logs will be redirected to and the level of each in which it should be displayed. |
 | casa.appLoggers.casaLogLevel | string | `"INFO"` | casa.log level |
 | casa.appLoggers.casaLogTarget | string | `"STDOUT"` | casa.log target |

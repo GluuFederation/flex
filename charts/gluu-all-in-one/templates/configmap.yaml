@@ -178,6 +178,7 @@ data:
   | squote
   }}
   {{- end }}
+  CN_CASA_ADMIN_ENABLED: {{ .Values.casa.adminEnabled | quote }}
   CN_SQL_PASSWORD_FILE: {{ .Values.cnSqlPasswordFile }}
   CN_CONFIG_API_PLUGINS: "admin-ui,fido2,scim,user-mgt"
   CN_AIO_COMPONENTS: {{ include "flex-all-in-one.aioComponents" . | fromJsonArray | join "," | quote}}
