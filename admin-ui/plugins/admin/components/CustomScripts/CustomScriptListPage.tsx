@@ -32,8 +32,7 @@ import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import CustomScriptDetailPage from './CustomScriptDetailPage'
 import { useTranslation } from 'react-i18next'
-import { useCedarling } from '@/cedarling'
-import { CEDAR_RESOURCE_SCOPES, ADMIN_UI_RESOURCES } from '@/cedarling'
+import { useCedarling, CEDAR_RESOURCE_SCOPES, ADMIN_UI_RESOURCES } from '@/cedarling'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
@@ -216,7 +215,16 @@ const CustomScriptListPage: React.FC = () => {
         field: 'name',
         render: (rowData: ScriptTableRow) => (
           <Box>
-            <Typography variant="body2" fontWeight={500}>
+            <Typography
+              variant="body2"
+              fontWeight={700}
+              sx={{
+                mt: 0.5,
+                color: rowData.enabled
+                  ? `${customColors.black} !important`
+                  : `${customColors.black}80`,
+              }}
+            >
               {rowData.name}
             </Typography>
             {rowData.scriptError?.stackTrace && (
@@ -226,7 +234,6 @@ const CustomScriptListPage: React.FC = () => {
                   icon={<ErrorOutline sx={{ fontSize: 16 }} />}
                   label={t('fields.error')}
                   color="error"
-                  sx={{ mt: 0.5 }}
                 />
               </Tooltip>
             )}
@@ -246,6 +253,9 @@ const CustomScriptListPage: React.FC = () => {
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
               maxWidth: 300,
+              color: rowData.enabled
+                ? `${customColors.black} !important`
+                : `${customColors.black}80`,
             }}
           >
             {rowData.description || '—'}
@@ -280,7 +290,15 @@ const CustomScriptListPage: React.FC = () => {
         title: t('fields.programming_language'),
         field: 'programmingLanguage',
         render: (rowData: ScriptTableRow) => (
-          <Typography variant="body2" sx={{ textTransform: 'capitalize' }}>
+          <Typography
+            variant="body2"
+            sx={{
+              textTransform: 'capitalize',
+              color: rowData.enabled
+                ? `${customColors.black} !important`
+                : `${customColors.black}80`,
+            }}
+          >
             {rowData.programmingLanguage || '—'}
           </Typography>
         ),
@@ -386,7 +404,6 @@ const CustomScriptListPage: React.FC = () => {
       rowStyle: (rowData: ScriptTableRow) => {
         const hasError = rowData.scriptError?.stackTrace
         const baseColor = rowData.enabled ? themeColors.lightBackground : customColors.white
-
         return {
           backgroundColor: hasError ? `${customColors.accentRed}15` : baseColor,
           color: customColors.darkGray,
