@@ -1,8 +1,8 @@
 import React from 'react'
 
 interface ShortCodesIconProps {
-  className: string
-  style: React.CSSProperties
+  className?: string
+  style?: React.CSSProperties
 }
 
 const ShortCodesIcon: React.FC<ShortCodesIconProps> = ({ className, style }) => {
