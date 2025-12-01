@@ -19,9 +19,6 @@ import SetTitle from 'Utils/SetTitle'
 import styles from './styles'
 import type { HealthState } from 'Redux/features/healthSlice'
 
-interface DashboardHealthRootState {
-  healthReducer: HealthState
-}
 import { formatDate } from 'Utils/Util'
 import UsersIcon from '@/components/SVG/menu/Users'
 import Administrator from '@/components/SVG/menu/Administrator'
@@ -34,6 +31,9 @@ import customColors from '@/customColors'
 import { useCedarling } from '@/cedarling'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
+interface DashboardHealthRootState {
+  healthReducer: HealthState
+}
 // Constants moved outside component for better performance
 const FETCHING_LICENSE_DETAILS = 'Fetch license details'
 

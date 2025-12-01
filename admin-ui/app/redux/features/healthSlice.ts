@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 
-type HealthStatus = 'Running' | 'Not present' | 'Down' | string
+type HealthStatus = 'Running' | 'Not present'
 
 export type HealthServiceKey =
   | 'jans-lock'
