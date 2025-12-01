@@ -161,6 +161,14 @@ const WebhookListPage: React.FC = () => {
   const webhooks = useMemo(() => (data?.entries || []) as unknown as WebhookEntry[], [data])
   const totalItems = useMemo(() => data?.totalEntriesCount || 0, [data])
 
+  // Clamp pageNumber when it becomes out of range (e.g., after deleting the last item on the last page)
+  useEffect(() => {
+    if (totalItems > 0 && pageNumber * limit >= totalItems) {
+      const lastPage = Math.max(0, Math.ceil(totalItems / limit) - 1)
+      setPageNumber(lastPage)
+    }
+  }, [totalItems, pageNumber, limit])
+
   const { deleteWebhook, isLoading: isDeleting } = useDeleteWebhookWithAudit()
 
   useEffect(() => {
@@ -346,7 +354,7 @@ const WebhookListPage: React.FC = () => {
       return <LoadingSkeleton />
     }
 
-    if (webhooks.length === 0 && !pattern) {
+    if (!pattern && totalItems === 0) {
       return <EmptyState />
     }
 
@@ -385,6 +393,7 @@ const WebhookListPage: React.FC = () => {
     isDeleting,
     webhooks,
     pattern,
+    totalItems,
     TablePaginationComponent,
     columns,
     rowActions,
