@@ -11,7 +11,7 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { useWebhookAudit, CREATE, UPDATE, DELETION } from './useWebhookAudit'
 import type { WebhookEntry } from '../types'
 
-interface MutationCallbacks {
+export interface MutationCallbacks {
   onSuccess?: () => void
   onError?: (error: unknown) => void
 }

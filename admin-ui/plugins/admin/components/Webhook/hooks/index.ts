@@ -4,3 +4,4 @@ export {
   useUpdateWebhookWithAudit,
   useDeleteWebhookWithAudit,
 } from './useWebhookMutations'
+export type { MutationCallbacks } from './useWebhookMutations'

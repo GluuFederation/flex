@@ -280,7 +280,7 @@ const WebhookListPage: React.FC = () => {
           <Typography
             variant="body2"
             fontWeight={500}
-            color={rowData.jansEnabled ? 'black !important' : 'gray !important'}
+            sx={{ color: rowData.jansEnabled ? 'black !important' : 'gray !important' }}
           >
             {rowData.displayName}
           </Typography>
