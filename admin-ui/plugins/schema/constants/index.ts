@@ -8,7 +8,6 @@ export const REQUIRED_ATTRIBUTE_FIELDS = [
   'dataType',
   'editType',
   'viewType',
-  'usageType',
 ] as const
 
 export type RequiredAttributeField = (typeof REQUIRED_ATTRIBUTE_FIELDS)[number]

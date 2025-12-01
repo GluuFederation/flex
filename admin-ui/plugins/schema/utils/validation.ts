@@ -28,10 +28,7 @@ const buildAttributeSchemaParts = (t: (key: string) => string, validationEnabled
       .of(Yup.string())
       .min(1, t('errors.required') || 'Required!')
       .required(t('errors.required') || 'Required!'),
-    usageType: Yup.array()
-      .of(Yup.string())
-      .min(1, t('errors.required') || 'Required!')
-      .required(t('errors.required') || 'Required!'),
+    usageType: Yup.array().of(Yup.string()).nullable(),
     viewType: Yup.array()
       .of(Yup.string())
       .min(1, t('errors.required') || 'Required!')

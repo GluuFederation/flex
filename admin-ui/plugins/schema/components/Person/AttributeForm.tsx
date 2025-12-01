@@ -344,12 +344,7 @@ const AttributeForm = memo(function AttributeForm(props: AttributeFormProps) {
             </FormGroup>
 
             <FormGroup row>
-              <GluuLabel
-                label="fields.usage_type"
-                required
-                doc_category={ATTRIBUTE}
-                doc_entry="usageType"
-              />
+              <GluuLabel label="fields.usage_type" doc_category={ATTRIBUTE} doc_entry="usageType" />
               <Col sm={9}>
                 <Input
                   type="select"
