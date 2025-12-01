@@ -16,6 +16,12 @@ interface MutationCallbacks {
   onError?: (error: unknown) => void
 }
 
+/**
+ * Extracts error message from webhook API responses.
+ * Note: The webhook API returns `responseMessage` in error responses, which differs from
+ * other APIs that use `message` (see plugins/schema/utils/errorHandler.ts).
+ * This is intentional and matches the Jans Config API response structure for webhook endpoints.
+ */
 const extractErrorMessage = (error: unknown, fallback: string): string =>
   (error as { response?: { data?: { responseMessage?: string } } })?.response?.data
     ?.responseMessage ||

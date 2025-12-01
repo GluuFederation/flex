@@ -1,7 +1,7 @@
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { WebhookEntry, AuiFeature } from 'JansConfigApi'
-import type { TriggerPayload } from 'Plugins/admin/components/Webhook/types'
+import type { TriggerPayload, WebhookActionPayload } from 'Plugins/admin/components/Webhook/types'
 
 export interface WebhookSliceState {
   webhooks: WebhookEntry[]
@@ -32,10 +32,6 @@ interface WebhookResponsePayload {
     totalEntriesCount?: number
     entriesCount?: number
   } | null
-}
-
-interface WebhookActionPayload {
-  action?: Record<string, unknown>
 }
 
 const initialState: WebhookSliceState = {

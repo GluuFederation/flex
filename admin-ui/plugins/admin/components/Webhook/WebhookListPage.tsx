@@ -19,7 +19,7 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { ThemeContext, ThemeContextType } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import SetTitle from 'Utils/SetTitle'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
@@ -30,12 +30,6 @@ import { useGetAllWebhooks } from 'JansConfigApi'
 import { useDeleteWebhookWithAudit } from './hooks'
 import WebhookSearch from './WebhookSearch'
 import type { WebhookEntry, TableAction } from './types'
-
-interface ThemeState {
-  state: {
-    theme: string
-  }
-}
 
 const EmptyState: React.FC = () => {
   const { t } = useTranslation()
@@ -131,7 +125,7 @@ const WebhookListPage: React.FC = () => {
   const [modal, setModal] = useState(false)
   const [deleteData, setDeleteData] = useState<WebhookEntry | null>(null)
 
-  const theme = useContext(ThemeContext) as ThemeState
+  const theme = useContext(ThemeContext) as ThemeContextType
   const themeColors = getThemeColor(theme.state.theme)
   const bgThemeColor = { background: themeColors.background }
   SetTitle(t('titles.webhooks'))

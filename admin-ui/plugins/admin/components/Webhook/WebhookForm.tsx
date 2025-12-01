@@ -27,7 +27,13 @@ import { useCreateWebhookWithAudit, useUpdateWebhookWithAudit } from './hooks'
 import Chip from '@mui/material/Chip'
 import Box from '@mui/material/Box'
 import Alert from '@mui/material/Alert'
-import type { WebhookFormValues, CursorPosition, AuiFeature, ShortCodesConfig } from './types'
+import type {
+  WebhookFormValues,
+  CursorPosition,
+  AuiFeature,
+  ShortCodesConfig,
+  WebhookEntry,
+} from './types'
 import type { RootState } from 'Plugins/admin/redux/sagas/types/state'
 
 const GluuInputEditor = lazy(() => import('Routes/Apps/Gluu/GluuInputEditor'))
