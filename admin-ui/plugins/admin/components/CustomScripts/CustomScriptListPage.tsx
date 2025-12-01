@@ -45,9 +45,10 @@ import { useCustomScriptsByType, useDeleteCustomScript, useCustomScriptTypes } f
 import { DEFAULT_SCRIPT_TYPE } from './constants'
 import type { CustomScript } from 'JansConfigApi'
 import type { Column, Action } from '@material-table/core'
+import type { ScriptError } from './types/customScript'
 
 interface ScriptTableRow extends CustomScript {
-  [key: string]: unknown
+  scriptError?: ScriptError
 }
 
 const CustomScriptListPage: React.FC = () => {
