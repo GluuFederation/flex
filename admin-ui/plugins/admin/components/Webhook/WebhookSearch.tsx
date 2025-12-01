@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState, KeyboardEvent } from 'react'
+import React, { memo, useCallback, useState, useEffect, KeyboardEvent } from 'react'
 import {
   Box,
   TextField,
@@ -46,6 +46,11 @@ const WebhookSearch: React.FC<WebhookSearchProps> = ({
 }) => {
   const { t } = useTranslation()
   const [inputValue, setInputValue] = useState(pattern)
+
+  // Keep input in sync if pattern is reset externally (e.g., from URL/query params)
+  useEffect(() => {
+    setInputValue(pattern)
+  }, [pattern])
 
   const handlePatternKeyDown = useCallback(
     (event: KeyboardEvent<HTMLInputElement>) => {

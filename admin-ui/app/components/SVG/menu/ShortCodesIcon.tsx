@@ -5,7 +5,7 @@ interface ShortCodesIconProps {
   style?: React.CSSProperties
 }
 
-const ShortCodesIcon: React.FC<ShortCodesIconProps> = ({ className, style }) => {
+const ShortCodesIcon: React.FC<ShortCodesIconProps> = ({ className, style = {} }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -13,7 +13,8 @@ const ShortCodesIcon: React.FC<ShortCodesIconProps> = ({ className, style }) => 
       viewBox="0 0 24 24"
       strokeWidth="1.5"
       stroke="currentColor"
-      style={{ width: '18px' }}
+      className={className}
+      style={{ width: '18px', ...style }}
     >
       <path
         strokeLinecap="round"

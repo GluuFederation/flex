@@ -721,6 +721,7 @@
     "url_error": "Veuillez entrer une URL.",
     "missing_required_permission": "Permission requise manquante",
     "invalid_json_error": "Valeur JSON invalide.",
+    "invalid_url_error": "URL invalide ou URL non autorisée.",
     "action_commit_question": "Journal d'audit : vous souhaitez appliquer les modifications apportées sur cette page ?",
     "licenseAuditLog": "Voulez-vous vraiment réinitialiser la licence existante ?",
     "action_deletion_question": "Voulez-vous vraiment supprimer cet élément ?",

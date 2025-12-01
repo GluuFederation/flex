@@ -753,6 +753,7 @@
     "session_timeout_required_error": "El tiempo de espera de sesión es obligatorio",
     "additional_parameters_required": "Both key and value are required for each custom parameter.",
     "invalid_json_error": "Valor JSON inválido.",
+    "invalid_url_error": "URL inválida o URL no permitida.",
     "add_identity_provider": "Agregar Proveedor de Identidad",
     "view_idp_details": "Ver Detalles del IdP",
     "edit_identity_provider": "Editar Proveedor de Identidad",

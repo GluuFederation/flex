@@ -27,13 +27,8 @@ import { useCreateWebhookWithAudit, useUpdateWebhookWithAudit } from './hooks'
 import Chip from '@mui/material/Chip'
 import Box from '@mui/material/Box'
 import Alert from '@mui/material/Alert'
-import type {
-  WebhookFormValues,
-  CursorPosition,
-  AuiFeature,
-  WebhookEntry,
-  ShortCodesConfig,
-} from './types'
+import type { WebhookFormValues, CursorPosition, AuiFeature, ShortCodesConfig } from './types'
+import type { RootState } from 'Plugins/admin/redux/sagas/types/state'
 
 const GluuInputEditor = lazy(() => import('Routes/Apps/Gluu/GluuInputEditor'))
 
@@ -44,12 +39,6 @@ const HTTP_METHODS = [
   { value: 'PATCH', label: 'PATCH' },
   { value: 'DELETE', label: 'DELETE' },
 ]
-
-interface RootState {
-  webhookReducer: {
-    selectedWebhook: WebhookEntry | null
-  }
-}
 
 const WebhookForm: React.FC = () => {
   const { id } = useParams<{ id?: string }>()
@@ -134,33 +123,35 @@ const WebhookForm: React.FC = () => {
       }
       if (!isValid(values.url)) {
         hasError = true
-        setFieldError('url', 'Invalid url or url not allowed.')
+        setFieldError('url', t('messages.invalid_url_error'))
       }
       return hasError
     },
     [t],
   )
 
+  const { values: formikValues, resetForm, setFieldValue, dirty: formikDirty } = formik
+
   const submitForm = useCallback(
     async (userMessage: string) => {
       closeCommitDialog()
 
       const payload: WebhookEntry = {
-        displayName: formik.values.displayName,
-        url: formik.values.url,
-        httpMethod: formik.values.httpMethod,
-        description: formik.values.description,
-        jansEnabled: formik.values.jansEnabled,
+        displayName: formikValues.displayName,
+        url: formikValues.url,
+        httpMethod: formikValues.httpMethod,
+        description: formikValues.description,
+        jansEnabled: formikValues.jansEnabled,
         httpHeaders:
-          formik.values.httpHeaders?.map((header) => ({
+          formikValues.httpHeaders?.map((header) => ({
             key: header.key || header.source || '',
             value: header.value || header.destination || '',
           })) || [],
         auiFeatureIds: selectedFeatures?.map((feature) => feature.auiFeatureId || '') || [],
       }
 
-      if (formik.values.httpMethod !== 'GET' && formik.values.httpMethod !== 'DELETE') {
-        payload.httpRequestBody = JSON.parse(formik.values.httpRequestBody)
+      if (formikValues.httpMethod !== 'GET' && formikValues.httpMethod !== 'DELETE') {
+        payload.httpRequestBody = JSON.parse(formikValues.httpRequestBody)
       }
 
       if (id && selectedWebhook) {
@@ -172,12 +163,13 @@ const WebhookForm: React.FC = () => {
         await createWebhook(payload, userMessage)
       }
 
-      formik.resetForm({ values: formik.values })
+      resetForm({ values: formikValues })
       setBaselineSelectedFeatures([...selectedFeatures])
     },
     [
       closeCommitDialog,
-      formik,
+      formikValues,
+      resetForm,
       selectedFeatures,
       id,
       selectedWebhook,
@@ -198,16 +190,16 @@ const WebhookForm: React.FC = () => {
     : []
 
   const handleCancel = useCallback(() => {
-    formik.resetForm({ values: initialFormValues })
+    resetForm({ values: initialFormValues })
     setSelectedFeatures([...baselineSelectedFeatures])
-  }, [formik, baselineSelectedFeatures, initialFormValues])
+  }, [resetForm, baselineSelectedFeatures, initialFormValues])
 
   const isFeatureSelectionChanged = useMemo(
     () => !isEqual(selectedFeatures, baselineSelectedFeatures),
     [selectedFeatures, baselineSelectedFeatures],
   )
 
-  const isFormChanged = formik.dirty || isFeatureSelectionChanged
+  const isFormChanged = formikDirty || isFeatureSelectionChanged
 
   const handleBack = useCallback(() => {
     navigateBack(ROUTES.WEBHOOK_LIST)
@@ -220,7 +212,7 @@ const WebhookForm: React.FC = () => {
   ) => {
     const _code = withString ? '"${' + code + '}"' : '${' + code + '}'
     const currentPosition = cursorPosition[name]
-    let value = formik.values[name] || ''
+    let value = formikValues[name] || ''
     if (currentPosition >= 0 && value) {
       value = value.slice(0, currentPosition) + _code + value.slice(currentPosition)
     } else if (value) {
@@ -233,13 +225,13 @@ const WebhookForm: React.FC = () => {
       ...prevState,
       [name]: currentPosition + _code.length,
     }))
-    formik.setFieldValue(name, value)
+    setFieldValue(name, value)
   }
 
   const showBodyEditor =
-    formik.values.httpMethod &&
-    formik.values.httpMethod !== 'GET' &&
-    formik.values.httpMethod !== 'DELETE'
+    formikValues.httpMethod &&
+    formikValues.httpMethod !== 'GET' &&
+    formikValues.httpMethod !== 'DELETE'
 
   if (loadingWebhookFeatures && id) {
     return <GluuSuspenseLoader />
@@ -279,7 +271,7 @@ const WebhookForm: React.FC = () => {
             <GluuInputRow
               label="fields.webhook_name"
               formik={formik}
-              value={formik.values?.displayName}
+              value={formikValues?.displayName}
               lsize={4}
               doc_entry="webhook_name"
               rsize={8}
@@ -315,7 +307,7 @@ const WebhookForm: React.FC = () => {
             <GluuInputRow
               label="fields.webhook_url"
               formik={formik}
-              value={formik.values?.url}
+              value={formikValues?.url}
               lsize={4}
               rsize={8}
               required
@@ -351,7 +343,7 @@ const WebhookForm: React.FC = () => {
             <GluuSelectRow
               label="fields.http_method"
               formik={formik}
-              value={formik.values?.httpMethod}
+              value={formikValues?.httpMethod}
               doc_category={WEBHOOK}
               doc_entry="http_method"
               values={HTTP_METHODS}
@@ -366,7 +358,7 @@ const WebhookForm: React.FC = () => {
             <GluuInputRow
               label="fields.description"
               formik={formik}
-              value={formik.values?.description}
+              value={formikValues?.description}
               doc_category={WEBHOOK}
               doc_entry="description"
               lsize={4}
@@ -390,7 +382,7 @@ const WebhookForm: React.FC = () => {
                   inputSm={10}
                   destinationPlaceholder={'placeholders.enter_key_value'}
                   sourcePlaceholder={'placeholders.enter_header_key'}
-                  options={formik.values.httpHeaders || []}
+                  options={formikValues.httpHeaders || []}
                   isKeys={false}
                   buttonText="actions.add_header"
                   showError={!!(formik.errors.httpHeaders && formik.touched.httpHeaders)}
@@ -431,7 +423,7 @@ const WebhookForm: React.FC = () => {
                   doc_category={WEBHOOK}
                   doc_entry="http_request_body"
                   formik={formik}
-                  value={formik.values?.httpRequestBody}
+                  value={formikValues?.httpRequestBody}
                   errorMessage={formik.errors.httpRequestBody}
                   showError={!!(formik.errors.httpRequestBody && formik.touched.httpRequestBody)}
                   placeholder=""
@@ -466,11 +458,11 @@ const WebhookForm: React.FC = () => {
                   id="jansEnabled"
                   name="jansEnabled"
                   onChange={formik.handleChange}
-                  checked={formik.values.jansEnabled}
+                  checked={formikValues.jansEnabled}
                 />
                 <Chip
-                  label={formik.values.jansEnabled ? 'Enabled' : 'Disabled'}
-                  color={formik.values.jansEnabled ? 'success' : 'default'}
+                  label={formikValues.jansEnabled ? t('options.enabled') : t('options.disabled')}
+                  color={formikValues.jansEnabled ? 'success' : 'default'}
                   size="small"
                   variant="outlined"
                 />

@@ -61,32 +61,10 @@ export interface CursorPosition {
   httpRequestBody: number
 }
 
-export interface WebhookSliceState {
-  webhooks: WebhookEntry[]
-  loading: boolean
-  saveOperationFlag: boolean
-  errorInSaveOperationFlag: boolean
-  totalItems: number
-  entriesCount: number
-  selectedWebhook: WebhookEntry | null
-  loadingFeatures: boolean
-  features: AuiFeature[]
-  webhookFeatures: AuiFeature[]
-  loadingWebhookFeatures: boolean
-  loadingWebhooks: boolean
-  featureWebhooks: WebhookEntry[]
-  webhookModal: boolean
-  triggerWebhookInProgress: boolean
-  triggerWebhookMessage: string
-  webhookTriggerErrors: unknown[]
-  triggerPayload: TriggerPayload
-  featureToTrigger: string
-  showErrorModal: boolean
-}
-
 export interface TriggerPayload {
-  feature: string | null
-  payload: unknown
+  feature?: string | null
+  payload?: unknown
+  createdFeatureValue?: unknown
 }
 
 export interface WebhookActionPayload {

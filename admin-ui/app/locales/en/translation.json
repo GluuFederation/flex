@@ -753,6 +753,7 @@
     "session_timeout_required_error": "Session timeout is required",
     "additional_parameters_required": "Both key and value are required for each custom parameter.",
     "invalid_json_error": "Invalid JSON value.",
+    "invalid_url_error": "Invalid URL or URL not allowed.",
     "add_identity_provider": "Add Identity Provider",
     "view_idp_details": "View IDP Details",
     "edit_identity_provider": "Edit Identity Provider",

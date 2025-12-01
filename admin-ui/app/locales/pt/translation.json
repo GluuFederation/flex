@@ -702,6 +702,7 @@
     "url_error": "Por favor, insira uma URL.",
     "missing_required_permission": "Permissão necessária ausente",
     "invalid_json_error": "Valor JSON inválido.",
+    "invalid_url_error": "URL inválido ou URL não permitido.",
     "license_api_not_enabled": "A API de licença não está habilitada para este aplicativo.",
     "adding_new_permission": "Adicionando nova permissão",
     "add_role": "Adicionar função",

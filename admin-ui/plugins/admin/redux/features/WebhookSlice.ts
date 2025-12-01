@@ -1,14 +1,9 @@
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { WebhookEntry, AuiFeature } from 'JansConfigApi'
+import type { TriggerPayload } from 'Plugins/admin/components/Webhook/types'
 
-interface TriggerPayload {
-  feature?: string | null
-  payload?: unknown
-  createdFeatureValue?: unknown
-}
-
-interface WebhookSliceState {
+export interface WebhookSliceState {
   webhooks: WebhookEntry[]
   loading: boolean
   saveOperationFlag: boolean
@@ -39,7 +34,7 @@ interface WebhookResponsePayload {
   } | null
 }
 
-interface ActionPayload {
+interface WebhookActionPayload {
   action?: Record<string, unknown>
 }
 
@@ -73,7 +68,7 @@ const webhookSlice = createSlice({
   name: 'webhook',
   initialState,
   reducers: {
-    getWebhook: (state, _action: PayloadAction<ActionPayload>) => {
+    getWebhook: (state, _action: PayloadAction<WebhookActionPayload>) => {
       state.loading = true
     },
     getWebhookResponse: (state, action: PayloadAction<WebhookResponsePayload>) => {
@@ -84,7 +79,7 @@ const webhookSlice = createSlice({
         state.entriesCount = action.payload.data.entriesCount || 0
       }
     },
-    createWebhook: (state, _action: PayloadAction<ActionPayload>) => {
+    createWebhook: (state, _action: PayloadAction<WebhookActionPayload>) => {
       state.loading = true
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
@@ -98,7 +93,7 @@ const webhookSlice = createSlice({
         state.errorInSaveOperationFlag = true
       }
     },
-    deleteWebhook: (state, _action: PayloadAction<ActionPayload>) => {
+    deleteWebhook: (state, _action: PayloadAction<WebhookActionPayload>) => {
       state.loading = true
     },
     deleteWebhookResponse: (state) => {
@@ -107,7 +102,7 @@ const webhookSlice = createSlice({
     setSelectedWebhook: (state, action: PayloadAction<WebhookEntry | null>) => {
       state.selectedWebhook = action.payload
     },
-    updateWebhook: (state, _action: PayloadAction<ActionPayload>) => {
+    updateWebhook: (state, _action: PayloadAction<WebhookActionPayload>) => {
       state.loading = true
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
