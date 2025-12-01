@@ -381,7 +381,7 @@ admin-ui:
   enabled: true
   ingress:
     # -- Enable Admin UI endpoints in either istio or nginx ingress depending on users choice
-    adminUiEnabled: false
+    adminUiEnabled: true
     # -- Admin UI ingress resource labels. key app is taken.
     adminUiLabels: {}
     # -- Admin UI ingress resource additional annotations.
