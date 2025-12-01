@@ -2982,54 +2982,54 @@
 </ul>
 <h3 id="ubuntu-2404">Ubuntu 24.04<a class="headerlink" href="#ubuntu-2404" title="Permanent link">#</a></h3>
 <p>Download the release package from the GitHub FLEX <a href="https://github.com/gluufederation/flex/releases">Releases</a></p>
-<div class="highlight"><span class="filename">Command</span><pre><span></span><code>wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/nightly/flex_0.0.0-nightly.ubuntu24.04_amd64.deb<span class="w"> </span>-P<span class="w"> </span>/tmp
+<div class="highlight"><span class="filename">Command</span><pre><span></span><code>wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu24.04_amd64.deb<span class="w"> </span>-P<span class="w"> </span>/tmp
 </code></pre></div>
 <p>Verify integrity of the downloaded package by verifying published <code>sha256sum</code>.  </p>
 <ul>
-<li>Go to the <a href="https://github.com/gluufederation/flex/releases">Flex Project Releases page</a> and copy the <code>sha256sum</code> value for the <code>flex_0.0.0-nightly.ubuntu24.04_amd64.deb</code> file:</li>
+<li>Go to the <a href="https://github.com/gluufederation/flex/releases">Flex Project Releases page</a> and copy the <code>sha256sum</code> value for the <code>flex_replace-flex-version-stable.ubuntu24.04_amd64.deb</code> file:</li>
 <li>Replace <code>paste-release-sha256sum</code> in the command below with the actual checksum you copied from the release page, and run the following command:
-      <div class="highlight"><span class="filename">Command</span><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;paste-release-sha256sum flex_0.0.0-nightly.ubuntu24.04_amd64.deb &#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">&#39;s/^sha256://&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>flex_0.0.0-nightly.ubuntu24.04_amd64.deb<span class="w"> </span>.sha256sum<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sha256sum<span class="w"> </span>-c<span class="w"> </span>flex_0.0.0-nightly.ubuntu24.04_amd64.deb.sha256sum
+      <div class="highlight"><span class="filename">Command</span><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;paste-release-sha256sum flex_replace-flex-version-stable.ubuntu24.04_amd64.deb &#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">&#39;s/^sha256://&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>flex_replace-flex-version-stable.ubuntu24.04_amd64.deb<span class="w"> </span>.sha256sum<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sha256sum<span class="w"> </span>-c<span class="w"> </span>flex_replace-flex-version-stable.ubuntu24.04_amd64.deb.sha256sum
 </code></pre></div></li>
 <li>Output similar to below should confirm the integrity of the downloaded package.
-    <div class="highlight"><span class="filename">Command</span><pre><span></span><code>flex_0.0.0-nightly.ubuntu24.04_amd64.deb:<span class="w"> </span>OK
+    <div class="highlight"><span class="filename">Command</span><pre><span></span><code>flex_replace-flex-version-stable.ubuntu24.04_amd64.deb:<span class="w"> </span>OK
 </code></pre></div></li>
 </ul>
 <p>Install the package</p>
-<div class="highlight"><span class="filename">Command</span><pre><span></span><code>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>/tmp/flex_0.0.0-nightly.ubuntu24.04_amd64.deb
+<div class="highlight"><span class="filename">Command</span><pre><span></span><code>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>/tmp/flex_replace-flex-version-stable.ubuntu24.04_amd64.deb
 </code></pre></div>
 <h3 id="ubuntu-2204">Ubuntu 22.04<a class="headerlink" href="#ubuntu-2204" title="Permanent link">#</a></h3>
 <p>Download the release package from the GitHub FLEX <a href="https://github.com/gluufederation/flex/releases">Releases</a></p>
-<div class="highlight"><span class="filename">Command</span><pre><span></span><code>wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/nightly/flex_0.0.0-nightly.ubuntu22.04_amd64.deb<span class="w"> </span>-P<span class="w"> </span>/tmp
+<div class="highlight"><span class="filename">Command</span><pre><span></span><code>wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu22.04_amd64.deb<span class="w"> </span>-P<span class="w"> </span>/tmp
 </code></pre></div>
 <p>Verify integrity of the downloaded package by verifying published <code>sha256sum</code>.  </p>
 <ul>
-<li>Go to the <a href="https://github.com/gluufederation/flex/releases">Flex Project Releases page</a> and copy the <code>sha256sum</code> value for the <code>flex_0.0.0-nightly.ubuntu22.04_amd64.deb</code> file:</li>
+<li>Go to the <a href="https://github.com/gluufederation/flex/releases">Flex Project Releases page</a> and copy the <code>sha256sum</code> value for the <code>flex_replace-flex-version-stable.ubuntu22.04_amd64.deb</code> file:</li>
 <li>Replace <code>paste-release-sha256sum</code> in the command below with the actual checksum you copied from the release page, and run the following command:
-      <div class="highlight"><span class="filename">Command</span><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;paste-release-sha256sum flex_0.0.0-nightly.ubuntu22.04_amd64.deb &#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">&#39;s/^sha256://&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>flex_0.0.0-nightly.ubuntu22.04_amd64.deb<span class="w"> </span>.sha256sum<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sha256sum<span class="w"> </span>-c<span class="w"> </span>flex_0.0.0-nightly.ubuntu22.04_amd64.deb.sha256sum
+      <div class="highlight"><span class="filename">Command</span><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;paste-release-sha256sum flex_replace-flex-version-stable.ubuntu22.04_amd64.deb &#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">&#39;s/^sha256://&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>flex_replace-flex-version-stable.ubuntu22.04_amd64.deb<span class="w"> </span>.sha256sum<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sha256sum<span class="w"> </span>-c<span class="w"> </span>flex_replace-flex-version-stable.ubuntu22.04_amd64.deb.sha256sum
 </code></pre></div></li>
 <li>Output similar to below should confirm the integrity of the downloaded package.
-    <div class="highlight"><span class="filename">Command</span><pre><span></span><code>flex_0.0.0-nightly.ubuntu22.04_amd64.deb:<span class="w"> </span>OK
+    <div class="highlight"><span class="filename">Command</span><pre><span></span><code>flex_replace-flex-version-stable.ubuntu22.04_amd64.deb:<span class="w"> </span>OK
 </code></pre></div></li>
 </ul>
 <p>Install the package</p>
-<div class="highlight"><span class="filename">Command</span><pre><span></span><code>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>/tmp/flex_0.0.0-nightly.ubuntu22.04_amd64.deb
+<div class="highlight"><span class="filename">Command</span><pre><span></span><code>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>/tmp/flex_replace-flex-version-stable.ubuntu22.04_amd64.deb
 </code></pre></div>
 <h3 id="ubuntu-2004">Ubuntu 20.04<a class="headerlink" href="#ubuntu-2004" title="Permanent link">#</a></h3>
 <p>Download the release package from the GitHub FLEX <a href="https://github.com/gluufederation/flex/releases">Releases</a></p>
-<div class="highlight"><span class="filename">Command</span><pre><span></span><code>wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/nightly/flex_0.0.0-nightly.ubuntu20.04_amd64.deb<span class="w"> </span>-P<span class="w"> </span>/tmp
+<div class="highlight"><span class="filename">Command</span><pre><span></span><code>wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu20.04_amd64.deb<span class="w"> </span>-P<span class="w"> </span>/tmp
 </code></pre></div>
 <p>Verify integrity of the downloaded package by verifying published <code>sha256sum</code>.  </p>
 <ul>
-<li>Go to the <a href="https://github.com/gluufederation/flex/releases">Flex Project Releases page</a> and copy the <code>sha256sum</code> value for the <code>flex_0.0.0-nightly.ubuntu20.04_amd64.deb</code> file:</li>
+<li>Go to the <a href="https://github.com/gluufederation/flex/releases">Flex Project Releases page</a> and copy the <code>sha256sum</code> value for the <code>flex_replace-flex-version-stable.ubuntu20.04_amd64.deb</code> file:</li>
 <li>Replace <code>paste-release-sha256sum</code> in the command below with the actual checksum you copied from the release page, and run the following command:
-      <div class="highlight"><span class="filename">Command</span><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;paste-release-sha256sum flex_0.0.0-nightly.ubuntu20.04_amd64.deb &#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">&#39;s/^sha256://&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>flex_0.0.0-nightly.ubuntu20.04_amd64.deb<span class="w"> </span>.sha256sum<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sha256sum<span class="w"> </span>-c<span class="w"> </span>flex_0.0.0-nightly.ubuntu20.04_amd64.deb.sha256sum
+      <div class="highlight"><span class="filename">Command</span><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;paste-release-sha256sum flex_replace-flex-version-stable.ubuntu20.04_amd64.deb &#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">&#39;s/^sha256://&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>flex_replace-flex-version-stable.ubuntu20.04_amd64.deb<span class="w"> </span>.sha256sum<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sha256sum<span class="w"> </span>-c<span class="w"> </span>flex_replace-flex-version-stable.ubuntu20.04_amd64.deb.sha256sum
 </code></pre></div></li>
 <li>Output similar to below should confirm the integrity of the downloaded package.
-    <div class="highlight"><span class="filename">Command</span><pre><span></span><code>flex_0.0.0-nightly.ubuntu20.04_amd64.deb:<span class="w"> </span>OK
+    <div class="highlight"><span class="filename">Command</span><pre><span></span><code>flex_replace-flex-version-stable.ubuntu20.04_amd64.deb:<span class="w"> </span>OK
 </code></pre></div></li>
 </ul>
 <p>Install the package</p>
-<div class="highlight"><span class="filename">Command</span><pre><span></span><code>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>/tmp/flex_0.0.0-nightly.ubuntu22.04_amd64.deb
+<div class="highlight"><span class="filename">Command</span><pre><span></span><code>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>/tmp/flex_replace-flex-version-stable.ubuntu22.04_amd64.deb
 </code></pre></div>
 <h3 id="run-the-setup-script">Run the setup script<a class="headerlink" href="#run-the-setup-script" title="Permanent link">#</a></h3>
 <p>Execute the setup script with command below:
