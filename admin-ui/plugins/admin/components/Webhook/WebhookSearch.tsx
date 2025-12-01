@@ -83,7 +83,7 @@ const WebhookSearch: React.FC<WebhookSearchProps> = ({
     <Box display="flex" alignItems="center" gap={2} flexWrap="wrap">
       <TextField
         size="small"
-        placeholder={t('placeholders.search_pattern') || 'Search...'}
+        placeholder={t('placeholders.search_pattern', { defaultValue: 'Search...' })}
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={handlePatternKeyDown}
@@ -116,8 +116,8 @@ const WebhookSearch: React.FC<WebhookSearchProps> = ({
       <Tooltip
         title={
           sortOrder === 'ascending'
-            ? t('options.ascending') || 'Ascending'
-            : t('options.descending') || 'Descending'
+            ? t('options.ascending', { defaultValue: 'Ascending' })
+            : t('options.descending', { defaultValue: 'Descending' })
         }
       >
         <IconButton onClick={handleSortOrderToggle} size="small" color="primary">

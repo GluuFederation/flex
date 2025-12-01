@@ -249,8 +249,10 @@ const WebhookForm: React.FC = () => {
         <Form onSubmit={formik.handleSubmit}>
           <Box sx={{ mb: 3 }}>
             <Alert severity="info" sx={{ mb: 2 }}>
-              {t('messages.webhook_form_description') ||
-                'Configure webhook to receive notifications when specific events occur.'}
+              {t('messages.webhook_form_description', {
+                defaultValue:
+                  'Configure webhook to receive notifications when specific events occur.',
+              })}
             </Alert>
           </Box>
 

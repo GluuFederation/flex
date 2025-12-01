@@ -43,10 +43,12 @@ const EmptyState: React.FC = () => {
       px={4}
     >
       <Typography variant="h6" color="textSecondary" gutterBottom>
-        {t('messages.no_webhooks_found') || 'No webhooks found'}
+        {t('messages.no_webhooks_found', { defaultValue: 'No webhooks found' })}
       </Typography>
       <Typography variant="body2" color="textSecondary">
-        {t('messages.create_first_webhook') || 'Create your first webhook to get started'}
+        {t('messages.create_first_webhook', {
+          defaultValue: 'Create your first webhook to get started',
+        })}
       </Typography>
     </Box>
   )
