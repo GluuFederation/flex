@@ -136,7 +136,13 @@ const WebhookForm: React.FC = () => {
     [t],
   )
 
-  const { values: formikValues, resetForm, setFieldValue, dirty: formikDirty } = formik
+  const {
+    values: formikValues,
+    resetForm,
+    setFieldValue,
+    setFieldError,
+    dirty: formikDirty,
+  } = formik
 
   const submitForm = useCallback(
     async (userMessage: string) => {
@@ -157,7 +163,12 @@ const WebhookForm: React.FC = () => {
       }
 
       if (formikValues.httpMethod !== 'GET' && formikValues.httpMethod !== 'DELETE') {
-        payload.httpRequestBody = JSON.parse(formikValues.httpRequestBody)
+        try {
+          payload.httpRequestBody = JSON.parse(formikValues.httpRequestBody)
+        } catch {
+          setFieldError('httpRequestBody', t('messages.invalid_json_error'))
+          return
+        }
       }
 
       if (id && selectedWebhook) {
@@ -176,6 +187,8 @@ const WebhookForm: React.FC = () => {
       closeCommitDialog,
       formikValues,
       resetForm,
+      setFieldError,
+      t,
       selectedFeatures,
       id,
       selectedWebhook,

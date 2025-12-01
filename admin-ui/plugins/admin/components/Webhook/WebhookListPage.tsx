@@ -28,7 +28,7 @@ import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useGetAllWebhooks } from 'JansConfigApi'
 import { useDeleteWebhookWithAudit } from './hooks'
-import WebhookSearch from './WebhookSearch'
+import WebhookSearch, { WebhookSortBy } from './WebhookSearch'
 import type { WebhookEntry, TableAction } from './types'
 
 const EmptyState: React.FC = () => {
@@ -68,9 +68,11 @@ const getHttpMethodColor = (
   const colorMap: Record<string, 'info' | 'success' | 'error' | 'warning'> = {
     GET: 'info',
     POST: 'success',
+    PUT: 'warning',
+    PATCH: 'warning',
     DELETE: 'error',
   }
-  return colorMap[method] || 'warning'
+  return colorMap[method] || 'default'
 }
 
 const EditIcon: React.FC<React.ComponentProps<typeof Edit>> = (props) => <Edit {...props} />
@@ -122,7 +124,7 @@ const WebhookListPage: React.FC = () => {
   const [pageNumber, setPageNumber] = useState(0)
   const [limit, setLimit] = useState(10)
   const [pattern, setPattern] = useState('')
-  const [sortBy, setSortBy] = useState('displayName')
+  const [sortBy, setSortBy] = useState<WebhookSortBy>('displayName')
   const [sortOrder, setSortOrder] = useState<'ascending' | 'descending'>('ascending')
   const [modal, setModal] = useState(false)
   const [deleteData, setDeleteData] = useState<WebhookEntry | null>(null)
@@ -210,7 +212,7 @@ const WebhookListPage: React.FC = () => {
     setPageNumber(0)
   }, [])
 
-  const handleSortByChange = useCallback((newSortBy: string) => {
+  const handleSortByChange = useCallback((newSortBy: WebhookSortBy) => {
     setSortBy(newSortBy)
     setPageNumber(0)
   }, [])
