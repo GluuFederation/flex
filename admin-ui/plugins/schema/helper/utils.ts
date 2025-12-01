@@ -1,8 +1,13 @@
 import { JansAttribute } from 'JansConfigApi'
 
-export const transformToFormValues = (
-  attribute: JansAttribute | undefined,
-): Partial<JansAttribute> => {
+// Shared constant for default attributeValidation structure
+export const DEFAULT_ATTRIBUTE_VALIDATION = {
+  maxLength: undefined,
+  regexp: undefined,
+  minLength: undefined,
+} as const
+
+export const transformToFormValues = (attribute: JansAttribute | null): Partial<JansAttribute> => {
   if (!attribute) {
     return {
       jansHideOnDiscovery: false,
@@ -10,11 +15,7 @@ export const transformToFormValues = (
       oxMultiValuedAttribute: false,
       custom: false,
       required: false,
-      attributeValidation: {
-        maxLength: undefined,
-        regexp: undefined,
-        minLength: undefined,
-      },
+      attributeValidation: { ...DEFAULT_ATTRIBUTE_VALIDATION },
     }
   }
 
@@ -22,24 +23,25 @@ export const transformToFormValues = (
     ...attribute,
     attributeValidation: attribute.attributeValidation
       ? { ...attribute.attributeValidation }
-      : {
-          maxLength: undefined,
-          regexp: undefined,
-          minLength: undefined,
-        },
+      : { ...DEFAULT_ATTRIBUTE_VALIDATION },
   }
 }
 
 export const toJansAttribute = (values: JansAttribute, validation: boolean): JansAttribute => {
-  const result = {
+  // Create a new object to avoid mutating the original
+  const result: JansAttribute = {
     ...values,
-    attributeValidation: values.attributeValidation ? { ...values.attributeValidation } : undefined,
   }
 
-  if (!validation && result.attributeValidation) {
-    delete result.attributeValidation.regexp
-    delete result.attributeValidation.maxLength
-    delete result.attributeValidation.minLength
+  if (!result.attributeValidation) {
+    result.attributeValidation = { ...DEFAULT_ATTRIBUTE_VALIDATION }
+  } else {
+    result.attributeValidation = { ...result.attributeValidation }
+  }
+
+  if (!validation) {
+    // When validation is disabled, set to undefined to indicate "no validation" to the backend
+    result.attributeValidation = undefined
   }
 
   return result

@@ -9,6 +9,8 @@ import { JansAttribute, useGetAttributesByInum } from 'JansConfigApi'
 import { AttributeItem } from '../types/AttributeListPage.types'
 import { useTranslation } from 'react-i18next'
 import { getErrorMessage } from '../../utils/errorHandler'
+import { getDefaultAttributeItem } from '../../utils/formHelpers'
+import { DEFAULT_ATTRIBUTE_VALIDATION } from '../../helper/utils'
 
 function AttributeViewPage(): JSX.Element {
   const { gid } = useParams<{ gid: string }>()
@@ -26,20 +28,18 @@ function AttributeViewPage(): JSX.Element {
     },
   })
 
+  const defaultAttribute = useMemo(() => getDefaultAttributeItem(), [])
+
   const extensibleItems = useMemo(() => {
-    if (!attribute) return null
+    if (!attribute) return defaultAttribute
     const cloned = cloneDeep(attribute) as JansAttribute
 
     if (!cloned.attributeValidation) {
-      cloned.attributeValidation = {
-        maxLength: undefined,
-        regexp: undefined,
-        minLength: undefined,
-      }
+      cloned.attributeValidation = { ...DEFAULT_ATTRIBUTE_VALIDATION }
     }
 
     return cloned
-  }, [attribute])
+  }, [attribute, defaultAttribute])
 
   function customHandleSubmit(): void {}
 
@@ -47,24 +47,6 @@ function AttributeViewPage(): JSX.Element {
     return (
       <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>{getErrorMessage(queryError, 'errors.attribute_load_failed', t)}</CardBody>
-      </Card>
-    )
-  }
-
-  if (isLoading) {
-    return (
-      <GluuLoader blocking={true}>
-        <Card className="mb-3" style={applicationStyle.mainCard}>
-          <CardBody>{t('messages.loading_attribute')}</CardBody>
-        </Card>
-      </GluuLoader>
-    )
-  }
-
-  if (!extensibleItems) {
-    return (
-      <Card className="mb-3" style={applicationStyle.mainCard}>
-        <CardBody>{t('errors.attribute_not_found')}</CardBody>
       </Card>
     )
   }

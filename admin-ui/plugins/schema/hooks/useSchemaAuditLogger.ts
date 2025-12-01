@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { logAuditUserAction } from '@/utils/AuditLogger'
 import type { SchemaPluginRootState } from '../types/shared'
 import type { JansAttribute } from 'JansConfigApi'
+import type { ModifiedFields } from '../components/types/AttributeListPage.types'
 import { UPDATE } from '@/audit/UserActionType'
 
 interface AuditLogParams {
@@ -10,11 +11,7 @@ interface AuditLogParams {
   resource: string
   message: string
   payload?: Partial<JansAttribute>
-  modifiedFields?: Record<string, unknown>
-  performedOn?: {
-    attribute_inum?: string
-    attributeName?: string
-  }
+  modifiedFields?: ModifiedFields
 }
 
 export function useSchemaAuditLogger() {
@@ -36,7 +33,6 @@ export function useSchemaAuditLogger() {
           action: params.action,
           resource: params.resource,
           message: params.message,
-          performedOn: params.performedOn,
           extra: ipAddress ? { ip_address: ipAddress } : {},
           client_id: clientId,
           payload: isUpdateAction ? undefined : params.payload,
