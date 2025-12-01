@@ -2,19 +2,30 @@ import React from 'react'
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import { useTranslation } from 'react-i18next'
 import JsonViewer from './JsonViewer'
-import PropTypes from 'prop-types'
 import customColors from '@/customColors'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 
-const JsonViewerDialog = ({
+interface JsonViewerDialogProps {
+  isOpen: boolean
+  toggle: () => void
+  data?: unknown
+  isLoading?: boolean
+  title?: string
+  theme?: 'light' | 'dark'
+  expanded?: boolean
+}
+
+const JsonViewerDialog: React.FC<JsonViewerDialogProps> = ({
   isOpen,
   toggle,
   data,
+  isLoading = false,
   title = 'JSON Viewer',
   theme = 'light',
   expanded = true,
 }) => {
   const { t } = useTranslation()
+
   return (
     <Modal isOpen={isOpen} toggle={toggle} size="lg" className="modal-outline-primary">
       <ModalHeader toggle={toggle}>
@@ -25,7 +36,16 @@ const JsonViewerDialog = ({
         {title}
       </ModalHeader>
       <ModalBody style={{ maxHeight: '70vh', overflow: 'auto' }}>
-        <JsonViewer data={data} theme={theme} expanded={expanded} />
+        {isLoading ? (
+          <div style={{ padding: '2rem', textAlign: 'center' }}>
+            <i className="fa fa-spinner fa-spin fa-2x" style={{ color: customColors.logo }} />
+            <p style={{ marginTop: '1rem', color: '#666' }}>
+              {t('messages.request_waiting_message')}
+            </p>
+          </div>
+        ) : data ? (
+          <JsonViewer data={data} theme={theme} expanded={expanded} />
+        ) : null}
       </ModalBody>
       <ModalFooter className="w-100">
         <GluuFormFooter
@@ -43,13 +63,6 @@ const JsonViewerDialog = ({
   )
 }
 
-JsonViewerDialog.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  toggle: PropTypes.func.isRequired,
-  data: PropTypes.object.isRequired,
-  title: PropTypes.string,
-  theme: PropTypes.string,
-  expanded: PropTypes.bool,
-}
+JsonViewerDialog.displayName = 'JsonViewerDialog'
 
 export default JsonViewerDialog

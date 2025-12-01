@@ -86,7 +86,7 @@ const SsaDetailPage: React.FC<SsaDetailPageProps> = ({ row }) => {
         <Col sm={6}>
           <GluuFormDetailRow
             label="fields.grant_types"
-            value={row.ssa.grant_types}
+            value={row.ssa.grant_types.join(', ')}
             doc_category={SSA}
             doc_entry="grant_types"
             isBadge

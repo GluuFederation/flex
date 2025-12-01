@@ -2,11 +2,32 @@ import React from 'react'
 import { JsonView, allExpanded, darkStyles, defaultStyles } from 'react-json-view-lite'
 import 'react-json-view-lite/dist/index.css'
 import './JsonViewer.css'
-import PropTypes from 'prop-types'
 import customColors from '@/customColors'
-const JsonViewer = ({ data, theme = 'light', expanded = true, style = {}, className = '' }) => {
+
+interface JsonViewerProps {
+  data: unknown
+  theme?: 'light' | 'dark'
+  expanded?: boolean
+  style?: React.CSSProperties
+  className?: string
+}
+
+const JsonViewer: React.FC<JsonViewerProps> = ({
+  data,
+  theme = 'light',
+  expanded = true,
+  style = {},
+  className = '',
+}) => {
   const styles = theme === 'dark' ? darkStyles : defaultStyles
   const shouldExpand = expanded ? allExpanded : undefined
+
+  const isValidJsonData = (value: unknown): value is Record<string, unknown> | unknown[] => {
+    return typeof value === 'object' && value !== null
+  }
+
+  const jsonData = isValidJsonData(data) ? data : {}
+
   return (
     <div
       className={`json-viewer ${className}`}
@@ -17,17 +38,11 @@ const JsonViewer = ({ data, theme = 'light', expanded = true, style = {}, classN
         ...style,
       }}
     >
-      <JsonView data={data} style={styles} shouldExpandNode={shouldExpand} />
+      <JsonView data={jsonData} style={styles} shouldExpandNode={shouldExpand} />
     </div>
   )
 }
 
-JsonViewer.propTypes = {
-  data: PropTypes.object.isRequired,
-  theme: PropTypes.string,
-  expanded: PropTypes.bool,
-  style: PropTypes.object,
-  className: PropTypes.string,
-}
+JsonViewer.displayName = 'JsonViewer'
 
 export default JsonViewer

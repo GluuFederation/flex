@@ -1,15 +1,4 @@
-import type { FormikProps } from 'formik'
 import type { Dayjs } from 'dayjs'
-
-type KnownSsaKeys =
-  | 'software_id'
-  | 'software_roles'
-  | 'description'
-  | 'org_id'
-  | 'grant_types'
-  | 'one_time_use'
-  | 'rotate_ssa'
-  | 'jti'
 
 export interface SsaDetails extends Record<string, unknown> {
   software_id: string
@@ -66,8 +55,8 @@ export interface SsaReduxState {
   jwt: SsaJwtResponse | null
 }
 
-export interface ModifiedFields {
-  [key: string]: boolean
-}
+type ModifiedFieldValue = string | string[] | boolean
+
+export type ModifiedFields = Record<string, ModifiedFieldValue>
 
 export type ExpirationDate = Dayjs | null

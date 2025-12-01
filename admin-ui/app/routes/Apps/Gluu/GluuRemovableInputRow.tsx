@@ -12,12 +12,12 @@ import type { InputProps } from 'reactstrap'
 type ModifiedFieldValue = string | string[] | boolean
 type FormikValues = Record<string, unknown>
 
-interface GluuRemovableInputRowProps {
+interface GluuRemovableInputRowProps<TValues extends FormikValues = FormikValues> {
   label: string
   name: string
   type?: InputProps['type']
   value?: string | boolean
-  formik: FormikProps<FormikValues>
+  formik: FormikProps<TValues>
   required?: boolean
   lsize?: number
   rsize?: number
@@ -29,7 +29,7 @@ interface GluuRemovableInputRowProps {
   setModifiedFields: React.Dispatch<React.SetStateAction<Record<string, ModifiedFieldValue>>>
 }
 
-function GluuRemovableInputRow({
+function GluuRemovableInputRow<TValues extends FormikValues = FormikValues>({
   label,
   name,
   type = 'text',
@@ -44,9 +44,9 @@ function GluuRemovableInputRow({
   isBoolean,
   modifiedFields,
   setModifiedFields,
-}: GluuRemovableInputRowProps) {
-  const currentValue = formik.values[name] as string | boolean | undefined
-  const isChecked = (formik.values[name] as boolean | undefined) ?? false
+}: GluuRemovableInputRowProps<TValues>) {
+  const currentValue = formik.values[name as keyof TValues] as string | boolean | undefined
+  const isChecked = (formik.values[name as keyof TValues] as boolean | undefined) ?? false
 
   return (
     <GluuTooltip doc_category={doc_category} isDirect={isDirect} doc_entry={name}>

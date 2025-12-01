@@ -48,7 +48,6 @@ const SSAListPage: React.FC = () => {
 
   const { logAudit } = useSsaAuditLogger()
 
-  const [loadingJti, setLoadingJti] = useState<string | null>(null)
   const [isDeleting, setIsDeleting] = useState<boolean>(false)
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme || 'light'
@@ -143,7 +142,7 @@ const SSAListPage: React.FC = () => {
           handleViewSsa(rowData)
         }
       },
-      disabled: loadingJti === rowData.ssa.jti,
+      disabled: getSsaJwtMutation.isPending,
     }))
     myActions.push((rowData: SsaData) => ({
       icon: () => <DownloadOutlined />,
@@ -157,7 +156,7 @@ const SSAListPage: React.FC = () => {
           handleDownloadSsa(rowData)
         }
       },
-      disabled: loadingJti === rowData.ssa.jti,
+      disabled: getSsaJwtMutation.isPending,
     }))
   }
 
@@ -204,22 +203,22 @@ const SSAListPage: React.FC = () => {
     }
   }
 
-  const handleViewSsa = async (row: SsaData): Promise<void> => {
-    setLoadingJti(row.ssa.jti)
-    try {
-      const fetchedJwtData = await getSsaJwtMutation.mutateAsync(row.ssa.jti)
-      setJwtData(fetchedJwtData)
-      toggleSsaDialog()
-    } catch (error) {
-      console.error('Failed to fetch SSA JWT:', error)
-      dispatch(updateToast(true, 'error'))
-    } finally {
-      setLoadingJti(null)
-    }
+  const handleViewSsa = (row: SsaData): void => {
+    setJwtData(null)
+    setSsaDialogOpen(true)
+    getSsaJwtMutation.mutate(row.ssa.jti, {
+      onSuccess: (fetchedJwtData) => {
+        setJwtData(fetchedJwtData)
+      },
+      onError: (error) => {
+        console.error('Failed to fetch SSA JWT:', error)
+        dispatch(updateToast(true, 'error'))
+        setSsaDialogOpen(false)
+      },
+    })
   }
 
   const handleDownloadSsa = async (row: SsaData): Promise<void> => {
-    setLoadingJti(row.ssa.jti)
     try {
       const jwtData = await getSsaJwtMutation.mutateAsync(row.ssa.jti)
       const blob = new Blob([jwtData.ssa], { type: 'text/plain' })
@@ -246,8 +245,6 @@ const SSAListPage: React.FC = () => {
     } catch (error) {
       console.error('Failed to download SSA JWT:', error)
       dispatch(updateToast(true, 'error'))
-    } finally {
-      setLoadingJti(null)
     }
   }
 
@@ -296,11 +293,12 @@ const SSAListPage: React.FC = () => {
             feature={adminUiFeatures.ssa_delete}
           />
         )}
-        {jwtData && ssaDialogOpen && (
+        {ssaDialogOpen && (
           <JsonViewerDialog
             isOpen={ssaDialogOpen}
             toggle={toggleSsaDialog}
             data={jwtData}
+            isLoading={getSsaJwtMutation.isPending}
             title={`JSON View`}
             theme="light"
             expanded={true}
