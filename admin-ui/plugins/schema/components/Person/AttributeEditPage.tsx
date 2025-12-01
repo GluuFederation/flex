@@ -11,6 +11,8 @@ import type {
   AttributeItem,
   SubmitData,
 } from 'Plugins/schema/components/types/AttributeListPage.types'
+import { getDefaultAttributeItem } from '../../utils/formHelpers'
+import { DEFAULT_ATTRIBUTE_VALIDATION } from '../../helper/utils'
 import {
   JansAttribute,
   useGetAttributesByInum,
@@ -55,30 +57,28 @@ function AttributeEditPage(): JSX.Element {
         queryClient.invalidateQueries({ queryKey: getGetAttributesQueryKey() })
         queryClient.invalidateQueries({ queryKey: getGetAttributesByInumQueryKey(inum) })
       },
-      onError: (error: unknown) => {
+      onError: (error: Error | Record<string, never>) => {
         const errorMessage = getErrorMessage(error, 'errors.attribute_update_failed', t)
         dispatch(updateToast(true, 'error', errorMessage))
       },
     },
   })
 
+  const defaultAttribute = useMemo(() => getDefaultAttributeItem(), [])
+
   const extensibleItems = useMemo(() => {
-    if (!attribute) return null
+    if (!attribute) return defaultAttribute
     const cloned = cloneDeep(attribute) as JansAttribute
 
     if (!cloned.attributeValidation) {
-      cloned.attributeValidation = {
-        maxLength: undefined,
-        regexp: undefined,
-        minLength: undefined,
-      }
+      cloned.attributeValidation = { ...DEFAULT_ATTRIBUTE_VALIDATION }
     }
 
     return cloned
-  }, [attribute])
+  }, [attribute, defaultAttribute])
 
   const customHandleSubmit = useCallback(
-    ({ data, userMessage, modifiedFields, performedOn }: SubmitData): void => {
+    ({ data, userMessage, modifiedFields }: SubmitData): void => {
       if (data) {
         putAttributeMutation.mutate(
           { data: data as JansAttribute },
@@ -109,16 +109,6 @@ function AttributeEditPage(): JSX.Element {
           {getErrorMessage(queryError, 'errors.attribute_load_failed', t)}
         </CardBody>
       </Card>
-    )
-  }
-
-  if (!extensibleItems) {
-    return (
-      <GluuLoader blocking={isLoading}>
-        <Card className="mb-3" style={applicationStyle.mainCard}>
-          <CardBody>{t('messages.loading_attribute')}</CardBody>
-        </Card>
-      </GluuLoader>
     )
   }
 

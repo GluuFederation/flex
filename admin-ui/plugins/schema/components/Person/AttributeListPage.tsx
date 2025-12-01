@@ -79,8 +79,8 @@ function AttributeListPage(): JSX.Element {
   const [pageNumber, setPageNumber] = useState<number>(0)
   const [pattern, setPattern] = useState<string | null>(null)
   const [startIndex, setStartIndex] = useState<number>(0)
-  const [status, setStatus] = useState<string | undefined>(undefined)
-  const [sortBy, setSortBy] = useState<string | undefined>(undefined)
+  const [status, setStatus] = useState<string | null>(null)
+  const [sortBy, setSortBy] = useState<string | null>(null)
   const [sortOrder, setSortOrder] = useState<'ascending' | 'descending'>('ascending')
 
   const theme = useContext(ThemeContext)
@@ -90,14 +90,14 @@ function AttributeListPage(): JSX.Element {
 
   const { data: attributesData, isLoading } = useGetAttributes({
     limit,
-    pattern: pattern || undefined,
+    ...(pattern && { pattern }),
     startIndex,
-    status: status || undefined,
-    sortBy: sortBy || undefined,
-    sortOrder: sortBy ? sortOrder : undefined,
+    ...(status && { status }),
+    ...(sortBy && { sortBy }),
+    ...(sortBy && sortOrder && { sortOrder }),
   })
 
-  const attributes = attributesData?.entries || []
+  const attributes = (attributesData?.entries || []) as unknown as JansAttribute[]
   const totalItems = attributesData?.totalEntriesCount || 0
 
   const deleteAttributeMutation = useDeleteAttributesByInum({
@@ -106,7 +106,7 @@ function AttributeListPage(): JSX.Element {
         dispatch(updateToast(true, 'success'))
         queryClient.invalidateQueries({ queryKey: getGetAttributesQueryKey() })
       },
-      onError: (error: unknown) => {
+      onError: (error: Error | Record<string, never>) => {
         const errorMessage = getErrorMessage(error, 'errors.attribute_delete_failed', t)
         dispatch(updateToast(true, 'error', errorMessage))
       },
@@ -155,14 +155,14 @@ function AttributeListPage(): JSX.Element {
 
   const handleStatusChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = event.target.value
-    setStatus(value === 'all' ? undefined : value.toUpperCase())
+    setStatus(value === 'all' ? null : value.toUpperCase())
     setPageNumber(0)
     setStartIndex(0)
   }
 
   const handleSortByChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = event.target.value
-    setSortBy(value === 'none' ? undefined : value)
+    setSortBy(value === 'none' ? null : value)
     setPageNumber(0)
     setStartIndex(0)
   }
@@ -173,8 +173,8 @@ function AttributeListPage(): JSX.Element {
 
   const handleClearFilters = (): void => {
     setPattern(null)
-    setStatus(undefined)
-    setSortBy(undefined)
+    setStatus(null)
+    setSortBy(null)
     setSortOrder('ascending')
     setPageNumber(0)
     setStartIndex(0)
@@ -482,7 +482,7 @@ function AttributeListPage(): JSX.Element {
               Pagination: PaginationWrapper,
             }}
             columns={columns}
-            data={attributes as unknown as JansAttribute[]}
+            data={attributes}
             isLoading={isLoading}
             title=""
             actions={attributeActions}
