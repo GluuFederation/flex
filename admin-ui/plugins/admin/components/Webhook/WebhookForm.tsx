@@ -57,9 +57,11 @@ const WebhookForm: React.FC = () => {
   const { data: featuresData, isLoading: loadingFeatures } = useGetAllFeatures()
   const features = useMemo(() => featuresData || [], [featuresData])
 
+  // Only fetch webhook features when editing an existing webhook (id is present)
+  // The 'skip' placeholder is never used as the query is disabled when id is falsy
   const { data: webhookFeaturesData, isLoading: loadingWebhookFeatures } =
-    useGetFeaturesByWebhookId(id || '', {
-      query: { enabled: !!id },
+    useGetFeaturesByWebhookId(id ?? 'skip', {
+      query: { enabled: Boolean(id) },
     })
 
   const initialSelectedFeatures = useMemo(() => {
@@ -127,7 +129,7 @@ const WebhookForm: React.FC = () => {
           setFieldError('httpRequestBody', t('messages.invalid_json_error'))
         }
       }
-      if (!isValid(values.url)) {
+      if (values.url && !isValid(values.url)) {
         hasError = true
         setFieldError('url', t('messages.invalid_url_error'))
       }
@@ -171,17 +173,22 @@ const WebhookForm: React.FC = () => {
         }
       }
 
-      if (id && selectedWebhook) {
-        payload.inum = selectedWebhook.inum
-        payload.dn = selectedWebhook.dn
-        payload.baseDn = selectedWebhook.baseDn
-        await updateWebhook(payload, userMessage)
-      } else {
-        await createWebhook(payload, userMessage)
-      }
+      try {
+        if (id && selectedWebhook) {
+          payload.inum = selectedWebhook.inum
+          payload.dn = selectedWebhook.dn
+          payload.baseDn = selectedWebhook.baseDn
+          await updateWebhook(payload, userMessage)
+        } else {
+          await createWebhook(payload, userMessage)
+        }
 
-      resetForm({ values: formikValues })
-      setBaselineSelectedFeatures([...selectedFeatures])
+        resetForm({ values: formikValues })
+        setBaselineSelectedFeatures([...selectedFeatures])
+      } catch (error) {
+        // Hooks already surface user-facing errors via toast; keep this for diagnostics
+        console.error('Failed to submit webhook form:', error)
+      }
     },
     [
       closeCommitDialog,
