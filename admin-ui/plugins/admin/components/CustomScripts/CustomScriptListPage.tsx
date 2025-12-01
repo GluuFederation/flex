@@ -550,9 +550,9 @@ const CustomScriptListPage: React.FC = () => {
               components={{
                 Container: (props) => <Paper {...props} elevation={0} />,
               }}
-              detailPanel={(rowData) => (
+              detailPanel={({ rowData }: { rowData: ScriptTableRow }) => (
                 <Box sx={{ p: 2, backgroundColor: themeColors.lightBackground }}>
-                  <CustomScriptDetailPage row={rowData.rowData} />
+                  <CustomScriptDetailPage row={rowData} />
                 </Box>
               )}
               localization={{
@@ -592,7 +592,10 @@ const CustomScriptListPage: React.FC = () => {
           <GluuDialog
             row={itemToDelete}
             name={itemToDelete.name}
-            handler={() => setModal(false)}
+            handler={() => {
+              setModal(false)
+              setItemToDelete(null)
+            }}
             modal={modal}
             subject="script"
             onAccept={handleDeleteConfirm}
