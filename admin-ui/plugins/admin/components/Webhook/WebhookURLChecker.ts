@@ -12,7 +12,7 @@ const NOT_ALLOWED: string[] = [
   'https://localhost',
 ]
 
-const PATTERN = /^(https?:\/\/)?([\w-]+\.)+[\w-]+(:\d+)?(\/[\w-.]*)*$/i
+const PATTERN = /^(https?:\/\/)?([\w-]+\.)+[\w-]+(:\d+)?(\/([\w\-.]|\$\{[\w]+\})*)*$/i
 
 const isAllowed = (url: string): boolean => {
   for (const blocked of NOT_ALLOWED) {
