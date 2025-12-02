@@ -1,3 +1,5 @@
+import type { HealthServiceKey, HealthStatusResponse } from 'Redux/features/healthSlice'
+
 // Sidebar-specific type definitions
 export interface MenuItem {
   icon?: string
@@ -26,9 +28,10 @@ export interface ThemeContextState {
   }
 }
 
-// Visibility and styling types for sidebar
-export interface VisibilityConditions {
-  readonly [key: string]: string
+type HealthVisibilityPath = '/jans-lock' | '/fido/fidomanagement' | '/scim' | '/saml'
+
+export type VisibilityConditions = {
+  readonly [P in HealthVisibilityPath]: HealthServiceKey
 }
 
 export interface IconStyles {
@@ -37,13 +40,6 @@ export interface IconStyles {
 
 export interface MenuIconMap {
   readonly [key: string]: React.ReactNode
-}
-
-// Sidebar state interface
-export interface SidebarState {
-  health: Record<string, string>
-  logoutAuditInFlight: boolean
-  logoutAuditSucceeded: boolean | null
 }
 
 // Root state interface for sidebar selectors
@@ -55,7 +51,7 @@ export interface SidebarRootState {
     permissions?: string[]
   }
   healthReducer: {
-    health: Record<string, string>
+    health: HealthStatusResponse
   }
   logoutAuditReducer: {
     logoutAuditInFlight: boolean

@@ -17,6 +17,8 @@ import CheckIcon from 'Images/svg/check.svg'
 import CrossIcon from 'Images/svg/cross.svg'
 import SetTitle from 'Utils/SetTitle'
 import styles from './styles'
+import type { HealthState } from 'Redux/features/healthSlice'
+
 import { formatDate } from 'Utils/Util'
 import UsersIcon from '@/components/SVG/menu/Users'
 import Administrator from '@/components/SVG/menu/Administrator'
@@ -29,6 +31,9 @@ import customColors from '@/customColors'
 import { useCedarling } from '@/cedarling'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
+interface DashboardHealthRootState {
+  healthReducer: HealthState
+}
 // Constants moved outside component for better performance
 const FETCHING_LICENSE_DETAILS = 'Fetch license details'
 
@@ -54,9 +59,11 @@ function DashboardPage() {
   const { isUserInfoFetched } = useSelector((state: any) => state.authReducer)
   const totalClientsEntries = useSelector((state: any) => state.initReducer.totalClientsEntries)
   const license = useSelector((state: any) => state.licenseDetailsReducer.item)
-  const serverStatus = useSelector((state: any) => state.healthReducer.serverStatus)
-  const serverHealth = useSelector((state: any) => state.healthReducer.health)
-  const dbStatus = useSelector((state: any) => state.healthReducer.dbStatus)
+  const serverStatus = useSelector(
+    (state: DashboardHealthRootState) => state.healthReducer.serverStatus,
+  )
+  const serverHealth = useSelector((state: DashboardHealthRootState) => state.healthReducer.health)
+  const dbStatus = useSelector((state: DashboardHealthRootState) => state.healthReducer.dbStatus)
   const access_token = useSelector((state: any) => state.authReducer.token?.access_token)
   const permissions = useSelector((state: any) => state.authReducer.permissions)
 
