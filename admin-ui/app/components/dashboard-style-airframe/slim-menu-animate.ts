@@ -1,125 +1,90 @@
-// @ts-nocheck
-// Default import fix
-const anime = require('animejs').default ? require('animejs').default : require('animejs')
+import anime from 'animejs'
 
 const ANIMATION_DURATION = 150
 const ANIMATION_STEP_OFFSET = 0.1
 
-function SlimMenuAnimate(config) {
-  const _this = this
+export default class SlimMenuAnimate {
+  private _sidebarElement: HTMLElement | null = null
+  private _triggerElements: HTMLElement[] = []
 
-  this.mouseInHandler = function () {
-    if (_this._animationsEnabled()) {
-      const triggerElement = this
-      const subMenuElement = triggerElement.querySelector(':scope > .sidebar-submenu')
+  private mouseInHandler = (event: Event): void => {
+    if (this._animationsEnabled()) {
+      const triggerElement = event.currentTarget as HTMLElement
+      const subMenuElement = triggerElement.querySelector(
+        ':scope > .sidebar-submenu',
+      ) as HTMLElement | null
 
-      const timeline = anime
-        .timeline({
-          targets: subMenuElement,
-          duration: ANIMATION_DURATION,
-          begin: function () {
-            subMenuElement.style.transformOrigin = 'top left'
-          },
-        })
-        .add({
-          opacity: [0, 1],
-          easing: 'easeOutCubic',
-        })
-        .add(
-          {
-            scale: [0.8, 1],
-            translateY: [-30, 0],
-            translateX: [-30, 0],
-            easing: 'easeOutElastic(1.5, 0.8)',
-          },
-          ANIMATION_DURATION * ANIMATION_STEP_OFFSET,
-        )
-
-      // Reset Style on Finish
-      timeline.finished.then(function () {
-        subMenuElement.style.opacity = ''
-        subMenuElement.style.transform = ''
-        subMenuElement.style.transformOrigin = ''
-      })
-    }
-  }
-  this.mouseOutHandler = function () {
-    if (_this._animationsEnabled()) {
-      const triggerElement = this
-      const subMenuElement = triggerElement.querySelector(':scope > .sidebar-submenu')
-      return
-      const timeline = anime
-        .timeline({
-          targets: subMenuElement,
-          duration: ANIMATION_DURATION,
-          begin: function () {
-            subMenuElement.style.display = 'block'
-            subMenuElement.style.height = 'auto'
-            subMenuElement.style.transformOrigin = 'top left'
-          },
-        })
-        .add({
-          scale: [1, 0.8],
-          translateY: [0, -30],
-          translateX: [0, -30],
-          easing: 'easeOutElastic(1.5, 0.8)',
-        })
-        .add(
-          {
-            opacity: [1, 0],
+      if (subMenuElement) {
+        const timeline = anime
+          .timeline({
+            targets: subMenuElement,
+            duration: ANIMATION_DURATION,
+            begin: () => {
+              subMenuElement.style.transformOrigin = 'top left'
+            },
+          })
+          .add({
+            opacity: [0, 1],
             easing: 'easeOutCubic',
-          },
-          ANIMATION_DURATION * ANIMATION_STEP_OFFSET,
-        )
+          })
+          .add(
+            {
+              scale: [0.8, 1],
+              translateY: [-30, 0],
+              translateX: [-30, 0],
+              easing: 'easeOutElastic(1.5, 0.8)',
+            },
+            ANIMATION_DURATION * ANIMATION_STEP_OFFSET,
+          )
 
-      // Reset Style on Finish
-      timeline.finished.then(function () {
-        subMenuElement.style.opacity = ''
-        subMenuElement.style.transform = ''
-        subMenuElement.style.transformOrigin = ''
-        subMenuElement.style.display = ''
-        subMenuElement.style.height = ''
-      })
+        // Reset Style on Finish
+        timeline.finished.then(() => {
+          subMenuElement.style.opacity = ''
+          subMenuElement.style.transform = ''
+          subMenuElement.style.transformOrigin = ''
+        })
+      }
     }
   }
-}
 
-SlimMenuAnimate.prototype._animationsEnabled = function () {
-  return (
-    this._sidebarElement.classList.contains('sidebar--animations-enabled') &&
-    this._sidebarElement.classList.contains('sidebar--slim') &&
-    this._sidebarElement.classList.contains('sidebar--collapsed')
-  )
-}
+  private mouseOutHandler = (): void => {
+    // Mouse out animation intentionally disabled
+  }
 
-/**
- * Assigns the parent sidebar element, and attaches hover listeners
- *
- * @param {HTMLElement} parentElement SidebarMenu parent
- */
-SlimMenuAnimate.prototype.assignSidebarElement = function (sidebarElement) {
-  const _this = this
-  _this._sidebarElement = sidebarElement
-  _this._triggerElements = Array.from(
-    _this._sidebarElement.querySelectorAll(
-      '.sidebar-menu .sidebar-menu__entry.sidebar-menu__entry--nested',
-    ),
-  )
-  _this._triggerElements.forEach(function (triggerElement) {
-    triggerElement.addEventListener('mouseenter', _this.mouseInHandler)
-    triggerElement.addEventListener('mouseleave', _this.mouseOutHandler)
-  })
-}
+  private _animationsEnabled(): boolean {
+    if (!this._sidebarElement) return false
 
-/**
- * Disconnects the listeners
- */
-SlimMenuAnimate.prototype.destroy = function () {
-  const _this = this
-  _this._triggerElements.forEach(function (triggerElement) {
-    triggerElement.removeEventListener('mouseenter', _this.mouseInHandler)
-    triggerElement.removeEventListener('mouseleave', _this.mouseOutHandler)
-  })
-}
+    return (
+      this._sidebarElement.classList.contains('sidebar--animations-enabled') &&
+      this._sidebarElement.classList.contains('sidebar--slim') &&
+      this._sidebarElement.classList.contains('sidebar--collapsed')
+    )
+  }
 
-module.exports = SlimMenuAnimate
+  /**
+   * Assigns the parent sidebar element, and attaches hover listeners
+   */
+  assignSidebarElement(sidebarElement: HTMLElement): void {
+    this._sidebarElement = sidebarElement
+    this._triggerElements = Array.from(
+      this._sidebarElement.querySelectorAll(
+        '.sidebar-menu .sidebar-menu__entry.sidebar-menu__entry--nested',
+      ),
+    ) as HTMLElement[]
+
+    this._triggerElements.forEach((triggerElement) => {
+      triggerElement.addEventListener('mouseenter', this.mouseInHandler)
+      triggerElement.addEventListener('mouseleave', this.mouseOutHandler)
+    })
+  }
+
+  /**
+   * Disconnects the listeners
+   */
+  destroy(): void {
+    this._triggerElements.forEach((triggerElement) => {
+      triggerElement.removeEventListener('mouseenter', this.mouseInHandler)
+      triggerElement.removeEventListener('mouseleave', this.mouseOutHandler)
+    })
+  }
+}

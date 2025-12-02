@@ -9,7 +9,6 @@ import {
 } from '@mui/icons-material'
 import {
   Paper,
-  TablePagination,
   Box,
   TextField,
   MenuItem,
@@ -63,8 +62,6 @@ const CustomScriptListPage: React.FC = () => {
   } = useCedarling()
 
   const pageSize = getPagingSize()
-  const [limit, setLimit] = useState<number>(pageSize)
-  const [pageNumber, setPageNumber] = useState<number>(0)
   const [pattern, setPattern] = useState<string>('')
   const [scriptType, setScriptType] = useState<string>(DEFAULT_SCRIPT_TYPE)
   const [sortBy, setSortBy] = useState<string>('')
@@ -96,16 +93,13 @@ const CustomScriptListPage: React.FC = () => {
     authorizeHelper(scriptScopes)
   }, [authorizeHelper, scriptScopes])
 
-  const startIndex = pageNumber * limit
   const {
     data: scriptsResponse,
     isLoading,
     error,
     refetch,
   } = useCustomScriptsByType(scriptType, {
-    limit,
     pattern: pattern || undefined,
-    startIndex,
     sortBy: sortBy || undefined,
     sortOrder: sortBy ? sortOrder : undefined,
   })
@@ -115,7 +109,6 @@ const CustomScriptListPage: React.FC = () => {
   const deleteMutation = useDeleteCustomScript()
 
   const scripts = (scriptsResponse?.entries || []) as ScriptTableRow[]
-  const totalItems = scriptsResponse?.totalEntriesCount || 0
 
   SetTitle(t('titles.scripts'))
 
@@ -171,42 +164,32 @@ const CustomScriptListPage: React.FC = () => {
 
   const handleSearchClear = useCallback(() => {
     setPattern('')
-    setPageNumber(0)
   }, [])
 
   const handleTypeChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setScriptType(event.target.value)
-    setPageNumber(0)
   }, [])
 
   const handlePatternChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setPattern(event.target.value)
   }, [])
 
-  const handlePatternKeyDown = useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'Enter') {
-      setPageNumber(0)
-    }
-  }, [])
+  const handlePatternKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (event.key === 'Enter') {
+        refetch()
+      }
+    },
+    [refetch],
+  )
 
   const handleSortByChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value
     setSortBy(value)
-    setPageNumber(0)
   }, [])
 
   const handleSortOrderToggle = useCallback(() => {
     setSortOrder((prev) => (prev === 'ascending' ? 'descending' : 'ascending'))
-    setPageNumber(0)
-  }, [])
-
-  const handlePageChange = useCallback((_: unknown, page: number) => {
-    setPageNumber(page)
-  }, [])
-
-  const handleRowsPerPageChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setLimit(parseInt(event.target.value, 10))
-    setPageNumber(0)
   }, [])
 
   const columns: Column<ScriptTableRow>[] = useMemo(
@@ -394,7 +377,7 @@ const CustomScriptListPage: React.FC = () => {
       search: false,
       idSynonym: 'inum',
       selection: false,
-      pageSize: limit,
+      pageSize: pageSize,
       headerStyle: {
         backgroundColor: themeColors.background,
         color: customColors.white,
@@ -412,9 +395,8 @@ const CustomScriptListPage: React.FC = () => {
         }
       },
       actionsColumnIndex: -1,
-      paging: false,
     }),
-    [limit, themeColors],
+    [pageSize, themeColors],
   )
 
   if (error) {
@@ -539,53 +521,27 @@ const CustomScriptListPage: React.FC = () => {
             </Stack>
           </Box>
 
-          <Box>
-            <MaterialTable
-              columns={columns}
-              data={scripts}
-              isLoading={isLoading || deleteMutation.isPending}
-              title=""
-              actions={actions}
-              options={tableOptions}
-              components={{
-                Container: (props) => <Paper {...props} elevation={0} />,
-              }}
-              detailPanel={({ rowData }: { rowData: ScriptTableRow }) => (
-                <Box sx={{ p: 2, backgroundColor: themeColors.lightBackground }}>
-                  <CustomScriptDetailPage row={rowData} />
-                </Box>
-              )}
-              localization={{
-                body: {
-                  emptyDataSourceMessage: t('messages.no_scripts_found'),
-                },
-              }}
-            />
-            <TablePagination
-              component="div"
-              count={totalItems}
-              page={pageNumber}
-              onPageChange={handlePageChange}
-              rowsPerPage={limit}
-              onRowsPerPageChange={handleRowsPerPageChange}
-              rowsPerPageOptions={[5, 10, 25, 50, 100]}
-              showFirstButton
-              showLastButton
-              labelRowsPerPage={t('fields.rows_per_page')}
-              labelDisplayedRows={({ from, to, count }) =>
-                `${from}-${to} ${t('fields.of')} ${count !== -1 ? count : `${t('fields.more_than')} ${to}`}`
-              }
-              sx={{
-                'borderTop': `1px solid ${themeColors.borderColor ?? '#e0e0e0'}`,
-                'backgroundColor': themeColors.background,
-                'color': customColors.white,
-                '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows, & .MuiTablePagination-select, & .MuiSelect-icon, & .MuiIconButton-root':
-                  {
-                    color: customColors.white,
-                  },
-              }}
-            />
-          </Box>
+          <MaterialTable
+            columns={columns}
+            data={scripts}
+            isLoading={isLoading || deleteMutation.isPending}
+            title=""
+            actions={actions}
+            options={tableOptions}
+            components={{
+              Container: (props) => <Paper {...props} elevation={0} />,
+            }}
+            detailPanel={({ rowData }: { rowData: ScriptTableRow }) => (
+              <Box sx={{ p: 2, backgroundColor: themeColors.lightBackground }}>
+                <CustomScriptDetailPage row={rowData} />
+              </Box>
+            )}
+            localization={{
+              body: {
+                emptyDataSourceMessage: t('messages.no_scripts_found'),
+              },
+            }}
+          />
         </GluuViewWrapper>
 
         {canDelete && itemToDelete && (
