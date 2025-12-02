@@ -75,7 +75,7 @@ export default class SideMenuAnimate {
 
   destroy(): void {
     if (this.activeAnimation) {
-      anime.remove(this.activeAnimation)
+      this.activeAnimation.pause()
     }
     this._nodesObserver.disconnect()
   }

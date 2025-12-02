@@ -46,12 +46,12 @@ export default class SlimSidebarAnimate {
     const sidebarElement = mutation.target as HTMLElement
     const layoutSidebarWrap = sidebarElement.closest('.layout__sidebar') as HTMLElement | null
     const sidebarMenu = sidebarElement.querySelector('.sidebar-menu') as HTMLElement | null
-    const sidebarLabels = sidebarElement.querySelectorAll(
+    const sidebarLabels = sidebarElement.querySelectorAll<HTMLElement>(
       '.sidebar-menu__entry__link > span, .sidebar-submenu__entry__link > span',
     )
-    const sidebarIcons = sidebarElement.querySelectorAll('.sidebar-menu__entry__icon')
-    const sidebarHideSlim = sidebarElement.querySelectorAll('.sidebar__hide-slim')
-    const sidebarShowSlim = sidebarElement.querySelectorAll('.sidebar__show-slim')
+    const sidebarIcons = sidebarElement.querySelectorAll<HTMLElement>('.sidebar-menu__entry__icon')
+    const sidebarHideSlim = sidebarElement.querySelectorAll<HTMLElement>('.sidebar__hide-slim')
+    const sidebarShowSlim = sidebarElement.querySelectorAll<HTMLElement>('.sidebar__show-slim')
 
     const isSidebarSlim = sidebarElement.classList.contains('sidebar--slim')
     const isSidebarCollapsed = sidebarElement.classList.contains('sidebar--collapsed')
@@ -99,10 +99,10 @@ export default class SlimSidebarAnimate {
   private animateToCollapsed(
     sidebarElement: HTMLElement,
     sidebarMenu: HTMLElement | null,
-    sidebarLabels: NodeListOf<Element>,
-    sidebarIcons: NodeListOf<Element>,
-    sidebarHideSlim: NodeListOf<Element>,
-    sidebarShowSlim: NodeListOf<Element>,
+    sidebarLabels: NodeListOf<HTMLElement>,
+    sidebarIcons: NodeListOf<HTMLElement>,
+    sidebarHideSlim: NodeListOf<HTMLElement>,
+    sidebarShowSlim: NodeListOf<HTMLElement>,
   ): void {
     const { config } = this
 
@@ -122,7 +122,7 @@ export default class SlimSidebarAnimate {
           opacity: 0,
           complete: () => {
             sidebarLabels.forEach((label) => {
-              ;(label as HTMLElement).removeAttribute('style')
+              label.removeAttribute('style')
             })
           },
         },
@@ -147,12 +147,12 @@ export default class SlimSidebarAnimate {
           sidebarElement.classList.remove('sidebar--animate-slim--progress')
           sidebarElement.removeAttribute('style')
           sidebarHideSlim.forEach((element) => {
-            ;(element as HTMLElement).removeAttribute('style')
+            element.removeAttribute('style')
           })
         },
         complete: () => {
           sidebarIcons.forEach((icon) => {
-            ;(icon as HTMLElement).removeAttribute('style')
+            icon.removeAttribute('style')
           })
         },
       })
@@ -162,7 +162,7 @@ export default class SlimSidebarAnimate {
           opacity: [0, 1],
           complete: () => {
             sidebarShowSlim.forEach((element) => {
-              ;(element as HTMLElement).removeAttribute('style')
+              element.removeAttribute('style')
             })
           },
         },
@@ -174,8 +174,8 @@ export default class SlimSidebarAnimate {
     })
     this.timelineStage2.finished.then(() => {
       this.isAnimating = false
-      sidebarElement.querySelectorAll('.sidebar__section').forEach((section) => {
-        ;(section as HTMLElement).removeAttribute('style')
+      sidebarElement.querySelectorAll<HTMLElement>('.sidebar__section').forEach((section) => {
+        section.removeAttribute('style')
       })
     })
     this.timelineStage1.play()
@@ -185,10 +185,10 @@ export default class SlimSidebarAnimate {
     sidebarElement: HTMLElement,
     layoutSidebarWrap: HTMLElement | null,
     sidebarMenu: HTMLElement | null,
-    sidebarLabels: NodeListOf<Element>,
-    sidebarIcons: NodeListOf<Element>,
-    sidebarHideSlim: NodeListOf<Element>,
-    sidebarShowSlim: NodeListOf<Element>,
+    sidebarLabels: NodeListOf<HTMLElement>,
+    sidebarIcons: NodeListOf<HTMLElement>,
+    sidebarHideSlim: NodeListOf<HTMLElement>,
+    sidebarShowSlim: NodeListOf<HTMLElement>,
     animationHalfTime: number,
   ): void {
     const { config } = this
@@ -222,13 +222,13 @@ export default class SlimSidebarAnimate {
         translateX: [0, 0],
         complete: () => {
           sidebarIcons.forEach((icon) => {
-            ;(icon as HTMLElement).removeAttribute('style')
+            icon.removeAttribute('style')
           })
           sidebarShowSlim.forEach((icon) => {
-            ;(icon as HTMLElement).removeAttribute('style')
+            icon.removeAttribute('style')
           })
           sidebarLabels.forEach((label) => {
-            ;(label as HTMLElement).style.opacity = '0'
+            label.style.opacity = '0'
           })
           sidebarElement.classList.remove('sidebar--collapsed')
           sidebarMenu?.classList.remove('sidebar-menu--slim')
@@ -250,7 +250,7 @@ export default class SlimSidebarAnimate {
           opacity: [0, 1],
           complete: () => {
             sidebarLabels.forEach((label) => {
-              ;(label as HTMLElement).removeAttribute('style')
+              label.removeAttribute('style')
             })
           },
         },
@@ -262,8 +262,8 @@ export default class SlimSidebarAnimate {
           duration: animationHalfTime,
           opacity: [0, 1],
           complete: () => {
-            sidebarHideSlim.forEach((label) => {
-              ;(label as HTMLElement).removeAttribute('style')
+            sidebarHideSlim.forEach((element) => {
+              element.removeAttribute('style')
             })
           },
         },
@@ -277,8 +277,8 @@ export default class SlimSidebarAnimate {
     })
     this.timelineStage2.finished.then(() => {
       this.isAnimating = false
-      sidebarElement.querySelectorAll('.sidebar__section').forEach((section) => {
-        ;(section as HTMLElement).removeAttribute('style')
+      sidebarElement.querySelectorAll<HTMLElement>('.sidebar__section').forEach((section) => {
+        section.removeAttribute('style')
       })
       layoutSidebarWrap?.classList.remove('layout__sidebar--slim')
     })
