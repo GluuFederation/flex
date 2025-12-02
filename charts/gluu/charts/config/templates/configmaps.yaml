@@ -203,6 +203,7 @@ data:
   | squote
   }}
   {{- end }}
+  CN_CASA_ADMIN_ENABLED: {{ .Values.global.casa.adminEnabled | quote }}
   # delete Duo script (https://github.com/GluuFederation/flex/issues/1120) by disabling the feature
   CN_DUO_ENABLED: "false"
   CN_SQL_PASSWORD_FILE: {{ .Values.global.cnSqlPasswordFile }}

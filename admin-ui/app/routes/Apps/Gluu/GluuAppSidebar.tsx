@@ -46,6 +46,7 @@ const VISIBILITY_CONDITIONS: VisibilityConditions = {
   '/jans-lock': 'jans-lock',
   '/fido/fidomanagement': 'jans-fido2',
   '/scim': 'jans-scim',
+  '/saml': 'keycloak',
 } as const
 
 const ICON_STYLES: IconStyles = {
@@ -74,7 +75,7 @@ const MENU_ICON_MAP: MenuIconMap = {
 // Type definitions for local state
 interface RootState extends SidebarRootState {}
 
-const selectHealth = (state: RootState): Record<string, string> => state.healthReducer.health
+const selectHealth = (state: RootState) => state.healthReducer.health
 const selectLogoutAuditSucceeded = (state: RootState): boolean | null =>
   state.logoutAuditReducer.logoutAuditSucceeded
 
@@ -156,7 +157,9 @@ function GluuAppSidebar(): JSX.Element {
     }
 
     return menus.filter((menu: PluginMenu): boolean => {
-      const healthKey = VISIBILITY_CONDITIONS[menu.path || '']
+      const healthKey = menu.path
+        ? VISIBILITY_CONDITIONS[menu.path as keyof VisibilityConditions]
+        : undefined
       return healthKey ? health?.[healthKey] === 'Running' : true
     })
   }, [health, fetchedServersLength])
