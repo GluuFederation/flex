@@ -161,7 +161,8 @@ const WebhookForm: React.FC = () => {
             key: header.key || header.source || '',
             value: header.value || header.destination || '',
           })) || [],
-        auiFeatureIds: selectedFeatures?.map((feature) => feature.auiFeatureId || '') || [],
+        auiFeatureIds:
+          selectedFeatures?.map((feature) => feature.auiFeatureId).filter(Boolean) || [],
       }
 
       if (formikValues.httpMethod !== 'GET' && formikValues.httpMethod !== 'DELETE') {
