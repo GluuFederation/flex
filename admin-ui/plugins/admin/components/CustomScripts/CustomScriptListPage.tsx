@@ -409,24 +409,26 @@ const CustomScriptListPage: React.FC = () => {
     return (
       <Card>
         <CardBody>
-          <Alert severity="error" sx={{ mb: 2 }}>
-            <Typography variant="h6" gutterBottom>
-              {t('messages.error_loading_scripts')}
-            </Typography>
-            <Typography variant="body2">
-              {error && typeof error === 'object' && 'message' in error
-                ? (error as { message: string }).message
-                : String(error)}
-            </Typography>
-          </Alert>
-          <Button
-            variant="contained"
-            onClick={handleRefresh}
-            startIcon={<RefreshIcon />}
-            sx={{ textTransform: 'none' }}
-          >
-            {t('actions.retry')}
-          </Button>
+          <GluuViewWrapper canShow={canRead}>
+            <Alert severity="error" sx={{ mb: 2 }}>
+              <Typography variant="h6" gutterBottom>
+                {t('messages.error_loading_scripts')}
+              </Typography>
+              <Typography variant="body2">
+                {error && typeof error === 'object' && 'message' in error
+                  ? (error as { message: string }).message
+                  : String(error)}
+              </Typography>
+            </Alert>
+            <Button
+              variant="contained"
+              onClick={handleRefresh}
+              startIcon={<RefreshIcon />}
+              sx={{ textTransform: 'none' }}
+            >
+              {t('actions.retry')}
+            </Button>
+          </GluuViewWrapper>
         </CardBody>
       </Card>
     )
