@@ -223,7 +223,6 @@ const CustomScriptListPage: React.FC = () => {
             )}
           </Box>
         ),
-        cellStyle: { minWidth: 200 },
       },
       {
         title: t('fields.description'),
@@ -261,13 +260,11 @@ const CustomScriptListPage: React.FC = () => {
             }}
           />
         ),
-        cellStyle: { minWidth: 150 },
       },
       {
         title: t('fields.level'),
         field: 'level',
         type: 'numeric',
-        width: 80,
         cellStyle: { textAlign: 'center' },
       },
       {
@@ -286,13 +283,11 @@ const CustomScriptListPage: React.FC = () => {
             {rowData.programmingLanguage || '—'}
           </Typography>
         ),
-        width: 120,
       },
       {
         title: t('options.enabled'),
         field: 'enabled',
         type: 'boolean',
-        width: 100,
         render: (rowData: ScriptTableRow) => (
           <Chip
             label={rowData.enabled ? t('options.yes') : t('options.no')}
