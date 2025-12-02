@@ -37,7 +37,6 @@ export default class SlimMenuAnimate {
             ANIMATION_DURATION * ANIMATION_STEP_OFFSET,
           )
 
-        // Reset Style on Finish
         timeline.finished.then(() => {
           subMenuElement.style.opacity = ''
           subMenuElement.style.transform = ''
@@ -47,9 +46,7 @@ export default class SlimMenuAnimate {
     }
   }
 
-  private mouseOutHandler = (): void => {
-    // Mouse out animation intentionally disabled
-  }
+  private mouseOutHandler = (): void => {}
 
   private _animationsEnabled(): boolean {
     if (!this._sidebarElement) return false
@@ -61,10 +58,12 @@ export default class SlimMenuAnimate {
     )
   }
 
-  /**
-   * Assigns the parent sidebar element, and attaches hover listeners
-   */
   assignSidebarElement(sidebarElement: HTMLElement): void {
+    this._triggerElements.forEach((triggerElement) => {
+      triggerElement.removeEventListener('mouseenter', this.mouseInHandler)
+      triggerElement.removeEventListener('mouseleave', this.mouseOutHandler)
+    })
+
     this._sidebarElement = sidebarElement
     this._triggerElements = Array.from(
       this._sidebarElement.querySelectorAll(
@@ -78,9 +77,6 @@ export default class SlimMenuAnimate {
     })
   }
 
-  /**
-   * Disconnects the listeners
-   */
   destroy(): void {
     this._triggerElements.forEach((triggerElement) => {
       triggerElement.removeEventListener('mouseenter', this.mouseInHandler)

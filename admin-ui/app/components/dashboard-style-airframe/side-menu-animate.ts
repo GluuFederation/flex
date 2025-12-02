@@ -44,7 +44,7 @@ export default class SideMenuAnimate {
 
           if (menu) {
             if (this.activeAnimation && !this.activeAnimation.completed) {
-              ;(this.activeAnimation as any).reset()
+              anime.remove(menu)
             }
 
             this.activeAnimation = anime({

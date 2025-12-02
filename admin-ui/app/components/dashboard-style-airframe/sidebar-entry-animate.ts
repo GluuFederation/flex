@@ -33,7 +33,6 @@ export default class SidebarEntryAnimate {
       const sidebarSectionsPostMenu: Element[] = []
 
       sidebarElement.querySelectorAll('.sidebar__section').forEach((sectionElement) => {
-        // Omit sections which aren't visible
         if (
           (isSlim && sectionElement.classList.contains('sidebar__hide-slim')) ||
           (!isSlim && sectionElement.classList.contains('sidebar__show-slim'))
@@ -43,17 +42,14 @@ export default class SidebarEntryAnimate {
 
         if (sidebarMenu && sectionElement.contains(sidebarMenu)) {
           sidebarMenuSection = sectionElement
-          // Add sidemenu entries
           const sidebarMenuEntriesNodes = sectionElement.querySelectorAll(
             '.sidebar-menu > .sidebar-menu__entry',
           )
           sideMenuEntries = sideMenuEntries.concat(Array.from(sidebarMenuEntriesNodes))
         } else {
           if (sideMenuEntries.length > 0) {
-            // Add post menu sections
             sidebarSectionsPostMenu.push(sectionElement)
           } else {
-            // Add pre menu sections
             sidebarSectionsPreMenu.push(sectionElement)
           }
         }
@@ -63,7 +59,6 @@ export default class SidebarEntryAnimate {
         easing: config.easing,
         duration: config.duration,
         complete: () => {
-          // Clear section styles
           const allElements = [
             ...sidebarSectionsPreMenu,
             ...sideMenuEntries,
@@ -75,10 +70,12 @@ export default class SidebarEntryAnimate {
         },
       })
 
+      const totalSections = sidebarSectionsPreMenu.length + sidebarSectionsPostMenu.length
+      const totalEntries = sideMenuEntries.length
       const staggerDelay =
-        config.duration /
-        (sidebarSectionsPreMenu.length + sidebarSectionsPostMenu.length) /
-        sideMenuEntries.length
+        totalSections > 0 && totalEntries > 0
+          ? config.duration / totalSections / totalEntries
+          : config.duration / 10
 
       timeline
         .add({
@@ -110,17 +107,9 @@ export default class SidebarEntryAnimate {
     return Promise.resolve()
   }
 
-  /**
-   * Assigns the parent sidebar element
-   */
   assignParentElement(parentElement: HTMLElement): void {
     this.sidebarElement = parentElement
   }
 
-  /**
-   * Cleanup method
-   */
-  destroy(): void {
-    // No cleanup needed for this class
-  }
+  destroy(): void {}
 }

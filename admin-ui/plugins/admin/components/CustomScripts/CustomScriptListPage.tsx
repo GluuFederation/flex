@@ -370,7 +370,18 @@ const CustomScriptListPage: React.FC = () => {
     }
 
     return actionList
-  }, [canRead, canWrite, canDelete, t, handleAdd, handleEdit, handleView, handleDeleteClick])
+  }, [
+    canRead,
+    canWrite,
+    canDelete,
+    t,
+    handleAdd,
+    handleEdit,
+    handleView,
+    handleDeleteClick,
+    themeColors,
+    customColors,
+  ])
 
   const tableOptions = useMemo(
     () => ({

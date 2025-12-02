@@ -58,12 +58,11 @@ export default class SlimSidebarAnimate {
     const lastSidebarSlim = (mutation.oldValue || '').indexOf('sidebar--slim') >= 0
     const lastSidebarCollapsed = (mutation.oldValue || '').indexOf('sidebar--collapsed') >= 0
 
-    // Finish previous animations if they exist
-    if (this.timelineStage1 && (this.timelineStage1 as any).isAnimating) {
-      ;(this.timelineStage1 as any).complete()
+    if (this.timelineStage1 && !this.timelineStage1.paused) {
+      this.timelineStage1.seek(this.timelineStage1.duration)
     }
-    if (this.timelineStage2 && (this.timelineStage2 as any).isAnimating) {
-      ;(this.timelineStage2 as any).complete()
+    if (this.timelineStage2 && !this.timelineStage2.paused) {
+      this.timelineStage2.seek(this.timelineStage2.duration)
     }
 
     if (
@@ -107,10 +106,8 @@ export default class SlimSidebarAnimate {
   ): void {
     const { config } = this
 
-    // Recover the changed class so the animation can be played smoothly
     sidebarElement.classList.remove('sidebar--collapsed')
 
-    // STAGE 1: Hide Default
     this.timelineStage1 = this.buildTimeline()
       .add({
         targets: sidebarElement,
@@ -139,7 +136,6 @@ export default class SlimSidebarAnimate {
         0,
       )
 
-    // STAGE 2: Show Slim
     this.timelineStage2 = this.buildTimeline()
       .add({
         targets: sidebarIcons,
@@ -173,7 +169,6 @@ export default class SlimSidebarAnimate {
         0,
       )
 
-    // START: Chain both timelines
     this.timelineStage1.finished.then(() => {
       this.timelineStage2?.play()
     })
@@ -182,7 +177,6 @@ export default class SlimSidebarAnimate {
       sidebarElement.querySelectorAll('.sidebar__section').forEach((section) => {
         ;(section as HTMLElement).removeAttribute('style')
       })
-      sidebarElement.classList.remove()
     })
     this.timelineStage1.play()
   }
@@ -199,13 +193,11 @@ export default class SlimSidebarAnimate {
   ): void {
     const { config } = this
 
-    // Recover the slim classes so the animation can make the smooth transition
     sidebarElement.classList.add('sidebar--collapsed')
     sidebarMenu?.classList.add('sidebar-menu--slim')
     layoutSidebarWrap?.classList.add('layout__sidebar--slim')
     sidebarElement.classList.add('sidebar--animate-slim--progress')
 
-    // STAGE 1: Hide Slim
     this.timelineStage1 = this.buildTimeline()
       .add({
         targets: sidebarIcons,
@@ -223,7 +215,6 @@ export default class SlimSidebarAnimate {
         0,
       )
 
-    // STAGE 2: Show Default
     this.timelineStage2 = this.buildTimeline()
       .add({
         targets: sidebarElement,
@@ -279,7 +270,6 @@ export default class SlimSidebarAnimate {
         0,
       )
 
-    // START: Chain both timelines
     this.timelineStage1.finished.then(() => {
       requestAnimationFrame(() => {
         this.timelineStage2?.play()
@@ -295,11 +285,6 @@ export default class SlimSidebarAnimate {
     this.timelineStage1.play()
   }
 
-  /**
-   * Assigns the parent sidebar element, and attaches a Mutation Observer
-   * which watches the collapsable nodes inside of the sidebar menu
-   * and animates them on changes
-   */
   assignParentElement(parentElement: HTMLElement): void {
     this._nodesObserver.disconnect()
     this._nodesObserver.observe(parentElement, {
@@ -310,10 +295,9 @@ export default class SlimSidebarAnimate {
     })
   }
 
-  /**
-   * Disconnects the observer
-   */
   destroy(): void {
+    this.timelineStage1?.pause()
+    this.timelineStage2?.pause()
     this._nodesObserver.disconnect()
   }
 }
