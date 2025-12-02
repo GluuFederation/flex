@@ -46,12 +46,12 @@ export default class SlimSidebarAnimate {
     const sidebarElement = mutation.target as HTMLElement
     const layoutSidebarWrap = sidebarElement.closest('.layout__sidebar') as HTMLElement | null
     const sidebarMenu = sidebarElement.querySelector('.sidebar-menu') as HTMLElement | null
-    const sidebarLabels = document.querySelectorAll(
+    const sidebarLabels = sidebarElement.querySelectorAll(
       '.sidebar-menu__entry__link > span, .sidebar-submenu__entry__link > span',
     )
-    const sidebarIcons = document.querySelectorAll('.sidebar-menu__entry__icon')
-    const sidebarHideSlim = document.querySelectorAll('.sidebar__hide-slim')
-    const sidebarShowSlim = document.querySelectorAll('.sidebar__show-slim')
+    const sidebarIcons = sidebarElement.querySelectorAll('.sidebar-menu__entry__icon')
+    const sidebarHideSlim = sidebarElement.querySelectorAll('.sidebar__hide-slim')
+    const sidebarShowSlim = sidebarElement.querySelectorAll('.sidebar__show-slim')
 
     const isSidebarSlim = sidebarElement.classList.contains('sidebar--slim')
     const isSidebarCollapsed = sidebarElement.classList.contains('sidebar--collapsed')

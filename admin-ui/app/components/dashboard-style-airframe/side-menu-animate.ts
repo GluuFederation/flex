@@ -63,11 +63,6 @@ export default class SideMenuAnimate {
     })
   }
 
-  /**
-   * Assigns the parent sidebar element, and attaches a Mutation Observer
-   * which watches the collapsable nodes inside of the sidebar menu
-   * and animates them on changes
-   */
   assignParentElement(parentElement: HTMLElement): void {
     this._nodesObserver.disconnect()
     this._nodesObserver.observe(parentElement, {
@@ -78,10 +73,10 @@ export default class SideMenuAnimate {
     })
   }
 
-  /**
-   * Disconnects the observer
-   */
   destroy(): void {
+    if (this.activeAnimation) {
+      anime.remove(this.activeAnimation)
+    }
     this._nodesObserver.disconnect()
   }
 }

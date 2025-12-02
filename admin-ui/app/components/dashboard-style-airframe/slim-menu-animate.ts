@@ -82,5 +82,7 @@ export default class SlimMenuAnimate {
       triggerElement.removeEventListener('mouseenter', this.mouseInHandler)
       triggerElement.removeEventListener('mouseleave', this.mouseOutHandler)
     })
+    this._triggerElements = []
+    this._sidebarElement = null
   }
 }

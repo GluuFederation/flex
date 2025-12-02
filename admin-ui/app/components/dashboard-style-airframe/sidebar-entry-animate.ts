@@ -27,45 +27,50 @@ export default class SidebarEntryAnimate {
         sidebarElement.classList.contains('sidebar--collapsed')
       const sidebarMenu = sidebarElement.querySelector('.sidebar-menu')
 
-      const sidebarSectionsPreMenu: Element[] = []
-      let sidebarMenuSection: Element | null = null
-      let sideMenuEntries: Element[] = []
-      const sidebarSectionsPostMenu: Element[] = []
+      const sidebarSectionsPreMenu: HTMLElement[] = []
+      let sidebarMenuSection: HTMLElement | null = null
+      let sideMenuEntries: HTMLElement[] = []
+      const sidebarSectionsPostMenu: HTMLElement[] = []
 
-      sidebarElement.querySelectorAll('.sidebar__section').forEach((sectionElement) => {
-        if (
-          (isSlim && sectionElement.classList.contains('sidebar__hide-slim')) ||
-          (!isSlim && sectionElement.classList.contains('sidebar__show-slim'))
-        ) {
-          return
-        }
-
-        if (sidebarMenu && sectionElement.contains(sidebarMenu)) {
-          sidebarMenuSection = sectionElement
-          const sidebarMenuEntriesNodes = sectionElement.querySelectorAll(
-            '.sidebar-menu > .sidebar-menu__entry',
-          )
-          sideMenuEntries = sideMenuEntries.concat(Array.from(sidebarMenuEntriesNodes))
-        } else {
-          if (sideMenuEntries.length > 0) {
-            sidebarSectionsPostMenu.push(sectionElement)
-          } else {
-            sidebarSectionsPreMenu.push(sectionElement)
+      sidebarElement
+        .querySelectorAll<HTMLElement>('.sidebar__section')
+        .forEach((sectionElement) => {
+          if (
+            (isSlim && sectionElement.classList.contains('sidebar__hide-slim')) ||
+            (!isSlim && sectionElement.classList.contains('sidebar__show-slim'))
+          ) {
+            return
           }
-        }
-      })
+
+          if (sidebarMenu && sectionElement.contains(sidebarMenu)) {
+            sidebarMenuSection = sectionElement
+            const sidebarMenuEntriesNodes = sectionElement.querySelectorAll<HTMLElement>(
+              '.sidebar-menu > .sidebar-menu__entry',
+            )
+            sideMenuEntries = sideMenuEntries.concat(Array.from(sidebarMenuEntriesNodes))
+          } else {
+            if (sideMenuEntries.length > 0) {
+              sidebarSectionsPostMenu.push(sectionElement)
+            } else {
+              sidebarSectionsPreMenu.push(sectionElement)
+            }
+          }
+        })
 
       const timeline = anime.timeline({
         easing: config.easing,
         duration: config.duration,
         complete: () => {
-          const allElements = [
+          const allElements: HTMLElement[] = [
             ...sidebarSectionsPreMenu,
             ...sideMenuEntries,
             ...sidebarSectionsPostMenu,
           ]
+          if (sidebarMenuSection) {
+            allElements.push(sidebarMenuSection)
+          }
           allElements.forEach((element) => {
-            ;(element as HTMLElement).style.opacity = ''
+            element.style.opacity = ''
           })
         },
       })
@@ -88,7 +93,7 @@ export default class SidebarEntryAnimate {
           delay: anime.stagger(staggerDelay),
           begin: () => {
             if (sidebarMenuSection) {
-              ;(sidebarMenuSection as HTMLElement).style.opacity = '1'
+              sidebarMenuSection.style.opacity = '1'
             }
           },
           opacity: [0, 1],
