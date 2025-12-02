@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react'
-import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
@@ -34,10 +33,11 @@ import { CREATE } from '../../../../app/audit/UserActionType'
 import { SSA as SSA_RESOURCE } from '../../redux/audit/Resources'
 import { updateToast } from 'Redux/features/toastSlice'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 const SsaAddPage: React.FC = () => {
   const { t } = useTranslation()
-  const navigate = useNavigate()
+  const { navigateBack, navigateToRoute } = useAppNavigation()
   const dispatch = useDispatch()
 
   const [modal, setModal] = useState<boolean>(false)
@@ -63,12 +63,8 @@ const SsaAddPage: React.FC = () => {
   SetTitle(t('titles.ssa_management'))
 
   const handleNavigateBack = useCallback(() => {
-    if (window.history.length > 1) {
-      navigate(-1)
-    } else {
-      navigate('/auth-server/config/ssa')
-    }
-  }, [navigate])
+    navigateBack(ROUTES.AUTH_SERVER_SSA_LIST)
+  }, [navigateBack])
 
   const formik = useFormik<SsaFormValues>({
     initialValues: getSsaInitialValues(),
@@ -93,9 +89,9 @@ const SsaAddPage: React.FC = () => {
 
   useEffect(() => {
     if (createSsaMutation.isSuccess) {
-      navigate('/auth-server/config/ssa')
+      navigateToRoute(ROUTES.AUTH_SERVER_SSA_LIST)
     }
-  }, [createSsaMutation.isSuccess, navigate])
+  }, [createSsaMutation.isSuccess, navigateToRoute])
 
   const [pendingPayload, setPendingPayload] = useState<SsaCreatePayload | null>(null)
 

@@ -11,7 +11,6 @@ import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router'
 import SetTitle from 'Utils/SetTitle'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import { DeleteOutlined, DownloadOutlined, VisibilityOutlined } from '@mui/icons-material'
@@ -21,6 +20,7 @@ import customColors from '@/customColors'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { useRevokeSsa } from 'JansConfigApi'
 import { useGetAllSsas, useGetSsaJwt, useSsaAuditLogger } from './hooks'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { formatExpirationDate } from './utils/dateFormatters'
 import type { SsaData, SsaJwtResponse } from './types'
 import { DELETION } from '../../../../app/audit/UserActionType'
@@ -36,7 +36,7 @@ const SSAListPage: React.FC = () => {
   } = useCedarling()
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const { navigateToRoute } = useAppNavigation()
   const [limit] = useState<number>(10)
   const [item, setItem] = useState<SsaData | null>(null)
   const [modal, setModal] = useState<boolean>(false)
@@ -173,7 +173,7 @@ const SSAListPage: React.FC = () => {
   }
 
   const handleGoToSsaAddPage = (): void => {
-    navigate('/auth-server/config/ssa/new')
+    navigateToRoute(ROUTES.AUTH_SERVER_SSA_ADD)
   }
 
   const onDeletionConfirmed = async (message: string): Promise<void> => {

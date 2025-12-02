@@ -1,5 +1,4 @@
 import React, { useState, useContext, useMemo, useCallback, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { Formik, ErrorMessage, FormikHelpers } from 'formik'
 import {
@@ -37,6 +36,7 @@ import {
   hasActualChanges,
 } from './helper/utils'
 import { getScopeValidationSchema } from './helper/validations'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 interface RootState {
   authReducer: {
@@ -58,7 +58,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme || 'light'
-  const navigate = useNavigate()
+  const { navigateBack, navigate } = useAppNavigation()
   const dispatch = useDispatch()
   const client = scope.clients || []
 
@@ -157,12 +157,8 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
   )
 
   const handleNavigateBack = useCallback(() => {
-    if (window.history.length > 1) {
-      navigate(-1)
-    } else {
-      navigate('/auth-server/scopes')
-    }
-  }, [navigate])
+    navigateBack(ROUTES.AUTH_SERVER_SCOPES_LIST)
+  }, [navigateBack])
 
   const goToClientViewPage = (clientId: string, clientData: ScopeClient = {} as ScopeClient) => {
     dispatch(viewOnly({ view: true }))

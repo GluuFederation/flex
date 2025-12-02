@@ -2,8 +2,8 @@ import { useNavigate, NavigateOptions } from 'react-router-dom'
 import { useCallback, useMemo } from 'react'
 
 const ROUTES = {
-  // Home & Dashboard
-  HOME_DASHBOARD: '/home/dashboard',
+  // Home & Dashboard (unified with plugin dashboard & sidebar)
+  HOME_DASHBOARD: '/adm/dashboard',
 
   // User Management
   USER_MANAGEMENT: '/user/usersmanagement',
@@ -30,6 +30,15 @@ const ROUTES = {
   ATTRIBUTE_ADD: '/attribute/new',
   ATTRIBUTE_EDIT: (inum: string) => `/attribute/edit/${encodeURIComponent(inum)}`,
   ATTRIBUTE_VIEW: (inum: string) => `/attribute/view/${encodeURIComponent(inum)}`,
+
+  // Auth Server - SSA
+  AUTH_SERVER_SSA_LIST: '/auth-server/config/ssa',
+  AUTH_SERVER_SSA_ADD: '/auth-server/config/ssa/new',
+
+  // Auth Server - Scopes
+  AUTH_SERVER_SCOPES_LIST: '/auth-server/scopes',
+  AUTH_SERVER_SCOPE_ADD: '/auth-server/scope/new',
+  AUTH_SERVER_SCOPE_EDIT: (inum: string) => `/auth-server/scope/edit/${encodeURIComponent(inum)}`,
 
   // Service Configuration
   SQL_LIST: '/config/sql',
