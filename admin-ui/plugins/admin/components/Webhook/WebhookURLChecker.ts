@@ -21,7 +21,7 @@ const isPrivateOrLocalhost = (hostname: string): boolean => {
   return false
 }
 
-const PATTERN = /^(https:\/\/)?([\w-]+\.)+[\w-]+(:\d+)?(\/([\w\-.]|\$\{[\w]+\})*)*$/i
+const PATTERN = /^https:\/\/([\w-]+\.)+[\w-]+(:\d+)?(\/([\w\-.]|\$\{[\w]+\})*)*$/i
 
 const isAllowed = (url: string): boolean => {
   try {
