@@ -1,13 +1,25 @@
-const BLOCKED_SCHEMES = ['http', 'ftp', 'file', 'telnet', 'smb', 'ssh', 'ldap']
+const BLOCKED_SCHEMES = [
+  'http',
+  'ftp',
+  'file',
+  'telnet',
+  'smb',
+  'ssh',
+  'ldap',
+  'gopher',
+  'dict',
+  'tftp',
+]
 
 const isPrivateOrLocalhost = (hostname: string): boolean => {
-  if (hostname === 'localhost' || hostname === '[::1]') {
+  if (hostname === 'localhost' || hostname === '::1' || hostname === '0.0.0.0') {
     return true
   }
   if (
     hostname.startsWith('127.') ||
     hostname.startsWith('10.') ||
-    hostname.startsWith('192.168.')
+    hostname.startsWith('192.168.') ||
+    hostname.startsWith('169.254.')
   ) {
     return true
   }
@@ -17,6 +29,12 @@ const isPrivateOrLocalhost = (hostname: string): boolean => {
     if (secondOctet >= 16 && secondOctet <= 31) {
       return true
     }
+  }
+  if (hostname.startsWith('fc') || hostname.startsWith('fd')) {
+    return true
+  }
+  if (hostname.startsWith('fe80:')) {
+    return true
   }
   return false
 }
@@ -31,7 +49,7 @@ const isAllowed = (url: string): boolean => {
       return false
     }
 
-    if (parsed.protocol === 'https:' && isPrivateOrLocalhost(parsed.hostname)) {
+    if (isPrivateOrLocalhost(parsed.hostname)) {
       return false
     }
 
