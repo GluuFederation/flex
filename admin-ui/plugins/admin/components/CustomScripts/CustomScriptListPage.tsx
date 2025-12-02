@@ -402,7 +402,7 @@ const CustomScriptListPage: React.FC = () => {
       },
       actionsColumnIndex: -1,
     }),
-    [pageSize, themeColors],
+    [pageSize, themeColors, customColors],
   )
 
   if (error) {
