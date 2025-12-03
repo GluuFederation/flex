@@ -21,6 +21,8 @@ export interface SsaJwtResponse {
   ssa: string
 }
 
+export type ExpirationDate = Dayjs | null
+
 export interface SsaFormValues extends Record<string, unknown> {
   software_id: string
   one_time_use: boolean
@@ -29,6 +31,8 @@ export interface SsaFormValues extends Record<string, unknown> {
   software_roles: string[]
   rotate_ssa: boolean
   grant_types: string[]
+  is_expirable: boolean
+  expirationDate: ExpirationDate
 }
 
 export interface SsaCreatePayload extends SsaFormValues {
@@ -58,5 +62,3 @@ export interface SsaReduxState {
 type ModifiedFieldValue = string | string[] | boolean
 
 export type ModifiedFields = Record<string, ModifiedFieldValue>
-
-export type ExpirationDate = Dayjs | null

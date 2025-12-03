@@ -3,13 +3,11 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import debounce from 'lodash/debounce'
-import dayjs from 'dayjs'
 import { CardBody, Card, Form, Col, Row, FormGroup } from 'Components'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import type { Dayjs } from 'dayjs'
-
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
@@ -41,8 +39,6 @@ const SsaAddPage: React.FC = () => {
   const dispatch = useDispatch()
 
   const [modal, setModal] = useState<boolean>(false)
-  const [isExpirable, setIsExpirable] = useState<boolean>(false)
-  const [expirationDate, setExpirationDate] = useState<Dayjs | null>(null)
   const [selectedAttributes, setSelectedAttributes] = useState<string[]>([])
   const [searchInputValue, setSearchInputValue] = useState<string>('')
   const [searchQuery, setSearchQuery] = useState<string>('')
@@ -71,16 +67,6 @@ const SsaAddPage: React.FC = () => {
     validationSchema: ssaValidationSchema,
     enableReinitialize: true,
     onSubmit: () => {
-      if (isExpirable && !expirationDate) {
-        dispatch(updateToast(true, 'error', 'Please select an expiration date'))
-        return
-      }
-
-      if (isExpirable && expirationDate && expirationDate.isBefore(dayjs())) {
-        dispatch(updateToast(true, 'error', 'Expiration date must be in the future'))
-        return
-      }
-
       openCommitDialog()
     },
   })
@@ -96,10 +82,11 @@ const SsaAddPage: React.FC = () => {
   const [pendingPayload, setPendingPayload] = useState<SsaCreatePayload | null>(null)
 
   const openCommitDialog = useCallback(() => {
+    const { is_expirable, expirationDate } = formik.values
     const payload: SsaCreatePayload = { ...formik.values }
 
-    if (isExpirable) {
-      const expirationSeconds = toEpochSecondsFromDayjs(expirationDate)
+    if (is_expirable) {
+      const expirationSeconds = toEpochSecondsFromDayjs(expirationDate as Dayjs | null)
       if (expirationSeconds !== null) {
         payload.expiration = expirationSeconds
       }
@@ -107,7 +94,7 @@ const SsaAddPage: React.FC = () => {
 
     setPendingPayload(payload)
     setModal(true)
-  }, [formik.values, expirationDate, isExpirable])
+  }, [formik.values])
 
   const debouncedSetSearchQuery = useMemo(
     () =>
@@ -152,6 +139,11 @@ const SsaAddPage: React.FC = () => {
     [setFieldValue],
   )
 
+  const isFormDirty = useMemo(
+    () => formik.dirty || selectedAttributes.length > 0 || Object.keys(modifiedFields).length > 0,
+    [formik.dirty, selectedAttributes, modifiedFields],
+  )
+
   const submitForm = async (userMessage: string): Promise<void> => {
     try {
       if (!pendingPayload) return
@@ -192,7 +184,7 @@ const SsaAddPage: React.FC = () => {
                   <Col
                     sm={FORM_LAYOUT.FULL_WIDTH_LEFT}
                     xs={12}
-                    style={{ borderRight: '1px solid #dee2e6', paddingRight: '2rem' }}
+                    style={applicationStyle.verticalDivider}
                   >
                     <FormGroup row>
                       <Col sm={8}>
@@ -202,6 +194,7 @@ const SsaAddPage: React.FC = () => {
                           formik={formik}
                           lsize={4}
                           rsize={8}
+                          required
                           value={formik.values.software_id}
                           errorMessage={formik.errors.software_id}
                           showError={!!(formik.errors.software_id && formik.touched.software_id)}
@@ -234,6 +227,7 @@ const SsaAddPage: React.FC = () => {
                           name="description"
                           formik={formik}
                           lsize={4}
+                          required
                           rsize={8}
                           value={formik.values.description}
                           errorMessage={formik.errors.description}
@@ -314,30 +308,34 @@ const SsaAddPage: React.FC = () => {
                     <FormGroup row>
                       <Col sm={8}>
                         <GluuToogleRow
-                          name="expiration"
+                          name="is_expirable"
+                          formik={formik}
                           label="fields.is_expirable"
                           lsize={4}
                           rsize={8}
-                          value={isExpirable}
-                          handler={() => setIsExpirable(!isExpirable)}
-                          errorMessage={undefined}
-                          showError={false}
+                          value={formik.values.is_expirable}
+                          errorMessage={formik.errors.is_expirable as string | undefined}
+                          showError={!!(formik.errors.is_expirable && formik.touched.is_expirable)}
                           doc_category={SSA}
                         />
                       </Col>
                     </FormGroup>
 
-                    {isExpirable && (
+                    {formik.values.is_expirable && (
                       <FormGroup row>
                         <Col sm={8}>
                           <FormGroup row>
-                            <GluuLabel label="fields.expiration_date" size={4} />
+                            <GluuLabel
+                              label="fields.expiration_date"
+                              size={4}
+                              required={formik.values.is_expirable}
+                            />
                             <Col sm={8}>
                               <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DatePicker
                                   format="MM/DD/YYYY"
-                                  value={expirationDate}
-                                  onChange={(date) => setExpirationDate(date)}
+                                  value={formik.values.expirationDate as Dayjs | null}
+                                  onChange={(date) => formik.setFieldValue('expirationDate', date)}
                                   disablePast
                                 />
                               </LocalizationProvider>
@@ -389,10 +387,10 @@ const SsaAddPage: React.FC = () => {
                     setModifiedFields({})
                     setSelectedAttributes([])
                   }}
-                  disableCancel={!formik.dirty}
+                  disableCancel={!isFormDirty}
                   showApply={true}
                   onApply={() => formik.handleSubmit()}
-                  disableApply={!formik.isValid || !formik.dirty || createSsaMutation.isPending}
+                  disableApply={!formik.isValid || !isFormDirty || createSsaMutation.isPending}
                   applyButtonType="button"
                   isLoading={createSsaMutation.isPending}
                 />

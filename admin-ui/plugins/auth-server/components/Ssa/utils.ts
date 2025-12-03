@@ -1,5 +1,5 @@
 import type { Dayjs } from 'dayjs'
-import type { SsaFormValues } from './types'
+import type { SsaFormValues, ExpirationDate } from './types'
 
 export const getSsaInitialValues = (): SsaFormValues => ({
   software_id: '',
@@ -9,6 +9,8 @@ export const getSsaInitialValues = (): SsaFormValues => ({
   software_roles: [],
   rotate_ssa: false,
   grant_types: [],
+  is_expirable: false,
+  expirationDate: null as ExpirationDate,
 })
 
 // Accepts a Dayjs object from MUI DatePicker and returns epoch seconds or null
