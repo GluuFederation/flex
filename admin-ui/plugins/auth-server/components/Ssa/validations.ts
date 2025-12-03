@@ -25,8 +25,13 @@ export const ssaValidationSchema = Yup.object<Record<keyof SsaFormValues, Yup.An
       if (!is_expirable || !value) {
         return true
       }
-      // value is expected to be a Dayjs here
-      return dayjs((value as Date).valueOf()).isAfter(dayjs())
+
+      const dateValue = dayjs(value as dayjs.Dayjs | Date | string | number)
+      if (!dateValue.isValid()) {
+        return false
+      }
+
+      return dateValue.isAfter(dayjs())
     }),
 }) as Yup.ObjectSchema<SsaFormValues>
 
