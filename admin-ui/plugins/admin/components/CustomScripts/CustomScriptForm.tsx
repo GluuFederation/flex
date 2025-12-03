@@ -506,8 +506,8 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
           compName="configurationProperties"
           label="fields.custom_properties"
           formik={formik}
-          keyPlaceholder={t('placeholders.enter_property_key')}
-          valuePlaceholder={t('placeholders.enter_property_value')}
+          keyPlaceholder="placeholders.enter_property_key"
+          valuePlaceholder="placeholders.enter_property_value"
           options={configurationPropertiesOptions}
           disabled={viewOnly}
         ></GluuProperties>
@@ -515,8 +515,8 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
           compName="moduleProperties"
           label="fields.module_properties"
           formik={formik}
-          keyPlaceholder={t('placeholders.enter_property_key')}
-          valuePlaceholder={t('placeholders.enter_property_value')}
+          keyPlaceholder="placeholders.enter_property_key"
+          valuePlaceholder="placeholders.enter_property_value"
           options={modulePropertiesOptions}
           disabled={viewOnly}
         ></GluuProperties>

@@ -263,29 +263,6 @@ const CustomScriptListPage: React.FC = () => {
         ),
       },
       {
-        title: t('fields.level'),
-        field: 'level',
-        type: 'numeric',
-        cellStyle: { textAlign: 'center' },
-      },
-      {
-        title: t('fields.programming_language'),
-        field: 'programmingLanguage',
-        render: (rowData: ScriptTableRow) => (
-          <Typography
-            variant="body2"
-            sx={{
-              textTransform: 'capitalize',
-              color: rowData.enabled
-                ? `${customColors.black} !important`
-                : `${customColors.black}80`,
-            }}
-          >
-            {rowData.programmingLanguage || '—'}
-          </Typography>
-        ),
-      },
-      {
         title: t('options.enabled'),
         field: 'enabled',
         type: 'boolean',
@@ -293,14 +270,17 @@ const CustomScriptListPage: React.FC = () => {
           <Chip
             label={rowData.enabled ? t('options.yes') : t('options.no')}
             size="small"
-            color={rowData.enabled ? 'success' : 'default'}
-            sx={{ minWidth: 60, fontWeight: 500 }}
+            sx={{
+              minWidth: 60,
+              fontWeight: 500,
+              backgroundColor: rowData.enabled ? themeColors.background : undefined,
+              color: rowData.enabled ? customColors.white : undefined,
+            }}
           />
         ),
-        cellStyle: { textAlign: 'center' },
       },
     ],
-    [t],
+    [t, themeColors],
   )
 
   const actions: Action<ScriptTableRow>[] = useMemo(() => {

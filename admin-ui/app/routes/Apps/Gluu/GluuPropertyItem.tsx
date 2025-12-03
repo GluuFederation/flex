@@ -45,7 +45,8 @@ function GluuPropertyItem({
             disabled={disabled}
             onChange={(event) => onPropertyChange(position, event)}
             placeholder={
-              valuePlaceholder ? t(valuePlaceholder) : t('placeholders.enter_property_value')
+              property.description ||
+              (valuePlaceholder ? t(valuePlaceholder) : t('placeholders.enter_property_value'))
             }
           />
         ) : (
