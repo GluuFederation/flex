@@ -280,7 +280,7 @@ const CustomScriptListPage: React.FC = () => {
         ),
       },
     ],
-    [t, themeColors],
+    [t, themeColors, customColors],
   )
 
   const actions: Action<ScriptTableRow>[] = useMemo(() => {
