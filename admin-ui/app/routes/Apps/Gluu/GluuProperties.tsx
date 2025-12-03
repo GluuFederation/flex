@@ -12,6 +12,12 @@ type KeyValueProperty = { key: string; value: string }
 type SourceDestinationProperty = { source: string; destination: string }
 type Property = KeyValueProperty | SourceDestinationProperty
 
+const isKeyValueProperty = (prop: Property): prop is KeyValueProperty =>
+  'key' in prop && 'value' in prop
+
+const isSourceDestinationProperty = (prop: Property): prop is SourceDestinationProperty =>
+  'source' in prop && 'destination' in prop
+
 const syncFormikProperties = (
   formik: any,
   compName: string,
@@ -20,16 +26,17 @@ const syncFormikProperties = (
 ) => {
   if (!formik || !compName) return
   if (!isKeys && !multiProperties) {
-    const valuesOnly = properties.map((item: KeyValueProperty) => item.value)
+    const valuesOnly = properties.filter(isKeyValueProperty).map((item) => item.value)
     formik.setFieldValue(compName, valuesOnly)
   } else if (!multiProperties) {
-    const apiFormat = properties.map((p: KeyValueProperty) => ({
+    const apiFormat = properties.filter(isKeyValueProperty).map((p) => ({
       value1: p.key,
       value2: p.value,
     }))
     formik.setFieldValue(compName, apiFormat)
   } else {
-    formik.setFieldValue(compName, properties)
+    const validProperties = properties.filter(isSourceDestinationProperty)
+    formik.setFieldValue(compName, validProperties)
   }
 }
 
