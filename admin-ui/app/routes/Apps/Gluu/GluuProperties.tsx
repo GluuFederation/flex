@@ -51,7 +51,6 @@ function GluuProperties({
     if (multiProperties) {
       item = { source: '', destination: '' }
     } else if (!isKeys) {
-      // When isKeys is false, we only need a value (string), not an object
       item = { key: '', value: '' }
     } else {
       item = { key: '', value: '' }
@@ -59,11 +58,17 @@ function GluuProperties({
     const newProperties = [...properties, item]
     setProperties(newProperties)
 
-    // Sync with formik
+    // Sync with formik using value1/value2 format for API compatibility
     if (formik && compName) {
       if (!isKeys && !multiProperties) {
         const valuesOnly = newProperties.map((property: KeyValueProperty) => property.value)
         formik.setFieldValue(compName, valuesOnly)
+      } else if (!multiProperties) {
+        const apiFormat = newProperties.map((p: KeyValueProperty) => ({
+          value1: p.key,
+          value2: p.value,
+        }))
+        formik.setFieldValue(compName, apiFormat)
       } else {
         formik.setFieldValue(compName, newProperties)
       }
@@ -75,11 +80,17 @@ function GluuProperties({
     newDataArr[position] = { ...newDataArr[position], [name]: value }
     setProperties(newDataArr)
 
-    // Sync with formik
+    // Sync with formik using value1/value2 format for API compatibility
     if (formik && compName) {
       if (!isKeys && !multiProperties) {
         const valuesOnly = newDataArr.map((item: KeyValueProperty) => item.value)
         formik.setFieldValue(compName, valuesOnly)
+      } else if (!multiProperties) {
+        const apiFormat = newDataArr.map((p: KeyValueProperty) => ({
+          value1: p.key,
+          value2: p.value,
+        }))
+        formik.setFieldValue(compName, apiFormat)
       } else {
         formik.setFieldValue(compName, newDataArr)
       }
@@ -90,11 +101,17 @@ function GluuProperties({
     data.splice(position, 1)
     setProperties(data)
 
-    // Sync with formik
+    // Sync with formik using value1/value2 format for API compatibility
     if (formik && compName) {
       if (!isKeys && !multiProperties) {
         const valuesOnly = data.map((item: KeyValueProperty) => item.value)
         formik.setFieldValue(compName, valuesOnly)
+      } else if (!multiProperties) {
+        const apiFormat = data.map((p: KeyValueProperty) => ({
+          value1: p.key,
+          value2: p.value,
+        }))
+        formik.setFieldValue(compName, apiFormat)
       } else {
         formik.setFieldValue(compName, data)
       }

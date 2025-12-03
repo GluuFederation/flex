@@ -117,7 +117,7 @@ const CustomScriptListPage: React.FC = () => {
   }, [navigateToRoute])
 
   const handleEdit = useCallback(
-    (row: CustomScript) => {
+    (row: ScriptTableRow) => {
       if (!row?.inum) return
       navigateToRoute(ROUTES.CUSTOM_SCRIPT_EDIT(row.inum))
     },
@@ -125,25 +125,25 @@ const CustomScriptListPage: React.FC = () => {
   )
 
   const handleView = useCallback(
-    (row: CustomScript) => {
+    (row: ScriptTableRow) => {
       if (!row?.inum) return
       navigateToRoute(`${ROUTES.CUSTOM_SCRIPT_EDIT(row.inum)}?view=true`)
     },
     [navigateToRoute],
   )
 
-  const handleDeleteClick = useCallback((row: CustomScript) => {
+  const handleDeleteClick = useCallback((row: ScriptTableRow) => {
     setItemToDelete(row)
     setModal(true)
   }, [])
 
   const handleDeleteConfirm = useCallback(
-    async (message: string) => {
-      if (!itemToDelete?.inum) return
+    async (message: string, inum?: string) => {
+      if (!inum) return
 
       try {
         await deleteMutation.mutateAsync({
-          inum: itemToDelete.inum,
+          inum,
           actionMessage: message,
         })
         dispatch(updateToast(true, 'success', t('messages.script_deleted_successfully')))
@@ -156,7 +156,7 @@ const CustomScriptListPage: React.FC = () => {
         dispatch(updateToast(true, 'error', errorMessage))
       }
     },
-    [deleteMutation, itemToDelete, dispatch, t],
+    [deleteMutation, dispatch, t],
   )
 
   const handleRefresh = useCallback(() => {
@@ -317,7 +317,7 @@ const CustomScriptListPage: React.FC = () => {
           </Tooltip>
         ),
         tooltip: t('messages.edit_script'),
-        onClick: (_event, rowData) => handleEdit(rowData as CustomScript),
+        onClick: (_event, rowData) => handleEdit(rowData as ScriptTableRow),
       })
     }
 
@@ -329,7 +329,7 @@ const CustomScriptListPage: React.FC = () => {
           </Tooltip>
         ),
         tooltip: t('messages.view_script_details'),
-        onClick: (_event, rowData) => handleView(rowData as CustomScript),
+        onClick: (_event, rowData) => handleView(rowData as ScriptTableRow),
       })
     }
 
@@ -341,7 +341,7 @@ const CustomScriptListPage: React.FC = () => {
           </Tooltip>
         ),
         tooltip: t('messages.delete_script'),
-        onClick: (_event, rowData) => handleDeleteClick(rowData as CustomScript),
+        onClick: (_event, rowData) => handleDeleteClick(rowData as ScriptTableRow),
       })
     }
 
@@ -372,8 +372,8 @@ const CustomScriptListPage: React.FC = () => {
         fontSize: '0.875rem',
         borderBottom: '2px solid #e0e0e0',
       },
-      rowStyle: (rowData: ScriptTableRow) => {
-        const hasError = rowData.scriptError?.stackTrace
+      rowStyle: (rowData) => {
+        const hasError = (rowData as ScriptTableRow).scriptError?.stackTrace
         const baseColor = rowData.enabled ? themeColors.lightBackground : customColors.white
         return {
           backgroundColor: hasError ? `${customColors.accentRed}15` : baseColor,
@@ -543,7 +543,7 @@ const CustomScriptListPage: React.FC = () => {
             }}
             modal={modal}
             subject="script"
-            onAccept={handleDeleteConfirm}
+            onAccept={(message: string) => handleDeleteConfirm(message, itemToDelete?.inum)}
             feature={adminUiFeatures.custom_script_delete}
           />
         )}
