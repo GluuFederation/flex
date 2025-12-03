@@ -12,6 +12,27 @@ type KeyValueProperty = { key: string; value: string }
 type SourceDestinationProperty = { source: string; destination: string }
 type Property = KeyValueProperty | SourceDestinationProperty
 
+const syncFormikProperties = (
+  formik: any,
+  compName: string,
+  properties: Property[],
+  { isKeys, multiProperties }: { isKeys: boolean; multiProperties: boolean },
+) => {
+  if (!formik || !compName) return
+  if (!isKeys && !multiProperties) {
+    const valuesOnly = properties.map((item: KeyValueProperty) => item.value)
+    formik.setFieldValue(compName, valuesOnly)
+  } else if (!multiProperties) {
+    const apiFormat = properties.map((p: KeyValueProperty) => ({
+      value1: p.key,
+      value2: p.value,
+    }))
+    formik.setFieldValue(compName, apiFormat)
+  } else {
+    formik.setFieldValue(compName, properties)
+  }
+}
+
 function GluuProperties({
   compName,
   label,
@@ -40,8 +61,6 @@ function GluuProperties({
   const theme: any = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
 
-  // Sync internal state with options prop when it changes
-  // This ensures the component properly resets when formik values are reset
   useEffect(() => {
     setProperties(options)
   }, [options])
@@ -57,65 +76,21 @@ function GluuProperties({
     }
     const newProperties = [...properties, item]
     setProperties(newProperties)
-
-    // Sync with formik using value1/value2 format for API compatibility
-    if (formik && compName) {
-      if (!isKeys && !multiProperties) {
-        const valuesOnly = newProperties.map((property: KeyValueProperty) => property.value)
-        formik.setFieldValue(compName, valuesOnly)
-      } else if (!multiProperties) {
-        const apiFormat = newProperties.map((p: KeyValueProperty) => ({
-          value1: p.key,
-          value2: p.value,
-        }))
-        formik.setFieldValue(compName, apiFormat)
-      } else {
-        formik.setFieldValue(compName, newProperties)
-      }
-    }
+    syncFormikProperties(formik, compName, newProperties, { isKeys, multiProperties })
   }
+
   const changeProperty = (position: any, e: any) => {
     const { name, value } = e.target
     const newDataArr = [...properties]
     newDataArr[position] = { ...newDataArr[position], [name]: value }
     setProperties(newDataArr)
-
-    // Sync with formik using value1/value2 format for API compatibility
-    if (formik && compName) {
-      if (!isKeys && !multiProperties) {
-        const valuesOnly = newDataArr.map((item: KeyValueProperty) => item.value)
-        formik.setFieldValue(compName, valuesOnly)
-      } else if (!multiProperties) {
-        const apiFormat = newDataArr.map((p: KeyValueProperty) => ({
-          value1: p.key,
-          value2: p.value,
-        }))
-        formik.setFieldValue(compName, apiFormat)
-      } else {
-        formik.setFieldValue(compName, newDataArr)
-      }
-    }
+    syncFormikProperties(formik, compName, newDataArr, { isKeys, multiProperties })
   }
   const removeProperty = (position: any) => {
     const data = [...properties]
     data.splice(position, 1)
     setProperties(data)
-
-    // Sync with formik using value1/value2 format for API compatibility
-    if (formik && compName) {
-      if (!isKeys && !multiProperties) {
-        const valuesOnly = data.map((item: KeyValueProperty) => item.value)
-        formik.setFieldValue(compName, valuesOnly)
-      } else if (!multiProperties) {
-        const apiFormat = data.map((p: KeyValueProperty) => ({
-          value1: p.key,
-          value2: p.value,
-        }))
-        formik.setFieldValue(compName, apiFormat)
-      } else {
-        formik.setFieldValue(compName, data)
-      }
-    }
+    syncFormikProperties(formik, compName, data, { isKeys, multiProperties })
   }
 
   function TooltipHeader() {
