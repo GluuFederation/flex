@@ -2,6 +2,7 @@ import store from 'Redux/store'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import { FETCH, DELETION, UPDATE, CREATE } from '../../../app/audit/UserActionType'
 import { API_USERS } from '../../../app/audit/Resources'
+import { CustomObjectAttribute } from 'JansConfigApi'
 import { CustomUser } from '../types/UserApiTypes'
 import { USER_PASSWORD_ATTR } from '../common/Constants'
 
@@ -38,6 +39,7 @@ export interface AuthState {
 }
 
 export interface AuditPayload extends CustomUser {
+  customAttributes?: CustomObjectAttribute[]
   modifiedFields?: Record<string, unknown>
   performedOn?: {
     user_inum?: string

@@ -175,23 +175,37 @@ const GluuCommitDialog = ({
                     </Col>
                     <Col sm={5} style={{ overflow: 'auto' }}>
                       {Array.isArray(item.value) ? (
-                        <div className="d-flex flex-column gap-1 align-items-start">
-                          {isOpen === key ? (
-                            <Collapse isOpen={isOpen === key}>{renderBadges(item.value)}</Collapse>
-                          ) : (
-                            renderBadges(item.value.slice(0, 2))
-                          )}
-                          {item.value.length > 2 && (
-                            <Button
-                              color="link"
-                              onClick={() => setIsOpen(isOpen !== key ? key : null)}
-                              size="sm"
-                            >
-                              {isOpen === key ? 'Show Less' : 'Show More'}
-                              {isOpen === key ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                            </Button>
-                          )}
-                        </div>
+                        item.value.length === 0 ? (
+                          <Badge color={`primary-${selectedTheme}`}>&quot;&quot;</Badge>
+                        ) : (
+                          <div className="d-flex flex-column gap-1 align-items-start">
+                            {isOpen === key ? (
+                              <Collapse isOpen={isOpen === key}>
+                                {renderBadges(item.value)}
+                              </Collapse>
+                            ) : (
+                              renderBadges(item.value.slice(0, 2))
+                            )}
+                            {item.value.length > 2 && (
+                              <Button
+                                color="link"
+                                onClick={() => setIsOpen(isOpen !== key ? key : null)}
+                                size="sm"
+                              >
+                                {isOpen === key ? 'Show Less' : 'Show More'}
+                                {isOpen === key ? (
+                                  <KeyboardArrowUpIcon />
+                                ) : (
+                                  <KeyboardArrowDownIcon />
+                                )}
+                              </Button>
+                            )}
+                          </div>
+                        )
+                      ) : typeof item.value === 'boolean' ? (
+                        <Badge color={`primary-${selectedTheme}`}>{String(item.value)}</Badge>
+                      ) : item.value === '' || item.value === null || item.value === undefined ? (
+                        <Badge color={`primary-${selectedTheme}`}>&quot;&quot;</Badge>
                       ) : (
                         <Badge color={`primary-${selectedTheme}`}>{String(item.value)}</Badge>
                       )}

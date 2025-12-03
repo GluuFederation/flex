@@ -15,8 +15,11 @@ export const validatePassword = (password: string): boolean => {
   return true
 }
 
-export const getStringValue = (value: string | string[] | null | undefined): string =>
-  typeof value === 'string' ? value : ''
+export const getStringValue = (value: string | string[] | boolean | null | undefined): string => {
+  if (typeof value === 'string') return value
+  if (typeof value === 'boolean') return ''
+  return ''
+}
 
 const processBirthdateAttribute = (
   customAttr: CustomObjectAttribute,
@@ -125,6 +128,21 @@ export const setupCustomAttributes = (
     if (customAttr.values && customAttr.values.length > 0 && customAttr.name) {
       const attributeData = attributeMap.get(customAttr.name)
       if (attributeData && !usedClaims.has(customAttr.name)) {
+        const isBoolean = attributeData.dataType?.toLowerCase() === 'boolean'
+        const firstValue = customAttr.values[0] as unknown
+
+        if (isBoolean && firstValue !== undefined && firstValue !== null) {
+          const boolValue =
+            typeof firstValue === 'boolean'
+              ? firstValue
+              : typeof firstValue === 'string'
+                ? (firstValue as string).toLowerCase() === 'true'
+                : Boolean(firstValue)
+          if (!boolValue) {
+            continue
+          }
+        }
+
         const data = { ...attributeData, options: customAttr.values } as PersonAttribute
         tempList.push(data)
       }
