@@ -1100,7 +1100,7 @@
       "grant_types": "Fixed value Fixed value [client_credentials].",
       "expiration": "Expiration date. (Default value: calculated based on global SSA settings)",
       "one_time_use": "Defined whether the SSA will be used only once or can be used multiple times. (Default value: true)",
-      "rotate_ssa": "TODO - Will be used to rotate expiration of the SSA, currently is only saved as part of the SSA. (Default value: true)",
+      "rotate_ssa": "Toggle to enable or disable the rotation of the SSA expiration. (Default value: true)",
       "status": "SSA status (ACTIVE, USED, EXPIRED or REVOKED)"
     },
     "authn": {

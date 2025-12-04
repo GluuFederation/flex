@@ -41,6 +41,10 @@ export default {
     borderRadius: 24,
     padding: 12,
   },
+  verticalDivider: {
+    borderRight: `1px solid ${customColors.lightGray}`,
+    paddingRight: '2rem',
+  },
   licensePanel: {
     backgroundColor: customColors.white,
     float: 'left',
