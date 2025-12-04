@@ -1,240 +1,135 @@
-import React, { useCallback, useContext, useMemo } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Box, Grid, Typography, Chip, Divider } from '@mui/material'
-import { ThemeContext } from 'Context/theme/themeContext'
-import getThemeColor from 'Context/theme/config'
+import { Box, Grid, Typography, Chip, Paper } from '@mui/material'
 import type { Client } from '../types'
 import { formatGrantTypeLabel, formatResponseTypeLabel, formatScopeDisplay } from '../helper/utils'
 
-interface ClientDetailViewProps {
-  client: Client
+interface ScopeItem {
+  dn?: string
+  id?: string
+  displayName?: string
 }
 
-const ClientDetailView: React.FC<ClientDetailViewProps> = ({ client }) => {
+interface ClientDetailViewProps {
+  client: Client
+  scopes?: ScopeItem[]
+}
+
+const ClientDetailView: React.FC<ClientDetailViewProps> = ({ client, scopes = [] }) => {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'darkBlue'
 
-  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+  const getScopeNames = (): string[] => {
+    if (!client.scopes || client.scopes.length === 0) return []
+    const matchedScopes = scopes
+      .filter((scope) => scope.dn && client.scopes?.includes(scope.dn))
+      .map((scope) => scope.id || scope.displayName || '')
+      .filter(Boolean)
 
-  const containerStyle = useMemo(
-    () => ({
-      p: 3,
-      backgroundColor: themeColors?.lightBackground || '#fafafa',
-    }),
-    [themeColors],
-  )
+    const matchedDns = scopes.filter((s) => s.dn && client.scopes?.includes(s.dn)).map((s) => s.dn)
+    const unmatchedScopes = client.scopes
+      .filter((s) => !matchedDns.includes(s))
+      .map((s) => formatScopeDisplay(s))
 
-  const sectionStyle = useMemo(
-    () => ({
-      mb: 3,
-    }),
-    [],
-  )
+    return [...matchedScopes, ...unmatchedScopes]
+  }
 
-  const labelStyle = useMemo(
-    () => ({
-      fontWeight: selectedTheme === 'darkBlack' ? 700 : 600,
-      color: selectedTheme === 'darkBlack' ? '#000000' : themeColors?.fontColor || '#555',
-      fontSize: '0.85rem',
-      mb: 0.5,
-    }),
-    [themeColors, selectedTheme],
-  )
+  const labelSx = {
+    fontSize: '0.7rem',
+    fontWeight: 600,
+    color: 'text.secondary',
+    textTransform: 'uppercase' as const,
+    letterSpacing: 0.5,
+  }
 
-  const valueStyle = useMemo(
-    () => ({
-      fontWeight: selectedTheme === 'darkBlack' ? 600 : 400,
-      color: selectedTheme === 'darkBlack' ? '#000000' : themeColors?.fontColor || '#333',
-      fontSize: '0.9rem',
-      wordBreak: 'break-all' as const,
-    }),
-    [themeColors, selectedTheme],
-  )
+  const valueSx = {
+    fontSize: '0.85rem',
+    fontWeight: 400,
+    color: 'text.primary',
+    wordBreak: 'break-word' as const,
+  }
 
-  const sectionTitleStyle = useMemo(
-    () => ({
-      mb: 2,
-      fontWeight: 700,
-      color: themeColors?.background || '#1976d2',
-    }),
-    [themeColors],
-  )
-
-  const chipStyle = useMemo(
-    () => ({
-      m: 0.25,
-      fontSize: '0.75rem',
-    }),
-    [],
-  )
-
-  const chipColors = useMemo(
-    () => ({
-      scopes: themeColors?.lightBackground || '#e3f2fd',
-      grants: themeColors?.lightBackground || '#fff3e0',
-      responses: themeColors?.lightBackground || '#e8f5e9',
-      uris: themeColors?.lightBackground || '#e1f5fe',
-      logout: themeColors?.lightBackground || '#fce4ec',
-      contacts: themeColors?.lightBackground || '#f3e5f5',
-    }),
-    [themeColors],
-  )
-
-  const renderField = useCallback(
-    (label: string, value: string | number | boolean | undefined | null) => {
-      if (value === undefined || value === null || value === '') return null
-      return (
-        <Grid item xs={12} sm={6} md={4}>
-          <Typography sx={labelStyle}>{label}</Typography>
-          <Typography sx={valueStyle}>
-            {typeof value === 'boolean'
-              ? value
-                ? t('options.yes')
-                : t('options.no')
-              : String(value)}
-          </Typography>
-        </Grid>
-      )
-    },
-    [labelStyle, valueStyle, t],
-  )
-
-  const renderChipList = useCallback(
-    (label: string, items: string[] | undefined, color: string) => {
-      if (!items || items.length === 0) return null
-      return (
-        <Grid item xs={12}>
-          <Typography sx={labelStyle}>{label}</Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-            {items.map((item, index) => (
-              <Chip
-                key={index}
-                label={item}
-                size="small"
-                sx={{ ...chipStyle, backgroundColor: color }}
-              />
-            ))}
-          </Box>
-        </Grid>
-      )
-    },
-    [labelStyle, chipStyle],
-  )
+  const chipSx = {
+    fontSize: '0.7rem',
+    height: 24,
+    backgroundColor: 'action.hover',
+  }
 
   return (
-    <Box sx={containerStyle}>
-      <Box sx={sectionStyle}>
-        <Typography variant="subtitle2" sx={sectionTitleStyle}>
-          {t('titles.client_details')}
+    <Paper
+      elevation={0}
+      sx={{
+        p: 2,
+        borderRadius: 1,
+        border: '1px solid',
+        borderColor: 'divider',
+      }}
+    >
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+        <Typography sx={{ fontSize: '1rem', fontWeight: 600, flex: 1 }}>
+          {client.displayName || client.clientName || t('fields.unnamed_client')}
         </Typography>
-        <Grid container spacing={2}>
-          {renderField(t('fields.client_id'), client.inum)}
-          {renderField(t('fields.client_name'), client.clientName)}
-          {renderField(t('fields.displayname'), client.displayName)}
-          {renderField(t('fields.description'), client.description)}
-          {renderField(t('fields.application_type'), client.applicationType)}
-          {renderField(t('fields.subject_type'), client.subjectType)}
-          {renderField(
-            t('fields.status'),
-            client.disabled ? t('fields.disabled') : t('fields.active'),
-          )}
-          {renderField(t('fields.is_trusted_client'), client.trustedClient)}
-        </Grid>
+        <Chip
+          label={client.disabled ? t('fields.disabled') : t('fields.active')}
+          size="small"
+          color={client.disabled ? 'default' : 'success'}
+          sx={{ height: 22, fontSize: '0.7rem' }}
+        />
       </Box>
 
-      <Divider sx={{ my: 2 }} />
-
-      <Box sx={sectionStyle}>
-        <Typography variant="subtitle2" sx={sectionTitleStyle}>
-          {t('titles.scopes_and_grants')}
-        </Typography>
-        <Grid container spacing={2}>
-          {renderChipList(
-            t('fields.scopes'),
-            client.scopes?.map((s) => formatScopeDisplay(s)),
-            chipColors.scopes,
-          )}
-          {renderChipList(
-            t('fields.grant_types'),
-            client.grantTypes?.map((g) => formatGrantTypeLabel(g)),
-            chipColors.grants,
-          )}
-          {renderChipList(
-            t('fields.response_types'),
-            client.responseTypes?.map((r) => formatResponseTypeLabel(r)),
-            chipColors.responses,
-          )}
+      <Grid container spacing={1.5}>
+        <Grid item xs={12} sm={4}>
+          <Typography sx={labelSx}>{t('fields.client_id')}</Typography>
+          <Typography sx={valueSx}>{client.inum}</Typography>
         </Grid>
-      </Box>
-
-      <Divider sx={{ my: 2 }} />
-
-      <Box sx={sectionStyle}>
-        <Typography variant="subtitle2" sx={sectionTitleStyle}>
-          {t('titles.uris')}
-        </Typography>
-        <Grid container spacing={2}>
-          {renderChipList(t('fields.redirect_uris'), client.redirectUris, chipColors.uris)}
-          {renderChipList(
-            t('fields.post_logout_redirect_uris'),
-            client.postLogoutRedirectUris,
-            chipColors.logout,
-          )}
-          {renderField(t('fields.client_uri'), client.clientUri)}
-          {renderField(t('fields.logo_uri'), client.logoUri)}
-          {renderField(t('fields.policy_uri'), client.policyUri)}
-          {renderField(t('fields.tos_uri'), client.tosUri)}
+        <Grid item xs={12} sm={4}>
+          <Typography sx={labelSx}>{t('fields.client_name')}</Typography>
+          <Typography sx={valueSx}>{client.clientName || '-'}</Typography>
         </Grid>
-      </Box>
-
-      <Divider sx={{ my: 2 }} />
-
-      <Box sx={sectionStyle}>
-        <Typography variant="subtitle2" sx={sectionTitleStyle}>
-          {t('titles.authentication')}
-        </Typography>
-        <Grid container spacing={2}>
-          {renderField(t('fields.token_endpoint_auth_method'), client.tokenEndpointAuthMethod)}
-          {renderField(t('fields.id_token_signed_response_alg'), client.idTokenSignedResponseAlg)}
-          {renderField(t('fields.access_token_signing_alg'), client.accessTokenSigningAlg)}
-          {renderField(t('fields.jwks_uri'), client.jwksUri)}
+        <Grid item xs={12} sm={4}>
+          <Typography sx={labelSx}>{t('fields.application_type')}</Typography>
+          <Typography sx={valueSx}>{client.applicationType || '-'}</Typography>
         </Grid>
-      </Box>
 
-      <Divider sx={{ my: 2 }} />
+        {client.description && (
+          <Grid item xs={12}>
+            <Typography sx={labelSx}>{t('fields.description')}</Typography>
+            <Typography sx={valueSx}>{client.description}</Typography>
+          </Grid>
+        )}
 
-      <Box sx={sectionStyle}>
-        <Typography variant="subtitle2" sx={sectionTitleStyle}>
-          {t('titles.token_settings')}
-        </Typography>
-        <Grid container spacing={2}>
-          {renderField(t('fields.access_token_lifetime'), client.accessTokenLifetime)}
-          {renderField(t('fields.refresh_token_lifetime'), client.refreshTokenLifetime)}
-          {renderField(t('fields.default_max_age'), client.defaultMaxAge)}
-          {renderField(t('fields.access_token_as_jwt'), client.accessTokenAsJwt)}
-          {renderField(t('fields.include_claims_in_id_token'), client.includeClaimsInIdToken)}
-          {renderField(
-            t('fields.persist_client_authorizations'),
-            client.persistClientAuthorizations,
-          )}
-        </Grid>
-      </Box>
+        {client.scopes && client.scopes.length > 0 && (
+          <Grid item xs={12}>
+            <Typography sx={{ ...labelSx, mb: 0.5 }}>{t('fields.scopes')}</Typography>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+              {getScopeNames().map((name, i) => (
+                <Chip key={i} label={name} size="small" sx={chipSx} />
+              ))}
+            </Box>
+          </Grid>
+        )}
 
-      {client.contacts && client.contacts.length > 0 && (
-        <>
-          <Divider sx={{ my: 2 }} />
-          <Box sx={sectionStyle}>
-            <Typography variant="subtitle2" sx={sectionTitleStyle}>
-              {t('titles.contacts')}
-            </Typography>
-            <Grid container spacing={2}>
-              {renderChipList(t('fields.contacts'), client.contacts, chipColors.contacts)}
-            </Grid>
-          </Box>
-        </>
-      )}
-    </Box>
+        {client.grantTypes && client.grantTypes.length > 0 && (
+          <Grid item xs={12} sm={6}>
+            <Typography sx={{ ...labelSx, mb: 0.5 }}>{t('fields.grant_types')}</Typography>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+              {client.grantTypes.map((g, i) => (
+                <Chip key={i} label={formatGrantTypeLabel(g)} size="small" sx={chipSx} />
+              ))}
+            </Box>
+          </Grid>
+        )}
+        {client.responseTypes && client.responseTypes.length > 0 && (
+          <Grid item xs={12} sm={6}>
+            <Typography sx={{ ...labelSx, mb: 0.5 }}>{t('fields.response_types')}</Typography>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+              {client.responseTypes.map((r, i) => (
+                <Chip key={i} label={formatResponseTypeLabel(r)} size="small" sx={chipSx} />
+              ))}
+            </Box>
+          </Grid>
+        )}
+      </Grid>
+    </Paper>
   )
 }
 

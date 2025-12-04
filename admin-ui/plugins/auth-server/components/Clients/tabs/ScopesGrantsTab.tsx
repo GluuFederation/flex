@@ -7,9 +7,8 @@ import {
   Chip,
   TextField,
   Autocomplete,
-  Checkbox,
+  Switch,
   FormControlLabel,
-  FormGroup,
 } from '@mui/material'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
@@ -83,13 +82,23 @@ const ScopesGrantsTab: React.FC<ScopesGrantsTabProps> = ({
     [onScopeSearch],
   )
 
+  const getScopeDisplayName = useCallback(
+    (scopeValue: string): string => {
+      const found = scopes.find((s) => s.dn === scopeValue || s.inum === scopeValue)
+      return found?.displayName || found?.id || formatScopeDisplay(scopeValue)
+    },
+    [scopes],
+  )
+
   const selectedScopes = useMemo(() => {
     const scopeValues = formik.values.scopes || []
     return scopeValues.map((scopeValue) => {
       const found = scopes.find((s) => s.dn === scopeValue || s.inum === scopeValue)
-      return found || { dn: scopeValue, displayName: formatScopeDisplay(scopeValue) }
+      return (
+        found || { dn: scopeValue, displayName: getScopeDisplayName(scopeValue), id: scopeValue }
+      )
     })
-  }, [formik.values.scopes, scopes])
+  }, [formik.values.scopes, scopes, getScopeDisplayName])
 
   const sectionStyle = useMemo(
     () => ({
@@ -123,6 +132,18 @@ const ScopesGrantsTab: React.FC<ScopesGrantsTabProps> = ({
     [themeColors],
   )
 
+  const switchStyle = useMemo(
+    () => ({
+      '& .MuiSwitch-switchBase.Mui-checked': {
+        color: themeColors?.background,
+      },
+      '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+        backgroundColor: themeColors?.background,
+      },
+    }),
+    [themeColors],
+  )
+
   return (
     <Box sx={{ p: 2 }}>
       <Box sx={sectionStyle}>
@@ -130,7 +151,7 @@ const ScopesGrantsTab: React.FC<ScopesGrantsTabProps> = ({
         {viewOnly ? (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
             {(formik.values.scopes || []).map((scope, index) => (
-              <Chip key={index} label={formatScopeDisplay(scope)} sx={chipStyle} size="small" />
+              <Chip key={index} label={getScopeDisplayName(scope)} sx={chipStyle} size="small" />
             ))}
             {(!formik.values.scopes || formik.values.scopes.length === 0) && (
               <Typography color="text.secondary" variant="body2">
@@ -203,24 +224,23 @@ const ScopesGrantsTab: React.FC<ScopesGrantsTabProps> = ({
             )}
           </Box>
         ) : (
-          <FormGroup>
-            <Grid container spacing={1}>
-              {GRANT_TYPES.map((grant) => (
-                <Grid item xs={12} sm={6} md={4} key={grant.value}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={(formik.values.grantTypes || []).includes(grant.value)}
-                        onChange={(e) => handleGrantTypeChange(grant.value, e.target.checked)}
-                        size="small"
-                      />
-                    }
-                    label={<Typography variant="body2">{grant.label}</Typography>}
-                  />
-                </Grid>
-              ))}
-            </Grid>
-          </FormGroup>
+          <Grid container spacing={1}>
+            {GRANT_TYPES.map((grant) => (
+              <Grid item xs={12} sm={6} md={4} key={grant.value}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={(formik.values.grantTypes || []).includes(grant.value)}
+                      onChange={(e) => handleGrantTypeChange(grant.value, e.target.checked)}
+                      disabled={viewOnly}
+                      sx={switchStyle}
+                    />
+                  }
+                  label={<Typography variant="body2">{grant.label}</Typography>}
+                />
+              </Grid>
+            ))}
+          </Grid>
         )}
       </Box>
 
@@ -246,21 +266,23 @@ const ScopesGrantsTab: React.FC<ScopesGrantsTabProps> = ({
             )}
           </Box>
         ) : (
-          <FormGroup row>
+          <Grid container spacing={1}>
             {RESPONSE_TYPES.map((type) => (
-              <FormControlLabel
-                key={type.value}
-                control={
-                  <Checkbox
-                    checked={(formik.values.responseTypes || []).includes(type.value)}
-                    onChange={(e) => handleResponseTypeChange(type.value, e.target.checked)}
-                    size="small"
-                  />
-                }
-                label={<Typography variant="body2">{type.label}</Typography>}
-              />
+              <Grid item xs={12} sm={6} md={4} key={type.value}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={(formik.values.responseTypes || []).includes(type.value)}
+                      onChange={(e) => handleResponseTypeChange(type.value, e.target.checked)}
+                      disabled={viewOnly}
+                      sx={switchStyle}
+                    />
+                  }
+                  label={<Typography variant="body2">{type.label}</Typography>}
+                />
+              </Grid>
             ))}
-          </FormGroup>
+          </Grid>
         )}
       </Box>
 

@@ -456,6 +456,146 @@ const UrisTab: React.FC<UrisTabProps> = ({
           </Grid>
         </Grid>
       </Box>
+
+      <Box sx={sectionStyle}>
+        <Typography sx={sectionTitleStyle}>{t('titles.localization')}</Typography>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              size="small"
+              label={t('fields.client_name_localized')}
+              name="clientNameLocalized"
+              value={
+                formik.values.clientNameLocalized
+                  ? JSON.stringify(formik.values.clientNameLocalized)
+                  : ''
+              }
+              onChange={(e) => {
+                try {
+                  const parsed = e.target.value ? JSON.parse(e.target.value) : {}
+                  handleFieldChange(
+                    'clientNameLocalized',
+                    t('fields.client_name_localized'),
+                    parsed,
+                  )
+                } catch {
+                  // Keep raw value for editing
+                }
+              }}
+              disabled={viewOnly}
+              multiline
+              rows={2}
+              sx={fieldStyle}
+              helperText={t('placeholders.localized_json_format')}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              size="small"
+              label={t('fields.logo_uri_localized')}
+              name="logoUriLocalized"
+              value={
+                formik.values.logoUriLocalized ? JSON.stringify(formik.values.logoUriLocalized) : ''
+              }
+              onChange={(e) => {
+                try {
+                  const parsed = e.target.value ? JSON.parse(e.target.value) : {}
+                  handleFieldChange('logoUriLocalized', t('fields.logo_uri_localized'), parsed)
+                } catch {
+                  // Keep raw value for editing
+                }
+              }}
+              disabled={viewOnly}
+              multiline
+              rows={2}
+              sx={fieldStyle}
+              helperText={t('placeholders.localized_json_format')}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              size="small"
+              label={t('fields.client_uri_localized')}
+              name="clientUriLocalized"
+              value={
+                formik.values.clientUriLocalized
+                  ? JSON.stringify(formik.values.clientUriLocalized)
+                  : ''
+              }
+              onChange={(e) => {
+                try {
+                  const parsed = e.target.value ? JSON.parse(e.target.value) : {}
+                  handleFieldChange('clientUriLocalized', t('fields.client_uri_localized'), parsed)
+                } catch {
+                  // Keep raw value for editing
+                }
+              }}
+              disabled={viewOnly}
+              multiline
+              rows={2}
+              sx={fieldStyle}
+              helperText={t('placeholders.localized_json_format')}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              size="small"
+              label={t('fields.policy_uri_localized')}
+              name="policyUriLocalized"
+              value={
+                formik.values.policyUriLocalized
+                  ? JSON.stringify(formik.values.policyUriLocalized)
+                  : ''
+              }
+              onChange={(e) => {
+                try {
+                  const parsed = e.target.value ? JSON.parse(e.target.value) : {}
+                  handleFieldChange('policyUriLocalized', t('fields.policy_uri_localized'), parsed)
+                } catch {
+                  // Keep raw value for editing
+                }
+              }}
+              disabled={viewOnly}
+              multiline
+              rows={2}
+              sx={fieldStyle}
+              helperText={t('placeholders.localized_json_format')}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              size="small"
+              label={t('fields.tos_uri_localized')}
+              name="tosUriLocalized"
+              value={
+                formik.values.tosUriLocalized ? JSON.stringify(formik.values.tosUriLocalized) : ''
+              }
+              onChange={(e) => {
+                try {
+                  const parsed = e.target.value ? JSON.parse(e.target.value) : {}
+                  handleFieldChange('tosUriLocalized', t('fields.tos_uri_localized'), parsed)
+                } catch {
+                  // Keep raw value for editing
+                }
+              }}
+              disabled={viewOnly}
+              multiline
+              rows={2}
+              sx={fieldStyle}
+              helperText={t('placeholders.localized_json_format')}
+            />
+          </Grid>
+        </Grid>
+      </Box>
     </Box>
   )
 }

@@ -286,15 +286,15 @@ const ClientForm: React.FC<ClientFormProps> = ({
                 >
                   {onCancel && (
                     <Button
-                      variant="outlined"
+                      variant="contained"
                       onClick={onCancel}
                       sx={{
                         ...buttonStyle,
-                        'borderColor': themeColors?.background,
-                        'color': themeColors?.background,
+                        'backgroundColor': themeColors?.background,
+                        'color': 'white',
                         '&:hover': {
-                          borderColor: themeColors?.background,
-                          backgroundColor: `${themeColors?.background}10`,
+                          backgroundColor: themeColors?.background,
+                          opacity: 0.9,
                         },
                       }}
                     >
@@ -307,12 +307,14 @@ const ClientForm: React.FC<ClientFormProps> = ({
                     disabled={!formik.dirty && Object.keys(modifiedFields).length === 0}
                     sx={{
                       'backgroundColor': themeColors?.background,
+                      'color': 'white',
                       '&:hover': {
                         backgroundColor: themeColors?.background,
                         opacity: 0.9,
                       },
                       '&:disabled': {
                         backgroundColor: themeColors?.lightBackground,
+                        color: 'rgba(255, 255, 255, 0.7)',
                       },
                     }}
                   >

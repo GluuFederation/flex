@@ -13,7 +13,11 @@ import {
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import type { AdvancedTabProps } from '../types'
-import { BACKCHANNEL_TOKEN_DELIVERY_MODES, SCRIPT_TYPES } from '../helper/constants'
+import {
+  BACKCHANNEL_TOKEN_DELIVERY_MODES,
+  SCRIPT_TYPES,
+  TOKEN_ENDPOINT_AUTH_METHODS,
+} from '../helper/constants'
 import { filterScriptsByType, getScriptNameFromDn } from '../helper/utils'
 
 const AdvancedTab: React.FC<AdvancedTabProps> = ({
@@ -128,6 +132,18 @@ const AdvancedTab: React.FC<AdvancedTabProps> = ({
     [scripts],
   )
 
+  const tokenExchangeScripts = useMemo(
+    () => filterScriptsByType(scripts, SCRIPT_TYPES.TOKEN_EXCHANGE),
+    [scripts],
+  )
+
+  const parScripts = useMemo(() => filterScriptsByType(scripts, SCRIPT_TYPES.PAR), [scripts])
+
+  const logoutStatusJwtScripts = useMemo(
+    () => filterScriptsByType(scripts, SCRIPT_TYPES.LOGOUT_STATUS_JWT),
+    [scripts],
+  )
+
   const renderScriptSelector = useCallback(
     (
       label: string,
@@ -228,6 +244,48 @@ const AdvancedTab: React.FC<AdvancedTabProps> = ({
           </Grid>
 
           <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
+              size="small"
+              type="number"
+              label={t('fields.id_token_lifetime')}
+              name="idTokenLifetime"
+              value={formik.values.idTokenLifetime || ''}
+              onChange={(e) =>
+                handleFieldChange(
+                  'idTokenLifetime',
+                  t('fields.id_token_lifetime'),
+                  e.target.value ? parseInt(e.target.value) : null,
+                )
+              }
+              disabled={viewOnly}
+              sx={fieldStyle}
+              InputProps={{ inputProps: { min: 0 } }}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
+              size="small"
+              type="number"
+              label={t('fields.tx_token_lifetime')}
+              name="txTokenLifetime"
+              value={formik.values.txTokenLifetime || ''}
+              onChange={(e) =>
+                handleFieldChange(
+                  'txTokenLifetime',
+                  t('fields.tx_token_lifetime'),
+                  e.target.value ? parseInt(e.target.value) : null,
+                )
+              }
+              disabled={viewOnly}
+              sx={fieldStyle}
+              InputProps={{ inputProps: { min: 0 } }}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={4}>
             <FormControlLabel
               control={
                 <Switch
@@ -266,6 +324,71 @@ const AdvancedTab: React.FC<AdvancedTabProps> = ({
               label={t('fields.include_claims_in_id_token')}
             />
           </Grid>
+
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
+              size="small"
+              type="number"
+              label={t('fields.requested_lifetime')}
+              name="attributes.requestedLifetime"
+              value={formik.values.attributes?.requestedLifetime || ''}
+              onChange={(e) =>
+                handleAttributeChange(
+                  'requestedLifetime',
+                  t('fields.requested_lifetime'),
+                  e.target.value ? parseInt(e.target.value) : null,
+                )
+              }
+              disabled={viewOnly}
+              sx={fieldStyle}
+              InputProps={{ inputProps: { min: 0 } }}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={4}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={
+                    formik.values.attributes?.runIntrospectionScriptBeforeJwtCreation || false
+                  }
+                  onChange={(e) =>
+                    handleAttributeChange(
+                      'runIntrospectionScriptBeforeJwtCreation',
+                      t('fields.run_introspection_script_before_jwt_creation'),
+                      e.target.checked,
+                    )
+                  }
+                  disabled={viewOnly}
+                  sx={switchStyle}
+                />
+              }
+              label={t('fields.run_introspection_script_before_jwt_creation')}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={4}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={
+                    formik.values.attributes?.keepClientAuthorizationAfterExpiration || false
+                  }
+                  onChange={(e) =>
+                    handleAttributeChange(
+                      'keepClientAuthorizationAfterExpiration',
+                      t('fields.keep_client_authorization_after_expiration'),
+                      e.target.checked,
+                    )
+                  }
+                  disabled={viewOnly}
+                  sx={switchStyle}
+                />
+              }
+              label={t('fields.keep_client_authorization_after_expiration')}
+            />
+          </Grid>
         </Grid>
       </Box>
 
@@ -290,6 +413,7 @@ const AdvancedTab: React.FC<AdvancedTabProps> = ({
               disabled={viewOnly}
               sx={fieldStyle}
               SelectProps={{ native: true }}
+              InputLabelProps={{ shrink: true }}
             >
               <option value="">{t('actions.choose')}...</option>
               {BACKCHANNEL_TOKEN_DELIVERY_MODES.map((mode) => (
@@ -384,6 +508,131 @@ const AdvancedTab: React.FC<AdvancedTabProps> = ({
       </Box>
 
       <Box sx={sectionStyle}>
+        <Typography sx={sectionTitleStyle}>{t('titles.acr_security')}</Typography>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
+              size="small"
+              type="number"
+              label={t('fields.minimum_acr_level')}
+              name="attributes.minimumAcrLevel"
+              value={formik.values.attributes?.minimumAcrLevel ?? ''}
+              onChange={(e) =>
+                handleAttributeChange(
+                  'minimumAcrLevel',
+                  t('fields.minimum_acr_level'),
+                  e.target.value ? parseInt(e.target.value) : null,
+                )
+              }
+              disabled={viewOnly}
+              sx={fieldStyle}
+              InputProps={{ inputProps: { min: -1 } }}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={4}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={formik.values.attributes?.minimumAcrLevelAutoresolve || false}
+                  onChange={(e) =>
+                    handleAttributeChange(
+                      'minimumAcrLevelAutoresolve',
+                      t('fields.minimum_acr_level_autoresolve'),
+                      e.target.checked,
+                    )
+                  }
+                  disabled={viewOnly}
+                  sx={switchStyle}
+                />
+              }
+              label={t('fields.minimum_acr_level_autoresolve')}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={4}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={formik.values.attributes?.allowOfflineAccessWithoutConsent || false}
+                  onChange={(e) =>
+                    handleAttributeChange(
+                      'allowOfflineAccessWithoutConsent',
+                      t('fields.allow_offline_access_without_consent'),
+                      e.target.checked,
+                    )
+                  }
+                  disabled={viewOnly}
+                  sx={switchStyle}
+                />
+              }
+              label={t('fields.allow_offline_access_without_consent')}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <Autocomplete
+              multiple
+              freeSolo
+              options={[]}
+              value={formik.values.attributes?.minimumAcrPriorityList || []}
+              onChange={(_, newValue) =>
+                handleAttributeChange(
+                  'minimumAcrPriorityList',
+                  t('fields.minimum_acr_priority_list'),
+                  newValue,
+                )
+              }
+              disabled={viewOnly}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  size="small"
+                  label={t('fields.minimum_acr_priority_list')}
+                  sx={fieldStyle}
+                />
+              )}
+              renderTags={(value, getTagProps) =>
+                value.map((option, index) => (
+                  <Chip {...getTagProps({ index })} key={index} label={option} size="small" />
+                ))
+              }
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <Autocomplete
+              multiple
+              options={TOKEN_ENDPOINT_AUTH_METHODS.map((m) => m.value)}
+              value={formik.values.attributes?.additionalTokenEndpointAuthMethods || []}
+              onChange={(_, newValue) =>
+                handleAttributeChange(
+                  'additionalTokenEndpointAuthMethods',
+                  t('fields.additional_token_endpoint_auth_methods'),
+                  newValue,
+                )
+              }
+              disabled={viewOnly}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  size="small"
+                  label={t('fields.additional_token_endpoint_auth_methods')}
+                  sx={fieldStyle}
+                />
+              )}
+              renderTags={(value, getTagProps) =>
+                value.map((option, index) => (
+                  <Chip {...getTagProps({ index })} key={index} label={option} size="small" />
+                ))
+              }
+            />
+          </Grid>
+        </Grid>
+      </Box>
+
+      <Box sx={sectionStyle}>
         <Typography sx={sectionTitleStyle}>{t('titles.uma')}</Typography>
         <Grid container spacing={2}>
           <Grid item xs={12} md={4}>
@@ -468,6 +717,59 @@ const AdvancedTab: React.FC<AdvancedTabProps> = ({
               updateTokenScripts,
               formik.values.attributes?.updateTokenScriptDns,
             )}
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            {renderScriptSelector(
+              t('fields.token_exchange_scripts'),
+              'tokenExchangeScripts',
+              tokenExchangeScripts,
+              formik.values.attributes?.tokenExchangeScripts,
+            )}
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            {renderScriptSelector(
+              t('fields.par_scripts'),
+              'parScriptDns',
+              parScripts,
+              formik.values.attributes?.parScriptDns,
+            )}
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            {renderScriptSelector(
+              t('fields.logout_status_jwt_scripts'),
+              'logoutStatusJwtScriptDns',
+              logoutStatusJwtScripts,
+              formik.values.attributes?.logoutStatusJwtScriptDns,
+            )}
+          </Grid>
+
+          <Grid item xs={12}>
+            <Autocomplete
+              multiple
+              freeSolo
+              options={[]}
+              value={formik.values.attributes?.spontaneousScopes || []}
+              onChange={(_, newValue) =>
+                handleAttributeChange('spontaneousScopes', t('fields.spontaneous_scopes'), newValue)
+              }
+              disabled={viewOnly}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  size="small"
+                  label={t('fields.spontaneous_scopes')}
+                  sx={fieldStyle}
+                />
+              )}
+              renderTags={(value, getTagProps) =>
+                value.map((option, index) => (
+                  <Chip {...getTagProps({ index })} key={index} label={option} size="small" />
+                ))
+              }
+            />
           </Grid>
         </Grid>
       </Box>
@@ -665,6 +967,87 @@ const AdvancedTab: React.FC<AdvancedTabProps> = ({
                   {...params}
                   size="small"
                   label={t('fields.additional_audience')}
+                  sx={fieldStyle}
+                />
+              )}
+              renderTags={(value, getTagProps) =>
+                value.map((option, index) => (
+                  <Chip {...getTagProps({ index })} key={index} label={option} size="small" />
+                ))
+              }
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              label={t('fields.jans_sub_attr')}
+              name="attributes.jansSubAttr"
+              value={formik.values.attributes?.jansSubAttr || ''}
+              onChange={(e) =>
+                handleAttributeChange('jansSubAttr', t('fields.jans_sub_attr'), e.target.value)
+              }
+              disabled={viewOnly}
+              sx={fieldStyle}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              label={t('fields.id_token_token_binding_cnf')}
+              name="idTokenTokenBindingCnf"
+              value={formik.values.idTokenTokenBindingCnf || ''}
+              onChange={(e) =>
+                handleFieldChange(
+                  'idTokenTokenBindingCnf',
+                  t('fields.id_token_token_binding_cnf'),
+                  e.target.value,
+                )
+              }
+              disabled={viewOnly}
+              sx={fieldStyle}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              size="small"
+              label={t('fields.evidence')}
+              name="attributes.evidence"
+              value={formik.values.attributes?.evidence || ''}
+              onChange={(e) =>
+                handleAttributeChange('evidence', t('fields.evidence'), e.target.value)
+              }
+              disabled={viewOnly}
+              multiline
+              rows={2}
+              sx={fieldStyle}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <Autocomplete
+              multiple
+              freeSolo
+              options={[]}
+              value={formik.values.attributes?.authorizationDetailsTypes || []}
+              onChange={(_, newValue) =>
+                handleAttributeChange(
+                  'authorizationDetailsTypes',
+                  t('fields.authorization_details_types'),
+                  newValue,
+                )
+              }
+              disabled={viewOnly}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  size="small"
+                  label={t('fields.authorization_details_types')}
                   sx={fieldStyle}
                 />
               )}

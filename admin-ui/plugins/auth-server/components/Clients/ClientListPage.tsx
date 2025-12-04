@@ -44,6 +44,7 @@ import {
   useGetOauthOpenidClients,
   useDeleteOauthOpenidClientByInum,
   getGetOauthOpenidClientsQueryKey,
+  useGetOauthScopes,
 } from 'JansConfigApi'
 import type { Client, ClientTableRow } from './types'
 import { useClientActions } from './hooks'
@@ -167,6 +168,12 @@ const ClientListPage: React.FC = () => {
       onError: handleDeleteError,
     },
   })
+
+  const { data: scopesData } = useGetOauthScopes({ limit: 200 }, { query: { staleTime: 60000 } })
+
+  const scopesList = useMemo(() => {
+    return (scopesData?.entries || []) as Array<{ dn?: string; id?: string; displayName?: string }>
+  }, [scopesData?.entries])
 
   const clientResourceId = ADMIN_UI_RESOURCES.Clients
 
@@ -353,13 +360,13 @@ const ClientListPage: React.FC = () => {
     [handleClientDelete],
   )
 
-  const DeleteIcon = () => <DeleteOutlined />
+  const DeleteIcon = () => <DeleteOutlined sx={{ color: 'error.main' }} />
 
   const detailPanel = useCallback(
     (props: DetailPanelProps): React.ReactElement => (
-      <ClientDetailView client={props.rowData as Client} />
+      <ClientDetailView client={props.rowData as Client} scopes={scopesList} />
     ),
-    [],
+    [scopesList],
   )
 
   const PaperContainer = useCallback(
@@ -431,9 +438,9 @@ const ClientListPage: React.FC = () => {
         render: (rowData) => truncateText(rowData.clientName || rowData.displayName || '-', 30),
       },
       {
-        title: t('fields.client_id'),
-        field: 'inum',
-        render: (rowData) => truncateText(rowData.inum || '', 20),
+        title: t('fields.application_type'),
+        field: 'applicationType',
+        render: (rowData) => rowData.applicationType || '-',
       },
       {
         title: t('fields.grant_types'),
@@ -573,7 +580,7 @@ const ClientListPage: React.FC = () => {
                       onChange={handleSortByChange}
                       label={t('fields.sort_by')}
                     >
-                      <MenuItem value="">{t('fields.none')}</MenuItem>
+                      <MenuItem value="">{t('options.none')}</MenuItem>
                       <MenuItem value="displayName">{t('fields.displayname')}</MenuItem>
                       <MenuItem value="clientName">{t('fields.client_name')}</MenuItem>
                       <MenuItem value="inum">{t('fields.client_id')}</MenuItem>
@@ -589,8 +596,8 @@ const ClientListPage: React.FC = () => {
                         onChange={handleSortOrderChange}
                         label={t('fields.sort_order')}
                       >
-                        <MenuItem value="ascending">{t('fields.ascending')}</MenuItem>
-                        <MenuItem value="descending">{t('fields.descending')}</MenuItem>
+                        <MenuItem value="ascending">{t('options.ascending')}</MenuItem>
+                        <MenuItem value="descending">{t('options.descending')}</MenuItem>
                       </Select>
                     </FormControl>
                   )}

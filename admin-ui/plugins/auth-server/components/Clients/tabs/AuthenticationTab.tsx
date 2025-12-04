@@ -113,6 +113,7 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
               disabled={viewOnly}
               sx={fieldStyle}
               SelectProps={{ native: true }}
+              InputLabelProps={{ shrink: true }}
             >
               <option value="">{t('actions.choose')}...</option>
               {TOKEN_ENDPOINT_AUTH_METHODS.map((option) => (
@@ -126,8 +127,38 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
           <Grid item xs={12} md={6}>
             <TextField
               fullWidth
+              select
+              size="small"
+              label={t('fields.token_endpoint_auth_signing_alg')}
+              name="tokenEndpointAuthSigningAlg"
+              value={formik.values.tokenEndpointAuthSigningAlg || ''}
+              onChange={(e) =>
+                handleFieldChange(
+                  'tokenEndpointAuthSigningAlg',
+                  t('fields.token_endpoint_auth_signing_alg'),
+                  e.target.value,
+                )
+              }
+              disabled={viewOnly}
+              sx={fieldStyle}
+              SelectProps={{ native: true }}
+              InputLabelProps={{ shrink: true }}
+            >
+              <option value="">{t('actions.choose')}...</option>
+              {signingAlgorithms.map((alg) => (
+                <option key={alg} value={alg}>
+                  {alg}
+                </option>
+              ))}
+            </TextField>
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
               size="small"
               label={t('fields.jwks_uri')}
+              InputLabelProps={{ shrink: true }}
               name="jwksUri"
               value={formik.values.jwksUri || ''}
               onChange={(e) => handleFieldChange('jwksUri', t('fields.jwks_uri'), e.target.value)}
@@ -141,6 +172,7 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
               fullWidth
               size="small"
               label={t('fields.jwks')}
+              InputLabelProps={{ shrink: true }}
               name="jwks"
               value={formik.values.jwks || ''}
               onChange={(e) => handleFieldChange('jwks', t('fields.jwks'), e.target.value)}
@@ -174,6 +206,7 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
               disabled={viewOnly}
               sx={fieldStyle}
               SelectProps={{ native: true }}
+              InputLabelProps={{ shrink: true }}
             >
               <option value="">{t('actions.choose')}...</option>
               {signingAlgorithms.map((alg) => (
@@ -202,6 +235,7 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
               disabled={viewOnly}
               sx={fieldStyle}
               SelectProps={{ native: true }}
+              InputLabelProps={{ shrink: true }}
             >
               <option value="">{t('actions.choose')}...</option>
               {encryptionAlgorithms.map((alg) => (
@@ -230,6 +264,7 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
               disabled={viewOnly}
               sx={fieldStyle}
               SelectProps={{ native: true }}
+              InputLabelProps={{ shrink: true }}
             >
               <option value="">{t('actions.choose')}...</option>
               {encryptionEncodings.map((enc) => (
@@ -263,6 +298,7 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
               disabled={viewOnly}
               sx={fieldStyle}
               SelectProps={{ native: true }}
+              InputLabelProps={{ shrink: true }}
             >
               <option value="">{t('actions.choose')}...</option>
               {accessTokenSigningAlgs.map((alg) => (
@@ -296,6 +332,7 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
               disabled={viewOnly}
               sx={fieldStyle}
               SelectProps={{ native: true }}
+              InputLabelProps={{ shrink: true }}
             >
               <option value="">{t('actions.choose')}...</option>
               {signingAlgorithms.map((alg) => (
@@ -324,6 +361,7 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
               disabled={viewOnly}
               sx={fieldStyle}
               SelectProps={{ native: true }}
+              InputLabelProps={{ shrink: true }}
             >
               <option value="">{t('actions.choose')}...</option>
               {encryptionAlgorithms.map((alg) => (
@@ -352,6 +390,7 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
               disabled={viewOnly}
               sx={fieldStyle}
               SelectProps={{ native: true }}
+              InputLabelProps={{ shrink: true }}
             >
               <option value="">{t('actions.choose')}...</option>
               {encryptionEncodings.map((enc) => (
@@ -385,6 +424,7 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
               disabled={viewOnly}
               sx={fieldStyle}
               SelectProps={{ native: true }}
+              InputLabelProps={{ shrink: true }}
             >
               <option value="">{t('actions.choose')}...</option>
               {signingAlgorithms.map((alg) => (
@@ -413,6 +453,7 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
               disabled={viewOnly}
               sx={fieldStyle}
               SelectProps={{ native: true }}
+              InputLabelProps={{ shrink: true }}
             >
               <option value="">{t('actions.choose')}...</option>
               {encryptionAlgorithms.map((alg) => (
@@ -441,6 +482,7 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
               disabled={viewOnly}
               sx={fieldStyle}
               SelectProps={{ native: true }}
+              InputLabelProps={{ shrink: true }}
             >
               <option value="">{t('actions.choose')}...</option>
               {encryptionEncodings.map((enc) => (
@@ -474,6 +516,7 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
               disabled={viewOnly}
               sx={fieldStyle}
               SelectProps={{ native: true }}
+              InputLabelProps={{ shrink: true }}
             >
               <option value="">{t('actions.choose')}...</option>
               {signingAlgorithms.map((alg) => (
@@ -502,6 +545,7 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
               disabled={viewOnly}
               sx={fieldStyle}
               SelectProps={{ native: true }}
+              InputLabelProps={{ shrink: true }}
             >
               <option value="">{t('actions.choose')}...</option>
               {encryptionAlgorithms.map((alg) => (
@@ -530,6 +574,7 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
               disabled={viewOnly}
               sx={fieldStyle}
               SelectProps={{ native: true }}
+              InputLabelProps={{ shrink: true }}
             >
               <option value="">{t('actions.choose')}...</option>
               {encryptionEncodings.map((enc) => (
@@ -563,6 +608,7 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
               disabled={viewOnly}
               sx={fieldStyle}
               SelectProps={{ native: true }}
+              InputLabelProps={{ shrink: true }}
             >
               <option value="">{t('actions.choose')}...</option>
               {signingAlgorithms.map((alg) => (
@@ -591,6 +637,7 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
               disabled={viewOnly}
               sx={fieldStyle}
               SelectProps={{ native: true }}
+              InputLabelProps={{ shrink: true }}
             >
               <option value="">{t('actions.choose')}...</option>
               {encryptionAlgorithms.map((alg) => (
@@ -619,11 +666,138 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
               disabled={viewOnly}
               sx={fieldStyle}
               SelectProps={{ native: true }}
+              InputLabelProps={{ shrink: true }}
             >
               <option value="">{t('actions.choose')}...</option>
               {encryptionEncodings.map((enc) => (
                 <option key={enc} value={enc}>
                   {enc}
+                </option>
+              ))}
+            </TextField>
+          </Grid>
+        </Grid>
+      </Box>
+
+      <Box sx={sectionStyle}>
+        <Typography sx={sectionTitleStyle}>{t('titles.tx_token')}</Typography>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
+              select
+              size="small"
+              label={t('fields.tx_token_signed_response_alg')}
+              name="attributes.txTokenSignedResponseAlg"
+              value={formik.values.attributes?.txTokenSignedResponseAlg || ''}
+              onChange={(e) =>
+                handleAttributeChange(
+                  'txTokenSignedResponseAlg',
+                  t('fields.tx_token_signed_response_alg'),
+                  e.target.value,
+                )
+              }
+              disabled={viewOnly}
+              sx={fieldStyle}
+              SelectProps={{ native: true }}
+              InputLabelProps={{ shrink: true }}
+            >
+              <option value="">{t('actions.choose')}...</option>
+              {signingAlgorithms.map((alg) => (
+                <option key={alg} value={alg}>
+                  {alg}
+                </option>
+              ))}
+            </TextField>
+          </Grid>
+
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
+              select
+              size="small"
+              label={t('fields.tx_token_encrypted_response_alg')}
+              name="attributes.txTokenEncryptedResponseAlg"
+              value={formik.values.attributes?.txTokenEncryptedResponseAlg || ''}
+              onChange={(e) =>
+                handleAttributeChange(
+                  'txTokenEncryptedResponseAlg',
+                  t('fields.tx_token_encrypted_response_alg'),
+                  e.target.value,
+                )
+              }
+              disabled={viewOnly}
+              sx={fieldStyle}
+              SelectProps={{ native: true }}
+              InputLabelProps={{ shrink: true }}
+            >
+              <option value="">{t('actions.choose')}...</option>
+              {encryptionAlgorithms.map((alg) => (
+                <option key={alg} value={alg}>
+                  {alg}
+                </option>
+              ))}
+            </TextField>
+          </Grid>
+
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
+              select
+              size="small"
+              label={t('fields.tx_token_encrypted_response_enc')}
+              name="attributes.txTokenEncryptedResponseEnc"
+              value={formik.values.attributes?.txTokenEncryptedResponseEnc || ''}
+              onChange={(e) =>
+                handleAttributeChange(
+                  'txTokenEncryptedResponseEnc',
+                  t('fields.tx_token_encrypted_response_enc'),
+                  e.target.value,
+                )
+              }
+              disabled={viewOnly}
+              sx={fieldStyle}
+              SelectProps={{ native: true }}
+              InputLabelProps={{ shrink: true }}
+            >
+              <option value="">{t('actions.choose')}...</option>
+              {encryptionEncodings.map((enc) => (
+                <option key={enc} value={enc}>
+                  {enc}
+                </option>
+              ))}
+            </TextField>
+          </Grid>
+        </Grid>
+      </Box>
+
+      <Box sx={sectionStyle}>
+        <Typography sx={sectionTitleStyle}>{t('titles.logout')}</Typography>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              select
+              size="small"
+              label={t('fields.logout_status_jwt_signed_response_alg')}
+              name="attributes.logoutStatusJwtSignedResponseAlg"
+              value={formik.values.attributes?.logoutStatusJwtSignedResponseAlg || ''}
+              onChange={(e) =>
+                handleAttributeChange(
+                  'logoutStatusJwtSignedResponseAlg',
+                  t('fields.logout_status_jwt_signed_response_alg'),
+                  e.target.value,
+                )
+              }
+              disabled={viewOnly}
+              sx={fieldStyle}
+              SelectProps={{ native: true }}
+              InputLabelProps={{ shrink: true }}
+            >
+              <option value="">{t('actions.choose')}...</option>
+              {signingAlgorithms.map((alg) => (
+                <option key={alg} value={alg}>
+                  {alg}
                 </option>
               ))}
             </TextField>

@@ -110,6 +110,9 @@ export const SCRIPT_TYPES = {
   UMA_RPT_POLICY: 'uma_rpt_policy',
   UMA_RPT_CLAIMS: 'uma_rpt_claims',
   UMA_CLAIMS_GATHERING: 'uma_claims_gathering',
+  TOKEN_EXCHANGE: 'token_exchange',
+  PAR: 'par',
+  LOGOUT_STATUS_JWT: 'logout_status_jwt',
 } as const
 
 export const TOKEN_TYPE_OPTIONS = [

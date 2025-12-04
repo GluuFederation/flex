@@ -8,6 +8,9 @@ import {
   FormControlLabel,
   InputAdornment,
   IconButton,
+  Typography,
+  Autocomplete,
+  Chip,
 } from '@mui/material'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
@@ -77,6 +80,25 @@ const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
     }),
     [themeColors],
   )
+
+  const sectionTitleStyle = useMemo(
+    () => ({
+      mb: 2,
+      fontWeight: selectedTheme === 'darkBlack' ? 700 : 600,
+      color: selectedTheme === 'darkBlack' ? '#000000' : themeColors?.fontColor || '#333',
+      fontSize: '0.95rem',
+    }),
+    [themeColors, selectedTheme],
+  )
+
+  const formatDate = useCallback((dateString: string | undefined) => {
+    if (!dateString) return '-'
+    try {
+      return new Date(dateString).toLocaleString()
+    } catch {
+      return dateString
+    }
+  }, [])
 
   return (
     <Box sx={{ p: 2 }}>
@@ -298,6 +320,165 @@ const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
               </LocalizationProvider>
             </Grid>
           )}
+        </Grid>
+      </Box>
+
+      <Box sx={sectionStyle}>
+        <Typography sx={sectionTitleStyle}>{t('titles.organization')}</Typography>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              label={t('fields.organization')}
+              name="organization"
+              value={formik.values.organization || ''}
+              onChange={(e) =>
+                handleFieldChange('organization', t('fields.organization'), e.target.value)
+              }
+              disabled={viewOnly}
+              sx={fieldStyle}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              type="number"
+              label={t('fields.ttl')}
+              name="ttl"
+              value={formik.values.ttl || ''}
+              onChange={(e) =>
+                handleFieldChange(
+                  'ttl',
+                  t('fields.ttl'),
+                  e.target.value ? parseInt(e.target.value) : null,
+                )
+              }
+              disabled={viewOnly}
+              sx={fieldStyle}
+              InputProps={{ inputProps: { min: 0 } }}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <Autocomplete
+              multiple
+              freeSolo
+              options={[]}
+              value={formik.values.groups || []}
+              onChange={(_, newValue) => handleFieldChange('groups', t('fields.groups'), newValue)}
+              disabled={viewOnly}
+              renderInput={(params) => (
+                <TextField {...params} size="small" label={t('fields.groups')} sx={fieldStyle} />
+              )}
+              renderTags={(value, getTagProps) =>
+                value.map((option, index) => (
+                  <Chip {...getTagProps({ index })} key={index} label={option} size="small" />
+                ))
+              }
+            />
+          </Grid>
+        </Grid>
+      </Box>
+
+      <Box sx={sectionStyle}>
+        <Typography sx={sectionTitleStyle}>{t('titles.system_information')}</Typography>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              label={t('fields.dn')}
+              name="dn"
+              value={formik.values.dn || ''}
+              disabled
+              sx={fieldStyle}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              label={t('fields.base_dn')}
+              name="baseDn"
+              value={formik.values.baseDn || ''}
+              disabled
+              sx={fieldStyle}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              label={t('fields.client_id_issued_at')}
+              name="clientIdIssuedAt"
+              value={formatDate(formik.values.clientIdIssuedAt)}
+              disabled
+              sx={fieldStyle}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              label={t('fields.client_secret_expires_at')}
+              name="clientSecretExpiresAt"
+              value={formatDate(formik.values.clientSecretExpiresAt)}
+              disabled
+              sx={fieldStyle}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              label={t('fields.last_access_time')}
+              name="lastAccessTime"
+              value={formatDate(formik.values.lastAccessTime)}
+              disabled
+              sx={fieldStyle}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              label={t('fields.last_logon_time')}
+              name="lastLogonTime"
+              value={formatDate(formik.values.lastLogonTime)}
+              disabled
+              sx={fieldStyle}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              label={t('fields.registration_access_token')}
+              name="registrationAccessToken"
+              type="password"
+              value={formik.values.registrationAccessToken || ''}
+              disabled
+              sx={fieldStyle}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <FormControlLabel
+              control={
+                <Switch checked={formik.values.deletable || false} disabled sx={switchStyle} />
+              }
+              label={t('fields.deletable')}
+            />
+          </Grid>
         </Grid>
       </Box>
     </Box>
