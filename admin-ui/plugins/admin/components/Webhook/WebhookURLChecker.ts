@@ -29,6 +29,13 @@ const isPrivateOrLocalhost = (hostname: string): boolean => {
   ) {
     return true
   }
+  const cgnatMatch = hostname.match(/^100\.(\d+)\./)
+  if (cgnatMatch) {
+    const secondOctet = parseInt(cgnatMatch[1], 10)
+    if (secondOctet >= 64 && secondOctet <= 127) {
+      return true
+    }
+  }
   const match = hostname.match(/^172\.(\d+)\./)
   if (match) {
     const secondOctet = parseInt(match[1], 10)
@@ -44,7 +51,12 @@ const isPrivateOrLocalhost = (hostname: string): boolean => {
     if (hostname.startsWith('fc') || hostname.startsWith('fd')) {
       return true
     }
-    if (hostname.startsWith('fe80:')) {
+    if (
+      hostname.startsWith('fe8') ||
+      hostname.startsWith('fe9') ||
+      hostname.startsWith('fea') ||
+      hostname.startsWith('feb')
+    ) {
       return true
     }
     if (hostname.startsWith('2001:db8:') || hostname.startsWith('ff')) {
@@ -55,7 +67,8 @@ const isPrivateOrLocalhost = (hostname: string): boolean => {
   return false
 }
 
-const PATTERN = /^https:\/\/([\w-]+\.)+[\w-]+(:\d+)?(\/[^\s?#]*)?(\?[^\s#]*)?(#[^\s]*)?$/i
+const PATTERN =
+  /^https:\/\/(([\w-]+\.)+[\w-]+|\[[\da-fA-F:]+\])(:\d+)?(\/[^\s?#]*)?(\?[^\s#]*)?(#[^\s]*)?$/i
 
 const isAllowed = (url: string): boolean => {
   try {
