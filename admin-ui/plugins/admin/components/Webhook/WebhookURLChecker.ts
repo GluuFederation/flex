@@ -37,19 +37,19 @@ const isPrivateOrLocalhost = (hostname: string): boolean => {
     }
   }
 
-  if (hostname.startsWith('::ffff:')) {
-    return true
-  }
-
-  if (hostname.startsWith('fc') || hostname.startsWith('fd')) {
-    return true
-  }
-  if (hostname.startsWith('fe80:')) {
-    return true
-  }
-
-  if (hostname.startsWith('2001:db8:') || hostname.startsWith('ff')) {
-    return true
+  if (hostname.includes(':')) {
+    if (hostname.startsWith('::ffff:')) {
+      return true
+    }
+    if (hostname.startsWith('fc') || hostname.startsWith('fd')) {
+      return true
+    }
+    if (hostname.startsWith('fe80:')) {
+      return true
+    }
+    if (hostname.startsWith('2001:db8:') || hostname.startsWith('ff')) {
+      return true
+    }
   }
 
   return false
