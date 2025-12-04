@@ -22,7 +22,7 @@ EXPOSE 8080
 
 RUN mkdir -p /app/static/rdbm /app/schema /app/templates/admin-ui
 
-ENV JANS_SOURCE_VERSION=2440f1c284173c0b4f7c4fd4ef1577ce39c385ad
+ENV JANS_SOURCE_VERSION=01995d33a5469dcebd2da6aa698203ebb80687d4
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
