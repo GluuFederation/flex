@@ -16,6 +16,10 @@ export const validatePassword = (password: string): boolean => {
 }
 
 export const getStringValue = (value: string | string[] | boolean | null | undefined): string => {
+  if (Array.isArray(value)) {
+    return value[0] ?? ''
+  }
+
   if (typeof value === 'string') return value
   if (typeof value === 'boolean') return ''
   return ''

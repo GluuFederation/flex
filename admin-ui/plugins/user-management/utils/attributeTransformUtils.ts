@@ -63,8 +63,24 @@ export const normalizeBooleanValue = (rawValue: FormValueEntry | boolean): boole
 }
 
 export const normalizeFieldValue = (value: FormValueEntry): string => {
-  if (Array.isArray(value)) return (value[0] as string) || ''
-  return typeof value === 'string' ? value : ''
+  if (Array.isArray(value)) {
+    const first = value[0]
+    return first != null ? String(first) : ''
+  }
+
+  if (typeof value === 'string') {
+    return value
+  }
+
+  if (typeof value === 'boolean') {
+    return value ? 'true' : 'false'
+  }
+
+  if (value == null) {
+    return ''
+  }
+
+  return String(value)
 }
 
 export const createCustomAttribute = (
