@@ -1,163 +1,218 @@
-import React, { useEffect, useState } from 'react'
-import { Card, CardBody, Form, FormGroup, Col } from 'Components'
+import React, { useEffect, useState, useCallback, useMemo, memo } from 'react'
+import { useLocation } from 'react-router-dom'
+import { Card, CardBody, Form, FormGroup, Col, Row } from 'Components'
 import { useFormik } from 'formik'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
+import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import { useDispatch, useSelector } from 'react-redux'
-import * as Yup from 'yup'
 import { useTranslation } from 'react-i18next'
 import {
   createSamlIdentity,
   toggleSavedFormFlag,
   updateSamlIdentity,
 } from 'Plugins/saml/redux/features/SamlSlice'
-import PropTypes from 'prop-types'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
-import GluuUploadFile from 'Routes/Apps/Gluu/GluuUploadFile'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
-import { Box } from '@mui/material'
+import GluuUploadFile from 'Routes/Apps/Gluu/GluuUploadFile'
+import GluuStatusMessage from 'Routes/Apps/Gluu/GluuStatusMessage'
 import Toggle from 'react-toggle'
-import { nameIDPolicyFormat } from '../helper'
+import {
+  nameIDPolicyFormat,
+  websiteSsoIdentityProviderValidationSchema,
+  transformToIdentityProviderFormValues,
+} from '../helper'
+import type { WebsiteSsoIdentityProviderFormValues } from '../helper/validations'
 import SetTitle from 'Utils/SetTitle'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
-import customColors from '@/customColors'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import type { SamlIdentity } from '../types/redux'
+import type { SamlRootState } from '../types/state'
+import type { LocationState } from '../types'
 
-const SamlIdpForm = ({ configs, viewOnly }) => {
-  const [showUploadBtn, setShowUploadBtn] = useState(false)
-  const [fileError, setFileError] = useState(false)
-  const savedForm = useSelector((state) => state.idpSamlReducer.savedForm)
-  const loading = useSelector((state) => state.idpSamlReducer.loading)
+interface WebsiteSsoIdentityProviderFormProps {
+  configs?: SamlIdentity | null
+  viewOnly?: boolean
+}
+
+const DOC_SECTION = 'samlIDP' as const
+
+const WebsiteSsoIdentityProviderForm = ({
+  configs: propsConfigs,
+  viewOnly: propsViewOnly,
+}: WebsiteSsoIdentityProviderFormProps = {}) => {
+  const location = useLocation()
+  const state = location.state as LocationState<SamlIdentity> | null
+
+  const configs = useMemo(
+    () => propsConfigs ?? state?.rowData ?? null,
+    [propsConfigs, state?.rowData],
+  )
+  const viewOnly = useMemo(
+    () => propsViewOnly ?? state?.viewOnly ?? false,
+    [propsViewOnly, state?.viewOnly],
+  )
+  const [showUploadBtn, setShowUploadBtn] = useState<boolean>(false)
+  const [metaDataFile, setMetaDataFile] = useState<File | null>(null)
+  const [fileError, setFileError] = useState<boolean>(false)
+  const savedForm = useSelector((state: SamlRootState) => state.idpSamlReducer.savedForm)
+  const loading = useSelector((state: SamlRootState) => state.idpSamlReducer.loading)
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const [modal, setModal] = useState(false)
+  const [modal, setModal] = useState<boolean>(false)
   const { navigateBack } = useAppNavigation()
-  const DOC_SECTION = 'samlIDP'
 
-  if (viewOnly) {
-    SetTitle(t('titles.idp'))
-  } else if (configs) {
-    SetTitle(t('titles.edit_idp'))
-  } else {
-    SetTitle(t('titles.create_idp'))
-  }
+  const title = useMemo(() => {
+    if (viewOnly) {
+      return t('titles.idp')
+    } else if (configs) {
+      return t('titles.edit_idp')
+    } else {
+      return t('titles.create_idp')
+    }
+  }, [viewOnly, configs, t])
 
-  const [metaDataFile, setMetadaDataFile] = useState(null)
-  const initialValues = {
-    ...(configs || {}),
-    name: configs?.name || '',
-    nameIDPolicyFormat: configs?.nameIDPolicyFormat || '',
-    singleSignOnServiceUrl: configs?.singleSignOnServiceUrl || '',
-    idpEntityId: configs?.idpEntityId || '',
-    displayName: configs?.displayName || '',
-    description: configs?.description || '',
-    importMetadataFile: false,
-    enabled: configs?.enabled || false,
-    principalAttribute: configs?.principalAttribute || '',
-    principalType: configs?.principalType || '',
-  }
+  SetTitle(title)
 
-  const validationSchema = Yup.object().shape({
-    singleSignOnServiceUrl: Yup.string().when('importMetadataFile', {
-      is: (value) => {
-        return value === false
-      },
-      then: () => Yup.string().required(`${t('fields.single_signon_service_url')} is Required!`),
-    }),
-    idpEntityId: Yup.string().when('importMetadataFile', {
-      is: (value) => {
-        return value === false
-      },
-      then: () => Yup.string().required(`${t('fields.idp_entity_id')} is Required!`),
-    }),
-    nameIDPolicyFormat: Yup.string().when('importMetadataFile', {
-      is: (value) => {
-        return value === false
-      },
-      then: () => Yup.string().required(`${t('fields.name_policy_format')} is Required!`),
-    }),
-    name: Yup.string().required(`${t('fields.name')} is Required!`),
-    displayName: Yup.string().required(`${t('fields.displayName')} is Required!`),
-  })
+  const initialValues = useMemo<WebsiteSsoIdentityProviderFormValues>(
+    () => transformToIdentityProviderFormValues(configs),
+    [configs],
+  )
 
-  const toggle = () => {
-    setModal(!modal)
-  }
+  const validationSchema = useMemo(() => websiteSsoIdentityProviderValidationSchema(t), [t])
 
-  const formik = useFormik({
+  const toggle = useCallback(() => {
+    setModal((prev) => !prev)
+  }, [])
+
+  const formik = useFormik<WebsiteSsoIdentityProviderFormValues>({
     initialValues,
     validationSchema,
+    enableReinitialize: true,
     onSubmit: () => {
       toggle()
     },
   })
 
-  const submitForm = (messages) => {
-    toggle()
-    handleSubmit(formik.values, messages)
-  }
+  const handleSubmit = useCallback(
+    (values: WebsiteSsoIdentityProviderFormValues, user_message: string) => {
+      const { metaDataFileImportedFlag, manualMetadata, ...formValues } = values
+      void metaDataFileImportedFlag
+      void manualMetadata
+      const formdata = new FormData()
 
-  function handleSubmit(values, user_message) {
-    delete values.importMetadataFile
-    const formdata = new FormData()
+      const identityProviderData = { ...formValues }
 
-    const payload = {
-      identityProvider: { ...values },
-    }
+      // If a metadata file is provided, add it as a file
+      if (metaDataFileImportedFlag && metaDataFile) {
+        const blob = new Blob([metaDataFile], {
+          type: 'application/octet-stream',
+        })
+        formdata.append('metaDataFile', blob)
+      }
 
-    if (metaDataFile) {
-      payload.metaDataFile = metaDataFile
-
-      const blob = new Blob([payload.metaDataFile], {
-        type: 'application/octet-stream',
-      })
-      formdata.append('metaDataFile', blob)
-    }
-
-    const blob = new Blob(
-      [
-        JSON.stringify({
-          ...payload.identityProvider,
-        }),
-      ],
-      {
-        type: 'application/json',
-      },
-    )
-
-    formdata.append('identityProvider', blob)
-
-    if (!configs) {
-      dispatch(
-        createSamlIdentity({
-          action: { action_message: user_message, action_data: formdata },
-        }),
+      const blob = new Blob(
+        [
+          JSON.stringify({
+            ...identityProviderData,
+          }),
+        ],
+        {
+          type: 'application/json',
+        },
       )
-    } else {
-      dispatch(
-        updateSamlIdentity({
-          action: { action_message: user_message, action_data: formdata },
-        }),
-      )
-    }
-  }
 
-  const handleDrop = (files) => {
-    const file = files[0]
-    if (file) {
-      formik.setFieldValue('importMetadataFile', true)
-      setMetadaDataFile(file)
-      setFileError('')
-    } else formik.setFieldValue('importMetadataFile', false)
-  }
+      formdata.append('identityProvider', blob)
 
-  const handleClearFiles = () => {
-    formik.setFieldValue('importMetadataFile', false)
-    setMetadaDataFile(null)
-  }
+      if (!configs) {
+        dispatch(
+          createSamlIdentity({
+            action: { action_message: user_message, action_data: formdata },
+          }),
+        )
+      } else {
+        dispatch(
+          updateSamlIdentity({
+            action: { action_message: user_message, action_data: formdata },
+          }),
+        )
+      }
+    },
+    [configs, dispatch, metaDataFile],
+  )
+
+  const submitForm = useCallback(
+    (messages: string) => {
+      toggle()
+      handleSubmit(formik.values, messages)
+    },
+    [toggle, formik.values, handleSubmit],
+  )
+
+  const handleToggleMetadataImport = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (event.target.checked) {
+        setShowUploadBtn(true)
+        formik.setFieldValue('metaDataFileImportedFlag', true)
+        formik.setFieldTouched('singleSignOnServiceUrl', false)
+        formik.setFieldTouched('idpEntityId', false)
+        formik.setFieldTouched('nameIDPolicyFormat', false)
+        setFileError(false)
+      } else {
+        formik.setFieldValue('metaDataFileImportedFlag', false)
+        formik.setFieldValue('manualMetadata', '')
+        formik.setFieldTouched('manualMetadata', false)
+        setMetaDataFile(null)
+        setFileError(false)
+        setShowUploadBtn(false)
+      }
+    },
+    [formik],
+  )
+
+  const handleDrop = useCallback(
+    (files: File[]) => {
+      const file = files[0]
+      if (file) {
+        formik.setFieldValue('metaDataFileImportedFlag', true)
+        setMetaDataFile(file)
+        setFileError(false)
+      } else {
+        formik.setFieldValue('metaDataFileImportedFlag', false)
+        setMetaDataFile(null)
+      }
+    },
+    [formik],
+  )
+
+  const handleClearFiles = useCallback(() => {
+    formik.setFieldValue('metaDataFileImportedFlag', false)
+    setMetaDataFile(null)
+    setFileError(false)
+  }, [formik])
+
+  const handleCancel = useCallback(() => {
+    formik.resetForm({ values: initialValues })
+  }, [formik, initialValues])
+
+  const handleFormSubmit = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      if (showUploadBtn && !metaDataFile) {
+        setFileError(true)
+        return
+      }
+      setFileError(false)
+      formik.handleSubmit(e)
+    },
+    [formik, showUploadBtn, metaDataFile],
+  )
+
+  const isApplyDisabled = useMemo(() => {
+    return !formik.isValid || !formik.dirty
+  }, [formik.isValid, formik.dirty])
 
   useEffect(() => {
     if (savedForm) {
@@ -173,18 +228,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
     <GluuLoader blocking={loading}>
       <Card>
         <CardBody className="">
-          <Form
-            onSubmit={(event) => {
-              event.preventDefault()
-              if (!metaDataFile && showUploadBtn) {
-                setFileError(true)
-                return
-              }
-              setFileError(false)
-              formik.handleSubmit(event)
-            }}
-            className="mt-4"
-          >
+          <Form onSubmit={handleFormSubmit} className="mt-4">
             <FormGroup row>
               <Col sm={10}>
                 <GluuInputRow
@@ -243,49 +287,41 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                 <FormGroup row>
                   <GluuLabel label={'fields.import_metadata_from_file'} size={4} />
                   <Col sm={8}>
-                    <Box
-                      display="flex"
-                      flexWrap={{ sm: 'wrap', md: 'nowrap' }}
-                      gap={1}
-                      alignItems="center"
-                    >
-                      <Toggle
-                        onChange={(event) => {
-                          if (event.target.checked) {
-                            setShowUploadBtn(true)
-                          } else {
-                            setMetadaDataFile(null)
-                            formik.setFieldValue('importMetadataFile', false)
-                            setShowUploadBtn(false)
-                            setFileError('')
-                          }
-                        }}
-                        checked={showUploadBtn}
-                        disabled={viewOnly}
-                      />
-                      {showUploadBtn && (
-                        <GluuUploadFile
-                          accept={{
-                            'text/xml': ['.xml'],
-                            'application/json': ['.json'],
-                          }}
-                          fileName={configs?.idpMetaDataFN}
-                          placeholder={`Drag 'n' drop .xml/.json file here, or click to select file`}
-                          onDrop={handleDrop}
-                          onClearFiles={handleClearFiles}
-                          disabled={viewOnly}
-                        />
-                      )}
-                    </Box>
-                    {fileError && (
-                      <div style={{ color: customColors.accentRed }}>
-                        {t('messages.import_metadata_file')}
-                      </div>
-                    )}
+                    <Toggle
+                      onChange={handleToggleMetadataImport}
+                      checked={showUploadBtn}
+                      disabled={viewOnly}
+                    />
                   </Col>
                 </FormGroup>
               </Col>
-              {!showUploadBtn && (
+              {showUploadBtn ? (
+                <Col sm={10}>
+                  <FormGroup row>
+                    <GluuLabel label={'fields.manual_metadata'} size={4} />
+                    <Col sm={8}>
+                      <GluuUploadFile
+                        accept={{
+                          'text/xml': ['.xml'],
+                          'application/json': ['.json'],
+                        }}
+                        fileName={configs?.idpMetaDataFN}
+                        placeholder={`Drag 'n' drop .xml/.json file here, or click to select file`}
+                        onDrop={handleDrop}
+                        onClearFiles={handleClearFiles}
+                        disabled={viewOnly}
+                      />
+                      {fileError && (
+                        <GluuStatusMessage
+                          message={t('messages.import_metadata_file')}
+                          type="error"
+                          inline
+                        />
+                      )}
+                    </Col>
+                  </FormGroup>
+                </Col>
+              ) : (
                 <>
                   <Col sm={10}>
                     <GluuInputRow
@@ -308,15 +344,14 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                       label="fields.name_policy_format"
                       name="nameIDPolicyFormat"
                       value={formik.values.nameIDPolicyFormat}
-                      defaultValue={formik.values.nameIDPolicyFormat}
                       values={nameIDPolicyFormat}
                       formik={formik}
                       lsize={4}
                       rsize={8}
                       required
-                      showError={
-                        formik.errors.nameIDPolicyFormat && formik.touched.nameIDPolicyFormat
-                      }
+                      showError={Boolean(
+                        formik.errors.nameIDPolicyFormat && formik.touched.nameIDPolicyFormat,
+                      )}
                       errorMessage={formik.errors.nameIDPolicyFormat}
                       disabled={viewOnly}
                       doc_category={DOC_SECTION}
@@ -427,12 +462,23 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                 </>
               )}
             </FormGroup>
-
-            <GluuCommitFooter
-              saveHandler={toggle}
-              hideButtons={{ save: viewOnly, back: viewOnly }}
-            />
-
+            {!viewOnly && (
+              <Row>
+                <Col>
+                  <GluuFormFooter
+                    showBack={true}
+                    showCancel={true}
+                    showApply={true}
+                    onApply={toggle}
+                    onCancel={handleCancel}
+                    disableBack={false}
+                    disableCancel={!formik.dirty}
+                    disableApply={isApplyDisabled}
+                    applyButtonType="button"
+                  />
+                </Col>
+              </Row>
+            )}
             <GluuCommitDialog
               handler={toggle}
               modal={modal}
@@ -447,8 +493,6 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
   )
 }
 
-export default SamlIdpForm
-SamlIdpForm.propTypes = {
-  configs: PropTypes.any,
-  viewOnly: PropTypes.bool,
-}
+WebsiteSsoIdentityProviderForm.displayName = 'WebsiteSsoIdentityProviderForm'
+
+export default memo(WebsiteSsoIdentityProviderForm)

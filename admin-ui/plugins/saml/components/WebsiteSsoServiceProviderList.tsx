@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import MaterialTable from '@material-table/core'
+import MaterialTable, { type Action } from '@material-table/core'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { buildPayload } from 'Utils/PermChecker'
@@ -14,28 +14,39 @@ import {
   getTrustRelationship,
   deleteTrustRelationship,
 } from 'Plugins/saml/redux/features/SamlSlice'
-import { PaperContainer, getTableCols } from './SamlIdentityList'
+import { PaperContainer, getServiceProviderTableCols } from '../helper/tableUtils'
 import customColors from '@/customColors'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import type { TrustRelationship } from '../types/redux'
+import type { SamlRootState } from '../types/state'
 
-const TrustRelationshipList = () => {
+interface DeleteItem {
+  inum: string
+  displayName?: string
+  tableData?: Record<string, never>
+}
+
+const WebsiteSsoServiceProviderList = React.memo(() => {
   const { authorizeHelper, hasCedarReadPermission, hasCedarWritePermission } = useCedarling()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme ?? 'light'
   const themeColors = getThemeColor(selectedTheme)
-  const bgThemeColor = { background: themeColors.background }
+  const bgThemeColor = useMemo(
+    () => ({ background: themeColors.background }),
+    [themeColors.background],
+  )
   const [modal, setModal] = useState(false)
-  const [item, setItem] = useState({})
+  const [item, setItem] = useState<DeleteItem>({ inum: '' })
 
-  const toggle = () => setModal(!modal)
+  const toggle = useCallback(() => setModal((prev) => !prev), [])
 
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const { navigateToRoute } = useAppNavigation()
   const { trustRelationships, loadingTrustRelationship } = useSelector(
-    (state) => state.idpSamlReducer,
+    (state: SamlRootState) => state.idpSamlReducer,
   )
   const samlResourceId = useMemo(() => ADMIN_UI_RESOURCES.SAML, [])
   const samlScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[samlResourceId], [samlResourceId])
@@ -60,7 +71,7 @@ const TrustRelationshipList = () => {
   }, [dispatch, canReadTrustRelationships])
 
   const handleGoToEditPage = useCallback(
-    (rowData, viewOnly) => {
+    (rowData: TrustRelationship, viewOnly?: boolean) => {
       navigateToRoute(ROUTES.SAML_SP_EDIT, { state: { rowData: rowData, viewOnly: viewOnly } })
     },
     [navigateToRoute],
@@ -70,30 +81,42 @@ const TrustRelationshipList = () => {
     navigateToRoute(ROUTES.SAML_SP_ADD)
   }, [navigateToRoute])
 
-  function handleDelete(row) {
-    setItem(row)
-    toggle()
-  }
+  const handleDelete = useCallback(
+    (row: TrustRelationship) => {
+      setItem(row)
+      toggle()
+    },
+    [toggle],
+  )
 
-  function onDeletionConfirmed(message) {
-    const userAction = {}
-    buildPayload(userAction, message, item.inum)
-    dispatch(deleteTrustRelationship({ action: userAction }))
-    toggle()
-  }
+  const onDeletionConfirmed = useCallback(
+    (message: string) => {
+      const userAction: { action_message?: string; action_data?: string } = {}
+      buildPayload(userAction, message, item.inum)
+      dispatch(deleteTrustRelationship({ action: { action_data: userAction.action_data ?? '' } }))
+      toggle()
+    },
+    [dispatch, item.inum, toggle],
+  )
 
   const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
 
   const tableActions = useMemo(() => {
-    const actions = []
+    const actions: Action<TrustRelationship>[] = []
     if (canWriteTrustRelationships) {
       actions.push({
         icon: 'edit',
         tooltip: `${t('messages.edit_service_provider')}`,
         iconProps: { color: 'primary', style: { color: customColors.darkGray } },
-        onClick: (event, rowData) => {
+        onClick: (
+          _event: React.MouseEvent,
+          rowData: TrustRelationship | TrustRelationship[],
+        ): void => {
+          if (Array.isArray(rowData)) return
           const data = { ...rowData }
-          delete data.tableData
+          if ('tableData' in data) {
+            delete (data as { tableData?: Record<string, never> }).tableData
+          }
           handleGoToEditPage(data)
         },
       })
@@ -101,7 +124,13 @@ const TrustRelationshipList = () => {
         icon: DeleteOutlinedIcon,
         iconProps: { color: 'secondary' },
         tooltip: `${t('messages.delete_service_provider')}`,
-        onClick: (event, rowData) => handleDelete(rowData),
+        onClick: (
+          _event: React.MouseEvent,
+          rowData: TrustRelationship | TrustRelationship[],
+        ): void => {
+          if (Array.isArray(rowData)) return
+          handleDelete(rowData)
+        },
       })
       actions.push({
         icon: 'add',
@@ -116,7 +145,13 @@ const TrustRelationshipList = () => {
         icon: 'visibility',
         iconProps: { style: { color: customColors.darkGray } },
         tooltip: `${t('messages.view_service_provider')}`,
-        onClick: (event, rowData) => handleGoToEditPage(rowData, true),
+        onClick: (
+          _event: React.MouseEvent,
+          rowData: TrustRelationship | TrustRelationship[],
+        ): void => {
+          if (Array.isArray(rowData)) return
+          handleGoToEditPage(rowData, true)
+        },
       })
     }
     return actions
@@ -127,7 +162,10 @@ const TrustRelationshipList = () => {
     handleGoToEditPage,
     handleGoToAddPage,
     handleDelete,
+    DeleteOutlinedIcon,
   ])
+
+  const tableColumns = useMemo(() => getServiceProviderTableCols(t), [t])
 
   return (
     <>
@@ -136,7 +174,7 @@ const TrustRelationshipList = () => {
           components={{
             Container: PaperContainer,
           }}
-          columns={getTableCols(t)}
+          columns={tableColumns}
           data={trustRelationships}
           isLoading={loadingTrustRelationship}
           title=""
@@ -146,10 +184,11 @@ const TrustRelationshipList = () => {
             searchFieldAlignment: 'left',
             selection: false,
             pageSize: 10,
+            idSynonym: 'inum',
             headerStyle: {
               ...applicationStyle.tableHeaderStyle,
               ...bgThemeColor,
-            },
+            } as React.CSSProperties,
             actionsColumnIndex: -1,
           }}
         />
@@ -166,6 +205,8 @@ const TrustRelationshipList = () => {
       )}
     </>
   )
-}
+})
 
-export default TrustRelationshipList
+WebsiteSsoServiceProviderList.displayName = 'WebsiteSsoServiceProviderList'
+
+export default WebsiteSsoServiceProviderList
