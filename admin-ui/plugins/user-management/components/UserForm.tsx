@@ -17,7 +17,12 @@ import AvailableClaimsPanel from './AvailableClaimsPanel'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { getUserValidationSchema, initializeCustomAttributes } from '../helper/validations'
 import { buildFormOperations, shouldDisableApplyButton } from '../utils'
-import { UserFormProps, FormOperation, ModifiedFields } from '../types/ComponentTypes'
+import {
+  UserFormProps,
+  FormOperation,
+  ModifiedFields,
+  UserEditFormValues,
+} from '../types/ComponentTypes'
 import { ThemeContext as ThemeContextType } from '../types/CommonTypes'
 import { PersonAttribute } from '../types/UserApiTypes'
 import { setupCustomAttributes } from '../utils'
@@ -63,7 +68,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
 
   const initializedRef = useRef<string | null>(null)
   const formContentRef = useRef<HTMLDivElement | null>(null)
-  const formik = useFormik({
+  const formik = useFormik<UserEditFormValues>({
     initialValues: initialValues,
     enableReinitialize: true,
     validationSchema: validationSchema,
@@ -105,12 +110,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
     setModifiedFields({})
     if (userDetails) {
       setSelectedClaims([])
-      setupCustomAttributes(
-        userDetails,
-        memoizedPersonAttributes,
-        selectedClaims,
-        setSelectedClaims,
-      )
+      setupCustomAttributes(userDetails, memoizedPersonAttributes, [], setSelectedClaims)
       initializedRef.current = userDetails.inum || 'new'
     } else {
       setSelectedClaims([])
@@ -468,7 +468,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
           modal={modal}
           onAccept={submitForm}
           feature={adminUiFeatures.users_edit}
-          formik={formik}
+          formik={formik as any}
           operations={operations}
         />
       </Form>

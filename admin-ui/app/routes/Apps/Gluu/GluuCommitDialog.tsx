@@ -22,30 +22,12 @@ import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
-
-const USER_MESSAGE = 'user_action_message'
+import type { GluuCommitDialogProps } from './types'
+import type { RootState } from '@/redux/sagas/types/audit'
 
 type JsonValue = string | number | boolean | null | { [key: string]: JsonValue } | JsonValue[]
 
-type GluuInputType = 'text' | 'textarea' | 'password' | 'email' | 'number' | 'search' | 'url'
-
-interface GluuCommitDialogProps {
-  handler: () => void
-  modal: boolean
-  onAccept: (message: string) => void
-  formik?: {
-    setFieldValue: (field: string, value: string) => void
-  }
-  operations?: Array<{
-    path?: string
-    value?: JsonValue | JsonValue[]
-  }>
-  label?: string
-  placeholderLabel?: string
-  inputType?: GluuInputType
-  feature?: string
-  isLicenseLabel?: boolean
-}
+const USER_MESSAGE = 'user_action_message'
 
 const GluuCommitDialog = ({
   handler,
@@ -68,8 +50,14 @@ const GluuCommitDialog = ({
   const [isOpen, setIsOpen] = useState<number | null>(null)
   const [userMessage, setUserMessage] = useState('')
   const { loadingWebhooks, webhookModal } = useSelector(
-    (state: { webhookReducer: { loadingWebhooks: boolean; webhookModal: boolean } }) =>
-      state.webhookReducer,
+    (
+      state: RootState & {
+        webhookReducer: {
+          loadingWebhooks: boolean
+          webhookModal: boolean
+        }
+      },
+    ) => state.webhookReducer,
   )
 
   const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
@@ -203,39 +191,41 @@ const GluuCommitDialog = ({
                 </FormGroup>
               ) : null}
               {operations &&
-                operations.map(
-                  (item: { path?: string; value?: JsonValue | JsonValue[] }, key: number) => (
-                    <FormGroup row key={key}>
-                      <Col sm={1} style={{ fontWeight: 'bold' }}>
-                        Set
-                      </Col>
-                      <Col
-                        sm={5}
-                        style={{
-                          overflow: 'auto',
-                          width: 300,
-                          paddingBottom: 10,
-                        }}
-                      >
-                        <Badge color={`primary-${selectedTheme}`}>{item.path}</Badge>
-                      </Col>
-                      <Col sm={1} style={{ fontWeight: 'bold' }}>
-                        to
-                      </Col>
-                      <Col sm={5} style={{ overflow: 'auto' }}>
-                        {Array.isArray(item.value) ? (
-                          renderArrayValue(item.value, key)
-                        ) : typeof item.value === 'boolean' ? (
-                          <Badge color={`primary-${selectedTheme}`}>{String(item.value)}</Badge>
-                        ) : item.value === '' || item.value === null || item.value === undefined ? (
-                          <Badge color={`primary-${selectedTheme}`}>&quot;&quot;</Badge>
-                        ) : (
-                          <Badge color={`primary-${selectedTheme}`}>{String(item.value)}</Badge>
-                        )}
-                      </Col>
-                    </FormGroup>
-                  ),
-                )}
+                operations.map((item, key) => (
+                  <FormGroup row key={key}>
+                    <Col sm={1} style={{ fontWeight: 'bold' }}>
+                      Set
+                    </Col>
+                    <Col
+                      sm={5}
+                      style={{
+                        overflow: 'auto',
+                        width: 300,
+                        paddingBottom: 10,
+                      }}
+                    >
+                      <Badge color={`primary-${selectedTheme}`}>{item.path}</Badge>
+                    </Col>
+                    <Col sm={1} style={{ fontWeight: 'bold' }}>
+                      to
+                    </Col>
+                    <Col sm={5} style={{ overflow: 'auto' }}>
+                      {Array.isArray(item.value) ? (
+                        renderArrayValue(item.value, key)
+                      ) : typeof item.value === 'boolean' ? (
+                        <Badge color={`primary-${selectedTheme}`}>{String(item.value)}</Badge>
+                      ) : item.value === '' || item.value === null || item.value === undefined ? (
+                        <Badge color={`primary-${selectedTheme}`}>&quot;&quot;</Badge>
+                      ) : typeof item.value === 'object' ? (
+                        <Badge color={`primary-${selectedTheme}`}>
+                          {JSON.stringify(item.value)}
+                        </Badge>
+                      ) : (
+                        <Badge color={`primary-${selectedTheme}`}>{String(item.value)}</Badge>
+                      )}
+                    </Col>
+                  </FormGroup>
+                ))}
             </div>
             <div>
               <FormGroup row>

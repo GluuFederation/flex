@@ -142,7 +142,8 @@ export const setupCustomAttributes = (
               : typeof firstValue === 'string'
                 ? (firstValue as string).toLowerCase() === 'true'
                 : Boolean(firstValue)
-          if (!boolValue) {
+          // Special-case: skip Email Verified when initial value is false so it can be added from claims.
+          if (customAttr.name === 'emailVerified' && boolValue === false) {
             continue
           }
         }

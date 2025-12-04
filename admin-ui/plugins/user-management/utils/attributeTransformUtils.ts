@@ -109,10 +109,18 @@ export const hadOriginalValue = (originalAttr?: CustomObjectAttribute): boolean 
   )
 }
 
-export const processMultiValuedField = (modifiedValue: ModifiedFieldValue): string[] => {
-  return Array.isArray(modifiedValue)
-    ? modifiedValue.map((v) => String(v))
-    : [String(modifiedValue)]
+export const processMultiValuedField = (
+  modifiedValue: ModifiedFieldValue,
+): (string | boolean)[] => {
+  if (Array.isArray(modifiedValue)) {
+    return modifiedValue.map((v) => (typeof v === 'boolean' ? v : String(v)))
+  }
+
+  if (typeof modifiedValue === 'boolean') {
+    return [modifiedValue]
+  }
+
+  return [String(modifiedValue)]
 }
 
 export const processSingleValuedField = (
