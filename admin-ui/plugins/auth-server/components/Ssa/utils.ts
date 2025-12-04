@@ -3,11 +3,11 @@ import type { SsaFormValues, ExpirationDate } from './types'
 
 export const getSsaInitialValues = (): SsaFormValues => ({
   software_id: '',
-  one_time_use: false,
+  one_time_use: true,
   org_id: '',
   description: '',
   software_roles: [],
-  rotate_ssa: false,
+  rotate_ssa: true,
   grant_types: [],
   is_expirable: false,
   expirationDate: null as ExpirationDate,

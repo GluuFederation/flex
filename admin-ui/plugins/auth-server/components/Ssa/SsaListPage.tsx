@@ -43,6 +43,16 @@ const SSAListPage: React.FC = () => {
   const toggle = (): void => setModal(!modal)
 
   const { data: items = [], isLoading: loading, refetch } = useGetAllSsas()
+
+  // Add unique id to each row for MaterialTable
+  const rowsWithId = useMemo(
+    () =>
+      items.map((item) => ({
+        ...item,
+        id: item.ssa.jti || `${item.ssa.software_id}-${item.ssa.org_id}`,
+      })),
+    [items],
+  )
   const revokeSsaMutation = useRevokeSsa()
   const getSsaJwtMutation = useGetSsaJwt()
 
@@ -258,7 +268,7 @@ const SSAListPage: React.FC = () => {
               Container: PaperContainer,
             }}
             columns={tableColumns}
-            data={items || []}
+            data={rowsWithId || []}
             isLoading={loading}
             title=""
             actions={myActions}

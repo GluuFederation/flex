@@ -3,11 +3,38 @@ import dayjs from 'dayjs'
 import type { SsaFormValues } from './types'
 
 export const ssaValidationSchema = Yup.object<Record<keyof SsaFormValues, Yup.AnySchema>>({
-  software_id: Yup.string().required('Software ID is required'),
-  org_id: Yup.string(),
-  description: Yup.string().required('Description is required'),
-  software_roles: Yup.array().of(Yup.string()),
-  grant_types: Yup.array().of(Yup.string()),
+  software_id: Yup.string()
+    .trim()
+    .required('Software ID is required')
+    .min(1, 'Software ID is required'),
+  org_id: Yup.string()
+    .trim()
+    .required('Organization ID is required')
+    .min(1, 'Organization ID is required'),
+  description: Yup.string()
+    .trim()
+    .required('Description is required')
+    .min(1, 'Description is required'),
+  software_roles: Yup.array()
+    .of(
+      Yup.mixed().test(
+        'is-string-or-object',
+        'Software role must be a string or object',
+        (value) => {
+          return typeof value === 'string' || (value && typeof value === 'object')
+        },
+      ),
+    )
+    .min(1, 'At least one software role is required')
+    .required('Software roles are required'),
+  grant_types: Yup.array()
+    .of(
+      Yup.mixed().test('is-string-or-object', 'Grant type must be a string or object', (value) => {
+        return typeof value === 'string' || (value && typeof value === 'object')
+      }),
+    )
+    .min(1, 'At least one grant type is required')
+    .required('Grant types are required'),
   one_time_use: Yup.boolean(),
   rotate_ssa: Yup.boolean(),
   is_expirable: Yup.boolean(),

@@ -66,6 +66,9 @@ const SsaAddPage: React.FC = () => {
     initialValues: getSsaInitialValues(),
     validationSchema: ssaValidationSchema,
     enableReinitialize: true,
+    validateOnMount: true,
+    validateOnChange: true,
+    validateOnBlur: true,
     onSubmit: () => {
       openCommitDialog()
     },
@@ -211,6 +214,7 @@ const SsaAddPage: React.FC = () => {
                           formik={formik}
                           lsize={4}
                           rsize={8}
+                          required
                           value={formik.values.org_id}
                           errorMessage={formik.errors.org_id}
                           showError={!!(formik.errors.org_id && formik.touched.org_id)}
@@ -245,6 +249,7 @@ const SsaAddPage: React.FC = () => {
                           formik={formik}
                           lsize={4}
                           rsize={8}
+                          required
                           options={softwareRolesOptions}
                           value={formik.values.software_roles}
                           errorMessage={formik.errors.software_roles as string | undefined}
@@ -264,6 +269,7 @@ const SsaAddPage: React.FC = () => {
                           formik={formik}
                           lsize={4}
                           rsize={8}
+                          required
                           value={formik.values.grant_types}
                           errorMessage={formik.errors.grant_types as string | undefined}
                           showError={!!(formik.errors.grant_types && formik.touched.grant_types)}
@@ -281,6 +287,7 @@ const SsaAddPage: React.FC = () => {
                           label="fields.one_time_use"
                           lsize={4}
                           rsize={8}
+                          labelStyle={{ whiteSpace: 'nowrap' }}
                           value={formik.values.one_time_use}
                           errorMessage={formik.errors.one_time_use as string | undefined}
                           showError={!!(formik.errors.one_time_use && formik.touched.one_time_use)}
@@ -297,6 +304,7 @@ const SsaAddPage: React.FC = () => {
                           label="fields.rotate_ssa"
                           lsize={4}
                           rsize={8}
+                          labelStyle={{ whiteSpace: 'nowrap' }}
                           value={formik.values.rotate_ssa}
                           errorMessage={formik.errors.rotate_ssa as string | undefined}
                           showError={!!(formik.errors.rotate_ssa && formik.touched.rotate_ssa)}
@@ -313,6 +321,7 @@ const SsaAddPage: React.FC = () => {
                           label="fields.is_expirable"
                           lsize={4}
                           rsize={8}
+                          labelStyle={{ whiteSpace: 'nowrap' }}
                           value={formik.values.is_expirable}
                           errorMessage={formik.errors.is_expirable as string | undefined}
                           showError={!!(formik.errors.is_expirable && formik.touched.is_expirable)}
