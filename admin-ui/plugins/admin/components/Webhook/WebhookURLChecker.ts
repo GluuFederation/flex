@@ -15,6 +15,7 @@ const isPrivateOrLocalhost = (hostname: string): boolean => {
   if (
     hostname === 'localhost' ||
     hostname === '::1' ||
+    hostname === '::' ||
     hostname === '0.0.0.0' ||
     hostname === '255.255.255.255' ||
     hostname.startsWith('0.')
