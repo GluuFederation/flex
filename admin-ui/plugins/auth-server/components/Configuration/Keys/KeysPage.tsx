@@ -9,6 +9,7 @@ import { useCedarling } from '@/cedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 
 const KeysPage: React.FC = () => {
   const { t } = useTranslation()
@@ -39,6 +40,7 @@ const KeysPage: React.FC = () => {
               </TabPane>
             </UncontrolledTabsTabContent>
           </UncontrolledTabs>
+          <GluuFormFooter showBack={true} showCancel={false} showApply={false} />
         </CardBody>
       </Card>
     </GluuViewWrapper>

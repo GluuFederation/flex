@@ -1,43 +1,54 @@
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import React from 'react'
+import { useDispatch } from 'react-redux'
 import { CardBody, Card } from 'Components'
 import CustomScriptForm from './CustomScriptForm'
-import { addCustomScript } from 'Plugins/admin/redux/features/customScriptSlice'
-import { buildPayload } from 'Utils/PermChecker'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import { CustomScriptItem, RootState, UserAction, SubmitData } from './types'
+import { updateToast } from 'Redux/features/toastSlice'
+import { useTranslation } from 'react-i18next'
+import { useCreateCustomScript, useMutationEffects } from './hooks'
+import type { CustomScript } from 'JansConfigApi'
+import type { SubmitData } from './types'
 
 function CustomScriptAddPage() {
-  const userAction: UserAction = {}
   const dispatch = useDispatch()
-  const loading = useSelector((state: RootState) => state.customScriptReducer.loading)
-  const saveOperationFlag = useSelector(
-    (state: RootState) => state.customScriptReducer.saveOperationFlag,
-  )
-  const errorInSaveOperationFlag = useSelector(
-    (state: RootState) => state.customScriptReducer.errorInSaveOperationFlag,
-  )
-  const { navigateBack } = useAppNavigation()
+  const { t } = useTranslation()
 
-  useEffect(() => {
-    if (saveOperationFlag && !errorInSaveOperationFlag) navigateBack(ROUTES.CUSTOM_SCRIPT_LIST)
-  }, [saveOperationFlag, errorInSaveOperationFlag, navigateBack])
+  const createMutation = useCreateCustomScript()
 
-  function handleSubmit(data: SubmitData) {
-    if (data) {
-      const message = data.customScript.action_message || ''
-      delete data.customScript.action_message
-      buildPayload(userAction, message, data)
-      dispatch(addCustomScript({ action: userAction } as any))
+  useMutationEffects({
+    mutation: createMutation,
+    successMessage: 'messages.script_added_successfully',
+    errorMessage: 'messages.error_adding_script',
+  })
+
+  const handleSubmit = async (data: SubmitData) => {
+    if (!data?.customScript) {
+      dispatch(updateToast(true, 'error', t('messages.invalid_script_data')))
+      return
+    }
+
+    try {
+      const {
+        action_message,
+        script_path: _scriptPath,
+        location_type: _locationType,
+        ...scriptData
+      } = data.customScript
+
+      await createMutation.mutateAsync({
+        data: scriptData as CustomScript,
+        actionMessage: action_message,
+      })
+    } catch (error) {
+      console.error('Failed to create script:', error)
     }
   }
 
   return (
-    <GluuLoader blocking={loading}>
+    <GluuLoader blocking={createMutation.isPending}>
       <Card className="mb-3" type="border" color={null}>
         <CardBody>
-          <CustomScriptForm item={new Object() as CustomScriptItem} handleSubmit={handleSubmit} />
+          <CustomScriptForm item={{}} handleSubmit={handleSubmit} />
         </CardBody>
       </Card>
     </GluuLoader>

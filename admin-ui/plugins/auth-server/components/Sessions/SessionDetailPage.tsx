@@ -40,7 +40,12 @@ const SessionDetailPage: React.FC<SessionDetailPageProps> = ({ row }) => {
   }
 
   // Helper function to safely stringify objects
-  const safeStringify = (obj: any): string => {
+  const safeStringify = (
+    obj:
+      | SessionDetailPageProps['row']['permissionGrantedMap']
+      | SessionDetailPageProps['row']['sessionAttributes']
+      | null,
+  ): string => {
     if (!obj) return '-'
 
     try {

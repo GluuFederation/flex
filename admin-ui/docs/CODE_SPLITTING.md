@@ -7,6 +7,7 @@ This document outlines the comprehensive code splitting strategy implemented in 
 ### 1. Webpack Configuration
 
 #### Vendor Library Splitting
+
 - **React Ecosystem**: `react`, `react-dom`, `react-router`, `react-router-dom`
 - **Material-UI**: `@mui/*`, `@emotion/*`
 - **Redux**: `@reduxjs/*`, `redux`, `redux-saga`, `redux-persist`
@@ -14,11 +15,13 @@ This document outlines the comprehensive code splitting strategy implemented in 
 - **Utilities**: `lodash`, `moment`, `dayjs`, `axios`, `formik`, `yup`
 
 #### Plugin-based Splitting
+
 - Each plugin gets its own chunk
 - Dynamic loading of plugin components
 - Fallback mechanisms for failed loads
 
 #### Common Code Splitting
+
 - Shared application code
 - Common vendor libraries
 - Reusable components
@@ -26,6 +29,7 @@ This document outlines the comprehensive code splitting strategy implemented in 
 ### 2. Route-based Code Splitting
 
 #### Lazy Route Loading
+
 ```typescript
 // Pre-defined lazy routes
 export const LazyRoutes = {
@@ -36,9 +40,10 @@ export const LazyRoutes = {
 ```
 
 #### Usage in Routes
+
 ```typescript
 <Route
-  path="/home/dashboard"
+  path="/adm/dashboard"
   element={
     <ProtectedRoute>
       <LazyRoutes.DashboardPage />
@@ -50,6 +55,7 @@ export const LazyRoutes = {
 ### 3. Plugin System Enhancement
 
 #### Dynamic Plugin Loading
+
 ```typescript
 // Async plugin loading
 export async function processRoutes() {
@@ -67,11 +73,12 @@ export async function processRoutes() {
 ```
 
 #### Plugin Component Loading
+
 ```typescript
 // Dynamic plugin component loading
 export const loadPluginComponent = (pluginName: string, componentName: string) => {
-  return createLazyComponent(() => 
-    import(`../../plugins/${pluginName}/components/${componentName}`)
+  return createLazyComponent(
+    () => import(`../../plugins/${pluginName}/components/${componentName}`),
   )
 }
 ```
@@ -79,6 +86,7 @@ export const loadPluginComponent = (pluginName: string, componentName: string) =
 ### 4. Component-based Code Splitting
 
 #### Large Component Splitting
+
 ```typescript
 // Lazy loading for heavy components
 export const LazyComponents = {
@@ -90,6 +98,7 @@ export const LazyComponents = {
 ```
 
 #### Conditional Loading
+
 ```typescript
 // Load components only when needed
 <ConditionalComponent
@@ -102,6 +111,7 @@ export const LazyComponents = {
 ## Usage
 
 ### Building with Code Splitting
+
 ```bash
 # Production build with analysis
 npm run analyze
@@ -115,6 +125,7 @@ npm run build:dev
 ```
 
 ### Bundle Analysis
+
 ```bash
 # Generate and analyze bundle
 npm run analyze

@@ -16,7 +16,6 @@ import SearchIcon from '@mui/icons-material/Search'
 import SwapVertIcon from '@mui/icons-material/SwapVert'
 import ClearIcon from '@mui/icons-material/Clear'
 import RefreshIcon from '@mui/icons-material/Refresh'
-import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { Badge } from 'reactstrap'
 import { Link } from 'react-router-dom'
@@ -46,6 +45,7 @@ import {
 import type { Scope } from 'JansConfigApi'
 import type { ScopeWithClients, ScopeTableRow } from './types'
 import { useScopeActions } from './hooks'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 interface DetailPanelProps {
   rowData: ScopeTableRow
@@ -81,7 +81,7 @@ const SELECT_FIELD_WIDTH = { width: '180px' } as const
 
 const ScopeListPage: React.FC = () => {
   const { t } = useTranslation()
-  const navigate = useNavigate()
+  const { navigateToRoute } = useAppNavigation()
   const theme = useContext(ThemeContext)
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
@@ -313,14 +313,16 @@ const ScopeListPage: React.FC = () => {
   )
 
   const handleGoToScopeAddPage = useCallback(() => {
-    return navigate('/auth-server/scope/new')
-  }, [navigate])
+    navigateToRoute(ROUTES.AUTH_SERVER_SCOPE_ADD)
+  }, [navigateToRoute])
 
   const handleGoToScopeEditPage = useCallback(
     (row: ScopeTableRow) => {
-      return navigate(`/auth-server/scope/edit/${row.inum}`)
+      if (row.inum) {
+        navigateToRoute(ROUTES.AUTH_SERVER_SCOPE_EDIT(row.inum))
+      }
     },
-    [navigate],
+    [navigateToRoute],
   )
 
   const handleScopeDelete = useCallback(

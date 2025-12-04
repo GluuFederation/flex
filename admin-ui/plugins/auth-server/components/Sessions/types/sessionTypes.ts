@@ -20,7 +20,6 @@ export interface Session {
   sessionAttributes: SessionAttributes
   expirationDate?: Date | string
   permissionGrantedMap?: Record<string, boolean>
-  [key: string]: any
 }
 
 export interface RootState {
