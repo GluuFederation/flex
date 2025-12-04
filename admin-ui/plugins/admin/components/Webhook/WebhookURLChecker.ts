@@ -12,7 +12,13 @@ const BLOCKED_SCHEMES = [
 ]
 
 const isPrivateOrLocalhost = (hostname: string): boolean => {
-  if (hostname === 'localhost' || hostname === '::1' || hostname === '0.0.0.0') {
+  if (
+    hostname === 'localhost' ||
+    hostname === '::1' ||
+    hostname === '0.0.0.0' ||
+    hostname === '255.255.255.255' ||
+    hostname.startsWith('0.')
+  ) {
     return true
   }
   if (
@@ -30,16 +36,26 @@ const isPrivateOrLocalhost = (hostname: string): boolean => {
       return true
     }
   }
+
+  if (hostname.startsWith('::ffff:')) {
+    return true
+  }
+
   if (hostname.startsWith('fc') || hostname.startsWith('fd')) {
     return true
   }
   if (hostname.startsWith('fe80:')) {
     return true
   }
+
+  if (hostname.startsWith('2001:db8:') || hostname.startsWith('ff')) {
+    return true
+  }
+
   return false
 }
 
-const PATTERN = /^https:\/\/([\w-]+\.)+[\w-]+(:\d+)?(\/([\w\-.]|\$\{[\w]+\})*)*$/i
+const PATTERN = /^https:\/\/([\w-]+\.)+[\w-]+(:\d+)?(\/[^\s?#]*)?(\?[^\s#]*)?(#[^\s]*)?$/i
 
 const isAllowed = (url: string): boolean => {
   try {
