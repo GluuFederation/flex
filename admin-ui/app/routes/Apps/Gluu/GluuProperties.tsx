@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from 'react'
+import { useState, useContext, useEffect, useRef } from 'react'
 import { FormGroup, Col, Button, Accordion, AccordionHeader, AccordionBody } from 'Components'
 import GluuPropertyItem from './GluuPropertyItem'
 import { useTranslation } from 'react-i18next'
@@ -100,11 +100,17 @@ function GluuProperties({
   const { t, i18n } = useTranslation()
   const theme: any = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
+  const formikRef = useRef(formik)
+  formikRef.current = formik
+  const initialSyncDone = useRef(false)
 
   useEffect(() => {
     setProperties(options)
-    syncFormikProperties(formik, compName, options, { isKeys, multiProperties })
-  }, [options, formik, compName, isKeys, multiProperties])
+    if (!initialSyncDone.current && options?.length > 0) {
+      syncFormikProperties(formikRef.current, compName, options, { isKeys, multiProperties })
+      initialSyncDone.current = true
+    }
+  }, [options, compName, isKeys, multiProperties])
 
   const addProperty = () => {
     let item: Property
