@@ -1,5 +1,3 @@
-// Core Custom Script Types
-
 export interface ModuleProperty {
   value1: string
   value2: string

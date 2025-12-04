@@ -5,6 +5,7 @@ export const themeConfig = {
     background: customColors.darkGray,
     lightBackground: customColors.darkBlueLightBackground,
     fontColor: customColors.darkGray,
+    borderColor: customColors.lightGray,
     menu: {
       background: customColors.darkBlueMenuBackground,
       color: customColors.white,
@@ -17,6 +18,7 @@ export const themeConfig = {
     background: customColors.darkBlueThemeBackground,
     lightBackground: customColors.blueThemelightBackground,
     fontColor: customColors.darkGray,
+    borderColor: customColors.lightGray,
     menu: {
       background: customColors.darkBlueThemeBackground,
       color: customColors.white,
@@ -29,6 +31,7 @@ export const themeConfig = {
     background: customColors.blueThemebackground,
     lightBackground: customColors.blueThemelightBackground,
     fontColor: customColors.darkGray,
+    borderColor: customColors.lightGray,
     menu: {
       background: customColors.blueThemebackground,
       color: customColors.white,
@@ -41,6 +44,7 @@ export const themeConfig = {
     background: customColors.logo,
     lightBackground: customColors.greenThemeLightBackground,
     fontColor: customColors.darkGray,
+    borderColor: customColors.lightGray,
     menu: {
       background: customColors.logo,
       color: customColors.white,
