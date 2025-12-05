@@ -45,7 +45,6 @@ export interface SamlIdentity {
   realm?: string
   baseDn?: string
   config?: SamlIdentityConfig
-  // Legacy flat structure support (for backward compatibility)
   singleSignOnServiceUrl?: string
   idpEntityId?: string
   nameIDPolicyFormat?: string
@@ -54,18 +53,6 @@ export interface SamlIdentity {
   singleLogoutServiceUrl?: string
   signingCertificate?: string
   encryptionPublicKey?: string
-}
-
-export interface SamlIdentityListResponse {
-  entries: SamlIdentity[]
-  totalEntriesCount: number
-  entriesCount: number
-}
-
-export interface SamlIdentityProviderResponse {
-  entries: SamlIdentity[]
-  totalEntriesCount: number
-  entriesCount: number
 }
 
 export interface TrustRelationshipListResponse {
@@ -123,27 +110,7 @@ export interface CreateSamlIdentityPayload {
   token: string
 }
 
-export interface UpdateSamlIdentityPayload {
-  formdata: FormData
-  token: string
-  inum: string
-}
-
-export interface DeleteSamlIdentityPayload {
-  inum: string
-}
-
 export interface CreateTrustRelationshipPayload {
   formdata: FormData
   token: string
-}
-
-export interface UpdateTrustRelationshipPayload {
-  formdata: FormData
-  token: string
-  inum: string
-}
-
-export interface DeleteTrustRelationshipPayload {
-  inum: string
 }

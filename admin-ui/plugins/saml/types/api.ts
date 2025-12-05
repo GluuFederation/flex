@@ -24,10 +24,6 @@ export interface SamlIdentityCreateResponse {
   principalType: string
 }
 
-export interface TrustRelationshipResponse {
-  body: TrustRelationship[]
-}
-
 export interface SamlApiResponse {
   inum?: string
   data?: Record<string, string | number | boolean>
@@ -43,7 +39,12 @@ export interface JansConfigApiClient {
 
 export interface JansIdentityBrokerApiClient {
   getSamlIdentityProvider: (
-    options: { inum: string },
+    options: {
+      inum?: string
+      limit?: number
+      pattern?: string
+      startIndex?: number
+    },
     callback: (
       error: Error | null,
       data?: SamlIdentityProviderResponse,

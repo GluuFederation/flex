@@ -3,11 +3,11 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type {
   SamlReduxState,
   SamlConfiguration,
-  SamlIdentityListResponse,
   TrustRelationship,
   PutSamlPropertiesPayload,
   GetSamlIdentityProviderPayload,
 } from '../../types/redux'
+import type { SamlIdentityProviderResponse } from '../../types/api'
 
 const initialState: SamlReduxState = {
   configuration: {
@@ -50,7 +50,7 @@ const samlSlice = createSlice({
     },
     getSamlIdentitiesResponse: (
       state,
-      action: PayloadAction<{ data?: SamlIdentityListResponse } | null>,
+      action: PayloadAction<{ data?: SamlIdentityProviderResponse } | null>,
     ) => {
       state.loadingSamlIdp = false
       if (action.payload?.data) {

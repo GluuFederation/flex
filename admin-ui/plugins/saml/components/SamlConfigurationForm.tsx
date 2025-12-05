@@ -118,7 +118,6 @@ const SamlConfigurationForm: React.FC = () => {
               isBoolean={true}
               handler={handleEnabledChange}
               value={formik.values.enabled}
-              required
               doc_category={DOC_SECTION}
               doc_entry="enabled"
             />
