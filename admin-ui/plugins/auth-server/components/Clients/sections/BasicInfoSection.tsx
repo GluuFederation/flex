@@ -8,7 +8,6 @@ import {
   FormControlLabel,
   InputAdornment,
   IconButton,
-  Typography,
   Autocomplete,
   Chip,
 } from '@mui/material'
@@ -19,13 +18,12 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
-import type { BasicInfoTabProps } from '../types'
+import type { SectionProps } from '../types'
 import { APPLICATION_TYPES, SUBJECT_TYPES } from '../helper/constants'
 
-const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
+const BasicInfoSection: React.FC<SectionProps> = ({
   formik,
   viewOnly = false,
-  modifiedFields,
   setModifiedFields,
 }) => {
   const { t } = useTranslation()
@@ -52,7 +50,13 @@ const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
   const fieldStyle = useMemo(
     () => ({
       '& .MuiOutlinedInput-root': {
-        backgroundColor: viewOnly ? themeColors?.lightBackground : 'white',
+        'backgroundColor': viewOnly ? themeColors?.lightBackground : 'white',
+        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+          borderColor: themeColors?.background,
+        },
+      },
+      '& .MuiInputLabel-root.Mui-focused': {
+        color: themeColors?.background,
       },
     }),
     [viewOnly, themeColors],
@@ -81,27 +85,8 @@ const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
     [themeColors],
   )
 
-  const sectionTitleStyle = useMemo(
-    () => ({
-      mb: 2,
-      fontWeight: selectedTheme === 'darkBlack' ? 700 : 600,
-      color: selectedTheme === 'darkBlack' ? '#000000' : themeColors?.fontColor || '#333',
-      fontSize: '0.95rem',
-    }),
-    [themeColors, selectedTheme],
-  )
-
-  const formatDate = useCallback((dateString: string | undefined) => {
-    if (!dateString) return '-'
-    try {
-      return new Date(dateString).toLocaleString()
-    } catch {
-      return dateString
-    }
-  }, [])
-
   return (
-    <Box sx={{ p: 2 }}>
+    <Box>
       <Box sx={sectionStyle}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
@@ -113,6 +98,31 @@ const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
               value={formik.values.inum || ''}
               disabled
               sx={fieldStyle}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              label={t('fields.client_secret')}
+              name="clientSecret"
+              type={showSecret ? 'text' : 'password'}
+              value={formik.values.clientSecret || ''}
+              onChange={(e) =>
+                handleFieldChange('clientSecret', t('fields.client_secret'), e.target.value)
+              }
+              disabled={viewOnly}
+              sx={fieldStyle}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={toggleSecretVisibility} edge="end" size="small">
+                      {showSecret ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
           </Grid>
 
@@ -143,31 +153,6 @@ const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
               }
               disabled={viewOnly}
               sx={fieldStyle}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              size="small"
-              label={t('fields.client_secret')}
-              name="clientSecret"
-              type={showSecret ? 'text' : 'password'}
-              value={formik.values.clientSecret || ''}
-              onChange={(e) =>
-                handleFieldChange('clientSecret', t('fields.client_secret'), e.target.value)
-              }
-              disabled={viewOnly}
-              sx={fieldStyle}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={toggleSecretVisibility} edge="end" size="small">
-                      {showSecret ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
             />
           </Grid>
 
@@ -324,7 +309,6 @@ const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
       </Box>
 
       <Box sx={sectionStyle}>
-        <Typography sx={sectionTitleStyle}>{t('titles.organization')}</Typography>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
             <TextField
@@ -341,142 +325,30 @@ const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
             />
           </Grid>
 
-          <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              size="small"
-              type="number"
-              label={t('fields.ttl')}
-              name="ttl"
-              value={formik.values.ttl || ''}
-              onChange={(e) =>
-                handleFieldChange(
-                  'ttl',
-                  t('fields.ttl'),
-                  e.target.value ? parseInt(e.target.value) : null,
-                )
-              }
-              disabled={viewOnly}
-              sx={fieldStyle}
-              InputProps={{ inputProps: { min: 0 } }}
-            />
-          </Grid>
-
           <Grid item xs={12}>
             <Autocomplete
               multiple
               freeSolo
               options={[]}
-              value={formik.values.groups || []}
-              onChange={(_, newValue) => handleFieldChange('groups', t('fields.groups'), newValue)}
+              value={formik.values.contacts || []}
+              onChange={(_, newValue) =>
+                handleFieldChange('contacts', t('fields.contacts'), newValue)
+              }
               disabled={viewOnly}
               renderInput={(params) => (
-                <TextField {...params} size="small" label={t('fields.groups')} sx={fieldStyle} />
+                <TextField {...params} size="small" label={t('fields.contacts')} sx={fieldStyle} />
               )}
               renderTags={(value, getTagProps) =>
                 value.map((option, index) => (
-                  <Chip {...getTagProps({ index })} key={index} label={option} size="small" />
+                  <Chip
+                    {...getTagProps({ index })}
+                    key={index}
+                    label={option}
+                    size="small"
+                    sx={{ backgroundColor: themeColors?.background, color: 'white' }}
+                  />
                 ))
               }
-            />
-          </Grid>
-        </Grid>
-      </Box>
-
-      <Box sx={sectionStyle}>
-        <Typography sx={sectionTitleStyle}>{t('titles.system_information')}</Typography>
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              size="small"
-              label={t('fields.dn')}
-              name="dn"
-              value={formik.values.dn || ''}
-              disabled
-              sx={fieldStyle}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              size="small"
-              label={t('fields.base_dn')}
-              name="baseDn"
-              value={formik.values.baseDn || ''}
-              disabled
-              sx={fieldStyle}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              size="small"
-              label={t('fields.client_id_issued_at')}
-              name="clientIdIssuedAt"
-              value={formatDate(formik.values.clientIdIssuedAt)}
-              disabled
-              sx={fieldStyle}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              size="small"
-              label={t('fields.client_secret_expires_at')}
-              name="clientSecretExpiresAt"
-              value={formatDate(formik.values.clientSecretExpiresAt)}
-              disabled
-              sx={fieldStyle}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              size="small"
-              label={t('fields.last_access_time')}
-              name="lastAccessTime"
-              value={formatDate(formik.values.lastAccessTime)}
-              disabled
-              sx={fieldStyle}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              size="small"
-              label={t('fields.last_logon_time')}
-              name="lastLogonTime"
-              value={formatDate(formik.values.lastLogonTime)}
-              disabled
-              sx={fieldStyle}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              size="small"
-              label={t('fields.registration_access_token')}
-              name="registrationAccessToken"
-              type="password"
-              value={formik.values.registrationAccessToken || ''}
-              disabled
-              sx={fieldStyle}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <FormControlLabel
-              control={
-                <Switch checked={formik.values.deletable || false} disabled sx={switchStyle} />
-              }
-              label={t('fields.deletable')}
             />
           </Grid>
         </Grid>
@@ -485,4 +357,4 @@ const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
   )
 }
 
-export default BasicInfoTab
+export default BasicInfoSection

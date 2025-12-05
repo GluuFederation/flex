@@ -3,13 +3,12 @@ import { useTranslation } from 'react-i18next'
 import { Box, Grid, TextField, Typography } from '@mui/material'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
-import type { AuthenticationTabProps } from '../types'
+import type { SectionProps } from '../types'
 import { TOKEN_ENDPOINT_AUTH_METHODS } from '../helper/constants'
 
-const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
+const AuthenticationSection: React.FC<SectionProps> = ({
   formik,
   viewOnly = false,
-  modifiedFields,
   setModifiedFields,
   oidcConfiguration,
 }) => {
@@ -43,7 +42,13 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
   const fieldStyle = useMemo(
     () => ({
       '& .MuiOutlinedInput-root': {
-        backgroundColor: viewOnly ? themeColors?.lightBackground : 'white',
+        'backgroundColor': viewOnly ? themeColors?.lightBackground : 'white',
+        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+          borderColor: themeColors?.background,
+        },
+      },
+      '& .MuiInputLabel-root.Mui-focused': {
+        color: themeColors?.background,
       },
     }),
     [viewOnly, themeColors],
@@ -71,27 +76,28 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
   )
 
   const signingAlgorithms = useMemo(
-    () => oidcConfiguration?.id_token_signing_alg_values_supported || [],
+    () => (oidcConfiguration?.idTokenSigningAlgValuesSupported as string[]) || [],
     [oidcConfiguration],
   )
 
   const encryptionAlgorithms = useMemo(
-    () => oidcConfiguration?.id_token_encryption_alg_values_supported || [],
+    () => (oidcConfiguration?.idTokenEncryptionAlgValuesSupported as string[]) || [],
     [oidcConfiguration],
   )
 
   const encryptionEncodings = useMemo(
-    () => oidcConfiguration?.id_token_encryption_enc_values_supported || [],
+    () => (oidcConfiguration?.idTokenEncryptionEncValuesSupported as string[]) || [],
     [oidcConfiguration],
   )
 
   const accessTokenSigningAlgs = useMemo(
-    () => oidcConfiguration?.access_token_signing_alg_values_supported || signingAlgorithms,
+    () =>
+      (oidcConfiguration?.accessTokenSigningAlgValuesSupported as string[]) || signingAlgorithms,
     [oidcConfiguration, signingAlgorithms],
   )
 
   return (
-    <Box sx={{ p: 2 }}>
+    <Box>
       <Box sx={sectionStyle}>
         <Typography sx={sectionTitleStyle}>{t('titles.token_endpoint_auth')}</Typography>
         <Grid container spacing={2}>
@@ -808,4 +814,4 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
   )
 }
 
-export default AuthenticationTab
+export default AuthenticationSection

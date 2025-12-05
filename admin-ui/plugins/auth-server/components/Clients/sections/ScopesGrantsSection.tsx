@@ -12,14 +12,13 @@ import {
 } from '@mui/material'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
-import type { ScopesGrantsTabProps, ClientScope } from '../types'
+import type { SectionProps, ClientScope } from '../types'
 import { GRANT_TYPES, RESPONSE_TYPES } from '../helper/constants'
 import { formatScopeDisplay } from '../helper/utils'
 
-const ScopesGrantsTab: React.FC<ScopesGrantsTabProps> = ({
+const ScopesGrantsSection: React.FC<SectionProps> = ({
   formik,
   viewOnly = false,
-  modifiedFields,
   setModifiedFields,
   scopes = [],
   scopesLoading = false,
@@ -84,7 +83,9 @@ const ScopesGrantsTab: React.FC<ScopesGrantsTabProps> = ({
 
   const getScopeDisplayName = useCallback(
     (scopeValue: string): string => {
-      const found = scopes.find((s) => s.dn === scopeValue || s.inum === scopeValue)
+      const found = scopes.find(
+        (s) => s.dn === scopeValue || s.inum === scopeValue || s.id === scopeValue,
+      )
       return found?.displayName || found?.id || formatScopeDisplay(scopeValue)
     },
     [scopes],
@@ -93,7 +94,9 @@ const ScopesGrantsTab: React.FC<ScopesGrantsTabProps> = ({
   const selectedScopes = useMemo(() => {
     const scopeValues = formik.values.scopes || []
     return scopeValues.map((scopeValue) => {
-      const found = scopes.find((s) => s.dn === scopeValue || s.inum === scopeValue)
+      const found = scopes.find(
+        (s) => s.dn === scopeValue || s.inum === scopeValue || s.id === scopeValue,
+      )
       return (
         found || { dn: scopeValue, displayName: getScopeDisplayName(scopeValue), id: scopeValue }
       )
@@ -124,9 +127,25 @@ const ScopesGrantsTab: React.FC<ScopesGrantsTabProps> = ({
   const chipStyle = useMemo(
     () => ({
       'm': 0.5,
-      'backgroundColor': themeColors?.lightBackground || '#e3f2fd',
+      'backgroundColor': themeColors?.background,
+      'color': 'white',
       '& .MuiChip-deleteIcon': {
-        color: themeColors?.background || '#1976d2',
+        color: 'rgba(255, 255, 255, 0.7)',
+      },
+    }),
+    [themeColors],
+  )
+
+  const fieldStyle = useMemo(
+    () => ({
+      '& .MuiOutlinedInput-root': {
+        'backgroundColor': 'white',
+        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+          borderColor: themeColors?.background,
+        },
+      },
+      '& .MuiInputLabel-root.Mui-focused': {
+        color: themeColors?.background,
       },
     }),
     [themeColors],
@@ -145,7 +164,7 @@ const ScopesGrantsTab: React.FC<ScopesGrantsTabProps> = ({
   )
 
   return (
-    <Box sx={{ p: 2 }}>
+    <Box>
       <Box sx={sectionStyle}>
         <Typography sx={sectionTitleStyle}>{t('fields.scopes')}</Typography>
         {viewOnly ? (
@@ -173,18 +192,14 @@ const ScopesGrantsTab: React.FC<ScopesGrantsTabProps> = ({
             loading={scopesLoading}
             filterSelectedOptions
             isOptionEqualToValue={(option, value) =>
-              option.dn === value.dn || option.inum === value.inum
+              option.dn === value.dn || option.inum === value.inum || option.id === value.id
             }
             renderInput={(params) => (
               <TextField
                 {...params}
                 size="small"
                 placeholder={t('placeholders.search_scopes')}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    backgroundColor: 'white',
-                  },
-                }}
+                sx={fieldStyle}
               />
             )}
             renderTags={(value, getTagProps) =>
@@ -209,12 +224,7 @@ const ScopesGrantsTab: React.FC<ScopesGrantsTabProps> = ({
             {(formik.values.grantTypes || []).map((grant, index) => {
               const grantOption = GRANT_TYPES.find((g) => g.value === grant)
               return (
-                <Chip
-                  key={index}
-                  label={grantOption?.label || grant}
-                  sx={{ ...chipStyle, backgroundColor: '#fff3e0' }}
-                  size="small"
-                />
+                <Chip key={index} label={grantOption?.label || grant} sx={chipStyle} size="small" />
               )
             })}
             {(!formik.values.grantTypes || formik.values.grantTypes.length === 0) && (
@@ -251,12 +261,7 @@ const ScopesGrantsTab: React.FC<ScopesGrantsTabProps> = ({
             {(formik.values.responseTypes || []).map((type, index) => {
               const typeOption = RESPONSE_TYPES.find((r) => r.value === type)
               return (
-                <Chip
-                  key={index}
-                  label={typeOption?.label || type}
-                  sx={{ ...chipStyle, backgroundColor: '#e8f5e9' }}
-                  size="small"
-                />
+                <Chip key={index} label={typeOption?.label || type} sx={chipStyle} size="small" />
               )
             })}
             {(!formik.values.responseTypes || formik.values.responseTypes.length === 0) && (
@@ -291,12 +296,7 @@ const ScopesGrantsTab: React.FC<ScopesGrantsTabProps> = ({
         {viewOnly ? (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
             {(formik.values.claims || []).map((claim, index) => (
-              <Chip
-                key={index}
-                label={claim}
-                sx={{ ...chipStyle, backgroundColor: '#fce4ec' }}
-                size="small"
-              />
+              <Chip key={index} label={claim} sx={chipStyle} size="small" />
             ))}
             {(!formik.values.claims || formik.values.claims.length === 0) && (
               <Typography color="text.secondary" variant="body2">
@@ -316,11 +316,7 @@ const ScopesGrantsTab: React.FC<ScopesGrantsTabProps> = ({
                 {...params}
                 size="small"
                 placeholder={t('placeholders.add_claims')}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    backgroundColor: 'white',
-                  },
-                }}
+                sx={fieldStyle}
               />
             )}
             renderTags={(value, getTagProps) =>
@@ -330,7 +326,7 @@ const ScopesGrantsTab: React.FC<ScopesGrantsTabProps> = ({
                   key={index}
                   label={option}
                   size="small"
-                  sx={{ ...chipStyle, backgroundColor: '#fce4ec' }}
+                  sx={chipStyle}
                 />
               ))
             }
@@ -341,4 +337,4 @@ const ScopesGrantsTab: React.FC<ScopesGrantsTabProps> = ({
   )
 }
 
-export default ScopesGrantsTab
+export default ScopesGrantsSection

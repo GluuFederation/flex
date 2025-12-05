@@ -582,7 +582,6 @@ const ClientListPage: React.FC = () => {
                     >
                       <MenuItem value="">{t('options.none')}</MenuItem>
                       <MenuItem value="displayName">{t('fields.displayname')}</MenuItem>
-                      <MenuItem value="clientName">{t('fields.client_name')}</MenuItem>
                       <MenuItem value="inum">{t('fields.client_id')}</MenuItem>
                     </Select>
                   </FormControl>

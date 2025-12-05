@@ -142,6 +142,18 @@ export const TAB_LABELS = {
   uris: 'titles.uris',
 } as const
 
+export const SECTIONS = [
+  { id: 'basic', labelKey: 'sections.basic_info', icon: 'InfoOutlined' },
+  { id: 'authentication', labelKey: 'sections.authentication', icon: 'LockOutlined' },
+  { id: 'scopes', labelKey: 'sections.scopes_and_grants', icon: 'VpnKeyOutlined' },
+  { id: 'uris', labelKey: 'sections.uris', icon: 'LinkOutlined' },
+  { id: 'tokens', labelKey: 'sections.tokens', icon: 'TokenOutlined' },
+  { id: 'ciba', labelKey: 'sections.ciba', icon: 'PhoneCallbackOutlined' },
+  { id: 'scripts', labelKey: 'sections.scripts', icon: 'CodeOutlined' },
+  { id: 'localization', labelKey: 'sections.localization', icon: 'LanguageOutlined' },
+  { id: 'system', labelKey: 'sections.system_info', icon: 'SettingsOutlined' },
+] as const
+
 export type GrantType = (typeof GRANT_TYPES)[number]['value']
 export type ResponseType = (typeof RESPONSE_TYPES)[number]['value']
 export type ApplicationType = (typeof APPLICATION_TYPES)[number]['value']

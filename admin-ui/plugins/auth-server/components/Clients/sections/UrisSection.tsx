@@ -12,14 +12,9 @@ import {
 } from '@mui/material'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
-import type { UrisTabProps } from '../types'
+import type { SectionProps } from '../types'
 
-const UrisTab: React.FC<UrisTabProps> = ({
-  formik,
-  viewOnly = false,
-  modifiedFields,
-  setModifiedFields,
-}) => {
+const UrisSection: React.FC<SectionProps> = ({ formik, viewOnly = false, setModifiedFields }) => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme || 'darkBlue'
@@ -50,7 +45,13 @@ const UrisTab: React.FC<UrisTabProps> = ({
   const fieldStyle = useMemo(
     () => ({
       '& .MuiOutlinedInput-root': {
-        backgroundColor: viewOnly ? themeColors?.lightBackground : 'white',
+        'backgroundColor': viewOnly ? themeColors?.lightBackground : 'white',
+        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+          borderColor: themeColors?.background,
+        },
+      },
+      '& .MuiInputLabel-root.Mui-focused': {
+        color: themeColors?.background,
       },
     }),
     [viewOnly, themeColors],
@@ -79,8 +80,12 @@ const UrisTab: React.FC<UrisTabProps> = ({
 
   const chipStyle = useMemo(
     () => ({
-      m: 0.5,
-      backgroundColor: themeColors?.lightBackground || '#e3f2fd',
+      'm': 0.5,
+      'backgroundColor': themeColors?.background,
+      'color': 'white',
+      '& .MuiChip-deleteIcon': {
+        color: 'rgba(255, 255, 255, 0.7)',
+      },
     }),
     [themeColors],
   )
@@ -131,7 +136,13 @@ const UrisTab: React.FC<UrisTabProps> = ({
           )}
           renderTags={(value, getTagProps) =>
             value.map((option, index) => (
-              <Chip {...getTagProps({ index })} key={index} label={option} size="small" />
+              <Chip
+                {...getTagProps({ index })}
+                key={index}
+                label={option}
+                size="small"
+                sx={chipStyle}
+              />
             ))
           }
         />
@@ -141,7 +152,7 @@ const UrisTab: React.FC<UrisTabProps> = ({
   )
 
   return (
-    <Box sx={{ p: 2 }}>
+    <Box>
       <Box sx={sectionStyle}>
         <Typography sx={sectionTitleStyle}>{t('titles.redirect_uris')}</Typography>
         <Grid container spacing={2}>
@@ -370,38 +381,6 @@ const UrisTab: React.FC<UrisTabProps> = ({
       </Box>
 
       <Box sx={sectionStyle}>
-        <Typography sx={sectionTitleStyle}>{t('titles.contacts')}</Typography>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Autocomplete
-              multiple
-              freeSolo
-              options={[]}
-              value={formik.values.contacts || []}
-              onChange={(_, newValue) =>
-                handleFieldChange('contacts', t('fields.contacts'), newValue)
-              }
-              disabled={viewOnly}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  size="small"
-                  label={t('fields.contacts')}
-                  placeholder={t('placeholders.add_email')}
-                  sx={fieldStyle}
-                />
-              )}
-              renderTags={(value, getTagProps) =>
-                value.map((option, index) => (
-                  <Chip {...getTagProps({ index })} key={index} label={option} size="small" />
-                ))
-              }
-            />
-          </Grid>
-        </Grid>
-      </Box>
-
-      <Box sx={sectionStyle}>
         <Typography sx={sectionTitleStyle}>{t('titles.software_info')}</Typography>
         <Grid container spacing={2}>
           <Grid item xs={12} md={4}>
@@ -456,148 +435,8 @@ const UrisTab: React.FC<UrisTabProps> = ({
           </Grid>
         </Grid>
       </Box>
-
-      <Box sx={sectionStyle}>
-        <Typography sx={sectionTitleStyle}>{t('titles.localization')}</Typography>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              size="small"
-              label={t('fields.client_name_localized')}
-              name="clientNameLocalized"
-              value={
-                formik.values.clientNameLocalized
-                  ? JSON.stringify(formik.values.clientNameLocalized)
-                  : ''
-              }
-              onChange={(e) => {
-                try {
-                  const parsed = e.target.value ? JSON.parse(e.target.value) : {}
-                  handleFieldChange(
-                    'clientNameLocalized',
-                    t('fields.client_name_localized'),
-                    parsed,
-                  )
-                } catch {
-                  // Keep raw value for editing
-                }
-              }}
-              disabled={viewOnly}
-              multiline
-              rows={2}
-              sx={fieldStyle}
-              helperText={t('placeholders.localized_json_format')}
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              size="small"
-              label={t('fields.logo_uri_localized')}
-              name="logoUriLocalized"
-              value={
-                formik.values.logoUriLocalized ? JSON.stringify(formik.values.logoUriLocalized) : ''
-              }
-              onChange={(e) => {
-                try {
-                  const parsed = e.target.value ? JSON.parse(e.target.value) : {}
-                  handleFieldChange('logoUriLocalized', t('fields.logo_uri_localized'), parsed)
-                } catch {
-                  // Keep raw value for editing
-                }
-              }}
-              disabled={viewOnly}
-              multiline
-              rows={2}
-              sx={fieldStyle}
-              helperText={t('placeholders.localized_json_format')}
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              size="small"
-              label={t('fields.client_uri_localized')}
-              name="clientUriLocalized"
-              value={
-                formik.values.clientUriLocalized
-                  ? JSON.stringify(formik.values.clientUriLocalized)
-                  : ''
-              }
-              onChange={(e) => {
-                try {
-                  const parsed = e.target.value ? JSON.parse(e.target.value) : {}
-                  handleFieldChange('clientUriLocalized', t('fields.client_uri_localized'), parsed)
-                } catch {
-                  // Keep raw value for editing
-                }
-              }}
-              disabled={viewOnly}
-              multiline
-              rows={2}
-              sx={fieldStyle}
-              helperText={t('placeholders.localized_json_format')}
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              size="small"
-              label={t('fields.policy_uri_localized')}
-              name="policyUriLocalized"
-              value={
-                formik.values.policyUriLocalized
-                  ? JSON.stringify(formik.values.policyUriLocalized)
-                  : ''
-              }
-              onChange={(e) => {
-                try {
-                  const parsed = e.target.value ? JSON.parse(e.target.value) : {}
-                  handleFieldChange('policyUriLocalized', t('fields.policy_uri_localized'), parsed)
-                } catch {
-                  // Keep raw value for editing
-                }
-              }}
-              disabled={viewOnly}
-              multiline
-              rows={2}
-              sx={fieldStyle}
-              helperText={t('placeholders.localized_json_format')}
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              size="small"
-              label={t('fields.tos_uri_localized')}
-              name="tosUriLocalized"
-              value={
-                formik.values.tosUriLocalized ? JSON.stringify(formik.values.tosUriLocalized) : ''
-              }
-              onChange={(e) => {
-                try {
-                  const parsed = e.target.value ? JSON.parse(e.target.value) : {}
-                  handleFieldChange('tosUriLocalized', t('fields.tos_uri_localized'), parsed)
-                } catch {
-                  // Keep raw value for editing
-                }
-              }}
-              disabled={viewOnly}
-              multiline
-              rows={2}
-              sx={fieldStyle}
-              helperText={t('placeholders.localized_json_format')}
-            />
-          </Grid>
-        </Grid>
-      </Box>
     </Box>
   )
 }
 
-export default UrisTab
+export default UrisSection

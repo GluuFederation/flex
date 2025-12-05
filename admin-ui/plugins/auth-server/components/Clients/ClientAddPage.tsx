@@ -3,9 +3,8 @@ import { useTranslation } from 'react-i18next'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import SetTitle from 'Utils/SetTitle'
 import { useClientActions, useCreateClient } from './hooks'
-import ClientForm from './components/ClientForm'
-import type { ClientFormValues, ModifiedFields, EMPTY_CLIENT } from './types'
-import { EMPTY_CLIENT as emptyClient } from './types'
+import ClientAddForm from './components/ClientAddForm'
+import type { ClientFormValues, ModifiedFields } from './types'
 
 const ClientAddPage: React.FC = () => {
   const { t } = useTranslation()
@@ -35,13 +34,7 @@ const ClientAddPage: React.FC = () => {
 
   return (
     <GluuLoader blocking={createClient.isPending}>
-      <ClientForm
-        client={emptyClient}
-        isEdit={false}
-        viewOnly={false}
-        onSubmit={handleSubmit}
-        onCancel={navigateToClientList}
-      />
+      <ClientAddForm onSubmit={handleSubmit} onCancel={navigateToClientList} />
     </GluuLoader>
   )
 }

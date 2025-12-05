@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { useContext, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Grid, Typography, Chip, Paper } from '@mui/material'
+import { Badge } from 'reactstrap'
+import { ThemeContext } from 'Context/theme/themeContext'
 import type { Client } from '../types'
 import { formatGrantTypeLabel, formatResponseTypeLabel, formatScopeDisplay } from '../helper/utils'
 
@@ -17,6 +19,8 @@ interface ClientDetailViewProps {
 
 const ClientDetailView: React.FC<ClientDetailViewProps> = ({ client, scopes = [] }) => {
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = useMemo(() => theme?.state?.theme || 'light', [theme?.state?.theme])
 
   const getScopeNames = (): string[] => {
     if (!client.scopes || client.scopes.length === 0) return []
@@ -68,12 +72,9 @@ const ClientDetailView: React.FC<ClientDetailViewProps> = ({ client, scopes = []
         <Typography sx={{ fontSize: '1rem', fontWeight: 600, flex: 1 }}>
           {client.displayName || client.clientName || t('fields.unnamed_client')}
         </Typography>
-        <Chip
-          label={client.disabled ? t('fields.disabled') : t('fields.active')}
-          size="small"
-          color={client.disabled ? 'default' : 'success'}
-          sx={{ height: 22, fontSize: '0.7rem' }}
-        />
+        <Badge color={client.disabled ? `danger-${selectedTheme}` : `primary-${selectedTheme}`}>
+          {client.disabled ? t('fields.disabled') : t('fields.active')}
+        </Badge>
       </Box>
 
       <Grid container spacing={1.5}>
