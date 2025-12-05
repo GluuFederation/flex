@@ -49,16 +49,7 @@ const GluuCommitDialog = ({
   const [active, setActive] = useState(false)
   const [isOpen, setIsOpen] = useState<number | null>(null)
   const [userMessage, setUserMessage] = useState('')
-  const { loadingWebhooks, webhookModal } = useSelector(
-    (
-      state: RootState & {
-        webhookReducer: {
-          loadingWebhooks: boolean
-          webhookModal: boolean
-        }
-      },
-    ) => state.webhookReducer,
-  )
+  const { loadingWebhooks, webhookModal } = useSelector((state: RootState) => state.webhookReducer)
 
   const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
   const webhookScopes = useMemo(
