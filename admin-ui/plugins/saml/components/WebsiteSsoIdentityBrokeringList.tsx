@@ -35,16 +35,15 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
     hasCedarWritePermission,
     hasCedarDeletePermission,
   } = useCedarling()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme?.state?.theme ?? 'light'
+  const themeColors = getThemeColor(selectedTheme)
+
   const [modal, setModal] = useState(false)
   const [limit, setLimit] = useState(10)
   const [pattern, setPattern] = useState<string | null>(null)
   const [item, setItem] = useState<DeleteItem>({ inum: '' })
   const [pageNumber, setPageNumber] = useState(0)
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state.theme ?? 'light'
-  const themeColors = getThemeColor(selectedTheme)
-
-  const toggle = useCallback(() => setModal((prev) => !prev), [])
 
   const { t } = useTranslation()
   const dispatch = useDispatch()
@@ -52,6 +51,7 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
   const { items, loadingSamlIdp, totalItems } = useSelector(
     (state: SamlRootState) => state.idpSamlReducer,
   )
+
   const samlResourceId = useMemo(() => ADMIN_UI_RESOURCES.SAML, [])
   const samlScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[samlResourceId], [samlResourceId])
   const canReadIdentities = useMemo(
@@ -67,7 +67,6 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
     [hasCedarDeletePermission, samlResourceId],
   )
 
-  // Permission initialization
   useEffect(() => {
     authorizeHelper(samlScopes)
   }, [authorizeHelper, samlScopes])
@@ -77,19 +76,21 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
     dispatch(getSamlIdentites({ limit, ...(pattern ? { pattern } : {}) }))
   }, [dispatch, canReadIdentities, limit, pattern])
 
+  const toggle = useCallback(() => setModal((prev) => !prev), [])
+
   const handleGoToEditPage = useCallback(
-    (rowData: SamlIdentity, viewOnly?: boolean) => {
+    (rowData: SamlIdentity, viewOnly?: boolean): void => {
       navigateToRoute(ROUTES.SAML_IDP_EDIT, { state: { rowData: rowData, viewOnly: viewOnly } })
     },
     [navigateToRoute],
   )
 
-  const handleGoToAddPage = useCallback(() => {
+  const handleGoToAddPage = useCallback((): void => {
     navigateToRoute(ROUTES.SAML_IDP_ADD)
   }, [navigateToRoute])
 
   const handleDelete = useCallback(
-    (row: SamlIdentity) => {
+    (row: SamlIdentity): void => {
       setItem(row)
       toggle()
     },
@@ -97,7 +98,7 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
   )
 
   const onDeletionConfirmed = useCallback(
-    (message: string) => {
+    (message: string): void => {
       const userAction: { action_message?: string; action_data?: string } = {}
       buildPayload(userAction, message, item.inum)
       dispatch(deleteSamlIdentity({ action: { action_data: userAction.action_data ?? '' } }))
@@ -107,7 +108,7 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
   )
 
   const onRowCountChangeClick = useCallback(
-    (count: number) => {
+    (count: number): void => {
       setPageNumber(0)
       setLimit(count)
       dispatch(getSamlIdentites({ startIndex: 0, limit: count, ...(pattern ? { pattern } : {}) }))
@@ -116,7 +117,7 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
   )
 
   const onPageChangeClick = useCallback(
-    (page: number) => {
+    (page: number): void => {
       const startCount = page * limit
       setPageNumber(page)
       dispatch(
@@ -130,8 +131,12 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
     [dispatch, limit, pattern],
   )
 
+  const handleRefresh = useCallback((): void => {
+    dispatch(getSamlIdentites({ limit, ...(pattern ? { pattern } : {}) }))
+  }, [dispatch, limit, pattern])
+
   const handleOptionsChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement> & { keyCode?: number }) => {
+    (event: React.ChangeEvent<HTMLInputElement> & { keyCode?: number }): void => {
       if (event.target.name === 'limit') {
         setLimit(Number(event.target.value))
       } else if (event.target.name === 'pattern') {
@@ -142,21 +147,23 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
         }
       }
     },
-    [limit, dispatch],
+    [dispatch, limit],
   )
 
   const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
 
   const PaginationWrapper = useCallback(
-    () => (
+    (): React.ReactElement => (
       <TablePagination
         count={totalItems}
         page={pageNumber}
-        onPageChange={(_prop: React.MouseEvent<HTMLButtonElement> | null, page: number) => {
+        onPageChange={(_prop: React.MouseEvent<HTMLButtonElement> | null, page: number): void => {
           onPageChangeClick(page)
         }}
         rowsPerPage={limit}
-        onRowsPerPageChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        onRowsPerPageChange={(
+          event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+        ): void => {
           onRowCountChangeClick(Number(event.target.value))
         }}
       />
@@ -164,7 +171,7 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
     [pageNumber, totalItems, onPageChangeClick, limit, onRowCountChangeClick],
   )
 
-  const GluuSearch = useCallback(() => {
+  const GluuSearch = useCallback((): React.ReactElement => {
     return (
       <GluuAdvancedSearch
         limitId={'searchLimit'}
@@ -182,7 +189,7 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
     if (canWriteIdentities) {
       actions.push({
         icon: 'edit',
-        tooltip: `${t('messages.edit_identity_provider')}`,
+        tooltip: `${t('titles.edit_identity_provider')}`,
         iconProps: { style: { color: customColors.darkGray } },
         onClick: (_event: React.MouseEvent, rowData: SamlIdentity | SamlIdentity[]): void => {
           if (Array.isArray(rowData)) return
@@ -195,7 +202,7 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
       })
       actions.push({
         icon: 'add',
-        tooltip: `${t('messages.add_identity_provider')}`,
+        tooltip: `${t('titles.create_identity_provider')}`,
         iconProps: { color: 'primary' },
         isFreeAction: true,
         onClick: () => handleGoToAddPage(),
@@ -204,7 +211,7 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
     if (canReadIdentities) {
       actions.push({
         icon: 'visibility',
-        tooltip: `${t('messages.view_identity_provider')}`,
+        tooltip: `${t('titles.view_identity_provider')}`,
         onClick: (_event: React.MouseEvent, rowData: SamlIdentity | SamlIdentity[]): void => {
           if (Array.isArray(rowData)) return
           handleGoToEditPage(rowData, true)
@@ -215,7 +222,7 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
       actions.push({
         icon: DeleteOutlinedIcon,
         iconProps: { color: 'secondary' },
-        tooltip: `${t('messages.delete_identity_provider')}`,
+        tooltip: `${t('titles.delete_identity_provider')}`,
         onClick: (_event: React.MouseEvent, rowData: SamlIdentity | SamlIdentity[]): void => {
           if (Array.isArray(rowData)) return
           handleDelete(rowData)
@@ -236,9 +243,7 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
       tooltip: `${t('messages.refresh')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
-      onClick: () => {
-        dispatch(getSamlIdentites({ limit, ...(pattern ? { pattern } : {}) }))
-      },
+      onClick: handleRefresh,
     } as Action<SamlIdentity> & { 'data-testid'?: string })
     return actions
   }, [
@@ -246,43 +251,57 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
     canReadIdentities,
     canDeleteIdentities,
     t,
-    dispatch,
     handleGoToEditPage,
     handleGoToAddPage,
     handleDelete,
-    limit,
-    pattern,
+    handleRefresh,
     DeleteOutlinedIcon,
     GluuSearch,
   ])
 
   const tableColumns = useMemo(() => getIdentityProviderTableCols(t), [t])
 
+  const headerStyle = useMemo(
+    () =>
+      ({
+        ...applicationStyle.tableHeaderStyle,
+        backgroundColor: themeColors.menu.background,
+        color: customColors.white,
+      }) as React.CSSProperties,
+    [themeColors.menu.background],
+  )
+
+  const tableOptions = useMemo(
+    () => ({
+      search: false,
+      selection: false,
+      idSynonym: 'inum',
+      pageSize: limit,
+      headerStyle,
+      actionsColumnIndex: -1,
+    }),
+    [limit, headerStyle],
+  )
+
+  const tableComponents = useMemo(
+    () => ({
+      Container: PaperContainer,
+      Pagination: PaginationWrapper,
+    }),
+    [PaginationWrapper],
+  )
+
   return (
     <>
       <GluuViewWrapper canShow={canReadIdentities}>
         <MaterialTable
-          components={{
-            Container: PaperContainer,
-            Pagination: PaginationWrapper,
-          }}
+          components={tableComponents}
           columns={tableColumns}
           data={items}
           isLoading={loadingSamlIdp}
           title=""
           actions={tableActions}
-          options={{
-            search: false,
-            selection: false,
-            idSynonym: 'inum',
-            pageSize: limit,
-            headerStyle: {
-              ...applicationStyle.tableHeaderStyle,
-              backgroundColor: themeColors.menu.background,
-              color: customColors.white,
-            } as React.CSSProperties,
-            actionsColumnIndex: -1,
-          }}
+          options={tableOptions}
         />
       </GluuViewWrapper>
       {canDeleteIdentities && (

@@ -1034,7 +1034,12 @@
     "cedar_Init": "Cedarling is trying to initialize, please wait",
     "newPermission": "New Permission",
     "addingNewApiPermission": "Adding new API Permission",
-    "followingPermissionRequiredToBeAdded": "Following permission required to be added!"
+    "followingPermissionRequiredToBeAdded": "Following permission required to be added!",
+    "identity_provider": "Identity Provider",
+    "edit_identity_provider": "Edit Identity Provider",
+    "create_identity_provider": "Create Identity Provider",
+    "view_identity_provider": "View Identity Provider",
+    "delete_identity_provider": "Delete Identity Provider"
   },
   "links": {
     "support": "https://support.gluu.org/"

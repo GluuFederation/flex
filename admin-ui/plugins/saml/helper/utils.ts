@@ -19,18 +19,34 @@ export const transformToFormValues = (
 export const transformToIdentityProviderFormValues = (
   configs?: SamlIdentity | null,
 ): WebsiteSsoIdentityProviderFormValues => {
+  const config = configs?.config || {}
+  const singleSignOnServiceUrl =
+    config.singleSignOnServiceUrl || configs?.singleSignOnServiceUrl || ''
+  const nameIDPolicyFormat = config.nameIDPolicyFormat || configs?.nameIDPolicyFormat || ''
+  const idpEntityId = config.idpEntityId || configs?.idpEntityId || ''
+  const singleLogoutServiceUrl =
+    config.singleLogoutServiceUrl || configs?.singleLogoutServiceUrl || ''
+  const signingCertificate = config.signingCertificate || configs?.signingCertificate || ''
+  const encryptionPublicKey = config.encryptionPublicKey || configs?.encryptionPublicKey || ''
+  const principalAttribute = config.principalAttribute || configs?.principalAttribute || ''
+  const principalType = config.principalType || configs?.principalType || ''
+
   return {
-    ...(configs || {}),
     name: configs?.name || '',
-    nameIDPolicyFormat: configs?.nameIDPolicyFormat || '',
-    singleSignOnServiceUrl: configs?.singleSignOnServiceUrl || '',
-    idpEntityId: configs?.idpEntityId || '',
     displayName: configs?.displayName || '',
     description: configs?.description || '',
-    metaDataFileImportedFlag: false,
     enabled: configs?.enabled || false,
-    principalAttribute: configs?.principalAttribute || '',
-    principalType: configs?.principalType || '',
+    nameIDPolicyFormat,
+    singleSignOnServiceUrl,
+    idpEntityId,
+    singleLogoutServiceUrl,
+    signingCertificate,
+    encryptionPublicKey,
+    principalAttribute,
+    principalType,
+    metaDataFileImportedFlag: configs?.idpMetaDataFN ? true : false,
+    metaDataFile: null,
+    idpMetaDataFN: configs?.idpMetaDataFN || undefined,
     manualMetadata: '',
   }
 }
@@ -74,4 +90,102 @@ export const transformToTrustRelationshipFormValues = (
     metaDataFileImportedFlag: configs?.spMetaDataFN ? true : false,
     metaDataFile: null,
   }
+}
+
+type FormValue = string | number | boolean | File | null
+type FormValues = Record<string, FormValue>
+type ConfigFields = Record<string, FormValue>
+type RootFields = Record<string, FormValue>
+type IdentityProviderPayload = RootFields & {
+  config?: ConfigFields
+  idpMetaDataFN?: string
+  inum?: string
+}
+
+const CONFIG_FIELDS = [
+  'singleSignOnServiceUrl',
+  'nameIDPolicyFormat',
+  'idpEntityId',
+  'singleLogoutServiceUrl',
+  'signingCertificate',
+  'encryptionPublicKey',
+  'principalAttribute',
+  'principalType',
+] as const
+
+const trimStringValue = (value: FormValue): FormValue => {
+  if (typeof value === 'string') {
+    return value.trim()
+  }
+  return value
+}
+
+export const cleanOptionalFields = (values: FormValues): FormValues => {
+  return Object.entries(values).reduce((acc, [key, value]) => {
+    acc[key] = trimStringValue(value)
+    return acc
+  }, {} as FormValues)
+}
+
+export const separateConfigFields = (
+  values: FormValues,
+): { rootFields: RootFields; configData: ConfigFields } => {
+  const rootFields: RootFields = {}
+  const configData: ConfigFields = {}
+
+  Object.entries(values).forEach(([key, value]) => {
+    const isConfigField = CONFIG_FIELDS.includes(key as (typeof CONFIG_FIELDS)[number])
+    if (isConfigField) {
+      configData[key] = trimStringValue(value)
+    } else {
+      rootFields[key] = trimStringValue(value)
+    }
+  })
+
+  return { rootFields, configData }
+}
+
+export const buildIdentityProviderPayload = (
+  rootFields: RootFields,
+  configData: ConfigFields,
+  inum?: string,
+  metaDataFileImportedFlag?: boolean,
+  idpMetaDataFN?: string,
+): IdentityProviderPayload => {
+  if (metaDataFileImportedFlag) {
+    const payload = {
+      ...rootFields,
+    } as IdentityProviderPayload
+
+    if (idpMetaDataFN) {
+      payload.idpMetaDataFN = idpMetaDataFN
+    }
+
+    if (inum) {
+      payload.inum = inum
+    }
+
+    return payload
+  }
+
+  const finalConfigData: ConfigFields = { ...configData }
+
+  CONFIG_FIELDS.forEach((field) => {
+    if (!(field in finalConfigData)) {
+      finalConfigData[field] = ''
+    } else {
+      finalConfigData[field] = trimStringValue(finalConfigData[field])
+    }
+  })
+
+  const payload = {
+    ...rootFields,
+    ...finalConfigData,
+  } as IdentityProviderPayload
+
+  if (inum) {
+    payload.inum = inum
+  }
+
+  return payload
 }

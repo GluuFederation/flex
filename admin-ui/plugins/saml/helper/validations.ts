@@ -10,6 +10,7 @@ export interface WebsiteSsoIdentityProviderFormValues {
   displayName: string
   description: string
   metaDataFileImportedFlag?: boolean
+  metaDataFile?: File | null
   enabled: boolean
   principalAttribute: string
   principalType: string
@@ -47,14 +48,73 @@ export const websiteSsoIdentityProviderValidationSchema = (
   t: TFunction,
 ): Yup.ObjectSchema<WebsiteSsoIdentityProviderFormValues> =>
   Yup.object().shape({
-    singleSignOnServiceUrl: requiredWhenMetadataNotImported(t, 'fields.single_signon_service_url'),
-    idpEntityId: requiredWhenMetadataNotImported(t, 'fields.idp_entity_id'),
+    name: Yup.string()
+      .required(`${t('fields.name')} is Required!`)
+      .trim(),
+    displayName: Yup.string()
+      .required(`${t('fields.displayName')} is Required!`)
+      .trim(),
+    description: Yup.string().nullable(),
+    enabled: Yup.boolean().required(),
+    metaDataFileImportedFlag: Yup.boolean(),
+    metaDataFile: Yup.mixed().when('metaDataFileImportedFlag', {
+      is: (val: boolean) => val === true,
+      then: (s) =>
+        s.nullable().when(['metaDataFileImportedFlag', 'idpMetaDataFN'], {
+          is: (metaDataFileImportedFlag: boolean, idpMetaDataFN: string | undefined) =>
+            metaDataFileImportedFlag === true && !idpMetaDataFN,
+          then: (schema) =>
+            schema
+              .required(`${t('messages.import_metadata_file')}`)
+              .test('file-type', `${t('messages.import_metadata_file')}`, (value) => {
+                if (value === null || value === undefined) return false
+                if (value instanceof File) return true
+                // Accept file-like objects with path, relativePath, or name
+                if (typeof value === 'object' && value !== null) {
+                  const obj = value as Record<string, unknown>
+                  return (
+                    (obj.path != null && String(obj.path).trim() !== '') ||
+                    (obj.relativePath != null && String(obj.relativePath).trim() !== '') ||
+                    (obj.name != null && String(obj.name).trim() !== '')
+                  )
+                }
+                return false
+              }),
+          otherwise: (schema) => schema.nullable(), // Allow null when existing file is present
+        }),
+      otherwise: (s) => s.nullable(),
+    }),
+    manualMetadata: Yup.string().nullable(),
+    idpMetaDataFN: Yup.string().nullable(),
+    singleSignOnServiceUrl: requiredWhenMetadataNotImported(
+      t,
+      'fields.single_signon_service_url',
+    ).when('metaDataFileImportedFlag', {
+      is: (value: boolean) => value === false,
+      then: (schema) => schema.url(`${t('fields.single_signon_service_url')} must be a valid URL`),
+      otherwise: (schema) => schema,
+    }),
+    idpEntityId: requiredWhenMetadataNotImported(t, 'fields.idp_entity_id').trim(),
     nameIDPolicyFormat: requiredWhenMetadataNotImported(t, 'fields.name_policy_format'),
-    // Manual metadata is now provided via a file upload (fields.manual_metadata),
-    // so we no longer require a text value here.
-    manualMetadata: Yup.string(),
-    name: Yup.string().required(`${t('fields.name')} is Required!`),
-    displayName: Yup.string().required(`${t('fields.displayName')} is Required!`),
+    singleLogoutServiceUrl: Yup.string()
+      .nullable()
+      .test(
+        'url-format',
+        `${t('fields.single_logout_service_url')} must be a valid URL`,
+        function (value) {
+          if (!value || value.trim().length === 0) return true
+          try {
+            new URL(value)
+            return true
+          } catch {
+            return false
+          }
+        },
+      ),
+    signingCertificate: Yup.string().nullable(),
+    encryptionPublicKey: Yup.string().nullable(),
+    principalAttribute: Yup.string().nullable(),
+    principalType: Yup.string().nullable(),
   }) as Yup.ObjectSchema<WebsiteSsoIdentityProviderFormValues>
 
 export interface WebsiteSsoTrustRelationshipFormValues {

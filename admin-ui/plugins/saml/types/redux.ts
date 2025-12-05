@@ -7,21 +7,53 @@ export interface SamlConfiguration {
   applicationName: string
 }
 
-export interface SamlIdentity {
-  inum: string
-  name: string
-  displayName: string
-  description: string
-  enabled: boolean
-  singleSignOnServiceUrl: string
-  idpEntityId: string
-  nameIDPolicyFormat: string
-  principalAttribute: string
-  principalType: string
+export interface SamlIdentityConfig {
+  singleSignOnServiceUrl?: string
+  nameIDPolicyFormat?: string
+  idpEntityId?: string
   singleLogoutServiceUrl?: string
   signingCertificate?: string
   encryptionPublicKey?: string
+  principalAttribute?: string
+  principalType?: string
+  validateSignature?: string
+  postBindingLogout?: string
+  postBindingResponse?: string
+  loginHint?: string
+  enabledFromMetadata?: string
+  postBindingAuthnRequest?: string
+  wantAuthnRequestsSigned?: string
+  addExtensionsElementWithKeyInfo?: string
+  [key: string]: unknown
+}
+
+export interface SamlIdentity {
+  inum?: string
+  name: string
+  displayName: string
+  description?: string
+  enabled: boolean
+  providerId?: string
+  trustEmail?: boolean
+  storeToken?: boolean
+  addReadTokenRoleOnCreate?: boolean
+  authenticateByDefault?: boolean
+  linkOnly?: boolean
   idpMetaDataFN?: string
+  dn?: string
+  creatorId?: string
+  realm?: string
+  baseDn?: string
+  config?: SamlIdentityConfig
+  // Legacy flat structure support (for backward compatibility)
+  singleSignOnServiceUrl?: string
+  idpEntityId?: string
+  nameIDPolicyFormat?: string
+  principalAttribute?: string
+  principalType?: string
+  singleLogoutServiceUrl?: string
+  signingCertificate?: string
+  encryptionPublicKey?: string
 }
 
 export interface SamlIdentityListResponse {

@@ -23,6 +23,9 @@ import {
   nameIDPolicyFormat,
   websiteSsoIdentityProviderValidationSchema,
   transformToIdentityProviderFormValues,
+  cleanOptionalFields,
+  separateConfigFields,
+  buildIdentityProviderPayload,
 } from '../helper'
 import type { WebsiteSsoIdentityProviderFormValues } from '../helper/validations'
 import SetTitle from 'Utils/SetTitle'
@@ -55,8 +58,6 @@ const WebsiteSsoIdentityProviderForm = ({
     [propsViewOnly, state?.viewOnly],
   )
   const [showUploadBtn, setShowUploadBtn] = useState<boolean>(false)
-  const [metaDataFile, setMetaDataFile] = useState<File | null>(null)
-  const [fileError, setFileError] = useState<boolean>(false)
   const savedForm = useSelector((state: SamlRootState) => state.idpSamlReducer.savedForm)
   const loading = useSelector((state: SamlRootState) => state.idpSamlReducer.loading)
   const { t } = useTranslation()
@@ -66,11 +67,11 @@ const WebsiteSsoIdentityProviderForm = ({
 
   const title = useMemo(() => {
     if (viewOnly) {
-      return t('titles.idp')
+      return t('titles.view_identity_provider')
     } else if (configs) {
-      return t('titles.edit_idp')
+      return t('titles.edit_identity_provider')
     } else {
-      return t('titles.create_idp')
+      return t('titles.create_identity_provider')
     }
   }, [viewOnly, configs, t])
 
@@ -80,6 +81,12 @@ const WebsiteSsoIdentityProviderForm = ({
     () => transformToIdentityProviderFormValues(configs),
     [configs],
   )
+
+  useEffect(() => {
+    if (initialValues.metaDataFileImportedFlag) {
+      setShowUploadBtn(true)
+    }
+  }, [initialValues.metaDataFileImportedFlag])
 
   const validationSchema = useMemo(() => websiteSsoIdentityProviderValidationSchema(t), [t])
 
@@ -91,6 +98,9 @@ const WebsiteSsoIdentityProviderForm = ({
     initialValues,
     validationSchema,
     enableReinitialize: true,
+    validateOnBlur: true,
+    validateOnChange: true,
+    validateOnMount: false,
     onSubmit: () => {
       toggle()
     },
@@ -98,31 +108,29 @@ const WebsiteSsoIdentityProviderForm = ({
 
   const handleSubmit = useCallback(
     (values: WebsiteSsoIdentityProviderFormValues, user_message: string) => {
-      const { metaDataFileImportedFlag, manualMetadata, ...formValues } = values
+      const { metaDataFileImportedFlag, manualMetadata, metaDataFile, ...formValues } = values
       void metaDataFileImportedFlag
       void manualMetadata
       const formdata = new FormData()
 
-      const identityProviderData = { ...formValues }
-
-      // If a metadata file is provided, add it as a file
-      if (metaDataFileImportedFlag && metaDataFile) {
-        const blob = new Blob([metaDataFile], {
-          type: 'application/octet-stream',
-        })
-        formdata.append('metaDataFile', blob)
+      if (metaDataFileImportedFlag && metaDataFile && metaDataFile instanceof File) {
+        formdata.append('metaDataFile', metaDataFile)
       }
 
-      const blob = new Blob(
-        [
-          JSON.stringify({
-            ...identityProviderData,
-          }),
-        ],
-        {
-          type: 'application/json',
-        },
+      const cleanFormValues = cleanOptionalFields(formValues)
+      const { rootFields, configData } = separateConfigFields(cleanFormValues)
+      const idpMetaDataFN = configs?.idpMetaDataFN || formValues.idpMetaDataFN
+      const identityProviderData = buildIdentityProviderPayload(
+        rootFields,
+        configData,
+        configs?.inum,
+        metaDataFileImportedFlag,
+        idpMetaDataFN,
       )
+
+      const blob = new Blob([JSON.stringify(identityProviderData)], {
+        type: 'application/json',
+      })
 
       formdata.append('identityProvider', blob)
 
@@ -135,12 +143,16 @@ const WebsiteSsoIdentityProviderForm = ({
       } else {
         dispatch(
           updateSamlIdentity({
-            action: { action_message: user_message, action_data: formdata },
+            action: {
+              action_message: user_message,
+              action_data: formdata,
+              action_inum: configs.inum,
+            },
           }),
         )
       }
     },
-    [configs, dispatch, metaDataFile],
+    [configs, dispatch],
   )
 
   const submitForm = useCallback(
@@ -152,21 +164,26 @@ const WebsiteSsoIdentityProviderForm = ({
   )
 
   const handleToggleMetadataImport = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
+    async (event: React.ChangeEvent<HTMLInputElement>) => {
       if (event.target.checked) {
         setShowUploadBtn(true)
         formik.setFieldValue('metaDataFileImportedFlag', true)
+        formik.setFieldValue('idpEntityId', '')
+        formik.setFieldValue('nameIDPolicyFormat', '')
+        formik.setFieldValue('singleSignOnServiceUrl', '')
         formik.setFieldTouched('singleSignOnServiceUrl', false)
         formik.setFieldTouched('idpEntityId', false)
         formik.setFieldTouched('nameIDPolicyFormat', false)
-        setFileError(false)
+        formik.setFieldTouched('metaDataFile', false)
+        await formik.validateForm()
       } else {
         formik.setFieldValue('metaDataFileImportedFlag', false)
         formik.setFieldValue('manualMetadata', '')
+        formik.setFieldValue('metaDataFile', null)
         formik.setFieldTouched('manualMetadata', false)
-        setMetaDataFile(null)
-        setFileError(false)
+        formik.setFieldTouched('metaDataFile', false)
         setShowUploadBtn(false)
+        await formik.validateForm()
       }
     },
     [formik],
@@ -176,43 +193,77 @@ const WebsiteSsoIdentityProviderForm = ({
     (files: File[]) => {
       const file = files[0]
       if (file) {
-        formik.setFieldValue('metaDataFileImportedFlag', true)
-        setMetaDataFile(file)
-        setFileError(false)
-      } else {
-        formik.setFieldValue('metaDataFileImportedFlag', false)
-        setMetaDataFile(null)
+        formik.setValues({
+          ...formik.values,
+          metaDataFileImportedFlag: true,
+          metaDataFile: file,
+        })
+        formik.setFieldTouched('metaDataFile', false, false)
       }
     },
     [formik],
   )
 
   const handleClearFiles = useCallback(() => {
-    formik.setFieldValue('metaDataFileImportedFlag', false)
-    setMetaDataFile(null)
-    setFileError(false)
+    formik.setFieldValue('metaDataFile', null, true)
+    formik.setFieldValue('metaDataFileImportedFlag', true, true)
+    formik.setFieldTouched('metaDataFile', true)
   }, [formik])
 
   const handleCancel = useCallback(() => {
     formik.resetForm({ values: initialValues })
+    setShowUploadBtn(false)
   }, [formik, initialValues])
 
   const handleFormSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
-      if (showUploadBtn && !metaDataFile) {
-        setFileError(true)
+      if (
+        !formik.values.metaDataFile &&
+        formik.values.metaDataFileImportedFlag &&
+        !configs?.idpMetaDataFN
+      ) {
+        formik.setFieldTouched('metaDataFile', true)
         return
       }
-      setFileError(false)
       formik.handleSubmit(e)
     },
-    [formik, showUploadBtn, metaDataFile],
+    [formik, configs?.idpMetaDataFN],
   )
 
   const isApplyDisabled = useMemo(() => {
+    if (formik.values.metaDataFileImportedFlag) {
+      const metaDataFile = formik.values.metaDataFile
+      const hasFile =
+        (metaDataFile !== null &&
+          metaDataFile !== undefined &&
+          (metaDataFile instanceof File ||
+            (typeof metaDataFile === 'object' &&
+              metaDataFile !== null &&
+              ('path' in metaDataFile || 'relativePath' in metaDataFile)))) ||
+        configs?.idpMetaDataFN
+      if (!hasFile) {
+        return true
+      }
+    }
     return !formik.isValid || !formik.dirty
-  }, [formik.isValid, formik.dirty])
+  }, [
+    formik.isValid,
+    formik.dirty,
+    formik.values.metaDataFileImportedFlag,
+    formik.values.metaDataFile,
+    configs?.idpMetaDataFN,
+  ])
+
+  const shouldShowError = useCallback(
+    (fieldName: keyof WebsiteSsoIdentityProviderFormValues): boolean => {
+      const error = formik.errors[fieldName]
+      const touched = formik.touched[fieldName]
+      const value = formik.values[fieldName]
+      return Boolean(error && (touched || (value !== undefined && value !== null && value !== '')))
+    },
+    [formik.errors, formik.touched, formik.values],
+  )
 
   useEffect(() => {
     if (savedForm) {
@@ -239,7 +290,7 @@ const WebsiteSsoIdentityProviderForm = ({
                   lsize={4}
                   required
                   rsize={8}
-                  showError={formik.errors.name && formik.touched.name}
+                  showError={shouldShowError('name')}
                   errorMessage={formik.errors.name}
                   disabled={viewOnly}
                   doc_category={DOC_SECTION}
@@ -254,7 +305,7 @@ const WebsiteSsoIdentityProviderForm = ({
                   lsize={4}
                   rsize={8}
                   required
-                  showError={formik.errors.displayName && formik.touched.displayName}
+                  showError={shouldShowError('displayName')}
                   errorMessage={formik.errors.displayName}
                   disabled={viewOnly}
                   doc_category={DOC_SECTION}
@@ -268,7 +319,7 @@ const WebsiteSsoIdentityProviderForm = ({
                   formik={formik}
                   lsize={4}
                   rsize={8}
-                  showError={formik.errors.description && formik.touched.description}
+                  showError={shouldShowError('description')}
                   errorMessage={formik.errors.description}
                   disabled={viewOnly}
                   doc_category={DOC_SECTION}
@@ -298,26 +349,37 @@ const WebsiteSsoIdentityProviderForm = ({
               {showUploadBtn ? (
                 <Col sm={10}>
                   <FormGroup row>
-                    <GluuLabel label={'fields.manual_metadata'} size={4} />
+                    <GluuLabel label={'fields.idp_metadata_file'} size={4} required />
                     <Col sm={8}>
                       <GluuUploadFile
+                        key={`metadata-file-${formik.values.metaDataFile?.name || configs?.idpMetaDataFN || 'empty'}-${formik.values.metaDataFileImportedFlag}`}
                         accept={{
                           'text/xml': ['.xml'],
                           'application/json': ['.json'],
                         }}
-                        fileName={configs?.idpMetaDataFN}
+                        fileName={
+                          formik.values.metaDataFile?.name ||
+                          (formik.values.metaDataFileImportedFlag && configs?.idpMetaDataFN
+                            ? configs.idpMetaDataFN
+                            : null)
+                        }
                         placeholder={`Drag 'n' drop .xml/.json file here, or click to select file`}
                         onDrop={handleDrop}
                         onClearFiles={handleClearFiles}
                         disabled={viewOnly}
+                        showClearButton={!viewOnly}
                       />
-                      {fileError && (
-                        <GluuStatusMessage
-                          message={t('messages.import_metadata_file')}
-                          type="error"
-                          inline
-                        />
-                      )}
+                      {formik.errors.metaDataFile &&
+                        (formik.touched.metaDataFile || formik.submitCount > 0) && (
+                          <GluuStatusMessage
+                            message={
+                              (formik.errors.metaDataFile as string) ||
+                              t('messages.import_metadata_file')
+                            }
+                            type="error"
+                            inline
+                          />
+                        )}
                     </Col>
                   </FormGroup>
                 </Col>
@@ -329,10 +391,10 @@ const WebsiteSsoIdentityProviderForm = ({
                       name="idpEntityId"
                       value={formik.values.idpEntityId || ''}
                       formik={formik}
-                      required
+                      required={!formik.values.metaDataFileImportedFlag}
                       lsize={4}
                       rsize={8}
-                      showError={formik.errors.idpEntityId && formik.touched.idpEntityId}
+                      showError={shouldShowError('idpEntityId')}
                       errorMessage={formik.errors.idpEntityId}
                       disabled={viewOnly}
                       doc_category={DOC_SECTION}
@@ -348,10 +410,8 @@ const WebsiteSsoIdentityProviderForm = ({
                       formik={formik}
                       lsize={4}
                       rsize={8}
-                      required
-                      showError={Boolean(
-                        formik.errors.nameIDPolicyFormat && formik.touched.nameIDPolicyFormat,
-                      )}
+                      required={!formik.values.metaDataFileImportedFlag}
+                      showError={shouldShowError('nameIDPolicyFormat')}
                       errorMessage={formik.errors.nameIDPolicyFormat}
                       disabled={viewOnly}
                       doc_category={DOC_SECTION}
@@ -363,14 +423,11 @@ const WebsiteSsoIdentityProviderForm = ({
                       label="fields.single_signon_service_url"
                       name="singleSignOnServiceUrl"
                       value={formik.values.singleSignOnServiceUrl}
-                      required
+                      required={!formik.values.metaDataFileImportedFlag}
                       formik={formik}
                       lsize={4}
                       rsize={8}
-                      showError={
-                        formik.errors.singleSignOnServiceUrl &&
-                        formik.touched.singleSignOnServiceUrl
-                      }
+                      showError={shouldShowError('singleSignOnServiceUrl')}
                       errorMessage={formik.errors.singleSignOnServiceUrl}
                       disabled={viewOnly}
                       doc_category={DOC_SECTION}
@@ -384,10 +441,7 @@ const WebsiteSsoIdentityProviderForm = ({
                       formik={formik}
                       lsize={4}
                       rsize={8}
-                      showError={
-                        formik.errors.singleLogoutServiceUrl &&
-                        formik.touched.singleLogoutServiceUrl
-                      }
+                      showError={shouldShowError('singleLogoutServiceUrl')}
                       errorMessage={formik.errors.singleLogoutServiceUrl}
                       disabled={viewOnly}
                       doc_category={DOC_SECTION}
@@ -402,9 +456,7 @@ const WebsiteSsoIdentityProviderForm = ({
                       lsize={4}
                       rsize={8}
                       type="textarea"
-                      showError={
-                        formik.errors.signingCertificate && formik.touched.signingCertificate
-                      }
+                      showError={shouldShowError('signingCertificate')}
                       errorMessage={formik.errors.signingCertificate}
                       disabled={viewOnly}
                       rows={10}
@@ -420,9 +472,7 @@ const WebsiteSsoIdentityProviderForm = ({
                       lsize={4}
                       rsize={8}
                       type="textarea"
-                      showError={
-                        formik.errors.encryptionPublicKey && formik.touched.encryptionPublicKey
-                      }
+                      showError={shouldShowError('encryptionPublicKey')}
                       errorMessage={formik.errors.encryptionPublicKey}
                       disabled={viewOnly}
                       rows={10}
@@ -437,9 +487,7 @@ const WebsiteSsoIdentityProviderForm = ({
                       formik={formik}
                       lsize={4}
                       rsize={8}
-                      showError={
-                        formik.errors.principalAttribute && formik.touched.principalAttribute
-                      }
+                      showError={shouldShowError('principalAttribute')}
                       errorMessage={formik.errors.principalAttribute}
                       disabled={viewOnly}
                       doc_category={DOC_SECTION}
@@ -453,7 +501,7 @@ const WebsiteSsoIdentityProviderForm = ({
                       formik={formik}
                       lsize={4}
                       rsize={8}
-                      showError={formik.errors.principalType && formik.touched.principalType}
+                      showError={shouldShowError('principalType')}
                       errorMessage={formik.errors.principalType}
                       disabled={viewOnly}
                       doc_category={DOC_SECTION}
@@ -462,23 +510,22 @@ const WebsiteSsoIdentityProviderForm = ({
                 </>
               )}
             </FormGroup>
-            {!viewOnly && (
-              <Row>
-                <Col>
-                  <GluuFormFooter
-                    showBack={true}
-                    showCancel={true}
-                    showApply={true}
-                    onApply={toggle}
-                    onCancel={handleCancel}
-                    disableBack={false}
-                    disableCancel={!formik.dirty}
-                    disableApply={isApplyDisabled}
-                    applyButtonType="button"
-                  />
-                </Col>
-              </Row>
-            )}
+            <Row>
+              <Col>
+                <GluuFormFooter
+                  showBack={true}
+                  showCancel={!viewOnly}
+                  showApply={!viewOnly}
+                  onApply={toggle}
+                  onCancel={handleCancel}
+                  onBack={navigateBack}
+                  disableBack={false}
+                  disableCancel={!formik.dirty}
+                  disableApply={isApplyDisabled}
+                  applyButtonType="button"
+                />
+              </Col>
+            </Row>
             <GluuCommitDialog
               handler={toggle}
               modal={modal}

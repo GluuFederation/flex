@@ -170,10 +170,7 @@ const WebsiteSsoTrustRelationshipForm = ({
       const formdata = new FormData()
 
       if (metaDataFile) {
-        const blob = new Blob([metaDataFile], {
-          type: 'application/octet-stream',
-        })
-        formdata.append('metaDataFile', blob)
+        formdata.append('metaDataFile', metaDataFile)
       }
 
       const payload: TrustRelationshipPayload = {
