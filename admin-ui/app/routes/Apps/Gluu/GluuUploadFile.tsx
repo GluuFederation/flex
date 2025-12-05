@@ -36,7 +36,6 @@ const GluuUploadFile: React.FC<GluuUploadFileProps> = ({
 
   useEffect(() => {
     setPreDefinedFileName(fileName || null)
-    setSelectedFile(null)
   }, [fileName])
 
   const handleDrop = useCallback(
@@ -76,7 +75,7 @@ const GluuUploadFile: React.FC<GluuUploadFileProps> = ({
         {selectedFile || preDefinedFileName ? (
           <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
             <Box display="flex" justifyContent="flex-start" alignItems="center" gap={1}>
-              <strong>{preDefinedFileName || selectedFile?.name}</strong>
+              <strong>{selectedFile?.name || preDefinedFileName}</strong>
               {selectedFile ? (
                 <p className="m-0">({((selectedFile?.size || 0) / 1000).toFixed(0)}K)</p>
               ) : null}

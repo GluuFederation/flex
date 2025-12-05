@@ -71,6 +71,8 @@ const SamlConfigurationForm: React.FC = () => {
     [dispatch],
   )
 
+  const { setFieldValue, resetForm, handleSubmit: formikHandleSubmit } = formik
+
   const submitForm = useCallback(
     (messages: string) => {
       toggle()
@@ -80,29 +82,29 @@ const SamlConfigurationForm: React.FC = () => {
   )
 
   const handleCancel = useCallback(() => {
-    formik.resetForm({ values: initialValues })
-  }, [formik, initialValues])
+    resetForm({ values: initialValues })
+  }, [resetForm, initialValues])
 
   const handleEnabledChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      formik.setFieldValue('enabled', event.target.checked)
+      setFieldValue('enabled', event.target.checked)
     },
-    [formik],
+    [setFieldValue],
   )
 
   const handleIgnoreValidationChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      formik.setFieldValue('ignoreValidation', event.target.checked)
+      setFieldValue('ignoreValidation', event.target.checked)
     },
-    [formik],
+    [setFieldValue],
   )
 
   const handleFormSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
-      formik.handleSubmit()
+      formikHandleSubmit()
     },
-    [formik],
+    [formikHandleSubmit],
   )
 
   return (
