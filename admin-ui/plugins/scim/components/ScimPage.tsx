@@ -97,8 +97,8 @@ const ScimPage: React.FC = () => {
                   case 'add':
                     return { ...updated, [key]: patch.value }
                   case 'remove': {
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    const { [key]: _omit, ...rest } = updated
+                    const { [key]: omitted, ...rest } = updated
+                    void omitted
                     return rest
                   }
                   default:
