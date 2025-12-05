@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from 'react'
+import { useState, useContext, useEffect, useRef } from 'react'
 import { FormGroup, Col, Button, Accordion, AccordionHeader, AccordionBody } from 'Components'
 import GluuPropertyItem from './GluuPropertyItem'
 import { useTranslation } from 'react-i18next'
@@ -11,6 +11,67 @@ import customColors from '@/customColors'
 type KeyValueProperty = { key: string; value: string }
 type SourceDestinationProperty = { source: string; destination: string }
 type Property = KeyValueProperty | SourceDestinationProperty
+
+const isKeyValueProperty = (prop: Property): prop is KeyValueProperty =>
+  'key' in prop && 'value' in prop
+
+const isSourceDestinationProperty = (prop: Property): prop is SourceDestinationProperty =>
+  'source' in prop && 'destination' in prop
+
+const syncFormikProperties = (
+  formik: any,
+  compName: string,
+  properties: Property[],
+  { isKeys, multiProperties }: { isKeys: boolean; multiProperties: boolean },
+) => {
+  if (!formik || !compName) return
+
+  if (process.env.NODE_ENV === 'development' && properties.length > 0) {
+    const hasKeyValue = properties.some((p: any) => 'key' in p && 'value' in p)
+    const hasSourceDest = properties.some((p: any) => 'source' in p && 'destination' in p)
+    const hasApiFormat = properties.some((p: any) => 'value1' in p && 'value2' in p)
+
+    if (multiProperties && !hasSourceDest) {
+      console.warn(
+        `GluuProperties[${compName}]: multiProperties=true but properties lack source/destination`,
+      )
+    }
+    if (!multiProperties && !hasKeyValue && hasApiFormat) {
+      console.error(
+        `GluuProperties[${compName}]: Properties in API format {value1,value2}. Transform to {key,value} before passing to component.`,
+      )
+    }
+  }
+
+  if (!isKeys && !multiProperties) {
+    const valuesOnly = properties.filter(isKeyValueProperty).map((item) => item.value)
+    if (process.env.NODE_ENV === 'development' && valuesOnly.length < properties.length) {
+      console.warn(
+        `GluuProperties[${compName}]: Filtered out ${properties.length - valuesOnly.length} properties due to type mismatch`,
+      )
+    }
+    formik.setFieldValue(compName, valuesOnly)
+  } else if (!multiProperties) {
+    const apiFormat = properties.filter(isKeyValueProperty).map((p) => ({
+      value1: p.key,
+      value2: p.value,
+    }))
+    if (process.env.NODE_ENV === 'development' && apiFormat.length < properties.length) {
+      console.warn(
+        `GluuProperties[${compName}]: Filtered out ${properties.length - apiFormat.length} properties due to type mismatch`,
+      )
+    }
+    formik.setFieldValue(compName, apiFormat)
+  } else {
+    const validProperties = properties.filter(isSourceDestinationProperty)
+    if (process.env.NODE_ENV === 'development' && validProperties.length < properties.length) {
+      console.warn(
+        `GluuProperties[${compName}]: Filtered out ${properties.length - validProperties.length} properties due to type mismatch`,
+      )
+    }
+    formik.setFieldValue(compName, validProperties)
+  }
+}
 
 function GluuProperties({
   compName,
@@ -39,66 +100,44 @@ function GluuProperties({
   const { t, i18n } = useTranslation()
   const theme: any = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
+  const formikRef = useRef(formik)
+  formikRef.current = formik
+  const initialSyncDone = useRef(false)
 
-  // Sync internal state with options prop when it changes
-  // This ensures the component properly resets when formik values are reset
   useEffect(() => {
     setProperties(options)
-  }, [options])
+    if (!initialSyncDone.current && options?.length > 0) {
+      syncFormikProperties(formikRef.current, compName, options, { isKeys, multiProperties })
+      initialSyncDone.current = true
+    }
+  }, [options, compName, isKeys, multiProperties])
 
   const addProperty = () => {
     let item: Property
     if (multiProperties) {
       item = { source: '', destination: '' }
     } else if (!isKeys) {
-      // When isKeys is false, we only need a value (string), not an object
       item = { key: '', value: '' }
     } else {
       item = { key: '', value: '' }
     }
     const newProperties = [...properties, item]
     setProperties(newProperties)
-
-    // Sync with formik
-    if (formik && compName) {
-      if (!isKeys && !multiProperties) {
-        const valuesOnly = newProperties.map((property: KeyValueProperty) => property.value)
-        formik.setFieldValue(compName, valuesOnly)
-      } else {
-        formik.setFieldValue(compName, newProperties)
-      }
-    }
+    syncFormikProperties(formik, compName, newProperties, { isKeys, multiProperties })
   }
+
   const changeProperty = (position: any, e: any) => {
     const { name, value } = e.target
     const newDataArr = [...properties]
     newDataArr[position] = { ...newDataArr[position], [name]: value }
     setProperties(newDataArr)
-
-    // Sync with formik
-    if (formik && compName) {
-      if (!isKeys && !multiProperties) {
-        const valuesOnly = newDataArr.map((item: KeyValueProperty) => item.value)
-        formik.setFieldValue(compName, valuesOnly)
-      } else {
-        formik.setFieldValue(compName, newDataArr)
-      }
-    }
+    syncFormikProperties(formik, compName, newDataArr, { isKeys, multiProperties })
   }
   const removeProperty = (position: any) => {
     const data = [...properties]
     data.splice(position, 1)
     setProperties(data)
-
-    // Sync with formik
-    if (formik && compName) {
-      if (!isKeys && !multiProperties) {
-        const valuesOnly = data.map((item: KeyValueProperty) => item.value)
-        formik.setFieldValue(compName, valuesOnly)
-      } else {
-        formik.setFieldValue(compName, data)
-      }
-    }
+    syncFormikProperties(formik, compName, data, { isKeys, multiProperties })
   }
 
   function TooltipHeader() {

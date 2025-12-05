@@ -8,6 +8,7 @@ import { getAttributes, getScripts } from 'Redux/features/initSlice'
 import { buildPayload } from 'Utils/PermChecker'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { updateToast } from 'Redux/features/toastSlice'
+import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { usePostOauthScopes, getGetOauthScopesQueryKey } from 'JansConfigApi'
@@ -77,6 +78,7 @@ const ScopeAddPage: React.FC = () => {
             : t('messages.scope_created_successfully')
 
         dispatch(updateToast(true, 'success', successMessage))
+        dispatch(triggerWebhook({ createdFeatureValue: response }))
 
         try {
           await logScopeCreation(parsedData as Scope, message, modifiedFields)

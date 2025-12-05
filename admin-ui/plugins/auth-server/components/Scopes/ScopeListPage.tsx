@@ -36,6 +36,7 @@ import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
 import { useQueryClient } from '@tanstack/react-query'
 import { updateToast } from 'Redux/features/toastSlice'
+import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
 import {
   useGetOauthScopes,
   useDeleteOauthScopesByInum,
@@ -338,13 +339,14 @@ const ScopeListPage: React.FC = () => {
 
       try {
         await deleteScope.mutateAsync({ inum: item.inum })
+        dispatch(triggerWebhook({ createdFeatureValue: item }))
         await logScopeDeletion(item, message)
         toggle()
       } catch (error) {
         console.error('Error deleting scope:', error)
       }
     },
-    [item, deleteScope, logScopeDeletion, toggle],
+    [item, deleteScope, logScopeDeletion, toggle, dispatch],
   )
 
   const onPageChangeClick = useCallback(
