@@ -45,7 +45,8 @@ function GluuPropertyItem({
             disabled={disabled}
             onChange={(event) => onPropertyChange(position, event)}
             placeholder={
-              valuePlaceholder ? t(valuePlaceholder) : t('placeholders.enter_property_value')
+              property.description ||
+              (valuePlaceholder ? t(valuePlaceholder) : t('placeholders.enter_property_value'))
             }
           />
         ) : (
@@ -74,7 +75,7 @@ function GluuPropertyItem({
         )}
       </Col>
       {isRemoveButton && (
-        <Col sm={2} className="mt-4">
+        <Col sm={2} className={isInputLables ? 'mt-4' : ''}>
           <Button
             type="button"
             color="danger"

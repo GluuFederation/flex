@@ -67,6 +67,7 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.4.3",
+    "@types/animejs": "^3.1.13",
     "@types/circular-dependency-plugin": "^5.0.8",
     "@types/jest": "^29.5.12",
     "@types/lodash": "^4.17.17",

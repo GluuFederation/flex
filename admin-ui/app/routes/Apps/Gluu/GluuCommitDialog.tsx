@@ -96,12 +96,11 @@ const GluuCommitDialog = ({
       formik.setFieldValue('action_message', userMessage)
     }
     onAccept(userMessage)
-    setUserMessage('')
   }
   const closeModal = () => {
     handler()
-    setUserMessage('')
     onCloseModal()
+    setUserMessage('')
   }
 
   const renderBadges = (values: JsonValue[]) => {

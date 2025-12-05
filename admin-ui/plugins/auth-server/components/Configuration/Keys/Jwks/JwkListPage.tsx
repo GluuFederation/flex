@@ -6,7 +6,7 @@ import JwkItem from './JwkItem'
 import { useJwkApi } from '../hooks'
 import { useTranslation } from 'react-i18next'
 
-const generateStableKey = (kid: string | undefined, index: number): string => {
+const generateStableKey = (kid: string, index: number): string => {
   return kid || `jwk-${index}`
 }
 
@@ -19,9 +19,10 @@ function JwkListPage(): React.ReactElement {
       return null
     }
 
-    return jwks.keys.map((item, index) => (
-      <JwkItem key={generateStableKey(item.kid, index)} item={item} index={index} />
-    ))
+    return jwks.keys.map((item, index) => {
+      const kid = item.kid ?? ''
+      return <JwkItem key={generateStableKey(kid, index)} item={item} index={index} />
+    })
   }, [jwks?.keys])
 
   if (error) {

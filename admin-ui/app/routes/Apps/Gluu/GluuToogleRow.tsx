@@ -15,6 +15,7 @@ function GluuToogleRow({
   disabled = false,
   required = false,
   isLabelVisible = true,
+  labelStyle,
 }: any) {
   return (
     <FormGroup row>
@@ -25,6 +26,7 @@ function GluuToogleRow({
           size={lsize}
           doc_category={doc_category}
           doc_entry={name}
+          style={labelStyle}
         />
       )}
       <Col sm={rsize}>

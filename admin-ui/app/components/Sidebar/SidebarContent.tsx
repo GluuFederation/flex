@@ -1,9 +1,8 @@
 import React from 'react'
 import classNames from 'classnames'
-
-const SidebarEntryAnimate = require('./../../components/dashboard-style-airframe/sidebar-entry-animate')
-const SlimSidebarAnimate = require('./../../components/dashboard-style-airframe/slim-sidebar-animate')
-const SlimMenuAnimate = require('./../../components/dashboard-style-airframe/slim-menu-animate')
+import SidebarEntryAnimate from '../dashboard-style-airframe/sidebar-entry-animate'
+import SlimSidebarAnimate from '../dashboard-style-airframe/slim-sidebar-animate'
+import SlimMenuAnimate from '../dashboard-style-airframe/slim-menu-animate'
 
 interface SidebarContentProps {
   children?: React.ReactNode
@@ -23,9 +22,9 @@ interface SidebarContentState {
 
 export class SidebarContent extends React.Component<SidebarContentProps, SidebarContentState> {
   sidebarRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>()
-  sidebarEntryAnimate: any
-  slimSidebarAnimate: any
-  slimMenuAnimate: any
+  sidebarEntryAnimate: SidebarEntryAnimate | null = null
+  slimSidebarAnimate: SlimSidebarAnimate | null = null
+  slimMenuAnimate: SlimMenuAnimate | null = null
 
   constructor(props: SidebarContentProps) {
     super(props)
@@ -40,9 +39,11 @@ export class SidebarContent extends React.Component<SidebarContentProps, Sidebar
     this.slimSidebarAnimate = new SlimSidebarAnimate()
     this.slimMenuAnimate = new SlimMenuAnimate()
 
-    this.sidebarEntryAnimate.assignParentElement(this.sidebarRef.current)
-    this.slimSidebarAnimate.assignParentElement(this.sidebarRef.current)
-    this.slimMenuAnimate.assignSidebarElement(this.sidebarRef.current)
+    if (this.sidebarRef.current) {
+      this.sidebarEntryAnimate.assignParentElement(this.sidebarRef.current)
+      this.slimSidebarAnimate.assignParentElement(this.sidebarRef.current)
+      this.slimMenuAnimate.assignSidebarElement(this.sidebarRef.current)
+    }
 
     this.sidebarEntryAnimate.executeAnimation().then(() => {
       this.setState({ entryAnimationFinished: true })
@@ -50,9 +51,9 @@ export class SidebarContent extends React.Component<SidebarContentProps, Sidebar
   }
 
   componentWillUnmount() {
-    this.sidebarEntryAnimate.destroy()
-    this.slimSidebarAnimate.destroy()
-    this.slimMenuAnimate.destroy()
+    this.sidebarEntryAnimate?.destroy()
+    this.slimSidebarAnimate?.destroy()
+    this.slimMenuAnimate?.destroy()
   }
 
   render() {

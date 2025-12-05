@@ -1,295 +1,303 @@
-// @ts-nocheck
-var anime = require('animejs').default ? require('animejs').default : require('animejs')
+import anime from 'animejs'
 
-function SlimSidebarAnimate(options) {
-  var timelineStage1, timelineStage2
-  var isAnimating = false
-  var config = Object.assign(
-    {},
-    {
+interface SlimSidebarAnimateOptions {
+  sidebarWidth?: number
+  sidebarSlimWidth?: number
+  animationDuration?: number
+  animationStaggerDelay?: number
+  animationEasing?: string
+}
+
+export default class SlimSidebarAnimate {
+  private _nodesObserver: MutationObserver
+  private config: Required<SlimSidebarAnimateOptions>
+  private timelineStage1: anime.AnimeTimelineInstance | null = null
+  private timelineStage2: anime.AnimeTimelineInstance | null = null
+  private isAnimating: boolean = false
+
+  constructor(options?: SlimSidebarAnimateOptions) {
+    this.config = {
       sidebarWidth: 250,
       sidebarSlimWidth: 60,
       animationDuration: 400,
       animationStaggerDelay: 10,
       animationEasing: 'easeInQuad',
-    },
-    options,
-  )
+      ...options,
+    }
 
-  function buildTimeline(beginCallback) {
-    return anime.timeline({
-      easing: config.animationEasing,
-      duration: config.animationDuration / 2,
-      autoplay: false,
-      begin: beginCallback || function () {},
+    this._nodesObserver = new MutationObserver((mutations) => {
+      this.handleMutation(mutations)
     })
   }
 
-  this._nodesObserver = new MutationObserver(function (mutations) {
-    var mutation = mutations[0]
-    var animationHalfTime = config.animationDuration / 2
-    var sidebarElement = mutation.target
-    var layoutSidebarWrap = sidebarElement.closest('.layout__sidebar')
-    var sidebarMenu = sidebarElement.querySelector('.sidebar-menu')
-    var sidebarLabels = document.querySelectorAll(
-      '.sidebar-menu__entry__link > span, ' + '.sidebar-submenu__entry__link > span',
+  private buildTimeline(beginCallback?: () => void): anime.AnimeTimelineInstance {
+    return anime.timeline({
+      easing: this.config.animationEasing,
+      duration: this.config.animationDuration / 2,
+      autoplay: false,
+      begin: beginCallback || (() => {}),
+    })
+  }
+
+  private handleMutation(mutations: MutationRecord[]): void {
+    const { config } = this
+    const mutation = mutations[0]
+    const animationHalfTime = config.animationDuration / 2
+    const sidebarElement = mutation.target as HTMLElement
+    const layoutSidebarWrap = sidebarElement.closest('.layout__sidebar') as HTMLElement | null
+    const sidebarMenu = sidebarElement.querySelector('.sidebar-menu') as HTMLElement | null
+    const sidebarLabels = sidebarElement.querySelectorAll<HTMLElement>(
+      '.sidebar-menu__entry__link > span, .sidebar-submenu__entry__link > span',
     )
-    var sidebarIcons = document.querySelectorAll('.sidebar-menu__entry__icon')
-    var sidebarHideSlim = document.querySelectorAll('.sidebar__hide-slim')
-    var sidebarShowSlim = document.querySelectorAll('.sidebar__show-slim')
+    const sidebarIcons = sidebarElement.querySelectorAll<HTMLElement>('.sidebar-menu__entry__icon')
+    const sidebarHideSlim = sidebarElement.querySelectorAll<HTMLElement>('.sidebar__hide-slim')
+    const sidebarShowSlim = sidebarElement.querySelectorAll<HTMLElement>('.sidebar__show-slim')
 
-    var isSidebarSlim = sidebarElement.classList.contains('sidebar--slim')
-    var isSidebarCollapsed = sidebarElement.classList.contains('sidebar--collapsed')
-    var lastSidebarSlim = mutation.oldValue.indexOf('sidebar--slim') >= 0
-    var lastSidebarCollapsed = mutation.oldValue.indexOf('sidebar--collapsed') >= 0
+    const isSidebarSlim = sidebarElement.classList.contains('sidebar--slim')
+    const isSidebarCollapsed = sidebarElement.classList.contains('sidebar--collapsed')
+    const lastSidebarSlim = (mutation.oldValue || '').indexOf('sidebar--slim') >= 0
+    const lastSidebarCollapsed = (mutation.oldValue || '').indexOf('sidebar--collapsed') >= 0
 
-    // Finish previous animations if they exist
-    if (timelineStage1 && timelineStage1.isAnimating) {
-      timelineStage1.complete()
+    if (this.timelineStage1 && !this.timelineStage1.paused) {
+      this.timelineStage1.seek(this.timelineStage1.duration)
     }
-    if (timelineStage2 && timelineStage2.isAnimating) {
-      timelineStage2.complete()
+    if (this.timelineStage2 && !this.timelineStage2.paused) {
+      this.timelineStage2.seek(this.timelineStage2.duration)
     }
 
     if (
       (isSidebarSlim || lastSidebarSlim) &&
       isSidebarCollapsed !== lastSidebarCollapsed &&
-      !isAnimating
+      !this.isAnimating
     ) {
-      isAnimating = true
+      this.isAnimating = true
 
       if (isSidebarCollapsed) {
-        // Recover the changed class so the animation
-        // can be played smoothly
-        sidebarElement.classList.remove('sidebar--collapsed')
-        // STAGE 1: Hide Default
-        timelineStage1 = buildTimeline()
-          .add({
-            // Move the sidebar off screen and leave only the "slim" part
-            targets: sidebarElement,
-            translateX: -(config.sidebarWidth - config.sidebarSlimWidth),
-            begin: function () {
-              // This class hides ::after carets and fades
-              // the active highlight
-              sidebarElement.classList.add('sidebar--animate-slim--progress')
-            },
-          })
-          .add(
-            {
-              // Hide the menu entries titles
-              targets: sidebarLabels,
-              opacity: 0,
-              complete: function () {
-                // Reset the style of titles upon completion
-                sidebarLabels.forEach(function (label) {
-                  label.removeAttribute('style')
-                })
-              },
-            },
-            0,
-          )
-          .add(
-            {
-              // Hide sections which are visible in default sidebar
-              targets: sidebarHideSlim,
-              opacity: 0,
-            },
-            0,
-          )
-        // STAGE 2: Show Slim
-        timelineStage2 = buildTimeline()
-          .add({
-            // Create a fade-in and entry from left of slim icons
-            targets: sidebarIcons,
-            opacity: [0, 1],
-            translateX: [-config.sidebarSlimWidth, 0],
-            delay: anime.stagger(config.animationStaggerDelay),
-            begin: function () {
-              // First animation stage complete, make the sidebar trully slim
-              sidebarElement.classList.add('sidebar--collapsed')
-              sidebarElement.classList.remove('sidebar--animate-slim--progress')
-              // Reset sidebar style after the first stage
-              sidebarElement.removeAttribute('style')
-              // Reset Hidden elements styles
-              sidebarHideSlim.forEach(function (element) {
-                element.removeAttribute('style')
-              })
-            },
-            complete: function () {
-              // Reset icons styles
-              sidebarIcons.forEach(function (icon) {
-                icon.removeAttribute('style')
-              })
-            },
-          })
-          .add(
-            {
-              // Fade in section visible only in slim sidebar
-              targets: sidebarShowSlim,
-              opacity: [0, 1],
-              complete: function () {
-                sidebarShowSlim.forEach(function (element) {
-                  element.removeAttribute('style')
-                })
-              },
-            },
-            0,
-          )
-        // START: Chain both timelines
-        timelineStage1.finished.then(function () {
-          timelineStage2.play()
-        })
-        timelineStage2.finished.then(function () {
-          isAnimating = false
-          // Reset styles of modified sections
-          sidebarElement.querySelectorAll('.sidebar__section').forEach(function (section) {
-            section.removeAttribute('style')
-          })
-          sidebarElement.classList.remove()
-        })
-        timelineStage1.play()
+        this.animateToCollapsed(
+          sidebarElement,
+          sidebarMenu,
+          sidebarLabels,
+          sidebarIcons,
+          sidebarHideSlim,
+          sidebarShowSlim,
+        )
       } else {
-        // Recover the slim classes so the animation can make
-        // the smooth transition
-        sidebarElement.classList.add('sidebar--collapsed')
-        sidebarMenu.classList.add('sidebar-menu--slim')
-        layoutSidebarWrap.classList.add('layout__sidebar--slim')
-        // Setup the animation class
-        sidebarElement.classList.add('sidebar--animate-slim--progress')
-        // STAGE 1: Hide Slim
-        timelineStage1 = buildTimeline()
-          .add({
-            // Hide the slim icons to the left of the screen and fade them out
-            targets: sidebarIcons,
-            translateX: -config.sidebarSlimWidth,
-            duration: animationHalfTime,
-            delay: anime.stagger(config.animationStaggerDelay),
-            opacity: 0,
-          })
-          .add(
-            {
-              // Hide the sections visible only in slim
-              targets: sidebarShowSlim,
-              duration: animationHalfTime,
-              opacity: [1, 0],
-            },
-            0,
-          )
-
-        // STAGE 2: Show Slim
-        timelineStage2 = buildTimeline()
-          // HACK: Setup step - translateX 0 is set for initial transform value
-          // animejs sets the translate by the first step in timeline
-          // which works wrong with remmoving the collapse clases. In other
-          // words: Don't touch this!
-          .add({
-            targets: sidebarElement,
-            duration: 1,
-            translateX: [0, 0],
-            complete: function () {
-              // Reset
-              sidebarIcons.forEach(function (icon) {
-                icon.removeAttribute('style')
-              })
-              sidebarShowSlim.forEach(function (icon) {
-                icon.removeAttribute('style')
-              })
-
-              // Hide Labels
-              sidebarLabels.forEach(function (label) {
-                label.style.opacity = 0
-              })
-
-              // Make the sidebar default
-              sidebarElement.classList.remove('sidebar--collapsed')
-              sidebarMenu.classList.remove('sidebar-menu--slim')
-              // Remove the animation classes
-              sidebarElement.classList.remove('sidebar--animate-slim--progress')
-            },
-          })
-          .add({
-            // Slide the sidebar back to default position
-            targets: sidebarElement,
-            duration: animationHalfTime,
-            complete: function () {
-              // Reset sidebar styles
-              sidebarElement.removeAttribute('style')
-            },
-            translateX: [-(config.sidebarWidth - config.sidebarSlimWidth), 0],
-          })
-          .add(
-            {
-              // Fade in the SideMenu entries titles
-              targets: sidebarLabels,
-              duration: animationHalfTime,
-              opacity: [0, 1],
-              complete: function () {
-                sidebarLabels.forEach(function (label) {
-                  label.removeAttribute('style')
-                })
-              },
-            },
-            0,
-          )
-          .add(
-            {
-              // Fade in sections which are visible only in default sidebar
-              targets: sidebarHideSlim,
-              duration: animationHalfTime,
-              opacity: [0, 1],
-              complete: function () {
-                sidebarHideSlim.forEach(function (label) {
-                  label.removeAttribute('style')
-                })
-              },
-            },
-            0,
-          )
-        // START: Chain both timelines
-        timelineStage1.finished.then(function () {
-          requestAnimationFrame(function () {
-            timelineStage2.play()
-          })
-        })
-        timelineStage2.finished.then(function () {
-          isAnimating = false
-          // Reset styles of modified sections
-          sidebarElement.querySelectorAll('.sidebar__section').forEach(function (section) {
-            section.removeAttribute('style')
-          })
-
-          // Recover the layout__sidebar state
-          layoutSidebarWrap.classList.remove('layout__sidebar--slim')
-        })
-        timelineStage1.play()
+        this.animateToExpanded(
+          sidebarElement,
+          layoutSidebarWrap,
+          sidebarMenu,
+          sidebarLabels,
+          sidebarIcons,
+          sidebarHideSlim,
+          sidebarShowSlim,
+          animationHalfTime,
+        )
       }
     }
-  })
-}
+  }
 
-/**
- * Assigns the parent sidebar element, and attaches a Mutation Observer
- * which watches the coallapsable nodes inside of the sidebar menu
- * and animates them on chenages
- *
- * @param {HTMLElement} parentElement SidebarMenu parent
- */
-SlimSidebarAnimate.prototype.assignParentElement = function (parentElement) {
-  // Reassign Observer Element
-  this._nodesObserver.disconnect()
-  this._nodesObserver.observe(parentElement, {
-    attributes: true,
-    attributeFilter: ['class'],
-    attributeOldValue: true,
-    subtree: false,
-  })
-}
+  private animateToCollapsed(
+    sidebarElement: HTMLElement,
+    sidebarMenu: HTMLElement | null,
+    sidebarLabels: NodeListOf<HTMLElement>,
+    sidebarIcons: NodeListOf<HTMLElement>,
+    sidebarHideSlim: NodeListOf<HTMLElement>,
+    sidebarShowSlim: NodeListOf<HTMLElement>,
+  ): void {
+    const { config } = this
 
-/**
- * Disconnects the observer
- */
-SlimSidebarAnimate.prototype.destroy = function () {
-  this._nodesObserver.disconnect()
-}
+    sidebarElement.classList.remove('sidebar--collapsed')
 
-module.exports = SlimSidebarAnimate
+    this.timelineStage1 = this.buildTimeline()
+      .add({
+        targets: sidebarElement,
+        translateX: -(config.sidebarWidth - config.sidebarSlimWidth),
+        begin: () => {
+          sidebarElement.classList.add('sidebar--animate-slim--progress')
+        },
+      })
+      .add(
+        {
+          targets: sidebarLabels,
+          opacity: 0,
+          complete: () => {
+            sidebarLabels.forEach((label) => {
+              label.removeAttribute('style')
+            })
+          },
+        },
+        0,
+      )
+      .add(
+        {
+          targets: sidebarHideSlim,
+          opacity: 0,
+        },
+        0,
+      )
+
+    this.timelineStage2 = this.buildTimeline()
+      .add({
+        targets: sidebarIcons,
+        opacity: [0, 1],
+        translateX: [-config.sidebarSlimWidth, 0],
+        delay: anime.stagger(config.animationStaggerDelay),
+        begin: () => {
+          sidebarElement.classList.add('sidebar--collapsed')
+          sidebarElement.classList.remove('sidebar--animate-slim--progress')
+          sidebarElement.removeAttribute('style')
+          sidebarHideSlim.forEach((element) => {
+            element.removeAttribute('style')
+          })
+        },
+        complete: () => {
+          sidebarIcons.forEach((icon) => {
+            icon.removeAttribute('style')
+          })
+        },
+      })
+      .add(
+        {
+          targets: sidebarShowSlim,
+          opacity: [0, 1],
+          complete: () => {
+            sidebarShowSlim.forEach((element) => {
+              element.removeAttribute('style')
+            })
+          },
+        },
+        0,
+      )
+
+    this.timelineStage1.finished.then(() => {
+      this.timelineStage2?.play()
+    })
+    this.timelineStage2.finished.then(() => {
+      this.isAnimating = false
+      sidebarElement.querySelectorAll<HTMLElement>('.sidebar__section').forEach((section) => {
+        section.removeAttribute('style')
+      })
+    })
+    this.timelineStage1.play()
+  }
+
+  private animateToExpanded(
+    sidebarElement: HTMLElement,
+    layoutSidebarWrap: HTMLElement | null,
+    sidebarMenu: HTMLElement | null,
+    sidebarLabels: NodeListOf<HTMLElement>,
+    sidebarIcons: NodeListOf<HTMLElement>,
+    sidebarHideSlim: NodeListOf<HTMLElement>,
+    sidebarShowSlim: NodeListOf<HTMLElement>,
+    animationHalfTime: number,
+  ): void {
+    const { config } = this
+
+    sidebarElement.classList.add('sidebar--collapsed')
+    sidebarMenu?.classList.add('sidebar-menu--slim')
+    layoutSidebarWrap?.classList.add('layout__sidebar--slim')
+    sidebarElement.classList.add('sidebar--animate-slim--progress')
+
+    this.timelineStage1 = this.buildTimeline()
+      .add({
+        targets: sidebarIcons,
+        translateX: -config.sidebarSlimWidth,
+        duration: animationHalfTime,
+        delay: anime.stagger(config.animationStaggerDelay),
+        opacity: 0,
+      })
+      .add(
+        {
+          targets: sidebarShowSlim,
+          duration: animationHalfTime,
+          opacity: [1, 0],
+        },
+        0,
+      )
+
+    this.timelineStage2 = this.buildTimeline()
+      .add({
+        targets: sidebarElement,
+        duration: 1,
+        translateX: [0, 0],
+        complete: () => {
+          sidebarIcons.forEach((icon) => {
+            icon.removeAttribute('style')
+          })
+          sidebarShowSlim.forEach((icon) => {
+            icon.removeAttribute('style')
+          })
+          sidebarLabels.forEach((label) => {
+            label.style.opacity = '0'
+          })
+          sidebarElement.classList.remove('sidebar--collapsed')
+          sidebarMenu?.classList.remove('sidebar-menu--slim')
+          sidebarElement.classList.remove('sidebar--animate-slim--progress')
+        },
+      })
+      .add({
+        targets: sidebarElement,
+        duration: animationHalfTime,
+        complete: () => {
+          sidebarElement.removeAttribute('style')
+        },
+        translateX: [-(config.sidebarWidth - config.sidebarSlimWidth), 0],
+      })
+      .add(
+        {
+          targets: sidebarLabels,
+          duration: animationHalfTime,
+          opacity: [0, 1],
+          complete: () => {
+            sidebarLabels.forEach((label) => {
+              label.removeAttribute('style')
+            })
+          },
+        },
+        0,
+      )
+      .add(
+        {
+          targets: sidebarHideSlim,
+          duration: animationHalfTime,
+          opacity: [0, 1],
+          complete: () => {
+            sidebarHideSlim.forEach((element) => {
+              element.removeAttribute('style')
+            })
+          },
+        },
+        0,
+      )
+
+    this.timelineStage1.finished.then(() => {
+      requestAnimationFrame(() => {
+        this.timelineStage2?.play()
+      })
+    })
+    this.timelineStage2.finished.then(() => {
+      this.isAnimating = false
+      sidebarElement.querySelectorAll<HTMLElement>('.sidebar__section').forEach((section) => {
+        section.removeAttribute('style')
+      })
+      layoutSidebarWrap?.classList.remove('layout__sidebar--slim')
+    })
+    this.timelineStage1.play()
+  }
+
+  assignParentElement(parentElement: HTMLElement): void {
+    this._nodesObserver.disconnect()
+    this._nodesObserver.observe(parentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+      attributeOldValue: true,
+      subtree: false,
+    })
+  }
+
+  destroy(): void {
+    this.timelineStage1?.pause()
+    this.timelineStage2?.pause()
+    this._nodesObserver.disconnect()
+  }
+}

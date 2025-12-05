@@ -13,7 +13,7 @@ const CustomScriptDetailPage: React.FC<CustomScriptDetailPageProps> = ({ row }) 
   const selectedTheme = theme?.state.theme || 'darkBlack'
 
   return (
-    <React.Fragment>
+    <>
       <Container style={{ backgroundColor: customColors.whiteSmoke, minWidth: '100%' }}>
         <Row>
           <Col sm={4}>
@@ -112,7 +112,7 @@ const CustomScriptDetailPage: React.FC<CustomScriptDetailPageProps> = ({ row }) 
           </Col>
         </Row>
       </Container>
-    </React.Fragment>
+    </>
   )
 }
 
