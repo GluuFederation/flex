@@ -791,6 +791,14 @@
     "action_deletion_question": "Tem certeza que quer deletar este item?",
     "action_deletion_for": "Confirmação de exclusão para",
     "add_client": "Adicionar Cliente",
+    "client_id_copied": "ID do cliente copiado para a área de transferência",
+    "client_secret_copied": "Segredo do cliente copiado para a área de transferência",
+    "token_revoked": "Token revogado com sucesso",
+    "error_fetching_tokens": "Erro ao buscar tokens",
+    "error_revoking_token": "Erro ao revogar token",
+    "save_client_first": "Por favor, salve o cliente primeiro para ver os tokens ativos",
+    "token_code_missing": "Código do token ausente",
+    "no_tokens_found": "Nenhum token ativo encontrado",
     "add_scope": "Adicionar escopo",
     "add_script": "Adicionar Script",
     "advanced_search": "Opções de pesquisa avançada",
@@ -799,6 +807,7 @@
     "database_status_up": "Online",
     "delete_client": "Apagar Cliente",
     "edit_client": "Editar Cliente",
+    "view_client": "Ver Cliente",
     "edit_scope": "Editar escopo",
     "edit_script": "Editar Script",
     "ldap_connection_error": "Falha na conexão LDAP!",
@@ -942,6 +951,7 @@
     "localized_json_format": "Formato JSON: {\"en\": \"valor\", \"pt\": \"valor\"}"
   },
   "titles": {
+    "actions": "Ações",
     "id_token": "Token de ID",
     "access_token": "Token de Acesso",
     "userinfo": "Informações do Usuário",
@@ -976,6 +986,7 @@
     "client_advanced": "Avançado",
     "client_attributes": "Atributos do cliente",
     "client_basic": "Básico",
+    "client_detail": "Detalhes do Cliente",
     "client_encryption_signing": "Criptografia / Assinatura",
     "client_scripts": "Scripts de cliente",
     "config_api_roles": "Funções de configuração da API",
@@ -1062,7 +1073,8 @@
     "ciba": "CIBA",
     "scripts": "Scripts",
     "localization": "Localização",
-    "system_info": "Informações do Sistema"
+    "system_info": "Informações do Sistema",
+    "active_tokens": "Tokens Ativos"
   },
   "links": {
     "support": "https://support.gluu.org/"

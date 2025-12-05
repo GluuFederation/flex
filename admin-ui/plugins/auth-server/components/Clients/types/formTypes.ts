@@ -13,6 +13,7 @@ export type ClientSection =
   | 'scripts'
   | 'localization'
   | 'system'
+  | 'activeTokens'
 
 export interface ClientFormValues extends ExtendedClient {
   expirable: boolean

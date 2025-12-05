@@ -1,6 +1,7 @@
 export { default as ClientListPage } from './ClientListPage'
 export { default as ClientAddPage } from './ClientAddPage'
 export { default as ClientEditPage } from './ClientEditPage'
+export { default as ClientDetailPage } from './ClientDetailPage'
 export { default as ClientForm } from './components/ClientForm'
 export { default as ClientDetailView } from './components/ClientDetailView'
 

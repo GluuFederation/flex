@@ -79,6 +79,13 @@ export function useClientActions() {
     [navigate],
   )
 
+  const navigateToClientView = useCallback(
+    (inum: string) => {
+      navigate(`${CLIENT_ROUTES.VIEW}/${inum}`)
+    },
+    [navigate],
+  )
+
   return {
     logClientCreation,
     logClientUpdate,
@@ -86,5 +93,6 @@ export function useClientActions() {
     navigateToClientList,
     navigateToClientAdd,
     navigateToClientEdit,
+    navigateToClientView,
   }
 }

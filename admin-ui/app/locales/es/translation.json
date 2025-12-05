@@ -853,6 +853,14 @@
     "action_deletion_question": "¿Realmente desea eliminar este elemento?",
     "action_deletion_for": "Confirmación de eliminación para",
     "add_client": "Agregar Cliente",
+    "client_id_copied": "ID de cliente copiado al portapapeles",
+    "client_secret_copied": "Secreto del cliente copiado al portapapeles",
+    "token_revoked": "Token revocado exitosamente",
+    "error_fetching_tokens": "Error al obtener tokens",
+    "error_revoking_token": "Error al revocar token",
+    "save_client_first": "Por favor guarde el cliente primero para ver los tokens activos",
+    "token_code_missing": "Falta el código del token",
+    "no_tokens_found": "No se encontraron tokens activos",
     "add_scope": "Agregar Scope",
     "add_script": "Agregar Script",
     "advanced_search": "Opciones de búsqueda avanzada",
@@ -862,6 +870,7 @@
     "database_status_up": "En línea",
     "delete_client": "Eliminar Cliente",
     "edit_client": "Editar Cliente",
+    "view_client": "Ver Cliente",
     "edit_scope": "Editar Scope",
     "edit_script": "Editar Script",
     "edit_authn": "Editar AuthN",
@@ -1018,6 +1027,7 @@
     "localized_json_format": "Formato JSON: {\"en\": \"valor\", \"es\": \"valor\"}"
   },
   "titles": {
+    "actions": "Acciones",
     "id_token": "Token de ID",
     "access_token": "Token de Acceso",
     "userinfo": "Información de Usuario",
@@ -1056,6 +1066,7 @@
     "client_advanced": "Propiedades avanzadas del cliente",
     "client_attributes": "Atributos del cliente",
     "client_basic": "Básico",
+    "client_detail": "Detalles del Cliente",
     "client_encryption_signing": "Cifrado/Firma",
     "client_scripts": "Scripts de cliente",
     "config_api_roles": "Roles de Config API",
@@ -1165,7 +1176,8 @@
     "ciba": "CIBA",
     "scripts": "Scripts",
     "localization": "Localización",
-    "system_info": "Información del Sistema"
+    "system_info": "Información del Sistema",
+    "active_tokens": "Tokens Activos"
   },
   "links": {
     "support": "https://support.gluu.org/"

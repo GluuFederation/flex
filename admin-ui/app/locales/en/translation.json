@@ -101,6 +101,7 @@
     "mau_clients": "Jan lock clients"
   },
   "fields": {
+    "filter_by": "Filter By",
     "access_token_signing_alg": "JWS alg for signing",
     "resetLicense": "Reset License",
     "asset_name": "Asset Name",
@@ -866,6 +867,14 @@
     "action_deletion_question": "Do you really want to delete this item?",
     "action_deletion_for": "Deletion confirmation for",
     "add_client": "Add Client",
+    "client_id_copied": "Client ID copied to clipboard",
+    "client_secret_copied": "Client secret copied to clipboard",
+    "token_revoked": "Token revoked successfully",
+    "error_fetching_tokens": "Error fetching tokens",
+    "error_revoking_token": "Error revoking token",
+    "save_client_first": "Please save the client first to view active tokens",
+    "token_code_missing": "Token code is missing",
+    "no_tokens_found": "No active tokens found",
     "add_scope": "Add Scope",
     "add_script": "Add Script",
     "advanced_search": "Advanced search options",
@@ -875,6 +884,7 @@
     "database_status_up": "Online",
     "delete_client": "Delete Client",
     "edit_client": "Edit Client",
+    "view_client": "View Client",
     "edit_scope": "Edit Scope",
     "edit_script": "Edit Script",
     "edit_authn": "Edit AuthN",
@@ -1033,6 +1043,7 @@
     "select_grant_types": "Select grant types"
   },
   "titles": {
+    "actions": "Actions",
     "id_token": "ID Token",
     "access_token": "Access Token",
     "userinfo": "UserInfo",
@@ -1071,6 +1082,7 @@
     "client_advanced": "Advanced Client Properties",
     "client_attributes": "Client Attributes",
     "client_basic": "Basic",
+    "client_detail": "Client Details",
     "client_encryption_signing": "Encryption/Signing",
     "client_scripts": "Client Scripts",
     "config_api_roles": "Config API Roles",
@@ -1183,7 +1195,8 @@
     "ciba": "CIBA",
     "scripts": "Scripts",
     "localization": "Localization",
-    "system_info": "System Info"
+    "system_info": "System Info",
+    "active_tokens": "Active Tokens"
   },
   "links": {
     "support": "https://support.gluu.org/"

@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useDispatch } from 'react-redux'
 import { updateToast } from 'Redux/features/toastSlice'
+import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
 import {
   useGetOauthOpenidClients,
   useGetOauthOpenidClientsByInum,
@@ -48,16 +49,20 @@ export function useCreateClient(onSuccess?: () => void, onError?: (error: Error)
   const queryClient = useQueryClient()
   const dispatch = useDispatch()
 
-  const handleSuccess = useCallback(() => {
-    dispatch(updateToast(true, 'success'))
-    queryClient.invalidateQueries({
-      predicate: (query) => {
-        const queryKey = query.queryKey[0] as string
-        return queryKey === getGetOauthOpenidClientsQueryKey()[0]
-      },
-    })
-    onSuccess?.()
-  }, [dispatch, queryClient, onSuccess])
+  const handleSuccess = useCallback(
+    (data: Client) => {
+      dispatch(updateToast(true, 'success'))
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const queryKey = query.queryKey[0] as string
+          return queryKey === getGetOauthOpenidClientsQueryKey()[0]
+        },
+      })
+      dispatch(triggerWebhook({ createdFeatureValue: data }))
+      onSuccess?.()
+    },
+    [dispatch, queryClient, onSuccess],
+  )
 
   const handleError = useCallback(
     (error: Error) => {
@@ -80,19 +85,23 @@ export function useUpdateClient(onSuccess?: () => void, onError?: (error: Error)
   const queryClient = useQueryClient()
   const dispatch = useDispatch()
 
-  const handleSuccess = useCallback(() => {
-    dispatch(updateToast(true, 'success'))
-    queryClient.invalidateQueries({
-      predicate: (query) => {
-        const queryKey = query.queryKey[0] as string
-        return (
-          queryKey === getGetOauthOpenidClientsQueryKey()[0] ||
-          queryKey === 'getOauthOpenidClientsByInum'
-        )
-      },
-    })
-    onSuccess?.()
-  }, [dispatch, queryClient, onSuccess])
+  const handleSuccess = useCallback(
+    (data: Client) => {
+      dispatch(updateToast(true, 'success'))
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const queryKey = query.queryKey[0] as string
+          return (
+            queryKey === getGetOauthOpenidClientsQueryKey()[0] ||
+            queryKey === 'getOauthOpenidClientsByInum'
+          )
+        },
+      })
+      dispatch(triggerWebhook({ createdFeatureValue: data }))
+      onSuccess?.()
+    },
+    [dispatch, queryClient, onSuccess],
+  )
 
   const handleError = useCallback(
     (error: Error) => {

@@ -796,6 +796,14 @@
     "action_deletion_question": "Voulez-vous vraiment supprimer cet élément ?",
     "action_deletion_for": "Confirmation de suppression pour",
     "add_client": "Ajouter un client",
+    "client_id_copied": "ID client copié dans le presse-papiers",
+    "client_secret_copied": "Secret client copié dans le presse-papiers",
+    "token_revoked": "Jeton révoqué avec succès",
+    "error_fetching_tokens": "Erreur lors de la récupération des jetons",
+    "error_revoking_token": "Erreur lors de la révocation du jeton",
+    "save_client_first": "Veuillez d'abord enregistrer le client pour voir les jetons actifs",
+    "token_code_missing": "Code du jeton manquant",
+    "no_tokens_found": "Aucun jeton actif trouvé",
     "add_scope": "Ajouter une portée",
     "add_script": "Ajouter un script",
     "advanced_search": "Options de recherche avancées",
@@ -804,6 +812,7 @@
     "database_status_up": "En ligne",
     "delete_client": "Supprimer le client",
     "edit_client": "Modifier le client",
+    "view_client": "Voir le client",
     "edit_scope": "Modifier la portée",
     "edit_script": "Modifier le script",
     "ldap_connection_error": "Échec de la connexion LDAP !",
@@ -949,6 +958,7 @@
     "localized_json_format": "Format JSON: {\"en\": \"valeur\", \"fr\": \"valeur\"}"
   },
   "titles": {
+    "actions": "Actions",
     "id_token": "Jeton d'ID",
     "access_token": "Jeton d'Accès",
     "userinfo": "Informations Utilisateur",
@@ -982,6 +992,7 @@
     "client_advanced": "Avancée",
     "client_attributes": "Attributs client",
     "client_basic": "De base",
+    "client_detail": "Détails du client",
     "saml_management": "SAML",
     "client_encryption_signing": "Cryptage/Signature",
     "client_scripts": "Scripts clients",
@@ -1068,7 +1079,8 @@
     "ciba": "CIBA",
     "scripts": "Scripts",
     "localization": "Localisation",
-    "system_info": "Informations Système"
+    "system_info": "Informations Système",
+    "active_tokens": "Jetons Actifs"
   },
   "links": {
     "support": "https://support.gluu.org/"

@@ -6,6 +6,7 @@ import ScopeEditPage from './components/Scopes/ScopeEditPage'
 import ClientListPage from './components/Clients/ClientListPage'
 import ClientAddPage from './components/Clients/ClientAddPage'
 import ClientEditPage from './components/Clients/ClientEditPage'
+import ClientDetailPage from './components/Clients/ClientDetailPage'
 
 import SessionListPage from './components/Sessions/SessionListPage'
 
@@ -166,6 +167,12 @@ const pluginMetadata = {
       component: ClientEditPage,
       path: PLUGIN_BASE_APTH + '/client/edit/:id',
       permission: CLIENT_WRITE,
+      resourceKey: ADMIN_UI_RESOURCES.Clients,
+    },
+    {
+      component: ClientDetailPage,
+      path: PLUGIN_BASE_APTH + '/client/view/:id',
+      permission: CLIENT_READ,
       resourceKey: ADMIN_UI_RESOURCES.Clients,
     },
     {

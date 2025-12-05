@@ -10,14 +10,22 @@ import {
   IconButton,
   Autocomplete,
   Chip,
+  Tooltip,
 } from '@mui/material'
-import { Visibility, VisibilityOff } from '@mui/icons-material'
+import {
+  Visibility,
+  VisibilityOff,
+  ContentCopy,
+  Autorenew as GenerateIcon,
+} from '@mui/icons-material'
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
+import { useDispatch } from 'react-redux'
+import { updateToast } from 'Redux/features/toastSlice'
 import type { SectionProps } from '../types'
 import { APPLICATION_TYPES, SUBJECT_TYPES } from '../helper/constants'
 
@@ -27,6 +35,7 @@ const BasicInfoSection: React.FC<SectionProps> = ({
   setModifiedFields,
 }) => {
   const { t } = useTranslation()
+  const dispatch = useDispatch()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme || 'darkBlue'
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
@@ -46,6 +55,33 @@ const BasicInfoSection: React.FC<SectionProps> = ({
   const toggleSecretVisibility = useCallback(() => {
     setShowSecret((prev) => !prev)
   }, [])
+
+  const handleCopyClientId = useCallback(() => {
+    if (formik.values.inum) {
+      navigator.clipboard.writeText(formik.values.inum)
+      dispatch(updateToast(true, 'success', t('messages.client_id_copied')))
+    }
+  }, [formik.values.inum, dispatch, t])
+
+  const handleCopyClientSecret = useCallback(() => {
+    if (formik.values.clientSecret) {
+      navigator.clipboard.writeText(formik.values.clientSecret)
+      dispatch(updateToast(true, 'success', t('messages.client_secret_copied')))
+    }
+  }, [formik.values.clientSecret, dispatch, t])
+
+  const generateSecret = useCallback((length = 32): string => {
+    const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*'
+    const array = new Uint8Array(length)
+    crypto.getRandomValues(array)
+    return Array.from(array, (byte) => charset[byte % charset.length]).join('')
+  }, [])
+
+  const handleGenerateSecret = useCallback(() => {
+    const newSecret = generateSecret()
+    handleFieldChange('clientSecret', t('fields.client_secret'), newSecret)
+    setShowSecret(true)
+  }, [generateSecret, handleFieldChange, t])
 
   const fieldStyle = useMemo(
     () => ({
@@ -98,32 +134,70 @@ const BasicInfoSection: React.FC<SectionProps> = ({
               value={formik.values.inum || ''}
               disabled
               sx={fieldStyle}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              size="small"
-              label={t('fields.client_secret')}
-              name="clientSecret"
-              type={showSecret ? 'text' : 'password'}
-              value={formik.values.clientSecret || ''}
-              onChange={(e) =>
-                handleFieldChange('clientSecret', t('fields.client_secret'), e.target.value)
-              }
-              disabled={viewOnly}
-              sx={fieldStyle}
               InputProps={{
-                endAdornment: (
+                endAdornment: formik.values.inum && (
                   <InputAdornment position="end">
-                    <IconButton onClick={toggleSecretVisibility} edge="end" size="small">
-                      {showSecret ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
+                    <Tooltip title={t('actions.copy')}>
+                      <IconButton onClick={handleCopyClientId} edge="end" size="small">
+                        <ContentCopy fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
                   </InputAdornment>
                 ),
               }}
             />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
+              <TextField
+                fullWidth
+                size="small"
+                label={t('fields.client_secret')}
+                name="clientSecret"
+                type={showSecret ? 'text' : 'password'}
+                value={formik.values.clientSecret || ''}
+                onChange={(e) =>
+                  handleFieldChange('clientSecret', t('fields.client_secret'), e.target.value)
+                }
+                disabled={viewOnly}
+                sx={fieldStyle}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      {formik.values.clientSecret && (
+                        <Tooltip title={t('actions.copy')}>
+                          <IconButton onClick={handleCopyClientSecret} edge="end" size="small">
+                            <ContentCopy fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                      <IconButton onClick={toggleSecretVisibility} edge="end" size="small">
+                        {showSecret ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              {!viewOnly && (
+                <Tooltip title={t('actions.generate_secret')}>
+                  <IconButton
+                    onClick={handleGenerateSecret}
+                    sx={{
+                      'mt': 0.25,
+                      'border': '1px solid',
+                      'borderColor': 'divider',
+                      'borderRadius': 1,
+                      '&:hover': {
+                        backgroundColor: `${themeColors?.background}10`,
+                      },
+                    }}
+                  >
+                    <GenerateIcon />
+                  </IconButton>
+                </Tooltip>
+              )}
+            </Box>
           </Grid>
 
           <Grid item xs={12} md={6}>

@@ -129,6 +129,7 @@ export const CLIENT_ROUTES = {
   LIST: '/auth-server/clients',
   ADD: '/auth-server/client/new',
   EDIT: '/auth-server/client/edit',
+  VIEW: '/auth-server/client/view',
 } as const
 
 export const DEFAULT_PAGE_SIZE = 10
@@ -152,6 +153,7 @@ export const SECTIONS = [
   { id: 'scripts', labelKey: 'sections.scripts', icon: 'CodeOutlined' },
   { id: 'localization', labelKey: 'sections.localization', icon: 'LanguageOutlined' },
   { id: 'system', labelKey: 'sections.system_info', icon: 'SettingsOutlined' },
+  { id: 'activeTokens', labelKey: 'sections.active_tokens', icon: 'CreditCardOutlined' },
 ] as const
 
 export type GrantType = (typeof GRANT_TYPES)[number]['value']

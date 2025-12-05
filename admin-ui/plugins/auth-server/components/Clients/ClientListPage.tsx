@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo, useContext, useEffect, useRef } from 'react'
 import MaterialTable from '@material-table/core'
 import type { Column, Action } from '@material-table/core'
-import { DeleteOutlined } from '@mui/icons-material'
+import { DeleteOutlined, Visibility } from '@mui/icons-material'
 import {
   Paper,
   TablePagination,
@@ -40,6 +40,7 @@ import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
 import { useQueryClient } from '@tanstack/react-query'
 import { updateToast } from 'Redux/features/toastSlice'
+import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
 import {
   useGetOauthOpenidClients,
   useDeleteOauthOpenidClientByInum,
@@ -95,7 +96,8 @@ const ClientListPage: React.FC = () => {
     hasCedarDeletePermission,
     authorizeHelper,
   } = useCedarling()
-  const { logClientDeletion, navigateToClientAdd, navigateToClientEdit } = useClientActions()
+  const { logClientDeletion, navigateToClientAdd, navigateToClientEdit, navigateToClientView } =
+    useClientActions()
 
   const getInitialPageSize = (): number => {
     const stored = localStorage.getItem('paggingSize')
@@ -144,15 +146,19 @@ const ClientListPage: React.FC = () => {
 
   const loading = isLoading || isFetching
 
-  const handleDeleteSuccess = useCallback(() => {
-    dispatch(updateToast(true, 'success'))
-    queryClient.invalidateQueries({
-      predicate: (query) => {
-        const queryKey = query.queryKey[0] as string
-        return queryKey === getGetOauthOpenidClientsQueryKey()[0]
-      },
-    })
-  }, [dispatch, queryClient])
+  const handleDeleteSuccess = useCallback(
+    (_data: unknown, variables: { inum: string }) => {
+      dispatch(updateToast(true, 'success'))
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const queryKey = query.queryKey[0] as string
+          return queryKey === getGetOauthOpenidClientsQueryKey()[0]
+        },
+      })
+      dispatch(triggerWebhook({ createdFeatureValue: { inum: variables.inum } }))
+    },
+    [dispatch, queryClient],
+  )
 
   const handleDeleteError = useCallback(
     (error: Error) => {
@@ -302,6 +308,15 @@ const ClientListPage: React.FC = () => {
       }
     },
     [navigateToClientEdit],
+  )
+
+  const handleGoToClientViewPage = useCallback(
+    (row: ClientTableRow) => {
+      if (row.inum) {
+        navigateToClientView(row.inum)
+      }
+    },
+    [navigateToClientView],
   )
 
   const handleClientDelete = useCallback(
@@ -456,6 +471,20 @@ const ClientListPage: React.FC = () => {
     [t, renderGrantTypesColumn, renderStatusColumn],
   )
 
+  const handleViewClick = useCallback(
+    (data: ClientTableRow | ClientTableRow[]) => {
+      if (data && !Array.isArray(data)) {
+        handleGoToClientViewPage(data)
+      }
+    },
+    [handleGoToClientViewPage],
+  )
+
+  const ViewIcon = useCallback(
+    () => <Visibility sx={{ color: themeColors?.background }} />,
+    [themeColors?.background],
+  )
+
   const myActions = useMemo<
     Array<Action<ClientTableRow> | ((rowData: ClientTableRow) => Action<ClientTableRow>)>
   >(() => {
@@ -483,6 +512,18 @@ const ClientListPage: React.FC = () => {
       })
     }
 
+    if (canReadClients) {
+      actions.push((rowData: ClientTableRow) => ({
+        icon: ViewIcon,
+        iconProps: {
+          id: `viewClient${rowData.inum}`,
+        },
+        tooltip: t('messages.view_client'),
+        onClick: (_event, data) => handleViewClick(data),
+        disabled: !canReadClients,
+      }))
+    }
+
     if (canDeleteClients) {
       actions.push((rowData: ClientTableRow) => ({
         icon: DeleteIcon,
@@ -498,12 +539,15 @@ const ClientListPage: React.FC = () => {
 
     return actions
   }, [
+    canReadClients,
     canWriteClients,
     canDeleteClients,
     t,
+    handleViewClick,
     handleEditClick,
     handleGoToClientAddPage,
     handleDeleteClick,
+    ViewIcon,
   ])
 
   const tableComponents = useMemo(

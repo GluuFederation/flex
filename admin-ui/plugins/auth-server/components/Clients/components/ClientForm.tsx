@@ -28,6 +28,7 @@ import {
   CodeOutlined,
   LanguageOutlined,
   SettingsOutlined,
+  CreditCardOutlined,
   ChevronLeft,
   ChevronRight,
 } from '@mui/icons-material'
@@ -58,6 +59,7 @@ import {
   ScriptsSection,
   LocalizationSection,
   SystemInfoSection,
+  ActiveTokensSection,
 } from '../sections'
 
 const NAV_COLLAPSED_KEY = 'clientFormNavCollapsed'
@@ -72,6 +74,7 @@ const SECTION_ICONS: Record<string, React.ReactNode> = {
   CodeOutlined: <CodeOutlined />,
   LanguageOutlined: <LanguageOutlined />,
   SettingsOutlined: <SettingsOutlined />,
+  CreditCardOutlined: <CreditCardOutlined />,
 }
 
 const ClientForm: React.FC<ClientFormProps> = ({
@@ -153,6 +156,13 @@ const ClientForm: React.FC<ClientFormProps> = ({
   }, [scriptsResponse?.entries])
 
   const initialValues = useMemo(() => buildClientInitialValues(client), [client])
+
+  const visibleSections = useMemo(() => {
+    if (isEdit) {
+      return SECTIONS
+    }
+    return SECTIONS.filter((s) => s.id !== 'activeTokens')
+  }, [isEdit])
 
   const handleNavCollapse = useCallback(() => {
     setNavCollapsed((prev) => {
@@ -273,6 +283,8 @@ const ClientForm: React.FC<ClientFormProps> = ({
           return <LocalizationSection {...sectionProps} />
         case 'system':
           return <SystemInfoSection {...sectionProps} />
+        case 'activeTokens':
+          return <ActiveTokensSection formik={formik as any} viewOnly={viewOnly} />
         default:
           return null
       }
@@ -299,7 +311,7 @@ const ClientForm: React.FC<ClientFormProps> = ({
               },
             }}
           >
-            {SECTIONS.map((section) => (
+            {visibleSections.map((section) => (
               <MenuItem key={section.id} value={section.id}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   {SECTION_ICONS[section.icon]}
@@ -315,7 +327,7 @@ const ClientForm: React.FC<ClientFormProps> = ({
     return (
       <Paper elevation={0} sx={navPanelStyle}>
         <List sx={{ flex: 1, py: 1 }}>
-          {SECTIONS.map((section) => (
+          {visibleSections.map((section) => (
             <Tooltip
               key={section.id}
               title={navCollapsed ? t(section.labelKey) : ''}
@@ -379,6 +391,7 @@ const ClientForm: React.FC<ClientFormProps> = ({
     handleNavCollapse,
     navPanelStyle,
     listItemStyle,
+    visibleSections,
   ])
 
   return (
@@ -452,34 +465,34 @@ const ClientForm: React.FC<ClientFormProps> = ({
                 </Box>
               )}
 
-              {!viewOnly && (
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    mt: 3,
-                    pt: 2,
-                    borderTop: `1px solid ${themeColors?.lightBackground || '#e0e0e0'}`,
-                  }}
-                >
-                  {onCancel ? (
-                    <Button
-                      variant="outlined"
-                      onClick={onCancel}
-                      sx={{
-                        'borderColor': themeColors?.background,
-                        'color': themeColors?.background,
-                        '&:hover': {
-                          borderColor: themeColors?.background,
-                          backgroundColor: `${themeColors?.background}10`,
-                        },
-                      }}
-                    >
-                      {t('actions.cancel')}
-                    </Button>
-                  ) : (
-                    <Box />
-                  )}
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: viewOnly ? 'flex-start' : 'space-between',
+                  mt: 3,
+                  pt: 2,
+                  borderTop: `1px solid ${themeColors?.lightBackground || '#e0e0e0'}`,
+                }}
+              >
+                {onCancel ? (
+                  <Button
+                    variant="outlined"
+                    onClick={onCancel}
+                    sx={{
+                      'borderColor': themeColors?.background,
+                      'color': themeColors?.background,
+                      '&:hover': {
+                        borderColor: themeColors?.background,
+                        backgroundColor: `${themeColors?.background}10`,
+                      },
+                    }}
+                  >
+                    {t('actions.cancel')}
+                  </Button>
+                ) : (
+                  <Box />
+                )}
+                {!viewOnly && (
                   <Button
                     type="submit"
                     variant="contained"
@@ -499,8 +512,8 @@ const ClientForm: React.FC<ClientFormProps> = ({
                   >
                     {isEdit ? t('actions.save') : t('actions.add')}
                   </Button>
-                </Box>
-              )}
+                )}
+              </Box>
             </Form>
           )}
         </Formik>
