@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
 
 import { CustomUser } from '../types/UserApiTypes'
-import { validatePassword } from '../utils/userFormUtils'
+import { validatePassword } from '../utils'
 
 export const getUserFormValidationSchema = (userDetails: CustomUser | null) =>
   Yup.object({

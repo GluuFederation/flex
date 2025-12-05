@@ -3,7 +3,7 @@ import moment from 'moment/moment'
 import { CustomUser, PersonAttribute } from '../types/UserApiTypes'
 import { UserEditFormValues } from '../types/ComponentTypes'
 import { CustomObjectAttribute } from 'JansConfigApi'
-import { validatePassword } from '../utils/userFormUtils'
+import { validatePassword } from '../utils'
 
 export const getUserValidationSchema = (userDetails: CustomUser | null) => {
   const isEdit = Boolean(userDetails)
@@ -81,7 +81,6 @@ export const passwordChangeValidationSchema = Yup.object({
     .required('Confirm password is required.'),
 })
 
-// Helper function to safely get property from CustomUser or customAttributes
 const getUserProperty = (
   userDetails: CustomUser | null,
   propertyName: string,
@@ -159,10 +158,21 @@ const processSingleValuedAttribute = (
 
   if (attrValues.length > 0) {
     const value = attrValues[0]
-    initialValues[customAttr.name] = typeof value === 'string' ? value : JSON.stringify(value)
-  } else if (attrSingleValue) {
-    initialValues[customAttr.name] =
-      typeof attrSingleValue === 'string' ? attrSingleValue : JSON.stringify(attrSingleValue)
+    if (typeof value === 'boolean') {
+      initialValues[customAttr.name] = value
+    } else if (typeof value === 'string') {
+      initialValues[customAttr.name] = value
+    } else {
+      initialValues[customAttr.name] = JSON.stringify(value)
+    }
+  } else if (attrSingleValue !== undefined && attrSingleValue !== null) {
+    if (typeof attrSingleValue === 'boolean') {
+      initialValues[customAttr.name] = attrSingleValue
+    } else if (typeof attrSingleValue === 'string') {
+      initialValues[customAttr.name] = attrSingleValue
+    } else {
+      initialValues[customAttr.name] = JSON.stringify(attrSingleValue)
+    }
   }
 }
 

@@ -2,6 +2,7 @@ import store from 'Redux/store'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import { FETCH, DELETION, UPDATE, CREATE } from '../../../app/audit/UserActionType'
 import { API_USERS } from '../../../app/audit/Resources'
+import { CustomObjectAttribute } from 'JansConfigApi'
 import { CustomUser } from '../types/UserApiTypes'
 import { USER_PASSWORD_ATTR } from '../common/Constants'
 
@@ -37,6 +38,14 @@ export interface AuthState {
   }
 }
 
+const SENSITIVE_CUSTOM_ATTRS: string[] = [USER_PASSWORD_ATTR]
+
+const isSensitiveCustomAttr = (name?: string): boolean => {
+  return !!name && SENSITIVE_CUSTOM_ATTRS.includes(name)
+}
+
+type CustomAttributeValueItem = CustomObjectAttribute['values'] extends (infer T)[] ? T : never
+
 export interface AuditPayload extends CustomUser {
   modifiedFields?: Record<string, unknown>
   performedOn?: {
@@ -62,16 +71,21 @@ function redactSensitiveData(payload: AuditPayload): void {
     payload.jsonPatchString = '[{"op":"replace","path":"/userPassword","value":"[REDACTED]"}]'
   }
 
-  if (Array.isArray(payload.customAttributes)) {
+  if (payload.customAttributes && payload.customAttributes.length > 0) {
     payload.customAttributes = payload.customAttributes.map((attr) => {
-      if (attr.name === USER_PASSWORD_ATTR) {
-        const redactedValues = Array.isArray(attr.values)
-          ? attr.values.map(() => '[REDACTED]')
-          : ['[REDACTED]']
-        return { ...attr, values: redactedValues }
+      if (isSensitiveCustomAttr(attr.name)) {
+        const redactedValue = '[REDACTED]' as CustomAttributeValueItem
+        const redactedValues =
+          attr.values && Array.isArray(attr.values)
+            ? (attr.values.map(() => redactedValue) as CustomObjectAttribute['values'])
+            : undefined
+        return {
+          ...attr,
+          values: redactedValues,
+        }
       }
       return attr
-    }) as typeof payload.customAttributes
+    }) as CustomUser['customAttributes']
   }
 }
 

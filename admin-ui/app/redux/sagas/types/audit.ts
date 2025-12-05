@@ -1,3 +1,5 @@
+import type { WebhookSliceState } from 'Plugins/admin/redux/features/WebhookSlice'
+
 // Define types for the audit log structure
 export interface PerformedBy {
   user_inum: string
@@ -17,7 +19,6 @@ export interface AuditLog {
   performedBy?: PerformedBy
   [key: string]: any
 }
-
 // Define types for Redux state structure
 export interface AuthState {
   config: {
@@ -39,4 +40,5 @@ export interface AuthState {
 
 export interface RootState {
   authReducer: AuthState
+  webhookReducer: WebhookSliceState
 }

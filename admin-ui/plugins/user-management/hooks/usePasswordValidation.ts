@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { FormikProps } from 'formik'
 import { UserEditFormValues } from '../types/ComponentTypes'
-import { getStringValue, validatePassword } from '../utils/userFormUtils'
+import { getStringValue, validatePassword } from '../utils'
 
 const usePasswordValidation = (
   formik: FormikProps<UserEditFormValues>,
