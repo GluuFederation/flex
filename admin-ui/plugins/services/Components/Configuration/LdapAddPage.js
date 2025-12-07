@@ -24,7 +24,7 @@ function LdapAddPage() {
 
   function handleSubmit(data) {
     if (data) {
-      let message = data.ldap.action_message
+      const message = data.ldap.action_message
       delete data.ldap.action_message
       buildPayload(userAction, message, data)
       dispatch(addLdap({ data: userAction }))

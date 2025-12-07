@@ -1,62 +1,93 @@
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import React from 'react'
+import { useDispatch } from 'react-redux'
+import { useParams, useSearchParams } from 'react-router-dom'
 import { CardBody, Card } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import CustomScriptForm from './CustomScriptForm'
-import { editCustomScript } from 'Plugins/admin/redux/features/customScriptSlice'
-import { buildPayload } from 'Utils/PermChecker'
-import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
+import { updateToast } from 'Redux/features/toastSlice'
 import { useTranslation } from 'react-i18next'
-import { RootState, UserAction, SubmitData, ModuleProperty } from './types'
+import { Alert, Box } from '@mui/material'
+import { useCustomScript, useUpdateCustomScript, useMutationEffects } from './hooks'
+import type { CustomScript } from 'JansConfigApi'
+import type { SubmitData } from './types'
 
 function CustomScriptEditPage() {
+  const { id: inum } = useParams<{ id: string }>()
   const dispatch = useDispatch()
-  const item = useSelector((state: RootState) => state.customScriptReducer.item)
-  const loading = useSelector((state: RootState) => state.customScriptReducer.loading)
-  const saveOperationFlag = useSelector(
-    (state: RootState) => state.customScriptReducer.saveOperationFlag,
-  )
-  const errorInSaveOperationFlag = useSelector(
-    (state: RootState) => state.customScriptReducer.errorInSaveOperationFlag,
-  )
-  const viewOnly = useSelector((state: RootState) => state.customScriptReducer.view)
-
-  const userAction: UserAction = {}
-  const { navigateBack } = useAppNavigation()
   const { t } = useTranslation()
+  const [searchParams] = useSearchParams()
 
-  useEffect(() => {
-    if (saveOperationFlag && !errorInSaveOperationFlag) navigateBack(ROUTES.CUSTOM_SCRIPT_LIST)
-  }, [saveOperationFlag, errorInSaveOperationFlag, navigateBack])
+  const viewOnly = searchParams.get('view') === 'true'
 
-  function handleSubmit(data: SubmitData) {
-    if (data) {
-      const message = data.customScript.action_message || ''
-      delete data.customScript.action_message
-      buildPayload(userAction, message, data)
-      dispatch(editCustomScript({ action: userAction } as any))
+  const { data: script, isLoading: loadingScript, error: fetchError } = useCustomScript(inum || '')
+
+  const updateMutation = useUpdateCustomScript()
+
+  useMutationEffects({
+    mutation: updateMutation,
+    successMessage: 'messages.script_updated_successfully',
+    errorMessage: 'messages.error_updating_script',
+  })
+
+  const handleSubmit = async (data: SubmitData) => {
+    if (!data?.customScript) {
+      dispatch(updateToast(true, 'error', t('messages.invalid_script_data')))
+      return
+    }
+
+    try {
+      const {
+        action_message,
+        script_path: _scriptPath,
+        location_type: _locationType,
+        ...scriptData
+      } = data.customScript
+
+      await updateMutation.mutateAsync({
+        data: scriptData as CustomScript,
+        actionMessage: action_message,
+      })
+    } catch (error) {
+      console.error('Failed to update script:', error)
     }
   }
 
-  const moduleProperties = item.moduleProperties
-    ? item.moduleProperties.map((item: ModuleProperty) => item)
-    : []
+  if (loadingScript) {
+    return (
+      <GluuLoader blocking={true}>
+        <Card className="mb-3" type="border" color={null}>
+          <CardBody>
+            <Box sx={{ p: 3, textAlign: 'center' }}>{t('messages.loading_script')}</Box>
+          </CardBody>
+        </Card>
+      </GluuLoader>
+    )
+  }
 
-  return (
-    <GluuLoader blocking={loading}>
-      <GluuAlert
-        severity={t('titles.error')}
-        message={t('messages.error_in_saving')}
-        show={errorInSaveOperationFlag}
-      />
+  if (fetchError || !script) {
+    return (
       <Card className="mb-3" type="border" color={null}>
         <CardBody>
-          <CustomScriptForm
-            item={{ ...item, moduleProperties }}
-            viewOnly={viewOnly}
-            handleSubmit={handleSubmit}
-          />
+          <Alert severity="error">
+            <Box>
+              <strong>{t('messages.error_loading_script')}</strong>
+            </Box>
+            <Box sx={{ mt: 1 }}>
+              {fetchError && typeof fetchError === 'object' && 'message' in fetchError
+                ? (fetchError as { message: string }).message
+                : t('messages.script_not_found')}
+            </Box>
+          </Alert>
+        </CardBody>
+      </Card>
+    )
+  }
+
+  return (
+    <GluuLoader blocking={updateMutation.isPending}>
+      <Card className="mb-3" type="border" color={null}>
+        <CardBody>
+          <CustomScriptForm item={script} viewOnly={viewOnly} handleSubmit={handleSubmit} />
         </CardBody>
       </Card>
     </GluuLoader>

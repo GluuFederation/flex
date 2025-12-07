@@ -11,7 +11,7 @@ type ThemeAction = {
 }
 
 // Define the context value type
-interface ThemeContextType {
+export interface ThemeContextType {
   state: ThemeState
   dispatch: Dispatch<ThemeAction>
 }

@@ -1,9 +1,7 @@
 import { SCRIPT_READ, SCRIPT_WRITE } from '../../app/utils/PermChecker'
-import { reducer as scriptReducer } from 'Plugins/admin/redux/features/customScriptSlice'
-import ScriptListPage from '../admin/components/CustomScripts/ScriptListPage'
+import CustomScriptListPage from '../admin/components/CustomScripts/CustomScriptListPage'
 import CustomScriptAddPage from '../admin/components/CustomScripts/CustomScriptAddPage'
 import CustomScriptEditPage from '../admin/components/CustomScripts/CustomScriptEditPage'
-import scriptSaga from '../admin/redux/sagas/CustomScriptSaga'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 
 const BASE_PLUGIN_PATH = '/adm'
@@ -20,7 +18,7 @@ const pluginMetadata = {
   ],
   routes: [
     {
-      component: ScriptListPage,
+      component: CustomScriptListPage,
       path: BASE_PLUGIN_PATH + '/scripts',
       permission: SCRIPT_READ,
       resourceKey: ADMIN_UI_RESOURCES.Scripts,
@@ -38,8 +36,8 @@ const pluginMetadata = {
       resourceKey: ADMIN_UI_RESOURCES.Scripts,
     },
   ],
-  reducers: [{ name: 'scriptReducer', reducer: scriptReducer }],
-  sagas: [scriptSaga()],
+  reducers: [],
+  sagas: [],
 }
 
 export default pluginMetadata

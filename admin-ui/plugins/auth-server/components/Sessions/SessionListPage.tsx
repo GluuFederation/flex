@@ -1,7 +1,14 @@
-import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  useCallback,
+  useMemo,
+  type SyntheticEvent,
+} from 'react'
 import moment from 'moment'
 import isEmpty from 'lodash/isEmpty'
-import MaterialTable from '@material-table/core'
+import MaterialTable, { type Action } from '@material-table/core'
 import Autocomplete from '@mui/material/Autocomplete'
 import {
   Paper,
@@ -47,6 +54,7 @@ import {
 } from 'JansConfigApi'
 import type { SessionId, SearchSessionParams } from 'JansConfigApi'
 import type { Session, TableColumn, SessionListPageProps, FilterState, ColumnState } from './types'
+import type { RootState as AuditRootState } from '@/redux/sagas/types/audit'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import { DELETION } from '../../../../app/audit/UserActionType'
 import { SESSION } from '../../redux/audit/Resources'
@@ -62,7 +70,7 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
   const deleteSessionMutation = useDeleteSession()
   const revokeSessionMutation = useRevokeUserSession()
 
-  const authState = useSelector((state: any) => state.authReducer)
+  const authState = useSelector((state: AuditRootState) => state.authReducer)
   const token = authState?.token?.access_token
   const client_id = authState?.config?.clientId
   const userinfo = authState?.userinfo
@@ -149,7 +157,6 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
     return filtered
   }, [sessions, filterState.pattern, filterState.searchFilter, isFilterApplied])
 
-  const [myActions, setMyActions] = useState<Array<(rowData: Session) => any>>([])
   const [item, setItem] = useState<Session>({} as Session)
   const [modal, setModal] = useState<boolean>(false)
   const [deleteModal, setDeleteModal] = useState<boolean>(false)
@@ -191,38 +198,29 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
     setDeleteModal(true)
   }, [])
 
-  const DeleteIcon = useCallback(
-    () => (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <DeleteOutlined />
-      </div>
-    ),
-    [],
+  const tableActions: Action<Session>[] = useMemo(
+    () =>
+      !canDeleteSession
+        ? []
+        : [
+            {
+              icon: () => (
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <DeleteOutlined style={{ color: customColors.accentRed }} />
+                </div>
+              ),
+              tooltip: `${t('actions.delete')}`,
+              onClick: (_event, data) => {
+                const row = Array.isArray(data) ? data[0] : data
+                if (!row) {
+                  return
+                }
+                handleDeleteSession(row)
+              },
+            },
+          ],
+    [canDeleteSession, t, handleDeleteSession],
   )
-
-  const createDeleteAction = useCallback(
-    (rowData: Session) => ({
-      icon: DeleteIcon,
-      iconProps: {
-        color: 'secondary',
-        id: 'deleteSession' + rowData.sessionAttributes?.auth_user,
-      },
-      tooltip: `${t('actions.delete')}`,
-      onClick: (event: React.MouseEvent, rowData: Session) => handleDeleteSession(rowData),
-      disabled: !canDeleteSession,
-    }),
-    [t, handleDeleteSession, canDeleteSession, DeleteIcon],
-  )
-
-  useEffect(() => {
-    const actions: Array<(rowData: Session) => any> = []
-
-    if (canDeleteSession) {
-      actions.push(createDeleteAction)
-    }
-
-    setMyActions(actions)
-  }, [canDeleteSession, createDeleteAction])
 
   const sessionUsername = useMemo(
     () =>
@@ -388,9 +386,12 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
     link.remove()
   }, [convertToCSV, authenticatedSessions])
 
-  const handleUsernameChange = useCallback((_: any, value: string | null) => {
-    setRevokeUsername(value)
-  }, [])
+  const handleUsernameChange = useCallback(
+    (_: SyntheticEvent<Element, Event>, value: string | null) => {
+      setRevokeUsername(value)
+    },
+    [],
+  )
 
   const handleFilterToggle = useCallback(() => {
     setShowFilter(!showFilter)
@@ -447,7 +448,10 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
     return <SessionDetailPage row={rowData.rowData} />
   }, [])
 
-  const TableContainer = useCallback((props: any) => <Paper {...props} elevation={0} />, [])
+  const TableContainer = useCallback(
+    (props: React.ComponentProps<typeof Paper>) => <Paper {...props} elevation={0} />,
+    [],
+  )
 
   const tableOptions = useMemo(
     () => ({
@@ -471,7 +475,7 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
     if (loading) {
       return (
         <div style={{ textAlign: 'center', padding: '20px' }}>
-          <p>{t('messages.loading')}...</p>
+          <p>{t('messages.request_waiting_message')}</p>
         </div>
       )
     }
@@ -502,7 +506,7 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
         data={authenticatedSessions}
         isLoading={loading}
         title=""
-        actions={myActions}
+        actions={tableActions}
         options={tableOptions}
         detailPanel={handleDetailPanel}
       />
@@ -511,7 +515,6 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
     loading,
     authenticatedSessions,
     columnState.updatedColumns,
-    myActions,
     tableOptions,
     handleDetailPanel,
     TableContainer,

@@ -9,25 +9,27 @@ import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { SCRIPT } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
-import { Alert, Button } from 'reactstrap'
+import { Button } from 'reactstrap'
 import ErrorIcon from '@mui/icons-material/Error'
 import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
-import { useSelector } from 'react-redux'
-import { Skeleton } from '@mui/material'
+import { Skeleton, Alert } from '@mui/material'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
+import type { CustomScript } from 'JansConfigApi'
 import {
   CustomScriptFormProps,
-  RootState,
   FormValues,
   ModuleProperty,
   ConfigurationProperty,
   ScriptType,
 } from './types'
 import { CustomScriptItem } from './types/customScript'
+import { useCustomScriptTypes } from './hooks'
 import { filterEmptyObjects, mapPropertyToKeyValue } from 'Utils/Util'
 import { customScriptValidationSchema } from './helper/validations'
 import { transformToFormValues, getModuleProperty } from './helper/utils'
+import { PROGRAMMING_LANGUAGES, LOCATION_TYPE_OPTIONS } from './constants'
+import { PersonAuthenticationFields } from './PersonAuthenticationFields'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 const GluuScriptErrorModal = lazy(() => import('Routes/Apps/Gluu/GluuScriptErrorModal'))
 const Counter = lazy(() => import('@/components/Widgets/GroupedButtons/Counter'))
@@ -35,13 +37,14 @@ const GluuInputEditor = lazy(() => import('Routes/Apps/Gluu/GluuInputEditor'))
 
 function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScriptFormProps) {
   const { navigateBack } = useAppNavigation()
-  const { scriptTypes, loadingScriptTypes } = useSelector(
-    (state: RootState) => state.customScriptReducer,
-  )
   const { t } = useTranslation()
   const [init, setInit] = useState<boolean>(false)
   const [modal, setModal] = useState<boolean>(false)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+
+  const isEditMode = Boolean(item?.inum)
+
+  const { data: scriptTypes = [], isLoading: loadingScriptTypes } = useCustomScriptTypes()
 
   const activate = useCallback(() => {
     setInit((prev) => (!prev ? true : prev))
@@ -238,8 +241,9 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
   const onLevelChange = useCallback(
     (level: number): void => {
       formik.setFieldValue('level', level)
+      activate()
     },
-    [formik.setFieldValue],
+    [formik, activate],
   )
 
   const showErrorModal = useCallback((): void => setIsModalOpen(true), [])
@@ -281,16 +285,23 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
 
       {item?.scriptError?.stackTrace && (
         <Alert
-          className="d-flex align-items-center justify-content-between w-100 mb-3"
-          color="danger"
+          severity="error"
+          icon={<ErrorIcon />}
+          sx={{ mb: 3 }}
+          action={
+            <Button
+              size="small"
+              style={{
+                backgroundColor: customColors.accentRed,
+                color: customColors.white,
+              }}
+              onClick={showErrorModal}
+            >
+              {t('actions.show_error')}
+            </Button>
+          }
         >
-          <div className="d-flex align-items-center" style={{ gap: '4px' }}>
-            <ErrorIcon color="error" />
-            <h5 className="alert-heading m-0">{t('messages.error_in_script')}!</h5>
-          </div>
-          <Button color="danger" onClick={showErrorModal}>
-            {t('actions.show_error')}
-          </Button>
+          {t('messages.error_in_script')}!
         </Alert>
       )}
       <Form onSubmit={formik.handleSubmit}>
@@ -311,7 +322,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
             <Input
               placeholder={t('placeholders.name')}
               id="name"
-              valid={!formik.errors.name && !formik.touched.name && init}
+              valid={formik.touched.name && !formik.errors.name}
               name="name"
               disabled={viewOnly}
               value={formik.values.name}
@@ -330,7 +341,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
             <InputGroup>
               <Input
                 placeholder={t('placeholders.description')}
-                valid={!formik.errors.description && !formik.touched.description && init}
+                valid={formik.touched.description && !formik.errors.description}
                 id="description"
                 name="description"
                 disabled={viewOnly}
@@ -341,34 +352,12 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
           </Col>
         </FormGroup>
         {scriptTypeState === 'person_authentication' && (
-          <FormGroup row>
-            <GluuLabel label={t('Select SAML ACRS')} doc_category={SCRIPT} doc_entry="aliases" />
-            <Col sm={9}>
-              <Input
-                type="select"
-                name="aliases"
-                id="aliases"
-                value={formik.values.aliases}
-                multiple
-                disabled={viewOnly}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  const selectEl = e.currentTarget as unknown as HTMLSelectElement
-                  const values = Array.from(selectEl.selectedOptions).map((o) => o.value)
-                  formik.setFieldValue('aliases', values)
-                }}
-              >
-                <option value="urn:oasis:names:tc:SAML:2.0:ac:classes:InternetProtocol">
-                  urn:oasis:names:tc:SAML:2.0:ac:classes:InternetProtocol
-                </option>
-                <option value="urn:oasis:names:tc:SAML:2.0:ac:classes:Password">
-                  urn:oasis:names:tc:SAML:2.0:ac:classes:Password
-                </option>
-                <option value="urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport">
-                  urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport
-                </option>
-              </Input>
-            </Col>
-          </FormGroup>
+          <PersonAuthenticationFields
+            formik={formik}
+            viewOnly={viewOnly}
+            usageTypeChange={usageTypeChange}
+            getModuleProperty={getModuleProperty}
+          />
         )}
 
         <FormGroup row>
@@ -388,7 +377,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
                   id="scriptType"
                   name="scriptType"
                   value={formik.values.scriptType}
-                  disabled={viewOnly}
+                  disabled={viewOnly || isEditMode}
                   onChange={(e: ChangeEvent<HTMLSelectElement>) => {
                     formik.setFieldValue('scriptType', e.target.value, true)
                   }}
@@ -429,9 +418,12 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
                   formik.setFieldValue('programmingLanguage', e.target.value)
                 }}
               >
-                <option value="">{t('Choose')}...</option>
-                <option value="java">Java</option>
-                <option value="python">Jython</option>
+                <option value="">{t('options.choose')}...</option>
+                {PROGRAMMING_LANGUAGES.map((lang) => (
+                  <option key={lang.value} value={lang.value}>
+                    {lang.label}
+                  </option>
+                ))}
               </CustomInput>
             </InputGroup>
             {formik.errors.programmingLanguage && formik.touched.programmingLanguage && (
@@ -457,8 +449,11 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
                 }}
               >
                 <option value="">{t('options.choose')}...</option>
-                <option value="db">{t('Database')}</option>
-                <option value="file">{t('File')}</option>
+                {LOCATION_TYPE_OPTIONS.map((location) => (
+                  <option key={location.value} value={location.value}>
+                    {t(location.key)}
+                  </option>
+                ))}
               </CustomInput>
             </InputGroup>
           </Col>
@@ -475,7 +470,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
               <InputGroup>
                 <Input
                   placeholder={t('placeholders.script_path')}
-                  valid={!formik.errors.script_path && !formik.touched.script_path && init}
+                  valid={formik.touched.script_path && !formik.errors.script_path}
                   disabled={viewOnly}
                   id="location_path"
                   value={formik.values.script_path || ''}
@@ -488,35 +483,6 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
               {formik.errors.script_path && formik.touched.script_path && (
                 <div style={{ color: customColors.accentRed }}>
                   {String(formik.errors.script_path)}
-                </div>
-              )}
-            </Col>
-          </FormGroup>
-        )}
-        {scriptTypeState === 'person_authentication' && (
-          <FormGroup row>
-            <GluuLabel label="Interactive" required doc_category={SCRIPT} doc_entry="usage_type" />
-            <Col sm={9}>
-              <InputGroup>
-                <CustomInput
-                  type="select"
-                  id="usage_type"
-                  name="usage_type"
-                  disabled={viewOnly}
-                  value={getModuleProperty('usage_type', formik.values.moduleProperties) || ''}
-                  onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                    usageTypeChange(e.target.value)
-                  }}
-                >
-                  <option value="">{t('options.choose')}...</option>
-                  <option value="interactive">Web</option>
-                  <option value="service">Native</option>
-                  <option value="both">Both methods</option>
-                </CustomInput>
-              </InputGroup>
-              {formik.errors.moduleProperties && formik.touched.moduleProperties && (
-                <div style={{ color: customColors.accentRed }}>
-                  {String(formik.errors.moduleProperties)}
                 </div>
               )}
             </Col>
@@ -540,8 +506,8 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
           compName="configurationProperties"
           label="fields.custom_properties"
           formik={formik}
-          keyPlaceholder={t('placeholders.enter_property_key')}
-          valuePlaceholder={t('placeholders.enter_property_value')}
+          keyPlaceholder="placeholders.enter_property_key"
+          valuePlaceholder="placeholders.enter_property_value"
           options={configurationPropertiesOptions}
           disabled={viewOnly}
         ></GluuProperties>
@@ -549,8 +515,8 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
           compName="moduleProperties"
           label="fields.module_properties"
           formik={formik}
-          keyPlaceholder={t('placeholders.enter_property_key')}
-          valuePlaceholder={t('placeholders.enter_property_value')}
+          keyPlaceholder="placeholders.enter_property_key"
+          valuePlaceholder="placeholders.enter_property_value"
           options={modulePropertiesOptions}
           disabled={viewOnly}
         ></GluuProperties>

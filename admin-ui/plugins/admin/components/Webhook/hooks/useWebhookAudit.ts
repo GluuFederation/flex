@@ -1,0 +1,58 @@
+import { useCallback } from 'react'
+import { useSelector } from 'react-redux'
+import { postUserAction } from 'Redux/api/backend-api'
+import { addAdditionalData } from 'Utils/TokenController'
+import { CREATE, UPDATE, DELETION, FETCH } from '@/audit/UserActionType'
+import type { WebhookEntry } from '../types'
+
+interface AuthState {
+  token: { access_token: string }
+  config: { clientId: string }
+  location: { IPv4: string }
+  userinfo: { name: string; inum: string } | null
+}
+
+interface RootState {
+  authReducer: AuthState
+}
+
+type ActionType = typeof CREATE | typeof UPDATE | typeof DELETION | typeof FETCH
+
+export const useWebhookAudit = () => {
+  const token = useSelector((state: RootState) => state.authReducer.token.access_token)
+  const clientId = useSelector((state: RootState) => state.authReducer.config.clientId)
+  const ipAddress = useSelector((state: RootState) => state.authReducer.location.IPv4)
+  const userinfo = useSelector((state: RootState) => state.authReducer.userinfo)
+
+  const initAudit = useCallback((): Record<string, unknown> => {
+    return {
+      headers: { Authorization: `Bearer ${token}` },
+      client_id: clientId,
+      ip_address: ipAddress,
+      status: 'success',
+      performedBy: {
+        user_inum: userinfo?.inum || '-',
+        userId: userinfo?.name || '-',
+      },
+    }
+  }, [token, clientId, ipAddress, userinfo])
+
+  const logAction = useCallback(
+    async (
+      actionType: ActionType,
+      resource: string,
+      payload: { action_message?: string; action_data?: WebhookEntry | { inum: string } },
+    ) => {
+      const audit = initAudit()
+      addAdditionalData(audit, actionType, resource, {
+        action: payload as { action_message?: string; action_data?: Record<string, unknown> },
+      })
+      await postUserAction(audit)
+    },
+    [initAudit],
+  )
+
+  return { initAudit, logAction }
+}
+
+export { CREATE, UPDATE, DELETION, FETCH }

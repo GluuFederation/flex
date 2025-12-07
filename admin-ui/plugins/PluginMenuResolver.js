@@ -36,7 +36,7 @@ export async function processMenus() {
 }
 
 export async function processRoutes() {
-  let pluginRoutes = []
+  const pluginRoutes = []
 
   const pluginPromises = plugins.map(async (item) => {
     try {
@@ -82,7 +82,7 @@ export function processMenusSync() {
 }
 
 export function processRoutesSync() {
-  let pluginRoutes = []
+  const pluginRoutes = []
   plugins.forEach((item) => {
     try {
       pluginRoutes.push(...(require(`${item.metadataFile}`).default?.routes || []))

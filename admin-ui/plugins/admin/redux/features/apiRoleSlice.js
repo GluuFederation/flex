@@ -34,7 +34,7 @@ const apiRoleSlice = createSlice({
     editRoleResponse: (state, action) => {
       state.loading = false
       if (action.payload?.data) {
-        let currentItems = [...state.items]
+        const currentItems = [...state.items]
         currentItems.push(action.payload.data)
         state.items = currentItems
       }

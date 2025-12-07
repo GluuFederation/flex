@@ -1,122 +1,120 @@
-// @ts-nocheck
-// Default import fix
-var anime = require('animejs').default ? require('animejs').default : require('animejs')
+import anime from 'animejs'
 
-function SidebarEntryAnimate(options) {
-  // Flag to ensure the animation is fired only once
-  this.wasAnimated = false
-  this.sidebarElement = null
-  this.config = Object.assign(
-    {},
-    {
+interface SidebarEntryAnimateOptions {
+  duration?: number
+  easing?: string
+}
+
+export default class SidebarEntryAnimate {
+  private wasAnimated: boolean = false
+  private sidebarElement: HTMLElement | null = null
+  private config: Required<SidebarEntryAnimateOptions>
+
+  constructor(options?: SidebarEntryAnimateOptions) {
+    this.config = {
       duration: 100,
       easing: 'linear',
-    },
-    options,
-  )
-}
-
-SidebarEntryAnimate.prototype.executeAnimation = function () {
-  var config = this.config
-
-  var sidebarElement = this.sidebarElement
-
-  if (!this.wasAnimated && sidebarElement) {
-    var isSlim =
-      sidebarElement.classList.contains('sidebar--slim') &&
-      sidebarElement.classList.contains('sidebar--collapsed')
-    var sidebarMenu = sidebarElement.querySelector('.sidebar-menu')
-
-    var sidebarSectionsPreMenu = []
-    var sidebarMenuSection = null
-    var sideMenuEntries = []
-    var sidebarSectionsPostMenu = []
-
-    sidebarElement.querySelectorAll('.sidebar__section').forEach(function (sectionElement) {
-      // Ommit sections which arent visible
-      if (
-        (isSlim && sectionElement.classList.contains('sidebar__hide-slim')) ||
-        (!isSlim && sectionElement.classList.contains('sidebar__show-slim'))
-      ) {
-        return
-      }
-
-      if (sectionElement.contains(sidebarMenu)) {
-        sidebarMenuSection = sectionElement
-        // Add sidemenu entries
-        var sidebarMenuEntriesNodes = sectionElement.querySelectorAll(
-          '.sidebar-menu > .sidebar-menu__entry',
-        )
-        sideMenuEntries = sideMenuEntries.concat(Array.from(sidebarMenuEntriesNodes))
-      } else {
-        if (sideMenuEntries.length > 0) {
-          // Add post menu sections
-          sidebarSectionsPostMenu.push(sectionElement)
-        } else {
-          // Add pre menu sections
-          sidebarSectionsPreMenu.push(sectionElement)
-        }
-      }
-    })
-
-    var timeline = anime.timeline({
-      easing: config.easing,
-      duration: config.duration,
-      complete: function () {
-        // Clear section styles
-        ;[]
-          .concat(sidebarSectionsPreMenu, sideMenuEntries, sidebarSectionsPostMenu)
-          .forEach(function (element) {
-            element.style.opacity = ''
-          })
-      },
-    })
-    var staggerDelay =
-      config.duration /
-      (sidebarSectionsPreMenu.length + sidebarSectionsPostMenu.length) /
-      sideMenuEntries.length
-    timeline
-      .add({
-        targets: sidebarSectionsPreMenu,
-        delay: anime.stagger(staggerDelay),
-        opacity: [0, 1],
-      })
-      .add({
-        targets: sideMenuEntries,
-        delay: anime.stagger(staggerDelay),
-        begin: function () {
-          sidebarMenuSection.style.opacity = 1
-        },
-        opacity: [0, 1],
-      })
-      .add({
-        targets: sidebarSectionsPostMenu,
-        delay: anime.stagger(staggerDelay),
-        opacity: [0, 1],
-      })
-
-    this.wasAnimated = true
-
-    return timeline.finished
+      ...options,
+    }
   }
 
-  return Promise.resolve()
+  executeAnimation(): Promise<void> {
+    const { config, sidebarElement } = this
+
+    if (!this.wasAnimated && sidebarElement) {
+      const isSlim =
+        sidebarElement.classList.contains('sidebar--slim') &&
+        sidebarElement.classList.contains('sidebar--collapsed')
+      const sidebarMenu = sidebarElement.querySelector('.sidebar-menu')
+
+      const sidebarSectionsPreMenu: HTMLElement[] = []
+      let sidebarMenuSection: HTMLElement | null = null
+      let sideMenuEntries: HTMLElement[] = []
+      const sidebarSectionsPostMenu: HTMLElement[] = []
+
+      sidebarElement
+        .querySelectorAll<HTMLElement>('.sidebar__section')
+        .forEach((sectionElement) => {
+          if (
+            (isSlim && sectionElement.classList.contains('sidebar__hide-slim')) ||
+            (!isSlim && sectionElement.classList.contains('sidebar__show-slim'))
+          ) {
+            return
+          }
+
+          if (sidebarMenu && sectionElement.contains(sidebarMenu)) {
+            sidebarMenuSection = sectionElement
+            const sidebarMenuEntriesNodes = sectionElement.querySelectorAll<HTMLElement>(
+              '.sidebar-menu > .sidebar-menu__entry',
+            )
+            sideMenuEntries = sideMenuEntries.concat(Array.from(sidebarMenuEntriesNodes))
+          } else {
+            if (sideMenuEntries.length > 0) {
+              sidebarSectionsPostMenu.push(sectionElement)
+            } else {
+              sidebarSectionsPreMenu.push(sectionElement)
+            }
+          }
+        })
+
+      const timeline = anime.timeline({
+        easing: config.easing,
+        duration: config.duration,
+        complete: () => {
+          const allElements: HTMLElement[] = [
+            ...sidebarSectionsPreMenu,
+            ...sideMenuEntries,
+            ...sidebarSectionsPostMenu,
+          ]
+          if (sidebarMenuSection) {
+            allElements.push(sidebarMenuSection)
+          }
+          allElements.forEach((element) => {
+            element.style.opacity = ''
+          })
+        },
+      })
+
+      const totalSections = sidebarSectionsPreMenu.length + sidebarSectionsPostMenu.length
+      const totalEntries = sideMenuEntries.length
+      const staggerDelay =
+        totalSections > 0 && totalEntries > 0
+          ? config.duration / totalSections / totalEntries
+          : config.duration / 10
+
+      timeline
+        .add({
+          targets: sidebarSectionsPreMenu,
+          delay: anime.stagger(staggerDelay),
+          opacity: [0, 1],
+        })
+        .add({
+          targets: sideMenuEntries,
+          delay: anime.stagger(staggerDelay),
+          begin: () => {
+            if (sidebarMenuSection) {
+              sidebarMenuSection.style.opacity = '1'
+            }
+          },
+          opacity: [0, 1],
+        })
+        .add({
+          targets: sidebarSectionsPostMenu,
+          delay: anime.stagger(staggerDelay),
+          opacity: [0, 1],
+        })
+
+      this.wasAnimated = true
+
+      return timeline.finished
+    }
+
+    return Promise.resolve()
+  }
+
+  assignParentElement(parentElement: HTMLElement): void {
+    this.sidebarElement = parentElement
+  }
+
+  destroy(): void {}
 }
-
-/**
- * Assigns the parent sidebar element, and attaches a Mutation Observer
- * which watches the coallapsable nodes inside of the sidebar menu
- * and animates them on chenages
- *
- * @param {HTMLElement} parentElement SidebarMenu parent
- */
-SidebarEntryAnimate.prototype.assignParentElement = function (parentElement) {
-  this.sidebarElement = parentElement
-}
-
-/**
- * Disconnects the observer
- */
-SidebarEntryAnimate.prototype.destroy = function () {}
-
-module.exports = SidebarEntryAnimate

@@ -1,10 +1,10 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import { CREATE, UPDATE, DELETION } from '../../../../../app/audit/UserActionType'
 import { SCOPE } from '../../../redux/audit/Resources'
 import type { Scope, ModifiedFields } from '../types'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 interface AuthState {
   token?: {
@@ -24,7 +24,7 @@ interface RootState {
 }
 
 export function useScopeActions() {
-  const navigate = useNavigate()
+  const { navigateToRoute } = useAppNavigation()
   const authState = useSelector((state: RootState) => state.authReducer)
   const token = authState?.token?.access_token
   const client_id = authState?.config?.clientId
@@ -81,18 +81,18 @@ export function useScopeActions() {
   )
 
   const navigateToScopeList = useCallback(() => {
-    navigate('/auth-server/scopes')
-  }, [navigate])
+    navigateToRoute(ROUTES.AUTH_SERVER_SCOPES_LIST)
+  }, [navigateToRoute])
 
   const navigateToScopeAdd = useCallback(() => {
-    navigate('/auth-server/scope/new')
-  }, [navigate])
+    navigateToRoute(ROUTES.AUTH_SERVER_SCOPE_ADD)
+  }, [navigateToRoute])
 
   const navigateToScopeEdit = useCallback(
     (inum: string) => {
-      navigate(`/auth-server/scope/edit/${inum}`)
+      navigateToRoute(ROUTES.AUTH_SERVER_SCOPE_EDIT(inum))
     },
-    [navigate],
+    [navigateToRoute],
   )
 
   return {

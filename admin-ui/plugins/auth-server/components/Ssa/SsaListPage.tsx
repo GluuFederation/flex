@@ -11,7 +11,6 @@ import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router'
 import SetTitle from 'Utils/SetTitle'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import { DeleteOutlined, DownloadOutlined, VisibilityOutlined } from '@mui/icons-material'
@@ -21,6 +20,7 @@ import customColors from '@/customColors'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { useRevokeSsa } from 'JansConfigApi'
 import { useGetAllSsas, useGetSsaJwt, useSsaAuditLogger } from './hooks'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { formatExpirationDate } from './utils/dateFormatters'
 import type { SsaData, SsaJwtResponse } from './types'
 import { DELETION } from '../../../../app/audit/UserActionType'
@@ -36,19 +36,28 @@ const SSAListPage: React.FC = () => {
   } = useCedarling()
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const { navigateToRoute } = useAppNavigation()
   const [limit] = useState<number>(10)
   const [item, setItem] = useState<SsaData | null>(null)
   const [modal, setModal] = useState<boolean>(false)
   const toggle = (): void => setModal(!modal)
 
   const { data: items = [], isLoading: loading, refetch } = useGetAllSsas()
+
+  // Add unique id to each row for MaterialTable
+  const rowsWithId = useMemo(
+    () =>
+      items.map((item) => ({
+        ...item,
+        id: item.ssa.jti || `${item.ssa.software_id}-${item.ssa.org_id}`,
+      })),
+    [items],
+  )
   const revokeSsaMutation = useRevokeSsa()
   const getSsaJwtMutation = useGetSsaJwt()
 
   const { logAudit } = useSsaAuditLogger()
 
-  const [loadingJti, setLoadingJti] = useState<string | null>(null)
   const [isDeleting, setIsDeleting] = useState<boolean>(false)
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme || 'light'
@@ -143,7 +152,7 @@ const SSAListPage: React.FC = () => {
           handleViewSsa(rowData)
         }
       },
-      disabled: loadingJti === rowData.ssa.jti,
+      disabled: getSsaJwtMutation.isPending,
     }))
     myActions.push((rowData: SsaData) => ({
       icon: () => <DownloadOutlined />,
@@ -157,7 +166,7 @@ const SSAListPage: React.FC = () => {
           handleDownloadSsa(rowData)
         }
       },
-      disabled: loadingJti === rowData.ssa.jti,
+      disabled: getSsaJwtMutation.isPending,
     }))
   }
 
@@ -174,7 +183,7 @@ const SSAListPage: React.FC = () => {
   }
 
   const handleGoToSsaAddPage = (): void => {
-    navigate('/auth-server/config/ssa/new')
+    navigateToRoute(ROUTES.AUTH_SERVER_SSA_ADD)
   }
 
   const onDeletionConfirmed = async (message: string): Promise<void> => {
@@ -204,22 +213,22 @@ const SSAListPage: React.FC = () => {
     }
   }
 
-  const handleViewSsa = async (row: SsaData): Promise<void> => {
-    setLoadingJti(row.ssa.jti)
-    try {
-      const fetchedJwtData = await getSsaJwtMutation.mutateAsync(row.ssa.jti)
-      setJwtData(fetchedJwtData)
-      toggleSsaDialog()
-    } catch (error) {
-      console.error('Failed to fetch SSA JWT:', error)
-      dispatch(updateToast(true, 'error'))
-    } finally {
-      setLoadingJti(null)
-    }
+  const handleViewSsa = (row: SsaData): void => {
+    setJwtData(null)
+    setSsaDialogOpen(true)
+    getSsaJwtMutation.mutate(row.ssa.jti, {
+      onSuccess: (fetchedJwtData) => {
+        setJwtData(fetchedJwtData)
+      },
+      onError: (error) => {
+        console.error('Failed to fetch SSA JWT:', error)
+        dispatch(updateToast(true, 'error'))
+        setSsaDialogOpen(false)
+      },
+    })
   }
 
   const handleDownloadSsa = async (row: SsaData): Promise<void> => {
-    setLoadingJti(row.ssa.jti)
     try {
       const jwtData = await getSsaJwtMutation.mutateAsync(row.ssa.jti)
       const blob = new Blob([jwtData.ssa], { type: 'text/plain' })
@@ -246,8 +255,6 @@ const SSAListPage: React.FC = () => {
     } catch (error) {
       console.error('Failed to download SSA JWT:', error)
       dispatch(updateToast(true, 'error'))
-    } finally {
-      setLoadingJti(null)
     }
   }
 
@@ -261,7 +268,7 @@ const SSAListPage: React.FC = () => {
               Container: PaperContainer,
             }}
             columns={tableColumns}
-            data={items || []}
+            data={rowsWithId || []}
             isLoading={loading}
             title=""
             actions={myActions}
@@ -296,11 +303,12 @@ const SSAListPage: React.FC = () => {
             feature={adminUiFeatures.ssa_delete}
           />
         )}
-        {jwtData && ssaDialogOpen && (
+        {ssaDialogOpen && (
           <JsonViewerDialog
             isOpen={ssaDialogOpen}
             toggle={toggleSsaDialog}
             data={jwtData}
+            isLoading={getSsaJwtMutation.isPending}
             title={`JSON View`}
             theme="light"
             expanded={true}

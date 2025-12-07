@@ -30,7 +30,7 @@ export default class LicenseApi {
   }
 
   getIsActive = (): Promise<any> => {
-    let retries = 0
+    const retries = 0
 
     return new Promise((resolve, reject) => {
       const makeRequest = (retries: number) => {
@@ -61,7 +61,7 @@ export default class LicenseApi {
   }
 
   checkAdminuiLicenseConfig = (): Promise<any> => {
-    let retries = 0
+    const retries = 0
     return new Promise((resolve, reject) => {
       const makeRequest = (retries: number) => {
         new Promise((resolve, reject) => {
