@@ -30,6 +30,8 @@ export type {
 
 export interface ExtendedClient extends Client {
   expirable?: boolean
+  authenticationMethod?: string
+  allAuthenticationMethods?: string[]
 }
 
 export interface ClientScope {

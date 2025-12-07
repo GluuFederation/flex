@@ -16,21 +16,19 @@ export function buildClientInitialValues(client: Partial<ExtendedClient>): Clien
 }
 
 export function buildClientPayload(values: ClientFormValues): ExtendedClient {
-  const payload: ExtendedClient = { ...values }
-
-  if (!payload.expirable) {
-    delete payload.expirationDate
+  const payload: ExtendedClient = {
+    ...values,
+    accessTokenAsJwt:
+      typeof values.accessTokenAsJwt === 'string'
+        ? values.accessTokenAsJwt === 'true'
+        : values.accessTokenAsJwt,
+    rptAsJwt: typeof values.rptAsJwt === 'string' ? values.rptAsJwt === 'true' : values.rptAsJwt,
+    attributes: values.attributes ? { ...values.attributes } : undefined,
   }
+
   delete payload.expirable
 
-  if (typeof payload.accessTokenAsJwt === 'string') {
-    payload.accessTokenAsJwt = payload.accessTokenAsJwt === 'true'
-  }
-  if (typeof payload.rptAsJwt === 'string') {
-    payload.rptAsJwt = payload.rptAsJwt === 'true'
-  }
-
-  return payload
+  return JSON.parse(JSON.stringify(payload))
 }
 
 export function hasFormChanges(
