@@ -52,11 +52,6 @@ interface LockDetailItem {
   monthly_active_clients?: number
 }
 
-interface LockDetail {
-  monthly_active_users?: number
-  monthly_active_clients?: number
-}
-
 interface RootState {
   mauReducer: {
     stat: StatDataItem[]
@@ -64,7 +59,7 @@ interface RootState {
   }
   initReducer: InitState
   lockReducer: {
-    lockDetail: LockDetailItem[] | LockDetail
+    lockDetail: LockDetailItem[] | LockDetailItem
     loading: boolean
   }
   authReducer: AuthState
