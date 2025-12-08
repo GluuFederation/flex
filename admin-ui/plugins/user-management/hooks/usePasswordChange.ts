@@ -10,7 +10,7 @@ import { triggerUserWebhook } from '../helper/userWebhookHelpers'
 import { CustomUser } from '../types/UserApiTypes'
 import { UserEditFormValues } from '../types/ComponentTypes'
 import { PasswordPatchPayload } from '../types/UserFormTypes'
-import { getStringValue } from '../utils/userFormUtils'
+import { getStringValue } from '../utils'
 import { USER_PASSWORD_ATTR } from '../common/Constants'
 
 const usePasswordChange = (

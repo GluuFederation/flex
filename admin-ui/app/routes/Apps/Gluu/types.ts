@@ -1,4 +1,5 @@
 import type { FormikProps } from 'formik'
+import { UserEditFormValues } from 'Plugins/user-management/types'
 import type { InputProps } from 'reactstrap'
 
 export interface WebhookTriggerError {
@@ -55,7 +56,7 @@ export interface GluuCommitDialogProps {
   handler: () => void
   modal: boolean
   onAccept: (message: string) => void
-  formik?: FormikProps<Record<string, unknown>>
+  formik?: FormikProps<UserEditFormValues>
   operations?: Array<{ path?: string; value?: unknown }>
   label?: string
   placeholderLabel?: string
