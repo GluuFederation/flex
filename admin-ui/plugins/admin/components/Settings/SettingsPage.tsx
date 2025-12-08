@@ -36,11 +36,7 @@ import {
 import { getPagingSize, savePagingSize as savePagingSizeToStorage } from 'Utils/pagingUtils'
 import packageJson from '../../../../package.json'
 import { getSettingsValidationSchema } from 'Plugins/admin/helper/validations/settingsValidation'
-import {
-  buildSettingsInitialValues,
-  type SettingsFormValues,
-  type SettingsConfigData,
-} from 'Plugins/admin/helper/settings'
+import { buildSettingsInitialValues, type SettingsFormValues } from 'Plugins/admin/helper/settings'
 import {
   useGetAdminuiConf,
   useEditAdminuiConf,
@@ -69,18 +65,10 @@ const LABEL_CONTAINER_STYLE: React.CSSProperties = {
   paddingRight: '15px',
 }
 
-interface ThemeState {
-  theme?: string
-}
-
-interface ThemeContextValue {
-  state?: ThemeState
-}
-
 const SettingsPage: React.FC = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const theme = useContext(ThemeContext) as ThemeContextValue | null
+  const theme = useContext(ThemeContext)
   const queryClient = useQueryClient()
 
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
@@ -133,17 +121,21 @@ const SettingsPage: React.FC = () => {
   }, [authorizeHelper, settingsScopes])
 
   const validationSchema = useMemo(() => getSettingsValidationSchema(t), [t])
-  const savedPagingSize = useMemo(() => getPagingSize(DEFAULT_PAGING_SIZE), [])
+  const savedPagingSize = useMemo(() => {
+    const stored = getPagingSize(DEFAULT_PAGING_SIZE)
+    return PAGING_SIZE_OPTIONS.includes(stored as (typeof PAGING_SIZE_OPTIONS)[number])
+      ? stored
+      : DEFAULT_PAGING_SIZE
+  }, [])
   const selectedTheme = useMemo(() => theme?.state?.theme || 'darkBlack', [theme?.state?.theme])
   const configApiUrl = useMemo(() => {
-    if (globalThis.window === undefined) return 'N/A'
-    const windowWithConfig = globalThis.window as Window & { configApiBaseUrl?: string }
+    if (typeof window === 'undefined') return 'N/A'
+    const windowWithConfig = window as Window & { configApiBaseUrl?: string }
     return windowWithConfig.configApiBaseUrl || 'N/A'
   }, [])
 
   const transformToFormValues = useCallback(
-    (configData?: AppConfigResponse | null) =>
-      buildSettingsInitialValues(configData as SettingsConfigData | null | undefined),
+    (configData?: AppConfigResponse | null) => buildSettingsInitialValues(configData),
     [],
   )
 
@@ -237,14 +229,16 @@ const SettingsPage: React.FC = () => {
   const hasQueryError = isConfigError || isScriptsError
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
+
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (isFormChanged) {
-        e.preventDefault()
-      }
+      if (!isFormChanged) return
+      e.preventDefault()
+      e.returnValue = ''
     }
 
-    globalThis.window.addEventListener('beforeunload', handleBeforeUnload)
-    return () => globalThis.window.removeEventListener('beforeunload', handleBeforeUnload)
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
   }, [isFormChanged])
 
   const handleCancel = useCallback(() => {
