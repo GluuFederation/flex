@@ -177,7 +177,7 @@ function DashboardPage() {
       !requestStates.licenseRequested
     ) {
       setRequestStates((prev) => ({ ...prev, licenseRequested: true }))
-      buildPayload(userAction as UserAction, FETCHING_LICENSE_DETAILS, options as ActionData)
+      buildPayload(userAction, FETCHING_LICENSE_DETAILS, options as ActionData)
       dispatch(getLicenseDetails())
     }
   }, [
@@ -200,7 +200,7 @@ function DashboardPage() {
       !requestStates.clientsRequested
     ) {
       setRequestStates((prev) => ({ ...prev, clientsRequested: true }))
-      buildPayload(userAction as UserAction, 'Fetch openid connect clients', {} as ActionData)
+      buildPayload(userAction, 'Fetch openid connect clients', {} as ActionData)
       dispatch(getClients())
     }
   }, [

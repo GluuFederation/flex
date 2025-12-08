@@ -16,7 +16,7 @@ export interface InitState {
   isLoading: boolean
 }
 
-interface ActionPayload {
+interface ActionDataPayload {
   [key: string]: string | number | boolean | string[] | number[] | boolean[] | null
 }
 
@@ -62,7 +62,7 @@ const initSlice = createSlice({
   name: 'init',
   initialState,
   reducers: {
-    getScripts: (state, _action: PayloadAction<{ action?: ActionPayload }>) => {
+    getScripts: (state, _action: PayloadAction<{ action?: ActionDataPayload }>) => {
       state.loadingScripts = true
     },
     getScriptsResponse: (state, action: PayloadAction<ScriptsResponsePayload>) => {
