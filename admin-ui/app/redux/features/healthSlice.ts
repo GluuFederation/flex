@@ -1,7 +1,7 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 
-type HealthStatus = 'Running' | 'Not present'
+type HealthStatus = 'Running' | 'Not present' | 'Down'
 
 export type HealthServiceKey =
   | 'jans-lock'
@@ -33,6 +33,17 @@ const initialState: HealthState = {
   loading: false,
 }
 
+interface HealthStatusResponsePayload {
+  data?: {
+    status?: HealthStatus
+    db_status?: HealthStatus
+  }
+}
+
+interface HealthServerStatusResponsePayload {
+  data?: HealthStatusResponse
+}
+
 const healthSlice = createSlice({
   name: 'health',
   initialState,
@@ -43,14 +54,21 @@ const healthSlice = createSlice({
     getHealthServerStatus: (state) => {
       state.loading = true
     },
-    getHealthStatusResponse: (state, action) => {
+    getHealthStatusResponse: (state, action: PayloadAction<HealthStatusResponsePayload | null>) => {
       state.loading = false
       if (action.payload?.data) {
-        state.serverStatus = action.payload.data.status
-        state.dbStatus = action.payload.data.db_status
+        if (action.payload.data.status) {
+          state.serverStatus = action.payload.data.status
+        }
+        if (action.payload.data.db_status) {
+          state.dbStatus = action.payload.data.db_status
+        }
       }
     },
-    getHealthServerStatusResponse: (state, action) => {
+    getHealthServerStatusResponse: (
+      state,
+      action: PayloadAction<HealthServerStatusResponsePayload | null>,
+    ) => {
       state.loading = false
       if (action.payload?.data) {
         state.health = action.payload.data
