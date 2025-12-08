@@ -55,7 +55,7 @@ import type { RootState } from '@/redux/sagas/types/audit'
 
 const PAGING_SIZE_OPTIONS = [1, 5, 10, 20] as const
 const DEFAULT_PAGING_SIZE = PAGING_SIZE_OPTIONS[2]
-const SCRIPTS_FETCH_LIMIT = 100
+const SCRIPTS_FETCH_LIMIT = 200
 
 const FORM_GROUP_ROW_STYLE = { justifyContent: 'space-between' }
 const LABEL_CONTAINER_STYLE: React.CSSProperties = {
