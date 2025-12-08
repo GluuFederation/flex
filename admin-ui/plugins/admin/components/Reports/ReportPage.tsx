@@ -1,6 +1,6 @@
 import React from 'react'
 
-function ReportPage() {
+const ReportPage: React.FC = () => {
   return <div></div>
 }
 
