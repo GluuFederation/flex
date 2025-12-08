@@ -18,6 +18,11 @@ import CrossIcon from 'Images/svg/cross.svg'
 import SetTitle from 'Utils/SetTitle'
 import styles from './styles'
 import type { HealthState } from 'Redux/features/healthSlice'
+import type { AuthState } from 'Redux/features/types/authTypes'
+import type { InitState } from 'Redux/features/initSlice'
+import type { LicenseDetailsState } from 'Redux/features/licenseDetailsSlice'
+import type { CedarPermissionsState } from '@/cedarling/types'
+import type { UserAction, ActionData } from 'Utils/PermChecker'
 
 import { formatDate } from 'Utils/Util'
 import UsersIcon from '@/components/SVG/menu/Users'
@@ -34,43 +39,81 @@ import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 interface DashboardHealthRootState {
   healthReducer: HealthState
 }
+
+interface StatDataItem {
+  month: number | string
+  mau?: number
+  authz_code_access_token_count?: number
+  client_credentials_access_token_count?: number
+}
+
+interface LockDetailItem {
+  monthly_active_users?: number
+  monthly_active_clients?: number
+}
+
+interface LockDetail {
+  monthly_active_users?: number
+  monthly_active_clients?: number
+}
+
+interface RootState {
+  mauReducer: {
+    stat: StatDataItem[]
+    loading: boolean
+  }
+  initReducer: InitState
+  lockReducer: {
+    lockDetail: LockDetailItem[] | LockDetail
+    loading: boolean
+  }
+  authReducer: AuthState
+  licenseDetailsReducer: LicenseDetailsState
+  healthReducer: HealthState
+  cedarPermissions: CedarPermissionsState
+}
+
 // Constants moved outside component for better performance
 const FETCHING_LICENSE_DETAILS = 'Fetch license details'
 
 function DashboardPage() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const userAction = useMemo(() => ({}), [])
+  const userAction = useMemo(() => ({ action_message: '', action_data: null }) as UserAction, [])
   const options = useMemo(() => ({}), [])
   const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
   const isMobile = useMediaQuery({ maxWidth: 767 })
   const { classes } = styles()
-  const [mauCount, setMauCount] = useState(null)
-  const [tokenCount, setTokenCount] = useState(null)
+  const [mauCount, setMauCount] = useState<number | null>(null)
+  const [tokenCount, setTokenCount] = useState<number | null>(null)
 
   const [requestStates, setRequestStates] = useState({
     licenseRequested: false,
     clientsRequested: false,
   })
-  const statData = useSelector((state: any) => state.mauReducer.stat)
-  const loading = useSelector((state: any) => state.mauReducer.loading)
-  const clients = useSelector((state: any) => state.initReducer.clients)
-  const lock = useSelector((state: any) => state.lockReducer.lockDetail)
-  const { isUserInfoFetched } = useSelector((state: any) => state.authReducer)
-  const totalClientsEntries = useSelector((state: any) => state.initReducer.totalClientsEntries)
-  const license = useSelector((state: any) => state.licenseDetailsReducer.item)
+  const statData = useSelector((state: RootState) => state.mauReducer.stat)
+  const loading = useSelector((state: RootState) => state.mauReducer.loading)
+  const clients = useSelector((state: RootState) => state.initReducer.clients)
+  const lock = useSelector((state: RootState) => state.lockReducer.lockDetail)
+  const { isUserInfoFetched } = useSelector((state: RootState) => state.authReducer)
+  const totalClientsEntries = useSelector(
+    (state: RootState) => state.initReducer.totalClientsEntries,
+  )
+  const license = useSelector((state: RootState) => state.licenseDetailsReducer.item)
   const serverStatus = useSelector(
     (state: DashboardHealthRootState) => state.healthReducer.serverStatus,
   )
   const serverHealth = useSelector((state: DashboardHealthRootState) => state.healthReducer.health)
   const dbStatus = useSelector((state: DashboardHealthRootState) => state.healthReducer.dbStatus)
-  const access_token = useSelector((state: any) => state.authReducer.token?.access_token)
-  const permissions = useSelector((state: any) => state.authReducer.permissions)
+  const access_token = useSelector((state: RootState) => state.authReducer.token?.access_token)
+  const permissions = useSelector((state: RootState) => state.authReducer.permissions)
 
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
   const { navigateToRoute } = useAppNavigation()
-  const cedarInitialized = useSelector((state: any) => state.cedarPermissions?.initialized)
-  const cedarIsInitializing = useSelector((state: any) => state.cedarPermissions?.isInitializing)
+  const cedarInitialized = useSelector((state: RootState) => state.cedarPermissions?.initialized)
+  const cedarIsInitializing = useSelector(
+    (state: RootState) => state.cedarPermissions?.isInitializing,
+  )
 
   const dashboardResourceId = useMemo(() => ADMIN_UI_RESOURCES.Dashboard, [])
   const dashboardScopes = useMemo(
@@ -108,7 +151,9 @@ function DashboardPage() {
     const formattedMonth =
       currentMonth > 9 ? currentMonth.toString() : '0' + currentMonth.toString()
     const yearMonth = currentYear.toString() + formattedMonth
-    const currentMonthData = statData.find(({ month }: any) => month.toString() === yearMonth)
+    const currentMonthData = statData.find(
+      (item: StatDataItem) => item.month.toString() === yearMonth,
+    )
 
     const mau = currentMonthData?.mau
     const token =
@@ -132,8 +177,8 @@ function DashboardPage() {
       !requestStates.licenseRequested
     ) {
       setRequestStates((prev) => ({ ...prev, licenseRequested: true }))
-      buildPayload(userAction as any, FETCHING_LICENSE_DETAILS, options as any)
-      dispatch(getLicenseDetails({} as any))
+      buildPayload(userAction as UserAction, FETCHING_LICENSE_DETAILS, options as ActionData)
+      dispatch(getLicenseDetails())
     }
   }, [
     access_token,
@@ -155,8 +200,8 @@ function DashboardPage() {
       !requestStates.clientsRequested
     ) {
       setRequestStates((prev) => ({ ...prev, clientsRequested: true }))
-      buildPayload(userAction as any, 'Fetch openid connect clients', {} as any)
-      dispatch(getClients({ action: userAction } as any))
+      buildPayload(userAction as UserAction, 'Fetch openid connect clients', {} as ActionData)
+      dispatch(getClients())
     }
   }, [
     access_token,
@@ -166,11 +211,6 @@ function DashboardPage() {
     dispatch,
     userAction,
   ])
-
-  const isUp = useCallback((status: any) => {
-    if (!status) return false
-    return status.toUpperCase() === 'ONLINE' || status.toUpperCase() === 'RUNNING'
-  }, [])
 
   const summaryData = useMemo(() => {
     const baseData = [
@@ -191,16 +231,17 @@ function DashboardPage() {
       },
     ]
 
-    if (lock && lock.length > 0) {
+    if (lock && Array.isArray(lock) && lock.length > 0) {
+      const lockItem = lock[0] as LockDetailItem
       baseData.push(
         {
           text: t('dashboard.mau_users'),
-          value: lock[0]?.monthly_active_users ?? 0,
+          value: lockItem?.monthly_active_users ?? 0,
           icon: <JansLockUsers className={classes.summaryIcon} style={{ top: '8px' }} />,
         },
         {
           text: t('dashboard.mau_clients'),
-          value: lock[0]?.monthly_active_clients ?? 0,
+          value: lockItem?.monthly_active_clients ?? 0,
           icon: <JansLockClients className={classes.summaryIcon} style={{ top: '8px' }} />,
         },
       )
@@ -276,25 +317,32 @@ function DashboardPage() {
   const getClassName = useCallback(
     (key: string) => {
       const value = getStatusValue(key)
-      return isUp(value) ? classes.checkText : classes.crossText
+      if (!value) return classes.crossText
+      const statusUpper = String(value).toUpperCase()
+      return statusUpper === 'RUNNING' || statusUpper === 'ONLINE'
+        ? classes.checkText
+        : classes.crossText
     },
-    [getStatusValue, isUp, classes.checkText, classes.crossText],
+    [getStatusValue, classes.checkText, classes.crossText],
   )
 
   const getStatusText = useCallback(
     (key: string) => {
       const value = getStatusValue(key)
-      return isUp(value) ? 'Running' : 'Down'
+      if (!value) return 'Unknown'
+      return value
     },
-    [getStatusValue, isUp],
+    [getStatusValue],
   )
 
   const getStatusIcon = useCallback(
     (key: string) => {
       const value = getStatusValue(key)
-      return isUp(value) ? CheckIcon : CrossIcon
+      if (!value) return CrossIcon
+      const statusUpper = String(value).toUpperCase()
+      return statusUpper === 'RUNNING' || statusUpper === 'ONLINE' ? CheckIcon : CrossIcon
     },
-    [getStatusValue, isUp],
+    [getStatusValue],
   )
 
   const StatusCard = useMemo(
@@ -351,7 +399,7 @@ function DashboardPage() {
       dispatch(
         auditLogoutLogs({
           message: 'Logging out due to insufficient permissions for Admin UI access.',
-        } as any),
+        }),
       )
     } else {
       navigateToRoute(ROUTES.LOGOUT)
