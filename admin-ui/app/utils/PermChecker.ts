@@ -135,20 +135,21 @@ export const ASSETS_DELETE = BASE_URL + '/config/jans_asset-delete'
 export const API_CONFIG_READ = BASE_URL + '/config/properties.readonly'
 export const API_CONFIG_WRITE = BASE_URL + '/config/properties.write'
 
-interface UserAction {
-  action_message?: string
-  action_data?: ActionData
-  [key: string]: unknown
+export interface UserAction {
+  action_message: string
+  action_data: ActionData | null
+  [key: string]: string | number | boolean | ActionData | string[] | number[] | boolean[] | null
 }
 
 // Union type for the various payload types used across the codebase
-type ActionData =
-  | Record<string, unknown> // Object payloads (most common)
+export type ActionData =
+  | Record<string, string | number | boolean | string[] | number[] | boolean[] | null> // Object payloads (most common)
   | string // ID strings (inum, jti, configId, etc.)
   | number // Numeric IDs
-  | unknown[] // Array payloads
+  | string[] // Array of strings
+  | number[] // Array of numbers
+  | boolean[] // Array of booleans
   | null
-  | undefined
 
 export const buildPayload = (
   userAction: UserAction,
