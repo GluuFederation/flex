@@ -13,7 +13,6 @@ export interface InitState {
   totalClientsEntries: number
   isTimeout: boolean
   loadingScripts: boolean
-  isLoading: boolean
 }
 
 interface ActionDataPayload {
@@ -55,7 +54,6 @@ const initialState: InitState = {
   totalClientsEntries: 0,
   isTimeout: false,
   loadingScripts: false,
-  isLoading: false,
 }
 
 const initSlice = createSlice({
@@ -91,7 +89,6 @@ const initSlice = createSlice({
       }
     },
     handleApiTimeout: (state, action: PayloadAction<ApiTimeoutPayload>) => {
-      state.isLoading = false
       state.isTimeout = action.payload.isTimeout
     },
   },
