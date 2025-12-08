@@ -124,10 +124,7 @@ const SettingsPage: React.FC = () => {
   )
 
   const pageTitle = t('titles.application_settings')
-
-  useEffect(() => {
-    SetTitle(pageTitle)
-  }, [pageTitle])
+  SetTitle(pageTitle)
 
   useEffect(() => {
     if (settingsScopes.length > 0) {
@@ -160,7 +157,7 @@ const SettingsPage: React.FC = () => {
     const names = entries
       .filter((s) => s.enabled)
       .map((s) => s.name)
-      .filter(Boolean as unknown as (value: unknown) => value is string)
+      .filter((name): name is string => Boolean(name))
     return Array.from(new Set([...names, SIMPLE_PASSWORD_AUTH]))
   }, [scriptsData])
 
@@ -292,8 +289,8 @@ const SettingsPage: React.FC = () => {
       <Alert color="danger" className="mb-3">
         <div className="d-flex justify-content-between align-items-center">
           <div>
-            {errorMessages.map((msg) => (
-              <div key={msg}>{msg}</div>
+            {errorMessages.map((msg, idx) => (
+              <div key={`error-${idx}`}>{msg}</div>
             ))}
           </div>
           <Button color="danger" size="sm" onClick={handleRetry}>
@@ -458,7 +455,7 @@ const SettingsPage: React.FC = () => {
               </div>
 
               <GluuFormFooter
-                showBack={true}
+                showBack
                 showCancel={canWriteSettings}
                 onCancel={handleCancel}
                 disableCancel={!isFormChanged}
