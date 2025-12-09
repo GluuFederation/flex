@@ -1,10 +1,4 @@
-export type JsonValue =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: JsonValue }
-  | JsonValue[]
+import type { JsonValue } from './common'
 
 export interface GluuCommitDialogOperation {
   path: string

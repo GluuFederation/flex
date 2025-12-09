@@ -14,7 +14,9 @@ import type { SamlRootState } from '../types/state'
 
 const SamlPage = React.memo(() => {
   const { t } = useTranslation()
-  const { loadingSamlIdp } = useSelector((state: SamlRootState) => state.idpSamlReducer)
+  const { loadingSamlIdp, loadingTrustRelationship } = useSelector(
+    (state: SamlRootState) => state.idpSamlReducer,
+  )
 
   SetTitle(t('titles.saml_management'))
 
@@ -44,7 +46,7 @@ const SamlPage = React.memo(() => {
   )
 
   return (
-    <GluuLoader blocking={loadingSamlIdp}>
+    <GluuLoader blocking={loadingSamlIdp || loadingTrustRelationship}>
       <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
           <GluuTabs tabNames={tabNames} tabToShow={tabToShow} withNavigation={true} />

@@ -23,7 +23,7 @@ import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
 import type { RootState } from '@/redux/sagas/types/audit'
-import { GluuCommitDialogOperation, GluuCommitDialogProps, JsonValue } from './types'
+import type { GluuCommitDialogOperation, GluuCommitDialogProps, JsonValue } from './types'
 
 const USER_MESSAGE = 'user_action_message'
 

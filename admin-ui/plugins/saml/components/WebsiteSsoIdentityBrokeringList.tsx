@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useContext, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { debounce } from 'lodash'
 import { getSamlIdentities, deleteSamlIdentity } from 'Plugins/saml/redux/features/SamlSlice'
 import MaterialTable, { type Action } from '@material-table/core'
 import { useTranslation } from 'react-i18next'
@@ -44,6 +45,7 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
   const [modal, setModal] = useState(false)
   const [limit, setLimit] = useState(10)
   const [pattern, setPattern] = useState<string | null>(null)
+  const [searchInput, setSearchInput] = useState<string>('')
   const [item, setItem] = useState<DeleteItem>({})
   const [pageNumber, setPageNumber] = useState(0)
 
@@ -72,6 +74,20 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
   useEffect(() => {
     authorizeHelper(samlScopes)
   }, [authorizeHelper, samlScopes])
+
+  const debouncedSetPattern = useMemo(
+    () =>
+      debounce((value: string) => {
+        setPattern(value || null)
+      }, 500),
+    [],
+  )
+
+  useEffect(() => {
+    return () => {
+      debouncedSetPattern.cancel()
+    }
+  }, [debouncedSetPattern])
 
   useEffect(() => {
     if (!canReadIdentities) return
@@ -137,7 +153,7 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
       setPageNumber(page)
       dispatch(
         getSamlIdentities({
-          startIndex: parseInt(String(startCount), 10),
+          startIndex: startCount,
           limit,
           ...(pattern ? { pattern } : {}),
         }),
@@ -151,13 +167,23 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
   }, [dispatch, limit, pattern])
 
   const handleOptionsChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement> & { keyCode?: number }): void => {
+    (event: React.ChangeEvent<HTMLInputElement>): void => {
       if (event.target.name === 'limit') {
         setLimit(Number(event.target.value))
       } else if (event.target.name === 'pattern') {
-        const nextPattern = event.target.value
-        setPattern(nextPattern)
-        if (event.keyCode === 13) {
+        const value = event.target.value
+        setSearchInput(value)
+        debouncedSetPattern(value)
+      }
+    },
+    [debouncedSetPattern],
+  )
+
+  const handleOptionsKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>): void => {
+      if (event.target instanceof HTMLInputElement && event.target.name === 'pattern') {
+        if (event.key === 'Enter' || event.keyCode === 13) {
+          const nextPattern = event.target.value
           dispatch(getSamlIdentities({ limit, pattern: nextPattern }))
         }
       }
@@ -190,12 +216,14 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
         limitId={'searchLimit'}
         patternId={'searchPattern'}
         limit={limit}
-        pattern={pattern}
-        handler={handleOptionsChange}
+        pattern={searchInput}
+        onChange={handleOptionsChange}
+        onKeyDown={handleOptionsKeyDown}
         showLimit={false}
+        controlled={true}
       />
     )
-  }, [limit, pattern, handleOptionsChange])
+  }, [limit, searchInput, handleOptionsChange, handleOptionsKeyDown])
 
   const tableActions = useMemo(() => {
     const actions: Action<SamlIdentity>[] = []
