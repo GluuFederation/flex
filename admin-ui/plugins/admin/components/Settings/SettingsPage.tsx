@@ -14,12 +14,15 @@ import {
   Form,
   Alert,
   Button,
+  Input,
+  Accordion,
+  AccordionHeader,
+  AccordionBody,
 } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { SETTINGS } from 'Utils/ApiResources'
@@ -223,7 +226,12 @@ const SettingsPage: React.FC = () => {
   const { resetForm } = formik
 
   const isPagingSizeChanged = currentPagingSize !== baselinePagingSize
-  const isFormChanged = formik.dirty || isPagingSizeChanged
+  const isAdditionalParamsChanged = useMemo(() => {
+    const initial = initialValues.additionalParameters || []
+    const current = formik.values.additionalParameters || []
+    return JSON.stringify(initial) !== JSON.stringify(current)
+  }, [initialValues.additionalParameters, formik.values.additionalParameters])
+  const isFormChanged = formik.dirty || isPagingSizeChanged || isAdditionalParamsChanged
   const hasErrors = !formik.isValid
   const isSubmitting = editConfigMutation.isPending
   const hasQueryError = isConfigError || isScriptsError
@@ -251,13 +259,6 @@ const SettingsPage: React.FC = () => {
     if (isConfigError) refetchConfig()
     if (isScriptsError) refetchScripts()
   }, [isConfigError, isScriptsError, refetchConfig, refetchScripts])
-
-  const additionalParametersOptions = useMemo(() => {
-    return (formik.values.additionalParameters || []).map((param) => ({
-      key: param.key || '',
-      value: param.value || '',
-    }))
-  }, [formik.values.additionalParameters])
 
   const additionalParametersError = formik.errors?.additionalParameters
   const showAdditionalParametersError = Boolean(
@@ -433,27 +434,78 @@ const SettingsPage: React.FC = () => {
                 </Col>
               </FormGroup>
 
-              <div className="mb-3">
-                <GluuProperties
-                  compName="additionalParameters"
-                  label="fields.custom_params_auth"
-                  formik={formik}
-                  keyPlaceholder={t('placeholders.enter_property_key')}
-                  valuePlaceholder={t('placeholders.enter_property_value')}
-                  options={additionalParametersOptions}
-                  tooltip="documentation.settings.custom_params"
-                  showError={showAdditionalParametersError}
-                  errorMessage={additionalParametersError}
-                  disabled={!canWriteSettings}
-                />
-              </div>
+              <Accordion className="mb-3 b-primary" initialOpen>
+                <AccordionHeader>
+                  <h5>{t('fields.custom_params_auth')}</h5>
+                </AccordionHeader>
+                <AccordionBody>
+                  <Button
+                    style={{ float: 'right' }}
+                    type="button"
+                    color={`primary-${selectedTheme}`}
+                    onClick={() => {
+                      const currentParams = formik.values.additionalParameters || []
+                      formik.setFieldValue('additionalParameters', [
+                        ...currentParams,
+                        { key: '', value: '' },
+                      ])
+                    }}
+                  >
+                    <i className="fa fa-fw fa-plus me-2"></i>
+                    {t('actions.add_property')}
+                  </Button>
+                  <FormGroup row>
+                    <Col sm={12}>
+                      {(formik.values.additionalParameters || []).map(
+                        (param: { key?: string; value?: string }, index: number) => (
+                          <FormGroup row key={index}>
+                            <Col sm={4}>
+                              <Input
+                                name={`additionalParameters.${index}.key`}
+                                value={param.key || ''}
+                                onChange={formik.handleChange}
+                                placeholder={t('placeholders.enter_property_key')}
+                              />
+                            </Col>
+                            <Col sm={6}>
+                              <Input
+                                name={`additionalParameters.${index}.value`}
+                                value={param.value || ''}
+                                onChange={formik.handleChange}
+                                placeholder={t('placeholders.enter_property_value')}
+                              />
+                            </Col>
+                            <Col sm={2}>
+                              <Button
+                                type="button"
+                                color="danger"
+                                onClick={() => {
+                                  const currentParams = [...formik.values.additionalParameters]
+                                  currentParams.splice(index, 1)
+                                  formik.setFieldValue('additionalParameters', currentParams)
+                                }}
+                              >
+                                <i className="fa fa-fw fa-trash me-2"></i>
+                                {t('actions.remove')}
+                              </Button>
+                            </Col>
+                          </FormGroup>
+                        ),
+                      )}
+                    </Col>
+                  </FormGroup>
+                  {showAdditionalParametersError && (
+                    <div style={{ color: '#dc3545' }}>{additionalParametersError}</div>
+                  )}
+                </AccordionBody>
+              </Accordion>
 
               <GluuFormFooter
                 showBack
-                showCancel={canWriteSettings}
+                showCancel
                 onCancel={handleCancel}
                 disableCancel={!isFormChanged}
-                showApply={canWriteSettings}
+                showApply
                 onApply={formik.handleSubmit}
                 disableApply={!isFormChanged || hasErrors || isSubmitting}
                 applyButtonType="button"
