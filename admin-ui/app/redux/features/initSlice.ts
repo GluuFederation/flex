@@ -1,15 +1,49 @@
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-interface InitState {
-  scripts: any[]
-  clients: any[]
-  scopes: any[]
-  attributes: any[]
+interface GenericItem {
+  [key: string]: string | number | boolean | string[] | number[] | boolean[] | null
+}
+
+export interface InitState {
+  scripts: GenericItem[]
+  clients: GenericItem[]
+  scopes: GenericItem[]
+  attributes: GenericItem[]
   totalClientsEntries: number
   isTimeout: boolean
   loadingScripts: boolean
-  isLoading?: boolean
+}
+
+interface ActionDataPayload {
+  [key: string]: string | number | boolean | string[] | number[] | boolean[] | null
+}
+
+interface ScriptsResponsePayload {
+  data?: {
+    entries?: GenericItem[]
+  }
+}
+
+interface ClientsResponsePayload {
+  data?: {
+    entries?: GenericItem[]
+    totalEntriesCount?: number
+  }
+}
+
+interface ScopesResponsePayload {
+  data?: GenericItem[]
+}
+
+interface AttributesResponsePayload {
+  data?: {
+    entries?: GenericItem[]
+  }
+}
+
+interface ApiTimeoutPayload {
+  isTimeout: boolean
 }
 
 const initialState: InitState = {
@@ -26,40 +60,36 @@ const initSlice = createSlice({
   name: 'init',
   initialState,
   reducers: {
-    getScripts: (state, _action: PayloadAction<{ action?: Record<string, unknown> }>) => {
+    getScripts: (state, _action: PayloadAction<{ action?: ActionDataPayload }>) => {
       state.loadingScripts = true
     },
-    getScriptsResponse: (state, action: PayloadAction<{ data?: { entries?: any[] } }>) => {
+    getScriptsResponse: (state, action: PayloadAction<ScriptsResponsePayload>) => {
       state.loadingScripts = false
       if (action.payload?.data) {
-        state.scripts = action.payload.data?.entries || []
+        state.scripts = action.payload.data.entries || []
       }
     },
     getClients: () => {},
-    getClientsResponse: (
-      state,
-      action: PayloadAction<{ data?: { entries?: any[]; totalEntriesCount?: number } }>,
-    ) => {
+    getClientsResponse: (state, action: PayloadAction<ClientsResponsePayload>) => {
       if (action.payload?.data) {
-        state.clients = action.payload.data?.entries || []
+        state.clients = action.payload.data.entries || []
         state.totalClientsEntries = action.payload.data.totalEntriesCount || 0
       }
     },
     getScopes: () => {},
-    getScopesResponse: (state, action: PayloadAction<{ data?: any[] }>) => {
+    getScopesResponse: (state, action: PayloadAction<ScopesResponsePayload>) => {
       if (action.payload?.data) {
         state.scopes = action.payload.data
       }
     },
     getAttributes: () => {},
-    getAttributesResponse: (state, action: PayloadAction<{ data?: { entries?: any[] } }>) => {
+    getAttributesResponse: (state, action: PayloadAction<AttributesResponsePayload>) => {
       if (action.payload?.data) {
-        state.attributes = action.payload.data?.entries || []
+        state.attributes = action.payload.data.entries || []
       }
     },
-    handleApiTimeout: (state, action: PayloadAction<{ isTimeout?: boolean }>) => {
-      state.isLoading = false
-      state.isTimeout = action.payload.isTimeout || false
+    handleApiTimeout: (state, action: PayloadAction<ApiTimeoutPayload>) => {
+      state.isTimeout = action.payload.isTimeout
     },
   },
 })

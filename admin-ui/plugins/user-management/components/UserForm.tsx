@@ -1,76 +1,31 @@
-// React and React-related imports
 import React, { useEffect, useState, useContext, useCallback, useMemo, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-
-// Third-party libraries
-
-// UI Components
 import { Button, Col, Form, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
-
-// Context and Redux
 import { ThemeContext } from 'Context/theme/themeContext'
-
-// API and Services
 import { GetAttributesParams } from 'JansConfigApi'
 import UserClaimEntry from './UserClaimEntry'
 import PasswordChangeModal from './PasswordChangeModal'
 import AvailableClaimsPanel from './AvailableClaimsPanel'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { getUserValidationSchema, initializeCustomAttributes } from '../helper/validations'
-
-// Types
-import { UserFormProps, FormOperation } from '../types/ComponentTypes'
+import { buildFormOperations, shouldDisableApplyButton } from '../utils'
+import {
+  UserFormProps,
+  FormOperation,
+  ModifiedFields,
+  UserEditFormValues,
+} from '../types/ComponentTypes'
 import { ThemeContext as ThemeContextType } from '../types/CommonTypes'
-import { PersonAttribute, CustomUser } from '../types/UserApiTypes'
-
-const setupCustomAttributes = (
-  userDetails: CustomUser | null,
-  personAttributes: PersonAttribute[],
-  setSelectedClaims: React.Dispatch<React.SetStateAction<PersonAttribute[]>>,
-) => {
-  if (!userDetails?.customAttributes) {
-    setSelectedClaims([])
-    return
-  }
-
-  const usedClaims = new Set([
-    'userId',
-    'displayName',
-    'mail',
-    'status',
-    'userPassword',
-    'givenName',
-    'middleName',
-    'sn',
-  ])
-
-  const getCustomAttributeById = (id: string) => {
-    const match = personAttributes.find((attr) => attr.name === id)
-    return match || null
-  }
-
-  const hydratedClaims: PersonAttribute[] = []
-
-  for (const customAttr of userDetails.customAttributes || []) {
-    if (customAttr.values && customAttr.values.length > 0 && customAttr.name) {
-      const attributeData = getCustomAttributeById(customAttr.name)
-      if (attributeData && !usedClaims.has(customAttr.name)) {
-        const data = { ...attributeData, options: customAttr.values } as PersonAttribute
-        hydratedClaims.push(data)
-      }
-    }
-  }
-
-  setSelectedClaims(hydratedClaims)
-}
+import { PersonAttribute } from '../types/UserApiTypes'
+import { setupCustomAttributes } from '../utils'
 
 function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<UserFormProps>) {
   const dispatch = useDispatch()
@@ -81,7 +36,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
   const [selectedClaims, setSelectedClaims] = useState<PersonAttribute[]>([])
   const [modal, setModal] = useState(false)
   const [changePasswordModal, setChangePasswordModal] = useState(false)
-  const [modifiedFields, setModifiedFields] = useState<Record<string, string | string[]>>({})
+  const [modifiedFields, setModifiedFields] = useState<ModifiedFields>({})
   const [operations, setOperations] = useState<FormOperation[]>([])
   const [claimsPanelHeight, setClaimsPanelHeight] = useState<number>()
 
@@ -90,7 +45,6 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
       state.attributesReducerRoot,
   )
 
-  // Memoize personAttributes based on length and first few items to prevent unnecessary re-renders
   const personAttributesKey = useMemo(
     () =>
       personAttributes.length > 0
@@ -112,10 +66,9 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
     [userDetails],
   )
 
-  // Track if we've initialized to prevent infinite loops
   const initializedRef = useRef<string | null>(null)
   const formContentRef = useRef<HTMLDivElement | null>(null)
-  const formik = useFormik({
+  const formik = useFormik<UserEditFormValues>({
     initialValues: initialValues,
     enableReinitialize: true,
     validationSchema: validationSchema,
@@ -132,28 +85,18 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
   }, [])
 
   const handleApply = useCallback(() => {
-    if (
-      isSubmitting ||
-      !formik.dirty ||
-      !formik.isValid ||
-      Object.keys(modifiedFields).length === 0
-    ) {
+    const hasModifiedFields = Object.keys(modifiedFields).length > 0
+    const isFormChanged = formik.dirty || hasModifiedFields
+
+    if (isSubmitting || !isFormChanged) {
       return
     }
-    const values = Object.keys(modifiedFields).reduce<FormOperation[]>((acc, key) => {
-      const value = modifiedFields[key]
 
-      if (Array.isArray(value) && value.length === 0) {
-        return acc
-      }
-      acc.push({
-        path: key,
-        value,
-        op: 'replace' as const,
-      })
-      return acc
-    }, [])
-    setOperations(values)
+    if (!hasModifiedFields && !formik.isValid) {
+      return
+    }
+
+    setOperations(buildFormOperations(modifiedFields))
     toggle()
   }, [isSubmitting, formik.dirty, formik.isValid, modifiedFields, toggle])
 
@@ -167,13 +110,13 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
     setModifiedFields({})
     if (userDetails) {
       setSelectedClaims([])
-      setupCustomAttributes(userDetails, memoizedPersonAttributes, setSelectedClaims)
+      setupCustomAttributes(userDetails, memoizedPersonAttributes, [], setSelectedClaims)
       initializedRef.current = userDetails.inum || 'new'
     } else {
       setSelectedClaims([])
       initializedRef.current = 'new'
     }
-  }, [formik, userDetails, memoizedPersonAttributes, setSelectedClaims])
+  }, [formik, userDetails, memoizedPersonAttributes, selectedClaims, setSelectedClaims])
 
   const toggleChangePasswordModal = useCallback(() => {
     setChangePasswordModal((prev) => !prev)
@@ -198,13 +141,17 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
     const userKey = userDetails?.inum || 'new'
     const attrsKey = personAttributesKey
 
-    // Only run if we haven't initialized for this user+attributes combination yet
     if (initializedRef.current === `${userKey}-${attrsKey}`) {
       return
     }
 
     if (userDetails) {
-      setupCustomAttributes(userDetails, memoizedPersonAttributes, setSelectedClaims)
+      setupCustomAttributes(
+        userDetails,
+        memoizedPersonAttributes,
+        selectedClaims,
+        setSelectedClaims,
+      )
     } else {
       setSelectedClaims([])
     }
@@ -214,15 +161,34 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
 
   const removeSelectedClaimsFromState = useCallback(
     (id: string) => {
-      formik.setFieldValue(id, '')
-      setModifiedFields((prev) => {
-        const newModifiedFields = { ...prev }
-        delete newModifiedFields[id]
-        return newModifiedFields
-      })
+      const attributeDef = memoizedPersonAttributes.find((attr) => attr.name === id)
+      const isMultiValued = attributeDef?.oxMultiValuedAttribute
+      const isBoolean = attributeDef?.dataType?.toLowerCase() === 'boolean'
+
+      if (isMultiValued) {
+        formik.setFieldValue(id, [])
+        setModifiedFields((prev) => ({
+          ...prev,
+          [id]: [],
+        }))
+      } else if (isBoolean) {
+        formik.setFieldValue(id, false)
+        setModifiedFields((prev) => ({
+          ...prev,
+          [id]: false,
+        }))
+      } else {
+        formik.setFieldValue(id, '')
+        setModifiedFields((prev) => ({
+          ...prev,
+          [id]: '',
+        }))
+      }
+
       setSelectedClaims((prev) => prev.filter((data) => data.name !== id))
+      formik.setFieldTouched(id, true)
     },
-    [formik],
+    [formik, memoizedPersonAttributes],
   )
 
   const handleChange = useCallback(
@@ -488,7 +454,12 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
           disableCancel={isSubmitting || !formik.dirty}
           showApply={true}
           onApply={handleApply}
-          disableApply={isSubmitting || !formik.dirty || !formik.isValid}
+          disableApply={shouldDisableApplyButton(
+            isSubmitting,
+            formik.dirty,
+            formik.isValid,
+            modifiedFields,
+          )}
           applyButtonType="button"
           isLoading={isSubmitting}
         />
@@ -497,7 +468,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
           modal={modal}
           onAccept={submitForm}
           feature={adminUiFeatures.users_edit}
-          formik={formik}
+          formik={formik as any}
           operations={operations}
         />
       </Form>
