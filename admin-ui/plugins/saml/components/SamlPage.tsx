@@ -6,6 +6,7 @@ import GluuTabs from 'Routes/Apps/Gluu/GluuTabs'
 import SetTitle from 'Utils/SetTitle'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { ROUTES } from '@/helpers/navigation'
 import SamlConfigurationForm from './SamlConfigurationForm'
 import WebsiteSsoIdentityBrokeringList from './WebsiteSsoIdentityBrokeringList'
 import WebsiteSsoServiceProviderList from './WebsiteSsoServiceProviderList'
@@ -19,9 +20,9 @@ const SamlPage = React.memo(() => {
 
   const tabNames = useMemo(
     () => [
-      { name: t('menus.configuration'), path: '/saml/config' },
-      { name: t('menus.identity_providers'), path: '/saml/identity-providers' },
-      { name: t('menus.service_providers'), path: '/saml/service-providers' },
+      { name: t('menus.configuration'), path: ROUTES.SAML_CONFIG },
+      { name: t('menus.identity_providers'), path: ROUTES.SAML_IDP_LIST },
+      { name: t('menus.service_providers'), path: ROUTES.SAML_SP_LIST },
     ],
     [t],
   )

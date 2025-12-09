@@ -28,6 +28,8 @@ interface DeleteItem {
   tableData?: Record<string, never>
 }
 
+const DeleteOutlinedIcon = () => <DeleteOutlined />
+
 const WebsiteSsoIdentityBrokeringList = React.memo(() => {
   const {
     authorizeHelper,
@@ -163,8 +165,6 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
     [dispatch, limit],
   )
 
-  const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
-
   const PaginationWrapper = useCallback(
     (): React.ReactElement => (
       <TablePagination
@@ -206,11 +206,9 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
         iconProps: { style: { color: customColors.darkGray } },
         onClick: (_event: React.MouseEvent, rowData: SamlIdentity | SamlIdentity[]): void => {
           if (Array.isArray(rowData)) return
-          const data = { ...rowData }
-          if ('tableData' in data) {
-            delete (data as { tableData?: Record<string, never> }).tableData
-          }
-          handleGoToEditPage(data)
+          const { tableData, ...clean } = rowData as SamlIdentity & { tableData?: unknown }
+          void tableData
+          handleGoToEditPage(clean)
         },
       })
       actions.push({
@@ -268,7 +266,6 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
     handleGoToAddPage,
     handleDelete,
     handleRefresh,
-    DeleteOutlinedIcon,
     GluuSearch,
   ])
 
