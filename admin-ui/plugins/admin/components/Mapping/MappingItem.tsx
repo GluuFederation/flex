@@ -3,13 +3,13 @@ import { Accordion, AccordionSummary, AccordionDetails, Typography, Chip, Box } 
 import { ExpandMore, SecurityOutlined } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
-import getThemeColor from '@/context/theme/config'
+import getThemeColor from 'Context/theme/config'
 import type { MappingItemProps, ThemeContextValue } from './types'
 
 const MappingItem: React.FC<MappingItemProps> = React.memo(function MappingItem({ candidate }) {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext) as ThemeContextValue
-  const selectedTheme = theme.state.theme
+  const theme = useContext(ThemeContext) as ThemeContextValue | undefined
+  const selectedTheme = theme?.state?.theme ?? 'default'
   const themeColors = getThemeColor(selectedTheme)
 
   const permissionsCount = candidate?.permissions?.length || 0
@@ -49,7 +49,7 @@ const MappingItem: React.FC<MappingItemProps> = React.memo(function MappingItem(
         sx={{
           'borderRadius': '8px',
           '&:hover': {
-            backgroundColor: 'rgba(0, 0, 0, 0.02)',
+            backgroundColor: 'action.hover',
           },
           '& .MuiAccordionSummary-content': {
             alignItems: 'center',
@@ -79,7 +79,7 @@ const MappingItem: React.FC<MappingItemProps> = React.memo(function MappingItem(
           size="small"
           sx={{
             backgroundColor: themeColors?.background,
-            color: '#fff',
+            color: 'primary.contrastText',
             fontWeight: 500,
             fontSize: '0.75rem',
             mr: 1,

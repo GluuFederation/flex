@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from 'react'
+import React, { useState, useEffect, useRef, useContext, useCallback } from 'react'
 import {
   Dialog,
   DialogTitle,
@@ -16,12 +16,12 @@ import type { TypeaheadRef } from 'react-bootstrap-typeahead'
 import GluuSingleValueCompleter from '../../../../app/routes/Apps/Gluu/GluuSingleValueCompleter'
 import GluuTypeAhead from '../../../../app/routes/Apps/Gluu/GluuTypeAhead'
 import { ThemeContext } from 'Context/theme/themeContext'
-import getThemeColor from '@/context/theme/config'
+import getThemeColor from 'Context/theme/config'
 import type { MappingAddDialogFormProps, ThemeContextValue } from './types'
 
 type Option = string | Record<string, unknown>
 
-const DOC_CATEGORY = 'openid_client'
+const DOC_CATEGORY = 'role_permission_mapping'
 
 const MappingAddDialogForm: React.FC<MappingAddDialogFormProps> = ({
   handler,
@@ -37,8 +37,8 @@ const MappingAddDialogForm: React.FC<MappingAddDialogFormProps> = ({
   const [selectedPermissions, setSelectedPermissions] = useState<string[]>([])
   const autocompleteRef = useRef<TypeaheadRef>(null)
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext) as ThemeContextValue
-  const selectedTheme = theme.state.theme
+  const theme = useContext(ThemeContext) as ThemeContextValue | undefined
+  const selectedTheme = theme?.state?.theme ?? 'default'
   const themeColors = getThemeColor(selectedTheme)
 
   const isAddEnabled = Boolean(apiRole && selectedPermissions.length)
@@ -50,26 +50,29 @@ const MappingAddDialogForm: React.FC<MappingAddDialogFormProps> = ({
     }
   }, [modal])
 
-  const getPermissionsForSearch = (role: string = '') => {
-    const fullPermissions: string[] = []
-    for (const p of permissions) {
-      if (p?.permission) {
-        fullPermissions.push(p.permission as string)
+  const getPermissionsForSearch = useCallback(
+    (role: string = '') => {
+      const fullPermissions: string[] = []
+      for (const p of permissions) {
+        if (p?.permission) {
+          fullPermissions.push(p.permission as string)
+        }
       }
-    }
-    if (role) {
-      const roleMapping = (mapping || []).find((m) => m?.role === role)
-      const assigned = new Set(roleMapping?.permissions || [])
-      const filtered = fullPermissions.filter((p) => !assigned.has(p))
-      setSearchAblePermissions(filtered)
-      return
-    }
-    setSearchAblePermissions(fullPermissions)
-  }
+      if (role) {
+        const roleMapping = (mapping || []).find((m) => m?.role === role)
+        const assigned = new Set(roleMapping?.permissions || [])
+        const filtered = fullPermissions.filter((p) => !assigned.has(p))
+        setSearchAblePermissions(filtered)
+        return
+      }
+      setSearchAblePermissions(fullPermissions)
+    },
+    [permissions, mapping],
+  )
 
   useEffect(() => {
     getPermissionsForSearch(apiRole)
-  }, [apiRole, permissions, mapping])
+  }, [apiRole, getPermissionsForSearch])
 
   useEffect(() => {
     const rolesArr = roles.filter((r) => r?.role).map((r) => r.role as string)
@@ -128,7 +131,7 @@ const MappingAddDialogForm: React.FC<MappingAddDialogFormProps> = ({
               name="api_role"
               label="fields.role"
               options={autoCompleteRoles}
-              value={[]}
+              value={apiRole ? [apiRole] : []}
               hideHelperMessage
               onChange={(selected: string[]) => {
                 const role = selected.length ? selected[0] : ''
