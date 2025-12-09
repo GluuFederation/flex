@@ -22,7 +22,7 @@ const MappingItem: React.FC<MappingItemProps> = React.memo(function MappingItem(
       variant="outlined"
       sx={{
         borderColor: themeColors?.background,
-        color: '#000',
+        color: 'text.primary',
         fontSize: '0.85rem',
         fontWeight: 600,
         height: 32,

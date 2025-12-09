@@ -12,7 +12,7 @@ import {
 } from 'JansConfigApi'
 import type { RolePermissionMapping } from 'JansConfigApi'
 import { updateToast } from 'Redux/features/toastSlice'
-import { extractErrorMessage } from '@/plugins/schema/utils/errorHandler'
+import { extractErrorMessage } from '../../../../schema/utils/errorHandler'
 
 export interface MutationCallbacks {
   onSuccess?: () => void

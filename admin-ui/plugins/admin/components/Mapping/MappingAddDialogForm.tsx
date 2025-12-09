@@ -31,7 +31,6 @@ const MappingAddDialogForm: React.FC<MappingAddDialogFormProps> = ({
   permissions,
   mapping = [],
 }) => {
-  const [active, setActive] = useState<boolean>(false)
   const [autoCompleteRoles, setAutoCompleteRoles] = useState<string[]>([])
   const [searchablePermissions, setSearchAblePermissions] = useState<string[]>([])
   const [apiRole, setApiRole] = useState<string>('')
@@ -42,11 +41,12 @@ const MappingAddDialogForm: React.FC<MappingAddDialogFormProps> = ({
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
 
+  const isAddEnabled = Boolean(apiRole && selectedPermissions.length)
+
   useEffect(() => {
     if (!modal) {
       setApiRole('')
       setSelectedPermissions([])
-      setActive(false)
     }
   }, [modal])
 
@@ -70,14 +70,6 @@ const MappingAddDialogForm: React.FC<MappingAddDialogFormProps> = ({
   useEffect(() => {
     getPermissionsForSearch(apiRole)
   }, [apiRole, permissions, mapping])
-
-  useEffect(() => {
-    if (selectedPermissions.length && apiRole !== '') {
-      setActive(true)
-    } else {
-      setActive(false)
-    }
-  }, [apiRole, selectedPermissions])
 
   useEffect(() => {
     const rolesArr = roles.filter((r) => r?.role).map((r) => r.role as string)
@@ -191,7 +183,7 @@ const MappingAddDialogForm: React.FC<MappingAddDialogFormProps> = ({
         <Button
           onClick={handleAccept}
           variant="contained"
-          disabled={!active}
+          disabled={!isAddEnabled}
           startIcon={<AddCircleOutline />}
           sx={{
             'backgroundColor': themeColors?.background,
