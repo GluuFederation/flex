@@ -168,7 +168,8 @@
     "add_source_attribute": "Adicionar atributo de origem",
     "add_source_ldap_server": "Adicionar servidor LDAP de origem",
     "remove_source_server": "Remover servidor de origem",
-    "copy_to_clipboard": "Copiar para área de transferência"
+    "copy_to_clipboard": "Copiar para área de transferência",
+    "refresh": "Atualizar"
   },
   "fields": {
     "asset_name": "Asset Name",
@@ -661,7 +662,9 @@
     "skip_defined_password_validation": "Pular Validação de Senha Definida",
     "auiPolicyStoreUrl": "Repositório de políticas remotas da interface de administração",
     "configApiPolicyStoreUrl": "Política de armazenamento da API de configuração",
-    "cedarlingPolicyStoreRetrievalPoint": "Ponto de Recuperação de Políticas"
+    "cedarlingPolicyStoreRetrievalPoint": "Ponto de Recuperação de Políticas",
+    "log_entry": "Entrada de registro",
+    "page_size": "Tamanho da página"
   },
   "messages": {
     "add_permission": "Adicionar permissão",
@@ -943,7 +946,14 @@
     "newPermission": "Nova Permissão",
     "addingNewApiPermission": "Adicionando nova permissão de API",
     "followingPermissionRequiredToBeAdded": "É necessária a permissão seguinte para ser adicionado!",
-    "authentication": "Autenticação"
+    "authentication": "Autenticação",
+    "error_loading_data": "Falha ao carregar os dados",
+    "try_again_later": "Por favor, tente novamente mais tarde",
+    "no_data": "Nenhum dado encontrado",
+    "adjust_filters": "Ajuste seus filtros ou intervalo de datas para encontrar registros de auditoria",
+    "audit_description": "Visualizar e pesquisar registros de auditoria do sistema dentro de um intervalo de datas",
+    "showing_entries": "Mostrando {{start}} a {{end}} de {{total}} entradas",
+    "start_date_after_end": "A data de início não pode ser posterior à data de fim"
   },
   "links": {
     "support": "https://support.gluu.org/"
