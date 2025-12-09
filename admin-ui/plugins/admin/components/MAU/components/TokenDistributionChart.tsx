@@ -1,17 +1,11 @@
-import React, { useContext, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { Card, CardBody, CardHeader } from 'Components'
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import { useTranslation } from 'react-i18next'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { useTheme } from 'Context/theme/themeContext'
 import type { MauSummary } from '../types'
 import { getChartColors } from '../constants'
 import { formatNumber } from '../utils'
-
-interface ThemeState {
-  state: {
-    theme: string
-  }
-}
 
 interface TokenDistributionChartProps {
   summary: MauSummary
@@ -19,8 +13,8 @@ interface TokenDistributionChartProps {
 
 const TokenDistributionChart: React.FC<TokenDistributionChartProps> = ({ summary }) => {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext) as ThemeState
-  const chartColors = useMemo(() => getChartColors(theme.state.theme), [theme.state.theme])
+  const { state } = useTheme()
+  const chartColors = useMemo(() => getChartColors(state.theme), [state.theme])
 
   const data = useMemo(
     () => [

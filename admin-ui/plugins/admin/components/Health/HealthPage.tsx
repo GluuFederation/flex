@@ -1,26 +1,20 @@
-import React, { useContext, useCallback } from 'react'
+import React, { useCallback } from 'react'
 import { Container, CardBody, Card, Button, Row, Col, Alert } from 'Components'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useHealthStatus } from './hooks'
 import ServiceStatusCard from './components/ServiceStatusCard'
 import HealthStatusBadge from './components/HealthStatusBadge'
 
-interface ThemeState {
-  state: {
-    theme: string
-  }
-}
-
 const HealthPage: React.FC = () => {
   const { t } = useTranslation()
   SetTitle(t('titles.services_health'))
 
-  const theme = useContext(ThemeContext) as ThemeState
-  const themeColors = getThemeColor(theme.state.theme)
+  const { state } = useTheme()
+  const themeColors = getThemeColor(state.theme)
 
   const {
     services,
@@ -57,11 +51,7 @@ const HealthPage: React.FC = () => {
                 )}
               </Col>
               <Col xs="auto">
-                <Button
-                  color={`primary-${theme.state.theme}`}
-                  onClick={handleRefresh}
-                  disabled={loading}
-                >
+                <Button color={`primary-${state.theme}`} onClick={handleRefresh} disabled={loading}>
                   <i className={`fa fa-refresh me-2 ${loading ? 'fa-spin' : ''}`}></i>
                   {t('actions.refresh')}
                 </Button>

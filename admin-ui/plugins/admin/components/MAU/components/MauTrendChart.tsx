@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { Card, CardBody, CardHeader } from 'Components'
 import {
   XAxis,
@@ -10,21 +10,15 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import { useTranslation } from 'react-i18next'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { useTheme } from 'Context/theme/themeContext'
 import type { MauChartProps } from '../types'
 import { getChartColors } from '../constants'
 import { formatMonth, formatNumber } from '../utils'
 
-interface ThemeState {
-  state: {
-    theme: string
-  }
-}
-
 const MauTrendChart: React.FC<MauChartProps> = ({ data }) => {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext) as ThemeState
-  const chartColors = useMemo(() => getChartColors(theme.state.theme), [theme.state.theme])
+  const { state } = useTheme()
+  const chartColors = useMemo(() => getChartColors(state.theme), [state.theme])
 
   const chartData = data.map((entry) => ({
     ...entry,

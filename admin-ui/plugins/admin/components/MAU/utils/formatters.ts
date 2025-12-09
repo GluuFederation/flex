@@ -4,8 +4,11 @@ export function formatMonth(yyyymm: number): string {
   const str = yyyymm.toString()
   if (str.length !== 6) return str
   const year = str.substring(0, 4)
-  const monthIndex = parseInt(str.substring(4, 6), 10) - 1
-  const monthName = MONTH_NAMES[monthIndex] ?? ''
+  const monthNumber = Number.parseInt(str.substring(4, 6), 10)
+  if (Number.isNaN(monthNumber) || monthNumber < 1 || monthNumber > 12) {
+    return str
+  }
+  const monthName = MONTH_NAMES[monthNumber - 1]
   return `${monthName} ${year}`
 }
 

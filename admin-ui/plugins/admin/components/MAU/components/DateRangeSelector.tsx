@@ -1,19 +1,13 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { Button, ButtonGroup } from 'Components'
 import Grid from '@mui/material/Grid'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { useTranslation } from 'react-i18next'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { useTheme } from 'Context/theme/themeContext'
 import type { DateRangeSelectorProps } from '../types'
 import { DATE_PRESETS } from '../constants'
-
-interface ThemeState {
-  state: {
-    theme: string
-  }
-}
 
 const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
   startDate,
@@ -26,8 +20,8 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
   isLoading,
 }) => {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext) as ThemeState
-  const selectedTheme = theme.state.theme
+  const { state } = useTheme()
+  const selectedTheme = state.theme
 
   return (
     <Grid container spacing={2} alignItems="center">

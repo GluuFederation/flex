@@ -877,6 +877,7 @@
     "status_degraded": "Degradado",
     "status_unknown": "Desconocido",
     "no_mau_data": "No hay datos disponibles para el período seleccionado.",
+    "error_loading_data": "Ocurrió un error al cargar los datos. Por favor, inténtelo de nuevo.",
     "mau_loading": "Cargando estadísticas...",
     "vs_previous_period": "vs período anterior"
   },

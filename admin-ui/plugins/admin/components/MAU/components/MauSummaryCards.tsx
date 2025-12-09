@@ -1,16 +1,10 @@
-import React, { useContext, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { Card, CardBody, Row, Col } from 'Components'
 import { useTranslation } from 'react-i18next'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { useTheme } from 'Context/theme/themeContext'
 import type { MauSummary } from '../types'
 import { getChartColors } from '../constants'
 import { formatNumber, formatPercentChange } from '../utils'
-
-interface ThemeState {
-  state: {
-    theme: string
-  }
-}
 
 interface MauSummaryCardsProps {
   summary: MauSummary
@@ -19,26 +13,30 @@ interface MauSummaryCardsProps {
 interface SummaryCardProps {
   title: string
   value: number
-  change: number
+  change?: number
   color: string
 }
 
 const SummaryCard: React.FC<SummaryCardProps> = ({ title, value, change, color }) => {
   const { t } = useTranslation()
-  const isPositive = change >= 0
-  const changeColor = isPositive ? '#28a745' : '#dc3545'
-  const changeIcon = isPositive ? 'fa-arrow-up' : 'fa-arrow-down'
+  const showChange = change !== undefined
+  const isPositive = change !== undefined && change > 0
+  const isNegative = change !== undefined && change < 0
+  const changeColor = isPositive ? '#28a745' : isNegative ? '#dc3545' : '#6c757d'
+  const changeIcon = isPositive ? 'fa-arrow-up' : isNegative ? 'fa-arrow-down' : 'fa-minus'
 
   return (
     <Card className="h-100" style={{ borderTop: `3px solid ${color}` }}>
       <CardBody className="text-center">
         <h6 className="text-muted mb-2">{title}</h6>
         <h3 className="mb-2">{formatNumber(value)}</h3>
-        <div style={{ color: changeColor, fontSize: '0.875rem' }}>
-          <i className={`fa ${changeIcon} me-1`}></i>
-          {formatPercentChange(change)}
-          <span className="text-muted ms-1">{t('messages.vs_previous_period')}</span>
-        </div>
+        {showChange && (
+          <div style={{ color: changeColor, fontSize: '0.875rem' }}>
+            <i className={`fa ${changeIcon} me-1`}></i>
+            {formatPercentChange(change)}
+            <span className="text-muted ms-1">{t('messages.vs_previous_period')}</span>
+          </div>
+        )}
       </CardBody>
     </Card>
   )
@@ -46,8 +44,8 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ title, value, change, color }
 
 const MauSummaryCards: React.FC<MauSummaryCardsProps> = ({ summary }) => {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext) as ThemeState
-  const chartColors = useMemo(() => getChartColors(theme.state.theme), [theme.state.theme])
+  const { state } = useTheme()
+  const chartColors = useMemo(() => getChartColors(state.theme), [state.theme])
 
   const cards = [
     {
@@ -65,13 +63,11 @@ const MauSummaryCards: React.FC<MauSummaryCardsProps> = ({ summary }) => {
     {
       title: t('fields.cc_tokens'),
       value: summary.clientCredentialsTokens,
-      change: summary.tokenChange,
       color: chartColors.clientCredentials,
     },
     {
       title: t('fields.authz_code_tokens'),
       value: summary.authCodeTokens,
-      change: summary.tokenChange,
       color: chartColors.authCodeAccess,
     },
   ]

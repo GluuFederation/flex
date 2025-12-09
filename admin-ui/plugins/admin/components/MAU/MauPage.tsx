@@ -109,7 +109,7 @@ const MauPage: React.FC = () => {
           {isError && (
             <Alert color="danger" className="mb-4">
               <i className="fa fa-exclamation-triangle me-2"></i>
-              {t('messages.error_in_saving')}
+              {t('messages.error_loading_data')}
             </Alert>
           )}
 

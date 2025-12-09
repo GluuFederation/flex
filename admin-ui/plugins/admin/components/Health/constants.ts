@@ -12,7 +12,7 @@ export const STATUS_COLORS: Record<ServiceStatusValue, string> = {
   unknown: '#ffc107',
 } as const
 
-export const STATUS_MAP: Record<string, ServiceStatusValue> = {
+export const STATUS_MAP = {
   'Running': 'up',
   'UP': 'up',
   'up': 'up',
@@ -23,7 +23,7 @@ export const STATUS_MAP: Record<string, ServiceStatusValue> = {
   'Not present': 'unknown',
   'not present': 'unknown',
   'unknown': 'unknown',
-} as const
+} as const satisfies Record<string, ServiceStatusValue>
 
 export const DEFAULT_STATUS: ServiceStatusValue = 'unknown'
 

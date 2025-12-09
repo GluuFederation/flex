@@ -42,9 +42,8 @@ export const CHART_COLORS_BY_THEME = {
 
 export type ThemeKey = keyof typeof CHART_COLORS_BY_THEME
 
-export const getChartColors = (theme: string) => {
-  return CHART_COLORS_BY_THEME[theme as ThemeKey] || CHART_COLORS_BY_THEME.lightGreen
-}
+export const getChartColors = (theme: ThemeKey | string) =>
+  CHART_COLORS_BY_THEME[theme as ThemeKey] ?? CHART_COLORS_BY_THEME.lightGreen
 
 export const MONTH_NAMES = [
   'Jan',

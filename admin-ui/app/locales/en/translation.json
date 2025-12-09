@@ -878,6 +878,7 @@
     "status_degraded": "Degraded",
     "status_unknown": "Unknown",
     "no_mau_data": "No data available for the selected period.",
+    "error_loading_data": "An error occurred while loading data. Please try again.",
     "mau_loading": "Loading statistics...",
     "vs_previous_period": "vs previous period"
   },

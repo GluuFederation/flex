@@ -45,6 +45,17 @@ function computeSummary(data: MauStatEntry[]): MauSummary {
   )
   const totalTokens = clientCredentialsTokens + authCodeTokens
 
+  if (data.length === 1) {
+    return {
+      totalMau,
+      totalTokens,
+      clientCredentialsTokens,
+      authCodeTokens,
+      mauChange: 0,
+      tokenChange: 0,
+    }
+  }
+
   const midpoint = Math.floor(data.length / 2)
   const firstHalf = data.slice(0, midpoint)
   const secondHalf = data.slice(midpoint)

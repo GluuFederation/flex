@@ -52,12 +52,19 @@ function computeOverallStatus(services: ServiceHealth[]): {
   const healthyCount = services.filter((s) => s.status === 'up').length
   const hasDown = services.some((s) => s.status === 'down')
   const hasDegraded = services.some((s) => s.status === 'degraded')
+  const hasUnknown = services.some((s) => s.status === 'unknown')
 
-  let overallStatus: ServiceStatusValue = 'up'
+  let overallStatus: ServiceStatusValue
   if (hasDown) {
     overallStatus = 'down'
   } else if (hasDegraded) {
     overallStatus = 'degraded'
+  } else if (healthyCount === services.length) {
+    overallStatus = 'up'
+  } else if (hasUnknown) {
+    overallStatus = 'unknown'
+  } else {
+    overallStatus = 'up'
   }
 
   return {

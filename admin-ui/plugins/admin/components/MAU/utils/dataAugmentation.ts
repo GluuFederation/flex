@@ -50,9 +50,10 @@ export function augmentMauData(
     return allMonths.map(createEmptyStatEntry)
   }
 
-  const existingMonths = new Set(data.map((entry) => entry.month))
   const allMonths = generateMonthRange(startDate, endDate)
-  const augmented = [...data]
+  const monthSet = new Set(allMonths)
+  const existingMonths = new Set(data.map((entry) => entry.month))
+  const augmented = data.filter((entry) => monthSet.has(entry.month))
 
   for (const month of allMonths) {
     if (!existingMonths.has(month)) {

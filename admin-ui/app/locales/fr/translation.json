@@ -815,6 +815,7 @@
     "status_degraded": "Dégradé",
     "status_unknown": "Inconnu",
     "no_mau_data": "Aucune donnée disponible pour la période sélectionnée.",
+    "error_loading_data": "Une erreur s'est produite lors du chargement des données. Veuillez réessayer.",
     "mau_loading": "Chargement des statistiques...",
     "vs_previous_period": "vs période précédente"
   },
