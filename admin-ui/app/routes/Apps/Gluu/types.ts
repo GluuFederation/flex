@@ -1,6 +1,14 @@
+export type JsonValue =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: JsonValue }
+  | JsonValue[]
+
 export interface GluuCommitDialogOperation {
   path: string
-  value: string | number | boolean | null | Record<string, unknown> | unknown[]
+  value: JsonValue
 }
 
 export interface GluuCommitDialogProps {

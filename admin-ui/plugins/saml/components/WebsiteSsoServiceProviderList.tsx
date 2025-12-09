@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import MaterialTable, { type Action } from '@material-table/core'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import { buildPayload } from 'Utils/PermChecker'
+import { buildPayload, type UserAction } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -93,7 +93,7 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
 
   const onDeletionConfirmed = useCallback(
     (message: string) => {
-      const userAction: { action_message: string; action_data: string } = {
+      const userAction: UserAction = {
         action_message: '',
         action_data: '',
       }
@@ -101,7 +101,7 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
       dispatch(
         deleteTrustRelationship({
           action: {
-            action_data: userAction.action_data,
+            action_data: userAction.action_data as string,
             action_message: userAction.action_message,
           },
         }),

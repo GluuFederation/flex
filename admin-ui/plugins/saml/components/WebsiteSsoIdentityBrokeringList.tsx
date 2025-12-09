@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useContext, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getSamlIdentites, deleteSamlIdentity } from 'Plugins/saml/redux/features/SamlSlice'
+import { getSamlIdentities, deleteSamlIdentity } from 'Plugins/saml/redux/features/SamlSlice'
 import MaterialTable, { type Action } from '@material-table/core'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -23,7 +23,7 @@ import type { SamlIdentity } from '../types/redux'
 import type { SamlRootState } from '../types/state'
 
 interface DeleteItem {
-  inum: string
+  inum?: string
   displayName?: string
   tableData?: Record<string, never>
 }
@@ -42,7 +42,7 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
   const [modal, setModal] = useState(false)
   const [limit, setLimit] = useState(10)
   const [pattern, setPattern] = useState<string | null>(null)
-  const [item, setItem] = useState<DeleteItem>({ inum: '' })
+  const [item, setItem] = useState<DeleteItem>({})
   const [pageNumber, setPageNumber] = useState(0)
 
   const { t } = useTranslation()
@@ -73,7 +73,7 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
 
   useEffect(() => {
     if (!canReadIdentities) return
-    dispatch(getSamlIdentites({ limit, ...(pattern ? { pattern } : {}) }))
+    dispatch(getSamlIdentities({ limit, ...(pattern ? { pattern } : {}) }))
   }, [dispatch, canReadIdentities, limit, pattern])
 
   const toggle = useCallback(() => setModal((prev) => !prev), [])
@@ -99,9 +99,22 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
 
   const onDeletionConfirmed = useCallback(
     (message: string): void => {
-      const userAction: { action_message?: string; action_data?: string } = {}
+      if (!item.inum) {
+        return
+      }
+      const userAction: { action_message: string; action_data: string } = {
+        action_message: '',
+        action_data: '',
+      }
       buildPayload(userAction, message, item.inum)
-      dispatch(deleteSamlIdentity({ action: { action_data: userAction.action_data ?? '' } }))
+      dispatch(
+        deleteSamlIdentity({
+          action: {
+            action_message: userAction.action_message,
+            action_data: userAction.action_data,
+          },
+        }),
+      )
       toggle()
     },
     [dispatch, item.inum, toggle],
@@ -111,7 +124,7 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
     (count: number): void => {
       setPageNumber(0)
       setLimit(count)
-      dispatch(getSamlIdentites({ startIndex: 0, limit: count, ...(pattern ? { pattern } : {}) }))
+      dispatch(getSamlIdentities({ startIndex: 0, limit: count, ...(pattern ? { pattern } : {}) }))
     },
     [dispatch, pattern],
   )
@@ -121,7 +134,7 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
       const startCount = page * limit
       setPageNumber(page)
       dispatch(
-        getSamlIdentites({
+        getSamlIdentities({
           startIndex: parseInt(String(startCount), 10),
           limit,
           ...(pattern ? { pattern } : {}),
@@ -132,7 +145,7 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
   )
 
   const handleRefresh = useCallback((): void => {
-    dispatch(getSamlIdentites({ limit, ...(pattern ? { pattern } : {}) }))
+    dispatch(getSamlIdentities({ limit, ...(pattern ? { pattern } : {}) }))
   }, [dispatch, limit, pattern])
 
   const handleOptionsChange = useCallback(
@@ -143,7 +156,7 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
         const nextPattern = event.target.value
         setPattern(nextPattern)
         if (event.keyCode === 13) {
-          dispatch(getSamlIdentites({ limit, pattern: nextPattern }))
+          dispatch(getSamlIdentities({ limit, pattern: nextPattern }))
         }
       }
     },

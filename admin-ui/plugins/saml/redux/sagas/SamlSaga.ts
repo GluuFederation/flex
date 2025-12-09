@@ -19,9 +19,10 @@ import {
   samlIdentityResponse,
   deleteSamlIdentityResponse,
   updateSamlIdentityResponse,
-  getSamlIdentites,
+  getSamlIdentities,
   getTrustRelationshipResponse,
   deleteTrustRelationshipResponse,
+  createTrustRelationshipResponse,
   updateTrustRelationshipResponse,
 } from '../features/SamlSlice'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
@@ -51,6 +52,32 @@ import type {
 
 import * as JansConfigApi from 'jans_config_api'
 
+type PayloadForAudit =
+  | PutSamlPropertiesSagaPayload
+  | CreateSamlIdentitySagaPayload
+  | UpdateSamlIdentitySagaPayload
+  | DeleteSamlIdentitySagaPayload
+  | CreateTrustRelationshipSagaPayload
+  | UpdateTrustRelationshipSagaPayload
+  | DeleteTrustRelationshipSagaPayload
+
+const toAdditionalPayload = (payload: PayloadForAudit): AdditionalPayload => {
+  const actionData = payload.action.action_data
+  const compatibleActionData: Record<string, string | number | boolean | object | null | FormData> =
+    typeof actionData === 'string'
+      ? { value: actionData }
+      : actionData instanceof FormData
+        ? { formData: actionData }
+        : { ...actionData }
+
+  return {
+    action: {
+      action_message: payload.action.action_message,
+      action_data: compatibleActionData,
+    },
+  } as AdditionalPayload
+}
+
 function* newSamlConfigFunction(): Generator<SelectEffect, SamlApi, string> {
   const token: string = yield select((state: SamlRootState) => state.authReducer.token.access_token)
   const issuer: string = yield select((state: SamlRootState) => state.authReducer.issuer)
@@ -72,7 +99,7 @@ function* newTrustRelationFunction(): Generator<SelectEffect, SamlApi, string> {
   return new SamlApi(api)
 }
 
-export function* getSamlConfigSaga(): SagaIterator<SamlConfiguration | unknown> {
+export function* getSamlConfigSaga(): SagaIterator<SamlConfiguration | Error> {
   const audit = yield* initAudit()
   try {
     const api: SamlApi = yield* newSamlConfigFunction()
@@ -80,18 +107,19 @@ export function* getSamlConfigSaga(): SagaIterator<SamlConfiguration | unknown> 
     yield put(getSamlConfigurationResponse(data))
     yield call(postUserAction, audit)
     return data
-  } catch (e: unknown) {
+  } catch (e) {
     yield put(getSamlConfigurationResponse(null))
-    yield* handleFourZeroOneError(e as Error)
-    yield* errorToast({ error: e as Error })
-    return e
+    const error = e instanceof Error ? e : new Error(String(e))
+    yield* handleFourZeroOneError(error)
+    yield* errorToast({ error })
+    return error
   }
 }
 
 export function* getSamlIdentityProvider({
   payload,
 }: PayloadAction<GetSamlIdentityProviderPayload>): SagaIterator<
-  SamlIdentityProviderResponse | unknown
+  SamlIdentityProviderResponse | Error
 > {
   const audit = yield* initAudit()
   try {
@@ -100,39 +128,40 @@ export function* getSamlIdentityProvider({
     yield put(getSamlIdentitiesResponse({ data }))
     yield call(postUserAction, audit)
     return data
-  } catch (e: unknown) {
+  } catch (e) {
     yield put(getSamlIdentitiesResponse(null))
-    yield* handleFourZeroOneError(e as Error)
-    yield* errorToast({ error: e as Error })
-    return e
+    const error = e instanceof Error ? e : new Error(String(e))
+    yield* handleFourZeroOneError(error)
+    yield* errorToast({ error })
+    return error
   }
 }
 
 export function* putSamlProperties({
   payload,
-}: PayloadAction<PutSamlPropertiesSagaPayload>): SagaIterator<SamlConfiguration | unknown> {
+}: PayloadAction<PutSamlPropertiesSagaPayload>): SagaIterator<SamlConfiguration | Error | void> {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, UPDATE, 'SAML', payload as AdditionalPayload)
+    addAdditionalData(audit, UPDATE, 'SAML', toAdditionalPayload(payload))
     const api: SamlApi = yield* newSamlConfigFunction()
     const data: SamlConfiguration = yield call(api.putSamlProperties, {
-      samlAppConfiguration: payload.action.action_data as SamlConfiguration,
+      samlAppConfiguration: payload.action.action_data,
     })
     yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     yield put(putSamlPropertiesResponse(data))
     yield call(postUserAction, audit)
     yield put(updateToast(true, 'success', 'Data updated successfully'))
-  } catch (error: unknown) {
+    return data
+  } catch (e) {
     yield put(putSamlPropertiesResponse(null))
-    yield* handleFourZeroOneError(error as Error)
-    yield* errorToast({ error: error as Error })
+    const error = e instanceof Error ? e : new Error(String(e))
+    yield* handleFourZeroOneError(error)
+    yield* errorToast({ error })
     return error
   }
 }
 
-export function* getTrustRelationshipsSaga(): SagaIterator<
-  TrustRelationshipListResponse | unknown
-> {
+export function* getTrustRelationshipsSaga(): SagaIterator<TrustRelationshipListResponse | Error> {
   const audit = yield* initAudit()
   try {
     const api: SamlApi = yield* newTrustRelationFunction()
@@ -140,20 +169,23 @@ export function* getTrustRelationshipsSaga(): SagaIterator<
     yield put(getTrustRelationshipResponse({ data: data?.body || [] }))
     yield call(postUserAction, audit)
     return data
-  } catch (e: unknown) {
+  } catch (e) {
     yield put(getTrustRelationshipResponse(null))
-    yield* handleFourZeroOneError(e as Error)
-    yield* errorToast({ error: e as Error })
-    return e
+    const error = e instanceof Error ? e : new Error(String(e))
+    yield* handleFourZeroOneError(error)
+    yield* errorToast({ error })
+    return error
   }
 }
 
 export function* postTrustRelationship({
   payload,
-}: PayloadAction<CreateTrustRelationshipSagaPayload>): SagaIterator<SamlApiResponse | unknown> {
+}: PayloadAction<CreateTrustRelationshipSagaPayload>): SagaIterator<
+  SamlApiResponse | Error | void
+> {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, CREATE, 'TRUST-RELATIONSHIP', payload as unknown as AdditionalPayload)
+    addAdditionalData(audit, CREATE, 'TRUST-RELATIONSHIP', toAdditionalPayload(payload))
     const token: string = yield select(
       (state: SamlRootState) => state.authReducer.token.access_token,
     )
@@ -165,24 +197,28 @@ export function* postTrustRelationship({
     yield put(toggleSavedFormFlag(true))
     yield call(postUserAction, audit)
     yield* triggerWebhook({ payload: { createdFeatureValue: data } })
-    yield put(updateToast(true, 'success', 'Data saved successfully'))
-  } catch (error: unknown) {
-    console.log('Error: ', error)
+    yield put(updateToast(true, 'success', 'Data created successfully'))
+    return data
+  } catch (e) {
+    console.log('Error: ', e)
     yield put(toggleSavedFormFlag(false))
-    yield* handleFourZeroOneError(error as Error)
-    yield* errorToast({ error: error as Error })
+    const error = e instanceof Error ? e : new Error(String(e))
+    yield* handleFourZeroOneError(error)
+    yield* errorToast({ error })
     return error
   } finally {
-    yield put(samlIdentityResponse())
+    yield put(createTrustRelationshipResponse())
   }
 }
 
 export function* updateTrustRelationship({
   payload,
-}: PayloadAction<UpdateTrustRelationshipSagaPayload>): SagaIterator<SamlApiResponse | unknown> {
+}: PayloadAction<UpdateTrustRelationshipSagaPayload>): SagaIterator<
+  SamlApiResponse | Error | void
+> {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, UPDATE, 'TRUST-RELATIONSHIP', payload as unknown as AdditionalPayload)
+    addAdditionalData(audit, UPDATE, 'TRUST-RELATIONSHIP', toAdditionalPayload(payload))
     const token: string = yield select(
       (state: SamlRootState) => state.authReducer.token.access_token,
     )
@@ -195,11 +231,13 @@ export function* updateTrustRelationship({
     yield call(postUserAction, audit)
     yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     yield put(updateToast(true, 'success', 'Data updated successfully'))
-  } catch (error: unknown) {
-    console.log('Error: ', error)
+    return data
+  } catch (e) {
+    console.log('Error: ', e)
     yield put(toggleSavedFormFlag(false))
-    yield* handleFourZeroOneError(error as Error)
-    yield* errorToast({ error: error as Error })
+    const error = e instanceof Error ? e : new Error(String(e))
+    yield* handleFourZeroOneError(error)
+    yield* errorToast({ error })
     return error
   } finally {
     yield put(updateTrustRelationshipResponse())
@@ -208,15 +246,12 @@ export function* updateTrustRelationship({
 
 export function* deleteTrustRelationship({
   payload,
-}: PayloadAction<DeleteTrustRelationshipSagaPayload>): SagaIterator<SamlApiResponse | unknown> {
+}: PayloadAction<DeleteTrustRelationshipSagaPayload>): SagaIterator<
+  SamlApiResponse | Error | void
+> {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(
-      audit,
-      DELETION,
-      'TRUST-RELATIONSHIP',
-      payload as unknown as AdditionalPayload,
-    )
+    addAdditionalData(audit, DELETION, 'TRUST-RELATIONSHIP', toAdditionalPayload(payload))
     const api: SamlApi = yield* newTrustRelationFunction()
     yield call(api.deleteTrustRelationship, payload.action.action_data)
     yield put(deleteTrustRelationshipResponse())
@@ -224,22 +259,22 @@ export function* deleteTrustRelationship({
     yield call(postUserAction, audit)
     yield* triggerWebhook({ payload: { createdFeatureValue: payload.action.action_data } })
     yield put(updateToast(true, 'success', 'Data deleted successfully'))
-  } catch (error: unknown) {
+    return { success: true } as SamlApiResponse
+  } catch (e) {
     yield put(deleteTrustRelationshipResponse())
-    yield* handleFourZeroOneError(error as Error)
-    yield* errorToast({ error: error as Error })
+    const error = e instanceof Error ? e : new Error(String(e))
+    yield* handleFourZeroOneError(error)
+    yield* errorToast({ error })
     return error
   }
 }
 
 export function* postSamlIdentity({
   payload,
-}: PayloadAction<CreateSamlIdentitySagaPayload>): SagaIterator<
-  SamlIdentityCreateResponse | unknown
-> {
+}: PayloadAction<CreateSamlIdentitySagaPayload>): SagaIterator<SamlIdentityCreateResponse | Error> {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, CREATE, 'SAML', payload as unknown as AdditionalPayload)
+    addAdditionalData(audit, CREATE, 'SAML', toAdditionalPayload(payload))
     const token: string = yield select(
       (state: SamlRootState) => state.authReducer.token.access_token,
     )
@@ -251,12 +286,14 @@ export function* postSamlIdentity({
     yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     yield put(toggleSavedFormFlag(true))
     yield call(postUserAction, audit)
-    yield put(updateToast(true, 'success', 'Data saved successfully'))
-  } catch (error: unknown) {
-    console.log('Error: ', error)
+    yield put(updateToast(true, 'success', 'Data created successfully'))
+    return data
+  } catch (e) {
+    console.log('Error: ', e)
     yield put(toggleSavedFormFlag(false))
-    yield* handleFourZeroOneError(error as Error)
-    yield* errorToast({ error: error as Error })
+    const error = e instanceof Error ? e : new Error(String(e))
+    yield* handleFourZeroOneError(error)
+    yield* errorToast({ error })
     return error
   } finally {
     yield put(samlIdentityResponse())
@@ -266,11 +303,11 @@ export function* postSamlIdentity({
 export function* updateSamlIdentity({
   payload,
 }: PayloadAction<UpdateSamlIdentitySagaPayload>): SagaIterator<
-  SamlIdentityCreateResponse | unknown
+  SamlIdentityCreateResponse | Error | void
 > {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, UPDATE, 'SAML', payload as unknown as AdditionalPayload)
+    addAdditionalData(audit, UPDATE, 'SAML', toAdditionalPayload(payload))
     const token: string = yield select(
       (state: SamlRootState) => state.authReducer.token.access_token,
     )
@@ -283,11 +320,13 @@ export function* updateSamlIdentity({
     yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     yield call(postUserAction, audit)
     yield put(updateToast(true, 'success', 'Data updated successfully'))
-  } catch (error: unknown) {
-    console.log('Error: ', error)
+    return data
+  } catch (e) {
+    console.log('Error: ', e)
     yield put(toggleSavedFormFlag(false))
-    yield* handleFourZeroOneError(error as Error)
-    yield* errorToast({ error: error as Error })
+    const error = e instanceof Error ? e : new Error(String(e))
+    yield* handleFourZeroOneError(error)
+    yield* errorToast({ error })
     return error
   } finally {
     yield put(updateSamlIdentityResponse())
@@ -296,29 +335,31 @@ export function* updateSamlIdentity({
 
 export function* deleteSamlIdentity({
   payload,
-}: PayloadAction<DeleteSamlIdentitySagaPayload>): SagaIterator<SamlApiResponse | unknown> {
+}: PayloadAction<DeleteSamlIdentitySagaPayload>): SagaIterator<SamlApiResponse | Error> {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, DELETION, 'SAML', payload as unknown as AdditionalPayload)
+    addAdditionalData(audit, DELETION, 'SAML', toAdditionalPayload(payload))
     const api: SamlApi = yield* newSamlIdentityFunction()
     const data: SamlApiResponse = yield call(
       api.deleteSamlIdentityProvider,
       payload.action.action_data,
     )
     yield put(deleteSamlIdentityResponse())
-    yield put(getSamlIdentites({} as GetSamlIdentityProviderPayload))
+    yield put(getSamlIdentities({} as GetSamlIdentityProviderPayload))
     yield call(postUserAction, audit)
     yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     yield put(updateToast(true, 'success', 'Data deleted successfully'))
-  } catch (error: unknown) {
+    return data
+  } catch (e) {
     yield put(deleteSamlIdentityResponse())
-    yield* handleFourZeroOneError(error as Error)
-    yield* errorToast({ error: error as Error })
+    const error = e instanceof Error ? e : new Error(String(e))
+    yield* handleFourZeroOneError(error)
+    yield* errorToast({ error })
     return error
   }
 }
 
-function* errorToast({ error }: { error: Error }): Generator<PutEffect, void, unknown> {
+function* errorToast({ error }: { error: Error }): Generator<PutEffect, void, void> {
   const errorMessage =
     (error as { response?: { data?: { description?: string; message?: string } } })?.response?.data
       ?.description ||
@@ -328,9 +369,13 @@ function* errorToast({ error }: { error: Error }): Generator<PutEffect, void, un
 }
 
 function* handleFourZeroOneError(
-  error: unknown,
+  error: Error | { status?: number } | null,
 ): Generator<SelectEffect | PutEffect, void, string> {
-  if (isFourZeroOneError(error as { status?: number } | null)) {
+  const errorWithStatus =
+    error && typeof error === 'object' && 'status' in error
+      ? { status: (error as { status?: number }).status }
+      : null
+  if (isFourZeroOneError(errorWithStatus)) {
     const jwt: string = yield select((state: SamlRootState) => state.authReducer.userinfo_jwt)
     yield put(getAPIAccessToken(jwt))
   }
@@ -341,7 +386,7 @@ export function* watchGetSamlConfig(): Generator {
 }
 
 export function* watchGetSamlIdentityProvider(): Generator {
-  yield takeEvery('idpSaml/getSamlIdentites', getSamlIdentityProvider)
+  yield takeEvery('idpSaml/getSamlIdentities', getSamlIdentityProvider)
 }
 
 export function* watchGetTrustRelationshipsSaga(): Generator {

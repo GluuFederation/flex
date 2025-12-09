@@ -66,7 +66,6 @@ export const transformToTrustRelationshipFormValues = (
   configs?: TrustRelationship | null,
 ): WebsiteSsoTrustRelationshipFormValues => {
   return {
-    ...(configs || {}),
     enabled: getDefault(configs?.enabled ?? null, false),
     name: getDefault(configs?.name ?? null, ''),
     displayName: getDefault(configs?.displayName ?? null, ''),
@@ -89,6 +88,7 @@ export const transformToTrustRelationshipFormValues = (
     },
     metaDataFileImportedFlag: !!configs?.spMetaDataFN,
     metaDataFile: null,
+    ...(configs?.spMetaDataFN ? { spMetaDataFN: configs.spMetaDataFN } : {}),
   }
 }
 

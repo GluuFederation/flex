@@ -23,11 +23,13 @@ import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
 import type { RootState } from '@/redux/sagas/types/audit'
-import { GluuCommitDialogOperation, GluuCommitDialogProps } from './types'
-
-type JsonValue = string | number | boolean | null | { [key: string]: JsonValue } | JsonValue[]
+import { GluuCommitDialogOperation, GluuCommitDialogProps, JsonValue } from './types'
 
 const USER_MESSAGE = 'user_action_message'
+
+const isJsonValueArray = (value: JsonValue): value is JsonValue[] => {
+  return Array.isArray(value)
+}
 
 const GluuCommitDialog = ({
   handler,
@@ -200,8 +202,8 @@ const GluuCommitDialog = ({
                       to
                     </Col>
                     <Col sm={5} style={{ overflow: 'auto' }}>
-                      {Array.isArray(item.value) ? (
-                        renderArrayValue(item.value as JsonValue[], key)
+                      {isJsonValueArray(item.value) ? (
+                        renderArrayValue(item.value, key)
                       ) : typeof item.value === 'boolean' ? (
                         <Badge color={`primary-${selectedTheme}`}>{String(item.value)}</Badge>
                       ) : item.value === '' || item.value === null || item.value === undefined ? (
@@ -222,7 +224,7 @@ const GluuCommitDialog = ({
                 <Col sm={12}>
                   <Input
                     id={USER_MESSAGE}
-                    type={(inputType || 'textarea') as 'textarea'}
+                    type={inputType || 'textarea'}
                     name={USER_MESSAGE}
                     onChange={(e) => setUserMessage(e.target.value)}
                     placeholder={

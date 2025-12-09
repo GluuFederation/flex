@@ -1,5 +1,5 @@
 import { useFormik } from 'formik'
-import React, { useState, useEffect, useMemo, useCallback, memo } from 'react'
+import React, { useState, useEffect, useMemo, useCallback, memo, useRef } from 'react'
 import { Row, Col, Form, FormGroup, CustomInput } from 'Components'
 import { useDispatch, useSelector } from 'react-redux'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
@@ -73,12 +73,15 @@ const SamlConfigurationForm: React.FC = () => {
 
   const { setFieldValue, resetForm, handleSubmit: formikHandleSubmit } = formik
 
+  const valuesRef = useRef<SamlConfigurationFormValues>(formik.values)
+  valuesRef.current = formik.values
+
   const submitForm = useCallback(
     (messages: string) => {
       toggle()
-      handleSubmit(formik.values, messages)
+      handleSubmit(valuesRef.current, messages)
     },
-    [toggle, formik.values, handleSubmit],
+    [toggle, handleSubmit],
   )
 
   const handleCancel = useCallback(() => {

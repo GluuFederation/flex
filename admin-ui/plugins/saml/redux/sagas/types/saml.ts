@@ -10,12 +10,18 @@ export interface SamlRootState {
   authReducer: SamlAuthState
 }
 
+export interface SamlProperties {
+  enabled: boolean
+  selectedIdp: string
+  ignoreValidation: boolean
+  applicationName: string
+}
+
 export interface PutSamlPropertiesSagaPayload {
   action: {
     action_message: string
-    action_data: unknown
+    action_data: SamlProperties
   }
-  [key: string]: unknown
 }
 
 export interface CreateSamlIdentitySagaPayload {
@@ -23,7 +29,6 @@ export interface CreateSamlIdentitySagaPayload {
     action_message: string
     action_data: FormData
   }
-  [key: string]: unknown
 }
 
 export interface UpdateSamlIdentitySagaPayload {
@@ -32,14 +37,13 @@ export interface UpdateSamlIdentitySagaPayload {
     action_data: FormData
     action_inum: string
   }
-  [key: string]: unknown
 }
 
 export interface DeleteSamlIdentitySagaPayload {
   action: {
+    action_message: string
     action_data: string
   }
-  [key: string]: unknown
 }
 
 export interface CreateTrustRelationshipSagaPayload {
@@ -47,7 +51,6 @@ export interface CreateTrustRelationshipSagaPayload {
     action_message: string
     action_data: FormData
   }
-  [key: string]: unknown
 }
 
 export interface UpdateTrustRelationshipSagaPayload {
@@ -56,7 +59,6 @@ export interface UpdateTrustRelationshipSagaPayload {
     action_data: FormData
     action_inum: string
   }
-  [key: string]: unknown
 }
 
 export interface DeleteTrustRelationshipSagaPayload {
@@ -64,5 +66,4 @@ export interface DeleteTrustRelationshipSagaPayload {
     action_message?: string
     action_data: string
   }
-  [key: string]: unknown
 }

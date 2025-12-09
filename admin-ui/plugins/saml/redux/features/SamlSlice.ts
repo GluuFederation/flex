@@ -45,7 +45,7 @@ const samlSlice = createSlice({
           }
       state.loading = false
     },
-    getSamlIdentites: (state, _action: PayloadAction<GetSamlIdentityProviderPayload>) => {
+    getSamlIdentities: (state, _action: PayloadAction<GetSamlIdentityProviderPayload>) => {
       state.loadingSamlIdp = true
     },
     getSamlIdentitiesResponse: (
@@ -100,20 +100,24 @@ const samlSlice = createSlice({
     },
     deleteSamlIdentity: (
       state,
-      _action: PayloadAction<{ action: { action_message?: string; action_data: string } }>,
+      _action: PayloadAction<{ action: { action_message: string; action_data: string } }>,
     ) => {
       state.loading = true
+      state.loadingSamlIdentity = true
     },
     deleteSamlIdentityResponse: (state) => {
       state.loading = false
+      state.loadingSamlIdentity = false
     },
     deleteTrustRelationship: (
       state,
       _action: PayloadAction<{ action: { action_message?: string; action_data: string } }>,
     ) => {
+      state.loading = true
       state.loadingTrustRelationship = true
     },
     deleteTrustRelationshipResponse: (state) => {
+      state.loading = false
       state.loadingTrustRelationship = false
     },
     getTrustRelationship: (state) => {
@@ -132,6 +136,10 @@ const samlSlice = createSlice({
     ) => {
       state.loading = true
       state.loadingTrustRelationship = true
+    },
+    createTrustRelationshipResponse: (state) => {
+      state.loading = false
+      state.loadingTrustRelationship = false
     },
     updateTrustRelationship: (
       state,
@@ -153,7 +161,7 @@ export const {
   getSamlConfiguration,
   getSamlConfigurationResponse,
   toggleSavedFormFlag,
-  getSamlIdentites,
+  getSamlIdentities,
   getSamlIdentitiesResponse,
   putSamlProperties,
   putSamlPropertiesResponse,
@@ -168,6 +176,7 @@ export const {
   deleteTrustRelationship,
   deleteTrustRelationshipResponse,
   createTrustRelationship,
+  createTrustRelationshipResponse,
   updateTrustRelationship,
   updateTrustRelationshipResponse,
 } = samlSlice.actions
