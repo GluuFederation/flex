@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useContext, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useContext, useMemo, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { debounce } from 'lodash'
 import { getSamlIdentities, deleteSamlIdentity } from 'Plugins/saml/redux/features/SamlSlice'
@@ -48,6 +48,7 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
   const [searchInput, setSearchInput] = useState<string>('')
   const [item, setItem] = useState<DeleteItem>({})
   const [pageNumber, setPageNumber] = useState(0)
+  const prevPatternRef = useRef<string | null>(null)
 
   const { t } = useTranslation()
   const dispatch = useDispatch()
@@ -90,9 +91,23 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
   }, [debouncedSetPattern])
 
   useEffect(() => {
+    if (pattern !== prevPatternRef.current) {
+      prevPatternRef.current = pattern
+      setPageNumber(0)
+    }
+  }, [pattern])
+
+  useEffect(() => {
     if (!canReadIdentities) return
-    dispatch(getSamlIdentities({ limit, ...(pattern ? { pattern } : {}) }))
-  }, [dispatch, canReadIdentities, limit, pattern])
+    const startIndex = pageNumber * limit
+    dispatch(
+      getSamlIdentities({
+        startIndex,
+        limit,
+        ...(pattern ? { pattern } : {}),
+      }),
+    )
+  }, [dispatch, canReadIdentities, pageNumber, limit, pattern])
 
   const toggle = useCallback(() => setModal((prev) => !prev), [])
 
@@ -138,33 +153,18 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
     [dispatch, item.inum, toggle],
   )
 
-  const onRowCountChangeClick = useCallback(
-    (count: number): void => {
-      setPageNumber(0)
-      setLimit(count)
-      dispatch(getSamlIdentities({ startIndex: 0, limit: count, ...(pattern ? { pattern } : {}) }))
-    },
-    [dispatch, pattern],
-  )
+  const onRowCountChangeClick = useCallback((count: number): void => {
+    setPageNumber(0)
+    setLimit(count)
+  }, [])
 
-  const onPageChangeClick = useCallback(
-    (page: number): void => {
-      const startCount = page * limit
-      setPageNumber(page)
-      dispatch(
-        getSamlIdentities({
-          startIndex: startCount,
-          limit,
-          ...(pattern ? { pattern } : {}),
-        }),
-      )
-    },
-    [dispatch, limit, pattern],
-  )
+  const onPageChangeClick = useCallback((page: number): void => {
+    setPageNumber(page)
+  }, [])
 
   const handleRefresh = useCallback((): void => {
-    dispatch(getSamlIdentities({ limit, ...(pattern ? { pattern } : {}) }))
-  }, [dispatch, limit, pattern])
+    setPageNumber(0)
+  }, [])
 
   const handleOptionsChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -184,11 +184,14 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
       if (event.target instanceof HTMLInputElement && event.target.name === 'pattern') {
         if (event.key === 'Enter' || event.keyCode === 13) {
           const nextPattern = event.target.value
-          dispatch(getSamlIdentities({ limit, pattern: nextPattern }))
+          setSearchInput(nextPattern)
+          debouncedSetPattern.cancel()
+          setPattern(nextPattern || null)
+          setPageNumber(0)
         }
       }
     },
-    [dispatch, limit],
+    [debouncedSetPattern],
   )
 
   const PaginationWrapper = useCallback(
