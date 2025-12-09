@@ -1,6 +1,7 @@
 import { useCallback, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { useQueryClient } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import {
   useGetAllAdminuiRolePermissions,
   useGetAllAdminuiRoles,
@@ -42,17 +43,16 @@ export const useMappingData = (enabled: boolean = true) => {
     permissions: permissionsQuery.data ?? [],
     isLoading: mappingQuery.isLoading || rolesQuery.isLoading || permissionsQuery.isLoading,
     isError: mappingQuery.isError || rolesQuery.isError || permissionsQuery.isError,
-    refetch: () => {
-      mappingQuery.refetch()
-      rolesQuery.refetch()
-      permissionsQuery.refetch()
-    },
+    error: mappingQuery.error || rolesQuery.error || permissionsQuery.error,
+    refetch: () =>
+      Promise.all([mappingQuery.refetch(), rolesQuery.refetch(), permissionsQuery.refetch()]),
   }
 }
 
 export const useUpdateMappingWithAudit = (callbacks?: MutationCallbacks) => {
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
+  const { t } = useTranslation()
   const mutation = useMapPermissionsToRole()
   const callbacksRef = useRef(callbacks)
   callbacksRef.current = callbacks
@@ -61,17 +61,23 @@ export const useUpdateMappingWithAudit = (callbacks?: MutationCallbacks) => {
     async (data: RolePermissionMapping) => {
       try {
         const result = await mutation.mutateAsync({ data })
-        dispatch(updateToast(true, 'success', 'Mapping updated successfully'))
+        dispatch(updateToast(true, 'success', t('messages.mapping_updated_successfully')))
         queryClient.invalidateQueries({ queryKey: getGetAllAdminuiRolePermissionsQueryKey() })
         callbacksRef.current?.onSuccess?.()
         return result
       } catch (error: unknown) {
-        dispatch(updateToast(true, 'error', extractErrorMessage(error, 'Failed to update mapping')))
+        dispatch(
+          updateToast(
+            true,
+            'error',
+            extractErrorMessage(error, t('messages.error_updating_mapping')),
+          ),
+        )
         callbacksRef.current?.onError?.(error)
         throw error
       }
     },
-    [mutation, dispatch, queryClient],
+    [mutation, dispatch, queryClient, t],
   )
 
   return {
@@ -85,6 +91,7 @@ export const useUpdateMappingWithAudit = (callbacks?: MutationCallbacks) => {
 export const useAddMappingWithAudit = (callbacks?: MutationCallbacks) => {
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
+  const { t } = useTranslation()
   const mutation = useAddRolePermissionsMapping()
   const callbacksRef = useRef(callbacks)
   callbacksRef.current = callbacks
@@ -93,17 +100,23 @@ export const useAddMappingWithAudit = (callbacks?: MutationCallbacks) => {
     async (data: RolePermissionMapping) => {
       try {
         const result = await mutation.mutateAsync({ data })
-        dispatch(updateToast(true, 'success', 'Mapping added successfully'))
+        dispatch(updateToast(true, 'success', t('messages.mapping_added_successfully')))
         queryClient.invalidateQueries({ queryKey: getGetAllAdminuiRolePermissionsQueryKey() })
         callbacksRef.current?.onSuccess?.()
         return result
       } catch (error: unknown) {
-        dispatch(updateToast(true, 'error', extractErrorMessage(error, 'Failed to add mapping')))
+        dispatch(
+          updateToast(
+            true,
+            'error',
+            extractErrorMessage(error, t('messages.error_adding_mapping')),
+          ),
+        )
         callbacksRef.current?.onError?.(error)
         throw error
       }
     },
-    [mutation, dispatch, queryClient],
+    [mutation, dispatch, queryClient, t],
   )
 
   return {

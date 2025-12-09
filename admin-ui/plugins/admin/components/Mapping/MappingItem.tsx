@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react'
+import React, { useContext } from 'react'
 import { Accordion, AccordionSummary, AccordionDetails, Typography, Chip, Box } from '@mui/material'
 import { ExpandMore, SecurityOutlined } from '@mui/icons-material'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -10,30 +10,23 @@ const MappingItem: React.FC<MappingItemProps> = React.memo(function MappingItem(
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
 
-  const permissionsCount = useMemo(
-    () => candidate?.permissions?.length || 0,
-    [candidate?.permissions?.length],
-  )
+  const permissionsCount = candidate?.permissions?.length || 0
 
-  const permissionChips = useMemo(
-    () =>
-      candidate?.permissions?.map((permission, idx) => (
-        <Chip
-          key={`${permission}-${idx}`}
-          label={permission}
-          size="small"
-          variant="outlined"
-          sx={{
-            borderColor: themeColors?.background,
-            color: '#000',
-            fontSize: '0.85rem',
-            fontWeight: 600,
-            height: 32,
-          }}
-        />
-      )),
-    [candidate?.permissions, themeColors?.background],
-  )
+  const permissionChips = candidate?.permissions?.map((permission, idx) => (
+    <Chip
+      key={`${permission}-${idx}`}
+      label={permission}
+      size="small"
+      variant="outlined"
+      sx={{
+        borderColor: themeColors?.background,
+        color: '#000',
+        fontSize: '0.85rem',
+        fontWeight: 600,
+        height: 32,
+      }}
+    />
+  ))
 
   return (
     <Accordion

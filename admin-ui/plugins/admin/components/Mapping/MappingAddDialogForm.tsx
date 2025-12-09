@@ -52,9 +52,9 @@ const MappingAddDialogForm: React.FC<MappingAddDialogFormProps> = ({
 
   const getPermissionsForSearch = (role: string = '') => {
     const fullPermissions: string[] = []
-    for (const i in permissions) {
-      if (permissions[i]?.permission) {
-        fullPermissions.push(permissions[i].permission as string)
+    for (const p of permissions) {
+      if (p?.permission) {
+        fullPermissions.push(p.permission as string)
       }
     }
     if (role) {
@@ -69,7 +69,7 @@ const MappingAddDialogForm: React.FC<MappingAddDialogFormProps> = ({
 
   useEffect(() => {
     getPermissionsForSearch(apiRole)
-  }, [permissions])
+  }, [apiRole, permissions, mapping])
 
   useEffect(() => {
     if (selectedPermissions.length && apiRole !== '') {
@@ -80,16 +80,7 @@ const MappingAddDialogForm: React.FC<MappingAddDialogFormProps> = ({
   }, [apiRole, selectedPermissions])
 
   useEffect(() => {
-    getPermissionsForSearch(apiRole)
-  }, [apiRole, mapping])
-
-  useEffect(() => {
-    const rolesArr: string[] = []
-    for (const i in roles) {
-      if (roles[i]?.role) {
-        rolesArr.push(roles[i].role as string)
-      }
-    }
+    const rolesArr = roles.filter((r) => r?.role).map((r) => r.role as string)
     setAutoCompleteRoles(rolesArr)
   }, [roles])
 
@@ -155,7 +146,7 @@ const MappingAddDialogForm: React.FC<MappingAddDialogFormProps> = ({
           <Box>
             <GluuTypeAhead
               name="addMappingRolePermissions"
-              label="Permissions"
+              label="fields.permissions"
               onChange={(selected: Option[]) => {
                 setSelectedPermissions(selected.filter((s): s is string => typeof s === 'string'))
               }}
@@ -164,7 +155,7 @@ const MappingAddDialogForm: React.FC<MappingAddDialogFormProps> = ({
               value={selectedPermissions}
               required={false}
               forwardRef={autocompleteRef}
-              doc_category={'Mapping'}
+              doc_category={DOC_CATEGORY}
             />
           </Box>
         </Stack>

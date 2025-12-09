@@ -29,7 +29,7 @@ const MappingPage: React.FC = React.memo(function MappingPage() {
     [hasCedarReadPermission, mappingResourceId],
   )
 
-  const { mapping, roles, isLoading } = useMappingData(canReadMapping)
+  const { mapping, roles, isLoading, isError } = useMappingData(canReadMapping)
 
   useEffect(() => {
     if (mappingScopes && mappingScopes.length > 0) {
@@ -42,7 +42,7 @@ const MappingPage: React.FC = React.memo(function MappingPage() {
       mapping.map((candidate, idx) => (
         <MappingItem key={candidate?.role || idx} candidate={candidate} />
       )),
-    [mapping, roles],
+    [mapping],
   )
 
   return (
@@ -84,6 +84,12 @@ const MappingPage: React.FC = React.memo(function MappingPage() {
               {t('documentation.mappings.note_suffix')}
             </Typography>
           </Alert>
+
+          {isError && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {t('messages.error_loading_mapping')}
+            </Alert>
+          )}
 
           <GluuViewWrapper canShow={canReadMapping}>
             <Box sx={{ mt: 1 }}>{mappingList}</Box>
