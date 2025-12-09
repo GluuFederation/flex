@@ -14,12 +14,7 @@ import {
   Skeleton,
   TablePagination,
   InputAdornment,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Tooltip,
-  SelectChangeEvent,
   keyframes,
 } from '@mui/material'
 import {
@@ -77,12 +72,6 @@ const STYLES = {
   },
   datePicker: {
     'minWidth': 160,
-    '& .MuiOutlinedInput-root': {
-      borderRadius: 1.5,
-    },
-  },
-  selectField: {
-    'minWidth': 120,
     '& .MuiOutlinedInput-root': {
       borderRadius: 1.5,
     },
@@ -165,12 +154,10 @@ const AuditSearch: React.FC<AuditSearchProps> = ({
   pattern,
   startDate,
   endDate,
-  limit,
   isLoading,
   onPatternChange,
   onStartDateChange,
   onEndDateChange,
-  onLimitChange,
   onSearch,
   onRefresh,
   isSearchDisabled,
@@ -187,13 +174,6 @@ const AuditSearch: React.FC<AuditSearchProps> = ({
       }
     },
     [isSearchDisabled, onSearch],
-  )
-
-  const handleLimitChange = useCallback(
-    (e: SelectChangeEvent<number>) => {
-      onLimitChange(Number(e.target.value))
-    },
-    [onLimitChange],
   )
 
   return (
@@ -249,17 +229,6 @@ const AuditSearch: React.FC<AuditSearchProps> = ({
             }}
           />
         </LocalizationProvider>
-
-        <FormControl size="small" sx={STYLES.selectField}>
-          <InputLabel>{t('fields.page_size')}</InputLabel>
-          <Select value={limit} onChange={handleLimitChange} label={t('fields.page_size')}>
-            {PAGE_SIZE_OPTIONS.map((size) => (
-              <MenuItem key={size} value={size}>
-                {size}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
 
         <Box sx={{ display: 'flex', gap: 1, ml: 'auto' }}>
           <Tooltip title={t('actions.refresh')}>
@@ -554,12 +523,10 @@ const AuditListPage: React.FC = () => {
         pattern={pattern}
         startDate={startDate}
         endDate={endDate}
-        limit={limit}
         isLoading={isLoading}
         onPatternChange={setPattern}
         onStartDateChange={setStartDate}
         onEndDateChange={setEndDate}
-        onLimitChange={setLimit}
         onSearch={handleSearch}
         onRefresh={handleRefresh}
         isSearchDisabled={isSearchDisabled}
@@ -569,6 +536,14 @@ const AuditListPage: React.FC = () => {
         <Box mb={2}>
           <Typography color="error" variant="body2">
             {t('messages.start_date_after_end')}
+          </Typography>
+        </Box>
+      )}
+
+      {filters.hasOnlyOneDate && (
+        <Box mb={2}>
+          <Typography color="warning.main" variant="body2">
+            {t('messages.both_dates_required')}
           </Typography>
         </Box>
       )}

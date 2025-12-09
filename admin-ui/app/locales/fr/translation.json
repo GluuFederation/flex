@@ -796,7 +796,15 @@
     "user_updated_successfully": "Utilisateur mis à jour avec succès",
     "user_deleted_successfully": "Utilisateur supprimé avec succès",
     "password_changed_successfully": "Mot de passe modifié avec succès",
-    "device_deleted_successfully": "Appareil supprimé avec succès"
+    "device_deleted_successfully": "Appareil supprimé avec succès",
+    "error_loading_data": "Échec du chargement des données",
+    "try_again_later": "Veuillez réessayer plus tard",
+    "no_data": "Aucune donnée trouvée",
+    "adjust_filters": "Ajustez vos filtres ou la plage de dates pour trouver les journaux d'audit",
+    "audit_description": "Afficher et rechercher les journaux d'audit du système dans une plage de dates",
+    "showing_entries": "Affichage de {{start}} à {{end}} sur {{total}} entrées",
+    "start_date_after_end": "La date de début ne peut pas être postérieure à la date de fin",
+    "both_dates_required": "Les dates de début et de fin sont requises pour le filtrage par plage de dates"
   },
   "errors": {
     "attribute_create_failed": "Erreur lors de la création de l'attribut",
@@ -952,14 +960,7 @@
     "newPermission": "Nouvelle Permission",
     "addingNewApiPermission": "Ajout d'une nouvelle autorisation API",
     "followingPermissionRequiredToBeAdded": "Une autorisation est requise pour être ajouté!",
-    "authentication": "Authentification",
-    "error_loading_data": "Échec du chargement des données",
-    "try_again_later": "Veuillez réessayer plus tard",
-    "no_data": "Aucune donnée trouvée",
-    "adjust_filters": "Ajustez vos filtres ou la plage de dates pour trouver les journaux d'audit",
-    "audit_description": "Afficher et rechercher les journaux d'audit du système dans une plage de dates",
-    "showing_entries": "Affichage de {{start}} à {{end}} sur {{total}} entrées",
-    "start_date_after_end": "La date de début ne peut pas être postérieure à la date de fin"
+    "authentication": "Authentification"
   },
   "links": {
     "support": "https://support.gluu.org/"

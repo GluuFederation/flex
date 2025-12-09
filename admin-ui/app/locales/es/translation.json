@@ -778,6 +778,7 @@
     "add_role": "Agregar Rol",
     "showing_entries": "Mostrando {{start}} a {{end}} de {{total}} entradas",
     "start_date_after_end": "La fecha de inicio no puede ser posterior a la fecha de fin",
+    "both_dates_required": "Las fechas de inicio y fin son obligatorias para el filtrado por rango de fechas",
     "success_in_saving": "Cambios guardados correctamente",
     "fido_config_updated_successfully": "Configuración FIDO actualizada correctamente",
     "fido_config_update_failed": "Error al actualizar la configuración FIDO",

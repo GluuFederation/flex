@@ -778,6 +778,7 @@
     "add_role": "Add Role",
     "showing_entries": "Showing {{start}} to {{end}} of {{total}} entries",
     "start_date_after_end": "Start date cannot be after end date",
+    "both_dates_required": "Both start and end dates are required for date range filtering",
     "success_in_saving": "Changes saved successfully",
     "fido_config_updated_successfully": "FIDO configuration updated successfully",
     "fido_config_update_failed": "Failed to update FIDO configuration",
