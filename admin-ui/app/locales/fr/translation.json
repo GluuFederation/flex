@@ -123,6 +123,7 @@
   "actions": {
     "accept": "J'accepte",
     "add_attribute_mapping": "Ajouter un mappage d'attributs",
+    "add_custom_attributes": "Ajouter des attributs personnalisés",
     "add": "Ajouter",
     "add_ldap_configuration": "Ajouter une configuration LDAP",
     "add_mapping": "Ajouter un Mapping",

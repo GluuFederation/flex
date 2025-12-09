@@ -121,6 +121,7 @@
   "actions": {
     "accept": "Aceitar",
     "add_attribute_mapping": "Adicionar mapeamento de atributos",
+    "add_custom_attributes": "Adicionar atributos personalizados",
     "add": "Adicionar",
     "reject": "Rejeitar",
     "configuration_copied": "Configuração copiada",

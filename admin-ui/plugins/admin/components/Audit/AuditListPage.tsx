@@ -393,12 +393,9 @@ const AuditListPage: React.FC = () => {
           padding: '12px 16px',
         },
         render: (rowData: AuditRow) => {
-          const log = rowData.log || ''
-          const match = log.match(auditListTimestampRegex)
+          const { timestamp, content } = rowData
 
-          if (match) {
-            const timestamp = match[1]
-            const content = match[2]
+          if (timestamp) {
             const dateOnly = timestamp.split(' ')[0] || timestamp
             const timeOnly = timestamp.split(' ')[1] || ''
 
@@ -434,7 +431,7 @@ const AuditListPage: React.FC = () => {
             )
           }
 
-          return <Typography sx={STYLES.logContent}>{log}</Typography>
+          return <Typography sx={STYLES.logContent}>{content}</Typography>
         },
       },
     ],
@@ -444,11 +441,18 @@ const AuditListPage: React.FC = () => {
   const auditRows: AuditRow[] = useMemo(() => {
     if (!entries || !Array.isArray(entries)) return []
     const startSerial = pageNumber * limit
-    return entries.map((auditString: string, idx: number) => ({
-      id: startSerial + idx + 1,
-      serial: startSerial + idx + 1,
-      log: auditString,
-    }))
+    return entries.map((auditString: string, idx: number) => {
+      const match = auditString.match(auditListTimestampRegex)
+      const timestamp = match?.[1] ?? ''
+      const content = match?.[2] ?? auditString
+      return {
+        id: startSerial + idx + 1,
+        serial: startSerial + idx + 1,
+        log: auditString,
+        timestamp,
+        content,
+      }
+    })
   }, [entries, pageNumber, limit])
 
   const renderTable = () => {
