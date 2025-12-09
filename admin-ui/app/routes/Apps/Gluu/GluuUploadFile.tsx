@@ -43,7 +43,7 @@ const GluuUploadFile: React.FC<GluuUploadFileProps> = ({
       const [file] = acceptedFiles
       if (!file) return
       setSelectedFile(file)
-      onDrop(acceptedFiles)
+      onDrop([file])
     },
     [onDrop],
   )

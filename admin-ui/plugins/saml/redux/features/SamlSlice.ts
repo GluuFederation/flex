@@ -98,7 +98,10 @@ const samlSlice = createSlice({
       state.loading = false
       state.loadingSamlIdentity = false
     },
-    deleteSamlIdentity: (state, _action: PayloadAction<{ action: { action_data: string } }>) => {
+    deleteSamlIdentity: (
+      state,
+      _action: PayloadAction<{ action: { action_message?: string; action_data: string } }>,
+    ) => {
       state.loading = true
     },
     deleteSamlIdentityResponse: (state) => {
@@ -106,7 +109,7 @@ const samlSlice = createSlice({
     },
     deleteTrustRelationship: (
       state,
-      _action: PayloadAction<{ action: { action_data: string } }>,
+      _action: PayloadAction<{ action: { action_message?: string; action_data: string } }>,
     ) => {
       state.loadingTrustRelationship = true
     },

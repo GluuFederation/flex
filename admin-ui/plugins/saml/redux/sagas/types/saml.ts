@@ -61,6 +61,7 @@ export interface UpdateTrustRelationshipSagaPayload {
 
 export interface DeleteTrustRelationshipSagaPayload {
   action: {
+    action_message?: string
     action_data: string
   }
   [key: string]: unknown

@@ -25,8 +25,10 @@ import type { SamlRootState } from '../types/state'
 interface DeleteItem {
   inum: string
   displayName?: string
-  tableData?: Record<string, never>
+  tableData?: Record<string, unknown>
 }
+
+const DeleteOutlinedIcon = () => <DeleteOutlined />
 
 const WebsiteSsoServiceProviderList = React.memo(() => {
   const { authorizeHelper, hasCedarReadPermission, hasCedarWritePermission } = useCedarling()
@@ -91,15 +93,23 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
 
   const onDeletionConfirmed = useCallback(
     (message: string) => {
-      const userAction: { action_message?: string; action_data?: string } = {}
+      const userAction: { action_message: string; action_data: string } = {
+        action_message: '',
+        action_data: '',
+      }
       buildPayload(userAction, message, item.inum)
-      dispatch(deleteTrustRelationship({ action: { action_data: userAction.action_data ?? '' } }))
+      dispatch(
+        deleteTrustRelationship({
+          action: {
+            action_data: userAction.action_data,
+            action_message: userAction.action_message,
+          },
+        }),
+      )
       toggle()
     },
     [dispatch, item.inum, toggle],
   )
-
-  const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
 
   const tableActions = useMemo(() => {
     const actions: Action<TrustRelationship>[] = []
@@ -113,11 +123,9 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
           rowData: TrustRelationship | TrustRelationship[],
         ): void => {
           if (Array.isArray(rowData)) return
-          const data = { ...rowData }
-          if ('tableData' in data) {
-            delete (data as { tableData?: Record<string, never> }).tableData
-          }
-          handleGoToEditPage(data)
+          const { tableData, ...clean } = rowData as TrustRelationship & { tableData?: unknown }
+          void tableData
+          handleGoToEditPage(clean)
         },
       })
       actions.push({
@@ -162,7 +170,6 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
     handleGoToEditPage,
     handleGoToAddPage,
     handleDelete,
-    DeleteOutlinedIcon,
   ])
 
   const tableColumns = useMemo(() => getServiceProviderTableCols(t), [t])

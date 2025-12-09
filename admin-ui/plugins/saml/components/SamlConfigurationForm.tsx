@@ -65,7 +65,7 @@ const SamlConfigurationForm: React.FC = () => {
       dispatch(
         putSamlProperties({
           action: { action_message: messages, action_data: values },
-        }) as ReturnType<typeof putSamlProperties>,
+        }),
       )
     },
     [dispatch],

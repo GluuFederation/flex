@@ -44,7 +44,7 @@ export const transformToIdentityProviderFormValues = (
     encryptionPublicKey,
     principalAttribute,
     principalType,
-    metaDataFileImportedFlag: configs?.idpMetaDataFN ? true : false,
+    metaDataFileImportedFlag: !!configs?.idpMetaDataFN,
     metaDataFile: null,
     idpMetaDataFN: configs?.idpMetaDataFN || undefined,
     manualMetadata: '',
@@ -87,7 +87,7 @@ export const transformToTrustRelationshipFormValues = (
         '',
       ),
     },
-    metaDataFileImportedFlag: configs?.spMetaDataFN ? true : false,
+    metaDataFileImportedFlag: !!configs?.spMetaDataFN,
     metaDataFile: null,
   }
 }
@@ -120,7 +120,7 @@ const trimStringValue = (value: FormValue): FormValue => {
   return value
 }
 
-export const cleanOptionalFields = (values: FormValues): FormValues => {
+export const trimStringFields = (values: FormValues): FormValues => {
   return Object.entries(values).reduce((acc, [key, value]) => {
     acc[key] = trimStringValue(value)
     return acc
@@ -143,6 +143,51 @@ export const separateConfigFields = (
   })
 
   return { rootFields, configData }
+}
+
+export const cleanOptionalFields = <T extends Record<string, unknown>>(
+  obj: T,
+  removeEmptyStrings = true,
+): Partial<T> => {
+  const cleaned: Partial<T> = {}
+
+  Object.entries(obj).forEach(([key, value]) => {
+    // Skip undefined and null values
+    if (value === undefined || value === null) {
+      return
+    }
+
+    // Optionally skip empty strings
+    if (removeEmptyStrings && typeof value === 'string' && value.trim() === '') {
+      return
+    }
+
+    // Handle nested objects
+    if (value && typeof value === 'object' && !Array.isArray(value) && !(value instanceof File)) {
+      const cleanedNested = cleanOptionalFields(
+        value as Record<string, unknown>,
+        removeEmptyStrings,
+      )
+      // Only include nested object if it has at least one property
+      if (Object.keys(cleanedNested).length > 0) {
+        cleaned[key as keyof T] = cleanedNested as T[keyof T]
+      }
+      return
+    }
+
+    // Handle arrays - keep non-empty arrays
+    if (Array.isArray(value)) {
+      if (value.length > 0) {
+        cleaned[key as keyof T] = value as T[keyof T]
+      }
+      return
+    }
+
+    // Keep all other values (strings, numbers, booleans, File objects, etc.)
+    cleaned[key as keyof T] = value as T[keyof T]
+  })
+
+  return cleaned
 }
 
 export const buildIdentityProviderPayload = (
