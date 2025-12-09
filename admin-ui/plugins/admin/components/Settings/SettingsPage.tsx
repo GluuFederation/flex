@@ -169,8 +169,7 @@ const SettingsPage: React.FC = () => {
     onSubmit: async (values, formikHelpers) => {
       savePagingSizeToStorage(currentPagingSize)
 
-      const cedarlingLogTypeChanged =
-        String(values?.cedarlingLogType) !== String(config?.cedarlingLogType)
+      const cedarlingLogTypeChanged = values?.cedarlingLogType !== config?.cedarlingLogType
 
       try {
         const updatePayload: AppConfigResponse = {
