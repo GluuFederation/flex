@@ -268,14 +268,13 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
         },
       })
     }
+    const handleSearchIconClickNoop = (): void => {}
     actions.push({
       icon: GluuSearch,
       tooltip: `${t('messages.advanced_search')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
-      onClick: () => {
-        // Advanced search is handled by the icon component itself
-      },
+      onClick: handleSearchIconClickNoop,
     })
     actions.push({
       icon: 'refresh',

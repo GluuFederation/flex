@@ -16,10 +16,23 @@ function GluuAdvancedSearch({
 }: GluuAdvancedSearchProps) {
   const { t } = useTranslation()
 
-  const handleChange =
-    onChange || (handler as ((event: React.ChangeEvent<HTMLInputElement>) => void) | undefined)
-  const handleKeyDown =
-    onKeyDown || (handler as ((event: React.KeyboardEvent<HTMLInputElement>) => void) | undefined)
+  const handleChange: ((event: React.ChangeEvent<HTMLInputElement>) => void) | undefined = onChange
+    ? onChange
+    : handler
+      ? (event: React.ChangeEvent<HTMLInputElement>) => {
+          handler(event)
+        }
+      : undefined
+
+  const handleKeyDown: ((event: React.KeyboardEvent<HTMLInputElement>) => void) | undefined =
+    onKeyDown
+      ? onKeyDown
+      : handler
+        ? (event: React.KeyboardEvent<HTMLInputElement>) => {
+            handler(event)
+          }
+        : undefined
+
   const patternProps = controlled ? { value: pattern || '' } : { defaultValue: pattern }
 
   return (
