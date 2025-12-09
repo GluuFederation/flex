@@ -1,11 +1,13 @@
 import React, { useContext } from 'react'
 import { Accordion, AccordionSummary, AccordionDetails, Typography, Chip, Box } from '@mui/material'
 import { ExpandMore, SecurityOutlined } from '@mui/icons-material'
+import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import type { MappingItemProps, ThemeContextValue } from './types'
 
 const MappingItem: React.FC<MappingItemProps> = React.memo(function MappingItem({ candidate }) {
+  const { t } = useTranslation()
   const theme = useContext(ThemeContext) as ThemeContextValue
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
@@ -73,7 +75,7 @@ const MappingItem: React.FC<MappingItemProps> = React.memo(function MappingItem(
           </Typography>
         </Box>
         <Chip
-          label={`${permissionsCount} permission${permissionsCount !== 1 ? 's' : ''}`}
+          label={t('messages.permissions_count', { count: permissionsCount })}
           size="small"
           sx={{
             backgroundColor: themeColors?.background,
@@ -103,7 +105,7 @@ const MappingItem: React.FC<MappingItemProps> = React.memo(function MappingItem(
         </Box>
         {permissionsCount === 0 && (
           <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
-            No permissions assigned
+            {t('messages.no_permissions_assigned')}
           </Typography>
         )}
       </AccordionDetails>

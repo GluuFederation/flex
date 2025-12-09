@@ -138,7 +138,11 @@ const MappingAddDialogForm: React.FC<MappingAddDialogFormProps> = ({
               options={autoCompleteRoles}
               value={[]}
               hideHelperMessage
-              onChange={(selected: string[]) => setApiRole(selected.length ? selected[0] : '')}
+              onChange={(selected: string[]) => {
+                const role = selected.length ? selected[0] : ''
+                setApiRole(role)
+                setSelectedPermissions([])
+              }}
               doc_category={DOC_CATEGORY}
             />
           </Box>

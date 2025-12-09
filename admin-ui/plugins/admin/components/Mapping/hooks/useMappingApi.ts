@@ -12,17 +12,12 @@ import {
 } from 'JansConfigApi'
 import type { RolePermissionMapping } from 'JansConfigApi'
 import { updateToast } from 'Redux/features/toastSlice'
+import { extractErrorMessage } from '@/plugins/schema/utils/errorHandler'
 
 export interface MutationCallbacks {
   onSuccess?: () => void
   onError?: (error: unknown) => void
 }
-
-const extractErrorMessage = (error: unknown, fallback: string): string =>
-  (error as { response?: { data?: { responseMessage?: string } } })?.response?.data
-    ?.responseMessage ||
-  (error as Error)?.message ||
-  fallback
 
 export const useMappingData = (enabled: boolean = true) => {
   const mappingQuery = useGetAllAdminuiRolePermissions({
