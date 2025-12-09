@@ -177,7 +177,7 @@ const MappingAddDialogForm: React.FC<MappingAddDialogFormProps> = ({
             'color': themeColors?.background,
             '&:hover': {
               borderColor: themeColors?.background,
-              backgroundColor: 'rgba(0, 0, 0, 0.04)',
+              backgroundColor: 'action.hover',
             },
           }}
         >
