@@ -772,6 +772,7 @@
     "select_message_provider_type": "Seleccione el tipo de proveedor de mensajes",
     "new_role": "Nuevo Rol",
     "adding_new_permission": "Agregando nuevo permiso",
+    "role_permission_mapping_description": "Administrar las asignaciones de roles y permisos para la UI de administración",
     "add_role": "Agregar Rol",
     "success_in_saving": "Cambios guardados correctamente",
     "fido_config_updated_successfully": "Configuración FIDO actualizada correctamente",

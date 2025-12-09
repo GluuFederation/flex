@@ -707,6 +707,7 @@
     "import_metadata_file": "Veuillez importer le fichier de métadonnées.",
     "delete_idp": "Supprimer un IDP SAML",
     "adding_new_permission": "Ajout d'une nouvelle autorisation",
+    "role_permission_mapping_description": "Gérer les mappages rôle-permission pour l'interface d'administration",
     "select_message_provider_type": "Veuillez sélectionner le type de fournisseur de messages",
     "license_api_not_enabled": "L'API de licence n'est pas activée pour cette application.",
     "edit_configuration": "Supprimer la configuration",

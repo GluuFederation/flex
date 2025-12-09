@@ -711,6 +711,7 @@
     "invalid_url_error": "URL inválido ou URL não permitido.",
     "license_api_not_enabled": "A API de licença não está habilitada para este aplicativo.",
     "adding_new_permission": "Adicionando nova permissão",
+    "role_permission_mapping_description": "Gerenciar mapeamentos de função para permissão para a UI de administração",
     "add_role": "Adicionar função",
     "fido_config_updated_successfully": "Configuração FIDO atualizada com sucesso",
     "fido_config_update_failed": "Falha ao atualizar a configuração FIDO",

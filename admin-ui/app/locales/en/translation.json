@@ -772,6 +772,7 @@
     "select_message_provider_type": "Please select message provider type",
     "new_role": "New Role",
     "adding_new_permission": "Adding new permission",
+    "role_permission_mapping_description": "Manage role-to-permission mappings for the Admin UI",
     "add_role": "Add Role",
     "success_in_saving": "Changes saved successfully",
     "fido_config_updated_successfully": "FIDO configuration updated successfully",
