@@ -29,7 +29,7 @@ const MappingPage: React.FC = React.memo(function MappingPage() {
     [hasCedarReadPermission, mappingResourceId],
   )
 
-  const { mapping, roles, isLoading, isError } = useMappingData(canReadMapping)
+  const { mapping, isLoading, isError } = useMappingData(canReadMapping)
 
   useEffect(() => {
     if (mappingScopes && mappingScopes.length > 0) {
