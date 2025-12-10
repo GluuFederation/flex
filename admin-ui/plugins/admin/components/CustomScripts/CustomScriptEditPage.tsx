@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import { useParams, useSearchParams } from 'react-router-dom'
+import { useParams, useMatch } from 'react-router-dom'
 import { CardBody, Card } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import CustomScriptForm from './CustomScriptForm'
@@ -8,6 +8,7 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { useTranslation } from 'react-i18next'
 import { Alert, Box } from '@mui/material'
 import { useCustomScript, useUpdateCustomScript, useMutationEffects } from './hooks'
+import { ROUTES } from '@/helpers/navigation'
 import type { CustomScript } from 'JansConfigApi'
 import type { SubmitData } from './types'
 
@@ -15,9 +16,8 @@ function CustomScriptEditPage() {
   const { id: inum } = useParams<{ id: string }>()
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  const [searchParams] = useSearchParams()
 
-  const viewOnly = searchParams.get('view') === 'true'
+  const viewMatch = useMatch(ROUTES.CUSTOM_SCRIPT_VIEW_TEMPLATE)
 
   const { data: script, isLoading: loadingScript, error: fetchError } = useCustomScript(inum || '')
 
@@ -36,13 +36,9 @@ function CustomScriptEditPage() {
     }
 
     try {
-      const {
-        action_message,
-        script_path: _scriptPath,
-        location_type: _locationType,
-        ...scriptData
-      } = data.customScript
-
+      const { action_message, script_path, location_type, ...scriptData } = data.customScript
+      void script_path
+      void location_type
       await updateMutation.mutateAsync({
         data: scriptData as CustomScript,
         actionMessage: action_message,
@@ -87,7 +83,7 @@ function CustomScriptEditPage() {
     <GluuLoader blocking={updateMutation.isPending}>
       <Card className="mb-3" type="border" color={null}>
         <CardBody>
-          <CustomScriptForm item={script} viewOnly={viewOnly} handleSubmit={handleSubmit} />
+          <CustomScriptForm item={script} viewOnly={!!viewMatch} handleSubmit={handleSubmit} />
         </CardBody>
       </Card>
     </GluuLoader>

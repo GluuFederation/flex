@@ -52,12 +52,6 @@ export const RoutedContent = () => {
       />
       <Route path={ROUTES.ROOT} element={<Navigate to={ROUTES.HOME_DASHBOARD} />} />
 
-      {/*    Layouts     */}
-      <Route path={ROUTES.LAYOUT_NAVBAR} element={<LazyRoutes.NavbarOnly />} />
-      <Route path={ROUTES.LAYOUT_SIDEBAR} element={<LazyRoutes.SidebarDefault />} />
-      <Route path={ROUTES.LAYOUT_SIDEBAR_A} element={<LazyRoutes.SidebarA />} />
-      <Route path={ROUTES.LAYOUT_SIDEBAR_WITH_NAVBAR} element={<LazyRoutes.SidebarWithNavbar />} />
-
       {/* -------- Plugins ---------*/}
       {pluginMenus.map((item, key) => (
         <Route key={key} path={item.path} element={<item.component />} />

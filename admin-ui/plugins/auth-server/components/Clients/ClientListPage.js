@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useContext, useMemo } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { Link, Paper, TablePagination } from '@mui/material'
 import { Card, CardBody, Badge } from 'Components'
 import { getScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
@@ -50,7 +51,7 @@ function ClientListPage() {
   const userAction = {}
   const options = {}
   const myActions = []
-  const navigate = useNavigate()
+  const { navigateToRoute } = useAppNavigation()
   const { search } = useLocation()
 
   const theme = useContext(ThemeContext)
@@ -237,10 +238,10 @@ function ClientListPage() {
   function handleGoToClientEditPage(row, edition) {
     dispatch(viewOnly({ view: edition }))
     dispatch(setCurrentItem({ item: row }))
-    return navigate(`/auth-server/client/edit/:` + row.inum.substring(0, 4))
+    return navigateToRoute(ROUTES.AUTH_SERVER_CLIENT_EDIT(row.inum.substring(0, 4)))
   }
   function handleGoToClientAddPage() {
-    return navigate('/auth-server/client/new')
+    return navigateToRoute(ROUTES.AUTH_SERVER_CLIENT_ADD)
   }
   function handleClientDelete(row) {
     dispatch(setCurrentItem({ item: row }))
@@ -266,7 +267,7 @@ function ClientListPage() {
     dispatch(deleteClient({ action: userAction }))
     removeClientFromList(item)
     if (!haveScopeINUMParam) {
-      navigate('/auth-server/clients')
+      navigateToRoute(ROUTES.AUTH_SERVER_CLIENTS_LIST)
     }
     toggle()
   }

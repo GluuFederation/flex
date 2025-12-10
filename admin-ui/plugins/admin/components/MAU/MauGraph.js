@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, lazy, Suspense, useMemo } from 'react'
+import React, { useState, useEffect, useContext, useMemo } from 'react'
 import moment from 'moment'
 import Grid from '@mui/material/Grid'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
@@ -19,8 +19,7 @@ import dayjs from 'dayjs'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
-
-const ActiveUsersGraph = lazy(() => import('Routes/Dashboards/Grapths/ActiveUsersGraph'))
+import ActiveUsersGraph from './ActiveUsersGraph'
 
 function MauGraph() {
   const dispatch = useDispatch()
@@ -152,7 +151,7 @@ function MauGraph() {
                   color={`primary-${selectedTheme}`}
                   onClick={search}
                 >
-                  <i className="fa fa-search me-2"></i>
+                  <i className="fa fa-search me-2" />
                   {t('actions.view')}
                 </Button>
               </Col>
@@ -161,9 +160,7 @@ function MauGraph() {
             <FormGroup row />
             <FormGroup row>
               <Col sm={12}>
-                <Suspense fallback={<div>Loading...</div>}>
-                  <ActiveUsersGraph data={doDataAugmentation(statData)} />
-                </Suspense>
+                <ActiveUsersGraph data={doDataAugmentation(statData)} />
               </Col>
             </FormGroup>
           </CardBody>

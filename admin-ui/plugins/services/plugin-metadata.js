@@ -29,6 +29,7 @@ import {
   PERSISTENCE_DETAIL,
 } from 'Utils/PermChecker'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { ROUTES } from '@/helpers/navigation'
 
 const pluginMetadata = {
   menus: [
@@ -38,13 +39,13 @@ const pluginMetadata = {
       children: [
         {
           title: 'menus.cache',
-          path: '/config/cache',
+          path: ROUTES.SERVICES_CACHE,
           permission: CACHE_READ,
           resourceKey: ADMIN_UI_RESOURCES.Cache,
         },
         {
           title: 'menus.persistence',
-          path: '/config/persistence',
+          path: ROUTES.SERVICES_PERSISTENCE,
           permission: PERSISTENCE_DETAIL,
           resourceKey: ADMIN_UI_RESOURCES.Persistence,
         },
@@ -54,49 +55,49 @@ const pluginMetadata = {
   routes: [
     {
       component: CachePage,
-      path: '/config/cache',
+      path: ROUTES.SERVICES_CACHE,
       permission: CACHE_READ,
       resourceKey: ADMIN_UI_RESOURCES.Cache,
     },
     {
       component: PersistenceDetail,
-      path: '/config/persistence',
+      path: ROUTES.SERVICES_PERSISTENCE,
       permission: PERSISTENCE_DETAIL,
       resourceKey: ADMIN_UI_RESOURCES.Persistence,
     },
     {
       component: LdapEditPage,
-      path: '/config/ldap/edit/:configId',
+      path: ROUTES.LDAP_EDIT_TEMPLATE,
       permission: CACHE_WRITE,
     },
     {
       component: LdapAddPage,
-      path: '/config/ldap/new',
+      path: ROUTES.LDAP_ADD,
       permission: LDAP_WRITE,
     },
     {
       component: LdapListPage,
-      path: '/config/ldap',
+      path: ROUTES.LDAP_LIST,
       permission: LDAP_READ,
     },
     {
       component: SqlEditPage,
-      path: '/config/sql/edit/:configId',
+      path: ROUTES.SQL_EDIT_TEMPLATE,
       permission: SQL_WRITE,
     },
     {
       component: SqlAddPage,
-      path: '/config/sql/new',
+      path: ROUTES.SQL_ADD,
       permission: SQL_WRITE,
     },
     {
       component: SqlListPage,
-      path: '/config/sql',
+      path: ROUTES.SQL_LIST,
       permission: SQL_READ,
     },
     {
       component: CouchbasePage,
-      path: '/config/couchbase',
+      path: ROUTES.SERVICES_COUCHBASE,
       permission: COUCHBASE_READ,
     },
   ],

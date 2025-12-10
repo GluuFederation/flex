@@ -6,7 +6,7 @@ import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useSelector, useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import {
   editLDAPAuthAcr,
   editScriptAuthAcr,
@@ -16,7 +16,7 @@ import {
 
 function AuthNEditPage() {
   const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const { navigateToRoute } = useAppNavigation()
   const { t } = useTranslation()
   const item = useSelector((state) => state.authNReducer.item)
   const loading = useSelector((state) => state.authNReducer.loading)
@@ -26,10 +26,10 @@ function AuthNEditPage() {
     if (success) {
       dispatch(setSuccess({ data: false }))
       setTimeout(() => {
-        navigate('/auth-server/authn')
+        navigateToRoute(ROUTES.AUTH_SERVER_AUTHN)
       }, [2000])
     }
-  }, [success])
+  }, [success, navigateToRoute])
 
   function handleSubmit(data) {
     const payload = {}

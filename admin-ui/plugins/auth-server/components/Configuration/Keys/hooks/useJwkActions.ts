@@ -1,13 +1,12 @@
 import { useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { ROUTES } from '../constants'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 export function useJwkActions() {
-  const navigate = useNavigate()
+  const { navigateToRoute } = useAppNavigation()
 
   const navigateToKeysList = useCallback(() => {
-    navigate(ROUTES.KEYS_LIST)
-  }, [navigate])
+    navigateToRoute(ROUTES.AUTH_SERVER_CONFIG_KEYS)
+  }, [navigateToRoute])
 
   return {
     navigateToKeysList,

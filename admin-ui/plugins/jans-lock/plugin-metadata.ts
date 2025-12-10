@@ -1,15 +1,14 @@
 import { JANS_LOCK_READ } from 'Utils/PermChecker'
 import JansLock from './components/JansLock'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-
-const PLUGIN_BASE_PATH = '/jans-lock'
+import { ROUTES } from '@/helpers/navigation'
 
 const pluginMetadata = {
   menus: [
     {
       title: 'titles.jans_lock',
       icon: 'jans_lock',
-      path: PLUGIN_BASE_PATH,
+      path: ROUTES.JANS_LOCK_BASE,
       permission: JANS_LOCK_READ,
       resourceKey: ADMIN_UI_RESOURCES.Lock,
     },
@@ -17,7 +16,7 @@ const pluginMetadata = {
   routes: [
     {
       component: JansLock,
-      path: PLUGIN_BASE_PATH,
+      path: ROUTES.JANS_LOCK_BASE,
       permission: JANS_LOCK_READ,
       resourceKey: ADMIN_UI_RESOURCES.Lock,
     },
