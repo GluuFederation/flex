@@ -123,6 +123,7 @@
   "actions": {
     "accept": "J'accepte",
     "add_attribute_mapping": "Ajouter un mappage d'attributs",
+    "add_custom_attributes": "Ajouter des attributs personnalisés",
     "add": "Ajouter",
     "add_ldap_configuration": "Ajouter une configuration LDAP",
     "add_mapping": "Ajouter un Mapping",
@@ -171,7 +172,8 @@
     "add_source_attribute": "Ajouter un attribut source",
     "add_source_ldap_server": "Ajouter un serveur LDAP source",
     "remove_source_server": "Supprimer le serveur source",
-    "copy_to_clipboard": "Copier dans le presse-papier"
+    "copy_to_clipboard": "Copier dans le presse-papier",
+    "refresh": "Actualiser"
   },
   "fields": {
     "asset_name": "Asset Name",
@@ -666,7 +668,9 @@
     "skip_defined_password_validation": "Ignorer la Validation du Mot de Passe Défini",
     "auiPolicyStoreUrl": "Magasin de politiques à distance de l'interface d'administration",
     "configApiPolicyStoreUrl": "Magasin de politiques de configuration de l'API",
-    "cedarlingPolicyStoreRetrievalPoint": "Point de récupération des politiques"
+    "cedarlingPolicyStoreRetrievalPoint": "Point de récupération des politiques",
+    "log_entry": "Entrée de journal",
+    "page_size": "Taille de la page"
   },
   "messages": {
     "add_permission": "Ajouter une autorisation",
@@ -793,7 +797,15 @@
     "user_updated_successfully": "Utilisateur mis à jour avec succès",
     "user_deleted_successfully": "Utilisateur supprimé avec succès",
     "password_changed_successfully": "Mot de passe modifié avec succès",
-    "device_deleted_successfully": "Appareil supprimé avec succès"
+    "device_deleted_successfully": "Appareil supprimé avec succès",
+    "error_loading_data": "Échec du chargement des données",
+    "try_again_later": "Veuillez réessayer plus tard",
+    "no_data": "Aucune donnée trouvée",
+    "adjust_filters": "Ajustez vos filtres ou la plage de dates pour trouver les journaux d'audit",
+    "audit_description": "Afficher et rechercher les journaux d'audit du système dans une plage de dates",
+    "showing_entries": "Affichage de {{start}} à {{end}} sur {{total}} entrées",
+    "start_date_after_end": "La date de début ne peut pas être postérieure à la date de fin",
+    "both_dates_required": "Les dates de début et de fin sont requises pour le filtrage par plage de dates"
   },
   "errors": {
     "attribute_create_failed": "Erreur lors de la création de l'attribut",
