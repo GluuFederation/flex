@@ -221,11 +221,9 @@ const SettingsPage: React.FC = () => {
   const { resetForm } = formik
 
   const isPagingSizeChanged = currentPagingSize !== baselinePagingSize
-  const isAdditionalParamsChanged = useMemo(() => {
-    const initial = initialValues.additionalParameters || []
-    const current = formik.values.additionalParameters || []
-    return JSON.stringify(initial) !== JSON.stringify(current)
-  }, [initialValues.additionalParameters, formik.values.additionalParameters])
+  const isAdditionalParamsChanged =
+    JSON.stringify(formik.initialValues.additionalParameters ?? []) !==
+    JSON.stringify(formik.values.additionalParameters ?? [])
   const isFormChanged = formik.dirty || isPagingSizeChanged || isAdditionalParamsChanged
   const hasErrors = !formik.isValid
   const isSubmitting = editConfigMutation.isPending
