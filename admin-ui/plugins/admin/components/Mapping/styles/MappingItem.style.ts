@@ -1,118 +1,50 @@
 import customColors from '@/customColors'
 
 export const mappingItemStyles = {
-  permissionRow: {
-    alignItems: 'center',
-    padding: '2px 0',
+  accordion: {
+    marginBottom: 12,
+    border: '1px solid',
+    borderColor: 'rgba(0, 0, 0, 0.12)',
+    borderRadius: 8,
+    boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
   },
 
-  permissionText: {
-    fontSize: '14px',
-    fontWeight: '500',
+  accordionSummary: {
+    borderRadius: 8,
+  },
+
+  permissionChip: {
+    fontSize: '0.75rem',
+    height: 28,
+  },
+
+  countChip: {
+    fontWeight: 500,
+    fontSize: '0.75rem',
   },
 
   buttonContainer: {
     display: 'flex',
     justifyContent: 'flex-end',
+    gap: 8,
   },
 
   removeButton: {
     backgroundColor: customColors.accentRed,
     borderColor: customColors.accentRed,
-    borderRadius: '4px',
+    borderRadius: 4,
     padding: '6px 12px',
     fontSize: '12px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '4px',
-    minWidth: '80px',
-    justifyContent: 'center',
     color: customColors.white,
   },
 
   addButton: {
     backgroundColor: customColors.logo,
     borderColor: customColors.logo,
-    borderRadius: '4px',
+    borderRadius: 4,
     padding: '6px 12px',
     fontSize: '12px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '4px',
-    minWidth: '80px',
-    justifyContent: 'center',
     color: customColors.white,
-  },
-
-  sectionDivider: {
-    margin: '40px 0',
-    borderTop: `1px solid ${customColors.darkGray}`,
-    paddingTop: '40px',
-  },
-
-  essentialSectionHeader: {
-    marginBottom: '7px',
-  },
-
-  essentialTitle: {
-    fontWeight: '600',
-    fontSize: '16px',
-    color: customColors.accentRed,
-    textTransform: 'uppercase' as const,
-    letterSpacing: '0.5px',
-    marginTop: '30px',
-    display: 'flex',
-    alignItems: 'center',
-  },
-
-  tooltipIcon: {
-    width: '18px',
-    height: '18px',
-    marginLeft: '8px',
-    color: customColors.darkGray,
-    cursor: 'pointer',
-  },
-
-  essentialSubtitle: {
-    color: customColors.darkGray,
-    fontSize: '12px',
-    margin: '0',
-    fontStyle: 'italic' as const,
-  },
-
-  essentialPermissionRow: {
-    alignItems: 'center',
-    padding: '2px 0',
-  },
-
-  essentialPermissionText: {
-    fontSize: '14px',
-    fontWeight: '500',
-    display: 'flex',
-    alignItems: 'center',
-  },
-
-  essentialIcon: {
-    marginRight: '8px',
-    fontSize: '12px',
-  },
-
-  permissionColumn: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-
-  removeButtonHover: {
-    backgroundColor: customColors.accentRed,
-    borderColor: customColors.accentRed,
-  },
-
-  addButtonHover: {
-    backgroundColor: customColors.logo,
-    borderColor: customColors.logo,
-  },
-  essentialSection: {
-    marginBottom: '20px',
   },
 }
 
