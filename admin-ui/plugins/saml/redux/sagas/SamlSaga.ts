@@ -29,6 +29,7 @@ import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { updateToast } from 'Redux/features/toastSlice'
 import { CREATE, DELETION, UPDATE } from '../../../../app/audit/UserActionType'
 import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSaga'
+import { AUDIT_RESOURCE_NAMES } from '../../helper/constants'
 import type {
   SamlRootState,
   PutSamlPropertiesSagaPayload,
@@ -142,7 +143,7 @@ export function* putSamlProperties({
 }: PayloadAction<PutSamlPropertiesSagaPayload>): SagaIterator<SamlConfiguration | Error | void> {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, UPDATE, 'SAML', toAdditionalPayload(payload))
+    addAdditionalData(audit, UPDATE, AUDIT_RESOURCE_NAMES.SAML, toAdditionalPayload(payload))
     const api: SamlApi = yield* newSamlConfigFunction()
     const data: SamlConfiguration = yield call(api.putSamlProperties, {
       samlAppConfiguration: payload.action.action_data,
@@ -185,7 +186,12 @@ export function* postTrustRelationship({
 > {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, CREATE, 'TRUST-RELATIONSHIP', toAdditionalPayload(payload))
+    addAdditionalData(
+      audit,
+      CREATE,
+      AUDIT_RESOURCE_NAMES.TRUST_RELATIONSHIP,
+      toAdditionalPayload(payload),
+    )
     const token: string = yield select(
       (state: SamlRootState) => state.authReducer.token.access_token,
     )
@@ -218,7 +224,12 @@ export function* updateTrustRelationship({
 > {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, UPDATE, 'TRUST-RELATIONSHIP', toAdditionalPayload(payload))
+    addAdditionalData(
+      audit,
+      UPDATE,
+      AUDIT_RESOURCE_NAMES.TRUST_RELATIONSHIP,
+      toAdditionalPayload(payload),
+    )
     const token: string = yield select(
       (state: SamlRootState) => state.authReducer.token.access_token,
     )
@@ -251,7 +262,12 @@ export function* deleteTrustRelationship({
 > {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, DELETION, 'TRUST-RELATIONSHIP', toAdditionalPayload(payload))
+    addAdditionalData(
+      audit,
+      DELETION,
+      AUDIT_RESOURCE_NAMES.TRUST_RELATIONSHIP,
+      toAdditionalPayload(payload),
+    )
     const api: SamlApi = yield* newTrustRelationFunction()
     yield call(api.deleteTrustRelationship, payload.action.action_data)
     yield put(deleteTrustRelationshipResponse())
@@ -274,7 +290,12 @@ export function* postSamlIdentity({
 }: PayloadAction<CreateSamlIdentitySagaPayload>): SagaIterator<SamlIdentityCreateResponse | Error> {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, CREATE, 'SAML', toAdditionalPayload(payload))
+    addAdditionalData(
+      audit,
+      CREATE,
+      AUDIT_RESOURCE_NAMES.IDENTITY_BROKERING,
+      toAdditionalPayload(payload),
+    )
     const token: string = yield select(
       (state: SamlRootState) => state.authReducer.token.access_token,
     )
@@ -307,7 +328,12 @@ export function* updateSamlIdentity({
 > {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, UPDATE, 'SAML', toAdditionalPayload(payload))
+    addAdditionalData(
+      audit,
+      UPDATE,
+      AUDIT_RESOURCE_NAMES.IDENTITY_BROKERING,
+      toAdditionalPayload(payload),
+    )
     const token: string = yield select(
       (state: SamlRootState) => state.authReducer.token.access_token,
     )
@@ -338,7 +364,12 @@ export function* deleteSamlIdentity({
 }: PayloadAction<DeleteSamlIdentitySagaPayload>): SagaIterator<SamlApiResponse | Error> {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, DELETION, 'SAML', toAdditionalPayload(payload))
+    addAdditionalData(
+      audit,
+      DELETION,
+      AUDIT_RESOURCE_NAMES.IDENTITY_BROKERING,
+      toAdditionalPayload(payload),
+    )
     const api: SamlApi = yield* newSamlIdentityFunction()
     const data: SamlApiResponse = yield call(
       api.deleteSamlIdentityProvider,

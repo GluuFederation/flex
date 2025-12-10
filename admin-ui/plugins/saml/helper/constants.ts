@@ -26,3 +26,9 @@ export const nameIDPolicyFormat: NameIdPolicyFormatOption[] = [
   },
 ] as const
 
+// Audit resource names
+export const AUDIT_RESOURCE_NAMES = {
+  SAML: 'SAML',
+  IDENTITY_BROKERING: 'Identity-Brokering',
+  TRUST_RELATIONSHIP: 'Trust-Relationship',
+} as const
