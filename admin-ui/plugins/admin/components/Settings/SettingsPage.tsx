@@ -74,7 +74,7 @@ const SettingsPage: React.FC = () => {
   const theme = useContext(ThemeContext)
   const queryClient = useQueryClient()
 
-  const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
+  const { hasCedarReadPermission, authorizeHelper } = useCedarling()
 
   const authState = useSelector((state: RootState) => ({
     token: state.authReducer?.token?.access_token,
@@ -108,10 +108,6 @@ const SettingsPage: React.FC = () => {
   const canReadSettings = useMemo(
     () => hasCedarReadPermission(settingsResourceId),
     [hasCedarReadPermission, settingsResourceId],
-  )
-  const canWriteSettings = useMemo(
-    () => hasCedarWritePermission(settingsResourceId),
-    [hasCedarWritePermission, settingsResourceId],
   )
 
   const pageTitle = t('titles.application_settings')
@@ -347,7 +343,6 @@ const SettingsPage: React.FC = () => {
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         handlePagingSizeChange(Number.parseInt(e.target.value, 10))
                       }
-                      disabled={!canWriteSettings}
                     >
                       {PAGING_SIZE_OPTIONS.map((option) => (
                         <option value={String(option)} key={option}>
@@ -373,7 +368,6 @@ const SettingsPage: React.FC = () => {
                 showError={Boolean(
                   formik.errors.sessionTimeoutInMins && formik.touched.sessionTimeoutInMins,
                 )}
-                disabled={!canWriteSettings}
               />
 
               <FormGroup row>
@@ -392,7 +386,6 @@ const SettingsPage: React.FC = () => {
                       name="acrValues"
                       value={formik.values.acrValues}
                       onChange={formik.handleChange}
-                      disabled={!canWriteSettings}
                     >
                       <option value="">{t('actions.choose')}...</option>
                       {authScripts.map((item) => (
@@ -422,7 +415,6 @@ const SettingsPage: React.FC = () => {
                     doc_entry="cedarSwitch"
                     lsize={4}
                     rsize={8}
-                    disabled={!canWriteSettings}
                     handler={(event: React.ChangeEvent<HTMLInputElement>) => {
                       formik.setFieldValue(
                         'cedarlingLogType',
