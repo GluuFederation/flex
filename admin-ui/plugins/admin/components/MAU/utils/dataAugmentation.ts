@@ -20,7 +20,7 @@ export function generateMonthRange(startDate: Dayjs, endDate: Dayjs): number[] {
 
 export function transformRawStatEntry(raw: RawStatEntry): MauStatEntry {
   return {
-    month: raw.month ?? 0,
+    month: typeof raw.month === 'string' ? Number.parseInt(raw.month, 10) : (raw.month ?? 0),
     mau: raw.monthly_active_users ?? 0,
     client_credentials_access_token_count:
       raw.token_count_per_granttype?.client_credentials?.access_token ?? 0,

@@ -9,7 +9,7 @@ export interface MauStatEntry {
 }
 
 export interface RawStatEntry {
-  month?: number
+  month?: string | number
   monthly_active_users?: number
   token_count_per_granttype?: {
     client_credentials?: {
