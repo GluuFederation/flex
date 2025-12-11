@@ -264,12 +264,16 @@ const WebsiteSsoServiceProviderForm = ({
   const handleFormSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
-      if (
-        !formik.values.metaDataFile &&
-        formik.values.spMetaDataSourceType?.toLowerCase() === 'file'
-      ) {
-        formik.setFieldTouched('metaDataFile', true)
-        return
+
+      if (formik.values.spMetaDataSourceType?.toLowerCase() === 'file') {
+        const hasMetadata =
+          formik.values.metaDataFile ||
+          formik.values.metaDataFileImportedFlag ||
+          formik.values.spMetaDataFN
+        if (!hasMetadata) {
+          formik.setFieldTouched('metaDataFile', true)
+          return
+        }
       }
       formik.handleSubmit(e)
     },
