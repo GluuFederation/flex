@@ -39,7 +39,7 @@ import type {
   CreateWebsiteSsoServiceProviderSagaPayload,
   UpdateWebsiteSsoServiceProviderSagaPayload,
   DeleteWebsiteSsoServiceProviderSagaPayload,
-} from './types/saml'
+} from '../../types/saga'
 import type {
   SamlConfiguration,
   WebsiteSsoServiceProviderListResponse,
@@ -275,7 +275,9 @@ export function* deleteWebsiteSsoServiceProvider({
     yield put(deleteWebsiteSsoServiceProviderResponse())
     yield call(getWebsiteSsoServiceProvidersSaga)
     yield call(postUserAction, audit)
-    yield* triggerWebhook({ payload: { createdFeatureValue: payload.action.action_data } })
+    yield* triggerWebhook({
+      payload: { createdFeatureValue: payload.action.action_data },
+    })
     yield put(updateToast(true, 'success', 'Data deleted successfully'))
     return { success: true } as SamlApiResponse
   } catch (e) {
@@ -373,10 +375,8 @@ export function* deleteSamlIdentity({
       toAdditionalPayload(payload),
     )
     const api: SamlApi = yield* newSamlIdentityFunction()
-    const data: SamlApiResponse = yield call(
-      api.deleteSamlIdentityProvider,
-      payload.action.action_data,
-    )
+    const inum = payload.action.action_data
+    const data: SamlApiResponse = yield call(api.deleteSamlIdentityProvider, inum)
     yield put(deleteSamlIdentityResponse())
     yield put(getSamlIdentities({} as GetSamlIdentityProviderPayload))
     yield call(postUserAction, audit)

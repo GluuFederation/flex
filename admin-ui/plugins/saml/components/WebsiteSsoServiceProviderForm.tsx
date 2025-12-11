@@ -201,7 +201,7 @@ const WebsiteSsoServiceProviderForm = ({
   const submitForm = useCallback(
     (messages: string) => {
       toggle()
-      handleSubmit(formik.getValues(), messages)
+      handleSubmit(formik.values, messages)
     },
     [toggle, handleSubmit, formik],
   )

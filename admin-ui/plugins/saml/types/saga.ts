@@ -13,18 +13,26 @@ export interface SamlRootState {
 export type {
   SamlConfiguration as SamlProperties,
   PutSamlPropertiesPayload as PutSamlPropertiesSagaPayload,
-} from '../../../types/redux'
+} from './redux'
 
-type SamlAction<TData, TInum = never> = {
+type SamlAction<TData> = {
   action: {
     action_message: string
     action_data: TData
-  } & (TInum extends never ? Record<string, never> : { action_inum: TInum })
+  }
+}
+
+type SamlActionWithInum<TData> = {
+  action: {
+    action_message: string
+    action_data: TData
+    action_inum: string
+  }
 }
 
 export interface CreateSamlIdentitySagaPayload extends SamlAction<FormData> {}
-export interface UpdateSamlIdentitySagaPayload extends SamlAction<FormData, string> {}
+export interface UpdateSamlIdentitySagaPayload extends SamlActionWithInum<FormData> {}
 export interface DeleteSamlIdentitySagaPayload extends SamlAction<string> {}
 export interface CreateWebsiteSsoServiceProviderSagaPayload extends SamlAction<FormData> {}
-export interface UpdateWebsiteSsoServiceProviderSagaPayload extends SamlAction<FormData, string> {}
+export interface UpdateWebsiteSsoServiceProviderSagaPayload extends SamlActionWithInum<FormData> {}
 export interface DeleteWebsiteSsoServiceProviderSagaPayload extends SamlAction<string> {}
