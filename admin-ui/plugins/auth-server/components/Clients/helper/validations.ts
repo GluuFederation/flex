@@ -32,9 +32,9 @@ export const clientValidationSchema = Yup.object().shape({
   displayName: Yup.string().nullable(),
   redirectUris: Yup.array()
     .of(uriValidation)
-    .when('grantTypes', (grantTypes: string[] = [], schema) => {
-      const needsRedirect =
-        grantTypes.includes('authorization_code') || grantTypes.includes('implicit')
+    .when('grantTypes', ([grantTypes], schema) => {
+      const grants = grantTypes || []
+      const needsRedirect = grants.includes('authorization_code') || grants.includes('implicit')
       return needsRedirect
         ? schema.min(
             1,
@@ -57,7 +57,7 @@ export const clientValidationSchema = Yup.object().shape({
   defaultMaxAge: Yup.number().nullable().min(0, 'Must be a non-negative number'),
   expirationDate: Yup.string()
     .nullable()
-    .when('expirable', (expirable: boolean, schema) =>
+    .when('expirable', ([expirable], schema) =>
       expirable
         ? schema.required('Expiration date is required when client is set to expire')
         : schema,
