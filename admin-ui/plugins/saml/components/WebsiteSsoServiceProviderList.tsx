@@ -175,7 +175,7 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: handleRefresh,
-    } as Action<WebsiteSsoServiceProvider> & { 'data-testid'?: string })
+    })
     return actions
   }, [
     canReadWebsiteSsoServiceProviders,

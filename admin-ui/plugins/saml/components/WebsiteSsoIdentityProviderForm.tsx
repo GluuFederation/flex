@@ -206,7 +206,7 @@ const WebsiteSsoIdentityProviderForm = ({
 
   const handleClearFiles = useCallback(() => {
     formik.setFieldValue('metaDataFile', null, true)
-    formik.setFieldValue('metaDataFileImportedFlag', true, true)
+    formik.setFieldValue('metaDataFileImportedFlag', false, true)
     formik.setFieldTouched('metaDataFile', true)
   }, [formik])
 
@@ -518,7 +518,7 @@ const WebsiteSsoIdentityProviderForm = ({
                   showApply={!viewOnly}
                   onApply={toggle}
                   onCancel={handleCancel}
-                  onBack={navigateBack}
+                  onBack={() => navigateBack(ROUTES.SAML_IDP_LIST)}
                   disableBack={false}
                   disableCancel={!formik.dirty}
                   disableApply={isApplyDisabled}

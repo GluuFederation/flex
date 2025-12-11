@@ -78,10 +78,9 @@ const WebsiteSsoServiceProviderForm = ({
   SetTitle(title)
 
   const loading = useSelector((state: SamlRootState) => state.idpSamlReducer.loading)
+  const savedForm = useSelector((state: SamlRootState) => state.idpSamlReducer.savedForm)
   const dispatch = useDispatch()
   const { navigateBack } = useAppNavigation()
-
-  const savedForm = useSelector((state: SamlRootState) => state.idpSamlReducer.savedForm)
   const [modal, setModal] = useState<boolean>(false)
 
   const {
@@ -202,9 +201,9 @@ const WebsiteSsoServiceProviderForm = ({
   const submitForm = useCallback(
     (messages: string) => {
       toggle()
-      handleSubmit(formik.values, messages)
+      handleSubmit(formik.getValues(), messages)
     },
-    [toggle, formik.values, handleSubmit],
+    [toggle, handleSubmit, formik],
   )
 
   const saveSelectedScopes = useCallback(
