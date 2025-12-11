@@ -1,0 +1,317 @@
+import type {
+  ExtendedClient,
+  ClientFormValues,
+  ModifiedFields,
+  ClientScope,
+  AddFormValues,
+} from '../types'
+import { EMPTY_CLIENT } from '../types'
+import { SECRET_GENERATION } from './constants'
+
+interface ScopeEntry {
+  dn?: string
+  inum?: string
+  id?: string
+  displayName?: string
+  description?: string
+}
+
+export function transformScopesResponse(entries: ScopeEntry[] | undefined | null): ClientScope[] {
+  return (entries || []).map(
+    (scope): ClientScope => ({
+      dn: scope.dn || '',
+      inum: scope.inum,
+      id: scope.id,
+      displayName: scope.displayName || scope.id,
+      description: scope.description,
+    }),
+  )
+}
+
+export function buildAddFormPayload(formValues: AddFormValues): ClientFormValues {
+  const payload = {
+    ...(EMPTY_CLIENT as ExtendedClient),
+    ...formValues,
+    redirectUris: formValues.redirectUris.filter(Boolean),
+    postLogoutRedirectUris: formValues.postLogoutRedirectUris.filter(Boolean),
+    attributes: {
+      ...EMPTY_CLIENT.attributes,
+    },
+  }
+  return payload as ClientFormValues
+}
+
+export function buildClientInitialValues(client: Partial<ExtendedClient>): ClientFormValues {
+  const merged = {
+    ...EMPTY_CLIENT,
+    ...client,
+    attributes: {
+      ...EMPTY_CLIENT.attributes,
+      ...client.attributes,
+    },
+    expirable: Boolean(client.expirationDate),
+  }
+
+  return merged as ClientFormValues
+}
+
+export function buildClientPayload(values: ClientFormValues): ExtendedClient {
+  const {
+    expirable,
+    authenticationMethod,
+    allAuthenticationMethods,
+    customAttributes,
+    dn,
+    baseDn,
+    deletable,
+    ...rest
+  } = values as ClientFormValues & {
+    authenticationMethod?: string
+    allAuthenticationMethods?: string[]
+    dn?: string
+    baseDn?: string
+    deletable?: boolean
+  }
+
+  const payload: ExtendedClient = {
+    ...rest,
+    accessTokenAsJwt:
+      typeof rest.accessTokenAsJwt === 'string'
+        ? rest.accessTokenAsJwt === 'true'
+        : rest.accessTokenAsJwt,
+    rptAsJwt: typeof rest.rptAsJwt === 'string' ? rest.rptAsJwt === 'true' : rest.rptAsJwt,
+    attributes: rest.attributes ? { ...rest.attributes } : undefined,
+  }
+
+  if (customAttributes && Array.isArray(customAttributes)) {
+    const localizedNames = [
+      'displayNameLocalized',
+      'jansClntURILocalized',
+      'jansLogoURILocalized',
+      'jansPolicyURILocalized',
+      'jansTosURILocalized',
+    ]
+    const filteredCustomAttributes = customAttributes.filter((attr) => {
+      if (!attr.name) return false
+      if (localizedNames.includes(attr.name)) {
+        const value = attr.value || attr.values?.[0]
+        if (value === '{}' || value === '') return false
+      }
+      return true
+    })
+    if (filteredCustomAttributes.length > 0) {
+      payload.customAttributes = filteredCustomAttributes
+    }
+  }
+
+  const localizedFields = [
+    'clientNameLocalized',
+    'logoUriLocalized',
+    'clientUriLocalized',
+    'policyUriLocalized',
+    'tosUriLocalized',
+  ] as const
+
+  for (const field of localizedFields) {
+    if (payload[field] && Object.keys(payload[field] as object).length === 0) {
+      delete payload[field]
+    }
+  }
+
+  // Deep clone to ensure clean serializable object for API submission.
+  // Note: This strips undefined values and converts Date objects to ISO strings,
+  // which is the desired behavior for JSON API payloads.
+  return JSON.parse(JSON.stringify(payload))
+}
+
+export function hasFormChanges(
+  currentValues: ClientFormValues,
+  initialValues: ClientFormValues,
+): boolean {
+  return JSON.stringify(currentValues) !== JSON.stringify(initialValues)
+}
+
+export function trackFieldChange(
+  fieldLabel: string,
+  value: unknown,
+  setModifiedFields: React.Dispatch<React.SetStateAction<ModifiedFields>>,
+): void {
+  setModifiedFields((prev) => ({
+    ...prev,
+    [fieldLabel]: value,
+  }))
+}
+
+export function formatScopeDisplay(scopeDn: string): string {
+  const parts = scopeDn.split(',')
+  const inumPart = parts.find((p) => p.startsWith('inum='))
+  if (inumPart) {
+    return inumPart.replace('inum=', '')
+  }
+  return scopeDn
+}
+
+export function formatGrantTypeLabel(grantType: string): string {
+  const labels: Record<string, string> = {
+    'authorization_code': 'Authorization Code',
+    'implicit': 'Implicit',
+    'refresh_token': 'Refresh Token',
+    'client_credentials': 'Client Credentials',
+    'password': 'Password',
+    'urn:ietf:params:oauth:grant-type:uma-ticket': 'UMA Ticket',
+    'urn:openid:params:grant-type:ciba': 'CIBA',
+    'urn:ietf:params:oauth:grant-type:device_code': 'Device Code',
+    'urn:ietf:params:oauth:grant-type:token-exchange': 'Token Exchange',
+    'urn:ietf:params:oauth:grant-type:jwt-bearer': 'JWT Bearer',
+  }
+  return labels[grantType] || grantType
+}
+
+export function formatResponseTypeLabel(responseType: string): string {
+  const labels: Record<string, string> = {
+    code: 'Code',
+    token: 'Token',
+    id_token: 'ID Token',
+  }
+  return labels[responseType] || responseType
+}
+
+export function extractInumFromDn(dn: string): string {
+  const match = dn.match(/inum=([^,]+)/)
+  return match ? match[1] : dn
+}
+
+export function buildScopeDn(inum: string): string {
+  return `inum=${inum},ou=scopes,o=jans`
+}
+
+export function filterScriptsByType(
+  scripts: Array<{ scriptType?: string; enabled?: boolean; dn?: string; name?: string }>,
+  scriptType: string,
+): Array<{ dn: string; name: string }> {
+  return scripts
+    .filter((script) => script.scriptType === scriptType && script.enabled)
+    .map((script) => ({
+      dn: script.dn || '',
+      name: script.name || '',
+    }))
+}
+
+export function getScriptNameFromDn(
+  dn: string,
+  scripts: Array<{ dn?: string; name?: string }>,
+): string {
+  const script = scripts.find((s) => s.dn === dn)
+  return script?.name || extractInumFromDn(dn)
+}
+
+export function formatDateForDisplay(dateString: string | undefined): string {
+  if (!dateString) return ''
+  try {
+    const date = new Date(dateString)
+    if (isNaN(date.getTime())) return dateString
+    return date.toLocaleString()
+  } catch {
+    return dateString
+  }
+}
+
+export function formatDateTime(dateString?: string, fallback = '--'): string {
+  if (!dateString) return fallback
+  try {
+    const date = new Date(dateString)
+    if (isNaN(date.getTime())) return dateString
+    return date.toLocaleString()
+  } catch {
+    return dateString
+  }
+}
+
+export function formatDateForInput(dateString: string | undefined): string {
+  if (!dateString) return ''
+  try {
+    const date = new Date(dateString)
+    if (isNaN(date.getTime())) return ''
+    return date.toISOString().slice(0, 16)
+  } catch {
+    return ''
+  }
+}
+
+export function isValidUrl(url: string): boolean {
+  try {
+    new URL(url)
+    return true
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Checks if a string has a valid URI scheme prefix.
+ * Note: For form validation with optional fields and custom scheme support,
+ * use isValidUri from validations.ts instead.
+ */
+export function hasValidUriScheme(uri: string): boolean {
+  if (!uri) return false
+  const uriPattern = /^[a-zA-Z][a-zA-Z0-9+.-]*:/
+  return uriPattern.test(uri)
+}
+
+export function downloadClientAsJson(client: ExtendedClient): void {
+  const jsonData = JSON.stringify(client, null, 2)
+  const blob = new Blob([jsonData], { type: 'application/json' })
+  const link = document.createElement('a')
+  link.href = URL.createObjectURL(blob)
+  // Sanitize filename to avoid invalid characters on various platforms
+  const rawName = client.displayName || client.clientName || 'client-data'
+  const safeName = rawName.replace(/[^a-zA-Z0-9._-]+/g, '_')
+  link.download = `${safeName}.json`
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(link.href)
+}
+
+export function generateClientSecretPlaceholder(): string {
+  return '••••••••••••••••'
+}
+
+/**
+ * Generates a cryptographically secure random client secret.
+ * Uses the Web Crypto API (crypto.getRandomValues) which is available
+ * in all modern browsers and secure contexts.
+ *
+ * @throws {Error} If crypto.getRandomValues is not available (e.g., non-secure context)
+ * @returns {string} A random string of the configured length using the configured charset
+ */
+export function generateClientSecret(): string {
+  if (typeof crypto === 'undefined' || typeof crypto.getRandomValues !== 'function') {
+    throw new Error('Secure random generation not available. Ensure the page is served over HTTPS.')
+  }
+
+  const { LENGTH, CHARSET } = SECRET_GENERATION
+  const array = new Uint8Array(LENGTH)
+  crypto.getRandomValues(array)
+  return Array.from(array, (byte) => CHARSET[byte % CHARSET.length]).join('')
+}
+
+export function truncateText(text: string, maxLength: number): string {
+  if (text.length <= maxLength) return text
+  return `${text.substring(0, maxLength)}...`
+}
+
+export function sortByName<T extends { name?: string }>(items: T[]): T[] {
+  return [...items].sort((a, b) => (a.name || '').localeCompare(b.name || ''))
+}
+
+export function removeDuplicates<T>(arr: T[]): T[] {
+  return [...new Set(arr)]
+}
+
+export function arrayEquals(a: unknown[], b: unknown[]): boolean {
+  if (a.length !== b.length) return false
+  const sortedA = [...a].sort()
+  const sortedB = [...b].sort()
+  return sortedA.every((val, idx) => val === sortedB[idx])
+}

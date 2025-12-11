@@ -1,0 +1,50 @@
+import React, { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useDispatch } from 'react-redux'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import SetTitle from 'Utils/SetTitle'
+import { updateToast } from 'Redux/features/toastSlice'
+import { useClientActions, useCreateClient } from './hooks'
+import ClientAddForm from './components/ClientAddForm'
+import type { ClientFormValues, ModifiedFields } from './types'
+
+const ClientAddPage: React.FC = () => {
+  const { t } = useTranslation()
+  const dispatch = useDispatch()
+  const { logClientCreation, navigateToClientList } = useClientActions()
+
+  const handleSuccess = useCallback(() => {
+    navigateToClientList()
+  }, [navigateToClientList])
+
+  const createClient = useCreateClient(handleSuccess)
+
+  const handleSubmit = useCallback(
+    async (values: ClientFormValues, message: string, modifiedFields: ModifiedFields) => {
+      try {
+        const result = await createClient.mutateAsync({ data: values })
+        if (result) {
+          try {
+            await logClientCreation(result, message, modifiedFields)
+          } catch (auditError) {
+            console.error('Error logging client creation:', auditError)
+            dispatch(updateToast(true, 'warning', t('messages.audit_log_failed')))
+          }
+        }
+      } catch (error) {
+        console.error('Error creating client:', error)
+      }
+    },
+    [createClient, logClientCreation, dispatch, t],
+  )
+
+  SetTitle(t('titles.add_openid_connect_client'))
+
+  return (
+    <GluuLoader blocking={createClient.isPending}>
+      <ClientAddForm onSubmit={handleSubmit} onCancel={navigateToClientList} />
+    </GluuLoader>
+  )
+}
+
+export default ClientAddPage
