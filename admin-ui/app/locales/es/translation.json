@@ -827,6 +827,7 @@
     "permission_name_error": "Asegúrese de que el nombre del permiso tenga al menos 5 caracteres.",
     "role_name_error": "Asegúrese de que el nombre del rol tenga al menos 5 caracteres.",
     "error_message": "Mensaje de Error",
+    "section_error": "Algo salió mal en esta sección",
     "webhook_dialog_note": "NOTA: La ejecución del Webhook ha fallado y no podrá continuar en este momento.",
     "http_method_error": "Seleccione un Método HTTP.",
     "request_body_error": "El cuerpo de la solicitud HTTP es obligatorio para el método HTTP seleccionado",

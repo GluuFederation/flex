@@ -5,7 +5,6 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
 import {
   useGetOauthOpenidClients,
-  useGetOauthOpenidClientsByInum,
   usePostOauthOpenidClient,
   usePutOauthOpenidClient,
   useDeleteOauthOpenidClientByInum,
@@ -42,7 +41,13 @@ export function useClientById(inum: string, enabled = true) {
     [enabled],
   )
 
-  return useGetOauthOpenidClientsByInum(inum, queryOptions)
+  const { data, ...rest } = useGetOauthOpenidClients({ pattern: inum, limit: 1 }, queryOptions)
+
+  const client = useMemo(() => {
+    return data?.entries?.find((c: Client) => c.inum === inum)
+  }, [data?.entries, inum])
+
+  return { data: client, ...rest }
 }
 
 export function useCreateClient(onSuccess?: () => void, onError?: (error: Error) => void) {
@@ -53,10 +58,7 @@ export function useCreateClient(onSuccess?: () => void, onError?: (error: Error)
     (data: Client) => {
       dispatch(updateToast(true, 'success'))
       queryClient.invalidateQueries({
-        predicate: (query) => {
-          const queryKey = query.queryKey[0] as string
-          return queryKey === getGetOauthOpenidClientsQueryKey()[0]
-        },
+        queryKey: getGetOauthOpenidClientsQueryKey(),
       })
       dispatch(triggerWebhook({ createdFeatureValue: data }))
       onSuccess?.()
@@ -89,13 +91,7 @@ export function useUpdateClient(onSuccess?: () => void, onError?: (error: Error)
     (data: Client) => {
       dispatch(updateToast(true, 'success'))
       queryClient.invalidateQueries({
-        predicate: (query) => {
-          const queryKey = query.queryKey[0] as string
-          return (
-            queryKey === getGetOauthOpenidClientsQueryKey()[0] ||
-            queryKey === 'getOauthOpenidClientsByInum'
-          )
-        },
+        queryKey: getGetOauthOpenidClientsQueryKey(),
       })
       dispatch(triggerWebhook({ createdFeatureValue: data }))
       onSuccess?.()
@@ -127,10 +123,7 @@ export function useDeleteClient(onSuccess?: () => void, onError?: (error: Error)
   const handleSuccess = useCallback(() => {
     dispatch(updateToast(true, 'success'))
     queryClient.invalidateQueries({
-      predicate: (query) => {
-        const queryKey = query.queryKey[0] as string
-        return queryKey === getGetOauthOpenidClientsQueryKey()[0]
-      },
+      queryKey: getGetOauthOpenidClientsQueryKey(),
     })
     onSuccess?.()
   }, [dispatch, queryClient, onSuccess])

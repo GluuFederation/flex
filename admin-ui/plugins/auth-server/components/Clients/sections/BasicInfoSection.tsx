@@ -27,7 +27,7 @@ import getThemeColor from 'Context/theme/config'
 import { useDispatch } from 'react-redux'
 import { updateToast } from 'Redux/features/toastSlice'
 import type { SectionProps } from '../types'
-import { APPLICATION_TYPES, SUBJECT_TYPES } from '../helper/constants'
+import { APPLICATION_TYPES, SUBJECT_TYPES, SECRET_GENERATION } from '../helper/constants'
 
 const BasicInfoSection: React.FC<SectionProps> = ({
   formik,
@@ -70,11 +70,11 @@ const BasicInfoSection: React.FC<SectionProps> = ({
     }
   }, [formik.values.clientSecret, dispatch, t])
 
-  const generateSecret = useCallback((length = 32): string => {
-    const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*'
-    const array = new Uint8Array(length)
+  const generateSecret = useCallback((): string => {
+    const { LENGTH, CHARSET } = SECRET_GENERATION
+    const array = new Uint8Array(LENGTH)
     crypto.getRandomValues(array)
-    return Array.from(array, (byte) => charset[byte % charset.length]).join('')
+    return Array.from(array, (byte) => CHARSET[byte % CHARSET.length]).join('')
   }, [])
 
   const handleGenerateSecret = useCallback(() => {

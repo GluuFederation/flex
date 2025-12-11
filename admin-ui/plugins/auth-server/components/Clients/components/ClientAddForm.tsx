@@ -33,8 +33,9 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { useGetOauthScopes } from 'JansConfigApi'
-import { GRANT_TYPES, DEFAULT_SCOPE_SEARCH_LIMIT } from '../helper/constants'
+import { GRANT_TYPES, DEFAULT_SCOPE_SEARCH_LIMIT, SECRET_GENERATION } from '../helper/constants'
 import { buildClientPayload } from '../helper/utils'
+import { uriValidation } from '../helper/validations'
 import type { ClientFormValues, ModifiedFields, ClientScope } from '../types'
 
 interface ClientAddFormProps {
@@ -64,27 +65,6 @@ const initialValues: AddFormValues = {
   postLogoutRedirectUris: [''],
 }
 
-const urlValidation = Yup.string().test(
-  'is-valid-uri',
-  'Invalid URI format. Must be a valid URL (e.g., https://example.com) or custom scheme (e.g., myapp://callback)',
-  (value) => {
-    if (!value || value.trim() === '') return true
-    try {
-      new URL(value)
-      return true
-    } catch {
-      if (value.startsWith('http://localhost') || value.startsWith('http://127.0.0.1')) {
-        return true
-      }
-      const customSchemeRegex = /^[a-zA-Z][a-zA-Z0-9+.-]*:\/\/.+$/
-      if (customSchemeRegex.test(value)) {
-        return true
-      }
-      return false
-    }
-  },
-)
-
 const validationSchema = Yup.object().shape({
   clientName: Yup.string().required('Client name is required'),
   clientSecret: Yup.string().required('Client secret is required'),
@@ -92,12 +72,12 @@ const validationSchema = Yup.object().shape({
   scopes: Yup.array().of(Yup.string()),
   grantTypes: Yup.array().of(Yup.string()),
   redirectUris: Yup.array()
-    .of(urlValidation)
+    .of(uriValidation)
     .test('has-valid-uri', 'At least one valid redirect URI is required', (value) => {
       if (!value || value.length === 0) return false
       return value.some((uri) => uri && uri.trim() !== '')
     }),
-  postLogoutRedirectUris: Yup.array().of(urlValidation),
+  postLogoutRedirectUris: Yup.array().of(uriValidation),
 })
 
 const ClientAddForm: React.FC<ClientAddFormProps> = ({ onSubmit, onCancel }) => {
@@ -150,11 +130,11 @@ const ClientAddForm: React.FC<ClientAddFormProps> = ({ onSubmit, onCancel }) => 
     setShowSecret((prev) => !prev)
   }, [])
 
-  const generateSecret = useCallback((length = 32): string => {
-    const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*'
-    const array = new Uint8Array(length)
+  const generateSecret = useCallback((): string => {
+    const { LENGTH, CHARSET } = SECRET_GENERATION
+    const array = new Uint8Array(LENGTH)
     crypto.getRandomValues(array)
-    return Array.from(array, (byte) => charset[byte % charset.length]).join('')
+    return Array.from(array, (byte) => CHARSET[byte % CHARSET.length]).join('')
   }, [])
 
   const handleCopyToClipboard = useCallback((text: string) => {

@@ -16,17 +16,67 @@ export function buildClientInitialValues(client: Partial<ExtendedClient>): Clien
 }
 
 export function buildClientPayload(values: ClientFormValues): ExtendedClient {
-  const payload: ExtendedClient = {
-    ...values,
-    accessTokenAsJwt:
-      typeof values.accessTokenAsJwt === 'string'
-        ? values.accessTokenAsJwt === 'true'
-        : values.accessTokenAsJwt,
-    rptAsJwt: typeof values.rptAsJwt === 'string' ? values.rptAsJwt === 'true' : values.rptAsJwt,
-    attributes: values.attributes ? { ...values.attributes } : undefined,
+  const {
+    expirable,
+    authenticationMethod,
+    allAuthenticationMethods,
+    customAttributes,
+    dn,
+    baseDn,
+    deletable,
+    ...rest
+  } = values as ClientFormValues & {
+    authenticationMethod?: string
+    allAuthenticationMethods?: string[]
+    dn?: string
+    baseDn?: string
+    deletable?: boolean
   }
 
-  delete payload.expirable
+  const payload: ExtendedClient = {
+    ...rest,
+    accessTokenAsJwt:
+      typeof rest.accessTokenAsJwt === 'string'
+        ? rest.accessTokenAsJwt === 'true'
+        : rest.accessTokenAsJwt,
+    rptAsJwt: typeof rest.rptAsJwt === 'string' ? rest.rptAsJwt === 'true' : rest.rptAsJwt,
+    attributes: rest.attributes ? { ...rest.attributes } : undefined,
+  }
+
+  if (customAttributes && Array.isArray(customAttributes)) {
+    const localizedNames = [
+      'displayNameLocalized',
+      'jansClntURILocalized',
+      'jansLogoURILocalized',
+      'jansPolicyURILocalized',
+      'jansTosURILocalized',
+    ]
+    const filteredCustomAttributes = customAttributes.filter((attr) => {
+      if (!attr.name) return false
+      if (localizedNames.includes(attr.name)) {
+        const value = attr.value || attr.values?.[0]
+        if (value === '{}' || value === '') return false
+      }
+      return true
+    })
+    if (filteredCustomAttributes.length > 0) {
+      payload.customAttributes = filteredCustomAttributes
+    }
+  }
+
+  const localizedFields = [
+    'clientNameLocalized',
+    'logoUriLocalized',
+    'clientUriLocalized',
+    'policyUriLocalized',
+    'tosUriLocalized',
+  ] as const
+
+  for (const field of localizedFields) {
+    if (payload[field] && Object.keys(payload[field] as object).length === 0) {
+      delete payload[field]
+    }
+  }
 
   return JSON.parse(JSON.stringify(payload))
 }

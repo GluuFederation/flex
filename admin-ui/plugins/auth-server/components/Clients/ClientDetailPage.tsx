@@ -52,6 +52,7 @@ const ClientDetailPage: React.FC = () => {
       {client && (
         <ClientForm
           client={client}
+          isEdit={true}
           viewOnly={true}
           onCancel={navigateToClientList}
           scopes={scopes}

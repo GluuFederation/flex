@@ -841,6 +841,7 @@
     "permission_name_error": "Please ensure the permission name is at least 5 characters long.",
     "role_name_error": "Please ensure the role name is at least 5 characters long.",
     "error_message": "Error Message",
+    "section_error": "Something went wrong in this section",
     "webhook_dialog_note": "NOTE: Webhook execution has failed, and you won't be able to continue at the moment.",
     "http_method_error": "Please select a HTTP Method.",
     "request_body_error": "HTTP Request Body is required for selected HTTP Method",

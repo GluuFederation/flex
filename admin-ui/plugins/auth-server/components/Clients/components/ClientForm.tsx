@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Formik, Form } from 'formik'
+import { Formik, Form, FormikProps } from 'formik'
+import { ErrorBoundary } from 'react-error-boundary'
 import {
   Box,
   Button,
@@ -45,7 +46,9 @@ import type {
   ClientSection,
   ModifiedFields,
   ClientScope,
+  SectionProps,
 } from '../types'
+import SectionErrorFallback from './SectionErrorFallback'
 import { clientValidationSchema } from '../helper/validations'
 import { buildClientInitialValues, buildClientPayload, downloadClientAsJson } from '../helper/utils'
 import { SECTIONS } from '../helper/constants'
@@ -248,13 +251,9 @@ const ClientForm: React.FC<ClientFormProps> = ({
   )
 
   const renderSectionContent = useCallback(
-    (formik: {
-      values: ClientFormValues
-      setFieldValue: (field: string, value: unknown) => void
-      dirty: boolean
-    }) => {
-      const sectionProps = {
-        formik: formik as any,
+    (formik: FormikProps<ClientFormValues>) => {
+      const sectionProps: SectionProps = {
+        formik,
         viewOnly,
         setModifiedFields,
         scripts,
@@ -284,7 +283,7 @@ const ClientForm: React.FC<ClientFormProps> = ({
         case 'system':
           return <SystemInfoSection {...sectionProps} />
         case 'activeTokens':
-          return <ActiveTokensSection formik={formik as any} viewOnly={viewOnly} />
+          return <ActiveTokensSection formik={formik} viewOnly={viewOnly} />
         default:
           return null
       }
@@ -448,7 +447,12 @@ const ClientForm: React.FC<ClientFormProps> = ({
                 <Box>
                   {renderNavigation()}
                   <Paper elevation={0} sx={{ p: 2 }}>
-                    {renderSectionContent(formik)}
+                    <ErrorBoundary
+                      FallbackComponent={SectionErrorFallback}
+                      resetKeys={[activeSection]}
+                    >
+                      {renderSectionContent(formik)}
+                    </ErrorBoundary>
                   </Paper>
                 </Box>
               ) : (
@@ -461,7 +465,14 @@ const ClientForm: React.FC<ClientFormProps> = ({
                   }}
                 >
                   {renderNavigation()}
-                  <Box sx={{ flex: 1, p: 3, overflow: 'auto' }}>{renderSectionContent(formik)}</Box>
+                  <Box sx={{ flex: 1, p: 3, overflow: 'auto' }}>
+                    <ErrorBoundary
+                      FallbackComponent={SectionErrorFallback}
+                      resetKeys={[activeSection]}
+                    >
+                      {renderSectionContent(formik)}
+                    </ErrorBoundary>
+                  </Box>
                 </Box>
               )}
 

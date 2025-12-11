@@ -76,23 +76,26 @@ const AuthenticationSection: React.FC<SectionProps> = ({
   )
 
   const signingAlgorithms = useMemo(
-    () => (oidcConfiguration?.idTokenSigningAlgValuesSupported as string[]) || [],
+    () => [...new Set((oidcConfiguration?.idTokenSigningAlgValuesSupported as string[]) || [])],
     [oidcConfiguration],
   )
 
   const encryptionAlgorithms = useMemo(
-    () => (oidcConfiguration?.idTokenEncryptionAlgValuesSupported as string[]) || [],
+    () => [...new Set((oidcConfiguration?.idTokenEncryptionAlgValuesSupported as string[]) || [])],
     [oidcConfiguration],
   )
 
   const encryptionEncodings = useMemo(
-    () => (oidcConfiguration?.idTokenEncryptionEncValuesSupported as string[]) || [],
+    () => [...new Set((oidcConfiguration?.idTokenEncryptionEncValuesSupported as string[]) || [])],
     [oidcConfiguration],
   )
 
   const accessTokenSigningAlgs = useMemo(
-    () =>
-      (oidcConfiguration?.accessTokenSigningAlgValuesSupported as string[]) || signingAlgorithms,
+    () => [
+      ...new Set(
+        (oidcConfiguration?.accessTokenSigningAlgValuesSupported as string[]) || signingAlgorithms,
+      ),
+    ],
     [oidcConfiguration, signingAlgorithms],
   )
 

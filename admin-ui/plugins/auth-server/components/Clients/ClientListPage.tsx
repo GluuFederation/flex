@@ -21,7 +21,7 @@ import SearchIcon from '@mui/icons-material/Search'
 import ClearIcon from '@mui/icons-material/Clear'
 import RefreshIcon from '@mui/icons-material/Refresh'
 import SortIcon from '@mui/icons-material/Sort'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { Badge } from 'reactstrap'
 import { Card, CardBody } from 'Components'
@@ -86,9 +86,15 @@ const TEXT_FIELD_WIDTH = { width: '300px' } as const
 const ClientListPage: React.FC = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const location = useLocation()
   const theme = useContext(ThemeContext)
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
+
+  const scopeInumFilter = useMemo(() => {
+    const searchParams = new URLSearchParams(location.search)
+    return searchParams.get('scopeInum')
+  }, [location.search])
 
   const {
     hasCedarReadPermission,
@@ -212,10 +218,21 @@ const ClientListPage: React.FC = () => {
     [hasCedarDeletePermission, clientResourceId],
   )
 
-  const clients = useMemo<ClientTableRow[]>(
-    () => (clientsResponse?.entries || []) as ClientTableRow[],
-    [clientsResponse?.entries],
-  )
+  const clients = useMemo<ClientTableRow[]>(() => {
+    const allClients = (clientsResponse?.entries || []) as ClientTableRow[]
+    if (scopeInumFilter) {
+      return allClients.filter((client) => {
+        const clientScopes = client.scopes || []
+        return clientScopes.some((scope) => {
+          if (typeof scope === 'string') {
+            return scope.includes(scopeInumFilter)
+          }
+          return false
+        })
+      })
+    }
+    return allClients
+  }, [clientsResponse?.entries, scopeInumFilter])
 
   const totalItems = useMemo(
     () => clientsResponse?.totalEntriesCount || 0,
@@ -225,7 +242,6 @@ const ClientListPage: React.FC = () => {
   const tableOptions = useMemo(
     () => ({
       idSynonym: 'inum',
-      columnsButton: true,
       search: false,
       selection: false,
       pageSize: limit,
@@ -272,7 +288,23 @@ const ClientListPage: React.FC = () => {
     setSortOrder('ascending')
     setPageNumber(0)
     setStartIndex(0)
-  }, [])
+    if (scopeInumFilter) {
+      navigate(location.pathname, { replace: true })
+    }
+  }, [scopeInumFilter, navigate, location.pathname])
+
+  const handleClearScopeFilter = useCallback((): void => {
+    navigate(location.pathname, { replace: true })
+  }, [navigate, location.pathname])
+
+  // Get scope display name for the filter indicator
+  const scopeFilterDisplayName = useMemo(() => {
+    if (!scopeInumFilter) return null
+    const scope = scopesList.find(
+      (s) => s.dn?.includes(scopeInumFilter) || s.dn === scopeInumFilter,
+    )
+    return scope?.id || scope?.displayName || scopeInumFilter
+  }, [scopeInumFilter, scopesList])
 
   const handleSortByChange = useCallback((event: SelectChangeEvent<string>): void => {
     setSortBy(event.target.value)
@@ -610,6 +642,19 @@ const ClientListPage: React.FC = () => {
                       ),
                     }}
                   />
+
+                  {scopeFilterDisplayName && (
+                    <Chip
+                      label={`${t('fields.scope')}: ${scopeFilterDisplayName}`}
+                      onDelete={handleClearScopeFilter}
+                      color="primary"
+                      size="small"
+                      sx={{
+                        backgroundColor: themeColors?.background,
+                        color: 'white',
+                      }}
+                    />
+                  )}
 
                   <FormControl size="small" sx={{ minWidth: 150 }}>
                     <InputLabel id="sort-by-label">

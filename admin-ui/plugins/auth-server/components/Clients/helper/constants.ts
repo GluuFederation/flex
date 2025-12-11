@@ -163,3 +163,19 @@ export type SubjectType = (typeof SUBJECT_TYPES)[number]['value']
 export type TokenEndpointAuthMethod = (typeof TOKEN_ENDPOINT_AUTH_METHODS)[number]['value']
 export type BackchannelTokenDeliveryMode =
   (typeof BACKCHANNEL_TOKEN_DELIVERY_MODES)[number]['value']
+
+export const THEME_DEFAULTS = {
+  BORDER_COLOR: '#e0e0e0',
+  LIGHT_BG: '#fafafa',
+  FONT_COLOR: '#333',
+  DARK_FONT: '#000000',
+  WHITE: '#fff',
+  ICON_OPACITY: 0.7,
+} as const
+
+export const SECRET_GENERATION = {
+  LENGTH: 32,
+  CHARSET: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
+} as const
+
+export const DATE_FORMAT = 'YYYY/MM/DD HH:mm:ss' as const

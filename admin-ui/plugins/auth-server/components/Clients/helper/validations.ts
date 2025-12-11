@@ -1,8 +1,31 @@
 import * as Yup from 'yup'
 
+export function isValidUri(value: string | undefined | null): boolean {
+  if (!value || value.trim() === '') return true
+  try {
+    new URL(value)
+    return true
+  } catch {
+    if (value.startsWith('http://localhost') || value.startsWith('http://127.0.0.1')) {
+      return true
+    }
+    const customSchemeRegex = /^[a-zA-Z][a-zA-Z0-9+.-]*:\/\/.+$/
+    if (customSchemeRegex.test(value)) {
+      return true
+    }
+    return false
+  }
+}
+
+export const uriValidation = Yup.string().test(
+  'is-valid-uri',
+  'Invalid URI format. Must be a valid URL (e.g., https://example.com) or custom scheme (e.g., myapp://callback)',
+  isValidUri,
+)
+
 const urlSchema = Yup.string().url('Must be a valid URL')
 
-const uriArraySchema = Yup.array().of(Yup.string().url('Must be a valid URL'))
+const uriArraySchema = Yup.array().of(uriValidation)
 
 export const clientValidationSchema = Yup.object().shape({
   clientName: Yup.string().nullable(),
@@ -75,5 +98,38 @@ export function validateRequiredArray(
   if (!arr || arr.length < minLength) {
     return `At least ${minLength} item(s) required`
   }
+  return null
+}
+
+export function validateExpirationDate(expirationDate: string | undefined | null): string | null {
+  if (!expirationDate) return null
+  const expDate = new Date(expirationDate)
+  const now = new Date()
+  if (expDate <= now) {
+    return 'Expiration date must be in the future'
+  }
+  return null
+}
+
+export function validateTokenLifetime(
+  value: number | undefined | null,
+  maxSeconds = 315360000,
+): string | null {
+  if (value === undefined || value === null) return null
+  if (value < 0) return 'Must be a positive number'
+  if (value > maxSeconds) return `Value exceeds maximum allowed (${maxSeconds} seconds)`
+  return null
+}
+
+export function isValidDn(dn: string | undefined | null): boolean {
+  if (!dn) return true
+  const dnPattern = /^[a-zA-Z]+=.+/
+  return dnPattern.test(dn)
+}
+
+export function validateAcrLevel(level: number | undefined | null): string | null {
+  if (level === undefined || level === null) return null
+  if (!Number.isInteger(level)) return 'ACR level must be an integer'
+  if (level < -1 || level > 10) return 'ACR level must be between -1 and 10'
   return null
 }

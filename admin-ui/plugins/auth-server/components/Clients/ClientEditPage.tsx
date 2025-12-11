@@ -1,8 +1,10 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { useDispatch } from 'react-redux'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import SetTitle from 'Utils/SetTitle'
+import { updateToast } from 'Redux/features/toastSlice'
 import { useGetOauthScopes } from 'JansConfigApi'
 import { useClientActions, useClientById, useUpdateClient } from './hooks'
 import ClientForm from './components/ClientForm'
@@ -11,6 +13,7 @@ import type { ClientFormValues, ModifiedFields, ClientScope } from './types'
 const ClientEditPage: React.FC = () => {
   const { t } = useTranslation()
   const { id } = useParams<{ id: string }>()
+  const dispatch = useDispatch()
   const { logClientUpdate, navigateToClientList } = useClientActions()
   const [scopeSearchPattern, setScopeSearchPattern] = useState('')
 
@@ -66,13 +69,18 @@ const ClientEditPage: React.FC = () => {
       try {
         const result = await updateClient.mutateAsync({ data: values })
         if (result) {
-          await logClientUpdate(result, message, modifiedFields)
+          try {
+            await logClientUpdate(result, message, modifiedFields)
+          } catch (auditError) {
+            console.error('Error logging client update:', auditError)
+            dispatch(updateToast(true, 'warning', t('messages.audit_log_failed')))
+          }
         }
       } catch (error) {
         console.error('Error updating client:', error)
       }
     },
-    [updateClient, logClientUpdate],
+    [updateClient, logClientUpdate, dispatch, t],
   )
 
   const isLoading = useMemo(

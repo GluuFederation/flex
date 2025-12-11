@@ -27,7 +27,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { updateToast } from 'Redux/features/toastSlice'
 import ActiveTokenDetailPanel from '../components/ActiveTokenDetailPanel'
-import type { ExtendedClient } from '../types'
+import type { SectionProps } from '../types'
 import {
   useGetTokenByClient,
   useRevokeToken,
@@ -35,14 +35,10 @@ import {
   type TokenEntity,
 } from 'JansConfigApi'
 
-interface ActiveTokensSectionProps {
-  formik: {
-    values: ExtendedClient
-  }
-  viewOnly?: boolean
-}
-
-const ActiveTokensSection: React.FC<ActiveTokensSectionProps> = ({ formik, viewOnly = false }) => {
+const ActiveTokensSection: React.FC<Pick<SectionProps, 'formik' | 'viewOnly'>> = ({
+  formik,
+  viewOnly = false,
+}) => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
@@ -213,15 +209,17 @@ const ActiveTokensSection: React.FC<ActiveTokensSectionProps> = ({ formik, viewO
 
   const PaginationWrapper = useCallback(
     () => (
-      <TablePagination
-        component="div"
-        count={totalItems}
-        page={pageNumber}
-        onPageChange={handlePageChange}
-        rowsPerPage={limit}
-        onRowsPerPageChange={handleRowsPerPageChange}
-        rowsPerPageOptions={[5, 10, 25, 50]}
-      />
+      <td colSpan={1000}>
+        <TablePagination
+          component="div"
+          count={totalItems}
+          page={pageNumber}
+          onPageChange={handlePageChange}
+          rowsPerPage={limit}
+          onRowsPerPageChange={handleRowsPerPageChange}
+          rowsPerPageOptions={[5, 10, 25, 50]}
+        />
+      </td>
     ),
     [totalItems, pageNumber, limit, handlePageChange, handleRowsPerPageChange],
   )

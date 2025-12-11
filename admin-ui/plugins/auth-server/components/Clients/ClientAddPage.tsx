@@ -1,13 +1,16 @@
 import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useDispatch } from 'react-redux'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import SetTitle from 'Utils/SetTitle'
+import { updateToast } from 'Redux/features/toastSlice'
 import { useClientActions, useCreateClient } from './hooks'
 import ClientAddForm from './components/ClientAddForm'
 import type { ClientFormValues, ModifiedFields } from './types'
 
 const ClientAddPage: React.FC = () => {
   const { t } = useTranslation()
+  const dispatch = useDispatch()
   const { logClientCreation, navigateToClientList } = useClientActions()
 
   const handleSuccess = useCallback(() => {
@@ -21,13 +24,18 @@ const ClientAddPage: React.FC = () => {
       try {
         const result = await createClient.mutateAsync({ data: values })
         if (result) {
-          await logClientCreation(result, message, modifiedFields)
+          try {
+            await logClientCreation(result, message, modifiedFields)
+          } catch (auditError) {
+            console.error('Error logging client creation:', auditError)
+            dispatch(updateToast(true, 'warning', t('messages.audit_log_failed')))
+          }
         }
       } catch (error) {
         console.error('Error creating client:', error)
       }
     },
-    [createClient, logClientCreation],
+    [createClient, logClientCreation, dispatch, t],
   )
 
   SetTitle(t('titles.add_openid_connect_client'))
