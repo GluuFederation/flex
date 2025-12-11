@@ -2,7 +2,7 @@ import HealthPage from './components/Health/HealthPage'
 import MappingPage from './components/Mapping/MappingPage'
 
 import SettingsPage from './components/Settings/SettingsPage'
-import MauGraph from './components/MAU/MauGraph'
+import MauPage from './components/MAU/MauPage'
 import WebhookListPage from './components/Webhook/WebhookListPage'
 import AuditListPage from '../admin/components/Audit/AuditListPage'
 
@@ -138,7 +138,7 @@ const pluginMetadata = {
       resourceKey: ADMIN_UI_RESOURCES.License,
     },
     {
-      component: MauGraph,
+      component: MauPage,
       path: PLUGIN_BASE_PATH + '/maugraph',
       permission: ACR_READ,
       resourceKey: ADMIN_UI_RESOURCES.MAU,
