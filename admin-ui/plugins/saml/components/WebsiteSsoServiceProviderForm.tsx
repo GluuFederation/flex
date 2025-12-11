@@ -156,6 +156,13 @@ const WebsiteSsoServiceProviderForm = ({
     return defaultScopeValue
   }, [formik.values.releasedAttributes, selectedClientScopes, defaultScopeValue, attributesList])
 
+  const releasedAttributesKey = useMemo(() => {
+    if (configs?.inum) {
+      return `releasedAttributes-${configs.inum}`
+    }
+    return 'releasedAttributes-new'
+  }, [configs?.inum])
+
   const handleSubmit = useCallback(
     (values: WebsiteSsoServiceProviderFormValues, user_message: string) => {
       const { metaDataFileImportedFlag, metaDataFile, ...websiteSsoServiceProviderData } = values
@@ -340,7 +347,7 @@ const WebsiteSsoServiceProviderForm = ({
               </Col>
               <Col sm={10}>
                 <GluuTypeAheadForDn
-                  key={`releasedAttributes-${JSON.stringify(formik.values.releasedAttributes)}`}
+                  key={releasedAttributesKey}
                   name="releasedAttributes"
                   label="fields.released_attributes"
                   formik={formik}
