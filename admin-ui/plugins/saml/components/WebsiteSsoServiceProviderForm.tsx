@@ -92,15 +92,12 @@ const WebsiteSsoServiceProviderForm = ({
   const attributesList = useMemo<ScopeOption[]>(
     () =>
       attributesData?.entries
-        ? attributesData.entries
-            .map((item) => ({
-              dn: item?.dn || '',
-              name: item?.displayName || '',
-            }))
-            .filter(
-              (item): item is ScopeOption =>
-                typeof item.dn === 'string' && typeof item.name === 'string',
-            )
+        ? attributesData.entries.map(
+            (item): ScopeOption => ({
+              dn: String(item?.dn || ''),
+              name: String(item?.displayName || ''),
+            }),
+          )
         : [],
     [attributesData],
   )
@@ -108,9 +105,7 @@ const WebsiteSsoServiceProviderForm = ({
   const defaultScopeValue = useMemo<ScopeOption[]>(
     () =>
       configs?.releasedAttributes?.length
-        ? attributesList
-            ?.filter((item) => configs?.releasedAttributes?.includes(item.dn))
-            ?.map((item) => ({ dn: item?.dn, name: item?.name }))
+        ? attributesList.filter((item) => configs?.releasedAttributes?.includes(item.dn))
         : [],
     [configs?.releasedAttributes, attributesList],
   )
@@ -147,9 +142,7 @@ const WebsiteSsoServiceProviderForm = ({
 
     if (Array.isArray(formikValue)) {
       if (formikValue.length === 0) return []
-      return attributesList
-        .filter((item) => formikValue.includes(item.dn))
-        .map((item) => ({ dn: item.dn, name: item.name }))
+      return attributesList.filter((item) => formikValue.includes(item.dn))
     }
 
     if (selectedClientScopes?.length) return selectedClientScopes
