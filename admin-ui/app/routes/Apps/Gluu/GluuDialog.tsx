@@ -101,7 +101,6 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: a
                   name="user_action_message"
                   onChange={(e) => setUserMessage(e.target.value)}
                   placeholder={t('placeholders.action_commit_message')}
-                  defaultValue=""
                   value={userMessage}
                 />
                 {userMessage.length < 10 && (

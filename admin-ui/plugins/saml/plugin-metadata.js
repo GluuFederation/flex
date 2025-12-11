@@ -1,11 +1,9 @@
 import { SAML_READ, SAML_WRITE, SAML_CONFIG_READ, SAML_TR_READ } from 'Utils/PermChecker'
-import SamlIdpAddPage from './components/SamlIdpAddPage'
-import SamlIdpEditPage from './components/SamlIdpEditPage'
+import WebsiteSsoIdentityProviderForm from './components/WebsiteSsoIdentityProviderForm'
 import SamlPage from './components/SamlPage'
 import samlSaga from './redux/sagas/SamlSaga'
 import samlReducer from './redux/features/SamlSlice'
-import TrustRelationshipEditPage from './components/TrustRelationshipEditPage'
-import TrustRelationshipAddPage from './components/TrustRelationshipAddPage'
+import WebsiteSsoServiceProviderForm from './components/WebsiteSsoServiceProviderForm'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 
 const PLUGIN_BASE_APTH = '/saml'
@@ -46,25 +44,25 @@ const pluginMetadata = {
       resourceKey: ADMIN_UI_RESOURCES.SAML,
     },
     {
-      component: SamlIdpEditPage,
+      component: WebsiteSsoIdentityProviderForm,
       path: PLUGIN_BASE_APTH + '/identity-providers/edit',
       permission: SAML_WRITE,
       resourceKey: ADMIN_UI_RESOURCES.SAML,
     },
     {
-      component: SamlIdpAddPage,
+      component: WebsiteSsoIdentityProviderForm,
       path: PLUGIN_BASE_APTH + '/identity-providers/add',
       permission: SAML_WRITE,
       resourceKey: ADMIN_UI_RESOURCES.SAML,
     },
     {
-      component: TrustRelationshipEditPage,
+      component: WebsiteSsoServiceProviderForm,
       path: PLUGIN_BASE_APTH + '/service-providers/edit',
       permission: SAML_WRITE,
       resourceKey: ADMIN_UI_RESOURCES.SAML,
     },
     {
-      component: TrustRelationshipAddPage,
+      component: WebsiteSsoServiceProviderForm,
       path: PLUGIN_BASE_APTH + '/service-providers/add',
       permission: SAML_WRITE,
       resourceKey: ADMIN_UI_RESOURCES.SAML,

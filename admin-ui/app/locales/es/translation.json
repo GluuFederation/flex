@@ -987,8 +987,9 @@
     "loading_database_information": "Cargando información de la base de datos...",
     "idp": "IDP",
     "sp": "SP",
-    "create_sp": "Crear Service Provider",
-    "edit_sp": "Editar Service Provider",
+    "create_service_provider": "Crear Proveedor de Servicio",
+    "edit_service_provider": "Editar Proveedor de Servicio",
+    "view_service_provider": "Ver Proveedor de Servicio",
     "create_idp": "Crear IDP",
     "edit_idp": "Editar IDP",
     "application_settings": "Configuración de la aplicación",
@@ -1068,7 +1069,12 @@
     "cedar_Init": "Cedarling está intentando inicializarse, por favor espera",
     "newPermission": "Nuevo permiso",
     "addingNewApiPermission": "Añadiendo nuevo permiso API",
-    "followingPermissionRequiredToBeAdded": "¡Es necesario añadir el siguiente permiso!"
+    "followingPermissionRequiredToBeAdded": "¡Es necesario añadir el siguiente permiso!",
+    "identity_provider": "Proveedor de Identidad",
+    "edit_identity_provider": "Editar Proveedor de Identidad",
+    "create_identity_provider": "Crear Proveedor de Identidad",
+    "view_identity_provider": "Ver Proveedor de Identidad",
+    "delete_identity_provider": "Eliminar Proveedor de Identidad"
   },
   "links": {
     "support": "https://support.gluu.org/"
