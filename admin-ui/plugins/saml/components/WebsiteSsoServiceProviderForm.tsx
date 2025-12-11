@@ -92,15 +92,12 @@ const WebsiteSsoServiceProviderForm = ({
   const attributesList = useMemo<ScopeOption[]>(
     () =>
       attributesData?.entries
-        ? attributesData.entries
-            .map((item) => ({
-              dn: item?.dn || '',
-              name: item?.displayName || '',
-            }))
-            .filter(
-              (item): item is ScopeOption =>
-                typeof item.dn === 'string' && typeof item.name === 'string',
-            )
+        ? attributesData.entries.map(
+            (item): ScopeOption => ({
+              dn: String(item?.dn || ''),
+              name: String(item?.displayName || ''),
+            }),
+          )
         : [],
     [attributesData],
   )
@@ -108,9 +105,7 @@ const WebsiteSsoServiceProviderForm = ({
   const defaultScopeValue = useMemo<ScopeOption[]>(
     () =>
       configs?.releasedAttributes?.length
-        ? attributesList
-            ?.filter((item) => configs?.releasedAttributes?.includes(item.dn))
-            ?.map((item) => ({ dn: item?.dn, name: item?.name }))
+        ? attributesList.filter((item) => configs?.releasedAttributes?.includes(item.dn))
         : [],
     [configs?.releasedAttributes, attributesList],
   )
@@ -147,14 +142,19 @@ const WebsiteSsoServiceProviderForm = ({
 
     if (Array.isArray(formikValue)) {
       if (formikValue.length === 0) return []
-      return attributesList
-        .filter((item) => formikValue.includes(item.dn))
-        .map((item) => ({ dn: item.dn, name: item.name }))
+      return attributesList.filter((item) => formikValue.includes(item.dn))
     }
 
     if (selectedClientScopes?.length) return selectedClientScopes
     return defaultScopeValue
   }, [formik.values.releasedAttributes, selectedClientScopes, defaultScopeValue, attributesList])
+
+  const releasedAttributesKey = useMemo(() => {
+    if (configs?.inum) {
+      return `releasedAttributes-${configs.inum}`
+    }
+    return 'releasedAttributes-new'
+  }, [configs?.inum])
 
   const handleSubmit = useCallback(
     (values: WebsiteSsoServiceProviderFormValues, user_message: string) => {
@@ -257,12 +257,16 @@ const WebsiteSsoServiceProviderForm = ({
   const handleFormSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
-      if (
-        !formik.values.metaDataFile &&
-        formik.values.spMetaDataSourceType?.toLowerCase() === 'file'
-      ) {
-        formik.setFieldTouched('metaDataFile', true)
-        return
+
+      if (formik.values.spMetaDataSourceType?.toLowerCase() === 'file') {
+        const hasMetadata =
+          formik.values.metaDataFile ||
+          formik.values.metaDataFileImportedFlag ||
+          formik.values.spMetaDataFN
+        if (!hasMetadata) {
+          formik.setFieldTouched('metaDataFile', true)
+          return
+        }
       }
       formik.handleSubmit(e)
     },
@@ -340,7 +344,7 @@ const WebsiteSsoServiceProviderForm = ({
               </Col>
               <Col sm={10}>
                 <GluuTypeAheadForDn
-                  key={`releasedAttributes-${JSON.stringify(formik.values.releasedAttributes)}`}
+                  key={releasedAttributesKey}
                   name="releasedAttributes"
                   label="fields.released_attributes"
                   formik={formik}

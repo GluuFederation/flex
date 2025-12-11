@@ -160,6 +160,7 @@ const ROUTES = {
   JANS_LOCK_BASE: PLUGIN_BASE_PATHS.JANS_LOCK,
 
   // ========== Core app pages ==========
+
   PROFILE: '/profile',
   LOGOUT: '/logout',
   ERROR_404: '/error-404',
