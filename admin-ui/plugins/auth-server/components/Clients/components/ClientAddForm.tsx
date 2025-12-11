@@ -33,8 +33,13 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { useGetOauthScopes } from 'JansConfigApi'
-import { GRANT_TYPES, DEFAULT_SCOPE_SEARCH_LIMIT, SECRET_GENERATION } from '../helper/constants'
-import { buildAddFormPayload, buildClientPayload, transformScopesResponse } from '../helper/utils'
+import { GRANT_TYPES, DEFAULT_SCOPE_SEARCH_LIMIT } from '../helper/constants'
+import {
+  buildAddFormPayload,
+  buildClientPayload,
+  transformScopesResponse,
+  generateClientSecret,
+} from '../helper/utils'
 import { uriValidation } from '../helper/validations'
 import type { AddFormValues, ClientFormValues, ClientScope, ModifiedFields } from '../types'
 
@@ -105,13 +110,6 @@ const ClientAddForm: React.FC<ClientAddFormProps> = ({ onSubmit, onCancel }) => 
     setShowSecret((prev) => !prev)
   }, [])
 
-  const generateSecret = useCallback((): string => {
-    const { LENGTH, CHARSET } = SECRET_GENERATION
-    const array = new Uint8Array(LENGTH)
-    crypto.getRandomValues(array)
-    return Array.from(array, (byte) => CHARSET[byte % CHARSET.length]).join('')
-  }, [])
-
   const handleCopyToClipboard = useCallback((text: string) => {
     navigator.clipboard.writeText(text).catch(() => {
       // Clipboard API may fail in non-secure contexts or due to permissions
@@ -123,6 +121,20 @@ const ClientAddForm: React.FC<ClientAddFormProps> = ({ onSubmit, onCancel }) => 
     setCommitModalOpen(true)
   }, [])
 
+  const fieldLabelMap = useMemo(
+    () => ({
+      clientName: t('fields.client_name'),
+      clientSecret: t('fields.client_secret'),
+      disabled: t('fields.status'),
+      description: t('fields.description'),
+      scopes: t('fields.scopes'),
+      grantTypes: t('fields.grant_types'),
+      redirectUris: t('fields.redirect_uris'),
+      postLogoutRedirectUris: t('fields.post_logout_redirect_uris'),
+    }),
+    [t],
+  )
+
   const handleCommitAccept = useCallback(
     (message: string) => {
       if (formValues) {
@@ -131,14 +143,15 @@ const ClientAddForm: React.FC<ClientAddFormProps> = ({ onSubmit, onCancel }) => 
         const modifiedFields: ModifiedFields = {}
         Object.entries(formValues).forEach(([key, value]) => {
           if (value !== undefined && value !== '' && (!Array.isArray(value) || value.length > 0)) {
-            modifiedFields[key] = value
+            const label = fieldLabelMap[key as keyof typeof fieldLabelMap] || key
+            modifiedFields[label] = value
           }
         })
         onSubmit(payload, message, modifiedFields)
       }
       setCommitModalOpen(false)
     },
-    [formValues, onSubmit],
+    [formValues, onSubmit, fieldLabelMap],
   )
 
   const handleCommitClose = useCallback(() => {
@@ -248,9 +261,14 @@ const ClientAddForm: React.FC<ClientAddFormProps> = ({ onSubmit, onCancel }) => 
                         <Tooltip title={t('actions.generate_secret')}>
                           <IconButton
                             onClick={() => {
-                              const newSecret = generateSecret()
-                              formik.setFieldValue('clientSecret', newSecret)
-                              setShowSecret(true)
+                              try {
+                                const newSecret = generateClientSecret()
+                                formik.setFieldValue('clientSecret', newSecret)
+                                setShowSecret(true)
+                              } catch {
+                                // Error generating secret - crypto API unavailable
+                                // User should ensure HTTPS context
+                              }
                             }}
                             sx={{
                               'border': '1px solid',

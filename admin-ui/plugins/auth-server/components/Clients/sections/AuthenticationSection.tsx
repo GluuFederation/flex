@@ -6,11 +6,13 @@ import getThemeColor from 'Context/theme/config'
 import type { SectionProps } from '../types'
 import { TOKEN_ENDPOINT_AUTH_METHODS } from '../helper/constants'
 
+type SelectOption = string | { value: string; label: string }
+
 interface AlgorithmSelectProps {
   label: string
   name: string
   value: string
-  options: string[]
+  options: SelectOption[]
   onChange: (value: string) => void
   disabled: boolean
   fieldStyle: object
@@ -41,11 +43,15 @@ const AlgorithmSelect: React.FC<AlgorithmSelectProps> = ({
     InputLabelProps={{ shrink: true }}
   >
     <option value="">{placeholder}</option>
-    {options.map((opt) => (
-      <option key={opt} value={opt}>
-        {opt}
-      </option>
-    ))}
+    {options.map((opt) => {
+      const optValue = typeof opt === 'string' ? opt : opt.value
+      const optLabel = typeof opt === 'string' ? opt : opt.label
+      return (
+        <option key={optValue} value={optValue}>
+          {optLabel}
+        </option>
+      )
+    })}
   </TextField>
 )
 
@@ -148,61 +154,41 @@ const AuthenticationSection: React.FC<SectionProps> = ({
         <Typography sx={sectionTitleStyle}>{t('titles.token_endpoint_auth')}</Typography>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              select
-              size="small"
+            <AlgorithmSelect
               label={t('fields.token_endpoint_auth_method')}
               name="tokenEndpointAuthMethod"
               value={formik.values.tokenEndpointAuthMethod || ''}
-              onChange={(e) =>
+              options={TOKEN_ENDPOINT_AUTH_METHODS}
+              onChange={(value) =>
                 handleFieldChange(
                   'tokenEndpointAuthMethod',
                   t('fields.token_endpoint_auth_method'),
-                  e.target.value,
+                  value,
                 )
               }
               disabled={viewOnly}
-              sx={fieldStyle}
-              SelectProps={{ native: true }}
-              InputLabelProps={{ shrink: true }}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              {TOKEN_ENDPOINT_AUTH_METHODS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </TextField>
+              fieldStyle={fieldStyle}
+              placeholder={`${t('actions.choose')}...`}
+            />
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              select
-              size="small"
+            <AlgorithmSelect
               label={t('fields.token_endpoint_auth_signing_alg')}
               name="tokenEndpointAuthSigningAlg"
               value={formik.values.tokenEndpointAuthSigningAlg || ''}
-              onChange={(e) =>
+              options={signingAlgorithms}
+              onChange={(value) =>
                 handleFieldChange(
                   'tokenEndpointAuthSigningAlg',
                   t('fields.token_endpoint_auth_signing_alg'),
-                  e.target.value,
+                  value,
                 )
               }
               disabled={viewOnly}
-              sx={fieldStyle}
-              SelectProps={{ native: true }}
-              InputLabelProps={{ shrink: true }}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              {signingAlgorithms.map((alg) => (
-                <option key={alg} value={alg}>
-                  {alg}
-                </option>
-              ))}
-            </TextField>
+              fieldStyle={fieldStyle}
+              placeholder={`${t('actions.choose')}...`}
+            />
           </Grid>
 
           <Grid item xs={12} md={6}>

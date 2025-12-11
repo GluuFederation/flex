@@ -27,7 +27,8 @@ import getThemeColor from 'Context/theme/config'
 import { useDispatch } from 'react-redux'
 import { updateToast } from 'Redux/features/toastSlice'
 import type { SectionProps } from '../types'
-import { APPLICATION_TYPES, SUBJECT_TYPES, SECRET_GENERATION } from '../helper/constants'
+import { APPLICATION_TYPES, SUBJECT_TYPES } from '../helper/constants'
+import { generateClientSecret } from '../helper/utils'
 
 const BasicInfoSection: React.FC<SectionProps> = ({
   formik,
@@ -78,18 +79,21 @@ const BasicInfoSection: React.FC<SectionProps> = ({
     }
   }, [formik.values.clientSecret, dispatch, t])
 
-  const generateSecret = useCallback((): string => {
-    const { LENGTH, CHARSET } = SECRET_GENERATION
-    const array = new Uint8Array(LENGTH)
-    crypto.getRandomValues(array)
-    return Array.from(array, (byte) => CHARSET[byte % CHARSET.length]).join('')
-  }, [])
-
   const handleGenerateSecret = useCallback(() => {
-    const newSecret = generateSecret()
-    handleFieldChange('clientSecret', t('fields.client_secret'), newSecret)
-    setShowSecret(true)
-  }, [generateSecret, handleFieldChange, t])
+    try {
+      const newSecret = generateClientSecret()
+      handleFieldChange('clientSecret', t('fields.client_secret'), newSecret)
+      setShowSecret(true)
+    } catch (error) {
+      dispatch(
+        updateToast(
+          true,
+          'error',
+          error instanceof Error ? error.message : t('messages.secret_generation_failed'),
+        ),
+      )
+    }
+  }, [handleFieldChange, t, dispatch])
 
   const fieldStyle = useMemo(
     () => ({

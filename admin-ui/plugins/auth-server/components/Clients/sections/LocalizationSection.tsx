@@ -64,13 +64,15 @@ const LocalizationSection: React.FC<SectionProps> = ({
     [themeColors],
   )
 
+  const borderColor = themeColors?.lightBackground || '#e0e0e0'
+
   const editorContainerStyle = useMemo(
     () => ({
       borderRadius: '4px',
-      border: `1px solid ${themeColors?.lightBackground || '#e0e0e0'}`,
+      border: `1px solid ${borderColor}`,
       overflow: 'hidden',
     }),
-    [themeColors],
+    [borderColor],
   )
 
   const helperTextStyle = useMemo(
@@ -118,7 +120,7 @@ const LocalizationSection: React.FC<SectionProps> = ({
           <Box
             sx={{
               ...editorContainerStyle,
-              borderColor: hasError ? 'error.main' : editorContainerStyle.border?.split(' ')[2],
+              borderColor: hasError ? 'error.main' : borderColor,
             }}
           >
             <AceEditor
@@ -154,6 +156,7 @@ const LocalizationSection: React.FC<SectionProps> = ({
       viewOnly,
       labelStyle,
       editorContainerStyle,
+      borderColor,
       helperTextStyle,
       t,
       getEditorValue,

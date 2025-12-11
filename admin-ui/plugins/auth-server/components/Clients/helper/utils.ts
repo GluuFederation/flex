@@ -6,6 +6,7 @@ import type {
   AddFormValues,
 } from '../types'
 import { EMPTY_CLIENT } from '../types'
+import { SECRET_GENERATION } from './constants'
 
 interface ScopeEntry {
   dn?: string
@@ -159,6 +160,9 @@ export function buildClientPayload(values: ClientFormValues): ExtendedClient {
     }
   }
 
+  // Deep clone to ensure clean serializable object for API submission.
+  // Note: This strips undefined values and converts Date objects to ISO strings,
+  // which is the desired behavior for JSON API payloads.
   return JSON.parse(JSON.stringify(payload))
 }
 
@@ -247,6 +251,7 @@ export function formatDateForDisplay(dateString: string | undefined): string {
   if (!dateString) return ''
   try {
     const date = new Date(dateString)
+    if (isNaN(date.getTime())) return dateString
     return date.toLocaleString()
   } catch {
     return dateString
@@ -268,6 +273,7 @@ export function formatDateForInput(dateString: string | undefined): string {
   if (!dateString) return ''
   try {
     const date = new Date(dateString)
+    if (isNaN(date.getTime())) return ''
     return date.toISOString().slice(0, 16)
   } catch {
     return ''
@@ -299,11 +305,10 @@ export function downloadClientAsJson(client: ExtendedClient): void {
   const blob = new Blob([jsonData], { type: 'application/json' })
   const link = document.createElement('a')
   link.href = URL.createObjectURL(blob)
-  link.download = client.displayName
-    ? `${client.displayName}.json`
-    : client.clientName
-      ? `${client.clientName}.json`
-      : 'client-data.json'
+  // Sanitize filename to avoid invalid characters on various platforms
+  const rawName = client.displayName || client.clientName || 'client-data'
+  const safeName = rawName.replace(/[^a-zA-Z0-9._-]+/g, '_')
+  link.download = `${safeName}.json`
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)
@@ -312,6 +317,25 @@ export function downloadClientAsJson(client: ExtendedClient): void {
 
 export function generateClientSecretPlaceholder(): string {
   return '••••••••••••••••'
+}
+
+/**
+ * Generates a cryptographically secure random client secret.
+ * Uses the Web Crypto API (crypto.getRandomValues) which is available
+ * in all modern browsers and secure contexts.
+ *
+ * @throws {Error} If crypto.getRandomValues is not available (e.g., non-secure context)
+ * @returns {string} A random string of the configured length using the configured charset
+ */
+export function generateClientSecret(): string {
+  if (typeof crypto === 'undefined' || typeof crypto.getRandomValues !== 'function') {
+    throw new Error('Secure random generation not available. Ensure the page is served over HTTPS.')
+  }
+
+  const { LENGTH, CHARSET } = SECRET_GENERATION
+  const array = new Uint8Array(LENGTH)
+  crypto.getRandomValues(array)
+  return Array.from(array, (byte) => CHARSET[byte % CHARSET.length]).join('')
 }
 
 export function truncateText(text: string, maxLength: number): string {

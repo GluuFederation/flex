@@ -32,15 +32,15 @@ export const clientValidationSchema = Yup.object().shape({
   displayName: Yup.string().nullable(),
   redirectUris: Yup.array()
     .of(Yup.string())
-    .when('grantTypes', {
-      is: (grantTypes: string[]) =>
-        grantTypes?.includes('authorization_code') || grantTypes?.includes('implicit'),
-      then: (schema) =>
-        schema.min(
-          1,
-          'At least one redirect URI is required for authorization_code or implicit grants',
-        ),
-      otherwise: (schema) => schema,
+    .when('grantTypes', (grantTypes: string[] = [], schema) => {
+      const needsRedirect =
+        grantTypes.includes('authorization_code') || grantTypes.includes('implicit')
+      return needsRedirect
+        ? schema.min(
+            1,
+            'At least one redirect URI is required for authorization_code or implicit grants',
+          )
+        : schema
     }),
   postLogoutRedirectUris: uriArraySchema.nullable(),
   frontChannelLogoutUri: urlSchema.nullable(),
@@ -57,11 +57,11 @@ export const clientValidationSchema = Yup.object().shape({
   defaultMaxAge: Yup.number().nullable().min(0, 'Must be a non-negative number'),
   expirationDate: Yup.string()
     .nullable()
-    .when('expirable', {
-      is: true,
-      then: (schema) => schema.required('Expiration date is required when client is set to expire'),
-      otherwise: (schema) => schema,
-    }),
+    .when('expirable', (expirable: boolean, schema) =>
+      expirable
+        ? schema.required('Expiration date is required when client is set to expire')
+        : schema,
+    ),
   contacts: Yup.array().of(Yup.string().email('Must be a valid email')).nullable(),
 })
 

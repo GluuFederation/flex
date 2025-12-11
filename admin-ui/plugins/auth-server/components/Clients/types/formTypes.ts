@@ -131,22 +131,4 @@ export interface UmaResourceForTab {
   iconUri?: string
 }
 
-export interface AuthState {
-  token?: {
-    access_token: string
-  }
-  config?: {
-    clientId: string
-  }
-  userinfo?: {
-    inum: string
-    name: string
-  }
-  location?: {
-    IPv4?: string
-  }
-}
-
-export interface RootState {
-  authReducer: AuthState
-}
+export type { RootState } from 'Redux/sagas/types/audit'

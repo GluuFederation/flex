@@ -291,13 +291,19 @@ const ClientListPage: React.FC = () => {
     setPageNumber(0)
     setStartIndex(0)
     if (scopeInumFilter) {
-      navigate(location.pathname, { replace: true })
+      const params = new URLSearchParams(location.search)
+      params.delete('scopeInum')
+      const newSearch = params.toString()
+      navigate(`${location.pathname}${newSearch ? `?${newSearch}` : ''}`, { replace: true })
     }
-  }, [scopeInumFilter, navigate, location.pathname])
+  }, [scopeInumFilter, navigate, location.pathname, location.search])
 
   const handleClearScopeFilter = useCallback((): void => {
-    navigate(location.pathname, { replace: true })
-  }, [navigate, location.pathname])
+    const params = new URLSearchParams(location.search)
+    params.delete('scopeInum')
+    const newSearch = params.toString()
+    navigate(`${location.pathname}${newSearch ? `?${newSearch}` : ''}`, { replace: true })
+  }, [navigate, location.pathname, location.search])
 
   // Get scope display name for the filter indicator
   const scopeFilterDisplayName = useMemo(() => {
