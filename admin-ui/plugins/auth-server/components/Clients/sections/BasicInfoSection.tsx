@@ -56,17 +56,25 @@ const BasicInfoSection: React.FC<SectionProps> = ({
     setShowSecret((prev) => !prev)
   }, [])
 
-  const handleCopyClientId = useCallback(() => {
+  const handleCopyClientId = useCallback(async () => {
     if (formik.values.inum) {
-      navigator.clipboard.writeText(formik.values.inum)
-      dispatch(updateToast(true, 'success', t('messages.client_id_copied')))
+      try {
+        await navigator.clipboard.writeText(formik.values.inum)
+        dispatch(updateToast(true, 'success', t('messages.client_id_copied')))
+      } catch {
+        dispatch(updateToast(true, 'error', t('messages.copy_failed')))
+      }
     }
   }, [formik.values.inum, dispatch, t])
 
-  const handleCopyClientSecret = useCallback(() => {
+  const handleCopyClientSecret = useCallback(async () => {
     if (formik.values.clientSecret) {
-      navigator.clipboard.writeText(formik.values.clientSecret)
-      dispatch(updateToast(true, 'success', t('messages.client_secret_copied')))
+      try {
+        await navigator.clipboard.writeText(formik.values.clientSecret)
+        dispatch(updateToast(true, 'success', t('messages.client_secret_copied')))
+      } catch {
+        dispatch(updateToast(true, 'error', t('messages.copy_failed')))
+      }
     }
   }, [formik.values.clientSecret, dispatch, t])
 
@@ -416,7 +424,7 @@ const BasicInfoSection: React.FC<SectionProps> = ({
                 value.map((option, index) => (
                   <Chip
                     {...getTagProps({ index })}
-                    key={index}
+                    key={`${option}-${index}`}
                     label={option}
                     size="small"
                     sx={{ backgroundColor: themeColors?.background, color: 'white' }}

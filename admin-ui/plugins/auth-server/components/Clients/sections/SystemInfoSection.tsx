@@ -13,6 +13,7 @@ import {
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import type { SectionProps } from '../types'
+import { formatDateTime } from '../helper/utils'
 
 const SystemInfoSection: React.FC<SectionProps> = ({
   formik,
@@ -85,15 +86,6 @@ const SystemInfoSection: React.FC<SectionProps> = ({
     [themeColors],
   )
 
-  const formatDate = useCallback((dateString: string | undefined) => {
-    if (!dateString) return '-'
-    try {
-      return new Date(dateString).toLocaleString()
-    } catch {
-      return dateString
-    }
-  }, [])
-
   return (
     <Box>
       <Box sx={sectionStyle}>
@@ -129,7 +121,7 @@ const SystemInfoSection: React.FC<SectionProps> = ({
               size="small"
               label={t('fields.client_id_issued_at')}
               name="clientIdIssuedAt"
-              value={formatDate(formik.values.clientIdIssuedAt)}
+              value={formatDateTime(formik.values.clientIdIssuedAt, '-')}
               disabled
               sx={fieldStyle}
             />
@@ -141,7 +133,7 @@ const SystemInfoSection: React.FC<SectionProps> = ({
               size="small"
               label={t('fields.client_secret_expires_at')}
               name="clientSecretExpiresAt"
-              value={formatDate(formik.values.clientSecretExpiresAt)}
+              value={formatDateTime(formik.values.clientSecretExpiresAt, '-')}
               disabled
               sx={fieldStyle}
             />
@@ -153,7 +145,7 @@ const SystemInfoSection: React.FC<SectionProps> = ({
               size="small"
               label={t('fields.last_access_time')}
               name="lastAccessTime"
-              value={formatDate(formik.values.lastAccessTime)}
+              value={formatDateTime(formik.values.lastAccessTime, '-')}
               disabled
               sx={fieldStyle}
             />
@@ -165,7 +157,7 @@ const SystemInfoSection: React.FC<SectionProps> = ({
               size="small"
               label={t('fields.last_logon_time')}
               name="lastLogonTime"
-              value={formatDate(formik.values.lastLogonTime)}
+              value={formatDateTime(formik.values.lastLogonTime, '-')}
               disabled
               sx={fieldStyle}
             />
@@ -210,7 +202,7 @@ const SystemInfoSection: React.FC<SectionProps> = ({
                 handleFieldChange(
                   'ttl',
                   t('fields.ttl'),
-                  e.target.value ? parseInt(e.target.value) : null,
+                  e.target.value ? parseInt(e.target.value, 10) : null,
                 )
               }
               disabled={viewOnly}

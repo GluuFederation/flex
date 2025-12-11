@@ -112,7 +112,7 @@ const UrisSection: React.FC<SectionProps> = ({ formik, viewOnly = false, setModi
             </Typography>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
               {(value || []).map((uri, index) => (
-                <Chip key={index} label={uri} sx={chipStyle} size="small" />
+                <Chip key={`${uri}-${index}`} label={uri} sx={chipStyle} size="small" />
               ))}
               {(!value || value.length === 0) && (
                 <Typography color="text.secondary" variant="body2">
@@ -138,7 +138,7 @@ const UrisSection: React.FC<SectionProps> = ({ formik, viewOnly = false, setModi
             value.map((option, index) => (
               <Chip
                 {...getTagProps({ index })}
-                key={index}
+                key={`${option}-${index}`}
                 label={option}
                 size="small"
                 sx={chipStyle}

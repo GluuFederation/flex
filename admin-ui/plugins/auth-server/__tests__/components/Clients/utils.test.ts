@@ -1,4 +1,5 @@
 import {
+  buildAddFormPayload,
   buildClientInitialValues,
   buildClientPayload,
   hasFormChanges,
@@ -10,18 +11,145 @@ import {
   filterScriptsByType,
   getScriptNameFromDn,
   formatDateForDisplay,
+  formatDateTime,
   formatDateForInput,
   isValidUrl,
-  isValidUri,
+  hasValidUriScheme,
   truncateText,
   sortByName,
   removeDuplicates,
   arrayEquals,
+  transformScopesResponse,
 } from 'Plugins/auth-server/components/Clients/helper/utils'
 import { EMPTY_CLIENT } from 'Plugins/auth-server/components/Clients/types'
-import { clients } from '../../components/clients.test'
 
 describe('Client Utils', () => {
+  describe('transformScopesResponse', () => {
+    it('transforms scope entries to ClientScope format', () => {
+      const entries = [
+        {
+          dn: 'inum=F0C4,ou=scopes,o=jans',
+          inum: 'F0C4',
+          id: 'openid',
+          displayName: 'OpenID',
+          description: 'OpenID scope',
+        },
+        {
+          dn: 'inum=F0C5,ou=scopes,o=jans',
+          inum: 'F0C5',
+          id: 'profile',
+          displayName: 'Profile',
+          description: 'Profile scope',
+        },
+      ]
+
+      const result = transformScopesResponse(entries)
+
+      expect(result).toHaveLength(2)
+      expect(result[0]).toEqual({
+        dn: 'inum=F0C4,ou=scopes,o=jans',
+        inum: 'F0C4',
+        id: 'openid',
+        displayName: 'OpenID',
+        description: 'OpenID scope',
+      })
+    })
+
+    it('uses id as displayName when displayName is missing', () => {
+      const entries = [{ dn: 'inum=F0C4,ou=scopes,o=jans', inum: 'F0C4', id: 'openid' }]
+
+      const result = transformScopesResponse(entries)
+
+      expect(result[0].displayName).toBe('openid')
+    })
+
+    it('uses empty string for dn when missing', () => {
+      const entries = [{ inum: 'F0C4', id: 'openid' }]
+
+      const result = transformScopesResponse(entries)
+
+      expect(result[0].dn).toBe('')
+    })
+
+    it('returns empty array for null or undefined input', () => {
+      expect(transformScopesResponse(null)).toEqual([])
+      expect(transformScopesResponse(undefined)).toEqual([])
+    })
+
+    it('returns empty array for empty array input', () => {
+      expect(transformScopesResponse([])).toEqual([])
+    })
+  })
+
+  describe('buildAddFormPayload', () => {
+    const mockAddFormValues = {
+      clientName: 'Test Client',
+      clientSecret: 'secret123',
+      disabled: false,
+      description: 'Test description',
+      scopes: ['inum=F0C4,ou=scopes,o=jans'],
+      grantTypes: ['authorization_code', 'refresh_token'],
+      redirectUris: ['https://example.com/callback', ''],
+      postLogoutRedirectUris: ['https://example.com/logout'],
+    }
+
+    it('transforms add form values to ClientFormValues with defaults', () => {
+      const result = buildAddFormPayload(mockAddFormValues)
+
+      expect(result.clientName).toBe('Test Client')
+      expect(result.clientSecret).toBe('secret123')
+      expect(result.disabled).toBe(false)
+      expect(result.description).toBe('Test description')
+    })
+
+    it('sets default application type and subject type', () => {
+      const result = buildAddFormPayload(mockAddFormValues)
+
+      expect(result.applicationType).toBe('web')
+      expect(result.subjectType).toBe('public')
+      expect(result.tokenEndpointAuthMethod).toBe('client_secret_basic')
+    })
+
+    it('filters out empty redirect URIs', () => {
+      const result = buildAddFormPayload(mockAddFormValues)
+
+      expect(result.redirectUris).toEqual(['https://example.com/callback'])
+      expect(result.postLogoutRedirectUris).toEqual(['https://example.com/logout'])
+    })
+
+    it('sets default boolean values', () => {
+      const result = buildAddFormPayload(mockAddFormValues)
+
+      expect(result.trustedClient).toBe(false)
+      expect(result.persistClientAuthorizations).toBe(false)
+      expect(result.includeClaimsInIdToken).toBe(false)
+      expect(result.rptAsJwt).toBe(false)
+      expect(result.accessTokenAsJwt).toBe(false)
+      expect(result.deletable).toBe(true)
+      expect(result.expirable).toBe(false)
+    })
+
+    it('sets default attributes', () => {
+      const result = buildAddFormPayload(mockAddFormValues)
+
+      expect(result.attributes).toBeDefined()
+      expect(result.attributes?.requirePar).toBe(false)
+      expect(result.attributes?.requirePkce).toBe(false)
+      expect(result.attributes?.dpopBoundAccessToken).toBe(false)
+      expect(result.attributes?.backchannelLogoutUri).toEqual([])
+    })
+
+    it('sets default empty arrays', () => {
+      const result = buildAddFormPayload(mockAddFormValues)
+
+      expect(result.contacts).toEqual([])
+      expect(result.defaultAcrValues).toEqual([])
+      expect(result.claims).toEqual([])
+      expect(result.responseTypes).toEqual([])
+      expect(result.customObjectClasses).toEqual(['top'])
+    })
+  })
+
   describe('buildClientInitialValues', () => {
     it('merges client data with empty client defaults', () => {
       const result = buildClientInitialValues({ clientName: 'Test Client' })
@@ -184,11 +312,33 @@ describe('Client Utils', () => {
   describe('formatDateForDisplay', () => {
     it('formats valid date string', () => {
       const result = formatDateForDisplay('2025-01-15T10:30:00')
-      expect(result).toBeTruthy()
+      expect(result).toContain('2025')
+      expect(result).toContain('15')
     })
 
     it('returns empty string for undefined', () => {
       expect(formatDateForDisplay(undefined)).toBe('')
+    })
+  })
+
+  describe('formatDateTime', () => {
+    it('formats valid date string', () => {
+      const result = formatDateTime('2025-01-15T10:30:00')
+      expect(result).toContain('2025')
+      expect(result).toContain('15')
+    })
+
+    it('returns default fallback for undefined', () => {
+      expect(formatDateTime(undefined)).toBe('--')
+    })
+
+    it('returns custom fallback when provided', () => {
+      expect(formatDateTime(undefined, '-')).toBe('-')
+      expect(formatDateTime(undefined, 'N/A')).toBe('N/A')
+    })
+
+    it('returns original string for invalid date', () => {
+      expect(formatDateTime('invalid-date')).toBe('invalid-date')
     })
   })
 
@@ -215,15 +365,17 @@ describe('Client Utils', () => {
     })
   })
 
-  describe('isValidUri', () => {
-    it('returns true for valid URIs', () => {
-      expect(isValidUri('https://example.com')).toBe(true)
-      expect(isValidUri('custom-scheme://app')).toBe(true)
+  describe('hasValidUriScheme', () => {
+    it('returns true for strings with valid URI scheme prefix', () => {
+      expect(hasValidUriScheme('https://example.com')).toBe(true)
+      expect(hasValidUriScheme('custom-scheme://app')).toBe(true)
+      expect(hasValidUriScheme('mailto:test@example.com')).toBe(true)
     })
 
-    it('returns false for invalid URIs', () => {
-      expect(isValidUri('')).toBe(false)
-      expect(isValidUri('no-scheme')).toBe(false)
+    it('returns false for strings without valid URI scheme', () => {
+      expect(hasValidUriScheme('')).toBe(false)
+      expect(hasValidUriScheme('no-scheme')).toBe(false)
+      expect(hasValidUriScheme('123://invalid')).toBe(false)
     })
   })
 

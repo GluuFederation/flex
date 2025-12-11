@@ -756,6 +756,7 @@
     "tos_uri_localized": "URI des CGU (Localisé)"
   },
   "messages": {
+    "token_attributes_notice": "Les attributs du jeton peuvent contenir des claims personnalisés et des métadonnées sensibles. Ces données sont visibles par les utilisateurs ayant des permissions de gestion des jetons.",
     "add_permission": "Ajouter une autorisation",
     "add_asset": "Add Jans Asset",
     "asset_document_error": "Document is mandatory.",
@@ -825,6 +826,8 @@
     "add_client": "Ajouter un client",
     "client_id_copied": "ID client copié dans le presse-papiers",
     "client_secret_copied": "Secret client copié dans le presse-papiers",
+    "copy_failed": "Échec de la copie dans le presse-papiers",
+    "scripts_truncated_warning": "Certains scripts peuvent ne pas être affichés. Il y a plus de scripts disponibles que ce qui peut être affiché. Visitez la page Scripts pour voir tous les scripts.",
     "token_revoked": "Jeton révoqué avec succès",
     "error_fetching_tokens": "Erreur lors de la récupération des jetons",
     "error_revoking_token": "Erreur lors de la révocation du jeton",

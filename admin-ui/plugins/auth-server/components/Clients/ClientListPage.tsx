@@ -107,7 +107,9 @@ const ClientListPage: React.FC = () => {
 
   const getInitialPageSize = (): number => {
     const stored = localStorage.getItem('paggingSize')
-    return stored ? parseInt(stored) : DEFAULT_PAGE_SIZE
+    if (!stored) return DEFAULT_PAGE_SIZE
+    const parsed = parseInt(stored, 10)
+    return Number.isNaN(parsed) ? DEFAULT_PAGE_SIZE : parsed
   }
 
   const [limit, setLimit] = useState<number>(getInitialPageSize())

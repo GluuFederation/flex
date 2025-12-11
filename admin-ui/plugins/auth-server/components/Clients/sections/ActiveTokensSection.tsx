@@ -161,6 +161,13 @@ const ActiveTokensSection: React.FC<Pick<SectionProps, 'formik' | 'viewOnly'>> =
     [revokeTokenMutation, dispatch, t],
   )
 
+  const escapeCSVField = (value: string): string => {
+    if (value.includes(',') || value.includes('"') || value.includes('\n')) {
+      return `"${value.replace(/"/g, '""')}"`
+    }
+    return value
+  }
+
   const convertToCSV = (data: TokenEntity[]): string => {
     if (data.length === 0) return ''
 
@@ -180,7 +187,7 @@ const ActiveTokensSection: React.FC<Pick<SectionProps, 'formik' | 'viewOnly'>> =
           const value = row[key as keyof TokenEntity]
           if (value === undefined || value === null) return ''
           if (typeof value === 'boolean') return value.toString()
-          return String(value).replace(/,/g, ';')
+          return escapeCSVField(String(value))
         })
         .join(','),
     )

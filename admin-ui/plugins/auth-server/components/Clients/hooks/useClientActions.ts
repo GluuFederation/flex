@@ -16,50 +16,62 @@ export function useClientActions() {
 
   const logClientCreation = useCallback(
     async (client: ExtendedClient, message: string, modifiedFields?: ModifiedFields) => {
-      await logAuditUserAction({
-        token,
-        userinfo,
-        action: CREATE,
-        resource: OIDC,
-        message,
-        modifiedFields,
-        performedOn: client.inum,
-        client_id,
-        payload: client,
-      })
+      try {
+        await logAuditUserAction({
+          token,
+          userinfo,
+          action: CREATE,
+          resource: OIDC,
+          message,
+          modifiedFields,
+          performedOn: client.inum,
+          client_id,
+          payload: client,
+        })
+      } catch (error) {
+        console.error('Failed to log client creation audit:', error)
+      }
     },
     [token, userinfo, client_id],
   )
 
   const logClientUpdate = useCallback(
     async (client: ExtendedClient, message: string, modifiedFields?: ModifiedFields) => {
-      await logAuditUserAction({
-        token,
-        userinfo,
-        action: UPDATE,
-        resource: OIDC,
-        message,
-        modifiedFields,
-        performedOn: client.inum,
-        client_id,
-        payload: client,
-      })
+      try {
+        await logAuditUserAction({
+          token,
+          userinfo,
+          action: UPDATE,
+          resource: OIDC,
+          message,
+          modifiedFields,
+          performedOn: client.inum,
+          client_id,
+          payload: client,
+        })
+      } catch (error) {
+        console.error('Failed to log client update audit:', error)
+      }
     },
     [token, userinfo, client_id],
   )
 
   const logClientDeletion = useCallback(
     async (client: ExtendedClient, message: string) => {
-      await logAuditUserAction({
-        token,
-        userinfo,
-        action: DELETION,
-        resource: OIDC,
-        message,
-        performedOn: client.inum,
-        client_id,
-        payload: { inum: client.inum, clientName: client.clientName },
-      })
+      try {
+        await logAuditUserAction({
+          token,
+          userinfo,
+          action: DELETION,
+          resource: OIDC,
+          message,
+          performedOn: client.inum,
+          client_id,
+          payload: { inum: client.inum, clientName: client.clientName },
+        })
+      } catch (error) {
+        console.error('Failed to log client deletion audit:', error)
+      }
     },
     [token, userinfo, client_id],
   )

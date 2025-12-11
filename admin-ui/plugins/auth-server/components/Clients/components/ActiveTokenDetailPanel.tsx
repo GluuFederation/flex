@@ -1,9 +1,16 @@
 import React, { useContext, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Box, Grid, Typography, Chip } from '@mui/material'
+import { Box, Grid, Typography, Chip, Alert } from '@mui/material'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import type { TokenEntity } from 'JansConfigApi'
+import { formatDateTime } from '../helper/utils'
+
+/**
+ * Token attributes may contain custom claims and metadata added during token issuance.
+ * These can include user identifiers, session data, or custom application-specific values.
+ * Administrators should be aware that this data is visible to users with token management permissions.
+ */
 
 interface ActiveTokenDetailPanelProps {
   rowData: TokenEntity
@@ -31,15 +38,6 @@ const ActiveTokenDetailPanel: React.FC<ActiveTokenDetailPanelProps> = ({ rowData
     wordBreak: 'break-word' as const,
   }
 
-  const formatDate = (dateString?: string): string => {
-    if (!dateString) return '--'
-    try {
-      return new Date(dateString).toLocaleString()
-    } catch {
-      return dateString
-    }
-  }
-
   return (
     <Box
       sx={{
@@ -52,12 +50,12 @@ const ActiveTokenDetailPanel: React.FC<ActiveTokenDetailPanelProps> = ({ rowData
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6} md={4}>
           <Typography sx={labelSx}>{t('fields.creationDate')}</Typography>
-          <Typography sx={valueSx}>{formatDate(rowData.creationDate)}</Typography>
+          <Typography sx={valueSx}>{formatDateTime(rowData.creationDate)}</Typography>
         </Grid>
 
         <Grid item xs={12} sm={6} md={4}>
           <Typography sx={labelSx}>{t('fields.expiration_date')}</Typography>
-          <Typography sx={valueSx}>{formatDate(rowData.expirationDate)}</Typography>
+          <Typography sx={valueSx}>{formatDateTime(rowData.expirationDate)}</Typography>
         </Grid>
 
         <Grid item xs={12} sm={6} md={4}>
@@ -76,7 +74,7 @@ const ActiveTokenDetailPanel: React.FC<ActiveTokenDetailPanelProps> = ({ rowData
         </Grid>
 
         <Grid item xs={12} sm={6} md={4}>
-          <Typography sx={labelSx}>{t('fields.deleteable')}</Typography>
+          <Typography sx={labelSx}>{t('fields.deletable')}</Typography>
           <Chip
             label={rowData.deletable ? t('options.yes') : t('options.no')}
             size="small"
@@ -91,6 +89,9 @@ const ActiveTokenDetailPanel: React.FC<ActiveTokenDetailPanelProps> = ({ rowData
         {rowData.attributes && Object.keys(rowData.attributes).length > 0 && (
           <Grid item xs={12}>
             <Typography sx={labelSx}>{t('fields.attributes')}</Typography>
+            <Alert severity="info" sx={{ mb: 1, py: 0 }}>
+              <Typography variant="caption">{t('messages.token_attributes_notice')}</Typography>
+            </Alert>
             <Box
               component="pre"
               sx={{

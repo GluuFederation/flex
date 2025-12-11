@@ -52,9 +52,9 @@ export const clientValidationSchema = Yup.object().shape({
   jwksUri: urlSchema.nullable(),
   sectorIdentifierUri: urlSchema.nullable(),
   backchannelClientNotificationEndpoint: urlSchema.nullable(),
-  accessTokenLifetime: Yup.number().nullable().min(0, 'Must be a positive number'),
-  refreshTokenLifetime: Yup.number().nullable().min(0, 'Must be a positive number'),
-  defaultMaxAge: Yup.number().nullable().min(0, 'Must be a positive number'),
+  accessTokenLifetime: Yup.number().nullable().min(0, 'Must be a non-negative number'),
+  refreshTokenLifetime: Yup.number().nullable().min(0, 'Must be a non-negative number'),
+  defaultMaxAge: Yup.number().nullable().min(0, 'Must be a non-negative number'),
   expirationDate: Yup.string()
     .nullable()
     .when('expirable', {
@@ -74,7 +74,11 @@ export function validateRedirectUri(uri: string): string | null {
     if (uri.startsWith('http://localhost') || uri.startsWith('http://127.0.0.1')) {
       return null
     }
-    return 'Must be a valid URL'
+    const customSchemeRegex = /^[a-zA-Z][a-zA-Z0-9+.-]*:\/\/.+$/
+    if (customSchemeRegex.test(uri)) {
+      return null
+    }
+    return 'Must be a valid URL or custom scheme URI (e.g., myapp://callback)'
   }
 }
 
@@ -84,10 +88,10 @@ export function validateEmail(email: string): string | null {
   return emailRegex.test(email) ? null : 'Must be a valid email address'
 }
 
-export function validatePositiveNumber(value: number | undefined | null): string | null {
+export function validateNonNegativeNumber(value: number | undefined | null): string | null {
   if (value === undefined || value === null) return null
   if (typeof value !== 'number') return 'Must be a number'
-  if (value < 0) return 'Must be a positive number'
+  if (value < 0) return 'Must be a non-negative number'
   return null
 }
 
@@ -116,7 +120,7 @@ export function validateTokenLifetime(
   maxSeconds = 315360000,
 ): string | null {
   if (value === undefined || value === null) return null
-  if (value < 0) return 'Must be a positive number'
+  if (value < 0) return 'Must be a non-negative number'
   if (value > maxSeconds) return `Value exceeds maximum allowed (${maxSeconds} seconds)`
   return null
 }

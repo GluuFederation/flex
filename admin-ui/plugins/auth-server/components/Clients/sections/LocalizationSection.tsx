@@ -20,6 +20,7 @@ const LocalizationSection: React.FC<SectionProps> = ({
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
 
   const [editorValues, setEditorValues] = useState<Record<string, string>>({})
+  const [jsonErrors, setJsonErrors] = useState<Record<string, boolean>>({})
 
   const handleFieldChange = useCallback(
     (fieldName: string, fieldLabel: string, value: unknown) => {
@@ -100,39 +101,54 @@ const LocalizationSection: React.FC<SectionProps> = ({
       try {
         const parsed = newValue.trim() ? JSON.parse(newValue) : {}
         handleFieldChange(fieldName, fieldLabel, parsed)
-      } catch {}
+        setJsonErrors((prev) => ({ ...prev, [fieldName]: false }))
+      } catch {
+        setJsonErrors((prev) => ({ ...prev, [fieldName]: true }))
+      }
     },
     [handleFieldChange],
   )
 
   const renderJsonEditor = useCallback(
-    (label: string, fieldName: string, formikValue: Record<string, string> | undefined) => (
-      <Grid item xs={12}>
-        <Typography sx={labelStyle}>{label}</Typography>
-        <Box sx={editorContainerStyle}>
-          <AceEditor
-            mode="json"
-            theme={selectedTheme === 'darkBlack' ? 'monokai' : 'xcode'}
-            value={getEditorValue(fieldName, formikValue)}
-            onChange={(newValue) => handleEditorChange(fieldName, label, newValue)}
-            name={`${fieldName}-editor`}
-            width="100%"
-            height="100px"
-            fontSize={13}
-            showPrintMargin={false}
-            showGutter={true}
-            highlightActiveLine={!viewOnly}
-            readOnly={viewOnly}
-            setOptions={{
-              useWorker: false,
-              showLineNumbers: true,
-              tabSize: 2,
+    (label: string, fieldName: string, formikValue: Record<string, string> | undefined) => {
+      const hasError = jsonErrors[fieldName]
+      return (
+        <Grid item xs={12}>
+          <Typography sx={labelStyle}>{label}</Typography>
+          <Box
+            sx={{
+              ...editorContainerStyle,
+              borderColor: hasError ? 'error.main' : editorContainerStyle.border?.split(' ')[2],
             }}
-          />
-        </Box>
-        <Typography sx={helperTextStyle}>{t('placeholders.localized_json_format')}</Typography>
-      </Grid>
-    ),
+          >
+            <AceEditor
+              mode="json"
+              theme={selectedTheme === 'darkBlack' ? 'monokai' : 'xcode'}
+              value={getEditorValue(fieldName, formikValue)}
+              onChange={(newValue) => handleEditorChange(fieldName, label, newValue)}
+              name={`${fieldName}-editor`}
+              width="100%"
+              height="100px"
+              fontSize={13}
+              showPrintMargin={false}
+              showGutter={true}
+              highlightActiveLine={!viewOnly}
+              readOnly={viewOnly}
+              setOptions={{
+                useWorker: false,
+                showLineNumbers: true,
+                tabSize: 2,
+              }}
+            />
+          </Box>
+          <Typography
+            sx={{ ...helperTextStyle, color: hasError ? 'error.main' : 'text.secondary' }}
+          >
+            {hasError ? t('messages.invalid_json_error') : t('placeholders.localized_json_format')}
+          </Typography>
+        </Grid>
+      )
+    },
     [
       selectedTheme,
       viewOnly,
@@ -142,6 +158,7 @@ const LocalizationSection: React.FC<SectionProps> = ({
       t,
       getEditorValue,
       handleEditorChange,
+      jsonErrors,
     ],
   )
 

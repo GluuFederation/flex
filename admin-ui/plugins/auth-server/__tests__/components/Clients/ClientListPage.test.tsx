@@ -1,9 +1,10 @@
 import React from 'react'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
+import ClientListPage from 'Plugins/auth-server/components/Clients/ClientListPage'
 
 const mockNavigate = jest.fn()
 const mockUseGetOauthOpenidClients = jest.fn()
@@ -24,6 +25,7 @@ jest.mock('@janssenproject/cedarling_wasm', () => ({
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({
     authorize: jest.fn(() => true),
+    authorizeHelper: jest.fn(),
     hasCedarReadPermission: jest.fn(() => true),
     hasCedarWritePermission: jest.fn(() => true),
     hasCedarDeletePermission: jest.fn(() => true),
@@ -38,6 +40,10 @@ jest.mock('JansConfigApi', () => ({
     isPending: false,
   })),
   getGetOauthOpenidClientsQueryKey: jest.fn(() => ['oauth-openid-clients']),
+  useGetOauthScopes: jest.fn(() => ({
+    data: { entries: [] },
+    isLoading: false,
+  })),
 }))
 
 const permissions = [
@@ -54,6 +60,8 @@ const WEBHOOK_STATE = {
   loadingWebhooks: false,
   webhookModal: false,
   webhooks: [],
+  featureWebhooks: [],
+  triggerWebhookInProgress: false,
 }
 
 const store = configureStore({
@@ -94,10 +102,19 @@ describe('ClientListPage', () => {
             displayName: 'Jans Config Api Client',
             applicationType: 'web',
             disabled: false,
+            grantTypes: ['authorization_code', 'client_credentials'],
+          },
+          {
+            inum: '1001.7f0a05b2-0976-475f-8048-50d4cc5e845f',
+            clientName: 'Admin UI Client',
+            displayName: 'Admin UI Client',
+            applicationType: 'web',
+            disabled: true,
+            grantTypes: ['refresh_token'],
           },
         ],
-        totalEntriesCount: 1,
-        entriesCount: 1,
+        totalEntriesCount: 2,
+        entriesCount: 2,
       },
       isLoading: false,
       error: null,
@@ -105,15 +122,101 @@ describe('ClientListPage', () => {
     })
   })
 
-  it('returns client list data from hook', () => {
-    const result = mockUseGetOauthOpenidClients()
-    expect(result.data?.entries).toHaveLength(1)
-    expect(result.isLoading).toBe(false)
-    expect(result.data?.entries[0].clientName).toBe('Jans Config Api Client')
+  it('renders client list page', async () => {
+    render(<ClientListPage />, { wrapper: Wrapper })
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /add client/i })).toBeInTheDocument()
+    })
   })
 
-  it('mock returns correct client inum', () => {
-    const result = mockUseGetOauthOpenidClients()
-    expect(result.data?.entries[0].inum).toBe('1801.a0beec01-617b-4607-8a35-3e46ac43deb5')
+  it('displays client names in the list', async () => {
+    render(<ClientListPage />, { wrapper: Wrapper })
+
+    await waitFor(() => {
+      expect(screen.getByText('Jans Config Api Client')).toBeInTheDocument()
+      expect(screen.getByText('Admin UI Client')).toBeInTheDocument()
+    })
+  })
+
+  it('does not display client data when loading', async () => {
+    mockUseGetOauthOpenidClients.mockReturnValue({
+      data: null,
+      isLoading: true,
+      error: null,
+      refetch: jest.fn(),
+    })
+
+    render(<ClientListPage />, { wrapper: Wrapper })
+
+    await waitFor(() => {
+      expect(screen.queryByText('Jans Config Api Client')).not.toBeInTheDocument()
+    })
+  })
+
+  it('renders add client button', async () => {
+    render(<ClientListPage />, { wrapper: Wrapper })
+
+    await waitFor(() => {
+      const addButton = screen.getByRole('button', { name: /add client/i })
+      expect(addButton).toBeInTheDocument()
+    })
+  })
+
+  it('navigates to add client page when add button is clicked', async () => {
+    render(<ClientListPage />, { wrapper: Wrapper })
+
+    await waitFor(() => {
+      const addButton = screen.getByRole('button', { name: /add client/i })
+      fireEvent.click(addButton)
+    })
+
+    expect(mockNavigate).toHaveBeenCalledWith('/auth-server/client/new')
+  })
+
+  it('renders search input', async () => {
+    render(<ClientListPage />, { wrapper: Wrapper })
+
+    await waitFor(() => {
+      const searchInput = screen.getByPlaceholderText(/search/i)
+      expect(searchInput).toBeInTheDocument()
+    })
+  })
+
+  it('renders refresh button', async () => {
+    render(<ClientListPage />, { wrapper: Wrapper })
+
+    await waitFor(() => {
+      const refreshButton = screen.getByTestId('RefreshIcon')
+      expect(refreshButton).toBeInTheDocument()
+    })
+  })
+
+  it('displays correct number of clients', async () => {
+    render(<ClientListPage />, { wrapper: Wrapper })
+
+    await waitFor(() => {
+      expect(screen.getByText('Jans Config Api Client')).toBeInTheDocument()
+      expect(screen.getByText('Admin UI Client')).toBeInTheDocument()
+    })
+  })
+
+  it('renders empty state when no clients exist', async () => {
+    mockUseGetOauthOpenidClients.mockReturnValue({
+      data: {
+        entries: [],
+        totalEntriesCount: 0,
+        entriesCount: 0,
+      },
+      isLoading: false,
+      error: null,
+      refetch: jest.fn(),
+    })
+
+    render(<ClientListPage />, { wrapper: Wrapper })
+
+    await waitFor(() => {
+      expect(screen.getByText(/no records to display/i)).toBeInTheDocument()
+    })
   })
 })

@@ -19,6 +19,17 @@ export interface ClientFormValues extends ExtendedClient {
   expirable: boolean
 }
 
+export interface AddFormValues {
+  clientName: string
+  clientSecret: string
+  disabled: boolean
+  description: string
+  scopes: string[]
+  grantTypes: string[]
+  redirectUris: string[]
+  postLogoutRedirectUris: string[]
+}
+
 export interface ClientFormProps {
   client: Partial<ExtendedClient>
   isEdit?: boolean
@@ -65,6 +76,7 @@ export interface SectionProps {
   viewOnly?: boolean
   setModifiedFields: React.Dispatch<React.SetStateAction<ModifiedFields>>
   scripts?: ClientScript[]
+  scriptsTruncated?: boolean
   scopes?: ClientScope[]
   scopesLoading?: boolean
   onScopeSearch?: (pattern: string) => void

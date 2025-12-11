@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
+import { useQueryClient, QueryClient } from '@tanstack/react-query'
 import { useDispatch } from 'react-redux'
+import { Dispatch } from 'redux'
 import { updateToast } from 'Redux/features/toastSlice'
 import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
 import {
@@ -11,6 +12,42 @@ import {
   getGetOauthOpenidClientsQueryKey,
 } from 'JansConfigApi'
 import type { Client, ClientListOptions } from '../types'
+
+interface MutationHandlerOptions {
+  dispatch: Dispatch
+  queryClient: QueryClient
+  errorMessageFallback: string
+  triggerWebhookOnSuccess?: boolean
+  onSuccess?: () => void
+  onError?: (error: Error) => void
+}
+
+function createMutationHandlers<T = Client>(options: MutationHandlerOptions) {
+  const {
+    dispatch,
+    queryClient,
+    errorMessageFallback,
+    triggerWebhookOnSuccess = true,
+    onSuccess,
+    onError,
+  } = options
+
+  const handleSuccess = (data: T) => {
+    dispatch(updateToast(true, 'success'))
+    queryClient.invalidateQueries({ queryKey: getGetOauthOpenidClientsQueryKey() })
+    if (triggerWebhookOnSuccess && data) {
+      dispatch(triggerWebhook({ createdFeatureValue: data }))
+    }
+    onSuccess?.()
+  }
+
+  const handleError = (error: Error) => {
+    dispatch(updateToast(true, 'error', error?.message || errorMessageFallback))
+    onError?.(error)
+  }
+
+  return { handleSuccess, handleError }
+}
 
 export function useClientList(params: ClientListOptions) {
   const queryOptions = useMemo(
@@ -54,25 +91,16 @@ export function useCreateClient(onSuccess?: () => void, onError?: (error: Error)
   const queryClient = useQueryClient()
   const dispatch = useDispatch()
 
-  const handleSuccess = useCallback(
-    (data: Client) => {
-      dispatch(updateToast(true, 'success'))
-      queryClient.invalidateQueries({
-        queryKey: getGetOauthOpenidClientsQueryKey(),
-      })
-      dispatch(triggerWebhook({ createdFeatureValue: data }))
-      onSuccess?.()
-    },
-    [dispatch, queryClient, onSuccess],
-  )
-
-  const handleError = useCallback(
-    (error: Error) => {
-      const errorMessage = error?.message || 'Failed to create client'
-      dispatch(updateToast(true, 'error', errorMessage))
-      onError?.(error)
-    },
-    [dispatch, onError],
+  const { handleSuccess, handleError } = useMemo(
+    () =>
+      createMutationHandlers({
+        dispatch,
+        queryClient,
+        errorMessageFallback: 'Failed to create client',
+        onSuccess,
+        onError,
+      }),
+    [dispatch, queryClient, onSuccess, onError],
   )
 
   return usePostOauthOpenidClient({
@@ -87,25 +115,16 @@ export function useUpdateClient(onSuccess?: () => void, onError?: (error: Error)
   const queryClient = useQueryClient()
   const dispatch = useDispatch()
 
-  const handleSuccess = useCallback(
-    (data: Client) => {
-      dispatch(updateToast(true, 'success'))
-      queryClient.invalidateQueries({
-        queryKey: getGetOauthOpenidClientsQueryKey(),
-      })
-      dispatch(triggerWebhook({ createdFeatureValue: data }))
-      onSuccess?.()
-    },
-    [dispatch, queryClient, onSuccess],
-  )
-
-  const handleError = useCallback(
-    (error: Error) => {
-      const errorMessage = error?.message || 'Failed to update client'
-      dispatch(updateToast(true, 'error', errorMessage))
-      onError?.(error)
-    },
-    [dispatch, onError],
+  const { handleSuccess, handleError } = useMemo(
+    () =>
+      createMutationHandlers({
+        dispatch,
+        queryClient,
+        errorMessageFallback: 'Failed to update client',
+        onSuccess,
+        onError,
+      }),
+    [dispatch, queryClient, onSuccess, onError],
   )
 
   return usePutOauthOpenidClient({
@@ -120,21 +139,17 @@ export function useDeleteClient(onSuccess?: () => void, onError?: (error: Error)
   const queryClient = useQueryClient()
   const dispatch = useDispatch()
 
-  const handleSuccess = useCallback(() => {
-    dispatch(updateToast(true, 'success'))
-    queryClient.invalidateQueries({
-      queryKey: getGetOauthOpenidClientsQueryKey(),
-    })
-    onSuccess?.()
-  }, [dispatch, queryClient, onSuccess])
-
-  const handleError = useCallback(
-    (error: Error) => {
-      const errorMessage = error?.message || 'Failed to delete client'
-      dispatch(updateToast(true, 'error', errorMessage))
-      onError?.(error)
-    },
-    [dispatch, onError],
+  const { handleSuccess, handleError } = useMemo(
+    () =>
+      createMutationHandlers<null>({
+        dispatch,
+        queryClient,
+        errorMessageFallback: 'Failed to delete client',
+        triggerWebhookOnSuccess: false,
+        onSuccess,
+        onError,
+      }),
+    [dispatch, queryClient, onSuccess, onError],
   )
 
   return useDeleteOauthOpenidClientByInum({
@@ -150,13 +165,7 @@ export function useInvalidateClientQueries() {
 
   return useCallback(() => {
     queryClient.invalidateQueries({
-      predicate: (query) => {
-        const queryKey = query.queryKey[0] as string
-        return (
-          queryKey === getGetOauthOpenidClientsQueryKey()[0] ||
-          queryKey === 'getOauthOpenidClientsByInum'
-        )
-      },
+      queryKey: getGetOauthOpenidClientsQueryKey(),
     })
   }, [queryClient])
 }

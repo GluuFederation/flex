@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Formik, Form, FormikProps } from 'formik'
 import { ErrorBoundary } from 'react-error-boundary'
 import {
+  Alert,
   Box,
   Button,
   Paper,
@@ -66,6 +67,7 @@ import {
 } from '../sections'
 
 const NAV_COLLAPSED_KEY = 'clientFormNavCollapsed'
+const SCRIPTS_FETCH_LIMIT = 200
 
 const SECTION_ICONS: Record<string, React.ReactNode> = {
   InfoOutlined: <InfoOutlined />,
@@ -116,8 +118,6 @@ const ClientForm: React.FC<ClientFormProps> = ({
 
   const oidcConfiguration = useMemo(() => propertiesData || {}, [propertiesData])
 
-  const scopes = propScopes
-  const scopesLoading = propScopesLoading
   const handleScopeSearch = useCallback(
     (pattern: string) => {
       if (propOnScopeSearch) {
@@ -128,7 +128,7 @@ const ClientForm: React.FC<ClientFormProps> = ({
   )
 
   const { data: scriptsResponse } = useGetConfigScripts(
-    { limit: 200 },
+    { limit: SCRIPTS_FETCH_LIMIT },
     {
       query: {
         refetchOnMount: 'always' as const,
@@ -157,6 +157,11 @@ const ClientForm: React.FC<ClientFormProps> = ({
       enabled: script.enabled,
     }))
   }, [scriptsResponse?.entries])
+
+  const scriptsTruncated = useMemo(() => {
+    const totalCount = scriptsResponse?.totalEntriesCount
+    return typeof totalCount === 'number' && totalCount > SCRIPTS_FETCH_LIMIT
+  }, [scriptsResponse?.totalEntriesCount])
 
   const initialValues = useMemo(() => buildClientInitialValues(client), [client])
 
@@ -257,8 +262,9 @@ const ClientForm: React.FC<ClientFormProps> = ({
         viewOnly,
         setModifiedFields,
         scripts,
-        scopes,
-        scopesLoading,
+        scriptsTruncated,
+        scopes: propScopes,
+        scopesLoading: propScopesLoading,
         onScopeSearch: handleScopeSearch,
         oidcConfiguration,
       }
@@ -288,7 +294,16 @@ const ClientForm: React.FC<ClientFormProps> = ({
           return null
       }
     },
-    [activeSection, viewOnly, scripts, scopes, scopesLoading, handleScopeSearch, oidcConfiguration],
+    [
+      activeSection,
+      viewOnly,
+      scripts,
+      scriptsTruncated,
+      propScopes,
+      propScopesLoading,
+      handleScopeSearch,
+      oidcConfiguration,
+    ],
   )
 
   const renderNavigation = useCallback(() => {

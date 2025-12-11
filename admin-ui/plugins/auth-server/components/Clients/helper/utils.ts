@@ -1,5 +1,86 @@
-import type { ExtendedClient, ClientFormValues, ModifiedFields } from '../types'
+import type {
+  ExtendedClient,
+  ClientFormValues,
+  ModifiedFields,
+  ClientScope,
+  AddFormValues,
+} from '../types'
 import { EMPTY_CLIENT } from '../types'
+
+interface ScopeEntry {
+  dn?: string
+  inum?: string
+  id?: string
+  displayName?: string
+  description?: string
+}
+
+export function transformScopesResponse(entries: ScopeEntry[] | undefined | null): ClientScope[] {
+  return (entries || []).map(
+    (scope): ClientScope => ({
+      dn: scope.dn || '',
+      inum: scope.inum,
+      id: scope.id,
+      displayName: scope.displayName || scope.id,
+      description: scope.description,
+    }),
+  )
+}
+
+/**
+ * Transforms simplified add form values into a full ClientFormValues payload.
+ * This adds all required default values for a new client.
+ */
+export function buildAddFormPayload(formValues: AddFormValues): ClientFormValues {
+  const payload = {
+    ...formValues,
+    applicationType: 'web' as const,
+    subjectType: 'public' as const,
+    tokenEndpointAuthMethod: 'client_secret_basic' as const,
+    responseTypes: [] as string[],
+    redirectUris: formValues.redirectUris.filter(Boolean),
+    postLogoutRedirectUris: formValues.postLogoutRedirectUris.filter(Boolean),
+    frontChannelLogoutSessionRequired: false,
+    backchannelUserCodeParameter: false,
+    trustedClient: false,
+    persistClientAuthorizations: false,
+    includeClaimsInIdToken: false,
+    rptAsJwt: false,
+    accessTokenAsJwt: false,
+    deletable: true,
+    customObjectClasses: ['top'],
+    contacts: [] as string[],
+    defaultAcrValues: [] as string[],
+    claims: [] as string[],
+    claimRedirectUris: [] as string[],
+    authorizedOrigins: [] as string[],
+    requestUris: [] as string[],
+    expirable: false,
+    attributes: {
+      runIntrospectionScriptBeforeJwtCreation: false,
+      keepClientAuthorizationAfterExpiration: false,
+      allowSpontaneousScopes: false,
+      backchannelLogoutSessionRequired: false,
+      backchannelLogoutUri: [] as string[],
+      rptClaimsScripts: [] as string[],
+      consentGatheringScripts: [] as string[],
+      spontaneousScopeScriptDns: [] as string[],
+      introspectionScripts: [] as string[],
+      postAuthnScripts: [] as string[],
+      ropcScripts: [] as string[],
+      updateTokenScriptDns: [] as string[],
+      additionalAudience: [] as string[],
+      spontaneousScopes: [] as string[],
+      jansAuthorizedAcr: [] as string[],
+      requirePar: false,
+      dpopBoundAccessToken: false,
+      jansDefaultPromptLogin: false,
+      minimumAcrLevelAutoresolve: false,
+      requirePkce: false,
+    },
+  }
+  return payload as ClientFormValues
+}
 
 export function buildClientInitialValues(client: Partial<ExtendedClient>): ClientFormValues {
   const merged = {
@@ -172,6 +253,17 @@ export function formatDateForDisplay(dateString: string | undefined): string {
   }
 }
 
+export function formatDateTime(dateString?: string, fallback = '--'): string {
+  if (!dateString) return fallback
+  try {
+    const date = new Date(dateString)
+    if (isNaN(date.getTime())) return dateString
+    return date.toLocaleString()
+  } catch {
+    return dateString
+  }
+}
+
 export function formatDateForInput(dateString: string | undefined): string {
   if (!dateString) return ''
   try {
@@ -191,7 +283,12 @@ export function isValidUrl(url: string): boolean {
   }
 }
 
-export function isValidUri(uri: string): boolean {
+/**
+ * Checks if a string has a valid URI scheme prefix.
+ * Note: For form validation with optional fields and custom scheme support,
+ * use isValidUri from validations.ts instead.
+ */
+export function hasValidUriScheme(uri: string): boolean {
   if (!uri) return false
   const uriPattern = /^[a-zA-Z][a-zA-Z0-9+.-]*:/
   return uriPattern.test(uri)

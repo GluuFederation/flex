@@ -751,6 +751,7 @@
     "tos_uri_localized": "URI dos Termos de Serviço (Localizado)"
   },
   "messages": {
+    "token_attributes_notice": "Os atributos do token podem conter claims personalizados e metadados sensíveis. Esses dados são visíveis para usuários com permissões de gerenciamento de tokens.",
     "add_permission": "Adicionar permissão",
     "add_asset": "Add Jans Asset",
     "asset_document_error": "Document is mandatory.",
@@ -820,6 +821,8 @@
     "add_client": "Adicionar Cliente",
     "client_id_copied": "ID do cliente copiado para a área de transferência",
     "client_secret_copied": "Segredo do cliente copiado para a área de transferência",
+    "copy_failed": "Falha ao copiar para a área de transferência",
+    "scripts_truncated_warning": "Alguns scripts podem não ser exibidos. Há mais scripts disponíveis do que podem ser exibidos. Visite a página de Scripts para ver todos os scripts.",
     "token_revoked": "Token revogado com sucesso",
     "error_fetching_tokens": "Erro ao buscar tokens",
     "error_revoking_token": "Erro ao revogar token",

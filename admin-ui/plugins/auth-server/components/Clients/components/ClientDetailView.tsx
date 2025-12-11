@@ -28,19 +28,23 @@ const ClientDetailView: React.FC<ClientDetailViewProps> = ({ client, scopes = []
 
   const handleCopyClientId = () => {
     if (client.inum) {
-      navigator.clipboard.writeText(client.inum)
-      dispatch(updateToast(true, 'success', t('messages.client_id_copied')))
+      navigator.clipboard
+        .writeText(client.inum)
+        .then(() => dispatch(updateToast(true, 'success', t('messages.client_id_copied'))))
+        .catch(() => dispatch(updateToast(true, 'error', t('messages.copy_failed'))))
     }
   }
 
   const handleCopyClientSecret = () => {
     if (client.clientSecret) {
-      navigator.clipboard.writeText(client.clientSecret)
-      dispatch(updateToast(true, 'success', t('messages.client_secret_copied')))
+      navigator.clipboard
+        .writeText(client.clientSecret)
+        .then(() => dispatch(updateToast(true, 'success', t('messages.client_secret_copied'))))
+        .catch(() => dispatch(updateToast(true, 'error', t('messages.copy_failed'))))
     }
   }
 
-  const getScopeNames = (): string[] => {
+  const scopeNames = useMemo((): string[] => {
     if (!client.scopes || client.scopes.length === 0) return []
     const matchedScopes = scopes
       .filter((scope) => scope.dn && client.scopes?.includes(scope.dn))
@@ -53,7 +57,7 @@ const ClientDetailView: React.FC<ClientDetailViewProps> = ({ client, scopes = []
       .map((s) => formatScopeDisplay(s))
 
     return [...matchedScopes, ...unmatchedScopes]
-  }
+  }, [client.scopes, scopes])
 
   const labelSx = {
     fontSize: '0.85rem',
@@ -165,7 +169,7 @@ const ClientDetailView: React.FC<ClientDetailViewProps> = ({ client, scopes = []
           <Grid item xs={12}>
             <Typography sx={{ ...labelSx, mb: 0.5 }}>{t('fields.scopes')}</Typography>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-              {getScopeNames().map((name, i) => (
+              {scopeNames.map((name, i) => (
                 <Chip key={i} label={name} size="small" sx={chipSx} />
               ))}
             </Box>

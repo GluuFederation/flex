@@ -6,6 +6,49 @@ import getThemeColor from 'Context/theme/config'
 import type { SectionProps } from '../types'
 import { TOKEN_ENDPOINT_AUTH_METHODS } from '../helper/constants'
 
+interface AlgorithmSelectProps {
+  label: string
+  name: string
+  value: string
+  options: string[]
+  onChange: (value: string) => void
+  disabled: boolean
+  fieldStyle: object
+  placeholder: string
+}
+
+const AlgorithmSelect: React.FC<AlgorithmSelectProps> = ({
+  label,
+  name,
+  value,
+  options,
+  onChange,
+  disabled,
+  fieldStyle,
+  placeholder,
+}) => (
+  <TextField
+    fullWidth
+    select
+    size="small"
+    label={label}
+    name={name}
+    value={value}
+    onChange={(e) => onChange(e.target.value)}
+    disabled={disabled}
+    sx={fieldStyle}
+    SelectProps={{ native: true }}
+    InputLabelProps={{ shrink: true }}
+  >
+    <option value="">{placeholder}</option>
+    {options.map((opt) => (
+      <option key={opt} value={opt}>
+        {opt}
+      </option>
+    ))}
+  </TextField>
+)
+
 const AuthenticationSection: React.FC<SectionProps> = ({
   formik,
   viewOnly = false,
@@ -198,90 +241,60 @@ const AuthenticationSection: React.FC<SectionProps> = ({
         <Typography sx={sectionTitleStyle}>{t('titles.id_token')}</Typography>
         <Grid container spacing={2}>
           <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              select
-              size="small"
+            <AlgorithmSelect
               label={t('fields.id_token_signed_response_alg')}
               name="idTokenSignedResponseAlg"
               value={formik.values.idTokenSignedResponseAlg || ''}
-              onChange={(e) =>
+              options={signingAlgorithms}
+              onChange={(value) =>
                 handleFieldChange(
                   'idTokenSignedResponseAlg',
                   t('fields.id_token_signed_response_alg'),
-                  e.target.value,
+                  value,
                 )
               }
               disabled={viewOnly}
-              sx={fieldStyle}
-              SelectProps={{ native: true }}
-              InputLabelProps={{ shrink: true }}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              {signingAlgorithms.map((alg) => (
-                <option key={alg} value={alg}>
-                  {alg}
-                </option>
-              ))}
-            </TextField>
+              fieldStyle={fieldStyle}
+              placeholder={`${t('actions.choose')}...`}
+            />
           </Grid>
 
           <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              select
-              size="small"
+            <AlgorithmSelect
               label={t('fields.id_token_encrypted_response_alg')}
               name="idTokenEncryptedResponseAlg"
               value={formik.values.idTokenEncryptedResponseAlg || ''}
-              onChange={(e) =>
+              options={encryptionAlgorithms}
+              onChange={(value) =>
                 handleFieldChange(
                   'idTokenEncryptedResponseAlg',
                   t('fields.id_token_encrypted_response_alg'),
-                  e.target.value,
+                  value,
                 )
               }
               disabled={viewOnly}
-              sx={fieldStyle}
-              SelectProps={{ native: true }}
-              InputLabelProps={{ shrink: true }}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              {encryptionAlgorithms.map((alg) => (
-                <option key={alg} value={alg}>
-                  {alg}
-                </option>
-              ))}
-            </TextField>
+              fieldStyle={fieldStyle}
+              placeholder={`${t('actions.choose')}...`}
+            />
           </Grid>
 
           <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              select
-              size="small"
+            <AlgorithmSelect
               label={t('fields.id_token_encrypted_response_enc')}
               name="idTokenEncryptedResponseEnc"
               value={formik.values.idTokenEncryptedResponseEnc || ''}
-              onChange={(e) =>
+              options={encryptionEncodings}
+              onChange={(value) =>
                 handleFieldChange(
                   'idTokenEncryptedResponseEnc',
                   t('fields.id_token_encrypted_response_enc'),
-                  e.target.value,
+                  value,
                 )
               }
               disabled={viewOnly}
-              sx={fieldStyle}
-              SelectProps={{ native: true }}
-              InputLabelProps={{ shrink: true }}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              {encryptionEncodings.map((enc) => (
-                <option key={enc} value={enc}>
-                  {enc}
-                </option>
-              ))}
-            </TextField>
+              fieldStyle={fieldStyle}
+              placeholder={`${t('actions.choose')}...`}
+            />
           </Grid>
         </Grid>
       </Box>
@@ -290,32 +303,22 @@ const AuthenticationSection: React.FC<SectionProps> = ({
         <Typography sx={sectionTitleStyle}>{t('titles.access_token')}</Typography>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              select
-              size="small"
+            <AlgorithmSelect
               label={t('fields.access_token_signing_alg')}
               name="accessTokenSigningAlg"
               value={formik.values.accessTokenSigningAlg || ''}
-              onChange={(e) =>
+              options={accessTokenSigningAlgs}
+              onChange={(value) =>
                 handleFieldChange(
                   'accessTokenSigningAlg',
                   t('fields.access_token_signing_alg'),
-                  e.target.value,
+                  value,
                 )
               }
               disabled={viewOnly}
-              sx={fieldStyle}
-              SelectProps={{ native: true }}
-              InputLabelProps={{ shrink: true }}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              {accessTokenSigningAlgs.map((alg) => (
-                <option key={alg} value={alg}>
-                  {alg}
-                </option>
-              ))}
-            </TextField>
+              fieldStyle={fieldStyle}
+              placeholder={`${t('actions.choose')}...`}
+            />
           </Grid>
         </Grid>
       </Box>
@@ -324,90 +327,60 @@ const AuthenticationSection: React.FC<SectionProps> = ({
         <Typography sx={sectionTitleStyle}>{t('titles.userinfo')}</Typography>
         <Grid container spacing={2}>
           <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              select
-              size="small"
+            <AlgorithmSelect
               label={t('fields.userinfo_signed_response_alg')}
               name="userInfoSignedResponseAlg"
               value={formik.values.userInfoSignedResponseAlg || ''}
-              onChange={(e) =>
+              options={signingAlgorithms}
+              onChange={(value) =>
                 handleFieldChange(
                   'userInfoSignedResponseAlg',
                   t('fields.userinfo_signed_response_alg'),
-                  e.target.value,
+                  value,
                 )
               }
               disabled={viewOnly}
-              sx={fieldStyle}
-              SelectProps={{ native: true }}
-              InputLabelProps={{ shrink: true }}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              {signingAlgorithms.map((alg) => (
-                <option key={alg} value={alg}>
-                  {alg}
-                </option>
-              ))}
-            </TextField>
+              fieldStyle={fieldStyle}
+              placeholder={`${t('actions.choose')}...`}
+            />
           </Grid>
 
           <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              select
-              size="small"
+            <AlgorithmSelect
               label={t('fields.userinfo_encrypted_response_alg')}
               name="userInfoEncryptedResponseAlg"
               value={formik.values.userInfoEncryptedResponseAlg || ''}
-              onChange={(e) =>
+              options={encryptionAlgorithms}
+              onChange={(value) =>
                 handleFieldChange(
                   'userInfoEncryptedResponseAlg',
                   t('fields.userinfo_encrypted_response_alg'),
-                  e.target.value,
+                  value,
                 )
               }
               disabled={viewOnly}
-              sx={fieldStyle}
-              SelectProps={{ native: true }}
-              InputLabelProps={{ shrink: true }}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              {encryptionAlgorithms.map((alg) => (
-                <option key={alg} value={alg}>
-                  {alg}
-                </option>
-              ))}
-            </TextField>
+              fieldStyle={fieldStyle}
+              placeholder={`${t('actions.choose')}...`}
+            />
           </Grid>
 
           <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              select
-              size="small"
+            <AlgorithmSelect
               label={t('fields.userinfo_encrypted_response_enc')}
               name="userInfoEncryptedResponseEnc"
               value={formik.values.userInfoEncryptedResponseEnc || ''}
-              onChange={(e) =>
+              options={encryptionEncodings}
+              onChange={(value) =>
                 handleFieldChange(
                   'userInfoEncryptedResponseEnc',
                   t('fields.userinfo_encrypted_response_enc'),
-                  e.target.value,
+                  value,
                 )
               }
               disabled={viewOnly}
-              sx={fieldStyle}
-              SelectProps={{ native: true }}
-              InputLabelProps={{ shrink: true }}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              {encryptionEncodings.map((enc) => (
-                <option key={enc} value={enc}>
-                  {enc}
-                </option>
-              ))}
-            </TextField>
+              fieldStyle={fieldStyle}
+              placeholder={`${t('actions.choose')}...`}
+            />
           </Grid>
         </Grid>
       </Box>
@@ -416,90 +389,60 @@ const AuthenticationSection: React.FC<SectionProps> = ({
         <Typography sx={sectionTitleStyle}>{t('titles.request_object')}</Typography>
         <Grid container spacing={2}>
           <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              select
-              size="small"
+            <AlgorithmSelect
               label={t('fields.request_object_signing_alg')}
               name="requestObjectSigningAlg"
               value={formik.values.requestObjectSigningAlg || ''}
-              onChange={(e) =>
+              options={signingAlgorithms}
+              onChange={(value) =>
                 handleFieldChange(
                   'requestObjectSigningAlg',
                   t('fields.request_object_signing_alg'),
-                  e.target.value,
+                  value,
                 )
               }
               disabled={viewOnly}
-              sx={fieldStyle}
-              SelectProps={{ native: true }}
-              InputLabelProps={{ shrink: true }}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              {signingAlgorithms.map((alg) => (
-                <option key={alg} value={alg}>
-                  {alg}
-                </option>
-              ))}
-            </TextField>
+              fieldStyle={fieldStyle}
+              placeholder={`${t('actions.choose')}...`}
+            />
           </Grid>
 
           <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              select
-              size="small"
+            <AlgorithmSelect
               label={t('fields.request_object_encryption_alg')}
               name="requestObjectEncryptionAlg"
               value={formik.values.requestObjectEncryptionAlg || ''}
-              onChange={(e) =>
+              options={encryptionAlgorithms}
+              onChange={(value) =>
                 handleFieldChange(
                   'requestObjectEncryptionAlg',
                   t('fields.request_object_encryption_alg'),
-                  e.target.value,
+                  value,
                 )
               }
               disabled={viewOnly}
-              sx={fieldStyle}
-              SelectProps={{ native: true }}
-              InputLabelProps={{ shrink: true }}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              {encryptionAlgorithms.map((alg) => (
-                <option key={alg} value={alg}>
-                  {alg}
-                </option>
-              ))}
-            </TextField>
+              fieldStyle={fieldStyle}
+              placeholder={`${t('actions.choose')}...`}
+            />
           </Grid>
 
           <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              select
-              size="small"
+            <AlgorithmSelect
               label={t('fields.request_object_encryption_enc')}
               name="requestObjectEncryptionEnc"
               value={formik.values.requestObjectEncryptionEnc || ''}
-              onChange={(e) =>
+              options={encryptionEncodings}
+              onChange={(value) =>
                 handleFieldChange(
                   'requestObjectEncryptionEnc',
                   t('fields.request_object_encryption_enc'),
-                  e.target.value,
+                  value,
                 )
               }
               disabled={viewOnly}
-              sx={fieldStyle}
-              SelectProps={{ native: true }}
-              InputLabelProps={{ shrink: true }}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              {encryptionEncodings.map((enc) => (
-                <option key={enc} value={enc}>
-                  {enc}
-                </option>
-              ))}
-            </TextField>
+              fieldStyle={fieldStyle}
+              placeholder={`${t('actions.choose')}...`}
+            />
           </Grid>
         </Grid>
       </Box>
@@ -508,90 +451,60 @@ const AuthenticationSection: React.FC<SectionProps> = ({
         <Typography sx={sectionTitleStyle}>{t('titles.introspection')}</Typography>
         <Grid container spacing={2}>
           <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              select
-              size="small"
+            <AlgorithmSelect
               label={t('fields.introspection_signed_response_alg')}
               name="attributes.introspectionSignedResponseAlg"
               value={formik.values.attributes?.introspectionSignedResponseAlg || ''}
-              onChange={(e) =>
+              options={signingAlgorithms}
+              onChange={(value) =>
                 handleAttributeChange(
                   'introspectionSignedResponseAlg',
                   t('fields.introspection_signed_response_alg'),
-                  e.target.value,
+                  value,
                 )
               }
               disabled={viewOnly}
-              sx={fieldStyle}
-              SelectProps={{ native: true }}
-              InputLabelProps={{ shrink: true }}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              {signingAlgorithms.map((alg) => (
-                <option key={alg} value={alg}>
-                  {alg}
-                </option>
-              ))}
-            </TextField>
+              fieldStyle={fieldStyle}
+              placeholder={`${t('actions.choose')}...`}
+            />
           </Grid>
 
           <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              select
-              size="small"
+            <AlgorithmSelect
               label={t('fields.introspection_encrypted_response_alg')}
               name="attributes.introspectionEncryptedResponseAlg"
               value={formik.values.attributes?.introspectionEncryptedResponseAlg || ''}
-              onChange={(e) =>
+              options={encryptionAlgorithms}
+              onChange={(value) =>
                 handleAttributeChange(
                   'introspectionEncryptedResponseAlg',
                   t('fields.introspection_encrypted_response_alg'),
-                  e.target.value,
+                  value,
                 )
               }
               disabled={viewOnly}
-              sx={fieldStyle}
-              SelectProps={{ native: true }}
-              InputLabelProps={{ shrink: true }}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              {encryptionAlgorithms.map((alg) => (
-                <option key={alg} value={alg}>
-                  {alg}
-                </option>
-              ))}
-            </TextField>
+              fieldStyle={fieldStyle}
+              placeholder={`${t('actions.choose')}...`}
+            />
           </Grid>
 
           <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              select
-              size="small"
+            <AlgorithmSelect
               label={t('fields.introspection_encrypted_response_enc')}
               name="attributes.introspectionEncryptedResponseEnc"
               value={formik.values.attributes?.introspectionEncryptedResponseEnc || ''}
-              onChange={(e) =>
+              options={encryptionEncodings}
+              onChange={(value) =>
                 handleAttributeChange(
                   'introspectionEncryptedResponseEnc',
                   t('fields.introspection_encrypted_response_enc'),
-                  e.target.value,
+                  value,
                 )
               }
               disabled={viewOnly}
-              sx={fieldStyle}
-              SelectProps={{ native: true }}
-              InputLabelProps={{ shrink: true }}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              {encryptionEncodings.map((enc) => (
-                <option key={enc} value={enc}>
-                  {enc}
-                </option>
-              ))}
-            </TextField>
+              fieldStyle={fieldStyle}
+              placeholder={`${t('actions.choose')}...`}
+            />
           </Grid>
         </Grid>
       </Box>
@@ -600,90 +513,60 @@ const AuthenticationSection: React.FC<SectionProps> = ({
         <Typography sx={sectionTitleStyle}>{t('titles.jarm')}</Typography>
         <Grid container spacing={2}>
           <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              select
-              size="small"
+            <AlgorithmSelect
               label={t('fields.jans_auth_signed_resp_alg')}
               name="attributes.jansAuthSignedRespAlg"
               value={formik.values.attributes?.jansAuthSignedRespAlg || ''}
-              onChange={(e) =>
+              options={signingAlgorithms}
+              onChange={(value) =>
                 handleAttributeChange(
                   'jansAuthSignedRespAlg',
                   t('fields.jans_auth_signed_resp_alg'),
-                  e.target.value,
+                  value,
                 )
               }
               disabled={viewOnly}
-              sx={fieldStyle}
-              SelectProps={{ native: true }}
-              InputLabelProps={{ shrink: true }}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              {signingAlgorithms.map((alg) => (
-                <option key={alg} value={alg}>
-                  {alg}
-                </option>
-              ))}
-            </TextField>
+              fieldStyle={fieldStyle}
+              placeholder={`${t('actions.choose')}...`}
+            />
           </Grid>
 
           <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              select
-              size="small"
+            <AlgorithmSelect
               label={t('fields.jans_auth_enc_resp_alg')}
               name="attributes.jansAuthEncRespAlg"
               value={formik.values.attributes?.jansAuthEncRespAlg || ''}
-              onChange={(e) =>
+              options={encryptionAlgorithms}
+              onChange={(value) =>
                 handleAttributeChange(
                   'jansAuthEncRespAlg',
                   t('fields.jans_auth_enc_resp_alg'),
-                  e.target.value,
+                  value,
                 )
               }
               disabled={viewOnly}
-              sx={fieldStyle}
-              SelectProps={{ native: true }}
-              InputLabelProps={{ shrink: true }}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              {encryptionAlgorithms.map((alg) => (
-                <option key={alg} value={alg}>
-                  {alg}
-                </option>
-              ))}
-            </TextField>
+              fieldStyle={fieldStyle}
+              placeholder={`${t('actions.choose')}...`}
+            />
           </Grid>
 
           <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              select
-              size="small"
+            <AlgorithmSelect
               label={t('fields.jans_auth_enc_resp_enc')}
               name="attributes.jansAuthEncRespEnc"
               value={formik.values.attributes?.jansAuthEncRespEnc || ''}
-              onChange={(e) =>
+              options={encryptionEncodings}
+              onChange={(value) =>
                 handleAttributeChange(
                   'jansAuthEncRespEnc',
                   t('fields.jans_auth_enc_resp_enc'),
-                  e.target.value,
+                  value,
                 )
               }
               disabled={viewOnly}
-              sx={fieldStyle}
-              SelectProps={{ native: true }}
-              InputLabelProps={{ shrink: true }}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              {encryptionEncodings.map((enc) => (
-                <option key={enc} value={enc}>
-                  {enc}
-                </option>
-              ))}
-            </TextField>
+              fieldStyle={fieldStyle}
+              placeholder={`${t('actions.choose')}...`}
+            />
           </Grid>
         </Grid>
       </Box>
@@ -692,90 +575,60 @@ const AuthenticationSection: React.FC<SectionProps> = ({
         <Typography sx={sectionTitleStyle}>{t('titles.tx_token')}</Typography>
         <Grid container spacing={2}>
           <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              select
-              size="small"
+            <AlgorithmSelect
               label={t('fields.tx_token_signed_response_alg')}
               name="attributes.txTokenSignedResponseAlg"
               value={formik.values.attributes?.txTokenSignedResponseAlg || ''}
-              onChange={(e) =>
+              options={signingAlgorithms}
+              onChange={(value) =>
                 handleAttributeChange(
                   'txTokenSignedResponseAlg',
                   t('fields.tx_token_signed_response_alg'),
-                  e.target.value,
+                  value,
                 )
               }
               disabled={viewOnly}
-              sx={fieldStyle}
-              SelectProps={{ native: true }}
-              InputLabelProps={{ shrink: true }}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              {signingAlgorithms.map((alg) => (
-                <option key={alg} value={alg}>
-                  {alg}
-                </option>
-              ))}
-            </TextField>
+              fieldStyle={fieldStyle}
+              placeholder={`${t('actions.choose')}...`}
+            />
           </Grid>
 
           <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              select
-              size="small"
+            <AlgorithmSelect
               label={t('fields.tx_token_encrypted_response_alg')}
               name="attributes.txTokenEncryptedResponseAlg"
               value={formik.values.attributes?.txTokenEncryptedResponseAlg || ''}
-              onChange={(e) =>
+              options={encryptionAlgorithms}
+              onChange={(value) =>
                 handleAttributeChange(
                   'txTokenEncryptedResponseAlg',
                   t('fields.tx_token_encrypted_response_alg'),
-                  e.target.value,
+                  value,
                 )
               }
               disabled={viewOnly}
-              sx={fieldStyle}
-              SelectProps={{ native: true }}
-              InputLabelProps={{ shrink: true }}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              {encryptionAlgorithms.map((alg) => (
-                <option key={alg} value={alg}>
-                  {alg}
-                </option>
-              ))}
-            </TextField>
+              fieldStyle={fieldStyle}
+              placeholder={`${t('actions.choose')}...`}
+            />
           </Grid>
 
           <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              select
-              size="small"
+            <AlgorithmSelect
               label={t('fields.tx_token_encrypted_response_enc')}
               name="attributes.txTokenEncryptedResponseEnc"
               value={formik.values.attributes?.txTokenEncryptedResponseEnc || ''}
-              onChange={(e) =>
+              options={encryptionEncodings}
+              onChange={(value) =>
                 handleAttributeChange(
                   'txTokenEncryptedResponseEnc',
                   t('fields.tx_token_encrypted_response_enc'),
-                  e.target.value,
+                  value,
                 )
               }
               disabled={viewOnly}
-              sx={fieldStyle}
-              SelectProps={{ native: true }}
-              InputLabelProps={{ shrink: true }}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              {encryptionEncodings.map((enc) => (
-                <option key={enc} value={enc}>
-                  {enc}
-                </option>
-              ))}
-            </TextField>
+              fieldStyle={fieldStyle}
+              placeholder={`${t('actions.choose')}...`}
+            />
           </Grid>
         </Grid>
       </Box>
@@ -784,32 +637,22 @@ const AuthenticationSection: React.FC<SectionProps> = ({
         <Typography sx={sectionTitleStyle}>{t('titles.logout')}</Typography>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              select
-              size="small"
+            <AlgorithmSelect
               label={t('fields.logout_status_jwt_signed_response_alg')}
               name="attributes.logoutStatusJwtSignedResponseAlg"
               value={formik.values.attributes?.logoutStatusJwtSignedResponseAlg || ''}
-              onChange={(e) =>
+              options={signingAlgorithms}
+              onChange={(value) =>
                 handleAttributeChange(
                   'logoutStatusJwtSignedResponseAlg',
                   t('fields.logout_status_jwt_signed_response_alg'),
-                  e.target.value,
+                  value,
                 )
               }
               disabled={viewOnly}
-              sx={fieldStyle}
-              SelectProps={{ native: true }}
-              InputLabelProps={{ shrink: true }}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              {signingAlgorithms.map((alg) => (
-                <option key={alg} value={alg}>
-                  {alg}
-                </option>
-              ))}
-            </TextField>
+              fieldStyle={fieldStyle}
+              placeholder={`${t('actions.choose')}...`}
+            />
           </Grid>
         </Grid>
       </Box>

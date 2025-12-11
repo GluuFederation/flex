@@ -812,6 +812,7 @@
     "add_community_project": "Agregar un Proyecto de la Comunidad"
   },
   "messages": {
+    "token_attributes_notice": "Los atributos del token pueden contener claims personalizados y metadatos sensibles. Estos datos son visibles para usuarios con permisos de gestión de tokens.",
     "add_permission": "Agregar Permiso",
     "add_asset": "Agregar Jans Asset",
     "asset_document_error": "El documento es obligatorio.",
@@ -884,6 +885,8 @@
     "add_client": "Agregar Cliente",
     "client_id_copied": "ID de cliente copiado al portapapeles",
     "client_secret_copied": "Secreto del cliente copiado al portapapeles",
+    "copy_failed": "Error al copiar al portapapeles",
+    "scripts_truncated_warning": "Es posible que no se muestren algunos scripts. Hay más scripts disponibles de los que se pueden mostrar. Visite la página de Scripts para ver todos los scripts.",
     "token_revoked": "Token revocado exitosamente",
     "error_fetching_tokens": "Error al obtener tokens",
     "error_revoking_token": "Error al revocar token",

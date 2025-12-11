@@ -8,7 +8,8 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { useGetOauthScopes } from 'JansConfigApi'
 import { useClientActions, useClientById, useUpdateClient } from './hooks'
 import ClientForm from './components/ClientForm'
-import type { ClientFormValues, ModifiedFields, ClientScope } from './types'
+import type { ClientFormValues, ModifiedFields } from './types'
+import { transformScopesResponse } from './helper/utils'
 
 const ClientEditPage: React.FC = () => {
   const { t } = useTranslation()
@@ -35,24 +36,10 @@ const ClientEditPage: React.FC = () => {
     },
   })
 
-  const scopes = useMemo((): ClientScope[] => {
-    const entries = (scopesResponse?.entries || []) as Array<{
-      dn?: string
-      inum?: string
-      id?: string
-      displayName?: string
-      description?: string
-    }>
-    return entries.map(
-      (scope): ClientScope => ({
-        dn: scope.dn || '',
-        inum: scope.inum,
-        id: scope.id,
-        displayName: scope.displayName || scope.id,
-        description: scope.description,
-      }),
-    )
-  }, [scopesResponse?.entries])
+  const scopes = useMemo(
+    () => transformScopesResponse(scopesResponse?.entries),
+    [scopesResponse?.entries],
+  )
 
   const handleScopeSearch = useCallback((pattern: string) => {
     setScopeSearchPattern(pattern)
@@ -83,10 +70,7 @@ const ClientEditPage: React.FC = () => {
     [updateClient, logClientUpdate, dispatch, t],
   )
 
-  const isLoading = useMemo(
-    () => clientLoading || updateClient.isPending,
-    [clientLoading, updateClient.isPending],
-  )
+  const isLoading = clientLoading || updateClient.isPending
 
   SetTitle(t('titles.edit_openid_connect_client'))
 

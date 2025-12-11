@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
+  Alert,
   Box,
   Grid,
   TextField,
@@ -21,6 +22,7 @@ const ScriptsSection: React.FC<SectionProps> = ({
   viewOnly = false,
   setModifiedFields,
   scripts = [],
+  scriptsTruncated = false,
 }) => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
@@ -171,6 +173,11 @@ const ScriptsSection: React.FC<SectionProps> = ({
 
   return (
     <Box>
+      {scriptsTruncated && (
+        <Alert severity="warning" sx={{ mb: 2 }}>
+          {t('messages.scripts_truncated_warning')}
+        </Alert>
+      )}
       <Box sx={sectionStyle}>
         <Typography sx={sectionTitleStyle}>{t('titles.client_scripts')}</Typography>
         <Grid container spacing={2}>
@@ -311,7 +318,7 @@ const ScriptsSection: React.FC<SectionProps> = ({
                 value.map((option, index) => (
                   <Chip
                     {...getTagProps({ index })}
-                    key={index}
+                    key={option}
                     label={option}
                     size="small"
                     sx={chipStyle}

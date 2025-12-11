@@ -116,7 +116,7 @@ const TokensSection: React.FC<SectionProps> = ({ formik, viewOnly = false, setMo
                 handleFieldChange(
                   'accessTokenLifetime',
                   t('fields.access_token_lifetime'),
-                  e.target.value ? parseInt(e.target.value) : null,
+                  e.target.value ? parseInt(e.target.value, 10) : null,
                 )
               }
               disabled={viewOnly}
@@ -137,7 +137,7 @@ const TokensSection: React.FC<SectionProps> = ({ formik, viewOnly = false, setMo
                 handleFieldChange(
                   'refreshTokenLifetime',
                   t('fields.refresh_token_lifetime'),
-                  e.target.value ? parseInt(e.target.value) : null,
+                  e.target.value ? parseInt(e.target.value, 10) : null,
                 )
               }
               disabled={viewOnly}
@@ -158,7 +158,7 @@ const TokensSection: React.FC<SectionProps> = ({ formik, viewOnly = false, setMo
                 handleFieldChange(
                   'defaultMaxAge',
                   t('fields.default_max_age'),
-                  e.target.value ? parseInt(e.target.value) : null,
+                  e.target.value ? parseInt(e.target.value, 10) : null,
                 )
               }
               disabled={viewOnly}
@@ -179,7 +179,7 @@ const TokensSection: React.FC<SectionProps> = ({ formik, viewOnly = false, setMo
                 handleAttributeChange(
                   'idTokenLifetime',
                   t('fields.id_token_lifetime'),
-                  e.target.value ? parseInt(e.target.value) : null,
+                  e.target.value ? parseInt(e.target.value, 10) : null,
                 )
               }
               disabled={viewOnly}
@@ -200,7 +200,7 @@ const TokensSection: React.FC<SectionProps> = ({ formik, viewOnly = false, setMo
                 handleAttributeChange(
                   'txTokenLifetime',
                   t('fields.tx_token_lifetime'),
-                  e.target.value ? parseInt(e.target.value) : null,
+                  e.target.value ? parseInt(e.target.value, 10) : null,
                 )
               }
               disabled={viewOnly}
@@ -221,7 +221,7 @@ const TokensSection: React.FC<SectionProps> = ({ formik, viewOnly = false, setMo
                 handleAttributeChange(
                   'requestedLifetime',
                   t('fields.requested_lifetime'),
-                  e.target.value ? parseInt(e.target.value) : null,
+                  e.target.value ? parseInt(e.target.value, 10) : null,
                 )
               }
               disabled={viewOnly}
@@ -372,7 +372,7 @@ const TokensSection: React.FC<SectionProps> = ({ formik, viewOnly = false, setMo
                 handleAttributeChange(
                   'parLifetime',
                   t('fields.par_lifetime'),
-                  e.target.value ? parseInt(e.target.value) : null,
+                  e.target.value ? parseInt(e.target.value, 10) : null,
                 )
               }
               disabled={viewOnly}
@@ -529,7 +529,7 @@ const TokensSection: React.FC<SectionProps> = ({ formik, viewOnly = false, setMo
                 handleAttributeChange(
                   'minimumAcrLevel',
                   t('fields.minimum_acr_level'),
-                  e.target.value ? parseInt(e.target.value) : null,
+                  e.target.value ? parseInt(e.target.value, 10) : null,
                 )
               }
               disabled={viewOnly}

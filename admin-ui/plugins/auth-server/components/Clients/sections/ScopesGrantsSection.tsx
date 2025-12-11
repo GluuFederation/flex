@@ -242,7 +242,6 @@ const ScopesGrantsSection: React.FC<SectionProps> = ({
                     <Switch
                       checked={(formik.values.grantTypes || []).includes(grant.value)}
                       onChange={(e) => handleGrantTypeChange(grant.value, e.target.checked)}
-                      disabled={viewOnly}
                       sx={switchStyle}
                     />
                   }
@@ -279,7 +278,6 @@ const ScopesGrantsSection: React.FC<SectionProps> = ({
                     <Switch
                       checked={(formik.values.responseTypes || []).includes(type.value)}
                       onChange={(e) => handleResponseTypeChange(type.value, e.target.checked)}
-                      disabled={viewOnly}
                       sx={switchStyle}
                     />
                   }

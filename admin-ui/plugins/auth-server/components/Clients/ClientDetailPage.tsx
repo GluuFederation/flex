@@ -6,7 +6,7 @@ import SetTitle from 'Utils/SetTitle'
 import { useGetOauthScopes } from 'JansConfigApi'
 import { useClientActions, useClientById } from './hooks'
 import ClientForm from './components/ClientForm'
-import type { ClientScope } from './types'
+import { transformScopesResponse } from './helper/utils'
 
 const ClientDetailPage: React.FC = () => {
   const { t } = useTranslation()
@@ -20,24 +20,10 @@ const ClientDetailPage: React.FC = () => {
     { query: { staleTime: 60000 } },
   )
 
-  const scopes = useMemo((): ClientScope[] => {
-    const entries = (scopesResponse?.entries || []) as Array<{
-      dn?: string
-      inum?: string
-      id?: string
-      displayName?: string
-      description?: string
-    }>
-    return entries.map(
-      (scope): ClientScope => ({
-        dn: scope.dn || '',
-        inum: scope.inum,
-        id: scope.id,
-        displayName: scope.displayName || scope.id,
-        description: scope.description,
-      }),
-    )
-  }, [scopesResponse?.entries])
+  const scopes = useMemo(
+    () => transformScopesResponse(scopesResponse?.entries),
+    [scopesResponse?.entries],
+  )
 
   const isLoading = clientLoading || scopesLoading
 

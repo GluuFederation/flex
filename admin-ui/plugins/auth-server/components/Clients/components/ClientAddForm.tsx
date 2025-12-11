@@ -34,24 +34,13 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { useGetOauthScopes } from 'JansConfigApi'
 import { GRANT_TYPES, DEFAULT_SCOPE_SEARCH_LIMIT, SECRET_GENERATION } from '../helper/constants'
-import { buildClientPayload } from '../helper/utils'
+import { buildAddFormPayload, buildClientPayload, transformScopesResponse } from '../helper/utils'
 import { uriValidation } from '../helper/validations'
-import type { ClientFormValues, ModifiedFields, ClientScope } from '../types'
+import type { AddFormValues, ClientFormValues, ClientScope, ModifiedFields } from '../types'
 
 interface ClientAddFormProps {
   onSubmit: (values: ClientFormValues, message: string, modifiedFields: ModifiedFields) => void
   onCancel?: () => void
-}
-
-interface AddFormValues {
-  clientName: string
-  clientSecret: string
-  disabled: boolean
-  description: string
-  scopes: string[]
-  grantTypes: string[]
-  redirectUris: string[]
-  postLogoutRedirectUris: string[]
 }
 
 const initialValues: AddFormValues = {
@@ -107,24 +96,10 @@ const ClientAddForm: React.FC<ClientAddFormProps> = ({ onSubmit, onCancel }) => 
     },
   })
 
-  const scopes = useMemo((): ClientScope[] => {
-    const entries = (scopesResponse?.entries || []) as Array<{
-      dn?: string
-      inum?: string
-      id?: string
-      displayName?: string
-      description?: string
-    }>
-    return entries.map(
-      (scope): ClientScope => ({
-        dn: scope.dn || '',
-        inum: scope.inum,
-        id: scope.id,
-        displayName: scope.displayName || scope.id,
-        description: scope.description,
-      }),
-    )
-  }, [scopesResponse?.entries])
+  const scopes = useMemo(
+    () => transformScopesResponse(scopesResponse?.entries),
+    [scopesResponse?.entries],
+  )
 
   const handleToggleSecret = useCallback(() => {
     setShowSecret((prev) => !prev)
@@ -138,7 +113,9 @@ const ClientAddForm: React.FC<ClientAddFormProps> = ({ onSubmit, onCancel }) => 
   }, [])
 
   const handleCopyToClipboard = useCallback((text: string) => {
-    navigator.clipboard.writeText(text)
+    navigator.clipboard.writeText(text).catch(() => {
+      // Clipboard API may fail in non-secure contexts or due to permissions
+    })
   }, [])
 
   const handleFormSubmit = useCallback((values: AddFormValues) => {
@@ -149,60 +126,15 @@ const ClientAddForm: React.FC<ClientAddFormProps> = ({ onSubmit, onCancel }) => 
   const handleCommitAccept = useCallback(
     (message: string) => {
       if (formValues) {
-        const fullPayload = {
-          ...formValues,
-          applicationType: 'web' as const,
-          subjectType: 'public' as const,
-          tokenEndpointAuthMethod: 'client_secret_basic' as const,
-          responseTypes: [] as string[],
-          redirectUris: formValues.redirectUris.filter(Boolean),
-          postLogoutRedirectUris: formValues.postLogoutRedirectUris.filter(Boolean),
-          frontChannelLogoutSessionRequired: false,
-          backchannelUserCodeParameter: false,
-          trustedClient: false,
-          persistClientAuthorizations: false,
-          includeClaimsInIdToken: false,
-          rptAsJwt: false,
-          accessTokenAsJwt: false,
-          deletable: true,
-          customObjectClasses: ['top'],
-          contacts: [] as string[],
-          defaultAcrValues: [] as string[],
-          claims: [] as string[],
-          claimRedirectUris: [] as string[],
-          authorizedOrigins: [] as string[],
-          requestUris: [] as string[],
-          attributes: {
-            runIntrospectionScriptBeforeJwtCreation: false,
-            keepClientAuthorizationAfterExpiration: false,
-            allowSpontaneousScopes: false,
-            backchannelLogoutSessionRequired: false,
-            backchannelLogoutUri: [] as string[],
-            rptClaimsScripts: [] as string[],
-            consentGatheringScripts: [] as string[],
-            spontaneousScopeScriptDns: [] as string[],
-            introspectionScripts: [] as string[],
-            postAuthnScripts: [] as string[],
-            ropcScripts: [] as string[],
-            updateTokenScriptDns: [] as string[],
-            additionalAudience: [] as string[],
-            spontaneousScopes: [] as string[],
-            jansAuthorizedAcr: [] as string[],
-            requirePar: false,
-            dpopBoundAccessToken: false,
-            jansDefaultPromptLogin: false,
-            minimumAcrLevelAutoresolve: false,
-            requirePkce: false,
-          },
-        }
-        const payload = buildClientPayload(fullPayload as unknown as ClientFormValues)
+        const fullPayload = buildAddFormPayload(formValues)
+        const payload = buildClientPayload(fullPayload) as ClientFormValues
         const modifiedFields: ModifiedFields = {}
         Object.entries(formValues).forEach(([key, value]) => {
           if (value !== undefined && value !== '' && (!Array.isArray(value) || value.length > 0)) {
             modifiedFields[key] = value
           }
         })
-        onSubmit(payload as ClientFormValues, message, modifiedFields)
+        onSubmit(payload, message, modifiedFields)
       }
       setCommitModalOpen(false)
     },
