@@ -845,6 +845,7 @@
     "import_metadata_file": "Importe el archivo de metadatos.",
     "view_identity_provider": "Ver Proveedor de Identidad",
     "delete_identity_provider": "Eliminar Proveedor de Identidad",
+    "create_identity_provider": "Crear Proveedor de Identidad",
     "license_api_not_enabled": "La API de Licencia no está habilitada para esta aplicación.",
     "edit_configuration": "Editar Configuración",
     "delete_configuration": "Eliminar Configuración",
@@ -1211,7 +1212,12 @@
     "token_lifetimes": "Tiempos de Vida de Tokens",
     "token_options": "Opciones de Tokens",
     "security": "Seguridad",
-    "advanced_token": "Configuración Avanzada de Tokens"
+    "advanced_token": "Configuración Avanzada de Tokens",
+    "identity_provider": "Proveedor de Identidad",
+    "edit_identity_provider": "Editar Proveedor de Identidad",
+    "create_identity_provider": "Crear Proveedor de Identidad",
+    "view_identity_provider": "Ver Proveedor de Identidad",
+    "delete_identity_provider": "Eliminar Proveedor de Identidad"
   },
   "sections": {
     "basic_info": "Información Básica",

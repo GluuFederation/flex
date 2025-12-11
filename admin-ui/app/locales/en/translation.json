@@ -859,6 +859,7 @@
     "import_metadata_file": "Please import metadata file.",
     "view_identity_provider": "View Identity Provider",
     "delete_identity_provider": "Delete Identity Provider",
+    "create_identity_provider": "Create Identity Provider",
     "license_api_not_enabled": "The License API is not enabled for this application.",
     "edit_configuration": "Edit Configuration",
     "delete_configuration": "Delete Configuration",
@@ -1231,7 +1232,12 @@
     "token_lifetimes": "Token Lifetimes",
     "token_options": "Token Options",
     "security": "Security",
-    "advanced_token": "Advanced Token Settings"
+    "advanced_token": "Advanced Token Settings",
+    "identity_provider": "Identity Provider",
+    "edit_identity_provider": "Edit Identity Provider",
+    "create_identity_provider": "Create Identity Provider",
+    "view_identity_provider": "View Identity Provider",
+    "delete_identity_provider": "Delete Identity Provider"
   },
   "sections": {
     "basic_info": "Basic Info",

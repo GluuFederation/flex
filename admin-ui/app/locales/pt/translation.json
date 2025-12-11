@@ -770,6 +770,7 @@
     "edit_identity_provider": "Editar Provedor de Identidade",
     "view_identity_provider": "Ver Provedor de Identidade",
     "delete_identity_provider": "Excluir Provedor de Identidade",
+    "create_identity_provider": "Criar Provedor de Identidade",
     "webhook_dialog_note": "NOTA: A execução do webhook falhou, e você não poderá continuar no momento.",
     "webhook_dialog_dec": "Como parte do processo de envio, o sistema acionará automaticamente os seguintes webhooks associados para realizar tarefas adicionais de processamento.",
     "edit_idp": "Editar IDP SAML",
@@ -1110,7 +1111,12 @@
     "token_options": "Opções de Tokens",
     "security": "Segurança",
     "advanced_token": "Configurações Avançadas de Tokens",
-    "software_info": "Informações do Software"
+    "software_info": "Informações do Software",
+    "identity_provider": "Provedor de Identidade",
+    "edit_identity_provider": "Editar Provedor de Identidade",
+    "create_identity_provider": "Criar Provedor de Identidade",
+    "view_identity_provider": "Visualizar Provedor de Identidade",
+    "delete_identity_provider": "Excluir Provedor de Identidade"
   },
   "sections": {
     "basic_info": "Informações Básicas",

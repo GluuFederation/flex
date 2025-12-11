@@ -33,8 +33,8 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
     if (!scimConfiguration || !formik.values) {
       return false
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { action_message, ...valuesWithoutAction } = formik.values
+    void action_message
     const patches = createJsonPatchFromDifferences(
       scimConfiguration,
       valuesWithoutAction as ScimFormValues,
