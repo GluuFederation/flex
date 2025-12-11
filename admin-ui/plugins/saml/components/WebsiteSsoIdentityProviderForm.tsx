@@ -27,7 +27,7 @@ import {
   separateConfigFields,
   buildIdentityProviderPayload,
 } from '../helper'
-import type { WebsiteSsoIdentityProviderFormValues } from '../helper/validations'
+import type { WebsiteSsoIdentityProviderFormValues } from '../types/formValues'
 import SetTitle from 'Utils/SetTitle'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
@@ -117,7 +117,7 @@ const WebsiteSsoIdentityProviderForm = ({
         formdata.append('metaDataFile', metaDataFile)
       }
 
-      const cleanFormValues = cleanOptionalFields(formValues)
+      const cleanFormValues = cleanOptionalFields(formValues, false)
       const { rootFields, configData } = separateConfigFields(cleanFormValues)
       const idpMetaDataFN = configs?.idpMetaDataFN || formValues.idpMetaDataFN
       const identityProviderData = buildIdentityProviderPayload(

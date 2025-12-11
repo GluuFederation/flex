@@ -1,9 +1,20 @@
 import type { SamlConfigurationFormValues } from '../types'
-import type { SamlConfiguration, SamlIdentity, TrustRelationship } from '../types/redux'
+import type {
+  SamlConfiguration,
+  SamlIdentity,
+  WebsiteSsoServiceProvider,
+  IdentityProviderPayload,
+  WebsiteSsoServiceProviderPayload,
+} from '../types/redux'
 import type {
   WebsiteSsoIdentityProviderFormValues,
-  WebsiteSsoTrustRelationshipFormValues,
-} from './validations'
+  WebsiteSsoServiceProviderFormValues,
+  FormValue,
+  FormValues,
+  ConfigFields,
+  RootFields,
+  CleanableValue,
+} from '../types/formValues'
 
 export const transformToFormValues = (
   configuration: SamlConfiguration | Record<string, string | number | boolean>,
@@ -30,6 +41,7 @@ export const transformToIdentityProviderFormValues = (
   const encryptionPublicKey = config.encryptionPublicKey || configs?.encryptionPublicKey || ''
   const principalAttribute = config.principalAttribute || configs?.principalAttribute || ''
   const principalType = config.principalType || configs?.principalType || ''
+  const validateSignature = config.validateSignature || ''
 
   return {
     name: configs?.name || '',
@@ -48,6 +60,18 @@ export const transformToIdentityProviderFormValues = (
     metaDataFile: null,
     idpMetaDataFN: configs?.idpMetaDataFN || undefined,
     manualMetadata: '',
+    // Additional CURL fields from configs
+    validateSignature,
+    trustEmail: configs?.trustEmail,
+    linkOnly: configs?.linkOnly,
+    creatorId: configs?.creatorId,
+    dn: configs?.dn,
+    providerId: configs?.providerId,
+    realm: configs?.realm,
+    addReadTokenRoleOnCreate: configs?.addReadTokenRoleOnCreate,
+    authenticateByDefault: configs?.authenticateByDefault,
+    storeToken: configs?.storeToken,
+    baseDn: configs?.baseDn,
   }
 }
 
@@ -55,16 +79,16 @@ const getDefault = <T>(value: T | null, defaultValue: T): T => {
   return value != null ? value : defaultValue
 }
 
-const getConfiguredType = (configs: TrustRelationship | null): string => {
+const getConfiguredType = (configs: WebsiteSsoServiceProvider | null): string => {
   if (configs?.spMetaDataSourceType) {
     return configs.spMetaDataSourceType
   }
   return ''
 }
 
-export const transformToTrustRelationshipFormValues = (
-  configs?: TrustRelationship | null,
-): WebsiteSsoTrustRelationshipFormValues => {
+export const transformToWebsiteSsoServiceProviderFormValues = (
+  configs?: WebsiteSsoServiceProvider | null,
+): WebsiteSsoServiceProviderFormValues => {
   return {
     enabled: getDefault(configs?.enabled ?? null, false),
     name: getDefault(configs?.name ?? null, ''),
@@ -89,17 +113,24 @@ export const transformToTrustRelationshipFormValues = (
     metaDataFileImportedFlag: !!configs?.spMetaDataFN,
     metaDataFile: null,
     ...(configs?.spMetaDataFN ? { spMetaDataFN: configs.spMetaDataFN } : {}),
+    // Additional CURL fields from configs
+    clientAuthenticatorType: configs?.clientAuthenticatorType,
+    spMetaDataURL: configs?.spMetaDataURL,
+    redirectUris: configs?.redirectUris,
+    profileConfigurations: configs?.profileConfigurations,
+    dn: configs?.dn,
+    validationLog: configs?.validationLog,
+    validationStatus: configs?.validationStatus,
+    secret: configs?.secret,
+    status: configs?.status,
+    owner: configs?.owner,
+    consentRequired: configs?.consentRequired,
+    metaLocation: configs?.metaLocation,
+    baseDn: configs?.baseDn,
+    registrationAccessToken: configs?.registrationAccessToken,
+    baseUrl: configs?.baseUrl,
+    alwaysDisplayInConsole: configs?.alwaysDisplayInConsole,
   }
-}
-
-type FormValue = string | number | boolean | File | null
-type FormValues = Record<string, FormValue>
-type ConfigFields = Record<string, FormValue>
-type RootFields = Record<string, FormValue>
-type IdentityProviderPayload = RootFields & {
-  config?: ConfigFields
-  idpMetaDataFN?: string
-  inum?: string
 }
 
 const CONFIG_FIELDS = [
@@ -111,6 +142,7 @@ const CONFIG_FIELDS = [
   'encryptionPublicKey',
   'principalAttribute',
   'principalType',
+  'validateSignature',
 ] as const
 
 const trimStringValue = (value: FormValue): FormValue => {
@@ -145,7 +177,7 @@ export const separateConfigFields = (
   return { rootFields, configData }
 }
 
-export const cleanOptionalFields = <T extends Record<string, unknown>>(
+export const cleanOptionalFields = <T extends Record<string, CleanableValue>>(
   obj: T,
   removeEmptyStrings = true,
 ): Partial<T> => {
@@ -165,7 +197,7 @@ export const cleanOptionalFields = <T extends Record<string, unknown>>(
     // Handle nested objects
     if (value && typeof value === 'object' && !Array.isArray(value) && !(value instanceof File)) {
       const cleanedNested = cleanOptionalFields(
-        value as Record<string, unknown>,
+        value as Record<string, CleanableValue>,
         removeEmptyStrings,
       )
       // Only include nested object if it has at least one property
@@ -190,43 +222,150 @@ export const cleanOptionalFields = <T extends Record<string, unknown>>(
   return cleaned
 }
 
+const getStringValue = (value: FormValue | undefined): string => {
+  if (value === null || value === undefined) return ''
+  if (typeof value === 'string') return value
+  return String(value)
+}
+
+const getBooleanValue = (value: FormValue | undefined, defaultValue = false): boolean => {
+  if (value === null || value === undefined) return defaultValue
+  if (typeof value === 'boolean') return value
+  if (typeof value === 'string') {
+    const lower = value.toLowerCase().trim()
+    return lower === 'true' || lower === '1'
+  }
+  return Boolean(value)
+}
+
+const getArrayValue = (value: FormValue | undefined): string[] => {
+  if (Array.isArray(value)) {
+    return value.map((item) => String(item))
+  }
+  return []
+}
+
 export const buildIdentityProviderPayload = (
   rootFields: RootFields,
   configData: ConfigFields,
   inum?: string,
-  metaDataFileImportedFlag?: boolean,
-  idpMetaDataFN?: string,
+  _metaDataFileImportedFlag?: boolean,
+  _idpMetaDataFN?: string,
 ): IdentityProviderPayload => {
-  if (metaDataFileImportedFlag) {
-    const payload = {
-      ...rootFields,
-    } as IdentityProviderPayload
+  // Build payload matching CURL structure exactly - all fields at root level
+  // All fields must be included as per CURL specification
+  const payload: IdentityProviderPayload = {
+    // Core fields from form/rootFields
+    name: getStringValue(rootFields.name),
+    displayName: getStringValue(rootFields.displayName),
+    description: getStringValue(rootFields.description),
+    enabled: getBooleanValue(rootFields.enabled, true),
 
-    if (idpMetaDataFN) {
-      payload.idpMetaDataFN = idpMetaDataFN
-    }
+    // Config fields (always include, even if empty)
+    singleSignOnServiceUrl: getStringValue(
+      configData.singleSignOnServiceUrl || rootFields.singleSignOnServiceUrl,
+    ),
+    nameIDPolicyFormat: getStringValue(
+      configData.nameIDPolicyFormat || rootFields.nameIDPolicyFormat,
+    ),
+    idpEntityId: getStringValue(configData.idpEntityId || rootFields.idpEntityId),
+    singleLogoutServiceUrl: getStringValue(
+      configData.singleLogoutServiceUrl || rootFields.singleLogoutServiceUrl,
+    ),
+    signingCertificate: getStringValue(
+      configData.signingCertificate || rootFields.signingCertificate,
+    ),
+    encryptionPublicKey: getStringValue(
+      configData.encryptionPublicKey || rootFields.encryptionPublicKey,
+    ),
+    principalAttribute: getStringValue(
+      configData.principalAttribute || rootFields.principalAttribute,
+    ),
+    principalType: getStringValue(configData.principalType || rootFields.principalType),
 
-    if (inum) {
-      payload.inum = inum
-    }
-
-    return payload
+    // All CURL fields - set defaults for missing ones to match CURL exactly
+    spMetaDataLocation: getStringValue(rootFields.spMetaDataLocation),
+    validateSignature: getStringValue(rootFields.validateSignature || configData.validateSignature),
+    firstBrokerLoginFlowAlias: getStringValue(rootFields.firstBrokerLoginFlowAlias),
+    spMetaDataURL: getStringValue(rootFields.spMetaDataURL),
+    trustEmail: getBooleanValue(rootFields.trustEmail),
+    linkOnly: getBooleanValue(rootFields.linkOnly),
+    creatorId: getStringValue(rootFields.creatorId),
+    dn: getStringValue(rootFields.dn),
+    validationLog: getArrayValue(rootFields.validationLog),
+    idpMetaDataURL: getStringValue(rootFields.idpMetaDataURL),
+    validationStatus: getStringValue(rootFields.validationStatus) || 'In Progress',
+    providerId: getStringValue(rootFields.providerId),
+    realm: getStringValue(rootFields.realm),
+    postBrokerLoginFlowAlias: getStringValue(rootFields.postBrokerLoginFlowAlias),
+    status: getStringValue(rootFields.status) || 'active',
+    addReadTokenRoleOnCreate: getBooleanValue(rootFields.addReadTokenRoleOnCreate),
+    authenticateByDefault: getBooleanValue(rootFields.authenticateByDefault),
+    storeToken: getBooleanValue(rootFields.storeToken),
+    idpMetaDataLocation: getStringValue(rootFields.idpMetaDataLocation),
+    baseDn: getStringValue(rootFields.baseDn),
   }
 
-  const finalConfigData: ConfigFields = { ...configData }
+  // Add optional fields if they exist
+  if (inum) {
+    payload.inum = inum
+  }
 
-  CONFIG_FIELDS.forEach((field) => {
-    if (!(field in finalConfigData)) {
-      finalConfigData[field] = ''
-    } else {
-      finalConfigData[field] = trimStringValue(finalConfigData[field])
-    }
-  })
+  return payload
+}
 
-  const payload = {
-    ...rootFields,
-    ...finalConfigData,
-  } as IdentityProviderPayload
+const getObjectValue = (
+  value: FormValue | Record<string, { name: string; signResponses: string }> | undefined,
+): Record<string, { name: string; signResponses: string }> => {
+  if (value && typeof value === 'object' && !Array.isArray(value) && !(value instanceof File)) {
+    return value as Record<string, { name: string; signResponses: string }>
+  }
+  return {}
+}
+
+export const buildWebsiteSsoServiceProviderPayload = (
+  formValues: Omit<
+    WebsiteSsoServiceProviderFormValues,
+    'metaDataFileImportedFlag' | 'metaDataFile'
+  >,
+  inum?: string,
+): WebsiteSsoServiceProviderPayload => {
+  const payload: WebsiteSsoServiceProviderPayload = {
+    enabled: getBooleanValue(formValues.enabled, true),
+    spMetaDataSourceType: getStringValue(formValues.spMetaDataSourceType),
+    name: getStringValue(formValues.name),
+    displayName: getStringValue(formValues.displayName),
+    description: getStringValue(formValues.description),
+    releasedAttributes: getArrayValue(formValues.releasedAttributes),
+    spLogoutURL: getStringValue(formValues.spLogoutURL),
+    samlMetadata: {
+      nameIDPolicyFormat: getStringValue(formValues.samlMetadata?.nameIDPolicyFormat),
+      entityId: getStringValue(formValues.samlMetadata?.entityId),
+      singleLogoutServiceUrl: getStringValue(formValues.samlMetadata?.singleLogoutServiceUrl),
+      jansAssertionConsumerServiceGetURL: getStringValue(
+        formValues.samlMetadata?.jansAssertionConsumerServiceGetURL,
+      ),
+      jansAssertionConsumerServicePostURL: getStringValue(
+        formValues.samlMetadata?.jansAssertionConsumerServicePostURL,
+      ),
+    },
+    clientAuthenticatorType: getStringValue(formValues.clientAuthenticatorType),
+    spMetaDataURL: getStringValue(formValues.spMetaDataURL),
+    redirectUris: getArrayValue(formValues.redirectUris),
+    profileConfigurations: getObjectValue(formValues.profileConfigurations),
+    dn: getStringValue(formValues.dn),
+    validationLog: getArrayValue(formValues.validationLog),
+    validationStatus: getStringValue(formValues.validationStatus) || 'In Progress',
+    secret: getStringValue(formValues.secret),
+    status: getStringValue(formValues.status) || 'active',
+    owner: getStringValue(formValues.owner),
+    consentRequired: getBooleanValue(formValues.consentRequired),
+    metaLocation: getStringValue(formValues.metaLocation),
+    baseDn: getStringValue(formValues.baseDn),
+    registrationAccessToken: getStringValue(formValues.registrationAccessToken),
+    baseUrl: getStringValue(formValues.baseUrl),
+    alwaysDisplayInConsole: getBooleanValue(formValues.alwaysDisplayInConsole),
+  }
 
   if (inum) {
     payload.inum = inum

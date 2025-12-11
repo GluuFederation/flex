@@ -1,8 +1,8 @@
 import type {
   SamlIdentity,
-  TrustRelationship,
+  WebsiteSsoServiceProvider,
   SamlConfiguration,
-  TrustRelationshipListResponse,
+  WebsiteSsoServiceProviderListResponse,
 } from './redux'
 
 export interface SamlIdentityProviderResponse {
@@ -61,8 +61,8 @@ export interface JansTrustRelationshipApiClient {
   getTrustRelationships: (
     callback: (
       error: Error | null,
-      data?: TrustRelationshipListResponse,
-      response?: { body?: TrustRelationship[] },
+      data?: WebsiteSsoServiceProviderListResponse,
+      response?: { body?: WebsiteSsoServiceProvider[] },
     ) => void,
   ) => void
   deleteTrustRelationship: (

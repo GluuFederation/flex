@@ -14,7 +14,7 @@ import type { SamlRootState } from '../types/state'
 
 const SamlPage = React.memo(() => {
   const { t } = useTranslation()
-  const { loadingSamlIdp, loadingTrustRelationship } = useSelector(
+  const { loadingSamlIdp, loadingWebsiteSsoServiceProvider } = useSelector(
     (state: SamlRootState) => state.idpSamlReducer,
   )
 
@@ -46,7 +46,7 @@ const SamlPage = React.memo(() => {
   )
 
   return (
-    <GluuLoader blocking={loadingSamlIdp || loadingTrustRelationship}>
+    <GluuLoader blocking={loadingSamlIdp || loadingWebsiteSsoServiceProvider}>
       <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
           <GluuTabs tabNames={tabNames} tabToShow={tabToShow} withNavigation={true} />

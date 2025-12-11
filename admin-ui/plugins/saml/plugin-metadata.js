@@ -3,7 +3,7 @@ import WebsiteSsoIdentityProviderForm from './components/WebsiteSsoIdentityProvi
 import SamlPage from './components/SamlPage'
 import samlSaga from './redux/sagas/SamlSaga'
 import samlReducer from './redux/features/SamlSlice'
-import WebsiteSsoTrustRelationshipForm from './components/WebsiteSsoTrustRelationshipForm'
+import WebsiteSsoServiceProviderForm from './components/WebsiteSsoServiceProviderForm'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 
 const PLUGIN_BASE_APTH = '/saml'
@@ -56,13 +56,13 @@ const pluginMetadata = {
       resourceKey: ADMIN_UI_RESOURCES.SAML,
     },
     {
-      component: WebsiteSsoTrustRelationshipForm,
+      component: WebsiteSsoServiceProviderForm,
       path: PLUGIN_BASE_APTH + '/service-providers/edit',
       permission: SAML_WRITE,
       resourceKey: ADMIN_UI_RESOURCES.SAML,
     },
     {
-      component: WebsiteSsoTrustRelationshipForm,
+      component: WebsiteSsoServiceProviderForm,
       path: PLUGIN_BASE_APTH + '/service-providers/add',
       permission: SAML_WRITE,
       resourceKey: ADMIN_UI_RESOURCES.SAML,

@@ -1,26 +1,18 @@
 import * as Yup from 'yup'
 import type { SamlConfigurationFormValues } from '../types'
 import type { TFunction } from 'i18next'
+import type {
+  WebsiteSsoIdentityProviderFormValues,
+  FileLikeObject,
+  WebsiteSsoServiceProviderFormValues,
+} from '../types/formValues'
 
-export interface WebsiteSsoIdentityProviderFormValues {
-  name: string
-  nameIDPolicyFormat: string
-  singleSignOnServiceUrl: string
-  idpEntityId: string
-  displayName: string
-  description: string
-  metaDataFileImportedFlag?: boolean
-  metaDataFile?: File | null
-  enabled: boolean
-  principalAttribute: string
-  principalType: string
-  singleLogoutServiceUrl?: string
-  signingCertificate?: string
-  encryptionPublicKey?: string
-  idpMetaDataFN?: string
-  manualMetadata?: string
-}
-
+// Re-export types for backward compatibility
+export type {
+  WebsiteSsoIdentityProviderFormValues,
+  FileLikeObject,
+  WebsiteSsoServiceProviderFormValues,
+} from '../types/formValues'
 export const samlConfigurationValidationSchema: Yup.ObjectSchema<SamlConfigurationFormValues> =
   Yup.object({
     enabled: Yup.boolean().required('Enabled field is required.'),
@@ -71,7 +63,7 @@ export const websiteSsoIdentityProviderValidationSchema = (
                 if (value instanceof File) return true
                 // Accept file-like objects with path, relativePath, or name
                 if (typeof value === 'object' && value !== null) {
-                  const obj = value as Record<string, unknown>
+                  const obj = value as FileLikeObject
                   return (
                     (obj.path != null && String(obj.path).trim() !== '') ||
                     (obj.relativePath != null && String(obj.relativePath).trim() !== '') ||
@@ -117,26 +109,6 @@ export const websiteSsoIdentityProviderValidationSchema = (
     principalType: Yup.string().nullable(),
   }) as Yup.ObjectSchema<WebsiteSsoIdentityProviderFormValues>
 
-export interface WebsiteSsoTrustRelationshipFormValues {
-  enabled: boolean
-  name: string
-  displayName: string
-  description: string
-  spMetaDataSourceType: string
-  releasedAttributes: string[]
-  spLogoutURL: string
-  samlMetadata: {
-    nameIDPolicyFormat: string
-    entityId: string
-    singleLogoutServiceUrl: string
-    jansAssertionConsumerServiceGetURL: string
-    jansAssertionConsumerServicePostURL: string
-  }
-  metaDataFileImportedFlag?: boolean
-  metaDataFile?: File | null
-  spMetaDataFN?: string
-}
-
 // Helper function to create required field when metadata source is manual
 const requiredWhenManual = (t: TFunction, fieldKey: string) =>
   Yup.string().when('$spMetaDataSourceType', {
@@ -145,9 +117,9 @@ const requiredWhenManual = (t: TFunction, fieldKey: string) =>
     otherwise: (s) => s,
   })
 
-export const websiteSsoTrustRelationshipValidationSchema = (
+export const websiteSsoServiceProviderValidationSchema = (
   t: TFunction,
-): Yup.ObjectSchema<WebsiteSsoTrustRelationshipFormValues> =>
+): Yup.ObjectSchema<WebsiteSsoServiceProviderFormValues> =>
   Yup.object().shape({
     displayName: Yup.string().required(`${t('fields.displayName')} is Required!`),
     name: Yup.string().required(`${t('fields.name')} is Required!`),
@@ -184,6 +156,6 @@ export const websiteSsoTrustRelationshipValidationSchema = (
         'fields.jans_assertion_consumer_service_post_url',
       ),
     }),
-  }) as Yup.ObjectSchema<WebsiteSsoTrustRelationshipFormValues>
+  }) as Yup.ObjectSchema<WebsiteSsoServiceProviderFormValues>
 
 export default samlConfigurationValidationSchema

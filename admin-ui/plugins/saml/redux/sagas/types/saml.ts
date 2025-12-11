@@ -46,14 +46,14 @@ export interface DeleteSamlIdentitySagaPayload {
   }
 }
 
-export interface CreateTrustRelationshipSagaPayload {
+export interface CreateWebsiteSsoServiceProviderSagaPayload {
   action: {
     action_message: string
     action_data: FormData
   }
 }
 
-export interface UpdateTrustRelationshipSagaPayload {
+export interface UpdateWebsiteSsoServiceProviderSagaPayload {
   action: {
     action_message: string
     action_data: FormData
@@ -61,7 +61,7 @@ export interface UpdateTrustRelationshipSagaPayload {
   }
 }
 
-export interface DeleteTrustRelationshipSagaPayload {
+export interface DeleteWebsiteSsoServiceProviderSagaPayload {
   action: {
     action_message?: string
     action_data: string
