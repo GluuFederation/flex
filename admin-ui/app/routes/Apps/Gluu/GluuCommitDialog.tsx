@@ -22,12 +22,14 @@ import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
-import type { GluuCommitDialogProps } from './types'
 import type { RootState } from '@/redux/sagas/types/audit'
-
-type JsonValue = string | number | boolean | null | { [key: string]: JsonValue } | JsonValue[]
+import type { GluuCommitDialogOperation, GluuCommitDialogProps, JsonValue } from './types'
 
 const USER_MESSAGE = 'user_action_message'
+
+const isJsonValueArray = (value: JsonValue): value is JsonValue[] => {
+  return Array.isArray(value)
+}
 
 const GluuCommitDialog = ({
   handler,
@@ -181,7 +183,7 @@ const GluuCommitDialog = ({
                 </FormGroup>
               ) : null}
               {operations &&
-                operations.map((item, key) => (
+                operations.map((item: GluuCommitDialogOperation, key: number) => (
                   <FormGroup row key={key}>
                     <Col sm={1} style={{ fontWeight: 'bold' }}>
                       Set
@@ -200,7 +202,7 @@ const GluuCommitDialog = ({
                       to
                     </Col>
                     <Col sm={5} style={{ overflow: 'auto' }}>
-                      {Array.isArray(item.value) ? (
+                      {isJsonValueArray(item.value) ? (
                         renderArrayValue(item.value, key)
                       ) : typeof item.value === 'boolean' ? (
                         <Badge color={`primary-${selectedTheme}`}>{String(item.value)}</Badge>

@@ -946,8 +946,9 @@
     "all_scopes": "Toutes les portées",
     "idp": "IDP",
     "sp": "SP",
-    "create_sp": "Créer un fournisseur de services",
-    "edit_sp": "Modifier un fournisseur de services",
+    "create_service_provider": "Créer un fournisseur de services",
+    "edit_service_provider": "Modifier un fournisseur de services",
+    "view_service_provider": "Voir le fournisseur de services",
     "create_idp": "Créer un IDP",
     "edit_idp": "Modifier un IDP",
     "client_advanced": "Avancée",
@@ -998,6 +999,11 @@
     "newPermission": "Nouvelle Permission",
     "addingNewApiPermission": "Ajout d'une nouvelle autorisation API",
     "followingPermissionRequiredToBeAdded": "Une autorisation est requise pour être ajouté!",
+    "identity_provider": "Fournisseur d'Identité",
+    "edit_identity_provider": "Modifier le Fournisseur d'Identité",
+    "create_identity_provider": "Créer un Fournisseur d'Identité",
+    "view_identity_provider": "Voir le Fournisseur d'Identité",
+    "delete_identity_provider": "Supprimer le Fournisseur d'Identité",
     "authentication": "Authentification"
   },
   "links": {

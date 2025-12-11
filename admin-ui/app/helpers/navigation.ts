@@ -49,6 +49,7 @@ const ROUTES = {
   LDAP_EDIT: (configId: string) => `/config/ldap/edit/${encodeURIComponent(configId)}`,
 
   // SAML
+  SAML_CONFIG: '/saml/config',
   SAML_SP_LIST: '/saml/service-providers',
   SAML_SP_ADD: '/saml/service-providers/add',
   SAML_SP_EDIT: '/saml/service-providers/edit',
