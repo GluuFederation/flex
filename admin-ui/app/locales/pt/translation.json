@@ -121,6 +121,7 @@
   "actions": {
     "accept": "Aceitar",
     "add_attribute_mapping": "Adicionar mapeamento de atributos",
+    "add_custom_attributes": "Adicionar atributos personalizados",
     "add": "Adicionar",
     "reject": "Rejeitar",
     "configuration_copied": "Configuração copiada",
@@ -608,6 +609,7 @@
     "customerName": "nome do cliente",
     "licenseDetails": "Detalhes da licença",
     "role": "Função",
+    "permissions": "Permissões",
     "deletable": "Apagável",
     "email": "E-mail",
     "userName": "Nome do usuário",
@@ -670,7 +672,9 @@
     "skip_defined_password_validation": "Pular Validação de Senha Definida",
     "auiPolicyStoreUrl": "Repositório de políticas remotas da interface de administração",
     "configApiPolicyStoreUrl": "Política de armazenamento da API de configuração",
-    "cedarlingPolicyStoreRetrievalPoint": "Ponto de Recuperação de Políticas"
+    "cedarlingPolicyStoreRetrievalPoint": "Ponto de Recuperação de Políticas",
+    "log_entry": "Entrada de registro",
+    "page_size": "Tamanho da página"
   },
   "messages": {
     "add_permission": "Adicionar permissão",
@@ -720,6 +724,7 @@
     "invalid_url_error": "URL inválido ou URL não permitido.",
     "license_api_not_enabled": "A API de licença não está habilitada para este aplicativo.",
     "adding_new_permission": "Adicionando nova permissão",
+    "role_permission_mapping_description": "Gerenciar mapeamentos de funções para permissões para a UI de administração",
     "add_role": "Adicionar função",
     "fido_config_updated_successfully": "Configuração FIDO atualizada com sucesso",
     "fido_config_update_failed": "Falha ao atualizar a configuração FIDO",
@@ -777,6 +782,14 @@
     "error_loading_scripts": "Erro ao carregar scripts",
     "script_not_found": "Script não encontrado",
     "no_scripts_found": "Nenhum script encontrado",
+    "mapping_updated_successfully": "Mapeamento atualizado com sucesso",
+    "error_updating_mapping": "Falha ao atualizar o mapeamento",
+    "mapping_added_successfully": "Mapeamento adicionado com sucesso",
+    "error_adding_mapping": "Falha ao adicionar o mapeamento",
+    "error_loading_mapping": "Falha ao carregar os mapeamentos de função e permissão",
+    "permissions_count_one": "{{count}} permissão",
+    "permissions_count_other": "{{count}} permissões",
+    "no_permissions_assigned": "Nenhuma permissão atribuída",
     "see_configurations": "Voir configuration",
     "manage_configurations": "Gerenciar configurações",
     "fetching_project_details": "Buscando detalhes do projeto...",
@@ -812,7 +825,14 @@
     "no_mau_data": "Nenhum dado disponível para o período selecionado.",
     "error_loading_data": "Ocorreu um erro ao carregar os dados. Por favor, tente novamente.",
     "mau_loading": "Carregando estatísticas...",
-    "vs_previous_period": "vs período anterior"
+    "vs_previous_period": "vs período anterior",
+    "try_again_later": "Por favor, tente novamente mais tarde",
+    "no_data": "Nenhum dado encontrado",
+    "adjust_filters": "Ajuste seus filtros ou intervalo de datas para encontrar registros de auditoria",
+    "audit_description": "Visualizar e pesquisar registros de auditoria do sistema dentro de um intervalo de datas",
+    "showing_entries": "Mostrando {{start}} a {{end}} de {{total}} entradas",
+    "start_date_after_end": "A data de início não pode ser posterior à data de fim",
+    "both_dates_required": "As datas de início e fim são obrigatórias para filtragem por intervalo de datas"
   },
   "errors": {
     "attribute_create_failed": "Erro ao criar atributo",

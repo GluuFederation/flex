@@ -11,7 +11,6 @@ import apiPermissionSaga from './redux/sagas/ApiPermissionSaga'
 import mappingSaga from './redux/sagas/MappingSaga'
 import webhookSaga from './redux/sagas/WebhookSaga'
 import assetSaga from './redux/sagas/AssetSaga'
-import auditSaga from '../admin/redux/sagas/AuditSaga'
 
 import { reducer as apiRoleReducer } from 'Plugins/admin/redux/features/apiRoleSlice'
 import { reducer as apiConfigReducer } from 'Plugins/admin/redux/features/apiConfigSlice'
@@ -19,7 +18,6 @@ import { reducer as apiPermissionReducer } from 'Plugins/admin/redux/features/ap
 import { reducer as mappingReducer } from 'Plugins/admin/redux/features/mappingSlice'
 import webhookReducer from 'Plugins/admin/redux/features/WebhookSlice'
 import { reducer as assetReducer } from 'Plugins/admin/redux/features/AssetSlice'
-import auditReducer from '../admin/redux/features/auditSlice'
 
 import {
   ACR_READ,
@@ -211,18 +209,10 @@ const pluginMetadata = {
     { name: 'apiRoleReducer', reducer: apiRoleReducer },
     { name: 'apiPermissionReducer', reducer: apiPermissionReducer },
     { name: 'mappingReducer', reducer: mappingReducer },
-    { name: 'auditReducer', reducer: auditReducer },
     { name: 'webhookReducer', reducer: webhookReducer },
     { name: 'assetReducer', reducer: assetReducer },
   ],
-  sagas: [
-    apiRoleSaga(),
-    auditSaga(),
-    apiPermissionSaga(),
-    mappingSaga(),
-    webhookSaga(),
-    assetSaga(),
-  ],
+  sagas: [apiRoleSaga(), apiPermissionSaga(), mappingSaga(), webhookSaga(), assetSaga()],
 }
 
 export default pluginMetadata

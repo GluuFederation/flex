@@ -13,7 +13,6 @@ import attributesReducerRoot from '../features/attributesSlice'
 import toastReducer from '../features/toastSlice'
 import profileDetailsReducer from '../features/ProfileDetailsSlice'
 import cedarPermissionsReducer from '../features/cedarPermissionsSlice'
-import auditReducer from 'Plugins/admin/redux/features/auditSlice'
 import sessionReducer from '../features/sessionSlice'
 
 const appReducers = {
@@ -29,7 +28,6 @@ const appReducers = {
   toastReducer,
   profileDetailsReducer,
   cedarPermissions: cedarPermissionsReducer,
-  auditReducer,
   sessionReducer,
 }
 
