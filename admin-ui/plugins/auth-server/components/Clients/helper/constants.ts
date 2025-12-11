@@ -134,6 +134,7 @@ export const CLIENT_ROUTES = {
 
 export const DEFAULT_PAGE_SIZE = 10
 export const DEFAULT_SCOPE_SEARCH_LIMIT = 100
+export const SCOPES_FETCH_LIMIT = 200
 
 export const TAB_LABELS = {
   basic: 'titles.basic_info',

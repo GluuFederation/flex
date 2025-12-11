@@ -63,7 +63,7 @@ export interface ScopesGrantsTabProps extends TabPanelProps {
 }
 
 export interface AdvancedTabProps extends TabPanelProps {
-  scripts: Array<{ dn: string; name: string; scriptType?: string; enabled?: boolean }>
+  scripts: ClientScript[]
   umaResources?: UmaResourceForTab[]
   isEdit?: boolean
   clientInum?: string

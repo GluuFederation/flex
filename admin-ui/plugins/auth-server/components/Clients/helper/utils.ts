@@ -28,56 +28,14 @@ export function transformScopesResponse(entries: ScopeEntry[] | undefined | null
   )
 }
 
-/**
- * Transforms simplified add form values into a full ClientFormValues payload.
- * This adds all required default values for a new client.
- */
 export function buildAddFormPayload(formValues: AddFormValues): ClientFormValues {
   const payload = {
+    ...(EMPTY_CLIENT as ExtendedClient),
     ...formValues,
-    applicationType: 'web' as const,
-    subjectType: 'public' as const,
-    tokenEndpointAuthMethod: 'client_secret_basic' as const,
-    responseTypes: [] as string[],
     redirectUris: formValues.redirectUris.filter(Boolean),
     postLogoutRedirectUris: formValues.postLogoutRedirectUris.filter(Boolean),
-    frontChannelLogoutSessionRequired: false,
-    backchannelUserCodeParameter: false,
-    trustedClient: false,
-    persistClientAuthorizations: false,
-    includeClaimsInIdToken: false,
-    rptAsJwt: false,
-    accessTokenAsJwt: false,
-    deletable: true,
-    customObjectClasses: ['top'],
-    contacts: [] as string[],
-    defaultAcrValues: [] as string[],
-    claims: [] as string[],
-    claimRedirectUris: [] as string[],
-    authorizedOrigins: [] as string[],
-    requestUris: [] as string[],
-    expirable: false,
     attributes: {
-      runIntrospectionScriptBeforeJwtCreation: false,
-      keepClientAuthorizationAfterExpiration: false,
-      allowSpontaneousScopes: false,
-      backchannelLogoutSessionRequired: false,
-      backchannelLogoutUri: [] as string[],
-      rptClaimsScripts: [] as string[],
-      consentGatheringScripts: [] as string[],
-      spontaneousScopeScriptDns: [] as string[],
-      introspectionScripts: [] as string[],
-      postAuthnScripts: [] as string[],
-      ropcScripts: [] as string[],
-      updateTokenScriptDns: [] as string[],
-      additionalAudience: [] as string[],
-      spontaneousScopes: [] as string[],
-      jansAuthorizedAcr: [] as string[],
-      requirePar: false,
-      dpopBoundAccessToken: false,
-      jansDefaultPromptLogin: false,
-      minimumAcrLevelAutoresolve: false,
-      requirePkce: false,
+      ...EMPTY_CLIENT.attributes,
     },
   }
   return payload as ClientFormValues

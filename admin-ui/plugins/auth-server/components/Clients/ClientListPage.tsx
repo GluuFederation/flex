@@ -51,7 +51,7 @@ import type { Client, ClientTableRow } from './types'
 import { useClientActions } from './hooks'
 import ClientDetailView from './components/ClientDetailView'
 import { formatGrantTypeLabel, truncateText } from './helper/utils'
-import { CLIENT_ROUTES, DEFAULT_PAGE_SIZE } from './helper/constants'
+import { CLIENT_ROUTES, DEFAULT_PAGE_SIZE, SCOPES_FETCH_LIMIT } from './helper/constants'
 
 interface DetailPanelProps {
   rowData: ClientTableRow
@@ -183,7 +183,10 @@ const ClientListPage: React.FC = () => {
     },
   })
 
-  const { data: scopesData } = useGetOauthScopes({ limit: 200 }, { query: { staleTime: 60000 } })
+  const { data: scopesData } = useGetOauthScopes(
+    { limit: SCOPES_FETCH_LIMIT },
+    { query: { staleTime: 60000 } },
+  )
 
   const scopesList = useMemo(() => {
     return (scopesData?.entries || []) as Array<{ dn?: string; id?: string; displayName?: string }>
@@ -224,8 +227,8 @@ const ClientListPage: React.FC = () => {
     const allClients = (clientsResponse?.entries || []) as ClientTableRow[]
     if (scopeInumFilter) {
       return allClients.filter((client) => {
-        const clientScopes = client.scopes || []
-        return clientScopes.some((scope) => {
+        const scopes = client.scopes || []
+        return scopes.some((scope) => {
           if (typeof scope === 'string') {
             return scope.includes(scopeInumFilter)
           }
@@ -373,13 +376,15 @@ const ClientListPage: React.FC = () => {
 
       try {
         await deleteClient.mutateAsync({ inum: selectedClient.inum })
-        await logClientDeletion(selectedClient, message)
         toggleDeleteModal()
+        logClientDeletion(selectedClient, message).catch((err) => {
+          console.error('Failed to log client deletion:', err)
+        })
       } catch (error) {
         console.error('Error deleting client:', error)
       }
     },
-    [selectedClient, deleteClient, logClientDeletion, toggleDeleteModal],
+    [selectedClient, deleteClient, toggleDeleteModal, logClientDeletion],
   )
 
   const onPageChangeClick = useCallback(
@@ -415,7 +420,7 @@ const ClientListPage: React.FC = () => {
     [handleClientDelete],
   )
 
-  const DeleteIcon = () => <DeleteOutlined sx={{ color: 'error.main' }} />
+  const DeleteIcon = useCallback(() => <DeleteOutlined sx={{ color: 'error.main' }} />, [])
 
   const detailPanel = useCallback(
     (props: DetailPanelProps): React.ReactElement => (
@@ -588,6 +593,7 @@ const ClientListPage: React.FC = () => {
     handleGoToClientAddPage,
     handleDeleteClick,
     ViewIcon,
+    DeleteIcon,
   ])
 
   const tableComponents = useMemo(

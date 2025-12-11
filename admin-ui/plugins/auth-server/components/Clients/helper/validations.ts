@@ -31,7 +31,7 @@ export const clientValidationSchema = Yup.object().shape({
   clientName: Yup.string().nullable(),
   displayName: Yup.string().nullable(),
   redirectUris: Yup.array()
-    .of(Yup.string())
+    .of(uriValidation)
     .when('grantTypes', (grantTypes: string[] = [], schema) => {
       const needsRedirect =
         grantTypes.includes('authorization_code') || grantTypes.includes('implicit')
@@ -108,6 +108,9 @@ export function validateRequiredArray(
 export function validateExpirationDate(expirationDate: string | undefined | null): string | null {
   if (!expirationDate) return null
   const expDate = new Date(expirationDate)
+  if (Number.isNaN(expDate.getTime())) {
+    return 'Expiration date must be a valid date'
+  }
   const now = new Date()
   if (expDate <= now) {
     return 'Expiration date must be in the future'
