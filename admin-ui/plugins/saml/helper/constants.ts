@@ -1,4 +1,9 @@
-export const nameIDPolicyFormat = [
+export interface NameIdPolicyFormatOption {
+  label: string
+  value: string
+}
+
+export const nameIDPolicyFormat: NameIdPolicyFormatOption[] = [
   {
     label: 'Unspecified',
     value: 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
@@ -19,4 +24,11 @@ export const nameIDPolicyFormat = [
     label: 'Transient',
     value: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
   },
-]
+] as const
+
+// Audit resource names
+export const AUDIT_RESOURCE_NAMES = {
+  SAML: 'SAML',
+  IDENTITY_BROKERING: 'Identity-Brokering',
+  TRUST_RELATIONSHIP: 'Trust-Relationship',
+} as const

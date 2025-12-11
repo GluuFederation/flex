@@ -914,8 +914,9 @@
     "loading_database_information": "Carregando informações do banco de dados...",
     "idp": "IDP",
     "sp": "SP",
-    "create_sp": "Criar Provedor de Serviços",
-    "edit_sp": "Editar Provedor de Serviços",
+    "create_service_provider": "Criar Provedor de Serviços",
+    "edit_service_provider": "Editar Provedor de Serviços",
+    "view_service_provider": "Visualizar Provedor de Serviços",
     "create_idp": "Criar IDP",
     "edit_idp": "Editar IDP",
     "all_oidc_clients": "Todos os clientes OIDC",
@@ -965,6 +966,11 @@
     "newPermission": "Nova Permissão",
     "addingNewApiPermission": "Adicionando nova permissão de API",
     "followingPermissionRequiredToBeAdded": "É necessária a permissão seguinte para ser adicionado!",
+    "identity_provider": "Provedor de Identidade",
+    "edit_identity_provider": "Editar Provedor de Identidade",
+    "create_identity_provider": "Criar Provedor de Identidade",
+    "view_identity_provider": "Visualizar Provedor de Identidade",
+    "delete_identity_provider": "Excluir Provedor de Identidade",
     "authentication": "Autenticação"
   },
   "links": {
