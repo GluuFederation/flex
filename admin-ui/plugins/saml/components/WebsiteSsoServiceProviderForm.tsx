@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useCallback, useMemo, memo } from 'react'
 import { useLocation } from 'react-router-dom'
 import {
-  createTrustRelationship,
+  createWebsiteSsoServiceProvider,
   toggleSavedFormFlag,
-  updateTrustRelationship,
+  updateWebsiteSsoServiceProvider,
 } from 'Plugins/saml/redux/features/SamlSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
@@ -20,30 +20,24 @@ import { setClientSelectedScopes } from 'Plugins/auth-server/redux/features/scop
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
 import {
   nameIDPolicyFormat,
-  websiteSsoTrustRelationshipValidationSchema,
-  transformToTrustRelationshipFormValues,
+  websiteSsoServiceProviderValidationSchema,
+  transformToWebsiteSsoServiceProviderFormValues,
+  buildWebsiteSsoServiceProviderPayload,
 } from '../helper'
-import type { WebsiteSsoTrustRelationshipFormValues } from '../helper/validations'
+import type { WebsiteSsoServiceProviderFormValues } from '../types/formValues'
 import GluuUploadFile from 'Routes/Apps/Gluu/GluuUploadFile'
 import SetTitle from 'Utils/SetTitle'
 import { useGetAttributes } from 'JansConfigApi'
 import GluuStatusMessage from 'Routes/Apps/Gluu/GluuStatusMessage'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import type { TrustRelationship } from '../types/redux'
+import type { WebsiteSsoServiceProvider } from '../types/redux'
 import type { SamlRootState } from '../types/state'
 import type { LocationState } from '../types'
 
-type TrustRelationshipPayload = Omit<
-  WebsiteSsoTrustRelationshipFormValues,
-  'metaDataFileImportedFlag' | 'metaDataFile'
-> & {
-  inum?: string
-}
+const MAX_ATTRIBUTES_FOR_WEBSITE_SSO = 100
 
-const MAX_ATTRIBUTES_FOR_TRUST_RELATION = 100
-
-interface WebsiteSsoTrustRelationshipFormProps {
-  configs?: TrustRelationship | null
+interface WebsiteSsoServiceProviderFormProps {
+  configs?: WebsiteSsoServiceProvider | null
   viewOnly?: boolean
 }
 
@@ -54,12 +48,12 @@ interface ScopeOption {
 
 const DOC_SECTION = 'saml' as const
 
-const WebsiteSsoTrustRelationshipForm = ({
+const WebsiteSsoServiceProviderForm = ({
   configs: propsConfigs,
   viewOnly: propsViewOnly,
-}: WebsiteSsoTrustRelationshipFormProps = {}) => {
+}: WebsiteSsoServiceProviderFormProps = {}) => {
   const location = useLocation()
-  const state = location.state as LocationState<TrustRelationship> | null
+  const state = location.state as LocationState<WebsiteSsoServiceProvider> | null
 
   const configs = useMemo(
     () => propsConfigs ?? state?.rowData ?? null,
@@ -84,17 +78,16 @@ const WebsiteSsoTrustRelationshipForm = ({
   SetTitle(title)
 
   const loading = useSelector((state: SamlRootState) => state.idpSamlReducer.loading)
+  const savedForm = useSelector((state: SamlRootState) => state.idpSamlReducer.savedForm)
   const dispatch = useDispatch()
   const { navigateBack } = useAppNavigation()
-
-  const savedForm = useSelector((state: SamlRootState) => state.idpSamlReducer.savedForm)
   const [modal, setModal] = useState<boolean>(false)
 
   const {
     data: attributesData,
     error: attributesError,
     isLoading: attributesLoading,
-  } = useGetAttributes({ limit: MAX_ATTRIBUTES_FOR_TRUST_RELATION })
+  } = useGetAttributes({ limit: MAX_ATTRIBUTES_FOR_WEBSITE_SSO })
 
   const attributesList = useMemo<ScopeOption[]>(
     () =>
@@ -127,18 +120,18 @@ const WebsiteSsoTrustRelationshipForm = ({
       state.scopeReducer.selectedClientScopes,
   )
 
-  const validationSchema = useMemo(() => websiteSsoTrustRelationshipValidationSchema(t), [t])
+  const validationSchema = useMemo(() => websiteSsoServiceProviderValidationSchema(t), [t])
 
   const toggle = useCallback(() => {
     setModal((prev) => !prev)
   }, [])
 
-  const initialValues = useMemo<WebsiteSsoTrustRelationshipFormValues>(
-    () => transformToTrustRelationshipFormValues(configs),
+  const initialValues = useMemo<WebsiteSsoServiceProviderFormValues>(
+    () => transformToWebsiteSsoServiceProviderFormValues(configs),
     [configs],
   )
 
-  const formik = useFormik<WebsiteSsoTrustRelationshipFormValues>({
+  const formik = useFormik<WebsiteSsoServiceProviderFormValues>({
     initialValues,
     validationSchema,
     enableReinitialize: true,
@@ -164,8 +157,8 @@ const WebsiteSsoTrustRelationshipForm = ({
   }, [formik.values.releasedAttributes, selectedClientScopes, defaultScopeValue, attributesList])
 
   const handleSubmit = useCallback(
-    (values: WebsiteSsoTrustRelationshipFormValues, user_message: string) => {
-      const { metaDataFileImportedFlag, metaDataFile, ...trustRelationshipData } = values
+    (values: WebsiteSsoServiceProviderFormValues, user_message: string) => {
+      const { metaDataFileImportedFlag, metaDataFile, ...websiteSsoServiceProviderData } = values
       void metaDataFileImportedFlag
       const formdata = new FormData()
 
@@ -173,10 +166,10 @@ const WebsiteSsoTrustRelationshipForm = ({
         formdata.append('metaDataFile', metaDataFile)
       }
 
-      const payload: TrustRelationshipPayload = {
-        ...trustRelationshipData,
-        ...(configs?.inum ? { inum: configs.inum } : {}),
-      }
+      const payload = buildWebsiteSsoServiceProviderPayload(
+        websiteSsoServiceProviderData,
+        configs?.inum,
+      )
 
       const blob = new Blob([JSON.stringify(payload)], {
         type: 'application/json',
@@ -186,13 +179,13 @@ const WebsiteSsoTrustRelationshipForm = ({
 
       if (!configs) {
         dispatch(
-          createTrustRelationship({
+          createWebsiteSsoServiceProvider({
             action: { action_message: user_message, action_data: formdata },
           }),
         )
       } else {
         dispatch(
-          updateTrustRelationship({
+          updateWebsiteSsoServiceProvider({
             action: {
               action_message: user_message,
               action_data: formdata,
@@ -208,9 +201,9 @@ const WebsiteSsoTrustRelationshipForm = ({
   const submitForm = useCallback(
     (messages: string) => {
       toggle()
-      handleSubmit(formik.values, messages)
+      handleSubmit(formik.getValues(), messages)
     },
-    [toggle, formik.values, handleSubmit],
+    [toggle, handleSubmit, formik],
   )
 
   const saveSelectedScopes = useCallback(
@@ -571,6 +564,6 @@ const WebsiteSsoTrustRelationshipForm = ({
   )
 }
 
-WebsiteSsoTrustRelationshipForm.displayName = 'WebsiteSsoTrustRelationshipForm'
+WebsiteSsoServiceProviderForm.displayName = 'WebsiteSsoServiceProviderForm'
 
-export default memo(WebsiteSsoTrustRelationshipForm)
+export default memo(WebsiteSsoServiceProviderForm)

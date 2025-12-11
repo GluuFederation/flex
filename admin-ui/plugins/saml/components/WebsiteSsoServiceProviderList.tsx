@@ -11,15 +11,15 @@ import getThemeColor from 'Context/theme/config'
 import { DeleteOutlined } from '@mui/icons-material'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import {
-  getTrustRelationship,
-  deleteTrustRelationship,
+  getWebsiteSsoServiceProvider,
+  deleteWebsiteSsoServiceProvider,
 } from 'Plugins/saml/redux/features/SamlSlice'
 import { PaperContainer, getServiceProviderTableCols } from '../helper/tableUtils'
 import customColors from '@/customColors'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import type { TrustRelationship } from '../types/redux'
+import type { WebsiteSsoServiceProvider } from '../types/redux'
 import type { SamlRootState } from '../types/state'
 
 interface DeleteItem {
@@ -47,16 +47,16 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const { navigateToRoute } = useAppNavigation()
-  const { trustRelationships, loadingTrustRelationship } = useSelector(
+  const { websiteSsoServiceProviders, loadingWebsiteSsoServiceProvider } = useSelector(
     (state: SamlRootState) => state.idpSamlReducer,
   )
   const samlResourceId = useMemo(() => ADMIN_UI_RESOURCES.SAML, [])
   const samlScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[samlResourceId], [samlResourceId])
-  const canReadTrustRelationships = useMemo(
+  const canReadWebsiteSsoServiceProviders = useMemo(
     () => hasCedarReadPermission(samlResourceId),
     [hasCedarReadPermission, samlResourceId],
   )
-  const canWriteTrustRelationships = useMemo(
+  const canWriteWebsiteSsoServiceProviders = useMemo(
     () => hasCedarWritePermission(samlResourceId),
     [hasCedarWritePermission, samlResourceId],
   )
@@ -66,14 +66,14 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
   }, [authorizeHelper, samlScopes])
 
   useEffect(() => {
-    if (!canReadTrustRelationships) {
+    if (!canReadWebsiteSsoServiceProviders) {
       return
     }
-    dispatch(getTrustRelationship())
-  }, [dispatch, canReadTrustRelationships])
+    dispatch(getWebsiteSsoServiceProvider())
+  }, [dispatch, canReadWebsiteSsoServiceProviders])
 
   const handleGoToEditPage = useCallback(
-    (rowData: TrustRelationship, viewOnly?: boolean) => {
+    (rowData: WebsiteSsoServiceProvider, viewOnly?: boolean) => {
       navigateToRoute(ROUTES.SAML_SP_EDIT, { state: { rowData: rowData, viewOnly: viewOnly } })
     },
     [navigateToRoute],
@@ -84,7 +84,7 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
   }, [navigateToRoute])
 
   const handleDelete = useCallback(
-    (row: TrustRelationship) => {
+    (row: WebsiteSsoServiceProvider) => {
       setItem(row)
       toggle()
     },
@@ -99,7 +99,7 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
       }
       buildPayload(userAction, message, item.inum)
       dispatch(
-        deleteTrustRelationship({
+        deleteWebsiteSsoServiceProvider({
           action: {
             action_data: userAction.action_data as string,
             action_message: userAction.action_message,
@@ -111,79 +111,94 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
     [dispatch, item.inum, toggle],
   )
 
+  const handleRefresh = useCallback((): void => {
+    dispatch(getWebsiteSsoServiceProvider())
+  }, [dispatch])
+
   const tableActions = useMemo(() => {
-    const actions: Action<TrustRelationship>[] = []
-    if (canWriteTrustRelationships) {
+    const actions: Action<WebsiteSsoServiceProvider>[] = []
+    if (canWriteWebsiteSsoServiceProviders) {
       actions.push({
         icon: 'edit',
         tooltip: `${t('messages.edit_service_provider')}`,
-        iconProps: { color: 'primary', style: { color: customColors.darkGray } },
+        iconProps: { style: { color: customColors.darkGray } },
         onClick: (
           _event: React.MouseEvent,
-          rowData: TrustRelationship | TrustRelationship[],
+          rowData: WebsiteSsoServiceProvider | WebsiteSsoServiceProvider[],
         ): void => {
           if (Array.isArray(rowData)) return
-          const { tableData, ...clean } = rowData as TrustRelationship & { tableData?: unknown }
+          const { tableData, ...clean } = rowData as WebsiteSsoServiceProvider & {
+            tableData?: unknown
+          }
           void tableData
           handleGoToEditPage(clean)
         },
       })
       actions.push({
-        icon: DeleteOutlinedIcon,
-        iconProps: { color: 'secondary' },
-        tooltip: `${t('messages.delete_service_provider')}`,
-        onClick: (
-          _event: React.MouseEvent,
-          rowData: TrustRelationship | TrustRelationship[],
-        ): void => {
-          if (Array.isArray(rowData)) return
-          handleDelete(rowData)
-        },
-      })
-      actions.push({
         icon: 'add',
         tooltip: `${t('messages.add_service_provider')}`,
-        iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
+        iconProps: { color: 'primary' },
         isFreeAction: true,
         onClick: () => handleGoToAddPage(),
       })
     }
-    if (canReadTrustRelationships) {
+    if (canReadWebsiteSsoServiceProviders) {
       actions.push({
         icon: 'visibility',
-        iconProps: { style: { color: customColors.darkGray } },
         tooltip: `${t('messages.view_service_provider')}`,
         onClick: (
           _event: React.MouseEvent,
-          rowData: TrustRelationship | TrustRelationship[],
+          rowData: WebsiteSsoServiceProvider | WebsiteSsoServiceProvider[],
         ): void => {
           if (Array.isArray(rowData)) return
           handleGoToEditPage(rowData, true)
         },
       })
     }
+    if (canWriteWebsiteSsoServiceProviders) {
+      actions.push({
+        icon: DeleteOutlinedIcon,
+        iconProps: { color: 'secondary' },
+        tooltip: `${t('messages.delete_service_provider')}`,
+        onClick: (
+          _event: React.MouseEvent,
+          rowData: WebsiteSsoServiceProvider | WebsiteSsoServiceProvider[],
+        ): void => {
+          if (Array.isArray(rowData)) return
+          handleDelete(rowData)
+        },
+      })
+    }
+    actions.push({
+      icon: 'refresh',
+      tooltip: `${t('messages.refresh')}`,
+      iconProps: { color: 'primary' },
+      isFreeAction: true,
+      onClick: handleRefresh,
+    })
     return actions
   }, [
-    canReadTrustRelationships,
-    canWriteTrustRelationships,
+    canReadWebsiteSsoServiceProviders,
+    canWriteWebsiteSsoServiceProviders,
     t,
     handleGoToEditPage,
     handleGoToAddPage,
     handleDelete,
+    handleRefresh,
   ])
 
   const tableColumns = useMemo(() => getServiceProviderTableCols(t), [t])
 
   return (
     <>
-      <GluuViewWrapper canShow={canReadTrustRelationships}>
+      <GluuViewWrapper canShow={canReadWebsiteSsoServiceProviders}>
         <MaterialTable
           components={{
             Container: PaperContainer,
           }}
           columns={tableColumns}
-          data={trustRelationships}
-          isLoading={loadingTrustRelationship}
+          data={websiteSsoServiceProviders}
+          isLoading={loadingWebsiteSsoServiceProvider}
           title=""
           actions={tableActions}
           options={{
@@ -200,13 +215,13 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
           }}
         />
       </GluuViewWrapper>
-      {canWriteTrustRelationships && (
+      {canWriteWebsiteSsoServiceProviders && (
         <GluuDialog
           row={item}
           name={item?.displayName || ''}
           handler={toggle}
           modal={modal}
-          subject="saml trust relationship"
+          subject="saml website sso service provider"
           onAccept={onDeletionConfirmed}
         />
       )}

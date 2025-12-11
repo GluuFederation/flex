@@ -8,14 +8,17 @@ import type {
 import type {
   SamlConfiguration,
   GetSamlIdentityProviderPayload,
-  TrustRelationshipListResponse,
+  WebsiteSsoServiceProviderListResponse,
 } from '../../types/redux'
 import type {
   SamlIdentityCreateResponse,
   SamlApiResponse,
   SamlIdentityProviderResponse,
 } from '../../types/api'
-import type { CreateSamlIdentityPayload, CreateTrustRelationshipPayload } from '../../types/redux'
+import type {
+  CreateSamlIdentityPayload,
+  CreateWebsiteSsoServiceProviderPayload,
+} from '../../types/redux'
 
 type SamlApiInstance =
   | JansConfigApiClient
@@ -117,8 +120,8 @@ export default class SamlApi {
     })
   }
 
-  getTrustRelationship = (): Promise<TrustRelationshipListResponse> => {
-    return new Promise<TrustRelationshipListResponse>((resolve, reject) => {
+  getWebsiteSsoServiceProvider = (): Promise<WebsiteSsoServiceProviderListResponse> => {
+    return new Promise<WebsiteSsoServiceProviderListResponse>((resolve, reject) => {
       if ('getTrustRelationships' in this.api) {
         this.api.getTrustRelationships((error, _data, response) => {
           handleResponse(error, reject, resolve as (data: unknown) => void, response)
@@ -129,10 +132,10 @@ export default class SamlApi {
     })
   }
 
-  postTrustRelationship = ({
+  postWebsiteSsoServiceProvider = ({
     formdata,
     token,
-  }: CreateTrustRelationshipPayload): Promise<SamlApiResponse> => {
+  }: CreateWebsiteSsoServiceProviderPayload): Promise<SamlApiResponse> => {
     return new Promise<SamlApiResponse>((resolve, reject) => {
       axios
         .post<SamlApiResponse>('/kc/saml/trust-relationship/upload', formdata, {
@@ -147,10 +150,10 @@ export default class SamlApi {
     })
   }
 
-  updateTrustRelationship = ({
+  updateWebsiteSsoServiceProvider = ({
     formdata,
     token,
-  }: CreateTrustRelationshipPayload): Promise<SamlApiResponse> => {
+  }: CreateWebsiteSsoServiceProviderPayload): Promise<SamlApiResponse> => {
     return new Promise<SamlApiResponse>((resolve, reject) => {
       axios
         .put<SamlApiResponse>('/kc/saml/trust-relationship/upload', formdata, {
@@ -165,7 +168,7 @@ export default class SamlApi {
     })
   }
 
-  deleteTrustRelationship = (inum: string): Promise<SamlApiResponse> => {
+  deleteWebsiteSsoServiceProvider = (inum: string): Promise<SamlApiResponse> => {
     return new Promise<SamlApiResponse>((resolve, reject) => {
       if ('deleteTrustRelationship' in this.api) {
         this.api.deleteTrustRelationship(inum, (error, data) => {

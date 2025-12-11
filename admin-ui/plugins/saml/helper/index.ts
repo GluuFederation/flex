@@ -3,19 +3,20 @@ export type { NameIdPolicyFormatOption } from './constants'
 export {
   samlConfigurationValidationSchema,
   websiteSsoIdentityProviderValidationSchema,
-  websiteSsoTrustRelationshipValidationSchema,
+  websiteSsoServiceProviderValidationSchema,
 } from './validations'
 export type {
   WebsiteSsoIdentityProviderFormValues,
-  WebsiteSsoTrustRelationshipFormValues,
-} from './validations'
+  WebsiteSsoServiceProviderFormValues,
+} from '../types/formValues'
 export {
   transformToFormValues,
   transformToIdentityProviderFormValues,
-  transformToTrustRelationshipFormValues,
+  transformToWebsiteSsoServiceProviderFormValues,
   cleanOptionalFields,
   separateConfigFields,
   buildIdentityProviderPayload,
+  buildWebsiteSsoServiceProviderPayload,
 } from './utils'
 export {
   PaperContainer,

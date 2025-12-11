@@ -3,7 +3,7 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type {
   SamlReduxState,
   SamlConfiguration,
-  TrustRelationship,
+  WebsiteSsoServiceProvider,
   PutSamlPropertiesPayload,
   GetSamlIdentityProviderPayload,
 } from '../../types/redux'
@@ -21,10 +21,10 @@ const initialState: SamlReduxState = {
   items: [],
   loadingSamlIdp: false,
   loadingSamlIdentity: false,
-  loadingTrustRelationship: false,
+  loadingWebsiteSsoServiceProvider: false,
   totalItems: 0,
   entriesCount: 0,
-  trustRelationships: [],
+  websiteSsoServiceProviders: [],
 }
 
 const samlSlice = createSlice({
@@ -109,50 +109,50 @@ const samlSlice = createSlice({
       state.loading = false
       state.loadingSamlIdentity = false
     },
-    deleteTrustRelationship: (
+    deleteWebsiteSsoServiceProvider: (
       state,
       _action: PayloadAction<{ action: { action_message?: string; action_data: string } }>,
     ) => {
       state.loading = true
-      state.loadingTrustRelationship = true
+      state.loadingWebsiteSsoServiceProvider = true
     },
-    deleteTrustRelationshipResponse: (state) => {
+    deleteWebsiteSsoServiceProviderResponse: (state) => {
       state.loading = false
-      state.loadingTrustRelationship = false
+      state.loadingWebsiteSsoServiceProvider = false
     },
-    getTrustRelationship: (state) => {
-      state.loadingTrustRelationship = true
+    getWebsiteSsoServiceProvider: (state) => {
+      state.loadingWebsiteSsoServiceProvider = true
     },
-    getTrustRelationshipResponse: (
+    getWebsiteSsoServiceProviderResponse: (
       state,
-      action: PayloadAction<{ data?: TrustRelationship[] } | null>,
+      action: PayloadAction<{ data?: WebsiteSsoServiceProvider[] } | null>,
     ) => {
-      state.loadingTrustRelationship = false
-      state.trustRelationships = action.payload?.data || []
+      state.loadingWebsiteSsoServiceProvider = false
+      state.websiteSsoServiceProviders = action.payload?.data || []
     },
-    createTrustRelationship: (
+    createWebsiteSsoServiceProvider: (
       state,
       _action: PayloadAction<{ action: { action_message: string; action_data: FormData } }>,
     ) => {
       state.loading = true
-      state.loadingTrustRelationship = true
+      state.loadingWebsiteSsoServiceProvider = true
     },
-    createTrustRelationshipResponse: (state) => {
+    createWebsiteSsoServiceProviderResponse: (state) => {
       state.loading = false
-      state.loadingTrustRelationship = false
+      state.loadingWebsiteSsoServiceProvider = false
     },
-    updateTrustRelationship: (
+    updateWebsiteSsoServiceProvider: (
       state,
       _action: PayloadAction<{
         action: { action_message: string; action_data: FormData; action_inum?: string }
       }>,
     ) => {
       state.loading = true
-      state.loadingTrustRelationship = true
+      state.loadingWebsiteSsoServiceProvider = true
     },
-    updateTrustRelationshipResponse: (state) => {
+    updateWebsiteSsoServiceProviderResponse: (state) => {
       state.loading = false
-      state.loadingTrustRelationship = false
+      state.loadingWebsiteSsoServiceProvider = false
     },
   },
 })
@@ -171,14 +171,14 @@ export const {
   deleteSamlIdentityResponse,
   updateSamlIdentityResponse,
   updateSamlIdentity,
-  getTrustRelationship,
-  getTrustRelationshipResponse,
-  deleteTrustRelationship,
-  deleteTrustRelationshipResponse,
-  createTrustRelationship,
-  createTrustRelationshipResponse,
-  updateTrustRelationship,
-  updateTrustRelationshipResponse,
+  getWebsiteSsoServiceProvider,
+  getWebsiteSsoServiceProviderResponse,
+  deleteWebsiteSsoServiceProvider,
+  deleteWebsiteSsoServiceProviderResponse,
+  createWebsiteSsoServiceProvider,
+  createWebsiteSsoServiceProviderResponse,
+  updateWebsiteSsoServiceProvider,
+  updateWebsiteSsoServiceProviderResponse,
 } = samlSlice.actions
 
 export default samlSlice.reducer

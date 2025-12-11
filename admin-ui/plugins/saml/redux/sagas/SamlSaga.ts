@@ -20,10 +20,10 @@ import {
   deleteSamlIdentityResponse,
   updateSamlIdentityResponse,
   getSamlIdentities,
-  getTrustRelationshipResponse,
-  deleteTrustRelationshipResponse,
-  createTrustRelationshipResponse,
-  updateTrustRelationshipResponse,
+  getWebsiteSsoServiceProviderResponse,
+  deleteWebsiteSsoServiceProviderResponse,
+  createWebsiteSsoServiceProviderResponse,
+  updateWebsiteSsoServiceProviderResponse,
 } from '../features/SamlSlice'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { updateToast } from 'Redux/features/toastSlice'
@@ -36,13 +36,13 @@ import type {
   CreateSamlIdentitySagaPayload,
   UpdateSamlIdentitySagaPayload,
   DeleteSamlIdentitySagaPayload,
-  CreateTrustRelationshipSagaPayload,
-  UpdateTrustRelationshipSagaPayload,
-  DeleteTrustRelationshipSagaPayload,
+  CreateWebsiteSsoServiceProviderSagaPayload,
+  UpdateWebsiteSsoServiceProviderSagaPayload,
+  DeleteWebsiteSsoServiceProviderSagaPayload,
 } from './types/saml'
 import type {
   SamlConfiguration,
-  TrustRelationshipListResponse,
+  WebsiteSsoServiceProviderListResponse,
   GetSamlIdentityProviderPayload,
 } from '../../types/redux'
 import type {
@@ -58,9 +58,9 @@ type PayloadForAudit =
   | CreateSamlIdentitySagaPayload
   | UpdateSamlIdentitySagaPayload
   | DeleteSamlIdentitySagaPayload
-  | CreateTrustRelationshipSagaPayload
-  | UpdateTrustRelationshipSagaPayload
-  | DeleteTrustRelationshipSagaPayload
+  | CreateWebsiteSsoServiceProviderSagaPayload
+  | UpdateWebsiteSsoServiceProviderSagaPayload
+  | DeleteWebsiteSsoServiceProviderSagaPayload
 
 const toAdditionalPayload = (payload: PayloadForAudit): AdditionalPayload => {
   const actionData = payload.action.action_data
@@ -93,7 +93,7 @@ function* newSamlIdentityFunction(): Generator<SelectEffect, SamlApi, string> {
   return new SamlApi(api)
 }
 
-function* newTrustRelationFunction(): Generator<SelectEffect, SamlApi, string> {
+function* newWebsiteSsoServiceProviderFunction(): Generator<SelectEffect, SamlApi, string> {
   const token: string = yield select((state: SamlRootState) => state.authReducer.token.access_token)
   const issuer: string = yield select((state: SamlRootState) => state.authReducer.issuer)
   const api = new JansConfigApi.SAMLTrustRelationshipApi(getClient(JansConfigApi, token, issuer))
@@ -162,16 +162,18 @@ export function* putSamlProperties({
   }
 }
 
-export function* getTrustRelationshipsSaga(): SagaIterator<TrustRelationshipListResponse | Error> {
+export function* getWebsiteSsoServiceProvidersSaga(): SagaIterator<
+  WebsiteSsoServiceProviderListResponse | Error
+> {
   const audit = yield* initAudit()
   try {
-    const api: SamlApi = yield* newTrustRelationFunction()
-    const data: TrustRelationshipListResponse = yield call(api.getTrustRelationship)
-    yield put(getTrustRelationshipResponse({ data: data?.body || [] }))
+    const api: SamlApi = yield* newWebsiteSsoServiceProviderFunction()
+    const data: WebsiteSsoServiceProviderListResponse = yield call(api.getWebsiteSsoServiceProvider)
+    yield put(getWebsiteSsoServiceProviderResponse({ data: data?.body || [] }))
     yield call(postUserAction, audit)
     return data
   } catch (e) {
-    yield put(getTrustRelationshipResponse(null))
+    yield put(getWebsiteSsoServiceProviderResponse(null))
     const error = e instanceof Error ? e : new Error(String(e))
     yield* handleFourZeroOneError(error)
     yield* errorToast({ error })
@@ -179,9 +181,9 @@ export function* getTrustRelationshipsSaga(): SagaIterator<TrustRelationshipList
   }
 }
 
-export function* postTrustRelationship({
+export function* postWebsiteSsoServiceProvider({
   payload,
-}: PayloadAction<CreateTrustRelationshipSagaPayload>): SagaIterator<
+}: PayloadAction<CreateWebsiteSsoServiceProviderSagaPayload>): SagaIterator<
   SamlApiResponse | Error | void
 > {
   const audit = yield* initAudit()
@@ -195,8 +197,8 @@ export function* postTrustRelationship({
     const token: string = yield select(
       (state: SamlRootState) => state.authReducer.token.access_token,
     )
-    const api: SamlApi = yield* newTrustRelationFunction()
-    const data: SamlApiResponse = yield call(api.postTrustRelationship, {
+    const api: SamlApi = yield* newWebsiteSsoServiceProviderFunction()
+    const data: SamlApiResponse = yield call(api.postWebsiteSsoServiceProvider, {
       formdata: payload.action.action_data,
       token,
     })
@@ -213,13 +215,13 @@ export function* postTrustRelationship({
     yield* errorToast({ error })
     return error
   } finally {
-    yield put(createTrustRelationshipResponse())
+    yield put(createWebsiteSsoServiceProviderResponse())
   }
 }
 
-export function* updateTrustRelationship({
+export function* updateWebsiteSsoServiceProvider({
   payload,
-}: PayloadAction<UpdateTrustRelationshipSagaPayload>): SagaIterator<
+}: PayloadAction<UpdateWebsiteSsoServiceProviderSagaPayload>): SagaIterator<
   SamlApiResponse | Error | void
 > {
   const audit = yield* initAudit()
@@ -233,8 +235,8 @@ export function* updateTrustRelationship({
     const token: string = yield select(
       (state: SamlRootState) => state.authReducer.token.access_token,
     )
-    const api: SamlApi = yield* newTrustRelationFunction()
-    const data: SamlApiResponse = yield call(api.updateTrustRelationship, {
+    const api: SamlApi = yield* newWebsiteSsoServiceProviderFunction()
+    const data: SamlApiResponse = yield call(api.updateWebsiteSsoServiceProvider, {
       formdata: payload.action.action_data,
       token,
     })
@@ -251,13 +253,13 @@ export function* updateTrustRelationship({
     yield* errorToast({ error })
     return error
   } finally {
-    yield put(updateTrustRelationshipResponse())
+    yield put(updateWebsiteSsoServiceProviderResponse())
   }
 }
 
-export function* deleteTrustRelationship({
+export function* deleteWebsiteSsoServiceProvider({
   payload,
-}: PayloadAction<DeleteTrustRelationshipSagaPayload>): SagaIterator<
+}: PayloadAction<DeleteWebsiteSsoServiceProviderSagaPayload>): SagaIterator<
   SamlApiResponse | Error | void
 > {
   const audit = yield* initAudit()
@@ -268,16 +270,16 @@ export function* deleteTrustRelationship({
       AUDIT_RESOURCE_NAMES.TRUST_RELATIONSHIP,
       toAdditionalPayload(payload),
     )
-    const api: SamlApi = yield* newTrustRelationFunction()
-    yield call(api.deleteTrustRelationship, payload.action.action_data)
-    yield put(deleteTrustRelationshipResponse())
-    yield call(getTrustRelationshipsSaga)
+    const api: SamlApi = yield* newWebsiteSsoServiceProviderFunction()
+    yield call(api.deleteWebsiteSsoServiceProvider, payload.action.action_data)
+    yield put(deleteWebsiteSsoServiceProviderResponse())
+    yield call(getWebsiteSsoServiceProvidersSaga)
     yield call(postUserAction, audit)
     yield* triggerWebhook({ payload: { createdFeatureValue: payload.action.action_data } })
     yield put(updateToast(true, 'success', 'Data deleted successfully'))
     return { success: true } as SamlApiResponse
   } catch (e) {
-    yield put(deleteTrustRelationshipResponse())
+    yield put(deleteWebsiteSsoServiceProviderResponse())
     const error = e instanceof Error ? e : new Error(String(e))
     yield* handleFourZeroOneError(error)
     yield* errorToast({ error })
@@ -420,8 +422,8 @@ export function* watchGetSamlIdentityProvider(): Generator {
   yield takeEvery('idpSaml/getSamlIdentities', getSamlIdentityProvider)
 }
 
-export function* watchGetTrustRelationshipsSaga(): Generator {
-  yield takeEvery('idpSaml/getTrustRelationship', getTrustRelationshipsSaga)
+export function* watchGetWebsiteSsoServiceProvidersSaga(): Generator {
+  yield takeEvery('idpSaml/getWebsiteSsoServiceProvider', getWebsiteSsoServiceProvidersSaga)
 }
 
 export function* watchPutSamlProperties(): Generator {
@@ -432,8 +434,8 @@ export function* watchCreateSamlIdentity(): Generator {
   yield takeEvery('idpSaml/createSamlIdentity', postSamlIdentity)
 }
 
-export function* watchCreateTrustRelationship(): Generator {
-  yield takeEvery('idpSaml/createTrustRelationship', postTrustRelationship)
+export function* watchCreateWebsiteSsoServiceProvider(): Generator {
+  yield takeEvery('idpSaml/createWebsiteSsoServiceProvider', postWebsiteSsoServiceProvider)
 }
 
 export function* watchDeleteSamlIdentityProvider(): Generator {
@@ -444,12 +446,12 @@ export function* watchUpdateSamlIdentity(): Generator {
   yield takeEvery('idpSaml/updateSamlIdentity', updateSamlIdentity)
 }
 
-export function* watchDeleteTrustRelationship(): Generator {
-  yield takeEvery('idpSaml/deleteTrustRelationship', deleteTrustRelationship)
+export function* watchDeleteWebsiteSsoServiceProvider(): Generator {
+  yield takeEvery('idpSaml/deleteWebsiteSsoServiceProvider', deleteWebsiteSsoServiceProvider)
 }
 
-export function* watchUpdateTrustRelationship(): Generator {
-  yield takeEvery('idpSaml/updateTrustRelationship', updateTrustRelationship)
+export function* watchUpdateWebsiteSsoServiceProvider(): Generator {
+  yield takeEvery('idpSaml/updateWebsiteSsoServiceProvider', updateWebsiteSsoServiceProvider)
 }
 
 export default function* rootSaga(): Generator {
@@ -460,9 +462,9 @@ export default function* rootSaga(): Generator {
     fork(watchCreateSamlIdentity),
     fork(watchDeleteSamlIdentityProvider),
     fork(watchUpdateSamlIdentity),
-    fork(watchCreateTrustRelationship),
-    fork(watchGetTrustRelationshipsSaga),
-    fork(watchUpdateTrustRelationship),
-    fork(watchDeleteTrustRelationship),
+    fork(watchCreateWebsiteSsoServiceProvider),
+    fork(watchGetWebsiteSsoServiceProvidersSaga),
+    fork(watchUpdateWebsiteSsoServiceProvider),
+    fork(watchDeleteWebsiteSsoServiceProvider),
   ])
 }

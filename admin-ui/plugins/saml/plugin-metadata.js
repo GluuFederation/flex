@@ -3,16 +3,17 @@ import WebsiteSsoIdentityProviderForm from './components/WebsiteSsoIdentityProvi
 import SamlPage from './components/SamlPage'
 import samlSaga from './redux/sagas/SamlSaga'
 import samlReducer from './redux/features/SamlSlice'
-import WebsiteSsoTrustRelationshipForm from './components/WebsiteSsoTrustRelationshipForm'
+import WebsiteSsoServiceProviderForm from './components/WebsiteSsoServiceProviderForm'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { ROUTES } from '@/helpers/navigation'
+
+const PLUGIN_BASE_APTH = '/saml'
 
 const pluginMetadata = {
   menus: [
     {
       title: 'menus.saml',
       icon: 'saml',
-      path: ROUTES.SAML_BASE,
+      path: PLUGIN_BASE_APTH,
       permission: SAML_READ,
       resourceKey: ADMIN_UI_RESOURCES.SAML,
     },
@@ -20,49 +21,49 @@ const pluginMetadata = {
   routes: [
     {
       component: SamlPage,
-      path: ROUTES.SAML_BASE,
+      path: PLUGIN_BASE_APTH,
       permission: SAML_READ,
       resourceKey: ADMIN_UI_RESOURCES.SAML,
     },
     {
       component: SamlPage,
-      path: ROUTES.SAML_CONFIG,
+      path: PLUGIN_BASE_APTH + '/config',
       permission: SAML_CONFIG_READ,
       resourceKey: ADMIN_UI_RESOURCES.SAML,
     },
     {
       component: SamlPage,
-      path: ROUTES.SAML_SP_LIST,
+      path: PLUGIN_BASE_APTH + '/service-providers',
       permission: SAML_TR_READ,
       resourceKey: ADMIN_UI_RESOURCES.SAML,
     },
     {
       component: SamlPage,
-      path: ROUTES.SAML_IDP_LIST,
+      path: PLUGIN_BASE_APTH + '/identity-providers',
       permission: SAML_READ,
       resourceKey: ADMIN_UI_RESOURCES.SAML,
     },
     {
       component: WebsiteSsoIdentityProviderForm,
-      path: ROUTES.SAML_IDP_EDIT,
+      path: PLUGIN_BASE_APTH + '/identity-providers/edit',
       permission: SAML_WRITE,
       resourceKey: ADMIN_UI_RESOURCES.SAML,
     },
     {
       component: WebsiteSsoIdentityProviderForm,
-      path: ROUTES.SAML_IDP_ADD,
+      path: PLUGIN_BASE_APTH + '/identity-providers/add',
       permission: SAML_WRITE,
       resourceKey: ADMIN_UI_RESOURCES.SAML,
     },
     {
-      component: WebsiteSsoTrustRelationshipForm,
-      path: ROUTES.SAML_SP_EDIT,
+      component: WebsiteSsoServiceProviderForm,
+      path: PLUGIN_BASE_APTH + '/service-providers/edit',
       permission: SAML_WRITE,
       resourceKey: ADMIN_UI_RESOURCES.SAML,
     },
     {
-      component: WebsiteSsoTrustRelationshipForm,
-      path: ROUTES.SAML_SP_ADD,
+      component: WebsiteSsoServiceProviderForm,
+      path: PLUGIN_BASE_APTH + '/service-providers/add',
       permission: SAML_WRITE,
       resourceKey: ADMIN_UI_RESOURCES.SAML,
     },

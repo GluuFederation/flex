@@ -55,11 +55,11 @@ export interface SamlIdentity {
   encryptionPublicKey?: string
 }
 
-export interface TrustRelationshipListResponse {
-  body: TrustRelationship[]
+export interface WebsiteSsoServiceProviderListResponse {
+  body: WebsiteSsoServiceProvider[]
 }
 
-export interface TrustRelationship {
+export interface WebsiteSsoServiceProvider {
   inum: string
   displayName: string
   name: string
@@ -76,6 +76,23 @@ export interface TrustRelationship {
     jansAssertionConsumerServiceGetURL: string
     jansAssertionConsumerServicePostURL: string
   }
+  // Additional CURL fields
+  clientAuthenticatorType?: string
+  spMetaDataURL?: string
+  redirectUris?: string[]
+  profileConfigurations?: Record<string, { name: string; signResponses: string }>
+  dn?: string
+  validationLog?: string[]
+  validationStatus?: string
+  secret?: string
+  status?: string
+  owner?: string
+  consentRequired?: boolean
+  metaLocation?: string
+  baseDn?: string
+  registrationAccessToken?: string
+  baseUrl?: string
+  alwaysDisplayInConsole?: boolean
 }
 
 export interface SamlReduxState {
@@ -85,10 +102,10 @@ export interface SamlReduxState {
   items: SamlIdentity[]
   loadingSamlIdp: boolean
   loadingSamlIdentity: boolean
-  loadingTrustRelationship: boolean
+  loadingWebsiteSsoServiceProvider: boolean
   totalItems: number
   entriesCount: number
-  trustRelationships: TrustRelationship[]
+  websiteSsoServiceProviders: WebsiteSsoServiceProvider[]
 }
 
 export interface PutSamlPropertiesPayload {
@@ -110,7 +127,77 @@ export interface CreateSamlIdentityPayload {
   token: string
 }
 
-export interface CreateTrustRelationshipPayload {
+export interface CreateWebsiteSsoServiceProviderPayload {
   formdata: FormData
   token: string
+}
+
+export interface IdentityProviderPayload {
+  spMetaDataLocation: string
+  enabled: boolean
+  validateSignature: string
+  firstBrokerLoginFlowAlias: string
+  spMetaDataURL: string
+  trustEmail: boolean
+  linkOnly: boolean
+  creatorId: string
+  principalType: string
+  dn: string
+  validationLog: string[]
+  idpMetaDataURL: string
+  validationStatus: string
+  name: string
+  singleLogoutServiceUrl: string
+  providerId: string
+  displayName: string
+  principalAttribute: string
+  realm: string
+  nameIDPolicyFormat: string
+  postBrokerLoginFlowAlias: string
+  signingCertificate: string
+  status: string
+  addReadTokenRoleOnCreate: boolean
+  idpEntityId: string
+  encryptionPublicKey: string
+  authenticateByDefault: boolean
+  storeToken: boolean
+  idpMetaDataLocation: string
+  baseDn: string
+  description: string
+  inum?: string
+  singleSignOnServiceUrl: string
+}
+
+export interface WebsiteSsoServiceProviderPayload {
+  enabled: boolean
+  spMetaDataSourceType: string
+  clientAuthenticatorType: string
+  spMetaDataURL: string
+  redirectUris: string[]
+  profileConfigurations: Record<string, { name: string; signResponses: string }>
+  spLogoutURL: string
+  dn: string
+  validationLog: string[]
+  validationStatus: string
+  name: string
+  displayName: string
+  secret: string
+  status: string
+  owner: string
+  releasedAttributes: string[]
+  consentRequired: boolean
+  metaLocation: string
+  baseDn: string
+  registrationAccessToken: string
+  samlMetadata: {
+    nameIDPolicyFormat: string
+    entityId: string
+    singleLogoutServiceUrl: string
+    jansAssertionConsumerServiceGetURL: string
+    jansAssertionConsumerServicePostURL: string
+  }
+  description: string
+  inum?: string
+  baseUrl: string
+  alwaysDisplayInConsole: boolean
 }

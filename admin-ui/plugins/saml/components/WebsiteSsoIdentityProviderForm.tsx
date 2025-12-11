@@ -27,7 +27,7 @@ import {
   separateConfigFields,
   buildIdentityProviderPayload,
 } from '../helper'
-import type { WebsiteSsoIdentityProviderFormValues } from '../helper/validations'
+import type { WebsiteSsoIdentityProviderFormValues } from '../types/formValues'
 import SetTitle from 'Utils/SetTitle'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
@@ -117,7 +117,7 @@ const WebsiteSsoIdentityProviderForm = ({
         formdata.append('metaDataFile', metaDataFile)
       }
 
-      const cleanFormValues = cleanOptionalFields(formValues)
+      const cleanFormValues = cleanOptionalFields(formValues, false)
       const { rootFields, configData } = separateConfigFields(cleanFormValues)
       const idpMetaDataFN = configs?.idpMetaDataFN || formValues.idpMetaDataFN
       const identityProviderData = buildIdentityProviderPayload(
@@ -206,7 +206,7 @@ const WebsiteSsoIdentityProviderForm = ({
 
   const handleClearFiles = useCallback(() => {
     formik.setFieldValue('metaDataFile', null, true)
-    formik.setFieldValue('metaDataFileImportedFlag', true, true)
+    formik.setFieldValue('metaDataFileImportedFlag', false, true)
     formik.setFieldTouched('metaDataFile', true)
   }, [formik])
 
@@ -518,7 +518,7 @@ const WebsiteSsoIdentityProviderForm = ({
                   showApply={!viewOnly}
                   onApply={toggle}
                   onCancel={handleCancel}
-                  onBack={navigateBack}
+                  onBack={() => navigateBack(ROUTES.SAML_IDP_LIST)}
                   disableBack={false}
                   disableCancel={!formik.dirty}
                   disableApply={isApplyDisabled}
