@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react'
 import MaterialTable from '@material-table/core'
 import { Paper } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useCedarling } from '@/cedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
@@ -25,7 +25,7 @@ function AuthNListPage({ isBuiltIn = false }) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const [myActions, setMyActions] = useState([])
-  const navigate = useNavigate()
+  const { navigateToRoute } = useAppNavigation()
   const [limit] = useState(10)
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
@@ -132,9 +132,9 @@ function AuthNListPage({ isBuiltIn = false }) {
   const handleGoToAuthNEditPage = useCallback(
     (row) => {
       dispatch(setCurrentItem({ item: row }))
-      return navigate(`/auth-server/authn/edit/:` + row.inum)
+      return navigateToRoute(ROUTES.AUTH_SERVER_AUTHN_EDIT(row.inum))
     },
-    [dispatch, navigate],
+    [dispatch, navigateToRoute],
   )
 
   return (

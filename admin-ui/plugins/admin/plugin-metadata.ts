@@ -40,8 +40,7 @@ import JansAssetAddPage from './components/Assets/JansAssetAddPage'
 import DashboardPage from '../../app/routes/Dashboards/DashboardPage'
 import LicenseDetailsPage from '../../app/routes/License/LicenseDetailsPage'
 import CedarlingConfigPage from './components/Cedarling/CedarlingConfigPage'
-
-const PLUGIN_BASE_PATH = '/adm'
+import { ROUTES } from '@/helpers/navigation'
 
 const pluginMetadata = {
   menus: [
@@ -51,31 +50,31 @@ const pluginMetadata = {
       children: [
         {
           title: 'menus.dashboard',
-          path: PLUGIN_BASE_PATH + '/dashboard',
+          path: ROUTES.ADMIN_DASHBOARD,
           permission: STAT_READ,
           resourceKey: ADMIN_UI_RESOURCES.Dashboard,
         },
         {
           title: 'menus.health',
-          path: PLUGIN_BASE_PATH + '/health',
+          path: ROUTES.ADMIN_HEALTH,
           permission: PROPERTIES_READ,
           resourceKey: CEDARLING_BYPASS,
         },
         {
           title: 'menus.licenseDetails',
-          path: PLUGIN_BASE_PATH + '/licenseDetails',
+          path: ROUTES.ADMIN_LICENSE_DETAILS,
           permission: LICENSE_DETAILS_READ,
           resourceKey: ADMIN_UI_RESOURCES.License,
         },
         {
           title: 'menus.maugraph',
-          path: PLUGIN_BASE_PATH + '/maugraph',
+          path: ROUTES.ADMIN_MAU_GRAPH,
           permission: ACR_READ,
           resourceKey: ADMIN_UI_RESOURCES.MAU,
         },
         {
           title: 'menus.settings',
-          path: PLUGIN_BASE_PATH + '/settings',
+          path: ROUTES.ADMIN_SETTINGS,
           permission: ACR_READ,
           resourceKey: ADMIN_UI_RESOURCES.Settings,
         },
@@ -84,13 +83,13 @@ const pluginMetadata = {
           children: [
             {
               title: 'menus.securityDropdown.mapping',
-              path: PLUGIN_BASE_PATH + '/mapping',
+              path: ROUTES.ADMIN_MAPPING,
               permission: MAPPING_READ,
               resourceKey: ADMIN_UI_RESOURCES.Security,
             },
             {
               title: 'menus.securityDropdown.cedarlingConfig',
-              path: PLUGIN_BASE_PATH + '/cedarlingconfig',
+              path: ROUTES.ADMIN_CEDARLING_CONFIG,
               permission: MAPPING_READ,
               resourceKey: ADMIN_UI_RESOURCES.Security,
             },
@@ -99,19 +98,19 @@ const pluginMetadata = {
 
         {
           title: 'menus.webhooks',
-          path: PLUGIN_BASE_PATH + '/webhook',
+          path: ROUTES.WEBHOOK_LIST,
           permission: WEBHOOK_READ,
           resourceKey: ADMIN_UI_RESOURCES.Webhooks,
         },
         {
           title: 'menus.assets',
-          path: PLUGIN_BASE_PATH + '/assets',
+          path: ROUTES.ASSETS_LIST,
           permission: ASSETS_READ,
           resourceKey: ADMIN_UI_RESOURCES.Assets,
         },
         {
           title: 'menus.audit_logs',
-          path: PLUGIN_BASE_PATH + '/audit-logs',
+          path: ROUTES.ADMIN_AUDIT_LOGS,
           permission: LOGGING_READ,
           resourceKey: ADMIN_UI_RESOURCES.AuditLogs,
         },
@@ -121,85 +120,85 @@ const pluginMetadata = {
   routes: [
     {
       component: DashboardPage,
-      path: PLUGIN_BASE_PATH + '/dashboard',
+      path: ROUTES.ADMIN_DASHBOARD,
       permission: STAT_READ,
       resourceKey: ADMIN_UI_RESOURCES.Dashboard,
     },
     {
       component: HealthPage,
-      path: PLUGIN_BASE_PATH + '/health',
+      path: ROUTES.ADMIN_HEALTH,
       permission: PROPERTIES_READ,
       resourceKey: CEDARLING_BYPASS,
     },
     {
       component: LicenseDetailsPage,
-      path: PLUGIN_BASE_PATH + '/licenseDetails',
+      path: ROUTES.ADMIN_LICENSE_DETAILS,
       permission: LICENSE_DETAILS_READ,
       resourceKey: ADMIN_UI_RESOURCES.License,
     },
     {
       component: MauPage,
-      path: PLUGIN_BASE_PATH + '/maugraph',
+      path: ROUTES.ADMIN_MAU_GRAPH,
       permission: ACR_READ,
       resourceKey: ADMIN_UI_RESOURCES.MAU,
     },
     {
       component: SettingsPage,
-      path: PLUGIN_BASE_PATH + '/settings',
+      path: ROUTES.ADMIN_SETTINGS,
       permission: ACR_READ,
       resourceKey: ADMIN_UI_RESOURCES.Settings,
     },
 
     {
       component: MappingPage,
-      path: PLUGIN_BASE_PATH + '/mapping',
+      path: ROUTES.ADMIN_MAPPING,
       permission: MAPPING_READ,
     },
     {
       component: CedarlingConfigPage,
-      path: PLUGIN_BASE_PATH + '/cedarlingconfig',
+      path: ROUTES.ADMIN_CEDARLING_CONFIG,
       permission: PROPERTIES_READ,
     },
 
     {
       component: WebhookListPage,
-      path: PLUGIN_BASE_PATH + '/webhook',
+      path: ROUTES.WEBHOOK_LIST,
       permission: WEBHOOK_READ,
       resourceKey: ADMIN_UI_RESOURCES.Webhooks,
     },
     {
       component: WebhookAddPage,
-      path: PLUGIN_BASE_PATH + '/webhook/add',
+      path: ROUTES.WEBHOOK_ADD,
       permission: WEBHOOK_WRITE,
       resourceKey: ADMIN_UI_RESOURCES.Webhooks,
     },
     {
       component: WebhookEditPage,
-      path: PLUGIN_BASE_PATH + '/webhook/edit/:id',
+      path: ROUTES.WEBHOOK_EDIT_TEMPLATE,
       permission: WEBHOOK_WRITE,
       resourceKey: ADMIN_UI_RESOURCES.Webhooks,
     },
     {
       component: JansAssetListPage,
-      path: PLUGIN_BASE_PATH + '/assets',
+      path: ROUTES.ASSETS_LIST,
       permission: ASSETS_READ,
       resourceKey: ADMIN_UI_RESOURCES.Assets,
     },
     {
       component: JansAssetAddPage,
-      path: PLUGIN_BASE_PATH + '/asset/add',
+      path: ROUTES.ASSET_ADD,
       permission: ASSETS_WRITE,
       resourceKey: ADMIN_UI_RESOURCES.Assets,
     },
     {
       component: JansAssetEditPage,
-      path: PLUGIN_BASE_PATH + '/asset/edit/:id',
+      path: ROUTES.ASSET_EDIT_TEMPLATE,
       permission: ASSETS_WRITE,
       resourceKey: ADMIN_UI_RESOURCES.Assets,
     },
     {
       component: AuditListPage,
-      path: PLUGIN_BASE_PATH + '/audit-logs',
+      path: ROUTES.ADMIN_AUDIT_LOGS,
       permission: LOGGING_READ,
       resourceKey: ADMIN_UI_RESOURCES.AuditLogs,
     },

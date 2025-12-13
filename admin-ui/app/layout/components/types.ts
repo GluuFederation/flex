@@ -18,27 +18,12 @@ export interface BaseLayoutComponentProps {
 // Empty props interfaces for components with no specific props
 export interface EmptyComponentProps {}
 
-// Navbar Activity Feed component props
-export interface NavbarActivityFeedProps extends BaseLayoutComponentProps {}
-
-// Navbar Messages component props
-export interface NavbarMessagesProps extends BaseLayoutComponentProps {}
-
-// Navbar User component props
-export interface NavbarUserProps extends BaseLayoutComponentProps {}
-
 // ============================================================================
 // Sidebar Component Types
 // ============================================================================
 
 // Default Sidebar component props
 export interface DefaultSidebarProps extends EmptyComponentProps {}
-
-// Sidebar Middle Nav component props
-export interface SidebarMiddleNavProps extends EmptyComponentProps {}
-
-// Sidebar with Navbar component props
-export interface SidebarWithNavbarNavbarProps extends EmptyComponentProps {}
 
 // ============================================================================
 // Activity Feed Data Types
@@ -134,13 +119,6 @@ export type ThemeColor =
 // Badge color type
 export type BadgeColor = ThemeColor
 
-// Theme context interface for layout components
-export interface LayoutThemeContext {
-  color: ThemeColor
-  isDark: boolean
-  toggleTheme: () => void
-}
-
 // ============================================================================
 // Event Handler Types
 // ============================================================================
@@ -157,18 +135,6 @@ export type ToggleHandler = () => void
 // ============================================================================
 // Dropdown Component Types
 // ============================================================================
-
-// Extended dropdown section props
-export interface ExtendedDropdownSectionProps extends BaseLayoutComponentProps {
-  list?: boolean
-  tag?: React.ElementType
-  to?: string
-}
-
-// Extended dropdown link props
-export interface ExtendedDropdownLinkProps extends BaseLayoutComponentProps {
-  to: string
-}
 
 // ============================================================================
 // Media Component Types
@@ -274,9 +240,6 @@ export interface AuditLogAction {
   timestamp?: Date
   userId?: string
 }
-
-// Dispatch function type for layout components
-export type LayoutDispatch = (action: { type: string; payload?: unknown }) => void
 
 // ============================================================================
 // Routing Types

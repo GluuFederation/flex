@@ -11,7 +11,6 @@ import Divider from './Divider'
 import EmptyLayout from './EmptyLayout'
 import ExtendedDropdown from './ExtendedDropdown'
 import FloatGrid from './FloatGrid'
-import HolderProvider from './HolderProvider'
 import IconWithBadge from './IconWithBadge'
 import InputGroupAddon from './InputGroupAddon'
 //import { Layout, withPageConfig, setupPage } from './Layout'
@@ -120,7 +119,6 @@ export {
   FloatGrid,
   IconWithBadge,
   InputGroupAddon,
-  HolderProvider,
   Layout,
   Nav,
   Navbar,

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Box from '@mui/material/Box'
-import { useNavigate } from 'react-router-dom'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import isEmpty from 'lodash/isEmpty'
 import { useTranslation } from 'react-i18next'
@@ -46,7 +46,7 @@ function ClientCibaParUmaPanel({
   setModifiedFields,
 }) {
   const { t } = useTranslation()
-  const navigate = useNavigate()
+  const { navigateToRoute } = useAppNavigation()
   const claimRedirectURI = []
 
   const [open, setOpen] = useState(false)
@@ -89,7 +89,7 @@ function ClientCibaParUmaPanel({
 
   const handleScopeEdit = (scope) => {
     dispatch(setCurrentItem({ item: scope }))
-    return navigate(`/auth-server/scope/edit:${scope.inum}`)
+    return navigateToRoute(ROUTES.AUTH_SERVER_SCOPE_EDIT(scope.inum))
   }
 
   const handleClientEdit = (inum) => {
@@ -97,7 +97,7 @@ function ClientCibaParUmaPanel({
     setOpen(false)
     dispatch(viewOnly(true))
     setCurrentStep(sequence[0])
-    return navigate(`/auth-server/client/edit:${inum?.substring(0, 4)}`)
+    return navigateToRoute(ROUTES.AUTH_SERVER_CLIENT_EDIT(inum.substring(0, 4)))
   }
 
   useEffect(() => {
