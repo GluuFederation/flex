@@ -417,7 +417,7 @@ const AuditListPage: React.FC = () => {
                   <Typography
                     variant="caption"
                     sx={{
-                      color: '#000000 !important',
+                      color: `${customColors.black} !important`, // Override MUI global text color
                       fontFamily: 'monospace',
                       minWidth: 90,
                     }}
@@ -425,7 +425,12 @@ const AuditListPage: React.FC = () => {
                     {timeOnly}
                   </Typography>
                 )}
-                <Typography sx={{ ...STYLES.logContent, color: '#000000 !important' }}>
+                <Typography
+                  sx={{
+                    ...STYLES.logContent,
+                    color: `${customColors.black} !important`, // Override MUI global text color
+                  }}
+                >
                   {content}
                 </Typography>
               </Box>
@@ -433,7 +438,12 @@ const AuditListPage: React.FC = () => {
           }
 
           return (
-            <Typography sx={{ ...STYLES.logContent, color: '#000000 !important' }}>
+            <Typography
+              sx={{
+                ...STYLES.logContent,
+                color: `${customColors.black} !important`, // Override MUI global text color
+              }}
+            >
               {content}
             </Typography>
           )

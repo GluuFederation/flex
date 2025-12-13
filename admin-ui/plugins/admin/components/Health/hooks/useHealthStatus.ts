@@ -41,44 +41,6 @@ function transformServiceStatus(data: JsonNode | undefined): ServiceHealth[] {
   return sortServicesByStatus(services)
 }
 
-function computeOverallStatus(services: ServiceHealth[]): {
-  overallStatus: ServiceStatusValue
-  healthyCount: number
-  totalCount: number
-} {
-  if (services.length === 0) {
-    return {
-      overallStatus: 'unknown',
-      healthyCount: 0,
-      totalCount: 0,
-    }
-  }
-
-  const healthyCount = services.filter((s) => s.status === 'up').length
-  const hasDown = services.some((s) => s.status === 'down')
-  const hasDegraded = services.some((s) => s.status === 'degraded')
-  const hasUnknown = services.some((s) => s.status === 'unknown')
-
-  let overallStatus: ServiceStatusValue
-  if (hasDown) {
-    overallStatus = 'down'
-  } else if (hasDegraded) {
-    overallStatus = 'degraded'
-  } else if (healthyCount === services.length) {
-    overallStatus = 'up'
-  } else if (hasUnknown) {
-    overallStatus = 'unknown'
-  } else {
-    overallStatus = 'up'
-  }
-
-  return {
-    overallStatus,
-    healthyCount,
-    totalCount: services.length,
-  }
-}
-
 export function useHealthStatus() {
   const authToken = useSelector((state: RootState) => state.authReducer?.token?.access_token)
 
@@ -93,14 +55,16 @@ export function useHealthStatus() {
 
   const services = query.data ?? []
 
-  const { overallStatus, healthyCount, totalCount } = useMemo(
-    () => computeOverallStatus(services),
+  const { healthyCount, totalCount } = useMemo(
+    () => ({
+      healthyCount: services.filter((s) => s.status === 'up').length,
+      totalCount: services.length,
+    }),
     [services],
   )
 
   return {
     services,
-    overallStatus,
     healthyCount,
     totalCount,
     isLoading: query.isLoading,
