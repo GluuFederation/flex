@@ -11,8 +11,8 @@ const AccordionTyped = Accordion as unknown as AccordionComponent
 
 const JwkItem = React.memo(function JwkItem({ item, index }: JwkItemProps): React.ReactElement {
   return (
-    <div>
-      <AccordionTyped className="mb-12">
+    <div style={{ marginBottom: '5px' }}>
+      <AccordionTyped>
         <AccordionTyped.Header className="text-info">
           <AccordionTyped.Indicator className="me-2" />
           {item.name ?? 'Unnamed Key'}

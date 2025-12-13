@@ -56,7 +56,6 @@ const FILTER_BOX_STYLES = {
   p: 1,
   backgroundColor: customColors.white,
   borderRadius: 1,
-  border: `1px solid ${customColors.lightGray}`,
 } as const
 
 const FILTER_CONTAINER_STYLES = {

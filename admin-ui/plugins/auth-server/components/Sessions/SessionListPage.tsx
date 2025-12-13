@@ -206,7 +206,7 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
             {
               icon: () => (
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                  <DeleteOutlined style={{ color: customColors.accentRed }} />
+                  <DeleteOutlined style={{ color: customColors.darkGray }} />
                 </div>
               ),
               tooltip: `${t('actions.delete')}`,

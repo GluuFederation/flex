@@ -77,7 +77,7 @@ const getHttpMethodColor = (
 
 const EditIcon: React.FC<React.ComponentProps<typeof Edit>> = (props) => <Edit {...props} />
 const DeleteIcon: React.FC<React.ComponentProps<typeof DeleteOutlined>> = (props) => (
-  <DeleteOutlined {...props} style={{ color: 'red', ...props.style }} />
+  <DeleteOutlined {...props} style={{ color: customColors.darkGray, ...props.style }} />
 )
 const PaperContainer = (props: React.ComponentProps<typeof Paper>) => (
   <Paper {...props} elevation={0} />
