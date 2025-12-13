@@ -337,7 +337,7 @@ const CustomScriptListPage: React.FC = () => {
       actionList.push({
         icon: () => (
           <Tooltip title={t('messages.delete_script')}>
-            <DeleteOutlined sx={{ fontSize: 20, color: customColors.accentRed }} />
+            <DeleteOutlined sx={{ fontSize: 20, color: customColors.darkGray }} />
           </Tooltip>
         ),
         tooltip: t('messages.delete_script'),

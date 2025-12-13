@@ -27,11 +27,16 @@ function transformServiceStatus(data: JsonNode | undefined): ServiceHealth[] {
 
   const response = data as ServiceStatusResponse
 
-  const services = Object.entries(response).map(([name, status]) => ({
-    name,
-    status: normalizeStatus(String(status)),
-    lastChecked: new Date(),
-  }))
+  const services = Object.entries(response)
+    .filter(([, status]) => {
+      const statusStr = String(status).toLowerCase()
+      return statusStr !== 'not present'
+    })
+    .map(([name, status]) => ({
+      name,
+      status: normalizeStatus(String(status)),
+      lastChecked: new Date(),
+    }))
 
   return sortServicesByStatus(services)
 }

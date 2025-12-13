@@ -7,7 +7,6 @@ import getThemeColor from '@/context/theme/config'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useHealthStatus } from './hooks'
 import ServiceStatusCard from './components/ServiceStatusCard'
-import HealthStatusBadge from './components/HealthStatusBadge'
 
 const HealthPage: React.FC = () => {
   const { t } = useTranslation()
@@ -16,16 +15,8 @@ const HealthPage: React.FC = () => {
   const { state } = useTheme()
   const themeColors = getThemeColor(state.theme)
 
-  const {
-    services,
-    overallStatus,
-    healthyCount,
-    totalCount,
-    isLoading,
-    isFetching,
-    isError,
-    refetch,
-  } = useHealthStatus()
+  const { services, healthyCount, totalCount, isLoading, isFetching, isError, refetch } =
+    useHealthStatus()
 
   const handleRefresh = useCallback(() => {
     refetch()
@@ -40,10 +31,7 @@ const HealthPage: React.FC = () => {
           <CardBody>
             <Row className="mb-4 align-items-center">
               <Col>
-                <h4 className="mb-0 d-flex align-items-center gap-3">
-                  {t('titles.services_health')}
-                  {!isLoading && !isError && <HealthStatusBadge status={overallStatus} />}
-                </h4>
+                <h4 className="mb-0">{t('titles.services_health')}</h4>
                 {!isLoading && !isError && totalCount > 0 && (
                   <small className="text-muted">
                     {t('messages.services_healthy_count', { healthyCount, totalCount })}

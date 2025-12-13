@@ -417,8 +417,7 @@ const AuditListPage: React.FC = () => {
                   <Typography
                     variant="caption"
                     sx={{
-                      color: customColors.darkGray,
-                      opacity: 0.6,
+                      color: '#000000 !important',
                       fontFamily: 'monospace',
                       minWidth: 90,
                     }}
@@ -426,12 +425,18 @@ const AuditListPage: React.FC = () => {
                     {timeOnly}
                   </Typography>
                 )}
-                <Typography sx={STYLES.logContent}>{content}</Typography>
+                <Typography sx={{ ...STYLES.logContent, color: '#000000 !important' }}>
+                  {content}
+                </Typography>
               </Box>
             )
           }
 
-          return <Typography sx={STYLES.logContent}>{content}</Typography>
+          return (
+            <Typography sx={{ ...STYLES.logContent, color: '#000000 !important' }}>
+              {content}
+            </Typography>
+          )
         },
       },
     ],
