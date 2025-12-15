@@ -1,5 +1,4 @@
-// @ts-nocheck
-import React from 'react'
+import React, { useMemo } from 'react'
 import {
   XAxis,
   YAxis,
@@ -11,51 +10,51 @@ import {
   CartesianGrid,
 } from 'recharts'
 import './styles.css'
-import { useSelector } from 'react-redux'
 import TooltipDesign from './TooltipDesign'
 import moment from 'moment'
 import customColors from '@/customColors'
+import type { MauStatEntry } from 'Plugins/admin/components/MAU/types'
 
-const DashboardChart = () => {
-  const statData = useSelector((state) => state.mauReducer.stat)
-  const startMonth = useSelector((state) => state.mauReducer.startMonth)
-  const endMonth = useSelector((state) => state.mauReducer.endMonth)
+interface DashboardChartProps {
+  statData: MauStatEntry[]
+  startMonth?: string
+  endMonth?: string
+}
 
-  function doDataAugmentation(stat) {
-    if (startMonth && endMonth) {
-      const dateStart = moment(startMonth, 'YYYYMM')
-      const dateEnd = moment(endMonth, 'YYYYMM')
-      const prepareStat = []
-      while (dateEnd > dateStart || dateStart.format('M') === dateEnd.format('M')) {
-        const available = stat.filter((obj) => {
-          return obj.month == dateStart.format('YYYYMM')
-        })
-        if (available.length) {
-          prepareStat.push(available[0])
-        } else {
-          const newEntry = new Object()
-          newEntry['month'] = dateStart.format('YYYYMM')
-          newEntry['mau'] = 0
-          newEntry['client_credentials_access_token_count'] = 0
-          newEntry['authz_code_access_token_count'] = 0
-          newEntry['authz_code_idtoken_count'] = 0
-          prepareStat.push(newEntry)
-        }
-        dateStart.add(1, 'month')
-      }
-      return prepareStat
-    } else {
-      return stat
+const DashboardChart = ({ statData, startMonth, endMonth }: DashboardChartProps) => {
+  const augmentedData = useMemo(() => {
+    if (!startMonth || !endMonth || !statData) {
+      return statData ?? []
     }
-  }
+
+    const dateStart = moment(startMonth, 'YYYYMM')
+    const dateEnd = moment(endMonth, 'YYYYMM')
+    const prepareStat: MauStatEntry[] = []
+
+    while (dateEnd > dateStart || dateStart.format('M') === dateEnd.format('M')) {
+      const monthNum = parseInt(dateStart.format('YYYYMM'), 10)
+      const available = statData.filter((obj) => obj.month === monthNum)
+
+      if (available.length) {
+        prepareStat.push(available[0])
+      } else {
+        prepareStat.push({
+          month: monthNum,
+          mau: 0,
+          client_credentials_access_token_count: 0,
+          authz_code_access_token_count: 0,
+          authz_code_idtoken_count: 0,
+        })
+      }
+      dateStart.add(1, 'month')
+    }
+
+    return prepareStat
+  }, [statData, startMonth, endMonth])
 
   return (
     <ResponsiveContainer debounce={300} width="100%" height="100%">
-      <BarChart
-        data={doDataAugmentation(statData)}
-        margin={{ top: 5, right: 30, bottom: 5 }}
-        height={400}
-      >
+      <BarChart data={augmentedData} margin={{ top: 5, right: 30, bottom: 5 }} height={400}>
         <XAxis dataKey={'month'} />
         <YAxis />
         <CartesianGrid strokeDasharray="3 3" />

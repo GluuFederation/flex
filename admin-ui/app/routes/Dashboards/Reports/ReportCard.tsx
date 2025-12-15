@@ -1,10 +1,10 @@
-// @ts-nocheck
 import React from 'react'
 import { Card, CardBody, CardTitle, Badge } from 'Components'
 import ReportPiChartItem from './ReportPiChartItem'
 import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
+import type { ReportCardProps } from '../types'
 
-function ReportCard({ title, data, upValue, downValue }) {
+function ReportCard({ title, data, upValue, downValue }: ReportCardProps) {
   return (
     <Card className="mb-3" style={{ borderRadius: '10px' }}>
       <CardBody>
