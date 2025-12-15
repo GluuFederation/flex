@@ -47,9 +47,9 @@ function ClientListPage() {
     authorizeHelper,
   } = useCedarling()
   const dispatch = useDispatch()
-  const nonExtensibleClients = useSelector((state) => state.oidcReducer.items)
+  const nonExtensibleClients = useSelector((state) => state.oidcReducer.items) || []
   const { totalItems } = useSelector((state) => state.oidcReducer)
-  const scopes = useSelector((state) => state.scopeReducer.items)
+  const scopes = useSelector((state) => state.scopeReducer.items) || []
   const scopeItem = useSelector((state) => state.scopeReducer.item)
   const loading = useSelector((state) => state.oidcReducer.loading)
   const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
@@ -88,14 +88,12 @@ function ClientListPage() {
   )
 
   const [scopeClients, setScopeClients] = useState([])
-  const haveScopeINUMParam = useMemo(() => search.indexOf('?scopeInum=') > -1, [search])
   const scopeInumParam = useMemo(() => {
-    if (haveScopeINUMParam) {
-      return search.replace('?scopeInum=', '')
-    }
-    return null
-  }, [haveScopeINUMParam, search])
-  const [isPageLoading, setIsPageLoading] = useState(loading)
+    const params = new URLSearchParams(search)
+    return params.get('scopeInum')
+  }, [search])
+  const haveScopeINUMParam = !!scopeInumParam
+  const [isPageLoading, setIsPageLoading] = useState(true)
   const [pageNumber, setPageNumber] = useState(0)
   SetTitle(t('titles.oidc_clients'))
 
@@ -248,11 +246,11 @@ function ClientListPage() {
 
       if (scopes.length === 0) {
         setIsPageLoading(true)
-        const scopePayload = {}
-        buildPayload(scopePayload, '', scopePayload)
-        scopePayload[LIMIT] = 100
-        scopePayload[WITH_ASSOCIATED_CLIENTS] = true
-        dispatch(getScopes({ action: scopePayload }))
+        const scopeAction = {
+          [LIMIT]: 100,
+          [WITH_ASSOCIATED_CLIENTS]: true,
+        }
+        dispatch(getScopes({ action: scopeAction }))
         return
       }
 
@@ -267,12 +265,14 @@ function ClientListPage() {
       userAction[LIMIT] = 100
       userAction[WITH_ASSOCIATED_CLIENTS] = true
       dispatch(getScopes({ action: userAction }))
-
-      setTimeout(() => {
-        setIsPageLoading(false)
-      }, 3000)
     }
   }, [haveScopeINUMParam, scopeInumParam, dispatch])
+
+  useEffect(() => {
+    if (!loading && (nonExtensibleClients.length > 0 || scopes.length > 0)) {
+      setIsPageLoading(false)
+    }
+  }, [loading, nonExtensibleClients.length, scopes.length])
 
   useEffect(() => {
     if (!haveScopeINUMParam || !scopeInumParam) return
@@ -303,6 +303,7 @@ function ClientListPage() {
     scopeInumParam,
     scopeClients.length,
     nonExtensibleClients.length,
+    filterClientsByScope,
   ])
 
   useEffect(() => {
