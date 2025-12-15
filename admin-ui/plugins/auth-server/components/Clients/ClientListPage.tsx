@@ -385,11 +385,14 @@ const ClientListPage: React.FC = () => {
     [limit],
   )
 
-  const onRowCountChangeClick = useCallback((count: number): void => {
-    setStartIndex(0)
-    setPageNumber(0)
-    setLimit(count)
-  }, [])
+  const onRowCountChangeClick = useCallback(
+    (count: number): void => {
+      setStartIndex(0)
+      setPageNumber(0)
+      setLimit(count)
+    },
+    [setLimit],
+  )
 
   const handleEditClick = useCallback(
     (data: ClientTableRow | ClientTableRow[]) => {
@@ -600,12 +603,13 @@ const ClientListPage: React.FC = () => {
   }, [authorizeHelper, clientScopes])
 
   useEffect(() => {
-    setPattern(debouncedPattern || null)
-    if (searchInput !== (pattern || '')) {
+    const newPattern = debouncedPattern || null
+    if (newPattern !== pattern) {
+      setPattern(newPattern)
       setPageNumber(0)
       setStartIndex(0)
     }
-  }, [debouncedPattern])
+  }, [debouncedPattern, pattern])
 
   return (
     <GluuLoader blocking={loading}>

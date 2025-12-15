@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
@@ -16,6 +16,8 @@ const mockClient = {
   responseTypes: ['code'],
   tokenEndpointAuthMethod: 'client_secret_basic',
   description: 'Test client description',
+  redirectUris: ['https://example.com/callback'],
+  scopes: [],
 }
 
 jest.mock('@janssenproject/cedarling_wasm', () => ({
@@ -242,6 +244,54 @@ describe('ClientForm', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Token Endpoint Authentication')).toBeInTheDocument()
+    })
+  })
+
+  it('calls onSubmit with payload when form is submitted', async () => {
+    render(
+      <Wrapper>
+        <ClientForm
+          client={mockClient}
+          isEdit={true}
+          onSubmit={mockOnSubmit}
+          onCancel={mockOnCancel}
+        />
+      </Wrapper>,
+    )
+
+    // Modify client name to make form dirty
+    const clientNameInputs = screen.getAllByDisplayValue(mockClient.clientName)
+    fireEvent.change(clientNameInputs[0], { target: { value: 'Updated Client Name' } })
+
+    // Click save button to open commit dialog
+    const saveButtons = screen.getAllByRole('button', { name: /save/i })
+    fireEvent.click(saveButtons[0])
+
+    // Wait for commit dialog modal to appear (it renders in a portal)
+    await waitFor(() => {
+      const modal = document.querySelector('.modal')
+      expect(modal).toBeInTheDocument()
+    })
+
+    // Find and fill the commit message input within the modal
+    const modal = document.querySelector('.modal') as HTMLElement
+    const commitInput = within(modal).getByPlaceholderText(/reason/i)
+    fireEvent.change(commitInput, { target: { value: 'Test commit message for update' } })
+
+    // Click accept button within the modal
+    const acceptButton = within(modal).getByRole('button', { name: /accept/i })
+    fireEvent.click(acceptButton)
+
+    // Verify onSubmit was called with payload containing updated client name
+    await waitFor(() => {
+      expect(mockOnSubmit).toHaveBeenCalledTimes(1)
+      expect(mockOnSubmit).toHaveBeenCalledWith(
+        expect.objectContaining({
+          clientName: 'Updated Client Name',
+        }),
+        'Test commit message for update',
+        expect.any(Object),
+      )
     })
   })
 })

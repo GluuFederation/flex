@@ -28,6 +28,7 @@ import type {
   ClientFormValues,
   ClientSection,
   ModifiedFields,
+  OidcConfiguration,
   SectionProps,
 } from '../types'
 import { useClientScopes } from '../hooks'
@@ -88,7 +89,10 @@ const ClientForm: React.FC<ClientFormProps> = ({
     },
   })
 
-  const oidcConfiguration = useMemo(() => (propertiesData || {}) as any, [propertiesData])
+  const oidcConfiguration = useMemo(
+    (): OidcConfiguration => (propertiesData as OidcConfiguration) || {},
+    [propertiesData],
+  )
 
   const { scopes, scopesLoading, handleScopeSearch } = useClientScopes()
 

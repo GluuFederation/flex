@@ -242,7 +242,7 @@ const GluuCommitDialog = ({
                       }}
                     >
                       {userMessage.length < 10
-                        ? `${10 - userMessage.length} ${userMessage.length ? t('placeholders.more') : ''} ${t('placeholders.charLessThan10')}`
+                        ? `${10 - userMessage.length}${userMessage.length ? ` ${t('placeholders.more')}` : ''} ${t('placeholders.charLessThan10')}`
                         : `${userMessage.length - 512} ${t('placeholders.charMoreThan512')}`}
                     </span>
                   )}

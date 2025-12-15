@@ -1090,7 +1090,7 @@
     "expires_before": "Expira antes de la fecha",
     "charMoreThan512": "caracteres excedidos (máximo 512)",
     "charLessThan10": "se requieren más caracteres (mínimo 10)",
-    "more": " más",
+    "more": "más",
     "add_claims": "Agregar claims",
     "add_email": "Agregar correo electrónico",
     "search_clients": "Buscar clientes...",

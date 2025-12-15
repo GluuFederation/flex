@@ -1104,7 +1104,7 @@
     "expires_before": "Expiration Before Date",
     "charMoreThan512": "characters over limit (maximum 512)",
     "charLessThan10": "characters required (minimum 10)",
-    "more": " more",
+    "more": "more",
     "add_claims": "Add claims",
     "add_email": "Add email",
     "search_clients": "Search clients...",

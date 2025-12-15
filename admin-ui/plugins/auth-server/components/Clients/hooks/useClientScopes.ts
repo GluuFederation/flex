@@ -2,19 +2,25 @@ import { useMemo, useState, useCallback } from 'react'
 import { useGetOauthScopes } from 'JansConfigApi'
 import { transformScopesResponse } from '../helper/utils'
 import { DEFAULT_SCOPE_SEARCH_LIMIT } from '../helper/constants'
+import { useDebounce } from './useDebounce'
 
 export const useClientScopes = (initialLimit = DEFAULT_SCOPE_SEARCH_LIMIT) => {
   const [scopeSearchPattern, setScopeSearchPattern] = useState('')
+  const debouncedSearchPattern = useDebounce(scopeSearchPattern, 300)
 
   const scopeQueryParams = useMemo(
     () => ({
       limit: initialLimit,
-      pattern: scopeSearchPattern || undefined,
+      pattern: debouncedSearchPattern || undefined,
     }),
-    [initialLimit, scopeSearchPattern],
+    [initialLimit, debouncedSearchPattern],
   )
 
-  const { data: scopesResponse, isLoading: scopesLoading } = useGetOauthScopes(scopeQueryParams, {
+  const {
+    data: scopesResponse,
+    isLoading: scopesLoading,
+    error: scopesError,
+  } = useGetOauthScopes(scopeQueryParams, {
     query: {
       refetchOnMount: 'always' as const,
       refetchOnWindowFocus: false,
@@ -34,6 +40,7 @@ export const useClientScopes = (initialLimit = DEFAULT_SCOPE_SEARCH_LIMIT) => {
   return {
     scopes,
     scopesLoading,
+    scopesError,
     handleScopeSearch,
     scopeSearchPattern,
   }
