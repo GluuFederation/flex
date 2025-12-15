@@ -8,7 +8,7 @@ export const findAndFilterScopeClients = (
   const foundScope = scopes.find(({ inum }) => inum === scopeInum)
 
   if (foundScope?.clients && Array.isArray(foundScope.clients) && foundScope.clients.length > 0) {
-    return foundScope.clients
+    return foundScope.clients.map(addOrg)
   }
 
   if (foundScope && nonExtensibleClients.length > 0) {

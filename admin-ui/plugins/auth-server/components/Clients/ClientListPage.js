@@ -52,7 +52,8 @@ function ClientListPage() {
   const { totalItems } = useSelector((state) => state.oidcReducer)
   const scopes = useSelector((state) => state.scopeReducer.items) || []
   const scopeItem = useSelector((state) => state.scopeReducer.item)
-  const loading = useSelector((state) => state.oidcReducer.loading)
+  const clientLoading = useSelector((state) => state.oidcReducer.loading)
+  const scopeLoading = useSelector((state) => state.scopeReducer.loading)
   const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
   let clients = [...(nonExtensibleClients ?? [])]
   clients = clients?.map(addOrg)
@@ -254,23 +255,18 @@ function ClientListPage() {
   }, [haveScopeINUMParam, scopeInumParam, dispatch, scopes.length])
 
   useEffect(() => {
-    if (!loading) {
+    if (!clientLoading && !scopeLoading) {
       setIsPageLoading(false)
     }
-  }, [loading])
+  }, [clientLoading, scopeLoading])
 
   const scopeClients = useMemo(() => {
     if (!haveScopeINUMParam || !scopeInumParam) {
       return []
     }
 
-    if (scopeItem?.inum === scopeInumParam) {
-      if (Array.isArray(scopeItem.clients)) {
-        return scopeItem.clients
-      }
-      if (scopeItem.inum) {
-        return []
-      }
+    if (scopeItem?.inum === scopeInumParam && Array.isArray(scopeItem.clients)) {
+      return scopeItem.clients
     }
 
     const clientsForScope = findAndFilterScopeClients(
@@ -289,6 +285,7 @@ function ClientListPage() {
     scopes,
     nonExtensibleClients,
     filterClientsByScope,
+    addOrg,
   ])
 
   useEffect(() => {
@@ -467,7 +464,7 @@ function ClientListPage() {
             }}
             columns={tableColumns}
             data={haveScopeINUMParam ? scopeClients : clients}
-            isLoading={isPageLoading ? isPageLoading : loading}
+            isLoading={isPageLoading || clientLoading || scopeLoading}
             title=""
             actions={myActions}
             options={{
