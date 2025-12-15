@@ -56,7 +56,7 @@ function ClientActiveTokens({ client }) {
   const getTokens = useCallback(
     (page, limitValue, fieldValuePair) => {
       const tokenOptions = {
-        startIndex: parseInt(page),
+        startIndex: parseInt(page, 10),
         limit: limitValue,
         fieldValuePair,
       }
@@ -75,7 +75,7 @@ function ClientActiveTokens({ client }) {
         conditionquery += `,${searchFilter}<${dayjs(pattern.dateBefore).format('YYYY-MM-DD')}`
       }
 
-      getTokens(parseInt(startCount), limit, `${conditionquery}`)
+      getTokens(startCount, limit, conditionquery)
     },
     [client.inum, getTokens, limit, pattern.dateAfter, pattern.dateBefore, searchFilter],
   )
@@ -130,10 +130,14 @@ function ClientActiveTokens({ client }) {
   const handleRevokeToken = (oldData) => {
     dispatch(deleteClientToken({ tknCode: oldData.tokenCode }))
     const startCount = pageNumber * limit
-    getTokens(startCount, limit, `clnId=${client.inum}`)
+    let conditionquery = `clnId=${client.inum}`
+    if (pattern.dateAfter && pattern.dateBefore) {
+      conditionquery += `,${searchFilter}>${dayjs(pattern.dateAfter).format('YYYY-MM-DD')}`
+      conditionquery += `,${searchFilter}<${dayjs(pattern.dateBefore).format('YYYY-MM-DD')}`
+    }
+    getTokens(startCount, limit, conditionquery)
   }
 
-  // Convert data array into CSV string
   const convertToCSV = (data) => {
     if (
       !data ||
@@ -149,20 +153,20 @@ function ClientActiveTokens({ client }) {
     const keys = Object.keys(data[0]).filter((item) => item !== 'attributes')
     const header = keys.map((item) => item.replace(/-/g, ' ').toUpperCase()).join(',')
 
-    const updateData = data.map((row) => {
-      return {
-        scope: row?.scope || '',
-        deletable: row?.deletable || '',
-        grantType: row?.grantType || '',
-        expirationDate: row?.expirationDate || '',
-        creationDate: row?.creationDate || '',
-        tokenType: row?.tokenType || '',
-      }
-    })
+    const updateData = data.map((row) => ({
+      id: row?.id || '',
+      tokenCode: row?.tokenCode || '',
+      scope: row?.scope || '',
+      deletable: row?.deletable || '',
+      grantType: row?.grantType || '',
+      expirationDate: row?.expirationDate || '',
+      creationDate: row?.creationDate || '',
+      tokenType: row?.tokenType || '',
+    }))
 
-    const rows = updateData.map((row) => {
-      return keys.map((key) => (row[key] != null ? String(row[key]) : '')).join(',')
-    })
+    const rows = updateData.map((row) =>
+      keys.map((key) => (row[key] != null ? String(row[key]) : '')).join(','),
+    )
 
     return [header, ...rows].join('\n')
   }
