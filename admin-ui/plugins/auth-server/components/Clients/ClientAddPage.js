@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import ClientWizardForm from './ClientWizardForm'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import { useNavigate } from 'react-router-dom'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { addNewClientAction } from 'Plugins/auth-server/redux/features/oidcSlice'
 import { getOidcDiscovery } from 'Redux/features/oidcDiscoverySlice'
 import { emptyScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
@@ -26,7 +26,7 @@ function ClientAddPage() {
   const userAction = {}
   const options = {}
   options['limit'] = parseInt(100000)
-  const navigate = useNavigate()
+  const { navigateToRoute } = useAppNavigation()
   useEffect(() => {
     dispatch(emptyScopes())
     buildPayload(userAction, '', options)
@@ -37,8 +37,10 @@ function ClientAddPage() {
   }, [])
 
   useEffect(() => {
-    if (saveOperationFlag && !errorInSaveOperationFlag) navigate('/auth-server/clients')
-  }, [saveOperationFlag])
+    if (saveOperationFlag && !errorInSaveOperationFlag) {
+      navigateToRoute(ROUTES.AUTH_SERVER_CLIENTS_LIST)
+    }
+  }, [saveOperationFlag, navigateToRoute])
 
   scopes = scopes?.map((item) => ({ dn: item.dn, name: item.id }))
   function handleSubmit(data) {

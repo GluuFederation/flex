@@ -1,5 +1,4 @@
-// @ts-nocheck
-import React from 'react'
+import React, { memo } from 'react'
 import {
   XAxis,
   YAxis,
@@ -13,7 +12,19 @@ import {
 import { useTranslation } from 'react-i18next'
 import customColors from '@/customColors'
 
-function ActiveUsersGraph({ data }) {
+interface MauDataPoint {
+  month: number
+  mau?: number
+  client_credentials_access_token_count?: number
+  authz_code_access_token_count?: number
+  authz_code_idtoken_count?: number
+}
+
+interface ActiveUsersGraphProps {
+  data: MauDataPoint[]
+}
+
+const ActiveUsersGraph: React.FC<ActiveUsersGraphProps> = ({ data }) => {
   const { t } = useTranslation()
 
   return (
@@ -35,4 +46,4 @@ function ActiveUsersGraph({ data }) {
   )
 }
 
-export default ActiveUsersGraph
+export default memo(ActiveUsersGraph)

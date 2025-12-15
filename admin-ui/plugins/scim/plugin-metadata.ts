@@ -1,15 +1,14 @@
 import { SCIM_CONFIG_READ, SCIM_CONFIG_WRITE } from 'Utils/PermChecker'
 import ScimPage from './components/ScimPage'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-
-const PLUGIN_BASE_PATH = '/scim'
+import { ROUTES } from '@/helpers/navigation'
 
 const pluginMetadata = {
   menus: [
     {
       title: 'menus.scim',
       icon: 'scim',
-      path: PLUGIN_BASE_PATH,
+      path: ROUTES.SCIM_BASE,
       permission: SCIM_CONFIG_READ,
       resourceKey: ADMIN_UI_RESOURCES.SCIM,
     },
@@ -17,7 +16,7 @@ const pluginMetadata = {
   routes: [
     {
       component: ScimPage,
-      path: PLUGIN_BASE_PATH,
+      path: ROUTES.SCIM_BASE,
       permission: SCIM_CONFIG_WRITE,
       resourceKey: ADMIN_UI_RESOURCES.SCIM,
     },

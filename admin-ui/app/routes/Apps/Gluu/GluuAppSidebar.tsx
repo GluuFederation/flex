@@ -43,10 +43,10 @@ import type {
 
 // Constants - Extract to improve performance and maintainability
 const VISIBILITY_CONDITIONS: VisibilityConditions = {
-  '/jans-lock': 'jans-lock',
-  '/fido/fidomanagement': 'jans-fido2',
-  '/scim': 'jans-scim',
-  '/saml': 'keycloak',
+  [ROUTES.JANS_LOCK_BASE]: 'jans-lock',
+  [ROUTES.FIDO_BASE]: 'jans-fido2',
+  [ROUTES.SCIM_BASE]: 'jans-scim',
+  [ROUTES.SAML_BASE]: 'keycloak',
 } as const
 
 const ICON_STYLES: IconStyles = {

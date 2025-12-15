@@ -127,7 +127,7 @@ const CustomScriptListPage: React.FC = () => {
   const handleView = useCallback(
     (row: ScriptTableRow) => {
       if (!row?.inum) return
-      navigateToRoute(`${ROUTES.CUSTOM_SCRIPT_EDIT(row.inum)}?view=true`)
+      navigateToRoute(ROUTES.CUSTOM_SCRIPT_VIEW(row.inum))
     },
     [navigateToRoute],
   )
