@@ -43,6 +43,14 @@ Gluu issues SSAs through the Agama Lab web interface. You can obtain an SSA for 
 - You may now use this file during Flex installation.
 
 ## License
+
 Gluu Flex uses the SSA obtained in the above step to either request a 30 day trial license or verify presence of a license tied to your Agama Lab account. One account may request one trial license in its lifetime. To purchase a full license, please navigate to the `Flex` tab of the marketplace where you may purchase licenses for up to 1600 MAU (monthly active users). To purchase an enterprise license for more MAU, please contact [Sales](mailto:sales@gluu.org).
 
 If you have subscribed to Flex via Agama Lab, the SSA obtained in the step before will automatically link your license to your installation. For enterprise licenses, please open a support ticket so that we can issue a license against your account. Once this is done, you may use the SSA obtained to proceed to installation.
+
+## Allow Gluu Endpoints Access in Flex
+
+- Flex requires outbound access to the following Gluu endpoints.
+- Please ensure these domains are whitelisted in the Flex environment
+    - account.gluu.org
+    - cloud.gluu.org
