@@ -32,6 +32,7 @@ import { useCedarling } from '@/cedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import ClientShowScopes from './ClientShowScopes'
+import { findAndFilterScopeClients } from './ClientScopeUtils'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
@@ -87,7 +88,6 @@ function ClientListPage() {
     [hasCedarDeletePermission, clientResourceId],
   )
 
-  const [scopeClients, setScopeClients] = useState([])
   const scopeInumParam = useMemo(() => {
     const params = new URLSearchParams(search)
     return params.get('scopeInum')
@@ -142,11 +142,14 @@ function ClientListPage() {
 
   const filterClientsByScope = useCallback(
     (scopeInum, scopeDn) => {
+      const normalizedScopeDn =
+        typeof scopeDn === 'string' && scopeDn.trim().length > 0 ? scopeDn : null
+
       return nonExtensibleClients.filter((client) => {
         if (!client.scopes || !Array.isArray(client.scopes)) return false
         return client.scopes.some((clientScope) => {
           return (
-            clientScope === scopeDn ||
+            (normalizedScopeDn && clientScope === normalizedScopeDn) ||
             clientScope.includes(`inum=${scopeInum}`) ||
             clientScope === scopeInum
           )
@@ -224,33 +227,13 @@ function ClientListPage() {
 
   useEffect(() => {
     if (haveScopeINUMParam && scopeInumParam) {
-      const foundScope = scopes.find(({ inum }) => inum === scopeInumParam)
-      if (foundScope?.clients && foundScope.clients.length > 0) {
-        setScopeClients(foundScope.clients)
-        setIsPageLoading(false)
-        return
-      }
-
-      if (foundScope && nonExtensibleClients.length > 0) {
-        const scopeDn = foundScope.dn || foundScope.baseDn
-        if (scopeDn) {
-          const filteredClients = filterClientsByScope(scopeInumParam, scopeDn)
-          if (filteredClients.length > 0) {
-            const clientsWithOrg = filteredClients.map(addOrg)
-            setScopeClients(clientsWithOrg)
-            setIsPageLoading(false)
-            return
-          }
-        }
-      }
-
       if (scopes.length === 0) {
         setIsPageLoading(true)
-        const scopeAction = {
+        const scopeApiAction = {
           [LIMIT]: 100,
           [WITH_ASSOCIATED_CLIENTS]: true,
         }
-        dispatch(getScopes({ action: scopeAction }))
+        dispatch(getScopes({ action: scopeApiAction }))
         return
       }
 
@@ -262,61 +245,51 @@ function ClientListPage() {
       dispatch(getOpenidClients({ action: options }))
 
       buildPayload(userAction, '', options)
-      userAction[LIMIT] = 100
-      userAction[WITH_ASSOCIATED_CLIENTS] = true
-      dispatch(getScopes({ action: userAction }))
+      const scopesApiAction = {
+        [LIMIT]: 100,
+        [WITH_ASSOCIATED_CLIENTS]: true,
+      }
+      dispatch(getScopes({ action: scopesApiAction }))
     }
-  }, [haveScopeINUMParam, scopeInumParam, dispatch])
+  }, [haveScopeINUMParam, scopeInumParam, dispatch, scopes.length])
 
   useEffect(() => {
-    if (!loading && (nonExtensibleClients.length > 0 || scopes.length > 0)) {
+    if (!loading) {
       setIsPageLoading(false)
     }
-  }, [loading, nonExtensibleClients.length, scopes.length])
+  }, [loading])
 
-  useEffect(() => {
-    if (!haveScopeINUMParam || !scopeInumParam) return
-    if (scopeClients.length > 0) return
-
-    const foundScope = scopes.find(({ inum }) => inum === scopeInumParam)
-
-    if (foundScope?.clients && foundScope.clients.length > 0) {
-      setScopeClients(foundScope.clients)
-      setIsPageLoading(false)
-      return
+  const scopeClients = useMemo(() => {
+    if (!haveScopeINUMParam || !scopeInumParam) {
+      return []
     }
 
-    if (foundScope && nonExtensibleClients.length > 0) {
-      const scopeDn = foundScope.dn || foundScope.baseDn
-      if (scopeDn) {
-        const filteredClients = filterClientsByScope(scopeInumParam, scopeDn)
-        if (filteredClients.length > 0) {
-          const clientsWithOrg = filteredClients.map(addOrg)
-          setScopeClients(clientsWithOrg)
-          setIsPageLoading(false)
-        }
+    if (scopeItem?.inum === scopeInumParam) {
+      if (Array.isArray(scopeItem.clients)) {
+        return scopeItem.clients
+      }
+      if (scopeItem.inum) {
+        return []
       }
     }
+
+    const clientsForScope = findAndFilterScopeClients(
+      scopeInumParam,
+      scopes,
+      nonExtensibleClients,
+      filterClientsByScope,
+      addOrg,
+    )
+
+    return clientsForScope || []
   }, [
-    scopes.length,
     haveScopeINUMParam,
     scopeInumParam,
-    scopeClients.length,
-    nonExtensibleClients.length,
+    scopeItem,
+    scopes,
+    nonExtensibleClients,
     filterClientsByScope,
   ])
-
-  useEffect(() => {
-    if (haveScopeINUMParam && scopeInumParam && scopeItem?.inum === scopeInumParam) {
-      if (scopeItem.clients && scopeItem.clients.length > 0) {
-        setScopeClients(scopeItem.clients)
-        setIsPageLoading(false)
-      } else if (scopeItem.inum) {
-        setScopeClients([])
-        setIsPageLoading(false)
-      }
-    }
-  }, [haveScopeINUMParam, scopeInumParam, scopeItem])
 
   useEffect(() => {
     dispatch(resetUMAResources())
@@ -355,16 +328,9 @@ function ClientListPage() {
       options[PATTERN] = memoPattern
     }
   }
-  const removeClientFromList = (deletedClient) => {
-    if (haveScopeINUMParam) {
-      setScopeClients((prev) => prev.filter((client) => client.inum !== deletedClient.inum))
-    }
-  }
-
   function onDeletionConfirmed(message) {
     buildPayload(userAction, message, item)
     dispatch(deleteClient({ action: userAction }))
-    removeClientFromList(item)
     if (!haveScopeINUMParam) {
       navigateToRoute(ROUTES.AUTH_SERVER_CLIENTS_LIST)
     }
