@@ -21,8 +21,14 @@ const DashboardChart = ({ statData, startMonth, endMonth }: DashboardChartProps)
       return []
     }
 
-    let current = moment(startMonth, 'YYYYMM')
+    const dateStart = moment(startMonth, 'YYYYMM')
     const dateEnd = moment(endMonth, 'YYYYMM')
+
+    if (dateStart.isAfter(dateEnd, 'month')) {
+      return []
+    }
+
+    let current = dateStart.clone()
     const byMonth = new Map<number, MauStatEntry>()
     statData.forEach((entry) => byMonth.set(entry.month, entry))
     const prepareStat: MauStatEntry[] = []

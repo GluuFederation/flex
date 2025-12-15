@@ -236,7 +236,7 @@ function DashboardPage() {
 
     return allServices.filter((serviceConfig) => {
       const status = getServiceStatus(serviceConfig.key)
-      return status !== 'unknown'
+      return status === 'up'
     })
   }, [services, getServiceStatus])
 
@@ -359,13 +359,29 @@ function DashboardPage() {
     permissions,
   ])
 
-  const handleStartDateChange = useCallback((date: Dayjs | null) => {
-    if (date) setStartDate(date)
-  }, [])
+  const handleStartDateChange = useCallback(
+    (date: Dayjs | null) => {
+      if (date) {
+        setStartDate(date)
+        if (date.isAfter(endDate)) {
+          setEndDate(date)
+        }
+      }
+    },
+    [endDate],
+  )
 
-  const handleEndDateChange = useCallback((date: Dayjs | null) => {
-    if (date) setEndDate(date)
-  }, [])
+  const handleEndDateChange = useCallback(
+    (date: Dayjs | null) => {
+      if (date) {
+        setEndDate(date)
+        if (date.isBefore(startDate)) {
+          setStartDate(date)
+        }
+      }
+    },
+    [startDate],
+  )
 
   const startMonth = startDate.format('YYYYMM')
   const endMonth = endDate.format('YYYYMM')
@@ -485,7 +501,7 @@ function DashboardPage() {
                   </Grid>
                   <Grid xs={11} item className={classes.desktopChartStyle}>
                     <DashboardChart
-                      statData={mauData}
+                      statData={mauData ?? []}
                       startMonth={startMonth}
                       endMonth={endMonth}
                     />
@@ -495,7 +511,7 @@ function DashboardPage() {
                 <Grid container className={classes.whiteBg + ' ' + classes.flex}>
                   <Grid md={9} xs={12} item className={classes.desktopChartStyle}>
                     <DashboardChart
-                      statData={mauData}
+                      statData={mauData ?? []}
                       startMonth={startMonth}
                       endMonth={endMonth}
                     />
