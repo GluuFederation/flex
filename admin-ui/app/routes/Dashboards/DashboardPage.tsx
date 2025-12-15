@@ -243,9 +243,11 @@ function DashboardPage() {
   const getClassName = useCallback(
     (key: string) => {
       const status = getServiceStatus(key)
-      return status === 'up' ? classes.checkText : classes.crossText
+      if (status === 'up') return classes.checkText
+      if (status === 'degraded') return classes.orange
+      return classes.crossText
     },
-    [getServiceStatus, classes.checkText, classes.crossText],
+    [getServiceStatus, classes.checkText, classes.orange, classes.crossText],
   )
 
   const getStatusText = useCallback(
@@ -262,7 +264,8 @@ function DashboardPage() {
   const getStatusIcon = useCallback(
     (key: string) => {
       const status = getServiceStatus(key)
-      return status === 'up' ? CheckIcon : CrossIcon
+      if (status === 'up' || status === 'degraded') return CheckIcon
+      return CrossIcon
     },
     [getServiceStatus],
   )
