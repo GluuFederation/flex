@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext, useCallback, useMemo, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { useFormik } from 'formik'
+import { useFormik, type FormikProps } from 'formik'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { Button, Col, Form, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
@@ -197,12 +197,15 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
         | React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
         | { target: { name: string; value: unknown } },
     ) => {
+      const { name, value } = e.target
+      formik.setFieldValue(name, value)
+      formik.setFieldTouched(name, true, false)
       setModifiedFields((prev) => ({
         ...prev,
-        [e.target.name]: e.target.value as string | string[],
+        [name]: value as string | string[],
       }))
     },
-    [],
+    [formik],
   )
 
   useEffect(() => {
@@ -468,7 +471,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
           modal={modal}
           onAccept={submitForm}
           feature={adminUiFeatures.users_edit}
-          formik={formik as any}
+          formik={formik as FormikProps<UserEditFormValues>}
           operations={operations}
         />
       </Form>

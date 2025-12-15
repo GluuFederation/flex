@@ -127,7 +127,7 @@ const CustomScriptListPage: React.FC = () => {
   const handleView = useCallback(
     (row: ScriptTableRow) => {
       if (!row?.inum) return
-      navigateToRoute(`${ROUTES.CUSTOM_SCRIPT_EDIT(row.inum)}?view=true`)
+      navigateToRoute(ROUTES.CUSTOM_SCRIPT_VIEW(row.inum))
     },
     [navigateToRoute],
   )
@@ -337,7 +337,7 @@ const CustomScriptListPage: React.FC = () => {
       actionList.push({
         icon: () => (
           <Tooltip title={t('messages.delete_script')}>
-            <DeleteOutlined sx={{ fontSize: 20, color: customColors.accentRed }} />
+            <DeleteOutlined sx={{ fontSize: 20, color: customColors.darkGray }} />
           </Tooltip>
         ),
         tooltip: t('messages.delete_script'),

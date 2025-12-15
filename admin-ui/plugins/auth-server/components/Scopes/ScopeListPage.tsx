@@ -56,7 +56,6 @@ const FILTER_BOX_STYLES = {
   p: 1,
   backgroundColor: customColors.white,
   borderRadius: 1,
-  border: `1px solid ${customColors.lightGray}`,
 } as const
 
 const FILTER_CONTAINER_STYLES = {
@@ -293,11 +292,11 @@ const ScopeListPage: React.FC = () => {
   }, [queryClient])
 
   const renderClientsColumn = useCallback((rowData: ScopeTableRow) => {
-    if (!rowData.clients) {
-      return 0
+    if (!rowData.clients || !rowData.inum) {
+      return rowData.clients?.length || 0
     }
     return (
-      <Link to={`/auth-server/clients?scopeInum=${rowData.inum}`} className="common-link">
+      <Link to={ROUTES.AUTH_SERVER_CLIENTS_LIST_WITH_SCOPE(rowData.inum)} className="common-link">
         {rowData.clients.length}
       </Link>
     )

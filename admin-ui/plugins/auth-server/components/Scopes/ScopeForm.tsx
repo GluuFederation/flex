@@ -37,6 +37,7 @@ import {
 } from './helper/utils'
 import { getScopeValidationSchema } from './helper/validations'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
 interface RootState {
   authReducer: {
@@ -58,7 +59,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme || 'light'
-  const { navigateBack, navigate } = useAppNavigation()
+  const { navigateBack, navigateToRoute } = useAppNavigation()
   const dispatch = useDispatch()
   const client = scope.clients || []
 
@@ -163,17 +164,17 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
   const goToClientViewPage = (clientId: string, clientData: ScopeClient = {} as ScopeClient) => {
     dispatch(viewOnly({ view: true }))
     dispatch(setCurrentItem({ item: clientData }))
-    return navigate(`/auth-server/client/edit:${clientId}`)
+    return navigateToRoute(ROUTES.AUTH_SERVER_CLIENT_EDIT(clientId))
   }
 
-  const operations = useMemo(
-    () =>
-      Object.keys(modifiedFields || {}).map((item) => ({
-        path: item,
-        value: modifiedFields[item],
-      })),
-    [modifiedFields],
-  )
+  const operations = useMemo((): Array<{ path: string; value: JsonValue }> => {
+    if (!modifiedFields) return []
+
+    return Object.entries(modifiedFields).map(([path, value]) => ({
+      path,
+      value: (value === undefined ? null : value) as JsonValue,
+    }))
+  }, [modifiedFields])
 
   return (
     <Container>

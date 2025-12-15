@@ -13,6 +13,7 @@ import {
 import type { DefaultSidebarProps } from './types'
 import { useTranslation } from 'react-i18next'
 import { RootState } from '@/cedarling'
+import { ROUTES } from '@/helpers/navigation'
 
 const GluuAppSidebar = lazy(() => import('Routes/Apps/Gluu/GluuAppSidebar'))
 
@@ -55,7 +56,7 @@ const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
       {/* START SIDEBAR: Only for Desktop */}
       <SidebarHideSlim>
         <SidebarSection>
-          <Link to="/" className="sidebar__brand">
+          <Link to={ROUTES.ROOT} className="sidebar__brand">
             <LogoThemed checkBackground className="sidebar__brand" />
           </Link>
         </SidebarSection>
@@ -64,7 +65,6 @@ const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
 
       {/* START SIDEBAR: Only for Mobile */}
       <SidebarMobileFluid>
-        {/* <SidebarTopA /> */}
         <SidebarSection fluid cover>
           {initialized ? (
             <Suspense fallback={<GluuSuspenseLoader />}>

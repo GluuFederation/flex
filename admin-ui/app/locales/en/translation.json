@@ -937,6 +937,7 @@
     "view_script_details": "View custom script details",
     "add_new_user": "Add User",
     "error_in_saving": "Error in saving.",
+    "default_policy_store_is_used": "Admin UI is already using default policy-store for access control.",
     "error_loading_data": "An error occurred while loading data. Please try again.",
     "try_again_later": "Please try again later",
     "loading_attribute": "Loading attribute...",
@@ -1993,10 +1994,14 @@
       "ignoreValidation": "Boolean value to enable/disable SAML validation."
     },
     "cedarlingConfig": {
-      "title": "Configure fine-grained control using Cedarling",
-      "point1": "1. Create a policy store using Agama Lab. Fork the sample project",
-      "point2": "2. Copy PolicyStore URL and apply.",
-      "note": "Note: This will help you to create your own cedarling project. You can update the policies using",
+      "title": "Configure Cedarling Policy Store",
+      "steps": "Steps to configure Remote Policy Store URL",
+      "point1": "1. Fork the project",
+      "point2": "2. Open the forked repository using",
+      "point3": "3. Make the required modifications in the policies for Admin UI access control and save the changes.",
+      "point4": "4. Make sure the hostname of the OpenID Configuration Endpoint matches with the hostname of your OpenId Provider.",
+      "point5": "5. Copy the Policy Store URL.",
+      "point6": "6. Open Cedarling Policy Store configuration screen on Admin UI and add the copied Policy Store URL in Admin UI Remote Policy Store field. Set Policy Retrieval Point field to Remote to use the remote Policy Store URL for the GUI access control.",
       "useRemotePolicyStore": "It is recommended to set it to Default for production. If set to Default, it will use the Admin-UI storage for Cedarling authorization. Enable Default mode and use the refresh button to store or update GitHub policies on the Admin-UI Server.",
       "updateRemotePolicyStoreOnServer": "Click here to update the default policy-store JSON with the version available from the configured remote URL."
     },
