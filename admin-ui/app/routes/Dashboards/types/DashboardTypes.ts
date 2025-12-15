@@ -1,3 +1,4 @@
+import type React from 'react'
 import type { LicenseResponse, Client, JansAttribute } from 'JansConfigApi'
 import type { MauStatEntry, MauDateRange } from 'Plugins/admin/components/MAU/types'
 
@@ -25,6 +26,15 @@ export interface ReportPiChartItemProps {
   data: ReportCardData[]
 }
 
+export interface PieChartLabelProps {
+  cx: number
+  cy: number
+  midAngle: number
+  innerRadius: number
+  outerRadius: number
+  percent: number
+}
+
 export interface DashboardSummaryItem {
   title: string
   value: number | string
@@ -38,18 +48,6 @@ export interface ServiceHealth {
   name: string
   status: ServiceStatusValue
   lastChecked?: Date
-}
-
-export interface DashboardDateRange {
-  startDate: Date
-  endDate: Date
-}
-
-export interface DateRangeProps {
-  startDate: Date
-  endDate: Date
-  onStartDateChange: (date: Date) => void
-  onEndDateChange: (date: Date) => void
 }
 
 export interface DashboardChartProps {

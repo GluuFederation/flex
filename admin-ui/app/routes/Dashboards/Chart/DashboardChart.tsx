@@ -13,26 +13,20 @@ import './styles.css'
 import TooltipDesign from './TooltipDesign'
 import moment from 'moment'
 import customColors from '@/customColors'
-import type { MauStatEntry } from 'Plugins/admin/components/MAU/types'
-
-interface DashboardChartProps {
-  statData: MauStatEntry[]
-  startMonth?: string
-  endMonth?: string
-}
+import type { DashboardChartProps, MauStatEntry } from '../types'
 
 const DashboardChart = ({ statData, startMonth, endMonth }: DashboardChartProps) => {
   const augmentedData = useMemo(() => {
-    if (!startMonth || !endMonth || !statData) {
-      return statData ?? []
+    if (!statData) {
+      return []
     }
 
-    const dateStart = moment(startMonth, 'YYYYMM')
+    let current = moment(startMonth, 'YYYYMM')
     const dateEnd = moment(endMonth, 'YYYYMM')
     const prepareStat: MauStatEntry[] = []
 
-    while (dateEnd > dateStart || dateStart.format('M') === dateEnd.format('M')) {
-      const monthNum = parseInt(dateStart.format('YYYYMM'), 10)
+    while (current.isSameOrBefore(dateEnd, 'month')) {
+      const monthNum = parseInt(current.format('YYYYMM'), 10)
       const available = statData.filter((obj) => obj.month === monthNum)
 
       if (available.length) {
@@ -46,7 +40,7 @@ const DashboardChart = ({ statData, startMonth, endMonth }: DashboardChartProps)
           authz_code_idtoken_count: 0,
         })
       }
-      dateStart.add(1, 'month')
+      current = current.clone().add(1, 'month')
     }
 
     return prepareStat

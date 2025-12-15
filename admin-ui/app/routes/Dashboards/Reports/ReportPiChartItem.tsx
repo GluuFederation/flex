@@ -2,16 +2,7 @@ import React from 'react'
 import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts'
 import applicationStyle from '../../Apps/Gluu/styles/applicationstyle'
 import customColors from '@/customColors'
-import type { ReportPiChartItemProps } from '../types'
-
-interface LabelProps {
-  cx: number
-  cy: number
-  midAngle: number
-  innerRadius: number
-  outerRadius: number
-  percent: number
-}
+import type { ReportPiChartItemProps, PieChartLabelProps } from '../types'
 
 function ReportPiChartItem({ data }: ReportPiChartItemProps) {
   const COLORS = [customColors.lightGreen, customColors.black]
@@ -24,7 +15,7 @@ function ReportPiChartItem({ data }: ReportPiChartItemProps) {
     innerRadius,
     outerRadius,
     percent,
-  }: LabelProps) => {
+  }: PieChartLabelProps) => {
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5
     const x = cx + radius * Math.cos(-midAngle * RADIAN)
     const y = cy + radius * Math.sin(-midAngle * RADIAN)

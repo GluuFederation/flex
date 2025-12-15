@@ -1,16 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-
-interface TooltipPayloadItem {
-  dataKey: string
-  value: number
-  payload: Record<string, number | string>
-}
-
-interface TooltipDesignProps {
-  payload?: TooltipPayloadItem[]
-  active?: boolean
-}
+import type { TooltipDesignProps } from '../types'
 
 function TooltipDesign({ payload = [] }: TooltipDesignProps) {
   const { t } = useTranslation()

@@ -47,10 +47,10 @@ function Reports() {
     queryOptions,
   )
 
-  const attributes = (attributesData?.entries ?? []) as unknown as JansAttribute[]
-  const clients = (clientsData?.entries ?? []) as unknown as Client[]
-  const scopes = (scopesData?.entries ?? []) as unknown as Scope[]
-  const scripts = (scriptsData?.entries ?? []) as unknown as CustomScript[]
+  const attributes = (attributesData?.entries as JansAttribute[]) ?? []
+  const clients = (clientsData?.entries as Client[]) ?? []
+  const scopes = (scopesData?.entries as Scope[]) ?? []
+  const scripts = (scriptsData?.entries as CustomScript[]) ?? []
 
   const isLoading = loadingAttributes || loadingClients || loadingScopes || loadingScripts
 
@@ -118,32 +118,32 @@ function Reports() {
             <ReportCard
               data={clientData}
               title={t('titles.all_oidc_clients')}
-              upValue={clients.filter((item) => item.disabled).length}
-              downValue={clients.filter((item) => !item.disabled).length}
+              upValue={clientData[1].value}
+              downValue={clientData[0].value}
             />
           </Col>
           <Col lg={3}>
             <ReportCard
               data={attributeData}
               title={t('titles.all_attributes')}
-              upValue={attributes.filter((item) => item.status === 'inactive').length}
-              downValue={attributes.filter((item) => item.status === 'active').length}
+              upValue={attributeData[1].value}
+              downValue={attributeData[0].value}
             />
           </Col>
           <Col lg={3}>
             <ReportCard
               data={scopeData}
               title={t('titles.all_scopes')}
-              upValue={scopes.filter((item) => item.scopeType === 'openid').length}
-              downValue={scopes.filter((item) => item.scopeType === 'oauth').length}
+              upValue={scopeData[1].value}
+              downValue={scopeData[0].value}
             />
           </Col>
           <Col lg={3}>
             <ReportCard
               data={scriptData}
               title={t('titles.all_custom_scripts')}
-              upValue={scripts.filter((item) => !item.enabled).length}
-              downValue={scripts.filter((item) => item.enabled).length}
+              upValue={scriptData[1].value}
+              downValue={scriptData[0].value}
             />
           </Col>
         </Row>

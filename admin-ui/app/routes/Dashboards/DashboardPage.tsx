@@ -133,9 +133,7 @@ function DashboardPage() {
     const date = new Date()
     const currentYear = date.getFullYear()
     const currentMonth = date.getMonth() + 1
-    const formattedMonth =
-      currentMonth > 9 ? currentMonth.toString() : '0' + currentMonth.toString()
-    const yearMonth = parseInt(currentYear.toString() + formattedMonth, 10)
+    const yearMonth = currentYear * 100 + currentMonth
 
     const currentMonthData = mauData.find((item) => item.month === yearMonth)
 
@@ -166,7 +164,7 @@ function DashboardPage() {
       },
     ]
 
-    if (lockData && lockData.length > 0) {
+    if (lockData && lockData.length > 0 && lockStats) {
       baseData.push(
         {
           text: t('dashboard.mau_users'),
@@ -219,7 +217,7 @@ function DashboardPage() {
 
   const getServiceStatus = useCallback(
     (key: string) => {
-      const service = services.find((s) => s.name === key || s.name.includes(key))
+      const service = services.find((s) => s.name === key)
       return service?.status ?? 'unknown'
     },
     [services],
