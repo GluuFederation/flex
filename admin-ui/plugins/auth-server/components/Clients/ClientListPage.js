@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useMemo } from 'react'
+import React, { useState, useEffect, useContext, useMemo, useCallback } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { useLocation } from 'react-router-dom'
@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { Link, Paper, TablePagination } from '@mui/material'
 import { Card, CardBody, Badge } from 'Components'
-import { getScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
+import { getScopes, getScopeByInum } from 'Plugins/auth-server/redux/features/scopeSlice'
 import { resetUMAResources } from 'Plugins/auth-server/redux/features/umaResourceSlice'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import ClientDetailPage from '../Clients/ClientDetailPage'
@@ -14,7 +14,13 @@ import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
-import { LIMIT_ID, LIMIT, PATTERN, PATTERN_ID } from 'Plugins/auth-server/common/Constants'
+import {
+  LIMIT_ID,
+  LIMIT,
+  PATTERN,
+  PATTERN_ID,
+  WITH_ASSOCIATED_CLIENTS,
+} from 'Plugins/auth-server/common/Constants'
 import {
   getOpenidClients,
   setCurrentItem,
@@ -44,6 +50,7 @@ function ClientListPage() {
   const nonExtensibleClients = useSelector((state) => state.oidcReducer.items)
   const { totalItems } = useSelector((state) => state.oidcReducer)
   const scopes = useSelector((state) => state.scopeReducer.items)
+  const scopeItem = useSelector((state) => state.scopeReducer.item)
   const loading = useSelector((state) => state.oidcReducer.loading)
   const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
   let clients = [...(nonExtensibleClients ?? [])]
@@ -81,12 +88,17 @@ function ClientListPage() {
   )
 
   const [scopeClients, setScopeClients] = useState([])
-  const [haveScopeINUMParam] = useState(search.indexOf('?scopeInum=') > -1)
+  const haveScopeINUMParam = useMemo(() => search.indexOf('?scopeInum=') > -1, [search])
+  const scopeInumParam = useMemo(() => {
+    if (haveScopeINUMParam) {
+      return search.replace('?scopeInum=', '')
+    }
+    return null
+  }, [haveScopeINUMParam, search])
   const [isPageLoading, setIsPageLoading] = useState(loading)
   const [pageNumber, setPageNumber] = useState(0)
   SetTitle(t('titles.oidc_clients'))
 
-  // Permission initialization
   useEffect(() => {
     authorizeHelper(clientScopes)
   }, [authorizeHelper, clientScopes])
@@ -129,6 +141,22 @@ function ClientListPage() {
   function shouldHideOrgColumn(clients) {
     return !clients?.some((client) => client.organization != '-')
   }
+
+  const filterClientsByScope = useCallback(
+    (scopeInum, scopeDn) => {
+      return nonExtensibleClients.filter((client) => {
+        if (!client.scopes || !Array.isArray(client.scopes)) return false
+        return client.scopes.some((clientScope) => {
+          return (
+            clientScope === scopeDn ||
+            clientScope.includes(`inum=${scopeInum}`) ||
+            clientScope === scopeInum
+          )
+        })
+      })
+    },
+    [nonExtensibleClients],
+  )
 
   const handler = () => {
     setScopesModal({
@@ -197,27 +225,97 @@ function ClientListPage() {
   ]
 
   useEffect(() => {
-    if (haveScopeINUMParam) {
-      const scopeInumParam = search.replace('?scopeInum=', '')
-
-      if (scopeInumParam?.length > 0) {
-        const clientsScope = scopes.find(({ inum }) => inum === scopeInumParam)?.clients || []
-        setScopeClients(clientsScope)
+    if (haveScopeINUMParam && scopeInumParam) {
+      const foundScope = scopes.find(({ inum }) => inum === scopeInumParam)
+      if (foundScope?.clients && foundScope.clients.length > 0) {
+        setScopeClients(foundScope.clients)
+        setIsPageLoading(false)
+        return
       }
+
+      if (foundScope && nonExtensibleClients.length > 0) {
+        const scopeDn = foundScope.dn || foundScope.baseDn
+        if (scopeDn) {
+          const filteredClients = filterClientsByScope(scopeInumParam, scopeDn)
+          if (filteredClients.length > 0) {
+            const clientsWithOrg = filteredClients.map(addOrg)
+            setScopeClients(clientsWithOrg)
+            setIsPageLoading(false)
+            return
+          }
+        }
+      }
+
+      if (scopes.length === 0) {
+        setIsPageLoading(true)
+        const scopePayload = {}
+        buildPayload(scopePayload, '', scopePayload)
+        scopePayload[LIMIT] = 100
+        scopePayload[WITH_ASSOCIATED_CLIENTS] = true
+        dispatch(getScopes({ action: scopePayload }))
+        return
+      }
+
+      setIsPageLoading(true)
+      dispatch(getScopeByInum({ action: scopeInumParam }))
     } else {
       setIsPageLoading(true)
       makeOptions()
       dispatch(getOpenidClients({ action: options }))
 
       buildPayload(userAction, '', options)
-      userAction['limit'] = 100
+      userAction[LIMIT] = 100
+      userAction[WITH_ASSOCIATED_CLIENTS] = true
       dispatch(getScopes({ action: userAction }))
 
       setTimeout(() => {
         setIsPageLoading(false)
       }, 3000)
     }
-  }, [haveScopeINUMParam])
+  }, [haveScopeINUMParam, scopeInumParam, dispatch])
+
+  useEffect(() => {
+    if (!haveScopeINUMParam || !scopeInumParam) return
+    if (scopeClients.length > 0) return
+
+    const foundScope = scopes.find(({ inum }) => inum === scopeInumParam)
+
+    if (foundScope?.clients && foundScope.clients.length > 0) {
+      setScopeClients(foundScope.clients)
+      setIsPageLoading(false)
+      return
+    }
+
+    if (foundScope && nonExtensibleClients.length > 0) {
+      const scopeDn = foundScope.dn || foundScope.baseDn
+      if (scopeDn) {
+        const filteredClients = filterClientsByScope(scopeInumParam, scopeDn)
+        if (filteredClients.length > 0) {
+          const clientsWithOrg = filteredClients.map(addOrg)
+          setScopeClients(clientsWithOrg)
+          setIsPageLoading(false)
+        }
+      }
+    }
+  }, [
+    scopes.length,
+    haveScopeINUMParam,
+    scopeInumParam,
+    scopeClients.length,
+    nonExtensibleClients.length,
+  ])
+
+  useEffect(() => {
+    if (haveScopeINUMParam && scopeInumParam && scopeItem?.inum === scopeInumParam) {
+      if (scopeItem.clients && scopeItem.clients.length > 0) {
+        setScopeClients(scopeItem.clients)
+        setIsPageLoading(false)
+      } else if (scopeItem.inum) {
+        setScopeClients([])
+        setIsPageLoading(false)
+      }
+    }
+  }, [haveScopeINUMParam, scopeInumParam, scopeItem])
 
   useEffect(() => {
     dispatch(resetUMAResources())
