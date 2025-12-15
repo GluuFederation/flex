@@ -106,7 +106,17 @@ const CedarlingConfigPage: React.FC = () => {
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
       setUrlTouched(true)
-
+      // when user tries to save default policy store with empty URL
+      if (
+        auiConfig?.cedarlingPolicyStoreRetrievalPoint === 'default' &&
+        cedarlingPolicyStoreRetrievalPoint === 'default' &&
+        auiPolicyStoreUrl.trim() === ''
+      ) {
+        const errorMessage = `${t('messages.default_policy_store_is_used')}`
+        dispatch(updateToast(true, 'error', errorMessage))
+        return
+      }
+      //when user tries to save remote policy store with empty URL
       if (auiPolicyStoreUrl.trim() === '') {
         const errorMessage = `${t('messages.error_in_saving')} field: ${t('fields.auiPolicyStoreUrl')} ${t('messages.is_required')}`
         dispatch(updateToast(true, 'error', errorMessage))
@@ -300,6 +310,9 @@ const CedarlingConfigPage: React.FC = () => {
                 '& .MuiAlert-message': { width: '100%' },
               }}
             >
+              <Typography variant="body2" color="text.primary">
+                {t('documentation.cedarlingConfig.steps')}{' '}
+              </Typography>
               <Typography variant="body2" sx={{ mb: 1 }}>
                 {t('documentation.cedarlingConfig.point1')}{' '}
                 <Link
@@ -308,24 +321,33 @@ const CedarlingConfigPage: React.FC = () => {
                   rel="noopener noreferrer"
                   sx={{ fontWeight: 500 }}
                 >
-                  AdminUICedarling
+                  GluuFlexAdminUIPolicyStore
                 </Link>
                 .
               </Typography>
               <Typography variant="body2" sx={{ mb: 1 }}>
-                {t('documentation.cedarlingConfig.point2')}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {t('documentation.cedarlingConfig.note')}{' '}
+                {t('documentation.cedarlingConfig.point2')}{' '}
                 <Link
                   href="https://cloud.gluu.org/agama-lab"
                   target="_blank"
                   rel="noopener noreferrer"
                   sx={{ fontWeight: 500 }}
                 >
-                  Agama-Lab
+                  Agama Lab's Policy Designer
                 </Link>
                 .
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {t('documentation.cedarlingConfig.point3')}{' '}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {t('documentation.cedarlingConfig.point4')}{' '}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {t('documentation.cedarlingConfig.point5')}{' '}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {t('documentation.cedarlingConfig.point6')}{' '}
               </Typography>
             </Alert>
 
