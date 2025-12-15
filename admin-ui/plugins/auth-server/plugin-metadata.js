@@ -137,7 +137,7 @@ const pluginMetadata = {
         },
         // {
         //   title: 'menus.lock ',
-        //   path: PLUGIN_BASE_APTH + '/lock',
+        //   path: ROUTES.AUTH_SERVER_LOCK,
         //   permission: MESSAGE_READ,
         // },
       ],
@@ -170,7 +170,7 @@ const pluginMetadata = {
     },
     {
       component: ClientDetailPage,
-      path: PLUGIN_BASE_APTH + '/client/view/:id',
+      path: ROUTES.AUTH_SERVER_CLIENT_VIEW_TEMPLATE,
       permission: CLIENT_READ,
       resourceKey: ADMIN_UI_RESOURCES.Clients,
     },
