@@ -761,6 +761,7 @@
     "permission_name_error": "Asegúrese de que el nombre del permiso tenga al menos 5 caracteres.",
     "role_name_error": "Asegúrese de que el nombre del rol tenga al menos 5 caracteres.",
     "error_message": "Mensaje de Error",
+    "defalut_policy_store_is_used": "La interfaz de administración (Admin UI) ya utiliza el almacén de políticas predeterminado para el control de acceso.",
     "webhook_dialog_note": "NOTA: La ejecución del Webhook ha fallado y no podrá continuar en este momento.",
     "http_method_error": "Seleccione un Método HTTP.",
     "request_body_error": "El cuerpo de la solicitud HTTP es obligatorio para el método HTTP seleccionado",
@@ -1826,10 +1827,14 @@
       "ignoreValidation": "Valor booleano para habilitar/deshabilitar validación SAML"
     },
     "cedarlingConfig": {
-      "title": "Configurar un control detallado mediante Cedarling",
-      "point1": "1. Crear un almacén de políticas con Agama Lab. Bifurcar proyecto.",
-      "point2": "2. Copie la URL de PolicyStore y configúrela.",
-      "note": "Nota: Esto te ayudará a crear tu propio proyecto de Cedarling. Puedes actualizar roles y permisos a través de Agama Lab.",
+      "title": "Configurar el almacén de políticas de Cedarling",
+      "steps": "Pasos para configurar la URL del Almacén de Políticas Remoto",
+      "point1": "1. Bifurcar el proyecto",
+      "point2": "2. Abrir el repositorio bifurcado usando",
+      "point3": "3. Realizar las modificaciones necesarias en las políticas para el control de acceso de la Admin UI y guardar los cambios.",
+      "point4": "4. Asegúrese de que el nombre de host del Endpoint de Configuración de OpenID coincida con el nombre de host de su Proveedor OpenID.",
+      "point5": "5. Copiar la URL del Almacén de Políticas.",
+      "point6": "6. Abra la pantalla de configuración del Almacén de Políticas de Cedarling en la Admin UI y agregue la URL del Almacén de Políticas copiada en el campo Almacén de Políticas Remoto de la Admin UI. Configure el campo Punto de Recuperación de Políticas como Remoto para usar la URL del Almacén de Políticas remoto para el control de acceso de la interfaz gráfica.",
       "useRemotePolicyStore": "Se recomienda establecerlo en Predeterminado para producción. Si se establece en Predeterminado, utilizará el almacenamiento de la interfaz de administración para la autorización de Cedarling. Active el modo Predeterminado y utilice el botón de actualización para guardar o actualizar las políticas de GitHub en el servidor de la interfaz de administración.",
       "updateRemotePolicyStoreOnServer": "Haga clic aquí para actualizar el JSON del almacén de políticas predeterminado con la versión disponible en la URL remota configurada."
     },
