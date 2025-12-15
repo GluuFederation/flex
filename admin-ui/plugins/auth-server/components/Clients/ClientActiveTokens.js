@@ -53,6 +53,18 @@ function ClientActiveTokens({ client }) {
 
   const { totalItems } = useSelector((state) => state.oidcReducer.tokens)
 
+  const getTokens = useCallback(
+    async (page, limitValue, fieldValuePair) => {
+      const tokenOptions = {
+        startIndex: parseInt(page),
+        limit: limitValue,
+        fieldValuePair,
+      }
+      await dispatch(getTokenByClient({ action: tokenOptions }))
+    },
+    [dispatch],
+  )
+
   const onPageChangeClick = useCallback(
     (page) => {
       const startCount = page * limit
@@ -121,18 +133,6 @@ function ClientActiveTokens({ client }) {
     getTokens(startCount, limit, `clnId=${client.inum}`)
   }
 
-  const getTokens = useCallback(
-    async (page, limitValue, fieldValuePair) => {
-      const tokenOptions = {
-        startIndex: parseInt(page),
-        limit: limitValue,
-        fieldValuePair,
-      }
-      await dispatch(getTokenByClient({ action: tokenOptions }))
-    },
-    [dispatch],
-  )
-
   // Convert data array into CSV string
   const convertToCSV = (data) => {
     if (
@@ -167,7 +167,6 @@ function ClientActiveTokens({ client }) {
     return [header, ...rows].join('\n')
   }
 
-  // Function to handle file download
   const downloadCSV = () => {
     if (!data || data.length === 0) {
       return

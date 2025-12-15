@@ -11,7 +11,11 @@ const initialState = {
   errorInSaveOperationFlag: false,
   totalItems: 0,
   entriesCount: 0,
-  tokens: {},
+  tokens: {
+    items: [],
+    totalItems: 0,
+    entriesCount: 0,
+  },
 }
 
 const oidcSlice = createSlice({
