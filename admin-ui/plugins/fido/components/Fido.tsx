@@ -23,6 +23,7 @@ import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import GluuViewWrapper from '@/routes/Apps/Gluu/GluuViewWrapper'
+import { ROUTES } from '@/helpers/navigation'
 
 const Fido: React.FC = () => {
   const { t } = useTranslation()
@@ -123,8 +124,8 @@ const Fido: React.FC = () => {
   )
 
   const tabNames = [
-    { name: t('menus.static_configuration'), path: '/fido/fidomanagement/static-configuration' },
-    { name: t('menus.dynamic_configuration'), path: '/fido/fidomanagement/dynamic-configuration' },
+    { name: t('menus.static_configuration'), path: ROUTES.FIDO_STATIC_CONFIG },
+    { name: t('menus.dynamic_configuration'), path: ROUTES.FIDO_DYNAMIC_CONFIG },
   ]
 
   const tabToShow = useCallback(

@@ -208,6 +208,7 @@ export const CEDAR_RESOURCE_SCOPES: Record<AdminUiFeatureResource, ResourceScope
   ],
   [ADMIN_UI_RESOURCES.Settings]: [
     { permission: ACR_READ, resourceId: ADMIN_UI_RESOURCES.Settings },
+    { permission: ACR_WRITE, resourceId: ADMIN_UI_RESOURCES.Settings },
   ],
   [ADMIN_UI_RESOURCES.AuditLogs]: [
     { permission: LOGGING_READ, resourceId: ADMIN_UI_RESOURCES.AuditLogs },

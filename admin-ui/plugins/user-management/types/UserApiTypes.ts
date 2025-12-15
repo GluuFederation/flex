@@ -1,14 +1,10 @@
 import { AuthState } from '../helper/userAuditHelpers'
 import { CustomObjectAttribute, CustomUser as ApiCustomUser, JansAttribute } from 'JansConfigApi'
 
-// Use the generated API types as the primary reference
 export type CustomUser = ApiCustomUser
 export type PersonAttribute = JansAttribute
-
-// Custom attribute interface - now using CustomObjectAttribute from SDK
 export type CustomAttribute = CustomObjectAttribute
 
-// 2FA Registration entry
 export interface FidoRegistrationEntry {
   id?: string
   challenge?: string

@@ -52,11 +52,6 @@ interface LockDetailItem {
   monthly_active_clients?: number
 }
 
-interface LockDetail {
-  monthly_active_users?: number
-  monthly_active_clients?: number
-}
-
 interface RootState {
   mauReducer: {
     stat: StatDataItem[]
@@ -64,7 +59,7 @@ interface RootState {
   }
   initReducer: InitState
   lockReducer: {
-    lockDetail: LockDetailItem[] | LockDetail
+    lockDetail: LockDetailItem[] | LockDetailItem
     loading: boolean
   }
   authReducer: AuthState
@@ -177,7 +172,7 @@ function DashboardPage() {
       !requestStates.licenseRequested
     ) {
       setRequestStates((prev) => ({ ...prev, licenseRequested: true }))
-      buildPayload(userAction as UserAction, FETCHING_LICENSE_DETAILS, options as ActionData)
+      buildPayload(userAction, FETCHING_LICENSE_DETAILS, options as ActionData)
       dispatch(getLicenseDetails())
     }
   }, [
@@ -200,7 +195,7 @@ function DashboardPage() {
       !requestStates.clientsRequested
     ) {
       setRequestStates((prev) => ({ ...prev, clientsRequested: true }))
-      buildPayload(userAction as UserAction, 'Fetch openid connect clients', {} as ActionData)
+      buildPayload(userAction, 'Fetch openid connect clients', {} as ActionData)
       dispatch(getClients())
     }
   }, [
