@@ -702,6 +702,7 @@
     "session_timeout_required_error": "La durée de la session est requise",
     "additional_parameters_required": "Both key and value are required for each custom parameter.",
     "webhook_execution_information": "Informations sur l'exécution du webhook",
+    "default_policy_store_is_used": "L’interface d’administration (Admin UI) utilise déjà le magasin de politiques par défaut pour le contrôle d’accès.",
     "error_message": "Message d'erreur",
     "add_service_provider": "Ajouter un fournisseur de services",
     "edit_service_provider": "Modifier le fournisseur de services",

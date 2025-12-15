@@ -112,7 +112,7 @@ const CedarlingConfigPage: React.FC = () => {
         cedarlingPolicyStoreRetrievalPoint === 'default' &&
         auiPolicyStoreUrl.trim() === ''
       ) {
-        const errorMessage = `${t('messages.defalut_policy_store_is_used')}`
+        const errorMessage = `${t('messages.default_policy_store_is_used')}`
         dispatch(updateToast(true, 'error', errorMessage))
         return
       }

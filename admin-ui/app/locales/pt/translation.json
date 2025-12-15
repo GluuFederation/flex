@@ -694,7 +694,7 @@
     "session_timeout_required_error": "O tempo limite da sessão é obrigatório",
     "additional_parameters_required": "Both key and value are required for each custom parameter.",
     "error_message": "Mensagem de erro",
-    "defalut_policy_store_is_used": "A interface de administração (Admin UI) já utiliza o repositório de políticas padrão para controle de acesso.",
+    "default_policy_store_is_used": "A interface de administração (Admin UI) já utiliza o repositório de políticas padrão para controle de acesso.",
     "add_service_provider": "Adicionar Provedor de Serviços",
     "delete_script": "Excluir roteiro",
     "edit_service_provider": "Editar Provedor de Serviços",

@@ -761,7 +761,7 @@
     "permission_name_error": "Asegúrese de que el nombre del permiso tenga al menos 5 caracteres.",
     "role_name_error": "Asegúrese de que el nombre del rol tenga al menos 5 caracteres.",
     "error_message": "Mensaje de Error",
-    "defalut_policy_store_is_used": "La interfaz de administración (Admin UI) ya utiliza el almacén de políticas predeterminado para el control de acceso.",
+    "default_policy_store_is_used": "La interfaz de administración (Admin UI) ya utiliza el almacén de políticas predeterminado para el control de acceso.",
     "webhook_dialog_note": "NOTA: La ejecución del Webhook ha fallado y no podrá continuar en este momento.",
     "http_method_error": "Seleccione un Método HTTP.",
     "request_body_error": "El cuerpo de la solicitud HTTP es obligatorio para el método HTTP seleccionado",
