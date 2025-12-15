@@ -41,8 +41,19 @@ const SystemInfoSection: React.FC<SectionProps> = ({
       '& .MuiOutlinedInput-root': {
         backgroundColor: themeColors?.lightBackground || '#f5f5f5',
       },
+      ...(selectedTheme === 'darkBlack' && {
+        '& .MuiInputBase-input': {
+          color: `${themeColors?.backgroundBlack} !important`,
+        },
+        '& .MuiInputBase-input.Mui-disabled': {
+          WebkitTextFillColor: `${themeColors?.backgroundBlack} !important`,
+        },
+        '& label': {
+          color: `${themeColors?.backgroundBlack} !important`,
+        },
+      }),
     }),
-    [themeColors],
+    [themeColors, selectedTheme],
   )
 
   const sectionStyle = useMemo(
@@ -51,7 +62,6 @@ const SystemInfoSection: React.FC<SectionProps> = ({
       p: 2,
       borderRadius: 1,
       border: `1px solid ${themeColors?.lightBackground || '#e0e0e0'}`,
-      backgroundColor: themeColors?.lightBackground || '#fafafa',
     }),
     [themeColors],
   )
@@ -60,7 +70,10 @@ const SystemInfoSection: React.FC<SectionProps> = ({
     () => ({
       mb: 2,
       fontWeight: selectedTheme === 'darkBlack' ? 700 : 600,
-      color: selectedTheme === 'darkBlack' ? '#000000' : themeColors?.fontColor || '#333',
+      color:
+        selectedTheme === 'darkBlack'
+          ? `${themeColors?.backgroundBlack} !important`
+          : themeColors?.fontColor || '#333',
       fontSize: '0.95rem',
     }),
     [themeColors, selectedTheme],

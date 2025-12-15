@@ -7,3 +7,6 @@ export {
   useDeleteClient,
   useInvalidateClientQueries,
 } from './useClientApi'
+export { useClientScopes } from './useClientScopes'
+export { usePageSize } from './usePageSize'
+export { useDebounce } from './useDebounce'

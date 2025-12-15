@@ -39,7 +39,6 @@ const LocalizationSection: React.FC<SectionProps> = ({
       p: 2,
       borderRadius: 1,
       border: `1px solid ${themeColors?.lightBackground || '#e0e0e0'}`,
-      backgroundColor: themeColors?.lightBackground || '#fafafa',
     }),
     [themeColors],
   )
@@ -48,7 +47,10 @@ const LocalizationSection: React.FC<SectionProps> = ({
     () => ({
       mb: 2,
       fontWeight: selectedTheme === 'darkBlack' ? 700 : 600,
-      color: selectedTheme === 'darkBlack' ? '#000000' : themeColors?.fontColor || '#333',
+      color:
+        selectedTheme === 'darkBlack'
+          ? `${themeColors?.backgroundBlack} !important`
+          : themeColors?.fontColor || '#333',
       fontSize: '0.95rem',
     }),
     [themeColors, selectedTheme],

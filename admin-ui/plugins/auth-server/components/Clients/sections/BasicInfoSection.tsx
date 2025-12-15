@@ -103,11 +103,22 @@ const BasicInfoSection: React.FC<SectionProps> = ({
           borderColor: themeColors?.background,
         },
       },
+      ...(selectedTheme === 'darkBlack' && {
+        '& .MuiInputBase-input': {
+          color: `${themeColors?.backgroundBlack} !important`,
+        },
+        '& .MuiInputBase-input.Mui-disabled': {
+          WebkitTextFillColor: `${themeColors?.backgroundBlack} !important`,
+        },
+        '& label': {
+          color: `${themeColors?.backgroundBlack} !important`,
+        },
+      }),
       '& .MuiInputLabel-root.Mui-focused': {
         color: themeColors?.background,
       },
     }),
-    [viewOnly, themeColors],
+    [viewOnly, themeColors, selectedTheme],
   )
 
   const sectionStyle = useMemo(
@@ -116,7 +127,6 @@ const BasicInfoSection: React.FC<SectionProps> = ({
       p: 2,
       borderRadius: 1,
       border: `1px solid ${themeColors?.lightBackground || '#e0e0e0'}`,
-      backgroundColor: themeColors?.lightBackground || '#fafafa',
     }),
     [themeColors],
   )
@@ -145,7 +155,23 @@ const BasicInfoSection: React.FC<SectionProps> = ({
               name="inum"
               value={formik.values.inum || ''}
               disabled
-              sx={fieldStyle}
+              sx={{
+                ...fieldStyle,
+                '& .MuiInputBase-input': {
+                  fontWeight: 700,
+                  fontSize: '1rem',
+                  ...(selectedTheme === 'darkBlack' && {
+                    color: `${themeColors?.backgroundBlack} !important`,
+                  }),
+                },
+                '& .MuiInputBase-input.Mui-disabled': {
+                  fontWeight: 700,
+                  fontSize: '1rem',
+                  ...(selectedTheme === 'darkBlack' && {
+                    WebkitTextFillColor: `${themeColors?.backgroundBlack} !important`,
+                  }),
+                },
+              }}
               InputProps={{
                 endAdornment: formik.values.inum && (
                   <InputAdornment position="end">

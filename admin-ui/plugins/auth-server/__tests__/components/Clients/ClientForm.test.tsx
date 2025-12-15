@@ -51,6 +51,14 @@ jest.mock('JansConfigApi', () => ({
   })),
 }))
 
+jest.mock('Plugins/auth-server/components/Clients/hooks', () => ({
+  useClientScopes: jest.fn(() => ({
+    scopes: [],
+    scopesLoading: false,
+    handleScopeSearch: jest.fn(),
+  })),
+}))
+
 const permissions = [
   'https://jans.io/oauth/config/openid/clients.readonly',
   'https://jans.io/oauth/config/openid/clients.write',
@@ -107,12 +115,7 @@ describe('ClientForm', () => {
   it('renders form with client name', () => {
     render(
       <Wrapper>
-        <ClientForm
-          client={mockClient}
-          onSubmit={mockOnSubmit}
-          onCancel={mockOnCancel}
-          onScopeSearch={mockOnScopeSearch}
-        />
+        <ClientForm client={mockClient} onSubmit={mockOnSubmit} onCancel={mockOnCancel} />
       </Wrapper>,
     )
 

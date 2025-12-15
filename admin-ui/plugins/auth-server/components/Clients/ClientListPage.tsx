@@ -48,7 +48,7 @@ import {
   useGetOauthScopes,
 } from 'JansConfigApi'
 import type { Client, ClientTableRow } from './types'
-import { useClientActions } from './hooks'
+import { useClientActions, usePageSize, useDebounce } from './hooks'
 import ClientDetailView from './components/ClientDetailView'
 import { formatGrantTypeLabel, truncateText } from './helper/utils'
 import { CLIENT_ROUTES, DEFAULT_PAGE_SIZE, SCOPES_FETCH_LIMIT } from './helper/constants'
@@ -105,14 +105,7 @@ const ClientListPage: React.FC = () => {
   const { logClientDeletion, navigateToClientAdd, navigateToClientEdit, navigateToClientView } =
     useClientActions()
 
-  const getInitialPageSize = (): number => {
-    const stored = localStorage.getItem('paggingSize')
-    if (!stored) return DEFAULT_PAGE_SIZE
-    const parsed = parseInt(stored, 10)
-    return Number.isNaN(parsed) ? DEFAULT_PAGE_SIZE : parsed
-  }
-
-  const [limit, setLimit] = useState<number>(getInitialPageSize())
+  const [limit, setLimit] = usePageSize()
   const [pageNumber, setPageNumber] = useState<number>(0)
   const [searchInput, setSearchInput] = useState<string>('')
   const [pattern, setPattern] = useState<string | null>(null)
@@ -121,7 +114,7 @@ const ClientListPage: React.FC = () => {
   const [sortOrder, setSortOrder] = useState<'ascending' | 'descending'>('ascending')
   const [selectedClient, setSelectedClient] = useState<Client | null>(null)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
-  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
+  const debouncedPattern = useDebounce(searchInput, 500)
 
   const clientsQueryParams = useMemo(
     () => ({
@@ -274,10 +267,6 @@ const ClientListPage: React.FC = () => {
   const handlePatternKeyDown = useCallback(
     (event: React.KeyboardEvent): void => {
       if (event.key === 'Enter') {
-        if (debounceTimerRef.current) {
-          clearTimeout(debounceTimerRef.current)
-          debounceTimerRef.current = null
-        }
         setPattern(searchInput || null)
         setPageNumber(0)
         setStartIndex(0)
@@ -611,22 +600,12 @@ const ClientListPage: React.FC = () => {
   }, [authorizeHelper, clientScopes])
 
   useEffect(() => {
-    debounceTimerRef.current = setTimeout(() => {
-      setPattern(searchInput || null)
-      if (searchInput !== (pattern || '')) {
-        setPageNumber(0)
-        setStartIndex(0)
-      }
-      debounceTimerRef.current = null
-    }, 500)
-
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current)
-        debounceTimerRef.current = null
-      }
+    setPattern(debouncedPattern || null)
+    if (searchInput !== (pattern || '')) {
+      setPageNumber(0)
+      setStartIndex(0)
     }
-  }, [searchInput, pattern])
+  }, [debouncedPattern])
 
   return (
     <GluuLoader blocking={loading}>

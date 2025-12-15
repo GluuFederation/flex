@@ -4,7 +4,7 @@ export const themeConfig = {
   darkBlack: {
     background: customColors.darkGray,
     lightBackground: customColors.darkBlueLightBackground,
-    fontColor: customColors.darkGray,
+    fontColor: customColors.white,
     borderColor: customColors.lightGray,
     menu: {
       background: customColors.darkBlueMenuBackground,

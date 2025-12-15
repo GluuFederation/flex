@@ -1,7 +1,6 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Formik, Form, Field, FieldArray } from 'formik'
-import * as Yup from 'yup'
 import {
   Box,
   Grid,
@@ -33,14 +32,10 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { useGetOauthScopes } from 'JansConfigApi'
-import { GRANT_TYPES, DEFAULT_SCOPE_SEARCH_LIMIT } from '../helper/constants'
-import {
-  buildAddFormPayload,
-  buildClientPayload,
-  transformScopesResponse,
-  generateClientSecret,
-} from '../helper/utils'
-import { uriValidation } from '../helper/validations'
+import { GRANT_TYPES } from '../helper/constants'
+import { useClientScopes } from '../hooks'
+import { buildAddFormPayload, buildClientPayload, generateClientSecret } from '../helper/utils'
+import { clientAddValidationSchema } from '../helper/validations'
 import type { AddFormValues, ClientFormValues, ClientScope, ModifiedFields } from '../types'
 
 interface ClientAddFormProps {
@@ -59,21 +54,6 @@ const initialValues: AddFormValues = {
   postLogoutRedirectUris: [''],
 }
 
-const validationSchema = Yup.object().shape({
-  clientName: Yup.string().required('Client name is required'),
-  clientSecret: Yup.string().required('Client secret is required'),
-  description: Yup.string(),
-  scopes: Yup.array().of(Yup.string()),
-  grantTypes: Yup.array().of(Yup.string()),
-  redirectUris: Yup.array()
-    .of(uriValidation)
-    .test('has-valid-uri', 'At least one valid redirect URI is required', (value) => {
-      if (!value || value.length === 0) return false
-      return value.some((uri) => uri && uri.trim() !== '')
-    }),
-  postLogoutRedirectUris: Yup.array().of(uriValidation),
-})
-
 const ClientAddForm: React.FC<ClientAddFormProps> = ({ onSubmit, onCancel }) => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
@@ -83,28 +63,8 @@ const ClientAddForm: React.FC<ClientAddFormProps> = ({ onSubmit, onCancel }) => 
   const [showSecret, setShowSecret] = useState(false)
   const [commitModalOpen, setCommitModalOpen] = useState(false)
   const [formValues, setFormValues] = useState<AddFormValues | null>(null)
-  const [scopeSearchPattern, setScopeSearchPattern] = useState('')
 
-  const scopeQueryParams = useMemo(
-    () => ({
-      limit: DEFAULT_SCOPE_SEARCH_LIMIT,
-      pattern: scopeSearchPattern || undefined,
-    }),
-    [scopeSearchPattern],
-  )
-
-  const { data: scopesResponse, isLoading: scopesLoading } = useGetOauthScopes(scopeQueryParams, {
-    query: {
-      refetchOnMount: 'always' as const,
-      refetchOnWindowFocus: false,
-      staleTime: 30000,
-    },
-  })
-
-  const scopes = useMemo(
-    () => transformScopesResponse(scopesResponse?.entries),
-    [scopesResponse?.entries],
-  )
+  const { scopes, scopesLoading, handleScopeSearch } = useClientScopes()
 
   const handleToggleSecret = useCallback(() => {
     setShowSecret((prev) => !prev)
@@ -207,7 +167,7 @@ const ClientAddForm: React.FC<ClientAddFormProps> = ({ onSubmit, onCancel }) => 
       <CardBody>
         <Formik
           initialValues={initialValues}
-          validationSchema={validationSchema}
+          validationSchema={clientAddValidationSchema}
           onSubmit={handleFormSubmit}
         >
           {(formik) => (
@@ -345,7 +305,7 @@ const ClientAddForm: React.FC<ClientAddFormProps> = ({ onSubmit, onCancel }) => 
                             newValue.map((v) => (typeof v === 'string' ? v : v.dn)),
                           )
                         }}
-                        onInputChange={(_, value) => setScopeSearchPattern(value)}
+                        onInputChange={(_, value) => handleScopeSearch(value)}
                         loading={scopesLoading}
                         renderInput={(params) => (
                           <TextField

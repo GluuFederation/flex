@@ -36,9 +36,6 @@ export interface ClientFormProps {
   viewOnly?: boolean
   onSubmit: (values: ClientFormValues, message: string, modifiedFields: ModifiedFields) => void
   onCancel?: () => void
-  scopes?: ClientScope[]
-  scopesLoading?: boolean
-  onScopeSearch?: (pattern: string) => void
 }
 
 export interface TabPanelProps {

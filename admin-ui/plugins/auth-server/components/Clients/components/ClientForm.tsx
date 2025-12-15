@@ -2,24 +2,7 @@ import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Formik, Form, FormikProps } from 'formik'
 import { ErrorBoundary } from 'react-error-boundary'
-import {
-  Alert,
-  Box,
-  Button,
-  Paper,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  IconButton,
-  Tooltip,
-  useMediaQuery,
-  useTheme,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-} from '@mui/material'
+import { Box, Button, Paper, Tabs, Tab } from '@mui/material'
 import {
   InfoOutlined,
   LockOutlined,
@@ -31,9 +14,8 @@ import {
   LanguageOutlined,
   SettingsOutlined,
   CreditCardOutlined,
-  ChevronLeft,
-  ChevronRight,
 } from '@mui/icons-material'
+import customColors from '@/customColors'
 import { Card, CardBody } from 'Components'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
@@ -46,9 +28,9 @@ import type {
   ClientFormValues,
   ClientSection,
   ModifiedFields,
-  ClientScope,
   SectionProps,
 } from '../types'
+import { useClientScopes } from '../hooks'
 import SectionErrorFallback from './SectionErrorFallback'
 import { clientValidationSchema } from '../helper/validations'
 import { buildClientInitialValues, buildClientPayload, downloadClientAsJson } from '../helper/utils'
@@ -66,7 +48,6 @@ import {
   ActiveTokensSection,
 } from '../sections'
 
-const NAV_COLLAPSED_KEY = 'clientFormNavCollapsed'
 const SCRIPTS_FETCH_LIMIT = 200
 
 const SECTION_ICONS: Record<string, React.ReactNode> = {
@@ -88,22 +69,13 @@ const ClientForm: React.FC<ClientFormProps> = ({
   viewOnly = false,
   onSubmit,
   onCancel,
-  scopes: propScopes = [],
-  scopesLoading: propScopesLoading = false,
-  onScopeSearch: propOnScopeSearch,
 }) => {
   const { t } = useTranslation()
-  const muiTheme = useTheme()
-  const isMobile = useMediaQuery(muiTheme.breakpoints.down('md'))
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme || 'darkBlue'
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
 
   const [activeSection, setActiveSection] = useState<ClientSection>('basic')
-  const [navCollapsed, setNavCollapsed] = useState(() => {
-    const stored = localStorage.getItem(NAV_COLLAPSED_KEY)
-    return stored === 'true'
-  })
   const [modifiedFields, setModifiedFields] = useState<ModifiedFields>({})
   const [commitModalOpen, setCommitModalOpen] = useState(false)
   const [formValues, setFormValues] = useState<ClientFormValues | null>(null)
@@ -116,16 +88,9 @@ const ClientForm: React.FC<ClientFormProps> = ({
     },
   })
 
-  const oidcConfiguration = useMemo(() => propertiesData || {}, [propertiesData])
+  const oidcConfiguration = useMemo(() => (propertiesData || {}) as any, [propertiesData])
 
-  const handleScopeSearch = useCallback(
-    (pattern: string) => {
-      if (propOnScopeSearch) {
-        propOnScopeSearch(pattern)
-      }
-    },
-    [propOnScopeSearch],
-  )
+  const { scopes, scopesLoading, handleScopeSearch } = useClientScopes()
 
   const { data: scriptsResponse } = useGetConfigScripts(
     { limit: SCRIPTS_FETCH_LIMIT },
@@ -172,14 +137,6 @@ const ClientForm: React.FC<ClientFormProps> = ({
     return SECTIONS.filter((s) => s.id !== 'activeTokens')
   }, [isEdit])
 
-  const handleNavCollapse = useCallback(() => {
-    setNavCollapsed((prev) => {
-      const newValue = !prev
-      localStorage.setItem(NAV_COLLAPSED_KEY, String(newValue))
-      return newValue
-    })
-  }, [])
-
   const handleSectionChange = useCallback((section: ClientSection) => {
     setActiveSection(section)
   }, [])
@@ -208,51 +165,31 @@ const ClientForm: React.FC<ClientFormProps> = ({
     downloadClientAsJson(values)
   }, [])
 
-  const buttonStyle = useMemo(
-    () => ({
-      ...applicationStyle.buttonStyle,
-      mr: 1,
-    }),
-    [],
-  )
-
   const operations = useMemo(() => {
     return Object.keys(modifiedFields).map((key) => ({
       path: key,
-      value: modifiedFields[key],
+      value: modifiedFields[key] as any,
     }))
   }, [modifiedFields])
 
-  const navPanelStyle = useMemo(
+  const tabsSx = useMemo(
     () => ({
-      width: navCollapsed ? 64 : 240,
-      minWidth: navCollapsed ? 64 : 240,
-      transition: 'width 0.2s ease, min-width 0.2s ease',
-      borderRight: `1px solid ${themeColors?.lightBackground || '#e0e0e0'}`,
-      backgroundColor: themeColors?.lightBackground || '#fafafa',
-      display: 'flex',
-      flexDirection: 'column' as const,
-    }),
-    [navCollapsed, themeColors],
-  )
-
-  const listItemStyle = useMemo(
-    () => ({
-      'py': 1.5,
-      'px': navCollapsed ? 2 : 2,
-      'justifyContent': navCollapsed ? 'center' : 'flex-start',
-      '&.Mui-selected': {
-        backgroundColor: `${themeColors?.background}15`,
-        borderRight: `3px solid ${themeColors?.background}`,
+      '& .MuiTab-root.Mui-selected': {
+        color: themeColors?.background,
+        fontWeight: 600,
+        background: themeColors?.background,
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text',
       },
-      '&.Mui-selected:hover': {
-        backgroundColor: `${themeColors?.background}20`,
-      },
-      '&:hover': {
-        backgroundColor: `${themeColors?.background}10`,
+      '& .MuiTabs-indicator': {
+        background: themeColors?.background,
+        height: 3,
+        borderRadius: '2px',
+        boxShadow: `0 2px 4px ${themeColors?.background}`,
       },
     }),
-    [navCollapsed, themeColors],
+    [themeColors],
   )
 
   const renderSectionContent = useCallback(
@@ -263,8 +200,8 @@ const ClientForm: React.FC<ClientFormProps> = ({
         setModifiedFields,
         scripts,
         scriptsTruncated,
-        scopes: propScopes,
-        scopesLoading: propScopesLoading,
+        scopes,
+        scopesLoading,
         onScopeSearch: handleScopeSearch,
         oidcConfiguration,
       }
@@ -299,114 +236,50 @@ const ClientForm: React.FC<ClientFormProps> = ({
       viewOnly,
       scripts,
       scriptsTruncated,
-      propScopes,
-      propScopesLoading,
+      scopes,
+      scopesLoading,
       handleScopeSearch,
       oidcConfiguration,
     ],
   )
 
-  const renderNavigation = useCallback(() => {
-    if (isMobile) {
-      return (
-        <FormControl fullWidth size="small" sx={{ mb: 2 }}>
-          <InputLabel id="section-select-label">{t('fields.section')}</InputLabel>
-          <Select
-            labelId="section-select-label"
-            value={activeSection}
-            label={t('fields.section')}
-            onChange={(e) => handleSectionChange(e.target.value as ClientSection)}
-            sx={{
-              '& .MuiOutlinedInput-notchedOutline': {
-                borderColor: themeColors?.lightBackground,
-              },
-              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                borderColor: themeColors?.background,
-              },
-            }}
-          >
-            {visibleSections.map((section) => (
-              <MenuItem key={section.id} value={section.id}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  {SECTION_ICONS[section.icon]}
-                  {t(section.labelKey)}
-                </Box>
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      )
-    }
+  const activeTabIndex = useMemo(
+    () => visibleSections.findIndex((s) => s.id === activeSection),
+    [visibleSections, activeSection],
+  )
 
+  const handleTabChange = useCallback(
+    (_: React.SyntheticEvent, newValue: number) => {
+      const section = visibleSections[newValue]
+      if (section) {
+        handleSectionChange(section.id as ClientSection)
+      }
+    },
+    [visibleSections, handleSectionChange],
+  )
+
+  const renderNavigation = useCallback(() => {
     return (
-      <Paper elevation={0} sx={navPanelStyle}>
-        <List sx={{ flex: 1, py: 1 }}>
-          {visibleSections.map((section) => (
-            <Tooltip
-              key={section.id}
-              title={navCollapsed ? t(section.labelKey) : ''}
-              placement="right"
-              arrow
-            >
-              <ListItemButton
-                selected={activeSection === section.id}
-                onClick={() => handleSectionChange(section.id as ClientSection)}
-                sx={listItemStyle}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: navCollapsed ? 0 : 40,
-                    color: activeSection === section.id ? themeColors?.background : 'inherit',
-                  }}
-                >
-                  {SECTION_ICONS[section.icon]}
-                </ListItemIcon>
-                {!navCollapsed && (
-                  <ListItemText
-                    primary={t(section.labelKey)}
-                    sx={{
-                      '& .MuiTypography-root': {
-                        fontSize: '0.875rem',
-                        fontWeight: activeSection === section.id ? 600 : 400,
-                        color: activeSection === section.id ? themeColors?.background : 'inherit',
-                      },
-                    }}
-                  />
-                )}
-              </ListItemButton>
-            </Tooltip>
-          ))}
-        </List>
-        <Box
-          sx={{
-            borderTop: `1px solid ${themeColors?.lightBackground || '#e0e0e0'}`,
-            p: 1,
-            display: 'flex',
-            justifyContent: 'center',
-          }}
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
+        <Tabs
+          value={activeTabIndex}
+          onChange={handleTabChange}
+          variant="scrollable"
+          scrollButtons="auto"
+          sx={tabsSx}
         >
-          <IconButton
-            onClick={handleNavCollapse}
-            size="small"
-            sx={{ color: themeColors?.fontColor }}
-          >
-            {navCollapsed ? <ChevronRight /> : <ChevronLeft />}
-          </IconButton>
-        </Box>
-      </Paper>
+          {visibleSections.map((section) => (
+            <Tab
+              key={section.id}
+              icon={SECTION_ICONS[section.icon] as React.ReactElement}
+              label={t(section.labelKey)}
+              iconPosition="start"
+            />
+          ))}
+        </Tabs>
+      </Box>
     )
-  }, [
-    isMobile,
-    activeSection,
-    navCollapsed,
-    themeColors,
-    t,
-    handleSectionChange,
-    handleNavCollapse,
-    navPanelStyle,
-    listItemStyle,
-    visibleSections,
-  ])
+  }, [activeTabIndex, handleTabChange, tabsSx, visibleSections, t])
 
   return (
     <Card style={applicationStyle.mainCard}>
@@ -458,38 +331,12 @@ const ClientForm: React.FC<ClientFormProps> = ({
                 )}
               </Box>
 
-              {isMobile ? (
-                <Box>
-                  {renderNavigation()}
-                  <Paper elevation={0} sx={{ p: 2 }}>
-                    <ErrorBoundary
-                      FallbackComponent={SectionErrorFallback}
-                      resetKeys={[activeSection]}
-                    >
-                      {renderSectionContent(formik)}
-                    </ErrorBoundary>
-                  </Paper>
-                </Box>
-              ) : (
-                <Box
-                  sx={{
-                    display: 'flex',
-                    minHeight: 600,
-                    border: `1px solid ${themeColors?.lightBackground || '#e0e0e0'}`,
-                    borderRadius: 1,
-                  }}
-                >
-                  {renderNavigation()}
-                  <Box sx={{ flex: 1, p: 3, overflow: 'auto' }}>
-                    <ErrorBoundary
-                      FallbackComponent={SectionErrorFallback}
-                      resetKeys={[activeSection]}
-                    >
-                      {renderSectionContent(formik)}
-                    </ErrorBoundary>
-                  </Box>
-                </Box>
-              )}
+              {renderNavigation()}
+              <Paper elevation={0} sx={{ p: 2, minHeight: 400 }}>
+                <ErrorBoundary FallbackComponent={SectionErrorFallback} resetKeys={[activeSection]}>
+                  {renderSectionContent(formik)}
+                </ErrorBoundary>
+              </Paper>
 
               <Box
                 sx={{

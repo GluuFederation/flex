@@ -96,11 +96,22 @@ const AuthenticationSection: React.FC<SectionProps> = ({
           borderColor: themeColors?.background,
         },
       },
+      ...(selectedTheme === 'darkBlack' && {
+        '& .MuiInputBase-input': {
+          color: `${themeColors?.backgroundBlack} !important`,
+        },
+        '& .MuiInputBase-input.Mui-disabled': {
+          WebkitTextFillColor: `${themeColors?.backgroundBlack} !important`,
+        },
+        '& label': {
+          color: `${themeColors?.backgroundBlack} !important`,
+        },
+      }),
       '& .MuiInputLabel-root.Mui-focused': {
         color: themeColors?.background,
       },
     }),
-    [viewOnly, themeColors],
+    [viewOnly, themeColors, selectedTheme],
   )
 
   const sectionStyle = useMemo(
@@ -109,7 +120,6 @@ const AuthenticationSection: React.FC<SectionProps> = ({
       p: 2,
       borderRadius: 1,
       border: `1px solid ${themeColors?.lightBackground || '#e0e0e0'}`,
-      backgroundColor: themeColors?.lightBackground || '#fafafa',
     }),
     [themeColors],
   )
@@ -118,7 +128,10 @@ const AuthenticationSection: React.FC<SectionProps> = ({
     () => ({
       mb: 2,
       fontWeight: selectedTheme === 'darkBlack' ? 700 : 600,
-      color: selectedTheme === 'darkBlack' ? '#000000' : themeColors?.fontColor || '#333',
+      color:
+        selectedTheme === 'darkBlack'
+          ? `${themeColors?.backgroundBlack} !important`
+          : themeColors?.fontColor || '#333',
       fontSize: '0.95rem',
     }),
     [themeColors, selectedTheme],

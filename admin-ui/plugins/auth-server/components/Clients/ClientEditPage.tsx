@@ -5,45 +5,16 @@ import { useDispatch } from 'react-redux'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import SetTitle from 'Utils/SetTitle'
 import { updateToast } from 'Redux/features/toastSlice'
-import { useGetOauthScopes } from 'JansConfigApi'
 import { useClientActions, useClientById, useUpdateClient } from './hooks'
 import ClientForm from './components/ClientForm'
 import type { ClientFormValues, ModifiedFields } from './types'
-import { transformScopesResponse } from './helper/utils'
 
 const ClientEditPage: React.FC = () => {
   const { t } = useTranslation()
   const { id } = useParams<{ id: string }>()
   const dispatch = useDispatch()
   const { logClientUpdate, navigateToClientList } = useClientActions()
-  const [scopeSearchPattern, setScopeSearchPattern] = useState('')
-
   const { data: client, isLoading: clientLoading } = useClientById(id || '', Boolean(id))
-
-  const scopeQueryParams = useMemo(
-    () => ({
-      limit: 200,
-      pattern: scopeSearchPattern || undefined,
-    }),
-    [scopeSearchPattern],
-  )
-
-  const { data: scopesResponse, isLoading: scopesLoading } = useGetOauthScopes(scopeQueryParams, {
-    query: {
-      refetchOnMount: 'always' as const,
-      refetchOnWindowFocus: false,
-      staleTime: 30000,
-    },
-  })
-
-  const scopes = useMemo(
-    () => transformScopesResponse(scopesResponse?.entries),
-    [scopesResponse?.entries],
-  )
-
-  const handleScopeSearch = useCallback((pattern: string) => {
-    setScopeSearchPattern(pattern)
-  }, [])
 
   const handleSuccess = useCallback(() => {
     navigateToClientList()
@@ -87,9 +58,6 @@ const ClientEditPage: React.FC = () => {
           viewOnly={false}
           onSubmit={handleSubmit}
           onCancel={navigateToClientList}
-          scopes={scopes}
-          scopesLoading={scopesLoading}
-          onScopeSearch={handleScopeSearch}
         />
       )}
     </GluuLoader>

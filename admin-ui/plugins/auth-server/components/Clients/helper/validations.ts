@@ -140,3 +140,18 @@ export function validateAcrLevel(level: number | undefined | null): string | nul
   if (level < -1 || level > 10) return 'ACR level must be between -1 and 10'
   return null
 }
+
+export const clientAddValidationSchema = Yup.object().shape({
+  clientName: Yup.string().required('Client name is required'),
+  clientSecret: Yup.string().required('Client secret is required'),
+  description: Yup.string(),
+  scopes: Yup.array().of(Yup.string()),
+  grantTypes: Yup.array().of(Yup.string()),
+  redirectUris: Yup.array()
+    .of(uriValidation)
+    .test('has-valid-uri', 'At least one valid redirect URI is required', (value) => {
+      if (!value || value.length === 0) return false
+      return value.some((uri) => uri && uri.trim() !== '')
+    }),
+  postLogoutRedirectUris: Yup.array().of(uriValidation),
+})
