@@ -23,14 +23,16 @@ const DashboardChart = ({ statData, startMonth, endMonth }: DashboardChartProps)
 
     let current = moment(startMonth, 'YYYYMM')
     const dateEnd = moment(endMonth, 'YYYYMM')
+    const byMonth = new Map<number, MauStatEntry>()
+    statData.forEach((entry) => byMonth.set(entry.month, entry))
     const prepareStat: MauStatEntry[] = []
 
     while (current.isSameOrBefore(dateEnd, 'month')) {
       const monthNum = parseInt(current.format('YYYYMM'), 10)
-      const available = statData.filter((obj) => obj.month === monthNum)
+      const available = byMonth.get(monthNum)
 
-      if (available.length) {
-        prepareStat.push(available[0])
+      if (available) {
+        prepareStat.push(available)
       } else {
         prepareStat.push({
           month: monthNum,

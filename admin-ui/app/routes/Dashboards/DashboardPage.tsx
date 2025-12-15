@@ -130,20 +130,19 @@ function DashboardPage() {
       return { mauCount: null, tokenCount: null }
     }
 
-    const date = new Date()
-    const currentYear = date.getFullYear()
-    const currentMonth = date.getMonth() + 1
-    const yearMonth = currentYear * 100 + currentMonth
+    const selectedYear = endDate.year()
+    const selectedMonth = endDate.month() + 1
+    const yearMonth = selectedYear * 100 + selectedMonth
 
-    const currentMonthData = mauData.find((item) => item.month === yearMonth)
+    const selectedMonthData = mauData.find((item) => item.month === yearMonth)
 
-    const mau = currentMonthData?.mau
+    const mau = selectedMonthData?.mau
     const token =
-      (currentMonthData?.authz_code_access_token_count || 0) +
-      (currentMonthData?.client_credentials_access_token_count || 0)
+      (selectedMonthData?.authz_code_access_token_count || 0) +
+      (selectedMonthData?.client_credentials_access_token_count || 0)
 
     return { mauCount: mau || null, tokenCount: token || null }
-  }, [mauData])
+  }, [mauData, endDate])
 
   const summaryData = useMemo(() => {
     const baseData = [
