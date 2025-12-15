@@ -694,6 +694,7 @@
     "session_timeout_required_error": "O tempo limite da sessão é obrigatório",
     "additional_parameters_required": "Both key and value are required for each custom parameter.",
     "error_message": "Mensagem de erro",
+    "default_policy_store_is_used": "A interface de administração (Admin UI) já utiliza o repositório de políticas padrão para controle de acesso.",
     "add_service_provider": "Adicionar Provedor de Serviços",
     "delete_script": "Excluir roteiro",
     "edit_service_provider": "Editar Provedor de Serviços",
@@ -1676,10 +1677,14 @@
       "acr": "Référence de classe de contexte d'authentification"
     },
     "cedarlingConfig": {
-      "title": "Configurar o controlo refinado usando Cedarling",
-      "point1": "1. Crie um repositório de políticas utilizando o Agama Lab. Duplique o projeto",
-      "point2": "2.º Copie o URL do PolicyStore e configure.",
-      "note": "Nota: isto irá ajudá-lo a criar o seu próprio projeto cedarling. Pode atualizar funções e permissões através do Agama Lab.",
+      "title": "Configurar a Política de Armazenamento Cedarling",
+      "steps": "Etapas para configurar a URL do Repositório de Políticas Remoto",
+      "point1": "1. Fazer um fork do projeto",
+      "point2": "2. Abrir o repositório bifurcado usando",
+      "point3": "3. Fazer as modificações necessárias nas políticas para o controle de acesso da Admin UI e salvar as alterações.",
+      "point4": "4. Certifique-se de que o nome do host do Endpoint de Configuração do OpenID corresponda ao nome do host do seu Provedor OpenID.",
+      "point5": "5. Copiar a URL do Repositório de Políticas.",
+      "point6": "6. Abra a tela de configuração do Repositório de Políticas Cedarling na Admin UI e adicione a URL do Repositório de Políticas copiada no campo Repositório de Políticas Remoto da Admin UI. Defina o campo Ponto de Recuperação de Políticas como Remoto para usar a URL do Repositório de Políticas remoto para o controle de acesso da interface gráfica.",
       "useRemotePolicyStore": "Recomenda-se definir como Padrão para a produção. Se definido como Padrão, será utilizado o armazenamento da interface administrativa para a autorização do Cedarling. Ative o modo Padrão e utilize o botão de atualização para armazenar ou atualizar as políticas do GitHub no servidor da interface administrativa.",
       "updateRemotePolicyStoreOnServer": "Clique aqui para atualizar o JSON do repositório de políticas padrão com a versão disponível no URL remoto configurado."
     },
