@@ -8,7 +8,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { ThemeContext } from 'Context/theme/themeContext'
-import { Box, Grid, MenuItem, Paper, TablePagination, TextField } from '@mui/material'
+import { Box, Grid, MenuItem, Paper, TablePagination, TextField, Tooltip } from '@mui/material'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -202,9 +202,18 @@ function ClientActiveTokens({ client }) {
                 >
                   {t('titles.filters')}
                 </MaterialButton>
-                <MaterialButton onClick={downloadCSV} startIcon={<GetAppIcon />} sx={{ ml: 2 }}>
-                  {t('titles.export_csv')}
-                </MaterialButton>
+                <Tooltip title={!data || data.length === 0 ? t('messages.no_data_to_export') : ''}>
+                  <span>
+                    <MaterialButton
+                      onClick={downloadCSV}
+                      startIcon={<GetAppIcon />}
+                      disabled={!data || data.length === 0}
+                      sx={{ ml: 2 }}
+                    >
+                      {t('titles.export_csv')}
+                    </MaterialButton>
+                  </span>
+                </Tooltip>
               </Box>
 
               {showFilter && (
