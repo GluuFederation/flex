@@ -54,13 +54,13 @@ function ClientActiveTokens({ client }) {
   const { totalItems } = useSelector((state) => state.oidcReducer.tokens)
 
   const getTokens = useCallback(
-    async (page, limitValue, fieldValuePair) => {
+    (page, limitValue, fieldValuePair) => {
       const tokenOptions = {
         startIndex: parseInt(page),
         limit: limitValue,
         fieldValuePair,
       }
-      await dispatch(getTokenByClient({ action: tokenOptions }))
+      dispatch(getTokenByClient({ action: tokenOptions }))
     },
     [dispatch],
   )
@@ -127,8 +127,8 @@ function ClientActiveTokens({ client }) {
     getTokens(startCount, limit, conditionquery)
   }
 
-  const handleRevokeToken = async (oldData) => {
-    await dispatch(deleteClientToken({ tknCode: oldData.tokenCode }))
+  const handleRevokeToken = (oldData) => {
+    dispatch(deleteClientToken({ tknCode: oldData.tokenCode }))
     const startCount = pageNumber * limit
     getTokens(startCount, limit, `clnId=${client.inum}`)
   }
@@ -191,7 +191,7 @@ function ClientActiveTokens({ client }) {
 
   useEffect(() => {
     getTokens(0, limit, `clnId=${client.inum}`)
-  }, [])
+  }, [getTokens, limit, client.inum])
 
   useEffect(() => {
     if (updatedToken && typeof updatedToken === 'object' && Object.keys(updatedToken).length > 0) {
@@ -199,6 +199,8 @@ function ClientActiveTokens({ client }) {
         ? updatedToken.items
             .map((item) => {
               return {
+                id: item.tokenCode,
+                tokenCode: item.tokenCode,
                 tokenType: item.tokenType,
                 scope: item.scope,
                 deletable: item.deletable,
