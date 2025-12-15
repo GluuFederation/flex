@@ -55,8 +55,6 @@ function ClientListPage() {
   const clientLoading = useSelector((state) => state.oidcReducer.loading)
   const scopeLoading = useSelector((state) => state.scopeReducer.loading)
   const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
-  let clients = [...(nonExtensibleClients ?? [])]
-  clients = clients?.map(addOrg)
   const userAction = {}
   const options = {}
   const myActions = []
@@ -115,7 +113,8 @@ function ClientListPage() {
   let memoLimit = limit
   let memoPattern = pattern
 
-  function addOrg(...args) {
+  const addOrg = useCallback((...args) => {
+    // function addOrg(...args) {
     const client = { ...args[0] }
     let org = '-'
     if (Object.prototype.hasOwnProperty.call(client, 'o')) {
@@ -135,11 +134,17 @@ function ClientListPage() {
     }
     client['organization'] = org
     return client
-  }
+    // }
+  }, [])
 
   function shouldHideOrgColumn(clients) {
     return !clients?.some((client) => client.organization != '-')
   }
+
+  const clients = useMemo(
+    () => nonExtensibleClients.map((client) => addOrg(client)),
+    [nonExtensibleClients, addOrg],
+  )
 
   const filterClientsByScope = useCallback(
     (scopeInum, scopeDn) => {
@@ -254,11 +259,16 @@ function ClientListPage() {
     }
   }, [haveScopeINUMParam, scopeInumParam, dispatch, scopes.length])
 
+  const isScopeLoading = useMemo(
+    () => (haveScopeINUMParam ? scopeLoading && !scopeItem : scopeLoading),
+    [haveScopeINUMParam, scopeLoading, scopeItem],
+  )
+
   useEffect(() => {
-    if (!clientLoading && !scopeLoading) {
+    if (!clientLoading && !isScopeLoading) {
       setIsPageLoading(false)
     }
-  }, [clientLoading, scopeLoading])
+  }, [clientLoading, isScopeLoading])
 
   const scopeClients = useMemo(() => {
     if (!haveScopeINUMParam || !scopeInumParam) {
@@ -266,7 +276,8 @@ function ClientListPage() {
     }
 
     if (scopeItem?.inum === scopeInumParam && Array.isArray(scopeItem.clients)) {
-      return scopeItem.clients
+      // return scopeItem.clients
+      return scopeItem.clients.map(addOrg)
     }
 
     const clientsForScope = findAndFilterScopeClients(
@@ -464,7 +475,7 @@ function ClientListPage() {
             }}
             columns={tableColumns}
             data={haveScopeINUMParam ? scopeClients : clients}
-            isLoading={isPageLoading || clientLoading || scopeLoading}
+            isLoading={isPageLoading || clientLoading || isScopeLoading}
             title=""
             actions={myActions}
             options={{
