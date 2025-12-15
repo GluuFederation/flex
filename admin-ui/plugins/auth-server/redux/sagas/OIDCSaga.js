@@ -57,7 +57,7 @@ export function* getOauthOpenidClients({ payload }) {
     yield call(postUserAction, audit)
     return data
   } catch (e) {
-    console.log(e)
+    yield put(updateToast(true, 'error'))
     yield put(getOpenidClientsResponse({ data: null }))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -81,7 +81,6 @@ export function* addNewClient({ payload }) {
     yield put(updateToast(true, 'error'))
     yield put(addClientResponse(null))
     if (isFourZeroOneError(e)) {
-      console.log(JSON.stringify(e))
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
@@ -104,7 +103,6 @@ export function* editAClient({ payload }) {
     return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
-    console.log(e)
     yield put(editClientResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -169,7 +167,12 @@ export function* deleteClientToken({ payload }) {
     yield put(updateToast(true, 'success'))
     yield put(deleteClientTokenResponse())
   } catch (error) {
+    yield put(updateToast(true, 'error'))
     yield put(deleteClientTokenResponse())
+    if (isFourZeroOneError(error)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
   }
 }
 

@@ -737,7 +737,7 @@
     "save_before_test": "Veuillez enregistrer la configuration avant de tester",
     "no_configuration_loaded": "Aucune configuration chargée",
     "insufficient_permissions_to_modify": "Vous n'avez pas la permission de modifier cette configuration",
-    "insufficient_token_read_permission": "Permissions insuffisantes: L'accès en lecture au jeton est requis. Veuillez contacter votre administrateur pour accorder la portée token.readonly au client admin-ui.",
+    "insufficient_token_read_permission": "L'accès aux données de jeton n'est pas accordé.",
     "http_method_error": "Veuillez sélectionner une méthode HTTP.",
     "display_name_error": "Veuillez entrer un nom d'affichage.",
     "url_error": "Veuillez entrer une URL.",

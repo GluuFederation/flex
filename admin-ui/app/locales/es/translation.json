@@ -802,7 +802,7 @@
     "save_before_test": "Por favor, guarde la configuración antes de probar",
     "no_configuration_loaded": "No se cargó ninguna configuración",
     "insufficient_permissions_to_modify": "No tiene permiso para modificar esta configuración",
-    "insufficient_token_read_permission": "Permisos insuficientes: Se requiere acceso de lectura al token. Por favor, contacte a su administrador para otorgar el alcance token.readonly al cliente admin-ui.",
+    "insufficient_token_read_permission": "El acceso a los datos del token no está concedido.",
     "action_commit_question": "Registro de auditoría: ¿Desea aplicar los cambios realizados en esta página?",
     "licenseAuditLog": "¿Realmente desea restablecer la licencia existente?",
     "action_deletion_question": "¿Realmente desea eliminar este elemento?",

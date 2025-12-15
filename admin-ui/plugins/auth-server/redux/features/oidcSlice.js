@@ -97,16 +97,19 @@ const oidcSlice = createSlice({
     getTokenByClientResponse: (state, action) => {
       state.isTokenLoading = false
       if (action.payload?.data) {
-        console.log(action.payload.data.entries)
         state.tokens.items = action.payload?.data?.entries || []
         state.tokens.totalItems = action.payload?.data?.totalEntriesCount || 0
         state.tokens.entriesCount = action.payload?.data?.entriesCount || 0
+      } else if (action.payload === null) {
+        state.tokens.items = []
+        state.tokens.totalItems = 0
+        state.tokens.entriesCount = 0
       }
     },
     deleteClientToken: (state) => {
       state.isTokenLoading = true
     },
-    deleteClientTokenResponse: (state, action) => {
+    deleteClientTokenResponse: (state) => {
       state.isTokenLoading = false
     },
   },

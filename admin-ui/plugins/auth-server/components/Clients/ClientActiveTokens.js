@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react'
+import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
 import MaterialTable from '@material-table/core'
 import { Card, CardBody } from '../../../../app/components'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
@@ -24,14 +24,18 @@ import FilterListIcon from '@mui/icons-material/FilterList'
 import GetAppIcon from '@mui/icons-material/GetApp'
 import customColors from '@/customColors'
 function ClientActiveTokens({ client }) {
-  const myActions = []
-  const options = {}
+  const myActions = useMemo(() => [], [])
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
-  const bgThemeColor = { background: themeColors.background }
+  const bgThemeColor = useMemo(
+    () => ({
+      background: themeColors.background,
+    }),
+    [themeColors.background],
+  )
   const [data, setData] = useState([])
 
   const [showFilter, setShowFilter] = useState(false)
@@ -49,23 +53,29 @@ function ClientActiveTokens({ client }) {
 
   const { totalItems } = useSelector((state) => state.oidcReducer.tokens)
 
-  const onPageChangeClick = (page) => {
-    const startCount = page * limit
-    setPageNumber(page)
-    let conditionquery = `clnId=${client.inum}`
-    if (pattern.dateAfter && pattern.dateBefore) {
-      conditionquery += `,${searchFilter}>${dayjs(pattern.dateAfter).format('YYYY-MM-DD')}`
-      conditionquery += `,${searchFilter}<${dayjs(pattern.dateBefore).format('YYYY-MM-DD')}`
-    }
+  const onPageChangeClick = useCallback(
+    (page) => {
+      const startCount = page * limit
+      setPageNumber(page)
+      let conditionquery = `clnId=${client.inum}`
+      if (pattern.dateAfter && pattern.dateBefore) {
+        conditionquery += `,${searchFilter}>${dayjs(pattern.dateAfter).format('YYYY-MM-DD')}`
+        conditionquery += `,${searchFilter}<${dayjs(pattern.dateBefore).format('YYYY-MM-DD')}`
+      }
 
-    getTokens(parseInt(startCount), limit, `${conditionquery}`)
-  }
+      getTokens(parseInt(startCount), limit, `${conditionquery}`)
+    },
+    [client.inum, getTokens, limit, pattern.dateAfter, pattern.dateBefore, searchFilter],
+  )
 
-  const onRowCountChangeClick = (count) => {
-    setPageNumber(0)
-    setLimit(count)
-    getTokens(0, limit, `clnId=${client.inum}`)
-  }
+  const onRowCountChangeClick = useCallback(
+    (count) => {
+      setPageNumber(0)
+      setLimit(count)
+      getTokens(0, count, `clnId=${client.inum}`)
+    },
+    [client.inum, getTokens],
+  )
 
   const PaperContainer = useCallback((props) => <Paper {...props} elevation={0} />, [])
 
@@ -81,7 +91,7 @@ function ClientActiveTokens({ client }) {
         onRowsPerPageChange={(prop, count) => onRowCountChangeClick(count.props.value)}
       />
     ),
-    [pageNumber, totalItems, onPageChangeClick, limit, onRowCountChangeClick],
+    [limit, onPageChangeClick, onRowCountChangeClick, pageNumber, totalItems],
   )
 
   const DetailPanel = useCallback((rowData) => {
@@ -111,52 +121,73 @@ function ClientActiveTokens({ client }) {
     getTokens(startCount, limit, `clnId=${client.inum}`)
   }
 
-  const getTokens = async (page, limit, fieldValuePair) => {
-    options['startIndex'] = parseInt(page)
-    options['limit'] = limit
-    options['fieldValuePair'] = fieldValuePair
-    await dispatch(getTokenByClient({ action: options }))
-  }
+  const getTokens = useCallback(
+    async (page, limitValue, fieldValuePair) => {
+      const tokenOptions = {
+        startIndex: parseInt(page),
+        limit: limitValue,
+        fieldValuePair,
+      }
+      await dispatch(getTokenByClient({ action: tokenOptions }))
+    },
+    [dispatch],
+  )
 
   // Convert data array into CSV string
   const convertToCSV = (data) => {
-    const keys = Object.keys(data[0]).filter((item) => item !== 'attributes') // Get the headers from the first object
-    const header = keys
-      .filter((item) => item !== 'attributes')
-      .map((item) => item.replace(/-/g, ' ').toUpperCase())
-      .join(',') // Create a comma-separated string of headers
+    if (
+      !data ||
+      !Array.isArray(data) ||
+      data.length === 0 ||
+      data[0] == null ||
+      typeof data[0] !== 'object' ||
+      Array.isArray(data[0])
+    ) {
+      return ''
+    }
+
+    const keys = Object.keys(data[0]).filter((item) => item !== 'attributes')
+    const header = keys.map((item) => item.replace(/-/g, ' ').toUpperCase()).join(',')
 
     const updateData = data.map((row) => {
       return {
-        scope: row.scope,
-        deletable: row.deletable,
-        grantType: row.grantType,
-        expirationDate: row.expirationDate,
-        creationDate: row.creationDate,
-        tokenType: row.tokenType,
+        scope: row?.scope || '',
+        deletable: row?.deletable || '',
+        grantType: row?.grantType || '',
+        expirationDate: row?.expirationDate || '',
+        creationDate: row?.creationDate || '',
+        tokenType: row?.tokenType || '',
       }
     })
 
     const rows = updateData.map((row) => {
-      return keys.map((key) => row[key]).join(',') // Create a comma-separated string for each row
+      return keys.map((key) => (row[key] != null ? String(row[key]) : '')).join(',')
     })
 
-    return [header, ...rows].join('\n') // Combine header and rows, separated by newlines
+    return [header, ...rows].join('\n')
   }
 
   // Function to handle file download
   const downloadCSV = () => {
+    if (!data || data.length === 0) {
+      return
+    }
+
     const csv = convertToCSV(data)
-    const blob = new Blob([csv], { type: 'text/csv' }) // Create a blob with the CSV data
+    if (!csv) {
+      return
+    }
+
+    const blob = new Blob([csv], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
 
-    // Create a temporary link element to trigger the download
     const link = document.createElement('a')
     link.href = url
-    link.setAttribute('download', `client-tokens.csv`) // Set the file name
+    link.setAttribute('download', `client-tokens.csv`)
     document.body.appendChild(link)
     link.click()
-    document.body.removeChild(link) // Clean up
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
   }
 
   useEffect(() => {
@@ -164,9 +195,9 @@ function ClientActiveTokens({ client }) {
   }, [])
 
   useEffect(() => {
-    if (updatedToken && Object.keys(updatedToken).length > 0) {
+    if (updatedToken && typeof updatedToken === 'object' && Object.keys(updatedToken).length > 0) {
       const result = updatedToken?.items?.length
-        ? updatedToken?.items
+        ? updatedToken.items
             .map((item) => {
               return {
                 tokenType: item.tokenType,
@@ -179,15 +210,34 @@ function ClientActiveTokens({ client }) {
               }
             })
             .sort((a, b) => {
-              // Compare based on creationDate
               return moment(b.creationDate, 'YYYY/DD/MM HH:mm:ss').diff(
                 moment(a.creationDate, 'YYYY/DD/MM HH:mm:ss'),
               )
             })
         : []
       setData(result)
+    } else if (!updatedToken || (updatedToken && !updatedToken.items)) {
+      setData([])
     }
   }, [updatedToken])
+
+  const isDataEmpty = useMemo(() => !data || data.length === 0, [data])
+
+  const columns = useMemo(
+    () => [
+      {
+        title: `${t('fields.creationDate')}`,
+        field: 'creationDate',
+      },
+      { title: `${t('fields.token_type')}`, field: 'tokenType' },
+      { title: `${t('fields.grant_type')}`, field: 'grantType' },
+      {
+        title: `${t('fields.expiration_date')}`,
+        field: 'expirationDate',
+      },
+    ],
+    [t],
+  )
 
   return (
     <GluuLoader blocking={loading}>
@@ -202,12 +252,12 @@ function ClientActiveTokens({ client }) {
                 >
                   {t('titles.filters')}
                 </MaterialButton>
-                <Tooltip title={!data || data.length === 0 ? t('messages.no_data_to_export') : ''}>
+                <Tooltip title={isDataEmpty ? t('messages.no_data_to_export') : ''}>
                   <span>
                     <MaterialButton
                       onClick={downloadCSV}
                       startIcon={<GetAppIcon />}
-                      disabled={!data || data.length === 0}
+                      disabled={isDataEmpty}
                       sx={{ ml: 2 }}
                     >
                       {t('titles.export_csv')}
@@ -319,26 +369,14 @@ function ClientActiveTokens({ client }) {
                 Container: PaperContainer,
                 Pagination: PaginationWrapper,
               }}
-              columns={[
-                {
-                  title: `${t('fields.creationDate')}`,
-                  field: 'creationDate',
-                },
-                { title: `${t('fields.token_type')}`, field: 'tokenType' },
-                { title: `${t('fields.grant_type')}`, field: 'grantType' },
-
-                {
-                  title: `${t('fields.expiration_date')}`,
-                  field: 'expirationDate',
-                },
-              ]}
+              columns={columns}
               data={data}
               isLoading={loading}
               title=""
               actions={myActions}
               options={{
                 search: false,
-                idSynonym: 'inum',
+                idSynonym: 'id',
                 searchFieldAlignment: 'left',
                 selection: false,
                 pageSize: limit,

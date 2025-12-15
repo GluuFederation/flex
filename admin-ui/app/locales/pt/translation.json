@@ -738,7 +738,7 @@
     "save_before_test": "Por favor, salve a configuração antes de testar",
     "no_configuration_loaded": "Nenhuma configuração carregada",
     "insufficient_permissions_to_modify": "Você não tem permissão para modificar esta configuração",
-    "insufficient_token_read_permission": "Permissões insuficientes: O acesso de leitura ao token é necessário. Entre em contato com seu administrador para conceder o escopo token.readonly ao cliente admin-ui.",
+    "insufficient_token_read_permission": "O acesso aos dados do token não foi concedido.",
     "action_commit_question": "Registro de auditoria: deseja aplicar as alterações feitas nesta página?",
     "licenseAuditLog": "Você realmente deseja redefinir a licença existente?",
     "action_deletion_question": "Tem certeza que quer deletar este item?",
