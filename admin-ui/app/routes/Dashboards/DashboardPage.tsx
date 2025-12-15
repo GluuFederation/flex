@@ -236,7 +236,7 @@ function DashboardPage() {
 
     return allServices.filter((serviceConfig) => {
       const status = getServiceStatus(serviceConfig.key)
-      return status === 'up'
+      return status === 'up' || status === 'degraded'
     })
   }, [services, getServiceStatus])
 
