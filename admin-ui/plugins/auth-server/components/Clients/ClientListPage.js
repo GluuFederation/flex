@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useMemo, useCallback, useRef } from 'react'
+import React, { useState, useEffect, useContext, useMemo, useCallback } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { useLocation } from 'react-router-dom'
@@ -68,9 +68,6 @@ function ClientListPage() {
     data: [],
     show: false,
   })
-
-  const optionsRef = useRef({})
-  const userActionRef = useRef({})
 
   const clientResourceId = useMemo(() => ADMIN_UI_RESOURCES.Clients, [])
   const selectedTheme = useMemo(() => theme?.state?.theme || 'light', [theme?.state?.theme])
@@ -213,12 +210,15 @@ function ClientListPage() {
   const toggle = useCallback(() => setModal((prev) => !prev), [])
 
   const makeOptions = useCallback(() => {
-    optionsRef.current[LIMIT] = limit
-    if (pattern) {
-      optionsRef.current[PATTERN] = pattern
-    } else {
-      delete optionsRef.current[PATTERN]
+    const baseOptions = {
+      [LIMIT]: limit,
     }
+
+    if (pattern && pattern !== '') {
+      return { ...baseOptions, [PATTERN]: pattern }
+    }
+
+    return baseOptions
   }, [limit, pattern])
 
   const handleOptionsChange = useCallback(
@@ -226,10 +226,11 @@ function ClientListPage() {
       if (event.target.name === 'limit') {
         setLimit(event.target.value)
       } else if (event.target.name === 'pattern') {
-        setPattern(event.target.value)
+        const nextPattern = event.target.value
+        setPattern(nextPattern)
         if (event.keyCode === 13) {
-          makeOptions()
-          dispatch(getOpenidClients({ action: optionsRef.current }))
+          const newOptions = makeOptions()
+          dispatch(getOpenidClients({ action: newOptions }))
         }
       }
     },
@@ -260,8 +261,9 @@ function ClientListPage() {
 
   const onDeletionConfirmed = useCallback(
     (message) => {
-      buildPayload(userActionRef.current, message, item)
-      dispatch(deleteClient({ action: userActionRef.current }))
+      const userAction = {}
+      buildPayload(userAction, message, item)
+      dispatch(deleteClient({ action: userAction }))
       if (!haveScopeINUMParam) {
         navigateToRoute(ROUTES.AUTH_SERVER_CLIENTS_LIST)
       }
@@ -272,31 +274,37 @@ function ClientListPage() {
 
   const onPageChangeClick = useCallback(
     (page) => {
-      makeOptions()
+      const baseOptions = makeOptions()
       const startCount = page * limit
-      optionsRef.current.startIndex = parseInt(startCount, 10)
-      optionsRef.current.limit = limit
+      const updatedOptions = {
+        ...baseOptions,
+        startIndex: parseInt(startCount, 10),
+        limit,
+      }
       setPageNumber(page)
-      dispatch(getOpenidClients({ action: optionsRef.current }))
+      dispatch(getOpenidClients({ action: updatedOptions }))
     },
     [makeOptions, limit, dispatch],
   )
 
   const onRowCountChangeClick = useCallback(
     (count) => {
-      makeOptions()
-      optionsRef.current.startIndex = 0
-      optionsRef.current.limit = count
+      const baseOptions = makeOptions()
+      const updatedOptions = {
+        ...baseOptions,
+        startIndex: 0,
+        limit: count,
+      }
       setPageNumber(0)
       setLimit(count)
-      dispatch(getOpenidClients({ action: optionsRef.current }))
+      dispatch(getOpenidClients({ action: updatedOptions }))
     },
     [makeOptions, dispatch],
   )
 
   const handleRefresh = useCallback(() => {
-    makeOptions()
-    dispatch(getOpenidClients({ action: optionsRef.current }))
+    const newOptions = makeOptions()
+    dispatch(getOpenidClients({ action: newOptions }))
   }, [makeOptions, dispatch])
 
   const tableColumns = useMemo(
@@ -518,8 +526,8 @@ function ClientListPage() {
         dispatch(getScopes({ action: scopeApiAction }))
 
         if (nonExtensibleClients.length === 0) {
-          makeOptions()
-          dispatch(getOpenidClients({ action: optionsRef.current }))
+          const options = makeOptions()
+          dispatch(getOpenidClients({ action: options }))
         }
         return
       }
@@ -529,8 +537,8 @@ function ClientListPage() {
       }
     } else {
       if (nonExtensibleClients.length === 0) {
-        makeOptions()
-        dispatch(getOpenidClients({ action: optionsRef.current }))
+        const options = makeOptions()
+        dispatch(getOpenidClients({ action: options }))
       }
 
       if (scopes.length === 0) {
