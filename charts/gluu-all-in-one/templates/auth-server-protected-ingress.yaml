@@ -17,7 +17,6 @@ metadata:
 {{ toYaml (index .Values "auth-server" "ingress" "authServerProtectedTokenLabels") | indent 4 }}
 {{- end }}
   annotations:
-    nginx.org/ssl-services: "auth-server"
     nginx.ingress.kubernetes.io/proxy-next-upstream: "error timeout invalid_header http_500 http_502 http_503 http_504"
 {{- if index .Values "auth-server" "ingress" "authServerAdditionalAnnotations" }}
 {{ toYaml (index .Values "auth-server" "ingress" "authServerAdditionalAnnotations") | indent 4 }}
@@ -73,7 +72,6 @@ metadata:
 {{ toYaml (index .Values "auth-server" "ingress" "authServerProtectedRegisterLabels") | indent 4 }}
 {{- end }}
   annotations:
-    nginx.org/ssl-services: "auth-server"
     nginx.ingress.kubernetes.io/proxy-next-upstream: "error timeout invalid_header http_500 http_502 http_503 http_504"
 {{- if index .Values "auth-server" "ingress" "authServerAdditionalAnnotations" }}
 {{ toYaml (index .Values "auth-server" "ingress" "authServerAdditionalAnnotations") | indent 4 }}
