@@ -33,6 +33,7 @@ import GluuTabs from 'Routes/Apps/Gluu/GluuTabs'
 import { toast } from 'react-toastify'
 import customColors from '@/customColors'
 import { useQueryClient } from '@tanstack/react-query'
+import { AXIOS_INSTANCE } from '../../../../api-client'
 import {
   useGetAgamaPrj,
   useDeleteAgamaPrj,
@@ -156,28 +157,6 @@ function AgamaListPage(): React.ReactElement {
     },
   })
 
-  const uploadProjectMutation = usePostAgamaPrj({
-    mutation: {
-      onSuccess: async (_response: string) => {
-        dispatch(updateToast(true, 'success'))
-        await queryClient.invalidateQueries({ queryKey: getGetAgamaPrjQueryKey() })
-        await logAgamaCreation({} as Deployment, `Uploaded Agama project: ${projectName}`)
-        setProjectName('')
-        setShowAddModal(false)
-        setSelectedFile(null)
-        setSelectedFileName(null)
-        setSHAfile(null)
-        setShaStatus(false)
-        setUploadLoading(false)
-      },
-      onError: (error: unknown) => {
-        console.error('Error uploading project:', error)
-        dispatch(updateToast(true, 'error', 'Failed to upload project'))
-        setUploadLoading(false)
-      },
-    },
-  })
-
   const deployProjectMutation = usePostAgamaPrj({
     mutation: {
       onSuccess: async (_response: string) => {
@@ -224,28 +203,6 @@ function AgamaListPage(): React.ReactElement {
     }
   }, [dispatch, configuration, canReadAuth])
 
-  function convertFileToByteArray(file: File): Promise<Uint8Array> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader()
-      reader.readAsArrayBuffer(file)
-      reader.onload = () => {
-        const byteArray = new Uint8Array(reader.result as ArrayBuffer)
-        resolve(byteArray)
-      }
-      reader.onerror = (error) => {
-        reject(error)
-      }
-    })
-  }
-
-  const convertByteArrayToBase64 = (byteArray: Uint8Array): string => {
-    let binary = ''
-    for (let i = 0; i < byteArray.length; i++) {
-      binary += String.fromCharCode(byteArray[i])
-    }
-    return btoa(binary)
-  }
-
   useEffect(() => {
     if (agamaRepositoriesData) {
       setAgamaRepositoriesList(
@@ -265,13 +222,27 @@ function AgamaListPage(): React.ReactElement {
     if (!selectedFile) return
 
     setUploadLoading(true)
-    const file = await convertFileToByteArray(selectedFile)
-    const base64Data = convertByteArrayToBase64(file)
-
-    await uploadProjectMutation.mutateAsync({
-      name: projectName,
-      data: base64Data,
-    })
+    try {
+      await AXIOS_INSTANCE.post(
+        `/api/v1/agama-deployment/${encodeURIComponent(projectName)}`,
+        selectedFile,
+        { headers: { 'Content-Type': 'application/zip' } },
+      )
+      dispatch(updateToast(true, 'success'))
+      await queryClient.invalidateQueries({ queryKey: getGetAgamaPrjQueryKey() })
+      await logAgamaCreation({} as Deployment, `Uploaded Agama project: ${projectName}`)
+      setProjectName('')
+      setShowAddModal(false)
+      setSelectedFile(null)
+      setSelectedFileName(null)
+      setSHAfile(null)
+      setShaStatus(false)
+    } catch (error) {
+      console.error('Error uploading project:', error)
+      dispatch(updateToast(true, 'error', 'Failed to upload project'))
+    } finally {
+      setUploadLoading(false)
+    }
   }
 
   const onDrop = useCallback(async (acceptedFiles: File[]): Promise<void> => {
