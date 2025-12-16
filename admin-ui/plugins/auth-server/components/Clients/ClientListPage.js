@@ -228,7 +228,7 @@ function ClientListPage() {
       } else if (event.target.name === 'pattern') {
         const nextPattern = event.target.value
         setPattern(nextPattern)
-        if (event.keyCode === 13) {
+        if (event.key === 'Enter') {
           const newOptions = {
             [LIMIT]: limit,
             ...(nextPattern && nextPattern !== '' ? { [PATTERN]: nextPattern } : {}),
