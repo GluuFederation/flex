@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useMemo, useCallback } from 'react'
+import React, { useState, useEffect, useContext, useMemo, useCallback, useRef } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { useLocation } from 'react-router-dom'
@@ -41,32 +41,51 @@ import customColors from '@/customColors'
 
 function ClientListPage() {
   const { t } = useTranslation()
+  const dispatch = useDispatch()
+  const { navigateToRoute } = useAppNavigation()
+  const { search } = useLocation()
+  const theme = useContext(ThemeContext)
   const {
     hasCedarReadPermission,
     hasCedarWritePermission,
     hasCedarDeletePermission,
     authorizeHelper,
   } = useCedarling()
-  const dispatch = useDispatch()
+
   const nonExtensibleClients = useSelector((state) => state.oidcReducer.items) || []
   const { totalItems } = useSelector((state) => state.oidcReducer)
   const scopes = useSelector((state) => state.scopeReducer.items) || []
   const scopeItem = useSelector((state) => state.scopeReducer.item)
   const clientLoading = useSelector((state) => state.oidcReducer.loading)
   const scopeLoading = useSelector((state) => state.scopeReducer.loading)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
-  const userAction = {}
-  const options = {}
-  const myActions = []
-  const { navigateToRoute } = useAppNavigation()
-  const { search } = useLocation()
 
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
-  const themeColors = getThemeColor(selectedTheme)
-  const bgThemeColor = { background: themeColors.background }
+  const [pageNumber, setPageNumber] = useState(0)
+  const [limit, setLimit] = useState(10)
+  const [pattern, setPattern] = useState(null)
+  const [item, setItem] = useState({})
+  const [modal, setModal] = useState(false)
+  const [scopesModal, setScopesModal] = useState({
+    data: [],
+    show: false,
+  })
 
-  const clientResourceId = ADMIN_UI_RESOURCES.Clients
+  const optionsRef = useRef({})
+  const userActionRef = useRef({})
+
+  const clientResourceId = useMemo(() => ADMIN_UI_RESOURCES.Clients, [])
+  const selectedTheme = useMemo(() => theme?.state?.theme || 'light', [theme?.state?.theme])
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+  const bgThemeColor = useMemo(
+    () => ({ background: themeColors.background }),
+    [themeColors.background],
+  )
+
+  const scopeInumParam = useMemo(() => {
+    const params = new URLSearchParams(search)
+    return params.get('scopeInum')
+  }, [search])
+  const haveScopeINUMParam = useMemo(() => !!scopeInumParam, [scopeInumParam])
+
   const clientScopes = useMemo(
     () => CEDAR_RESOURCE_SCOPES[clientResourceId] || [],
     [clientResourceId],
@@ -87,63 +106,32 @@ function ClientListPage() {
     [hasCedarDeletePermission, clientResourceId],
   )
 
-  const scopeInumParam = useMemo(() => {
-    const params = new URLSearchParams(search)
-    return params.get('scopeInum')
-  }, [search])
-  const haveScopeINUMParam = !!scopeInumParam
-  const [isPageLoading, setIsPageLoading] = useState(true)
-  const [pageNumber, setPageNumber] = useState(0)
-  SetTitle(t('titles.oidc_clients'))
-
-  useEffect(() => {
-    authorizeHelper(clientScopes)
-  }, [authorizeHelper, clientScopes])
-
-  const [scopesModal, setScopesModal] = useState({
-    data: [],
-    show: false,
-  })
-  const [limit, setLimit] = useState(10)
-  const [pattern, setPattern] = useState(null)
-  const [item, setItem] = useState({})
-  const [modal, setModal] = useState(false)
-  const toggle = () => setModal(!modal)
-
-  let memoLimit = limit
-  let memoPattern = pattern
-
-  const addOrg = useCallback((...args) => {
-    // function addOrg(...args) {
-    const client = { ...args[0] }
+  const addOrg = useCallback((client) => {
+    if (!client) return client
+    const clientCopy = { ...client }
     let org = '-'
-    if (Object.prototype.hasOwnProperty.call(client, 'o')) {
-      client['organization'] = client.o
-      return client
+    if (Object.prototype.hasOwnProperty.call(clientCopy, 'o')) {
+      clientCopy.organization = clientCopy.o
+      return clientCopy
     }
     if (
-      Object.prototype.hasOwnProperty.call(client, 'customAttributes') &&
-      Array.isArray(client.customAttributes)
+      Object.prototype.hasOwnProperty.call(clientCopy, 'customAttributes') &&
+      Array.isArray(clientCopy.customAttributes)
     ) {
-      const results = client.customAttributes.filter(
-        (item) => item.name == 'o' || item.name == 'organization',
+      const results = clientCopy.customAttributes.filter(
+        (item) => item.name === 'o' || item.name === 'organization',
       )
       if (results.length !== 0) {
         org = results[0].values[0]
       }
     }
-    client['organization'] = org
-    return client
-    // }
+    clientCopy.organization = org
+    return clientCopy
   }, [])
 
-  function shouldHideOrgColumn(clients) {
-    return !clients?.some((client) => client.organization != '-')
-  }
-
-  const clients = useMemo(
-    () => nonExtensibleClients.map((client) => addOrg(client)),
-    [nonExtensibleClients, addOrg],
+  const shouldHideOrgColumn = useCallback(
+    (clientsList) => !clientsList?.some((client) => client.organization !== '-'),
+    [],
   )
 
   const filterClientsByScope = useCallback(
@@ -165,110 +153,15 @@ function ClientListPage() {
     [nonExtensibleClients],
   )
 
-  const handler = () => {
-    setScopesModal({
-      data: [],
-      show: false,
-    })
-  }
-  const setScopeData = (data) => {
-    setScopesModal({
-      data: data,
-      show: true,
-    })
-  }
-
-  const tableColumns = [
-    {
-      title: `${t('fields.inum')}`,
-      field: 'inum',
-      hidden: true,
-      sorting: true,
-      searchable: true,
-    },
-    { title: `${t('fields.client_id')}`, field: 'inum' },
-    { title: `${t('fields.client_name')}`, field: 'clientName' },
-    {
-      title: `${t('fields.grant_types')}`,
-      field: 'grantTypes',
-      render: (rowData) => {
-        return rowData?.grantTypes?.map((data) => {
-          return (
-            <div key={data} style={{ maxWidth: 140, overflow: 'auto' }}>
-              <Badge color={`primary-${selectedTheme}`}>{data}</Badge>
-            </div>
-          )
-        })
-      },
-    },
-    {
-      title: `${t('fields.scopes')}`,
-      field: 'scopes',
-      render: (rowData) => {
-        return (
-          <Link className="common-link" onClick={() => setScopeData(rowData.scopes)}>
-            {rowData.scopes?.length || '0'}
-          </Link>
-        )
-      },
-    },
-    {
-      title: `${t('fields.is_trusted_client')}`,
-      field: 'trustedClient',
-      type: 'boolean',
-      render: (rowData) => (
-        <Badge color={getTrustedTheme(rowData.trustedClient)}>
-          {rowData.trustedClient ? t('options.yes') : t('options.no')}
-        </Badge>
-      ),
-    },
-    {
-      title: `${t('fields.organization')}`,
-      field: 'organization',
-      hidden: shouldHideOrgColumn(clients),
-      sorting: true,
-      searchable: true,
-    },
-  ]
-
-  useEffect(() => {
-    if (haveScopeINUMParam && scopeInumParam) {
-      if (scopes.length === 0) {
-        setIsPageLoading(true)
-        const scopeApiAction = {
-          [LIMIT]: 100,
-          [WITH_ASSOCIATED_CLIENTS]: true,
-        }
-        dispatch(getScopes({ action: scopeApiAction }))
-        return
-      }
-
-      setIsPageLoading(true)
-      dispatch(getScopeByInum({ action: scopeInumParam }))
-    } else {
-      setIsPageLoading(true)
-      makeOptions()
-      dispatch(getOpenidClients({ action: options }))
-
-      buildPayload(userAction, '', options)
-      const scopesApiAction = {
-        [LIMIT]: 100,
-        [WITH_ASSOCIATED_CLIENTS]: true,
-      }
-      dispatch(getScopes({ action: scopesApiAction }))
-    }
-  }, [haveScopeINUMParam, scopeInumParam, dispatch, scopes.length])
-
-  const isScopeLoading = useMemo(
-    () => (haveScopeINUMParam ? scopeLoading && !scopeItem : scopeLoading),
-    [haveScopeINUMParam, scopeLoading, scopeItem],
+  const getTrustedTheme = useCallback(
+    (status) => (status ? `primary-${selectedTheme}` : 'secondary'),
+    [selectedTheme],
   )
 
-  useEffect(() => {
-    if (!clientLoading && !isScopeLoading) {
-      setIsPageLoading(false)
-    }
-  }, [clientLoading, isScopeLoading])
+  const clients = useMemo(
+    () => nonExtensibleClients.map((client) => addOrg(client)),
+    [nonExtensibleClients, addOrg],
+  )
 
   const scopeClients = useMemo(() => {
     if (!haveScopeINUMParam || !scopeInumParam) {
@@ -276,7 +169,6 @@ function ClientListPage() {
     }
 
     if (scopeItem?.inum === scopeInumParam && Array.isArray(scopeItem.clients)) {
-      // return scopeItem.clients
       return scopeItem.clients.map(addOrg)
     }
 
@@ -299,200 +191,393 @@ function ClientListPage() {
     addOrg,
   ])
 
-  useEffect(() => {
-    dispatch(resetUMAResources())
-  }, [])
-  useEffect(() => {}, [cedarPermissions])
+  const isScopeLoading = useMemo(
+    () => haveScopeINUMParam && scopeLoading && scopeClients.length === 0,
+    [haveScopeINUMParam, scopeLoading, scopeClients.length],
+  )
 
-  function handleOptionsChange(event) {
-    if (event.target.name == 'limit') {
-      memoLimit = event.target.value
-    } else if (event.target.name == 'pattern') {
-      memoPattern = event.target.value
-      if (event.keyCode === 13) {
-        makeOptions()
-        dispatch(getOpenidClients({ action: options }))
-      }
-    }
-  }
-  function handleGoToClientEditPage(row, edition) {
-    dispatch(viewOnly({ view: edition }))
-    dispatch(setCurrentItem({ item: row }))
-    return navigateToRoute(ROUTES.AUTH_SERVER_CLIENT_EDIT(row.inum.substring(0, 4)))
-  }
-  function handleGoToClientAddPage() {
-    return navigateToRoute(ROUTES.AUTH_SERVER_CLIENT_ADD)
-  }
-  function handleClientDelete(row) {
-    dispatch(setCurrentItem({ item: row }))
-    setItem(row)
-    toggle()
-  }
-  function makeOptions() {
-    setLimit(memoLimit)
-    setPattern(memoPattern)
-    options[LIMIT] = memoLimit
-    if (memoPattern) {
-      options[PATTERN] = memoPattern
-    }
-  }
-  function onDeletionConfirmed(message) {
-    buildPayload(userAction, message, item)
-    dispatch(deleteClient({ action: userAction }))
-    if (!haveScopeINUMParam) {
-      navigateToRoute(ROUTES.AUTH_SERVER_CLIENTS_LIST)
-    }
-    toggle()
-  }
-
-  if (canWriteClient) {
-    myActions.push({
-      icon: 'add',
-      tooltip: `${t('messages.add_client')}`,
-      iconProps: { color: 'primary' },
-      ['data-testid']: `${t('messages.add_client')}`,
-      isFreeAction: true,
-      onClick: () => handleGoToClientAddPage(),
+  const handleCloseScopesModal = useCallback(() => {
+    setScopesModal({
+      data: [],
+      show: false,
     })
-    myActions.push((rowData) => ({
-      icon: 'edit',
-      iconProps: {
-        id: 'editClient' + rowData.inum,
-        style: { color: customColors.darkGray },
-      },
-      tooltip: `${t('messages.edit_client')}`,
-      onClick: (event, rowData) => handleGoToClientEditPage(rowData, false),
-      disabled: false,
-    }))
-  }
+  }, [])
 
-  if (canReadClient) {
-    myActions.push({
-      icon: () => (
-        <GluuAdvancedSearch
-          limitId={LIMIT_ID}
-          patternId={PATTERN_ID}
-          limit={limit}
-          pattern={pattern}
-          handler={handleOptionsChange}
-          showLimit={false}
-        />
-      ),
-      tooltip: `${t('messages.advanced_search')}`,
-      iconProps: {
-        color: 'primary',
-        style: {
-          borderColor: customColors.lightBlue,
+  const handleSetScopeData = useCallback((data) => {
+    setScopesModal({
+      data: data,
+      show: true,
+    })
+  }, [])
+
+  const toggle = useCallback(() => setModal((prev) => !prev), [])
+
+  const makeOptions = useCallback(() => {
+    optionsRef.current[LIMIT] = limit
+    if (pattern) {
+      optionsRef.current[PATTERN] = pattern
+    } else {
+      delete optionsRef.current[PATTERN]
+    }
+  }, [limit, pattern])
+
+  const handleOptionsChange = useCallback(
+    (event) => {
+      if (event.target.name === 'limit') {
+        setLimit(event.target.value)
+      } else if (event.target.name === 'pattern') {
+        setPattern(event.target.value)
+        if (event.keyCode === 13) {
+          makeOptions()
+          dispatch(getOpenidClients({ action: optionsRef.current }))
+        }
+      }
+    },
+    [makeOptions, dispatch],
+  )
+
+  const handleGoToClientEditPage = useCallback(
+    (row, edition) => {
+      dispatch(viewOnly({ view: edition }))
+      dispatch(setCurrentItem({ item: row }))
+      return navigateToRoute(ROUTES.AUTH_SERVER_CLIENT_EDIT(row.inum.substring(0, 4)))
+    },
+    [dispatch, navigateToRoute],
+  )
+
+  const handleGoToClientAddPage = useCallback(() => {
+    return navigateToRoute(ROUTES.AUTH_SERVER_CLIENT_ADD)
+  }, [navigateToRoute])
+
+  const handleClientDelete = useCallback(
+    (row) => {
+      dispatch(setCurrentItem({ item: row }))
+      setItem(row)
+      toggle()
+    },
+    [dispatch, toggle],
+  )
+
+  const onDeletionConfirmed = useCallback(
+    (message) => {
+      buildPayload(userActionRef.current, message, item)
+      dispatch(deleteClient({ action: userActionRef.current }))
+      if (!haveScopeINUMParam) {
+        navigateToRoute(ROUTES.AUTH_SERVER_CLIENTS_LIST)
+      }
+      toggle()
+    },
+    [dispatch, haveScopeINUMParam, item, navigateToRoute, toggle],
+  )
+
+  const onPageChangeClick = useCallback(
+    (page) => {
+      makeOptions()
+      const startCount = page * limit
+      optionsRef.current.startIndex = parseInt(startCount, 10)
+      optionsRef.current.limit = limit
+      setPageNumber(page)
+      dispatch(getOpenidClients({ action: optionsRef.current }))
+    },
+    [makeOptions, limit, dispatch],
+  )
+
+  const onRowCountChangeClick = useCallback(
+    (count) => {
+      makeOptions()
+      optionsRef.current.startIndex = 0
+      optionsRef.current.limit = count
+      setPageNumber(0)
+      setLimit(count)
+      dispatch(getOpenidClients({ action: optionsRef.current }))
+    },
+    [makeOptions, dispatch],
+  )
+
+  const handleRefresh = useCallback(() => {
+    makeOptions()
+    dispatch(getOpenidClients({ action: optionsRef.current }))
+  }, [makeOptions, dispatch])
+
+  const tableColumns = useMemo(
+    () => [
+      {
+        title: `${t('fields.inum')}`,
+        field: 'inum',
+        hidden: true,
+        sorting: true,
+        searchable: true,
+      },
+      { title: `${t('fields.client_id')}`, field: 'inum' },
+      { title: `${t('fields.client_name')}`, field: 'clientName' },
+      {
+        title: `${t('fields.grant_types')}`,
+        field: 'grantTypes',
+        render: (rowData) => {
+          return rowData?.grantTypes?.map((data) => {
+            return (
+              <div key={data} style={{ maxWidth: 140, overflow: 'auto' }}>
+                <Badge color={`primary-${selectedTheme}`}>{data}</Badge>
+              </div>
+            )
+          })
         },
       },
-      isFreeAction: true,
-      onClick: () => {},
-    })
-    myActions.push({
-      icon: 'refresh',
-      tooltip: `${t('messages.refresh')}`,
-      iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
-      ['data-testid']: `${t('messages.refresh')}`,
-      isFreeAction: true,
-      onClick: () => {
-        makeOptions()
-        // buildPayload(userAction, SEARCHING_OIDC_CLIENTS, options)
-        dispatch(getOpenidClients({ action: options }))
+      {
+        title: `${t('fields.scopes')}`,
+        field: 'scopes',
+        render: (rowData) => {
+          return (
+            <Link className="common-link" onClick={() => handleSetScopeData(rowData.scopes)}>
+              {rowData.scopes?.length || '0'}
+            </Link>
+          )
+        },
       },
-    })
-    myActions.push((rowData) => ({
-      icon: 'visibility',
-      iconProps: {
-        id: 'viewClient' + rowData.inum,
-        style: { color: customColors.darkGray },
+      {
+        title: `${t('fields.is_trusted_client')}`,
+        field: 'trustedClient',
+        type: 'boolean',
+        render: (rowData) => (
+          <Badge color={getTrustedTheme(rowData.trustedClient)}>
+            {rowData.trustedClient ? t('options.yes') : t('options.no')}
+          </Badge>
+        ),
       },
-      tooltip: `${t('messages.view_client_details')}`,
-      onClick: (event, rowData) => handleGoToClientEditPage(rowData, true),
-      disabled: false,
-    }))
-  }
-  if (canDeleteClient) {
-    myActions.push((rowData) => ({
-      icon: () => <DeleteOutlined />,
-      iconProps: {
-        color: 'secondary',
-        id: 'deleteClient' + rowData.inum,
-        style: { color: customColors.darkGray },
+      {
+        title: `${t('fields.organization')}`,
+        field: 'organization',
+        hidden: shouldHideOrgColumn(clients),
+        sorting: true,
+        searchable: true,
       },
-      tooltip: rowData.deletable
-        ? `${t('messages.delete_client')}`
-        : `${t('messages.not_deletable_client')}`,
-      onClick: (event, rowData) => handleClientDelete(rowData),
-      disabled: false,
-    }))
-  }
+    ],
+    [t, selectedTheme, getTrustedTheme, handleSetScopeData, shouldHideOrgColumn, clients],
+  )
 
-  function getTrustedTheme(status) {
-    if (status) {
-      return `primary-${selectedTheme}`
-    } else {
-      return 'secondary'
+  const tableOptions = useMemo(
+    () => ({
+      search: false,
+      idSynonym: 'inum',
+      searchFieldAlignment: 'left',
+      selection: false,
+      pageSize: limit,
+      headerStyle: {
+        ...applicationStyle.tableHeaderStyle,
+        ...bgThemeColor,
+      },
+      actionsColumnIndex: -1,
+    }),
+    [limit, bgThemeColor],
+  )
+
+  const ContainerComponent = useCallback((props) => <Paper {...props} elevation={0} />, [])
+
+  const PaginationComponent = useCallback(
+    () => (
+      <TablePagination
+        count={totalItems}
+        page={pageNumber}
+        onPageChange={(_prop, page) => {
+          onPageChangeClick(page)
+        }}
+        rowsPerPage={limit}
+        onRowsPerPageChange={(_prop, count) => onRowCountChangeClick(count.props.value)}
+      />
+    ),
+    [totalItems, pageNumber, limit, onPageChangeClick, onRowCountChangeClick],
+  )
+
+  const tableComponents = useMemo(
+    () => ({
+      Container: ContainerComponent,
+      Pagination: PaginationComponent,
+    }),
+    [ContainerComponent, PaginationComponent],
+  )
+
+  const detailPanel = useCallback(
+    (rowData) => <ClientDetailPage row={rowData.rowData} scopes={scopes} />,
+    [scopes],
+  )
+
+  const myActions = useMemo(() => {
+    const actions = []
+
+    if (canWriteClient) {
+      actions.push({
+        'icon': 'add',
+        'tooltip': `${t('messages.add_client')}`,
+        'iconProps': { color: 'primary' },
+        'data-testid': `${t('messages.add_client')}`,
+        'isFreeAction': true,
+        'onClick': handleGoToClientAddPage,
+      })
+      actions.push((rowData) => ({
+        icon: 'edit',
+        iconProps: {
+          id: `editClient${rowData.inum}`,
+          style: { color: customColors.darkGray },
+        },
+        tooltip: `${t('messages.edit_client')}`,
+        onClick: (_event, rowData) => handleGoToClientEditPage(rowData, false),
+        disabled: false,
+      }))
     }
-  }
 
-  const onPageChangeClick = (page) => {
-    makeOptions()
-    const startCount = page * limit
-    options['startIndex'] = parseInt(startCount)
-    options['limit'] = limit
-    setPageNumber(page)
-    dispatch(getOpenidClients({ action: options }))
-  }
-  const onRowCountChangeClick = (count) => {
-    makeOptions()
-    options['startIndex'] = 0
-    options['limit'] = count
-    setPageNumber(0)
-    setLimit(count)
-    dispatch(getOpenidClients({ action: options }))
-  }
+    if (canReadClient) {
+      actions.push({
+        icon: () => (
+          <GluuAdvancedSearch
+            limitId={LIMIT_ID}
+            patternId={PATTERN_ID}
+            limit={limit}
+            pattern={pattern}
+            handler={handleOptionsChange}
+            showLimit={false}
+          />
+        ),
+        tooltip: `${t('messages.advanced_search')}`,
+        iconProps: {
+          color: 'primary',
+          style: {
+            borderColor: customColors.lightBlue,
+          },
+        },
+        isFreeAction: true,
+        onClick: () => {},
+      })
+      actions.push({
+        'icon': 'refresh',
+        'tooltip': `${t('messages.refresh')}`,
+        'iconProps': { color: 'primary', style: { color: customColors.lightBlue } },
+        'data-testid': `${t('messages.refresh')}`,
+        'isFreeAction': true,
+        'onClick': handleRefresh,
+      })
+      actions.push((rowData) => ({
+        icon: 'visibility',
+        iconProps: {
+          id: `viewClient${rowData.inum}`,
+          style: { color: customColors.darkGray },
+        },
+        tooltip: `${t('messages.view_client_details')}`,
+        onClick: (_event, rowData) => handleGoToClientEditPage(rowData, true),
+        disabled: false,
+      }))
+    }
+
+    if (canDeleteClient) {
+      actions.push((rowData) => ({
+        icon: () => <DeleteOutlined />,
+        iconProps: {
+          color: 'secondary',
+          id: `deleteClient${rowData.inum}`,
+          style: { color: customColors.darkGray },
+        },
+        tooltip: rowData.deletable
+          ? `${t('messages.delete_client')}`
+          : `${t('messages.not_deletable_client')}`,
+        onClick: (_event, rowData) => handleClientDelete(rowData),
+        disabled: false,
+      }))
+    }
+
+    return actions
+  }, [
+    canWriteClient,
+    canReadClient,
+    canDeleteClient,
+    t,
+    limit,
+    pattern,
+    handleGoToClientAddPage,
+    handleGoToClientEditPage,
+    handleClientDelete,
+    handleOptionsChange,
+    handleRefresh,
+  ])
+
+  SetTitle(t('titles.oidc_clients'))
+
+  useEffect(() => {
+    authorizeHelper(clientScopes)
+  }, [authorizeHelper, clientScopes])
+
+  useEffect(() => {
+    dispatch(resetUMAResources())
+  }, [dispatch])
+
+  useEffect(() => {
+    if (haveScopeINUMParam && scopeInumParam) {
+      if (scopes.length === 0) {
+        const scopeApiAction = {
+          [LIMIT]: 100,
+          [WITH_ASSOCIATED_CLIENTS]: true,
+        }
+        dispatch(getScopes({ action: scopeApiAction }))
+
+        if (nonExtensibleClients.length === 0) {
+          makeOptions()
+          dispatch(getOpenidClients({ action: optionsRef.current }))
+        }
+        return
+      }
+
+      if (!scopeItem || scopeItem.inum !== scopeInumParam) {
+        dispatch(getScopeByInum({ action: scopeInumParam }))
+      }
+    } else {
+      if (nonExtensibleClients.length === 0) {
+        makeOptions()
+        dispatch(getOpenidClients({ action: optionsRef.current }))
+      }
+
+      if (scopes.length === 0) {
+        buildPayload(userActionRef.current, '', optionsRef.current)
+        const scopesApiAction = {
+          [LIMIT]: 100,
+          [WITH_ASSOCIATED_CLIENTS]: true,
+        }
+        dispatch(getScopes({ action: scopesApiAction }))
+      }
+    }
+  }, [
+    haveScopeINUMParam,
+    scopeInumParam,
+    dispatch,
+    scopes.length,
+    nonExtensibleClients.length,
+    scopeItem,
+    makeOptions,
+  ])
+
+  const tableData = useMemo(
+    () => (haveScopeINUMParam ? scopeClients : clients),
+    [haveScopeINUMParam, scopeClients, clients],
+  )
+
+  const isLoading = useMemo(() => clientLoading || isScopeLoading, [clientLoading, isScopeLoading])
 
   return (
     <Card style={applicationStyle.mainCard}>
-      <ClientShowScopes handler={handler} isOpen={scopesModal?.show} data={scopesModal?.data} />
+      <ClientShowScopes
+        handler={handleCloseScopesModal}
+        isOpen={scopesModal?.show}
+        data={scopesModal?.data}
+      />
       <CardBody>
         <GluuViewWrapper canShow={canReadClient}>
           <MaterialTable
-            key={limit ? limit : 0}
-            components={{
-              Container: (props) => <Paper {...props} elevation={0} />,
-              Pagination: () => (
-                <TablePagination
-                  count={totalItems}
-                  page={pageNumber}
-                  onPageChange={(prop, page) => {
-                    onPageChangeClick(page)
-                  }}
-                  rowsPerPage={limit}
-                  onRowsPerPageChange={(prop, count) => onRowCountChangeClick(count.props.value)}
-                />
-              ),
-            }}
+            key={limit || 0}
+            components={tableComponents}
             columns={tableColumns}
-            data={haveScopeINUMParam ? scopeClients : clients}
-            isLoading={isPageLoading || clientLoading || isScopeLoading}
+            data={tableData}
+            isLoading={isLoading}
             title=""
             actions={myActions}
-            options={{
-              search: false,
-              idSynonym: 'inum',
-              searchFieldAlignment: 'left',
-              selection: false,
-              pageSize: limit,
-              headerStyle: {
-                ...applicationStyle.tableHeaderStyle,
-                ...bgThemeColor,
-              },
-              actionsColumnIndex: -1,
-            }}
-            detailPanel={(rowData) => {
-              return <ClientDetailPage row={rowData.rowData} scopes={scopes} />
-            }}
+            options={tableOptions}
+            detailPanel={detailPanel}
           />
         </GluuViewWrapper>
         {canDeleteClient && (
