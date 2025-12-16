@@ -229,12 +229,15 @@ function ClientListPage() {
         const nextPattern = event.target.value
         setPattern(nextPattern)
         if (event.keyCode === 13) {
-          const newOptions = makeOptions()
+          const newOptions = {
+            [LIMIT]: limit,
+            ...(nextPattern && nextPattern !== '' ? { [PATTERN]: nextPattern } : {}),
+          }
           dispatch(getOpenidClients({ action: newOptions }))
         }
       }
     },
-    [makeOptions, dispatch],
+    [limit, dispatch],
   )
 
   const handleGoToClientEditPage = useCallback(
@@ -524,47 +527,45 @@ function ClientListPage() {
     dispatch(resetUMAResources())
   }, [dispatch])
 
+  // Normal clients mode: load clients list when there's no scope filter
   useEffect(() => {
-    if (haveScopeINUMParam && scopeInumParam) {
-      if (scopes.length === 0) {
-        const scopeApiAction = {
-          [LIMIT]: 100,
-          [WITH_ASSOCIATED_CLIENTS]: true,
-        }
-        dispatch(getScopes({ action: scopeApiAction }))
+    if (haveScopeINUMParam) return
 
-        if (nonExtensibleClients.length === 0) {
-          const options = makeOptions()
-          dispatch(getOpenidClients({ action: options }))
-        }
-        return
-      }
+    const options = makeOptions()
+    dispatch(getOpenidClients({ action: options }))
+  }, [haveScopeINUMParam, makeOptions, dispatch])
 
-      if (!scopeItem || scopeItem.inum !== scopeInumParam) {
-        dispatch(getScopeByInum({ action: scopeInumParam }))
-      }
-    } else {
-      if (nonExtensibleClients.length === 0) {
-        const options = makeOptions()
-        dispatch(getOpenidClients({ action: options }))
-      }
+  useEffect(() => {
+    if (scopes.length > 0) return
 
-      if (scopes.length === 0) {
-        const scopesApiAction = {
-          [LIMIT]: 100,
-          [WITH_ASSOCIATED_CLIENTS]: true,
-        }
-        dispatch(getScopes({ action: scopesApiAction }))
-      }
+    const scopesApiAction = {
+      [LIMIT]: 100,
+      [WITH_ASSOCIATED_CLIENTS]: true,
+    }
+    dispatch(getScopes({ action: scopesApiAction }))
+  }, [scopes.length, dispatch])
+
+  useEffect(() => {
+    if (!haveScopeINUMParam || !scopeInumParam) return
+
+    if (scopes.length === 0) return
+
+    if (nonExtensibleClients.length === 0) {
+      const options = makeOptions()
+      dispatch(getOpenidClients({ action: options }))
+    }
+
+    if (!scopeItem || scopeItem.inum !== scopeInumParam) {
+      dispatch(getScopeByInum({ action: scopeInumParam }))
     }
   }, [
     haveScopeINUMParam,
     scopeInumParam,
-    dispatch,
     scopes.length,
     nonExtensibleClients.length,
     scopeItem,
     makeOptions,
+    dispatch,
   ])
 
   const tableData = useMemo(
