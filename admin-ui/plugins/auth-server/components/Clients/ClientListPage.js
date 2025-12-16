@@ -384,7 +384,7 @@ function ClientListPage() {
   const PaginationComponent = useCallback(
     () => (
       <TablePagination
-        count={totalItems}
+        count={haveScopeINUMParam ? scopeClients.length : totalItems}
         page={pageNumber}
         onPageChange={(_prop, page) => {
           onPageChangeClick(page)
@@ -393,15 +393,23 @@ function ClientListPage() {
         onRowsPerPageChange={(_prop, count) => onRowCountChangeClick(count.props.value)}
       />
     ),
-    [totalItems, pageNumber, limit, onPageChangeClick, onRowCountChangeClick],
+    [
+      haveScopeINUMParam,
+      scopeClients.length,
+      totalItems,
+      pageNumber,
+      limit,
+      onPageChangeClick,
+      onRowCountChangeClick,
+    ],
   )
 
   const tableComponents = useMemo(
     () => ({
       Container: ContainerComponent,
-      Pagination: PaginationComponent,
+      Pagination: haveScopeINUMParam ? () => null : PaginationComponent,
     }),
-    [ContainerComponent, PaginationComponent],
+    [ContainerComponent, PaginationComponent, haveScopeINUMParam],
   )
 
   const detailPanel = useCallback(
