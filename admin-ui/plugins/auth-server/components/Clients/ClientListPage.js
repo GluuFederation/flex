@@ -229,12 +229,15 @@ function ClientListPage() {
         const nextPattern = event.target.value
         setPattern(nextPattern)
         if (event.keyCode === 13) {
-          const newOptions = makeOptions()
+          const newOptions = {
+            [LIMIT]: limit,
+            ...(nextPattern && nextPattern !== '' ? { [PATTERN]: nextPattern } : {}),
+          }
           dispatch(getOpenidClients({ action: newOptions }))
         }
       }
     },
-    [makeOptions, dispatch],
+    [limit, dispatch],
   )
 
   const handleGoToClientEditPage = useCallback(
