@@ -534,7 +534,6 @@ function ClientListPage() {
       }
 
       if (scopes.length === 0) {
-        buildPayload(userActionRef.current, '', optionsRef.current)
         const scopesApiAction = {
           [LIMIT]: 100,
           [WITH_ASSOCIATED_CLIENTS]: true,
