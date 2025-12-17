@@ -39,9 +39,6 @@ import {
   useDeleteAgamaPrj,
   getGetAgamaPrjQueryKey,
   useGetAgamaRepositories,
-  usePostAgamaPrj,
-  getAgamaProject,
-  getGetAgamaProjectQueryKey,
   type Deployment,
 } from 'JansConfigApi'
 import type {
@@ -154,28 +151,6 @@ function AgamaListPage(): React.ReactElement {
   } = useGetAgamaRepositories({
     query: {
       enabled: false, // Only fetch when explicitly triggered
-    },
-  })
-
-  const deployProjectMutation = usePostAgamaPrj({
-    mutation: {
-      onSuccess: async (_response: string) => {
-        dispatch(updateToast(true, 'success'))
-        await queryClient.invalidateQueries({ queryKey: getGetAgamaPrjQueryKey() })
-        await logAgamaCreation(
-          {} as Deployment,
-          `Deployed community Agama project: ${repoName || 'Unknown'}`,
-        )
-        setShowConfigModal(false)
-        setShowAddModal(false)
-        setRepoName(null)
-        setFileLoading(false)
-      },
-      onError: (error: unknown) => {
-        console.error('Error deploying project:', error)
-        toast.error('File not found or deployment failed')
-        setFileLoading(false)
-      },
     },
   })
 
@@ -538,26 +513,44 @@ function AgamaListPage(): React.ReactElement {
 
     setFileLoading(true)
     const downloadUrl = repo['download-link']
-    setProjectName(repo['repository-name'])
+    const projectNameToUse = repo['repository-name']
+    setProjectName(projectNameToUse)
 
     try {
-      const downloadResult = await queryClient.fetchQuery({
-        queryKey: getGetAgamaProjectQueryKey({ downloadLink: encodeURIComponent(downloadUrl) }),
-        queryFn: ({ signal }) =>
-          getAgamaProject({ downloadLink: encodeURIComponent(downloadUrl) }, undefined, signal),
-        staleTime: 0, // Always fetch fresh, don't use cache
+      const downloadResponse = await AXIOS_INSTANCE.get(`/api/v1/agama-repo/download`, {
+        params: { downloadLink: downloadUrl },
       })
 
-      if (!downloadResult) {
+      if (!downloadResponse.data) {
         throw new Error('Failed to download project')
       }
+      const base64Data = downloadResponse.data as string
+      const binaryString = atob(base64Data)
+      const bytes = new Uint8Array(binaryString.length)
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i)
+      }
 
-      const base64Data = downloadResult as unknown as string
-
-      await deployProjectMutation.mutateAsync({
-        name: repo['repository-name'],
-        data: base64Data,
+      const projectBlob = new Blob([bytes], { type: 'application/zip' })
+      const projectFile = new File([projectBlob], `${projectNameToUse}.gama`, {
+        type: 'application/zip',
       })
+      await AXIOS_INSTANCE.post(
+        `/api/v1/agama-deployment/${encodeURIComponent(projectNameToUse)}`,
+        projectFile,
+        { headers: { 'Content-Type': 'application/zip' } },
+      )
+
+      dispatch(updateToast(true, 'success'))
+      await queryClient.invalidateQueries({ queryKey: getGetAgamaPrjQueryKey() })
+      await logAgamaCreation(
+        {} as Deployment,
+        `Deployed community Agama project: ${projectNameToUse}`,
+      )
+      setShowConfigModal(false)
+      setShowAddModal(false)
+      setRepoName(null)
+      setFileLoading(false)
     } catch (error) {
       console.error('Error deploying project:', error)
       toast.error('File not found or deployment failed')
