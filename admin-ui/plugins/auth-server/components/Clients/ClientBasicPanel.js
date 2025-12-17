@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState, useMemo } from 'react'
 import { Col, Container, FormGroup, Input, InputGroup, CustomInput } from 'Components'
 import IconButton from '@mui/material/IconButton'
 import Visibility from '@mui/icons-material/Visibility'
@@ -59,7 +59,16 @@ const ClientBasicPanel = ({
   const scopeOptions = client?.scopes?.length ? clientScopeOptions : scopes
   const { t } = useTranslation()
 
-  const tokenEndpointAuthMethod = oidcConfiguration?.tokenEndpointAuthMethodsSupported || []
+  const tokenEndpointAuthMethod = useMemo(() => {
+    const supportedMethods = oidcConfiguration?.tokenEndpointAuthMethodsSupported || []
+    const currentValue = formik.values.tokenEndpointAuthMethod
+
+    if (currentValue && !supportedMethods.includes(currentValue)) {
+      return [...supportedMethods, currentValue]
+    }
+
+    return supportedMethods
+  }, [oidcConfiguration?.tokenEndpointAuthMethodsSupported, formik.values.tokenEndpointAuthMethod])
 
   const [showClientSecret, setShowClientSecret] = useState(false)
   const [userScopeAction] = useState({
