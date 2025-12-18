@@ -58,7 +58,6 @@ const oidcSlice = createSlice({
     },
     editClient: (state) => {
       state.loading = true
-      state.items = []
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
     },
@@ -88,6 +87,8 @@ const oidcSlice = createSlice({
     setCurrentItem: (state, action) => {
       state.item = action.payload?.item
       state.loading = false
+      state.saveOperationFlag = false
+      state.errorInSaveOperationFlag = false
     },
     viewOnly: (state, action) => {
       state.loading = false
