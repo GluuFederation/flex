@@ -1,31 +1,71 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Spinner } from 'reactstrap'
 import { Badge } from 'Components'
-import { useSelector } from 'react-redux'
 import { ThemeContext } from 'Context/theme/themeContext'
+import { AXIOS_INSTANCE } from '../../../../api-client'
+import { getClientScopeByInum } from '../../../../app/utils/Util'
 
 function ClientShowScopes({ handler, data, isOpen }) {
   const { t } = useTranslation()
-  const scopes = useSelector((state) => state.scopeReducer.items)
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
-  const clientScopes = data
-    ? scopes.filter((item) => data.includes(item.dn, 0)).map((item) => item.id)
-    : []
+  const [fetchedScopes, setFetchedScopes] = useState([])
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (!isOpen || !data || data.length === 0) {
+      setFetchedScopes([])
+      return
+    }
+
+    const fetchScopesForClient = async () => {
+      setLoading(true)
+
+      const scopeInums = data
+        .map((scopeDn) => getClientScopeByInum(scopeDn))
+        .filter((inum) => inum !== null && inum !== undefined)
+
+      if (scopeInums.length === 0) {
+        setFetchedScopes([])
+        setLoading(false)
+        return
+      }
+
+      try {
+        const response = await AXIOS_INSTANCE.get('/api/v1/scopes', {
+          params: {
+            pattern: scopeInums.join(','),
+            limit: scopeInums.length,
+          },
+        })
+        const scopeResults = response.data?.entries || response.data || []
+        setFetchedScopes(Array.isArray(scopeResults) ? scopeResults : [])
+      } catch (error) {
+        console.error('Error fetching scopes:', error)
+        setFetchedScopes([])
+      }
+
+      setLoading(false)
+    }
+
+    fetchScopesForClient()
+  }, [isOpen, data])
 
   return (
     <Modal isOpen={isOpen} toggle={handler} className="modal-outline-primary">
       <ModalHeader>Scopes</ModalHeader>
       <ModalBody>
-        {clientScopes.length > 0 ? (
-          clientScopes?.map((scope, key) => {
-            return (
-              <div key={key}>
-                <Badge color={`primary-${selectedTheme}`}>{scope}</Badge>
-              </div>
-            )
-          })
+        {loading ? (
+          <div className="text-center">
+            <Spinner color="primary" />
+          </div>
+        ) : fetchedScopes.length > 0 ? (
+          fetchedScopes.map((scope, key) => (
+            <div key={key}>
+              <Badge color={`primary-${selectedTheme}`}>{scope.id || scope.displayName}</Badge>
+            </div>
+          ))
         ) : (
           <div>{t('messages.no_scope_in_client')}</div>
         )}
