@@ -16,6 +16,7 @@ function ClientShowScopes({ handler, data, isOpen }) {
   useEffect(() => {
     if (!isOpen || !data || data.length === 0) {
       setFetchedScopes([])
+      setLoading(false)
       return
     }
 
@@ -24,7 +25,7 @@ function ClientShowScopes({ handler, data, isOpen }) {
 
       const scopeInums = data
         .map((scopeDn) => getClientScopeByInum(scopeDn))
-        .filter((inum) => inum !== null && inum !== undefined)
+        .filter((inum) => inum !== null && inum !== undefined && inum !== '')
 
       if (scopeInums.length === 0) {
         setFetchedScopes([])
