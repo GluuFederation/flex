@@ -61,8 +61,8 @@ function ClientShowScopes({ handler, data, isOpen }) {
             <Spinner color="primary" />
           </div>
         ) : fetchedScopes.length > 0 ? (
-          fetchedScopes.map((scope, key) => (
-            <div key={key}>
+          fetchedScopes.map((scope, index) => (
+            <div key={scope.inum || scope.id || index}>
               <Badge color={`primary-${selectedTheme}`}>{scope.id || scope.displayName}</Badge>
             </div>
           ))
