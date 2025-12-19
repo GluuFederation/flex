@@ -22,9 +22,7 @@ function ClientShowScopes({ handler, data, isOpen }: ClientShowScopesProps): Rea
     if (!data || data.length === 0) {
       return []
     }
-    return data
-      .map((scopeDn) => getClientScopeByInum(scopeDn))
-      .filter((inum) => inum !== null && inum !== undefined && inum !== '')
+    return data.map((scopeDn) => getClientScopeByInum(scopeDn)).filter(Boolean)
   }, [data])
 
   const {
@@ -34,7 +32,6 @@ function ClientShowScopes({ handler, data, isOpen }: ClientShowScopesProps): Rea
   } = useGetOauthScopes(
     {
       pattern: scopeInums.join(','),
-      limit: scopeInums.length || 10,
     },
     {
       query: {
