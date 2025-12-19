@@ -48,7 +48,7 @@ function ClientShowScopes({ handler, data, isOpen }: ClientShowScopesProps): Rea
 
   return (
     <Modal isOpen={isOpen} toggle={handler} className="modal-outline-primary">
-      <ModalHeader>Scopes</ModalHeader>
+      <ModalHeader>{t('fields.scopes')}</ModalHeader>
       <ModalBody>
         {loading ? (
           <div className="text-center">
@@ -57,7 +57,7 @@ function ClientShowScopes({ handler, data, isOpen }: ClientShowScopesProps): Rea
         ) : fetchedScopes.length > 0 ? (
           fetchedScopes.map((scope, index) => (
             <div key={scope.inum || scope.id || index}>
-              <Badge color={`primary-${selectedTheme}`}>{scope.id || scope.displayName}</Badge>
+              <Badge color={`primary-${selectedTheme}`}>{scope.displayName || scope.id}</Badge>
             </div>
           ))
         ) : (
