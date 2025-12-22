@@ -1,0 +1,4082 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Gluu Flex Project Deployment and Operation References">
+      
+      
+        <meta name="author" content="Gluu, Inc.">
+      
+      
+        <link rel="canonical" href="https://docs.gluu.org/v5.15.0/admin/recipes/getting-started-rancher/">
+      
+      
+        <link rel="prev" href="../">
+      
+      
+        <link rel="next" href="../testing-flex-saml-sso-sptest/">
+      
+      
+      <link rel="icon" href="../../../assets/logo/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+    
+    
+      
+        <title>Getting Started with Rancher - Gluu Flex Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../css/timeago.css">
+    
+      <link rel="stylesheet" href="../../../css/tabs.css">
+    
+      <link rel="stylesheet" href="../../../stylesheets/mermaid-extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="green">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#overview" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Gluu Flex Documentation" class="md-header__button md-logo" aria-label="Gluu Flex Documentation" data-md-component="logo">
+      
+  <img src="../../../assets/logo/gluu.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Gluu Flex Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Getting Started with Rancher
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="green"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="green"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="green" data-md-color-accent="green"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/GluuFederation/flex" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Overview
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../install/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Installation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Administration
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../reference/kubernetes/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../openbanking/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Open Banking
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../solo/solo-getting-started/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Gluu Solo
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Gluu Flex Documentation" class="md-nav__button md-logo" aria-label="Gluu Flex Documentation" data-md-component="logo">
+      
+  <img src="../../../assets/logo/gluu.png" alt="logo">
+
+    </a>
+    Gluu Flex Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/GluuFederation/flex" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../install/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Installation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../install/agama/prerequisites/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Prerequisites
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../install/helm-install/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Helm Deployments
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Helm Deployments
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../install/helm-install/local/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Local Kubernetes Cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../install/helm-install/amazon-eks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Amazon EKS
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../install/helm-install/google-gke/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Google GKE
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../install/helm-install/microsoft-azure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Microsoft Azure AKS
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../install/helm-install/rancher/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rancher Marketplace
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Docker Deployments
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            Docker Deployments
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../install/docker-install/quick-start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Quick Start
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../install/docker-install/compose/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Docker compose
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    VM Installation
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            VM Installation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../install/vm-install/vm-requirements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    VM System Requirements
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../install/vm-install/ubuntu/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ubuntu
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../install/vm-install/rhel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    RHEL
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../install/vm-install/suse/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SUSE
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Administration
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Administration
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../kubernetes-ops/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    K8s Operations Guide
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            K8s Operations Guide
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../kubernetes-ops/upgrade/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Upgrade
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../kubernetes-ops/admin-ui-private/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Admin-UI Private
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Admin UI
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            Admin UI
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../admin-ui/introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_2" id="__nav_3_4_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Design & Implementation
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            Design & Implementation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../admin-ui/auth-server-interaction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Auth Server Interaction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../admin-ui/access-control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Access Control
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../admin-ui/configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../admin-ui/logs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Logs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_5" id="__nav_3_4_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Left Navigation Menu
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_5">
+            <span class="md-nav__icon md-icon"></span>
+            Left Navigation Menu
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../admin-ui/left-nav-menu/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Left Navigation Menu
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../admin-ui/home/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../admin-ui/auth-server-menu/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Auth server
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../admin-ui/user-management-menu/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Users
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../admin-ui/scripts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Scripts
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../admin-ui/user-claims/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    User Claims
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../admin-ui/services-menu/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Services
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../admin-ui/smtp-menu/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SMTP
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../admin-ui/scim-menu/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SCIM
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../admin-ui/fido-menu/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    FIDO
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../admin-ui/saml-menu/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SAML
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../admin-ui/jans-lock-menu/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Jans Lock
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../admin-ui/faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    FAQ & Troubleshooting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Flex Recipes
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            Flex Recipes
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Getting Started with Rancher
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Getting Started with Rancher
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-blocks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Building Blocks
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scope
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#audience" class="md-nav__link">
+    <span class="md-ellipsis">
+      Audience
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#technical-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Technical overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#config-and-secret-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      Config and Secret keys
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Config and Secret keys">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gluu-config-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      Gluu Config Keys
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gluu-secret-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      Gluu Secret Keys
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#install-postgresql-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      Install PostgreSQL database
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-mysql-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      Install MySQL database
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#connecting-to-the-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Connecting to the Setup
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-configuration-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing Configuration endpoints
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#login-and-add-a-new-user" class="md-nav__link">
+    <span class="md-ellipsis">
+      Login and Add a New User
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-casa" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing Casa
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enabling-two-factor-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      Enabling Two-Factor Authentication
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-apache-oidc-locally" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing Apache OIDC Locally
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#register-an-openid-connect-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      Register an OpenID Connect client
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Register an OpenID Connect client">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#admin-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      Admin UI
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jans-tui" class="md-nav__link">
+    <span class="md-ellipsis">
+      Jans TUI
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-an-application-container" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create an Application Container
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-an-authenticating-reverse-proxy-container" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create an Authenticating Reverse Proxy Container
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing-flex-saml-sso-sptest/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Testing Flex SAML SSO with sptest
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../add-claims-to-token/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Add required claims to id-token
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gluu-migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Migrating from Gluu4
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../reference/kubernetes/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Reference
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/kubernetes/helm-chart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Flex Helm Chart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/kubernetes/docker-flex-monolith/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Flex Monolith Docker Image
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/kubernetes/docker-admin-ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Admin UI Docker Image
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../openbanking/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Open Banking
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Open Banking
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_2" id="__nav_5_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_2">
+            <span class="md-nav__icon md-icon"></span>
+            Installation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../openbanking/install-cn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cloud-Native
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../openbanking/install-vm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    VM (only recommended for development/testing)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_3" id="__nav_5_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Operation Guide
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_3">
+            <span class="md-nav__icon md-icon"></span>
+            Operation Guide
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../openbanking/configuration-instructions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuration Instructions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../openbanking/curl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Managing scripts with CURL
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../openbanking/jans-cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Managing Scripts with the jans-cli
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../openbanking/par-jarm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    PAR and JARM
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Gluu Solo
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Gluu Solo
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../solo/solo-getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Getting Started with Gluu Solo
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../solo/solo-subscription/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How To Subscribe
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../solo/solo-administration-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Administration Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-blocks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Building Blocks
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scope
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#audience" class="md-nav__link">
+    <span class="md-ellipsis">
+      Audience
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#technical-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Technical overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#config-and-secret-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      Config and Secret keys
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Config and Secret keys">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gluu-config-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      Gluu Config Keys
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gluu-secret-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      Gluu Secret Keys
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#install-postgresql-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      Install PostgreSQL database
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-mysql-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      Install MySQL database
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#connecting-to-the-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Connecting to the Setup
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-configuration-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing Configuration endpoints
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#login-and-add-a-new-user" class="md-nav__link">
+    <span class="md-ellipsis">
+      Login and Add a New User
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-casa" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing Casa
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enabling-two-factor-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      Enabling Two-Factor Authentication
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-apache-oidc-locally" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing Apache OIDC Locally
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#register-an-openid-connect-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      Register an OpenID Connect client
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Register an OpenID Connect client">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#admin-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      Admin UI
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jans-tui" class="md-nav__link">
+    <span class="md-ellipsis">
+      Jans TUI
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-an-application-container" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create an Application Container
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-an-authenticating-reverse-proxy-container" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create an Authenticating Reverse Proxy Container
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+  <h1>Getting Started with Rancher</h1>
+
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">#</a></h2>
+<p>Gluu Flex (“Flex”) is a cloud-native digital identity platform that enables organizations to authenticate and authorize people and software through the use of open standards like OpenID Connect, OAuth, and FIDO.</p>
+<p>It is a downstream commercial distribution of the Linux Foundation Janssen Project software, plus a web administration tool(Gluu Admin-UI).</p>
+<p>SUSE Rancher’s helm-based deployment approach simplifies the deployment and configuration of Flex, enabling organizations to take advantage of Flex’s modular design to improve their security posture while simultaneously enabling just-in-time auto-scaling.</p>
+<p>The key services of Flex include:</p>
+<ul>
+<li>
+<p><strong>(REQUIRED) Jans Auth Server</strong>: This component is the OAuth Authorization Server, the OpenID Connect Provider, and the UMA Authorization Server for person and software authentication. This service must be Internet-facing.</p>
+</li>
+<li>
+<p><strong>(REQUIRED) Jans Config API</strong>: The API to configure the auth-server and other components is consolidated in this component. This service should not be Internet-facing.</p>
+</li>
+<li>
+<p><strong>Gluu Admin UI</strong>: Web admin tool for ad-hoc configuration.</p>
+</li>
+<li>
+<p><strong>Jans Fido</strong>: This component provides the server-side endpoints to enroll and validate devices that use FIDO. It provides both FIDO U2F (register, authenticate) and FIDO 2 (attestation, assertion) endpoints. This service must be Internet-facing.</p>
+</li>
+<li>
+<p><strong>Jans SCIM</strong>: System for Cross-domain Identity Management (<a href="http://www.simplecloud.info/">SCIM</a>) is JSON/REST API to manage user data. Use it to add, edit and update user information. This service should not be Internet-facing.</p>
+</li>
+<li>
+<p><strong>Jans Casa</strong>: A self-service web portal for end-users to manage authentication and authorization preferences for their account in the Gluu Flex server. Typically, it enables people to manage their MFA credentials, like FIDO tokens and OTP authenticators. It's also extensible if your organization has any other self-service requirements.</p>
+</li>
+</ul>
+<h2 id="building-blocks">Building Blocks<a class="headerlink" href="#building-blocks" title="Permanent link">#</a></h2>
+<p><img alt="building_blocks_small" src="https://user-images.githubusercontent.com/3717101/179056897-99ac7c2b-49f5-4fe3-9029-a355f3aee45c.png" /></p>
+<h2 id="scope">Scope<a class="headerlink" href="#scope" title="Permanent link">#</a></h2>
+<p>In this Quickstart Guide, we will: </p>
+<ol>
+<li>Deploy Flex and add some users.</li>
+<li>Enable two-factor authentication.</li>
+<li>Protect content on an Apache web server with OpenID Connect.</li>
+</ol>
+<h2 id="audience">Audience<a class="headerlink" href="#audience" title="Permanent link">#</a></h2>
+<p>This document is intended for DevOps engineers, site reliability engineers (SREs), platform engineers, software engineers, and developers who are responsible for managing and running stateful workloads in Kubernetes clusters. </p>
+<!--- [Provide an overview of the minimum viable architecture with hints or guidance for upscaling to fully-supported, enterprise deployment.  Include relevant images.] -->
+
+<h2 id="technical-overview">Technical overview<a class="headerlink" href="#technical-overview" title="Permanent link">#</a></h2>
+<p><img alt="gluucloudnative-jans" src="https://user-images.githubusercontent.com/47318409/177173069-2d2d6c79-e226-4cca-a14e-92caf3cd7353.png" /></p>
+<p>In addition to the core services listed in the Introduction above, the SUSE Rancher deployment includes the following components:</p>
+<ul>
+<li><code>PostgreSQL/MySQL</code>: SQL database dialect used to store configuration, people clients, sessions and other data needed for <code>Gluu Flex</code> operation.</li>
+<li><code>Cert Manager</code>: Used for managing X.509 certificates and crypto keys lifecycle in Janssen Server.</li>
+<li><code>Key Rotation</code>: A cronjob that implements <code>Cert Manager</code> to rotate the auth keys</li>
+<li><code>Configuration job</code>: loads (generate/restore) and dumps (backup) the configuration and secrets.</li>
+<li><code>Persistence job</code>: This job loads initial data for the backend used (SQL or Couchbase).</li>
+<li><code>ConfigMaps</code>: Stores configuration needed for Flex environment setup.</li>
+<li><code>Secrets</code>: Contains sensitive or confidential data such as a password, a token, or a key.</li>
+</ul>
+<h2 id="config-and-secret-keys">Config and Secret keys<a class="headerlink" href="#config-and-secret-keys" title="Permanent link">#</a></h2>
+<p>The <code>Configuration job</code> creates a set of configurations and secrets used by all services in the Flex setup.</p>
+<p>To check the values of the configuration keys(configmaps) in the installation:</p>
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>cm<span class="w"> </span>cn<span class="w"> </span>-o<span class="w"> </span>json<span class="w"> </span>-n<span class="w"> </span>&lt;namespace&gt;
+</code></pre></div>
+<p>To check the values of the secret keys in installation:</p>
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span>cn<span class="w"> </span>-o<span class="w"> </span>json<span class="w"> </span>-n<span class="w"> </span>&lt;namespace&gt;
+</code></pre></div>
+<h3 id="gluu-config-keys">Gluu Config Keys<a class="headerlink" href="#gluu-config-keys" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Example Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>admin_email</code></td>
+<td><code>team@gluu.org</code></td>
+</tr>
+<tr>
+<td><code>admin_inum</code></td>
+<td><code>d3afef58-c026-4514-9d4c-e0a3efb4c29d</code></td>
+</tr>
+<tr>
+<td><code>admin_ui_client_id</code></td>
+<td><code>1901.a6575c1e-4688-4c11-8c95-d9e570b13ee8</code></td>
+</tr>
+<tr>
+<td><code>auth_enc_keys</code></td>
+<td><code>RSA1_5 RSA-OAEP</code></td>
+</tr>
+<tr>
+<td><code>auth_key_rotated_at</code></td>
+<td><code>1653517558</code></td>
+</tr>
+<tr>
+<td><code>auth_legacyIdTokenClaims</code></td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>auth_openidScopeBackwardCompatibility</code></td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>auth_openid_jks_fn</code></td>
+<td><code>/etc/certs/auth-keys.jks</code></td>
+</tr>
+<tr>
+<td><code>auth_openid_jwks_fn</code></td>
+<td><code>/etc/certs/auth-keys.json</code></td>
+</tr>
+<tr>
+<td><code>casa_client_id</code></td>
+<td><code>0008-db36db1f-025e-4164-aeed-f82df064eee8</code></td>
+</tr>
+<tr>
+<td><code>auth_sig_keys</code></td>
+<td><code>RS256 RS384 RS512 ES256 ES384 ES512 PS384 PS512</code></td>
+</tr>
+<tr>
+<td><code>city</code></td>
+<td><code>Austin</code></td>
+</tr>
+<tr>
+<td><code>country_code</code></td>
+<td><code>US</code></td>
+</tr>
+<tr>
+<td><code>default_openid_jks_dn_name</code></td>
+<td><code>CN=Janssen Auth CA Certificate</code></td>
+</tr>
+<tr>
+<td><code>fido2ConfigFolder</code></td>
+<td><code>/etc/jans/conf/fido2</code></td>
+</tr>
+<tr>
+<td><code>hostname</code></td>
+<td><code>demoexample.gluu.org</code></td>
+</tr>
+<tr>
+<td><code>jca_client_id</code></td>
+<td><code>1801.4df6c3ba-ebf6-4836-8fb5-6da927586f61</code></td>
+</tr>
+<tr>
+<td><code>optional_scopes</code></td>
+<td><code>[\"casa\", \"sql\", \"fido2\", \"scim\"]</code></td>
+</tr>
+<tr>
+<td><code>orgName</code></td>
+<td><code>Gluu</code></td>
+</tr>
+<tr>
+<td><code>tui_client_id</code></td>
+<td><code>2000.9313cd4b-147c-4a67-96be-8a69ddbaf7e9</code></td>
+</tr>
+<tr>
+<td><code>scim_client_id</code></td>
+<td><code>1201.1cbcc731-3fca-4668-a480-1b5f5a7d6a53</code></td>
+</tr>
+<tr>
+<td><code>state</code></td>
+<td><code>TX</code></td>
+</tr>
+<tr>
+<td><code>token_server_admin_ui_client_id</code></td>
+<td><code>1901.57a858dc-69f3-4967-befe-e089fe376638</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="gluu-secret-keys">Gluu Secret Keys<a class="headerlink" href="#gluu-secret-keys" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Example Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>admin_ui_client_encoded_pw</code></td>
+<td><code>QlBMMTZUZWVYeWczVlpNUk1XN0pzdzrg</code></td>
+</tr>
+<tr>
+<td><code>admin_ui_client_pw</code></td>
+<td><code>WnJYZEcyVlNBWG9d</code></td>
+</tr>
+<tr>
+<td><code>auth_jks_base64</code></td>
+<td><code>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</code></td>
+</tr>
+<tr>
+<td><code>auth_openid_jks_pass</code></td>
+<td><code>TWZoR3Rlb0NnUHEP</code></td>
+</tr>
+<tr>
+<td><code>auth_openid_key_base64</code></td>
+<td><code>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</code></td>
+</tr>
+<tr>
+<td><code>casa_client_encoded_pw</code></td>
+<td><code>b3NabG9oVGNncFVVWFpxNEJMU3V0dzrg</code></td>
+</tr>
+<tr>
+<td><code>casa_client_pw</code></td>
+<td><code>M1g0Z1dEbGNPQ19d</code></td>
+</tr>
+<tr>
+<td><code>encoded_admin_password</code></td>
+<td><code>e3NzaGF9eGpOaDRyblU3dzJZbmpPclovMUlheTdkR0RrOTdLe</code></td>
+</tr>
+<tr>
+<td><code>encoded_salt</code></td>
+<td><code>Um9NSEJnOU9IbTRvRkJHVVZETVZIeXEP</code></td>
+</tr>
+<tr>
+<td><code>jca_client_encoded_pw</code></td>
+<td><code>Um9NSEJnOU9IbTRvRkJHVVZETVZIeX58</code></td>
+</tr>
+<tr>
+<td><code>jca_client_pw</code></td>
+<td><code>Um9NSEJnOU9IbTRvR</code></td>
+</tr>
+<tr>
+<td><code>otp_configuration</code></td>
+<td><code>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</code></td>
+</tr>
+<tr>
+<td><code>pairwiseCalculationKey</code></td>
+<td><code>ZHd2VW01Y3VOUW6638ZHd2VW</code></td>
+</tr>
+<tr>
+<td><code>pairwiseCalculationSalt</code></td>
+<td><code>ZHd2VW01Y3VOUW6638ZHd2VW0</code></td>
+</tr>
+<tr>
+<td><code>plugins_admin_ui_properties</code></td>
+<td><code>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</code></td>
+</tr>
+<tr>
+<td><code>tui_client_encoded_pw</code></td>
+<td><code>ZHd2VW01Y3VOUW66388PS512</code></td>
+</tr>
+<tr>
+<td><code>tui_client_pw</code></td>
+<td><code>AusZHd2VW01Y3VOUW6638</code></td>
+</tr>
+<tr>
+<td><code>scim_client_encoded_pw</code></td>
+<td><code>UZHd2VW01Y3VOUW6638ZHd2VW01Y3VOUW6638</code></td>
+</tr>
+<tr>
+<td><code>scim_client_pw</code></td>
+<td><code>ZHd2VW01Y3VOUW6638</code></td>
+</tr>
+<tr>
+<td><code>sql_password</code></td>
+<td><code>ZHd2VW01Y3V638</code></td>
+</tr>
+<tr>
+<td><code>ssl_ca_cert</code></td>
+<td><code>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</code></td>
+</tr>
+<tr>
+<td><code>ssl_ca_key</code></td>
+<td><code>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</code></td>
+</tr>
+<tr>
+<td><code>ssl_cert</code></td>
+<td><code>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</code></td>
+</tr>
+<tr>
+<td><code>ssl_csr</code></td>
+<td><code>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</code></td>
+</tr>
+<tr>
+<td><code>ssl_key</code></td>
+<td><code>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</code></td>
+</tr>
+<tr>
+<td><code>token_server_admin_ui_client_encoded_pw</code></td>
+<td><code>Q1Z1cmtYWUlYSVg4U2tLTldVcnZVTUF</code></td>
+</tr>
+<tr>
+<td><code>token_server_admin_ui_client_pw</code></td>
+<td><code>ZHd2VW01Y3VOUW6638</code></td>
+</tr>
+</tbody>
+</table>
+<!--- [Be sure to clearly state prerequisites for this guide.  Reference other documents to provide guidance where possible.  Include any special consideration notes.] -->
+
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">#</a></h2>
+<!--- [Provide step-by-step guide (provide console commands or focused screenshots) to installing the components of this solution, assuming the prerequisites are in place.  If it helps clarity, subdivide into sections for each component.] -->
+
+<ul>
+<li>
+<p>SUSE Rancher installed with an accessible UI</p>
+</li>
+<li>
+<p>Kubernetes cluster running on SUSE Rancher with at least 1 worker node</p>
+</li>
+<li>
+<p>Sufficient RBAC permissions to deploy and manage applications in the cluster.</p>
+</li>
+<li>
+<p>LinuxIO kernel modules on the worker nodes</p>
+</li>
+<li>
+<p>Docker running locally (Linux preferred)</p>
+</li>
+<li>
+<p>Essential tools and CLI utilities are installed on your local workstation and are available in your <code>$PATH</code>: <code>curl</code>, <code>kubectl</code></p>
+</li>
+<li>
+<p>An entry in the <code>/etc/hosts</code> file of your local workstation to resolve the hostname of the Gluu Flex installation. This step is for testing purposes. </p>
+</li>
+</ul>
+<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">#</a></h2>
+<p><strong>Summary of steps</strong>:</p>
+<ol>
+<li>
+<p>Install Database:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For the <code>Database test setup</code> to work, a PV provisioner support must be present in the underlying infrastructure.</p>
+</div>
+<h3 id="install-postgresql-database">Install PostgreSQL database<a class="headerlink" href="#install-postgresql-database" title="Permanent link">#</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you are willing to use MySQL installation, skip this section and head to the <a href="#install-mysql-database">Install MySQL</a> section.</p>
+</div>
+<p>To install a quick setup with <code>PostgreSQL</code> as the backend, you need to provide the connection parameters of a fresh setup. 
+For a test setup, you can follow the below instructions:</p>
+<ul>
+<li>Open a kubectl shell from the top right navigation menu <code>&gt;_</code>. </li>
+<li>Run:
+    <div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://raw.githubusercontent.com/GluuFederation/flex/nightly/automation/pgsql.yaml<span class="w"> </span>
+kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>pgsql.yaml<span class="w"> </span><span class="c1">#adjust values as preferred</span>
+</code></pre></div></li>
+</ul>
+<h3 id="install-mysql-database">Install MySQL database<a class="headerlink" href="#install-mysql-database" title="Permanent link">#</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Skip this section if you installed <a href="#install-postgresql-database">PostgreSQL</a>. This section is only needed if you are willing to use MySQL.</p>
+</div>
+<p>To install a quick setup with <code>MySQL</code> as the backend, you need to provide the connection parameters of a fresh setup. 
+For a test setup, you can follow the below instructions:</p>
+<ul>
+<li>Open a kubectl shell from the top right navigation menu <code>&gt;_</code>. </li>
+<li>Run:
+    <div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://raw.githubusercontent.com/GluuFederation/flex/nightly/automation/mysql.yaml<span class="w"> </span>
+kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>mysql.yaml<span class="w"> </span><span class="c1">#adjust values as preferred</span>
+</code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>Install <a href="https://github.com/kubernetes/ingress-nginx">Nginx-Ingress</a>, if you are not using Istio ingress</p>
+<div class="highlight"><pre><span></span><code>helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo add stable https://charts.helm.sh/stable
+helm repo update
+helm install nginx ingress-nginx/ingress-nginx
+</code></pre></div>
+<p>To get the Loadbalancer IP: 
+<div class="highlight"><pre><span></span><code>kubectl get svc nginx-ingress-nginx-controller --output jsonpath=&#39;{.status.loadBalancer.ingress[0].ip}&#39;
+</code></pre></div></p>
+</li>
+<li>
+<p>Install Gluu Flex:</p>
+<ul>
+<li>Head to <code>Apps</code> --&gt; <code>Charts</code> and search for <code>Gluu</code></li>
+<li>Click on <code>Install</code> on the right side of the window. </li>
+<li>Change the namespace from <code>default</code> to <code>gluu</code>, then click on <code>Next</code>.</li>
+<li>Scroll through the sections to get familiar with the options. For minimal setup follow with the next instructions.</li>
+<li>Add <code>License SSA</code>. Before initiating the setup, please obtain an <a href="https://docs.gluu.org/vreplace-flex-version/install/agama/prerequisites/#obtaining-an-ssa">SSA</a> for Flex trial, after which you will issued a JWT.</li>
+<li>Click on the <code>Persistence</code> section. Change <code>SQL database host uri</code> to <code>postgresql.gluu.svc</code> in the case of <code>PostgreSQL</code> or <code>mysql.gluu.svc</code> in the case of <code>MySQL</code>. Also set <code>SQL database username</code>,<code>SQL password</code>, and <code>SQL database name</code> to the values you used during the database installation.</li>
+<li>To enable Casa and the Admin UI, navigate to the <code>Optional Services</code> section and check the <code>Enable casa</code> and <code>boolean flag to enable admin UI</code> boxes. You can also enable different services like <code>Client API</code> and <code>Jackrabbit</code>.</li>
+<li>Click on the  section named <code>Ingress</code> and enable all the endpoints. You might add LB IP or address if you don't have <code>FQDN</code> for <code>Gluu</code>. </li>
+<li>To pass your <code>FQDN</code> or <code>Domain</code> that is intended to serve the Gluu Flex IDP, head to the <code>Configuration</code> section:<ol>
+<li>Add your <code>FQDN</code> and check the box <code>Is the FQDN globally resolvable</code>.</li>
+<li>Click on the <code>Edit YAML</code> tab and add your <code>FQDN</code> to <code>nginx-ingress.ingress.hosts</code> and <code>nginx-ingress.ingress.tls.hosts</code>. </li>
+</ol>
+</li>
+<li>Click on <code>Install</code> on the bottom right of the window.</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can upgrade your installation after the deployment. To do that, go to the SUSE Rancher Dashboard -&gt; Apps -&gt; Installed Apps -&gt; gluu -&gt; Click on the 3 dots on the right -&gt; Upgrade -&gt; Make your changes -&gt; Click Update.</p>
+</div>
+</li>
+</ol>
+<p>The running deployment and services of different Gluu Flex components like <code>casa</code>, <code>admin-ui</code>, <code>scim</code>, <code>auth-server</code>, etc can be viewed by navigating through the SUSE Rancher. Go to <code>Workloads</code> and see the running pods. Go under <code>Service Discovery</code> and checkout the <code>Ingresses</code> and <code>Services</code>. All deployed components should be in a healthy and running state like in the screenshot shown below.</p>
+<p><img width="1488" alt="Screenshot 2022-07-05 at 11 53 06" src="https://user-images.githubusercontent.com/17182751/177325882-e2819b8d-b2cb-4be2-8c4c-d90815d02093.png"></p>
+<h2 id="connecting-to-the-setup">Connecting to the Setup<a class="headerlink" href="#connecting-to-the-setup" title="Permanent link">#</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can skip this section if you have a globally resolvable <code>FQDN</code>.</p>
+</div>
+<p>In the event you used microk8s or your fqdn is not registered, the below steps will help with connecting to your setup.</p>
+<ol>
+<li>
+<p>To access the setup from a browser or another VM, we need to change the ingress class annotation from <code>kubernetes.io/ingress.class: nginx</code> to <code>kubernetes.io/ingress.class: public</code> e.g., for the specific component you want to access publicly in the browser;</p>
+<ul>
+<li>Navigate through the SUSE Rancher UI to <code>Service Discovery</code> -&gt; <code>Ingresses</code></li>
+<li>Choose the <code>ingress</code> for the targeted component. For example <code>gluu-nginx-ingress-auth-server</code> for <code>auth-server</code> </li>
+<li>Click on the three dots in the top right corner </li>
+<li>Click on <code>Edit Yaml</code></li>
+<li>On line 8, change the <code>kubernetes.io/ingress.class</code> annotation value from <code>nginx</code> to <code>public</code></li>
+<li>Click <code>Save</code></li>
+</ul>
+<p><img width="1508" alt="Screenshot 2022-07-05 at 11 54 17" src="https://user-images.githubusercontent.com/17182751/177326471-49bb4f33-d0c4-4202-b84a-3dd2514cff65.png"></p>
+</li>
+<li>
+<p>The <code>LoadBalancer IP</code> needs to get mapped inside <code>/etc/hosts</code> with the domain chosen for <code>gluu flex</code>. If the domain you used in the setup is demoexample.gluu.org:</p>
+<div class="highlight"><pre><span></span><code>3.65.27.95 demoexample.gluu.org
+</code></pre></div>
+</li>
+<li>
+<p>You can do the same edit for every component you want to access publicly from the browser.</p>
+</li>
+</ol>
+<h2 id="testing-configuration-endpoints">Testing Configuration endpoints<a class="headerlink" href="#testing-configuration-endpoints" title="Permanent link">#</a></h2>
+<ol>
+<li>
+<p>Try accessing some Gluu Flex endpoints like <code>https://demoexample.gluu.org/.well-known/openid-configuration</code> in the browser and you'll get back a JSON response;</p>
+<p><img width="1508" alt="Screenshot 2022-07-17 at 02 27 17" src="https://user-images.githubusercontent.com/17182751/179374985-479aff51-85bb-4f13-bf23-bb31047a50d3.png"></p>
+</li>
+<li>
+<p>Note that you can also access those endpoints via curl command, E.g.</p>
+<div class="highlight"><pre><span></span><code>curl -k https://demoexample.gluu.org/.well-known/openid-configuration
+</code></pre></div>
+<p>You should get a similar response like the one below;</p>
+<p><code>{"version":"1.1","issuer":"https://demoexample.gluu.org","attestation":{"base_path":"https://demoexample.gluu.org/jans-fido2/restv1/attestation","options_enpoint":"https://demoexample.gluu.org/jans-fido2/restv1/attestation/options","result_enpoint":"https://demoexample.gluu.org/jans-fido2/restv1/attestation/result"},"assertion":{"base_path":"https://demoexample.gluu.org/jans-fido2/restv1/assertion","options_enpoint":"https://demoexample.gluu.org/jans-fido2/restv1/assertion/options","result_enpoint":"https://demoexample.gluu.org/jans-fido2/restv1/assertion/result"}}</code></p>
+</li>
+</ol>
+<h2 id="login-and-add-a-new-user">Login and Add a New User<a class="headerlink" href="#login-and-add-a-new-user" title="Permanent link">#</a></h2>
+<p>After inputting the license keys, you can then use <code>admin</code> and the password you set to login to the Admin UI and you should see the Admin UI dashboard.</p>
+<p>You could also add another test user via the admin UI that will be used for testing Casa and 2FA as shown in the screenshot below.</p>
+<p>Navigate to <code>Users</code> and click on <code>+</code> in the top right corner to add a user.</p>
+<p><img width="1077" alt="Screenshot 2022-07-26 at 15 51 58" src="https://user-images.githubusercontent.com/17182751/181010315-b900bfba-5863-40aa-b791-e7711a69675d.png"></p>
+<h2 id="testing-casa">Testing Casa<a class="headerlink" href="#testing-casa" title="Permanent link">#</a></h2>
+<p>Jans Casa ("Casa") is a self-service web portal for managing account security preferences. The primary use case for Casa is self-service 2FA, but other use cases and functionalities can be supported via Casa plugins.</p>
+<p>Although you have not enabled two-factor authentication yet, you should still be able to login to Casa as the admin user and the password is the one you set during installation. </p>
+<p>Point your browser to <code>https://demoexample.gluu.org/jans-casa</code> and you should be welcomed by the Casa login page as shown below.</p>
+<p><img width="1503" alt="Screenshot 2022-07-06 at 22 39 49" src="https://user-images.githubusercontent.com/17182751/177629838-20b3140f-3d28-4b63-a275-c8ce54f6a096.png"></p>
+<p>After logging in, you'll be welcomed by the home page as shown below.</p>
+<p><img alt="Screenshot 2022-08-24 at 19 13 24" src="https://user-images.githubusercontent.com/17182751/186470113-9955cfa3-8364-4248-9be1-7d51c94a2633.png" /></p>
+<h2 id="enabling-two-factor-authentication">Enabling Two-Factor Authentication<a class="headerlink" href="#enabling-two-factor-authentication" title="Permanent link">#</a></h2>
+<p>In this part, we are going to enable two standard authentication mechanisms: OTP and FIDO. </p>
+<p>This can be done through the admin UI. 2FA can be turned on by clicking the switch in the Second Factor Authentication widget. By default, you will be able to choose from a few 2FA policies:</p>
+<ul>
+<li>Always (upon every login attempt)</li>
+<li>If the location (e.g. city) detected in the login attempt is unrecognized</li>
+<li>If the device used to login is unrecognized</li>
+</ul>
+<p>To reduce the chance of account lockout, enroll at least two different types of 2FA credentials -- e.g. one security key and one OTP app; or one OTP app and one SMS phone number, etc. This way, regardless of which device you're using to access a protected resource, you will have a usable option for passing strong authentication.</p>
+<p>To enable 2FA, firstly the OTP and FIDO components have to be enabled in the Casa admin UI then login to Casa as an end user, and register an OTP device (i.e. Google Authenticator) and a FIDO device.</p>
+<p><code>Register OTP device</code></p>
+<ul>
+<li>To add a new OTP token, navigate to 2FA credentials &gt; OTP Tokens.</li>
+<li>You can either add a soft OTP token by choosing the <code>Soft token</code> option or a hard token by choosing the <code>Hard Token</code> Option</li>
+<li>Check the soft OTP token and click ready</li>
+<li>Before proceeding to the next step, Download Google Authenticator from <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2">Google Play</a> or <a href="https://itunes.apple.com/us/app/authenticator/id766157276?mt=8">Appstore</a></li>
+<li>Then proceed and scan the QR code with your app</li>
+</ul>
+<p><img alt="Screenshot 2022-08-29 at 10 18 43" src="https://user-images.githubusercontent.com/17182751/187145542-ad2231e7-9e51-499b-aa65-7f1a688c0fe9.png" /></p>
+<ul>
+<li>Enter the 6-digit code that appears in your authenticator app and validate the enrollment.</li>
+</ul>
+<p><code>Register Fido device</code></p>
+<ul>
+<li>To add a new FIDO 2 credential, navigate to <code>2FA credentials</code> &gt; <code>Security Keys and built-in Platform Authenticators</code> Insert the fido key and click Ready. Casa will prompt you to press the button on the key.</li>
+</ul>
+<p><img alt="Screenshot 2022-08-29 at 10 42 42" src="https://user-images.githubusercontent.com/17182751/187150057-51eb3b32-f4c7-4a3d-905c-67d674b456b7.png" /></p>
+<ul>
+<li>Add a nickname and click Add. Once added, the new device will appear in a list on the same page. Click the pencil to edit the device's nickname</li>
+</ul>
+<h2 id="testing-apache-oidc-locally">Testing Apache OIDC Locally<a class="headerlink" href="#testing-apache-oidc-locally" title="Permanent link">#</a></h2>
+<p>In this part, we are going to use docker to locally configure an apache web server, and then install the mod_auth_openidc module and configure it accordingly.</p>
+<p>Using local docker containers, our approach is to first register a client, then spin up two Apache containers, one serving static content (with server-side includes configured so we can display headers and environment information), and one acting as the OpenID Connect authenticating reverse proxy.</p>
+<h2 id="register-an-openid-connect-client">Register an OpenID Connect client<a class="headerlink" href="#register-an-openid-connect-client" title="Permanent link">#</a></h2>
+<p>On the Janssen server, you can register a new client in the Flex Admin UI or the jans-cli. In this section, we are going to show both ways of doing it from the Admin UI and using jans-cli</p>
+<h4 id="admin-ui"><code>Admin UI</code><a class="headerlink" href="#admin-ui" title="Permanent link">#</a></h4>
+<p>Navigate to <code>Auth server</code> -&gt; <code>Clients</code> and click on <code>+</code> in the top right corner to create a client.</p>
+<p>Take note of the following keys:values because they configure the right client that we need</p>
+<div class="highlight"><pre><span></span><code>scopes: email_,openid_,profile
+responseTypes: code
+</code></pre></div>
+<p>The screenshot below shows an example of the Admin UI section from where a client is created</p>
+<p><img width="1447" alt="Screenshot 2022-07-26 at 16 34 05" src="https://user-images.githubusercontent.com/17182751/181018938-d64b81b9-58c6-49e1-bd86-6d50a6dada9f.png"></p>
+<h4 id="jans-tui"><code>Jans TUI</code><a class="headerlink" href="#jans-tui" title="Permanent link">#</a></h4>
+<p>On the Janssen server, we are going to register a new client using the jans-cli. There are two ways you can register an OIDC client with the Janssen server, Manual Client Registration and Dynamic Client Registration (DCR).</p>
+<p>Here we will use manual client registration. We will use jans-tui tool provided by the Janssen server. jans-tui has a menu-driven interface that makes it easy to configure the Janssen server. Here we will use the menu-driven approach to register a new client.</p>
+<ol>
+<li>
+<p>Download jans-cli-tui from the <a href="https://github.com/JanssenProject/jans/releases">release</a> assets depending on your OS. For example: </p>
+<p><code>wget https://github.com/JanssenProject/jans/releases/download/vreplace-janssen-version/jans-cli-tui-linux-ubuntu-X86-64.pyz</code></p>
+<p>Now we have <code>jans-cli-tui-linux-ubuntu-X86-64.pyz</code> downloaded.</p>
+</li>
+<li>
+<p>Now we can grab the FQDN, client-id, client-secret, and connect using the following commands:
+    <div class="highlight"><pre><span></span><code>FQDN= #Add your FQDN here
+TUI_CLIENT_ID=$(kubectl get cm cn -n &lt;namespace&gt; --template={{.data.tui_client_id}})
+TUI_CLIENT_SECRET=$(kubectl get secret cn -n &lt;namespace&gt; --template={{.data.tui_client_pw}} | base64 -d)
+#add -noverify if your FQDN is not registered
+</code></pre></div></p>
+</li>
+<li>
+<p>Get schema file using this command</p>
+<p><code>python3 jans-cli-tui-linux-ubuntu-X86-64.pyz --host &lt;FQDN&gt; --client-id &lt;TUI_CLIENT_ID&gt; --client-secret &lt;TUI_CLIENT_SECRET&gt; --no-tui --schema /components/schemas/Client</code></p>
+</li>
+<li>
+<p>Add values for required params and store this JSON in a text file. Take keynote of the following properties.</p>
+<p><code>schema-json-file.json</code></p>
+<div class="highlight"><pre><span></span><code>{
+    &quot;dn&quot;: null,
+    &quot;inum&quot;: null,
+    &quot;displayName&quot;: &quot;&lt;name-of-choice&gt;&quot;,
+    &quot;clientSecret&quot;: &quot;&lt;secret-of-your-choice&gt;&quot;,
+    &quot;frontChannelLogoutUri&quot;: null,
+    &quot;frontChannelLogoutSessionRequired&quot;: null,
+    &quot;registrationAccessToken&quot;: null,
+    &quot;clientIdIssuedAt&quot;: null,
+    &quot;clientSecretExpiresAt&quot;: null,
+    &quot;redirectUris&quot;: [
+        &quot;&lt;your-uri-here&gt;&quot;
+    ],
+    &quot;claimRedirectUris&quot;: null,
+    &quot;responseTypes&quot;: [
+        &quot;code&quot;
+    ],
+    &quot;grantTypes&quot;: [
+        &quot;authorization_code&quot;
+    ],
+    &quot;applicationType&quot;: &quot;web&quot;,
+    &quot;contacts&quot;: null,
+    &quot;idTokenTokenBindingCnf&quot;: null,
+    &quot;logoUri&quot;: null,
+    &quot;clientUri&quot;: null,
+    &quot;policyUri&quot;: null,
+    &quot;tosUri&quot;: null,
+    &quot;jwksUri&quot;: null,
+    &quot;jwks&quot;: null,
+    &quot;sectorIdentifierUri&quot;: null,
+    &quot;subjectType&quot;: &quot;public&quot;,
+    &quot;idTokenSignedResponseAlg&quot;: null,
+    &quot;idTokenEncryptedResponseAlg&quot;: null,
+    &quot;idTokenEncryptedResponseEnc&quot;: null,
+    &quot;userInfoSignedResponseAlg&quot;: null,
+    &quot;userInfoEncryptedResponseAlg&quot;: null,
+    &quot;userInfoEncryptedResponseEnc&quot;: null,
+    &quot;requestObjectSigningAlg&quot;: null,
+    &quot;requestObjectEncryptionAlg&quot;: null,
+    &quot;requestObjectEncryptionEnc&quot;: null,
+    &quot;tokenEndpointAuthMethod&quot;: &quot;client_secret_basic&quot;,
+    &quot;tokenEndpointAuthSigningAlg&quot;: null,
+    &quot;defaultMaxAge&quot;: null,
+    &quot;requireAuthTime&quot;: null,
+    &quot;defaultAcrValues&quot;: null,
+    &quot;initiateLoginUri&quot;: null,
+    &quot;postLogoutRedirectUris&quot;: null,
+    &quot;requestUris&quot;: null,
+    &quot;scopes&quot;: [
+        &quot;email&quot;,
+        &quot;openid&quot;,
+        &quot;profile&quot;
+    ],
+    &quot;claims&quot;: null,
+    &quot;trustedClient&quot;: false,
+    &quot;lastAccessTime&quot;: null,
+    &quot;lastLogonTime&quot;: null,
+    &quot;persistClientAuthorizations&quot;: null,
+    &quot;includeClaimsInIdToken&quot;: false,
+    &quot;refreshTokenLifetime&quot;: null,
+    &quot;accessTokenLifetime&quot;: null,
+    &quot;customAttributes&quot;: null,
+    &quot;customObjectClasses&quot;: null,
+    &quot;rptAsJwt&quot;: null,
+    &quot;accessTokenAsJwt&quot;: null,
+    &quot;accessTokenSigningAlg&quot;: null,
+    &quot;disabled&quot;: false,
+    &quot;authorizedOrigins&quot;: null,
+    &quot;softwareId&quot;: null,
+    &quot;softwareVersion&quot;: null,
+    &quot;softwareStatement&quot;: null,
+    &quot;attributes&quot;: null,
+    &quot;backchannelTokenDeliveryMode&quot;: null,
+    &quot;backchannelClientNotificationEndpoint&quot;: null,
+    &quot;backchannelAuthenticationRequestSigningAlg&quot;: null,
+    &quot;backchannelUserCodeParameter&quot;: null,
+    &quot;expirationDate&quot;: null,
+    &quot;deletable&quot;: false,
+    &quot;jansId&quot;: null,
+    &quot;description&quot;: null
+}
+</code></pre></div>
+</li>
+<li>
+<p>Now you can use that JSON file as input to the command below and register your client</p>
+<p><code>python3 jans-cli-tui-linux-ubuntu-X86-64.pyz --host &lt;FQDN&gt; --client-id &lt;TUI_CLIENT_ID&gt; --client-secret &lt;TUI_CLIENT_SECRET&gt; --no-tui --operation-id=post-oauth-openid-client --data &lt;path&gt;/schema-json-file.json</code></p>
+</li>
+<li>
+<p>After the client is successfully registered, there will be data that describes the newly registered client. Some of these values, like <code>inum</code> and <code>clientSecret</code>, will be required before we configure <code>mod_auth_openidc</code> So keep in mind that we shall get back to this.</p>
+</li>
+</ol>
+<h2 id="create-an-application-container">Create an Application Container<a class="headerlink" href="#create-an-application-container" title="Permanent link">#</a></h2>
+<p>An application docker container will be run locally which will act as the protected resource (PR) / external application. The following files have code for the small application. We shall create a directory locally / on your machine called <code>test</code> and add the required files.</p>
+<ol>
+<li>
+<p>Firstly create a project folder named <code>test</code> by running <code>mkdir test &amp;&amp; cd test</code> and add the following files with their content; </p>
+<p><code>app.conf</code></p>
+<div class="highlight"><pre><span></span><code>ServerRoot &quot;/usr/local/apache2&quot;
+Listen 80
+
+LoadModule mpm_event_module modules/mod_mpm_event.so
+LoadModule authz_core_module modules/mod_authz_core.so
+LoadModule include_module modules/mod_include.so
+LoadModule filter_module modules/mod_filter.so
+LoadModule mime_module modules/mod_mime.so
+LoadModule log_config_module modules/mod_log_config.so
+LoadModule setenvif_module modules/mod_setenvif.so
+LoadModule unixd_module modules/mod_unixd.so
+LoadModule dir_module modules/mod_dir.so
+
+User daemon
+Group daemon
+
+&lt;Directory /&gt;
+AllowOverride none
+Require all denied
+&lt;/Directory&gt;
+
+DocumentRoot &quot;/usr/local/apache2/htdocs&quot;
+&lt;Directory &quot;/usr/local/apache2/htdocs&quot;&gt;
+Options Indexes FollowSymLinks Includes
+AllowOverride None
+Require all granted
+
+SetEnvIf X-Remote-User &quot;(.*)&quot; REMOTE_USER=$0
+SetEnvIf X-Remote-User-Name &quot;(.*)&quot; REMOTE_USER_NAME=$0
+SetEnvIf X-Remote-User-Email &quot;(.*)&quot; REMOTE_USER_EMAIL=$0
+&lt;/Directory&gt;
+
+DirectoryIndex index.html
+&lt;Files &quot;.ht*&quot;&gt;
+    Require all denied
+&lt;/Files&gt;
+
+ErrorLog /proc/self/fd/2
+LogLevel warn
+LogFormat &quot;%h %l %u %t \&quot;%r\&quot; %&gt;s %b \&quot;%{Referer}i\&quot; \&quot;%{User-Agent}i\&quot;&quot; combined
+LogFormat &quot;%h %l %u %t \&quot;%r\&quot; %&gt;s %b&quot; common
+CustomLog /proc/self/fd/1 common
+
+TypesConfig conf/mime.types
+AddType application/x-compress .Z
+AddType application/x-gzip .gz .tgz
+AddType text/html .shtml
+AddOutputFilter INCLUDES .shtml
+</code></pre></div>
+<p><code>user.shtml</code></p>
+<div class="highlight"><pre><span></span><code>&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Hello User&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Hello &lt;!--#echo var=REMOTE_USER_NAME --&gt;!&lt;/p&gt;
+&lt;p&gt;You authenticated as: &lt;!--#echo var=REMOTE_USER --&gt;&lt;/p&gt;
+&lt;p&gt;Your email address is: &lt;!--#echo var=REMOTE_USER_EMAIL --&gt;&lt;/p&gt;
+&lt;p&gt;Environment:&lt;/&gt;
+&lt;p&gt;&lt;!--#printenv --&gt;!&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre></div>
+<p><code>index.html</code></p>
+<div class="highlight"><pre><span></span><code>&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Hello World&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Hello world!&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre></div>
+<p><code>Dockerfile</code></p>
+<div class="highlight"><pre><span></span><code>FROM httpd:2.4.54@sha256:c9eba4494b9d856843b49eb897f9a583a0873b1c14c86d5ab77e5bdedd6ad05d
+# &quot;Created&quot;: &quot;2022-06-08T18:45:46.260791323Z&quot; , &quot;Version&quot;:&quot;2.4.54&quot;
+
+RUN apt-get update \
+&amp;&amp; apt-get install -y --no-install-recommends wget ca-certificates libcjose0 libhiredis0.14 apache2-api-20120211 apache2-bin\
+&amp;&amp; wget https://github.com/zmartzone/mod_auth_openidc/releases/download/v2.4.11.2/libapache2-mod-auth-openidc_2.4.11.2-1.buster+1_amd64.deb \
+&amp;&amp; dpkg -i libapache2-mod-auth-openidc_2.4.11.2-1.buster+1_amd64.deb \
+&amp;&amp; ln -s /usr/lib/apache2/modules/mod_auth_openidc.so /usr/local/apache2/modules/mod_auth_openidc.so \
+&amp;&amp; rm -rf /var/log/dpkg.log /var/log/alternatives.log /var/log/apt \
+&amp;&amp; touch /usr/local/apache2/conf/extra/secret.conf \
+&amp;&amp; touch /usr/local/apache2/conf/extra/oidc.conf
+
+RUN echo &quot;\n\nLoadModule auth_openidc_module modules/mod_auth_openidc.so\n\nInclude conf/extra/secret.conf\nInclude conf/extra/oidc.conf\n&quot; &gt;&gt; /usr/local/apache2/conf/httpd.conf
+</code></pre></div>
+<p><code>gluu.secret.conf</code></p>
+<div class="highlight"><pre><span></span><code>OIDCClientID &lt;inum-as-received-in-client-registration-response&gt;
+OIDCCryptoPassphrase &lt;crypto-passphrase-of-choice&gt;
+OIDCClientSecret &lt;as-provided-in-client-registration-request&gt;
+OIDCResponseType code
+OIDCScope &quot;openid email profile&quot;
+OIDCProviderTokenEndpointAuth client_secret_basic
+OIDCSSLValidateServer Off
+OIDCRedirectURI http://localhost:8111/oauth2callback
+OIDCCryptoPassphrase &lt;crypto-passphrase-of-choice&gt;
+&lt;Location &quot;/&quot;&gt;
+    Require valid-user
+    AuthType openid-connect
+&lt;/Location&gt;
+</code></pre></div>
+</li>
+<li>
+<p>After, run an Apache container which will play the role of an application being protected by the authenticating reverse proxy.</p>
+<div class="highlight"><pre><span></span><code>docker run -dit -p 8110:80 \
+       -v &quot;$PWD/app.conf&quot;:/usr/local/apache2/conf/httpd.conf \
+       -v &quot;$PWD/index.html&quot;:/usr/local/apache2/htdocs/index.html \
+       -v &quot;$PWD/user.shtml&quot;:/usr/local/apache2/htdocs/user.shtml \
+       --name apache-app httpd:2.4
+</code></pre></div>
+<p>Note that we are using a popular pre-built image useful for acting as a reverse proxy for authentication in front of an application. It contains a stripped-down Apache with minimal modules, and adds the <code>mod_auth_openidc</code> module for performing OpenID Connect authentication.</p>
+</li>
+<li>
+<p>Make a test curl command call to ensure you get back some content as shown in the screenshot below</p>
+<div class="highlight"><pre><span></span><code>curl http://localhost:8110/user.shtml
+</code></pre></div>
+<p><img width="752" alt="Screenshot 2022-07-05 at 23 30 25" src="https://user-images.githubusercontent.com/17182751/177411203-62b386d8-3c87-443c-b04c-6c24108ace46.png"></p>
+</li>
+</ol>
+<h2 id="create-an-authenticating-reverse-proxy-container">Create an Authenticating Reverse Proxy Container<a class="headerlink" href="#create-an-authenticating-reverse-proxy-container" title="Permanent link">#</a></h2>
+<p>We shall use Apache, but this time we use a Docker image that has <code>mod_auth_oidc</code> installed and configured. This proxy will require authentication, handle the authentication flow with redirects, and then forward requests to the application.</p>
+<p>In order to use this, you will need to have registered a new OpenID Connect client on the Janssen server. We did that in the step 1 above</p>
+<ol>
+<li>
+<p>Add the following files to the <code>test</code> folder.</p>
+<p><code>oidc.conf</code></p>
+<div class="highlight"><pre><span></span><code># Unset to make sure clients can&#39;t control these
+RequestHeader unset X-Remote-User
+RequestHeader unset X-Remote-User-Name
+RequestHeader unset X-Remote-User-Email
+
+# If you want to see tons of logs for your experimentation
+#LogLevel trace8
+
+OIDCClientID &lt;inum-as-received-in-client-registration-response&gt;
+OIDCProviderMetadataURL https://idp-proxy.med.stanford.edu/auth/realms/med-all/.well-known/openid-configuration
+#OIDCProviderMetadataURL https://idp-proxy-stage.med.stanford.edu/auth/realms/choir/.well-known/openid-configuration
+OIDCRedirectURI http://localhost:8111/oauth2callback
+
+OIDCScope &quot;openid email profile&quot;
+OIDCRemoteUserClaim principal
+OIDCPassClaimsAs environment
+
+&lt;Location /&gt;
+AuthType openid-connect
+Require valid-user
+
+ProxyPass http://app:80/
+ProxyPassReverse http://app:80/
+
+RequestHeader set X-Remote-User %{OIDC_CLAIM_principal}e
+RequestHeader set X-Remote-User-Name %{OIDC_CLAIM_name}e
+RequestHeader set X-Remote-User-Email %{OIDC_CLAIM_email}e
+&lt;/Location&gt;
+</code></pre></div>
+<p><code>proxy.conf</code></p>
+<div class="highlight"><pre><span></span><code># This is the main Apache HTTP server configuration file. For documentation, see:
+#   http://httpd.apache.org/docs/2.4/
+#   http://httpd.apache.org/docs/2.4/mod/directives.html
+#
+# This is intended to be a hardened configuration, with minimal security surface area necessary
+# to run mod_auth_openidc.
+
+ServerRoot &quot;/usr/local/apache2&quot;
+Listen 80
+
+LoadModule mpm_event_module modules/mod_mpm_event.so
+LoadModule authn_file_module modules/mod_authn_file.so
+LoadModule authn_core_module modules/mod_authn_core.so
+LoadModule authz_host_module modules/mod_authz_host.so
+LoadModule authz_groupfile_module modules/mod_authz_groupfile.so
+LoadModule authz_user_module modules/mod_authz_user.so
+LoadModule authz_core_module modules/mod_authz_core.so
+LoadModule access_compat_module modules/mod_access_compat.so
+LoadModule auth_basic_module modules/mod_auth_basic.so
+LoadModule reqtimeout_module modules/mod_reqtimeout.so
+LoadModule filter_module modules/mod_filter.so
+LoadModule mime_module modules/mod_mime.so
+LoadModule log_config_module modules/mod_log_config.so
+LoadModule env_module modules/mod_env.so
+LoadModule headers_module modules/mod_headers.so
+LoadModule setenvif_module modules/mod_setenvif.so
+#LoadModule version_module modules/mod_version.so
+LoadModule proxy_module modules/mod_proxy.so
+LoadModule proxy_http_module modules/mod_proxy_http.so
+LoadModule unixd_module modules/mod_unixd.so
+#LoadModule status_module modules/mod_status.so
+#LoadModule autoindex_module modules/mod_autoindex.so
+LoadModule dir_module modules/mod_dir.so
+LoadModule alias_module modules/mod_alias.so
+
+&lt;IfModule unixd_module&gt;
+    User daemon
+    Group daemon
+&lt;/IfModule&gt;
+
+ServerAdmin you@example.com
+
+&lt;Directory /&gt;
+    AllowOverride none
+    Require all denied
+&lt;/Directory&gt;
+
+DocumentRoot &quot;/usr/local/apache2/htdocs&quot;
+&lt;Directory &quot;/usr/local/apache2/htdocs&quot;&gt;
+    Options Indexes FollowSymLinks
+    AllowOverride None
+    Require all granted
+&lt;/Directory&gt;
+&lt;IfModule dir_module&gt;
+    DirectoryIndex index.html
+&lt;/IfModule&gt;
+&lt;Directory /opt/apache/htdocs&gt;
+    Options None
+    Require all denied
+&lt;/Directory&gt;
+&lt;Files &quot;.ht*&quot;&gt;
+    Require all denied
+&lt;/Files&gt;
+ErrorLog /proc/self/fd/2
+LogLevel warn
+&lt;IfModule log_config_module&gt;
+    LogFormat &quot;%h %l %u %t \&quot;%r\&quot; %&gt;s %b \&quot;%{Referer}i\&quot; \&quot;%{User-Agent}i\&quot;&quot; combined
+    LogFormat &quot;%h %l %u %t \&quot;%r\&quot; %&gt;s %b&quot; common
+    &lt;IfModule logio_module&gt;
+    LogFormat &quot;%h %l %u %t \&quot;%r\&quot; %&gt;s %b \&quot;%{Referer}i\&quot; \&quot;%{User-Agent}i\&quot; %I %O&quot; combinedio
+    &lt;/IfModule&gt;
+    CustomLog /proc/self/fd/1 common
+&lt;/IfModule&gt;
+&lt;IfModule alias_module&gt;
+    ScriptAlias /cgi-bin/ &quot;/usr/local/apache2/cgi-bin/&quot;
+&lt;/IfModule&gt;
+&lt;Directory &quot;/usr/local/apache2/cgi-bin&quot;&gt;
+    AllowOverride None
+    Options None
+    Require all granted
+&lt;/Directory&gt;
+
+&lt;IfModule headers_module&gt;
+    RequestHeader unset Proxy early
+&lt;/IfModule&gt;
+
+&lt;IfModule mime_module&gt;
+    TypesConfig conf/mime.types
+    AddType application/x-compress .Z
+    AddType application/x-gzip .gz .tgz
+&lt;/IfModule&gt;
+&lt;IfModule proxy_html_module&gt;
+Include conf/extra/proxy-html.conf
+&lt;/IfModule&gt;
+&lt;IfModule ssl_module&gt;
+SSLRandomSeed startup builtin
+SSLRandomSeed connect builtin
+&lt;/IfModule&gt;
+TraceEnable off
+ServerTokens Prod
+ServerSignature Off
+LoadModule auth_openidc_module modules/mod_auth_openidc.so
+Include conf/extra/secret.conf
+Include conf/extra/oidc.conf
+</code></pre></div>
+</li>
+<li>
+<p>Edit the file to include the client secret for the client you created during DCR, and add a securely generated pass phrase for the session keys</p>
+<div class="highlight"><pre><span></span><code>docker build --pull -t apache-oidc -f Dockerfile .
+
+docker run -dit -p 8111:80 \
+       -v &quot;$PWD/proxy.conf&quot;:/usr/local/apache2/conf/httpd.conf \
+       -v &quot;$PWD/gluu.secret.conf&quot;:/usr/local/apache2/conf/extra/secret.conf \
+       -v &quot;$PWD/oidc.conf&quot;:/usr/local/apache2/conf/extra/oidc.conf \
+       --link apache-app:app \
+       --name apache-proxy apache-oidc
+</code></pre></div>
+</li>
+<li>
+<p>Now open a fresh web browser with private (incognito) mode, and go to this url</p>
+<div class="highlight"><pre><span></span><code>http://localhost:8111/user.shtml
+</code></pre></div>
+</li>
+<li>
+<p>To check the proxy logs</p>
+<div class="highlight"><pre><span></span><code>docker logs -f apache-proxy
+</code></pre></div>
+</li>
+<li>
+<p>To see the app logs</p>
+<div class="highlight"><pre><span></span><code>docker logs -f apache-app
+</code></pre></div>
+</li>
+<li>
+<p>If you modified the configuration files, just restart the proxy.</p>
+<div class="highlight"><pre><span></span><code>docker restart apache-proxy
+</code></pre></div>
+</li>
+</ol>
+
+
+
+
+
+
+
+  
+    
+  
+  
+    
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="November 27, 2025 09:01:44 UTC"><span class="timeago" datetime="2025-11-27T09:01:44+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="November 27, 2025 09:01:44 UTC">2025-11-27</span>
+  </span>
+
+    
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Created">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="January 25, 2023 09:30:31 UTC"><span class="timeago" datetime="2023-01-25T09:30:31+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="January 25, 2023 09:30:31 UTC">2023-01-25</span>
+  </span>
+
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2025, Gluu Flex
+    </div>
+  
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/GluuFederation/flex" target="_blank" rel="noopener" title="Gluu Flex on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://gluu.org" target="_blank" rel="noopener" title="Gluu Website" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M579.8 267.7c56.5-56.5 56.5-148 0-204.5-50-50-128.8-56.5-186.3-15.4l-1.6 1.1c-14.4 10.3-17.7 30.3-7.4 44.6s30.3 17.7 44.6 7.4l1.6-1.1c32.1-22.9 76-19.3 103.8 8.6 31.5 31.5 31.5 82.5 0 114L422.3 334.8c-31.5 31.5-82.5 31.5-114 0-27.9-27.9-31.5-71.8-8.6-103.8l1.1-1.6c10.3-14.4 6.9-34.4-7.4-44.6s-34.4-6.9-44.6 7.4l-1.1 1.6C206.5 251.2 213 330 263 380c56.5 56.5 148 56.5 204.5 0zM60.2 244.3c-56.5 56.5-56.5 148 0 204.5 50 50 128.8 56.5 186.3 15.4l1.6-1.1c14.4-10.3 17.7-30.3 7.4-44.6s-30.3-17.7-44.6-7.4l-1.6 1.1c-32.1 22.9-76 19.3-103.8-8.6C74 372 74 321 105.5 289.5l112.2-112.3c31.5-31.5 82.5-31.5 114 0 27.9 27.9 31.5 71.8 8.6 103.9l-1.1 1.6c-10.3 14.4-6.9 34.4 7.4 44.6s34.4 6.9 44.6-7.4l1.1-1.6C433.5 260.8 427 182 377 132c-56.5-56.5-148-56.5-204.5 0z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../..", "features": ["toc.autohide - search.suggest - search.highlight", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.indexes"], "search": "../../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "stable", "provider": "mike"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      
+        <script src="../../../js/timeago.min.js"></script>
+      
+        <script src="../../../js/timeago_mkdocs_material.js"></script>
+      
+    
+  </body>
+</html>
