@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import { DEFAULT_PAGE_SIZE } from '../helper/constants'
 
+// Note: Key spelling preserved for backward compatibility with existing user preferences
 const STORAGE_KEY = 'paggingSize'
 
 export const usePageSize = (defaultSize = DEFAULT_PAGE_SIZE) => {

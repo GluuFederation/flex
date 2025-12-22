@@ -154,7 +154,7 @@ const ClientForm: React.FC<ClientFormProps> = ({
     (message: string) => {
       if (formValues) {
         const payload = buildClientPayload(formValues)
-        onSubmit(payload as ClientFormValues, message, modifiedFields)
+        onSubmit(payload, message, modifiedFields)
       }
       setCommitModalOpen(false)
     },

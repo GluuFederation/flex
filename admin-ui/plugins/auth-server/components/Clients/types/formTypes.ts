@@ -1,3 +1,4 @@
+import type { Dispatch, SetStateAction } from 'react'
 import type { FormikProps } from 'formik'
 import type { ExtendedClient, ModifiedFields, ClientScope, ClientScript } from './clientTypes'
 
@@ -34,7 +35,7 @@ export interface ClientFormProps {
   client: Partial<ExtendedClient>
   isEdit?: boolean
   viewOnly?: boolean
-  onSubmit: (values: ClientFormValues, message: string, modifiedFields: ModifiedFields) => void
+  onSubmit: (payload: ExtendedClient, message: string, modifiedFields: ModifiedFields) => void
   onCancel?: () => void
 }
 
@@ -42,7 +43,7 @@ export interface TabPanelProps {
   formik: FormikProps<ClientFormValues>
   viewOnly?: boolean
   modifiedFields: ModifiedFields
-  setModifiedFields: React.Dispatch<React.SetStateAction<ModifiedFields>>
+  setModifiedFields: Dispatch<SetStateAction<ModifiedFields>>
 }
 
 export interface BasicInfoTabProps extends TabPanelProps {
@@ -71,7 +72,7 @@ export interface UrisTabProps extends TabPanelProps {}
 export interface SectionProps {
   formik: FormikProps<ClientFormValues>
   viewOnly?: boolean
-  setModifiedFields: React.Dispatch<React.SetStateAction<ModifiedFields>>
+  setModifiedFields: Dispatch<SetStateAction<ModifiedFields>>
   scripts?: ClientScript[]
   scriptsTruncated?: boolean
   scopes?: ClientScope[]

@@ -107,7 +107,6 @@ const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 describe('ClientForm', () => {
   const mockOnSubmit = jest.fn()
   const mockOnCancel = jest.fn()
-  const mockOnScopeSearch = jest.fn()
 
   beforeEach(() => {
     jest.clearAllMocks()
@@ -267,14 +266,11 @@ describe('ClientForm', () => {
     const saveButtons = screen.getAllByRole('button', { name: /save/i })
     fireEvent.click(saveButtons[0])
 
-    // Wait for commit dialog modal to appear (it renders in a portal)
-    await waitFor(() => {
-      const modal = document.querySelector('.modal')
-      expect(modal).toBeInTheDocument()
-    })
+    // Wait for commit dialog modal to appear
+    const modal = await screen.findByRole('dialog')
+    expect(modal).toBeInTheDocument()
 
     // Find and fill the commit message input within the modal
-    const modal = document.querySelector('.modal') as HTMLElement
     const commitInput = within(modal).getByPlaceholderText(/reason/i)
     fireEvent.change(commitInput, { target: { value: 'Test commit message for update' } })
 

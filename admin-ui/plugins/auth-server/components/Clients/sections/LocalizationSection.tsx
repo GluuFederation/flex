@@ -9,6 +9,12 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import type { SectionProps } from '../types'
 
+const helperTextStyle = {
+  mt: 0.5,
+  fontSize: '0.75rem',
+  color: 'text.secondary',
+}
+
 const LocalizationSection: React.FC<SectionProps> = ({
   formik,
   viewOnly = false,
@@ -75,15 +81,6 @@ const LocalizationSection: React.FC<SectionProps> = ({
       overflow: 'hidden',
     }),
     [borderColor],
-  )
-
-  const helperTextStyle = useMemo(
-    () => ({
-      mt: 0.5,
-      fontSize: '0.75rem',
-      color: 'text.secondary',
-    }),
-    [],
   )
 
   const getEditorValue = useCallback(
@@ -159,7 +156,6 @@ const LocalizationSection: React.FC<SectionProps> = ({
       labelStyle,
       editorContainerStyle,
       borderColor,
-      helperTextStyle,
       t,
       getEditorValue,
       handleEditorChange,

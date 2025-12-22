@@ -124,7 +124,7 @@ const TokensSection: React.FC<SectionProps> = ({ formik, viewOnly = false, setMo
               type="number"
               label={t('fields.access_token_lifetime')}
               name="accessTokenLifetime"
-              value={formik.values.accessTokenLifetime || ''}
+              value={formik.values.accessTokenLifetime ?? ''}
               onChange={(e) =>
                 handleFieldChange(
                   'accessTokenLifetime',
@@ -145,7 +145,7 @@ const TokensSection: React.FC<SectionProps> = ({ formik, viewOnly = false, setMo
               type="number"
               label={t('fields.refresh_token_lifetime')}
               name="refreshTokenLifetime"
-              value={formik.values.refreshTokenLifetime || ''}
+              value={formik.values.refreshTokenLifetime ?? ''}
               onChange={(e) =>
                 handleFieldChange(
                   'refreshTokenLifetime',
@@ -166,7 +166,7 @@ const TokensSection: React.FC<SectionProps> = ({ formik, viewOnly = false, setMo
               type="number"
               label={t('fields.default_max_age')}
               name="defaultMaxAge"
-              value={formik.values.defaultMaxAge || ''}
+              value={formik.values.defaultMaxAge ?? ''}
               onChange={(e) =>
                 handleFieldChange(
                   'defaultMaxAge',
@@ -187,7 +187,7 @@ const TokensSection: React.FC<SectionProps> = ({ formik, viewOnly = false, setMo
               type="number"
               label={t('fields.id_token_lifetime')}
               name="attributes.idTokenLifetime"
-              value={formik.values.attributes?.idTokenLifetime || ''}
+              value={formik.values.attributes?.idTokenLifetime ?? ''}
               onChange={(e) =>
                 handleAttributeChange(
                   'idTokenLifetime',
@@ -208,7 +208,7 @@ const TokensSection: React.FC<SectionProps> = ({ formik, viewOnly = false, setMo
               type="number"
               label={t('fields.tx_token_lifetime')}
               name="attributes.txTokenLifetime"
-              value={formik.values.attributes?.txTokenLifetime || ''}
+              value={formik.values.attributes?.txTokenLifetime ?? ''}
               onChange={(e) =>
                 handleAttributeChange(
                   'txTokenLifetime',
@@ -229,7 +229,7 @@ const TokensSection: React.FC<SectionProps> = ({ formik, viewOnly = false, setMo
               type="number"
               label={t('fields.requested_lifetime')}
               name="attributes.requestedLifetime"
-              value={formik.values.attributes?.requestedLifetime || ''}
+              value={formik.values.attributes?.requestedLifetime ?? ''}
               onChange={(e) =>
                 handleAttributeChange(
                   'requestedLifetime',
@@ -380,7 +380,7 @@ const TokensSection: React.FC<SectionProps> = ({ formik, viewOnly = false, setMo
               type="number"
               label={t('fields.par_lifetime')}
               name="attributes.parLifetime"
-              value={formik.values.attributes?.parLifetime || ''}
+              value={formik.values.attributes?.parLifetime ?? ''}
               onChange={(e) =>
                 handleAttributeChange(
                   'parLifetime',
