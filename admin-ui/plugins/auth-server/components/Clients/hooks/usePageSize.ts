@@ -4,7 +4,9 @@ import { DEFAULT_PAGE_SIZE } from '../helper/constants'
 // Note: Key spelling preserved for backward compatibility with existing user preferences
 const STORAGE_KEY = 'paggingSize'
 
-export const usePageSize = (defaultSize = DEFAULT_PAGE_SIZE) => {
+type SetPageSize = (size: number) => void
+
+export const usePageSize = (defaultSize = DEFAULT_PAGE_SIZE): readonly [number, SetPageSize] => {
   const [pageSize, setPageSizeState] = useState<number>(() => {
     const stored = localStorage.getItem(STORAGE_KEY)
     if (!stored) return defaultSize
@@ -14,7 +16,7 @@ export const usePageSize = (defaultSize = DEFAULT_PAGE_SIZE) => {
 
   const setPageSize = useCallback(
     (size: number) => {
-      const validatedSize = Number.isFinite(size) && size > 0 ? size : defaultSize
+      const validatedSize = Number.isFinite(size) && size > 0 ? Math.round(size) : defaultSize
       setPageSizeState(validatedSize)
       try {
         localStorage.setItem(STORAGE_KEY, String(validatedSize))
