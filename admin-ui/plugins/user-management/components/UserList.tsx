@@ -145,10 +145,11 @@ function UserList(): JSX.Element {
 
   const handleGoToUserEditPage = useCallback(
     (row: UserTableRowData): void => {
-      const userData = row as unknown as CustomUser
       const userId = row.tableData?.uuid || row.inum
       if (!userId) return
-      navigateToRoute(ROUTES.USER_EDIT(userId), { state: { selectedUser: userData } })
+      const userData = { ...row }
+      delete userData.tableData
+      navigateToRoute(ROUTES.USER_EDIT(userId), { state: { selectedUser: userData as CustomUser } })
     },
     [navigateToRoute],
   )
