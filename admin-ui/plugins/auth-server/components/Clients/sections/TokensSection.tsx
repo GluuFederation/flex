@@ -515,7 +515,7 @@ const TokensSection: React.FC<SectionProps> = ({ formik, viewOnly = false, setMo
                 value.map((option, index) => (
                   <Chip
                     {...getTagProps({ index })}
-                    key={index}
+                    key={option}
                     label={option}
                     size="small"
                     sx={chipStyle}
@@ -617,7 +617,7 @@ const TokensSection: React.FC<SectionProps> = ({ formik, viewOnly = false, setMo
                 value.map((option, index) => (
                   <Chip
                     {...getTagProps({ index })}
-                    key={index}
+                    key={option}
                     label={option}
                     size="small"
                     sx={chipStyle}
@@ -649,7 +649,7 @@ const TokensSection: React.FC<SectionProps> = ({ formik, viewOnly = false, setMo
                 value.map((option, index) => (
                   <Chip
                     {...getTagProps({ index })}
-                    key={index}
+                    key={option}
                     label={option}
                     size="small"
                     sx={chipStyle}
@@ -685,7 +685,7 @@ const TokensSection: React.FC<SectionProps> = ({ formik, viewOnly = false, setMo
                 value.map((option, index) => (
                   <Chip
                     {...getTagProps({ index })}
-                    key={index}
+                    key={option}
                     label={option}
                     size="small"
                     sx={chipStyle}
@@ -726,7 +726,7 @@ const TokensSection: React.FC<SectionProps> = ({ formik, viewOnly = false, setMo
                 value.map((option, index) => (
                   <Chip
                     {...getTagProps({ index })}
-                    key={index}
+                    key={option}
                     label={option}
                     size="small"
                     sx={chipStyle}
@@ -813,7 +813,7 @@ const TokensSection: React.FC<SectionProps> = ({ formik, viewOnly = false, setMo
                 value.map((option, index) => (
                   <Chip
                     {...getTagProps({ index })}
-                    key={index}
+                    key={option}
                     label={option}
                     size="small"
                     sx={chipStyle}

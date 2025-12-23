@@ -1,5 +1,6 @@
 import type { Dispatch, SetStateAction } from 'react'
 import type { FormikProps } from 'formik'
+import type { AppConfiguration, Client, UmaResource } from 'JansConfigApi'
 import type { ExtendedClient, ModifiedFields, ClientScope, ClientScript } from './clientTypes'
 
 export type ClientTab = 'basic' | 'authentication' | 'scopes' | 'advanced' | 'uris'
@@ -20,15 +21,17 @@ export interface ClientFormValues extends ExtendedClient {
   expirable: boolean
 }
 
-export interface AddFormValues {
-  clientName: string
-  clientSecret: string
+export type AddFormValues = Pick<
+  Client,
+  | 'clientName'
+  | 'clientSecret'
+  | 'scopes'
+  | 'grantTypes'
+  | 'redirectUris'
+  | 'postLogoutRedirectUris'
+> & {
   disabled: boolean
   description: string
-  scopes: string[]
-  grantTypes: string[]
-  redirectUris: string[]
-  postLogoutRedirectUris: string[]
 }
 
 export interface ClientFormProps {
@@ -87,46 +90,42 @@ export interface SectionConfig {
   icon: string
 }
 
-export interface OidcConfiguration {
-  idTokenSigningAlgValuesSupported?: string[]
-  idTokenEncryptionAlgValuesSupported?: string[]
-  idTokenEncryptionEncValuesSupported?: string[]
-  userinfoSigningAlgValuesSupported?: string[]
-  userinfoEncryptionAlgValuesSupported?: string[]
-  userinfoEncryptionEncValuesSupported?: string[]
-  requestObjectSigningAlgValuesSupported?: string[]
-  requestObjectEncryptionAlgValuesSupported?: string[]
-  requestObjectEncryptionEncValuesSupported?: string[]
-  tokenEndpointAuthMethodsSupported?: string[]
-  tokenEndpointAuthSigningAlgValuesSupported?: string[]
-  accessTokenSigningAlgValuesSupported?: string[]
-  authorizationSigningAlgValuesSupported?: string[]
-  authorizationEncryptionAlgValuesSupported?: string[]
-  authorizationEncryptionEncValuesSupported?: string[]
-  introspectionSigningAlgValuesSupported?: string[]
-  introspectionEncryptionAlgValuesSupported?: string[]
-  introspectionEncryptionEncValuesSupported?: string[]
-  txTokenSigningAlgValuesSupported?: string[]
-  txTokenEncryptionAlgValuesSupported?: string[]
-  txTokenEncryptionEncValuesSupported?: string[]
+export type OidcConfiguration = Pick<
+  AppConfiguration,
+  | 'idTokenSigningAlgValuesSupported'
+  | 'idTokenEncryptionAlgValuesSupported'
+  | 'idTokenEncryptionEncValuesSupported'
+  | 'userInfoSigningAlgValuesSupported'
+  | 'userInfoEncryptionAlgValuesSupported'
+  | 'userInfoEncryptionEncValuesSupported'
+  | 'requestObjectSigningAlgValuesSupported'
+  | 'requestObjectEncryptionAlgValuesSupported'
+  | 'requestObjectEncryptionEncValuesSupported'
+  | 'tokenEndpointAuthMethodsSupported'
+  | 'tokenEndpointAuthSigningAlgValuesSupported'
+  | 'accessTokenSigningAlgValuesSupported'
+  | 'authorizationSigningAlgValuesSupported'
+  | 'authorizationEncryptionAlgValuesSupported'
+  | 'authorizationEncryptionEncValuesSupported'
+  | 'introspectionSigningAlgValuesSupported'
+  | 'introspectionEncryptionAlgValuesSupported'
+  | 'introspectionEncryptionEncValuesSupported'
+  | 'txTokenSigningAlgValuesSupported'
+  | 'txTokenEncryptionAlgValuesSupported'
+  | 'txTokenEncryptionEncValuesSupported'
+  | 'subjectTypesSupported'
+> & {
   backchannelAuthenticationRequestSigningAlgValuesSupported?: string[]
   responseTypesSupported?: string[]
   grantTypesSupported?: string[]
   acrValuesSupported?: string[]
-  subjectTypesSupported?: string[]
   scopesSupported?: string[]
   claimsSupported?: string[]
 }
 
-export interface UmaResourceForTab {
-  dn?: string
-  inum?: string
-  id?: string
-  name?: string
-  description?: string
-  scopes?: string[]
-  scopeExpression?: string
-  iconUri?: string
-}
+export type UmaResourceForTab = Pick<
+  UmaResource,
+  'dn' | 'inum' | 'id' | 'name' | 'description' | 'scopes' | 'scopeExpression' | 'iconUri'
+>
 
 export type { RootState } from 'Redux/sagas/types/audit'

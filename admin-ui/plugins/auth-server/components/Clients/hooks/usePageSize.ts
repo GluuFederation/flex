@@ -5,19 +5,25 @@ import { DEFAULT_PAGE_SIZE } from '../helper/constants'
 const STORAGE_KEY = 'paggingSize'
 
 export const usePageSize = (defaultSize = DEFAULT_PAGE_SIZE) => {
-  const getInitialPageSize = (): number => {
+  const [pageSize, setPageSizeState] = useState<number>(() => {
     const stored = localStorage.getItem(STORAGE_KEY)
     if (!stored) return defaultSize
     const parsed = parseInt(stored, 10)
     return Number.isNaN(parsed) ? defaultSize : parsed
-  }
+  })
 
-  const [pageSize, setPageSizeState] = useState<number>(getInitialPageSize())
-
-  const setPageSize = useCallback((size: number) => {
-    setPageSizeState(size)
-    localStorage.setItem(STORAGE_KEY, String(size))
-  }, [])
+  const setPageSize = useCallback(
+    (size: number) => {
+      const validatedSize = size > 0 ? size : defaultSize
+      setPageSizeState(validatedSize)
+      try {
+        localStorage.setItem(STORAGE_KEY, String(validatedSize))
+      } catch {
+        // Ignore localStorage errors (private browsing, quota exceeded, storage disabled)
+      }
+    },
+    [defaultSize],
+  )
 
   return [pageSize, setPageSize] as const
 }
