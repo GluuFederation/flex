@@ -14,7 +14,7 @@ export const usePageSize = (defaultSize = DEFAULT_PAGE_SIZE) => {
 
   const setPageSize = useCallback(
     (size: number) => {
-      const validatedSize = size > 0 ? size : defaultSize
+      const validatedSize = Number.isFinite(size) && size > 0 ? size : defaultSize
       setPageSizeState(validatedSize)
       try {
         localStorage.setItem(STORAGE_KEY, String(validatedSize))
