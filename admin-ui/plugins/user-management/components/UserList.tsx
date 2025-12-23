@@ -147,8 +147,7 @@ function UserList(): JSX.Element {
     (row: UserTableRowData): void => {
       const userId = row.tableData?.uuid || row.inum
       if (!userId) return
-      const userData = { ...row }
-      delete userData.tableData
+      const { tableData, ...userData } = row
       navigateToRoute(ROUTES.USER_EDIT(userId), { state: { selectedUser: userData as CustomUser } })
     },
     [navigateToRoute],
