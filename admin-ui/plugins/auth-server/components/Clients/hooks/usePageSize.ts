@@ -7,16 +7,24 @@ const STORAGE_KEY = 'paggingSize'
 type SetPageSize = (size: number) => void
 
 export const usePageSize = (defaultSize = DEFAULT_PAGE_SIZE): readonly [number, SetPageSize] => {
+  const safeDefault =
+    Number.isFinite(defaultSize) && defaultSize > 0 ? Math.round(defaultSize) : DEFAULT_PAGE_SIZE
+
   const [pageSize, setPageSizeState] = useState<number>(() => {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    if (!stored) return defaultSize
-    const parsed = parseInt(stored, 10)
-    return Number.isNaN(parsed) ? defaultSize : parsed
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY)
+      if (!stored) return safeDefault
+      const parsed = parseInt(stored, 10)
+      return Number.isNaN(parsed) ? safeDefault : parsed
+    } catch {
+      // localStorage unavailable (security restrictions, disabled, etc.)
+      return safeDefault
+    }
   })
 
   const setPageSize = useCallback(
     (size: number) => {
-      const validatedSize = Number.isFinite(size) && size > 0 ? Math.round(size) : defaultSize
+      const validatedSize = Number.isFinite(size) && size > 0 ? Math.round(size) : safeDefault
       setPageSizeState(validatedSize)
       try {
         localStorage.setItem(STORAGE_KEY, String(validatedSize))
@@ -24,7 +32,7 @@ export const usePageSize = (defaultSize = DEFAULT_PAGE_SIZE): readonly [number, 
         // Ignore localStorage errors (private browsing, quota exceeded, storage disabled)
       }
     },
-    [defaultSize],
+    [safeDefault],
   )
 
   return [pageSize, setPageSize] as const
