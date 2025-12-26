@@ -80,6 +80,7 @@ const ROUTES = {
   AUTH_SERVER_CLIENT_EDIT: (inum: string) =>
     `${PLUGIN_BASE_PATHS.AUTH_SERVER}/client/edit/${encodeURIComponent(inum)}`,
   AUTH_SERVER_CLIENT_EDIT_TEMPLATE: `${PLUGIN_BASE_PATHS.AUTH_SERVER}/client/edit/:id`,
+  AUTH_SERVER_CLIENT_VIEW_TEMPLATE: `${PLUGIN_BASE_PATHS.AUTH_SERVER}/client/view/:id`,
 
   // Scopes
   AUTH_SERVER_SCOPES_LIST: `${PLUGIN_BASE_PATHS.AUTH_SERVER}/scopes`,
