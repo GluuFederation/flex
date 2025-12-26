@@ -54,6 +54,7 @@ class Upgrade:
         logger.info("Running upgrade process (if required)")
         self.update_web_client()
         self.update_backend_client()
+        self.update_resource_scopes()
 
     def update_web_client(self):
         kwargs = {"table_name": "jansClnt"}
@@ -236,6 +237,55 @@ class Upgrade:
 
         if should_update:
             self.backend.modify_entry(entry.id, entry.attrs, **kwargs)
+
+    def update_resource_scopes(self):
+        def update_scope(dn, old_name, new_name):
+            kwargs = {"table_name": "adminUIResourceScopesMapping"}
+            id_ = doc_id_from_dn(dn)
+
+            entry = self.backend.get_entry(id_, **kwargs)
+
+            if not entry:
+                return
+
+            should_update = False
+
+            if not self.backend.client.use_simple_json:
+                scopes = entry.attrs["jansScope"]["v"]
+            else:
+                scopes = entry.attrs["jansScope"]
+
+            for idx, scope in enumerate(scopes):
+                if scope == old_name:
+                    scopes[idx] = new_name
+                    should_update = True
+
+            if should_update:
+                if not self.backend.client.use_simple_json:
+                    entry.attrs["jansScope"]["v"] = scopes
+                else:
+                    entry.attrs["jansScope"] = scopes
+                self.backend.modify_entry(entry.id, entry.attrs, **kwargs)
+
+        # list of scope mappings that need to be adjusted
+        for scope in [
+            {
+                "dn": "inum=6b3fa54a-6b39-4d6a-8af6-f775084ff3e2,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans",
+                "old_name": "https://jans.io/oauth/config/jans_asset-read",
+                "new_name": "https://jans.io/oauth/config/asset.readonly",
+            },
+            {
+                "dn": "inum=014fe962-0fea-49c4-9798-eb51ce80204f,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans",
+                "old_name": "https://jans.io/oauth/config/jans_asset-write",
+                "new_name": "https://jans.io/oauth/config/asset.write",
+            },
+            {
+                "dn": "inum=b9ff6c69-4fc7-4a23-8ba7-7a250d80ea11,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans",
+                "old_name": "https://jans.io/oauth/config/jans_asset-delete",
+                "new_name": "https://jans.io/oauth/config/asset.admin",
+            },
+        ]:
+            update_scope(scope["dn"], scope["old_name"], scope["new_name"])
 
 
 def main():
