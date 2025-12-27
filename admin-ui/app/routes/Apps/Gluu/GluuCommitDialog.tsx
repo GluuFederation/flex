@@ -24,6 +24,7 @@ import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
 import type { RootState } from '@/redux/sagas/types/audit'
 import type { GluuCommitDialogOperation, GluuCommitDialogProps, JsonValue } from './types'
+import { Alert, Box } from '@mui/material'
 
 const USER_MESSAGE = 'user_action_message'
 
@@ -42,6 +43,8 @@ const GluuCommitDialog = ({
   inputType,
   feature,
   isLicenseLabel = false,
+  alertMessage,
+  alertSeverity,
 }: GluuCommitDialogProps) => {
   const { t } = useTranslation()
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
@@ -168,6 +171,14 @@ const GluuCommitDialog = ({
                 overflowX: 'hidden',
               }}
             >
+              {alertMessage && alertSeverity && (
+                <FormGroup row>
+                  <Box mb={2}>
+                    <Alert severity={alertSeverity}>{alertMessage}</Alert>
+                  </Box>
+                </FormGroup>
+              )}
+
               {operations?.length ? (
                 <FormGroup row>
                   <h1

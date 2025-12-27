@@ -887,6 +887,7 @@
     "user_updated_successfully": "User updated successfully",
     "user_deleted_successfully": "User deleted successfully",
     "password_changed_successfully": "Password changed successfully",
+    "revokeUserSession": "The user's session will be revoked as one or more of the following field has been modified: Password, Status, Admin Role.",
     "device_deleted_successfully": "Device deleted successfully",
     "service_status_up": "Service is running normally.",
     "service_status_down": "Service is currently unavailable.",

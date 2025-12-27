@@ -818,6 +818,7 @@
     "user_updated_successfully": "Utilisateur mis à jour avec succès",
     "user_deleted_successfully": "Utilisateur supprimé avec succès",
     "password_changed_successfully": "Mot de passe modifié avec succès",
+    "revokeUserSession": "La session de l’utilisateur sera révoquée, car un ou plusieurs des champs suivants ont été modifiés : mot de passe, statut, rôle administrateur.",
     "device_deleted_successfully": "Appareil supprimé avec succès",
     "service_status_up": "Le service fonctionne normalement.",
     "service_status_down": "Le service est actuellement indisponible.",
