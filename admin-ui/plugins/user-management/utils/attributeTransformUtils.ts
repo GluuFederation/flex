@@ -228,7 +228,6 @@ export const updateCustomAttributesWithModifiedFields = (
       }
     }
   })
-  alert(JSON.stringify(modifiedFields))
 
   return result
 }
