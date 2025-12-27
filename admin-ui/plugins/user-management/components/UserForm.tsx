@@ -33,6 +33,10 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
   const { t } = useTranslation()
   const DOC_SECTION = 'user'
   const [searchClaims, setSearchClaims] = useState('')
+  const [alertMessage, setAlertMessage] = useState('')
+  const [alertSeverity, setAlertSeverity] = useState<
+    'error' | 'warning' | 'info' | 'success' | undefined
+  >(undefined)
   const [selectedClaims, setSelectedClaims] = useState<PersonAttribute[]>([])
   const [modal, setModal] = useState(false)
   const [changePasswordModal, setChangePasswordModal] = useState(false)
@@ -84,9 +88,22 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
     setModal((prev) => !prev)
   }, [])
 
+  const revokeSessionWhenFieldsModified = useMemo(
+    () => ['userPassword', 'status', 'jansAdminUIRole'] as const,
+    [],
+  )
+
   const handleApply = useCallback(() => {
     const hasModifiedFields = Object.keys(modifiedFields).length > 0
     const isFormChanged = formik.dirty || hasModifiedFields
+
+    const anyKeyPresent = revokeSessionWhenFieldsModified.some((key) =>
+      Object.prototype.hasOwnProperty.call(modifiedFields, key),
+    )
+    if (anyKeyPresent) {
+      setAlertMessage(t('messages.revokeUserSession'))
+      setAlertSeverity('warning')
+    }
 
     if (isSubmitting || !isFormChanged) {
       return
@@ -473,6 +490,8 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
           feature={adminUiFeatures.users_edit}
           formik={formik as FormikProps<UserEditFormValues>}
           operations={operations}
+          alertMessage={alertMessage}
+          alertSeverity={alertSeverity}
         />
       </Form>
     </GluuLoader>

@@ -105,7 +105,7 @@ export const hadOriginalValue = (originalAttr?: CustomObjectAttribute): boolean 
   if (!originalAttr) return false
   return Boolean(
     (originalAttr.values && originalAttr.values.length > 0) ||
-      (originalAttr.value !== undefined && originalAttr.value !== null),
+    (originalAttr.value !== undefined && originalAttr.value !== null),
   )
 }
 
@@ -228,6 +228,7 @@ export const updateCustomAttributesWithModifiedFields = (
       }
     }
   })
+  alert(JSON.stringify(modifiedFields))
 
   return result
 }
