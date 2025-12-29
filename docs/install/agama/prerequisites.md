@@ -50,7 +50,6 @@ If you have subscribed to Flex via Agama Lab, the SSA obtained in the step befor
 
 ## Allow Gluu Endpoints Access in Flex
 
-- Flex requires outbound access to the following Gluu endpoints.
-- Please ensure these domains are whitelisted in the Flex environment
+- Flex requires outbound access to the following Gluu endpoints. Please ensure these domains are whitelisted in the Flex environment.
     - account.gluu.org
     - cloud.gluu.org
