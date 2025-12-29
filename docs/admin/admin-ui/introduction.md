@@ -28,7 +28,7 @@ The GUI utilizes a dedicated Java backend to handle specific tasks, such as read
 
 Gluu Flex can be installed using [VM installer](../../install/vm-install/vm-requirements.md) or using [Rancher](../recipes/getting-started-rancher.md) on Cloud Native.
 
-During installation, we need to provide a Software Statement Assertion (SSA) which is used by Admin UI to register an OIDC client to access license APIs. Check the following [guide](../../install/agama/prerequisites.md#software-statement-assertions) for the steps to issue SSA from the [Agama Lab](https://cloud.gluu.org/agama-lab) web interface.
+During installation, we need to provide a Software Statement Assertion (SSA) which is used by Admin UI to register an OIDC client to access license APIs. Check the following [guide](../../install/flex/prerequisites.md#software-statement-assertions) for the steps to issue SSA from the [Agama Lab](https://cloud.gluu.org/agama-lab) web interface.
 
 ![image](../../assets/admin-ui/install-ssa.png)
 

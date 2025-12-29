@@ -114,7 +114,7 @@ nav:
 - 'Overview': 'README.md'
 - 'Installation':
     - 'install/README.md'
-    - 'Prerequisites': 'install/agama/prerequisites.md'
+    - 'Prerequisites': 'install/flex/prerequisites.md'
     - 'Helm Deployments':
         - 'install/helm-install/README.md'
         - 'Local Kubernetes Cluster': 'install/helm-install/local.md'
