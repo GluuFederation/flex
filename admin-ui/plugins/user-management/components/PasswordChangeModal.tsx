@@ -130,7 +130,7 @@ const PasswordChangeModal = ({
         message: userMessage,
       }
 
-      await changePasswordMutation.mutate({
+      await changePasswordMutation.mutateAsync({
         inum: userDetails.inum,
         data: patchOperations,
       })

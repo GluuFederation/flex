@@ -17,6 +17,7 @@ import AvailableClaimsPanel from './AvailableClaimsPanel'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { getUserValidationSchema, initializeCustomAttributes } from '../helper/validations'
 import { buildFormOperations, shouldDisableApplyButton } from '../utils'
+import { revokeSessionWhenFieldsModifiedInUserForm } from '../helper/constants'
 import {
   UserFormProps,
   FormOperation,
@@ -88,16 +89,11 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
     setModal((prev) => !prev)
   }, [])
 
-  const revokeSessionWhenFieldsModified = useMemo(
-    () => ['userPassword', 'status', 'jansAdminUIRole'] as const,
-    [],
-  )
-
   const handleApply = useCallback(() => {
     const hasModifiedFields = Object.keys(modifiedFields).length > 0
     const isFormChanged = formik.dirty || hasModifiedFields
 
-    const anyKeyPresent = revokeSessionWhenFieldsModified.some((key) =>
+    const anyKeyPresent = revokeSessionWhenFieldsModifiedInUserForm.some((key) =>
       Object.prototype.hasOwnProperty.call(modifiedFields, key),
     )
     if (anyKeyPresent) {

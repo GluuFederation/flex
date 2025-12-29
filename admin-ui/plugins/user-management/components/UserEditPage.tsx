@@ -25,6 +25,7 @@ import {
   updateCustomAttributesWithModifiedFields,
   getStandardFieldValues,
 } from '../utils'
+import { revokeSessionWhenFieldsModifiedInUserForm } from '../helper/constants'
 
 function UserEditPage() {
   const dispatch = useDispatch()
@@ -80,14 +81,8 @@ function UserEditPage() {
     [],
   )
 
-  const revokeSessionWhenFieldsModified = useMemo(
-    () => ['userPassword', 'status', 'jansAdminUIRole'] as const,
-    [],
-  )
-
   const submitData = useCallback(
     async (values: UserEditFormValues, modifiedFields: ModifiedFields, userMessage: string) => {
-      alert()
       const baseCustomAttributes = buildCustomAttributesFromValues(values, personAttributes)
       const customAttributes = updateCustomAttributesWithModifiedFields(
         baseCustomAttributes,
@@ -116,7 +111,7 @@ function UserEditPage() {
           action_message: userMessage,
         } as CustomUser,
       })
-      const anyKeyPresent = revokeSessionWhenFieldsModified.some((key) =>
+      const anyKeyPresent = revokeSessionWhenFieldsModifiedInUserForm.some((key) =>
         Object.prototype.hasOwnProperty.call(modifiedFields, key),
       )
       if (anyKeyPresent) {
