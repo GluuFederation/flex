@@ -12,7 +12,7 @@ Gluu Flex Admin UI is a web interface to simplify the management and configurati
 
 ![image](../../assets/admin-ui/design-auth-server-interaction.png)
 
-The above diagram explains interaction between various depending components.
+The above diagram explains the interaction between various dependent components.
 
 ### Admin UI Frontend
 

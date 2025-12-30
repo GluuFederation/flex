@@ -12,7 +12,7 @@ and dedicated authentication solutions for businesses. It eliminates the need fo
 infrastructure management by offering a Software-as-a-Service (SaaS) model tailored to various
 business requirements.
 
-Curious about features! Check out [Gluu Solo] website for more.
+Curious about the features? Check out the [Gluu Solo](https://gluu.org/solo/) website for more.
 
 To start using Gluu Solo, sign into Agama Lab. In a few steps, you'll be able to go-live with Gluu Solo:
 

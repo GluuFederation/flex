@@ -28,7 +28,7 @@ The following fields are supported in the Person (attribute) creation form:
     * A short textual description explaining what the attribute is or how it is used.
 
 4. Status
-    * Allows you to enable or disable attributes without deleting them
+    * Allows you to enable or disable attributes without deleting them.
 
 5. Data Type
     * Defines the type of data the attribute holds. Common types include `string`, `boolean`, `numeric`, etc.
@@ -40,7 +40,7 @@ The following fields are supported in the Person (attribute) creation form:
     * Specifies who can view this attribute in the UI — `ADMIN` or `USER`, or both.
 
 8. Usage Type
-    * Defines the use case for the attribute
+    * Defines the use case for the attribute.
 
 9. oxAuth Claim Name
     * The name of the claim as it will appear in an OpenID Connect (OIDC) ID token or UserInfo response.

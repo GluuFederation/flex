@@ -115,7 +115,7 @@ https://FQDN/jans-casa
 ## Enabling HTTPS
 To enable communication with Janssen Server over TLS (https) in a production
 environment, Janssen Server needs details about CA certificate. Update the
-HTTPS cofiguration file `https_jans.conf` as shown below:
+HTTPS configuration file `https_jans.conf` as shown below:
 
 !!! Note
     Want to use `Let's Encrypt` to get a certificate? Follow [this guide](../../openbanking/install-vm.md#importing-the-ca-certificate-in-jvm-truststore-and-signing-encryption-keys-into-auth-server-keystore).

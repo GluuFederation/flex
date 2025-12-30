@@ -61,5 +61,5 @@ The installer will automatically add a record to your hosts record in the VM but
 | Admin-UI    | `https://FQDN/admin`                            |
 
 ## Configure Gluu Flex
-  You can use the Janssen [TUI](https://docs.jans.io/head/admin/kubernetes-ops/tui-k8s/) to configure Flex components. The TUI calls the Config API to perform ad hoc configuration.
 
+You can use the Janssen [TUI](https://docs.jans.io/head/admin/kubernetes-ops/tui-k8s/) to configure Flex components. The TUI calls the Config API to perform ad hoc configuration.

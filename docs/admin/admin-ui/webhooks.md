@@ -13,7 +13,7 @@ Webhooks are a mechanism for automating workflows by allowing external systems t
 
 ## Webhook management on the UI
 
-The webhook create/update form consists for following fields.
+The webhook create/update form consists of the following fields.
 
 |Field|Description|Required|
 |--|--|--|

@@ -56,7 +56,7 @@ The `post-config-scripts` and `put-config-scripts` require various details about
 python3 jans-cli-linux-amd64.pyz --host <FQDN> --client-id $TESTCLIENT --client_secret $TESTCLIENTSECRET --schema /components/schemas/CustomScript 
 ```
 
-The output of the above command will be similar as:
+The output of the above command will be similar to:
 
 ```json
 {
