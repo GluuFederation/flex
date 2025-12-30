@@ -6,6 +6,7 @@ import ScopeEditPage from './components/Scopes/ScopeEditPage'
 import ClientListPage from './components/Clients/ClientListPage'
 import ClientAddPage from './components/Clients/ClientAddPage'
 import ClientEditPage from './components/Clients/ClientEditPage'
+import ClientDetailPage from './components/Clients/ClientDetailPage'
 
 import SessionListPage from './components/Sessions/SessionListPage'
 
@@ -136,7 +137,7 @@ const pluginMetadata = {
         },
         // {
         //   title: 'menus.lock ',
-        //   path: PLUGIN_BASE_APTH + '/lock',
+        //   path: ROUTES.AUTH_SERVER_LOCK,
         //   permission: MESSAGE_READ,
         // },
       ],
@@ -165,6 +166,12 @@ const pluginMetadata = {
       component: ClientEditPage,
       path: ROUTES.AUTH_SERVER_CLIENT_EDIT_TEMPLATE,
       permission: CLIENT_WRITE,
+      resourceKey: ADMIN_UI_RESOURCES.Clients,
+    },
+    {
+      component: ClientDetailPage,
+      path: ROUTES.AUTH_SERVER_CLIENT_VIEW_TEMPLATE,
+      permission: CLIENT_READ,
       resourceKey: ADMIN_UI_RESOURCES.Clients,
     },
     {
