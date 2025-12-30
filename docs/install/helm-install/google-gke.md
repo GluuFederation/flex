@@ -24,9 +24,9 @@ tags:
 3. If you are using `Cloud Shell`, you can skip to step 7.
 
 3. Install [gcloud](https://cloud.google.com/sdk/docs/quickstarts).
-    
+
 4. Install `kubectl` using `gcloud components install kubectl` command.
-    
+
 5. Install [Helm3](https://helm.sh/docs/intro/install/).
 
 6. Create cluster using a command such as the following example:
@@ -43,7 +43,7 @@ tags:
 
 ## Gluu Flex Installation using Helm
 1.  Install [Nginx-Ingress](https://github.com/kubernetes/ingress-nginx), if you are not using Istio ingress
-    
+
       ```
       helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
       helm repo add stable https://charts.helm.sh/stable
@@ -101,7 +101,7 @@ tags:
         ```
 
         Add the following yaml snippet to your `override.yaml` file:
-        
+
         ```yaml
         config:
           configmap:
@@ -178,4 +178,5 @@ tags:
       ```
 
 ## Configure Gluu Flex
-  You can use the Janssen [TUI](https://docs.jans.io/head/admin/kubernetes-ops/tui-k8s/) to configure Flex components. The TUI calls the Config API to perform ad hoc configuration. 
+  You can use the Janssen [TUI](https://docs.jans.io/head/admin/kubernetes-ops/tui-k8s/) to configure Flex components. The TUI calls the Config API to perform ad hoc configuration.
+

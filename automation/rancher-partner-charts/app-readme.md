@@ -14,7 +14,7 @@ Common use cases include:
 - Customer identity and access management (CIAM)   
 - Identity federation      
 
-### Free Open Source Software 
+### Free Open Source Software
 The Gluu Server is a FOSS platform for IAM.
 
 ### Open Web Standards

@@ -29,7 +29,7 @@ Gluu Flex Admin UI facilitates interaction with the Jans Auth Server through a R
 5. Confirm the existence of the `/opt/jans/jetty/jans-config-api/custom/libs/gluu-flex-admin-ui-plugin.jar` file. This file serves as the backend jar for the Admin UI and is used as a Jans Config API extension.
 6. It is also recommended to check the browser's console log and network tab for any failing requests, as this can provide additional information to diagnose and troubleshoot issues.
 
-#### Internal server error in generating Jans Config Api token 
+#### Internal server error in generating Jans Config Api token
 
 ```text
 Error Code: 500
@@ -41,7 +41,7 @@ This error is displayed when there is an internal server error in generating an 
 1. Inspect the Gluu Flex Admin UI log at `/opt/jans/jetty/jans-config-api/logs/adminui.log` for any errors related to token requests.
 2. Examine the Janssen Auth server log at `/opt/jans/jetty/jans-auth/logs/jans-auth.log` while it is in debug/trace mode to identify any errors that may occur during token generation. 
 
-### Why is the Gluu Flex Admin UI is displaying following page to upload SSA? 
+### Why is the Gluu Flex Admin UI is displaying following page to upload SSA?
 
 ![image](../../assets/admin-ui/upload-ssa.png)
 
@@ -61,4 +61,4 @@ This message indicates that in order to enjoy long-term access to the Gluu Flex 
 License validity period has expired.
 ```
 
-This message is displayed when a user attempts to generate a trial license (from the Admin UI) after the previously generated trial license has expired. Please note that the Admin UI 30-day trial license can only be generated once per Agama Lab user.  
+This message is displayed when a user attempts to generate a trial license (from the Admin UI) after the previously generated trial license has expired. Please note that the Admin UI 30-day trial license can only be generated once per Agama Lab user.

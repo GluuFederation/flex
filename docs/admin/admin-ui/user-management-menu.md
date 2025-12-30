@@ -8,9 +8,9 @@ tags:
 
 # Users
 
-The User Management module allows administrators to create, edit, delete, and 
+The User Management module allows administrators to create, edit, delete, and
 search user records in Janssen persistence. This module can be accessed via
-the `Users` link on the left navigation menu as shown in the image below. 
+the `Users` link on the left navigation menu as shown in the image below.
 
 
 ![image](../../assets/admin-ui/admin-ui-left-nav-menu.png)
@@ -38,12 +38,12 @@ panel on the right side. Different [Admin UI Roles](./home.md#admin-ui-roles) ca
  * Modify existing user details, manage assigned claims, and update attributes.
     ![image](../../assets/admin-ui/admin-ui-update-user.png)
 
-### Change password    
+### Change password
 
  * The password can be changed from the Edit User screen. 
 
      ![image](../../assets/admin-ui/admin-ui-user-changepassword.png)
-    
+
 
 
 

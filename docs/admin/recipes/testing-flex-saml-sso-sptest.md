@@ -9,21 +9,21 @@ tags:
 
 # Test SAML SSO with Flex
 
-This guide shows how to test Flex for SAML SSO. We will be using 
-[sptest](https://sptest.iamshowcase.com/) test service provider 
+This guide shows how to test Flex for SAML SSO. We will be using
+[sptest](https://sptest.iamshowcase.com/) test service provider
 to complete our test.
 
 ## Installing SAML IDP in the Flex Server
 
-During installation the [Flex Server](../../../../), make sure you have 
-selected the [Jans KC](https://docs.jans.io/head/janssen-server/keycloak/) 
+During installation the [Flex Server](../../../../), make sure you have
+selected the [Jans KC](https://docs.jans.io/head/janssen-server/keycloak/)
 module to be installed.
 
 ![image](../../assets/flex-install-janskc.png)
 
 ## Configure IDP in Flex Server
 
-Follow the steps below to create a 
+Follow the steps below to create a
 TR and apply them in [Flex Server](../../../../):
 
 * Download the SP metadata using the following command:
@@ -45,7 +45,7 @@ wget https://sptest.iamshowcase.com/testsp_metadata.xml
 ## Configure SP in Iamshowcase
 
 
-After configuring the IDP in Flex Server, it's time to connect the service 
+After configuring the IDP in Flex Server, it's time to connect the service
 provider (SP) with the IDP:
 
 * Download the IDP metadata from the following URL:
@@ -72,12 +72,13 @@ Refer to the Janssen Server [SAML SSO](https://docs.jans.io/head/janssen-server/
 
 ## FAQ
 
-Check KC scheduler log for any TR issue 
+Check KC scheduler log for any TR issue
 ```
 /opt/kc-scheduler/logs/scheduler.log
 ```
-Also check file directory inside 
+Also check file directory inside
 ```
 /opt/idp/configs/keycloak/sp/metadata
 ```
+
 
