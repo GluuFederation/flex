@@ -17,7 +17,7 @@ From the Solo space dashboard click on
  `Configuration` button to open the configurations page. This page lists
  different ways to manage the configuration.
 
-![](../assets/agama-lab/solo-configuration.png)
+![solo-configuration](../assets/agama-lab/solo-configuration.png)
 
 IaC(Infrastructure As Code) using Terraform is the `recommended` method to
 configure Gluu Solo cloud infrastructure and administer the IDP.
@@ -51,11 +51,11 @@ the terminal to connect and administer the IDP remotely.
 Administrators can manage and update the CIDR and integration settings from
 `Settings` Page.
 
-![](../assets/agama-lab/solo-settings-page.png)
+![solo-settings-page](../assets/agama-lab/solo-settings-page.png)
 
 ## Gluu Solo Billing
 
 Solo spaces billing page provides details of the current billing plan, usage and
 the payment history.
 
-![](../assets/agama-lab/solo-billing-page.png)
+![solo-billing-page](../assets/agama-lab/solo-billing-page.png)

@@ -90,7 +90,7 @@ This way the calls are made privately without hitting the FQDN through the inter
 
 1.  Expose the service IP (port 443) to host (port 8443):
 
-    ```
+    ```sh
     kubectl -n ingress-nginx port-forward svc/ingress-nginx-controller 8443:443 &
     ```
 
@@ -98,7 +98,7 @@ This way the calls are made privately without hitting the FQDN through the inter
 
 1.  __OPTIONAL__: if the K8s cluster is deployed at a remote VM, make SSH tunneling before accessing the admin-ui web:
 
-    ```
+    ```sh
     ssh -N -L 8443:localhost:8443 <user>@<remote-vm> &
     ```
 

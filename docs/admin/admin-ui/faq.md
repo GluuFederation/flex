@@ -41,13 +41,13 @@ This error is displayed when there is an internal server error in generating an 
 1. Inspect the Gluu Flex Admin UI log at `/opt/jans/jetty/jans-config-api/logs/adminui.log` for any errors related to token requests.
 2. Examine the Janssen Auth server log at `/opt/jans/jetty/jans-auth/logs/jans-auth.log` while it is in debug/trace mode to identify any errors that may occur during token generation. 
 
-### Why is the Gluu Flex Admin UI is displaying following page to upload SSA?
+### Why is the Gluu Flex Admin UI is displaying the following page to upload SSA?
 
 ![image](../../assets/admin-ui/upload-ssa.png)
 
 During installation, it is necessary to provide a Software Statement Assertion (SSA), which the Admin UI utilizes to register an OIDC client for accessing license APIs. To obtain a new SSA or renew an existing one, please follow the steps outlined in the provided [guide](../../install/agama/prerequisites.md#software-statement-assertions) from the Agama Lab web interface. If the SSA used during the installation has expired or become invalidated, you will need to upload a fresh SSA to regain access to the Admin UI.
 
-### Why is the Gluu Flex Admin UI is displaying following message on screen to generate trial license?
+### Why is the Gluu Flex Admin UI is displaying the following message on screen to generate trial license?
 
 ![image](../../assets/admin-ui/license-error-payment-required.png)
 

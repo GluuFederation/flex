@@ -40,7 +40,7 @@ panel on the right side. Different [Admin UI Roles](./home.md#admin-ui-roles) ca
 
 ### Change password
 
- * The password can be changed from the Edit User screen. 
+ * The password can be changed from the Edit User screen.
 
      ![image](../../assets/admin-ui/admin-ui-user-changepassword.png)
 

@@ -8,7 +8,7 @@ tags:
 
 # Gluu Solo Subscription
 
-Customers require active Gluu Solo subscription in order to avail Gluu Solo
+Customers require an active Gluu Solo subscription to access Gluu Solo
 services. Customers can opt for one of the Gluu Solo subscription plans according
 to the business need.
 

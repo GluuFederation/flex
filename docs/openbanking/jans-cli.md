@@ -1,5 +1,6 @@
 ## Introduction
-Jans-cli is a command line interface to configure the Janssen software and it supports both interactive and command-line options for configuration.
+
+Jans-cli is a command-line interface to configure the Janssen software and it supports both interactive and command-line options for configuration.
 
 Jans-cli calls the Jans-Config-API to perform various operations. During Janssen installation, the installer creates a client to use Jans Config API. Jans-cli uses this client to call Jans Config API.
 

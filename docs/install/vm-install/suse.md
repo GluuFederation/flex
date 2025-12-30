@@ -91,6 +91,7 @@ Install Admin UI [Y/n]: y
 ```
 
 ## Verify and Access the Installation
+
 Verify that installation has been successful and all installed components are accessible using the steps below:
 
 - Log in to Text User Interface (TUI)
@@ -112,7 +113,9 @@ When troubleshooting issues with Admin UI access, it's advisable to check the [l
 ```text
 https://FQDN/jans-casa
 ```
+
 ## Enabling HTTPS
+
 To enable communication with Janssen Server over TLS (https) in a production
 environment, Janssen Server needs details about CA certificate. Update the
 HTTPS configuration file `https_jans.conf` as shown below:
@@ -132,7 +135,9 @@ SSLCertificateKeyFile location_of_privkey.pem
 ```bash
 sudo /usr/sbin/rcapache2 restart
 ```
+
 ## Uninstallation
+
 Removing Flex is a two step process:
 
 - [Uninstall Gluu Flex](#uninstall-gluu-flex) and [Uninstall Janssen Packages](#uninstall-janssen-packages)
@@ -199,6 +204,7 @@ Restarting Janssen Config Api
 ```
 
 ### Uninstall Janssen Packages
+
 The command below removes and uninstall the `jans` package
 ```shell
 sudo python3 /opt/jans/jans-setup/install.py -uninstall

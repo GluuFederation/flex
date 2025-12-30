@@ -73,12 +73,14 @@ Refer to the Janssen Server [SAML SSO](https://docs.jans.io/head/janssen-server/
 ## FAQ
 
 Check KC scheduler log for any TR issue
-```
+
+```bash
 /opt/kc-scheduler/logs/scheduler.log
 ```
+
 Also check file directory inside
-```
+
+```bash
 /opt/idp/configs/keycloak/sp/metadata
 ```
-
 

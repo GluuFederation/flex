@@ -3,6 +3,7 @@
 For a full walkthrough of the Gluu Flex Server on Rancher, please see the [Gluu Server on Rancher Tutorial](https://docs.gluu.org/stable/admin/recipes/getting-started-rancher/).
 
 ## Introduction
+
 The Gluu Server is a container distribution of free open source software (FOSS) for identity and access management (IAM). SaaS, custom, open source and commercial web and mobile applications can leverage a Gluu Server for user authentication, identity information, and policy decisions.
 
 Common use cases include:
@@ -15,9 +16,11 @@ Common use cases include:
 - Identity federation      
 
 ### Free Open Source Software
+
 The Gluu Server is a FOSS platform for IAM.
 
 ### Open Web Standards
+
 The Gluu Server can be deployed to support the following open standards for authentication, authorization, federated identity, and identity management:
 
 - OAuth 2.0    
@@ -29,9 +32,11 @@ The Gluu Server can be deployed to support the following open standards for auth
 - Remote Authentication Dial-In User Service (RADIUS)
 
 ### Important notes for installation:
+
 - Make sure to enable `Customize Helm options before install` after clicking the initial `Install` on the top right. When you view your helm options, please uncheck the wait parameter as that conflicts with the post-install hook for the persistence image.
 
 ### Quick install on Rancher UI with Docker single node
+
 - Install the nginx-ingress-controller chart.
 - Install the OpenEBS chart.
 - Install Gluu chart and specify your persistence.
