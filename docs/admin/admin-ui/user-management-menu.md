@@ -36,6 +36,7 @@ panel on the right side. Different [Admin UI Roles](./home.md#admin-ui-roles) ca
 ## Edit User
 
  * Modify existing user details, manage assigned claims, and update attributes.
+ 
     ![image](../../assets/admin-ui/admin-ui-update-user.png)
 
 ### Change password

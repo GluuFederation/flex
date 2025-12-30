@@ -25,8 +25,7 @@ The Janssen Authentication Server leverages custom scripts, which, when implemen
 
 ## Script properties
 
-Each script presents a few default properties where values can be set
-according to the requirement. Details can be found [script properties documentation](https://docs.jans.io/stable/janssen-server/developer/scripts/#configurable-properties-of-a-custom-script).
+Each script presents a few default properties where values can be set according to the requirement. Details can be found [script properties documentation](https://docs.jans.io/stable/janssen-server/developer/scripts/#configurable-properties-of-a-custom-script).
 
 In addition to the default properties, custom properties can be supplied to
 the script using the `Custom properties` section.
