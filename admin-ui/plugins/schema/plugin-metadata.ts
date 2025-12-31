@@ -4,13 +4,14 @@ import AttributeEditPage from 'Plugins/schema/components/Person/AttributeEditPag
 import AttributeViewPage from 'Plugins/schema/components/Person/AttributeViewPage'
 import { ATTRIBUTE_READ, ATTRIBUTE_WRITE } from 'Utils/PermChecker'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { ROUTES } from '@/helpers/navigation'
 
 const pluginMetadata = {
   menus: [
     {
       title: 'menus.user_claims',
       icon: 'user_claims',
-      path: '/attributes',
+      path: ROUTES.ATTRIBUTES_LIST,
       permission: ATTRIBUTE_READ,
       resourceKey: ADMIN_UI_RESOURCES.Attributes,
     },
@@ -18,25 +19,25 @@ const pluginMetadata = {
   routes: [
     {
       component: AttributeEditPage,
-      path: '/attribute/edit/:gid',
+      path: ROUTES.ATTRIBUTE_EDIT_TEMPLATE,
       permission: ATTRIBUTE_WRITE,
       resourceKey: ADMIN_UI_RESOURCES.Attributes,
     },
     {
       component: AttributeViewPage,
-      path: '/attribute/view/:gid',
+      path: ROUTES.ATTRIBUTE_VIEW_TEMPLATE,
       permission: ATTRIBUTE_READ,
       resourceKey: ADMIN_UI_RESOURCES.Attributes,
     },
     {
       component: AttributeAddPage,
-      path: '/attribute/new',
+      path: ROUTES.ATTRIBUTE_ADD,
       permission: ATTRIBUTE_WRITE,
       resourceKey: ADMIN_UI_RESOURCES.Attributes,
     },
     {
       component: AttributeListPage,
-      path: '/attributes',
+      path: ROUTES.ATTRIBUTES_LIST,
       permission: ATTRIBUTE_READ,
       resourceKey: ADMIN_UI_RESOURCES.Attributes,
     },

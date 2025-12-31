@@ -27,16 +27,10 @@ export const LazyRoutes = {
   GluuNavBar: createLazyRoute(() => import('../routes/Apps/Gluu/GluuNavBar')),
 
   // Layout routes
-  NavbarOnly: createLazyRoute(() => import('../routes/Layouts/NavbarOnly')),
-  SidebarDefault: createLazyRoute(() => import('../routes/Layouts/SidebarDefault')),
-  SidebarA: createLazyRoute(() => import('../routes/Layouts/SidebarA')),
-  SidebarWithNavbar: createLazyRoute(() => import('../routes/Layouts/SidebarWithNavbar')),
+  // (layout demo routes removed)
 
   // Layout components
   DefaultSidebar: createLazyRoute(() => import('../layout/components/DefaultSidebar')),
-
-  // Activity routes
-  ActivityPage: createLazyRoute(() => import('../routes/Activity/ActivityPage')),
 }
 
 // Dynamic route loader for plugins
@@ -65,7 +59,7 @@ export const loadPluginRoute = (pluginName: string, routePath?: string) => {
 export const preloadRoute = (routeName: keyof typeof LazyRoutes) => {
   const route = LazyRoutes[routeName]
   if (route && 'preload' in route) {
-    ;(route as any).preload()
+    return (route as { preload: () => void }).preload()
   }
 }
 

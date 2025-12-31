@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import ClientWizardForm from './ClientWizardForm'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import { useNavigate } from 'react-router-dom'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useDispatch, useSelector } from 'react-redux'
 import { editClient } from 'Plugins/auth-server/redux/features/oidcSlice'
 import { getScopeByCreator, emptyScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
@@ -28,7 +28,7 @@ function ClientEditPage() {
   const userAction = {}
   const options = {}
   options['limit'] = parseInt(100000)
-  const navigate = useNavigate()
+  const { navigateBack } = useAppNavigation()
 
   useEffect(() => {
     dispatch(emptyScopes())
@@ -43,8 +43,10 @@ function ClientEditPage() {
     dispatch(getOidcDiscovery())
   }, [])
   useEffect(() => {
-    if (saveOperationFlag) navigate('/auth-server/clients')
-  }, [saveOperationFlag])
+    if (saveOperationFlag) {
+      navigateBack(ROUTES.AUTH_SERVER_CLIENTS_LIST)
+    }
+  }, [saveOperationFlag, navigateBack])
 
   if (!clientData.attributes) {
     clientData.attributes = {}

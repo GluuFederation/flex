@@ -19,12 +19,13 @@ export const getSettingsValidationSchema = (t: TFunction) =>
         }
         return params.every((param) => {
           if (!param) {
-            return false
+            return true
           }
           const key = (param.key || '').trim()
           const value = (param.value || '').trim()
+          // Allow empty rows, but if one field is filled, both must be filled
           if (!key && !value) {
-            return false
+            return true
           }
           return Boolean(key) && Boolean(value)
         })

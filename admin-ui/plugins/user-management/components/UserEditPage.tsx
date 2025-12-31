@@ -1,28 +1,31 @@
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useEffect, useState, useMemo, useCallback } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { Container, CardBody, Card } from 'Components'
 import UserForm from './UserForm'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
-import moment from 'moment'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { getPersistenceType } from 'Plugins/services/redux/features/persistenceTypeSlice'
-import { BIRTHDATE_ATTR } from '../common/Constants'
-import { UserEditPageState, UserEditFormValues } from '../types/ComponentTypes'
+import { UserEditPageState, UserEditFormValues, ModifiedFields } from '../types/ComponentTypes'
 import { PersonAttribute, CustomUser } from '../types/UserApiTypes'
 import {
   usePutUser,
   getGetUserQueryKey,
-  CustomObjectAttribute,
   useGetAttributes,
+  useRevokeUserSession,
 } from 'JansConfigApi'
 import { useQueryClient } from '@tanstack/react-query'
 import { updateToast } from 'Redux/features/toastSlice'
 import { logUserUpdate, getErrorMessage } from '../helper/userAuditHelpers'
 import { triggerUserWebhook } from '../helper/userWebhookHelpers'
-import { mapToPersonAttributes } from '../utils/userFormUtils'
-import type { FormValueEntry } from '../types/ComponentTypes'
+import {
+  mapToPersonAttributes,
+  buildCustomAttributesFromValues,
+  updateCustomAttributesWithModifiedFields,
+  getStandardFieldValues,
+} from '../utils'
+import { revokeSessionWhenFieldsModifiedInUserForm } from '../helper/constants'
 
 function UserEditPage() {
   const dispatch = useDispatch()
@@ -54,6 +57,7 @@ function UserEditPage() {
   const persistenceType = useSelector(
     (state: UserEditPageState) => state.persistenceTypeReducer.type,
   )
+  const revokeSessionMutation = useRevokeUserSession()
 
   const updateUserMutation = usePutUser({
     mutation: {
@@ -72,113 +76,50 @@ function UserEditPage() {
   })
   const isSubmitting = updateUserMutation.isPending
 
-  const createCustomAttributes = (values: UserEditFormValues): CustomObjectAttribute[] => {
-    if (!values) {
-      return []
-    }
+  const standardFields = useMemo(
+    () => ['userId', 'mail', 'displayName', 'status', 'givenName'] as const,
+    [],
+  )
 
-    const result: CustomObjectAttribute[] = []
-    const attributeMap = new Map(personAttributes.map((attr) => [attr.name, attr]))
+  const submitData = useCallback(
+    async (values: UserEditFormValues, modifiedFields: ModifiedFields, userMessage: string) => {
+      const baseCustomAttributes = buildCustomAttributesFromValues(values, personAttributes)
+      const customAttributes = updateCustomAttributesWithModifiedFields(
+        baseCustomAttributes,
+        modifiedFields,
+        personAttributes,
+        userDetails,
+      )
+      const standardFieldValues = getStandardFieldValues(values, standardFields)
 
-    Object.keys(values).forEach((attributeName) => {
-      const attributeDefinition = attributeMap.get(attributeName)
-
-      if (!attributeDefinition) {
-        return
+      updateUserMutation.mutate({
+        data: {
+          inum: userDetails?.inum,
+          ...standardFieldValues,
+          customAttributes,
+          dn: userDetails?.dn || '',
+          ...(persistenceType === 'ldap' && {
+            customObjectClasses: ['top', 'jansPerson', 'jansCustomPerson'],
+          }),
+          modifiedFields: Object.keys(modifiedFields).map((key) => ({
+            [key]: modifiedFields[key],
+          })),
+          performedOn: {
+            user_inum: userDetails?.inum,
+            userId: userDetails?.displayName,
+          },
+          action_message: userMessage,
+        } as CustomUser,
+      })
+      const anyKeyPresent = revokeSessionWhenFieldsModifiedInUserForm.some((key) =>
+        Object.prototype.hasOwnProperty.call(modifiedFields, key),
+      )
+      if (anyKeyPresent) {
+        await revokeSessionMutation.mutateAsync({ userDn: userDetails?.dn || '' })
       }
-
-      const isMultiValued = Boolean(attributeDefinition.oxMultiValuedAttribute)
-      const rawValue = values[attributeName]
-
-      if (!isMultiValued) {
-        let normalized: string | null = null
-        if (typeof rawValue === 'string') {
-          normalized = rawValue.trim()
-        } else if (Array.isArray(rawValue)) {
-          normalized = (rawValue[0] as string | undefined)?.trim() ?? null
-        }
-
-        const singleValue =
-          attributeName === BIRTHDATE_ATTR && normalized
-            ? (() => {
-                const m = moment(normalized, 'YYYY-MM-DD', true)
-                return m.isValid() ? m.format('YYYY-MM-DD') : ''
-              })()
-            : (normalized ?? '')
-
-        const customAttribute: CustomObjectAttribute = {
-          name: attributeName,
-          multiValued: false,
-          values: (singleValue ? [singleValue] : []) as unknown as CustomObjectAttribute['values'],
-        }
-        result.push(customAttribute)
-      } else {
-        let multiValues: string[] = []
-        if (Array.isArray(rawValue)) {
-          multiValues = rawValue
-            .map((entry: FormValueEntry) => {
-              if (typeof entry === 'string') {
-                return entry.trim()
-              }
-              if (entry && typeof entry === 'object' && !Array.isArray(entry)) {
-                const record = entry as { value?: string; [key: string]: string | undefined }
-                const maybe = record.value ?? record[attributeName]
-                return typeof maybe === 'string' ? maybe.trim() : ''
-              }
-              return ''
-            })
-            .filter((v): v is string => Boolean(v.trim()))
-        }
-
-        // Only add the attribute if there are actual values
-        if (multiValues.length > 0) {
-          const customAttribute: CustomObjectAttribute = {
-            name: attributeName,
-            multiValued: true,
-            values: multiValues as unknown as CustomObjectAttribute['values'],
-          }
-          result.push(customAttribute)
-        }
-      }
-    })
-
-    return result
-  }
-
-  const submitData = (
-    values: UserEditFormValues,
-    modifiedFields: Record<string, string | string[]>,
-    userMessage: string,
-  ) => {
-    const customAttributes = createCustomAttributes(values)
-    const userInum = userDetails?.inum
-
-    const submittableValues = {
-      inum: userInum,
-      userId: Array.isArray(values.userId) ? values.userId[0] : values.userId || '',
-      mail: Array.isArray(values.mail) ? values.mail[0] : values.mail,
-      displayName: Array.isArray(values.displayName)
-        ? values.displayName[0]
-        : values.displayName || '',
-      status: Array.isArray(values.status) ? values.status[0] : values.status || '',
-      givenName: Array.isArray(values.givenName) ? values.givenName[0] : values.givenName || '',
-      customAttributes,
-      dn: userDetails?.dn || '',
-      ...(persistenceType === 'ldap' && {
-        customObjectClasses: ['top', 'jansPerson', 'jansCustomPerson'],
-      }),
-      modifiedFields: Object.keys(modifiedFields).map((key) => ({
-        [key]: modifiedFields[key],
-      })),
-      performedOn: {
-        user_inum: userDetails?.inum,
-        userId: userDetails?.displayName,
-      },
-      action_message: userMessage,
-    }
-
-    updateUserMutation.mutate({ data: submittableValues as CustomUser })
-  }
+    },
+    [personAttributes, userDetails, persistenceType, standardFields, updateUserMutation],
+  )
 
   return (
     <Container>

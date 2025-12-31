@@ -8,7 +8,7 @@ import ClientActiveTokens from './ClientActiveTokens'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { Formik } from 'formik'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useCedarling } from '@/cedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
@@ -56,7 +56,7 @@ function ClientWizardForm({
   const { hasCedarWritePermission, authorizeHelper } = useCedarling()
   const formRef = useRef()
   const { t } = useTranslation()
-  const navigate = useNavigate()
+  const { navigateToRoute } = useAppNavigation()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const [modal, setModal] = useState(false)
@@ -485,7 +485,7 @@ function ClientWizardForm({
                         <Button
                           type="button"
                           color={`primary-${selectedTheme}`}
-                          onClick={() => navigate('/auth-server/clients')}
+                          onClick={() => navigateToRoute(ROUTES.AUTH_SERVER_CLIENTS_LIST)}
                           style={{
                             ...applicationStyle.buttonStyle,
                             ...applicationStyle.buttonFlexIconStyles,

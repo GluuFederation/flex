@@ -56,11 +56,11 @@ TabPanel.displayName = 'TabPanel'
 const isNavigationTab = (tab: TabItem | null): tab is NavigationTab => {
   return Boolean(
     tab &&
-      typeof tab === 'object' &&
-      'name' in tab &&
-      'path' in tab &&
-      typeof tab.path === 'string' &&
-      tab.path.trim().length > 0,
+    typeof tab === 'object' &&
+    'name' in tab &&
+    'path' in tab &&
+    typeof tab.path === 'string' &&
+    tab.path.trim().length > 0,
   )
 }
 
@@ -159,7 +159,7 @@ export default function GluuTabs({ tabNames, tabToShow, withNavigation = false }
     }
 
     const activeTab = tabNames[activeIndex] ?? null
-    if (isNavigationTab(activeTab)) {
+    if (isNavigationTab(activeTab) && activeTab.path !== path.pathname) {
       navigateToRoute(activeTab.path, { replace: true })
     }
     setValue(activeIndex)

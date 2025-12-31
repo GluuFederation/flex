@@ -1,35 +1,7 @@
-// Component-specific type definitions
 import { FormikProps } from 'formik'
 import { CustomUser, PersonAttribute, CustomAttribute } from './UserApiTypes'
 import { UserFormValues } from './CommonTypes'
 
-export interface UserClaimEntryProps {
-  data: PersonAttribute
-  entry: string | number
-  formik: FormikProps<UserFormValues>
-  handler: (name: string) => void
-  modifiedFields: Record<string, string | string[]>
-  setModifiedFields: React.Dispatch<React.SetStateAction<Record<string, string | string[]>>>
-}
-
-export interface UserFormProps {
-  onSubmitData: (
-    values: UserEditFormValues,
-    modifiedFields: Record<string, string | string[]>,
-    usermessage: string,
-  ) => void
-  userDetails?: CustomUser | null
-  isSubmitting?: boolean
-}
-
-// Note: persistenceTypeReducer is still used in UserEditPage for system configuration
-export interface UserEditPageState {
-  persistenceTypeReducer: {
-    type: string
-  }
-}
-
-// Define a more specific type for user form values
 export interface UserEditFormValues {
   userId?: string
   mail?: string
@@ -37,12 +9,40 @@ export interface UserEditFormValues {
   status?: string
   givenName?: string
   birthdate?: string | null
-  [key: string]: string | string[] | null | undefined
+  [key: string]: string | string[] | boolean | null | undefined
+}
+
+export type ModifiedFieldValue = string | string[] | boolean
+export type ModifiedFields = Record<string, ModifiedFieldValue>
+
+export interface UserClaimEntryProps {
+  data: PersonAttribute
+  entry: string | number
+  formik: FormikProps<UserFormValues>
+  handler: (name: string) => void
+  modifiedFields: ModifiedFields
+  setModifiedFields: React.Dispatch<React.SetStateAction<ModifiedFields>>
+}
+
+export interface UserFormProps {
+  onSubmitData: (
+    values: UserEditFormValues,
+    modifiedFields: ModifiedFields,
+    usermessage: string,
+  ) => void
+  userDetails?: CustomUser | null
+  isSubmitting?: boolean
+}
+
+export interface UserEditPageState {
+  persistenceTypeReducer: {
+    type: string
+  }
 }
 
 export interface FormOperation {
   path: string
-  value: string | string[]
+  value: string | string[] | boolean
   op: 'add' | 'remove' | 'replace'
 }
 
@@ -118,6 +118,7 @@ export interface OTPDevicesData {
 export type FormValueEntry =
   | string
   | string[]
+  | boolean
   | null
   | undefined
   | { value?: string; label?: string; [key: string]: string | undefined }

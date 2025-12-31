@@ -2,27 +2,22 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
 import { useMediaQuery } from 'react-responsive'
+import dayjs from 'dayjs'
+import type { Dayjs } from 'dayjs'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import { getClients } from 'Redux/features/initSlice'
-import { buildPayload } from 'Utils/PermChecker'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
-import { getLicenseDetails } from 'Redux/features/licenseDetailsSlice'
 import DashboardChart from './Chart/DashboardChart'
 import DateRange from './DateRange'
 import CheckIcon from 'Images/svg/check.svg'
 import CrossIcon from 'Images/svg/cross.svg'
 import SetTitle from 'Utils/SetTitle'
 import styles from './styles'
-import type { HealthState } from 'Redux/features/healthSlice'
-import type { AuthState } from 'Redux/features/types/authTypes'
-import type { InitState } from 'Redux/features/initSlice'
-import type { LicenseDetailsState } from 'Redux/features/licenseDetailsSlice'
 import type { CedarPermissionsState } from '@/cedarling/types'
-import type { UserAction, ActionData } from 'Utils/PermChecker'
+import type { AuthState } from 'Redux/features/types/authTypes'
 
 import { formatDate } from 'Utils/Util'
 import UsersIcon from '@/components/SVG/menu/Users'
@@ -36,75 +31,27 @@ import customColors from '@/customColors'
 import { useCedarling } from '@/cedarling'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
-interface DashboardHealthRootState {
-  healthReducer: HealthState
-}
-
-interface StatDataItem {
-  month: number | string
-  mau?: number
-  authz_code_access_token_count?: number
-  client_credentials_access_token_count?: number
-}
-
-interface LockDetailItem {
-  monthly_active_users?: number
-  monthly_active_clients?: number
-}
-
-interface LockDetail {
-  monthly_active_users?: number
-  monthly_active_clients?: number
-}
+import { useDashboardLicense, useDashboardClients, useDashboardLockStats } from './hooks'
+import { useMauStats } from 'Plugins/admin/components/MAU/hooks'
+import { useHealthStatus } from 'Plugins/admin/components/Health/hooks'
+import type { MauDateRange } from 'Plugins/admin/components/MAU/types'
 
 interface RootState {
-  mauReducer: {
-    stat: StatDataItem[]
-    loading: boolean
-  }
-  initReducer: InitState
-  lockReducer: {
-    lockDetail: LockDetailItem[] | LockDetail
-    loading: boolean
-  }
   authReducer: AuthState
-  licenseDetailsReducer: LicenseDetailsState
-  healthReducer: HealthState
   cedarPermissions: CedarPermissionsState
 }
-
-// Constants moved outside component for better performance
-const FETCHING_LICENSE_DETAILS = 'Fetch license details'
 
 function DashboardPage() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const userAction = useMemo(() => ({ action_message: '', action_data: null }) as UserAction, [])
-  const options = useMemo(() => ({}), [])
   const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
   const isMobile = useMediaQuery({ maxWidth: 767 })
   const { classes } = styles()
-  const [mauCount, setMauCount] = useState<number | null>(null)
-  const [tokenCount, setTokenCount] = useState<number | null>(null)
 
-  const [requestStates, setRequestStates] = useState({
-    licenseRequested: false,
-    clientsRequested: false,
-  })
-  const statData = useSelector((state: RootState) => state.mauReducer.stat)
-  const loading = useSelector((state: RootState) => state.mauReducer.loading)
-  const clients = useSelector((state: RootState) => state.initReducer.clients)
-  const lock = useSelector((state: RootState) => state.lockReducer.lockDetail)
+  const [startDate, setStartDate] = useState<Dayjs>(dayjs().subtract(3, 'months'))
+  const [endDate, setEndDate] = useState<Dayjs>(dayjs())
+
   const { isUserInfoFetched } = useSelector((state: RootState) => state.authReducer)
-  const totalClientsEntries = useSelector(
-    (state: RootState) => state.initReducer.totalClientsEntries,
-  )
-  const license = useSelector((state: RootState) => state.licenseDetailsReducer.item)
-  const serverStatus = useSelector(
-    (state: DashboardHealthRootState) => state.healthReducer.serverStatus,
-  )
-  const serverHealth = useSelector((state: DashboardHealthRootState) => state.healthReducer.health)
-  const dbStatus = useSelector((state: DashboardHealthRootState) => state.healthReducer.dbStatus)
   const access_token = useSelector((state: RootState) => state.authReducer.token?.access_token)
   const permissions = useSelector((state: RootState) => state.authReducer.permissions)
 
@@ -132,7 +79,6 @@ function DashboardPage() {
 
   const initPermissions = useCallback(async () => {
     if (!access_token || !cedarInitialized) return
-
     await authorizeHelper(dashboardScopes)
   }, [access_token, cedarInitialized, authorizeHelper, dashboardScopes])
 
@@ -142,75 +88,61 @@ function DashboardPage() {
     }
   }, [access_token, cedarInitialized, cedarIsInitializing, initPermissions])
 
-  const processedStats = useMemo(() => {
-    if (!statData || statData.length === 0) return { mauCount: null, tokenCount: null }
+  const { data: license, isLoading: licenseLoading } = useDashboardLicense()
+  const {
+    clients,
+    totalCount: totalClientsEntries,
+    isLoading: clientsLoading,
+  } = useDashboardClients()
+  const { services, isLoading: healthLoading } = useHealthStatus()
 
-    const date = new Date()
-    const currentYear = date.getFullYear()
-    const currentMonth = date.getMonth() + 1
-    const formattedMonth =
-      currentMonth > 9 ? currentMonth.toString() : '0' + currentMonth.toString()
-    const yearMonth = currentYear.toString() + formattedMonth
-    const currentMonthData = statData.find(
-      (item: StatDataItem) => item.month.toString() === yearMonth,
-    )
+  const isLockServiceAvailable = useMemo(() => {
+    const lockService = services.find((s) => s.name === 'jans-lock')
+    return lockService?.status === 'up'
+  }, [services])
 
-    const mau = currentMonthData?.mau
+  const {
+    latestStats: lockStats,
+    isLoading: lockLoading,
+    data: lockData,
+  } = useDashboardLockStats({
+    enabled: isLockServiceAvailable,
+  })
+
+  const dateRange: MauDateRange = useMemo(
+    () => ({
+      startDate,
+      endDate,
+    }),
+    [startDate, endDate],
+  )
+
+  const {
+    data: mauData,
+    isLoading: mauLoading,
+    summary: mauSummary,
+  } = useMauStats(dateRange, {
+    enabled: hasViewPermissions && !!access_token,
+  })
+
+  const { mauCount, tokenCount } = useMemo(() => {
+    if (!mauData || mauData.length === 0) {
+      return { mauCount: null, tokenCount: null }
+    }
+
+    const selectedYear = endDate.year()
+    const selectedMonth = endDate.month() + 1
+    const yearMonth = selectedYear * 100 + selectedMonth
+
+    const selectedMonthData = mauData.find((item) => item.month === yearMonth)
+
+    const mau = selectedMonthData?.mau
     const token =
-      (currentMonthData?.authz_code_access_token_count || 0) +
-      (currentMonthData?.client_credentials_access_token_count || 0)
+      (selectedMonthData?.authz_code_access_token_count || 0) +
+      (selectedMonthData?.client_credentials_access_token_count || 0)
 
     return { mauCount: mau || null, tokenCount: token || null }
-  }, [statData])
-
-  useEffect(() => {
-    setMauCount(processedStats.mauCount)
-    setTokenCount(processedStats.tokenCount)
-  }, [processedStats])
-
-  useEffect(() => {
-    if (
-      access_token &&
-      hasViewPermissions &&
-      Object.keys(license).length === 0 &&
-      !loading &&
-      !requestStates.licenseRequested
-    ) {
-      setRequestStates((prev) => ({ ...prev, licenseRequested: true }))
-      buildPayload(userAction as UserAction, FETCHING_LICENSE_DETAILS, options as ActionData)
-      dispatch(getLicenseDetails())
-    }
-  }, [
-    access_token,
-    hasViewPermissions,
-    license,
-    loading,
-    requestStates.licenseRequested,
-    dispatch,
-    userAction,
-    options,
-    FETCHING_LICENSE_DETAILS,
-  ])
-
-  useEffect(() => {
-    if (
-      access_token &&
-      hasViewPermissions &&
-      clients.length === 0 &&
-      !requestStates.clientsRequested
-    ) {
-      setRequestStates((prev) => ({ ...prev, clientsRequested: true }))
-      buildPayload(userAction as UserAction, 'Fetch openid connect clients', {} as ActionData)
-      dispatch(getClients())
-    }
-  }, [
-    access_token,
-    hasViewPermissions,
-    clients,
-    requestStates.clientsRequested,
-    dispatch,
-    userAction,
-  ])
+  }, [mauData, endDate])
 
   const summaryData = useMemo(() => {
     const baseData = [
@@ -231,24 +163,23 @@ function DashboardPage() {
       },
     ]
 
-    if (lock && Array.isArray(lock) && lock.length > 0) {
-      const lockItem = lock[0] as LockDetailItem
+    if (lockData && lockData.length > 0 && lockStats) {
       baseData.push(
         {
           text: t('dashboard.mau_users'),
-          value: lockItem?.monthly_active_users ?? 0,
+          value: lockStats.monthly_active_users,
           icon: <JansLockUsers className={classes.summaryIcon} style={{ top: '8px' }} />,
         },
         {
           text: t('dashboard.mau_clients'),
-          value: lockItem?.monthly_active_clients ?? 0,
+          value: lockStats.monthly_active_clients,
           icon: <JansLockClients className={classes.summaryIcon} style={{ top: '8px' }} />,
         },
       )
     }
 
     return baseData
-  }, [t, totalClientsEntries, mauCount, tokenCount, lock, classes.summaryIcon])
+  }, [t, totalClientsEntries, mauCount, tokenCount, lockData, lockStats, classes.summaryIcon])
 
   const userInfo = useMemo(
     () => [
@@ -271,7 +202,7 @@ function DashboardPage() {
       },
       {
         text: t('fields.validityPeriod'),
-        value: formatDate(license.validityPeriod),
+        value: formatDate(license?.validityPeriod),
         key: 'License Validity Period',
       },
       {
@@ -283,66 +214,60 @@ function DashboardPage() {
     [t, license],
   )
 
-  const statusDetails = useMemo(
-    () => [
-      {
-        label: 'menus.oauthserver',
-        status: serverStatus,
-        key: 'status',
-      },
-      {
-        label: 'dashboard.config_api',
-        status: serverStatus,
-        key: 'jans-config-api',
-      },
-      { label: 'dashboard.database_status', status: dbStatus, key: 'db_status' },
-      { label: 'FIDO', status: serverStatus, key: 'jans-fido2' },
-      { label: 'CASA', status: serverStatus, key: 'jans-casa' },
-      { label: 'dashboard.key_cloak', status: serverStatus, key: 'keycloak' },
-      { label: 'SCIM', status: false, key: 'jans-scim' },
-      { label: 'dashboard.jans_lock', status: serverStatus, key: 'jans-lock' },
-    ],
-    [serverStatus, dbStatus],
+  const getServiceStatus = useCallback(
+    (key: string) => {
+      const service = services.find((s) => s.name === key)
+      return service?.status ?? 'unknown'
+    },
+    [services],
   )
 
-  const getStatusValue = useCallback(
-    (key: string) => {
-      if (key === 'db_status') return dbStatus
-      if (key === 'status') return serverStatus
-      return serverHealth[key]
-    },
-    [serverHealth, dbStatus, serverStatus],
-  )
+  const statusDetails = useMemo(() => {
+    const allServices = [
+      { label: 'menus.oauthserver', key: 'jans-auth' },
+      { label: 'dashboard.config_api', key: 'jans-config-api' },
+      { label: 'dashboard.database_status', key: 'database' },
+      { label: 'FIDO', key: 'jans-fido2' },
+      { label: 'CASA', key: 'jans-casa' },
+      { label: 'dashboard.key_cloak', key: 'keycloak' },
+      { label: 'SCIM', key: 'jans-scim' },
+      { label: 'dashboard.jans_lock', key: 'jans-lock' },
+    ]
+
+    return allServices.filter((serviceConfig) => {
+      const status = getServiceStatus(serviceConfig.key)
+      return status === 'up' || status === 'degraded'
+    })
+  }, [services, getServiceStatus])
 
   const getClassName = useCallback(
     (key: string) => {
-      const value = getStatusValue(key)
-      if (!value) return classes.crossText
-      const statusUpper = String(value).toUpperCase()
-      return statusUpper === 'RUNNING' || statusUpper === 'ONLINE'
-        ? classes.checkText
-        : classes.crossText
+      const status = getServiceStatus(key)
+      if (status === 'up') return classes.checkText
+      if (status === 'degraded') return classes.orange
+      return classes.crossText
     },
-    [getStatusValue, classes.checkText, classes.crossText],
+    [getServiceStatus, classes.checkText, classes.orange, classes.crossText],
   )
 
   const getStatusText = useCallback(
     (key: string) => {
-      const value = getStatusValue(key)
-      if (!value) return 'Unknown'
-      return value
+      const status = getServiceStatus(key)
+      if (status === 'up') return 'Running'
+      if (status === 'down') return 'Down'
+      if (status === 'degraded') return 'Degraded'
+      return 'Unknown'
     },
-    [getStatusValue],
+    [getServiceStatus],
   )
 
   const getStatusIcon = useCallback(
     (key: string) => {
-      const value = getStatusValue(key)
-      if (!value) return CrossIcon
-      const statusUpper = String(value).toUpperCase()
-      return statusUpper === 'RUNNING' || statusUpper === 'ONLINE' ? CheckIcon : CrossIcon
+      const status = getServiceStatus(key)
+      if (status === 'up' || status === 'degraded') return CheckIcon
+      return CrossIcon
     },
-    [getStatusValue],
+    [getServiceStatus],
   )
 
   const StatusCard = useMemo(
@@ -417,8 +342,52 @@ function DashboardPage() {
   }, [isUserInfoFetched, access_token, hasViewPermissions, handleLogout])
 
   const isBlocking = useMemo(() => {
-    return loading || cedarIsInitializing || (!cedarInitialized && !permissions)
-  }, [loading, cedarIsInitializing, cedarInitialized, permissions])
+    return (
+      licenseLoading ||
+      clientsLoading ||
+      mauLoading ||
+      healthLoading ||
+      lockLoading ||
+      cedarIsInitializing ||
+      (!cedarInitialized && !permissions)
+    )
+  }, [
+    licenseLoading,
+    clientsLoading,
+    mauLoading,
+    healthLoading,
+    lockLoading,
+    cedarIsInitializing,
+    cedarInitialized,
+    permissions,
+  ])
+
+  const handleStartDateChange = useCallback(
+    (date: Dayjs | null) => {
+      if (date) {
+        setStartDate(date)
+        if (date.isAfter(endDate)) {
+          setEndDate(date)
+        }
+      }
+    },
+    [endDate],
+  )
+
+  const handleEndDateChange = useCallback(
+    (date: Dayjs | null) => {
+      if (date) {
+        setEndDate(date)
+        if (date.isBefore(startDate)) {
+          setStartDate(date)
+        }
+      }
+    },
+    [startDate],
+  )
+
+  const startMonth = startDate.format('YYYYMM')
+  const endMonth = endDate.format('YYYYMM')
 
   return (
     <GluuLoader blocking={isBlocking}>
@@ -526,20 +495,38 @@ function DashboardPage() {
                     }
                   >
                     <div>{t('dashboard.select_date_range')}</div>
-                    <DateRange />
+                    <DateRange
+                      startDate={startDate}
+                      endDate={endDate}
+                      onStartDateChange={handleStartDateChange}
+                      onEndDateChange={handleEndDateChange}
+                    />
                   </Grid>
                   <Grid xs={11} item className={classes.desktopChartStyle}>
-                    <DashboardChart />
+                    <DashboardChart
+                      statData={mauData ?? []}
+                      startMonth={startMonth}
+                      endMonth={endMonth}
+                    />
                   </Grid>
                 </Grid>
               ) : (
                 <Grid container className={classes.whiteBg + ' ' + classes.flex}>
                   <Grid md={9} xs={12} item className={classes.desktopChartStyle}>
-                    <DashboardChart />
+                    <DashboardChart
+                      statData={mauData ?? []}
+                      startMonth={startMonth}
+                      endMonth={endMonth}
+                    />
                   </Grid>
                   <Grid md={3} xs={6} item>
                     <div style={{ fontSize: 'large' }}>{t('dashboard.select_date_range')}</div>
-                    <DateRange />
+                    <DateRange
+                      startDate={startDate}
+                      endDate={endDate}
+                      onStartDateChange={handleStartDateChange}
+                      onEndDateChange={handleEndDateChange}
+                    />
                   </Grid>
                 </Grid>
               )}

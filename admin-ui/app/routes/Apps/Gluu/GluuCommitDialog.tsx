@@ -22,8 +22,15 @@ import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
+import type { RootState } from '@/redux/sagas/types/audit'
+import type { GluuCommitDialogOperation, GluuCommitDialogProps, JsonValue } from './types'
+import { Alert, Box } from '@mui/material'
 
 const USER_MESSAGE = 'user_action_message'
+
+const isJsonValueArray = (value: JsonValue): value is JsonValue[] => {
+  return Array.isArray(value)
+}
 
 const GluuCommitDialog = ({
   handler,
@@ -36,16 +43,18 @@ const GluuCommitDialog = ({
   inputType,
   feature,
   isLicenseLabel = false,
-}: any) => {
+  alertMessage,
+  alertSeverity,
+}: GluuCommitDialogProps) => {
   const { t } = useTranslation()
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
 
-  const theme: any = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme?.state.theme || 'light'
   const [active, setActive] = useState(false)
-  const [isOpen, setIsOpen] = useState(null)
+  const [isOpen, setIsOpen] = useState<number | null>(null)
   const [userMessage, setUserMessage] = useState('')
-  const { loadingWebhooks, webhookModal } = useSelector((state: any) => state.webhookReducer)
+  const { loadingWebhooks, webhookModal } = useSelector((state: RootState) => state.webhookReducer)
 
   const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
   const webhookScopes = useMemo(
@@ -90,13 +99,10 @@ const GluuCommitDialog = ({
     setUserMessage('')
   }
 
-  if (!modal) {
-    return <></>
-  }
-  const renderBadges = (values: any) => {
+  const renderBadges = (values: JsonValue[]) => {
     return (
       <div className="d-flex flex-column gap-1 align-items-start">
-        {values.map((data: any) => (
+        {values.map((data) => (
           <Badge
             color={`primary-${selectedTheme}  `}
             style={{ width: 'fit-content' }}
@@ -107,6 +113,32 @@ const GluuCommitDialog = ({
         ))}
       </div>
     )
+  }
+
+  const renderArrayValue = (values: JsonValue[], key: number) => {
+    if (!values.length) {
+      return <Badge color={`primary-${selectedTheme}`}>&quot;&quot;</Badge>
+    }
+
+    return (
+      <div className="d-flex flex-column gap-1 align-items-start">
+        {isOpen === key ? (
+          <Collapse isOpen={isOpen === key}>{renderBadges(values)}</Collapse>
+        ) : (
+          renderBadges(values.slice(0, 2))
+        )}
+        {values.length > 2 && (
+          <Button color="link" onClick={() => setIsOpen(isOpen !== key ? key : null)} size="sm">
+            {isOpen === key ? 'Show Less' : 'Show More'}
+            {isOpen === key ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </Button>
+        )}
+      </div>
+    )
+  }
+
+  if (!modal) {
+    return <></>
   }
   return (
     <>
@@ -139,6 +171,14 @@ const GluuCommitDialog = ({
                 overflowX: 'hidden',
               }}
             >
+              {alertMessage && alertSeverity && (
+                <FormGroup row>
+                  <Box mb={2}>
+                    <Alert severity={alertSeverity}>{alertMessage}</Alert>
+                  </Box>
+                </FormGroup>
+              )}
+
               {operations?.length ? (
                 <FormGroup row>
                   <h1
@@ -154,7 +194,7 @@ const GluuCommitDialog = ({
                 </FormGroup>
               ) : null}
               {operations &&
-                operations.map((item: any, key: any) => (
+                operations.map((item: GluuCommitDialogOperation, key: number) => (
                   <FormGroup row key={key}>
                     <Col sm={1} style={{ fontWeight: 'bold' }}>
                       Set
@@ -173,24 +213,16 @@ const GluuCommitDialog = ({
                       to
                     </Col>
                     <Col sm={5} style={{ overflow: 'auto' }}>
-                      {Array.isArray(item.value) ? (
-                        <div className="d-flex flex-column gap-1 align-items-start">
-                          {isOpen === key ? (
-                            <Collapse isOpen={isOpen === key}>{renderBadges(item.value)}</Collapse>
-                          ) : (
-                            renderBadges(item.value.slice(0, 2))
-                          )}
-                          {item.value.length > 2 && (
-                            <Button
-                              color="link"
-                              onClick={() => setIsOpen(isOpen !== key ? key : null)}
-                              size="sm"
-                            >
-                              {isOpen === key ? 'Show Less' : 'Show More'}
-                              {isOpen === key ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                            </Button>
-                          )}
-                        </div>
+                      {isJsonValueArray(item.value) ? (
+                        renderArrayValue(item.value, key)
+                      ) : typeof item.value === 'boolean' ? (
+                        <Badge color={`primary-${selectedTheme}`}>{String(item.value)}</Badge>
+                      ) : item.value === '' || item.value === null || item.value === undefined ? (
+                        <Badge color={`primary-${selectedTheme}`}>&quot;&quot;</Badge>
+                      ) : typeof item.value === 'object' ? (
+                        <Badge color={`primary-${selectedTheme}`}>
+                          {JSON.stringify(item.value)}
+                        </Badge>
                       ) : (
                         <Badge color={`primary-${selectedTheme}`}>{String(item.value)}</Badge>
                       )}
