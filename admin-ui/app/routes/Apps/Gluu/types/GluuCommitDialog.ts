@@ -19,6 +19,8 @@ export interface GluuCommitDialogProps {
   operations?: GluuCommitDialogOperation[]
   label?: string
   placeholderLabel?: string
+  alertMessage?: string
+  alertSeverity?: 'error' | 'warning' | 'info' | 'success'
   inputType?: 'text' | 'textarea' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search'
   feature?: string
   isLicenseLabel?: boolean

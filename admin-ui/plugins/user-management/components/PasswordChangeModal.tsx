@@ -9,7 +9,12 @@ import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
 import { useDispatch } from 'react-redux'
 import { passwordChangeValidationSchema } from '../helper/validations'
-import { usePatchUserByInum, getGetUserQueryKey, UserPatchRequest } from 'JansConfigApi'
+import {
+  usePatchUserByInum,
+  getGetUserQueryKey,
+  UserPatchRequest,
+  useRevokeUserSession,
+} from 'JansConfigApi'
 import { updateToast } from 'Redux/features/toastSlice'
 import { logPasswordChange, getErrorMessage } from '../helper/userAuditHelpers'
 import { triggerUserWebhook } from '../helper/userWebhookHelpers'
@@ -42,6 +47,10 @@ const PasswordChangeModal = ({
 
   const [passwordModal, setPasswordModal] = useState(false)
   const [password, setPassword] = useState<string>('')
+  const [alertMessage, setAlertMessage] = useState('')
+  const [alertSeverity, setAlertSeverity] = useState<
+    'error' | 'warning' | 'info' | 'success' | undefined
+  >(undefined)
 
   const initialValues = useMemo<PasswordChangeFormValues>(
     () => ({
@@ -69,8 +78,10 @@ const PasswordChangeModal = ({
     },
   })
 
+  const revokeSessionMutation = useRevokeUserSession()
+
   const submitChangePassword = useCallback(
-    (userMessage: string) => {
+    async (userMessage: string) => {
       if (!userDetails?.inum || !password) return
 
       const passwordAttrIndex = userDetails?.customAttributes?.findIndex(
@@ -119,10 +130,11 @@ const PasswordChangeModal = ({
         message: userMessage,
       }
 
-      changePasswordMutation.mutate({
+      await changePasswordMutation.mutateAsync({
         inum: userDetails.inum,
         data: patchOperations,
       })
+      await revokeSessionMutation.mutateAsync({ userDn: userDetails?.dn || '' })
 
       // Log audit separately with full payload
       logPasswordChange(userDetails.inum, auditPayload).catch((error) => {
@@ -135,6 +147,8 @@ const PasswordChangeModal = ({
   const handlePasswordSubmit = useCallback((values: PasswordChangeFormValues) => {
     setPassword(values.userPassword)
     setPasswordModal(true)
+    setAlertMessage(t('messages.revokeUserSession'))
+    setAlertSeverity('warning')
   }, [])
 
   const passwordFormik = useFormik<PasswordChangeFormValues>({
@@ -203,6 +217,8 @@ const PasswordChangeModal = ({
         modal={passwordModal}
         onAccept={submitChangePassword}
         isLoading={isLoading}
+        alertMessage={alertMessage}
+        alertSeverity={alertSeverity}
       />
       <Modal
         isOpen={isOpen}

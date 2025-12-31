@@ -9,7 +9,12 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { getPersistenceType } from 'Plugins/services/redux/features/persistenceTypeSlice'
 import { UserEditPageState, UserEditFormValues, ModifiedFields } from '../types/ComponentTypes'
 import { PersonAttribute, CustomUser } from '../types/UserApiTypes'
-import { usePutUser, getGetUserQueryKey, useGetAttributes } from 'JansConfigApi'
+import {
+  usePutUser,
+  getGetUserQueryKey,
+  useGetAttributes,
+  useRevokeUserSession,
+} from 'JansConfigApi'
 import { useQueryClient } from '@tanstack/react-query'
 import { updateToast } from 'Redux/features/toastSlice'
 import { logUserUpdate, getErrorMessage } from '../helper/userAuditHelpers'
@@ -20,6 +25,7 @@ import {
   updateCustomAttributesWithModifiedFields,
   getStandardFieldValues,
 } from '../utils'
+import { revokeSessionWhenFieldsModifiedInUserForm } from '../helper/constants'
 
 function UserEditPage() {
   const dispatch = useDispatch()
@@ -51,6 +57,7 @@ function UserEditPage() {
   const persistenceType = useSelector(
     (state: UserEditPageState) => state.persistenceTypeReducer.type,
   )
+  const revokeSessionMutation = useRevokeUserSession()
 
   const updateUserMutation = usePutUser({
     mutation: {
@@ -75,7 +82,7 @@ function UserEditPage() {
   )
 
   const submitData = useCallback(
-    (values: UserEditFormValues, modifiedFields: ModifiedFields, userMessage: string) => {
+    async (values: UserEditFormValues, modifiedFields: ModifiedFields, userMessage: string) => {
       const baseCustomAttributes = buildCustomAttributesFromValues(values, personAttributes)
       const customAttributes = updateCustomAttributesWithModifiedFields(
         baseCustomAttributes,
@@ -104,6 +111,12 @@ function UserEditPage() {
           action_message: userMessage,
         } as CustomUser,
       })
+      const anyKeyPresent = revokeSessionWhenFieldsModifiedInUserForm.some((key) =>
+        Object.prototype.hasOwnProperty.call(modifiedFields, key),
+      )
+      if (anyKeyPresent) {
+        await revokeSessionMutation.mutateAsync({ userDn: userDetails?.dn || '' })
+      }
     },
     [personAttributes, userDetails, persistenceType, standardFields, updateUserMutation],
   )

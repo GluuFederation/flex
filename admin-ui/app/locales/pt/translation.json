@@ -813,6 +813,7 @@
     "user_updated_successfully": "Usuário atualizado com sucesso",
     "user_deleted_successfully": "Usuário excluído com sucesso",
     "password_changed_successfully": "Senha alterada com sucesso",
+    "revokeUserSession": "A sessão do usuário será revogada, pois um ou mais dos seguintes campos foram modificados: senha, status, função de administrador.",
     "device_deleted_successfully": "Dispositivo excluído com sucesso",
     "service_status_up": "O serviço está funcionando normalmente.",
     "service_status_down": "O serviço está indisponível no momento.",
