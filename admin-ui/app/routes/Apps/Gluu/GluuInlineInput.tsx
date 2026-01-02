@@ -110,17 +110,17 @@ const GluuInlineInput = ({
   )
 
   const onAccept = useCallback(() => {
-    if (disabled) {
+    if (disabled || !path || typeof path !== 'string' || path.trim() === '') {
       return
     }
     const patch: JsonPatch = {
       op: 'replace',
-      path: path || '',
+      path,
       value: isArray ? correctValue : data,
     } as JsonPatch
     handler(patch)
     setShow((prev) => !prev)
-  }, [disabled, path, isArray, correctValue, data, handler])
+  }, [disabled, path, isArray, correctValue, data, handler, name])
 
   const onCancel = useCallback(() => {
     setCorrectValue([])
