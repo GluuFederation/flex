@@ -120,7 +120,7 @@ const GluuInlineInput = ({
     } as JsonPatch
     handler(patch)
     setShow((prev) => !prev)
-  }, [disabled, path, isArray, correctValue, data, handler, name])
+  }, [disabled, path, isArray, correctValue, data, handler])
 
   const onCancel = useCallback(() => {
     setCorrectValue([])
