@@ -17,7 +17,7 @@ tags:
 
 ## Initial Setup
 
-1. Before initiating the setup, please obtain an [SSA](https://docs.gluu.org/vreplace-flex-version/install/agama/prerequisites/#obtaining-an-ssa) for Flex trial, after which you will issued a JWT.
+1. Before initiating the setup, please obtain an [SSA](https://docs.gluu.org/vreplace-flex-version/install/flex/prerequisites/#obtaining-an-ssa) for Flex trial, after which you will issued a JWT.
 
 2. Enable [GKE API](https://console.cloud.google.com/kubernetes) if not enabled yet.
 
