@@ -511,7 +511,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../agama/prerequisites/" class="md-nav__link">
+      <a href="../../flex/prerequisites/" class="md-nav__link">
         
   
   
@@ -2876,7 +2876,7 @@
 <h2 id="initial-setup">Initial Setup<a class="headerlink" href="#initial-setup" title="Permanent link">#</a></h2>
 <ol>
 <li>
-<p>Before initiating the setup, please obtain an <a href="https://docs.gluu.org/nightly/install/agama/prerequisites/#obtaining-an-ssa">SSA</a> for Flex trial, after which you will issued a JWT.</p>
+<p>Before initiating the setup, please obtain an <a href="https://docs.gluu.org/vreplace-flex-version/install/agama/flex/#obtaining-an-ssa">SSA</a> for Flex trial, after which you will issued a JWT.</p>
 </li>
 <li>
 <p>Install <a href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html">aws cli</a></p>
@@ -2957,7 +2957,7 @@ helm install nginx ingress-nginx/ingress-nginx
 <p>PostgreSQL for persistence storage</p>
 <p>In a production environment, a production grade PostgreSQL server should be used such as <code>Amazon RDS</code></p>
 <p>For testing purposes, you can deploy it on the EKS cluster using the following commands:</p>
-<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://raw.githubusercontent.com/GluuFederation/flex/nightly/automation/pgsql.yaml
+<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://raw.githubusercontent.com/GluuFederation/flex/vreplace-flex-version/automation/pgsql.yaml
 kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>pgsql.yaml
 </code></pre></div>
 <p>Add the following yaml snippet to your <code>override.yaml</code> file:</p>
@@ -2976,7 +2976,7 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
 <p>MySQL for persistence storage</p>
 <p>In a production environment, a production grade MySQL server should be used such as <code>Amazon RDS</code></p>
 <p>For testing purposes, you can deploy it on the EKS cluster using the following commands:</p>
-<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://raw.githubusercontent.com/GluuFederation/flex/nightly/automation/mysql.yaml
+<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://raw.githubusercontent.com/GluuFederation/flex/vreplace-flex-version/automation/mysql.yaml
 kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>mysql.yaml
 </code></pre></div>
 <p>Add the following yaml snippet to your <code>override.yaml</code> file:</p>
@@ -3049,7 +3049,7 @@ helm install gluu gluu-flex/gluu -n gluu -f override.yaml
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="November 27, 2025 09:01:44 UTC"><span class="timeago" datetime="2025-11-27T09:01:44+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="November 27, 2025 09:01:44 UTC">2025-11-27</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="January 2, 2026 04:18:57 UTC"><span class="timeago" datetime="2026-01-02T04:18:57+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="January 2, 2026 04:18:57 UTC">2026-01-02</span>
   </span>
 
     
