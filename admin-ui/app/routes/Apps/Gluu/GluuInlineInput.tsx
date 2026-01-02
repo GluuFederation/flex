@@ -53,7 +53,9 @@ const GluuInlineInput = ({
   const selectedTheme = theme.state.theme
   const [show, setShow] = useState(false)
   const [correctValue, setCorrectValue] = useState<string[]>([])
-  const [data, setData] = useState<string | number | boolean>(value as string | number | boolean)
+  const [data, setData] = useState<string | number | boolean>(
+    value && !Array.isArray(value) ? (value as string | number | boolean) : '',
+  )
 
   useEffect(() => {
     if (value !== undefined && !Array.isArray(value)) {
