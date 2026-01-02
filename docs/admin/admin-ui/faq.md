@@ -45,7 +45,7 @@ This error is displayed when there is an internal server error in generating an 
 
 ![image](../../assets/admin-ui/upload-ssa.png)
 
-During installation, it is necessary to provide a Software Statement Assertion (SSA), which the Admin UI utilizes to register an OIDC client for accessing license APIs. To obtain a new SSA or renew an existing one, please follow the steps outlined in the provided [guide](../../install/agama/prerequisites.md#software-statement-assertions) from the Agama Lab web interface. If the SSA used during the installation has expired or become invalidated, you will need to upload a fresh SSA to regain access to the Admin UI.
+During installation, it is necessary to provide a Software Statement Assertion (SSA), which the Admin UI utilizes to register an OIDC client for accessing license APIs. To obtain a new SSA or renew an existing one, please follow the steps outlined in the provided [guide](../../install/flex/prerequisites.md#software-statement-assertions) from the Agama Lab web interface. If the SSA used during the installation has expired or become invalidated, you will need to upload a fresh SSA to regain access to the Admin UI.
 
 ### Why is the Gluu Flex Admin UI is displaying following message on screen to generate trial license?
 
