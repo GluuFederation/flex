@@ -17,6 +17,7 @@ import AvailableClaimsPanel from './AvailableClaimsPanel'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { getUserValidationSchema, initializeCustomAttributes } from '../helper/validations'
 import { buildFormOperations, shouldDisableApplyButton } from '../utils'
+import { revokeSessionWhenFieldsModifiedInUserForm } from '../helper/constants'
 import {
   UserFormProps,
   FormOperation,
@@ -33,6 +34,10 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
   const { t } = useTranslation()
   const DOC_SECTION = 'user'
   const [searchClaims, setSearchClaims] = useState('')
+  const [alertMessage, setAlertMessage] = useState('')
+  const [alertSeverity, setAlertSeverity] = useState<
+    'error' | 'warning' | 'info' | 'success' | undefined
+  >(undefined)
   const [selectedClaims, setSelectedClaims] = useState<PersonAttribute[]>([])
   const [modal, setModal] = useState(false)
   const [changePasswordModal, setChangePasswordModal] = useState(false)
@@ -87,6 +92,14 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
   const handleApply = useCallback(() => {
     const hasModifiedFields = Object.keys(modifiedFields).length > 0
     const isFormChanged = formik.dirty || hasModifiedFields
+
+    const anyKeyPresent = revokeSessionWhenFieldsModifiedInUserForm.some((key) =>
+      Object.prototype.hasOwnProperty.call(modifiedFields, key),
+    )
+    if (anyKeyPresent) {
+      setAlertMessage(t('messages.revokeUserSession'))
+      setAlertSeverity('warning')
+    }
 
     if (isSubmitting || !isFormChanged) {
       return
@@ -473,6 +486,8 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
           feature={adminUiFeatures.users_edit}
           formik={formik as FormikProps<UserEditFormValues>}
           operations={operations}
+          alertMessage={alertMessage}
+          alertSeverity={alertSeverity}
         />
       </Form>
     </GluuLoader>

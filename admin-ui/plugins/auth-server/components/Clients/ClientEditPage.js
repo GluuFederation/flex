@@ -28,7 +28,7 @@ function ClientEditPage() {
   const userAction = {}
   const options = {}
   options['limit'] = parseInt(100000)
-  const { navigateToRoute } = useAppNavigation()
+  const { navigateBack } = useAppNavigation()
 
   useEffect(() => {
     dispatch(emptyScopes())
@@ -44,9 +44,9 @@ function ClientEditPage() {
   }, [])
   useEffect(() => {
     if (saveOperationFlag) {
-      navigateToRoute(ROUTES.AUTH_SERVER_CLIENTS_LIST)
+      navigateBack(ROUTES.AUTH_SERVER_CLIENTS_LIST)
     }
-  }, [saveOperationFlag, navigateToRoute])
+  }, [saveOperationFlag, navigateBack])
 
   if (!clientData.attributes) {
     clientData.attributes = {}

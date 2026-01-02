@@ -1,6 +1,7 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
+import i18n from 'i18next'
 import {
   getOpenidClientsResponse,
   addClientResponse,
@@ -56,7 +57,7 @@ export function* getOauthOpenidClients({ payload }) {
     yield call(postUserAction, audit)
     return data
   } catch (e) {
-    console.log(e)
+    yield put(updateToast(true, 'error'))
     yield put(getOpenidClientsResponse({ data: null }))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -80,7 +81,6 @@ export function* addNewClient({ payload }) {
     yield put(updateToast(true, 'error'))
     yield put(addClientResponse(null))
     if (isFourZeroOneError(e)) {
-      console.log(JSON.stringify(e))
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
@@ -103,7 +103,6 @@ export function* editAClient({ payload }) {
     return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
-    console.log(e)
     yield put(editClientResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -141,7 +140,23 @@ export function* getOpenidClientTokens({ payload }) {
     const data = yield call(api.getOpenidClientTokens, payload)
     yield put(getTokenByClientResponse({ data }))
   } catch (error) {
+    const errorData = error?.response?.data
+    const isInsufficientScope =
+      error?.response?.status === 403 &&
+      (errorData?.errorMessage?.includes('Insufficient scopes') ||
+        errorData?.error === 'insufficient_scope')
+
+    const errorMessage = isInsufficientScope
+      ? i18n.t('messages.insufficient_token_read_permission')
+      : undefined
+
+    yield put(updateToast(true, 'error', errorMessage))
     yield put(getTokenByClientResponse(null))
+
+    if (isFourZeroOneError(error)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
   }
 }
 
@@ -152,7 +167,12 @@ export function* deleteClientToken({ payload }) {
     yield put(updateToast(true, 'success'))
     yield put(deleteClientTokenResponse())
   } catch (error) {
+    yield put(updateToast(true, 'error'))
     yield put(deleteClientTokenResponse())
+    if (isFourZeroOneError(error)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
   }
 }
 

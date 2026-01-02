@@ -91,7 +91,7 @@ dn: inum=6b3fa54a-6b39-4d6a-8af6-f775084ff3e2,ou=adminUIResourceScopesMapping,ou
 inum: 6b3fa54a-6b39-4d6a-8af6-f775084ff3e2
 jansAccessType: READ
 jansResource: assets
-jansScope: https://jans.io/oauth/config/jans_asset-read
+jansScope: https://jans.io/oauth/config/asset.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
 jansScope: https://jans.io/oauth/config/data.readonly
 objectClass: top
@@ -101,7 +101,7 @@ dn: inum=014fe962-0fea-49c4-9798-eb51ce80204f,ou=adminUIResourceScopesMapping,ou
 inum: 014fe962-0fea-49c4-9798-eb51ce80204f
 jansAccessType: WRITE
 jansResource: assets
-jansScope: https://jans.io/oauth/config/jans_asset-write
+jansScope: https://jans.io/oauth/config/asset.write
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
 objectClass: top
 objectClass: adminUIResourceScopesMapping
@@ -110,7 +110,7 @@ dn: inum=b9ff6c69-4fc7-4a23-8ba7-7a250d80ea11,ou=adminUIResourceScopesMapping,ou
 inum: b9ff6c69-4fc7-4a23-8ba7-7a250d80ea11
 jansAccessType: DELETE
 jansResource: assets
-jansScope: https://jans.io/oauth/config/jans_asset-delete
+jansScope: https://jans.io/oauth/config/asset.admin
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
 objectClass: top
 objectClass: adminUIResourceScopesMapping
