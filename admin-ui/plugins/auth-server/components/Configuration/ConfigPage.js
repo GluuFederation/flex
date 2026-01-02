@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useEffect, useState, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FormGroup, Card, CardBody, CardHeader } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -6,6 +6,7 @@ import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import PropertyBuilder from './JsonPropertyBuilder'
 import { useDispatch, useSelector } from 'react-redux'
+import { useQueryClient } from '@tanstack/react-query'
 import RefreshIcon from '@mui/icons-material/Refresh'
 import spec from '../../../../configApiSpecs.yaml'
 import { buildPayload } from 'Utils/PermChecker'
@@ -19,20 +20,50 @@ import {
   SIMPLE_PASSWORD_AUTH,
   FETCHING_JSON_PROPERTIES,
 } from 'Plugins/auth-server/common/Constants'
-import { getAcrsConfig, editAcrs } from 'Plugins/auth-server/redux/features/acrSlice'
+import { useGetAcrs, usePutAcrs, getGetAcrsQueryKey } from 'JansConfigApi'
 import { getScripts } from 'Redux/features/initSlice'
 import customColors from '@/customColors'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { useAcrAudit } from '../AuthN/hooks'
+import { updateToast } from 'Redux/features/toastSlice'
 
 function ConfigPage() {
   const { hasCedarWritePermission, authorizeHelper } = useCedarling()
   const { navigateBack } = useAppNavigation()
   const configuration = useSelector((state) => state.jsonConfigReducer.configuration)
-  const acrs = useSelector((state) => state.acrReducer.acrReponse)
   const scripts = useSelector((state) => state.initReducer.scripts)
   const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   const dispatch = useDispatch()
+  const queryClient = useQueryClient()
+  const { logAcrUpdate } = useAcrAudit()
+
+  // Fetch ACR config using Orval hook
+  const { data: acrs, isLoading: acrLoading } = useGetAcrs({
+    query: {
+      staleTime: 30000,
+    },
+  })
+
+  // Mutation for updating ACR
+  const handleAcrUpdateSuccess = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: getGetAcrsQueryKey() })
+  }, [queryClient])
+
+  const handleAcrUpdateError = useCallback(
+    (error) => {
+      const errorMessage = error?.message || 'Failed to update default ACR'
+      dispatch(updateToast(true, 'error', errorMessage))
+    },
+    [dispatch],
+  )
+
+  const putAcrsMutation = usePutAcrs({
+    mutation: {
+      onSuccess: handleAcrUpdateSuccess,
+      onError: handleAcrUpdateError,
+    },
+  })
 
   const { t } = useTranslation()
   const lSize = 6
@@ -78,7 +109,6 @@ function ConfigPage() {
   useEffect(() => {
     buildPayload(userAction, FETCHING_JSON_PROPERTIES, {})
     dispatch(getJsonConfig({ action: userAction }))
-    dispatch(getAcrsConfig())
     dispatch(getScripts({ action: userAction }))
   }, [])
   useEffect(() => {}, [cedarPermissions])
@@ -108,20 +138,24 @@ function ConfigPage() {
     setPut(put)
     setOperations(patches.concat(put))
   }
-  function submitForm(message) {
+  async function submitForm(message) {
     toggle()
-    handleSubmit(message)
+    await handleSubmit(message)
   }
-  const handleSubmit = (message) => {
+  const handleSubmit = async (message) => {
     if (patches.length >= 0) {
       const postBody = {}
       postBody['requestBody'] = patches
 
       buildPayload(userAction, message, postBody)
       if (put) {
-        const opts = {}
-        opts['authenticationMethod'] = { defaultAcr: put.value || acrs.defaultAcr }
-        dispatch(editAcrs({ data: opts }))
+        const newAcr = { defaultAcr: put.value || acrs?.defaultAcr }
+        try {
+          await putAcrsMutation.mutateAsync({ data: newAcr })
+          await logAcrUpdate(newAcr, message, { defaultAcr: newAcr.defaultAcr })
+        } catch {
+          // Error handling is done in onError callback
+        }
       }
       dispatch(patchJsonConfig({ action: userAction }))
     }
@@ -140,7 +174,13 @@ function ConfigPage() {
   }
 
   return (
-    <GluuLoader blocking={!(!!configuration && Object.keys(configuration).length > 0)}>
+    <GluuLoader
+      blocking={
+        !(!!configuration && Object.keys(configuration).length > 0) ||
+        acrLoading ||
+        putAcrsMutation.isPending
+      }
+    >
       <Card style={{ borderRadius: 24 }}>
         <CardHeader>
           <div style={{ display: 'flex' }}>

@@ -1,14 +1,27 @@
-import React from 'react'
+import React, { type ReactElement } from 'react'
 import { Container, Row, Col } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import { AUTHN } from 'Utils/ApiResources'
-
 import customColors from '@/customColors'
 
-function AuthNDetailPage({ row }) {
+interface AuthNDetailRow {
+  acrName?: string
+  level?: number
+  passwordAttribute?: string
+  hashAlgorithm?: string
+  primaryKey?: string
+  samlACR?: string
+  description?: string
+}
+
+interface AuthNDetailPageProps {
+  row: AuthNDetailRow
+}
+
+function AuthNDetailPage({ row }: AuthNDetailPageProps): ReactElement {
   return (
     <React.Fragment>
-      <Container style={{ backgroundColor: customColors.smokeWhite }}>
+      <Container style={{ backgroundColor: customColors.whiteSmoke }}>
         <Row>
           <Col sm={6}>
             <GluuFormDetailRow
@@ -47,7 +60,6 @@ function AuthNDetailPage({ row }) {
           </Col>
         </Row>
         <Row>
-          {' '}
           <Col sm={6}>
             <GluuFormDetailRow
               label="fields.primary_key"

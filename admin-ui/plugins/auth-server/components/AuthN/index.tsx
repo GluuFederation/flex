@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { type ReactElement } from 'react'
 import AuthNListPage from './AuthNListPage'
 import { useTranslation } from 'react-i18next'
 import GluuTabs from 'Routes/Apps/Gluu/GluuTabs'
@@ -9,10 +9,15 @@ import AgamaListPage from '../Agama/AgamaListPage'
 import AliasesListPage from '../Agama/AgamaAliasListPage'
 import DefaultAcr from './DefaultAcr'
 
-function AuthNPage() {
+interface TabName {
+  name: string
+  path: string
+}
+
+function AuthNPage(): ReactElement {
   const { t } = useTranslation()
 
-  const tabNames = [
+  const tabNames: TabName[] = [
     { name: t('menus.default_acr'), path: '' },
     {
       name: t('menus.builtIn'),
@@ -29,7 +34,7 @@ function AuthNPage() {
     },
   ]
 
-  const tabToShow = (tabName) => {
+  const tabToShow = (tabName: string): ReactElement | undefined => {
     switch (tabName) {
       case t('menus.default_acr'):
         return <DefaultAcr />
@@ -41,6 +46,8 @@ function AuthNPage() {
         return <AliasesListPage />
       case t('menus.agama_flows'):
         return <AgamaListPage />
+      default:
+        return undefined
     }
   }
 
