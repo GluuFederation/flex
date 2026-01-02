@@ -11,7 +11,7 @@ import type { JsonPatch } from 'JansConfigApi'
 interface GluuInlineInputProps {
   label: string
   name: string
-  type?: string
+  type?: 'text' | 'number' | 'email' | 'password' | 'tel' | 'url'
   value?: string | number | boolean | string[]
   required?: boolean
   lsize?: number
@@ -156,7 +156,7 @@ const GluuInlineInput = ({
                 id={name}
                 data-testid={name}
                 name={name}
-                type={type as 'text' | 'number' | 'email' | 'password' | 'tel' | 'url'}
+                type={type}
                 defaultValue={String(data)}
                 onChange={onValueChanged}
                 disabled={disabled}
