@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import ApiConfigForm from './ApiConfigForm'
 import { Card } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -6,55 +6,60 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import SetTitle from 'Utils/SetTitle'
 import { useTranslation } from 'react-i18next'
 import { useGetConfigApiProperties, usePatchConfigApiProperties } from 'JansConfigApi'
-import { useConfigApiActions } from './hooks'
+import { useConfigApiActions } from './utils'
 import { toast } from 'react-toastify'
 import type { JsonPatch } from './types'
 
-function ConfigApiPage(): JSX.Element {
+const ConfigApiPage = (): JSX.Element => {
   const { t } = useTranslation()
   const { logConfigApiUpdate } = useConfigApiActions()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-  SetTitle(t('titles.config_api_configuration'))
-
   const { data: configuration, isLoading, error } = useGetConfigApiProperties()
-
   const patchConfigMutation = usePatchConfigApiProperties()
 
-  const handleSubmit = async (patches: JsonPatch[], message: string) => {
-    try {
-      setErrorMessage(null)
-
-      await patchConfigMutation.mutateAsync({ data: patches })
-
-      let auditSuccess = true
-      try {
-        await logConfigApiUpdate(message, { requestBody: patches })
-      } catch (auditError) {
-        console.error('Error logging audit:', auditError)
-        auditSuccess = false
-      }
-
-      if (auditSuccess) {
-        toast.success(t('messages.success_in_saving'))
-      } else {
-        toast.warning(t('messages.success_in_saving_audit_failed'))
-      }
-    } catch (err) {
-      console.error('Error updating config:', err)
-      const errorMsg = err instanceof Error ? err.message : t('messages.error_in_saving')
-      setErrorMessage(errorMsg)
-      toast.error(errorMsg)
-    }
-  }
+  SetTitle(t('titles.config_api_configuration'))
 
   const loading = patchConfigMutation.isPending || isLoading
 
-  if (error) {
+  const handleSubmit = useCallback(
+    async (patches: JsonPatch[], message: string) => {
+      try {
+        setErrorMessage(null)
+        await patchConfigMutation.mutateAsync({ data: patches })
+
+        let auditSuccess = true
+        try {
+          await logConfigApiUpdate(message, { requestBody: patches })
+        } catch (auditError) {
+          console.error('Error logging audit:', auditError)
+          auditSuccess = false
+        }
+
+        if (auditSuccess) {
+          toast.success(t('messages.success_in_saving'))
+        } else {
+          toast.warning(t('messages.success_in_saving_audit_failed'))
+        }
+      } catch (err) {
+        console.error('Error updating config:', err)
+        const errorMsg = err instanceof Error ? err.message : t('messages.error_in_saving')
+        setErrorMessage(errorMsg)
+        toast.error(errorMsg)
+      }
+    },
+    [patchConfigMutation, logConfigApiUpdate, t],
+  )
+
+  if (error !== null && error !== undefined) {
+    const errorText =
+      typeof error === 'object' && error !== null && 'message' in error
+        ? String((error as { message: string | number | boolean | null }).message || error)
+        : String(error)
     return (
       <Card style={applicationStyle.mainCard}>
         <div className="p-4 text-danger">
-          {t('messages.error_in_loading')}: {error instanceof Error ? error.message : String(error)}
+          {t('messages.error_in_loading')}: {errorText}
         </div>
       </Card>
     )
