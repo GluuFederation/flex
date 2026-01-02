@@ -1,42 +1,32 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo, useCallback } from 'react'
 import { Accordion, FormGroup, Col, Button } from 'Components'
 import GluuInlineInput from 'Routes/Apps/Gluu/GluuInlineInput'
 import { useTranslation } from 'react-i18next'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { generateLabel, isObject, isObjectArray } from '../JsonPropertyBuilder'
 import customColors from '@/customColors'
-import type { JsonPropertyBuilderConfigApiProps } from './types'
+import type { JsonPropertyBuilderConfigApiProps, AccordionWithSubComponents } from './types'
 import type { JsonPatch } from 'JansConfigApi'
+import {
+  isNumber,
+  isBoolean,
+  isString,
+  isStringArray,
+  shouldRenderAsBoolean,
+  shouldRenderAsString,
+  shouldRenderAsStringArray,
+  shouldRenderAsNumber,
+  getBooleanValue,
+  getStringValue,
+  getNumberValue,
+  getStringArrayValue,
+} from './utils'
 
-function _isNumber(item: unknown): item is number {
-  return typeof item === 'number' || typeof item === 'bigint'
-}
+const AccordionWithSub = Accordion as AccordionWithSubComponents
+const AccordionHeader = AccordionWithSub.Header
+const AccordionBody = AccordionWithSub.Body
 
-function _isBoolean(
-  item: unknown,
-  schema?: JsonPropertyBuilderConfigApiProps['schema'],
-): item is boolean {
-  return typeof item === 'boolean' || schema?.type === 'boolean'
-}
-
-function _isString(
-  item: unknown,
-  schema?: JsonPropertyBuilderConfigApiProps['schema'],
-): item is string {
-  return typeof item === 'string' || schema?.type === 'string'
-}
-
-function isStringArray(
-  item: unknown,
-  schema?: JsonPropertyBuilderConfigApiProps['schema'],
-): item is string[] {
-  return (
-    (Array.isArray(item) && item.length >= 1 && typeof item[0] === 'string') ||
-    (schema?.type === 'array' && schema?.items?.type === 'string')
-  )
-}
-
-function JsonPropertyBuilderConfigApi({
+const JsonPropertyBuilderConfigApi = ({
   propKey,
   propValue,
   lSize,
@@ -47,20 +37,21 @@ function JsonPropertyBuilderConfigApi({
   doc_category = 'json_properties',
   tooltipPropKey = '',
   parent,
-}: JsonPropertyBuilderConfigApiProps): JSX.Element {
+  disabled = false,
+}: JsonPropertyBuilderConfigApiProps): JSX.Element => {
   const { t } = useTranslation()
   const [show, setShow] = useState(true)
 
-  let path = initialPath
-  if (!path) {
-    path = '/' + propKey
-  } else {
-    path = path + '/' + propKey
-  }
+  const path = useMemo(() => {
+    if (!initialPath) {
+      return `/${propKey}`
+    }
+    return `${initialPath}/${propKey}`
+  }, [initialPath, propKey])
 
-  const uniqueId = path.replace(/\//g, '-').substring(1) || propKey
+  const uniqueId = useMemo(() => path.replace(/\//g, '-').substring(1) || propKey, [path, propKey])
 
-  const removeHandler = () => {
+  const removeHandler = useCallback(() => {
     const patch: JsonPatch = {
       path,
       value: propValue,
@@ -68,9 +59,9 @@ function JsonPropertyBuilderConfigApi({
     }
     handler(patch)
     setShow(false)
-  }
+  }, [path, propValue, handler])
 
-  if (_isBoolean(propValue, schema)) {
+  if (isBoolean(propValue) || shouldRenderAsBoolean(schema)) {
     return (
       <GluuInlineInput
         id={uniqueId}
@@ -80,15 +71,16 @@ function JsonPropertyBuilderConfigApi({
         label={generateLabel(propKey)}
         isBoolean={true}
         handler={handler}
-        value={propValue}
+        value={getBooleanValue(propValue, schema)}
         parentIsArray={parentIsArray}
         path={path}
         doc_category={doc_category}
+        disabled={disabled}
       />
     )
   }
 
-  if (_isString(propValue, schema)) {
+  if (isString(propValue) || shouldRenderAsString(schema)) {
     return (
       <GluuInlineInput
         id={uniqueId}
@@ -97,15 +89,16 @@ function JsonPropertyBuilderConfigApi({
         rsize={lSize}
         label={generateLabel(propKey)}
         handler={handler}
-        value={propValue}
+        value={getStringValue(propValue, schema)}
         parentIsArray={parentIsArray}
         path={path}
         doc_category={doc_category}
+        disabled={disabled}
       />
     )
   }
 
-  if (_isNumber(propValue)) {
+  if (isNumber(propValue, schema) || shouldRenderAsNumber(schema)) {
     return (
       <GluuInlineInput
         id={uniqueId}
@@ -115,29 +108,31 @@ function JsonPropertyBuilderConfigApi({
         rsize={lSize}
         label={generateLabel(propKey)}
         handler={handler}
-        value={propValue}
+        value={getNumberValue(propValue, schema)}
         parentIsArray={parentIsArray}
         path={path}
         doc_category={doc_category}
+        disabled={disabled}
       />
     )
   }
 
-  if (isStringArray(propValue, schema)) {
+  if (isStringArray(propValue) || shouldRenderAsStringArray(schema)) {
     return (
       <GluuInlineInput
         id={uniqueId}
         name={tooltipPropKey || propKey}
         label={generateLabel(propKey)}
-        value={propValue || []}
+        value={getStringArrayValue(propValue, schema)}
         lsize={lSize}
         rsize={lSize}
         isArray={true}
         handler={handler}
-        options={schema?.items?.enum || propValue || []}
+        options={schema?.items?.enum || getStringArrayValue(propValue, schema)}
         parentIsArray={parentIsArray}
         path={path}
         doc_category={doc_category}
+        disabled={disabled}
       />
     )
   }
@@ -145,7 +140,7 @@ function JsonPropertyBuilderConfigApi({
   if (isObjectArray(propValue)) {
     return (
       <Accordion className="mb-2 b-primary" initialOpen>
-        <Accordion.Header
+        <AccordionHeader
           style={{
             color: customColors.lightBlue,
           }}
@@ -157,8 +152,8 @@ function JsonPropertyBuilderConfigApi({
             doc_category={doc_category}
             doc_entry={`${propKey}.self`}
           />
-        </Accordion.Header>
-        <Accordion.Body>
+        </AccordionHeader>
+        <AccordionBody>
           {Object.keys(propValue as Record<string, unknown>)?.map((item) => {
             return (
               <JsonPropertyBuilderConfigApi
@@ -171,10 +166,11 @@ function JsonPropertyBuilderConfigApi({
                 parent={propKey}
                 path={path}
                 doc_category={doc_category}
+                disabled={disabled}
               />
             )
           })}
-        </Accordion.Body>
+        </AccordionBody>
       </Accordion>
     )
   }
@@ -184,7 +180,7 @@ function JsonPropertyBuilderConfigApi({
       <>
         {show && (
           <Accordion className="mb-2 b-primary" initialOpen>
-            <Accordion.Header
+            <AccordionHeader
               style={{
                 color: customColors.lightBlue,
               }}
@@ -198,21 +194,25 @@ function JsonPropertyBuilderConfigApi({
                   doc_entry={`${propKey}.self`}
                 />
               ) : null}
-            </Accordion.Header>
-            <Accordion.Body>
+            </AccordionHeader>
+            <AccordionBody>
               {parentIsArray && (
                 <FormGroup row>
                   <Col sm={11} md={11}></Col>
                   <Col sm={1} md={1}>
                     <Button
                       style={{
-                        backgroundColor: customColors.accentRed,
+                        backgroundColor: disabled ? customColors.darkGray : customColors.accentRed,
                         color: customColors.white,
                         float: 'right',
                         border: 'none',
+                        cursor: disabled ? 'not-allowed' : 'pointer',
+                        opacity: disabled ? 0.6 : 1,
                       }}
                       size="sm"
                       onClick={removeHandler}
+                      disabled={disabled}
+                      aria-disabled={disabled}
                     >
                       <i className="fa fa-remove me-2"></i>
                       {'  '}
@@ -242,10 +242,11 @@ function JsonPropertyBuilderConfigApi({
                     parentIsArray={parentIsArray}
                     path={path}
                     doc_category={doc_category}
+                    disabled={disabled}
                   />
                 )
               })}
-            </Accordion.Body>
+            </AccordionBody>
           </Accordion>
         )}
       </>

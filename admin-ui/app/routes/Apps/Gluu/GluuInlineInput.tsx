@@ -1,14 +1,39 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useCallback, useEffect, useMemo } from 'react'
 import GluuLabel from './GluuLabel'
 import GluuToogle from './GluuToogle'
-import { useTranslation } from 'react-i18next'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { Col, FormGroup, Input, Button } from 'Components'
 import { ThemeContext } from 'Context/theme/themeContext'
 import customColors from '@/customColors'
+import type { JsonPatch } from 'JansConfigApi'
 
-function GluuInlineInput({
+interface GluuInlineInputProps {
+  label: string
+  name: string
+  type?: 'text' | 'number' | 'email' | 'password' | 'tel' | 'url'
+  value?: string | number | boolean | string[]
+  required?: boolean
+  lsize?: number
+  rsize?: number
+  isBoolean?: boolean
+  isArray?: boolean
+  handler: (patch: JsonPatch) => void
+  options?: string[]
+  path?: string
+  doc_category?: string
+  disabled?: boolean
+  id?: string
+  parentIsArray?: boolean
+}
+
+interface ThemeContextValue {
+  state: {
+    theme: string
+  }
+}
+
+const GluuInlineInput = ({
   label,
   name,
   type = 'text',
@@ -22,52 +47,100 @@ function GluuInlineInput({
   options,
   path,
   doc_category = 'json_properties',
-}: any) {
-  const { t } = useTranslation()
-  const theme: any = useContext(ThemeContext)
+  disabled = false,
+}: GluuInlineInputProps) => {
+  const theme = useContext(ThemeContext) as ThemeContextValue
   const selectedTheme = theme.state.theme
-  const VALUE = 'value'
-  const PATH = 'path'
   const [show, setShow] = useState(false)
-  const [correctValue, setCorrectValue] = useState([])
-  const [data, setData] = useState(value)
-  const onValueChanged = (e: any) => {
-    if (isBoolean) {
-      setData(e.target.checked)
-    } else {
-      setData(e.target.value)
+  const [correctValue, setCorrectValue] = useState<string[]>([])
+  const [data, setData] = useState<string | number | boolean>(
+    value !== undefined && !Array.isArray(value) ? (value as string | number | boolean) : '',
+  )
+
+  useEffect(() => {
+    if (value !== undefined && !Array.isArray(value)) {
+      setData(value as string | number | boolean)
     }
-    setShow(true)
-  }
-  const handleTypeAheadChange = (selectedOptions: any) => {
-    const object = selectedOptions.filter((data: any) => typeof data == 'object')
-    const arrayItems = selectedOptions.filter((data: any) => typeof data != 'object')
-    for (const i in object) {
-      if (!object[i]['tokenEndpointAuthMethodsSupported']) {
-        arrayItems.push(object[i][name])
-      } else {
-        arrayItems.push(object[i]['tokenEndpointAuthMethodsSupported'])
+  }, [value])
+
+  const onValueChanged = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (disabled) {
+        return
       }
+      if (isBoolean) {
+        setData(e.target.checked)
+      } else {
+        setData(e.target.value)
+      }
+      setShow(true)
+    },
+    [disabled, isBoolean],
+  )
+
+  const handleTypeAheadChange = useCallback(
+    (selectedOptions: (string | Record<string, string>)[]) => {
+      if (disabled) {
+        return
+      }
+      const object = selectedOptions.filter(
+        (item): item is Record<string, string> => typeof item === 'object',
+      )
+      const arrayItems = selectedOptions.filter(
+        (item): item is string => typeof item !== 'object',
+      ) as string[]
+
+      for (const obj of object) {
+        if (!obj.tokenEndpointAuthMethodsSupported) {
+          const value = obj[name]
+          if (typeof value === 'string') {
+            arrayItems.push(value)
+          }
+        } else {
+          const value = obj.tokenEndpointAuthMethodsSupported
+          if (typeof value === 'string') {
+            arrayItems.push(value)
+          }
+        }
+      }
+      setCorrectValue(arrayItems)
+      setShow(true)
+    },
+    [disabled, name],
+  )
+
+  const onAccept = useCallback(() => {
+    if (disabled || !path || typeof path !== 'string' || path.trim() === '') {
+      return
     }
-    setCorrectValue(arrayItems)
-    setShow(true)
-  }
-  const onAccept = () => {
-    const patch: any = {}
-    patch[PATH] = path
-    if (isArray) {
-      patch[VALUE] = correctValue
-    } else {
-      patch[VALUE] = data
-    }
-    patch['op'] = 'replace'
+    const patch: JsonPatch = {
+      op: 'replace',
+      path,
+      value: isArray ? correctValue : data,
+    } as JsonPatch
     handler(patch)
-    setShow(!show)
-  }
-  const onCancel = () => {
+    setShow((prev) => !prev)
+  }, [disabled, path, isArray, correctValue, data, handler])
+
+  const onCancel = useCallback(() => {
     setCorrectValue([])
-    setShow(!show)
-  }
+    setShow((prev) => !prev)
+  }, [])
+
+  const disabledStyle = useMemo(
+    () => (disabled ? { cursor: 'not-allowed', opacity: 0.6 } : {}),
+    [disabled],
+  )
+
+  const filteredValue = useMemo(
+    () => (Array.isArray(value) ? value.filter((item) => item != null) : []),
+    [value],
+  )
+
+  const filteredOptions = useMemo(
+    () => (Array.isArray(options) ? options.filter((item) => item != null) : []),
+    [options],
+  )
   return (
     <FormGroup row>
       <Col sm={10}>
@@ -86,8 +159,10 @@ function GluuInlineInput({
                 data-testid={name}
                 name={name}
                 type={type}
-                defaultValue={data}
+                defaultValue={String(data)}
                 onChange={onValueChanged}
+                disabled={disabled}
+                style={disabledStyle}
               />
             )}
             {isBoolean && (
@@ -96,7 +171,8 @@ function GluuInlineInput({
                 data-testid={name}
                 name={name}
                 handler={onValueChanged}
-                value={value}
+                value={value as boolean}
+                disabled={disabled}
               />
             )}
             {isArray && (
@@ -108,15 +184,16 @@ function GluuInlineInput({
                 labelKey={name}
                 onChange={handleTypeAheadChange}
                 multiple={true}
-                defaultSelected={Array.isArray(value) ? value.filter((item) => item != null) : []}
-                options={Array.isArray(options) ? options.filter((item) => item != null) : []}
+                defaultSelected={filteredValue}
+                options={filteredOptions}
+                disabled={disabled}
               />
             )}
           </Col>
         </FormGroup>
       </Col>
       <Col sm={2}>
-        {show && (
+        {show && !disabled && (
           <>
             <Button
               color={`primary-${selectedTheme}`}
@@ -124,7 +201,7 @@ function GluuInlineInput({
               size="sm"
               onClick={onAccept}
             >
-              <i className="fa fa-check me-2"></i>
+              <i className="fa fa-check me-2" />
             </Button>
             <Button
               style={{
@@ -143,4 +220,5 @@ function GluuInlineInput({
     </FormGroup>
   )
 }
+
 export default GluuInlineInput
