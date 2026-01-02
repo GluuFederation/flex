@@ -38,7 +38,7 @@ The Static Configuration section holds the main server parameters and certificat
 
 * This field defines the folder path that contains the MDS TOC files.
 * The TOC files provide metadata related to FIDO2 authenticators and are necessary for validation during the authentication process.
-  
+
 
 **Check U2F Attestations**
 
@@ -79,7 +79,7 @@ The Static Configuration section holds the main server parameters and certificat
 **Requested Parties ID**
 
   * This field is used to define the party or service requesting authentication. Multiple parties can be added by clicking the + Add Party button.
-  
+
   * This setting is used to limit authentication to certain parties or domains. It ensures that only specific parties can authenticate the user, adding an additional layer of security.
 
 Once all parameters are set, click the Apply button at the bottom of the page to save the configuration changes.
@@ -93,7 +93,7 @@ The Dynamic Configuration section allows for adjustments to operational settings
 **Issuer**
 
   * This is the identifier (usually a URL) of the FIDO2 service. It identifies the entity that is responsible for issuing the authentication tokens.
-  
+
   * It identifies the authentication provider to ensure that the server’s identity is verified during communication with other systems or services.
 
 **Base Endpoint**
@@ -132,7 +132,7 @@ The Dynamic Configuration section allows for adjustments to operational settings
   * Defines the format in which log entries are recorded. Common formats include plain text or JSON.
 
   * It allows for easy reading and processing of logs depending on the desired format, making it easier for administrators to monitor system activity.
-  
+
 **External Logger Configuration**
 
   * Provides the ability to configure an external logging system for centralized logging.
@@ -162,7 +162,7 @@ The Dynamic Configuration section allows for adjustments to operational settings
 
   * A field that provides suggestions or predefined values to assist in configuration.
   * It guides the user in providing the correct configuration options or values by offering helpful hints or pre-configured suggestions, such as common object classes or device types.
-  
+
 Once all parameters are set, click the Apply button at the bottom of the page to save the configuration changes.
 
 

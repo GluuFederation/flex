@@ -75,9 +75,9 @@ The information is stored in json format with following attributes.
 |Attribute Name|Description|
 |--------------|-----------|
 |uiConfig|Object with UI configuration attributes|
-|sessionTimeoutInMins|The admin UI will auto-logout after a period of inactivity defined in this field.|  
+|sessionTimeoutInMins|The admin UI will auto-logout after a period of inactivity defined in this field.|
 
-uiConfig 
+uiConfig
 
 |Attribute Name|Description|
 |--------------|-----------|

@@ -7,12 +7,12 @@ tags:
 
 # Getting Started with Gluu Solo
 
-Gluu Solo is a cloud-based identity management service designed to provide secure, scalable, 
-and dedicated authentication solutions for businesses. It eliminates the need for complex 
-infrastructure management by offering a Software-as-a-Service (SaaS) model tailored to various 
+Gluu Solo is a cloud-based identity management service designed to provide secure, scalable,
+and dedicated authentication solutions for businesses. It eliminates the need for complex
+infrastructure management by offering a Software-as-a-Service (SaaS) model tailored to various
 business requirements.
 
-Curious about features! Check out [Gluu Solo] website for more. 
+Curious about the features? Check out the [Gluu Solo](https://gluu.org/solo/) website for more.
 
 To start using Gluu Solo, sign into Agama Lab. In a few steps, you'll be able to go-live with Gluu Solo:
 
@@ -34,10 +34,10 @@ flowchart TD
 
 ## Subscription
 
-Gluu Solo offers various subscription plans tailored to different business needs. 
-Each plan allows you to choose from multiple cloud locations and offers an SLA that 
+Gluu Solo offers various subscription plans tailored to different business needs.
+Each plan allows you to choose from multiple cloud locations and offers an SLA that
 aligns with your identity management requirements.
-Check out [subscription process](./solo-subscription.md) to know more. 
+Check out [subscription process](./solo-subscription.md) to know more.
 
 
 ## Setting up Gluu Solo cloud environment and IDP

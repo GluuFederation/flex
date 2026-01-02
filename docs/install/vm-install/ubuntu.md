@@ -22,7 +22,7 @@ sudo ufw allow https
 ```
 - Please obtain an [SSA](../../install/flex/prerequisites.md#software-statement-assertions) to trial Flex, after which you are issued a JWT
   that you can use during installation. SSA should be stored in a text file on an accessible path.
-  
+
 ## Supported Versions
 - Ubuntu 24.04
 - Ubuntu 22.04
@@ -33,7 +33,7 @@ Before you install, check the [VM system requirements](../vm-install/vm-requirem
 
 * Download the GPG key zip file, unzip and import GPG key
 
-    ```shell 
+    ```shell
     wget https://github.com/GluuFederation/flex/files/11814579/automation-flex-public-gpg.zip
     ```
     ```shell
@@ -47,12 +47,12 @@ Before you install, check the [VM system requirements](../vm-install/vm-requirem
 
 Download the release package from the GitHub FLEX [Releases](https://github.com/gluufederation/flex/releases)
 
-  ```bash title="Command" 
+  ```bash title="Command"
   wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu24.04_amd64.deb -P /tmp
   ```
 
-Verify integrity of the downloaded package by verifying published `sha256sum`.  
-    
+Verify integrity of the downloaded package by verifying published `sha256sum`.
+
   * Go to the [Flex Project Releases page](https://github.com/gluufederation/flex/releases) and copy the `sha256sum` value for the `flex_replace-flex-version-stable.ubuntu24.04_amd64.deb` file:
   * Replace `paste-release-sha256sum` in the command below with the actual checksum you copied from the release page, and run the following command:
       ```bash title="Command"
@@ -81,8 +81,8 @@ Download the release package from the GitHub FLEX [Releases](https://github.com/
 wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu22.04_amd64.deb -P /tmp
 ```
 
-Verify integrity of the downloaded package by verifying published `sha256sum`.  
-    
+Verify integrity of the downloaded package by verifying published `sha256sum`.
+
   * Go to the [Flex Project Releases page](https://github.com/gluufederation/flex/releases) and copy the `sha256sum` value for the `flex_replace-flex-version-stable.ubuntu22.04_amd64.deb` file:
   * Replace `paste-release-sha256sum` in the command below with the actual checksum you copied from the release page, and run the following command:
       ```bash title="Command"
@@ -111,8 +111,8 @@ wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-vers
 ```
 
 
-Verify integrity of the downloaded package by verifying published `sha256sum`.  
-    
+Verify integrity of the downloaded package by verifying published `sha256sum`.
+
   * Go to the [Flex Project Releases page](https://github.com/gluufederation/flex/releases) and copy the `sha256sum` value for the `flex_replace-flex-version-stable.ubuntu20.04_amd64.deb` file:
   * Replace `paste-release-sha256sum` in the command below with the actual checksum you copied from the release page, and run the following command:
       ```bash title="Command"
@@ -309,3 +309,4 @@ To update the Admin UI in an existing Flex installation, execute this command:
 ```shell
 sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --update-admin-ui
 ```
+

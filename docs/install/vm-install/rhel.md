@@ -56,8 +56,8 @@ sudo rpm -import automation-flex-public-gpg.asc
 ```
 
 
-Verify integrity of the downloaded package by verifying published `sha256sum`.  
-    
+Verify integrity of the downloaded package by verifying published `sha256sum`.
+
   * Go to the [Flex Project Releases page](https://github.com/gluufederation/flex/releases) and copy the `sha256sum` value for the `flex-replace-flex-version-stable.el8.x86_64.rpm` file:
   * Replace `paste-release-sha256sum` in the command below with the actual checksum you copied from the release page, and run the following command:
       ```bash title="Command"
@@ -106,9 +106,9 @@ When troubleshooting issues with Admin UI access, it's advisable to check the [l
 ```text
 https://FQDN/jans-casa
 ```
-## Enabling HTTPS 
-To enable communication with Janssen Server over TLS (https) in a production 
-environment, Janssen Server needs details about CA certificate. Update the 
+## Enabling HTTPS
+To enable communication with Janssen Server over TLS (https) in a production
+environment, Janssen Server needs details about CA certificate. Update the
 HTTPS cofiguration file `https_jans.conf` as shown below:
 
 !!! Note
@@ -255,3 +255,4 @@ To update the Admin UI in an existing Flex installation, execute this command:
 ```shell
 sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --update-admin-ui
 ```
+

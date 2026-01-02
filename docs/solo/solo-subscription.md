@@ -8,11 +8,11 @@ tags:
 
 # Gluu Solo Subscription
 
-Customers require active Gluu Solo subscription in order to avail Gluu Solo 
-services. Customers can opt one of the Gluu Solo subscription plans according
-to the business need. 
+Customers require an active Gluu Solo subscription to access Gluu Solo
+services. Customers can opt for one of the Gluu Solo subscription plans according
+to the business need.
 
-New customers can subscribe to Gluu Solo using the 
+New customers can subscribe to Gluu Solo using the
 [Agama Lab](https://gluu.org/agama-lab/).
 
 ## Subscription process
@@ -105,6 +105,3 @@ New customers can subscribe to Gluu Solo using the
     * Solo space shows your current instance and runtime status.
 
     ![](../assets/agama-lab/solo-creating-new-instance.png)
-
-
-

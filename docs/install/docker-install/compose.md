@@ -8,7 +8,7 @@ tags:
 ---
 
 
-!!! Warning 
+!!! Warning
     **This image is for testing and development purposes only. Use Flex [helm charts](https://github.com/GluuFederation/flex/tree/main/charts/gluu) for production setups.**
 
 # Docker Compose
@@ -67,7 +67,7 @@ wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-mono
 wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-monolith/flex-postgres-compose.yml 
 ```
 
-Download the script files 
+Download the script files
 
 ```bash
 
@@ -134,4 +134,3 @@ Remove setup and volumes
 ```bash
 ./clean.sh #You can pass mysql|postgres as an argument to the script. If you don't pass any, it will default to mysql.
 ```
-

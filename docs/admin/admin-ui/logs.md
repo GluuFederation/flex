@@ -8,7 +8,7 @@ tags:
 
 # Gluu Flex Admin UI Logs
 
-Log files are essential components of a web application's infrastructure as they provide valuable insights into its functioning, performance, and potential issues. Log files play a critical role in maintaining, troubleshooting, and monitoring the Gluu Flex Admin UI application. Understanding the different log types, their locations, and the process of accessing and analyzing them will empower administrators to efficiently manage the application's health and quickly address any issues that may arise. 
+Log files are essential components of a web application's infrastructure as they provide valuable insights into its functioning, performance, and potential issues. Log files play a critical role in maintaining, troubleshooting, and monitoring the Gluu Flex Admin UI application. Understanding the different log types, their locations, and the process of accessing and analyzing them will empower administrators to efficiently manage the application's health and quickly address any issues that may arise.
 
 ## Log File Types
 

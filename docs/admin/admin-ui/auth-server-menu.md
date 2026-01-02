@@ -13,7 +13,7 @@ tags:
 
 # Auth Server
 
-The **Auth Server** menu covers the following important submenus to configure 
+The **Auth Server** menu covers the following important submenus to configure
 and manage the Auth server.
 
 - Clients

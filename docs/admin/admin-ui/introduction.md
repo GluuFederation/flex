@@ -12,7 +12,7 @@ Gluu Flex Admin UI is a web interface to simplify the management and configurati
 
 ![image](../../assets/admin-ui/design-auth-server-interaction.png)
 
-The above diagram explains interaction between various depending components.  
+The above diagram explains the interaction between various dependent components.
 
 ### Admin UI Frontend
 
@@ -22,7 +22,7 @@ The GUI utilizes popular libraries such as [Material-UI](https://mui.com/materia
 
 ### Admin UI Backend
 
-The GUI utilizes a dedicated Java backend to handle specific tasks, such as reading the Admin UI configuration from persistence, managing Admin UI roles and permission mapping in configuration, performing audit logging, and making calls to license APIs on SCAN. The Jans Config API follows a flexible plugin architecture, allowing the addition of new APIs through extensions known as plugins, without the need to modify the core application. The Admin UI Backend has been incorporated into the Jans Config API as a plugin to address Admin UI-specific tasks.   
+The GUI utilizes a dedicated Java backend to handle specific tasks, such as reading the Admin UI configuration from persistence, managing Admin UI roles and permission mapping in configuration, performing audit logging, and making calls to license APIs on SCAN. The Jans Config API follows a flexible plugin architecture, allowing the addition of new APIs through extensions known as plugins, without the need to modify the core application. The Admin UI Backend has been incorporated into the Jans Config API as a plugin to address Admin UI-specific tasks.
 
 ## Installation
 

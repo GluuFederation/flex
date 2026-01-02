@@ -1,4 +1,4 @@
-## Generate/install keys and certs for Gluu Open Banking Identity Platform 
+## Generate/install keys and certs for Gluu Open Banking Identity Platform
 
 This section covers details about setting up the keys and certificates in Cloud-Native distribution.
 
@@ -6,9 +6,9 @@ This section covers details about setting up the keys and certificates in Cloud-
 
 Remember, MTLS is needed not only for the TPPs to call the authorization and token endpoints for OpenID Connect flows, but also by clients that are calling the configuration API.
 
-## Add/Update Custom Scripts: 
+## Add/Update Custom Scripts:
 
-To add or update custom scripts, you can use either `jans-cli` or `curl`. 
+To add or update custom scripts, you can use either `jans-cli` or `curl`.
 
 * `jans-cli` in interactive mode, `option 13` enables you to manage custom scripts. For more info, see the [docs](https://gluu.org/docs/openbanking/jans-cli/).
 
@@ -16,4 +16,5 @@ To add or update custom scripts, you can use either `jans-cli` or `curl`.
 
 * To use `curl` see these [docs](https://gluu.org/docs/openbanking/curl/#managing-scripts-with-curl)
 
-Note: If using VM installation you can normally find `jans-cli.py` in the `/opt/jans/jans-cli/` folder. 
+Note: If using VM installation you can normally find `jans-cli.py` in the `/opt/jans/jans-cli/` folder.
+

@@ -1,5 +1,5 @@
 # Managing scripts with CURL
- 
+
 ## Curl Prerequisites
 
 - Gluu open banking distribution
@@ -34,7 +34,7 @@
     ```
 
 ## CURL operations
-    
+
 1.  The curl commands to list, add, or update custom script require a token, so first call the token endpoint to get the token using:
 
     ```bash
@@ -42,14 +42,14 @@
     ```
     
     Example:
-    
+
     ```bash
     curl -u '1801.bdfae945-b31d-4d60-8e47-16518153215:rjHoLfjfsv2G2qzGEasd1651813aIXvCi61NU' https://bank.gluu.org/jans-auth/restv1/token -d  "grant_type=client_credentials&scope=https://jans.io/oauth/config/scripts.readonly" --cert apr22.crt --key apr22.key
     {"access_token":"ad34ac-8f2d-4bec-aed3-343adasda2","scope":"https://jans.io/oauth/config/scripts.readonly","token_type":"bearer","expires_in":299}
     ```
-    
+
 1. Save the `access_token` for use in subsequent commands.
-    
+
 1.  Use different scope values as per the requirement:
 
     1.  View scripts information: https://jans.io/oauth/config/scripts.readonly
@@ -67,19 +67,20 @@
         ```
         
         Example:
-        
+
         ```bash
         curl -X GET https://bank.gluu.org/jans-config-api/api/v1/config/scripts -H "Accept: application/json" -H "Authorization:Bearer ad34ac-8f2d-4bec-aed3-343adasda2" -H "Content-Type: application/json"
         ```     
-               
-    1.  The following command will add a new custom script (Obtain token with write scope) and if it is successful it will display the added script in JSON format. The scriptformat.json file has script details according to the custom script schema. It should have the entire script inside the scriptformat.json as a string value under the script field. Converting a multiline script into a string requires converting newlines into \n. So curl is not a suitable choice for adding new script, jans-cli is a better option.    
+
+    1.  The following command will add a new custom script (Obtain token with write scope) and if it is successful it will display the added script in JSON format. The scriptformat.json file has script details according to the custom script schema. It should have the entire script inside the scriptformat.json as a string value under the script field. Converting a multiline script into a string requires converting newlines into \n. So curl is not a suitable choice for adding new script, jans-cli is a better option.
     
         ```bash
         curl -X POST "https://<FQDN>/jans-config-api/api/v1/config/scripts" -H  "Accept: application/json" -H "Authorization:Bearer <access_token>" -H "Content-Type: application/json" --data @/home/user/scriptformat.json
         ```
         
         Example:
-        
+
         ```bash
         curl -X POST "https://bank.gluu.org/jans-config-api/api/v1/config/scripts" -H  "Accept: application/json" -H "Authorization:Bearer ad34ac-8f2d-4bec-aed3-343adasda2" -H "Content-Type: application/json" --data @/home/user/scriptformat.json
         ```
+

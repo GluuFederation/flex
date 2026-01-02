@@ -24,7 +24,7 @@ tags:
     ```
     az group create --name gluu-resource-group --location eastus
     ```
-  
+
 4. Create an [AKS cluster](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli#create-aks-cluster) such as the following example:
     ```
     az aks create -g gluu-resource-group -n gluu-cluster --enable-managed-identity --node-vm-size NODE_TYPE --node-count 2 --enable-addons monitoring --enable-msi-auth-for-monitoring  --generate-ssh-keys 
@@ -47,7 +47,7 @@ tags:
 
 ## Gluu Flex Installation using Helm
 1.  Install [Nginx-Ingress](https://github.com/kubernetes/ingress-nginx), if you are not using Istio ingress
-    
+
       ```
       helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
       helm repo add stable https://charts.helm.sh/stable
@@ -105,7 +105,7 @@ tags:
         ```
 
         Add the following yaml snippet to your `override.yaml` file:
-        
+
         ```yaml
         config:
           configmap:

@@ -11,9 +11,9 @@ Gluu Flex Admin UI serves as a powerful web interface designed to streamline the
 
 Webhooks are a mechanism for automating workflows by allowing external systems to be notified of specific events. In the context of Gluu Flex Admin UI, webhooks can be mapped to various Admin UI features to execute custom business logic when events associated with those features occur. Administrators can map one or more webhooks to specific feature events using the user interface.
 
-## Webhook management on the UI 
+## Webhook management on the UI
 
-The webhook create/update form consists for following fields.
+The webhook create/update form consists of the following fields.
 
 |Field|Description|Required|
 |--|--|--|
@@ -29,7 +29,7 @@ The webhook create/update form consists for following fields.
 
 ![image](../../assets/admin-ui/webhook-create.png)
 
-Once a webhook is created it can be searched, edited or deleted.   
+Once a webhook is created it can be searched, edited or deleted.
 
 ![image](../../assets/admin-ui/webhook-view.png)
 
@@ -77,6 +77,6 @@ The webhooks can be mapped with one or more Admin UI feature(s) using the [webho
 |Users|Add/Edit|https://jans.io/oauth/config/user.write|
 |Users|Delete|https://jans.io/oauth/config/user.delete|
 
-When the feature action is performed (e.g. submitting the "create new user" form), the Admin UI displays the consent dialog with a list of webhooks that will be triggered upon the successful execution of the event. If the user clicks on the Accept button, all the enabled webhooks will be triggered during the event execution. The Admin UI is unable to proceed with event execution if any webhook fails during the process.       
+When the feature action is performed (e.g. submitting the "create new user" form), the Admin UI displays the consent dialog with a list of webhooks that will be triggered upon the successful execution of the event. If the user clicks on the Accept button, all the enabled webhooks will be triggered during the event execution. The Admin UI is unable to proceed with event execution if any webhook fails during the process.
 
 ![image](../../assets/admin-ui/webhooks-trigger.png)

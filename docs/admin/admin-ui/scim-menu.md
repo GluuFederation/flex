@@ -7,19 +7,19 @@ tags:
 
 # SCIM Admin Guide
 
-System for Cross-domain Identity Management, in short SCIM, is a protocol that 
-simplifies the exchange of user identity information across different domains. 
-The Flex server provides an implementation for the 
+System for Cross-domain Identity Management, in short SCIM, is a protocol that
+simplifies the exchange of user identity information across different domains.
+The Flex server provides an implementation for the
 [SCIM protocol](https://datatracker.ietf.org/doc/html/rfc7644).
 
-Gluu Flex Admin UI allows administrators to view and manage the 
+Gluu Flex Admin UI allows administrators to view and manage the
 [configuration](https://docs.jans.io/stable/janssen-server/scim/config/) of the Gluu Flex SCIM server.
 
-## SCIM Configuration 
+## SCIM Configuration
 
-The SCIM configuration page in the Admin UI allows administrators to manage and 
-customize SCIM services. These settings control endpoints, logging, caching, 
-performance limits, and schema extensions. Proper configuration ensures secure, 
+The SCIM configuration page in the Admin UI allows administrators to manage and
+customize SCIM services. These settings control endpoints, logging, caching,
+performance limits, and schema extensions. Proper configuration ensures secure,
 efficient, and scalable user and group management through the SCIM API.
 
 ![image](../../assets/admin-ui/admin-ui-scim.png)
@@ -45,7 +45,7 @@ efficient, and scalable user and group management through the SCIM API.
   is `30`.
 
 **Bulk Max Payload Size**
-  
+
   * This is the maximum byte size allowed for bulk SCIM requests. Any batch 
   exceeding this size will be rejected. The default value is 3072000 bytes 
   (around 3 MB).
@@ -66,6 +66,6 @@ efficient, and scalable user and group management through the SCIM API.
   Validation makes use of the regular expression defined over the `password` database attribute as 
   well as the minimum and maximum length defined.
 
-Once all parameters are set, click the Apply button at the bottom of the page 
+Once all parameters are set, click the Apply button at the bottom of the page
 to save the configuration changes.
 
