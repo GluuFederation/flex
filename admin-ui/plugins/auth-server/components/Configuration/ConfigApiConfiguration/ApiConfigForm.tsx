@@ -32,14 +32,13 @@ const { properties: schema } = (spec as unknown as SpecSchema).components?.schem
   ?.ApiAppConfiguration ?? { properties: {} }
 
 const CONFIG_API_RESOURCE_ID = ADMIN_UI_RESOURCES.ConfigApiConfiguration
+const configApiScopes = CEDAR_RESOURCE_SCOPES[CONFIG_API_RESOURCE_ID] || []
 
 const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }) => {
   const { authorizeHelper, hasCedarWritePermission } = useCedarling()
   const { navigateToRoute } = useAppNavigation()
   const [modal, setModal] = useState(false)
   const [patches, setPatches] = useState<JsonPatch[]>([])
-
-  const configApiScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[CONFIG_API_RESOURCE_ID] || [], [])
 
   const canWriteConfigApi = useMemo(
     () => hasCedarWritePermission(CONFIG_API_RESOURCE_ID),
@@ -62,7 +61,12 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
   }, [authorizeHelper, configApiScopes])
 
   const patchHandler = useCallback((patch: JsonPatch) => {
-    setPatches((existingPatches) => [...existingPatches, patch])
+    setPatches((existingPatches) => {
+      const filteredPatches = existingPatches.filter(
+        (existingPatch) => existingPatch.path !== patch.path,
+      )
+      return [...filteredPatches, patch]
+    })
   }, [])
 
   const toggle = useCallback(() => {

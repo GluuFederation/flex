@@ -7,7 +7,24 @@ import { generateLabel, isObject, isObjectArray } from '../JsonPropertyBuilder'
 import customColors from '@/customColors'
 import type { JsonPropertyBuilderConfigApiProps, AccordionWithSubComponents } from './types'
 import type { JsonPatch } from 'JansConfigApi'
-import { isNumber, isBoolean, isString, isStringArray } from './utils'
+import {
+  isNumber,
+  isBoolean,
+  isString,
+  isStringArray,
+  shouldRenderAsBoolean,
+  shouldRenderAsString,
+  shouldRenderAsStringArray,
+  shouldRenderAsNumber,
+  getBooleanValue,
+  getStringValue,
+  getNumberValue,
+  getStringArrayValue,
+} from './utils'
+
+const AccordionWithSub = Accordion as AccordionWithSubComponents
+const AccordionHeader = AccordionWithSub.Header
+const AccordionBody = AccordionWithSub.Body
 
 const JsonPropertyBuilderConfigApi = ({
   propKey,
@@ -35,9 +52,6 @@ const JsonPropertyBuilderConfigApi = ({
   const uniqueId = useMemo(() => path.replace(/\//g, '-').substring(1) || propKey, [path, propKey])
 
   const removeHandler = useCallback(() => {
-    if (disabled) {
-      return
-    }
     const patch: JsonPatch = {
       path,
       value: propValue,
@@ -45,9 +59,9 @@ const JsonPropertyBuilderConfigApi = ({
     }
     handler(patch)
     setShow(false)
-  }, [disabled, path, propValue, handler])
+  }, [path, propValue, handler])
 
-  if (isBoolean(propValue, schema)) {
+  if (isBoolean(propValue) || shouldRenderAsBoolean(schema)) {
     return (
       <GluuInlineInput
         id={uniqueId}
@@ -57,7 +71,7 @@ const JsonPropertyBuilderConfigApi = ({
         label={generateLabel(propKey)}
         isBoolean={true}
         handler={handler}
-        value={propValue}
+        value={getBooleanValue(propValue, schema)}
         parentIsArray={parentIsArray}
         path={path}
         doc_category={doc_category}
@@ -66,7 +80,7 @@ const JsonPropertyBuilderConfigApi = ({
     )
   }
 
-  if (isString(propValue, schema)) {
+  if (isString(propValue) || shouldRenderAsString(schema)) {
     return (
       <GluuInlineInput
         id={uniqueId}
@@ -75,7 +89,7 @@ const JsonPropertyBuilderConfigApi = ({
         rsize={lSize}
         label={generateLabel(propKey)}
         handler={handler}
-        value={propValue}
+        value={getStringValue(propValue, schema)}
         parentIsArray={parentIsArray}
         path={path}
         doc_category={doc_category}
@@ -84,7 +98,7 @@ const JsonPropertyBuilderConfigApi = ({
     )
   }
 
-  if (isNumber(propValue)) {
+  if (isNumber(propValue, schema) || shouldRenderAsNumber(schema)) {
     return (
       <GluuInlineInput
         id={uniqueId}
@@ -94,7 +108,7 @@ const JsonPropertyBuilderConfigApi = ({
         rsize={lSize}
         label={generateLabel(propKey)}
         handler={handler}
-        value={propValue}
+        value={getNumberValue(propValue, schema)}
         parentIsArray={parentIsArray}
         path={path}
         doc_category={doc_category}
@@ -103,18 +117,18 @@ const JsonPropertyBuilderConfigApi = ({
     )
   }
 
-  if (isStringArray(propValue, schema)) {
+  if (isStringArray(propValue) || shouldRenderAsStringArray(schema)) {
     return (
       <GluuInlineInput
         id={uniqueId}
         name={tooltipPropKey || propKey}
         label={generateLabel(propKey)}
-        value={propValue || []}
+        value={getStringArrayValue(propValue, schema)}
         lsize={lSize}
         rsize={lSize}
         isArray={true}
         handler={handler}
-        options={schema?.items?.enum || propValue || []}
+        options={schema?.items?.enum || getStringArrayValue(propValue, schema)}
         parentIsArray={parentIsArray}
         path={path}
         doc_category={doc_category}
@@ -124,9 +138,6 @@ const JsonPropertyBuilderConfigApi = ({
   }
 
   if (isObjectArray(propValue)) {
-    const AccordionWithSub = Accordion as AccordionWithSubComponents
-    const AccordionHeader = AccordionWithSub.Header
-    const AccordionBody = AccordionWithSub.Body
     return (
       <Accordion className="mb-2 b-primary" initialOpen>
         <AccordionHeader
@@ -165,9 +176,6 @@ const JsonPropertyBuilderConfigApi = ({
   }
 
   if (isObject(propValue)) {
-    const AccordionWithSub = Accordion as AccordionWithSubComponents
-    const AccordionHeader = AccordionWithSub.Header
-    const AccordionBody = AccordionWithSub.Body
     return (
       <>
         {show && (
@@ -194,13 +202,17 @@ const JsonPropertyBuilderConfigApi = ({
                   <Col sm={1} md={1}>
                     <Button
                       style={{
-                        backgroundColor: customColors.accentRed,
+                        backgroundColor: disabled ? customColors.darkGray : customColors.accentRed,
                         color: customColors.white,
                         float: 'right',
                         border: 'none',
+                        cursor: disabled ? 'not-allowed' : 'pointer',
+                        opacity: disabled ? 0.6 : 1,
                       }}
                       size="sm"
                       onClick={removeHandler}
+                      disabled={disabled}
+                      aria-disabled={disabled}
                     >
                       <i className="fa fa-remove me-2"></i>
                       {'  '}

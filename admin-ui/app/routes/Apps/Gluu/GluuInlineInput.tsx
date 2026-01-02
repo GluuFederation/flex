@@ -56,7 +56,7 @@ const GluuInlineInput = ({
   const [data, setData] = useState<string | number | boolean>(value as string | number | boolean)
 
   useEffect(() => {
-    if (value !== undefined) {
+    if (value !== undefined && !Array.isArray(value)) {
       setData(value as string | number | boolean)
     }
   }, [value])
