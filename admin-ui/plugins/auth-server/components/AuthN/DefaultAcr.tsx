@@ -123,7 +123,7 @@ function DefaultAcr(): React.ReactElement {
   }, [authorizeHelper, authScopes])
 
   useEffect(() => {
-    dispatch(getScripts({ action: {} }))
+    dispatch(getScripts({ action: { action_data: {} } }))
   }, [dispatch])
 
   // Surface ACR fetch failures
@@ -184,6 +184,13 @@ function DefaultAcr(): React.ReactElement {
           await logAcrUpdate(newAcr, userMessage, { defaultAcr: acrValue })
         } catch (auditError) {
           console.error('Failed to log ACR update:', auditError)
+          dispatch(
+            updateToast(
+              true,
+              'warning',
+              t('messages.audit_log_failed', 'Update succeeded, but audit logging failed'),
+            ),
+          )
         }
       } catch {
         // Mutation error handling is done in onError callback

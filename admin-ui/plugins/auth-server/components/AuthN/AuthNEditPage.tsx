@@ -95,19 +95,24 @@ function AuthNEditPage(): ReactElement {
     putScriptMutation.isPending
 
   async function handleSubmit(data: AuthNFormValues): Promise<void> {
+    if (!atomItem?.name) {
+      dispatch(updateToast(true, 'error', t('messages.error_in_saving')))
+      return
+    }
+
     setIsSubmitting(true)
 
     try {
-      if (item.name === 'simple_password_auth') {
+      if (atomItem.name === 'simple_password_auth') {
         if (data.defaultAuthNMethod === 'true' || data.defaultAuthNMethod === true) {
           const acrData: AuthenticationMethod = { defaultAcr: 'simple_password_auth' }
           await putAcrsMutation.mutateAsync({ data: acrData })
         } else {
           handleSuccess()
         }
-      } else if (item.name === 'default_ldap_password') {
+      } else if (atomItem.name === 'default_ldap_password') {
         const ldapPayload: GluuLdapConfiguration = {
-          configId: item.configId || '',
+          configId: atomItem.configId || '',
           bindDN: data.bindDN,
           bindPassword: data.bindPassword,
           servers: Array.isArray(data.servers) ? data.servers : [data.servers],
@@ -126,14 +131,29 @@ function AuthNEditPage(): ReactElement {
         await putLdapMutation.mutateAsync({ data: ldapPayload })
 
         if (data.defaultAuthNMethod === 'true' || data.defaultAuthNMethod === true) {
-          const acrData: AuthenticationMethod = { defaultAcr: data.configId }
-          await putAcrsMutation.mutateAsync({ data: acrData })
+          try {
+            const acrData: AuthenticationMethod = { defaultAcr: data.configId }
+            await putAcrsMutation.mutateAsync({ data: acrData })
+          } catch (acrError) {
+            dispatch(
+              updateToast(
+                true,
+                'warning',
+                t(
+                  'messages.ldap_saved_acr_failed',
+                  'LDAP config saved, but failed to set default ACR',
+                ),
+              ),
+            )
+            setIsSubmitting(false)
+            return
+          }
         }
       } else {
         const scriptPayload: CustomScript = {
           inum: data.inum,
           dn: data.baseDn,
-          name: item.acrName,
+          name: atomItem.acrName || '',
           description: data.description,
           level: data.level,
           scriptType: 'person_authentication',
@@ -153,8 +173,23 @@ function AuthNEditPage(): ReactElement {
         await putScriptMutation.mutateAsync({ data: scriptPayload })
 
         if (data.defaultAuthNMethod === 'true' || data.defaultAuthNMethod === true) {
-          const acrData: AuthenticationMethod = { defaultAcr: item.acrName || '' }
-          await putAcrsMutation.mutateAsync({ data: acrData })
+          try {
+            const acrData: AuthenticationMethod = { defaultAcr: atomItem.acrName || '' }
+            await putAcrsMutation.mutateAsync({ data: acrData })
+          } catch (acrError) {
+            dispatch(
+              updateToast(
+                true,
+                'warning',
+                t(
+                  'messages.script_saved_acr_failed',
+                  'Script config saved, but failed to set default ACR',
+                ),
+              ),
+            )
+            setIsSubmitting(false)
+            return
+          }
         }
       }
     } catch (error) {

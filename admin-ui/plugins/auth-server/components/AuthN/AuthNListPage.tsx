@@ -29,6 +29,8 @@ import { currentAuthNItemAtom, type AuthNItem } from './atoms'
 import { BUILT_IN_ACRS } from './constants'
 import { useGetAcrs } from 'JansConfigApi'
 
+const PAGE_SIZE = 10
+
 interface AuthNListPageProps {
   isBuiltIn?: boolean
 }
@@ -54,7 +56,6 @@ function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
     Array<Action<AuthNItem> | ((rowData: AuthNItem) => Action<AuthNItem>)>
   >([])
   const { navigateToRoute } = useAppNavigation()
-  const [limit] = useState(10)
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme || 'light'
   const themeColors = getThemeColor(selectedTheme)
@@ -79,7 +80,6 @@ function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
   const { data: scriptsResponse, isLoading: scriptsLoading } =
     useCustomScriptsByType(DEFAULT_SCRIPT_TYPE)
   const scripts = scriptsResponse?.entries || []
-  const customScriptloading = scriptsLoading
 
   SetTitle(t('titles.authentication'))
 
@@ -125,7 +125,6 @@ function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
             handleGoToAuthNEditPage(rowDataClicked)
           }
         },
-        disabled: !canWriteAuthN,
       }))
     }
 
@@ -184,7 +183,7 @@ function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
   ]
 
   const tableData = useMemo(() => {
-    if (loading || customScriptloading || acrsLoading) {
+    if (loading || scriptsLoading || acrsLoading) {
       return []
     }
     if (isBuiltIn) {
@@ -193,18 +192,18 @@ function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
     return [...list.ldap, ...list.scripts].sort(
       (item1, item2) => (item1.level || 0) - (item2.level || 0),
     )
-  }, [loading, customScriptloading, acrsLoading, isBuiltIn, list.ldap, list.scripts])
+  }, [loading, scriptsLoading, acrsLoading, isBuiltIn, list.ldap, list.scripts])
 
   return (
     <GluuViewWrapper canShow={canReadAuthN}>
       <MaterialTable
-        key={limit ? limit : 0}
+        key={PAGE_SIZE}
         components={{
           Container: (props) => <Paper {...props} elevation={0} />,
         }}
         columns={columns}
         data={tableData}
-        isLoading={loading || customScriptloading || acrsLoading}
+        isLoading={loading || scriptsLoading || acrsLoading}
         title=""
         actions={myActions}
         options={{
@@ -212,7 +211,7 @@ function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
           search: false,
           idSynonym: 'inum',
           selection: false,
-          pageSize: limit,
+          pageSize: PAGE_SIZE,
           headerStyle: {
             ...applicationStyle.tableHeaderStyle,
             ...bgThemeColor,
