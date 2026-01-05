@@ -11,39 +11,7 @@ import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import customColors from '@/customColors'
 import { useGetAcrs } from 'JansConfigApi'
-
-interface ConfigurationProperty {
-  key?: string
-  value?: string
-  value1?: string
-  value2?: string
-  hide?: boolean
-}
-
-interface AuthNItem {
-  inum?: string
-  name?: string
-  acrName?: string
-  level?: number
-  samlACR?: string
-  description?: string
-  primaryKey?: string
-  passwordAttribute?: string
-  hashAlgorithm?: string
-  bindDN?: string
-  maxConnections?: number
-  localPrimaryKey?: string
-  servers?: string[]
-  baseDNs?: string[]
-  bindPassword?: string
-  useSSL?: boolean
-  enabled?: boolean
-  configId?: string
-  baseDn?: string
-  dn?: string
-  configurationProperties?: ConfigurationProperty[]
-  tableData?: unknown
-}
+import { type AuthNItem } from './atoms'
 
 interface AuthNFormValues {
   acr: string
@@ -359,7 +327,7 @@ function AuthNForm({ item, handleSubmit }: AuthNFormProps): ReactElement {
               formik={formik}
               required={true}
               options={[]}
-              value={item.servers || []}
+              value={Array.isArray(formik.values.servers) ? formik.values.servers : []}
               showError={!!(formik.errors.servers && formik.touched.servers)}
               errorMessage={formik.errors.servers as string}
             />
@@ -373,7 +341,7 @@ function AuthNForm({ item, handleSubmit }: AuthNFormProps): ReactElement {
               label="fields.base_dns"
               formik={formik}
               options={[]}
-              value={item.baseDNs || []}
+              value={Array.isArray(formik.values.baseDNs) ? formik.values.baseDNs : []}
               showError={!!(formik.errors.baseDNs && formik.touched.baseDNs)}
               errorMessage={formik.errors.baseDNs as string}
             />

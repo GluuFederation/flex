@@ -1,1 +1,1 @@
-export { currentAuthNItemAtom, type AuthNItem } from './authNAtoms'
+export { currentAuthNItemAtom, type AuthNItem, type ConfigurationProperty } from './authNAtoms'

@@ -25,7 +25,7 @@ import AuthNDetailPage from './AuthNDetailPage'
 import { getLdapConfig } from 'Plugins/services/redux/features/ldapSlice'
 import { useCustomScriptsByType } from 'Plugins/admin/components/CustomScripts/hooks'
 import { DEFAULT_SCRIPT_TYPE } from 'Plugins/admin/components/CustomScripts/constants'
-import { currentAuthNItemAtom } from './atoms'
+import { currentAuthNItemAtom, type AuthNItem } from './atoms'
 import { BUILT_IN_ACRS } from './constants'
 import { useGetAcrs } from 'JansConfigApi'
 
@@ -33,43 +33,14 @@ interface AuthNListPageProps {
   isBuiltIn?: boolean
 }
 
-interface AuthNItem {
-  inum?: string
-  name?: string
-  acrName?: string
-  level?: number
-  samlACR?: string
-  enabled?: boolean
-  configId?: string
-}
-
-interface LdapItem {
-  inum?: string
-  configId?: string
-  enabled?: boolean
-  level?: number
-  samlACR?: string
-  name?: string
-  acrName?: string
-}
-
-interface ScriptItem {
-  inum?: string
-  name?: string
-  enabled?: boolean
-  level?: number
-  samlACR?: string
-  acrName?: string
-}
-
 interface ListState {
-  ldap: LdapItem[]
-  scripts: ScriptItem[]
+  ldap: AuthNItem[]
+  scripts: AuthNItem[]
 }
 
 interface RootState {
   ldapReducer: {
-    ldap: LdapItem[]
+    ldap: AuthNItem[]
     loading: boolean
   }
 }
@@ -132,14 +103,9 @@ function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
     [setCurrentItem, navigateToRoute],
   )
 
-  // Permission initialization
   useEffect(() => {
     authorizeHelper(authNScopes)
     dispatch(getLdapConfig())
-
-    return () => {
-      // Cleanup if needed
-    }
   }, [authorizeHelper, authNScopes, dispatch])
 
   // Actions as state that will rebuild when permissions change
@@ -170,9 +136,9 @@ function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
     setList((prevList) => ({ ...prevList, ldap: [] }))
 
     if (ldap.length > 0 && !loading) {
-      const getEnabledldap = ldap.filter((item) => item.enabled === true)
-      if (getEnabledldap?.length > 0) {
-        const updateLDAPItems = ldap.map((item) => ({
+      const enabledLdap = ldap.filter((item) => item.enabled === true)
+      if (enabledLdap.length > 0) {
+        const updateLDAPItems = enabledLdap.map((item) => ({
           ...item,
           name: 'default_ldap_password',
           acrName: item.configId,
@@ -185,9 +151,9 @@ function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
   useEffect(() => {
     setList((prevList) => ({ ...prevList, scripts: [] }))
     if (scripts.length > 0 && !scriptsLoading) {
-      const getEnabledscripts = scripts.filter((item: ScriptItem) => item.enabled === true)
+      const getEnabledscripts = scripts.filter((item: AuthNItem) => item.enabled === true)
       if (getEnabledscripts?.length > 0) {
-        const updateScriptsItems = getEnabledscripts.map((item: ScriptItem) => ({
+        const updateScriptsItems = getEnabledscripts.map((item: AuthNItem) => ({
           ...item,
           name: 'myAuthnScript',
           acrName: item.name,
@@ -222,7 +188,7 @@ function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
       return []
     }
     if (isBuiltIn) {
-      return BUILT_IN_ACRS as unknown as AuthNItem[]
+      return BUILT_IN_ACRS as AuthNItem[]
     }
     return [...list.ldap, ...list.scripts].sort(
       (item1, item2) => (item1.level || 0) - (item2.level || 0),

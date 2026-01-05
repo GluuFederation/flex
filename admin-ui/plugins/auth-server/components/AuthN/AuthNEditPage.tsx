@@ -3,7 +3,6 @@ import { CardBody, Card } from 'Components'
 import { useAtomValue } from 'jotai'
 import AuthNForm from './AuthNForm'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
@@ -17,15 +16,7 @@ import {
 } from 'JansConfigApi'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useDispatch } from 'react-redux'
-import { currentAuthNItemAtom, type AuthNItem } from './atoms'
-
-interface ConfigurationProperty {
-  key?: string
-  value?: string
-  value1?: string
-  value2?: string
-  hide?: boolean
-}
+import { currentAuthNItemAtom, type AuthNItem, type ConfigurationProperty } from './atoms'
 
 interface AuthNFormValues {
   acr: string
@@ -59,8 +50,8 @@ function AuthNEditPage(): ReactElement {
   const item: AuthNItem = atomItem || {}
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // Orval mutation hooks
   const handleSuccess = useCallback(() => {
+    setIsSubmitting(false)
     dispatch(updateToast(true, 'success'))
     setTimeout(() => {
       navigateToRoute(ROUTES.AUTH_SERVER_AUTHN)
@@ -112,11 +103,9 @@ function AuthNEditPage(): ReactElement {
           const acrData: AuthenticationMethod = { defaultAcr: 'simple_password_auth' }
           await putAcrsMutation.mutateAsync({ data: acrData })
         } else {
-          // No changes to make
           handleSuccess()
         }
       } else if (item.name === 'default_ldap_password') {
-        // Update LDAP config
         const ldapPayload: GluuLdapConfiguration = {
           configId: item.configId || '',
           bindDN: data.bindDN,
@@ -134,15 +123,13 @@ function AuthNEditPage(): ReactElement {
           level: data.level,
         }
 
-        // Update default ACR if selected
+        await putLdapMutation.mutateAsync({ data: ldapPayload })
+
         if (data.defaultAuthNMethod === 'true' || data.defaultAuthNMethod === true) {
           const acrData: AuthenticationMethod = { defaultAcr: data.configId }
           await putAcrsMutation.mutateAsync({ data: acrData })
         }
-
-        await putLdapMutation.mutateAsync({ data: ldapPayload })
       } else {
-        // Script-based authentication
         const scriptPayload: CustomScript = {
           inum: data.inum,
           dn: data.baseDn,
@@ -163,23 +150,24 @@ function AuthNEditPage(): ReactElement {
             }))
         }
 
-        // Update default ACR if selected
+        await putScriptMutation.mutateAsync({ data: scriptPayload })
+
         if (data.defaultAuthNMethod === 'true' || data.defaultAuthNMethod === true) {
           const acrData: AuthenticationMethod = { defaultAcr: item.acrName || '' }
           await putAcrsMutation.mutateAsync({ data: acrData })
         }
-
-        await putScriptMutation.mutateAsync({ data: scriptPayload })
       }
-    } catch {
-      // Error handling is done in onError callbacks
+    } catch (error) {
+      if (error instanceof Error && !('response' in error)) {
+        console.error('Unexpected error during form submission:', error)
+        dispatch(updateToast(true, 'error', error.message || t('messages.error_in_saving')))
+      }
       setIsSubmitting(false)
     }
   }
 
   return (
     <GluuLoader blocking={isLoading}>
-      <GluuAlert severity={t('titles.error')} message={t('messages.error_in_saving')} />
       <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
           <AuthNForm handleSubmit={handleSubmit} item={{ ...item }} />

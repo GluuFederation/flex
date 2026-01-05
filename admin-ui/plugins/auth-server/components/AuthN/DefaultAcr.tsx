@@ -40,8 +40,6 @@ interface RootState {
 
 interface PutData {
   value: string | string[]
-  path: string
-  op: 'replace'
 }
 
 const MAX_AGAMA_PROJECTS_FOR_ACR = 500
@@ -125,7 +123,7 @@ function DefaultAcr(): React.ReactElement {
   }, [authorizeHelper, authScopes])
 
   useEffect(() => {
-    dispatch(getScripts({}))
+    dispatch(getScripts({ action: {} }))
   }, [dispatch])
 
   // Surface ACR fetch failures
@@ -182,9 +180,13 @@ function DefaultAcr(): React.ReactElement {
       const newAcr: AuthenticationMethod = { defaultAcr: acrValue }
       try {
         await putAcrsMutation.mutateAsync({ data: newAcr })
-        await logAcrUpdate(newAcr, userMessage, { defaultAcr: acrValue })
+        try {
+          await logAcrUpdate(newAcr, userMessage, { defaultAcr: acrValue })
+        } catch (auditError) {
+          console.error('Failed to log ACR update:', auditError)
+        }
       } catch {
-        // Error handling is done in onError callback
+        // Mutation error handling is done in onError callback
       }
     }
   }

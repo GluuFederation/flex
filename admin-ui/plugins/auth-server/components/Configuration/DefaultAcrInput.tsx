@@ -4,16 +4,12 @@ import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { Col, InputGroup, CustomInput, FormGroup, Button } from 'Components'
 import { ThemeContext } from 'Context/theme/themeContext'
+import { type DropdownOption } from '../AuthN/helper/acrUtils'
 
 interface PutData {
   value: string | string[]
   path: string
   op: 'replace'
-}
-
-interface DropdownOption {
-  label: string
-  value: string
 }
 
 interface DefaultAcrInputProps {

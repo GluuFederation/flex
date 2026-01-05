@@ -1,5 +1,13 @@
 import { atom } from 'jotai'
 
+export interface ConfigurationProperty {
+  key?: string
+  value?: string
+  value1?: string
+  value2?: string
+  hide?: boolean
+}
+
 export interface AuthNItem {
   inum?: string
   name?: string
@@ -21,13 +29,7 @@ export interface AuthNItem {
   configId?: string
   baseDn?: string
   dn?: string
-  configurationProperties?: Array<{
-    key?: string
-    value?: string
-    value1?: string
-    value2?: string
-    hide?: boolean
-  }>
+  configurationProperties?: ConfigurationProperty[]
   tableData?: unknown
 }
 
