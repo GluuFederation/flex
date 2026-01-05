@@ -20,7 +20,6 @@ import { reducer as oidcReducer } from './redux/features/oidcSlice'
 import { reducer as scopeReducer } from './redux/features/scopeSlice'
 import { reducer as jsonReducer } from './redux/features/jsonConfigSlice'
 import { reducer as acrReducer } from './redux/features/acrSlice'
-import { reducer as loggingReducer } from './redux/features/loggingSlice'
 import { reducer as umaResourceReducer } from './redux/features/umaResourceSlice'
 import { reducer as sessionReducer } from './redux/features/sessionSlice'
 import ssaReducer from './redux/features/SsaSlice'
@@ -30,7 +29,6 @@ import scopesSaga from './redux/sagas/OAuthScopeSaga'
 import oidcSaga from './redux/sagas/OIDCSaga'
 import jsonSaga from './redux/sagas/JsonConfigSaga'
 import acrSaga from './redux/sagas/AcrsSaga'
-import loggingSaga from './redux/sagas/LoggingSaga'
 import umaResourceSaga from './redux/sagas/UMAResourceSaga'
 import sessionSaga from './redux/sagas/SessionSaga'
 import authnSaga from './redux/sagas/AuthnSaga'
@@ -256,7 +254,6 @@ const pluginMetadata = {
     { name: 'oidcReducer', reducer: oidcReducer },
     { name: 'authPropertiesReducer', reducer: jsonReducer },
     { name: 'acrReducer', reducer: acrReducer },
-    { name: 'loggingReducer', reducer: loggingReducer },
     { name: 'umaResourceReducer', reducer: umaResourceReducer },
     { name: 'sessionReducer', reducer: sessionReducer },
     { name: 'authNReducer', reducer: authNReducer },
@@ -268,7 +265,6 @@ const pluginMetadata = {
     oidcSaga(),
     jsonSaga(),
     acrSaga(),
-    loggingSaga(),
     umaResourceSaga(),
     sessionSaga(),
     authnSaga(),
