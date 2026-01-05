@@ -31,7 +31,7 @@ sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(
 ```shell
 sudo yum -y module enable mod_auth_openidc;
 ```
-- Please obtain an [SSA](../../install/agama/prerequisites.md#software-statement-assertions) to trial Flex, after which you are issued a JWT
+- Please obtain an [SSA](../../install/flex/prerequisites.md#software-statement-assertions) to trial Flex, after which you are issued a JWT
   that you can use during installation. SSA should be stored in a text file on an accessible path.
 
 ## Install the Package

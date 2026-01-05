@@ -212,7 +212,7 @@ kubectl get secret cn -o json -n <namespace>
     - Click on `Install` on the right side of the window.
     - Change the namespace from `default` to `gluu`, then click on `Next`.
     - Scroll through the sections to get familiar with the options. For minimal setup follow with the next instructions.
-    - Add `License SSA`. Before initiating the setup, please obtain an [SSA](https://docs.gluu.org/vreplace-flex-version/install/agama/prerequisites/#obtaining-an-ssa) for Flex trial, after which you will issued a JWT.
+    - Add `License SSA`. Before initiating the setup, please obtain an [SSA](https://docs.gluu.org/vreplace-flex-version/install/flex/prerequisites/#obtaining-an-ssa) for Flex trial, after which you will issued a JWT.
     - Click on the `Persistence` section. Change `SQL database host uri` to `postgresql.gluu.svc` in the case of `PostgreSQL` or `mysql.gluu.svc` in the case of `MySQL`. Also set `SQL database username`,`SQL password`, and `SQL database name` to the values you used during the database installation.
     - To enable Casa and the Admin UI, navigate to the `Optional Services` section and check the `Enable casa` and `boolean flag to enable admin UI` boxes. You can also enable different services like `Client API` and `Jackrabbit`.
     - Click on the  section named `Ingress` and enable all the endpoints. You might add LB IP or address if you don't have `FQDN` for `Gluu`.

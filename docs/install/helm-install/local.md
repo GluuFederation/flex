@@ -37,7 +37,7 @@ Releases of images are in style 0.0.0-nightly or x.y-z-1
 
 ## Installation Steps
 
-Before initiating the setup, please obtain an [SSA](https://docs.gluu.org/vreplace-flex-version/install/agama/prerequisites/#obtaining-an-ssa) for Flex trial, after which you will issued a JWT.
+Before initiating the setup, please obtain an [SSA](https://docs.gluu.org/vreplace-flex-version/install/flex/prerequisites/#obtaining-an-ssa) for Flex trial, after which you will issued a JWT.
 
 Start a fresh Ubuntu VM with ports `443` and `80` open. Then execute the following:
 

@@ -17,7 +17,7 @@ Also, there are multiple `Rancher` installation [options](https://ranchermanager
     If you are deploying an Ingress controller on a single node deployment, in which Ingress utilizes ports 80 and 443, then you have to adjust the host ports mapped for the rancher/rancher container.
     Here's an [example](https://ranchermanager.docs.rancher.com/reference-guides/single-node-rancher-in-docker/advanced-options#running-rancherrancher-and-rancherrancher-agent-on-the-same-node) on how to do that.
 
-1. Before initiating the setup, please obtain an [SSA](https://docs.gluu.org/vreplace-flex-version/install/agama/prerequisites/#obtaining-an-ssa) for Flex trial, after which you will issued a JWT.
+1. Before initiating the setup, please obtain an [SSA](https://docs.gluu.org/vreplace-flex-version/install/flex/prerequisites/#obtaining-an-ssa) for Flex trial, after which you will issued a JWT.
 2. Provision a Linux 4 CPU, 16 GB RAM, and 50GB SSD VM with ports `443` and `80` open. Save the VM IP address. For development environments, the VM can be set up using VMWare Workstation Player or VirtualBox with Ubuntu 20.04/22.04 operating system running on a VM.
 3. Install [Docker](https://docs.docker.com/engine/install/).
 4. Execute

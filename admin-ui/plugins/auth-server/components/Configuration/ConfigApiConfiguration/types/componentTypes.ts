@@ -1,4 +1,5 @@
 import type { JsonPatch } from './configApiTypes'
+import { Accordion } from 'Components'
 
 export interface SchemaProperty {
   type?: string
@@ -19,4 +20,10 @@ export interface JsonPropertyBuilderConfigApiProps {
   doc_category?: string
   tooltipPropKey?: string
   parent?: string
+  disabled?: boolean
+}
+
+export type AccordionWithSubComponents = typeof Accordion & {
+  Header: React.ComponentType<React.PropsWithChildren<{ style?: React.CSSProperties }>>
+  Body: React.ComponentType<React.PropsWithChildren>
 }

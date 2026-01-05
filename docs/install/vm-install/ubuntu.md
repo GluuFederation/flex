@@ -20,7 +20,7 @@ This is a step-by-step guide for installation and uninstallation of Gluu Flex on
 ```shell
 sudo ufw allow https
 ```
-- Please obtain an [SSA](../../install/agama/prerequisites.md#software-statement-assertions) to trial Flex, after which you are issued a JWT
+- Please obtain an [SSA](../../install/flex/prerequisites.md#software-statement-assertions) to trial Flex, after which you are issued a JWT
   that you can use during installation. SSA should be stored in a text file on an accessible path.
 
 ## Supported Versions

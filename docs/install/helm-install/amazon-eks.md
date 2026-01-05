@@ -16,7 +16,7 @@ tags:
 
 ## Initial Setup
 
-1. Before initiating the setup, please obtain an [SSA](https://docs.gluu.org/vreplace-flex-version/install/agama/prerequisites/#obtaining-an-ssa) for Flex trial, after which you will issued a JWT.
+1. Before initiating the setup, please obtain an [SSA](https://docs.gluu.org/vreplace-flex-version/install/agama/flex/#obtaining-an-ssa) for Flex trial, after which you will issued a JWT.
 
 2. Install [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 

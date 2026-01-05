@@ -10,6 +10,8 @@ import JsonPropertyBuilderConfigApi from './JsonPropertyBuilderConfigApi'
 import { toast } from 'react-toastify'
 import type { ApiAppConfiguration, JsonPatch } from './types'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { READ_ONLY_FIELDS } from './utils'
+import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/types'
 
 interface ApiConfigFormProps {
   configuration: ApiAppConfiguration
@@ -20,7 +22,7 @@ interface SpecSchema {
   components: {
     schemas: {
       ApiAppConfiguration: {
-        properties: Record<string, unknown>
+        properties: Record<string, string | number | boolean | null | undefined>
       }
     }
   }
@@ -29,22 +31,27 @@ interface SpecSchema {
 const { properties: schema } = (spec as unknown as SpecSchema).components?.schemas
   ?.ApiAppConfiguration ?? { properties: {} }
 
+const CONFIG_API_RESOURCE_ID = ADMIN_UI_RESOURCES.ConfigApiConfiguration
+const configApiScopes = CEDAR_RESOURCE_SCOPES[CONFIG_API_RESOURCE_ID] || []
+
 const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }) => {
   const { authorizeHelper, hasCedarWritePermission } = useCedarling()
   const { navigateToRoute } = useAppNavigation()
   const [modal, setModal] = useState(false)
   const [patches, setPatches] = useState<JsonPatch[]>([])
 
-  const operations = patches
-  const configApiResourceId = ADMIN_UI_RESOURCES.ConfigApiConfiguration
-  const configApiScopes = useMemo(
-    () => CEDAR_RESOURCE_SCOPES[configApiResourceId] || [],
-    [configApiResourceId],
+  const canWriteConfigApi = useMemo(
+    () => hasCedarWritePermission(CONFIG_API_RESOURCE_ID),
+    [hasCedarWritePermission],
   )
 
-  const canWriteConfigApi = useMemo(
-    () => hasCedarWritePermission(configApiResourceId),
-    [hasCedarWritePermission, configApiResourceId],
+  const operations: GluuCommitDialogOperation[] = useMemo(
+    () =>
+      patches.map((patch) => ({
+        path: patch.path as string,
+        value: patch.value as JsonValue,
+      })),
+    [patches],
   )
 
   useEffect(() => {
@@ -52,6 +59,15 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
       authorizeHelper(configApiScopes)
     }
   }, [authorizeHelper, configApiScopes])
+
+  const patchHandler = useCallback((patch: JsonPatch) => {
+    setPatches((existingPatches) => {
+      const filteredPatches = existingPatches.filter(
+        (existingPatch) => existingPatch.path !== patch.path,
+      )
+      return [...filteredPatches, patch]
+    })
+  }, [])
 
   const toggle = useCallback(() => {
     if (patches?.length > 0) {
@@ -69,27 +85,29 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
     [toggle, onSubmit, patches],
   )
 
-  const patchHandler = (patch: JsonPatch) => {
-    setPatches((existingPatches) => [...existingPatches, patch])
-  }
-
-  const handleBack = () => {
+  const handleBack = useCallback(() => {
     navigateToRoute(ROUTES.HOME_DASHBOARD)
-  }
+  }, [navigateToRoute])
 
   return (
     <>
-      {Object.keys(configuration).map((propKey) => (
-        <JsonPropertyBuilderConfigApi
-          key={propKey}
-          propKey={propKey}
-          propValue={configuration[propKey as keyof ApiAppConfiguration]}
-          lSize={6}
-          handler={patchHandler}
-          schema={schema[propKey] as { type?: string; items?: { type?: string; enum?: string[] } }}
-          doc_category="config_api_properties"
-        />
-      ))}
+      {Object.keys(configuration).map((propKey) => {
+        const isDisabled = READ_ONLY_FIELDS.includes(propKey)
+        return (
+          <JsonPropertyBuilderConfigApi
+            key={propKey}
+            propKey={propKey}
+            propValue={configuration[propKey as keyof ApiAppConfiguration]}
+            lSize={6}
+            handler={patchHandler}
+            schema={
+              schema[propKey] as { type?: string; items?: { type?: string; enum?: string[] } }
+            }
+            doc_category="config_api_properties"
+            disabled={isDisabled}
+          />
+        )
+      })}
 
       <FormGroup row />
       {canWriteConfigApi && (
