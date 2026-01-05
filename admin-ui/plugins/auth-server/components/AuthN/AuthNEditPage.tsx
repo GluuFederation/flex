@@ -1,4 +1,4 @@
-import React, { useState, useCallback, type ReactElement } from 'react'
+import React, { useState, useCallback, useRef, useEffect, type ReactElement } from 'react'
 import { CardBody, Card } from 'Components'
 import { useAtomValue } from 'jotai'
 import AuthNForm from './AuthNForm'
@@ -17,6 +17,25 @@ import {
 import { updateToast } from 'Redux/features/toastSlice'
 import { useDispatch } from 'react-redux'
 import { currentAuthNItemAtom, type AuthNItem, type ConfigurationProperty } from './atoms'
+
+const isDefaultAuthNMethod = (value: boolean | string): boolean =>
+  value === 'true' || value === true
+
+const transformConfigurationProperties = (
+  properties: ConfigurationProperty[] | undefined,
+): Array<{ value1: string; value2: string; hide: boolean }> | undefined => {
+  if (!properties || properties.length === 0) {
+    return undefined
+  }
+  return properties
+    .filter((e): e is ConfigurationProperty => e != null)
+    .filter((e) => Object.keys(e).length !== 0)
+    .map((e) => ({
+      value1: e.key || e.value1 || '',
+      value2: e.value || e.value2 || '',
+      hide: false,
+    }))
+}
 
 interface AuthNFormValues {
   acr: string
@@ -47,13 +66,21 @@ function AuthNEditPage(): ReactElement {
   const { navigateToRoute } = useAppNavigation()
   const { t } = useTranslation()
   const atomItem = useAtomValue(currentAuthNItemAtom)
-  const item: AuthNItem = atomItem || {}
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const navigationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (navigationTimeoutRef.current) {
+        clearTimeout(navigationTimeoutRef.current)
+      }
+    }
+  }, [])
 
   const handleSuccess = useCallback(() => {
     setIsSubmitting(false)
     dispatch(updateToast(true, 'success'))
-    setTimeout(() => {
+    navigationTimeoutRef.current = setTimeout(() => {
       navigateToRoute(ROUTES.AUTH_SERVER_AUTHN)
     }, 2000)
   }, [dispatch, navigateToRoute])
@@ -104,7 +131,7 @@ function AuthNEditPage(): ReactElement {
 
     try {
       if (atomItem.name === 'simple_password_auth') {
-        if (data.defaultAuthNMethod === 'true' || data.defaultAuthNMethod === true) {
+        if (isDefaultAuthNMethod(data.defaultAuthNMethod)) {
           const acrData: AuthenticationMethod = { defaultAcr: 'simple_password_auth' }
           await putAcrsMutation.mutateAsync({ data: acrData })
         } else {
@@ -130,7 +157,7 @@ function AuthNEditPage(): ReactElement {
 
         await putLdapMutation.mutateAsync({ data: ldapPayload })
 
-        if (data.defaultAuthNMethod === 'true' || data.defaultAuthNMethod === true) {
+        if (isDefaultAuthNMethod(data.defaultAuthNMethod)) {
           try {
             const acrData: AuthenticationMethod = { defaultAcr: data.configId }
             await putAcrsMutation.mutateAsync({ data: acrData })
@@ -157,22 +184,12 @@ function AuthNEditPage(): ReactElement {
           description: data.description,
           level: data.level,
           scriptType: 'person_authentication',
-        }
-
-        if (data?.configurationProperties && data.configurationProperties.length > 0) {
-          scriptPayload.configurationProperties = data.configurationProperties
-            .filter((e): e is ConfigurationProperty => e != null)
-            .filter((e) => Object.keys(e).length !== 0)
-            .map((e) => ({
-              value1: e.key || e.value1 || '',
-              value2: e.value || e.value2 || '',
-              hide: false,
-            }))
+          configurationProperties: transformConfigurationProperties(data.configurationProperties),
         }
 
         await putScriptMutation.mutateAsync({ data: scriptPayload })
 
-        if (data.defaultAuthNMethod === 'true' || data.defaultAuthNMethod === true) {
+        if (isDefaultAuthNMethod(data.defaultAuthNMethod)) {
           try {
             const acrData: AuthenticationMethod = { defaultAcr: atomItem.acrName || '' }
             await putAcrsMutation.mutateAsync({ data: acrData })
@@ -201,11 +218,21 @@ function AuthNEditPage(): ReactElement {
     }
   }
 
+  if (!atomItem) {
+    return (
+      <GluuLoader blocking={true}>
+        <Card className="mb-3" style={applicationStyle.mainCard}>
+          <CardBody>{t('messages.no_item_selected', 'No item selected')}</CardBody>
+        </Card>
+      </GluuLoader>
+    )
+  }
+
   return (
     <GluuLoader blocking={isLoading}>
       <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
-          <AuthNForm handleSubmit={handleSubmit} item={{ ...item }} />
+          <AuthNForm handleSubmit={handleSubmit} item={atomItem} />
         </CardBody>
       </Card>
     </GluuLoader>
