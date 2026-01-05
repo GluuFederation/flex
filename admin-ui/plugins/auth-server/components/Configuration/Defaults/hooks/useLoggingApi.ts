@@ -12,26 +12,7 @@ import { logAuditUserAction } from 'Utils/AuditLogger'
 import { UPDATE } from '@/audit/UserActionType'
 import { API_LOGGING } from '@/audit/Resources'
 import type { ChangedFields } from 'Plugins/auth-server/redux/features/types/loggingTypes'
-
-interface AuthState {
-  token: {
-    access_token: string
-  }
-  userinfo: {
-    inum?: string
-    name?: string
-  }
-  config: {
-    clientId: string
-  }
-  location?: {
-    IPv4?: string
-  }
-}
-
-interface RootState {
-  authReducer: AuthState
-}
+import type { AuthState, RootState } from '@/redux/sagas/types/audit'
 
 const LOGGING_CACHE_CONFIG = {
   STALE_TIME: 5 * 60 * 1000,
@@ -95,9 +76,9 @@ export function useUpdateLoggingConfig() {
 
       await queryClient.invalidateQueries({ queryKey: getGetConfigLoggingQueryKey() })
 
-      await logAudit(userMessage, changedFields)
-
       dispatch(updateToast(true, 'success'))
+
+      logAudit(userMessage, changedFields)
 
       return result
     },
