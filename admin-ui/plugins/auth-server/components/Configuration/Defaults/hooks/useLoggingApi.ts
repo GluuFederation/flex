@@ -12,7 +12,7 @@ import { logAuditUserAction } from 'Utils/AuditLogger'
 import { UPDATE } from '@/audit/UserActionType'
 import { API_LOGGING } from '@/audit/Resources'
 import type { ChangedFields } from 'Plugins/auth-server/redux/features/types/loggingTypes'
-import type { AuthState, RootState } from '@/redux/sagas/types/audit'
+import type { RootState } from '@/redux/sagas/types/audit'
 
 const LOGGING_CACHE_CONFIG = {
   STALE_TIME: 5 * 60 * 1000,
@@ -40,19 +40,17 @@ interface UpdateLoggingParams {
 export function useUpdateLoggingConfig() {
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
-  const authState = useSelector((state: RootState) => state.authReducer)
+  const token = useSelector((state: RootState) => state.authReducer?.token?.access_token)
+  const userinfo = useSelector((state: RootState) => state.authReducer?.userinfo)
+  const clientId = useSelector((state: RootState) => state.authReducer?.config?.clientId)
+  const ipAddress = useSelector((state: RootState) => state.authReducer?.location?.IPv4)
   const baseMutation = usePutConfigLogging()
 
   const logAudit = useCallback(
     async (userMessage: string, changedFields: ChangedFields<Logging>): Promise<void> => {
-      const token = authState?.token?.access_token ?? ''
-      const userinfo = authState?.userinfo
-      const clientId = authState?.config?.clientId
-      const ipAddress = authState?.location?.IPv4
-
       try {
         await logAuditUserAction({
-          token,
+          token: token ?? '',
           userinfo,
           action: UPDATE,
           resource: API_LOGGING,
@@ -65,7 +63,7 @@ export function useUpdateLoggingConfig() {
         console.error('Failed to log logging audit action:', error)
       }
     },
-    [authState],
+    [token, userinfo, clientId, ipAddress],
   )
 
   const mutateAsync = useCallback(
