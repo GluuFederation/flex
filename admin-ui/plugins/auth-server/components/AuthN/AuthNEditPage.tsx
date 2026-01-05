@@ -94,23 +94,16 @@ function AuthNEditPage(): ReactElement {
     [dispatch, t],
   )
 
-  const putAcrsMutation = usePutAcrs({
-    mutation: {
-      onSuccess: handleSuccess,
-      onError: handleError,
-    },
-  })
+  const putAcrsMutation = usePutAcrs()
 
   const putLdapMutation = usePutConfigDatabaseLdap({
     mutation: {
-      onSuccess: handleSuccess,
       onError: handleError,
     },
   })
 
   const putScriptMutation = usePutConfigScripts({
     mutation: {
-      onSuccess: handleSuccess,
       onError: handleError,
     },
   })
@@ -132,11 +125,15 @@ function AuthNEditPage(): ReactElement {
     try {
       if (atomItem.name === 'simple_password_auth') {
         if (isDefaultAuthNMethod(data.defaultAuthNMethod)) {
-          const acrData: AuthenticationMethod = { defaultAcr: 'simple_password_auth' }
-          await putAcrsMutation.mutateAsync({ data: acrData })
-        } else {
-          handleSuccess()
+          try {
+            const acrData: AuthenticationMethod = { defaultAcr: 'simple_password_auth' }
+            await putAcrsMutation.mutateAsync({ data: acrData })
+          } catch (error) {
+            handleError(error as Error)
+            return
+          }
         }
+        handleSuccess()
       } else if (atomItem.name === 'default_ldap_password') {
         const ldapPayload: GluuLdapConfiguration = {
           configId: atomItem.configId || '',
@@ -176,6 +173,7 @@ function AuthNEditPage(): ReactElement {
             return
           }
         }
+        handleSuccess()
       } else {
         const scriptPayload: CustomScript = {
           inum: data.inum,
@@ -208,6 +206,7 @@ function AuthNEditPage(): ReactElement {
             return
           }
         }
+        handleSuccess()
       }
     } catch (error) {
       if (error instanceof Error && !('response' in error)) {
