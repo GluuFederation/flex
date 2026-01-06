@@ -84,7 +84,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#overview" class="md-skip">
+        <a href="#gluu-flex-on-suse-rancher" class="md-skip">
           Skip to content
         </a>
       
@@ -1862,6 +1862,8 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
           
@@ -1893,6 +1895,8 @@
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
+  
+    
   
   
     <label class="md-nav__title" for="__toc">
@@ -2818,6 +2822,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -3069,8 +3075,7 @@
   
 
 
-  <h1>Getting Started with Rancher</h1>
-
+<h1 id="gluu-flex-on-suse-rancher">Gluu Flex on SUSE Rancher<a class="headerlink" href="#gluu-flex-on-suse-rancher" title="Permanent link">#</a></h1>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">#</a></h2>
 <p>Gluu Flex (“Flex”) is a cloud-native digital identity platform that enables organizations to authenticate and authorize people and software through the use of open standards like OpenID Connect, OAuth, and FIDO.</p>
 <p>It is a downstream commercial distribution of the Linux Foundation Janssen Project software, plus a web administration tool(Gluu Admin-UI).</p>
@@ -3099,14 +3104,14 @@
 <h2 id="building-blocks">Building Blocks<a class="headerlink" href="#building-blocks" title="Permanent link">#</a></h2>
 <p><img alt="building_blocks_small" src="https://user-images.githubusercontent.com/3717101/179056897-99ac7c2b-49f5-4fe3-9029-a355f3aee45c.png" /></p>
 <h2 id="scope">Scope<a class="headerlink" href="#scope" title="Permanent link">#</a></h2>
-<p>In this Quickstart Guide, we will: </p>
+<p>In this Quickstart Guide, we will:</p>
 <ol>
 <li>Deploy Flex and add some users.</li>
 <li>Enable two-factor authentication.</li>
 <li>Protect content on an Apache web server with OpenID Connect.</li>
 </ol>
 <h2 id="audience">Audience<a class="headerlink" href="#audience" title="Permanent link">#</a></h2>
-<p>This document is intended for DevOps engineers, site reliability engineers (SREs), platform engineers, software engineers, and developers who are responsible for managing and running stateful workloads in Kubernetes clusters. </p>
+<p>This document is intended for DevOps engineers, site reliability engineers (SREs), platform engineers, software engineers, and developers who are responsible for managing and running stateful workloads in Kubernetes clusters.</p>
 <!--- [Provide an overview of the minimum viable architecture with hints or guidance for upscaling to fully-supported, enterprise deployment.  Include relevant images.] -->
 
 <h2 id="technical-overview">Technical overview<a class="headerlink" href="#technical-overview" title="Permanent link">#</a></h2>
@@ -3432,16 +3437,16 @@ helm install nginx ingress-nginx/ingress-nginx
 <p>Install Gluu Flex:</p>
 <ul>
 <li>Head to <code>Apps</code> --&gt; <code>Charts</code> and search for <code>Gluu</code></li>
-<li>Click on <code>Install</code> on the right side of the window. </li>
+<li>Click on <code>Install</code> on the right side of the window.</li>
 <li>Change the namespace from <code>default</code> to <code>gluu</code>, then click on <code>Next</code>.</li>
 <li>Scroll through the sections to get familiar with the options. For minimal setup follow with the next instructions.</li>
 <li>Add <code>License SSA</code>. Before initiating the setup, please obtain an <a href="https://docs.gluu.org/vreplace-flex-version/install/flex/prerequisites/#obtaining-an-ssa">SSA</a> for Flex trial, after which you will issued a JWT.</li>
 <li>Click on the <code>Persistence</code> section. Change <code>SQL database host uri</code> to <code>postgresql.gluu.svc</code> in the case of <code>PostgreSQL</code> or <code>mysql.gluu.svc</code> in the case of <code>MySQL</code>. Also set <code>SQL database username</code>,<code>SQL password</code>, and <code>SQL database name</code> to the values you used during the database installation.</li>
 <li>To enable Casa and the Admin UI, navigate to the <code>Optional Services</code> section and check the <code>Enable casa</code> and <code>boolean flag to enable admin UI</code> boxes. You can also enable different services like <code>Client API</code> and <code>Jackrabbit</code>.</li>
-<li>Click on the  section named <code>Ingress</code> and enable all the endpoints. You might add LB IP or address if you don't have <code>FQDN</code> for <code>Gluu</code>. </li>
+<li>Click on the  section named <code>Ingress</code> and enable all the endpoints. You might add LB IP or address if you don't have <code>FQDN</code> for <code>Gluu</code>.</li>
 <li>To pass your <code>FQDN</code> or <code>Domain</code> that is intended to serve the Gluu Flex IDP, head to the <code>Configuration</code> section:<ol>
 <li>Add your <code>FQDN</code> and check the box <code>Is the FQDN globally resolvable</code>.</li>
-<li>Click on the <code>Edit YAML</code> tab and add your <code>FQDN</code> to <code>nginx-ingress.ingress.hosts</code> and <code>nginx-ingress.ingress.tls.hosts</code>. </li>
+<li>Click on the <code>Edit YAML</code> tab and add your <code>FQDN</code> to <code>nginx-ingress.ingress.hosts</code> and <code>nginx-ingress.ingress.tls.hosts</code>.</li>
 </ol>
 </li>
 <li>Click on <code>Install</code> on the bottom right of the window.</li>
@@ -3465,8 +3470,8 @@ helm install nginx ingress-nginx/ingress-nginx
 <p>To access the setup from a browser or another VM, we need to change the ingress class annotation from <code>kubernetes.io/ingress.class: nginx</code> to <code>kubernetes.io/ingress.class: public</code> e.g., for the specific component you want to access publicly in the browser;</p>
 <ul>
 <li>Navigate through the SUSE Rancher UI to <code>Service Discovery</code> -&gt; <code>Ingresses</code></li>
-<li>Choose the <code>ingress</code> for the targeted component. For example <code>gluu-nginx-ingress-auth-server</code> for <code>auth-server</code> </li>
-<li>Click on the three dots in the top right corner </li>
+<li>Choose the <code>ingress</code> for the targeted component. For example <code>gluu-nginx-ingress-auth-server</code> for <code>auth-server</code></li>
+<li>Click on the three dots in the top right corner</li>
 <li>Click on <code>Edit Yaml</code></li>
 <li>On line 8, change the <code>kubernetes.io/ingress.class</code> annotation value from <code>nginx</code> to <code>public</code></li>
 <li>Click <code>Save</code></li>
@@ -3503,13 +3508,13 @@ helm install nginx ingress-nginx/ingress-nginx
 <p><img width="1077" alt="Screenshot 2022-07-26 at 15 51 58" src="https://user-images.githubusercontent.com/17182751/181010315-b900bfba-5863-40aa-b791-e7711a69675d.png"></p>
 <h2 id="testing-casa">Testing Casa<a class="headerlink" href="#testing-casa" title="Permanent link">#</a></h2>
 <p>Jans Casa ("Casa") is a self-service web portal for managing account security preferences. The primary use case for Casa is self-service 2FA, but other use cases and functionalities can be supported via Casa plugins.</p>
-<p>Although you have not enabled two-factor authentication yet, you should still be able to login to Casa as the admin user and the password is the one you set during installation. </p>
+<p>Although you have not enabled two-factor authentication yet, you should still be able to login to Casa as the admin user and the password is the one you set during installation.</p>
 <p>Point your browser to <code>https://demoexample.gluu.org/jans-casa</code> and you should be welcomed by the Casa login page as shown below.</p>
 <p><img width="1503" alt="Screenshot 2022-07-06 at 22 39 49" src="https://user-images.githubusercontent.com/17182751/177629838-20b3140f-3d28-4b63-a275-c8ce54f6a096.png"></p>
 <p>After logging in, you'll be welcomed by the home page as shown below.</p>
 <p><img alt="Screenshot 2022-08-24 at 19 13 24" src="https://user-images.githubusercontent.com/17182751/186470113-9955cfa3-8364-4248-9be1-7d51c94a2633.png" /></p>
 <h2 id="enabling-two-factor-authentication">Enabling Two-Factor Authentication<a class="headerlink" href="#enabling-two-factor-authentication" title="Permanent link">#</a></h2>
-<p>In this part, we are going to enable two standard authentication mechanisms: OTP and FIDO. </p>
+<p>In this part, we are going to enable two standard authentication mechanisms: OTP and FIDO.</p>
 <p>This can be done through the admin UI. 2FA can be turned on by clicking the switch in the Second Factor Authentication widget. By default, you will be able to choose from a few 2FA policies:</p>
 <ul>
 <li>Always (upon every login attempt)</li>
@@ -3991,7 +3996,7 @@ docker run -dit -p 8111:80 \
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="January 2, 2026 04:18:57 UTC"><span class="timeago" datetime="2026-01-02T04:18:57+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="January 2, 2026 04:18:57 UTC">2026-01-02</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="January 6, 2026 11:07:54 UTC"><span class="timeago" datetime="2026-01-06T11:07:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="January 6, 2026 11:07:54 UTC">2026-01-06</span>
   </span>
 
     

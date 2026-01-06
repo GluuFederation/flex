@@ -2910,7 +2910,7 @@ of Gluu Flex on SUSE Linux distributions</p>
 </code></pre></div></p>
 </li>
 </ul>
-<p>Verify integrity of the downloaded package by verifying published <code>sha256sum</code>.  </p>
+<p>Verify integrity of the downloaded package by verifying published <code>sha256sum</code>.</p>
 <ul>
 <li>Go to the <a href="https://github.com/gluufederation/flex/releases">Flex Project Releases page</a> and copy the <code>sha256sum</code> value for the <code>flex-replace-flex-version-stable.suse15.x86_64.rpm</code> file:</li>
 <li>Replace <code>paste-release-sha256sum</code> in the command below with the actual checksum you copied from the release page, and run the following command:
@@ -2957,9 +2957,9 @@ This should be the SSA or file that was acquired as part of <a href="#prerequisi
 </code></pre></div></li>
 </ul>
 <h2 id="enabling-https">Enabling HTTPS<a class="headerlink" href="#enabling-https" title="Permanent link">#</a></h2>
-<p>To enable communication with Janssen Server over TLS (https) in a production 
-environment, Janssen Server needs details about CA certificate. Update the 
-HTTPS cofiguration file <code>https_jans.conf</code> as shown below:</p>
+<p>To enable communication with Janssen Server over TLS (https) in a production
+environment, Janssen Server needs details about CA certificate. Update the
+HTTPS configuration file <code>https_jans.conf</code> as shown below:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Want to use <code>Let's Encrypt</code> to get a certificate? Follow <a href="../../../openbanking/install-vm/#importing-the-ca-certificate-in-jvm-truststore-and-signing-encryption-keys-into-auth-server-keystore">this guide</a>.</p>
@@ -3078,7 +3078,7 @@ Removing<span class="w"> </span>/etc/apache2/vhosts.d/_https_jans.conf
 <p>You should see the package with:
 <div class="highlight"><pre><span></span><code>sudo rpm -qa | grep flex
 </code></pre></div></p>
-<p>Remove package with: 
+<p>Remove package with:
 <div class="highlight"><pre><span></span><code>sudo zypper remove flex
 </code></pre></div></p>
 <h3 id="updating-admin-ui">Updating Admin UI<a class="headerlink" href="#updating-admin-ui" title="Permanent link">#</a></h3>
@@ -3107,7 +3107,7 @@ Removing<span class="w"> </span>/etc/apache2/vhosts.d/_https_jans.conf
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="January 2, 2026 04:18:57 UTC"><span class="timeago" datetime="2026-01-02T04:18:57+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="January 2, 2026 04:18:57 UTC">2026-01-02</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="January 6, 2026 11:07:54 UTC"><span class="timeago" datetime="2026-01-06T11:07:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="January 6, 2026 11:07:54 UTC">2026-01-06</span>
   </span>
 
     
