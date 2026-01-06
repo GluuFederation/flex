@@ -1,9 +1,30 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, type ChangeEvent, type ReactElement } from 'react'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { Col, InputGroup, CustomInput, FormGroup, Button } from 'Components'
 import { ThemeContext } from 'Context/theme/themeContext'
+import { type DropdownOption } from '../AuthN/helper/acrUtils'
+
+interface PutData {
+  value: string | string[]
+  path: string
+  op: 'replace'
+}
+
+interface DefaultAcrInputProps {
+  label: string
+  name: string
+  value?: string
+  required?: boolean
+  lsize?: number
+  rsize?: number
+  isArray?: boolean
+  handler: (put: PutData) => void
+  options: (DropdownOption | string)[]
+  path: string
+  showSaveButtons?: boolean
+}
 
 function DefaultAcrInput({
   label,
@@ -17,49 +38,50 @@ function DefaultAcrInput({
   options,
   path,
   showSaveButtons = true,
-}) {
+}: DefaultAcrInputProps): ReactElement {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const selectedTheme = theme?.state?.theme || 'light'
   const VALUE = 'value'
   const PATH = 'path'
   const [show, setShow] = useState(false)
-  const [correctValue, setCorrectValue] = useState([])
-  const [data, setData] = useState(value)
+  const [correctValue, setCorrectValue] = useState<string[]>([])
+  const [data, setData] = useState<string | undefined>(value)
 
   useEffect(() => {
     setData(value)
   }, [value])
 
-  const onValueChanged = (data) => {
+  const onValueChanged = (newData: string): void => {
     setShow(true)
-    setData(data)
+    setData(newData)
 
-    if (!showSaveButtons && data) {
-      const put = {}
-      put[PATH] = path
-      put[VALUE] = isArray ? (Array.isArray(data) ? data : [data]) : data
-      put['op'] = 'replace'
+    if (!showSaveButtons && newData) {
+      const put: PutData = {
+        [PATH]: path,
+        [VALUE]: isArray ? (Array.isArray(newData) ? newData : [newData]) : newData,
+        op: 'replace',
+      }
       handler(put)
       setShow(false)
     }
   }
-  const onAccept = () => {
-    const put = {}
-    put[PATH] = path
-    if (isArray) {
-      put[VALUE] = correctValue
-    } else {
-      put[VALUE] = data
+
+  const onAccept = (): void => {
+    const put: PutData = {
+      [PATH]: path,
+      [VALUE]: isArray ? correctValue : (data ?? ''),
+      op: 'replace',
     }
-    put['op'] = 'replace'
     handler(put)
     setShow(!show)
   }
-  const onCancel = () => {
+
+  const onCancel = (): void => {
     setCorrectValue([])
     setShow(!show)
   }
+
   return (
     <FormGroup row>
       <Col sm={10}>
@@ -80,7 +102,7 @@ function DefaultAcrInput({
                 id={name}
                 name={name}
                 value={data}
-                onChange={(e) => {
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => {
                   onValueChanged(e.target.value)
                 }}
               >
