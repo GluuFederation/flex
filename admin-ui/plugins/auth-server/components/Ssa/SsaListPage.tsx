@@ -59,6 +59,7 @@ const SSAListPage: React.FC = () => {
     mutation: {
       onError: (error) => {
         console.error('Failed to revoke SSA:', error)
+        dispatch(updateToast(true, 'error', t('messages.error_in_saving')))
       },
     },
   })
