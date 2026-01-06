@@ -1,8 +1,6 @@
-import React, { useEffect, useContext, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useEffect, useContext, useMemo, ReactElement } from 'react'
 import { Container, Row, Col, Card, CardBody } from 'Components'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
-import { getDatabaseInfo } from '../../redux/features/persistenceTypeSlice'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
@@ -13,15 +11,22 @@ import customColors from '@/customColors'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { useGetPropertiesPersistence } from 'JansConfigApi'
 
-function PersistenceDetail() {
-  const { databaseInfo, databaseInfoLoading } = useSelector((state) => state.persistenceTypeReducer)
-  const dispatch = useDispatch()
+interface DatabaseField {
+  key: string
+  label: string
+  tooltip: string
+  value: string | undefined
+}
+
+function PersistenceDetail(): ReactElement | null {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const selectedTheme = theme?.state?.theme || 'darkBlue'
   const themeColors = getThemeColor(selectedTheme)
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
+
   const persistenceResourceId = useMemo(() => ADMIN_UI_RESOURCES.Persistence, [])
   const persistenceScopes = useMemo(
     () => CEDAR_RESOURCE_SCOPES[persistenceResourceId],
@@ -34,6 +39,12 @@ function PersistenceDetail() {
 
   SetTitle(t('menus.persistence'))
 
+  const { data: persistenceData, isLoading: databaseInfoLoading } = useGetPropertiesPersistence({
+    query: { staleTime: 30000, enabled: canReadPersistence },
+  })
+
+  const databaseInfo = persistenceData || {}
+
   const labelStyle = {
     color: themeColors.fontColor,
   }
@@ -44,7 +55,7 @@ function PersistenceDetail() {
     borderColor: themeColors.fontColor + '40',
   }
 
-  const databaseFields = [
+  const databaseFields: DatabaseField[] = [
     {
       key: 'databaseName',
       label: 'fields.database_name',
@@ -83,7 +94,7 @@ function PersistenceDetail() {
     },
   ]
 
-  const renderDatabaseField = (field) => (
+  const renderDatabaseField = (field: DatabaseField): ReactElement => (
     <Col sm={6} key={field.key}>
       <GluuTooltip doc_category={t(field.tooltip)} doc_entry={field.tooltip} isDirect={true}>
         <div className="mb-3">
@@ -99,12 +110,6 @@ function PersistenceDetail() {
   useEffect(() => {
     authorizeHelper(persistenceScopes)
   }, [authorizeHelper, persistenceScopes])
-
-  useEffect(() => {
-    if (canReadPersistence) {
-      dispatch(getDatabaseInfo())
-    }
-  }, [canReadPersistence, dispatch])
 
   if (!canReadPersistence) {
     return null

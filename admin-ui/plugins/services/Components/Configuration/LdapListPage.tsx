@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useContext, useCallback, useMemo, ReactElement } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useCedarling, ADMIN_UI_RESOURCES, CEDAR_RESOURCE_SCOPES } from '@/cedarling'
 import { Badge } from 'reactstrap'
 import { Paper } from '@mui/material'
@@ -13,38 +13,68 @@ import LdapDetailPage from './LdapDetailPage'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import Alert from '@mui/material/Alert'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
-import { buildPayload } from 'Utils/PermChecker'
-import {
-  getLdapConfig,
-  setCurrentItem,
-  deleteLdap,
-  testLdap,
-  resetTestLdap,
-} from 'Plugins/services/redux/features/ldapSlice'
-import { getPersistenceType } from 'Plugins/services/redux/features/persistenceTypeSlice'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import customColors from '@/customColors'
 import { getPagingSize } from '@/utils/pagingUtils'
+import { useSetAtom } from 'jotai'
+import { useQueryClient } from '@tanstack/react-query'
+import { updateToast } from 'Redux/features/toastSlice'
+import {
+  useGetConfigDatabaseLdap,
+  useDeleteConfigDatabaseLdapByName,
+  usePostConfigDatabaseLdapTest,
+  useGetPropertiesPersistence,
+  getGetConfigDatabaseLdapQueryKey,
+  type GluuLdapConfiguration,
+} from 'JansConfigApi'
+import { currentLdapItemAtom } from './atoms'
+import { useLdapAudit } from './hooks'
+import type { PersistenceInfo } from './types'
 
-function LdapListPage() {
+interface AlertState {
+  severity: 'success' | 'error' | 'warning' | 'info' | ''
+  message: string
+  show: boolean
+}
+
+interface ActionObject {
+  icon: string | (() => ReactElement)
+  iconProps?: Record<string, unknown>
+  tooltip: string
+  onClick: (event: React.MouseEvent, rowData: GluuLdapConfiguration | GluuLdapConfiguration[]) => void
+  disabled?: boolean
+  isFreeAction?: boolean
+}
+
+type ActionType = ActionObject | ((rowData: GluuLdapConfiguration) => ActionObject)
+
+function LdapListPage(): ReactElement {
   const {
     hasCedarReadPermission,
     hasCedarWritePermission,
     hasCedarDeletePermission,
     authorizeHelper,
   } = useCedarling()
-  const ldapConfigurations = useSelector((state) => state.ldapReducer.ldap)
-  const loading = useSelector((state) => state.ldapReducer.loading)
-  const testStatus = useSelector((state) => state.ldapReducer.testStatus)
-  const persistenceType = useSelector((state) => state.persistenceTypeReducer.type)
-  const persistenceTypeLoading = useSelector((state) => state.persistenceTypeReducer.loading)
 
   const dispatch = useDispatch()
   const { navigateToRoute, navigateBack } = useAppNavigation()
   const { t } = useTranslation()
+  const queryClient = useQueryClient()
+  const setCurrentLdapItem = useSetAtom(currentLdapItemAtom)
+  const { logLdapDelete } = useLdapAudit()
+
+  const { data: ldapConfigurations, isLoading: loading } = useGetConfigDatabaseLdap({
+    query: { staleTime: 30000 },
+  })
+
+  const { data: persistenceData, isLoading: persistenceTypeLoading } = useGetPropertiesPersistence({
+    query: { staleTime: 30000 },
+  })
+
+  const persistenceType = (persistenceData as PersistenceInfo | undefined)?.persistenceType
 
   const persistenceResourceId = useMemo(() => ADMIN_UI_RESOURCES.Persistence, [])
   const persistenceScopes = useMemo(
@@ -69,45 +99,68 @@ function LdapListPage() {
     authorizeHelper(persistenceScopes)
   }, [authorizeHelper, persistenceScopes])
 
-  useEffect(() => {
-    dispatch(getLdapConfig())
-    dispatch(getPersistenceType())
-  }, [dispatch])
-
-  // State for managing actions and UI
-  const [myActions, setMyActions] = useState([])
-  const [item, setItem] = useState({})
+  const [myActions, setMyActions] = useState<ActionType[]>([])
+  const [item, setItem] = useState<GluuLdapConfiguration>({})
   const [modal, setModal] = useState(false)
   const [testRunning, setTestRunning] = useState(false)
-  const [alertObj, setAlertObj] = useState({
+  const [alertObj, setAlertObj] = useState<AlertState>({
     severity: '',
     message: '',
     show: false,
   })
 
-  // Theme and styling
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const selectedTheme = theme?.state?.theme || 'darkBlue'
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
 
-  // Constants
-  const userAction = {}
   const pageSize = getPagingSize()
 
   SetTitle(t('titles.ldap_authentication'))
 
-  // Navigation handlers
+  const deleteMutation = useDeleteConfigDatabaseLdapByName({
+    mutation: {
+      onSuccess: () => {
+        dispatch(updateToast(true, 'success'))
+        queryClient.invalidateQueries({ queryKey: getGetConfigDatabaseLdapQueryKey() })
+      },
+      onError: () => {
+        dispatch(updateToast(true, 'danger'))
+      },
+    },
+  })
+
+  const testMutation = usePostConfigDatabaseLdapTest({
+    mutation: {
+      onSuccess: () => {
+        setAlertObj({
+          severity: 'success',
+          message: t('messages.ldap_connection_success'),
+          show: true,
+        })
+        setTestRunning(false)
+      },
+      onError: () => {
+        setAlertObj({
+          severity: 'error',
+          message: t('messages.ldap_connection_error'),
+          show: true,
+        })
+        setTestRunning(false)
+      },
+    },
+  })
+
   const handleGoToLdapEditPage = useCallback(
-    (row) => {
+    (row: GluuLdapConfiguration) => {
       if (!row?.configId) return
-      dispatch(setCurrentItem({ item: row }))
+      setCurrentLdapItem(row)
       navigateToRoute(ROUTES.LDAP_EDIT(row.configId))
     },
-    [dispatch, navigateToRoute],
+    [setCurrentLdapItem, navigateToRoute],
   )
 
-  const handleLdapDelete = useCallback((row) => {
+  const handleLdapDelete = useCallback((row: GluuLdapConfiguration) => {
     setItem(row)
     toggle()
   }, [])
@@ -116,21 +169,23 @@ function LdapListPage() {
     navigateToRoute(ROUTES.LDAP_ADD)
   }, [navigateToRoute])
 
-  const toggle = useCallback(() => setModal(!modal), [modal])
+  const toggle = useCallback(() => setModal((prev) => !prev), [])
 
-  // Build actions based on permissions
   useEffect(() => {
-    const actions = []
+    const actions: ActionType[] = []
 
     if (canWriteLdap) {
-      actions.push((rowData) => ({
+      actions.push((rowData: GluuLdapConfiguration) => ({
         icon: 'edit',
         iconProps: {
           id: 'editLdap' + rowData.configId,
           style: { color: customColors.darkGray },
         },
-        tooltip: `${t('tooltips.edit_ldap')}`,
-        onClick: (event, rowData) => handleGoToLdapEditPage(rowData),
+        tooltip: t('tooltips.edit_ldap'),
+        onClick: (_event: React.MouseEvent, data: GluuLdapConfiguration | GluuLdapConfiguration[]) => {
+          const row = Array.isArray(data) ? data[0] : data
+          handleGoToLdapEditPage(row)
+        },
         disabled: !canWriteLdap,
       }))
     }
@@ -138,25 +193,28 @@ function LdapListPage() {
     if (canReadLdap) {
       actions.push({
         icon: 'refresh',
-        tooltip: `${t('tooltips.refresh_data')}`,
+        tooltip: t('tooltips.refresh_data'),
         iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
         isFreeAction: true,
         onClick: () => {
-          dispatch(getLdapConfig())
+          queryClient.invalidateQueries({ queryKey: getGetConfigDatabaseLdapQueryKey() })
         },
       })
     }
 
     if (canDeleteLdap) {
-      actions.push((rowData) => ({
+      actions.push((rowData: GluuLdapConfiguration) => ({
         icon: () => <DeleteOutlined />,
         iconProps: {
           color: 'secondary',
           id: 'deleteLdap' + rowData.configId,
           style: { color: customColors.darkGray },
         },
-        tooltip: `${t('tooltips.delete_record')}`,
-        onClick: (event, rowData) => handleLdapDelete(rowData),
+        tooltip: t('tooltips.delete_record'),
+        onClick: (_event: React.MouseEvent, data: GluuLdapConfiguration | GluuLdapConfiguration[]) => {
+          const row = Array.isArray(data) ? data[0] : data
+          handleLdapDelete(row)
+        },
         disabled: !canDeleteLdap,
       }))
     }
@@ -164,27 +222,27 @@ function LdapListPage() {
     if (canWriteLdap) {
       actions.push({
         icon: 'add',
-        tooltip: `${t('tooltips.add_ldap')}`,
+        tooltip: t('tooltips.add_ldap'),
         iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
         isFreeAction: true,
         onClick: () => handleGoToLdapAddPage(),
       })
     }
 
-    setMyActions(actions)
+    setMyActions(actions as ActionType[])
   }, [
     canReadLdap,
     canWriteLdap,
     canDeleteLdap,
     t,
-    dispatch,
+    queryClient,
     handleGoToLdapEditPage,
     handleLdapDelete,
     handleGoToLdapAddPage,
   ])
 
   const getBadgeTheme = useCallback(
-    (status) => {
+    (status: boolean | undefined) => {
       if (status) {
         return `primary-${selectedTheme}`
       } else {
@@ -195,102 +253,82 @@ function LdapListPage() {
   )
 
   const onDeletionConfirmed = useCallback(
-    (message) => {
-      buildPayload(userAction, message, item.configId)
-      dispatch(deleteLdap({ configId: item.configId }))
+    async (message: string) => {
+      if (item.configId) {
+        try {
+          await deleteMutation.mutateAsync({ name: item.configId })
+          await logLdapDelete(item.configId, message)
+        } catch (error) {
+          console.error('Failed to delete LDAP config:', error)
+        }
+      }
       navigateBack(ROUTES.LDAP_LIST)
       toggle()
     },
-    [item.configId, navigateBack, toggle, dispatch],
+    [item.configId, navigateBack, toggle, deleteMutation, logLdapDelete],
   )
 
   const testLdapConnect = useCallback(
-    (row) => {
-      const testPromise = new Promise(function (resolve) {
-        setAlertObj({ ...alertObj, show: false })
-        dispatch(resetTestLdap())
-        resolve()
-      })
-
-      testPromise.then(() => {
-        setTestRunning(true)
-        dispatch(testLdap({ data: row }))
-      })
+    (row: GluuLdapConfiguration) => {
+      setAlertObj({ severity: '', message: '', show: false })
+      setTestRunning(true)
+      testMutation.mutate({ data: row })
     },
-    [alertObj, dispatch],
+    [testMutation],
   )
 
   useEffect(() => {
-    dispatch(resetTestLdap())
-    setAlertObj({ ...alertObj, show: false })
+    setAlertObj({ severity: '', message: '', show: false })
   }, [])
 
-  useEffect(() => {
-    if (testStatus === null || !testRunning) {
-      return
-    }
-
-    if (testStatus) {
-      setAlertObj({
-        ...alertObj,
-        severity: 'success',
-        message: `${t('messages.ldap_connection_success')}`,
-        show: true,
-      })
-    } else {
-      setAlertObj({
-        ...alertObj,
-        severity: 'error',
-        message: `${t('messages.ldap_connection_error')}`,
-        show: true,
-      })
-    }
-  }, [testStatus])
-
-  // MaterialTable options
   const tableOptions = {
     search: true,
     selection: false,
     pageSize: pageSize,
-    headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
+    headerStyle: {
+      ...applicationStyle.tableHeaderStyle,
+      ...bgThemeColor,
+      textTransform: 'uppercase' as const,
+    },
     actionsColumnIndex: -1,
   }
 
-  // Container and DetailPanel components
-  const PaperContainer = useCallback((props) => <Paper {...props} elevation={0} />, [])
+  const PaperContainer = useCallback((props: Record<string, unknown>) => <Paper {...props} elevation={0} />, [])
 
   const DetailPanel = useCallback(
-    (rowData) => {
+    (rowData: { rowData: GluuLdapConfiguration }) => {
       return <LdapDetailPage row={rowData.rowData} testLdapConnection={testLdapConnect} />
     },
     [testLdapConnect],
   )
 
+  const isLoading = loading || deleteMutation.isPending || testMutation.isPending
+
   return (
     <Card style={applicationStyle.mainCard}>
       <CardBody>
         <GluuLoader blocking={persistenceTypeLoading}>
-          {persistenceType == `ldap` ? (
+          {persistenceType === 'ldap' ? (
             <MaterialTable
               components={{
                 Container: PaperContainer,
               }}
               columns={[
-                { title: `${t('fields.configuration_id')}`, field: 'configId' },
-                { title: `${t('fields.bind_dn')}`, field: 'bindDN' },
+                { title: t('fields.configuration_id'), field: 'configId' },
+                { title: t('fields.bind_dn'), field: 'bindDN' },
                 {
-                  title: `${t('fields.status')}`,
+                  title: t('fields.status'),
                   field: 'enabled',
                   type: 'boolean',
-                  render: (rowData) => (
+                  render: (rowData: GluuLdapConfiguration) => (
                     <Badge color={getBadgeTheme(rowData.enabled)}>
-                      {rowData.enabled ? `${t('fields.enable')}` : `${t('fields.disable')}`}
+                      {rowData.enabled ? t('fields.enable') : t('fields.disable')}
                     </Badge>
                   ),
                 },
               ]}
-              data={ldapConfigurations?.length ? ldapConfigurations : []}
-              isLoading={loading}
+              data={Array.isArray(ldapConfigurations) ? ldapConfigurations : []}
+              isLoading={isLoading}
               title=""
               actions={myActions}
               options={tableOptions}

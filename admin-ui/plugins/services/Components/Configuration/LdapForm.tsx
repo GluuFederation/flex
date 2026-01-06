@@ -1,5 +1,5 @@
-import React, { useContext, useState, useEffect } from 'react'
-import { useFormik } from 'formik'
+import React, { useContext, useState, useEffect, ReactElement } from 'react'
+import { useFormik, FormikContextType } from 'formik'
 import * as Yup from 'yup'
 import { Col, InputGroup, Form, FormGroup, Input } from 'Components'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
@@ -10,49 +10,80 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { LDAP } from 'Utils/ApiResources'
-import { testLdap, resetTestLdap } from 'Plugins/services/redux/features/ldapSlice'
 import { ThemeContext } from 'Context/theme/themeContext'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { updateToast } from 'Redux/features/toastSlice'
 import customColors from '@/customColors'
+import { usePostConfigDatabaseLdapTest } from 'JansConfigApi'
+import type { GluuLdapConfiguration } from 'JansConfigApi'
 
-function LdapForm({ item, handleSubmit, createLdap }) {
+interface LdapFormProps {
+  item: GluuLdapConfiguration
+  handleSubmit: (data: { ldap: GluuLdapConfiguration } | GluuLdapConfiguration) => void
+  createLdap?: boolean
+  isLoading?: boolean
+}
+
+interface ServerItem {
+  servers?: string
+}
+
+interface BaseDnItem {
+  baseDNs?: string
+}
+
+function LdapForm({ item, handleSubmit, createLdap, isLoading = false }: LdapFormProps): ReactElement {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
-  function toogle() {
+  const selectedTheme = theme?.state?.theme || 'darkBlue'
+
+  function toogle(): void {
     if (!init) {
       setInit(true)
     }
   }
 
-  const loading = useSelector((state) => state.ldapReducer.loading)
-  const testStatus = useSelector((state) => state.ldapReducer.testStatus)
+  const testMutation = usePostConfigDatabaseLdapTest({
+    mutation: {
+      onSuccess: () => {
+        dispatch(updateToast(true, 'success', t('messages.ldap_connection_success')))
+      },
+      onError: () => {
+        dispatch(updateToast(true, 'error', t('messages.ldap_connection_error')))
+      },
+    },
+  })
 
-  function toggle() {
+  function toggle(): void {
     setModal(!modal)
   }
-  function submitForm() {
+
+  function submitForm(): void {
     toggle()
-    document.getElementsByClassName('UserActionSubmitButton')[0].click()
+    const submitButton = document.getElementsByClassName('UserActionSubmitButton')[0] as HTMLElement
+    if (submitButton) {
+      submitButton.click()
+    }
   }
+
   const formik = useFormik({
     initialValues: {
-      configId: item.configId,
-      bindDN: item.bindDN,
-      bindPassword: item.bindPassword,
-      servers: item.servers,
-      maxConnections: item.maxConnections,
-      useSSL: item.useSSL,
-      baseDNs: item.baseDNs,
-      primaryKey: item.primaryKey,
-      localPrimaryKey: item.localPrimaryKey,
-      enabled: item.enabled,
-      level: item.level,
+      configId: item.configId || '',
+      bindDN: item.bindDN || '',
+      bindPassword: item.bindPassword || '',
+      servers: item.servers || [],
+      maxConnections: item.maxConnections || 2,
+      useSSL: item.useSSL || false,
+      baseDNs: item.baseDNs || [],
+      primaryKey: item.primaryKey || '',
+      localPrimaryKey: item.localPrimaryKey || '',
+      enabled: item.enabled || false,
+      level: item.level || 0,
     },
+    enableReinitialize: true,
     validationSchema: Yup.object({
       configId: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
       bindDN: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
@@ -65,44 +96,40 @@ function LdapForm({ item, handleSubmit, createLdap }) {
       localPrimaryKey: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
     }),
     onSubmit: (values) => {
-      values.servers = values.servers.map((ele) => (ele.servers ? ele.servers : ele))
-      values.baseDNs = values.baseDNs.map((ele) => (ele.baseDNs ? ele.baseDNs : ele))
+      const servers = values.servers.map((ele: string | ServerItem) =>
+        typeof ele === 'object' && ele.servers ? ele.servers : ele,
+      ) as string[]
+      const baseDNs = values.baseDNs.map((ele: string | BaseDnItem) =>
+        typeof ele === 'object' && ele.baseDNs ? ele.baseDNs : ele,
+      ) as string[]
 
-      const result = Object.assign(item, values)
+      const result: GluuLdapConfiguration = {
+        ...item,
+        ...values,
+        servers,
+        baseDNs,
+      }
+
       handleSubmit(createLdap ? { ldap: result } : result)
     },
   })
 
-  function checkLdapConnection() {
-    const testPromise = new Promise(function (resolve) {
-      dispatch(resetTestLdap())
-      resolve()
-    })
-
-    testPromise.then(() => {
-      dispatch(testLdap({ data: formik.values }))
-    })
+  function checkLdapConnection(): void {
+    const testData: GluuLdapConfiguration = {
+      ...formik.values,
+      servers: formik.values.servers.map((ele: string | ServerItem) =>
+        typeof ele === 'object' && ele.servers ? ele.servers : ele,
+      ) as string[],
+      baseDNs: formik.values.baseDNs.map((ele: string | BaseDnItem) =>
+        typeof ele === 'object' && ele.baseDNs ? ele.baseDNs : ele,
+      ) as string[],
+    }
+    testMutation.mutate({ data: testData })
   }
-
-  useEffect(() => {
-    dispatch(resetTestLdap())
-  }, [])
-
-  useEffect(() => {
-    if (testStatus === null) {
-      return
-    }
-
-    if (testStatus) {
-      dispatch(updateToast(true, 'success', `${t('messages.ldap_connection_success')}`))
-    } else {
-      dispatch(updateToast(true, 'error', `${t('messages.ldap_connection_error')}`))
-    }
-  }, [testStatus])
 
   return (
     <Form onSubmit={formik.handleSubmit}>
-      <GluuLoader blocking={loading}>
+      <GluuLoader blocking={isLoading || testMutation.isPending}>
         <FormGroup row>
           <Col sm={12} className="text-end">
             <button
@@ -235,18 +262,16 @@ function LdapForm({ item, handleSubmit, createLdap }) {
             <GluuTypeAhead
               name="servers"
               label="fields.remote_ldap_server_post"
-              formik={formik}
+              formik={formik as FormikContextType<unknown>}
               required={true}
               options={['localhost:1636']}
               doc_category={LDAP}
               doc_entry="servers"
               value={item.servers}
-              valid={!formik.errors.servers && !formik.touched.servers && init}
-              onKeyUp={toogle}
-            ></GluuTypeAhead>
+            />
 
             {formik.errors.servers && formik.touched.servers ? (
-              <div style={{ color: customColors.accentRed }}>{formik.errors.servers}</div>
+              <div style={{ color: customColors.accentRed }}>{String(formik.errors.servers)}</div>
             ) : null}
           </Col>
         </FormGroup>
@@ -257,14 +282,13 @@ function LdapForm({ item, handleSubmit, createLdap }) {
               label="fields.base_dns"
               doc_category={LDAP}
               doc_entry="base_dns"
-              formik={formik}
+              formik={formik as FormikContextType<unknown>}
               options={[]}
               required={true}
-              onKeyUp={toogle}
               value={item.baseDNs}
-            ></GluuTypeAhead>
+            />
             {formik.errors.baseDNs && formik.touched.baseDNs ? (
-              <div style={{ color: customColors.accentRed }}>{formik.errors.baseDNs}</div>
+              <div style={{ color: customColors.accentRed }}>{String(formik.errors.baseDNs)}</div>
             ) : null}
           </Col>
         </FormGroup>
@@ -328,10 +352,7 @@ function LdapForm({ item, handleSubmit, createLdap }) {
           </Col>
         </FormGroup>
 
-        <FormGroup row>
-          {' '}
-          <Input type="hidden" id="moduleProperties" defaultValue={item.moduleProperties} />
-        </FormGroup>
+        <FormGroup row> </FormGroup>
         <FormGroup row></FormGroup>
         <GluuCommitFooter saveHandler={toggle} />
         <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} formik={formik} />

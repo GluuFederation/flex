@@ -1,12 +1,17 @@
-import React from 'react'
+import React, { ReactElement } from 'react'
 import { FormGroup, Card, Col, CardBody } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import { CACHE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
-import PropTypes from 'prop-types'
+import type { FormikProps } from 'formik'
+import type { CacheFormValues } from './types'
 
-function CacheNative({ formik }) {
+interface CacheNativeProps {
+  formik: FormikProps<CacheFormValues>
+}
+
+function CacheNative({ formik }: CacheNativeProps): ReactElement {
   const { t } = useTranslation()
   return (
     <Card>
@@ -51,6 +56,3 @@ function CacheNative({ formik }) {
 }
 
 export default CacheNative
-CacheNative.propTypes = {
-  formik: PropTypes.object,
-}

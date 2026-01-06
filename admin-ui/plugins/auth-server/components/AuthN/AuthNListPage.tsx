@@ -8,7 +8,6 @@ import React, {
 } from 'react'
 import MaterialTable, { type Action, type Column } from '@material-table/core'
 import { Paper } from '@mui/material'
-import { useSelector, useDispatch } from 'react-redux'
 import { useSetAtom } from 'jotai'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useCedarling } from '@/cedarling'
@@ -22,8 +21,8 @@ import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import AuthNDetailPage from './AuthNDetailPage'
-import { getLdapConfig } from 'Plugins/services/redux/features/ldapSlice'
 import { useCustomScriptsByType } from 'Plugins/admin/components/CustomScripts/hooks'
+import { useGetConfigDatabaseLdap } from 'JansConfigApi'
 import { DEFAULT_SCRIPT_TYPE } from 'Plugins/admin/components/CustomScripts/constants'
 import { currentAuthNItemAtom, type AuthNItem } from './atoms'
 import { BUILT_IN_ACRS } from './constants'
@@ -40,17 +39,9 @@ interface ListState {
   scripts: AuthNItem[]
 }
 
-interface RootState {
-  ldapReducer: {
-    ldap: AuthNItem[]
-    loading: boolean
-  }
-}
-
 function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement {
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
   const { t } = useTranslation()
-  const dispatch = useDispatch()
   const setCurrentItem = useSetAtom(currentAuthNItemAtom)
   const [myActions, setMyActions] = useState<
     Array<Action<AuthNItem> | ((rowData: AuthNItem) => Action<AuthNItem>)>
@@ -66,8 +57,11 @@ function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
     scripts: [],
   })
 
-  const ldap = useSelector((state: RootState) => state.ldapReducer.ldap)
-  const loading = useSelector((state: RootState) => state.ldapReducer.loading)
+  const { data: ldapData, isLoading: ldapLoading } = useGetConfigDatabaseLdap({
+    query: { staleTime: 30000 },
+  })
+  const ldap = (ldapData || []) as AuthNItem[]
+  const loading = ldapLoading
 
   // Fetch ACR config using Orval hook
   const { data: acrs, isLoading: acrsLoading } = useGetAcrs({
@@ -105,8 +99,7 @@ function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
 
   useEffect(() => {
     authorizeHelper(authNScopes)
-    dispatch(getLdapConfig())
-  }, [authorizeHelper, authNScopes, dispatch])
+  }, [authorizeHelper, authNScopes])
 
   // Actions as state that will rebuild when permissions change
   useEffect(() => {

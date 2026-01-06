@@ -7,16 +7,6 @@ import SqlListPage from './Components/Configuration/SqlListPage'
 import SqlAddPage from './Components/Configuration/SqlAddPage'
 import SqlEditPage from './Components/Configuration/SqlEditPage'
 import PersistenceDetail from './Components/Configuration/PersistenceDetail'
-import { reducer as cacheReducer } from './redux/features/cacheSlice'
-import { reducer as couchbaseReducer } from './redux/features/couchbaseSlice'
-import { reducer as ldapReducer } from './redux/features/ldapSlice'
-import { reducer as sqlReducer } from './redux/features/sqlSlice'
-import { reducer as persistenceTypeReducer } from './redux/features/persistenceTypeSlice'
-import cacheSaga from './redux/sagas/CacheSaga'
-import couchbaseSaga from './redux/sagas/CouchbaseSaga'
-import ldapSaga from './redux/sagas/LdapSaga'
-import sqlSaga from './redux/sagas/SqlSaga'
-import persistenceTypeSaga from './redux/sagas/PersistenceTypeSaga'
 
 import {
   CACHE_READ,
@@ -101,14 +91,8 @@ const pluginMetadata = {
       permission: COUCHBASE_READ,
     },
   ],
-  reducers: [
-    { name: 'cacheReducer', reducer: cacheReducer },
-    { name: 'couchbaseReducer', reducer: couchbaseReducer },
-    { name: 'ldapReducer', reducer: ldapReducer },
-    { name: 'sqlReducer', reducer: sqlReducer },
-    { name: 'persistenceTypeReducer', reducer: persistenceTypeReducer },
-  ],
-  sagas: [cacheSaga(), couchbaseSaga(), ldapSaga(), sqlSaga(), persistenceTypeSaga()],
+  reducers: [],
+  sagas: [],
 }
 
 export default pluginMetadata

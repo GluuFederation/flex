@@ -4,16 +4,16 @@ import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { Container, CardBody, Card } from 'Components'
 import UserForm from './UserForm'
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import { getPersistenceType } from 'Plugins/services/redux/features/persistenceTypeSlice'
-import { UserEditPageState, UserEditFormValues, ModifiedFields } from '../types/ComponentTypes'
+import { UserEditFormValues, ModifiedFields } from '../types/ComponentTypes'
 import { PersonAttribute, CustomUser } from '../types/UserApiTypes'
 import {
   usePutUser,
   getGetUserQueryKey,
   useGetAttributes,
   useRevokeUserSession,
+  useGetPropertiesPersistence,
 } from 'JansConfigApi'
 import { useQueryClient } from '@tanstack/react-query'
 import { updateToast } from 'Redux/features/toastSlice'
@@ -50,13 +50,10 @@ function UserEditPage() {
     [attributesData?.entries],
   )
 
-  useEffect(() => {
-    dispatch(getPersistenceType())
-  }, [dispatch])
-
-  const persistenceType = useSelector(
-    (state: UserEditPageState) => state.persistenceTypeReducer.type,
-  )
+  const { data: persistenceData } = useGetPropertiesPersistence({
+    query: { staleTime: 30000 },
+  })
+  const persistenceType = (persistenceData as { persistenceType?: string } | undefined)?.persistenceType
   const revokeSessionMutation = useRevokeUserSession()
 
   const updateUserMutation = usePutUser({

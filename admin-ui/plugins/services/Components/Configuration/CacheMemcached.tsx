@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, ReactElement } from 'react'
 import { Badge, FormGroup, Card, Col, CardBody, CustomInput } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { CACHE } from 'Utils/ApiResources'
@@ -6,12 +6,19 @@ import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
-import PropTypes from 'prop-types'
+import type { FormikProps } from 'formik'
+import type { MemcachedConfiguration } from 'JansConfigApi'
+import type { CacheFormValues } from './types'
 
-function CacheMemcached({ config, formik }) {
+interface CacheMemcachedProps {
+  config: MemcachedConfiguration
+  formik: FormikProps<CacheFormValues>
+}
+
+function CacheMemcached({ config, formik }: CacheMemcachedProps): ReactElement {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const selectedTheme = theme?.state?.theme || 'darkBlue'
 
   return (
     <Card>
@@ -77,7 +84,3 @@ function CacheMemcached({ config, formik }) {
 }
 
 export default CacheMemcached
-CacheMemcached.propTypes = {
-  formik: PropTypes.object,
-  config: PropTypes.any,
-}

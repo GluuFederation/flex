@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, ReactElement } from 'react'
 import { Col, FormGroup, Input, Card, CardBody, Badge } from 'Components'
 import { COUCHBASE } from 'Utils/ApiResources'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
@@ -6,11 +6,19 @@ import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import customColors from '@/customColors'
+import type { CouchbaseConfiguration } from 'JansConfigApi'
+import type { FormikProps } from 'formik'
 
-function CouchbaseItem({ couchbase, index, formik }) {
+interface CouchbaseItemProps {
+  couchbase: CouchbaseConfiguration
+  index: number
+  formik: FormikProps<CouchbaseConfiguration[]>
+}
+
+function CouchbaseItem({ couchbase, index, formik }: CouchbaseItemProps): ReactElement {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const selectedTheme = theme?.state?.theme || 'darkBlue'
 
   return (
     <Card
@@ -51,8 +59,8 @@ function CouchbaseItem({ couchbase, index, formik }) {
               <GluuLabel label="fields.servers" size={4} />
               <Col sm={8}>
                 {couchbase.servers.length &&
-                  couchbase.servers.map((server, index) => (
-                    <Badge key={index} color={`primary-${selectedTheme}`} className="ms-1">
+                  couchbase.servers.map((server, idx) => (
+                    <Badge key={idx} color={`primary-${selectedTheme}`} className="ms-1">
                       {server}
                     </Badge>
                   ))}
@@ -66,8 +74,8 @@ function CouchbaseItem({ couchbase, index, formik }) {
               <GluuLabel label="fields.buckets" size={4} />
               <Col sm={8}>
                 {couchbase.buckets.length &&
-                  couchbase.buckets.map((bucket, index) => (
-                    <Badge key={index} color={`primary-${selectedTheme}`} className="ms-1">
+                  couchbase.buckets.map((bucket, idx) => (
+                    <Badge key={idx} color={`primary-${selectedTheme}`} className="ms-1">
                       {bucket}
                     </Badge>
                   ))}
@@ -182,7 +190,7 @@ function CouchbaseItem({ couchbase, index, formik }) {
                   id="sslTrustStorePin"
                   name="sslTrustStorePin"
                   disabled
-                  defaultChecked={couchbase.sslTrustStorePin}
+                  defaultValue={couchbase.sslTrustStorePin}
                   onChange={formik.handleChange}
                 />
               </Col>
@@ -198,7 +206,7 @@ function CouchbaseItem({ couchbase, index, formik }) {
                   id="userName"
                   name="userName"
                   disabled
-                  defaultChecked={couchbase.userName}
+                  defaultValue={couchbase.userName}
                   onChange={formik.handleChange}
                 />
               </Col>
@@ -214,7 +222,8 @@ function CouchbaseItem({ couchbase, index, formik }) {
                   id="userPassword"
                   name="userPassword"
                   disabled
-                  defaultChecked={couchbase.userPassword}
+                  type="password"
+                  defaultValue={couchbase.userPassword}
                   onChange={formik.handleChange}
                 />
               </Col>

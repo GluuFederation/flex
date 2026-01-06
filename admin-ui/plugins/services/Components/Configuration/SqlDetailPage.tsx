@@ -1,13 +1,19 @@
-import React, { useContext } from 'react'
+import React, { useContext, ReactElement } from 'react'
 import { Container, Badge, Row, Col, FormGroup, Label } from 'Components'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import customColors from '@/customColors'
+import type { SqlConfiguration } from 'JansConfigApi'
 
-const SqlDetailPage = ({ row }) => {
+interface SqlDetailPageProps {
+  row: SqlConfiguration
+  testSqlConnection?: (row: SqlConfiguration) => void
+}
+
+function SqlDetailPage({ row, testSqlConnection }: SqlDetailPageProps): ReactElement {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const selectedTheme = theme?.state?.theme || 'darkBlue'
 
   return (
     <React.Fragment>
@@ -82,8 +88,22 @@ const SqlDetailPage = ({ row }) => {
             </FormGroup>
           </Col>
         </Row>
+        {testSqlConnection && (
+          <Row>
+            <Col sm={4}>
+              <button
+                onClick={() => testSqlConnection(row)}
+                type="button"
+                className={`btn btn-primary-${selectedTheme} text-center`}
+              >
+                {t('fields.test_connection')}
+              </button>
+            </Col>
+          </Row>
+        )}
       </Container>
     </React.Fragment>
   )
 }
+
 export default SqlDetailPage
