@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import { Accordion, Button } from 'Components'
 import GluuInlineInput from 'Routes/Apps/Gluu/GluuInlineInput'
 import { useTranslation } from 'react-i18next'
@@ -42,24 +42,36 @@ const JsonPropertyBuilderConfigApi = ({
   const { t } = useTranslation()
   const [show, setShow] = useState(true)
 
+  useEffect(() => {
+    setShow(true)
+  }, [propValue])
+
   const path = useMemo(() => {
     if (!initialPath) {
       return `/${propKey}`
     }
+    if (parentIsArray && !isNaN(parseInt(propKey))) {
+      return initialPath
+    }
     return `${initialPath}/${propKey}`
-  }, [initialPath, propKey])
+  }, [initialPath, propKey, parentIsArray])
 
   const uniqueId = useMemo(() => path.replace(/\//g, '-').substring(1) || propKey, [path, propKey])
 
   const removeHandler = useCallback(() => {
+    if (!show) {
+      return
+    }
+
     const patch: JsonPatch = {
       path,
       value: propValue,
       op: 'remove',
     }
-    handler(patch)
+
     setShow(false)
-  }, [path, propValue, handler])
+    handler(patch)
+  }, [path, propValue, handler, show])
 
   if (isBoolean(propValue) || shouldRenderAsBoolean(schema)) {
     return (
@@ -142,6 +154,15 @@ const JsonPropertyBuilderConfigApi = ({
   }
 
   if (isObjectArray(propValue)) {
+    if (
+      !Array.isArray(propValue) ||
+      propValue.length === 0 ||
+      typeof propValue[0] !== 'object' ||
+      propValue[0] === null
+    ) {
+      return <></>
+    }
+    const arrayValue = propValue as AppConfiguration[]
     return (
       <Accordion className="mb-2 b-primary" initialOpen>
         <AccordionHeader
@@ -152,18 +173,22 @@ const JsonPropertyBuilderConfigApi = ({
           {generateLabel(propKey)}
         </AccordionHeader>
         <AccordionBody>
-          {Object.keys(propValue as AppConfiguration)?.map((item) => {
-            const nestedValue = (propValue as AppConfiguration)[item]
+          {arrayValue.map((item, index) => {
+            const itemPath = `${path}/${index}`
+            const itemObj = item as AppConfiguration
+            const itemIdentifier =
+              (itemObj.directory as string) || (itemObj.name as string) || `item-${index}`
+            const stableKey = `${path}-${itemIdentifier}`
             return (
               <JsonPropertyBuilderConfigApi
-                key={item}
-                propKey={item}
-                propValue={nestedValue}
+                key={stableKey}
+                propKey={String(index)}
+                propValue={item}
                 handler={handler}
                 lSize={lSize}
                 parentIsArray={true}
                 parent={propKey}
-                path={path}
+                path={itemPath}
                 doc_category={doc_category}
                 disabled={disabled}
               />
@@ -175,6 +200,11 @@ const JsonPropertyBuilderConfigApi = ({
   }
 
   if (isObject(propValue)) {
+    const isArrayItem = !isNaN(parseInt(propKey))
+    const displayLabel = isArrayItem
+      ? `${generateLabel(parent || propKey)} ${parseInt(propKey) + 1}`
+      : generateLabel(propKey)
+
     return (
       <>
         {show && (
@@ -192,7 +222,7 @@ const JsonPropertyBuilderConfigApi = ({
                   width: '100%',
                 }}
               >
-                <span>{generateLabel(propKey)}</span>
+                <span>{displayLabel}</span>
                 {parentIsArray && (
                   <Button
                     style={{
