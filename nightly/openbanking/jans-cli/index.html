@@ -2742,10 +2742,10 @@
   <h1>Managing Scripts with the jans-cli</h1>
 
 <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">#</a></h2>
-<p>Jans-cli is a command line interface to configure the Janssen software and it supports both interactive and command-line options for configuration. </p>
+<p>Jans-cli is a command-line interface to configure the Janssen software and it supports both interactive and command-line options for configuration.</p>
 <p>Jans-cli calls the Jans-Config-API to perform various operations. During Janssen installation, the installer creates a client to use Jans Config API. Jans-cli uses this client to call Jans Config API.</p>
 <h2 id="supported-operations">Supported Operations<a class="headerlink" href="#supported-operations" title="Permanent link">#</a></h2>
-<p>Jans-cli supports the following six operations on custom scripts: </p>
+<p>Jans-cli supports the following six operations on custom scripts:</p>
 <ol>
 <li><code>get-config-scripts</code>: gets a list of custom scripts.</li>
 <li><code>post-config-scripts</code>: adds a new custom script.</li>
@@ -2788,10 +2788,10 @@ openssl<span class="w"> </span>x509<span class="w"> </span>-req<span class="w"> 
 </li>
 </ol>
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">#</a></h2>
-<p>The <code>post-config-scripts</code> and <code>put-config-scripts</code> require various details about the scripts. The following command gives the basic schema of the custom scripts to pass to these operations. </p>
+<p>The <code>post-config-scripts</code> and <code>put-config-scripts</code> require various details about the scripts. The following command gives the basic schema of the custom scripts to pass to these operations.</p>
 <div class="highlight"><pre><span></span><code>python3<span class="w"> </span>jans-cli-linux-amd64.pyz<span class="w"> </span>--host<span class="w"> </span>&lt;FQDN&gt;<span class="w"> </span>--client-id<span class="w"> </span><span class="nv">$TESTCLIENT</span><span class="w"> </span>--client_secret<span class="w"> </span><span class="nv">$TESTCLIENTSECRET</span><span class="w"> </span>--schema<span class="w"> </span>/components/schemas/CustomScript<span class="w"> </span>
 </code></pre></div>
-<p>The output of the above command will be similar as: </p>
+<p>The output of the above command will be similar to:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;dn&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;inum&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
@@ -2853,11 +2853,11 @@ openssl<span class="w"> </span>x509<span class="w"> </span>-req<span class="w"> 
 <div class="highlight"><pre><span></span><code>python3<span class="w"> </span>jans-cli-linux-amd64.pyz<span class="w"> </span>--host<span class="w"> </span>&lt;FQDN&gt;<span class="w"> </span>--client-id<span class="w"> </span><span class="nv">$TESTCLIENT</span><span class="w"> </span>--client_secret<span class="w"> </span><span class="nv">$TESTCLIENTSECRET</span><span class="w"> </span>--operation-id<span class="w"> </span>post-config-scripts<span class="w"> </span>--data<span class="w"> </span>/tmp/sampleadd.json<span class="w"> </span><span class="se">\</span>
 --CC<span class="w"> </span>client.crt<span class="w"> </span>--CK<span class="w"> </span>client.key
 </code></pre></div>
-<p>The following command will modify/update the existing script with details given in /tmp/samplemodify.json file. <strong>Remember to set inum field in samplemodify.json to the inum of the script to update.</strong> </p>
+<p>The following command will modify/update the existing script with details given in /tmp/samplemodify.json file. <strong>Remember to set inum field in samplemodify.json to the inum of the script to update.</strong></p>
 <div class="highlight"><pre><span></span><code>python3<span class="w"> </span>jans-cli-linux-amd64.pyz<span class="w"> </span>--host<span class="w"> </span>&lt;FQDN&gt;<span class="w"> </span>--client-id<span class="w"> </span><span class="nv">$TESTCLIENT</span><span class="w"> </span>--client_secret<span class="w"> </span><span class="nv">$TESTCLIENTSECRET</span><span class="w"> </span>--operation-id<span class="w"> </span>put-config-scripts<span class="w"> </span>--data<span class="w"> </span>/tmp/samplemodify.json<span class="w"> </span><span class="se">\</span>
 --CC<span class="w"> </span>client.crt<span class="w"> </span>--CK<span class="w"> </span>client.key
 </code></pre></div>
-<p>To delete a custom script by its inum, use the following command: </p>
+<p>To delete a custom script by its inum, use the following command:</p>
 <div class="highlight"><pre><span></span><code>python3<span class="w"> </span>jans-cli-linux-amd64.pyz<span class="w"> </span>--host<span class="w"> </span>&lt;FQDN&gt;<span class="w"> </span>--client-id<span class="w"> </span><span class="nv">$TESTCLIENT</span><span class="w"> </span>--client_secret<span class="w"> </span><span class="nv">$TESTCLIENTSECRET</span><span class="w"> </span>--operation-id<span class="w"> </span>delete-config-scripts-by-inum<span class="w"> </span>--url-suffix<span class="w"> </span>inum:HKM-TEST<span class="w"> </span><span class="se">\</span>
 --CC<span class="w"> </span>client.crt<span class="w"> </span>--CK<span class="w"> </span>client.key
 </code></pre></div>
@@ -2904,7 +2904,7 @@ openssl<span class="w"> </span>x509<span class="w"> </span>-req<span class="w"> 
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="September 19, 2024 09:10:48 UTC"><span class="timeago" datetime="2024-09-19T09:10:48+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="September 19, 2024 09:10:48 UTC">2024-09-19</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="January 6, 2026 11:07:54 UTC"><span class="timeago" datetime="2026-01-06T11:07:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="January 6, 2026 11:07:54 UTC">2026-01-06</span>
   </span>
 
     
