@@ -55,14 +55,7 @@ const SSAListPage: React.FC = () => {
       })),
     [items],
   )
-  const revokeSsaMutation = useRevokeSsa({
-    mutation: {
-      onError: (error) => {
-        console.error('Failed to revoke SSA:', error)
-        dispatch(updateToast(true, 'error', t('messages.error_in_saving')))
-      },
-    },
-  })
+  const revokeSsaMutation = useRevokeSsa()
   const getSsaJwtMutation = useGetSsaJwt()
 
   const { logAudit } = useSsaAuditLogger()
