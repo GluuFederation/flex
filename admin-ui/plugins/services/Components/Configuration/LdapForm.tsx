@@ -32,7 +32,12 @@ interface BaseDnItem {
   baseDNs?: string
 }
 
-function LdapForm({ item, handleSubmit, createLdap, isLoading = false }: LdapFormProps): ReactElement {
+function LdapForm({
+  item,
+  handleSubmit,
+  createLdap,
+  isLoading = false,
+}: LdapFormProps): ReactElement {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const [init, setInit] = useState(false)

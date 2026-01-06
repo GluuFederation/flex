@@ -43,7 +43,9 @@ function LdapEditPage(): ReactElement {
   function handleSubmit(data: { ldap: GluuLdapConfiguration } | GluuLdapConfiguration): void {
     if (!isEmpty(data)) {
       const ldapData = 'ldap' in data ? data.ldap : data
-      const { action_message, ...cleanData } = ldapData as GluuLdapConfiguration & { action_message?: string }
+      const { action_message, ...cleanData } = ldapData as GluuLdapConfiguration & {
+        action_message?: string
+      }
       editMutation.mutate({ data: cleanData })
     }
   }

@@ -65,9 +65,11 @@ function CachePage(): ReactElement | null {
 
   SetTitle(t('fields.cache_configuration'))
 
-  const { data: cacheData = {} as CacheConfiguration, isLoading: cacheLoading } = useGetConfigCache({
-    query: { staleTime: 30000, enabled: canReadCache },
-  })
+  const { data: cacheData = {} as CacheConfiguration, isLoading: cacheLoading } = useGetConfigCache(
+    {
+      query: { staleTime: 30000, enabled: canReadCache },
+    },
+  )
   const { data: cacheMemoryData = {} as InMemoryConfiguration, isLoading: memoryLoading } =
     useGetConfigCacheInMemory({
       query: { staleTime: 30000, enabled: canReadCache },
@@ -238,7 +240,8 @@ function CachePage(): ReactElement | null {
 
                   if (values.cacheProviderType === 'REDIS') {
                     const redisCache: RedisConfiguration = {
-                      redisProviderType: values.redisProviderType as RedisConfiguration['redisProviderType'],
+                      redisProviderType:
+                        values.redisProviderType as RedisConfiguration['redisProviderType'],
                       servers: values.servers,
                       password: values.password,
                       sentinelMasterGroupName: values.sentinelMasterGroupName,
@@ -260,7 +263,8 @@ function CachePage(): ReactElement | null {
                       maxOperationQueueLength: values.maxOperationQueueLength,
                       bufferSize: values.bufferSize,
                       defaultPutExpiration: values.memDefaultPutExpiration,
-                      connectionFactoryType: values.connectionFactoryType as MemcachedConfiguration['connectionFactoryType'],
+                      connectionFactoryType:
+                        values.connectionFactoryType as MemcachedConfiguration['connectionFactoryType'],
                     }
                     await putMemcachedMutation.mutateAsync({ data: memCache })
                   }
@@ -277,7 +281,10 @@ function CachePage(): ReactElement | null {
                   }
 
                   await logCacheUpdate(
-                    { cacheProviderType: values.cacheProviderType as CacheConfiguration['cacheProviderType'] },
+                    {
+                      cacheProviderType:
+                        values.cacheProviderType as CacheConfiguration['cacheProviderType'],
+                    },
                     'Cache configuration updated',
                   )
                 } catch (error) {

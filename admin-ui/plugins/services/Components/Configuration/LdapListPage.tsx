@@ -44,7 +44,10 @@ interface ActionObject {
   icon: string | (() => ReactElement)
   iconProps?: Record<string, unknown>
   tooltip: string
-  onClick: (event: React.MouseEvent, rowData: GluuLdapConfiguration | GluuLdapConfiguration[]) => void
+  onClick: (
+    event: React.MouseEvent,
+    rowData: GluuLdapConfiguration | GluuLdapConfiguration[],
+  ) => void
   disabled?: boolean
   isFreeAction?: boolean
 }
@@ -182,7 +185,10 @@ function LdapListPage(): ReactElement {
           style: { color: customColors.darkGray },
         },
         tooltip: t('tooltips.edit_ldap'),
-        onClick: (_event: React.MouseEvent, data: GluuLdapConfiguration | GluuLdapConfiguration[]) => {
+        onClick: (
+          _event: React.MouseEvent,
+          data: GluuLdapConfiguration | GluuLdapConfiguration[],
+        ) => {
           const row = Array.isArray(data) ? data[0] : data
           handleGoToLdapEditPage(row)
         },
@@ -211,7 +217,10 @@ function LdapListPage(): ReactElement {
           style: { color: customColors.darkGray },
         },
         tooltip: t('tooltips.delete_record'),
-        onClick: (_event: React.MouseEvent, data: GluuLdapConfiguration | GluuLdapConfiguration[]) => {
+        onClick: (
+          _event: React.MouseEvent,
+          data: GluuLdapConfiguration | GluuLdapConfiguration[],
+        ) => {
           const row = Array.isArray(data) ? data[0] : data
           handleLdapDelete(row)
         },
@@ -293,7 +302,10 @@ function LdapListPage(): ReactElement {
     actionsColumnIndex: -1,
   }
 
-  const PaperContainer = useCallback((props: Record<string, unknown>) => <Paper {...props} elevation={0} />, [])
+  const PaperContainer = useCallback(
+    (props: Record<string, unknown>) => <Paper {...props} elevation={0} />,
+    [],
+  )
 
   const DetailPanel = useCallback(
     (rowData: { rowData: GluuLdapConfiguration }) => {

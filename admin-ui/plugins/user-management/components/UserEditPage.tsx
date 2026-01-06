@@ -53,7 +53,8 @@ function UserEditPage() {
   const { data: persistenceData } = useGetPropertiesPersistence({
     query: { staleTime: 30000 },
   })
-  const persistenceType = (persistenceData as { persistenceType?: string } | undefined)?.persistenceType
+  const persistenceType = (persistenceData as { persistenceType?: string } | undefined)
+    ?.persistenceType
   const revokeSessionMutation = useRevokeUserSession()
 
   const updateUserMutation = usePutUser({

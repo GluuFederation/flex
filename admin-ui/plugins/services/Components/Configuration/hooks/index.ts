@@ -104,11 +104,7 @@ export function useSqlAudit() {
   const userinfo = authState?.userinfo
 
   const logSqlCreate = useCallback(
-    async (
-      sql: SqlConfiguration,
-      message: string,
-      modifiedFields?: Record<string, unknown>,
-    ) => {
+    async (sql: SqlConfiguration, message: string, modifiedFields?: Record<string, unknown>) => {
       await logAuditUserAction({
         token,
         userinfo,
@@ -125,11 +121,7 @@ export function useSqlAudit() {
   )
 
   const logSqlUpdate = useCallback(
-    async (
-      sql: SqlConfiguration,
-      message: string,
-      modifiedFields?: Record<string, unknown>,
-    ) => {
+    async (sql: SqlConfiguration, message: string, modifiedFields?: Record<string, unknown>) => {
       await logAuditUserAction({
         token,
         userinfo,

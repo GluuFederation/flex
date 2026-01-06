@@ -41,7 +41,9 @@ function SqlEditPage(): ReactElement {
 
   function handleSubmit(data: { sql: SqlConfiguration }): void {
     if (data) {
-      const { action_message, ...cleanData } = data.sql as SqlConfiguration & { action_message?: string }
+      const { action_message, ...cleanData } = data.sql as SqlConfiguration & {
+        action_message?: string
+      }
       editMutation.mutate({ data: cleanData })
     }
   }

@@ -159,7 +159,9 @@ function SqlForm({ item, handleSubmit, isLoading = false }: SqlFormProps): React
             />
 
             {formik.errors.connectionUri && formik.touched.connectionUri ? (
-              <div style={{ color: customColors.accentRed }}>{String(formik.errors.connectionUri)}</div>
+              <div style={{ color: customColors.accentRed }}>
+                {String(formik.errors.connectionUri)}
+              </div>
             ) : null}
           </Col>
         </FormGroup>
