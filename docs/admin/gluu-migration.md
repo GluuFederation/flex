@@ -31,7 +31,7 @@ Once completed, let's showcase how to move existing gluu4 [clients](#clients-mig
 !!! Note
     The examples are meant for demonstration purposes. You should adjust them as needed.
 
-## Clients Migration 
+## Clients Migration
 
 We will use the [jans_oidc_client](https://registry.terraform.io/providers/JanssenProject/jans/latest/docs/resources/oidc_client) resource.
 
