@@ -17,13 +17,13 @@ The VM must have a static IP address and a resolvable hostname. A fully qualifie
 
 The Gluu Open Banking Identity Platform can be installed on main Linux distributions.
 
-## Installation 
+## Installation
 
 Download the installer (`install.py`)
 ```
 wget https://raw.githubusercontent.com/JanssenProject/jans/main/jans-linux-setup/jans_setup/install.py
 ```
-Execute the installer: 
+Execute the installer:
 ```
 sudo python3 install.py --profile openbanking
 
@@ -57,16 +57,16 @@ Before the last question installer process will display the selected choices and
 
 | Prompt | Description |
 | ---- | --------- |
-| Proceed with these values [Y/n]| Confirmation before setting up the services. 
- 
+| Proceed with these values [Y/n]| Confirmation before setting up the services.
+
 ### Uninstalling Janssen Server
 
 Execute the installation script with the `-uninstall` argument.
 
 ## MTLS Configuration
 
-For MTLS, OBIE-issued (for openbanking UK) certificates and keys should be used. The following discussion assumes that the file `ca.crt` has a CA certificate and `ca.key` has a CA private key. 
-Following command generates self-signed ca.crt and ca.key: 
+For MTLS, OBIE-issued (for openbanking UK) certificates and keys should be used. The following discussion assumes that the file `ca.crt` has a CA certificate and `ca.key` has a CA private key.
+Following command generates self-signed ca.crt and ca.key:
 ```
 openssl req -newkey rsa:2048 -nodes -keyform PEM -keyout ca.key -x509 -days 3650 -outform PEM -out ca.crt
 ```
@@ -108,12 +108,12 @@ cat client.key client.crt ca.crt >client.pem
 
 Use this pem file to create JWKs for the clients (if required). To create a JWK, you can use a free utility published at [https://mkjwk.org](https://mkjwk.org). Or you can download the command-line tool from [GitHub](https://github.com/mitreid-connect/json-web-key-generator). There are numerous other online PEM-to-JWKS tools available like [JWKConvertFunctions](https://8gwifi.org/jwkconvertfunctions.jsp). We may need to add/update some data in these generated JWKs.
 
-!!!Note 
+!!!Note
     It is important to give different values of the Common Name field (“Common Name (e.g. server FQDN or YOUR name) []”) for the CA, Server and  clients. Other fields may have common values but the same values for Common Name of all certificates result in certificate verification failing at runtime.
 
 
 
-### Importing the CA certificate in JVM truststore and signing, encryption keys into auth-Server keystore: 
+### Importing the CA certificate in JVM truststore and signing, encryption keys into auth-Server keystore:
 
 The command line utility keytool is installed with JDK, it can be used to import the CA certificate in JVM truststore (/opt/jre/lib/security/cacerts) and  signing,encryption keys into the jans-auth server’s keystore(/etc/certs/jans-auth-keys.jks).
 
@@ -126,3 +126,4 @@ The command line utility keytool is installed with JDK, it can be used to import
 ## Accessing the Platform
 
 After successful installation, access the Gluu Open Banking Platform using either [jans-cli](https://docs.gluu.org/vreplace-flex-version/openbanking/jans-cli/) or [curl](https://docs.gluu.org/vreplace-flex-version/openbanking/curl/).
+
