@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { useGetConfigApiProperties, usePatchConfigApiProperties } from 'JansConfigApi'
 import { useConfigApiActions } from './utils'
 import { toast } from 'react-toastify'
-import type { JsonPatch, PatchConfigApiPropertiesData, ModifiedFields } from './types'
+import type { JsonPatch, ModifiedFields, ApiAppConfiguration, ConfigApiAuditPayload } from './types'
 
 const ConfigApiPage = (): JSX.Element => {
   const { t } = useTranslation()
@@ -27,16 +27,19 @@ const ConfigApiPage = (): JSX.Element => {
       try {
         setErrorMessage(null)
         await patchConfigMutation.mutateAsync({
-          data: patches as PatchConfigApiPropertiesData,
+          data: patches,
         })
 
         await refetch()
 
         let auditSuccess = true
         try {
-          const auditPayload: ModifiedFields = {
+          const auditPayloadData: ConfigApiAuditPayload = {
             requestBody: patches,
-          } as { requestBody: JsonPatch[] } & ModifiedFields
+          }
+          const auditPayload: ModifiedFields = {
+            requestBody: auditPayloadData,
+          }
           await logConfigApiUpdate(message, auditPayload)
         } catch (auditError) {
           console.error('Error logging audit:', auditError)
@@ -77,7 +80,7 @@ const ConfigApiPage = (): JSX.Element => {
       <Card style={applicationStyle.mainCard}>
         {configuration && (
           <ApiConfigForm
-            configuration={configuration as import('./types').ApiAppConfiguration}
+            configuration={configuration as ApiAppConfiguration}
             onSubmit={handleSubmit}
           />
         )}

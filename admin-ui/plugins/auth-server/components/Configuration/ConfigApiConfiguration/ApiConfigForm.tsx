@@ -1,5 +1,7 @@
 import React, { useCallback, useState, useEffect, useMemo, useRef } from 'react'
 import { useFormik } from 'formik'
+import { toast } from 'react-toastify'
+import { useTranslation } from 'react-i18next'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { FormGroup, Form } from 'Components'
 import { useCedarling } from '@/cedarling'
@@ -48,6 +50,7 @@ const CONFIG_API_RESOURCE_ID = ADMIN_UI_RESOURCES.ConfigApiConfiguration
 const configApiScopes = CEDAR_RESOURCE_SCOPES[CONFIG_API_RESOURCE_ID] || []
 
 const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }) => {
+  const { t } = useTranslation()
   const { authorizeHelper, hasCedarWritePermission } = useCedarling()
   const { navigateToRoute } = useAppNavigation()
   const [modal, setModal] = useState(false)
@@ -105,7 +108,7 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
         setResetKey((prev) => prev + 1)
       }
     }
-  }, [configuration, patches.length, formik])
+  }, [configuration, patches.length, formik.resetForm])
 
   useEffect(() => {
     if (configApiScopes && configApiScopes.length > 0) {
@@ -221,10 +224,9 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
 
       setResetKey((prev) => prev + 1)
 
-      setTimeout(() => {
-        formik.validateForm()
+      formik.validateForm().then(() => {
         processingRemovalsRef.current.delete(removalKey)
-      }, 0)
+      })
 
       return true
     },
@@ -282,9 +284,10 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
         setPatches([])
       } catch (error) {
         console.error('Error submitting form:', error)
+        toast.error(t('messages.error_in_saving'))
       }
     },
-    [toggle, onSubmit, patches],
+    [toggle, onSubmit, patches, t],
   )
 
   const handleBack = useCallback(() => {

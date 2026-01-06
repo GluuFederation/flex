@@ -1,5 +1,4 @@
-import type { SchemaProperty } from '../types'
-import type { PropertyValue } from '../../types'
+import type { SchemaProperty, PropertyValue, AppConfiguration } from '../../types'
 
 export function isNumber(item: PropertyValue, _schema?: SchemaProperty): item is number {
   return typeof item === 'number' || typeof item === 'bigint'
@@ -71,4 +70,31 @@ export function getStringArrayValue(item: PropertyValue, schema?: SchemaProperty
     return []
   }
   return []
+}
+
+export function isEmptyArray(item: PropertyValue): boolean {
+  return Array.isArray(item) && item.length === 0
+}
+
+export function isObjectArray(item: PropertyValue): boolean {
+  return Array.isArray(item) && item.length >= 1 && typeof item[0] === 'object' && item[0] !== null
+}
+
+export function isObject(item: PropertyValue): item is AppConfiguration {
+  if (item != null) {
+    return typeof item === 'object' && !Array.isArray(item)
+  }
+  return false
+}
+
+export function generateLabel(name: string): string {
+  const result = name.replace(/([A-Z])/g, ' $1')
+  return result.charAt(0).toUpperCase() + result.slice(1)
+}
+
+export function migratingTextIfRenamed(isRenamedKey: boolean, text: string): string {
+  if (isRenamedKey) {
+    return text
+  }
+  return generateLabel(text)
 }
