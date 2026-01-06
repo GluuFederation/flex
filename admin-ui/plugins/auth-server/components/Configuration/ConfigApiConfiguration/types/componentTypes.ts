@@ -1,4 +1,5 @@
 import type { JsonPatch } from './configApiTypes'
+import type { PropertyValue } from '../../types'
 import { Accordion } from 'Components'
 
 export interface SchemaProperty {
@@ -11,7 +12,7 @@ export interface SchemaProperty {
 
 export interface JsonPropertyBuilderConfigApiProps {
   propKey: string
-  propValue: unknown
+  propValue: PropertyValue
   lSize: number
   path?: string
   handler: (patch: JsonPatch) => void

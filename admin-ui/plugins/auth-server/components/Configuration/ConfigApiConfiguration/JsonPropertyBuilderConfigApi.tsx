@@ -1,12 +1,12 @@
 import React, { useState, useMemo, useCallback } from 'react'
-import { Accordion, FormGroup, Col, Button } from 'Components'
+import { Accordion, Button } from 'Components'
 import GluuInlineInput from 'Routes/Apps/Gluu/GluuInlineInput'
 import { useTranslation } from 'react-i18next'
-import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { generateLabel, isObject, isObjectArray } from '../JsonPropertyBuilder'
 import customColors from '@/customColors'
 import type { JsonPropertyBuilderConfigApiProps, AccordionWithSubComponents } from './types'
 import type { JsonPatch } from 'JansConfigApi'
+import type { AppConfiguration } from '../types'
 import {
   isNumber,
   isBoolean,
@@ -76,6 +76,7 @@ const JsonPropertyBuilderConfigApi = ({
         path={path}
         doc_category={doc_category}
         disabled={disabled}
+        showSaveButtons={false}
       />
     )
   }
@@ -94,6 +95,7 @@ const JsonPropertyBuilderConfigApi = ({
         path={path}
         doc_category={doc_category}
         disabled={disabled}
+        showSaveButtons={false}
       />
     )
   }
@@ -113,6 +115,7 @@ const JsonPropertyBuilderConfigApi = ({
         path={path}
         doc_category={doc_category}
         disabled={disabled}
+        showSaveButtons={false}
       />
     )
   }
@@ -133,6 +136,7 @@ const JsonPropertyBuilderConfigApi = ({
         path={path}
         doc_category={doc_category}
         disabled={disabled}
+        showSaveButtons={false}
       />
     )
   }
@@ -145,21 +149,16 @@ const JsonPropertyBuilderConfigApi = ({
             color: customColors.lightBlue,
           }}
         >
-          <GluuLabel
-            label={generateLabel(propKey)}
-            size={lSize}
-            required={false}
-            doc_category={doc_category}
-            doc_entry={`${propKey}.self`}
-          />
+          {generateLabel(propKey)}
         </AccordionHeader>
         <AccordionBody>
-          {Object.keys(propValue as Record<string, unknown>)?.map((item) => {
+          {Object.keys(propValue as AppConfiguration)?.map((item) => {
+            const nestedValue = (propValue as AppConfiguration)[item]
             return (
               <JsonPropertyBuilderConfigApi
                 key={item}
                 propKey={item}
-                propValue={(propValue as Record<string, unknown>)[item]}
+                propValue={nestedValue}
                 handler={handler}
                 lSize={lSize}
                 parentIsArray={true}
@@ -185,44 +184,40 @@ const JsonPropertyBuilderConfigApi = ({
                 color: customColors.lightBlue,
               }}
             >
-              {propKey.toUpperCase().length > 2 ? (
-                <GluuLabel
-                  label={generateLabel(propKey)}
-                  size={lSize}
-                  required={false}
-                  doc_category={doc_category}
-                  doc_entry={`${propKey}.self`}
-                />
-              ) : null}
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  width: '100%',
+                }}
+              >
+                <span>{generateLabel(propKey)}</span>
+                {parentIsArray && (
+                  <Button
+                    style={{
+                      backgroundColor: disabled ? customColors.darkGray : customColors.accentRed,
+                      color: customColors.white,
+                      border: 'none',
+                      cursor: disabled ? 'not-allowed' : 'pointer',
+                      opacity: disabled ? 0.6 : 1,
+                    }}
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      removeHandler()
+                    }}
+                    disabled={disabled}
+                    aria-disabled={disabled}
+                  >
+                    <i className="fa fa-remove me-2" />
+                    {t('actions.remove')}
+                  </Button>
+                )}
+              </div>
             </AccordionHeader>
             <AccordionBody>
-              {parentIsArray && (
-                <FormGroup row>
-                  <Col sm={11} md={11}></Col>
-                  <Col sm={1} md={1}>
-                    <Button
-                      style={{
-                        backgroundColor: disabled ? customColors.darkGray : customColors.accentRed,
-                        color: customColors.white,
-                        float: 'right',
-                        border: 'none',
-                        cursor: disabled ? 'not-allowed' : 'pointer',
-                        opacity: disabled ? 0.6 : 1,
-                      }}
-                      size="sm"
-                      onClick={removeHandler}
-                      disabled={disabled}
-                      aria-disabled={disabled}
-                    >
-                      <i className="fa fa-remove me-2"></i>
-                      {'  '}
-                      {t('actions.remove')}
-                      {'  '}
-                    </Button>
-                  </Col>
-                </FormGroup>
-              )}
-              {Object.keys(propValue as Record<string, unknown>)?.map((objKey) => {
+              {Object.keys(propValue as AppConfiguration)?.map((objKey) => {
                 let tooltipKey = ''
 
                 if (isNaN(parseInt(propKey))) {
@@ -231,12 +226,13 @@ const JsonPropertyBuilderConfigApi = ({
                   tooltipKey = `${parent}.${objKey}`
                 }
 
+                const nestedValue = (propValue as AppConfiguration)[objKey]
                 return (
                   <JsonPropertyBuilderConfigApi
                     key={objKey}
                     propKey={objKey}
                     tooltipPropKey={tooltipKey}
-                    propValue={(propValue as Record<string, unknown>)[objKey]}
+                    propValue={nestedValue}
                     handler={handler}
                     lSize={lSize}
                     parentIsArray={parentIsArray}

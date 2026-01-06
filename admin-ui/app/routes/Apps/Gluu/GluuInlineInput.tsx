@@ -25,6 +25,7 @@ interface GluuInlineInputProps {
   disabled?: boolean
   id?: string
   parentIsArray?: boolean
+  showSaveButtons?: boolean
 }
 
 interface ThemeContextValue {
@@ -48,6 +49,8 @@ const GluuInlineInput = ({
   path,
   doc_category = 'json_properties',
   disabled = false,
+  id,
+  showSaveButtons = true,
 }: GluuInlineInputProps) => {
   const theme = useContext(ThemeContext) as ThemeContextValue
   const selectedTheme = theme.state.theme
@@ -68,14 +71,20 @@ const GluuInlineInput = ({
       if (disabled) {
         return
       }
-      if (isBoolean) {
-        setData(e.target.checked)
-      } else {
-        setData(e.target.value)
+      const nextValue = isBoolean ? e.target.checked : e.target.value
+      setData(nextValue)
+      if (showSaveButtons) {
+        setShow(true)
+      } else if (path && typeof path === 'string' && path.trim() !== '') {
+        const patch: JsonPatch = {
+          op: 'replace',
+          path,
+          value: nextValue,
+        }
+        handler(patch)
       }
-      setShow(true)
     },
-    [disabled, isBoolean],
+    [disabled, isBoolean, showSaveButtons, path, handler],
   )
 
   const handleTypeAheadChange = useCallback(
@@ -104,9 +113,19 @@ const GluuInlineInput = ({
         }
       }
       setCorrectValue(arrayItems)
-      setShow(true)
+      if (showSaveButtons) {
+        setShow(true)
+      }
+      if (!showSaveButtons && path && typeof path === 'string' && path.trim() !== '') {
+        const patch: JsonPatch = {
+          op: 'replace',
+          path,
+          value: arrayItems,
+        }
+        handler(patch)
+      }
     },
-    [disabled, name],
+    [disabled, name, showSaveButtons, path, handler],
   )
 
   const onAccept = useCallback(() => {
@@ -141,6 +160,7 @@ const GluuInlineInput = ({
     () => (Array.isArray(options) ? options.filter((item) => item != null) : []),
     [options],
   )
+  const resolvedId = id || name
   return (
     <FormGroup row>
       <Col sm={10}>
@@ -155,8 +175,8 @@ const GluuInlineInput = ({
           <Col sm={rsize}>
             {!isBoolean && !isArray && (
               <Input
-                id={name}
-                data-testid={name}
+                id={resolvedId}
+                data-testid={resolvedId}
                 name={name}
                 type={type}
                 defaultValue={String(data)}
@@ -167,8 +187,8 @@ const GluuInlineInput = ({
             )}
             {isBoolean && (
               <GluuToogle
-                id={name}
-                data-testid={name}
+                id={resolvedId}
+                data-testid={resolvedId}
                 name={name}
                 handler={onValueChanged}
                 value={value as boolean}
@@ -177,8 +197,8 @@ const GluuInlineInput = ({
             )}
             {isArray && (
               <Typeahead
-                id={name}
-                data-testid={name}
+                id={resolvedId}
+                data-testid={resolvedId}
                 allowNew
                 emptyLabel=""
                 labelKey={name}
@@ -193,7 +213,7 @@ const GluuInlineInput = ({
         </FormGroup>
       </Col>
       <Col sm={2}>
-        {show && !disabled && (
+        {show && showSaveButtons && !disabled && (
           <>
             <Button
               color={`primary-${selectedTheme}`}

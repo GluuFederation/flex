@@ -3,10 +3,7 @@ import { useSelector } from 'react-redux'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import { UPDATE } from '@/audit/UserActionType'
 import type { RootState } from '@/redux/sagas/types/audit'
-
-export interface ModifiedFields {
-  [key: string]: unknown
-}
+import type { ModifiedFields } from '../types'
 
 export function useConfigApiActions() {
   const authState = useSelector((state: RootState) => state.authReducer)

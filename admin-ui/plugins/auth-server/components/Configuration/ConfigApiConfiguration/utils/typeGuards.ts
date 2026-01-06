@@ -1,18 +1,19 @@
 import type { SchemaProperty } from '../types'
+import type { PropertyValue } from '../../types'
 
-export function isNumber(item: unknown, _schema?: SchemaProperty): item is number {
+export function isNumber(item: PropertyValue, _schema?: SchemaProperty): item is number {
   return typeof item === 'number' || typeof item === 'bigint'
 }
 
-export function isBoolean(item: unknown): item is boolean {
+export function isBoolean(item: PropertyValue): item is boolean {
   return typeof item === 'boolean'
 }
 
-export function isString(item: unknown): item is string {
+export function isString(item: PropertyValue): item is string {
   return typeof item === 'string'
 }
 
-export function isStringArray(item: unknown): item is string[] {
+export function isStringArray(item: PropertyValue): item is string[] {
   return Array.isArray(item) && item.every((el) => typeof el === 'string')
 }
 
@@ -32,7 +33,7 @@ export function shouldRenderAsNumber(schema?: SchemaProperty): boolean {
   return schema?.type === 'number'
 }
 
-export function getBooleanValue(item: unknown, schema?: SchemaProperty): boolean | undefined {
+export function getBooleanValue(item: PropertyValue, schema?: SchemaProperty): boolean | undefined {
   if (isBoolean(item)) {
     return item
   }
@@ -42,7 +43,7 @@ export function getBooleanValue(item: unknown, schema?: SchemaProperty): boolean
   return undefined
 }
 
-export function getStringValue(item: unknown, schema?: SchemaProperty): string | undefined {
+export function getStringValue(item: PropertyValue, schema?: SchemaProperty): string | undefined {
   if (isString(item)) {
     return item
   }
@@ -52,7 +53,7 @@ export function getStringValue(item: unknown, schema?: SchemaProperty): string |
   return undefined
 }
 
-export function getNumberValue(item: unknown, schema?: SchemaProperty): number | undefined {
+export function getNumberValue(item: PropertyValue, schema?: SchemaProperty): number | undefined {
   if (isNumber(item)) {
     return item
   }
@@ -62,7 +63,7 @@ export function getNumberValue(item: unknown, schema?: SchemaProperty): number |
   return undefined
 }
 
-export function getStringArrayValue(item: unknown, schema?: SchemaProperty): string[] {
+export function getStringArrayValue(item: PropertyValue, schema?: SchemaProperty): string[] {
   if (isStringArray(item)) {
     return item
   }
