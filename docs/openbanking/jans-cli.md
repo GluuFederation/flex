@@ -1,11 +1,12 @@
 ## Introduction
-Jans-cli is a command line interface to configure the Janssen software and it supports both interactive and command-line options for configuration. 
+
+Jans-cli is a command-line interface to configure the Janssen software and it supports both interactive and command-line options for configuration.
 
 Jans-cli calls the Jans-Config-API to perform various operations. During Janssen installation, the installer creates a client to use Jans Config API. Jans-cli uses this client to call Jans Config API.
 
-## Supported Operations 
-  
-Jans-cli supports the following six operations on custom scripts: 
+## Supported Operations
+
+Jans-cli supports the following six operations on custom scripts:
 
 1. `get-config-scripts`: gets a list of custom scripts.
 2. `post-config-scripts`: adds a new custom script.
@@ -43,20 +44,20 @@ Jans-cli supports the following six operations on custom scripts:
     ```
 
 1.  Run the jans-cli in interactive mode and try it out: 
-       
+
     ```bash
     python3 jans-cli-linux-amd64.pyz --host <FQDN> --client-id $TESTCLIENT --client_secret $TESTCLIENTSECRET --CC client.crt --CK client.key
     ```
 
 ## Examples
-    
-The `post-config-scripts` and `put-config-scripts` require various details about the scripts. The following command gives the basic schema of the custom scripts to pass to these operations. 
+
+The `post-config-scripts` and `put-config-scripts` require various details about the scripts. The following command gives the basic schema of the custom scripts to pass to these operations.
 
 ```bash
 python3 jans-cli-linux-amd64.pyz --host <FQDN> --client-id $TESTCLIENT --client_secret $TESTCLIENTSECRET --schema /components/schemas/CustomScript 
 ```
 
-The output of the above command will be similar as: 
+The output of the above command will be similar to:
 
 ```json
 {
@@ -122,20 +123,20 @@ To add or modify a script first, we need to create the script's python file (e.g
 ### Add a new custom script, update and delete existing custom script
 
 The following command will add a new script with details given in /tmp/sampleadd.json file. __The jans-cli will generate a unique inum of this new script if we skip inum in the json file.__
- 
-```bash 
+
+```bash
 python3 jans-cli-linux-amd64.pyz --host <FQDN> --client-id $TESTCLIENT --client_secret $TESTCLIENTSECRET --operation-id post-config-scripts --data /tmp/sampleadd.json \
 --CC client.crt --CK client.key
 ```
 
-The following command will modify/update the existing script with details given in /tmp/samplemodify.json file. __Remember to set inum field in samplemodify.json to the inum of the script to update.__ 
+The following command will modify/update the existing script with details given in /tmp/samplemodify.json file. __Remember to set inum field in samplemodify.json to the inum of the script to update.__
 
-```bash 
+```bash
 python3 jans-cli-linux-amd64.pyz --host <FQDN> --client-id $TESTCLIENT --client_secret $TESTCLIENTSECRET --operation-id put-config-scripts --data /tmp/samplemodify.json \
 --CC client.crt --CK client.key
 ```
 
-To delete a custom script by its inum, use the following command: 
+To delete a custom script by its inum, use the following command:
 
 ```bash
 python3 jans-cli-linux-amd64.pyz --host <FQDN> --client-id $TESTCLIENT --client_secret $TESTCLIENTSECRET --operation-id delete-config-scripts-by-inum --url-suffix inum:HKM-TEST \
@@ -147,22 +148,21 @@ python3 jans-cli-linux-amd64.pyz --host <FQDN> --client-id $TESTCLIENT --client_
 These commands to print the details are important, as using them we can get the inum of these scripts which is required to perform update or delete operations.
 
 1.  The following command will display the details of all the existing custom scripts. This will be helpful to get the inum of scripts to perform the update and delete operation.
- 
+
     ```bash
     python3 jans-cli-linux-amd64.pyz --host <FQDN> --client-id $TESTCLIENT --client_secret $TESTCLIENTSECRET --operation-id get-config-scripts --CC client.crt --CK client.key
     ```
 
 1.  The following command displays the details of selected custom script (by inum). 
 
-    ```bash 
+    ```bash
     python3 jans-cli-linux-amd64.pyz --host <FQDN> --client-id $TESTCLIENT --client_secret $TESTCLIENTSECRET --operation-id get-config-scripts-by-inum --url-suffix inum:_____  \
     --CC client.crt --CK client.key
     ```
 
 1.  Use the following command to display the details of existing custom scripts of a given type (for example: INTROSPECTION).
- 
+
     ```bash
     python3 jans-cli-linux-amd64.pyz --host <FQDN> --client-id $TESTCLIENT --client_secret $TESTCLIENTSECRET --operation-id get-config-scripts-by-type --url-suffix type:INTROSPECTION \
     --CC client.crt --CK client.key
     ```
-

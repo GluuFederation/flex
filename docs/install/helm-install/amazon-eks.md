@@ -22,7 +22,7 @@ tags:
 
 3. Configure your AWS user account using [aws configure](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) command. This makes you able to authenticate before creating the cluster.
     Note that this user account must have permissions to work with Amazon EKS IAM roles and service linked roles, AWS CloudFormation, and a VPC and related resources
-    
+
 4. Install [kubectl](https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html)
 
 5. Install [eksctl](https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html) 
@@ -45,7 +45,7 @@ tags:
 
 ## Gluu Flex Installation using Helm
 1.  Install [Nginx-Ingress](https://github.com/kubernetes/ingress-nginx), if you are not using Istio ingress
-    
+
       ```
       helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
       helm repo add stable https://charts.helm.sh/stable
@@ -107,7 +107,7 @@ tags:
         ```
 
         Add the following yaml snippet to your `override.yaml` file:
-        
+
         ```yaml
         config:
           configmap:
@@ -184,4 +184,5 @@ tags:
       ```
 
 ## Configure Gluu Flex
-  You can use the Janssen [TUI](https://docs.jans.io/head/admin/kubernetes-ops/tui-k8s/) to configure Flex components. The TUI calls the Config API to perform ad hoc configuration. 
+  You can use the Janssen [TUI](https://docs.jans.io/head/admin/kubernetes-ops/tui-k8s/) to configure Flex components. The TUI calls the Config API to perform ad hoc configuration.
+

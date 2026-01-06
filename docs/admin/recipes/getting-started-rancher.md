@@ -1,4 +1,6 @@
-## Overview 
+# Gluu Flex on SUSE Rancher
+
+## Overview
 
 Gluu Flex (“Flex”) is a cloud-native digital identity platform that enables organizations to authenticate and authorize people and software through the use of open standards like OpenID Connect, OAuth, and FIDO.
 
@@ -9,13 +11,13 @@ SUSE Rancher’s helm-based deployment approach simplifies the deployment and co
 The key services of Flex include:
 
 - **(REQUIRED) Jans Auth Server**: This component is the OAuth Authorization Server, the OpenID Connect Provider, and the UMA Authorization Server for person and software authentication. This service must be Internet-facing.
- 
+
 - **(REQUIRED) Jans Config API**: The API to configure the auth-server and other components is consolidated in this component. This service should not be Internet-facing.
 
 - **Gluu Admin UI**: Web admin tool for ad-hoc configuration.
 
 - **Jans Fido**: This component provides the server-side endpoints to enroll and validate devices that use FIDO. It provides both FIDO U2F (register, authenticate) and FIDO 2 (attestation, assertion) endpoints. This service must be Internet-facing.
- 
+
 - **Jans SCIM**: System for Cross-domain Identity Management ([SCIM](http://www.simplecloud.info/)) is JSON/REST API to manage user data. Use it to add, edit and update user information. This service should not be Internet-facing.
 
 - **Jans Casa**: A self-service web portal for end-users to manage authentication and authorization preferences for their account in the Gluu Flex server. Typically, it enables people to manage their MFA credentials, like FIDO tokens and OTP authenticators. It's also extensible if your organization has any other self-service requirements.
@@ -24,17 +26,17 @@ The key services of Flex include:
 
 ![building_blocks_small](https://user-images.githubusercontent.com/3717101/179056897-99ac7c2b-49f5-4fe3-9029-a355f3aee45c.png)
 
-## Scope 
+## Scope
 
-In this Quickstart Guide, we will: 
+In this Quickstart Guide, we will:
 
 1. Deploy Flex and add some users.
 2. Enable two-factor authentication.
 3. Protect content on an Apache web server with OpenID Connect.
 
-## Audience 
+## Audience
 
-This document is intended for DevOps engineers, site reliability engineers (SREs), platform engineers, software engineers, and developers who are responsible for managing and running stateful workloads in Kubernetes clusters. 
+This document is intended for DevOps engineers, site reliability engineers (SREs), platform engineers, software engineers, and developers who are responsible for managing and running stateful workloads in Kubernetes clusters.
 
 <!--- [Provide an overview of the minimum viable architecture with hints or guidance for upscaling to fully-supported, enterprise deployment.  Include relevant images.] -->
 
@@ -132,7 +134,7 @@ kubectl get secret cn -o json -n <namespace>
 
 <!--- [Be sure to clearly state prerequisites for this guide.  Reference other documents to provide guidance where possible.  Include any special consideration notes.] -->
 
-## Prerequisites 
+## Prerequisites
 
 <!--- [Provide step-by-step guide (provide console commands or focused screenshots) to installing the components of this solution, assuming the prerequisites are in place.  If it helps clarity, subdivide into sections for each component.] -->
 
@@ -150,7 +152,7 @@ kubectl get secret cn -o json -n <namespace>
 
 - An entry in the `/etc/hosts` file of your local workstation to resolve the hostname of the Gluu Flex installation. This step is for testing purposes. 
 
-## Installation 
+## Installation
 
 **Summary of steps**:
 
@@ -207,16 +209,16 @@ kubectl get secret cn -o json -n <namespace>
 3. Install Gluu Flex:
 
     - Head to `Apps` --> `Charts` and search for `Gluu`
-    - Click on `Install` on the right side of the window. 
+    - Click on `Install` on the right side of the window.
     - Change the namespace from `default` to `gluu`, then click on `Next`.
     - Scroll through the sections to get familiar with the options. For minimal setup follow with the next instructions.
     - Add `License SSA`. Before initiating the setup, please obtain an [SSA](https://docs.gluu.org/vreplace-flex-version/install/flex/prerequisites/#obtaining-an-ssa) for Flex trial, after which you will issued a JWT.
     - Click on the `Persistence` section. Change `SQL database host uri` to `postgresql.gluu.svc` in the case of `PostgreSQL` or `mysql.gluu.svc` in the case of `MySQL`. Also set `SQL database username`,`SQL password`, and `SQL database name` to the values you used during the database installation.
     - To enable Casa and the Admin UI, navigate to the `Optional Services` section and check the `Enable casa` and `boolean flag to enable admin UI` boxes. You can also enable different services like `Client API` and `Jackrabbit`.
-    - Click on the  section named `Ingress` and enable all the endpoints. You might add LB IP or address if you don't have `FQDN` for `Gluu`. 
+    - Click on the  section named `Ingress` and enable all the endpoints. You might add LB IP or address if you don't have `FQDN` for `Gluu`.
     - To pass your `FQDN` or `Domain` that is intended to serve the Gluu Flex IDP, head to the `Configuration` section:
         1.  Add your `FQDN` and check the box `Is the FQDN globally resolvable`.
-        2.  Click on the `Edit YAML` tab and add your `FQDN` to `nginx-ingress.ingress.hosts` and `nginx-ingress.ingress.tls.hosts`. 
+        2.  Click on the `Edit YAML` tab and add your `FQDN` to `nginx-ingress.ingress.hosts` and `nginx-ingress.ingress.tls.hosts`.
     - Click on `Install` on the bottom right of the window.
 
     !!! NOTE
@@ -228,15 +230,15 @@ The running deployment and services of different Gluu Flex components like `casa
 
 ## Connecting to the Setup
 
-!!! NOTE 
+!!! NOTE
     You can skip this section if you have a globally resolvable `FQDN`.
 
 In the event you used microk8s or your fqdn is not registered, the below steps will help with connecting to your setup.
 
 1. To access the setup from a browser or another VM, we need to change the ingress class annotation from `kubernetes.io/ingress.class: nginx` to `kubernetes.io/ingress.class: public` e.g., for the specific component you want to access publicly in the browser;
     - Navigate through the SUSE Rancher UI to `Service Discovery` -> `Ingresses`
-    - Choose the `ingress` for the targeted component. For example `gluu-nginx-ingress-auth-server` for `auth-server` 
-    - Click on the three dots in the top right corner 
+    - Choose the `ingress` for the targeted component. For example `gluu-nginx-ingress-auth-server` for `auth-server`
+    - Click on the three dots in the top right corner
     - Click on `Edit Yaml `
     - On line 8, change the `kubernetes.io/ingress.class` annotation value from `nginx` to `public`
     - Click `Save`
@@ -283,7 +285,7 @@ Navigate to `Users` and click on `+` in the top right corner to add a user.
 
 Jans Casa ("Casa") is a self-service web portal for managing account security preferences. The primary use case for Casa is self-service 2FA, but other use cases and functionalities can be supported via Casa plugins.
 
-Although you have not enabled two-factor authentication yet, you should still be able to login to Casa as the admin user and the password is the one you set during installation. 
+Although you have not enabled two-factor authentication yet, you should still be able to login to Casa as the admin user and the password is the one you set during installation.
 
 Point your browser to `https://demoexample.gluu.org/jans-casa` and you should be welcomed by the Casa login page as shown below.
 
@@ -296,7 +298,7 @@ After logging in, you'll be welcomed by the home page as shown below.
 
 ## Enabling Two-Factor Authentication
 
-In this part, we are going to enable two standard authentication mechanisms: OTP and FIDO. 
+In this part, we are going to enable two standard authentication mechanisms: OTP and FIDO.
 
 This can be done through the admin UI. 2FA can be turned on by clicking the switch in the Second Factor Authentication widget. By default, you will be able to choose from a few 2FA policies:
 
@@ -380,7 +382,7 @@ Here we will use manual client registration. We will use jans-tui tool provided 
 1. Add values for required params and store this JSON in a text file. Take keynote of the following properties.
 
     `schema-json-file.json`
-    
+
     ```
     {
         "dn": null,
@@ -616,7 +618,7 @@ An application docker container will be run locally which will act as the protec
 
     <img width="752" alt="Screenshot 2022-07-05 at 23 30 25" src="https://user-images.githubusercontent.com/17182751/177411203-62b386d8-3c87-443c-b04c-6c24108ace46.png">
 
-   
+
 ## Create an Authenticating Reverse Proxy Container
 
 We shall use Apache, but this time we use a Docker image that has `mod_auth_oidc` installed and configured. This proxy will require authentication, handle the authentication flow with redirects, and then forward requests to the application.
