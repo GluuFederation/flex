@@ -48,7 +48,7 @@ sudo su -
 wget https://raw.githubusercontent.com/GluuFederation/flex/vreplace-flex-version/automation/startflexdemo.sh && chmod u+x startflexdemo.sh && ./startflexdemo.sh
 ```
 
-This will install Docker, Microk8s, Helm and Gluu with the default settings that can be found inside [values.yaml](https://github.com/GluuFederation/flex/blob/main/charts/gluu/values.yaml).  
+This will install Docker, Microk8s, Helm and Gluu with the default settings that can be found inside [values.yaml](https://github.com/GluuFederation/flex/blob/main/charts/gluu/values.yaml).
 
 The installer will automatically add a record to your hosts record in the VM but if you want to access the endpoints outside the VM you must map the `ip` of the instance running Ubuntu to the FQDN you provided and then access the endpoints at your browser such in the example in the table below.
 
@@ -61,5 +61,5 @@ The installer will automatically add a record to your hosts record in the VM but
 | Admin-UI    | `https://FQDN/admin`                            |
 
 ## Configure Gluu Flex
-  You can use the Janssen [TUI](https://docs.jans.io/head/admin/kubernetes-ops/tui-k8s/) to configure Flex components. The TUI calls the Config API to perform ad hoc configuration.
-  
+
+You can use the Janssen [TUI](https://docs.jans.io/head/admin/kubernetes-ops/tui-k8s/) to configure Flex components. The TUI calls the Config API to perform ad hoc configuration.

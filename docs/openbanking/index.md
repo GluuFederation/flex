@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Gluu Open Banking Identity Platform is a specific profile of the Gluu Server that is packaged and configured for certain use cases:  
+The Gluu Open Banking Identity Platform is a specific profile of the Gluu Server that is packaged and configured for certain use cases:
 
 * Dynamic Client Registration using software statements  
 * Payment Authorization  

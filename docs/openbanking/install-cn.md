@@ -2,7 +2,7 @@
 
 ## System Requirements
 
-  
+
 Use the listing below for a detailed estimation of the minimum required resources. The table contains the default resources recommendation per service. Depending on the use of each service the resources need may increase or decrease.
 
 |Service           | CPU Unit   |    RAM      |   Disk Space     | Processor Type | Required                                    |
@@ -60,7 +60,7 @@ Use the listing below for a detailed estimation of the minimum required resource
 
       During fresh installation, the config-job checks if SSL certificates and keys are mounted as files. If no mounted files are found, it attempts to download SSL certificates from the FQDN supplied. If the download is successful, an empty key file is generated. If no mounted or downloaded files are found, it generates self-signed SSL certificates, CA certificates, and keys.
 
-  
+
       | certificates and keys of interest in https | Notes                                      |
       | ----------------------------------------  | ------------------------------------------ |
       | web_https.crt         | (nginx) web server certificate. This is commonly referred to as server.crt |
@@ -68,9 +68,9 @@ Use the listing below for a detailed estimation of the minimum required resource
       | web_https.csr         | (nginx) web server certificate signing request. This is commonly referred to as server.csr |
       | web_https_ca.crt      | Certificate authority certificate that signed/signs the web server certificate. |
       | web_https_ca.key      | Certificate authority key that signed/signs the web server certificate.|
-      
 
-     
+
+
 
   -  Create a secret containing the OB CA certificates (issuing, root, and signing CAs) and the OB AS transport crt. For more information read [here](https://kubernetes.github.io/ingress-nginx/examples/auth/client-certs/).
 
@@ -88,13 +88,13 @@ Use the listing below for a detailed estimation of the minimum required resource
 
     kubectl create secret generic ca-secret -n gluu --from-file=tls.crt=server.crt --from-file=tls.key=server.key --from-file=ca.crt=ca.crt
     ```
-        
+
 1.  Inject OBIE signed certs, keys and uri: 
 
     1.  When using OBIE signed certificates and keys, there are  many objects that can be injected. The certificate signing pem file i.e `obsigning.pem`, the signing key i.e `obsigning-oajsdij8927123.key`, the certificate transport pem file i.e `obtransport.pem`, the transport key i.e `obtransport-sdfe4234234.key`, the transport truststore p12 i.e `ob-transport-truststore.p12`, and the jwks uri `https://mykeystore.openbanking.wow/xxxxx/xxxxx.jwks`.
-    
+
     1.  base64 encrypt all `.pem` and `.key` files.
-    
+
         ```bash
         cat obsigning.pem | base64 | tr -d '\n' > obsigningbase64.pem
         cat obsigning-oajsdij8927123.key | base64 | tr -d '\n' > obsigningbase64.key
@@ -102,21 +102,21 @@ Use the listing below for a detailed estimation of the minimum required resource
         cat obtransport-sdfe4234234.key | base64 | tr -d '\n' > obtransportbase64.key
         ```
 
-        
-    1.  Generate your transport truststore or convert it to `.p12` format. Please name it as `ob-transport-truststore.p12` 
-    
+
+    1.  Generate your transport truststore or convert it to `.p12` format. Please name it as `ob-transport-truststore.p12`
+
         ```bash
         cat obissuingca.pem obrootca.pem obsigningca.pem > transport-truststore.crt
         keytool -importcert -file transport-truststore.crt -keystore ob-transport-truststore.p12 -alias obkeystore
         ```
-        
+
     1.  base64 encrypt the `ob-transport-truststore.p12`
-    
+
         ```bash
         cat ob-transport-truststore.p12 | base64 | tr -d '\n' > obtransporttruststorebase64.pem
         ```
 
-    
+
     1.  Add the kid as the alias for the JKS used for the OB AS external signing crt. This is a kid value.Used in SSA Validation, kid used while encoding a JWT sent to token URL i.e XkwIzWy44xWSlcWnMiEc8iq9s2G. This kid value should exist inside the jwks uri endpoint.
 
     1. Add those values to `override.yaml`:
@@ -145,7 +145,7 @@ Use the listing below for a detailed estimation of the minimum required resource
         # -- Open banking AS transport truststore crt. This is normally generated from the OB issuing CA, OB Root CA and Signing CA. Used when .global.cnObExtSigningJwksUri is set. Used in SSA Validation. This must be encoded using base64.
         cnObTransportTrustStore: <base64 string in obtransporttruststorebase64.pem>
     ```   
-          
+
    -  Please note that the password for the keystores created can be fetched by executing the following command:
 
       `kubectl get secret cn -n gluu --template={{.data.auth_openid_jks_pass}} | base64 -d`
@@ -177,23 +177,23 @@ After running the script, you can go ahead and [test the setup](#testing-the-set
 
 After successful installation, you can access and test the Gluu Open Banking Platform using either [curl](https://docs.gluu.org/head/openbanking/curl/) or [Jans-CLI](https://docs.gluu.org/head/openbanking/jans-cli/).
 
-    
+
 ## Changing the  signing key kid for the AS dynamically
 
 
 1.  Get a client id and its associated password. We will use the jans-config-api client id and secret
-   
+
     ```bash
     TESTCLIENT=$(kubectl get cm cn -n gluu --template={{.data.jca_client_id}})
     TESTCLIENTSECRET=$(kubectl get secret cn -n gluu --template={{.data.jca_client_pw}} | base64 -d)
     ```
-    
+
 1.  Get a token. To pass mTLS, we will use client.crt and client.key:
 
     ```bash
     curl -k -u $TESTCLIENT:$TESTCLIENTSECRET https://<FQDN>/jans-auth/restv1/token -d "grant_type=client_credentials&scope=https://jans.io/oauth/jans-auth-server/config/properties.write" --cert client.crt --key client.key
     ```
-    
+
 1.  Add the entry `staticKid` to force the AS to use a specific signing key. Please modify `XhCYDfFM7UFXHfykNaLk1aLCnZM` to the kid to be used:          
 
     ```bash
@@ -240,4 +240,3 @@ After successful installation, you can access and test the Gluu Open Banking Pla
 
 
 1. Run helm install or helm upgrade if Gluu has already been installed.
-

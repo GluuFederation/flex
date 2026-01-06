@@ -6,7 +6,7 @@ tags:
 - docker
 ---
 
-!!! Warning 
+!!! Warning
     **This image is for testing and development purposes only. Use Flex [helm charts](https://github.com/GluuFederation/flex/tree/main/charts/gluu) for production setups.**
 
 ## Overview
@@ -52,7 +52,7 @@ To access Gluu flex standard endpoints from outside of the Docker container, sys
 172.22.0.3      demoexample.gluu.org
 ```
 
-After adding the record, hit the standard endpoints such as 
+After adding the record, hit the standard endpoints such as
 
 ```
 https://demoexample.gluu.org/.well-known/openid-configuration

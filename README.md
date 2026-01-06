@@ -67,15 +67,15 @@ We need to call Gluu License APIs to perform license checks. So, if you need an
 "air-gapped" deployment which will not be allowed to call the Gluu License API,
 please reach out to  [sales@gluu.org](mailto:sales@gluu.org)
 
-When in doubt, [book a meeting](https://gluu.org/contact-us/) with the Gluu 
+When in doubt, [book a meeting](https://gluu.org/contact-us/) with the Gluu
 business team to discuss your license and support options.
 
 ## License and SSA
 
-Each Gluu Flex instance needs an SSA(Software Statement Assertion) as an input 
-during the installation process. SSA, which is an encrypted JWT string, 
-represents an installed instance of the Gluu Flex. Customers can get one or 
-more SSAs issued for a particular license using [Agama Lab](https://cloud.gluu.org/agama-lab). 
+Each Gluu Flex instance needs an SSA(Software Statement Assertion) as an input
+during the installation process. SSA, which is an encrypted JWT string,
+represents an installed instance of the Gluu Flex. Customers can get one or
+more SSAs issued for a particular license using [Agama Lab](https://cloud.gluu.org/agama-lab).
 
 ## Flex Release Timeline
 
