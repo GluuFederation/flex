@@ -66,6 +66,8 @@ const GluuInlineInput = ({
     }
   }, [value])
 
+  const isValidPath = useMemo(() => path && typeof path === 'string' && path.trim() !== '', [path])
+
   const onValueChanged = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       if (disabled) {
@@ -75,16 +77,16 @@ const GluuInlineInput = ({
       setData(nextValue)
       if (showSaveButtons) {
         setShow(true)
-      } else if (path && typeof path === 'string' && path.trim() !== '') {
+      } else if (isValidPath) {
         const patch: JsonPatch = {
           op: 'replace',
-          path,
+          path: path as string,
           value: nextValue,
         }
         handler(patch)
       }
     },
-    [disabled, isBoolean, showSaveButtons, path, handler],
+    [disabled, isBoolean, showSaveButtons, isValidPath, path, handler],
   )
 
   const handleTypeAheadChange = useCallback(
@@ -115,11 +117,10 @@ const GluuInlineInput = ({
       setCorrectValue(arrayItems)
       if (showSaveButtons) {
         setShow(true)
-      }
-      if (!showSaveButtons && path && typeof path === 'string' && path.trim() !== '') {
+      } else if (isValidPath) {
         const patch: JsonPatch = {
           op: 'replace',
-          path,
+          path: path as string,
           value: arrayItems,
         }
         handler(patch)
@@ -129,7 +130,7 @@ const GluuInlineInput = ({
   )
 
   const onAccept = useCallback(() => {
-    if (disabled || !path || typeof path !== 'string' || path.trim() === '') {
+    if (disabled || !isValidPath) {
       return
     }
     const patch: JsonPatch = {
@@ -139,7 +140,7 @@ const GluuInlineInput = ({
     } as JsonPatch
     handler(patch)
     setShow((prev) => !prev)
-  }, [disabled, path, isArray, correctValue, data, handler])
+  }, [disabled, isValidPath, isArray, correctValue, data, handler, path])
 
   const onCancel = useCallback(() => {
     setCorrectValue([])

@@ -3,37 +3,29 @@ import { Accordion, FormGroup, Col, Button } from 'Components'
 import GluuInlineInput from 'Routes/Apps/Gluu/GluuInlineInput'
 import { useTranslation } from 'react-i18next'
 import customColors from '@/customColors'
-import type { JsonPropertyBuilderProps, AccordionWithSubComponents } from './types'
+import type {
+  JsonPropertyBuilderProps,
+  AccordionWithSubComponents,
+  AppConfiguration,
+} from './types'
 import type { JsonPatch } from 'JansConfigApi'
+import {
+  isString,
+  isStringArray,
+  isEmptyArray,
+  isBoolean,
+  isNumber,
+  shouldRenderAsBoolean,
+  shouldRenderAsString,
+  shouldRenderAsStringArray,
+  isObjectArray,
+  isObject,
+  migratingTextIfRenamed,
+} from './ConfigApiConfiguration/utils'
 
 const AccordionWithSub = Accordion as AccordionWithSubComponents
 const AccordionHeader = AccordionWithSub.Header
 const AccordionBody = AccordionWithSub.Body
-
-export function generateLabel(name: string): string {
-  const result = name.replace(/([A-Z])/g, ' $1')
-  return result.charAt(0).toUpperCase() + result.slice(1)
-}
-
-import type { PropertyValue, AppConfiguration } from './types'
-
-export function isObjectArray(item: PropertyValue): boolean {
-  return Array.isArray(item) && item.length >= 1 && typeof item[0] === 'object'
-}
-
-export function isObject(item: PropertyValue): item is AppConfiguration {
-  if (item != null) {
-    return typeof item === 'object' && !Array.isArray(item)
-  }
-  return false
-}
-
-const migratingTextIfRenamed = (isRenamedKey: boolean, text: string): string => {
-  if (isRenamedKey) {
-    return text
-  }
-  return generateLabel(text)
-}
 
 const JsonPropertyBuilder = ({
   propKey,
@@ -50,44 +42,6 @@ const JsonPropertyBuilder = ({
 
   const path = initialPath ? `${initialPath}/${propKey}` : `/${propKey}`
 
-  const isBoolean = useCallback(
-    (item: PropertyValue): boolean => {
-      return typeof item === 'boolean' || schema?.type === 'boolean'
-    },
-    [schema],
-  )
-
-  const isString = useCallback(
-    (item: PropertyValue): item is string => {
-      return typeof item === 'string' || schema?.type === 'string'
-    },
-    [schema],
-  )
-
-  const isNumber = useCallback((item: PropertyValue): item is number => {
-    return typeof item === 'number' || typeof item === 'bigint'
-  }, [])
-
-  const isStringArray = useCallback(
-    (item: PropertyValue): item is string[] => {
-      return (
-        (Array.isArray(item) && item.length >= 1 && typeof item[0] === 'string') ||
-        (schema?.type === 'array' && schema?.items?.type === 'string') === true
-      )
-    },
-    [schema],
-  )
-
-  const isEmptyArray = useCallback(
-    (item: PropertyValue): boolean => {
-      return (
-        (Array.isArray(item) && item.length === 0) ||
-        (schema?.type === 'array' && schema?.items?.type === 'string') === true
-      )
-    },
-    [schema],
-  )
-
   const removeHandler = useCallback(() => {
     const patch: JsonPatch = {
       path,
@@ -98,7 +52,7 @@ const JsonPropertyBuilder = ({
     setShow(false)
   }, [path, propValue, handler])
 
-  if (isBoolean(propValue)) {
+  if (isBoolean(propValue) || shouldRenderAsBoolean(schema)) {
     return (
       <GluuInlineInput
         id={propKey}
@@ -115,7 +69,7 @@ const JsonPropertyBuilder = ({
     )
   }
 
-  if (isString(propValue)) {
+  if (isString(propValue) || shouldRenderAsString(schema)) {
     return (
       <GluuInlineInput
         id={propKey}
@@ -124,7 +78,7 @@ const JsonPropertyBuilder = ({
         rsize={lSize}
         label={migratingTextIfRenamed(isRenamedKey, propKey)}
         handler={handler}
-        value={propValue}
+        value={propValue as string}
         parentIsArray={parentIsArray}
         path={path}
       />
@@ -148,7 +102,7 @@ const JsonPropertyBuilder = ({
     )
   }
 
-  if (isStringArray(propValue) || isEmptyArray(propValue)) {
+  if (isStringArray(propValue) || isEmptyArray(propValue) || shouldRenderAsStringArray(schema)) {
     return (
       <GluuInlineInput
         id={propKey}
@@ -223,10 +177,8 @@ const JsonPropertyBuilder = ({
                       size="sm"
                       onClick={removeHandler}
                     >
-                      <i className="fa fa-remove me-2"></i>
-                      {'  '}
+                      <i className="fa fa-remove me-2" />
                       {t('actions.remove')}
-                      {'  '}
                     </Button>
                   </Col>
                 </FormGroup>

@@ -1,14 +1,6 @@
 import type { JsonPatch } from './configApiTypes'
-import type { PropertyValue } from '../../types'
+import type { PropertyValue, SchemaProperty } from '../../types'
 import { Accordion } from 'Components'
-
-export interface SchemaProperty {
-  type?: string
-  items?: {
-    type?: string
-    enum?: string[]
-  }
-}
 
 export interface JsonPropertyBuilderConfigApiProps {
   propKey: string

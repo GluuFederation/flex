@@ -128,7 +128,6 @@ export interface EditAcrsPayload {
 
 export interface JsonPatchRequestBody {
   requestBody: JsonPatch[]
-  [key: string]: JsonPatch[] | string | number | boolean | string[] | number[] | boolean[] | null
 }
 
 export type { JsonPatch, GluuCommitDialogOperation, JsonValue, UserAction, ActionData }

@@ -1,21 +1,27 @@
 import * as Yup from 'yup'
 import type { SchemaProperty, AppConfiguration } from './types'
 
-const buildPropertySchema = (propKey: string, schema?: SchemaProperty): Yup.AnySchema => {
+const createNumberSchema = (): Yup.AnySchema => {
+  return Yup.number()
+    .nullable()
+    .transform((value, originalValue) => {
+      if (originalValue === '' || originalValue === null || originalValue === undefined) {
+        return null
+      }
+      return value
+    })
+}
+
+const buildPropertySchema = (schema?: SchemaProperty): Yup.AnySchema => {
   const schemaType = schema?.type
 
   switch (schemaType) {
     case 'string':
       return Yup.string().nullable()
     case 'number':
-      return Yup.number()
-        .nullable()
-        .transform((value, originalValue) => {
-          if (originalValue === '' || originalValue === null || originalValue === undefined) {
-            return null
-          }
-          return value
-        })
+      return createNumberSchema()
+    case 'integer':
+      return createNumberSchema()
     case 'boolean':
       return Yup.boolean().nullable()
     case 'array':
@@ -35,7 +41,7 @@ export const buildAuthServerPropertiesSchema = (
 
   Object.keys(schemaDefinitions).forEach((propKey) => {
     const schema = schemaDefinitions[propKey]
-    shape[propKey] = buildPropertySchema(propKey, schema)
+    shape[propKey] = buildPropertySchema(schema)
   })
 
   return Yup.object().shape(shape) as unknown as Yup.ObjectSchema<AppConfiguration>
