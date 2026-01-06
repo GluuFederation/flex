@@ -52,13 +52,13 @@ export interface SsaDetailPageProps {
   row: SsaData
 }
 
-export interface SsaReduxState {
-  items: SsaData[]
-  loading: boolean
-  savedConfig: boolean
-  jwt: SsaJwtResponse | null
-}
-
 type ModifiedFieldValue = string | string[] | boolean
 
 export type ModifiedFields = Record<string, ModifiedFieldValue>
+
+export interface SsaAuditLogPayload {
+  jti?: string
+  org_id?: string
+  software_id?: string
+  [key: string]: unknown
+}

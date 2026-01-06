@@ -18,8 +18,9 @@ import SsaDetailPage from './SsaDetailPage'
 import JsonViewerDialog from '../JsonViewer/JsonViewerDialog'
 import customColors from '@/customColors'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
-import { useRevokeSsa } from 'JansConfigApi'
-import { useGetAllSsas, useGetSsaJwt, useSsaAuditLogger } from './hooks'
+import { useRevokeSsa, type RevokeSsaParams } from 'JansConfigApi'
+import { useQueryClient } from '@tanstack/react-query'
+import { useGetAllSsas, useGetSsaJwt, useSsaAuditLogger, SSA_QUERY_KEYS } from './hooks'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { formatExpirationDate } from './utils/dateFormatters'
 import type { SsaData, SsaJwtResponse } from './types'
@@ -37,12 +38,13 @@ const SSAListPage: React.FC = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const { navigateToRoute } = useAppNavigation()
+  const queryClient = useQueryClient()
   const [limit] = useState<number>(10)
   const [item, setItem] = useState<SsaData | null>(null)
   const [modal, setModal] = useState<boolean>(false)
   const toggle = (): void => setModal(!modal)
 
-  const { data: items = [], isLoading: loading, refetch } = useGetAllSsas()
+  const { data: items = [], isLoading: loading } = useGetAllSsas()
 
   // Add unique id to each row for MaterialTable
   const rowsWithId = useMemo(
@@ -53,7 +55,13 @@ const SSAListPage: React.FC = () => {
       })),
     [items],
   )
-  const revokeSsaMutation = useRevokeSsa()
+  const revokeSsaMutation = useRevokeSsa({
+    mutation: {
+      onError: (error) => {
+        console.error('Failed to revoke SSA:', error)
+      },
+    },
+  })
   const getSsaJwtMutation = useGetSsaJwt()
 
   const { logAudit } = useSsaAuditLogger()
@@ -191,9 +199,8 @@ const SSAListPage: React.FC = () => {
 
     setIsDeleting(true)
     try {
-      await revokeSsaMutation.mutateAsync({
-        params: { jti: item.ssa.jti },
-      })
+      const params: RevokeSsaParams = { jti: item.ssa.jti }
+      await revokeSsaMutation.mutateAsync({ params })
 
       await logAudit({
         action: DELETION,
@@ -204,7 +211,7 @@ const SSAListPage: React.FC = () => {
 
       dispatch(updateToast(true, 'success'))
       toggle()
-      refetch()
+      queryClient.invalidateQueries({ queryKey: SSA_QUERY_KEYS.all })
     } catch (error) {
       console.error('Failed to delete SSA:', error)
       dispatch(updateToast(true, 'error'))

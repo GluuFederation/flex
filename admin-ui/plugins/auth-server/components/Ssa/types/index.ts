@@ -6,7 +6,7 @@ export type {
   SsaCreatePayload,
   CustomAttributesListProps,
   SsaDetailPageProps,
-  SsaReduxState,
   ModifiedFields,
   ExpirationDate,
+  SsaAuditLogPayload,
 } from './ssaTypes'

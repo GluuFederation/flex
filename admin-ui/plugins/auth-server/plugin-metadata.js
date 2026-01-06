@@ -22,7 +22,6 @@ import { reducer as jsonReducer } from './redux/features/jsonConfigSlice'
 import { reducer as loggingReducer } from './redux/features/loggingSlice'
 import { reducer as umaResourceReducer } from './redux/features/umaResourceSlice'
 import { reducer as sessionReducer } from './redux/features/sessionSlice'
-import ssaReducer from './redux/features/SsaSlice'
 import messageReducer from './redux/features/MessageSlice'
 
 import scopesSaga from './redux/sagas/OAuthScopeSaga'
@@ -31,7 +30,6 @@ import jsonSaga from './redux/sagas/JsonConfigSaga'
 import loggingSaga from './redux/sagas/LoggingSaga'
 import umaResourceSaga from './redux/sagas/UMAResourceSaga'
 import sessionSaga from './redux/sagas/SessionSaga'
-import ssaSaga from './redux/sagas/SsaSaga'
 import messageSaga from './redux/sagas/MessageSaga'
 
 import {
@@ -254,7 +252,6 @@ const pluginMetadata = {
     { name: 'loggingReducer', reducer: loggingReducer },
     { name: 'umaResourceReducer', reducer: umaResourceReducer },
     { name: 'sessionReducer', reducer: sessionReducer },
-    { name: 'SsaReducer', reducer: ssaReducer },
     { name: 'messageReducer', reducer: messageReducer },
   ],
   sagas: [
@@ -264,7 +261,6 @@ const pluginMetadata = {
     loggingSaga(),
     umaResourceSaga(),
     sessionSaga(),
-    ssaSaga(),
     messageSaga(),
   ],
 }
