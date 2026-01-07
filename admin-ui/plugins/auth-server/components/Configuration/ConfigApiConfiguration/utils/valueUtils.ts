@@ -7,8 +7,7 @@ export const extractObjectArray = (
   if (!Array.isArray(value) || value.length === 0) {
     return null
   }
-  const firstItem = value[0]
-  if (typeof firstItem !== 'object' || firstItem === null || Array.isArray(firstItem)) {
+  if (!value.every((item) => typeof item === 'object' && item !== null && !Array.isArray(item))) {
     return null
   }
   return value as PropertyValue[] as Record<string, PropertyValue>[]
@@ -52,10 +51,6 @@ export const updateValuesAfterRemoval = (
   }
 
   const newArray = currentArray.filter((_, index) => index !== indexToRemove)
-
-  if (newArray.length !== currentArray.length - 1) {
-    return null
-  }
 
   const updatedValues = parentField
     ? (() => {
