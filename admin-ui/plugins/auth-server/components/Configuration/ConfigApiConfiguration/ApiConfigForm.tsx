@@ -127,6 +127,65 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
     return patches.length > 0 || formik.dirty
   }, [patches.length, formik.dirty])
 
+  const updateValuesAfterRemoval = (
+    currentValues: ApiAppConfiguration,
+    parentField: string | null,
+    arrayField: string,
+    indexToRemove: number,
+  ): ApiAppConfiguration | null => {
+    let currentArray: Record<string, PropertyValue>[] | undefined
+
+    if (parentField) {
+      const parentValue = currentValues[parentField as keyof ApiAppConfiguration]
+      const parentRecord = extractRecord(parentValue as PropertyValue)
+      if (parentRecord) {
+        const arrayValue = parentRecord[arrayField]
+        const extractedArray = extractObjectArray(arrayValue as PropertyValue)
+        if (extractedArray) {
+          currentArray = extractedArray
+        }
+      }
+    } else {
+      const arrayValue = currentValues[arrayField as keyof ApiAppConfiguration]
+      const extractedArray = extractObjectArray(arrayValue as PropertyValue)
+      if (extractedArray) {
+        currentArray = extractedArray
+      }
+    }
+
+    if (!Array.isArray(currentArray) || indexToRemove < 0 || indexToRemove >= currentArray.length) {
+      return null
+    }
+
+    const newArray = currentArray.filter((_, index) => index !== indexToRemove)
+
+    if (newArray.length !== currentArray.length - 1) {
+      return null
+    }
+
+    const updatedValues = parentField
+      ? (() => {
+          const parentValue = currentValues[parentField as keyof ApiAppConfiguration]
+          const parentRecord = extractRecord(parentValue as PropertyValue)
+          if (parentRecord) {
+            return {
+              ...currentValues,
+              [parentField]: {
+                ...parentRecord,
+                [arrayField]: newArray,
+              },
+            } as ApiAppConfiguration
+          }
+          return null
+        })()
+      : ({
+          ...currentValues,
+          [arrayField]: newArray,
+        } as ApiAppConfiguration)
+
+    return updatedValues
+  }
+
   const removeArrayItem = useCallback(
     (
       parentField: string | null,
@@ -143,61 +202,17 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
       processingRemovalsRef.current.add(removalKey)
 
       formik.setValues((currentValues) => {
-        let currentArray: Record<string, PropertyValue>[] | undefined
+        const updatedValues = updateValuesAfterRemoval(
+          currentValues,
+          parentField,
+          arrayField,
+          indexToRemove,
+        )
 
-        if (parentField) {
-          const parentValue = currentValues[parentField as keyof ApiAppConfiguration]
-          const parentRecord = extractRecord(parentValue as PropertyValue)
-          if (parentRecord) {
-            const arrayValue = parentRecord[arrayField]
-            const extractedArray = extractObjectArray(arrayValue as PropertyValue)
-            if (extractedArray) {
-              currentArray = extractedArray
-            }
-          }
-        } else {
-          const arrayValue = currentValues[arrayField as keyof ApiAppConfiguration]
-          const extractedArray = extractObjectArray(arrayValue as PropertyValue)
-          if (extractedArray) {
-            currentArray = extractedArray
-          }
-        }
-
-        if (
-          !Array.isArray(currentArray) ||
-          indexToRemove < 0 ||
-          indexToRemove >= currentArray.length
-        ) {
+        if (updatedValues === null) {
           processingRemovalsRef.current.delete(removalKey)
           return currentValues
         }
-
-        const newArray = currentArray.filter((_, index) => index !== indexToRemove)
-
-        if (newArray.length !== currentArray.length - 1) {
-          processingRemovalsRef.current.delete(removalKey)
-          return currentValues
-        }
-
-        const updatedValues = parentField
-          ? (() => {
-              const parentValue = currentValues[parentField as keyof ApiAppConfiguration]
-              const parentRecord = extractRecord(parentValue as PropertyValue)
-              if (parentRecord) {
-                return {
-                  ...currentValues,
-                  [parentField]: {
-                    ...parentRecord,
-                    [arrayField]: newArray,
-                  },
-                } as ApiAppConfiguration
-              }
-              return currentValues
-            })()
-          : ({
-              ...currentValues,
-              [arrayField]: newArray,
-            } as ApiAppConfiguration)
 
         return updatedValues
       })
@@ -327,11 +342,26 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
           obj: ApiAppConfiguration,
           path: string[],
         ): TraversableValue | null => {
+          if (!obj || path.length === 0) {
+            return null
+          }
+
           let current: PropertyValue | PropertyValue[] | ApiAppConfiguration = obj
           for (let i = 0; i < path.length - 1; i++) {
+            if (current === null || current === undefined) {
+              return null
+            }
+
             const part = path[i]
-            const index = parseInt(part)
-            if (!isNaN(index) && Array.isArray(current)) {
+            const index = parseInt(part, 10)
+
+            if (!isNaN(index) && part === String(index)) {
+              if (!Array.isArray(current)) {
+                return null
+              }
+              if (index < 0 || index >= current.length) {
+                return null
+              }
               current = current[index] as PropertyValue | PropertyValue[] | ApiAppConfiguration
             } else if (typeof current === 'object' && current !== null && !Array.isArray(current)) {
               const key = part as keyof typeof current
@@ -417,10 +447,7 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
               onCancel={handleCancel}
               disableCancel={!hasChanges}
               showApply
-              disableApply={(() => {
-                const hasPatches = patches.length > 0
-                return !hasChanges || (!hasPatches && !formik.isValid)
-              })()}
+              disableApply={!hasChanges || (patches.length === 0 && !formik.isValid)}
               applyButtonType="submit"
             />
           </div>

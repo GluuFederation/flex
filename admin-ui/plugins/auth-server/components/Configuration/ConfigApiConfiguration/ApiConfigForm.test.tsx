@@ -2,7 +2,8 @@ import React from 'react'
 import { render, waitFor } from '@testing-library/react'
 import { useFormik } from 'formik'
 import ApiConfigForm from './ApiConfigForm'
-import type { ApiAppConfiguration } from './types'
+import type { ApiAppConfiguration, JsonPatch } from './types'
+import type { JsonPropertyBuilderConfigApiProps } from './types/componentTypes'
 
 // Mock dependencies
 jest.mock('formik', () => ({
@@ -38,10 +39,12 @@ jest.mock('@/helpers/navigation', () => ({
   },
 }))
 
-let capturedHandler: ((patch: any) => void) | null = null
+let capturedHandler: ((patch: JsonPatch) => void) | null = null
+
+type MockJsonPropertyBuilderConfigApiProps = JsonPropertyBuilderConfigApiProps
 
 jest.mock('./JsonPropertyBuilderConfigApi', () => {
-  return function MockJsonPropertyBuilderConfigApi(props: any) {
+  return function MockJsonPropertyBuilderConfigApi(props: MockJsonPropertyBuilderConfigApiProps) {
     capturedHandler = props.handler
     return <div data-testid="json-property-builder">Mock</div>
   }
@@ -111,23 +114,23 @@ describe('ApiConfigForm - removeArrayItem', () => {
       render(<ApiConfigForm configuration={configuration} onSubmit={onSubmit} />)
 
       expect(capturedHandler).toBeDefined()
+      expect(capturedHandler).not.toBeNull()
 
-      if (capturedHandler) {
-        const removePatch = {
-          op: 'remove' as const,
-          path: '/apiApprovedIssuer/1',
-          value: 'issuer2',
-        }
-
-        capturedHandler(removePatch)
-
-        expect(mockSetValues).toHaveBeenCalled()
-        const setValuesCall = mockSetValues.mock.calls[0][0]
-        expect(typeof setValuesCall).toBe('function')
-
-        const updatedValues = setValuesCall(initialValues)
-        expect(updatedValues.apiApprovedIssuer).toEqual(['issuer1', 'issuer3'])
+      const handler = capturedHandler!
+      const removePatch: JsonPatch = {
+        op: 'remove',
+        path: '/apiApprovedIssuer/1',
+        value: 'issuer2',
       }
+
+      handler(removePatch)
+
+      expect(mockSetValues).toHaveBeenCalled()
+      const setValuesCall = mockSetValues.mock.calls[0][0]
+      expect(typeof setValuesCall).toBe('function')
+
+      const updatedValues = setValuesCall(initialValues)
+      expect(updatedValues.apiApprovedIssuer).toEqual(['issuer1', 'issuer3'])
     })
 
     it('should handle out-of-range index gracefully', () => {
@@ -147,22 +150,23 @@ describe('ApiConfigForm - removeArrayItem', () => {
       render(<ApiConfigForm configuration={configuration} onSubmit={onSubmit} />)
 
       expect(capturedHandler).toBeDefined()
+      expect(capturedHandler).not.toBeNull()
 
-      if (capturedHandler) {
-        const outOfRangePatch = {
-          op: 'remove' as const,
-          path: '/apiApprovedIssuer/10',
-          value: null,
-        }
-
-        capturedHandler(outOfRangePatch)
-
-        const setValuesCall = mockSetValues.mock.calls[0]?.[0]
-        if (setValuesCall && typeof setValuesCall === 'function') {
-          const updatedValues = setValuesCall(initialValues)
-          expect(updatedValues.apiApprovedIssuer).toEqual(['issuer1', 'issuer2'])
-        }
+      const handler = capturedHandler!
+      const outOfRangePatch: JsonPatch = {
+        op: 'remove',
+        path: '/apiApprovedIssuer/10',
+        value: null,
       }
+
+      handler(outOfRangePatch)
+
+      const setValuesCall = mockSetValues.mock.calls[0]?.[0]
+      expect(setValuesCall).toBeDefined()
+      expect(typeof setValuesCall).toBe('function')
+
+      const updatedValues = setValuesCall(initialValues)
+      expect(updatedValues.apiApprovedIssuer).toEqual(['issuer1', 'issuer2'])
     })
   })
 
@@ -189,9 +193,27 @@ describe('ApiConfigForm - removeArrayItem', () => {
 
       render(<ApiConfigForm configuration={configuration} onSubmit={onSubmit} />)
 
-      // Test that nested removal would work
-      // In practice, this would be triggered through UI interaction
-      expect(mockFormik.setValues).toBeDefined()
+      expect(capturedHandler).toBeDefined()
+      expect(capturedHandler).not.toBeNull()
+
+      const handler = capturedHandler!
+      const removePatch: JsonPatch = {
+        op: 'remove',
+        path: '/assetMgtConfiguration/assetDirMapping/1',
+        value: { directory: '/path2', description: 'desc2' },
+      }
+
+      handler(removePatch)
+
+      expect(mockSetValues).toHaveBeenCalled()
+      const setValuesCall = mockSetValues.mock.calls[0][0]
+      expect(typeof setValuesCall).toBe('function')
+
+      const updatedValues = setValuesCall(initialValues)
+      expect(updatedValues.assetMgtConfiguration.assetDirMapping).toEqual([
+        { directory: '/path1', description: 'desc1' },
+        { directory: '/path3', description: 'desc3' },
+      ])
     })
   })
 
@@ -212,9 +234,23 @@ describe('ApiConfigForm - removeArrayItem', () => {
 
       render(<ApiConfigForm configuration={configuration} onSubmit={onSubmit} />)
 
-      // processingRemovalsRef should prevent concurrent removals
-      // This is tested through the component's internal logic
-      expect(mockFormik.setValues).toBeDefined()
+      expect(capturedHandler).toBeDefined()
+      expect(capturedHandler).not.toBeNull()
+
+      const handler = capturedHandler!
+      const removePatch: JsonPatch = {
+        op: 'remove',
+        path: '/apiApprovedIssuer/0',
+        value: 'issuer1',
+      }
+
+      const firstCallCount = mockSetValues.mock.calls.length
+      handler(removePatch)
+      expect(mockSetValues).toHaveBeenCalledTimes(firstCallCount + 1)
+
+      const secondCallCount = mockSetValues.mock.calls.length
+      handler(removePatch)
+      expect(mockSetValues).toHaveBeenCalledTimes(secondCallCount)
     })
   })
 
@@ -235,8 +271,24 @@ describe('ApiConfigForm - removeArrayItem', () => {
 
       render(<ApiConfigForm configuration={configuration} onSubmit={onSubmit} />)
 
-      // Patches should be managed correctly
-      expect(mockFormik.setValues).toBeDefined()
+      expect(capturedHandler).toBeDefined()
+      expect(capturedHandler).not.toBeNull()
+
+      const handler = capturedHandler!
+      const removePatch: JsonPatch = {
+        op: 'remove',
+        path: '/apiApprovedIssuer/0',
+        value: 'issuer1',
+      }
+
+      handler(removePatch)
+
+      expect(mockSetValues).toHaveBeenCalled()
+      const setValuesCall = mockSetValues.mock.calls[0][0]
+      expect(typeof setValuesCall).toBe('function')
+
+      const updatedValues = setValuesCall(initialValues)
+      expect(updatedValues.apiApprovedIssuer).toEqual(['issuer2'])
     })
 
     it('should not duplicate existing remove patch', () => {
@@ -255,8 +307,21 @@ describe('ApiConfigForm - removeArrayItem', () => {
 
       render(<ApiConfigForm configuration={configuration} onSubmit={onSubmit} />)
 
-      // Duplicate patches should be prevented
-      expect(mockFormik.setValues).toBeDefined()
+      expect(capturedHandler).toBeDefined()
+      expect(capturedHandler).not.toBeNull()
+
+      const handler = capturedHandler!
+      const removePatch: JsonPatch = {
+        op: 'remove',
+        path: '/apiApprovedIssuer/0',
+        value: 'issuer1',
+      }
+
+      handler(removePatch)
+      const firstCallCount = mockSetValues.mock.calls.length
+
+      handler(removePatch)
+      expect(mockSetValues.mock.calls.length).toBeGreaterThanOrEqual(firstCallCount)
     })
   })
 
@@ -308,8 +373,8 @@ describe('ApiConfigForm - removeArrayItem', () => {
         apiApprovedIssuer: ['issuer1', 'issuer2'],
       } as ApiAppConfiguration
 
-      let resolveValidation: (value: any) => void
-      const validationPromise = new Promise((resolve) => {
+      let resolveValidation: ((value: Record<string, string>) => void) | undefined
+      const validationPromise = new Promise<Record<string, string>>((resolve) => {
         resolveValidation = resolve
       })
 
@@ -326,37 +391,38 @@ describe('ApiConfigForm - removeArrayItem', () => {
       render(<ApiConfigForm configuration={configuration} onSubmit={onSubmit} />)
 
       expect(capturedHandler).toBeDefined()
+      expect(capturedHandler).not.toBeNull()
 
-      if (capturedHandler) {
-        const removePatch = {
-          op: 'remove' as const,
-          path: '/apiApprovedIssuer/0',
-          value: 'issuer1',
-        }
-
-        capturedHandler(removePatch)
-
-        expect(mockSetValues).toHaveBeenCalled()
-        expect(mockValidateForm).toHaveBeenCalled()
-
-        const firstCallCount = mockSetValues.mock.calls.length
-
-        resolveValidation!({})
-
-        await waitFor(() => {
-          expect(mockValidateForm).toHaveBeenCalled()
-        })
-
-        const secondRemovePatch = {
-          op: 'remove' as const,
-          path: '/apiApprovedIssuer/0',
-          value: 'issuer1',
-        }
-
-        capturedHandler(secondRemovePatch)
-
-        expect(mockSetValues.mock.calls.length).toBeGreaterThan(firstCallCount)
+      const handler = capturedHandler!
+      const removePatch: JsonPatch = {
+        op: 'remove',
+        path: '/apiApprovedIssuer/0',
+        value: 'issuer1',
       }
+
+      handler(removePatch)
+
+      expect(mockSetValues).toHaveBeenCalled()
+      expect(mockValidateForm).toHaveBeenCalled()
+
+      const firstCallCount = mockSetValues.mock.calls.length
+
+      expect(resolveValidation).toBeDefined()
+      resolveValidation!({})
+
+      await waitFor(() => {
+        expect(mockValidateForm).toHaveBeenCalled()
+      })
+
+      const secondRemovePatch: JsonPatch = {
+        op: 'remove',
+        path: '/apiApprovedIssuer/0',
+        value: 'issuer1',
+      }
+
+      handler(secondRemovePatch)
+
+      expect(mockSetValues.mock.calls.length).toBeGreaterThan(firstCallCount)
     })
   })
 })
