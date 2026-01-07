@@ -269,12 +269,12 @@ function LdapListPage(): ReactElement {
         try {
           await deleteMutation.mutateAsync({ name: item.configId })
           await logLdapDelete(item, message)
+          toggle()
           navigateBack(ROUTES.LDAP_LIST)
         } catch (error) {
           console.error('Failed to delete LDAP config:', error)
         }
       }
-      toggle()
     },
     [item, navigateBack, toggle, deleteMutation, logLdapDelete],
   )

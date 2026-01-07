@@ -76,7 +76,7 @@ export type CacheFormValuesUnion =
   | NativePersistenceCacheFormValues
 
 export interface CacheFormValues {
-  cacheProviderType: CacheProviderType | string
+  cacheProviderType: CacheProviderType
   memoryDefaultPutExpiration?: number
   memCacheServers?: string
   maxOperationQueueLength?: number
@@ -101,26 +101,26 @@ export interface CacheFormValues {
 }
 
 export function isInMemoryCache(
-  values: CacheFormValues,
-): values is CacheFormValues & InMemoryCacheFormValues {
+  values: CacheFormValues | CacheFormValuesUnion,
+): values is InMemoryCacheFormValues {
   return values.cacheProviderType === 'IN_MEMORY'
 }
 
 export function isMemcachedCache(
-  values: CacheFormValues,
-): values is CacheFormValues & MemcachedCacheFormValues {
+  values: CacheFormValues | CacheFormValuesUnion,
+): values is MemcachedCacheFormValues {
   return values.cacheProviderType === 'MEMCACHED'
 }
 
 export function isRedisCache(
-  values: CacheFormValues,
-): values is CacheFormValues & RedisCacheFormValues {
+  values: CacheFormValues | CacheFormValuesUnion,
+): values is RedisCacheFormValues {
   return values.cacheProviderType === 'REDIS'
 }
 
 export function isNativePersistenceCache(
-  values: CacheFormValues,
-): values is CacheFormValues & NativePersistenceCacheFormValues {
+  values: CacheFormValues | CacheFormValuesUnion,
+): values is NativePersistenceCacheFormValues {
   return values.cacheProviderType === 'NATIVE_PERSISTENCE'
 }
 

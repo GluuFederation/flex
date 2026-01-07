@@ -244,12 +244,12 @@ function SqlListPage(): ReactElement {
         try {
           await deleteMutation.mutateAsync({ name: item.configId })
           await logSqlDelete(item, message)
+          toggle()
           navigateBack(ROUTES.SQL_LIST)
         } catch (error) {
           console.error('Failed to delete SQL config:', error)
         }
       }
-      toggle()
     },
     [item, deleteMutation, logSqlDelete, navigateBack, toggle],
   )

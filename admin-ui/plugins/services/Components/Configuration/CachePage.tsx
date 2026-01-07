@@ -39,7 +39,7 @@ import {
   type RedisConfiguration,
 } from 'JansConfigApi'
 import { useCacheAudit } from './hooks'
-import type { CacheFormValues } from './types'
+import type { CacheFormValues, CacheProviderType } from './types'
 import { isInMemoryCache, isMemcachedCache, isRedisCache, isNativePersistenceCache } from './types'
 
 function CachePage(): ReactElement | null {
@@ -49,7 +49,7 @@ function CachePage(): ReactElement | null {
   const { logCacheUpdate } = useCacheAudit()
 
   const [modal, setModal] = useState(false)
-  const [cacheProviderType, setCacheProviderType] = useState<string>('')
+  const [cacheProviderType, setCacheProviderType] = useState<CacheProviderType | ''>('')
 
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
   const cacheResourceId = useMemo(() => ADMIN_UI_RESOURCES.Cache, [])
@@ -118,7 +118,7 @@ function CachePage(): ReactElement | null {
 
   const initialValues = useMemo<CacheFormValues>(
     () => ({
-      cacheProviderType: cacheData.cacheProviderType || '',
+      cacheProviderType: (cacheData.cacheProviderType || 'IN_MEMORY') as CacheProviderType,
       memCacheServers: cacheMemData.servers,
       maxOperationQueueLength: cacheMemData.maxOperationQueueLength,
       bufferSize: cacheMemData.bufferSize,
@@ -272,8 +272,9 @@ function CachePage(): ReactElement | null {
                               name="cacheProviderType"
                               value={cacheProviderType}
                               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                setCacheProviderType(e.target.value)
-                                formik.setFieldValue('cacheProviderType', e.target.value)
+                                const value = e.target.value as CacheProviderType
+                                setCacheProviderType(value)
+                                formik.setFieldValue('cacheProviderType', value)
                               }}
                             >
                               <option value="IN_MEMORY">{t('options.in_memory')}</option>
