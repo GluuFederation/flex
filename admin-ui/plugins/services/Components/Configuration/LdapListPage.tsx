@@ -107,7 +107,6 @@ function LdapListPage(): ReactElement {
   const [myActions, setMyActions] = useState<ActionType[]>([])
   const [item, setItem] = useState<GluuLdapConfiguration | null>(null)
   const [modal, setModal] = useState(false)
-  const [testRunning, setTestRunning] = useState(false)
   const [alertObj, setAlertObj] = useState<AlertState>({
     severity: undefined,
     message: '',
@@ -143,7 +142,6 @@ function LdapListPage(): ReactElement {
           message: t('messages.ldap_connection_success'),
           show: true,
         })
-        setTestRunning(false)
       },
       onError: () => {
         setAlertObj({
@@ -151,7 +149,6 @@ function LdapListPage(): ReactElement {
           message: t('messages.ldap_connection_error'),
           show: true,
         })
-        setTestRunning(false)
       },
     },
   })
@@ -285,7 +282,6 @@ function LdapListPage(): ReactElement {
   const testLdapConnect = useCallback(
     (row: GluuLdapConfiguration) => {
       setAlertObj({ severity: undefined, message: '', show: false })
-      setTestRunning(true)
       testMutation.mutate({ data: row })
     },
     [testMutation],
