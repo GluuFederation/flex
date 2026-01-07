@@ -12,8 +12,12 @@ import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/types'
 import type { FormikTouched } from 'formik'
 import JsonPropertyBuilderConfigApi from './JsonPropertyBuilderConfigApi'
-import { READ_ONLY_FIELDS, updateValuesAfterRemoval, applyRemovePatchToValues } from './utils'
-import { configApiPropertiesSchema } from './validations'
+import {
+  READ_ONLY_FIELDS,
+  updateValuesAfterRemoval,
+  applyRemovePatchToValues,
+  configApiPropertiesSchema,
+} from './utils'
 import type { ApiAppConfiguration, JsonPatch } from './types'
 import type { PropertyValue } from '../types'
 
@@ -108,11 +112,6 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
     return patches.length > 0 || formik.dirty
   }, [patches.length, formik.dirty])
 
-  const setValues = formik.setValues
-  const setTouched = formik.setTouched
-  const validateForm = formik.validateForm
-  const touched = formik.touched
-
   const removeArrayItem = useCallback(
     (
       parentField: string | null,
@@ -128,7 +127,7 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
 
       processingRemovalsRef.current.add(removalKey)
 
-      setValues((currentValues) => {
+      formik.setValues((currentValues) => {
         const updatedValues = updateValuesAfterRemoval(
           currentValues,
           parentField,
@@ -178,23 +177,23 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
       })
 
       const touchedField = parentField || arrayField
-      setTouched({
-        ...touched,
+      formik.setTouched({
+        ...formik.touched,
         [touchedField]: true,
       } as FormikTouched<ApiAppConfiguration>)
 
       setResetKey((prev) => prev + 1)
 
-      validateForm().then(() => {
+      formik.validateForm().then(() => {
         processingRemovalsRef.current.delete(removalKey)
       })
       return true
     },
     [
-      setValues,
-      setTouched,
-      validateForm,
-      touched,
+      formik.setValues,
+      formik.setTouched,
+      formik.validateForm,
+      formik.touched,
       setPatches,
       setResetKey,
       updateValuesAfterRemoval,
