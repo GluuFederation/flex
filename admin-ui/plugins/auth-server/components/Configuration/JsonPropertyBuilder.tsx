@@ -121,6 +121,9 @@ const JsonPropertyBuilder = ({
   }
 
   if (isObjectArray(propValue)) {
+    // isObjectArray ensures propValue is an array of objects (AppConfiguration)
+    // Runtime check guarantees it's an array, so this cast is safe
+    const arrayValue = (Array.isArray(propValue) ? propValue : []) as AppConfiguration[]
     return (
       <Accordion className="mb-2 b-primary" initialOpen>
         <AccordionHeader
@@ -131,12 +134,11 @@ const JsonPropertyBuilder = ({
           {propKey.toUpperCase()}
         </AccordionHeader>
         <AccordionBody>
-          {Object.keys(propValue as AppConfiguration)?.map((item) => {
-            const nestedValue = (propValue as AppConfiguration)[item]
+          {arrayValue.map((nestedValue, index) => {
             return (
               <JsonPropertyBuilder
-                key={item}
-                propKey={item}
+                key={String(index)}
+                propKey={String(index)}
                 propValue={nestedValue}
                 handler={handler}
                 lSize={lSize}
