@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react'
+import React, { ReactElement, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { Container, CardBody, Card } from 'Components'
 import SqlForm from './SqlForm'
@@ -17,6 +17,7 @@ function SqlAddPage(): ReactElement {
   const { navigateBack } = useAppNavigation()
   const queryClient = useQueryClient()
   const { logSqlCreate } = useSqlAudit()
+  const actionMessageRef = useRef<string>('SQL configuration created')
 
   const addMutation = usePostConfigDatabaseSql({
     mutation: {
@@ -24,7 +25,7 @@ function SqlAddPage(): ReactElement {
         dispatch(updateToast(true, 'success'))
         queryClient.invalidateQueries({ queryKey: getGetConfigDatabaseSqlQueryKey() })
         try {
-          await logSqlCreate(variables.data, 'SQL configuration created')
+          await logSqlCreate(variables.data, actionMessageRef.current)
         } catch (error) {
           console.error('Failed to log SQL create:', error)
         }
@@ -41,6 +42,7 @@ function SqlAddPage(): ReactElement {
       const { action_message, ...cleanData } = data.sql as SqlConfiguration & {
         action_message?: string
       }
+      actionMessageRef.current = action_message || 'SQL configuration created'
       addMutation.mutate({ data: cleanData })
     }
   }

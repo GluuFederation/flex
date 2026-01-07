@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react'
+import React, { ReactElement, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { Container, CardBody, Card } from 'Components'
 import LdapForm from './LdapForm'
@@ -21,6 +21,7 @@ function LdapEditPage(): ReactElement {
   const { navigateBack } = useAppNavigation()
   const queryClient = useQueryClient()
   const { logLdapUpdate } = useLdapAudit()
+  const actionMessageRef = useRef<string>('LDAP configuration updated')
 
   const editMutation = usePutConfigDatabaseLdap({
     mutation: {
@@ -28,7 +29,7 @@ function LdapEditPage(): ReactElement {
         dispatch(updateToast(true, 'success'))
         queryClient.invalidateQueries({ queryKey: getGetConfigDatabaseLdapQueryKey() })
         try {
-          await logLdapUpdate(variables.data, 'LDAP configuration updated')
+          await logLdapUpdate(variables.data, actionMessageRef.current)
         } catch (error) {
           console.error('Failed to log LDAP update:', error)
         }
@@ -46,6 +47,7 @@ function LdapEditPage(): ReactElement {
       const { action_message, ...cleanData } = ldapData as GluuLdapConfiguration & {
         action_message?: string
       }
+      actionMessageRef.current = action_message || 'LDAP configuration updated'
       editMutation.mutate({ data: cleanData })
     }
   }

@@ -31,15 +31,7 @@ import {
 } from 'JansConfigApi'
 import { currentSqlItemAtom } from './atoms'
 import { useSqlAudit } from './hooks'
-import type { PersistenceInfo } from './types'
-
-function isPersistenceInfo(data: unknown): data is PersistenceInfo {
-  return (
-    data !== null &&
-    typeof data === 'object' &&
-    ('persistenceType' in data || Object.keys(data).length === 0)
-  )
-}
+import { isPersistenceInfo } from './types'
 
 interface AlertState {
   severity: 'success' | 'error' | 'warning' | 'info' | undefined

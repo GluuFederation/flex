@@ -11,6 +11,7 @@ export interface LdapFormProps {
   item: GluuLdapConfiguration
   handleSubmit: (data: { ldap: GluuLdapConfiguration } | GluuLdapConfiguration) => void
   createLdap?: boolean
+  isLoading?: boolean
 }
 
 export interface LdapDetailPageProps {
@@ -29,6 +30,110 @@ export interface SqlDetailPageProps {
   testSqlConnection?: (row: SqlConfiguration) => void
 }
 
+// Cache provider type literals
+export type CacheProviderType = 'IN_MEMORY' | 'MEMCACHED' | 'REDIS' | 'NATIVE_PERSISTENCE'
+
+// Provider-specific form value interfaces
+export interface InMemoryCacheFormValues {
+  cacheProviderType: 'IN_MEMORY'
+  memoryDefaultPutExpiration?: number
+}
+
+export interface MemcachedCacheFormValues {
+  cacheProviderType: 'MEMCACHED'
+  memCacheServers?: string
+  maxOperationQueueLength?: number
+  bufferSize?: number
+  memDefaultPutExpiration?: number
+  connectionFactoryType?: string
+}
+
+export interface RedisCacheFormValues {
+  cacheProviderType: 'REDIS'
+  redisProviderType?: string
+  servers?: string
+  password?: string
+  sentinelMasterGroupName?: string
+  sslTrustStoreFilePath?: string
+  redisDefaultPutExpiration?: number
+  useSSL?: boolean
+  maxIdleConnections?: number
+  maxTotalConnections?: number
+  connectionTimeout?: number
+  soTimeout?: number
+  maxRetryAttempts?: number
+}
+
+export interface NativePersistenceCacheFormValues {
+  cacheProviderType: 'NATIVE_PERSISTENCE'
+  nativeDefaultPutExpiration?: number
+  defaultCleanupBatchSize?: number
+  deleteExpiredOnGetRequest?: boolean
+}
+
+// Discriminated union for type-safe provider handling
+export type CacheFormValuesUnion =
+  | InMemoryCacheFormValues
+  | MemcachedCacheFormValues
+  | RedisCacheFormValues
+  | NativePersistenceCacheFormValues
+
+// Flattened type for Formik compatibility (supports provider switching)
+// All provider fields are optional since only one provider is active at a time
+export interface CacheFormValues {
+  cacheProviderType: CacheProviderType | string
+  // In-Memory fields
+  memoryDefaultPutExpiration?: number
+  // Memcached fields
+  memCacheServers?: string
+  maxOperationQueueLength?: number
+  bufferSize?: number
+  memDefaultPutExpiration?: number
+  connectionFactoryType?: string
+  // Redis fields
+  redisProviderType?: string
+  servers?: string
+  password?: string
+  sentinelMasterGroupName?: string
+  sslTrustStoreFilePath?: string
+  redisDefaultPutExpiration?: number
+  useSSL?: boolean
+  maxIdleConnections?: number
+  maxTotalConnections?: number
+  connectionTimeout?: number
+  soTimeout?: number
+  maxRetryAttempts?: number
+  // Native Persistence fields
+  nativeDefaultPutExpiration?: number
+  defaultCleanupBatchSize?: number
+  deleteExpiredOnGetRequest?: boolean
+}
+
+// Type guards for discriminated union
+export function isInMemoryCache(
+  values: CacheFormValues,
+): values is CacheFormValues & InMemoryCacheFormValues {
+  return values.cacheProviderType === 'IN_MEMORY'
+}
+
+export function isMemcachedCache(
+  values: CacheFormValues,
+): values is CacheFormValues & MemcachedCacheFormValues {
+  return values.cacheProviderType === 'MEMCACHED'
+}
+
+export function isRedisCache(
+  values: CacheFormValues,
+): values is CacheFormValues & RedisCacheFormValues {
+  return values.cacheProviderType === 'REDIS'
+}
+
+export function isNativePersistenceCache(
+  values: CacheFormValues,
+): values is CacheFormValues & NativePersistenceCacheFormValues {
+  return values.cacheProviderType === 'NATIVE_PERSISTENCE'
+}
+
 export interface CacheInMemoryProps {
   formik: FormikProps<CacheFormValues>
 }
@@ -45,31 +150,6 @@ export interface CacheNativeProps {
 export interface CacheRedisProps {
   config: RedisConfiguration
   formik: FormikProps<CacheFormValues>
-}
-
-export interface CacheFormValues {
-  cacheProviderType: string
-  memCacheServers?: string
-  maxOperationQueueLength?: number
-  bufferSize?: number
-  memDefaultPutExpiration?: number
-  connectionFactoryType?: string
-  memoryDefaultPutExpiration?: number
-  redisProviderType?: string
-  servers?: string
-  password?: string
-  sentinelMasterGroupName?: string
-  sslTrustStoreFilePath?: string
-  redisDefaultPutExpiration?: number
-  useSSL?: boolean
-  maxIdleConnections?: number
-  maxTotalConnections?: number
-  connectionTimeout?: number
-  soTimeout?: number
-  maxRetryAttempts?: number
-  nativeDefaultPutExpiration?: number
-  defaultCleanupBatchSize?: number
-  deleteExpiredOnGetRequest?: boolean
 }
 
 export interface CouchbaseItemProps {
@@ -105,4 +185,10 @@ export interface PersistenceInfo {
   productVersion?: string
   driverName?: string
   driverVersion?: string
+}
+
+export function isPersistenceInfo(data: unknown): data is PersistenceInfo {
+  return (
+    data !== null && typeof data === 'object' && !Array.isArray(data) && 'persistenceType' in data
+  )
 }

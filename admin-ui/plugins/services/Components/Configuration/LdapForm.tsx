@@ -16,13 +16,7 @@ import { updateToast } from 'Redux/features/toastSlice'
 import customColors from '@/customColors'
 import { usePostConfigDatabaseLdapTest } from 'JansConfigApi'
 import type { GluuLdapConfiguration } from 'JansConfigApi'
-
-interface LdapFormProps {
-  item: GluuLdapConfiguration
-  handleSubmit: (data: { ldap: GluuLdapConfiguration } | GluuLdapConfiguration) => void
-  createLdap?: boolean
-  isLoading?: boolean
-}
+import type { LdapFormProps } from './types'
 
 interface ServerItem {
   servers?: string

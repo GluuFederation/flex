@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react'
+import React, { ReactElement, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { cloneDeep } from 'lodash'
 import { Container, CardBody, Card } from 'Components'
@@ -21,6 +21,7 @@ function SqlEditPage(): ReactElement {
   const { navigateBack } = useAppNavigation()
   const queryClient = useQueryClient()
   const { logSqlUpdate } = useSqlAudit()
+  const actionMessageRef = useRef<string>('SQL configuration updated')
 
   const editMutation = usePutConfigDatabaseSql({
     mutation: {
@@ -28,7 +29,7 @@ function SqlEditPage(): ReactElement {
         dispatch(updateToast(true, 'success'))
         queryClient.invalidateQueries({ queryKey: getGetConfigDatabaseSqlQueryKey() })
         try {
-          await logSqlUpdate(variables.data, 'SQL configuration updated')
+          await logSqlUpdate(variables.data, actionMessageRef.current)
         } catch (error) {
           console.error('Failed to log SQL update:', error)
         }
@@ -45,6 +46,7 @@ function SqlEditPage(): ReactElement {
       const { action_message, ...cleanData } = data.sql as SqlConfiguration & {
         action_message?: string
       }
+      actionMessageRef.current = action_message || 'SQL configuration updated'
       editMutation.mutate({ data: cleanData })
     }
   }

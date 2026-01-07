@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react'
+import React, { ReactElement, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { Container, CardBody, Card } from 'Components'
 import LdapForm from './LdapForm'
@@ -24,6 +24,7 @@ function LdapAddPage(): ReactElement {
   const { navigateBack } = useAppNavigation()
   const queryClient = useQueryClient()
   const { logLdapCreate } = useLdapAudit()
+  const actionMessageRef = useRef<string>('LDAP configuration created')
 
   const addMutation = usePostConfigDatabaseLdap({
     mutation: {
@@ -31,7 +32,7 @@ function LdapAddPage(): ReactElement {
         dispatch(updateToast(true, 'success'))
         queryClient.invalidateQueries({ queryKey: getGetConfigDatabaseLdapQueryKey() })
         try {
-          await logLdapCreate(variables.data, 'LDAP configuration created')
+          await logLdapCreate(variables.data, actionMessageRef.current)
         } catch (error) {
           console.error('Failed to log LDAP create:', error)
         }
@@ -49,6 +50,7 @@ function LdapAddPage(): ReactElement {
       const { action_message, ...cleanData } = ldapData as GluuLdapConfiguration & {
         action_message?: string
       }
+      actionMessageRef.current = action_message || 'LDAP configuration created'
       addMutation.mutate({ data: cleanData })
     }
   }

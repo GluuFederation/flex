@@ -40,6 +40,7 @@ import {
 } from 'JansConfigApi'
 import { useCacheAudit } from './hooks'
 import type { CacheFormValues } from './types'
+import { isInMemoryCache, isMemcachedCache, isRedisCache, isNativePersistenceCache } from './types'
 
 function CachePage(): ReactElement | null {
   const dispatch = useDispatch()
@@ -185,7 +186,7 @@ function CachePage(): ReactElement | null {
                 }
 
                 try {
-                  if (values.cacheProviderType === 'NATIVE_PERSISTENCE') {
+                  if (isNativePersistenceCache(values)) {
                     const nativeCache: NativePersistenceConfiguration = {
                       defaultPutExpiration: values.nativeDefaultPutExpiration,
                       defaultCleanupBatchSize: values.defaultCleanupBatchSize,
@@ -194,14 +195,14 @@ function CachePage(): ReactElement | null {
                     await putNativeMutation.mutateAsync({ data: nativeCache })
                   }
 
-                  if (values.cacheProviderType === 'IN_MEMORY') {
+                  if (isInMemoryCache(values)) {
                     const memoryCache: InMemoryConfiguration = {
                       defaultPutExpiration: values.memoryDefaultPutExpiration,
                     }
                     await putMemoryMutation.mutateAsync({ data: memoryCache })
                   }
 
-                  if (values.cacheProviderType === 'REDIS') {
+                  if (isRedisCache(values)) {
                     const redisCache: RedisConfiguration = {
                       redisProviderType:
                         values.redisProviderType as RedisConfiguration['redisProviderType'],
@@ -220,7 +221,7 @@ function CachePage(): ReactElement | null {
                     await putRedisMutation.mutateAsync({ data: redisCache })
                   }
 
-                  if (values.cacheProviderType === 'MEMCACHED') {
+                  if (isMemcachedCache(values)) {
                     const memCache: MemcachedConfiguration = {
                       servers: values.memCacheServers,
                       maxOperationQueueLength: values.maxOperationQueueLength,

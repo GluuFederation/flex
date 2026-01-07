@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useCallback } from 'react'
+import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { Container, CardBody, Card } from 'Components'
@@ -6,6 +6,7 @@ import UserForm from './UserForm'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import Alert from '@mui/material/Alert'
 import { UserEditFormValues, ModifiedFields } from '../types/ComponentTypes'
 import { PersonAttribute, CustomUser } from '../types/UserApiTypes'
 import {
@@ -26,18 +27,7 @@ import {
   getStandardFieldValues,
 } from '../utils'
 import { revokeSessionWhenFieldsModifiedInUserForm } from '../helper/constants'
-
-interface PersistenceInfo {
-  persistenceType?: string
-}
-
-function isPersistenceInfo(data: unknown): data is PersistenceInfo {
-  return (
-    data !== null &&
-    typeof data === 'object' &&
-    ('persistenceType' in data || Object.keys(data).length === 0)
-  )
-}
+import { isPersistenceInfo } from 'Plugins/services/Components/Configuration/types'
 
 function UserEditPage() {
   const dispatch = useDispatch()
@@ -73,11 +63,13 @@ function UserEditPage() {
     ? persistenceData.persistenceType
     : undefined
 
+  const persistenceErrorToastShown = useRef(false)
   useEffect(() => {
-    if (persistenceError) {
-      console.error('Failed to load persistence configuration')
+    if (persistenceError && !persistenceErrorToastShown.current) {
+      persistenceErrorToastShown.current = true
+      dispatch(updateToast(true, 'warning', t('messages.persistence_config_load_failed')))
     }
-  }, [persistenceError])
+  }, [persistenceError, dispatch, t])
 
   const revokeSessionMutation = useRevokeUserSession()
 
@@ -147,6 +139,11 @@ function UserEditPage() {
     <Container>
       <Card type="border" color={null} className="mb-3">
         <CardBody>
+          {persistenceError && (
+            <Alert severity="warning" sx={{ mb: 2 }}>
+              {t('messages.persistence_config_load_failed_detail')}
+            </Alert>
+          )}
           <GluuLoader blocking={loadingAttributes || loadingPersistence || isSubmitting}>
             <UserForm
               onSubmitData={submitData}

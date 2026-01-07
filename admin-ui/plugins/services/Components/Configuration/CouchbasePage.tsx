@@ -18,7 +18,7 @@ import {
   type CouchbaseConfiguration,
 } from 'JansConfigApi'
 import { useCouchbaseAudit } from './hooks'
-import type { PersistenceInfo } from './types'
+import { isPersistenceInfo } from './types'
 
 function CouchbasePage(): ReactElement {
   const dispatch = useDispatch()
@@ -36,7 +36,9 @@ function CouchbasePage(): ReactElement {
     query: { staleTime: 30000 },
   })
 
-  const persistenceType = (persistenceData as PersistenceInfo | undefined)?.persistenceType
+  const persistenceType = isPersistenceInfo(persistenceData)
+    ? persistenceData.persistenceType
+    : undefined
 
   const editMutation = usePutConfigDatabaseCouchbase()
 
