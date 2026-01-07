@@ -1,4 +1,4 @@
-import React, { ReactElement, useRef } from 'react'
+import React, { ReactElement, useRef, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { cloneDeep } from 'lodash'
 import { Container, CardBody, Card } from 'Components'
@@ -14,11 +14,12 @@ import {
 } from 'JansConfigApi'
 import { currentSqlItemAtom } from './atoms'
 import { useSqlAudit } from './hooks'
+import { extractActionMessage } from './types'
 
-function SqlEditPage(): ReactElement {
+function SqlEditPage(): ReactElement | null {
   const item = useAtomValue(currentSqlItemAtom)
   const dispatch = useDispatch()
-  const { navigateBack } = useAppNavigation()
+  const { navigateBack, navigateToRoute } = useAppNavigation()
   const queryClient = useQueryClient()
   const { logSqlUpdate } = useSqlAudit()
   const actionMessageRef = useRef<string>('SQL configuration updated')
@@ -43,24 +44,23 @@ function SqlEditPage(): ReactElement {
 
   function handleSubmit(data: { sql: SqlConfiguration }): void {
     if (data) {
-      const { action_message, ...cleanData } = data.sql as SqlConfiguration & {
-        action_message?: string
-      }
-      actionMessageRef.current = action_message || 'SQL configuration updated'
+      const { cleanData, message } = extractActionMessage(
+        data.sql as SqlConfiguration & { action_message?: string },
+        'SQL configuration updated',
+      )
+      actionMessageRef.current = message
       editMutation.mutate({ data: cleanData })
     }
   }
 
+  useEffect(() => {
+    if (!item) {
+      navigateToRoute(ROUTES.SQL_LIST)
+    }
+  }, [item, navigateToRoute])
+
   if (!item) {
-    return (
-      <Container>
-        <Card className="mb-3">
-          <CardBody>
-            <div>No SQL configuration selected. Please go back and select one.</div>
-          </CardBody>
-        </Card>
-      </Container>
-    )
+    return null
   }
 
   return (

@@ -35,7 +35,7 @@ import { useLdapAudit } from './hooks'
 import { isPersistenceInfo } from './types'
 
 interface AlertState {
-  severity: 'success' | 'error' | 'warning' | 'info' | ''
+  severity: 'success' | 'error' | 'warning' | 'info' | undefined
   message: string
   show: boolean
 }
@@ -109,7 +109,7 @@ function LdapListPage(): ReactElement {
   const [modal, setModal] = useState(false)
   const [testRunning, setTestRunning] = useState(false)
   const [alertObj, setAlertObj] = useState<AlertState>({
-    severity: '',
+    severity: undefined,
     message: '',
     show: false,
   })
@@ -269,11 +269,11 @@ function LdapListPage(): ReactElement {
         try {
           await deleteMutation.mutateAsync({ name: item.configId })
           await logLdapDelete(item, message)
+          navigateBack(ROUTES.LDAP_LIST)
         } catch (error) {
           console.error('Failed to delete LDAP config:', error)
         }
       }
-      navigateBack(ROUTES.LDAP_LIST)
       toggle()
     },
     [item, navigateBack, toggle, deleteMutation, logLdapDelete],
@@ -281,7 +281,7 @@ function LdapListPage(): ReactElement {
 
   const testLdapConnect = useCallback(
     (row: GluuLdapConfiguration) => {
-      setAlertObj({ severity: '', message: '', show: false })
+      setAlertObj({ severity: undefined, message: '', show: false })
       setTestRunning(true)
       testMutation.mutate({ data: row })
     },
@@ -289,7 +289,7 @@ function LdapListPage(): ReactElement {
   )
 
   useEffect(() => {
-    setAlertObj({ severity: '', message: '', show: false })
+    setAlertObj({ severity: undefined, message: '', show: false })
   }, [])
 
   const tableOptions = {

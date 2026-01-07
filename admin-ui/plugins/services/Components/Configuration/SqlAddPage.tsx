@@ -11,6 +11,7 @@ import {
   type SqlConfiguration,
 } from 'JansConfigApi'
 import { useSqlAudit } from './hooks'
+import { extractActionMessage } from './types'
 
 function SqlAddPage(): ReactElement {
   const dispatch = useDispatch()
@@ -39,10 +40,11 @@ function SqlAddPage(): ReactElement {
 
   function handleSubmit(data: { sql: SqlConfiguration }): void {
     if (data) {
-      const { action_message, ...cleanData } = data.sql as SqlConfiguration & {
-        action_message?: string
-      }
-      actionMessageRef.current = action_message || 'SQL configuration created'
+      const { cleanData, message } = extractActionMessage(
+        data.sql as SqlConfiguration & { action_message?: string },
+        'SQL configuration created',
+      )
+      actionMessageRef.current = message
       addMutation.mutate({ data: cleanData })
     }
   }

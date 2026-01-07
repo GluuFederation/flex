@@ -30,10 +30,8 @@ export interface SqlDetailPageProps {
   testSqlConnection?: (row: SqlConfiguration) => void
 }
 
-// Cache provider type literals
 export type CacheProviderType = 'IN_MEMORY' | 'MEMCACHED' | 'REDIS' | 'NATIVE_PERSISTENCE'
 
-// Provider-specific form value interfaces
 export interface InMemoryCacheFormValues {
   cacheProviderType: 'IN_MEMORY'
   memoryDefaultPutExpiration?: number
@@ -71,26 +69,20 @@ export interface NativePersistenceCacheFormValues {
   deleteExpiredOnGetRequest?: boolean
 }
 
-// Discriminated union for type-safe provider handling
 export type CacheFormValuesUnion =
   | InMemoryCacheFormValues
   | MemcachedCacheFormValues
   | RedisCacheFormValues
   | NativePersistenceCacheFormValues
 
-// Flattened type for Formik compatibility (supports provider switching)
-// All provider fields are optional since only one provider is active at a time
 export interface CacheFormValues {
   cacheProviderType: CacheProviderType | string
-  // In-Memory fields
   memoryDefaultPutExpiration?: number
-  // Memcached fields
   memCacheServers?: string
   maxOperationQueueLength?: number
   bufferSize?: number
   memDefaultPutExpiration?: number
   connectionFactoryType?: string
-  // Redis fields
   redisProviderType?: string
   servers?: string
   password?: string
@@ -103,13 +95,11 @@ export interface CacheFormValues {
   connectionTimeout?: number
   soTimeout?: number
   maxRetryAttempts?: number
-  // Native Persistence fields
   nativeDefaultPutExpiration?: number
   defaultCleanupBatchSize?: number
   deleteExpiredOnGetRequest?: boolean
 }
 
-// Type guards for discriminated union
 export function isInMemoryCache(
   values: CacheFormValues,
 ): values is CacheFormValues & InMemoryCacheFormValues {
@@ -191,4 +181,15 @@ export function isPersistenceInfo(data: unknown): data is PersistenceInfo {
   return (
     data !== null && typeof data === 'object' && !Array.isArray(data) && 'persistenceType' in data
   )
+}
+
+export function extractActionMessage<T extends { action_message?: string }>(
+  data: T,
+  defaultMessage: string,
+): { cleanData: Omit<T, 'action_message'>; message: string } {
+  const { action_message, ...cleanData } = data
+  return {
+    cleanData: cleanData as Omit<T, 'action_message'>,
+    message: action_message || defaultMessage,
+  }
 }

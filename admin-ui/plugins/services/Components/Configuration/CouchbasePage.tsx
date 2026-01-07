@@ -88,9 +88,8 @@ function CouchbasePage(): ReactElement {
               >
                 {(formik) => (
                   <Form onSubmit={formik.handleSubmit}>
-                    {Array.isArray(couchbase) &&
-                      couchbase.length > 0 &&
-                      couchbase.map((couchbaseItem, index) => (
+                    {formik.values.length > 0 &&
+                      formik.values.map((couchbaseItem, index) => (
                         <CouchbaseItem
                           key={couchbaseItem.configId ?? index}
                           couchbase={couchbaseItem}

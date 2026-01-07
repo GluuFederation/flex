@@ -11,6 +11,7 @@ import {
   type GluuLdapConfiguration,
 } from 'JansConfigApi'
 import { useLdapAudit } from './hooks'
+import { extractActionMessage } from './types'
 
 const DEFAULT_LDAP_CONFIGURATION: GluuLdapConfiguration = {
   maxConnections: 2,
@@ -47,10 +48,11 @@ function LdapAddPage(): ReactElement {
   function handleSubmit(data: { ldap: GluuLdapConfiguration } | GluuLdapConfiguration): void {
     if (data) {
       const ldapData = 'ldap' in data ? data.ldap : data
-      const { action_message, ...cleanData } = ldapData as GluuLdapConfiguration & {
-        action_message?: string
-      }
-      actionMessageRef.current = action_message || 'LDAP configuration created'
+      const { cleanData, message } = extractActionMessage(
+        ldapData as GluuLdapConfiguration & { action_message?: string },
+        'LDAP configuration created',
+      )
+      actionMessageRef.current = message
       addMutation.mutate({ data: cleanData })
     }
   }
