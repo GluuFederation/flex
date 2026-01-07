@@ -196,7 +196,6 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
       formik.touched,
       setPatches,
       setResetKey,
-      updateValuesAfterRemoval,
     ],
   )
 
