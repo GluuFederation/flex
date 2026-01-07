@@ -33,8 +33,16 @@ import { currentSqlItemAtom } from './atoms'
 import { useSqlAudit } from './hooks'
 import type { PersistenceInfo } from './types'
 
+function isPersistenceInfo(data: unknown): data is PersistenceInfo {
+  return (
+    data !== null &&
+    typeof data === 'object' &&
+    ('persistenceType' in data || Object.keys(data).length === 0)
+  )
+}
+
 interface AlertState {
-  severity: 'success' | 'error' | 'warning' | 'info' | ''
+  severity: 'success' | 'error' | 'warning' | 'info' | undefined
   message: string
   show: boolean
 }
@@ -73,7 +81,9 @@ function SqlListPage(): ReactElement {
     query: { staleTime: 30000 },
   })
 
-  const persistenceType = (persistenceData as PersistenceInfo | undefined)?.persistenceType
+  const persistenceType = isPersistenceInfo(persistenceData)
+    ? persistenceData.persistenceType
+    : undefined
 
   const persistenceResourceId = useMemo(() => ADMIN_UI_RESOURCES.Persistence, [])
   const persistenceScopes = useMemo(
@@ -99,11 +109,11 @@ function SqlListPage(): ReactElement {
   }, [authorizeHelper, persistenceScopes])
 
   const [myActions, setMyActions] = useState<ActionType[]>([])
-  const [item, setItem] = useState<SqlConfiguration>({})
+  const [item, setItem] = useState<SqlConfiguration | null>(null)
   const [modal, setModal] = useState(false)
   const pageSize = getPagingSize()
   const [alertObj, setAlertObj] = useState<AlertState>({
-    severity: '',
+    severity: undefined,
     message: '',
     show: false,
   })
@@ -238,23 +248,23 @@ function SqlListPage(): ReactElement {
 
   const onDeletionConfirmed = useCallback(
     async (message: string) => {
-      if (item.configId) {
+      if (item?.configId) {
         try {
           await deleteMutation.mutateAsync({ name: item.configId })
-          await logSqlDelete(item.configId, message)
+          await logSqlDelete(item, message)
+          navigateBack(ROUTES.SQL_LIST)
         } catch (error) {
           console.error('Failed to delete SQL config:', error)
         }
       }
-      navigateBack(ROUTES.SQL_LIST)
       toggle()
     },
-    [item.configId, deleteMutation, logSqlDelete, navigateBack, toggle],
+    [item, deleteMutation, logSqlDelete, navigateBack, toggle],
   )
 
   const testSqlConnect = useCallback(
     (row: SqlConfiguration) => {
-      setAlertObj({ severity: '', message: '', show: false })
+      setAlertObj({ severity: undefined, message: '', show: false })
       testMutation.mutate({ data: row })
     },
     [testMutation],

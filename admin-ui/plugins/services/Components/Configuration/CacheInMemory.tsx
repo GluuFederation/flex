@@ -3,12 +3,7 @@ import { FormGroup, Card, Col, CardBody } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import { CACHE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
-import type { FormikProps } from 'formik'
-import type { CacheFormValues } from './types'
-
-interface CacheInMemoryProps {
-  formik: FormikProps<CacheFormValues>
-}
+import type { CacheInMemoryProps } from './types'
 
 function CacheInMemory({ formik }: CacheInMemoryProps): ReactElement {
   const { t } = useTranslation()

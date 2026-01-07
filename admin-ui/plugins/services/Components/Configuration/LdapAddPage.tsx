@@ -12,6 +12,13 @@ import {
 } from 'JansConfigApi'
 import { useLdapAudit } from './hooks'
 
+const DEFAULT_LDAP_CONFIGURATION: GluuLdapConfiguration = {
+  maxConnections: 2,
+  useSSL: false,
+  useAnonymousBind: false,
+  enabled: false,
+}
+
 function LdapAddPage(): ReactElement {
   const dispatch = useDispatch()
   const { navigateBack } = useAppNavigation()
@@ -46,19 +53,12 @@ function LdapAddPage(): ReactElement {
     }
   }
 
-  const defaultConfigurations: GluuLdapConfiguration = {
-    maxConnections: 2,
-    useSSL: false,
-    useAnonymousBind: false,
-    enabled: false,
-  }
-
   return (
     <Container>
       <Card className="mb-3">
         <CardBody>
           <LdapForm
-            item={defaultConfigurations}
+            item={DEFAULT_LDAP_CONFIGURATION}
             handleSubmit={handleSubmit}
             createLdap={true}
             isLoading={addMutation.isPending}

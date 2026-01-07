@@ -6,14 +6,7 @@ import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import customColors from '@/customColors'
-import type { CouchbaseConfiguration } from 'JansConfigApi'
-import type { FormikProps } from 'formik'
-
-interface CouchbaseItemProps {
-  couchbase: CouchbaseConfiguration
-  index: number
-  formik: FormikProps<CouchbaseConfiguration[]>
-}
+import type { CouchbaseItemProps } from './types'
 
 function CouchbaseItem({ couchbase, index, formik }: CouchbaseItemProps): ReactElement {
   const { t } = useTranslation()

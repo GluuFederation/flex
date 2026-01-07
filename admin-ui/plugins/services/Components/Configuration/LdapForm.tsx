@@ -32,6 +32,18 @@ interface BaseDnItem {
   baseDNs?: string
 }
 
+function normalizeServers(servers: (string | ServerItem)[]): string[] {
+  return servers.map((ele) =>
+    typeof ele === 'object' && ele.servers ? ele.servers : ele,
+  ) as string[]
+}
+
+function normalizeBaseDNs(baseDNs: (string | BaseDnItem)[]): string[] {
+  return baseDNs.map((ele) =>
+    typeof ele === 'object' && ele.baseDNs ? ele.baseDNs : ele,
+  ) as string[]
+}
+
 function LdapForm({
   item,
   handleSubmit,
@@ -45,7 +57,7 @@ function LdapForm({
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme || 'darkBlue'
 
-  function toogle(): void {
+  function activateValidation(): void {
     if (!init) {
       setInit(true)
     }
@@ -61,18 +73,6 @@ function LdapForm({
       },
     },
   })
-
-  function toggle(): void {
-    setModal(!modal)
-  }
-
-  function submitForm(): void {
-    toggle()
-    const submitButton = document.getElementsByClassName('UserActionSubmitButton')[0] as HTMLElement
-    if (submitButton) {
-      submitButton.click()
-    }
-  }
 
   const formik = useFormik({
     initialValues: {
@@ -101,33 +101,31 @@ function LdapForm({
       localPrimaryKey: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
     }),
     onSubmit: (values) => {
-      const servers = values.servers.map((ele: string | ServerItem) =>
-        typeof ele === 'object' && ele.servers ? ele.servers : ele,
-      ) as string[]
-      const baseDNs = values.baseDNs.map((ele: string | BaseDnItem) =>
-        typeof ele === 'object' && ele.baseDNs ? ele.baseDNs : ele,
-      ) as string[]
-
       const result: GluuLdapConfiguration = {
         ...item,
         ...values,
-        servers,
-        baseDNs,
+        servers: normalizeServers(values.servers),
+        baseDNs: normalizeBaseDNs(values.baseDNs),
       }
 
       handleSubmit(createLdap ? { ldap: result } : result)
     },
   })
 
+  function toggle(): void {
+    setModal(!modal)
+  }
+
+  function handleFormSubmit(): void {
+    toggle()
+    formik.submitForm()
+  }
+
   function checkLdapConnection(): void {
     const testData: GluuLdapConfiguration = {
       ...formik.values,
-      servers: formik.values.servers.map((ele: string | ServerItem) =>
-        typeof ele === 'object' && ele.servers ? ele.servers : ele,
-      ) as string[],
-      baseDNs: formik.values.baseDNs.map((ele: string | BaseDnItem) =>
-        typeof ele === 'object' && ele.baseDNs ? ele.baseDNs : ele,
-      ) as string[],
+      servers: normalizeServers(formik.values.servers),
+      baseDNs: normalizeBaseDNs(formik.values.baseDNs),
     }
     testMutation.mutate({ data: testData })
   }
@@ -157,7 +155,7 @@ function LdapForm({
                 name="configId"
                 defaultValue={item.configId}
                 disabled
-                onKeyUp={toogle}
+                onKeyUp={activateValidation}
                 onChange={formik.handleChange}
               />
             ) : (
@@ -167,7 +165,7 @@ function LdapForm({
                 id="configId"
                 name="configId"
                 defaultValue={item.configId}
-                onKeyUp={toogle}
+                onKeyUp={activateValidation}
                 onChange={formik.handleChange}
               />
             )}
@@ -185,7 +183,7 @@ function LdapForm({
               valid={!formik.errors.bindDN && !formik.touched.bindDN && init}
               name="bindDN"
               defaultValue={item.bindDN}
-              onKeyUp={toogle}
+              onKeyUp={activateValidation}
               onChange={formik.handleChange}
             />
             {formik.errors.bindDN && formik.touched.bindDN ? (
@@ -206,7 +204,7 @@ function LdapForm({
                 placeholder={t('placeholders.ldap_bind_max_connections')}
                 valid={!formik.errors.maxConnections && !formik.touched.maxConnections && init}
                 id="maxConnections"
-                onKeyUp={toogle}
+                onKeyUp={activateValidation}
                 defaultValue={item.maxConnections}
                 onChange={formik.handleChange}
               />
@@ -229,7 +227,7 @@ function LdapForm({
                 placeholder={t('placeholders.ldap_primary_key')}
                 valid={!formik.errors.primaryKey && !formik.touched.primaryKey && init}
                 id="primaryKey"
-                onKeyUp={toogle}
+                onKeyUp={activateValidation}
                 defaultValue={item.primaryKey}
                 onChange={formik.handleChange}
               />
@@ -252,7 +250,7 @@ function LdapForm({
                 placeholder={t('placeholders.ldap_primary_key')}
                 valid={!formik.errors.localPrimaryKey && !formik.touched.localPrimaryKey && init}
                 id="localPrimaryKey"
-                onKeyUp={toogle}
+                onKeyUp={activateValidation}
                 defaultValue={item.localPrimaryKey}
                 onChange={formik.handleChange}
               />
@@ -309,7 +307,7 @@ function LdapForm({
               <Input
                 placeholder={t('placeholders.ldap_bind_password')}
                 valid={!formik.errors.bindPassword && !formik.touched.bindPassword && init}
-                onKeyUp={toogle}
+                onKeyUp={activateValidation}
                 id="bindPassword"
                 type="password"
                 defaultValue={item.bindPassword}
@@ -346,7 +344,7 @@ function LdapForm({
                 placeholder={t('placeholders.level')}
                 valid={!formik.errors.level && !formik.touched.level && init}
                 id="level"
-                onKeyUp={toogle}
+                onKeyUp={activateValidation}
                 defaultValue={item.level}
                 onChange={formik.handleChange}
               />
@@ -360,7 +358,12 @@ function LdapForm({
         <FormGroup row> </FormGroup>
         <FormGroup row></FormGroup>
         <GluuCommitFooter saveHandler={toggle} />
-        <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} formik={formik} />
+        <GluuCommitDialog
+          handler={toggle}
+          modal={modal}
+          onAccept={handleFormSubmit}
+          formik={formik}
+        />
       </GluuLoader>
     </Form>
   )

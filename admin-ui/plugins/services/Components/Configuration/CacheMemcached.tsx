@@ -6,14 +6,7 @@ import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
-import type { FormikProps } from 'formik'
-import type { MemcachedConfiguration } from 'JansConfigApi'
-import type { CacheFormValues } from './types'
-
-interface CacheMemcachedProps {
-  config: MemcachedConfiguration
-  formik: FormikProps<CacheFormValues>
-}
+import type { CacheMemcachedProps } from './types'
 
 function CacheMemcached({ config, formik }: CacheMemcachedProps): ReactElement {
   const { t } = useTranslation()

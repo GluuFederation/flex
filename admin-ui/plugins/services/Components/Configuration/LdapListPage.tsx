@@ -34,6 +34,14 @@ import { currentLdapItemAtom } from './atoms'
 import { useLdapAudit } from './hooks'
 import type { PersistenceInfo } from './types'
 
+function isPersistenceInfo(data: unknown): data is PersistenceInfo {
+  return (
+    data !== null &&
+    typeof data === 'object' &&
+    ('persistenceType' in data || Object.keys(data).length === 0)
+  )
+}
+
 interface AlertState {
   severity: 'success' | 'error' | 'warning' | 'info' | ''
   message: string
@@ -77,7 +85,9 @@ function LdapListPage(): ReactElement {
     query: { staleTime: 30000 },
   })
 
-  const persistenceType = (persistenceData as PersistenceInfo | undefined)?.persistenceType
+  const persistenceType = isPersistenceInfo(persistenceData)
+    ? persistenceData.persistenceType
+    : undefined
 
   const persistenceResourceId = useMemo(() => ADMIN_UI_RESOURCES.Persistence, [])
   const persistenceScopes = useMemo(
@@ -103,7 +113,7 @@ function LdapListPage(): ReactElement {
   }, [authorizeHelper, persistenceScopes])
 
   const [myActions, setMyActions] = useState<ActionType[]>([])
-  const [item, setItem] = useState<GluuLdapConfiguration>({})
+  const [item, setItem] = useState<GluuLdapConfiguration | null>(null)
   const [modal, setModal] = useState(false)
   const [testRunning, setTestRunning] = useState(false)
   const [alertObj, setAlertObj] = useState<AlertState>({
@@ -263,10 +273,10 @@ function LdapListPage(): ReactElement {
 
   const onDeletionConfirmed = useCallback(
     async (message: string) => {
-      if (item.configId) {
+      if (item?.configId) {
         try {
           await deleteMutation.mutateAsync({ name: item.configId })
-          await logLdapDelete(item.configId, message)
+          await logLdapDelete(item, message)
         } catch (error) {
           console.error('Failed to delete LDAP config:', error)
         }
@@ -274,7 +284,7 @@ function LdapListPage(): ReactElement {
       navigateBack(ROUTES.LDAP_LIST)
       toggle()
     },
-    [item.configId, navigateBack, toggle, deleteMutation, logLdapDelete],
+    [item, navigateBack, toggle, deleteMutation, logLdapDelete],
   )
 
   const testLdapConnect = useCallback(

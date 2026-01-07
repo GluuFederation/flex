@@ -38,29 +38,37 @@ function CouchbasePage(): ReactElement {
 
   const persistenceType = (persistenceData as PersistenceInfo | undefined)?.persistenceType
 
-  const editMutation = usePutConfigDatabaseCouchbase({
-    mutation: {
-      onSuccess: async () => {
-        dispatch(updateToast(true, 'success'))
-        queryClient.invalidateQueries({ queryKey: getGetConfigDatabaseCouchbaseQueryKey() })
-      },
-      onError: () => {
-        dispatch(updateToast(true, 'danger'))
-      },
-    },
-  })
+  const editMutation = usePutConfigDatabaseCouchbase()
 
   const handleSubmit = async (values: CouchbaseConfiguration[]): Promise<void> => {
-    if (values && values.length > 0) {
-      try {
-        for (const config of values) {
-          await editMutation.mutateAsync({ data: config })
-          await logCouchbaseUpdate(config, 'Couchbase configuration updated')
-        }
-      } catch (error) {
-        console.error('Failed to update Couchbase config:', error)
-      }
+    if (!values || values.length === 0) return
+
+    const results = await Promise.allSettled(
+      values.map(async (config) => {
+        await editMutation.mutateAsync({ data: config })
+        await logCouchbaseUpdate(config, 'Couchbase configuration updated')
+        return config.configId
+      }),
+    )
+
+    const fulfilled = results.filter(
+      (r): r is PromiseFulfilledResult<string | undefined> => r.status === 'fulfilled',
+    )
+    const rejected = results.filter((r): r is PromiseRejectedResult => r.status === 'rejected')
+
+    if (rejected.length === 0) {
+      dispatch(updateToast(true, 'success'))
+    } else if (fulfilled.length === 0) {
+      dispatch(updateToast(true, 'danger'))
+    } else {
+      dispatch(updateToast(true, 'warning', t('messages.partial_update_failure')))
+      console.error(
+        'Partial failure updating Couchbase configs:',
+        rejected.map((r) => r.reason),
+      )
     }
+
+    queryClient.invalidateQueries({ queryKey: getGetConfigDatabaseCouchbaseQueryKey() })
   }
 
   const isLoading = loading || persistenceLoading || editMutation.isPending
@@ -82,7 +90,7 @@ function CouchbasePage(): ReactElement {
                       couchbase.length > 0 &&
                       couchbase.map((couchbaseItem, index) => (
                         <CouchbaseItem
-                          key={index}
+                          key={couchbaseItem.configId ?? index}
                           couchbase={couchbaseItem}
                           index={index}
                           formik={formik}

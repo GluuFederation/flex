@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react'
 import { useDispatch } from 'react-redux'
+import { cloneDeep } from 'lodash'
 import { Container, CardBody, Card } from 'Components'
 import SqlForm from './SqlForm'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
@@ -66,7 +67,7 @@ function SqlEditPage(): ReactElement {
         <Card className="mb-3">
           <CardBody>
             <SqlForm
-              item={{ ...item }}
+              item={cloneDeep(item)}
               handleSubmit={handleSubmit}
               isLoading={editMutation.isPending}
             />

@@ -3,12 +3,7 @@ import { Container, Badge, Row, Col, FormGroup, Label } from 'Components'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import customColors from '@/customColors'
-import type { SqlConfiguration } from 'JansConfigApi'
-
-interface SqlDetailPageProps {
-  row: SqlConfiguration
-  testSqlConnection?: (row: SqlConfiguration) => void
-}
+import type { SqlDetailPageProps } from './types'
 
 function SqlDetailPage({ row, testSqlConnection }: SqlDetailPageProps): ReactElement {
   const { t } = useTranslation()

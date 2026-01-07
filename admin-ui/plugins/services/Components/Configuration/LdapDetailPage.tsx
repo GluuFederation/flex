@@ -3,12 +3,7 @@ import { Container, Badge, Row, Col, FormGroup, Label } from 'Components'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import customColors from '@/customColors'
-import type { GluuLdapConfiguration } from 'JansConfigApi'
-
-interface LdapDetailPageProps {
-  row: GluuLdapConfiguration
-  testLdapConnection: (row: GluuLdapConfiguration) => void
-}
+import type { LdapDetailPageProps } from './types'
 
 function LdapDetailPage({ row, testLdapConnection }: LdapDetailPageProps): ReactElement {
   const { t } = useTranslation()
@@ -88,7 +83,6 @@ function LdapDetailPage({ row, testLdapConnection }: LdapDetailPageProps): React
           <FormGroup row>
             <Label sm={6}>{t('fields.use_ssl')}:</Label>
             <Label sm={6}>
-              {row.useSSL}
               <Badge color={getBadgeTheme(row.useSSL)}>
                 {row.useSSL ? t('options.true') : t('options.false')}
               </Badge>
@@ -125,7 +119,11 @@ function LdapDetailPage({ row, testLdapConnection }: LdapDetailPageProps): React
         <Col sm={4}>
           <FormGroup row>
             <Label sm={6}>{t('fields.use_anonymous_bind')}:</Label>
-            <Label sm={6}>{row.useAnonymousBind ? 'true' : 'false'}</Label>
+            <Label sm={6}>
+              <Badge color={getBadgeTheme(row.useAnonymousBind)}>
+                {row.useAnonymousBind ? t('options.true') : t('options.false')}
+              </Badge>
+            </Label>
           </FormGroup>
         </Col>
       </Row>

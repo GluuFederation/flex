@@ -22,11 +22,10 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import AuthNDetailPage from './AuthNDetailPage'
 import { useCustomScriptsByType } from 'Plugins/admin/components/CustomScripts/hooks'
-import { useGetConfigDatabaseLdap } from 'JansConfigApi'
 import { DEFAULT_SCRIPT_TYPE } from 'Plugins/admin/components/CustomScripts/constants'
 import { currentAuthNItemAtom, type AuthNItem } from './atoms'
 import { BUILT_IN_ACRS } from './constants'
-import { useGetAcrs } from 'JansConfigApi'
+import { useGetAcrs, useGetConfigDatabaseLdap, type GluuLdapConfiguration } from 'JansConfigApi'
 
 const PAGE_SIZE = 10
 
@@ -57,11 +56,9 @@ function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
     scripts: [],
   })
 
-  const { data: ldapData, isLoading: ldapLoading } = useGetConfigDatabaseLdap({
+  const { data: ldapConfigurations = [], isLoading: ldapLoading } = useGetConfigDatabaseLdap({
     query: { staleTime: 30000 },
   })
-  const ldap = (ldapData || []) as AuthNItem[]
-  const loading = ldapLoading
 
   // Fetch ACR config using Orval hook
   const { data: acrs, isLoading: acrsLoading } = useGetAcrs({
@@ -124,21 +121,36 @@ function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
     setMyActions(newActions)
   }, [canWriteAuthN, t, handleGoToAuthNEditPage])
 
+  const mapLdapToAuthNItem = useCallback(
+    (config: GluuLdapConfiguration): AuthNItem => ({
+      configId: config.configId,
+      bindDN: config.bindDN,
+      bindPassword: config.bindPassword,
+      servers: config.servers,
+      maxConnections: config.maxConnections,
+      useSSL: config.useSSL,
+      baseDNs: config.baseDNs,
+      primaryKey: config.primaryKey,
+      localPrimaryKey: config.localPrimaryKey,
+      enabled: config.enabled,
+      level: config.level,
+      name: 'default_ldap_password',
+      acrName: config.configId,
+    }),
+    [],
+  )
+
   useEffect(() => {
     setList((prevList) => ({ ...prevList, ldap: [] }))
 
-    if (ldap.length > 0 && !loading) {
-      const enabledLdap = ldap.filter((item) => item.enabled === true)
+    if (ldapConfigurations.length > 0 && !ldapLoading) {
+      const enabledLdap = ldapConfigurations.filter((item) => item.enabled === true)
       if (enabledLdap.length > 0) {
-        const updateLDAPItems = enabledLdap.map((item) => ({
-          ...item,
-          name: 'default_ldap_password',
-          acrName: item.configId,
-        }))
+        const updateLDAPItems = enabledLdap.map(mapLdapToAuthNItem)
         setList((prevList) => ({ ...prevList, ldap: updateLDAPItems }))
       }
     }
-  }, [ldap, loading])
+  }, [ldapConfigurations, ldapLoading, mapLdapToAuthNItem])
 
   useEffect(() => {
     setList((prevList) => ({ ...prevList, scripts: [] }))

@@ -12,19 +12,14 @@ import { useTranslation } from 'react-i18next'
 import customColors from '@/customColors'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import type { SqlConfiguration } from 'JansConfigApi'
-
-interface SqlFormProps {
-  item: SqlConfiguration
-  handleSubmit: (data: { sql: SqlConfiguration }) => void
-  isLoading?: boolean
-}
+import type { SqlFormProps } from './types'
 
 function SqlForm({ item, handleSubmit, isLoading = false }: SqlFormProps): ReactElement {
   const { t } = useTranslation()
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)
 
-  function toogle(): void {
+  function activateValidation(): void {
     if (!init) {
       setInit(true)
     }
@@ -34,13 +29,21 @@ function SqlForm({ item, handleSubmit, isLoading = false }: SqlFormProps): React
     setModal(!modal)
   }
 
-  function submitForm(): void {
-    toggle()
-    const submitButton = document.getElementsByClassName('UserActionSubmitButton')[0] as HTMLElement
-    if (submitButton) {
-      submitButton.click()
-    }
-  }
+  const validationSchema = Yup.object({
+    configId: Yup.string()
+      .min(2, t('messages.min_characters', { count: 2 }))
+      .required(t('messages.field_required')),
+    userName: Yup.string()
+      .min(2, t('messages.min_characters', { count: 2 }))
+      .required(t('messages.field_required')),
+    userPassword: Yup.string()
+      .min(2, t('messages.min_characters', { count: 2 }))
+      .required(t('messages.field_required')),
+    connectionUri: Yup.array().required(t('messages.field_required')),
+    schemaName: Yup.string()
+      .min(2, t('messages.min_characters', { count: 2 }))
+      .required(t('messages.field_required')),
+  })
 
   const formik = useFormik({
     initialValues: {
@@ -56,19 +59,18 @@ function SqlForm({ item, handleSubmit, isLoading = false }: SqlFormProps): React
       enabled: item.enabled || false,
     },
     enableReinitialize: true,
-    validationSchema: Yup.object({
-      configId: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
-      userName: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
-      userPassword: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
-      connectionUri: Yup.array().required('Required!'),
-      schemaName: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
-    }),
+    validationSchema,
     onSubmit: (values) => {
       const result: SqlConfiguration = { ...item, ...values }
       const reqBody = { sql: result }
       handleSubmit(reqBody)
     },
   })
+
+  function handleFormSubmit(): void {
+    toggle()
+    formik.submitForm()
+  }
 
   return (
     <Form onSubmit={formik.handleSubmit}>
@@ -85,7 +87,7 @@ function SqlForm({ item, handleSubmit, isLoading = false }: SqlFormProps): React
                   name="configId"
                   defaultValue={item.configId}
                   disabled
-                  onKeyUp={toogle}
+                  onKeyUp={activateValidation}
                   onChange={formik.handleChange}
                 />
               ) : (
@@ -95,7 +97,7 @@ function SqlForm({ item, handleSubmit, isLoading = false }: SqlFormProps): React
                   id="configId"
                   name="configId"
                   defaultValue={item.configId}
-                  onKeyUp={toogle}
+                  onKeyUp={activateValidation}
                   onChange={formik.handleChange}
                 />
               )}
@@ -115,7 +117,7 @@ function SqlForm({ item, handleSubmit, isLoading = false }: SqlFormProps): React
                 valid={!formik.errors.userName && !formik.touched.userName && init}
                 name="userName"
                 defaultValue={item.userName}
-                onKeyUp={toogle}
+                onKeyUp={activateValidation}
                 onChange={formik.handleChange}
               />
               {formik.errors.userName && formik.touched.userName ? (
@@ -132,7 +134,7 @@ function SqlForm({ item, handleSubmit, isLoading = false }: SqlFormProps): React
                 <Input
                   placeholder={t('placeholders.sql_password')}
                   valid={!formik.errors.userPassword && !formik.touched.userPassword && init}
-                  onKeyUp={toogle}
+                  onKeyUp={activateValidation}
                   id="userPassword"
                   type="password"
                   defaultValue={item.userPassword}
@@ -175,7 +177,7 @@ function SqlForm({ item, handleSubmit, isLoading = false }: SqlFormProps): React
                 valid={!formik.errors.schemaName && !formik.touched.schemaName && init}
                 name="schemaName"
                 defaultValue={item.schemaName}
-                onKeyUp={toogle}
+                onKeyUp={activateValidation}
                 onChange={formik.handleChange}
               />
               {formik.errors.schemaName && formik.touched.schemaName ? (
@@ -198,7 +200,7 @@ function SqlForm({ item, handleSubmit, isLoading = false }: SqlFormProps): React
                 }
                 name="passwordEncryptionMethod"
                 defaultValue={item.passwordEncryptionMethod}
-                onKeyUp={toogle}
+                onKeyUp={activateValidation}
                 onChange={formik.handleChange}
               />
             </Col>
@@ -214,7 +216,7 @@ function SqlForm({ item, handleSubmit, isLoading = false }: SqlFormProps): React
                 valid={!formik.errors.serverTimezone && !formik.touched.serverTimezone && init}
                 name="serverTimezone"
                 defaultValue={item.serverTimezone}
-                onKeyUp={toogle}
+                onKeyUp={activateValidation}
                 onChange={formik.handleChange}
               />
             </Col>
@@ -258,7 +260,7 @@ function SqlForm({ item, handleSubmit, isLoading = false }: SqlFormProps): React
                   valid={!formik.errors.enabled && !formik.touched.enabled && init}
                   type="checkbox"
                   id="enabled"
-                  onKeyUp={toogle}
+                  onKeyUp={activateValidation}
                   defaultChecked={item.enabled}
                   onChange={formik.handleChange}
                 />
@@ -268,7 +270,12 @@ function SqlForm({ item, handleSubmit, isLoading = false }: SqlFormProps): React
         </GluuTooltip>
         <FormGroup row></FormGroup>
         <GluuCommitFooter saveHandler={toggle} />
-        <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} formik={formik} />
+        <GluuCommitDialog
+          handler={toggle}
+          modal={modal}
+          onAccept={handleFormSubmit}
+          formik={formik}
+        />
       </GluuLoader>
     </Form>
   )

@@ -4,12 +4,7 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import { CACHE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
-import type { FormikProps } from 'formik'
-import type { CacheFormValues } from './types'
-
-interface CacheNativeProps {
-  formik: FormikProps<CacheFormValues>
-}
+import type { CacheNativeProps } from './types'
 
 function CacheNative({ formik }: CacheNativeProps): ReactElement {
   const { t } = useTranslation()

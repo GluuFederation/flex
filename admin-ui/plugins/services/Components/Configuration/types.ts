@@ -2,10 +2,7 @@ import type {
   GluuLdapConfiguration,
   SqlConfiguration,
   CouchbaseConfiguration,
-  CacheConfiguration,
-  InMemoryConfiguration,
   MemcachedConfiguration,
-  NativePersistenceConfiguration,
   RedisConfiguration,
 } from 'JansConfigApi'
 import type { FormikProps } from 'formik'
@@ -23,17 +20,16 @@ export interface LdapDetailPageProps {
 
 export interface SqlFormProps {
   item: SqlConfiguration
-  handleSubmit: (data: { sql: SqlConfiguration } | SqlConfiguration) => void
-  createSql?: boolean
+  handleSubmit: (data: { sql: SqlConfiguration }) => void
+  isLoading?: boolean
 }
 
 export interface SqlDetailPageProps {
   row: SqlConfiguration
-  testSqlConnection: (row: SqlConfiguration) => void
+  testSqlConnection?: (row: SqlConfiguration) => void
 }
 
 export interface CacheInMemoryProps {
-  config: InMemoryConfiguration
   formik: FormikProps<CacheFormValues>
 }
 
@@ -43,7 +39,6 @@ export interface CacheMemcachedProps {
 }
 
 export interface CacheNativeProps {
-  config: NativePersistenceConfiguration
   formik: FormikProps<CacheFormValues>
 }
 
@@ -79,7 +74,8 @@ export interface CacheFormValues {
 
 export interface CouchbaseItemProps {
   couchbase: CouchbaseConfiguration
-  formik: FormikProps<CouchbaseFormValues>
+  index: number
+  formik: FormikProps<CouchbaseConfiguration[]>
 }
 
 export interface CouchbaseFormValues {

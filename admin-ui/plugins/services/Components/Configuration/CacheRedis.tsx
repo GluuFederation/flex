@@ -7,14 +7,7 @@ import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { CACHE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
-import type { FormikProps } from 'formik'
-import type { RedisConfiguration } from 'JansConfigApi'
-import type { CacheFormValues } from './types'
-
-interface CacheRedisProps {
-  config: RedisConfiguration
-  formik: FormikProps<CacheFormValues>
-}
+import type { CacheRedisProps } from './types'
 
 function CacheRedis({ config, formik }: CacheRedisProps): ReactElement {
   const { t } = useTranslation()

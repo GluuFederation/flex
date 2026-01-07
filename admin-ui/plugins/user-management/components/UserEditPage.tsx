@@ -27,6 +27,18 @@ import {
 } from '../utils'
 import { revokeSessionWhenFieldsModifiedInUserForm } from '../helper/constants'
 
+interface PersistenceInfo {
+  persistenceType?: string
+}
+
+function isPersistenceInfo(data: unknown): data is PersistenceInfo {
+  return (
+    data !== null &&
+    typeof data === 'object' &&
+    ('persistenceType' in data || Object.keys(data).length === 0)
+  )
+}
+
 function UserEditPage() {
   const dispatch = useDispatch()
   const { navigateToRoute } = useAppNavigation()
@@ -50,11 +62,23 @@ function UserEditPage() {
     [attributesData?.entries],
   )
 
-  const { data: persistenceData } = useGetPropertiesPersistence({
+  const {
+    data: persistenceData,
+    isLoading: loadingPersistence,
+    isError: persistenceError,
+  } = useGetPropertiesPersistence({
     query: { staleTime: 30000 },
   })
-  const persistenceType = (persistenceData as { persistenceType?: string } | undefined)
-    ?.persistenceType
+  const persistenceType = isPersistenceInfo(persistenceData)
+    ? persistenceData.persistenceType
+    : undefined
+
+  useEffect(() => {
+    if (persistenceError) {
+      console.error('Failed to load persistence configuration')
+    }
+  }, [persistenceError])
+
   const revokeSessionMutation = useRevokeUserSession()
 
   const updateUserMutation = usePutUser({
@@ -123,7 +147,7 @@ function UserEditPage() {
     <Container>
       <Card type="border" color={null} className="mb-3">
         <CardBody>
-          <GluuLoader blocking={loadingAttributes || isSubmitting}>
+          <GluuLoader blocking={loadingAttributes || loadingPersistence || isSubmitting}>
             <UserForm
               onSubmitData={submitData}
               userDetails={userDetails}

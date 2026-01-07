@@ -92,58 +92,18 @@ function CachePage(): ReactElement | null {
   const patchCacheMutation = usePatchConfigCache({
     mutation: {
       onSuccess: () => {
-        dispatch(updateToast(true, 'success'))
         queryClient.invalidateQueries({ queryKey: getGetConfigCacheQueryKey() })
       },
-      onError: () => {
-        dispatch(updateToast(true, 'danger'))
-      },
     },
   })
 
-  const putMemoryMutation = usePutConfigCacheInMemory({
-    mutation: {
-      onSuccess: () => {
-        dispatch(updateToast(true, 'success'))
-      },
-      onError: () => {
-        dispatch(updateToast(true, 'danger'))
-      },
-    },
-  })
+  const putMemoryMutation = usePutConfigCacheInMemory()
 
-  const putMemcachedMutation = usePutConfigCacheMemcached({
-    mutation: {
-      onSuccess: () => {
-        dispatch(updateToast(true, 'success'))
-      },
-      onError: () => {
-        dispatch(updateToast(true, 'danger'))
-      },
-    },
-  })
+  const putMemcachedMutation = usePutConfigCacheMemcached()
 
-  const putNativeMutation = usePutConfigCacheNativePersistence({
-    mutation: {
-      onSuccess: () => {
-        dispatch(updateToast(true, 'success'))
-      },
-      onError: () => {
-        dispatch(updateToast(true, 'danger'))
-      },
-    },
-  })
+  const putNativeMutation = usePutConfigCacheNativePersistence()
 
-  const putRedisMutation = usePutConfigCacheRedis({
-    mutation: {
-      onSuccess: () => {
-        dispatch(updateToast(true, 'success'))
-      },
-      onError: () => {
-        dispatch(updateToast(true, 'danger'))
-      },
-    },
-  })
+  const putRedisMutation = usePutConfigCacheRedis()
 
   useEffect(() => {
     authorizeHelper(cacheScopes)
@@ -155,30 +115,33 @@ function CachePage(): ReactElement | null {
     }
   }, [cacheData])
 
-  const INITIAL_VALUES: CacheFormValues = {
-    cacheProviderType: cacheData.cacheProviderType || '',
-    memCacheServers: cacheMemData.servers,
-    maxOperationQueueLength: cacheMemData.maxOperationQueueLength,
-    bufferSize: cacheMemData.bufferSize,
-    memDefaultPutExpiration: cacheMemData.defaultPutExpiration,
-    connectionFactoryType: cacheMemData.connectionFactoryType,
-    memoryDefaultPutExpiration: cacheMemoryData.defaultPutExpiration,
-    redisProviderType: cacheRedisData.redisProviderType,
-    servers: cacheRedisData.servers,
-    password: cacheRedisData.password || '',
-    sentinelMasterGroupName: cacheRedisData.sentinelMasterGroupName || '',
-    sslTrustStoreFilePath: cacheRedisData.sslTrustStoreFilePath || '',
-    redisDefaultPutExpiration: cacheRedisData.defaultPutExpiration,
-    useSSL: cacheRedisData.useSSL,
-    maxIdleConnections: cacheRedisData.maxIdleConnections,
-    maxTotalConnections: cacheRedisData.maxTotalConnections,
-    connectionTimeout: cacheRedisData.connectionTimeout,
-    soTimeout: cacheRedisData.soTimeout,
-    maxRetryAttempts: cacheRedisData.maxRetryAttempts,
-    nativeDefaultPutExpiration: cacheNativeData.defaultPutExpiration,
-    defaultCleanupBatchSize: cacheNativeData.defaultCleanupBatchSize,
-    deleteExpiredOnGetRequest: cacheNativeData.deleteExpiredOnGetRequest,
-  }
+  const initialValues = useMemo<CacheFormValues>(
+    () => ({
+      cacheProviderType: cacheData.cacheProviderType || '',
+      memCacheServers: cacheMemData.servers,
+      maxOperationQueueLength: cacheMemData.maxOperationQueueLength,
+      bufferSize: cacheMemData.bufferSize,
+      memDefaultPutExpiration: cacheMemData.defaultPutExpiration,
+      connectionFactoryType: cacheMemData.connectionFactoryType,
+      memoryDefaultPutExpiration: cacheMemoryData.defaultPutExpiration,
+      redisProviderType: cacheRedisData.redisProviderType,
+      servers: cacheRedisData.servers,
+      password: cacheRedisData.password || '',
+      sentinelMasterGroupName: cacheRedisData.sentinelMasterGroupName || '',
+      sslTrustStoreFilePath: cacheRedisData.sslTrustStoreFilePath || '',
+      redisDefaultPutExpiration: cacheRedisData.defaultPutExpiration,
+      useSSL: cacheRedisData.useSSL,
+      maxIdleConnections: cacheRedisData.maxIdleConnections,
+      maxTotalConnections: cacheRedisData.maxTotalConnections,
+      connectionTimeout: cacheRedisData.connectionTimeout,
+      soTimeout: cacheRedisData.soTimeout,
+      maxRetryAttempts: cacheRedisData.maxRetryAttempts,
+      nativeDefaultPutExpiration: cacheNativeData.defaultPutExpiration,
+      defaultCleanupBatchSize: cacheNativeData.defaultCleanupBatchSize,
+      deleteExpiredOnGetRequest: cacheNativeData.deleteExpiredOnGetRequest,
+    }),
+    [cacheData, cacheMemData, cacheMemoryData, cacheRedisData, cacheNativeData],
+  )
 
   function toggle(): void {
     setModal(!modal)
@@ -214,7 +177,7 @@ function CachePage(): ReactElement | null {
         <Card style={applicationStyle.mainCard}>
           <CardBody>
             <Formik
-              initialValues={INITIAL_VALUES}
+              initialValues={initialValues}
               enableReinitialize
               onSubmit={async (values) => {
                 if (!canWriteCache) {
@@ -280,6 +243,7 @@ function CachePage(): ReactElement | null {
                     await patchCacheMutation.mutateAsync({ data: cache })
                   }
 
+                  dispatch(updateToast(true, 'success'))
                   await logCacheUpdate(
                     {
                       cacheProviderType:
@@ -288,6 +252,7 @@ function CachePage(): ReactElement | null {
                     'Cache configuration updated',
                   )
                 } catch (error) {
+                  dispatch(updateToast(true, 'danger'))
                   console.error('Failed to update cache config:', error)
                 }
               }}
@@ -330,7 +295,7 @@ function CachePage(): ReactElement | null {
                     <CacheRedis config={cacheRedisData} formik={formik} />
                   )}
                   {cacheProviderType === 'NATIVE_PERSISTENCE' && <CacheNative formik={formik} />}
-                  <FormGroup row></FormGroup>
+                  <div style={{ marginTop: 16 }} />
                   <GluuFormFooter
                     showBack={true}
                     showCancel={true}
