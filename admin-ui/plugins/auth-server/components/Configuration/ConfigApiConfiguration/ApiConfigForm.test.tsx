@@ -66,8 +66,10 @@ describe('ApiConfigForm - removeArrayItem', () => {
   const mockValidateForm = jest.fn()
   const mockSetValues = jest.fn()
   const mockSetTouched = jest.fn()
+  let trackedState: ApiAppConfiguration | null = null
 
   const createMockFormik = (initialValues: ApiAppConfiguration) => {
+    trackedState = { ...initialValues }
     const formikTouched: Record<string, boolean> = {}
     const formikErrors: Record<string, string> = {}
 
@@ -88,10 +90,15 @@ describe('ApiConfigForm - removeArrayItem', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     capturedHandler = null
+    trackedState = null
     mockValidateForm.mockResolvedValue({})
     mockSetValues.mockImplementation((updater) => {
-      if (typeof updater === 'function') {
-        updater({} as ApiAppConfiguration)
+      if (typeof updater === 'function' && trackedState) {
+        const result = updater(trackedState)
+        if (result) {
+          trackedState = result
+        }
+        return result
       }
     })
   })
@@ -342,8 +349,21 @@ describe('ApiConfigForm - removeArrayItem', () => {
 
       render(<ApiConfigForm configuration={configuration} onSubmit={onSubmit} />)
 
-      // Touched state should be updated
-      expect(mockSetTouched).toBeDefined()
+      expect(capturedHandler).toBeDefined()
+      expect(capturedHandler).not.toBeNull()
+
+      const handler = capturedHandler!
+      const removePatch = {
+        op: 'remove' as const,
+        path: '/apiApprovedIssuer/0',
+        value: 'issuer1',
+      }
+
+      handler(removePatch)
+
+      expect(mockSetTouched).toHaveBeenCalledWith(
+        expect.objectContaining({ apiApprovedIssuer: true }),
+      )
     })
 
     it('should increment resetKey', () => {
@@ -360,10 +380,33 @@ describe('ApiConfigForm - removeArrayItem', () => {
 
       const onSubmit = jest.fn().mockResolvedValue(undefined)
 
-      render(<ApiConfigForm configuration={configuration} onSubmit={onSubmit} />)
+      const { container, rerender } = render(
+        <ApiConfigForm configuration={configuration} onSubmit={onSubmit} />,
+      )
 
-      // resetKey should increment
-      expect(mockFormik.setValues).toBeDefined()
+      expect(capturedHandler).toBeDefined()
+      expect(capturedHandler).not.toBeNull()
+
+      const handler = capturedHandler!
+      const removePatch = {
+        op: 'remove' as const,
+        path: '/apiApprovedIssuer/0',
+        value: 'issuer1',
+      }
+
+      const firstRenderKey = container
+        .querySelector('[key*="apiApprovedIssuer"]')
+        ?.getAttribute('key')
+      handler(removePatch)
+
+      expect(mockSetValues).toHaveBeenCalled()
+
+      rerender(<ApiConfigForm configuration={configuration} onSubmit={onSubmit} />)
+      const secondRenderKey = container
+        .querySelector('[key*="apiApprovedIssuer"]')
+        ?.getAttribute('key')
+
+      expect(firstRenderKey).not.toBe(secondRenderKey)
     })
   })
 

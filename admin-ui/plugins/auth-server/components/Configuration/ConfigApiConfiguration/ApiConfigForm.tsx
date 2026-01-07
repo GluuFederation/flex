@@ -2,38 +2,20 @@ import React, { useCallback, useState, useEffect, useMemo, useRef } from 'react'
 import { useFormik } from 'formik'
 import { toast } from 'react-toastify'
 import { useTranslation } from 'react-i18next'
-import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { FormGroup, Form } from 'Components'
 import { useCedarling } from '@/cedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
+import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/types'
+import type { FormikTouched } from 'formik'
 import JsonPropertyBuilderConfigApi from './JsonPropertyBuilderConfigApi'
+import { READ_ONLY_FIELDS, updateValuesAfterRemoval } from './utils'
+import { configApiPropertiesSchema } from './validations'
 import type { ApiAppConfiguration, JsonPatch } from './types'
 import type { PropertyValue } from '../types'
-import type { FormikTouched } from 'formik'
-
-function extractObjectArray(value: PropertyValue): Record<string, PropertyValue>[] | null {
-  if (!Array.isArray(value) || value.length === 0) {
-    return null
-  }
-  const firstItem = value[0]
-  if (typeof firstItem !== 'object' || firstItem === null || Array.isArray(firstItem)) {
-    return null
-  }
-  return value as PropertyValue[] as Record<string, PropertyValue>[]
-}
-
-function extractRecord(value: PropertyValue): Record<string, PropertyValue> | null {
-  if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-    return value as Record<string, PropertyValue>
-  }
-  return null
-}
-import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { READ_ONLY_FIELDS } from './utils'
-import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/types'
-import { configApiPropertiesSchema } from './validations'
 
 interface ApiConfigFormProps {
   configuration: ApiAppConfiguration
@@ -112,7 +94,7 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
     if (configApiScopes && configApiScopes.length > 0) {
       authorizeHelper(configApiScopes)
     }
-  }, [authorizeHelper, configApiScopes])
+  }, [authorizeHelper])
 
   const operations: GluuCommitDialogOperation[] = useMemo(
     () =>
@@ -126,65 +108,6 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
   const hasChanges = useMemo(() => {
     return patches.length > 0 || formik.dirty
   }, [patches.length, formik.dirty])
-
-  const updateValuesAfterRemoval = (
-    currentValues: ApiAppConfiguration,
-    parentField: string | null,
-    arrayField: string,
-    indexToRemove: number,
-  ): ApiAppConfiguration | null => {
-    let currentArray: Record<string, PropertyValue>[] | undefined
-
-    if (parentField) {
-      const parentValue = currentValues[parentField as keyof ApiAppConfiguration]
-      const parentRecord = extractRecord(parentValue as PropertyValue)
-      if (parentRecord) {
-        const arrayValue = parentRecord[arrayField]
-        const extractedArray = extractObjectArray(arrayValue as PropertyValue)
-        if (extractedArray) {
-          currentArray = extractedArray
-        }
-      }
-    } else {
-      const arrayValue = currentValues[arrayField as keyof ApiAppConfiguration]
-      const extractedArray = extractObjectArray(arrayValue as PropertyValue)
-      if (extractedArray) {
-        currentArray = extractedArray
-      }
-    }
-
-    if (!Array.isArray(currentArray) || indexToRemove < 0 || indexToRemove >= currentArray.length) {
-      return null
-    }
-
-    const newArray = currentArray.filter((_, index) => index !== indexToRemove)
-
-    if (newArray.length !== currentArray.length - 1) {
-      return null
-    }
-
-    const updatedValues = parentField
-      ? (() => {
-          const parentValue = currentValues[parentField as keyof ApiAppConfiguration]
-          const parentRecord = extractRecord(parentValue as PropertyValue)
-          if (parentRecord) {
-            return {
-              ...currentValues,
-              [parentField]: {
-                ...parentRecord,
-                [arrayField]: newArray,
-              },
-            } as ApiAppConfiguration
-          }
-          return null
-        })()
-      : ({
-          ...currentValues,
-          [arrayField]: newArray,
-        } as ApiAppConfiguration)
-
-    return updatedValues
-  }
 
   const removeArrayItem = useCallback(
     (
@@ -317,16 +240,13 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
 
   const propertyKeys = useMemo(() => Object.keys(configuration), [configuration])
 
-  // Only recompute when the number of remove patches changes, not on every patch change
   const removePatchCount = useMemo(() => patches.filter((p) => p.op === 'remove').length, [patches])
 
   const currentValues = useMemo(() => {
-    // If no remove patches, return baseline directly (no cloning needed)
     if (removePatchCount === 0) {
       return baselineConfigurationRef.current
     }
 
-    // Clone and apply remove patches only when necessary
     const values = JSON.parse(
       JSON.stringify(baselineConfigurationRef.current),
     ) as ApiAppConfiguration
@@ -386,8 +306,13 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
         }
 
         const lastPart = pathParts[pathParts.length - 1]
-        const lastIndex = parseInt(lastPart)
-        if (!isNaN(lastIndex) && Array.isArray(target)) {
+        const lastIndex = parseInt(lastPart, 10)
+        if (
+          !isNaN(lastIndex) &&
+          lastPart === String(lastIndex) &&
+          Number.isInteger(lastIndex) &&
+          Array.isArray(target)
+        ) {
           target.splice(lastIndex, 1)
         }
       } catch (error) {
