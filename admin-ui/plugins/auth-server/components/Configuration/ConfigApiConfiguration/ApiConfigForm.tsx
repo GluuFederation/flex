@@ -2,44 +2,24 @@ import React, { useCallback, useState, useEffect, useMemo, useRef } from 'react'
 import { useFormik } from 'formik'
 import { toast } from 'react-toastify'
 import { useTranslation } from 'react-i18next'
-import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { FormGroup, Form } from 'Components'
 import { useCedarling } from '@/cedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
+import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/types'
+import type { FormikTouched } from 'formik'
 import JsonPropertyBuilderConfigApi from './JsonPropertyBuilderConfigApi'
+import {
+  READ_ONLY_FIELDS,
+  updateValuesAfterRemoval,
+  applyRemovePatchToValues,
+  configApiPropertiesSchema,
+} from './utils'
 import type { ApiAppConfiguration, JsonPatch } from './types'
 import type { PropertyValue } from '../types'
-import type { FormikTouched } from 'formik'
-
-// Helper to safely extract array of objects from a value
-// Runtime check ensures it's an array of objects, so type assertion is safe
-function extractObjectArray(value: PropertyValue): Record<string, PropertyValue>[] | null {
-  if (!Array.isArray(value) || value.length === 0) {
-    return null
-  }
-  const firstItem = value[0]
-  if (typeof firstItem !== 'object' || firstItem === null || Array.isArray(firstItem)) {
-    return null
-  }
-  // At this point, we've verified it's an array of objects
-  // TypeScript needs assertion, but runtime check guarantees safety
-  // We use a double assertion to avoid the 'unknown' intermediate type
-  return value as Record<string, PropertyValue>[] & PropertyValue as Record<string, PropertyValue>[]
-}
-
-// Helper to safely extract object/record from a value
-function extractRecord(value: PropertyValue): Record<string, PropertyValue> | null {
-  if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-    return value as Record<string, PropertyValue>
-  }
-  return null
-}
-import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { READ_ONLY_FIELDS } from './utils'
-import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/types'
-import { configApiPropertiesSchema } from './validations'
 
 interface ApiConfigFormProps {
   configuration: ApiAppConfiguration
@@ -83,13 +63,16 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
       return
     }
 
+    const hasPatches = patches.length > 0
     const errors = await formik.validateForm()
-    if (Object.keys(errors).length > 0 || !formik.isValid) {
+    const hasErrors = Object.keys(errors).length > 0
+
+    if (!hasPatches && (!formik.isValid || hasErrors)) {
       return
     }
 
     setModal(true)
-  }, [patches, formik])
+  }, [patches, formik.validateForm, formik.isValid])
 
   useEffect(() => {
     const configChanged =
@@ -114,7 +97,7 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
     if (configApiScopes && configApiScopes.length > 0) {
       authorizeHelper(configApiScopes)
     }
-  }, [authorizeHelper, configApiScopes])
+  }, [authorizeHelper])
 
   const operations: GluuCommitDialogOperation[] = useMemo(
     () =>
@@ -145,75 +128,52 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
       processingRemovalsRef.current.add(removalKey)
 
       formik.setValues((currentValues) => {
-        let currentArray: Record<string, PropertyValue>[] | undefined
+        const updatedValues = updateValuesAfterRemoval(
+          currentValues,
+          parentField,
+          arrayField,
+          indexToRemove,
+        )
 
-        if (parentField) {
-          const parentValue = currentValues[parentField as keyof ApiAppConfiguration]
-          const parentRecord = extractRecord(parentValue as PropertyValue)
-          if (parentRecord) {
-            const arrayValue = parentRecord[arrayField]
-            const extractedArray = extractObjectArray(arrayValue as PropertyValue)
-            if (extractedArray) {
-              currentArray = extractedArray
-            }
-          }
-        } else {
-          const arrayValue = currentValues[arrayField as keyof ApiAppConfiguration]
-          const extractedArray = extractObjectArray(arrayValue as PropertyValue)
-          if (extractedArray) {
-            currentArray = extractedArray
-          }
-        }
-
-        if (
-          !Array.isArray(currentArray) ||
-          indexToRemove < 0 ||
-          indexToRemove >= currentArray.length
-        ) {
+        if (updatedValues === null) {
           processingRemovalsRef.current.delete(removalKey)
           return currentValues
         }
 
-        const newArray = currentArray.filter((_, index) => index !== indexToRemove)
-
-        if (newArray.length !== currentArray.length - 1) {
-          processingRemovalsRef.current.delete(removalKey)
-          return currentValues
-        }
-
-        if (parentField) {
-          const parentValue = currentValues[parentField as keyof ApiAppConfiguration]
-          const parentRecord = extractRecord(parentValue as PropertyValue)
-          if (parentRecord) {
-            return {
-              ...currentValues,
-              [parentField]: {
-                ...parentRecord,
-                [arrayField]: newArray,
-              },
-            } as ApiAppConfiguration
-          }
-        }
-
-        return {
-          ...currentValues,
-          [arrayField]: newArray,
-        } as ApiAppConfiguration
+        return updatedValues
       })
 
       setPatches((existingPatches) => {
-        if (
-          existingPatches.some(
-            (existingPatch) => existingPatch.path === patch.path && existingPatch.op === 'remove',
-          )
-        ) {
+        const removalPath = typeof patch.path === 'string' ? patch.path : ''
+        const removalPathNormalized = removalPath.replace(/^\//, '')
+
+        let hasExistingRemove = false
+        const filteredPatches = existingPatches.filter((existingPatch) => {
+          if (existingPatch.path === patch.path && existingPatch.op === 'remove') {
+            hasExistingRemove = true
+            return false
+          }
+
+          const existingPath = typeof existingPatch.path === 'string' ? existingPatch.path : ''
+          const existingPathNormalized = existingPath.replace(/^\//, '')
+
+          if (existingPathNormalized === removalPathNormalized) {
+            return false
+          }
+
+          if (existingPathNormalized.startsWith(removalPathNormalized + '/')) {
+            return false
+          }
+
+          return true
+        })
+
+        if (hasExistingRemove) {
           processingRemovalsRef.current.delete(removalKey)
           return existingPatches
         }
-        return [
-          ...existingPatches.filter((existingPatch) => existingPatch.path !== patch.path),
-          patch,
-        ]
+
+        return [...filteredPatches, patch]
       })
 
       const touchedField = parentField || arrayField
@@ -227,10 +187,16 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
       formik.validateForm().then(() => {
         processingRemovalsRef.current.delete(removalKey)
       })
-
       return true
     },
-    [formik],
+    [
+      formik.setValues,
+      formik.setTouched,
+      formik.validateForm,
+      formik.touched,
+      setPatches,
+      setResetKey,
+    ],
   )
 
   const patchHandler = useCallback(
@@ -263,13 +229,8 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
         )
         return [...filteredPatches, patch]
       })
-
-      const fieldPath = typeof patch.path === 'string' ? patch.path.replace(/^\//, '') : ''
-      if (fieldPath && patch.op !== 'remove') {
-        formik.setFieldValue(fieldPath, patch.value, false)
-      }
     },
-    [formik, removeArrayItem],
+    [removeArrayItem],
   )
 
   const toggle = useCallback(() => {
@@ -305,12 +266,25 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
     setResetKey((prev) => prev + 1)
   }, [formik])
 
-  const propertyKeys = useMemo(() => {
-    const configKeys = Object.keys(configuration)
-    const formikKeys = Object.keys(formik.values)
-    const allKeys = new Set([...configKeys, ...formikKeys])
-    return Array.from(allKeys)
-  }, [configuration, formik.values])
+  const propertyKeys = useMemo(() => Object.keys(configuration), [configuration])
+
+  const removePatches = useMemo(() => patches.filter((p) => p.op === 'remove'), [patches])
+
+  const currentValues = useMemo(() => {
+    if (removePatches.length === 0) {
+      return baselineConfigurationRef.current
+    }
+
+    const values = JSON.parse(
+      JSON.stringify(baselineConfigurationRef.current),
+    ) as ApiAppConfiguration
+
+    removePatches.forEach((patch) => {
+      applyRemovePatchToValues(values, patch)
+    })
+
+    return values
+  }, [removePatches, resetKey])
 
   return (
     <>
@@ -324,7 +298,7 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
         <div style={{ flex: 1, paddingBottom: '100px' }}>
           {propertyKeys.map((propKey) => {
             const isDisabled = READ_ONLY_FIELDS.includes(propKey)
-            const propValue = formik.values[propKey as keyof ApiAppConfiguration]
+            const propValue = currentValues[propKey as keyof ApiAppConfiguration]
             const fieldError = formik.errors[propKey as keyof ApiAppConfiguration]
             const fieldTouched = formik.touched[propKey as keyof ApiAppConfiguration]
 
@@ -361,7 +335,7 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
               onCancel={handleCancel}
               disableCancel={!hasChanges}
               showApply
-              disableApply={!formik.isValid || !hasChanges}
+              disableApply={!hasChanges || (patches.length === 0 && !formik.isValid)}
               applyButtonType="submit"
             />
           </div>

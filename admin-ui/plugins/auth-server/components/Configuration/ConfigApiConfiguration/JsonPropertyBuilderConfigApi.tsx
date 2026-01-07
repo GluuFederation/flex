@@ -2,7 +2,6 @@ import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import { Accordion, Button } from 'Components'
 import GluuInlineInput from 'Routes/Apps/Gluu/GluuInlineInput'
 import { useTranslation } from 'react-i18next'
-import { generateLabel, isObject, isObjectArray } from './utils'
 import customColors from '@/customColors'
 import type { JsonPropertyBuilderConfigApiProps, AccordionWithSubComponents } from './types'
 import type { JsonPatch } from 'JansConfigApi'
@@ -20,6 +19,9 @@ import {
   getStringValue,
   getNumberValue,
   getStringArrayValue,
+  generateLabel,
+  isObject,
+  isObjectArray,
 } from './utils'
 
 const AccordionWithSub = Accordion as AccordionWithSubComponents
@@ -154,12 +156,7 @@ const JsonPropertyBuilderConfigApi = ({
   }
 
   if (isObjectArray(propValue)) {
-    if (
-      !Array.isArray(propValue) ||
-      propValue.length === 0 ||
-      typeof propValue[0] !== 'object' ||
-      propValue[0] === null
-    ) {
+    if (!Array.isArray(propValue) || propValue.length === 0) {
       return <></>
     }
     const arrayValue = propValue as AppConfiguration[]
@@ -201,9 +198,14 @@ const JsonPropertyBuilderConfigApi = ({
 
   if (isObject(propValue)) {
     const isArrayItem = !isNaN(parseInt(propKey))
-    const displayLabel = isArrayItem
-      ? `${generateLabel(parent || propKey)} ${parseInt(propKey) + 1}`
-      : generateLabel(propKey)
+
+    const getLabelForArrayItem = (): string => {
+      if (parent && isNaN(parseInt(parent))) {
+        return `${generateLabel(parent)} ${parseInt(propKey) + 1}`
+      }
+      return `Item ${parseInt(propKey) + 1}`
+    }
+    const displayLabel = isArrayItem ? getLabelForArrayItem() : generateLabel(propKey)
 
     return (
       <>
