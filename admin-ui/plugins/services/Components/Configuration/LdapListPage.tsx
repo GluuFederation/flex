@@ -165,6 +165,8 @@ function LdapListPage(): ReactElement {
     [setCurrentLdapItem, navigateToRoute],
   )
 
+  const toggle = useCallback(() => setModal((prev) => !prev), [])
+
   const handleLdapDelete = useCallback(
     (row: GluuLdapConfiguration) => {
       setItem(row)
@@ -176,8 +178,6 @@ function LdapListPage(): ReactElement {
   const handleGoToLdapAddPage = useCallback(() => {
     navigateToRoute(ROUTES.LDAP_ADD)
   }, [navigateToRoute])
-
-  const toggle = useCallback(() => setModal((prev) => !prev), [])
 
   useEffect(() => {
     const actions: ActionType[] = []
