@@ -38,8 +38,11 @@ jest.mock('@/helpers/navigation', () => ({
   },
 }))
 
+let capturedHandler: ((patch: any) => void) | null = null
+
 jest.mock('./JsonPropertyBuilderConfigApi', () => {
-  return function MockJsonPropertyBuilderConfigApi() {
+  return function MockJsonPropertyBuilderConfigApi(props: any) {
+    capturedHandler = props.handler
     return <div data-testid="json-property-builder">Mock</div>
   }
 })
@@ -81,6 +84,7 @@ describe('ApiConfigForm - removeArrayItem', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+    capturedHandler = null
     mockValidateForm.mockResolvedValue({})
     mockSetValues.mockImplementation((updater) => {
       if (typeof updater === 'function') {
@@ -106,10 +110,24 @@ describe('ApiConfigForm - removeArrayItem', () => {
 
       render(<ApiConfigForm configuration={configuration} onSubmit={onSubmit} />)
 
-      // Access removeArrayItem through the component's internal logic
-      // Since removeArrayItem is internal, we'll test it through patchHandler
-      // This is a simplified test - in practice, you'd trigger through UI
-      expect(mockFormik.setValues).toBeDefined()
+      expect(capturedHandler).toBeDefined()
+
+      if (capturedHandler) {
+        const removePatch = {
+          op: 'remove' as const,
+          path: '/apiApprovedIssuer/1',
+          value: 'issuer2',
+        }
+
+        capturedHandler(removePatch)
+
+        expect(mockSetValues).toHaveBeenCalled()
+        const setValuesCall = mockSetValues.mock.calls[0][0]
+        expect(typeof setValuesCall).toBe('function')
+
+        const updatedValues = setValuesCall(initialValues)
+        expect(updatedValues.apiApprovedIssuer).toEqual(['issuer1', 'issuer3'])
+      }
     })
 
     it('should handle out-of-range index gracefully', () => {
@@ -128,8 +146,23 @@ describe('ApiConfigForm - removeArrayItem', () => {
 
       render(<ApiConfigForm configuration={configuration} onSubmit={onSubmit} />)
 
-      // Out-of-range index should not cause errors
-      expect(mockSetValues).not.toHaveBeenCalled()
+      expect(capturedHandler).toBeDefined()
+
+      if (capturedHandler) {
+        const outOfRangePatch = {
+          op: 'remove' as const,
+          path: '/apiApprovedIssuer/10',
+          value: null,
+        }
+
+        capturedHandler(outOfRangePatch)
+
+        const setValuesCall = mockSetValues.mock.calls[0]?.[0]
+        if (setValuesCall && typeof setValuesCall === 'function') {
+          const updatedValues = setValuesCall(initialValues)
+          expect(updatedValues.apiApprovedIssuer).toEqual(['issuer1', 'issuer2'])
+        }
+      }
     })
   })
 
@@ -275,8 +308,13 @@ describe('ApiConfigForm - removeArrayItem', () => {
         apiApprovedIssuer: ['issuer1', 'issuer2'],
       } as ApiAppConfiguration
 
+      let resolveValidation: (value: any) => void
+      const validationPromise = new Promise((resolve) => {
+        resolveValidation = resolve
+      })
+
       const mockFormik = createMockFormik(initialValues)
-      mockValidateForm.mockResolvedValue({})
+      mockValidateForm.mockReturnValue(validationPromise)
       ;(useFormik as jest.Mock).mockReturnValue(mockFormik)
 
       const configuration: ApiAppConfiguration = {
@@ -287,10 +325,38 @@ describe('ApiConfigForm - removeArrayItem', () => {
 
       render(<ApiConfigForm configuration={configuration} onSubmit={onSubmit} />)
 
-      // Wait for async validation to complete
-      await waitFor(() => {
-        expect(mockValidateForm).toBeDefined()
-      })
+      expect(capturedHandler).toBeDefined()
+
+      if (capturedHandler) {
+        const removePatch = {
+          op: 'remove' as const,
+          path: '/apiApprovedIssuer/0',
+          value: 'issuer1',
+        }
+
+        capturedHandler(removePatch)
+
+        expect(mockSetValues).toHaveBeenCalled()
+        expect(mockValidateForm).toHaveBeenCalled()
+
+        const firstCallCount = mockSetValues.mock.calls.length
+
+        resolveValidation!({})
+
+        await waitFor(() => {
+          expect(mockValidateForm).toHaveBeenCalled()
+        })
+
+        const secondRemovePatch = {
+          op: 'remove' as const,
+          path: '/apiApprovedIssuer/0',
+          value: 'issuer1',
+        }
+
+        capturedHandler(secondRemovePatch)
+
+        expect(mockSetValues.mock.calls.length).toBeGreaterThan(firstCallCount)
+      }
     })
   })
 })

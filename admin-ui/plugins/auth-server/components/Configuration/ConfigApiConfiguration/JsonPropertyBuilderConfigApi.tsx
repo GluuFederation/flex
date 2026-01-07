@@ -156,12 +156,7 @@ const JsonPropertyBuilderConfigApi = ({
   }
 
   if (isObjectArray(propValue)) {
-    if (
-      !Array.isArray(propValue) ||
-      propValue.length === 0 ||
-      typeof propValue[0] !== 'object' ||
-      propValue[0] === null
-    ) {
+    if (!Array.isArray(propValue) || propValue.length === 0) {
       return <></>
     }
     const arrayValue = propValue as AppConfiguration[]

@@ -39,6 +39,7 @@ interface ApiConfigFormProps {
   configuration: ApiAppConfiguration
   onSubmit: (patches: JsonPatch[], message: string) => Promise<void>
 }
+type TraversableValue = PropertyValue | PropertyValue[]
 
 const CONFIG_API_RESOURCE_ID = ADMIN_UI_RESOURCES.ConfigApiConfiguration
 const configApiScopes = CEDAR_RESOURCE_SCOPES[CONFIG_API_RESOURCE_ID] || []
@@ -262,17 +263,8 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
         )
         return [...filteredPatches, patch]
       })
-
-      const convertPathToFormikField = (jsonPatchPath: string): string => {
-        return jsonPatchPath.replace(/^\//, '').replace(/\//g, '.')
-      }
-
-      const fieldPath = typeof patch.path === 'string' ? convertPathToFormikField(patch.path) : ''
-      if (fieldPath && patch.op !== 'remove') {
-        formik.setFieldValue(fieldPath, patch.value, false)
-      }
     },
-    [formik, removeArrayItem, patches.length],
+    [removeArrayItem],
   )
 
   const toggle = useCallback(() => {
@@ -308,9 +300,73 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
     setResetKey((prev) => prev + 1)
   }, [formik])
 
-  const propertyKeys = useMemo(() => {
-    return Object.keys(formik.values)
-  }, [formik.values])
+  const propertyKeys = useMemo(() => Object.keys(configuration), [configuration])
+
+  // Only recompute when the number of remove patches changes, not on every patch change
+  const removePatchCount = useMemo(() => patches.filter((p) => p.op === 'remove').length, [patches])
+
+  const currentValues = useMemo(() => {
+    // If no remove patches, return baseline directly (no cloning needed)
+    if (removePatchCount === 0) {
+      return baselineConfigurationRef.current
+    }
+
+    // Clone and apply remove patches only when necessary
+    const values = JSON.parse(
+      JSON.stringify(baselineConfigurationRef.current),
+    ) as ApiAppConfiguration
+
+    patches.forEach((patch) => {
+      if (patch.op !== 'remove' || !patch.path) return
+
+      try {
+        const pathStr = typeof patch.path === 'string' ? patch.path : ''
+        const pathParts = pathStr.replace(/^\//, '').split('/')
+
+        const getNestedValue = (
+          obj: ApiAppConfiguration,
+          path: string[],
+        ): TraversableValue | null => {
+          let current: PropertyValue | PropertyValue[] | ApiAppConfiguration = obj
+          for (let i = 0; i < path.length - 1; i++) {
+            const part = path[i]
+            const index = parseInt(part)
+            if (!isNaN(index) && Array.isArray(current)) {
+              current = current[index] as PropertyValue | PropertyValue[] | ApiAppConfiguration
+            } else if (typeof current === 'object' && current !== null && !Array.isArray(current)) {
+              const key = part as keyof typeof current
+              if (key in current) {
+                current = (current as Record<string, PropertyValue>)[key] as
+                  | PropertyValue
+                  | PropertyValue[]
+                  | ApiAppConfiguration
+              } else {
+                return null
+              }
+            } else {
+              return null
+            }
+          }
+          return current as TraversableValue
+        }
+
+        const target = getNestedValue(values, pathParts)
+        if (target === null) {
+          return
+        }
+
+        const lastPart = pathParts[pathParts.length - 1]
+        const lastIndex = parseInt(lastPart)
+        if (!isNaN(lastIndex) && Array.isArray(target)) {
+          target.splice(lastIndex, 1)
+        }
+      } catch (error) {
+        console.error('Error applying remove patch:', error)
+      }
+    })
+
+    return values
+  }, [removePatchCount, resetKey, patches])
 
   return (
     <>
@@ -324,7 +380,7 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
         <div style={{ flex: 1, paddingBottom: '100px' }}>
           {propertyKeys.map((propKey) => {
             const isDisabled = READ_ONLY_FIELDS.includes(propKey)
-            const propValue = formik.values[propKey as keyof ApiAppConfiguration]
+            const propValue = currentValues[propKey as keyof ApiAppConfiguration]
             const fieldError = formik.errors[propKey as keyof ApiAppConfiguration]
             const fieldTouched = formik.touched[propKey as keyof ApiAppConfiguration]
 
