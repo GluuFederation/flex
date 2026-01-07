@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
-import ConfigPage from './ConfigPage'
+import AuthPage from './AuthPage'
 import { Provider } from 'react-redux'
 import i18n from '../../../../app/i18n'
 import { I18nextProvider } from 'react-i18next'
@@ -162,7 +162,7 @@ const Wrapper = ({ children }) => (
 )
 
 it('Should render json properties page properly', () => {
-  render(<ConfigPage configuration={config} permissions={permissions} />, {
+  render(<AuthPage configuration={config} permissions={permissions} />, {
     wrapper: Wrapper,
   })
   waitFor(() => expect(screen.getByText(config.issuer)).toBeInTheDocument())
@@ -171,3 +171,4 @@ it('Should render json properties page properly', () => {
   expect(screen.getByTestId('authorizationEndpoint')).toHaveValue(config.authorizationEndpoint)
   screen.getByText(/Base Endpoint:/)
 })
+

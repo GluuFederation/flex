@@ -9,7 +9,7 @@ import ClientEditPage from './components/Clients/ClientEditPage'
 
 import SessionListPage from './components/Sessions/SessionListPage'
 
-import PropertiesPage from './components/Configuration/ConfigPage'
+import PropertiesPage from './components/Configuration/AuthPage'
 import KeysPage from './components/Configuration/Keys/KeysPage'
 import LoggingPage from './components/Configuration/Defaults/LoggingPage'
 
