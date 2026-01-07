@@ -165,10 +165,13 @@ function LdapListPage(): ReactElement {
     [setCurrentLdapItem, navigateToRoute],
   )
 
-  const handleLdapDelete = useCallback((row: GluuLdapConfiguration) => {
-    setItem(row)
-    toggle()
-  }, [])
+  const handleLdapDelete = useCallback(
+    (row: GluuLdapConfiguration) => {
+      setItem(row)
+      toggle()
+    },
+    [toggle],
+  )
 
   const handleGoToLdapAddPage = useCallback(() => {
     navigateToRoute(ROUTES.LDAP_ADD)
@@ -287,10 +290,6 @@ function LdapListPage(): ReactElement {
     },
     [testMutation],
   )
-
-  useEffect(() => {
-    setAlertObj({ severity: undefined, message: '', show: false })
-  }, [])
 
   const tableOptions = {
     search: true,

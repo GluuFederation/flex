@@ -178,9 +178,11 @@ export interface PersistenceInfo {
 }
 
 export function isPersistenceInfo(data: unknown): data is PersistenceInfo {
-  return (
-    data !== null && typeof data === 'object' && !Array.isArray(data) && 'persistenceType' in data
-  )
+  if (data === null || typeof data !== 'object' || Array.isArray(data)) {
+    return false
+  }
+  const obj = data as Record<string, unknown>
+  return 'persistenceType' in obj && typeof obj.persistenceType === 'string'
 }
 
 export function extractActionMessage<T extends { action_message?: string }>(
