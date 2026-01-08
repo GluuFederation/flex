@@ -14,12 +14,9 @@ import {
 } from './utils'
 import type { LoggingFormValues } from './utils'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { Formik } from 'formik'
-import {
-  getLoggingConfig,
-  editLoggingConfig,
-} from 'Plugins/auth-server/redux/features/loggingSlice'
+import { useLoggingConfig, useUpdateLoggingConfig } from './hooks'
 import { useCedarling } from '@/cedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
@@ -29,11 +26,8 @@ import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import type { Logging } from 'JansConfigApi'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import { loggingValidationSchema } from './validations'
-import type {
-  LoggingModuleRootState,
-  EditLoggingPayload,
-  ChangedFields,
-} from 'Plugins/auth-server/redux/features/types/loggingTypes'
+import type { ChangedFields } from 'Plugins/auth-server/redux/features/types/loggingTypes'
+import { updateToast } from 'Redux/features/toastSlice'
 
 interface PendingValues {
   mergedValues: Logging
@@ -43,9 +37,12 @@ interface PendingValues {
 function LoggingPage(): React.ReactElement {
   const { t } = useTranslation()
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
-  const logging = useSelector((state: LoggingModuleRootState) => state.loggingReducer.logging)
-  const loading = useSelector((state: LoggingModuleRootState) => state.loggingReducer.loading)
   const dispatch = useDispatch()
+
+  const { data: logging, isLoading: queryLoading } = useLoggingConfig()
+  const updateLoggingMutation = useUpdateLoggingConfig()
+
+  const loading = queryLoading || updateLoggingMutation.isPending
 
   const loggingResourceId = ADMIN_UI_RESOURCES.Logging
   const loggingScopes = useMemo(
@@ -82,12 +79,6 @@ function LoggingPage(): React.ReactElement {
   }, [authorizeHelper, loggingScopes])
 
   useEffect(() => {
-    if (canReadLogging) {
-      dispatch(getLoggingConfig())
-    }
-  }, [canReadLogging, dispatch])
-
-  useEffect(() => {
     if (logging) {
       setLocalLogging(logging)
     }
@@ -119,24 +110,25 @@ function LoggingPage(): React.ReactElement {
   )
 
   const handleAccept = useCallback(
-    (userMessage: string): void => {
+    async (userMessage: string): Promise<void> => {
       if (!pendingValues) return
 
       const { mergedValues, changedFields } = pendingValues
 
-      const opts: Record<string, string> = {}
-      opts['logging'] = JSON.stringify(mergedValues)
-
-      const payload: EditLoggingPayload = {
-        data: opts,
-        otherFields: { userMessage, changedFields },
+      try {
+        await updateLoggingMutation.mutateAsync({
+          data: mergedValues,
+          userMessage,
+          changedFields,
+        })
+        closeCommitDialog()
+        setPendingValues(null)
+      } catch (error) {
+        console.error('Failed to update logging config:', error)
+        dispatch(updateToast(true, 'error'))
       }
-
-      dispatch(editLoggingConfig(payload))
-      closeCommitDialog()
-      setPendingValues(null)
     },
-    [pendingValues, dispatch, closeCommitDialog],
+    [pendingValues, updateLoggingMutation, closeCommitDialog, dispatch],
   )
 
   return (

@@ -7,10 +7,9 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { Logging } from 'JansConfigApi'
 
-// Mock the orval hooks
-jest.mock('JansConfigApi', () => ({
-  useGetConfigLogging: jest.fn(),
-  usePutConfigLogging: jest.fn(),
+jest.mock('./hooks', () => ({
+  useLoggingConfig: jest.fn(),
+  useUpdateLoggingConfig: jest.fn(),
 }))
 
 const permissions = [
@@ -70,17 +69,15 @@ const Wrapper: React.FC<WrapperProps> = ({ children }) => (
 )
 
 it('Should render Logging page properly', () => {
-  const { useGetConfigLogging, usePutConfigLogging } = require('JansConfigApi')
+  const { useLoggingConfig, useUpdateLoggingConfig } = require('./hooks')
 
-  // Mock the GET hook to return logging data
-  useGetConfigLogging.mockReturnValue({
+  useLoggingConfig.mockReturnValue({
     data: logging,
     isLoading: false,
     error: null,
   })
 
-  // Mock the PUT mutation hook
-  usePutConfigLogging.mockReturnValue({
+  useUpdateLoggingConfig.mockReturnValue({
     mutateAsync: jest.fn(),
     isPending: false,
     isError: false,
