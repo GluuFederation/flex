@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { ReactElement } from 'react'
 import { FormGroup, Card, Col, CardBody } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import { CACHE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
-import PropTypes from 'prop-types'
+import type { CacheInMemoryProps } from './types'
 
-function CacheInMemory({ formik }) {
+function CacheInMemory({ formik }: CacheInMemoryProps): ReactElement {
   const { t } = useTranslation()
   return (
     <Card>
@@ -31,6 +31,3 @@ function CacheInMemory({ formik }) {
 }
 
 export default CacheInMemory
-CacheInMemory.propTypes = {
-  formik: PropTypes.object,
-}
