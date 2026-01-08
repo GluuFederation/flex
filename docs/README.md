@@ -30,7 +30,7 @@ The Gluu Flex contract includes guaranteed response times and consultative suppo
 ## Looking for older documentation versions?
 
  The Janssen Project posts the last five versions of the documentation. If you are looking for older versions, you can find them unprocessed in the [docs](https://github.com/JanssenProject/jans/tree/main/docs) folder. Select the version of choice from the tag dropdown in GitHub. If you want to process them you may do so by following the steps below :
- 
+
 ### Testing Documentation Changes Locally
 
 While contributing documentation to official Gluu [documentation](https://docs.gluu.org/) it is important to make sure that documents meet [style guidelines](../CONTRIBUTING.md#documentation-style-guide) and have been proofread to remove any typographical or grammatical errors.
