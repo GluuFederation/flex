@@ -1,12 +1,12 @@
-import React, { useState, useMemo, useCallback } from 'react'
-import { Accordion, FormGroup, Col, Button } from 'Components'
+import React, { useState, useMemo, useCallback, useEffect } from 'react'
+import { Accordion, Button, FormGroup, Col } from 'Components'
 import GluuInlineInput from 'Routes/Apps/Gluu/GluuInlineInput'
 import { useTranslation } from 'react-i18next'
-import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import { generateLabel, isObject, isObjectArray } from '../JsonPropertyBuilder'
+import { getIn } from 'formik'
 import customColors from '@/customColors'
 import type { JsonPropertyBuilderConfigApiProps, AccordionWithSubComponents } from './types'
 import type { JsonPatch } from 'JansConfigApi'
+import type { AppConfiguration } from '../types'
 import {
   isNumber,
   isBoolean,
@@ -20,11 +20,36 @@ import {
   getStringValue,
   getNumberValue,
   getStringArrayValue,
+  generateLabel,
+  isObject,
+  isObjectArray,
 } from './utils'
 
 const AccordionWithSub = Accordion as AccordionWithSubComponents
 const AccordionHeader = AccordionWithSub.Header
 const AccordionBody = AccordionWithSub.Body
+
+const ERROR_CONTAINER_STYLE: React.CSSProperties = {
+  marginTop: '-1.75rem',
+  marginBottom: 0,
+}
+
+const FORM_GROUP_STYLE: React.CSSProperties = {
+  marginBottom: 0,
+  marginTop: 0,
+}
+
+const ERROR_COL_STYLE: React.CSSProperties = {
+  paddingTop: 0,
+  paddingBottom: 0,
+}
+
+const ERROR_TEXT_STYLE: React.CSSProperties = {
+  marginTop: 0,
+  marginBottom: 0,
+  lineHeight: '1.2',
+  paddingTop: '2px',
+}
 
 const JsonPropertyBuilderConfigApi = ({
   propKey,
@@ -38,106 +63,176 @@ const JsonPropertyBuilderConfigApi = ({
   tooltipPropKey = '',
   parent,
   disabled = false,
+  errors,
+  touched,
 }: JsonPropertyBuilderConfigApiProps): JSX.Element => {
   const { t } = useTranslation()
   const [show, setShow] = useState(true)
+
+  useEffect(() => {
+    setShow(true)
+  }, [propValue])
 
   const path = useMemo(() => {
     if (!initialPath) {
       return `/${propKey}`
     }
+    if (parentIsArray && !isNaN(parseInt(propKey))) {
+      return initialPath
+    }
     return `${initialPath}/${propKey}`
-  }, [initialPath, propKey])
+  }, [initialPath, propKey, parentIsArray])
 
   const uniqueId = useMemo(() => path.replace(/\//g, '-').substring(1) || propKey, [path, propKey])
 
+  const formikPath = useMemo(() => {
+    if (!path) return propKey
+    return path.replace(/^\//, '').replace(/\//g, '.')
+  }, [path, propKey])
+
+  const fieldError = useMemo(() => {
+    if (!errors) return undefined
+    return getIn(errors, formikPath)
+  }, [errors, formikPath])
+
+  const fieldTouched = useMemo(() => {
+    if (!touched) return false
+    return getIn(touched, formikPath) === true
+  }, [touched, formikPath])
+
   const removeHandler = useCallback(() => {
+    if (!show) {
+      return
+    }
+
     const patch: JsonPatch = {
       path,
       value: propValue,
       op: 'remove',
     }
-    handler(patch)
+
     setShow(false)
-  }, [path, propValue, handler])
+    handler(patch)
+  }, [path, propValue, handler, show])
+
+  const renderError = useCallback(() => {
+    if (!fieldTouched || !fieldError) return null
+    if (typeof fieldError === 'object' && fieldError !== null) return null
+    return (
+      <div style={ERROR_CONTAINER_STYLE}>
+        <FormGroup row style={FORM_GROUP_STYLE}>
+          <Col sm={10}>
+            <FormGroup row style={FORM_GROUP_STYLE}>
+              <Col sm={lSize}></Col>
+              <Col sm={lSize} style={ERROR_COL_STYLE}>
+                <div className="text-danger small" style={ERROR_TEXT_STYLE}>
+                  {String(fieldError)}
+                </div>
+              </Col>
+            </FormGroup>
+          </Col>
+        </FormGroup>
+      </div>
+    )
+  }, [fieldTouched, fieldError, lSize])
 
   if (isBoolean(propValue) || shouldRenderAsBoolean(schema)) {
     return (
-      <GluuInlineInput
-        id={uniqueId}
-        name={tooltipPropKey || propKey}
-        lsize={lSize}
-        rsize={lSize}
-        label={generateLabel(propKey)}
-        isBoolean={true}
-        handler={handler}
-        value={getBooleanValue(propValue, schema)}
-        parentIsArray={parentIsArray}
-        path={path}
-        doc_category={doc_category}
-        disabled={disabled}
-      />
+      <>
+        <GluuInlineInput
+          id={uniqueId}
+          name={tooltipPropKey || propKey}
+          lsize={lSize}
+          rsize={lSize}
+          label={generateLabel(propKey)}
+          isBoolean={true}
+          handler={handler}
+          value={getBooleanValue(propValue, schema)}
+          parentIsArray={parentIsArray}
+          path={path}
+          doc_category={doc_category}
+          disabled={disabled}
+          showSaveButtons={false}
+        />
+        {renderError()}
+      </>
     )
   }
 
   if (isString(propValue) || shouldRenderAsString(schema)) {
     return (
-      <GluuInlineInput
-        id={uniqueId}
-        name={tooltipPropKey || propKey}
-        lsize={lSize}
-        rsize={lSize}
-        label={generateLabel(propKey)}
-        handler={handler}
-        value={getStringValue(propValue, schema)}
-        parentIsArray={parentIsArray}
-        path={path}
-        doc_category={doc_category}
-        disabled={disabled}
-      />
+      <>
+        <GluuInlineInput
+          id={uniqueId}
+          name={tooltipPropKey || propKey}
+          lsize={lSize}
+          rsize={lSize}
+          label={generateLabel(propKey)}
+          handler={handler}
+          value={getStringValue(propValue, schema)}
+          parentIsArray={parentIsArray}
+          path={path}
+          doc_category={doc_category}
+          disabled={disabled}
+          showSaveButtons={false}
+        />
+        {renderError()}
+      </>
     )
   }
 
   if (isNumber(propValue, schema) || shouldRenderAsNumber(schema)) {
     return (
-      <GluuInlineInput
-        id={uniqueId}
-        name={tooltipPropKey || propKey}
-        lsize={lSize}
-        type="number"
-        rsize={lSize}
-        label={generateLabel(propKey)}
-        handler={handler}
-        value={getNumberValue(propValue, schema)}
-        parentIsArray={parentIsArray}
-        path={path}
-        doc_category={doc_category}
-        disabled={disabled}
-      />
+      <>
+        <GluuInlineInput
+          id={uniqueId}
+          name={tooltipPropKey || propKey}
+          lsize={lSize}
+          type="number"
+          rsize={lSize}
+          label={generateLabel(propKey)}
+          handler={handler}
+          value={getNumberValue(propValue, schema)}
+          parentIsArray={parentIsArray}
+          path={path}
+          doc_category={doc_category}
+          disabled={disabled}
+          showSaveButtons={false}
+        />
+        {renderError()}
+      </>
     )
   }
 
   if (isStringArray(propValue) || shouldRenderAsStringArray(schema)) {
     return (
-      <GluuInlineInput
-        id={uniqueId}
-        name={tooltipPropKey || propKey}
-        label={generateLabel(propKey)}
-        value={getStringArrayValue(propValue, schema)}
-        lsize={lSize}
-        rsize={lSize}
-        isArray={true}
-        handler={handler}
-        options={schema?.items?.enum || getStringArrayValue(propValue, schema)}
-        parentIsArray={parentIsArray}
-        path={path}
-        doc_category={doc_category}
-        disabled={disabled}
-      />
+      <>
+        <GluuInlineInput
+          id={uniqueId}
+          name={tooltipPropKey || propKey}
+          label={generateLabel(propKey)}
+          value={getStringArrayValue(propValue, schema)}
+          lsize={lSize}
+          rsize={lSize}
+          isArray={true}
+          handler={handler}
+          options={schema?.items?.enum || getStringArrayValue(propValue, schema)}
+          parentIsArray={parentIsArray}
+          path={path}
+          doc_category={doc_category}
+          disabled={disabled}
+          showSaveButtons={false}
+        />
+        {renderError()}
+      </>
     )
   }
 
   if (isObjectArray(propValue)) {
+    if (!Array.isArray(propValue) || propValue.length === 0) {
+      return <></>
+    }
+    const arrayValue = propValue as AppConfiguration[]
     return (
       <Accordion className="mb-2 b-primary" initialOpen>
         <AccordionHeader
@@ -145,28 +240,29 @@ const JsonPropertyBuilderConfigApi = ({
             color: customColors.lightBlue,
           }}
         >
-          <GluuLabel
-            label={generateLabel(propKey)}
-            size={lSize}
-            required={false}
-            doc_category={doc_category}
-            doc_entry={`${propKey}.self`}
-          />
+          {generateLabel(propKey)}
         </AccordionHeader>
         <AccordionBody>
-          {Object.keys(propValue as Record<string, unknown>)?.map((item) => {
+          {arrayValue.map((item, index) => {
+            const itemPath = `${path}/${index}`
+            const itemObj = item as AppConfiguration
+            const itemIdentifier =
+              (itemObj.directory as string) || (itemObj.name as string) || `item-${index}`
+            const stableKey = `${path}-${itemIdentifier}`
             return (
               <JsonPropertyBuilderConfigApi
-                key={item}
-                propKey={item}
-                propValue={(propValue as Record<string, unknown>)[item]}
+                key={stableKey}
+                propKey={String(index)}
+                propValue={item}
                 handler={handler}
                 lSize={lSize}
                 parentIsArray={true}
                 parent={propKey}
-                path={path}
+                path={itemPath}
                 doc_category={doc_category}
                 disabled={disabled}
+                errors={errors}
+                touched={touched}
               />
             )
           })}
@@ -176,6 +272,16 @@ const JsonPropertyBuilderConfigApi = ({
   }
 
   if (isObject(propValue)) {
+    const isArrayItem = !isNaN(parseInt(propKey))
+
+    const getLabelForArrayItem = (): string => {
+      if (parent && isNaN(parseInt(parent))) {
+        return `${generateLabel(parent)} ${parseInt(propKey) + 1}`
+      }
+      return `Item ${parseInt(propKey) + 1}`
+    }
+    const displayLabel = isArrayItem ? getLabelForArrayItem() : generateLabel(propKey)
+
     return (
       <>
         {show && (
@@ -185,44 +291,40 @@ const JsonPropertyBuilderConfigApi = ({
                 color: customColors.lightBlue,
               }}
             >
-              {propKey.toUpperCase().length > 2 ? (
-                <GluuLabel
-                  label={generateLabel(propKey)}
-                  size={lSize}
-                  required={false}
-                  doc_category={doc_category}
-                  doc_entry={`${propKey}.self`}
-                />
-              ) : null}
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  width: '100%',
+                }}
+              >
+                <span>{displayLabel}</span>
+                {parentIsArray && (
+                  <Button
+                    style={{
+                      backgroundColor: disabled ? customColors.darkGray : customColors.accentRed,
+                      color: customColors.white,
+                      border: 'none',
+                      cursor: disabled ? 'not-allowed' : 'pointer',
+                      opacity: disabled ? 0.6 : 1,
+                    }}
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      removeHandler()
+                    }}
+                    disabled={disabled}
+                    aria-disabled={disabled}
+                  >
+                    <i className="fa fa-remove me-2" />
+                    {t('actions.remove')}
+                  </Button>
+                )}
+              </div>
             </AccordionHeader>
             <AccordionBody>
-              {parentIsArray && (
-                <FormGroup row>
-                  <Col sm={11} md={11}></Col>
-                  <Col sm={1} md={1}>
-                    <Button
-                      style={{
-                        backgroundColor: disabled ? customColors.darkGray : customColors.accentRed,
-                        color: customColors.white,
-                        float: 'right',
-                        border: 'none',
-                        cursor: disabled ? 'not-allowed' : 'pointer',
-                        opacity: disabled ? 0.6 : 1,
-                      }}
-                      size="sm"
-                      onClick={removeHandler}
-                      disabled={disabled}
-                      aria-disabled={disabled}
-                    >
-                      <i className="fa fa-remove me-2"></i>
-                      {'  '}
-                      {t('actions.remove')}
-                      {'  '}
-                    </Button>
-                  </Col>
-                </FormGroup>
-              )}
-              {Object.keys(propValue as Record<string, unknown>)?.map((objKey) => {
+              {Object.keys(propValue as AppConfiguration)?.map((objKey) => {
                 let tooltipKey = ''
 
                 if (isNaN(parseInt(propKey))) {
@@ -231,18 +333,21 @@ const JsonPropertyBuilderConfigApi = ({
                   tooltipKey = `${parent}.${objKey}`
                 }
 
+                const nestedValue = (propValue as AppConfiguration)[objKey]
                 return (
                   <JsonPropertyBuilderConfigApi
                     key={objKey}
                     propKey={objKey}
                     tooltipPropKey={tooltipKey}
-                    propValue={(propValue as Record<string, unknown>)[objKey]}
+                    propValue={nestedValue}
                     handler={handler}
                     lSize={lSize}
                     parentIsArray={parentIsArray}
                     path={path}
                     doc_category={doc_category}
                     disabled={disabled}
+                    errors={errors}
+                    touched={touched}
                   />
                 )
               })}

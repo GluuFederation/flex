@@ -19,7 +19,6 @@ import ConfigApiPage from './components/Configuration/ConfigApiConfiguration/Con
 import { reducer as oidcReducer } from './redux/features/oidcSlice'
 import { reducer as scopeReducer } from './redux/features/scopeSlice'
 import { reducer as jsonReducer } from './redux/features/jsonConfigSlice'
-import { reducer as loggingReducer } from './redux/features/loggingSlice'
 import { reducer as umaResourceReducer } from './redux/features/umaResourceSlice'
 import { reducer as sessionReducer } from './redux/features/sessionSlice'
 import messageReducer from './redux/features/MessageSlice'
@@ -27,7 +26,6 @@ import messageReducer from './redux/features/MessageSlice'
 import scopesSaga from './redux/sagas/OAuthScopeSaga'
 import oidcSaga from './redux/sagas/OIDCSaga'
 import jsonSaga from './redux/sagas/JsonConfigSaga'
-import loggingSaga from './redux/sagas/LoggingSaga'
 import umaResourceSaga from './redux/sagas/UMAResourceSaga'
 import sessionSaga from './redux/sagas/SessionSaga'
 import messageSaga from './redux/sagas/MessageSaga'
@@ -249,7 +247,6 @@ const pluginMetadata = {
     { name: 'scopeReducer', reducer: scopeReducer },
     { name: 'oidcReducer', reducer: oidcReducer },
     { name: 'authPropertiesReducer', reducer: jsonReducer },
-    { name: 'loggingReducer', reducer: loggingReducer },
     { name: 'umaResourceReducer', reducer: umaResourceReducer },
     { name: 'sessionReducer', reducer: sessionReducer },
     { name: 'messageReducer', reducer: messageReducer },
@@ -258,7 +255,6 @@ const pluginMetadata = {
     scopesSaga(),
     oidcSaga(),
     jsonSaga(),
-    loggingSaga(),
     umaResourceSaga(),
     sessionSaga(),
     messageSaga(),
