@@ -8,14 +8,14 @@ import { useTranslation } from 'react-i18next'
 import { useGetConfigApiProperties, usePatchConfigApiProperties } from 'JansConfigApi'
 import { useConfigApiActions } from './utils'
 import { toast } from 'react-toastify'
-import type { JsonPatch } from './types'
+import type { JsonPatch, ModifiedFields, ApiAppConfiguration, ConfigApiAuditPayload } from './types'
 
 const ConfigApiPage = (): JSX.Element => {
   const { t } = useTranslation()
   const { logConfigApiUpdate } = useConfigApiActions()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-  const { data: configuration, isLoading, error } = useGetConfigApiProperties()
+  const { data: configuration, isLoading, error, refetch } = useGetConfigApiProperties()
   const patchConfigMutation = usePatchConfigApiProperties()
 
   SetTitle(t('titles.config_api_configuration'))
@@ -26,11 +26,21 @@ const ConfigApiPage = (): JSX.Element => {
     async (patches: JsonPatch[], message: string) => {
       try {
         setErrorMessage(null)
-        await patchConfigMutation.mutateAsync({ data: patches })
+        await patchConfigMutation.mutateAsync({
+          data: patches,
+        })
+
+        await refetch()
 
         let auditSuccess = true
         try {
-          await logConfigApiUpdate(message, { requestBody: patches })
+          const auditPayloadData: ConfigApiAuditPayload = {
+            requestBody: patches,
+          }
+          const auditPayload: ModifiedFields = {
+            requestBody: auditPayloadData,
+          }
+          await logConfigApiUpdate(message, auditPayload)
         } catch (auditError) {
           console.error('Error logging audit:', auditError)
           auditSuccess = false
@@ -48,7 +58,7 @@ const ConfigApiPage = (): JSX.Element => {
         toast.error(errorMsg)
       }
     },
-    [patchConfigMutation, logConfigApiUpdate, t],
+    [patchConfigMutation, logConfigApiUpdate, t, refetch],
   )
 
   if (error !== null && error !== undefined) {
@@ -68,7 +78,12 @@ const ConfigApiPage = (): JSX.Element => {
   return (
     <GluuLoader blocking={loading}>
       <Card style={applicationStyle.mainCard}>
-        {configuration && <ApiConfigForm configuration={configuration} onSubmit={handleSubmit} />}
+        {configuration && (
+          <ApiConfigForm
+            configuration={configuration as ApiAppConfiguration}
+            onSubmit={handleSubmit}
+          />
+        )}
         {errorMessage && (
           <div className="alert alert-danger mt-3" role="alert">
             {errorMessage}

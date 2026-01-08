@@ -1,84 +1,58 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import { Accordion, FormGroup, Col, Button } from 'Components'
 import GluuInlineInput from 'Routes/Apps/Gluu/GluuInlineInput'
 import { useTranslation } from 'react-i18next'
-import PropTypes from 'prop-types'
 import customColors from '@/customColors'
+import type {
+  JsonPropertyBuilderProps,
+  AccordionWithSubComponents,
+  AppConfiguration,
+} from './types'
+import type { JsonPatch } from 'JansConfigApi'
+import {
+  isString,
+  isStringArray,
+  isEmptyArray,
+  isBoolean,
+  isNumber,
+  shouldRenderAsBoolean,
+  shouldRenderAsString,
+  shouldRenderAsStringArray,
+  isObjectArray,
+  isObject,
+  migratingTextIfRenamed,
+} from './ConfigApiConfiguration/utils'
 
-export function generateLabel(name) {
-  const result = name.replace(/([A-Z])/g, ' $1')
-  return result.charAt(0).toUpperCase() + result.slice(1)
-}
-export function isObjectArray(item) {
-  return Array.isArray(item) && item.length >= 1 && typeof item[0] === 'object'
-}
+const AccordionWithSub = Accordion as AccordionWithSubComponents
+const AccordionHeader = AccordionWithSub.Header
+const AccordionBody = AccordionWithSub.Body
 
-export function isObject(item) {
-  if (item != null) {
-    return typeof item === 'object'
-  } else {
-    return false
-  }
-}
-const migratingTextIfRenamed = (isRenamedKey, text) => {
-  if (isRenamedKey) {
-    return text
-  } else {
-    return generateLabel(text)
-  }
-}
-function JsonPropertyBuilder({
+const JsonPropertyBuilder = ({
   propKey,
   propValue,
   lSize,
-  path,
+  path: initialPath,
   handler,
-  parentIsArray,
+  parentIsArray = false,
   schema,
-  isRenamedKey,
-}) {
+  isRenamedKey = false,
+}: JsonPropertyBuilderProps): JSX.Element => {
   const { t } = useTranslation()
-  const [show, setShow] = useState(true)
-  if (!path) {
-    path = '/' + propKey
-  } else {
-    path = path + '/' + propKey
-  }
-  function isBoolean(item) {
-    return typeof item === 'boolean' || schema?.type === 'boolean'
-  }
+  const [show, setShow] = useState<boolean>(true)
 
-  function isString(item) {
-    return typeof item === 'string' || schema?.type === 'string'
-  }
+  const path = initialPath ? `${initialPath}/${propKey}` : `/${propKey}`
 
-  function isNumber(item) {
-    return typeof item === 'number' || typeof item === 'bigint'
-  }
-  const removeHandler = () => {
-    const patch = {}
-    patch['path'] = path
-    patch['value'] = propValue
-    patch['op'] = 'remove'
+  const removeHandler = useCallback(() => {
+    const patch: JsonPatch = {
+      path,
+      value: propValue,
+      op: 'remove',
+    }
     handler(patch)
     setShow(false)
-  }
+  }, [path, propValue, handler])
 
-  function isStringArray(item) {
-    return (
-      (Array.isArray(item) && item.length >= 1 && typeof item[0] === 'string') ||
-      (schema?.type === 'array' && schema?.items?.type === 'string')
-    )
-  }
-
-  function isEmptyArray(item) {
-    return (
-      (Array.isArray(item) && item.length === 0) ||
-      (schema?.type === 'array' && schema?.items?.type === 'string')
-    )
-  }
-
-  if (isBoolean(propValue)) {
+  if (isBoolean(propValue) || shouldRenderAsBoolean(schema)) {
     return (
       <GluuInlineInput
         id={propKey}
@@ -88,13 +62,14 @@ function JsonPropertyBuilder({
         label={migratingTextIfRenamed(isRenamedKey, propKey)}
         isBoolean={true}
         handler={handler}
-        value={propValue}
+        value={propValue as boolean}
         parentIsArray={parentIsArray}
         path={path}
       />
     )
   }
-  if (isString(propValue)) {
+
+  if (isString(propValue) || shouldRenderAsString(schema)) {
     return (
       <GluuInlineInput
         id={propKey}
@@ -103,12 +78,13 @@ function JsonPropertyBuilder({
         rsize={lSize}
         label={migratingTextIfRenamed(isRenamedKey, propKey)}
         handler={handler}
-        value={propValue}
+        value={propValue as string}
         parentIsArray={parentIsArray}
         path={path}
       />
     )
   }
+
   if (isNumber(propValue)) {
     return (
       <GluuInlineInput
@@ -125,18 +101,19 @@ function JsonPropertyBuilder({
       />
     )
   }
-  if (isStringArray(propValue) || isEmptyArray(propValue)) {
+
+  if (isStringArray(propValue) || isEmptyArray(propValue) || shouldRenderAsStringArray(schema)) {
     return (
       <GluuInlineInput
         id={propKey}
         name={propKey}
         label={migratingTextIfRenamed(isRenamedKey, propKey)}
-        value={propValue || []}
+        value={(propValue as string[]) || []}
         lsize={lSize}
         rsize={lSize}
         isArray={true}
         handler={handler}
-        options={schema?.items?.enum || propValue || []}
+        options={schema?.items?.enum || (propValue as string[]) || []}
         parentIsArray={parentIsArray}
         path={path}
       />
@@ -144,44 +121,50 @@ function JsonPropertyBuilder({
   }
 
   if (isObjectArray(propValue)) {
+    // isObjectArray ensures propValue is an array of objects (AppConfiguration)
+    // Runtime check guarantees it's an array, so this cast is safe
+    const arrayValue = (Array.isArray(propValue) ? propValue : []) as AppConfiguration[]
     return (
       <Accordion className="mb-2 b-primary" initialOpen>
-        <Accordion.Header
+        <AccordionHeader
           style={{
             color: customColors.lightBlue,
           }}
         >
           {propKey.toUpperCase()}
-        </Accordion.Header>
-        <Accordion.Body>
-          {Object.keys(propValue)?.map((item, idx) => (
-            <JsonPropertyBuilder
-              key={idx}
-              propKey={item}
-              propValue={propValue[item]}
-              handler={handler}
-              lSize={lSize}
-              parentIsArray={true}
-              path={path}
-            />
-          ))}
-        </Accordion.Body>
+        </AccordionHeader>
+        <AccordionBody>
+          {arrayValue.map((nestedValue, index) => {
+            return (
+              <JsonPropertyBuilder
+                key={String(index)}
+                propKey={String(index)}
+                propValue={nestedValue}
+                handler={handler}
+                lSize={lSize}
+                parentIsArray={true}
+                path={path}
+              />
+            )
+          })}
+        </AccordionBody>
       </Accordion>
     )
   }
+
   if (isObject(propValue)) {
     return (
       <div>
         {show && (
           <Accordion className="mb-2 b-primary" initialOpen>
-            <Accordion.Header
+            <AccordionHeader
               style={{
                 color: customColors.lightBlue,
               }}
             >
               {propKey.toUpperCase().length > 10 ? propKey.toUpperCase() : ''}
-            </Accordion.Header>
-            <Accordion.Body>
+            </AccordionHeader>
+            <AccordionBody>
               {parentIsArray && (
                 <FormGroup row>
                   <Col sm={11} md={11}></Col>
@@ -196,37 +179,31 @@ function JsonPropertyBuilder({
                       size="sm"
                       onClick={removeHandler}
                     >
-                      <i className="fa fa-remove me-2"></i>
-                      {'  '}
+                      <i className="fa fa-remove me-2" />
                       {t('actions.remove')}
-                      {'  '}
                     </Button>
                   </Col>
                 </FormGroup>
               )}
-              {Object.keys(propValue)?.map((objKey, idx) => (
+              {Object.keys(propValue)?.map((objKey) => (
                 <JsonPropertyBuilder
-                  key={idx}
+                  key={objKey}
                   propKey={objKey}
                   propValue={propValue[objKey]}
                   handler={handler}
                   lSize={lSize}
                   parentIsArray={parentIsArray}
-                  enableRemove={parentIsArray}
                   path={path}
                 />
               ))}
-            </Accordion.Body>
+            </AccordionBody>
           </Accordion>
         )}
       </div>
     )
   }
-  return <div></div>
-}
 
-JsonPropertyBuilder.propTypes = {
-  schema: PropTypes.shape({ items: PropTypes.any, type: PropTypes.string }),
+  return <></>
 }
 
 export default JsonPropertyBuilder
