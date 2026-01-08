@@ -205,7 +205,7 @@ const SSAListPage: React.FC = () => {
 
       dispatch(updateToast(true, 'success'))
       toggle()
-      queryClient.invalidateQueries({ queryKey: SSA_QUERY_KEYS.all })
+      await queryClient.invalidateQueries({ queryKey: SSA_QUERY_KEYS.all })
     } catch (error) {
       console.error('Failed to delete SSA:', error)
       dispatch(updateToast(true, 'error'))
