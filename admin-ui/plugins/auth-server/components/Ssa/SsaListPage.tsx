@@ -196,12 +196,16 @@ const SSAListPage: React.FC = () => {
       const params: RevokeSsaParams = { jti: item.ssa.jti }
       await revokeSsaMutation.mutateAsync({ params })
 
-      await logAudit({
-        action: DELETION,
-        resource: SSA_RESOURCE,
-        message: message || 'SSA deleted successfully',
-        payload: { jti: item.ssa.jti, org_id: item.ssa.org_id },
-      })
+      try {
+        await logAudit({
+          action: DELETION,
+          resource: SSA_RESOURCE,
+          message: message || 'SSA deleted successfully',
+          payload: { jti: item.ssa.jti, org_id: item.ssa.org_id },
+        })
+      } catch (auditError) {
+        console.error('Failed to log audit for SSA deletion:', auditError)
+      }
 
       dispatch(updateToast(true, 'success'))
       toggle()
