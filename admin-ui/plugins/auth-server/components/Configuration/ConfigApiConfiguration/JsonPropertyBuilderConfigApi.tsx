@@ -1,7 +1,8 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react'
-import { Accordion, Button } from 'Components'
+import { Accordion, Button, FormGroup, Col } from 'Components'
 import GluuInlineInput from 'Routes/Apps/Gluu/GluuInlineInput'
 import { useTranslation } from 'react-i18next'
+import { getIn } from 'formik'
 import customColors from '@/customColors'
 import type { JsonPropertyBuilderConfigApiProps, AccordionWithSubComponents } from './types'
 import type { JsonPatch } from 'JansConfigApi'
@@ -28,6 +29,28 @@ const AccordionWithSub = Accordion as AccordionWithSubComponents
 const AccordionHeader = AccordionWithSub.Header
 const AccordionBody = AccordionWithSub.Body
 
+const ERROR_CONTAINER_STYLE: React.CSSProperties = {
+  marginTop: '-1.75rem',
+  marginBottom: 0,
+}
+
+const FORM_GROUP_STYLE: React.CSSProperties = {
+  marginBottom: 0,
+  marginTop: 0,
+}
+
+const ERROR_COL_STYLE: React.CSSProperties = {
+  paddingTop: 0,
+  paddingBottom: 0,
+}
+
+const ERROR_TEXT_STYLE: React.CSSProperties = {
+  marginTop: 0,
+  marginBottom: 0,
+  lineHeight: '1.2',
+  paddingTop: '2px',
+}
+
 const JsonPropertyBuilderConfigApi = ({
   propKey,
   propValue,
@@ -40,6 +63,8 @@ const JsonPropertyBuilderConfigApi = ({
   tooltipPropKey = '',
   parent,
   disabled = false,
+  errors,
+  touched,
 }: JsonPropertyBuilderConfigApiProps): JSX.Element => {
   const { t } = useTranslation()
   const [show, setShow] = useState(true)
@@ -60,6 +85,21 @@ const JsonPropertyBuilderConfigApi = ({
 
   const uniqueId = useMemo(() => path.replace(/\//g, '-').substring(1) || propKey, [path, propKey])
 
+  const formikPath = useMemo(() => {
+    if (!path) return propKey
+    return path.replace(/^\//, '').replace(/\//g, '.')
+  }, [path, propKey])
+
+  const fieldError = useMemo(() => {
+    if (!errors) return undefined
+    return getIn(errors, formikPath)
+  }, [errors, formikPath])
+
+  const fieldTouched = useMemo(() => {
+    if (!touched) return false
+    return getIn(touched, formikPath) === true
+  }, [touched, formikPath])
+
   const removeHandler = useCallback(() => {
     if (!show) {
       return
@@ -75,83 +115,116 @@ const JsonPropertyBuilderConfigApi = ({
     handler(patch)
   }, [path, propValue, handler, show])
 
+  const renderError = useCallback(() => {
+    if (!fieldTouched || !fieldError) return null
+    if (typeof fieldError === 'object' && fieldError !== null) return null
+    return (
+      <div style={ERROR_CONTAINER_STYLE}>
+        <FormGroup row style={FORM_GROUP_STYLE}>
+          <Col sm={10}>
+            <FormGroup row style={FORM_GROUP_STYLE}>
+              <Col sm={lSize}></Col>
+              <Col sm={lSize} style={ERROR_COL_STYLE}>
+                <div className="text-danger small" style={ERROR_TEXT_STYLE}>
+                  {String(fieldError)}
+                </div>
+              </Col>
+            </FormGroup>
+          </Col>
+        </FormGroup>
+      </div>
+    )
+  }, [fieldTouched, fieldError, lSize])
+
   if (isBoolean(propValue) || shouldRenderAsBoolean(schema)) {
     return (
-      <GluuInlineInput
-        id={uniqueId}
-        name={tooltipPropKey || propKey}
-        lsize={lSize}
-        rsize={lSize}
-        label={generateLabel(propKey)}
-        isBoolean={true}
-        handler={handler}
-        value={getBooleanValue(propValue, schema)}
-        parentIsArray={parentIsArray}
-        path={path}
-        doc_category={doc_category}
-        disabled={disabled}
-        showSaveButtons={false}
-      />
+      <>
+        <GluuInlineInput
+          id={uniqueId}
+          name={tooltipPropKey || propKey}
+          lsize={lSize}
+          rsize={lSize}
+          label={generateLabel(propKey)}
+          isBoolean={true}
+          handler={handler}
+          value={getBooleanValue(propValue, schema)}
+          parentIsArray={parentIsArray}
+          path={path}
+          doc_category={doc_category}
+          disabled={disabled}
+          showSaveButtons={false}
+        />
+        {renderError()}
+      </>
     )
   }
 
   if (isString(propValue) || shouldRenderAsString(schema)) {
     return (
-      <GluuInlineInput
-        id={uniqueId}
-        name={tooltipPropKey || propKey}
-        lsize={lSize}
-        rsize={lSize}
-        label={generateLabel(propKey)}
-        handler={handler}
-        value={getStringValue(propValue, schema)}
-        parentIsArray={parentIsArray}
-        path={path}
-        doc_category={doc_category}
-        disabled={disabled}
-        showSaveButtons={false}
-      />
+      <>
+        <GluuInlineInput
+          id={uniqueId}
+          name={tooltipPropKey || propKey}
+          lsize={lSize}
+          rsize={lSize}
+          label={generateLabel(propKey)}
+          handler={handler}
+          value={getStringValue(propValue, schema)}
+          parentIsArray={parentIsArray}
+          path={path}
+          doc_category={doc_category}
+          disabled={disabled}
+          showSaveButtons={false}
+        />
+        {renderError()}
+      </>
     )
   }
 
   if (isNumber(propValue, schema) || shouldRenderAsNumber(schema)) {
     return (
-      <GluuInlineInput
-        id={uniqueId}
-        name={tooltipPropKey || propKey}
-        lsize={lSize}
-        type="number"
-        rsize={lSize}
-        label={generateLabel(propKey)}
-        handler={handler}
-        value={getNumberValue(propValue, schema)}
-        parentIsArray={parentIsArray}
-        path={path}
-        doc_category={doc_category}
-        disabled={disabled}
-        showSaveButtons={false}
-      />
+      <>
+        <GluuInlineInput
+          id={uniqueId}
+          name={tooltipPropKey || propKey}
+          lsize={lSize}
+          type="number"
+          rsize={lSize}
+          label={generateLabel(propKey)}
+          handler={handler}
+          value={getNumberValue(propValue, schema)}
+          parentIsArray={parentIsArray}
+          path={path}
+          doc_category={doc_category}
+          disabled={disabled}
+          showSaveButtons={false}
+        />
+        {renderError()}
+      </>
     )
   }
 
   if (isStringArray(propValue) || shouldRenderAsStringArray(schema)) {
     return (
-      <GluuInlineInput
-        id={uniqueId}
-        name={tooltipPropKey || propKey}
-        label={generateLabel(propKey)}
-        value={getStringArrayValue(propValue, schema)}
-        lsize={lSize}
-        rsize={lSize}
-        isArray={true}
-        handler={handler}
-        options={schema?.items?.enum || getStringArrayValue(propValue, schema)}
-        parentIsArray={parentIsArray}
-        path={path}
-        doc_category={doc_category}
-        disabled={disabled}
-        showSaveButtons={false}
-      />
+      <>
+        <GluuInlineInput
+          id={uniqueId}
+          name={tooltipPropKey || propKey}
+          label={generateLabel(propKey)}
+          value={getStringArrayValue(propValue, schema)}
+          lsize={lSize}
+          rsize={lSize}
+          isArray={true}
+          handler={handler}
+          options={schema?.items?.enum || getStringArrayValue(propValue, schema)}
+          parentIsArray={parentIsArray}
+          path={path}
+          doc_category={doc_category}
+          disabled={disabled}
+          showSaveButtons={false}
+        />
+        {renderError()}
+      </>
     )
   }
 
@@ -188,6 +261,8 @@ const JsonPropertyBuilderConfigApi = ({
                 path={itemPath}
                 doc_category={doc_category}
                 disabled={disabled}
+                errors={errors}
+                touched={touched}
               />
             )
           })}
@@ -271,6 +346,8 @@ const JsonPropertyBuilderConfigApi = ({
                     path={path}
                     doc_category={doc_category}
                     disabled={disabled}
+                    errors={errors}
+                    touched={touched}
                   />
                 )
               })}

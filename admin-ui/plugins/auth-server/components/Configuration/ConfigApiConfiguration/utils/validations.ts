@@ -11,17 +11,25 @@ const configApiPropertiesSchemaShape: Record<keyof ApiAppConfiguration, Yup.AnyS
   acrValidationEnabled: Yup.boolean().nullable(),
   returnClientSecretInResponse: Yup.boolean().nullable(),
   returnEncryptedClientSecretInResponse: Yup.boolean().nullable(),
-  apiApprovedIssuer: Yup.array().of(Yup.string()).min(1).nullable(),
-  apiProtectionType: Yup.string().oneOf(['OAuth2']).nullable(),
+  apiApprovedIssuer: Yup.array()
+    .of(Yup.string())
+    .min(1, 'At least one approved issuer is required')
+    .nullable(),
+  apiProtectionType: Yup.string()
+    .oneOf(['OAuth2'], 'Invalid API protection type. Supported type is OAuth2')
+    .nullable(),
   apiClientId: Yup.string().nullable(),
   apiClientPassword: Yup.string().nullable(),
   endpointInjectionEnabled: Yup.boolean().nullable(),
-  authIssuerUrl: Yup.string().url().nullable(),
-  authOpenidConfigurationUrl: Yup.string().url().nullable(),
-  authOpenidIntrospectionUrl: Yup.string().url().nullable(),
-  authOpenidTokenUrl: Yup.string().url().nullable(),
-  authOpenidRevokeUrl: Yup.string().url().nullable(),
-  exclusiveAuthScopes: Yup.array().of(Yup.string()).min(1).nullable(),
+  authIssuerUrl: Yup.string().url('Invalid URL format').nullable(),
+  authOpenidConfigurationUrl: Yup.string().url('Invalid URL format').nullable(),
+  authOpenidIntrospectionUrl: Yup.string().url('Invalid URL format').nullable(),
+  authOpenidTokenUrl: Yup.string().url('Invalid URL format').nullable(),
+  authOpenidRevokeUrl: Yup.string().url('Invalid URL format').nullable(),
+  exclusiveAuthScopes: Yup.array()
+    .of(Yup.string())
+    .min(1, 'At least one scope is required')
+    .nullable(),
   corsConfigurationFilters: Yup.array()
     .of(
       Yup.object({
@@ -31,20 +39,40 @@ const configApiPropertiesSchemaShape: Record<keyof ApiAppConfiguration, Yup.AnyS
         corsAllowedMethods: Yup.string().nullable(),
         corsSupportCredentials: Yup.boolean().nullable(),
         corsLoggingEnabled: Yup.boolean().nullable(),
-        corsPreflightMaxAge: Yup.number().min(0).nullable(),
+        corsPreflightMaxAge: Yup.number()
+          .transform((value, originalValue) => {
+            if (originalValue === '' || originalValue === null || originalValue === undefined) {
+              return null
+            }
+            const num = Number(value)
+            return isNaN(num) ? null : num
+          })
+          .min(0, 'Must be non-negative')
+          .max(86400, 'Must not exceed 24 hours (86400 seconds)')
+          .nullable(),
         corsRequestDecorate: Yup.boolean().nullable(),
       }),
     )
     .nullable(),
   loggingLevel: Yup.string()
-    .oneOf([...LOG_LEVELS])
+    .oneOf([...LOG_LEVELS], 'Invalid logging level')
     .nullable(),
   loggingLayout: Yup.string()
-    .oneOf([...LOG_LAYOUTS])
+    .oneOf([...LOG_LAYOUTS], 'Invalid logging layout')
     .nullable(),
   disableJdkLogger: Yup.boolean().nullable(),
   disableExternalLoggerConfiguration: Yup.boolean().nullable(),
-  maxCount: Yup.number().min(0).nullable(),
+  maxCount: Yup.number()
+    .transform((value, originalValue) => {
+      if (originalValue === '' || originalValue === null || originalValue === undefined) {
+        return null
+      }
+      const num = Number(value)
+      return isNaN(num) ? null : num
+    })
+    .min(0, 'Must be non-negative')
+    .max(10000, 'Must not exceed 10000')
+    .nullable(),
   acrExclusionList: Yup.array().of(Yup.string()).nullable(),
   userExclusionAttributes: Yup.array().of(Yup.string()).nullable(),
   userMandatoryAttributes: Yup.array().of(Yup.string()).nullable(),
@@ -92,9 +120,12 @@ const configApiPropertiesSchemaShape: Record<keyof ApiAppConfiguration, Yup.AnyS
       .of(
         Yup.object({
           directory: Yup.string().nullable(),
-          type: Yup.array().of(Yup.string()).min(1).nullable(),
+          type: Yup.array().of(Yup.string()).min(1, 'At least one type is required').nullable(),
           description: Yup.string().nullable(),
-          jansServiceModule: Yup.array().of(Yup.string()).min(1).nullable(),
+          jansServiceModule: Yup.array()
+            .of(Yup.string())
+            .min(1, 'At least one service module is required')
+            .nullable(),
         }),
       )
       .nullable(),

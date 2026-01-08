@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect, useMemo, useRef } from 'react'
-import { useFormik } from 'formik'
+import { useFormik, setIn } from 'formik'
 import { toast } from 'react-toastify'
 import { useTranslation } from 'react-i18next'
 import { FormGroup, Form } from 'Components'
@@ -223,6 +223,18 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
         }
       }
 
+      if (patch.op === 'replace' && patch.path) {
+        const fieldPath = typeof patch.path === 'string' ? patch.path.replace(/^\//, '') : ''
+        const formikPath = fieldPath.replace(/\//g, '.')
+
+        formik.setFieldValue(formikPath, patch.value, false)
+        formik.setTouched(setIn(formik.touched, formikPath, true), false)
+
+        setTimeout(() => {
+          formik.validateField(formikPath)
+        }, 0)
+      }
+
       setPatches((existingPatches) => {
         const filteredPatches = existingPatches.filter(
           (existingPatch) => existingPatch.path !== patch.path,
@@ -230,7 +242,13 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
         return [...filteredPatches, patch]
       })
     },
-    [removeArrayItem],
+    [
+      removeArrayItem,
+      formik.setFieldValue,
+      formik.setTouched,
+      formik.touched,
+      formik.validateField,
+    ],
   )
 
   const toggle = useCallback(() => {
@@ -299,8 +317,6 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
           {propertyKeys.map((propKey) => {
             const isDisabled = READ_ONLY_FIELDS.includes(propKey)
             const propValue = currentValues[propKey as keyof ApiAppConfiguration]
-            const fieldError = formik.errors[propKey as keyof ApiAppConfiguration]
-            const fieldTouched = formik.touched[propKey as keyof ApiAppConfiguration]
 
             if (propValue === undefined) {
               return null
@@ -315,10 +331,9 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
                   handler={patchHandler}
                   doc_category="config_api_properties"
                   disabled={isDisabled}
+                  errors={formik.errors}
+                  touched={formik.touched}
                 />
-                {fieldTouched && fieldError && (
-                  <div className="text-danger small mt-1">{String(fieldError)}</div>
-                )}
               </div>
             )
           })}
