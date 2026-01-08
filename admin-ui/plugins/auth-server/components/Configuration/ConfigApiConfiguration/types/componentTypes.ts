@@ -1,5 +1,7 @@
 import type { JsonPatch } from './configApiTypes'
 import type { PropertyValue, SchemaProperty } from '../../types'
+import type { FormikErrors, FormikTouched } from 'formik'
+import type { ApiAppConfiguration } from './configApiTypes'
 import { Accordion } from 'Components'
 
 export interface JsonPropertyBuilderConfigApiProps {
@@ -14,6 +16,8 @@ export interface JsonPropertyBuilderConfigApiProps {
   tooltipPropKey?: string
   parent?: string
   disabled?: boolean
+  errors?: FormikErrors<ApiAppConfiguration>
+  touched?: FormikTouched<ApiAppConfiguration>
 }
 
 export type AccordionWithSubComponents = typeof Accordion & {

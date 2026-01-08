@@ -1,19 +1,19 @@
 import type { JsonPatch } from 'JansConfigApi'
 
 export interface CorsConfigurationFilter {
-  filterName: string
-  corsEnabled: boolean
-  corsAllowedOrigins: string
-  corsAllowedMethods: string
-  corsSupportCredentials: boolean
-  corsLoggingEnabled: boolean
-  corsPreflightMaxAge: number
-  corsRequestDecorate: boolean
+  filterName?: string | null
+  corsEnabled?: boolean | null
+  corsAllowedOrigins?: string | null
+  corsAllowedMethods?: string | null
+  corsSupportCredentials?: boolean | null
+  corsLoggingEnabled?: boolean | null
+  corsPreflightMaxAge?: number | null
+  corsRequestDecorate?: boolean | null
 }
 
 export interface AgamaConfiguration {
-  mandatoryAttributes: string[]
-  optionalAttributes: string[]
+  mandatoryAttributes?: string[] | null
+  optionalAttributes?: string[] | null
 }
 
 export interface AuditLogIgnoreObjectMapping {
@@ -22,77 +22,77 @@ export interface AuditLogIgnoreObjectMapping {
 }
 
 export interface AuditLogConf {
-  enabled: boolean
-  logData: boolean
-  ignoreHttpMethod: string[]
-  ignoreAnnotation: string[]
-  ignoreObjectMapping: AuditLogIgnoreObjectMapping[]
-  headerAttributes: string[]
-  auditLogFilePath: string
-  auditLogFileName: string
-  auditLogDateFormat: string
+  enabled?: boolean | null
+  logData?: boolean | null
+  ignoreHttpMethod?: string[] | null
+  ignoreAnnotation?: string[] | null
+  ignoreObjectMapping?: AuditLogIgnoreObjectMapping[] | null
+  headerAttributes?: string[] | null
+  auditLogFilePath?: string | null
+  auditLogFileName?: string | null
+  auditLogDateFormat?: string | null
 }
 
 export interface DataFormatConversionConf {
-  enabled: boolean
-  ignoreHttpMethod: string[]
+  enabled?: boolean | null
+  ignoreHttpMethod?: string[] | null
 }
 
 export interface Plugin {
-  name: string
-  description: string
-  className: string
+  name?: string | null
+  description?: string | null
+  className?: string | null
 }
 
 export interface AssetDirMapping {
-  directory: string
-  type: string[]
-  description: string
-  jansServiceModule: string[]
+  directory?: string | null
+  type?: string[] | null
+  description?: string | null
+  jansServiceModule?: string[] | null
 }
 
 export interface AssetMgtConfiguration {
-  assetMgtEnabled: boolean
-  assetServerUploadEnabled: boolean
-  fileExtensionValidationEnabled: boolean
-  moduleNameValidationEnabled: boolean
-  assetDirMapping: AssetDirMapping[]
+  assetMgtEnabled?: boolean | null
+  assetServerUploadEnabled?: boolean | null
+  fileExtensionValidationEnabled?: boolean | null
+  moduleNameValidationEnabled?: boolean | null
+  assetDirMapping?: AssetDirMapping[] | null
 }
 
 export interface ApiAppConfiguration {
-  serviceName: string
-  configOauthEnabled: boolean
-  disableLoggerTimer: boolean
-  disableAuditLogger: boolean
-  customAttributeValidationEnabled: boolean
-  acrValidationEnabled: boolean
-  returnClientSecretInResponse: boolean
-  returnEncryptedClientSecretInResponse: boolean
-  apiApprovedIssuer: string[]
-  apiProtectionType: string
-  apiClientId: string
-  apiClientPassword: string
-  endpointInjectionEnabled: boolean
-  authIssuerUrl: string
-  authOpenidConfigurationUrl: string
-  authOpenidIntrospectionUrl: string
-  authOpenidTokenUrl: string
-  authOpenidRevokeUrl: string
-  exclusiveAuthScopes: string[]
-  corsConfigurationFilters: CorsConfigurationFilter[]
-  loggingLevel: string
-  loggingLayout: string
-  disableJdkLogger: boolean
-  disableExternalLoggerConfiguration: boolean
-  maxCount: number
-  acrExclusionList: string[]
-  userExclusionAttributes: string[]
-  userMandatoryAttributes: string[]
-  agamaConfiguration: AgamaConfiguration
-  auditLogConf: AuditLogConf
-  dataFormatConversionConf: DataFormatConversionConf
-  plugins: Plugin[]
-  assetMgtConfiguration: AssetMgtConfiguration
+  serviceName?: string | null
+  configOauthEnabled?: boolean | null
+  disableLoggerTimer?: boolean | null
+  disableAuditLogger?: boolean | null
+  customAttributeValidationEnabled?: boolean | null
+  acrValidationEnabled?: boolean | null
+  returnClientSecretInResponse?: boolean | null
+  returnEncryptedClientSecretInResponse?: boolean | null
+  apiApprovedIssuer?: string[] | null
+  apiProtectionType?: string | null
+  apiClientId?: string | null
+  apiClientPassword?: string | null
+  endpointInjectionEnabled?: boolean | null
+  authIssuerUrl?: string | null
+  authOpenidConfigurationUrl?: string | null
+  authOpenidIntrospectionUrl?: string | null
+  authOpenidTokenUrl?: string | null
+  authOpenidRevokeUrl?: string | null
+  exclusiveAuthScopes?: string[] | null
+  corsConfigurationFilters?: CorsConfigurationFilter[] | null
+  loggingLevel?: string | null
+  loggingLayout?: string | null
+  disableJdkLogger?: boolean | null
+  disableExternalLoggerConfiguration?: boolean | null
+  maxCount?: number | null
+  acrExclusionList?: string[] | null
+  userExclusionAttributes?: string[] | null
+  userMandatoryAttributes?: string[] | null
+  agamaConfiguration?: AgamaConfiguration | null
+  auditLogConf?: AuditLogConf | null
+  dataFormatConversionConf?: DataFormatConversionConf | null
+  plugins?: Plugin[] | null
+  assetMgtConfiguration?: AssetMgtConfiguration | null
 }
 
 export type { JsonPatch }

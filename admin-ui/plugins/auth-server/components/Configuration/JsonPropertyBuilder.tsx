@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react'
-import { Accordion, Button } from 'Components'
+import { Accordion, FormGroup, Col, Button } from 'Components'
 import GluuInlineInput from 'Routes/Apps/Gluu/GluuInlineInput'
 import { useTranslation } from 'react-i18next'
 import customColors from '@/customColors'
@@ -36,8 +36,6 @@ const JsonPropertyBuilder = ({
   parentIsArray = false,
   schema,
   isRenamedKey = false,
-  parentKey,
-  onRemoveFromArray,
 }: JsonPropertyBuilderProps): JSX.Element => {
   const { t } = useTranslation()
   const [show, setShow] = useState<boolean>(true)
@@ -52,10 +50,7 @@ const JsonPropertyBuilder = ({
     }
     handler(patch)
     setShow(false)
-    if (onRemoveFromArray) {
-      onRemoveFromArray()
-    }
-  }, [path, propValue, handler, onRemoveFromArray])
+  }, [path, propValue, handler])
 
   if (isBoolean(propValue) || shouldRenderAsBoolean(schema)) {
     return (
@@ -70,7 +65,6 @@ const JsonPropertyBuilder = ({
         value={propValue as boolean}
         parentIsArray={parentIsArray}
         path={path}
-        showSaveButtons={false}
       />
     )
   }
@@ -87,7 +81,6 @@ const JsonPropertyBuilder = ({
         value={propValue as string}
         parentIsArray={parentIsArray}
         path={path}
-        showSaveButtons={false}
       />
     )
   }
@@ -105,7 +98,6 @@ const JsonPropertyBuilder = ({
         value={propValue}
         parentIsArray={parentIsArray}
         path={path}
-        showSaveButtons={false}
       />
     )
   }
@@ -124,27 +116,14 @@ const JsonPropertyBuilder = ({
         options={schema?.items?.enum || (propValue as string[]) || []}
         parentIsArray={parentIsArray}
         path={path}
-        showSaveButtons={false}
       />
     )
   }
 
   if (isObjectArray(propValue)) {
-    if (!Array.isArray(propValue) || propValue.length === 0) {
-      return <></>
-    }
-
-    const arrayValue = propValue as AppConfiguration[]
-    const [visibleCount, setVisibleCount] = useState<number>(arrayValue.length)
-
-    const handleItemRemoved = useCallback(() => {
-      setVisibleCount((prev) => (prev > 0 ? prev - 1 : 0))
-    }, [])
-
-    if (visibleCount === 0) {
-      return <></>
-    }
-
+    // isObjectArray ensures propValue is an array of objects (AppConfiguration)
+    // Runtime check guarantees it's an array, so this cast is safe
+    const arrayValue = (Array.isArray(propValue) ? propValue : []) as AppConfiguration[]
     return (
       <Accordion className="mb-2 b-primary" initialOpen>
         <AccordionHeader
@@ -155,31 +134,25 @@ const JsonPropertyBuilder = ({
           {propKey.toUpperCase()}
         </AccordionHeader>
         <AccordionBody>
-          {arrayValue.map((nestedValue, index) => (
-            <JsonPropertyBuilder
-              key={`${path}-${index}`}
-              propKey={String(index)}
-              propValue={nestedValue}
-              handler={handler}
-              lSize={lSize}
-              parentIsArray={true}
-              path={path}
-              parentKey={propKey}
-              onRemoveFromArray={handleItemRemoved}
-            />
-          ))}
+          {arrayValue.map((nestedValue, index) => {
+            return (
+              <JsonPropertyBuilder
+                key={String(index)}
+                propKey={String(index)}
+                propValue={nestedValue}
+                handler={handler}
+                lSize={lSize}
+                parentIsArray={true}
+                path={path}
+              />
+            )
+          })}
         </AccordionBody>
       </Accordion>
     )
   }
 
   if (isObject(propValue)) {
-    const isArrayItem = !isNaN(parseInt(propKey))
-    const baseLabel = parentKey || propKey
-    const displayLabel = isArrayItem
-      ? `${migratingTextIfRenamed(isRenamedKey, baseLabel)} ${parseInt(propKey) + 1}`
-      : migratingTextIfRenamed(isRenamedKey, propKey)
-
     return (
       <div>
         {show && (
@@ -189,35 +162,29 @@ const JsonPropertyBuilder = ({
                 color: customColors.lightBlue,
               }}
             >
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  width: '100%',
-                }}
-              >
-                <span>{displayLabel}</span>
-                {parentIsArray && (
-                  <Button
-                    style={{
-                      backgroundColor: customColors.accentRed,
-                      color: customColors.white,
-                      border: 'none',
-                    }}
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      removeHandler()
-                    }}
-                  >
-                    <i className="fa fa-remove me-2" />
-                    {t('actions.remove')}
-                  </Button>
-                )}
-              </div>
+              {propKey.toUpperCase().length > 10 ? propKey.toUpperCase() : ''}
             </AccordionHeader>
             <AccordionBody>
+              {parentIsArray && (
+                <FormGroup row>
+                  <Col sm={11} md={11}></Col>
+                  <Col sm={1} md={1}>
+                    <Button
+                      style={{
+                        backgroundColor: customColors.accentRed,
+                        color: customColors.white,
+                        float: 'right',
+                        border: 'none',
+                      }}
+                      size="sm"
+                      onClick={removeHandler}
+                    >
+                      <i className="fa fa-remove me-2" />
+                      {t('actions.remove')}
+                    </Button>
+                  </Col>
+                </FormGroup>
+              )}
               {Object.keys(propValue)?.map((objKey) => (
                 <JsonPropertyBuilder
                   key={objKey}
@@ -239,8 +206,4 @@ const JsonPropertyBuilder = ({
   return <></>
 }
 
-const MemoizedJsonPropertyBuilder = React.memo(JsonPropertyBuilder)
-
-MemoizedJsonPropertyBuilder.displayName = 'JsonPropertyBuilder'
-
-export default MemoizedJsonPropertyBuilder
+export default JsonPropertyBuilder

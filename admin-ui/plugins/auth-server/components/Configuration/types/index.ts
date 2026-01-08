@@ -44,8 +44,6 @@ export interface JsonPropertyBuilderProps {
   parentIsArray?: boolean
   schema?: SchemaProperty
   isRenamedKey?: boolean
-  parentKey?: string
-  onRemoveFromArray?: () => void
 }
 
 export interface DefaultAcrInputOption {

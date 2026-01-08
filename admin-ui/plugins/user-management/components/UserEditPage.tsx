@@ -1,19 +1,20 @@
-import React, { useEffect, useState, useMemo, useCallback } from 'react'
+import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { Container, CardBody, Card } from 'Components'
 import UserForm from './UserForm'
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import { getPersistenceType } from 'Plugins/services/redux/features/persistenceTypeSlice'
-import { UserEditPageState, UserEditFormValues, ModifiedFields } from '../types/ComponentTypes'
+import Alert from '@mui/material/Alert'
+import { UserEditFormValues, ModifiedFields } from '../types/ComponentTypes'
 import { PersonAttribute, CustomUser } from '../types/UserApiTypes'
 import {
   usePutUser,
   getGetUserQueryKey,
   useGetAttributes,
   useRevokeUserSession,
+  useGetPropertiesPersistence,
 } from 'JansConfigApi'
 import { useQueryClient } from '@tanstack/react-query'
 import { updateToast } from 'Redux/features/toastSlice'
@@ -26,6 +27,7 @@ import {
   getStandardFieldValues,
 } from '../utils'
 import { revokeSessionWhenFieldsModifiedInUserForm } from '../helper/constants'
+import { isPersistenceInfo } from 'Plugins/services/Components/Configuration/types'
 
 function UserEditPage() {
   const dispatch = useDispatch()
@@ -50,13 +52,25 @@ function UserEditPage() {
     [attributesData?.entries],
   )
 
-  useEffect(() => {
-    dispatch(getPersistenceType())
-  }, [dispatch])
+  const {
+    data: persistenceData,
+    isLoading: loadingPersistence,
+    isError: persistenceError,
+  } = useGetPropertiesPersistence({
+    query: { staleTime: 30000 },
+  })
+  const persistenceType = isPersistenceInfo(persistenceData)
+    ? persistenceData.persistenceType
+    : undefined
 
-  const persistenceType = useSelector(
-    (state: UserEditPageState) => state.persistenceTypeReducer.type,
-  )
+  const persistenceErrorToastShown = useRef(false)
+  useEffect(() => {
+    if (persistenceError && !persistenceErrorToastShown.current) {
+      persistenceErrorToastShown.current = true
+      dispatch(updateToast(true, 'warning', t('messages.persistence_config_load_failed')))
+    }
+  }, [persistenceError, dispatch, t])
+
   const revokeSessionMutation = useRevokeUserSession()
 
   const updateUserMutation = usePutUser({
@@ -125,7 +139,12 @@ function UserEditPage() {
     <Container>
       <Card type="border" color={null} className="mb-3">
         <CardBody>
-          <GluuLoader blocking={loadingAttributes || isSubmitting}>
+          {persistenceError && (
+            <Alert severity="warning" sx={{ mb: 2 }}>
+              {t('messages.persistence_config_load_failed_detail')}
+            </Alert>
+          )}
+          <GluuLoader blocking={loadingAttributes || loadingPersistence || isSubmitting}>
             <UserForm
               onSubmitData={submitData}
               userDetails={userDetails}
