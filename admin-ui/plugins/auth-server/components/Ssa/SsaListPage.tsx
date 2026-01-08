@@ -214,19 +214,17 @@ const SSAListPage: React.FC = () => {
     }
   }
 
-  const handleViewSsa = (row: SsaData): void => {
+  const handleViewSsa = async (row: SsaData): Promise<void> => {
     setJwtData(null)
     setSsaDialogOpen(true)
-    getSsaJwtMutation.mutate(row.ssa.jti, {
-      onSuccess: (fetchedJwtData) => {
-        setJwtData(fetchedJwtData)
-      },
-      onError: (error) => {
-        console.error('Failed to fetch SSA JWT:', error)
-        dispatch(updateToast(true, 'error'))
-        setSsaDialogOpen(false)
-      },
-    })
+    try {
+      const fetchedJwtData = await getSsaJwtMutation.mutateAsync(row.ssa.jti)
+      setJwtData(fetchedJwtData)
+    } catch (error) {
+      console.error('Failed to fetch SSA JWT:', error)
+      dispatch(updateToast(true, 'error'))
+      setSsaDialogOpen(false)
+    }
   }
 
   const handleDownloadSsa = async (row: SsaData): Promise<void> => {
