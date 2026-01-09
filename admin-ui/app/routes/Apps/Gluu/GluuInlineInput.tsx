@@ -26,8 +26,6 @@ interface GluuInlineInputProps {
   id?: string
   parentIsArray?: boolean
   showSaveButtons?: boolean
-  onBlur?: () => void
-  onChange?: (value: unknown) => void
 }
 
 interface ThemeContextValue {
@@ -119,16 +117,16 @@ const GluuInlineInput = ({
       setCorrectValue(arrayItems)
       if (showSaveButtons) {
         setShow(true)
-      } else if (isValidPath && debouncedHandlerRef.current) {
+      } else if (isValidPath) {
         const patch: JsonPatch = {
           op: 'replace',
           path: path as string,
           value: arrayItems,
         }
-        debouncedHandlerRef.current(patch)
+        handler(patch)
       }
     },
-    [disabled, name, showSaveButtons, isValidPath, path],
+    [disabled, name, showSaveButtons, isValidPath, path, handler],
   )
 
   const onAccept = useCallback(() => {

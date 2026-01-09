@@ -28,6 +28,7 @@ import { useAcrAudit } from '../AuthN/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import { toast } from 'react-toastify'
 import { useFormik, setIn } from 'formik'
+import * as Yup from 'yup'
 import {
   generateLabel,
   isRenamedKey,
@@ -35,6 +36,7 @@ import {
   getMissingProperties,
   useAuthServerPropertiesActions,
 } from './Properties/utils'
+import { appConfigurationSchema } from './Properties/utils/validations'
 import type {
   AppConfiguration,
   RootState,
@@ -53,9 +55,6 @@ const AuthPage: React.FC = () => {
   const { logAuthServerPropertiesUpdate } = useAuthServerPropertiesActions()
   const configuration = useSelector((state: RootState) => state.jsonConfigReducer.configuration)
   const scripts = useSelector((state: RootState) => state.initReducer.scripts)
-  const { permissions: cedarPermissions } = useSelector(
-    (state: RootState) => state.cedarPermissions,
-  )
 
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
@@ -129,68 +128,21 @@ const AuthPage: React.FC = () => {
     authorizeHelper(propertiesScopes)
   }, [authorizeHelper, propertiesScopes])
 
-  const validate = useCallback((values: AppConfiguration) => {
+  const validate = useCallback(async (values: AppConfiguration) => {
     const errors: Record<string, string> = {}
 
-    if (!values || typeof values !== 'object') {
-      return errors
-    }
-
-    for (const key of Object.keys(values)) {
-      const fieldValue = values[key]
-
-      // Skip null/undefined/empty values
-      if (fieldValue === null || fieldValue === undefined || fieldValue === '') {
-        continue
-      }
-
-      const lowerName = key.toLowerCase()
-
-      // Validate URL fields
-      if (
-        lowerName.endsWith('endpoint') ||
-        lowerName.endsWith('uri') ||
-        lowerName.endsWith('url') ||
-        (lowerName.includes('url') && !lowerName.includes('curl')) ||
-        lowerName === 'issuer'
-      ) {
-        if (typeof fieldValue === 'string' && fieldValue.trim() !== '') {
-          try {
-            new URL(fieldValue)
-          } catch {
-            errors[key] = 'Invalid URL format'
+    try {
+      await appConfigurationSchema.validate(values, { abortEarly: false })
+    } catch (err) {
+      const validationError = err as Yup.ValidationError
+      if (validationError.inner && Array.isArray(validationError.inner)) {
+        for (const error of validationError.inner) {
+          if (error.path) {
+            errors[error.path] = error.message
           }
         }
-      }
-
-      // Validate number fields
-      if (
-        lowerName.includes('lifetime') ||
-        lowerName.includes('interval') ||
-        (lowerName.includes('time') &&
-          !lowerName.includes('endpoint') &&
-          !lowerName.includes('url')) ||
-        lowerName.includes('size') ||
-        lowerName.includes('count') ||
-        lowerName.includes('limit') ||
-        lowerName.includes('delay') ||
-        lowerName.includes('duration')
-      ) {
-        if (typeof fieldValue === 'string') {
-          const trimmed = fieldValue.trim()
-          if (trimmed !== '') {
-            const num = Number(trimmed)
-            if (isNaN(num) || !isFinite(num)) {
-              errors[key] = 'Must be a valid number'
-            } else if (num < 0) {
-              errors[key] = 'Must be non-negative'
-            }
-          }
-        } else if (typeof fieldValue === 'number') {
-          if (fieldValue < 0) {
-            errors[key] = 'Must be non-negative'
-          }
-        }
+      } else if (validationError.path) {
+        errors[validationError.path] = validationError.message
       }
     }
 
@@ -253,10 +205,6 @@ const AuthPage: React.FC = () => {
       }),
     )
   }, [dispatch])
-
-  useEffect(() => {
-    // Empty effect for cedarPermissions dependency
-  }, [cedarPermissions])
 
   const operations = useMemo<GluuCommitDialogOperation[]>(() => {
     const patchOperations: GluuCommitDialogOperation[] = patches.map((patch) => ({

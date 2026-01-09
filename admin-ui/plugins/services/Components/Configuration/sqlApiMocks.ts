@@ -3,20 +3,20 @@ import { useDispatch } from 'react-redux'
 import { updateToast } from 'Redux/features/toastSlice'
 
 export interface SqlConfiguration {
-  configId?: string
-  userName?: string
-  userPassword?: string
-  connectionUri?: string[]
-  schemaName?: string
-  passwordEncryptionMethod?: string
-  serverTimezone?: string
-  binaryAttributes?: string[]
-  certificateAttributes?: string[]
-  enabled?: boolean
+  configId?: string | null
+  userName?: string | null
+  userPassword?: string | null
+  connectionUri?: string[] | null
+  schemaName?: string | null
+  passwordEncryptionMethod?: string | null
+  serverTimezone?: string | null
+  binaryAttributes?: string[] | null
+  certificateAttributes?: string[] | null
+  enabled?: boolean | null
 }
 
 export const useGetConfigDatabaseSql = (options?: { query?: { staleTime?: number } }) => {
-  return useQuery({
+  return useQuery<SqlConfiguration[]>({
     queryKey: ['/api/v1/config/database'],
     queryFn: async () => {
       return [] as SqlConfiguration[]
@@ -75,43 +75,47 @@ export const usePutConfigDatabaseSql = (options?: {
 
 export const useDeleteConfigDatabaseSqlByName = (options?: {
   mutation?: {
-    onSuccess?: () => void
-    onError?: () => void
+    onSuccess?: (data: { name: string }, variables: { name: string }) => void
+    onError?: (error: unknown, variables: { name: string }) => void
   }
 }) => {
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (_variables: { name: string }) => {
-      return Promise.resolve()
+    mutationFn: async (variables: { name: string }) => {
+      return Promise.resolve(variables)
     },
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['/api/v1/config/database'] })
-      options?.mutation?.onSuccess?.()
+      options?.mutation?.onSuccess?.(data, variables)
     },
-    onError: () => {
+    onError: (error, variables) => {
       dispatch(updateToast(true, 'danger'))
-      options?.mutation?.onError?.()
+      options?.mutation?.onError?.(error, variables)
     },
   })
 }
 
 export const usePostConfigDatabaseSqlTest = (options?: {
   mutation?: {
-    onSuccess?: () => void
-    onError?: () => void
+    onSuccess?: (data: void, variables: { data: SqlConfiguration }) => void
+    onError?: (error: Error, variables: { data: SqlConfiguration }) => void
   }
 }) => {
-  return useMutation({
-    mutationFn: async (_variables: { data: SqlConfiguration }) => {
+  return useMutation<void, Error, { data: SqlConfiguration }>({
+    mutationFn: async (_variables: { data: SqlConfiguration }): Promise<void> => {
       return Promise.resolve()
     },
-    onSuccess: () => {
-      options?.mutation?.onSuccess?.()
+    onSuccess: (data, variables) => {
+      options?.mutation?.onSuccess?.(data, variables)
     },
-    onError: () => {
-      options?.mutation?.onError?.()
+    onError: (error, variables) => {
+      options?.mutation?.onError?.(error, variables)
     },
   })
+}
+
+export const getGetConfigDatabaseSqlQueryKey = () => {
+  return ['/api/v1/config/database'] as const
 }

@@ -14,7 +14,7 @@ export const appConfigurationSchema = Yup.object().test(
     // Validate URL fields (fields ending with Endpoint, Uri, Url, or containing 'url')
     for (const key of Object.keys(value)) {
       const fieldValue = value[key]
-      
+
       // Skip null/undefined/empty values
       if (fieldValue === null || fieldValue === undefined || fieldValue === '') {
         continue
@@ -26,11 +26,11 @@ export const appConfigurationSchema = Yup.object().test(
       if (
         lowerName.endsWith('endpoint') ||
         lowerName.endsWith('uri') ||
-        lowerName.endsWith('url') ||
-        lowerName.includes('url') ||
+        (lowerName.endsWith('url') && !lowerName.includes('curl')) ||
+        (lowerName.includes('url') && !lowerName.includes('curl')) ||
         lowerName === 'issuer'
       ) {
-        if (typeof fieldValue === 'string') {
+        if (typeof fieldValue === 'string' && fieldValue.trim() !== '') {
           try {
             new URL(fieldValue)
           } catch {
@@ -46,7 +46,9 @@ export const appConfigurationSchema = Yup.object().test(
       if (
         lowerName.includes('lifetime') ||
         lowerName.includes('interval') ||
-        (lowerName.includes('time') && !lowerName.includes('endpoint')) ||
+        (lowerName.includes('time') &&
+          !lowerName.includes('endpoint') &&
+          !lowerName.includes('url')) ||
         lowerName.includes('size') ||
         lowerName.includes('count') ||
         lowerName.includes('limit') ||
@@ -54,18 +56,21 @@ export const appConfigurationSchema = Yup.object().test(
         lowerName.includes('duration')
       ) {
         if (typeof fieldValue === 'string') {
-          const num = Number(fieldValue)
-          if (isNaN(num) || !isFinite(num)) {
-            return this.createError({
-              path: key,
-              message: 'Must be a valid number',
-            })
-          }
-          if (num < 0) {
-            return this.createError({
-              path: key,
-              message: 'Must be non-negative',
-            })
+          const trimmed = fieldValue.trim()
+          if (trimmed !== '') {
+            const num = Number(trimmed)
+            if (isNaN(num) || !isFinite(num)) {
+              return this.createError({
+                path: key,
+                message: 'Must be a valid number',
+              })
+            }
+            if (num < 0) {
+              return this.createError({
+                path: key,
+                message: 'Must be non-negative',
+              })
+            }
           }
         } else if (typeof fieldValue === 'number') {
           if (fieldValue < 0) {
@@ -81,4 +86,3 @@ export const appConfigurationSchema = Yup.object().test(
     return true
   },
 )
-

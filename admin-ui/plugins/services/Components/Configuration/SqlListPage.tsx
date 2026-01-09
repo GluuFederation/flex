@@ -122,8 +122,8 @@ function SqlListPage(): ReactElement {
     mutation: {
       onSuccess: () => {
         dispatch(updateToast(true, 'success'))
-        queryClient.invalidateQueries({ 
-          queryKey: ['/api/v1/config/database'] 
+        queryClient.invalidateQueries({
+          queryKey: ['/api/v1/config/database'],
         })
       },
       onError: () => {
@@ -205,9 +205,9 @@ function SqlListPage(): ReactElement {
         iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
         isFreeAction: true,
         onClick: () => {
-          queryClient.invalidateQueries({ 
-          queryKey: ['/api/v1/config/database'] 
-        })
+          queryClient.invalidateQueries({
+            queryKey: ['/api/v1/config/database'],
+          })
         },
       })
     }
