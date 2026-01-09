@@ -30,6 +30,7 @@ function SqlAddPage(): ReactElement {
         try {
           await logSqlCreate(variables.data, actionMessageRef.current)
         } catch (error) {
+          // eslint-disable-next-line no-console
           console.error('Failed to log SQL create:', error)
         }
         navigateBack(ROUTES.SQL_LIST)

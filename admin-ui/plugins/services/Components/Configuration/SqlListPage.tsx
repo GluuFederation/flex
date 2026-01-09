@@ -251,6 +251,7 @@ function SqlListPage(): ReactElement {
           toggle()
           navigateBack(ROUTES.SQL_LIST)
         } catch (error) {
+          // eslint-disable-next-line no-console
           console.error('Failed to delete SQL config:', error)
         }
       }

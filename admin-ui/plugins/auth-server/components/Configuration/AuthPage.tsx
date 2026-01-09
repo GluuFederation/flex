@@ -8,7 +8,7 @@ import PropertyBuilder from './JsonPropertyBuilder'
 import { useDispatch, useSelector } from 'react-redux'
 import { useQueryClient } from '@tanstack/react-query'
 import RefreshIcon from '@mui/icons-material/Refresh'
-import spec from '../../../../configApiSpecs.yaml'
+import { getAppConfigurationProperties, type SchemaProperty } from '@/config/openApiSpec'
 import { buildPayload } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
@@ -37,15 +37,7 @@ import {
   useAuthServerPropertiesActions,
 } from './Properties/utils'
 import { appConfigurationSchema } from './Properties/utils/validations'
-import type {
-  AppConfiguration,
-  RootState,
-  JsonPatch,
-  AcrPutOperation,
-  Script,
-  SpecSchema,
-  SchemaProperty,
-} from './types'
+import type { AppConfiguration, RootState, JsonPatch, AcrPutOperation, Script } from './types'
 import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/types'
 import type { UserAction, ActionData } from 'Utils/PermChecker'
 
@@ -112,7 +104,7 @@ const AuthPage: React.FC = () => {
 
   const [search, setSearch] = useState<string>('')
   const [finalSearch, setFinalSearch] = useState<string>('')
-  const schema = (spec as unknown as SpecSchema).components.schemas.AppConfiguration.properties
+  const schema = getAppConfigurationProperties()
   const properties = Object.keys(schema)
   const api_configurations = Object.keys(configuration)
   const missing_properties_data = useMemo(

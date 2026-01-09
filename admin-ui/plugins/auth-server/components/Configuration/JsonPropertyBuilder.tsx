@@ -75,20 +75,15 @@ const JsonPropertyBuilder = ({
 
   const fieldError = useMemo(() => {
     if (!errors) return undefined
-    // For top-level fields, directly access the error
-    const error = errors[propKey] || getIn(errors, formikPath)
-    return error
+    return errors[propKey] || getIn(errors, formikPath)
   }, [errors, formikPath, propKey])
 
   const fieldTouched = useMemo(() => {
     if (!touched) return false
-    // For top-level fields, directly check touched status
-    const isTouched = touched[propKey] === true || getIn(touched, formikPath) === true
-    return isTouched
+    return touched[propKey] === true || getIn(touched, formikPath) === true
   }, [touched, formikPath, propKey])
 
   const renderError = useCallback(() => {
-    // Show error if field is touched and has an error
     if (!fieldTouched) return null
     if (!fieldError) return null
     if (typeof fieldError === 'object' && fieldError !== null) return null
@@ -209,8 +204,6 @@ const JsonPropertyBuilder = ({
   }
 
   if (isObjectArray(propValue)) {
-    // isObjectArray ensures propValue is an array of objects (AppConfiguration)
-    // Runtime check guarantees it's an array, so this cast is safe
     const arrayValue = (Array.isArray(propValue) ? propValue : []) as AppConfiguration[]
     return (
       <Accordion className="mb-2 b-primary" initialOpen>

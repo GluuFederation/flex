@@ -4,13 +4,14 @@ import { updateToast } from 'Redux/features/toastSlice'
 
 /**
  * Feature flag to control SQL API behavior.
+ * Set via environment variable: REACT_APP_USE_REAL_SQL_API=true
  *
  * TODO: Replace mock implementation with real JansConfigApi integration when backend endpoints are available.
  * Tracking: Backend SQL configuration API endpoints need to be implemented.
  * Timeline: TBD - pending backend work.
  *
  * When real API is available:
- * 1. Set USE_REAL_SQL_API to true
+ * 1. Set REACT_APP_USE_REAL_SQL_API=true in environment
  * 2. Import and use real JansConfigApi hooks (e.g., useGetConfigDatabaseSql, usePostConfigDatabaseSql, etc.)
  * 3. Remove mock implementations
  * 4. Update error handling to use real API error responses
@@ -18,7 +19,23 @@ import { updateToast } from 'Redux/features/toastSlice'
  * Current behavior: All hooks return mock data (empty arrays, resolved promises) to allow UI development
  * without backend dependencies. In production, this will surface errors instead of silently returning empty data.
  */
-const USE_REAL_SQL_API = false
+const USE_REAL_SQL_API = process.env.REACT_APP_USE_REAL_SQL_API === 'true'
+
+// Constants
+const DEFAULT_STALE_TIME_MS = 30000 // 30 seconds
+const PRODUCTION_ENV = 'production'
+const PRODUCTION_ERROR_MESSAGE =
+  'SQL configuration API is not available. Mock data is disabled in production to prevent data masking.'
+
+/**
+ * Helper function to throw error if mocks are disabled in production.
+ * Used consistently across all SQL API hooks to prevent silent mock data in production.
+ */
+function throwIfMocksDisabled(): void {
+  if (!USE_REAL_SQL_API && process.env.NODE_ENV === PRODUCTION_ENV) {
+    throw new Error(PRODUCTION_ERROR_MESSAGE)
+  }
+}
 
 export interface SqlConfiguration {
   configId?: string | null
@@ -36,9 +53,10 @@ export interface SqlConfiguration {
 /**
  * Query key helper for SQL database configuration queries.
  * Used for cache invalidation and query key consistency.
+ * Namespaced to avoid collision with Couchbase query keys.
  */
 export const getGetConfigDatabaseSqlQueryKey = () => {
-  return ['/api/v1/config/database'] as const
+  return ['config', 'database', 'sql'] as const
 }
 
 /**
@@ -62,20 +80,19 @@ export const useGetConfigDatabaseSql = (options?: { query?: { staleTime?: number
         )
       }
 
-      // Mock implementation - in production, throw error to prevent silent empty data
-      if (process.env.NODE_ENV === 'production') {
-        throw new Error(
-          'SQL configuration API is not available. Mock data is disabled in production to prevent data masking.',
-        )
-      }
+      // Check if mocks are disabled in production
+      throwIfMocksDisabled()
 
       // Development: return empty array for UI development
-      console.warn(
-        '[SQL API Mocks] useGetConfigDatabaseSql: Returning mock empty array. Real API not yet implemented.',
-      )
-      return [] as SqlConfiguration[]
+      if (process.env.NODE_ENV !== PRODUCTION_ENV) {
+        // eslint-disable-next-line no-console
+        console.warn(
+          '[SQL API Mocks] useGetConfigDatabaseSql: Returning mock empty array. Real API not yet implemented.',
+        )
+      }
+      return []
     },
-    staleTime: options?.query?.staleTime ?? 30000,
+    staleTime: options?.query?.staleTime ?? DEFAULT_STALE_TIME_MS,
     retry: false, // Don't retry mock failures
   })
 }
@@ -107,10 +124,16 @@ export const usePostConfigDatabaseSql = (options?: {
         )
       }
 
+      // Check if mocks are disabled in production
+      throwIfMocksDisabled()
+
       // Mock implementation - simulate successful creation
-      console.warn(
-        '[SQL API Mocks] usePostConfigDatabaseSql: Using mock implementation. Real API not yet implemented.',
-      )
+      if (process.env.NODE_ENV !== PRODUCTION_ENV) {
+        // eslint-disable-next-line no-console
+        console.warn(
+          '[SQL API Mocks] usePostConfigDatabaseSql: Using mock implementation. Real API not yet implemented.',
+        )
+      }
       return Promise.resolve(variables.data)
     },
     onSuccess: (data, variables) => {
@@ -121,6 +144,7 @@ export const usePostConfigDatabaseSql = (options?: {
       const errorMessage =
         error instanceof Error ? error.message : 'Failed to create SQL configuration'
       dispatch(updateToast(true, 'error', errorMessage))
+      // eslint-disable-next-line no-console
       console.error('[SQL API] POST error:', error)
       options?.mutation?.onError?.(error, variables)
     },
@@ -154,10 +178,16 @@ export const usePutConfigDatabaseSql = (options?: {
         )
       }
 
+      // Check if mocks are disabled in production
+      throwIfMocksDisabled()
+
       // Mock implementation - simulate successful update
-      console.warn(
-        '[SQL API Mocks] usePutConfigDatabaseSql: Using mock implementation. Real API not yet implemented.',
-      )
+      if (process.env.NODE_ENV !== PRODUCTION_ENV) {
+        // eslint-disable-next-line no-console
+        console.warn(
+          '[SQL API Mocks] usePutConfigDatabaseSql: Using mock implementation. Real API not yet implemented.',
+        )
+      }
       return Promise.resolve(variables.data)
     },
     onSuccess: (data, variables) => {
@@ -168,6 +198,7 @@ export const usePutConfigDatabaseSql = (options?: {
       const errorMessage =
         error instanceof Error ? error.message : 'Failed to update SQL configuration'
       dispatch(updateToast(true, 'error', errorMessage))
+      // eslint-disable-next-line no-console
       console.error('[SQL API] PUT error:', error)
       options?.mutation?.onError?.(error, variables)
     },
@@ -201,10 +232,16 @@ export const useDeleteConfigDatabaseSqlByName = (options?: {
         )
       }
 
+      // Check if mocks are disabled in production
+      throwIfMocksDisabled()
+
       // Mock implementation - simulate successful deletion
-      console.warn(
-        '[SQL API Mocks] useDeleteConfigDatabaseSqlByName: Using mock implementation. Real API not yet implemented.',
-      )
+      if (process.env.NODE_ENV !== PRODUCTION_ENV) {
+        // eslint-disable-next-line no-console
+        console.warn(
+          '[SQL API Mocks] useDeleteConfigDatabaseSqlByName: Using mock implementation. Real API not yet implemented.',
+        )
+      }
       return Promise.resolve(variables)
     },
     onSuccess: (data, variables) => {
@@ -215,6 +252,7 @@ export const useDeleteConfigDatabaseSqlByName = (options?: {
       const errorMessage =
         error instanceof Error ? error.message : 'Failed to delete SQL configuration'
       dispatch(updateToast(true, 'error', errorMessage))
+      // eslint-disable-next-line no-console
       console.error('[SQL API] DELETE error:', error)
       options?.mutation?.onError?.(error, variables)
     },
@@ -247,10 +285,16 @@ export const usePostConfigDatabaseSqlTest = (options?: {
         )
       }
 
+      // Check if mocks are disabled in production
+      throwIfMocksDisabled()
+
       // Mock implementation - simulate successful test
-      console.warn(
-        '[SQL API Mocks] usePostConfigDatabaseSqlTest: Using mock implementation. Real API not yet implemented.',
-      )
+      if (process.env.NODE_ENV !== PRODUCTION_ENV) {
+        // eslint-disable-next-line no-console
+        console.warn(
+          '[SQL API Mocks] usePostConfigDatabaseSqlTest: Using mock implementation. Real API not yet implemented.',
+        )
+      }
       return Promise.resolve()
     },
     onSuccess: (data, variables) => {
@@ -259,7 +303,6 @@ export const usePostConfigDatabaseSqlTest = (options?: {
     onError: (error, variables) => {
       const errorMessage = error instanceof Error ? error.message : 'SQL connection test failed'
       dispatch(updateToast(true, 'error', `SQL connection test failed: ${errorMessage}`))
-      console.error('[SQL API] TEST error:', error)
       options?.mutation?.onError?.(error, variables)
     },
   })

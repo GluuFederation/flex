@@ -7,7 +7,11 @@ import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useAtomValue } from 'jotai'
 import { useQueryClient } from '@tanstack/react-query'
 import { updateToast } from 'Redux/features/toastSlice'
-import { usePutConfigDatabaseSql, type SqlConfiguration } from './sqlApiMocks'
+import {
+  usePutConfigDatabaseSql,
+  getGetConfigDatabaseSqlQueryKey,
+  type SqlConfiguration,
+} from './sqlApiMocks'
 import { currentSqlItemAtom } from './atoms'
 import { useSqlAudit } from './hooks'
 import { extractActionMessage } from './types'
@@ -25,11 +29,12 @@ function SqlEditPage(): ReactElement | null {
       onSuccess: async (data, variables) => {
         dispatch(updateToast(true, 'success'))
         queryClient.invalidateQueries({
-          queryKey: ['/api/v1/config/database'],
+          queryKey: getGetConfigDatabaseSqlQueryKey(),
         })
         try {
           await logSqlUpdate(variables.data, actionMessageRef.current)
         } catch (error) {
+          // eslint-disable-next-line no-console
           console.error('Failed to log SQL update:', error)
         }
         navigateBack(ROUTES.SQL_LIST)
