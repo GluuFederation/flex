@@ -34,6 +34,14 @@ export interface SqlConfiguration {
 }
 
 /**
+ * Query key helper for SQL database configuration queries.
+ * Used for cache invalidation and query key consistency.
+ */
+export const getGetConfigDatabaseSqlQueryKey = () => {
+  return ['/api/v1/config/database'] as const
+}
+
+/**
  * Hook to fetch SQL database configurations.
  *
  * @param options - Query options including staleTime
@@ -227,6 +235,8 @@ export const usePostConfigDatabaseSqlTest = (options?: {
     onError?: (error: Error, variables: { data: SqlConfiguration }) => void
   }
 }) => {
+  const dispatch = useDispatch()
+
   return useMutation<void, Error, { data: SqlConfiguration }>({
     mutationFn: async (_variables: { data: SqlConfiguration }): Promise<void> => {
       if (USE_REAL_SQL_API) {
@@ -247,12 +257,10 @@ export const usePostConfigDatabaseSqlTest = (options?: {
       options?.mutation?.onSuccess?.(data, variables)
     },
     onError: (error, variables) => {
+      const errorMessage = error instanceof Error ? error.message : 'SQL connection test failed'
+      dispatch(updateToast(true, 'error', `SQL connection test failed: ${errorMessage}`))
       console.error('[SQL API] TEST error:', error)
       options?.mutation?.onError?.(error, variables)
     },
   })
-}
-
-export const getGetConfigDatabaseSqlQueryKey = () => {
-  return ['/api/v1/config/database'] as const
 }
