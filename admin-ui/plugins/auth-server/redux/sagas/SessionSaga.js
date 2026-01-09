@@ -1,7 +1,6 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
-import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { SESSION } from '../audit/Resources'
 import { FETCH, DELETION } from '../../../../app/audit/UserActionType'
 import SessionApi from '../api/SessionApi'
@@ -16,14 +15,9 @@ import {
 } from '../features/sessionSlice'
 
 function* newFunction() {
-  const wholeToken = yield select((state) => state.authReducer.token)
-  let token = null
-  if (wholeToken) {
-    token = yield select((state) => state.authReducer.token.access_token)
-  }
-
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.AuthSessionManagementApi(getClient(JansConfigApi, token, issuer))
+  // Use null for token - HttpOnly session cookie handles auth
+  const api = new JansConfigApi.AuthSessionManagementApi(getClient(JansConfigApi, null, issuer))
 
   return new SessionApi(api)
 }
@@ -43,8 +37,8 @@ export function* getSessions({ payload }) {
     console.error('SessionSaga: Error fetching sessions:', e)
     yield put(handleUpdateSessionsResponse({ data: [] }))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
     return e
   }
@@ -62,8 +56,8 @@ export function* searchSessions({ payload }) {
   } catch (e) {
     yield put(handleUpdateSessionsResponse({ data: null }))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
     return e
   }
@@ -81,8 +75,8 @@ export function* revokeSessionByUserDn({ payload }) {
   } catch (e) {
     yield put(handleRevokeSession({ data: null }))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
   } finally {
     yield put(toggleLoader(false))
@@ -101,8 +95,8 @@ export function* deleteSessionById({ payload }) {
   } catch (e) {
     yield put(handleDeleteSession({ data: null }))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
   } finally {
     yield put(toggleLoader(false))

@@ -1,27 +1,9 @@
 import store from '../store'
 
-export const getDefaultClient = (JansConfigApi: any) => {
-  let defaultClient = JansConfigApi.ApiClient.instance
-  defaultClient.timeout = 60000
-  const jansauth = defaultClient.authentications['jans-auth']
-  defaultClient =
-    window['configApiBaseUrl'] ||
-    process.env.CONFIG_API_BASE_URL ||
-    'https://admin-ui-test.gluu.org'.replace(/\/+$/, '')
-  const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Credentials': true,
-    'issuer': localStorage.getItem('gluu.api.token.issuer'),
-  }
-  defaultClient.defaultHeaders = headers
-  jansauth.accessToken = localStorage.getItem('gluu.api.token')
-  return defaultClient
-}
-
 export const getClient = (JansConfigApi: any, r_token: any, r_issuer: any) => {
-  const userInum = store.getState()?.authReducer?.userInum || ''
+  const authState = (store.getState() as any)?.authReducer
+  const userInum = authState?.userInum || ''
+  const hasSession = authState?.hasSession || false
   const defaultClient = JansConfigApi.ApiClient.instance
   defaultClient.timeout = 60000
   const jansauth = defaultClient.authentications['oauth2']
@@ -29,21 +11,30 @@ export const getClient = (JansConfigApi: any, r_token: any, r_issuer: any) => {
     window['configApiBaseUrl'] ||
     process.env.CONFIG_API_BASE_URL ||
     'https://admin-ui-test.gluu.org'.replace(/\/+$/, '')
+
+  if (hasSession) {
+    defaultClient.enableCookies = true
+    jansauth.accessToken = undefined
+  } else if (r_token) {
+    defaultClient.enableCookies = false
+    jansauth.accessToken = r_token
+  }
+
   const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Credentials': true,
     'issuer': r_issuer,
     'jans-client': 'admin-ui',
     'User-inum': userInum,
   }
   defaultClient.defaultHeaders = headers
-  jansauth.accessToken = r_token
   return defaultClient
 }
+
 export const getClientWithToken = (JansConfigApi: any, token: any) => {
-  const userInum = store.getState()?.authReducer?.userInum || ''
+  const authState = (store.getState() as any)?.authReducer
+  const userInum = authState?.userInum || ''
+  const issuer = authState?.issuer || ''
+  const hasSession = authState?.hasSession || false
   const defaultClient = JansConfigApi.ApiClient.instance
   defaultClient.timeout = 60000
   const jansauth = defaultClient.authentications['oauth2']
@@ -51,12 +42,18 @@ export const getClientWithToken = (JansConfigApi: any, token: any) => {
     window['configApiBaseUrl'] ||
     process.env.CONFIG_API_BASE_URL ||
     'https://admin-ui-test.gluu.org'.replace(/\/+$/, '')
+
+  if (hasSession) {
+    defaultClient.enableCookies = true
+    jansauth.accessToken = undefined
+  } else {
+    defaultClient.enableCookies = false
+    jansauth.accessToken = token
+  }
+
   const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Credentials': true,
-    'Authorization': 'Bearer ' + token,
+    'issuer': issuer,
     'jans-client': 'admin-ui',
     'User-inum': userInum,
   }

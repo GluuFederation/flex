@@ -31,11 +31,10 @@ export interface AuthState {
     name: string
     inum: string
   }
-  token: {
-    access_token: string
-  }
   userinfo_jwt: string | null
   issuer: string
+  hasSession: boolean
+  JwtToken: string | null
 }
 
 export interface RootState {

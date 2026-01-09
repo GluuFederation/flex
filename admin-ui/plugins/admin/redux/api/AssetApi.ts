@@ -64,7 +64,7 @@ export default class AssetApi {
   /**
    * Create new Jans asset - compatible with saga usage
    */
-  createJansAsset = (body: AssetFormData, token: string): Promise<Document> => {
+  createJansAsset = (body: AssetFormData): Promise<Document> => {
     const document: Document = {
       fileName: body.fileName,
       description: body.description,
@@ -77,7 +77,7 @@ export default class AssetApi {
     return new Promise<Document>((resolve, reject) => {
       axios
         .postForm('/api/v1/jans-assets/upload', formData, {
-          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
         })
         .then((result) => handleResponse(null, reject, resolve as (data: unknown) => void, result))
         .catch((error) =>
@@ -89,7 +89,7 @@ export default class AssetApi {
   /**
    * Update existing Jans asset - compatible with saga usage
    */
-  updateJansAsset = (body: AssetFormData, token: string): Promise<Document> => {
+  updateJansAsset = (body: AssetFormData): Promise<Document> => {
     const document: Document = {
       fileName: body.fileName,
       description: body.description,
@@ -105,7 +105,7 @@ export default class AssetApi {
     return new Promise<Document>((resolve, reject) => {
       axios
         .putForm('/api/v1/jans-assets/upload', formData, {
-          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
         })
         .then((result) => handleResponse(null, reject, resolve as (data: unknown) => void, result))
         .catch((error) =>

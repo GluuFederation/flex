@@ -38,14 +38,12 @@ export function useSsaAuditLogger() {
 
   const logAudit = useCallback(
     async (params: SsaAuditParams): Promise<void> => {
-      const token = authState?.token?.access_token ?? ''
       const userinfo = authState?.userinfo
       const clientId = authState?.config?.clientId
       const ipAddress = authState?.location?.IPv4
 
       try {
         await logAuditUserAction({
-          token,
           userinfo,
           action: params.action,
           resource: params.resource,

@@ -31,7 +31,7 @@ export default function AppAuthProvider(props) {
   const location = useLocation()
   const [roleNotFound, setRoleNotFound] = useState(false)
   const [showAdminUI, setShowAdminUI] = useState(false)
-  const { config, userinfo, userinfo_jwt, token, issuer } = useSelector(
+  const { config, userinfo, userinfo_jwt, issuer, hasSession } = useSelector(
     (state) => state.authReducer,
   )
 
@@ -129,7 +129,7 @@ export default function AppAuthProvider(props) {
         let authConfigs
         dispatch(getOAuth2Config())
         let idToken = null
-        let JwtToken = null
+        let oauthAccessToken = null
 
         AuthorizationServiceConfiguration.fetchFromIssuer(issuer, new FetchRequestor())
           .then((configuration) => {
@@ -138,7 +138,7 @@ export default function AppAuthProvider(props) {
           })
           .then((token) => {
             idToken = token?.idToken
-            JwtToken = token?.accessToken
+            oauthAccessToken = token?.accessToken
             return fetchUserInformation({
               userInfoEndpoint: authConfigs.userInfoEndpoint,
               access_token: token.accessToken,
@@ -152,7 +152,7 @@ export default function AppAuthProvider(props) {
                   userinfo: jwtDecode(ujwt),
                   ujwt,
                   idToken,
-                  JwtToken,
+                  JwtToken: oauthAccessToken,
                   isUserInfoFetched: true,
                 }),
               )
@@ -168,15 +168,16 @@ export default function AppAuthProvider(props) {
                 window.location.href = sessionEndpoint
                 return null
               }
-              if (!token) {
+              // Re-create session if not present
+              if (!hasSession) {
                 dispatch(getAPIAccessToken(userinfo_jwt))
               }
             }
             return fetchApiAccessToken(ujwt)
           })
-          .then((tokenResponse: { access_token: string }) => {
-            // fetch policy store and set in redux
-            return fetchPolicyStore(tokenResponse.access_token)
+          .then((tokenResponse) => {
+            // fetch policy store using the token (session may not be created yet)
+            return fetchPolicyStore(tokenResponse?.access_token)
           })
           .then((policyStoreResponse) => {
             const policyStoreJson = policyStoreResponse.data.responseObject

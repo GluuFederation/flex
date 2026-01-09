@@ -1,6 +1,5 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
-import { getAPIAccessToken } from 'Redux/features/authSlice'
 import SsaApi from '../api/SsaApi'
 import {
   getSsaConfig,
@@ -18,19 +17,19 @@ import { postUserAction } from 'Redux/api/backend-api'
 const JansConfigApi = require('jans_config_api')
 
 function* createSsaApi() {
-  const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
+  // Use null for token - HttpOnly session cookie handles auth
   const api = new JansConfigApi.SoftwareStatementAssertionSSAApi(
-    getClient(JansConfigApi, token, issuer),
+    getClient(JansConfigApi, null, issuer),
   )
   return new SsaApi(api)
 }
 
 export function* getSsa() {
-  const token = yield select((state) => state.authReducer.token.access_token)
   const { authServerHost } = yield select((state) => state.authReducer.config)
   try {
-    const data = yield call(new SsaApi().getAllSsa, { payload: { token }, authServerHost })
+    // Use null for token - HttpOnly session cookie handles auth
+    const data = yield call(new SsaApi().getAllSsa, { payload: { token: null }, authServerHost })
     if (!data?.error) {
       yield put(getSsaConfigResponse(data))
     } else {
@@ -42,20 +41,20 @@ export function* getSsa() {
     yield put(getSsaConfigResponse([]))
     yield put(updateToast(true, 'error'))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
     return e
   }
 }
 
 export function* getSsaJwt({ payload }) {
-  const token = yield select((state) => state.authReducer.token.access_token)
   const { authServerHost } = yield select((state) => state.authReducer.config)
   try {
+    // Use null for token - HttpOnly session cookie handles auth
     const data = yield call(new SsaApi().getSsaJwt, {
       jti: payload.action.action_data,
-      token,
+      token: null,
       authServerHost,
     })
     yield put(getSsaJwtResponse(data))
@@ -81,12 +80,12 @@ export function* addSsaConfig({ payload }) {
       delete audit.payload
     }
   }
-  const token = yield select((state) => state.authReducer.token.access_token)
   const { authServerHost } = yield select((state) => state.authReducer.config)
   try {
+    // Use null for token - HttpOnly session cookie handles auth
     const data = yield call(new SsaApi().createSsa, {
       payload: payload.action.action_data,
-      token,
+      token: null,
       authServerHost,
     })
     if (!data?.error) {
@@ -98,8 +97,8 @@ export function* addSsaConfig({ payload }) {
     return payload.action.action_data
   } catch (e) {
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
     return e
   }
@@ -108,12 +107,12 @@ export function* addSsaConfig({ payload }) {
 export function* removeSsaConfig({ payload }) {
   const audit = yield* initAudit()
   addAdditionalData(audit, DELETION, 'delete-ssa', payload)
-  const token = yield select((state) => state.authReducer.token.access_token)
   try {
     const ssaApi = yield* createSsaApi()
+    // Use null for token - HttpOnly session cookie handles auth
     const data = yield call(ssaApi.removeSsa, {
       jti: payload.action.action_data,
-      authorization: 'Bearer ' + token,
+      authorization: null,
     })
     yield put(updateToast(true, 'success'))
     yield put(getSsaConfig())
@@ -123,8 +122,8 @@ export function* removeSsaConfig({ payload }) {
     yield put(updateToast(true, 'error'))
     yield put(removeSsaResponse())
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
     return e
   }

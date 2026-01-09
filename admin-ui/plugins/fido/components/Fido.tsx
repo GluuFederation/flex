@@ -29,7 +29,6 @@ const Fido: React.FC = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
-  const token = useSelector((state: AuthRootState) => state.authReducer.token.access_token)
   const userinfo = useSelector((state: AuthRootState) => state.authReducer.userinfo)
   const client_id = useSelector((state: AuthRootState) => state.authReducer.config.clientId)
   const ip_address = useSelector((state: AuthRootState) => state.authReducer.location.IPv4)
@@ -94,7 +93,6 @@ const Fido: React.FC = () => {
       putFidoMutation.mutate(apiPayload, {
         onSuccess: () => {
           logAudit({
-            token,
             userinfo,
             action: 'UPDATE',
             resource: 'FIDO',
@@ -115,7 +113,6 @@ const Fido: React.FC = () => {
       putFidoMutation,
       dispatch,
       t,
-      token,
       userinfo,
       client_id,
       ip_address,

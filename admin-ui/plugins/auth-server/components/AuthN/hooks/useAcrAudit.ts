@@ -24,7 +24,6 @@ interface RootState {
 
 export function useAcrAudit() {
   const authState = useSelector((state: RootState) => state.authReducer)
-  const token = authState?.token?.access_token
   const client_id = authState?.config?.clientId
   const userinfo = authState?.userinfo
 
@@ -35,7 +34,6 @@ export function useAcrAudit() {
       modifiedFields?: Record<string, unknown>,
     ) => {
       await logAuditUserAction({
-        token,
         userinfo,
         action: UPDATE,
         resource: API_ACRS,
@@ -46,7 +44,7 @@ export function useAcrAudit() {
         payload: acr,
       })
     },
-    [token, userinfo, client_id],
+    [userinfo, client_id],
   )
 
   return { logAcrUpdate }

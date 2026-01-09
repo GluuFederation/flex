@@ -6,7 +6,6 @@ import { CREATE, UPDATE, DELETION, FETCH } from '@/audit/UserActionType'
 import type { WebhookEntry } from '../types'
 
 interface AuthState {
-  token: { access_token: string }
   config: { clientId: string }
   location: { IPv4: string }
   userinfo: { name: string; inum: string } | null
@@ -19,14 +18,12 @@ interface RootState {
 type ActionType = typeof CREATE | typeof UPDATE | typeof DELETION | typeof FETCH
 
 export const useWebhookAudit = () => {
-  const token = useSelector((state: RootState) => state.authReducer.token.access_token)
   const clientId = useSelector((state: RootState) => state.authReducer.config.clientId)
   const ipAddress = useSelector((state: RootState) => state.authReducer.location.IPv4)
   const userinfo = useSelector((state: RootState) => state.authReducer.userinfo)
 
   const initAudit = useCallback((): Record<string, unknown> => {
     return {
-      headers: { Authorization: `Bearer ${token}` },
       client_id: clientId,
       ip_address: ipAddress,
       status: 'success',
@@ -35,7 +32,7 @@ export const useWebhookAudit = () => {
         userId: userinfo?.name || '-',
       },
     }
-  }, [token, clientId, ipAddress, userinfo])
+  }, [clientId, ipAddress, userinfo])
 
   const logAction = useCallback(
     async (

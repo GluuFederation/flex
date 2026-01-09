@@ -6,12 +6,10 @@ const initialState: AuthState = {
   isAuthenticated: false,
   userinfo: null,
   userinfo_jwt: null,
-  token: null,
   issuer: null,
   permissions: [],
   location: {},
   config: {},
-  defaultToken: null,
   codeChallenge: null,
   codeChallengeMethod: 'S256',
   codeVerifier: null,
@@ -25,15 +23,14 @@ const initialState: AuthState = {
   JwtToken: null,
   userInum: null,
   isUserInfoFetched: false,
+  hasSession: false,
 }
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    getOAuth2Config: (state, action: PayloadAction<any>) => {
-      state.defaultToken = action.payload
-    },
+    getOAuth2Config: (_state, _action: PayloadAction<any>) => {},
     setBackendStatus: (state, action: PayloadAction<BackendStatus>) => {
       state.backendStatus.active = action.payload.active
       state.backendStatus.errorMessage = action.payload.errorMessage
@@ -63,10 +60,10 @@ const authSlice = createSlice({
       }>,
     ) => {
       if (action.payload?.ujwt) {
-        state.JwtToken = action.payload.JwtToken ?? null
         state.userinfo = action.payload.userinfo ?? null
         state.userinfo_jwt = action.payload.ujwt
         state.idToken = action.payload.idToken ?? null
+        state.JwtToken = action.payload.JwtToken ?? null
         state.isUserInfoFetched = action.payload.isUserInfoFetched ?? false
         state.isAuthenticated = true
         state.userInum = action.payload?.userinfo?.inum ?? null
@@ -77,17 +74,11 @@ const authSlice = createSlice({
     getAPIAccessToken: (_state, _action: PayloadAction<any>) => {},
     getAPIAccessTokenResponse: (
       state,
-      action: PayloadAction<{ access_token?: string; scopes?: string[]; issuer?: string }>,
+      action: PayloadAction<{ scopes?: string[]; issuer?: string }>,
     ) => {
-      if (action.payload?.access_token) {
-        state.token = {
-          access_token: action.payload.access_token,
-          scopes: action.payload.scopes || [],
-        }
-        state.issuer = action.payload.issuer || null
-        state.permissions = action.payload.scopes || []
-        state.isAuthenticated = true
-      }
+      state.issuer = action.payload?.issuer || null
+      state.permissions = action.payload?.scopes || []
+      state.isAuthenticated = true
     },
     getUserLocation: (_state, _action: PayloadAction<any>) => {},
     getUserLocationResponse: (state, action: PayloadAction<{ location?: Location }>) => {
@@ -96,14 +87,26 @@ const authSlice = createSlice({
       }
     },
     setApiDefaultToken: (state, action: PayloadAction<any>) => {
-      state.defaultToken = action.payload
-      state.issuer = action.payload.issuer
+      state.issuer = action.payload?.issuer || null
     },
     putConfigWorker: (state, _action: PayloadAction<any>) => {
       state.loadingConfig = true
     },
     putConfigWorkerResponse: (state) => {
       state.loadingConfig = false
+    },
+    createAdminUiSession: (
+      _state,
+      _action: PayloadAction<{ ujwt: string; apiProtectionToken: string }>,
+    ) => {},
+    createAdminUiSessionResponse: (state, action: PayloadAction<{ success: boolean }>) => {
+      if (action.payload?.success) {
+        state.hasSession = true
+      }
+    },
+    deleteAdminUiSession: (_state) => {},
+    deleteAdminUiSessionResponse: (state) => {
+      state.hasSession = false
     },
   },
 })
@@ -123,6 +126,10 @@ export const {
   setBackendStatus,
   putConfigWorker,
   putConfigWorkerResponse,
+  createAdminUiSession,
+  createAdminUiSessionResponse,
+  deleteAdminUiSession,
+  deleteAdminUiSessionResponse,
 } = authSlice.actions
 export default authSlice.reducer
 reducerRegistry.register('authReducer', authSlice.reducer)

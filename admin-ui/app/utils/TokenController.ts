@@ -24,10 +24,6 @@ export const isFourZeroOneError = (error?: { status?: number } | null): boolean 
   return error?.status === 401
 }
 
-export const hasApiToken = (): boolean => {
-  return Boolean(localStorage.getItem('gluu.api.token'))
-}
-
 export const saveState = (state?: string | null): void => {
   if (state) {
     localStorage.setItem('gluu.flow.state', state)

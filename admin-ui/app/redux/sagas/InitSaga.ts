@@ -7,7 +7,6 @@ import {
   getScopesResponse,
   getClientsResponse,
 } from '../features/initSlice'
-import { getAPIAccessToken } from '../features/authSlice'
 import { postUserAction } from '../api/backend-api'
 import { initAudit } from '../sagas/SagaUtils'
 import InitApi from '../api/InitApi'
@@ -15,32 +14,26 @@ import { getClient } from '../api/base'
 const JansConfigApi = require('jans_config_api')
 
 function* initScripts() {
-  const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.CustomScriptsApi(getClient(JansConfigApi, token, issuer))
+  const api = new JansConfigApi.CustomScriptsApi(getClient(JansConfigApi, null, issuer))
   return new InitApi(api)
 }
 
 function* initScopes() {
-  const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.OAuthScopesApi(getClient(JansConfigApi, token, issuer))
+  const api = new JansConfigApi.OAuthScopesApi(getClient(JansConfigApi, null, issuer))
   return new InitApi(api)
 }
 
 function* initClients() {
-  const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.OAuthOpenIDConnectClientsApi(
-    getClient(JansConfigApi, token, issuer),
-  )
+  const api = new JansConfigApi.OAuthOpenIDConnectClientsApi(getClient(JansConfigApi, null, issuer))
   return new InitApi(api)
 }
 
 function* initAttributes() {
-  const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.AttributeApi(getClient(JansConfigApi, token, issuer))
+  const api = new JansConfigApi.AttributeApi(getClient(JansConfigApi, null, issuer))
   return new InitApi(api)
 }
 
@@ -55,8 +48,8 @@ export function* getScripts({ payload }) {
   } catch (e) {
     yield put(getScriptsResponse(null))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
   }
 }
@@ -73,8 +66,8 @@ export function* getClients({ payload }) {
   } catch (e) {
     yield put(getClientsResponse(null))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
   }
 }
@@ -90,8 +83,8 @@ export function* getScopes({ payload }) {
   } catch (e) {
     yield put(getScopesResponse(null))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
   }
 }
@@ -107,8 +100,8 @@ export function* getAttributes({ payload }) {
   } catch (e) {
     yield put(getAttributesResponse(null))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
   }
 }

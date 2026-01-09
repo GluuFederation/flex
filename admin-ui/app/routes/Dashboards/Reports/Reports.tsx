@@ -20,17 +20,17 @@ import { REPORTS_CACHE_CONFIG } from '../constants'
 
 function Reports() {
   const { t } = useTranslation()
-  const authToken = useSelector((state: RootState) => state.authReducer?.token?.access_token)
+  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
 
   const queryOptions = useMemo(
     () => ({
       query: {
-        enabled: !!authToken,
+        enabled: hasSession === true,
         staleTime: REPORTS_CACHE_CONFIG.STALE_TIME,
         gcTime: REPORTS_CACHE_CONFIG.GC_TIME,
       },
     }),
-    [authToken],
+    [hasSession],
   )
 
   const { data: attributesData, isLoading: loadingAttributes } = useGetAttributes(
