@@ -50,6 +50,9 @@ import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/type
 import type { UserAction, ActionData } from 'Utils/PermChecker'
 
 const AuthPage: React.FC = () => {
+  const { t } = useTranslation()
+  SetTitle(t('titles.jans_json_property'))
+
   const { hasCedarWritePermission, authorizeHelper } = useCedarling()
   const { navigateToRoute } = useAppNavigation()
   const { logAuthServerPropertiesUpdate } = useAuthServerPropertiesActions()
@@ -85,7 +88,6 @@ const AuthPage: React.FC = () => {
     },
   })
 
-  const { t } = useTranslation()
   const lSize = 6
   const userAction: UserAction = {
     action_message: '',
@@ -117,11 +119,18 @@ const AuthPage: React.FC = () => {
     () => getMissingProperties(properties, api_configurations),
     [properties, api_configurations],
   )
-  SetTitle(t('titles.jans_json_property'))
 
   const [put, setPut] = useState<AcrPutOperation | null>(null)
 
   const baselineConfigurationRef = useRef<AppConfiguration | null>(null)
+  const setFieldValueRef = useRef<
+    ((field: string, value: unknown, shouldValidate?: boolean) => void) | null
+  >(null)
+  const setTouchedRef = useRef<
+    ((touched: Record<string, boolean | undefined>, shouldValidate?: boolean) => void) | null
+  >(null)
+  const validateFormRef = useRef<(() => Promise<unknown>) | null>(null)
+  const touchedRef = useRef<Record<string, boolean | undefined>>({})
   const previousConfigurationRef = useRef<AppConfiguration | null>(null)
 
   useEffect(() => {
@@ -159,6 +168,14 @@ const AuthPage: React.FC = () => {
     onSubmit: () => {
       // Form submission is handled by handleSubmit wrapper
     },
+  })
+
+  // Update refs with current formik methods/values on each render
+  useEffect(() => {
+    setFieldValueRef.current = formik.setFieldValue
+    setTouchedRef.current = formik.setTouched
+    validateFormRef.current = formik.validateForm
+    touchedRef.current = formik.touched
   })
 
   useEffect(() => {
@@ -228,12 +245,18 @@ const AuthPage: React.FC = () => {
         const fieldPath = typeof patch.path === 'string' ? patch.path.replace(/^\//, '') : ''
         const formikPath = fieldPath.replace(/\//g, '.')
 
-        formik.setFieldValue(formikPath, patch.value, false)
-        formik.setTouched(setIn(formik.touched, formikPath, true), false)
+        if (setFieldValueRef.current) {
+          setFieldValueRef.current(formikPath, patch.value, false)
+        }
+        if (setTouchedRef.current) {
+          setTouchedRef.current(setIn(touchedRef.current, formikPath, true), false)
+        }
 
         // Use validateForm() instead of validateField() because we use custom validate function
         setTimeout(() => {
-          formik.validateForm()
+          if (validateFormRef.current) {
+            validateFormRef.current()
+          }
         }, 0)
       }
 
@@ -243,7 +266,7 @@ const AuthPage: React.FC = () => {
         return [...filteredPatches, patch]
       })
     },
-    [formik.setFieldValue, formik.setTouched, formik.touched, formik.validateForm],
+    [setPatches],
   )
 
   const putHandler = useCallback(
@@ -451,7 +474,7 @@ const AuthPage: React.FC = () => {
                 <GluuFormFooter
                   showBack
                   onBack={handleBack}
-                  backButtonLabel="Back"
+                  backButtonLabel={t('actions.back')}
                   showCancel
                   onCancel={handleCancel}
                   disableCancel={!hasChanges}

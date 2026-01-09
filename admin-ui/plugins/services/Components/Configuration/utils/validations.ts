@@ -24,7 +24,6 @@ const sqlConfigurationSchemaShape: Record<keyof SqlConfiguration, Yup.AnySchema>
         'Invalid connection URI format',
       ),
     )
-    .min(1, 'At least one connection URI is required')
     .nullable(),
   schemaName: Yup.string()
     .trim()

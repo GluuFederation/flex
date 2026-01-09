@@ -17,7 +17,7 @@ export interface SqlConfiguration {
 
 export const useGetConfigDatabaseSql = (options?: { query?: { staleTime?: number } }) => {
   return useQuery<SqlConfiguration[]>({
-    queryKey: ['/api/v1/config/database'],
+    queryKey: getGetConfigDatabaseSqlQueryKey(),
     queryFn: async () => {
       return [] as SqlConfiguration[]
     },
@@ -28,7 +28,7 @@ export const useGetConfigDatabaseSql = (options?: { query?: { staleTime?: number
 export const usePostConfigDatabaseSql = (options?: {
   mutation?: {
     onSuccess?: (data: unknown, variables: { data: SqlConfiguration }) => void
-    onError?: () => void
+    onError?: (error: unknown, variables: { data: SqlConfiguration }) => void
   }
 }) => {
   const dispatch = useDispatch()
@@ -39,12 +39,12 @@ export const usePostConfigDatabaseSql = (options?: {
       return Promise.resolve(variables.data)
     },
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['/api/v1/config/database'] })
+      queryClient.invalidateQueries({ queryKey: getGetConfigDatabaseSqlQueryKey() })
       options?.mutation?.onSuccess?.(data, variables)
     },
-    onError: () => {
+    onError: (error, variables) => {
       dispatch(updateToast(true, 'danger'))
-      options?.mutation?.onError?.()
+      options?.mutation?.onError?.(error, variables)
     },
   })
 }
@@ -52,7 +52,7 @@ export const usePostConfigDatabaseSql = (options?: {
 export const usePutConfigDatabaseSql = (options?: {
   mutation?: {
     onSuccess?: (data: unknown, variables: { data: SqlConfiguration }) => void
-    onError?: () => void
+    onError?: (error: unknown, variables: { data: SqlConfiguration }) => void
   }
 }) => {
   const dispatch = useDispatch()
@@ -63,12 +63,12 @@ export const usePutConfigDatabaseSql = (options?: {
       return Promise.resolve(variables.data)
     },
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['/api/v1/config/database'] })
+      queryClient.invalidateQueries({ queryKey: getGetConfigDatabaseSqlQueryKey() })
       options?.mutation?.onSuccess?.(data, variables)
     },
-    onError: () => {
+    onError: (error, variables) => {
       dispatch(updateToast(true, 'danger'))
-      options?.mutation?.onError?.()
+      options?.mutation?.onError?.(error, variables)
     },
   })
 }
@@ -87,7 +87,7 @@ export const useDeleteConfigDatabaseSqlByName = (options?: {
       return Promise.resolve(variables)
     },
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['/api/v1/config/database'] })
+      queryClient.invalidateQueries({ queryKey: getGetConfigDatabaseSqlQueryKey() })
       options?.mutation?.onSuccess?.(data, variables)
     },
     onError: (error, variables) => {

@@ -1,8 +1,12 @@
 import * as Yup from 'yup'
-import type { AppConfiguration } from '../types'
+import type { AppConfiguration, SpecSchema, SchemaProperty } from '../types'
+import spec from '../../../../../configApiSpecs.yaml'
 
-// Create a dynamic validation schema for AppConfiguration
-// Since AppConfiguration is a flexible object, we'll validate based on field patterns
+// Get the schema properties from the OpenAPI spec
+const schemaProperties = (spec as unknown as SpecSchema).components.schemas.AppConfiguration
+  .properties
+
+// Create a dynamic validation schema for AppConfiguration based on OpenAPI schema
 export const appConfigurationSchema = Yup.object().test(
   'validate-fields',
   'Invalid field values',
@@ -11,73 +15,64 @@ export const appConfigurationSchema = Yup.object().test(
       return true
     }
 
-    // Validate URL fields (fields ending with Endpoint, Uri, Url, or containing 'url')
+    // Validate each field based on its schema definition
     for (const key of Object.keys(value)) {
       const fieldValue = value[key]
+      const fieldSchema: SchemaProperty | undefined = schemaProperties[key]
 
       // Skip null/undefined/empty values
       if (fieldValue === null || fieldValue === undefined || fieldValue === '') {
         continue
       }
 
-      const lowerName = key.toLowerCase()
+      // Validate based on schema type/format
+      if (fieldSchema) {
+        const fieldType = fieldSchema.type
 
-      // Validate URL fields
-      if (
-        lowerName.endsWith('endpoint') ||
-        lowerName.endsWith('uri') ||
-        (lowerName.endsWith('url') && !lowerName.includes('curl')) ||
-        (lowerName.includes('url') && !lowerName.includes('curl')) ||
-        lowerName === 'issuer'
-      ) {
-        if (typeof fieldValue === 'string' && fieldValue.trim() !== '') {
-          try {
-            new URL(fieldValue)
-          } catch {
-            return this.createError({
-              path: key,
-              message: 'Invalid URL format',
-            })
+        // Validate URL fields based on format in schema
+        if (fieldType === 'string') {
+          // Check if schema indicates URL format (format: 'uri' or 'url')
+          const format = (fieldSchema as { format?: string }).format
+          if (format === 'uri' || format === 'url') {
+            if (typeof fieldValue === 'string' && fieldValue.trim() !== '') {
+              try {
+                new URL(fieldValue)
+              } catch {
+                return this.createError({
+                  path: key,
+                  message: 'Invalid URL format',
+                })
+              }
+            }
           }
         }
-      }
 
-      // Validate number fields (fields containing 'lifetime', 'interval', 'time', 'size', 'count', 'limit')
-      if (
-        lowerName.includes('lifetime') ||
-        lowerName.includes('interval') ||
-        (lowerName.includes('time') &&
-          !lowerName.includes('endpoint') &&
-          !lowerName.includes('url')) ||
-        lowerName.includes('size') ||
-        lowerName.includes('count') ||
-        lowerName.includes('limit') ||
-        lowerName.includes('delay') ||
-        lowerName.includes('duration')
-      ) {
-        if (typeof fieldValue === 'string') {
-          const trimmed = fieldValue.trim()
-          if (trimmed !== '') {
-            const num = Number(trimmed)
-            if (isNaN(num) || !isFinite(num)) {
-              return this.createError({
-                path: key,
-                message: 'Must be a valid number',
-              })
+        // Validate number fields based on schema type
+        if (fieldType === 'number' || fieldType === 'integer') {
+          if (typeof fieldValue === 'string') {
+            const trimmed = fieldValue.trim()
+            if (trimmed !== '') {
+              const num = Number(trimmed)
+              if (isNaN(num) || !isFinite(num)) {
+                return this.createError({
+                  path: key,
+                  message: 'Must be a valid number',
+                })
+              }
+              if (num < 0) {
+                return this.createError({
+                  path: key,
+                  message: 'Must be non-negative',
+                })
+              }
             }
-            if (num < 0) {
+          } else if (typeof fieldValue === 'number') {
+            if (fieldValue < 0) {
               return this.createError({
                 path: key,
                 message: 'Must be non-negative',
               })
             }
-          }
-        } else if (typeof fieldValue === 'number') {
-          if (fieldValue < 0) {
-            return this.createError({
-              path: key,
-              message: 'Must be non-negative',
-            })
           }
         }
       }

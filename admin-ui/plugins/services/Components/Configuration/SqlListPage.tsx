@@ -25,6 +25,7 @@ import { useGetPropertiesPersistence } from 'JansConfigApi'
 import {
   useGetConfigDatabaseSql,
   useDeleteConfigDatabaseSqlByName,
+  getGetConfigDatabaseSqlQueryKey,
   type SqlConfiguration,
 } from './sqlApiMocks'
 import { currentSqlItemAtom } from './atoms'
@@ -123,7 +124,7 @@ function SqlListPage(): ReactElement {
       onSuccess: () => {
         dispatch(updateToast(true, 'success'))
         queryClient.invalidateQueries({
-          queryKey: ['/api/v1/config/database'],
+          queryKey: getGetConfigDatabaseSqlQueryKey(),
         })
       },
       onError: () => {
@@ -206,7 +207,7 @@ function SqlListPage(): ReactElement {
         isFreeAction: true,
         onClick: () => {
           queryClient.invalidateQueries({
-            queryKey: ['/api/v1/config/database'],
+            queryKey: getGetConfigDatabaseSqlQueryKey(),
           })
         },
       })
