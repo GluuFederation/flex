@@ -28,10 +28,10 @@ const PRODUCTION_ERROR_MESSAGE =
   'SQL configuration API is not available. Mock data is disabled in production to prevent data masking.'
 
 /**
- * Helper function to throw error if mocks are disabled in production.
- * Used consistently across all SQL API hooks to prevent silent mock data in production.
+ * Throws error if mocks are used in production environment.
+ * Prevents silent data masking by ensuring production builds fail fast.
  */
-function throwIfMocksDisabled(): void {
+function throwIfMocksInProduction(): void {
   if (!USE_REAL_SQL_API && process.env.NODE_ENV === PRODUCTION_ENV) {
     throw new Error(PRODUCTION_ERROR_MESSAGE)
   }
@@ -80,10 +80,7 @@ export const useGetConfigDatabaseSql = (options?: { query?: { staleTime?: number
         )
       }
 
-      // Check if mocks are disabled in production
-      throwIfMocksDisabled()
-
-      // Development: return empty array for UI development
+      throwIfMocksInProduction()
       if (process.env.NODE_ENV !== PRODUCTION_ENV) {
         // eslint-disable-next-line no-console
         console.warn(
@@ -124,10 +121,7 @@ export const usePostConfigDatabaseSql = (options?: {
         )
       }
 
-      // Check if mocks are disabled in production
-      throwIfMocksDisabled()
-
-      // Mock implementation - simulate successful creation
+      throwIfMocksInProduction()
       if (process.env.NODE_ENV !== PRODUCTION_ENV) {
         // eslint-disable-next-line no-console
         console.warn(
@@ -178,10 +172,7 @@ export const usePutConfigDatabaseSql = (options?: {
         )
       }
 
-      // Check if mocks are disabled in production
-      throwIfMocksDisabled()
-
-      // Mock implementation - simulate successful update
+      throwIfMocksInProduction()
       if (process.env.NODE_ENV !== PRODUCTION_ENV) {
         // eslint-disable-next-line no-console
         console.warn(
@@ -232,10 +223,7 @@ export const useDeleteConfigDatabaseSqlByName = (options?: {
         )
       }
 
-      // Check if mocks are disabled in production
-      throwIfMocksDisabled()
-
-      // Mock implementation - simulate successful deletion
+      throwIfMocksInProduction()
       if (process.env.NODE_ENV !== PRODUCTION_ENV) {
         // eslint-disable-next-line no-console
         console.warn(
@@ -285,10 +273,7 @@ export const usePostConfigDatabaseSqlTest = (options?: {
         )
       }
 
-      // Check if mocks are disabled in production
-      throwIfMocksDisabled()
-
-      // Mock implementation - simulate successful test
+      throwIfMocksInProduction()
       if (process.env.NODE_ENV !== PRODUCTION_ENV) {
         // eslint-disable-next-line no-console
         console.warn(

@@ -69,8 +69,9 @@ const JsonPropertyBuilder = ({
   const path = initialPath ? `${initialPath}/${propKey}` : `/${propKey}`
 
   const formikPath = useMemo(() => {
-    if (!path) return propKey
-    return path.replace(/^\//, '').replace(/\//g, '.')
+    if (!path || path === '/') return propKey
+    const normalized = path.replace(/^\//, '').replace(/\//g, '.')
+    return normalized || propKey
   }, [path, propKey])
 
   const fieldError = useMemo(() => {

@@ -25,13 +25,13 @@ import { useGetPropertiesPersistence } from 'JansConfigApi'
 import {
   useGetConfigDatabaseSql,
   useDeleteConfigDatabaseSqlByName,
+  usePostConfigDatabaseSqlTest,
   getGetConfigDatabaseSqlQueryKey,
   type SqlConfiguration,
 } from './sqlApiMocks'
 import { currentSqlItemAtom } from './atoms'
 import { useSqlAudit } from './hooks'
 import { isPersistenceInfo } from './types'
-import { usePostConfigDatabaseSqlTest } from './sqlApiMocks'
 
 interface AlertState {
   severity: 'success' | 'error' | 'warning' | 'info' | undefined
@@ -65,7 +65,12 @@ function SqlListPage(): ReactElement {
   const { logSqlDelete } = useSqlAudit()
   const { navigateToRoute, navigateBack } = useAppNavigation()
 
-  const { data: sqlConfigurations, isLoading: loading } = useGetConfigDatabaseSql({
+  const {
+    data: sqlConfigurations,
+    isLoading: loading,
+    isError: sqlError,
+    error: sqlErrorDetails,
+  } = useGetConfigDatabaseSql({
     query: { staleTime: 30000 },
   })
 
@@ -273,6 +278,20 @@ function SqlListPage(): ReactElement {
   )
 
   const isLoading = loading || deleteMutation.isPending || testMutation.isPending
+
+  if (sqlError) {
+    const errorMessage =
+      sqlErrorDetails instanceof Error
+        ? sqlErrorDetails.message
+        : 'Failed to load SQL configurations'
+    return (
+      <Card style={applicationStyle.mainCard}>
+        <CardBody>
+          <Alert severity="error">{errorMessage}</Alert>
+        </CardBody>
+      </Card>
+    )
+  }
 
   return (
     <Card style={applicationStyle.mainCard}>

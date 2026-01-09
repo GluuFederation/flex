@@ -8,7 +8,7 @@ const PRODUCTION_ENV = 'production'
 const PRODUCTION_ERROR_MESSAGE =
   'Couchbase configuration API is not available. Mock data is disabled in production.'
 
-function throwIfMocksDisabled(): void {
+function throwIfMocksInProduction(): void {
   if (!USE_REAL_COUCHBASE_API && process.env.NODE_ENV === PRODUCTION_ENV) {
     throw new Error(PRODUCTION_ERROR_MESSAGE)
   }
@@ -44,7 +44,7 @@ export const useGetConfigDatabaseCouchbase = (options?: { query?: { staleTime?: 
       if (USE_REAL_COUCHBASE_API) {
         throw new Error('Real Couchbase API not yet implemented.')
       }
-      throwIfMocksDisabled()
+      throwIfMocksInProduction()
       if (process.env.NODE_ENV !== PRODUCTION_ENV) {
         // eslint-disable-next-line no-console
         console.warn('[Couchbase API Mocks] useGetConfigDatabaseCouchbase: Returning mock data.')
@@ -70,7 +70,7 @@ export const usePutConfigDatabaseCouchbase = (options?: {
       if (USE_REAL_COUCHBASE_API) {
         throw new Error('Real Couchbase API not yet implemented.')
       }
-      throwIfMocksDisabled()
+      throwIfMocksInProduction()
       if (process.env.NODE_ENV !== PRODUCTION_ENV) {
         // eslint-disable-next-line no-console
         console.warn('[Couchbase API Mocks] usePutConfigDatabaseCouchbase: Using mock.')
