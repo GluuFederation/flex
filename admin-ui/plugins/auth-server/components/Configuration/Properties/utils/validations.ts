@@ -1,6 +1,7 @@
 import * as Yup from 'yup'
 import type { AppConfiguration, SpecSchema, SchemaProperty } from '../types'
-import spec from '../../../../../configApiSpecs.yaml'
+// Import from root - path goes up 6 levels from utils/ to root
+import spec from '../../../../../../configApiSpecs.yaml'
 
 // Get the schema properties from the OpenAPI spec
 const schemaProperties = (spec as unknown as SpecSchema).components.schemas.AppConfiguration

@@ -20,7 +20,7 @@ const sqlConfigurationSchemaShape: Record<keyof SqlConfiguration, Yup.AnySchema>
   connectionUri: Yup.array()
     .of(
       Yup.string().matches(
-        /^(jdbc:[a-zA-Z0-9]+:\/\/|https?:\/\/).*/,
+        /^(jdbc:[A-Za-z0-9]+(?:[:][A-Za-z0-9]+)*(?:(?::\/\/)|:)?(?:@\/\/)?.*|https?:\/\/.*)/,
         'Invalid connection URI format',
       ),
     )
@@ -31,9 +31,11 @@ const sqlConfigurationSchemaShape: Record<keyof SqlConfiguration, Yup.AnySchema>
     .min(2, 'Minimum 2 characters required')
     .nullable(),
   passwordEncryptionMethod: Yup.string()
+    .trim()
     .transform((value) => (value === '' ? null : value))
     .nullable(),
   serverTimezone: Yup.string()
+    .trim()
     .transform((value) => (value === '' ? null : value))
     .nullable(),
   binaryAttributes: Yup.array().of(Yup.string()).nullable(),
