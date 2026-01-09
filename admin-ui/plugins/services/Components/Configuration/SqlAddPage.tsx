@@ -9,7 +9,7 @@ import {
   usePostConfigDatabaseSql,
   getGetConfigDatabaseSqlQueryKey,
   type SqlConfiguration,
-} from 'JansConfigApi'
+} from './sqlApiMocks'
 import { useSqlAudit } from './hooks'
 import { extractActionMessage } from './types'
 
@@ -24,10 +24,13 @@ function SqlAddPage(): ReactElement {
     mutation: {
       onSuccess: async (data, variables) => {
         dispatch(updateToast(true, 'success'))
-        queryClient.invalidateQueries({ queryKey: getGetConfigDatabaseSqlQueryKey() })
+        queryClient.invalidateQueries({
+          queryKey: getGetConfigDatabaseSqlQueryKey(),
+        })
         try {
           await logSqlCreate(variables.data, actionMessageRef.current)
         } catch (error) {
+          // eslint-disable-next-line no-console
           console.error('Failed to log SQL create:', error)
         }
         navigateBack(ROUTES.SQL_LIST)

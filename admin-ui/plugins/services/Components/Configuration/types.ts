@@ -1,10 +1,10 @@
 import type {
   GluuLdapConfiguration,
-  SqlConfiguration,
-  CouchbaseConfiguration,
   MemcachedConfiguration,
   RedisConfiguration,
 } from 'JansConfigApi'
+import type { SqlConfiguration } from './sqlApiMocks'
+import type { CouchbaseConfiguration } from './couchbaseApiMocks'
 import type { FormikProps } from 'formik'
 
 export interface LdapFormProps {

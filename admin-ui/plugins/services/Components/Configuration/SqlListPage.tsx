@@ -21,14 +21,14 @@ import { getPagingSize } from '@/utils/pagingUtils'
 import { useSetAtom } from 'jotai'
 import { useQueryClient } from '@tanstack/react-query'
 import { updateToast } from 'Redux/features/toastSlice'
+import { useGetPropertiesPersistence } from 'JansConfigApi'
 import {
   useGetConfigDatabaseSql,
   useDeleteConfigDatabaseSqlByName,
   usePostConfigDatabaseSqlTest,
-  useGetPropertiesPersistence,
   getGetConfigDatabaseSqlQueryKey,
   type SqlConfiguration,
-} from 'JansConfigApi'
+} from './sqlApiMocks'
 import { currentSqlItemAtom } from './atoms'
 import { useSqlAudit } from './hooks'
 import { isPersistenceInfo } from './types'
@@ -65,7 +65,12 @@ function SqlListPage(): ReactElement {
   const { logSqlDelete } = useSqlAudit()
   const { navigateToRoute, navigateBack } = useAppNavigation()
 
-  const { data: sqlConfigurations, isLoading: loading } = useGetConfigDatabaseSql({
+  const {
+    data: sqlConfigurations,
+    isLoading: loading,
+    isError: sqlError,
+    error: sqlErrorDetails,
+  } = useGetConfigDatabaseSql({
     query: { staleTime: 30000 },
   })
 
@@ -123,7 +128,9 @@ function SqlListPage(): ReactElement {
     mutation: {
       onSuccess: () => {
         dispatch(updateToast(true, 'success'))
-        queryClient.invalidateQueries({ queryKey: getGetConfigDatabaseSqlQueryKey() })
+        queryClient.invalidateQueries({
+          queryKey: getGetConfigDatabaseSqlQueryKey(),
+        })
       },
       onError: () => {
         dispatch(updateToast(true, 'danger'))
@@ -204,7 +211,9 @@ function SqlListPage(): ReactElement {
         iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
         isFreeAction: true,
         onClick: () => {
-          queryClient.invalidateQueries({ queryKey: getGetConfigDatabaseSqlQueryKey() })
+          queryClient.invalidateQueries({
+            queryKey: getGetConfigDatabaseSqlQueryKey(),
+          })
         },
       })
     }
@@ -247,6 +256,7 @@ function SqlListPage(): ReactElement {
           toggle()
           navigateBack(ROUTES.SQL_LIST)
         } catch (error) {
+          // eslint-disable-next-line no-console
           console.error('Failed to delete SQL config:', error)
         }
       }
@@ -268,6 +278,20 @@ function SqlListPage(): ReactElement {
   )
 
   const isLoading = loading || deleteMutation.isPending || testMutation.isPending
+
+  if (sqlError) {
+    const errorMessage =
+      sqlErrorDetails instanceof Error
+        ? sqlErrorDetails.message
+        : 'Failed to load SQL configurations'
+    return (
+      <Card style={applicationStyle.mainCard}>
+        <CardBody>
+          <Alert severity="error">{errorMessage}</Alert>
+        </CardBody>
+      </Card>
+    )
+  }
 
   return (
     <Card style={applicationStyle.mainCard}>

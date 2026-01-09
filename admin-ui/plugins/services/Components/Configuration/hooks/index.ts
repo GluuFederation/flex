@@ -3,12 +3,9 @@ import { useSelector } from 'react-redux'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import { CREATE, UPDATE, DELETION, PATCH } from '@/audit/UserActionType'
 import type { AuthRootState } from 'Utils/types'
-import type {
-  GluuLdapConfiguration,
-  SqlConfiguration,
-  CacheConfiguration,
-  CouchbaseConfiguration,
-} from 'JansConfigApi'
+import type { GluuLdapConfiguration, CacheConfiguration } from 'JansConfigApi'
+import type { SqlConfiguration } from '../sqlApiMocks'
+import type { CouchbaseConfiguration } from '../couchbaseApiMocks'
 
 const API_LDAP = 'api-ldap'
 const API_SQL = 'api-sql'

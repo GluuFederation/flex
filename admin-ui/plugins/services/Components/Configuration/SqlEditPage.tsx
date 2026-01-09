@@ -11,7 +11,7 @@ import {
   usePutConfigDatabaseSql,
   getGetConfigDatabaseSqlQueryKey,
   type SqlConfiguration,
-} from 'JansConfigApi'
+} from './sqlApiMocks'
 import { currentSqlItemAtom } from './atoms'
 import { useSqlAudit } from './hooks'
 import { extractActionMessage } from './types'
@@ -28,10 +28,13 @@ function SqlEditPage(): ReactElement | null {
     mutation: {
       onSuccess: async (data, variables) => {
         dispatch(updateToast(true, 'success'))
-        queryClient.invalidateQueries({ queryKey: getGetConfigDatabaseSqlQueryKey() })
+        queryClient.invalidateQueries({
+          queryKey: getGetConfigDatabaseSqlQueryKey(),
+        })
         try {
           await logSqlUpdate(variables.data, actionMessageRef.current)
         } catch (error) {
+          // eslint-disable-next-line no-console
           console.error('Failed to log SQL update:', error)
         }
         navigateBack(ROUTES.SQL_LIST)
