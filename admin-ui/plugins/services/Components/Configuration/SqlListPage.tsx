@@ -21,17 +21,16 @@ import { getPagingSize } from '@/utils/pagingUtils'
 import { useSetAtom } from 'jotai'
 import { useQueryClient } from '@tanstack/react-query'
 import { updateToast } from 'Redux/features/toastSlice'
+import { useGetPropertiesPersistence } from 'JansConfigApi'
 import {
   useGetConfigDatabaseSql,
   useDeleteConfigDatabaseSqlByName,
-  usePostConfigDatabaseSqlTest,
-  useGetPropertiesPersistence,
-  getGetConfigDatabaseSqlQueryKey,
   type SqlConfiguration,
-} from 'JansConfigApi'
+} from './sqlApiMocks'
 import { currentSqlItemAtom } from './atoms'
 import { useSqlAudit } from './hooks'
 import { isPersistenceInfo } from './types'
+import { usePostConfigDatabaseSqlTest } from './sqlApiMocks'
 
 interface AlertState {
   severity: 'success' | 'error' | 'warning' | 'info' | undefined
@@ -123,7 +122,9 @@ function SqlListPage(): ReactElement {
     mutation: {
       onSuccess: () => {
         dispatch(updateToast(true, 'success'))
-        queryClient.invalidateQueries({ queryKey: getGetConfigDatabaseSqlQueryKey() })
+        queryClient.invalidateQueries({ 
+          queryKey: ['/api/v1/config/database'] 
+        })
       },
       onError: () => {
         dispatch(updateToast(true, 'danger'))
@@ -204,7 +205,9 @@ function SqlListPage(): ReactElement {
         iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
         isFreeAction: true,
         onClick: () => {
-          queryClient.invalidateQueries({ queryKey: getGetConfigDatabaseSqlQueryKey() })
+          queryClient.invalidateQueries({ 
+          queryKey: ['/api/v1/config/database'] 
+        })
         },
       })
     }

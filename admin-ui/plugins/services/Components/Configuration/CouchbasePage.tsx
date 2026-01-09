@@ -10,13 +10,13 @@ import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useQueryClient } from '@tanstack/react-query'
 import { updateToast } from 'Redux/features/toastSlice'
+import { useGetPropertiesPersistence } from 'JansConfigApi'
 import {
   useGetConfigDatabaseCouchbase,
   usePutConfigDatabaseCouchbase,
-  useGetPropertiesPersistence,
   getGetConfigDatabaseCouchbaseQueryKey,
   type CouchbaseConfiguration,
-} from 'JansConfigApi'
+} from './couchbaseApiMocks'
 import { useCouchbaseAudit } from './hooks'
 import { isPersistenceInfo } from './types'
 

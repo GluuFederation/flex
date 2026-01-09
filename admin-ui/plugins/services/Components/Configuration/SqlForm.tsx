@@ -1,6 +1,5 @@
 import React, { useState, ReactElement } from 'react'
 import { useFormik, FormikContextType } from 'formik'
-import * as Yup from 'yup'
 import { Col, InputGroup, Form, FormGroup, Input } from 'Components'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
@@ -11,8 +10,9 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
 import customColors from '@/customColors'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import type { SqlConfiguration } from 'JansConfigApi'
+import type { SqlConfiguration } from './sqlApiMocks'
 import type { SqlFormProps } from './types'
+import { sqlConfigurationSchema } from './utils/validations'
 
 function SqlForm({ item, handleSubmit, isLoading = false }: SqlFormProps): ReactElement {
   const { t } = useTranslation()
@@ -29,23 +29,7 @@ function SqlForm({ item, handleSubmit, isLoading = false }: SqlFormProps): React
     setModal(!modal)
   }
 
-  const validationSchema = Yup.object({
-    configId: Yup.string()
-      .min(2, t('messages.min_characters', { count: 2 }))
-      .required(t('messages.field_required')),
-    userName: Yup.string()
-      .min(2, t('messages.min_characters', { count: 2 }))
-      .required(t('messages.field_required')),
-    userPassword: Yup.string()
-      .min(2, t('messages.min_characters', { count: 2 }))
-      .required(t('messages.field_required')),
-    connectionUri: Yup.array().required(t('messages.field_required')),
-    schemaName: Yup.string()
-      .min(2, t('messages.min_characters', { count: 2 }))
-      .required(t('messages.field_required')),
-  })
-
-  const formik = useFormik({
+  const formik = useFormik<SqlConfiguration>({
     initialValues: {
       configId: item.configId || '',
       userName: item.userName || '',
@@ -59,7 +43,9 @@ function SqlForm({ item, handleSubmit, isLoading = false }: SqlFormProps): React
       enabled: item.enabled || false,
     },
     enableReinitialize: true,
-    validationSchema,
+    validationSchema: sqlConfigurationSchema,
+    validateOnChange: true,
+    validateOnBlur: true,
     onSubmit: (values) => {
       const result: SqlConfiguration = { ...item, ...values }
       const reqBody = { sql: result }
@@ -82,6 +68,7 @@ function SqlForm({ item, handleSubmit, isLoading = false }: SqlFormProps): React
               {item.configId ? (
                 <Input
                   valid={!formik.errors.configId && !formik.touched.configId && init}
+                  invalid={!!formik.errors.configId && formik.touched.configId}
                   placeholder={t('placeholders.sql_config_name')}
                   id="configId"
                   name="configId"
@@ -89,16 +76,19 @@ function SqlForm({ item, handleSubmit, isLoading = false }: SqlFormProps): React
                   disabled
                   onKeyUp={activateValidation}
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
               ) : (
                 <Input
                   valid={!formik.errors.configId && !formik.touched.configId && init}
+                  invalid={!!formik.errors.configId && formik.touched.configId}
                   placeholder={t('placeholders.sql_config_name')}
                   id="configId"
                   name="configId"
                   defaultValue={item.configId}
                   onKeyUp={activateValidation}
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
               )}
               {formik.errors.configId && formik.touched.configId ? (
@@ -115,10 +105,12 @@ function SqlForm({ item, handleSubmit, isLoading = false }: SqlFormProps): React
                 placeholder={t('placeholders.sql_username')}
                 id="userName"
                 valid={!formik.errors.userName && !formik.touched.userName && init}
+                invalid={!!formik.errors.userName && formik.touched.userName}
                 name="userName"
                 defaultValue={item.userName}
                 onKeyUp={activateValidation}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
               {formik.errors.userName && formik.touched.userName ? (
                 <div style={{ color: customColors.accentRed }}>{formik.errors.userName}</div>
@@ -134,11 +126,13 @@ function SqlForm({ item, handleSubmit, isLoading = false }: SqlFormProps): React
                 <Input
                   placeholder={t('placeholders.sql_password')}
                   valid={!formik.errors.userPassword && !formik.touched.userPassword && init}
+                  invalid={!!formik.errors.userPassword && formik.touched.userPassword}
                   onKeyUp={activateValidation}
                   id="userPassword"
                   type="password"
                   defaultValue={item.userPassword}
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
               </InputGroup>
               {formik.errors.userPassword && formik.touched.userPassword ? (
@@ -175,10 +169,12 @@ function SqlForm({ item, handleSubmit, isLoading = false }: SqlFormProps): React
                 placeholder={t('placeholders.sql_schemaname')}
                 id="schemaName"
                 valid={!formik.errors.schemaName && !formik.touched.schemaName && init}
+                invalid={!!formik.errors.schemaName && formik.touched.schemaName}
                 name="schemaName"
                 defaultValue={item.schemaName}
                 onKeyUp={activateValidation}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
               {formik.errors.schemaName && formik.touched.schemaName ? (
                 <div style={{ color: customColors.accentRed }}>{formik.errors.schemaName}</div>

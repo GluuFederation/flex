@@ -39,7 +39,7 @@ export default function BlockUi(props) {
       ) {
         setFocused(safeActiveElement())
         if (focused && focused !== document.body) {
-          ;(window.setImmediate || setTimeout)(
+          (window.setImmediate || setTimeout)(
             () => focused && typeof focused.blur === 'function' && focused.blur(),
           )
         }

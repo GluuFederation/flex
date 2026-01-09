@@ -7,9 +7,8 @@ import { useQueryClient } from '@tanstack/react-query'
 import { updateToast } from 'Redux/features/toastSlice'
 import {
   usePostConfigDatabaseSql,
-  getGetConfigDatabaseSqlQueryKey,
   type SqlConfiguration,
-} from 'JansConfigApi'
+} from './sqlApiMocks'
 import { useSqlAudit } from './hooks'
 import { extractActionMessage } from './types'
 
@@ -24,7 +23,9 @@ function SqlAddPage(): ReactElement {
     mutation: {
       onSuccess: async (data, variables) => {
         dispatch(updateToast(true, 'success'))
-        queryClient.invalidateQueries({ queryKey: getGetConfigDatabaseSqlQueryKey() })
+        queryClient.invalidateQueries({ 
+          queryKey: ['/api/v1/config/database'] 
+        })
         try {
           await logSqlCreate(variables.data, actionMessageRef.current)
         } catch (error) {

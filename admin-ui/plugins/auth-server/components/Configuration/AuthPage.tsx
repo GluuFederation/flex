@@ -27,6 +27,7 @@ import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useAcrAudit } from '../AuthN/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import { toast } from 'react-toastify'
+import { useFormik, setIn } from 'formik'
 import {
   generateLabel,
   isRenamedKey,
@@ -128,6 +129,86 @@ const AuthPage: React.FC = () => {
     authorizeHelper(propertiesScopes)
   }, [authorizeHelper, propertiesScopes])
 
+  const validate = useCallback((values: AppConfiguration) => {
+    const errors: Record<string, string> = {}
+
+    if (!values || typeof values !== 'object') {
+      return errors
+    }
+
+    for (const key of Object.keys(values)) {
+      const fieldValue = values[key]
+
+      // Skip null/undefined/empty values
+      if (fieldValue === null || fieldValue === undefined || fieldValue === '') {
+        continue
+      }
+
+      const lowerName = key.toLowerCase()
+
+      // Validate URL fields
+      if (
+        lowerName.endsWith('endpoint') ||
+        lowerName.endsWith('uri') ||
+        lowerName.endsWith('url') ||
+        (lowerName.includes('url') && !lowerName.includes('curl')) ||
+        lowerName === 'issuer'
+      ) {
+        if (typeof fieldValue === 'string' && fieldValue.trim() !== '') {
+          try {
+            new URL(fieldValue)
+          } catch {
+            errors[key] = 'Invalid URL format'
+          }
+        }
+      }
+
+      // Validate number fields
+      if (
+        lowerName.includes('lifetime') ||
+        lowerName.includes('interval') ||
+        (lowerName.includes('time') &&
+          !lowerName.includes('endpoint') &&
+          !lowerName.includes('url')) ||
+        lowerName.includes('size') ||
+        lowerName.includes('count') ||
+        lowerName.includes('limit') ||
+        lowerName.includes('delay') ||
+        lowerName.includes('duration')
+      ) {
+        if (typeof fieldValue === 'string') {
+          const trimmed = fieldValue.trim()
+          if (trimmed !== '') {
+            const num = Number(trimmed)
+            if (isNaN(num) || !isFinite(num)) {
+              errors[key] = 'Must be a valid number'
+            } else if (num < 0) {
+              errors[key] = 'Must be non-negative'
+            }
+          }
+        } else if (typeof fieldValue === 'number') {
+          if (fieldValue < 0) {
+            errors[key] = 'Must be non-negative'
+          }
+        }
+      }
+    }
+
+    return errors
+  }, [])
+
+  const formik = useFormik<AppConfiguration>({
+    initialValues: configuration || {},
+    validate,
+    enableReinitialize: true,
+    validateOnChange: true,
+    validateOnBlur: true,
+    validateOnMount: false,
+    onSubmit: () => {
+      // Form submission is handled by handleSubmit wrapper
+    },
+  })
+
   useEffect(() => {
     const configChanged =
       previousConfigurationRef.current === null ||
@@ -141,10 +222,15 @@ const AuthPage: React.FC = () => {
         previousConfigurationRef.current = JSON.parse(
           JSON.stringify(configuration),
         ) as AppConfiguration
+        formik.resetForm({
+          values: configuration,
+          touched: {},
+          errors: {},
+        })
         setResetKey((prev) => prev + 1)
       }
     }
-  }, [configuration, patches.length])
+  }, [configuration, patches.length, formik])
 
   const authScripts: string[] = scripts
     .filter((item: Script) => item.scriptType === 'person_authentication')
@@ -188,11 +274,29 @@ const AuthPage: React.FC = () => {
     return [...patchOperations, ...putOperations]
   }, [patches, put])
 
-  const patchHandler = useCallback((patch: JsonPatch) => {
-    setPatches((existingPatches) => {
-      return [...existingPatches, patch]
-    })
-  }, [])
+  const patchHandler = useCallback(
+    (patch: JsonPatch) => {
+      if (patch.op === 'replace' && patch.path) {
+        const fieldPath = typeof patch.path === 'string' ? patch.path.replace(/^\//, '') : ''
+        const formikPath = fieldPath.replace(/\//g, '.')
+
+        formik.setFieldValue(formikPath, patch.value, false)
+        formik.setTouched(setIn(formik.touched, formikPath, true), false)
+
+        // Use validateForm() instead of validateField() because we use custom validate function
+        setTimeout(() => {
+          formik.validateForm()
+        }, 0)
+      }
+
+      setPatches((existingPatches) => {
+        // Replace existing patch for the same path instead of adding duplicates
+        const filteredPatches = existingPatches.filter((p) => p.path !== patch.path)
+        return [...filteredPatches, patch]
+      })
+    },
+    [formik.setFieldValue, formik.setTouched, formik.touched, formik.validateForm],
+  )
 
   const putHandler = useCallback(
     (putData: { value: string | string[]; path: string; op: 'replace' }) => {
@@ -219,12 +323,20 @@ const AuthPage: React.FC = () => {
     setPut(null)
     setResetKey((prev) => prev + 1)
     setErrorMessage(null)
+    // Reset to baseline configuration - components will re-render with original values
     if (baselineConfigurationRef.current) {
       previousConfigurationRef.current = JSON.parse(
         JSON.stringify(baselineConfigurationRef.current),
       ) as AppConfiguration
+      formik.resetForm({
+        values: baselineConfigurationRef.current,
+        touched: {},
+        errors: {},
+      })
     }
-  }, [])
+    // Refetch to ensure we have the latest server state
+    dispatch(getJsonConfig())
+  }, [dispatch, formik])
 
   const handleSubmit = useCallback(
     async (message: string) => {
@@ -342,6 +454,8 @@ const AuthPage: React.FC = () => {
                           lSize={lSize}
                           handler={patchHandler}
                           schema={schema[propKey] as SchemaProperty}
+                          errors={formik.errors}
+                          touched={formik.touched}
                         />
                       )
                     }
@@ -359,6 +473,8 @@ const AuthPage: React.FC = () => {
                         lSize={lSize}
                         schema={schema[propKey] as SchemaProperty}
                         handler={patchHandler}
+                        errors={formik.errors}
+                        touched={formik.touched}
                       />
                     )
                   }

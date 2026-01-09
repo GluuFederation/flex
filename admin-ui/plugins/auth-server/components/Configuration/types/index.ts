@@ -44,6 +44,8 @@ export interface JsonPropertyBuilderProps {
   parentIsArray?: boolean
   schema?: SchemaProperty
   isRenamedKey?: boolean
+  errors?: Record<string, unknown>
+  touched?: Record<string, boolean | undefined>
 }
 
 export interface DefaultAcrInputOption {
