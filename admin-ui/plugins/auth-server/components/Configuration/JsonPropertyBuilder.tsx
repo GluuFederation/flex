@@ -68,28 +68,40 @@ const JsonPropertyBuilder = ({
 
   const path = initialPath ? `${initialPath}/${propKey}` : `/${propKey}`
 
-  const formikPath = useMemo(() => {
-    if (!path || path === '/') return propKey
-    const normalized = path.replace(/^\//, '').replace(/\//g, '.')
-    return normalized || propKey
+  const formikPathSegments = useMemo(() => {
+    if (!path || path === '/') return [propKey]
+    const trimmed = path.replace(/^\//, '')
+    if (!trimmed) return [propKey]
+    return trimmed.split('/')
   }, [path, propKey])
 
   const fieldError = useMemo(() => {
     if (!errors) return undefined
-    return errors[propKey] || getIn(errors, formikPath)
-  }, [errors, formikPath, propKey])
+    return getIn(errors, formikPathSegments)
+  }, [errors, formikPathSegments])
 
   const fieldTouched = useMemo(() => {
     if (!touched) return false
-    return touched[propKey] === true || getIn(touched, formikPath) === true
-  }, [touched, formikPath, propKey])
+    return getIn(touched, formikPathSegments) === true
+  }, [touched, formikPathSegments])
 
   const renderError = useCallback(() => {
     if (!fieldTouched) return null
     if (!fieldError) return null
-    if (typeof fieldError === 'object' && fieldError !== null) return null
 
-    const errorMessage = String(fieldError)
+    let errorMessage: string | null = null
+
+    if (Array.isArray(fieldError)) {
+      const firstScalar = fieldError.find((item) => typeof item === 'string' && item.trim() !== '')
+      errorMessage = firstScalar || null
+    } else if (typeof fieldError === 'string') {
+      errorMessage = fieldError
+    } else if (typeof fieldError === 'object' && fieldError !== null) {
+      return null
+    } else {
+      errorMessage = String(fieldError)
+    }
+
     if (!errorMessage || errorMessage.trim() === '') return null
 
     return (

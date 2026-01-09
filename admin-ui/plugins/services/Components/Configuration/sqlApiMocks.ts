@@ -37,6 +37,25 @@ function throwIfMocksInProduction(): void {
   }
 }
 
+/**
+ * Factory to create standardized mutation error handlers.
+ * Reduces duplication across POST/PUT/DELETE hooks.
+ */
+function createMutationErrorHandler<TVariables>(
+  dispatch: ReturnType<typeof useDispatch>,
+  defaultMessage: string,
+  logPrefix: string,
+  onErrorCallback?: (error: Error, variables: TVariables) => void,
+): (error: Error, variables: TVariables) => void {
+  return (error, variables) => {
+    const errorMessage = error instanceof Error ? error.message : defaultMessage
+    dispatch(updateToast(true, 'error', errorMessage))
+    // eslint-disable-next-line no-console
+    console.error(`[SQL API] ${logPrefix} error:`, error)
+    onErrorCallback?.(error, variables)
+  }
+}
+
 export interface SqlConfiguration {
   configId?: string | null
   userName?: string | null
@@ -134,14 +153,12 @@ export const usePostConfigDatabaseSql = (options?: {
       queryClient.invalidateQueries({ queryKey: getGetConfigDatabaseSqlQueryKey() })
       options?.mutation?.onSuccess?.(data, variables)
     },
-    onError: (error, variables) => {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Failed to create SQL configuration'
-      dispatch(updateToast(true, 'error', errorMessage))
-      // eslint-disable-next-line no-console
-      console.error('[SQL API] POST error:', error)
-      options?.mutation?.onError?.(error, variables)
-    },
+    onError: createMutationErrorHandler<{ data: SqlConfiguration }>(
+      dispatch,
+      'Failed to create SQL configuration',
+      'POST',
+      options?.mutation?.onError,
+    ),
   })
 }
 
@@ -185,14 +202,12 @@ export const usePutConfigDatabaseSql = (options?: {
       queryClient.invalidateQueries({ queryKey: getGetConfigDatabaseSqlQueryKey() })
       options?.mutation?.onSuccess?.(data, variables)
     },
-    onError: (error, variables) => {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Failed to update SQL configuration'
-      dispatch(updateToast(true, 'error', errorMessage))
-      // eslint-disable-next-line no-console
-      console.error('[SQL API] PUT error:', error)
-      options?.mutation?.onError?.(error, variables)
-    },
+    onError: createMutationErrorHandler<{ data: SqlConfiguration }>(
+      dispatch,
+      'Failed to update SQL configuration',
+      'PUT',
+      options?.mutation?.onError,
+    ),
   })
 }
 
@@ -236,14 +251,12 @@ export const useDeleteConfigDatabaseSqlByName = (options?: {
       queryClient.invalidateQueries({ queryKey: getGetConfigDatabaseSqlQueryKey() })
       options?.mutation?.onSuccess?.(data, variables)
     },
-    onError: (error, variables) => {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Failed to delete SQL configuration'
-      dispatch(updateToast(true, 'error', errorMessage))
-      // eslint-disable-next-line no-console
-      console.error('[SQL API] DELETE error:', error)
-      options?.mutation?.onError?.(error, variables)
-    },
+    onError: createMutationErrorHandler<{ name: string }>(
+      dispatch,
+      'Failed to delete SQL configuration',
+      'DELETE',
+      options?.mutation?.onError,
+    ),
   })
 }
 
@@ -285,10 +298,11 @@ export const usePostConfigDatabaseSqlTest = (options?: {
     onSuccess: (data, variables) => {
       options?.mutation?.onSuccess?.(data, variables)
     },
-    onError: (error, variables) => {
-      const errorMessage = error instanceof Error ? error.message : 'SQL connection test failed'
-      dispatch(updateToast(true, 'error', `SQL connection test failed: ${errorMessage}`))
-      options?.mutation?.onError?.(error, variables)
-    },
+    onError: createMutationErrorHandler<{ data: SqlConfiguration }>(
+      dispatch,
+      'SQL connection test failed',
+      'TEST',
+      options?.mutation?.onError,
+    ),
   })
 }

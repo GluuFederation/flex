@@ -49,7 +49,6 @@ const sqlConfigurationSchemaShape: Record<keyof SqlConfiguration, Yup.AnySchema>
         .transform((value) => (value === '' ? null : value))
         .test('valid-uri', 'Invalid JDBC or HTTP(S) connection URI format', (value) => {
           if (!value || typeof value !== 'string') return true
-          if (value === '') return true
           return JDBC_URI_PATTERN.test(value) || HTTP_URI_PATTERN.test(value)
         }),
     )
