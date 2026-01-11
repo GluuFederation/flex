@@ -43,6 +43,6 @@
     }
   ],
   "oidMacros": {
-    "jansAttr": "GluuFlexPublished:3"
+    "flexAttr": "GluuFlexPublished:3"
   }
 }
