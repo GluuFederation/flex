@@ -34,7 +34,7 @@
       "names": [
         "adminUISession"
       ],
-      "oid": "jansObjClass",
+      "oid": "flexObjClass",
       "sup": [
         "top"
       ],
@@ -42,6 +42,7 @@
     }
   ],
   "oidMacros": {
-    "flexAttr": "GluuFlexPublished:3"
+    "flexAttr": "GluuFlexPublished:3",
+    "flexObjClass": "jansPublished:4",
   }
 }
