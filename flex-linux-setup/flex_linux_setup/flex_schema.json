@@ -29,8 +29,7 @@
         "exp"
       ],
       "must": [
-        "objectclass",
-        "sid"
+        "objectclass"
       ],
       "names": [
         "adminUISession"
