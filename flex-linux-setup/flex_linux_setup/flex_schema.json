@@ -14,7 +14,7 @@
       "sql_types": {
         "mysql": {
           "type": "TEXT"
-         }
+        }
       }
     }
   ],
@@ -30,7 +30,8 @@
         "exp"
       ],
       "must": [
-        "objectclass"
+        "objectclass",
+        "sid"
       ],
       "names": [
         "adminUISession"
