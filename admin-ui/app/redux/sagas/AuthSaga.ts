@@ -110,6 +110,11 @@ function* getAPIAccessTokenWorker(jwt) {
 
         if (defaultToken) {
           yield put(createAdminUiSession({ ujwt: jwt.payload, apiProtectionToken: defaultToken }))
+        } else {
+          console.error('Failed to obtain API token for session creation')
+          yield put(
+            createAdminUiSessionResponse({ success: false, error: 'Failed to obtain API token' }),
+          )
         }
         return
       }
