@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { all, call, fork, put, select, takeEvery } from 'redux-saga/effects'
+import { all, call, fork, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import {
   getOAuth2ConfigResponse,
   getAPIAccessTokenResponse,
@@ -171,7 +171,7 @@ export function* putConfigWorkerWatcher() {
   yield takeEvery('auth/putConfigWorker', putConfigWorker)
 }
 export function* createAdminUiSessionWatcher() {
-  yield takeEvery('auth/createAdminUiSession', createAdminUiSessionWorker)
+  yield takeLatest('auth/createAdminUiSession', createAdminUiSessionWorker)
 }
 export function* deleteAdminUiSessionWatcher() {
   yield takeEvery('auth/deleteAdminUiSession', deleteAdminUiSessionWorker)
