@@ -17,7 +17,7 @@ function ByeBye() {
 
   useEffect(() => {
     const performLogout = async () => {
-      dispatch(setAuthState(false))
+      dispatch(setAuthState({ state: false }))
 
       if (hasSession) {
         try {

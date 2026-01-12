@@ -100,7 +100,10 @@ const authSlice = createSlice({
       _state,
       _action: PayloadAction<{ ujwt: string; apiProtectionToken: string }>,
     ) => {},
-    createAdminUiSessionResponse: (state, action: PayloadAction<{ success: boolean }>) => {
+    createAdminUiSessionResponse: (
+      state,
+      action: PayloadAction<{ success: boolean; error?: string }>,
+    ) => {
       if (action.payload?.success) {
         state.hasSession = true
       }

@@ -138,16 +138,17 @@ function* createAdminUiSessionWorker({ payload }) {
     yield put(createAdminUiSessionResponse({ success: true }))
   } catch (error) {
     console.log('Problems creating Admin UI session.', error)
-    yield put(createAdminUiSessionResponse({ success: false }))
+    yield put(createAdminUiSessionResponse({ success: false, error: error?.message }))
   }
 }
 
 function* deleteAdminUiSessionWorker() {
   try {
     yield call(deleteAdminUiSessionApi)
-    yield put(deleteAdminUiSessionResponse())
   } catch (error) {
     console.log('Problems deleting Admin UI session.', error)
+  } finally {
+    yield put(deleteAdminUiSessionResponse())
   }
 }
 
