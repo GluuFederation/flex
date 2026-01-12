@@ -2,6 +2,7 @@ import { select, put } from 'redux-saga/effects'
 import type { AuditLog, AuthState, RootState } from './types/audit'
 import { isFourZeroOneError } from '../../utils/TokenController'
 import { updateToast } from '../features/toastSlice'
+import { auditLogoutLogs } from '../features/sessionSlice'
 
 export function* initAudit(): Generator<any, AuditLog, any> {
   const auditlog: AuditLog = {}
@@ -19,6 +20,11 @@ export function* initAudit(): Generator<any, AuditLog, any> {
   return auditlog
 }
 
+export function* redirectToLogout(message = 'Session expired'): Generator<any, void, any> {
+  yield put(auditLogoutLogs({ message }))
+  window.location.href = '/logout'
+}
+
 export function* handleResponseError(
   error: unknown,
   options: {
@@ -34,8 +40,8 @@ export function* handleResponseError(
     yield put(clearDataAction)
   }
   if (isFourZeroOneError(error)) {
-    // Session expired - redirect to login
-    window.location.href = '/logout'
+    yield* redirectToLogout()
+    return
   }
 
   return error

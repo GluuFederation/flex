@@ -20,7 +20,7 @@ const initialState: AuthState = {
   },
   loadingConfig: false,
   idToken: null,
-  JwtToken: null,
+  jwtToken: null,
   userInum: null,
   isUserInfoFetched: false,
   hasSession: false,
@@ -30,6 +30,7 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    // Saga trigger action
     getOAuth2Config: (_state, _action: PayloadAction<any>) => {},
     setBackendStatus: (state, action: PayloadAction<BackendStatus>) => {
       state.backendStatus.active = action.payload.active
@@ -55,7 +56,7 @@ const authSlice = createSlice({
         ujwt?: string
         userinfo?: UserInfo
         idToken?: string
-        JwtToken?: string
+        jwtToken?: string
         isUserInfoFetched?: boolean
       }>,
     ) => {
@@ -63,7 +64,7 @@ const authSlice = createSlice({
         state.userinfo = action.payload.userinfo ?? null
         state.userinfo_jwt = action.payload.ujwt
         state.idToken = action.payload.idToken ?? null
-        state.JwtToken = action.payload.JwtToken ?? null
+        state.jwtToken = action.payload.jwtToken ?? null
         state.isUserInfoFetched = action.payload.isUserInfoFetched ?? false
         state.isAuthenticated = true
         state.userInum = action.payload?.userinfo?.inum ?? null

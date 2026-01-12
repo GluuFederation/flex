@@ -17,6 +17,7 @@ import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import AssetApi from '../api/AssetApi'
 import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
+import { redirectToLogout } from 'Redux/sagas/SagaUtils'
 import {
   CreateAssetSagaPayload,
   UpdateAssetSagaPayload,
@@ -34,7 +35,6 @@ import { getErrorMessage } from './types/common'
 import * as JansConfigApi from 'jans_config_api'
 import { initAudit } from 'Redux/sagas/SagaUtils'
 
-// Helper function to create AssetApi instance
 function* createAssetApi(): Generator<SelectEffect, AssetApi, string> {
   const issuer: string = yield select((state: AssetRootState) => state.authReducer.issuer)
   const api = new JansConfigApi.JansAssetsApi(getClient(JansConfigApi, null, issuer))
@@ -58,8 +58,8 @@ export function* getAllJansAssets({
     yield* errorToast(errMsg)
     yield put(getJansAssetResponse({ data: null }))
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -82,8 +82,8 @@ export function* getAssetServices({
     yield* errorToast(errMsg)
     yield put(getAssetServicesResponse({ data: null }))
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -106,8 +106,8 @@ export function* getAssetTypes({
     yield* errorToast(errMsg)
     yield put(getAssetTypesResponse({ data: null }))
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -123,7 +123,6 @@ export function* createJansAsset({
     const data: Document = yield call(
       { context: assetApi, fn: assetApi.createJansAsset },
       payload.action.action_data as AssetFormData,
-      null,
     )
     yield put(createJansAssetResponse({ data }))
     yield call(postUserAction, audit)
@@ -133,8 +132,8 @@ export function* createJansAsset({
     yield* errorToast(errMsg)
     yield put(createJansAssetResponse({ data: null }))
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -156,8 +155,8 @@ export function* deleteJansAsset({
     yield* errorToast(errMsg)
     yield put(deleteJansAssetResponse())
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -173,7 +172,6 @@ export function* updateJansAsset({
     const data: Document = yield call(
       { context: assetApi, fn: assetApi.updateJansAsset },
       payload.action.action_data as AssetFormData,
-      null,
     )
     yield put(updateJansAssetResponse({ data }))
     yield call(postUserAction, audit)
@@ -184,14 +182,13 @@ export function* updateJansAsset({
     yield* errorToast(errMsg)
     yield put(updateJansAssetResponse({ data: null }))
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }
 }
 
-// Helper function to show error toast
 function* errorToast(errMsg: string): Generator<PutEffect, void, void> {
   yield put(updateToast(true, 'error', errMsg))
 }

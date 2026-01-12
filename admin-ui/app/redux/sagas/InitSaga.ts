@@ -8,7 +8,7 @@ import {
   getClientsResponse,
 } from '../features/initSlice'
 import { postUserAction } from '../api/backend-api'
-import { initAudit } from '../sagas/SagaUtils'
+import { initAudit, redirectToLogout } from '../sagas/SagaUtils'
 import InitApi from '../api/InitApi'
 import { getClient } from '../api/base'
 const JansConfigApi = require('jans_config_api')
@@ -48,8 +48,8 @@ export function* getScripts({ payload }) {
   } catch (e) {
     yield put(getScriptsResponse(null))
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
   }
 }
@@ -66,8 +66,8 @@ export function* getClients({ payload }) {
   } catch (e) {
     yield put(getClientsResponse(null))
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
   }
 }
@@ -83,8 +83,8 @@ export function* getScopes({ payload }) {
   } catch (e) {
     yield put(getScopesResponse(null))
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
   }
 }
@@ -100,8 +100,8 @@ export function* getAttributes({ payload }) {
   } catch (e) {
     yield put(getAttributesResponse(null))
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
   }
 }

@@ -5,7 +5,7 @@ import { getMauResponse } from 'Plugins/admin/redux/features/mauSlice'
 import { postUserAction } from '../api/backend-api'
 import MauApi from '../api/MauApi'
 import { getClient } from '../api/base'
-import { initAudit } from '../sagas/SagaUtils'
+import { initAudit, redirectToLogout } from '../sagas/SagaUtils'
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {
@@ -27,8 +27,8 @@ export function* getMau({ payload }) {
   } catch (e) {
     yield put(getMauResponse(null))
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }

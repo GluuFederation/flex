@@ -22,7 +22,7 @@ export interface AuthState {
   userinfo: UserInfo | null
   userinfo_jwt: string | null
   idToken: string | null
-  JwtToken: string | null
+  jwtToken: string | null
   issuer: string | null
   permissions: string[]
   location: Location

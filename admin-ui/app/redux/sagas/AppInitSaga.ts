@@ -4,7 +4,7 @@ let appInitCompleted = false
 
 type AuthReducerShape = {
   hasSession?: boolean
-  JwtToken?: string | null
+  jwtToken?: string | null
   idToken?: string | null
   userinfo_jwt?: string | null
 }

@@ -2,10 +2,11 @@ import type { SagaIterator } from 'redux-saga'
 import { all, call, fork, put, select, takeLatest } from 'redux-saga/effects'
 import * as JansConfigApi from 'jans_config_api'
 import { handleTypedResponse } from 'Utils/ApiUtils'
-import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
+import { addAdditionalData } from 'Utils/TokenController'
 import { FETCH } from '../../audit/UserActionType'
 import { API_USERS } from '../../audit/Resources'
-import { initAudit } from 'Redux/sagas/SagaUtils'
+import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
+import { isFourZeroOneError } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
 import {
   setUserProfileDetails,
@@ -49,15 +50,14 @@ function* getProfileDetailsWorker({
   } catch (e) {
     yield put(setUserProfileDetails(null))
     if (isFourZeroOneError(e as { status?: number })) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
   } finally {
     yield put(checkIsLoadingDetails(false))
   }
 }
 
-//watcher sagas
 export function* getProfileDetailsWatcher(): SagaIterator {
   yield takeLatest(getProfileDetails, getProfileDetailsWorker)
 }

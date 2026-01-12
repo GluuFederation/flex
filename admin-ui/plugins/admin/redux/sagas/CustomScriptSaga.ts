@@ -33,10 +33,9 @@ import {
 import { getErrorMessage } from './types/common'
 
 import * as JansConfigApi from 'jans_config_api'
-import { initAudit } from 'Redux/sagas/SagaUtils'
+import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSaga'
 
-// Helper function to create ScriptApi instance
 function* createScriptApi(): Generator<SelectEffect, ScriptApi, string> {
   const issuer: string = yield select((state: CustomScriptRootState) => state.authReducer.issuer)
   const api = new JansConfigApi.CustomScriptsApi(getClient(JansConfigApi, null, issuer))
@@ -65,8 +64,8 @@ export function* getCustomScripts({
     yield* errorToast(errMsg)
     yield put(getCustomScriptsResponse({}))
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -90,8 +89,8 @@ export function* getScriptsByType({
     yield* errorToast(errMsg)
     yield put(getCustomScriptsResponse({}))
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -120,8 +119,8 @@ export function* addScript({
     yield* errorToast(errMsg)
     yield put(addCustomScriptResponse({}))
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -150,8 +149,8 @@ export function* editScript({
     yield* errorToast(errMsg)
     yield put(editCustomScriptResponse({}))
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -176,8 +175,8 @@ export function* deleteScript({
     yield* errorToast(errMsg)
     yield put(deleteCustomScriptResponse({}))
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -208,8 +207,8 @@ export function* getScriptTypes(): SagaIterator<ScriptType[] | unknown> {
     console.log('error in getting script-types: ', errMsg)
     yield put(setScriptTypes([]))
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   } finally {
@@ -217,12 +216,10 @@ export function* getScriptTypes(): SagaIterator<ScriptType[] | unknown> {
   }
 }
 
-// Helper function to show success toast
 function* successToast(): Generator<PutEffect, void, void> {
   yield put(updateToast(true, 'success'))
 }
 
-// Helper function to show error toast
 function* errorToast(errMsg: string): Generator<PutEffect, void, void> {
   yield put(updateToast(true, 'error', errMsg))
 }

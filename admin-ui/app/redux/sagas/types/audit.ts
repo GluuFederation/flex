@@ -12,7 +12,7 @@ export interface AuditLogHeaders {
 }
 
 export interface AuditLog {
-  headers: AuditLogHeaders
+  headers?: AuditLogHeaders
   client_id?: string
   ip_address?: string
   status?: string
@@ -34,7 +34,7 @@ export interface AuthState {
   userinfo_jwt: string | null
   issuer: string
   hasSession: boolean
-  JwtToken: string | null
+  jwtToken: string | null
 }
 
 export interface RootState {

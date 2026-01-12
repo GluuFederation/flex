@@ -7,13 +7,15 @@ export default class SsaApi {
 
   getAllSsa = ({ payload, authServerHost }) => {
     const { token } = payload
+    const headers = { 'Content-Type': 'application/json' }
+    if (token) {
+      headers['Authorization'] = 'Bearer ' + token
+    }
     return new Promise((resolve, reject) => {
       fetch(`${authServerHost}/jans-auth/restv1/ssa`, {
-        headers: {
-          'Authorization': 'Bearer ' + token,
-          'Content-Type': 'application/json',
-        },
+        headers,
         method: 'GET',
+        credentials: 'include',
       })
         .then((response) => response.json())
         .then((data) => {
@@ -26,14 +28,16 @@ export default class SsaApi {
   }
 
   createSsa = ({ payload, token, authServerHost }) => {
+    const headers = { 'Content-Type': 'application/json' }
+    if (token) {
+      headers['Authorization'] = 'Bearer ' + token
+    }
     return new Promise((resolve, reject) => {
       fetch(`${authServerHost}/jans-auth/restv1/ssa`, {
-        headers: {
-          'Authorization': 'Bearer ' + token,
-          'Content-Type': 'application/json',
-        },
+        headers,
         method: 'POST',
         body: JSON.stringify(payload),
+        credentials: 'include',
       })
         .then((response) => response.json())
         .then((data) => {
@@ -46,13 +50,15 @@ export default class SsaApi {
   }
 
   getSsaJwt = ({ jti, token, authServerHost }) => {
+    const headers = { 'Content-Type': 'application/json' }
+    if (token) {
+      headers['Authorization'] = 'Bearer ' + token
+    }
     return new Promise((resolve, reject) => {
       fetch(`${authServerHost}/jans-auth/restv1/ssa/jwt?jti=${encodeURIComponent(jti)}`, {
-        headers: {
-          'Authorization': 'Bearer ' + token,
-          'Content-Type': 'application/json',
-        },
+        headers,
         method: 'GET',
+        credentials: 'include',
       })
         .then((response) => response.json())
         .then((data) => {

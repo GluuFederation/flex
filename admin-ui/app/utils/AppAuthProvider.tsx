@@ -152,7 +152,7 @@ export default function AppAuthProvider(props) {
                   userinfo: jwtDecode(ujwt),
                   ujwt,
                   idToken,
-                  JwtToken: oauthAccessToken,
+                  jwtToken: oauthAccessToken,
                   isUserInfoFetched: true,
                 }),
               )
@@ -176,8 +176,10 @@ export default function AppAuthProvider(props) {
             return fetchApiAccessToken(ujwt)
           })
           .then((tokenResponse) => {
-            // fetch policy store using the token (session may not be created yet)
-            return fetchPolicyStore(tokenResponse?.access_token)
+            if (!tokenResponse || tokenResponse === -1) {
+              throw new Error('Failed to fetch API access token')
+            }
+            return fetchPolicyStore(tokenResponse.access_token)
           })
           .then((policyStoreResponse) => {
             const policyStoreJson = policyStoreResponse.data.responseObject

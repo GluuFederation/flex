@@ -6,7 +6,7 @@ import { FETCH, DELETION } from '../../../../app/audit/UserActionType'
 import SessionApi from '../api/SessionApi'
 import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
-import { initAudit } from 'Redux/sagas/SagaUtils'
+import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 import {
   handleRevokeSession,
   handleDeleteSession,
@@ -16,9 +16,7 @@ import {
 
 function* newFunction() {
   const issuer = yield select((state) => state.authReducer.issuer)
-  // Use null for token - HttpOnly session cookie handles auth
   const api = new JansConfigApi.AuthSessionManagementApi(getClient(JansConfigApi, null, issuer))
-
   return new SessionApi(api)
 }
 
@@ -37,8 +35,8 @@ export function* getSessions({ payload }) {
     console.error('SessionSaga: Error fetching sessions:', e)
     yield put(handleUpdateSessionsResponse({ data: [] }))
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -56,8 +54,8 @@ export function* searchSessions({ payload }) {
   } catch (e) {
     yield put(handleUpdateSessionsResponse({ data: null }))
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -75,8 +73,8 @@ export function* revokeSessionByUserDn({ payload }) {
   } catch (e) {
     yield put(handleRevokeSession({ data: null }))
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
   } finally {
     yield put(toggleLoader(false))
@@ -95,8 +93,8 @@ export function* deleteSessionById({ payload }) {
   } catch (e) {
     yield put(handleDeleteSession({ data: null }))
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
   } finally {
     yield put(toggleLoader(false))

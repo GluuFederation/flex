@@ -15,9 +15,9 @@ export const getClient = (JansConfigApi: any, r_token: any, r_issuer: any) => {
   if (hasSession) {
     defaultClient.enableCookies = true
     jansauth.accessToken = undefined
-  } else if (r_token) {
+  } else {
     defaultClient.enableCookies = false
-    jansauth.accessToken = r_token
+    jansauth.accessToken = r_token || undefined
   }
 
   const headers = {

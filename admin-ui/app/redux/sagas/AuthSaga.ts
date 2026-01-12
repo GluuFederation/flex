@@ -15,16 +15,17 @@ import {
   getUserIpAndLocation,
   fetchApiTokenWithDefaultScopes,
   putServerConfiguration,
-  createAdminUiSession,
-  deleteAdminUiSession,
+  createAdminUiSession as createAdminUiSessionApi,
+  deleteAdminUiSession as deleteAdminUiSessionApi,
 } from '../api/backend-api'
 import { updateToast } from 'Redux/features/toastSlice'
 import {
-  getAPIAccessToken,
+  createAdminUiSession,
   createAdminUiSessionResponse,
   deleteAdminUiSessionResponse,
 } from 'Redux/features/authSlice'
 import { isFourZeroOneError } from 'Utils/TokenController'
+import { redirectToLogout } from 'Redux/sagas/SagaUtils'
 
 function* getApiTokenWithDefaultScopes() {
   const response = yield call(fetchApiTokenWithDefaultScopes)
@@ -45,13 +46,10 @@ function* getApiTokenWithDefaultScopes() {
 
 function* getOAuth2ConfigWorker({ payload }) {
   try {
-    // Check if we have a session or a pre-login token
     const hasSession = yield select((state) => state.authReducer.hasSession)
 
-    // Pre-login: use provided token; Post-login: use session cookie
     let token = null
     if (!hasSession) {
-      // Get token from payload or fetch a new default token
       token = payload?.access_token
       if (!token) {
         token = yield* getApiTokenWithDefaultScopes()
@@ -72,13 +70,11 @@ function* getOAuth2ConfigWorker({ payload }) {
 
 export function* putConfigWorker({ payload }) {
   try {
-    // Extract metadata (if any) from payload
     const { _meta, ...configData } = payload
     const response = yield call(putServerConfiguration, { props: configData })
     if (response) {
       yield put(getOAuth2ConfigResponse({ config: response }))
 
-      // If cedarlingLogType changed, show specific toast; otherwise show generic success
       if (_meta?.cedarlingLogTypeChanged && _meta?.toastMessage) {
         yield put(updateToast(true, 'success', _meta.toastMessage))
       } else {
@@ -89,8 +85,8 @@ export function* putConfigWorker({ payload }) {
   } catch (error) {
     yield put(updateToast(true, 'error'))
     if (isFourZeroOneError(error)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return error
   } finally {
@@ -101,7 +97,6 @@ export function* putConfigWorker({ payload }) {
 function* getAPIAccessTokenWorker(jwt) {
   try {
     if (jwt) {
-      // Get API protection token with UJWT for permissions/scopes
       const response = yield call(fetchApiAccessToken, jwt.payload)
       if (response && response !== -1) {
         yield put(
@@ -111,17 +106,10 @@ function* getAPIAccessTokenWorker(jwt) {
           }),
         )
 
-        // Get token for one-time session creation
         const defaultToken = yield* getApiTokenWithDefaultScopes()
 
         if (defaultToken) {
-          try {
-            yield call(createAdminUiSession, jwt.payload, defaultToken)
-            yield put(createAdminUiSessionResponse({ success: true }))
-          } catch (sessionError) {
-            console.log('Problems creating Admin UI session.', sessionError)
-            throw sessionError
-          }
+          yield put(createAdminUiSession({ ujwt: jwt.payload, apiProtectionToken: defaultToken }))
         }
         return
       }
@@ -146,7 +134,7 @@ function* getLocationWorker() {
 function* createAdminUiSessionWorker({ payload }) {
   try {
     const { ujwt, apiProtectionToken } = payload
-    yield call(createAdminUiSession, ujwt, apiProtectionToken)
+    yield call(createAdminUiSessionApi, ujwt, apiProtectionToken)
     yield put(createAdminUiSessionResponse({ success: true }))
   } catch (error) {
     console.log('Problems creating Admin UI session.', error)
@@ -156,7 +144,7 @@ function* createAdminUiSessionWorker({ payload }) {
 
 function* deleteAdminUiSessionWorker() {
   try {
-    yield call(deleteAdminUiSession)
+    yield call(deleteAdminUiSessionApi)
     yield put(deleteAdminUiSessionResponse())
   } catch (error) {
     console.log('Problems deleting Admin UI session.', error)
@@ -164,7 +152,6 @@ function* deleteAdminUiSessionWorker() {
   }
 }
 
-//watcher sagas
 export function* getApiTokenWatcher() {
   yield takeEvery('auth/getAPIAccessToken', getAPIAccessTokenWorker)
 }
@@ -184,9 +171,7 @@ export function* createAdminUiSessionWatcher() {
 export function* deleteAdminUiSessionWatcher() {
   yield takeEvery('auth/deleteAdminUiSession', deleteAdminUiSessionWorker)
 }
-/**
- * Auth Root Saga
- */
+
 export default function* rootSaga() {
   yield all([
     fork(getOAuth2ConfigWatcher),

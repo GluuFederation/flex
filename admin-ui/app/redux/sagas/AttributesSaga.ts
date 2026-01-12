@@ -4,10 +4,9 @@ import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import { getAttributesResponseRoot, toggleInitAttributeLoader } from '../features/attributesSlice'
 import { postUserAction } from 'Redux/api/backend-api'
 import { FETCH } from '../../audit/UserActionType'
-// } from '../../../../app/audit/UserActionType'
 import AttributeApi from '../api/AttributeApi'
 import { getClient } from 'Redux/api/base'
-import { initAudit } from 'Redux/sagas/SagaUtils'
+import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 
 const PERSON_SCHEMA = 'person schema'
 
@@ -33,8 +32,8 @@ export function* getAttributesRoot({ payload }) {
   } catch (e) {
     yield put(getAttributesResponseRoot({ data: [] }))
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
   } finally {
     yield put(toggleInitAttributeLoader(false))

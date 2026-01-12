@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux'
 import type { SsaData, SsaJwtResponse, SsaCreatePayload } from '../types'
 
 interface AuthState {
-  JwtToken: string | null
+  jwtToken: string | null
   config: {
     authServerHost: string
   }
@@ -131,7 +131,7 @@ const getSsaJwt = async (
 }
 
 export const useGetAllSsas = (): UseQueryResult<SsaData[], Error> => {
-  const token = useSelector((state: RootState) => state.authReducer.JwtToken)
+  const token = useSelector((state: RootState) => state.authReducer.jwtToken)
   const authServerHost = useSelector((state: RootState) => state.authReducer.config.authServerHost)
 
   return useQuery<SsaData[], Error>({
@@ -152,7 +152,7 @@ export const useGetAllSsas = (): UseQueryResult<SsaData[], Error> => {
 }
 
 export const useCreateSsa = (): UseMutationResult<SsaData, Error, SsaCreatePayload, unknown> => {
-  const token = useSelector((state: RootState) => state.authReducer.JwtToken)
+  const token = useSelector((state: RootState) => state.authReducer.jwtToken)
   const authServerHost = useSelector((state: RootState) => state.authReducer.config.authServerHost)
   const queryClient = useQueryClient()
 
@@ -173,7 +173,7 @@ export const useCreateSsa = (): UseMutationResult<SsaData, Error, SsaCreatePaylo
 }
 
 export const useGetSsaJwt = (): UseMutationResult<SsaJwtResponse, Error, string, unknown> => {
-  const token = useSelector((state: RootState) => state.authReducer.JwtToken)
+  const token = useSelector((state: RootState) => state.authReducer.jwtToken)
   const authServerHost = useSelector((state: RootState) => state.authReducer.config.authServerHost)
 
   return useMutation<SsaJwtResponse, Error, string>({

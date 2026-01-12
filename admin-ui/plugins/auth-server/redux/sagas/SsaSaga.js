@@ -9,7 +9,7 @@ import {
   getSsaJwtResponse,
 } from '../features/SsaSlice'
 import { CREATE, DELETION } from '../../../../app/audit/UserActionType'
-import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
+import { initAudit, redirectToLogout } from '../../../../app/redux/sagas/SagaUtils'
 import { updateToast } from 'Redux/features/toastSlice'
 import { getClient } from '@/redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
@@ -18,7 +18,6 @@ const JansConfigApi = require('jans_config_api')
 
 function* createSsaApi() {
   const issuer = yield select((state) => state.authReducer.issuer)
-  // Use null for token - HttpOnly session cookie handles auth
   const api = new JansConfigApi.SoftwareStatementAssertionSSAApi(
     getClient(JansConfigApi, null, issuer),
   )
@@ -28,7 +27,6 @@ function* createSsaApi() {
 export function* getSsa() {
   const { authServerHost } = yield select((state) => state.authReducer.config)
   try {
-    // Use null for token - HttpOnly session cookie handles auth
     const data = yield call(new SsaApi().getAllSsa, { payload: { token: null }, authServerHost })
     if (!data?.error) {
       yield put(getSsaConfigResponse(data))
@@ -41,8 +39,8 @@ export function* getSsa() {
     yield put(getSsaConfigResponse([]))
     yield put(updateToast(true, 'error'))
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -51,7 +49,6 @@ export function* getSsa() {
 export function* getSsaJwt({ payload }) {
   const { authServerHost } = yield select((state) => state.authReducer.config)
   try {
-    // Use null for token - HttpOnly session cookie handles auth
     const data = yield call(new SsaApi().getSsaJwt, {
       jti: payload.action.action_data,
       token: null,
@@ -82,7 +79,6 @@ export function* addSsaConfig({ payload }) {
   }
   const { authServerHost } = yield select((state) => state.authReducer.config)
   try {
-    // Use null for token - HttpOnly session cookie handles auth
     const data = yield call(new SsaApi().createSsa, {
       payload: payload.action.action_data,
       token: null,
@@ -97,8 +93,8 @@ export function* addSsaConfig({ payload }) {
     return payload.action.action_data
   } catch (e) {
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -109,7 +105,6 @@ export function* removeSsaConfig({ payload }) {
   addAdditionalData(audit, DELETION, 'delete-ssa', payload)
   try {
     const ssaApi = yield* createSsaApi()
-    // Use null for token - HttpOnly session cookie handles auth
     const data = yield call(ssaApi.removeSsa, {
       jti: payload.action.action_data,
       authorization: null,
@@ -122,8 +117,8 @@ export function* removeSsaConfig({ payload }) {
     yield put(updateToast(true, 'error'))
     yield put(removeSsaResponse())
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }

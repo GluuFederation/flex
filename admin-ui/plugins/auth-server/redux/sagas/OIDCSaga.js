@@ -17,20 +17,18 @@ import { CREATE, UPDATE, DELETION, FETCH } from '../../../../app/audit/UserActio
 import OIDCApi from '../api/OIDCApi'
 import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
-import { initAudit } from 'Redux/sagas/SagaUtils'
+import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSaga'
 import TokenApi from '../api/TokenApi'
 
 function* newFunction() {
   const issuer = yield select((state) => state.authReducer.issuer)
-  // Use null for token - HttpOnly session cookie handles auth
   const api = new JansConfigApi.OAuthOpenIDConnectClientsApi(getClient(JansConfigApi, null, issuer))
   return new OIDCApi(api)
 }
 
 function* newTokenFunction() {
   const issuer = yield select((state) => state.authReducer.issuer)
-  // Use null for token - HttpOnly session cookie handles auth
   const api = new JansConfigApi.TokenApi(getClient(JansConfigApi, null, issuer))
   return new TokenApi(api)
 }
@@ -49,8 +47,8 @@ export function* getOauthOpenidClients({ payload }) {
     yield put(updateToast(true, 'error'))
     yield put(getOpenidClientsResponse({ data: null }))
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
   }
 }
@@ -70,8 +68,8 @@ export function* addNewClient({ payload }) {
     yield put(updateToast(true, 'error'))
     yield put(addClientResponse(null))
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -94,8 +92,8 @@ export function* editAClient({ payload }) {
     yield put(updateToast(true, 'error'))
     yield put(editClientResponse(null))
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -117,8 +115,8 @@ export function* deleteAClient({ payload }) {
     yield put(updateToast(true, 'error'))
     yield put(deleteClientResponse(null))
     if (isFourZeroOneError(e)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
   }
 }
@@ -143,8 +141,8 @@ export function* getOpenidClientTokens({ payload }) {
     yield put(getTokenByClientResponse(null))
 
     if (isFourZeroOneError(error)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
   }
 }
@@ -159,8 +157,8 @@ export function* deleteClientToken({ payload }) {
     yield put(updateToast(true, 'error'))
     yield put(deleteClientTokenResponse())
     if (isFourZeroOneError(error)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
   }
 }

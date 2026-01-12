@@ -33,7 +33,7 @@ import WebhookApi from '../api/WebhookApi'
 import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
 const JansConfigApi = require('jans_config_api')
-import { initAudit } from 'Redux/sagas/SagaUtils'
+import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 import { webhookOutputObject } from 'Plugins/admin/helper/utils'
 import {
   RootState,
@@ -77,8 +77,8 @@ export function* getWebhooks({
     )
     yield put(getWebhookResponse({ data: null }))
     if (isFourZeroOneError(error)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return error
   }
@@ -108,8 +108,8 @@ export function* createWebhook({
     )
     yield put(createWebhookResponse({ data: null }))
     if (isFourZeroOneError(error)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return error
   }
@@ -140,8 +140,8 @@ export function* deleteWebhook({
     )
     yield put(deleteWebhookResponse())
     if (isFourZeroOneError(error)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return error
   }
@@ -172,8 +172,8 @@ export function* updateWebhook({
     )
     yield put(updateWebhookResponse({ data: null }))
     if (isFourZeroOneError(error)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return error
   }
@@ -200,8 +200,8 @@ export function* getFeatures(): Generator<CallEffect | PutEffect | SelectEffect,
     )
     yield put(getFeaturesResponse([]))
     if (isFourZeroOneError(error)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return error
   }
@@ -232,8 +232,8 @@ export function* getFeaturesByWebhookId({
     )
     yield put(getFeaturesByWebhookIdResponse([]))
     if (isFourZeroOneError(error)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return error
   }
@@ -267,8 +267,8 @@ export function* getWebhooksByFeatureId({
     )
     yield put(getWebhooksByFeatureIdResponse([]))
     if (isFourZeroOneError(error)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return error
   }
@@ -354,8 +354,8 @@ export function* triggerWebhook({
       ),
     )
     if (isFourZeroOneError(error)) {
-      // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     addAdditionalData(audit, FETCH, `/webhook/${payload}`, {
       action: { action_data: { error: error, success: false } },
