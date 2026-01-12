@@ -27,6 +27,8 @@ import {
 import { isFourZeroOneError } from 'Utils/TokenController'
 import { redirectToLogout } from 'Redux/sagas/SagaUtils'
 
+const API_ERROR_RESPONSE = -1
+
 function* getApiTokenWithDefaultScopes() {
   const response = yield call(fetchApiTokenWithDefaultScopes)
 
@@ -57,13 +59,17 @@ function* getOAuth2ConfigWorker({ payload }) {
     }
 
     const response = yield call(fetchServerConfiguration, token)
-    if (response && response !== -1) {
+    if (response && response !== API_ERROR_RESPONSE) {
       localStorage.setItem('postLogoutRedirectUri', response.postLogoutRedirectUri)
       yield put(getOAuth2ConfigResponse({ config: response }))
       return
     }
   } catch (error) {
     console.error('Problems getting OAuth2 configuration.', error?.response?.data || error)
+    if (isFourZeroOneError(error)) {
+      yield* redirectToLogout()
+      return
+    }
   }
   yield put(getOAuth2ConfigResponse())
 }
@@ -98,7 +104,7 @@ function* getAPIAccessTokenWorker(jwt) {
   try {
     if (jwt) {
       const response = yield call(fetchApiAccessToken, jwt.payload)
-      if (response && response !== -1) {
+      if (response && response !== API_ERROR_RESPONSE) {
         yield put(
           getAPIAccessTokenResponse({
             scopes: response.scopes,
@@ -121,6 +127,10 @@ function* getAPIAccessTokenWorker(jwt) {
     }
   } catch (error) {
     console.error('Problems getting API Access Token.', error?.response?.data || error)
+    if (isFourZeroOneError(error)) {
+      yield* redirectToLogout()
+      return
+    }
   }
 }
 
@@ -145,6 +155,10 @@ function* createAdminUiSessionWorker({ payload }) {
     const errorMessage =
       error?.response?.data?.message || error?.response?.data?.responseMessage || error?.message
     console.error('Problems creating Admin UI session.', error?.response?.data || error)
+    if (isFourZeroOneError(error)) {
+      yield* redirectToLogout()
+      return
+    }
     yield put(createAdminUiSessionResponse({ success: false, error: errorMessage }))
   }
 }
