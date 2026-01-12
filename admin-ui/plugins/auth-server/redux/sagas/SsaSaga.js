@@ -107,7 +107,6 @@ export function* removeSsaConfig({ payload }) {
     const ssaApi = yield* createSsaApi()
     const data = yield call(ssaApi.removeSsa, {
       jti: payload.action.action_data,
-      authorization: null,
     })
     yield put(updateToast(true, 'success'))
     yield put(getSsaConfig())

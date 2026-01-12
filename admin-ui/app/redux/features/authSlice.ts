@@ -106,9 +106,7 @@ const authSlice = createSlice({
       }
     },
     deleteAdminUiSession: (_state) => {},
-    deleteAdminUiSessionResponse: (state) => {
-      state.hasSession = false
-    },
+    deleteAdminUiSessionResponse: () => initialState,
   },
 })
 

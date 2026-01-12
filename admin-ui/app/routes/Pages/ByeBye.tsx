@@ -40,6 +40,7 @@ function ByeBye() {
     }
 
     performLogout()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

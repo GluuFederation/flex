@@ -176,7 +176,7 @@ export default function AppAuthProvider(props) {
             return fetchApiAccessToken(ujwt)
           })
           .then((tokenResponse) => {
-            if (!tokenResponse || tokenResponse === -1) {
+            if (!tokenResponse || tokenResponse === -1 || !tokenResponse.access_token) {
               throw new Error('Failed to fetch API access token')
             }
             return fetchPolicyStore(tokenResponse.access_token)

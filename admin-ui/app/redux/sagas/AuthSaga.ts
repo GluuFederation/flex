@@ -148,7 +148,6 @@ function* deleteAdminUiSessionWorker() {
     yield put(deleteAdminUiSessionResponse())
   } catch (error) {
     console.log('Problems deleting Admin UI session.', error)
-    yield put(deleteAdminUiSessionResponse())
   }
 }
 
