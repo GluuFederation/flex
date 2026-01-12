@@ -93,14 +93,6 @@ export const LDAP_READ = BASE_URL + '/config/database/ldap.readonly'
 export const LDAP_WRITE = BASE_URL + '/config/database/ldap.write'
 export const LDAP_DELETE = BASE_URL + '/config/database/ldap.delete'
 
-export const COUCHBASE_READ = BASE_URL + '/config/database/couchbase.readonly'
-export const COUCHBASE_WRITE = BASE_URL + '/config/database/couchbase.write'
-export const COUCHBASE_DELETE = BASE_URL + '/config/database/couchbase.delete'
-
-export const SQL_READ = BASE_URL + '/config/database/sql.readonly'
-export const SQL_WRITE = BASE_URL + '/config/database/sql.write'
-export const SQL_DELETE = BASE_URL + '/config/database/sql.delete'
-
 export const PERSISTENCE_DETAIL = BASE_URL + '/jans-auth-server/config/properties.readonly'
 
 export const STAT_READ = BASE_URL + '/config/stats.readonly'
