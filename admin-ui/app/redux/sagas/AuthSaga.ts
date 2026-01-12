@@ -63,7 +63,7 @@ function* getOAuth2ConfigWorker({ payload }) {
       return
     }
   } catch (error) {
-    console.log('Problems getting OAuth2 configuration.', error)
+    console.error('Problems getting OAuth2 configuration.', error?.response?.data || error)
   }
   yield put(getOAuth2ConfigResponse())
 }
@@ -120,7 +120,7 @@ function* getAPIAccessTokenWorker(jwt) {
       }
     }
   } catch (error) {
-    console.log('Problems getting API Access Token.', error)
+    console.error('Problems getting API Access Token.', error?.response?.data || error)
   }
 }
 
@@ -132,7 +132,7 @@ function* getLocationWorker() {
       return
     }
   } catch (error) {
-    console.log('Problem getting user location.', error)
+    console.error('Problem getting user location.', error?.response?.data || error)
   }
 }
 
@@ -142,8 +142,10 @@ function* createAdminUiSessionWorker({ payload }) {
     yield call(createAdminUiSessionApi, ujwt, apiProtectionToken)
     yield put(createAdminUiSessionResponse({ success: true }))
   } catch (error) {
-    console.log('Problems creating Admin UI session.', error)
-    yield put(createAdminUiSessionResponse({ success: false, error: error?.message }))
+    const errorMessage =
+      error?.response?.data?.message || error?.response?.data?.responseMessage || error?.message
+    console.error('Problems creating Admin UI session.', error?.response?.data || error)
+    yield put(createAdminUiSessionResponse({ success: false, error: errorMessage }))
   }
 }
 
@@ -151,7 +153,7 @@ function* deleteAdminUiSessionWorker() {
   try {
     yield call(deleteAdminUiSessionApi)
   } catch (error) {
-    console.log('Problems deleting Admin UI session.', error)
+    console.error('Problems deleting Admin UI session.', error?.response?.data || error)
   } finally {
     yield put(deleteAdminUiSessionResponse())
   }
