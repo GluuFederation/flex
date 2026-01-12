@@ -19,7 +19,6 @@ function ByeBye() {
     const performLogout = async () => {
       dispatch(setAuthState(false))
 
-      // Delete admin UI session if it exists
       if (hasSession) {
         try {
           await deleteSession()
