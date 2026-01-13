@@ -96,7 +96,13 @@ export const fetchPolicyStore = (token?: string) => {
   const config = token
     ? { headers: { Authorization: `Bearer ${token}` } }
     : { withCredentials: true }
-  return axios.get('/admin-ui/security/policyStore', config)
+  return axios
+    .get('/admin-ui/security/policyStore', config)
+    .then((response) => response)
+    .catch((error) => {
+      console.error('Problems fetching policy store.', error)
+      throw error
+    })
 }
 
 // Create Admin UI session using UJWT
