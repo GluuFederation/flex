@@ -2,12 +2,13 @@ import React, { useContext, useEffect, useCallback, useMemo } from 'react'
 import { Container, Row, Col, Card, CardBody, Button, Badge, AvatarImage } from 'Components'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from '../Gluu/GluuErrorFallBack'
+import GluuLoader from '../Gluu/GluuLoader'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from '../../../context/theme/themeContext'
 import SetTitle from 'Utils/SetTitle'
 import styles from './styles'
-import { Box, Divider, Skeleton } from '@mui/material'
+import { Box, Divider } from '@mui/material'
 import { getProfileDetails } from 'Redux/features/ProfileDetailsSlice'
 import { randomAvatar } from '../../../utilities'
 import getThemeColor from '../../../context/theme/config'
@@ -26,7 +27,6 @@ const ProfileDetails: React.FC = () => {
   const { classes } = styles()
   const { navigateToRoute } = useAppNavigation()
 
-  // Set page title
   SetTitle(t('titles.profile_detail'))
 
   const { loading, profileDetails } = useSelector(
@@ -90,37 +90,21 @@ const ProfileDetails: React.FC = () => {
 
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
-      <Container>
-        <Row className={classes.centerCard}>
-          <Col xs={10} md={8} lg={5}>
-            <Card className="" type="" color={null}>
-              <CardBody className={classes.profileCard}>
-                <React.Fragment>
-                  <Box className={`${classes.avatar_wrapper} d-flex justify-content-center my-3`}>
-                    <AvatarImage size="lg" src={avatarSrc} />
-                  </Box>
-                  <Box display={'flex'} flexDirection={'column'} gap={2}>
-                    <Box display={'flex'} flexDirection={'column'} gap={1}>
-                      {loading ? (
-                        <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                          <Skeleton
-                            width={'45%'}
-                            sx={{
-                              display: 'flex',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                            }}
-                            animation="wave"
-                          />
-                        </Box>
-                      ) : (
+      <GluuLoader blocking={loading}>
+        <Container>
+          <Row className={classes.centerCard}>
+            <Col xs={10} md={8} lg={5}>
+              <Card className="" type="" color={null}>
+                <CardBody className={classes.profileCard}>
+                  <React.Fragment>
+                    <Box className={`${classes.avatar_wrapper} d-flex justify-content-center my-3`}>
+                      <AvatarImage size="lg" src={avatarSrc} />
+                    </Box>
+                    <Box display={'flex'} flexDirection={'column'} gap={2}>
+                      <Box display={'flex'} flexDirection={'column'} gap={1}>
                         <Box fontWeight={700} fontSize={'16px'} className="text-center mb-4">
                           {profileDetails?.displayName}
                         </Box>
-                      )}
-                      {loading ? (
-                        <Skeleton animation="wave" />
-                      ) : (
                         <Box
                           display={'flex'}
                           justifyContent={'space-between'}
@@ -130,11 +114,7 @@ const ProfileDetails: React.FC = () => {
                           <Box fontWeight={700}>First Name</Box>
                           <Box>{profileDetails?.givenName}</Box>
                         </Box>
-                      )}
-                      <Divider />
-                      {loading ? (
-                        <Skeleton animation="wave" />
-                      ) : (
+                        <Divider />
                         <Box
                           display={'flex'}
                           justifyContent={'space-between'}
@@ -144,11 +124,7 @@ const ProfileDetails: React.FC = () => {
                           <Box fontWeight={700}>Last Name</Box>
                           <Box>{userinfo?.family_name}</Box>
                         </Box>
-                      )}
-                      <Divider />
-                      {loading ? (
-                        <Skeleton animation="wave" />
-                      ) : (
+                        <Divider />
                         <Box
                           display={'flex'}
                           justifyContent={'space-between'}
@@ -158,11 +134,7 @@ const ProfileDetails: React.FC = () => {
                           <Box fontWeight={700}>Email</Box>
                           <Box>{profileDetails?.mail}</Box>
                         </Box>
-                      )}
-                      <Divider />
-                      {loading ? (
-                        <Skeleton animation="wave" />
-                      ) : (
+                        <Divider />
                         <Box
                           display={'flex'}
                           justifyContent={'space-between'}
@@ -183,11 +155,7 @@ const ProfileDetails: React.FC = () => {
                             </Box>
                           )}
                         </Box>
-                      )}
-                      <Divider />
-                      {loading ? (
-                        <Skeleton animation="wave" />
-                      ) : (
+                        <Divider />
                         <Box
                           display={'flex'}
                           justifyContent={'space-between'}
@@ -197,31 +165,25 @@ const ProfileDetails: React.FC = () => {
                           <Box fontWeight={700}>Status</Box>
                           <Box>{profileDetails?.status || '-'}</Box>
                         </Box>
-                      )}
-                      <Divider />
+                        <Divider />
+                      </Box>
+                      {canEditProfile ? (
+                        <Button
+                          color={`primary-${selectedTheme}`}
+                          onClick={navigateToUserManagement}
+                        >
+                          <i className="fa fa-pencil me-2" />
+                          {t('actions.edit')}
+                        </Button>
+                      ) : null}
                     </Box>
-                    {canEditProfile ? (
-                      <>
-                        {loading ? (
-                          <Skeleton animation="wave" height={40} />
-                        ) : (
-                          <Button
-                            color={`primary-${selectedTheme}`}
-                            onClick={navigateToUserManagement}
-                          >
-                            <i className="fa fa-pencil me-2" />
-                            {t('actions.edit')}
-                          </Button>
-                        )}
-                      </>
-                    ) : null}
-                  </Box>
-                </React.Fragment>
-              </CardBody>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
+                  </React.Fragment>
+                </CardBody>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
+      </GluuLoader>
     </ErrorBoundary>
   )
 }

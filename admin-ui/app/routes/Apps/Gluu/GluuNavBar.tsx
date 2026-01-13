@@ -1,17 +1,16 @@
-import { useState, useEffect, useMemo, memo, useRef } from 'react'
+import { useState, useEffect, memo, useRef, useMemo } from 'react'
 import Box from '@mui/material/Box'
-import { AvatarAddOn, Nav, NavItem, Notifications, SidebarTrigger, AvatarImage } from 'Components'
+import { Nav, NavItem, Notifications, SidebarTrigger } from 'Components'
 import { LanguageMenu } from './LanguageMenu'
 import { ThemeDropdownComponent } from './ThemeDropdown'
 import { useSelector } from 'react-redux'
 import { DropdownProfile } from 'Routes/components/Dropdowns/DropdownProfile'
-import { randomAvatar } from '../../../utilities'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
 import { useNewNavbarStyles } from './styles/GluuNavBar.style'
 import { useNavbarTheme } from './hooks/useNavbarTheme'
 import { usePageTitle } from './hooks/usePageTitle'
-import customColors from '@/customColors'
+import { UserIcon } from './components/UserIcon'
 import type { UserInfo } from 'Redux/features/types/authTypes'
 
 const ChevronIcon = memo(() => (
@@ -29,10 +28,11 @@ ChevronIcon.displayName = 'ChevronIcon'
 
 const MOBILE_BREAKPOINT = '(max-width: 768px)'
 
+const userInfoSelector = (state: { authReducer: { userinfo: UserInfo | null } }) =>
+  state.authReducer.userinfo
+
 const GluuNavBar = () => {
-  const userInfo = useSelector(
-    (state: { authReducer: { userinfo: UserInfo | null } }) => state.authReducer.userinfo,
-  )
+  const userInfo = useSelector(userInfoSelector)
 
   const { navbarColors } = useNavbarTheme()
   const { classes } = useNewNavbarStyles(navbarColors)()
@@ -44,22 +44,22 @@ const GluuNavBar = () => {
   )
 
   useEffect(() => {
-    if (navbarRef.current) {
-      const element = navbarRef.current
-      element.style.setProperty('background-color', navbarColors.background, 'important')
-      element.style.setProperty('border-bottom', `1px solid ${navbarColors.border}`, 'important')
-      element.style.setProperty('--theme-navbar-background', navbarColors.background, 'important')
-      element.style.setProperty('--theme-navbar-text', navbarColors.text, 'important')
-      element.style.setProperty('--theme-navbar-icon', navbarColors.icon, 'important')
-      element.style.setProperty('--theme-navbar-border', navbarColors.border, 'important')
-    }
+    if (!navbarRef.current) return
+
+    const element = navbarRef.current
+    element.style.setProperty('background-color', navbarColors.background, 'important')
+    element.style.setProperty('border-bottom', `1px solid ${navbarColors.border}`, 'important')
+    element.style.setProperty('--theme-navbar-background', navbarColors.background, 'important')
+    element.style.setProperty('--theme-navbar-text', navbarColors.text, 'important')
+    element.style.setProperty('--theme-navbar-icon', navbarColors.icon, 'important')
+    element.style.setProperty('--theme-navbar-border', navbarColors.border, 'important')
 
     const pageTitleElement = document.getElementById('page-title-navbar')
     if (pageTitleElement) {
       pageTitleElement.style.setProperty('color', navbarColors.text, 'important')
       pageTitleElement.style.setProperty('font-weight', '700', 'important')
     }
-  }, [navbarColors.background, navbarColors.border, navbarColors.text, navbarColors.icon])
+  }, [navbarColors])
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -71,13 +71,44 @@ const GluuNavBar = () => {
     return () => mediaQuery.removeEventListener('change', handleChange)
   }, [])
 
-  const avatarAddOns = useMemo(
-    () => [
-      <AvatarAddOn.Icon className="fa fa-circle" color={customColors.white} key="avatar-icon-bg" />,
-      <AvatarAddOn.Icon className="fa fa-circle" color="success" key="avatar-icon-fg" />,
-    ],
-    [],
-  )
+  const displayName = useMemo(() => {
+    if (!userInfo) return 'User'
+
+    const givenName = userInfo.given_name as string | undefined
+    const familyName =
+      (userInfo.family_name as string | undefined) || (userInfo.sn as string | undefined)
+
+    if (givenName && familyName) {
+      return `${givenName} ${familyName}`.trim()
+    }
+
+    if (givenName) return givenName
+    if (familyName) return familyName
+
+    return (
+      (userInfo.name as string | undefined) ||
+      (userInfo.user_name as string | undefined) ||
+      (userInfo.display_name as string | undefined) ||
+      (userInfo.displayName as string | undefined) ||
+      (userInfo.nickname as string | undefined) ||
+      'User'
+    )
+  }, [
+    userInfo?.given_name,
+    userInfo?.family_name,
+    userInfo?.sn,
+    userInfo?.name,
+    userInfo?.user_name,
+    userInfo?.display_name,
+    userInfo?.displayName,
+    userInfo?.nickname,
+  ])
+
+  const avatarUrl = useMemo(() => {
+    if (!userInfo) return null
+
+    return userInfo.picture || userInfo.avatar || userInfo.photo || userInfo.image || null
+  }, [userInfo?.picture, userInfo?.avatar, userInfo?.photo, userInfo?.image])
 
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
@@ -106,24 +137,24 @@ const GluuNavBar = () => {
             </h3>
           </Box>
           <Box className={classes.rightSection}>
-            <Box className={classes.iconButton}>
+            <Box className={`${classes.navbarItem} ${classes.iconButton}`}>
               <Notifications />
             </Box>
             {userInfo && (
               <>
-                <Box className={classes.languageMenuWrapper}>
+                <Box className={`${classes.navbarItem} ${classes.languageMenuWrapper}`}>
                   <ThemeDropdownComponent userInfo={userInfo} />
                 </Box>
-                <Box className={classes.languageMenuWrapper}>
+                <Box className={`${classes.navbarItem} ${classes.languageMenuWrapper}`}>
                   <LanguageMenu userInfo={userInfo} />
                 </Box>
               </>
             )}
             <DropdownProfile
               trigger={
-                <Box className={classes.userProfileContainer}>
-                  <AvatarImage size="md" src={randomAvatar()} addOns={avatarAddOns} />
-                  <span className={classes.userName}>Hello User</span>
+                <Box className={`${classes.navbarItem} ${classes.userProfileContainer}`}>
+                  <UserIcon size={40} className={classes.userIcon} avatarUrl={avatarUrl} />
+                  <span className={classes.userName}>{displayName}</span>
                   <Box className={classes.userChevron}>
                     <ChevronIcon />
                   </Box>
@@ -141,4 +172,4 @@ const GluuNavBar = () => {
 
 GluuNavBar.displayName = 'GluuNavBar'
 
-export default GluuNavBar
+export default memo(GluuNavBar)
