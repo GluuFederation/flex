@@ -251,14 +251,7 @@ const pluginMetadata = {
     { name: 'sessionReducer', reducer: sessionReducer },
     { name: 'messageReducer', reducer: messageReducer },
   ],
-  sagas: [
-    scopesSaga(),
-    oidcSaga(),
-    jsonSaga(),
-    umaResourceSaga(),
-    sessionSaga(),
-    messageSaga(),
-  ],
+  sagas: [scopesSaga(), oidcSaga(), jsonSaga(), umaResourceSaga(), sessionSaga(), messageSaga()],
 }
 
 export default pluginMetadata
