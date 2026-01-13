@@ -28,6 +28,7 @@ import {
 } from '../utils'
 import { revokeSessionWhenFieldsModifiedInUserForm } from '../helper/constants'
 import { isPersistenceInfo } from 'Plugins/services/Components/Configuration/types'
+import { AXIOS_INSTANCE } from '../../../api-client'
 
 function UserEditPage() {
   const dispatch = useDispatch()
@@ -129,7 +130,12 @@ function UserEditPage() {
         Object.prototype.hasOwnProperty.call(modifiedFields, key),
       )
       if (anyKeyPresent) {
+        // Revoke user session after password change
         await revokeSessionMutation.mutateAsync({ userDn: userDetails?.dn || '' })
+        // Additional safeguard to delete Admin UI sessions
+        await AXIOS_INSTANCE.delete(
+          `/app/admin-ui/oauth2/session/${encodeURIComponent(userDetails?.dn || '')}`,
+        )
       }
     },
     [personAttributes, userDetails, persistenceType, standardFields, updateUserMutation],

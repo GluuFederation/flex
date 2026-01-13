@@ -19,6 +19,7 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { logPasswordChange, getErrorMessage } from '../helper/userAuditHelpers'
 import { triggerUserWebhook } from '../helper/userWebhookHelpers'
 import { CustomUser } from '../types/UserApiTypes'
+import { AXIOS_INSTANCE } from '../../../api-client'
 
 interface PasswordChangeFormValues {
   userPassword: string
@@ -134,7 +135,12 @@ const PasswordChangeModal = ({
         inum: userDetails.inum,
         data: patchOperations,
       })
+      // Revoke user session after password change
       await revokeSessionMutation.mutateAsync({ userDn: userDetails?.dn || '' })
+      // Additional safeguard to delete Admin UI sessions
+      await AXIOS_INSTANCE.delete(
+        `/app/admin-ui/oauth2/session/${encodeURIComponent(userDetails?.dn || '')}`,
+      )
 
       // Log audit separately with full payload
       logPasswordChange(userDetails.inum, auditPayload).catch((error) => {
