@@ -141,7 +141,14 @@ function UserEditPage() {
         }
       }
     },
-    [personAttributes, userDetails, persistenceType, standardFields, updateUserMutation],
+    [
+      personAttributes,
+      userDetails,
+      persistenceType,
+      standardFields,
+      updateUserMutation,
+      revokeSessionMutation,
+    ],
   )
 
   return (
