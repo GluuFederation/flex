@@ -130,12 +130,15 @@ function UserEditPage() {
         Object.prototype.hasOwnProperty.call(modifiedFields, key),
       )
       if (anyKeyPresent) {
-        // Revoke user session after password change
-        await revokeSessionMutation.mutateAsync({ userDn: userDetails?.dn || '' })
-        // Additional safeguard to delete Admin UI sessions
-        await AXIOS_INSTANCE.delete(
-          `/app/admin-ui/oauth2/session/${encodeURIComponent(userDetails?.dn || '')}`,
-        )
+        // Revoke user session after successful update of user details
+        try {
+          await revokeSessionMutation.mutateAsync({ userDn: userDetails?.dn || '' })
+          await AXIOS_INSTANCE.delete(
+            `/app/admin-ui/oauth2/session/${encodeURIComponent(userDetails?.dn || '')}`,
+          )
+        } catch (error) {
+          console.error('Failed to revoke user session:', error)
+        }
       }
     },
     [personAttributes, userDetails, persistenceType, standardFields, updateUserMutation],

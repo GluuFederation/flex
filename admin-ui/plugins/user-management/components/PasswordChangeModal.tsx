@@ -135,12 +135,15 @@ const PasswordChangeModal = ({
         inum: userDetails.inum,
         data: patchOperations,
       })
-      // Revoke user session after password change
-      await revokeSessionMutation.mutateAsync({ userDn: userDetails?.dn || '' })
-      // Additional safeguard to delete Admin UI sessions
-      await AXIOS_INSTANCE.delete(
-        `/app/admin-ui/oauth2/session/${encodeURIComponent(userDetails?.dn || '')}`,
-      )
+      // Revoke user session after successful update of user details
+      try {
+        await revokeSessionMutation.mutateAsync({ userDn: userDetails?.dn || '' })
+        await AXIOS_INSTANCE.delete(
+          `/app/admin-ui/oauth2/session/${encodeURIComponent(userDetails?.dn || '')}`,
+        )
+      } catch (error) {
+        console.error('Failed to revoke user session:', error)
+      }
 
       // Log audit separately with full payload
       logPasswordChange(userDetails.inum, auditPayload).catch((error) => {
