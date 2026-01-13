@@ -28,8 +28,13 @@ let defaultToken
 
 export function* getAccessToken() {
   if (!defaultToken) {
-    defaultToken = yield call(fetchApiTokenWithDefaultScopes)
-    yield put(setApiDefaultToken(defaultToken))
+    try {
+      defaultToken = yield call(fetchApiTokenWithDefaultScopes)
+      yield put(setApiDefaultToken(defaultToken))
+    } catch (error) {
+      console.error('Failed to fetch API token with default scopes', error)
+      throw error
+    }
   }
   return defaultToken
 }

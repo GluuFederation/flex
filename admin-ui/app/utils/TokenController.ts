@@ -20,8 +20,8 @@ export type AdditionalPayload = GenericRecord & {
   omitPayload?: boolean
 }
 
-export const isFourZeroOneError = (error?: { status?: number } | null): boolean => {
-  return error?.status === 401
+export const isFourZeroOneError = (error?: any): boolean => {
+  return error?.response?.status === 401 || error?.status === 401
 }
 
 export const saveState = (state?: string | null): void => {

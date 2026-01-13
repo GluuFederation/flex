@@ -26,19 +26,19 @@ import {
 import { isFourZeroOneError } from 'Utils/TokenController'
 import { redirectToLogout } from 'Redux/sagas/SagaUtils'
 
-const API_ERROR_RESPONSE = -1
-
 function* getApiTokenWithDefaultScopes() {
-  const response = yield call(fetchApiTokenWithDefaultScopes)
-
-  if (response?.access_token) {
-    return response.access_token
-  } else if (response?.name === 'AxiosError') {
+  try {
+    const response = yield call(fetchApiTokenWithDefaultScopes)
+    if (response?.access_token) {
+      return response.access_token
+    }
+    return null
+  } catch (error) {
     yield put(
       setBackendStatus({
         active: false,
-        errorMessage: response?.response?.data?.responseMessage,
-        statusCode: response?.response?.status,
+        errorMessage: error?.response?.data?.responseMessage,
+        statusCode: error?.response?.status,
       }),
     )
     return null
@@ -62,7 +62,7 @@ function* getOAuth2ConfigWorker({ payload }) {
     }
 
     const response = yield call(fetchServerConfiguration, token)
-    if (response && response !== API_ERROR_RESPONSE) {
+    if (response) {
       localStorage.setItem('postLogoutRedirectUri', response.postLogoutRedirectUri)
       yield put(getOAuth2ConfigResponse({ config: response }))
       return
@@ -107,7 +107,7 @@ function* getAPIAccessTokenWorker(jwt) {
   try {
     if (jwt?.payload) {
       const response = yield call(fetchApiTokenWithDefaultScopes)
-      if (response && response !== API_ERROR_RESPONSE && !response?.name) {
+      if (response) {
         yield put(
           getAPIAccessTokenResponse({
             scopes: response.scopes,
@@ -125,22 +125,19 @@ function* getAPIAccessTokenWorker(jwt) {
             createAdminUiSessionResponse({ success: false, error: 'Failed to obtain API token' }),
           )
         }
-        return
-      } else if (response?.name === 'AxiosError') {
-        yield put(
-          setBackendStatus({
-            active: false,
-            errorMessage: response?.response?.data?.responseMessage,
-            statusCode: response?.response?.status,
-          }),
-        )
       }
     }
   } catch (error) {
     console.error('Problems getting API Access Token.', error?.response?.data || error)
+    yield put(
+      setBackendStatus({
+        active: false,
+        errorMessage: error?.response?.data?.responseMessage,
+        statusCode: error?.response?.status,
+      }),
+    )
     if (isFourZeroOneError(error)) {
       yield* redirectToLogout()
-      return
     }
   }
 }

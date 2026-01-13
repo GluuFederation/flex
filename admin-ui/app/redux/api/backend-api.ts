@@ -10,7 +10,7 @@ export const fetchServerConfiguration = (token?: string) => {
     .then((response) => response.data)
     .catch((error) => {
       console.error('Problems getting configuration in order to process authz code flow.', error)
-      return -1
+      throw error
     })
 }
 
@@ -21,7 +21,7 @@ export const putServerConfiguration = (payload: any) => {
     .then((response) => response.data)
     .catch((error) => {
       console.error('Problems updating configuration.', error)
-      throw Error(`Problems updating configuration. ${error?.message}`)
+      throw error
     })
 }
 
@@ -88,7 +88,7 @@ export const fetchApiTokenWithDefaultScopes = () => {
     .then((response) => response.data)
     .catch((error) => {
       console.error('Problems getting API access token in order to process api calls.', error)
-      return error
+      throw error
     })
 }
 
