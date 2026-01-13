@@ -6,13 +6,7 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
-import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import {
-  createSamlIdentity,
-  toggleSavedFormFlag,
-  updateSamlIdentity,
-} from 'Plugins/saml/redux/features/SamlSlice'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
@@ -31,12 +25,16 @@ import type { WebsiteSsoIdentityProviderFormValues } from '../types/formValues'
 import SetTitle from 'Utils/SetTitle'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import type { SamlIdentity } from '../types/redux'
-import type { SamlRootState } from '../types/state'
+import {
+  useCreateIdentityProvider,
+  useUpdateIdentityProvider,
+  type IdentityProvider,
+  type BrokerIdentityProviderForm,
+} from './hooks'
 import type { LocationState } from '../types'
 
 interface WebsiteSsoIdentityProviderFormProps {
-  configs?: SamlIdentity | null
+  configs?: IdentityProvider | null
   viewOnly?: boolean
 }
 
@@ -47,7 +45,7 @@ const WebsiteSsoIdentityProviderForm = ({
   viewOnly: propsViewOnly,
 }: WebsiteSsoIdentityProviderFormProps = {}) => {
   const location = useLocation()
-  const state = location.state as LocationState<SamlIdentity> | null
+  const state = location.state as LocationState<IdentityProvider> | null
 
   const configs = useMemo(
     () => propsConfigs ?? state?.rowData ?? null,
@@ -58,10 +56,14 @@ const WebsiteSsoIdentityProviderForm = ({
     [propsViewOnly, state?.viewOnly],
   )
   const [showUploadBtn, setShowUploadBtn] = useState<boolean>(false)
-  const savedForm = useSelector((state: SamlRootState) => state.idpSamlReducer.savedForm)
-  const loading = useSelector((state: SamlRootState) => state.idpSamlReducer.loading)
+
+  const createIdentityProvider = useCreateIdentityProvider()
+  const updateIdentityProvider = useUpdateIdentityProvider()
+
+  const loading = createIdentityProvider.isPending || updateIdentityProvider.isPending
+  const savedForm = createIdentityProvider.savedForm || updateIdentityProvider.savedForm
+
   const { t } = useTranslation()
-  const dispatch = useDispatch()
   const [modal, setModal] = useState<boolean>(false)
   const { navigateBack } = useAppNavigation()
 
@@ -107,15 +109,10 @@ const WebsiteSsoIdentityProviderForm = ({
   })
 
   const handleSubmit = useCallback(
-    (values: WebsiteSsoIdentityProviderFormValues, user_message: string) => {
+    async (values: WebsiteSsoIdentityProviderFormValues, user_message: string) => {
       const { metaDataFileImportedFlag, manualMetadata, metaDataFile, ...formValues } = values
       void metaDataFileImportedFlag
       void manualMetadata
-      const formdata = new FormData()
-
-      if (metaDataFileImportedFlag && metaDataFile && metaDataFile instanceof File) {
-        formdata.append('metaDataFile', metaDataFile)
-      }
 
       const cleanFormValues = cleanOptionalFields(formValues, false)
       const { rootFields, configData } = separateConfigFields(cleanFormValues)
@@ -128,31 +125,31 @@ const WebsiteSsoIdentityProviderForm = ({
         idpMetaDataFN,
       )
 
-      const blob = new Blob([JSON.stringify(identityProviderData)], {
-        type: 'application/json',
-      })
+      const brokerIdentityProviderFormData: BrokerIdentityProviderForm = {
+        identityProvider: identityProviderData as unknown as IdentityProvider,
+        metaDataFile:
+          metaDataFileImportedFlag && metaDataFile && metaDataFile instanceof File
+            ? metaDataFile
+            : new Blob([]),
+      }
 
-      formdata.append('identityProvider', blob)
-
-      if (!configs) {
-        dispatch(
-          createSamlIdentity({
-            action: { action_message: user_message, action_data: formdata },
-          }),
-        )
-      } else {
-        dispatch(
-          updateSamlIdentity({
-            action: {
-              action_message: user_message,
-              action_data: formdata,
-              action_inum: configs.inum,
-            },
-          }),
-        )
+      try {
+        if (!configs) {
+          await createIdentityProvider.mutateAsync({
+            data: brokerIdentityProviderFormData,
+            userMessage: user_message,
+          })
+        } else {
+          await updateIdentityProvider.mutateAsync({
+            data: brokerIdentityProviderFormData,
+            userMessage: user_message,
+          })
+        }
+      } catch (error) {
+        console.error('Failed to save identity provider:', error)
       }
     },
-    [configs, dispatch],
+    [configs, createIdentityProvider, updateIdentityProvider],
   )
 
   const submitForm = useCallback(
@@ -269,11 +266,14 @@ const WebsiteSsoIdentityProviderForm = ({
     if (savedForm) {
       navigateBack(ROUTES.SAML_IDP_LIST)
     }
+  }, [savedForm, navigateBack])
 
+  useEffect(() => {
     return () => {
-      dispatch(toggleSavedFormFlag(false))
+      createIdentityProvider.resetSavedForm()
+      updateIdentityProvider.resetSavedForm()
     }
-  }, [savedForm, navigateBack, dispatch])
+  }, [createIdentityProvider, updateIdentityProvider])
 
   return (
     <GluuLoader blocking={loading}>

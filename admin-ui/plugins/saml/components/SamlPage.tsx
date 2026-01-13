@@ -1,22 +1,16 @@
 import React, { useMemo, useCallback } from 'react'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { Card, CardBody } from 'Components'
-import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuTabs from 'Routes/Apps/Gluu/GluuTabs'
 import SetTitle from 'Utils/SetTitle'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
 import { ROUTES } from '@/helpers/navigation'
 import SamlConfigurationForm from './SamlConfigurationForm'
 import WebsiteSsoIdentityBrokeringList from './WebsiteSsoIdentityBrokeringList'
 import WebsiteSsoServiceProviderList from './WebsiteSsoServiceProviderList'
-import type { SamlRootState } from '../types/state'
 
 const SamlPage = React.memo(() => {
   const { t } = useTranslation()
-  const { loadingSamlIdp, loadingWebsiteSsoServiceProvider } = useSelector(
-    (state: SamlRootState) => state.idpSamlReducer,
-  )
 
   SetTitle(t('titles.saml_management'))
 
@@ -46,13 +40,11 @@ const SamlPage = React.memo(() => {
   )
 
   return (
-    <GluuLoader blocking={loadingSamlIdp || loadingWebsiteSsoServiceProvider}>
-      <Card className="mb-3" style={applicationStyle.mainCard}>
-        <CardBody>
-          <GluuTabs tabNames={tabNames} tabToShow={tabToShow} withNavigation={true} />
-        </CardBody>
-      </Card>
-    </GluuLoader>
+    <Card className="mb-3" style={applicationStyle.mainCard}>
+      <CardBody>
+        <GluuTabs tabNames={tabNames} tabToShow={tabToShow} withNavigation={true} />
+      </CardBody>
+    </Card>
   )
 })
 

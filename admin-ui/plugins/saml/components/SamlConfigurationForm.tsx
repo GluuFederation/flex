@@ -1,7 +1,6 @@
 import { useFormik } from 'formik'
 import React, { useState, useEffect, useMemo, useCallback, memo, useRef } from 'react'
 import { Row, Col, Form, FormGroup, CustomInput } from 'Components'
-import { useDispatch, useSelector } from 'react-redux'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -9,29 +8,28 @@ import { useCedarling } from '@/cedarling'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import { useTranslation } from 'react-i18next'
-import { putSamlProperties, getSamlConfiguration } from 'Plugins/saml/redux/features/SamlSlice'
 import SetTitle from 'Utils/SetTitle'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { samlConfigurationValidationSchema } from '../helper/validations'
 import { transformToFormValues } from '../helper/utils'
+import { useSamlConfiguration, useUpdateSamlConfiguration } from './hooks'
 import type { SamlConfigurationFormValues } from '../types'
-import type { SamlRootState } from '../types/state'
 
 const DOC_SECTION = 'samlConfiguration' as const
 
 const SamlConfigurationForm: React.FC = () => {
   const { t } = useTranslation()
   const { authorizeHelper, hasCedarWritePermission } = useCedarling()
-  const dispatch = useDispatch()
   const [modal, setModal] = useState<boolean>(false)
-  const { configuration, loading } = useSelector((state: SamlRootState) => state.idpSamlReducer)
-  SetTitle(t('titles.saml_management'))
 
-  useEffect(() => {
-    dispatch(getSamlConfiguration())
-  }, [dispatch])
+  // Use React Query hooks instead of Redux
+  const { data: configuration, isLoading: queryLoading } = useSamlConfiguration()
+  const updateConfigMutation = useUpdateSamlConfiguration()
+  const loading = queryLoading || updateConfigMutation.isPending
+
+  SetTitle(t('titles.saml_management'))
 
   const samlResourceId = useMemo(() => ADMIN_UI_RESOURCES.SAML, [])
   const samlScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[samlResourceId], [samlResourceId])
@@ -61,14 +59,17 @@ const SamlConfigurationForm: React.FC = () => {
   })
 
   const handleSubmit = useCallback(
-    (values: SamlConfigurationFormValues, messages: string) => {
-      dispatch(
-        putSamlProperties({
-          action: { action_message: messages, action_data: values },
-        }),
-      )
+    async (values: SamlConfigurationFormValues, messages: string) => {
+      try {
+        await updateConfigMutation.mutateAsync({
+          data: values,
+          userMessage: messages,
+        })
+      } catch (error) {
+        console.error('Failed to update SAML configuration:', error)
+      }
     },
-    [dispatch],
+    [updateConfigMutation],
   )
 
   const { setFieldValue, resetForm, handleSubmit: formikHandleSubmit } = formik
