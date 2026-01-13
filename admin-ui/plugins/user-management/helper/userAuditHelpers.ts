@@ -7,9 +7,6 @@ import { CustomUser } from '../types/UserApiTypes'
 import { USER_PASSWORD_ATTR } from '../common/Constants'
 
 export interface AuditLog {
-  headers: {
-    Authorization?: string
-  }
   client_id?: string
   ip_address?: string
   status?: string
@@ -21,9 +18,6 @@ export interface AuditLog {
 }
 
 export interface AuthState {
-  token: {
-    access_token: string
-  }
   issuer: string
   userinfo_jwt: string
   config: {
@@ -92,20 +86,16 @@ function redactSensitiveData(payload: AuditPayload): void {
 export function initAudit(): AuditLog {
   const state = store.getState() as unknown as { authReducer: AuthState }
   const authReducer: AuthState = state.authReducer
-  const auditlog: AuditLog = {
-    headers: {},
-  }
+  const auditlog: AuditLog = {}
   const client_id = authReducer.config?.clientId || ''
   const ip_address = authReducer.location?.IPv4 || ''
   const userinfo = authReducer.userinfo
   const author = userinfo ? userinfo.name : '-'
   const inum = userinfo ? userinfo.inum : '-'
-  const token = authReducer.token?.access_token || ''
   auditlog.client_id = client_id
   auditlog.ip_address = ip_address
   auditlog.status = 'success'
   auditlog.performedBy = { user_inum: inum, userId: author }
-  auditlog.headers.Authorization = `Bearer ${token}`
 
   return auditlog
 }
@@ -114,7 +104,6 @@ export async function logUserCreation(data: CustomUser, payload: CustomUser): Pr
   try {
     const state = store.getState() as unknown as { authReducer: AuthState }
     const authReducer: AuthState = state.authReducer
-    const token = authReducer.token?.access_token || ''
     const client_id = authReducer.config?.clientId || ''
     const userinfo = authReducer.userinfo
 
@@ -127,7 +116,6 @@ export async function logUserCreation(data: CustomUser, payload: CustomUser): Pr
       'Created user'
 
     await logAuditUserAction({
-      token,
       userinfo,
       action: CREATE,
       resource: API_USERS,
@@ -144,7 +132,6 @@ export async function logUserUpdate(data: CustomUser, payload: CustomUser): Prom
   try {
     const state = store.getState() as unknown as { authReducer: AuthState }
     const authReducer: AuthState = state.authReducer
-    const token = authReducer.token?.access_token || ''
     const client_id = authReducer.config?.clientId || ''
     const userinfo = authReducer.userinfo
 
@@ -157,7 +144,6 @@ export async function logUserUpdate(data: CustomUser, payload: CustomUser): Prom
       'Updated user'
 
     await logAuditUserAction({
-      token,
       userinfo,
       action: UPDATE,
       resource: API_USERS,
@@ -174,14 +160,12 @@ export async function logUserDeletion(inum: string, userData?: CustomUser): Prom
   try {
     const state = store.getState() as unknown as { authReducer: AuthState }
     const authReducer: AuthState = state.authReducer
-    const token = authReducer.token?.access_token || ''
     const client_id = authReducer.config?.clientId || ''
     const userinfo = authReducer.userinfo
     const payload = userData || { inum }
     const extendedPayload = userData as AuditPayload | undefined
     const message = extendedPayload?.action_message || extendedPayload?.message || 'Deleted user'
     await logAuditUserAction({
-      token,
       userinfo,
       action: DELETION,
       resource: API_USERS,
@@ -198,12 +182,10 @@ export async function logUserFetch(payload: Record<string, unknown>): Promise<vo
   try {
     const state = store.getState() as unknown as { authReducer: AuthState }
     const authReducer: AuthState = state.authReducer
-    const token = authReducer.token?.access_token || ''
     const client_id = authReducer.config?.clientId || ''
     const userinfo = authReducer.userinfo
 
     await logAuditUserAction({
-      token,
       userinfo,
       action: FETCH,
       resource: API_USERS,
@@ -223,7 +205,6 @@ export async function logPasswordChange(
   try {
     const state = store.getState() as unknown as { authReducer: AuthState }
     const authReducer: AuthState = state.authReducer
-    const token = authReducer.token?.access_token || ''
     const client_id = authReducer.config?.clientId || ''
     const userinfo = authReducer.userinfo
 
@@ -236,7 +217,6 @@ export async function logPasswordChange(
       'Password changed'
 
     await logAuditUserAction({
-      token,
       userinfo,
       action: UPDATE,
       resource: API_USERS,

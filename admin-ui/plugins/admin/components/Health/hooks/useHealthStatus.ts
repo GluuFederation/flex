@@ -42,11 +42,11 @@ function transformServiceStatus(data: JsonNode | undefined): ServiceHealth[] {
 }
 
 export function useHealthStatus() {
-  const authToken = useSelector((state: RootState) => state.authReducer?.token?.access_token)
+  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
 
   const query = useGetServiceStatus(undefined, {
     query: {
-      enabled: !!authToken,
+      enabled: hasSession === true,
       staleTime: HEALTH_CACHE_CONFIG.STALE_TIME,
       gcTime: HEALTH_CACHE_CONFIG.GC_TIME,
       select: transformServiceStatus,

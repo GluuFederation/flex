@@ -113,7 +113,7 @@ export interface ApiPermission {
 export interface AuthReducerState {
   userinfo_jwt?: string
   idToken?: string
-  JwtToken?: string
+  jwtToken?: string
   token?: {
     scopes: string[]
   }

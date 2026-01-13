@@ -14,9 +14,7 @@ export const SSA_QUERY_KEYS = {
 } as const
 
 interface AuthState {
-  token: {
-    access_token: string
-  }
+  jwtToken: string | null
   config: {
     authServerHost: string
   }
@@ -138,12 +136,12 @@ const getSsaJwt = async (
 }
 
 export const useGetAllSsas = (): UseQueryResult<SsaData[], Error> => {
-  const token = useSelector((state: RootState) => state.authReducer.token.access_token)
+  const token = useSelector((state: RootState) => state.authReducer.jwtToken)
   const authServerHost = useSelector((state: RootState) => state.authReducer.config.authServerHost)
 
   return useQuery<SsaData[], Error>({
     queryKey: SSA_QUERY_KEYS.all,
-    queryFn: ({ signal }) => fetchAllSsas(token, authServerHost, signal),
+    queryFn: ({ signal }) => fetchAllSsas(token ?? '', authServerHost, signal),
     enabled: !!token && !!authServerHost,
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
@@ -159,7 +157,7 @@ export const useGetAllSsas = (): UseQueryResult<SsaData[], Error> => {
 }
 
 export const useCreateSsa = (): UseMutationResult<SsaData, Error, SsaCreatePayload, unknown> => {
-  const token = useSelector((state: RootState) => state.authReducer.token.access_token)
+  const token = useSelector((state: RootState) => state.authReducer.jwtToken)
   const authServerHost = useSelector((state: RootState) => state.authReducer.config.authServerHost)
   const queryClient = useQueryClient()
 
@@ -171,7 +169,7 @@ export const useCreateSsa = (): UseMutationResult<SsaData, Error, SsaCreatePaylo
       if (!authServerHost) {
         throw new Error('Auth server host not configured')
       }
-      return createSsa(payload, token, authServerHost)
+      return createSsa(payload, token ?? '', authServerHost)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: SSA_QUERY_KEYS.all })
@@ -180,7 +178,7 @@ export const useCreateSsa = (): UseMutationResult<SsaData, Error, SsaCreatePaylo
 }
 
 export const useGetSsaJwt = (): UseMutationResult<SsaJwtResponse, Error, string, unknown> => {
-  const token = useSelector((state: RootState) => state.authReducer.token.access_token)
+  const token = useSelector((state: RootState) => state.authReducer.jwtToken)
   const authServerHost = useSelector((state: RootState) => state.authReducer.config.authServerHost)
 
   return useMutation<SsaJwtResponse, Error, string>({
@@ -191,7 +189,7 @@ export const useGetSsaJwt = (): UseMutationResult<SsaJwtResponse, Error, string,
       if (!authServerHost) {
         throw new Error('Auth server host not configured')
       }
-      return getSsaJwt(jti, token, authServerHost)
+      return getSsaJwt(jti, token ?? '', authServerHost)
     },
   })
 }

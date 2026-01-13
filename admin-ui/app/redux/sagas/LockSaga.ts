@@ -2,7 +2,6 @@
 import { call, all, put, fork, select, takeLatest } from 'redux-saga/effects'
 import { isFourZeroOneError } from 'Utils/TokenController'
 
-import { getAPIAccessToken } from '../features/authSlice'
 import { getClient } from '../api/base'
 import { initAudit } from '../sagas/SagaUtils'
 import LockApi from '../api/LockApi'
@@ -10,9 +9,8 @@ import { getLockStatusResponse } from '../features/lockSlice'
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.StatisticsApi(getClient(JansConfigApi, token, issuer))
+  const api = new JansConfigApi.StatisticsApi(getClient(JansConfigApi, null, issuer))
   return new LockApi(api)
 }
 
@@ -25,8 +23,8 @@ export function* getLockMau({ payload }) {
   } catch (e) {
     yield put(getLockStatusResponse(null))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
   }
 }

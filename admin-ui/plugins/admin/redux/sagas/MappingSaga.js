@@ -7,7 +7,6 @@ import {
 } from 'Plugins/admin/redux/features/mappingSlice'
 import { API_MAPPING } from '../audit/Resources'
 import { FETCH } from '../../../../app/audit/UserActionType'
-import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { updateToast } from 'Redux/features/toastSlice'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import MappingApi from '../api/MappingApi'
@@ -17,10 +16,10 @@ const JansConfigApi = require('jans_config_api')
 import { initAudit } from 'Redux/sagas/SagaUtils'
 
 function* newFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
+  // Use null for token - HttpOnly session cookie handles auth
   const api = new JansConfigApi.AdminUIRolePermissionsMappingApi(
-    getClient(JansConfigApi, token, issuer),
+    getClient(JansConfigApi, null, issuer),
   )
   return new MappingApi(api)
 }
@@ -37,8 +36,8 @@ export function* fetchMapping({ payload }) {
   } catch (e) {
     yield put(getMappingResponse({ data: null }))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
     return e
   }
@@ -57,8 +56,8 @@ export function* updateMapping({ payload }) {
     yield put(updatePermissionsLoading({ data: false }))
     yield put(getMappingResponse({ data: null }))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
     return e
   }
@@ -76,8 +75,8 @@ export function* addMapping({ payload }) {
     yield put(updatePermissionsLoading({ data: false }))
     // yield put(getMappingResponse(null))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
     return e
   }
@@ -96,8 +95,8 @@ export function* deleteMapping({ payload }) {
     yield put(updatePermissionsLoading({ data: false }))
     // yield put(getMappingResponse(null))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
     return e
   }

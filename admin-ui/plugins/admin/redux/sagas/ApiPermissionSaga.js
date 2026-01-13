@@ -1,5 +1,4 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { API_PERMISSION } from '../audit/Resources'
 import PermissionApi from '../api/PermissionApi'
 import { getClient } from 'Redux/api/base'
@@ -19,9 +18,9 @@ import { initAudit } from 'Redux/sagas/SagaUtils'
 import { buildPermissionDeleteErrorMessage } from 'Utils/PermissionMappingUtils'
 
 function* newFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.AdminUIPermissionApi(getClient(JansConfigApi, token, issuer))
+  // Use null for token - HttpOnly session cookie handles auth
+  const api = new JansConfigApi.AdminUIPermissionApi(getClient(JansConfigApi, null, issuer))
   return new PermissionApi(api)
 }
 
@@ -37,8 +36,8 @@ export function* getPermissions({ payload }) {
   } catch (e) {
     yield put(getPermissionResponse(null))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
     return e
   }
@@ -54,8 +53,8 @@ export function* getPermission({ payload }) {
   } catch (e) {
     yield put(getPermissionResponse(null))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
   }
 }
@@ -76,8 +75,8 @@ export function* addPermission({ payload }) {
     yield put(updateToast(true, 'error'))
     yield put(addPermissionResponse({ data: null }))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
     return e
   }
@@ -101,8 +100,8 @@ export function* editPermission({ payload }) {
     yield put(updateToast(true, 'error', errorMessage))
     yield put(editPermissionResponse({ data: null }))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
     return e
   }
@@ -140,8 +139,8 @@ export function* deletePermission({ payload }) {
     yield put(updateToast(true, 'error', finalMessage))
     yield put(deletePermissionResponse({ inum: null }))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
     return e
   }

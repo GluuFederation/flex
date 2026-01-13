@@ -74,12 +74,11 @@ export default class SamlApi {
 
   postSamlIdentityProvider = ({
     formdata,
-    token,
   }: CreateSamlIdentityPayload): Promise<SamlIdentityCreateResponse> => {
     return new Promise<SamlIdentityCreateResponse>((resolve, reject) => {
       axios
         .post<SamlIdentityCreateResponse>('/kc/saml/idp/upload', formdata, {
-          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
         })
         .then((result) =>
           handleResponse(null, reject, resolve as (data: unknown) => void, result.data),
@@ -92,12 +91,11 @@ export default class SamlApi {
 
   updateSamlIdentityProvider = ({
     formdata,
-    token,
   }: CreateSamlIdentityPayload): Promise<SamlIdentityCreateResponse> => {
     return new Promise<SamlIdentityCreateResponse>((resolve, reject) => {
       axios
         .put<SamlIdentityCreateResponse>('/kc/saml/idp/upload', formdata, {
-          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
         })
         .then((result) =>
           handleResponse(null, reject, resolve as (data: unknown) => void, result.data),
@@ -134,12 +132,11 @@ export default class SamlApi {
 
   postWebsiteSsoServiceProvider = ({
     formdata,
-    token,
   }: CreateWebsiteSsoServiceProviderPayload): Promise<SamlApiResponse> => {
     return new Promise<SamlApiResponse>((resolve, reject) => {
       axios
         .post<SamlApiResponse>('/kc/saml/trust-relationship/upload', formdata, {
-          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
         })
         .then((result) =>
           handleResponse(null, reject, resolve as (data: unknown) => void, result.data),
@@ -152,12 +149,11 @@ export default class SamlApi {
 
   updateWebsiteSsoServiceProvider = ({
     formdata,
-    token,
   }: CreateWebsiteSsoServiceProviderPayload): Promise<SamlApiResponse> => {
     return new Promise<SamlApiResponse>((resolve, reject) => {
       axios
         .put<SamlApiResponse>('/kc/saml/trust-relationship/upload', formdata, {
-          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
         })
         .then((result) =>
           handleResponse(null, reject, resolve as (data: unknown) => void, result.data),

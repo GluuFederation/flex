@@ -11,7 +11,6 @@ import LicenseDetailsApi from '../api/LicenseDetailsApi'
 import { initAudit } from 'Redux/sagas/SagaUtils'
 import { postUserAction } from 'Redux/api/backend-api'
 import { addAdditionalData, isFourZeroOneError } from 'Utils/TokenController'
-import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { API_LICENSE } from '../../audit/Resources'
 import { DELETION } from '@/audit/UserActionType'
 const JansConfigApi = require('jans_config_api')
@@ -22,9 +21,8 @@ type ResetLicenseAction = {
 }
 
 function* newFunction() {
-  const token = yield select((state) => state.authReducer.token?.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.AdminUILicenseApi(getClient(JansConfigApi, token, issuer))
+  const api = new JansConfigApi.AdminUILicenseApi(getClient(JansConfigApi, null, issuer))
   return new LicenseDetailsApi(api)
 }
 
@@ -45,8 +43,8 @@ export function* resetLicenseConfigWorker(action: ResetLicenseAction) {
     }
   } catch (error) {
     if (isFourZeroOneError(error)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
   }
 }
@@ -63,8 +61,8 @@ export function* getLicenseDetailsWorker() {
     console.log('error in getting license details: ', e)
     yield put(getLicenseDetailsResponse(null))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
   }
 }
@@ -80,8 +78,8 @@ export function* updateLicenseDetailsWorker({ payload }) {
   } catch (e) {
     yield put(updateLicenseDetailsResponse(null))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
   }
 }

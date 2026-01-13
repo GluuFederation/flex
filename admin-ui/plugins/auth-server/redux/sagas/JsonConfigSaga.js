@@ -1,5 +1,4 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { getAPIAccessToken } from 'Redux/features/authSlice'
 import JsonConfigApi from '../api/JsonConfigApi'
 import { getClient } from 'Redux/api/base'
 import { JSON_CONFIG } from '../audit/Resources'
@@ -14,9 +13,9 @@ const JansConfigApi = require('jans_config_api')
 import { initAudit } from 'Redux/sagas/SagaUtils'
 
 function* newFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.ConfigurationPropertiesApi(getClient(JansConfigApi, token, issuer))
+  // Use null for token - HttpOnly session cookie handles auth
+  const api = new JansConfigApi.ConfigurationPropertiesApi(getClient(JansConfigApi, null, issuer))
   return new JsonConfigApi(api)
 }
 
@@ -33,8 +32,8 @@ export function* getJsonConfig({ payload }) {
     console.log(e)
     yield put(getJsonConfigResponse(null))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
     return e
   }
@@ -55,8 +54,8 @@ export function* patchJsonConfig({ payload }) {
     yield put(updateToast(true, 'error'))
     yield put(patchJsonConfigResponse(null))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
     return e
   }
