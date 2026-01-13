@@ -1,0 +1,48 @@
+{
+  "schemaFile": "102-gluu-flex.ldif",
+  "attributeTypes": [
+    {
+      "desc": "jansUjwt for flex",
+      "equality": "caseExactMatch",
+      "names": [
+        "jansUjwt"
+      ],
+      "oid": "flexAttr",
+      "syntax": "1.3.6.1.4.1.1466.115.121.1.15",
+      "x_origin": "Gluu Flex created attribute",
+      "sql_types": {
+        "mysql": {
+          "type": "TEXT"
+        }
+      }
+    }
+  ],
+  "objectClasses": [
+    {
+      "kind": "STRUCTURAL",
+      "may": [
+        "inum",
+        "sid",
+        "jansUjwt",
+        "jansUsrDN",
+        "creationDate",
+        "exp"
+      ],
+      "must": [
+        "objectclass"
+      ],
+      "names": [
+        "adminUISession"
+      ],
+      "oid": "flexObjClass",
+      "sup": [
+        "top"
+      ],
+      "x_origin": "Gluu Flex created objectclass"
+    }
+  ],
+  "oidMacros": {
+    "flexAttr": "GluuFlexPublished:3",
+    "flexObjClass": "jansPublished:4"
+  }
+}

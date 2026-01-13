@@ -610,3 +610,26 @@ jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
+dn: inum=ae01fe2a-a183-4b71-bc4b-3dfef88d1cd0,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: ae01fe2a-a183-4b71-bc4b-3dfef88d1cd0
+jansAccessType: READ
+jansResource: adminUISession
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/user/session.readonly
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=b954f8d8-86f6-4f3b-ac84-ec8928bbe78f,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: b954f8d8-86f6-4f3b-ac84-ec8928bbe78f
+jansAccessType: WRITE
+jansResource: adminUISession
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/user/session.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=c954f8d8-6c5f-4d1b-90f6-985dd694d20a,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: c954f8d8-6c5f-4d1b-90f6-985dd694d20a
+jansAccessType: DELETE
+jansResource: adminUISession
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/user/session.delete
+objectClass: top
+objectClass: adminUIResourceScopesMapping
