@@ -1,11 +1,9 @@
 import type { SamlConfigurationFormValues } from '../types'
 import type {
   SamlConfiguration,
-  SamlIdentity,
-  WebsiteSsoServiceProvider,
   IdentityProviderPayload,
   WebsiteSsoServiceProviderPayload,
-} from '../types/redux'
+} from '../types/payloads'
 import type {
   WebsiteSsoIdentityProviderFormValues,
   WebsiteSsoServiceProviderFormValues,
@@ -15,9 +13,34 @@ import type {
   RootFields,
   CleanableValue,
 } from '../types/formValues'
+import type { IdentityProvider, TrustRelationship, SamlAppConfiguration } from 'JansConfigApi'
+
+type IdentityProviderWithMetaDataFN = IdentityProvider & {
+  idpMetaDataFN?: string
+  config?: {
+    singleSignOnServiceUrl?: string
+    nameIDPolicyFormat?: string
+    idpEntityId?: string
+    singleLogoutServiceUrl?: string
+    signingCertificate?: string
+    encryptionPublicKey?: string
+    principalAttribute?: string
+    principalType?: string
+    validateSignature?: string
+    [key: string]: unknown
+  }
+}
+
+type TrustRelationshipWithMetaDataFN = TrustRelationship & {
+  spMetaDataFN?: string
+}
 
 export const transformToFormValues = (
-  configuration: SamlConfiguration | Record<string, string | number | boolean>,
+  configuration:
+    | SamlConfiguration
+    | SamlAppConfiguration
+    | Record<string, string | number | boolean>
+    | undefined,
 ): SamlConfigurationFormValues => {
   return {
     enabled: Boolean(configuration?.enabled),
@@ -28,7 +51,7 @@ export const transformToFormValues = (
 }
 
 export const transformToIdentityProviderFormValues = (
-  configs?: SamlIdentity | null,
+  configs?: IdentityProviderWithMetaDataFN | null,
 ): WebsiteSsoIdentityProviderFormValues => {
   const config = configs?.config || {}
   const singleSignOnServiceUrl =
@@ -60,7 +83,6 @@ export const transformToIdentityProviderFormValues = (
     metaDataFile: null,
     idpMetaDataFN: configs?.idpMetaDataFN || undefined,
     manualMetadata: '',
-    // Additional CURL fields from configs
     validateSignature,
     trustEmail: configs?.trustEmail,
     linkOnly: configs?.linkOnly,
@@ -79,7 +101,7 @@ const getDefault = <T>(value: T | null, defaultValue: T): T => {
   return value != null ? value : defaultValue
 }
 
-const getConfiguredType = (configs: WebsiteSsoServiceProvider | null): string => {
+const getConfiguredType = (configs: TrustRelationshipWithMetaDataFN | null): string => {
   if (configs?.spMetaDataSourceType) {
     return configs.spMetaDataSourceType
   }
@@ -87,7 +109,7 @@ const getConfiguredType = (configs: WebsiteSsoServiceProvider | null): string =>
 }
 
 export const transformToWebsiteSsoServiceProviderFormValues = (
-  configs?: WebsiteSsoServiceProvider | null,
+  configs?: TrustRelationshipWithMetaDataFN | null,
 ): WebsiteSsoServiceProviderFormValues => {
   return {
     enabled: getDefault(configs?.enabled ?? null, false),
@@ -113,11 +135,12 @@ export const transformToWebsiteSsoServiceProviderFormValues = (
     metaDataFileImportedFlag: !!configs?.spMetaDataFN,
     metaDataFile: null,
     ...(configs?.spMetaDataFN ? { spMetaDataFN: configs.spMetaDataFN } : {}),
-    // Additional CURL fields from configs
     clientAuthenticatorType: configs?.clientAuthenticatorType,
     spMetaDataURL: configs?.spMetaDataURL,
     redirectUris: configs?.redirectUris,
-    profileConfigurations: configs?.profileConfigurations,
+    profileConfigurations: configs?.profileConfigurations as
+      | Record<string, { name: string; signResponses: string }>
+      | undefined,
     dn: configs?.dn,
     validationLog: configs?.validationLog,
     validationStatus: configs?.validationStatus,
@@ -184,30 +207,25 @@ export const cleanOptionalFields = <T extends Record<string, CleanableValue>>(
   const cleaned: Partial<T> = {}
 
   Object.entries(obj).forEach(([key, value]) => {
-    // Skip undefined and null values
     if (value === undefined || value === null) {
       return
     }
 
-    // Optionally skip empty strings
     if (removeEmptyStrings && typeof value === 'string' && value.trim() === '') {
       return
     }
 
-    // Handle nested objects
     if (value && typeof value === 'object' && !Array.isArray(value) && !(value instanceof File)) {
       const cleanedNested = cleanOptionalFields(
         value as Record<string, CleanableValue>,
         removeEmptyStrings,
       )
-      // Only include nested object if it has at least one property
       if (Object.keys(cleanedNested).length > 0) {
         cleaned[key as keyof T] = cleanedNested as T[keyof T]
       }
       return
     }
 
-    // Handle arrays - keep non-empty arrays
     if (Array.isArray(value)) {
       if (value.length > 0) {
         cleaned[key as keyof T] = value as T[keyof T]
@@ -215,7 +233,6 @@ export const cleanOptionalFields = <T extends Record<string, CleanableValue>>(
       return
     }
 
-    // Keep all other values (strings, numbers, booleans, File objects, etc.)
     cleaned[key as keyof T] = value as T[keyof T]
   })
 
@@ -252,16 +269,11 @@ export const buildIdentityProviderPayload = (
   _metaDataFileImportedFlag?: boolean,
   _idpMetaDataFN?: string,
 ): IdentityProviderPayload => {
-  // Build payload matching CURL structure exactly - all fields at root level
-  // All fields must be included as per CURL specification
   const payload: IdentityProviderPayload = {
-    // Core fields from form/rootFields
     name: getStringValue(rootFields.name),
     displayName: getStringValue(rootFields.displayName),
     description: getStringValue(rootFields.description),
     enabled: getBooleanValue(rootFields.enabled, true),
-
-    // Config fields (always include, even if empty)
     singleSignOnServiceUrl: getStringValue(
       configData.singleSignOnServiceUrl || rootFields.singleSignOnServiceUrl,
     ),
@@ -282,8 +294,6 @@ export const buildIdentityProviderPayload = (
       configData.principalAttribute || rootFields.principalAttribute,
     ),
     principalType: getStringValue(configData.principalType || rootFields.principalType),
-
-    // All CURL fields - set defaults for missing ones to match CURL exactly
     spMetaDataLocation: getStringValue(rootFields.spMetaDataLocation),
     validateSignature: getStringValue(rootFields.validateSignature || configData.validateSignature),
     firstBrokerLoginFlowAlias: getStringValue(rootFields.firstBrokerLoginFlowAlias),
@@ -306,7 +316,6 @@ export const buildIdentityProviderPayload = (
     baseDn: getStringValue(rootFields.baseDn),
   }
 
-  // Add optional fields if they exist
   if (inum) {
     payload.inum = inum
   }

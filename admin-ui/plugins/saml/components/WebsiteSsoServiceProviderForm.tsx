@@ -1,10 +1,5 @@
-import React, { useEffect, useState, useCallback, useMemo, memo } from 'react'
+import React, { useEffect, useState, useCallback, useMemo, memo, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
-import {
-  createWebsiteSsoServiceProvider,
-  toggleSavedFormFlag,
-  updateWebsiteSsoServiceProvider,
-} from 'Plugins/saml/redux/features/SamlSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { Card, CardBody, Form, FormGroup, Col, Row } from 'Components'
@@ -17,6 +12,7 @@ import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useTranslation } from 'react-i18next'
 import { setClientSelectedScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
+import { updateToast } from 'Redux/features/toastSlice'
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
 import {
   nameIDPolicyFormat,
@@ -30,14 +26,19 @@ import SetTitle from 'Utils/SetTitle'
 import { useGetAttributes } from 'JansConfigApi'
 import GluuStatusMessage from 'Routes/Apps/Gluu/GluuStatusMessage'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import type { WebsiteSsoServiceProvider } from '../types/redux'
-import type { SamlRootState } from '../types/state'
+import {
+  useCreateTrustRelationship,
+  useUpdateTrustRelationship,
+  TrustRelationshipSpMetaDataSourceType,
+  type TrustRelationship,
+  type TrustRelationshipForm,
+} from './hooks'
 import type { LocationState } from '../types'
 
 const MAX_ATTRIBUTES_FOR_WEBSITE_SSO = 100
 
 interface WebsiteSsoServiceProviderFormProps {
-  configs?: WebsiteSsoServiceProvider | null
+  configs?: TrustRelationship | null
   viewOnly?: boolean
 }
 
@@ -53,7 +54,7 @@ const WebsiteSsoServiceProviderForm = ({
   viewOnly: propsViewOnly,
 }: WebsiteSsoServiceProviderFormProps = {}) => {
   const location = useLocation()
-  const state = location.state as LocationState<WebsiteSsoServiceProvider> | null
+  const state = location.state as LocationState<TrustRelationship> | null
 
   const configs = useMemo(
     () => propsConfigs ?? state?.rowData ?? null,
@@ -77,8 +78,17 @@ const WebsiteSsoServiceProviderForm = ({
 
   SetTitle(title)
 
-  const loading = useSelector((state: SamlRootState) => state.idpSamlReducer.loading)
-  const savedForm = useSelector((state: SamlRootState) => state.idpSamlReducer.savedForm)
+  const createTrustRelationship = useCreateTrustRelationship()
+  const updateTrustRelationship = useUpdateTrustRelationship()
+
+  const createResetRef = useRef(createTrustRelationship.resetSavedForm)
+  const updateResetRef = useRef(updateTrustRelationship.resetSavedForm)
+  createResetRef.current = createTrustRelationship.resetSavedForm
+  updateResetRef.current = updateTrustRelationship.resetSavedForm
+
+  const loading = createTrustRelationship.isPending || updateTrustRelationship.isPending
+  const savedForm = createTrustRelationship.savedForm || updateTrustRelationship.savedForm
+
   const dispatch = useDispatch()
   const { navigateBack } = useAppNavigation()
   const [modal, setModal] = useState<boolean>(false)
@@ -157,45 +167,43 @@ const WebsiteSsoServiceProviderForm = ({
   }, [configs?.inum])
 
   const handleSubmit = useCallback(
-    (values: WebsiteSsoServiceProviderFormValues, user_message: string) => {
+    async (values: WebsiteSsoServiceProviderFormValues, user_message: string) => {
       const { metaDataFileImportedFlag, metaDataFile, ...websiteSsoServiceProviderData } = values
-      void metaDataFileImportedFlag
-      const formdata = new FormData()
-
-      if (metaDataFile) {
-        formdata.append('metaDataFile', metaDataFile)
-      }
 
       const payload = buildWebsiteSsoServiceProviderPayload(
         websiteSsoServiceProviderData,
         configs?.inum,
       )
 
-      const blob = new Blob([JSON.stringify(payload)], {
-        type: 'application/json',
-      })
+      const trustRelationshipFormData: TrustRelationshipForm = {
+        trustRelationship: {
+          ...payload,
+          spMetaDataSourceType:
+            payload.spMetaDataSourceType as (typeof TrustRelationshipSpMetaDataSourceType)[keyof typeof TrustRelationshipSpMetaDataSourceType],
+        } as TrustRelationship,
+        metaDataFile:
+          metaDataFileImportedFlag && metaDataFile && metaDataFile instanceof File
+            ? metaDataFile
+            : new Blob([]),
+      }
 
-      formdata.append('trustRelationship', blob)
-
-      if (!configs) {
-        dispatch(
-          createWebsiteSsoServiceProvider({
-            action: { action_message: user_message, action_data: formdata },
-          }),
-        )
-      } else {
-        dispatch(
-          updateWebsiteSsoServiceProvider({
-            action: {
-              action_message: user_message,
-              action_data: formdata,
-              action_inum: configs.inum,
-            },
-          }),
-        )
+      try {
+        if (!configs) {
+          await createTrustRelationship.mutateAsync({
+            data: trustRelationshipFormData,
+            userMessage: user_message,
+          })
+        } else {
+          await updateTrustRelationship.mutateAsync({
+            data: trustRelationshipFormData,
+            userMessage: user_message,
+          })
+        }
+      } catch (error) {
+        dispatch(updateToast(true, 'error'))
       }
     },
-    [configs, dispatch],
+    [configs, createTrustRelationship, updateTrustRelationship, dispatch],
   )
 
   const submitForm = useCallback(
@@ -217,12 +225,15 @@ const WebsiteSsoServiceProviderForm = ({
     if (savedForm) {
       navigateBack(ROUTES.SAML_SP_LIST)
     }
+  }, [savedForm, navigateBack])
 
+  useEffect(() => {
     return () => {
-      dispatch(toggleSavedFormFlag(false))
+      createResetRef.current()
+      updateResetRef.current()
       dispatch(setClientSelectedScopes([]))
     }
-  }, [savedForm, navigateBack, dispatch])
+  }, [dispatch])
 
   const handleDrop = useCallback(
     (files: File[]) => {
