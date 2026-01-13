@@ -76,6 +76,8 @@
     "company_name": "Company Name",
     "customer_name": "Customer Name",
     "license_status": "License Status",
+    "active": "Active",
+    "inactive": "Inactive",
     "oauth_server_status": "OAuth server status",
     "database_status": "Database status",
     "server_status": "Server status",

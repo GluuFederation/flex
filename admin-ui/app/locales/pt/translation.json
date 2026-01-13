@@ -25,6 +25,8 @@
     "company_name": "Nome da empresa",
     "customer_name": "nome do cliente",
     "license_status": "Status da licença",
+    "active": "Ativo",
+    "inactive": "Inativo",
     "oauth_server_status": "Status do servidor OAuth",
     "database_status": "Status do banco de dados",
     "server_status": "Status do servidor",

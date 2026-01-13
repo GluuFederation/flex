@@ -100,10 +100,15 @@ const UserInfoItem = memo<{
   item: { text: string; value: string | undefined }
   classes: ClassesType
   isStatus?: boolean
-}>(({ item, classes, isStatus }) => {
+  t: (key: string) => string
+}>(({ item, classes, isStatus, t }) => {
   if (isStatus) {
     const isActive = item.value === 'active'
-    const displayValue = item.value ? item.value.charAt(0).toUpperCase() + item.value.slice(1) : '-'
+    const displayValue = item.value
+      ? isActive
+        ? t('dashboard.active')
+        : t('dashboard.inactive')
+      : '-'
     return (
       <div className={classes.userInfoStatusContainer}>
         <div className={classes.userInfoText}>{item.text}:</div>
@@ -484,6 +489,7 @@ const DashboardPage = () => {
                                   item={item}
                                   classes={classes}
                                   isStatus={item.isStatus}
+                                  t={t}
                                 />
                               </div>
                             ))}

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useMemo, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { ThemeContext } from 'Context/theme/themeContext'
-import getThemeColor from 'Context/theme/config'
+import getThemeColor, { themeConfig } from 'Context/theme/config'
 import { ReactNode } from 'react'
 import customColors from '@/customColors'
 
@@ -25,7 +25,10 @@ const LayoutContent = ({ children }: LayoutContentProps) => {
     throw new Error('ThemeContext must be used within a ThemeProvider')
   }
   const selectedTheme = theme.state.theme
-  const themeColors = getThemeColor(selectedTheme)
+  const themeColors = useMemo(() => {
+    const colors = getThemeColor(selectedTheme)
+    return colors || themeConfig.light
+  }, [selectedTheme])
   const layoutElementRef = useRef<HTMLElement | null>(null)
 
   const isDark = useMemo(() => selectedTheme === 'dark', [selectedTheme])

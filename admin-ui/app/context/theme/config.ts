@@ -58,7 +58,8 @@ export const themeConfig = {
 }
 
 const getThemeColor = (config: string): (typeof themeConfig)[keyof typeof themeConfig] => {
-  return themeConfig[config as keyof typeof themeConfig]
+  const validConfig = config === 'light' || config === 'dark' ? config : 'light'
+  return themeConfig[validConfig]
 }
 
 export default getThemeColor
