@@ -2,18 +2,15 @@ import React, { useContext } from 'react'
 import clsx from 'clsx'
 import Drawer from '@mui/material/Drawer'
 import Box from '@mui/material/Box'
-import SettingsIcon from '@mui/icons-material/Settings'
 import { ThemeContext } from 'Context/theme/themeContext'
 import darkBlackThumbnail from 'Images/theme-thumbnail/darkBlack.jpg'
-import darkBlueThumbnail from 'Images/theme-thumbnail/darkBlue.jpg'
 import lightBlueThumbnail from 'Images/theme-thumbnail/lightBlue.jpg'
-import lightGreenThumbnail from 'Images/theme-thumbnail/lightGreen.jpg'
+import settingsIcon from 'Images/svg/settings-icon.svg'
 import styles from './styles'
-import customColors from '@/customColors'
 
 interface UserInfo {
   inum?: string
-  [key: string]: any
+  [key: string]: string | undefined
 }
 
 interface ThemeSettingsProps {
@@ -29,21 +26,30 @@ interface ThemeListItem {
 export function ThemeSettings({ userInfo }: ThemeSettingsProps) {
   const { classes } = styles()
   const [open, setOpen] = React.useState(false)
-  const themeContext = useContext(ThemeContext) as any
+  const themeContext = useContext(ThemeContext)
+
+  const currentTheme = React.useMemo(() => {
+    return themeContext?.state?.theme || 'light'
+  }, [themeContext?.state?.theme])
+
+  const iconFilter = React.useMemo(() => {
+    if (currentTheme === 'dark') {
+      return 'brightness(0) invert(1)'
+    }
+    return 'brightness(0) saturate(100%) invert(26%) sepia(9%) saturate(1234%) hue-rotate(182deg) brightness(96%) contrast(89%)'
+  }, [currentTheme])
 
   const themeList: ThemeListItem[] = [
-    { value: 'darkBlack', thumbnail: darkBlackThumbnail, text: 'Dark Black' },
-    { value: 'darkBlue', thumbnail: darkBlueThumbnail, text: 'Dark Blue' },
-    { value: 'lightBlue', thumbnail: lightBlueThumbnail, text: 'Light Blue' },
-    { value: 'lightGreen', thumbnail: lightGreenThumbnail, text: 'Light Green' },
+    { value: 'light', thumbnail: lightBlueThumbnail, text: 'Light Theme' },
+    { value: 'dark', thumbnail: darkBlackThumbnail, text: 'Dark Theme' },
   ]
-  const existingConfig = JSON.parse(localStorage.getItem('userConfig') || '{}')
-  const lang = existingConfig?.lang || {}
-  const theme = existingConfig?.theme || {}
 
   const onChangeTheme = (value: string) => {
-    const { inum } = userInfo
+    const existingConfig = JSON.parse(localStorage.getItem('userConfig') || '{}')
+    const lang = existingConfig?.lang || {}
+    const theme = existingConfig?.theme || {}
 
+    const { inum } = userInfo
     if (inum) {
       theme[inum] = value
     }
@@ -51,8 +57,9 @@ export function ThemeSettings({ userInfo }: ThemeSettingsProps) {
     const newConfig = { lang, theme }
     localStorage.setItem('userConfig', JSON.stringify(newConfig))
 
-    themeContext.dispatch({ type: value })
-    return
+    if (themeContext) {
+      themeContext.dispatch({ type: value })
+    }
   }
 
   const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
@@ -80,7 +87,7 @@ export function ThemeSettings({ userInfo }: ThemeSettingsProps) {
         {themeList.map((text) => (
           <Box
             className={clsx(classes.selectItem, {
-              [classes.selectedItem]: themeContext.state.theme === text.value,
+              [classes.selectedItem]: themeContext?.state?.theme === text.value,
             })}
             onClick={() => onChangeTheme(text.value)}
             key={text.value}
@@ -100,7 +107,16 @@ export function ThemeSettings({ userInfo }: ThemeSettingsProps) {
   return (
     <React.Fragment>
       <button onClick={toggleDrawer(true)} className={classes.settingsToggeleBtn}>
-        <SettingsIcon style={{ color: customColors.white, width: '35px', height: '100%' }} />
+        <img
+          src={settingsIcon}
+          alt="Settings"
+          style={{
+            width: '32px',
+            height: '32px',
+            display: 'block',
+            filter: iconFilter,
+          }}
+        />
       </button>
       <Drawer anchor={'right'} open={open} onClose={toggleDrawer(false)}>
         {list('right')}

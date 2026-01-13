@@ -6,7 +6,7 @@ interface OAuthProps {
   style?: React.CSSProperties
 }
 
-const OAuthIcon: React.FC<OAuthProps> = ({ fill = '#000', className, style }) => {
+const OAuthIcon: React.FC<OAuthProps> = ({ fill = 'currentColor', className, style }) => {
   return (
     <div className={className} style={style}>
       <svg xmlns="http://www.w3.org/2000/svg" fill={fill} viewBox="0 0 22.95 22.95">

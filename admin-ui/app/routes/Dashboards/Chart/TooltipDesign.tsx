@@ -2,7 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import type { TooltipDesignProps } from '../types'
 
-function TooltipDesign({ payload = [] }: TooltipDesignProps) {
+const TooltipDesign = ({ payload = [] }: TooltipDesignProps) => {
   const { t } = useTranslation()
   const objValues: Record<string, string> = {
     client_credentials_access_token_count: t('tooltips.client_credentials_access_token_count'),

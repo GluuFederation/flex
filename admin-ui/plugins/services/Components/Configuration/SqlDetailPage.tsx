@@ -8,7 +8,7 @@ import type { SqlDetailPageProps } from './types'
 function SqlDetailPage({ row, testSqlConnection }: SqlDetailPageProps): ReactElement {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'darkBlue'
+  const selectedTheme = theme?.state?.theme || 'light'
 
   return (
     <React.Fragment>
@@ -41,7 +41,8 @@ function SqlDetailPage({ row, testSqlConnection }: SqlDetailPageProps): ReactEle
               <Label sm={6}>{t('fields.connectionUris')}:</Label>
               <Label sm={6}>
                 {row.connectionUri &&
-                  row.connectionUri.map((ele, index) => (
+                  row.connectionUri.length > 0 &&
+                  row.connectionUri.map((ele: string, index: number) => (
                     <Badge key={index} color={`primary-${selectedTheme}`}>
                       {ele}
                     </Badge>
@@ -54,7 +55,8 @@ function SqlDetailPage({ row, testSqlConnection }: SqlDetailPageProps): ReactEle
               <Label sm={6}>{t('fields.binaryAttributes')}:</Label>
               <Label sm={6}>
                 {row.binaryAttributes &&
-                  row.binaryAttributes.map((attr, index) => (
+                  row.binaryAttributes.length > 0 &&
+                  row.binaryAttributes.map((attr: string, index: number) => (
                     <Badge key={index} color={`primary-${selectedTheme}`}>
                       {attr}
                     </Badge>

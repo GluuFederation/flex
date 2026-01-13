@@ -28,10 +28,10 @@ export const STATUS_COLOR_MAP: Record<string, string> = {
   'not present': 'secondary',
 } as const
 
-export function getStatusDisplay(status: string): string {
+export const getStatusDisplay = (status: string): string => {
   return STATUS_DISPLAY_MAP[status.toLowerCase()] ?? 'Unknown'
 }
 
-export function getStatusColor(status: string): string {
+export const getStatusColor = (status: string): string => {
   return STATUS_COLOR_MAP[status.toLowerCase()] ?? 'secondary'
 }

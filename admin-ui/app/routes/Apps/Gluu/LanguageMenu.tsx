@@ -7,7 +7,7 @@ import customColors from '@/customColors'
 const LanguageMenu = ({ userInfo }: any) => {
   const [isOpen, setOpen] = useState(false)
   const initLang = localStorage.getItem('initLang') || 'en'
-  const initTheme = localStorage.getItem('initTheme') || 'darkBlack'
+  const initTheme = localStorage.getItem('initTheme') || 'light'
   const userConfig = JSON.parse(localStorage.getItem('userConfig') as string)
   const userConfigLang = userConfig && userConfig !== 'null' ? userConfig?.lang : {}
   const userConfigTheme = userConfig && userConfig !== 'null' ? userConfig?.theme : {}

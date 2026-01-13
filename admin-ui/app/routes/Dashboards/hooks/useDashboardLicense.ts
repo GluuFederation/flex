@@ -3,8 +3,9 @@ import { useGetAdminuiLicense, type LicenseResponse } from 'JansConfigApi'
 import type { RootState } from 'Redux/sagas/types/audit'
 import { DASHBOARD_CACHE_CONFIG } from '../constants'
 
-// Clean up quotes from string fields (matching existing Redux slice behavior)
-function transformLicenseResponse(data: LicenseResponse | undefined): LicenseResponse | undefined {
+const transformLicenseResponse = (
+  data: LicenseResponse | undefined,
+): LicenseResponse | undefined => {
   if (!data) return undefined
 
   return {
@@ -16,7 +17,7 @@ function transformLicenseResponse(data: LicenseResponse | undefined): LicenseRes
   }
 }
 
-export function useDashboardLicense() {
+export const useDashboardLicense = () => {
   const authToken = useSelector((state: RootState) => state.authReducer?.token?.access_token)
 
   return useGetAdminuiLicense({

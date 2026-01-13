@@ -1,3 +1,5 @@
+@import "./theme-colors";
+
 .layout__content {
     border-bottom-left-radius: 28px;
     border-bottom-right-radius: 28px;
@@ -12,101 +14,55 @@
     padding: 5px 8px;
 }
 
-.bg-primary-darkBlack {
-    background-color: #323c47;
+.bg-primary-light {
+    background-color: $text-secondary;
     color: #ffffff;
 }
 
-.bg-primary-darkBlue {
-    background-color: #284461;
-    color: #ffffff;
-}
-
-.bg-primary-lightBlue {
-    background-color: #9dbde2;
-    color: #ffffff;
-}
-
-.bg-primary-lightGreen {
-    background-color: #3bc391;
+.bg-primary-dark {
+    background-color: $dark-background;
     color: #ffffff;
 }
 
 // Button
 
-.btn-primary-darkBlack {
-    background-color: #323c47 !important;
+.btn-primary-light {
+    background-color: $text-secondary !important;
     color: #ffffff !important;
 }
 
-.btn-primary-darkBlue {
-    background-color: #284461 !important;
-    color: #ffffff !important;
-}
-
-.btn-primary-lightBlue {
-    background-color: #9dbde2 !important;
-    color: #ffffff !important;
-}
-
-.btn-primary-lightGreen {
-    background-color: #3bc391 !important;
+.btn-primary-dark {
+    background-color: $dark-background !important;
     color: #ffffff !important;
 }
 
 // Button outline
 
-.btn-outline-primary-darkBlack {
-    background-color: #303641 !important;
+.btn-outline-primary-light {
+    background-color: $text-secondary !important;
     color: #ffffff !important;
 }
 
-.btn-outline-primary-darkBlue {
-    background-color: #284461 !important;
-    color: #ffffff !important;
-}
-
-.btn-outline-primary-lightBlue {
-    background-color: #9dbde2 !important;
-    color: #ffffff !important;
-}
-
-.btn-outline-primary-lightGreen {
-    background-color: #3bc391 !important;
+.btn-outline-primary-dark {
+    background-color: $dark-background !important;
     color: #ffffff !important;
 }
 
 // Tooltip
 
-.type-darkBlack {
-    background-color: #303641 !important;
+.type-light {
+    background-color: $text-secondary !important;
     color: #ffffff !important;
     &::after {
-        border-bottom-color: #303641 !important;
+        border-bottom-color: $text-secondary !important;
     }
 }
 
-.type-darkBlue {
-    background-color: #284461 !important;
+.type-dark {
+    background-color: $dark-background !important;
     color: #ffffff !important;
     &::after {
-        border-bottom-color: #284461 !important;
-    }
-}
-
-.type-lightBlue {
-    background-color: #9dbde2 !important;
-    color: #ffffff !important;
-    &::after {
-        border-bottom-color: #9dbde2 !important;
-    }
-}
-
-.type-lightGreen {
-    background-color: #3bc391 !important;
-    color: #ffffff !important;
-    &::after {
-        border-bottom-color: #3bc391 !important;
+        border-bottom-color: $dark-background !important;
     }
 }
 

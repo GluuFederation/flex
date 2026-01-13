@@ -8,7 +8,7 @@ const logoutSlice = createSlice({
     logoutUser: (state, action) => {
       const userConfig = localStorage.getItem('userConfig')
       localStorage.clear()
-      localStorage.setItem('initTheme', 'darkBlack')
+      localStorage.setItem('initTheme', 'light')
       localStorage.setItem('initLang', 'en')
 
       if (userConfig && userConfig !== 'null') {

@@ -5,8 +5,8 @@
 
 .btn-transparent {
     background-color: transparent;
-    border: 1px solid #9a9a9a;
-    color: #fff;
+    border: 1px solid var(--theme-navbar-border, #9a9a9a);
+    color: var(--theme-navbar-text, #fff);
     width: 44px;
     height: 36px;
     padding: 5px 10px 10px 10px;
@@ -29,26 +29,26 @@
 }
 
 .page-title {
-    color: #fff;
+    color: var(--theme-navbar-text, var(--theme-text-color, #fff));
     position: relative;
     top: 14px;
 }
 
 .sidebar-menu__entry--nested.open .sidebar-menu__entry__link::after {
-    color: #323b47 !important;
+    color: var(--theme-menu-arrow-color, var(--theme-menu-text-color)) !important;
 }
 
 .sidebar-menu__entry--nested .sidebar-menu__entry__link::after {
-    color: #323b47 !important;
+    color: var(--theme-menu-arrow-color, var(--theme-menu-text-color)) !important;
 }
 
 .sidebar-submenu__entry.active:not(.open) > .sidebar-submenu__entry__link {
-    color: #323b47 !important;
+    color: var(--theme-menu-text-color-active, var(--theme-menu-text-color, #323b47)) !important;
 }
 
 .sidebar-menu {
     height: 87vh;
     overflow-y: scroll;
     margin-bottom: 0;
-    margin-top: 20px;
+    margin-top: 0;
 }

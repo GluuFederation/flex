@@ -11,7 +11,7 @@ import type { CacheMemcachedProps } from './types'
 function CacheMemcached({ config, formik }: CacheMemcachedProps): ReactElement {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'darkBlue'
+  const selectedTheme = theme?.state?.theme || 'light'
 
   return (
     <Card>

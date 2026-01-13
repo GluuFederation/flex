@@ -1,43 +1,43 @@
+@import "./theme-colors";
+
 $dark-gray: #323c47;
 $accent-red: #b3424a;
 $light-blue: #3573a6;
 $light-cyan: #bdd4d5;
 $light-gray: #eaecf1;
 $pale-yellow: #cfd76f;
-$darkBlueThemeBackground: #284461;
-$blueThemebackground: #9dbde2;
 
 .custom-sidebar-container {
-    background-color: #fcfcfc;
+    background-color: var(--theme-sidebar-background, #fcfcfc);
     border-top-right-radius: 28px;
     border-top-left-radius: 28px;
 
     .sidebar-menu__entry__link {
-        color: #323b47;
+        color: var(--theme-menu-text-color, #323b47);
     }
 
     .sidebar-submenu__entry__link {
-        color: #323b47;
+        color: var(--theme-menu-text-color, #323b47);
     }
 
     .sidebar-menu__entry__link:hover {
-        color: #323b47;
+        color: var(--theme-menu-text-color-hover, #323b47);
     }
     .sidebar-submenu__entry__link:hover {
-        color: #323b47;
+        color: var(--theme-menu-text-color-hover, #323b47);
     }
 
     .sidebar-menu__entry:hover {
         i {
-            color: #323b47;
+            color: var(--theme-menu-icon-color-hover, #323b47);
         }
         a {
-            color: #323b47;
+            color: var(--theme-menu-text-color-hover, #323b47);
         }
     }
 
     .sidebar-menu__entry__icon {
-        color: #323b47;
+        color: var(--theme-menu-icon-color, #323b47);
     }
 }
 
@@ -62,43 +62,23 @@ $blueThemebackground: #9dbde2;
     cursor: pointer;
 }
 
-.sidebar-menu-active-darkBlack {
-    background: $dark-gray !important;
+.sidebar-menu-active-light {
+    background: $text-secondary !important;
     color: #fff !important;
 }
 
-.sidebar-menu-active-darkBlack:hover {
-    background: #000 !important;
+.sidebar-menu-active-light:hover {
+    background: $primary-dark !important;
     color: #fff !important;
 }
 
-.sidebar-menu-active-darkBlue {
-    background: $darkBlueThemeBackground !important;
+.sidebar-menu-active-dark {
+    background: $dark-background !important;
     color: #fff !important;
 }
 
-.sidebar-menu-active-darkBlue:hover {
-    background: #323c46 !important;
-    color: #fff !important;
-}
-
-.sidebar-menu-active-lightBlue {
-    background: $blueThemebackground !important;
-    color: #fff !important;
-}
-
-.sidebar-menu-active-lightBlue:hover {
-    background: #274561 !important;
-    color: #fff !important;
-}
-
-.sidebar-menu-active-lightGreen {
-    background: #02b774 !important;
-    color: #fff !important;
-}
-
-.sidebar-menu-active-lightGreen:hover {
-    background: #02b774 !important;
+.sidebar-menu-active-dark:hover {
+    background: $dark-sidebar !important;
     color: #fff !important;
 }
 

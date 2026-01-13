@@ -35,7 +35,7 @@ function GluuFormDetailRow({
 }: GluuFormDetailRowProps) {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme ?? 'light'
+  const selectedTheme = theme?.state?.theme || 'light'
 
   const appliedLabelStyle: CSSProperties = { ...defaultLabelStyle, ...labelStyle }
 

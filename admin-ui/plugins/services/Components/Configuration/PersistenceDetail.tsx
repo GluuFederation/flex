@@ -23,7 +23,7 @@ interface DatabaseField {
 function PersistenceDetail(): ReactElement | null {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'darkBlue'
+  const selectedTheme = theme?.state?.theme || 'light'
   const themeColors = getThemeColor(selectedTheme)
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
 

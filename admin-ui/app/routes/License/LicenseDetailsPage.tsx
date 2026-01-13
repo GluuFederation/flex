@@ -55,7 +55,7 @@ function LicenseDetailsPage() {
 
   SetTitle(t('menus.licenseDetails'))
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'darkBlack'
+  const selectedTheme = theme?.state?.theme || 'light'
   const themeColors = getThemeColor(selectedTheme)
 
   const labelStyle = {

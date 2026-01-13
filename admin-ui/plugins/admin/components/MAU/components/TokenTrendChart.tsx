@@ -44,8 +44,8 @@ const TokenTrendChart: React.FC<MauChartProps> = ({ data }) => {
               dataKey="clientCredentials"
               name={t('fields.cc_tokens')}
               stackId="1"
-              stroke={chartColors.clientCredentials}
-              fill={chartColors.clientCredentials}
+              stroke={chartColors.trendClientCredentials}
+              fill={chartColors.trendClientCredentials}
               fillOpacity={0.6}
             />
             <Area
@@ -53,8 +53,8 @@ const TokenTrendChart: React.FC<MauChartProps> = ({ data }) => {
               dataKey="authzCodeAccess"
               name={t('dashboard.authorization_code_access_token')}
               stackId="1"
-              stroke={chartColors.authCodeAccess}
-              fill={chartColors.authCodeAccess}
+              stroke={chartColors.trendAuthCodeAccess}
+              fill={chartColors.trendAuthCodeAccess}
               fillOpacity={0.6}
             />
             <Area
@@ -62,8 +62,8 @@ const TokenTrendChart: React.FC<MauChartProps> = ({ data }) => {
               dataKey="authzCodeId"
               name={t('dashboard.authorization_code_id_token')}
               stackId="1"
-              stroke={chartColors.authCodeId}
-              fill={chartColors.authCodeId}
+              stroke={chartColors.trendAuthCodeId}
+              fill={chartColors.trendAuthCodeId}
               fillOpacity={0.6}
             />
           </AreaChart>

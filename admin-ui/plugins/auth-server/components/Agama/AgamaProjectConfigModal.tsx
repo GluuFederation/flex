@@ -30,7 +30,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
   const dispatch = useDispatch()
   const theme = useContext(ThemeContext)
   const name = row.details?.projectMetadata?.projectName || ''
-  const selectedTheme = theme?.state?.theme || 'dark'
+  const selectedTheme = theme?.state?.theme || 'light'
   const [configDetails, setConfigDetails] = useState<ConfigDetailsState>({
     isLoading: false,
     data: {},

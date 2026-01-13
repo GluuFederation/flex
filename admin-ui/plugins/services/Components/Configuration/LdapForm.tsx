@@ -49,7 +49,7 @@ function LdapForm({
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'darkBlue'
+  const selectedTheme = theme?.state?.theme || 'light'
 
   function activateValidation(): void {
     if (!init) {

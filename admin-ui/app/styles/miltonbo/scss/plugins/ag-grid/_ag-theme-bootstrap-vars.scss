@@ -1,4 +1,5 @@
 @import "./../../variables";
+@import "./../../../../custom/theme-colors";
 
 $font-family: $font-family-base;
 $font-size: 14px;
@@ -15,26 +16,26 @@ $secondary-foreground-color: $table-head-color;
 $disabled-foreground-color: rgba($table-head-color, $disabled-foreground-color-opacity);
 $menu-option-active-color: #bde2e5 !default;
 
-$card-background-color: #f6f6f6 !default;
+$card-background-color: $light-background !default;
 $border-color: transparent !default;
 $primary-color: $primary !default;
 $accent-color: black !default;
 $selected-color: $gray-200;
 
 $background-color: white !default;
-$odd-row-background-color: #f6f6f6 !default;
+$odd-row-background-color: $light-background !default;
 
-$editor-background-color: #f6f6f6 !default;
+$editor-background-color: $light-background !default;
 
 $header-foreground-color: $secondary-foreground-color;
 $header-background-color: transparent !default;
 $header-cell-hover-background-color: $header-background-color !default;
 $header-background-image: none !default;
-$panel-background-color: #f6f6f6 !default;
+$panel-background-color: $light-background !default;
 
 $input-border-color: $input-border-color;
 
-$tool-panel-background-color: #f6f6f6 !default;
+$tool-panel-background-color: $light-background !default;
 
 $chip-background-color: #ecf0f1 !default;
 

@@ -1,5 +1,6 @@
 @import "./miltonbo/scss/style.scss";
 @import "~pretty-checkbox/src/pretty-checkbox.scss";
+@import "./custom/theme-colors";
 @import "./custom/layout.scss";
 @import "./custom/navbar.scss";
 @import "./custom/sidebar.scss";
@@ -354,7 +355,7 @@ html {
 @media screen and (min-width: 768px) {
     .month-picker > .box {
         border: 1px solid #e0e0e0;
-        background-color: #f6f6f6;
+        background-color: $light-background;
         padding-left: 0.9rem;
         box-sizing: border-box;
         line-height: 3.2rem;

@@ -130,7 +130,7 @@ const SettingsPage: React.FC = () => {
       ? stored
       : DEFAULT_PAGING_SIZE
   }, [])
-  const selectedTheme = useMemo(() => theme?.state?.theme || 'darkBlack', [theme?.state?.theme])
+  const selectedTheme = useMemo(() => theme?.state?.theme || 'light', [theme?.state?.theme])
   const configApiUrl = useMemo(() => {
     if (typeof window === 'undefined') return 'N/A'
     const windowWithConfig = window as Window & { configApiBaseUrl?: string }

@@ -4,7 +4,7 @@ import { useGetOauthOpenidClients } from 'JansConfigApi'
 import type { RootState } from 'Redux/sagas/types/audit'
 import { DASHBOARD_CACHE_CONFIG } from '../constants'
 
-export function useDashboardClients() {
+export const useDashboardClients = () => {
   const authToken = useSelector((state: RootState) => state.authReducer?.token?.access_token)
 
   const query = useGetOauthOpenidClients(undefined, {

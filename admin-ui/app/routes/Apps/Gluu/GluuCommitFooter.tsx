@@ -38,7 +38,7 @@ function GluuCommitFooter({
 }: GluuCommitFooterProps) {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state.theme || 'darkBlack'
+  const selectedTheme = theme?.state?.theme || 'light'
 
   function goBack() {
     if (backButtonHandler) {

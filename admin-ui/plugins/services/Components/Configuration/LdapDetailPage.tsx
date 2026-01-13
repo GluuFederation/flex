@@ -8,7 +8,7 @@ import type { LdapDetailPageProps } from './types'
 function LdapDetailPage({ row, testLdapConnection }: LdapDetailPageProps): ReactElement {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'darkBlue'
+  const selectedTheme = theme?.state?.theme || 'light'
 
   function getBadgeTheme(status: boolean | undefined): string {
     if (status) {

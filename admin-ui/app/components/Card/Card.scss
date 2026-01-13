@@ -22,11 +22,27 @@
     }
 
     &--background {
-        color: map-get($dashboard-colors, "white");
-
         @each $name, $color in $dashboard-colors {
             &.custom-card--color-#{$name} {
                 background-color: $color;
+                // Only set white text for dark colored backgrounds
+                @if $name ==
+                    "primary" or
+                    $name ==
+                    "secondary" or
+                    $name ==
+                    "dark" or
+                    $name ==
+                    "success" or
+                    $name ==
+                    "danger" or
+                    $name ==
+                    "warning" or
+                    $name ==
+                    "info"
+                {
+                    color: map-get($dashboard-colors, "white");
+                }
             }
         }
     }

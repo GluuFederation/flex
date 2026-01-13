@@ -12,7 +12,7 @@ import type { CacheRedisProps } from './types'
 function CacheRedis({ config, formik }: CacheRedisProps): ReactElement {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'darkBlue'
+  const selectedTheme = theme?.state?.theme || 'light'
 
   return (
     <Card>

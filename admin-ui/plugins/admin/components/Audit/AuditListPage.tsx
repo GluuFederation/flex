@@ -164,7 +164,7 @@ const AuditSearch: React.FC<AuditSearchProps> = ({
 }) => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'darkBlack'
+  const selectedTheme = theme?.state?.theme || 'light'
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
 
   const handleKeyDown = useCallback(
@@ -275,7 +275,7 @@ const AuditListPage: React.FC = () => {
   SetTitle(t('menus.audit_logs'))
 
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'darkBlack'
+  const selectedTheme = theme?.state?.theme || 'light'
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
 
   const [limit, setLimit] = useState<number>(10)

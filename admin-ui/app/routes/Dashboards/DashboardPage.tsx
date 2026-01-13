@@ -1,35 +1,29 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react'
+import React, { useState, useEffect, useMemo, useCallback, useContext, memo } from 'react'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
 import { useMediaQuery } from 'react-responsive'
 import dayjs from 'dayjs'
 import type { Dayjs } from 'dayjs'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import DashboardChart from './Chart/DashboardChart'
 import DateRange from './DateRange'
-import CheckIcon from 'Images/svg/check.svg'
-import CrossIcon from 'Images/svg/cross.svg'
 import SetTitle from 'Utils/SetTitle'
 import styles from './styles'
 import type { CedarPermissionsState } from '@/cedarling/types'
 import type { AuthState } from 'Redux/features/types/authTypes'
 
 import { formatDate } from 'Utils/Util'
-import UsersIcon from '@/components/SVG/menu/Users'
-import Administrator from '@/components/SVG/menu/Administrator'
-import OAuthIcon from '@/components/SVG/menu/OAuth'
-import JansLockUsers from '@/components/SVG/menu/JansLockUsers'
-import JansLockClients from '@/components/SVG/menu/JansLockClients'
 import GluuPermissionModal from 'Routes/Apps/Gluu/GluuPermissionModal'
 import { auditLogoutLogs } from 'Redux/features/sessionSlice'
 import customColors from '@/customColors'
 import { useCedarling } from '@/cedarling'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
 
 import { useDashboardLicense, useDashboardClients, useDashboardLockStats } from './hooks'
 import { useMauStats } from 'Plugins/admin/components/MAU/hooks'
@@ -41,12 +35,129 @@ interface RootState {
   cedarPermissions: CedarPermissionsState
 }
 
-function DashboardPage() {
+type ClassesType = Record<string, string>
+
+const STATUS_DETAILS = [
+  { label: 'menus.oauthserver', key: 'jans-auth' },
+  { label: 'dashboard.config_api', key: 'jans-config-api' },
+  { label: 'dashboard.database_status', key: 'database' },
+  { label: 'FIDO', key: 'jans-fido2' },
+  { label: 'CASA', key: 'jans-casa' },
+  { label: 'dashboard.key_cloak', key: 'keycloak' },
+  { label: 'SCIM', key: 'jans-scim' },
+  { label: 'dashboard.jans_lock', key: 'jans-lock' },
+] as const
+
+const LEGEND_ITEMS = [
+  { color: customColors.chartPurple, label: 'Authorization Code ID Token' },
+  { color: customColors.chartCoral, label: 'Authorization Code Access Token' },
+  { color: customColors.chartCyan, label: 'Client Credential Access Token' },
+] as const
+
+const CHART_TITLE_STYLE = {
+  fontSize: 22,
+  fontWeight: 500,
+  marginBottom: 0,
+  marginTop: 0,
+} as const
+
+const StatusIndicator = memo<{
+  label: string
+  status: string
+  classes: ClassesType
+  t: (key: string) => string
+}>(({ label, status, classes, t }) => {
+  const isActive = status === 'up' || status === 'degraded'
+  return (
+    <div className={classes.statusIndicator}>
+      <div
+        className={`${classes.statusDot} ${
+          isActive ? classes.statusDotActive : classes.statusDotInactive
+        }`}
+      />
+      <span>{t(label)}</span>
+    </div>
+  )
+})
+StatusIndicator.displayName = 'StatusIndicator'
+
+const SummaryCard = memo<{
+  text: string
+  value: number | null
+  classes: ClassesType
+}>(({ text, value, classes }) => (
+  <Paper className={classes.summary} elevation={0}>
+    <div className={classes.summaryText}>{text}</div>
+    <div className={classes.summaryValue}>{value}</div>
+  </Paper>
+))
+SummaryCard.displayName = 'SummaryCard'
+
+const UserInfoItem = memo<{
+  item: { text: string; value: string | undefined }
+  classes: ClassesType
+  isStatus?: boolean
+}>(({ item, classes, isStatus }) => {
+  if (isStatus) {
+    const isActive = item.value === 'active'
+    const displayValue = item.value ? item.value.charAt(0).toUpperCase() + item.value.slice(1) : '-'
+    return (
+      <div className={classes.userInfoStatusContainer}>
+        <div className={classes.userInfoText}>{item.text}:</div>
+        <span className={isActive ? classes.greenBlock : classes.redBlock}>{displayValue}</span>
+      </div>
+    )
+  }
+
+  return (
+    <>
+      <div className={classes.userInfoText}>{item.text}:</div>
+      <div className={classes.userInfoValue}>{item.value || '-'}</div>
+    </>
+  )
+})
+UserInfoItem.displayName = 'UserInfoItem'
+
+const DashboardPage = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
   const isMobile = useMediaQuery({ maxWidth: 767 })
-  const { classes } = styles()
+
+  const themeContext = useContext(ThemeContext)
+  const currentTheme = useMemo(
+    () => themeContext?.state.theme || 'light',
+    [themeContext?.state.theme],
+  )
+  const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
+
+  const isDark = currentTheme === 'dark'
+  const dashboardThemeColors = useMemo(() => {
+    const baseColors = isDark
+      ? {
+          cardBg: customColors.darkCardBg,
+          cardBorder: customColors.darkBorderAccent,
+          text: customColors.white,
+          textSecondary: customColors.textMutedDark,
+        }
+      : {
+          cardBg: customColors.white,
+          cardBorder: customColors.lightBorder,
+          text: customColors.primaryDark,
+          textSecondary: customColors.textSecondary,
+        }
+
+    return {
+      ...baseColors,
+      background: themeColors.background,
+      statusCardBg: baseColors.cardBg,
+      statusCardBorder: baseColors.cardBorder,
+    }
+  }, [isDark, themeColors.background])
+
+  const { classes } = styles({
+    themeColors: dashboardThemeColors,
+    isDark: currentTheme === 'dark',
+  })
 
   const [startDate, setStartDate] = useState<Dayjs>(dayjs().subtract(3, 'months'))
   const [endDate, setEndDate] = useState<Dayjs>(dayjs())
@@ -89,11 +200,7 @@ function DashboardPage() {
   }, [access_token, cedarInitialized, cedarIsInitializing, initPermissions])
 
   const { data: license, isLoading: licenseLoading } = useDashboardLicense()
-  const {
-    clients,
-    totalCount: totalClientsEntries,
-    isLoading: clientsLoading,
-  } = useDashboardClients()
+  const { totalCount: totalClientsEntries, isLoading: clientsLoading } = useDashboardClients()
   const { services, isLoading: healthLoading } = useHealthStatus()
 
   const isLockServiceAvailable = useMemo(() => {
@@ -117,11 +224,7 @@ function DashboardPage() {
     [startDate, endDate],
   )
 
-  const {
-    data: mauData,
-    isLoading: mauLoading,
-    summary: mauSummary,
-  } = useMauStats(dateRange, {
+  const { data: mauData, isLoading: mauLoading } = useMauStats(dateRange, {
     enabled: hasViewPermissions && !!access_token,
   })
 
@@ -149,17 +252,14 @@ function DashboardPage() {
       {
         text: t('dashboard.oidc_clients_count'),
         value: totalClientsEntries,
-        icon: <Administrator className={classes.summaryIcon} style={{ top: '8px' }} />,
       },
       {
         text: t('dashboard.active_users_count'),
         value: mauCount ?? 0,
-        icon: <UsersIcon className={classes.summaryIcon} style={{ top: '4px' }} />,
       },
       {
         text: t('dashboard.token_issued_count'),
         value: tokenCount ?? 0,
-        icon: <OAuthIcon className={classes.summaryIcon} style={{ top: '8px' }} />,
       },
     ]
 
@@ -168,47 +268,49 @@ function DashboardPage() {
         {
           text: t('dashboard.mau_users'),
           value: lockStats.monthly_active_users,
-          icon: <JansLockUsers className={classes.summaryIcon} style={{ top: '8px' }} />,
         },
         {
           text: t('dashboard.mau_clients'),
           value: lockStats.monthly_active_clients,
-          icon: <JansLockClients className={classes.summaryIcon} style={{ top: '8px' }} />,
         },
       )
     }
 
     return baseData
-  }, [t, totalClientsEntries, mauCount, tokenCount, lockData, lockStats, classes.summaryIcon])
+  }, [t, totalClientsEntries, mauCount, tokenCount, lockData, lockStats])
 
   const userInfo = useMemo(
     () => [
       {
         text: t('dashboard.product_name'),
         value: license?.productName,
+        isStatus: false,
       },
       {
         text: t('dashboard.license_type'),
         value: license?.licenseType,
+        isStatus: false,
       },
       {
         text: t('dashboard.customer_email'),
         value: license?.customerEmail,
+        isStatus: false,
       },
       {
         text: t('dashboard.customer_name'),
         value:
           String(license?.customerFirstName || '') + ' ' + String(license?.customerLastName || ''),
+        isStatus: false,
       },
       {
         text: t('fields.validityPeriod'),
         value: formatDate(license?.validityPeriod),
-        key: 'License Validity Period',
+        isStatus: false,
       },
       {
         text: t('dashboard.license_status'),
         value: license?.licenseActive ? 'active' : 'inactive',
-        key: 'License Status',
+        isStatus: true,
       },
     ],
     [t, license],
@@ -220,103 +322,6 @@ function DashboardPage() {
       return service?.status ?? 'unknown'
     },
     [services],
-  )
-
-  const statusDetails = useMemo(() => {
-    const allServices = [
-      { label: 'menus.oauthserver', key: 'jans-auth' },
-      { label: 'dashboard.config_api', key: 'jans-config-api' },
-      { label: 'dashboard.database_status', key: 'database' },
-      { label: 'FIDO', key: 'jans-fido2' },
-      { label: 'CASA', key: 'jans-casa' },
-      { label: 'dashboard.key_cloak', key: 'keycloak' },
-      { label: 'SCIM', key: 'jans-scim' },
-      { label: 'dashboard.jans_lock', key: 'jans-lock' },
-    ]
-
-    return allServices.filter((serviceConfig) => {
-      const status = getServiceStatus(serviceConfig.key)
-      return status === 'up' || status === 'degraded'
-    })
-  }, [services, getServiceStatus])
-
-  const getClassName = useCallback(
-    (key: string) => {
-      const status = getServiceStatus(key)
-      if (status === 'up') return classes.checkText
-      if (status === 'degraded') return classes.orange
-      return classes.crossText
-    },
-    [getServiceStatus, classes.checkText, classes.orange, classes.crossText],
-  )
-
-  const getStatusText = useCallback(
-    (key: string) => {
-      const status = getServiceStatus(key)
-      if (status === 'up') return 'Running'
-      if (status === 'down') return 'Down'
-      if (status === 'degraded') return 'Degraded'
-      return 'Unknown'
-    },
-    [getServiceStatus],
-  )
-
-  const getStatusIcon = useCallback(
-    (key: string) => {
-      const status = getServiceStatus(key)
-      if (status === 'up' || status === 'degraded') return CheckIcon
-      return CrossIcon
-    },
-    [getServiceStatus],
-  )
-
-  const StatusCard = useMemo(
-    () => (
-      <Grid item xs={12}>
-        <div className={classes.statusContainer}>
-          <div
-            className={classes.userInfoTitle}
-            style={{
-              color: customColors.white,
-              fontSize: 24,
-              fontWeight: 400,
-              marginBottom: '10px',
-            }}
-          >
-            {t('dashboard.system_status')}
-          </div>
-
-          <div
-            className={classes.userInfoText}
-            style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}
-          >
-            {statusDetails.map(({ label, key }) => (
-              <div className={classes.statusText} key={label}>
-                <div
-                  className="d-flex justify-content-between"
-                  style={{
-                    width: '100%',
-                    borderLeft: '4px solid ' + customColors.orange,
-                    paddingLeft: '10px',
-                  }}
-                >
-                  <div>
-                    <span style={{ display: 'block', marginBottom: '-4px' }}>{t(label)}</span>
-                    <span className={getClassName(key)} style={{ fontSize: '16px' }}>
-                      {getStatusText(key)}
-                    </span>
-                  </div>
-                  <span style={{ width: '18%', marginTop: '10px' }}>
-                    <img src={getStatusIcon(key)} className={getClassName(key)} alt={label} />
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </Grid>
-    ),
-    [t, statusDetails, classes, getClassName, getStatusText, getStatusIcon],
   )
 
   const handleLogout = useCallback(() => {
@@ -362,198 +367,172 @@ function DashboardPage() {
     permissions,
   ])
 
-  const handleStartDateChange = useCallback(
-    (date: Dayjs | null) => {
-      if (date) {
+  const handleDateChange = useCallback(
+    (type: 'start' | 'end', date: Dayjs | null) => {
+      if (!date) return
+
+      if (type === 'start') {
         setStartDate(date)
         if (date.isAfter(endDate)) {
           setEndDate(date)
         }
-      }
-    },
-    [endDate],
-  )
-
-  const handleEndDateChange = useCallback(
-    (date: Dayjs | null) => {
-      if (date) {
+      } else {
         setEndDate(date)
         if (date.isBefore(startDate)) {
           setStartDate(date)
         }
       }
     },
-    [startDate],
+    [startDate, endDate],
   )
 
-  const startMonth = startDate.format('YYYYMM')
-  const endMonth = endDate.format('YYYYMM')
+  const handleStartDateChange = useCallback(
+    (date: Dayjs | null) => handleDateChange('start', date),
+    [handleDateChange],
+  )
+
+  const handleEndDateChange = useCallback(
+    (date: Dayjs | null) => handleDateChange('end', date),
+    [handleDateChange],
+  )
+
+  const dateMonths = useMemo(
+    () => ({
+      start: startDate.format('YYYYMM'),
+      end: endDate.format('YYYYMM'),
+    }),
+    [startDate, endDate],
+  )
+
+  const chartTitleStyle = useMemo(
+    () => ({
+      ...CHART_TITLE_STYLE,
+      color: dashboardThemeColors.text,
+    }),
+    [dashboardThemeColors.text],
+  )
 
   return (
     <GluuLoader blocking={isBlocking}>
       {showModal}
-      <GluuViewWrapper canShow={hasViewPermissions}>
-        <div className={classes.root}>
-          <Grid container className="px-40 h-100" spacing={2}>
-            <Grid item lg={3} md={12} xs={12} height="auto">
-              <div
-                className={classes.userInfoTitle}
-                style={{
-                  color: customColors.white,
-                  fontSize: 24,
-                  fontWeight: 400,
-                  marginBottom: '10px',
-                }}
-              >
-                {t('dashboard.summary_title')}
-              </div>
-              <div className="d-flex flex-column" style={{ gap: '10px', marginTop: '11px' }}>
-                {summaryData.map((data, key) => (
-                  <Paper key={key} className={classes.summary}>
-                    <div className={classes.summaryDetails}>
-                      <div>
-                        <div className={classes.summaryText}>{data.text}</div>
-                        <div className={classes.summaryValue}>{data.value}</div>
-                      </div>
-                      <div
-                        className="d-flex justify-content-center align-items-center"
-                        style={{ width: '30%', height: '100%' }}
-                      >
-                        {data.icon}
-                      </div>
-                    </div>
-                  </Paper>
+
+      <div className={classes.root}>
+        <Grid container className="px-40" style={{ marginBottom: 0 }}>
+          <Grid item xs={12}>
+            <div className={classes.statusSection}>
+              <div className={classes.statusContainer}>
+                {STATUS_DETAILS.map(({ label, key }) => (
+                  <StatusIndicator
+                    key={label}
+                    label={label}
+                    status={getServiceStatus(key)}
+                    classes={classes}
+                    t={t}
+                  />
                 ))}
               </div>
-            </Grid>
+            </div>
+          </Grid>
+        </Grid>
 
-            <Grid item lg={5} md={12} xs={12}>
-              {StatusCard}
+        <Grid container className="px-40" spacing={2}>
+          <Grid item xs={12}>
+            <Grid container spacing={2}>
+              {summaryData.slice(0, 3).map((data, key) => (
+                <Grid item xs={12} sm={6} md={4} key={key}>
+                  <SummaryCard text={data.text} value={data.value} classes={classes} />
+                </Grid>
+              ))}
             </Grid>
+          </Grid>
 
-            <Grid item lg={4} md={12} xs={12}>
-              <Paper
-                className={classes.dashboardCard + ' top-minus-40 d-flex justify-content-center'}
-                elevation={0}
-              >
-                <Grid className={classes.flex} container>
-                  <Grid item xs={12} className={isMobile ? 'mt-20' : ''}>
-                    <div className={classes.userInfo}>
-                      <div
-                        className={classes.userInfoTitle}
-                        style={{
-                          color: customColors.white,
-                          fontSize: 24,
-                          fontWeight: 400,
-                          marginBottom: '10px',
-                        }}
-                      >
-                        {t('dashboard.user_info')}
-                      </div>
-                      <div
-                        className="d-flex flex-column justify-content-between"
-                        style={{
-                          backgroundColor: customColors.white,
-                          padding: '20px',
-                          borderRadius: '5px',
-                        }}
-                      >
-                        {userInfo.map((info, key) => (
-                          <div className={classes.userInfoText} key={key}>
-                            <span style={{ fontWeight: 600 }}>{info.text}: </span>
-                            {info?.key === 'License Status' ? (
-                              <span
-                                className={
-                                  info.value === 'active' ? classes.greenBlock : classes.redBlock
-                                }
+          <Grid item lg={5} md={12} xs={12}>
+            <Paper
+              className={classes.dashboardCard + ' d-flex justify-content-center'}
+              elevation={0}
+            >
+              <Grid className={classes.flex} container>
+                <Grid item xs={12} className={isMobile ? 'mt-20' : ''}>
+                  <div className={classes.userInfo}>
+                    <div className={classes.userInfoTitle}>{t('dashboard.user_info')}</div>
+                    <div className={classes.userInfoContent}>
+                      {Array.from({ length: Math.ceil(userInfo.length / 2) }, (_, rowIndex) => {
+                        const startIndex = rowIndex * 2
+                        const rowItems = userInfo.slice(startIndex, startIndex + 2)
+                        const isLastRow = rowIndex === Math.ceil(userInfo.length / 2) - 1
+
+                        return (
+                          <div
+                            key={rowIndex}
+                            className={`${classes.userInfoRow} ${
+                              isLastRow ? classes.userInfoRowLast : ''
+                            }`}
+                          >
+                            {rowItems.map((item, itemIndex) => (
+                              <div
+                                key={startIndex + itemIndex}
+                                className={`${classes.userInfoItem} ${
+                                  itemIndex === 0
+                                    ? classes.userInfoItemLeft
+                                    : classes.userInfoItemRight
+                                }`}
                               >
-                                {info.value}
-                              </span>
-                            ) : (
-                              <React.Fragment>{info.value}</React.Fragment>
-                            )}
+                                <UserInfoItem
+                                  item={item}
+                                  classes={classes}
+                                  isStatus={item.isStatus}
+                                />
+                              </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
+                        )
+                      })}
                     </div>
-                  </Grid>
+                  </div>
                 </Grid>
-              </Paper>
-            </Grid>
-          </Grid>
-
-          <Grid container className="px-40" sx={{ marginTop: '20px' }}>
-            <Grid lg={12} xs={12} item>
-              <h3 className="text-white">{t('dashboard.access_tokens_graph')}</h3>
-              {isTabletOrMobile ? (
-                <Grid container className={classes.whiteBg}>
-                  <Grid
-                    xs={12}
-                    item
-                    style={
-                      isTabletOrMobile ? { marginLeft: 40 } : { marginLeft: 40, marginBottom: 40 }
-                    }
-                  >
-                    <div>{t('dashboard.select_date_range')}</div>
-                    <DateRange
-                      startDate={startDate}
-                      endDate={endDate}
-                      onStartDateChange={handleStartDateChange}
-                      onEndDateChange={handleEndDateChange}
-                    />
-                  </Grid>
-                  <Grid xs={11} item className={classes.desktopChartStyle}>
-                    <DashboardChart
-                      statData={mauData ?? []}
-                      startMonth={startMonth}
-                      endMonth={endMonth}
-                    />
-                  </Grid>
-                </Grid>
-              ) : (
-                <Grid container className={classes.whiteBg + ' ' + classes.flex}>
-                  <Grid md={9} xs={12} item className={classes.desktopChartStyle}>
-                    <DashboardChart
-                      statData={mauData ?? []}
-                      startMonth={startMonth}
-                      endMonth={endMonth}
-                    />
-                  </Grid>
-                  <Grid md={3} xs={6} item>
-                    <div style={{ fontSize: 'large' }}>{t('dashboard.select_date_range')}</div>
-                    <DateRange
-                      startDate={startDate}
-                      endDate={endDate}
-                      onStartDateChange={handleStartDateChange}
-                      onEndDateChange={handleEndDateChange}
-                    />
-                  </Grid>
-                </Grid>
-              )}
-            </Grid>
-          </Grid>
-
-          <Grid container className={classes.flex + ' px-40'}>
-            <Grid xs={12} item>
-              <Grid xs={12} item className={(isMobile ? classes.block : classes.flex) + ' mt-20'}>
-                <ul className="me-40">
-                  <li className={classes.orange}>
-                    {t('dashboard.client_credentials_access_token')}
-                  </li>
-                </ul>
-                <ul className="me-40">
-                  <li className={classes.lightBlue}>
-                    {t('dashboard.authorization_code_access_token')}
-                  </li>
-                </ul>
-                <ul>
-                  <li className={classes.redText}>{t('dashboard.authorization_code_id_token')}</li>
-                </ul>
               </Grid>
-            </Grid>
+            </Paper>
           </Grid>
-        </div>
-      </GluuViewWrapper>
+
+          <Grid item lg={7} md={12} xs={12}>
+            <Paper elevation={0} style={{ background: 'transparent' }}>
+              <div className={classes.whiteBg}>
+                <h3 style={chartTitleStyle}>{t('dashboard.access_tokens_graph')}</h3>
+                <DateRange
+                  startDate={startDate}
+                  endDate={endDate}
+                  onStartDateChange={handleStartDateChange}
+                  onEndDateChange={handleEndDateChange}
+                  textColor={dashboardThemeColors.text}
+                  backgroundColor={dashboardThemeColors.cardBg}
+                  isDark={isDark}
+                />
+                <div className={classes.desktopChartStyle}>
+                  <div className={classes.chartBackground} />
+                  <DashboardChart
+                    statData={mauData ?? []}
+                    startMonth={dateMonths.start}
+                    endMonth={dateMonths.end}
+                    textColor={dashboardThemeColors.text}
+                    gridColor={dashboardThemeColors.textSecondary}
+                  />
+                </div>
+                <div className={classes.chartLegend}>
+                  {LEGEND_ITEMS.map((item) => (
+                    <div key={item.label} className={classes.legendItem}>
+                      <div
+                        className={classes.legendColor}
+                        style={{ backgroundColor: item.color }}
+                      />
+                      <span>{item.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Paper>
+          </Grid>
+        </Grid>
+      </div>
     </GluuLoader>
   )
 }

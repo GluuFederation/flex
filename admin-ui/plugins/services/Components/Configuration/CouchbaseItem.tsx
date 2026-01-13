@@ -11,7 +11,7 @@ import type { CouchbaseItemProps } from './types'
 function CouchbaseItem({ couchbase, index, formik }: CouchbaseItemProps): ReactElement {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'darkBlue'
+  const selectedTheme = theme?.state?.theme || 'light'
 
   return (
     <Card
@@ -51,8 +51,8 @@ function CouchbaseItem({ couchbase, index, formik }: CouchbaseItemProps): ReactE
             <FormGroup row>
               <GluuLabel label="fields.servers" size={4} />
               <Col sm={8}>
-                {couchbase.servers.length &&
-                  couchbase.servers.map((server, idx) => (
+                {couchbase.servers.length > 0 &&
+                  couchbase.servers.map((server: string, idx: number) => (
                     <Badge key={idx} color={`primary-${selectedTheme}`} className="ms-1">
                       {server}
                     </Badge>
@@ -66,8 +66,8 @@ function CouchbaseItem({ couchbase, index, formik }: CouchbaseItemProps): ReactE
             <FormGroup row>
               <GluuLabel label="fields.buckets" size={4} />
               <Col sm={8}>
-                {couchbase.buckets.length &&
-                  couchbase.buckets.map((bucket, idx) => (
+                {couchbase.buckets.length > 0 &&
+                  couchbase.buckets.map((bucket: string, idx: number) => (
                     <Badge key={idx} color={`primary-${selectedTheme}`} className="ms-1">
                       {bucket}
                     </Badge>

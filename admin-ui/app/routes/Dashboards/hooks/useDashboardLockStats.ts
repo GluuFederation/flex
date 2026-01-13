@@ -5,7 +5,7 @@ import type { RootState } from 'Redux/sagas/types/audit'
 import { DASHBOARD_CACHE_CONFIG } from '../constants'
 import type { LockStatEntry } from '../types'
 
-function transformLockStats(data: JsonNode[] | undefined): LockStatEntry[] {
+const transformLockStats = (data: JsonNode[] | undefined): LockStatEntry[] => {
   if (!data || !Array.isArray(data)) {
     return []
   }
@@ -21,7 +21,7 @@ interface UseDashboardLockStatsOptions {
   enabled?: boolean
 }
 
-export function useDashboardLockStats(options: UseDashboardLockStatsOptions = {}) {
+export const useDashboardLockStats = (options: UseDashboardLockStatsOptions = {}) => {
   const { enabled = true } = options
   const authToken = useSelector((state: RootState) => state.authReducer?.token?.access_token)
 

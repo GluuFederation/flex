@@ -70,7 +70,9 @@ const GluuFormFooter = ({
 }: GluuFormFooterProps) => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = useMemo(() => theme?.state.theme || 'darkBlack', [theme?.state.theme])
+  const selectedTheme = useMemo(() => {
+    return theme?.state?.theme || 'light'
+  }, [theme?.state?.theme])
   const { navigateToRoute } = useAppNavigation()
 
   const handleBackClick = useCallback(() => {

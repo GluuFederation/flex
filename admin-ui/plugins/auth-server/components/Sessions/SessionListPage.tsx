@@ -172,7 +172,7 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
   const pageSize = getPagingSize()
   const toggle = () => setModal(!modal)
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'default'
+  const selectedTheme = theme?.state?.theme || 'light'
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
 

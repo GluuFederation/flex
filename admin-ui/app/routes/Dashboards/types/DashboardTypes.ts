@@ -54,6 +54,8 @@ export interface DashboardChartProps {
   statData: MauStatEntry[]
   startMonth: string
   endMonth: string
+  textColor?: string
+  gridColor?: string
 }
 
 export interface TooltipPayloadItem {

@@ -106,7 +106,7 @@ function AgamaListPage(): React.ReactElement {
   const isConfigLoading = useSelector((state: RootState) => state.jsonConfigReducer.loading)
 
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'dark'
+  const selectedTheme = theme?.state?.theme || 'light'
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
 

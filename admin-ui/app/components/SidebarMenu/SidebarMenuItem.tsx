@@ -1,8 +1,17 @@
-import React, { ReactNode, CSSProperties, MouseEvent, useEffect, useId, useContext } from 'react'
+import React, {
+  ReactNode,
+  CSSProperties,
+  MouseEvent,
+  useEffect,
+  useId,
+  useContext,
+  useMemo,
+} from 'react'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
-import { MenuContext } from './MenuContext'
+import { MenuContext, type SidebarMenuContext } from './MenuContext'
 import customColors from '@/customColors'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 interface SidebarMenuItemLinkProps {
   to?: string | null
@@ -36,7 +45,9 @@ const SidebarMenuItemLink: React.FC<SidebarMenuItemLinkProps> = (props) => {
         className={`${props.classBase}__entry__link`}
         onClick={(e: MouseEvent<HTMLAnchorElement>) => {
           e.preventDefault()
-          props.handleClick && props.handleClick()
+          if (props.handleClick) {
+            props.handleClick()
+          }
         }}
       >
         {props.children}
@@ -80,7 +91,7 @@ interface SidebarMenuItemProps {
   currentUrl?: string
   slim?: boolean
   // User props
-  icon?: any
+  icon?: React.ReactElement
   title?: string | ReactNode
   to?: string
   href?: string
@@ -113,6 +124,8 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
   isEmptyNode = false,
 }) => {
   const { entries, addEntry, updateEntry, removeEntry } = useContext(MenuContext)
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme?.state.theme || 'light'
   const id = useId()
 
   useEffect(() => {
@@ -158,6 +171,14 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
   }
   const nonaActiveMenu: CSSProperties = {}
 
+  const iconFillColor = useMemo(() => {
+    const isActive = entry?.active
+    if (isActive) {
+      return selectedTheme === 'dark' ? customColors.white : customColors.primaryDark
+    }
+    return selectedTheme === 'dark' ? customColors.white : customColors.textSecondary
+  }, [entry?.active, selectedTheme])
+
   function getStyle(itemClass: string): CSSProperties {
     if (
       itemClass.includes('active') &&
@@ -197,7 +218,7 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
           {icon &&
             React.cloneElement(icon, {
               className: classNames(icon.props.className, `${classBase}__entry__icon`),
-              fill: sidebarMenuActive ? customColors.white : customColors.darkGray,
+              fill: iconFillColor,
             })}
           {typeof title === 'string' ? <span style={textStyle}>{title}</span> : title}
         </SidebarMenuItemLink>
@@ -207,7 +228,7 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
           {React.Children.map(children, (child) =>
             child ? (
               <MenuContext.Consumer>
-                {(ctx: any) =>
+                {(ctx: SidebarMenuContext) =>
                   React.isValidElement(child)
                     ? React.cloneElement(child, {
                         isSubNode: true,

@@ -44,7 +44,7 @@ interface AcrMappingTableRow extends AcrMapping {
 function AliasesListPage(): React.ReactElement {
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'dark'
+  const selectedTheme = theme?.state?.theme || 'light'
   const themeColors = getThemeColor(selectedTheme)
 
   const bgThemeColor = { background: themeColors.background }

@@ -207,7 +207,7 @@ const JansAssetListPage: React.FC = () => {
     [],
   )
   const theme = useContext(ThemeContext)
-  const themeColors = getThemeColor(theme?.state?.theme || 'darkBlack')
+  const themeColors = getThemeColor(theme?.state?.theme || 'light')
   const bgThemeColor = { background: themeColors.background }
 
   const submitForm = useCallback(

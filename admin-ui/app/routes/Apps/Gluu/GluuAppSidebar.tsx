@@ -6,7 +6,6 @@ import GluuErrorFallBack from './GluuErrorFallBack'
 import { processMenus } from 'Plugins/PluginMenuResolver'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
-import getThemeColor from 'Context/theme/config'
 import CachedIcon from '@mui/icons-material/Cached'
 import LockIcon from '@mui/icons-material/Lock'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -15,7 +14,6 @@ import { MenuContext } from '../../../components/SidebarMenu/MenuContext'
 import type { SidebarMenuContext } from '../../../components/SidebarMenu/MenuContext'
 
 import {
-  WaveIcon,
   HomeIcon,
   OAuthIcon,
   UserClaimsIcon,
@@ -26,6 +24,7 @@ import {
   SamlIcon,
   JansKcLinkIcon,
   StmpZoneIcon,
+  ScriptsIcon,
 } from '../../../components/SVG'
 import { AdminUiFeatureResource, useCedarling } from '@/cedarling'
 import { CEDARLING_BYPASS } from '@/cedarling/utility'
@@ -37,7 +36,6 @@ import type {
   IconStyles,
   MenuIconMap,
   ThemeContextState,
-  ThemeColors,
   SidebarRootState,
 } from '../../../components/Sidebar'
 
@@ -61,7 +59,7 @@ const MENU_ICON_MAP: MenuIconMap = {
   oauthserver: <OAuthIcon className="menu-icon" />,
   services: <ServicesIcon className="menu-icon" />,
   user_claims: <UserClaimsIcon className="menu-icon" />,
-  scripts: <i className="menu-icon fas fa-file-code" style={ICON_STYLES.script} />,
+  scripts: <ScriptsIcon className="menu-icon" style={ICON_STYLES.script} />,
   usersmanagement: <UsersIcon className="menu-icon" />,
   stmpmanagement: <StmpZoneIcon className="menu-icon" />,
   fidomanagement: <FidoIcon className="menu-icon" />,
@@ -72,8 +70,7 @@ const MENU_ICON_MAP: MenuIconMap = {
   saml: <SamlIcon className="menu-icon" style={ICON_STYLES.saml} />,
 } as const
 
-// Type definitions for local state
-interface RootState extends SidebarRootState {}
+type RootState = SidebarRootState
 
 const selectHealth = (state: RootState) => state.healthReducer.health
 const selectLogoutAuditSucceeded = (state: RootState): boolean | null =>
@@ -98,8 +95,6 @@ function GluuAppSidebar(): JSX.Element {
     (): string => `sidebar-menu-active-${selectedTheme}`,
     [selectedTheme],
   )
-
-  const themeColors = useMemo((): ThemeColors => getThemeColor(selectedTheme), [selectedTheme])
 
   const getMenuIcon = useCallback((name?: string): React.ReactNode | null => {
     if (!name) return null
@@ -239,15 +234,6 @@ function GluuAppSidebar(): JSX.Element {
             <GluuLoader blocking />
           </div>
         )}
-
-        <div
-          className={
-            isReady ? `${classes.waveContainer} ${classes.waveFadeIn}` : classes.waveContainerFixed
-          }
-        >
-          <WaveIcon className={classes.wave} fill={themeColors.menu.background} />
-          <div className={classes.powered}>Powered by Gluu</div>
-        </div>
       </SidebarMenu>
     </ErrorBoundary>
   )
