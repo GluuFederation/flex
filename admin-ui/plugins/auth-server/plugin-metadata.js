@@ -9,7 +9,7 @@ import ClientEditPage from './components/Clients/ClientEditPage'
 
 import SessionListPage from './components/Sessions/SessionListPage'
 
-import PropertiesPage from './components/Configuration/ConfigPage'
+import PropertiesPage from './components/Configuration/AuthPage'
 import KeysPage from './components/Configuration/Keys/KeysPage'
 import LoggingPage from './components/Configuration/Defaults/LoggingPage'
 
@@ -251,14 +251,7 @@ const pluginMetadata = {
     { name: 'sessionReducer', reducer: sessionReducer },
     { name: 'messageReducer', reducer: messageReducer },
   ],
-  sagas: [
-    scopesSaga(),
-    oidcSaga(),
-    jsonSaga(),
-    umaResourceSaga(),
-    sessionSaga(),
-    messageSaga(),
-  ],
+  sagas: [scopesSaga(), oidcSaga(), jsonSaga(), umaResourceSaga(), sessionSaga(), messageSaga()],
 }
 
 export default pluginMetadata

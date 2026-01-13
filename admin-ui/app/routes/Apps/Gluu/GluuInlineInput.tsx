@@ -126,7 +126,7 @@ const GluuInlineInput = ({
         handler(patch)
       }
     },
-    [disabled, name, showSaveButtons, path, handler],
+    [disabled, name, showSaveButtons, isValidPath, path, handler],
   )
 
   const onAccept = useCallback(() => {
