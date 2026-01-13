@@ -5,6 +5,14 @@
     "portuguese": "Português",
     "spanish": "Espanhol"
   },
+  "themes": {
+    "theme": "Tema",
+    "light": "Claro",
+    "dark": "Escuro"
+  },
+  "notifications": {
+    "no_notifications": "Sem notificações"
+  },
   "dashboard": {
     "summary_title": "Estatísticas de usuários ativos e token de acesso",
     "oidc_clients_count": "Contagem de Clientes OIDC",

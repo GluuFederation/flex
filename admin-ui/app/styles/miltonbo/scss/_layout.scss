@@ -12,11 +12,11 @@
         left: $sidebar-default-width;
         right: 0;
         z-index: 1030;
-        background: $body-bg;
+        background: var(--theme-navbar-background, $body-bg);
 
         @media (max-width: breakpoint-max("md", $grid-breakpoints)) {
             left: 0;
-            background: $navbar-background-color;
+            background: var(--theme-navbar-background, $navbar-background-color);
             border-bottom: 1px solid $navbar-border-color;
         }
 

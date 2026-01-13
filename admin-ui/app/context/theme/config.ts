@@ -11,7 +11,7 @@ const createLightTheme = () => {
     fontColor: text,
     borderColor: border,
     menu: {
-      background,
+      background: customColors.white,
       color: text,
     },
     navbar: {

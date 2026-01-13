@@ -17,6 +17,7 @@ export const customColors = {
   darkBackground: '#0b2947',
   darkBorder: '#193f66',
   darkCardBg: '#091e34',
+  darkDropdownBg: '#194169',
   textSecondary: '#425466',
   mauDark: '#4CAF50',
   mauPieClientCredentials: '#64b5f6',
@@ -39,6 +40,13 @@ export const customColors = {
   chartCoral: '#ff928a',
   chartCyan: '#3cc3df',
   buttonLightBg: '#f4f6f8',
+  hoverBgDark: 'rgba(255, 255, 255, 0.08)',
+  hoverBgLight: 'rgba(0, 0, 0, 0.04)',
+  shadowLight: 'rgba(0, 0, 0, 0.05)',
+  shadowMedium: 'rgba(0, 0, 0, 0.08)',
+  shadowDark: 'rgba(0, 0, 0, 0.1)',
+  ribbonShadow: 'rgba(26, 35, 126, 0.2)',
+  sidebarHoverBg: '#d3d3d3',
 } as const
 
 export type CustomColorKeys = keyof typeof customColors

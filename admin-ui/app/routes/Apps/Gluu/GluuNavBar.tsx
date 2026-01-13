@@ -1,88 +1,144 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, memo, useRef } from 'react'
 import Box from '@mui/material/Box'
-import {
-  AvatarAddOn,
-  DropdownToggle,
-  Navbar,
-  Nav,
-  NavItem,
-  Notifications,
-  SidebarTrigger,
-  ThemeSetting,
-  UncontrolledDropdown,
-  AvatarImage,
-} from 'Components'
+import { AvatarAddOn, Nav, NavItem, Notifications, SidebarTrigger, AvatarImage } from 'Components'
 import { LanguageMenu } from './LanguageMenu'
+import { ThemeDropdownComponent } from './ThemeDropdown'
 import { useSelector } from 'react-redux'
 import { DropdownProfile } from 'Routes/components/Dropdowns/DropdownProfile'
 import { randomAvatar } from '../../../utilities'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
+import { useNewNavbarStyles } from './styles/GluuNavBar.style'
+import { useNavbarTheme } from './hooks/useNavbarTheme'
+import { usePageTitle } from './hooks/usePageTitle'
 import customColors from '@/customColors'
+import type { UserInfo } from 'Redux/features/types/authTypes'
 
-function GluuNavBar() {
-  const userInfo = useSelector((state: any) => state.authReducer.userinfo)
-  const [showCollapse, setShowCollapse] = useState(window.matchMedia('(max-width: 768px)').matches)
+const ChevronIcon = memo(() => (
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+    <path
+      d="M4.5 6.75L9 11.25L13.5 6.75"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+))
+ChevronIcon.displayName = 'ChevronIcon'
+
+const MOBILE_BREAKPOINT = '(max-width: 768px)'
+
+const GluuNavBar = () => {
+  const userInfo = useSelector(
+    (state: { authReducer: { userinfo: UserInfo | null } }) => state.authReducer.userinfo,
+  )
+
+  const { navbarColors } = useNavbarTheme()
+  const { classes } = useNewNavbarStyles(navbarColors)()
+  const pageTitle = usePageTitle()
+  const navbarRef = useRef<HTMLDivElement>(null)
+
+  const [showCollapse, setShowCollapse] = useState(() =>
+    typeof window !== 'undefined' ? window.matchMedia(MOBILE_BREAKPOINT).matches : false,
+  )
+
   useEffect(() => {
-    window
-      .matchMedia('(max-width: 768px)')
-      .addEventListener('change', (e) => setShowCollapse(e.matches))
+    if (navbarRef.current) {
+      const element = navbarRef.current
+      element.style.setProperty('background-color', navbarColors.background, 'important')
+      element.style.setProperty('border-bottom', `1px solid ${navbarColors.border}`, 'important')
+      element.style.setProperty('--theme-navbar-background', navbarColors.background, 'important')
+      element.style.setProperty('--theme-navbar-text', navbarColors.text, 'important')
+      element.style.setProperty('--theme-navbar-icon', navbarColors.icon, 'important')
+      element.style.setProperty('--theme-navbar-border', navbarColors.border, 'important')
+    }
+
+    const pageTitleElement = document.getElementById('page-title-navbar')
+    if (pageTitleElement) {
+      pageTitleElement.style.setProperty('color', navbarColors.text, 'important')
+      pageTitleElement.style.setProperty('font-weight', '700', 'important')
+    }
+  }, [navbarColors.background, navbarColors.border, navbarColors.text, navbarColors.icon])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const mediaQuery = window.matchMedia(MOBILE_BREAKPOINT)
+    const handleChange = (e: MediaQueryListEvent) => setShowCollapse(e.matches)
+
+    mediaQuery.addEventListener('change', handleChange)
+    return () => mediaQuery.removeEventListener('change', handleChange)
   }, [])
+
+  const avatarAddOns = useMemo(
+    () => [
+      <AvatarAddOn.Icon className="fa fa-circle" color={customColors.white} key="avatar-icon-bg" />,
+      <AvatarAddOn.Icon className="fa fa-circle" color="success" key="avatar-icon-fg" />,
+    ],
+    [],
+  )
+
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
-      <Navbar expand="lg" themed>
-        <Nav>
-          {showCollapse && (
-            <NavItem>
-              <SidebarTrigger id="navToggleBtn" />
-            </NavItem>
-          )}
-        </Nav>
-        <Box display="flex" justifyContent="space-between" width="100%">
-          <h3 className="page-title" id="page-title">
-            Dashboard
-          </h3>
-          <Box display="flex" justifyContent="space-between" alignItems="center" gap="10px">
-            <Notifications />
-            <ThemeSetting userInfo={userInfo} />
-            <div
-              className="d-flex justify-content-center align-items-center"
-              style={{ padding: '0px 5px' }}
-            >
-              <LanguageMenu userInfo={userInfo} />
-            </div>
-            <div style={{ padding: '0 5px' }}>
-              <UncontrolledDropdown
-                nav
-                direction="down"
-                sx={{ display: { xs: 'none', md: 'flex' } }}
-              >
-                <DropdownToggle nav>
-                  <AvatarImage
-                    size="md"
-                    src={randomAvatar()}
-                    addOns={[
-                      <AvatarAddOn.Icon
-                        className="fa fa-circle"
-                        color={customColors.white}
-                        key="avatar-icon-bg"
-                      />,
-                      <AvatarAddOn.Icon
-                        className="fa fa-circle"
-                        color="success"
-                        key="avatar-icon-fg"
-                      />,
-                    ]}
-                  />
-                </DropdownToggle>
-                <DropdownProfile end userinfo={userInfo} />
-              </UncontrolledDropdown>
-            </div>
+      <Box
+        ref={navbarRef}
+        className={`${classes.navbarWrapper} navbar-themed`}
+        sx={{
+          'backgroundColor': `${navbarColors.background} !important`,
+          'borderBottom': `1px solid ${navbarColors.border} !important`,
+          '--theme-navbar-background': navbarColors.background,
+          '--theme-navbar-text': navbarColors.text,
+          '--theme-navbar-icon': navbarColors.icon,
+        }}
+      >
+        <Box className={classes.navbarContainer}>
+          <Box className={classes.leftSection}>
+            {showCollapse && (
+              <Nav className={classes.navLeft}>
+                <NavItem>
+                  <SidebarTrigger id="navToggleBtn" />
+                </NavItem>
+              </Nav>
+            )}
+            <h3 className={classes.pageTitle} id="page-title-navbar">
+              {pageTitle}
+            </h3>
+          </Box>
+          <Box className={classes.rightSection}>
+            <Box className={classes.iconButton}>
+              <Notifications />
+            </Box>
+            {userInfo && (
+              <>
+                <Box className={classes.languageMenuWrapper}>
+                  <ThemeDropdownComponent userInfo={userInfo} />
+                </Box>
+                <Box className={classes.languageMenuWrapper}>
+                  <LanguageMenu userInfo={userInfo} />
+                </Box>
+              </>
+            )}
+            <DropdownProfile
+              trigger={
+                <Box className={classes.userProfileContainer}>
+                  <AvatarImage size="md" src={randomAvatar()} addOns={avatarAddOns} />
+                  <span className={classes.userName}>Hello User</span>
+                  <Box className={classes.userChevron}>
+                    <ChevronIcon />
+                  </Box>
+                </Box>
+              }
+              userinfo={userInfo || undefined}
+              position="bottom"
+            />
           </Box>
         </Box>
-      </Navbar>
+      </Box>
     </ErrorBoundary>
   )
 }
+
+GluuNavBar.displayName = 'GluuNavBar'
 
 export default GluuNavBar

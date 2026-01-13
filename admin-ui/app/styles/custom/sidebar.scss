@@ -9,15 +9,21 @@ $pale-yellow: #cfd76f;
 
 .custom-sidebar-container {
     background-color: var(--theme-sidebar-background, #fcfcfc);
-    border-top-right-radius: 28px;
-    border-top-left-radius: 28px;
 
     .sidebar-menu__entry__link {
         color: var(--theme-menu-text-color, #323b47);
+        font-family: "Mona-Sans", sans-serif;
+        font-size: 16px;
+        font-weight: 500;
+        letter-spacing: 0.32px;
     }
 
     .sidebar-submenu__entry__link {
         color: var(--theme-menu-text-color, #323b47);
+        font-family: "Mona-Sans", sans-serif;
+        font-size: 16px;
+        font-weight: 500;
+        letter-spacing: 0.32px;
     }
 
     .sidebar-menu__entry__link:hover {
@@ -60,11 +66,11 @@ $pale-yellow: #cfd76f;
 
 .sidebar-menu__entry {
     .sidebar-menu__entry__link:hover {
-        background: lightgrey;
+        background: var(--theme-menu-hover-background, #d3d3d3) !important;
     }
 
     .sidebar-submenu .sidebar-submenu__entry .sidebar-submenu__entry__link:hover {
-        background: lightgrey;
+        background: var(--theme-menu-hover-background, #d3d3d3) !important;
     }
 }
 

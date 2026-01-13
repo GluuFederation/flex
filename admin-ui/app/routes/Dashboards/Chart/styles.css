@@ -4,5 +4,5 @@
 
 table > thead > tr > th .Mui-active,
 table > thead > tr > th .Mui-active > svg {
-    color: #fff !important;
+    color: var(--theme-text-color, #ffffff) !important;
 }

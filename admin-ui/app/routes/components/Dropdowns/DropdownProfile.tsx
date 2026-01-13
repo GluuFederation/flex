@@ -1,15 +1,21 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
-import { DropdownMenu, DropdownItem } from 'Components'
 import { useTranslation } from 'react-i18next'
 import { auditLogoutLogs } from 'Redux/features/sessionSlice'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { GluuDropdown, type GluuDropdownOption } from 'Components'
+import type { DropdownProfileProps, LogoutAuditState } from './types'
 
-const DropdownProfile = ({ position = '', end, userinfo }: any) => {
+const DropdownProfile = ({
+  trigger,
+  position = 'bottom',
+  userinfo: _userinfo,
+}: DropdownProfileProps) => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const { logoutAuditSucceeded } = useSelector((state: any) => state.logoutAuditReducer)
+  const { logoutAuditSucceeded } = useSelector(
+    (state: LogoutAuditState) => state.logoutAuditReducer,
+  )
   const { navigateToRoute } = useAppNavigation()
 
   const handleLogout = () => {
@@ -22,27 +28,32 @@ const DropdownProfile = ({ position = '', end, userinfo }: any) => {
     }
   }, [logoutAuditSucceeded, navigateToRoute])
 
+  const options: GluuDropdownOption<string>[] = [
+    {
+      value: 'profile',
+      label: t('menus.my_profile'),
+      onClick: () => {
+        navigateToRoute(ROUTES.PROFILE)
+      },
+    },
+    {
+      value: 'logout',
+      label: t('menus.signout'),
+      onClick: () => {
+        handleLogout()
+      },
+    },
+  ]
+
   return (
-    <DropdownMenu end={end}>
-      <DropdownItem header>
-        {userinfo.user_name || userinfo.name || userinfo.given_name}
-      </DropdownItem>
-      <DropdownItem divider />
-      <DropdownItem tag={Link} to={ROUTES.PROFILE}>
-        {t('menus.my_profile')}
-      </DropdownItem>
-      <DropdownItem divider />
-      <DropdownItem
-        tag={Link}
-        onClick={(e) => {
-          e.preventDefault()
-          handleLogout()
-        }}
-      >
-        <i className="fa fa-fw fa-sign-out me-2"></i>
-        {t('menus.signout')}
-      </DropdownItem>
-    </DropdownMenu>
+    <GluuDropdown
+      trigger={trigger}
+      options={options}
+      position={position}
+      minWidth={182}
+      showArrow={true}
+    />
   )
 }
+
 export { DropdownProfile }

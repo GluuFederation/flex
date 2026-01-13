@@ -13,6 +13,7 @@ import './styles.css'
 import TooltipDesign from './TooltipDesign'
 import moment from 'moment'
 import customColors from '@/customColors'
+import { fontFamily, fontSizes } from '@/styles/fonts'
 import type { DashboardChartProps, MauStatEntry } from '../types'
 
 const DashboardChart = memo(
@@ -65,11 +66,20 @@ const DashboardChart = memo(
           <CartesianGrid strokeDasharray="3 3" stroke={gridColor || customColors.textMutedDark} />
           <XAxis
             dataKey="monthLabel"
-            tick={{ fill: textColor || customColors.primaryDark, fontSize: 10.798 }}
-            style={{ color: textColor || customColors.primaryDark }}
+            tick={{
+              fill: textColor || customColors.primaryDark,
+              fontSize: parseFloat(fontSizes.chartAxis),
+              fontFamily,
+            }}
+            style={{ color: textColor || customColors.primaryDark, fontFamily }}
           />
           <YAxis
-            tick={{ fill: textColor || customColors.primaryDark, fontSize: 10.798 }}
+            tick={{
+              fill: textColor || customColors.primaryDark,
+              fontSize: parseFloat(fontSizes.chartAxis),
+              fontFamily,
+            }}
+            style={{ fontFamily }}
             domain={[0, 1200]}
             ticks={[0, 300, 600, 900, 1200]}
           />

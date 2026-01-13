@@ -54,9 +54,12 @@ const LEGEND_ITEMS = [
   { color: customColors.chartCyan, label: 'Client Credential Access Token' },
 ] as const
 
+import { fontFamily, fontWeights, fontSizes } from '@/styles/fonts'
+
 const CHART_TITLE_STYLE = {
-  fontSize: 22,
-  fontWeight: 500,
+  fontFamily,
+  fontSize: fontSizes.xl,
+  fontWeight: fontWeights.medium,
   marginBottom: 0,
   marginTop: 0,
 } as const

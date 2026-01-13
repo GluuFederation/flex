@@ -652,6 +652,14 @@
     "portuguese": "Portuguese",
     "spanish": "Spanish"
   },
+  "themes": {
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "notifications": {
+    "no_notifications": "No notifications"
+  },
   "menus": {
     "assets": "Assets",
     "scim": "SCIM",

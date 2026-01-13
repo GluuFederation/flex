@@ -5,6 +5,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { useTranslation } from 'react-i18next'
 import customColors from '@/customColors'
+import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
 import type { Dayjs } from 'dayjs'
 
 interface DateRangeProps {
@@ -37,9 +38,7 @@ const DateRange = memo(
       const popupBg = isDark ? customColors.darkCardBg : customColors.white
       const selectedBg = isDark ? customColors.darkBorder : customColors.primaryDark
       const selectedText = customColors.white
-      const hoverBgDark = 'rgba(255, 255, 255, 0.08)'
-      const hoverBgLight = 'rgba(0, 0, 0, 0.04)'
-      const hoverBg = isDark ? hoverBgDark : hoverBgLight
+      const hoverBg = isDark ? customColors.hoverBgDark : customColors.hoverBgLight
       const placeholderColor = isDark ? customColors.white : customColors.primaryDark
       const iconColor = isDark ? customColors.white : customColors.primaryDark
 
@@ -65,6 +64,8 @@ const DateRange = memo(
           backgroundColor: isDark ? customColors.darkInputBg : customColors.white,
         },
         '& .MuiInputBase-input': {
+          'fontFamily': fontFamily,
+          'fontSize': fontSizes.base,
           'color': themeColors.inputTextColor,
           '&::placeholder': {
             color: themeColors.placeholderColor,
@@ -153,10 +154,12 @@ const DateRange = memo(
       () => ({
         'width': '100%',
         '& .MuiInputLabel-sizeSmall': {
-          padding: '0 2px',
+          fontFamily,
+          padding: '0px 2px',
           background: themeColors.labelBackground,
           color: themeColors.labelColor,
-          fontSize: '19px',
+          fontSize: fontSizes.base,
+          fontWeight: fontWeights.medium,
           marginTop: '-2px',
         },
         '& .MuiIconButton-root': {

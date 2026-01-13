@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useMemo, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
@@ -9,6 +9,16 @@ interface LayoutContentProps {
   children: ReactNode
 }
 
+const SELECTORS = [
+  'h1, h2, h3, h4, h5, h6',
+  '.page-title, #page-title',
+  '.card-header, .custom-card-header:not(.custom-card-header--background), .card-header h1, .card-header h2, .card-header h3, .card-header h4, .card-header h5, .card-header h6',
+  'thead th, .table thead th, table thead th',
+  '.form-section-title, .section-title, .form-title',
+] as const
+
+const STYLE_ID = 'layout-content-theme-colors'
+
 const LayoutContent = ({ children }: LayoutContentProps) => {
   const theme = useContext(ThemeContext)
   if (!theme) {
@@ -16,32 +26,59 @@ const LayoutContent = ({ children }: LayoutContentProps) => {
   }
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
+  const layoutElementRef = useRef<HTMLElement | null>(null)
 
-  useEffect(() => {
-    const styleId = 'layout-content-theme-colors'
-    let styleElement = document.getElementById(styleId)
-    if (!styleElement) {
-      styleElement = document.createElement('style')
-      styleElement.id = styleId
-      document.head.appendChild(styleElement)
-    }
+  const isDark = useMemo(() => selectedTheme === 'dark', [selectedTheme])
 
-    const isDark = selectedTheme === 'dark'
+  const menuColors = useMemo(() => {
     const textColor = isDark ? customColors.white : customColors.textSecondary
     const textColorActive = isDark ? customColors.white : customColors.primaryDark
     const textColorHover = isDark ? customColors.white : customColors.primaryDark
+    const hoverBackground = isDark ? customColors.hoverBgDark : customColors.sidebarHoverBg
 
-    const cssVariables = {
+    return {
+      textColor,
+      textColorActive,
+      textColorHover,
+      hoverBackground,
+    }
+  }, [isDark])
+
+  const cssVariables = useMemo(
+    () => ({
       '--theme-sidebar-background': themeColors.menu.background,
-      '--theme-menu-icon-color': textColor,
-      '--theme-menu-icon-color-active': textColorActive,
-      '--theme-menu-icon-color-hover': textColorHover,
-      '--theme-menu-text-color': textColor,
-      '--theme-menu-text-color-active': textColorActive,
-      '--theme-menu-text-color-hover': textColorHover,
-      '--theme-menu-arrow-color': textColor,
-      '--theme-menu-arrow-color-active': textColorActive,
-      '--theme-menu-arrow-color-hover': textColorHover,
+      '--theme-navbar-background': themeColors.navbar.background,
+      '--theme-menu-icon-color': menuColors.textColor,
+      '--theme-menu-icon-color-active': menuColors.textColorActive,
+      '--theme-menu-icon-color-hover': menuColors.textColorHover,
+      '--theme-menu-text-color': menuColors.textColor,
+      '--theme-menu-text-color-active': menuColors.textColorActive,
+      '--theme-menu-text-color-hover': menuColors.textColorHover,
+      '--theme-menu-arrow-color': menuColors.textColor,
+      '--theme-menu-arrow-color-active': menuColors.textColorActive,
+      '--theme-menu-arrow-color-hover': menuColors.textColorHover,
+      '--theme-menu-hover-background': menuColors.hoverBackground,
+    }),
+    [
+      themeColors.menu.background,
+      themeColors.navbar.background,
+      menuColors.textColor,
+      menuColors.textColorActive,
+      menuColors.textColorHover,
+      menuColors.hoverBackground,
+    ],
+  )
+
+  useEffect(() => {
+    let styleElement = document.getElementById(STYLE_ID) as HTMLStyleElement | null
+    if (!styleElement) {
+      styleElement = document.createElement('style')
+      styleElement.id = STYLE_ID
+      document.head.appendChild(styleElement)
+    }
+
+    if (!layoutElementRef.current) {
+      layoutElementRef.current = document.querySelector('.layout')
     }
 
     const setCSSVariables = (element: HTMLElement) => {
@@ -50,27 +87,24 @@ const LayoutContent = ({ children }: LayoutContentProps) => {
       })
     }
 
-    const layoutElement = document.querySelector('.layout')
-    if (layoutElement instanceof HTMLElement) {
-      setCSSVariables(layoutElement)
+    if (layoutElementRef.current instanceof HTMLElement) {
+      setCSSVariables(layoutElementRef.current)
     }
     setCSSVariables(document.documentElement)
 
-    const selectors = [
-      'h1, h2, h3, h4, h5, h6',
-      '.page-title, #page-title',
-      '.card-header, .custom-card-header:not(.custom-card-header--background), .card-header h1, .card-header h2, .card-header h3, .card-header h4, .card-header h5, .card-header h6',
-      'thead th, .table thead th, table thead th',
-      '.form-section-title, .section-title, .form-title',
-    ]
+    styleElement.textContent = SELECTORS.map(
+      (selector) => `.layout__content ${selector} { color: ${themeColors.fontColor} !important; }`,
+    ).join('\n')
 
-    styleElement.textContent = selectors
-      .map(
-        (selector) =>
-          `.layout__content ${selector} { color: ${themeColors.fontColor} !important; }`,
-      )
-      .join('\n')
-  }, [themeColors.fontColor, themeColors.menu.background, selectedTheme])
+    const { body } = document
+    const { documentElement } = document
+    if (body) {
+      body.style.backgroundColor = themeColors.background
+    }
+    if (documentElement) {
+      documentElement.style.backgroundColor = themeColors.background
+    }
+  }, [cssVariables, themeColors.fontColor, themeColors.background])
 
   return (
     <div
@@ -79,7 +113,6 @@ const LayoutContent = ({ children }: LayoutContentProps) => {
         {
           'background': themeColors.background,
           'color': themeColors.fontColor,
-          'height': '100%',
           '--theme-text-color': themeColors.fontColor,
         } as React.CSSProperties
       }

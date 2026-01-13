@@ -1,5 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { fontFamily, fontSizes } from '@/styles/fonts'
 import type { TooltipDesignProps } from '../types'
 
 const TooltipDesign = ({ payload = [] }: TooltipDesignProps) => {
@@ -15,7 +16,7 @@ const TooltipDesign = ({ payload = [] }: TooltipDesignProps) => {
       {payload.length > 0 &&
         payload.map((item, key) => {
           return (
-            <div key={key} style={{ fontSize: '12px' }}>
+            <div key={key} style={{ fontFamily, fontSize: fontSizes.sm }}>
               {objValues[item.dataKey]} : {item.payload[item.dataKey]}
             </div>
           )

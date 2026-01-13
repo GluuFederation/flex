@@ -1,69 +1,57 @@
 import React, { Suspense, lazy, ComponentType } from 'react'
 import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
 
-// Route loading utility
-export const createLazyRoute = (importFn: () => Promise<{ default: ComponentType<any> }>) => {
+type LazyRouteWrapper = ComponentType<Record<string, unknown>> & {
+  preload: () => void
+}
+
+export const createLazyRoute = (
+  importFn: () => Promise<{ default: ComponentType<Record<string, unknown>> }>,
+): LazyRouteWrapper => {
   const LazyComponent = lazy(importFn)
 
-  const Wrapper: any = (props: any) => (
+  const Wrapper = (props: Record<string, unknown>) => (
     <Suspense fallback={<GluuSuspenseLoader />}>
       <LazyComponent {...props} />
     </Suspense>
   )
-  // Allow preloading the chunk ahead of time
-  Wrapper.preload = importFn
-  return Wrapper
+
+  const typedWrapper = Wrapper as LazyRouteWrapper
+  typedWrapper.preload = importFn
+  return typedWrapper
 }
 
-// Pre-defined lazy routes for better code splitting
 export const LazyRoutes = {
-  // Dashboard routes
   DashboardPage: createLazyRoute(() => import('../routes/Dashboards/DashboardPage')),
-
-  // App routes
   ProfilePage: createLazyRoute(() => import('../routes/Apps/Profile/ProfilePage')),
   Gluu404Error: createLazyRoute(() => import('../routes/Apps/Gluu/Gluu404Error')),
   ByeBye: createLazyRoute(() => import('../routes/Pages/ByeBye')),
-  GluuNavBar: createLazyRoute(() => import('../routes/Apps/Gluu/GluuNavBarNew')),
-
-  // Layout routes
-  // (layout demo routes removed)
-
-  // Layout components
+  GluuNavBar: createLazyRoute(() => import('../routes/Apps/Gluu/GluuNavBar')),
   DefaultSidebar: createLazyRoute(() => import('../layout/components/DefaultSidebar')),
+  GluuToast: createLazyRoute(() => import('../routes/Apps/Gluu/GluuToast')),
+  GluuWebhookErrorDialog: createLazyRoute(
+    () => import('../routes/Apps/Gluu/GluuWebhookErrorDialog'),
+  ),
 }
 
-// Dynamic route loader for plugins
-export const loadPluginRoute = (pluginName: string, routePath?: string) => {
+export const loadPluginRoute = (pluginName: string, routePath?: string): LazyRouteWrapper => {
   const componentPath = routePath || `${pluginName.charAt(0).toUpperCase() + pluginName.slice(1)}`
 
   return createLazyRoute(() =>
-    import(
-      /* webpackChunkName: "plugin-[request]" */
-      /* webpackMode: "lazy" */
-      /* webpackInclude: /^[^/]+\/components\/[^/]+$/ */
-      `../../plugins/${pluginName}/components/${componentPath}`
-    ).catch(
-      () =>
-        import(
-          /* webpackChunkName: "plugin-[request]" */
-          /* webpackMode: "lazy" */
-          /* webpackInclude: /^[^/]+\/components\/index(\.(t|j)sx?)?$/ */
-          `../../plugins/${pluginName}/components/index`
-        ),
+    import(`../../plugins/${pluginName}/components/${componentPath}`).catch(
+      () => import(`../../plugins/${pluginName}/components/index`),
     ),
   )
 }
 
-// Route preloading utility
-export const preloadRoute = (routeName: keyof typeof LazyRoutes) => {
+export const preloadRoute = (routeName: keyof typeof LazyRoutes): void => {
   const route = LazyRoutes[routeName]
   if (route && 'preload' in route) {
-    return (route as { preload: () => void }).preload()
+    const lazyRoute = route as LazyRouteWrapper
+    lazyRoute.preload()
   }
 }
 
-// Batch preload multiple routes
-export const preloadRoutes = (routeNames: (keyof typeof LazyRoutes)[]) => {
+export const preloadRoutes = (routeNames: (keyof typeof LazyRoutes)[]): void => {
   routeNames.forEach(preloadRoute)
 }

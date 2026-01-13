@@ -1,4 +1,5 @@
 import { makeStyles } from 'tss-react/mui'
+import { fontFamily, fontWeights, fontSizes, letterSpacing } from '@/styles/fonts'
 
 interface NavbarColors {
   background: string
@@ -17,14 +18,14 @@ export const useNewNavbarStyles = (navbarColors: NavbarColors) => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      padding: '0 60px',
+      padding: '0px 60px',
       position: 'relative',
       [theme.breakpoints.down('md')]: {
-        padding: '0 20px',
+        padding: '0px 20px',
         height: '80px',
       },
       [theme.breakpoints.down('sm')]: {
-        padding: '0 15px',
+        padding: '0px 15px',
         height: '70px',
       },
     },
@@ -33,17 +34,17 @@ export const useNewNavbarStyles = (navbarColors: NavbarColors) => {
       alignItems: 'center',
     },
     pageTitle: {
-      fontFamily: "'Mona-Sans', sans-serif",
-      fontSize: '24px',
-      fontWeight: 700,
+      fontFamily,
+      fontSize: fontSizes['3xl'],
+      fontWeight: fontWeights.bold,
       color: `${navbarColors.text} !important`,
       margin: 0,
-      padding: 0,
+      padding: '0px',
       [theme.breakpoints.down('md')]: {
-        fontSize: '20px',
+        fontSize: fontSizes.lg,
       },
       [theme.breakpoints.down('sm')]: {
-        fontSize: '18px',
+        fontSize: fontSizes.md,
       },
     },
     navbarContainer: {
@@ -67,6 +68,11 @@ export const useNewNavbarStyles = (navbarColors: NavbarColors) => {
       [theme.breakpoints.down('sm')]: {
         gap: '8px',
       },
+    },
+    dropdownWrapper: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     iconButton: {
       width: '32px',
@@ -100,18 +106,18 @@ export const useNewNavbarStyles = (navbarColors: NavbarColors) => {
       },
     },
     userName: {
-      fontFamily: "'Mona-Sans', sans-serif",
+      fontFamily,
       fontSize: '15px',
-      fontWeight: 500,
+      fontWeight: fontWeights.medium,
       color: navbarColors.text,
-      letterSpacing: '0.3px',
+      letterSpacing: letterSpacing.normal,
       lineHeight: 'normal',
       width: '84px',
       whiteSpace: 'nowrap',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       [theme.breakpoints.down('md')]: {
-        fontSize: '14px',
+        fontSize: fontSizes.base,
         width: '70px',
       },
       [theme.breakpoints.down('sm')]: {

@@ -1,6 +1,7 @@
 import customColors from '@/customColors'
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
+import { fontFamily, fontWeights, fontSizes, letterSpacing, lineHeights } from '@/styles/fonts'
 
 interface DashboardThemeColors {
   cardBg: string
@@ -32,7 +33,7 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
     }
     return {
       border: `1.5px solid ${themeColors.cardBorder}`,
-      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+      boxShadow: `0 2px 8px ${customColors.shadowMedium}`,
     }
   }
 
@@ -62,9 +63,10 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       position: 'relative',
     },
     summaryText: {
-      fontWeight: 500,
-      fontSize: 22,
-      lineHeight: '22px',
+      fontFamily,
+      fontWeight: fontWeights.medium,
+      fontSize: fontSizes.xl,
+      lineHeight: lineHeights.tight,
       color: themeColors.text,
       marginBottom: 0,
       position: 'absolute',
@@ -78,10 +80,11 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       display: 'flex',
     },
     summaryValue: {
+      fontFamily,
       color: themeColors.text,
-      fontWeight: 600,
-      fontSize: 48,
-      lineHeight: '22px',
+      fontWeight: fontWeights.semiBold,
+      fontSize: fontSizes['4xl'],
+      lineHeight: lineHeights.tight,
       display: 'flex',
       position: 'absolute',
       top: '109px',
@@ -114,7 +117,8 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       alignItems: 'center',
     },
     newsTitle: {
-      fontSize: 20,
+      fontFamily,
+      fontSize: fontSizes.lg,
     },
     logo: {
       width: '40%',
@@ -130,10 +134,11 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      padding: '0 20px',
+      padding: '0px 20px',
     },
     reportTitle: {
-      fontSize: 20,
+      fontFamily,
+      fontSize: fontSizes.lg,
     },
     detailReportImg: {
       width: '70%',
@@ -150,12 +155,12 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       position: 'relative',
     },
     userInfoTitle: {
-      fontWeight: 500,
-      fontSize: 22,
-      lineHeight: '22px',
+      fontFamily,
+      fontWeight: fontWeights.medium,
+      fontSize: fontSizes.xl,
+      lineHeight: lineHeights.tight,
       marginBottom: 0,
       color: themeColors.text,
-      fontFamily: "'Mona-Sans', sans-serif",
       position: 'absolute',
       top: '23.5px',
       left: '31.5px',
@@ -187,19 +192,19 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       left: '260px',
     },
     userInfoText: {
-      fontSize: 16,
-      lineHeight: '32px',
+      fontFamily,
+      fontSize: fontSizes.md,
+      lineHeight: lineHeights.loose,
       marginBottom: 0,
       color: themeColors.text,
-      fontWeight: 500,
-      fontFamily: "'Mona-Sans', sans-serif",
+      fontWeight: fontWeights.medium,
     },
     userInfoValue: {
-      fontSize: 20,
-      lineHeight: '32px',
+      fontFamily,
+      fontSize: fontSizes.lg,
+      lineHeight: lineHeights.loose,
       color: themeColors.text,
-      fontWeight: 700,
-      fontFamily: "'Mona-Sans', sans-serif",
+      fontWeight: fontWeights.bold,
     },
     userInfoStatusContainer: {
       display: 'flex',
@@ -218,7 +223,7 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
     supportCard: {
       borderRadius: 14,
       color: customColors.white,
-      padding: 20,
+      padding: '20px',
       width: '100%',
       maxWidth: 140,
       display: 'flex',
@@ -227,12 +232,13 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       alignItems: 'center',
       flexDirection: 'column',
       textAlign: 'center',
-      fontSize: 20,
+      fontSize: fontSizes.lg,
     },
     supportLogo: {
       width: '50%',
     },
     verticalTextContainer: {
+      fontFamily,
       borderRadius: 14,
       color: customColors.white,
       padding: '20px 10px',
@@ -241,9 +247,9 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       display: 'flex',
       marginRight: 20,
       justifyContent: 'space-between',
-      fontSize: 24,
+      fontSize: fontSizes['2xl'],
       flexDirection: 'row',
-      fontWeight: 700,
+      fontWeight: fontWeights.bold,
       zIndex: 3,
     },
     textVertical: {
@@ -253,7 +259,7 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
     statusSection: {
       width: '100%',
       height: '106px',
-      padding: '0 6px',
+      padding: '0px 6px',
       backgroundColor: themeColors.background,
       marginLeft: 0,
       marginRight: 0,
@@ -275,12 +281,13 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       flexWrap: 'nowrap',
     },
     statusIndicator: {
+      fontFamily,
       display: 'flex',
       alignItems: 'center',
       gap: '13px',
-      fontSize: 16,
-      fontWeight: 600,
-      lineHeight: '28px',
+      fontSize: fontSizes.md,
+      fontWeight: fontWeights.semiBold,
+      lineHeight: lineHeights.relaxed,
       color: themeColors.text,
       flex: '0 0 auto',
       whiteSpace: 'nowrap',
@@ -315,16 +322,19 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       color: customColors.accentRed,
     },
     orange: {
+      fontFamily,
       color: customColors.orange,
-      fontWeight: 600,
+      fontWeight: fontWeights.semiBold,
     },
     lightBlue: {
+      fontFamily,
       color: customColors.lightBlue,
-      fontWeight: 600,
+      fontWeight: fontWeights.semiBold,
     },
     lightGreen: {
+      fontFamily,
       color: customColors.lightGreen,
-      fontWeight: 600,
+      fontWeight: fontWeights.semiBold,
     },
     whiteBg: {
       background: themeColors.cardBg,
@@ -363,14 +373,15 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       color: customColors.accentRed,
     },
     greenBlock: {
+      fontFamily,
       background: isDark ? customColors.statusActive : customColors.statusActiveBg,
       color: isDark ? customColors.white : customColors.statusActive,
       borderRadius: 5,
       padding: '8px',
-      fontSize: 12,
-      fontWeight: 500,
-      lineHeight: '16px',
-      letterSpacing: '0.2px',
+      fontSize: fontSizes.sm,
+      fontWeight: fontWeights.medium,
+      lineHeight: lineHeights.base,
+      letterSpacing: letterSpacing.tight,
       display: 'inline-flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -380,14 +391,15 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       boxSizing: 'border-box',
     },
     redBlock: {
+      fontFamily,
       background: isDark ? customColors.statusInactive : customColors.statusInactiveBg,
       color: customColors.white,
       borderRadius: 5,
       padding: '8px',
-      fontSize: 12,
-      fontWeight: 500,
-      lineHeight: '24px',
-      letterSpacing: '0.2px',
+      fontSize: fontSizes.sm,
+      fontWeight: fontWeights.medium,
+      lineHeight: lineHeights.base,
+      letterSpacing: letterSpacing.tight,
     },
     bannerContainer: {
       marginTop: 35,
@@ -410,13 +422,13 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       marginTop: '4px',
     },
     legendItem: {
+      fontFamily,
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
       gap: '6px',
-      fontSize: 12,
+      fontSize: fontSizes.sm,
       color: themeColors.text,
-      fontFamily: "'Mona-Sans', sans-serif",
       flex: '0 0 auto',
       whiteSpace: 'nowrap',
     },

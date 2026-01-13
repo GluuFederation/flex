@@ -1,8 +1,3 @@
-.layout__navbar {
-    border-top-left-radius: 28px;
-    border-top-right-radius: 28px;
-}
-
 .btn-transparent {
     background-color: transparent;
     border: 1px solid var(--theme-navbar-border, #9a9a9a);
@@ -36,6 +31,10 @@
 
 .sidebar-menu__entry--nested.open .sidebar-menu__entry__link::after {
     color: var(--theme-menu-arrow-color, var(--theme-menu-text-color)) !important;
+}
+
+.sidebar-menu__entry--nested.active.open .sidebar-menu__entry__link::after {
+    color: var(--theme-menu-text-color-active) !important;
 }
 
 .sidebar-menu__entry--nested .sidebar-menu__entry__link::after {
