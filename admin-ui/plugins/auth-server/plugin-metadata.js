@@ -21,7 +21,6 @@ import { reducer as scopeReducer } from './redux/features/scopeSlice'
 import { reducer as jsonReducer } from './redux/features/jsonConfigSlice'
 import { reducer as umaResourceReducer } from './redux/features/umaResourceSlice'
 import { reducer as sessionReducer } from './redux/features/sessionSlice'
-import ssaReducer from './redux/features/SsaSlice'
 import messageReducer from './redux/features/MessageSlice'
 
 import scopesSaga from './redux/sagas/OAuthScopeSaga'
@@ -29,7 +28,6 @@ import oidcSaga from './redux/sagas/OIDCSaga'
 import jsonSaga from './redux/sagas/JsonConfigSaga'
 import umaResourceSaga from './redux/sagas/UMAResourceSaga'
 import sessionSaga from './redux/sagas/SessionSaga'
-import ssaSaga from './redux/sagas/SsaSaga'
 import messageSaga from './redux/sagas/MessageSaga'
 
 import {
@@ -251,18 +249,9 @@ const pluginMetadata = {
     { name: 'authPropertiesReducer', reducer: jsonReducer },
     { name: 'umaResourceReducer', reducer: umaResourceReducer },
     { name: 'sessionReducer', reducer: sessionReducer },
-    { name: 'SsaReducer', reducer: ssaReducer },
     { name: 'messageReducer', reducer: messageReducer },
   ],
-  sagas: [
-    scopesSaga(),
-    oidcSaga(),
-    jsonSaga(),
-    umaResourceSaga(),
-    sessionSaga(),
-    ssaSaga(),
-    messageSaga(),
-  ],
+  sagas: [scopesSaga(), oidcSaga(), jsonSaga(), umaResourceSaga(), sessionSaga(), messageSaga()],
 }
 
 export default pluginMetadata

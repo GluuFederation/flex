@@ -18,8 +18,9 @@ import SsaDetailPage from './SsaDetailPage'
 import JsonViewerDialog from '../JsonViewer/JsonViewerDialog'
 import customColors from '@/customColors'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
-import { useRevokeSsa } from 'JansConfigApi'
-import { useGetAllSsas, useGetSsaJwt, useSsaAuditLogger } from './hooks'
+import { useRevokeSsa, type RevokeSsaParams } from 'JansConfigApi'
+import { useQueryClient } from '@tanstack/react-query'
+import { useGetAllSsas, useGetSsaJwt, useSsaAuditLogger, SSA_QUERY_KEYS } from './hooks'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { formatExpirationDate } from './utils/dateFormatters'
 import type { SsaData, SsaJwtResponse } from './types'
@@ -37,12 +38,13 @@ const SSAListPage: React.FC = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const { navigateToRoute } = useAppNavigation()
+  const queryClient = useQueryClient()
   const [limit] = useState<number>(10)
   const [item, setItem] = useState<SsaData | null>(null)
   const [modal, setModal] = useState<boolean>(false)
   const toggle = (): void => setModal(!modal)
 
-  const { data: items = [], isLoading: loading, refetch } = useGetAllSsas()
+  const { data: items = [], isLoading: loading } = useGetAllSsas()
 
   // Add unique id to each row for MaterialTable
   const rowsWithId = useMemo(
@@ -191,20 +193,23 @@ const SSAListPage: React.FC = () => {
 
     setIsDeleting(true)
     try {
-      await revokeSsaMutation.mutateAsync({
-        params: { jti: item.ssa.jti },
-      })
+      const params: RevokeSsaParams = { jti: item.ssa.jti }
+      await revokeSsaMutation.mutateAsync({ params })
 
-      await logAudit({
-        action: DELETION,
-        resource: SSA_RESOURCE,
-        message: message || 'SSA deleted successfully',
-        payload: { jti: item.ssa.jti, org_id: item.ssa.org_id },
-      })
+      try {
+        await logAudit({
+          action: DELETION,
+          resource: SSA_RESOURCE,
+          message: message || 'SSA deleted successfully',
+          payload: { jti: item.ssa.jti, org_id: item.ssa.org_id },
+        })
+      } catch (auditError) {
+        console.error('Failed to log audit for SSA deletion:', auditError)
+      }
 
       dispatch(updateToast(true, 'success'))
       toggle()
-      refetch()
+      await queryClient.invalidateQueries({ queryKey: SSA_QUERY_KEYS.all })
     } catch (error) {
       console.error('Failed to delete SSA:', error)
       dispatch(updateToast(true, 'error'))
@@ -213,19 +218,17 @@ const SSAListPage: React.FC = () => {
     }
   }
 
-  const handleViewSsa = (row: SsaData): void => {
+  const handleViewSsa = async (row: SsaData): Promise<void> => {
     setJwtData(null)
     setSsaDialogOpen(true)
-    getSsaJwtMutation.mutate(row.ssa.jti, {
-      onSuccess: (fetchedJwtData) => {
-        setJwtData(fetchedJwtData)
-      },
-      onError: (error) => {
-        console.error('Failed to fetch SSA JWT:', error)
-        dispatch(updateToast(true, 'error'))
-        setSsaDialogOpen(false)
-      },
-    })
+    try {
+      const fetchedJwtData = await getSsaJwtMutation.mutateAsync(row.ssa.jti)
+      setJwtData(fetchedJwtData)
+    } catch (error) {
+      console.error('Failed to fetch SSA JWT:', error)
+      dispatch(updateToast(true, 'error'))
+      setSsaDialogOpen(false)
+    }
   }
 
   const handleDownloadSsa = async (row: SsaData): Promise<void> => {

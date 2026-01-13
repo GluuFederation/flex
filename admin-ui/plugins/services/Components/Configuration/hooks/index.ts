@@ -3,17 +3,10 @@ import { useSelector } from 'react-redux'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import { CREATE, UPDATE, DELETION, PATCH } from '@/audit/UserActionType'
 import type { AuthRootState } from 'Utils/types'
-import type {
-  GluuLdapConfiguration,
-  SqlConfiguration,
-  CacheConfiguration,
-  CouchbaseConfiguration,
-} from 'JansConfigApi'
+import type { GluuLdapConfiguration, CacheConfiguration } from 'JansConfigApi'
 
 const API_LDAP = 'api-ldap'
-const API_SQL = 'api-sql'
 const API_CACHE = 'api-cache'
-const API_COUCHBASE = 'api-couchbase'
 
 function useAuditAuth() {
   const authState = useSelector((state: AuthRootState) => state.authReducer)
@@ -104,74 +97,6 @@ export function useLdapAudit() {
   return { logLdapCreate, logLdapUpdate, logLdapDelete }
 }
 
-export function useSqlAudit() {
-  const { token, client_id, userinfo } = useAuditAuth()
-
-  const logSqlCreate = useCallback(
-    async (sql: SqlConfiguration, message: string, modifiedFields?: Record<string, unknown>) => {
-      try {
-        await logAuditUserAction({
-          token,
-          userinfo,
-          action: CREATE,
-          resource: API_SQL,
-          message,
-          modifiedFields,
-          performedOn: sql.configId,
-          client_id,
-          payload: sql,
-        })
-      } catch (error) {
-        console.error('Failed to log SQL create audit:', error)
-      }
-    },
-    [token, userinfo, client_id],
-  )
-
-  const logSqlUpdate = useCallback(
-    async (sql: SqlConfiguration, message: string, modifiedFields?: Record<string, unknown>) => {
-      try {
-        await logAuditUserAction({
-          token,
-          userinfo,
-          action: UPDATE,
-          resource: API_SQL,
-          message,
-          modifiedFields,
-          performedOn: sql.configId,
-          client_id,
-          payload: sql,
-        })
-      } catch (error) {
-        console.error('Failed to log SQL update audit:', error)
-      }
-    },
-    [token, userinfo, client_id],
-  )
-
-  const logSqlDelete = useCallback(
-    async (sql: SqlConfiguration, message: string) => {
-      try {
-        await logAuditUserAction({
-          token,
-          userinfo,
-          action: DELETION,
-          resource: API_SQL,
-          message,
-          performedOn: sql.configId,
-          client_id,
-          payload: sql,
-        })
-      } catch (error) {
-        console.error('Failed to log SQL delete audit:', error)
-      }
-    },
-    [token, userinfo, client_id],
-  )
-
-  return { logSqlCreate, logSqlUpdate, logSqlDelete }
-}
-
 export function useCacheAudit() {
   const { token, client_id, userinfo } = useAuditAuth()
 
@@ -201,60 +126,4 @@ export function useCacheAudit() {
   )
 
   return { logCacheUpdate }
-}
-
-export function useCouchbaseAudit() {
-  const { token, client_id, userinfo } = useAuditAuth()
-
-  const logCouchbaseCreate = useCallback(
-    async (
-      couchbase: CouchbaseConfiguration,
-      message: string,
-      modifiedFields?: Record<string, unknown>,
-    ) => {
-      try {
-        await logAuditUserAction({
-          token,
-          userinfo,
-          action: CREATE,
-          resource: API_COUCHBASE,
-          message,
-          modifiedFields,
-          performedOn: couchbase.configId,
-          client_id,
-          payload: couchbase,
-        })
-      } catch (error) {
-        console.error('Failed to log Couchbase create audit:', error)
-      }
-    },
-    [token, userinfo, client_id],
-  )
-
-  const logCouchbaseUpdate = useCallback(
-    async (
-      couchbase: CouchbaseConfiguration,
-      message: string,
-      modifiedFields?: Record<string, unknown>,
-    ) => {
-      try {
-        await logAuditUserAction({
-          token,
-          userinfo,
-          action: UPDATE,
-          resource: API_COUCHBASE,
-          message,
-          modifiedFields,
-          performedOn: couchbase.configId,
-          client_id,
-          payload: couchbase,
-        })
-      } catch (error) {
-        console.error('Failed to log Couchbase update audit:', error)
-      }
-    },
-    [token, userinfo, client_id],
-  )
-
-  return { logCouchbaseCreate, logCouchbaseUpdate }
 }
