@@ -3,7 +3,7 @@ import type {
   SamlConfiguration,
   IdentityProviderPayload,
   WebsiteSsoServiceProviderPayload,
-} from '../types/redux'
+} from '../types/payloads'
 import type {
   WebsiteSsoIdentityProviderFormValues,
   WebsiteSsoServiceProviderFormValues,

@@ -18,7 +18,7 @@ export type {
   SamlIdentityConfig,
   WebsiteSsoServiceProvider,
   GetSamlIdentityProviderPayload,
-} from './redux'
+} from './payloads'
 
 export type {
   SamlAppConfiguration,

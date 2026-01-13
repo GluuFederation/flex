@@ -1,5 +1,3 @@
-import type { SamlConfigurationFormValues } from './formValues'
-
 export interface SamlConfiguration {
   enabled: boolean
   selectedIdp: string
@@ -55,10 +53,6 @@ export interface SamlIdentity {
   encryptionPublicKey?: string
 }
 
-export interface WebsiteSsoServiceProviderListResponse {
-  body: WebsiteSsoServiceProvider[]
-}
-
 export interface WebsiteSsoServiceProvider {
   inum: string
   displayName: string
@@ -76,7 +70,6 @@ export interface WebsiteSsoServiceProvider {
     jansAssertionConsumerServiceGetURL: string
     jansAssertionConsumerServicePostURL: string
   }
-  // Additional CURL fields
   clientAuthenticatorType?: string
   spMetaDataURL?: string
   redirectUris?: string[]
@@ -95,41 +88,11 @@ export interface WebsiteSsoServiceProvider {
   alwaysDisplayInConsole?: boolean
 }
 
-export interface SamlReduxState {
-  configuration: SamlConfiguration
-  loading: boolean
-  savedForm: boolean
-  items: SamlIdentity[]
-  loadingSamlIdp: boolean
-  loadingSamlIdentity: boolean
-  loadingWebsiteSsoServiceProvider: boolean
-  totalItems: number
-  entriesCount: number
-  websiteSsoServiceProviders: WebsiteSsoServiceProvider[]
-}
-
-export interface PutSamlPropertiesPayload {
-  action: {
-    action_message: string
-    action_data: SamlConfigurationFormValues
-  }
-}
-
 export interface GetSamlIdentityProviderPayload {
   inum?: string
   limit?: number
   pattern?: string
   startIndex?: number
-}
-
-export interface CreateSamlIdentityPayload {
-  formdata: FormData
-  token: string
-}
-
-export interface CreateWebsiteSsoServiceProviderPayload {
-  formdata: FormData
-  token: string
 }
 
 export interface IdentityProviderPayload {
