@@ -8,6 +8,11 @@ import {
 import { useSelector } from 'react-redux'
 import type { SsaData, SsaJwtResponse, SsaCreatePayload } from '../types'
 
+export const SSA_QUERY_KEYS = {
+  all: ['ssas'] as const,
+  detail: (jti: string) => ['ssas', jti] as const,
+} as const
+
 interface AuthState {
   token: {
     access_token: string
@@ -137,7 +142,7 @@ export const useGetAllSsas = (): UseQueryResult<SsaData[], Error> => {
   const authServerHost = useSelector((state: RootState) => state.authReducer.config.authServerHost)
 
   return useQuery<SsaData[], Error>({
-    queryKey: ['ssas'],
+    queryKey: SSA_QUERY_KEYS.all,
     queryFn: ({ signal }) => fetchAllSsas(token, authServerHost, signal),
     enabled: !!token && !!authServerHost,
     staleTime: 5 * 60 * 1000,
@@ -169,7 +174,7 @@ export const useCreateSsa = (): UseMutationResult<SsaData, Error, SsaCreatePaylo
       return createSsa(payload, token, authServerHost)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['ssas'] })
+      queryClient.invalidateQueries({ queryKey: SSA_QUERY_KEYS.all })
     },
   })
 }

@@ -19,17 +19,6 @@ export interface LdapDetailPageProps {
   testLdapConnection: (row: GluuLdapConfiguration) => void
 }
 
-export interface SqlFormProps {
-  item: SqlConfiguration
-  handleSubmit: (data: { sql: SqlConfiguration }) => void
-  isLoading?: boolean
-}
-
-export interface SqlDetailPageProps {
-  row: SqlConfiguration
-  testSqlConnection?: (row: SqlConfiguration) => void
-}
-
 export type CacheProviderType = 'IN_MEMORY' | 'MEMCACHED' | 'REDIS' | 'NATIVE_PERSISTENCE'
 
 export interface InMemoryCacheFormValues {
@@ -140,31 +129,6 @@ export interface CacheNativeProps {
 export interface CacheRedisProps {
   config: RedisConfiguration
   formik: FormikProps<CacheFormValues>
-}
-
-export interface CouchbaseItemProps {
-  couchbase: CouchbaseConfiguration
-  index: number
-  formik: FormikProps<CouchbaseConfiguration[]>
-}
-
-export interface CouchbaseFormValues {
-  configId?: string
-  userName?: string
-  userPassword?: string
-  servers?: string[]
-  defaultBucket?: string
-  buckets?: string[]
-  passwordEncryptionMethod?: string
-  connectTimeout?: number
-  computationPoolSize?: number
-  useSSL?: boolean
-  sslTrustStoreFile?: string
-  sslTrustStorePin?: string
-  sslTrustStoreFormat?: string
-  enabled?: boolean
-  binaryAttributes?: string[]
-  certificateAttributes?: string[]
 }
 
 export interface PersistenceInfo {

@@ -271,6 +271,7 @@ from setup_app.installers.jans_auth import JansAuthInstaller
 from setup_app.installers.jans import JansInstaller
 from setup_app.installers.jans_cli import JansCliInstaller
 from setup_app.installers.jans_casa import CasaInstaller
+from setup_app.installers.rdbm import RDBMInstaller
 from setup_app.utils.properties_utils import propertiesUtils
 from setup_app.utils.ldif_utils import myLdifParser, create_client_ldif
 
@@ -303,6 +304,7 @@ config_api_installer = ConfigApiInstaller()
 jansAuthInstaller = JansAuthInstaller()
 jans_cli_installer = JansCliInstaller()
 jans_casa_installer = CasaInstaller()
+rdbm_installer = RDBMInstaller()
 
 setup_properties = base.read_properties_file(argsp.f) if argsp.f else {}
 
@@ -325,6 +327,7 @@ class flex_installer(JettyInstaller):
         self.admin_ui_config_properties_path = os.path.join(self.templates_dir, 'auiConfiguration.json')
         self.adimin_ui_bin_url = 'https://jenkins.gluu.org/npm/admin_ui/main/built/admin-ui-main-built.tar.gz'
         self.policy_store_path = os.path.join(self.templates_dir, 'policy-store.json')
+        self.schema_file = os.path.join(self.flex_setup_dir, 'flex_schema.json')
 
         if not argsp.download_exit:
             self.dbUtils.bind(force=True)
@@ -480,6 +483,13 @@ class flex_installer(JettyInstaller):
         scope_search_result = self.dbUtils.search('ou=scopes,o=jans', search_filter=f'(&(jansId={jansid})(objectClass=jansScope))')
         return scope_search_result['dn']
 
+
+    def create_tables(self):
+        print("self.schema_file", self.schema_file)
+        self.dbUtils.read_jans_schema(others=[self.schema_file])
+        rdbm_installer.create_tables([self.schema_file])
+
+
     def install_gluu_admin_ui(self):
 
         print("Installing Gluu Admin UI Frontend")
@@ -487,6 +497,8 @@ class flex_installer(JettyInstaller):
         self.unpack_gluu_admin_ui_archive()
 
         aui_config_template_vars = base.readJsonFile(self.admin_ui_config_properties_path)
+
+        self.create_tables()
 
         print("Creating Gluu Flex Admin UI Web Client")
 
