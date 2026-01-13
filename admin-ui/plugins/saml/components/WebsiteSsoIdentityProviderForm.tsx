@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback, useMemo, memo, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 import { Card, CardBody, Form, FormGroup, Col, Row } from 'Components'
 import { useFormik } from 'formik'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
@@ -25,6 +26,7 @@ import type { WebsiteSsoIdentityProviderFormValues } from '../types/formValues'
 import SetTitle from 'Utils/SetTitle'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { updateToast } from 'Redux/features/toastSlice'
 import {
   useCreateIdentityProvider,
   useUpdateIdentityProvider,
@@ -68,6 +70,7 @@ const WebsiteSsoIdentityProviderForm = ({
   const loading = createIdentityProvider.isPending || updateIdentityProvider.isPending
   const savedForm = createIdentityProvider.savedForm || updateIdentityProvider.savedForm
 
+  const dispatch = useDispatch()
   const { t } = useTranslation()
   const [modal, setModal] = useState<boolean>(false)
   const { navigateBack } = useAppNavigation()
@@ -153,10 +156,10 @@ const WebsiteSsoIdentityProviderForm = ({
           })
         }
       } catch (error) {
-        console.error('Failed to save identity provider:', error)
+        dispatch(updateToast(true, 'error'))
       }
     },
-    [configs, createIdentityProvider, updateIdentityProvider],
+    [configs, createIdentityProvider, updateIdentityProvider, dispatch],
   )
 
   const submitForm = useCallback(

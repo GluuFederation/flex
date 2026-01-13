@@ -1,5 +1,6 @@
 import { useFormik } from 'formik'
 import React, { useState, useEffect, useMemo, useCallback, memo, useRef } from 'react'
+import { useDispatch } from 'react-redux'
 import { Row, Col, Form, FormGroup, CustomInput } from 'Components'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
@@ -14,6 +15,7 @@ import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { samlConfigurationValidationSchema } from '../helper/validations'
 import { transformToFormValues } from '../helper/utils'
+import { updateToast } from 'Redux/features/toastSlice'
 import { useSamlConfiguration, useUpdateSamlConfiguration } from './hooks'
 import type { SamlConfigurationFormValues } from '../types'
 
@@ -21,10 +23,10 @@ const DOC_SECTION = 'samlConfiguration' as const
 
 const SamlConfigurationForm: React.FC = () => {
   const { t } = useTranslation()
+  const dispatch = useDispatch()
   const { authorizeHelper, hasCedarWritePermission } = useCedarling()
   const [modal, setModal] = useState<boolean>(false)
 
-  // Use React Query hooks instead of Redux
   const { data: configuration, isLoading: queryLoading } = useSamlConfiguration()
   const updateConfigMutation = useUpdateSamlConfiguration()
   const loading = queryLoading || updateConfigMutation.isPending
@@ -66,10 +68,10 @@ const SamlConfigurationForm: React.FC = () => {
           userMessage: messages,
         })
       } catch (error) {
-        console.error('Failed to update SAML configuration:', error)
+        dispatch(updateToast(true, 'error'))
       }
     },
-    [updateConfigMutation],
+    [updateConfigMutation, dispatch],
   )
 
   const { setFieldValue, resetForm, handleSubmit: formikHandleSubmit } = formik

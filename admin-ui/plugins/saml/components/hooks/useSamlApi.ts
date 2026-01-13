@@ -186,11 +186,10 @@ export function useUpdateSamlConfiguration() {
         logAudit(userMessage, data)
         return result
       } catch (error) {
-        dispatch(updateToast(true, 'error'))
         throw error
       }
     },
-    [baseMutation, queryClient, logAudit, dispatch],
+    [baseMutation, queryClient, logAudit],
   )
 
   return {
@@ -240,11 +239,10 @@ export function useCreateIdentityProvider() {
         return result
       } catch (error) {
         setSavedForm(false)
-        dispatch(updateToast(true, 'error'))
         throw error
       }
     },
-    [baseMutation, queryClient, logAudit, dispatch],
+    [baseMutation, queryClient, logAudit],
   )
 
   const resetSavedForm = useCallback(() => {
@@ -288,11 +286,10 @@ export function useUpdateIdentityProvider() {
         return result
       } catch (error) {
         setSavedForm(false)
-        dispatch(updateToast(true, 'error'))
         throw error
       }
     },
-    [baseMutation, queryClient, logAudit, dispatch],
+    [baseMutation, queryClient, logAudit],
   )
 
   const resetSavedForm = useCallback(() => {
@@ -332,11 +329,10 @@ export function useDeleteIdentityProvider() {
         dispatch(updateToast(true, 'success'))
         logAudit(userMessage, inum)
       } catch (error) {
-        dispatch(updateToast(true, 'error'))
         throw error
       }
     },
-    [baseMutation, queryClient, logAudit, dispatch],
+    [baseMutation, queryClient, logAudit],
   )
 
   return {
@@ -386,11 +382,10 @@ export function useCreateTrustRelationship() {
         return result
       } catch (error) {
         setSavedForm(false)
-        dispatch(updateToast(true, 'error'))
         throw error
       }
     },
-    [baseMutation, queryClient, logAudit, dispatch],
+    [baseMutation, queryClient, logAudit],
   )
 
   const resetSavedForm = useCallback(() => {
@@ -434,11 +429,10 @@ export function useUpdateTrustRelationship() {
         return result
       } catch (error) {
         setSavedForm(false)
-        dispatch(updateToast(true, 'error'))
         throw error
       }
     },
-    [baseMutation, queryClient, logAudit, dispatch],
+    [baseMutation, queryClient, logAudit],
   )
 
   const resetSavedForm = useCallback(() => {
@@ -478,11 +472,10 @@ export function useDeleteTrustRelationshipMutation() {
         dispatch(updateToast(true, 'success'))
         logAudit(userMessage, id)
       } catch (error) {
-        dispatch(updateToast(true, 'error'))
         throw error
       }
     },
-    [baseMutation, queryClient, logAudit, dispatch],
+    [baseMutation, queryClient, logAudit],
   )
 
   return {

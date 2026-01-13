@@ -12,6 +12,7 @@ import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useTranslation } from 'react-i18next'
 import { setClientSelectedScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
+import { updateToast } from 'Redux/features/toastSlice'
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
 import {
   nameIDPolicyFormat,
@@ -199,10 +200,10 @@ const WebsiteSsoServiceProviderForm = ({
           })
         }
       } catch (error) {
-        console.error('Failed to save trust relationship:', error)
+        dispatch(updateToast(true, 'error'))
       }
     },
-    [configs, createTrustRelationship, updateTrustRelationship],
+    [configs, createTrustRelationship, updateTrustRelationship, dispatch],
   )
 
   const submitForm = useCallback(
