@@ -11,7 +11,6 @@ import {
 
 import {
   fetchServerConfiguration,
-  fetchApiAccessToken,
   getUserIpAndLocation,
   fetchApiTokenWithDefaultScopes,
   putServerConfiguration,
@@ -103,8 +102,8 @@ export function* putConfigWorker({ payload }) {
 function* getAPIAccessTokenWorker(jwt) {
   try {
     if (jwt) {
-      const response = yield call(fetchApiAccessToken, jwt.payload)
-      if (response && response !== API_ERROR_RESPONSE) {
+      const response = yield call(fetchApiTokenWithDefaultScopes)
+      if (response && response !== API_ERROR_RESPONSE && !response?.name) {
         yield put(
           getAPIAccessTokenResponse({
             scopes: response.scopes,
@@ -112,10 +111,10 @@ function* getAPIAccessTokenWorker(jwt) {
           }),
         )
 
-        const defaultToken = yield* getApiTokenWithDefaultScopes()
-
-        if (defaultToken) {
-          yield put(createAdminUiSession({ ujwt: jwt.payload, apiProtectionToken: defaultToken }))
+        if (response.access_token) {
+          yield put(
+            createAdminUiSession({ ujwt: jwt.payload, apiProtectionToken: response.access_token }),
+          )
         } else {
           console.error('Failed to obtain API token for session creation')
           yield put(
@@ -123,6 +122,14 @@ function* getAPIAccessTokenWorker(jwt) {
           )
         }
         return
+      } else if (response?.name === 'AxiosError') {
+        yield put(
+          setBackendStatus({
+            active: false,
+            errorMessage: response?.response?.data?.responseMessage,
+            statusCode: response?.response?.status,
+          }),
+        )
       }
     }
   } catch (error) {

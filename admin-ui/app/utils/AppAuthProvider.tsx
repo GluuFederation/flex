@@ -23,7 +23,7 @@ import {
   AuthorizationNotifier,
   GRANT_TYPE_AUTHORIZATION_CODE,
 } from '@openid/appauth'
-import { fetchApiAccessToken, fetchPolicyStore, fetchUserInformation } from 'Redux/api/backend-api'
+import { fetchPolicyStore, fetchUserInformation } from 'Redux/api/backend-api'
 import { jwtDecode } from 'jwt-decode'
 
 export default function AppAuthProvider(props) {
@@ -56,6 +56,22 @@ export default function AppAuthProvider(props) {
       dispatch(checkLicensePresent())
     }
   }, [isConfigValid])
+
+  useEffect(() => {
+    if (hasSession) {
+      fetchPolicyStore()
+        .then((policyStoreResponse) => {
+          const policyStoreJson = policyStoreResponse.data.responseObject
+          dispatch({
+            type: 'cedarPermissions/setPolicyStoreJson',
+            payload: policyStoreJson,
+          })
+        })
+        .catch((error) => {
+          console.error('Failed to fetch policy store', error)
+        })
+    }
+  }, [hasSession, dispatch])
 
   const [error, setError] = useState(null)
   const [code, setCode] = useState(null)
@@ -173,22 +189,6 @@ export default function AppAuthProvider(props) {
                 dispatch(getAPIAccessToken(userinfo_jwt))
               }
             }
-            if (hasSession) {
-              return fetchPolicyStore()
-            }
-            return fetchApiAccessToken(ujwt).then((tokenResponse) => {
-              if (!tokenResponse || tokenResponse === -1 || !tokenResponse.access_token) {
-                throw new Error('Failed to fetch API access token')
-              }
-              return fetchPolicyStore(tokenResponse.access_token)
-            })
-          })
-          .then((policyStoreResponse) => {
-            const policyStoreJson = policyStoreResponse.data.responseObject
-            dispatch({
-              type: 'cedarPermissions/setPolicyStoreJson',
-              payload: policyStoreJson,
-            })
           })
           .catch((oError) => {
             setError(oError)

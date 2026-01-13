@@ -42,7 +42,8 @@ function* getApiTokenWithDefaultScopes() {
 }
 
 function* newFunction() {
-  const { access_token, issuer } = yield call(fetchApiTokenWithDefaultScopes)
+  const tokenResponse = yield call(getAccessToken)
+  const { access_token, issuer } = tokenResponse
   const api = new JansConfigApi.StatisticsUserApi(getClient(JansConfigApi, access_token, issuer))
   return new MauApi(api)
 }
