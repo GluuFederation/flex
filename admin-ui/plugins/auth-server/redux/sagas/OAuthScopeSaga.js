@@ -1,5 +1,4 @@
 import { call, all, put, fork, takeEvery, takeLatest, select } from 'redux-saga/effects'
-import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { updateToast } from 'Redux/features/toastSlice'
 import { SCOPE } from '../audit/Resources'
 import { CREATE, UPDATE, DELETION, FETCH } from '../../../../app/audit/UserActionType'
@@ -23,9 +22,9 @@ import {
 } from '../features/scopeSlice'
 
 function* newFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.OAuthScopesApi(getClient(JansConfigApi, token, issuer))
+  // Use null for token - HttpOnly session cookie handles auth
+  const api = new JansConfigApi.OAuthScopesApi(getClient(JansConfigApi, null, issuer))
   return new ScopeApi(api)
 }
 
@@ -40,8 +39,8 @@ export function* getScopeByInum({ payload }) {
   } catch (e) {
     yield put(deleteScopeResponse(null))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
   }
 }
@@ -55,8 +54,8 @@ export function* getScopeByCreator({ payload }) {
     yield call(postUserAction, audit)
   } catch (e) {
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
   }
 }
@@ -74,8 +73,8 @@ export function* getScopes({ payload }) {
   } catch (e) {
     yield put(handleUpdateScopeResponse({ data: null }))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
     return e
   }
@@ -93,8 +92,8 @@ export function* getClientScopes({ payload }) {
   } catch (e) {
     yield put(getClientScopesResponse(null))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
   }
 }
@@ -115,8 +114,8 @@ export function* addAScope({ payload }) {
     yield put(updateToast(true, 'error'))
     yield put(addScopeResponse(null))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
     return e
   }
@@ -138,8 +137,8 @@ export function* editAnScope({ payload }) {
     yield put(updateToast(true, 'error'))
     yield put(editScopeResponse(null))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
     return e
   }
@@ -160,8 +159,8 @@ export function* deleteAnScope({ payload }) {
     yield put(updateToast(true, 'error'))
     yield put(deleteScopeResponse({ data: null }))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.s.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
   }
 }

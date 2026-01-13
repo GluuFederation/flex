@@ -20,12 +20,23 @@ export type AdditionalPayload = GenericRecord & {
   omitPayload?: boolean
 }
 
-export const isFourZeroOneError = (error?: { status?: number } | null): boolean => {
-  return error?.status === 401
+type AxiosErrorLike = {
+  response?: {
+    status?: number
+  }
 }
 
-export const hasApiToken = (): boolean => {
-  return Boolean(localStorage.getItem('gluu.api.token'))
+type DirectStatusError = {
+  status?: number
+}
+
+type HttpError = AxiosErrorLike | DirectStatusError | null | undefined
+
+export const isFourZeroOneError = (error?: HttpError): boolean => {
+  if (!error) return false
+  const axiosStatus = (error as AxiosErrorLike)?.response?.status
+  const directStatus = (error as DirectStatusError)?.status
+  return axiosStatus === 401 || directStatus === 401
 }
 
 export const saveState = (state?: string | null): void => {

@@ -3,7 +3,8 @@ import { all, fork, put, select, takeLatest } from 'redux-saga/effects'
 let appInitCompleted = false
 
 type AuthReducerShape = {
-  token?: { access_token?: string }
+  hasSession?: boolean
+  jwtToken?: string | null
   idToken?: string | null
   userinfo_jwt?: string | null
 }
@@ -21,11 +22,12 @@ function* runAppInitIfReady(): Generator<unknown, void, unknown> {
   const auth: AuthReducerShape = (yield select(
     (state: { authReducer: AuthReducerShape }) => state.authReducer,
   )) as AuthReducerShape
-  const accessToken = auth?.token?.access_token
+  const hasSession = auth?.hasSession
   const idToken = auth?.idToken
   const userinfoJwt = auth?.userinfo_jwt
 
-  if (!accessToken || !idToken || !userinfoJwt) {
+  // Wait until session is established and tokens are available
+  if (!hasSession || !idToken || !userinfoJwt) {
     return
   }
 
@@ -62,6 +64,7 @@ function* runAppInitIfReady(): Generator<unknown, void, unknown> {
 function* watchAuthTokens(): Generator<unknown, void, unknown> {
   yield takeLatest('auth/getUserInfoResponse', runAppInitIfReady)
   yield takeLatest('auth/getAPIAccessTokenResponse', runAppInitIfReady)
+  yield takeLatest('auth/createAdminUiSessionResponse', runAppInitIfReady)
 }
 
 export default function* appInitSaga(): Generator<unknown, void, unknown> {

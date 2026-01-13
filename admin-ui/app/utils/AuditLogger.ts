@@ -8,7 +8,6 @@ export interface BasicUserInfo {
 }
 
 export interface LogAuditParams {
-  token?: string
   userinfo?: BasicUserInfo | null
   action: string
   resource: string
@@ -23,7 +22,6 @@ export interface LogAuditParams {
 }
 
 export async function logAuditUserAction({
-  token,
   userinfo,
   action,
   resource,
@@ -36,7 +34,6 @@ export async function logAuditUserAction({
   payload,
 }: LogAuditParams): Promise<void> {
   const audit: AuditLog = {
-    headers: { Authorization: token ? `Bearer ${token}` : '' },
     status,
     performedBy: {
       user_inum: userinfo?.inum ?? '-',
@@ -60,9 +57,7 @@ export async function logAuditUserAction({
   }
 
   addAdditionalData(audit, action, resource, payloadWrapper)
-  if (audit?.headers?.Authorization) {
-    await postUserAction(audit)
-  }
+  await postUserAction(audit)
 }
 
 export const logAudit = logAuditUserAction

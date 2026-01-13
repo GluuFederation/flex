@@ -11,38 +11,25 @@ import {
   getTokenByClientResponse,
   deleteClientTokenResponse,
 } from '../features/oidcSlice'
-import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { OIDC } from '../audit/Resources'
 import { updateToast } from 'Redux/features/toastSlice'
 import { CREATE, UPDATE, DELETION, FETCH } from '../../../../app/audit/UserActionType'
 import OIDCApi from '../api/OIDCApi'
 import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
-import { initAudit } from 'Redux/sagas/SagaUtils'
+import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSaga'
 import TokenApi from '../api/TokenApi'
 
 function* newFunction() {
-  const wholeToken = yield select((state) => state.authReducer.token)
-  let token = null
-  if (wholeToken) {
-    token = yield select((state) => state.authReducer.token.access_token)
-  }
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.OAuthOpenIDConnectClientsApi(
-    getClient(JansConfigApi, token, issuer),
-  )
+  const api = new JansConfigApi.OAuthOpenIDConnectClientsApi(getClient(JansConfigApi, null, issuer))
   return new OIDCApi(api)
 }
 
 function* newTokenFunction() {
-  const wholeToken = yield select((state) => state.authReducer.token)
-  let token = null
-  if (wholeToken) {
-    token = yield select((state) => state.authReducer.token.access_token)
-  }
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.TokenApi(getClient(JansConfigApi, token, issuer))
+  const api = new JansConfigApi.TokenApi(getClient(JansConfigApi, null, issuer))
   return new TokenApi(api)
 }
 
@@ -60,8 +47,8 @@ export function* getOauthOpenidClients({ payload }) {
     yield put(updateToast(true, 'error'))
     yield put(getOpenidClientsResponse({ data: null }))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      yield* redirectToLogout()
+      return
     }
   }
 }
@@ -81,8 +68,8 @@ export function* addNewClient({ payload }) {
     yield put(updateToast(true, 'error'))
     yield put(addClientResponse(null))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -105,8 +92,8 @@ export function* editAClient({ payload }) {
     yield put(updateToast(true, 'error'))
     yield put(editClientResponse(null))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -128,8 +115,8 @@ export function* deleteAClient({ payload }) {
     yield put(updateToast(true, 'error'))
     yield put(deleteClientResponse(null))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      yield* redirectToLogout()
+      return
     }
   }
 }
@@ -154,8 +141,8 @@ export function* getOpenidClientTokens({ payload }) {
     yield put(getTokenByClientResponse(null))
 
     if (isFourZeroOneError(error)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      yield* redirectToLogout()
+      return
     }
   }
 }
@@ -170,8 +157,8 @@ export function* deleteClientToken({ payload }) {
     yield put(updateToast(true, 'error'))
     yield put(deleteClientTokenResponse())
     if (isFourZeroOneError(error)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      yield* redirectToLogout()
+      return
     }
   }
 }

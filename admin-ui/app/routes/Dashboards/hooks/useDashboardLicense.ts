@@ -17,11 +17,11 @@ function transformLicenseResponse(data: LicenseResponse | undefined): LicenseRes
 }
 
 export function useDashboardLicense() {
-  const authToken = useSelector((state: RootState) => state.authReducer?.token?.access_token)
+  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
 
   return useGetAdminuiLicense({
     query: {
-      enabled: !!authToken,
+      enabled: hasSession === true,
       staleTime: DASHBOARD_CACHE_CONFIG.STALE_TIME,
       gcTime: DASHBOARD_CACHE_CONFIG.GC_TIME,
       select: transformLicenseResponse,

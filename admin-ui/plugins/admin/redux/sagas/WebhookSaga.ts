@@ -27,14 +27,13 @@ import {
   setShowErrorModal,
 } from 'Plugins/admin/redux/features/WebhookSlice'
 import { CREATE, FETCH, DELETION, UPDATE } from '../../../../app/audit/UserActionType'
-import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { updateToast } from 'Redux/features/toastSlice'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import WebhookApi from '../api/WebhookApi'
 import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
 const JansConfigApi = require('jans_config_api')
-import { initAudit } from 'Redux/sagas/SagaUtils'
+import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 import { webhookOutputObject } from 'Plugins/admin/helper/utils'
 import {
   RootState,
@@ -48,9 +47,8 @@ import {
 } from './types'
 
 function* newFunction(): Generator<SelectEffect, WebhookApi, any> {
-  const token: string = yield select((state: RootState) => state.authReducer.token.access_token)
   const issuer: string = yield select((state: RootState) => state.authReducer.issuer)
-  const api = new JansConfigApi.AdminUIWebhooksApi(getClient(JansConfigApi, token, issuer))
+  const api = new JansConfigApi.AdminUIWebhooksApi(getClient(JansConfigApi, null, issuer))
   return new WebhookApi(api)
 }
 
@@ -79,8 +77,8 @@ export function* getWebhooks({
     )
     yield put(getWebhookResponse({ data: null }))
     if (isFourZeroOneError(error)) {
-      const jwt: string = yield select((state: RootState) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      yield* redirectToLogout()
+      return
     }
     return error
   }
@@ -110,8 +108,8 @@ export function* createWebhook({
     )
     yield put(createWebhookResponse({ data: null }))
     if (isFourZeroOneError(error)) {
-      const jwt: string = yield select((state: RootState) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      yield* redirectToLogout()
+      return
     }
     return error
   }
@@ -142,8 +140,8 @@ export function* deleteWebhook({
     )
     yield put(deleteWebhookResponse())
     if (isFourZeroOneError(error)) {
-      const jwt: string = yield select((state: RootState) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      yield* redirectToLogout()
+      return
     }
     return error
   }
@@ -174,8 +172,8 @@ export function* updateWebhook({
     )
     yield put(updateWebhookResponse({ data: null }))
     if (isFourZeroOneError(error)) {
-      const jwt: string = yield select((state: RootState) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      yield* redirectToLogout()
+      return
     }
     return error
   }
@@ -202,8 +200,8 @@ export function* getFeatures(): Generator<CallEffect | PutEffect | SelectEffect,
     )
     yield put(getFeaturesResponse([]))
     if (isFourZeroOneError(error)) {
-      const jwt: string = yield select((state: RootState) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      yield* redirectToLogout()
+      return
     }
     return error
   }
@@ -234,8 +232,8 @@ export function* getFeaturesByWebhookId({
     )
     yield put(getFeaturesByWebhookIdResponse([]))
     if (isFourZeroOneError(error)) {
-      const jwt: string = yield select((state: RootState) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      yield* redirectToLogout()
+      return
     }
     return error
   }
@@ -269,8 +267,8 @@ export function* getWebhooksByFeatureId({
     )
     yield put(getWebhooksByFeatureIdResponse([]))
     if (isFourZeroOneError(error)) {
-      const jwt: string = yield select((state: RootState) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      yield* redirectToLogout()
+      return
     }
     return error
   }
@@ -356,8 +354,8 @@ export function* triggerWebhook({
       ),
     )
     if (isFourZeroOneError(error)) {
-      const jwt: string = yield select((state: RootState) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      yield* redirectToLogout()
+      return
     }
     addAdditionalData(audit, FETCH, `/webhook/${payload}`, {
       action: { action_data: { error: error, success: false } },

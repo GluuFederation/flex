@@ -26,14 +26,12 @@ interface RootState {
 export function useScopeActions() {
   const { navigateToRoute } = useAppNavigation()
   const authState = useSelector((state: RootState) => state.authReducer)
-  const token = authState?.token?.access_token
   const client_id = authState?.config?.clientId
   const userinfo = authState?.userinfo
 
   const logScopeCreation = useCallback(
     async (scope: Scope, message: string, modifiedFields?: ModifiedFields) => {
       await logAuditUserAction({
-        token,
         userinfo,
         action: CREATE,
         resource: SCOPE,
@@ -44,13 +42,12 @@ export function useScopeActions() {
         payload: scope,
       })
     },
-    [token, userinfo, client_id],
+    [userinfo, client_id],
   )
 
   const logScopeUpdate = useCallback(
     async (scope: Scope, message: string, modifiedFields?: ModifiedFields) => {
       await logAuditUserAction({
-        token,
         userinfo,
         action: UPDATE,
         resource: SCOPE,
@@ -61,13 +58,12 @@ export function useScopeActions() {
         payload: scope,
       })
     },
-    [token, userinfo, client_id],
+    [userinfo, client_id],
   )
 
   const logScopeDeletion = useCallback(
     async (scope: Scope, message: string) => {
       await logAuditUserAction({
-        token,
         userinfo,
         action: DELETION,
         resource: SCOPE,
@@ -77,7 +73,7 @@ export function useScopeActions() {
         payload: { inum: scope.inum, id: scope.id },
       })
     },
-    [token, userinfo, client_id],
+    [userinfo, client_id],
   )
 
   const navigateToScopeList = useCallback(() => {

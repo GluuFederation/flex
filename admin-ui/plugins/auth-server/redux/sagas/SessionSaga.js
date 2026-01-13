@@ -1,13 +1,12 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
-import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { SESSION } from '../audit/Resources'
 import { FETCH, DELETION } from '../../../../app/audit/UserActionType'
 import SessionApi from '../api/SessionApi'
 import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
-import { initAudit } from 'Redux/sagas/SagaUtils'
+import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 import {
   handleRevokeSession,
   handleDeleteSession,
@@ -16,15 +15,8 @@ import {
 } from '../features/sessionSlice'
 
 function* newFunction() {
-  const wholeToken = yield select((state) => state.authReducer.token)
-  let token = null
-  if (wholeToken) {
-    token = yield select((state) => state.authReducer.token.access_token)
-  }
-
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.AuthSessionManagementApi(getClient(JansConfigApi, token, issuer))
-
+  const api = new JansConfigApi.AuthSessionManagementApi(getClient(JansConfigApi, null, issuer))
   return new SessionApi(api)
 }
 
@@ -43,8 +35,8 @@ export function* getSessions({ payload }) {
     console.error('SessionSaga: Error fetching sessions:', e)
     yield put(handleUpdateSessionsResponse({ data: [] }))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -62,8 +54,8 @@ export function* searchSessions({ payload }) {
   } catch (e) {
     yield put(handleUpdateSessionsResponse({ data: null }))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -81,8 +73,8 @@ export function* revokeSessionByUserDn({ payload }) {
   } catch (e) {
     yield put(handleRevokeSession({ data: null }))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      yield* redirectToLogout()
+      return
     }
   } finally {
     yield put(toggleLoader(false))
@@ -101,8 +93,8 @@ export function* deleteSessionById({ payload }) {
   } catch (e) {
     yield put(handleDeleteSession({ data: null }))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      yield* redirectToLogout()
+      return
     }
   } finally {
     yield put(toggleLoader(false))

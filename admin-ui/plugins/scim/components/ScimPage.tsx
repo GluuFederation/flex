@@ -48,9 +48,6 @@ const ScimPage: React.FC = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
-  const token: string | undefined = useSelector(
-    (state: RootState) => state.authReducer?.token?.access_token,
-  )
   const userinfo: RootState['authReducer']['userinfo'] | undefined = useSelector(
     (state: RootState) => state.authReducer?.userinfo,
   )
@@ -117,7 +114,6 @@ const ScimPage: React.FC = () => {
         try {
           const userMessage: string = userMessageRef.current || 'SCIM configuration updated'
           await logAudit({
-            token: token ?? undefined,
             userinfo: userinfo ?? undefined,
             action: PATCH,
             resource: 'update_scim_config',

@@ -4,11 +4,6 @@ export interface BackendStatus {
   statusCode: number | null
 }
 
-export interface Token {
-  access_token: string
-  scopes: string[]
-}
-
 export interface UserInfo {
   // Define userinfo properties as needed, using 'any' for now
   [key: string]: any
@@ -26,14 +21,12 @@ export interface AuthState {
   isAuthenticated: boolean
   userinfo: UserInfo | null
   userinfo_jwt: string | null
-  token: Token | null
   idToken: string | null
-  JwtToken: string | null
+  jwtToken: string | null
   issuer: string | null
   permissions: string[]
   location: Location
   config: Config
-  defaultToken: any
   codeChallenge: string | null
   codeChallengeMethod: string
   codeVerifier: string | null
@@ -42,4 +35,5 @@ export interface AuthState {
   authState?: any
   userInum?: string | null
   isUserInfoFetched: boolean
+  hasSession: boolean
 }

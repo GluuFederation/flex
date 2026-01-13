@@ -1,12 +1,11 @@
 import { select, put } from 'redux-saga/effects'
 import type { AuditLog, AuthState, RootState } from './types/audit'
 import { isFourZeroOneError } from '../../utils/TokenController'
-import { getAPIAccessToken } from '../features/authSlice'
 import { updateToast } from '../features/toastSlice'
+import { auditLogoutLogs } from '../features/sessionSlice'
+
 export function* initAudit(): Generator<any, AuditLog, any> {
-  const auditlog: AuditLog = {
-    headers: {},
-  }
+  const auditlog: AuditLog = {}
   const client_id: string = yield select((state: RootState) => state.authReducer.config.clientId)
   const ip_address: string = yield select((state: RootState) => state.authReducer.location.IPv4)
   const userinfo: AuthState['userinfo'] = yield select(
@@ -14,13 +13,16 @@ export function* initAudit(): Generator<any, AuditLog, any> {
   )
   const author: string = userinfo ? userinfo.name : '-'
   const inum: string = userinfo ? userinfo.inum : '-'
-  const token: string = yield select((state: RootState) => state.authReducer.token.access_token)
   auditlog.client_id = client_id
   auditlog.ip_address = ip_address
   auditlog.status = 'success'
   auditlog.performedBy = { user_inum: inum, userId: author }
-  auditlog.headers.Authorization = `Bearer ${token}`
   return auditlog
+}
+
+export function* redirectToLogout(message = 'Session expired'): Generator<any, void, any> {
+  yield put(auditLogoutLogs({ message }))
+  window.location.href = '/logout'
 }
 
 export function* handleResponseError(
@@ -38,8 +40,8 @@ export function* handleResponseError(
     yield put(clearDataAction)
   }
   if (isFourZeroOneError(error)) {
-    const jwt: string = yield select((state: RootState) => state.authReducer.userinfo_jwt)
-    yield put(getAPIAccessToken(jwt))
+    yield* redirectToLogout()
+    return
   }
 
   return error
