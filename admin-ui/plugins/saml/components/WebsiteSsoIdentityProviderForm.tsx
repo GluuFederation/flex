@@ -131,7 +131,9 @@ const WebsiteSsoIdentityProviderForm = ({
       )
 
       const brokerIdentityProviderFormData: BrokerIdentityProviderForm = {
-        identityProvider: identityProviderData as unknown as IdentityProvider,
+        identityProvider: {
+          ...identityProviderData,
+        } as IdentityProvider,
         metaDataFile:
           metaDataFileImportedFlag && metaDataFile && metaDataFile instanceof File
             ? metaDataFile

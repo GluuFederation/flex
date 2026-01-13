@@ -168,7 +168,6 @@ const WebsiteSsoServiceProviderForm = ({
   const handleSubmit = useCallback(
     async (values: WebsiteSsoServiceProviderFormValues, user_message: string) => {
       const { metaDataFileImportedFlag, metaDataFile, ...websiteSsoServiceProviderData } = values
-      void metaDataFileImportedFlag
 
       const payload = buildWebsiteSsoServiceProviderPayload(
         websiteSsoServiceProviderData,
@@ -181,7 +180,10 @@ const WebsiteSsoServiceProviderForm = ({
           spMetaDataSourceType:
             payload.spMetaDataSourceType as (typeof TrustRelationshipSpMetaDataSourceType)[keyof typeof TrustRelationshipSpMetaDataSourceType],
         } as TrustRelationship,
-        metaDataFile: metaDataFile || new Blob([]),
+        metaDataFile:
+          metaDataFileImportedFlag && metaDataFile && metaDataFile instanceof File
+            ? metaDataFile
+            : new Blob([]),
       }
 
       try {
