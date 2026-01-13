@@ -1,7 +1,7 @@
 import { makeStyles } from 'tss-react/mui'
 import customColors from '@/customColors'
 import { fontFamily, fontWeights, fontSizes, letterSpacing, lineHeights } from '@/styles/fonts'
-import type { DropdownPosition } from './types'
+import type { DropdownPosition } from '../GluuDropdown/types'
 
 export const useStyles = makeStyles<{
   isDark: boolean

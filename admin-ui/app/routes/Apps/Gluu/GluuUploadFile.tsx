@@ -31,7 +31,7 @@ const GluuUploadFile: React.FC<GluuUploadFileProps> = ({
   const theme = useContext(ThemeContext)
   const selectedTheme = useMemo(() => {
     return theme?.state?.theme || 'light'
-  }, [theme?.state.theme])
+  }, [theme?.state?.theme])
 
   const [preDefinedFileName, setPreDefinedFileName] = useState<string | null>(fileName || null)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)

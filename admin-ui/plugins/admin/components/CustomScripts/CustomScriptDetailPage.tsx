@@ -10,7 +10,7 @@ import { CustomScriptDetailPageProps } from './types'
 const CustomScriptDetailPage: React.FC<CustomScriptDetailPageProps> = ({ row }) => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state.theme || 'light'
+  const selectedTheme = theme?.state?.theme || 'light'
 
   return (
     <>

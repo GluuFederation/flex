@@ -7,7 +7,6 @@ import { processMenus } from 'Plugins/PluginMenuResolver'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import CachedIcon from '@mui/icons-material/Cached'
-import LockIcon from '@mui/icons-material/Lock'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import styles from './styles/GluuAppSidebar.style'
 import { MenuContext } from '../../../components/SidebarMenu/MenuContext'
@@ -25,6 +24,7 @@ import {
   JansKcLinkIcon,
   StmpZoneIcon,
   ScriptsIcon,
+  LockIcon,
 } from '../../../components/SVG'
 import { AdminUiFeatureResource, useCedarling } from '@/cedarling'
 import { CEDARLING_BYPASS } from '@/cedarling/utility'
@@ -38,7 +38,6 @@ import type {
   SidebarRootState,
 } from '../../../components/Sidebar'
 
-// Constants - Extract to improve performance and maintainability
 const VISIBILITY_CONDITIONS: VisibilityConditions = {
   [ROUTES.JANS_LOCK_BASE]: 'jans-lock',
   [ROUTES.FIDO_BASE]: 'jans-fido2',
@@ -46,7 +45,6 @@ const VISIBILITY_CONDITIONS: VisibilityConditions = {
   [ROUTES.SAML_BASE]: 'keycloak',
 } as const
 
-// Icon mapping for better performance - O(1) lookup instead of O(n) switch
 const MENU_ICON_MAP: MenuIconMap = {
   home: <HomeIcon className="menu-icon" />,
   oauthserver: <OAuthIcon className="menu-icon" />,
@@ -92,7 +90,7 @@ function GluuAppSidebar(): JSX.Element {
   const getMenuIcon = useCallback((name?: string): React.ReactElement | undefined => {
     if (!name) return undefined
     const icon = MENU_ICON_MAP[name]
-    return icon ? (icon as React.ReactElement) : undefined
+    return React.isValidElement(icon) ? icon : undefined
   }, [])
 
   const getMenuPath = useCallback((menu: MenuItem): string | undefined => {

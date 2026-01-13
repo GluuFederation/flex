@@ -21,7 +21,9 @@ export function useNavbarTheme() {
 
   useEffect(() => {
     const styleId = 'navbar-theme-colors'
-    let styleElement = document.getElementById(styleId)
+    let styleElement = document.getElementById(styleId) as HTMLStyleElement | null
+    const createdByThisEffect = !styleElement
+
     if (!styleElement) {
       styleElement = document.createElement('style')
       styleElement.id = styleId
@@ -47,10 +49,16 @@ export function useNavbarTheme() {
         color: var(--theme-navbar-text) !important;
       }
       #page-title-navbar {
-        color: ${navbarColors.text} !important;
+        color: var(--theme-navbar-text) !important;
       }
     `
-  }, [navbarColors.text, navbarColors.background, navbarColors.border, navbarColors.icon])
+
+    return () => {
+      if (createdByThisEffect && styleElement && styleElement.parentNode) {
+        styleElement.parentNode.removeChild(styleElement)
+      }
+    }
+  }, [navbarColors.text])
 
   return {
     currentTheme,

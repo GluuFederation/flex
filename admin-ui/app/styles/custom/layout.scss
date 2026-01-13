@@ -1,8 +1,5 @@
 @import "./theme-colors";
 
-.layout__content {
-}
-
 .txt-white {
     color: #ffffff;
 }
@@ -36,13 +33,15 @@
 // Button outline
 
 .btn-outline-primary-light {
-    background-color: $text-secondary !important;
-    color: #ffffff !important;
+    background-color: transparent !important;
+    border: 1px solid $text-secondary !important;
+    color: $text-secondary !important;
 }
 
 .btn-outline-primary-dark {
-    background-color: $dark-background !important;
-    color: #ffffff !important;
+    background-color: transparent !important;
+    border: 1px solid $dark-background !important;
+    color: $dark-background !important;
 }
 
 // Tooltip

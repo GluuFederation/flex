@@ -94,7 +94,7 @@ const ProfileDetails: React.FC = () => {
         <Container>
           <Row className={classes.centerCard}>
             <Col xs={10} md={8} lg={5}>
-              <Card className="" type="" color={null}>
+              <Card>
                 <CardBody className={classes.profileCard}>
                   <React.Fragment>
                     <Box className={`${classes.avatar_wrapper} d-flex justify-content-center my-3`}>

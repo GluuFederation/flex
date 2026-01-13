@@ -13,6 +13,7 @@ import HomeIcon from './menu/Home'
 import FidoIcon from './menu/Fido'
 import StmpZoneIcon from './menu/Smtp'
 import ScriptsIcon from './menu/Scripts'
+import LockIcon from './menu/Lock'
 
 export {
   MenuContext,
@@ -30,4 +31,5 @@ export {
   FidoIcon,
   StmpZoneIcon,
   ScriptsIcon,
+  LockIcon,
 }

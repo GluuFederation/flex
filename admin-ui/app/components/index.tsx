@@ -103,17 +103,14 @@ export {
   UncontrolledCollapse,
   UncontrolledTooltip,
 } from 'reactstrap'
-export type {
-  DropdownOption,
-  DropdownPosition as ThemeDropdownPosition,
-  ThemeDropdownProps,
-} from './ThemeDropdown/types'
+export type { DropdownOption, ThemeDropdownProps } from './ThemeDropdown/types'
 export type {
   GluuDropdownProps,
   GluuDropdownOption,
   DropdownPosition,
   DropdownValue,
 } from './GluuDropdown/types'
+export type { DropdownPosition as ThemeDropdownPosition } from './GluuDropdown/types'
 export {
   Accordion,
   AccordionHeader,

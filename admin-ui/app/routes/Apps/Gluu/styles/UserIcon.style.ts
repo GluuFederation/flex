@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 
-interface UserIconStylesProps {
+export interface UserIconStylesProps {
   iconSize: number
 }
 
@@ -25,6 +25,5 @@ export const useStyles = makeStyles<UserIconStylesProps>()((theme, { iconSize })
     width: '100%',
     height: '100%',
     objectFit: 'cover',
-    borderRadius: '50%',
   },
 }))

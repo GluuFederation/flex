@@ -12,9 +12,7 @@ export function usePageTitle(initialTitle = 'Dashboard'): string {
     setPageTitle(titleElement.textContent || initialTitle)
 
     const observer = new MutationObserver(() => {
-      if (titleElement) {
-        setPageTitle(titleElement.textContent || initialTitle)
-      }
+      setPageTitle(titleElement.textContent || initialTitle)
     })
 
     observer.observe(titleElement, { childList: true, characterData: true, subtree: true })

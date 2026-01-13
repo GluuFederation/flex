@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useId } from 'react'
 
 interface FidoProps {
   fill?: string
@@ -7,6 +7,7 @@ interface FidoProps {
 }
 
 const FidoIcon: React.FC<FidoProps> = ({ fill = 'currentColor', className, style }) => {
+  const titleId = useId()
   return (
     <div className={className} style={style}>
       <svg
@@ -17,7 +18,10 @@ const FidoIcon: React.FC<FidoProps> = ({ fill = 'currentColor', className, style
         strokeWidth="1.5"
         width="28"
         height="28"
+        role="img"
+        aria-labelledby={titleId}
       >
+        <title id={titleId}>Fido icon</title>
         <path
           strokeLinecap="round"
           strokeLinejoin="round"

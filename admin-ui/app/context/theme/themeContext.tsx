@@ -1,4 +1,4 @@
-import React, { createContext, useReducer, useContext, Dispatch, ReactNode } from 'react'
+import React, { createContext, useReducer, useContext, Dispatch, ReactNode, useEffect } from 'react'
 
 // Define the shape of the theme state
 type ThemeState = {
@@ -18,7 +18,7 @@ export interface ThemeContextType {
 
 export const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
-// Get initial theme from localStorage
+// Get initial theme from localStorage (pure function, no side effects)
 // Priority: 1) userConfig (user-specific), 2) initTheme (global), 3) default 'light'
 const getInitialTheme = (): string => {
   if (typeof window === 'undefined') return 'light'
@@ -28,19 +28,25 @@ const getInitialTheme = (): string => {
     const userConfigStr = window.localStorage.getItem('userConfig')
     if (userConfigStr) {
       const userConfig = JSON.parse(userConfigStr)
-      if (userConfig?.theme && typeof userConfig.theme === 'object') {
-        const themeValues = Object.values(userConfig.theme)
-        if (themeValues.length > 0 && typeof themeValues[0] === 'string') {
-          const userTheme = themeValues[0] as string
-          if (userTheme === 'light' || userTheme === 'dark') {
-            window.localStorage.setItem('initTheme', userTheme)
-            return userTheme
+      // Handle both object format { [inum]: 'light' } and direct string format
+      if (userConfig?.theme) {
+        let userTheme: string | undefined
+        if (typeof userConfig.theme === 'string') {
+          userTheme = userConfig.theme
+        } else if (typeof userConfig.theme === 'object') {
+          const themeValues = Object.values(userConfig.theme)
+          if (themeValues.length > 0 && typeof themeValues[0] === 'string') {
+            userTheme = themeValues[0] as string
           }
+        }
+        if (userTheme === 'light' || userTheme === 'dark') {
+          return userTheme
         }
       }
     }
-  } catch {
+  } catch (e) {
     // Silent fail, fallback to initTheme
+    console.debug('Failed to parse userConfig:', e)
   }
 
   // Fallback to initTheme
@@ -48,20 +54,12 @@ const getInitialTheme = (): string => {
 
   if (!savedTheme) return 'light'
 
-  // If saved theme is one of the old themes, migrate to light and save
-  const oldThemes = ['darkBlack', 'darkBlue', 'lightBlue', 'lightGreen']
-  if (oldThemes.includes(savedTheme)) {
-    window.localStorage.setItem('initTheme', 'light')
-    return 'light'
-  }
-
   // Return saved theme if it's valid (light or dark)
   if (savedTheme === 'light' || savedTheme === 'dark') {
     return savedTheme
   }
 
   // Invalid theme, default to light
-  window.localStorage.setItem('initTheme', 'light')
   return 'light'
 }
 
@@ -85,6 +83,50 @@ interface ThemeProviderProps {
 
 export function ThemeProvider(props: ThemeProviderProps) {
   const [state, dispatch] = useReducer(themeReducer, initialState)
+
+  // Handle theme persistence in useEffect (side effects)
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    // Migrate userConfig theme to initTheme if needed
+    try {
+      const userConfigStr = window.localStorage.getItem('userConfig')
+      if (userConfigStr) {
+        const userConfig = JSON.parse(userConfigStr)
+        if (userConfig?.theme) {
+          let userTheme: string | undefined
+          if (typeof userConfig.theme === 'string') {
+            userTheme = userConfig.theme
+          } else if (typeof userConfig.theme === 'object') {
+            const themeValues = Object.values(userConfig.theme)
+            if (themeValues.length > 0 && typeof themeValues[0] === 'string') {
+              userTheme = themeValues[0] as string
+            }
+          }
+          if (userTheme === 'light' || userTheme === 'dark') {
+            const currentInitTheme = window.localStorage.getItem('initTheme')
+            if (currentInitTheme !== userTheme) {
+              window.localStorage.setItem('initTheme', userTheme)
+            }
+          }
+        }
+      }
+    } catch (e) {
+      console.debug('Failed to migrate userConfig theme:', e)
+      // Ensure we have a valid theme set
+      const currentTheme = window.localStorage.getItem('initTheme')
+      if (!currentTheme || !['light', 'dark'].includes(currentTheme)) {
+        window.localStorage.setItem('initTheme', 'light')
+      }
+    }
+
+    // Ensure invalid themes are migrated to light
+    const currentTheme = window.localStorage.getItem('initTheme')
+    if (currentTheme && !['light', 'dark'].includes(currentTheme)) {
+      window.localStorage.setItem('initTheme', 'light')
+    }
+  }, [])
+
   return <ThemeContext.Provider value={{ state, dispatch }}>{props.children}</ThemeContext.Provider>
 }
 

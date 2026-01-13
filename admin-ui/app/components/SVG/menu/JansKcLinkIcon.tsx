@@ -1,15 +1,22 @@
-import React from 'react'
+import React, { useId } from 'react'
 interface JansKcLinkIconProps {
   fill?: string
   className: string
   style?: React.CSSProperties
+  decorative?: boolean
+  title?: string
 }
 
 const JansKcLinkIcon: React.FC<JansKcLinkIconProps> = ({
   fill = 'currentColor',
   className,
   style,
+  decorative = false,
+  title,
 }) => {
+  const titleId = useId()
+  const iconTitle = title || 'Jans Keycloak Link icon'
+
   return (
     <div className={className} style={style}>
       <svg
@@ -20,7 +27,11 @@ const JansKcLinkIcon: React.FC<JansKcLinkIconProps> = ({
         strokeWidth="1.5"
         width="28"
         height="28"
+        role="img"
+        aria-hidden={decorative}
+        aria-labelledby={decorative ? undefined : titleId}
       >
+        {!decorative && <title id={titleId}>{iconTitle}</title>}
         <path
           strokeLinecap="round"
           strokeLinejoin="round"

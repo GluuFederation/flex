@@ -4,11 +4,11 @@ function setTitle(title: string = 'Dashboard') {
     const pageTitleNavbar = document.getElementById('page-title-navbar')
 
     if (pageTitle) {
-      pageTitle.innerHTML = title
+      pageTitle.textContent = title
     }
 
     if (pageTitleNavbar) {
-      pageTitleNavbar.innerHTML = title
+      pageTitleNavbar.textContent = title
     }
   }
 }

@@ -15,6 +15,7 @@ export const customColors = {
   primaryDark: '#0a2540',
   lightBorder: '#efefef',
   darkBackground: '#0b2947',
+  darkSidebar: '#0a2540',
   darkBorder: '#193f66',
   darkCardBg: '#091e34',
   darkDropdownBg: '#194169',

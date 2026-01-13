@@ -35,7 +35,7 @@ const GluuNavBar = () => {
   const userInfo = useSelector(userInfoSelector)
 
   const { navbarColors } = useNavbarTheme()
-  const { classes } = useNewNavbarStyles(navbarColors)()
+  const { classes } = useNewNavbarStyles({ navbarColors })
   const pageTitle = usePageTitle()
   const navbarRef = useRef<HTMLDivElement>(null)
 

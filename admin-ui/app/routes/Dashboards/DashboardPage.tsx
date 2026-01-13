@@ -425,7 +425,7 @@ const DashboardPage = () => {
       {showModal}
 
       <div className={classes.root}>
-        <Grid container className="px-40" style={{ marginBottom: 0 }}>
+        <Grid container className="px-24" style={{ marginBottom: 0 }}>
           <Grid item xs={12}>
             <div className={classes.statusSection}>
               <div className={classes.statusContainer}>
@@ -443,7 +443,7 @@ const DashboardPage = () => {
           </Grid>
         </Grid>
 
-        <Grid container className="px-40" spacing={2}>
+        <Grid container className="px-24" spacing={2}>
           <Grid item xs={12}>
             <Grid container spacing={2}>
               {summaryData.slice(0, 3).map((data, key) => (

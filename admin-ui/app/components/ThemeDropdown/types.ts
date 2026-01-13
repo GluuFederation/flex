@@ -1,6 +1,7 @@
 import type React from 'react'
+import type { DropdownPosition } from '../GluuDropdown/types'
 
-export type DropdownPosition = 'top' | 'bottom' | 'left' | 'right'
+export type { DropdownPosition }
 
 export type DropdownOption = {
   value: string | number

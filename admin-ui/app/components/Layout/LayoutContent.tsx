@@ -51,6 +51,7 @@ const LayoutContent = ({ children }: LayoutContentProps) => {
     () => ({
       '--theme-sidebar-background': themeColors.menu.background,
       '--theme-navbar-background': themeColors.navbar.background,
+      '--theme-navbar-border': themeColors.navbar.border,
       '--theme-menu-icon-color': menuColors.textColor,
       '--theme-menu-icon-color-active': menuColors.textColorActive,
       '--theme-menu-icon-color-hover': menuColors.textColorHover,
@@ -65,6 +66,7 @@ const LayoutContent = ({ children }: LayoutContentProps) => {
     [
       themeColors.menu.background,
       themeColors.navbar.background,
+      themeColors.navbar.border,
       menuColors.textColor,
       menuColors.textColorActive,
       menuColors.textColorHover,

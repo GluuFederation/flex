@@ -16,6 +16,5 @@ export type LogoutAuditState = {
 
 export type DropdownProfileProps = {
   trigger: React.ReactNode
-  userinfo?: UserInfo
   position?: DropdownPosition
 }

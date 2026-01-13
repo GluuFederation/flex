@@ -1,12 +1,5 @@
 @import "./theme-colors";
 
-$dark-gray: #323c47;
-$accent-red: #b3424a;
-$light-blue: #3573a6;
-$light-cyan: #bdd4d5;
-$light-gray: #eaecf1;
-$pale-yellow: #cfd76f;
-
 .custom-sidebar-container {
     background-color: var(--theme-sidebar-background, #fcfcfc);
 
@@ -78,26 +71,6 @@ $pale-yellow: #cfd76f;
     cursor: pointer;
 }
 
-.sidebar-menu-active-light {
-    background: $text-secondary !important;
-    color: #fff !important;
-}
-
-.sidebar-menu-active-light:hover {
-    background: $primary-dark !important;
-    color: #fff !important;
-}
-
-.sidebar-menu-active-dark {
-    background: $dark-background !important;
-    color: #fff !important;
-}
-
-.sidebar-menu-active-dark:hover {
-    background: $dark-sidebar !important;
-    color: #fff !important;
-}
-
-.sidebar-active-icon {
-    color: #000 !important;
+.sidebar__section:has(.sidebar__brand) {
+    border-bottom: 1px solid var(--theme-navbar-border);
 }

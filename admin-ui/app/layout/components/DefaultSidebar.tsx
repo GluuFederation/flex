@@ -57,7 +57,7 @@ const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
       <SidebarHideSlim>
         <SidebarSection>
           <Link to={ROUTES.ROOT} className="sidebar__brand">
-            <LogoThemed checkBackground className="sidebar__brand" />
+            <LogoThemed className="sidebar__brand" />
           </Link>
         </SidebarSection>
       </SidebarHideSlim>

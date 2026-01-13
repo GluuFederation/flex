@@ -1,16 +1,18 @@
 import React, { Suspense, lazy, ComponentType } from 'react'
 import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
 
-type LazyRouteWrapper = ComponentType<Record<string, unknown>> & {
-  preload: () => void
+type ComponentProps = Record<string, never>
+
+type LazyRouteWrapper = ComponentType<ComponentProps> & {
+  preload: () => Promise<{ default: ComponentType<ComponentProps> }>
 }
 
 export const createLazyRoute = (
-  importFn: () => Promise<{ default: ComponentType<Record<string, unknown>> }>,
+  importFn: () => Promise<{ default: ComponentType<ComponentProps> }>,
 ): LazyRouteWrapper => {
   const LazyComponent = lazy(importFn)
 
-  const Wrapper = (props: Record<string, unknown>) => (
+  const Wrapper = (props: ComponentProps) => (
     <Suspense fallback={<GluuSuspenseLoader />}>
       <LazyComponent {...props} />
     </Suspense>

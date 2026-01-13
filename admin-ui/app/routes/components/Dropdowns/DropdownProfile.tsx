@@ -6,11 +6,7 @@ import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { GluuDropdown, type GluuDropdownOption } from 'Components'
 import type { DropdownProfileProps, LogoutAuditState } from './types'
 
-const DropdownProfile = ({
-  trigger,
-  position = 'bottom',
-  userinfo: _userinfo,
-}: DropdownProfileProps) => {
+const DropdownProfile = ({ trigger, position = 'bottom' }: DropdownProfileProps) => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const { logoutAuditSucceeded } = useSelector(

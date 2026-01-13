@@ -7,7 +7,7 @@ import { useStyles } from './styles/ThemeDropdown.style'
 import type { ThemeDropdownComponentProps } from './types'
 
 const ChevronIcon = memo(() => (
-  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true" focusable="false">
     <path
       d="M4.5 6.75L9 11.25L13.5 6.75"
       stroke="currentColor"
@@ -30,17 +30,26 @@ export const ThemeDropdownComponent = memo<ThemeDropdownComponentProps>(({ userI
 
   const onChangeTheme = useCallback(
     (value: string) => {
-      const existingConfig = JSON.parse(localStorage.getItem('userConfig') || '{}')
-      const lang = existingConfig?.lang || {}
-      const theme = existingConfig?.theme || {}
+      try {
+        const existingConfig = JSON.parse(localStorage.getItem('userConfig') || '{}')
+        const lang = existingConfig?.lang || {}
+        const theme = existingConfig?.theme || {}
 
-      const { inum } = userInfo
-      if (inum) {
-        theme[inum] = value
+        const { inum } = userInfo
+        if (inum) {
+          theme[inum] = value
+        }
+
+        const newConfig = { lang, theme }
+        localStorage.setItem('userConfig', JSON.stringify(newConfig))
+      } catch (e) {
+        console.debug('Failed to parse userConfig:', e)
+        const { inum } = userInfo
+        if (inum) {
+          const newConfig = { lang: {}, theme: { [inum]: value } }
+          localStorage.setItem('userConfig', JSON.stringify(newConfig))
+        }
       }
-
-      const newConfig = { lang, theme }
-      localStorage.setItem('userConfig', JSON.stringify(newConfig))
 
       themeContext?.dispatch({ type: value })
     },

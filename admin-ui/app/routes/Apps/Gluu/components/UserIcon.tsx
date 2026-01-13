@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useMemo } from 'react'
 import Box from '@mui/material/Box'
 import DEFAULT_AVATAR_URL from '../../../../images/avatars/ava1.png'
 import { useStyles } from '../styles/UserIcon.style'
@@ -19,8 +19,13 @@ const UserIcon = memo<UserIconProps>(({ size = 40, className, avatarUrl }) => {
     }
   }
 
+  const containerClassName = useMemo(
+    () => [className, classes.container].filter(Boolean).join(' '),
+    [className, classes.container],
+  )
+
   return (
-    <Box className={`${className || ''} ${classes.container}`}>
+    <Box className={containerClassName}>
       <Box className={classes.innerBox}>
         <img
           src={avatarUrl || DEFAULT_AVATAR_URL}
