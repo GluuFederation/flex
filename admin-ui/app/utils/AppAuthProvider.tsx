@@ -57,23 +57,33 @@ export default function AppAuthProvider(props) {
     }
   }, [isConfigValid])
 
+  const [error, setError] = useState(null)
+
   useEffect(() => {
+    let isMounted = true
+
     if (hasSession) {
       fetchPolicyStore()
         .then((policyStoreResponse) => {
-          const policyStoreJson = policyStoreResponse.data.responseObject
-          dispatch({
-            type: 'cedarPermissions/setPolicyStoreJson',
-            payload: policyStoreJson,
-          })
+          if (isMounted) {
+            const policyStoreJson = policyStoreResponse.data.responseObject
+            dispatch({
+              type: 'cedarPermissions/setPolicyStoreJson',
+              payload: policyStoreJson,
+            })
+          }
         })
-        .catch((error) => {
-          console.error('Failed to fetch policy store', error)
+        .catch((err) => {
+          if (isMounted) {
+            setError(err)
+          }
         })
     }
-  }, [hasSession, dispatch])
 
-  const [error, setError] = useState(null)
+    return () => {
+      isMounted = false
+    }
+  }, [hasSession, dispatch])
   const [code, setCode] = useState(null)
 
   useEffect(() => {

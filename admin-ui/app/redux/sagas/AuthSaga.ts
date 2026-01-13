@@ -55,6 +55,10 @@ function* getOAuth2ConfigWorker({ payload }) {
       if (!token) {
         token = yield* getApiTokenWithDefaultScopes()
       }
+      if (!token) {
+        yield put(getOAuth2ConfigResponse())
+        return
+      }
     }
 
     const response = yield call(fetchServerConfiguration, token)
@@ -101,7 +105,7 @@ export function* putConfigWorker({ payload }) {
 
 function* getAPIAccessTokenWorker(jwt) {
   try {
-    if (jwt) {
+    if (jwt?.payload) {
       const response = yield call(fetchApiTokenWithDefaultScopes)
       if (response && response !== API_ERROR_RESPONSE && !response?.name) {
         yield put(
