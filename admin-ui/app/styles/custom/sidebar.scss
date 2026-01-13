@@ -46,6 +46,16 @@ $pale-yellow: #cfd76f;
     width: 28px;
     margin-right: 10px;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    svg {
+        width: 28px;
+        height: 28px;
+        display: block;
+    }
 }
 
 .sidebar-menu__entry {

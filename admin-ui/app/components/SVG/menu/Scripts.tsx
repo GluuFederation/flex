@@ -15,6 +15,8 @@ const ScriptsIcon: React.FC<ScriptsProps> = ({ fill = 'currentColor', className,
         viewBox="0 0 24 24"
         stroke={fill}
         strokeWidth="1.5"
+        width="28"
+        height="28"
       >
         <path
           strokeLinecap="round"

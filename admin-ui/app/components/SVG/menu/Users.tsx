@@ -15,6 +15,8 @@ const UsersIcon: React.FC<UsersProps> = ({ fill = 'currentColor', className, sty
         viewBox="0 0 24 24"
         stroke={fill}
         strokeWidth="1.5"
+        width="28"
+        height="28"
       >
         <path
           strokeLinecap="round"

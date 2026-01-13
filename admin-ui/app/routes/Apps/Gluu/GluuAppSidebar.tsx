@@ -33,7 +33,6 @@ import type {
   MenuItem,
   PluginMenu,
   VisibilityConditions,
-  IconStyles,
   MenuIconMap,
   ThemeContextState,
   SidebarRootState,
@@ -47,27 +46,21 @@ const VISIBILITY_CONDITIONS: VisibilityConditions = {
   [ROUTES.SAML_BASE]: 'keycloak',
 } as const
 
-const ICON_STYLES: IconStyles = {
-  default: { top: '-2px', height: '28px', width: '28px' },
-  saml: { top: 0, height: '28px', width: '28px' },
-  script: { fontSize: '28px' },
-} as const
-
 // Icon mapping for better performance - O(1) lookup instead of O(n) switch
 const MENU_ICON_MAP: MenuIconMap = {
   home: <HomeIcon className="menu-icon" />,
   oauthserver: <OAuthIcon className="menu-icon" />,
   services: <ServicesIcon className="menu-icon" />,
   user_claims: <UserClaimsIcon className="menu-icon" />,
-  scripts: <ScriptsIcon className="menu-icon" style={ICON_STYLES.script} />,
+  scripts: <ScriptsIcon className="menu-icon" />,
   usersmanagement: <UsersIcon className="menu-icon" />,
   stmpmanagement: <StmpZoneIcon className="menu-icon" />,
   fidomanagement: <FidoIcon className="menu-icon" />,
   scim: <ScimIcon className="menu-icon" />,
-  jans_link: <CachedIcon className="menu-icon" style={ICON_STYLES.default} />,
-  jans_lock: <LockIcon className="menu-icon" style={ICON_STYLES.default} />,
-  jans_kc_link: <JansKcLinkIcon className="menu-icon" style={ICON_STYLES.default} />,
-  saml: <SamlIcon className="menu-icon" style={ICON_STYLES.saml} />,
+  jans_link: <CachedIcon className="menu-icon" />,
+  jans_lock: <LockIcon className="menu-icon" />,
+  jans_kc_link: <JansKcLinkIcon className="menu-icon" />,
+  saml: <SamlIcon className="menu-icon" />,
 } as const
 
 type RootState = SidebarRootState
@@ -96,9 +89,10 @@ function GluuAppSidebar(): JSX.Element {
     [selectedTheme],
   )
 
-  const getMenuIcon = useCallback((name?: string): React.ReactNode | null => {
-    if (!name) return null
-    return MENU_ICON_MAP[name] ?? null
+  const getMenuIcon = useCallback((name?: string): React.ReactElement | undefined => {
+    if (!name) return undefined
+    const icon = MENU_ICON_MAP[name]
+    return icon ? (icon as React.ReactElement) : undefined
   }, [])
 
   const getMenuPath = useCallback((menu: MenuItem): string | undefined => {

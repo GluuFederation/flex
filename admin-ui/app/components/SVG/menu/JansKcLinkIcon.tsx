@@ -2,7 +2,7 @@ import React from 'react'
 interface JansKcLinkIconProps {
   fill?: string
   className: string
-  style: React.CSSProperties
+  style?: React.CSSProperties
 }
 
 const JansKcLinkIcon: React.FC<JansKcLinkIconProps> = ({
@@ -18,6 +18,8 @@ const JansKcLinkIcon: React.FC<JansKcLinkIconProps> = ({
         viewBox="0 0 24 24"
         stroke={fill}
         strokeWidth="1.5"
+        width="28"
+        height="28"
       >
         <path
           strokeLinecap="round"
