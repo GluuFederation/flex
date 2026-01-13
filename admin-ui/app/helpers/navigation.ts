@@ -119,14 +119,6 @@ const ROUTES = {
   // ========== Services Plugin ==========
   SERVICES_CACHE: `${PLUGIN_BASE_PATHS.SERVICES}/cache`,
   SERVICES_PERSISTENCE: `${PLUGIN_BASE_PATHS.SERVICES}/persistence`,
-  SERVICES_COUCHBASE: `${PLUGIN_BASE_PATHS.SERVICES}/couchbase`,
-
-  // SQL
-  SQL_LIST: `${PLUGIN_BASE_PATHS.SERVICES}/sql`,
-  SQL_ADD: `${PLUGIN_BASE_PATHS.SERVICES}/sql/new`,
-  SQL_EDIT: (configId: string) =>
-    `${PLUGIN_BASE_PATHS.SERVICES}/sql/edit/${encodeURIComponent(configId)}`,
-  SQL_EDIT_TEMPLATE: `${PLUGIN_BASE_PATHS.SERVICES}/sql/edit/:configId`,
 
   // LDAP
   LDAP_LIST: `${PLUGIN_BASE_PATHS.SERVICES}/ldap`,
