@@ -12,8 +12,8 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
   navbarWrapper: {
     height: '106px',
     width: '100%',
-    backgroundColor: `${navbarColors.background} !important`,
-    borderBottom: `1px solid ${navbarColors.border} !important`,
+    backgroundColor: navbarColors.background,
+    borderBottom: `1px solid ${navbarColors.border}`,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -36,7 +36,7 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     fontFamily,
     fontSize: fontSizes['3xl'],
     fontWeight: fontWeights.bold,
-    color: `${navbarColors.text} !important`,
+    color: navbarColors.text,
     margin: 0,
     padding: '0px',
     lineHeight: 1,
@@ -127,7 +127,7 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     fontFamily,
     fontSize: fontSizes.base,
     fontWeight: fontWeights.medium,
-    color: `${navbarColors.text} !important`,
+    color: navbarColors.text,
     letterSpacing: letterSpacing.normal,
     lineHeight: '1.5',
     maxWidth: '200px',
@@ -139,7 +139,6 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     display: 'block',
     flexShrink: 1,
     [theme.breakpoints.down('md')]: {
-      fontSize: fontSizes.base,
       maxWidth: '150px',
     },
     [theme.breakpoints.down('sm')]: {
@@ -150,15 +149,18 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     flexShrink: 0,
   },
   userChevron: {
-    width: '18px',
-    height: '18px',
-    minWidth: '18px',
-    minHeight: '18px',
-    color: `${navbarColors.icon} !important`,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexShrink: 0,
+    'width': '18px',
+    'height': '18px',
+    'minWidth': '18px',
+    'minHeight': '18px',
+    'color': navbarColors.icon,
+    'display': 'flex',
+    'alignItems': 'center',
+    'justifyContent': 'center',
+    'flexShrink': 0,
+    '& svg': {
+      color: navbarColors.icon,
+    },
     [theme.breakpoints.down('sm')]: {
       width: '16px',
       height: '16px',
@@ -168,6 +170,4 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
   },
 }))
 
-export const useNewNavbarStyles = ({ navbarColors }: { navbarColors: NavbarColors }) => {
-  return useStyles({ navbarColors })
-}
+export { useStyles }

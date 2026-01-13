@@ -10,8 +10,12 @@ export interface Token {
 }
 
 export interface UserInfo {
-  // Define userinfo properties as needed, using 'any' for now
-  [key: string]: any
+  inum?: string
+  user_name?: string
+  name?: string
+  given_name?: string
+  family_name?: string
+  [key: string]: string | number | boolean | undefined | null
 }
 
 export interface Config {

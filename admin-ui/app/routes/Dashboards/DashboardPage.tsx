@@ -1,34 +1,34 @@
 import React, { useState, useEffect, useMemo, useCallback, useContext, memo } from 'react'
-import Grid from '@mui/material/Grid'
-import Paper from '@mui/material/Paper'
+import { useTranslation } from 'react-i18next'
+import { useDispatch, useSelector } from 'react-redux'
 import { useMediaQuery } from 'react-responsive'
 import dayjs from 'dayjs'
 import type { Dayjs } from 'dayjs'
-import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import Grid from '@mui/material/Grid'
+import Paper from '@mui/material/Paper'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
-import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
-import DashboardChart from './Chart/DashboardChart'
-import DateRange from './DateRange'
-import SetTitle from 'Utils/SetTitle'
-import styles from './styles'
-import type { CedarPermissionsState } from '@/cedarling/types'
-import type { AuthState } from 'Redux/features/types/authTypes'
-
-import { formatDate } from 'Utils/Util'
-import GluuPermissionModal from 'Routes/Apps/Gluu/GluuPermissionModal'
-import { auditLogoutLogs } from 'Redux/features/sessionSlice'
-import customColors from '@/customColors'
 import { useCedarling } from '@/cedarling'
+import customColors from '@/customColors'
+import { fontFamily, fontWeights, fontSizes } from '@/styles/fonts'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
-
-import { useDashboardLicense, useDashboardClients, useDashboardLockStats } from './hooks'
+import { auditLogoutLogs } from 'Redux/features/sessionSlice'
+import type { AuthState } from 'Redux/features/types/authTypes'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuPermissionModal from 'Routes/Apps/Gluu/GluuPermissionModal'
+import { formatDate } from 'Utils/Util'
+import { useDebounce } from 'Utils/hooks'
+import SetTitle from 'Utils/SetTitle'
 import { useMauStats } from 'Plugins/admin/components/MAU/hooks'
 import { useHealthStatus } from 'Plugins/admin/components/Health/hooks'
+import type { CedarPermissionsState } from '@/cedarling/types'
 import type { MauDateRange } from 'Plugins/admin/components/MAU/types'
+import DashboardChart from './Chart/DashboardChart'
+import DateRange from './DateRange'
+import { useDashboardLicense, useDashboardClients, useDashboardLockStats } from './hooks'
+import styles from './styles'
 
 interface RootState {
   authReducer: AuthState
@@ -53,8 +53,6 @@ const LEGEND_ITEMS = [
   { color: customColors.chartCoral, label: 'Authorization Code Access Token' },
   { color: customColors.chartCyan, label: 'Client Credential Access Token' },
 ] as const
-
-import { fontFamily, fontWeights, fontSizes } from '@/styles/fonts'
 
 const CHART_TITLE_STYLE = {
   fontFamily,
@@ -91,7 +89,7 @@ const SummaryCard = memo<{
 }>(({ text, value, classes }) => (
   <Paper className={classes.summary} elevation={0}>
     <div className={classes.summaryText}>{text}</div>
-    <div className={classes.summaryValue}>{value}</div>
+    <div className={classes.summaryValue}>{value !== null ? value : '—'}</div>
   </Paper>
 ))
 SummaryCard.displayName = 'SummaryCard'
@@ -170,6 +168,9 @@ const DashboardPage = () => {
   const [startDate, setStartDate] = useState<Dayjs>(dayjs().subtract(3, 'months'))
   const [endDate, setEndDate] = useState<Dayjs>(dayjs())
 
+  const debouncedStartDate = useDebounce(startDate, 1000)
+  const debouncedEndDate = useDebounce(endDate, 1000)
+
   const { isUserInfoFetched } = useSelector((state: RootState) => state.authReducer)
   const access_token = useSelector((state: RootState) => state.authReducer.token?.access_token)
   const permissions = useSelector((state: RootState) => state.authReducer.permissions)
@@ -226,10 +227,10 @@ const DashboardPage = () => {
 
   const dateRange: MauDateRange = useMemo(
     () => ({
-      startDate,
-      endDate,
+      startDate: debouncedStartDate,
+      endDate: debouncedEndDate,
     }),
-    [startDate, endDate],
+    [debouncedStartDate, debouncedEndDate],
   )
 
   const { data: mauData, isLoading: mauLoading } = useMauStats(dateRange, {
@@ -406,10 +407,10 @@ const DashboardPage = () => {
 
   const dateMonths = useMemo(
     () => ({
-      start: startDate.format('YYYYMM'),
-      end: endDate.format('YYYYMM'),
+      start: debouncedStartDate.format('YYYYMM'),
+      end: debouncedEndDate.format('YYYYMM'),
     }),
-    [startDate, endDate],
+    [debouncedStartDate, debouncedEndDate],
   )
 
   const chartTitleStyle = useMemo(
@@ -464,38 +465,15 @@ const DashboardPage = () => {
                   <div className={classes.userInfo}>
                     <div className={classes.userInfoTitle}>{t('dashboard.user_info')}</div>
                     <div className={classes.userInfoContent}>
-                      {Array.from({ length: Math.ceil(userInfo.length / 2) }, (_, rowIndex) => {
-                        const startIndex = rowIndex * 2
-                        const rowItems = userInfo.slice(startIndex, startIndex + 2)
-                        const isLastRow = rowIndex === Math.ceil(userInfo.length / 2) - 1
-
-                        return (
-                          <div
-                            key={rowIndex}
-                            className={`${classes.userInfoRow} ${
-                              isLastRow ? classes.userInfoRowLast : ''
-                            }`}
-                          >
-                            {rowItems.map((item, itemIndex) => (
-                              <div
-                                key={startIndex + itemIndex}
-                                className={`${classes.userInfoItem} ${
-                                  itemIndex === 0
-                                    ? classes.userInfoItemLeft
-                                    : classes.userInfoItemRight
-                                }`}
-                              >
-                                <UserInfoItem
-                                  item={item}
-                                  classes={classes}
-                                  isStatus={item.isStatus}
-                                  t={t}
-                                />
-                              </div>
-                            ))}
-                          </div>
-                        )
-                      })}
+                      {userInfo.map((item, index) => (
+                        <UserInfoItem
+                          key={`${item.text}-${index}`}
+                          item={item}
+                          classes={classes}
+                          isStatus={item.isStatus}
+                          t={t}
+                        />
+                      ))}
                     </div>
                   </div>
                 </Grid>

@@ -37,8 +37,6 @@
                     $name ==
                     "danger" or
                     $name ==
-                    "warning" or
-                    $name ==
                     "info"
                 {
                     color: map-get($dashboard-colors, "white");

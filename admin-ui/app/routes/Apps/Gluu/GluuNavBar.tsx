@@ -1,20 +1,20 @@
 import { useState, useEffect, memo, useRef, useMemo } from 'react'
+import { useSelector } from 'react-redux'
+import { ErrorBoundary } from 'react-error-boundary'
 import Box from '@mui/material/Box'
 import { Nav, NavItem, Notifications, SidebarTrigger } from 'Components'
+import { DropdownProfile } from 'Routes/components/Dropdowns/DropdownProfile'
+import type { UserInfo } from 'Redux/features/types/authTypes'
 import { LanguageMenu } from './LanguageMenu'
 import { ThemeDropdownComponent } from './ThemeDropdown'
-import { useSelector } from 'react-redux'
-import { DropdownProfile } from 'Routes/components/Dropdowns/DropdownProfile'
-import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
-import { useNewNavbarStyles } from './styles/GluuNavBar.style'
+import { UserIcon } from './components/UserIcon'
+import { useStyles } from './styles/GluuNavBar.style'
 import { useNavbarTheme } from './hooks/useNavbarTheme'
 import { usePageTitle } from './hooks/usePageTitle'
-import { UserIcon } from './components/UserIcon'
-import type { UserInfo } from 'Redux/features/types/authTypes'
 
 const ChevronIcon = memo(() => (
-  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true" focusable="false">
     <path
       d="M4.5 6.75L9 11.25L13.5 6.75"
       stroke="currentColor"
@@ -28,14 +28,14 @@ ChevronIcon.displayName = 'ChevronIcon'
 
 const MOBILE_BREAKPOINT = '(max-width: 768px)'
 
-const userInfoSelector = (state: { authReducer: { userinfo: UserInfo | null } }) =>
+const selectUserInfo = (state: { authReducer: { userinfo: UserInfo | null } }) =>
   state.authReducer.userinfo
 
 const GluuNavBar = () => {
-  const userInfo = useSelector(userInfoSelector)
+  const userInfo = useSelector(selectUserInfo)
 
   const { navbarColors } = useNavbarTheme()
-  const { classes } = useNewNavbarStyles({ navbarColors })
+  const { classes } = useStyles({ navbarColors })
   const pageTitle = usePageTitle()
   const navbarRef = useRef<HTMLDivElement>(null)
 
@@ -93,22 +93,14 @@ const GluuNavBar = () => {
       (userInfo.nickname as string | undefined) ||
       'User'
     )
-  }, [
-    userInfo?.given_name,
-    userInfo?.family_name,
-    userInfo?.sn,
-    userInfo?.name,
-    userInfo?.user_name,
-    userInfo?.display_name,
-    userInfo?.displayName,
-    userInfo?.nickname,
-  ])
+  }, [userInfo])
 
   const avatarUrl = useMemo(() => {
     if (!userInfo) return null
 
-    return userInfo.picture || userInfo.avatar || userInfo.photo || userInfo.image || null
-  }, [userInfo?.picture, userInfo?.avatar, userInfo?.photo, userInfo?.image])
+    const url = userInfo.picture || userInfo.avatar || userInfo.photo || userInfo.image
+    return typeof url === 'string' ? url : null
+  }, [userInfo])
 
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
@@ -116,8 +108,6 @@ const GluuNavBar = () => {
         ref={navbarRef}
         className={`${classes.navbarWrapper} navbar-themed`}
         sx={{
-          'backgroundColor': `${navbarColors.background} !important`,
-          'borderBottom': `1px solid ${navbarColors.border} !important`,
           '--theme-navbar-background': navbarColors.background,
           '--theme-navbar-text': navbarColors.text,
           '--theme-navbar-icon': navbarColors.icon,
@@ -160,7 +150,6 @@ const GluuNavBar = () => {
                   </Box>
                 </Box>
               }
-              userinfo={userInfo || undefined}
               position="bottom"
             />
           </Box>

@@ -1,24 +1,31 @@
 import type React from 'react'
-import type { DropdownPosition } from '../GluuDropdown/types'
+import type { DropdownPosition, GluuDropdownOption, GluuDropdownProps } from '../GluuDropdown/types'
 
 export type { DropdownPosition }
 
-export type DropdownOption = {
-  value: string | number
-  label: string | React.ReactNode
+export type DropdownOption = Omit<
+  GluuDropdownOption<string | number>,
+  'onClick' | 'divider' | 'icon' | 'metadata'
+> & {
   onClick?: () => void
-  disabled?: boolean
 }
 
-export type ThemeDropdownProps = {
+export type ThemeDropdownProps = Omit<
+  Pick<
+    GluuDropdownProps<string | number>,
+    | 'position'
+    | 'selectedValue'
+    | 'onSelect'
+    | 'className'
+    | 'dropdownClassName'
+    | 'minWidth'
+    | 'maxWidth'
+    | 'showArrow'
+  >,
+  'selectedValue' | 'onSelect'
+> & {
   trigger: React.ReactNode
   options: DropdownOption[]
-  position?: DropdownPosition
   selectedValue?: string | number
   onSelect?: (value: string | number) => void
-  className?: string
-  dropdownClassName?: string
-  minWidth?: number | string
-  maxWidth?: number | string
-  showArrow?: boolean
 }

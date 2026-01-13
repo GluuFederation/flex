@@ -1,4 +1,4 @@
-import React, { useContext, ReactElement } from 'react'
+import React, { ReactElement } from 'react'
 import { Badge, FormGroup, Card, Col, CardBody, InputGroup, CustomInput } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
@@ -6,13 +6,10 @@ import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { CACHE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
-import { ThemeContext } from 'Context/theme/themeContext'
 import type { CacheRedisProps } from './types'
 
 function CacheRedis({ config, formik }: CacheRedisProps): ReactElement {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'light'
 
   return (
     <Card>
@@ -47,7 +44,7 @@ function CacheRedis({ config, formik }: CacheRedisProps): ReactElement {
           <FormGroup row>
             <GluuLabel label="fields.servers" size={6} />
             <Col sm={6}>
-              <Badge color={`primary-${selectedTheme}`}>{config.servers}</Badge>
+              <Badge color="primary">{config.servers}</Badge>
             </Col>
           </FormGroup>
         </GluuTooltip>

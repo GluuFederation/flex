@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react'
+import { memo, useMemo, useCallback } from 'react'
 import Box from '@mui/material/Box'
 import DEFAULT_AVATAR_URL from '../../../../images/avatars/ava1.png'
 import { useStyles } from '../styles/UserIcon.style'
@@ -12,12 +12,12 @@ interface UserIconProps {
 const UserIcon = memo<UserIconProps>(({ size = 40, className, avatarUrl }) => {
   const { classes } = useStyles({ iconSize: size })
 
-  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+  const handleImageError = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
     const target = e.target as HTMLImageElement
     if (target.src !== DEFAULT_AVATAR_URL) {
       target.src = DEFAULT_AVATAR_URL
     }
-  }
+  }, [])
 
   const containerClassName = useMemo(
     () => [className, classes.container].filter(Boolean).join(' '),

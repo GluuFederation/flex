@@ -1,18 +1,18 @@
 import React, { useId } from 'react'
-interface StmpProps {
+interface SmtpProps {
   fill?: string
   className: string
   style?: React.CSSProperties
 }
 
-const StmpZoneIcon: React.FC<StmpProps> = ({ fill = 'currentColor', className, style }) => {
+const SmtpZoneIcon: React.FC<SmtpProps> = ({ fill = 'currentColor', className, style }) => {
   const titleId = useId()
   return (
     <div className={className} style={style}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
-        viewBox="0 0 30 30"
+        viewBox="0 0 28 28"
         width="28"
         height="28"
         role="img"
@@ -31,4 +31,4 @@ const StmpZoneIcon: React.FC<StmpProps> = ({ fill = 'currentColor', className, s
     </div>
   )
 }
-export default StmpZoneIcon
+export default SmtpZoneIcon

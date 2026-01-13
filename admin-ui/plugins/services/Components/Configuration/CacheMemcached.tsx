@@ -1,17 +1,14 @@
-import React, { useContext, ReactElement } from 'react'
+import React, { ReactElement } from 'react'
 import { Badge, FormGroup, Card, Col, CardBody, CustomInput } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { CACHE } from 'Utils/ApiResources'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import { useTranslation } from 'react-i18next'
-import { ThemeContext } from 'Context/theme/themeContext'
 import type { CacheMemcachedProps } from './types'
 
 function CacheMemcached({ config, formik }: CacheMemcachedProps): ReactElement {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'light'
 
   return (
     <Card>
@@ -20,7 +17,7 @@ function CacheMemcached({ config, formik }: CacheMemcachedProps): ReactElement {
           <FormGroup row>
             <GluuLabel label="fields.servers" size={6} />
             <Col sm={6}>
-              <Badge color={`primary-${selectedTheme}`}>{config.servers}</Badge>
+              <Badge color="primary">{config.servers}</Badge>
             </Col>
           </FormGroup>
         </GluuTooltip>

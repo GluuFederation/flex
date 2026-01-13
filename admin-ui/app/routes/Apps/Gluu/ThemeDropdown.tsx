@@ -1,8 +1,8 @@
 import React, { useContext, useMemo, useCallback, memo } from 'react'
 import { useTranslation } from 'react-i18next'
+import Box from '@mui/material/Box'
 import { GluuDropdown, type GluuDropdownOption } from 'Components'
 import { ThemeContext } from 'Context/theme/themeContext'
-import Box from '@mui/material/Box'
 import { useStyles } from './styles/ThemeDropdown.style'
 import type { ThemeDropdownComponentProps } from './types'
 
@@ -30,25 +30,35 @@ export const ThemeDropdownComponent = memo<ThemeDropdownComponentProps>(({ userI
 
   const onChangeTheme = useCallback(
     (value: string) => {
-      try {
-        const existingConfig = JSON.parse(localStorage.getItem('userConfig') || '{}')
-        const lang = existingConfig?.lang || {}
-        const theme = existingConfig?.theme || {}
+      const { inum } = userInfo
+      if (!inum) {
+        themeContext?.dispatch({ type: value })
+        return
+      }
 
-        const { inum } = userInfo
-        if (inum) {
-          theme[inum] = value
+      try {
+        const existingConfigStr = localStorage.getItem('userConfig')
+        const existingConfig = existingConfigStr ? JSON.parse(existingConfigStr) : {}
+
+        const updatedTheme = {
+          ...(existingConfig.theme || {}),
+          [inum]: value,
         }
 
-        const newConfig = { lang, theme }
+        const newConfig = {
+          ...existingConfig,
+          lang: existingConfig.lang || {},
+          theme: updatedTheme,
+        }
+
         localStorage.setItem('userConfig', JSON.stringify(newConfig))
       } catch (e) {
         console.debug('Failed to parse userConfig:', e)
-        const { inum } = userInfo
-        if (inum) {
-          const newConfig = { lang: {}, theme: { [inum]: value } }
-          localStorage.setItem('userConfig', JSON.stringify(newConfig))
+        const newConfig = {
+          lang: {},
+          theme: { [inum]: value },
         }
+        localStorage.setItem('userConfig', JSON.stringify(newConfig))
       }
 
       themeContext?.dispatch({ type: value })

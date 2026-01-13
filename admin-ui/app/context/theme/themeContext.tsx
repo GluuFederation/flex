@@ -18,35 +18,54 @@ export interface ThemeContextType {
 
 export const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
-// Get initial theme from localStorage (pure function, no side effects)
-// Priority: 1) userConfig (user-specific), 2) initTheme (global), 3) default 'light'
-const getInitialTheme = (): string => {
-  if (typeof window === 'undefined') return 'light'
+const extractUserTheme = (currentInum?: string | null): string | undefined => {
+  if (typeof window === 'undefined') return undefined
 
-  // First, try to get user-specific theme from userConfig
   try {
     const userConfigStr = window.localStorage.getItem('userConfig')
-    if (userConfigStr) {
-      const userConfig = JSON.parse(userConfigStr)
-      // Handle both object format { [inum]: 'light' } and direct string format
-      if (userConfig?.theme) {
-        let userTheme: string | undefined
-        if (typeof userConfig.theme === 'string') {
-          userTheme = userConfig.theme
-        } else if (typeof userConfig.theme === 'object') {
-          const themeValues = Object.values(userConfig.theme)
-          if (themeValues.length > 0 && typeof themeValues[0] === 'string') {
-            userTheme = themeValues[0] as string
-          }
-        }
-        if (userTheme === 'light' || userTheme === 'dark') {
-          return userTheme
+    if (!userConfigStr) return undefined
+
+    const userConfig = JSON.parse(userConfigStr)
+    if (!userConfig?.theme) return undefined
+
+    let userTheme: string | undefined
+
+    if (typeof userConfig.theme === 'string') {
+      userTheme = userConfig.theme
+    } else if (typeof userConfig.theme === 'object') {
+      // If currentInum is available, use it; otherwise fall back to first value
+      if (currentInum && userConfig.theme[currentInum]) {
+        userTheme = userConfig.theme[currentInum]
+      } else {
+        const themeValues = Object.values(userConfig.theme)
+        if (themeValues.length > 0 && typeof themeValues[0] === 'string') {
+          userTheme = themeValues[0] as string
         }
       }
     }
+
+    // Validate theme value
+    if (userTheme === 'light' || userTheme === 'dark') {
+      return userTheme
+    }
   } catch (e) {
-    // Silent fail, fallback to initTheme
     console.debug('Failed to parse userConfig:', e)
+  }
+
+  return undefined
+}
+
+// Get initial theme from localStorage (pure function, no side effects)
+// Priority: 1) userConfig (user-specific), 2) initTheme (global), 3) default 'light'
+// Note: currentInum is not available at initialization time, so we use first value
+// The useEffect will update with the correct user's theme when user context is available
+const getInitialTheme = (): string => {
+  if (typeof window === 'undefined') return 'light'
+
+  // Try to get user-specific theme from userConfig
+  const userTheme = extractUserTheme()
+  if (userTheme) {
+    return userTheme
   }
 
   // Fallback to initTheme
@@ -88,41 +107,31 @@ export function ThemeProvider(props: ThemeProviderProps) {
   useEffect(() => {
     if (typeof window === 'undefined') return
 
-    // Migrate userConfig theme to initTheme if needed
+    // Try to get current user's inum from localStorage if available
+    // This is a fallback; ideally inum should be passed from user context
+    let currentInum: string | null = null
     try {
-      const userConfigStr = window.localStorage.getItem('userConfig')
-      if (userConfigStr) {
-        const userConfig = JSON.parse(userConfigStr)
-        if (userConfig?.theme) {
-          let userTheme: string | undefined
-          if (typeof userConfig.theme === 'string') {
-            userTheme = userConfig.theme
-          } else if (typeof userConfig.theme === 'object') {
-            const themeValues = Object.values(userConfig.theme)
-            if (themeValues.length > 0 && typeof themeValues[0] === 'string') {
-              userTheme = themeValues[0] as string
-            }
-          }
-          if (userTheme === 'light' || userTheme === 'dark') {
-            const currentInitTheme = window.localStorage.getItem('initTheme')
-            if (currentInitTheme !== userTheme) {
-              window.localStorage.setItem('initTheme', userTheme)
-            }
-          }
-        }
+      const userInfoStr = window.localStorage.getItem('userInfo')
+      if (userInfoStr) {
+        const userInfo = JSON.parse(userInfoStr)
+        currentInum = userInfo?.inum || null
       }
-    } catch (e) {
-      console.debug('Failed to migrate userConfig theme:', e)
-      // Ensure we have a valid theme set
-      const currentTheme = window.localStorage.getItem('initTheme')
-      if (!currentTheme || !['light', 'dark'].includes(currentTheme)) {
-        window.localStorage.setItem('initTheme', 'light')
+    } catch {
+      // Ignore parsing errors
+    }
+
+    // Extract user theme using the shared helper
+    const userTheme = extractUserTheme(currentInum)
+    if (userTheme) {
+      const currentInitTheme = window.localStorage.getItem('initTheme')
+      if (currentInitTheme !== userTheme) {
+        window.localStorage.setItem('initTheme', userTheme)
       }
     }
 
     // Ensure invalid themes are migrated to light
     const currentTheme = window.localStorage.getItem('initTheme')
-    if (currentTheme && !['light', 'dark'].includes(currentTheme)) {
+    if (!currentTheme || !['light', 'dark'].includes(currentTheme)) {
       window.localStorage.setItem('initTheme', 'light')
     }
   }, [])

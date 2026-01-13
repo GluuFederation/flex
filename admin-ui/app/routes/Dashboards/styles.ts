@@ -171,26 +171,10 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       left: '31.5px',
       width: '402px',
       minWidth: '402px',
-    },
-    userInfoRow: {
-      position: 'relative',
-      height: '63px',
-      marginBottom: '30px',
-    },
-    userInfoRowLast: {
-      marginBottom: 0,
-    },
-    userInfoItem: {
-      position: 'absolute',
-      display: 'flex',
-      flexDirection: 'column',
-      top: 0,
-    },
-    userInfoItemLeft: {
-      left: 0,
-    },
-    userInfoItemRight: {
-      left: '260px',
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gap: '30px 0px',
+      rowGap: '30px',
     },
     userInfoText: {
       fontFamily,
@@ -392,18 +376,9 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       boxSizing: 'border-box',
     },
     redBlock: {
-      // fontFamily,
-
-      // color: customColors.white,
-      // borderRadius: 5,
-      // padding: '8px',
-      // fontSize: fontSizes.sm,
-      // fontWeight: fontWeights.medium,
-      // lineHeight: lineHeights.base,
-      // letterSpacing: letterSpacing.tight,
       fontFamily,
       background: isDark ? customColors.statusInactive : customColors.statusInactiveBg,
-      color: isDark ? customColors.white : customColors.statusActive,
+      color: isDark ? customColors.white : customColors.statusInactive,
       borderRadius: 5,
       padding: '8px',
       fontSize: fontSizes.sm,

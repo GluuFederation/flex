@@ -22,7 +22,7 @@ import {
   ScimIcon,
   SamlIcon,
   JansKcLinkIcon,
-  StmpZoneIcon,
+  SmtpZoneIcon,
   ScriptsIcon,
   LockIcon,
 } from '../../../components/SVG'
@@ -52,7 +52,7 @@ const MENU_ICON_MAP: MenuIconMap = {
   user_claims: <UserClaimsIcon className="menu-icon" />,
   scripts: <ScriptsIcon className="menu-icon" />,
   usersmanagement: <UsersIcon className="menu-icon" />,
-  stmpmanagement: <StmpZoneIcon className="menu-icon" />,
+  stmpmanagement: <SmtpZoneIcon className="menu-icon" />,
   fidomanagement: <FidoIcon className="menu-icon" />,
   scim: <ScimIcon className="menu-icon" />,
   jans_link: <CachedIcon className="menu-icon" />,

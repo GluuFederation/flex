@@ -96,8 +96,10 @@ export const useStyles = makeStyles<{
     '&.disabled': {
       'opacity': 0.5,
       'cursor': 'not-allowed',
+      'pointerEvents': 'none',
       '&:hover': {
         backgroundColor: 'transparent',
+        color: 'inherit',
       },
     },
   },

@@ -1,16 +1,10 @@
 import React, { useState, useRef, useEffect, useContext, useMemo, useCallback, memo } from 'react'
 import Box from '@mui/material/Box'
 import { ThemeContext } from 'Context/theme/themeContext'
+import { ArrowIcon } from 'Components'
 import customColors from '@/customColors'
 import { useStyles } from './ThemeDropdown.style'
 import type { DropdownOption, ThemeDropdownProps } from './types'
-
-const ArrowIcon = memo(() => (
-  <svg width="15" height="10" viewBox="0 0 15 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M7.5 0L0 10H15L7.5 0Z" fill="currentColor" />
-  </svg>
-))
-ArrowIcon.displayName = 'ArrowIcon'
 
 export const ThemeDropdown = memo<ThemeDropdownProps>(
   ({
@@ -75,9 +69,38 @@ export const ThemeDropdown = memo<ThemeDropdownProps>(
       return style
     }, [minWidth, maxWidth])
 
+    const handleTriggerKeyDown = useCallback(
+      (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          setIsOpen(!isOpen)
+        }
+      },
+      [isOpen],
+    )
+
+    const handleOptionKeyDown = useCallback(
+      (option: DropdownOption) => (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (option.disabled) return
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          handleOptionClick(option)
+        }
+      },
+      [handleOptionClick],
+    )
+
     return (
       <div className={`${classes.dropdownWrapper} ${className || ''}`} ref={dropdownRef}>
-        <div onClick={() => setIsOpen(!isOpen)} style={{ cursor: 'pointer' }}>
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => setIsOpen(!isOpen)}
+          onKeyDown={handleTriggerKeyDown}
+          style={{ cursor: 'pointer' }}
+          aria-haspopup="listbox"
+          aria-expanded={isOpen}
+        >
           {trigger}
         </div>
         {isOpen && (
@@ -86,6 +109,7 @@ export const ThemeDropdown = memo<ThemeDropdownProps>(
               ref={menuRef}
               className={`${classes.dropdownMenu} ${dropdownClassName || ''}`}
               style={menuStyle}
+              role="listbox"
             >
               {showArrow && (
                 <div className={classes.arrow}>
@@ -95,10 +119,15 @@ export const ThemeDropdown = memo<ThemeDropdownProps>(
               {options.map((option) => (
                 <div
                   key={option.value}
+                  role="option"
+                  tabIndex={option.disabled ? -1 : 0}
+                  aria-selected={selectedValue === option.value}
+                  aria-disabled={option.disabled}
                   className={`${classes.option} ${
                     selectedValue === option.value ? 'selected' : ''
                   } ${option.disabled ? 'disabled' : ''}`}
                   onClick={() => handleOptionClick(option)}
+                  onKeyDown={handleOptionKeyDown(option)}
                 >
                   {option.label}
                 </div>

@@ -2,11 +2,11 @@ import React, { useId } from 'react'
 
 interface SamlProps {
   fill?: string
-  className: string
+  className?: string
   style?: React.CSSProperties
 }
 
-const SamlIcon: React.FC<SamlProps> = ({ fill = 'currentColor', className, style }) => {
+const SamlIcon: React.FC<SamlProps> = ({ fill = 'currentColor', className = '', style }) => {
   const titleId = useId()
   return (
     <div className={className} style={style}>

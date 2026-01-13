@@ -1,20 +1,19 @@
 import React, { useMemo, memo } from 'react'
+import moment from 'moment'
 import {
   XAxis,
   YAxis,
   Area,
   AreaChart,
   ResponsiveContainer,
-  Legend,
   Tooltip,
   CartesianGrid,
 } from 'recharts'
-import './styles.css'
-import TooltipDesign from './TooltipDesign'
-import moment from 'moment'
 import customColors from '@/customColors'
 import { fontFamily, fontSizes } from '@/styles/fonts'
+import TooltipDesign from './TooltipDesign'
 import type { DashboardChartProps, MauStatEntry } from '../types'
+import './styles.css'
 
 const DashboardChart = memo(
   ({ statData, startMonth, endMonth, textColor, gridColor }: DashboardChartProps) => {
@@ -60,6 +59,30 @@ const DashboardChart = memo(
       return prepareStat
     }, [statData, startMonth, endMonth])
 
+    const maxValue = useMemo(() => {
+      if (augmentedData.length === 0) return 1200
+
+      const max = augmentedData.reduce((acc, entry) => {
+        const total =
+          (entry.authz_code_idtoken_count || 0) +
+          (entry.authz_code_access_token_count || 0) +
+          (entry.client_credentials_access_token_count || 0)
+        return Math.max(acc, total)
+      }, 0)
+
+      const tickInterval = 300
+      return Math.ceil(max / tickInterval) * tickInterval || 1200
+    }, [augmentedData])
+
+    const yAxisTicks = useMemo(() => {
+      const tickInterval = 300
+      const ticks: number[] = []
+      for (let i = 0; i <= maxValue; i += tickInterval) {
+        ticks.push(i)
+      }
+      return ticks
+    }, [maxValue])
+
     return (
       <ResponsiveContainer debounce={1} width="100%" height="100%">
         <AreaChart data={augmentedData} margin={{ top: 10, right: 30, left: -20, bottom: 20 }}>
@@ -80,11 +103,10 @@ const DashboardChart = memo(
               fontFamily,
             }}
             style={{ fontFamily }}
-            domain={[0, 1200]}
-            ticks={[0, 300, 600, 900, 1200]}
+            domain={[0, maxValue]}
+            ticks={yAxisTicks}
           />
           <Tooltip content={<TooltipDesign />} />
-          <Legend wrapperStyle={{ display: 'none' }} />
           <Area
             type="monotone"
             dataKey="authz_code_idtoken_count"

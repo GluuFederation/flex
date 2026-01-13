@@ -28,6 +28,7 @@ import SidebarTrigger from './SidebarTrigger'
 import { ThemeClass, ThemeProvider, ThemeConsumer } from './Theme'
 import { ThemeDropdown } from './ThemeDropdown'
 import { GluuDropdown } from './GluuDropdown'
+import { ArrowIcon } from './SVG'
 import UncontrolledTabs from './UncontrolledTabs'
 import Wizard from './Wizard'
 import WizardStep from './Wizard/WizardStep'
@@ -147,6 +148,7 @@ export {
   ThemeProvider,
   ThemeDropdown,
   GluuDropdown,
+  ArrowIcon,
   UncontrolledTabs,
   Wizard,
   WizardStep,

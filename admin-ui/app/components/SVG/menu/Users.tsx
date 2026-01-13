@@ -7,6 +7,7 @@ interface UsersProps {
 }
 
 const UsersIcon: React.FC<UsersProps> = ({ fill = 'currentColor', className, style }) => {
+  const height = Math.round((28 * 20) / 24)
   return (
     <div className={className} style={style}>
       <svg
@@ -16,7 +17,7 @@ const UsersIcon: React.FC<UsersProps> = ({ fill = 'currentColor', className, sty
         stroke={fill}
         strokeWidth="2"
         width="28"
-        height="28"
+        height={height}
         role="img"
         aria-label="Users"
       >

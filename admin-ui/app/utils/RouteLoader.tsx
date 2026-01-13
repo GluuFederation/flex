@@ -1,24 +1,24 @@
 import React, { Suspense, lazy, ComponentType } from 'react'
 import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
 
-type ComponentProps = Record<string, never>
+type LazyRouteWrapper<P extends Record<string, unknown> = Record<string, unknown>> =
+  ComponentType<P> & {
+    preload: () => Promise<{ default: ComponentType<P> }>
+  }
 
-type LazyRouteWrapper = ComponentType<ComponentProps> & {
-  preload: () => Promise<{ default: ComponentType<ComponentProps> }>
-}
-
-export const createLazyRoute = (
-  importFn: () => Promise<{ default: ComponentType<ComponentProps> }>,
-): LazyRouteWrapper => {
+export const createLazyRoute = <P extends Record<string, unknown> = Record<string, unknown>>(
+  importFn: () => Promise<{ default: ComponentType<P> }>,
+): LazyRouteWrapper<P> => {
   const LazyComponent = lazy(importFn)
 
-  const Wrapper = (props: ComponentProps) => (
+  const Wrapper = (props: P) => (
     <Suspense fallback={<GluuSuspenseLoader />}>
+      {/* @ts-expect-error - LazyComponent props are dynamically typed and P is guaranteed to match at runtime */}
       <LazyComponent {...props} />
     </Suspense>
   )
 
-  const typedWrapper = Wrapper as LazyRouteWrapper
+  const typedWrapper = Wrapper as LazyRouteWrapper<P>
   typedWrapper.preload = importFn
   return typedWrapper
 }
@@ -40,9 +40,14 @@ export const loadPluginRoute = (pluginName: string, routePath?: string): LazyRou
   const componentPath = routePath || `${pluginName.charAt(0).toUpperCase() + pluginName.slice(1)}`
 
   return createLazyRoute(() =>
-    import(`../../plugins/${pluginName}/components/${componentPath}`).catch(
-      () => import(`../../plugins/${pluginName}/components/index`),
-    ),
+    import(`../../plugins/${pluginName}/components/${componentPath}`).catch((err) => {
+      console.warn(`Failed to load plugin route: ${pluginName}/${componentPath}`, {
+        pluginName,
+        componentPath,
+        error: err,
+      })
+      return import(`../../plugins/${pluginName}/components/index`)
+    }),
   )
 }
 

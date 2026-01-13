@@ -1,7 +1,5 @@
 @import "./miltonbo/scss/style.scss";
 @import "~pretty-checkbox/src/pretty-checkbox.scss";
-@import "./custom/theme-colors";
-@import "./custom/layout.scss";
 @import "./custom/navbar.scss";
 @import "./custom/sidebar.scss";
 @import "./custom/spacing.scss";
@@ -408,34 +406,34 @@ html {
 }
 
 .block-ui-container {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    min-height: 100vh !important;
-    z-index: 9999 !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    min-height: 100vh;
+    z-index: 9999;
 }
 
 .block-ui-overlay {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    border-radius: 0 !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
 }
 
 .block-ui-message-container {
-    position: fixed !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    z-index: 10000 !important;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10000;
 }
 
 .search-select {

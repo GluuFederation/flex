@@ -95,7 +95,7 @@ export const useStyles = makeStyles<{
   isDark: boolean
   position: DropdownPosition
   dropdownBg: string
-}>()((theme, { isDark, position, dropdownBg }) => ({
+}>()((_theme, { isDark, position, dropdownBg }) => ({
   dropdownWrapper: {
     position: 'relative',
     display: 'inline-block',
@@ -110,7 +110,7 @@ export const useStyles = makeStyles<{
     minWidth: DROPDOWN_CONSTANTS.minWidth,
     maxHeight: DROPDOWN_CONSTANTS.maxHeight,
     overflowY: 'auto',
-    overflow: 'visible',
+    overflowX: 'hidden',
     ...getPositionStyles(position),
   },
   arrow: {

@@ -31,6 +31,14 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
   const theme = useContext(ThemeContext)
   const name = row.details?.projectMetadata?.projectName || ''
   const selectedTheme = theme?.state?.theme || 'light'
+
+  const aceTheme = useMemo(() => {
+    const themeMap: Record<string, string> = {
+      light: 'xcode',
+      dark: 'monokai',
+    }
+    return themeMap[selectedTheme] || 'xcode'
+  }, [selectedTheme])
   const [configDetails, setConfigDetails] = useState<ConfigDetailsState>({
     isLoading: false,
     data: {},
@@ -347,7 +355,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
                           <AceEditor
                             mode={'json'}
                             readOnly={true}
-                            theme={selectedTheme}
+                            theme={aceTheme}
                             fontSize={14}
                             width="100%"
                             height="300px"

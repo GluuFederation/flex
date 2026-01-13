@@ -20,6 +20,7 @@ export function useNavbarTheme() {
   }, [themeColors])
 
   useEffect(() => {
+    document.documentElement.style.setProperty('--theme-navbar-text', navbarColors.text)
     const styleId = 'navbar-theme-colors'
     let styleElement = document.getElementById(styleId) as HTMLStyleElement | null
     const createdByThisEffect = !styleElement

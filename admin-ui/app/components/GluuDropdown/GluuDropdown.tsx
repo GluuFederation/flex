@@ -1,16 +1,10 @@
-import React, { useState, useRef, useEffect, useContext, useMemo, useCallback, memo } from 'react'
+import React, { useState, useRef, useEffect, useContext, useMemo, useCallback } from 'react'
 import Box from '@mui/material/Box'
 import { ThemeContext } from 'Context/theme/themeContext'
+import { ArrowIcon } from 'Components'
 import customColors from '@/customColors'
 import { useStyles } from './GluuDropdown.style'
 import type { DropdownValue, GluuDropdownOption, GluuDropdownProps, DropdownState } from './types'
-
-const ArrowIcon = memo(() => (
-  <svg width="15" height="10" viewBox="0 0 15 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M7.5 10L0 0H15L7.5 10Z" fill="currentColor" stroke="none" />
-  </svg>
-))
-ArrowIcon.displayName = 'ArrowIcon'
 
 export function GluuDropdown<T extends DropdownValue = DropdownValue>({
   trigger,
@@ -67,6 +61,15 @@ export function GluuDropdown<T extends DropdownValue = DropdownValue>({
     [controlled, onOpenChange],
   )
 
+  const extractTextFromReactNode = useCallback((node: React.ReactNode): string => {
+    if (typeof node === 'string') return node
+    if (typeof node === 'number') return String(node)
+    if (React.isValidElement(node) && node.props.children) {
+      return extractTextFromReactNode(node.props.children)
+    }
+    return ''
+  }, [])
+
   const filteredOptions = useMemo(() => {
     if (!searchable || !searchQuery.trim()) {
       return options
@@ -75,10 +78,14 @@ export function GluuDropdown<T extends DropdownValue = DropdownValue>({
     const query = searchQuery.toLowerCase().trim()
     return options.filter((option) => {
       if (option.divider) return true
-      const labelText = typeof option.label === 'string' ? option.label : ''
-      return labelText.toLowerCase().includes(query)
+      const searchText = option.searchValue
+        ? option.searchValue.toLowerCase()
+        : typeof option.label === 'string'
+          ? option.label.toLowerCase()
+          : extractTextFromReactNode(option.label).toLowerCase()
+      return searchText.includes(query)
     })
-  }, [options, searchQuery, searchable])
+  }, [options, searchQuery, searchable, extractTextFromReactNode])
 
   const isSelected = useCallback(
     (value: T): boolean => {
@@ -91,10 +98,13 @@ export function GluuDropdown<T extends DropdownValue = DropdownValue>({
     [selectedValue, multiple],
   )
 
-  const getSelectedOption = useCallback((): GluuDropdownOption<T> | undefined => {
+  const getSelectedOption = useCallback(():
+    | GluuDropdownOption<T>
+    | GluuDropdownOption<T>[]
+    | undefined => {
     if (selectedValue === undefined) return undefined
     if (multiple && Array.isArray(selectedValue)) {
-      return options.find((opt) => selectedValue.includes(opt.value))
+      return options.filter((opt) => selectedValue.includes(opt.value))
     }
     return options.find((opt) => opt.value === selectedValue)
   }, [options, selectedValue, multiple])
@@ -147,6 +157,17 @@ export function GluuDropdown<T extends DropdownValue = DropdownValue>({
     }
   }, [disabled, isOpen, setIsOpen])
 
+  const handleTriggerKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (disabled) return
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault()
+        handleTriggerClick()
+      }
+    },
+    [disabled, handleTriggerClick],
+  )
+
   const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setInternalState((prev) => ({ ...prev, searchQuery: e.target.value }))
   }, [])
@@ -180,13 +201,25 @@ export function GluuDropdown<T extends DropdownValue = DropdownValue>({
       const optionIsSelected = isSelected(option.value)
       const optionContent = renderOption ? renderOption(option, optionIsSelected) : option.label
 
+      const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (option.disabled) return
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          handleOptionClick(option)
+        }
+      }
+
       return (
         <div
           key={String(option.value)}
           className={`${classes.option} ${optionIsSelected ? 'selected' : ''} ${
             option.disabled ? 'disabled' : ''
           }`}
+          role="option"
+          aria-selected={optionIsSelected}
+          tabIndex={option.disabled ? -1 : 0}
           onClick={() => handleOptionClick(option)}
+          onKeyDown={handleKeyDown}
         >
           {option.icon && <span>{option.icon}</span>}
           {optionContent}
@@ -197,7 +230,16 @@ export function GluuDropdown<T extends DropdownValue = DropdownValue>({
 
   return (
     <div className={`${classes.dropdownWrapper} ${className || ''}`} ref={dropdownRef}>
-      <div onClick={handleTriggerClick} style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}>
+      <div
+        role="button"
+        tabIndex={disabled ? -1 : 0}
+        aria-expanded={isOpen}
+        aria-disabled={disabled}
+        aria-haspopup="listbox"
+        onClick={handleTriggerClick}
+        onKeyDown={handleTriggerKeyDown}
+        style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}
+      >
         {renderTrigger ? renderTrigger(isOpen, selectedOption) : trigger || null}
       </div>
       {isOpen && (
@@ -205,6 +247,7 @@ export function GluuDropdown<T extends DropdownValue = DropdownValue>({
           ref={menuRef}
           className={`${classes.dropdownMenu} ${dropdownClassName || ''}`}
           style={menuStyle}
+          role="listbox"
         >
           {showArrow && (
             <div className={classes.arrow}>

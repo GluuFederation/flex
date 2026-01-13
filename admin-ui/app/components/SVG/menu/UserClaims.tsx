@@ -3,9 +3,14 @@ import React, { useId } from 'react'
 interface UserClaimsProps {
   fill?: string
   className: string
+  decorative?: boolean
 }
 
-const UserClaimsIcon: React.FC<UserClaimsProps> = ({ fill = 'currentColor', className }) => {
+const UserClaimsIcon: React.FC<UserClaimsProps> = ({
+  fill = 'currentColor',
+  className,
+  decorative = false,
+}) => {
   const titleId = useId()
   return (
     <div className={className}>
@@ -17,10 +22,11 @@ const UserClaimsIcon: React.FC<UserClaimsProps> = ({ fill = 'currentColor', clas
         strokeWidth="1.66667"
         width="28"
         height="28"
-        role="img"
-        aria-labelledby={titleId}
+        role={decorative ? undefined : 'img'}
+        aria-labelledby={decorative ? undefined : titleId}
+        aria-hidden={decorative}
       >
-        <title id={titleId}>User Claims icon</title>
+        {!decorative && <title id={titleId}>User Claims icon</title>}
         <circle cx="14.8333" cy="17.1667" r="4.5" />
         <circle cx="20.3333" cy="10.6667" r="1.66667" />
         <circle cx="24.1667" cy="22.8333" r="2.5" />

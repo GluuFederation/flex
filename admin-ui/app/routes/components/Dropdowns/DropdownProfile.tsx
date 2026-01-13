@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { auditLogoutLogs } from 'Redux/features/sessionSlice'
+import { useDispatch, useSelector } from 'react-redux'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { auditLogoutLogs } from 'Redux/features/sessionSlice'
 import { GluuDropdown, type GluuDropdownOption } from 'Components'
 import type { DropdownProfileProps, LogoutAuditState } from './types'
 

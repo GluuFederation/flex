@@ -9,7 +9,7 @@ import type { MappingItemProps, ThemeContextValue } from './types'
 const MappingItem: React.FC<MappingItemProps> = React.memo(function MappingItem({ candidate }) {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext) as ThemeContextValue | undefined
-  const selectedTheme = theme?.state?.theme ?? 'default'
+  const selectedTheme = theme?.state?.theme ?? 'light'
   const themeColors = getThemeColor(selectedTheme)
 
   const permissionsCount = candidate?.permissions?.length || 0

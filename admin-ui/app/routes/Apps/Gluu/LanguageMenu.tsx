@@ -1,13 +1,13 @@
 import { useState, useEffect, useContext, useMemo, useCallback, memo } from 'react'
 import { useTranslation } from 'react-i18next'
+import Box from '@mui/material/Box'
 import { GluuDropdown, type GluuDropdownOption } from 'Components'
 import { ThemeContext } from 'Context/theme/themeContext'
-import Box from '@mui/material/Box'
 import { useStyles } from './styles/LanguageMenu.style'
 import type { LanguageMenuProps } from './types'
 
 const ChevronIcon = memo(() => (
-  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true" focusable="false">
     <path
       d="M4.5 6.75L9 11.25L13.5 6.75"
       stroke="currentColor"
@@ -22,22 +22,23 @@ ChevronIcon.displayName = 'ChevronIcon'
 const LanguageMenu = memo<LanguageMenuProps>(({ userInfo }) => {
   const initLang = useMemo(() => localStorage.getItem('initLang') || 'en', [])
   const initTheme = useMemo(() => localStorage.getItem('initTheme') || 'light', [])
-  const userConfig = useMemo(
-    () =>
-      JSON.parse(localStorage.getItem('userConfig') || '{}') as {
-        lang?: Record<string, string>
-        theme?: Record<string, string>
-      },
-    [],
-  )
-  const userConfigLang = useMemo(
-    () => (userConfig && userConfig !== null ? userConfig.lang || {} : {}),
-    [userConfig],
-  )
-  const userConfigTheme = useMemo(
-    () => (userConfig && userConfig !== null ? userConfig.theme || {} : {}),
-    [userConfig],
-  )
+  const safeParseUserConfig = useCallback(() => {
+    try {
+      return (
+        (JSON.parse(localStorage.getItem('userConfig') || '{}') as {
+          lang?: Record<string, string>
+          theme?: Record<string, string>
+        }) || {}
+      )
+    } catch (error) {
+      console.warn('Failed to parse userConfig:', error)
+      return {}
+    }
+  }, [])
+
+  const userConfig = useMemo(() => safeParseUserConfig(), [safeParseUserConfig])
+  const userConfigLang = useMemo(() => userConfig?.lang || {}, [userConfig])
+  const userConfigTheme = useMemo(() => userConfig?.theme || {}, [userConfig])
   const [lang, setLang] = useState<string>('en')
   const [langUpdated, setLangUpdated] = useState(false)
   const [themeUpdated, setThemeUpdated] = useState(false)

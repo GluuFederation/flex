@@ -21,24 +21,11 @@
     }
 
     &--background {
+        $white-text-names: ("primary", "secondary", "dark", "success", "danger", "info");
         @each $name, $color in $dashboard-colors {
             &.custom-card--color-#{$name} {
                 background-color: $color;
-                @if $name ==
-                    "primary" or
-                    $name ==
-                    "secondary" or
-                    $name ==
-                    "dark" or
-                    $name ==
-                    "success" or
-                    $name ==
-                    "danger" or
-                    $name ==
-                    "warning" or
-                    $name ==
-                    "info"
-                {
+                @if index($white-text-names, $name) {
                     color: map-get($dashboard-colors, "white");
                 }
             }

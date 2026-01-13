@@ -11,9 +11,10 @@ import SamlIcon from './menu/Saml'
 import OAuthIcon from './menu/OAuth'
 import HomeIcon from './menu/Home'
 import FidoIcon from './menu/Fido'
-import StmpZoneIcon from './menu/Smtp'
+import SmtpZoneIcon from './menu/Smtp'
 import ScriptsIcon from './menu/Scripts'
 import LockIcon from './menu/Lock'
+import ArrowIcon from './Arrow'
 
 export {
   MenuContext,
@@ -29,7 +30,8 @@ export {
   OAuthIcon,
   HomeIcon,
   FidoIcon,
-  StmpZoneIcon,
+  SmtpZoneIcon,
   ScriptsIcon,
   LockIcon,
+  ArrowIcon,
 }

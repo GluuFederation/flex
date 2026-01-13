@@ -1,7 +1,4 @@
-export type UserInfo = {
-  inum?: string
-  [key: string]: string | number | boolean | undefined
-}
+import type { UserInfo } from 'Redux/features/types/authTypes'
 
 export type LanguageMenuProps = {
   userInfo: UserInfo

@@ -1,22 +1,22 @@
-@import "./theme-colors";
+@mixin sidebar-entry-typography {
+    font-family: "Mona-Sans", sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0.32px;
+}
 
 .custom-sidebar-container {
     background-color: var(--theme-sidebar-background, #fcfcfc);
+    box-shadow: var(--theme-sidebar-shadow, 0px 0px 1rem 0px rgba(0, 0, 0, 0.15));
 
     .sidebar-menu__entry__link {
         color: var(--theme-menu-text-color, #323b47);
-        font-family: "Mona-Sans", sans-serif;
-        font-size: 16px;
-        font-weight: 500;
-        letter-spacing: 0.32px;
+        @include sidebar-entry-typography;
     }
 
     .sidebar-submenu__entry__link {
         color: var(--theme-menu-text-color, #323b47);
-        font-family: "Mona-Sans", sans-serif;
-        font-size: 16px;
-        font-weight: 500;
-        letter-spacing: 0.32px;
+        @include sidebar-entry-typography;
     }
 
     .sidebar-menu__entry__link:hover {
@@ -24,15 +24,6 @@
     }
     .sidebar-submenu__entry__link:hover {
         color: var(--theme-menu-text-color-hover, #323b47);
-    }
-
-    .sidebar-menu__entry:hover {
-        i {
-            color: var(--theme-menu-icon-color-hover, #323b47);
-        }
-        a {
-            color: var(--theme-menu-text-color-hover, #323b47);
-        }
     }
 
     .sidebar-menu__entry__icon {
@@ -58,6 +49,11 @@
 }
 
 .sidebar-menu__entry {
+    .sidebar-menu__entry__link {
+        padding-top: 12px !important;
+        padding-bottom: 12px !important;
+    }
+
     .sidebar-menu__entry__link:hover {
         background: var(--theme-menu-hover-background, #d3d3d3) !important;
     }

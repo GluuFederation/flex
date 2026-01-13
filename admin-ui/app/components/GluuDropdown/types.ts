@@ -12,6 +12,7 @@ export type GluuDropdownOption<T extends DropdownValue = DropdownValue> = {
   divider?: boolean
   icon?: React.ReactNode
   metadata?: Record<string, string | number | boolean | null | undefined>
+  searchValue?: string
 }
 
 export type GluuDropdownProps<T extends DropdownValue = DropdownValue> = {
@@ -37,7 +38,10 @@ export type GluuDropdownProps<T extends DropdownValue = DropdownValue> = {
   emptyMessage?: string
   multiple?: boolean
   renderOption?: (option: GluuDropdownOption<T>, isSelected: boolean) => React.ReactNode
-  renderTrigger?: (isOpen: boolean, selectedOption?: GluuDropdownOption<T>) => React.ReactNode
+  renderTrigger?: (
+    isOpen: boolean,
+    selectedOption?: GluuDropdownOption<T> | GluuDropdownOption<T>[],
+  ) => React.ReactNode
 }
 
 export type DropdownState = {

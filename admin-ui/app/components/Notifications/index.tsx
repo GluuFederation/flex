@@ -1,9 +1,9 @@
 import React, { useContext, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import Box from '@mui/material/Box'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { GluuDropdown, type GluuDropdownOption } from 'Components'
 import notificationIcon from 'Images/svg/notification-icon.svg'
-import Box from '@mui/material/Box'
 
 const Notifications = () => {
   const { t } = useTranslation()

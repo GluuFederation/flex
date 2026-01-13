@@ -1,12 +1,12 @@
 import React, { memo, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import type { Dayjs } from 'dayjs'
 import Grid from '@mui/material/Grid'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import { useTranslation } from 'react-i18next'
 import customColors from '@/customColors'
 import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
-import type { Dayjs } from 'dayjs'
 
 interface DateRangeProps {
   startDate: Dayjs
@@ -32,6 +32,7 @@ const DateRange = memo(
 
     const themeColors = useMemo(() => {
       const labelBg = backgroundColor || (isDark ? customColors.darkCardBg : customColors.white)
+      const inputBg = isDark ? customColors.darkInputBg : customColors.white
       const inputText = textColor || (isDark ? customColors.white : customColors.primaryDark)
       const labelText = textColor || (isDark ? customColors.white : customColors.primaryDark)
       const borderColor = isDark ? customColors.darkBorder : customColors.borderInput
@@ -44,6 +45,7 @@ const DateRange = memo(
 
       return {
         labelBackground: labelBg,
+        inputBackground: inputBg,
         inputTextColor: inputText,
         labelColor: labelText,
         borderColor,
@@ -59,9 +61,17 @@ const DateRange = memo(
     const textFieldSx = useMemo(
       () => ({
         'width': '100%',
+        'maxWidth': '100%',
+        'boxSizing': 'border-box',
+        '& .MuiInputLabel-root': {
+          'color': themeColors.labelColor,
+          '&.Mui-focused': {
+            color: themeColors.labelColor,
+          },
+        },
         '& .MuiInputBase-root': {
           color: themeColors.inputTextColor,
-          backgroundColor: isDark ? customColors.darkInputBg : customColors.white,
+          backgroundColor: themeColors.inputBackground,
         },
         '& .MuiInputBase-input': {
           'fontFamily': fontFamily,
@@ -97,7 +107,7 @@ const DateRange = memo(
           color: themeColors.iconColor,
         },
       }),
-      [themeColors, isDark],
+      [themeColors],
     )
 
     const popperSx = useMemo(
@@ -153,14 +163,27 @@ const DateRange = memo(
     const datePickerSx = useMemo(
       () => ({
         'width': '100%',
+        'maxWidth': '100%',
+        'minWidth': 0,
+        'flex': '1 1 auto',
+        'boxSizing': 'border-box',
+        '& .MuiInputLabel-root': {
+          'color': themeColors.labelColor,
+          '&.Mui-focused': {
+            color: themeColors.labelColor,
+          },
+        },
         '& .MuiInputLabel-sizeSmall': {
           fontFamily,
-          padding: '0px 2px',
-          background: themeColors.labelBackground,
-          color: themeColors.labelColor,
-          fontSize: fontSizes.base,
-          fontWeight: fontWeights.medium,
-          marginTop: '-2px',
+          'padding': '0px 2px',
+          'background': themeColors.labelBackground,
+          'color': themeColors.labelColor,
+          'fontSize': fontSizes.base,
+          'fontWeight': fontWeights.medium,
+          'marginTop': '-2px',
+          '&.Mui-focused': {
+            color: themeColors.labelColor,
+          },
         },
         '& .MuiIconButton-root': {
           'color': themeColors.iconColor,
@@ -230,7 +253,9 @@ const DateRange = memo(
       prevProps.endDate.isSame(nextProps.endDate) &&
       prevProps.textColor === nextProps.textColor &&
       prevProps.backgroundColor === nextProps.backgroundColor &&
-      prevProps.isDark === nextProps.isDark
+      prevProps.isDark === nextProps.isDark &&
+      prevProps.onStartDateChange === nextProps.onStartDateChange &&
+      prevProps.onEndDateChange === nextProps.onEndDateChange
     )
   },
 )
