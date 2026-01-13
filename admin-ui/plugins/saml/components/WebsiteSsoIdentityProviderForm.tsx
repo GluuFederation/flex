@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo, memo } from 'react'
+import React, { useEffect, useState, useCallback, useMemo, memo, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { Card, CardBody, Form, FormGroup, Col, Row } from 'Components'
 import { useFormik } from 'formik'
@@ -59,6 +59,11 @@ const WebsiteSsoIdentityProviderForm = ({
 
   const createIdentityProvider = useCreateIdentityProvider()
   const updateIdentityProvider = useUpdateIdentityProvider()
+
+  const createResetRef = useRef(createIdentityProvider.resetSavedForm)
+  const updateResetRef = useRef(updateIdentityProvider.resetSavedForm)
+  createResetRef.current = createIdentityProvider.resetSavedForm
+  updateResetRef.current = updateIdentityProvider.resetSavedForm
 
   const loading = createIdentityProvider.isPending || updateIdentityProvider.isPending
   const savedForm = createIdentityProvider.savedForm || updateIdentityProvider.savedForm
@@ -270,10 +275,10 @@ const WebsiteSsoIdentityProviderForm = ({
 
   useEffect(() => {
     return () => {
-      createIdentityProvider.resetSavedForm()
-      updateIdentityProvider.resetSavedForm()
+      createResetRef.current()
+      updateResetRef.current()
     }
-  }, [createIdentityProvider, updateIdentityProvider])
+  }, [])
 
   return (
     <GluuLoader blocking={loading}>

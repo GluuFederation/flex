@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo, memo } from 'react'
+import React, { useEffect, useState, useCallback, useMemo, memo, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
@@ -79,6 +79,11 @@ const WebsiteSsoServiceProviderForm = ({
 
   const createTrustRelationship = useCreateTrustRelationship()
   const updateTrustRelationship = useUpdateTrustRelationship()
+
+  const createResetRef = useRef(createTrustRelationship.resetSavedForm)
+  const updateResetRef = useRef(updateTrustRelationship.resetSavedForm)
+  createResetRef.current = createTrustRelationship.resetSavedForm
+  updateResetRef.current = updateTrustRelationship.resetSavedForm
 
   const loading = createTrustRelationship.isPending || updateTrustRelationship.isPending
   const savedForm = createTrustRelationship.savedForm || updateTrustRelationship.savedForm
@@ -221,11 +226,11 @@ const WebsiteSsoServiceProviderForm = ({
 
   useEffect(() => {
     return () => {
-      createTrustRelationship.resetSavedForm()
-      updateTrustRelationship.resetSavedForm()
+      createResetRef.current()
+      updateResetRef.current()
       dispatch(setClientSelectedScopes([]))
     }
-  }, [createTrustRelationship, updateTrustRelationship, dispatch])
+  }, [dispatch])
 
   const handleDrop = useCallback(
     (files: File[]) => {

@@ -25,7 +25,7 @@ import {
   type IdentityProviderPagedResult,
 } from 'JansConfigApi'
 import { updateToast } from 'Redux/features/toastSlice'
-import { logAuditUserAction } from 'Utils/AuditLogger'
+import { logAuditUserAction, type BasicUserInfo } from 'Utils/AuditLogger'
 import { CREATE, UPDATE, DELETION } from '@/audit/UserActionType'
 import { AUDIT_RESOURCE_NAMES } from '../../helper/constants'
 import type { RootState } from '@/redux/sagas/types/audit'
@@ -70,6 +70,48 @@ export type {
 }
 
 export { TrustRelationshipSpMetaDataSourceType }
+
+interface AuditContext {
+  token: string
+  userinfo: BasicUserInfo | null | undefined
+  clientId: string | undefined
+  ipAddress: string | undefined
+}
+
+function useAuditContext(): AuditContext {
+  const token = useSelector((state: RootState) => state.authReducer?.token?.access_token) ?? ''
+  const userinfo = useSelector((state: RootState) => state.authReducer?.userinfo)
+  const clientId = useSelector((state: RootState) => state.authReducer?.config?.clientId)
+  const ipAddress = useSelector((state: RootState) => state.authReducer?.location?.IPv4)
+
+  return { token, userinfo, clientId, ipAddress }
+}
+
+type AuditAction = typeof CREATE | typeof UPDATE | typeof DELETION
+
+function createAuditLogger<T>(
+  auditContext: AuditContext,
+  action: AuditAction,
+  resource: string,
+  payloadMapper: (data: T) => unknown,
+) {
+  return async (userMessage: string, data: T): Promise<void> => {
+    try {
+      await logAuditUserAction({
+        token: auditContext.token,
+        userinfo: auditContext.userinfo,
+        action,
+        resource,
+        message: userMessage,
+        extra: auditContext.ipAddress ? { ip_address: auditContext.ipAddress } : {},
+        client_id: auditContext.clientId,
+        payload: payloadMapper(data),
+      })
+    } catch (error) {
+      console.error(`Failed to log ${resource} audit action:`, error)
+    }
+  }
+}
 
 interface UpdateSamlConfigurationParams {
   data: SamlAppConfiguration
@@ -121,41 +163,32 @@ export function useSamlConfiguration() {
 export function useUpdateSamlConfiguration() {
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
-  const token = useSelector((state: RootState) => state.authReducer?.token?.access_token)
-  const userinfo = useSelector((state: RootState) => state.authReducer?.userinfo)
-  const clientId = useSelector((state: RootState) => state.authReducer?.config?.clientId)
-  const ipAddress = useSelector((state: RootState) => state.authReducer?.location?.IPv4)
-
+  const auditContext = useAuditContext()
   const baseMutation = usePutSamlProperties()
 
   const logAudit = useCallback(
-    async (userMessage: string, data: SamlAppConfiguration): Promise<void> => {
-      try {
-        await logAuditUserAction({
-          token: token ?? '',
-          userinfo,
-          action: UPDATE,
-          resource: AUDIT_RESOURCE_NAMES.SAML,
-          message: userMessage,
-          extra: ipAddress ? { ip_address: ipAddress } : {},
-          client_id: clientId,
-          payload: { data },
-        })
-      } catch (error) {
-        console.error('Failed to log SAML configuration audit action:', error)
-      }
-    },
-    [token, userinfo, clientId, ipAddress],
+    createAuditLogger<SamlAppConfiguration>(
+      auditContext,
+      UPDATE,
+      AUDIT_RESOURCE_NAMES.SAML,
+      (data) => ({ data }),
+    ),
+    [auditContext.token, auditContext.userinfo, auditContext.clientId, auditContext.ipAddress],
   )
 
   const mutateAsync = useCallback(
     async (params: UpdateSamlConfigurationParams): Promise<SamlAppConfiguration> => {
       const { data, userMessage } = params
-      const result = await baseMutation.mutateAsync({ data })
-      await queryClient.invalidateQueries({ queryKey: getGetSamlPropertiesQueryKey() })
-      dispatch(updateToast(true, 'success'))
-      logAudit(userMessage, data)
-      return result
+      try {
+        const result = await baseMutation.mutateAsync({ data })
+        await queryClient.invalidateQueries({ queryKey: getGetSamlPropertiesQueryKey() })
+        dispatch(updateToast(true, 'success'))
+        logAudit(userMessage, data)
+        return result
+      } catch (error) {
+        dispatch(updateToast(true, 'error'))
+        throw error
+      }
     },
     [baseMutation, queryClient, logAudit, dispatch],
   )
@@ -181,32 +214,18 @@ export function useIdentityProviders(params?: GetSamlIdentityProviderParams) {
 export function useCreateIdentityProvider() {
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
-  const token = useSelector((state: RootState) => state.authReducer?.token?.access_token)
-  const userinfo = useSelector((state: RootState) => state.authReducer?.userinfo)
-  const clientId = useSelector((state: RootState) => state.authReducer?.config?.clientId)
-  const ipAddress = useSelector((state: RootState) => state.authReducer?.location?.IPv4)
-
+  const auditContext = useAuditContext()
   const baseMutation = usePostSamlIdentityProvider()
   const [savedForm, setSavedForm] = useState(false)
 
   const logAudit = useCallback(
-    async (userMessage: string, data: BrokerIdentityProviderForm): Promise<void> => {
-      try {
-        await logAuditUserAction({
-          token: token ?? '',
-          userinfo,
-          action: CREATE,
-          resource: AUDIT_RESOURCE_NAMES.IDENTITY_BROKERING,
-          message: userMessage,
-          extra: ipAddress ? { ip_address: ipAddress } : {},
-          client_id: clientId,
-          payload: { identityProvider: data.identityProvider },
-        })
-      } catch (error) {
-        console.error('Failed to log IDP create audit action:', error)
-      }
-    },
-    [token, userinfo, clientId, ipAddress],
+    createAuditLogger<BrokerIdentityProviderForm>(
+      auditContext,
+      CREATE,
+      AUDIT_RESOURCE_NAMES.IDENTITY_BROKERING,
+      (data) => ({ identityProvider: data.identityProvider }),
+    ),
+    [auditContext.token, auditContext.userinfo, auditContext.clientId, auditContext.ipAddress],
   )
 
   const mutateAsync = useCallback(
@@ -243,32 +262,18 @@ export function useCreateIdentityProvider() {
 export function useUpdateIdentityProvider() {
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
-  const token = useSelector((state: RootState) => state.authReducer?.token?.access_token)
-  const userinfo = useSelector((state: RootState) => state.authReducer?.userinfo)
-  const clientId = useSelector((state: RootState) => state.authReducer?.config?.clientId)
-  const ipAddress = useSelector((state: RootState) => state.authReducer?.location?.IPv4)
-
+  const auditContext = useAuditContext()
   const baseMutation = usePutSamlIdentityProvider()
   const [savedForm, setSavedForm] = useState(false)
 
   const logAudit = useCallback(
-    async (userMessage: string, data: BrokerIdentityProviderForm): Promise<void> => {
-      try {
-        await logAuditUserAction({
-          token: token ?? '',
-          userinfo,
-          action: UPDATE,
-          resource: AUDIT_RESOURCE_NAMES.IDENTITY_BROKERING,
-          message: userMessage,
-          extra: ipAddress ? { ip_address: ipAddress } : {},
-          client_id: clientId,
-          payload: { identityProvider: data.identityProvider },
-        })
-      } catch (error) {
-        console.error('Failed to log IDP update audit action:', error)
-      }
-    },
-    [token, userinfo, clientId, ipAddress],
+    createAuditLogger<BrokerIdentityProviderForm>(
+      auditContext,
+      UPDATE,
+      AUDIT_RESOURCE_NAMES.IDENTITY_BROKERING,
+      (data) => ({ identityProvider: data.identityProvider }),
+    ),
+    [auditContext.token, auditContext.userinfo, auditContext.clientId, auditContext.ipAddress],
   )
 
   const mutateAsync = useCallback(
@@ -305,31 +310,17 @@ export function useUpdateIdentityProvider() {
 export function useDeleteIdentityProvider() {
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
-  const token = useSelector((state: RootState) => state.authReducer?.token?.access_token)
-  const userinfo = useSelector((state: RootState) => state.authReducer?.userinfo)
-  const clientId = useSelector((state: RootState) => state.authReducer?.config?.clientId)
-  const ipAddress = useSelector((state: RootState) => state.authReducer?.location?.IPv4)
-
+  const auditContext = useAuditContext()
   const baseMutation = useDeleteSamlIdentityProvider()
 
   const logAudit = useCallback(
-    async (userMessage: string, inum: string): Promise<void> => {
-      try {
-        await logAuditUserAction({
-          token: token ?? '',
-          userinfo,
-          action: DELETION,
-          resource: AUDIT_RESOURCE_NAMES.IDENTITY_BROKERING,
-          message: userMessage,
-          extra: ipAddress ? { ip_address: ipAddress } : {},
-          client_id: clientId,
-          payload: { inum },
-        })
-      } catch (error) {
-        console.error('Failed to log IDP delete audit action:', error)
-      }
-    },
-    [token, userinfo, clientId, ipAddress],
+    createAuditLogger<string>(
+      auditContext,
+      DELETION,
+      AUDIT_RESOURCE_NAMES.IDENTITY_BROKERING,
+      (inum) => ({ inum }),
+    ),
+    [auditContext.token, auditContext.userinfo, auditContext.clientId, auditContext.ipAddress],
   )
 
   const mutateAsync = useCallback(
@@ -369,32 +360,18 @@ export function useTrustRelationships() {
 export function useCreateTrustRelationship() {
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
-  const token = useSelector((state: RootState) => state.authReducer?.token?.access_token)
-  const userinfo = useSelector((state: RootState) => state.authReducer?.userinfo)
-  const clientId = useSelector((state: RootState) => state.authReducer?.config?.clientId)
-  const ipAddress = useSelector((state: RootState) => state.authReducer?.location?.IPv4)
-
+  const auditContext = useAuditContext()
   const baseMutation = usePostTrustRelationshipMetadataFile()
   const [savedForm, setSavedForm] = useState(false)
 
   const logAudit = useCallback(
-    async (userMessage: string, data: TrustRelationshipForm): Promise<void> => {
-      try {
-        await logAuditUserAction({
-          token: token ?? '',
-          userinfo,
-          action: CREATE,
-          resource: AUDIT_RESOURCE_NAMES.TRUST_RELATIONSHIP,
-          message: userMessage,
-          extra: ipAddress ? { ip_address: ipAddress } : {},
-          client_id: clientId,
-          payload: { trustRelationship: data.trustRelationship },
-        })
-      } catch (error) {
-        console.error('Failed to log trust relationship create audit action:', error)
-      }
-    },
-    [token, userinfo, clientId, ipAddress],
+    createAuditLogger<TrustRelationshipForm>(
+      auditContext,
+      CREATE,
+      AUDIT_RESOURCE_NAMES.TRUST_RELATIONSHIP,
+      (data) => ({ trustRelationship: data.trustRelationship }),
+    ),
+    [auditContext.token, auditContext.userinfo, auditContext.clientId, auditContext.ipAddress],
   )
 
   const mutateAsync = useCallback(
@@ -431,32 +408,18 @@ export function useCreateTrustRelationship() {
 export function useUpdateTrustRelationship() {
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
-  const token = useSelector((state: RootState) => state.authReducer?.token?.access_token)
-  const userinfo = useSelector((state: RootState) => state.authReducer?.userinfo)
-  const clientId = useSelector((state: RootState) => state.authReducer?.config?.clientId)
-  const ipAddress = useSelector((state: RootState) => state.authReducer?.location?.IPv4)
-
+  const auditContext = useAuditContext()
   const baseMutation = usePutTrustRelationship()
   const [savedForm, setSavedForm] = useState(false)
 
   const logAudit = useCallback(
-    async (userMessage: string, data: TrustRelationshipForm): Promise<void> => {
-      try {
-        await logAuditUserAction({
-          token: token ?? '',
-          userinfo,
-          action: UPDATE,
-          resource: AUDIT_RESOURCE_NAMES.TRUST_RELATIONSHIP,
-          message: userMessage,
-          extra: ipAddress ? { ip_address: ipAddress } : {},
-          client_id: clientId,
-          payload: { trustRelationship: data.trustRelationship },
-        })
-      } catch (error) {
-        console.error('Failed to log trust relationship update audit action:', error)
-      }
-    },
-    [token, userinfo, clientId, ipAddress],
+    createAuditLogger<TrustRelationshipForm>(
+      auditContext,
+      UPDATE,
+      AUDIT_RESOURCE_NAMES.TRUST_RELATIONSHIP,
+      (data) => ({ trustRelationship: data.trustRelationship }),
+    ),
+    [auditContext.token, auditContext.userinfo, auditContext.clientId, auditContext.ipAddress],
   )
 
   const mutateAsync = useCallback(
@@ -493,31 +456,17 @@ export function useUpdateTrustRelationship() {
 export function useDeleteTrustRelationshipMutation() {
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
-  const token = useSelector((state: RootState) => state.authReducer?.token?.access_token)
-  const userinfo = useSelector((state: RootState) => state.authReducer?.userinfo)
-  const clientId = useSelector((state: RootState) => state.authReducer?.config?.clientId)
-  const ipAddress = useSelector((state: RootState) => state.authReducer?.location?.IPv4)
-
+  const auditContext = useAuditContext()
   const baseMutation = useDeleteTrustRelationship()
 
   const logAudit = useCallback(
-    async (userMessage: string, id: string): Promise<void> => {
-      try {
-        await logAuditUserAction({
-          token: token ?? '',
-          userinfo,
-          action: DELETION,
-          resource: AUDIT_RESOURCE_NAMES.TRUST_RELATIONSHIP,
-          message: userMessage,
-          extra: ipAddress ? { ip_address: ipAddress } : {},
-          client_id: clientId,
-          payload: { id },
-        })
-      } catch (error) {
-        console.error('Failed to log trust relationship delete audit action:', error)
-      }
-    },
-    [token, userinfo, clientId, ipAddress],
+    createAuditLogger<string>(
+      auditContext,
+      DELETION,
+      AUDIT_RESOURCE_NAMES.TRUST_RELATIONSHIP,
+      (id) => ({ id }),
+    ),
+    [auditContext.token, auditContext.userinfo, auditContext.clientId, auditContext.ipAddress],
   )
 
   const mutateAsync = useCallback(
