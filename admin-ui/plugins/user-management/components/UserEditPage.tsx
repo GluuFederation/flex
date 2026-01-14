@@ -130,14 +130,18 @@ function UserEditPage() {
         Object.prototype.hasOwnProperty.call(modifiedFields, key),
       )
       if (anyKeyPresent) {
+        const userDn = userDetails?.dn
+        if (!userDn) {
+          console.error('Cannot revoke session: user DN is undefined')
+          return
+        }
         // Revoke user session after successful update of user details
         try {
-          await revokeSessionMutation.mutateAsync({ userDn: userDetails?.dn || '' })
-          await AXIOS_INSTANCE.delete(
-            `/app/admin-ui/oauth2/session/${encodeURIComponent(userDetails?.dn || '')}`,
-          )
+          await revokeSessionMutation.mutateAsync({ userDn })
+          await AXIOS_INSTANCE.delete(`/app/admin-ui/oauth2/session/${encodeURIComponent(userDn)}`)
         } catch (error) {
           console.error('Failed to revoke user session:', error)
+          dispatch(updateToast(true, 'warning', t('messages.session_revocation_failed')))
         }
       }
     },
