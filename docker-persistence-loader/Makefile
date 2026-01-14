@@ -5,8 +5,8 @@ IMAGE?=${IMAGE_URL}:${IMAGE_VERSION}
 # pass extra args to the targets, for example:
 #
 # - `make build-dev ARGS="--no-cache"`
-# - `make trivy-scan TRIVY_ARGS="-f json"`
-# - `make grype-scan GRYPE_ARGS="-o json"`
+# - `make trivy-scan ARGS="-f json"`
+# - `make grype-scan ARGS="-o json"`
 ARGS?=
 
 .PHONY: test clean all build-dev trivy-scan grype-scan
