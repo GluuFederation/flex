@@ -103,8 +103,7 @@ const DashboardPage = () => {
   const debouncedStartDate = useDebounce(startDate, 1000)
   const debouncedEndDate = useDebounce(endDate, 1000)
 
-  const { isUserInfoFetched } = useSelector((state: RootState) => state.authReducer)
-  const access_token = useSelector((state: RootState) => state.authReducer.token?.access_token)
+  const { isUserInfoFetched, hasSession } = useSelector((state: RootState) => state.authReducer)
   const permissions = useSelector((state: RootState) => state.authReducer.permissions)
 
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
@@ -130,15 +129,15 @@ const DashboardPage = () => {
   SetTitle(t('menus.dashboard'))
 
   const initPermissions = useCallback(async () => {
-    if (!access_token || !cedarInitialized) return
+    if (!hasSession || !cedarInitialized) return
     await authorizeHelper(dashboardScopes)
-  }, [access_token, cedarInitialized, authorizeHelper, dashboardScopes])
+  }, [hasSession, cedarInitialized, authorizeHelper, dashboardScopes])
 
   useEffect(() => {
-    if (access_token && cedarInitialized && !cedarIsInitializing) {
+    if (hasSession && cedarInitialized && !cedarIsInitializing) {
       initPermissions()
     }
-  }, [access_token, cedarInitialized, cedarIsInitializing, initPermissions])
+  }, [hasSession, cedarInitialized, cedarIsInitializing, initPermissions])
 
   const { data: license, isLoading: licenseLoading } = useDashboardLicense()
   const { totalCount: totalClientsEntries, isLoading: clientsLoading } = useDashboardClients()
@@ -166,7 +165,7 @@ const DashboardPage = () => {
   )
 
   const { data: mauData, isLoading: mauLoading } = useMauStats(dateRange, {
-    enabled: hasViewPermissions && !!access_token,
+    enabled: hasViewPermissions && hasSession,
   })
 
   const { mauCount, tokenCount } = useMemo(() => {
@@ -266,7 +265,7 @@ const DashboardPage = () => {
   )
 
   const handleLogout = useCallback(() => {
-    if (access_token) {
+    if (hasSession) {
       dispatch(
         auditLogoutLogs({
           message: 'Logging out due to insufficient permissions for Admin UI access.',
@@ -275,17 +274,17 @@ const DashboardPage = () => {
     } else {
       navigateToRoute(ROUTES.LOGOUT)
     }
-  }, [access_token, dispatch, navigateToRoute])
+  }, [hasSession, dispatch, navigateToRoute])
 
   const showModal = useMemo(() => {
-    const shouldShowModal = !isUserInfoFetched && (!access_token || !hasViewPermissions)
+    const shouldShowModal = !isUserInfoFetched && (!hasSession || !hasViewPermissions)
 
     if (shouldShowModal) {
       return <GluuPermissionModal handler={handleLogout} isOpen={true} />
     }
 
     return null
-  }, [isUserInfoFetched, access_token, hasViewPermissions, handleLogout])
+  }, [isUserInfoFetched, hasSession, hasViewPermissions, handleLogout])
 
   const isBlocking = useMemo(() => {
     return (

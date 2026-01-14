@@ -5,11 +5,11 @@ import type { RootState } from 'Redux/sagas/types/audit'
 import { DASHBOARD_CACHE_CONFIG } from '../constants'
 
 export const useDashboardClients = () => {
-  const authToken = useSelector((state: RootState) => state.authReducer?.token?.access_token)
+  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
 
   const query = useGetOauthOpenidClients(undefined, {
     query: {
-      enabled: !!authToken,
+      enabled: hasSession === true,
       staleTime: DASHBOARD_CACHE_CONFIG.STALE_TIME,
       gcTime: DASHBOARD_CACHE_CONFIG.GC_TIME,
     },

@@ -23,11 +23,11 @@ interface UseDashboardLockStatsOptions {
 
 export const useDashboardLockStats = (options: UseDashboardLockStatsOptions = {}) => {
   const { enabled = true } = options
-  const authToken = useSelector((state: RootState) => state.authReducer?.token?.access_token)
+  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
 
   const query = useGetLockStat(undefined, {
     query: {
-      enabled: !!authToken && enabled,
+      enabled: hasSession === true && enabled,
       staleTime: DASHBOARD_CACHE_CONFIG.STALE_TIME,
       gcTime: DASHBOARD_CACHE_CONFIG.GC_TIME,
       select: transformLockStats,

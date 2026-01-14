@@ -98,7 +98,7 @@ export function useMauStats(
     enabled?: boolean
   },
 ) {
-  const authToken = useSelector((state: RootState) => state.authReducer?.token?.access_token)
+  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
 
   const params: GetStatParams = {
     start_month: formatDateForApi(dateRange.startDate),
@@ -106,7 +106,10 @@ export function useMauStats(
   }
 
   const isEnabled =
-    (options?.enabled ?? true) && !!authToken && !!dateRange.startDate && !!dateRange.endDate
+    (options?.enabled ?? true) &&
+    hasSession === true &&
+    !!dateRange.startDate &&
+    !!dateRange.endDate
 
   const query = useGetStat(params, {
     query: {

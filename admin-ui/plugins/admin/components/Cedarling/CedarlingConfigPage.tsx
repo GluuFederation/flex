@@ -81,9 +81,6 @@ const CedarlingConfigPage: React.FC = () => {
   const editAdminuiConfMutation = useEditAdminuiConf()
   const syncRoleToScopesMappingsMutation = useSyncRoleToScopesMappings()
   const setRemotePolicyStoreAsDefaultMutation = useSetRemotePolicyStoreAsDefault()
-  const token: string | undefined = useSelector(
-    (state: AuditRootState) => state.authReducer?.token?.access_token,
-  )
   const userinfo: AuditRootState['authReducer']['userinfo'] | undefined = useSelector(
     (state: AuditRootState) => state.authReducer?.userinfo,
   )
@@ -146,7 +143,6 @@ const CedarlingConfigPage: React.FC = () => {
 
         let userMessage: string = 'Policy Store URL configuration updated'
         await logAudit({
-          token: token ?? undefined,
           userinfo: userinfo ?? undefined,
           action: UPDATE,
           resource: ADMIN_UI_CEDARLING_CONFIG,
@@ -159,7 +155,6 @@ const CedarlingConfigPage: React.FC = () => {
 
         userMessage = 'sync role to scopes mappings'
         await logAudit({
-          token: token ?? undefined,
           userinfo: userinfo ?? undefined,
           action: UPDATE,
           resource: ADMIN_UI_CEDARLING_CONFIG,
@@ -188,7 +183,6 @@ const CedarlingConfigPage: React.FC = () => {
       dispatch,
       editAdminuiConfMutation,
       auiConfig,
-      token,
       userinfo,
       client_id,
       syncRoleToScopesMappingsMutation,
@@ -208,7 +202,6 @@ const CedarlingConfigPage: React.FC = () => {
 
         const userMessage: string = 'Set policy store as default'
         await logAudit({
-          token: token ?? undefined,
           userinfo: userinfo ?? undefined,
           action: UPDATE,
           resource: ADMIN_UI_CEDARLING_CONFIG,
@@ -228,7 +221,7 @@ const CedarlingConfigPage: React.FC = () => {
         setIsLoading(false)
       }
     },
-    [dispatch, setRemotePolicyStoreAsDefaultMutation, token, userinfo, client_id, t],
+    [dispatch, setRemotePolicyStoreAsDefaultMutation, userinfo, client_id, t],
   )
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {

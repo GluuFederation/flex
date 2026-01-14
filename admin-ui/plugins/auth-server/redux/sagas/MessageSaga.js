@@ -6,7 +6,6 @@ import {
   toggleSaveConfigLoader,
   toggleMessageConfigLoader,
 } from '../features/MessageSlice'
-import { getAPIAccessToken } from 'Redux/features/authSlice'
 import MessageApi from '../api/MessageApi'
 import { getClient } from 'Redux/api/base'
 import { initAudit } from 'Redux/sagas/SagaUtils'
@@ -20,27 +19,25 @@ const POSTGRES = 'postgres'
 const REDIS = 'redis'
 
 function* newFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.MessageConfigurationApi(getClient(JansConfigApi, token, issuer))
+  // Use null for token - HttpOnly session cookie handles auth
+  const api = new JansConfigApi.MessageConfigurationApi(getClient(JansConfigApi, null, issuer))
   return new MessageApi(api)
 }
 
 function* newPostgresFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
+  // Use null for token - HttpOnly session cookie handles auth
   const api = new JansConfigApi.MessageConfigurationPostgresApi(
-    getClient(JansConfigApi, token, issuer),
+    getClient(JansConfigApi, null, issuer),
   )
   return new MessageApi(api)
 }
 
 function* newRedisFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.MessageConfigurationRedisApi(
-    getClient(JansConfigApi, token, issuer),
-  )
+  // Use null for token - HttpOnly session cookie handles auth
+  const api = new JansConfigApi.MessageConfigurationRedisApi(getClient(JansConfigApi, null, issuer))
   return new MessageApi(api)
 }
 
@@ -59,8 +56,8 @@ export function* getConfigMessage() {
     yield put(getMessageResponse(null))
     yield put(toggleMessageConfigLoader(false))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
   }
 }
@@ -80,8 +77,8 @@ export function* editMessageConfig({ payload }) {
     yield put(editMessageConfigResponse(null))
     yield put(toggleMessageConfigLoader(false))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
   }
 }
@@ -100,8 +97,8 @@ export function* putConfigMessagePostgres({ payload }) {
     yield put(updateToast(true, 'error', e?.response?.body?.responseMessage || e.message))
     yield put(toggleSaveConfigLoader(false))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
   }
 }
@@ -120,8 +117,8 @@ export function* putConfigMessageRedis({ payload }) {
     yield put(updateToast(true, 'error', e?.response?.body?.responseMessage || e.message))
     yield put(toggleSaveConfigLoader(false))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      // Session expired - redirect to login
+      window.location.href = '/logout'
     }
   }
 }
