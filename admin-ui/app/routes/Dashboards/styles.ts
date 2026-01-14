@@ -153,6 +153,12 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       ...cardBorderStyle,
       padding: '31.5px',
       position: 'relative',
+      [theme.breakpoints.down('md')]: {
+        padding: '20px',
+      },
+      [theme.breakpoints.down('sm')]: {
+        padding: '16px',
+      },
     },
     userInfoTitle: {
       fontFamily,
@@ -164,17 +170,38 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       position: 'absolute',
       top: '23.5px',
       left: '31.5px',
+      [theme.breakpoints.down('md')]: {
+        top: '20px',
+        left: '20px',
+      },
+      [theme.breakpoints.down('sm')]: {
+        top: '16px',
+        left: '16px',
+        fontSize: fontSizes.lg,
+      },
     },
     userInfoContent: {
       position: 'absolute',
       top: '67.5px',
       left: '31.5px',
-      width: '402px',
-      minWidth: '402px',
+      width: 'calc(100% - 63px)',
+      maxWidth: '402px',
       display: 'grid',
       gridTemplateColumns: '1fr 1fr',
       gap: '30px 0px',
       rowGap: '30px',
+      [theme.breakpoints.down('md')]: {
+        top: '60px',
+        left: '20px',
+        width: 'calc(100% - 40px)',
+      },
+      [theme.breakpoints.down('sm')]: {
+        top: '52px',
+        left: '16px',
+        width: 'calc(100% - 32px)',
+        gridTemplateColumns: '1fr',
+        gap: '20px 0px',
+      },
     },
     userInfoText: {
       fontFamily,

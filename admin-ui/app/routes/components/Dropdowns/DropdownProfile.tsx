@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
@@ -14,9 +14,9 @@ const DropdownProfile = ({ trigger, position = 'bottom' }: DropdownProfileProps)
   )
   const { navigateToRoute } = useAppNavigation()
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     dispatch(auditLogoutLogs({ message: 'User logged out mannually' }))
-  }
+  }, [dispatch])
 
   useEffect(() => {
     if (logoutAuditSucceeded === true) {
@@ -24,22 +24,25 @@ const DropdownProfile = ({ trigger, position = 'bottom' }: DropdownProfileProps)
     }
   }, [logoutAuditSucceeded, navigateToRoute])
 
-  const options: GluuDropdownOption<string>[] = [
-    {
-      value: 'profile',
-      label: t('menus.my_profile'),
-      onClick: () => {
-        navigateToRoute(ROUTES.PROFILE)
+  const options: GluuDropdownOption<string>[] = useMemo(
+    () => [
+      {
+        value: 'profile',
+        label: t('menus.my_profile'),
+        onClick: () => {
+          navigateToRoute(ROUTES.PROFILE)
+        },
       },
-    },
-    {
-      value: 'logout',
-      label: t('menus.signout'),
-      onClick: () => {
-        handleLogout()
+      {
+        value: 'logout',
+        label: t('menus.signout'),
+        onClick: () => {
+          handleLogout()
+        },
       },
-    },
-  ]
+    ],
+    [t, navigateToRoute, handleLogout],
+  )
 
   return (
     <GluuDropdown

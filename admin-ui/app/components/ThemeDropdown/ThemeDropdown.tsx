@@ -69,40 +69,28 @@ export const ThemeDropdown = memo<ThemeDropdownProps>(
       return style
     }, [minWidth, maxWidth])
 
-    const handleTriggerKeyDown = useCallback(
-      (e: React.KeyboardEvent<HTMLDivElement>) => {
-        if (e.key === 'Enter' || e.key === ' ') {
+    const handleKeyDown = useCallback(
+      (e: React.KeyboardEvent) => {
+        if (e.key === 'Escape' && isOpen) {
           e.preventDefault()
-          setIsOpen(!isOpen)
+          setIsOpen(false)
         }
       },
       [isOpen],
     )
 
-    const handleOptionKeyDown = useCallback(
-      (option: DropdownOption) => (e: React.KeyboardEvent<HTMLDivElement>) => {
-        if (option.disabled) return
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault()
-          handleOptionClick(option)
-        }
-      },
-      [handleOptionClick],
-    )
-
     return (
       <div className={`${classes.dropdownWrapper} ${className || ''}`} ref={dropdownRef}>
-        <div
-          role="button"
-          tabIndex={0}
+        <button
+          type="button"
           onClick={() => setIsOpen(!isOpen)}
-          onKeyDown={handleTriggerKeyDown}
-          style={{ cursor: 'pointer' }}
+          onKeyDown={handleKeyDown}
+          style={{ cursor: 'pointer', background: 'none', border: 'none', padding: 0 }}
           aria-haspopup="listbox"
           aria-expanded={isOpen}
         >
           {trigger}
-        </div>
+        </button>
         {isOpen && (
           <>
             <Box
@@ -120,14 +108,12 @@ export const ThemeDropdown = memo<ThemeDropdownProps>(
                 <div
                   key={option.value}
                   role="option"
-                  tabIndex={option.disabled ? -1 : 0}
                   aria-selected={selectedValue === option.value}
                   aria-disabled={option.disabled}
                   className={`${classes.option} ${
                     selectedValue === option.value ? 'selected' : ''
                   } ${option.disabled ? 'disabled' : ''}`}
                   onClick={() => handleOptionClick(option)}
-                  onKeyDown={handleOptionKeyDown(option)}
                 >
                   {option.label}
                 </div>

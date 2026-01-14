@@ -64,25 +64,25 @@ const getArrowStyles = (position: DropdownPosition) => {
   switch (position) {
     case 'top':
       return {
-        bottom: '0px',
+        bottom: '-15px',
         left: '50%',
         transform: 'translateX(-50%) rotate(180deg)',
       }
     case 'bottom':
       return {
-        top: '0px',
+        top: '-15px',
         left: '50%',
         transform: 'translateX(-50%)',
       }
     case 'left':
       return {
-        right: '0px',
+        right: '-15px',
         top: '50%',
         transform: 'translateY(-50%) rotate(90deg)',
       }
     case 'right':
       return {
-        left: '0px',
+        left: '-15px',
         top: '50%',
         transform: 'translateY(-50%) rotate(-90deg)',
       }
@@ -104,13 +104,13 @@ export const useStyles = makeStyles<{
     position: 'absolute',
     zIndex: DROPDOWN_CONSTANTS.menuZIndex,
     backgroundColor: dropdownBg,
+    border: 'none',
     borderRadius: DROPDOWN_CONSTANTS.borderRadius,
     boxShadow: `0px 4px 11px 0px ${customColors.shadowLight}`,
     padding: DROPDOWN_CONSTANTS.padding,
     minWidth: DROPDOWN_CONSTANTS.minWidth,
     maxHeight: DROPDOWN_CONSTANTS.maxHeight,
-    overflowY: 'auto',
-    overflowX: 'hidden',
+    overflowY: 'visible',
     ...getPositionStyles(position),
   },
   arrow: {
@@ -162,6 +162,9 @@ export const useStyles = makeStyles<{
     'display': 'flex',
     'alignItems': 'center',
     'gap': DROPDOWN_CONSTANTS.optionGap,
+    '&.single-option': {
+      justifyContent: 'center',
+    },
     '&:last-child': {
       marginBottom: 0,
     },
@@ -178,6 +181,7 @@ export const useStyles = makeStyles<{
       'cursor': 'not-allowed',
       '&:hover': {
         backgroundColor: 'transparent',
+        color: 'inherit',
       },
     },
   },

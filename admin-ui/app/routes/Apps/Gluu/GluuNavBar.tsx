@@ -48,17 +48,10 @@ const GluuNavBar = () => {
 
     const element = navbarRef.current
     element.style.setProperty('background-color', navbarColors.background, 'important')
-    element.style.setProperty('border-bottom', `1px solid ${navbarColors.border}`, 'important')
     element.style.setProperty('--theme-navbar-background', navbarColors.background, 'important')
     element.style.setProperty('--theme-navbar-text', navbarColors.text, 'important')
     element.style.setProperty('--theme-navbar-icon', navbarColors.icon, 'important')
     element.style.setProperty('--theme-navbar-border', navbarColors.border, 'important')
-
-    const pageTitleElement = document.getElementById('page-title-navbar')
-    if (pageTitleElement) {
-      pageTitleElement.style.setProperty('color', navbarColors.text, 'important')
-      pageTitleElement.style.setProperty('font-weight', '700', 'important')
-    }
   }, [navbarColors])
 
   useEffect(() => {

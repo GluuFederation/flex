@@ -21,7 +21,7 @@
     }
 
     &--background {
-        $white-text-names: ("primary", "secondary", "dark", "success", "danger", "info");
+        $white-text-names: ("primary", "secondary", "dark", "success", "danger", "info", "warning");
         @each $name, $color in $dashboard-colors {
             &.custom-card--color-#{$name} {
                 background-color: $color;

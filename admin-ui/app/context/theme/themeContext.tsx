@@ -32,22 +32,14 @@ const extractUserTheme = (currentInum?: string | null): string | undefined => {
 
     if (typeof userConfig.theme === 'string') {
       userTheme = userConfig.theme
-    } else if (typeof userConfig.theme === 'object') {
-      // If currentInum is available, use it; otherwise fall back to first value
-      if (currentInum && userConfig.theme[currentInum]) {
-        userTheme = userConfig.theme[currentInum]
-      } else {
-        const themeValues = Object.values(userConfig.theme)
-        if (themeValues.length > 0 && typeof themeValues[0] === 'string') {
-          userTheme = themeValues[0] as string
-        }
-      }
+    } else if (typeof userConfig.theme === 'object' && currentInum) {
+      userTheme = userConfig.theme[currentInum]
     }
 
-    // Validate theme value
     if (userTheme === 'light' || userTheme === 'dark') {
       return userTheme
     }
+    return 'light'
   } catch (e) {
     console.debug('Failed to parse userConfig:', e)
   }

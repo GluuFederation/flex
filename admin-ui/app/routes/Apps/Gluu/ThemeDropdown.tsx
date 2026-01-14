@@ -6,33 +6,31 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import { useStyles } from './styles/ThemeDropdown.style'
 import type { ThemeDropdownComponentProps } from './types'
 
-const ChevronIcon = memo(() => (
-  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true" focusable="false">
-    <path
-      d="M4.5 6.75L9 11.25L13.5 6.75"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-))
-ChevronIcon.displayName = 'ChevronIcon'
-
 export const ThemeDropdownComponent = memo<ThemeDropdownComponentProps>(({ userInfo }) => {
   const { t } = useTranslation()
   const themeContext = useContext(ThemeContext)
+  const { state, dispatch } = themeContext || { state: { theme: 'light' }, dispatch: undefined }
   const currentTheme = useMemo(() => {
-    return themeContext?.state?.theme || 'light'
-  }, [themeContext?.state?.theme])
+    return state?.theme || 'light'
+  }, [state?.theme])
   const isDark = currentTheme === 'dark'
   const { classes } = useStyles({ isDark })
 
   const onChangeTheme = useCallback(
     (value: string) => {
+      if (!dispatch) {
+        console.warn('Theme dispatch is not available')
+        return
+      }
+
+      if (!userInfo) {
+        dispatch({ type: value })
+        return
+      }
+
       const { inum } = userInfo
       if (!inum) {
-        themeContext?.dispatch({ type: value })
+        dispatch({ type: value })
         return
       }
 
@@ -61,9 +59,9 @@ export const ThemeDropdownComponent = memo<ThemeDropdownComponentProps>(({ userI
         localStorage.setItem('userConfig', JSON.stringify(newConfig))
       }
 
-      themeContext?.dispatch({ type: value })
+      dispatch({ type: value })
     },
-    [userInfo, themeContext],
+    [userInfo, dispatch],
   )
 
   const options: GluuDropdownOption<string>[] = useMemo(
@@ -71,15 +69,13 @@ export const ThemeDropdownComponent = memo<ThemeDropdownComponentProps>(({ userI
       {
         value: 'light',
         label: <span className={classes.optionLabel}>{t('themes.light')}</span>,
-        onClick: () => onChangeTheme('light'),
       },
       {
         value: 'dark',
         label: <span className={classes.optionLabel}>{t('themes.dark')}</span>,
-        onClick: () => onChangeTheme('dark'),
       },
     ],
-    [classes, t, onChangeTheme],
+    [classes, t],
   )
 
   return (
@@ -87,14 +83,13 @@ export const ThemeDropdownComponent = memo<ThemeDropdownComponentProps>(({ userI
       renderTrigger={(isOpen) => (
         <Box className={classes.trigger}>
           <span>{t('themes.theme')}</span>
-          <Box className={`${classes.chevron} ${isOpen ? classes.chevronOpen : ''}`}>
-            <ChevronIcon />
-          </Box>
+          <i className={`fa ${isOpen ? 'fa-angle-up' : 'fa-angle-down'} ${classes.chevron}`} />
         </Box>
       )}
       options={options}
       position="bottom"
       selectedValue={currentTheme}
+      onSelect={(value) => onChangeTheme(value as string)}
       minWidth={120}
       showArrow={true}
     />

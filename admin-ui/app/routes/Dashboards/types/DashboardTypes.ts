@@ -71,6 +71,11 @@ export interface TooltipDesignProps {
   active?: boolean
 }
 
+export type ChartDataKey =
+  | 'client_credentials_access_token_count'
+  | 'authz_code_access_token_count'
+  | 'authz_code_idtoken_count'
+
 export type DashboardClient = Pick<Client, 'inum' | 'clientName' | 'disabled'>
 
 export type DashboardAttribute = Pick<JansAttribute, 'dn' | 'name' | 'status'>

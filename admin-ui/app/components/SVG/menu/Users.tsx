@@ -1,12 +1,14 @@
 import React from 'react'
 
 interface UsersProps {
-  fill?: string
+  color?: string
+  fill?: string // deprecated, use color instead
   className: string
   style?: React.CSSProperties
 }
 
-const UsersIcon: React.FC<UsersProps> = ({ fill = 'currentColor', className, style }) => {
+const UsersIcon: React.FC<UsersProps> = ({ color, fill, className, style }) => {
+  const strokeColor = color ?? fill ?? 'currentColor'
   const height = Math.round((28 * 20) / 24)
   return (
     <div className={className} style={style}>
@@ -14,7 +16,7 @@ const UsersIcon: React.FC<UsersProps> = ({ fill = 'currentColor', className, sty
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 20"
-        stroke={fill}
+        stroke={strokeColor}
         strokeWidth="2"
         width="28"
         height={height}

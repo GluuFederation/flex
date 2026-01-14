@@ -1,4 +1,6 @@
 import React, { useMemo, memo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { GlobalStyles } from '@mui/material'
 import moment from 'moment'
 import {
   XAxis,
@@ -12,11 +14,14 @@ import {
 import customColors from '@/customColors'
 import { fontFamily, fontSizes } from '@/styles/fonts'
 import TooltipDesign from './TooltipDesign'
+import { chartGlobalStyles } from './DashboardChart.style'
 import type { DashboardChartProps, MauStatEntry } from '../types'
-import './styles.css'
+import { CHART_CONSTANTS, CHART_LEGEND_CONFIG } from '../constants'
 
 const DashboardChart = memo(
   ({ statData, startMonth, endMonth, textColor, gridColor }: DashboardChartProps) => {
+    const { t } = useTranslation()
+
     const augmentedData = useMemo(() => {
       if (!statData) {
         return []
@@ -60,7 +65,7 @@ const DashboardChart = memo(
     }, [statData, startMonth, endMonth])
 
     const maxValue = useMemo(() => {
-      if (augmentedData.length === 0) return 1200
+      if (augmentedData.length === 0) return CHART_CONSTANTS.MIN_MAX
 
       const max = augmentedData.reduce((acc, entry) => {
         const total =
@@ -70,78 +75,64 @@ const DashboardChart = memo(
         return Math.max(acc, total)
       }, 0)
 
-      const tickInterval = 300
-      return Math.ceil(max / tickInterval) * tickInterval || 1200
+      const calculatedMaxRounded =
+        Math.ceil(max / CHART_CONSTANTS.TICK_INTERVAL) * CHART_CONSTANTS.TICK_INTERVAL
+      return Math.max(calculatedMaxRounded, CHART_CONSTANTS.MIN_MAX)
     }, [augmentedData])
 
     const yAxisTicks = useMemo(() => {
-      const tickInterval = 300
       const ticks: number[] = []
-      for (let i = 0; i <= maxValue; i += tickInterval) {
+      const effectiveMaxValue = Math.max(maxValue, CHART_CONSTANTS.TICK_INTERVAL)
+      for (let i = 0; i <= effectiveMaxValue; i += CHART_CONSTANTS.TICK_INTERVAL) {
         ticks.push(i)
       }
       return ticks
     }, [maxValue])
 
+    const axisTickStyle = useMemo(
+      () => ({
+        fill: textColor || customColors.primaryDark,
+        fontSize: parseFloat(fontSizes.chartAxis),
+        fontFamily,
+      }),
+      [textColor],
+    )
+
     return (
-      <ResponsiveContainer debounce={1} width="100%" height="100%">
-        <AreaChart data={augmentedData} margin={{ top: 10, right: 30, left: -20, bottom: 20 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke={gridColor || customColors.textMutedDark} />
-          <XAxis
-            dataKey="monthLabel"
-            tick={{
-              fill: textColor || customColors.primaryDark,
-              fontSize: parseFloat(fontSizes.chartAxis),
-              fontFamily,
-            }}
-            style={{ color: textColor || customColors.primaryDark, fontFamily }}
-          />
-          <YAxis
-            tick={{
-              fill: textColor || customColors.primaryDark,
-              fontSize: parseFloat(fontSizes.chartAxis),
-              fontFamily,
-            }}
-            style={{ fontFamily }}
-            domain={[0, maxValue]}
-            ticks={yAxisTicks}
-          />
-          <Tooltip content={<TooltipDesign />} />
-          <Area
-            type="monotone"
-            dataKey="authz_code_idtoken_count"
-            name="Authorization Code ID Token"
-            stackId="1"
-            stroke={customColors.chartPurple}
-            fill={customColors.chartPurple}
-            fillOpacity={0.6}
-            dot={{ fill: customColors.chartPurple, r: 3.5 }}
-            activeDot={{ r: 5 }}
-          />
-          <Area
-            type="monotone"
-            dataKey="authz_code_access_token_count"
-            name="Authorization Code Access Token"
-            stackId="1"
-            stroke={customColors.chartCoral}
-            fill={customColors.chartCoral}
-            fillOpacity={0.6}
-            dot={{ fill: customColors.chartCoral, r: 3.5 }}
-            activeDot={{ r: 5 }}
-          />
-          <Area
-            type="monotone"
-            dataKey="client_credentials_access_token_count"
-            name="Client Credential Access Token"
-            stackId="1"
-            stroke={customColors.chartCyan}
-            fill={customColors.chartCyan}
-            fillOpacity={0.6}
-            dot={{ fill: customColors.chartCyan, r: 3.5 }}
-            activeDot={{ r: 5 }}
-          />
-        </AreaChart>
-      </ResponsiveContainer>
+      <>
+        <GlobalStyles styles={chartGlobalStyles} />
+        <ResponsiveContainer debounce={1} width="100%" height="100%">
+          <AreaChart data={augmentedData} margin={CHART_CONSTANTS.MARGIN}>
+            <CartesianGrid strokeDasharray="3 3" stroke={gridColor || customColors.textMutedDark} />
+            <XAxis
+              dataKey="monthLabel"
+              tick={axisTickStyle}
+              style={{ color: textColor || customColors.primaryDark, fontFamily }}
+            />
+            <YAxis
+              tick={axisTickStyle}
+              style={{ fontFamily }}
+              domain={[0, maxValue]}
+              ticks={yAxisTicks}
+            />
+            <Tooltip content={<TooltipDesign />} />
+            {CHART_LEGEND_CONFIG.map((config) => (
+              <Area
+                key={config.dataKey}
+                type="monotone"
+                dataKey={config.dataKey}
+                name={t(config.translationKey)}
+                stackId="1"
+                stroke={config.color}
+                fill={config.color}
+                fillOpacity={CHART_CONSTANTS.FILL_OPACITY}
+                dot={{ fill: config.color, r: CHART_CONSTANTS.DOT_RADIUS }}
+                activeDot={{ r: CHART_CONSTANTS.ACTIVE_DOT_RADIUS }}
+              />
+            ))}
+          </AreaChart>
+        </ResponsiveContainer>
+      </>
     )
   },
 )

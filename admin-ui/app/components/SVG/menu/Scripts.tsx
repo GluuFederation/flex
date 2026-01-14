@@ -2,14 +2,14 @@ import React, { useId } from 'react'
 
 interface ScriptsProps {
   fill?: string
-  className: string
+  className?: string
   style?: React.CSSProperties
   title?: string
 }
 
 const ScriptsIcon: React.FC<ScriptsProps> = ({
   fill = 'currentColor',
-  className,
+  className = '',
   style,
   title = 'Scripts icon',
 }) => {

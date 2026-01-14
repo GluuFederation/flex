@@ -65,7 +65,14 @@ export function GluuDropdown<T extends DropdownValue = DropdownValue>({
     if (typeof node === 'string') return node
     if (typeof node === 'number') return String(node)
     if (React.isValidElement(node) && node.props.children) {
-      return extractTextFromReactNode(node.props.children)
+      const { children } = node.props
+      if (Array.isArray(children)) {
+        return children.map((child) => extractTextFromReactNode(child)).join('')
+      }
+      return extractTextFromReactNode(children)
+    }
+    if (Array.isArray(node)) {
+      return node.map((child) => extractTextFromReactNode(child)).join('')
     }
     return ''
   }, [])
@@ -193,9 +200,9 @@ export function GluuDropdown<T extends DropdownValue = DropdownValue>({
       return <div className={classes.emptyMessage}>{emptyMessage}</div>
     }
 
-    return filteredOptions.map((option) => {
+    return filteredOptions.map((option, index) => {
       if (option.divider) {
-        return <div key={`divider-${option.value}`} className={classes.divider} />
+        return <div key={`divider-${index}-${option.value}`} className={classes.divider} />
       }
 
       const optionIsSelected = isSelected(option.value)
@@ -211,10 +218,10 @@ export function GluuDropdown<T extends DropdownValue = DropdownValue>({
 
       return (
         <div
-          key={String(option.value)}
+          key={`option-${index}-${String(option.value)}`}
           className={`${classes.option} ${optionIsSelected ? 'selected' : ''} ${
             option.disabled ? 'disabled' : ''
-          }`}
+          } ${filteredOptions.length === 1 && !option.icon ? 'single-option' : ''}`}
           role="option"
           aria-selected={optionIsSelected}
           tabIndex={option.disabled ? -1 : 0}
@@ -248,6 +255,7 @@ export function GluuDropdown<T extends DropdownValue = DropdownValue>({
           className={`${classes.dropdownMenu} ${dropdownClassName || ''}`}
           style={menuStyle}
           role="listbox"
+          id="dropdown-listbox"
         >
           {showArrow && (
             <div className={classes.arrow}>
@@ -262,6 +270,10 @@ export function GluuDropdown<T extends DropdownValue = DropdownValue>({
               placeholder={searchPlaceholder}
               value={searchQuery}
               onChange={handleSearchChange}
+              role="searchbox"
+              aria-label={searchPlaceholder || 'Search dropdown options'}
+              aria-autocomplete="list"
+              aria-controls="dropdown-listbox"
             />
           )}
           {renderOptions}

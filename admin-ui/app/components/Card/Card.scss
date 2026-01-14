@@ -22,23 +22,13 @@
     }
 
     &--background {
+        $dark-backgrounds: "primary", "secondary", "dark", "success", "danger", "info";
+
         @each $name, $color in $dashboard-colors {
             &.custom-card--color-#{$name} {
                 background-color: $color;
                 // Only set white text for dark colored backgrounds
-                @if $name ==
-                    "primary" or
-                    $name ==
-                    "secondary" or
-                    $name ==
-                    "dark" or
-                    $name ==
-                    "success" or
-                    $name ==
-                    "danger" or
-                    $name ==
-                    "info"
-                {
+                @if index($dark-backgrounds, $name) {
                     color: map-get($dashboard-colors, "white");
                 }
             }

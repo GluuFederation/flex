@@ -58,17 +58,37 @@ const DateRange = memo(
       }
     }, [backgroundColor, textColor, isDark])
 
-    const textFieldSx = useMemo(
+    const commonInputStyles = useMemo(
       () => ({
-        'width': '100%',
-        'maxWidth': '100%',
-        'boxSizing': 'border-box',
         '& .MuiInputLabel-root': {
           'color': themeColors.labelColor,
           '&.Mui-focused': {
             color: themeColors.labelColor,
           },
         },
+        '& .MuiIconButton-root': {
+          'color': themeColors.iconColor,
+          '&:hover': {
+            backgroundColor: themeColors.hoverBg,
+            color: themeColors.inputTextColor,
+          },
+          '& .MuiSvgIcon-root': {
+            color: themeColors.iconColor,
+          },
+        },
+        '& .MuiSvgIcon-root': {
+          color: themeColors.iconColor,
+        },
+      }),
+      [themeColors],
+    )
+
+    const textFieldSx = useMemo(
+      () => ({
+        'width': '100%',
+        'maxWidth': '100%',
+        'boxSizing': 'border-box',
+        ...commonInputStyles,
         '& .MuiInputBase-root': {
           color: themeColors.inputTextColor,
           backgroundColor: themeColors.inputBackground,
@@ -93,21 +113,8 @@ const DateRange = memo(
             borderColor: themeColors.borderColor,
           },
         },
-        '& .MuiIconButton-root': {
-          'color': themeColors.iconColor,
-          '&:hover': {
-            backgroundColor: themeColors.hoverBg,
-            color: themeColors.inputTextColor,
-          },
-          '& .MuiSvgIcon-root': {
-            color: themeColors.iconColor,
-          },
-        },
-        '& .MuiSvgIcon-root': {
-          color: themeColors.iconColor,
-        },
       }),
-      [themeColors],
+      [themeColors, commonInputStyles],
     )
 
     const popperSx = useMemo(
@@ -167,12 +174,7 @@ const DateRange = memo(
         'minWidth': 0,
         'flex': '1 1 auto',
         'boxSizing': 'border-box',
-        '& .MuiInputLabel-root': {
-          'color': themeColors.labelColor,
-          '&.Mui-focused': {
-            color: themeColors.labelColor,
-          },
-        },
+        ...commonInputStyles,
         '& .MuiInputLabel-sizeSmall': {
           fontFamily,
           'padding': '0px 2px',
@@ -185,21 +187,8 @@ const DateRange = memo(
             color: themeColors.labelColor,
           },
         },
-        '& .MuiIconButton-root': {
-          'color': themeColors.iconColor,
-          '&:hover': {
-            backgroundColor: themeColors.hoverBg,
-            color: themeColors.inputTextColor,
-          },
-          '& .MuiSvgIcon-root': {
-            color: themeColors.iconColor,
-          },
-        },
-        '& .MuiSvgIcon-root': {
-          color: themeColors.iconColor,
-        },
       }),
-      [themeColors],
+      [themeColors, commonInputStyles],
     )
 
     return (

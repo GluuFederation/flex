@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback, useContext, memo } from 'react'
+import React, { useState, useEffect, useMemo, useCallback, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { useMediaQuery } from 'react-responsive'
@@ -26,16 +26,16 @@ import { useHealthStatus } from 'Plugins/admin/components/Health/hooks'
 import type { CedarPermissionsState } from '@/cedarling/types'
 import type { MauDateRange } from 'Plugins/admin/components/MAU/types'
 import DashboardChart from './Chart/DashboardChart'
+import { CHART_LEGEND_CONFIG } from './constants'
 import DateRange from './DateRange'
 import { useDashboardLicense, useDashboardClients, useDashboardLockStats } from './hooks'
 import styles from './styles'
+import { StatusIndicator, SummaryCard, UserInfoItem } from './components'
 
 interface RootState {
   authReducer: AuthState
   cedarPermissions: CedarPermissionsState
 }
-
-type ClassesType = Record<string, string>
 
 const STATUS_DETAILS = [
   { label: 'menus.oauthserver', key: 'jans-auth' },
@@ -48,12 +48,6 @@ const STATUS_DETAILS = [
   { label: 'dashboard.jans_lock', key: 'jans-lock' },
 ] as const
 
-const LEGEND_ITEMS = [
-  { color: customColors.chartPurple, label: 'Authorization Code ID Token' },
-  { color: customColors.chartCoral, label: 'Authorization Code Access Token' },
-  { color: customColors.chartCyan, label: 'Client Credential Access Token' },
-] as const
-
 const CHART_TITLE_STYLE = {
   fontFamily,
   fontSize: fontSizes.xl,
@@ -61,68 +55,6 @@ const CHART_TITLE_STYLE = {
   marginBottom: 0,
   marginTop: 0,
 } as const
-
-const StatusIndicator = memo<{
-  label: string
-  status: string
-  classes: ClassesType
-  t: (key: string) => string
-}>(({ label, status, classes, t }) => {
-  const isActive = status === 'up' || status === 'degraded'
-  return (
-    <div className={classes.statusIndicator}>
-      <div
-        className={`${classes.statusDot} ${
-          isActive ? classes.statusDotActive : classes.statusDotInactive
-        }`}
-      />
-      <span>{t(label)}</span>
-    </div>
-  )
-})
-StatusIndicator.displayName = 'StatusIndicator'
-
-const SummaryCard = memo<{
-  text: string
-  value: number | null
-  classes: ClassesType
-}>(({ text, value, classes }) => (
-  <Paper className={classes.summary} elevation={0}>
-    <div className={classes.summaryText}>{text}</div>
-    <div className={classes.summaryValue}>{value !== null ? value : '—'}</div>
-  </Paper>
-))
-SummaryCard.displayName = 'SummaryCard'
-
-const UserInfoItem = memo<{
-  item: { text: string; value: string | undefined }
-  classes: ClassesType
-  isStatus?: boolean
-  t: (key: string) => string
-}>(({ item, classes, isStatus, t }) => {
-  if (isStatus) {
-    const isActive = item.value === 'active'
-    const displayValue = item.value
-      ? isActive
-        ? t('dashboard.active')
-        : t('dashboard.inactive')
-      : '-'
-    return (
-      <div className={classes.userInfoStatusContainer}>
-        <div className={classes.userInfoText}>{item.text}:</div>
-        <span className={isActive ? classes.greenBlock : classes.redBlock}>{displayValue}</span>
-      </div>
-    )
-  }
-
-  return (
-    <>
-      <div className={classes.userInfoText}>{item.text}:</div>
-      <div className={classes.userInfoValue}>{item.value || '-'}</div>
-    </>
-  )
-})
-UserInfoItem.displayName = 'UserInfoItem'
 
 const DashboardPage = () => {
   const { t } = useTranslation()
@@ -447,8 +379,8 @@ const DashboardPage = () => {
         <Grid container className="px-24" spacing={2}>
           <Grid item xs={12}>
             <Grid container spacing={2}>
-              {summaryData.slice(0, 3).map((data, key) => (
-                <Grid item xs={12} sm={6} md={4} key={key}>
+              {summaryData.slice(0, 3).map((data) => (
+                <Grid item xs={12} sm={6} md={4} key={data.text}>
                   <SummaryCard text={data.text} value={data.value} classes={classes} />
                 </Grid>
               ))}
@@ -505,13 +437,13 @@ const DashboardPage = () => {
                   />
                 </div>
                 <div className={classes.chartLegend}>
-                  {LEGEND_ITEMS.map((item) => (
-                    <div key={item.label} className={classes.legendItem}>
+                  {CHART_LEGEND_CONFIG.map((config) => (
+                    <div key={config.dataKey} className={classes.legendItem}>
                       <div
                         className={classes.legendColor}
-                        style={{ backgroundColor: item.color }}
+                        style={{ backgroundColor: config.color }}
                       />
-                      <span>{item.label}</span>
+                      <span>{t(config.translationKey)}</span>
                     </div>
                   ))}
                 </div>

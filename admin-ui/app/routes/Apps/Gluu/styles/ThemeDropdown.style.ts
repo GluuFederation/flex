@@ -24,17 +24,9 @@ export const useStyles = makeStyles<{ isDark: boolean }>()((theme, { isDark }) =
     },
   },
   chevron: {
-    width: '18px',
-    height: '18px',
     marginLeft: '8px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    fontSize: '18px',
     color: 'inherit',
-    transition: 'transform 0.2s ease',
-  },
-  chevronOpen: {
-    transform: 'rotate(180deg)',
   },
   optionLabel: {
     fontFamily,

@@ -2,10 +2,10 @@ import React, { useId } from 'react'
 
 interface ServicesProps {
   fill?: string
-  className: string
+  className?: string
 }
 
-const ServicesIcon: React.FC<ServicesProps> = ({ fill = 'currentColor', className }) => {
+const ServicesIcon: React.FC<ServicesProps> = ({ fill = 'currentColor', className = '' }) => {
   const titleId = useId()
   const clipId = `${titleId}-clip`
   return (

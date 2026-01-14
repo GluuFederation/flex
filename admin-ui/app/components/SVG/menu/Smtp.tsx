@@ -3,9 +3,15 @@ interface SmtpProps {
   fill?: string
   className: string
   style?: React.CSSProperties
+  decorative?: boolean
 }
 
-const SmtpZoneIcon: React.FC<SmtpProps> = ({ fill = 'currentColor', className, style }) => {
+const SmtpZoneIcon: React.FC<SmtpProps> = ({
+  fill = 'currentColor',
+  className,
+  style,
+  decorative = false,
+}) => {
   const titleId = useId()
   return (
     <div className={className} style={style}>
@@ -15,10 +21,11 @@ const SmtpZoneIcon: React.FC<SmtpProps> = ({ fill = 'currentColor', className, s
         viewBox="0 0 28 28"
         width="28"
         height="28"
-        role="img"
-        aria-labelledby={titleId}
+        role={decorative ? 'presentation' : 'img'}
+        aria-hidden={decorative ? 'true' : undefined}
+        aria-labelledby={decorative ? undefined : titleId}
       >
-        <title id={titleId}>SMTP</title>
+        {!decorative && <title id={titleId}>SMTP</title>}
         <path
           d="M25.9118 16.815C25.9085 16.7967 25.904 16.779 25.8992 16.761C25.895 16.746 25.8938 16.731 25.8884 16.7163L22.9043 8.04753C22.8143 7.78623 22.5689 7.61133 22.2926 7.61133H17.4263C17.069 7.61133 16.7795 7.90083 16.7795 8.25813C16.7795 8.61543 17.069 8.90493 17.4263 8.90493H21.8312L24.3701 16.2795H20.4491C20.2079 16.2795 19.9868 16.4136 19.8752 16.6275L18.7589 18.771H11.2388L10.1225 16.6275C10.0109 16.4136 9.78978 16.2795 9.54858 16.2795H5.62758L8.16648 8.90493H12.5714C12.9287 8.90493 13.2182 8.61543 13.2182 8.25813C13.2182 7.90083 12.9287 7.61133 12.5714 7.61133H7.70508C7.42878 7.61133 7.18338 7.78653 7.09338 8.04753L4.10928 16.7163C4.10418 16.731 4.10268 16.746 4.09848 16.761C4.09368 16.779 4.08888 16.7967 4.08588 16.815C4.08108 16.8429 4.07868 16.8705 4.07748 16.8981C4.07688 16.9077 4.07478 16.9164 4.07478 16.926V24.66C4.07478 25.0173 4.36428 25.3068 4.72158 25.3068H25.277C25.6343 25.3068 25.9238 25.0173 25.9238 24.66V16.926C25.9238 16.9164 25.9214 16.9074 25.9211 16.8981C25.9199 16.8705 25.9175 16.8429 25.9127 16.815H25.9118ZM24.6296 24.0135H5.36778V17.5731H9.15588L10.2722 19.7166C10.3835 19.9305 10.6049 20.0646 10.8458 20.0646H19.151C19.3919 20.0646 19.6133 19.9305 19.7246 19.7166L20.8409 17.5731H24.629V24.0135H24.6296Z"
           fill={fill}

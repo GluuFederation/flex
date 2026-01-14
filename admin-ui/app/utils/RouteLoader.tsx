@@ -13,7 +13,7 @@ export const createLazyRoute = <P extends Record<string, unknown> = Record<strin
 
   const Wrapper = (props: P) => (
     <Suspense fallback={<GluuSuspenseLoader />}>
-      {/* @ts-expect-error - LazyComponent props are dynamically typed and P is guaranteed to match at runtime */}
+      {/* @ts-expect-error Known TypeScript limitation: React.lazy() doesn't preserve generic type parameters. Runtime safety guaranteed by importFn. */}
       <LazyComponent {...props} />
     </Suspense>
   )
@@ -46,7 +46,15 @@ export const loadPluginRoute = (pluginName: string, routePath?: string): LazyRou
         componentPath,
         error: err,
       })
-      return import(`../../plugins/${pluginName}/components/index`)
+      return import(`../../plugins/${pluginName}/components/index`).catch((fallbackErr) => {
+        console.warn(`Failed to load fallback plugin index for: ${pluginName}`, {
+          pluginName,
+          componentPath,
+          primaryError: err,
+          fallbackError: fallbackErr,
+        })
+        throw fallbackErr
+      })
     }),
   )
 }
@@ -55,7 +63,9 @@ export const preloadRoute = (routeName: keyof typeof LazyRoutes): void => {
   const route = LazyRoutes[routeName]
   if (route && 'preload' in route) {
     const lazyRoute = route as LazyRouteWrapper
-    lazyRoute.preload()
+    lazyRoute.preload().catch((error) => {
+      console.warn(`Failed to preload route: ${routeName}`, error)
+    })
   }
 }
 

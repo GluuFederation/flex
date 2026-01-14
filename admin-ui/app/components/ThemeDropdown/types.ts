@@ -10,19 +10,9 @@ export type DropdownOption = Omit<
   onClick?: () => void
 }
 
-export type ThemeDropdownProps = Omit<
-  Pick<
-    GluuDropdownProps<string | number>,
-    | 'position'
-    | 'selectedValue'
-    | 'onSelect'
-    | 'className'
-    | 'dropdownClassName'
-    | 'minWidth'
-    | 'maxWidth'
-    | 'showArrow'
-  >,
-  'selectedValue' | 'onSelect'
+export type ThemeDropdownProps = Pick<
+  GluuDropdownProps<string | number>,
+  'position' | 'className' | 'dropdownClassName' | 'minWidth' | 'maxWidth' | 'showArrow'
 > & {
   trigger: React.ReactNode
   options: DropdownOption[]
