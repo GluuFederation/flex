@@ -139,13 +139,20 @@ jobs:
             echo "Waiting for all images to be built before building the all-in-one image"
             TEMP_IMG="admin-ui persistence-loader"
             for img in $TEMP_IMG; do
+              max_retries=30
+              retry_count=0
               while true; do
-                echo "Attempting to pull the Docker image $img"
+                echo "Attempting to pull $img image"
                 if docker pull ghcr.io/$REPOSITORY/$img:$VERSION; then
-                  echo "Docker image $img pulled successfully"
+                  echo "$img image pulled successfully"
                   break
                 else
-                  echo "Failed to pull Docker image $img, retrying in 20 seconds"
+                  retry_count=$((retry_count + 1))
+                  if [ $retry_count -ge $max_retries ]; then
+                    echo "Failed to pull $img image after $max_retries attempts"
+                    exit 1
+                  fi
+                  echo "Failed to pull $img image, retrying in 20 seconds (attempt $retry_count/$max_retries)"
                   sleep 20
                 fi
               done
