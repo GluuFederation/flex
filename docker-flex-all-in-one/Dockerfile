@@ -20,7 +20,7 @@ FROM ${JANS_AIO_IMAGE} AS jans-aio-src
 
 FROM ${FLEX_ADMIN_UI_IMAGE} AS flex-admin-ui-src
 
-FROM ${FLEX_PERSISTENCE_LOADER_IMAGE} as flex-persistence-loader-src
+FROM ${FLEX_PERSISTENCE_LOADER_IMAGE} AS flex-persistence-loader-src
 
 # ===
 # app
