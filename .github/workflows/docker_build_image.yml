@@ -15,9 +15,9 @@ on:
   workflow_dispatch:
     inputs:
       services:
-        description: 'One or set of the docker images. Format as following: "docker-admin-ui docker-flex-monolith docker-flex-all-in-one"'
+        description: 'One or set of the docker images. Format as following: "docker-admin-ui docker-persistence-loader docker-flex-monolith docker-flex-all-in-one"'
         required: true
-        default: 'docker-admin-ui docker-flex-monolith docker-flex-all-in-one'
+        default: 'docker-admin-ui docker-persistence-loader docker-flex-monolith docker-flex-all-in-one'
       gluu_version:
         description: 'The war version to build the image off'
         required: false
@@ -42,7 +42,7 @@ jobs:
     strategy:
       max-parallel: 8
       matrix:
-        docker-images: ["admin-ui", "flex-monolith", "flex-all-in-one"]
+        docker-images: ["admin-ui", "persistence-loader", "flex-monolith", "flex-all-in-one"]
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
@@ -59,6 +59,7 @@ jobs:
           sparse-checkout: |
             automation
             docker-admin-ui
+            docker-persistence-loader
             docker-flex-monolith
             docker-flex-all-in-one
       - name: Check docker directories that changed
@@ -68,7 +69,7 @@ jobs:
           DEFAULT_ALL=${{ github.event.inputs.services }}
           if [ -z "$DEFAULT_ALL" ]
           then
-            DEFAULT_ALL="docker-admin-ui docker-flex-monolith docker-flex-all-in-one"
+            DEFAULT_ALL="docker-admin-ui docker-persistence-loader docker-flex-monolith docker-flex-all-in-one"
           else
             echo "$DEFAULT_ALL"
           fi
