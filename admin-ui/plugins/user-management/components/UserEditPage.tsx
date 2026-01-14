@@ -141,7 +141,6 @@ function UserEditPage() {
           await AXIOS_INSTANCE.delete(`/app/admin-ui/oauth2/session/${encodeURIComponent(userDn)}`)
         } catch (error) {
           console.error('Failed to revoke user session:', error)
-          dispatch(updateToast(true, 'warning', t('messages.session_revocation_failed')))
         }
       }
     },
