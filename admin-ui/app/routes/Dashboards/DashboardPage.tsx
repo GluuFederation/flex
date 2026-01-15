@@ -317,16 +317,6 @@ const DashboardPage = () => {
     [handleDateChange],
   )
 
-  const handleStartDateAccept = useCallback(
-    (date: Dayjs | null) => handleDateChange('start', date),
-    [handleDateChange],
-  )
-
-  const handleEndDateAccept = useCallback(
-    (date: Dayjs | null) => handleDateChange('end', date),
-    [handleDateChange],
-  )
-
   const dateMonths = useMemo(
     () => ({
       start: debouncedStartDate.format('YYYYMM'),
@@ -422,8 +412,8 @@ const DashboardPage = () => {
                     endDate={endDate}
                     onStartDateChange={handleStartDateChange}
                     onEndDateChange={handleEndDateChange}
-                    onStartDateAccept={handleStartDateAccept}
-                    onEndDateAccept={handleEndDateAccept}
+                    onStartDateAccept={handleStartDateChange}
+                    onEndDateAccept={handleEndDateChange}
                     textColor={dashboardThemeColors.text}
                     backgroundColor={dashboardThemeColors.cardBg}
                     isDark={isDark}
