@@ -8,7 +8,7 @@ import {
 } from '../features/licenseDetailsSlice'
 import { getClient } from 'Redux/api/base'
 import LicenseDetailsApi from '../api/LicenseDetailsApi'
-import { initAudit } from 'Redux/sagas/SagaUtils'
+import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 import { postUserAction } from 'Redux/api/backend-api'
 import { addAdditionalData, isFourZeroSixError } from 'Utils/TokenController'
 import { API_LICENSE } from '../../audit/Resources'
@@ -44,7 +44,7 @@ export function* resetLicenseConfigWorker(action: ResetLicenseAction) {
   } catch (error) {
     if (isFourZeroSixError(error)) {
       // Session expired - redirect to login
-      window.location.href = '/admin/logout'
+      yield* redirectToLogout()
     }
   }
 }
@@ -62,7 +62,7 @@ export function* getLicenseDetailsWorker() {
     yield put(getLicenseDetailsResponse(null))
     if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/admin/logout'
+      yield* redirectToLogout()
     }
   }
 }
@@ -79,7 +79,7 @@ export function* updateLicenseDetailsWorker({ payload }) {
     yield put(updateLicenseDetailsResponse(null))
     if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/admin/logout'
+      yield* redirectToLogout()
     }
   }
 }

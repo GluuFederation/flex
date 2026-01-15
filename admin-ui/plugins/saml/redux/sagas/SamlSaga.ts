@@ -2,7 +2,7 @@ import { call, all, put, fork, select, takeEvery } from 'redux-saga/effects'
 import type { SelectEffect, PutEffect } from 'redux-saga/effects'
 import { SagaIterator } from 'redux-saga'
 import { PayloadAction } from '@reduxjs/toolkit'
-import { initAudit } from 'Redux/sagas/SagaUtils'
+import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 import { getClient } from 'Redux/api/base'
 import {
   isFourZeroSixError,
@@ -394,7 +394,7 @@ function* handleFourZeroOneError(
       : null
   if (isFourZeroSixError(errorWithStatus)) {
     // Session expired - redirect to login
-    window.location.href = '/admin/logout'
+    yield* redirectToLogout()
   }
 }
 

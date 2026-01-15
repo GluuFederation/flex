@@ -14,7 +14,7 @@ import { isFourZeroSixError, addAdditionalData } from 'Utils/TokenController'
 import { updateToast } from 'Redux/features/toastSlice'
 
 const JansConfigApi = require('jans_config_api')
-import { initAudit } from 'Redux/sagas/SagaUtils'
+import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 import { buildPermissionDeleteErrorMessage } from 'Utils/PermissionMappingUtils'
 
 function* newFunction() {
@@ -37,7 +37,8 @@ export function* getPermissions({ payload }) {
     yield put(getPermissionResponse(null))
     if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/admin/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -54,7 +55,7 @@ export function* getPermission({ payload }) {
     yield put(getPermissionResponse(null))
     if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/admin/logout'
+      yield* redirectToLogout()
     }
   }
 }
@@ -76,7 +77,7 @@ export function* addPermission({ payload }) {
     yield put(addPermissionResponse({ data: null }))
     if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/admin/logout'
+      yield* redirectToLogout()
     }
     return e
   }
@@ -101,7 +102,7 @@ export function* editPermission({ payload }) {
     yield put(editPermissionResponse({ data: null }))
     if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/admin/logout'
+      yield* redirectToLogout()
     }
     return e
   }
@@ -140,7 +141,7 @@ export function* deletePermission({ payload }) {
     yield put(deletePermissionResponse({ inum: null }))
     if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/admin/logout'
+      yield* redirectToLogout()
     }
     return e
   }

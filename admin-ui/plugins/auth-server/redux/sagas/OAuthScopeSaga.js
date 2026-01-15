@@ -7,9 +7,8 @@ import { getClient } from 'Redux/api/base'
 import { isFourZeroSixError, addAdditionalData } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
 import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSaga'
-
+import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 const JansConfigApi = require('jans_config_api')
-import { initAudit } from 'Redux/sagas/SagaUtils'
 import {
   deleteScopeResponse,
   handleUpdateScopeResponse,
@@ -40,7 +39,8 @@ export function* getScopeByInum({ payload }) {
     yield put(deleteScopeResponse(null))
     if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/admin/logout'
+      yield* redirectToLogout()
+      return
     }
   }
 }
@@ -55,7 +55,8 @@ export function* getScopeByCreator({ payload }) {
   } catch (e) {
     if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/admin/logout'
+      yield* redirectToLogout()
+      return
     }
   }
 }
@@ -74,7 +75,8 @@ export function* getScopes({ payload }) {
     yield put(handleUpdateScopeResponse({ data: null }))
     if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/admin/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -93,7 +95,8 @@ export function* getClientScopes({ payload }) {
     yield put(getClientScopesResponse(null))
     if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/admin/logout'
+      yield* redirectToLogout()
+      return
     }
   }
 }
@@ -115,7 +118,8 @@ export function* addAScope({ payload }) {
     yield put(addScopeResponse(null))
     if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/admin/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -138,7 +142,8 @@ export function* editAnScope({ payload }) {
     yield put(editScopeResponse(null))
     if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/admin/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -160,7 +165,8 @@ export function* deleteAnScope({ payload }) {
     yield put(deleteScopeResponse({ data: null }))
     if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/admin/logout'
+      yield* redirectToLogout()
+      return
     }
   }
 }

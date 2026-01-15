@@ -8,10 +8,11 @@ import {
 } from '../features/MessageSlice'
 import MessageApi from '../api/MessageApi'
 import { getClient } from 'Redux/api/base'
-import { initAudit } from 'Redux/sagas/SagaUtils'
 import { postUserAction } from 'Redux/api/backend-api'
 import { UPDATE, FETCH } from '../../../../app/audit/UserActionType'
 import { updateToast } from 'Redux/features/toastSlice'
+import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
+
 const JansConfigApi = require('jans_config_api')
 
 const LOCK = 'message'
@@ -57,7 +58,8 @@ export function* getConfigMessage() {
     yield put(toggleMessageConfigLoader(false))
     if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/admin/logout'
+      yield* redirectToLogout()
+      return
     }
   }
 }
@@ -78,7 +80,8 @@ export function* editMessageConfig({ payload }) {
     yield put(toggleMessageConfigLoader(false))
     if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/admin/logout'
+      yield* redirectToLogout()
+      return
     }
   }
 }
@@ -98,7 +101,8 @@ export function* putConfigMessagePostgres({ payload }) {
     yield put(toggleSaveConfigLoader(false))
     if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/admin/logout'
+      yield* redirectToLogout()
+      return
     }
   }
 }
@@ -118,7 +122,8 @@ export function* putConfigMessageRedis({ payload }) {
     yield put(toggleSaveConfigLoader(false))
     if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/admin/logout'
+      yield* redirectToLogout()
+      return
     }
   }
 }

@@ -3,7 +3,7 @@ import { call, all, put, fork, select, takeLatest } from 'redux-saga/effects'
 import { isFourZeroSixError } from 'Utils/TokenController'
 
 import { getClient } from '../api/base'
-import { initAudit } from '../sagas/SagaUtils'
+import { initAudit, redirectToLogout } from '../sagas/SagaUtils'
 import LockApi from '../api/LockApi'
 import { getLockStatusResponse } from '../features/lockSlice'
 const JansConfigApi = require('jans_config_api')
@@ -24,7 +24,7 @@ export function* getLockMau({ payload }) {
     yield put(getLockStatusResponse(null))
     if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/admin/logout'
+      yield* redirectToLogout()
     }
   }
 }

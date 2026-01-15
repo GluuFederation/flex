@@ -10,7 +10,7 @@ import { FETCH, DELETION } from '../../../../app/audit/UserActionType'
 import UMAResourceApi from '../api/UMAResourceApi'
 import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
-import { initAudit } from 'Redux/sagas/SagaUtils'
+import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 
 function* newFunction() {
   const issuer = yield select((state) => state.authReducer.issuer)
@@ -34,7 +34,7 @@ export function* getUMAResourcesByClient({ payload }) {
     yield put(getUMAResourcesByClientResponse(null))
     if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/admin/logout'
+      yield* redirectToLogout()
     }
   }
 }
@@ -51,7 +51,7 @@ export function* deleteUMAResourceById({ payload }) {
     yield put(deleteUMAResourceResponse(null))
     if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/admin/logout'
+      yield* redirectToLogout()
     }
   }
 }

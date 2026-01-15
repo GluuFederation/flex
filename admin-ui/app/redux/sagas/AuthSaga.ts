@@ -138,6 +138,7 @@ function* getAPIAccessTokenWorker(jwt) {
     )
     if (isFourZeroSixError(error)) {
       yield* redirectToLogout()
+      return
     }
   }
 }

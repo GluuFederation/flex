@@ -5,8 +5,8 @@ import { getHealthStatusResponse, getHealthServerStatusResponse } from '../featu
 import { postUserAction } from '../api/backend-api'
 import HealthApi from '../api/HealthApi'
 import { getClient } from '../api/base'
-import { initAudit } from '../sagas/SagaUtils'
 import HealthCheckApi from '../api/HealthCheckApi'
+import { initAudit, redirectToLogout } from '../sagas/SagaUtils'
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {
@@ -34,7 +34,7 @@ export function* getHealthStatus({ payload }) {
     yield put(getHealthStatusResponse(null))
     if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/admin/logout'
+      yield* redirectToLogout()
     }
   }
 }

@@ -4,6 +4,7 @@ import { getOidcDiscoveryResponse } from '../actions'
 import { isFourZeroSixError } from 'Utils/TokenController'
 import OidcDiscoveryApi from '../api/OidcDiscoveryApi'
 import { getClient } from '../api/base'
+import { initAudit, redirectToLogout } from '../sagas/SagaUtils'
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {
@@ -22,7 +23,8 @@ export function* getOidcDiscovery() {
     yield put(getOidcDiscoveryResponse({ configuration: null }))
     if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/admin/logout'
+      yield* redirectToLogout()
+      return
     }
   }
 }
