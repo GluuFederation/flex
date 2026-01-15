@@ -33,8 +33,8 @@ import CustomScriptDetailPage from './CustomScriptDetailPage'
 import { useTranslation } from 'react-i18next'
 import { useCedarling, CEDAR_RESOURCE_SCOPES, ADMIN_UI_RESOURCES } from '@/cedarling'
 import SetTitle from 'Utils/SetTitle'
-import { ThemeContext } from 'Context/theme/themeContext'
-import getThemeColor from 'Context/theme/config'
+import { ThemeContext } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
 import { updateToast } from 'Redux/features/toastSlice'
@@ -71,8 +71,9 @@ const CustomScriptListPage: React.FC = () => {
   const [itemToDelete, setItemToDelete] = useState<CustomScript | null>(null)
 
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
-  const themeColors = getThemeColor(selectedTheme)
+
+  const selectedTheme = useMemo(() => theme?.state?.theme || DEFAULT_THEME, [theme?.state?.theme])
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
 
   const scriptsResourceId = ADMIN_UI_RESOURCES.Scripts
   const scriptScopes = CEDAR_RESOURCE_SCOPES[scriptsResourceId] || []

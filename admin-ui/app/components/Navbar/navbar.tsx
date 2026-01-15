@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 import classNames from 'classnames'
 import { Navbar as BSNavbar, Container } from 'reactstrap'
-import { THEME_LIGHT, THEME_DARK, type ThemeValue } from '@/context/theme/constants'
+import { THEME_LIGHT, THEME_DARK, type ThemeValue, DEFAULT_THEME } from '@/context/theme/constants'
 
 interface NavbarProps {
   themed?: boolean
@@ -41,11 +41,11 @@ const Navbar: React.FC<NavbarProps> = ({
 
   // When a combination of light or dark is present
   // with a color - use a custom class instead of bootstrap's
-  if ((isDark || isLight) && color) {
-    navbarClass = classNames(
-      navbarClass,
-      `navbar-${isLight ? THEME_LIGHT : ''}${isDark ? THEME_DARK : ''}-${color}`,
-    )
+  if (color) {
+    const themeStr = isLight ? THEME_LIGHT : isDark ? THEME_DARK : DEFAULT_THEME
+    if (themeStr) {
+      navbarClass = classNames(navbarClass, `navbar-${themeStr}-${color}`)
+    }
   }
 
   return (

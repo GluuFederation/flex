@@ -10,7 +10,7 @@ export interface UserInfo {
   name?: string
   given_name?: string
   family_name?: string
-  [key: string]: string | number | boolean | undefined | null
+  [key: string]: string | string[] | number | boolean | undefined | null
 }
 
 export interface Config {

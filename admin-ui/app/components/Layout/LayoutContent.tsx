@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useMemo, useRef } from 'react'
 import PropTypes from 'prop-types'
-import { ThemeContext } from 'Context/theme/themeContext'
-import getThemeColor, { themeConfig } from 'Context/theme/config'
+import { ThemeContext } from '@/context/theme/themeContext'
+import getThemeColor, { themeConfig } from '@/context/theme/config'
 import { ReactNode } from 'react'
 import customColors from '@/customColors'
 import { THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
@@ -104,11 +104,40 @@ const LayoutContent = ({ children }: LayoutContentProps) => {
 
     const { body } = document
     const { documentElement } = document
+    const previousBodyBg = body?.style.backgroundColor || null
+    const previousDocElementBg = documentElement?.style.backgroundColor || null
+
     if (body) {
       body.style.backgroundColor = themeColors.background
     }
     if (documentElement) {
       documentElement.style.backgroundColor = themeColors.background
+    }
+
+    return () => {
+      const styleToRemove = document.getElementById(STYLE_ID)
+      if (styleToRemove) {
+        styleToRemove.remove()
+      }
+
+      if (layoutElementRef.current instanceof HTMLElement) {
+        Object.keys(cssVariables).forEach((property) => {
+          layoutElementRef.current?.style.removeProperty(property)
+        })
+      }
+
+      Object.keys(cssVariables).forEach((property) => {
+        document.documentElement.style.removeProperty(property)
+      })
+
+      if (body) {
+        body.style.backgroundColor = previousBodyBg || ''
+      }
+      if (documentElement) {
+        documentElement.style.backgroundColor = previousDocElementBg || ''
+      }
+
+      layoutElementRef.current = null
     }
   }, [cssVariables, themeColors.fontColor, themeColors.background])
 
@@ -117,9 +146,8 @@ const LayoutContent = ({ children }: LayoutContentProps) => {
       className="layout__content"
       style={
         {
-          'background': themeColors.background,
-          'color': themeColors.fontColor,
-          '--theme-text-color': themeColors.fontColor,
+          background: themeColors.background,
+          color: themeColors.fontColor,
         } as React.CSSProperties
       }
     >

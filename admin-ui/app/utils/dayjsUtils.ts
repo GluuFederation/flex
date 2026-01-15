@@ -1,9 +1,11 @@
 import dayjs from 'dayjs'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 import type { Dayjs, OpUnitType, ManipulateType } from 'dayjs'
 
 // Extend dayjs with plugins
 dayjs.extend(isSameOrBefore)
+dayjs.extend(customParseFormat)
 
 // Re-export types for convenience
 export type { Dayjs } from 'dayjs'

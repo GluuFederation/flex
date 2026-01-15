@@ -1,7 +1,7 @@
 import React, { useContext, ReactElement } from 'react'
 import { Container, Badge, Row, Col, FormGroup, Label } from 'Components'
 import { useTranslation } from 'react-i18next'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { ThemeContext } from '@/context/theme/themeContext'
 import customColors from '@/customColors'
 import type { LdapDetailPageProps } from './types'
 import { DEFAULT_THEME } from '@/context/theme/constants'

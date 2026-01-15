@@ -15,22 +15,22 @@ export const DATE_PRESETS: DateRangePreset[] = [
   { labelKey: 'fields.date_preset_1y', months: 12 },
 ] as const
 
+const sharedMauColors = {
+  pieClientCredentials: customColors.mauPieClientCredentials,
+  pieAuthCodeAccess: customColors.mauPieAuthCodeAccess,
+  trendClientCredentials: customColors.mauTrendClientCredentials,
+  trendAuthCodeAccess: customColors.mauTrendAuthCodeAccess,
+  trendAuthCodeId: customColors.mauTrendAuthCodeId,
+} as const
+
 export const CHART_COLORS_BY_THEME = {
   [THEME_LIGHT]: {
     mau: customColors.logo,
-    pieClientCredentials: customColors.mauPieClientCredentials,
-    pieAuthCodeAccess: customColors.mauPieAuthCodeAccess,
-    trendClientCredentials: customColors.mauTrendClientCredentials,
-    trendAuthCodeAccess: customColors.mauTrendAuthCodeAccess,
-    trendAuthCodeId: customColors.mauTrendAuthCodeId,
+    ...sharedMauColors,
   },
   [THEME_DARK]: {
     mau: customColors.mauDark,
-    pieClientCredentials: customColors.mauPieClientCredentials,
-    pieAuthCodeAccess: customColors.mauPieAuthCodeAccess,
-    trendClientCredentials: customColors.mauTrendClientCredentials,
-    trendAuthCodeAccess: customColors.mauTrendAuthCodeAccess,
-    trendAuthCodeId: customColors.mauTrendAuthCodeId,
+    ...sharedMauColors,
   },
 } as const
 

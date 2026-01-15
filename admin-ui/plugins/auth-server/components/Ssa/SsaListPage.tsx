@@ -8,8 +8,8 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useCedarling } from '@/cedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { ThemeContext } from 'Context/theme/themeContext'
-import getThemeColor from 'Context/theme/config'
+import { ThemeContext } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
@@ -63,8 +63,8 @@ const SSAListPage: React.FC = () => {
 
   const [isDeleting, setIsDeleting] = useState<boolean>(false)
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
-  const themeColors = getThemeColor(selectedTheme)
+  const selectedTheme = useMemo(() => theme?.state?.theme || DEFAULT_THEME, [theme?.state?.theme])
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const bgThemeColor = { background: themeColors.background }
   SetTitle(t('titles.ssa_management'))
   const [ssaDialogOpen, setSsaDialogOpen] = useState<boolean>(false)
@@ -314,7 +314,7 @@ const SSAListPage: React.FC = () => {
             data={jwtData}
             isLoading={getSsaJwtMutation.isPending}
             title={`JSON View`}
-            theme={THEME_LIGHT}
+            theme={selectedTheme || THEME_LIGHT}
             expanded={true}
           />
         )}

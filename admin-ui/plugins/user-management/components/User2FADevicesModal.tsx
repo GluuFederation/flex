@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import GluuViewDetailModal from 'Routes/Apps/Gluu/GluuViewDetailsModal'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import getThemeColor from 'Context/theme/config'
-import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { ThemeContext } from '@/context/theme/themeContext'
 import {
   useGetRegistrationEntriesFido2,
   useDeleteFido2Data,

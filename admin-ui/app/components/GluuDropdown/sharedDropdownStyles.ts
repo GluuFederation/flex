@@ -69,10 +69,7 @@ export const createBaseOptionStyles = ({
         color: 'inherit',
       },
     },
-  }
-
-  if (optionGap !== undefined) {
-    baseStyles.gap = optionGap
+    'gap': optionGap,
   }
 
   return baseStyles

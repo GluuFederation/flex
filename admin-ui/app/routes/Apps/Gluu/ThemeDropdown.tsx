@@ -2,7 +2,7 @@ import React, { useMemo, useCallback, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import Box from '@mui/material/Box'
 import { GluuDropdown, type GluuDropdownOption } from 'Components'
-import { useTheme } from 'Context/theme/themeContext'
+import { useTheme } from '@/context/theme/themeContext'
 import { THEME_LIGHT, THEME_DARK, isValidTheme, type ThemeValue } from '@/context/theme/constants'
 import { useStyles } from './styles/ThemeDropdown.style'
 import type { ThemeDropdownComponentProps } from './types'
@@ -10,9 +10,7 @@ import type { ThemeDropdownComponentProps } from './types'
 export const ThemeDropdownComponent = memo<ThemeDropdownComponentProps>(({ userInfo }) => {
   const { t } = useTranslation()
   const { state, dispatch } = useTheme()
-  const currentTheme = useMemo(() => {
-    return state.theme
-  }, [state.theme])
+  const currentTheme = state.theme
   const isDark = currentTheme === THEME_DARK
   const { classes } = useStyles({ isDark })
 

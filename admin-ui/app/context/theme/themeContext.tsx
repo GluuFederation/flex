@@ -1,4 +1,12 @@
-import React, { createContext, useReducer, useContext, Dispatch, ReactNode, useEffect } from 'react'
+import React, {
+  createContext,
+  useReducer,
+  useContext,
+  Dispatch,
+  ReactNode,
+  useEffect,
+  useRef,
+} from 'react'
 import { DEFAULT_THEME, isValidTheme, type ThemeValue } from './constants'
 
 type ThemeState = {
@@ -64,8 +72,7 @@ const getInitialTheme = (): ThemeValue => {
       return savedTheme
     }
 
-    const currentInitTheme = window.localStorage.getItem('initTheme')
-    if (currentInitTheme !== userTheme) {
+    if (savedTheme !== userTheme) {
       window.localStorage.setItem('initTheme', userTheme)
     }
     return userTheme
@@ -100,9 +107,10 @@ interface ThemeProviderProps {
 
 export function ThemeProvider(props: ThemeProviderProps) {
   const [state, dispatch] = useReducer(themeReducer, initialState)
+  const hasSyncedRef = useRef(false)
 
   useEffect(() => {
-    if (typeof window === 'undefined') return
+    if (typeof window === 'undefined' || hasSyncedRef.current) return
 
     try {
       let currentInum: string | null = null
@@ -117,24 +125,36 @@ export function ThemeProvider(props: ThemeProviderProps) {
       }
 
       const userTheme = extractUserTheme(currentInum)
-      const currentInitTheme = window.localStorage.getItem('initTheme')
-      if (currentInitTheme !== userTheme) {
+      const savedTheme = window.localStorage.getItem('initTheme')
+      if (savedTheme !== userTheme) {
         window.localStorage.setItem('initTheme', userTheme)
       }
 
       const finalTheme = window.localStorage.getItem('initTheme')
-      if (!finalTheme || !isValidTheme(finalTheme)) {
-        window.localStorage.setItem('initTheme', DEFAULT_THEME)
+      const resolvedTheme = finalTheme && isValidTheme(finalTheme) ? finalTheme : DEFAULT_THEME
+
+      if (resolvedTheme !== DEFAULT_THEME && !finalTheme) {
+        window.localStorage.setItem('initTheme', resolvedTheme)
       }
+
+      if (resolvedTheme !== state.theme) {
+        dispatch({ type: resolvedTheme })
+      }
+
+      hasSyncedRef.current = true
     } catch (e) {
       console.debug('Failed to sync theme in useEffect, ensuring default:', e)
       try {
         window.localStorage.setItem('initTheme', DEFAULT_THEME)
+        if (state.theme !== DEFAULT_THEME) {
+          dispatch({ type: DEFAULT_THEME })
+        }
+        hasSyncedRef.current = true
       } catch (_error) {
         void _error
       }
     }
-  }, [])
+  }, [state.theme])
 
   return <ThemeContext.Provider value={{ state, dispatch }}>{props.children}</ThemeContext.Provider>
 }

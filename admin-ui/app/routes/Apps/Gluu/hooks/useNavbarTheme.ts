@@ -1,6 +1,6 @@
 import { useContext, useMemo, useEffect } from 'react'
-import { ThemeContext } from 'Context/theme/themeContext'
-import getThemeColor, { themeConfig } from 'Context/theme/config'
+import { ThemeContext } from '@/context/theme/themeContext'
+import getThemeColor, { themeConfig } from '@/context/theme/config'
 import { THEME_LIGHT, DEFAULT_THEME, isValidTheme } from '@/context/theme/constants'
 
 export function useNavbarTheme() {
@@ -24,13 +24,16 @@ export function useNavbarTheme() {
     document.documentElement.style.setProperty('--theme-navbar-text', navbarColors.text)
     const styleId = 'navbar-theme-colors'
     let styleElement = document.getElementById(styleId) as HTMLStyleElement | null
-    const createdByThisEffect = !styleElement
 
     if (!styleElement) {
       styleElement = document.createElement('style')
       styleElement.id = styleId
+      styleElement.dataset.navbarThemeCount = '0'
       document.head.appendChild(styleElement)
     }
+
+    const currentCount = parseInt(styleElement.dataset.navbarThemeCount || '0', 10)
+    styleElement.dataset.navbarThemeCount = String(currentCount + 1)
 
     styleElement.textContent = `
       .navbar-themed .dropdown-menu,
@@ -56,8 +59,15 @@ export function useNavbarTheme() {
     `
 
     return () => {
-      if (createdByThisEffect && styleElement && styleElement.parentNode) {
-        styleElement.parentNode.removeChild(styleElement)
+      const element = document.getElementById(styleId) as HTMLStyleElement | null
+      if (element) {
+        const count = parseInt(element.dataset.navbarThemeCount || '0', 10)
+        const newCount = Math.max(0, count - 1)
+        element.dataset.navbarThemeCount = String(newCount)
+
+        if (newCount === 0 && element.parentNode) {
+          element.parentNode.removeChild(element)
+        }
       }
     }
   }, [navbarColors.text])
