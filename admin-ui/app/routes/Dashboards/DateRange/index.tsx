@@ -263,7 +263,9 @@ const DateRange = memo(
       prevProps.isDark === nextProps.isDark &&
       prevProps.dateFormat === nextProps.dateFormat &&
       prevProps.onStartDateChange === nextProps.onStartDateChange &&
-      prevProps.onEndDateChange === nextProps.onEndDateChange
+      prevProps.onEndDateChange === nextProps.onEndDateChange &&
+      prevProps.onStartDateAccept === nextProps.onStartDateAccept &&
+      prevProps.onEndDateAccept === nextProps.onEndDateAccept
     )
   },
 )

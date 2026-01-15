@@ -26,7 +26,7 @@ const TooltipDesign = memo(
 
     return (
       <div
-        className="thumbnail p-2"
+        className="thumbnail"
         style={{
           backgroundColor,
           color: textColor,

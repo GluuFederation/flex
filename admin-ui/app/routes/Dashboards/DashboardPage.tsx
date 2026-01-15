@@ -318,18 +318,12 @@ const DashboardPage = () => {
   )
 
   const handleStartDateAccept = useCallback(
-    (date: Dayjs | null) => {
-      if (!date) return
-      handleDateChange('start', date)
-    },
+    (date: Dayjs | null) => handleDateChange('start', date),
     [handleDateChange],
   )
 
   const handleEndDateAccept = useCallback(
-    (date: Dayjs | null) => {
-      if (!date) return
-      handleDateChange('end', date)
-    },
+    (date: Dayjs | null) => handleDateChange('end', date),
     [handleDateChange],
   )
 
