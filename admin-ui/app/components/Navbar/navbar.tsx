@@ -4,7 +4,6 @@ import { Navbar as BSNavbar, Container } from 'reactstrap'
 import { THEME_LIGHT, THEME_DARK, type ThemeValue, DEFAULT_THEME } from '@/context/theme/constants'
 
 interface NavbarProps {
-  themed?: boolean
   fluid?: boolean
   shadow?: boolean
   className?: string
@@ -17,7 +16,6 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({
-  themed: _themed = false,
   fluid = false,
   shadow,
   className,
@@ -39,13 +37,9 @@ const Navbar: React.FC<NavbarProps> = ({
     className,
   )
 
-  // When a combination of light or dark is present
-  // with a color - use a custom class instead of bootstrap's
   if (color) {
     const themeStr = isLight ? THEME_LIGHT : isDark ? THEME_DARK : DEFAULT_THEME
-    if (themeStr) {
-      navbarClass = classNames(navbarClass, `navbar-${themeStr}-${color}`)
-    }
+    navbarClass = classNames(navbarClass, `navbar-${themeStr}-${color}`)
   }
 
   return (

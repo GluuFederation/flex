@@ -28,11 +28,11 @@ import SidebarTrigger from './SidebarTrigger'
 import { ThemeClass, ThemeProvider, ThemeConsumer } from './Theme'
 import { ThemeDropdown } from './ThemeDropdown'
 import { GluuDropdown } from './GluuDropdown'
-import { ArrowIcon } from './SVG'
+import { ArrowIcon, ChevronIcon } from './SVG'
 import UncontrolledTabs from './UncontrolledTabs'
 import Wizard from './Wizard'
 import WizardStep from './Wizard/WizardStep'
-// Export non overriden Reactstrap components
+
 export {
   Alert,
   Badge,
@@ -149,6 +149,7 @@ export {
   ThemeDropdown,
   GluuDropdown,
   ArrowIcon,
+  ChevronIcon,
   UncontrolledTabs,
   Wizard,
   WizardStep,

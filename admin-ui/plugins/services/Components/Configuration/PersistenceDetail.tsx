@@ -1,8 +1,8 @@
-import React, { useEffect, useContext, useMemo, ReactElement } from 'react'
+import React, { useEffect, useMemo, ReactElement } from 'react'
 import { Container, Row, Col, Card, CardBody } from 'Components'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import { useTranslation } from 'react-i18next'
-import { ThemeContext } from '@/context/theme/themeContext'
+import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import SetTitle from 'Utils/SetTitle'
@@ -23,9 +23,9 @@ interface DatabaseField {
 
 function PersistenceDetail(): ReactElement | null {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
-  const themeColors = getThemeColor(selectedTheme)
+  const { state: themeState } = useTheme()
+  const selectedTheme = useMemo(() => themeState.theme || DEFAULT_THEME, [themeState.theme])
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
 
   const persistenceResourceId = useMemo(() => ADMIN_UI_RESOURCES.Persistence, [])

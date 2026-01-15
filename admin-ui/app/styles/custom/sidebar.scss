@@ -11,6 +11,11 @@
     background-color: var(--theme-sidebar-background, #fcfcfc);
     box-shadow: var(--theme-sidebar-shadow, 0px 0px 1rem 0px rgba(0, 0, 0, 0.15));
 
+    .sidebar-menu {
+        padding-top: 34px;
+        padding-bottom: 34px;
+    }
+
     .sidebar-menu__entry__link {
         color: var(--theme-menu-text-color, #323b47);
         @include sidebar-entry-typography;
@@ -52,8 +57,8 @@
 
 .custom-sidebar-container .sidebar-menu__entry {
     .sidebar-menu__entry__link {
-        padding-top: 12px;
-        padding-bottom: 12px;
+        padding-top: 16px;
+        padding-bottom: 16px;
     }
 
     .sidebar-menu__entry__link:hover {
@@ -74,6 +79,11 @@
     position: relative;
     z-index: 1;
     padding-right: 1.5rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 106px;
+    min-height: 106px;
 
     &::after {
         content: "";
@@ -84,5 +94,19 @@
         height: 1px;
         background-color: var(--theme-navbar-border, #e5e7eb);
         pointer-events: none;
+    }
+}
+
+.sidebar-menu__entry__link,
+.sidebar-submenu__entry__link {
+    > span:has(+ .sidebar-menu__entry__chevron),
+    > span:has(+ .sidebar-submenu__entry__chevron) {
+        flex: 0 1 auto;
+    }
+
+    > .sidebar-menu__entry__chevron,
+    > .sidebar-submenu__entry__chevron {
+        margin-left: 0;
+        margin-right: auto;
     }
 }

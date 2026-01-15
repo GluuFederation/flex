@@ -18,7 +18,7 @@ export const UserInfoItem = memo<UserInfoItemProps>(({ item, classes, isStatus, 
         : t('dashboard.inactive')
       : '-'
     return (
-      <div className={classes.userInfoStatusContainer}>
+      <div className={classes.userInfoItem}>
         <div className={classes.userInfoText}>{item.text}:</div>
         <span className={isActive ? classes.greenBlock : classes.redBlock}>{displayValue}</span>
       </div>
@@ -26,10 +26,10 @@ export const UserInfoItem = memo<UserInfoItemProps>(({ item, classes, isStatus, 
   }
 
   return (
-    <>
+    <div className={classes.userInfoItem}>
       <div className={classes.userInfoText}>{item.text}:</div>
       <div className={classes.userInfoValue}>{item.value || '-'}</div>
-    </>
+    </div>
   )
 })
 

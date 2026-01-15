@@ -6,7 +6,7 @@ import { auditLogoutLogs } from 'Redux/features/sessionSlice'
 import { GluuDropdown, type GluuDropdownOption } from 'Components'
 import type { DropdownProfileProps, LogoutAuditState } from './types'
 
-const DropdownProfile = ({ trigger, position = 'bottom' }: DropdownProfileProps) => {
+const DropdownProfile = ({ trigger, renderTrigger, position = 'bottom' }: DropdownProfileProps) => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const { logoutAuditSucceeded } = useSelector(
@@ -47,6 +47,7 @@ const DropdownProfile = ({ trigger, position = 'bottom' }: DropdownProfileProps)
   return (
     <GluuDropdown
       trigger={trigger}
+      renderTrigger={renderTrigger}
       options={options}
       position={position}
       minWidth={182}

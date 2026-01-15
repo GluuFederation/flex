@@ -22,18 +22,12 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
   const getCardBorderStyle = () => {
     if (isDark) {
       return {
-        border: '1.5px solid transparent',
-        backgroundImage: `
-          linear-gradient(${themeColors.cardBg}, ${themeColors.cardBg}),
-          linear-gradient(35deg, ${customColors.darkBorderGradientStart} 0%, ${customColors.darkBorderGradientMid} 50%, ${customColors.darkBorderGradientEnd} 100%)
-        `,
-        backgroundOrigin: 'border-box',
-        backgroundClip: 'padding-box, border-box',
+        border: `1.5px solid ${customColors.darkBorderAccent}`,
       }
     }
     return {
       border: `1.5px solid ${themeColors.cardBorder}`,
-      boxShadow: `0 2px 8px ${customColors.shadowMedium}`,
+      boxShadow: `0px 4px 11px 0px ${customColors.shadowLight}`,
     }
   }
 
@@ -70,8 +64,8 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       color: themeColors.text,
       marginBottom: 0,
       position: 'absolute',
-      top: '42.5px',
-      left: '38.5px',
+      top: '44px',
+      left: '40px',
     },
     summaryIcon: {
       height: '30px',
@@ -87,8 +81,8 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       lineHeight: lineHeights.tight,
       display: 'flex',
       position: 'absolute',
-      top: '109px',
-      left: '38.5px',
+      top: '110px',
+      left: '40px',
       transform: 'translateY(-50%)',
     },
     dashboardCard: {
@@ -147,17 +141,22 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
     },
     userInfo: {
       borderRadius: 16,
-      minHeight: 462,
       color: themeColors.text,
       backgroundColor: themeColors.cardBg,
       ...cardBorderStyle,
-      padding: '31.5px',
+      padding: 0,
+      display: 'flex',
+      flexDirection: 'column',
+      height: 462,
+      boxSizing: 'border-box',
       position: 'relative',
       [theme.breakpoints.down('md')]: {
         padding: '20px',
+        height: 'auto',
       },
       [theme.breakpoints.down('sm')]: {
         padding: '16px',
+        height: 'auto',
       },
     },
     userInfoTitle: {
@@ -165,42 +164,52 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       fontWeight: fontWeights.medium,
       fontSize: fontSizes.xl,
       lineHeight: lineHeights.tight,
-      marginBottom: 0,
-      color: themeColors.text,
+      margin: 0,
       position: 'absolute',
-      top: '23.5px',
-      left: '31.5px',
-      [theme.breakpoints.down('md')]: {
-        top: '20px',
-        left: '20px',
-      },
+      top: '25px',
+      left: '33px',
+      color: themeColors.text,
       [theme.breakpoints.down('sm')]: {
-        top: '16px',
-        left: '16px',
         fontSize: fontSizes.lg,
+        position: 'relative',
+        top: 'auto',
+        left: 'auto',
+        marginBottom: '24px',
       },
     },
     userInfoContent: {
+      display: 'flex',
+      flexDirection: 'row',
+      gap: '40px',
+      width: '100%',
+      maxWidth: '100%',
       position: 'absolute',
-      top: '67.5px',
-      left: '31.5px',
-      width: 'calc(100% - 63px)',
-      maxWidth: '402px',
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gap: '30px 0px',
+      top: '69px',
+      left: '33px',
       [theme.breakpoints.down('md')]: {
-        top: '60px',
-        left: '20px',
-        width: 'calc(100% - 40px)',
+        gap: '30px',
+        position: 'relative',
+        top: 'auto',
+        left: 'auto',
       },
       [theme.breakpoints.down('sm')]: {
-        top: '52px',
-        left: '16px',
-        width: 'calc(100% - 32px)',
-        gridTemplateColumns: '1fr',
-        gap: '20px 0px',
+        flexDirection: 'column',
+        gap: '20px',
       },
+    },
+    userInfoColumn: {
+      display: 'flex',
+      flexDirection: 'column',
+      flex: '1 1 0',
+      gap: '24px',
+      [theme.breakpoints.down('sm')]: {
+        gap: '20px',
+      },
+    },
+    userInfoItem: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '8px',
     },
     userInfoText: {
       fontFamily,
@@ -216,11 +225,6 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       lineHeight: lineHeights.loose,
       color: themeColors.text,
       fontWeight: fontWeights.bold,
-    },
-    userInfoStatusContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '8px',
     },
     chartContainerTable: {
       width: 780,
@@ -350,7 +354,7 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
     whiteBg: {
       background: themeColors.cardBg,
       ...cardBorderStyle,
-      padding: '30px',
+      padding: '33px',
       color: themeColors.text,
       borderRadius: 16,
       height: 462,
@@ -358,7 +362,23 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       overflow: 'hidden',
       display: 'flex',
       flexDirection: 'column',
+      boxSizing: 'border-box',
+    },
+    chartTitle: {
+      fontFamily,
+      fontWeight: fontWeights.medium,
+      fontSize: fontSizes.xl,
+      lineHeight: lineHeights.tight,
+      color: themeColors.text,
+      marginBottom: '24px',
+      marginTop: 0,
+    },
+    chartDatePickers: {
+      display: 'flex',
       gap: '16px',
+      width: '100%',
+      maxWidth: '516px',
+      marginBottom: '16px',
     },
     chartContainer: {
       width: '100%',

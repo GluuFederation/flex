@@ -64,3 +64,13 @@ export const CHART_LEGEND_CONFIG = [
     translationKey: 'tooltips.client_credentials_access_token_count',
   },
 ] as const
+
+export const STATUS_DETAILS = [
+  { label: 'menus.oauthserver', key: 'jans-auth' },
+  { label: 'dashboard.config_api', key: 'jans-config-api' },
+  { label: 'FIDO', key: 'jans-fido2' },
+  { label: 'CASA', key: 'jans-casa' },
+  { label: 'dashboard.key_cloak', key: 'keycloak' },
+  { label: 'SCIM', key: 'jans-scim' },
+  { label: 'dashboard.jans_lock', key: 'jans-lock' },
+] as const

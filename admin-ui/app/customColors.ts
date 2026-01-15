@@ -32,6 +32,7 @@ export const customColors = {
   statusInactiveBg: '#ffe6e7',
   borderInput: '#ebebeb',
   darkInputBg: '#15395d',
+  lightInputBg: '#f9fafb',
   darkBorderAccent: 'rgba(0, 213, 230, 0.2)',
   darkBorderGradientStart: 'rgba(0, 213, 230, 0.8)',
   darkBorderGradientMid: 'rgba(0, 213, 230, 0.5)',

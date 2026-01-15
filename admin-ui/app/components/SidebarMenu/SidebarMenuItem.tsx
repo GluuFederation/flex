@@ -13,6 +13,7 @@ import { MenuContext, type SidebarMenuContext } from './MenuContext'
 import customColors from '@/customColors'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
+import { ChevronIcon } from '../SVG'
 
 interface SidebarMenuItemLinkProps {
   to?: string | null
@@ -222,6 +223,24 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
               fill: iconFillColor,
             })}
           {typeof title === 'string' ? <span style={textStyle}>{title}</span> : title}
+          {children && !noCaret && (
+            <span
+              className={`${classBase}__entry__chevron`}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '22px',
+                height: '22px',
+                flexShrink: 0,
+                transition: 'transform 0.2s ease',
+                transformOrigin: 'center center',
+                transform: entry?.open ? 'rotate(0deg)' : 'rotate(-90deg)',
+              }}
+            >
+              <ChevronIcon width={22} height={22} />
+            </span>
+          )}
         </SidebarMenuItemLink>
       )}
       {children && (

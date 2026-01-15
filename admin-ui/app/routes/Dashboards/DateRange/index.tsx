@@ -32,10 +32,10 @@ const DateRange = memo(
 
     const themeColors = useMemo(() => {
       const labelBg = backgroundColor || (isDark ? customColors.darkCardBg : customColors.white)
-      const inputBg = isDark ? customColors.darkInputBg : customColors.white
+      const inputBg = isDark ? customColors.darkInputBg : customColors.lightInputBg
       const inputText = textColor || (isDark ? customColors.white : customColors.primaryDark)
       const labelText = textColor || (isDark ? customColors.white : customColors.primaryDark)
-      const borderColor = isDark ? customColors.darkBorder : customColors.borderInput
+      const borderColor = isDark ? 'transparent' : customColors.borderInput
       const popupBg = isDark ? customColors.darkCardBg : customColors.white
       const selectedBg = isDark ? customColors.darkBorder : customColors.primaryDark
       const selectedText = customColors.white

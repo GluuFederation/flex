@@ -74,6 +74,7 @@ const Notifications = () => {
       options={notificationOptions}
       position="bottom"
       closeOnSelect={false}
+      centerText={true}
     />
   )
 }

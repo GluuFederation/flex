@@ -75,7 +75,8 @@ export const useStyles = makeStyles<{
   isDark: boolean
   position: DropdownPosition
   dropdownBg: string
-}>()((_theme, { isDark, position, dropdownBg }) => ({
+  centerText?: boolean
+}>()((_theme, { isDark, position, dropdownBg, centerText }) => ({
   dropdownWrapper: {
     position: 'relative',
     display: 'inline-block',
@@ -92,6 +93,7 @@ export const useStyles = makeStyles<{
     maxHeight: SHARED_DROPDOWN_STYLES.maxHeight,
     overflowY: 'visible',
     ...getPositionStyles(position),
+    marginTop: position === 'bottom' ? '13px' : position === 'top' ? undefined : '4px',
   },
   arrow: {
     'position': 'absolute',
@@ -127,7 +129,10 @@ export const useStyles = makeStyles<{
     },
   },
   option: {
-    ...createBaseOptionStyles({ isDark }),
+    ...createBaseOptionStyles({
+      isDark,
+      ...(centerText && { optionPadding: '12px 12px' }),
+    }),
     '&.single-option': {
       justifyContent: 'center',
     },

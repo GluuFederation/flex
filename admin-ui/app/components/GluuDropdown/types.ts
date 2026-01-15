@@ -42,6 +42,7 @@ export type GluuDropdownProps<T extends DropdownValue = DropdownValue> = {
     isOpen: boolean,
     selectedOption?: GluuDropdownOption<T> | GluuDropdownOption<T>[],
   ) => React.ReactNode
+  centerText?: boolean
 }
 
 export type DropdownState = {

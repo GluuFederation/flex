@@ -106,8 +106,19 @@ export const createTriggerStyles = ({
   },
 })
 
-export const chevronStyles = {
+export const createChevronStyles = () => ({
   marginLeft: '8px',
-  fontSize: '18px',
+  width: '18px',
+  height: '18px',
+  minWidth: '18px',
+  minHeight: '18px',
+  display: 'flex',
+  alignItems: 'center',
   color: 'inherit',
-}
+  transition: 'transform 0.2s ease',
+  flexShrink: 0,
+})
+
+export const createChevronOpenStyles = () => ({
+  transform: 'rotate(180deg)',
+})

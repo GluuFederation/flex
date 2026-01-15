@@ -133,10 +133,6 @@ export function ThemeProvider(props: ThemeProviderProps) {
       const finalTheme = window.localStorage.getItem('initTheme')
       const resolvedTheme = finalTheme && isValidTheme(finalTheme) ? finalTheme : DEFAULT_THEME
 
-      if (resolvedTheme !== DEFAULT_THEME && !finalTheme) {
-        window.localStorage.setItem('initTheme', resolvedTheme)
-      }
-
       if (resolvedTheme !== state.theme) {
         dispatch({ type: resolvedTheme })
       }

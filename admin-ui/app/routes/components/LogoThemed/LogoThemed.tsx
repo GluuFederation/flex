@@ -28,7 +28,7 @@ const LogoThemed: React.FC<LogoThemedProps> = ({ className, width, height, ...ot
     return {
       width: widthValue,
       height: heightValue,
-      filter: LOGO_FILTERS[currentTheme],
+      filter: LOGO_FILTERS[currentTheme] || LOGO_FILTERS[DEFAULT_THEME],
     }
   }, [currentTheme, width, height])
 

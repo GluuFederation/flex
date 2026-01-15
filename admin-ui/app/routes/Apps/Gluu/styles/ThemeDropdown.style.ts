@@ -1,6 +1,10 @@
 import { makeStyles } from 'tss-react/mui'
 import customColors from '@/customColors'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
+import {
+  createChevronStyles,
+  createChevronOpenStyles,
+} from '@/components/GluuDropdown/sharedDropdownStyles'
 
 export const useStyles = makeStyles<{ isDark: boolean }>()((theme, { isDark }) => ({
   trigger: {
@@ -23,11 +27,8 @@ export const useStyles = makeStyles<{ isDark: boolean }>()((theme, { isDark }) =
       opacity: 0.8,
     },
   },
-  chevron: {
-    marginLeft: '8px',
-    fontSize: '18px',
-    color: 'inherit',
-  },
+  chevron: createChevronStyles(),
+  chevronOpen: createChevronOpenStyles(),
   optionLabel: {
     fontFamily,
     fontSize: fontSizes.md,

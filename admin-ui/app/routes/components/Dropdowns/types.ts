@@ -1,5 +1,5 @@
 import type React from 'react'
-import type { DropdownPosition } from 'Components'
+import type { DropdownPosition, GluuDropdownOption } from 'Components'
 
 export type LogoutAuditState = {
   logoutAuditReducer: {
@@ -8,6 +8,10 @@ export type LogoutAuditState = {
 }
 
 export type DropdownProfileProps = {
-  trigger: React.ReactNode
+  trigger?: React.ReactNode
+  renderTrigger?: (
+    isOpen: boolean,
+    selectedOption?: GluuDropdownOption<string> | GluuDropdownOption<string>[],
+  ) => React.ReactNode
   position?: DropdownPosition
 }

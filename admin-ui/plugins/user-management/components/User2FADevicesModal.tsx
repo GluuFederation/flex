@@ -42,15 +42,17 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
   const themeContext = useContext(ThemeContext)
-  const selectedTheme = theme || themeContext?.state?.theme || DEFAULT_THEME
-  const themeColors = getThemeColor(selectedTheme)
+  const selectedTheme = useMemo(
+    () => theme || themeContext?.state?.theme || DEFAULT_THEME,
+    [theme, themeContext?.state?.theme],
+  )
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const bgThemeColor = { background: themeColors.background }
 
   const [faDetails, setFADetails] = useState<DeviceData[]>([])
   const [otpDevicesList, setOTPDevicesList] = useState<DeviceData[]>([])
   const initializedRef = useRef<string | null>(null)
 
-  // Fetch FIDO2 registration entries
   const { data: fidoRegistrationData, refetch: refetchFido2Details } =
     useGetRegistrationEntriesFido2(userDetails?.userId?.toLowerCase() || '', {
       query: {
@@ -58,11 +60,7 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
       },
     })
 
-  // Memoize fidoDetails to prevent unnecessary re-renders
-  const fidoDetails = useMemo(
-    () => fidoRegistrationData?.entries || [],
-    [fidoRegistrationData?.entries],
-  )
+  const fidoDetails = useMemo(() => fidoRegistrationData?.entries || [], [fidoRegistrationData])
 
   // Delete FIDO2 mutation
   const deleteFido2Mutation = useDeleteFido2Data({

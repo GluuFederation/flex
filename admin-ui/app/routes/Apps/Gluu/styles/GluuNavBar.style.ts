@@ -19,6 +19,7 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     padding: '0px 60px',
     position: 'relative',
     marginTop: '-1px',
+    borderBottom: `1px solid ${navbarColors.border}`,
     [theme.breakpoints.down('md')]: {
       padding: '0px 20px',
       height: '80px',
@@ -156,14 +157,17 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     color: navbarColors.icon,
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
     flexShrink: 0,
+    transition: 'transform 0.2s ease',
     [theme.breakpoints.down('sm')]: {
       width: '16px',
       height: '16px',
       minWidth: '16px',
       minHeight: '16px',
     },
+  },
+  userChevronOpen: {
+    transform: 'rotate(180deg)',
   },
 }))
 

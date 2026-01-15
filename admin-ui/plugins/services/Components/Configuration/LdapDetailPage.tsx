@@ -1,4 +1,4 @@
-import React, { useContext, ReactElement } from 'react'
+import React, { useContext, useMemo, ReactElement } from 'react'
 import { Container, Badge, Row, Col, FormGroup, Label } from 'Components'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from '@/context/theme/themeContext'
@@ -9,7 +9,7 @@ import { DEFAULT_THEME } from '@/context/theme/constants'
 function LdapDetailPage({ row, testLdapConnection }: LdapDetailPageProps): ReactElement {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
+  const selectedTheme = useMemo(() => theme?.state?.theme || DEFAULT_THEME, [theme?.state?.theme])
 
   function getBadgeTheme(status: boolean | undefined): string {
     if (status) {

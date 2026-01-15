@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import Box from '@mui/material/Box'
-import { GluuDropdown, type GluuDropdownOption } from 'Components'
+import { GluuDropdown, type GluuDropdownOption, ChevronIcon } from 'Components'
 import { useTheme } from '@/context/theme/themeContext'
 import { THEME_LIGHT, THEME_DARK, isValidTheme, type ThemeValue } from '@/context/theme/constants'
 import { useStyles } from './styles/ThemeDropdown.style'
@@ -88,7 +88,9 @@ export const ThemeDropdownComponent = memo<ThemeDropdownComponentProps>(({ userI
       renderTrigger={(isOpen) => (
         <Box className={classes.trigger}>
           <span>{t('themes.theme')}</span>
-          <i className={`fa ${isOpen ? 'fa-angle-up' : 'fa-angle-down'} ${classes.chevron}`} />
+          <Box className={`${classes.chevron} ${isOpen ? classes.chevronOpen : ''}`}>
+            <ChevronIcon />
+          </Box>
         </Box>
       )}
       options={options}

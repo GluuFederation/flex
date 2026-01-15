@@ -31,6 +31,7 @@ export function GluuDropdown<T extends DropdownValue = DropdownValue>({
   multiple = false,
   renderOption,
   renderTrigger,
+  centerText = false,
 }: GluuDropdownProps<T>): React.ReactElement {
   const [internalState, setInternalState] = useState<DropdownState>({
     isOpen: false,
@@ -47,7 +48,7 @@ export function GluuDropdown<T extends DropdownValue = DropdownValue>({
   const dropdownBg = useMemo(() => {
     return isDark ? customColors.darkDropdownBg : customColors.white
   }, [isDark])
-  const { classes } = useStyles({ isDark, position, dropdownBg })
+  const { classes } = useStyles({ isDark, position, dropdownBg, centerText })
 
   const isOpen = controlled ? (controlledIsOpen ?? false) : internalState.isOpen
   const searchQuery = internalState.searchQuery

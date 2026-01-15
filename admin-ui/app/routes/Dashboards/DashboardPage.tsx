@@ -10,7 +10,6 @@ import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useCedarling } from '@/cedarling'
 import customColors from '@/customColors'
-import { fontFamily, fontWeights, fontSizes } from '@/styles/fonts'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
@@ -27,7 +26,7 @@ import { useHealthStatus } from 'Plugins/admin/components/Health/hooks'
 import type { CedarPermissionsState } from '@/cedarling/types'
 import type { MauDateRange } from 'Plugins/admin/components/MAU/types'
 import DashboardChart from './Chart/DashboardChart'
-import { CHART_LEGEND_CONFIG } from './constants'
+import { CHART_LEGEND_CONFIG, STATUS_DETAILS } from './constants'
 import DateRange from './DateRange'
 import { useDashboardLicense, useDashboardClients, useDashboardLockStats } from './hooks'
 import styles from './styles'
@@ -37,25 +36,6 @@ interface RootState {
   authReducer: AuthState
   cedarPermissions: CedarPermissionsState
 }
-
-const STATUS_DETAILS = [
-  { label: 'menus.oauthserver', key: 'jans-auth' },
-  { label: 'dashboard.config_api', key: 'jans-config-api' },
-  { label: 'dashboard.database_status', key: 'database' },
-  { label: 'FIDO', key: 'jans-fido2' },
-  { label: 'CASA', key: 'jans-casa' },
-  { label: 'dashboard.key_cloak', key: 'keycloak' },
-  { label: 'SCIM', key: 'jans-scim' },
-  { label: 'dashboard.jans_lock', key: 'jans-lock' },
-] as const
-
-const CHART_TITLE_STYLE = {
-  fontFamily,
-  fontSize: fontSizes.xl,
-  fontWeight: fontWeights.medium,
-  marginBottom: 0,
-  marginTop: 0,
-} as const
 
 const DashboardPage = () => {
   const { t } = useTranslation()
@@ -345,14 +325,6 @@ const DashboardPage = () => {
     [debouncedStartDate, debouncedEndDate],
   )
 
-  const chartTitleStyle = useMemo(
-    () => ({
-      ...CHART_TITLE_STYLE,
-      color: dashboardThemeColors.text,
-    }),
-    [dashboardThemeColors.text],
-  )
-
   return (
     <GluuLoader blocking={isBlocking}>
       {showModal}
@@ -397,15 +369,32 @@ const DashboardPage = () => {
                   <div className={classes.userInfo}>
                     <div className={classes.userInfoTitle}>{t('dashboard.user_info')}</div>
                     <div className={classes.userInfoContent}>
-                      {userInfo.map((item, index) => (
-                        <UserInfoItem
-                          key={`${item.text}-${index}`}
-                          item={item}
-                          classes={classes}
-                          isStatus={item.isStatus}
-                          t={t}
-                        />
-                      ))}
+                      <div className={classes.userInfoColumn}>
+                        {userInfo
+                          .filter((_, index) => index % 2 === 0)
+                          .map((item, index) => (
+                            <UserInfoItem
+                              key={`${item.text}-${index}`}
+                              item={item}
+                              classes={classes}
+                              isStatus={item.isStatus}
+                              t={t}
+                            />
+                          ))}
+                      </div>
+                      <div className={classes.userInfoColumn}>
+                        {userInfo
+                          .filter((_, index) => index % 2 === 1)
+                          .map((item, index) => (
+                            <UserInfoItem
+                              key={`${item.text}-${index}`}
+                              item={item}
+                              classes={classes}
+                              isStatus={item.isStatus}
+                              t={t}
+                            />
+                          ))}
+                      </div>
                     </div>
                   </div>
                 </Grid>
@@ -416,16 +405,18 @@ const DashboardPage = () => {
           <Grid item lg={7} md={12} xs={12}>
             <Paper elevation={0} style={{ background: 'transparent' }}>
               <div className={classes.whiteBg}>
-                <h3 style={chartTitleStyle}>{t('dashboard.access_tokens_graph')}</h3>
-                <DateRange
-                  startDate={startDate}
-                  endDate={endDate}
-                  onStartDateChange={handleStartDateChange}
-                  onEndDateChange={handleEndDateChange}
-                  textColor={dashboardThemeColors.text}
-                  backgroundColor={dashboardThemeColors.cardBg}
-                  isDark={isDark}
-                />
+                <h3 className={classes.chartTitle}>{t('dashboard.access_tokens_graph')}</h3>
+                <div className={classes.chartDatePickers}>
+                  <DateRange
+                    startDate={startDate}
+                    endDate={endDate}
+                    onStartDateChange={handleStartDateChange}
+                    onEndDateChange={handleEndDateChange}
+                    textColor={dashboardThemeColors.text}
+                    backgroundColor={dashboardThemeColors.cardBg}
+                    isDark={isDark}
+                  />
+                </div>
                 <div className={classes.desktopChartStyle}>
                   <div className={classes.chartBackground} />
                   <DashboardChart

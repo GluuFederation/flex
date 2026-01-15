@@ -63,6 +63,7 @@ const LayoutContent = ({ children }: LayoutContentProps) => {
       '--theme-menu-arrow-color-active': menuColors.textColorActive,
       '--theme-menu-arrow-color-hover': menuColors.textColorHover,
       '--theme-menu-hover-background': menuColors.hoverBackground,
+      '--theme-menu-background-color-hover': menuColors.hoverBackground,
     }),
     [
       themeColors.menu.background,

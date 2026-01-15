@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext, useMemo, useCallback, memo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import Box from '@mui/material/Box'
-import { GluuDropdown, type GluuDropdownOption } from 'Components'
+import { GluuDropdown, type GluuDropdownOption, ChevronIcon } from 'Components'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
 import { useStyles } from './styles/LanguageMenu.style'
@@ -83,7 +83,9 @@ const LanguageMenu = memo<LanguageMenuProps>(({ userInfo }) => {
       renderTrigger={(isOpen) => (
         <Box className={classes.trigger} data-testid="ACTIVE_LANG">
           <span>{lang.toUpperCase()}</span>
-          <i className={`fa ${isOpen ? 'fa-angle-up' : 'fa-angle-down'} ${classes.chevron}`} />
+          <Box className={`${classes.chevron} ${isOpen ? classes.chevronOpen : ''}`}>
+            <ChevronIcon />
+          </Box>
         </Box>
       )}
       options={options}

@@ -1,8 +1,8 @@
-import { useState, useEffect, memo, useRef, useMemo, useCallback } from 'react'
+import { useState, useEffect, useRef, useMemo, useCallback, memo } from 'react'
 import { useSelector } from 'react-redux'
 import { ErrorBoundary } from 'react-error-boundary'
 import Box from '@mui/material/Box'
-import { Nav, NavItem, Notifications, SidebarTrigger } from 'Components'
+import { Nav, NavItem, Notifications, SidebarTrigger, ChevronIcon } from 'Components'
 import { DropdownProfile } from 'Routes/components/Dropdowns/DropdownProfile'
 import type { UserInfo } from 'Redux/features/types/authTypes'
 import { LanguageMenu } from './LanguageMenu'
@@ -12,19 +12,6 @@ import { UserIcon } from './components/UserIcon'
 import { useStyles } from './styles/GluuNavBar.style'
 import { useNavbarTheme } from './hooks/useNavbarTheme'
 import { usePageTitle } from './hooks/usePageTitle'
-
-const ChevronIcon = memo(() => (
-  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true" focusable="false">
-    <path
-      d="M4.5 6.75L9 11.25L13.5 6.75"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-))
-ChevronIcon.displayName = 'ChevronIcon'
 
 const MOBILE_BREAKPOINT = '(max-width: 768px)'
 
@@ -136,15 +123,17 @@ const GluuNavBar = () => {
               </>
             )}
             <DropdownProfile
-              trigger={
+              renderTrigger={(isOpen: boolean) => (
                 <Box className={`${classes.navbarItem} ${classes.userProfileContainer}`}>
                   <UserIcon size={40} className={classes.userIcon} avatarUrl={avatarUrl} />
                   <span className={classes.userName}>{displayName}</span>
-                  <Box className={classes.userChevron}>
+                  <Box
+                    className={`${classes.userChevron} ${isOpen ? classes.userChevronOpen : ''}`}
+                  >
                     <ChevronIcon />
                   </Box>
                 </Box>
-              }
+              )}
               position="bottom"
             />
           </Box>
