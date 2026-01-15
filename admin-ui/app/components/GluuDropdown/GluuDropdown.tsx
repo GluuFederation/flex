@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useContext, useMemo, useCallback } from 'react'
 import Box from '@mui/material/Box'
 import { ThemeContext } from 'Context/theme/themeContext'
+import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
 import { ArrowIcon } from 'Components'
 import customColors from '@/customColors'
 import { useStyles } from './GluuDropdown.style'
@@ -41,8 +42,8 @@ export function GluuDropdown<T extends DropdownValue = DropdownValue>({
   const searchInputRef = useRef<HTMLInputElement>(null)
 
   const theme = useContext(ThemeContext)
-  const currentTheme = theme?.state.theme || 'light'
-  const isDark = currentTheme === 'dark'
+  const currentTheme = theme?.state.theme || DEFAULT_THEME
+  const isDark = currentTheme === THEME_DARK
   const dropdownBg = useMemo(() => {
     return isDark ? customColors.darkDropdownBg : customColors.white
   }, [isDark])

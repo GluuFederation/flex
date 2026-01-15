@@ -1,5 +1,4 @@
 import customColors from '@/customColors'
-import type { ChartDataKey } from './types'
 
 export const DASHBOARD_CACHE_CONFIG = {
   STALE_TIME: 30 * 1000,
@@ -48,11 +47,7 @@ export const CHART_CONSTANTS = {
   MARGIN: { top: 10, right: 30, left: -20, bottom: 20 },
 } as const
 
-export const CHART_LEGEND_CONFIG: Array<{
-  dataKey: ChartDataKey
-  color: string
-  translationKey: string
-}> = [
+export const CHART_LEGEND_CONFIG = [
   {
     dataKey: 'authz_code_idtoken_count',
     color: customColors.chartPurple,

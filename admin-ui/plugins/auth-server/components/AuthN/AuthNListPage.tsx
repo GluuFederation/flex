@@ -1,11 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useContext,
-  useCallback,
-  useMemo,
-  type ReactElement,
-} from 'react'
+import React, { useState, useEffect, useCallback, useMemo, type ReactElement } from 'react'
 import MaterialTable, { type Action, type Column } from '@material-table/core'
 import { Paper } from '@mui/material'
 import { useSetAtom } from 'jotai'
@@ -18,7 +11,7 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
 import customColors from '@/customColors'
 import SetTitle from 'Utils/SetTitle'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import AuthNDetailPage from './AuthNDetailPage'
 import { useCustomScriptsByType } from 'Plugins/admin/components/CustomScripts/hooks'
@@ -26,6 +19,7 @@ import { DEFAULT_SCRIPT_TYPE } from 'Plugins/admin/components/CustomScripts/cons
 import { currentAuthNItemAtom, type AuthNItem } from './atoms'
 import { BUILT_IN_ACRS } from './constants'
 import { useGetAcrs, useGetConfigDatabaseLdap, type GluuLdapConfiguration } from 'JansConfigApi'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 const PAGE_SIZE = 10
 
@@ -46,8 +40,8 @@ function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
     Array<Action<AuthNItem> | ((rowData: AuthNItem) => Action<AuthNItem>)>
   >([])
   const { navigateToRoute } = useAppNavigation()
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'light'
+  const { state: themeState } = useTheme()
+  const selectedTheme = themeState.theme || DEFAULT_THEME
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
 

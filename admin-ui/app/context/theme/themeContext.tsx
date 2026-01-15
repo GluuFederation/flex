@@ -1,16 +1,14 @@
 import React, { createContext, useReducer, useContext, Dispatch, ReactNode, useEffect } from 'react'
+import { DEFAULT_THEME, isValidTheme, type ThemeValue } from './constants'
 
-// Define the shape of the theme state
 type ThemeState = {
-  theme: string
+  theme: ThemeValue
 }
 
-// Define the shape of the actions for the reducer
 type ThemeAction = {
-  type: string
+  type: ThemeValue
 }
 
-// Define the context value type
 export interface ThemeContextType {
   state: ThemeState
   dispatch: Dispatch<ThemeAction>
@@ -18,15 +16,21 @@ export interface ThemeContextType {
 
 export const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
-const extractUserTheme = (currentInum?: string | null): string | undefined => {
-  if (typeof window === 'undefined') return undefined
+const extractUserTheme = (currentInum?: string | null): ThemeValue => {
+  if (typeof window === 'undefined') {
+    return DEFAULT_THEME
+  }
 
   try {
     const userConfigStr = window.localStorage.getItem('userConfig')
-    if (!userConfigStr) return undefined
+    if (!userConfigStr) {
+      return DEFAULT_THEME
+    }
 
-    const userConfig = JSON.parse(userConfigStr)
-    if (!userConfig?.theme) return undefined
+    const userConfig = JSON.parse(userConfigStr) as { theme?: string | Record<string, string> }
+    if (!userConfig?.theme) {
+      return DEFAULT_THEME
+    }
 
     let userTheme: string | undefined
 
@@ -36,42 +40,44 @@ const extractUserTheme = (currentInum?: string | null): string | undefined => {
       userTheme = userConfig.theme[currentInum]
     }
 
-    if (userTheme === 'light' || userTheme === 'dark') {
+    if (userTheme && isValidTheme(userTheme)) {
       return userTheme
     }
-    return 'light'
-  } catch (e) {
-    console.debug('Failed to parse userConfig:', e)
-  }
 
-  return undefined
+    return DEFAULT_THEME
+  } catch (e) {
+    console.debug('Failed to extract user theme, using default:', e)
+    return DEFAULT_THEME
+  }
 }
 
-// Get initial theme from localStorage (pure function, no side effects)
-// Priority: 1) userConfig (user-specific), 2) initTheme (global), 3) default 'light'
-// Note: currentInum is not available at initialization time, so we use first value
-// The useEffect will update with the correct user's theme when user context is available
-const getInitialTheme = (): string => {
-  if (typeof window === 'undefined') return 'light'
+const getInitialTheme = (): ThemeValue => {
+  if (typeof window === 'undefined') {
+    return DEFAULT_THEME
+  }
 
-  // Try to get user-specific theme from userConfig
-  const userTheme = extractUserTheme()
-  if (userTheme) {
+  try {
+    const userTheme = extractUserTheme()
+    const savedTheme = window.localStorage.getItem('initTheme')
+
+    if (userTheme === DEFAULT_THEME && savedTheme && isValidTheme(savedTheme)) {
+      return savedTheme
+    }
+
+    const currentInitTheme = window.localStorage.getItem('initTheme')
+    if (currentInitTheme !== userTheme) {
+      window.localStorage.setItem('initTheme', userTheme)
+    }
     return userTheme
+  } catch (e) {
+    console.debug('Failed to get initial theme, using default:', e)
+    try {
+      window.localStorage.setItem('initTheme', DEFAULT_THEME)
+    } catch (_error) {
+      void _error
+    }
+    return DEFAULT_THEME
   }
-
-  // Fallback to initTheme
-  const savedTheme = window.localStorage.getItem('initTheme')
-
-  if (!savedTheme) return 'light'
-
-  // Return saved theme if it's valid (light or dark)
-  if (savedTheme === 'light' || savedTheme === 'dark') {
-    return savedTheme
-  }
-
-  // Invalid theme, default to light
-  return 'light'
 }
 
 const initialState: ThemeState = {
@@ -95,36 +101,38 @@ interface ThemeProviderProps {
 export function ThemeProvider(props: ThemeProviderProps) {
   const [state, dispatch] = useReducer(themeReducer, initialState)
 
-  // Handle theme persistence in useEffect (side effects)
   useEffect(() => {
     if (typeof window === 'undefined') return
 
-    // Try to get current user's inum from localStorage if available
-    // This is a fallback; ideally inum should be passed from user context
-    let currentInum: string | null = null
     try {
-      const userInfoStr = window.localStorage.getItem('userInfo')
-      if (userInfoStr) {
-        const userInfo = JSON.parse(userInfoStr)
-        currentInum = userInfo?.inum || null
+      let currentInum: string | null = null
+      try {
+        const userInfoStr = window.localStorage.getItem('userInfo')
+        if (userInfoStr) {
+          const userInfo = JSON.parse(userInfoStr) as { inum?: string }
+          currentInum = userInfo?.inum || null
+        }
+      } catch (_error) {
+        void _error
       }
-    } catch {
-      // Ignore parsing errors
-    }
 
-    // Extract user theme using the shared helper
-    const userTheme = extractUserTheme(currentInum)
-    if (userTheme) {
+      const userTheme = extractUserTheme(currentInum)
       const currentInitTheme = window.localStorage.getItem('initTheme')
       if (currentInitTheme !== userTheme) {
         window.localStorage.setItem('initTheme', userTheme)
       }
-    }
 
-    // Ensure invalid themes are migrated to light
-    const currentTheme = window.localStorage.getItem('initTheme')
-    if (!currentTheme || !['light', 'dark'].includes(currentTheme)) {
-      window.localStorage.setItem('initTheme', 'light')
+      const finalTheme = window.localStorage.getItem('initTheme')
+      if (!finalTheme || !isValidTheme(finalTheme)) {
+        window.localStorage.setItem('initTheme', DEFAULT_THEME)
+      }
+    } catch (e) {
+      console.debug('Failed to sync theme in useEffect, ensuring default:', e)
+      try {
+        window.localStorage.setItem('initTheme', DEFAULT_THEME)
+      } catch (_error) {
+        void _error
+      }
     }
   }, [])
 

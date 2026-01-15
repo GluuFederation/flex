@@ -38,6 +38,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 function ClientListPage() {
   const { t } = useTranslation()
@@ -70,7 +71,7 @@ function ClientListPage() {
   })
 
   const clientResourceId = useMemo(() => ADMIN_UI_RESOURCES.Clients, [])
-  const selectedTheme = useMemo(() => theme?.state?.theme || 'light', [theme?.state?.theme])
+  const selectedTheme = useMemo(() => theme?.state?.theme || DEFAULT_THEME, [theme?.state?.theme])
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const bgThemeColor = useMemo(
     () => ({ background: themeColors.background }),

@@ -13,6 +13,7 @@ import {
 } from 'reactstrap'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 import PropTypes from 'prop-types'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
@@ -50,7 +51,7 @@ const GluuCommitDialog = ({
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
 
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state.theme || 'light'
+  const selectedTheme = theme?.state.theme || DEFAULT_THEME
   const [active, setActive] = useState(false)
   const [isOpen, setIsOpen] = useState<number | null>(null)
   const [userMessage, setUserMessage] = useState('')

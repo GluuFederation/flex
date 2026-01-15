@@ -5,9 +5,9 @@ export const chartGlobalStyles = {
     display: 'none',
   },
   'table > thead > tr > th .Mui-active': {
-    color: `var(--theme-text-color, ${customColors.white})`,
+    color: `var(--theme-text-color, ${customColors.primaryDark})`,
   },
   'table > thead > tr > th .Mui-active > svg': {
-    color: `var(--theme-text-color, ${customColors.white})`,
+    color: `var(--theme-text-color, ${customColors.primaryDark})`,
   },
 }

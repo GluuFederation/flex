@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useState, useCallback, useMemo } from 'react'
+import React, { useContext, useEffect, useState, useMemo } from 'react'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import { ThemeContext } from 'Context/theme/themeContext'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Box } from '@mui/material'
 import MaterialTable from '@material-table/core'
@@ -10,8 +9,8 @@ import { useDispatch } from 'react-redux'
 import { updateToast } from 'Redux/features/toastSlice'
 import { isEmpty } from 'lodash'
 import AceEditor from 'react-ace'
-import type { Deployment } from 'JansConfigApi'
 import { useGetAgamaPrjByName, useGetAgamaPrjConfigs, usePutAgamaPrj } from 'JansConfigApi'
+import { DEFAULT_THEME, THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
 import type {
   AgamaProjectConfigModalProps,
   FlowError,
@@ -30,12 +29,12 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
   const dispatch = useDispatch()
   const theme = useContext(ThemeContext)
   const name = row.details?.projectMetadata?.projectName || ''
-  const selectedTheme = theme?.state?.theme || 'light'
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
 
   const aceTheme = useMemo(() => {
     const themeMap: Record<string, string> = {
-      light: 'xcode',
-      dark: 'monokai',
+      [THEME_LIGHT]: 'xcode',
+      [THEME_DARK]: 'monokai',
     }
     return themeMap[selectedTheme] || 'xcode'
   }, [selectedTheme])

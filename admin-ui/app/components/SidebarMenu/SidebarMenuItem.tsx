@@ -12,6 +12,7 @@ import classNames from 'classnames'
 import { MenuContext, type SidebarMenuContext } from './MenuContext'
 import customColors from '@/customColors'
 import { ThemeContext } from 'Context/theme/themeContext'
+import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
 
 interface SidebarMenuItemLinkProps {
   to?: string | null
@@ -125,7 +126,7 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
 }) => {
   const { entries, addEntry, updateEntry, removeEntry } = useContext(MenuContext)
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state.theme || 'light'
+  const selectedTheme = theme?.state.theme || DEFAULT_THEME
   const id = useId()
 
   useEffect(() => {
@@ -174,9 +175,9 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
   const iconFillColor = useMemo(() => {
     const isActive = entry?.active
     if (isActive) {
-      return selectedTheme === 'dark' ? customColors.white : customColors.primaryDark
+      return selectedTheme === THEME_DARK ? customColors.white : customColors.primaryDark
     }
-    return selectedTheme === 'dark' ? customColors.white : customColors.textSecondary
+    return selectedTheme === THEME_DARK ? customColors.white : customColors.textSecondary
   }, [entry?.active, selectedTheme])
 
   function getStyle(itemClass: string): CSSProperties {

@@ -2,13 +2,12 @@ import React from 'react'
 
 interface UsersProps {
   color?: string
-  fill?: string // deprecated, use color instead
   className: string
   style?: React.CSSProperties
 }
 
-const UsersIcon: React.FC<UsersProps> = ({ color, fill, className, style }) => {
-  const strokeColor = color ?? fill ?? 'currentColor'
+const UsersIcon: React.FC<UsersProps> = ({ color, className, style }) => {
+  const strokeColor = color ?? 'currentColor'
   const height = Math.round((28 * 20) / 24)
   return (
     <div className={className} style={style}>

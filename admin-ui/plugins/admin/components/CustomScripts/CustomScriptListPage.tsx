@@ -45,6 +45,7 @@ import { DEFAULT_SCRIPT_TYPE } from './constants'
 import type { CustomScript } from 'JansConfigApi'
 import type { Column, Action } from '@material-table/core'
 import type { ScriptError } from './types/customScript'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 interface ScriptTableRow extends CustomScript {
   scriptError?: ScriptError
@@ -70,7 +71,7 @@ const CustomScriptListPage: React.FC = () => {
   const [itemToDelete, setItemToDelete] = useState<CustomScript | null>(null)
 
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'light'
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
   const themeColors = getThemeColor(selectedTheme)
 
   const scriptsResourceId = ADMIN_UI_RESOURCES.Scripts
@@ -372,8 +373,8 @@ const CustomScriptListPage: React.FC = () => {
         fontSize: '0.875rem',
         borderBottom: '2px solid #e0e0e0',
       },
-      rowStyle: (rowData) => {
-        const hasError = (rowData as ScriptTableRow).scriptError?.stackTrace
+      rowStyle: (rowData: ScriptTableRow) => {
+        const hasError = rowData.scriptError?.stackTrace
         const baseColor = rowData.enabled ? themeColors.lightBackground : customColors.white
         return {
           backgroundColor: hasError ? `${customColors.accentRed}15` : baseColor,

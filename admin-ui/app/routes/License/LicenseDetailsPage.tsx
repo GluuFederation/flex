@@ -6,6 +6,7 @@ import { useContext } from 'react'
 
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 import customColors from '@/customColors'
 import { getLicenseDetails } from 'Redux/features/licenseDetailsSlice'
 import { Card, CardBody, Container, Row, Col, Button } from 'Components'
@@ -55,7 +56,7 @@ function LicenseDetailsPage() {
 
   SetTitle(t('menus.licenseDetails'))
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'light'
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
   const themeColors = getThemeColor(selectedTheme)
 
   const labelStyle = {

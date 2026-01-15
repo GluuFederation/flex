@@ -1,4 +1,4 @@
-import { useState, useEffect, memo, useRef, useMemo } from 'react'
+import { useState, useEffect, memo, useRef, useMemo, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { ErrorBoundary } from 'react-error-boundary'
 import Box from '@mui/material/Box'
@@ -43,16 +43,18 @@ const GluuNavBar = () => {
     typeof window !== 'undefined' ? window.matchMedia(MOBILE_BREAKPOINT).matches : false,
   )
 
+  const applyNavbarColors = useCallback((element: HTMLElement, colors: typeof navbarColors) => {
+    element.style.setProperty('background-color', colors.background, 'important')
+    element.style.setProperty('--theme-navbar-background', colors.background, 'important')
+    element.style.setProperty('--theme-navbar-text', colors.text, 'important')
+    element.style.setProperty('--theme-navbar-icon', colors.icon, 'important')
+    element.style.setProperty('--theme-navbar-border', colors.border, 'important')
+  }, [])
+
   useEffect(() => {
     if (!navbarRef.current) return
-
-    const element = navbarRef.current
-    element.style.setProperty('background-color', navbarColors.background, 'important')
-    element.style.setProperty('--theme-navbar-background', navbarColors.background, 'important')
-    element.style.setProperty('--theme-navbar-text', navbarColors.text, 'important')
-    element.style.setProperty('--theme-navbar-icon', navbarColors.icon, 'important')
-    element.style.setProperty('--theme-navbar-border', navbarColors.border, 'important')
-  }, [navbarColors])
+    applyNavbarColors(navbarRef.current, navbarColors)
+  }, [navbarColors, applyNavbarColors])
 
   useEffect(() => {
     if (typeof window === 'undefined') return

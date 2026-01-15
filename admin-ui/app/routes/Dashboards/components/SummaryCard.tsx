@@ -1,7 +1,11 @@
 import { memo } from 'react'
 import Paper from '@mui/material/Paper'
 
-type ClassesType = Record<string, string>
+interface ClassesType {
+  summary: string
+  summaryText: string
+  summaryValue: string
+}
 
 interface SummaryCardProps {
   text: string

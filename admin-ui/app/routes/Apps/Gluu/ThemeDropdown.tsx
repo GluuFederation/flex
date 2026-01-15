@@ -1,46 +1,53 @@
-import React, { useContext, useMemo, useCallback, memo } from 'react'
+import React, { useMemo, useCallback, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import Box from '@mui/material/Box'
 import { GluuDropdown, type GluuDropdownOption } from 'Components'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { useTheme } from 'Context/theme/themeContext'
+import { THEME_LIGHT, THEME_DARK, isValidTheme, type ThemeValue } from '@/context/theme/constants'
 import { useStyles } from './styles/ThemeDropdown.style'
 import type { ThemeDropdownComponentProps } from './types'
 
 export const ThemeDropdownComponent = memo<ThemeDropdownComponentProps>(({ userInfo }) => {
   const { t } = useTranslation()
-  const themeContext = useContext(ThemeContext)
-  const { state, dispatch } = themeContext || { state: { theme: 'light' }, dispatch: undefined }
+  const { state, dispatch } = useTheme()
   const currentTheme = useMemo(() => {
-    return state?.theme || 'light'
-  }, [state?.theme])
-  const isDark = currentTheme === 'dark'
+    return state.theme
+  }, [state.theme])
+  const isDark = currentTheme === THEME_DARK
   const { classes } = useStyles({ isDark })
 
   const onChangeTheme = useCallback(
     (value: string) => {
-      if (!dispatch) {
-        console.warn('Theme dispatch is not available')
+      if (!isValidTheme(value)) {
+        console.warn('Invalid theme value:', value)
         return
       }
 
+      const themeValue: ThemeValue = value
+
       if (!userInfo) {
-        dispatch({ type: value })
+        dispatch({ type: themeValue })
         return
       }
 
       const { inum } = userInfo
       if (!inum) {
-        dispatch({ type: value })
+        dispatch({ type: themeValue })
         return
       }
 
       try {
         const existingConfigStr = localStorage.getItem('userConfig')
-        const existingConfig = existingConfigStr ? JSON.parse(existingConfigStr) : {}
+        const existingConfig = existingConfigStr
+          ? (JSON.parse(existingConfigStr) as {
+              theme?: Record<string, string>
+              lang?: Record<string, string>
+            })
+          : {}
 
         const updatedTheme = {
           ...(existingConfig.theme || {}),
-          [inum]: value,
+          [inum]: themeValue,
         }
 
         const newConfig = {
@@ -54,12 +61,12 @@ export const ThemeDropdownComponent = memo<ThemeDropdownComponentProps>(({ userI
         console.debug('Failed to parse userConfig:', e)
         const newConfig = {
           lang: {},
-          theme: { [inum]: value },
+          theme: { [inum]: themeValue },
         }
         localStorage.setItem('userConfig', JSON.stringify(newConfig))
       }
 
-      dispatch({ type: value })
+      dispatch({ type: themeValue })
     },
     [userInfo, dispatch],
   )
@@ -67,11 +74,11 @@ export const ThemeDropdownComponent = memo<ThemeDropdownComponentProps>(({ userI
   const options: GluuDropdownOption<string>[] = useMemo(
     () => [
       {
-        value: 'light',
+        value: THEME_LIGHT,
         label: <span className={classes.optionLabel}>{t('themes.light')}</span>,
       },
       {
-        value: 'dark',
+        value: THEME_DARK,
         label: <span className={classes.optionLabel}>{t('themes.dark')}</span>,
       },
     ],
@@ -89,7 +96,7 @@ export const ThemeDropdownComponent = memo<ThemeDropdownComponentProps>(({ userI
       options={options}
       position="bottom"
       selectedValue={currentTheme}
-      onSelect={(value) => onChangeTheme(value as string)}
+      onSelect={(value) => onChangeTheme(value)}
       minWidth={120}
       showArrow={true}
     />

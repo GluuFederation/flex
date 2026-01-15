@@ -4,6 +4,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor, { themeConfig } from 'Context/theme/config'
 import { ReactNode } from 'react'
 import customColors from '@/customColors'
+import { THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
 
 interface LayoutContentProps {
   children: ReactNode
@@ -27,11 +28,11 @@ const LayoutContent = ({ children }: LayoutContentProps) => {
   const selectedTheme = theme.state.theme
   const themeColors = useMemo(() => {
     const colors = getThemeColor(selectedTheme)
-    return colors || themeConfig.light
+    return colors || themeConfig[THEME_LIGHT]
   }, [selectedTheme])
   const layoutElementRef = useRef<HTMLElement | null>(null)
 
-  const isDark = useMemo(() => selectedTheme === 'dark', [selectedTheme])
+  const isDark = useMemo(() => selectedTheme === THEME_DARK, [selectedTheme])
 
   const menuColors = useMemo(() => {
     const textColor = isDark ? customColors.white : customColors.textSecondary

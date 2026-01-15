@@ -1,7 +1,13 @@
 import React, { useMemo, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { GlobalStyles } from '@mui/material'
-import moment from 'moment'
+import {
+  createDate,
+  formatDate,
+  addDate,
+  isAfterDate,
+  isSameOrBeforeDate,
+} from '@/utils/dayjsUtils'
 import {
   XAxis,
   YAxis,
@@ -27,26 +33,26 @@ const DashboardChart = memo(
         return []
       }
 
-      const dateStart = moment(startMonth, 'YYYYMM')
-      const dateEnd = moment(endMonth, 'YYYYMM')
+      const dateStart = createDate(startMonth, 'YYYYMM')
+      const dateEnd = createDate(endMonth, 'YYYYMM')
 
-      if (dateStart.isAfter(dateEnd, 'month')) {
+      if (isAfterDate(dateStart, dateEnd, 'month')) {
         return []
       }
 
-      let current = dateStart.clone()
+      let current = dateStart
       const byMonth = new Map<number, MauStatEntry>()
       statData.forEach((entry) => byMonth.set(entry.month, entry))
       const prepareStat: Array<MauStatEntry & { monthLabel: string }> = []
 
-      while (current.isSameOrBefore(dateEnd, 'month')) {
-        const monthNum = parseInt(current.format('YYYYMM'), 10)
+      while (isSameOrBeforeDate(current, dateEnd, 'month')) {
+        const monthNum = parseInt(formatDate(current, 'YYYYMM'), 10)
         const available = byMonth.get(monthNum)
 
         if (available) {
           prepareStat.push({
             ...available,
-            monthLabel: current.format('YYYY MM'),
+            monthLabel: formatDate(current, 'YYYY MM'),
           })
         } else {
           prepareStat.push({
@@ -55,10 +61,10 @@ const DashboardChart = memo(
             client_credentials_access_token_count: 0,
             authz_code_access_token_count: 0,
             authz_code_idtoken_count: 0,
-            monthLabel: current.format('YYYY MM'),
+            monthLabel: formatDate(current, 'YYYY MM'),
           })
         }
-        current = current.clone().add(1, 'month')
+        current = addDate(current, 1, 'month')
       }
 
       return prepareStat

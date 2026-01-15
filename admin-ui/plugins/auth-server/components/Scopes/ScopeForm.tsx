@@ -38,6 +38,7 @@ import {
 import { getScopeValidationSchema } from './helper/validations'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 interface RootState {
   authReducer: {
@@ -58,7 +59,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
 }) => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'light'
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
   const { navigateBack, navigateToRoute } = useAppNavigation()
   const dispatch = useDispatch()
   const client = scope.clients || []

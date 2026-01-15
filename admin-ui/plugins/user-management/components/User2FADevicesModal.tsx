@@ -28,6 +28,7 @@ import {
   CustomUser,
 } from '../types'
 import { getErrorMessage, logUserUpdate } from '../helper/userAuditHelpers'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 interface User2FADevicesModalProps {
   isOpen: boolean
@@ -41,7 +42,7 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
   const themeContext = useContext(ThemeContext)
-  const selectedTheme = theme || themeContext?.state?.theme || 'light'
+  const selectedTheme = theme || themeContext?.state?.theme || DEFAULT_THEME
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
 

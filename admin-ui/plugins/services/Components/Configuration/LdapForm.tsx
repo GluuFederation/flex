@@ -17,6 +17,7 @@ import customColors from '@/customColors'
 import { usePostConfigDatabaseLdapTest } from 'JansConfigApi'
 import type { GluuLdapConfiguration } from 'JansConfigApi'
 import type { LdapFormProps } from './types'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 interface ServerItem {
   servers?: string
@@ -49,7 +50,7 @@ function LdapForm({
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'light'
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
 
   function activateValidation(): void {
     if (!init) {

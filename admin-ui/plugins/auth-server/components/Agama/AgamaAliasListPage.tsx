@@ -25,6 +25,7 @@ import SetTitle from 'Utils/SetTitle'
 import type { AcrMapping, AcrMappingFormValues } from './types'
 import { useAgamaActions } from './hooks'
 import { DEFAULT_PAGE_SIZE } from './constants'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 interface RootState {
   jsonConfigReducer: {
@@ -44,7 +45,7 @@ interface AcrMappingTableRow extends AcrMapping {
 function AliasesListPage(): React.ReactElement {
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'light'
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
   const themeColors = getThemeColor(selectedTheme)
 
   const bgThemeColor = { background: themeColors.background }

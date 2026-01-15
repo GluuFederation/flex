@@ -4,11 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import customColors from '@/customColors'
 import type { LdapDetailPageProps } from './types'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 function LdapDetailPage({ row, testLdapConnection }: LdapDetailPageProps): ReactElement {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'light'
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
 
   function getBadgeTheme(status: boolean | undefined): string {
     if (status) {

@@ -1,22 +1,23 @@
 import { useContext, useMemo, useEffect } from 'react'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor, { themeConfig } from 'Context/theme/config'
+import { THEME_LIGHT, DEFAULT_THEME, isValidTheme } from '@/context/theme/constants'
 
 export function useNavbarTheme() {
   const themeContext = useContext(ThemeContext)
 
   const currentTheme = useMemo(() => {
     const theme = themeContext?.state?.theme
-    return theme === 'light' || theme === 'dark' ? theme : 'light'
+    return theme && isValidTheme(theme) ? theme : DEFAULT_THEME
   }, [themeContext?.state?.theme])
 
   const themeColors = useMemo(() => {
     const colors = getThemeColor(currentTheme)
-    return colors || themeConfig.light
+    return colors || themeConfig[THEME_LIGHT]
   }, [currentTheme])
 
   const navbarColors = useMemo(() => {
-    return themeColors?.navbar || themeConfig.light.navbar
+    return themeColors?.navbar || themeConfig[THEME_LIGHT].navbar
   }, [themeColors])
 
   useEffect(() => {

@@ -12,6 +12,7 @@ import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useGetPropertiesPersistence } from 'JansConfigApi'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 interface DatabaseField {
   key: string
@@ -23,7 +24,7 @@ interface DatabaseField {
 function PersistenceDetail(): ReactElement | null {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'light'
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
   const themeColors = getThemeColor(selectedTheme)
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
 

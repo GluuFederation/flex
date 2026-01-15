@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import customColors from '@/customColors'
 import type { ScopeDetailPageProps } from './types'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 const CONTAINER_STYLES = { backgroundColor: customColors.whiteSmoke } as const
 
@@ -14,7 +15,7 @@ const ScopeDetailPage: React.FC<ScopeDetailPageProps> = ({ row }) => {
 
   const theme = useContext(ThemeContext)
 
-  const selectedTheme = useMemo(() => theme?.state?.theme || 'light', [theme?.state?.theme])
+  const selectedTheme = useMemo(() => theme?.state?.theme || DEFAULT_THEME, [theme?.state?.theme])
 
   const defaultScopeValue = useMemo(
     () => (row.defaultScope ? t('options.yes') : t('options.no')),

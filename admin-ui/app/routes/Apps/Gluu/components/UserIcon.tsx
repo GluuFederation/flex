@@ -23,6 +23,10 @@ const UserIcon = memo<UserIconProps>(({ size = 40, className, avatarUrl }) => {
     }
   }, [])
 
+  const handleImageLoad = useCallback(() => {
+    failedUrlRef.current = null
+  }, [])
+
   const containerClassName = [className, classes.container].filter(Boolean).join(' ')
 
   return (
@@ -33,6 +37,7 @@ const UserIcon = memo<UserIconProps>(({ size = 40, className, avatarUrl }) => {
           alt="User avatar"
           className={classes.image}
           onError={handleImageError}
+          onLoad={handleImageLoad}
         />
       </Box>
     </Box>

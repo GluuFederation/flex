@@ -1,5 +1,9 @@
 import React from 'react'
 
+/**
+ * LayoutNavbar component expects a single React element child.
+ * @param children - A single React element to be rendered in the navbar layout.
+ */
 interface LayoutNavbarProps {
   children: React.ReactNode
 }
@@ -7,9 +11,13 @@ interface LayoutNavbarProps {
 type LayoutNavbarComponent = React.FC<LayoutNavbarProps> & { layoutPartName: string }
 
 const LayoutNavbar: LayoutNavbarComponent = (props) => {
-  const navbar = React.Children.only(props.children) as React.ReactElement
+  const child = React.Children.only(props.children)
 
-  return <div className="layout__navbar">{React.cloneElement(navbar, { fixed: null })}</div>
+  if (!React.isValidElement(child)) {
+    throw new Error('LayoutNavbar expects a single valid React element as a child')
+  }
+
+  return <div className="layout__navbar">{React.cloneElement(child, { fixed: null })}</div>
 }
 
 LayoutNavbar.layoutPartName = 'navbar'

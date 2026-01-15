@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState, useContext, useEffect } from 'react'
+import React, { useMemo, useCallback, useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
 import { useDispatch, useSelector } from 'react-redux'
@@ -28,7 +28,7 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { SETTINGS } from 'Utils/ApiResources'
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { useTheme } from 'Context/theme/themeContext'
 import { SIMPLE_PASSWORD_AUTH } from 'Plugins/auth-server/common/Constants'
 import {
   CedarlingLogType,
@@ -55,6 +55,8 @@ import { UPDATE } from '@/audit/UserActionType'
 import { ADMIN_UI_SETTINGS } from 'Plugins/admin/redux/audit/Resources'
 import { getErrorMessage } from 'Plugins/schema/utils/errorHandler'
 import type { RootState } from '@/redux/sagas/types/audit'
+import { DEFAULT_THEME } from '@/context/theme/constants'
+import customColors from '@/customColors'
 
 const PAGING_SIZE_OPTIONS = [1, 5, 10, 20] as const
 const DEFAULT_PAGING_SIZE = PAGING_SIZE_OPTIONS[2]
@@ -71,7 +73,7 @@ const LABEL_CONTAINER_STYLE: React.CSSProperties = {
 const SettingsPage: React.FC = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const theme = useContext(ThemeContext)
+  const { state: themeState } = useTheme()
   const queryClient = useQueryClient()
 
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
@@ -129,7 +131,7 @@ const SettingsPage: React.FC = () => {
       ? stored
       : DEFAULT_PAGING_SIZE
   }, [])
-  const selectedTheme = useMemo(() => theme?.state?.theme || 'light', [theme?.state?.theme])
+  const selectedTheme = useMemo(() => themeState.theme || DEFAULT_THEME, [themeState.theme])
   const configApiUrl = useMemo(() => {
     if (typeof window === 'undefined') return 'N/A'
     const windowWithConfig = window as Window & { configApiBaseUrl?: string }
@@ -259,6 +261,23 @@ const SettingsPage: React.FC = () => {
   const showAdditionalParametersError = Boolean(
     additionalParametersError && (formik.submitCount > 0 || formik.touched?.additionalParameters),
   )
+
+  const additionalParametersErrorText = useMemo(() => {
+    if (!additionalParametersError) return ''
+    if (typeof additionalParametersError === 'string') return additionalParametersError
+    if (Array.isArray(additionalParametersError)) {
+      return additionalParametersError
+        .map((error) => (typeof error === 'string' ? error : JSON.stringify(error)))
+        .join(', ')
+    }
+    if (typeof additionalParametersError === 'object') {
+      const errorValues = Object.values(additionalParametersError)
+        .filter((error) => error != null)
+        .map((error) => (typeof error === 'string' ? error : JSON.stringify(error)))
+      return errorValues.length > 0 ? errorValues.join(', ') : ''
+    }
+    return String(additionalParametersError)
+  }, [additionalParametersError])
 
   const renderErrorAlert = () => {
     if (!hasQueryError) return null
@@ -494,7 +513,9 @@ const SettingsPage: React.FC = () => {
                     </Col>
                   </FormGroup>
                   {showAdditionalParametersError && (
-                    <div style={{ color: '#dc3545' }}>{additionalParametersError}</div>
+                    <div style={{ color: customColors.accentRed }}>
+                      {additionalParametersErrorText}
+                    </div>
                   )}
                 </AccordionBody>
               </Accordion>

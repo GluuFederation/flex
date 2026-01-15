@@ -29,6 +29,7 @@ import { Document, RootState, SearchEvent } from './types'
 import { DeleteAssetSagaPayload } from 'Plugins/admin/redux/features/types'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 const JansAssetListPage: React.FC = () => {
   const dispatch = useDispatch()
@@ -207,7 +208,7 @@ const JansAssetListPage: React.FC = () => {
     [],
   )
   const theme = useContext(ThemeContext)
-  const themeColors = getThemeColor(theme?.state?.theme || 'light')
+  const themeColors = getThemeColor(theme?.state?.theme || DEFAULT_THEME)
   const bgThemeColor = { background: themeColors.background }
 
   const submitForm = useCallback(

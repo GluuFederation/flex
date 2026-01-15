@@ -21,6 +21,7 @@ import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import type { WebsiteSsoServiceProvider } from '../types/redux'
 import type { SamlRootState } from '../types/state'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 interface DeleteItem {
   inum: string
@@ -33,7 +34,7 @@ const DeleteOutlinedIcon = () => <DeleteOutlined />
 const WebsiteSsoServiceProviderList = React.memo(() => {
   const { authorizeHelper, hasCedarReadPermission, hasCedarWritePermission } = useCedarling()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme ?? 'light'
+  const selectedTheme = theme?.state?.theme ?? DEFAULT_THEME
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = useMemo(
     () => ({ background: themeColors.background }),

@@ -40,6 +40,7 @@ import {
 } from 'Plugins/admin/helper/utils'
 import { useGetAuditData, GetAuditDataParams } from 'JansConfigApi'
 import { AuditRow, AuditSearchProps } from './types'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50, 100]
 
@@ -164,7 +165,7 @@ const AuditSearch: React.FC<AuditSearchProps> = ({
 }) => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'light'
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
 
   const handleKeyDown = useCallback(
@@ -275,7 +276,7 @@ const AuditListPage: React.FC = () => {
   SetTitle(t('menus.audit_logs'))
 
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'light'
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
 
   const [limit, setLimit] = useState<number>(10)

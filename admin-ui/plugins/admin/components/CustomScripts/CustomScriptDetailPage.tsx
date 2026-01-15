@@ -6,11 +6,12 @@ import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import customColors from '@/customColors'
 import { CustomScriptDetailPageProps } from './types'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 const CustomScriptDetailPage: React.FC<CustomScriptDetailPageProps> = ({ row }) => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'light'
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
 
   return (
     <>

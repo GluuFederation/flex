@@ -6,6 +6,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import { getClientScopeByInum } from '../../../../app/utils/Util'
 import { useGetOauthScopes } from 'JansConfigApi'
 import type { Scope } from 'JansConfigApi'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 interface ClientShowScopesProps {
   handler: () => void
@@ -16,7 +17,7 @@ interface ClientShowScopesProps {
 function ClientShowScopes({ handler, data, isOpen }: ClientShowScopesProps): React.ReactElement {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'light'
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
 
   const scopeInums = useMemo(() => {
     if (!data || data.length === 0) {

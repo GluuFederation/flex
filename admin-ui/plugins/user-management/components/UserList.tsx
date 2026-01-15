@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useCallback, useMemo } from 'react'
+import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import MaterialTable, { Action } from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import LockOpenIcon from '@mui/icons-material/LockOpen'
@@ -17,7 +17,7 @@ import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import SetTitle from 'Utils/SetTitle'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { LIMIT_ID, PATTERN_ID } from '../common/Constants'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
@@ -30,6 +30,7 @@ import { logUserDeletion, getErrorMessage } from '../helper/userAuditHelpers'
 import { triggerUserWebhook } from '../helper/userWebhookHelpers'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 function UserList(): JSX.Element {
   const {
@@ -117,8 +118,8 @@ function UserList(): JSX.Element {
       deleteUserMutation.mutate({ inum: deleteData.inum })
     }
   }
-  const themeContext = useContext(ThemeContext)
-  const selectedTheme = themeContext?.state?.theme || 'light'
+  const { state: themeState } = useTheme()
+  const selectedTheme = themeState.theme || DEFAULT_THEME
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
   SetTitle(t('titles.user_management'))
@@ -147,6 +148,7 @@ function UserList(): JSX.Element {
     (row: UserTableRowData): void => {
       const userId = row.tableData?.uuid || row.inum
       if (!userId) return
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { tableData, ...userData } = row
       navigateToRoute(ROUTES.USER_EDIT(userId), { state: { selectedUser: userData as CustomUser } })
     },

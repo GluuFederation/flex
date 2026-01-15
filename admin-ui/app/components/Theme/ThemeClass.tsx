@@ -1,6 +1,10 @@
 import React from 'react'
 import { Consumer } from './ThemeContext'
 
+interface ThemeState {
+  style: string
+  color: string
+}
 interface ThemeClassProps {
   children: (layoutThemeClass: string) => React.ReactNode
   color?: string
@@ -15,7 +19,9 @@ const ThemeClass: React.FC<ThemeClassProps> = ({ children, color, style }) => {
 const ContextThemeClass: React.FC<
   Omit<ThemeClassProps, 'children'> & { children: (layoutThemeClass: string) => React.ReactNode }
 > = (otherProps) => (
-  <Consumer>{(themeState: any) => <ThemeClass {...{ ...themeState, ...otherProps }} />}</Consumer>
+  <Consumer>
+    {(themeState: ThemeState) => <ThemeClass {...{ ...themeState, ...otherProps }} />}
+  </Consumer>
 )
 
 export { ContextThemeClass as ThemeClass }

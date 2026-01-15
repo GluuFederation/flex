@@ -1,4 +1,5 @@
 import customColors from '@/customColors'
+import { THEME_LIGHT, THEME_DARK, DEFAULT_THEME } from './constants'
 
 const createLightTheme = () => {
   const background = customColors.lightBackground
@@ -53,12 +54,12 @@ const createDarkTheme = () => {
 }
 
 export const themeConfig = {
-  light: createLightTheme(),
-  dark: createDarkTheme(),
+  [THEME_LIGHT]: createLightTheme(),
+  [THEME_DARK]: createDarkTheme(),
 }
 
 const getThemeColor = (config: string): (typeof themeConfig)[keyof typeof themeConfig] => {
-  const validConfig = config === 'light' || config === 'dark' ? config : 'light'
+  const validConfig = config === THEME_LIGHT || config === THEME_DARK ? config : DEFAULT_THEME
   return themeConfig[validConfig]
 }
 

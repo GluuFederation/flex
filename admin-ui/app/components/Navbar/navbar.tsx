@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react'
 import classNames from 'classnames'
 import { Navbar as BSNavbar, Container } from 'reactstrap'
+import { THEME_LIGHT, THEME_DARK, type ThemeValue } from '@/context/theme/constants'
 
 interface NavbarProps {
   themed?: boolean
@@ -9,22 +10,27 @@ interface NavbarProps {
   className?: string
   children?: ReactNode
   color?: string
+  theme?: ThemeValue
   dark?: boolean
   light?: boolean
-  [key: string]: any // for ...otherProps
+  [key: string]: unknown // for ...otherProps
 }
 
 const Navbar: React.FC<NavbarProps> = ({
-  themed = false,
+  themed: _themed = false,
   fluid = false,
   shadow,
   className,
   children,
-  dark,
-  light,
+  theme,
+  dark: darkProp,
+  light: lightProp,
   color,
   ...otherProps
 }) => {
+  const isDark = theme === THEME_DARK || (theme === undefined && darkProp === true)
+  const isLight = theme === THEME_LIGHT || (theme === undefined && lightProp === true)
+
   let navbarClass = classNames(
     {
       'navbar-shadow': shadow,
@@ -35,22 +41,18 @@ const Navbar: React.FC<NavbarProps> = ({
 
   // When a combination of light or dark is present
   // with a color - use a custom class instead of bootstrap's
-  if ((dark || light) && color) {
+  if ((isDark || isLight) && color) {
     navbarClass = classNames(
       navbarClass,
-      `navbar-${light ? 'light' : ''}${dark ? 'dark' : ''}-${color}`,
+      `navbar-${isLight ? THEME_LIGHT : ''}${isDark ? THEME_DARK : ''}-${color}`,
     )
   }
 
   return (
     <BSNavbar
       className={navbarClass}
-      /*
-                Use the dark and light switches
-                only when color is not set
-            */
-      dark={dark && !color}
-      light={light && !color}
+      dark={isDark && !color}
+      light={isLight && !color}
       {...otherProps}
     >
       {

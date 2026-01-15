@@ -33,6 +33,7 @@ import {
 import { currentLdapItemAtom } from './atoms'
 import { useLdapAudit } from './hooks'
 import { isPersistenceInfo } from './types'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 interface AlertState {
   severity: 'success' | 'error' | 'warning' | 'info' | undefined
@@ -114,7 +115,7 @@ function LdapListPage(): ReactElement {
   })
 
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'light'
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
 

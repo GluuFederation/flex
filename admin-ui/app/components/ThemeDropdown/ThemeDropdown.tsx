@@ -3,6 +3,7 @@ import Box from '@mui/material/Box'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { ArrowIcon } from 'Components'
 import customColors from '@/customColors'
+import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
 import { useStyles } from './ThemeDropdown.style'
 import type { DropdownOption, ThemeDropdownProps } from './types'
 
@@ -23,8 +24,8 @@ export const ThemeDropdown = memo<ThemeDropdownProps>(
     const dropdownRef = useRef<HTMLDivElement>(null)
     const menuRef = useRef<HTMLDivElement>(null)
     const theme = useContext(ThemeContext)
-    const currentTheme = theme?.state.theme || 'light'
-    const isDark = currentTheme === 'dark'
+    const currentTheme = theme?.state.theme || DEFAULT_THEME
+    const isDark = currentTheme === THEME_DARK
     const dropdownBg = useMemo(() => {
       return isDark ? customColors.darkDropdownBg : customColors.white
     }, [isDark])

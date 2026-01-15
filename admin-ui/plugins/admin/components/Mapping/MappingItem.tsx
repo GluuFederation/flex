@@ -5,11 +5,12 @@ import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import type { MappingItemProps, ThemeContextValue } from './types'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 const MappingItem: React.FC<MappingItemProps> = React.memo(function MappingItem({ candidate }) {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext) as ThemeContextValue | undefined
-  const selectedTheme = theme?.state?.theme ?? 'light'
+  const selectedTheme = theme?.state?.theme ?? DEFAULT_THEME
   const themeColors = getThemeColor(selectedTheme)
 
   const permissionsCount = candidate?.permissions?.length || 0

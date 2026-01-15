@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import Box from '@mui/material/Box'
 import { GluuDropdown, type GluuDropdownOption } from 'Components'
 import { ThemeContext } from 'Context/theme/themeContext'
+import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
 import { useStyles } from './styles/LanguageMenu.style'
 import type { LanguageMenuProps } from './types'
 
@@ -32,8 +33,8 @@ const LanguageMenu = memo<LanguageMenuProps>(({ userInfo }) => {
   const { t, i18n } = useTranslation()
   const { inum } = userInfo
   const themeContext = useContext(ThemeContext)
-  const currentTheme = themeContext?.state?.theme || 'light'
-  const isDark = currentTheme === 'dark'
+  const currentTheme = themeContext?.state?.theme || DEFAULT_THEME
+  const isDark = currentTheme === THEME_DARK
   const { classes } = useStyles({ isDark })
 
   const hasInitializedRef = useRef(false)
@@ -88,7 +89,7 @@ const LanguageMenu = memo<LanguageMenuProps>(({ userInfo }) => {
       options={options}
       position="bottom"
       selectedValue={lang}
-      onSelect={(value) => changeLanguage(value as string)}
+      onSelect={(value) => changeLanguage(value)}
       minWidth={67}
       showArrow={true}
     />

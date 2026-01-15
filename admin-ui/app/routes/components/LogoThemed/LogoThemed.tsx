@@ -1,6 +1,7 @@
 import React, { useContext, useMemo } from 'react'
 import classNames from 'classnames'
 import { ThemeContext } from 'Context/theme/themeContext'
+import { THEME_DARK, THEME_LIGHT, DEFAULT_THEME } from '@/context/theme/constants'
 import logoImage from '../../../images/logos/logo192.png'
 
 interface LogoThemedProps {
@@ -11,15 +12,14 @@ interface LogoThemedProps {
 }
 
 const LOGO_FILTERS = {
-  dark: 'brightness(0) invert(1)',
-  light:
+  [THEME_DARK]: 'brightness(0) invert(1)',
+  [THEME_LIGHT]:
     'brightness(0) saturate(100%) invert(48%) sepia(79%) saturate(2476%) hue-rotate(130deg) brightness(95%) contrast(101%)',
 } as const
 
 const LogoThemed: React.FC<LogoThemedProps> = ({ className, width, height, ...otherProps }) => {
   const themeContext = useContext(ThemeContext)
-  const currentTheme = themeContext?.state.theme || 'light'
-  const isDark = currentTheme === 'dark'
+  const currentTheme = themeContext?.state.theme || DEFAULT_THEME
 
   const logoStyle: React.CSSProperties = useMemo(() => {
     const widthValue = width != null ? (typeof width === 'number' ? `${width}px` : width) : '130px'
@@ -28,9 +28,9 @@ const LogoThemed: React.FC<LogoThemedProps> = ({ className, width, height, ...ot
     return {
       width: widthValue,
       height: heightValue,
-      filter: isDark ? LOGO_FILTERS.dark : LOGO_FILTERS.light,
+      filter: LOGO_FILTERS[currentTheme],
     }
-  }, [isDark, width, height])
+  }, [currentTheme, width, height])
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>

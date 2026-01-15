@@ -27,6 +27,7 @@ import type { SsaData, SsaJwtResponse } from './types'
 import { DELETION } from '../../../../app/audit/UserActionType'
 import { SSA as SSA_RESOURCE } from '../../redux/audit/Resources'
 import { updateToast } from 'Redux/features/toastSlice'
+import { DEFAULT_THEME, THEME_LIGHT } from '@/context/theme/constants'
 
 const SSAListPage: React.FC = () => {
   const {
@@ -62,7 +63,7 @@ const SSAListPage: React.FC = () => {
 
   const [isDeleting, setIsDeleting] = useState<boolean>(false)
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'light'
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
   SetTitle(t('titles.ssa_management'))
@@ -313,7 +314,7 @@ const SSAListPage: React.FC = () => {
             data={jwtData}
             isLoading={getSsaJwtMutation.isPending}
             title={`JSON View`}
-            theme="light"
+            theme={THEME_LIGHT}
             expanded={true}
           />
         )}

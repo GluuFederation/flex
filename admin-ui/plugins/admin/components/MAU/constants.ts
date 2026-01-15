@@ -1,5 +1,6 @@
 import type { DateRangePreset } from './types'
 import customColors from '@/customColors'
+import { THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
 
 export const MAU_CACHE_CONFIG = {
   STALE_TIME: 5 * 60 * 1000,
@@ -15,7 +16,7 @@ export const DATE_PRESETS: DateRangePreset[] = [
 ] as const
 
 export const CHART_COLORS_BY_THEME = {
-  light: {
+  [THEME_LIGHT]: {
     mau: customColors.logo,
     pieClientCredentials: customColors.mauPieClientCredentials,
     pieAuthCodeAccess: customColors.mauPieAuthCodeAccess,
@@ -23,7 +24,7 @@ export const CHART_COLORS_BY_THEME = {
     trendAuthCodeAccess: customColors.mauTrendAuthCodeAccess,
     trendAuthCodeId: customColors.mauTrendAuthCodeId,
   },
-  dark: {
+  [THEME_DARK]: {
     mau: customColors.mauDark,
     pieClientCredentials: customColors.mauPieClientCredentials,
     pieAuthCodeAccess: customColors.mauPieAuthCodeAccess,
@@ -36,7 +37,7 @@ export const CHART_COLORS_BY_THEME = {
 export type ThemeKey = keyof typeof CHART_COLORS_BY_THEME
 
 export const getChartColors = (theme: ThemeKey | string) => {
-  return CHART_COLORS_BY_THEME[theme as ThemeKey] ?? CHART_COLORS_BY_THEME.light
+  return CHART_COLORS_BY_THEME[theme as ThemeKey] ?? CHART_COLORS_BY_THEME[THEME_LIGHT]
 }
 
 export const MONTH_NAMES = [

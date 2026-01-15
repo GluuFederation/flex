@@ -12,6 +12,7 @@ import { Box, Divider } from '@mui/material'
 import { getProfileDetails } from 'Redux/features/ProfileDetailsSlice'
 import { randomAvatar } from '../../../utilities'
 import getThemeColor from '../../../context/theme/config'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
@@ -22,7 +23,7 @@ const ProfileDetails: React.FC = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch<AppDispatch>()
   const theme = useContext(ThemeContext) as ThemeContextValue
-  const selectedTheme = useMemo(() => theme?.state?.theme ?? 'light', [theme?.state?.theme])
+  const selectedTheme = useMemo(() => theme?.state?.theme ?? DEFAULT_THEME, [theme?.state?.theme])
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { classes } = styles()
   const { navigateToRoute } = useAppNavigation()

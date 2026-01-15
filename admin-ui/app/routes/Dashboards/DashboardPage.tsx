@@ -14,6 +14,7 @@ import { fontFamily, fontWeights, fontSizes } from '@/styles/fonts'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
+import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
 import { auditLogoutLogs } from 'Redux/features/sessionSlice'
 import type { AuthState } from 'Redux/features/types/authTypes'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -63,12 +64,12 @@ const DashboardPage = () => {
 
   const themeContext = useContext(ThemeContext)
   const currentTheme = useMemo(
-    () => themeContext?.state.theme || 'light',
+    () => themeContext?.state.theme || DEFAULT_THEME,
     [themeContext?.state.theme],
   )
   const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
 
-  const isDark = currentTheme === 'dark'
+  const isDark = currentTheme === THEME_DARK
   const dashboardThemeColors = useMemo(() => {
     const baseColors = isDark
       ? {
@@ -94,7 +95,7 @@ const DashboardPage = () => {
 
   const { classes } = styles({
     themeColors: dashboardThemeColors,
-    isDark: currentTheme === 'dark',
+    isDark: currentTheme === THEME_DARK,
   })
 
   const [startDate, setStartDate] = useState<Dayjs>(dayjs().subtract(3, 'months'))

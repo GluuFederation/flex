@@ -189,7 +189,6 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       display: 'grid',
       gridTemplateColumns: '1fr 1fr',
       gap: '30px 0px',
-      rowGap: '30px',
       [theme.breakpoints.down('md')]: {
         top: '60px',
         left: '20px',

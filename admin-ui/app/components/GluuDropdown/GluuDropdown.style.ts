@@ -1,28 +1,8 @@
 import { makeStyles } from 'tss-react/mui'
 import customColors from '@/customColors'
-import { fontFamily, fontWeights, fontSizes, letterSpacing, lineHeights } from '@/styles/fonts'
+import { fontFamily, fontSizes } from '@/styles/fonts'
 import type { DropdownPosition } from './types'
-
-const DROPDOWN_CONSTANTS = {
-  borderRadius: '16px',
-  padding: '16px',
-  minWidth: '143px',
-  maxHeight: '400px',
-  margin: '9px',
-  arrowWidth: '14.5px',
-  arrowHeight: '9.5px',
-  arrowZIndex: 999,
-  menuZIndex: 1000,
-  optionMinHeight: '42px',
-  optionPadding: '12px 48px 12px 12px',
-  optionGap: '12px',
-  optionMarginBottom: '2px',
-  searchPadding: '8px 12px',
-  searchMarginBottom: '12px',
-  searchBorderRadius: '8px',
-  emptyMessagePadding: '20px',
-  dividerMargin: '8px 0',
-} as const
+import { createBaseOptionStyles, SHARED_DROPDOWN_STYLES } from './sharedDropdownStyles'
 
 const getPositionStyles = (position: DropdownPosition) => {
   const baseTransform =
@@ -34,25 +14,25 @@ const getPositionStyles = (position: DropdownPosition) => {
     case 'top':
       return {
         bottom: '100%',
-        marginBottom: DROPDOWN_CONSTANTS.margin,
+        marginBottom: SHARED_DROPDOWN_STYLES.margin,
         ...baseTransform,
       }
     case 'bottom':
       return {
         top: '100%',
-        marginTop: DROPDOWN_CONSTANTS.margin,
+        marginTop: SHARED_DROPDOWN_STYLES.margin,
         ...baseTransform,
       }
     case 'left':
       return {
         right: '100%',
-        marginRight: DROPDOWN_CONSTANTS.margin,
+        marginRight: SHARED_DROPDOWN_STYLES.margin,
         ...baseTransform,
       }
     case 'right':
       return {
         left: '100%',
-        marginLeft: DROPDOWN_CONSTANTS.margin,
+        marginLeft: SHARED_DROPDOWN_STYLES.margin,
         ...baseTransform,
       }
     default:
@@ -102,22 +82,22 @@ export const useStyles = makeStyles<{
   },
   dropdownMenu: {
     position: 'absolute',
-    zIndex: DROPDOWN_CONSTANTS.menuZIndex,
+    zIndex: SHARED_DROPDOWN_STYLES.menuZIndex,
     backgroundColor: dropdownBg,
     border: 'none',
-    borderRadius: DROPDOWN_CONSTANTS.borderRadius,
+    borderRadius: SHARED_DROPDOWN_STYLES.borderRadius,
     boxShadow: `0px 4px 11px 0px ${customColors.shadowLight}`,
-    padding: DROPDOWN_CONSTANTS.padding,
-    minWidth: DROPDOWN_CONSTANTS.minWidth,
-    maxHeight: DROPDOWN_CONSTANTS.maxHeight,
+    padding: SHARED_DROPDOWN_STYLES.padding,
+    minWidth: SHARED_DROPDOWN_STYLES.minWidth,
+    maxHeight: SHARED_DROPDOWN_STYLES.maxHeight,
     overflowY: 'visible',
     ...getPositionStyles(position),
   },
   arrow: {
     'position': 'absolute',
-    'width': DROPDOWN_CONSTANTS.arrowWidth,
-    'height': DROPDOWN_CONSTANTS.arrowHeight,
-    'zIndex': DROPDOWN_CONSTANTS.arrowZIndex,
+    'width': SHARED_DROPDOWN_STYLES.arrowWidth,
+    'height': SHARED_DROPDOWN_STYLES.arrowHeight,
+    'zIndex': SHARED_DROPDOWN_STYLES.arrowZIndex,
     'pointerEvents': 'none',
     ...getArrowStyles(position),
     '& svg': {
@@ -130,9 +110,9 @@ export const useStyles = makeStyles<{
   },
   searchInput: {
     'width': '100%',
-    'padding': DROPDOWN_CONSTANTS.searchPadding,
-    'marginBottom': DROPDOWN_CONSTANTS.searchMarginBottom,
-    'borderRadius': DROPDOWN_CONSTANTS.searchBorderRadius,
+    'padding': SHARED_DROPDOWN_STYLES.searchPadding,
+    'marginBottom': SHARED_DROPDOWN_STYLES.searchMarginBottom,
+    'borderRadius': SHARED_DROPDOWN_STYLES.searchBorderRadius,
     'border': `1px solid ${isDark ? customColors.darkBorder : customColors.lightBorder}`,
     'backgroundColor': isDark ? customColors.darkInputBg : customColors.white,
     'color': isDark ? customColors.white : customColors.primaryDark,
@@ -147,51 +127,18 @@ export const useStyles = makeStyles<{
     },
   },
   option: {
-    'padding': DROPDOWN_CONSTANTS.optionPadding,
-    'borderRadius': DROPDOWN_CONSTANTS.searchBorderRadius,
-    'cursor': 'pointer',
-    fontFamily,
-    'fontSize': fontSizes.md,
-    'fontWeight': fontWeights.semiBold,
-    'lineHeight': lineHeights.tight,
-    'letterSpacing': letterSpacing.wide,
-    'color': isDark ? customColors.white : customColors.textSecondary,
-    'transition': 'all 0.2s ease',
-    'marginBottom': DROPDOWN_CONSTANTS.optionMarginBottom,
-    'minHeight': DROPDOWN_CONSTANTS.optionMinHeight,
-    'display': 'flex',
-    'alignItems': 'center',
-    'gap': DROPDOWN_CONSTANTS.optionGap,
+    ...createBaseOptionStyles({ isDark }),
     '&.single-option': {
       justifyContent: 'center',
-    },
-    '&:last-child': {
-      marginBottom: 0,
-    },
-    '&:hover:not(.disabled)': {
-      backgroundColor: isDark ? customColors.darkBackground : customColors.buttonLightBg,
-      color: isDark ? customColors.white : customColors.primaryDark,
-    },
-    '&.selected': {
-      backgroundColor: isDark ? customColors.darkBackground : customColors.buttonLightBg,
-      color: isDark ? customColors.white : customColors.textSecondary,
-    },
-    '&.disabled': {
-      'opacity': 0.5,
-      'cursor': 'not-allowed',
-      '&:hover': {
-        backgroundColor: 'transparent',
-        color: 'inherit',
-      },
     },
   },
   divider: {
     height: '1px',
     backgroundColor: isDark ? customColors.darkBorder : customColors.lightBorder,
-    margin: DROPDOWN_CONSTANTS.dividerMargin,
+    margin: SHARED_DROPDOWN_STYLES.dividerMargin,
   },
   emptyMessage: {
-    padding: DROPDOWN_CONSTANTS.emptyMessagePadding,
+    padding: SHARED_DROPDOWN_STYLES.emptyMessagePadding,
     textAlign: 'center',
     color: isDark ? customColors.textMutedDark : customColors.textSecondary,
     fontFamily,

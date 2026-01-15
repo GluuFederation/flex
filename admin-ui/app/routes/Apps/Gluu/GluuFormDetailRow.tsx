@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { FormGroup, Label, Badge } from 'Components'
 import GluuTooltip from './GluuTooltip'
 import { ThemeContext } from 'Context/theme/themeContext'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 interface GluuFormDetailRowProps {
   label: string
@@ -35,7 +36,7 @@ function GluuFormDetailRow({
 }: GluuFormDetailRowProps) {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'light'
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
 
   const appliedLabelStyle: CSSProperties = { ...defaultLabelStyle, ...labelStyle }
 

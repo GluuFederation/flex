@@ -15,7 +15,7 @@ const DropdownProfile = ({ trigger, position = 'bottom' }: DropdownProfileProps)
   const { navigateToRoute } = useAppNavigation()
 
   const handleLogout = useCallback(() => {
-    dispatch(auditLogoutLogs({ message: 'User logged out mannually' }))
+    dispatch(auditLogoutLogs({ message: 'User logged out manually' }))
   }, [dispatch])
 
   useEffect(() => {

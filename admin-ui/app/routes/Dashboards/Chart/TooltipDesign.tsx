@@ -1,4 +1,4 @@
-import React, { useMemo, memo } from 'react'
+import React, { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { fontFamily, fontSizes } from '@/styles/fonts'
 import type { TooltipDesignProps, ChartDataKey } from '../types'
@@ -6,14 +6,11 @@ import type { TooltipDesignProps, ChartDataKey } from '../types'
 const TooltipDesign = memo(({ payload = [] }: TooltipDesignProps) => {
   const { t } = useTranslation()
 
-  const labelMap = useMemo<Record<ChartDataKey, string>>(
-    () => ({
-      client_credentials_access_token_count: t('tooltips.client_credentials_access_token_count'),
-      authz_code_access_token_count: t('tooltips.authz_code_access_token_count'),
-      authz_code_idtoken_count: t('tooltips.authz_code_idtoken_count'),
-    }),
-    [t],
-  )
+  const labelMap: Record<ChartDataKey, string> = {
+    client_credentials_access_token_count: t('tooltips.client_credentials_access_token_count'),
+    authz_code_access_token_count: t('tooltips.authz_code_access_token_count'),
+    authz_code_idtoken_count: t('tooltips.authz_code_idtoken_count'),
+  }
 
   if (payload.length === 0) return null
 
