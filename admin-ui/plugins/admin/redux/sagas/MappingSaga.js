@@ -8,7 +8,7 @@ import {
 import { API_MAPPING } from '../audit/Resources'
 import { FETCH } from '../../../../app/audit/UserActionType'
 import { updateToast } from 'Redux/features/toastSlice'
-import { isFourZeroSixError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import MappingApi from '../api/MappingApi'
 import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
@@ -35,7 +35,7 @@ export function* fetchMapping({ payload }) {
     return data
   } catch (e) {
     yield put(getMappingResponse({ data: null }))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
       return
@@ -56,7 +56,7 @@ export function* updateMapping({ payload }) {
     yield put(updateToast(true, 'error'))
     yield put(updatePermissionsLoading({ data: false }))
     yield put(getMappingResponse({ data: null }))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
       return
@@ -76,7 +76,7 @@ export function* addMapping({ payload }) {
     yield put(updateToast(true, 'error'))
     yield put(updatePermissionsLoading({ data: false }))
     // yield put(getMappingResponse(null))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
       return
@@ -97,7 +97,7 @@ export function* deleteMapping({ payload }) {
     yield put(updateToast(true, 'error'))
     yield put(updatePermissionsLoading({ data: false }))
     // yield put(getMappingResponse(null))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
       return

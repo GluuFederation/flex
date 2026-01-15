@@ -13,7 +13,7 @@ import {
 import { SCRIPT } from '../audit/Resources'
 import { CREATE, UPDATE, DELETION, FETCH } from '../../../../app/audit/UserActionType'
 import { updateToast } from 'Redux/features/toastSlice'
-import { isFourZeroSixError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import ScriptApi from '../api/ScriptApi'
 import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
@@ -63,7 +63,7 @@ export function* getCustomScripts({
     const errMsg = getErrorMessage(e)
     yield* errorToast(errMsg)
     yield put(getCustomScriptsResponse({}))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       yield* redirectToLogout()
       return
     }
@@ -88,7 +88,7 @@ export function* getScriptsByType({
     const errMsg = getErrorMessage(e)
     yield* errorToast(errMsg)
     yield put(getCustomScriptsResponse({}))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       yield* redirectToLogout()
       return
     }
@@ -118,7 +118,7 @@ export function* addScript({
     const errMsg = getErrorMessage(e)
     yield* errorToast(errMsg)
     yield put(addCustomScriptResponse({}))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       yield* redirectToLogout()
       return
     }
@@ -148,7 +148,7 @@ export function* editScript({
     const errMsg = getErrorMessage(e)
     yield* errorToast(errMsg)
     yield put(editCustomScriptResponse({}))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       yield* redirectToLogout()
       return
     }
@@ -174,7 +174,7 @@ export function* deleteScript({
     const errMsg = getErrorMessage(e)
     yield* errorToast(errMsg)
     yield put(deleteCustomScriptResponse({}))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       yield* redirectToLogout()
       return
     }
@@ -206,7 +206,7 @@ export function* getScriptTypes(): SagaIterator<ScriptType[] | unknown> {
     const errMsg = getErrorMessage(e)
     console.log('error in getting script-types: ', errMsg)
     yield put(setScriptTypes([]))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       yield* redirectToLogout()
       return
     }

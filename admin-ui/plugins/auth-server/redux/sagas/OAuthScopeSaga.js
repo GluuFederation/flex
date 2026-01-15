@@ -4,7 +4,7 @@ import { SCOPE } from '../audit/Resources'
 import { CREATE, UPDATE, DELETION, FETCH } from '../../../../app/audit/UserActionType'
 import ScopeApi from '../api/ScopeApi'
 import { getClient } from 'Redux/api/base'
-import { isFourZeroSixError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
 import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSaga'
 import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
@@ -37,7 +37,7 @@ export function* getScopeByInum({ payload }) {
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(deleteScopeResponse(null))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
       return
@@ -53,7 +53,7 @@ export function* getScopeByCreator({ payload }) {
     yield put(getScopeByCreatorResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
       return
@@ -73,7 +73,7 @@ export function* getScopes({ payload }) {
     return data
   } catch (e) {
     yield put(handleUpdateScopeResponse({ data: null }))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
       return
@@ -93,7 +93,7 @@ export function* getClientScopes({ payload }) {
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getClientScopesResponse(null))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
       return
@@ -116,7 +116,7 @@ export function* addAScope({ payload }) {
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(addScopeResponse(null))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
       return
@@ -140,7 +140,7 @@ export function* editAnScope({ payload }) {
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(editScopeResponse(null))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
       return
@@ -163,7 +163,7 @@ export function* deleteAnScope({ payload }) {
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(deleteScopeResponse({ data: null }))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
       return

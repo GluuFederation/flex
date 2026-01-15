@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroSixError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import { getMauResponse } from 'Plugins/admin/redux/features/mauSlice'
 import { postUserAction } from '../api/backend-api'
 import MauApi from '../api/MauApi'
@@ -26,7 +26,7 @@ export function* getMau({ payload }) {
     return data
   } catch (e) {
     yield put(getMauResponse(null))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       yield* redirectToLogout()
       return
     }

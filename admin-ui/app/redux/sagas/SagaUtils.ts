@@ -1,6 +1,6 @@
 import { select, put } from 'redux-saga/effects'
 import type { AuditLog, AuthState, RootState } from './types/audit'
-import { isFourZeroSixError } from '../../utils/TokenController'
+import { isFourZeroThreeError } from '../../utils/TokenController'
 import { updateToast } from '../features/toastSlice'
 import { auditLogoutLogs } from '../features/sessionSlice'
 
@@ -39,7 +39,7 @@ export function* handleResponseError(
   if (clearDataAction) {
     yield put(clearDataAction)
   }
-  if (isFourZeroSixError(error)) {
+  if (isFourZeroThreeError(error)) {
     yield* redirectToLogout()
     return
   }

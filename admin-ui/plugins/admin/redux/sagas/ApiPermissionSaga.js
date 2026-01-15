@@ -10,7 +10,7 @@ import {
   deletePermissionResponse,
 } from 'Plugins/admin/redux/features/apiPermissionSlice'
 import { CREATE, UPDATE, DELETION, FETCH } from '../../../../app/audit/UserActionType'
-import { isFourZeroSixError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import { updateToast } from 'Redux/features/toastSlice'
 
 const JansConfigApi = require('jans_config_api')
@@ -35,7 +35,7 @@ export function* getPermissions({ payload }) {
     return data
   } catch (e) {
     yield put(getPermissionResponse(null))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
       return
@@ -53,7 +53,7 @@ export function* getPermission({ payload }) {
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getPermissionResponse(null))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
     }
@@ -75,7 +75,7 @@ export function* addPermission({ payload }) {
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(addPermissionResponse({ data: null }))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
     }
@@ -100,7 +100,7 @@ export function* editPermission({ payload }) {
     const errorMessage = e?.response?.body?.responseMessage || e.message
     yield put(updateToast(true, 'error', errorMessage))
     yield put(editPermissionResponse({ data: null }))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
     }
@@ -139,7 +139,7 @@ export function* deletePermission({ payload }) {
     }
     yield put(updateToast(true, 'error', finalMessage))
     yield put(deletePermissionResponse({ inum: null }))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
     }

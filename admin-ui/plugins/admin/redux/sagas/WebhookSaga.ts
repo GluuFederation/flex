@@ -28,7 +28,7 @@ import {
 } from 'Plugins/admin/redux/features/WebhookSlice'
 import { CREATE, FETCH, DELETION, UPDATE } from '../../../../app/audit/UserActionType'
 import { updateToast } from 'Redux/features/toastSlice'
-import { isFourZeroSixError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import WebhookApi from '../api/WebhookApi'
 import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
@@ -76,7 +76,7 @@ export function* getWebhooks({
       ),
     )
     yield put(getWebhookResponse({ data: null }))
-    if (isFourZeroSixError(error)) {
+    if (isFourZeroThreeError(error)) {
       yield* redirectToLogout()
       return
     }
@@ -107,7 +107,7 @@ export function* createWebhook({
       ),
     )
     yield put(createWebhookResponse({ data: null }))
-    if (isFourZeroSixError(error)) {
+    if (isFourZeroThreeError(error)) {
       yield* redirectToLogout()
       return
     }
@@ -139,7 +139,7 @@ export function* deleteWebhook({
       ),
     )
     yield put(deleteWebhookResponse())
-    if (isFourZeroSixError(error)) {
+    if (isFourZeroThreeError(error)) {
       yield* redirectToLogout()
       return
     }
@@ -171,7 +171,7 @@ export function* updateWebhook({
       ),
     )
     yield put(updateWebhookResponse({ data: null }))
-    if (isFourZeroSixError(error)) {
+    if (isFourZeroThreeError(error)) {
       yield* redirectToLogout()
       return
     }
@@ -199,7 +199,7 @@ export function* getFeatures(): Generator<CallEffect | PutEffect | SelectEffect,
       ),
     )
     yield put(getFeaturesResponse([]))
-    if (isFourZeroSixError(error)) {
+    if (isFourZeroThreeError(error)) {
       yield* redirectToLogout()
       return
     }
@@ -231,7 +231,7 @@ export function* getFeaturesByWebhookId({
       ),
     )
     yield put(getFeaturesByWebhookIdResponse([]))
-    if (isFourZeroSixError(error)) {
+    if (isFourZeroThreeError(error)) {
       yield* redirectToLogout()
       return
     }
@@ -266,7 +266,7 @@ export function* getWebhooksByFeatureId({
       ),
     )
     yield put(getWebhooksByFeatureIdResponse([]))
-    if (isFourZeroSixError(error)) {
+    if (isFourZeroThreeError(error)) {
       yield* redirectToLogout()
       return
     }
@@ -353,7 +353,7 @@ export function* triggerWebhook({
         error?.response?.body?.responseMessage || error.message || 'Unknown error',
       ),
     )
-    if (isFourZeroSixError(error)) {
+    if (isFourZeroThreeError(error)) {
       yield* redirectToLogout()
       return
     }

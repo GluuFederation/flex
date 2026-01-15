@@ -1,5 +1,5 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroSixError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import {
   getMessageResponse,
   editMessageConfigResponse,
@@ -56,7 +56,7 @@ export function* getConfigMessage() {
     yield put(updateToast(true, 'error', e?.response?.body?.responseMessage || e.message))
     yield put(getMessageResponse(null))
     yield put(toggleMessageConfigLoader(false))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
       return
@@ -78,7 +78,7 @@ export function* editMessageConfig({ payload }) {
     yield put(updateToast(true, 'error', e?.response?.body?.responseMessage || e.message))
     yield put(editMessageConfigResponse(null))
     yield put(toggleMessageConfigLoader(false))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
       return
@@ -99,7 +99,7 @@ export function* putConfigMessagePostgres({ payload }) {
   } catch (e) {
     yield put(updateToast(true, 'error', e?.response?.body?.responseMessage || e.message))
     yield put(toggleSaveConfigLoader(false))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
       return
@@ -120,7 +120,7 @@ export function* putConfigMessageRedis({ payload }) {
   } catch (e) {
     yield put(updateToast(true, 'error', e?.response?.body?.responseMessage || e.message))
     yield put(toggleSaveConfigLoader(false))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
       return

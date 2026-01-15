@@ -1,5 +1,5 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroSixError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
 import {
   getUMAResourcesByClientResponse,
@@ -32,7 +32,7 @@ export function* getUMAResourcesByClient({ payload }) {
   } catch (e) {
     console.log(e)
     yield put(getUMAResourcesByClientResponse(null))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
     }
@@ -49,7 +49,7 @@ export function* deleteUMAResourceById({ payload }) {
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(deleteUMAResourceResponse(null))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
     }

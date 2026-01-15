@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroSixError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import {
   getAttributesResponse,
   getScriptsResponse,
@@ -47,7 +47,7 @@ export function* getScripts({ payload }) {
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getScriptsResponse(null))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       yield* redirectToLogout()
       return
     }
@@ -65,7 +65,7 @@ export function* getClients({ payload }) {
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getClientsResponse(null))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       yield* redirectToLogout()
       return
     }
@@ -82,7 +82,7 @@ export function* getScopes({ payload }) {
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getScopesResponse(null))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       yield* redirectToLogout()
       return
     }
@@ -99,7 +99,7 @@ export function* getAttributes({ payload }) {
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getAttributesResponse(null))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       yield* redirectToLogout()
       return
     }

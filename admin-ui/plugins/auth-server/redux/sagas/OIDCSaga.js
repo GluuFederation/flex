@@ -1,5 +1,5 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroSixError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
 import i18n from 'i18next'
 import {
@@ -46,7 +46,7 @@ export function* getOauthOpenidClients({ payload }) {
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(getOpenidClientsResponse({ data: null }))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       yield* redirectToLogout()
       return
     }
@@ -67,7 +67,7 @@ export function* addNewClient({ payload }) {
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(addClientResponse(null))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       yield* redirectToLogout()
       return
     }
@@ -91,7 +91,7 @@ export function* editAClient({ payload }) {
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(editClientResponse(null))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       yield* redirectToLogout()
       return
     }
@@ -114,7 +114,7 @@ export function* deleteAClient({ payload }) {
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(deleteClientResponse(null))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       yield* redirectToLogout()
       return
     }
@@ -140,7 +140,7 @@ export function* getOpenidClientTokens({ payload }) {
     yield put(updateToast(true, 'error', errorMessage))
     yield put(getTokenByClientResponse(null))
 
-    if (isFourZeroSixError(error)) {
+    if (isFourZeroThreeError(error)) {
       yield* redirectToLogout()
       return
     }
@@ -156,7 +156,7 @@ export function* deleteClientToken({ payload }) {
   } catch (error) {
     yield put(updateToast(true, 'error'))
     yield put(deleteClientTokenResponse())
-    if (isFourZeroSixError(error)) {
+    if (isFourZeroThreeError(error)) {
       yield* redirectToLogout()
       return
     }

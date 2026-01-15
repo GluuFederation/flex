@@ -5,7 +5,7 @@ import { PayloadAction } from '@reduxjs/toolkit'
 import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 import { getClient } from 'Redux/api/base'
 import {
-  isFourZeroSixError,
+  isFourZeroThreeError,
   addAdditionalData,
   type AdditionalPayload,
 } from 'Utils/TokenController'
@@ -392,7 +392,7 @@ function* handleFourZeroOneError(
     error && typeof error === 'object' && 'status' in error
       ? { status: (error as { status?: number }).status }
       : null
-  if (isFourZeroSixError(errorWithStatus)) {
+  if (isFourZeroThreeError(errorWithStatus)) {
     // Session expired - redirect to login
     yield* redirectToLogout()
   }

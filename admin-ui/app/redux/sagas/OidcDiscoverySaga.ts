@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { all, call, fork, put, takeLatest, select } from 'redux-saga/effects'
 import { getOidcDiscoveryResponse } from '../actions'
-import { isFourZeroSixError } from 'Utils/TokenController'
+import { isFourZeroThreeError } from 'Utils/TokenController'
 import OidcDiscoveryApi from '../api/OidcDiscoveryApi'
 import { getClient } from '../api/base'
 import { initAudit, redirectToLogout } from '../sagas/SagaUtils'
@@ -21,7 +21,7 @@ export function* getOidcDiscovery() {
     yield put(getOidcDiscoveryResponse({ configuration: data }))
   } catch (e) {
     yield put(getOidcDiscoveryResponse({ configuration: null }))
-    if (isFourZeroSixError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
       return

@@ -36,7 +36,7 @@ AXIOS_INSTANCE.interceptors.request.use((config) => {
 AXIOS_INSTANCE.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 406) {
+    if (error.response?.status === 403) {
       window.location.href = '/admin/logout'
     }
 
