@@ -235,7 +235,7 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
                 flexShrink: 0,
                 transition: 'transform 0.2s ease',
                 transformOrigin: 'center center',
-                transform: entry?.open ? 'rotate(0deg)' : 'rotate(-90deg)',
+                ...(entry?.open ? { transform: 'rotate(0deg)' } : { transform: 'rotate(-90deg)' }),
               }}
             >
               <ChevronIcon width={22} height={22} />

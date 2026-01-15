@@ -372,9 +372,9 @@ const DashboardPage = () => {
                       <div className={classes.userInfoColumn}>
                         {userInfo
                           .filter((_, index) => index % 2 === 0)
-                          .map((item, index) => (
+                          .map((item) => (
                             <UserInfoItem
-                              key={`${item.text}-${index}`}
+                              key={item.text}
                               item={item}
                               classes={classes}
                               isStatus={item.isStatus}
@@ -385,9 +385,9 @@ const DashboardPage = () => {
                       <div className={classes.userInfoColumn}>
                         {userInfo
                           .filter((_, index) => index % 2 === 1)
-                          .map((item, index) => (
+                          .map((item) => (
                             <UserInfoItem
-                              key={`${item.text}-${index}`}
+                              key={item.text}
                               item={item}
                               classes={classes}
                               isStatus={item.isStatus}
@@ -425,6 +425,8 @@ const DashboardPage = () => {
                     endMonth={dateMonths.end}
                     textColor={dashboardThemeColors.text}
                     gridColor={dashboardThemeColors.textSecondary}
+                    tooltipBackgroundColor={dashboardThemeColors.cardBg}
+                    tooltipTextColor={dashboardThemeColors.text}
                   />
                 </div>
                 <div className={classes.chartLegend}>

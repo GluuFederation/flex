@@ -22,6 +22,13 @@ export const SHARED_DROPDOWN_STYLES = {
   dividerMargin: '8px 0',
 } as const
 
+export const NO_TEXT_SELECT = {
+  userSelect: 'none',
+  WebkitUserSelect: 'none',
+  MozUserSelect: 'none',
+  msUserSelect: 'none',
+} as const
+
 export interface BaseOptionStylesParams {
   isDark: boolean
   optionPadding?: string
@@ -35,7 +42,7 @@ export const createBaseOptionStyles = ({
   optionBorderRadius = SHARED_DROPDOWN_STYLES.searchBorderRadius,
   optionGap = SHARED_DROPDOWN_STYLES.optionGap,
 }: BaseOptionStylesParams) => {
-  const baseStyles: Record<string, unknown> = {
+  const baseStyles = {
     'padding': optionPadding,
     'borderRadius': optionBorderRadius,
     'cursor': 'pointer',
@@ -101,6 +108,7 @@ export const createTriggerStyles = ({
   'fontWeight': fontWeights.medium,
   'lineHeight': lineHeights.relaxed,
   'color': isDark ? customColors.white : customColors.textSecondary,
+  ...NO_TEXT_SELECT,
   '&:hover': {
     opacity: 0.8,
   },

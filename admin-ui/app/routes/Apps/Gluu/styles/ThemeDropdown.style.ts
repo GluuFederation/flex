@@ -4,6 +4,7 @@ import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import {
   createChevronStyles,
   createChevronOpenStyles,
+  NO_TEXT_SELECT,
 } from '@/components/GluuDropdown/sharedDropdownStyles'
 
 export const useStyles = makeStyles<{ isDark: boolean }>()((theme, { isDark }) => ({
@@ -23,6 +24,7 @@ export const useStyles = makeStyles<{ isDark: boolean }>()((theme, { isDark }) =
     'fontWeight': fontWeights.medium,
     'lineHeight': lineHeights.relaxed,
     'color': isDark ? customColors.white : customColors.textSecondary,
+    ...NO_TEXT_SELECT,
     '&:hover': {
       opacity: 0.8,
     },

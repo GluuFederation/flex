@@ -56,6 +56,8 @@ export interface DashboardChartProps {
   endMonth: string
   textColor?: string
   gridColor?: string
+  tooltipBackgroundColor?: string
+  tooltipTextColor?: string
 }
 
 export interface TooltipPayloadItem {
@@ -69,6 +71,8 @@ export interface TooltipPayloadItem {
 export interface TooltipDesignProps {
   payload?: TooltipPayloadItem[]
   active?: boolean
+  backgroundColor?: string
+  textColor?: string
 }
 
 export type ChartDataKey =

@@ -25,7 +25,15 @@ import type { DashboardChartProps, MauStatEntry } from '../types'
 import { CHART_CONSTANTS, CHART_LEGEND_CONFIG } from '../constants'
 
 const DashboardChart = memo(
-  ({ statData, startMonth, endMonth, textColor, gridColor }: DashboardChartProps) => {
+  ({
+    statData,
+    startMonth,
+    endMonth,
+    textColor,
+    gridColor,
+    tooltipBackgroundColor,
+    tooltipTextColor,
+  }: DashboardChartProps) => {
     const { t } = useTranslation()
 
     const augmentedData = useMemo(() => {
@@ -121,7 +129,14 @@ const DashboardChart = memo(
               domain={[0, maxValue]}
               ticks={yAxisTicks}
             />
-            <Tooltip content={<TooltipDesign />} />
+            <Tooltip
+              content={
+                <TooltipDesign
+                  backgroundColor={tooltipBackgroundColor}
+                  textColor={tooltipTextColor}
+                />
+              }
+            />
             {CHART_LEGEND_CONFIG.map((config) => (
               <Area
                 key={config.dataKey}

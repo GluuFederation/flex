@@ -109,6 +109,7 @@ export function ThemeProvider(props: ThemeProviderProps) {
   const [state, dispatch] = useReducer(themeReducer, initialState)
   const hasSyncedRef = useRef(false)
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (typeof window === 'undefined' || hasSyncedRef.current) return
 
@@ -150,7 +151,7 @@ export function ThemeProvider(props: ThemeProviderProps) {
         void _error
       }
     }
-  }, [state.theme])
+  }, [])
 
   return <ThemeContext.Provider value={{ state, dispatch }}>{props.children}</ThemeContext.Provider>
 }

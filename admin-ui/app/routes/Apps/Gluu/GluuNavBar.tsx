@@ -86,15 +86,7 @@ const GluuNavBar = () => {
 
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
-      <Box
-        ref={navbarRef}
-        className={`${classes.navbarWrapper} navbar-themed`}
-        sx={{
-          '--theme-navbar-background': navbarColors.background,
-          '--theme-navbar-text': navbarColors.text,
-          '--theme-navbar-icon': navbarColors.icon,
-        }}
-      >
+      <Box ref={navbarRef} className={`${classes.navbarWrapper} navbar-themed`}>
         <Box className={classes.navbarContainer}>
           <Box className={classes.leftSection}>
             {showCollapse && (

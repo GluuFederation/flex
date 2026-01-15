@@ -1,9 +1,10 @@
-import React, { useState, useRef, useEffect, useContext, useMemo, useCallback } from 'react'
+import React, { useState, useRef, useEffect, useContext, useMemo, useCallback, useId } from 'react'
 import Box from '@mui/material/Box'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
 import { ArrowIcon } from 'Components'
 import customColors from '@/customColors'
+import { NO_TEXT_SELECT } from './sharedDropdownStyles'
 import { useStyles } from './GluuDropdown.style'
 import type { DropdownValue, GluuDropdownOption, GluuDropdownProps, DropdownState } from './types'
 
@@ -41,6 +42,7 @@ export function GluuDropdown<T extends DropdownValue = DropdownValue>({
   const dropdownRef = useRef<HTMLDivElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
   const searchInputRef = useRef<HTMLInputElement>(null)
+  const listboxId = useId()
 
   const theme = useContext(ThemeContext)
   const currentTheme = theme?.state.theme || DEFAULT_THEME
@@ -177,6 +179,14 @@ export function GluuDropdown<T extends DropdownValue = DropdownValue>({
     [disabled, handleTriggerClick],
   )
 
+  const handleTriggerMouseDown = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (disabled) return
+      e.preventDefault()
+    },
+    [disabled],
+  )
+
   const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setInternalState((prev) => ({ ...prev, searchQuery: e.target.value }))
   }, [])
@@ -247,7 +257,11 @@ export function GluuDropdown<T extends DropdownValue = DropdownValue>({
         aria-haspopup="listbox"
         onClick={handleTriggerClick}
         onKeyDown={handleTriggerKeyDown}
-        style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}
+        onMouseDown={handleTriggerMouseDown}
+        style={{
+          cursor: disabled ? 'not-allowed' : 'pointer',
+          ...NO_TEXT_SELECT,
+        }}
       >
         {renderTrigger ? renderTrigger(isOpen, selectedOption) : trigger || null}
       </div>
@@ -257,28 +271,30 @@ export function GluuDropdown<T extends DropdownValue = DropdownValue>({
           className={`${classes.dropdownMenu} ${dropdownClassName || ''}`}
           style={menuStyle}
           role="listbox"
-          id="dropdown-listbox"
+          id={listboxId}
         >
           {showArrow && (
             <div className={classes.arrow}>
               <ArrowIcon />
             </div>
           )}
-          {searchable && (
-            <input
-              ref={searchInputRef}
-              type="text"
-              className={classes.searchInput}
-              placeholder={searchPlaceholder}
-              value={searchQuery}
-              onChange={handleSearchChange}
-              role="searchbox"
-              aria-label={searchPlaceholder || 'Search dropdown options'}
-              aria-autocomplete="list"
-              aria-controls="dropdown-listbox"
-            />
-          )}
-          {renderOptions}
+          <div className={classes.dropdownMenuContent}>
+            {searchable && (
+              <input
+                ref={searchInputRef}
+                type="text"
+                className={classes.searchInput}
+                placeholder={searchPlaceholder}
+                value={searchQuery}
+                onChange={handleSearchChange}
+                role="searchbox"
+                aria-label={searchPlaceholder || 'Search dropdown options'}
+                aria-autocomplete="list"
+                aria-controls={listboxId}
+              />
+            )}
+            {renderOptions}
+          </div>
         </Box>
       )}
     </div>

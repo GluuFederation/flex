@@ -2,6 +2,7 @@ import customColors from '@/customColors'
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
 import { fontFamily, fontWeights, fontSizes, letterSpacing, lineHeights } from '@/styles/fonts'
+import { BORDER_RADIUS } from './constants'
 
 interface DashboardThemeColors {
   cardBg: string
@@ -50,7 +51,7 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       display: 'flex',
       flexDirection: 'column',
       ...cardBorderStyle,
-      borderRadius: 16,
+      borderRadius: BORDER_RADIUS.DEFAULT,
       padding: '38.5px',
       paddingBottom: '38.5px',
       backgroundColor: themeColors.cardBg,
@@ -91,7 +92,7 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
     },
     slider: {
       border: `5px solid ${customColors.white} `,
-      borderRadius: 24,
+      borderRadius: BORDER_RADIUS.LARGE,
       height: 120,
       background: customColors.darkGray,
       display: 'flex',
@@ -101,7 +102,7 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       padding: '0px 14px 0px 14px',
     },
     news: {
-      borderRadius: 24,
+      borderRadius: BORDER_RADIUS.LARGE,
       height: 140,
       background: customColors.lightBlue,
       color: customColors.white,
@@ -120,7 +121,7 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       marginBottom: 10,
     },
     reports: {
-      borderRadius: 24,
+      borderRadius: BORDER_RADIUS.LARGE,
       marginLeft: 20,
       height: 140,
       background: customColors.white,
@@ -140,7 +141,7 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       marginRight: 10,
     },
     userInfo: {
-      borderRadius: 16,
+      borderRadius: BORDER_RADIUS.DEFAULT,
       color: themeColors.text,
       backgroundColor: themeColors.cardBg,
       ...cardBorderStyle,
@@ -236,7 +237,7 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       marginLeft: 20,
     },
     supportCard: {
-      borderRadius: 14,
+      borderRadius: BORDER_RADIUS.MEDIUM,
       color: customColors.white,
       padding: '20px',
       width: '100%',
@@ -254,7 +255,7 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
     },
     verticalTextContainer: {
       fontFamily,
-      borderRadius: 14,
+      borderRadius: BORDER_RADIUS.MEDIUM,
       color: customColors.white,
       padding: '20px 10px',
       width: '100%',
@@ -311,7 +312,7 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
     statusDot: {
       width: 16,
       height: 16,
-      borderRadius: '50%',
+      borderRadius: BORDER_RADIUS.CIRCLE,
       flexShrink: 0,
     },
     statusDotActive: {
@@ -356,7 +357,7 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       ...cardBorderStyle,
       padding: '33px',
       color: themeColors.text,
-      borderRadius: 16,
+      borderRadius: BORDER_RADIUS.DEFAULT,
       height: 462,
       position: 'relative',
       overflow: 'hidden',
@@ -407,7 +408,7 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       fontFamily,
       background: isDark ? customColors.statusActive : customColors.statusActiveBg,
       color: isDark ? customColors.white : customColors.statusActive,
-      borderRadius: 5,
+      borderRadius: BORDER_RADIUS.SMALL,
       padding: '8px',
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.medium,
@@ -425,7 +426,7 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       fontFamily,
       background: isDark ? customColors.statusInactive : customColors.statusInactiveBg,
       color: isDark ? customColors.white : customColors.statusInactive,
-      borderRadius: 5,
+      borderRadius: BORDER_RADIUS.SMALL,
       padding: '8px',
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.medium,
@@ -474,7 +475,7 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       width: '20px',
       height: '3px',
       flexShrink: 0,
-      borderRadius: '1.5px',
+      borderRadius: BORDER_RADIUS.THIN,
     },
   }
 })

@@ -38,9 +38,15 @@ const LanguageMenu = memo<LanguageMenuProps>(({ userInfo }) => {
   const { classes } = useStyles({ isDark })
 
   const hasInitializedRef = useRef(false)
+  const prevInumRef = useRef<string | undefined>(inum)
   const [lang, setLang] = useState<string>(() => getInitialLang(inum))
 
   useEffect(() => {
+    if (prevInumRef.current !== inum) {
+      hasInitializedRef.current = false
+      prevInumRef.current = inum
+    }
+
     if (hasInitializedRef.current) return
 
     const userLang = getInitialLang(inum)
@@ -50,6 +56,7 @@ const LanguageMenu = memo<LanguageMenuProps>(({ userInfo }) => {
     }
 
     hasInitializedRef.current = true
+    prevInumRef.current = inum
   }, [i18n, inum])
 
   const changeLanguage = useCallback(

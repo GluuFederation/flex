@@ -74,3 +74,12 @@ export const STATUS_DETAILS = [
   { label: 'SCIM', key: 'jans-scim' },
   { label: 'dashboard.jans_lock', key: 'jans-lock' },
 ] as const
+
+export const BORDER_RADIUS = {
+  DEFAULT: 16,
+  LARGE: 24,
+  MEDIUM: 14,
+  SMALL: 5,
+  CIRCLE: '50%',
+  THIN: '1.5px',
+} as const

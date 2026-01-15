@@ -47,8 +47,11 @@ export const customColors = {
   shadowLight: 'rgba(0, 0, 0, 0.05)',
   shadowMedium: 'rgba(0, 0, 0, 0.08)',
   shadowDark: 'rgba(0, 0, 0, 0.1)',
+  shadowTooltip: 'rgba(0, 0, 0, 0.25)',
   ribbonShadow: 'rgba(26, 35, 126, 0.2)',
   sidebarHoverBg: '#d3d3d3',
+  tooltipBorderLight: 'rgba(0, 0, 0, 0.1)',
+  tooltipBorderDark: 'rgba(255, 255, 255, 0.2)',
 } as const
 
 export type CustomColorKeys = keyof typeof customColors

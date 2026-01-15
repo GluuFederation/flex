@@ -35,11 +35,11 @@ const LogoThemed: React.FC<LogoThemedProps> = ({ className, width, height, ...ot
   return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
       <img
+        {...otherProps}
         style={logoStyle}
         src={logoImage}
         className={classNames('d-block', className)}
         alt="Jans Admin UI Logo"
-        {...otherProps}
       />
     </div>
   )

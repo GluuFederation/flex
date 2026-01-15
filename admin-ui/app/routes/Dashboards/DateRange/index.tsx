@@ -237,9 +237,19 @@ const DateRange = memo(
     )
   },
   (prevProps, nextProps) => {
+    const startDateSame =
+      prevProps.startDate && nextProps.startDate
+        ? prevProps.startDate.isSame(nextProps.startDate)
+        : prevProps.startDate === nextProps.startDate
+
+    const endDateSame =
+      prevProps.endDate && nextProps.endDate
+        ? prevProps.endDate.isSame(nextProps.endDate)
+        : prevProps.endDate === nextProps.endDate
+
     return (
-      prevProps.startDate.isSame(nextProps.startDate) &&
-      prevProps.endDate.isSame(nextProps.endDate) &&
+      startDateSame &&
+      endDateSame &&
       prevProps.textColor === nextProps.textColor &&
       prevProps.backgroundColor === nextProps.backgroundColor &&
       prevProps.isDark === nextProps.isDark &&
