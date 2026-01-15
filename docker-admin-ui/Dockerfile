@@ -52,7 +52,8 @@ RUN git clone --depth ${GIT_CLONE_DEPTH} --filter blob:none --no-checkout https:
      && git checkout ${FLEX_SOURCE_VERSION} \
      && git sparse-checkout add admin-ui \
      && git sparse-checkout add ${FLEX_SETUP_DIR}/templates \
-     && cp ${FLEX_SETUP_DIR}/templates/*.ldif /app/templates/admin-ui
+     && cp ${FLEX_SETUP_DIR}/templates/*.ldif /app/templates/admin-ui \
+     && cp ${FLEX_SETUP_DIR}/flex_schema.json /app/schema/
 
 WORKDIR /
 
