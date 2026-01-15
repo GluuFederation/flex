@@ -1484,7 +1484,7 @@ persistence:
     # -- Image pullPolicy to use for deploying.
     pullPolicy: IfNotPresent
     # -- Image  to use for deploying.
-    repository: ghcr.io/janssenproject/jans/persistence-loader
+    repository: ghcr.io/gluufederation/flex/persistence-loader
     # -- Image  tag to use for deploying.
     tag: 0.0.0-nightly
     # -- Image Pull Secrets
