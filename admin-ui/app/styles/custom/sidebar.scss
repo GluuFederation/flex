@@ -100,16 +100,12 @@
 .sidebar-menu__entry__link,
 .sidebar-submenu__entry__link {
     > span:has(+ .sidebar-menu__entry__chevron),
-    > span:has(+ .sidebar-submenu__entry__chevron),
-    > span.has-chev,
-    > span.has-sub-chev {
+    > span:has(+ .sidebar-submenu__entry__chevron) {
         flex: 0 1 auto;
     }
 
     > .sidebar-menu__entry__chevron,
-    > .sidebar-submenu__entry__chevron,
-    &.has-chev > span:first-of-type,
-    &.has-sub-chev > span:first-of-type {
+    > .sidebar-submenu__entry__chevron {
         margin-left: 0;
         margin-right: auto;
     }

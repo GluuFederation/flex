@@ -33,6 +33,7 @@ const DashboardChart = memo(
     gridColor,
     tooltipBackgroundColor,
     tooltipTextColor,
+    isDark = false,
   }: DashboardChartProps) => {
     const { t } = useTranslation()
 
@@ -134,6 +135,7 @@ const DashboardChart = memo(
                 <TooltipDesign
                   backgroundColor={tooltipBackgroundColor}
                   textColor={tooltipTextColor}
+                  isDark={isDark}
                 />
               }
             />

@@ -58,6 +58,7 @@ export interface DashboardChartProps {
   gridColor?: string
   tooltipBackgroundColor?: string
   tooltipTextColor?: string
+  isDark?: boolean
 }
 
 export interface TooltipPayloadItem {
@@ -73,6 +74,7 @@ export interface TooltipDesignProps {
   active?: boolean
   backgroundColor?: string
   textColor?: string
+  isDark?: boolean
 }
 
 export type ChartDataKey =

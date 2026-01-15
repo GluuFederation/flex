@@ -56,7 +56,6 @@ const LanguageMenu = memo<LanguageMenuProps>(({ userInfo }) => {
     }
 
     hasInitializedRef.current = true
-    prevInumRef.current = inum
   }, [i18n, inum])
 
   const changeLanguage = useCallback(

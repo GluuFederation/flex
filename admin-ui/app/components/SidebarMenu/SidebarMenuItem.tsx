@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 import { MenuContext, type SidebarMenuContext } from './MenuContext'
 import customColors from '@/customColors'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { ThemeContext } from '@/context/theme/themeContext'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
 import { ChevronIcon } from '../SVG'
 

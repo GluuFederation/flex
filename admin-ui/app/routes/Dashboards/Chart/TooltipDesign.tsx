@@ -9,6 +9,7 @@ const TooltipDesign = memo(
     payload = [],
     backgroundColor = customColors.white,
     textColor = customColors.primaryDark,
+    isDark = false,
   }: TooltipDesignProps) => {
     const { t } = useTranslation()
 
@@ -20,10 +21,7 @@ const TooltipDesign = memo(
 
     if (payload.length === 0) return null
 
-    const isDarkTheme = textColor === customColors.white
-    const borderColor = isDarkTheme
-      ? customColors.tooltipBorderDark
-      : customColors.tooltipBorderLight
+    const borderColor = isDark ? customColors.tooltipBorderDark : customColors.tooltipBorderLight
     const shadowColor = customColors.shadowTooltip
 
     return (

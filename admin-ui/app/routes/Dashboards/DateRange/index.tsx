@@ -16,6 +16,7 @@ interface DateRangeProps {
   textColor?: string
   backgroundColor?: string
   isDark?: boolean
+  dateFormat?: string
 }
 
 const DateRange = memo(
@@ -27,6 +28,7 @@ const DateRange = memo(
     textColor,
     backgroundColor,
     isDark = false,
+    dateFormat = 'MM/DD/YYYY',
   }: DateRangeProps) => {
     const { t } = useTranslation()
 
@@ -196,7 +198,7 @@ const DateRange = memo(
         <Grid container spacing={2} sx={{ width: '100%' }}>
           <Grid item xs={12} sm={6}>
             <DatePicker
-              format="MM/DD/YYYY"
+              format={dateFormat}
               label={t('dashboard.start_date')}
               value={startDate}
               onChange={onStartDateChange}
@@ -215,7 +217,7 @@ const DateRange = memo(
           </Grid>
           <Grid item xs={12} sm={6}>
             <DatePicker
-              format="MM/DD/YYYY"
+              format={dateFormat}
               label={t('dashboard.end_date')}
               value={endDate}
               onChange={onEndDateChange}
@@ -253,6 +255,7 @@ const DateRange = memo(
       prevProps.textColor === nextProps.textColor &&
       prevProps.backgroundColor === nextProps.backgroundColor &&
       prevProps.isDark === nextProps.isDark &&
+      prevProps.dateFormat === nextProps.dateFormat &&
       prevProps.onStartDateChange === nextProps.onStartDateChange &&
       prevProps.onEndDateChange === nextProps.onEndDateChange
     )

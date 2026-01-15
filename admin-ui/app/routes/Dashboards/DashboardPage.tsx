@@ -75,7 +75,7 @@ const DashboardPage = () => {
 
   const { classes } = styles({
     themeColors: dashboardThemeColors,
-    isDark: currentTheme === THEME_DARK,
+    isDark,
   })
 
   const [startDate, setStartDate] = useState<Dayjs>(dayjs().subtract(3, 'months'))
@@ -427,6 +427,7 @@ const DashboardPage = () => {
                     gridColor={dashboardThemeColors.textSecondary}
                     tooltipBackgroundColor={dashboardThemeColors.cardBg}
                     tooltipTextColor={dashboardThemeColors.text}
+                    isDark={isDark}
                   />
                 </div>
                 <div className={classes.chartLegend}>
