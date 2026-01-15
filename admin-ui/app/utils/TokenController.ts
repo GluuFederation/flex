@@ -32,11 +32,11 @@ type DirectStatusError = {
 
 type HttpError = AxiosErrorLike | DirectStatusError | null | undefined
 
-export const isFourZeroOneError = (error?: HttpError): boolean => {
+export const isFourZeroSixError = (error?: HttpError): boolean => {
   if (!error) return false
   const axiosStatus = (error as AxiosErrorLike)?.response?.status
   const directStatus = (error as DirectStatusError)?.status
-  return axiosStatus === 401 || directStatus === 401
+  return axiosStatus === 406 || directStatus === 406
 }
 
 export const saveState = (state?: string | null): void => {

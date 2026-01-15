@@ -23,7 +23,7 @@ import {
   createAdminUiSessionResponse,
   deleteAdminUiSessionResponse,
 } from 'Redux/features/authSlice'
-import { isFourZeroOneError } from 'Utils/TokenController'
+import { isFourZeroSixError } from 'Utils/TokenController'
 import { redirectToLogout } from 'Redux/sagas/SagaUtils'
 
 function* getApiTokenWithDefaultScopes() {
@@ -69,7 +69,7 @@ function* getOAuth2ConfigWorker({ payload }) {
     }
   } catch (error) {
     console.error('Problems getting OAuth2 configuration.', error?.response?.data || error)
-    if (isFourZeroOneError(error)) {
+    if (isFourZeroSixError(error)) {
       yield* redirectToLogout()
       return
     }
@@ -93,7 +93,7 @@ export function* putConfigWorker({ payload }) {
     }
   } catch (error) {
     yield put(updateToast(true, 'error'))
-    if (isFourZeroOneError(error)) {
+    if (isFourZeroSixError(error)) {
       yield* redirectToLogout()
       return
     }
@@ -136,7 +136,7 @@ function* getAPIAccessTokenWorker(jwt) {
         statusCode: error?.response?.status,
       }),
     )
-    if (isFourZeroOneError(error)) {
+    if (isFourZeroSixError(error)) {
       yield* redirectToLogout()
     }
   }
@@ -163,7 +163,7 @@ function* createAdminUiSessionWorker({ payload }) {
     const errorMessage =
       error?.response?.data?.message || error?.response?.data?.responseMessage || error?.message
     console.error('Problems creating Admin UI session.', error?.response?.data || error)
-    if (isFourZeroOneError(error)) {
+    if (isFourZeroSixError(error)) {
       yield* redirectToLogout()
       return
     }

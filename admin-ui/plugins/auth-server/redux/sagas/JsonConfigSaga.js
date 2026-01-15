@@ -5,7 +5,7 @@ import { JSON_CONFIG } from '../audit/Resources'
 import { PATCH, FETCH } from '../../../../app/audit/UserActionType'
 import { postUserAction } from 'Redux/api/backend-api'
 import { updateToast } from 'Redux/features/toastSlice'
-import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroSixError, addAdditionalData } from 'Utils/TokenController'
 import { getJsonConfigResponse, patchJsonConfigResponse } from '../features/jsonConfigSlice'
 import {} from '../../common/Constants'
 
@@ -31,9 +31,9 @@ export function* getJsonConfig({ payload }) {
   } catch (e) {
     console.log(e)
     yield put(getJsonConfigResponse(null))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      window.location.href = '/admin/logout'
     }
     return e
   }
@@ -53,9 +53,9 @@ export function* patchJsonConfig({ payload }) {
     console.log('error', e)
     yield put(updateToast(true, 'error'))
     yield put(patchJsonConfigResponse(null))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      window.location.href = '/admin/logout'
     }
     return e
   }

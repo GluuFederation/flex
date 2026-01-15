@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroSixError, addAdditionalData } from 'Utils/TokenController'
 import { getAttributesResponseRoot, toggleInitAttributeLoader } from '../features/attributesSlice'
 import { postUserAction } from 'Redux/api/backend-api'
 import { FETCH } from '../../audit/UserActionType'
@@ -31,7 +31,7 @@ export function* getAttributesRoot({ payload }) {
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getAttributesResponseRoot({ data: [] }))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroSixError(e)) {
       yield* redirectToLogout()
       return
     }

@@ -8,7 +8,7 @@ import {
 import { API_MAPPING } from '../audit/Resources'
 import { FETCH } from '../../../../app/audit/UserActionType'
 import { updateToast } from 'Redux/features/toastSlice'
-import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroSixError, addAdditionalData } from 'Utils/TokenController'
 import MappingApi from '../api/MappingApi'
 import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
@@ -35,9 +35,9 @@ export function* fetchMapping({ payload }) {
     return data
   } catch (e) {
     yield put(getMappingResponse({ data: null }))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      window.location.href = '/admin/logout'
     }
     return e
   }
@@ -55,9 +55,9 @@ export function* updateMapping({ payload }) {
     yield put(updateToast(true, 'error'))
     yield put(updatePermissionsLoading({ data: false }))
     yield put(getMappingResponse({ data: null }))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      window.location.href = '/admin/logout'
     }
     return e
   }
@@ -74,9 +74,9 @@ export function* addMapping({ payload }) {
     yield put(updateToast(true, 'error'))
     yield put(updatePermissionsLoading({ data: false }))
     // yield put(getMappingResponse(null))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      window.location.href = '/admin/logout'
     }
     return e
   }
@@ -94,9 +94,9 @@ export function* deleteMapping({ payload }) {
     yield put(updateToast(true, 'error'))
     yield put(updatePermissionsLoading({ data: false }))
     // yield put(getMappingResponse(null))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      window.location.href = '/admin/logout'
     }
     return e
   }

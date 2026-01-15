@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { call, all, put, fork, select, takeLatest } from 'redux-saga/effects'
-import { isFourZeroOneError } from 'Utils/TokenController'
+import { isFourZeroSixError } from 'Utils/TokenController'
 
 import { getClient } from '../api/base'
 import { initAudit } from '../sagas/SagaUtils'
@@ -22,9 +22,9 @@ export function* getLockMau({ payload }) {
     yield put(getLockStatusResponse({ data }))
   } catch (e) {
     yield put(getLockStatusResponse(null))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      window.location.href = '/admin/logout'
     }
   }
 }

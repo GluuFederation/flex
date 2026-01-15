@@ -10,7 +10,7 @@ import {
   deletePermissionResponse,
 } from 'Plugins/admin/redux/features/apiPermissionSlice'
 import { CREATE, UPDATE, DELETION, FETCH } from '../../../../app/audit/UserActionType'
-import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroSixError, addAdditionalData } from 'Utils/TokenController'
 import { updateToast } from 'Redux/features/toastSlice'
 
 const JansConfigApi = require('jans_config_api')
@@ -35,9 +35,9 @@ export function* getPermissions({ payload }) {
     return data
   } catch (e) {
     yield put(getPermissionResponse(null))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      window.location.href = '/admin/logout'
     }
     return e
   }
@@ -52,9 +52,9 @@ export function* getPermission({ payload }) {
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getPermissionResponse(null))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      window.location.href = '/admin/logout'
     }
   }
 }
@@ -74,9 +74,9 @@ export function* addPermission({ payload }) {
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(addPermissionResponse({ data: null }))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      window.location.href = '/admin/logout'
     }
     return e
   }
@@ -99,9 +99,9 @@ export function* editPermission({ payload }) {
     const errorMessage = e?.response?.body?.responseMessage || e.message
     yield put(updateToast(true, 'error', errorMessage))
     yield put(editPermissionResponse({ data: null }))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      window.location.href = '/admin/logout'
     }
     return e
   }
@@ -138,9 +138,9 @@ export function* deletePermission({ payload }) {
     }
     yield put(updateToast(true, 'error', finalMessage))
     yield put(deletePermissionResponse({ inum: null }))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      window.location.href = '/admin/logout'
     }
     return e
   }

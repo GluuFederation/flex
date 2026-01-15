@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroSixError, addAdditionalData } from 'Utils/TokenController'
 import { getHealthStatusResponse, getHealthServerStatusResponse } from '../features/healthSlice'
 import { postUserAction } from '../api/backend-api'
 import HealthApi from '../api/HealthApi'
@@ -32,9 +32,9 @@ export function* getHealthStatus({ payload }) {
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getHealthStatusResponse(null))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      window.location.href = '/admin/logout'
     }
   }
 }

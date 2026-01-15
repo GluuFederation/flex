@@ -33,6 +33,19 @@ AXIOS_INSTANCE.interceptors.request.use((config) => {
   return config
 })
 
+AXIOS_INSTANCE.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 406) {
+      // Call logout endpoint
+      window.location.href = '/admin/logout'
+      // OR call API logout explicitly (see below)
+    }
+
+    return Promise.reject(error)
+  },
+)
+
 // React Query compatible instance
 export const customInstance = <T>(
   config: AxiosRequestConfig,

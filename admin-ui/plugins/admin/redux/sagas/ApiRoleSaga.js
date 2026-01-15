@@ -9,7 +9,7 @@ import {
 import { API_ROLE } from '../audit/Resources'
 import { CREATE, UPDATE, DELETION, FETCH } from '../../../../app/audit/UserActionType'
 import { updateToast } from 'Redux/features/toastSlice'
-import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroSixError, addAdditionalData } from 'Utils/TokenController'
 import RoleApi from '../api/RoleApi'
 import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
@@ -34,9 +34,9 @@ export function* getRoles({ payload }) {
     return data
   } catch (e) {
     yield put(getRolesResponse(null))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      window.location.href = '/admin/logout'
     }
     return e
   }
@@ -51,9 +51,9 @@ export function* getRole({ payload }) {
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getRoleResponse(null))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      window.location.href = '/admin/logout'
     }
   }
 }
@@ -70,9 +70,9 @@ export function* addRole({ payload }) {
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(addRoleResponse(null))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      window.location.href = '/admin/logout'
     }
     return e
   }
@@ -90,9 +90,9 @@ export function* editRole({ payload }) {
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(editRoleResponse(null))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      window.location.href = '/admin/logout'
     }
     return e
   }
@@ -111,9 +111,9 @@ export function* deleteRole({ payload }) {
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(deleteRoleResponse(null))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      window.location.href = '/admin/logout'
     }
     return e
   }

@@ -10,7 +10,7 @@ import { getClient } from 'Redux/api/base'
 import LicenseDetailsApi from '../api/LicenseDetailsApi'
 import { initAudit } from 'Redux/sagas/SagaUtils'
 import { postUserAction } from 'Redux/api/backend-api'
-import { addAdditionalData, isFourZeroOneError } from 'Utils/TokenController'
+import { addAdditionalData, isFourZeroSixError } from 'Utils/TokenController'
 import { API_LICENSE } from '../../audit/Resources'
 import { DELETION } from '@/audit/UserActionType'
 const JansConfigApi = require('jans_config_api')
@@ -42,9 +42,9 @@ export function* resetLicenseConfigWorker(action: ResetLicenseAction) {
       yield put(setLicenseResetFailure())
     }
   } catch (error) {
-    if (isFourZeroOneError(error)) {
+    if (isFourZeroSixError(error)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      window.location.href = '/admin/logout'
     }
   }
 }
@@ -60,9 +60,9 @@ export function* getLicenseDetailsWorker() {
   } catch (e) {
     console.log('error in getting license details: ', e)
     yield put(getLicenseDetailsResponse(null))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      window.location.href = '/admin/logout'
     }
   }
 }
@@ -77,9 +77,9 @@ export function* updateLicenseDetailsWorker({ payload }) {
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(updateLicenseDetailsResponse(null))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroSixError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      window.location.href = '/admin/logout'
     }
   }
 }
