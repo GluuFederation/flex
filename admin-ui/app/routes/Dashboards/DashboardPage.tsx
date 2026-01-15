@@ -81,8 +81,8 @@ const DashboardPage = () => {
   const [startDate, setStartDate] = useState<Dayjs>(dayjs().subtract(3, 'months'))
   const [endDate, setEndDate] = useState<Dayjs>(dayjs())
 
-  const debouncedStartDate = useDebounce(startDate, 1000)
-  const debouncedEndDate = useDebounce(endDate, 1000)
+  const debouncedStartDate = useDebounce(startDate, 400)
+  const debouncedEndDate = useDebounce(endDate, 400)
 
   const { isUserInfoFetched, hasSession } = useSelector((state: RootState) => state.authReducer)
   const permissions = useSelector((state: RootState) => state.authReducer.permissions)
@@ -317,6 +317,22 @@ const DashboardPage = () => {
     [handleDateChange],
   )
 
+  const handleStartDateAccept = useCallback(
+    (date: Dayjs | null) => {
+      if (!date) return
+      handleDateChange('start', date)
+    },
+    [handleDateChange],
+  )
+
+  const handleEndDateAccept = useCallback(
+    (date: Dayjs | null) => {
+      if (!date) return
+      handleDateChange('end', date)
+    },
+    [handleDateChange],
+  )
+
   const dateMonths = useMemo(
     () => ({
       start: debouncedStartDate.format('YYYYMM'),
@@ -412,6 +428,8 @@ const DashboardPage = () => {
                     endDate={endDate}
                     onStartDateChange={handleStartDateChange}
                     onEndDateChange={handleEndDateChange}
+                    onStartDateAccept={handleStartDateAccept}
+                    onEndDateAccept={handleEndDateAccept}
                     textColor={dashboardThemeColors.text}
                     backgroundColor={dashboardThemeColors.cardBg}
                     isDark={isDark}

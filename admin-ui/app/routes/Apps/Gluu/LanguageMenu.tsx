@@ -97,7 +97,7 @@ const LanguageMenu = memo<LanguageMenuProps>(({ userInfo }) => {
       options={options}
       position="bottom"
       selectedValue={lang}
-      onSelect={(value) => changeLanguage(value)}
+      onSelect={changeLanguage}
       minWidth={67}
       showArrow={true}
     />

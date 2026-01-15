@@ -13,6 +13,8 @@ interface DateRangeProps {
   endDate: Dayjs
   onStartDateChange: (date: Dayjs | null) => void
   onEndDateChange: (date: Dayjs | null) => void
+  onStartDateAccept?: (date: Dayjs | null) => void
+  onEndDateAccept?: (date: Dayjs | null) => void
   textColor?: string
   backgroundColor?: string
   isDark?: boolean
@@ -25,6 +27,8 @@ const DateRange = memo(
     endDate,
     onStartDateChange,
     onEndDateChange,
+    onStartDateAccept,
+    onEndDateAccept,
     textColor,
     backgroundColor,
     isDark = false,
@@ -202,6 +206,7 @@ const DateRange = memo(
               label={t('dashboard.start_date')}
               value={startDate}
               onChange={onStartDateChange}
+              onAccept={onStartDateAccept}
               slotProps={{
                 textField: {
                   size: 'small',
@@ -221,6 +226,7 @@ const DateRange = memo(
               label={t('dashboard.end_date')}
               value={endDate}
               onChange={onEndDateChange}
+              onAccept={onEndDateAccept}
               slotProps={{
                 textField: {
                   size: 'small',

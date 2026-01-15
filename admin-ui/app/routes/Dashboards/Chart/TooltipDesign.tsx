@@ -37,7 +37,7 @@ const TooltipDesign = memo(
           minWidth: '200px',
         }}
       >
-        {payload.map((item) => {
+        {payload.map((item, idx) => {
           const label = labelMap[item.dataKey as ChartDataKey] || item.dataKey
           const value = item.payload[item.dataKey]
           return (
@@ -49,8 +49,7 @@ const TooltipDesign = memo(
                 color: textColor,
                 fontWeight: 500,
                 lineHeight: '1.5',
-                marginBottom:
-                  payload.length > 1 && item !== payload[payload.length - 1] ? '8px' : '0',
+                marginBottom: payload.length > 1 && idx !== payload.length - 1 ? '8px' : '0',
               }}
             >
               <span style={{ fontWeight: 600 }}>{label}</span> : {value}
