@@ -639,8 +639,8 @@ questions:
   group: "Ingress"
   show_if: "global.distribution=default&&global.casa.enabled=true"
   required: true
-  description: "Enable endpoint /casa. Enable this!"
-  label: Enable endpoint /casa Enable this!
+  description: "Enable endpoint /jans-casa. Enable this!"
+  label: Enable endpoint /jans-casa Enable this!
 #auth-server OB
 - variable: global.auth-server.ingress.authServerProtectedToken
   default: true
