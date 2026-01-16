@@ -1,6 +1,7 @@
 import Axios, { AxiosRequestConfig, AxiosHeaders } from 'axios'
 import store from './app/redux/store'
-import Cookies from 'js-cookie'
+import { navigationService } from './app/utils/NavigationService'
+import { ROUTES } from './app/helpers/navigation'
 const baseUrl =
   (typeof window !== 'undefined' && (window as any).configApiBaseUrl) ||
   process.env.CONFIG_API_BASE_URL ||
@@ -37,8 +38,7 @@ AXIOS_INSTANCE.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 403) {
-      Cookies.remove('admin_ui_session_id', { path: '/' })
-      window.location.href = '/admin/logout'
+      navigationService.navigate(ROUTES.LOGOUT, { replace: true })
     }
 
     return Promise.reject(error)

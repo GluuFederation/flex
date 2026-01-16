@@ -63,7 +63,7 @@ export const postUserAction = (userAction: any) => {
       { withCredentials: true },
     )
     .then((response) => response)
-    .catch((e) => {
+    .catch(() => {
       return -1
     })
 }

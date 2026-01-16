@@ -6,6 +6,7 @@ import AppAuthProvider from 'Utils/AppAuthProvider'
 import GluuToast from 'Routes/Apps/Gluu/GluuToast'
 import GluuWebhookErrorDialog from 'Routes/Apps/Gluu/GluuWebhookErrorDialog'
 import PermissionsPolicyInitializer from './PermissionsPolicyInitializer'
+import NavigationProvider from './NavigationProvider'
 import { ROUTES } from '@/helpers/navigation'
 
 export default function AuthenticatedRouteSelector() {
@@ -17,13 +18,15 @@ export default function AuthenticatedRouteSelector() {
   }
 
   return (
-    <AppAuthProvider>
-      <AppLayout>
-        <RoutedContent />
-        <GluuToast />
-        <GluuWebhookErrorDialog />
-        <PermissionsPolicyInitializer />
-      </AppLayout>
-    </AppAuthProvider>
+    <NavigationProvider>
+      <AppAuthProvider>
+        <AppLayout>
+          <RoutedContent />
+          <GluuToast />
+          <GluuWebhookErrorDialog />
+          <PermissionsPolicyInitializer />
+        </AppLayout>
+      </AppAuthProvider>
+    </NavigationProvider>
   )
 }

@@ -1,9 +1,13 @@
-import { select, put } from 'redux-saga/effects'
+import { select, put, call } from 'redux-saga/effects'
 import type { AuditLog, AuthState, RootState } from './types/audit'
 import { isFourZeroThreeError } from '../../utils/TokenController'
 import { updateToast } from '../features/toastSlice'
 import { auditLogoutLogs } from '../features/sessionSlice'
-import Cookies from 'js-cookie'
+import { setAuthState } from '../features/authSlice'
+import { logoutUser } from '../features/logoutSlice'
+import { deleteAdminUiSession as deleteSession } from '../api/backend-api'
+import { ROUTES } from '@/helpers/navigation'
+import { navigationService } from '../../utils/NavigationService'
 
 export function* initAudit(): Generator<any, AuditLog, any> {
   const auditlog: AuditLog = {}
@@ -23,8 +27,19 @@ export function* initAudit(): Generator<any, AuditLog, any> {
 
 export function* redirectToLogout(message = 'Session expired'): Generator<any, void, any> {
   yield put(auditLogoutLogs({ message }))
-  Cookies.remove('admin_ui_session_id', { path: '/' })
-  window.location.href = '/admin/logout'
+  yield put(setAuthState({ state: false }))
+
+  const hasSession: boolean = yield select((state: RootState) => state.authReducer.hasSession)
+  if (hasSession) {
+    try {
+      yield call(deleteSession)
+    } catch (error: unknown) {
+      console.error('Error deleting session:', error)
+    }
+  }
+
+  yield put(logoutUser(undefined))
+  navigationService.navigate(ROUTES.LOGOUT, { replace: true })
 }
 
 export function* handleResponseError(
@@ -41,7 +56,7 @@ export function* handleResponseError(
   if (clearDataAction) {
     yield put(clearDataAction)
   }
-  if (isFourZeroThreeError(error)) {
+  if (isFourZeroThreeError(error as { response?: { status?: number }; status?: number })) {
     yield* redirectToLogout()
     return
   }
