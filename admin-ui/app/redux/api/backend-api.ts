@@ -71,10 +71,14 @@ export const postUserAction = (userAction: any) => {
 // Get API Access Token
 export const fetchApiAccessToken = (jwt: any, permissionTag: any) => {
   return axios
-    .post('/app/admin-ui/oauth2/api-protection-token', {
-      ujwt: jwt,
-      permissionTag: permissionTag || [],
-    })
+    .post(
+      '/app/admin-ui/oauth2/api-protection-token',
+      {
+        ujwt: jwt,
+        permissionTag: permissionTag || [],
+      },
+      { withCredentials: false },
+    )
     .then((response) => response.data)
     .catch((error) => {
       console.error('Problems getting API access token in order to process api calls.', error)
@@ -84,7 +88,7 @@ export const fetchApiAccessToken = (jwt: any, permissionTag: any) => {
 
 export const fetchApiTokenWithDefaultScopes = () => {
   return axios
-    .post('/app/admin-ui/oauth2/api-protection-token', {})
+    .post('/app/admin-ui/oauth2/api-protection-token', {}, { withCredentials: false })
     .then((response) => response.data)
     .catch((error) => {
       console.error('Problems getting API access token in order to process api calls.', error)
