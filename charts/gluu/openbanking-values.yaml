@@ -365,7 +365,7 @@ global:
     # -- Boolean flag to enable/disable the casa chart.
     enabled: true
     ingress:
-      # -- Enable casa endpoints /casa
+      # -- Enable casa endpoints /jans-casa
       casaEnabled: true
   cloud:
     # -- Boolean flag if enabled will strip resources requests and limits from all services.
