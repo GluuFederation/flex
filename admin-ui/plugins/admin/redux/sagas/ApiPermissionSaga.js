@@ -103,6 +103,7 @@ export function* editPermission({ payload }) {
     if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
+      return
     }
     return e
   }

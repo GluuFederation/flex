@@ -35,6 +35,7 @@ export function* getHealthStatus({ payload }) {
     if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
+      return
     }
   }
 }

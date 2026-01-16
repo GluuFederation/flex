@@ -25,6 +25,7 @@ export function* getLockMau({ payload }) {
     if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
+      return
     }
   }
 }

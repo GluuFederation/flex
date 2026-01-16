@@ -48,6 +48,7 @@ export function* deleteUMAResourceById({ payload }) {
     yield put(deleteUMAResourceResponse({ data: payload.action.id }))
     yield call(postUserAction, audit)
   } catch (e) {
+    console.log(e)
     yield put(deleteUMAResourceResponse(null))
     if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
