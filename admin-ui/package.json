@@ -70,6 +70,7 @@
     "@types/animejs": "^3.1.13",
     "@types/circular-dependency-plugin": "^5.0.8",
     "@types/jest": "^29.5.12",
+    "@types/js-cookie": "^3.0.6",
     "@types/lodash": "^4.17.17",
     "@types/node": "^20.11.24",
     "@types/react": "^18.2.61",
