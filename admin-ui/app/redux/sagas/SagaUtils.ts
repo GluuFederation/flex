@@ -3,6 +3,7 @@ import type { AuditLog, AuthState, RootState } from './types/audit'
 import { isFourZeroThreeError } from '../../utils/TokenController'
 import { updateToast } from '../features/toastSlice'
 import { auditLogoutLogs } from '../features/sessionSlice'
+import Cookies from 'js-cookie'
 
 export function* initAudit(): Generator<any, AuditLog, any> {
   const auditlog: AuditLog = {}
@@ -23,7 +24,7 @@ export function* initAudit(): Generator<any, AuditLog, any> {
 export function* redirectToLogout(message = 'Session expired'): Generator<any, void, any> {
   yield put(auditLogoutLogs({ message }))
   // Clear session cookie
-  document.cookie = 'admin_ui_session_id=; max-age=0; path=/; Secure; SameSite=None'
+  Cookies.remove('user_token', { path: '/' })
   window.location.href = '/admin/logout'
 }
 

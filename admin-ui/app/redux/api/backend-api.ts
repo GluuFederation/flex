@@ -70,7 +70,6 @@ export const postUserAction = (userAction: any) => {
 
 // Get API Access Token
 export const fetchApiAccessToken = (jwt: any, permissionTag: any) => {
-  document.cookie = 'admin_ui_session_id=; max-age=0; path=/; Secure; SameSite=None'
   return axios
     .post('/app/admin-ui/oauth2/api-protection-token', {
       ujwt: jwt,
@@ -84,7 +83,6 @@ export const fetchApiAccessToken = (jwt: any, permissionTag: any) => {
 }
 
 export const fetchApiTokenWithDefaultScopes = () => {
-  document.cookie = 'admin_ui_session_id=; max-age=0; path=/; Secure; SameSite=None'
   return axios
     .post('/app/admin-ui/oauth2/api-protection-token', {}, { withCredentials: false })
     .then((response) => response.data)
