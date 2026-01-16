@@ -52,6 +52,18 @@ export const customColors = {
   sidebarHoverBg: '#d3d3d3',
   tooltipBorderLight: 'rgba(0, 0, 0, 0.1)',
   tooltipBorderDark: 'rgba(255, 255, 255, 0.2)',
+  healthCardBorderLight: '#f0f0f0',
+  healthCardBorderDark: '#284b6e',
+  infoBoxBgLight: '#e5f6fd',
+  infoBoxBorderLight: '#a6d3e6',
+  infoBoxTextLight: '#4f8196',
+  infoBoxBgDark: '#10375e',
+  infoBoxBorderDark: '#224f7c',
+  infoBoxTextDark: '#72a1d1',
+  descriptionTextLight: '#868d8f',
+  descriptionTextDark: '#b3cae2',
+  radioTextDark: '#c9dbec',
+  modalOverlay: 'rgba(0, 0, 0, 0.6)',
 } as const
 
 export type CustomColorKeys = keyof typeof customColors

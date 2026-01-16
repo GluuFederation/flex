@@ -73,6 +73,7 @@ export const STATUS_DETAILS = [
   { label: 'dashboard.key_cloak', key: 'keycloak' },
   { label: 'SCIM', key: 'jans-scim' },
   { label: 'dashboard.jans_lock', key: 'jans-lock' },
+  { label: 'dashboard.jans_link', key: 'jans-link' },
 ] as const
 
 export const BORDER_RADIUS = {

@@ -6,7 +6,8 @@ import type { ServiceHealth, ServiceStatusValue, ServiceStatusResponse } from '.
 import { HEALTH_CACHE_CONFIG, STATUS_MAP, DEFAULT_STATUS } from '../constants'
 
 function normalizeStatus(apiStatus: string): ServiceStatusValue {
-  return STATUS_MAP[apiStatus] ?? DEFAULT_STATUS
+  const statusMap = STATUS_MAP as Record<string, ServiceStatusValue>
+  return statusMap[apiStatus] ?? DEFAULT_STATUS
 }
 
 const STATUS_SORT_ORDER: Record<ServiceStatusValue, number> = {
@@ -27,19 +28,17 @@ function transformServiceStatus(data: JsonNode | undefined): ServiceHealth[] {
 
   const response = data as ServiceStatusResponse
 
-  const services = Object.entries(response)
-    .filter(([, status]) => {
-      const statusStr = String(status).toLowerCase()
-      return statusStr !== 'not present'
-    })
-    .map(([name, status]) => ({
-      name,
-      status: normalizeStatus(String(status)),
-      lastChecked: new Date(),
-    }))
+  const services = Object.entries(response).map(([name, status]) => ({
+    name,
+    status: normalizeStatus(String(status)),
+    lastChecked: new Date(),
+  }))
 
   return sortServicesByStatus(services)
 }
+
+// Services to exclude from Health page (show only 6 services)
+const HEALTH_PAGE_EXCLUDED_SERVICES = ['jans-lock', 'jans-link'] as const
 
 export function useHealthStatus() {
   const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
@@ -53,7 +52,13 @@ export function useHealthStatus() {
     },
   })
 
-  const services = query.data ?? []
+  const allServices = query.data ?? []
+
+  // Filter out excluded services for Health page (show only 6 services)
+  const services = useMemo(
+    () => allServices.filter((s) => !HEALTH_PAGE_EXCLUDED_SERVICES.includes(s.name as any)),
+    [allServices],
+  )
 
   const { healthyCount, totalCount } = useMemo(
     () => ({
@@ -64,7 +69,8 @@ export function useHealthStatus() {
   )
 
   return {
-    services,
+    services, // Filtered services (6) for Health page
+    allServices, // All services (8) for Dashboard
     healthyCount,
     totalCount,
     isLoading: query.isLoading,

@@ -122,7 +122,7 @@ const DashboardPage = () => {
 
   const { data: license, isLoading: licenseLoading } = useDashboardLicense()
   const { totalCount: totalClientsEntries, isLoading: clientsLoading } = useDashboardClients()
-  const { services, isLoading: healthLoading } = useHealthStatus()
+  const { allServices: services, isLoading: healthLoading } = useHealthStatus()
 
   const isLockServiceAvailable = useMemo(() => {
     const lockService = services.find((s) => s.name === 'jans-lock')

@@ -812,6 +812,7 @@
     "no_configuration_loaded": "No configuration loaded",
     "insufficient_permissions_to_modify": "You do not have permission to modify this configuration",
     "action_commit_question": "Audit log: Want to apply changes made on this page?",
+    "action_commit_question_title": "Want to apply changes made on this page?",
     "licenseAuditLog": "Do you really want to reset the existing license?",
     "action_deletion_question": "Do you really want to delete this item?",
     "action_deletion_for": "Deletion confirmation for",
@@ -1018,7 +1019,9 @@
     "expires_before": "Expiration Before Date",
     "charMoreThan512": "characters over limit (maximum 512)",
     "charLessThan10": "characters required (minimum 10)",
-    "more": " more"
+    "more": " more",
+    "provide_reason": "Provide the reason of this change",
+    "ten_characters_required": "10 characters required (minimum 10)"
   },
   "titles": {
     "activeTokens": "Active Tokens",

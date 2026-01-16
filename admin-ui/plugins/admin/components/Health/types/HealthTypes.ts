@@ -13,13 +13,6 @@ export interface ServiceHealth {
 
 export interface ServiceStatusCardProps {
   service: ServiceHealth
-  themeColors: {
-    background: string
-  }
-}
-
-export interface HealthStatusBadgeProps {
-  status: ServiceStatusValue
 }
 
 export interface ServiceStatusResponse {

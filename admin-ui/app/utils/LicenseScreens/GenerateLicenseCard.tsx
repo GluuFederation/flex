@@ -6,8 +6,10 @@ import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 import { useDispatch, useSelector } from 'react-redux'
 import { generateTrialLicense } from '../../redux/actions'
+import { useStyles } from './GenerateLicenseCard.style'
 
 const GenerateLicenseCard = () => {
+  const { classes } = useStyles()
   const dispatch = useDispatch()
   const generatingTrialKey = useSelector((state) => state.licenseReducer.generatingTrialKey)
 
@@ -16,7 +18,7 @@ const GenerateLicenseCard = () => {
   }
 
   return (
-    <Card className="license-card">
+    <Card className={classes.licenseCard}>
       <CardContent>
         <Typography variant="h5" component="div" gutterBottom>
           Free Trial
@@ -26,12 +28,12 @@ const GenerateLicenseCard = () => {
           interface.
         </Typography>
       </CardContent>
-      <CardActions className="license-card-actions">
+      <CardActions className={classes.licenseCardActions}>
         <button
           type="button"
           disabled={generatingTrialKey}
           onClick={() => generateLicenseKey()}
-          className="btn license-generate-btn"
+          className={`btn ${classes.licenseGenerateBtn}`}
         >
           {generatingTrialKey ? 'Generating please wait...' : 'Start 30 days trial'}
         </button>

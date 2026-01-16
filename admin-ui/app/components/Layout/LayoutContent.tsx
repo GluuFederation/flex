@@ -64,6 +64,9 @@ const LayoutContent = ({ children }: LayoutContentProps) => {
       '--theme-menu-arrow-color-hover': menuColors.textColorHover,
       '--theme-menu-hover-background': menuColors.hoverBackground,
       '--theme-menu-background-color-hover': menuColors.hoverBackground,
+      '--theme-license-overlay': customColors.modalOverlay,
+      '--theme-license-primary': customColors.statusActive,
+      '--theme-license-white': customColors.white,
     }),
     [
       themeColors.menu.background,

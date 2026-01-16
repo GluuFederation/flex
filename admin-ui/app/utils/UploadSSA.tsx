@@ -9,8 +9,9 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
 import { useSelector, useDispatch } from 'react-redux'
 import { uploadNewSsaToken } from '../redux/actions'
-import './LicenseScreens/style.css'
+import { useStyles } from './LicenseScreens/ApiKey.style'
 function UploadSSA() {
+  const { classes } = useStyles()
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
@@ -66,8 +67,8 @@ function UploadSSA() {
     <React.Fragment>
       <Container>
         {isLoading && (
-          <div className="loader-outer">
-            <div className="loader"></div>
+          <div className={classes.loaderOuter}>
+            <div className={classes.loader}></div>
           </div>
         )}
         <div className="row">

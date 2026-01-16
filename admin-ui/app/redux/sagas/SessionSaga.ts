@@ -14,7 +14,7 @@ interface ApiResponse {
 
 export function* auditLogoutLogsSaga({
   payload,
-}: PayloadAction<{ message: string }>): Generator<any, boolean, any> {
+}: PayloadAction<{ message: string; reason?: string }>): Generator<any, boolean, any> {
   if (process.env.NODE_ENV === 'development') {
     console.log('Logout audit:', payload.message)
   }
