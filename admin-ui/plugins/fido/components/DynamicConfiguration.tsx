@@ -23,10 +23,11 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
     setModal((prev) => !prev)
   }, [])
 
-  const initialValues: DynamicConfigFormValues = transformToFormValues(
-    fidoConfiguration,
-    fidoConstants.DYNAMIC,
-  ) as DynamicConfigFormValues
+  const initialValues = useMemo<DynamicConfigFormValues>(
+    () =>
+      transformToFormValues(fidoConfiguration, fidoConstants.DYNAMIC) as DynamicConfigFormValues,
+    [fidoConfiguration],
+  )
 
   const formik = useFormik<DynamicConfigFormValues>({
     initialValues,
@@ -35,6 +36,8 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
     validateOnMount: true,
   })
 
+  // formik intentionally excluded - it has a new reference each render, causing infinite reset loop
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (fidoConfiguration) {
       formik.resetForm({
