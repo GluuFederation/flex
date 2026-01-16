@@ -23,7 +23,7 @@ export function* initAudit(): Generator<any, AuditLog, any> {
 export function* redirectToLogout(message = 'Session expired'): Generator<any, void, any> {
   yield put(auditLogoutLogs({ message }))
   // Clear session cookie
-  document.cookie = 'admin_ui_session_id=; max-age=0; path=/'
+  document.cookie = 'admin_ui_session_id=; max-age=0; path=/; Secure; SameSite=None'
   window.location.href = '/admin/logout'
 }
 

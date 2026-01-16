@@ -38,7 +38,7 @@ AXIOS_INSTANCE.interceptors.response.use(
   (error) => {
     if (error.response?.status === 403) {
       //remove session cookie
-      document.cookie = 'admin_ui_session_id=; max-age=0; path=/'
+      document.cookie = 'admin_ui_session_id=; max-age=0; path=/; Secure; SameSite=None'
       window.location.href = '/admin/logout'
     }
 
