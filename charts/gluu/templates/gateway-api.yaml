@@ -431,7 +431,6 @@ spec:
     - type: RequestRedirect
       requestRedirect:
         scheme: https
-        port: {{ .Values.gatewayApi.httpsPort }}
         statusCode: 301
   {{- end }}
 
@@ -445,7 +444,6 @@ spec:
     - type: RequestRedirect
       requestRedirect:
         scheme: https
-        port: {{ .Values.gatewayApi.httpsPort }}
         statusCode: 301
   {{- end }}
 
@@ -459,7 +457,6 @@ spec:
     - type: RequestRedirect
       requestRedirect:
         scheme: https
-        port: {{ .Values.gatewayApi.httpsPort }}
         statusCode: 301
   {{- end }}
 
@@ -473,7 +470,6 @@ spec:
     - type: RequestRedirect
       requestRedirect:
         scheme: https
-        port: {{ .Values.gatewayApi.httpsPort }}
         statusCode: 301
   {{- end }}
 
@@ -487,7 +483,6 @@ spec:
     - type: RequestRedirect
       requestRedirect:
         scheme: https
-        port: {{ .Values.gatewayApi.httpsPort }}
         statusCode: 301
   {{- end }}
 
@@ -501,7 +496,6 @@ spec:
     - type: RequestRedirect
       requestRedirect:
         scheme: https
-        port: {{ .Values.gatewayApi.httpsPort }}
         statusCode: 301
   {{- end }}
 {{- end }}
