@@ -1,6 +1,6 @@
 import Axios, { AxiosRequestConfig, AxiosHeaders } from 'axios'
 import store from './app/redux/store'
-import Cookies from 'js-cookie'
+
 const baseUrl =
   (typeof window !== 'undefined' && (window as any).configApiBaseUrl) ||
   process.env.CONFIG_API_BASE_URL ||
@@ -37,7 +37,8 @@ AXIOS_INSTANCE.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 403) {
-      Cookies.remove('admin_ui_session_id', { path: '/' })
+      //remove session cookie
+      document.cookie = 'admin_ui_session_id=; max-age=0; path=/'
       window.location.href = '/admin/logout'
     }
 
