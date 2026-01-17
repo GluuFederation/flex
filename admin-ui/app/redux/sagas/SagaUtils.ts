@@ -24,8 +24,8 @@ export function* initAudit(): Generator<any, AuditLog, any> {
 export function* redirectToLogout(message = 'Session expired'): Generator<any, void, any> {
   yield put(auditLogoutLogs({ message }))
 
-  const response = yield call(fetchApiTokenWithDefaultScopes)
-  yield call(deleteAdminUiSession, response?.access_token)
+  //const response = yield call(fetchApiTokenWithDefaultScopes)
+  yield call(deleteAdminUiSession)
   window.location.href = '/admin/logout'
 }
 

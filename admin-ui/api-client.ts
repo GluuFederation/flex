@@ -40,8 +40,8 @@ AXIOS_INSTANCE.interceptors.response.use(
     if (error.response?.status === 403) {
       //remove session cookie
       //Cookies.remove('admin_ui_session_id', { path: '/' })
-      const response = await fetchApiTokenWithDefaultScopes()
-      await deleteAdminUiSession(response?.access_token)
+      //const response = await fetchApiTokenWithDefaultScopes()
+      await deleteAdminUiSession()
       window.location.href = '/admin/logout'
     }
 
