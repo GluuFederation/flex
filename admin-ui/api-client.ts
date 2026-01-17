@@ -1,6 +1,6 @@
 import Axios, { AxiosRequestConfig, AxiosHeaders } from 'axios'
 import store from './app/redux/store'
-import { fetchApiTokenWithDefaultScopes, deleteAdminUiSession } from './app/redux/api/backend-api'
+import { deleteAdminUiSession } from './app/redux/api/backend-api'
 
 const baseUrl =
   (typeof window !== 'undefined' && (window as any).configApiBaseUrl) ||
@@ -39,8 +39,6 @@ AXIOS_INSTANCE.interceptors.response.use(
   async (error) => {
     if (error.response?.status === 403) {
       //remove session cookie
-      //Cookies.remove('admin_ui_session_id', { path: '/' })
-      //const response = await fetchApiTokenWithDefaultScopes()
       await deleteAdminUiSession()
       window.location.href = '/admin/logout'
     }
