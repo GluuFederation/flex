@@ -118,9 +118,12 @@ export const createAdminUiSession = (ujwt: string, apiProtectionToken: string) =
 }
 
 // Delete Admin UI session (logout)
-export const deleteAdminUiSession = () => {
+export const deleteAdminUiSession = (token?: string) => {
+  const config = token
+    ? { headers: { Authorization: `Bearer ${token}` } }
+    : { withCredentials: true }
   return axios
-    .delete('/app/admin-ui/oauth2/session', { withCredentials: true })
+    .delete('/app/admin-ui/oauth2/session', config)
     .then((response) => response.data)
     .catch((error) => {
       console.error('Problems deleting Admin UI session.', error)
