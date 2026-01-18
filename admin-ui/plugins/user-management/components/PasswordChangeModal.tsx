@@ -136,13 +136,16 @@ const PasswordChangeModal = ({
         data: patchOperations,
       })
       // Revoke user session after successful update of user details
-      try {
-        await revokeSessionMutation.mutateAsync({ userDn: userDetails?.dn || '' })
-        await AXIOS_INSTANCE.delete(
-          `/app/admin-ui/oauth2/session/${encodeURIComponent(userDetails?.dn || '')}`,
-        )
-      } catch (error) {
-        console.error('Failed to revoke user session:', error)
+      const userDn = userDetails?.dn
+      if (!userDn) {
+        console.error('Failed to revoke user session: missing user DN')
+      } else {
+        try {
+          await revokeSessionMutation.mutateAsync({ userDn })
+          await AXIOS_INSTANCE.delete(`/app/admin-ui/oauth2/session/${encodeURIComponent(userDn)}`)
+        } catch (error) {
+          console.error('Failed to revoke user session:', error)
+        }
       }
 
       // Log audit separately with full payload

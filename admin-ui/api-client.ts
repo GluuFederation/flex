@@ -38,9 +38,13 @@ AXIOS_INSTANCE.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response?.status === 403) {
-      const response = await fetchApiTokenWithDefaultScopes()
-      await deleteAdminUiSession(response?.access_token)
-      window.location.href = '/admin/logout'
+      try {
+        const response = await fetchApiTokenWithDefaultScopes()
+        await deleteAdminUiSession(response?.access_token)
+        window.location.href = '/admin/logout'
+      } catch (e) {
+        console.error('Failed to cleanup session on 403:', e)
+      }
     }
 
     return Promise.reject(error)

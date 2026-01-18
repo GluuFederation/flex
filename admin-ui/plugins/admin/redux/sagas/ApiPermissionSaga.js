@@ -56,6 +56,7 @@ export function* getPermission({ payload }) {
     if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
+      return
     }
   }
 }
@@ -78,6 +79,7 @@ export function* addPermission({ payload }) {
     if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -143,6 +145,7 @@ export function* deletePermission({ payload }) {
     if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
+      return
     }
     return e
   }

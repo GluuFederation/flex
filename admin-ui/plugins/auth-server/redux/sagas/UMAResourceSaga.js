@@ -35,6 +35,7 @@ export function* getUMAResourcesByClient({ payload }) {
     if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
+      return
     }
   }
 }
@@ -53,6 +54,7 @@ export function* deleteUMAResourceById({ payload }) {
     if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
+      return
     }
   }
 }

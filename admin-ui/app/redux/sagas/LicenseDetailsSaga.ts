@@ -45,6 +45,7 @@ export function* resetLicenseConfigWorker(action: ResetLicenseAction) {
     if (isFourZeroThreeError(error)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
+      return
     }
   }
 }
@@ -63,6 +64,7 @@ export function* getLicenseDetailsWorker() {
     if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
+      return
     }
   }
 }
@@ -80,6 +82,7 @@ export function* updateLicenseDetailsWorker({ payload }) {
     if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
       yield* redirectToLogout()
+      return
     }
   }
 }

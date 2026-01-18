@@ -4,7 +4,7 @@ import { getOidcDiscoveryResponse } from '../actions'
 import { isFourZeroThreeError } from 'Utils/TokenController'
 import OidcDiscoveryApi from '../api/OidcDiscoveryApi'
 import { getClient } from '../api/base'
-import { initAudit, redirectToLogout } from '../sagas/SagaUtils'
+import { redirectToLogout } from '../sagas/SagaUtils'
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {
