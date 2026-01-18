@@ -1,5 +1,6 @@
 import Axios, { AxiosRequestConfig, AxiosHeaders } from 'axios'
 import store from './app/redux/store'
+import { fetchApiTokenWithDefaultScopes, deleteAdminUiSession } from './app/redux/api/backend-api'
 
 const baseUrl =
   (typeof window !== 'undefined' && (window as any).configApiBaseUrl) ||
@@ -32,6 +33,19 @@ AXIOS_INSTANCE.interceptors.request.use((config) => {
   }
   return config
 })
+
+AXIOS_INSTANCE.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response?.status === 403) {
+      const response = await fetchApiTokenWithDefaultScopes()
+      await deleteAdminUiSession(response?.access_token)
+      window.location.href = '/admin/logout'
+    }
+
+    return Promise.reject(error)
+  },
+)
 
 // React Query compatible instance
 export const customInstance = <T>(

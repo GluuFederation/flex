@@ -1,8 +1,9 @@
-import { select, put } from 'redux-saga/effects'
+import { select, put, call } from 'redux-saga/effects'
 import type { AuditLog, AuthState, RootState } from './types/audit'
-import { isFourZeroOneError } from '../../utils/TokenController'
+import { isFourZeroThreeError } from '../../utils/TokenController'
 import { updateToast } from '../features/toastSlice'
 import { auditLogoutLogs } from '../features/sessionSlice'
+import { fetchApiTokenWithDefaultScopes, deleteAdminUiSession } from '../api/backend-api'
 
 export function* initAudit(): Generator<any, AuditLog, any> {
   const auditlog: AuditLog = {}
@@ -22,7 +23,9 @@ export function* initAudit(): Generator<any, AuditLog, any> {
 
 export function* redirectToLogout(message = 'Session expired'): Generator<any, void, any> {
   yield put(auditLogoutLogs({ message }))
-  window.location.href = '/logout'
+  const response = yield call(fetchApiTokenWithDefaultScopes)
+  yield call(deleteAdminUiSession, response?.access_token)
+  window.location.href = '/admin/logout'
 }
 
 export function* handleResponseError(
@@ -39,7 +42,7 @@ export function* handleResponseError(
   if (clearDataAction) {
     yield put(clearDataAction)
   }
-  if (isFourZeroOneError(error)) {
+  if (isFourZeroThreeError(error)) {
     yield* redirectToLogout()
     return
   }
