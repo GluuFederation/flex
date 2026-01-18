@@ -3,7 +3,7 @@ import type { AuditLog, AuthState, RootState } from './types/audit'
 import { isFourZeroThreeError } from '../../utils/TokenController'
 import { updateToast } from '../features/toastSlice'
 import { auditLogoutLogs } from '../features/sessionSlice'
-import { deleteAdminUiSession } from '../api/backend-api'
+import { fetchApiTokenWithDefaultScopes, deleteAdminUiSession } from '../api/backend-api'
 
 export function* initAudit(): Generator<any, AuditLog, any> {
   const auditlog: AuditLog = {}
@@ -23,7 +23,9 @@ export function* initAudit(): Generator<any, AuditLog, any> {
 
 export function* redirectToLogout(message = 'Session expired'): Generator<any, void, any> {
   yield put(auditLogoutLogs({ message }))
-  yield call(deleteAdminUiSession)
+
+  const response = yield call(fetchApiTokenWithDefaultScopes)
+  yield call(deleteAdminUiSession, response?.access_token)
   window.location.href = '/admin/logout'
 }
 
