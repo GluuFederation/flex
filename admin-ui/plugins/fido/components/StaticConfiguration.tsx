@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import { useFormik } from 'formik'
 import { useTranslation } from 'react-i18next'
 
@@ -34,8 +34,6 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
   isSubmitting,
   readOnly,
 }) => {
-  const staticConfiguration = fidoConfiguration?.fido2Configuration
-
   const { t } = useTranslation()
 
   const [modal, setModal] = useState(false)
@@ -44,16 +42,28 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
     setModal((prev) => !prev)
   }, [])
 
+  const initialValues: StaticConfigFormValues = transformToFormValues(
+    fidoConfiguration?.fido2Configuration,
+    fidoConstants.STATIC,
+  ) as StaticConfigFormValues
+
   const formik = useFormik<StaticConfigFormValues>({
-    initialValues: transformToFormValues(
-      staticConfiguration,
-      fidoConstants.STATIC,
-    ) as StaticConfigFormValues,
+    initialValues,
     onSubmit: readOnly ? () => undefined : toggle,
     validationSchema: validationSchema[fidoConstants.VALIDATION_SCHEMAS.STATIC_CONFIG],
-    enableReinitialize: true,
     validateOnMount: true,
   })
+
+  useEffect(() => {
+    if (fidoConfiguration?.fido2Configuration) {
+      formik.resetForm({
+        values: transformToFormValues(
+          fidoConfiguration.fido2Configuration,
+          fidoConstants.STATIC,
+        ) as StaticConfigFormValues,
+      })
+    }
+  }, [fidoConfiguration])
 
   const submitForm = useCallback(
     (userMessage: string) => {
@@ -67,12 +77,8 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
   )
 
   const handleCancel = useCallback(() => {
-    const initialValues = transformToFormValues(
-      staticConfiguration,
-      fidoConstants.STATIC,
-    ) as StaticConfigFormValues
-    formik.resetForm({ values: initialValues })
-  }, [formik, staticConfiguration])
+    formik.resetForm()
+  }, [formik])
 
   const requestedPartiesOptions = useMemo(() => {
     return (formik.values.requestedParties || []).map((item) => ({
@@ -364,7 +370,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
             showError={!!(formik.errors.attestationMode && formik.touched.attestationMode)}
             errorMessage={formik.errors.attestationMode}
             handleChange={(_e) => {
-              formik.setFieldTouched(fidoConstants.FORM_FIELDS.ATTESTATION_MODE, true)
+              formik.setFieldTouched(fidoConstants.FORM_FIELDS.ATTESTATION_MODE, true, false)
             }}
           />
         </Col>
