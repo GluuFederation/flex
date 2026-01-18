@@ -2,10 +2,10 @@ import { call, all, put, fork, select, takeEvery } from 'redux-saga/effects'
 import type { SelectEffect, PutEffect } from 'redux-saga/effects'
 import { SagaIterator } from 'redux-saga'
 import { PayloadAction } from '@reduxjs/toolkit'
-import { initAudit } from 'Redux/sagas/SagaUtils'
+import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 import { getClient } from 'Redux/api/base'
 import {
-  isFourZeroOneError,
+  isFourZeroThreeError,
   addAdditionalData,
   type AdditionalPayload,
 } from 'Utils/TokenController'
@@ -392,9 +392,9 @@ function* handleFourZeroOneError(
     error && typeof error === 'object' && 'status' in error
       ? { status: (error as { status?: number }).status }
       : null
-  if (isFourZeroOneError(errorWithStatus)) {
+  if (isFourZeroThreeError(errorWithStatus)) {
     // Session expired - redirect to login
-    window.location.href = '/logout'
+    yield* redirectToLogout()
   }
 }
 

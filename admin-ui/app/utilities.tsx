@@ -5,7 +5,7 @@ declare const require: {
     useSubdirectories: boolean,
     regExp: RegExp,
   ) => {
-    keys: () => string[]
+    keys: () => string[];
     (id: string): any
   }
 }

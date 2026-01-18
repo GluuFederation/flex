@@ -6,7 +6,7 @@ import { addAdditionalData } from 'Utils/TokenController'
 import { FETCH } from '../../audit/UserActionType'
 import { API_USERS } from '../../audit/Resources'
 import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
-import { isFourZeroOneError } from 'Utils/TokenController'
+import { isFourZeroThreeError } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
 import {
   setUserProfileDetails,
@@ -49,7 +49,7 @@ function* getProfileDetailsWorker({
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(setUserProfileDetails(null))
-    if (isFourZeroOneError(e as { status?: number })) {
+    if (isFourZeroThreeError(e as { status?: number })) {
       yield* redirectToLogout()
       return
     }

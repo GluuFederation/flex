@@ -1,5 +1,5 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import {
   getMessageResponse,
   editMessageConfigResponse,
@@ -8,10 +8,11 @@ import {
 } from '../features/MessageSlice'
 import MessageApi from '../api/MessageApi'
 import { getClient } from 'Redux/api/base'
-import { initAudit } from 'Redux/sagas/SagaUtils'
 import { postUserAction } from 'Redux/api/backend-api'
 import { UPDATE, FETCH } from '../../../../app/audit/UserActionType'
 import { updateToast } from 'Redux/features/toastSlice'
+import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
+
 const JansConfigApi = require('jans_config_api')
 
 const LOCK = 'message'
@@ -55,9 +56,10 @@ export function* getConfigMessage() {
     yield put(updateToast(true, 'error', e?.response?.body?.responseMessage || e.message))
     yield put(getMessageResponse(null))
     yield put(toggleMessageConfigLoader(false))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
   }
 }
@@ -76,9 +78,10 @@ export function* editMessageConfig({ payload }) {
     yield put(updateToast(true, 'error', e?.response?.body?.responseMessage || e.message))
     yield put(editMessageConfigResponse(null))
     yield put(toggleMessageConfigLoader(false))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
   }
 }
@@ -96,9 +99,10 @@ export function* putConfigMessagePostgres({ payload }) {
   } catch (e) {
     yield put(updateToast(true, 'error', e?.response?.body?.responseMessage || e.message))
     yield put(toggleSaveConfigLoader(false))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
   }
 }
@@ -116,9 +120,10 @@ export function* putConfigMessageRedis({ payload }) {
   } catch (e) {
     yield put(updateToast(true, 'error', e?.response?.body?.responseMessage || e.message))
     yield put(toggleSaveConfigLoader(false))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
   }
 }

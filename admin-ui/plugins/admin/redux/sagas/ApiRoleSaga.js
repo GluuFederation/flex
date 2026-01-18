@@ -9,12 +9,12 @@ import {
 import { API_ROLE } from '../audit/Resources'
 import { CREATE, UPDATE, DELETION, FETCH } from '../../../../app/audit/UserActionType'
 import { updateToast } from 'Redux/features/toastSlice'
-import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import RoleApi from '../api/RoleApi'
 import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
 const JansConfigApi = require('jans_config_api')
-import { initAudit } from 'Redux/sagas/SagaUtils'
+import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 
 function* newFunction() {
   const issuer = yield select((state) => state.authReducer.issuer)
@@ -34,9 +34,10 @@ export function* getRoles({ payload }) {
     return data
   } catch (e) {
     yield put(getRolesResponse(null))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -51,9 +52,10 @@ export function* getRole({ payload }) {
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getRoleResponse(null))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
   }
 }
@@ -70,9 +72,10 @@ export function* addRole({ payload }) {
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(addRoleResponse(null))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -90,9 +93,10 @@ export function* editRole({ payload }) {
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(editRoleResponse(null))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -111,9 +115,10 @@ export function* deleteRole({ payload }) {
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(deleteRoleResponse(null))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }

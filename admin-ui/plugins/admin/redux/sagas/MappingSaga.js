@@ -8,12 +8,12 @@ import {
 import { API_MAPPING } from '../audit/Resources'
 import { FETCH } from '../../../../app/audit/UserActionType'
 import { updateToast } from 'Redux/features/toastSlice'
-import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import MappingApi from '../api/MappingApi'
 import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
 const JansConfigApi = require('jans_config_api')
-import { initAudit } from 'Redux/sagas/SagaUtils'
+import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 
 function* newFunction() {
   const issuer = yield select((state) => state.authReducer.issuer)
@@ -35,9 +35,10 @@ export function* fetchMapping({ payload }) {
     return data
   } catch (e) {
     yield put(getMappingResponse({ data: null }))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -55,9 +56,10 @@ export function* updateMapping({ payload }) {
     yield put(updateToast(true, 'error'))
     yield put(updatePermissionsLoading({ data: false }))
     yield put(getMappingResponse({ data: null }))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -74,9 +76,10 @@ export function* addMapping({ payload }) {
     yield put(updateToast(true, 'error'))
     yield put(updatePermissionsLoading({ data: false }))
     // yield put(getMappingResponse(null))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -94,9 +97,10 @@ export function* deleteMapping({ payload }) {
     yield put(updateToast(true, 'error'))
     yield put(updatePermissionsLoading({ data: false }))
     // yield put(getMappingResponse(null))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }

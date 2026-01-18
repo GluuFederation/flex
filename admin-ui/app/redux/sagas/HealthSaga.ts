@@ -1,12 +1,12 @@
 // @ts-nocheck
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import { getHealthStatusResponse, getHealthServerStatusResponse } from '../features/healthSlice'
 import { postUserAction } from '../api/backend-api'
 import HealthApi from '../api/HealthApi'
 import { getClient } from '../api/base'
-import { initAudit } from '../sagas/SagaUtils'
 import HealthCheckApi from '../api/HealthCheckApi'
+import { initAudit, redirectToLogout } from '../sagas/SagaUtils'
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {
@@ -32,9 +32,10 @@ export function* getHealthStatus({ payload }) {
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getHealthStatusResponse(null))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
   }
 }

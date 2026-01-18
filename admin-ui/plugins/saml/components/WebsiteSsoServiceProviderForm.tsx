@@ -483,7 +483,7 @@ const WebsiteSsoServiceProviderForm = ({
                       rsize={8}
                       showError={Boolean(
                         formik.errors.samlMetadata?.nameIDPolicyFormat &&
-                          formik.touched.samlMetadata?.nameIDPolicyFormat,
+                        formik.touched.samlMetadata?.nameIDPolicyFormat,
                       )}
                       errorMessage={formik.errors.samlMetadata?.nameIDPolicyFormat}
                       disabled={viewOnly}

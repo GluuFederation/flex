@@ -1,5 +1,5 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
 import {
   getUMAResourcesByClientResponse,
@@ -10,7 +10,7 @@ import { FETCH, DELETION } from '../../../../app/audit/UserActionType'
 import UMAResourceApi from '../api/UMAResourceApi'
 import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
-import { initAudit } from 'Redux/sagas/SagaUtils'
+import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 
 function* newFunction() {
   const issuer = yield select((state) => state.authReducer.issuer)
@@ -32,9 +32,10 @@ export function* getUMAResourcesByClient({ payload }) {
   } catch (e) {
     console.log(e)
     yield put(getUMAResourcesByClientResponse(null))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
   }
 }
@@ -48,10 +49,12 @@ export function* deleteUMAResourceById({ payload }) {
     yield put(deleteUMAResourceResponse({ data: payload.action.id }))
     yield call(postUserAction, audit)
   } catch (e) {
+    console.log(e)
     yield put(deleteUMAResourceResponse(null))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
   }
 }
