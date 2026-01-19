@@ -5,12 +5,11 @@ import { JSON_CONFIG } from '../audit/Resources'
 import { PATCH, FETCH } from '../../../../app/audit/UserActionType'
 import { postUserAction } from 'Redux/api/backend-api'
 import { updateToast } from 'Redux/features/toastSlice'
-import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import { getJsonConfigResponse, patchJsonConfigResponse } from '../features/jsonConfigSlice'
-import {} from '../../common/Constants'
+import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 
 const JansConfigApi = require('jans_config_api')
-import { initAudit } from 'Redux/sagas/SagaUtils'
 
 function* newFunction() {
   const issuer = yield select((state) => state.authReducer.issuer)
@@ -31,9 +30,10 @@ export function* getJsonConfig({ payload }) {
   } catch (e) {
     console.log(e)
     yield put(getJsonConfigResponse(null))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -53,9 +53,10 @@ export function* patchJsonConfig({ payload }) {
     console.log('error', e)
     yield put(updateToast(true, 'error'))
     yield put(patchJsonConfigResponse(null))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
     return e
   }

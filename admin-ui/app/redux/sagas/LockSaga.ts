@@ -1,9 +1,9 @@
 // @ts-nocheck
 import { call, all, put, fork, select, takeLatest } from 'redux-saga/effects'
-import { isFourZeroOneError } from 'Utils/TokenController'
+import { isFourZeroThreeError } from 'Utils/TokenController'
 
 import { getClient } from '../api/base'
-import { initAudit } from '../sagas/SagaUtils'
+import { initAudit, redirectToLogout } from '../sagas/SagaUtils'
 import LockApi from '../api/LockApi'
 import { getLockStatusResponse } from '../features/lockSlice'
 const JansConfigApi = require('jans_config_api')
@@ -22,9 +22,10 @@ export function* getLockMau({ payload }) {
     yield put(getLockStatusResponse({ data }))
   } catch (e) {
     yield put(getLockStatusResponse(null))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
   }
 }
