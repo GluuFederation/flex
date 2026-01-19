@@ -16,7 +16,7 @@ function transformLicenseResponse(data: LicenseResponse | undefined): LicenseRes
   }
 }
 
-export function useDashboardLicense() {
+export const useDashboardLicense = () => {
   const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
 
   return useGetAdminuiLicense({

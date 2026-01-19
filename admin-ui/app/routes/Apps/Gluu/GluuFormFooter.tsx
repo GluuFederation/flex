@@ -3,6 +3,7 @@ import { Button, Divider } from 'Components'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 import { Box } from '@mui/material'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
@@ -70,7 +71,9 @@ const GluuFormFooter = ({
 }: GluuFormFooterProps) => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = useMemo(() => theme?.state.theme || 'darkBlack', [theme?.state.theme])
+  const selectedTheme = useMemo(() => {
+    return theme?.state?.theme || DEFAULT_THEME
+  }, [theme?.state?.theme])
   const { navigateToRoute } = useAppNavigation()
 
   const handleBackClick = useCallback(() => {

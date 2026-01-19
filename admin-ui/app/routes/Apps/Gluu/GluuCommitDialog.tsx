@@ -13,17 +13,18 @@ import {
 } from 'reactstrap'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 import PropTypes from 'prop-types'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import { useSelector } from 'react-redux'
-import useWebhookDialogAction from 'Utils/hooks/useWebhookDialogAction'
+import { useWebhookDialogAction } from 'Utils/hooks'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
 import type { RootState } from '@/redux/sagas/types/audit'
-import type { GluuCommitDialogOperation, GluuCommitDialogProps, JsonValue } from './types'
+import type { GluuCommitDialogOperation, GluuCommitDialogProps, JsonValue } from './types/index'
 import { Alert, Box } from '@mui/material'
 
 const USER_MESSAGE = 'user_action_message'
@@ -50,7 +51,7 @@ const GluuCommitDialog = ({
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
 
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state.theme || 'light'
+  const selectedTheme = theme?.state.theme || DEFAULT_THEME
   const [active, setActive] = useState(false)
   const [isOpen, setIsOpen] = useState<number | null>(null)
   const [userMessage, setUserMessage] = useState('')

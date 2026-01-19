@@ -47,6 +47,7 @@ import { getErrorMessage } from '../../utils/errorHandler'
 import type { StyledBadgeProps } from '../types/AttributeListPage.types'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 type AttributeIdentifier = Pick<JansAttribute, 'inum' | 'name'>
 
@@ -84,7 +85,7 @@ function AttributeListPage(): JSX.Element {
   const [sortOrder, setSortOrder] = useState<'ascending' | 'descending'>('ascending')
 
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme ?? 'light'
+  const selectedTheme = theme?.state?.theme ?? DEFAULT_THEME
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
 

@@ -39,11 +39,11 @@ export default {
   mainCard: {
     minHeight: '70vh',
     borderRadius: 24,
-    padding: 12,
+    padding: '12px',
   },
   verticalDivider: {
     borderRight: `1px solid ${customColors.lightGray}`,
-    paddingRight: '2rem',
+    paddingRight: '32px',
   },
   licensePanel: {
     backgroundColor: customColors.white,
@@ -111,6 +111,6 @@ export default {
   persistenceCard: {
     minHeight: '70vh',
     borderRadius: 24,
-    padding: 12,
+    padding: '12px',
   },
 }

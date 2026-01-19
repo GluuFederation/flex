@@ -1,4 +1,5 @@
 import type { Dispatch, UnknownAction } from '@reduxjs/toolkit'
+import type { UserInfo } from 'Redux/features/types/authTypes'
 
 export interface CustomAttribute {
   name: string
@@ -12,12 +13,6 @@ export interface ProfileDetails {
   status?: string
   inum?: string
   customAttributes?: CustomAttribute[]
-}
-
-export interface UserInfo {
-  inum?: string
-  family_name?: string
-  [key: string]: unknown
 }
 
 export interface ProfileDetailsState {

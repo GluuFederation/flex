@@ -57,16 +57,8 @@
         &--nested {
             .sidebar-menu__entry__link {
                 &::after {
-                    flex: 0 0 auto;
-                    @include caret();
+                    content: none !important;
                 }
-                &:hover::after {
-                    color: $sidebar-menu-highlight-color;
-                }
-            }
-
-            &.open .sidebar-menu__entry__link::after {
-                content: "\f107";
             }
         }
 
@@ -94,13 +86,8 @@
 
         &--nested > .sidebar-submenu__entry__link {
             &::after {
-                flex: 0 0 auto;
-                @include caret();
+                content: none !important;
             }
-        }
-
-        &--nested.open > .sidebar-submenu__entry__link::after {
-            content: "\f107";
         }
 
         &__link {
@@ -121,10 +108,6 @@
 }
 
 .open {
-    &.sidebar-menu__entry--nested > .sidebar-submenu__entry__link::after {
-        content: "\f107";
-    }
-
     > .sidebar-submenu {
         height: auto;
     }

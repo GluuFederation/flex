@@ -1,4 +1,3 @@
-import React from 'react'
 import { MenuContext } from '../SidebarMenu/MenuContext'
 import { SidebarMenu } from '../SidebarMenu/SidebarMenu'
 import { SidebarMenuItem } from '../SidebarMenu/SidebarMenuItem'
@@ -10,13 +9,13 @@ import ServicesIcon from './menu/Services'
 import ScimIcon from './menu/Scim'
 import SamlIcon from './menu/Saml'
 import OAuthIcon from './menu/OAuth'
-import JansLockUsersIcon from './menu/JansLockUsers'
-import JansLockClientsIcon from './menu/JansLockClients'
 import HomeIcon from './menu/Home'
 import FidoIcon from './menu/Fido'
-import AdministratorIcon from './menu/Administrator'
-import WaveIcon from './SidebarWave'
-import StmpZoneIcon from './menu/Smtp'
+import SmtpZoneIcon from './menu/Smtp'
+import ScriptsIcon from './menu/Scripts'
+import LockIcon from './menu/Lock'
+import ArrowIcon from './Arrow'
+import { ChevronIcon } from './Chevron'
 
 export {
   MenuContext,
@@ -24,17 +23,17 @@ export {
   SidebarMenuItem,
   JansKcLinkIcon,
   ShortCodesIcon,
-  WaveIcon,
   UsersIcon,
   UserClaimsIcon,
   ServicesIcon,
   ScimIcon,
   SamlIcon,
   OAuthIcon,
-  JansLockUsersIcon,
-  JansLockClientsIcon,
   HomeIcon,
   FidoIcon,
-  AdministratorIcon,
-  StmpZoneIcon,
+  SmtpZoneIcon,
+  ScriptsIcon,
+  LockIcon,
+  ArrowIcon,
+  ChevronIcon,
 }

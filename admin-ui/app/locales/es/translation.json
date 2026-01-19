@@ -76,6 +76,8 @@
     "company_name": "Nombre de la Empresa",
     "customer_name": "Nombre del Cliente",
     "license_status": "Estado de la Licencia",
+    "active": "Activo",
+    "inactive": "Inactivo",
     "oauth_server_status": "Estado del Servidor OAuth",
     "database_status": "Estado de la Base de Datos",
     "server_status": "Estado del Servidor",
@@ -651,6 +653,14 @@
     "english": "Ingles",
     "portuguese": "Portugues",
     "spanish": "Español"
+  },
+  "themes": {
+    "theme": "Tema",
+    "light": "Claro",
+    "dark": "Oscuro"
+  },
+  "notifications": {
+    "no_notifications": "Sin notificaciones"
   },
   "menus": {
     "assets": "Recursos",

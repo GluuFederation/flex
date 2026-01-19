@@ -4,6 +4,7 @@ import { useDropzone, type Accept } from 'react-dropzone'
 import { Box } from '@mui/material'
 import { Button } from 'reactstrap'
 import { ThemeContext } from 'Context/theme/themeContext'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 interface GluuUploadFileProps {
   accept?: Accept
@@ -29,7 +30,9 @@ const GluuUploadFile: React.FC<GluuUploadFileProps> = ({
   showClearButton = true,
 }) => {
   const theme = useContext(ThemeContext)
-  const selectedTheme = useMemo(() => theme?.state.theme || 'darkBlack', [theme?.state.theme])
+  const selectedTheme = useMemo(() => {
+    return theme?.state?.theme || DEFAULT_THEME
+  }, [theme?.state?.theme])
 
   const [preDefinedFileName, setPreDefinedFileName] = useState<string | null>(fileName || null)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)

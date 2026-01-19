@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, ReactElement } from 'react'
+import React, { useContext, useState, useMemo, ReactElement } from 'react'
 import { useFormik, FormikContextType } from 'formik'
 import * as Yup from 'yup'
 import { Col, InputGroup, Form, FormGroup, Input } from 'Components'
@@ -10,13 +10,14 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { LDAP } from 'Utils/ApiResources'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { ThemeContext } from '@/context/theme/themeContext'
 import { useDispatch } from 'react-redux'
 import { updateToast } from 'Redux/features/toastSlice'
 import customColors from '@/customColors'
 import { usePostConfigDatabaseLdapTest } from 'JansConfigApi'
 import type { GluuLdapConfiguration } from 'JansConfigApi'
 import type { LdapFormProps } from './types'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 interface ServerItem {
   servers?: string
@@ -49,7 +50,7 @@ function LdapForm({
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'darkBlue'
+  const selectedTheme = useMemo(() => theme?.state?.theme || DEFAULT_THEME, [theme?.state?.theme])
 
   function activateValidation(): void {
     if (!init) {

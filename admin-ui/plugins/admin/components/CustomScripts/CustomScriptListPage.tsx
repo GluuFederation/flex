@@ -33,8 +33,8 @@ import CustomScriptDetailPage from './CustomScriptDetailPage'
 import { useTranslation } from 'react-i18next'
 import { useCedarling, CEDAR_RESOURCE_SCOPES, ADMIN_UI_RESOURCES } from '@/cedarling'
 import SetTitle from 'Utils/SetTitle'
-import { ThemeContext } from 'Context/theme/themeContext'
-import getThemeColor from 'Context/theme/config'
+import { ThemeContext } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
 import { updateToast } from 'Redux/features/toastSlice'
@@ -45,6 +45,7 @@ import { DEFAULT_SCRIPT_TYPE } from './constants'
 import type { CustomScript } from 'JansConfigApi'
 import type { Column, Action } from '@material-table/core'
 import type { ScriptError } from './types/customScript'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 interface ScriptTableRow extends CustomScript {
   scriptError?: ScriptError
@@ -70,8 +71,9 @@ const CustomScriptListPage: React.FC = () => {
   const [itemToDelete, setItemToDelete] = useState<CustomScript | null>(null)
 
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'light'
-  const themeColors = getThemeColor(selectedTheme)
+
+  const selectedTheme = useMemo(() => theme?.state?.theme || DEFAULT_THEME, [theme?.state?.theme])
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
 
   const scriptsResourceId = ADMIN_UI_RESOURCES.Scripts
   const scriptScopes = CEDAR_RESOURCE_SCOPES[scriptsResourceId] || []
@@ -372,8 +374,8 @@ const CustomScriptListPage: React.FC = () => {
         fontSize: '0.875rem',
         borderBottom: '2px solid #e0e0e0',
       },
-      rowStyle: (rowData) => {
-        const hasError = (rowData as ScriptTableRow).scriptError?.stackTrace
+      rowStyle: (rowData: ScriptTableRow) => {
+        const hasError = rowData.scriptError?.stackTrace
         const baseColor = rowData.enabled ? themeColors.lightBackground : customColors.white
         return {
           backgroundColor: hasError ? `${customColors.accentRed}15` : baseColor,

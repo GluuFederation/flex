@@ -1,6 +1,7 @@
 import { makeStyles } from 'tss-react/mui'
+import type { Theme } from '@mui/material/styles'
 
-const styles = makeStyles()((theme: any) => ({
+const styles = makeStyles()((theme: Theme) => ({
   root: {
     padding: '1px 10px 1px 10px',
     display: 'flex',

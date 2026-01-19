@@ -46,6 +46,7 @@ import type { Scope } from 'JansConfigApi'
 import type { ScopeWithClients, ScopeTableRow } from './types'
 import { useScopeActions } from './hooks'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 interface DetailPanelProps {
   rowData: ScopeTableRow
@@ -170,7 +171,7 @@ const ScopeListPage: React.FC = () => {
 
   const scopesResourceId = ADMIN_UI_RESOURCES.Scopes
 
-  const selectedTheme = useMemo(() => theme?.state?.theme || 'light', [theme?.state?.theme])
+  const selectedTheme = useMemo(() => theme?.state?.theme || DEFAULT_THEME, [theme?.state?.theme])
 
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
 

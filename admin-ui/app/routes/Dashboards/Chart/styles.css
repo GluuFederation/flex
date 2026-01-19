@@ -1,8 +1,0 @@
-.recharts-legend-wrapper {
-    display: none;
-}
-
-table > thead > tr > th .Mui-active,
-table > thead > tr > th .Mui-active > svg {
-    color: #fff !important;
-}

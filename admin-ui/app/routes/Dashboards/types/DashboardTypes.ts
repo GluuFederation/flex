@@ -54,6 +54,11 @@ export interface DashboardChartProps {
   statData: MauStatEntry[]
   startMonth: string
   endMonth: string
+  textColor?: string
+  gridColor?: string
+  tooltipBackgroundColor?: string
+  tooltipTextColor?: string
+  isDark?: boolean
 }
 
 export interface TooltipPayloadItem {
@@ -67,7 +72,15 @@ export interface TooltipPayloadItem {
 export interface TooltipDesignProps {
   payload?: TooltipPayloadItem[]
   active?: boolean
+  backgroundColor?: string
+  textColor?: string
+  isDark?: boolean
 }
+
+export type ChartDataKey =
+  | 'client_credentials_access_token_count'
+  | 'authz_code_access_token_count'
+  | 'authz_code_idtoken_count'
 
 export type DashboardClient = Pick<Client, 'inum' | 'clientName' | 'disabled'>
 

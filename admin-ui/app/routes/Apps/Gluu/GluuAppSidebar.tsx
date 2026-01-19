@@ -6,16 +6,13 @@ import GluuErrorFallBack from './GluuErrorFallBack'
 import { processMenus } from 'Plugins/PluginMenuResolver'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
-import getThemeColor from 'Context/theme/config'
 import CachedIcon from '@mui/icons-material/Cached'
-import LockIcon from '@mui/icons-material/Lock'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import styles from './styles/GluuAppSidebar.style'
 import { MenuContext } from '../../../components/SidebarMenu/MenuContext'
 import type { SidebarMenuContext } from '../../../components/SidebarMenu/MenuContext'
 
 import {
-  WaveIcon,
   HomeIcon,
   OAuthIcon,
   UserClaimsIcon,
@@ -25,7 +22,9 @@ import {
   ScimIcon,
   SamlIcon,
   JansKcLinkIcon,
-  StmpZoneIcon,
+  SmtpZoneIcon,
+  ScriptsIcon,
+  LockIcon,
 } from '../../../components/SVG'
 import { AdminUiFeatureResource, useCedarling } from '@/cedarling'
 import { CEDARLING_BYPASS } from '@/cedarling/utility'
@@ -34,14 +33,11 @@ import type {
   MenuItem,
   PluginMenu,
   VisibilityConditions,
-  IconStyles,
   MenuIconMap,
   ThemeContextState,
-  ThemeColors,
   SidebarRootState,
 } from '../../../components/Sidebar'
 
-// Constants - Extract to improve performance and maintainability
 const VISIBILITY_CONDITIONS: VisibilityConditions = {
   [ROUTES.JANS_LOCK_BASE]: 'jans-lock',
   [ROUTES.FIDO_BASE]: 'jans-fido2',
@@ -49,31 +45,23 @@ const VISIBILITY_CONDITIONS: VisibilityConditions = {
   [ROUTES.SAML_BASE]: 'keycloak',
 } as const
 
-const ICON_STYLES: IconStyles = {
-  default: { top: '-2px', height: '28px', width: '28px' },
-  saml: { top: 0, height: '28px', width: '28px' },
-  script: { fontSize: '28px' },
-} as const
-
-// Icon mapping for better performance - O(1) lookup instead of O(n) switch
 const MENU_ICON_MAP: MenuIconMap = {
   home: <HomeIcon className="menu-icon" />,
   oauthserver: <OAuthIcon className="menu-icon" />,
   services: <ServicesIcon className="menu-icon" />,
   user_claims: <UserClaimsIcon className="menu-icon" />,
-  scripts: <i className="menu-icon fas fa-file-code" style={ICON_STYLES.script} />,
+  scripts: <ScriptsIcon className="menu-icon" />,
   usersmanagement: <UsersIcon className="menu-icon" />,
-  stmpmanagement: <StmpZoneIcon className="menu-icon" />,
+  smtpmanagement: <SmtpZoneIcon className="menu-icon" />,
   fidomanagement: <FidoIcon className="menu-icon" />,
   scim: <ScimIcon className="menu-icon" />,
-  jans_link: <CachedIcon className="menu-icon" style={ICON_STYLES.default} />,
-  jans_lock: <LockIcon className="menu-icon" style={ICON_STYLES.default} />,
-  jans_kc_link: <JansKcLinkIcon className="menu-icon" style={ICON_STYLES.default} />,
-  saml: <SamlIcon className="menu-icon" style={ICON_STYLES.saml} />,
+  jans_link: <CachedIcon className="menu-icon" />,
+  jans_lock: <LockIcon className="menu-icon" />,
+  jans_kc_link: <JansKcLinkIcon className="menu-icon" />,
+  saml: <SamlIcon className="menu-icon" />,
 } as const
 
-// Type definitions for local state
-interface RootState extends SidebarRootState {}
+type RootState = SidebarRootState
 
 const selectHealth = (state: RootState) => state.healthReducer.health
 const selectLogoutAuditSucceeded = (state: RootState): boolean | null =>
@@ -99,11 +87,10 @@ function GluuAppSidebar(): JSX.Element {
     [selectedTheme],
   )
 
-  const themeColors = useMemo((): ThemeColors => getThemeColor(selectedTheme), [selectedTheme])
-
-  const getMenuIcon = useCallback((name?: string): React.ReactNode | null => {
-    if (!name) return null
-    return MENU_ICON_MAP[name] ?? null
+  const getMenuIcon = useCallback((name?: string): React.ReactElement | undefined => {
+    if (!name) return undefined
+    const icon = MENU_ICON_MAP[name]
+    return React.isValidElement(icon) ? icon : undefined
   }, [])
 
   const getMenuPath = useCallback((menu: MenuItem): string | undefined => {
@@ -239,15 +226,6 @@ function GluuAppSidebar(): JSX.Element {
             <GluuLoader blocking />
           </div>
         )}
-
-        <div
-          className={
-            isReady ? `${classes.waveContainer} ${classes.waveFadeIn}` : classes.waveContainerFixed
-          }
-        >
-          <WaveIcon className={classes.wave} fill={themeColors.menu.background} />
-          <div className={classes.powered}>Powered by Gluu</div>
-        </div>
       </SidebarMenu>
     </ErrorBoundary>
   )

@@ -21,12 +21,12 @@ const TokenDistributionChart: React.FC<TokenDistributionChartProps> = ({ summary
       {
         name: t('fields.cc_tokens'),
         value: summary.clientCredentialsTokens,
-        color: chartColors.clientCredentials,
+        color: chartColors.pieClientCredentials,
       },
       {
         name: t('fields.authz_code_tokens'),
         value: summary.authCodeTokens,
-        color: chartColors.authCodeAccess,
+        color: chartColors.pieAuthCodeAccess,
       },
     ],
     [summary, t, chartColors],
