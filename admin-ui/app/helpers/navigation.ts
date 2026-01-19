@@ -154,7 +154,7 @@ const ROUTES = {
   // ========== Core app pages ==========
 
   PROFILE: '/profile',
-  LOGOUT: '/logout',
+  LOGOUT: '/admin/logout',
   ERROR_404: '/error-404',
 
   // ========== Wildcard routes ==========
