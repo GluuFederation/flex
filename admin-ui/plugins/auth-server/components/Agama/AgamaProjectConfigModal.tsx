@@ -65,9 +65,22 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
   const updateConfigMutation = usePutAgamaPrj({
     mutation: {
       onSuccess: async (data) => {
+        // Normalise config payload to a plain object that matches ConfigDetailsState
+        let normalizedData: Record<string, unknown> = {}
+
+        if (typeof data === 'string') {
+          try {
+            normalizedData = JSON.parse(data) as Record<string, unknown>
+          } catch (e) {
+            console.error('Failed to parse config data JSON on success:', e)
+          }
+        } else if (data && typeof data === 'object') {
+          normalizedData = structuredClone(data) as Record<string, unknown>
+        }
+
         setConfigDetails((prevState) => ({
           ...prevState,
-          data: JSON.parse(data as string),
+          data: normalizedData,
         }))
         dispatch(
           updateToast(true, 'success', `Configuration for project ${name} imported successfully.`),
