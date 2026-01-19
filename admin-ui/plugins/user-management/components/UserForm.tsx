@@ -61,7 +61,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
 
   const theme = useContext(ThemeContext) as ThemeContextType
   const selectedTheme = theme.state.theme
-  const options: Partial<GetAttributesParams> = {}
+  const options = useMemo(() => ({}) as Partial<GetAttributesParams>, [])
   const initialValues = useMemo(
     () => initializeCustomAttributes(userDetails || null, memoizedPersonAttributes),
     [userDetails, memoizedPersonAttributes],
@@ -152,24 +152,13 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
     }
 
     if (userDetails) {
-      setupCustomAttributes(
-        userDetails,
-        memoizedPersonAttributes,
-        selectedClaims,
-        setSelectedClaims,
-      )
+      setupCustomAttributes(userDetails, memoizedPersonAttributes, [], setSelectedClaims)
     } else {
       setSelectedClaims([])
     }
 
     initializedRef.current = `${userKey}-${attrsKey}`
-  }, [
-    userDetails?.inum,
-    personAttributesKey,
-    memoizedPersonAttributes,
-    selectedClaims,
-    setSelectedClaims,
-  ])
+  }, [userDetails?.inum, personAttributesKey, memoizedPersonAttributes, setSelectedClaims])
 
   const isEmptyValue = useCallback((value: unknown): boolean => {
     if (value === null || value === undefined) return true

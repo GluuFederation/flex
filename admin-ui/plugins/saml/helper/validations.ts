@@ -105,21 +105,20 @@ export const websiteSsoIdentityProviderValidationSchema = (
     ).concat(urlValidation(t, 'fields.single_signon_service_url')),
     idpEntityId: Yup.string()
       .concat(noSpacesValidation(t, 'fields.idp_entity_id'))
-      .when('metaDataFileImportedFlag', {
-        is: (value: boolean) => value === false,
-        then: (schema) =>
-          schema
-            .required(`${t('fields.idp_entity_id')} is Required!`)
-            .test(
-              'not-empty',
-              t('errors.cannot_be_empty', { field: t('fields.idp_entity_id') }),
-              (value) => {
-                if (!value) return true // Required validation handles empty
-                return value.trim().length > 0
-              },
-            ),
-        otherwise: (schema) => schema,
-      }),
+      .when('metaDataFileImportedFlag', ([value], schema) =>
+        value === false
+          ? schema
+              .required(`${t('fields.idp_entity_id')} is Required!`)
+              .test(
+                'not-empty',
+                t('errors.cannot_be_empty', { field: t('fields.idp_entity_id') }),
+                (v) => {
+                  if (!v) return true // Required validation handles empty
+                  return v.trim().length > 0
+                },
+              )
+          : schema,
+      ),
     nameIDPolicyFormat: requiredWhenMetadataNotImported(t, 'fields.name_policy_format'),
     singleLogoutServiceUrl: Yup.string()
       .nullable()

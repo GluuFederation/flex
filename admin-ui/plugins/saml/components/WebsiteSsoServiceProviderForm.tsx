@@ -8,7 +8,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { Card, CardBody, Form, FormGroup, Col, Row } from 'Components'
-import { useFormik } from 'formik'
+import { useFormik, setNestedObjectValues } from 'formik'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
@@ -271,22 +271,7 @@ const WebsiteSsoServiceProviderForm = ({
 
       const errors = await formik.validateForm()
       if (Object.keys(errors).length > 0) {
-        const touched: Record<string, boolean | Record<string, boolean>> = {}
-        Object.keys(errors).forEach((key) => {
-          if (key.includes('.')) {
-            const [parent, child] = key.split('.')
-            if (!touched[parent] || typeof touched[parent] === 'boolean') {
-              touched[parent] = {}
-            }
-            const parentTouched = touched[parent]
-            if (typeof parentTouched === 'object' && !Array.isArray(parentTouched)) {
-              parentTouched[child] = true
-            }
-          } else {
-            touched[key] = true
-          }
-        })
-        formik.setTouched(touched, false)
+        formik.setTouched(setNestedObjectValues(errors, true), false)
         return
       }
 
