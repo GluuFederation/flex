@@ -28,6 +28,7 @@ import {
 } from '../utils'
 import { revokeSessionWhenFieldsModifiedInUserForm } from '../helper/constants'
 import { isPersistenceInfo } from 'Plugins/services/Components/Configuration/types'
+import { AXIOS_INSTANCE } from '../../../api-client'
 
 function UserEditPage() {
   const dispatch = useDispatch()
@@ -129,10 +130,28 @@ function UserEditPage() {
         Object.prototype.hasOwnProperty.call(modifiedFields, key),
       )
       if (anyKeyPresent) {
-        await revokeSessionMutation.mutateAsync({ userDn: userDetails?.dn || '' })
+        const userDn = userDetails?.dn
+        if (!userDn) {
+          console.error('Cannot revoke session: user DN is undefined')
+          return
+        }
+        // Revoke user session after successful update of user details
+        try {
+          await revokeSessionMutation.mutateAsync({ userDn })
+          await AXIOS_INSTANCE.delete(`/app/admin-ui/oauth2/session/${encodeURIComponent(userDn)}`)
+        } catch (error) {
+          console.error('Failed to revoke user session:', error)
+        }
       }
     },
-    [personAttributes, userDetails, persistenceType, standardFields, updateUserMutation],
+    [
+      personAttributes,
+      userDetails,
+      persistenceType,
+      standardFields,
+      updateUserMutation,
+      revokeSessionMutation,
+    ],
   )
 
   return (
