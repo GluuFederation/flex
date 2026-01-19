@@ -13,14 +13,7 @@ export const customScriptValidationSchema = Yup.object({
     .integer('Level must be an integer')
     .min(0, 'Level must be non-negative')
     .required('Required!'),
-  script: Yup.string().when('location_type', (values, schema) => {
-    const locationType = values[0] as string
-    return locationType === 'db' ? schema.required('Required!') : schema
-  }),
-  script_path: Yup.string().when('location_type', (values, schema) => {
-    const locationType = values[0] as string
-    return locationType === 'file' ? schema.required('Required!') : schema
-  }),
+  script: Yup.string().required('Required!'),
 
   moduleProperties: Yup.array()
     .of(
