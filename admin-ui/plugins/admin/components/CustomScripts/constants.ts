@@ -18,8 +18,3 @@ export const PROGRAMMING_LANGUAGES = [
   { value: 'java', label: 'Java' },
   { value: 'python', label: 'Jython' },
 ]
-
-export const LOCATION_TYPE_OPTIONS = [
-  { value: 'db', key: 'options.database' },
-  { value: 'file', key: 'options.file' },
-]
