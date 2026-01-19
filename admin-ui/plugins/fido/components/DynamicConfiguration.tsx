@@ -36,8 +36,6 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
     validateOnMount: true,
   })
 
-  // formik intentionally excluded - it has a new reference each render, causing infinite reset loop
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (fidoConfiguration) {
       formik.resetForm({

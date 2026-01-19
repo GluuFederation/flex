@@ -255,7 +255,7 @@ const WebsiteSsoServiceProviderForm = ({
   }, [formik, initialValues])
 
   const handleFormSubmit = useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
+    async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
 
       if (formik.values.spMetaDataSourceType?.toLowerCase() === 'file') {
@@ -268,6 +268,27 @@ const WebsiteSsoServiceProviderForm = ({
           return
         }
       }
+
+      const errors = await formik.validateForm()
+      if (Object.keys(errors).length > 0) {
+        const touched: Record<string, boolean | Record<string, boolean>> = {}
+        Object.keys(errors).forEach((key) => {
+          if (key.includes('.')) {
+            const [parent, child] = key.split('.')
+            if (!touched[parent] || typeof touched[parent] === 'boolean') {
+              touched[parent] = {}
+            }
+            if (typeof touched[parent] === 'object' && !Array.isArray(touched[parent])) {
+              ;(touched[parent] as Record<string, boolean>)[child] = true
+            }
+          } else {
+            touched[key] = true
+          }
+        })
+        formik.setTouched(touched, false)
+        return
+      }
+
       formik.handleSubmit(e)
     },
     [formik],
@@ -287,7 +308,12 @@ const WebsiteSsoServiceProviderForm = ({
                   formik={formik}
                   lsize={4}
                   rsize={8}
-                  showError={formik.errors.name && formik.touched.name}
+                  showError={Boolean(
+                    formik.errors.name &&
+                    (formik.touched.name ||
+                      formik.submitCount > 0 ||
+                      (formik.values.name && formik.values.name.length > 0)),
+                  )}
                   errorMessage={formik.errors.name}
                   disabled={viewOnly}
                   required
@@ -302,7 +328,12 @@ const WebsiteSsoServiceProviderForm = ({
                   formik={formik}
                   lsize={4}
                   rsize={8}
-                  showError={formik.errors.displayName && formik.touched.displayName}
+                  showError={Boolean(
+                    formik.errors.displayName &&
+                    (formik.touched.displayName ||
+                      formik.submitCount > 0 ||
+                      (formik.values.displayName && formik.values.displayName.length > 0)),
+                  )}
                   errorMessage={formik.errors.displayName}
                   disabled={viewOnly}
                   required
@@ -338,6 +369,13 @@ const WebsiteSsoServiceProviderForm = ({
                   formik={formik}
                   lsize={4}
                   rsize={8}
+                  showError={Boolean(
+                    formik.errors.spLogoutURL &&
+                    (formik.touched.spLogoutURL ||
+                      formik.submitCount > 0 ||
+                      (formik.values.spLogoutURL && formik.values.spLogoutURL.length > 0)),
+                  )}
+                  errorMessage={formik.errors.spLogoutURL}
                   disabled={viewOnly}
                   doc_category={DOC_SECTION}
                 />
@@ -438,10 +476,13 @@ const WebsiteSsoServiceProviderForm = ({
                       formik={formik}
                       lsize={4}
                       rsize={8}
-                      showError={
+                      showError={Boolean(
                         formik.errors.samlMetadata?.singleLogoutServiceUrl &&
-                        formik.touched.samlMetadata?.singleLogoutServiceUrl
-                      }
+                        (formik.touched.samlMetadata?.singleLogoutServiceUrl ||
+                          formik.submitCount > 0 ||
+                          (formik.values.samlMetadata.singleLogoutServiceUrl &&
+                            formik.values.samlMetadata.singleLogoutServiceUrl.length > 0)),
+                      )}
                       errorMessage={formik.errors.samlMetadata?.singleLogoutServiceUrl}
                       disabled={viewOnly}
                       required={Boolean(
@@ -459,10 +500,13 @@ const WebsiteSsoServiceProviderForm = ({
                       formik={formik}
                       lsize={4}
                       rsize={8}
-                      showError={
+                      showError={Boolean(
                         formik.errors.samlMetadata?.entityId &&
-                        formik.touched.samlMetadata?.entityId
-                      }
+                        (formik.touched.samlMetadata?.entityId ||
+                          formik.submitCount > 0 ||
+                          (formik.values.samlMetadata.entityId &&
+                            formik.values.samlMetadata.entityId.length > 0)),
+                      )}
                       errorMessage={formik.errors.samlMetadata?.entityId}
                       disabled={viewOnly}
                       required={Boolean(
@@ -483,7 +527,7 @@ const WebsiteSsoServiceProviderForm = ({
                       rsize={8}
                       showError={Boolean(
                         formik.errors.samlMetadata?.nameIDPolicyFormat &&
-                        formik.touched.samlMetadata?.nameIDPolicyFormat,
+                        (formik.touched.samlMetadata?.nameIDPolicyFormat || formik.submitCount > 0),
                       )}
                       errorMessage={formik.errors.samlMetadata?.nameIDPolicyFormat}
                       disabled={viewOnly}
@@ -502,10 +546,14 @@ const WebsiteSsoServiceProviderForm = ({
                       formik={formik}
                       lsize={4}
                       rsize={8}
-                      showError={
+                      showError={Boolean(
                         formik.errors.samlMetadata?.jansAssertionConsumerServiceGetURL &&
-                        formik.touched.samlMetadata?.jansAssertionConsumerServiceGetURL
-                      }
+                        (formik.touched.samlMetadata?.jansAssertionConsumerServiceGetURL ||
+                          formik.submitCount > 0 ||
+                          (formik.values.samlMetadata.jansAssertionConsumerServiceGetURL &&
+                            formik.values.samlMetadata.jansAssertionConsumerServiceGetURL.length >
+                              0)),
+                      )}
                       errorMessage={formik.errors.samlMetadata?.jansAssertionConsumerServiceGetURL}
                       disabled={viewOnly}
                       required={Boolean(
@@ -523,10 +571,14 @@ const WebsiteSsoServiceProviderForm = ({
                       formik={formik}
                       lsize={4}
                       rsize={8}
-                      showError={
+                      showError={Boolean(
                         formik.errors.samlMetadata?.jansAssertionConsumerServicePostURL &&
-                        formik.touched.samlMetadata?.jansAssertionConsumerServicePostURL
-                      }
+                        (formik.touched.samlMetadata?.jansAssertionConsumerServicePostURL ||
+                          formik.submitCount > 0 ||
+                          (formik.values.samlMetadata.jansAssertionConsumerServicePostURL &&
+                            formik.values.samlMetadata.jansAssertionConsumerServicePostURL.length >
+                              0)),
+                      )}
                       errorMessage={formik.errors.samlMetadata?.jansAssertionConsumerServicePostURL}
                       disabled={viewOnly}
                       required={Boolean(

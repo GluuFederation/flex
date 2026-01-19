@@ -915,7 +915,9 @@
     "attribute_update_failed": "Error updating attribute",
     "attribute_delete_failed": "Error deleting attribute",
     "attribute_load_failed": "Error loading attribute",
-    "attribute_not_found": "Attribute not found"
+    "cannot_contain_spaces": "{{field}} cannot contain spaces",
+    "cannot_be_empty": "{{field}} cannot be empty",
+    "must_be_valid_url": "{{field}} must be a valid URL"
   },
   "tooltips": {
     "add_attribute": "Add attribute",
