@@ -1,9 +1,10 @@
 // @ts-nocheck
 import { all, call, fork, put, takeLatest, select } from 'redux-saga/effects'
 import { getOidcDiscoveryResponse } from '../actions'
-import { isFourZeroOneError } from 'Utils/TokenController'
+import { isFourZeroThreeError } from 'Utils/TokenController'
 import OidcDiscoveryApi from '../api/OidcDiscoveryApi'
 import { getClient } from '../api/base'
+import { redirectToLogout } from '../sagas/SagaUtils'
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {
@@ -20,9 +21,10 @@ export function* getOidcDiscovery() {
     yield put(getOidcDiscoveryResponse({ configuration: data }))
   } catch (e) {
     yield put(getOidcDiscoveryResponse({ configuration: null }))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       // Session expired - redirect to login
-      window.location.href = '/logout'
+      yield* redirectToLogout()
+      return
     }
   }
 }
