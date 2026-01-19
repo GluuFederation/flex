@@ -116,4 +116,7 @@ export type JsonValue =
  */
 export type JsonObject = { [key: string]: JsonValue }
 
+/**
+ * Type for API error responses
+ */
 export type ApiError = Error | { message?: string; status?: number; statusText?: string }

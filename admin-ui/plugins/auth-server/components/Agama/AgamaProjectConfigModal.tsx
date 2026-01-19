@@ -64,7 +64,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
 
   const updateConfigMutation = usePutAgamaPrj({
     mutation: {
-      onSuccess: async (data: string | JsonObject) => {
+      onSuccess: (data: string | JsonObject) => {
         // Normalise config payload to a plain object that matches ConfigDetailsState
         let normalizedData: JsonObject = {}
 
@@ -89,13 +89,16 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
         )
       },
       onError: (error: ApiError) => {
-        const errorMessage =
-          error instanceof Error ? error.message : error?.message || 'Invalid JSON file'
+        const errorMessage = getErrorMessage(error, 'Invalid JSON file')
         console.error('Error importing config:', error)
         dispatch(updateToast(true, 'error', errorMessage))
       },
     },
   })
+
+  function getErrorMessage(error: ApiError, fallback = 'An error occurred'): string {
+    return error instanceof Error ? error.message : error?.message || fallback
+  }
 
   useEffect(() => {
     if (projectDetailsData) {
@@ -202,10 +205,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
         } catch (error) {
           const importError: ApiError = error instanceof Error ? error : { message: String(error) }
           console.error('Error importing config:', importError)
-          const errorMessage =
-            importError instanceof Error
-              ? importError.message
-              : importError?.message || 'Invalid JSON file'
+          const errorMessage = getErrorMessage(importError, 'Invalid JSON file')
           dispatch(updateToast(true, 'error', errorMessage))
         } finally {
           setConfigDetails((prevState) => ({
