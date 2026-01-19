@@ -13,7 +13,7 @@ import {
 } from 'Plugins/admin/redux/features/AssetSlice'
 import { CREATE, FETCH, DELETION, UPDATE } from '../../../../app/audit/UserActionType'
 import { updateToast } from 'Redux/features/toastSlice'
-import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import AssetApi from '../api/AssetApi'
 import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
@@ -57,7 +57,7 @@ export function* getAllJansAssets({
     const errMsg = getErrorMessage(e)
     yield* errorToast(errMsg)
     yield put(getJansAssetResponse({ data: null }))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       yield* redirectToLogout()
       return
     }
@@ -81,7 +81,7 @@ export function* getAssetServices({
     const errMsg = getErrorMessage(e)
     yield* errorToast(errMsg)
     yield put(getAssetServicesResponse({ data: null }))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       yield* redirectToLogout()
       return
     }
@@ -105,7 +105,7 @@ export function* getAssetTypes({
     const errMsg = getErrorMessage(e)
     yield* errorToast(errMsg)
     yield put(getAssetTypesResponse({ data: null }))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       yield* redirectToLogout()
       return
     }
@@ -131,7 +131,7 @@ export function* createJansAsset({
     const errMsg = getErrorMessage(e)
     yield* errorToast(errMsg)
     yield put(createJansAssetResponse({ data: null }))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       yield* redirectToLogout()
       return
     }
@@ -154,7 +154,7 @@ export function* deleteJansAsset({
     const errMsg = getErrorMessage(e)
     yield* errorToast(errMsg)
     yield put(deleteJansAssetResponse())
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       yield* redirectToLogout()
       return
     }
@@ -181,7 +181,7 @@ export function* updateJansAsset({
     const errMsg = getErrorMessage(e)
     yield* errorToast(errMsg)
     yield put(updateJansAssetResponse({ data: null }))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       yield* redirectToLogout()
       return
     }
