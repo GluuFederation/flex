@@ -290,7 +290,7 @@ spec:
   {{- end }}
 
   {{- /* 14. Admin UI */}}
-  {{- if index .Values.global "admin-ui" "ingress" "adminUiEnabled" -}}
+  {{- if index .Values.global "admin-ui" "ingress" "adminUiEnabled" }}
   - matches:
     - path:
         type: PathPrefix
