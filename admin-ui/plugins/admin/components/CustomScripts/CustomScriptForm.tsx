@@ -1,5 +1,6 @@
 import React, { Suspense, lazy, useState, ChangeEvent, useMemo, useCallback } from 'react'
-import { useFormik } from 'formik'
+import { useFormik, setNestedObjectValues } from 'formik'
+import type { FormikTouched } from 'formik'
 import Toggle from 'react-toggle'
 import { Col, InputGroup, CustomInput, Form, FormGroup, Input } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
@@ -174,10 +175,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
   const handleDialogAccept = useCallback(async () => {
     const errors = await formik.validateForm()
     if (Object.keys(errors).length > 0) {
-      const touched: Record<string, boolean> = {}
-      Object.keys(errors).forEach((key) => {
-        touched[key] = true
-      })
+      const touched = setNestedObjectValues(errors, true) as FormikTouched<FormValues>
       formik.setTouched(touched)
       toggle()
       return
