@@ -93,6 +93,10 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
     const hasModifiedFields = Object.keys(modifiedFields).length > 0
     const isFormChanged = formik.dirty || hasModifiedFields
 
+    if (isSubmitting || !isFormChanged || !formik.isValid) {
+      return
+    }
+
     const anyKeyPresent = revokeSessionWhenFieldsModifiedInUserForm.some((key) =>
       Object.prototype.hasOwnProperty.call(modifiedFields, key),
     )
@@ -101,17 +105,9 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
       setAlertSeverity('warning')
     }
 
-    if (isSubmitting || !isFormChanged) {
-      return
-    }
-
-    if (!hasModifiedFields && !formik.isValid) {
-      return
-    }
-
     setOperations(buildFormOperations(modifiedFields))
     toggle()
-  }, [isSubmitting, formik.dirty, formik.isValid, modifiedFields, toggle])
+  }, [isSubmitting, formik.dirty, formik.isValid, modifiedFields, toggle, t])
 
   const handleNavigateBack = useCallback(() => {
     navigateBack(ROUTES.USER_MANAGEMENT)
