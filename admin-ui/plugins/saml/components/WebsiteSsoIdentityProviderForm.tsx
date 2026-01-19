@@ -412,9 +412,7 @@ const WebsiteSsoIdentityProviderForm = ({
                       rsize={8}
                       showError={Boolean(
                         formik.errors.idpEntityId &&
-                        (formik.touched.idpEntityId ||
-                          formik.submitCount > 0 ||
-                          (formik.values.idpEntityId && formik.values.idpEntityId.length > 0)),
+                        (formik.touched.idpEntityId || formik.submitCount > 0),
                       )}
                       errorMessage={formik.errors.idpEntityId}
                       disabled={viewOnly}
@@ -525,10 +523,7 @@ const WebsiteSsoIdentityProviderForm = ({
                       rsize={8}
                       showError={Boolean(
                         formik.errors.principalAttribute &&
-                        (formik.touched.principalAttribute ||
-                          formik.submitCount > 0 ||
-                          (formik.values.principalAttribute &&
-                            formik.values.principalAttribute.length > 0)),
+                        (formik.touched.principalAttribute || formik.submitCount > 0),
                       )}
                       errorMessage={formik.errors.principalAttribute}
                       disabled={viewOnly}
@@ -545,9 +540,7 @@ const WebsiteSsoIdentityProviderForm = ({
                       rsize={8}
                       showError={Boolean(
                         formik.errors.principalType &&
-                        (formik.touched.principalType ||
-                          formik.submitCount > 0 ||
-                          (formik.values.principalType && formik.values.principalType.length > 0)),
+                        (formik.touched.principalType || formik.submitCount > 0),
                       )}
                       errorMessage={formik.errors.principalType}
                       disabled={viewOnly}
