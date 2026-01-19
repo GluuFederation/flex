@@ -61,7 +61,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
 
   const theme = useContext(ThemeContext) as ThemeContextType
   const selectedTheme = theme.state.theme
-  const options = useMemo<Partial<GetAttributesParams>>(() => ({}), [])
+  const options: Partial<GetAttributesParams> = {}
   const initialValues = useMemo(
     () => initializeCustomAttributes(userDetails || null, memoizedPersonAttributes),
     [userDetails, memoizedPersonAttributes],
@@ -80,9 +80,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
     validateOnChange: true,
     validateOnBlur: true,
     validateOnMount: false,
-    onSubmit: () => {
-      // Form submission is handled by GluuCommitDialog onAccept
-    },
+    onSubmit: () => {},
   })
 
   const toggle = useCallback(() => {
@@ -98,7 +96,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
     }
 
     const anyKeyPresent = revokeSessionWhenFieldsModifiedInUserForm.some((key) =>
-      Object.prototype.hasOwnProperty.call(modifiedFields, key),
+      key in modifiedFields,
     )
     if (anyKeyPresent) {
       setAlertMessage(t('messages.revokeUserSession'))
@@ -117,15 +115,14 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
     const resetValues = initializeCustomAttributes(userDetails || null, memoizedPersonAttributes)
     formik.resetForm({ values: resetValues })
     setModifiedFields({})
+    setSelectedClaims([])
     if (userDetails) {
-      setSelectedClaims([])
       setupCustomAttributes(userDetails, memoizedPersonAttributes, [], setSelectedClaims)
       initializedRef.current = userDetails.inum || 'new'
     } else {
-      setSelectedClaims([])
       initializedRef.current = 'new'
     }
-  }, [formik, userDetails, memoizedPersonAttributes, selectedClaims, setSelectedClaims])
+  }, [formik, userDetails, memoizedPersonAttributes, setSelectedClaims])
 
   const toggleChangePasswordModal = useCallback(() => {
     setChangePasswordModal((prev) => !prev)
@@ -166,15 +163,35 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
     }
 
     initializedRef.current = `${userKey}-${attrsKey}`
-  }, [userDetails?.inum, personAttributesKey, memoizedPersonAttributes, setSelectedClaims])
+  }, [userDetails?.inum, personAttributesKey, memoizedPersonAttributes, selectedClaims, setSelectedClaims])
 
   const isEmptyValue = useCallback((value: unknown): boolean => {
     if (value === null || value === undefined) return true
     if (typeof value === 'string') return value.trim() === ''
     if (Array.isArray(value)) return value.length === 0
-    if (typeof value === 'boolean') return value === false
     return false
   }, [])
+
+  const resetFormToInitialCustomAttributes = useCallback(() => {
+    const resetValues = initializeCustomAttributes(
+      userDetails || null,
+      memoizedPersonAttributes,
+    )
+    formik.resetForm({ values: resetValues })
+  }, [formik, memoizedPersonAttributes, userDetails])
+
+  const prevModifiedFieldsLengthRef = useRef<number>(0)
+
+  useEffect(() => {
+    const currentLength = Object.keys(modifiedFields).length
+    const prevLength = prevModifiedFieldsLengthRef.current
+
+    if (prevLength > 0 && currentLength === 0) {
+      resetFormToInitialCustomAttributes()
+    }
+
+    prevModifiedFieldsLengthRef.current = currentLength
+  }, [modifiedFields, resetFormToInitialCustomAttributes])
 
   const updateModifiedFields = useCallback(
     (name: string, value: unknown) => {
@@ -182,15 +199,6 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
         if (isEmptyValue(value)) {
           const { [name]: _removed, ...rest } = prev
           void _removed
-          if (Object.keys(rest).length === 0) {
-            const resetValues = initializeCustomAttributes(
-              userDetails || null,
-              memoizedPersonAttributes,
-            )
-            requestAnimationFrame(() => {
-              formik.resetForm({ values: resetValues })
-            })
-          }
           return rest
         } else {
           return {
@@ -200,7 +208,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
         }
       })
     },
-    [formik, isEmptyValue, memoizedPersonAttributes, userDetails],
+    [isEmptyValue],
   )
 
   const removeSelectedClaimsFromState = useCallback(
@@ -216,7 +224,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
       } else {
         formik.setFieldValue(id, '')
       }
-      updateModifiedFields(id, isMultiValued ? [] : isBoolean ? false : '')
+      updateModifiedFields(id, isMultiValued ? [] : '')
       setSelectedClaims((prev) => prev.filter((data) => data.name !== id))
     },
     [formik, memoizedPersonAttributes, updateModifiedFields],
@@ -227,29 +235,17 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
       setModifiedFields((prev) => {
         const newFields = typeof fields === 'function' ? fields(prev) : fields
         const cleanedFields: Record<string, string | string[] | boolean> = {}
-        let hasNonEmptyFields = false
 
         for (const [key, value] of Object.entries(newFields)) {
           if (!isEmptyValue(value)) {
             cleanedFields[key] = value
-            hasNonEmptyFields = true
           }
-        }
-
-        if (!hasNonEmptyFields && Object.keys(cleanedFields).length === 0) {
-          const resetValues = initializeCustomAttributes(
-            userDetails || null,
-            memoizedPersonAttributes,
-          )
-          requestAnimationFrame(() => {
-            formik.resetForm({ values: resetValues })
-          })
         }
 
         return cleanedFields
       })
     },
-    [formik, isEmptyValue, memoizedPersonAttributes, userDetails],
+    [isEmptyValue],
   )
 
   const handleChange = useCallback(
@@ -261,7 +257,6 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
       const { name, value } = e.target
       formik.setFieldValue(name, value)
       formik.setFieldTouched(name, true, false)
-      // Use helper to update modifiedFields (removes empty values automatically)
       updateModifiedFields(name, value)
     },
     [formik, updateModifiedFields],
