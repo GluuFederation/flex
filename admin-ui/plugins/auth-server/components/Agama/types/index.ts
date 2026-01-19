@@ -16,6 +16,9 @@ export type {
   ExtendedProjectMetadata,
   AgamaTableRow,
   ModifiedFields,
+  JsonValue,
+  JsonObject,
+  ApiError,
 } from './agamaTypes'
 
 // Component props types

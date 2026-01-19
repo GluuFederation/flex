@@ -99,3 +99,21 @@ export interface AgamaTableRow extends AgamaProject {
 export interface ModifiedFields {
   [key: string]: string | boolean | string[] | number | undefined | null | Record<string, unknown>
 }
+
+/**
+ * Type for JSON-serializable values
+ */
+export type JsonValue =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: JsonValue }
+  | JsonValue[]
+
+/**
+ * Type for JSON objects
+ */
+export type JsonObject = { [key: string]: JsonValue }
+
+export type ApiError = Error | { message?: string; status?: number; statusText?: string }
