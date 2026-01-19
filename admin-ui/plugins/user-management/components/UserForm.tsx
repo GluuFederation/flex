@@ -172,6 +172,41 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
     initializedRef.current = `${userKey}-${attrsKey}`
   }, [userDetails?.inum, personAttributesKey, memoizedPersonAttributes, setSelectedClaims])
 
+  const isEmptyValue = useCallback((value: unknown): boolean => {
+    if (value === null || value === undefined) return true
+    if (typeof value === 'string') return value.trim() === ''
+    if (Array.isArray(value)) return value.length === 0
+    if (typeof value === 'boolean') return value === false
+    return false
+  }, [])
+
+  const updateModifiedFields = useCallback(
+    (name: string, value: unknown) => {
+      setModifiedFields((prev) => {
+        if (isEmptyValue(value)) {
+          const { [name]: _removed, ...rest } = prev
+          void _removed
+          if (Object.keys(rest).length === 0) {
+            const resetValues = initializeCustomAttributes(
+              userDetails || null,
+              memoizedPersonAttributes,
+            )
+            requestAnimationFrame(() => {
+              formik.resetForm({ values: resetValues })
+            })
+          }
+          return rest
+        } else {
+          return {
+            ...prev,
+            [name]: value as string | string[] | boolean,
+          }
+        }
+      })
+    },
+    [formik, isEmptyValue, memoizedPersonAttributes, userDetails],
+  )
+
   const removeSelectedClaimsFromState = useCallback(
     (id: string) => {
       const attributeDef = memoizedPersonAttributes.find((attr) => attr.name === id)
@@ -180,28 +215,45 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
 
       if (isMultiValued) {
         formik.setFieldValue(id, [])
-        setModifiedFields((prev) => ({
-          ...prev,
-          [id]: [],
-        }))
       } else if (isBoolean) {
         formik.setFieldValue(id, false)
-        setModifiedFields((prev) => ({
-          ...prev,
-          [id]: false,
-        }))
       } else {
         formik.setFieldValue(id, '')
-        setModifiedFields((prev) => ({
-          ...prev,
-          [id]: '',
-        }))
       }
-
+      updateModifiedFields(id, isMultiValued ? [] : isBoolean ? false : '')
       setSelectedClaims((prev) => prev.filter((data) => data.name !== id))
-      formik.setFieldTouched(id, true)
     },
-    [formik, memoizedPersonAttributes],
+    [formik, memoizedPersonAttributes, updateModifiedFields],
+  )
+
+  const setModifiedFieldsWrapper = useCallback(
+    (fields: React.SetStateAction<Record<string, string | string[] | boolean>>) => {
+      setModifiedFields((prev) => {
+        const newFields = typeof fields === 'function' ? fields(prev) : fields
+        const cleanedFields: Record<string, string | string[] | boolean> = {}
+        let hasNonEmptyFields = false
+
+        for (const [key, value] of Object.entries(newFields)) {
+          if (!isEmptyValue(value)) {
+            cleanedFields[key] = value
+            hasNonEmptyFields = true
+          }
+        }
+
+        if (!hasNonEmptyFields && Object.keys(cleanedFields).length === 0) {
+          const resetValues = initializeCustomAttributes(
+            userDetails || null,
+            memoizedPersonAttributes,
+          )
+          requestAnimationFrame(() => {
+            formik.resetForm({ values: resetValues })
+          })
+        }
+
+        return cleanedFields
+      })
+    },
+    [formik, isEmptyValue, memoizedPersonAttributes, userDetails],
   )
 
   const handleChange = useCallback(
@@ -213,12 +265,10 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
       const { name, value } = e.target
       formik.setFieldValue(name, value)
       formik.setFieldTouched(name, true, false)
-      setModifiedFields((prev) => ({
-        ...prev,
-        [name]: value as string | string[],
-      }))
+      // Use helper to update modifiedFields (removes empty values automatically)
+      updateModifiedFields(name, value)
     },
-    [formik],
+    [formik, updateModifiedFields],
   )
 
   useEffect(() => {
@@ -422,7 +472,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
                   data={data}
                   formik={formik}
                   handler={removeSelectedClaimsFromState}
-                  setModifiedFields={setModifiedFields}
+                  setModifiedFields={setModifiedFieldsWrapper}
                   modifiedFields={modifiedFields}
                 />
               ))}
@@ -467,7 +517,9 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
           onBack={handleNavigateBack}
           showCancel={true}
           onCancel={handleCancel}
-          disableCancel={isSubmitting || !formik.dirty}
+          disableCancel={
+            isSubmitting || (!formik.dirty && Object.keys(modifiedFields).length === 0)
+          }
           showApply={true}
           onApply={handleApply}
           disableApply={shouldDisableApplyButton(
