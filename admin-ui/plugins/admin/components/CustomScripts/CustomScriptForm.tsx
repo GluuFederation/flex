@@ -1,12 +1,4 @@
-import React, {
-  Suspense,
-  lazy,
-  useState,
-  ChangeEvent,
-  useMemo,
-  useCallback,
-  useEffect,
-} from 'react'
+import React, { Suspense, lazy, useState, ChangeEvent, useMemo, useCallback } from 'react'
 import { useFormik } from 'formik'
 import Toggle from 'react-toggle'
 import { Col, InputGroup, CustomInput, Form, FormGroup, Input } from 'Components'
@@ -154,8 +146,6 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
 
   const usageTypeChange = useCallback(
     (value: string): void => {
-      if (!value) return
-
       const currentProperties = formik.values.moduleProperties || []
       const newProperties = updatePropertyInModuleProperties(currentProperties, 'usage_type', value)
 
@@ -205,25 +195,6 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
   }, [formik.values.moduleProperties])
 
   const scriptTypeState = formik.values.scriptType
-
-  useEffect(() => {
-    const isApplyDisabled = !formik.isValid || !formik.dirty
-    console.log('🔵 [CustomScriptForm] Form Validation State:')
-    console.log('  - formik.isValid:', formik.isValid)
-    console.log('  - formik.dirty:', formik.dirty)
-    console.log('  - Apply Button Disabled:', isApplyDisabled)
-    console.log('  - Validation Errors:', formik.errors)
-    console.log('  - Touched Fields:', formik.touched)
-    if (!formik.isValid) {
-      console.log('  ❌ Form is INVALID. Reasons:')
-      Object.keys(formik.errors).forEach((key) => {
-        console.log(`    - ${key}:`, formik.errors[key as keyof typeof formik.errors])
-      })
-    }
-    if (!formik.dirty) {
-      console.log('  ⚠️ Form is NOT DIRTY (no changes made)')
-    }
-  }, [formik.isValid, formik.dirty, formik.errors, formik.touched])
 
   return (
     <>
