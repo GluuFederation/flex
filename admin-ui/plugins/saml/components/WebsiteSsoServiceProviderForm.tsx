@@ -278,8 +278,9 @@ const WebsiteSsoServiceProviderForm = ({
             if (!touched[parent] || typeof touched[parent] === 'boolean') {
               touched[parent] = {}
             }
-            if (typeof touched[parent] === 'object' && !Array.isArray(touched[parent])) {
-              ;(touched[parent] as Record<string, boolean>)[child] = true
+            const parentTouched = touched[parent]
+            if (typeof parentTouched === 'object' && !Array.isArray(parentTouched)) {
+              parentTouched[child] = true
             }
           } else {
             touched[key] = true

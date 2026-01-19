@@ -95,8 +95,8 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
       return
     }
 
-    const anyKeyPresent = revokeSessionWhenFieldsModifiedInUserForm.some((key) =>
-      key in modifiedFields,
+    const anyKeyPresent = revokeSessionWhenFieldsModifiedInUserForm.some(
+      (key) => key in modifiedFields,
     )
     if (anyKeyPresent) {
       setAlertMessage(t('messages.revokeUserSession'))
@@ -163,7 +163,13 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
     }
 
     initializedRef.current = `${userKey}-${attrsKey}`
-  }, [userDetails?.inum, personAttributesKey, memoizedPersonAttributes, selectedClaims, setSelectedClaims])
+  }, [
+    userDetails?.inum,
+    personAttributesKey,
+    memoizedPersonAttributes,
+    selectedClaims,
+    setSelectedClaims,
+  ])
 
   const isEmptyValue = useCallback((value: unknown): boolean => {
     if (value === null || value === undefined) return true
@@ -173,10 +179,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
   }, [])
 
   const resetFormToInitialCustomAttributes = useCallback(() => {
-    const resetValues = initializeCustomAttributes(
-      userDetails || null,
-      memoizedPersonAttributes,
-    )
+    const resetValues = initializeCustomAttributes(userDetails || null, memoizedPersonAttributes)
     formik.resetForm({ values: resetValues })
   }, [formik, memoizedPersonAttributes, userDetails])
 
