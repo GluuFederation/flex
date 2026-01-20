@@ -216,7 +216,7 @@ const WebsiteSsoIdentityProviderForm = ({
   }, [formik, initialValues])
 
   const handleFormSubmit = useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
+    async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
       if (
         !formik.values.metaDataFile &&
@@ -226,6 +226,17 @@ const WebsiteSsoIdentityProviderForm = ({
         formik.setFieldTouched('metaDataFile', true)
         return
       }
+
+      const errors = await formik.validateForm()
+      if (Object.keys(errors).length > 0) {
+        const touched: Record<string, boolean> = {}
+        Object.keys(errors).forEach((key) => {
+          touched[key] = true
+        })
+        formik.setTouched(touched, false)
+        return
+      }
+
       formik.handleSubmit(e)
     },
     [formik, configs?.idpMetaDataFN],
@@ -260,9 +271,14 @@ const WebsiteSsoIdentityProviderForm = ({
       const error = formik.errors[fieldName]
       const touched = formik.touched[fieldName]
       const value = formik.values[fieldName]
-      return Boolean(error && (touched || (value !== undefined && value !== null && value !== '')))
+      return Boolean(
+        error &&
+        (touched ||
+          formik.submitCount > 0 ||
+          (value !== undefined && value !== null && String(value).length > 0)),
+      )
     },
-    [formik.errors, formik.touched, formik.values],
+    [formik.errors, formik.touched, formik.values, formik.submitCount],
   )
 
   useEffect(() => {
@@ -394,7 +410,10 @@ const WebsiteSsoIdentityProviderForm = ({
                       required={!formik.values.metaDataFileImportedFlag}
                       lsize={4}
                       rsize={8}
-                      showError={shouldShowError('idpEntityId')}
+                      showError={Boolean(
+                        formik.errors.idpEntityId &&
+                        (formik.touched.idpEntityId || formik.submitCount > 0),
+                      )}
                       errorMessage={formik.errors.idpEntityId}
                       disabled={viewOnly}
                       doc_category={DOC_SECTION}
@@ -411,7 +430,10 @@ const WebsiteSsoIdentityProviderForm = ({
                       lsize={4}
                       rsize={8}
                       required={!formik.values.metaDataFileImportedFlag}
-                      showError={shouldShowError('nameIDPolicyFormat')}
+                      showError={Boolean(
+                        formik.errors.nameIDPolicyFormat &&
+                        (formik.touched.nameIDPolicyFormat || formik.submitCount > 0),
+                      )}
                       errorMessage={formik.errors.nameIDPolicyFormat}
                       disabled={viewOnly}
                       doc_category={DOC_SECTION}
@@ -427,7 +449,10 @@ const WebsiteSsoIdentityProviderForm = ({
                       formik={formik}
                       lsize={4}
                       rsize={8}
-                      showError={shouldShowError('singleSignOnServiceUrl')}
+                      showError={Boolean(
+                        formik.errors.singleSignOnServiceUrl &&
+                        (formik.touched.singleSignOnServiceUrl || formik.submitCount > 0),
+                      )}
                       errorMessage={formik.errors.singleSignOnServiceUrl}
                       disabled={viewOnly}
                       doc_category={DOC_SECTION}
@@ -441,7 +466,10 @@ const WebsiteSsoIdentityProviderForm = ({
                       formik={formik}
                       lsize={4}
                       rsize={8}
-                      showError={shouldShowError('singleLogoutServiceUrl')}
+                      showError={Boolean(
+                        formik.errors.singleLogoutServiceUrl &&
+                        (formik.touched.singleLogoutServiceUrl || formik.submitCount > 0),
+                      )}
                       errorMessage={formik.errors.singleLogoutServiceUrl}
                       disabled={viewOnly}
                       doc_category={DOC_SECTION}
@@ -456,7 +484,10 @@ const WebsiteSsoIdentityProviderForm = ({
                       lsize={4}
                       rsize={8}
                       type="textarea"
-                      showError={shouldShowError('signingCertificate')}
+                      showError={Boolean(
+                        formik.errors.signingCertificate &&
+                        (formik.touched.signingCertificate || formik.submitCount > 0),
+                      )}
                       errorMessage={formik.errors.signingCertificate}
                       disabled={viewOnly}
                       rows={10}
@@ -472,7 +503,10 @@ const WebsiteSsoIdentityProviderForm = ({
                       lsize={4}
                       rsize={8}
                       type="textarea"
-                      showError={shouldShowError('encryptionPublicKey')}
+                      showError={Boolean(
+                        formik.errors.encryptionPublicKey &&
+                        (formik.touched.encryptionPublicKey || formik.submitCount > 0),
+                      )}
                       errorMessage={formik.errors.encryptionPublicKey}
                       disabled={viewOnly}
                       rows={10}
@@ -487,7 +521,10 @@ const WebsiteSsoIdentityProviderForm = ({
                       formik={formik}
                       lsize={4}
                       rsize={8}
-                      showError={shouldShowError('principalAttribute')}
+                      showError={Boolean(
+                        formik.errors.principalAttribute &&
+                        (formik.touched.principalAttribute || formik.submitCount > 0),
+                      )}
                       errorMessage={formik.errors.principalAttribute}
                       disabled={viewOnly}
                       doc_category={DOC_SECTION}
@@ -501,7 +538,10 @@ const WebsiteSsoIdentityProviderForm = ({
                       formik={formik}
                       lsize={4}
                       rsize={8}
-                      showError={shouldShowError('principalType')}
+                      showError={Boolean(
+                        formik.errors.principalType &&
+                        (formik.touched.principalType || formik.submitCount > 0),
+                      )}
                       errorMessage={formik.errors.principalType}
                       disabled={viewOnly}
                       doc_category={DOC_SECTION}

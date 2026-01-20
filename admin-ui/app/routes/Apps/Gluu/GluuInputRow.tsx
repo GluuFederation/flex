@@ -57,6 +57,7 @@ function GluuInputRow({
               formik.handleChange(event)
             }
           }}
+          onBlur={formik.handleBlur}
           onFocus={onFocus}
           onKeyDown={(evt) => evt.key === 'e' && type === 'number' && evt.preventDefault()}
           disabled={disabled}
