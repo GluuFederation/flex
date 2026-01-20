@@ -188,7 +188,7 @@ function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
   ]
 
   const tableData = useMemo(() => {
-    if (loading || scriptsLoading || acrsLoading) {
+    if (ldapLoading || scriptsLoading || acrsLoading) {
       return []
     }
     if (isBuiltIn) {
@@ -197,7 +197,7 @@ function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
     return [...list.ldap, ...list.scripts].sort(
       (item1, item2) => (item1.level || 0) - (item2.level || 0),
     )
-  }, [loading, scriptsLoading, acrsLoading, isBuiltIn, list.ldap, list.scripts])
+  }, [ldapLoading, scriptsLoading, acrsLoading, isBuiltIn, list.ldap, list.scripts])
 
   return (
     <GluuViewWrapper canShow={canReadAuthN}>
@@ -208,7 +208,7 @@ function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
         }}
         columns={columns}
         data={tableData}
-        isLoading={loading || scriptsLoading || acrsLoading}
+        isLoading={ldapLoading || scriptsLoading || acrsLoading}
         title=""
         actions={myActions}
         options={{

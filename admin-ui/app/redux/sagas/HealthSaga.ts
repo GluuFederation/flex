@@ -1,26 +1,23 @@
 // @ts-nocheck
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import { getHealthStatusResponse, getHealthServerStatusResponse } from '../features/healthSlice'
-import { getAPIAccessToken } from '../features/authSlice'
 import { postUserAction } from '../api/backend-api'
 import HealthApi from '../api/HealthApi'
 import { getClient } from '../api/base'
-import { initAudit } from '../sagas/SagaUtils'
 import HealthCheckApi from '../api/HealthCheckApi'
+import { initAudit, redirectToLogout } from '../sagas/SagaUtils'
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.AuthServerHealthCheckApi(getClient(JansConfigApi, token, issuer))
+  const api = new JansConfigApi.AuthServerHealthCheckApi(getClient(JansConfigApi, null, issuer))
   return new HealthApi(api)
 }
 
 function* newStatusFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.HealthCheckApi(getClient(JansConfigApi, token, issuer))
+  const api = new JansConfigApi.HealthCheckApi(getClient(JansConfigApi, null, issuer))
   return new HealthCheckApi(api)
 }
 
@@ -35,9 +32,10 @@ export function* getHealthStatus({ payload }) {
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getHealthStatusResponse(null))
-    if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+    if (isFourZeroThreeError(e)) {
+      // Session expired - redirect to login
+      yield* redirectToLogout()
+      return
     }
   }
 }

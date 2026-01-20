@@ -1,23 +1,20 @@
 // @ts-nocheck
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import { getAttributesResponseRoot, toggleInitAttributeLoader } from '../features/attributesSlice'
-import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { postUserAction } from 'Redux/api/backend-api'
 import { FETCH } from '../../audit/UserActionType'
-// } from '../../../../app/audit/UserActionType'
 import AttributeApi from '../api/AttributeApi'
 import { getClient } from 'Redux/api/base'
-import { initAudit } from 'Redux/sagas/SagaUtils'
+import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 
 const PERSON_SCHEMA = 'person schema'
 
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.AttributeApi(getClient(JansConfigApi, token, issuer))
+  const api = new JansConfigApi.AttributeApi(getClient(JansConfigApi, null, issuer))
   return new AttributeApi(api)
 }
 
@@ -34,9 +31,9 @@ export function* getAttributesRoot({ payload }) {
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getAttributesResponseRoot({ data: [] }))
-    if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+    if (isFourZeroThreeError(e)) {
+      yield* redirectToLogout()
+      return
     }
   } finally {
     yield put(toggleInitAttributeLoader(false))

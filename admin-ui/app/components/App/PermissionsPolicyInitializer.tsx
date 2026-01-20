@@ -10,10 +10,7 @@ import bootstrap from '@/cedarling/config/cedarling-bootstrap-TBAC.json'
 // Extended state interface for this component
 interface ExtendedRootState {
   authReducer: {
-    token?: {
-      access_token: string
-      scopes: string[]
-    }
+    hasSession?: boolean
     config?: {
       cedarlingLogType?: CedarlingLogType
     }
@@ -38,7 +35,7 @@ const PermissionsPolicyInitializer = () => {
 
   const [maxRetries] = useState(10)
 
-  const token = useSelector((state: ExtendedRootState) => state.authReducer.token)
+  const hasSession = useSelector((state: ExtendedRootState) => state.authReducer.hasSession)
   const { initialized, isInitializing, policyStoreJson } = useSelector(
     (state: ExtendedRootState) => state.cedarPermissions,
   )
@@ -76,8 +73,7 @@ const PermissionsPolicyInitializer = () => {
     }
 
     const shouldTryInit =
-      token &&
-      token.access_token &&
+      hasSession &&
       !initialized &&
       !isInitializing &&
       cedarlingLogType &&
@@ -132,7 +128,7 @@ const PermissionsPolicyInitializer = () => {
           dispatch(setCedarFailedStatusAfterMaxTries())
         }
       })
-  }, [token, initialized, isInitializing, cedarlingLogType, policyStoreJson, dispatch])
+  }, [hasSession, initialized, isInitializing, cedarlingLogType, policyStoreJson, dispatch])
 
   return null
 }

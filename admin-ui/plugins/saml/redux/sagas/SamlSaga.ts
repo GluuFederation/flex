@@ -2,10 +2,10 @@ import { call, all, put, fork, select, takeEvery } from 'redux-saga/effects'
 import type { SelectEffect, PutEffect } from 'redux-saga/effects'
 import { SagaIterator } from 'redux-saga'
 import { PayloadAction } from '@reduxjs/toolkit'
-import { initAudit } from 'Redux/sagas/SagaUtils'
+import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 import { getClient } from 'Redux/api/base'
 import {
-  isFourZeroOneError,
+  isFourZeroThreeError,
   addAdditionalData,
   type AdditionalPayload,
 } from 'Utils/TokenController'
@@ -25,7 +25,6 @@ import {
   createWebsiteSsoServiceProviderResponse,
   updateWebsiteSsoServiceProviderResponse,
 } from '../features/SamlSlice'
-import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { updateToast } from 'Redux/features/toastSlice'
 import { CREATE, DELETION, UPDATE } from '../../../../app/audit/UserActionType'
 import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSaga'
@@ -80,23 +79,20 @@ const toAdditionalPayload = (payload: PayloadForAudit): AdditionalPayload => {
 }
 
 function* newSamlConfigFunction(): Generator<SelectEffect, SamlApi, string> {
-  const token: string = yield select((state: SamlRootState) => state.authReducer.token.access_token)
   const issuer: string = yield select((state: SamlRootState) => state.authReducer.issuer)
-  const api = new JansConfigApi.SAMLConfigurationApi(getClient(JansConfigApi, token, issuer))
+  const api = new JansConfigApi.SAMLConfigurationApi(getClient(JansConfigApi, null, issuer))
   return new SamlApi(api)
 }
 
 function* newSamlIdentityFunction(): Generator<SelectEffect, SamlApi, string> {
-  const token: string = yield select((state: SamlRootState) => state.authReducer.token.access_token)
   const issuer: string = yield select((state: SamlRootState) => state.authReducer.issuer)
-  const api = new JansConfigApi.SAMLIdentityBrokerApi(getClient(JansConfigApi, token, issuer))
+  const api = new JansConfigApi.SAMLIdentityBrokerApi(getClient(JansConfigApi, null, issuer))
   return new SamlApi(api)
 }
 
 function* newWebsiteSsoServiceProviderFunction(): Generator<SelectEffect, SamlApi, string> {
-  const token: string = yield select((state: SamlRootState) => state.authReducer.token.access_token)
   const issuer: string = yield select((state: SamlRootState) => state.authReducer.issuer)
-  const api = new JansConfigApi.SAMLTrustRelationshipApi(getClient(JansConfigApi, token, issuer))
+  const api = new JansConfigApi.SAMLTrustRelationshipApi(getClient(JansConfigApi, null, issuer))
   return new SamlApi(api)
 }
 
@@ -194,13 +190,10 @@ export function* postWebsiteSsoServiceProvider({
       AUDIT_RESOURCE_NAMES.TRUST_RELATIONSHIP,
       toAdditionalPayload(payload),
     )
-    const token: string = yield select(
-      (state: SamlRootState) => state.authReducer.token.access_token,
-    )
     const api: SamlApi = yield* newWebsiteSsoServiceProviderFunction()
     const data: SamlApiResponse = yield call(api.postWebsiteSsoServiceProvider, {
       formdata: payload.action.action_data,
-      token,
+      token: null,
     })
     yield put(toggleSavedFormFlag(true))
     yield call(postUserAction, audit)
@@ -232,13 +225,10 @@ export function* updateWebsiteSsoServiceProvider({
       AUDIT_RESOURCE_NAMES.TRUST_RELATIONSHIP,
       toAdditionalPayload(payload),
     )
-    const token: string = yield select(
-      (state: SamlRootState) => state.authReducer.token.access_token,
-    )
     const api: SamlApi = yield* newWebsiteSsoServiceProviderFunction()
     const data: SamlApiResponse = yield call(api.updateWebsiteSsoServiceProvider, {
       formdata: payload.action.action_data,
-      token,
+      token: null,
     })
     yield put(toggleSavedFormFlag(true))
     yield call(postUserAction, audit)
@@ -300,13 +290,10 @@ export function* postSamlIdentity({
       AUDIT_RESOURCE_NAMES.IDENTITY_BROKERING,
       toAdditionalPayload(payload),
     )
-    const token: string = yield select(
-      (state: SamlRootState) => state.authReducer.token.access_token,
-    )
     const api: SamlApi = yield* newSamlIdentityFunction()
     const data: SamlIdentityCreateResponse = yield call(api.postSamlIdentityProvider, {
       formdata: payload.action.action_data,
-      token,
+      token: null,
     })
     yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     yield put(toggleSavedFormFlag(true))
@@ -338,13 +325,10 @@ export function* updateSamlIdentity({
       AUDIT_RESOURCE_NAMES.IDENTITY_BROKERING,
       toAdditionalPayload(payload),
     )
-    const token: string = yield select(
-      (state: SamlRootState) => state.authReducer.token.access_token,
-    )
     const api: SamlApi = yield* newSamlIdentityFunction()
     const data: SamlIdentityCreateResponse = yield call(api.updateSamlIdentityProvider, {
       formdata: payload.action.action_data,
-      token,
+      token: null,
     })
     yield put(toggleSavedFormFlag(true))
     yield* triggerWebhook({ payload: { createdFeatureValue: data } })
@@ -408,9 +392,9 @@ function* handleFourZeroOneError(
     error && typeof error === 'object' && 'status' in error
       ? { status: (error as { status?: number }).status }
       : null
-  if (isFourZeroOneError(errorWithStatus)) {
-    const jwt: string = yield select((state: SamlRootState) => state.authReducer.userinfo_jwt)
-    yield put(getAPIAccessToken(jwt))
+  if (isFourZeroThreeError(errorWithStatus)) {
+    // Session expired - redirect to login
+    yield* redirectToLogout()
   }
 }
 
