@@ -6,6 +6,7 @@ import React, {
   useMemo,
   type ReactElement,
 } from 'react'
+import { useDispatch } from 'react-redux'
 import MaterialTable, { type Action, type Column } from '@material-table/core'
 import { Paper } from '@mui/material'
 import { useSetAtom } from 'jotai'
@@ -20,6 +21,7 @@ import customColors from '@/customColors'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
+import { updateToast } from 'Redux/features/toastSlice'
 import AuthNDetailPage from './AuthNDetailPage'
 import { useCustomScriptsByType } from 'Plugins/admin/components/CustomScripts/hooks'
 import { DEFAULT_SCRIPT_TYPE } from 'Plugins/admin/components/CustomScripts/constants'
@@ -39,6 +41,7 @@ interface ListState {
 }
 
 function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement {
+  const dispatch = useDispatch()
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
   const { t } = useTranslation()
   const setCurrentItem = useSetAtom(currentAuthNItemAtom)
@@ -89,9 +92,14 @@ function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
   const handleGoToAuthNEditPage = useCallback(
     (row: AuthNItem) => {
       setCurrentItem(row)
-      return navigateToRoute(ROUTES.AUTH_SERVER_AUTHN_EDIT(row.inum || ''))
+      if (!row.inum) {
+        dispatch(updateToast(true, 'error', t('messages.built_in_acr_cannot_be_edited')))
+        return
+      }
+
+      return navigateToRoute(ROUTES.AUTH_SERVER_AUTHN_EDIT(row.inum))
     },
-    [setCurrentItem, navigateToRoute],
+    [setCurrentItem, navigateToRoute, dispatch, t],
   )
 
   useEffect(() => {

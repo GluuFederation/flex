@@ -1,4 +1,4 @@
-import type { Deployment, DeploymentDetails, ProjectMetadata } from 'JansConfigApi'
+import type { Deployment } from 'JansConfigApi'
 
 /**
  * Extended Agama project type with additional UI fields
@@ -28,14 +28,6 @@ export interface AgamaRepositoriesResponse {
 }
 
 /**
- * File upload payload for Agama project
- */
-export interface AgamaFileUpload {
-  name: string
-  file: Uint8Array
-}
-
-/**
  * ACR (Authentication Context Class Reference) mapping
  */
 export interface AcrMapping {
@@ -49,6 +41,46 @@ export interface AcrMapping {
 export interface FlowError {
   flow: string
   error: string
+}
+
+/**
+ * ACR Mapping table row with MaterialTable metadata
+ */
+export type AcrMappingTableRow = AcrMapping & {
+  tableData?: {
+    id: number
+  }
+}
+
+/**
+ * Root state for JSON config reducer
+ */
+export interface JsonConfigRootState {
+  jsonConfigReducer: {
+    configuration: {
+      acrMappings?: Record<string, string>
+    }
+    loading: boolean
+  }
+}
+
+interface AgamaJsonPatch {
+  op: 'add' | 'remove' | 'replace'
+  path: string
+  value?: Record<string, string>
+}
+
+export interface AgamaJsonPatchRequestBody {
+  requestBody: AgamaJsonPatch[]
+  [key: string]:
+    | AgamaJsonPatch[]
+    | string
+    | number
+    | boolean
+    | string[]
+    | number[]
+    | boolean[]
+    | null
 }
 
 /**
@@ -68,20 +100,6 @@ export interface ProjectDetailsState {
 export interface ConfigDetailsState {
   isLoading: boolean
   data: Record<string, unknown>
-}
-
-/**
- * Extended deployment details with typed flows error
- */
-export interface ExtendedDeploymentDetails extends DeploymentDetails {
-  flowsError?: Record<string, string>
-}
-
-/**
- * Extended project metadata
- */
-export interface ExtendedProjectMetadata extends ProjectMetadata {
-  configs?: Record<string, Record<string, Record<string, unknown>>>
 }
 
 /**
