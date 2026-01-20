@@ -1,5 +1,6 @@
 import React, { Suspense, lazy, useState, ChangeEvent, useMemo, useCallback } from 'react'
-import { useFormik } from 'formik'
+import { useFormik, setNestedObjectValues } from 'formik'
+import type { FormikTouched } from 'formik'
 import Toggle from 'react-toggle'
 import { Col, InputGroup, CustomInput, Form, FormGroup, Input } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
@@ -15,7 +16,6 @@ import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
 import { Skeleton, Alert } from '@mui/material'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
-import type { CustomScript } from 'JansConfigApi'
 import {
   CustomScriptFormProps,
   FormValues,
@@ -28,7 +28,7 @@ import { useCustomScriptTypes } from './hooks'
 import { filterEmptyObjects, mapPropertyToKeyValue } from 'Utils/Util'
 import { customScriptValidationSchema } from './helper/validations'
 import { transformToFormValues, getModuleProperty } from './helper/utils'
-import { PROGRAMMING_LANGUAGES, LOCATION_TYPE_OPTIONS } from './constants'
+import { PROGRAMMING_LANGUAGES } from './constants'
 import { PersonAuthenticationFields } from './PersonAuthenticationFields'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 const GluuScriptErrorModal = lazy(() => import('Routes/Apps/Gluu/GluuScriptErrorModal'))
@@ -38,17 +38,12 @@ const GluuInputEditor = lazy(() => import('Routes/Apps/Gluu/GluuInputEditor'))
 function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScriptFormProps) {
   const { navigateBack } = useAppNavigation()
   const { t } = useTranslation()
-  const [init, setInit] = useState<boolean>(false)
   const [modal, setModal] = useState<boolean>(false)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 
   const isEditMode = Boolean(item?.inum)
 
   const { data: scriptTypes = [], isLoading: loadingScriptTypes } = useCustomScriptTypes()
-
-  const activate = useCallback(() => {
-    setInit((prev) => (!prev ? true : prev))
-  }, [])
 
   const toggle = useCallback(() => {
     setModal((prev) => !prev)
@@ -78,7 +73,9 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
     initialValues: transformToFormValues(item),
     validationSchema: customScriptValidationSchema,
     enableReinitialize: true,
-    validateOnMount: true,
+    validateOnMount: false,
+    validateOnChange: true,
+    validateOnBlur: true,
     onSubmit: (values: FormValues) => {
       const mappedConfigurationProperties: ConfigurationProperty[] | undefined =
         values.configurationProperties
@@ -112,20 +109,12 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
         enabled: booleanEnabled,
       }
 
-      const customScript: CustomScriptItem =
-        values.location_type === 'file'
-          ? {
-              ...base,
-              locationType: 'file',
-              locationPath: values.script_path,
-              script: undefined,
-            }
-          : {
-              ...base,
-              locationType: 'db',
-              locationPath: undefined,
-              script: values.script,
-            }
+      const customScript: CustomScriptItem = {
+        ...base,
+        locationType: 'db',
+        locationPath: undefined,
+        script: values.script,
+      }
 
       const actionMessage = values.action_message?.trim()
 
@@ -137,35 +126,6 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
       handleSubmit(reqBody)
     },
   })
-
-  const updateModuleProperty = useCallback(
-    (key: string, value: string): void => {
-      const currentProperties = formik.values.moduleProperties || []
-      const index = currentProperties.findIndex((p) => p.value1 === key)
-
-      let newProperties: ModuleProperty[]
-      if (index >= 0) {
-        newProperties = currentProperties.map((p, idx) =>
-          idx === index
-            ? { ...p, value1: key, value2: value, description: p.description || '' }
-            : p,
-        )
-      } else {
-        newProperties = [...currentProperties, { value1: key, value2: value, description: '' }]
-      }
-      formik.setFieldValue('moduleProperties', newProperties)
-    },
-    [formik.values.moduleProperties, formik.setFieldValue],
-  )
-
-  const removeModuleProperty = useCallback(
-    (key: string): void => {
-      const currentProperties = formik.values.moduleProperties || []
-      const newProperties = currentProperties.filter((p) => p.value1 !== key)
-      formik.setFieldValue('moduleProperties', newProperties)
-    },
-    [formik.values.moduleProperties, formik.setFieldValue],
-  )
 
   const updatePropertyInModuleProperties = useCallback(
     (properties: ModuleProperty[], key: string, value: string): ModuleProperty[] => {
@@ -185,51 +145,8 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
     [],
   )
 
-  const locationTypeChange = useCallback(
-    (value: string): void => {
-      const currentProperties = formik.values.moduleProperties || []
-      const newProperties = updatePropertyInModuleProperties(
-        currentProperties,
-        'location_type',
-        value,
-      )
-
-      formik.setFieldValue('moduleProperties', newProperties)
-      formik.setFieldValue('location_type', value || '')
-
-      if (value === 'db') {
-        removeModuleProperty('location_path')
-        formik.setFieldValue('locationPath', undefined)
-        formik.setFieldValue('script_path', undefined)
-      } else if (value === 'file') {
-        formik.setFieldValue('script', undefined)
-      } else {
-        formik.setFieldValue('script', undefined)
-        formik.setFieldValue('script_path', undefined)
-      }
-    },
-    [
-      formik.setFieldValue,
-      formik.values.moduleProperties,
-      updatePropertyInModuleProperties,
-      removeModuleProperty,
-    ],
-  )
-
-  const scriptPathChange = useCallback(
-    (value: string): void => {
-      if (!value) return
-      formik.setFieldValue('locationPath', value)
-      removeModuleProperty('location_path')
-      updateModuleProperty('location_path', value)
-    },
-    [formik.setFieldValue, removeModuleProperty, updateModuleProperty],
-  )
-
   const usageTypeChange = useCallback(
     (value: string): void => {
-      if (!value) return
-
       const currentProperties = formik.values.moduleProperties || []
       const newProperties = updatePropertyInModuleProperties(currentProperties, 'usage_type', value)
 
@@ -241,9 +158,9 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
   const onLevelChange = useCallback(
     (level: number): void => {
       formik.setFieldValue('level', level)
-      activate()
+      formik.setFieldTouched('level', true)
     },
-    [formik, activate],
+    [formik],
   )
 
   const showErrorModal = useCallback((): void => setIsModalOpen(true), [])
@@ -255,10 +172,17 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
     formik.resetForm({ values: resetValues })
   }, [formik, item])
 
-  const handleDialogAccept = useCallback(() => {
+  const handleDialogAccept = useCallback(async () => {
+    const errors = await formik.validateForm()
+    if (Object.keys(errors).length > 0) {
+      const touched = setNestedObjectValues(errors, true) as FormikTouched<FormValues>
+      formik.setTouched(touched)
+      toggle()
+      return
+    }
     formik.handleSubmit()
     toggle()
-  }, [formik.handleSubmit, toggle])
+  }, [formik, toggle])
 
   const configurationPropertiesOptions = useMemo(() => {
     return filterEmptyObjects(formik.values.configurationProperties)?.map(mapPropertyToKeyValue)
@@ -268,7 +192,6 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
     return filterEmptyObjects(formik.values.moduleProperties)?.map(mapPropertyToKeyValue)
   }, [formik.values.moduleProperties])
 
-  const scriptPath = formik.values.location_type === 'file'
   const scriptTypeState = formik.values.scriptType
 
   return (
@@ -323,15 +246,18 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
               placeholder={t('placeholders.name')}
               id="name"
               valid={formik.touched.name && !formik.errors.name}
+              invalid={formik.touched.name && !!formik.errors.name}
               name="name"
               disabled={viewOnly}
               value={formik.values.name}
-              onKeyUp={activate}
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
             />
-            {formik.errors.name && formik.touched.name ? (
-              <div style={{ color: customColors.accentRed }}>{String(formik.errors.name)}</div>
-            ) : null}
+            {formik.errors.name && formik.touched.name && (
+              <div style={{ color: customColors.accentRed, marginTop: '4px' }}>
+                {String(formik.errors.name)}
+              </div>
+            )}
           </Col>
         </FormGroup>
 
@@ -342,12 +268,19 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
               <Input
                 placeholder={t('placeholders.description')}
                 valid={formik.touched.description && !formik.errors.description}
+                invalid={formik.touched.description && !!formik.errors.description}
                 id="description"
                 name="description"
                 disabled={viewOnly}
                 value={formik.values.description}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
+              {formik.errors.description && formik.touched.description && (
+                <div style={{ color: customColors.accentRed, marginTop: '4px' }}>
+                  {String(formik.errors.description)}
+                </div>
+              )}
             </InputGroup>
           </Col>
         </FormGroup>
@@ -380,7 +313,9 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
                   disabled={viewOnly || isEditMode}
                   onChange={(e: ChangeEvent<HTMLSelectElement>) => {
                     formik.setFieldValue('scriptType', e.target.value, true)
+                    formik.setFieldTouched('scriptType', true)
                   }}
+                  onBlur={formik.handleBlur}
                 >
                   <option value="">{t('options.choose')}...</option>
                   {scriptTypes.map((ele: ScriptType) => (
@@ -391,8 +326,8 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
                 </CustomInput>
               </InputGroup>
             )}
-            {formik.errors.scriptType && formik.touched.scriptType ? (
-              <div style={{ color: customColors.accentRed }}>
+            {formik.errors.scriptType && formik.touched.scriptType && !formik.values.scriptType ? (
+              <div style={{ color: customColors.accentRed, marginTop: '4px' }}>
                 {String(formik.errors.scriptType)}
               </div>
             ) : null}
@@ -416,7 +351,9 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
                 disabled={viewOnly}
                 onChange={(e: ChangeEvent<HTMLSelectElement>) => {
                   formik.setFieldValue('programmingLanguage', e.target.value)
+                  formik.setFieldTouched('programmingLanguage', true)
                 }}
+                onBlur={formik.handleBlur}
               >
                 <option value="">{t('options.choose')}...</option>
                 {PROGRAMMING_LANGUAGES.map((lang) => (
@@ -426,68 +363,15 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
                 ))}
               </CustomInput>
             </InputGroup>
-            {formik.errors.programmingLanguage && formik.touched.programmingLanguage && (
-              <div style={{ color: customColors.accentRed }}>
-                {String(formik.errors.programmingLanguage)}
-              </div>
-            )}
-          </Col>
-        </FormGroup>
-
-        <FormGroup row>
-          <GluuLabel label="fields.location_type" doc_category={SCRIPT} doc_entry="locationType" />
-          <Col sm={9}>
-            <InputGroup>
-              <CustomInput
-                type="select"
-                id="location_type"
-                name="location_type"
-                disabled={viewOnly}
-                value={formik.values.location_type}
-                onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                  locationTypeChange(e.target.value)
-                }}
-              >
-                <option value="">{t('options.choose')}...</option>
-                {LOCATION_TYPE_OPTIONS.map((location) => (
-                  <option key={location.value} value={location.value}>
-                    {t(location.key)}
-                  </option>
-                ))}
-              </CustomInput>
-            </InputGroup>
-          </Col>
-        </FormGroup>
-        {scriptPath && (
-          <FormGroup row>
-            <GluuLabel
-              required
-              label="fields.script_path"
-              doc_category={SCRIPT}
-              doc_entry="scriptPath"
-            />
-            <Col sm={9}>
-              <InputGroup>
-                <Input
-                  placeholder={t('placeholders.script_path')}
-                  valid={formik.touched.script_path && !formik.errors.script_path}
-                  disabled={viewOnly}
-                  id="location_path"
-                  value={formik.values.script_path || ''}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                    scriptPathChange(e.target.value)
-                    formik.setFieldValue('script_path', e.target.value)
-                  }}
-                />
-              </InputGroup>
-              {formik.errors.script_path && formik.touched.script_path && (
-                <div style={{ color: customColors.accentRed }}>
-                  {String(formik.errors.script_path)}
+            {formik.errors.programmingLanguage &&
+              formik.touched.programmingLanguage &&
+              !formik.values.programmingLanguage && (
+                <div style={{ color: customColors.accentRed, marginTop: '4px' }}>
+                  {String(formik.errors.programmingLanguage)}
                 </div>
               )}
-            </Col>
-          </FormGroup>
-        )}
+          </Col>
+        </FormGroup>
 
         <FormGroup row>
           <GluuLabel label="fields.level" doc_category={SCRIPT} doc_entry="level" />
@@ -500,6 +384,11 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
               />
             </Suspense>
             <Input type="hidden" id="level" value={formik.values.level} />
+            {formik.errors.level && formik.touched.level && (
+              <div style={{ color: customColors.accentRed, marginTop: '4px' }}>
+                {String(formik.errors.level)}
+              </div>
+            )}
           </Col>
         </FormGroup>
         <GluuProperties
@@ -520,24 +409,22 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
           options={modulePropertiesOptions}
           disabled={viewOnly}
         ></GluuProperties>
-        {!scriptPath && (
-          <Suspense fallback={<GluuSuspenseLoader />}>
-            <GluuInputEditor
-              doc_category={SCRIPT}
-              name="script"
-              language={formik.values.programmingLanguage?.toLowerCase()}
-              label="fields.script"
-              lsize={2}
-              rsize={10}
-              formik={formik}
-              value={formik.values.script}
-              readOnly={viewOnly}
-              errorMessage={formik.errors.script}
-              showError={formik.errors.script && formik.touched.script}
-              required={formik.values.location_type === 'db'}
-            />
-          </Suspense>
-        )}
+        <Suspense fallback={<GluuSuspenseLoader />}>
+          <GluuInputEditor
+            doc_category={SCRIPT}
+            name="script"
+            language={formik.values.programmingLanguage?.toLowerCase()}
+            label="fields.script"
+            lsize={2}
+            rsize={10}
+            formik={formik}
+            value={formik.values.script}
+            readOnly={viewOnly}
+            errorMessage={formik.errors.script}
+            showError={formik.errors.script && formik.touched.script}
+            required={true}
+          />
+        </Suspense>
 
         <FormGroup row>
           <GluuLabel label="options.enabled" size={3} doc_category={SCRIPT} doc_entry="enabled" />
