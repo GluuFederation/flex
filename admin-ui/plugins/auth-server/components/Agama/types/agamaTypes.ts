@@ -43,7 +43,7 @@ export interface JsonConfigRootState {
   }
 }
 
-interface AgamaJsonPatch {
+export interface AgamaJsonPatch {
   op: 'add' | 'remove' | 'replace'
   path: string
   value?: Record<string, string>
@@ -51,15 +51,6 @@ interface AgamaJsonPatch {
 
 export interface AgamaJsonPatchRequestBody {
   requestBody: AgamaJsonPatch[]
-  [key: string]:
-    | AgamaJsonPatch[]
-    | string
-    | number
-    | boolean
-    | string[]
-    | number[]
-    | boolean[]
-    | null
 }
 
 export interface ProjectDetailsState {

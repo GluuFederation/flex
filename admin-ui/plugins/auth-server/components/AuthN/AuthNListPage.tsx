@@ -114,11 +114,11 @@ function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
       newActions.push((rowData: AuthNItem) => ({
         icon: 'edit',
         iconProps: {
-          id: 'editAutN' + rowData.inum,
+          id: 'editAutN' + (rowData.inum || rowData.acrName),
           style: { color: customColors.darkGray },
         },
         tooltip: `${t('messages.edit_authn')}`,
-        onClick: (_event, rowDataClicked) => {
+        onClick: (_event: React.MouseEvent, rowDataClicked: AuthNItem | AuthNItem[]) => {
           if (!Array.isArray(rowDataClicked)) {
             handleGoToAuthNEditPage(rowDataClicked)
           }

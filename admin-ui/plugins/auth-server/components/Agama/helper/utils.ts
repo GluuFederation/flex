@@ -11,7 +11,7 @@ export const transformAcrMappingsToTableData = (
   }
   return Object.entries(acrMappings).map(([key, value]) => ({
     mapping: key,
-    source: value as string,
+    source: value,
   }))
 }
 
@@ -34,6 +34,16 @@ export const buildAcrMappingDeletePayload = (
   mappings: Record<string, string>,
   existingMappings?: Record<string, string>,
 ): AgamaJsonPatchRequestBody => {
+  if (Object.keys(mappings).length === 0 && existingMappings) {
+    return {
+      requestBody: [
+        {
+          path: '/acrMappings',
+          op: 'remove',
+        },
+      ],
+    }
+  }
   return {
     requestBody: [
       {
@@ -71,5 +81,5 @@ export const prepareMappingsForDelete = (
 }
 
 export const toActionData = (payload: AgamaJsonPatchRequestBody): ActionData => {
-  return payload as ActionData
+  return payload as unknown as ActionData
 }

@@ -1,17 +1,20 @@
-import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useContext, useCallback, useMemo, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
 import { Form, FormGroup, Col } from 'Components'
 import { Modal, ModalBody, ModalHeader } from 'reactstrap'
 import MaterialTable from '@material-table/core'
-import type { Column, Action } from '@material-table/core'
-import TablePagination from '@mui/material/TablePagination'
+import type { Column } from '@material-table/core'
 import Paper from '@mui/material/Paper'
 import Box from '@mui/material/Box'
+import EditIcon from '@mui/icons-material/Edit'
+import AddIcon from '@mui/icons-material/Add'
+import DeleteIcon from '@mui/icons-material/Delete'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
+import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import { ThemeContext } from 'Context/theme/themeContext'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import getThemeColor from 'Context/theme/config'
@@ -22,14 +25,8 @@ import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
 import { getJsonConfig, patchJsonConfig } from 'Plugins/auth-server/redux/features/jsonConfigSlice'
-import type {
-  AcrMapping,
-  AcrMappingFormValues,
-  AcrMappingTableRow,
-  JsonConfigRootState,
-} from './types'
-import { useAgamaActions } from './hooks'
-import { DEFAULT_PAGE_SIZE } from './constants'
+import { updateToast } from 'Redux/features/toastSlice'
+import type { AcrMappingFormValues, AcrMappingTableRow, JsonConfigRootState } from './types'
 import {
   getAcrMappingValidationSchema,
   transformAcrMappingsToTableData,
@@ -40,28 +37,30 @@ import {
   toActionData,
 } from './helper'
 
+const authResourceId = ADMIN_UI_RESOURCES.Authentication
+const authScopes = CEDAR_RESOURCE_SCOPES[authResourceId]
+
 function AliasesListPage(): React.ReactElement {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme || 'dark'
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
-  const { logAcrMappingUpdate } = useAgamaActions()
 
   const { loading } = useSelector((state: JsonConfigRootState) => state.jsonConfigReducer)
   const configuration = useSelector(
     (state: JsonConfigRootState) => state.jsonConfigReducer.configuration,
   )
 
-  const [listData, setListData] = useState<AcrMapping[]>([])
+  const [listData, setListData] = useState<AcrMappingTableRow[]>([])
   const [showAddModal, setShowAddModal] = useState<boolean>(false)
   const [isEdit, setIsEdit] = useState<boolean>(false)
-  const [selectedRow, setSelectedRow] = useState<AcrMapping | null>(null)
+  const [selectedRow, setSelectedRow] = useState<AcrMappingTableRow | null>(null)
+  const [deleteModal, setDeleteModal] = useState<boolean>(false)
+  const [itemToDelete, setItemToDelete] = useState<AcrMappingTableRow | null>(null)
 
   SetTitle(t('titles.authentication'))
 
-  const authResourceId = useMemo(() => ADMIN_UI_RESOURCES.Authentication, [])
-  const authScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[authResourceId], [authResourceId])
   const bgThemeColor = useMemo(
     () => ({ background: getThemeColor(selectedTheme).background }),
     [selectedTheme],
@@ -98,28 +97,37 @@ function AliasesListPage(): React.ReactElement {
         )
         const postBody = buildAcrMappingPayload(nextMappings, configuration?.acrMappings)
 
-        const modifiedFields: Record<string, string> = {
-          mapping: values.mapping,
-          source: values.source,
-        }
-
         buildPayload(userAction, 'changes', toActionData(postBody))
         dispatch(patchJsonConfig({ action: userAction }))
-
-        const auditMessage = isEdit
-          ? `Updated ACR mapping: ${values.mapping}`
-          : `Created ACR mapping: ${values.mapping}`
-        await logAcrMappingUpdate(auditMessage, modifiedFields)
-
-        setIsEdit(false)
-        setSelectedRow(null)
-        setShowAddModal(false)
       } catch (error) {
-        console.error('Error submitting ACR mapping:', error)
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : typeof error === 'object' && error !== null && 'message' in error
+              ? String((error as { message: unknown }).message)
+              : t('messages.error_processiong_request')
+        dispatch(updateToast(true, 'error', `${t('messages.error_in_saving')} ${errorMessage}`))
       }
     },
-    [configuration, isEdit, selectedRow, dispatch, logAcrMappingUpdate],
+    [configuration, isEdit, selectedRow, dispatch, t],
   )
+
+  const previousLoadingRef = useRef<boolean>(loading)
+
+  useEffect(() => {
+    const wasLoading = previousLoadingRef.current
+    const isLoading = loading
+    previousLoadingRef.current = loading
+
+    if (wasLoading && !isLoading && configuration?.acrMappings !== undefined) {
+      setIsEdit(false)
+      setSelectedRow(null)
+      setShowAddModal(false)
+    } else if (wasLoading && !isLoading && configuration?.acrMappings === undefined) {
+      const errorMessage = t('messages.error_processiong_request')
+      dispatch(updateToast(true, 'error', `${t('messages.error_in_saving')} ${errorMessage}`))
+    }
+  }, [loading, configuration, dispatch, t])
 
   const formik = useFormik<AcrMappingFormValues>({
     initialValues: initialFormValues,
@@ -146,26 +154,20 @@ function AliasesListPage(): React.ReactElement {
     setListData(data)
   }, [configuration])
 
+  // Reset form state when modal closes
   useEffect(() => {
     if (!showAddModal) {
       formik.resetForm({ values: initialFormValues })
       setIsEdit(false)
       setSelectedRow(null)
-    } else if (showAddModal && isEdit && selectedRow) {
-      formik.setValues({
-        source: selectedRow.source,
-        mapping: selectedRow.mapping,
-      })
     }
-  }, [showAddModal, isEdit, selectedRow, initialFormValues, formik])
+  }, [showAddModal]) // eslint-disable-line
 
   const handleCancel = useCallback(() => {
     formik.resetForm({ values: initialFormValues })
     setIsEdit(false)
     setSelectedRow(null)
-    setTimeout(() => {
-      setShowAddModal(false)
-    }, 0)
+    setShowAddModal(false)
   }, [formik, initialFormValues])
 
   const handleApply = useCallback(() => {
@@ -195,34 +197,14 @@ function AliasesListPage(): React.ReactElement {
     [formik],
   )
 
-  const myActions = useMemo(() => {
-    const actions: Action<AcrMappingTableRow>[] = []
-
-    if (canWriteAuth) {
-      actions.push({
-        icon: 'add',
-        tooltip: `${t('actions.add_mapping')}`,
-        iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
-        isFreeAction: true,
-        onClick: handleAddClick,
-      })
-
-      actions.push({
-        icon: 'edit',
-        iconProps: {
-          style: { color: customColors.darkGray },
-        },
-        tooltip: `${t('messages.edit_acr')}`,
-        onClick: (_event: unknown, rowData: AcrMappingTableRow | AcrMappingTableRow[]) => {
-          if (!Array.isArray(rowData) && rowData) {
-            handleEditClick(rowData)
-          }
-        },
-      } as Action<AcrMappingTableRow>)
-    }
-
-    return actions
-  }, [canWriteAuth, t, handleAddClick, handleEditClick])
+  const handleEditAction = useCallback(
+    (_event: unknown, rowData: AcrMappingTableRow | AcrMappingTableRow[]) => {
+      if (!Array.isArray(rowData)) {
+        handleEditClick(rowData)
+      }
+    },
+    [handleEditClick],
+  )
 
   const handleFormSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
@@ -232,37 +214,61 @@ function AliasesListPage(): React.ReactElement {
     [formik],
   )
 
-  const handleRowDelete = useCallback(
-    async (oldData: AcrMappingTableRow): Promise<void> => {
-      if (!oldData?.mapping) {
+  const handleDeleteAction = useCallback(
+    (_event: unknown, rowData: AcrMappingTableRow | AcrMappingTableRow[]) => {
+      if (!Array.isArray(rowData)) {
+        setItemToDelete(rowData)
+        setDeleteModal(true)
+      }
+    },
+    [],
+  )
+
+  const handleDeleteConfirm = useCallback(
+    async (message: string): Promise<void> => {
+      if (!itemToDelete?.mapping) {
         return
       }
-      const userAction: UserAction = {} as UserAction
-      const currentMappings = { ...(configuration?.acrMappings ?? {}) }
-      const updatedMappings = prepareMappingsForDelete(currentMappings, oldData.mapping)
-      const postBody = buildAcrMappingDeletePayload(updatedMappings, configuration?.acrMappings)
+      try {
+        const userAction: UserAction = {} as UserAction
+        const currentMappings = { ...(configuration?.acrMappings ?? {}) }
+        const updatedMappings = prepareMappingsForDelete(currentMappings, itemToDelete.mapping)
+        const postBody = buildAcrMappingDeletePayload(updatedMappings, configuration?.acrMappings)
 
-      buildPayload(userAction, 'changes', toActionData(postBody))
-      dispatch(patchJsonConfig({ action: userAction }))
+        // Add deleted mapping info for audit tracking
+        const basePayload = toActionData(postBody) as Record<string, unknown>
+        const payloadWithDeleteInfo = {
+          ...basePayload,
+          deletedMapping: {
+            mapping: itemToDelete.mapping,
+            source: itemToDelete.source,
+          },
+        }
 
-      await logAcrMappingUpdate(`Deleted ACR mapping: ${oldData.mapping}`, {
-        mapping: oldData.mapping,
-        source: oldData.source,
-      })
+        buildPayload(
+          userAction,
+          message,
+          payloadWithDeleteInfo as unknown as ReturnType<typeof toActionData>,
+        )
+        dispatch(patchJsonConfig({ action: userAction }))
+        setDeleteModal(false)
+        setItemToDelete(null)
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : typeof error === 'object' && error !== null && 'message' in error
+              ? String((error as { message: unknown }).message)
+              : t('messages.error_processiong_request')
+        dispatch(updateToast(true, 'error', `${t('messages.error_in_saving')} ${errorMessage}`))
+      }
     },
-    [configuration, dispatch, logAcrMappingUpdate],
+    [itemToDelete, configuration, dispatch, t],
   )
 
   const shouldDisableApply = useMemo(() => {
     return !formik.isValid || !formik.dirty || loading
   }, [formik.isValid, formik.dirty, loading])
-
-  const isDeleteHidden = useCallback(() => !canWriteAuth, [canWriteAuth])
-
-  const onRowDelete = useCallback(
-    (oldData: AcrMappingTableRow) => handleRowDelete(oldData),
-    [handleRowDelete],
-  )
 
   const tableColumns: Column<AcrMappingTableRow>[] = useMemo(
     () => [
@@ -291,18 +297,39 @@ function AliasesListPage(): React.ReactElement {
   const tableComponents = useMemo(
     () => ({
       Container: (props: React.ComponentProps<typeof Paper>) => <Paper {...props} elevation={0} />,
-      Pagination: () => (
-        <TablePagination
-          count={listData?.length || 0}
-          page={0}
-          onPageChange={() => {}}
-          rowsPerPage={DEFAULT_PAGE_SIZE}
-          onRowsPerPageChange={() => {}}
-        />
-      ),
     }),
-    [listData?.length],
+    [],
   )
+
+  const tableActions = useMemo(() => {
+    const actions = []
+
+    if (canWriteAuth) {
+      actions.push({
+        icon: () => <AddIcon />,
+        tooltip: t('actions.add_mapping'),
+        iconProps: { color: 'primary' as const, style: { color: customColors.lightBlue } },
+        isFreeAction: true,
+        onClick: handleAddClick,
+      })
+      actions.push({
+        icon: () => <EditIcon />,
+        tooltip: t('messages.edit_acr'),
+        iconProps: { color: 'primary' as const, style: { color: customColors.darkGray } },
+        isFreeAction: false,
+        onClick: handleEditAction,
+      })
+      actions.push({
+        icon: () => <DeleteIcon />,
+        tooltip: t('actions.delete'),
+        iconProps: { color: 'secondary' as const, style: { color: customColors.accentRed } },
+        isFreeAction: false,
+        onClick: handleDeleteAction,
+      })
+    }
+
+    return actions
+  }, [canWriteAuth, t, handleAddClick, handleEditAction, handleDeleteAction])
 
   return (
     <>
@@ -313,10 +340,12 @@ function AliasesListPage(): React.ReactElement {
           data={listData}
           isLoading={loading}
           title=""
-          actions={myActions}
+          actions={tableActions}
           options={{
             search: false,
             paging: false,
+            idSynonym: 'mapping',
+            selection: false,
             rowStyle: () => ({
               backgroundColor: customColors.white,
             }),
@@ -326,18 +355,14 @@ function AliasesListPage(): React.ReactElement {
             } as React.CSSProperties,
             actionsColumnIndex: -1,
           }}
-          editable={{
-            isDeleteHidden,
-            onRowDelete,
-          }}
         />
       </GluuViewWrapper>
 
-      <Modal isOpen={showAddModal}>
-        <Form onSubmit={handleFormSubmit} className="mt-4">
-          <ModalHeader>{modalTitle}</ModalHeader>
+      <Modal isOpen={showAddModal} toggle={handleCancel}>
+        <Form onSubmit={handleFormSubmit}>
+          <ModalHeader style={{ padding: '1rem' }}>{modalTitle}</ModalHeader>
 
-          <ModalBody>
+          <ModalBody style={{ paddingTop: '1rem' }}>
             <GluuInputRow
               label="fields.mapping"
               name="mapping"
@@ -362,7 +387,7 @@ function AliasesListPage(): React.ReactElement {
             />
           </ModalBody>
 
-          <ModalBody>
+          <ModalBody style={{ padding: '0 1rem' }}>
             <FormGroup row>
               <Col sm={3}></Col>
               <Col sm={9}>
@@ -393,6 +418,20 @@ function AliasesListPage(): React.ReactElement {
           </ModalBody>
         </Form>
       </Modal>
+
+      {itemToDelete && (
+        <GluuDialog
+          row={itemToDelete}
+          name={itemToDelete.mapping}
+          handler={() => {
+            setDeleteModal(false)
+            setItemToDelete(null)
+          }}
+          modal={deleteModal}
+          subject="ACR mapping"
+          onAccept={handleDeleteConfirm}
+        />
+      )}
     </>
   )
 }
