@@ -36,16 +36,37 @@ const requiredWhenMetadataNotImported = (t: TFunction, fieldKey: string) =>
     otherwise: () => Yup.string(),
   })
 
+const noSpacesValidation = (t: TFunction, fieldKey: string) =>
+  Yup.string().matches(/^\S*$/, t('errors.cannot_contain_spaces', { field: t(fieldKey) }))
+
+// Helper function to validate URL format
+const urlFormatTest = (t: TFunction, fieldKey: string) =>
+  Yup.string().test(
+    'url-format',
+    t('errors.must_be_valid_url', { field: t(fieldKey) }),
+    function (value) {
+      if (!value || value.trim().length === 0) return true
+      try {
+        new URL(value)
+        return true
+      } catch {
+        return false
+      }
+    },
+  )
+
+// Helper function to validate URL fields (no spaces + valid URL)
+const urlValidation = (t: TFunction, fieldKey: string) =>
+  noSpacesValidation(t, fieldKey).concat(urlFormatTest(t, fieldKey))
+
 export const websiteSsoIdentityProviderValidationSchema = (
   t: TFunction,
 ): Yup.ObjectSchema<WebsiteSsoIdentityProviderFormValues> =>
   Yup.object().shape({
-    name: Yup.string()
-      .required(`${t('fields.name')} is Required!`)
-      .trim(),
-    displayName: Yup.string()
-      .required(`${t('fields.displayName')} is Required!`)
-      .trim(),
+    name: noSpacesValidation(t, 'fields.name').required(`${t('fields.name')} is Required!`),
+    displayName: noSpacesValidation(t, 'fields.displayName').required(
+      `${t('fields.displayName')} is Required!`,
+    ),
     description: Yup.string().nullable(),
     enabled: Yup.boolean().required(),
     metaDataFileImportedFlag: Yup.boolean(),
@@ -81,32 +102,33 @@ export const websiteSsoIdentityProviderValidationSchema = (
     singleSignOnServiceUrl: requiredWhenMetadataNotImported(
       t,
       'fields.single_signon_service_url',
-    ).when('metaDataFileImportedFlag', {
-      is: (value: boolean) => value === false,
-      then: (schema) => schema.url(`${t('fields.single_signon_service_url')} must be a valid URL`),
-      otherwise: (schema) => schema,
-    }),
-    idpEntityId: requiredWhenMetadataNotImported(t, 'fields.idp_entity_id').trim(),
+    ).concat(urlValidation(t, 'fields.single_signon_service_url')),
+    idpEntityId: Yup.string()
+      .concat(noSpacesValidation(t, 'fields.idp_entity_id'))
+      .when('metaDataFileImportedFlag', ([value], schema) =>
+        value === false
+          ? schema
+              .required(`${t('fields.idp_entity_id')} is Required!`)
+              .test(
+                'not-empty',
+                t('errors.cannot_be_empty', { field: t('fields.idp_entity_id') }),
+                (v) => {
+                  if (!v) return true // Required validation handles empty
+                  return v.trim().length > 0
+                },
+              )
+          : schema,
+      ),
     nameIDPolicyFormat: requiredWhenMetadataNotImported(t, 'fields.name_policy_format'),
     singleLogoutServiceUrl: Yup.string()
       .nullable()
-      .test(
-        'url-format',
-        `${t('fields.single_logout_service_url')} must be a valid URL`,
-        function (value) {
-          if (!value || value.trim().length === 0) return true
-          try {
-            new URL(value)
-            return true
-          } catch {
-            return false
-          }
-        },
-      ),
+      .concat(urlValidation(t, 'fields.single_logout_service_url')),
     signingCertificate: Yup.string().nullable(),
     encryptionPublicKey: Yup.string().nullable(),
-    principalAttribute: Yup.string().nullable(),
-    principalType: Yup.string().nullable(),
+    principalAttribute: Yup.string()
+      .nullable()
+      .concat(noSpacesValidation(t, 'fields.principal_attribute')),
+    principalType: Yup.string().nullable().concat(noSpacesValidation(t, 'fields.principal_type')),
   }) as Yup.ObjectSchema<WebsiteSsoIdentityProviderFormValues>
 
 // Helper function to create required field when metadata source is manual
@@ -121,8 +143,13 @@ export const websiteSsoServiceProviderValidationSchema = (
   t: TFunction,
 ): Yup.ObjectSchema<WebsiteSsoServiceProviderFormValues> =>
   Yup.object().shape({
-    displayName: Yup.string().required(`${t('fields.displayName')} is Required!`),
-    name: Yup.string().required(`${t('fields.name')} is Required!`),
+    displayName: noSpacesValidation(t, 'fields.displayName').required(
+      `${t('fields.displayName')} is Required!`,
+    ),
+    name: noSpacesValidation(t, 'fields.name').required(`${t('fields.name')} is Required!`),
+    spLogoutURL: Yup.string()
+      .nullable()
+      .concat(urlValidation(t, 'fields.service_provider_logout_url')),
     spMetaDataSourceType: Yup.string().required(`${t('fields.metadata_location')} is Required!`),
     metaDataFileImportedFlag: Yup.boolean(),
     metaDataFile: Yup.mixed().when('spMetaDataSourceType', {
@@ -144,17 +171,28 @@ export const websiteSsoServiceProviderValidationSchema = (
       otherwise: (s) => s.nullable(),
     }),
     samlMetadata: Yup.object().shape({
-      singleLogoutServiceUrl: requiredWhenManual(t, 'fields.single_logout_service_url'),
-      entityId: requiredWhenManual(t, 'fields.entity_id'),
+      singleLogoutServiceUrl: requiredWhenManual(t, 'fields.single_logout_service_url').concat(
+        urlValidation(t, 'fields.single_logout_service_url'),
+      ),
+      entityId: requiredWhenManual(t, 'fields.entity_id')
+        .test(
+          'not-empty',
+          t('errors.cannot_be_empty', { field: t('fields.entity_id') }),
+          (value) => {
+            if (!value) return true // Required validation handles empty
+            return value.trim().length > 0
+          },
+        )
+        .concat(noSpacesValidation(t, 'fields.entity_id')),
       nameIDPolicyFormat: requiredWhenManual(t, 'fields.name_id_policy_format'),
       jansAssertionConsumerServiceGetURL: requiredWhenManual(
         t,
         'fields.jans_assertion_consumer_service_get_url',
-      ),
+      ).concat(urlValidation(t, 'fields.jans_assertion_consumer_service_get_url')),
       jansAssertionConsumerServicePostURL: requiredWhenManual(
         t,
         'fields.jans_assertion_consumer_service_post_url',
-      ),
+      ).concat(urlValidation(t, 'fields.jans_assertion_consumer_service_post_url')),
     }),
   }) as Yup.ObjectSchema<WebsiteSsoServiceProviderFormValues>
 

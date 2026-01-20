@@ -851,7 +851,9 @@
     "attribute_update_failed": "Erreur lors de la mise à jour de l'attribut",
     "attribute_delete_failed": "Erreur lors de la suppression de l'attribut",
     "attribute_load_failed": "Erreur lors du chargement de l'attribut",
-    "attribute_not_found": "Attribut introuvable"
+    "cannot_contain_spaces": "{{field}} ne peut pas contenir d'espaces",
+    "cannot_be_empty": "{{field}} ne peut pas être vide",
+    "must_be_valid_url": "{{field}} doit être une URL valide"
   },
   "tooltips": {
     "add_attribute": "Ajouter un attribut",
