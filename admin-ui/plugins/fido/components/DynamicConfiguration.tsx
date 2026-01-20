@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import { useFormik } from 'formik'
 import { Row, Col, Form, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
@@ -23,16 +23,29 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
     setModal((prev) => !prev)
   }, [])
 
+  const initialValues = useMemo<DynamicConfigFormValues>(
+    () =>
+      transformToFormValues(fidoConfiguration, fidoConstants.DYNAMIC) as DynamicConfigFormValues,
+    [fidoConfiguration],
+  )
+
   const formik = useFormik<DynamicConfigFormValues>({
-    initialValues: transformToFormValues(
-      fidoConfiguration,
-      fidoConstants.DYNAMIC,
-    ) as DynamicConfigFormValues,
+    initialValues,
     onSubmit: readOnly ? () => undefined : toggle,
     validationSchema: validationSchema[fidoConstants.VALIDATION_SCHEMAS.DYNAMIC_CONFIG],
-    enableReinitialize: true,
     validateOnMount: true,
   })
+
+  useEffect(() => {
+    if (fidoConfiguration) {
+      formik.resetForm({
+        values: transformToFormValues(
+          fidoConfiguration,
+          fidoConstants.DYNAMIC,
+        ) as DynamicConfigFormValues,
+      })
+    }
+  }, [fidoConfiguration])
 
   const submitForm = useCallback(
     (userMessage: string) => {
@@ -46,12 +59,8 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
   )
 
   const handleCancel = useCallback(() => {
-    const initialValues = transformToFormValues(
-      fidoConfiguration,
-      fidoConstants.DYNAMIC,
-    ) as DynamicConfigFormValues
-    formik.resetForm({ values: initialValues })
-  }, [formik, fidoConfiguration])
+    formik.resetForm()
+  }, [formik])
 
   const handleFormSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
