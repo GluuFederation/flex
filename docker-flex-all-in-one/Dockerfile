@@ -10,6 +10,7 @@ ARG FLEX_BASE_VERSION=0.0.0-nightly
 # they can be overriden in build process via --build-arg option
 ARG JANS_AIO_IMAGE=ghcr.io/janssenproject/jans/all-in-one:${BASE_VERSION}
 ARG FLEX_ADMIN_UI_IMAGE=ghcr.io/gluufederation/flex/admin-ui:${FLEX_BASE_VERSION}
+ARG FLEX_PERSISTENCE_LOADER_IMAGE=ghcr.io/gluufederation/flex/persistence-loader:${FLEX_BASE_VERSION}
 
 # -----------
 # base images
@@ -18,6 +19,8 @@ ARG FLEX_ADMIN_UI_IMAGE=ghcr.io/gluufederation/flex/admin-ui:${FLEX_BASE_VERSION
 FROM ${JANS_AIO_IMAGE} AS jans-aio-src
 
 FROM ${FLEX_ADMIN_UI_IMAGE} AS flex-admin-ui-src
+
+FROM ${FLEX_PERSISTENCE_LOADER_IMAGE} AS flex-persistence-loader-src
 
 # ===
 # app
@@ -55,6 +58,9 @@ COPY --from=jans-aio-src /opt/idp /opt/idp
 COPY --from=jans-aio-src /var/log/adminui /var/log/adminui
 COPY --from=jans-aio-src /usr/share/java /usr/share/java
 
+# override persistence-loader assets
+COPY --from=flex-persistence-loader-src /app/schema /app/schema
+
 COPY --from=flex-admin-ui-src /opt/flex/admin-ui /opt/flex/admin-ui
 COPY --from=flex-admin-ui-src /app/templates/admin-ui /app/templates/admin-ui
 COPY --from=flex-admin-ui-src /run/nginx/nginx.pid /run/nginx/nginx.pid
@@ -65,7 +71,7 @@ RUN ln -sf /app/flex_aio/admin_ui/entrypoint.sh /app/bin/admin-ui-entrypoint.sh
 # Assets sync
 # ===========
 
-ENV JANS_SOURCE_VERSION=abcbf28f7422a6f293669bfd172fcf546b4ecf42
+ENV JANS_SOURCE_VERSION=422f12c2eda090381d0a4725f6bc8c14bb7ef872
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the assets

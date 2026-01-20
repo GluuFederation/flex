@@ -12,9 +12,8 @@ import {
 } from 'Plugins/admin/redux/features/customScriptSlice'
 import { SCRIPT } from '../audit/Resources'
 import { CREATE, UPDATE, DELETION, FETCH } from '../../../../app/audit/UserActionType'
-import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { updateToast } from 'Redux/features/toastSlice'
-import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import ScriptApi from '../api/ScriptApi'
 import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
@@ -34,16 +33,12 @@ import {
 import { getErrorMessage } from './types/common'
 
 import * as JansConfigApi from 'jans_config_api'
-import { initAudit } from 'Redux/sagas/SagaUtils'
+import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSaga'
 
-// Helper function to create ScriptApi instance
 function* createScriptApi(): Generator<SelectEffect, ScriptApi, string> {
-  const token: string = yield select(
-    (state: CustomScriptRootState) => state.authReducer.token.access_token,
-  )
   const issuer: string = yield select((state: CustomScriptRootState) => state.authReducer.issuer)
-  const api = new JansConfigApi.CustomScriptsApi(getClient(JansConfigApi, token, issuer))
+  const api = new JansConfigApi.CustomScriptsApi(getClient(JansConfigApi, null, issuer))
   return new ScriptApi(api)
 }
 
@@ -68,11 +63,9 @@ export function* getCustomScripts({
     const errMsg = getErrorMessage(e)
     yield* errorToast(errMsg)
     yield put(getCustomScriptsResponse({}))
-    if (isFourZeroOneError(e)) {
-      const jwt: string = yield select(
-        (state: CustomScriptRootState) => state.authReducer.userinfo_jwt,
-      )
-      yield put(getAPIAccessToken(jwt))
+    if (isFourZeroThreeError(e)) {
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -95,11 +88,9 @@ export function* getScriptsByType({
     const errMsg = getErrorMessage(e)
     yield* errorToast(errMsg)
     yield put(getCustomScriptsResponse({}))
-    if (isFourZeroOneError(e)) {
-      const jwt: string = yield select(
-        (state: CustomScriptRootState) => state.authReducer.userinfo_jwt,
-      )
-      yield put(getAPIAccessToken(jwt))
+    if (isFourZeroThreeError(e)) {
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -127,11 +118,9 @@ export function* addScript({
     const errMsg = getErrorMessage(e)
     yield* errorToast(errMsg)
     yield put(addCustomScriptResponse({}))
-    if (isFourZeroOneError(e)) {
-      const jwt: string = yield select(
-        (state: CustomScriptRootState) => state.authReducer.userinfo_jwt,
-      )
-      yield put(getAPIAccessToken(jwt))
+    if (isFourZeroThreeError(e)) {
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -159,11 +148,9 @@ export function* editScript({
     const errMsg = getErrorMessage(e)
     yield* errorToast(errMsg)
     yield put(editCustomScriptResponse({}))
-    if (isFourZeroOneError(e)) {
-      const jwt: string = yield select(
-        (state: CustomScriptRootState) => state.authReducer.userinfo_jwt,
-      )
-      yield put(getAPIAccessToken(jwt))
+    if (isFourZeroThreeError(e)) {
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -187,11 +174,9 @@ export function* deleteScript({
     const errMsg = getErrorMessage(e)
     yield* errorToast(errMsg)
     yield put(deleteCustomScriptResponse({}))
-    if (isFourZeroOneError(e)) {
-      const jwt: string = yield select(
-        (state: CustomScriptRootState) => state.authReducer.userinfo_jwt,
-      )
-      yield put(getAPIAccessToken(jwt))
+    if (isFourZeroThreeError(e)) {
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -221,11 +206,9 @@ export function* getScriptTypes(): SagaIterator<ScriptType[] | unknown> {
     const errMsg = getErrorMessage(e)
     console.log('error in getting script-types: ', errMsg)
     yield put(setScriptTypes([]))
-    if (isFourZeroOneError(e)) {
-      const jwt: string = yield select(
-        (state: CustomScriptRootState) => state.authReducer.userinfo_jwt,
-      )
-      yield put(getAPIAccessToken(jwt))
+    if (isFourZeroThreeError(e)) {
+      yield* redirectToLogout()
+      return
     }
     return e
   } finally {
@@ -233,12 +216,10 @@ export function* getScriptTypes(): SagaIterator<ScriptType[] | unknown> {
   }
 }
 
-// Helper function to show success toast
 function* successToast(): Generator<PutEffect, void, void> {
   yield put(updateToast(true, 'success'))
 }
 
-// Helper function to show error toast
 function* errorToast(errMsg: string): Generator<PutEffect, void, void> {
   yield put(updateToast(true, 'error', errMsg))
 }

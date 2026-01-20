@@ -22,7 +22,7 @@ EXPOSE 8080
 
 RUN mkdir -p /app/static/rdbm /app/schema /app/templates/admin-ui
 
-ENV JANS_SOURCE_VERSION=abcbf28f7422a6f293669bfd172fcf546b4ecf42
+ENV JANS_SOURCE_VERSION=422f12c2eda090381d0a4725f6bc8c14bb7ef872
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -44,7 +44,7 @@ RUN git clone --depth ${GIT_CLONE_DEPTH} --filter blob:none --no-checkout https:
 
 WORKDIR /tmp/flex
 
-ENV FLEX_SOURCE_VERSION=b156764d5e06d866ca31ced98d9341815e57dc44
+ENV FLEX_SOURCE_VERSION=47eabba59972b236ac3bc6dda1b738186b467585
 ARG FLEX_SETUP_DIR=flex-linux-setup/flex_linux_setup
 
 RUN git clone --depth ${GIT_CLONE_DEPTH} --filter blob:none --no-checkout https://github.com/GluuFederation/flex . \
@@ -52,7 +52,8 @@ RUN git clone --depth ${GIT_CLONE_DEPTH} --filter blob:none --no-checkout https:
      && git checkout ${FLEX_SOURCE_VERSION} \
      && git sparse-checkout add admin-ui \
      && git sparse-checkout add ${FLEX_SETUP_DIR}/templates \
-     && cp ${FLEX_SETUP_DIR}/templates/*.ldif /app/templates/admin-ui
+     && cp ${FLEX_SETUP_DIR}/templates/*.ldif /app/templates/admin-ui \
+     && cp ${FLEX_SETUP_DIR}/flex_schema.json /app/schema/
 
 WORKDIR /
 

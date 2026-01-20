@@ -8,10 +8,9 @@ import {
 } from '../features/licenseDetailsSlice'
 import { getClient } from 'Redux/api/base'
 import LicenseDetailsApi from '../api/LicenseDetailsApi'
-import { initAudit } from 'Redux/sagas/SagaUtils'
+import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 import { postUserAction } from 'Redux/api/backend-api'
-import { addAdditionalData, isFourZeroOneError } from 'Utils/TokenController'
-import { getAPIAccessToken } from 'Redux/features/authSlice'
+import { addAdditionalData, isFourZeroThreeError } from 'Utils/TokenController'
 import { API_LICENSE } from '../../audit/Resources'
 import { DELETION } from '@/audit/UserActionType'
 const JansConfigApi = require('jans_config_api')
@@ -22,9 +21,8 @@ type ResetLicenseAction = {
 }
 
 function* newFunction() {
-  const token = yield select((state) => state.authReducer.token?.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.AdminUILicenseApi(getClient(JansConfigApi, token, issuer))
+  const api = new JansConfigApi.AdminUILicenseApi(getClient(JansConfigApi, null, issuer))
   return new LicenseDetailsApi(api)
 }
 
@@ -44,9 +42,10 @@ export function* resetLicenseConfigWorker(action: ResetLicenseAction) {
       yield put(setLicenseResetFailure())
     }
   } catch (error) {
-    if (isFourZeroOneError(error)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+    if (isFourZeroThreeError(error)) {
+      // Session expired - redirect to login
+      yield* redirectToLogout()
+      return
     }
   }
 }
@@ -62,9 +61,10 @@ export function* getLicenseDetailsWorker() {
   } catch (e) {
     console.log('error in getting license details: ', e)
     yield put(getLicenseDetailsResponse(null))
-    if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+    if (isFourZeroThreeError(e)) {
+      // Session expired - redirect to login
+      yield* redirectToLogout()
+      return
     }
   }
 }
@@ -79,9 +79,10 @@ export function* updateLicenseDetailsWorker({ payload }) {
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(updateLicenseDetailsResponse(null))
-    if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+    if (isFourZeroThreeError(e)) {
+      // Session expired - redirect to login
+      yield* redirectToLogout()
+      return
     }
   }
 }

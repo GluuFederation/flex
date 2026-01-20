@@ -20,11 +20,11 @@ const LOGGING_CACHE_CONFIG = {
 }
 
 export function useLoggingConfig() {
-  const authToken = useSelector((state: RootState) => state.authReducer?.token?.access_token)
+  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
 
   return useGetConfigLogging({
     query: {
-      enabled: !!authToken,
+      enabled: hasSession === true,
       staleTime: LOGGING_CACHE_CONFIG.STALE_TIME,
       gcTime: LOGGING_CACHE_CONFIG.GC_TIME,
     },
@@ -40,7 +40,6 @@ interface UpdateLoggingParams {
 export function useUpdateLoggingConfig() {
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
-  const token = useSelector((state: RootState) => state.authReducer?.token?.access_token)
   const userinfo = useSelector((state: RootState) => state.authReducer?.userinfo)
   const clientId = useSelector((state: RootState) => state.authReducer?.config?.clientId)
   const ipAddress = useSelector((state: RootState) => state.authReducer?.location?.IPv4)
@@ -50,7 +49,6 @@ export function useUpdateLoggingConfig() {
     async (userMessage: string, changedFields: ChangedFields<Logging>): Promise<void> => {
       try {
         await logAuditUserAction({
-          token: token ?? '',
           userinfo,
           action: UPDATE,
           resource: API_LOGGING,
@@ -63,7 +61,7 @@ export function useUpdateLoggingConfig() {
         console.error('Failed to log logging audit action:', error)
       }
     },
-    [token, userinfo, clientId, ipAddress],
+    [userinfo, clientId, ipAddress],
   )
 
   const mutateAsync = useCallback(

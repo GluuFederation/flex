@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useState, useCallback, useMemo } from 'react'
+import React, { useContext, useEffect, useState, useMemo } from 'react'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import { ThemeContext } from 'Context/theme/themeContext'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Box } from '@mui/material'
 import MaterialTable from '@material-table/core'
@@ -10,13 +9,14 @@ import { useDispatch } from 'react-redux'
 import { updateToast } from 'Redux/features/toastSlice'
 import { isEmpty } from 'lodash'
 import AceEditor from 'react-ace'
-import type { Deployment } from 'JansConfigApi'
 import { useGetAgamaPrjByName, useGetAgamaPrjConfigs, usePutAgamaPrj } from 'JansConfigApi'
 import type {
   AgamaProjectConfigModalProps,
   FlowError,
   ProjectDetailsState,
   ConfigDetailsState,
+  JsonObject,
+  ApiError,
 } from './types'
 
 const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
@@ -64,21 +64,41 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
 
   const updateConfigMutation = usePutAgamaPrj({
     mutation: {
-      onSuccess: async (data) => {
+      onSuccess: (data: string | JsonObject) => {
+        // Normalise config payload to a plain object that matches ConfigDetailsState
+        let normalizedData: JsonObject = {}
+
+        if (typeof data === 'string') {
+          try {
+            const parsed = JSON.parse(data) as JsonObject
+            normalizedData = parsed
+          } catch (e) {
+            const parseError: Error = e instanceof Error ? e : new Error(String(e))
+            console.error('Failed to parse config data JSON on success:', parseError)
+          }
+        } else if (data && typeof data === 'object' && !Array.isArray(data)) {
+          normalizedData = structuredClone(data) as JsonObject
+        }
+
         setConfigDetails((prevState) => ({
           ...prevState,
-          data: JSON.parse(data as string),
+          data: normalizedData,
         }))
         dispatch(
           updateToast(true, 'success', `Configuration for project ${name} imported successfully.`),
         )
       },
-      onError: (error: unknown) => {
+      onError: (error: ApiError) => {
+        const errorMessage = getErrorMessage(error, 'Invalid JSON file')
         console.error('Error importing config:', error)
-        dispatch(updateToast(true, 'error', `Invalid JSON file`))
+        dispatch(updateToast(true, 'error', errorMessage))
       },
     },
   })
+
+  function getErrorMessage(error: ApiError, fallback = 'An error occurred'): string {
+    return error instanceof Error ? error.message : error?.message || fallback
+  }
 
   useEffect(() => {
     if (projectDetailsData) {
@@ -122,7 +142,8 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
           data: parsedData,
         })
       } catch (error) {
-        console.error('Error parsing config data:', error)
+        const parseError: Error = error instanceof Error ? error : new Error(String(error))
+        console.error('Error parsing config data:', parseError)
         setConfigDetails({
           isLoading: false,
           data: {},
@@ -157,7 +178,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
   }
 
   async function handleImportConfig(): Promise<void> {
-    let parsedValue: Record<string, unknown> | null = null
+    let parsedValue: JsonObject | null = null
     const input = document.createElement('input')
     input.type = 'file'
     input.accept = '.json'
@@ -172,7 +193,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
           const result = event.target?.result
           if (typeof result !== 'string') return
 
-          parsedValue = JSON.parse(result) as Record<string, unknown>
+          parsedValue = JSON.parse(result) as JsonObject
           setConfigDetails((prevState) => ({ ...prevState, isLoading: true }))
 
           await updateConfigMutation.mutateAsync({
@@ -182,8 +203,10 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
 
           await refetchConfig()
         } catch (error) {
-          console.error('Error importing config:', error)
-          dispatch(updateToast(true, 'error', `Invalid JSON file`))
+          const importError: ApiError = error instanceof Error ? error : { message: String(error) }
+          console.error('Error importing config:', importError)
+          const errorMessage = getErrorMessage(importError, 'Invalid JSON file')
+          dispatch(updateToast(true, 'error', errorMessage))
         } finally {
           setConfigDetails((prevState) => ({
             ...prevState,

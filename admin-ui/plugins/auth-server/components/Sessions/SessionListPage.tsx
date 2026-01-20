@@ -71,7 +71,6 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
   const revokeSessionMutation = useRevokeUserSession()
 
   const authState = useSelector((state: AuditRootState) => state.authReducer)
-  const token = authState?.token?.access_token
   const client_id = authState?.config?.clientId
   const userinfo = authState?.userinfo
 
@@ -304,7 +303,6 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
         if (userDn) {
           await revokeSessionMutation.mutateAsync({ userDn })
           await logAuditUserAction({
-            token,
             userinfo,
             action: DELETION,
             resource: SESSION,
@@ -319,7 +317,7 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
         console.error('Error revoking session:', error)
       }
     },
-    [item, revokeSessionMutation, refetchSessions, toggle, token, userinfo, client_id],
+    [item, revokeSessionMutation, refetchSessions, toggle, userinfo, client_id],
   )
 
   const onDeleteConfirmed = useCallback(
@@ -329,7 +327,6 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
         if (sessionId) {
           await deleteSessionMutation.mutateAsync({ sid: sessionId })
           await logAuditUserAction({
-            token,
             userinfo,
             action: DELETION,
             resource: SESSION,
@@ -344,7 +341,7 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
         console.error('Error deleting session:', error)
       }
     },
-    [item, deleteSessionMutation, refetchSessions, token, userinfo, client_id],
+    [item, deleteSessionMutation, refetchSessions, userinfo, client_id],
   )
 
   const convertToCSV = useCallback(

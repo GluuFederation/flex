@@ -23,7 +23,7 @@ import {
   AuthorizationNotifier,
   GRANT_TYPE_AUTHORIZATION_CODE,
 } from '@openid/appauth'
-import { fetchApiAccessToken, fetchPolicyStore, fetchUserInformation } from 'Redux/api/backend-api'
+import { fetchPolicyStore, fetchUserInformation } from 'Redux/api/backend-api'
 import { jwtDecode } from 'jwt-decode'
 
 export default function AppAuthProvider(props) {
@@ -31,7 +31,7 @@ export default function AppAuthProvider(props) {
   const location = useLocation()
   const [roleNotFound, setRoleNotFound] = useState(false)
   const [showAdminUI, setShowAdminUI] = useState(false)
-  const { config, userinfo, userinfo_jwt, token, issuer } = useSelector(
+  const { config, userinfo, userinfo_jwt, issuer, hasSession } = useSelector(
     (state) => state.authReducer,
   )
 
@@ -58,6 +58,32 @@ export default function AppAuthProvider(props) {
   }, [isConfigValid])
 
   const [error, setError] = useState(null)
+
+  useEffect(() => {
+    let isMounted = true
+
+    if (hasSession) {
+      fetchPolicyStore()
+        .then((policyStoreResponse) => {
+          if (isMounted) {
+            const policyStoreJson = policyStoreResponse.data.responseObject
+            dispatch({
+              type: 'cedarPermissions/setPolicyStoreJson',
+              payload: policyStoreJson,
+            })
+          }
+        })
+        .catch((err) => {
+          if (isMounted) {
+            setError(err)
+          }
+        })
+    }
+
+    return () => {
+      isMounted = false
+    }
+  }, [hasSession, dispatch])
   const [code, setCode] = useState(null)
 
   useEffect(() => {
@@ -129,7 +155,7 @@ export default function AppAuthProvider(props) {
         let authConfigs
         dispatch(getOAuth2Config())
         let idToken = null
-        let JwtToken = null
+        let oauthAccessToken = null
 
         AuthorizationServiceConfiguration.fetchFromIssuer(issuer, new FetchRequestor())
           .then((configuration) => {
@@ -138,7 +164,7 @@ export default function AppAuthProvider(props) {
           })
           .then((token) => {
             idToken = token?.idToken
-            JwtToken = token?.accessToken
+            oauthAccessToken = token?.accessToken
             return fetchUserInformation({
               userInfoEndpoint: authConfigs.userInfoEndpoint,
               access_token: token.accessToken,
@@ -152,7 +178,7 @@ export default function AppAuthProvider(props) {
                   userinfo: jwtDecode(ujwt),
                   ujwt,
                   idToken,
-                  JwtToken,
+                  jwtToken: oauthAccessToken,
                   isUserInfoFetched: true,
                 }),
               )
@@ -168,22 +194,11 @@ export default function AppAuthProvider(props) {
                 window.location.href = sessionEndpoint
                 return null
               }
-              if (!token) {
+              // Re-create session if not present
+              if (!hasSession) {
                 dispatch(getAPIAccessToken(userinfo_jwt))
               }
             }
-            return fetchApiAccessToken(ujwt)
-          })
-          .then((tokenResponse: { access_token: string }) => {
-            // fetch policy store and set in redux
-            return fetchPolicyStore(tokenResponse.access_token)
-          })
-          .then((policyStoreResponse) => {
-            const policyStoreJson = policyStoreResponse.data.responseObject
-            dispatch({
-              type: 'cedarPermissions/setPolicyStoreJson',
-              payload: policyStoreJson,
-            })
           })
           .catch((oError) => {
             setError(oError)

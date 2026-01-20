@@ -77,7 +77,6 @@ const SettingsPage: React.FC = () => {
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
 
   const authState = useSelector((state: RootState) => ({
-    token: state.authReducer?.token?.access_token,
     userinfo: state.authReducer?.userinfo,
     clientId: state.authReducer?.config?.clientId,
   }))
@@ -190,7 +189,6 @@ const SettingsPage: React.FC = () => {
         dispatch(getOAuth2ConfigResponse({ config: updatedConfig }))
 
         await logAudit({
-          token: authState.token ?? undefined,
           userinfo: authState.userinfo ?? undefined,
           action: UPDATE,
           resource: ADMIN_UI_SETTINGS,

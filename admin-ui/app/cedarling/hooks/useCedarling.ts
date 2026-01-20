@@ -21,7 +21,7 @@ export function useCedarling(): UseCedarlingReturn {
   const {
     userinfo_jwt: userinfo_token,
     idToken: id_token,
-    JwtToken: access_token,
+    jwtToken: access_token,
   } = useSelector((state: RootState) => state.authReducer)
 
   const {

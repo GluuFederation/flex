@@ -4,17 +4,14 @@ import store from 'Redux/store'
 import type { RootState, AuditLog } from 'Redux/sagas/types/audit'
 
 const createAuditLog = (state: RootState): AuditLog | null => {
-  const { token, userinfo, config, location } = state.authReducer
+  const { userinfo, config, location } = state.authReducer
 
-  if (!token?.access_token || !userinfo?.inum || !userinfo?.name) {
+  if (!userinfo?.inum || !userinfo?.name) {
     console.warn('Cannot create audit log: Missing required auth data')
     return null
   }
 
   return {
-    headers: {
-      Authorization: `Bearer ${token.access_token}`,
-    },
     status: 'success',
     performedBy: {
       user_inum: userinfo.inum,

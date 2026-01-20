@@ -31,7 +31,7 @@ export function* auditLogoutLogsSaga({
   } catch (e: unknown) {
     yield put(auditLogoutLogsResponse(false))
     if (process.env.NODE_ENV === 'development') {
-      console.log('Error:', e)
+      console.error('Error:', e)
     }
     return false
   }

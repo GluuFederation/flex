@@ -15,11 +15,6 @@ export const getModuleProperty = (
 export const transformToFormValues = (
   item: CustomScriptItem | CustomScript | Record<string, never>,
 ): FormValues => {
-  const defaultScriptPathValue = getModuleProperty('location_path', item.moduleProperties)
-
-  const locationType = item.locationType || (item.script ? 'db' : 'file')
-  const scriptPath = item.locationPath || defaultScriptPathValue || ''
-
   return {
     name: item.name || '',
     description: item.description || '',
@@ -31,9 +26,9 @@ export const transformToFormValues = (
     moduleProperties: (filterEmptyObjects(item.moduleProperties) || []) as ModuleProperty[],
     configurationProperties: (filterEmptyObjects(item.configurationProperties) ||
       []) as ConfigurationProperty[],
-    script_path: scriptPath,
-    locationPath: item.locationPath,
-    location_type: locationType,
+    script_path: '',
+    locationPath: undefined,
+    location_type: 'db',
     enabled: item.enabled !== undefined ? item.enabled : true,
     action_message: '',
   }

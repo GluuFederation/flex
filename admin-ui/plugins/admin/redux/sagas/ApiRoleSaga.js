@@ -8,19 +8,18 @@ import {
 } from 'Plugins/admin/redux/features/apiRoleSlice'
 import { API_ROLE } from '../audit/Resources'
 import { CREATE, UPDATE, DELETION, FETCH } from '../../../../app/audit/UserActionType'
-import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { updateToast } from 'Redux/features/toastSlice'
-import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import RoleApi from '../api/RoleApi'
 import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
 const JansConfigApi = require('jans_config_api')
-import { initAudit } from 'Redux/sagas/SagaUtils'
+import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 
 function* newFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.AdminUIRoleApi(getClient(JansConfigApi, token, issuer))
+  // Use null for token - HttpOnly session cookie handles auth
+  const api = new JansConfigApi.AdminUIRoleApi(getClient(JansConfigApi, null, issuer))
   return new RoleApi(api)
 }
 
@@ -35,9 +34,10 @@ export function* getRoles({ payload }) {
     return data
   } catch (e) {
     yield put(getRolesResponse(null))
-    if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+    if (isFourZeroThreeError(e)) {
+      // Session expired - redirect to login
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -52,9 +52,10 @@ export function* getRole({ payload }) {
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getRoleResponse(null))
-    if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+    if (isFourZeroThreeError(e)) {
+      // Session expired - redirect to login
+      yield* redirectToLogout()
+      return
     }
   }
 }
@@ -71,9 +72,10 @@ export function* addRole({ payload }) {
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(addRoleResponse(null))
-    if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+    if (isFourZeroThreeError(e)) {
+      // Session expired - redirect to login
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -91,9 +93,10 @@ export function* editRole({ payload }) {
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(editRoleResponse(null))
-    if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+    if (isFourZeroThreeError(e)) {
+      // Session expired - redirect to login
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -112,9 +115,10 @@ export function* deleteRole({ payload }) {
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(deleteRoleResponse(null))
-    if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+    if (isFourZeroThreeError(e)) {
+      // Session expired - redirect to login
+      yield* redirectToLogout()
+      return
     }
     return e
   }
