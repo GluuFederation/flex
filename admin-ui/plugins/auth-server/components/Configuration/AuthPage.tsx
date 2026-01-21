@@ -222,6 +222,7 @@ const AuthPage: React.FC = () => {
   const hasChanges = useMemo(() => {
     return patches.length > 0 || (put && put.value && put.value !== acrs?.defaultAcr)
   }, [patches.length, put, acrs?.defaultAcr])
+  const isConfigEmpty = !configuration || Object.keys(configuration).length === 0
   const patchHandler = useCallback(
     (patch: JsonPatch) => {
       if (patch.op === 'replace' && patch.path) {
@@ -332,13 +333,7 @@ const AuthPage: React.FC = () => {
   )
 
   return (
-    <GluuLoader
-      blocking={
-        !(!!configuration && Object.keys(configuration).length > 0) ||
-        acrLoading ||
-        putAcrsMutation.isPending
-      }
-    >
+    <GluuLoader blocking={isConfigEmpty || acrLoading || putAcrsMutation.isPending}>
       <Card style={{ borderRadius: 24 }}>
         <CardHeader>
           <div style={{ display: 'flex' }}>
