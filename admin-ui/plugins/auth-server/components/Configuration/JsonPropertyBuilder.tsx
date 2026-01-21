@@ -304,4 +304,4 @@ const JsonPropertyBuilder = ({
   return <></>
 }
 
-export default JsonPropertyBuilder
+export default React.memo(JsonPropertyBuilder)

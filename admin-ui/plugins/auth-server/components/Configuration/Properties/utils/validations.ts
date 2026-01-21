@@ -143,7 +143,7 @@ const buildAppConfigurationSchema = (
     consentGatheringScriptBackwardCompatibility: Yup.boolean().nullable(),
     introspectionScriptBackwardCompatibility: Yup.boolean().nullable(),
     introspectionResponseScopesBackwardCompatibility: Yup.boolean().nullable(),
-    softwareStatementValidationType: Yup.string().nullable(),
+    authorizationChallengeShouldGenerateSession: Yup.boolean().nullable(),
 
     // Numbers (durations, intervals, sizes etc.)
     accessEvaluationDiscoveryCacheLifetimeInMinutes: nonNegativeNumber(t),
@@ -191,13 +191,11 @@ const buildAppConfigurationSchema = (
     dpopJtiCacheTime: nonNegativeNumber(t),
     dpopNonceCacheTime: nonNegativeNumber(t),
     discoveryCacheLifetimeInMinutes: nonNegativeNumber(t),
-
-    // Arrays
     grantTypesSupportedByDynamicRegistration: Yup.array().of(Yup.string()).nullable(),
+    authorizationChallengeDefaultAcr: Yup.string().nullable(),
 
     // Strings
-    authorizationChallengeDefaultAcr: Yup.string().nullable(),
-    authorizationChallengeShouldGenerateSession: Yup.boolean().nullable(),
+    softwareStatementValidationType: Yup.string().nullable(),
   }
 
   return Yup.object().shape(appConfigurationSchemaShape) as Yup.ObjectSchema<

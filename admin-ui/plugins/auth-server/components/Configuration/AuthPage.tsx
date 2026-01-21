@@ -1,33 +1,34 @@
 import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useDispatch, useSelector } from 'react-redux'
+import { useQueryClient } from '@tanstack/react-query'
+import { useFormik, setIn } from 'formik'
+import * as Yup from 'yup'
+import { debounce } from 'lodash'
+import { toast } from 'react-toastify'
+import SearchIcon from '@mui/icons-material/Search'
 import { FormGroup, Card, CardBody, CardHeader, Form } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import PropertyBuilder from './JsonPropertyBuilder'
-import { useDispatch, useSelector } from 'react-redux'
-import { useQueryClient } from '@tanstack/react-query'
-import RefreshIcon from '@mui/icons-material/Refresh'
-import { buildPayload } from 'Utils/PermChecker'
-import { useCedarling } from '@/cedarling'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
-import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { getJsonConfig, patchJsonConfig } from 'Plugins/auth-server/redux/features/jsonConfigSlice'
-import SetTitle from 'Utils/SetTitle'
 import DefaultAcrInput from './DefaultAcrInput'
+import SetTitle from 'Utils/SetTitle'
+import customColors from '@/customColors'
+import { buildPayload } from 'Utils/PermChecker'
+import { updateToast } from 'Redux/features/toastSlice'
+import { getJsonConfig, patchJsonConfig } from 'Plugins/auth-server/redux/features/jsonConfigSlice'
 import {
   SIMPLE_PASSWORD_AUTH,
   FETCHING_JSON_PROPERTIES,
 } from 'Plugins/auth-server/common/Constants'
 import { useGetAcrs, usePutAcrs, getGetAcrsQueryKey } from 'JansConfigApi'
 import { getScripts } from 'Redux/features/initSlice'
-import customColors from '@/customColors'
+import { useCedarling } from '@/cedarling'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useAcrAudit } from '../AuthN/hooks'
-import { updateToast } from 'Redux/features/toastSlice'
-import { toast } from 'react-toastify'
-import { useFormik, setIn } from 'formik'
-import * as Yup from 'yup'
 import {
   generateLabel,
   isRenamedKey,
@@ -43,68 +44,38 @@ const AuthPage: React.FC = () => {
   const { t } = useTranslation()
   SetTitle(t('titles.jans_json_property'))
 
-  const { hasCedarWritePermission, authorizeHelper } = useCedarling()
-  const { navigateToRoute } = useAppNavigation()
-  const { logAuthServerPropertiesUpdate } = useAuthServerPropertiesActions()
-  const configuration = useSelector((state: RootState) => state.jsonConfigReducer.configuration)
-  const scripts = useSelector((state: RootState) => state.initReducer.scripts)
-
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
+  const { navigateToRoute } = useAppNavigation()
+  const { hasCedarWritePermission, authorizeHelper } = useCedarling()
+  const { logAuthServerPropertiesUpdate } = useAuthServerPropertiesActions()
   const { logAcrUpdate } = useAcrAudit()
-
+  const configuration = useSelector((state: RootState) => state.jsonConfigReducer.configuration)
+  const scripts = useSelector((state: RootState) => state.initReducer.scripts)
   const { data: acrs, isLoading: acrLoading } = useGetAcrs({
-    query: {
-      staleTime: 30000,
-    },
+    query: { staleTime: 30000 },
   })
-
-  const handleAcrUpdateSuccess = useCallback(() => {
-    queryClient.invalidateQueries({ queryKey: getGetAcrsQueryKey() })
-  }, [queryClient])
-
-  const handleAcrUpdateError = useCallback(
-    (error: unknown) => {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to update default ACR'
-      dispatch(updateToast(true, 'error', errorMessage))
-    },
-    [dispatch],
-  )
-
-  const putAcrsMutation = usePutAcrs({
-    mutation: {
-      onSuccess: handleAcrUpdateSuccess,
-      onError: handleAcrUpdateError,
-    },
-  })
-
   const lSize = 6
   const userAction: UserAction = {
     action_message: '',
     action_data: null,
   }
-
   const propertiesResourceId = ADMIN_UI_RESOURCES.AuthenticationServerConfiguration
   const propertiesScopes = useMemo(
     () => CEDAR_RESOURCE_SCOPES[propertiesResourceId] || [],
     [propertiesResourceId],
   )
-
   const canWriteProperties = useMemo(
     () => hasCedarWritePermission(propertiesResourceId),
     [hasCedarWritePermission, propertiesResourceId],
   )
-
   const [modal, setModal] = useState<boolean>(false)
   const [patches, setPatches] = useState<JsonPatch[]>([])
   const [resetKey, setResetKey] = useState<number>(0)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-
   const [search, setSearch] = useState<string>('')
   const [finalSearch, setFinalSearch] = useState<string>('')
-
   const [put, setPut] = useState<AcrPutOperation | null>(null)
-
   const baselineConfigurationRef = useRef<AppConfiguration | null>(null)
   const setFieldValueRef = useRef<
     ((field: string, value: unknown, shouldValidate?: boolean) => void) | null
@@ -115,18 +86,35 @@ const AuthPage: React.FC = () => {
   const validateFormRef = useRef<(() => Promise<unknown>) | null>(null)
   const touchedRef = useRef<Record<string, boolean | undefined>>({})
   const previousConfigurationRef = useRef<AppConfiguration | null>(null)
-
-  useEffect(() => {
-    authorizeHelper(propertiesScopes)
-  }, [authorizeHelper, propertiesScopes])
-
+  const debouncedSetFinalSearch = useMemo(
+    () =>
+      debounce((value: string) => {
+        setFinalSearch(value.toLowerCase())
+      }, 300),
+    [],
+  )
+  const validationSchema = useMemo(() => createAppConfigurationSchema(t), [t])
+  const handleAcrUpdateSuccess = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: getGetAcrsQueryKey() })
+  }, [queryClient])
+  const handleAcrUpdateError = useCallback(
+    (error: unknown) => {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update default ACR'
+      dispatch(updateToast(true, 'error', errorMessage))
+    },
+    [dispatch],
+  )
+  const putAcrsMutation = usePutAcrs({
+    mutation: {
+      onSuccess: handleAcrUpdateSuccess,
+      onError: handleAcrUpdateError,
+    },
+  })
   const validate = useCallback(
     async (values: AppConfiguration) => {
       const errors: Record<string, string> = {}
-      const schema = createAppConfigurationSchema(t)
-
       try {
-        await schema.validate(values, { abortEarly: false })
+        await validationSchema.validate(values, { abortEarly: false })
       } catch (err) {
         const validationError = err as Yup.ValidationError
         if (validationError.inner && Array.isArray(validationError.inner)) {
@@ -139,37 +127,32 @@ const AuthPage: React.FC = () => {
           errors[validationError.path] = validationError.message
         }
       }
-
       return errors
     },
-    [t],
+    [validationSchema],
   )
-
   const formik = useFormik<AppConfiguration>({
     initialValues: configuration || {},
     validate,
     enableReinitialize: true,
-    validateOnChange: true,
+    validateOnChange: false,
     validateOnBlur: true,
     validateOnMount: false,
-    onSubmit: () => {
-      // Form submission is handled by handleSubmit wrapper
-    },
+    onSubmit: () => {},
   })
-
-  // Update refs with current formik methods/values on each render
+  useEffect(() => {
+    authorizeHelper(propertiesScopes)
+  }, [authorizeHelper, propertiesScopes])
   useEffect(() => {
     setFieldValueRef.current = formik.setFieldValue
     setTouchedRef.current = formik.setTouched
     validateFormRef.current = formik.validateForm
     touchedRef.current = formik.touched
   })
-
   useEffect(() => {
     const configChanged =
       previousConfigurationRef.current === null ||
       JSON.stringify(previousConfigurationRef.current) !== JSON.stringify(configuration)
-
     if (configuration && Object.keys(configuration).length > 0 && configChanged) {
       if (patches.length === 0) {
         baselineConfigurationRef.current = JSON.parse(
@@ -187,14 +170,6 @@ const AuthPage: React.FC = () => {
       }
     }
   }, [configuration, patches.length, formik])
-
-  const authScripts: string[] = scripts
-    .filter((item: Script) => item.scriptType === 'person_authentication')
-    .filter((item: Script) => item.enabled)
-    .map((item: Script) => item.name)
-
-  authScripts.push(SIMPLE_PASSWORD_AUTH)
-
   useEffect(() => {
     const actionPayload: ActionData = {}
     buildPayload(userAction, FETCHING_JSON_PROPERTIES, actionPayload)
@@ -209,7 +184,26 @@ const AuthPage: React.FC = () => {
       }),
     )
   }, [dispatch])
-
+  const propertiesData = useMemo(() => {
+    if (Object.keys(configuration).length === 0) {
+      return []
+    }
+    const renamed = renamedFieldFromObject(configuration)
+    return Object.entries(renamed)
+      .filter(([propKey]) => generateLabel(propKey).includes(finalSearch))
+      .map(([propKey, propValue]) => ({
+        propKey,
+        propValue: propValue as AppConfiguration,
+      }))
+  }, [configuration, finalSearch])
+  const authScripts = useMemo(() => {
+    const filteredScripts: string[] = scripts
+      .filter((item: Script) => item.scriptType === 'person_authentication')
+      .filter((item: Script) => item.enabled)
+      .map((item: Script) => item.name)
+    filteredScripts.push(SIMPLE_PASSWORD_AUTH)
+    return filteredScripts
+  }, [scripts])
   const operations = useMemo<GluuCommitDialogOperation[]>(() => {
     const patchOperations: GluuCommitDialogOperation[] = patches.map((patch) => ({
       path: patch.path as string,
@@ -225,37 +219,28 @@ const AuthPage: React.FC = () => {
       : []
     return [...patchOperations, ...putOperations]
   }, [patches, put])
-
+  const hasChanges = useMemo(() => {
+    return patches.length > 0 || (put && put.value && put.value !== acrs?.defaultAcr)
+  }, [patches.length, put, acrs?.defaultAcr])
   const patchHandler = useCallback(
     (patch: JsonPatch) => {
       if (patch.op === 'replace' && patch.path) {
         const fieldPath = typeof patch.path === 'string' ? patch.path.replace(/^\//, '') : ''
         const formikPath = fieldPath.replace(/\//g, '.')
-
         if (setFieldValueRef.current) {
           setFieldValueRef.current(formikPath, patch.value, false)
         }
         if (setTouchedRef.current) {
           setTouchedRef.current(setIn(touchedRef.current, formikPath, true), false)
         }
-
-        // Use validateForm() instead of validateField() because we use custom validate function
-        setTimeout(() => {
-          if (validateFormRef.current) {
-            validateFormRef.current()
-          }
-        }, 0)
       }
-
       setPatches((existingPatches) => {
-        // Replace existing patch for the same path instead of adding duplicates
         const filteredPatches = existingPatches.filter((p) => p.path !== patch.path)
         return [...filteredPatches, patch]
       })
     },
     [setPatches],
   )
-
   const putHandler = useCallback(
     (putData: { value: string | string[]; path: string; op: 'replace' }) => {
       const putValue: AcrPutOperation = {
@@ -267,21 +252,17 @@ const AuthPage: React.FC = () => {
     },
     [],
   )
-
   const toggle = useCallback(() => {
     setModal((prev) => !prev)
   }, [])
-
   const handleBack = useCallback(() => {
     navigateToRoute(ROUTES.HOME_DASHBOARD)
   }, [navigateToRoute])
-
   const handleCancel = useCallback(() => {
     setPatches([])
     setPut(null)
     setResetKey((prev) => prev + 1)
     setErrorMessage(null)
-    // Reset to baseline configuration - components will re-render with original values
     if (baselineConfigurationRef.current) {
       previousConfigurationRef.current = JSON.parse(
         JSON.stringify(baselineConfigurationRef.current),
@@ -292,24 +273,19 @@ const AuthPage: React.FC = () => {
         errors: {},
       })
     }
-    // Refetch to ensure we have the latest server state
     dispatch(getJsonConfig())
   }, [dispatch, formik])
-
   const handleSubmit = useCallback(
     async (message: string) => {
       try {
         setErrorMessage(null)
-
         if (patches.length > 0) {
           const postBody = {
             requestBody: patches,
           } as unknown as ActionData
-
           buildPayload(userAction, message, postBody)
           dispatch(patchJsonConfig({ action: userAction }))
         }
-
         if (put && put.value) {
           const newAcr = { defaultAcr: put.value || acrs?.defaultAcr }
           try {
@@ -319,7 +295,6 @@ const AuthPage: React.FC = () => {
             console.error('Error updating ACR:', error)
           }
         }
-
         let auditSuccess = true
         try {
           const auditPayload = {
@@ -331,7 +306,6 @@ const AuthPage: React.FC = () => {
           console.error('Error logging audit:', auditError)
           auditSuccess = false
         }
-
         if (auditSuccess) {
           toast.success(t('messages.success_in_saving'))
         } else {
@@ -346,7 +320,6 @@ const AuthPage: React.FC = () => {
     },
     [patches, put, acrs, dispatch, putAcrsMutation, logAcrUpdate, logAuthServerPropertiesUpdate, t],
   )
-
   const submitForm = useCallback(
     async (message: string) => {
       toggle()
@@ -354,10 +327,6 @@ const AuthPage: React.FC = () => {
     },
     [toggle, handleSubmit],
   )
-
-  const hasChanges = useMemo(() => {
-    return patches.length > 0 || (put && put.value && put.value !== acrs?.defaultAcr)
-  }, [patches.length, put, acrs?.defaultAcr])
 
   return (
     <GluuLoader
@@ -372,19 +341,25 @@ const AuthPage: React.FC = () => {
           <div style={{ display: 'flex' }}>
             <div style={{ flex: 2 }}></div>
             <div style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
-              <div style={{ flex: 1 }}>
+              <div style={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center' }}>
                 <input
-                  type="search"
+                  type="text"
                   className="form-control"
                   placeholder="Search..."
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    setSearch(e.target.value)
+                    debouncedSetFinalSearch(e.target.value)
+                  }}
                   value={search}
+                  style={{ paddingRight: '30px' }}
                 />
-              </div>
-              <div style={{ paddingLeft: 5 }}>
-                <RefreshIcon
-                  onClick={() => setFinalSearch(search.toLowerCase())}
-                  style={{ cursor: 'pointer', color: customColors.lightBlue }}
+                <SearchIcon
+                  style={{
+                    position: 'absolute',
+                    right: '10px',
+                    color: customColors.lightBlue,
+                    pointerEvents: 'none',
+                  }}
                 />
               </div>
             </div>
@@ -399,27 +374,19 @@ const AuthPage: React.FC = () => {
             style={{ display: 'flex', flexDirection: 'column', minHeight: '100%' }}
           >
             <div style={{ flex: 1, paddingBottom: '100px' }}>
-              {Object.keys(configuration).length > 0 &&
-                Object.entries(renamedFieldFromObject(configuration)).map(
-                  ([propKey, propValue]) => {
-                    if (generateLabel(propKey).includes(finalSearch)) {
-                      return (
-                        <PropertyBuilder
-                          isRenamedKey={isRenamedKey(propKey)}
-                          key={`${propKey}-${resetKey}`}
-                          propKey={propKey}
-                          propValue={propValue as AppConfiguration}
-                          lSize={lSize}
-                          handler={patchHandler}
-                          errors={formik.errors}
-                          touched={formik.touched}
-                        />
-                      )
-                    }
-                    return null
-                  },
-                )}
-
+              {propertiesData.length > 0 &&
+                propertiesData.map(({ propKey, propValue }) => (
+                  <PropertyBuilder
+                    isRenamedKey={isRenamedKey(propKey)}
+                    key={`${propKey}-${resetKey}`}
+                    propKey={propKey}
+                    propValue={propValue}
+                    lSize={lSize}
+                    handler={patchHandler}
+                    errors={formik.errors}
+                    touched={formik.touched}
+                  />
+                ))}
               {!!configuration && Object.keys(configuration).length > 0 && (
                 <DefaultAcrInput
                   key={`defaultAcr-${resetKey}`}
@@ -434,10 +401,8 @@ const AuthPage: React.FC = () => {
                   showSaveButtons={false}
                 />
               )}
-
               <FormGroup row></FormGroup>
             </div>
-
             {canWriteProperties && (
               <div className="position-sticky bottom-0 bg-body py-3" style={{ zIndex: 10 }}>
                 <GluuFormFooter
