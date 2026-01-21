@@ -846,7 +846,9 @@
     "attribute_update_failed": "Erro ao atualizar atributo",
     "attribute_delete_failed": "Erro ao excluir atributo",
     "attribute_load_failed": "Erro ao carregar atributo",
-    "attribute_not_found": "Atributo não encontrado"
+    "cannot_contain_spaces": "{{field}} não pode conter espaços",
+    "cannot_be_empty": "{{field}} não pode estar vazio",
+    "must_be_valid_url": "{{field}} deve ser uma URL válida"
   },
   "validation_messages": {
     "invalid_url_format": "Formato de URL inválido",
