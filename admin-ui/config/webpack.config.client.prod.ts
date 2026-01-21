@@ -192,11 +192,6 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
       },
       {
         test: /\.ya?ml$/,
-        include: [
-          config.srcDir,
-          config.pluginsDir,
-          path.resolve(__dirname, '..'), // Include root directory for configApiSpecs.yaml
-        ],
         use: 'yaml-loader',
       },
       {

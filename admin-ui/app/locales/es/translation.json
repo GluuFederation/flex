@@ -913,6 +913,15 @@
     "attribute_load_failed": "Error al cargar el atributo",
     "attribute_not_found": "Atributo no encontrado"
   },
+  "validation_messages": {
+    "invalid_url_format": "Formato de URL inválido",
+    "must_be_non_negative": "Debe ser no negativo",
+    "required_field": "Este campo es obligatorio",
+    "invalid_number": "Debe ser un número válido",
+    "invalid_email": "Debe ser una dirección de correo válida",
+    "invalid_json": "Debe ser JSON válido",
+    "invalid_pattern": "Formato inválido"
+  },
   "tooltips": {
     "add_attribute": "Añadir atributo",
     "add_ldap": "Añadir LDAP",

@@ -848,6 +848,15 @@
     "attribute_load_failed": "Erro ao carregar atributo",
     "attribute_not_found": "Atributo não encontrado"
   },
+  "validation_messages": {
+    "invalid_url_format": "Formato de URL inválido",
+    "must_be_non_negative": "Deve ser não-negativo",
+    "required_field": "Este campo é obrigatório",
+    "invalid_number": "Deve ser um número válido",
+    "invalid_email": "Deve ser um endereço de e-mail válido",
+    "invalid_json": "Deve ser um JSON válido",
+    "invalid_pattern": "Formato inválido"
+  },
   "tooltips": {
     "add_attribute": "Adicionar atributo",
     "add_user": "Adicionar usuário",

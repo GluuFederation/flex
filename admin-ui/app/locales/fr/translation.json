@@ -853,6 +853,15 @@
     "attribute_load_failed": "Erreur lors du chargement de l'attribut",
     "attribute_not_found": "Attribut introuvable"
   },
+  "validation_messages": {
+    "invalid_url_format": "Format d'URL invalide",
+    "must_be_non_negative": "Doit être non-négatif",
+    "required_field": "Ce champ est obligatoire",
+    "invalid_number": "Doit être un nombre valide",
+    "invalid_email": "Doit être une adresse e-mail valide",
+    "invalid_json": "Doit être du JSON valide",
+    "invalid_pattern": "Format invalide"
+  },
   "tooltips": {
     "add_attribute": "Ajouter un attribut",
     "add_ldap": "Ajouter LDAP",

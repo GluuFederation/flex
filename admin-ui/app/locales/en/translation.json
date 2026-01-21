@@ -917,6 +917,15 @@
     "attribute_load_failed": "Error loading attribute",
     "attribute_not_found": "Attribute not found"
   },
+  "validation_messages": {
+    "invalid_url_format": "Invalid URL format",
+    "must_be_non_negative": "Must be non-negative",
+    "required_field": "This field is required",
+    "invalid_number": "Must be a valid number",
+    "invalid_email": "Must be a valid email address",
+    "invalid_json": "Must be valid JSON",
+    "invalid_pattern": "Invalid format"
+  },
   "tooltips": {
     "add_attribute": "Add attribute",
     "add_user": "Add User",

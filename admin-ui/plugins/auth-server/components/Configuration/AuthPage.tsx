@@ -8,7 +8,6 @@ import PropertyBuilder from './JsonPropertyBuilder'
 import { useDispatch, useSelector } from 'react-redux'
 import { useQueryClient } from '@tanstack/react-query'
 import RefreshIcon from '@mui/icons-material/Refresh'
-import { getAppConfigurationProperties, type SchemaProperty } from '@/config/openApiSpec'
 import { buildPayload } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
@@ -33,10 +32,9 @@ import {
   generateLabel,
   isRenamedKey,
   renamedFieldFromObject,
-  getMissingProperties,
   useAuthServerPropertiesActions,
 } from './Properties/utils'
-import { appConfigurationSchema } from './Properties/utils/validations'
+import { createAppConfigurationSchema } from './Properties/utils/validations'
 import type { AppConfiguration, RootState, JsonPatch, AcrPutOperation, Script } from './types'
 import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/types'
 import type { UserAction, ActionData } from 'Utils/PermChecker'
@@ -104,13 +102,6 @@ const AuthPage: React.FC = () => {
 
   const [search, setSearch] = useState<string>('')
   const [finalSearch, setFinalSearch] = useState<string>('')
-  const schema = getAppConfigurationProperties()
-  const properties = Object.keys(schema)
-  const api_configurations = Object.keys(configuration)
-  const missing_properties_data = useMemo(
-    () => getMissingProperties(properties, api_configurations),
-    [properties, api_configurations],
-  )
 
   const [put, setPut] = useState<AcrPutOperation | null>(null)
 
@@ -129,26 +120,30 @@ const AuthPage: React.FC = () => {
     authorizeHelper(propertiesScopes)
   }, [authorizeHelper, propertiesScopes])
 
-  const validate = useCallback(async (values: AppConfiguration) => {
-    const errors: Record<string, string> = {}
+  const validate = useCallback(
+    async (values: AppConfiguration) => {
+      const errors: Record<string, string> = {}
+      const schema = createAppConfigurationSchema(t)
 
-    try {
-      await appConfigurationSchema.validate(values, { abortEarly: false })
-    } catch (err) {
-      const validationError = err as Yup.ValidationError
-      if (validationError.inner && Array.isArray(validationError.inner)) {
-        for (const error of validationError.inner) {
-          if (error.path) {
-            errors[error.path] = error.message
+      try {
+        await schema.validate(values, { abortEarly: false })
+      } catch (err) {
+        const validationError = err as Yup.ValidationError
+        if (validationError.inner && Array.isArray(validationError.inner)) {
+          for (const error of validationError.inner) {
+            if (error.path) {
+              errors[error.path] = error.message
+            }
           }
+        } else if (validationError.path) {
+          errors[validationError.path] = validationError.message
         }
-      } else if (validationError.path) {
-        errors[validationError.path] = validationError.message
       }
-    }
 
-    return errors
-  }, [])
+      return errors
+    },
+    [t],
+  )
 
   const formik = useFormik<AppConfiguration>({
     initialValues: configuration || {},
@@ -416,7 +411,6 @@ const AuthPage: React.FC = () => {
                           propValue={propValue as AppConfiguration}
                           lSize={lSize}
                           handler={patchHandler}
-                          schema={schema[propKey] as SchemaProperty}
                           errors={formik.errors}
                           touched={formik.touched}
                         />
@@ -426,23 +420,6 @@ const AuthPage: React.FC = () => {
                   },
                 )}
 
-              {Object.keys(configuration).length > 0 &&
-                missing_properties_data.map((propKey) => {
-                  if (generateLabel(propKey).includes(finalSearch)) {
-                    return (
-                      <PropertyBuilder
-                        key={`${propKey}-${resetKey}`}
-                        propKey={propKey}
-                        lSize={lSize}
-                        schema={schema[propKey] as SchemaProperty}
-                        handler={patchHandler}
-                        errors={formik.errors}
-                        touched={formik.touched}
-                      />
-                    )
-                  }
-                  return null
-                })}
               {!!configuration && Object.keys(configuration).length > 0 && (
                 <DefaultAcrInput
                   key={`defaultAcr-${resetKey}`}
