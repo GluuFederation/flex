@@ -233,6 +233,9 @@ const AuthPage: React.FC = () => {
         if (setTouchedRef.current) {
           setTouchedRef.current(setIn(touchedRef.current, formikPath, true), false)
         }
+        if (validateFormRef.current) {
+          void validateFormRef.current()
+        }
       }
       setPatches((existingPatches) => {
         const filteredPatches = existingPatches.filter((p) => p.path !== patch.path)
