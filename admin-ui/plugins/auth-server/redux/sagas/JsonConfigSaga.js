@@ -41,7 +41,11 @@ export function* patchJsonConfig({ payload }) {
   const audit = yield* initAudit()
   try {
     const enhancedPayload = enhanceJsonConfigAuditPayload(payload, JSON_CONFIG)
-    const isDeleteOperation = payload?.action?.action_data?.deletedMapping
+    const hasDeletedMapping = payload?.action?.action_data?.deletedMapping
+    const hasRemovePatch =
+      Array.isArray(payload?.action?.action_data?.requestBody) &&
+      payload.action.action_data.requestBody.some((patch) => patch.op === 'remove')
+    const isDeleteOperation = hasDeletedMapping || hasRemovePatch
     const actionType = isDeleteOperation ? DELETION : PATCH
     addAdditionalData(audit, actionType, JSON_CONFIG, enhancedPayload)
     const configApi = yield* newFunction()

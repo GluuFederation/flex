@@ -40,6 +40,7 @@ export interface JsonConfigRootState {
       acrMappings?: Record<string, string>
     }
     loading: boolean
+    saveError: boolean
   }
 }
 

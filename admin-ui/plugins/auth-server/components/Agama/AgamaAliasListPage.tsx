@@ -44,15 +44,15 @@ function AliasesListPage(): React.ReactElement {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'dark'
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
 
-  const { loading } = useSelector((state: JsonConfigRootState) => state.jsonConfigReducer)
+  const { loading, saveError } = useSelector(
+    (state: JsonConfigRootState) => state.jsonConfigReducer,
+  )
   const configuration = useSelector(
     (state: JsonConfigRootState) => state.jsonConfigReducer.configuration,
   )
 
-  const [listData, setListData] = useState<AcrMappingTableRow[]>([])
   const [showAddModal, setShowAddModal] = useState<boolean>(false)
   const [isEdit, setIsEdit] = useState<boolean>(false)
   const [selectedRow, setSelectedRow] = useState<AcrMappingTableRow | null>(null)
@@ -61,10 +61,21 @@ function AliasesListPage(): React.ReactElement {
 
   SetTitle(t('titles.authentication'))
 
+  const selectedTheme = theme?.state?.theme || 'dark'
   const bgThemeColor = useMemo(
     () => ({ background: getThemeColor(selectedTheme).background }),
     [selectedTheme],
   )
+
+  const canReadAuth = useMemo(
+    () => hasCedarReadPermission(authResourceId),
+    [hasCedarReadPermission],
+  )
+  const canWriteAuth = useMemo(
+    () => hasCedarWritePermission(authResourceId),
+    [hasCedarWritePermission],
+  )
+
   const initialFormValues = useMemo<AcrMappingFormValues>(
     () => ({
       source: '',
@@ -72,17 +83,12 @@ function AliasesListPage(): React.ReactElement {
     }),
     [],
   )
-
-  const canReadAuth = useMemo(
-    () => hasCedarReadPermission(authResourceId),
-    [hasCedarReadPermission, authResourceId],
-  )
-  const canWriteAuth = useMemo(
-    () => hasCedarWritePermission(authResourceId),
-    [hasCedarWritePermission, authResourceId],
-  )
-
   const validationSchema = useMemo(() => getAcrMappingValidationSchema(t), [t])
+
+  const listData = useMemo(
+    () => transformAcrMappingsToTableData(configuration?.acrMappings),
+    [configuration?.acrMappings],
+  )
 
   const handleSubmitCallback = useCallback(
     async (values: AcrMappingFormValues): Promise<void> => {
@@ -112,23 +118,6 @@ function AliasesListPage(): React.ReactElement {
     [configuration, isEdit, selectedRow, dispatch, t],
   )
 
-  const previousLoadingRef = useRef<boolean>(loading)
-
-  useEffect(() => {
-    const wasLoading = previousLoadingRef.current
-    const isLoading = loading
-    previousLoadingRef.current = loading
-
-    if (wasLoading && !isLoading && configuration?.acrMappings !== undefined) {
-      setIsEdit(false)
-      setSelectedRow(null)
-      setShowAddModal(false)
-    } else if (wasLoading && !isLoading && configuration?.acrMappings === undefined) {
-      const errorMessage = t('messages.error_processiong_request')
-      dispatch(updateToast(true, 'error', `${t('messages.error_in_saving')} ${errorMessage}`))
-    }
-  }, [loading, configuration, dispatch, t])
-
   const formik = useFormik<AcrMappingFormValues>({
     initialValues: initialFormValues,
     validationSchema,
@@ -136,32 +125,43 @@ function AliasesListPage(): React.ReactElement {
     enableReinitialize: true,
   })
 
+  const previousLoadingRef = useRef<boolean>(loading)
+  const formikRef = useRef(formik)
+  const initialFormValuesRef = useRef(initialFormValues)
+  formikRef.current = formik
+  initialFormValuesRef.current = initialFormValues
+
+  useEffect(() => {
+    const wasLoading = previousLoadingRef.current
+    const isLoading = loading
+    previousLoadingRef.current = loading
+
+    if (wasLoading && !isLoading && !saveError) {
+      setIsEdit(false)
+      setSelectedRow(null)
+      setShowAddModal(false)
+    } else if (wasLoading && !isLoading && saveError) {
+      const errorMessage = t('messages.error_processiong_request')
+      dispatch(updateToast(true, 'error', `${t('messages.error_in_saving')} ${errorMessage}`))
+    }
+  }, [loading, saveError, dispatch, t])
+
   useEffect(() => {
     if (authScopes && authScopes.length > 0) {
       authorizeHelper(authScopes)
     }
-  }, [authorizeHelper, authScopes])
-
-  useEffect(() => {
-    if (!canReadAuth) {
-      return
+    if (canReadAuth) {
+      dispatch(getJsonConfig())
     }
-    dispatch(getJsonConfig())
-  }, [dispatch, canReadAuth])
+  }, [authorizeHelper, canReadAuth, dispatch, authScopes])
 
-  useEffect(() => {
-    const data = transformAcrMappingsToTableData(configuration?.acrMappings)
-    setListData(data)
-  }, [configuration])
-
-  // Reset form state when modal closes
   useEffect(() => {
     if (!showAddModal) {
-      formik.resetForm({ values: initialFormValues })
+      formikRef.current.resetForm({ values: initialFormValuesRef.current })
       setIsEdit(false)
       setSelectedRow(null)
     }
-  }, [showAddModal]) // eslint-disable-line
+  }, [showAddModal])
 
   const handleCancel = useCallback(() => {
     formik.resetForm({ values: initialFormValues })
@@ -235,7 +235,6 @@ function AliasesListPage(): React.ReactElement {
         const updatedMappings = prepareMappingsForDelete(currentMappings, itemToDelete.mapping)
         const postBody = buildAcrMappingDeletePayload(updatedMappings, configuration?.acrMappings)
 
-        // Add deleted mapping info for audit tracking
         const basePayload = toActionData(postBody) as Record<string, unknown>
         const payloadWithDeleteInfo = {
           ...basePayload,

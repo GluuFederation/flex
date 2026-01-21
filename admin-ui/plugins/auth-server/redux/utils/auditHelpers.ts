@@ -160,9 +160,12 @@ export const enhanceJsonConfigAuditPayload = (
   const userMessage = payload?.action?.action_message
   let modifiedFields: Record<string, string> = {}
   let performedOn = defaultResource
+  let auditMessage = ''
 
   if (deletedMapping) {
     performedOn = ACR_MAPPINGS_PATH
+    const deleteDetails = createDeleteAuditDetails()
+    auditMessage = deleteDetails.auditMessage
     modifiedFields = {
       mapping: deletedMapping.mapping,
       source: deletedMapping.source,
@@ -173,17 +176,22 @@ export const enhanceJsonConfigAuditPayload = (
       const acrMappingDetails = processAcrMappingPatch(patch)
       if (acrMappingDetails) {
         performedOn = acrMappingDetails.performedOn
+        auditMessage = acrMappingDetails.auditMessage
         modifiedFields = acrMappingDetails.modifiedFields
         break
       }
     }
   }
 
+  // Important: do NOT append anything to the user's message.
+  // Use derived auditMessage only when userMessage is absent.
+  const finalMessage = userMessage || auditMessage || 'Updated JSON configuration'
+
   return {
     ...payload,
     action: {
       ...payload.action,
-      action_message: userMessage || 'Updated JSON configuration',
+      action_message: finalMessage,
       action_data: {
         ...(actionData || {}),
         modifiedFields,

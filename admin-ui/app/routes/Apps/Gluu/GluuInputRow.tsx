@@ -50,14 +50,14 @@ function GluuInputRow({
           name={name}
           value={value}
           onChange={(event) => {
-            if (handleChange) {
-              formik.handleChange(event)
-              handleChange(event)
-            } else {
+            if (formik) {
               formik.handleChange(event)
             }
+            if (handleChange) {
+              handleChange(event)
+            }
           }}
-          onBlur={formik.handleBlur}
+          onBlur={formik?.handleBlur}
           onFocus={onFocus}
           onKeyDown={(evt) => evt.key === 'e' && type === 'number' && evt.preventDefault()}
           disabled={disabled}
