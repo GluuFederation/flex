@@ -16,7 +16,8 @@ import {
 } from 'JansConfigApi'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useDispatch } from 'react-redux'
-import { currentAuthNItemAtom, type AuthNItem, type ConfigurationProperty } from './atoms'
+import { currentAuthNItemAtom, type ConfigurationProperty } from './atoms'
+import { type AuthNFormValues } from './AuthNForm'
 
 const isDefaultAuthNMethod = (value: boolean | string): boolean =>
   value === 'true' || value === true
@@ -37,31 +38,7 @@ const transformConfigurationProperties = (
     }))
 }
 
-interface AuthNFormValues {
-  acr: string
-  level: number
-  defaultAuthNMethod: boolean | string
-  samlACR: string
-  description: string
-  primaryKey: string
-  passwordAttribute: string
-  hashAlgorithm: string
-  bindDN: string
-  maxConnections: string | number
-  remotePrimaryKey: string
-  localPrimaryKey: string
-  servers: string | string[]
-  baseDNs: string | string[]
-  bindPassword: string
-  useSSL: boolean
-  enabled: boolean
-  configId: string
-  baseDn: string | undefined
-  inum: string | undefined
-  configurationProperties?: ConfigurationProperty[]
-}
-
-function AuthNEditPage(): ReactElement {
+const AuthNEditPage = (): ReactElement => {
   const dispatch = useDispatch()
   const { navigateToRoute } = useAppNavigation()
   const { t } = useTranslation()
@@ -124,16 +101,16 @@ function AuthNEditPage(): ReactElement {
 
     try {
       if (atomItem.name === 'simple_password_auth') {
-        if (isDefaultAuthNMethod(data.defaultAuthNMethod)) {
-          try {
-            const acrData: AuthenticationMethod = { defaultAcr: 'simple_password_auth' }
-            await putAcrsMutation.mutateAsync({ data: acrData })
-          } catch (error) {
-            handleError(error as Error)
-            return
-          }
+        try {
+          const acrData: AuthenticationMethod = isDefaultAuthNMethod(data.defaultAuthNMethod)
+            ? { defaultAcr: 'simple_password_auth' }
+            : { defaultAcr: '' }
+          await putAcrsMutation.mutateAsync({ data: acrData })
+          handleSuccess()
+        } catch (error) {
+          handleError(error as Error)
+          return
         }
-        handleSuccess()
       } else if (atomItem.name === 'default_ldap_password') {
         const ldapPayload: GluuLdapConfiguration = {
           configId: atomItem.configId || '',
@@ -158,7 +135,7 @@ function AuthNEditPage(): ReactElement {
           try {
             const acrData: AuthenticationMethod = { defaultAcr: data.configId }
             await putAcrsMutation.mutateAsync({ data: acrData })
-          } catch (acrError) {
+          } catch {
             dispatch(
               updateToast(
                 true,
@@ -191,7 +168,7 @@ function AuthNEditPage(): ReactElement {
           try {
             const acrData: AuthenticationMethod = { defaultAcr: atomItem.acrName || '' }
             await putAcrsMutation.mutateAsync({ data: acrData })
-          } catch (acrError) {
+          } catch {
             dispatch(
               updateToast(
                 true,
@@ -229,9 +206,9 @@ function AuthNEditPage(): ReactElement {
 
   return (
     <GluuLoader blocking={isLoading}>
-      <Card className="mb-3" style={applicationStyle.mainCard}>
+      <Card className="mb-3" style={{ ...applicationStyle.mainCard, minHeight: 'unset' }}>
         <CardBody>
-          <AuthNForm handleSubmit={handleSubmit} item={atomItem} />
+          <AuthNForm handleSubmit={handleSubmit} item={atomItem} isSubmitting={isLoading} />
         </CardBody>
       </Card>
     </GluuLoader>
