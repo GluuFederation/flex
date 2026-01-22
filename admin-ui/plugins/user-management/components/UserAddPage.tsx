@@ -17,7 +17,7 @@ import type { CustomUser } from '../types/UserApiTypes'
 
 function UserAddPage() {
   const dispatch = useDispatch()
-  const { navigateToRoute } = useAppNavigation()
+  const { navigateBack } = useAppNavigation()
   const queryClient = useQueryClient()
   const { t } = useTranslation()
   const { data: attributesData, isLoading: loadingAttributes } = useGetAttributes({
@@ -35,7 +35,7 @@ function UserAddPage() {
         await logUserCreation(data, variables.data)
         triggerUserWebhook(data)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
-        navigateToRoute(ROUTES.USER_MANAGEMENT)
+        navigateBack(ROUTES.USER_MANAGEMENT)
       },
       onError: (error: unknown) => {
         const errMsg = getErrorMessage(error)
