@@ -64,7 +64,7 @@ export const postUserAction = (userAction: any) => {
     )
     .then((response) => response)
     .catch((error) => {
-      console.error('Problems updating configuration.', error)
+      console.error('Problems posting user action audit log.', error)
       throw error
     })
 }

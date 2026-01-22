@@ -5,7 +5,7 @@ import { fetchApiTokenWithDefaultScopes, deleteAdminUiSession } from '../api/bac
 import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
 import { CREATE } from '../../audit/UserActionType'
-import { initAudit, redirectToLogout } from '../sagas/SagaUtils'
+import { initAudit } from '../sagas/SagaUtils'
 
 const API_USERS = '/api/v1/users'
 
@@ -32,9 +32,16 @@ export function* auditLogoutLogsSaga({
     return ok
   } catch (e) {
     if (isFourZeroThreeError(e)) {
-      const response = yield call(fetchApiTokenWithDefaultScopes)
-      yield call(deleteAdminUiSession, response?.access_token)
+      try {
+        const response = yield call(fetchApiTokenWithDefaultScopes)
+        yield call(deleteAdminUiSession, response?.access_token)
+      } catch (recoveryError) {
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Session cleanup failed:', recoveryError)
+        }
+      }
       window.location.href = '/admin/logout'
+      return false
     }
     yield put(auditLogoutLogsResponse(false))
     if (process.env.NODE_ENV === 'development') {
