@@ -46,7 +46,7 @@ const AuthPage: React.FC = () => {
 
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
-  const { navigateToRoute } = useAppNavigation()
+  const { navigateBack } = useAppNavigation()
   const { hasCedarWritePermission, authorizeHelper } = useCedarling()
   const { logAuthServerPropertiesUpdate } = useAuthServerPropertiesActions()
   const { logAcrUpdate } = useAcrAudit()
@@ -93,6 +93,11 @@ const AuthPage: React.FC = () => {
       }, 300),
     [],
   )
+  useEffect(() => {
+    return () => {
+      debouncedSetFinalSearch.cancel()
+    }
+  }, [debouncedSetFinalSearch])
   const validationSchema = useMemo(() => createAppConfigurationSchema(t), [t])
   const handleAcrUpdateSuccess = useCallback(() => {
     queryClient.invalidateQueries({ queryKey: getGetAcrsQueryKey() })
@@ -260,8 +265,8 @@ const AuthPage: React.FC = () => {
     setModal((prev) => !prev)
   }, [])
   const handleBack = useCallback(() => {
-    navigateToRoute(ROUTES.HOME_DASHBOARD)
-  }, [navigateToRoute])
+    navigateBack(ROUTES.HOME_DASHBOARD)
+  }, [navigateBack])
   const handleCancel = useCallback(() => {
     setPatches([])
     setPut(null)
