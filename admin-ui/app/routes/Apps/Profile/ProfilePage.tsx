@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useCallback, useMemo } from 'react'
+import React, { useContext, useEffect, useCallback, useMemo, memo } from 'react'
 import { Container, Row, Col, Card, CardBody, Button, Badge, AvatarImage } from 'Components'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from '../Gluu/GluuErrorFallBack'
@@ -10,31 +10,47 @@ import styles from './styles'
 import { Box, Divider, Skeleton } from '@mui/material'
 import { getProfileDetails } from 'Redux/features/ProfileDetailsSlice'
 import { randomAvatar } from '../../../utilities'
-import getThemeColor from '../../../context/theme/config'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import customColors from '@/customColors'
 import type { AppDispatch, ProfileRootState, ThemeContextValue, CustomAttribute } from './types'
+
+const JANS_ADMIN_UI_ROLE_ATTR = 'jansAdminUIRole'
+const SKELETON_WIDTH = '45%'
+const BADGE_PADDING = '4px 6px'
+const SKELETON_HEIGHT = 40
+
+const skeletonCenterStyle = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+} as const
 
 const ProfileDetails: React.FC = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch<AppDispatch>()
   const theme = useContext(ThemeContext) as ThemeContextValue
-  const selectedTheme = useMemo(() => theme?.state?.theme ?? 'light', [theme?.state?.theme])
-  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { classes } = styles()
   const { navigateToRoute } = useAppNavigation()
 
-  // Set page title
+  const selectedTheme = useMemo(() => theme?.state?.theme ?? 'light', [theme?.state?.theme])
+  const buttonColor = useMemo(() => `primary-${selectedTheme}`, [selectedTheme])
+
   SetTitle(t('titles.profile_detail'))
 
   const { loading, profileDetails } = useSelector(
     (state: ProfileRootState) => state.profileDetailsReducer,
   )
-  const { userinfo, token: authToken } = useSelector((state: ProfileRootState) => state.authReducer)
-  const userInum = useMemo(() => userinfo?.inum, [userinfo?.inum])
+  const authState = useSelector((state: ProfileRootState) => state.authReducer)
+  const { userinfo, token: authToken } = authState
+  const stateUserInum = (authState as { userInum?: string | null; hasSession?: boolean }).userInum
+  const hasSession = (authState as { hasSession?: boolean }).hasSession ?? false
+
+  const userInum = useMemo(() => stateUserInum || userinfo?.inum, [stateUserInum, userinfo?.inum])
   const apiAccessToken = authToken?.access_token ?? null
+  const canMakeApiCall = hasSession || !!apiAccessToken
 
   const { authorizeHelper, hasCedarWritePermission } = useCedarling()
   const usersResourceId = useMemo(() => ADMIN_UI_RESOURCES.Users, [])
@@ -47,7 +63,7 @@ const ProfileDetails: React.FC = () => {
   const jansAdminUIRole = useMemo(
     () =>
       profileDetails?.customAttributes?.find(
-        (att: CustomAttribute): boolean => att?.name === 'jansAdminUIRole',
+        (att: CustomAttribute): boolean => att?.name === JANS_ADMIN_UI_ROLE_ATTR,
       ),
     [profileDetails?.customAttributes],
   )
@@ -55,11 +71,11 @@ const ProfileDetails: React.FC = () => {
   const avatarSrc = useMemo(() => randomAvatar(), [])
 
   useEffect(() => {
-    if (!apiAccessToken || !userInum) {
+    if (!canMakeApiCall || !userInum) {
       return
     }
     dispatch(getProfileDetails({ pattern: userInum }))
-  }, [apiAccessToken, dispatch, userInum])
+  }, [canMakeApiCall, dispatch, userInum])
 
   useEffect(() => {
     if (usersScopes && usersScopes.length > 0) {
@@ -79,14 +95,66 @@ const ProfileDetails: React.FC = () => {
     return jansAdminUIRole.values.map((role: string, index: number) => (
       <Badge
         key={`${role}-${index}`}
-        style={{ padding: '4px 6px' }}
-        color={`primary-${selectedTheme}`}
+        style={{ padding: BADGE_PADDING, color: customColors.white }}
+        color={buttonColor}
         className="me-1"
       >
-        <span style={{ color: themeColors.fontColor }}>{role}</span>
+        {role}
       </Badge>
     ))
-  }, [jansAdminUIRole?.values, selectedTheme, themeColors.fontColor])
+  }, [jansAdminUIRole?.values, buttonColor])
+
+  const renderField = useCallback(
+    (labelKey: string, value: string | undefined, isLoading: boolean) => {
+      if (isLoading) {
+        return <Skeleton animation="wave" />
+      }
+      return (
+        <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} mb={1}>
+          <Box fontWeight={700}>{t(labelKey)}</Box>
+          <Box>{value || '-'}</Box>
+        </Box>
+      )
+    },
+    [t],
+  )
+
+  const renderDisplayName = useMemo(() => {
+    if (loading) {
+      return (
+        <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
+          <Skeleton width={SKELETON_WIDTH} sx={skeletonCenterStyle} animation="wave" />
+        </Box>
+      )
+    }
+    return (
+      <Box fontWeight={700} fontSize={'16px'} className="text-center mb-4">
+        {profileDetails?.displayName}
+      </Box>
+    )
+  }, [loading, profileDetails?.displayName])
+
+  const renderUserRolesField = useMemo(() => {
+    if (loading) {
+      return <Skeleton animation="wave" />
+    }
+    return (
+      <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} mb={1} gap={3}>
+        <Box fontWeight={700}>{t('titles.roles')}</Box>
+        {roleBadges && (
+          <Box
+            display={'flex'}
+            gap={'2px'}
+            flexWrap={'wrap'}
+            alignItems={'end'}
+            justifyContent={'end'}
+          >
+            {roleBadges}
+          </Box>
+        )}
+      </Box>
+    )
+  }, [loading, roleBadges, t])
 
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
@@ -101,120 +169,36 @@ const ProfileDetails: React.FC = () => {
                   </Box>
                   <Box display={'flex'} flexDirection={'column'} gap={2}>
                     <Box display={'flex'} flexDirection={'column'} gap={1}>
-                      {loading ? (
-                        <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                          <Skeleton
-                            width={'45%'}
-                            sx={{
-                              display: 'flex',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                            }}
-                            animation="wave"
-                          />
-                        </Box>
-                      ) : (
-                        <Box fontWeight={700} fontSize={'16px'} className="text-center mb-4">
-                          {profileDetails?.displayName}
-                        </Box>
-                      )}
-                      {loading ? (
-                        <Skeleton animation="wave" />
-                      ) : (
-                        <Box
-                          display={'flex'}
-                          justifyContent={'space-between'}
-                          alignItems={'center'}
-                          mb={1}
-                        >
-                          <Box fontWeight={700}>First Name</Box>
-                          <Box>{profileDetails?.givenName}</Box>
-                        </Box>
+                      {renderDisplayName}
+                      {renderField('fields.givenName', profileDetails?.givenName, loading)}
+                      <Divider />
+                      {renderField(
+                        'fields.sn',
+                        profileDetails?.customAttributes?.find(
+                          (att: CustomAttribute) => att?.name === 'sn',
+                        )?.values?.[0],
+                        loading,
                       )}
                       <Divider />
-                      {loading ? (
-                        <Skeleton animation="wave" />
-                      ) : (
-                        <Box
-                          display={'flex'}
-                          justifyContent={'space-between'}
-                          alignItems={'center'}
-                          mb={1}
-                        >
-                          <Box fontWeight={700}>Last Name</Box>
-                          <Box>{userinfo?.family_name}</Box>
-                        </Box>
-                      )}
+                      {renderField('fields.mail', profileDetails?.mail, loading)}
                       <Divider />
-                      {loading ? (
-                        <Skeleton animation="wave" />
-                      ) : (
-                        <Box
-                          display={'flex'}
-                          justifyContent={'space-between'}
-                          alignItems={'center'}
-                          mb={1}
-                        >
-                          <Box fontWeight={700}>Email</Box>
-                          <Box>{profileDetails?.mail}</Box>
-                        </Box>
-                      )}
+                      {renderUserRolesField}
                       <Divider />
-                      {loading ? (
-                        <Skeleton animation="wave" />
-                      ) : (
-                        <Box
-                          display={'flex'}
-                          justifyContent={'space-between'}
-                          alignItems={'center'}
-                          mb={1}
-                          gap={3}
-                        >
-                          <Box fontWeight={700}>User Roles</Box>
-                          {roleBadges && (
-                            <Box
-                              display={'flex'}
-                              gap={'2px'}
-                              flexWrap={'wrap'}
-                              alignItems={'end'}
-                              justifyContent={'end'}
-                            >
-                              {roleBadges}
-                            </Box>
-                          )}
-                        </Box>
-                      )}
-                      <Divider />
-                      {loading ? (
-                        <Skeleton animation="wave" />
-                      ) : (
-                        <Box
-                          display={'flex'}
-                          justifyContent={'space-between'}
-                          alignItems={'center'}
-                          mb={1}
-                        >
-                          <Box fontWeight={700}>Status</Box>
-                          <Box>{profileDetails?.status || '-'}</Box>
-                        </Box>
-                      )}
+                      {renderField('fields.status', profileDetails?.status, loading)}
                       <Divider />
                     </Box>
-                    {canEditProfile ? (
+                    {canEditProfile && (
                       <>
                         {loading ? (
-                          <Skeleton animation="wave" height={40} />
+                          <Skeleton animation="wave" height={SKELETON_HEIGHT} />
                         ) : (
-                          <Button
-                            color={`primary-${selectedTheme}`}
-                            onClick={navigateToUserManagement}
-                          >
+                          <Button color={buttonColor} onClick={navigateToUserManagement}>
                             <i className="fa fa-pencil me-2" />
                             {t('actions.edit')}
                           </Button>
                         )}
                       </>
-                    ) : null}
+                    )}
                   </Box>
                 </React.Fragment>
               </CardBody>
@@ -226,4 +210,4 @@ const ProfileDetails: React.FC = () => {
   )
 }
 
-export default React.memo(ProfileDetails)
+export default memo(ProfileDetails)
