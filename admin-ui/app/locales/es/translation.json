@@ -542,6 +542,8 @@
     "modality": "Modalidad",
     "dateAdded": "Fecha de Alta",
     "givenName": "Nombre",
+    "sn": "Apellido",
+    "mail": "Correo",
     "resources": "Recursos",
     "resourceId": "ID de Recurso",
     "scopeSelection": "Selección de Ámbito",

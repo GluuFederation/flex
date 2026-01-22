@@ -32,7 +32,7 @@ import { AXIOS_INSTANCE } from '../../../api-client'
 
 function UserEditPage() {
   const dispatch = useDispatch()
-  const { navigateToRoute } = useAppNavigation()
+  const { navigateToRoute, navigateBack } = useAppNavigation()
   const location = useLocation()
   const queryClient = useQueryClient()
   const { t } = useTranslation()
@@ -81,7 +81,7 @@ function UserEditPage() {
         await logUserUpdate(data, variables.data)
         triggerUserWebhook(data)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
-        navigateToRoute(ROUTES.USER_MANAGEMENT)
+        navigateBack(ROUTES.USER_MANAGEMENT)
       },
       onError: (error: unknown) => {
         const errMsg = getErrorMessage(error)

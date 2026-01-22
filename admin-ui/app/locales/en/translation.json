@@ -542,6 +542,8 @@
     "modality": "Modality",
     "dateAdded": "Date Added",
     "givenName": "Given Name",
+    "sn": "Last Name",
+    "mail": "Email",
     "resources": "Resources",
     "resourceId": "Resource id",
     "scopeSelection": "Scope Selection",
