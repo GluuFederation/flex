@@ -1,11 +1,12 @@
 import React, { useState, useContext, useRef, useEffect, useMemo } from 'react'
-import { Card, CardFooter, CardBody, Button, Wizard, WizardStep } from 'Components'
+import { Card, CardBody, Button, Wizard, WizardStep } from 'Components'
 import { Form } from 'reactstrap'
 import ClientBasic from './ClientBasicPanel'
 import ClientAdvanced from './ClientAdvancedPanel'
 import ClientScript from './ClientScriptPanel'
 import ClientActiveTokens from './ClientActiveTokens'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import { Formik } from 'formik'
 import { useTranslation } from 'react-i18next'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
@@ -56,7 +57,7 @@ function ClientWizardForm({
   const { hasCedarWritePermission, authorizeHelper } = useCedarling()
   const formRef = useRef()
   const { t } = useTranslation()
-  const { navigateToRoute } = useAppNavigation()
+  const { navigateBack } = useAppNavigation()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const [modal, setModal] = useState(false)
@@ -75,7 +76,6 @@ function ClientWizardForm({
     [hasCedarWritePermission, clientResourceId],
   )
 
-  // Permission initialization
   useEffect(() => {
     authorizeHelper(clientScopes)
   }, [authorizeHelper, clientScopes])
@@ -200,6 +200,26 @@ function ClientWizardForm({
     toggle()
     document.getElementsByClassName('UserActionSubmitButton')[0].click()
   }
+
+  const handleNavigateBack = () => {
+    navigateBack(ROUTES.AUTH_SERVER_CLIENTS_LIST)
+  }
+
+  const handleCancel = () => {
+    if (formRef.current) {
+      formRef.current.resetForm()
+    }
+    setModifiedFields({})
+  }
+
+  const handleApply = () => {
+    if (!viewOnly && canWriteClient) {
+      validateFinish()
+    }
+  }
+
+  const isFirstStep = currentStep === sequence[0]
+  const isLastStep = currentStep === sequence[sequence.length - 1]
 
   useEffect(() => {
     return function cleanup() {
@@ -478,79 +498,48 @@ function ClientWizardForm({
                   </Wizard>
                 </CardBody>
                 <CardBody className="p-2">{activeClientStep(formik)}</CardBody>
-                <CardFooter className="p-4 bt-0">
-                  <div className="d-flex">
-                    <div style={{ flex: 1 }}>
-                      {!viewOnly && currentStep === sequence[0] && (
-                        <Button
-                          type="button"
-                          color={`primary-${selectedTheme}`}
-                          onClick={() => navigateToRoute(ROUTES.AUTH_SERVER_CLIENTS_LIST)}
-                          style={{
-                            ...applicationStyle.buttonStyle,
-                            ...applicationStyle.buttonFlexIconStyles,
-                          }}
-                          className="me-3"
-                        >
-                          <i className="fa fa-arrow-circle-left me-2"></i>
-                          {t('actions.cancel')}
-                        </Button>
-                      )}
-                      {currentStep !== sequence[0] && (
-                        <Button
-                          type="button"
-                          onClick={prevStep}
-                          style={{
-                            ...applicationStyle.buttonStyle,
-                            ...applicationStyle.buttonFlexIconStyles,
-                          }}
-                          className="me-3"
-                        >
-                          <i className="fa fa-angle-left me-2"></i>
-                          {t('actions.previous')}
-                        </Button>
-                      )}
-                    </div>
-                    <div
+                <div className="p-4">
+                  <div className="d-flex justify-content-between mb-4">
+                    <Button
+                      type="button"
+                      onClick={prevStep}
+                      disabled={isFirstStep}
                       style={{
-                        flex: 1,
-                        justifyContent: 'flex-end',
-                        display: 'flex',
-                        gap: '8px',
+                        ...applicationStyle.buttonStyle,
+                        ...applicationStyle.buttonFlexIconStyles,
+                      }}
+                      color={`primary-${selectedTheme}`}
+                    >
+                      <i className="fa fa-angle-left me-2"></i>
+                      {t('actions.previous')}
+                    </Button>
+                    <Button
+                      type="button"
+                      color={`primary-${selectedTheme}`}
+                      onClick={nextStep}
+                      disabled={isLastStep}
+                      style={{
+                        ...applicationStyle.buttonStyle,
+                        ...applicationStyle.buttonFlexIconStyles,
                       }}
                     >
-                      {currentStep !== sequence[sequence.length - 1] && (
-                        <Button
-                          type="button"
-                          color={`primary-${selectedTheme}`}
-                          onClick={nextStep}
-                          style={{
-                            ...applicationStyle.buttonStyle,
-                            ...applicationStyle.buttonFlexIconStyles,
-                          }}
-                          className="px-4"
-                        >
-                          {t('actions.next')}
-                          <i className="fa fa-angle-right ms-2"></i>
-                        </Button>
-                      )}
-                      {!viewOnly && canWriteClient && (
-                        <Button
-                          type="button"
-                          color={`primary-${selectedTheme}`}
-                          className="px-4 ms-2"
-                          onClick={validateFinish}
-                          style={{
-                            ...applicationStyle.buttonStyle,
-                            ...applicationStyle.buttonFlexIconStyles,
-                          }}
-                        >
-                          {t('actions.finish')}
-                        </Button>
-                      )}
-                    </div>
+                      {t('actions.next')}
+                      <i className="fa fa-angle-right ms-2"></i>
+                    </Button>
                   </div>
-                </CardFooter>
+                  <GluuFormFooter
+                    showBack={true}
+                    onBack={handleNavigateBack}
+                    showCancel={true}
+                    onCancel={handleCancel}
+                    disableCancel={Object.keys(modifiedFields).length === 0}
+                    showApply={!viewOnly && canWriteClient}
+                    onApply={handleApply}
+                    disableApply={Object.keys(modifiedFields).length === 0}
+                    applyButtonType="button"
+                    isLoading={false}
+                  />
+                </div>
                 <Button
                   type="submit"
                   color={`primary-${selectedTheme}`}

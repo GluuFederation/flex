@@ -13,7 +13,6 @@ import PropertiesPage from './components/Configuration/ConfigPage'
 import KeysPage from './components/Configuration/Keys/KeysPage'
 import LoggingPage from './components/Configuration/Defaults/LoggingPage'
 
-import ReportPage from './components/Reports/ReportPage'
 import ConfigApiPage from './components/Configuration/ConfigApiConfiguration/ConfigApiPage'
 
 import { reducer as oidcReducer } from './redux/features/oidcSlice'
@@ -116,21 +115,12 @@ const pluginMetadata = {
           permission: API_CONFIG_READ,
           resourceKey: ADMIN_UI_RESOURCES.ConfigApiConfiguration,
         },
-        // {
-        //   title: 'menus.configuration',
-        //   children: [],
-        // },
         {
           title: 'menus.sessions',
           path: ROUTES.AUTH_SERVER_SESSIONS,
           permission: SESSION_READ,
           resourceKey: ADMIN_UI_RESOURCES.Session,
         },
-        // {
-        //   title: 'menus.lock ',
-        //   path: PLUGIN_BASE_APTH + '/lock',
-        //   permission: MESSAGE_READ,
-        // },
       ],
     },
   ],
@@ -206,11 +196,6 @@ const pluginMetadata = {
       path: ROUTES.AUTH_SERVER_CONFIG_LOGGING,
       permission: ACR_READ,
       resourceKey: ADMIN_UI_RESOURCES.Logging,
-    },
-    {
-      component: ReportPage,
-      path: ROUTES.AUTH_SERVER_REPORTS,
-      permission: ACR_READ,
     },
     {
       component: AgamaListPageWrapper,

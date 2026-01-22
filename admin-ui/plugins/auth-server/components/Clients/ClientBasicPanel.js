@@ -119,7 +119,9 @@ const ClientBasicPanel = ({
 
   const debounceFn = useCallback(
     _debounce((query) => {
-      query && handleDebounceFn(query)
+      if (query) {
+        handleDebounceFn(query)
+      }
     }, 500),
     [],
   )
