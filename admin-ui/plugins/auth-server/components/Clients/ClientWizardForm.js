@@ -61,9 +61,22 @@ function ClientWizardForm({
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const [modal, setModal] = useState(false)
-  const [currentStep, setCurrentStep] = useState(sequence[0])
+  const [currentStep, setCurrentStep] = useState(() => {
+    const initialActiveSteps = isEdit
+      ? sequence
+      : sequence.filter((step) => step !== 'ClientActiveTokens')
+    return initialActiveSteps[0]
+  })
   const dispatch = useDispatch()
   const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
+
+  const activeSteps = useMemo(() => {
+    return isEdit ? sequence : sequence.filter((step) => step !== 'ClientActiveTokens')
+  }, [isEdit])
+
+  const validCurrentStep = useMemo(() => {
+    return activeSteps.includes(currentStep) ? currentStep : activeSteps[0]
+  }, [activeSteps, currentStep])
 
   const clientResourceId = ADMIN_UI_RESOURCES.Clients
   const clientScopes = useMemo(
@@ -79,6 +92,12 @@ function ClientWizardForm({
   useEffect(() => {
     authorizeHelper(clientScopes)
   }, [authorizeHelper, clientScopes])
+
+  useEffect(() => {
+    if (activeSteps.length > 0 && !activeSteps.includes(currentStep)) {
+      setCurrentStep(activeSteps[0])
+    }
+  }, [activeSteps, currentStep])
 
   const initialValues = {
     inum: client_data.inum,
@@ -176,24 +195,40 @@ function ClientWizardForm({
     return sequence[index]
   }
   function prevStep() {
-    setCurrentStep(sequence[sequence.indexOf(currentStep) - 1])
+    const currentIndex = activeSteps.indexOf(validCurrentStep)
+
+    if (currentIndex > 0) {
+      setCurrentStep(activeSteps[currentIndex - 1])
+    }
   }
   function nextStep() {
+    const currentIndex = activeSteps.indexOf(validCurrentStep)
+
     if (
       formRef.current.values.grantTypes.includes('authorization_code') ||
       formRef.current.values.grantTypes.includes('implicit')
     ) {
       if (formRef && formRef.current && formRef.current.values.redirectUris.length > 0) {
-        setCurrentStep(sequence[sequence.indexOf(currentStep) + 1])
+        if (currentIndex < activeSteps.length - 1) {
+          setCurrentStep(activeSteps[currentIndex + 1])
+        }
       } else {
         toast.info('Please add atleast 1 redirect URL')
       }
     } else {
-      setCurrentStep(sequence[sequence.indexOf(currentStep) + 1])
+      if (currentIndex < activeSteps.length - 1) {
+        setCurrentStep(activeSteps[currentIndex + 1])
+      }
     }
   }
   function isComplete(stepId) {
-    return sequence.indexOf(stepId) < sequence.indexOf(currentStep)
+    const stepIndex = activeSteps.indexOf(stepId)
+    const currentIndex = activeSteps.indexOf(validCurrentStep)
+
+    if (stepIndex === -1 || currentIndex === -1) {
+      return false
+    }
+    return stepIndex < currentIndex
   }
   function submitForm(message) {
     commitMessage = message
@@ -218,8 +253,9 @@ function ClientWizardForm({
     }
   }
 
-  const isFirstStep = currentStep === sequence[0]
-  const isLastStep = currentStep === sequence[sequence.length - 1]
+  const isFirstStep = activeSteps.length > 0 && validCurrentStep === activeSteps[0]
+  const isLastStep =
+    activeSteps.length > 0 && validCurrentStep === activeSteps[activeSteps.length - 1]
 
   useEffect(() => {
     return function cleanup() {
@@ -229,7 +265,7 @@ function ClientWizardForm({
   useEffect(() => {}, [cedarPermissions])
 
   const activeClientStep = (formik) => {
-    switch (currentStep) {
+    switch (validCurrentStep) {
       case sequence[0]:
         return (
           <div>
@@ -414,9 +450,9 @@ function ClientWizardForm({
                 </div>
                 <CardBody className="d-flex justify-content-center pt-3 wizard-wrapper">
                   <Wizard
-                    activeStep={currentStep}
+                    activeStep={validCurrentStep}
                     onStepChanged={changeStep}
-                    initialActiveStep={sequence[0]}
+                    initialActiveStep={activeSteps[0]}
                   >
                     <WizardStep
                       data-testid={sequence[0]}
