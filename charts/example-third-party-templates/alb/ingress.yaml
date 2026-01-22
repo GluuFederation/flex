@@ -110,7 +110,7 @@ spec:
         backend:
           serviceName: oxpassport
           servicePort: 8090
-      - path: /casa*
+      - path: /jans-casa*
         backend:
           serviceName: casa
           servicePort: 8080
