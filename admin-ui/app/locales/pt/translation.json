@@ -808,6 +808,7 @@
     "add_ssa": "Adicionar SSA",
     "copied": "Copiado",
     "edit_acr": "Editar ACR",
+    "built_in_acr_cannot_be_edited": "O ACR integrado não pode ser editado devido à ausência do identificador (inum)",
     "no_data_found": "Nenhum dado encontrado",
     "no_data_to_export": "Nenhum dado disponível para exportar",
     "no_sessions_found": "Nenhuma sessão encontrada",

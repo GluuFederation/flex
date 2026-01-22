@@ -55,6 +55,7 @@ import { UPDATE } from '@/audit/UserActionType'
 import { ADMIN_UI_SETTINGS } from 'Plugins/admin/redux/audit/Resources'
 import { getErrorMessage } from 'Plugins/schema/utils/errorHandler'
 import type { RootState } from '@/redux/sagas/types/audit'
+import customColors from '@/customColors'
 
 const PAGING_SIZE_OPTIONS = [1, 5, 10, 20] as const
 const DEFAULT_PAGING_SIZE = PAGING_SIZE_OPTIONS[2]
@@ -76,10 +77,8 @@ const SettingsPage: React.FC = () => {
 
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
 
-  const authState = useSelector((state: RootState) => ({
-    userinfo: state.authReducer?.userinfo,
-    clientId: state.authReducer?.config?.clientId,
-  }))
+  const userinfo = useSelector((state: RootState) => state.authReducer?.userinfo)
+  const clientId = useSelector((state: RootState) => state.authReducer?.config?.clientId)
 
   const {
     data: config,
@@ -189,11 +188,11 @@ const SettingsPage: React.FC = () => {
         dispatch(getOAuth2ConfigResponse({ config: updatedConfig }))
 
         await logAudit({
-          userinfo: authState.userinfo ?? undefined,
+          userinfo: userinfo ?? undefined,
           action: UPDATE,
           resource: ADMIN_UI_SETTINGS,
           message: 'Application settings updated',
-          client_id: authState.clientId,
+          client_id: clientId,
           payload: {
             sessionTimeoutInMins: values.sessionTimeoutInMins,
             acrValues: values.acrValues,
@@ -259,6 +258,26 @@ const SettingsPage: React.FC = () => {
   const showAdditionalParametersError = Boolean(
     additionalParametersError && (formik.submitCount > 0 || formik.touched?.additionalParameters),
   )
+
+  const additionalParametersErrorText = useMemo((): string | null => {
+    const err = additionalParametersError
+    if (!err) return null
+    if (typeof err === 'string') return err
+    if (Array.isArray(err)) {
+      for (const item of err) {
+        if (!item) continue
+        if (typeof item === 'string') return item
+        if (typeof item === 'object') {
+          const maybeKey = (item as { key?: unknown }).key
+          const maybeValue = (item as { value?: unknown }).value
+          if (typeof maybeKey === 'string') return maybeKey
+          if (typeof maybeValue === 'string') return maybeValue
+        }
+      }
+      return null
+    }
+    return null
+  }, [additionalParametersError])
 
   const renderErrorAlert = () => {
     if (!hasQueryError) return null
@@ -494,7 +513,9 @@ const SettingsPage: React.FC = () => {
                     </Col>
                   </FormGroup>
                   {showAdditionalParametersError && (
-                    <div style={{ color: '#dc3545' }}>{additionalParametersError}</div>
+                    <div style={{ color: customColors.accentRed }}>
+                      {additionalParametersErrorText || t('messages.field_required')}
+                    </div>
                   )}
                 </AccordionBody>
               </Accordion>

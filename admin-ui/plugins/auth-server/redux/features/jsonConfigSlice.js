@@ -4,6 +4,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
   configuration: {},
   loading: false,
+  saveError: false,
 }
 
 const jsonConfigSlice = createSlice({
@@ -19,13 +20,17 @@ const jsonConfigSlice = createSlice({
         state.configuration = action.payload.data
       }
     },
-    patchJsonConfig: (state, action) => {
+    patchJsonConfig: (state, _action) => {
       state.loading = true
+      state.saveError = false
     },
     patchJsonConfigResponse: (state, action) => {
       state.loading = false
       if (action.payload?.data) {
         state.configuration = action.payload.data
+        state.saveError = false
+      } else {
+        state.saveError = true
       }
     },
     handleDefault: (state) => {

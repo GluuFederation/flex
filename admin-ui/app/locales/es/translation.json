@@ -823,6 +823,7 @@
     "edit_script": "Editar Script",
     "edit_authn": "Editar AuthN",
     "edit_acr": "Editar ACR",
+    "built_in_acr_cannot_be_edited": "El ACR integrado no se puede editar debido a la falta del identificador (inum)",
     "ldap_connection_error": "¡Fallo en la conexión LDAP!",
     "ldap_connection_success": "¡Conexión LDAP exitosa!",
     "not_deletable_client": "Este Cliente no se puede eliminar",
