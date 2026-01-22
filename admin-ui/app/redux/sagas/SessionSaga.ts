@@ -1,10 +1,10 @@
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { auditLogoutLogs, auditLogoutLogsResponse } from '../features/sessionSlice'
-import { initAudit } from './SagaUtils'
-import { addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
 import { CREATE } from '../../audit/UserActionType'
+import { initAudit, redirectToLogout } from '../sagas/SagaUtils'
 
 const API_USERS = '/api/v1/users'
 
@@ -28,7 +28,11 @@ export function* auditLogoutLogsSaga({
     const ok = !!data && typeof data.status === 'number' && data.status >= 200 && data.status < 300
     yield put(auditLogoutLogsResponse(ok))
     return ok
-  } catch (e: unknown) {
+  } catch (e) {
+    if (isFourZeroThreeError(e)) {
+      yield* redirectToLogout()
+      return false
+    }
     yield put(auditLogoutLogsResponse(false))
     if (process.env.NODE_ENV === 'development') {
       console.error('Error:', e)
