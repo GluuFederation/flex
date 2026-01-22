@@ -34,6 +34,7 @@ export interface AuthState {
   userinfo?: UserInfo
   token?: AuthToken | null
   issuer?: string | null
+  userInum?: string | null
 }
 
 export interface ProfileRootState {
