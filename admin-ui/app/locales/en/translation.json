@@ -821,6 +821,7 @@
     "edit_script": "Edit Script",
     "edit_authn": "Edit AuthN",
     "edit_acr": "Edit ACR",
+    "built_in_acr_cannot_be_edited": "Built-in ACR cannot be edited due to missing identifier (inum)",
     "ldap_connection_error": "LDAP Connection Failed!",
     "ldap_connection_success": "LDAP Connection successful!",
     "not_deletable_client": "This Client can't be detele",
