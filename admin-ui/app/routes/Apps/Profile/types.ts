@@ -11,7 +11,10 @@ export interface ProfileDetails {
   mail?: string
   status?: string
   inum?: string
+  sn?: string
+  surname?: string
   customAttributes?: CustomAttribute[]
+  [key: string]: unknown // Allow additional properties from API
 }
 
 export interface UserInfo {

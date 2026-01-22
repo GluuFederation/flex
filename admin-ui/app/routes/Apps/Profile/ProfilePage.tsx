@@ -155,6 +155,7 @@ const ProfileDetails: React.FC = () => {
       </Box>
     )
   }, [loading, roleBadges, t])
+
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
       <Container>
@@ -171,7 +172,13 @@ const ProfileDetails: React.FC = () => {
                       {renderDisplayName}
                       {renderField('fields.givenName', profileDetails?.givenName, loading)}
                       <Divider />
-                      {renderField('fields.sn', userinfo?.family_name, loading)}
+                      {renderField(
+                        'fields.sn',
+                        profileDetails?.customAttributes?.find(
+                          (att: CustomAttribute) => att?.name === 'sn',
+                        )?.values?.[0],
+                        loading,
+                      )}
                       <Divider />
                       {renderField('fields.mail', profileDetails?.mail, loading)}
                       <Divider />
