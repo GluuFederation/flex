@@ -63,8 +63,9 @@ export const postUserAction = (userAction: any) => {
       { withCredentials: true },
     )
     .then((response) => response)
-    .catch((e) => {
-      return -1
+    .catch((error) => {
+      console.error('Problems posting user action audit log.', error)
+      throw error
     })
 }
 
