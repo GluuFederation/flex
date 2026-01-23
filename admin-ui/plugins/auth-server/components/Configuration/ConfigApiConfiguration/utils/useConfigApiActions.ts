@@ -7,14 +7,12 @@ import type { ModifiedFields } from '../types'
 
 export function useConfigApiActions() {
   const authState = useSelector((state: RootState) => state.authReducer)
-  const token = authState?.token?.access_token
   const client_id = authState?.config?.clientId
   const userinfo = authState?.userinfo
 
   const logConfigApiUpdate = useCallback(
     async (message: string, modifiedFields?: ModifiedFields) => {
       await logAuditUserAction({
-        token,
         userinfo,
         action: UPDATE,
         resource: 'Config API configuration',
@@ -24,7 +22,7 @@ export function useConfigApiActions() {
         client_id,
       })
     },
-    [token, userinfo, client_id],
+    [userinfo, client_id],
   )
 
   return {

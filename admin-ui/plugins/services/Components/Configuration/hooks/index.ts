@@ -13,16 +13,15 @@ function useAuditAuth() {
 
   return useMemo(
     () => ({
-      token: authState?.token?.access_token,
       client_id: authState?.config?.clientId,
       userinfo: authState?.userinfo,
     }),
-    [authState?.token?.access_token, authState?.config?.clientId, authState?.userinfo],
+    [authState?.config?.clientId, authState?.userinfo],
   )
 }
 
 export function useLdapAudit() {
-  const { token, client_id, userinfo } = useAuditAuth()
+  const { client_id, userinfo } = useAuditAuth()
 
   const logLdapCreate = useCallback(
     async (
@@ -32,7 +31,6 @@ export function useLdapAudit() {
     ) => {
       try {
         await logAuditUserAction({
-          token,
           userinfo,
           action: CREATE,
           resource: API_LDAP,
@@ -46,7 +44,7 @@ export function useLdapAudit() {
         console.error('Failed to log LDAP create audit:', error)
       }
     },
-    [token, userinfo, client_id],
+    [userinfo, client_id],
   )
 
   const logLdapUpdate = useCallback(
@@ -57,7 +55,6 @@ export function useLdapAudit() {
     ) => {
       try {
         await logAuditUserAction({
-          token,
           userinfo,
           action: UPDATE,
           resource: API_LDAP,
@@ -71,14 +68,13 @@ export function useLdapAudit() {
         console.error('Failed to log LDAP update audit:', error)
       }
     },
-    [token, userinfo, client_id],
+    [userinfo, client_id],
   )
 
   const logLdapDelete = useCallback(
     async (ldap: GluuLdapConfiguration, message: string) => {
       try {
         await logAuditUserAction({
-          token,
           userinfo,
           action: DELETION,
           resource: API_LDAP,
@@ -91,14 +87,14 @@ export function useLdapAudit() {
         console.error('Failed to log LDAP delete audit:', error)
       }
     },
-    [token, userinfo, client_id],
+    [userinfo, client_id],
   )
 
   return { logLdapCreate, logLdapUpdate, logLdapDelete }
 }
 
 export function useCacheAudit() {
-  const { token, client_id, userinfo } = useAuditAuth()
+  const { client_id, userinfo } = useAuditAuth()
 
   const logCacheUpdate = useCallback(
     async (
@@ -108,7 +104,6 @@ export function useCacheAudit() {
     ) => {
       try {
         await logAuditUserAction({
-          token,
           userinfo,
           action: PATCH,
           resource: API_CACHE,
@@ -122,7 +117,7 @@ export function useCacheAudit() {
         console.error('Failed to log cache update audit:', error)
       }
     },
-    [token, userinfo, client_id],
+    [userinfo, client_id],
   )
 
   return { logCacheUpdate }

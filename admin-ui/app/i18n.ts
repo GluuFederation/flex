@@ -30,6 +30,10 @@ const i18nConfig: InitOptions = {
   react: {
     useSuspense: false,
   },
+  interpolation: {
+    escapeValue: false, // React already escapes HTML for XSS protection, so we don't need i18next to escape
+    // This prevents double-escaping which causes &#39; to appear instead of '
+  },
 }
 
 i18n.use(initReactI18next).init(i18nConfig)

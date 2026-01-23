@@ -158,13 +158,11 @@ function SmtpEditPage() {
         { data },
         {
           onSuccess: () => {
-            const token = state.authReducer?.token?.access_token
             const userinfo = state.authReducer?.userinfo
             const clientId = state.authReducer?.config?.clientId
             const ipAddress = state.authReducer?.location?.IPv4
             const patches = buildPatches(smtpConfiguration, data)
             logAuditUserAction({
-              token: token ?? undefined,
               userinfo: userinfo ?? undefined,
               action: UPDATE,
               resource: API_SMTP,

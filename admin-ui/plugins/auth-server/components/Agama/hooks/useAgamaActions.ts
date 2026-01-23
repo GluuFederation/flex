@@ -17,7 +17,6 @@ import type { RootState } from '@/redux/sagas/types/audit'
  */
 export function useAgamaActions() {
   const authState = useSelector((state: RootState) => state.authReducer)
-  const token = authState?.token?.access_token
   const client_id = authState?.config?.clientId
   const userinfo = authState?.userinfo
 
@@ -27,7 +26,6 @@ export function useAgamaActions() {
   const logAgamaCreation = useCallback(
     async (project: Deployment, message: string, modifiedFields?: ModifiedFields) => {
       await logAuditUserAction({
-        token,
         userinfo,
         action: CREATE,
         resource: AGAMA_PROJECT,
@@ -38,7 +36,7 @@ export function useAgamaActions() {
         payload: project,
       })
     },
-    [token, userinfo, client_id],
+    [userinfo, client_id],
   )
 
   /**
@@ -47,7 +45,6 @@ export function useAgamaActions() {
   const logAgamaUpdate = useCallback(
     async (project: Deployment, message: string, modifiedFields?: ModifiedFields) => {
       await logAuditUserAction({
-        token,
         userinfo,
         action: UPDATE,
         resource: AGAMA_PROJECT,
@@ -58,7 +55,7 @@ export function useAgamaActions() {
         payload: project,
       })
     },
-    [token, userinfo, client_id],
+    [userinfo, client_id],
   )
 
   /**
@@ -67,7 +64,6 @@ export function useAgamaActions() {
   const logAgamaDeletion = useCallback(
     async (project: Deployment, message: string) => {
       await logAuditUserAction({
-        token,
         userinfo,
         action: DELETION,
         resource: AGAMA_PROJECT,
@@ -77,7 +73,7 @@ export function useAgamaActions() {
         payload: { dn: project.dn, id: project.id },
       })
     },
-    [token, userinfo, client_id],
+    [userinfo, client_id],
   )
 
   /**
@@ -86,7 +82,6 @@ export function useAgamaActions() {
   const logAcrMappingUpdate = useCallback(
     async (message: string, modifiedFields?: ModifiedFields) => {
       await logAuditUserAction({
-        token,
         userinfo,
         action: UPDATE,
         resource: 'json-configuration',
@@ -96,7 +91,7 @@ export function useAgamaActions() {
         client_id,
       })
     },
-    [token, userinfo, client_id],
+    [userinfo, client_id],
   )
 
   return {

@@ -1,10 +1,11 @@
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { auditLogoutLogs, auditLogoutLogsResponse } from '../features/sessionSlice'
-import { initAudit } from './SagaUtils'
-import { addAdditionalData } from 'Utils/TokenController'
+import { fetchApiTokenWithDefaultScopes, deleteAdminUiSession } from '../api/backend-api'
+import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
 import { CREATE } from '../../audit/UserActionType'
+import { initAudit } from '../sagas/SagaUtils'
 
 const API_USERS = '/api/v1/users'
 
@@ -26,12 +27,25 @@ export function* auditLogoutLogsSaga({
     audit.message = payload.message
     const data: ApiResponse = yield call(postUserAction, audit)
     const ok = !!data && typeof data.status === 'number' && data.status >= 200 && data.status < 300
+
     yield put(auditLogoutLogsResponse(ok))
     return ok
-  } catch (e: unknown) {
+  } catch (e) {
+    if (isFourZeroThreeError(e)) {
+      try {
+        const response = yield call(fetchApiTokenWithDefaultScopes)
+        yield call(deleteAdminUiSession, response?.access_token)
+      } catch (recoveryError) {
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Session cleanup failed:', recoveryError)
+        }
+      }
+      window.location.href = '/admin/logout'
+      return false
+    }
     yield put(auditLogoutLogsResponse(false))
     if (process.env.NODE_ENV === 'development') {
-      console.log('Error:', e)
+      console.error('Error:', e)
     }
     return false
   }

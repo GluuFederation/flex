@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { all, call, fork, put, select, takeEvery } from 'redux-saga/effects'
+import { all, call, fork, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import {
   getOAuth2ConfigResponse,
   getAPIAccessTokenResponse,
@@ -11,26 +11,34 @@ import {
 
 import {
   fetchServerConfiguration,
-  fetchApiAccessToken,
   getUserIpAndLocation,
   fetchApiTokenWithDefaultScopes,
   putServerConfiguration,
+  createAdminUiSession as createAdminUiSessionApi,
+  deleteAdminUiSession as deleteAdminUiSessionApi,
 } from '../api/backend-api'
 import { updateToast } from 'Redux/features/toastSlice'
-import { getAPIAccessToken } from 'Redux/features/authSlice'
-import { isFourZeroOneError } from 'Utils/TokenController'
+import {
+  createAdminUiSession,
+  createAdminUiSessionResponse,
+  deleteAdminUiSessionResponse,
+} from 'Redux/features/authSlice'
+import { isFourZeroThreeError } from 'Utils/TokenController'
+import { redirectToLogout } from 'Redux/sagas/SagaUtils'
 
 function* getApiTokenWithDefaultScopes() {
-  const response = yield call(fetchApiTokenWithDefaultScopes)
-
-  if (response?.access_token) {
-    return response.access_token
-  } else if (response?.name === 'AxiosError') {
+  try {
+    const response = yield call(fetchApiTokenWithDefaultScopes)
+    if (response?.access_token) {
+      return response.access_token
+    }
+    return null
+  } catch (error) {
     yield put(
       setBackendStatus({
         active: false,
-        errorMessage: response?.response?.data?.responseMessage,
-        statusCode: response?.response?.status,
+        errorMessage: error?.response?.data?.responseMessage,
+        statusCode: error?.response?.status,
       }),
     )
     return null
@@ -39,31 +47,43 @@ function* getApiTokenWithDefaultScopes() {
 
 function* getOAuth2ConfigWorker({ payload }) {
   try {
-    const token = !payload?.access_token
-      ? yield* getApiTokenWithDefaultScopes()
-      : payload.access_token
+    const hasSession = yield select((state) => state.authReducer.hasSession)
+
+    let token = null
+    if (!hasSession) {
+      token = payload?.access_token
+      if (!token) {
+        token = yield* getApiTokenWithDefaultScopes()
+      }
+      if (!token) {
+        yield put(getOAuth2ConfigResponse())
+        return
+      }
+    }
+
     const response = yield call(fetchServerConfiguration, token)
-    localStorage.setItem('postLogoutRedirectUri', response.postLogoutRedirectUri)
     if (response) {
+      localStorage.setItem('postLogoutRedirectUri', response.postLogoutRedirectUri)
       yield put(getOAuth2ConfigResponse({ config: response }))
       return
     }
   } catch (error) {
-    console.log('Problems getting OAuth2 configuration.', error)
+    console.error('Problems getting OAuth2 configuration.', error?.response?.data || error)
+    if (isFourZeroThreeError(error)) {
+      yield* redirectToLogout()
+      return
+    }
   }
   yield put(getOAuth2ConfigResponse())
 }
 
 export function* putConfigWorker({ payload }) {
   try {
-    // Extract metadata (if any) from payload
     const { _meta, ...configData } = payload
-    const token = yield select((state) => state.authReducer.token.access_token)
-    const response = yield call(putServerConfiguration, { token, props: configData })
+    const response = yield call(putServerConfiguration, { props: configData })
     if (response) {
       yield put(getOAuth2ConfigResponse({ config: response }))
 
-      // If cedarlingLogType changed, show specific toast; otherwise show generic success
       if (_meta?.cedarlingLogTypeChanged && _meta?.toastMessage) {
         yield put(updateToast(true, 'success', _meta.toastMessage))
       } else {
@@ -73,9 +93,9 @@ export function* putConfigWorker({ payload }) {
     }
   } catch (error) {
     yield put(updateToast(true, 'error'))
-    if (isFourZeroOneError(error)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+    if (isFourZeroThreeError(error)) {
+      yield* redirectToLogout()
+      return
     }
     return error
   } finally {
@@ -85,15 +105,41 @@ export function* putConfigWorker({ payload }) {
 
 function* getAPIAccessTokenWorker(jwt) {
   try {
-    if (jwt) {
-      const response = yield call(fetchApiAccessToken, jwt.payload)
+    if (jwt?.payload) {
+      const response = yield call(fetchApiTokenWithDefaultScopes)
       if (response) {
-        yield put(getAPIAccessTokenResponse(response))
-        return
+        yield put(
+          getAPIAccessTokenResponse({
+            scopes: response.scopes,
+            issuer: response.issuer,
+          }),
+        )
+
+        if (response.access_token) {
+          yield put(
+            createAdminUiSession({ ujwt: jwt.payload, apiProtectionToken: response.access_token }),
+          )
+        } else {
+          console.error('Failed to obtain API token for session creation')
+          yield put(
+            createAdminUiSessionResponse({ success: false, error: 'Failed to obtain API token' }),
+          )
+        }
       }
     }
   } catch (error) {
-    console.log('Problems getting API Access Token.', error)
+    console.error('Problems getting API Access Token.', error?.response?.data || error)
+    yield put(
+      setBackendStatus({
+        active: false,
+        errorMessage: error?.response?.data?.responseMessage,
+        statusCode: error?.response?.status,
+      }),
+    )
+    if (isFourZeroThreeError(error)) {
+      yield* redirectToLogout()
+      return
+    }
   }
 }
 
@@ -105,11 +151,37 @@ function* getLocationWorker() {
       return
     }
   } catch (error) {
-    console.log('Problem getting user location.', error)
+    console.error('Problem getting user location.', error?.response?.data || error)
   }
 }
 
-//watcher sagas
+function* createAdminUiSessionWorker({ payload }) {
+  try {
+    const { ujwt, apiProtectionToken } = payload
+    yield call(createAdminUiSessionApi, ujwt, apiProtectionToken)
+    yield put(createAdminUiSessionResponse({ success: true }))
+  } catch (error) {
+    const errorMessage =
+      error?.response?.data?.message || error?.response?.data?.responseMessage || error?.message
+    console.error('Problems creating Admin UI session.', error?.response?.data || error)
+    if (isFourZeroThreeError(error)) {
+      yield* redirectToLogout()
+      return
+    }
+    yield put(createAdminUiSessionResponse({ success: false, error: errorMessage }))
+  }
+}
+
+function* deleteAdminUiSessionWorker() {
+  try {
+    yield call(deleteAdminUiSessionApi)
+  } catch (error) {
+    console.error('Problems deleting Admin UI session.', error?.response?.data || error)
+  } finally {
+    yield put(deleteAdminUiSessionResponse())
+  }
+}
+
 export function* getApiTokenWatcher() {
   yield takeEvery('auth/getAPIAccessToken', getAPIAccessTokenWorker)
 }
@@ -123,14 +195,20 @@ export function* getLocationWatcher() {
 export function* putConfigWorkerWatcher() {
   yield takeEvery('auth/putConfigWorker', putConfigWorker)
 }
-/**
- * Auth Root Saga
- */
+export function* createAdminUiSessionWatcher() {
+  yield takeLatest('auth/createAdminUiSession', createAdminUiSessionWorker)
+}
+export function* deleteAdminUiSessionWatcher() {
+  yield takeEvery('auth/deleteAdminUiSession', deleteAdminUiSessionWorker)
+}
+
 export default function* rootSaga() {
   yield all([
     fork(getOAuth2ConfigWatcher),
     fork(getApiTokenWatcher),
     fork(getLocationWatcher),
     fork(putConfigWorkerWatcher),
+    fork(createAdminUiSessionWatcher),
+    fork(deleteAdminUiSessionWatcher),
   ])
 }

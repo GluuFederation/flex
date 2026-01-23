@@ -1,5 +1,4 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { API_PERMISSION } from '../audit/Resources'
 import PermissionApi from '../api/PermissionApi'
 import { getClient } from 'Redux/api/base'
@@ -11,17 +10,17 @@ import {
   deletePermissionResponse,
 } from 'Plugins/admin/redux/features/apiPermissionSlice'
 import { CREATE, UPDATE, DELETION, FETCH } from '../../../../app/audit/UserActionType'
-import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import { updateToast } from 'Redux/features/toastSlice'
 
 const JansConfigApi = require('jans_config_api')
-import { initAudit } from 'Redux/sagas/SagaUtils'
+import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 import { buildPermissionDeleteErrorMessage } from 'Utils/PermissionMappingUtils'
 
 function* newFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.AdminUIPermissionApi(getClient(JansConfigApi, token, issuer))
+  // Use null for token - HttpOnly session cookie handles auth
+  const api = new JansConfigApi.AdminUIPermissionApi(getClient(JansConfigApi, null, issuer))
   return new PermissionApi(api)
 }
 
@@ -36,9 +35,10 @@ export function* getPermissions({ payload }) {
     return data
   } catch (e) {
     yield put(getPermissionResponse(null))
-    if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+    if (isFourZeroThreeError(e)) {
+      // Session expired - redirect to login
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -53,9 +53,10 @@ export function* getPermission({ payload }) {
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getPermissionResponse(null))
-    if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+    if (isFourZeroThreeError(e)) {
+      // Session expired - redirect to login
+      yield* redirectToLogout()
+      return
     }
   }
 }
@@ -75,9 +76,10 @@ export function* addPermission({ payload }) {
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(addPermissionResponse({ data: null }))
-    if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+    if (isFourZeroThreeError(e)) {
+      // Session expired - redirect to login
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -100,9 +102,10 @@ export function* editPermission({ payload }) {
     const errorMessage = e?.response?.body?.responseMessage || e.message
     yield put(updateToast(true, 'error', errorMessage))
     yield put(editPermissionResponse({ data: null }))
-    if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+    if (isFourZeroThreeError(e)) {
+      // Session expired - redirect to login
+      yield* redirectToLogout()
+      return
     }
     return e
   }
@@ -139,9 +142,10 @@ export function* deletePermission({ payload }) {
     }
     yield put(updateToast(true, 'error', finalMessage))
     yield put(deletePermissionResponse({ inum: null }))
-    if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+    if (isFourZeroThreeError(e)) {
+      // Session expired - redirect to login
+      yield* redirectToLogout()
+      return
     }
     return e
   }

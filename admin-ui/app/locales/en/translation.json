@@ -542,6 +542,8 @@
     "modality": "Modality",
     "dateAdded": "Date Added",
     "givenName": "Given Name",
+    "sn": "Last Name",
+    "mail": "Email",
     "resources": "Resources",
     "resourceId": "Resource id",
     "scopeSelection": "Scope Selection",
@@ -821,6 +823,7 @@
     "edit_script": "Edit Script",
     "edit_authn": "Edit AuthN",
     "edit_acr": "Edit ACR",
+    "built_in_acr_cannot_be_edited": "Built-in ACR cannot be edited due to missing identifier (inum)",
     "ldap_connection_error": "LDAP Connection Failed!",
     "ldap_connection_success": "LDAP Connection successful!",
     "not_deletable_client": "This Client can't be detele",
@@ -915,7 +918,18 @@
     "attribute_update_failed": "Error updating attribute",
     "attribute_delete_failed": "Error deleting attribute",
     "attribute_load_failed": "Error loading attribute",
-    "attribute_not_found": "Attribute not found"
+    "cannot_contain_spaces": "{{field}} cannot contain spaces",
+    "cannot_be_empty": "{{field}} cannot be empty",
+    "must_be_valid_url": "{{field}} must be a valid URL"
+  },
+  "validation_messages": {
+    "invalid_url_format": "Invalid URL format",
+    "must_be_non_negative": "Must be non-negative",
+    "required_field": "This field is required",
+    "invalid_number": "Must be a valid number",
+    "invalid_email": "Must be a valid email address",
+    "invalid_json": "Must be valid JSON",
+    "invalid_pattern": "Invalid format"
   },
   "tooltips": {
     "add_attribute": "Add attribute",

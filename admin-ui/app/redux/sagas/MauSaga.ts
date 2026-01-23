@@ -1,18 +1,16 @@
 // @ts-nocheck
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import { getMauResponse } from 'Plugins/admin/redux/features/mauSlice'
-import { getAPIAccessToken } from '../features/authSlice'
 import { postUserAction } from '../api/backend-api'
 import MauApi from '../api/MauApi'
 import { getClient } from '../api/base'
-import { initAudit } from '../sagas/SagaUtils'
+import { initAudit, redirectToLogout } from '../sagas/SagaUtils'
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.StatisticsUserApi(getClient(JansConfigApi, token, issuer))
+  const api = new JansConfigApi.StatisticsUserApi(getClient(JansConfigApi, null, issuer))
   return new MauApi(api)
 }
 
@@ -28,9 +26,9 @@ export function* getMau({ payload }) {
     return data
   } catch (e) {
     yield put(getMauResponse(null))
-    if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+    if (isFourZeroThreeError(e)) {
+      yield* redirectToLogout()
+      return
     }
     return e
   }

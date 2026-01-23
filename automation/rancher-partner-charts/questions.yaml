@@ -639,8 +639,8 @@ questions:
   group: "Ingress"
   show_if: "global.distribution=default&&global.casa.enabled=true"
   required: true
-  description: "Enable endpoint /casa. Enable this!"
-  label: Enable endpoint /casa Enable this!
+  description: "Enable endpoint /jans-casa. Enable this!"
+  label: Enable endpoint /jans-casa. Enable this!
 #auth-server OB
 - variable: global.auth-server.ingress.authServerProtectedToken
   default: true
@@ -703,7 +703,7 @@ questions:
 - variable: auth-server.image.tag
   required: true
   type: string
-  default: "0.0.0-nightly"
+  default: "1.16.0-1"
   description: "The Auth Server Image tag"
   label: Auth Server image tag
   group: "Images"
@@ -732,7 +732,7 @@ questions:
 - variable: admin-ui.image.tag
   required: true
   type: string
-  default: "0.0.0-nightly"
+  default: "5.16.0-1"
   description: "The AdminUI Image tag"
   label: AdminUI image tag
   group: "Images"
@@ -761,7 +761,7 @@ questions:
 - variable: auth-server-key-rotation.image.tag
   required: true
   type: string
-  default: "0.0.0-nightly"
+  default: "1.16.0-1"
   description: "The Auth Server Image tag"
   label: Auth Server KeyRotation image tag
   group: "Images"
@@ -790,7 +790,7 @@ questions:
 - variable: casa.image.tag
   required: true
   type: string
-  default: "0.0.0-nightly"
+  default: "1.16.0-1"
   description: "The Casa Image tag"
   label: Casa image tag
   group: "Images"
@@ -819,7 +819,7 @@ questions:
 - variable: config.image.tag
   required: true
   type: string
-  default: "0.0.0-nightly"
+  default: "1.16.0-1"
   description: "The Configurator Image tag"
   label: Configurator image tag
   group: "Images"
@@ -848,7 +848,7 @@ questions:
 - variable: config-api.image.tag
   required: true
   type: string
-  default: "0.0.0-nightly"
+  default: "1.16.0-1"
   description: "The ConfigAPI Image tag"
   label: ConfigAPI image tag
   group: "Images"
@@ -877,7 +877,7 @@ questions:
 - variable: fido2.image.tag
   required: true
   type: string
-  default: "0.0.0-nightly"
+  default: "1.16.0-1"
   description: "The Fido2 Image tag"
   label: Fido2 image tag
   group: "Images"
@@ -906,7 +906,7 @@ questions:
 - variable: persistence.image.tag
   required: true
   type: string
-  default: "0.0.0-nightly"
+  default: "5.16.0-1"
   description: "The Persistence Image tag"
   label: Persistence image tag
   group: "Images"
@@ -935,7 +935,7 @@ questions:
 - variable: scim.image.tag
   required: true
   type: string
-  default: "0.0.0-nightly"
+  default: "1.16.0-1"
   description: "The SCIM Image tag"
   label: SCIM image tag
   group: "Images"

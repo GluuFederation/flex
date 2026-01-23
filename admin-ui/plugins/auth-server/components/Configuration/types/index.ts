@@ -3,6 +3,7 @@ import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/type
 import type { Accordion } from 'Components'
 import type React from 'react'
 import type { UserAction, ActionData } from 'Utils/PermChecker'
+import type { FormikErrors, FormikTouched } from 'formik'
 
 export interface AppConfiguration {
   [key: string]: string | number | boolean | string[] | AppConfiguration | null | undefined
@@ -44,6 +45,8 @@ export interface JsonPropertyBuilderProps {
   parentIsArray?: boolean
   schema?: SchemaProperty
   isRenamedKey?: boolean
+  errors?: FormikErrors<AppConfiguration>
+  touched?: FormikTouched<AppConfiguration>
 }
 
 export interface DefaultAcrInputOption {

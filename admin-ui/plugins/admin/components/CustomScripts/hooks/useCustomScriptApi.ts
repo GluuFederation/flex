@@ -47,11 +47,11 @@ const useWebhookTrigger = () => {
 }
 
 export function useCustomScripts(params?: GetConfigScriptsParams) {
-  const authToken = useSelector((state: RootState) => state.authReducer?.token?.access_token)
+  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
 
   return useGetConfigScripts(params, {
     query: {
-      enabled: !!authToken,
+      enabled: hasSession === true,
       staleTime: SCRIPT_CACHE_CONFIG.STALE_TIME,
       gcTime: SCRIPT_CACHE_CONFIG.GC_TIME,
     },
@@ -62,11 +62,11 @@ export function useCustomScriptsByType(
   type: string,
   params?: Omit<GetConfigScriptsByTypeParams, 'type'>,
 ) {
-  const authToken = useSelector((state: RootState) => state.authReducer?.token?.access_token)
+  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
 
   return useGetConfigScriptsByType(type, params, {
     query: {
-      enabled: !!type && !!authToken,
+      enabled: !!type && hasSession === true,
       staleTime: SCRIPT_CACHE_CONFIG.STALE_TIME,
       gcTime: SCRIPT_CACHE_CONFIG.GC_TIME,
     },
@@ -74,11 +74,11 @@ export function useCustomScriptsByType(
 }
 
 export function useCustomScript(inum: string) {
-  const authToken = useSelector((state: RootState) => state.authReducer?.token?.access_token)
+  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
 
   return useGetConfigScriptsByInum(inum, {
     query: {
-      enabled: !!inum && !!authToken,
+      enabled: !!inum && hasSession === true,
       staleTime: SCRIPT_CACHE_CONFIG.SINGLE_SCRIPT_STALE_TIME,
     },
   })
@@ -191,11 +191,11 @@ export function useDeleteCustomScript() {
 }
 
 export function useCustomScriptTypes() {
-  const authToken = useSelector((state: RootState) => state.authReducer?.token?.access_token)
+  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
 
   return useGetCustomScriptType({
     query: {
-      enabled: !!authToken,
+      enabled: hasSession === true,
       select: (data: string[]): ScriptType[] => {
         if (!data || !Array.isArray(data)) {
           return []
