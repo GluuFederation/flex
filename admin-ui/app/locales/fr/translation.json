@@ -859,6 +859,15 @@
     "cannot_be_empty": "{{field}} ne peut pas être vide",
     "must_be_valid_url": "{{field}} doit être une URL valide"
   },
+  "validation_messages": {
+    "invalid_url_format": "Format d'URL invalide",
+    "must_be_non_negative": "Doit être non-négatif",
+    "required_field": "Ce champ est obligatoire",
+    "invalid_number": "Doit être un nombre valide",
+    "invalid_email": "Doit être une adresse e-mail valide",
+    "invalid_json": "Doit être du JSON valide",
+    "invalid_pattern": "Format invalide"
+  },
   "tooltips": {
     "add_attribute": "Ajouter un attribut",
     "add_ldap": "Ajouter LDAP",
