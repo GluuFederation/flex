@@ -265,6 +265,7 @@ const SettingsPage: React.FC = () => {
     if (typeof additionalParametersError === 'string') return additionalParametersError
     if (Array.isArray(additionalParametersError)) {
       return additionalParametersError
+        .filter((error) => error != null)
         .map((error) => (typeof error === 'string' ? error : JSON.stringify(error)))
         .join(', ')
     }
@@ -510,11 +511,13 @@ const SettingsPage: React.FC = () => {
                       )}
                     </Col>
                   </FormGroup>
-                  {showAdditionalParametersError && (
-                    <div style={{ color: customColors.accentRed }}>
-                      {additionalParametersErrorText}
-                    </div>
-                  )}
+                  {showAdditionalParametersError &&
+                    additionalParametersErrorText &&
+                    additionalParametersErrorText.trim() && (
+                      <div style={{ color: customColors.accentRed }}>
+                        {additionalParametersErrorText}
+                      </div>
+                    )}
                 </AccordionBody>
               </Accordion>
 

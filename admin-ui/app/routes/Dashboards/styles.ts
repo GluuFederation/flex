@@ -3,6 +3,7 @@ import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
 import { fontFamily, fontWeights, fontSizes, letterSpacing, lineHeights } from '@/styles/fonts'
 import { BORDER_RADIUS } from './constants'
+import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 
 interface DashboardThemeColors {
   cardBg: string
@@ -20,19 +21,13 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
 ) => {
   const { themeColors, isDark } = params
 
-  const getCardBorderStyle = () => {
-    if (isDark) {
-      return {
-        border: `1.5px solid ${customColors.darkBorderAccent}`,
-      }
-    }
-    return {
-      border: `1.5px solid ${themeColors.cardBorder}`,
-      boxShadow: `0px 4px 11px 0px ${customColors.shadowLight}`,
-    }
-  }
-
-  const cardBorderStyle = getCardBorderStyle()
+  const cardBorderStyle = getCardBorderStyle({
+    isDark,
+    borderRadius: BORDER_RADIUS.DEFAULT,
+    borderWidth: '1px',
+    gradientPosition: 'top right',
+    ellipseSize: '200% 160%',
+  })
 
   return {
     root: {
@@ -360,7 +355,7 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       borderRadius: BORDER_RADIUS.DEFAULT,
       height: 462,
       position: 'relative',
-      overflow: 'hidden',
+      overflow: 'visible',
       display: 'flex',
       flexDirection: 'column',
       boxSizing: 'border-box',

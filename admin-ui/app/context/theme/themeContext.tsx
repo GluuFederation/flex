@@ -54,7 +54,9 @@ const extractUserTheme = (currentInum?: string | null): ThemeValue => {
 
     return DEFAULT_THEME
   } catch (e) {
-    console.debug('Failed to extract user theme, using default:', e)
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Failed to extract user theme, using default:', e)
+    }
     return DEFAULT_THEME
   }
 }
@@ -65,23 +67,27 @@ const getInitialTheme = (): ThemeValue => {
   }
 
   try {
-    const userTheme = extractUserTheme()
     const savedTheme = window.localStorage.getItem('initTheme')
-
-    if (userTheme === DEFAULT_THEME && savedTheme && isValidTheme(savedTheme)) {
+    if (savedTheme && isValidTheme(savedTheme)) {
       return savedTheme
     }
 
-    if (savedTheme !== userTheme) {
+    const userTheme = extractUserTheme()
+    if (userTheme !== DEFAULT_THEME) {
       window.localStorage.setItem('initTheme', userTheme)
+      return userTheme
     }
-    return userTheme
+
+    window.localStorage.setItem('initTheme', DEFAULT_THEME)
+    return DEFAULT_THEME
   } catch (e) {
-    console.debug('Failed to get initial theme, using default:', e)
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Failed to get initial theme, using default:', e)
+    }
     try {
       window.localStorage.setItem('initTheme', DEFAULT_THEME)
-    } catch (_error) {
-      void _error
+    } catch {
+      // Ignore localStorage errors
     }
     return DEFAULT_THEME
   }
@@ -105,50 +111,63 @@ interface ThemeProviderProps {
   children: ReactNode
 }
 
+const getUserInum = (): string | null => {
+  try {
+    const userInfoStr = window.localStorage.getItem('userInfo')
+    if (userInfoStr) {
+      const userInfo = JSON.parse(userInfoStr) as { inum?: string }
+      return userInfo?.inum || null
+    }
+  } catch {
+    // Ignore parsing errors
+  }
+  return null
+}
+
 export function ThemeProvider(props: ThemeProviderProps) {
   const [state, dispatch] = useReducer(themeReducer, initialState)
   const hasSyncedRef = useRef(false)
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (typeof window === 'undefined' || hasSyncedRef.current) return
 
     try {
-      let currentInum: string | null = null
-      try {
-        const userInfoStr = window.localStorage.getItem('userInfo')
-        if (userInfoStr) {
-          const userInfo = JSON.parse(userInfoStr) as { inum?: string }
-          currentInum = userInfo?.inum || null
-        }
-      } catch (_error) {
-        void _error
-      }
-
-      const userTheme = extractUserTheme(currentInum)
       const savedTheme = window.localStorage.getItem('initTheme')
-      if (savedTheme !== userTheme) {
-        window.localStorage.setItem('initTheme', userTheme)
+      if (savedTheme && isValidTheme(savedTheme)) {
+        dispatch({ type: savedTheme })
+        hasSyncedRef.current = true
+        return
       }
 
-      const finalTheme = window.localStorage.getItem('initTheme')
-      const resolvedTheme = finalTheme && isValidTheme(finalTheme) ? finalTheme : DEFAULT_THEME
+      const currentInum = getUserInum()
+      const userTheme = extractUserTheme(currentInum)
 
-      if (resolvedTheme !== state.theme) {
-        dispatch({ type: resolvedTheme })
+      if (userTheme !== DEFAULT_THEME) {
+        window.localStorage.setItem('initTheme', userTheme)
+        dispatch({ type: userTheme })
+      } else {
+        window.localStorage.setItem('initTheme', DEFAULT_THEME)
+        dispatch({ type: DEFAULT_THEME })
       }
 
       hasSyncedRef.current = true
     } catch (e) {
-      console.debug('Failed to sync theme in useEffect, ensuring default:', e)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Failed to sync theme in useEffect, ensuring default:', e)
+      }
       try {
-        window.localStorage.setItem('initTheme', DEFAULT_THEME)
-        if (state.theme !== DEFAULT_THEME) {
+        const currentTheme = window.localStorage.getItem('initTheme')
+        if (!currentTheme || !isValidTheme(currentTheme)) {
+          window.localStorage.setItem('initTheme', DEFAULT_THEME)
           dispatch({ type: DEFAULT_THEME })
+        } else {
+          dispatch({ type: currentTheme })
         }
         hasSyncedRef.current = true
-      } catch (_error) {
-        void _error
+      } catch (error) {
+        if (process.env.NODE_ENV === 'development') {
+          console.error(error)
+        }
       }
     }
   }, [])

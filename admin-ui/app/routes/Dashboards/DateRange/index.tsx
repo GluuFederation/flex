@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import customColors from '@/customColors'
+import customColors, { hexToRgb } from '@/customColors'
 import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
 
 interface DateRangeProps {
@@ -45,7 +45,9 @@ const DateRange = memo(
       const popupBg = isDark ? customColors.darkCardBg : customColors.white
       const selectedBg = isDark ? customColors.darkBorder : customColors.primaryDark
       const selectedText = customColors.white
-      const hoverBg = isDark ? customColors.hoverBgDark : customColors.hoverBgLight
+      const hoverBg = isDark
+        ? `rgba(${hexToRgb(customColors.white)}, 0.08)`
+        : `rgba(${hexToRgb(customColors.black)}, 0.04)`
       const placeholderColor = isDark ? customColors.white : customColors.primaryDark
       const iconColor = isDark ? customColors.white : customColors.primaryDark
 

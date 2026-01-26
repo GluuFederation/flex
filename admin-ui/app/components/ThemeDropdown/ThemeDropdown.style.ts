@@ -1,5 +1,5 @@
 import { makeStyles } from 'tss-react/mui'
-import customColors from '@/customColors'
+import customColors, { hexToRgb } from '@/customColors'
 import type { DropdownPosition } from '../GluuDropdown/types'
 import {
   createBaseOptionStyles,
@@ -89,7 +89,7 @@ export const useStyles = makeStyles<{
     backgroundColor: dropdownBg,
     border: 'none',
     borderRadius: SHARED_DROPDOWN_STYLES.borderRadius,
-    boxShadow: `0px 4px 11px 0px ${customColors.shadowLight}`,
+    boxShadow: `0px 4px 11px 0px rgba(${hexToRgb(customColors.black)}, 0.05)`,
     padding: '22px 20px',
     minWidth: SHARED_DROPDOWN_STYLES.minWidth,
     ...getPositionStyles(position),

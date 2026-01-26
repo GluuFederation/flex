@@ -1,5 +1,5 @@
 import { makeStyles } from 'tss-react/mui'
-import customColors from '@/customColors'
+import customColors, { hexToRgb } from '@/customColors'
 import { fontFamily, fontSizes } from '@/styles/fonts'
 import type { DropdownPosition } from './types'
 import { createBaseOptionStyles, SHARED_DROPDOWN_STYLES } from './sharedDropdownStyles'
@@ -87,7 +87,7 @@ export const useStyles = makeStyles<{
     backgroundColor: dropdownBg,
     border: 'none',
     borderRadius: SHARED_DROPDOWN_STYLES.borderRadius,
-    boxShadow: `0px 4px 11px 0px ${customColors.shadowLight}`,
+    boxShadow: `0px 4px 11px 0px rgba(${hexToRgb(customColors.black)}, 0.05)`,
     padding: 0,
     minWidth: SHARED_DROPDOWN_STYLES.minWidth,
     maxHeight: SHARED_DROPDOWN_STYLES.maxHeight,
@@ -113,7 +113,7 @@ export const useStyles = makeStyles<{
       height: '100%',
       fill: dropdownBg,
       color: dropdownBg,
-      filter: `drop-shadow(0px -1px 2px ${customColors.shadowDark})`,
+      filter: `drop-shadow(0px -1px 2px rgba(${hexToRgb(customColors.black)}, 0.1))`,
     },
   },
   searchInput: {
@@ -128,7 +128,9 @@ export const useStyles = makeStyles<{
     'fontSize': fontSizes.base,
     '&:focus': {
       outline: 'none',
-      borderColor: isDark ? customColors.darkBorderAccent : customColors.primaryDark,
+      borderColor: isDark
+        ? `rgba(${hexToRgb(customColors.darkBorderGradientBase)}, 0.2)`
+        : customColors.primaryDark,
     },
     '&::placeholder': {
       color: isDark ? customColors.textMutedDark : customColors.textSecondary,

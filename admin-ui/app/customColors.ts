@@ -33,26 +33,26 @@ export const customColors = {
   borderInput: '#ebebeb',
   darkInputBg: '#15395d',
   lightInputBg: '#f9fafb',
-  darkBorderAccent: 'rgba(0, 213, 230, 0.2)',
-  darkBorderGradientStart: 'rgba(0, 213, 230, 0.8)',
-  darkBorderGradientMid: 'rgba(0, 213, 230, 0.5)',
-  darkBorderGradientEnd: 'rgba(0, 213, 230, 0.1)',
+  sidebarHoverBg: '#d3d3d3',
   textMutedDark: '#6a8096',
   chartPurple: '#8979ff',
   chartCoral: '#ff928a',
   chartCyan: '#3cc3df',
   buttonLightBg: '#f4f6f8',
-  hoverBgDark: 'rgba(255, 255, 255, 0.08)',
-  hoverBgLight: 'rgba(0, 0, 0, 0.04)',
-  shadowLight: 'rgba(0, 0, 0, 0.05)',
-  shadowMedium: 'rgba(0, 0, 0, 0.08)',
-  shadowDark: 'rgba(0, 0, 0, 0.1)',
-  shadowTooltip: 'rgba(0, 0, 0, 0.25)',
-  ribbonShadow: 'rgba(26, 35, 126, 0.2)',
-  sidebarHoverBg: '#d3d3d3',
-  tooltipBorderLight: 'rgba(0, 0, 0, 0.1)',
-  tooltipBorderDark: 'rgba(255, 255, 255, 0.2)',
+  darkBorderGradientBase: '#00d5e6',
+  ribbonShadowRgb: '#1a237e',
 } as const
+
+export const hexToRgb = (hex: string): string => {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  if (!result) {
+    throw new Error(`Invalid hex color: ${hex}`)
+  }
+  const r = parseInt(result[1], 16)
+  const g = parseInt(result[2], 16)
+  const b = parseInt(result[3], 16)
+  return `${r}, ${g}, ${b}`
+}
 
 export type CustomColorKeys = keyof typeof customColors
 

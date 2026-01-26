@@ -1,7 +1,7 @@
 import React, { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { fontFamily, fontSizes } from '@/styles/fonts'
-import customColors from '@/customColors'
+import customColors, { hexToRgb } from '@/customColors'
 import type { TooltipDesignProps, ChartDataKey } from '../types'
 
 const TooltipDesign = memo(
@@ -21,8 +21,10 @@ const TooltipDesign = memo(
 
     if (payload.length === 0) return null
 
-    const borderColor = isDark ? customColors.tooltipBorderDark : customColors.tooltipBorderLight
-    const shadowColor = customColors.shadowTooltip
+    const borderColor = isDark
+      ? `rgba(${hexToRgb(customColors.white)}, 0.2)`
+      : `rgba(${hexToRgb(customColors.black)}, 0.1)`
+    const shadowColor = `rgba(${hexToRgb(customColors.black)}, 0.25)`
 
     return (
       <div

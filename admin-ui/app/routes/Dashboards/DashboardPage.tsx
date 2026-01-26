@@ -9,7 +9,7 @@ import Paper from '@mui/material/Paper'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useCedarling } from '@/cedarling'
-import customColors from '@/customColors'
+import customColors, { hexToRgb } from '@/customColors'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
@@ -54,7 +54,7 @@ const DashboardPage = () => {
     const baseColors = isDark
       ? {
           cardBg: customColors.darkCardBg,
-          cardBorder: customColors.darkBorderAccent,
+          cardBorder: `rgba(${hexToRgb(customColors.darkBorderGradientBase)}, 0.2)`,
           text: customColors.white,
           textSecondary: customColors.textMutedDark,
         }
@@ -199,8 +199,6 @@ const DashboardPage = () => {
 
     return baseData
   }, [t, totalClientsEntries, mauCount, tokenCount, lockData, lockStats])
-
-  console.log('license', license)
 
   const userInfo = useMemo(
     () => [

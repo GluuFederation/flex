@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { ThemeContext } from '@/context/theme/themeContext'
 import getThemeColor, { themeConfig } from '@/context/theme/config'
 import { ReactNode } from 'react'
-import customColors from '@/customColors'
+import customColors, { hexToRgb } from '@/customColors'
 import { THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
 
 interface LayoutContentProps {
@@ -38,7 +38,9 @@ const LayoutContent = ({ children }: LayoutContentProps) => {
     const textColor = isDark ? customColors.white : customColors.textSecondary
     const textColorActive = isDark ? customColors.white : customColors.primaryDark
     const textColorHover = isDark ? customColors.white : customColors.primaryDark
-    const hoverBackground = isDark ? customColors.hoverBgDark : customColors.sidebarHoverBg
+    const hoverBackground = isDark
+      ? `rgba(${hexToRgb(customColors.white)}, 0.08)`
+      : customColors.sidebarHoverBg
 
     return {
       textColor,

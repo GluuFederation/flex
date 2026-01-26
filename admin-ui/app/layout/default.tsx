@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 import { Layout, ThemeProvider } from 'Components'
-import { THEME_LIGHT } from '@/context/theme/constants'
+import { DEFAULT_THEME, isValidTheme } from '@/context/theme/constants'
 
 import 'Styles/bootstrap.scss'
 import 'Styles/main.scss'
@@ -23,6 +23,25 @@ interface FavIcon {
 
 interface AppLayoutProps {
   children: ReactNode
+}
+
+const getInitialThemeStyle = (): string => {
+  if (typeof window === 'undefined') {
+    return DEFAULT_THEME
+  }
+
+  try {
+    const savedTheme = window.localStorage.getItem('initTheme')
+    if (savedTheme && isValidTheme(savedTheme)) {
+      return savedTheme
+    }
+    return DEFAULT_THEME
+  } catch (e) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Failed to get initial theme from localStorage:', e)
+    }
+    return DEFAULT_THEME
+  }
 }
 
 const favIcons: FavIcon[] = [
@@ -51,19 +70,17 @@ const favIcons: FavIcon[] = [
 ]
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
+  const initialTheme = getInitialThemeStyle()
+
   return (
-    <ThemeProvider initialStyle={THEME_LIGHT} initialColor="primary">
+    <ThemeProvider initialStyle={initialTheme} initialColor="primary">
       <Layout sidebarSlim favIcons={favIcons}>
-        {/* --------- Navbar ----------- */}
         <Layout.Navbar>
           <RoutedNavbars />
         </Layout.Navbar>
-        {/* -------- Sidebar ------------*/}
         <Layout.Sidebar>
           <RoutedSidebars />
         </Layout.Sidebar>
-
-        {/* -------- Content ------------*/}
         <Layout.Content>{children}</Layout.Content>
       </Layout>
     </ThemeProvider>
