@@ -91,63 +91,78 @@ Gluu Flex Admin UI->>Gluu Flex Admin UI: extract & store claims from UJWT
 
 ```
 
-## API Protection and Scopes
-
-To ensure security and access control, Gluu Flex Admin UI leverages API protection and scopes:
-
-1. The Jans Config API's endpoints are protected and can only be accessed using a token (`AT2`) with the required scopes.
-2. To generate an AT2, the frontend requests the Token Server via the backend. **The Token Server and Authorization Server can be the same or different.**
-3. The Token Server employs an update-token script that validates the UJWT and refers to the role-scope mapping in the Token Server persistence.
-4. The update-token script validates the UJWT and includes the appropriate scopes in AT2 based on the user's role.
-5. The frontend receives AT2 and associated scopes from the backend.
-6. The scopes provided in AT2 determine which Config API–protected endpoints the Admin UI can access. Refer this [doc](./access-control.md) for GUI access control.
-
-```mermaid
-
-sequenceDiagram
-title License Verification
-autonumber
-actor User
-
-Gluu Flex Admin UI->>Admin UI Backend: /api-protection-token?ujwt=...
-Admin UI Backend->>Jans Token Server: /token
-Jans Token Server->>Jans Token Server: Verify ujwt
-Jans Token Server->>Jans Token Server: Add scopes to token based on role (AT2)
-Jans Token Server->>Admin UI Backend: AT2
-Admin UI Backend->>Gluu Flex Admin UI: AT2
-Gluu Flex Admin UI->>Gluu Flex Admin UI:extracts scopes from AT2
-Gluu Flex Admin UI->>Gluu Flex Admin UI: AT2 determine which Config API–protected endpoints the Admin UI can access
-```
 ## Accessing Config-API Endpoints
 
-To access config-api endpoints, the following steps are taken:
+To access Config API endpoints, Admin UI Backend generates client_credentials token by following below steps:
 
-1. The Admin UI frontend requests AT2 from the Token Server through the backend.
-2. Armed with AT2, the frontend sends a request to the desired Jans Config API endpoint. AT2 is included in the authorization header, along with other request parameters.
-3. At the Jans Config API, AT2 is validated, and the provided scopes are verified to ensure the necessary scope for the requested endpoint is present.
-4. If the above steps are successful, the requested data is fetched from the Jans Config API and forwarded to the frontend.
+1. Admin UI Frontend calls **POST** `/session` endpoint of Admin UI Backend by passing User-Info JWT (UJWT) as parameter.
+2. The Admin UI backend verifies the signature of the UJWT. If the signature is valid, it creates session cookie with a random Session ID. Store the mapping of Session ID and UJWT along with created_date and expiry_date into the Jans persistence (in `adminUISession` table).
+3. The session cookie is sent back to Admin UI Frontend in response and is stored in browser.
+4. For making any request to Config API endpoints the Admin UI Frontend (Browser) will call Config API endpoint. The session cookie will be automatically paired with the request.
+5. The Admin UI Backend will intercept the request. It will check if the valid session cookie is present in request.
+6. Admin UI Backend will verify the cookie's Session ID presence in `adminUISession` table. Also fetch UJWT of the record from table.
+7. If the session cookie is valid then Admin UI Backend will generate client_credentials token (AT2).
+8. To generate an AT2, the backend requests the Token Server. **The Token Server and Authorization Server can be the same or different.**
+9. The Token Server employs an `update-token script` that validates the UJWT and refers to the role-scope mapping in the persistence.
+10. The update-token script validates the UJWT and includes the appropriate scopes in AT2 based on the user's role.
+11. The AT2 will be used to call Config API endpoint. 
+12. The response obtained from Config API will be sent back to the Admin UI Frontend (Browser).
+13. If the cookie's Session ID is not presence in `adminUISession` table, send **403-Forbidden** error in response asking Admin UI to force logout.
+
+```mermaid
+sequenceDiagram
+    title Accessing Config API Endpoints
+    autonumber
+
+    actor User
+    participant Browser as Admin UI (Browser)
+    participant Backend as Admin UI Backend
+    participant ConfigAPI as Config API
+
+    User->>Browser: Login
+    Browser->>Backend: POST /session
+    Note right of Browser: userinfo JWT (UJWT)
+
+    Backend->>Backend: Verify UJWT
+    Backend->>Backend: Create session cookie with opaque SessionID
+    Backend->>Backend: Persist mapping of SessionID ↔ UJWT
+    Backend->>Browser: Set session cookie
+    Note right of Browser: Cookie stored in browser
+
+    Browser->>Backend: Call Config API endpoints
+    Note right of Browser: Session cookie
+    Backend->>Backend: check if session cookie is present in request
+    Backend->>Backend: clear expired Admin UI sessions from persistence (ran after at least 5 minutes)
+    Backend->>Backend: checks presence of session in cache or database
+    alt Session exists in persistence
+        Backend->>Backend: Generate client-credentials access token (AT2)
+        Backend->>ConfigAPI: call endpoint
+        Note right of Backend: AT2
+        ConfigAPI->>ConfigAPI: verify AT2        
+        ConfigAPI->>Browser: endpoint response
+    else Session does not exist in persistence
+        Backend->>Browser: 403 Forbidden (force logout)
+    end
+
+```
 
 ```mermaid
 
 sequenceDiagram
-title License Verification
+title Details of generation of AT2
 autonumber
 actor User
+participant Backend as Admin UI Backend
+participant JansServer as Jans Token Server
+participant Script as Update Token Script
 
-Gluu Flex Admin UI->>Admin UI Backend: /api-protection-token?ujwt=...
-Admin UI Backend->>Jans Token Server: /token
-Jans Token Server->>Jans Token Server: Verify ujwt
-Jans Token Server->>Jans Token Server: Add scopes to token based on role (AT2)
-Jans Token Server->>Admin UI Backend: AT2
-Admin UI Backend->>Gluu Flex Admin UI: AT2
-Gluu Flex Admin UI->>Jans Config API: request API with AT2
-Jans Config API<<->>Jans Token Server: introspect AT2
-Jans Token Server->>Jans Config API: AT2 JSON
-Jans Config API->>Jans Config API: Enforcement: verify required scopes
-Jans Config API->>Jans Config API: validate params
-Jans Config API->>Jans Auth Server:call API with request params
-Jans Auth Server->>Jans Config API:response
-Jans Config API->>Gluu Flex Admin UI:response
+Backend->>JansServer: /token
+Note right of Backend: UJWT
+JansServer->>Script: Verify UJWT
+Script->>Script: Add scopes to token based on role (AT2)
+Script->>JansServer: AT2
+JansServer->>Backend: AT2
+
 ```
 
 ## Conclusion
