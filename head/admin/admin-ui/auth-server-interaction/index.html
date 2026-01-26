@@ -1382,15 +1382,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#api-protection-and-scopes" class="md-nav__link">
-    <span class="md-ellipsis">
-      API Protection and Scopes
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#accessing-config-api-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       Accessing Config-API Endpoints
@@ -2672,15 +2663,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#api-protection-and-scopes" class="md-nav__link">
-    <span class="md-ellipsis">
-      API Protection and Scopes
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#accessing-config-api-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       Accessing Config-API Endpoints
@@ -2817,58 +2799,73 @@ Gluu Flex Admin UI-&gt;&gt;Jans Auth Server: /userInfo
 Jans Auth Server-&gt;&gt;Gluu Flex Admin UI: user-info (UJWT)
 Gluu Flex Admin UI-&gt;&gt;Gluu Flex Admin UI: extract &amp; store claims from UJWT
 </code></pre>
-<h2 id="api-protection-and-scopes">API Protection and Scopes<a class="headerlink" href="#api-protection-and-scopes" title="Permanent link">#</a></h2>
-<p>To ensure security and access control, Gluu Flex Admin UI leverages API protection and scopes:</p>
-<ol>
-<li>The Jans Config API's endpoints are protected and can only be accessed using a token (<code>AT2</code>) with the required scopes.</li>
-<li>To generate an AT2, the frontend requests the Token Server via the backend. <strong>The Token Server and Authorization Server can be the same or different.</strong></li>
-<li>The Token Server employs an update-token script that validates the UJWT and refers to the role-scope mapping in the Token Server persistence.</li>
-<li>The update-token script validates the UJWT and includes the appropriate scopes in AT2 based on the user's role.</li>
-<li>The frontend receives AT2 and associated scopes from the backend.</li>
-<li>The scopes provided in AT2 determine which Config API–protected endpoints the Admin UI can access. Refer this <a href="../access-control/">doc</a> for GUI access control.</li>
-</ol>
-<pre class="mermaid"><code>
-sequenceDiagram
-title License Verification
-autonumber
-actor User
-
-Gluu Flex Admin UI-&gt;&gt;Admin UI Backend: /api-protection-token?ujwt=...
-Admin UI Backend-&gt;&gt;Jans Token Server: /token
-Jans Token Server-&gt;&gt;Jans Token Server: Verify ujwt
-Jans Token Server-&gt;&gt;Jans Token Server: Add scopes to token based on role (AT2)
-Jans Token Server-&gt;&gt;Admin UI Backend: AT2
-Admin UI Backend-&gt;&gt;Gluu Flex Admin UI: AT2
-Gluu Flex Admin UI-&gt;&gt;Gluu Flex Admin UI:extracts scopes from AT2
-Gluu Flex Admin UI-&gt;&gt;Gluu Flex Admin UI: AT2 determine which Config API–protected endpoints the Admin UI can access</code></pre>
 <h2 id="accessing-config-api-endpoints">Accessing Config-API Endpoints<a class="headerlink" href="#accessing-config-api-endpoints" title="Permanent link">#</a></h2>
-<p>To access config-api endpoints, the following steps are taken:</p>
+<p>To access Config API endpoints, Admin UI Backend generates client_credentials token by following below steps:</p>
 <ol>
-<li>The Admin UI frontend requests AT2 from the Token Server through the backend.</li>
-<li>Armed with AT2, the frontend sends a request to the desired Jans Config API endpoint. AT2 is included in the authorization header, along with other request parameters.</li>
-<li>At the Jans Config API, AT2 is validated, and the provided scopes are verified to ensure the necessary scope for the requested endpoint is present.</li>
-<li>If the above steps are successful, the requested data is fetched from the Jans Config API and forwarded to the frontend.</li>
+<li>Admin UI Frontend calls <strong>POST</strong> <code>/session</code> endpoint of Admin UI Backend by passing User-Info JWT (UJWT) as parameter.</li>
+<li>The Admin UI backend verifies the signature of the UJWT. If the signature is valid, it creates session cookie with a random Session ID. Store the mapping of Session ID and UJWT along with created_date and expiry_date into the Jans persistence (in <code>adminUISession</code> table).</li>
+<li>The session cookie is sent back to Admin UI Frontend in response and is stored in browser.</li>
+<li>For making any request to Config API endpoints the Admin UI Frontend (Browser) will call Config API endpoint. The session cookie will be automatically paired with the request.</li>
+<li>The Admin UI Backend will intercept the request. It will check if the valid session cookie is present in request.</li>
+<li>Admin UI Backend will verify the cookie's Session ID presence in <code>adminUISession</code> table. Also fetch UJWT of the record from table.</li>
+<li>If the session cookie is valid then Admin UI Backend will generate client_credentials token (AT2).</li>
+<li>To generate an AT2, the backend requests the Token Server. <strong>The Token Server and Authorization Server can be the same or different.</strong></li>
+<li>The Token Server employs an <code>update-token script</code> that validates the UJWT and refers to the role-scope mapping in the persistence.</li>
+<li>The update-token script validates the UJWT and includes the appropriate scopes in AT2 based on the user's role.</li>
+<li>The AT2 will be used to call Config API endpoint. </li>
+<li>The response obtained from Config API will be sent back to the Admin UI Frontend (Browser).</li>
+<li>If the cookie's Session ID is not presence in <code>adminUISession</code> table, send <strong>403-Forbidden</strong> error in response asking Admin UI to force logout.</li>
 </ol>
+<pre class="mermaid"><code>sequenceDiagram
+    title Accessing Config API Endpoints
+    autonumber
+
+    actor User
+    participant Browser as Admin UI (Browser)
+    participant Backend as Admin UI Backend
+    participant ConfigAPI as Config API
+
+    User-&gt;&gt;Browser: Login
+    Browser-&gt;&gt;Backend: POST /session
+    Note right of Browser: userinfo JWT (UJWT)
+
+    Backend-&gt;&gt;Backend: Verify UJWT
+    Backend-&gt;&gt;Backend: Create session cookie with opaque SessionID
+    Backend-&gt;&gt;Backend: Persist mapping of SessionID ↔ UJWT
+    Backend-&gt;&gt;Browser: Set session cookie
+    Note right of Browser: Cookie stored in browser
+
+    Browser-&gt;&gt;Backend: Call Config API endpoints
+    Note right of Browser: Session cookie
+    Backend-&gt;&gt;Backend: check if session cookie is present in request
+    Backend-&gt;&gt;Backend: clear expired Admin UI sessions from persistence (ran after at least 5 minutes)
+    Backend-&gt;&gt;Backend: checks presence of session in cache or database
+    alt Session exists in persistence
+        Backend-&gt;&gt;Backend: Generate client-credentials access token (AT2)
+        Backend-&gt;&gt;ConfigAPI: call endpoint
+        Note right of Backend: AT2
+        ConfigAPI-&gt;&gt;ConfigAPI: verify AT2        
+        ConfigAPI-&gt;&gt;Browser: endpoint response
+    else Session does not exist in persistence
+        Backend-&gt;&gt;Browser: 403 Forbidden (force logout)
+    end
+</code></pre>
 <pre class="mermaid"><code>
 sequenceDiagram
-title License Verification
+title Details of generation of AT2
 autonumber
 actor User
+participant Backend as Admin UI Backend
+participant JansServer as Jans Token Server
+participant Script as Update Token Script
 
-Gluu Flex Admin UI-&gt;&gt;Admin UI Backend: /api-protection-token?ujwt=...
-Admin UI Backend-&gt;&gt;Jans Token Server: /token
-Jans Token Server-&gt;&gt;Jans Token Server: Verify ujwt
-Jans Token Server-&gt;&gt;Jans Token Server: Add scopes to token based on role (AT2)
-Jans Token Server-&gt;&gt;Admin UI Backend: AT2
-Admin UI Backend-&gt;&gt;Gluu Flex Admin UI: AT2
-Gluu Flex Admin UI-&gt;&gt;Jans Config API: request API with AT2
-Jans Config API&lt;&lt;-&gt;&gt;Jans Token Server: introspect AT2
-Jans Token Server-&gt;&gt;Jans Config API: AT2 JSON
-Jans Config API-&gt;&gt;Jans Config API: Enforcement: verify required scopes
-Jans Config API-&gt;&gt;Jans Config API: validate params
-Jans Config API-&gt;&gt;Jans Auth Server:call API with request params
-Jans Auth Server-&gt;&gt;Jans Config API:response
-Jans Config API-&gt;&gt;Gluu Flex Admin UI:response</code></pre>
+Backend-&gt;&gt;JansServer: /token
+Note right of Backend: UJWT
+JansServer-&gt;&gt;Script: Verify UJWT
+Script-&gt;&gt;Script: Add scopes to token based on role (AT2)
+Script-&gt;&gt;JansServer: AT2
+JansServer-&gt;&gt;Backend: AT2
+</code></pre>
 <h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">#</a></h2>
 <p>The Gluu Flex Admin UI simplifies the process of managing configuration and features of the Jans Auth Server through an intuitive graphical user interface. By following the Authorization Code Flow and leveraging API protection and scopes, the Gluu Flex Admin UI ensures secure and controlled interaction with the Jans Auth Server's REST API layer. This seamless interaction empowers administrators to efficiently manage the Jans Auth Server's settings while adhering to strict access controls and security protocols.</p>
 
@@ -2893,7 +2890,7 @@ Jans Config API-&gt;&gt;Gluu Flex Admin UI:response</code></pre>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="January 6, 2026 11:07:54 UTC"><span class="timeago" datetime="2026-01-06T11:07:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="January 6, 2026 11:07:54 UTC">2026-01-06</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="January 26, 2026 12:09:52 UTC"><span class="timeago" datetime="2026-01-26T12:09:52+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="January 26, 2026 12:09:52 UTC">2026-01-26</span>
   </span>
 
     
