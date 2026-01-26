@@ -93,7 +93,7 @@ Gluu Flex Admin UI->>Gluu Flex Admin UI: extract & store claims from UJWT
 
 ## Accessing Config-API Endpoints
 
-To access Config API endpoints, Admin UI Backend generates client_credential token by following below steps:
+To access Config API endpoints, Admin UI Backend generates client_credentials token by following below steps:
 
 1. Admin UI Frontend calls **POST** `/session` endpoint of Admin UI Backend by passing User-Info JWT (UJWT) as parameter.
 2. The Admin UI backend verifies the signature of the UJWT. If the signature is valid, it creates session cookie with a random Session ID. Store the mapping of Session ID and UJWT along with created_date and expiry_date into the Jans persistence (in `adminUISession` table).
@@ -101,7 +101,7 @@ To access Config API endpoints, Admin UI Backend generates client_credential tok
 4. For making any request to Config API endpoints the Admin UI Frontend (Browser) will call Config API endpoint. The session cookie will be automatically paired with the request.
 5. The Admin UI Backend will intercept the request. It will check if the valid session cookie is present in request.
 6. Admin UI Backend will verify the cookie's Session ID presence in `adminUISession` table. Also fetch UJWT of the record from table.
-7. If the session cookie is valid then Admin UI Backend will generate client_credential token (AT2).
+7. If the session cookie is valid then Admin UI Backend will generate client_credentials token (AT2).
 8. To generate an AT2, the backend requests the Token Server. **The Token Server and Authorization Server can be the same or different.**
 9. The Token Server employs an `update-token script` that validates the UJWT and refers to the role-scope mapping in the persistence.
 10. The update-token script validates the UJWT and includes the appropriate scopes in AT2 based on the user's role.
