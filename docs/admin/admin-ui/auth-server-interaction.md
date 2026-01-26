@@ -132,7 +132,7 @@ sequenceDiagram
     Browser->>Backend: Call Config API endpoints
     Note right of Browser: Session cookie
     Backend->>Backend: check if session cookie is present in request
-    Backend->>Backend: clear expired Admin UI sessions from persistance (ran after atleast 5 minutes)
+    Backend->>Backend: clear expired Admin UI sessions from persistence (ran after at least 5 minutes)
     Backend->>Backend: checks presence of session in cache or database
     alt Session exists in persistence
         Backend->>Backend: Generate client-credentials access token (AT2)
@@ -157,7 +157,8 @@ participant JansServer as Jans Token Server
 participant Script as Update Token Script
 
 Backend->>JansServer: /token
-JansServer->>Script: Verify ujwt
+Note right of Backend: UJWT
+JansServer->>Script: Verify UJWT
 Script->>Script: Add scopes to token based on role (AT2)
 Script->>JansServer: AT2
 JansServer->>Backend: AT2
