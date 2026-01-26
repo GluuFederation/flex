@@ -72,19 +72,17 @@ export type {
 export { TrustRelationshipSpMetaDataSourceType }
 
 interface AuditContext {
-  token: string
   userinfo: BasicUserInfo | null | undefined
   clientId: string | undefined
   ipAddress: string | undefined
 }
 
 function useAuditContext(): AuditContext {
-  const token = useSelector((state: RootState) => state.authReducer?.token?.access_token) ?? ''
   const userinfo = useSelector((state: RootState) => state.authReducer?.userinfo)
   const clientId = useSelector((state: RootState) => state.authReducer?.config?.clientId)
   const ipAddress = useSelector((state: RootState) => state.authReducer?.location?.IPv4)
 
-  return { token, userinfo, clientId, ipAddress }
+  return { userinfo, clientId, ipAddress }
 }
 
 type AuditAction = typeof CREATE | typeof UPDATE | typeof DELETION
@@ -98,7 +96,6 @@ function createAuditLogger<T>(
   return async (userMessage: string, data: T): Promise<void> => {
     try {
       await logAuditUserAction({
-        token: auditContext.token,
         userinfo: auditContext.userinfo,
         action,
         resource,
@@ -149,11 +146,11 @@ interface DeleteTrustRelationshipParams {
 }
 
 export function useSamlConfiguration() {
-  const authToken = useSelector((state: RootState) => state.authReducer?.token?.access_token)
+  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
 
   return useGetSamlProperties({
     query: {
-      enabled: !!authToken,
+      enabled: hasSession === true,
       staleTime: SAML_CACHE_CONFIG.STALE_TIME,
       gcTime: SAML_CACHE_CONFIG.GC_TIME,
     },
@@ -173,23 +170,19 @@ export function useUpdateSamlConfiguration() {
       AUDIT_RESOURCE_NAMES.SAML,
       (data) => ({ data }),
     ),
-    [auditContext.token, auditContext.userinfo, auditContext.clientId, auditContext.ipAddress],
+    [auditContext.userinfo, auditContext.clientId, auditContext.ipAddress],
   )
 
   const mutateAsync = useCallback(
     async (params: UpdateSamlConfigurationParams): Promise<SamlAppConfiguration> => {
       const { data, userMessage } = params
-      try {
-        const result = await baseMutation.mutateAsync({ data })
-        await queryClient.invalidateQueries({ queryKey: getGetSamlPropertiesQueryKey() })
-        dispatch(updateToast(true, 'success'))
-        logAudit(userMessage, data)
-        return result
-      } catch (error) {
-        throw error
-      }
+      const result = await baseMutation.mutateAsync({ data })
+      await queryClient.invalidateQueries({ queryKey: getGetSamlPropertiesQueryKey() })
+      dispatch(updateToast(true, 'success'))
+      logAudit(userMessage, data)
+      return result
     },
-    [baseMutation, queryClient, logAudit],
+    [baseMutation.mutateAsync, queryClient, dispatch, logAudit],
   )
 
   return {
@@ -199,11 +192,11 @@ export function useUpdateSamlConfiguration() {
 }
 
 export function useIdentityProviders(params?: GetSamlIdentityProviderParams) {
-  const authToken = useSelector((state: RootState) => state.authReducer?.token?.access_token)
+  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
 
   return useGetSamlIdentityProvider(params, {
     query: {
-      enabled: !!authToken,
+      enabled: hasSession === true,
       staleTime: SAML_CACHE_CONFIG.STALE_TIME,
       gcTime: SAML_CACHE_CONFIG.GC_TIME,
     },
@@ -224,7 +217,7 @@ export function useCreateIdentityProvider() {
       AUDIT_RESOURCE_NAMES.IDENTITY_BROKERING,
       (data) => ({ identityProvider: data.identityProvider }),
     ),
-    [auditContext.token, auditContext.userinfo, auditContext.clientId, auditContext.ipAddress],
+    [auditContext.userinfo, auditContext.clientId, auditContext.ipAddress],
   )
 
   const mutateAsync = useCallback(
@@ -242,7 +235,7 @@ export function useCreateIdentityProvider() {
         throw error
       }
     },
-    [baseMutation, queryClient, logAudit],
+    [baseMutation.mutateAsync, queryClient, dispatch, logAudit],
   )
 
   const resetSavedForm = useCallback(() => {
@@ -271,7 +264,7 @@ export function useUpdateIdentityProvider() {
       AUDIT_RESOURCE_NAMES.IDENTITY_BROKERING,
       (data) => ({ identityProvider: data.identityProvider }),
     ),
-    [auditContext.token, auditContext.userinfo, auditContext.clientId, auditContext.ipAddress],
+    [auditContext.userinfo, auditContext.clientId, auditContext.ipAddress],
   )
 
   const mutateAsync = useCallback(
@@ -289,7 +282,7 @@ export function useUpdateIdentityProvider() {
         throw error
       }
     },
-    [baseMutation, queryClient, logAudit],
+    [baseMutation.mutateAsync, queryClient, dispatch, logAudit],
   )
 
   const resetSavedForm = useCallback(() => {
@@ -317,7 +310,7 @@ export function useDeleteIdentityProvider() {
       AUDIT_RESOURCE_NAMES.IDENTITY_BROKERING,
       (inum) => ({ inum }),
     ),
-    [auditContext.token, auditContext.userinfo, auditContext.clientId, auditContext.ipAddress],
+    [auditContext.userinfo, auditContext.clientId, auditContext.ipAddress],
   )
 
   const mutateAsync = useCallback(
@@ -329,10 +322,13 @@ export function useDeleteIdentityProvider() {
         dispatch(updateToast(true, 'success'))
         logAudit(userMessage, inum)
       } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'Failed to delete identity provider'
+        dispatch(updateToast(true, 'error', errorMessage))
         throw error
       }
     },
-    [baseMutation, queryClient, logAudit],
+    [baseMutation.mutateAsync, queryClient, dispatch, logAudit],
   )
 
   return {
@@ -342,11 +338,11 @@ export function useDeleteIdentityProvider() {
 }
 
 export function useTrustRelationships() {
-  const authToken = useSelector((state: RootState) => state.authReducer?.token?.access_token)
+  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
 
   return useGetTrustRelationships({
     query: {
-      enabled: !!authToken,
+      enabled: hasSession === true,
       staleTime: SAML_CACHE_CONFIG.STALE_TIME,
       gcTime: SAML_CACHE_CONFIG.GC_TIME,
     },
@@ -367,7 +363,7 @@ export function useCreateTrustRelationship() {
       AUDIT_RESOURCE_NAMES.TRUST_RELATIONSHIP,
       (data) => ({ trustRelationship: data.trustRelationship }),
     ),
-    [auditContext.token, auditContext.userinfo, auditContext.clientId, auditContext.ipAddress],
+    [auditContext.userinfo, auditContext.clientId, auditContext.ipAddress],
   )
 
   const mutateAsync = useCallback(
@@ -414,7 +410,7 @@ export function useUpdateTrustRelationship() {
       AUDIT_RESOURCE_NAMES.TRUST_RELATIONSHIP,
       (data) => ({ trustRelationship: data.trustRelationship }),
     ),
-    [auditContext.token, auditContext.userinfo, auditContext.clientId, auditContext.ipAddress],
+    [auditContext.userinfo, auditContext.clientId, auditContext.ipAddress],
   )
 
   const mutateAsync = useCallback(
@@ -460,7 +456,7 @@ export function useDeleteTrustRelationshipMutation() {
       AUDIT_RESOURCE_NAMES.TRUST_RELATIONSHIP,
       (id) => ({ id }),
     ),
-    [auditContext.token, auditContext.userinfo, auditContext.clientId, auditContext.ipAddress],
+    [auditContext.userinfo, auditContext.clientId, auditContext.ipAddress],
   )
 
   const mutateAsync = useCallback(
@@ -472,10 +468,13 @@ export function useDeleteTrustRelationshipMutation() {
         dispatch(updateToast(true, 'success'))
         logAudit(userMessage, id)
       } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'Failed to delete trust relationship'
+        dispatch(updateToast(true, 'error', errorMessage))
         throw error
       }
     },
-    [baseMutation, queryClient, logAudit],
+    [baseMutation.mutateAsync, queryClient, dispatch, logAudit],
   )
 
   return {

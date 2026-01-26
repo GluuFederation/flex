@@ -68,10 +68,15 @@ const SamlConfigurationForm: React.FC = () => {
           userMessage: messages,
         })
       } catch (error) {
-        dispatch(updateToast(true, 'error'))
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+              t('messages.error_in_saving')
+        dispatch(updateToast(true, 'error', errorMessage))
       }
     },
-    [updateConfigMutation, dispatch],
+    [updateConfigMutation, dispatch, t],
   )
 
   const { setFieldValue, resetForm, handleSubmit: formikHandleSubmit } = formik

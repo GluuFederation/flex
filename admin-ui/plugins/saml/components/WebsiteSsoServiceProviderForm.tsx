@@ -210,10 +210,15 @@ const WebsiteSsoServiceProviderForm = ({
           })
         }
       } catch (error) {
-        dispatch(updateToast(true, 'error'))
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+              t('messages.error_in_saving')
+        dispatch(updateToast(true, 'error', errorMessage))
       }
     },
-    [configs, createTrustRelationshipAsync, updateTrustRelationshipAsync, dispatch],
+    [configs, createTrustRelationshipAsync, updateTrustRelationshipAsync, dispatch, t],
   )
 
   const submitForm = useCallback(

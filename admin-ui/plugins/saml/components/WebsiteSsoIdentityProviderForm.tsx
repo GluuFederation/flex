@@ -59,16 +59,26 @@ const WebsiteSsoIdentityProviderForm = ({
   )
   const [showUploadBtn, setShowUploadBtn] = useState<boolean>(false)
 
-  const createIdentityProvider = useCreateIdentityProvider()
-  const updateIdentityProvider = useUpdateIdentityProvider()
+  const {
+    mutateAsync: createIdentityProviderAsync,
+    isPending: isCreatePending,
+    savedForm: createSavedForm,
+    resetSavedForm: resetCreateSavedForm,
+  } = useCreateIdentityProvider()
+  const {
+    mutateAsync: updateIdentityProviderAsync,
+    isPending: isUpdatePending,
+    savedForm: updateSavedForm,
+    resetSavedForm: resetUpdateSavedForm,
+  } = useUpdateIdentityProvider()
 
-  const createResetRef = useRef(createIdentityProvider.resetSavedForm)
-  const updateResetRef = useRef(updateIdentityProvider.resetSavedForm)
-  createResetRef.current = createIdentityProvider.resetSavedForm
-  updateResetRef.current = updateIdentityProvider.resetSavedForm
+  const createResetRef = useRef(resetCreateSavedForm)
+  const updateResetRef = useRef(resetUpdateSavedForm)
+  createResetRef.current = resetCreateSavedForm
+  updateResetRef.current = resetUpdateSavedForm
 
-  const loading = createIdentityProvider.isPending || updateIdentityProvider.isPending
-  const savedForm = createIdentityProvider.savedForm || updateIdentityProvider.savedForm
+  const loading = isCreatePending || isUpdatePending
+  const savedForm = createSavedForm || updateSavedForm
 
   const dispatch = useDispatch()
   const { t } = useTranslation()
@@ -145,21 +155,26 @@ const WebsiteSsoIdentityProviderForm = ({
 
       try {
         if (!configs) {
-          await createIdentityProvider.mutateAsync({
+          await createIdentityProviderAsync({
             data: brokerIdentityProviderFormData,
             userMessage: user_message,
           })
         } else {
-          await updateIdentityProvider.mutateAsync({
+          await updateIdentityProviderAsync({
             data: brokerIdentityProviderFormData,
             userMessage: user_message,
           })
         }
       } catch (error) {
-        dispatch(updateToast(true, 'error'))
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+              t('messages.error_in_saving')
+        dispatch(updateToast(true, 'error', errorMessage))
       }
     },
-    [configs, createIdentityProvider, updateIdentityProvider, dispatch],
+    [configs, createIdentityProviderAsync, updateIdentityProviderAsync, dispatch, t],
   )
 
   const submitForm = useCallback(
