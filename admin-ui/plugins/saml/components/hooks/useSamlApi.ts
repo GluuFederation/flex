@@ -385,7 +385,7 @@ export function useCreateTrustRelationship() {
         throw error
       }
     },
-    [baseMutation, queryClient, logAudit],
+    [baseMutation.mutateAsync, queryClient, dispatch, logAudit],
   )
 
   const resetSavedForm = useCallback(() => {
@@ -432,7 +432,7 @@ export function useUpdateTrustRelationship() {
         throw error
       }
     },
-    [baseMutation, queryClient, logAudit],
+    [baseMutation.mutateAsync, queryClient, dispatch, logAudit],
   )
 
   const resetSavedForm = useCallback(() => {

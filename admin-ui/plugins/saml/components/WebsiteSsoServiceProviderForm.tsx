@@ -78,16 +78,26 @@ const WebsiteSsoServiceProviderForm = ({
 
   SetTitle(title)
 
-  const createTrustRelationship = useCreateTrustRelationship()
-  const updateTrustRelationship = useUpdateTrustRelationship()
+  const {
+    mutateAsync: createTrustRelationshipAsync,
+    isPending: isCreatePending,
+    savedForm: createSavedForm,
+    resetSavedForm: resetCreateSavedForm,
+  } = useCreateTrustRelationship()
+  const {
+    mutateAsync: updateTrustRelationshipAsync,
+    isPending: isUpdatePending,
+    savedForm: updateSavedForm,
+    resetSavedForm: resetUpdateSavedForm,
+  } = useUpdateTrustRelationship()
 
-  const createResetRef = useRef(createTrustRelationship.resetSavedForm)
-  const updateResetRef = useRef(updateTrustRelationship.resetSavedForm)
-  createResetRef.current = createTrustRelationship.resetSavedForm
-  updateResetRef.current = updateTrustRelationship.resetSavedForm
+  const createResetRef = useRef(resetCreateSavedForm)
+  const updateResetRef = useRef(resetUpdateSavedForm)
+  createResetRef.current = resetCreateSavedForm
+  updateResetRef.current = resetUpdateSavedForm
 
-  const loading = createTrustRelationship.isPending || updateTrustRelationship.isPending
-  const savedForm = createTrustRelationship.savedForm || updateTrustRelationship.savedForm
+  const loading = isCreatePending || isUpdatePending
+  const savedForm = createSavedForm || updateSavedForm
 
   const dispatch = useDispatch()
   const { navigateBack } = useAppNavigation()
@@ -189,12 +199,12 @@ const WebsiteSsoServiceProviderForm = ({
 
       try {
         if (!configs) {
-          await createTrustRelationship.mutateAsync({
+          await createTrustRelationshipAsync({
             data: trustRelationshipFormData,
             userMessage: user_message,
           })
         } else {
-          await updateTrustRelationship.mutateAsync({
+          await updateTrustRelationshipAsync({
             data: trustRelationshipFormData,
             userMessage: user_message,
           })
@@ -203,7 +213,7 @@ const WebsiteSsoServiceProviderForm = ({
         dispatch(updateToast(true, 'error'))
       }
     },
-    [configs, createTrustRelationship, updateTrustRelationship, dispatch],
+    [configs, createTrustRelationshipAsync, updateTrustRelationshipAsync, dispatch],
   )
 
   const submitForm = useCallback(
@@ -324,7 +334,7 @@ const WebsiteSsoServiceProviderForm = ({
                   rsize={8}
                   showError={Boolean(
                     formik.errors.displayName &&
-                    (formik.touched.displayName || formik.submitCount > 0),
+                      (formik.touched.displayName || formik.submitCount > 0),
                   )}
                   errorMessage={formik.errors.displayName}
                   disabled={viewOnly}
@@ -363,7 +373,7 @@ const WebsiteSsoServiceProviderForm = ({
                   rsize={8}
                   showError={Boolean(
                     formik.errors.spLogoutURL &&
-                    (formik.touched.spLogoutURL || formik.submitCount > 0),
+                      (formik.touched.spLogoutURL || formik.submitCount > 0),
                   )}
                   errorMessage={formik.errors.spLogoutURL}
                   disabled={viewOnly}
@@ -468,8 +478,8 @@ const WebsiteSsoServiceProviderForm = ({
                       rsize={8}
                       showError={Boolean(
                         formik.errors.samlMetadata?.singleLogoutServiceUrl &&
-                        (formik.touched.samlMetadata?.singleLogoutServiceUrl ||
-                          formik.submitCount > 0),
+                          (formik.touched.samlMetadata?.singleLogoutServiceUrl ||
+                            formik.submitCount > 0),
                       )}
                       errorMessage={formik.errors.samlMetadata?.singleLogoutServiceUrl}
                       disabled={viewOnly}
@@ -490,7 +500,7 @@ const WebsiteSsoServiceProviderForm = ({
                       rsize={8}
                       showError={Boolean(
                         formik.errors.samlMetadata?.entityId &&
-                        (formik.touched.samlMetadata?.entityId || formik.submitCount > 0),
+                          (formik.touched.samlMetadata?.entityId || formik.submitCount > 0),
                       )}
                       errorMessage={formik.errors.samlMetadata?.entityId}
                       disabled={viewOnly}
@@ -512,7 +522,8 @@ const WebsiteSsoServiceProviderForm = ({
                       rsize={8}
                       showError={Boolean(
                         formik.errors.samlMetadata?.nameIDPolicyFormat &&
-                        (formik.touched.samlMetadata?.nameIDPolicyFormat || formik.submitCount > 0),
+                          (formik.touched.samlMetadata?.nameIDPolicyFormat ||
+                            formik.submitCount > 0),
                       )}
                       errorMessage={formik.errors.samlMetadata?.nameIDPolicyFormat}
                       disabled={viewOnly}
@@ -533,8 +544,8 @@ const WebsiteSsoServiceProviderForm = ({
                       rsize={8}
                       showError={Boolean(
                         formik.errors.samlMetadata?.jansAssertionConsumerServiceGetURL &&
-                        (formik.touched.samlMetadata?.jansAssertionConsumerServiceGetURL ||
-                          formik.submitCount > 0),
+                          (formik.touched.samlMetadata?.jansAssertionConsumerServiceGetURL ||
+                            formik.submitCount > 0),
                       )}
                       errorMessage={formik.errors.samlMetadata?.jansAssertionConsumerServiceGetURL}
                       disabled={viewOnly}
@@ -555,8 +566,8 @@ const WebsiteSsoServiceProviderForm = ({
                       rsize={8}
                       showError={Boolean(
                         formik.errors.samlMetadata?.jansAssertionConsumerServicePostURL &&
-                        (formik.touched.samlMetadata?.jansAssertionConsumerServicePostURL ||
-                          formik.submitCount > 0),
+                          (formik.touched.samlMetadata?.jansAssertionConsumerServicePostURL ||
+                            formik.submitCount > 0),
                       )}
                       errorMessage={formik.errors.samlMetadata?.jansAssertionConsumerServicePostURL}
                       disabled={viewOnly}
