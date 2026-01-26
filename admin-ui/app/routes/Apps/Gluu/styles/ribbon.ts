@@ -13,7 +13,7 @@ export default {
     color: customColors.white,
     borderRadius: '50px 0px 0px 50px',
     textAlign: 'center',
-    boxShadow: `4px 4px 15px rgba(${hexToRgb(customColors.ribbonShadowRgb)}, 0.2)`,
+    boxShadow: `4px 4px 15px rgba(${hexToRgb(customColors.ribbonShadowColor)}, 0.2)`,
   },
   ribbon_left: {
     position: 'absolute',
@@ -26,6 +26,6 @@ export default {
     color: customColors.white,
     borderRadius: '0px 50px 50px 0px',
     textAlign: 'center',
-    boxShadow: `4px 4px 15px rgba(${hexToRgb(customColors.ribbonShadowRgb)}, 0.2)`,
+    boxShadow: `4px 4px 15px rgba(${hexToRgb(customColors.ribbonShadowColor)}, 0.2)`,
   },
 }

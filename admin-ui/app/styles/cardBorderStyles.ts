@@ -15,7 +15,7 @@ export const getCardBorderStyle = (options: CardBorderStyleOptions) => {
     borderRadius = 16,
     borderWidth = '1px',
     gradientPosition = 'top right',
-    ellipseSize = '200% 160%', // Optimized for corner positioning
+    ellipseSize = '200% 160%',
   } = options
 
   const gradientPositionMap: Record<string, string> = {
@@ -45,12 +45,13 @@ export const getCardBorderStyle = (options: CardBorderStyleOptions) => {
         borderRadius: borderRadius,
         padding: borderWidth,
         background: `radial-gradient(ellipse ${ellipseSize} at ${getGradientPosition(gradientPosition)}, 
-          rgba(${hexToRgb(customColors.darkBorderGradientBase)}, 0.4) 0%, 
-          rgba(${hexToRgb(customColors.darkBorderGradientBase)}, 0.45) 12%, 
-          rgba(${hexToRgb(customColors.darkBorderGradientBase)}, 0.75) 25%, 
-          rgba(${hexToRgb(customColors.darkBorderGradientBase)}, 0.8) 45%, 
-          rgba(${hexToRgb(customColors.darkBorderGradientBase)}, 0.8) 65%, 
-          rgba(${hexToRgb(customColors.darkBorderGradientBase)}, 0.8) 100%)`,
+          rgba(${hexToRgb(customColors.darkBorderGradientBase)}, 0.25) 0%, 
+          rgba(${hexToRgb(customColors.darkBorderGradientBase)}, 0.3) 6%, 
+          rgba(${hexToRgb(customColors.darkBorderGradientBase)}, 0.5) 12%, 
+          rgba(${hexToRgb(customColors.darkBorderGradientBase)}, 0.8) 20%, 
+          rgba(${hexToRgb(customColors.darkBorderGradientBase)}, 0.95) 35%, 
+          rgba(${hexToRgb(customColors.darkBorderGradientBase)}, 1.0) 50%, 
+          rgba(${hexToRgb(customColors.darkBorderGradientBase)}, 1.0) 100%)`,
         WebkitMask: `linear-gradient(${customColors.white} 0 0) content-box, linear-gradient(${customColors.white} 0 0)`,
         WebkitMaskComposite: 'xor' as const,
         mask: `linear-gradient(${customColors.white} 0 0) content-box, linear-gradient(${customColors.white} 0 0)`,

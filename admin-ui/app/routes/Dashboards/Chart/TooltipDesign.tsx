@@ -7,6 +7,7 @@ import type { TooltipDesignProps, ChartDataKey } from '../types'
 const TooltipDesign = memo(
   ({
     payload = [],
+    active,
     backgroundColor = customColors.white,
     textColor = customColors.primaryDark,
     isDark = false,
@@ -19,7 +20,7 @@ const TooltipDesign = memo(
       authz_code_idtoken_count: t('tooltips.authz_code_idtoken_count'),
     }
 
-    if (payload.length === 0) return null
+    if (!active || payload.length === 0) return null
 
     const borderColor = isDark
       ? `rgba(${hexToRgb(customColors.white)}, 0.2)`

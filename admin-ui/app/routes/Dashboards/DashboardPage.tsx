@@ -230,8 +230,13 @@ const DashboardPage = () => {
       },
       {
         text: t('dashboard.license_status'),
-        value: license?.licenseActive ? 'active' : 'inactive',
-        isStatus: true,
+        value:
+          license?.licenseActive !== undefined
+            ? license.licenseActive
+              ? 'active'
+              : 'inactive'
+            : 'Unknown',
+        isStatus: license?.licenseActive !== undefined,
       },
     ],
     [t, license],

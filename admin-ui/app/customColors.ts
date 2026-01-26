@@ -40,13 +40,19 @@ export const customColors = {
   chartCyan: '#3cc3df',
   buttonLightBg: '#f4f6f8',
   darkBorderGradientBase: '#00d5e6',
-  ribbonShadowRgb: '#1a237e',
+  ribbonShadowColor: '#1a237e',
 } as const
 
-export const hexToRgb = (hex: string): string => {
+/**
+ * Converts a hex color string to RGB format (e.g., "#ffffff" -> "255, 255, 255").
+ * @param hex - Hex color string (with or without # prefix)
+ * @param fallback - Optional fallback RGB string to return if hex is invalid (default: "0, 0, 0")
+ * @returns RGB string in format "r, g, b" or the fallback if hex is invalid
+ */
+export const hexToRgb = (hex: string, fallback: string = '0, 0, 0'): string => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
   if (!result) {
-    throw new Error(`Invalid hex color: ${hex}`)
+    return fallback
   }
   const r = parseInt(result[1], 16)
   const g = parseInt(result[2], 16)
