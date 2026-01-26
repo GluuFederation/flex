@@ -23,7 +23,7 @@ if [ -z "$INSTALLED_FLEX_NAME" ]; then
 fi
 
 if [ -z "$FLEX_VERSION" ]; then
-    FLEX_VERSION="5.16.0-1"
+    FLEX_VERSION="0.0.0-nightly"
 fi
 
 if [ -z "$DATABASE_VOLUME_NAME" ]; then
