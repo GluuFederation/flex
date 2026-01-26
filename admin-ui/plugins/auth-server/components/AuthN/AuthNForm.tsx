@@ -1,22 +1,23 @@
-import React, { useState, type ReactElement, type FormEvent } from 'react'
+import React, { useState, useCallback, useMemo, type ReactElement, type FormEvent } from 'react'
 import { useFormik, type FormikProps } from 'formik'
-import * as Yup from 'yup'
 import { Container, Col, InputGroup, CustomInput, Form, FormGroup, Input, Row } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import { useTranslation } from 'react-i18next'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
-import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
+import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import customColors from '@/customColors'
 import { useGetAcrs } from 'JansConfigApi'
 import { type AuthNItem } from './atoms'
+import { getAuthNValidationSchema } from './helper/validations'
 
-interface AuthNFormValues {
+export interface AuthNFormValues {
   acr: string
   level: number
-  defaultAuthNMethod: boolean
+  defaultAuthNMethod: boolean | string
   samlACR: string
   description: string
   primaryKey: string
@@ -26,19 +27,26 @@ interface AuthNFormValues {
   maxConnections: string | number
   remotePrimaryKey: string
   localPrimaryKey: string
-  servers: string | string[]
-  baseDNs: string | string[]
+  servers: string[]
+  baseDNs: string[]
   bindPassword: string
   useSSL: boolean
   enabled: boolean
   configId: string
   baseDn: string | undefined
   inum: string | undefined
+  configurationProperties?: Array<{
+    key?: string
+    value?: string
+    value1?: string
+    value2?: string
+  }>
 }
 
 interface AuthNFormProps {
   item: AuthNItem
   handleSubmit: (values: AuthNFormValues) => void
+  isSubmitting?: boolean
 }
 
 interface PropertyConfig {
@@ -46,8 +54,9 @@ interface PropertyConfig {
   value: string
 }
 
-function AuthNForm({ item, handleSubmit }: AuthNFormProps): ReactElement {
+const AuthNForm = ({ item, handleSubmit, isSubmitting = false }: AuthNFormProps): ReactElement => {
   const { t } = useTranslation()
+  const { navigateBack } = useAppNavigation()
   const [modal, setModal] = useState(false)
 
   // Fetch ACR config using Orval hook
@@ -57,48 +66,72 @@ function AuthNForm({ item, handleSubmit }: AuthNFormProps): ReactElement {
     },
   })
 
-  const initialValues: AuthNFormValues = {
-    acr: item?.acrName || '',
-    level: parseInt(String(item.level)) || 0,
-    defaultAuthNMethod: acrs?.defaultAcr === item.acrName,
-    samlACR: item?.samlACR || '',
-    description: item?.description || '',
-    primaryKey: item?.primaryKey || '',
-    passwordAttribute: item?.passwordAttribute || '',
-    hashAlgorithm: item?.hashAlgorithm || '',
-    bindDN: item?.bindDN || '',
-    maxConnections: item?.maxConnections || '',
-    remotePrimaryKey: item?.localPrimaryKey || '',
-    localPrimaryKey: item?.localPrimaryKey || '',
-    servers: item?.servers || '',
-    baseDNs: item?.baseDNs || '',
-    bindPassword: item?.bindPassword || '',
-    useSSL: item?.useSSL || false,
-    enabled: item?.enabled || false,
-    configId: item?.configId || '',
-    baseDn: item?.baseDn,
-    inum: item?.inum,
-  }
+  const initialValues: AuthNFormValues = useMemo(
+    () => ({
+      acr: item?.acrName || '',
+      level: parseInt(String(item.level)) || 0,
+      defaultAuthNMethod: acrs?.defaultAcr === item.acrName,
+      samlACR: item?.samlACR || '',
+      description: item?.description || '',
+      primaryKey: item?.primaryKey || '',
+      passwordAttribute: item?.passwordAttribute || '',
+      hashAlgorithm: item?.hashAlgorithm || '',
+      bindDN: item?.bindDN || '',
+      maxConnections: item?.maxConnections || '',
+      remotePrimaryKey: item?.localPrimaryKey || '',
+      localPrimaryKey: item?.localPrimaryKey || '',
+      servers: Array.isArray(item?.servers) ? item.servers : item?.servers ? [item.servers] : [],
+      baseDNs: Array.isArray(item?.baseDNs) ? item.baseDNs : item?.baseDNs ? [item.baseDNs] : [],
+      bindPassword: item?.bindPassword || '',
+      useSSL: item?.useSSL || false,
+      enabled: item?.enabled || false,
+      configId: item?.configId || '',
+      baseDn: item?.baseDn,
+      inum: item?.inum,
+      configurationProperties: item?.configurationProperties || [],
+    }),
+    [item, acrs?.defaultAcr],
+  )
+
+  const validationSchema = useMemo(() => getAuthNValidationSchema(item), [item])
 
   const formik: FormikProps<AuthNFormValues> = useFormik<AuthNFormValues>({
     initialValues: initialValues,
+    enableReinitialize: true,
+    validationSchema: validationSchema,
+    validateOnChange: true,
+    validateOnBlur: true,
     onSubmit: () => {
       toggle()
     },
-    validationSchema: Yup.object({
-      acr: Yup.string().required('ACR name is required.'),
-      level: Yup.string().required('Level is required.'),
-    }),
   })
 
-  const toggle = (): void => {
-    setModal(!modal)
-  }
+  const toggle = useCallback((): void => {
+    setModal((prev) => !prev)
+  }, [])
 
-  const submitForm = (): void => {
+  const submitForm = useCallback(
+    (_userMessage: string): void => {
+      toggle()
+      handleSubmit(formik.values)
+    },
+    [toggle, handleSubmit, formik.values],
+  )
+
+  const handleApply = useCallback((): void => {
+    if (isSubmitting || !formik.dirty || !formik.isValid) {
+      return
+    }
     toggle()
-    handleSubmit(formik.values)
-  }
+  }, [isSubmitting, formik.dirty, formik.isValid, toggle])
+
+  const handleNavigateBack = useCallback((): void => {
+    navigateBack(ROUTES.AUTH_SERVER_AUTHN)
+  }, [navigateBack])
+
+  const handleCancel = useCallback((): void => {
+    formik.resetForm({ values: initialValues })
+  }, [formik, initialValues])
 
   const getPropertiesConfig = (entry: AuthNItem): PropertyConfig[] => {
     if (entry.configurationProperties && Array.isArray(entry.configurationProperties)) {
@@ -112,7 +145,7 @@ function AuthNForm({ item, handleSubmit }: AuthNFormProps): ReactElement {
   }
 
   return (
-    <Container>
+    <Container fluid className="p-0">
       <Form
         onSubmit={(e: FormEvent<HTMLFormElement>) => {
           e.preventDefault()
@@ -156,7 +189,7 @@ function AuthNForm({ item, handleSubmit }: AuthNFormProps): ReactElement {
 
         <FormGroup row>
           <GluuLabel label="fields.default_authn_method" size={4} />
-          <Col sm={4}>
+          <Col sm={8}>
             <InputGroup>
               <CustomInput
                 type="select"
@@ -164,6 +197,7 @@ function AuthNForm({ item, handleSubmit }: AuthNFormProps): ReactElement {
                 name="defaultAuthNMethod"
                 value={String(formik.values.defaultAuthNMethod)}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 disabled={false}
               >
                 <option value="">{t('actions.choose')}...</option>
@@ -171,6 +205,11 @@ function AuthNForm({ item, handleSubmit }: AuthNFormProps): ReactElement {
                 <option value="false">false</option>
               </CustomInput>
             </InputGroup>
+            {formik.errors.defaultAuthNMethod && formik.touched.defaultAuthNMethod && (
+              <div style={{ color: customColors.accentRed, fontSize: '12px', marginTop: '4px' }}>
+                {formik.errors.defaultAuthNMethod}
+              </div>
+            )}
           </Col>
         </FormGroup>
 
@@ -181,10 +220,16 @@ function AuthNForm({ item, handleSubmit }: AuthNFormProps): ReactElement {
               <Input
                 id="samlACR"
                 name="samlACR"
-                defaultValue={formik.values.samlACR}
+                value={formik.values.samlACR}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 disabled={item.name === 'simple_password_auth'}
               />
+              {formik.errors.samlACR && formik.touched.samlACR && (
+                <div style={{ color: customColors.accentRed, fontSize: '12px', marginTop: '4px' }}>
+                  {formik.errors.samlACR}
+                </div>
+              )}
             </Col>
           </FormGroup>
         )}
@@ -196,10 +241,16 @@ function AuthNForm({ item, handleSubmit }: AuthNFormProps): ReactElement {
               <Input
                 id="description"
                 name="description"
-                defaultValue={formik.values.description}
+                value={formik.values.description}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 disabled={item.name === 'simple_password_auth'}
               />
+              {formik.errors.description && formik.touched.description && (
+                <div style={{ color: customColors.accentRed, fontSize: '12px', marginTop: '4px' }}>
+                  {formik.errors.description}
+                </div>
+              )}
             </Col>
           </FormGroup>
         )}
@@ -253,7 +304,7 @@ function AuthNForm({ item, handleSubmit }: AuthNFormProps): ReactElement {
         {item.name === 'simple_password_auth' && (
           <FormGroup row>
             <GluuLabel label="fields.hash_algorithm" size={4} />
-            <Col sm={4}>
+            <Col sm={8}>
               <InputGroup>
                 <CustomInput
                   type="select"
@@ -279,9 +330,17 @@ function AuthNForm({ item, handleSubmit }: AuthNFormProps): ReactElement {
                 <Input
                   id="bindDN"
                   name="bindDN"
-                  value={item?.bindDN || ''}
+                  value={formik.values.bindDN}
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+                {formik.errors.bindDN && formik.touched.bindDN && (
+                  <div
+                    style={{ color: customColors.accentRed, fontSize: '12px', marginTop: '4px' }}
+                  >
+                    {formik.errors.bindDN}
+                  </div>
+                )}
               </Col>
             </FormGroup>
 
@@ -291,9 +350,18 @@ function AuthNForm({ item, handleSubmit }: AuthNFormProps): ReactElement {
                 <Input
                   id="maxConnections"
                   name="maxConnections"
-                  value={item?.maxConnections || ''}
+                  type="number"
+                  value={formik.values.maxConnections}
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+                {formik.errors.maxConnections && formik.touched.maxConnections && (
+                  <div
+                    style={{ color: customColors.accentRed, fontSize: '12px', marginTop: '4px' }}
+                  >
+                    {formik.errors.maxConnections}
+                  </div>
+                )}
               </Col>
             </FormGroup>
 
@@ -303,8 +371,9 @@ function AuthNForm({ item, handleSubmit }: AuthNFormProps): ReactElement {
                 <Input
                   id="remotePrimaryKey"
                   name="remotePrimaryKey"
-                  value={item?.localPrimaryKey || ''}
+                  value={formik.values.remotePrimaryKey}
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
               </Col>
             </FormGroup>
@@ -315,8 +384,9 @@ function AuthNForm({ item, handleSubmit }: AuthNFormProps): ReactElement {
                 <Input
                   id="localPrimaryKey"
                   name="localPrimaryKey"
-                  value={item?.localPrimaryKey || ''}
+                  value={formik.values.localPrimaryKey}
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
               </Col>
             </FormGroup>
@@ -352,8 +422,10 @@ function AuthNForm({ item, handleSubmit }: AuthNFormProps): ReactElement {
                 <Input
                   id="bindPassword"
                   name="bindPassword"
-                  value={item?.bindPassword || ''}
+                  type="password"
+                  value={formik.values.bindPassword}
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
               </Col>
             </FormGroup>
@@ -366,8 +438,9 @@ function AuthNForm({ item, handleSubmit }: AuthNFormProps): ReactElement {
                     placeholder={t('placeholders.use_ssl')}
                     id="useSSL"
                     type="checkbox"
-                    defaultChecked={item.useSSL}
+                    checked={formik.values.useSSL}
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                   />
                 </InputGroup>
               </Col>
@@ -381,15 +454,27 @@ function AuthNForm({ item, handleSubmit }: AuthNFormProps): ReactElement {
                     placeholder={t('placeholders.enabled')}
                     id="enabled"
                     type="checkbox"
-                    defaultChecked={item.enabled}
+                    checked={formik.values.enabled}
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                   />
                 </InputGroup>
               </Col>
             </FormGroup>
           </>
         )}
-        <GluuCommitFooter saveHandler={toggle} hideButtons={{ save: true }} type="submit" />
+        <GluuFormFooter
+          showBack={true}
+          onBack={handleNavigateBack}
+          showCancel={true}
+          onCancel={handleCancel}
+          disableCancel={isSubmitting || !formik.dirty}
+          showApply={true}
+          onApply={handleApply}
+          disableApply={isSubmitting || !formik.dirty || !formik.isValid}
+          applyButtonType="button"
+          isLoading={isSubmitting}
+        />
         <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} formik={formik} />
       </Form>
     </Container>

@@ -1,5 +1,5 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
+import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
 import { SESSION } from '../audit/Resources'
 import { FETCH, DELETION } from '../../../../app/audit/UserActionType'
@@ -34,7 +34,7 @@ export function* getSessions({ payload }) {
   } catch (e) {
     console.error('SessionSaga: Error fetching sessions:', e)
     yield put(handleUpdateSessionsResponse({ data: [] }))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       yield* redirectToLogout()
       return
     }
@@ -53,7 +53,7 @@ export function* searchSessions({ payload }) {
     return data
   } catch (e) {
     yield put(handleUpdateSessionsResponse({ data: null }))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       yield* redirectToLogout()
       return
     }
@@ -72,7 +72,7 @@ export function* revokeSessionByUserDn({ payload }) {
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(handleRevokeSession({ data: null }))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       yield* redirectToLogout()
       return
     }
@@ -92,7 +92,7 @@ export function* deleteSessionById({ payload }) {
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(handleDeleteSession({ data: null }))
-    if (isFourZeroOneError(e)) {
+    if (isFourZeroThreeError(e)) {
       yield* redirectToLogout()
       return
     }

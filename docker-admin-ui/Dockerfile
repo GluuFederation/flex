@@ -22,7 +22,7 @@ EXPOSE 8080
 
 RUN mkdir -p /app/static/rdbm /app/schema /app/templates/admin-ui
 
-ENV JANS_SOURCE_VERSION=4317fdfcd2dc458415f173644cdae97120d8bc7c
+ENV JANS_SOURCE_VERSION=051440c1c1a9345480c2925ae35a60b9131c27e6
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -44,7 +44,7 @@ RUN git clone --depth ${GIT_CLONE_DEPTH} --filter blob:none --no-checkout https:
 
 WORKDIR /tmp/flex
 
-ENV FLEX_SOURCE_VERSION=b156764d5e06d866ca31ced98d9341815e57dc44
+ENV FLEX_SOURCE_VERSION=377359e8ce6ea5b650c7eb8e36a6faf739b2f282
 ARG FLEX_SETUP_DIR=flex-linux-setup/flex_linux_setup
 
 RUN git clone --depth ${GIT_CLONE_DEPTH} --filter blob:none --no-checkout https://github.com/GluuFederation/flex . \
@@ -52,7 +52,8 @@ RUN git clone --depth ${GIT_CLONE_DEPTH} --filter blob:none --no-checkout https:
      && git checkout ${FLEX_SOURCE_VERSION} \
      && git sparse-checkout add admin-ui \
      && git sparse-checkout add ${FLEX_SETUP_DIR}/templates \
-     && cp ${FLEX_SETUP_DIR}/templates/*.ldif /app/templates/admin-ui
+     && cp ${FLEX_SETUP_DIR}/templates/*.ldif /app/templates/admin-ui \
+     && cp ${FLEX_SETUP_DIR}/flex_schema.json /app/schema/
 
 WORKDIR /
 
@@ -161,7 +162,7 @@ ENV CN_WAIT_MAX_TIME=300 \
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/admin-ui" \
     org.opencontainers.image.authors="Gluu Inc. <team@gluu.org>" \
     org.opencontainers.image.vendor="Gluu Federation" \
-    org.opencontainers.image.version="0.0.0-nightly" \
+    org.opencontainers.image.version="5.16.0-1" \
     org.opencontainers.image.title="Gluu Flex Admin UI" \
     org.opencontainers.image.description=""
 

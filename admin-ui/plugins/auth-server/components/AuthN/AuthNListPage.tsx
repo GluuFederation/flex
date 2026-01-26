@@ -21,8 +21,6 @@ import { BUILT_IN_ACRS } from './constants'
 import { useGetAcrs, useGetConfigDatabaseLdap, type GluuLdapConfiguration } from 'JansConfigApi'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 
-const PAGE_SIZE = 10
-
 interface AuthNListPageProps {
   isBuiltIn?: boolean
 }
@@ -32,18 +30,22 @@ interface ListState {
   scripts: AuthNItem[]
 }
 
-function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement {
+const PAGE_SIZE = 10
+
+const authNResourceId = ADMIN_UI_RESOURCES.Authentication
+
+const AuthNListPage = ({ isBuiltIn = false }: AuthNListPageProps): ReactElement => {
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
   const { t } = useTranslation()
   const setCurrentItem = useSetAtom(currentAuthNItemAtom)
-  const [myActions, setMyActions] = useState<
-    Array<Action<AuthNItem> | ((rowData: AuthNItem) => Action<AuthNItem>)>
-  >([])
   const { navigateToRoute } = useAppNavigation()
   const { state: themeState } = useTheme()
   const selectedTheme = themeState.theme || DEFAULT_THEME
   const themeColors = getThemeColor(selectedTheme)
-  const bgThemeColor = { background: themeColors.background }
+  const bgThemeColor = useMemo(
+    () => ({ background: themeColors.background }),
+    [themeColors.background],
+  )
 
   const [list, setList] = useState<ListState>({
     ldap: [],
@@ -54,21 +56,18 @@ function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
     query: { staleTime: 30000 },
   })
 
-  // Fetch ACR config using Orval hook
   const { data: acrs, isLoading: acrsLoading } = useGetAcrs({
     query: {
       staleTime: 30000,
     },
   })
 
-  // Use React Query hook for custom scripts
   const { data: scriptsResponse, isLoading: scriptsLoading } =
     useCustomScriptsByType(DEFAULT_SCRIPT_TYPE)
   const scripts = scriptsResponse?.entries || []
 
   SetTitle(t('titles.authentication'))
 
-  const authNResourceId = ADMIN_UI_RESOURCES.Authentication
   const authNScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[authNResourceId] || [], [authNResourceId])
 
   const canReadAuthN = useMemo(
@@ -83,7 +82,9 @@ function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
   const handleGoToAuthNEditPage = useCallback(
     (row: AuthNItem) => {
       setCurrentItem(row)
-      return navigateToRoute(ROUTES.AUTH_SERVER_AUTHN_EDIT(row.inum || ''))
+
+      const id = row.inum || row.acrName || row.name || 'built-in'
+      return navigateToRoute(ROUTES.AUTH_SERVER_AUTHN_EDIT(id))
     },
     [setCurrentItem, navigateToRoute],
   )
@@ -92,19 +93,20 @@ function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
     authorizeHelper(authNScopes)
   }, [authorizeHelper, authNScopes])
 
-  // Actions as state that will rebuild when permissions change
-  useEffect(() => {
-    const newActions: Array<Action<AuthNItem> | ((rowData: AuthNItem) => Action<AuthNItem>)> = []
+  const myActions = useMemo<
+    Array<Action<AuthNItem> | ((rowData: AuthNItem) => Action<AuthNItem>)>
+  >(() => {
+    const actions: Array<Action<AuthNItem> | ((rowData: AuthNItem) => Action<AuthNItem>)> = []
 
     if (canWriteAuthN) {
-      newActions.push((rowData: AuthNItem) => ({
+      actions.push((rowData: AuthNItem) => ({
         icon: 'edit',
         iconProps: {
-          id: 'editAutN' + rowData.inum,
+          id: 'editAutN' + (rowData.inum || rowData.acrName),
           style: { color: customColors.darkGray },
         },
         tooltip: `${t('messages.edit_authn')}`,
-        onClick: (_event, rowDataClicked) => {
+        onClick: (_event: React.MouseEvent, rowDataClicked: AuthNItem | AuthNItem[]) => {
           if (!Array.isArray(rowDataClicked)) {
             handleGoToAuthNEditPage(rowDataClicked)
           }
@@ -112,7 +114,7 @@ function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
       }))
     }
 
-    setMyActions(newActions)
+    return actions
   }, [canWriteAuthN, t, handleGoToAuthNEditPage])
 
   const mapLdapToAuthNItem = useCallback(
@@ -135,51 +137,53 @@ function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
   )
 
   useEffect(() => {
-    setList((prevList) => ({ ...prevList, ldap: [] }))
-
-    if (ldapConfigurations.length > 0 && !ldapLoading) {
-      const enabledLdap = ldapConfigurations.filter((item) => item.enabled === true)
-      if (enabledLdap.length > 0) {
-        const updateLDAPItems = enabledLdap.map(mapLdapToAuthNItem)
-        setList((prevList) => ({ ...prevList, ldap: updateLDAPItems }))
-      }
+    if (ldapLoading || ldapConfigurations.length === 0) {
+      setList((prevList) => ({ ...prevList, ldap: [] }))
+      return
     }
+
+    const enabledLdap = ldapConfigurations.filter((item) => item.enabled === true)
+    const updateLDAPItems = enabledLdap.map(mapLdapToAuthNItem)
+    setList((prevList) => ({ ...prevList, ldap: updateLDAPItems }))
   }, [ldapConfigurations, ldapLoading, mapLdapToAuthNItem])
 
   useEffect(() => {
-    setList((prevList) => ({ ...prevList, scripts: [] }))
-    if (scripts.length > 0 && !scriptsLoading) {
-      const getEnabledscripts = scripts.filter((item: AuthNItem) => item.enabled === true)
-      if (getEnabledscripts?.length > 0) {
-        const updateScriptsItems = getEnabledscripts.map((item: AuthNItem) => ({
-          ...item,
-          name: 'myAuthnScript',
-          acrName: item.name,
-        }))
-        setList((prevList) => ({ ...prevList, scripts: updateScriptsItems }))
-      }
+    if (scriptsLoading || scripts.length === 0) {
+      setList((prevList) => ({ ...prevList, scripts: [] }))
+      return
     }
+
+    const getEnabledscripts = scripts.filter((item: AuthNItem) => item.enabled === true)
+    const updateScriptsItems = getEnabledscripts.map((item: AuthNItem) => ({
+      ...item,
+      name: 'myAuthnScript',
+      acrName: item.name,
+    }))
+    setList((prevList) => ({ ...prevList, scripts: updateScriptsItems }))
   }, [scripts, scriptsLoading])
 
-  const columns: Column<AuthNItem>[] = [
-    { title: `${t('fields.acr')}`, field: 'acrName' },
-    { title: `${t('fields.saml_acr')}`, field: 'samlACR' },
-    { title: `${t('fields.level')}`, field: 'level' },
-    {
-      title: `${t('options.default')}`,
-      field: '',
-      render: (rowData: AuthNItem) => {
-        return rowData.acrName === acrs?.defaultAcr ? (
-          <i className="fa fa-check" style={{ color: customColors.logo, fontSize: '24px' }}></i>
-        ) : (
-          <i
-            className="fa fa-close"
-            style={{ color: customColors.accentRed, fontSize: '24px' }}
-          ></i>
-        )
+  const columns: Column<AuthNItem>[] = useMemo(
+    () => [
+      { title: `${t('fields.acr')}`, field: 'acrName' },
+      { title: `${t('fields.saml_acr')}`, field: 'samlACR' },
+      { title: `${t('fields.level')}`, field: 'level' },
+      {
+        title: `${t('options.default')}`,
+        field: '',
+        render: (rowData: AuthNItem) => {
+          return rowData.acrName === acrs?.defaultAcr ? (
+            <i className="fa fa-check" style={{ color: customColors.logo, fontSize: '24px' }}></i>
+          ) : (
+            <i
+              className="fa fa-close"
+              style={{ color: customColors.accentRed, fontSize: '24px' }}
+            ></i>
+          )
+        },
       },
-    },
-  ]
+    ],
+    [t, acrs?.defaultAcr],
+  )
 
   const tableData = useMemo(() => {
     if (ldapLoading || scriptsLoading || acrsLoading) {
@@ -193,33 +197,46 @@ function AuthNListPage({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
     )
   }, [ldapLoading, scriptsLoading, acrsLoading, isBuiltIn, list.ldap, list.scripts])
 
+  const tableComponents = useMemo(
+    () => ({
+      Container: (props: React.ComponentProps<typeof Paper>) => <Paper {...props} elevation={0} />,
+    }),
+    [],
+  )
+
+  const detailPanel = useCallback(
+    (rowData: { rowData: AuthNItem }) => <AuthNDetailPage row={rowData.rowData} />,
+    [],
+  )
+
+  const tableOptions = useMemo(
+    () => ({
+      columnsButton: true,
+      search: false,
+      idSynonym: isBuiltIn ? 'acrName' : 'inum',
+      selection: false,
+      pageSize: PAGE_SIZE,
+      headerStyle: {
+        ...applicationStyle.tableHeaderStyle,
+        ...bgThemeColor,
+      } as React.CSSProperties,
+      actionsColumnIndex: -1,
+    }),
+    [isBuiltIn, bgThemeColor],
+  )
+
   return (
     <GluuViewWrapper canShow={canReadAuthN}>
       <MaterialTable
         key={PAGE_SIZE}
-        components={{
-          Container: (props) => <Paper {...props} elevation={0} />,
-        }}
+        components={tableComponents}
         columns={columns}
         data={tableData}
         isLoading={ldapLoading || scriptsLoading || acrsLoading}
         title=""
         actions={myActions}
-        options={{
-          columnsButton: true,
-          search: false,
-          idSynonym: 'inum',
-          selection: false,
-          pageSize: PAGE_SIZE,
-          headerStyle: {
-            ...applicationStyle.tableHeaderStyle,
-            ...bgThemeColor,
-          } as React.CSSProperties,
-          actionsColumnIndex: -1,
-        }}
-        detailPanel={(rowData) => {
-          return <AuthNDetailPage row={rowData.rowData} />
-        }}
+        options={tableOptions}
+        detailPanel={detailPanel}
       />
     </GluuViewWrapper>
   )

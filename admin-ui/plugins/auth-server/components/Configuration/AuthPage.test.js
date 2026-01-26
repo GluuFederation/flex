@@ -1,9 +1,7 @@
 import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
-import ConfigPage from './ConfigPage'
+import AuthPage from './AuthPage'
 import { Provider } from 'react-redux'
-import i18n from '../../../../app/i18n'
-import { I18nextProvider } from 'react-i18next'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 
@@ -161,11 +159,11 @@ const Wrapper = ({ children }) => (
   </AppTestWrapper>
 )
 
-it('Should render json properties page properly', () => {
-  render(<ConfigPage configuration={config} permissions={permissions} />, {
+it('Should render json properties page properly', async () => {
+  render(<AuthPage />, {
     wrapper: Wrapper,
   })
-  waitFor(() => expect(screen.getByText(config.issuer)).toBeInTheDocument())
+  await waitFor(() => expect(screen.getByText(config.issuer)).toBeInTheDocument())
   expect(screen.getByTestId('issuer')).toHaveValue(config.issuer)
   expect(screen.getByTestId('baseEndpoint')).toHaveValue(config.baseEndpoint)
   expect(screen.getByTestId('authorizationEndpoint')).toHaveValue(config.authorizationEndpoint)

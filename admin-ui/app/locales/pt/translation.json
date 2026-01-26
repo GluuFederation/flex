@@ -625,6 +625,9 @@
     "userName": "Nome do usuário",
     "nickName": "Apelido",
     "modality": "modalidade",
+    "givenName": "Nome Próprio",
+    "sn": "Sobrenome",
+    "mail": "E-mail",
     "dateAdded": "data adicionada",
     "resources": "Recursos",
     "resourceId": "ID do recurso",
@@ -818,6 +821,7 @@
     "add_ssa": "Adicionar SSA",
     "copied": "Copiado",
     "edit_acr": "Editar ACR",
+    "built_in_acr_cannot_be_edited": "O ACR integrado não pode ser editado devido à ausência do identificador (inum)",
     "no_data_found": "Nenhum dado encontrado",
     "no_data_to_export": "Nenhum dado disponível para exportar",
     "no_sessions_found": "Nenhuma sessão encontrada",
@@ -856,7 +860,18 @@
     "attribute_update_failed": "Erro ao atualizar atributo",
     "attribute_delete_failed": "Erro ao excluir atributo",
     "attribute_load_failed": "Erro ao carregar atributo",
-    "attribute_not_found": "Atributo não encontrado"
+    "cannot_contain_spaces": "{{field}} não pode conter espaços",
+    "cannot_be_empty": "{{field}} não pode estar vazio",
+    "must_be_valid_url": "{{field}} deve ser uma URL válida"
+  },
+  "validation_messages": {
+    "invalid_url_format": "Formato de URL inválido",
+    "must_be_non_negative": "Deve ser não-negativo",
+    "required_field": "Este campo é obrigatório",
+    "invalid_number": "Deve ser um número válido",
+    "invalid_email": "Deve ser um endereço de e-mail válido",
+    "invalid_json": "Deve ser um JSON válido",
+    "invalid_pattern": "Formato inválido"
   },
   "tooltips": {
     "add_attribute": "Adicionar atributo",

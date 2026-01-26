@@ -544,6 +544,8 @@
     "modality": "Modalidad",
     "dateAdded": "Fecha de Alta",
     "givenName": "Nombre",
+    "sn": "Apellido",
+    "mail": "Correo",
     "resources": "Recursos",
     "resourceId": "ID de Recurso",
     "scopeSelection": "Selección de Ámbito",
@@ -833,6 +835,7 @@
     "edit_script": "Editar Script",
     "edit_authn": "Editar AuthN",
     "edit_acr": "Editar ACR",
+    "built_in_acr_cannot_be_edited": "El ACR integrado no se puede editar debido a la falta del identificador (inum)",
     "ldap_connection_error": "¡Fallo en la conexión LDAP!",
     "ldap_connection_success": "¡Conexión LDAP exitosa!",
     "not_deletable_client": "Este Cliente no se puede eliminar",
@@ -921,7 +924,18 @@
     "attribute_update_failed": "Error al actualizar el atributo",
     "attribute_delete_failed": "Error al eliminar el atributo",
     "attribute_load_failed": "Error al cargar el atributo",
-    "attribute_not_found": "Atributo no encontrado"
+    "cannot_contain_spaces": "{{field}} no puede contener espacios",
+    "cannot_be_empty": "{{field}} no puede estar vacío",
+    "must_be_valid_url": "{{field}} debe ser una URL válida"
+  },
+  "validation_messages": {
+    "invalid_url_format": "Formato de URL inválido",
+    "must_be_non_negative": "Debe ser no negativo",
+    "required_field": "Este campo es obligatorio",
+    "invalid_number": "Debe ser un número válido",
+    "invalid_email": "Debe ser una dirección de correo válida",
+    "invalid_json": "Debe ser JSON válido",
+    "invalid_pattern": "Formato inválido"
   },
   "tooltips": {
     "add_attribute": "Añadir atributo",

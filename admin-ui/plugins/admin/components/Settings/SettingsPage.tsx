@@ -78,10 +78,8 @@ const SettingsPage: React.FC = () => {
 
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
 
-  const authState = useSelector((state: RootState) => ({
-    userinfo: state.authReducer?.userinfo,
-    clientId: state.authReducer?.config?.clientId,
-  }))
+  const userinfo = useSelector((state: RootState) => state.authReducer?.userinfo)
+  const clientId = useSelector((state: RootState) => state.authReducer?.config?.clientId)
 
   const {
     data: config,
@@ -191,11 +189,11 @@ const SettingsPage: React.FC = () => {
         dispatch(getOAuth2ConfigResponse({ config: updatedConfig }))
 
         await logAudit({
-          userinfo: authState.userinfo ?? undefined,
+          userinfo: userinfo ?? undefined,
           action: UPDATE,
           resource: ADMIN_UI_SETTINGS,
           message: 'Application settings updated',
-          client_id: authState.clientId,
+          client_id: clientId,
           payload: {
             sessionTimeoutInMins: values.sessionTimeoutInMins,
             acrValues: values.acrValues,

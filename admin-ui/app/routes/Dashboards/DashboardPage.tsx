@@ -200,6 +200,8 @@ const DashboardPage = () => {
     return baseData
   }, [t, totalClientsEntries, mauCount, tokenCount, lockData, lockStats])
 
+  console.log('license', license)
+
   const userInfo = useMemo(
     () => [
       {
@@ -220,7 +222,7 @@ const DashboardPage = () => {
       {
         text: t('dashboard.customer_name'),
         value:
-          String(license?.customerFirstName || '') + ' ' + String(license?.customerLastName || ''),
+          `${license?.customerFirstName || ''} ${license?.customerLastName || ''}`.trim() || 'N/A',
         isStatus: false,
       },
       {

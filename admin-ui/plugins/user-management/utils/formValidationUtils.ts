@@ -10,7 +10,7 @@ export const shouldDisableApplyButton = (
   const isFormChanged = isDirty || hasModifiedFields
 
   if (isSubmitting || !isFormChanged) return true
-  if (!hasModifiedFields && !isValid) return true
+  if (!isValid) return true
   return false
 }
 

@@ -579,7 +579,6 @@
     "ssl_trust_store_format": "Format de magasin de confiance SSL",
     "ssl_trust_store_pin": "NIP du magasin de confiance SSL",
     "state": "État",
-    "status": "StatutStatut",
     "subject_type": "Type de sujet",
     "test_config": "Tester la configuration",
     "test_connection": "Tester la connexion",
@@ -615,6 +614,10 @@
     "nickName": "Surnom",
     "modality": "Modalité",
     "dateAdded": "date ajoutée",
+    "givenName": "Prénom",
+    "sn": "Nom de famille",
+    "mail": "Courriel",
+    "status": "Statut",
     "resources": "Ressources",
     "resourceId": "Identifiant de la ressource",
     "iconUrl": "URL de l'icône",
@@ -823,6 +826,7 @@
     "add_ssa": "Ajouter SSA",
     "copied": "Copié",
     "edit_acr": "Modifier ACR",
+    "built_in_acr_cannot_be_edited": "L'ACR intégré ne peut pas être modifié en raison de l'absence d'identifiant (inum)",
     "no_data_found": "Aucune donnée trouvée",
     "no_data_to_export": "Aucune donnée disponible à exporter",
     "no_sessions_found": "Aucune session trouvée",
@@ -861,7 +865,18 @@
     "attribute_update_failed": "Erreur lors de la mise à jour de l'attribut",
     "attribute_delete_failed": "Erreur lors de la suppression de l'attribut",
     "attribute_load_failed": "Erreur lors du chargement de l'attribut",
-    "attribute_not_found": "Attribut introuvable"
+    "cannot_contain_spaces": "{{field}} ne peut pas contenir d'espaces",
+    "cannot_be_empty": "{{field}} ne peut pas être vide",
+    "must_be_valid_url": "{{field}} doit être une URL valide"
+  },
+  "validation_messages": {
+    "invalid_url_format": "Format d'URL invalide",
+    "must_be_non_negative": "Doit être non-négatif",
+    "required_field": "Ce champ est obligatoire",
+    "invalid_number": "Doit être un nombre valide",
+    "invalid_email": "Doit être une adresse e-mail valide",
+    "invalid_json": "Doit être du JSON valide",
+    "invalid_pattern": "Format invalide"
   },
   "tooltips": {
     "add_attribute": "Ajouter un attribut",

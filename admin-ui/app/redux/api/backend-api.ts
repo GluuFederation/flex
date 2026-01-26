@@ -63,8 +63,9 @@ export const postUserAction = (userAction: any) => {
       { withCredentials: true },
     )
     .then((response) => response)
-    .catch((e) => {
-      return -1
+    .catch((error) => {
+      console.error('Problems posting user action audit log.', error)
+      throw error
     })
 }
 
@@ -84,7 +85,7 @@ export const fetchApiAccessToken = (jwt: any, permissionTag: any) => {
 
 export const fetchApiTokenWithDefaultScopes = () => {
   return axios
-    .post('/app/admin-ui/oauth2/api-protection-token', {})
+    .post('/app/admin-ui/oauth2/api-protection-token', {}, { withCredentials: false })
     .then((response) => response.data)
     .catch((error) => {
       console.error('Problems getting API access token in order to process api calls.', error)
@@ -118,9 +119,12 @@ export const createAdminUiSession = (ujwt: string, apiProtectionToken: string) =
 }
 
 // Delete Admin UI session (logout)
-export const deleteAdminUiSession = () => {
+export const deleteAdminUiSession = (token?: string) => {
+  const config = token
+    ? { headers: { Authorization: `Bearer ${token}` } }
+    : { withCredentials: true }
   return axios
-    .delete('/app/admin-ui/oauth2/session', { withCredentials: true })
+    .delete('/app/admin-ui/oauth2/session', config)
     .then((response) => response.data)
     .catch((error) => {
       console.error('Problems deleting Admin UI session.', error)
