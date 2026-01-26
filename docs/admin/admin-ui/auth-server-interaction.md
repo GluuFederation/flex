@@ -103,7 +103,7 @@ To access Config API endpoints, Admin UI Backend generates client_credential tok
 6. Admin UI Backend will verify the cookie's Session ID presence in `adminUISession` table. Also fetch UJWT of the record from table.
 7. If the session cookie is valid then Admin UI Backend will generate client_credential token (AT2).
 8. To generate an AT2, the backend requests the Token Server. **The Token Server and Authorization Server can be the same or different.**
-9. The Token Server employs an update-token script that validates the UJWT and refers to the role-scope mapping in the persistence.
+9. The Token Server employs an `update-token script` that validates the UJWT and refers to the role-scope mapping in the persistence.
 10. The update-token script validates the UJWT and includes the appropriate scopes in AT2 based on the user's role.
 11. The AT2 will be used to call Config API endpoint. 
 12. The response obtained from Config API will be sent back to the Admin UI Frontend (Browser).
