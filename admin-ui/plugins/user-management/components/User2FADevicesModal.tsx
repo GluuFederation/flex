@@ -258,6 +258,7 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
           headerStyle: {
             ...applicationStyle.tableHeaderStyle,
             ...bgThemeColor,
+            color: themeColors.fontColor,
           } as React.CSSProperties,
           actionsColumnIndex: -1,
         }}

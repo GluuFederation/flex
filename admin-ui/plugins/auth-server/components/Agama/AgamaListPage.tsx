@@ -870,6 +870,7 @@ function AgamaListPage(): React.ReactElement {
             headerStyle: {
               ...(applicationStyle.tableHeaderStyle as React.CSSProperties),
               ...bgThemeColor,
+              color: themeColors.fontColor,
             } as React.CSSProperties,
             actionsColumnIndex: -1,
           }}

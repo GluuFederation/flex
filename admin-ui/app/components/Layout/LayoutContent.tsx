@@ -10,16 +10,6 @@ interface LayoutContentProps {
   children: ReactNode
 }
 
-const SELECTORS = [
-  'h1, h2, h3, h4, h5, h6',
-  '.page-title, #page-title',
-  '.card-header, .custom-card-header:not(.custom-card-header--background), .card-header h1, .card-header h2, .card-header h3, .card-header h4, .card-header h5, .card-header h6',
-  'thead th, .table thead th, table thead th',
-  '.form-section-title, .section-title, .form-title',
-] as const
-
-const STYLE_ID = 'layout-content-theme-colors'
-
 const LayoutContent = ({ children }: LayoutContentProps) => {
   const theme = useContext(ThemeContext)
   if (!theme) {
@@ -79,13 +69,6 @@ const LayoutContent = ({ children }: LayoutContentProps) => {
   )
 
   useEffect(() => {
-    let styleElement = document.getElementById(STYLE_ID) as HTMLStyleElement | null
-    if (!styleElement) {
-      styleElement = document.createElement('style')
-      styleElement.id = STYLE_ID
-      document.head.appendChild(styleElement)
-    }
-
     if (!layoutElementRef.current) {
       layoutElementRef.current = document.querySelector('.layout')
     }
@@ -101,10 +84,6 @@ const LayoutContent = ({ children }: LayoutContentProps) => {
     }
     setCSSVariables(document.documentElement)
 
-    styleElement.textContent = SELECTORS.map(
-      (selector) => `.layout__content ${selector} { color: ${themeColors.fontColor} !important; }`,
-    ).join('\n')
-
     const { body } = document
     const { documentElement } = document
     const previousBodyBg = body?.style.backgroundColor || null
@@ -118,11 +97,6 @@ const LayoutContent = ({ children }: LayoutContentProps) => {
     }
 
     return () => {
-      const styleToRemove = document.getElementById(STYLE_ID)
-      if (styleToRemove) {
-        styleToRemove.remove()
-      }
-
       if (layoutElementRef.current instanceof HTMLElement) {
         Object.keys(cssVariables).forEach((property) => {
           layoutElementRef.current?.style.removeProperty(property)
@@ -142,7 +116,7 @@ const LayoutContent = ({ children }: LayoutContentProps) => {
 
       layoutElementRef.current = null
     }
-  }, [cssVariables, themeColors.fontColor, themeColors.background])
+  }, [cssVariables, themeColors.background])
 
   return (
     <div
@@ -150,7 +124,6 @@ const LayoutContent = ({ children }: LayoutContentProps) => {
       style={
         {
           background: themeColors.background,
-          color: themeColors.fontColor,
         } as React.CSSProperties
       }
     >

@@ -31,6 +31,7 @@ import DateRange from './DateRange'
 import { useDashboardLicense, useDashboardClients, useDashboardLockStats } from './hooks'
 import styles from './styles'
 import { StatusIndicator, SummaryCard, UserInfoItem } from './components'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 
 interface RootState {
   authReducer: AuthState
@@ -410,7 +411,9 @@ const DashboardPage = () => {
           <Grid item lg={7} md={12} xs={12}>
             <Paper elevation={0} style={{ background: 'transparent' }}>
               <div className={classes.whiteBg}>
-                <h3 className={classes.chartTitle}>{t('dashboard.access_tokens_graph')}</h3>
+                <GluuText variant="h3" className={classes.chartTitle}>
+                  {t('dashboard.access_tokens_graph')}
+                </GluuText>
                 <div className={classes.chartDatePickers}>
                   <DateRange
                     startDate={startDate}

@@ -318,14 +318,22 @@ const JansAssetListPage: React.FC = () => {
                 searchFieldAlignment: 'left',
                 selection: false,
                 pageSize: limit,
-                rowStyle: (rowData: Document) => ({
-                  backgroundColor: rowData.enabled
+                rowStyle: (rowData: Document) => {
+                  const isEnabled = Boolean(rowData.enabled)
+                  const backgroundColor = isEnabled
                     ? themeColors.lightBackground
-                    : customColors.white,
-                }),
+                    : customColors.white
+                  const color = isEnabled ? themeColors.fontColor : customColors.primaryDark
+
+                  return {
+                    backgroundColor,
+                    color,
+                  }
+                },
                 headerStyle: {
                   ...applicationStyle.tableHeaderStyle,
                   ...bgThemeColor,
+                  color: themeColors.fontColor,
                 } as React.CSSProperties,
                 actionsColumnIndex: -1,
               }}

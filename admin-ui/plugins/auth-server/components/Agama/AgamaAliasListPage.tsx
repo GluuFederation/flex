@@ -352,6 +352,7 @@ function AliasesListPage(): React.ReactElement {
             headerStyle: {
               ...(applicationStyle.tableHeaderStyle as React.CSSProperties),
               ...bgThemeColor,
+              color: getThemeColor(selectedTheme).fontColor,
             } as React.CSSProperties,
             actionsColumnIndex: -1,
           }}

@@ -2,11 +2,10 @@ import customColors from '@/customColors'
 
 export default {
   tableHeaderStyle: {
-    backgroundColor: customColors.darkGray,
-    color: customColors.white,
     padding: '12px',
     textTransform: 'uppercase',
     fontSize: '16px',
+    fontWeight: 400,
   },
   homeStatTooltip: {
     backgroundColor: customColors.lightBlue,

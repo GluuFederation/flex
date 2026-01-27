@@ -38,7 +38,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
-import { DEFAULT_THEME } from '@/context/theme/constants'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 
 function ClientListPage() {
   const { t } = useTranslation()
@@ -73,6 +73,7 @@ function ClientListPage() {
   const clientResourceId = useMemo(() => ADMIN_UI_RESOURCES.Clients, [])
   const selectedTheme = useMemo(() => theme?.state?.theme || DEFAULT_THEME, [theme?.state?.theme])
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+  const isDarkTheme = useMemo(() => selectedTheme === THEME_DARK, [selectedTheme])
   const bgThemeColor = useMemo(
     () => ({ background: themeColors.background }),
     [themeColors.background],
@@ -325,15 +326,19 @@ function ClientListPage() {
       {
         title: `${t('fields.grant_types')}`,
         field: 'grantTypes',
-        render: (rowData) => {
-          return rowData?.grantTypes?.map((data) => {
-            return (
-              <div key={data} style={{ maxWidth: 140, overflow: 'auto' }}>
-                <Badge color={`primary-${selectedTheme}`}>{data}</Badge>
-              </div>
-            )
-          })
-        },
+        render: (rowData) =>
+          rowData?.grantTypes?.map((data) => (
+            <div key={data} style={{ maxWidth: 140, overflow: 'auto' }}>
+              <Badge
+                color={`primary-${selectedTheme}`}
+                style={{
+                  color: customColors.primaryDark,
+                }}
+              >
+                {data}
+              </Badge>
+            </div>
+          )),
       },
       {
         title: `${t('fields.scopes')}`,
@@ -351,7 +356,12 @@ function ClientListPage() {
         field: 'trustedClient',
         type: 'boolean',
         render: (rowData) => (
-          <Badge color={getTrustedTheme(rowData.trustedClient)}>
+          <Badge
+            color={getTrustedTheme(rowData.trustedClient)}
+            style={{
+              color: customColors.primaryDark,
+            }}
+          >
             {rowData.trustedClient ? t('options.yes') : t('options.no')}
           </Badge>
         ),
@@ -364,7 +374,16 @@ function ClientListPage() {
         searchable: true,
       },
     ],
-    [t, selectedTheme, getTrustedTheme, handleSetScopeData, shouldHideOrgColumn, clients],
+    [
+      t,
+      selectedTheme,
+      getTrustedTheme,
+      handleSetScopeData,
+      shouldHideOrgColumn,
+      clients,
+      isDarkTheme,
+      themeColors.fontColor,
+    ],
   )
 
   const tableOptions = useMemo(
@@ -377,10 +396,11 @@ function ClientListPage() {
       headerStyle: {
         ...applicationStyle.tableHeaderStyle,
         ...bgThemeColor,
+        color: themeColors.fontColor,
       },
       actionsColumnIndex: -1,
     }),
-    [limit, bgThemeColor],
+    [limit, bgThemeColor, themeColors.fontColor],
   )
 
   const ContainerComponent = useCallback((props) => <Paper {...props} elevation={0} />, [])

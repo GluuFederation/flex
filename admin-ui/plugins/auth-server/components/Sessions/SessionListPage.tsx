@@ -463,10 +463,11 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
         ...applicationStyle.tableHeaderStyle,
         ...bgThemeColor,
         textTransform: 'uppercase' as const,
+        color: themeColors.fontColor,
       },
       actionsColumnIndex: -1,
     }),
-    [pageSize, bgThemeColor],
+    [pageSize, bgThemeColor, themeColors.fontColor],
   )
 
   const renderContent = useCallback(() => {

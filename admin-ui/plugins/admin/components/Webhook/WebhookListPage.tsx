@@ -387,6 +387,7 @@ const WebhookListPage: React.FC = () => {
           headerStyle: {
             ...(applicationStyle.tableHeaderStyle as React.CSSProperties),
             ...bgThemeColor,
+            color: themeColors.fontColor,
           },
           actionsColumnIndex: -1,
         }}

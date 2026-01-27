@@ -358,10 +358,11 @@ function AttributeListPage(): JSX.Element {
       headerStyle: {
         ...applicationStyle.tableHeaderStyle,
         ...bgThemeColor,
+        color: themeColors.fontColor,
       } as React.CSSProperties,
       actionsColumnIndex: -1,
     }),
-    [limit, bgThemeColor],
+    [limit, bgThemeColor, themeColors.fontColor],
   )
 
   return (

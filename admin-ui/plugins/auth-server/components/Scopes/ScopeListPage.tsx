@@ -226,10 +226,11 @@ const ScopeListPage: React.FC = () => {
           | 'none'
           | 'capitalize'
           | undefined,
+        color: themeColors.fontColor,
       },
       actionsColumnIndex: -1,
     }),
-    [limit, bgThemeColor],
+    [limit, bgThemeColor, themeColors.fontColor],
   )
 
   const toggle = useCallback(() => setModal((prev) => !prev), [])
@@ -305,11 +306,17 @@ const ScopeListPage: React.FC = () => {
 
   const renderScopeTypeColumn = useCallback(
     (rowData: ScopeTableRow) => (
-      <Badge key={rowData.inum} color={`primary-${selectedTheme}`}>
+      <Badge
+        key={rowData.inum}
+        color={`primary-${selectedTheme}`}
+        style={{
+          color: customColors.primaryDark,
+        }}
+      >
         {rowData.scopeType}
       </Badge>
     ),
-    [selectedTheme],
+    [selectedTheme, themeColors.fontColor],
   )
 
   const handleGoToScopeAddPage = useCallback(() => {

@@ -30,7 +30,7 @@ import { logUserDeletion, getErrorMessage } from '../helper/userAuditHelpers'
 import { triggerUserWebhook } from '../helper/userWebhookHelpers'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
-import { DEFAULT_THEME } from '@/context/theme/constants'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 
 function UserList(): JSX.Element {
   const {
@@ -122,6 +122,9 @@ function UserList(): JSX.Element {
   const selectedTheme = themeState.theme || DEFAULT_THEME
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
+  const isDark = selectedTheme === THEME_DARK
+  const iconDefaultColor = isDark ? themeColors.fontColor : customColors.darkGray
+  const iconPrimaryColor = isDark ? themeColors.fontColor : customColors.lightBlue
   SetTitle(t('titles.user_management'))
   const myActions: (
     | Action<UserTableRowData>
@@ -193,7 +196,7 @@ function UserList(): JSX.Element {
       iconProps: {
         color: 'primary',
         style: {
-          borderColor: customColors.lightBlue,
+          borderColor: iconPrimaryColor,
         },
       },
       isFreeAction: true,
@@ -202,7 +205,7 @@ function UserList(): JSX.Element {
     myActions.push({
       icon: 'refresh',
       tooltip: `${t('messages.refresh')}`,
-      iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
+      iconProps: { color: 'primary', style: { color: iconPrimaryColor } },
       isFreeAction: true,
       onClick: () => {
         refetchUsers()
@@ -223,7 +226,6 @@ function UserList(): JSX.Element {
       tooltip: `${t('tooltips.edit_user')}`,
       iconProps: {
         id: 'editScope' + (rowData.inum || ''),
-        style: { color: customColors.darkGray },
       },
       onClick: (
         _event: React.MouseEvent<HTMLElement>,
@@ -238,7 +240,7 @@ function UserList(): JSX.Element {
       icon: LockedOpenIcon,
       iconProps: {
         id: 'viewDetail' + (rowData.inum || ''),
-        style: { color: customColors.darkGray },
+        style: { color: iconDefaultColor },
       },
       tooltip: `${t('messages.credentials')}`,
       onClick: (
@@ -259,7 +261,7 @@ function UserList(): JSX.Element {
       iconProps: {
         color: 'secondary',
         id: 'deleteClient' + (rowData.inum || ''),
-        style: { color: customColors.darkGray },
+        style: { color: iconDefaultColor },
       },
       onClick: (
         _event: React.MouseEvent<HTMLElement>,
@@ -364,13 +366,10 @@ function UserList(): JSX.Element {
                 searchFieldAlignment: 'left',
                 selection: false,
                 pageSize: limit,
-                rowStyle: (rowData: UserTableRowData) => ({
-                  backgroundColor:
-                    rowData.status === 'active' ? themeColors.lightBackground : customColors.white,
-                }),
                 headerStyle: {
                   ...applicationStyle.tableHeaderStyle,
                   ...bgThemeColor,
+                  color: themeColors.fontColor,
                 } as React.CSSProperties,
                 actionsColumnIndex: -1,
               }}

@@ -219,10 +219,11 @@ const AuthNListPage = ({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
       headerStyle: {
         ...applicationStyle.tableHeaderStyle,
         ...bgThemeColor,
+        color: themeColors.fontColor,
       } as React.CSSProperties,
       actionsColumnIndex: -1,
     }),
-    [isBuiltIn, bgThemeColor],
+    [isBuiltIn, bgThemeColor, themeColors.fontColor],
   )
 
   return (

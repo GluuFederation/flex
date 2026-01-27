@@ -57,6 +57,7 @@ import { getErrorMessage } from 'Plugins/schema/utils/errorHandler'
 import type { RootState } from '@/redux/sagas/types/audit'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import customColors from '@/customColors'
+import getThemeColor from '@/context/theme/config'
 
 const PAGING_SIZE_OPTIONS = [1, 5, 10, 20] as const
 const DEFAULT_PAGING_SIZE = PAGING_SIZE_OPTIONS[2]
@@ -130,6 +131,7 @@ const SettingsPage: React.FC = () => {
       : DEFAULT_PAGING_SIZE
   }, [])
   const selectedTheme = useMemo(() => themeState.theme || DEFAULT_THEME, [themeState.theme])
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const configApiUrl = useMemo(() => {
     if (typeof window === 'undefined') return 'N/A'
     const windowWithConfig = window as Window & { configApiBaseUrl?: string }
@@ -337,7 +339,7 @@ const SettingsPage: React.FC = () => {
                 />
                 <Col sm={8}>
                   <Label style={LABEL_CONTAINER_STYLE}>
-                    <h3>
+                    <h3 style={{ color: customColors.primaryDark }}>
                       <Badge color={`primary-${selectedTheme}`}>{configApiUrl}</Badge>
                     </h3>
                   </Label>
@@ -449,7 +451,9 @@ const SettingsPage: React.FC = () => {
 
               <Accordion className="mb-3 b-primary" initialOpen>
                 <AccordionHeader>
-                  <h5>{t('fields.custom_params_auth')}</h5>
+                  <h5 style={{ color: customColors.primaryDark }}>
+                    {t('fields.custom_params_auth')}
+                  </h5>
                 </AccordionHeader>
                 <AccordionBody>
                   <Button
