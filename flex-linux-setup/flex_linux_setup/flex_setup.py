@@ -485,10 +485,9 @@ class flex_installer(JettyInstaller):
 
 
     def create_tables(self):
-        print("self.schema_file", self.schema_file)
         self.dbUtils.read_jans_schema(others=[self.schema_file])
         rdbm_installer.create_tables([self.schema_file])
-
+        self.dbUtils.rdm_automapper(True)
 
     def install_gluu_admin_ui(self):
 
