@@ -96,7 +96,7 @@ export const parseDateStrict = (date: string, format: string): Dayjs | null => {
 
 export const formatDate = (
   date: string | number | Date | Dayjs | null | undefined,
-  format = 'YYYY-MM-DD',
+  format = DATE_FORMATS.DATE_ONLY,
 ): string => {
   if (date == null) return ''
   const d = dayjs(date)
