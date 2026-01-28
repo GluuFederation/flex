@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext, useCallback, useMemo } from 'react'
 import MaterialTable, { Action, Column } from '@material-table/core'
-import { DeleteOutlined } from '@mui/icons-material'
+import { DeleteOutlined, Edit } from '@mui/icons-material'
 import { Paper, TablePagination } from '@mui/material'
 import { Card, CardBody } from 'Components'
 import { useCedarling } from '@/cedarling'
@@ -169,11 +169,8 @@ const JansAssetListPage: React.FC = () => {
       })
 
       actions.push({
-        icon: 'edit',
+        icon: () => <Edit style={{ color: customColors.darkGray }} />,
         tooltip: `${t('messages.edit')}`,
-        iconProps: {
-          style: { color: isDarkTheme ? themeColors.fontColor : customColors.darkGray },
-        },
         onClick: (event: React.MouseEvent, rowData: Document | Document[]) => {
           if (!Array.isArray(rowData)) {
             navigateToEditPage(rowData)
@@ -184,11 +181,7 @@ const JansAssetListPage: React.FC = () => {
 
     if (canDeleteAssets) {
       actions.push({
-        icon: () => (
-          <DeleteOutlined
-            sx={{ color: isDarkTheme ? themeColors.fontColor : customColors.accentRed }}
-          />
-        ),
+        icon: () => <DeleteOutlined style={{ color: customColors.darkGray }} />,
         tooltip: `${t('messages.delete')}`,
         onClick: (event: React.MouseEvent, rowData: Document | Document[]) => {
           if (!Array.isArray(rowData)) {
@@ -214,7 +207,6 @@ const JansAssetListPage: React.FC = () => {
     handleOptionsChange,
     dispatch,
     isDarkTheme,
-    themeColors.fontColor,
   ])
 
   const PaperContainer = useCallback(
@@ -330,18 +322,9 @@ const JansAssetListPage: React.FC = () => {
                 searchFieldAlignment: 'left',
                 selection: false,
                 pageSize: limit,
-                rowStyle: (rowData: Document) => {
-                  const isEnabled = Boolean(rowData.enabled)
-                  const backgroundColor = isEnabled
-                    ? themeColors.lightBackground
-                    : customColors.white
-                  const color = isEnabled ? themeColors.fontColor : customColors.primaryDark
-
-                  return {
-                    backgroundColor,
-                    color,
-                  }
-                },
+                rowStyle: (_rowData: Document, index: number) => ({
+                  backgroundColor: index % 2 === 0 ? customColors.white : customColors.whiteSmoke,
+                }),
                 headerStyle: {
                   ...applicationStyle.tableHeaderStyle,
                   ...bgThemeColor,
