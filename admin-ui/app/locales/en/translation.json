@@ -78,6 +78,7 @@
     "license_status": "License Status",
     "active": "Active",
     "inactive": "Inactive",
+    "unknown": "Unknown",
     "oauth_server_status": "OAuth server status",
     "database_status": "Database status",
     "server_status": "Server status",
@@ -101,6 +102,7 @@
     "mau_clients": "Jan lock clients"
   },
   "fields": {
+    "actions": "Actions",
     "access_token_signing_alg": "JWS alg for signing",
     "resetLicense": "Reset License",
     "search": "Search",

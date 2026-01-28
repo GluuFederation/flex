@@ -27,6 +27,7 @@
     "license_status": "Status da licença",
     "active": "Ativo",
     "inactive": "Inativo",
+    "unknown": "Desconhecido",
     "oauth_server_status": "Status do servidor OAuth",
     "database_status": "Status do banco de dados",
     "server_status": "Status do servidor",
@@ -183,6 +184,7 @@
     "refresh": "Atualizar"
   },
   "fields": {
+    "actions": "Ações",
     "asset_name": "Asset Name",
     "resetLicense": "Redefinir licença",
     "search": "Pesquisar",

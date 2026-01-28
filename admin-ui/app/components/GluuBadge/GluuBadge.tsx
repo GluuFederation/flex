@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useCallback } from 'react'
 import { fontFamily } from '@/styles/fonts'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -76,8 +76,30 @@ const GluuBadge: React.FC<GluuBadgeProps> = (props) => {
     style,
   ])
 
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLSpanElement>) => {
+      if (onClick && (e.key === 'Enter' || e.key === ' ')) {
+        if (e.key === ' ') {
+          e.preventDefault()
+        }
+        onClick()
+      }
+    },
+    [onClick],
+  )
+
+  const isInteractive = !!onClick
+
   return (
-    <span className={className} style={badgeStyle} onClick={onClick} title={title}>
+    <span
+      className={className}
+      style={badgeStyle}
+      onClick={onClick}
+      onKeyDown={isInteractive ? handleKeyDown : undefined}
+      role={isInteractive ? 'button' : undefined}
+      tabIndex={isInteractive ? 0 : undefined}
+      title={title}
+    >
       {children}
     </span>
   )

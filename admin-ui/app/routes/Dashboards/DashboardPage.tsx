@@ -237,7 +237,7 @@ const DashboardPage = () => {
             ? license.licenseActive
               ? 'active'
               : 'inactive'
-            : 'Unknown',
+            : undefined,
         isStatus: license?.licenseActive !== undefined,
       },
     ],

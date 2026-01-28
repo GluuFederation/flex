@@ -295,7 +295,7 @@ const CustomScriptListPage: React.FC = () => {
         },
       },
       {
-        title: 'Actions',
+        title: t('fields.actions'),
         field: 'actions',
         sorting: false,
         render: (rowData: ScriptTableRow) => {

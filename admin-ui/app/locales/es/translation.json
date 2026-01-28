@@ -78,6 +78,7 @@
     "license_status": "Estado de la Licencia",
     "active": "Activo",
     "inactive": "Inactivo",
+    "unknown": "Desconocido",
     "oauth_server_status": "Estado del Servidor OAuth",
     "database_status": "Estado de la Base de Datos",
     "server_status": "Estado del Servidor",
@@ -101,6 +102,7 @@
     "mau_clients": "Clientes de Jans Lock"
   },
   "fields": {
+    "actions": "Acciones",
     "access_token_signing_alg": "Algoritmo JWS para firma",
     "resetLicense": "Restablecer Licencia",
     "search": "Buscar",
