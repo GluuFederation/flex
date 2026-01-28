@@ -24,8 +24,8 @@ import {
   getAssetTypes,
 } from 'Plugins/admin/redux/features/AssetSlice'
 import customColors from '../../../../app/customColors'
-import moment from 'moment'
-import { Document, RootState, SearchEvent } from './types'
+import { formatDate } from '@/utils/dayjsUtils'
+import { Document, RootState } from './types'
 import { DeleteAssetSagaPayload } from 'Plugins/admin/redux/features/types'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
@@ -77,12 +77,13 @@ const JansAssetListPage: React.FC = () => {
   )
 
   const handleOptionsChange = useCallback(
-    (event: SearchEvent) => {
-      if (event.target.name === 'limit') {
-        memoLimit = Number(event.target.value)
-      } else if (event.target.name === 'pattern') {
-        memoPattern = String(event.target.value) || undefined
-        if (event.keyCode === 13) {
+    (event: React.ChangeEvent<HTMLInputElement> | React.KeyboardEvent<HTMLInputElement>) => {
+      const target = event.target as HTMLInputElement
+      if (target.name === 'limit') {
+        memoLimit = Number(target.value)
+      } else if (target.name === 'pattern') {
+        memoPattern = String(target.value) || undefined
+        if ('keyCode' in event && event.keyCode === 13) {
           const newOptions = {
             limit: limit,
             pattern: memoPattern,
@@ -300,7 +301,7 @@ const JansAssetListPage: React.FC = () => {
                     field: 'creationDate',
                     render: (rowData: Document) => (
                       <div style={{ wordWrap: 'break-word', maxWidth: '420px' }}>
-                        {moment(rowData.creationDate).format('YYYY-MM-DD')}
+                        {rowData.creationDate ? formatDate(rowData.creationDate, 'YYYY-MM-DD') : ''}
                       </div>
                     ),
                   },

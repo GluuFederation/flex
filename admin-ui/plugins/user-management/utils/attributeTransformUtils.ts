@@ -1,4 +1,4 @@
-import moment from 'moment'
+import { formatDate, isValidDate } from '@/utils/dayjsUtils'
 import { CustomObjectAttribute } from 'JansConfigApi'
 import { BIRTHDATE_ATTR, JANS_ADMIN_UI_ROLE_ATTR } from '../common/Constants'
 import {
@@ -46,8 +46,12 @@ export const normalizeSingleValue = (value: FormValueEntry, attributeName: strin
         : ''
 
   if (attributeName === BIRTHDATE_ATTR && normalized) {
-    const m = moment(normalized, 'YYYY-MM-DD', true)
-    return m.isValid() ? m.format('YYYY-MM-DD') : ''
+    // Ensure the value strictly matches YYYY-MM-DD and is a valid date
+    const birthdatePattern = /^\d{4}-\d{2}-\d{2}$/
+    if (!birthdatePattern.test(normalized)) {
+      return ''
+    }
+    return isValidDate(normalized) ? formatDate(normalized, 'YYYY-MM-DD') : ''
   }
   return normalized
 }

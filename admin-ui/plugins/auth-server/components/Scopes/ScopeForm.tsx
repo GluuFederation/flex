@@ -25,7 +25,7 @@ import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { SCOPE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
-import moment from 'moment'
+import { formatDate } from '@/utils/dayjsUtils'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
 import type { ScopeFormProps, ScopeFormValues, ScopeClient, ExtendedScope } from './types'
@@ -595,7 +595,11 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                         <GluuLabel label="fields.creationDate" size={4} />
                         <Col sm={8}>
                           <Input
-                            defaultValue={moment(scope.creationDate).format('YYYY-MM-DD HH:mm:ss')}
+                            defaultValue={
+                              scope.creationDate
+                                ? formatDate(scope.creationDate, 'YYYY-MM-DD HH:mm:ss')
+                                : ''
+                            }
                             disabled={true}
                           />
                         </Col>
@@ -662,7 +666,11 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                       <GluuLabel label="fields.creationDate" size={4} />
                       <Col sm={8}>
                         <Input
-                          defaultValue={moment(scope.creationDate).format('YYYY-MM-DD HH:mm:ss')}
+                          defaultValue={
+                            scope.creationDate
+                              ? formatDate(scope.creationDate, 'YYYY-MM-DD HH:mm:ss')
+                              : ''
+                          }
                           disabled={true}
                         />
                       </Col>

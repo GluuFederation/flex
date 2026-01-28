@@ -1,4 +1,4 @@
-import moment from 'moment/moment'
+import { formatDate, isValidDate } from '@/utils/dayjsUtils'
 import { CustomObjectAttribute, PagedResultEntriesItem } from 'JansConfigApi'
 
 import { BIRTHDATE_ATTR, USER_PASSWORD_ATTR } from '../common/Constants'
@@ -31,10 +31,13 @@ const processBirthdateAttribute = (
 ) => {
   const attrValues = customAttr.values ?? []
   const attrSingleValue = customAttr.value
-  const dateSource =
-    attrValues.length > 0 ? JSON.stringify(attrValues[0]) : JSON.stringify(attrSingleValue)
-  if (dateSource) {
-    initialValues[customAttr.name || ''] = moment(dateSource).format('YYYY-MM-DD')
+  const rawDate =
+    attrValues.length > 0
+      ? (attrValues[0] as unknown as string | number | Date | null)
+      : (attrSingleValue as unknown as string | number | Date | null)
+
+  if (rawDate !== undefined && rawDate !== null && customAttr.name) {
+    initialValues[customAttr.name] = isValidDate(rawDate) ? formatDate(rawDate, 'YYYY-MM-DD') : ''
   }
 }
 
