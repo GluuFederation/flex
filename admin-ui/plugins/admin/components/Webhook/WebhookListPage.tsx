@@ -256,9 +256,8 @@ const WebhookListPage: React.FC = () => {
         icon: EditIcon,
         tooltip: t('actions.edit'),
         iconProps: {
-          color: 'primary',
           id: 'editWebhook' + rowData.inum,
-          style: { color: customColors.darkGray },
+          style: { color: themeColors.fontColor },
         },
         onClick: () => navigateToEditPage(rowData),
         disabled: false,
@@ -271,6 +270,7 @@ const WebhookListPage: React.FC = () => {
         tooltip: t('actions.delete'),
         iconProps: {
           id: 'deleteWebhook' + rowData.inum,
+          style: { color: themeColors.fontColor },
         },
         onClick: () => {
           setDeleteData(rowData)
@@ -281,7 +281,7 @@ const WebhookListPage: React.FC = () => {
     }
 
     return actions
-  }, [canWriteWebhooks, canDeleteWebhooks, t, navigateToEditPage, toggle])
+  }, [canWriteWebhooks, canDeleteWebhooks, t, navigateToEditPage, toggle, themeColors.fontColor])
 
   const columns = useMemo(
     () => [
