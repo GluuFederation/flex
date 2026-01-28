@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import { Row, Col } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
-import { formatDate, isValidDate } from '@/utils/dayjsUtils'
+import { formatDate, parseDateStrict } from '@/utils/dayjsUtils'
 import DOMPurify from 'dompurify'
 import customColors from '@/customColors'
 import { BIRTHDATE_ATTR } from '../common/Constants'
@@ -66,7 +66,8 @@ const UserDetailViewPage = ({ row }: RowProps) => {
             const raw = data?.values?.[0]
             const birthdatePattern = /^\d{4}-\d{2}-\d{2}$/
             if (typeof raw === 'string' && birthdatePattern.test(raw)) {
-              valueToShow = isValidDate(raw) ? formatDate(raw, 'YYYY-MM-DD') : ''
+              const parsed = parseDateStrict(raw, 'YYYY-MM-DD')
+              valueToShow = parsed ? formatDate(parsed, 'YYYY-MM-DD') : ''
             } else {
               valueToShow = ''
             }

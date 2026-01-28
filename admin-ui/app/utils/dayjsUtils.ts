@@ -55,6 +55,12 @@ export const isSameDate = (
   return dayjs(date).isSame(compareDate, unit)
 }
 
+/**
+ * Lenient date validity check using dayjs(date).isValid().
+ * Accepts string | number | Date | Dayjs | null | undefined; null/undefined return false.
+ * Note: this normalizes overflow dates (e.g. '2024-02-30') and is not suitable for strict format validation.
+ * For strict checks use parseDateStrict instead.
+ */
 export const isValidDate = (date: string | number | Date | Dayjs | null | undefined): boolean => {
   if (date == null) return false
   return dayjs(date).isValid()
@@ -113,8 +119,4 @@ export const startOfDate = (date: string | number | Date | Dayjs, unit: OpUnitTy
 
 export const endOfDate = (date: string | number | Date | Dayjs, unit: OpUnitType): Dayjs => {
   return dayjs(date).endOf(unit)
-}
-
-export const cloneDate = (date: string | number | Date | Dayjs): Dayjs => {
-  return dayjs(date).clone()
 }
