@@ -27,7 +27,7 @@ import type { SsaData, SsaJwtResponse } from './types'
 import { DELETION } from '../../../../app/audit/UserActionType'
 import { SSA as SSA_RESOURCE } from '../../redux/audit/Resources'
 import { updateToast } from 'Redux/features/toastSlice'
-import { DEFAULT_THEME, THEME_LIGHT } from '@/context/theme/constants'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 const SSAListPage: React.FC = () => {
   const {
@@ -314,7 +314,7 @@ const SSAListPage: React.FC = () => {
             data={jwtData}
             isLoading={getSsaJwtMutation.isPending}
             title={`JSON View`}
-            theme={selectedTheme || THEME_LIGHT}
+            theme={selectedTheme}
             expanded={true}
           />
         )}

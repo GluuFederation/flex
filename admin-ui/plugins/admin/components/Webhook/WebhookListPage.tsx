@@ -292,7 +292,11 @@ const WebhookListPage: React.FC = () => {
           <Typography
             variant="body2"
             fontWeight={500}
-            sx={{ color: rowData.jansEnabled ? 'black !important' : 'gray !important' }}
+            sx={{
+              color: rowData.jansEnabled
+                ? `${themeColors.fontColor} !important`
+                : `${customColors.textSecondary} !important`,
+            }}
           >
             {rowData.displayName}
           </Typography>
@@ -306,7 +310,9 @@ const WebhookListPage: React.FC = () => {
           <Typography
             variant="body2"
             sx={{
-              color: rowData.jansEnabled ? 'black !important' : 'gray !important',
+              color: rowData.jansEnabled
+                ? `${themeColors.fontColor} !important`
+                : `${customColors.textSecondary} !important`,
               wordBreak: 'break-all',
               maxWidth: '350px',
               fontFamily: 'monospace',
@@ -326,6 +332,15 @@ const WebhookListPage: React.FC = () => {
             size="small"
             color={getHttpMethodColor(rowData.httpMethod || '')}
             variant="outlined"
+            sx={
+              rowData.jansEnabled
+                ? {
+                    'color': themeColors.fontColor,
+                    'borderColor': themeColors.fontColor,
+                    '& .MuiChip-label': { color: themeColors.fontColor },
+                  }
+                : undefined
+            }
           />
         ),
       },

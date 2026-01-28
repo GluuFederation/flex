@@ -34,8 +34,8 @@ const DeleteOutlinedIcon = () => <DeleteOutlined />
 const WebsiteSsoServiceProviderList = React.memo(() => {
   const { authorizeHelper, hasCedarReadPermission, hasCedarWritePermission } = useCedarling()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme ?? DEFAULT_THEME
-  const themeColors = getThemeColor(selectedTheme)
+  const selectedTheme = useMemo(() => theme?.state?.theme ?? DEFAULT_THEME, [theme?.state?.theme])
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const [modal, setModal] = useState(false)
   const [item, setItem] = useState<DeleteItem>({ inum: '' })
 

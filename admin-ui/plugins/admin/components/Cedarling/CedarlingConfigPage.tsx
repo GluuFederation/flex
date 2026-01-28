@@ -327,7 +327,7 @@ const CedarlingConfigPage: React.FC = () => {
                   rel="noopener noreferrer"
                   sx={{ fontWeight: 500 }}
                 >
-                  &apos;Agama Lab&apos;s Policy Designer
+                  Agama Lab&apos;s Policy Designer
                 </Link>
                 .
               </Typography>
