@@ -47,6 +47,7 @@ import type { ScopeWithClients, ScopeTableRow } from './types'
 import { useScopeActions } from './hooks'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { DEFAULT_THEME } from '@/context/theme/constants'
+import { fontFamily, fontWeights } from '@/styles/fonts'
 
 interface DetailPanelProps {
   rowData: ScopeTableRow
@@ -311,6 +312,8 @@ const ScopeListPage: React.FC = () => {
         color={`primary-${selectedTheme}`}
         style={{
           color: customColors.primaryDark,
+          fontWeight: fontWeights.bold,
+          fontFamily: fontFamily,
         }}
       >
         {rowData.scopeType}

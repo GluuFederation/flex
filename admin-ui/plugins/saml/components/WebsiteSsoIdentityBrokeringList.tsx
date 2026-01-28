@@ -306,10 +306,10 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
     () =>
       ({
         ...applicationStyle.tableHeaderStyle,
-        backgroundColor: themeColors.menu.background,
-        color: customColors.white,
+        backgroundColor: themeColors.background,
+        color: themeColors.fontColor,
       }) as React.CSSProperties,
-    [themeColors.menu.background],
+    [themeColors.background, themeColors.fontColor],
   )
 
   const tableOptions = useMemo(

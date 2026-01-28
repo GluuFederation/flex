@@ -264,10 +264,11 @@ const CustomScriptListPage: React.FC = () => {
                 'fontFamily': 'monospace',
                 'fontSize': '0.75rem',
                 'borderRadius': 1,
-                'color': isEnabled ? darkThemeColors.fontColor : customColors.primaryDark,
-                'borderColor': isEnabled ? darkThemeColors.borderColor : customColors.lightBorder,
+                'color': isEnabled ? customColors.white : customColors.primaryDark,
+                'borderColor': isEnabled ? customColors.white : customColors.lightBorder,
+                'backgroundColor': isEnabled ? 'transparent' : 'transparent',
                 '& .MuiChip-label': {
-                  color: isEnabled ? darkThemeColors.fontColor : customColors.primaryDark,
+                  color: isEnabled ? customColors.white : customColors.primaryDark,
                 },
               }}
             />
@@ -279,6 +280,7 @@ const CustomScriptListPage: React.FC = () => {
         field: 'enabled',
         type: 'boolean',
         render: (rowData: ScriptTableRow) => {
+          const isEnabled = rowData.enabled === true
           return (
             <Chip
               label={rowData.enabled ? t('options.yes') : t('options.no')}
@@ -288,7 +290,10 @@ const CustomScriptListPage: React.FC = () => {
                 fontWeight: 500,
                 backgroundColor: darkThemeColors.background,
                 color: darkThemeColors.fontColor,
-                opacity: rowData.enabled ? 1 : 0.6,
+                border: isEnabled
+                  ? `1px solid ${lightThemeColors.borderColor}`
+                  : `1px solid ${darkThemeColors.borderColor}`,
+                opacity: isEnabled ? 1 : 0.6,
               }}
             />
           )

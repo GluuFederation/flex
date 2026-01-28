@@ -65,7 +65,6 @@ const SSAListPage: React.FC = () => {
   const theme = useContext(ThemeContext)
   const selectedTheme = useMemo(() => theme?.state?.theme || DEFAULT_THEME, [theme?.state?.theme])
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
-  const bgThemeColor = { background: themeColors.background }
   SetTitle(t('titles.ssa_management'))
   const [ssaDialogOpen, setSsaDialogOpen] = useState<boolean>(false)
   const [jwtData, setJwtData] = useState<SsaJwtResponse | null>(null)
@@ -283,7 +282,8 @@ const SSAListPage: React.FC = () => {
               pageSize: limit,
               headerStyle: {
                 ...applicationStyle.tableHeaderStyle,
-                ...bgThemeColor,
+                backgroundColor: themeColors.background,
+                color: themeColors.fontColor,
                 textTransform: applicationStyle.tableHeaderStyle.textTransform as
                   | 'uppercase'
                   | 'lowercase'

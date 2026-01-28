@@ -36,10 +36,6 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme ?? DEFAULT_THEME
   const themeColors = getThemeColor(selectedTheme)
-  const bgThemeColor = useMemo(
-    () => ({ background: themeColors.background }),
-    [themeColors.background],
-  )
   const [modal, setModal] = useState(false)
   const [item, setItem] = useState<DeleteItem>({ inum: '' })
 
@@ -210,7 +206,8 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
             idSynonym: 'inum',
             headerStyle: {
               ...applicationStyle.tableHeaderStyle,
-              ...bgThemeColor,
+              backgroundColor: themeColors.background,
+              color: themeColors.fontColor,
             } as React.CSSProperties,
             actionsColumnIndex: -1,
           }}

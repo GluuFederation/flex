@@ -75,9 +75,9 @@ const getHttpMethodColor = (
   return colorMap[method] || 'default'
 }
 
-const EditIcon: React.FC<React.ComponentProps<typeof Edit>> = (props) => <Edit {...props} />
-const DeleteIcon: React.FC<React.ComponentProps<typeof DeleteOutlined>> = (props) => (
-  <DeleteOutlined {...props} style={{ color: customColors.darkGray, ...props.style }} />
+const EditIcon = (): React.ReactNode => <Edit style={{ color: customColors.darkGray }} />
+const DeleteIcon = (): React.ReactNode => (
+  <DeleteOutlined style={{ color: customColors.darkGray }} />
 )
 const PaperContainer = (props: React.ComponentProps<typeof Paper>) => (
   <Paper {...props} elevation={0} />
@@ -340,7 +340,7 @@ const WebhookListPage: React.FC = () => {
               rowData.jansEnabled
                 ? {
                     backgroundColor: themeColors.background,
-                    color: customColors.white,
+                    color: themeColors.fontColor,
                   }
                 : undefined
             }
@@ -376,7 +376,7 @@ const WebhookListPage: React.FC = () => {
         options={{
           idSynonym: 'inum',
           search: false,
-          searchFieldAlignment: 'left',
+          toolbar: false,
           selection: false,
           pageSize: limit,
           rowStyle: (rowData: WebhookEntry) => ({

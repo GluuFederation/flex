@@ -282,12 +282,13 @@ const CedarlingConfigPage: React.FC = () => {
         <Paper
           elevation={1}
           sx={{
-            p: 4,
+            px: 2,
+            py: 3,
             borderRadius: 2,
             minHeight: 500,
           }}
         >
-          <Box sx={{ maxWidth: 900, mx: 'auto' }}>
+          <Box sx={{ maxWidth: '100%', mx: 'auto' }}>
             <Typography
               variant="h5"
               sx={{ fontWeight: 600, color: 'text.primary', textAlign: 'center', mb: 3 }}
@@ -326,7 +327,7 @@ const CedarlingConfigPage: React.FC = () => {
                   rel="noopener noreferrer"
                   sx={{ fontWeight: 500 }}
                 >
-                  Agama Lab's Policy Designer
+                  &apos;Agama Lab&apos;s Policy Designer
                 </Link>
                 .
               </Typography>

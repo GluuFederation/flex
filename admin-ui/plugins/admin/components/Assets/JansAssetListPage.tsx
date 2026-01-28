@@ -29,7 +29,7 @@ import { Document, RootState, SearchEvent } from './types'
 import { DeleteAssetSagaPayload } from 'Plugins/admin/redux/features/types'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
-import { DEFAULT_THEME } from '@/context/theme/constants'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 
 const JansAssetListPage: React.FC = () => {
   const dispatch = useDispatch()
@@ -120,6 +120,11 @@ const JansAssetListPage: React.FC = () => {
     [hasCedarDeletePermission, assetsResourceId],
   )
 
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
+  const themeColors = getThemeColor(selectedTheme)
+  const isDarkTheme = selectedTheme === THEME_DARK
+
   useEffect(() => {
     const actions: Action<Document>[] = []
 
@@ -166,6 +171,9 @@ const JansAssetListPage: React.FC = () => {
       actions.push({
         icon: 'edit',
         tooltip: `${t('messages.edit')}`,
+        iconProps: {
+          style: { color: isDarkTheme ? themeColors.fontColor : customColors.darkGray },
+        },
         onClick: (event: React.MouseEvent, rowData: Document | Document[]) => {
           if (!Array.isArray(rowData)) {
             navigateToEditPage(rowData)
@@ -176,7 +184,11 @@ const JansAssetListPage: React.FC = () => {
 
     if (canDeleteAssets) {
       actions.push({
-        icon: () => <DeleteOutlined />,
+        icon: () => (
+          <DeleteOutlined
+            sx={{ color: isDarkTheme ? themeColors.fontColor : customColors.accentRed }}
+          />
+        ),
         tooltip: `${t('messages.delete')}`,
         onClick: (event: React.MouseEvent, rowData: Document | Document[]) => {
           if (!Array.isArray(rowData)) {
@@ -201,14 +213,14 @@ const JansAssetListPage: React.FC = () => {
     hasCedarDeletePermission,
     handleOptionsChange,
     dispatch,
+    isDarkTheme,
+    themeColors.fontColor,
   ])
 
   const PaperContainer = useCallback(
     (props: React.ComponentProps<typeof Paper>) => <Paper {...props} elevation={0} />,
     [],
   )
-  const theme = useContext(ThemeContext)
-  const themeColors = getThemeColor(theme?.state?.theme || DEFAULT_THEME)
   const bgThemeColor = { background: themeColors.background }
 
   const submitForm = useCallback(
