@@ -15,7 +15,7 @@ import {
 } from 'JansConfigApi'
 import { useQueryClient } from '@tanstack/react-query'
 import { updateToast } from 'Redux/features/toastSlice'
-import moment from 'moment'
+import { formatDate } from '@/utils/dayjsUtils'
 import customColors from '@/customColors'
 import UserDeviceDetailViewPage from './UserDeviceDetailViewPage'
 import {
@@ -128,9 +128,7 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
           modality: item?.soft
             ? 'Soft token - time based (totp)'
             : 'Hard token - time based (totp)',
-          dateAdded: moment(new Date((item.addedOn || 0) * 1000).toString()).format(
-            'YYYY-MM-DD HH:mm:ss',
-          ),
+          dateAdded: formatDate((item.addedOn || 0) * 1000, 'YYYY-MM-DD HH:mm:ss'),
           type: 'OTP',
         }
       }) || []
@@ -153,9 +151,7 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
         id: item.id,
         nickName: displayName,
         modality: modality,
-        dateAdded: item.creationDate
-          ? moment(item.creationDate).format('YYYY-MM-DD HH:mm:ss')
-          : '-',
+        dateAdded: item.creationDate ? formatDate(item.creationDate, 'YYYY-MM-DD HH:mm:ss') : '-',
         type: deviceType,
         registrationData: item.registrationData,
         deviceData: item.deviceData,

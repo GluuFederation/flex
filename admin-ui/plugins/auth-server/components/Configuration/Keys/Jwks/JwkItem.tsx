@@ -1,6 +1,6 @@
 import React from 'react'
 import { Col, FormGroup, Input, Card, CardBody, Accordion } from 'Components'
-import moment from 'moment'
+import { formatDate } from '@/utils/dayjsUtils'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import customColors from '@/customColors'
 import type { JwkItemProps } from '../types'
@@ -56,7 +56,7 @@ const JwkItem = React.memo(function JwkItem({ item, index }: JwkItemProps): Reac
                     data-testid="exp"
                     name="exp"
                     readOnly
-                    defaultValue={item.exp != null ? moment(item.exp).format(DATE_FORMAT) : ''}
+                    defaultValue={item.exp != null ? formatDate(item.exp, DATE_FORMAT) : ''}
                   />
                 </Col>
                 <GluuLabel label="use" size={1} />

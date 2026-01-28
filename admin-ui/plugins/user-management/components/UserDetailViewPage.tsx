@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import { Row, Col } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
-import moment from 'moment'
+import { formatDate, parseDateStrict } from '@/utils/dayjsUtils'
 import DOMPurify from 'dompurify'
 import customColors from '@/customColors'
 import { BIRTHDATE_ATTR } from '../common/Constants'
@@ -63,8 +63,14 @@ const UserDetailViewPage = ({ row }: RowProps) => {
         {rowData.customAttributes?.map((data: CustomObjectAttribute, key: number) => {
           let valueToShow = ''
           if (data.name === BIRTHDATE_ATTR) {
-            const m = moment(data?.values?.[0], 'YYYY-MM-DD', true)
-            valueToShow = m.isValid() ? m.format('YYYY-MM-DD') : ''
+            const raw = data?.values?.[0]
+            const birthdatePattern = /^\d{4}-\d{2}-\d{2}$/
+            if (typeof raw === 'string' && birthdatePattern.test(raw)) {
+              const parsed = parseDateStrict(raw, 'YYYY-MM-DD')
+              valueToShow = parsed ? formatDate(parsed, 'YYYY-MM-DD') : ''
+            } else {
+              valueToShow = ''
+            }
           } else {
             valueToShow = data.multiValued
               ? data?.values?.join(', ') || ''
@@ -77,15 +83,17 @@ const UserDetailViewPage = ({ row }: RowProps) => {
                 <Col sm={6} xl={4} key={'customAttributes' + key}>
                   <GluuFormDetailRow
                     label={sanitizeValue(
-                      getCustomAttributeById(data?.name || '')?.displayName || data?.name || '',
+                      String(
+                        getCustomAttributeById(data?.name || '')?.displayName || data?.name || '',
+                      ),
                     )}
                     doc_category={sanitizeValue(
-                      getCustomAttributeById(data?.name || '')?.description || data?.name || '',
+                      String(
+                        getCustomAttributeById(data?.name || '')?.description || data?.name || '',
+                      ),
                     )}
                     isDirect={true}
-                    value={sanitizeValue(
-                      typeof valueToShow === 'boolean' ? JSON.stringify(valueToShow) : valueToShow,
-                    )}
+                    value={sanitizeValue(String(valueToShow))}
                   />
                 </Col>
               ) : null}

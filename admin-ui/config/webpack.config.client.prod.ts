@@ -63,7 +63,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
           priority: 17,
         },
         utils: {
-          test: /[\\/]node_modules[\\/](lodash|moment|dayjs|axios|formik|yup)[\\/]/,
+          test: /[\\/]node_modules[\\/](lodash|dayjs|axios|formik|yup)[\\/]/,
           name: 'utils-vendor',
           chunks: 'all',
           priority: 16,

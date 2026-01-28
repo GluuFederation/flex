@@ -11,8 +11,8 @@ import {
 } from 'recharts'
 import './styles.css'
 import TooltipDesign from './TooltipDesign'
-import moment from 'moment'
 import customColors from '@/customColors'
+import { createDate, addDate, isSameOrBeforeDate } from '@/utils/dayjsUtils'
 import type { DashboardChartProps, MauStatEntry } from '../types'
 
 const DashboardChart = ({ statData, startMonth, endMonth }: DashboardChartProps) => {
@@ -21,20 +21,24 @@ const DashboardChart = ({ statData, startMonth, endMonth }: DashboardChartProps)
       return []
     }
 
-    const dateStart = moment(startMonth, 'YYYYMM')
-    const dateEnd = moment(endMonth, 'YYYYMM')
+    const start = createDate(String(startMonth), 'YYYYMM')
+    const end = createDate(String(endMonth), 'YYYYMM')
 
-    if (dateStart.isAfter(dateEnd, 'month')) {
+    if (!start.isValid() || !end.isValid()) {
       return []
     }
 
-    let current = dateStart.clone()
+    if (!isSameOrBeforeDate(start, end, 'month')) {
+      return []
+    }
+
     const byMonth = new Map<number, MauStatEntry>()
     statData.forEach((entry) => byMonth.set(entry.month, entry))
     const prepareStat: MauStatEntry[] = []
 
-    while (current.isSameOrBefore(dateEnd, 'month')) {
-      const monthNum = parseInt(current.format('YYYYMM'), 10)
+    let current = start
+    while (isSameOrBeforeDate(current, end, 'month')) {
+      const monthNum = Number(current.format('YYYYMM'))
       const available = byMonth.get(monthNum)
 
       if (available) {
@@ -48,7 +52,7 @@ const DashboardChart = ({ statData, startMonth, endMonth }: DashboardChartProps)
           authz_code_idtoken_count: 0,
         })
       }
-      current = current.clone().add(1, 'month')
+      current = addDate(current, 1, 'month')
     }
 
     return prepareStat

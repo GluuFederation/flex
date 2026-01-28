@@ -4,10 +4,11 @@ import JwkListPage from './JwkListPage'
 import { Provider } from 'react-redux'
 import i18n from '../../../../../../app/i18n'
 import { I18nextProvider } from 'react-i18next'
-import moment from 'moment'
+import { formatDate } from '../../../../../../app/utils/dayjsUtils'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { mockJwksConfig } from '../__fixtures__/jwkTestData'
 import { DATE_FORMAT } from '../constants'
+import { useJwkApi } from '../hooks'
 
 jest.mock('../hooks', () => ({
   useJwkApi: jest.fn(() => ({
@@ -45,14 +46,13 @@ describe('JwkListPage', () => {
     expect(screen.getByTestId('kty')).toHaveValue(firstKey?.kty ?? '')
     expect(screen.getByTestId('use')).toHaveValue(firstKey?.use ?? '')
     expect(screen.getByTestId('alg')).toHaveValue(firstKey?.alg ?? '')
-    if (firstKey?.exp != null) {
-      expect(screen.getByTestId('exp')).toHaveValue(moment(firstKey.exp).format(DATE_FORMAT))
-    }
+    const expectedExp = firstKey?.exp != null ? formatDate(firstKey.exp, DATE_FORMAT) : ''
+    expect(screen.getByTestId('exp')).toHaveValue(expectedExp)
   })
 
   it('should handle undefined exp gracefully', () => {
-    const { useJwkApi } = require('../hooks')
-    useJwkApi.mockReturnValue({
+    const mockedUseJwkApi = useJwkApi as jest.Mock
+    mockedUseJwkApi.mockReturnValue({
       jwks: {
         keys: [{ ...mockJwksConfig.keys[0], exp: undefined }],
       },
@@ -67,8 +67,8 @@ describe('JwkListPage', () => {
   })
 
   it('should handle null exp gracefully', () => {
-    const { useJwkApi } = require('../hooks')
-    useJwkApi.mockReturnValue({
+    const mockedUseJwkApi = useJwkApi as jest.Mock
+    mockedUseJwkApi.mockReturnValue({
       jwks: {
         keys: [{ ...mockJwksConfig.keys[0], exp: null }],
       },

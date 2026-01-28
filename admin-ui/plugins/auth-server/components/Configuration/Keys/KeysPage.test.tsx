@@ -4,7 +4,7 @@ import KeysPage from './KeysPage'
 import { Provider } from 'react-redux'
 import i18n from '../../../../../app/i18n'
 import { I18nextProvider } from 'react-i18next'
-import moment from 'moment'
+import { formatDate } from '@/utils/dayjsUtils'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import {
   mockJwksConfig,
@@ -50,7 +50,7 @@ describe('KeysPage', () => {
     expect(screen.getByTestId('use')).toHaveValue(firstKey?.use ?? '')
     expect(screen.getByTestId('alg')).toHaveValue(firstKey?.alg ?? '')
     if (firstKey?.exp != null) {
-      expect(screen.getByTestId('exp')).toHaveValue(moment(firstKey.exp).format(DATE_FORMAT))
+      expect(screen.getByTestId('exp')).toHaveValue(formatDate(firstKey.exp, DATE_FORMAT))
     }
   })
 
