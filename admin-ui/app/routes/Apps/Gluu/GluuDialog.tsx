@@ -1,23 +1,16 @@
 import { useState, useEffect, useContext, useMemo } from 'react'
-import {
-  FormGroup,
-  Col,
-  Input,
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from 'reactstrap'
+import { FormGroup, Col, Input, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import { useTranslation } from 'react-i18next'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import getThemeColor from '@/context/theme/config'
 import { useSelector } from 'react-redux'
 import { useWebhookDialogAction } from 'Utils/hooks'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
+import { GluuButton } from '@/components'
 
 const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: any) => {
   const [active, setActive] = useState(false)
@@ -27,7 +20,10 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: a
   const [userMessage, setUserMessage] = useState('')
   const { loadingWebhooks, webhookModal } = useSelector((state: any) => state.webhookReducer)
   const theme: any = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const selectedTheme = theme?.state.theme || DEFAULT_THEME
+  const isDark = selectedTheme === THEME_DARK
+  const inverseTheme = isDark ? 'light' : 'dark'
+  const inverseColors = getThemeColor(inverseTheme)
 
   const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
   const webhookScopes = useMemo(
@@ -102,6 +98,7 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: a
                   onChange={(e) => setUserMessage(e.target.value)}
                   placeholder={t('placeholders.action_commit_message')}
                   value={userMessage}
+                  style={{ borderColor: inverseColors.borderColor }}
                 />
                 {userMessage.length < 10 && (
                   <span
@@ -118,17 +115,13 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: a
           </ModalBody>
           <ModalFooter>
             {active && (
-              <Button
-                color={`primary-${selectedTheme}`}
-                style={applicationStyle.buttonStyle}
-                onClick={handleAccept}
-              >
+              <GluuButton theme="dark" onClick={handleAccept}>
                 {t('actions.yes')}
-              </Button>
-            )}{' '}
-            <Button color={`primary-${selectedTheme}`} onClick={closeModal}>
+              </GluuButton>
+            )}
+            <GluuButton theme="dark" onClick={closeModal}>
               {t('actions.no')}
-            </Button>
+            </GluuButton>
           </ModalFooter>
         </Modal>
       )}

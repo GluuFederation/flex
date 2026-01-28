@@ -173,8 +173,11 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
   const toggle = () => setModal(!modal)
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme || DEFAULT_THEME
-  const themeColors = getThemeColor(selectedTheme)
-  const bgThemeColor = { background: themeColors.background }
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+  const bgThemeColor = useMemo(
+    () => ({ background: themeColors.background }),
+    [themeColors.background],
+  )
 
   const sessionResourceId = ADMIN_UI_RESOURCES.Session
   const sessionScopes = useMemo(

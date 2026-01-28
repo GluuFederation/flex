@@ -74,6 +74,9 @@ const CustomScriptListPage: React.FC = () => {
 
   const selectedTheme = useMemo(() => theme?.state?.theme || DEFAULT_THEME, [theme?.state?.theme])
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+  const darkThemeColors = useMemo(() => getThemeColor('dark'), [])
+  const lightThemeColors = useMemo(() => getThemeColor('light'), [])
+
   const isDarkTheme = useMemo(() => selectedTheme === THEME_DARK, [selectedTheme])
 
   const scriptsResourceId = ADMIN_UI_RESOURCES.Scripts
@@ -228,61 +231,117 @@ const CustomScriptListPage: React.FC = () => {
       {
         title: t('fields.description'),
         field: 'description',
-        render: (rowData: ScriptTableRow) => (
-          <Typography
-            variant="body2"
-            sx={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              maxWidth: 300,
-              color: isDarkTheme ? customColors.primaryDark : themeColors.fontColor,
-              opacity: rowData.enabled ? 0.9 : 0.6,
-            }}
-          >
-            {rowData.description || '—'}
-          </Typography>
-        ),
+        render: (rowData: ScriptTableRow) => {
+          const isEnabled = rowData.enabled === true
+          return (
+            <Typography
+              variant="body2"
+              sx={{
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                maxWidth: 300,
+                color: isEnabled ? customColors.white : lightThemeColors.fontColor,
+                opacity: isEnabled ? 0.9 : 0.6,
+              }}
+            >
+              {rowData.description || '—'}
+            </Typography>
+          )
+        },
       },
       {
         title: t('fields.script_type'),
         field: 'scriptType',
-        render: (rowData: ScriptTableRow) => (
-          <Chip
-            label={rowData.scriptType}
-            size="small"
-            variant="outlined"
-            sx={{
-              'fontFamily': 'monospace',
-              'fontSize': '0.75rem',
-              'borderRadius': 1,
-              'color': isDarkTheme ? themeColors.fontColor : customColors.primaryDark,
-              'borderColor': isDarkTheme ? themeColors.borderColor : customColors.lightBorder,
-              '& .MuiChip-label': {
-                color: customColors.primaryDark,
-              },
-            }}
-          />
-        ),
+        render: (rowData: ScriptTableRow) => {
+          const isEnabled = rowData.enabled === true
+          return (
+            <Chip
+              label={rowData.scriptType}
+              size="small"
+              variant="outlined"
+              sx={{
+                'fontFamily': 'monospace',
+                'fontSize': '0.75rem',
+                'borderRadius': 1,
+                'color': isEnabled ? darkThemeColors.fontColor : customColors.primaryDark,
+                'borderColor': isEnabled ? darkThemeColors.borderColor : customColors.lightBorder,
+                '& .MuiChip-label': {
+                  color: isEnabled ? darkThemeColors.fontColor : customColors.primaryDark,
+                },
+              }}
+            />
+          )
+        },
       },
       {
         title: t('options.enabled'),
         field: 'enabled',
         type: 'boolean',
-        render: (rowData: ScriptTableRow) => (
-          <Chip
-            label={rowData.enabled ? t('options.yes') : t('options.no')}
-            size="small"
-            sx={{
-              minWidth: 60,
-              fontWeight: 500,
-              color: isDarkTheme ? customColors.primaryDark : themeColors.fontColor,
-            }}
-          />
-        ),
+        render: (rowData: ScriptTableRow) => {
+          return (
+            <Chip
+              label={rowData.enabled ? t('options.yes') : t('options.no')}
+              size="small"
+              sx={{
+                minWidth: 60,
+                fontWeight: 500,
+                backgroundColor: darkThemeColors.background,
+                color: darkThemeColors.fontColor,
+                opacity: rowData.enabled ? 1 : 0.6,
+              }}
+            />
+          )
+        },
+      },
+      {
+        title: 'Actions',
+        field: 'actions',
+        sorting: false,
+        render: (rowData: ScriptTableRow) => {
+          const isEnabled = rowData.enabled === true
+          const iconColor = isEnabled ? customColors.white : customColors.darkGray
+          return (
+            <Box sx={{ display: 'flex', gap: 1 }}>
+              {canWrite && (
+                <Tooltip title={t('messages.edit_script')}>
+                  <IconButton size="small" onClick={() => handleEdit(rowData)}>
+                    <EditOutlined sx={{ fontSize: 20, color: iconColor }} />
+                  </IconButton>
+                </Tooltip>
+              )}
+              {canRead && (
+                <Tooltip title={t('messages.view_script_details')}>
+                  <IconButton size="small" onClick={() => handleView(rowData)}>
+                    <VisibilityOutlined sx={{ fontSize: 20, color: iconColor }} />
+                  </IconButton>
+                </Tooltip>
+              )}
+              {canDelete && (
+                <Tooltip title={t('messages.delete_script')}>
+                  <IconButton size="small" onClick={() => handleDeleteClick(rowData)}>
+                    <DeleteOutlined sx={{ fontSize: 20, color: iconColor }} />
+                  </IconButton>
+                </Tooltip>
+              )}
+            </Box>
+          )
+        },
       },
     ],
-    [t, themeColors, customColors, isDarkTheme],
+    [
+      t,
+      themeColors,
+      darkThemeColors,
+      customColors,
+      isDarkTheme,
+      canWrite,
+      canRead,
+      canDelete,
+      handleEdit,
+      handleView,
+      handleDeleteClick,
+    ],
   )
 
   const actions: Action<ScriptTableRow>[] = useMemo(() => {
@@ -311,71 +370,10 @@ const CustomScriptListPage: React.FC = () => {
         onClick: handleAdd,
         tooltip: t('messages.add_script'),
       })
-
-      actionList.push({
-        icon: () => (
-          <Tooltip title={t('messages.edit_script')}>
-            <EditOutlined
-              sx={{
-                fontSize: 20,
-                color: customColors.darkGray,
-              }}
-            />
-          </Tooltip>
-        ),
-        tooltip: t('messages.edit_script'),
-        onClick: (_event, rowData) => handleEdit(rowData as ScriptTableRow),
-      })
-    }
-
-    if (canRead) {
-      actionList.push({
-        icon: () => (
-          <Tooltip title={t('messages.view_script_details')}>
-            <VisibilityOutlined
-              sx={{
-                fontSize: 20,
-                color: customColors.darkGray,
-              }}
-            />
-          </Tooltip>
-        ),
-        tooltip: t('messages.view_script_details'),
-        onClick: (_event, rowData) => handleView(rowData as ScriptTableRow),
-      })
-    }
-
-    if (canDelete) {
-      actionList.push({
-        icon: () => (
-          <Tooltip title={t('messages.delete_script')}>
-            <DeleteOutlined
-              sx={{
-                fontSize: 20,
-                color: customColors.darkGray,
-              }}
-            />
-          </Tooltip>
-        ),
-        tooltip: t('messages.delete_script'),
-        onClick: (_event, rowData) => handleDeleteClick(rowData as ScriptTableRow),
-      })
     }
 
     return actionList
-  }, [
-    canRead,
-    canWrite,
-    canDelete,
-    t,
-    handleAdd,
-    handleEdit,
-    handleView,
-    handleDeleteClick,
-    themeColors,
-    customColors,
-    isDarkTheme,
-  ])
+  }, [canWrite, t, handleAdd, themeColors, customColors])
 
   const tableOptions = useMemo(
     () => ({
@@ -392,17 +390,31 @@ const CustomScriptListPage: React.FC = () => {
       },
       rowStyle: (rowData: ScriptTableRow) => {
         const hasError = rowData.scriptError?.stackTrace
-        const baseColor = customColors.white
-        const textColor = customColors.darkGray
+
+        if (hasError) {
+          return {
+            backgroundColor: `${customColors.accentRed}15`,
+            color: customColors.darkGray,
+            fontSize: '0.875rem',
+          }
+        }
+
+        if (rowData.enabled) {
+          return {
+            backgroundColor: darkThemeColors.background,
+            color: darkThemeColors.fontColor,
+            fontSize: '0.875rem',
+          }
+        }
+
         return {
-          backgroundColor: hasError ? `${customColors.accentRed}15` : baseColor,
-          color: textColor,
+          backgroundColor: customColors.white,
+          color: customColors.darkGray,
           fontSize: '0.875rem',
         }
       },
-      actionsColumnIndex: -1,
     }),
-    [pageSize, themeColors, customColors, isDarkTheme],
+    [pageSize, themeColors, darkThemeColors, customColors, isDarkTheme],
   )
 
   if (error) {

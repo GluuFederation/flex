@@ -23,6 +23,7 @@ import { useDebounce } from 'Utils/hooks'
 import SetTitle from 'Utils/SetTitle'
 import { useMauStats } from 'Plugins/admin/components/MAU/hooks'
 import { useHealthStatus } from 'Plugins/admin/components/Health/hooks'
+import { DEFAULT_STATUS } from 'Plugins/admin/components/Health/constants'
 import type { CedarPermissionsState } from '@/cedarling/types'
 import type { MauDateRange } from 'Plugins/admin/components/MAU/types'
 import DashboardChart from './Chart/DashboardChart'
@@ -246,8 +247,17 @@ const DashboardPage = () => {
   const getServiceStatus = useCallback(
     (key: string) => {
       const service = services.find((s) => s.name === key)
-      return service?.status ?? 'unknown'
+      return service?.status ?? DEFAULT_STATUS
     },
+    [services],
+  )
+
+  const visibleStatusDetails = useMemo(
+    () =>
+      STATUS_DETAILS.filter(({ key }) => {
+        const service = services.find((s) => s.name === key)
+        return service?.status === 'up' || service?.status === 'down'
+      }),
     [services],
   )
 
@@ -340,7 +350,10 @@ const DashboardPage = () => {
           <Grid item xs={12}>
             <div className={classes.statusSection}>
               <div className={classes.statusContainer}>
-                {STATUS_DETAILS.map(({ label, key }) => (
+                <GluuText variant="span" className={classes.statusTitle}>
+                  {t('dashboard.system_status')}:
+                </GluuText>
+                {visibleStatusDetails.map(({ label, key }) => (
                   <StatusIndicator
                     key={label}
                     label={label}
@@ -375,32 +388,15 @@ const DashboardPage = () => {
                   <div className={classes.userInfo}>
                     <div className={classes.userInfoTitle}>{t('dashboard.user_info')}</div>
                     <div className={classes.userInfoContent}>
-                      <div className={classes.userInfoColumn}>
-                        {userInfo
-                          .filter((_, index) => index % 2 === 0)
-                          .map((item) => (
-                            <UserInfoItem
-                              key={item.text}
-                              item={item}
-                              classes={classes}
-                              isStatus={item.isStatus}
-                              t={t}
-                            />
-                          ))}
-                      </div>
-                      <div className={classes.userInfoColumn}>
-                        {userInfo
-                          .filter((_, index) => index % 2 === 1)
-                          .map((item) => (
-                            <UserInfoItem
-                              key={item.text}
-                              item={item}
-                              classes={classes}
-                              isStatus={item.isStatus}
-                              t={t}
-                            />
-                          ))}
-                      </div>
+                      {userInfo.map((item) => (
+                        <UserInfoItem
+                          key={item.text}
+                          item={item}
+                          classes={classes}
+                          isStatus={item.isStatus}
+                          t={t}
+                        />
+                      ))}
                     </div>
                   </div>
                 </Grid>
@@ -447,7 +443,9 @@ const DashboardPage = () => {
                         className={classes.legendColor}
                         style={{ backgroundColor: config.color }}
                       />
-                      <span>{t(config.translationKey)}</span>
+                      <GluuText variant="span" className={classes.legendLabel}>
+                        {t(config.translationKey)}
+                      </GluuText>
                     </div>
                   ))}
                 </div>

@@ -1,4 +1,5 @@
 import { memo } from 'react'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 
 type ClassesType = Record<string, string>
 
@@ -20,7 +21,11 @@ export const UserInfoItem = memo<UserInfoItemProps>(({ item, classes, isStatus, 
     return (
       <div className={classes.userInfoItem}>
         <div className={classes.userInfoText}>{item.text}:</div>
-        <span className={isActive ? classes.greenBlock : classes.redBlock}>{displayValue}</span>
+        <div className={classes.userInfoValue}>
+          <GluuText variant="span" className={isActive ? classes.greenBlock : classes.redBlock}>
+            {displayValue}
+          </GluuText>
+        </div>
       </div>
     )
   }

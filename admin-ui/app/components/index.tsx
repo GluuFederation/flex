@@ -10,6 +10,8 @@ import Divider from './Divider'
 import EmptyLayout from './EmptyLayout'
 import ExtendedDropdown from './ExtendedDropdown'
 import FloatGrid from './FloatGrid'
+import { GluuBadge } from './GluuBadge'
+import { GluuButton } from './GluuButton'
 import IconWithBadge from './IconWithBadge'
 import InputGroupAddon from './InputGroupAddon'
 //import { Layout, withPageConfig, setupPage } from './Layout'
@@ -112,6 +114,8 @@ export type {
   DropdownValue,
 } from './GluuDropdown/types'
 export type { DropdownPosition as ThemeDropdownPosition } from './GluuDropdown/types'
+export type { GluuBadgeProps, BadgeSize, BadgeTheme } from './GluuBadge/types'
+export type { GluuButtonProps, ButtonSize, ButtonTheme } from './GluuButton/types'
 export {
   Accordion,
   AccordionHeader,
@@ -126,6 +130,8 @@ export {
   EmptyLayout,
   ExtendedDropdown,
   FloatGrid,
+  GluuBadge,
+  GluuButton,
   IconWithBadge,
   InputGroupAddon,
   Layout,

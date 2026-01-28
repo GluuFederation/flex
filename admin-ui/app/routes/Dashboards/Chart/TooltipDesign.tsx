@@ -2,6 +2,7 @@ import React, { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { fontFamily, fontSizes } from '@/styles/fonts'
 import customColors, { hexToRgb } from '@/customColors'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import type { TooltipDesignProps, ChartDataKey } from '../types'
 
 const TooltipDesign = memo(
@@ -55,7 +56,10 @@ const TooltipDesign = memo(
                 marginBottom: payload.length > 1 && idx !== payload.length - 1 ? '8px' : '0',
               }}
             >
-              <span style={{ fontWeight: 600 }}>{label}</span> : {value}
+              <GluuText variant="span" style={{ fontWeight: 600 }}>
+                {label}
+              </GluuText>{' '}
+              : {value}
             </div>
           )
         })}

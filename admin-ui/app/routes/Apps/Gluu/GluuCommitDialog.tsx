@@ -13,7 +13,8 @@ import {
 } from 'reactstrap'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
-import { DEFAULT_THEME } from '@/context/theme/constants'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import getThemeColor from '@/context/theme/config'
 import PropTypes from 'prop-types'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
@@ -26,6 +27,7 @@ import customColors from '@/customColors'
 import type { RootState } from '@/redux/sagas/types/audit'
 import type { GluuCommitDialogOperation, GluuCommitDialogProps, JsonValue } from './types/index'
 import { Alert, Box } from '@mui/material'
+import { GluuButton } from '@/components'
 
 const USER_MESSAGE = 'user_action_message'
 
@@ -52,6 +54,9 @@ const GluuCommitDialog = ({
 
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state.theme || DEFAULT_THEME
+  const isDark = selectedTheme === THEME_DARK
+  const inverseTheme = isDark ? 'light' : 'dark'
+  const inverseColors = getThemeColor(inverseTheme)
   const [active, setActive] = useState(false)
   const [isOpen, setIsOpen] = useState<number | null>(null)
   const [userMessage, setUserMessage] = useState('')
@@ -246,6 +251,7 @@ const GluuCommitDialog = ({
                     }
                     rows="4"
                     value={userMessage}
+                    style={{ borderColor: inverseColors.borderColor }}
                   />
                   {(userMessage.length < 10 || userMessage.length > 512) && (
                     <span
@@ -264,15 +270,15 @@ const GluuCommitDialog = ({
           </ModalBody>
           <ModalFooter>
             {active && (
-              <Button color={`primary-${selectedTheme}`} onClick={handleAccept}>
+              <GluuButton theme="dark" onClick={handleAccept}>
                 <i className="fa fa-check-circle me-2"></i>
                 {t('actions.accept')}
-              </Button>
+              </GluuButton>
             )}
-            <Button color={`primary-${selectedTheme}`} onClick={closeModal}>
+            <GluuButton theme="dark" onClick={closeModal}>
               <i className="fa fa-remove me-2"></i>
               {t('actions.no')}
-            </Button>
+            </GluuButton>
           </ModalFooter>
         </Modal>
       )}

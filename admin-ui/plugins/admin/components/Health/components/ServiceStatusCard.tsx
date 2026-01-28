@@ -16,8 +16,6 @@ function getStatusMessage(service: ServiceHealth, t: TFunction): string {
       return t('messages.service_status_up')
     case 'down':
       return t('messages.service_status_down')
-    case 'degraded':
-      return t('messages.service_status_degraded')
     default:
       return t('messages.service_status_unknown')
   }
@@ -48,7 +46,7 @@ const ServiceStatusCard: React.FC<ServiceStatusCardProps> = ({ service, themeCol
       <CardBody>
         <p
           className={service.error ? 'text-danger mb-0' : 'mb-0'}
-          style={!service.error ? { color: customColors.primaryDark } : undefined}
+          style={!service.error ? { color: themeColors.fontColor } : undefined}
         >
           {statusMessage}
         </p>

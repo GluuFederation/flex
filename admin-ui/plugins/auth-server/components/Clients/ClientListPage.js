@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { Link, Paper, TablePagination } from '@mui/material'
-import { Card, CardBody, Badge } from 'Components'
+import { Card, CardBody, GluuBadge } from 'Components'
 import { getScopes, getScopeByInum } from 'Plugins/auth-server/redux/features/scopeSlice'
 import { resetUMAResources } from 'Plugins/auth-server/redux/features/umaResourceSlice'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
@@ -38,7 +38,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
-import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 function ClientListPage() {
   const { t } = useTranslation()
@@ -73,7 +73,6 @@ function ClientListPage() {
   const clientResourceId = useMemo(() => ADMIN_UI_RESOURCES.Clients, [])
   const selectedTheme = useMemo(() => theme?.state?.theme || DEFAULT_THEME, [theme?.state?.theme])
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
-  const isDarkTheme = useMemo(() => selectedTheme === THEME_DARK, [selectedTheme])
   const bgThemeColor = useMemo(
     () => ({ background: themeColors.background }),
     [themeColors.background],
@@ -150,11 +149,6 @@ function ClientListPage() {
       })
     },
     [nonExtensibleClients],
-  )
-
-  const getTrustedTheme = useCallback(
-    (status) => (status ? `primary-${selectedTheme}` : 'secondary'),
-    [selectedTheme],
   )
 
   const clients = useMemo(
@@ -326,26 +320,40 @@ function ClientListPage() {
       {
         title: `${t('fields.grant_types')}`,
         field: 'grantTypes',
-        render: (rowData) =>
-          rowData?.grantTypes?.map((data) => (
-            <div key={data} style={{ maxWidth: 140, overflow: 'auto' }}>
-              <Badge
-                color={`primary-${selectedTheme}`}
+        render: (rowData) => (
+          <div
+            style={{
+              maxWidth: 200,
+              overflowX: 'auto',
+              overflowY: 'visible',
+            }}
+          >
+            {rowData?.grantTypes?.map((data, index) => (
+              <div
+                key={`${data}-${index}`}
                 style={{
+                  fontSize: '13px',
                   color: customColors.primaryDark,
+                  whiteSpace: 'nowrap',
+                  padding: '2px 0',
                 }}
               >
                 {data}
-              </Badge>
-            </div>
-          )),
+              </div>
+            ))}
+          </div>
+        ),
       },
       {
         title: `${t('fields.scopes')}`,
         field: 'scopes',
         render: (rowData) => {
           return (
-            <Link className="common-link" onClick={() => handleSetScopeData(rowData.scopes)}>
+            <Link
+              className="common-link"
+              onClick={() => handleSetScopeData(rowData.scopes)}
+              style={{ cursor: 'pointer' }}
+            >
               {rowData.scopes?.length || '0'}
             </Link>
           )
@@ -354,17 +362,14 @@ function ClientListPage() {
       {
         title: `${t('fields.is_trusted_client')}`,
         field: 'trustedClient',
-        type: 'boolean',
-        render: (rowData) => (
-          <Badge
-            color={getTrustedTheme(rowData.trustedClient)}
-            style={{
-              color: customColors.primaryDark,
-            }}
-          >
-            {rowData.trustedClient ? t('options.yes') : t('options.no')}
-          </Badge>
-        ),
+        render: (rowData) => {
+          const value = rowData.trustedClient === true
+          return (
+            <GluuBadge theme="dark" style={value ? {} : { opacity: 0.6 }}>
+              {value ? t('options.yes') : t('options.no')}
+            </GluuBadge>
+          )
+        },
       },
       {
         title: `${t('fields.organization')}`,
@@ -374,16 +379,7 @@ function ClientListPage() {
         searchable: true,
       },
     ],
-    [
-      t,
-      selectedTheme,
-      getTrustedTheme,
-      handleSetScopeData,
-      shouldHideOrgColumn,
-      clients,
-      isDarkTheme,
-      themeColors.fontColor,
-    ],
+    [t, selectedTheme, handleSetScopeData, shouldHideOrgColumn, clients],
   )
 
   const tableOptions = useMemo(
