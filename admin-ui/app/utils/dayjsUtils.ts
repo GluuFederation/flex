@@ -70,6 +70,12 @@ export const getCurrentDate = (): Dayjs => {
   return dayjs()
 }
 
+/**
+ * Create a Dayjs instance from a value.
+ * Accepts string | number | Date | Dayjs | null; when date is null/undefined, returns the current date/time.
+ * If a format is provided, parsing is lenient (non-strict) and may normalize overflow dates; use parseDateStrict for strict validation.
+ * Always returns a Dayjs instance.
+ */
 export const createDate = (
   date?: string | number | Date | Dayjs | null,
   format?: string,
