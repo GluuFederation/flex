@@ -1,4 +1,4 @@
-import { formatDate, isValidDate } from '@/utils/dayjsUtils'
+import { parseDateStrict } from '@/utils/dayjsUtils'
 import { CustomObjectAttribute } from 'JansConfigApi'
 import { BIRTHDATE_ATTR, JANS_ADMIN_UI_ROLE_ATTR } from '../common/Constants'
 import {
@@ -51,7 +51,8 @@ export const normalizeSingleValue = (value: FormValueEntry, attributeName: strin
     if (!birthdatePattern.test(normalized)) {
       return ''
     }
-    return isValidDate(normalized) ? formatDate(normalized, 'YYYY-MM-DD') : ''
+    const parsed = parseDateStrict(normalized, 'YYYY-MM-DD')
+    return parsed ? parsed.format('YYYY-MM-DD') : ''
   }
   return normalized
 }

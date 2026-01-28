@@ -92,11 +92,7 @@ const UserDetailViewPage = ({ row }: RowProps) => {
                       ),
                     )}
                     isDirect={true}
-                    value={sanitizeValue(
-                      typeof valueToShow === 'boolean'
-                        ? JSON.stringify(valueToShow)
-                        : String(valueToShow),
-                    )}
+                    value={sanitizeValue(String(valueToShow))}
                   />
                 </Col>
               ) : null}

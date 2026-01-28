@@ -12,6 +12,7 @@ import {
 import './styles.css'
 import TooltipDesign from './TooltipDesign'
 import customColors from '@/customColors'
+import { createDate, addDate, isSameOrBeforeDate } from '@/utils/dayjsUtils'
 import type { DashboardChartProps, MauStatEntry } from '../types'
 
 const DashboardChart = ({ statData, startMonth, endMonth }: DashboardChartProps) => {
@@ -20,30 +21,14 @@ const DashboardChart = ({ statData, startMonth, endMonth }: DashboardChartProps)
       return []
     }
 
-    const parseYearMonth = (value: number | string) => {
-      const s = String(value)
-      if (s.length !== 6) {
-        return null
-      }
-      const year = Number(s.slice(0, 4))
-      const month = Number(s.slice(4, 6))
-      if (!Number.isFinite(year) || !Number.isFinite(month) || month < 1 || month > 12) {
-        return null
-      }
-      return { year, month }
-    }
+    const start = createDate(String(startMonth), 'YYYYMM')
+    const end = createDate(String(endMonth), 'YYYYMM')
 
-    const start = parseYearMonth(startMonth)
-    const end = parseYearMonth(endMonth)
-
-    if (!start || !end) {
+    if (!start.isValid() || !end.isValid()) {
       return []
     }
 
-    const startIndex = start.year * 12 + (start.month - 1)
-    const endIndex = end.year * 12 + (end.month - 1)
-
-    if (startIndex > endIndex) {
+    if (!isSameOrBeforeDate(start, end, 'month')) {
       return []
     }
 
@@ -51,10 +36,9 @@ const DashboardChart = ({ statData, startMonth, endMonth }: DashboardChartProps)
     statData.forEach((entry) => byMonth.set(entry.month, entry))
     const prepareStat: MauStatEntry[] = []
 
-    for (let idx = startIndex; idx <= endIndex; idx += 1) {
-      const year = Math.floor(idx / 12)
-      const month = (idx % 12) + 1
-      const monthNum = year * 100 + month
+    let current = start
+    while (isSameOrBeforeDate(current, end, 'month')) {
+      const monthNum = Number(current.format('YYYYMM'))
       const available = byMonth.get(monthNum)
 
       if (available) {
@@ -68,6 +52,7 @@ const DashboardChart = ({ statData, startMonth, endMonth }: DashboardChartProps)
           authz_code_idtoken_count: 0,
         })
       }
+      current = addDate(current, 1, 'month')
     }
 
     return prepareStat
