@@ -357,10 +357,10 @@ const WebhookListPage: React.FC = () => {
           const isEnabled = rowData.jansEnabled === true
           return (
             <Chip
-              label={isEnabled ? t('options.yes') : t('options.no')}
+              label={isEnabled ? t('options.enabled') : t('options.disabled')}
               size="small"
               sx={{
-                minWidth: 60,
+                minWidth: 80,
                 fontWeight: 500,
                 backgroundColor: darkThemeColors.background,
                 color: darkThemeColors.fontColor,
