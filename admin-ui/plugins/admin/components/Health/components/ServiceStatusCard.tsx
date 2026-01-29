@@ -46,7 +46,7 @@ const ServiceStatusCard: React.FC<ServiceStatusCardProps> = ({ service, themeCol
       <CardBody>
         <p
           className={service.error ? 'text-danger mb-0' : 'mb-0'}
-          style={!service.error ? { color: themeColors.fontColor } : undefined}
+          style={!service.error ? { color: customColors.primaryDark } : undefined}
         >
           {statusMessage}
         </p>

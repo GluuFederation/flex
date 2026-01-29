@@ -1,12 +1,15 @@
-import React, { memo, useMemo } from 'react'
+import React, { memo, useMemo, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Dayjs } from 'dayjs'
 import Grid from '@mui/material/Grid'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import customColors, { hexToRgb } from '@/customColors'
+import { hexToRgb } from '@/customColors'
 import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
+import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 
 interface DateRangeProps {
   startDate: Dayjs
@@ -31,25 +34,27 @@ const DateRange = memo(
     onEndDateAccept,
     textColor,
     backgroundColor,
-    isDark = false,
+    isDark: _isDark = false,
     dateFormat = 'MM/DD/YYYY',
   }: DateRangeProps) => {
     const { t } = useTranslation()
+    const theme = useContext(ThemeContext) as { state?: { theme?: string } } | undefined
+    const selectedTheme = theme?.state?.theme ?? DEFAULT_THEME
+    const globalThemeColors = getThemeColor(selectedTheme)
+    const isDarkTheme = selectedTheme === THEME_DARK
 
     const themeColors = useMemo(() => {
-      const labelBg = backgroundColor || (isDark ? customColors.darkCardBg : customColors.white)
-      const inputBg = isDark ? customColors.darkInputBg : customColors.lightInputBg
-      const inputText = textColor || (isDark ? customColors.white : customColors.primaryDark)
-      const labelText = textColor || (isDark ? customColors.white : customColors.primaryDark)
-      const borderColor = isDark ? 'transparent' : customColors.borderInput
-      const popupBg = isDark ? customColors.darkCardBg : customColors.white
-      const selectedBg = isDark ? customColors.darkBorder : customColors.primaryDark
-      const selectedText = customColors.white
-      const hoverBg = isDark
-        ? `rgba(${hexToRgb(customColors.white)}, 0.08)`
-        : `rgba(${hexToRgb(customColors.black)}, 0.04)`
-      const placeholderColor = isDark ? customColors.white : customColors.primaryDark
-      const iconColor = isDark ? customColors.white : customColors.primaryDark
+      const labelBg = backgroundColor || globalThemeColors.background
+      const inputBg = globalThemeColors.inputBackground
+      const inputText = textColor || globalThemeColors.fontColor
+      const labelText = textColor || globalThemeColors.fontColor
+      const borderColor = isDarkTheme ? 'transparent' : globalThemeColors.borderColor
+      const popupBg = globalThemeColors.dashboard.supportCard
+      const selectedBg = globalThemeColors.background
+      const selectedText = globalThemeColors.fontColor
+      const hoverBg = `rgba(${hexToRgb(globalThemeColors.fontColor)}, ${isDarkTheme ? 0.08 : 0.04})`
+      const placeholderColor = globalThemeColors.fontColor
+      const iconColor = globalThemeColors.fontColor
 
       return {
         labelBackground: labelBg,
@@ -64,7 +69,7 @@ const DateRange = memo(
         placeholderColor,
         iconColor,
       }
-    }, [backgroundColor, textColor, isDark])
+    }, [backgroundColor, textColor, isDarkTheme, globalThemeColors])
 
     const commonInputStyles = useMemo(
       () => ({
@@ -142,7 +147,13 @@ const DateRange = memo(
             },
           },
           '& .MuiPickersCalendarHeader-root': {
-            color: themeColors.inputTextColor,
+            'color': themeColors.inputTextColor,
+            '& .MuiPickersCalendarHeader-switchViewButton': {
+              color: themeColors.inputTextColor,
+            },
+            '& .MuiPickersCalendarHeader-switchViewIcon': {
+              color: themeColors.inputTextColor,
+            },
           },
           '& .MuiPickersDay-root': {
             'color': themeColors.inputTextColor,
@@ -159,6 +170,11 @@ const DateRange = memo(
           },
           '& .MuiDayCalendar-weekContainer': {
             '& .MuiTypography-root': {
+              color: themeColors.inputTextColor,
+            },
+          },
+          '& .MuiDayCalendar-header': {
+            '& .MuiDayCalendar-weekDayLabel': {
               color: themeColors.inputTextColor,
             },
           },

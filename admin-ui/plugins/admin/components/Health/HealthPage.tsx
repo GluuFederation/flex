@@ -42,7 +42,15 @@ const HealthPage: React.FC = () => {
                 )}
               </Col>
               <Col xs="auto">
-                <Button color={`primary-${state.theme}`} onClick={handleRefresh} disabled={loading}>
+                <Button
+                  style={{
+                    backgroundColor: themeColors.background,
+                    color: themeColors.fontColor,
+                    border: 'none',
+                  }}
+                  onClick={handleRefresh}
+                  disabled={loading}
+                >
                   <i className={`fa fa-refresh me-2 ${loading ? 'fa-spin' : ''}`}></i>
                   {t('actions.refresh')}
                 </Button>

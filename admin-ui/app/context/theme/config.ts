@@ -11,6 +11,7 @@ const createLightTheme = () => {
     lightBackground: customColors.whiteSmoke,
     fontColor: text,
     borderColor: border,
+    inputBackground: customColors.lightInputBg,
     menu: {
       background: customColors.white,
       color: text,
@@ -37,6 +38,7 @@ const createDarkTheme = () => {
     lightBackground: customColors.primaryDark,
     fontColor: text,
     borderColor: border,
+    inputBackground: customColors.darkInputBg,
     menu: {
       background: customColors.primaryDark,
       color: text,

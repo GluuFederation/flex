@@ -12,6 +12,7 @@ import { getProfileDetails } from 'Redux/features/ProfileDetailsSlice'
 import { randomAvatar } from '../../../utilities'
 import getThemeColor from '../../../context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
+import customColors from '@/customColors'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
@@ -193,7 +194,11 @@ const ProfileDetails: React.FC = () => {
                           <Skeleton animation="wave" height={SKELETON_HEIGHT} />
                         ) : (
                           <Button
-                            color={`primary-${selectedTheme}`}
+                            style={{
+                              backgroundColor: 'transparent',
+                              color: customColors.primaryDark,
+                              border: `1px solid ${themeColors.background}`,
+                            }}
                             onClick={navigateToUserManagement}
                           >
                             <i className="fa fa-pencil me-2" />
