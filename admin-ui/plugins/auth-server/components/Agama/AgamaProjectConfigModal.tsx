@@ -11,6 +11,7 @@ import { isEmpty } from 'lodash'
 import AceEditor from 'react-ace'
 import { useGetAgamaPrjByName, useGetAgamaPrjConfigs, usePutAgamaPrj } from 'JansConfigApi'
 import { DEFAULT_THEME, THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
+import customColors from '@/customColors'
 import type {
   AgamaProjectConfigModalProps,
   FlowError,
@@ -19,6 +20,12 @@ import type {
   JsonObject,
   ApiError,
 } from './types'
+
+const buttonStyle = {
+  backgroundColor: customColors.primaryDark,
+  color: customColors.white,
+  border: 'none',
+}
 
 const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
   isOpen,
@@ -325,15 +332,17 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
                     sx={{ margin: '8px' }}
                     style={{ gap: '12px' }}
                   >
-                    <Button onClick={handleExportSampleConfig}>
+                    <Button style={buttonStyle} onClick={handleExportSampleConfig}>
                       {t('fields.export_sample_config')}
                     </Button>
 
-                    <Button onClick={handleExportCurrentConfig}>
+                    <Button style={buttonStyle} onClick={handleExportCurrentConfig}>
                       {t('fields.export_current_config')}
                     </Button>
 
-                    <Button onClick={handleImportConfig}>{t('fields.import_configuration')}</Button>
+                    <Button style={buttonStyle} onClick={handleImportConfig}>
+                      {t('fields.import_configuration')}
+                    </Button>
                   </Box>
                 ) : (
                   <>
@@ -398,7 +407,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
       </ModalBody>
       <ModalFooter>
         {!isEmpty(projectConfigs) && (
-          <Button onClick={() => !isCopied && copyToClipboard()}>
+          <Button style={buttonStyle} onClick={() => !isCopied && copyToClipboard()}>
             {isCopied ? (
               <>{t('actions.configuration_copied')}</>
             ) : (
@@ -406,7 +415,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
             )}
           </Button>
         )}
-        <Button color={`primary-${selectedTheme}`} onClick={handler}>
+        <Button style={buttonStyle} onClick={handler}>
           {t('actions.close')}
         </Button>
       </ModalFooter>
