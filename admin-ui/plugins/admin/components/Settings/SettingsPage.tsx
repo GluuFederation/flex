@@ -469,6 +469,7 @@ const SettingsPage: React.FC = () => {
                       backgroundColor: customColors.primaryDark,
                       color: customColors.white,
                       border: 'none',
+                      marginBottom: formik.values.additionalParameters.length > 0 ? 0 : '16px',
                     }}
                     type="button"
                     disabled={!canWriteSettings}
