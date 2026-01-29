@@ -48,7 +48,6 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       ...cardBorderStyle,
       borderRadius: BORDER_RADIUS.DEFAULT,
       padding: '38.5px',
-      paddingBottom: '38.5px',
       backgroundColor: themeColors.cardBg,
       position: 'relative',
     },
