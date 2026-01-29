@@ -447,11 +447,13 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
     chartLegend: {
       display: 'flex',
       flexDirection: 'row',
-      flexWrap: 'nowrap',
-      justifyContent: 'space-between',
+      flexWrap: 'wrap',
+      justifyContent: 'center',
       alignItems: 'center',
+      gap: '12px',
       width: '100%',
-      marginTop: '4px',
+      marginTop: '8px',
+      padding: '0 8px',
     },
     legendItem: {
       fontFamily,
@@ -462,7 +464,6 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       fontSize: fontSizes.sm,
       color: themeColors.text,
       flex: '0 0 auto',
-      whiteSpace: 'nowrap',
     },
     legendColor: {
       width: '20px',
