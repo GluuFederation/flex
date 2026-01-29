@@ -1,28 +1,64 @@
-// Custom Project Colors
-// Define all your custom colors here for easy maintenance
-
 export const customColors = {
   logo: '#00b875',
   darkGray: '#323c47',
   accentRed: '#b3424a',
   lightBlue: '#3573a6',
-  lightCyan: '#bdd4d5',
   lightGray: '#eaecf1',
   paleYellow: '#cfd76f',
-  mutedTeal: '#669da2',
-  mint: '#bee0d2',
   lightGreen: '#7bc257',
   orange: '#ff993a',
   white: '#ffffff',
   black: '#000000',
   whiteSmoke: '#f5f5f5',
-  greenThemeLightBackground: '#abebd4',
-  blueThemelightBackground: '#c9def6',
-  blueThemebackground: '#9DBDE2',
-  darkBlueThemeBackground: '#284461',
-  darkBlueMenuBackground: '#323C46',
-  darkBlueLightBackground: '#989ea7',
+
+  lightBackground: '#f6f6f6',
+  primaryDark: '#0a2540',
+  lightBorder: '#efefef',
+  darkBackground: '#0b2947',
+  darkSidebar: '#0a2540',
+  darkBorder: '#193f66',
+  darkCardBg: '#091e34',
+  darkDropdownBg: '#194169',
+  textSecondary: '#425466',
+  mauDark: '#4CAF50',
+  mauPieClientCredentials: '#64b5f6',
+  mauPieAuthCodeAccess: '#ffb74d',
+  mauTrendClientCredentials: '#5daafa',
+  mauTrendAuthCodeAccess: '#f9aa35',
+  mauTrendAuthCodeId: '#da51f0',
+  statusActive: '#00a65d',
+  statusActiveBg: '#d3f5e6',
+  statusInactive: '#f13f44',
+  statusInactiveBg: '#ffe6e7',
+  borderInput: '#ebebeb',
+  darkInputBg: '#15395d',
+  lightInputBg: '#f9fafb',
+  sidebarHoverBg: '#d3d3d3',
+  textMutedDark: '#6a8096',
+  chartPurple: '#8979ff',
+  chartCoral: '#ff928a',
+  chartCyan: '#3cc3df',
+  buttonLightBg: '#f4f6f8',
+  darkBorderGradientBase: '#00d5e6',
+  ribbonShadowColor: '#1a237e',
 } as const
+
+/**
+ * Converts a hex color string to RGB format (e.g., "#ffffff" -> "255, 255, 255").
+ * @param hex - Hex color string (with or without # prefix)
+ * @param fallback - Optional fallback RGB string to return if hex is invalid (default: "0, 0, 0")
+ * @returns RGB string in format "r, g, b" or the fallback if hex is invalid
+ */
+export const hexToRgb = (hex: string, fallback: string = '0, 0, 0'): string => {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  if (!result) {
+    return fallback
+  }
+  const r = parseInt(result[1], 16)
+  const g = parseInt(result[2], 16)
+  const b = parseInt(result[3], 16)
+  return `${r}, ${g}, ${b}`
+}
 
 export type CustomColorKeys = keyof typeof customColors
 

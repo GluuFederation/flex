@@ -1,3 +1,4 @@
+import customColors from '@/customColors'
 import type { ServiceStatusValue } from './types'
 
 export const HEALTH_CACHE_CONFIG = {
@@ -6,10 +7,8 @@ export const HEALTH_CACHE_CONFIG = {
 } as const
 
 export const STATUS_COLORS: Record<ServiceStatusValue, string> = {
-  up: '#28a745',
-  down: '#dc3545',
-  degraded: '#ffc107',
-  unknown: '#ffc107',
+  up: customColors.statusActive,
+  down: customColors.statusInactive,
 } as const
 
 export const STATUS_MAP = {
@@ -18,25 +17,21 @@ export const STATUS_MAP = {
   'up': 'up',
   'DOWN': 'down',
   'down': 'down',
-  'DEGRADED': 'degraded',
-  'degraded': 'degraded',
-  'Not present': 'unknown',
-  'not present': 'unknown',
-  'unknown': 'unknown',
+  'DEGRADED': 'down',
+  'degraded': 'down',
+  'Not present': 'down',
+  'not present': 'down',
+  'unknown': 'down',
 } as const satisfies Record<string, ServiceStatusValue>
 
-export const DEFAULT_STATUS: ServiceStatusValue = 'unknown'
+export const DEFAULT_STATUS: ServiceStatusValue = 'down'
 
 export const STATUS_LABEL_KEYS: Record<ServiceStatusValue, string> = {
   up: 'messages.status_online',
   down: 'messages.status_offline',
-  degraded: 'messages.status_degraded',
-  unknown: 'messages.status_unknown',
 } as const
 
 export const STATUS_BADGE_COLOR: Record<ServiceStatusValue, string> = {
   up: 'success',
   down: 'danger',
-  degraded: 'warning',
-  unknown: 'warning',
 } as const

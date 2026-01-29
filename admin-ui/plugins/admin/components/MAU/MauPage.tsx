@@ -18,6 +18,7 @@ import {
   TokenDistributionChart,
   TokenTrendChart,
 } from './components'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 
 const MauPage: React.FC = () => {
   const { t } = useTranslation()
@@ -89,7 +90,9 @@ const MauPage: React.FC = () => {
             <CardBody>
               <Row className="mb-4 align-items-center">
                 <Col>
-                  <h4 className="mb-0">{t('titles.mau_dashboard')}</h4>
+                  <GluuText variant="h4" className="mb-0" onLightSurface>
+                    {t('titles.mau_dashboard')}
+                  </GluuText>
                 </Col>
               </Row>
 

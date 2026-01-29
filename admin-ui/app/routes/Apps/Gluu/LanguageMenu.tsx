@@ -1,76 +1,109 @@
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect, useContext, useMemo, useCallback, memo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { DropdownToggle, DropdownMenu, DropdownItem, ButtonDropdown } from 'Components'
+import Box from '@mui/material/Box'
+import { GluuDropdown, type GluuDropdownOption, ChevronIcon } from 'Components'
 import { ThemeContext } from 'Context/theme/themeContext'
-import customColors from '@/customColors'
+import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
+import { useStyles } from './styles/LanguageMenu.style'
+import type { LanguageMenuProps } from './types'
 
-const LanguageMenu = ({ userInfo }: any) => {
-  const [isOpen, setOpen] = useState(false)
-  const initLang = localStorage.getItem('initLang') || 'en'
-  const initTheme = localStorage.getItem('initTheme') || 'darkBlack'
-  const userConfig = JSON.parse(localStorage.getItem('userConfig') as string)
-  const userConfigLang = userConfig && userConfig !== 'null' ? userConfig?.lang : {}
-  const userConfigTheme = userConfig && userConfig !== 'null' ? userConfig?.theme : {}
-  const [lang, setLang] = useState('en')
-  const [langUpdated, setLangUpdated] = useState(false)
-  const [themeUpdated, setThemeUpdated] = useState(false)
+interface UserConfig {
+  lang?: Record<string, string>
+  theme?: Record<string, string>
+}
+
+const DEFAULT_LANG = 'en'
+
+const safeParseUserConfig = (): UserConfig => {
+  try {
+    return JSON.parse(localStorage.getItem('userConfig') || '{}') || {}
+  } catch (error) {
+    console.warn('Failed to parse userConfig:', error)
+    return {}
+  }
+}
+
+const getInitialLang = (inum?: string): string => {
+  const initLang = localStorage.getItem('initLang') || DEFAULT_LANG
+  const config = safeParseUserConfig()
+  return config?.lang?.[inum || ''] || initLang
+}
+
+const LanguageMenu = memo<LanguageMenuProps>(({ userInfo }) => {
   const { t, i18n } = useTranslation()
   const { inum } = userInfo
-  const toggle = () => setOpen(!isOpen)
-  const themeContext: any = useContext(ThemeContext)
+  const themeContext = useContext(ThemeContext)
+  const currentTheme = themeContext?.state?.theme || DEFAULT_THEME
+  const isDark = currentTheme === THEME_DARK
+  const { classes } = useStyles({ isDark })
 
-  function changeLanguage(code: any) {
-    i18n.changeLanguage(code)
-    setLang(code)
-    let lang = { ...userConfigLang }
-    if (inum) {
-      lang = { [inum]: code }
-    }
-    const newConfig = { lang, theme: userConfigTheme }
-    localStorage.setItem('userConfig', JSON.stringify(newConfig))
-  }
+  const hasInitializedRef = useRef(false)
+  const prevInumRef = useRef<string | undefined>(inum)
+  const [lang, setLang] = useState<string>(() => getInitialLang(inum))
 
   useEffect(() => {
-    const currentLang = userConfigLang[inum] ? userConfigLang[inum] : initLang
-    const currentTheme = userConfigTheme[inum] ? userConfigTheme[inum] : initTheme
-
-    if (currentLang !== initLang && !langUpdated) {
-      i18n.changeLanguage(currentLang)
-      setLang(currentLang)
-      setLangUpdated(true)
+    if (prevInumRef.current !== inum) {
+      hasInitializedRef.current = false
+      prevInumRef.current = inum
     }
 
-    if (currentTheme !== initTheme && !themeUpdated) {
-      themeContext.dispatch({ type: currentTheme })
-      setThemeUpdated(true)
+    if (hasInitializedRef.current) return
+
+    const userLang = getInitialLang(inum)
+    if (userLang !== i18n.language) {
+      i18n.changeLanguage(userLang)
+      setLang(userLang)
     }
-  }, [userConfigLang, userConfigTheme, langUpdated, themeUpdated])
+
+    hasInitializedRef.current = true
+  }, [i18n, inum])
+
+  const changeLanguage = useCallback(
+    (code: string) => {
+      i18n.changeLanguage(code)
+      setLang(code)
+
+      const config = safeParseUserConfig()
+      const langConfig = { ...(config?.lang || {}) }
+      if (inum) {
+        langConfig[inum] = code
+      }
+      const newConfig = { ...config, lang: langConfig }
+      localStorage.setItem('userConfig', JSON.stringify(newConfig))
+    },
+    [i18n, inum],
+  )
+
+  const options: GluuDropdownOption<string>[] = useMemo(
+    () => [
+      { value: 'en', label: t('languages.english') },
+      { value: 'fr', label: t('languages.french') },
+      { value: 'pt', label: t('languages.portuguese') },
+      { value: 'es', label: t('languages.spanish') },
+    ],
+    [t],
+  )
 
   return (
-    <ButtonDropdown isOpen={isOpen} toggle={toggle}>
-      <DropdownToggle
-        caret
-        color="transparent"
-        style={{ border: `1px solid ${customColors.white}`, fontSize: '12px' }}
-        data-testid="ACTIVE_LANG"
-      >
-        <span style={{ color: customColors.white }}>{lang}</span>
-      </DropdownToggle>
-      <DropdownMenu>
-        <DropdownItem onClick={() => changeLanguage('en')} data-testid="ENG">
-          {t('languages.english')}
-        </DropdownItem>
-        <DropdownItem onClick={() => changeLanguage('fr')} data-testid="FRE">
-          {t('languages.french')}
-        </DropdownItem>
-        <DropdownItem onClick={() => changeLanguage('pt')} data-testid="POR">
-          {t('languages.portuguese')}
-        </DropdownItem>
-        <DropdownItem onClick={() => changeLanguage('es')} data-testid="ESP">
-          {t('languages.spanish')}
-        </DropdownItem>
-      </DropdownMenu>
-    </ButtonDropdown>
+    <GluuDropdown
+      renderTrigger={(isOpen) => (
+        <Box className={classes.trigger} data-testid="ACTIVE_LANG">
+          <span>{lang.toUpperCase()}</span>
+          <Box className={`${classes.chevron} ${isOpen ? classes.chevronOpen : ''}`}>
+            <ChevronIcon />
+          </Box>
+        </Box>
+      )}
+      options={options}
+      position="bottom"
+      selectedValue={lang}
+      onSelect={changeLanguage}
+      minWidth={67}
+      showArrow={true}
+    />
   )
-}
+})
+
+LanguageMenu.displayName = 'LanguageMenu'
+
 export { LanguageMenu }

@@ -40,6 +40,7 @@ import {
 } from 'Plugins/admin/helper/utils'
 import { useGetAuditData, GetAuditDataParams } from 'JansConfigApi'
 import { AuditRow, AuditSearchProps } from './types'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50, 100]
 
@@ -164,7 +165,7 @@ const AuditSearch: React.FC<AuditSearchProps> = ({
 }) => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'darkBlack'
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
 
   const handleKeyDown = useCallback(
@@ -196,7 +197,7 @@ const AuditSearch: React.FC<AuditSearchProps> = ({
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <SearchIcon sx={{ color: customColors.lightGray }} />
+                <SearchIcon sx={{ color: customColors.darkBackground }} />
               </InputAdornment>
             ),
           }}
@@ -236,8 +237,9 @@ const AuditSearch: React.FC<AuditSearchProps> = ({
               onClick={onRefresh}
               disabled={isLoading}
               sx={{
-                'backgroundColor': customColors.lightGray,
-                '&:hover': { backgroundColor: customColors.lightGray, opacity: 0.8 },
+                'backgroundColor': themeColors.background,
+                'color': themeColors.fontColor,
+                '&:hover': { backgroundColor: themeColors.background, opacity: 0.8 },
               }}
             >
               <RefreshIcon
@@ -257,6 +259,7 @@ const AuditSearch: React.FC<AuditSearchProps> = ({
               'px': 3,
               'borderRadius': 1.5,
               'backgroundColor': themeColors.background,
+              'color': themeColors.fontColor,
               '&:hover': { backgroundColor: themeColors.background, opacity: 0.9 },
               'textTransform': 'none',
               'fontWeight': 600,
@@ -275,7 +278,7 @@ const AuditListPage: React.FC = () => {
   SetTitle(t('menus.audit_logs'))
 
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'darkBlack'
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
 
   const [limit, setLimit] = useState<number>(10)
@@ -406,7 +409,7 @@ const AuditListPage: React.FC = () => {
                   label={dateOnly}
                   size="small"
                   sx={{
-                    'backgroundColor': themeColors.background,
+                    'backgroundColor': customColors.darkBackground,
                     'color': customColors.white,
                     'fontWeight': 600,
                     'fontSize': '0.75rem',
@@ -450,7 +453,7 @@ const AuditListPage: React.FC = () => {
         },
       },
     ],
-    [t, themeColors.background],
+    [t],
   )
 
   const auditRows: AuditRow[] = useMemo(() => {
@@ -510,15 +513,12 @@ const AuditListPage: React.FC = () => {
           sorting: false,
           headerStyle: {
             backgroundColor: themeColors.background,
-            color: customColors.white,
+            color: themeColors.fontColor,
             fontWeight: 600,
             fontSize: '0.875rem',
             textTransform: 'uppercase' as const,
             padding: '14px 16px',
           },
-          rowStyle: (_: AuditRow, index: number) => ({
-            backgroundColor: index % 2 === 0 ? customColors.white : themeColors.lightBackground,
-          }),
         }}
       />
     )

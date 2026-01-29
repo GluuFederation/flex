@@ -1,29 +1,25 @@
-// @ts-nocheck
-import React, { useContext } from 'react'
-import PropTypes from 'prop-types'
-import { ThemeContext } from 'Context/theme/themeContext'
-import getThemeColor from 'Context/theme/config'
+import React from 'react'
 
+/**
+ * LayoutNavbar component expects a single React element child.
+ * @param children - A single React element to be rendered in the navbar layout.
+ */
 interface LayoutNavbarProps {
   children: React.ReactNode
 }
 
-const LayoutNavbar: React.FC<LayoutNavbarProps> = (props) => {
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state.theme
-  const themeColors = getThemeColor(selectedTheme)
-  const navbar = React.Children.only(props.children)
+type LayoutNavbarComponent = React.FC<LayoutNavbarProps> & { layoutPartName: string }
 
-  return (
-    <div className="layout__navbar" style={{ background: themeColors.background }}>
-      {React.cloneElement(navbar, { fixed: null })}
-    </div>
-  )
+const LayoutNavbar: LayoutNavbarComponent = (props) => {
+  const child = React.Children.only(props.children)
+
+  if (!React.isValidElement(child)) {
+    throw new Error('LayoutNavbar expects a single valid React element as a child')
+  }
+
+  return <div className="layout__navbar">{React.cloneElement(child, { fixed: null })}</div>
 }
 
-LayoutNavbar.propTypes = {
-  children: PropTypes.node,
-}
 LayoutNavbar.layoutPartName = 'navbar'
 
 export { LayoutNavbar }

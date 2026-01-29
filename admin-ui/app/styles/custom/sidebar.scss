@@ -1,43 +1,40 @@
-$dark-gray: #323c47;
-$accent-red: #b3424a;
-$light-blue: #3573a6;
-$light-cyan: #bdd4d5;
-$light-gray: #eaecf1;
-$pale-yellow: #cfd76f;
-$darkBlueThemeBackground: #284461;
-$blueThemebackground: #9dbde2;
+@import "./_typography.scss";
+
+@mixin sidebar-entry-typography {
+    font-family: $font-family-primary;
+    font-size: $font-size-16;
+    font-weight: $font-weight-medium;
+    letter-spacing: $letter-spacing-032;
+}
 
 .custom-sidebar-container {
-    background-color: #fcfcfc;
-    border-top-right-radius: 28px;
-    border-top-left-radius: 28px;
+    background-color: var(--theme-sidebar-background, #fcfcfc);
+    box-shadow: var(--theme-sidebar-shadow, 0px 0px 1rem 0px rgba(0, 0, 0, 0.15));
+
+    .sidebar-menu {
+        padding-top: 34px;
+        padding-bottom: 34px;
+    }
 
     .sidebar-menu__entry__link {
-        color: #323b47;
+        color: var(--theme-menu-text-color, #323b47);
+        @include sidebar-entry-typography;
     }
 
     .sidebar-submenu__entry__link {
-        color: #323b47;
+        color: var(--theme-menu-text-color, #323b47);
+        @include sidebar-entry-typography;
     }
 
     .sidebar-menu__entry__link:hover {
-        color: #323b47;
+        color: var(--theme-menu-text-color-hover, #323b47);
     }
     .sidebar-submenu__entry__link:hover {
-        color: #323b47;
-    }
-
-    .sidebar-menu__entry:hover {
-        i {
-            color: #323b47;
-        }
-        a {
-            color: #323b47;
-        }
+        color: var(--theme-menu-text-color-hover, #323b47);
     }
 
     .sidebar-menu__entry__icon {
-        color: #323b47;
+        color: var(--theme-menu-icon-color, #323b47);
     }
 }
 
@@ -46,15 +43,30 @@ $blueThemebackground: #9dbde2;
     width: 28px;
     margin-right: 10px;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    svg {
+        width: 28px;
+        height: 28px;
+        display: block;
+    }
 }
 
-.sidebar-menu__entry {
+.custom-sidebar-container .sidebar-menu__entry {
+    .sidebar-menu__entry__link {
+        padding-top: 16px;
+        padding-bottom: 16px;
+    }
+
     .sidebar-menu__entry__link:hover {
-        background: lightgrey;
+        background: var(--theme-menu-hover-background, #d3d3d3);
     }
 
     .sidebar-submenu .sidebar-submenu__entry .sidebar-submenu__entry__link:hover {
-        background: lightgrey;
+        background: var(--theme-menu-hover-background, #d3d3d3);
     }
 }
 
@@ -62,46 +74,39 @@ $blueThemebackground: #9dbde2;
     cursor: pointer;
 }
 
-.sidebar-menu-active-darkBlack {
-    background: $dark-gray !important;
-    color: #fff !important;
+.sidebar__section:has(.sidebar__brand) {
+    border-bottom: 1px solid var(--theme-navbar-border, #e5e7eb);
+    position: relative;
+    z-index: 1;
+    padding-right: 1.5rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 106px;
+    min-height: 106px;
+
+    &::after {
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        right: 0;
+        left: 100%;
+        height: 1px;
+        background-color: var(--theme-navbar-border, #e5e7eb);
+        pointer-events: none;
+    }
 }
 
-.sidebar-menu-active-darkBlack:hover {
-    background: #000 !important;
-    color: #fff !important;
-}
+.sidebar-menu__entry__link,
+.sidebar-submenu__entry__link {
+    > span:has(+ .sidebar-menu__entry__chevron),
+    > span:has(+ .sidebar-submenu__entry__chevron) {
+        flex: 0 1 auto;
+    }
 
-.sidebar-menu-active-darkBlue {
-    background: $darkBlueThemeBackground !important;
-    color: #fff !important;
-}
-
-.sidebar-menu-active-darkBlue:hover {
-    background: #323c46 !important;
-    color: #fff !important;
-}
-
-.sidebar-menu-active-lightBlue {
-    background: $blueThemebackground !important;
-    color: #fff !important;
-}
-
-.sidebar-menu-active-lightBlue:hover {
-    background: #274561 !important;
-    color: #fff !important;
-}
-
-.sidebar-menu-active-lightGreen {
-    background: #02b774 !important;
-    color: #fff !important;
-}
-
-.sidebar-menu-active-lightGreen:hover {
-    background: #02b774 !important;
-    color: #fff !important;
-}
-
-.sidebar-active-icon {
-    color: #000 !important;
+    > .sidebar-menu__entry__chevron,
+    > .sidebar-submenu__entry__chevron {
+        margin-left: 0;
+        margin-right: auto;
+    }
 }

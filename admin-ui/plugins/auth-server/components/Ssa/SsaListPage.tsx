@@ -8,8 +8,8 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useCedarling } from '@/cedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { ThemeContext } from 'Context/theme/themeContext'
-import getThemeColor from 'Context/theme/config'
+import { ThemeContext } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
@@ -27,6 +27,7 @@ import type { SsaData, SsaJwtResponse } from './types'
 import { DELETION } from '../../../../app/audit/UserActionType'
 import { SSA as SSA_RESOURCE } from '../../redux/audit/Resources'
 import { updateToast } from 'Redux/features/toastSlice'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 const SSAListPage: React.FC = () => {
   const {
@@ -62,9 +63,8 @@ const SSAListPage: React.FC = () => {
 
   const [isDeleting, setIsDeleting] = useState<boolean>(false)
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'light'
-  const themeColors = getThemeColor(selectedTheme)
-  const bgThemeColor = { background: themeColors.background }
+  const selectedTheme = useMemo(() => theme?.state?.theme || DEFAULT_THEME, [theme?.state?.theme])
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   SetTitle(t('titles.ssa_management'))
   const [ssaDialogOpen, setSsaDialogOpen] = useState<boolean>(false)
   const [jwtData, setJwtData] = useState<SsaJwtResponse | null>(null)
@@ -282,7 +282,8 @@ const SSAListPage: React.FC = () => {
               pageSize: limit,
               headerStyle: {
                 ...applicationStyle.tableHeaderStyle,
-                ...bgThemeColor,
+                backgroundColor: themeColors.background,
+                color: themeColors.fontColor,
                 textTransform: applicationStyle.tableHeaderStyle.textTransform as
                   | 'uppercase'
                   | 'lowercase'
@@ -313,7 +314,7 @@ const SSAListPage: React.FC = () => {
             data={jwtData}
             isLoading={getSsaJwtMutation.isPending}
             title={`JSON View`}
-            theme="light"
+            theme={selectedTheme}
             expanded={true}
           />
         )}

@@ -13,7 +13,6 @@
 
     &--side-border {
         border-left-width: 2px;
-
         @each $name, $color in $dashboard-colors {
             &.custom-card--color-#{$name} {
                 border-left-color: $color;
@@ -22,11 +21,13 @@
     }
 
     &--background {
-        color: map-get($dashboard-colors, "white");
-
+        $white-text-names: ("primary", "secondary", "dark", "success", "danger", "info", "warning");
         @each $name, $color in $dashboard-colors {
             &.custom-card--color-#{$name} {
                 background-color: $color;
+                @if index($white-text-names, $name) {
+                    color: map-get($dashboard-colors, "white");
+                }
             }
         }
     }

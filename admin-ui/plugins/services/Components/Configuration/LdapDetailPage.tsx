@@ -1,22 +1,42 @@
-import React, { useContext, ReactElement } from 'react'
+import React, { useContext, useMemo, ReactElement } from 'react'
 import { Container, Badge, Row, Col, FormGroup, Label } from 'Components'
 import { useTranslation } from 'react-i18next'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { ThemeContext } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
 import customColors from '@/customColors'
 import type { LdapDetailPageProps } from './types'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 function LdapDetailPage({ row, testLdapConnection }: LdapDetailPageProps): ReactElement {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'darkBlue'
+  const selectedTheme = useMemo(() => theme?.state?.theme || DEFAULT_THEME, [theme?.state?.theme])
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
 
-  function getBadgeTheme(status: boolean | undefined): string {
-    if (status) {
-      return `primary-${selectedTheme}`
-    } else {
-      return 'warning'
-    }
-  }
+  const labelStyle = useMemo(
+    () => ({
+      fontWeight: 'bold' as const,
+      color: customColors.black,
+    }),
+    [],
+  )
+
+  const valueStyle = useMemo(
+    () => ({
+      color: customColors.black,
+    }),
+    [],
+  )
+
+  const badgeStyle = useMemo(
+    () => ({
+      backgroundColor: themeColors.background,
+      color: customColors.white,
+      marginRight: '4px',
+      marginBottom: '4px',
+    }),
+    [themeColors.background],
+  )
 
   function checkLdapConnection(): void {
     testLdapConnection(row)
@@ -28,20 +48,20 @@ function LdapDetailPage({ row, testLdapConnection }: LdapDetailPageProps): React
       <Row>
         <Col sm={6}>
           <FormGroup row>
-            <Label for="input" sm={6}>
+            <Label for="input" sm={6} style={labelStyle}>
               {t('fields.configuration_id')}:
             </Label>
-            <Label for="input" sm={6}>
+            <Label for="input" sm={6} style={valueStyle}>
               {row.configId}
             </Label>
           </FormGroup>
         </Col>
         <Col sm={6}>
           <FormGroup row>
-            <Label for="input" sm={6}>
+            <Label for="input" sm={6} style={labelStyle}>
               {t('fields.bind_dn')}:
             </Label>
-            <Label for="input" sm={6}>
+            <Label for="input" sm={6} style={valueStyle}>
               {row.bindDN}
             </Label>
           </FormGroup>
@@ -50,9 +70,11 @@ function LdapDetailPage({ row, testLdapConnection }: LdapDetailPageProps): React
       <Row>
         <Col sm={6}>
           <FormGroup row>
-            <Label sm={6}>{t('fields.status')}:</Label>
-            <Label sm={6}>
-              <Badge color={getBadgeTheme(row.enabled)}>
+            <Label sm={6} style={labelStyle}>
+              {t('fields.status')}:
+            </Label>
+            <Label sm={6} style={valueStyle}>
+              <Badge style={badgeStyle}>
                 {row.enabled ? t('options.enabled') : t('options.disable')}
               </Badge>
             </Label>
@@ -60,11 +82,13 @@ function LdapDetailPage({ row, testLdapConnection }: LdapDetailPageProps): React
         </Col>
         <Col sm={6}>
           <FormGroup row>
-            <Label sm={6}>{t('fields.servers')}:</Label>
-            <Label sm={6}>
+            <Label sm={6} style={labelStyle}>
+              {t('fields.servers')}:
+            </Label>
+            <Label sm={6} style={valueStyle}>
               {row.servers &&
                 row.servers.map((server, index) => (
-                  <Badge key={index} color={`primary-${selectedTheme}`}>
+                  <Badge key={index} style={badgeStyle}>
                     {server}
                   </Badge>
                 ))}
@@ -75,15 +99,21 @@ function LdapDetailPage({ row, testLdapConnection }: LdapDetailPageProps): React
       <Row>
         <Col sm={4}>
           <FormGroup row>
-            <Label sm={6}>{t('fields.max_connections')}:</Label>
-            <Label sm={6}>{row.maxConnections}</Label>
+            <Label sm={6} style={labelStyle}>
+              {t('fields.max_connections')}:
+            </Label>
+            <Label sm={6} style={valueStyle}>
+              {row.maxConnections}
+            </Label>
           </FormGroup>
         </Col>
         <Col sm={4}>
           <FormGroup row>
-            <Label sm={6}>{t('fields.use_ssl')}:</Label>
-            <Label sm={6}>
-              <Badge color={getBadgeTheme(row.useSSL)}>
+            <Label sm={6} style={labelStyle}>
+              {t('fields.use_ssl')}:
+            </Label>
+            <Label sm={6} style={valueStyle}>
+              <Badge style={badgeStyle}>
                 {row.useSSL ? t('options.true') : t('options.false')}
               </Badge>
             </Label>
@@ -91,11 +121,13 @@ function LdapDetailPage({ row, testLdapConnection }: LdapDetailPageProps): React
         </Col>
         <Col sm={4}>
           <FormGroup row>
-            <Label sm={6}>{t('fields.base_dns')}:</Label>
-            <Label sm={6}>
+            <Label sm={6} style={labelStyle}>
+              {t('fields.base_dns')}:
+            </Label>
+            <Label sm={6} style={valueStyle}>
               {row.baseDNs &&
                 row.baseDNs.map((baseDN) => (
-                  <Badge key={baseDN} color={`primary-${selectedTheme}`}>
+                  <Badge key={baseDN} style={badgeStyle}>
                     {baseDN}
                   </Badge>
                 ))}
@@ -106,21 +138,31 @@ function LdapDetailPage({ row, testLdapConnection }: LdapDetailPageProps): React
       <Row>
         <Col sm={4}>
           <FormGroup row>
-            <Label sm={6}>{t('fields.primary_key')}:</Label>
-            <Label sm={6}>{row.primaryKey}</Label>
+            <Label sm={6} style={labelStyle}>
+              {t('fields.primary_key')}:
+            </Label>
+            <Label sm={6} style={valueStyle}>
+              {row.primaryKey}
+            </Label>
           </FormGroup>
         </Col>
         <Col sm={4}>
           <FormGroup row>
-            <Label sm={6}>{t('fields.local_primary_key')}:</Label>
-            <Label sm={6}>{row.localPrimaryKey}</Label>
+            <Label sm={6} style={labelStyle}>
+              {t('fields.local_primary_key')}:
+            </Label>
+            <Label sm={6} style={valueStyle}>
+              {row.localPrimaryKey}
+            </Label>
           </FormGroup>
         </Col>
         <Col sm={4}>
           <FormGroup row>
-            <Label sm={6}>{t('fields.use_anonymous_bind')}:</Label>
-            <Label sm={6}>
-              <Badge color={getBadgeTheme(row.useAnonymousBind)}>
+            <Label sm={6} style={labelStyle}>
+              {t('fields.use_anonymous_bind')}:
+            </Label>
+            <Label sm={6} style={valueStyle}>
+              <Badge style={badgeStyle}>
                 {row.useAnonymousBind ? t('options.true') : t('options.false')}
               </Badge>
             </Label>
@@ -132,7 +174,14 @@ function LdapDetailPage({ row, testLdapConnection }: LdapDetailPageProps): React
           <button
             onClick={checkLdapConnection}
             type="button"
-            className={`btn btn-primary-${selectedTheme} text-center`}
+            style={{
+              backgroundColor: themeColors.background,
+              color: themeColors.fontColor,
+              border: 'none',
+              padding: '8px 16px',
+              borderRadius: '4px',
+              cursor: 'pointer',
+            }}
           >
             {t('fields.test_connection')}
           </button>

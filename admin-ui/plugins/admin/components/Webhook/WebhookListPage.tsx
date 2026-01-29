@@ -21,6 +21,7 @@ import { useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext, ThemeContextType } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
+import { THEME_DARK } from 'Context/theme/constants'
 import SetTitle from 'Utils/SetTitle'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { setSelectedWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
@@ -30,6 +31,7 @@ import { useGetAllWebhooks } from 'JansConfigApi'
 import { useDeleteWebhookWithAudit } from './hooks'
 import WebhookSearch, { WebhookSortBy } from './WebhookSearch'
 import type { WebhookEntry, TableAction } from './types'
+import { fontFamily } from '@/styles/fonts'
 
 const EmptyState: React.FC = () => {
   const { t } = useTranslation()
@@ -75,10 +77,6 @@ const getHttpMethodColor = (
   return colorMap[method] || 'default'
 }
 
-const EditIcon: React.FC<React.ComponentProps<typeof Edit>> = (props) => <Edit {...props} />
-const DeleteIcon: React.FC<React.ComponentProps<typeof DeleteOutlined>> = (props) => (
-  <DeleteOutlined {...props} style={{ color: customColors.darkGray, ...props.style }} />
-)
 const PaperContainer = (props: React.ComponentProps<typeof Paper>) => (
   <Paper {...props} elevation={0} />
 )
@@ -131,6 +129,9 @@ const WebhookListPage: React.FC = () => {
 
   const theme = useContext(ThemeContext) as ThemeContextType
   const themeColors = getThemeColor(theme.state.theme)
+  const darkThemeColors = getThemeColor('dark')
+  const lightThemeColors = getThemeColor('light')
+  const isDarkTheme = theme.state.theme === THEME_DARK
   const bgThemeColor = { background: themeColors.background }
   SetTitle(t('titles.webhooks'))
 
@@ -252,36 +253,42 @@ const WebhookListPage: React.FC = () => {
     const actions: ((rowData: WebhookEntry) => TableAction)[] = []
 
     if (canWriteWebhooks) {
-      actions.push((rowData: WebhookEntry) => ({
-        icon: EditIcon,
-        tooltip: t('actions.edit'),
-        iconProps: {
-          color: 'primary',
-          id: 'editWebhook' + rowData.inum,
-          style: { color: customColors.darkGray },
-        },
-        onClick: () => navigateToEditPage(rowData),
-        disabled: false,
-      }))
+      actions.push((rowData: WebhookEntry) => {
+        const iconColor =
+          isDarkTheme && rowData.jansEnabled ? customColors.white : customColors.darkGray
+        return {
+          icon: () => <Edit style={{ color: iconColor }} />,
+          tooltip: t('actions.edit'),
+          iconProps: {
+            id: 'editWebhook' + rowData.inum,
+          },
+          onClick: () => navigateToEditPage(rowData),
+          disabled: false,
+        }
+      })
     }
 
     if (canDeleteWebhooks) {
-      actions.push((rowData: WebhookEntry) => ({
-        icon: DeleteIcon,
-        tooltip: t('actions.delete'),
-        iconProps: {
-          id: 'deleteWebhook' + rowData.inum,
-        },
-        onClick: () => {
-          setDeleteData(rowData)
-          toggle()
-        },
-        disabled: false,
-      }))
+      actions.push((rowData: WebhookEntry) => {
+        const iconColor =
+          isDarkTheme && rowData.jansEnabled ? customColors.white : customColors.darkGray
+        return {
+          icon: () => <DeleteOutlined style={{ color: iconColor }} />,
+          tooltip: t('actions.delete'),
+          iconProps: {
+            id: 'deleteWebhook' + rowData.inum,
+          },
+          onClick: () => {
+            setDeleteData(rowData)
+            toggle()
+          },
+          disabled: false,
+        }
+      })
     }
 
     return actions
-  }, [canWriteWebhooks, canDeleteWebhooks, t, navigateToEditPage, toggle])
+  }, [canWriteWebhooks, canDeleteWebhooks, t, navigateToEditPage, toggle, isDarkTheme])
 
   const columns = useMemo(
     () => [
@@ -292,7 +299,11 @@ const WebhookListPage: React.FC = () => {
           <Typography
             variant="body2"
             fontWeight={500}
-            sx={{ color: rowData.jansEnabled ? 'black !important' : 'gray !important' }}
+            sx={{
+              color: rowData.jansEnabled
+                ? `${themeColors.fontColor} !important`
+                : `${customColors.textSecondary} !important`,
+            }}
           >
             {rowData.displayName}
           </Typography>
@@ -306,11 +317,12 @@ const WebhookListPage: React.FC = () => {
           <Typography
             variant="body2"
             sx={{
-              color: rowData.jansEnabled ? 'black !important' : 'gray !important',
+              color: rowData.jansEnabled
+                ? `${themeColors.fontColor} !important`
+                : `${customColors.textSecondary} !important`,
               wordBreak: 'break-all',
               maxWidth: '350px',
-              fontFamily: 'monospace',
-              fontSize: '0.8rem',
+              fontFamily: fontFamily,
             }}
           >
             {rowData.url}
@@ -326,31 +338,43 @@ const WebhookListPage: React.FC = () => {
             size="small"
             color={getHttpMethodColor(rowData.httpMethod || '')}
             variant="outlined"
+            sx={
+              rowData.jansEnabled
+                ? {
+                    'color': themeColors.fontColor,
+                    'borderColor': themeColors.fontColor,
+                    '& .MuiChip-label': { color: themeColors.fontColor },
+                  }
+                : undefined
+            }
           />
         ),
       },
       {
         title: t('fields.status'),
         field: 'jansEnabled',
-        render: (rowData: WebhookEntry) => (
-          <Chip
-            label={rowData.jansEnabled ? t('options.enabled') : t('options.disabled')}
-            size="small"
-            sx={
-              rowData.jansEnabled
-                ? {
-                    backgroundColor: themeColors.background,
-                    color: customColors.white,
-                  }
-                : undefined
-            }
-            color={rowData.jansEnabled ? undefined : 'default'}
-            variant={rowData.jansEnabled ? 'filled' : 'outlined'}
-          />
-        ),
+        render: (rowData: WebhookEntry) => {
+          const isEnabled = rowData.jansEnabled === true
+          return (
+            <Chip
+              label={isEnabled ? t('options.enabled') : t('options.disabled')}
+              size="small"
+              sx={{
+                minWidth: 80,
+                fontWeight: 500,
+                backgroundColor: darkThemeColors.background,
+                color: darkThemeColors.fontColor,
+                border: isEnabled
+                  ? `1px solid ${lightThemeColors.borderColor}`
+                  : `1px solid ${darkThemeColors.borderColor}`,
+                opacity: isEnabled ? 1 : 0.6,
+              }}
+            />
+          )
+        },
       },
     ],
-    [t, themeColors],
+    [t, themeColors, darkThemeColors, lightThemeColors],
   )
 
   const renderTableContent = useCallback(() => {
@@ -376,7 +400,7 @@ const WebhookListPage: React.FC = () => {
         options={{
           idSynonym: 'inum',
           search: false,
-          searchFieldAlignment: 'left',
+          toolbar: false,
           selection: false,
           pageSize: limit,
           rowStyle: (rowData: WebhookEntry) => ({
@@ -387,6 +411,7 @@ const WebhookListPage: React.FC = () => {
           headerStyle: {
             ...(applicationStyle.tableHeaderStyle as React.CSSProperties),
             ...bgThemeColor,
+            color: themeColors.fontColor,
           },
           actionsColumnIndex: -1,
         }}

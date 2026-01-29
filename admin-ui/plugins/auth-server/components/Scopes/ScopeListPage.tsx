@@ -46,6 +46,8 @@ import type { Scope } from 'JansConfigApi'
 import type { ScopeWithClients, ScopeTableRow } from './types'
 import { useScopeActions } from './hooks'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { DEFAULT_THEME } from '@/context/theme/constants'
+import { fontFamily, fontWeights } from '@/styles/fonts'
 
 interface DetailPanelProps {
   rowData: ScopeTableRow
@@ -170,7 +172,7 @@ const ScopeListPage: React.FC = () => {
 
   const scopesResourceId = ADMIN_UI_RESOURCES.Scopes
 
-  const selectedTheme = useMemo(() => theme?.state?.theme || 'light', [theme?.state?.theme])
+  const selectedTheme = useMemo(() => theme?.state?.theme || DEFAULT_THEME, [theme?.state?.theme])
 
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
 
@@ -225,10 +227,11 @@ const ScopeListPage: React.FC = () => {
           | 'none'
           | 'capitalize'
           | undefined,
+        color: themeColors.fontColor,
       },
       actionsColumnIndex: -1,
     }),
-    [limit, bgThemeColor],
+    [limit, bgThemeColor, themeColors.fontColor],
   )
 
   const toggle = useCallback(() => setModal((prev) => !prev), [])
@@ -304,11 +307,21 @@ const ScopeListPage: React.FC = () => {
 
   const renderScopeTypeColumn = useCallback(
     (rowData: ScopeTableRow) => (
-      <Badge key={rowData.inum} color={`primary-${selectedTheme}`}>
+      <Badge
+        key={rowData.inum}
+        style={{
+          backgroundColor: themeColors.background,
+          color: customColors.white,
+          fontWeight: fontWeights.medium,
+          fontFamily: fontFamily,
+          padding: '4px 8px',
+          borderRadius: '4px',
+        }}
+      >
         {rowData.scopeType}
       </Badge>
     ),
-    [selectedTheme],
+    [themeColors.background],
   )
 
   const handleGoToScopeAddPage = useCallback(() => {

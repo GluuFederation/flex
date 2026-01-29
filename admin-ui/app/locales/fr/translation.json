@@ -5,6 +5,14 @@
     "portuguese": "Português",
     "spanish": "Espagnole"
   },
+  "themes": {
+    "theme": "Thème",
+    "light": "Clair",
+    "dark": "Sombre"
+  },
+  "notifications": {
+    "no_notifications": "Aucune notification"
+  },
   "dashboard": {
     "summary_title": "Statistiques des utilisateurs actifs et des jetons d'accès",
     "oidc_clients_count": "Compte de clients OIDC",
@@ -17,6 +25,9 @@
     "company_name": "Nom de l'entreprise",
     "customer_name": "nom du client",
     "license_status": "Statut de la licence",
+    "active": "Active",
+    "inactive": "Inactive",
+    "unknown": "Inconnu",
     "oauth_server_status": "État du serveur OAuth",
     "database_status": "Statut de la base de données",
     "server_status": "État du serveur",
@@ -176,6 +187,7 @@
     "refresh": "Actualiser"
   },
   "fields": {
+    "actions": "Actions",
     "asset_name": "Asset Name",
     "resetLicense": "Réinitialiser la licence",
     "search": "Rechercher",

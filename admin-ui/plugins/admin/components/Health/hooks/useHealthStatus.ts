@@ -6,14 +6,13 @@ import type { ServiceHealth, ServiceStatusValue, ServiceStatusResponse } from '.
 import { HEALTH_CACHE_CONFIG, STATUS_MAP, DEFAULT_STATUS } from '../constants'
 
 function normalizeStatus(apiStatus: string): ServiceStatusValue {
-  return STATUS_MAP[apiStatus] ?? DEFAULT_STATUS
+  const mappedStatus = STATUS_MAP[apiStatus as keyof typeof STATUS_MAP]
+  return mappedStatus ?? DEFAULT_STATUS
 }
 
 const STATUS_SORT_ORDER: Record<ServiceStatusValue, number> = {
   up: 0,
-  degraded: 1,
-  unknown: 2,
-  down: 3,
+  down: 1,
 }
 
 function sortServicesByStatus(services: ServiceHealth[]): ServiceHealth[] {

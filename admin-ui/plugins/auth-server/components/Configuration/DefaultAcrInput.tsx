@@ -5,6 +5,7 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { Col, InputGroup, CustomInput, FormGroup, Button } from 'Components'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { type DropdownOption } from '../AuthN/helper/acrUtils'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 interface PutData {
   value: string | string[]
@@ -41,7 +42,7 @@ function DefaultAcrInput({
 }: DefaultAcrInputProps): ReactElement {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'light'
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
   const VALUE = 'value'
   const PATH = 'path'
   const [show, setShow] = useState(false)

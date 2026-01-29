@@ -1,8 +1,11 @@
-import { useContext, memo, CSSProperties } from 'react'
+import { memo, CSSProperties, useMemo, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FormGroup, Label, Badge } from 'Components'
 import GluuTooltip from './GluuTooltip'
+import customColors from '@/customColors'
 import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 interface GluuFormDetailRowProps {
   label: string
@@ -35,9 +38,32 @@ function GluuFormDetailRow({
 }: GluuFormDetailRowProps) {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme ?? 'light'
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
 
-  const appliedLabelStyle: CSSProperties = { ...defaultLabelStyle, ...labelStyle }
+  const appliedLabelStyle: CSSProperties = useMemo(
+    () => ({
+      ...defaultLabelStyle,
+      color: customColors.black,
+      ...labelStyle,
+    }),
+    [labelStyle],
+  )
+
+  const valueLabelStyle: CSSProperties = useMemo(
+    () => ({
+      color: customColors.black,
+    }),
+    [],
+  )
+
+  const badgeStyle: CSSProperties = useMemo(
+    () => ({
+      backgroundColor: themeColors.background,
+      color: customColors.white,
+    }),
+    [themeColors.background],
+  )
 
   return (
     <GluuTooltip doc_category={doc_category} isDirect={isDirect} doc_entry={doc_entry || label}>
@@ -45,11 +71,13 @@ function GluuFormDetailRow({
         <Label for={label} style={appliedLabelStyle} sm={lsize}>
           {t(label)}:
         </Label>
-        <Label for={value?.toString()} sm={rsize}>
+        <Label for={value?.toString()} style={valueLabelStyle} sm={rsize}>
           {!isBadge ? (
             value
           ) : (
-            <Badge color={badgeColor ? badgeColor : `primary-${selectedTheme}`}>{value}</Badge>
+            <Badge style={badgeColor ? undefined : badgeStyle} color={badgeColor}>
+              {value}
+            </Badge>
           )}
         </Label>
       </FormGroup>

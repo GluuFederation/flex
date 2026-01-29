@@ -1,16 +1,13 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { Container, Row, Col } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import { SCRIPT } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
-import { ThemeContext } from 'Context/theme/themeContext'
 import customColors from '@/customColors'
 import { CustomScriptDetailPageProps } from './types'
 
 const CustomScriptDetailPage: React.FC<CustomScriptDetailPageProps> = ({ row }) => {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state.theme || 'darkBlack'
 
   return (
     <>
@@ -58,7 +55,6 @@ const CustomScriptDetailPage: React.FC<CustomScriptDetailPageProps> = ({ row }) 
               doc_category={SCRIPT}
               doc_entry="internal"
               isBadge
-              badgeColor={`primary-${selectedTheme}`}
               value={row.internal ? t('options.true') : t('options.false')}
             />
           </Col>
@@ -68,7 +64,6 @@ const CustomScriptDetailPage: React.FC<CustomScriptDetailPageProps> = ({ row }) 
               doc_category={SCRIPT}
               doc_entry="enabled"
               isBadge
-              badgeColor={`primary-${selectedTheme}`}
               value={row.enabled ? t('options.true') : t('options.false')}
             />
           </Col>

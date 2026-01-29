@@ -7,7 +7,7 @@ const pluginMetadata = {
   menus: [
     {
       title: 'menus.smtp',
-      icon: 'stmpmanagement',
+      icon: 'smtpmanagement',
       path: ROUTES.SMTP_BASE,
       permission: SMTP_READ,
       resourceKey: ADMIN_UI_RESOURCES.SMTP,

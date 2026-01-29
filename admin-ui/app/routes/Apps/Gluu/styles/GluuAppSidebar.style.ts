@@ -39,26 +39,6 @@ const styles = makeStyles()({
     animation: 'fadeInUp 360ms ease-out both',
     animationDelay: '80ms',
   },
-  'waveContainer': {
-    position: 'relative',
-    bottom: 93,
-    left: 0,
-    top: 140,
-    height: 70,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-  },
-  'wave': {
-    position: 'relative',
-    top: -75,
-  },
-  'powered': {
-    color: customColors.white,
-    textAlign: 'center',
-    position: 'relative',
-    top: -130,
-    fontWeight: 500,
-  },
   'waveContainerFixed': {
     position: 'absolute',
     bottom: 0,

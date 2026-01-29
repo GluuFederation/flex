@@ -2,7 +2,7 @@ import type { HealthStatus, Status } from 'JansConfigApi'
 
 export type { HealthStatus, Status }
 
-export type ServiceStatusValue = 'up' | 'down' | 'unknown' | 'degraded'
+export type ServiceStatusValue = 'up' | 'down'
 
 export interface ServiceHealth {
   name: string
@@ -15,6 +15,7 @@ export interface ServiceStatusCardProps {
   service: ServiceHealth
   themeColors: {
     background: string
+    fontColor: string
   }
 }
 

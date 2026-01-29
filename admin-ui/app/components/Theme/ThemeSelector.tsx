@@ -6,11 +6,15 @@ import { Card, CardBody, Button, FormGroup, Input as CustomInput } from 'reactst
 import 'Styles/components/theme-selector.scss'
 import { Consumer } from './ThemeContext'
 import customColors from '@/customColors'
+import { THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
 
-// Option types
 interface ThemeOption {
   name: string
   value: string
+}
+interface ThemeState {
+  style: string
+  color: string
 }
 
 interface ThemeSelectorProps {
@@ -31,8 +35,8 @@ interface ThemeSelectorState {
 class ThemeSelector extends React.Component<ThemeSelectorProps, ThemeSelectorState> {
   static defaultProps = {
     styleOptions: [
-      { name: 'Light', value: 'light' },
-      { name: 'Dark', value: 'dark' },
+      { name: THEME_LIGHT.toUpperCase(), value: THEME_LIGHT },
+      { name: THEME_DARK.toUpperCase(), value: THEME_DARK },
       { name: 'Color', value: 'color' },
     ],
     colorOptions: [
@@ -157,7 +161,7 @@ class ThemeSelector extends React.Component<ThemeSelectorProps, ThemeSelectorSta
 }
 
 const ContextThemeSelector: React.FC<Partial<ThemeSelectorProps>> = (props) => (
-  <Consumer>{(themeState: any) => <ThemeSelector {...themeState} {...props} />}</Consumer>
+  <Consumer>{(themeState: ThemeState) => <ThemeSelector {...themeState} {...props} />}</Consumer>
 )
 
 export { ContextThemeSelector as ThemeSelector }
