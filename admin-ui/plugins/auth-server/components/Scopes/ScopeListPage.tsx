@@ -309,17 +309,19 @@ const ScopeListPage: React.FC = () => {
     (rowData: ScopeTableRow) => (
       <Badge
         key={rowData.inum}
-        color={`primary-${selectedTheme}`}
         style={{
-          color: customColors.primaryDark,
-          fontWeight: fontWeights.bold,
+          backgroundColor: themeColors.background,
+          color: customColors.white,
+          fontWeight: fontWeights.medium,
           fontFamily: fontFamily,
+          padding: '4px 8px',
+          borderRadius: '4px',
         }}
       >
         {rowData.scopeType}
       </Badge>
     ),
-    [selectedTheme, themeColors.fontColor],
+    [themeColors.background],
   )
 
   const handleGoToScopeAddPage = useCallback(() => {

@@ -57,6 +57,7 @@ const GluuCommitDialog = ({
   const isDark = selectedTheme === THEME_DARK
   const inverseTheme = isDark ? 'light' : 'dark'
   const inverseColors = getThemeColor(inverseTheme)
+  const themeColors = getThemeColor(selectedTheme)
   const [active, setActive] = useState(false)
   const [isOpen, setIsOpen] = useState<number | null>(null)
   const [userMessage, setUserMessage] = useState('')
@@ -110,8 +111,11 @@ const GluuCommitDialog = ({
       <div className="d-flex flex-column gap-1 align-items-start">
         {values.map((data) => (
           <Badge
-            color={`primary-${selectedTheme}  `}
-            style={{ width: 'fit-content' }}
+            style={{
+              width: 'fit-content',
+              backgroundColor: themeColors.background,
+              color: customColors.white,
+            }}
             key={String(data)}
           >
             {JSON.stringify(data)}
@@ -123,7 +127,16 @@ const GluuCommitDialog = ({
 
   const renderArrayValue = (values: JsonValue[], key: number) => {
     if (!values.length) {
-      return <Badge color={`primary-${selectedTheme}`}>&quot;&quot;</Badge>
+      return (
+        <Badge
+          style={{
+            backgroundColor: themeColors.background,
+            color: customColors.white,
+          }}
+        >
+          &quot;&quot;
+        </Badge>
+      )
     }
 
     return (
@@ -152,7 +165,7 @@ const GluuCommitDialog = ({
         <>{webhookTriggerModal({ closeModal })}</>
       ) : (
         <Modal isOpen={modal} size={'lg'} toggle={closeModal} className="modal-outline-primary">
-          <ModalHeader toggle={closeModal}>
+          <ModalHeader toggle={closeModal} style={{ color: customColors.black }}>
             <i
               onClick={closeModal}
               onKeyDown={() => {}}
@@ -161,11 +174,13 @@ const GluuCommitDialog = ({
               role="img"
               aria-hidden="true"
             ></i>
-            {isLicenseLabel
-              ? t('messages.licenseAuditLog')
-              : !label || label === ''
-                ? t('messages.action_commit_question')
-                : label}
+            <span style={{ color: customColors.black }}>
+              {isLicenseLabel
+                ? t('messages.licenseAuditLog')
+                : !label || label === ''
+                  ? t('messages.action_commit_question')
+                  : label}
+            </span>
           </ModalHeader>
           <ModalBody>
             <div
@@ -192,7 +207,7 @@ const GluuCommitDialog = ({
                       fontSize: '1.2rem',
                       fontWeight: 'bold',
                       margin: 0,
-                      color: `${customColors.black} !important`,
+                      color: customColors.black,
                     }}
                   >
                     List of changes
@@ -202,7 +217,7 @@ const GluuCommitDialog = ({
               {operations &&
                 operations.map((item: GluuCommitDialogOperation, key: number) => (
                   <FormGroup row key={key}>
-                    <Col sm={1} style={{ fontWeight: 'bold' }}>
+                    <Col sm={1} style={{ fontWeight: 'bold', color: customColors.black }}>
                       Set
                     </Col>
                     <Col
@@ -213,24 +228,57 @@ const GluuCommitDialog = ({
                         paddingBottom: 10,
                       }}
                     >
-                      <Badge color={`primary-${selectedTheme}`}>{item.path}</Badge>
+                      <Badge
+                        style={{
+                          backgroundColor: themeColors.background,
+                          color: customColors.white,
+                        }}
+                      >
+                        {item.path}
+                      </Badge>
                     </Col>
-                    <Col sm={1} style={{ fontWeight: 'bold' }}>
+                    <Col sm={1} style={{ fontWeight: 'bold', color: customColors.black }}>
                       to
                     </Col>
                     <Col sm={5} style={{ overflow: 'auto' }}>
                       {isJsonValueArray(item.value) ? (
                         renderArrayValue(item.value, key)
                       ) : typeof item.value === 'boolean' ? (
-                        <Badge color={`primary-${selectedTheme}`}>{String(item.value)}</Badge>
+                        <Badge
+                          style={{
+                            backgroundColor: themeColors.background,
+                            color: customColors.white,
+                          }}
+                        >
+                          {String(item.value)}
+                        </Badge>
                       ) : item.value === '' || item.value === null || item.value === undefined ? (
-                        <Badge color={`primary-${selectedTheme}`}>&quot;&quot;</Badge>
+                        <Badge
+                          style={{
+                            backgroundColor: themeColors.background,
+                            color: customColors.white,
+                          }}
+                        >
+                          &quot;&quot;
+                        </Badge>
                       ) : typeof item.value === 'object' ? (
-                        <Badge color={`primary-${selectedTheme}`}>
+                        <Badge
+                          style={{
+                            backgroundColor: themeColors.background,
+                            color: customColors.white,
+                          }}
+                        >
                           {JSON.stringify(item.value)}
                         </Badge>
                       ) : (
-                        <Badge color={`primary-${selectedTheme}`}>{String(item.value)}</Badge>
+                        <Badge
+                          style={{
+                            backgroundColor: themeColors.background,
+                            color: customColors.white,
+                          }}
+                        >
+                          {String(item.value)}
+                        </Badge>
                       )}
                     </Col>
                   </FormGroup>

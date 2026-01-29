@@ -24,8 +24,8 @@ const MappingItem: React.FC<MappingItemProps> = React.memo(function MappingItem(
       size="small"
       variant="outlined"
       sx={{
-        borderColor: isDarkTheme ? themeColors.borderColor : customColors.lightBorder,
-        color: isDarkTheme ? themeColors.fontColor : customColors.primaryDark,
+        borderColor: customColors.lightBorder,
+        color: customColors.primaryDark,
         fontSize: '0.85rem',
         fontWeight: 600,
         height: 32,
@@ -67,7 +67,7 @@ const MappingItem: React.FC<MappingItemProps> = React.memo(function MappingItem(
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
           <SecurityOutlined
             sx={{
-              color: isDarkTheme ? themeColors.fontColor : customColors.textSecondary,
+              color: customColors.textSecondary,
               fontSize: 22,
             }}
           />

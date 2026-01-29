@@ -29,6 +29,7 @@ import { SETTINGS } from 'Utils/ApiResources'
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTheme } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
 import { SIMPLE_PASSWORD_AUTH } from 'Plugins/auth-server/common/Constants'
 import {
   CedarlingLogType,
@@ -130,6 +131,14 @@ const SettingsPage: React.FC = () => {
       : DEFAULT_PAGING_SIZE
   }, [])
   const selectedTheme = useMemo(() => themeState.theme || DEFAULT_THEME, [themeState.theme])
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+  const badgeStyle = useMemo(
+    () => ({
+      backgroundColor: themeColors.background,
+      color: customColors.white,
+    }),
+    [themeColors.background],
+  )
   const configApiUrl = useMemo(() => {
     if (typeof window === 'undefined') return 'N/A'
     const windowWithConfig = window as Window & { configApiBaseUrl?: string }
@@ -338,7 +347,7 @@ const SettingsPage: React.FC = () => {
                 <Col sm={8}>
                   <Label style={LABEL_CONTAINER_STYLE}>
                     <h3 style={{ color: customColors.primaryDark }}>
-                      <Badge color={`primary-${selectedTheme}`}>{configApiUrl}</Badge>
+                      <Badge style={badgeStyle}>{configApiUrl}</Badge>
                     </h3>
                   </Label>
                 </Col>
@@ -455,9 +464,13 @@ const SettingsPage: React.FC = () => {
                 </AccordionHeader>
                 <AccordionBody>
                   <Button
-                    style={{ float: 'right' }}
+                    style={{
+                      float: 'right',
+                      backgroundColor: customColors.primaryDark,
+                      color: customColors.white,
+                      border: 'none',
+                    }}
                     type="button"
-                    color={`primary-${selectedTheme}`}
                     disabled={!canWriteSettings}
                     onClick={() => {
                       const currentParams = formik.values.additionalParameters || []

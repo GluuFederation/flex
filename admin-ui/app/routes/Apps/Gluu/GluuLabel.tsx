@@ -14,9 +14,18 @@ interface GluuLabelProps {
   doc_category?: string
   doc_entry?: string
   style?: CSSProperties
+  allowColon?: boolean
 }
 
-function GluuLabel({ label, required, size, doc_category, doc_entry, style }: GluuLabelProps) {
+function GluuLabel({
+  label,
+  required,
+  size,
+  doc_category,
+  doc_entry,
+  style,
+  allowColon = true,
+}: GluuLabelProps) {
   const { t, i18n } = useTranslation()
 
   const labelColor = useMemo(() => customColors.primaryDark, [])
@@ -65,7 +74,7 @@ function GluuLabel({ label, required, size, doc_category, doc_entry, style }: Gl
             </>
           )}
         </span>
-        <span>:</span>
+        {allowColon && <span>:</span>}
       </h5>
     </Label>
   )

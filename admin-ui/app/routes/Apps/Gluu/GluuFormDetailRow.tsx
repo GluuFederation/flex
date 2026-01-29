@@ -1,8 +1,11 @@
-import { memo, CSSProperties, useMemo } from 'react'
+import { memo, CSSProperties, useMemo, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FormGroup, Label, Badge } from 'Components'
 import GluuTooltip from './GluuTooltip'
 import customColors from '@/customColors'
+import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 interface GluuFormDetailRowProps {
   label: string
@@ -34,22 +37,32 @@ function GluuFormDetailRow({
   rowClassName,
 }: GluuFormDetailRowProps) {
   const { t } = useTranslation()
-  const labelColor = useMemo(() => customColors.primaryDark, [])
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
 
   const appliedLabelStyle: CSSProperties = useMemo(
     () => ({
       ...defaultLabelStyle,
-      color: labelColor,
+      color: customColors.black,
       ...labelStyle,
     }),
-    [labelColor, labelStyle],
+    [labelStyle],
   )
 
   const valueLabelStyle: CSSProperties = useMemo(
     () => ({
-      color: labelColor,
+      color: customColors.black,
     }),
-    [labelColor],
+    [],
+  )
+
+  const badgeStyle: CSSProperties = useMemo(
+    () => ({
+      backgroundColor: themeColors.background,
+      color: customColors.white,
+    }),
+    [themeColors.background],
   )
 
   return (
@@ -59,7 +72,13 @@ function GluuFormDetailRow({
           {t(label)}:
         </Label>
         <Label for={value?.toString()} style={valueLabelStyle} sm={rsize}>
-          {!isBadge ? value : <Badge color={badgeColor ? badgeColor : 'primary'}>{value}</Badge>}
+          {!isBadge ? (
+            value
+          ) : (
+            <Badge style={badgeColor ? undefined : badgeStyle} color={badgeColor}>
+              {value}
+            </Badge>
+          )}
         </Label>
       </FormGroup>
     </GluuTooltip>
