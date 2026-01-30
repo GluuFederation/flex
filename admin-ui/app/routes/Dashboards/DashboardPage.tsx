@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo, useCallback, useContext } from 're
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { useMediaQuery } from 'react-responsive'
-import dayjs from 'dayjs'
 import type { Dayjs } from 'dayjs'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
@@ -33,6 +32,13 @@ import { useDashboardLicense, useDashboardClients, useDashboardLockStats } from 
 import styles from './styles'
 import { StatusIndicator, SummaryCard, UserInfoItem } from './components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
+import {
+  isAfterDate,
+  isBeforeDate,
+  createDate,
+  subtractDate,
+  formatDate as formatDateDayjs,
+} from '@/utils/dayjsUtils'
 
 interface RootState {
   authReducer: AuthState
@@ -80,8 +86,8 @@ const DashboardPage = () => {
     isDark,
   })
 
-  const [startDate, setStartDate] = useState<Dayjs>(dayjs().subtract(3, 'months'))
-  const [endDate, setEndDate] = useState<Dayjs>(dayjs())
+  const [startDate, setStartDate] = useState<Dayjs>(() => subtractDate(createDate(), 3, 'months'))
+  const [endDate, setEndDate] = useState<Dayjs>(() => createDate())
 
   const debouncedStartDate = useDebounce(startDate, 400)
   const debouncedEndDate = useDebounce(endDate, 400)
@@ -310,12 +316,12 @@ const DashboardPage = () => {
 
       if (type === 'start') {
         setStartDate(date)
-        if (date.isAfter(endDate)) {
+        if (isAfterDate(date, endDate)) {
           setEndDate(date)
         }
       } else {
         setEndDate(date)
-        if (date.isBefore(startDate)) {
+        if (isBeforeDate(date, startDate)) {
           setStartDate(date)
         }
       }
@@ -335,8 +341,8 @@ const DashboardPage = () => {
 
   const dateMonths = useMemo(
     () => ({
-      start: debouncedStartDate.format('YYYYMM'),
-      end: debouncedEndDate.format('YYYYMM'),
+      start: formatDateDayjs(debouncedStartDate, 'YYYYMM'),
+      end: formatDateDayjs(debouncedEndDate, 'YYYYMM'),
     }),
     [debouncedStartDate, debouncedEndDate],
   )
