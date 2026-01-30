@@ -37,7 +37,8 @@ import {
   isBeforeDate,
   createDate,
   subtractDate,
-  formatDate as formatDateDayjs,
+  formatDate as formatDayjsDate,
+  DATE_FORMATS,
 } from '@/utils/dayjsUtils'
 
 interface RootState {
@@ -341,8 +342,8 @@ const DashboardPage = () => {
 
   const dateMonths = useMemo(
     () => ({
-      start: formatDateDayjs(debouncedStartDate, 'YYYYMM'),
-      end: formatDateDayjs(debouncedEndDate, 'YYYYMM'),
+      start: formatDayjsDate(debouncedStartDate, DATE_FORMATS.MONTH_KEY),
+      end: formatDayjsDate(debouncedEndDate, DATE_FORMATS.MONTH_KEY),
     }),
     [debouncedStartDate, debouncedEndDate],
   )

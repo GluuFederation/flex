@@ -13,6 +13,7 @@ export const DATE_FORMATS = {
   DATETIME_SECONDS: 'YYYY-MM-DD HH:mm:ss',
   DATETIME_AMPM: 'YYYY-MM-DD h:mm:ss A',
   DATETIME_LONG: 'ddd, MMM DD, YYYY h:mm:ss A',
+  MONTH_KEY: 'YYYYMM',
   TOKEN_DATETIME: 'YYYY/DD/MM HH:mm:ss',
 } as const
 

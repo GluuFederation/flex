@@ -605,11 +605,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                         <GluuLabel label="fields.creationDate" size={4} />
                         <Col sm={8}>
                           <Input
-                            defaultValue={
-                              scope.creationDate
-                                ? formatDate(scope.creationDate, 'YYYY-MM-DD HH:mm:ss')
-                                : ''
-                            }
+                            defaultValue={formatDate(scope.creationDate, 'YYYY-MM-DD HH:mm:ss')}
                             disabled={true}
                           />
                         </Col>
@@ -676,11 +672,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                       <GluuLabel label="fields.creationDate" size={4} />
                       <Col sm={8}>
                         <Input
-                          defaultValue={
-                            scope.creationDate
-                              ? formatDate(scope.creationDate, 'YYYY-MM-DD HH:mm:ss')
-                              : ''
-                          }
+                          defaultValue={formatDate(scope.creationDate, 'YYYY-MM-DD HH:mm:ss')}
                           disabled={true}
                         />
                       </Col>
