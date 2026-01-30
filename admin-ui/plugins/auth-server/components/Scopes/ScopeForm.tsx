@@ -26,7 +26,7 @@ import { SCOPE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
-import { formatDate } from '@/utils/dayjsUtils'
+import { formatDate, DATE_FORMATS } from '@/utils/dayjsUtils'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
 import type { ScopeFormProps, ScopeFormValues, ScopeClient, ExtendedScope } from './types'
@@ -605,7 +605,10 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                         <GluuLabel label="fields.creationDate" size={4} />
                         <Col sm={8}>
                           <Input
-                            defaultValue={formatDate(scope.creationDate, 'YYYY-MM-DD HH:mm:ss')}
+                            defaultValue={formatDate(
+                              scope.creationDate,
+                              DATE_FORMATS.DATETIME_SECONDS,
+                            )}
                             disabled={true}
                           />
                         </Col>
@@ -672,7 +675,10 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                       <GluuLabel label="fields.creationDate" size={4} />
                       <Col sm={8}>
                         <Input
-                          defaultValue={formatDate(scope.creationDate, 'YYYY-MM-DD HH:mm:ss')}
+                          defaultValue={formatDate(
+                            scope.creationDate,
+                            DATE_FORMATS.DATETIME_SECONDS,
+                          )}
                           disabled={true}
                         />
                       </Col>
