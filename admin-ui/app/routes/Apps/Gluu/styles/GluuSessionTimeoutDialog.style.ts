@@ -1,5 +1,4 @@
 import { makeStyles } from 'tss-react/mui'
-import red from '@mui/material/colors/red'
 import customColors from '@/customColors'
 
 const styles = makeStyles()({
@@ -9,7 +8,7 @@ const styles = makeStyles()({
   button: {
     borderRadius: 0,
     textTransform: 'none',
-    padding: 5,
+    padding: '5px',
   },
   logout: {
     'color': customColors.white,

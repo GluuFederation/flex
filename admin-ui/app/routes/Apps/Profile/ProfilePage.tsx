@@ -10,11 +10,13 @@ import styles from './styles'
 import { Box, Divider, Skeleton } from '@mui/material'
 import { getProfileDetails } from 'Redux/features/ProfileDetailsSlice'
 import { randomAvatar } from '../../../utilities'
+import getThemeColor from '../../../context/theme/config'
+import { DEFAULT_THEME } from '@/context/theme/constants'
+import customColors from '@/customColors'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import customColors from '@/customColors'
 import type { AppDispatch, ProfileRootState, ThemeContextValue, CustomAttribute } from './types'
 
 const JANS_ADMIN_UI_ROLE_ATTR = 'jansAdminUIRole'
@@ -32,11 +34,10 @@ const ProfileDetails: React.FC = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch<AppDispatch>()
   const theme = useContext(ThemeContext) as ThemeContextValue
+  const selectedTheme = useMemo(() => theme?.state?.theme ?? DEFAULT_THEME, [theme?.state?.theme])
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { classes } = styles()
   const { navigateToRoute } = useAppNavigation()
-
-  const selectedTheme = useMemo(() => theme?.state?.theme ?? 'light', [theme?.state?.theme])
-  const buttonColor = useMemo(() => `primary-${selectedTheme}`, [selectedTheme])
 
   SetTitle(t('titles.profile_detail'))
 
@@ -95,14 +96,14 @@ const ProfileDetails: React.FC = () => {
     return jansAdminUIRole.values.map((role: string, index: number) => (
       <Badge
         key={`${role}-${index}`}
-        style={{ padding: BADGE_PADDING, color: customColors.white }}
-        color={buttonColor}
+        style={{ padding: BADGE_PADDING, color: themeColors.fontColor }}
+        color={`primary-${selectedTheme}`}
         className="me-1"
       >
         {role}
       </Badge>
     ))
-  }, [jansAdminUIRole?.values, buttonColor])
+  }, [jansAdminUIRole?.values, selectedTheme, themeColors.fontColor])
 
   const renderField = useCallback(
     (labelKey: string, value: string | undefined, isLoading: boolean) => {
@@ -192,7 +193,14 @@ const ProfileDetails: React.FC = () => {
                         {loading ? (
                           <Skeleton animation="wave" height={SKELETON_HEIGHT} />
                         ) : (
-                          <Button color={buttonColor} onClick={navigateToUserManagement}>
+                          <Button
+                            style={{
+                              backgroundColor: 'transparent',
+                              color: customColors.primaryDark,
+                              border: `1px solid ${themeColors.background}`,
+                            }}
+                            onClick={navigateToUserManagement}
+                          >
                             <i className="fa fa-pencil me-2" />
                             {t('actions.edit')}
                           </Button>

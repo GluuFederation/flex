@@ -1,10 +1,12 @@
-import React, { useContext } from 'react'
+import React, { useContext, useMemo } from 'react'
 import { Container, Badge, Col, FormGroup, Label } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import GluuSecretDetail from 'Routes/Apps/Gluu/GluuSecretDetail'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
 import customColors from '@/customColors'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 const DOC_CATEGORY = 'openid_client'
 
@@ -26,12 +28,6 @@ const detailColumnStyle = {
   flexDirection: 'column',
   gap: '0.75rem',
 }
-const detailLabelStyle = {
-  fontWeight: 600,
-  wordWrap: 'break-word',
-  whiteSpace: 'normal',
-  paddingRight: '0.5rem',
-}
 const detailValueStyle = {
   display: 'flex',
   flexWrap: 'wrap',
@@ -42,7 +38,27 @@ const detailValueStyle = {
 function ClientDetailPage({ row, scopes }) {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+
+  const detailLabelStyle = useMemo(
+    () => ({
+      fontWeight: 600,
+      wordWrap: 'break-word',
+      whiteSpace: 'normal',
+      paddingRight: '0.5rem',
+      color: customColors.black,
+    }),
+    [],
+  )
+
+  const badgeStyle = useMemo(
+    () => ({
+      backgroundColor: themeColors.background,
+      color: customColors.white,
+    }),
+    [themeColors.background],
+  )
 
   const scopesDns = row.scopes || []
   const clientScopes = scopes
@@ -64,7 +80,7 @@ function ClientDetailPage({ row, scopes }) {
     <div style={detailValueStyle}>
       {items?.length
         ? items.map((item, key) => (
-            <Badge key={key} color={`primary-${selectedTheme}`}>
+            <Badge key={key} style={badgeStyle}>
               {item}
             </Badge>
           ))
@@ -115,9 +131,9 @@ function ClientDetailPage({ row, scopes }) {
               <Col sm={8}>
                 <div style={detailValueStyle}>
                   {row.trustedClient ? (
-                    <Badge color={`primary-${selectedTheme}`}>{t('options.yes')}</Badge>
+                    <Badge style={badgeStyle}>{t('options.yes')}</Badge>
                   ) : (
-                    <Badge color="secondary">{t('options.no')}</Badge>
+                    <Badge style={badgeStyle}>{t('options.no')}</Badge>
                   )}
                 </div>
               </Col>
@@ -181,9 +197,9 @@ function ClientDetailPage({ row, scopes }) {
               <Col sm={8}>
                 <div style={detailValueStyle}>
                   {!row.disabled ? (
-                    <Badge color={`primary-${selectedTheme}`}>{t('options.enabled')}</Badge>
+                    <Badge style={badgeStyle}>{t('options.enabled')}</Badge>
                   ) : (
-                    <Badge color="danger">{t('options.disabled')}</Badge>
+                    <Badge style={badgeStyle}>{t('options.disabled')}</Badge>
                   )}
                 </div>
               </Col>
@@ -207,7 +223,7 @@ function ClientDetailPage({ row, scopes }) {
               <Col sm={8}>
                 <div style={detailValueStyle}>
                   {row.authenticationMethod ? (
-                    <Badge color={`primary-${selectedTheme}`}>{row.authenticationMethod}</Badge>
+                    <Badge style={badgeStyle}>{row.authenticationMethod}</Badge>
                   ) : (
                     dash
                   )}

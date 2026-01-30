@@ -1,4 +1,6 @@
 import type { DateRangePreset } from './types'
+import customColors from '@/customColors'
+import { THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
 
 export const MAU_CACHE_CONFIG = {
   STALE_TIME: 5 * 60 * 1000,
@@ -13,37 +15,30 @@ export const DATE_PRESETS: DateRangePreset[] = [
   { labelKey: 'fields.date_preset_1y', months: 12 },
 ] as const
 
+const sharedMauColors = {
+  pieClientCredentials: customColors.mauPieClientCredentials,
+  pieAuthCodeAccess: customColors.mauPieAuthCodeAccess,
+  trendClientCredentials: customColors.mauTrendClientCredentials,
+  trendAuthCodeAccess: customColors.mauTrendAuthCodeAccess,
+  trendAuthCodeId: customColors.mauTrendAuthCodeId,
+} as const
+
 export const CHART_COLORS_BY_THEME = {
-  darkBlack: {
-    mau: '#4CAF50',
-    clientCredentials: '#64B5F6',
-    authCodeAccess: '#FFB74D',
-    authCodeId: '#BA68C8',
+  [THEME_LIGHT]: {
+    mau: customColors.logo,
+    ...sharedMauColors,
   },
-  darkBlue: {
-    mau: '#00b875',
-    clientCredentials: '#4FC3F7',
-    authCodeAccess: '#FFB74D',
-    authCodeId: '#CE93D8',
-  },
-  lightBlue: {
-    mau: '#00b875',
-    clientCredentials: '#1976D2',
-    authCodeAccess: '#F57C00',
-    authCodeId: '#7B1FA2',
-  },
-  lightGreen: {
-    mau: '#2E7D32',
-    clientCredentials: '#1565C0',
-    authCodeAccess: '#E65100',
-    authCodeId: '#6A1B9A',
+  [THEME_DARK]: {
+    mau: customColors.mauDark,
+    ...sharedMauColors,
   },
 } as const
 
 export type ThemeKey = keyof typeof CHART_COLORS_BY_THEME
 
-export const getChartColors = (theme: ThemeKey | string) =>
-  CHART_COLORS_BY_THEME[theme as ThemeKey] ?? CHART_COLORS_BY_THEME.lightGreen
+export const getChartColors = (theme: ThemeKey | string) => {
+  return CHART_COLORS_BY_THEME[theme as ThemeKey] ?? CHART_COLORS_BY_THEME[THEME_LIGHT]
+}
 
 export const MONTH_NAMES = [
   'Jan',

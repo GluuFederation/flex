@@ -41,6 +41,7 @@ import {
   useGetAgamaRepositories,
   type Deployment,
 } from 'JansConfigApi'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 import type {
   AgamaProject,
   AgamaRepository,
@@ -106,7 +107,7 @@ function AgamaListPage(): React.ReactElement {
   const isConfigLoading = useSelector((state: RootState) => state.jsonConfigReducer.loading)
 
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'dark'
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
 
@@ -869,6 +870,7 @@ function AgamaListPage(): React.ReactElement {
             headerStyle: {
               ...(applicationStyle.tableHeaderStyle as React.CSSProperties),
               ...bgThemeColor,
+              color: themeColors.fontColor,
             } as React.CSSProperties,
             actionsColumnIndex: -1,
           }}
