@@ -10,7 +10,6 @@ export {
   useUpdateTrustRelationship,
   useDeleteTrustRelationshipMutation,
   SAML_QUERY_KEYS,
-  TrustRelationshipSpMetaDataSourceType,
   type SamlAppConfiguration,
   type IdentityProvider,
   type TrustRelationship,
@@ -19,3 +18,4 @@ export {
   type GetSamlIdentityProviderParams,
   type IdentityProviderPagedResult,
 } from './useSamlApi'
+export { TrustRelationshipSpMetaDataSourceType } from 'JansConfigApi'
