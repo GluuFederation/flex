@@ -28,6 +28,10 @@ interface DeleteItem {
   tableData?: Record<string, never>
 }
 
+type IdentityProviderRowData = IdentityProvider & {
+  tableData?: Record<string, unknown>
+}
+
 const DeleteOutlinedIcon = () => <DeleteOutlined />
 
 const WebsiteSsoIdentityBrokeringList = React.memo(() => {
@@ -245,7 +249,7 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
           rowData: IdentityProvider | IdentityProvider[],
         ): void => {
           if (Array.isArray(rowData)) return
-          const { tableData, ...clean } = rowData as IdentityProvider & { tableData?: unknown }
+          const { tableData, ...clean } = rowData as IdentityProviderRowData
           void tableData
           handleGoToEditPage(clean)
         },
@@ -267,7 +271,9 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
           rowData: IdentityProvider | IdentityProvider[],
         ): void => {
           if (Array.isArray(rowData)) return
-          handleGoToEditPage(rowData, true)
+          const { tableData, ...clean } = rowData as IdentityProviderRowData
+          void tableData
+          handleGoToEditPage(clean, true)
         },
       })
     }
