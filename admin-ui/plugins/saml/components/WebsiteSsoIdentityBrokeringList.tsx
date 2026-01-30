@@ -1,9 +1,8 @@
 import React, { useCallback, useEffect, useContext, useMemo, useState, useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { debounce } from 'lodash'
-import { getSamlIdentities, deleteSamlIdentity } from 'Plugins/saml/redux/features/SamlSlice'
 import MaterialTable, { type Action } from '@material-table/core'
 import { useTranslation } from 'react-i18next'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { buildPayload } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
@@ -20,14 +19,17 @@ import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { PaperContainer, getIdentityProviderTableCols } from '../helper/tableUtils'
-import type { SamlIdentity } from '../types/redux'
-import type { SamlRootState } from '../types/state'
+import { useIdentityProviders, useDeleteIdentityProvider, type IdentityProvider } from './hooks'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 
 interface DeleteItem {
   inum?: string
   displayName?: string
   tableData?: Record<string, never>
+}
+
+type IdentityProviderRowData = IdentityProvider & {
+  tableData?: Record<string, unknown>
 }
 
 const DeleteOutlinedIcon = () => <DeleteOutlined />
@@ -52,11 +54,28 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
   const prevPatternRef = useRef<string | null>(null)
 
   const { t } = useTranslation()
-  const dispatch = useDispatch()
   const { navigateToRoute } = useAppNavigation()
-  const { items, loadingSamlIdp, totalItems } = useSelector(
-    (state: SamlRootState) => state.idpSamlReducer,
+
+  const queryParams = useMemo(
+    () => ({
+      startIndex: pageNumber * limit,
+      limit,
+      ...(pattern ? { pattern } : {}),
+    }),
+    [pageNumber, limit, pattern],
   )
+
+  const {
+    data: idpData,
+    isLoading: isInitialLoading,
+    isFetching: isFetchingData,
+  } = useIdentityProviders(queryParams)
+  const deleteIdentityProviderMutation = useDeleteIdentityProvider()
+
+  const isLoading = isInitialLoading || isFetchingData || deleteIdentityProviderMutation.isPending
+
+  const items = idpData?.entries ?? []
+  const totalItems = idpData?.totalEntriesCount ?? 0
 
   const samlResourceId = useMemo(() => ADMIN_UI_RESOURCES.SAML, [])
   const samlScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[samlResourceId], [samlResourceId])
@@ -98,22 +117,10 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
     }
   }, [pattern])
 
-  useEffect(() => {
-    if (!canReadIdentities) return
-    const startIndex = pageNumber * limit
-    dispatch(
-      getSamlIdentities({
-        startIndex,
-        limit,
-        ...(pattern ? { pattern } : {}),
-      }),
-    )
-  }, [dispatch, canReadIdentities, pageNumber, limit, pattern])
-
   const toggle = useCallback(() => setModal((prev) => !prev), [])
 
   const handleGoToEditPage = useCallback(
-    (rowData: SamlIdentity, viewOnly?: boolean): void => {
+    (rowData: IdentityProvider, viewOnly?: boolean): void => {
       navigateToRoute(ROUTES.SAML_IDP_EDIT, { state: { rowData: rowData, viewOnly: viewOnly } })
     },
     [navigateToRoute],
@@ -124,34 +131,35 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
   }, [navigateToRoute])
 
   const handleDelete = useCallback(
-    (row: SamlIdentity): void => {
-      setItem(row)
+    (row: IdentityProvider): void => {
+      setItem({ inum: row.inum, displayName: row.displayName })
       toggle()
     },
     [toggle],
   )
 
   const onDeletionConfirmed = useCallback(
-    (message: string): void => {
+    async (message: string): Promise<void> => {
       if (!item.inum) {
         return
       }
+
       const userAction: { action_message: string; action_data: string } = {
         action_message: '',
         action_data: '',
       }
       buildPayload(userAction, message, item.inum)
-      dispatch(
-        deleteSamlIdentity({
-          action: {
-            action_message: userAction.action_message,
-            action_data: userAction.action_data,
-          },
-        }),
-      )
-      toggle()
+      try {
+        await deleteIdentityProviderMutation.mutateAsync({
+          inum: userAction.action_data,
+          userMessage: userAction.action_message,
+        })
+        toggle()
+      } catch (error) {
+        console.error('Failed to delete identity provider:', error)
+      }
     },
-    [dispatch, item.inum, toggle],
+    [buildPayload, deleteIdentityProviderMutation, item.inum, toggle],
   )
 
   const onRowCountChangeClick = useCallback((count: number): void => {
@@ -230,15 +238,18 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
   }, [limit, searchInput, handleOptionsChange, handleOptionsKeyDown])
 
   const tableActions = useMemo(() => {
-    const actions: Action<SamlIdentity>[] = []
+    const actions: Action<IdentityProvider>[] = []
     if (canWriteIdentities) {
       actions.push({
         icon: 'edit',
         tooltip: `${t('titles.edit_identity_provider')}`,
         iconProps: { style: { color: customColors.darkGray } },
-        onClick: (_event: React.MouseEvent, rowData: SamlIdentity | SamlIdentity[]): void => {
+        onClick: (
+          _event: React.MouseEvent,
+          rowData: IdentityProvider | IdentityProvider[],
+        ): void => {
           if (Array.isArray(rowData)) return
-          const { tableData, ...clean } = rowData as SamlIdentity & { tableData?: unknown }
+          const { tableData, ...clean } = rowData as IdentityProviderRowData
           void tableData
           handleGoToEditPage(clean)
         },
@@ -255,9 +266,14 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
       actions.push({
         icon: 'visibility',
         tooltip: `${t('titles.view_identity_provider')}`,
-        onClick: (_event: React.MouseEvent, rowData: SamlIdentity | SamlIdentity[]): void => {
+        onClick: (
+          _event: React.MouseEvent,
+          rowData: IdentityProvider | IdentityProvider[],
+        ): void => {
           if (Array.isArray(rowData)) return
-          handleGoToEditPage(rowData, true)
+          const { tableData, ...clean } = rowData as IdentityProviderRowData
+          void tableData
+          handleGoToEditPage(clean, true)
         },
       })
     }
@@ -266,7 +282,10 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
         icon: DeleteOutlinedIcon,
         iconProps: { color: 'secondary' },
         tooltip: `${t('titles.delete_identity_provider')}`,
-        onClick: (_event: React.MouseEvent, rowData: SamlIdentity | SamlIdentity[]): void => {
+        onClick: (
+          _event: React.MouseEvent,
+          rowData: IdentityProvider | IdentityProvider[],
+        ): void => {
           if (Array.isArray(rowData)) return
           handleDelete(rowData)
         },
@@ -286,7 +305,7 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: handleRefresh,
-    } as Action<SamlIdentity> & { 'data-testid'?: string })
+    } as Action<IdentityProvider> & { 'data-testid'?: string })
     return actions
   }, [
     canWriteIdentities,
@@ -333,13 +352,13 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
   )
 
   return (
-    <>
+    <GluuLoader blocking={isLoading}>
       <GluuViewWrapper canShow={canReadIdentities}>
         <MaterialTable
           components={tableComponents}
           columns={tableColumns}
           data={items}
-          isLoading={loadingSamlIdp}
+          isLoading={isLoading}
           title=""
           actions={tableActions}
           options={tableOptions}
@@ -356,7 +375,7 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
           feature={adminUiFeatures.saml_idp_write}
         />
       )}
-    </>
+    </GluuLoader>
   )
 })
 
