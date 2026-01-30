@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Card, CardHeader, CardBody } from 'Components'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
 import type { ServiceStatusCardProps, ServiceHealth } from '../types'
 import { formatServiceName } from '../utils'
 import HealthStatusBadge from './HealthStatusBadge'
+import customColors from '@/customColors'
 
 function getStatusMessage(service: ServiceHealth, t: TFunction): string {
   if (service.error) {
@@ -15,8 +16,6 @@ function getStatusMessage(service: ServiceHealth, t: TFunction): string {
       return t('messages.service_status_up')
     case 'down':
       return t('messages.service_status_down')
-    case 'degraded':
-      return t('messages.service_status_degraded')
     default:
       return t('messages.service_status_unknown')
   }
@@ -27,18 +26,30 @@ const ServiceStatusCard: React.FC<ServiceStatusCardProps> = ({ service, themeCol
   const displayName = formatServiceName(service.name)
   const statusMessage = getStatusMessage(service, t)
 
+  const headerTextColor = useMemo(() => {
+    // Use white text on dark background, dark text on light background
+    return themeColors.fontColor === customColors.white
+      ? customColors.white
+      : customColors.primaryDark
+  }, [themeColors.fontColor])
+
   return (
     <Card className="mb-3">
       <CardHeader
-        style={{ background: themeColors.background }}
+        style={{ background: themeColors.background, color: headerTextColor }}
         tag="h6"
-        className="text-white d-flex justify-content-between align-items-center"
+        className="d-flex justify-content-between align-items-center"
       >
         <span>{displayName}</span>
         <HealthStatusBadge status={service.status} />
       </CardHeader>
       <CardBody>
-        <p className={service.error ? 'text-danger mb-0' : 'mb-0'}>{statusMessage}</p>
+        <p
+          className={service.error ? 'text-danger mb-0' : 'mb-0'}
+          style={!service.error ? { color: customColors.primaryDark } : undefined}
+        >
+          {statusMessage}
+        </p>
       </CardBody>
     </Card>
   )

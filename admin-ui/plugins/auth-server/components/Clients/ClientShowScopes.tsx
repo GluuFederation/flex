@@ -1,8 +1,7 @@
-import React, { useContext, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Spinner } from 'reactstrap'
-import { Badge } from 'Components'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { Modal, ModalHeader, ModalBody, ModalFooter, Spinner } from 'reactstrap'
+import { GluuBadge, GluuButton } from 'Components'
 import { getClientScopeByInum } from '../../../../app/utils/Util'
 import { useGetOauthScopes } from 'JansConfigApi'
 import type { Scope } from 'JansConfigApi'
@@ -15,8 +14,6 @@ interface ClientShowScopesProps {
 
 function ClientShowScopes({ handler, data, isOpen }: ClientShowScopesProps): React.ReactElement {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'light'
 
   const scopeInums = useMemo(() => {
     if (!data || data.length === 0) {
@@ -53,8 +50,8 @@ function ClientShowScopes({ handler, data, isOpen }: ClientShowScopesProps): Rea
           </div>
         ) : fetchedScopes.length > 0 ? (
           fetchedScopes.map((scope, index) => (
-            <div key={scope.inum || scope.id || index}>
-              <Badge color={`primary-${selectedTheme}`}>{scope.displayName || scope.id}</Badge>
+            <div key={scope.inum || scope.id || index} style={{ marginBottom: 4 }}>
+              <GluuBadge>{scope.displayName || scope.id}</GluuBadge>
             </div>
           ))
         ) : (
@@ -62,9 +59,7 @@ function ClientShowScopes({ handler, data, isOpen }: ClientShowScopesProps): Rea
         )}
       </ModalBody>
       <ModalFooter>
-        <Button color={`primary-${selectedTheme}`} onClick={handler}>
-          {t('actions.close')}
-        </Button>
+        <GluuButton onClick={handler}>{t('actions.close')}</GluuButton>
       </ModalFooter>
     </Modal>
   )

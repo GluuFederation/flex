@@ -25,7 +25,8 @@ import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { SCOPE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
-import moment from 'moment'
+import getThemeColor from 'Context/theme/config'
+import { formatDate, DATE_FORMATS } from '@/utils/dayjsUtils'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
 import type { ScopeFormProps, ScopeFormValues, ScopeClient, ExtendedScope } from './types'
@@ -38,6 +39,7 @@ import {
 import { getScopeValidationSchema } from './helper/validations'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 interface RootState {
   authReducer: {
@@ -58,7 +60,15 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
 }) => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'light'
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+  const badgeStyle = useMemo(
+    () => ({
+      backgroundColor: themeColors.background,
+      color: customColors.white,
+    }),
+    [themeColors.background],
+  )
   const { navigateBack, navigateToRoute } = useAppNavigation()
   const dispatch = useDispatch()
   const client = scope.clients || []
@@ -392,7 +402,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                     doc_entry="scopeType"
                   />
                   <Col sm={8}>
-                    <Badge key={scope.inum} color={`primary-${selectedTheme}`}>
+                    <Badge key={scope.inum} style={badgeStyle}>
                       {formikProps.values.scopeType || scope.scopeType}
                     </Badge>
                   </Col>
@@ -595,7 +605,10 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                         <GluuLabel label="fields.creationDate" size={4} />
                         <Col sm={8}>
                           <Input
-                            defaultValue={moment(scope.creationDate).format('YYYY-MM-DD HH:mm:ss')}
+                            defaultValue={formatDate(
+                              scope.creationDate,
+                              DATE_FORMATS.DATETIME_SECONDS,
+                            )}
                             disabled={true}
                           />
                         </Col>
@@ -651,7 +664,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                               style={{ maxWidth: 140, overflow: 'auto' }}
                               key={`scope-${index}-${item}`}
                             >
-                              <Badge color={`primary-${selectedTheme}`}>{item}</Badge>
+                              <Badge style={badgeStyle}>{item}</Badge>
                             </div>
                           ))}
                         </Col>
@@ -662,7 +675,10 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                       <GluuLabel label="fields.creationDate" size={4} />
                       <Col sm={8}>
                         <Input
-                          defaultValue={moment(scope.creationDate).format('YYYY-MM-DD HH:mm:ss')}
+                          defaultValue={formatDate(
+                            scope.creationDate,
+                            DATE_FORMATS.DATETIME_SECONDS,
+                          )}
                           disabled={true}
                         />
                       </Col>

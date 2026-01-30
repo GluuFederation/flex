@@ -76,6 +76,9 @@
     "company_name": "Nombre de la Empresa",
     "customer_name": "Nombre del Cliente",
     "license_status": "Estado de la Licencia",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "unknown": "Desconocido",
     "oauth_server_status": "Estado del Servidor OAuth",
     "database_status": "Estado de la Base de Datos",
     "server_status": "Estado del Servidor",
@@ -99,6 +102,7 @@
     "mau_clients": "Clientes de Jans Lock"
   },
   "fields": {
+    "actions": "Acciones",
     "access_token_signing_alg": "Algoritmo JWS para firma",
     "resetLicense": "Restablecer Licencia",
     "search": "Buscar",
@@ -653,6 +657,14 @@
     "english": "Ingles",
     "portuguese": "Portugues",
     "spanish": "Español"
+  },
+  "themes": {
+    "theme": "Tema",
+    "light": "Claro",
+    "dark": "Oscuro"
+  },
+  "notifications": {
+    "no_notifications": "Sin notificaciones"
   },
   "menus": {
     "assets": "Recursos",

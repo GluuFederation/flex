@@ -20,6 +20,7 @@ import {
   useDeleteTrustRelationshipMutation,
   type TrustRelationship,
 } from './hooks'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 interface DeleteItem {
   inum: string
@@ -32,12 +33,8 @@ const DeleteOutlinedIcon = () => <DeleteOutlined />
 const WebsiteSsoServiceProviderList = React.memo(() => {
   const { authorizeHelper, hasCedarReadPermission, hasCedarWritePermission } = useCedarling()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme ?? 'light'
-  const themeColors = getThemeColor(selectedTheme)
-  const bgThemeColor = useMemo(
-    () => ({ background: themeColors.background }),
-    [themeColors.background],
-  )
+  const selectedTheme = useMemo(() => theme?.state?.theme ?? DEFAULT_THEME, [theme?.state?.theme])
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const [modal, setModal] = useState(false)
   const [item, setItem] = useState<DeleteItem>({ inum: '' })
 
@@ -209,7 +206,8 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
             idSynonym: 'inum',
             headerStyle: {
               ...applicationStyle.tableHeaderStyle,
-              ...bgThemeColor,
+              backgroundColor: themeColors.background,
+              color: themeColors.fontColor,
             } as React.CSSProperties,
             actionsColumnIndex: -1,
           }}

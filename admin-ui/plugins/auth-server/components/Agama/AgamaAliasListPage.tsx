@@ -18,6 +18,7 @@ import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import { ThemeContext } from 'Context/theme/themeContext'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import getThemeColor from 'Context/theme/config'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 import SetTitle from 'Utils/SetTitle'
 import { buildPayload, type UserAction } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
@@ -61,7 +62,7 @@ function AliasesListPage(): React.ReactElement {
 
   SetTitle(t('titles.authentication'))
 
-  const selectedTheme = theme?.state?.theme || 'dark'
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
   const bgThemeColor = useMemo(
     () => ({ background: getThemeColor(selectedTheme).background }),
     [selectedTheme],
@@ -351,6 +352,7 @@ function AliasesListPage(): React.ReactElement {
             headerStyle: {
               ...(applicationStyle.tableHeaderStyle as React.CSSProperties),
               ...bgThemeColor,
+              color: getThemeColor(selectedTheme).fontColor,
             } as React.CSSProperties,
             actionsColumnIndex: -1,
           }}

@@ -33,8 +33,8 @@ import CustomScriptDetailPage from './CustomScriptDetailPage'
 import { useTranslation } from 'react-i18next'
 import { useCedarling, CEDAR_RESOURCE_SCOPES, ADMIN_UI_RESOURCES } from '@/cedarling'
 import SetTitle from 'Utils/SetTitle'
-import { ThemeContext } from 'Context/theme/themeContext'
-import getThemeColor from 'Context/theme/config'
+import { ThemeContext } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
 import { updateToast } from 'Redux/features/toastSlice'
@@ -45,6 +45,7 @@ import { DEFAULT_SCRIPT_TYPE } from './constants'
 import type { CustomScript } from 'JansConfigApi'
 import type { Column, Action } from '@material-table/core'
 import type { ScriptError } from './types/customScript'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 
 interface ScriptTableRow extends CustomScript {
   scriptError?: ScriptError
@@ -70,8 +71,13 @@ const CustomScriptListPage: React.FC = () => {
   const [itemToDelete, setItemToDelete] = useState<CustomScript | null>(null)
 
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'light'
-  const themeColors = getThemeColor(selectedTheme)
+
+  const selectedTheme = useMemo(() => theme?.state?.theme || DEFAULT_THEME, [theme?.state?.theme])
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+  const darkThemeColors = useMemo(() => getThemeColor('dark'), [])
+  const lightThemeColors = useMemo(() => getThemeColor('light'), [])
+
+  const isDarkTheme = useMemo(() => selectedTheme === THEME_DARK, [selectedTheme])
 
   const scriptsResourceId = ADMIN_UI_RESOURCES.Scripts
   const scriptScopes = CEDAR_RESOURCE_SCOPES[scriptsResourceId] || []
@@ -192,7 +198,6 @@ const CustomScriptListPage: React.FC = () => {
   const handleSortOrderToggle = useCallback(() => {
     setSortOrder((prev) => (prev === 'ascending' ? 'descending' : 'ascending'))
   }, [])
-
   const columns: Column<ScriptTableRow>[] = useMemo(
     () => [
       {
@@ -205,9 +210,7 @@ const CustomScriptListPage: React.FC = () => {
               fontWeight={700}
               sx={{
                 mt: 0.5,
-                color: rowData.enabled
-                  ? `${customColors.black} !important`
-                  : `${customColors.black}80`,
+                opacity: rowData.enabled ? 1 : 0.6,
               }}
             >
               {rowData.name}
@@ -228,59 +231,122 @@ const CustomScriptListPage: React.FC = () => {
       {
         title: t('fields.description'),
         field: 'description',
-        render: (rowData: ScriptTableRow) => (
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              maxWidth: 300,
-              color: rowData.enabled
-                ? `${customColors.black} !important`
-                : `${customColors.black}80`,
-            }}
-          >
-            {rowData.description || '—'}
-          </Typography>
-        ),
+        render: (rowData: ScriptTableRow) => {
+          const isEnabled = rowData.enabled === true
+          return (
+            <Typography
+              variant="body2"
+              sx={{
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                maxWidth: 300,
+                color: isEnabled ? customColors.white : lightThemeColors.fontColor,
+                opacity: isEnabled ? 0.9 : 0.6,
+              }}
+            >
+              {rowData.description || '—'}
+            </Typography>
+          )
+        },
       },
       {
         title: t('fields.script_type'),
         field: 'scriptType',
-        render: (rowData: ScriptTableRow) => (
-          <Chip
-            label={rowData.scriptType}
-            size="small"
-            variant="outlined"
-            sx={{
-              fontFamily: 'monospace',
-              fontSize: '0.75rem',
-              borderRadius: 1,
-            }}
-          />
-        ),
+        render: (rowData: ScriptTableRow) => {
+          const isEnabled = rowData.enabled === true
+          return (
+            <Chip
+              label={rowData.scriptType}
+              size="small"
+              variant="outlined"
+              sx={{
+                'fontFamily': 'monospace',
+                'fontSize': '0.75rem',
+                'borderRadius': 1,
+                'color': isEnabled ? customColors.white : customColors.primaryDark,
+                'borderColor': isEnabled ? customColors.white : customColors.lightBorder,
+                'backgroundColor': isEnabled ? 'transparent' : 'transparent',
+                '& .MuiChip-label': {
+                  color: isEnabled ? customColors.white : customColors.primaryDark,
+                },
+              }}
+            />
+          )
+        },
       },
       {
         title: t('options.enabled'),
         field: 'enabled',
         type: 'boolean',
-        render: (rowData: ScriptTableRow) => (
-          <Chip
-            label={rowData.enabled ? t('options.yes') : t('options.no')}
-            size="small"
-            sx={{
-              minWidth: 60,
-              fontWeight: 500,
-              backgroundColor: rowData.enabled ? themeColors.background : undefined,
-              color: rowData.enabled ? customColors.white : undefined,
-            }}
-          />
-        ),
+        render: (rowData: ScriptTableRow) => {
+          const isEnabled = rowData.enabled === true
+          return (
+            <Chip
+              label={rowData.enabled ? t('options.yes') : t('options.no')}
+              size="small"
+              sx={{
+                minWidth: 60,
+                fontWeight: 500,
+                backgroundColor: darkThemeColors.background,
+                color: darkThemeColors.fontColor,
+                border: isEnabled
+                  ? `1px solid ${lightThemeColors.borderColor}`
+                  : `1px solid ${darkThemeColors.borderColor}`,
+                opacity: isEnabled ? 1 : 0.6,
+              }}
+            />
+          )
+        },
+      },
+      {
+        title: t('fields.actions'),
+        field: 'actions',
+        sorting: false,
+        render: (rowData: ScriptTableRow) => {
+          const isEnabled = rowData.enabled === true
+          const iconColor = isEnabled ? customColors.white : customColors.darkGray
+          return (
+            <Box sx={{ display: 'flex', gap: 1 }}>
+              {canWrite && (
+                <Tooltip title={t('messages.edit_script')}>
+                  <IconButton size="small" onClick={() => handleEdit(rowData)}>
+                    <EditOutlined sx={{ fontSize: 20, color: iconColor }} />
+                  </IconButton>
+                </Tooltip>
+              )}
+              {canRead && (
+                <Tooltip title={t('messages.view_script_details')}>
+                  <IconButton size="small" onClick={() => handleView(rowData)}>
+                    <VisibilityOutlined sx={{ fontSize: 20, color: iconColor }} />
+                  </IconButton>
+                </Tooltip>
+              )}
+              {canDelete && (
+                <Tooltip title={t('messages.delete_script')}>
+                  <IconButton size="small" onClick={() => handleDeleteClick(rowData)}>
+                    <DeleteOutlined sx={{ fontSize: 20, color: iconColor }} />
+                  </IconButton>
+                </Tooltip>
+              )}
+            </Box>
+          )
+        },
       },
     ],
-    [t, themeColors, customColors],
+    [
+      t,
+      themeColors,
+      darkThemeColors,
+      customColors,
+      isDarkTheme,
+      canWrite,
+      canRead,
+      canDelete,
+      handleEdit,
+      handleView,
+      handleDeleteClick,
+    ],
   )
 
   const actions: Action<ScriptTableRow>[] = useMemo(() => {
@@ -296,7 +362,7 @@ const CustomScriptListPage: React.FC = () => {
             sx={{
               'textTransform': 'none',
               'backgroundColor': themeColors.background,
-              'color': customColors.white,
+              'color': themeColors.fontColor,
               '&:hover': {
                 backgroundColor: customColors.darkGray,
               },
@@ -309,55 +375,10 @@ const CustomScriptListPage: React.FC = () => {
         onClick: handleAdd,
         tooltip: t('messages.add_script'),
       })
-
-      actionList.push({
-        icon: () => (
-          <Tooltip title={t('messages.edit_script')}>
-            <EditOutlined sx={{ fontSize: 20, color: customColors.darkGray }} />
-          </Tooltip>
-        ),
-        tooltip: t('messages.edit_script'),
-        onClick: (_event, rowData) => handleEdit(rowData as ScriptTableRow),
-      })
-    }
-
-    if (canRead) {
-      actionList.push({
-        icon: () => (
-          <Tooltip title={t('messages.view_script_details')}>
-            <VisibilityOutlined sx={{ fontSize: 20, color: customColors.darkGray }} />
-          </Tooltip>
-        ),
-        tooltip: t('messages.view_script_details'),
-        onClick: (_event, rowData) => handleView(rowData as ScriptTableRow),
-      })
-    }
-
-    if (canDelete) {
-      actionList.push({
-        icon: () => (
-          <Tooltip title={t('messages.delete_script')}>
-            <DeleteOutlined sx={{ fontSize: 20, color: customColors.darkGray }} />
-          </Tooltip>
-        ),
-        tooltip: t('messages.delete_script'),
-        onClick: (_event, rowData) => handleDeleteClick(rowData as ScriptTableRow),
-      })
     }
 
     return actionList
-  }, [
-    canRead,
-    canWrite,
-    canDelete,
-    t,
-    handleAdd,
-    handleEdit,
-    handleView,
-    handleDeleteClick,
-    themeColors,
-    customColors,
-  ])
+  }, [canWrite, t, handleAdd, themeColors, customColors])
 
   const tableOptions = useMemo(
     () => ({
@@ -367,23 +388,38 @@ const CustomScriptListPage: React.FC = () => {
       pageSize: pageSize,
       headerStyle: {
         backgroundColor: themeColors.background,
-        color: customColors.white,
+        color: themeColors.fontColor,
         fontWeight: 600,
         fontSize: '0.875rem',
         borderBottom: '2px solid #e0e0e0',
       },
-      rowStyle: (rowData) => {
-        const hasError = (rowData as ScriptTableRow).scriptError?.stackTrace
-        const baseColor = rowData.enabled ? themeColors.lightBackground : customColors.white
+      rowStyle: (rowData: ScriptTableRow) => {
+        const hasError = rowData.scriptError?.stackTrace
+
+        if (hasError) {
+          return {
+            backgroundColor: `${customColors.accentRed}15`,
+            color: customColors.darkGray,
+            fontSize: '0.875rem',
+          }
+        }
+
+        if (rowData.enabled) {
+          return {
+            backgroundColor: darkThemeColors.background,
+            color: darkThemeColors.fontColor,
+            fontSize: '0.875rem',
+          }
+        }
+
         return {
-          backgroundColor: hasError ? `${customColors.accentRed}15` : baseColor,
+          backgroundColor: customColors.white,
           color: customColors.darkGray,
           fontSize: '0.875rem',
         }
       },
-      actionsColumnIndex: -1,
     }),
-    [pageSize, themeColors, customColors],
+    [pageSize, themeColors, darkThemeColors, customColors, isDarkTheme],
   )
 
   if (error) {
@@ -452,7 +488,9 @@ const CustomScriptListPage: React.FC = () => {
                 value={scriptType}
                 onChange={handleTypeChange}
                 disabled={loadingTypes}
-                sx={{ minWidth: 220 }}
+                sx={{
+                  minWidth: 220,
+                }}
               >
                 {(scriptTypes || []).map((type) => (
                   <MenuItem key={type.value} value={type.value}>

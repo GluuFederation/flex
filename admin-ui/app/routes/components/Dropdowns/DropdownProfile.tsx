@@ -1,20 +1,22 @@
-import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
-import { DropdownMenu, DropdownItem } from 'Components'
+import { useEffect, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { auditLogoutLogs } from 'Redux/features/sessionSlice'
+import { useDispatch, useSelector } from 'react-redux'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { auditLogoutLogs } from 'Redux/features/sessionSlice'
+import { GluuDropdown, type GluuDropdownOption } from 'Components'
+import type { DropdownProfileProps, LogoutAuditState } from './types'
 
-const DropdownProfile = ({ position = '', end, userinfo }: any) => {
+const DropdownProfile = ({ trigger, renderTrigger, position = 'bottom' }: DropdownProfileProps) => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const { logoutAuditSucceeded } = useSelector((state: any) => state.logoutAuditReducer)
+  const { logoutAuditSucceeded } = useSelector(
+    (state: LogoutAuditState) => state.logoutAuditReducer,
+  )
   const { navigateToRoute } = useAppNavigation()
 
-  const handleLogout = () => {
-    dispatch(auditLogoutLogs({ message: 'User logged out mannually' }))
-  }
+  const handleLogout = useCallback(() => {
+    dispatch(auditLogoutLogs({ message: 'User logged out manually' }))
+  }, [dispatch])
 
   useEffect(() => {
     if (logoutAuditSucceeded === true) {
@@ -22,27 +24,36 @@ const DropdownProfile = ({ position = '', end, userinfo }: any) => {
     }
   }, [logoutAuditSucceeded, navigateToRoute])
 
-  return (
-    <DropdownMenu end={end}>
-      <DropdownItem header>
-        {userinfo.user_name || userinfo.name || userinfo.given_name}
-      </DropdownItem>
-      <DropdownItem divider />
-      <DropdownItem tag={Link} to={ROUTES.PROFILE}>
-        {t('menus.my_profile')}
-      </DropdownItem>
-      <DropdownItem divider />
-      <DropdownItem
-        tag={Link}
-        onClick={(e) => {
-          e.preventDefault()
+  const options: GluuDropdownOption<string>[] = useMemo(
+    () => [
+      {
+        value: 'profile',
+        label: t('menus.my_profile'),
+        onClick: () => {
+          navigateToRoute(ROUTES.PROFILE)
+        },
+      },
+      {
+        value: 'logout',
+        label: t('menus.signout'),
+        onClick: () => {
           handleLogout()
-        }}
-      >
-        <i className="fa fa-fw fa-sign-out me-2"></i>
-        {t('menus.signout')}
-      </DropdownItem>
-    </DropdownMenu>
+        },
+      },
+    ],
+    [t, navigateToRoute, handleLogout],
+  )
+
+  return (
+    <GluuDropdown
+      trigger={trigger}
+      renderTrigger={renderTrigger}
+      options={options}
+      position={position}
+      minWidth={182}
+      showArrow={true}
+    />
   )
 }
+
 export { DropdownProfile }

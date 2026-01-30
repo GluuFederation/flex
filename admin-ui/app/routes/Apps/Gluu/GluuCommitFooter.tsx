@@ -3,6 +3,7 @@ import { Button, Divider } from 'Components'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 import { Box } from '@mui/material'
 
 interface GluuCommitFooterProps {
@@ -38,7 +39,7 @@ function GluuCommitFooter({
 }: GluuCommitFooterProps) {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state.theme || 'darkBlack'
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
 
   function goBack() {
     if (backButtonHandler) {

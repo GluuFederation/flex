@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react'
 
 import { Provider } from './ThemeContext'
+import { THEME_LIGHT } from '@/context/theme/constants'
 
 interface ThemeProviderProps {
   children?: ReactNode
@@ -18,7 +19,7 @@ export class ThemeProvider extends React.Component<ThemeProviderProps, ThemeProv
     super(props)
 
     this.state = {
-      style: 'light',
+      style: THEME_LIGHT,
       color: 'primary',
     }
   }

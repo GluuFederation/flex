@@ -1,4 +1,6 @@
 // Layout Components TypeScript Type Definitions
+import type React from 'react'
+import type { ThemeValue } from '@/context/theme/constants'
 
 // ============================================================================
 // Core Layout Component Types
@@ -15,15 +17,15 @@ export interface BaseLayoutComponentProps {
 // Navbar Component Types
 // ============================================================================
 
-// Empty props interfaces for components with no specific props
-export interface EmptyComponentProps {}
+// Empty props type for components with no specific props
+export type EmptyComponentProps = Record<string, never>
 
 // ============================================================================
 // Sidebar Component Types
 // ============================================================================
 
 // Default Sidebar component props
-export interface DefaultSidebarProps extends EmptyComponentProps {}
+export type DefaultSidebarProps = EmptyComponentProps
 
 // ============================================================================
 // Activity Feed Data Types
@@ -112,8 +114,7 @@ export type ThemeColor =
   | 'danger'
   | 'warning'
   | 'info'
-  | 'light'
-  | 'dark'
+  | ThemeValue
   | 'white'
 
 // Badge color type
@@ -141,13 +142,13 @@ export type ToggleHandler = () => void
 // ============================================================================
 
 // Media component props
-export interface MediaProps extends BaseLayoutComponentProps {}
+export type MediaProps = BaseLayoutComponentProps
 
 // Media left/right props
-export interface MediaSideProps extends BaseLayoutComponentProps {}
+export type MediaSideProps = BaseLayoutComponentProps
 
 // Media body props
-export interface MediaBodyProps extends BaseLayoutComponentProps {}
+export type MediaBodyProps = BaseLayoutComponentProps
 
 // ============================================================================
 // List Component Types
@@ -181,7 +182,7 @@ export interface IconWithBadgeProps extends BaseLayoutComponentProps {
 // ============================================================================
 
 // Input group props
-export interface InputGroupProps extends BaseLayoutComponentProps {}
+export type InputGroupProps = BaseLayoutComponentProps
 
 // Input props
 export interface InputProps extends BaseLayoutComponentProps {
@@ -222,7 +223,7 @@ export interface AvatarImageProps extends BaseLayoutComponentProps {
 // ============================================================================
 
 // Extended from BaseLayoutComponentProps for consistency
-export interface CommonProps extends BaseLayoutComponentProps {}
+export type CommonProps = BaseLayoutComponentProps
 
 // Navigation link props
 export interface NavigationLinkProps extends BaseLayoutComponentProps {

@@ -282,7 +282,6 @@
     .sidebar {
         background: var(--theme-sidebar-background);
         color: var(--theme-sidebar-text-color);
-        border-right: var(--theme-sidebar-border);
     }
 
     .sidebar .avatar__icon--stack > .fa-circle:first-child {
@@ -364,6 +363,12 @@
 
             &::after {
                 color: var(--theme-menu-arrow-color-active) !important;
+            }
+        }
+
+        &__entry.active.open > .sidebar-menu__entry__link {
+            &::after {
+                color: var(--theme-menu-text-color-active) !important;
             }
         }
     }

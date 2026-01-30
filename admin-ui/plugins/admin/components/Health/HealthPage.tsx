@@ -7,6 +7,7 @@ import getThemeColor from '@/context/theme/config'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useHealthStatus } from './hooks'
 import ServiceStatusCard from './components/ServiceStatusCard'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 
 const HealthPage: React.FC = () => {
   const { t } = useTranslation()
@@ -31,15 +32,25 @@ const HealthPage: React.FC = () => {
           <CardBody>
             <Row className="mb-4 align-items-center">
               <Col>
-                <h4 className="mb-0">{t('titles.services_health')}</h4>
+                <GluuText variant="h4" className="mb-0" onLightSurface>
+                  {t('titles.services_health')}
+                </GluuText>
                 {!isLoading && !isError && totalCount > 0 && (
-                  <small className="text-muted">
+                  <GluuText variant="small" secondary onLightSurface style={{ opacity: 0.9 }}>
                     {t('messages.services_healthy_count', { healthyCount, totalCount })}
-                  </small>
+                  </GluuText>
                 )}
               </Col>
               <Col xs="auto">
-                <Button color={`primary-${state.theme}`} onClick={handleRefresh} disabled={loading}>
+                <Button
+                  style={{
+                    backgroundColor: themeColors.background,
+                    color: themeColors.fontColor,
+                    border: 'none',
+                  }}
+                  onClick={handleRefresh}
+                  disabled={loading}
+                >
                   <i className={`fa fa-refresh me-2 ${loading ? 'fa-spin' : ''}`}></i>
                   {t('actions.refresh')}
                 </Button>

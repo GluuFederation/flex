@@ -12,7 +12,7 @@ This document outlines the comprehensive code splitting strategy implemented in 
 - **Material-UI**: `@mui/*`, `@emotion/*`
 - **Redux**: `@reduxjs/*`, `redux`, `redux-saga`, `redux-persist`
 - **Charts**: `recharts`, `react-ace`, `ace-builds`
-- **Utilities**: `lodash`, `moment`, `dayjs`, `axios`, `formik`, `yup`
+- **Utilities**: `lodash`, `dayjs`, `axios`, `formik`, `yup`
 
 #### Plugin-based Splitting
 

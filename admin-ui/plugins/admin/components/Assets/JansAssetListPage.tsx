@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext, useCallback, useMemo } from 'react'
 import MaterialTable, { Action, Column } from '@material-table/core'
-import { DeleteOutlined } from '@mui/icons-material'
+import { DeleteOutlined, Edit } from '@mui/icons-material'
 import { Paper, TablePagination } from '@mui/material'
 import { Card, CardBody } from 'Components'
 import { useCedarling } from '@/cedarling'
@@ -24,11 +24,12 @@ import {
   getAssetTypes,
 } from 'Plugins/admin/redux/features/AssetSlice'
 import customColors from '../../../../app/customColors'
-import moment from 'moment'
-import { Document, RootState, SearchEvent } from './types'
+import { formatDate } from '@/utils/dayjsUtils'
+import { Document, RootState } from './types'
 import { DeleteAssetSagaPayload } from 'Plugins/admin/redux/features/types'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 
 const JansAssetListPage: React.FC = () => {
   const dispatch = useDispatch()
@@ -77,12 +78,13 @@ const JansAssetListPage: React.FC = () => {
   )
 
   const handleOptionsChange = useCallback(
-    (event: SearchEvent) => {
-      if (event.target.name === 'limit') {
-        memoLimit = Number(event.target.value)
-      } else if (event.target.name === 'pattern') {
-        memoPattern = String(event.target.value) || undefined
-        if (event.keyCode === 13) {
+    (event: React.ChangeEvent<HTMLInputElement> | React.KeyboardEvent<HTMLInputElement>) => {
+      const target = event.target as HTMLInputElement
+      if (target.name === 'limit') {
+        memoLimit = Number(target.value)
+      } else if (target.name === 'pattern') {
+        memoPattern = String(target.value) || undefined
+        if ('keyCode' in event && event.keyCode === 13) {
           const newOptions = {
             limit: limit,
             pattern: memoPattern,
@@ -118,6 +120,11 @@ const JansAssetListPage: React.FC = () => {
     () => hasCedarDeletePermission(assetsResourceId),
     [hasCedarDeletePermission, assetsResourceId],
   )
+
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
+  const themeColors = getThemeColor(selectedTheme)
+  const isDarkTheme = selectedTheme === THEME_DARK
 
   useEffect(() => {
     const actions: Action<Document>[] = []
@@ -163,7 +170,7 @@ const JansAssetListPage: React.FC = () => {
       })
 
       actions.push({
-        icon: 'edit',
+        icon: () => <Edit style={{ color: customColors.darkGray }} />,
         tooltip: `${t('messages.edit')}`,
         onClick: (event: React.MouseEvent, rowData: Document | Document[]) => {
           if (!Array.isArray(rowData)) {
@@ -175,7 +182,7 @@ const JansAssetListPage: React.FC = () => {
 
     if (canDeleteAssets) {
       actions.push({
-        icon: () => <DeleteOutlined />,
+        icon: () => <DeleteOutlined style={{ color: customColors.darkGray }} />,
         tooltip: `${t('messages.delete')}`,
         onClick: (event: React.MouseEvent, rowData: Document | Document[]) => {
           if (!Array.isArray(rowData)) {
@@ -200,14 +207,13 @@ const JansAssetListPage: React.FC = () => {
     hasCedarDeletePermission,
     handleOptionsChange,
     dispatch,
+    isDarkTheme,
   ])
 
   const PaperContainer = useCallback(
     (props: React.ComponentProps<typeof Paper>) => <Paper {...props} elevation={0} />,
     [],
   )
-  const theme = useContext(ThemeContext)
-  const themeColors = getThemeColor(theme?.state?.theme || 'darkBlack')
   const bgThemeColor = { background: themeColors.background }
 
   const submitForm = useCallback(
@@ -300,7 +306,7 @@ const JansAssetListPage: React.FC = () => {
                     field: 'creationDate',
                     render: (rowData: Document) => (
                       <div style={{ wordWrap: 'break-word', maxWidth: '420px' }}>
-                        {moment(rowData.creationDate).format('YYYY-MM-DD')}
+                        {rowData.creationDate ? formatDate(rowData.creationDate, 'YYYY-MM-DD') : ''}
                       </div>
                     ),
                   },
@@ -317,14 +323,13 @@ const JansAssetListPage: React.FC = () => {
                 searchFieldAlignment: 'left',
                 selection: false,
                 pageSize: limit,
-                rowStyle: (rowData: Document) => ({
-                  backgroundColor: rowData.enabled
-                    ? themeColors.lightBackground
-                    : customColors.white,
+                rowStyle: (_rowData: Document, index: number) => ({
+                  backgroundColor: index % 2 === 0 ? customColors.white : customColors.whiteSmoke,
                 }),
                 headerStyle: {
                   ...applicationStyle.tableHeaderStyle,
                   ...bgThemeColor,
+                  color: themeColors.fontColor,
                 } as React.CSSProperties,
                 actionsColumnIndex: -1,
               }}

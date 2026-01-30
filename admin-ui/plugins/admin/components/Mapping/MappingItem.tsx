@@ -1,16 +1,12 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { Accordion, AccordionSummary, AccordionDetails, Typography, Chip, Box } from '@mui/material'
 import { ExpandMore, SecurityOutlined } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
-import { ThemeContext } from 'Context/theme/themeContext'
-import getThemeColor from 'Context/theme/config'
-import type { MappingItemProps, ThemeContextValue } from './types'
+import type { MappingItemProps } from './types'
+import customColors from '@/customColors'
 
 const MappingItem: React.FC<MappingItemProps> = React.memo(function MappingItem({ candidate }) {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext) as ThemeContextValue | undefined
-  const selectedTheme = theme?.state?.theme ?? 'default'
-  const themeColors = getThemeColor(selectedTheme)
 
   const permissionsCount = candidate?.permissions?.length || 0
 
@@ -21,8 +17,8 @@ const MappingItem: React.FC<MappingItemProps> = React.memo(function MappingItem(
       size="small"
       variant="outlined"
       sx={{
-        borderColor: themeColors?.background,
-        color: 'text.primary',
+        borderColor: customColors.lightBorder,
+        color: customColors.primaryDark,
         fontSize: '0.85rem',
         fontWeight: 600,
         height: 32,
@@ -45,7 +41,7 @@ const MappingItem: React.FC<MappingItemProps> = React.memo(function MappingItem(
       }}
     >
       <AccordionSummary
-        expandIcon={<ExpandMore sx={{ color: themeColors?.background }} />}
+        expandIcon={<ExpandMore sx={{ color: customColors.textSecondary }} />}
         sx={{
           'borderRadius': '8px',
           '&:hover': {
@@ -60,7 +56,7 @@ const MappingItem: React.FC<MappingItemProps> = React.memo(function MappingItem(
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
           <SecurityOutlined
             sx={{
-              color: themeColors?.background,
+              color: customColors.textSecondary,
               fontSize: 22,
             }}
           />
@@ -78,8 +74,8 @@ const MappingItem: React.FC<MappingItemProps> = React.memo(function MappingItem(
           label={t('messages.permissions_count', { count: permissionsCount })}
           size="small"
           sx={{
-            backgroundColor: themeColors?.background,
-            color: 'primary.contrastText',
+            backgroundColor: customColors.primaryDark,
+            color: customColors.white,
             fontWeight: 500,
             fontSize: '0.75rem',
             mr: 1,
