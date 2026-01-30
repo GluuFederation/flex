@@ -6,7 +6,6 @@ import React, {
   useMemo,
   type SyntheticEvent,
 } from 'react'
-import moment from 'moment'
 import isEmpty from 'lodash/isEmpty'
 import MaterialTable, { type Action } from '@material-table/core'
 import Autocomplete from '@mui/material/Autocomplete'
@@ -39,7 +38,8 @@ import SessionDetailPage from '../Sessions/SessionDetailPage'
 import { useCedarling } from '@/cedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import dayjs, { Dayjs } from 'dayjs'
+import { formatDate } from '@/utils/dayjsUtils'
+import { Dayjs } from 'dayjs'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import GetAppIcon from '@mui/icons-material/GetApp'
 import ViewColumnIcon from '@mui/icons-material/ViewColumn'
@@ -249,7 +249,11 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
         title: `${t('fields.auth_time')}`,
         field: 'authenticationTime',
         render: (rowData: Session) => (
-          <span>{moment(rowData.authenticationTime).format('ddd, MMM DD, YYYY h:mm:ss A')}</span>
+          <span>
+            {rowData.authenticationTime
+              ? formatDate(rowData.authenticationTime, 'ddd, MMM DD, YYYY h:mm:ss A')
+              : ''}
+          </span>
         ),
       },
       {
@@ -354,16 +358,16 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
 
       const header = keys.map((item) => item.replaceAll('-', ' ').toUpperCase()).join(',')
 
-      const updateData = data.map((row) => {
-        return {
-          [t('fields.username')]: row.sessionAttributes.auth_user,
-          [t('fields.ip_address')]: row.sessionAttributes.remote_ip,
-          [t('fields.client_id_used')]: row.sessionAttributes.client_id,
-          [t('fields.auth_time')]: moment(row.authenticationTime).format('YYYY-MM-DD h:mm:ss A'),
-          [t('fields.acr')]: row.sessionAttributes.acr_values,
-          [t('fields.state')]: row.state,
-        }
-      })
+      const updateData = data.map((row) => ({
+        [t('fields.username')]: row.sessionAttributes.auth_user,
+        [t('fields.ip_address')]: row.sessionAttributes.remote_ip,
+        [t('fields.client_id_used')]: row.sessionAttributes.client_id,
+        [t('fields.auth_time')]: row.authenticationTime
+          ? formatDate(row.authenticationTime, 'YYYY-MM-DD h:mm:ss A')
+          : '',
+        [t('fields.acr')]: row.sessionAttributes.acr_values,
+        [t('fields.state')]: row.state,
+      }))
 
       const rows = updateData.map((row) => {
         return keys.map((key) => row[key]).join(',')
@@ -412,7 +416,7 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
       const searchValue =
         searchFilter !== 'expirationDate' && searchFilter !== 'authenticationTime'
           ? pattern
-          : dayjs(date).format('YYYY-MM-DD')
+          : formatDate(date, 'YYYY-MM-DD')
 
       const isSessionAttribute = searchFilter === 'client_id' || searchFilter === 'auth_user'
 

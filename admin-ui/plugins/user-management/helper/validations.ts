@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import moment from 'moment/moment'
+import { formatDate, isValidDate } from '@/utils/dayjsUtils'
 import { CustomUser, PersonAttribute } from '../types/UserApiTypes'
 import { UserEditFormValues } from '../types/ComponentTypes'
 import { CustomObjectAttribute } from 'JansConfigApi'
@@ -117,13 +117,14 @@ const processBirthdateAttribute = (
   const attrSingleValue = customAttr.value
   if (!customAttr.name) return
 
-  const dateSource = attrValues.length > 0 ? attrValues[0] : attrSingleValue
+  const rawDate =
+    attrValues.length > 0
+      ? (attrValues[0] as unknown as string | number | Date | null)
+      : (attrSingleValue as unknown as string | number | Date | null)
 
-  if (dateSource !== undefined && dateSource !== null) {
-    const parsedDate = moment(dateSource)
-
-    if (parsedDate.isValid()) {
-      initialValues[customAttr.name] = parsedDate.format('YYYY-MM-DD')
+  if (rawDate !== undefined && rawDate !== null) {
+    if (isValidDate(rawDate)) {
+      initialValues[customAttr.name] = formatDate(rawDate, 'YYYY-MM-DD')
       return
     }
   }

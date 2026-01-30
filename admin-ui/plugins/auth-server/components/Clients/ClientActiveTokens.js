@@ -13,11 +13,10 @@ import { Box, Grid, MenuItem, Paper, TablePagination, TextField, Tooltip } from 
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import getThemeColor from 'Context/theme/config'
-import moment from 'moment'
 import { deleteClientToken, getTokenByClient } from '../../redux/features/oidcSlice'
 import ClientActiveTokenDetailPage from './ClientActiveTokenDetailPage'
 import { Button } from 'Components'
-import dayjs from 'dayjs'
+import { formatDate, diffDate, createDate } from '@/utils/dayjsUtils'
 import PropTypes from 'prop-types'
 import { Button as MaterialButton } from '@mui/material'
 import FilterListIcon from '@mui/icons-material/FilterList'
@@ -71,8 +70,8 @@ function ClientActiveTokens({ client }) {
       setPageNumber(page)
       let conditionquery = `clnId=${client.inum}`
       if (pattern.dateAfter && pattern.dateBefore) {
-        conditionquery += `,${searchFilter}>${dayjs(pattern.dateAfter).format('YYYY-MM-DD')}`
-        conditionquery += `,${searchFilter}<${dayjs(pattern.dateBefore).format('YYYY-MM-DD')}`
+        conditionquery += `,${searchFilter}>${formatDate(pattern.dateAfter, 'YYYY-MM-DD')}`
+        conditionquery += `,${searchFilter}<${formatDate(pattern.dateBefore, 'YYYY-MM-DD')}`
       }
 
       getTokens(startCount, limit, conditionquery)
@@ -114,8 +113,8 @@ function ClientActiveTokens({ client }) {
     const startCount = pageNumber * limit
     let conditionquery = `clnId=${client.inum}`
     if (pattern.dateAfter && pattern.dateBefore) {
-      conditionquery += `,${searchFilter}>${dayjs(pattern.dateAfter).format('YYYY-MM-DD')}`
-      conditionquery += `,${searchFilter}<${dayjs(pattern.dateBefore).format('YYYY-MM-DD')}`
+      conditionquery += `,${searchFilter}>${formatDate(pattern.dateAfter, 'YYYY-MM-DD')}`
+      conditionquery += `,${searchFilter}<${formatDate(pattern.dateBefore, 'YYYY-MM-DD')}`
     }
     getTokens(startCount, limit, conditionquery)
   }
@@ -132,8 +131,8 @@ function ClientActiveTokens({ client }) {
     const startCount = pageNumber * limit
     let conditionquery = `clnId=${client.inum}`
     if (pattern.dateAfter && pattern.dateBefore) {
-      conditionquery += `,${searchFilter}>${dayjs(pattern.dateAfter).format('YYYY-MM-DD')}`
-      conditionquery += `,${searchFilter}<${dayjs(pattern.dateBefore).format('YYYY-MM-DD')}`
+      conditionquery += `,${searchFilter}>${formatDate(pattern.dateAfter, 'YYYY-MM-DD')}`
+      conditionquery += `,${searchFilter}<${formatDate(pattern.dateBefore, 'YYYY-MM-DD')}`
     }
     getTokens(startCount, limit, conditionquery)
   }
@@ -202,6 +201,13 @@ function ClientActiveTokens({ client }) {
       const result = updatedToken?.items?.length
         ? updatedToken.items
             .map((item) => {
+              const expirationDate = item.expirationDate
+                ? formatDate(item.expirationDate, 'YYYY/DD/MM HH:mm:ss')
+                : ''
+              const creationDate = item.creationDate
+                ? formatDate(item.creationDate, 'YYYY/DD/MM HH:mm:ss')
+                : ''
+
               return {
                 id: item.tokenCode,
                 tokenCode: item.tokenCode,
@@ -210,15 +216,16 @@ function ClientActiveTokens({ client }) {
                 deletable: item.deletable,
                 attributes: item.attributes,
                 grantType: item.grantType,
-                expirationDate: moment(item.expirationDate).format('YYYY/DD/MM HH:mm:ss'),
-                creationDate: moment(item.creationDate).format('YYYY/DD/MM HH:mm:ss'),
+                expirationDate,
+                creationDate,
               }
             })
-            .sort((a, b) => {
-              return moment(b.creationDate, 'YYYY/DD/MM HH:mm:ss').diff(
-                moment(a.creationDate, 'YYYY/DD/MM HH:mm:ss'),
-              )
-            })
+            .sort((a, b) =>
+              diffDate(
+                createDate(b.creationDate, 'YYYY/DD/MM HH:mm:ss'),
+                createDate(a.creationDate, 'YYYY/DD/MM HH:mm:ss'),
+              ),
+            )
         : []
       setData(result)
     } else if (!updatedToken || (updatedToken && !updatedToken.items)) {

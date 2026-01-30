@@ -1,6 +1,7 @@
 import React, { memo, useMemo, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Dayjs } from 'dayjs'
+import { isSameDate } from '@/utils/dayjsUtils'
 import Grid from '@mui/material/Grid'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
@@ -265,12 +266,12 @@ const DateRange = memo(
   (prevProps, nextProps) => {
     const startDateSame =
       prevProps.startDate && nextProps.startDate
-        ? prevProps.startDate.isSame(nextProps.startDate)
+        ? isSameDate(prevProps.startDate, nextProps.startDate)
         : prevProps.startDate === nextProps.startDate
 
     const endDateSame =
       prevProps.endDate && nextProps.endDate
-        ? prevProps.endDate.isSame(nextProps.endDate)
+        ? isSameDate(prevProps.endDate, nextProps.endDate)
         : prevProps.endDate === nextProps.endDate
 
     return (
