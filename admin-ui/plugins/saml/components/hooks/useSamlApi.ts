@@ -1,16 +1,12 @@
 import { useCallback, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useQueryClient } from '@tanstack/react-query'
+import { useQueryClient, useMutation } from '@tanstack/react-query'
 import {
   useGetSamlProperties,
   usePutSamlProperties,
   useGetSamlIdentityProvider,
-  usePostSamlIdentityProvider,
-  usePutSamlIdentityProvider,
   useDeleteSamlIdentityProvider,
   useGetTrustRelationships,
-  usePostTrustRelationshipMetadataFile,
-  usePutTrustRelationship,
   useDeleteTrustRelationship,
   getGetSamlPropertiesQueryKey,
   getGetSamlIdentityProviderQueryKey,
@@ -24,6 +20,7 @@ import {
   type GetSamlIdentityProviderParams,
   type IdentityProviderPagedResult,
 } from 'JansConfigApi'
+import { AXIOS_INSTANCE } from '../../../../api-client'
 import { updateToast } from 'Redux/features/toastSlice'
 import { logAuditUserAction, type BasicUserInfo } from 'Utils/AuditLogger'
 import { CREATE, UPDATE, DELETION } from '@/audit/UserActionType'
@@ -71,6 +68,90 @@ export type {
 
 export { TrustRelationshipSpMetaDataSourceType }
 
+// ============================================================================
+// Custom API functions for multipart uploads (matching main branch approach)
+// These use axios directly like the old SamlApi.ts did
+// ============================================================================
+
+/**
+ * Creates FormData for Identity Provider operations
+ * Matches the main branch approach exactly (same order and checks)
+ */
+function createIdentityProviderFormData(data: BrokerIdentityProviderForm): FormData {
+  const formData = new FormData()
+
+  // 1. Append metaDataFile FIRST if valid (matching main branch order)
+  if (data.metaDataFile instanceof File && data.metaDataFile.size > 0) {
+    formData.append('metaDataFile', data.metaDataFile)
+  }
+
+  // 2. Create JSON Blob with proper content type and append (matching main branch)
+  const identityProviderBlob = new Blob([JSON.stringify(data.identityProvider)], {
+    type: 'application/json',
+  })
+  formData.append('identityProvider', identityProviderBlob)
+
+  return formData
+}
+
+/**
+ * Creates FormData for Trust Relationship operations
+ * Matches the main branch approach exactly (same order and checks)
+ */
+function createTrustRelationshipFormData(data: TrustRelationshipForm): FormData {
+  const formData = new FormData()
+
+  // 1. Append metaDataFile FIRST if valid (matching main branch order)
+  if (data.metaDataFile instanceof File && data.metaDataFile.size > 0) {
+    formData.append('metaDataFile', data.metaDataFile)
+  }
+
+  // 2. Create JSON Blob with proper content type and append (matching main branch)
+  const trustRelationshipBlob = new Blob([JSON.stringify(data.trustRelationship)], {
+    type: 'application/json',
+  })
+  formData.append('trustRelationship', trustRelationshipBlob)
+
+  return formData
+}
+
+// API functions using axios directly (same as main branch SamlApi.ts)
+const samlApi = {
+  postIdentityProvider: async (data: BrokerIdentityProviderForm): Promise<IdentityProvider> => {
+    const formData = createIdentityProviderFormData(data)
+    const response = await AXIOS_INSTANCE.post<IdentityProvider>('/kc/saml/idp/upload', formData)
+    return response.data
+  },
+
+  putIdentityProvider: async (data: BrokerIdentityProviderForm): Promise<IdentityProvider> => {
+    const formData = createIdentityProviderFormData(data)
+    const response = await AXIOS_INSTANCE.put<IdentityProvider>('/kc/saml/idp/upload', formData)
+    return response.data
+  },
+
+  postTrustRelationship: async (data: TrustRelationshipForm): Promise<TrustRelationship> => {
+    const formData = createTrustRelationshipFormData(data)
+    const response = await AXIOS_INSTANCE.post<TrustRelationship>(
+      '/kc/saml/trust-relationship/upload',
+      formData,
+    )
+    return response.data
+  },
+
+  putTrustRelationship: async (data: TrustRelationshipForm): Promise<TrustRelationship> => {
+    const formData = createTrustRelationshipFormData(data)
+    const response = await AXIOS_INSTANCE.put<TrustRelationship>(
+      '/kc/saml/trust-relationship/upload',
+      formData,
+    )
+    return response.data
+  },
+}
+
+// ============================================================================
+// Audit logging utilities
+// ============================================================================
+
 interface AuditContext {
   userinfo: BasicUserInfo | null | undefined
   clientId: string | undefined
@@ -110,6 +191,10 @@ function createAuditLogger<T>(
   }
 }
 
+// ============================================================================
+// Hook parameter interfaces
+// ============================================================================
+
 interface UpdateSamlConfigurationParams {
   data: SamlAppConfiguration
   userMessage: string
@@ -144,6 +229,10 @@ interface DeleteTrustRelationshipParams {
   id: string
   userMessage: string
 }
+
+// ============================================================================
+// SAML Configuration hooks (using orval)
+// ============================================================================
 
 export function useSamlConfiguration() {
   const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
@@ -191,6 +280,10 @@ export function useUpdateSamlConfiguration() {
   }
 }
 
+// ============================================================================
+// Identity Provider hooks
+// ============================================================================
+
 export function useIdentityProviders(params?: GetSamlIdentityProviderParams) {
   const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
 
@@ -203,12 +296,16 @@ export function useIdentityProviders(params?: GetSamlIdentityProviderParams) {
   })
 }
 
+// Uses custom axios call (matching main branch approach for multipart)
 export function useCreateIdentityProvider() {
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
   const auditContext = useAuditContext()
-  const baseMutation = usePostSamlIdentityProvider()
   const [savedForm, setSavedForm] = useState(false)
+
+  const baseMutation = useMutation({
+    mutationFn: (data: BrokerIdentityProviderForm) => samlApi.postIdentityProvider(data),
+  })
 
   const logAudit = useCallback(
     createAuditLogger<BrokerIdentityProviderForm>(
@@ -224,7 +321,7 @@ export function useCreateIdentityProvider() {
     async (params: CreateIdentityProviderParams): Promise<IdentityProvider> => {
       const { data, userMessage } = params
       try {
-        const result = await baseMutation.mutateAsync({ data })
+        const result = await baseMutation.mutateAsync(data)
         await queryClient.invalidateQueries({ queryKey: getGetSamlIdentityProviderQueryKey() })
         dispatch(updateToast(true, 'success'))
         setSavedForm(true)
@@ -250,12 +347,16 @@ export function useCreateIdentityProvider() {
   }
 }
 
+// Uses custom axios call (matching main branch approach for multipart)
 export function useUpdateIdentityProvider() {
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
   const auditContext = useAuditContext()
-  const baseMutation = usePutSamlIdentityProvider()
   const [savedForm, setSavedForm] = useState(false)
+
+  const baseMutation = useMutation({
+    mutationFn: (data: BrokerIdentityProviderForm) => samlApi.putIdentityProvider(data),
+  })
 
   const logAudit = useCallback(
     createAuditLogger<BrokerIdentityProviderForm>(
@@ -271,7 +372,7 @@ export function useUpdateIdentityProvider() {
     async (params: UpdateIdentityProviderParams): Promise<IdentityProvider> => {
       const { data, userMessage } = params
       try {
-        const result = await baseMutation.mutateAsync({ data })
+        const result = await baseMutation.mutateAsync(data)
         await queryClient.invalidateQueries({ queryKey: getGetSamlIdentityProviderQueryKey() })
         dispatch(updateToast(true, 'success'))
         setSavedForm(true)
@@ -297,6 +398,7 @@ export function useUpdateIdentityProvider() {
   }
 }
 
+// Uses orval hook (DELETE doesn't need special FormData handling)
 export function useDeleteIdentityProvider() {
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
@@ -337,6 +439,10 @@ export function useDeleteIdentityProvider() {
   }
 }
 
+// ============================================================================
+// Trust Relationship hooks
+// ============================================================================
+
 export function useTrustRelationships() {
   const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
 
@@ -349,12 +455,16 @@ export function useTrustRelationships() {
   })
 }
 
+// Uses custom axios call (matching main branch approach for multipart)
 export function useCreateTrustRelationship() {
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
   const auditContext = useAuditContext()
-  const baseMutation = usePostTrustRelationshipMetadataFile()
   const [savedForm, setSavedForm] = useState(false)
+
+  const baseMutation = useMutation({
+    mutationFn: (data: TrustRelationshipForm) => samlApi.postTrustRelationship(data),
+  })
 
   const logAudit = useCallback(
     createAuditLogger<TrustRelationshipForm>(
@@ -370,7 +480,7 @@ export function useCreateTrustRelationship() {
     async (params: CreateTrustRelationshipParams): Promise<TrustRelationship> => {
       const { data, userMessage } = params
       try {
-        const result = await baseMutation.mutateAsync({ data })
+        const result = await baseMutation.mutateAsync(data)
         await queryClient.invalidateQueries({ queryKey: getGetTrustRelationshipsQueryKey() })
         dispatch(updateToast(true, 'success'))
         setSavedForm(true)
@@ -396,12 +506,16 @@ export function useCreateTrustRelationship() {
   }
 }
 
+// Uses custom axios call (matching main branch approach for multipart)
 export function useUpdateTrustRelationship() {
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
   const auditContext = useAuditContext()
-  const baseMutation = usePutTrustRelationship()
   const [savedForm, setSavedForm] = useState(false)
+
+  const baseMutation = useMutation({
+    mutationFn: (data: TrustRelationshipForm) => samlApi.putTrustRelationship(data),
+  })
 
   const logAudit = useCallback(
     createAuditLogger<TrustRelationshipForm>(
@@ -417,7 +531,7 @@ export function useUpdateTrustRelationship() {
     async (params: UpdateTrustRelationshipParams): Promise<TrustRelationship> => {
       const { data, userMessage } = params
       try {
-        const result = await baseMutation.mutateAsync({ data })
+        const result = await baseMutation.mutateAsync(data)
         await queryClient.invalidateQueries({ queryKey: getGetTrustRelationshipsQueryKey() })
         dispatch(updateToast(true, 'success'))
         setSavedForm(true)
@@ -443,6 +557,7 @@ export function useUpdateTrustRelationship() {
   }
 }
 
+// Uses orval hook (DELETE doesn't need special FormData handling)
 export function useDeleteTrustRelationshipMutation() {
   const dispatch = useDispatch()
   const queryClient = useQueryClient()

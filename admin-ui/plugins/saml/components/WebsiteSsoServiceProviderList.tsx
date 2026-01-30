@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import MaterialTable, { type Action } from '@material-table/core'
 import { useTranslation } from 'react-i18next'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { buildPayload, type UserAction } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
@@ -47,10 +48,13 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
 
   const {
     data: websiteSsoServiceProviders = [],
-    isLoading: loadingWebsiteSsoServiceProvider,
+    isLoading: isInitialLoading,
+    isFetching: isFetchingData,
     refetch,
   } = useTrustRelationships()
   const deleteTrustRelationshipMutation = useDeleteTrustRelationshipMutation()
+
+  const isLoading = isInitialLoading || isFetchingData || deleteTrustRelationshipMutation.isPending
 
   const samlResourceId = useMemo(() => ADMIN_UI_RESOURCES.SAML, [])
   const samlScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[samlResourceId], [samlResourceId])
@@ -88,6 +92,8 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
 
   const onDeletionConfirmed = useCallback(
     async (message: string) => {
+      toggle()
+
       const userAction: UserAction = {
         action_message: '',
         action_data: '',
@@ -101,7 +107,6 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
       } catch (error) {
         console.error('Failed to delete service provider:', error)
       }
-      toggle()
     },
     [deleteTrustRelationshipMutation, item.inum, toggle],
   )
@@ -185,7 +190,7 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
   const tableColumns = useMemo(() => getServiceProviderTableCols(t), [t])
 
   return (
-    <>
+    <GluuLoader blocking={isLoading}>
       <GluuViewWrapper canShow={canReadWebsiteSsoServiceProviders}>
         <MaterialTable
           components={{
@@ -193,7 +198,7 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
           }}
           columns={tableColumns}
           data={websiteSsoServiceProviders}
-          isLoading={loadingWebsiteSsoServiceProvider}
+          isLoading={isLoading}
           title=""
           actions={tableActions}
           options={{
@@ -220,7 +225,7 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
           onAccept={onDeletionConfirmed}
         />
       )}
-    </>
+    </GluuLoader>
   )
 })
 

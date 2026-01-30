@@ -152,10 +152,18 @@ const WebsiteSsoServiceProviderForm = ({
     enableReinitialize: true,
     validateOnChange: true,
     validateOnBlur: true,
+    validateOnMount: false,
     onSubmit: () => {
       toggle()
     },
   })
+
+  // Revalidate form when spMetaDataSourceType changes (for conditional validation)
+  useEffect(() => {
+    if (formik.values.spMetaDataSourceType) {
+      formik.validateForm()
+    }
+  }, [formik.values.spMetaDataSourceType]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const scopeFieldValue = useMemo<ScopeOption[]>(() => {
     const formikValue = formik.values.releasedAttributes
@@ -339,7 +347,7 @@ const WebsiteSsoServiceProviderForm = ({
                   rsize={8}
                   showError={Boolean(
                     formik.errors.displayName &&
-                      (formik.touched.displayName || formik.submitCount > 0),
+                    (formik.touched.displayName || formik.submitCount > 0),
                   )}
                   errorMessage={formik.errors.displayName}
                   disabled={viewOnly}
@@ -378,7 +386,7 @@ const WebsiteSsoServiceProviderForm = ({
                   rsize={8}
                   showError={Boolean(
                     formik.errors.spLogoutURL &&
-                      (formik.touched.spLogoutURL || formik.submitCount > 0),
+                    (formik.touched.spLogoutURL || formik.submitCount > 0),
                   )}
                   errorMessage={formik.errors.spLogoutURL}
                   disabled={viewOnly}
@@ -483,8 +491,8 @@ const WebsiteSsoServiceProviderForm = ({
                       rsize={8}
                       showError={Boolean(
                         formik.errors.samlMetadata?.singleLogoutServiceUrl &&
-                          (formik.touched.samlMetadata?.singleLogoutServiceUrl ||
-                            formik.submitCount > 0),
+                        (formik.touched.samlMetadata?.singleLogoutServiceUrl ||
+                          formik.submitCount > 0),
                       )}
                       errorMessage={formik.errors.samlMetadata?.singleLogoutServiceUrl}
                       disabled={viewOnly}
@@ -505,7 +513,7 @@ const WebsiteSsoServiceProviderForm = ({
                       rsize={8}
                       showError={Boolean(
                         formik.errors.samlMetadata?.entityId &&
-                          (formik.touched.samlMetadata?.entityId || formik.submitCount > 0),
+                        (formik.touched.samlMetadata?.entityId || formik.submitCount > 0),
                       )}
                       errorMessage={formik.errors.samlMetadata?.entityId}
                       disabled={viewOnly}
@@ -527,8 +535,7 @@ const WebsiteSsoServiceProviderForm = ({
                       rsize={8}
                       showError={Boolean(
                         formik.errors.samlMetadata?.nameIDPolicyFormat &&
-                          (formik.touched.samlMetadata?.nameIDPolicyFormat ||
-                            formik.submitCount > 0),
+                        (formik.touched.samlMetadata?.nameIDPolicyFormat || formik.submitCount > 0),
                       )}
                       errorMessage={formik.errors.samlMetadata?.nameIDPolicyFormat}
                       disabled={viewOnly}
@@ -549,8 +556,8 @@ const WebsiteSsoServiceProviderForm = ({
                       rsize={8}
                       showError={Boolean(
                         formik.errors.samlMetadata?.jansAssertionConsumerServiceGetURL &&
-                          (formik.touched.samlMetadata?.jansAssertionConsumerServiceGetURL ||
-                            formik.submitCount > 0),
+                        (formik.touched.samlMetadata?.jansAssertionConsumerServiceGetURL ||
+                          formik.submitCount > 0),
                       )}
                       errorMessage={formik.errors.samlMetadata?.jansAssertionConsumerServiceGetURL}
                       disabled={viewOnly}
@@ -571,8 +578,8 @@ const WebsiteSsoServiceProviderForm = ({
                       rsize={8}
                       showError={Boolean(
                         formik.errors.samlMetadata?.jansAssertionConsumerServicePostURL &&
-                          (formik.touched.samlMetadata?.jansAssertionConsumerServicePostURL ||
-                            formik.submitCount > 0),
+                        (formik.touched.samlMetadata?.jansAssertionConsumerServicePostURL ||
+                          formik.submitCount > 0),
                       )}
                       errorMessage={formik.errors.samlMetadata?.jansAssertionConsumerServicePostURL}
                       disabled={viewOnly}
