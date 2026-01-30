@@ -22,6 +22,7 @@ import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { PaperContainer, getIdentityProviderTableCols } from '../helper/tableUtils'
 import type { SamlIdentity } from '../types/redux'
 import type { SamlRootState } from '../types/state'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 interface DeleteItem {
   inum?: string
@@ -39,7 +40,7 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
     hasCedarDeletePermission,
   } = useCedarling()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme ?? 'light'
+  const selectedTheme = theme?.state?.theme ?? DEFAULT_THEME
   const themeColors = getThemeColor(selectedTheme)
 
   const [modal, setModal] = useState(false)
@@ -305,10 +306,10 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
     () =>
       ({
         ...applicationStyle.tableHeaderStyle,
-        backgroundColor: themeColors.menu.background,
-        color: customColors.white,
+        backgroundColor: themeColors.background,
+        color: themeColors.fontColor,
       }) as React.CSSProperties,
-    [themeColors.menu.background],
+    [themeColors.background, themeColors.fontColor],
   )
 
   const tableOptions = useMemo(

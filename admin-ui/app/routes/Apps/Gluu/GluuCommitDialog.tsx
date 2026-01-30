@@ -13,18 +13,21 @@ import {
 } from 'reactstrap'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import getThemeColor from '@/context/theme/config'
 import PropTypes from 'prop-types'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import { useSelector } from 'react-redux'
-import useWebhookDialogAction from 'Utils/hooks/useWebhookDialogAction'
+import { useWebhookDialogAction } from 'Utils/hooks'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
 import type { RootState } from '@/redux/sagas/types/audit'
-import type { GluuCommitDialogOperation, GluuCommitDialogProps, JsonValue } from './types'
+import type { GluuCommitDialogOperation, GluuCommitDialogProps, JsonValue } from './types/index'
 import { Alert, Box } from '@mui/material'
+import { GluuButton } from '@/components'
 
 const USER_MESSAGE = 'user_action_message'
 
@@ -50,7 +53,11 @@ const GluuCommitDialog = ({
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
 
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state.theme || 'light'
+  const selectedTheme = theme?.state.theme || DEFAULT_THEME
+  const isDark = selectedTheme === THEME_DARK
+  const inverseTheme = isDark ? 'light' : 'dark'
+  const inverseColors = getThemeColor(inverseTheme)
+  const themeColors = getThemeColor(selectedTheme)
   const [active, setActive] = useState(false)
   const [isOpen, setIsOpen] = useState<number | null>(null)
   const [userMessage, setUserMessage] = useState('')
@@ -104,8 +111,11 @@ const GluuCommitDialog = ({
       <div className="d-flex flex-column gap-1 align-items-start">
         {values.map((data) => (
           <Badge
-            color={`primary-${selectedTheme}  `}
-            style={{ width: 'fit-content' }}
+            style={{
+              width: 'fit-content',
+              backgroundColor: themeColors.background,
+              color: customColors.white,
+            }}
             key={String(data)}
           >
             {JSON.stringify(data)}
@@ -117,7 +127,16 @@ const GluuCommitDialog = ({
 
   const renderArrayValue = (values: JsonValue[], key: number) => {
     if (!values.length) {
-      return <Badge color={`primary-${selectedTheme}`}>&quot;&quot;</Badge>
+      return (
+        <Badge
+          style={{
+            backgroundColor: themeColors.background,
+            color: customColors.white,
+          }}
+        >
+          &quot;&quot;
+        </Badge>
+      )
     }
 
     return (
@@ -146,7 +165,7 @@ const GluuCommitDialog = ({
         <>{webhookTriggerModal({ closeModal })}</>
       ) : (
         <Modal isOpen={modal} size={'lg'} toggle={closeModal} className="modal-outline-primary">
-          <ModalHeader toggle={closeModal}>
+          <ModalHeader toggle={closeModal} style={{ color: customColors.black }}>
             <i
               onClick={closeModal}
               onKeyDown={() => {}}
@@ -155,11 +174,13 @@ const GluuCommitDialog = ({
               role="img"
               aria-hidden="true"
             ></i>
-            {isLicenseLabel
-              ? t('messages.licenseAuditLog')
-              : !label || label === ''
-                ? t('messages.action_commit_question')
-                : label}
+            <span style={{ color: customColors.black }}>
+              {isLicenseLabel
+                ? t('messages.licenseAuditLog')
+                : !label || label === ''
+                  ? t('messages.action_commit_question')
+                  : label}
+            </span>
           </ModalHeader>
           <ModalBody>
             <div
@@ -186,7 +207,7 @@ const GluuCommitDialog = ({
                       fontSize: '1.2rem',
                       fontWeight: 'bold',
                       margin: 0,
-                      color: `${customColors.black} !important`,
+                      color: customColors.black,
                     }}
                   >
                     List of changes
@@ -196,7 +217,7 @@ const GluuCommitDialog = ({
               {operations &&
                 operations.map((item: GluuCommitDialogOperation, key: number) => (
                   <FormGroup row key={key}>
-                    <Col sm={1} style={{ fontWeight: 'bold' }}>
+                    <Col sm={1} style={{ fontWeight: 'bold', color: customColors.black }}>
                       Set
                     </Col>
                     <Col
@@ -207,24 +228,57 @@ const GluuCommitDialog = ({
                         paddingBottom: 10,
                       }}
                     >
-                      <Badge color={`primary-${selectedTheme}`}>{item.path}</Badge>
+                      <Badge
+                        style={{
+                          backgroundColor: themeColors.background,
+                          color: customColors.white,
+                        }}
+                      >
+                        {item.path}
+                      </Badge>
                     </Col>
-                    <Col sm={1} style={{ fontWeight: 'bold' }}>
+                    <Col sm={1} style={{ fontWeight: 'bold', color: customColors.black }}>
                       to
                     </Col>
                     <Col sm={5} style={{ overflow: 'auto' }}>
                       {isJsonValueArray(item.value) ? (
                         renderArrayValue(item.value, key)
                       ) : typeof item.value === 'boolean' ? (
-                        <Badge color={`primary-${selectedTheme}`}>{String(item.value)}</Badge>
+                        <Badge
+                          style={{
+                            backgroundColor: themeColors.background,
+                            color: customColors.white,
+                          }}
+                        >
+                          {String(item.value)}
+                        </Badge>
                       ) : item.value === '' || item.value === null || item.value === undefined ? (
-                        <Badge color={`primary-${selectedTheme}`}>&quot;&quot;</Badge>
+                        <Badge
+                          style={{
+                            backgroundColor: themeColors.background,
+                            color: customColors.white,
+                          }}
+                        >
+                          &quot;&quot;
+                        </Badge>
                       ) : typeof item.value === 'object' ? (
-                        <Badge color={`primary-${selectedTheme}`}>
+                        <Badge
+                          style={{
+                            backgroundColor: themeColors.background,
+                            color: customColors.white,
+                          }}
+                        >
                           {JSON.stringify(item.value)}
                         </Badge>
                       ) : (
-                        <Badge color={`primary-${selectedTheme}`}>{String(item.value)}</Badge>
+                        <Badge
+                          style={{
+                            backgroundColor: themeColors.background,
+                            color: customColors.white,
+                          }}
+                        >
+                          {String(item.value)}
+                        </Badge>
                       )}
                     </Col>
                   </FormGroup>
@@ -245,6 +299,7 @@ const GluuCommitDialog = ({
                     }
                     rows="4"
                     value={userMessage}
+                    style={{ borderColor: inverseColors.borderColor }}
                   />
                   {(userMessage.length < 10 || userMessage.length > 512) && (
                     <span
@@ -263,15 +318,15 @@ const GluuCommitDialog = ({
           </ModalBody>
           <ModalFooter>
             {active && (
-              <Button color={`primary-${selectedTheme}`} onClick={handleAccept}>
+              <GluuButton theme="dark" onClick={handleAccept}>
                 <i className="fa fa-check-circle me-2"></i>
                 {t('actions.accept')}
-              </Button>
+              </GluuButton>
             )}
-            <Button color={`primary-${selectedTheme}`} onClick={closeModal}>
+            <GluuButton theme="dark" onClick={closeModal}>
               <i className="fa fa-remove me-2"></i>
               {t('actions.no')}
-            </Button>
+            </GluuButton>
           </ModalFooter>
         </Modal>
       )}

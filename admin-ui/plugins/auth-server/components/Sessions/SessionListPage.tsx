@@ -58,6 +58,7 @@ import type { RootState as AuditRootState } from '@/redux/sagas/types/audit'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import { DELETION } from '../../../../app/audit/UserActionType'
 import { SESSION } from '../../redux/audit/Resources'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 const SessionListPage: React.FC<SessionListPageProps> = () => {
   const { hasCedarDeletePermission, authorizeHelper } = useCedarling()
@@ -171,9 +172,12 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
   const pageSize = getPagingSize()
   const toggle = () => setModal(!modal)
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'default'
-  const themeColors = getThemeColor(selectedTheme)
-  const bgThemeColor = { background: themeColors.background }
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+  const bgThemeColor = useMemo(
+    () => ({ background: themeColors.background }),
+    [themeColors.background],
+  )
 
   const sessionResourceId = ADMIN_UI_RESOURCES.Session
   const sessionScopes = useMemo(
@@ -466,10 +470,11 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
         ...applicationStyle.tableHeaderStyle,
         ...bgThemeColor,
         textTransform: 'uppercase' as const,
+        color: themeColors.fontColor,
       },
       actionsColumnIndex: -1,
     }),
-    [pageSize, bgThemeColor],
+    [pageSize, bgThemeColor, themeColors.fontColor],
   )
 
   const renderContent = useCallback(() => {

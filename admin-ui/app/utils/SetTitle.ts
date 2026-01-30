@@ -1,15 +1,16 @@
-// @ts-nocheck
-import { useEffect } from 'react'
+function setTitle(title: string = 'Dashboard') {
+  if (typeof window !== 'undefined') {
+    const pageTitle = document.getElementById('page-title')
+    const pageTitleNavbar = document.getElementById('page-title-navbar')
 
-function useSetTitle(title = 'Dashboard') {
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const pageTitle = document.getElementById('page-title')
-      if (pageTitle) {
-        pageTitle.innerHTML = title
-      }
+    if (pageTitle) {
+      pageTitle.textContent = title
     }
-  }, [title])
+
+    if (pageTitleNavbar) {
+      pageTitleNavbar.textContent = title
+    }
+  }
 }
 
-export default useSetTitle
+export default setTitle

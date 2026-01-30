@@ -1,9 +1,8 @@
-import React, { useContext, useMemo, useCallback } from 'react'
+import React, { useMemo, useCallback } from 'react'
 import { Container, Row, Col } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import { SCOPE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
-import { ThemeContext } from 'Context/theme/themeContext'
 import customColors from '@/customColors'
 import type { ScopeDetailPageProps } from './types'
 
@@ -12,10 +11,6 @@ const CONTAINER_STYLES = { backgroundColor: customColors.whiteSmoke } as const
 const ScopeDetailPage: React.FC<ScopeDetailPageProps> = ({ row }) => {
   const { t } = useTranslation()
 
-  const theme = useContext(ThemeContext)
-
-  const selectedTheme = useMemo(() => theme?.state?.theme || 'light', [theme?.state?.theme])
-
   const defaultScopeValue = useMemo(
     () => (row.defaultScope ? t('options.yes') : t('options.no')),
     [row.defaultScope, t],
@@ -23,10 +18,7 @@ const ScopeDetailPage: React.FC<ScopeDetailPageProps> = ({ row }) => {
 
   const attributeKeys = useMemo(() => Object.keys(row.attributes || {}), [row.attributes])
 
-  const defaultScopeBadgeColor = useMemo(
-    () => (row.defaultScope ? `primary-${selectedTheme}` : 'dimmed'),
-    [row.defaultScope, selectedTheme],
-  )
+  const labelStyle = useMemo(() => ({ fontWeight: 'bold' as const, color: customColors.black }), [])
 
   const renderAttributeRow = useCallback(
     (item: string, key: number) => (
@@ -89,7 +81,6 @@ const ScopeDetailPage: React.FC<ScopeDetailPageProps> = ({ row }) => {
           <GluuFormDetailRow
             label="fields.default_scope"
             isBadge
-            badgeColor={defaultScopeBadgeColor}
             value={defaultScopeValue}
             doc_category={SCOPE}
             doc_entry="defaultScope"
@@ -97,7 +88,9 @@ const ScopeDetailPage: React.FC<ScopeDetailPageProps> = ({ row }) => {
         </Col>
       </Row>
       <Row>
-        <Col sm={3}>{t('fields.attributes')}:</Col>
+        <Col sm={3} style={labelStyle}>
+          {t('fields.attributes')}:
+        </Col>
         <Col sm={9}>{attributeKeys.map(renderAttributeRow)}</Col>
       </Row>
     </Container>

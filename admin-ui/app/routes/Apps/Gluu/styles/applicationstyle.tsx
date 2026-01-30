@@ -2,11 +2,10 @@ import customColors from '@/customColors'
 
 export default {
   tableHeaderStyle: {
-    backgroundColor: customColors.darkGray,
-    color: customColors.white,
     padding: '12px',
     textTransform: 'uppercase',
     fontSize: '16px',
+    fontWeight: 400,
   },
   homeStatTooltip: {
     backgroundColor: customColors.lightBlue,
@@ -39,11 +38,11 @@ export default {
   mainCard: {
     minHeight: '70vh',
     borderRadius: 24,
-    padding: 12,
+    padding: '12px',
   },
   verticalDivider: {
     borderRight: `1px solid ${customColors.lightGray}`,
-    paddingRight: '2rem',
+    paddingRight: '32px',
   },
   licensePanel: {
     backgroundColor: customColors.white,
@@ -111,6 +110,6 @@ export default {
   persistenceCard: {
     minHeight: '70vh',
     borderRadius: 24,
-    padding: 12,
+    padding: '12px',
   },
 }

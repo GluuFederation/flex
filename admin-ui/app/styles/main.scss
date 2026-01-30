@@ -1,6 +1,5 @@
 @import "./miltonbo/scss/style.scss";
 @import "~pretty-checkbox/src/pretty-checkbox.scss";
-@import "./custom/layout.scss";
 @import "./custom/navbar.scss";
 @import "./custom/sidebar.scss";
 @import "./custom/spacing.scss";
@@ -11,10 +10,12 @@ body {
         "Droid Sans", "Helvetica Neue", sans-serif !important;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background: transparent;
 }
 
 html {
     font-size: 14px !important;
+    background: transparent;
 }
 
 .mau-graph {
@@ -354,7 +355,7 @@ html {
 @media screen and (min-width: 768px) {
     .month-picker > .box {
         border: 1px solid #e0e0e0;
-        background-color: #f6f6f6;
+        background-color: $light-background;
         padding-left: 0.9rem;
         box-sizing: border-box;
         line-height: 3.2rem;
@@ -404,8 +405,24 @@ html {
     background: transparent !important;
 }
 
+.block-ui-container {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+}
+
 .block-ui-overlay {
-    border-radius: 12px;
+    position: fixed;
+    inset: 0;
+    border-radius: 0;
+}
+
+.block-ui-message-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10000;
 }
 
 .search-select {
@@ -475,18 +492,12 @@ nav .container-fluid .container {
 }
 
 #page-title,
-h3,
-h4,
-h5.d-flex {
+.d-flex {
     font-weight: 400 !important;
 }
 
 div.text-info {
     color: #00b875 !important;
-}
-
-p {
-    color: #8493a5 !important;
 }
 
 label {

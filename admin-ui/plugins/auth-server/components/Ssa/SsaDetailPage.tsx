@@ -5,6 +5,7 @@ import { SSA } from 'Utils/ApiResources'
 import GluuFormActionRow from 'Routes/Apps/Gluu/GluuFormActionRow'
 import JsonViewerDialog from '../JsonViewer/JsonViewerDialog'
 import customColors from '@/customColors'
+import { THEME_LIGHT } from '@/context/theme/constants'
 import type { SsaDetailPageProps } from './types'
 import { formatExpirationDate } from './utils/dateFormatters'
 
@@ -109,7 +110,7 @@ const SsaDetailPage: React.FC<SsaDetailPageProps> = ({ row }) => {
         toggle={handleSsaDialogOpen}
         data={row.ssa.software_roles}
         title="JSON View"
-        theme="light"
+        theme={THEME_LIGHT}
         expanded={true}
       />
     </Container>

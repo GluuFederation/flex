@@ -23,7 +23,7 @@ const HeaderAuth: React.FC<HeaderAuthProps> = ({
         {icon ? (
           <i className={`fa fa-${icon} fa-3x ${iconClassName}`}></i>
         ) : (
-          <LogoThemed checkBackground height="30" />
+          <LogoThemed height="30" />
         )}
       </Link>
     </div>

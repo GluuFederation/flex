@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState, useContext, useEffect } from 'react'
+import React, { useMemo, useCallback, useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
 import { useDispatch, useSelector } from 'react-redux'
@@ -28,7 +28,8 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { SETTINGS } from 'Utils/ApiResources'
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { useTheme } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
 import { SIMPLE_PASSWORD_AUTH } from 'Plugins/auth-server/common/Constants'
 import {
   CedarlingLogType,
@@ -55,6 +56,7 @@ import { UPDATE } from '@/audit/UserActionType'
 import { ADMIN_UI_SETTINGS } from 'Plugins/admin/redux/audit/Resources'
 import { getErrorMessage } from 'Plugins/schema/utils/errorHandler'
 import type { RootState } from '@/redux/sagas/types/audit'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 import customColors from '@/customColors'
 
 const PAGING_SIZE_OPTIONS = [1, 5, 10, 20] as const
@@ -72,7 +74,7 @@ const LABEL_CONTAINER_STYLE: React.CSSProperties = {
 const SettingsPage: React.FC = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const theme = useContext(ThemeContext)
+  const { state: themeState } = useTheme()
   const queryClient = useQueryClient()
 
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
@@ -128,7 +130,15 @@ const SettingsPage: React.FC = () => {
       ? stored
       : DEFAULT_PAGING_SIZE
   }, [])
-  const selectedTheme = useMemo(() => theme?.state?.theme || 'darkBlack', [theme?.state?.theme])
+  const selectedTheme = useMemo(() => themeState.theme || DEFAULT_THEME, [themeState.theme])
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+  const badgeStyle = useMemo(
+    () => ({
+      backgroundColor: themeColors.background,
+      color: customColors.white,
+    }),
+    [themeColors.background],
+  )
   const configApiUrl = useMemo(() => {
     if (typeof window === 'undefined') return 'N/A'
     const windowWithConfig = window as Window & { configApiBaseUrl?: string }
@@ -259,24 +269,22 @@ const SettingsPage: React.FC = () => {
     additionalParametersError && (formik.submitCount > 0 || formik.touched?.additionalParameters),
   )
 
-  const additionalParametersErrorText = useMemo((): string | null => {
-    const err = additionalParametersError
-    if (!err) return null
-    if (typeof err === 'string') return err
-    if (Array.isArray(err)) {
-      for (const item of err) {
-        if (!item) continue
-        if (typeof item === 'string') return item
-        if (typeof item === 'object') {
-          const maybeKey = (item as { key?: unknown }).key
-          const maybeValue = (item as { value?: unknown }).value
-          if (typeof maybeKey === 'string') return maybeKey
-          if (typeof maybeValue === 'string') return maybeValue
-        }
-      }
-      return null
+  const additionalParametersErrorText = useMemo(() => {
+    if (!additionalParametersError) return ''
+    if (typeof additionalParametersError === 'string') return additionalParametersError
+    if (Array.isArray(additionalParametersError)) {
+      return additionalParametersError
+        .filter((error) => error != null)
+        .map((error) => (typeof error === 'string' ? error : JSON.stringify(error)))
+        .join(', ')
     }
-    return null
+    if (typeof additionalParametersError === 'object') {
+      const errorValues = Object.values(additionalParametersError)
+        .filter((error) => error != null)
+        .map((error) => (typeof error === 'string' ? error : JSON.stringify(error)))
+      return errorValues.length > 0 ? errorValues.join(', ') : ''
+    }
+    return String(additionalParametersError)
   }, [additionalParametersError])
 
   const renderErrorAlert = () => {
@@ -338,8 +346,8 @@ const SettingsPage: React.FC = () => {
                 />
                 <Col sm={8}>
                   <Label style={LABEL_CONTAINER_STYLE}>
-                    <h3>
-                      <Badge color={`primary-${selectedTheme}`}>{configApiUrl}</Badge>
+                    <h3 style={{ color: customColors.primaryDark }}>
+                      <Badge style={badgeStyle}>{configApiUrl}</Badge>
                     </h3>
                   </Label>
                 </Col>
@@ -450,13 +458,20 @@ const SettingsPage: React.FC = () => {
 
               <Accordion className="mb-3 b-primary" initialOpen>
                 <AccordionHeader>
-                  <h5>{t('fields.custom_params_auth')}</h5>
+                  <h5 style={{ color: customColors.primaryDark }}>
+                    {t('fields.custom_params_auth')}
+                  </h5>
                 </AccordionHeader>
                 <AccordionBody>
                   <Button
-                    style={{ float: 'right' }}
+                    style={{
+                      float: 'right',
+                      backgroundColor: customColors.primaryDark,
+                      color: customColors.white,
+                      border: 'none',
+                      marginBottom: formik.values.additionalParameters.length > 0 ? 0 : '16px',
+                    }}
                     type="button"
-                    color={`primary-${selectedTheme}`}
                     disabled={!canWriteSettings}
                     onClick={() => {
                       const currentParams = formik.values.additionalParameters || []
@@ -512,11 +527,13 @@ const SettingsPage: React.FC = () => {
                       )}
                     </Col>
                   </FormGroup>
-                  {showAdditionalParametersError && (
-                    <div style={{ color: customColors.accentRed }}>
-                      {additionalParametersErrorText || t('messages.field_required')}
-                    </div>
-                  )}
+                  {showAdditionalParametersError &&
+                    additionalParametersErrorText &&
+                    additionalParametersErrorText.trim() && (
+                      <div style={{ color: customColors.accentRed }}>
+                        {additionalParametersErrorText}
+                      </div>
+                    )}
                 </AccordionBody>
               </Accordion>
 

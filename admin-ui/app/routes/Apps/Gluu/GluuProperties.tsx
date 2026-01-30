@@ -1,8 +1,7 @@
-import { useState, useContext, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { FormGroup, Col, Button, Accordion, AccordionHeader, AccordionBody } from 'Components'
 import GluuPropertyItem from './GluuPropertyItem'
 import { useTranslation } from 'react-i18next'
-import { ThemeContext } from 'Context/theme/themeContext'
 import { Tooltip as ReactTooltip } from 'react-tooltip'
 import { HelpOutline } from '@mui/icons-material'
 import customColors from '@/customColors'
@@ -98,8 +97,7 @@ function GluuProperties({
 }: any) {
   const [properties, setProperties] = useState(options)
   const { t, i18n } = useTranslation()
-  const theme: any = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+
   const formikRef = useRef(formik)
   formikRef.current = formik
   const initialSyncDone = useRef(false)
@@ -177,9 +175,11 @@ function GluuProperties({
           <Button
             style={{
               float: 'right',
+              backgroundColor: customColors.primaryDark,
+              color: customColors.white,
+              border: 'none',
             }}
             type="button"
-            color={`primary-${selectedTheme}`}
             onClick={addProperty}
             disabled={disabled}
           >

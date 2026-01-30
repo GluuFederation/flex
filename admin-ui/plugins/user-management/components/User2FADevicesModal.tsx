@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import GluuViewDetailModal from 'Routes/Apps/Gluu/GluuViewDetailsModal'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import getThemeColor from 'Context/theme/config'
-import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { ThemeContext } from '@/context/theme/themeContext'
 import {
   useGetRegistrationEntriesFido2,
   useDeleteFido2Data,
@@ -28,6 +28,7 @@ import {
   CustomUser,
 } from '../types'
 import { getErrorMessage, logUserUpdate } from '../helper/userAuditHelpers'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
 interface User2FADevicesModalProps {
   isOpen: boolean
@@ -41,15 +42,17 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
   const themeContext = useContext(ThemeContext)
-  const selectedTheme = theme || themeContext?.state?.theme || 'light'
-  const themeColors = getThemeColor(selectedTheme)
+  const selectedTheme = useMemo(
+    () => theme || themeContext?.state?.theme || DEFAULT_THEME,
+    [theme, themeContext?.state?.theme],
+  )
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const bgThemeColor = { background: themeColors.background }
 
   const [faDetails, setFADetails] = useState<DeviceData[]>([])
   const [otpDevicesList, setOTPDevicesList] = useState<DeviceData[]>([])
   const initializedRef = useRef<string | null>(null)
 
-  // Fetch FIDO2 registration entries
   const { data: fidoRegistrationData, refetch: refetchFido2Details } =
     useGetRegistrationEntriesFido2(userDetails?.userId?.toLowerCase() || '', {
       query: {
@@ -57,11 +60,7 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
       },
     })
 
-  // Memoize fidoDetails to prevent unnecessary re-renders
-  const fidoDetails = useMemo(
-    () => fidoRegistrationData?.entries || [],
-    [fidoRegistrationData?.entries],
-  )
+  const fidoDetails = useMemo(() => fidoRegistrationData?.entries || [], [fidoRegistrationData])
 
   // Delete FIDO2 mutation
   const deleteFido2Mutation = useDeleteFido2Data({
@@ -255,6 +254,7 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
           headerStyle: {
             ...applicationStyle.tableHeaderStyle,
             ...bgThemeColor,
+            color: themeColors.fontColor,
           } as React.CSSProperties,
           actionsColumnIndex: -1,
         }}

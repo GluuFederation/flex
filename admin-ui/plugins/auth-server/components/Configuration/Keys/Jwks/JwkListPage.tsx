@@ -43,7 +43,7 @@ function JwkListPage(): React.ReactElement {
 
   return (
     <GluuLoader blocking={isLoading}>
-      <GluuLabel label="fields.json_web_keys" size={3} />
+      <GluuLabel label="fields.json_web_keys" allowColon={false} size={3} />
       <Card>
         <CardBody>
           {jwkItems || (
