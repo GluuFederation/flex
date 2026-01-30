@@ -139,7 +139,6 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
       if (!item.inum) {
         return
       }
-      toggle()
 
       const userAction: { action_message: string; action_data: string } = {
         action_message: '',
@@ -151,11 +150,12 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
           inum: userAction.action_data,
           userMessage: userAction.action_message,
         })
+        toggle()
       } catch (error) {
         console.error('Failed to delete identity provider:', error)
       }
     },
-    [deleteIdentityProviderMutation, item.inum, toggle],
+    [buildPayload, deleteIdentityProviderMutation, item.inum, toggle],
   )
 
   const onRowCountChangeClick = useCallback((count: number): void => {
