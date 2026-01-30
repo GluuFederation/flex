@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useContext, useMemo, useState, useRef } 
 import { debounce } from 'lodash'
 import MaterialTable, { type Action } from '@material-table/core'
 import { useTranslation } from 'react-i18next'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { buildPayload } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
@@ -59,8 +60,14 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
     [pageNumber, limit, pattern],
   )
 
-  const { data: idpData, isLoading: loadingSamlIdp } = useIdentityProviders(queryParams)
+  const {
+    data: idpData,
+    isLoading: isInitialLoading,
+    isFetching: isFetchingData,
+  } = useIdentityProviders(queryParams)
   const deleteIdentityProviderMutation = useDeleteIdentityProvider()
+
+  const isLoading = isInitialLoading || isFetchingData || deleteIdentityProviderMutation.isPending
 
   const items = idpData?.entries ?? []
   const totalItems = idpData?.totalEntriesCount ?? 0
@@ -131,6 +138,8 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
       if (!item.inum) {
         return
       }
+      toggle()
+
       const userAction: { action_message: string; action_data: string } = {
         action_message: '',
         action_data: '',
@@ -144,7 +153,6 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
       } catch (error) {
         console.error('Failed to delete identity provider:', error)
       }
-      toggle()
     },
     [deleteIdentityProviderMutation, item.inum, toggle],
   )
@@ -337,13 +345,13 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
   )
 
   return (
-    <>
+    <GluuLoader blocking={isLoading}>
       <GluuViewWrapper canShow={canReadIdentities}>
         <MaterialTable
           components={tableComponents}
           columns={tableColumns}
           data={items}
-          isLoading={loadingSamlIdp}
+          isLoading={isLoading}
           title=""
           actions={tableActions}
           options={tableOptions}
@@ -360,7 +368,7 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
           feature={adminUiFeatures.saml_idp_write}
         />
       )}
-    </>
+    </GluuLoader>
   )
 })
 
