@@ -39,7 +39,7 @@
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json}\"",
     "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json}\"",
     "api": "rimraf jans_config_api && openapi-merge-cli && openapi-generator-cli generate -i ./configApiSpecs.yaml --global-property skipFormModel=false -g javascript -o jans_config_api && cd jans_config_api && npm i mocha@10.2.0 && npm install && npm run build",
-    "api:orval": "rimraf jans_config_api_orval && openapi-merge-cli && orval --config ./orval.config.ts && node fix-orval-enums.js",
+    "api:orval": "rimraf jans_config_api_orval && openapi-merge-cli && orval --config ./orval.config.ts && npx tsc -p script/fix-orval-enums.tsconfig.json && node .fix-orval-enums-out/fix-orval-enums.js",
     "plugin:showAll": "node ./build/plugin-cli.js --showAllPlugins",
     "plugin:add": "node ./build/plugin-cli.js --addPlugin",
     "plugin:remove": "node ./build/plugin-cli.js --removePlugin",

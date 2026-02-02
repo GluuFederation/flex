@@ -1,8 +1,6 @@
 import { SAML_READ, SAML_WRITE, SAML_CONFIG_READ, SAML_TR_READ } from 'Utils/PermChecker'
 import WebsiteSsoIdentityProviderForm from './components/WebsiteSsoIdentityProviderForm'
 import SamlPage from './components/SamlPage'
-import samlSaga from './redux/sagas/SamlSaga'
-import samlReducer from './redux/features/SamlSlice'
 import WebsiteSsoServiceProviderForm from './components/WebsiteSsoServiceProviderForm'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 
@@ -68,8 +66,8 @@ const pluginMetadata = {
       resourceKey: ADMIN_UI_RESOURCES.SAML,
     },
   ],
-  reducers: [{ name: 'idpSamlReducer', reducer: samlReducer }],
-  sagas: [samlSaga()],
+  reducers: [],
+  sagas: [],
 }
 
 export default pluginMetadata

@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2015",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "outDir": "../.fix-orval-enums-out",
+    "rootDir": ".",
+    "declaration": false,
+    "noEmit": false
+  },
+  "include": ["./fix-orval-enums.ts"]
+}
