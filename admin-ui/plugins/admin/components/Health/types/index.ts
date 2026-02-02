@@ -4,6 +4,5 @@ export type {
   ServiceStatusValue,
   ServiceHealth,
   ServiceStatusCardProps,
-  HealthStatusBadgeProps,
   ServiceStatusResponse,
 } from './HealthTypes'

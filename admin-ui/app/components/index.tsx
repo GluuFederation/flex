@@ -11,6 +11,7 @@ import EmptyLayout from './EmptyLayout'
 import ExtendedDropdown from './ExtendedDropdown'
 import FloatGrid from './FloatGrid'
 import { GluuBadge } from './GluuBadge'
+import { GluuSpinner } from './GluuSpinner'
 import { GluuButton } from './GluuButton'
 import IconWithBadge from './IconWithBadge'
 import InputGroupAddon from './InputGroupAddon'
@@ -132,6 +133,7 @@ export {
   FloatGrid,
   GluuBadge,
   GluuButton,
+  GluuSpinner,
   IconWithBadge,
   InputGroupAddon,
   Layout,

@@ -1,5 +1,6 @@
 import { memo } from 'react'
 import Paper from '@mui/material/Paper'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 
 interface ClassesType {
   summary: string
@@ -15,8 +16,12 @@ interface SummaryCardProps {
 
 export const SummaryCard = memo<SummaryCardProps>(({ text, value, classes }) => (
   <Paper className={classes.summary} elevation={0}>
-    <div className={classes.summaryText}>{text}</div>
-    <div className={classes.summaryValue}>{value !== null ? value : '—'}</div>
+    <GluuText variant="div" className={classes.summaryText}>
+      {text}
+    </GluuText>
+    <GluuText variant="div" className={classes.summaryValue}>
+      {value !== null ? value : '—'}
+    </GluuText>
   </Paper>
 ))
 

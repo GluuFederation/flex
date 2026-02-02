@@ -10,7 +10,6 @@ export const customColors = {
   white: '#ffffff',
   black: '#000000',
   whiteSmoke: '#f5f5f5',
-
   lightBackground: '#f6f6f6',
   primaryDark: '#0a2540',
   lightBorder: '#efefef',

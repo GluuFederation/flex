@@ -918,6 +918,8 @@
     "no_services_found": "No services found.",
     "status_online": "Online",
     "status_offline": "Offline",
+    "status_active": "Active",
+    "status_inactive": "Inactive",
     "status_degraded": "Degraded",
     "status_unknown": "Unknown",
     "no_mau_data": "No data available for the selected period.",

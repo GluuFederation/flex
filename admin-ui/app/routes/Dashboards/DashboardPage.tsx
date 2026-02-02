@@ -22,7 +22,7 @@ import { useDebounce } from 'Utils/hooks'
 import SetTitle from 'Utils/SetTitle'
 import { useMauStats } from 'Plugins/admin/components/MAU/hooks'
 import { useHealthStatus } from 'Plugins/admin/components/Health/hooks'
-import { DEFAULT_STATUS } from 'Plugins/admin/components/Health/constants'
+import { DEFAULT_STATUS } from '@/constants'
 import type { CedarPermissionsState } from '@/cedarling/types'
 import type { MauDateRange } from 'Plugins/admin/components/MAU/types'
 import DashboardChart from './Chart/DashboardChart'
@@ -131,12 +131,12 @@ const DashboardPage = () => {
 
   const { data: license, isLoading: licenseLoading } = useDashboardLicense()
   const { totalCount: totalClientsEntries, isLoading: clientsLoading } = useDashboardClients()
-  const { services, isLoading: healthLoading } = useHealthStatus()
+  const { allServices, isLoading: healthLoading } = useHealthStatus()
 
   const isLockServiceAvailable = useMemo(() => {
-    const lockService = services.find((s) => s.name === 'jans-lock')
+    const lockService = allServices.find((s) => s.name === 'jans-lock')
     return lockService?.status === 'up'
-  }, [services])
+  }, [allServices])
 
   const {
     latestStats: lockStats,
@@ -253,19 +253,19 @@ const DashboardPage = () => {
 
   const getServiceStatus = useCallback(
     (key: string) => {
-      const service = services.find((s) => s.name === key)
+      const service = allServices.find((s) => s.name === key)
       return service?.status ?? DEFAULT_STATUS
     },
-    [services],
+    [allServices],
   )
 
   const visibleStatusDetails = useMemo(
     () =>
       STATUS_DETAILS.filter(({ key }) => {
-        const service = services.find((s) => s.name === key)
+        const service = allServices.find((s) => s.name === key)
         return service?.status === 'up' || service?.status === 'down'
       }),
-    [services],
+    [allServices],
   )
 
   const handleLogout = useCallback(() => {
@@ -393,7 +393,9 @@ const DashboardPage = () => {
               <Grid className={classes.flex} container>
                 <Grid item xs={12} className={isMobile ? 'mt-20' : ''}>
                   <div className={classes.userInfo}>
-                    <div className={classes.userInfoTitle}>{t('dashboard.user_info')}</div>
+                    <GluuText variant="div" className={classes.userInfoTitle}>
+                      {t('dashboard.user_info')}
+                    </GluuText>
                     <div className={classes.userInfoContent}>
                       {userInfo.map((item) => (
                         <UserInfoItem
@@ -401,6 +403,7 @@ const DashboardPage = () => {
                           item={item}
                           classes={classes}
                           isStatus={item.isStatus}
+                          isDark={isDark}
                           t={t}
                         />
                       ))}

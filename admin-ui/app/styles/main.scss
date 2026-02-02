@@ -425,6 +425,13 @@ html {
     z-index: 10000;
 }
 
+.block-ui-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
 .search-select {
     font-size: 14px;
     width: 210px;

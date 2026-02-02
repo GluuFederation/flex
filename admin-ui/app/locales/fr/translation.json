@@ -848,6 +848,8 @@
     "no_services_found": "Aucun service trouvé.",
     "status_online": "En ligne",
     "status_offline": "Hors ligne",
+    "status_active": "Actif",
+    "status_inactive": "Inactif",
     "status_degraded": "Dégradé",
     "status_unknown": "Inconnu",
     "no_mau_data": "Aucune donnée disponible pour la période sélectionnée.",

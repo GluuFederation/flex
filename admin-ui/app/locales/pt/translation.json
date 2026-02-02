@@ -843,6 +843,8 @@
     "no_services_found": "Nenhum serviço encontrado.",
     "status_online": "Online",
     "status_offline": "Offline",
+    "status_active": "Ativo",
+    "status_inactive": "Inativo",
     "status_degraded": "Degradado",
     "status_unknown": "Desconhecido",
     "no_mau_data": "Nenhum dado disponível para o período selecionado.",

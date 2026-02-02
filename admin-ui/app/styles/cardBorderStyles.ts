@@ -1,4 +1,5 @@
 import customColors, { hexToRgb } from '@/customColors'
+import { BORDER_RADIUS, ELLIPSE_SIZE, GRADIENT_POSITION } from '@/constants'
 
 interface CardBorderStyleOptions {
   isDark: boolean
@@ -11,23 +12,22 @@ interface CardBorderStyleOptions {
 export const getCardBorderStyle = (options: CardBorderStyleOptions) => {
   const {
     isDark,
-
-    borderRadius = 16,
+    borderRadius = BORDER_RADIUS.DEFAULT,
     borderWidth = '1px',
-    gradientPosition = 'top right',
-    ellipseSize = '200% 160%',
+    gradientPosition = GRADIENT_POSITION.TOP_RIGHT,
+    ellipseSize = ELLIPSE_SIZE,
   } = options
 
   const gradientPositionMap: Record<string, string> = {
-    'top right': '100% 0%',
-    'top left': '0% 0%',
-    'bottom right': '100% 100%',
-    'bottom left': '0% 100%',
-    'center': '50% 50%',
+    [GRADIENT_POSITION.TOP_RIGHT]: '100% 0%',
+    [GRADIENT_POSITION.TOP_LEFT]: '0% 0%',
+    [GRADIENT_POSITION.BOTTOM_RIGHT]: '100% 100%',
+    [GRADIENT_POSITION.BOTTOM_LEFT]: '0% 100%',
+    [GRADIENT_POSITION.CENTER]: '50% 50%',
   }
 
   const getGradientPosition = (position: string) => {
-    return gradientPositionMap[position] || gradientPositionMap['top right']
+    return gradientPositionMap[position] || gradientPositionMap[GRADIENT_POSITION.TOP_RIGHT]
   }
 
   if (isDark) {

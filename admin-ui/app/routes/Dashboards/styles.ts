@@ -1,7 +1,7 @@
 import customColors from '@/customColors'
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
-import { fontFamily, fontWeights, fontSizes, letterSpacing, lineHeights } from '@/styles/fonts'
+import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { BORDER_RADIUS } from './constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 
@@ -23,10 +23,6 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
 
   const cardBorderStyle = getCardBorderStyle({
     isDark,
-    borderRadius: BORDER_RADIUS.DEFAULT,
-    borderWidth: '1px',
-    gradientPosition: 'top right',
-    ellipseSize: '200% 160%',
   })
 
   return {
@@ -395,42 +391,6 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
     },
     redText: {
       color: customColors.accentRed,
-    },
-    greenBlock: {
-      fontFamily,
-      background: isDark ? customColors.statusActive : customColors.statusActiveBg,
-      color: isDark ? customColors.white : customColors.statusActive,
-      borderRadius: BORDER_RADIUS.SMALL,
-      padding: '0 8px',
-      fontSize: fontSizes.sm,
-      fontWeight: fontWeights.medium,
-      lineHeight: lineHeights.base,
-      letterSpacing: letterSpacing.tight,
-      display: 'inline-flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      whiteSpace: 'nowrap',
-      width: 'fit-content',
-      height: 'fit-content',
-      boxSizing: 'border-box',
-    },
-    redBlock: {
-      fontFamily,
-      background: isDark ? customColors.statusInactive : customColors.statusInactiveBg,
-      color: isDark ? customColors.white : customColors.statusInactive,
-      borderRadius: BORDER_RADIUS.SMALL,
-      padding: '0 8px',
-      fontSize: fontSizes.sm,
-      fontWeight: fontWeights.medium,
-      lineHeight: lineHeights.base,
-      letterSpacing: letterSpacing.tight,
-      display: 'inline-flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      whiteSpace: 'nowrap',
-      width: 'fit-content',
-      height: 'fit-content',
-      boxSizing: 'border-box',
     },
     bannerContainer: {
       marginTop: 35,
