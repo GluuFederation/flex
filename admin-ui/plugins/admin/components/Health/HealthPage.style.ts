@@ -1,5 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
+import { SPACING } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 
@@ -23,39 +24,23 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
   })
 
   return {
-    root: {
-      maxWidth: '100vw',
-      padding: '24px 0',
-      display: 'flex',
-      justifyContent: 'center',
-    },
-    wrapper: {
-      width: '100%',
-      maxWidth: 1196,
-      display: 'flex',
-      justifyContent: 'center',
-    },
     healthCard: {
       backgroundColor: themeColors.cardBg,
       ...cardBorderStyle,
       borderRadius: 16,
       padding: 0,
-      width: 1196,
-      height: 616,
+      width: '100%',
+      minHeight: 616,
       position: 'relative',
       overflow: 'visible',
       display: 'flex',
       flexDirection: 'column',
       boxSizing: 'border-box',
-      [theme.breakpoints.down('lg')]: {
-        width: '100%',
-        maxWidth: 1196,
-      },
     },
     header: {
-      paddingTop: '24px',
-      paddingLeft: '24px',
-      paddingRight: '24px',
+      paddingTop: `${SPACING.CONTENT_PADDING}px`,
+      paddingLeft: `${SPACING.CONTENT_PADDING}px`,
+      paddingRight: `${SPACING.CONTENT_PADDING}px`,
       paddingBottom: 0,
       display: 'flex',
       justifyContent: 'space-between',
@@ -81,7 +66,7 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
     },
     refreshButtonWrapper: {
       position: 'absolute',
-      right: '24px',
+      right: `${SPACING.CONTENT_PADDING}px`,
       top: '50%',
       transform: 'translateY(-50%)',
       zIndex: 10,
@@ -112,33 +97,31 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
         cursor: 'not-allowed',
       },
     },
+    messageBlock: {
+      padding: `${SPACING.CONTENT_PADDING}px`,
+      display: 'flex',
+      alignItems: 'center',
+      gap: SPACING.CARD_CONTENT_GAP,
+    },
     servicesGrid: {
-      'paddingTop': '24px',
-      'paddingLeft': '24px',
-      'paddingRight': '24px',
-      'paddingBottom': '24px',
-      'flex': 1,
-      'minHeight': 0,
-      'overflowY': 'auto',
-      'width': '100%',
-      'boxSizing': 'border-box',
-      'margin': 0,
-      '& > .MuiGrid-item': {
-        'paddingTop': '24px',
-        'paddingLeft': '0px',
-        'paddingRight': '12px',
-        '&:nth-of-type(odd)': {
-          paddingLeft: '0px',
-          paddingRight: '12px',
-        },
-        '&:nth-of-type(even)': {
-          paddingLeft: '12px',
-          paddingRight: '0px',
-        },
-        '&:nth-of-type(1), &:nth-of-type(2)': {
-          paddingTop: '0px',
-        },
+      paddingTop: `${SPACING.SECTION_GAP}px`,
+      paddingLeft: `${SPACING.CONTENT_PADDING}px`,
+      paddingRight: `${SPACING.CONTENT_PADDING}px`,
+      paddingBottom: `${SPACING.CONTENT_PADDING}px`,
+      flex: 1,
+      minHeight: 0,
+      overflowY: 'auto',
+      width: '100%',
+      boxSizing: 'border-box',
+      display: 'grid',
+      gridTemplateColumns: 'repeat(2, 1fr)',
+      gap: SPACING.CARD_GAP,
+      [theme.breakpoints.down('sm')]: {
+        gridTemplateColumns: '1fr',
       },
+    },
+    serviceCardWrapper: {
+      minWidth: 0,
     },
   }
 })

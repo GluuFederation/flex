@@ -1,5 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import customColors from '@/customColors'
+import { SPACING } from '@/constants'
 import { fontFamily, fontWeights, fontSizes } from '@/styles/fonts'
 
 const useStyles = makeStyles<{ isDark: boolean }>()((_, { isDark }) => ({
@@ -7,8 +8,7 @@ const useStyles = makeStyles<{ isDark: boolean }>()((_, { isDark }) => ({
     backgroundColor: isDark ? customColors.darkInputBg : customColors.white,
     borderRadius: 16,
     width: '100%',
-    maxWidth: '548px',
-    height: 135,
+    minHeight: 135,
     padding: 0,
     position: 'relative',
     display: 'flex',
@@ -24,13 +24,13 @@ const useStyles = makeStyles<{ isDark: boolean }>()((_, { isDark }) => ({
   },
   textContainer: {
     position: 'absolute',
-    left: '24px',
-    top: '24px',
-    width: '205px',
-    height: '59px',
+    left: `${SPACING.CARD_PADDING}px`,
+    top: `${SPACING.CARD_PADDING}px`,
+    right: '80px',
+    minHeight: '59px',
     display: 'flex',
     flexDirection: 'column',
-    gap: 0,
+    gap: `${SPACING.CARD_CONTENT_GAP}px`,
   },
   serviceName: {
     fontFamily,
@@ -54,8 +54,8 @@ const useStyles = makeStyles<{ isDark: boolean }>()((_, { isDark }) => ({
   },
   statusBadge: {
     position: 'absolute',
-    right: '24px',
-    top: '24px',
+    right: `${SPACING.CARD_PADDING}px`,
+    top: `${SPACING.CARD_PADDING}px`,
     zIndex: 1,
   },
 }))

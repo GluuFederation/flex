@@ -10,7 +10,6 @@ interface DashboardThemeColors {
   cardBorder: string
   text: string
   textSecondary: string
-  background: string
   statusCardBg: string
   statusCardBorder: string
 }
@@ -26,9 +25,6 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
   })
 
   return {
-    root: {
-      maxWidth: '100vw',
-    },
     flex: {
       flexGrow: 1,
       display: 'flex',
@@ -248,7 +244,6 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       width: '100%',
       height: '106px',
       padding: '0px 6px',
-      backgroundColor: themeColors.background,
       marginLeft: 0,
       marginRight: 0,
       display: 'flex',

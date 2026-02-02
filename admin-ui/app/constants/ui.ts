@@ -1,4 +1,12 @@
-/** Shared UI constants for borders, radius, gradients - used by cardBorderStyles, Dashboards, Health, etc. */
+export const SPACING = {
+  PAGE: 24,
+  CONTENT_PADDING: 40,
+  SECTION_GAP: 24,
+  CARD_GAP: 24,
+  CARD_PADDING: 24,
+  CARD_CONTENT_GAP: 8,
+} as const
+
 export const BORDER_RADIUS = {
   DEFAULT: 16,
   LARGE: 24,

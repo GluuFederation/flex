@@ -11,7 +11,6 @@ import { useCedarling } from '@/cedarling'
 import customColors, { hexToRgb } from '@/customColors'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { ThemeContext } from 'Context/theme/themeContext'
-import getThemeColor from 'Context/theme/config'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
 import { auditLogoutLogs } from 'Redux/features/sessionSlice'
 import type { AuthState } from 'Redux/features/types/authTypes'
@@ -30,6 +29,7 @@ import { CHART_LEGEND_CONFIG, STATUS_DETAILS } from './constants'
 import DateRange from './DateRange'
 import { useDashboardLicense, useDashboardClients, useDashboardLockStats } from './hooks'
 import styles from './styles'
+import { GluuPageContent } from '@/components'
 import { StatusIndicator, SummaryCard, UserInfoItem } from './components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import {
@@ -56,8 +56,6 @@ const DashboardPage = () => {
     () => themeContext?.state.theme || DEFAULT_THEME,
     [themeContext?.state.theme],
   )
-  const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
-
   const isDark = currentTheme === THEME_DARK
   const dashboardThemeColors = useMemo(() => {
     const baseColors = isDark
@@ -76,11 +74,10 @@ const DashboardPage = () => {
 
     return {
       ...baseColors,
-      background: themeColors.background,
       statusCardBg: baseColors.cardBg,
       statusCardBorder: baseColors.cardBorder,
     }
-  }, [isDark, themeColors.background])
+  }, [isDark])
 
   const { classes } = styles({
     themeColors: dashboardThemeColors,
@@ -352,8 +349,8 @@ const DashboardPage = () => {
     <GluuLoader blocking={isBlocking}>
       {showModal}
 
-      <div className={classes.root}>
-        <Grid container className="px-24" style={{ marginBottom: 0 }}>
+      <GluuPageContent>
+        <Grid container style={{ marginBottom: 0 }}>
           <Grid item xs={12}>
             <div className={classes.statusSection}>
               <div className={classes.statusContainer}>
@@ -374,7 +371,7 @@ const DashboardPage = () => {
           </Grid>
         </Grid>
 
-        <Grid container className="px-24" spacing={2}>
+        <Grid container spacing={2}>
           <Grid item xs={12}>
             <Grid container spacing={2}>
               {summaryData.slice(0, 3).map((data) => (
@@ -463,7 +460,7 @@ const DashboardPage = () => {
             </Paper>
           </Grid>
         </Grid>
-      </div>
+      </GluuPageContent>
     </GluuLoader>
   )
 }
