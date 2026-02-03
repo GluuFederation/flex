@@ -15,7 +15,7 @@ const MODAL_HEIGHT = 380
 const HORIZONTAL_PADDING = 40
 const CONTENT_WIDTH = MODAL_WIDTH - HORIZONTAL_PADDING * 2
 
-export const useStyles = makeStyles<StylesParams>()((_theme, { isDark }) => {
+export const useStyles = makeStyles<StylesParams>()((theme, { isDark }) => {
   const cardBorderStyle = getCardBorderStyle({ isDark, borderRadius: 16 })
 
   return {
@@ -27,12 +27,14 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark }) => {
       transform: 'translate(-50%, -50%)',
       backgroundColor: isDark ? customColors.darkCardBg : customColors.white,
       borderRadius: '16px',
-      width: `${MODAL_WIDTH}px`,
-      height: `${MODAL_HEIGHT}px`,
+      width: `min(${MODAL_WIDTH}px, 90vw)`,
+      maxWidth: `${MODAL_WIDTH}px`,
+      height: `min(${MODAL_HEIGHT}px, 90vh)`,
+      maxHeight: `${MODAL_HEIGHT}px`,
       zIndex: 1050,
       padding: 0,
       boxSizing: 'border-box',
-      overflow: 'visible',
+      overflow: 'auto',
     },
     overlay: {
       position: 'fixed',
@@ -83,7 +85,8 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark }) => {
       top: '88px',
       left: '50%',
       transform: 'translateX(-50%)',
-      width: `${CONTENT_WIDTH}px`,
+      width: `min(${CONTENT_WIDTH}px, calc(100% - ${HORIZONTAL_PADDING * 2}px))`,
+      maxWidth: `${CONTENT_WIDTH}px`,
       height: '160px',
       backgroundColor: isDark ? customColors.darkInputBg : customColors.lightBackground,
       border: isDark
@@ -119,7 +122,8 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark }) => {
       top: '245px',
       left: '50%',
       transform: 'translateX(-50%)',
-      width: `${CONTENT_WIDTH}px`,
+      width: `min(${CONTENT_WIDTH}px, calc(100% - ${HORIZONTAL_PADDING * 2}px))`,
+      maxWidth: `${CONTENT_WIDTH}px`,
       fontFamily,
       fontWeight: fontWeights.medium,
       fontSize: fontSizes.base,

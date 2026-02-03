@@ -1,8 +1,8 @@
-import React, { useCallback, useContext, useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import Paper from '@mui/material/Paper'
 import SetTitle from 'Utils/SetTitle'
-import { ThemeContext } from '@/context/theme/themeContext'
+import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
 import customColors from '@/customColors'
@@ -18,8 +18,8 @@ const HealthPage: React.FC = () => {
   const { t } = useTranslation()
   SetTitle(t('titles.services_health'))
 
-  const themeContext = useContext(ThemeContext)
-  const currentTheme = themeContext?.state.theme || DEFAULT_THEME
+  const { state: themeState } = useTheme()
+  const currentTheme = themeState?.theme || DEFAULT_THEME
   const isDark = currentTheme === THEME_DARK
   const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
 
@@ -79,17 +79,15 @@ const HealthPage: React.FC = () => {
           </div>
 
           {isError && (
-            <div className={classes.messageBlock}>
-              <i className="fa fa-exclamation-triangle" style={{ color: customColors.accentRed }} />
-              <GluuText variant="span" style={{ color: customColors.accentRed }}>
-                {t('messages.error_fetching_health_status')}
-              </GluuText>
+            <div className={classes.messageBlock} style={{ color: customColors.accentRed }}>
+              <i className={`fa fa-exclamation-triangle ${classes.errorIcon}`} />
+              <GluuText variant="span">{t('messages.error_fetching_health_status')}</GluuText>
             </div>
           )}
 
           {!isLoading && !isError && services.length === 0 && (
-            <div className={classes.messageBlock}>
-              <i className="fa fa-info-circle" style={{ color: customColors.textSecondary }} />
+            <div className={classes.messageBlock} style={{ color: customColors.textSecondary }}>
+              <i className={`fa fa-info-circle ${classes.infoIcon}`} />
               <GluuText variant="span" secondary>
                 {t('messages.no_services_found')}
               </GluuText>

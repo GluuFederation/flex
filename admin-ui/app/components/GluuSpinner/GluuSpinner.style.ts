@@ -15,6 +15,7 @@ const useStyles = makeStyles<GluuSpinnerStyleParams>()((_, { size, isDark }) => 
     '100%': { transform: 'rotate(360deg)' },
   },
   'spinner': {
+    display: 'block',
     width: size,
     height: size,
     borderRadius: '50%',

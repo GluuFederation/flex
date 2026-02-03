@@ -3,12 +3,9 @@ import { ThemeContext } from '@/context/theme/themeContext'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
 import { useStyles } from './GluuSpinner.style'
 
-export interface GluuSpinnerProps {
-  /** Size in pixels. Default: 48 for inline, use 80 for full-page blocking overlay */
+interface GluuSpinnerProps {
   'size'?: number
-  /** Override theme detection. When not provided, uses ThemeContext */
   'isDark'?: boolean
-  /** Accessible label for screen readers */
   'aria-label'?: string
 }
 
@@ -21,7 +18,7 @@ const GluuSpinner = React.memo<GluuSpinnerProps>(
     const { classes } = useStyles({ size, isDark })
 
     return (
-      <div className={classes.spinner} role="status" aria-label={ariaLabel} aria-live="polite" />
+      <output className={classes.spinner} role="status" aria-label={ariaLabel} aria-live="polite" />
     )
   },
 )

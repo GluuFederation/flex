@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
-import { SPACING } from '@/constants'
+import { SPACING, BORDER_RADIUS } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 
@@ -27,7 +27,7 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
     healthCard: {
       backgroundColor: themeColors.cardBg,
       ...cardBorderStyle,
-      borderRadius: 16,
+      borderRadius: BORDER_RADIUS.DEFAULT,
       padding: 0,
       width: '100%',
       minHeight: 616,
@@ -102,6 +102,14 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
       display: 'flex',
       alignItems: 'center',
       gap: SPACING.CARD_CONTENT_GAP,
+    },
+    errorIcon: {
+      color: 'inherit',
+      flexShrink: 0,
+    },
+    infoIcon: {
+      color: 'inherit',
+      flexShrink: 0,
     },
     servicesGrid: {
       paddingTop: `${SPACING.SECTION_GAP}px`,

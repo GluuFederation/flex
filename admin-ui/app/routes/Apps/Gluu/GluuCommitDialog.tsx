@@ -14,7 +14,11 @@ import type { RootState } from '@/redux/sagas/types/audit'
 import type { GluuCommitDialogProps } from './types/index'
 import customColors from '@/customColors'
 import { useStyles } from './styles/GluuCommitDialog.style'
-import { getCommitMessageValidationError } from '@/utils/validation/commitMessage'
+import {
+  getCommitMessageValidationError,
+  COMMIT_MESSAGE_MIN_LENGTH,
+  COMMIT_MESSAGE_MAX_LENGTH,
+} from '@/utils/validation/commitMessage'
 import GluuText from './GluuText'
 import { GluuButton } from '@/components'
 
@@ -73,7 +77,8 @@ const GluuCommitDialog = ({
   }, [])
 
   const messageLength = userMessage.length
-  const isValid = messageLength >= 10 && messageLength <= 512
+  const isValid =
+    messageLength >= COMMIT_MESSAGE_MIN_LENGTH && messageLength <= COMMIT_MESSAGE_MAX_LENGTH
   const errorMessageText = useMemo(
     () => getCommitMessageValidationError(messageLength, t),
     [messageLength, t],
@@ -103,6 +108,27 @@ const GluuCommitDialog = ({
     setUserMessage('')
   }, [handler, onCloseModal])
 
+  const handleOverlayKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
+        e.preventDefault()
+        closeModal()
+      }
+    },
+    [closeModal],
+  )
+
+  const handleModalKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        closeModal()
+      }
+      e.stopPropagation()
+    },
+    [closeModal],
+  )
+
   if (!modal) {
     return <></>
   }
@@ -112,8 +138,22 @@ const GluuCommitDialog = ({
       <>{webhookTriggerModal({ closeModal })}</>
     ) : (
       <>
-        <div className={classes.overlay} onClick={closeModal} />
-        <div className={classes.modalContainer} onClick={(e) => e.stopPropagation()}>
+        <div
+          className={classes.overlay}
+          onClick={closeModal}
+          onKeyDown={handleOverlayKeyDown}
+          role="button"
+          tabIndex={0}
+          aria-label={t('actions.close')}
+        />
+        <div
+          className={classes.modalContainer}
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={handleModalKeyDown}
+          role="dialog"
+          tabIndex={-1}
+          aria-labelledby="commit-dialog-title"
+        >
           <GluuButton
             onClick={closeModal}
             className={classes.closeButton}
@@ -126,7 +166,7 @@ const GluuCommitDialog = ({
           >
             <CloseOutlinedIcon />
           </GluuButton>
-          <GluuText variant="h2" className={classes.title}>
+          <GluuText variant="h2" className={classes.title} id="commit-dialog-title">
             {titleText}
           </GluuText>
           <div className={classes.textareaContainer}>

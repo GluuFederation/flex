@@ -1037,6 +1037,9 @@
     "expires_before": "Expiration Before Date",
     "charMoreThan512": "characters over limit (maximum 512)",
     "charLessThan10": "characters required (minimum 10)",
+    "charRequiredMin": "{{count}} characters required (minimum {{min}})",
+    "charRequiredMin_one": "{{count}} character required (minimum {{min}})",
+    "charRequiredMin_other": "{{count}} characters required (minimum {{min}})",
     "more": " more"
   },
   "titles": {

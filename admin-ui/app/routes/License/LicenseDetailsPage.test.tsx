@@ -13,7 +13,7 @@ const mockLicense = {
   licenseActive: true,
   licenseEnable: true,
   licenseEnabled: true,
-  licenseKey: 'GFXJ-AB8B-YDJK-L4AD',
+  licenseKey: 'TEST_LICENSE_KEY',
   licenseType: 'TIME_LIMITED',
   maxActivations: 14,
   productCode: 'adminui001',

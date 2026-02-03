@@ -37,7 +37,6 @@ function transformServiceStatus(data: JsonNode | undefined): ServiceHealth[] {
   return sortServicesByStatus(services)
 }
 
-// Services to exclude from Health page (show only 6 services)
 const HEALTH_PAGE_EXCLUDED_SERVICES = ['jans-lock', 'jans-link'] as const
 
 export function useHealthStatus() {
@@ -54,7 +53,6 @@ export function useHealthStatus() {
 
   const allServices = query.data ?? []
 
-  // Filter out excluded services for Health page (show only 6 services)
   const services = useMemo(
     () =>
       allServices.filter(
@@ -72,8 +70,8 @@ export function useHealthStatus() {
   )
 
   return {
-    services, // Filtered services (6) for Health page
-    allServices, // All services (8) for Dashboard
+    services,
+    allServices,
     healthyCount,
     totalCount,
     isLoading: query.isLoading,

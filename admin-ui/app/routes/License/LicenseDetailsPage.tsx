@@ -128,7 +128,7 @@ const LicenseDetailsPage = () => {
           {t(field.label)}:
         </GluuText>
         <GluuText variant="div" className={classes.value}>
-          {field.value || 'N/A'}
+          {field.value ?? 'N/A'}
         </GluuText>
       </div>
     ),
