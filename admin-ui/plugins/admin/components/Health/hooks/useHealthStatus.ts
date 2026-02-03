@@ -5,9 +5,10 @@ import type { RootState } from 'Redux/sagas/types/audit'
 import type { ServiceHealth, ServiceStatusValue, ServiceStatusResponse } from '../types'
 import { HEALTH_CACHE_CONFIG, STATUS_MAP, DEFAULT_STATUS } from '../constants'
 
-function normalizeStatus(apiStatus: string): ServiceStatusValue {
+const normalizeStatus = (apiStatus: string): ServiceStatusValue => {
   const statusMap = STATUS_MAP as Record<string, ServiceStatusValue>
-  return statusMap[apiStatus] ?? DEFAULT_STATUS
+  const normalized = apiStatus.toLowerCase()
+  return statusMap[normalized] ?? DEFAULT_STATUS
 }
 
 const STATUS_SORT_ORDER: Record<ServiceStatusValue, number> = {
@@ -17,11 +18,11 @@ const STATUS_SORT_ORDER: Record<ServiceStatusValue, number> = {
   down: 3,
 }
 
-function sortServicesByStatus(services: ServiceHealth[]): ServiceHealth[] {
+const sortServicesByStatus = (services: ServiceHealth[]): ServiceHealth[] => {
   return [...services].sort((a, b) => STATUS_SORT_ORDER[a.status] - STATUS_SORT_ORDER[b.status])
 }
 
-function transformServiceStatus(data: JsonNode | undefined): ServiceHealth[] {
+const transformServiceStatus = (data: JsonNode | undefined): ServiceHealth[] => {
   if (!data || typeof data !== 'object') {
     return []
   }
@@ -39,7 +40,7 @@ function transformServiceStatus(data: JsonNode | undefined): ServiceHealth[] {
 
 const HEALTH_PAGE_EXCLUDED_SERVICES = ['jans-lock', 'jans-link'] as const
 
-export function useHealthStatus() {
+export const useHealthStatus = () => {
   const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
 
   const query = useGetServiceStatus(undefined, {

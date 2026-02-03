@@ -3,14 +3,10 @@ import customColors from '@/customColors'
 export type ServiceStatusValue = 'up' | 'down' | 'unknown' | 'degraded'
 
 export const STATUS_MAP = {
-  'Running': 'up',
-  'UP': 'up',
+  'running': 'up',
   'up': 'up',
-  'DOWN': 'down',
   'down': 'down',
-  'DEGRADED': 'degraded',
   'degraded': 'degraded',
-  'Not present': 'unknown',
   'not present': 'unknown',
   'unknown': 'unknown',
 } as const satisfies Record<string, ServiceStatusValue>
