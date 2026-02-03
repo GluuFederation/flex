@@ -672,28 +672,30 @@ class flex_installer(JettyInstaller):
         config_api_installer.copyFile(self.java_security_fn, self.java_security_dir)
 
         config_api_server_ini_fn = os.path.join(self.config_api_base_dir, 'start.d/server.ini')
-        if os.path.exists(config_api_server_ini_fn):
-            java_security_prefix = '-Djava.security.properties'
-            java_security_prop_line = f'{java_security_prefix}=./' + Path(self.java_security_dir).relative_to(self.config_api_base_dir).joinpath(os.path.basename(self.java_security_fn)).as_posix()
-            config_api_server_ini_content = config_api_installer.readFile(config_api_server_ini_fn)
-            config_api_server_ini_content_list = config_api_server_ini_content.splitlines()
-            write_fn = False
-            for i, line in enumerate(config_api_server_ini_content_list[:]):
-                ls = line.strip()
-                if ls == java_security_prop_line:
-                    break
-                lsl = ls.split('=')
-                if len(lsl) > 1:
-                    if lsl[0].strip() == java_security_prefix:
-                        config_api_server_ini_content_list[i] = java_security_prop_line
-                        write_fn = True
-                        break
-            else:
-                config_api_server_ini_content_list.append(java_security_prop_line)
-                write_fn = True
+        if not os.path.exists(config_api_server_ini_fn):
+            return
 
-            if write_fn:
-                config_api_installer.writeFile(config_api_server_ini_fn, '\n'.join(config_api_server_ini_content_list))
+        java_security_prefix = '-Djava.security.properties'
+        java_security_prop_line = f'{java_security_prefix}=./' + Path(self.java_security_dir).relative_to(self.config_api_base_dir).joinpath(os.path.basename(self.java_security_fn)).as_posix()
+        config_api_server_ini_content = config_api_installer.readFile(config_api_server_ini_fn)
+        config_api_server_ini_content_list = config_api_server_ini_content.splitlines()
+        write_fn = False
+
+        for i, line in enumerate(config_api_server_ini_content_list[:]):
+            ls = line.strip()
+            if ls == java_security_prop_line:
+                break
+            lsl = ls.split('=')
+            if len(lsl) > 1 and lsl[0].strip() == java_security_prefix:
+                    config_api_server_ini_content_list[i] = java_security_prop_line
+                    write_fn = True
+                    break
+        else:
+            config_api_server_ini_content_list.append(java_security_prop_line)
+            write_fn = True
+
+        if write_fn:
+            config_api_installer.writeFile(config_api_server_ini_fn, '\n'.join(config_api_server_ini_content_list))
 
     def install_casa(self):
         Config.install_casa = True
