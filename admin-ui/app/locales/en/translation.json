@@ -94,6 +94,7 @@
     "config_api_status": "Config API Status",
     "key_cloak": "Keycloak",
     "jans_lock": "Jans Lock",
+    "casa": "CASA",
     "jans_link": "Jans Link",
     "access_denied": "Access Denied",
     "access_denied_message": "You do not have permission to access this page",

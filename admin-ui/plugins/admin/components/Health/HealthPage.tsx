@@ -66,6 +66,7 @@ const HealthPage: React.FC = () => {
                 backgroundColor="transparent"
                 borderColor={healthThemeColors.refreshButtonBorder}
                 textColor={healthThemeColors.refreshButtonText}
+                useOpacityOnHover
               >
                 <i
                   className={`fa fa-refresh ${loading ? 'fa-spin' : ''}`}

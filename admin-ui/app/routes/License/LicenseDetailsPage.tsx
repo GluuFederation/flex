@@ -165,6 +165,7 @@ const LicenseDetailsPage = () => {
                   disabled={loading}
                   backgroundColor={customColors.statusActive}
                   textColor={customColors.white}
+                  useOpacityOnHover
                   style={{ gap: 8 }}
                 >
                   <i className="fa fa-refresh" style={{ fontSize: 16 }} />

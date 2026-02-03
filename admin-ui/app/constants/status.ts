@@ -41,9 +41,9 @@ export const STATUS_BADGE_COLOR: Record<ServiceStatusValue, string> = {
 export const STATUS_DETAILS = [
   { label: 'menus.oauthserver', key: 'jans-auth' },
   { label: 'dashboard.config_api', key: 'jans-config-api' },
-  { label: 'FIDO', key: 'jans-fido2' },
-  { label: 'CASA', key: 'jans-casa' },
+  { label: 'menus.fido', key: 'jans-fido2' },
+  { label: 'dashboard.casa', key: 'jans-casa' },
   { label: 'dashboard.key_cloak', key: 'keycloak' },
-  { label: 'SCIM', key: 'jans-scim' },
+  { label: 'menus.scim', key: 'jans-scim' },
   { label: 'dashboard.jans_lock', key: 'jans-lock' },
 ] as const

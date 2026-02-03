@@ -30,6 +30,8 @@ const GluuButton: React.FC<GluuButtonProps> = (props) => {
     minHeight,
     style,
     className,
+    useOpacityOnHover = false,
+    hoverOpacity,
     onClick,
     type = 'button',
     title,
@@ -48,6 +50,8 @@ const GluuButton: React.FC<GluuButtonProps> = (props) => {
     const text = textColor ?? themeColors.fontColor
     const border = borderColor ?? (isDark ? 'transparent' : themeColors.borderColor)
     const hoverBg = isDark ? themeColors.lightBackground : themeColors.borderColor
+    const keepBgOnHover = useOpacityOnHover && isHovered && !isDisabled
+    const opacityOnHover = hoverOpacity ?? 0.5
 
     return {
       display: 'inline-flex',
@@ -62,18 +66,20 @@ const GluuButton: React.FC<GluuButtonProps> = (props) => {
       minHeight: minHeight ?? sizeConfig.minHeight,
       borderRadius: borderRadius ?? '6px',
       border: `1px solid ${border}`,
-      backgroundColor: outlined
-        ? isHovered && !isDisabled
-          ? `${bg}15`
-          : 'transparent'
-        : isHovered && !isDisabled
-          ? hoverBg
-          : bg,
+      backgroundColor: keepBgOnHover
+        ? bg
+        : outlined
+          ? isHovered && !isDisabled
+            ? `${bg}15`
+            : 'transparent'
+          : isHovered && !isDisabled
+            ? hoverBg
+            : bg,
       color: outlined ? themeColors.fontColor : text,
       cursor: isDisabled ? 'not-allowed' : 'pointer',
-      opacity: isDisabled ? 0.65 : 1,
+      opacity: isDisabled ? 0.65 : keepBgOnHover ? opacityOnHover : 1,
       width: block ? '100%' : 'auto',
-      transition: 'background-color 0.15s ease-in-out',
+      transition: 'background-color 0.15s ease-in-out, opacity 0.15s ease-in-out',
       ...style,
     }
   }, [
@@ -92,6 +98,8 @@ const GluuButton: React.FC<GluuButtonProps> = (props) => {
     fontWeight,
     padding,
     minHeight,
+    useOpacityOnHover,
+    hoverOpacity,
     style,
   ])
 
