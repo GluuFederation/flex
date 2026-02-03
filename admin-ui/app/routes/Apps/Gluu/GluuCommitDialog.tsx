@@ -95,18 +95,19 @@ const GluuCommitDialog = ({
     [placeholderLabel, t],
   )
 
-  const handleAccept = useCallback(() => {
-    if (formik) {
-      formik.setFieldValue('action_message', userMessage)
-    }
-    onAccept(userMessage)
-  }, [formik, onAccept, userMessage])
-
   const closeModal = useCallback(() => {
     handler()
     onCloseModal()
     setUserMessage('')
   }, [handler, onCloseModal])
+
+  const handleAccept = useCallback(() => {
+    if (formik) {
+      formik.setFieldValue('action_message', userMessage)
+    }
+    onAccept(userMessage)
+    closeModal()
+  }, [formik, onAccept, userMessage, closeModal])
 
   const handleOverlayKeyDown = useCallback(
     (e: React.KeyboardEvent) => {

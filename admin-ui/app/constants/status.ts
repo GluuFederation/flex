@@ -21,7 +21,7 @@ export const STATUS_LABEL_KEYS: Record<ServiceStatusValue, string> = {
   up: 'messages.status_active',
   down: 'messages.status_inactive',
   degraded: 'messages.status_degraded',
-  unknown: 'messages.status_unknown',
+  unknown: 'messages.status_inactive',
 } as const
 
 export const STATUS_COLORS: Record<ServiceStatusValue, string> = {
