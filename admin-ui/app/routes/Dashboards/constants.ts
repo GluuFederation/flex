@@ -40,6 +40,8 @@ export const getStatusColor = (status: string): string => {
   return STATUS_COLOR_MAP[status.toLowerCase()] ?? 'secondary'
 }
 
+export const USER_INFO_CHART_BREAKPOINT = 1370
+
 export const CHART_CONSTANTS = {
   MIN_MAX: 1200,
   TICK_INTERVAL: 300,

@@ -2,7 +2,7 @@ import customColors from '@/customColors'
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
-import { BORDER_RADIUS } from './constants'
+import { BORDER_RADIUS, USER_INFO_CHART_BREAKPOINT } from './constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 
 interface DashboardThemeColors {
@@ -408,6 +408,23 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       width: '100%',
       marginTop: '8px',
       padding: '0 8px',
+    },
+    userInfoChartRow: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 16,
+      width: '100%',
+      [`@media (min-width: ${USER_INFO_CHART_BREAKPOINT}px)`]: {
+        flexDirection: 'row',
+      },
+    },
+    userInfoChartCol: {
+      flex: '1 1 100%',
+      minWidth: 0,
+      [`@media (min-width: ${USER_INFO_CHART_BREAKPOINT}px)`]: {
+        '&:first-of-type': { flex: '5 1 0' },
+        '&:last-of-type': { flex: '7 1 0' },
+      },
     },
     legendItem: {
       fontFamily,
