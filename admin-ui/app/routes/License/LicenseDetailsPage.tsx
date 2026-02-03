@@ -12,6 +12,7 @@ import { GluuButton } from '@/components/GluuButton'
 import Alert from '@mui/material/Alert'
 import SetTitle from 'Utils/SetTitle'
 import { formatDate } from 'Utils/Util'
+import { formatLicenseFieldValue } from '@/utils/licenseUtils'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
@@ -93,9 +94,7 @@ const LicenseDetailsPage = () => {
         label: 'fields.customerName',
         value: loading
           ? PLACEHOLDER
-          : !item.customerFirstName && !item.customerLastName
-            ? '-'
-            : item.customerFirstName + ' ' + item.customerLastName,
+          : [item.customerFirstName, item.customerLastName].filter(Boolean).join(' '),
       },
       {
         key: 'companyName',
@@ -122,16 +121,19 @@ const LicenseDetailsPage = () => {
   )
 
   const renderLicenseField = useCallback(
-    (field: LicenseField) => (
-      <div key={field.key} className={classes.fieldWrapper}>
-        <GluuText variant="div" className={classes.label}>
-          {t(field.label)}:
-        </GluuText>
-        <GluuText variant="div" className={classes.value}>
-          {field.value ?? 'N/A'}
-        </GluuText>
-      </div>
-    ),
+    (field: LicenseField) => {
+      const displayValue = formatLicenseFieldValue(field.value)
+      return (
+        <div key={field.key} className={classes.fieldWrapper}>
+          <GluuText variant="div" className={classes.label}>
+            {t(field.label)}:
+          </GluuText>
+          <GluuText variant="div" className={classes.value}>
+            {displayValue}
+          </GluuText>
+        </div>
+      )
+    },
     [classes.fieldWrapper, classes.label, classes.value, t],
   )
 

@@ -15,8 +15,8 @@ const MODAL_HEIGHT = 380
 const HORIZONTAL_PADDING = 40
 const CONTENT_WIDTH = MODAL_WIDTH - HORIZONTAL_PADDING * 2
 
-export const useStyles = makeStyles<StylesParams>()((theme, { isDark }) => {
-  const cardBorderStyle = getCardBorderStyle({ isDark, borderRadius: 16 })
+export const useStyles = makeStyles<StylesParams>()((_theme, { isDark }) => {
+  const cardBorderStyle = getCardBorderStyle({ isDark })
 
   return {
     modalContainer: {
@@ -34,7 +34,7 @@ export const useStyles = makeStyles<StylesParams>()((theme, { isDark }) => {
       zIndex: 1050,
       padding: 0,
       boxSizing: 'border-box',
-      overflow: 'auto',
+      overflow: 'visible',
     },
     overlay: {
       position: 'fixed',
@@ -42,6 +42,9 @@ export const useStyles = makeStyles<StylesParams>()((theme, { isDark }) => {
       backgroundColor: isDark ? OVERLAY_BG_DARK : OVERLAY_BG_LIGHT,
       zIndex: 1040,
       cursor: 'pointer',
+      border: 'none',
+      padding: 0,
+      margin: 0,
     },
     title: {
       fontFamily,

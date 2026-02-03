@@ -17,9 +17,7 @@ const GluuSpinner = React.memo<GluuSpinnerProps>(
 
     const { classes } = useStyles({ size, isDark })
 
-    return (
-      <output className={classes.spinner} role="status" aria-label={ariaLabel} aria-live="polite" />
-    )
+    return <output className={classes.spinner} aria-label={ariaLabel} aria-live="polite" />
   },
 )
 

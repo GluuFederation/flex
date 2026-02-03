@@ -138,12 +138,11 @@ const GluuCommitDialog = ({
       <>{webhookTriggerModal({ closeModal })}</>
     ) : (
       <>
-        <div
+        <button
+          type="button"
           className={classes.overlay}
           onClick={closeModal}
           onKeyDown={handleOverlayKeyDown}
-          role="button"
-          tabIndex={0}
           aria-label={t('actions.close')}
         />
         <div
