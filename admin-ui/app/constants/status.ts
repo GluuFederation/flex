@@ -29,7 +29,7 @@ export const STATUS_COLORS: Record<ServiceStatusValue, string> = {
   down: customColors.statusInactive,
   degraded: customColors.orange,
   unknown: customColors.orange,
-}
+} as const
 
 export const STATUS_BADGE_COLOR: Record<ServiceStatusValue, string> = {
   up: 'success',

@@ -177,6 +177,8 @@ const GluuCommitDialog = ({
               placeholder={placeholderText}
               value={userMessage}
               className={classes.textarea}
+              aria-invalid={!!errorMessageText}
+              aria-describedby={errorMessageText ? `${USER_MESSAGE}-error` : undefined}
             />
           </div>
           {errorMessageText && (
@@ -184,6 +186,7 @@ const GluuCommitDialog = ({
               variant="span"
               className={classes.errorMessage}
               style={{ color: customColors.statusInactive }}
+              id={`${USER_MESSAGE}-error`}
             >
               {errorMessageText}
             </GluuText>
@@ -191,8 +194,8 @@ const GluuCommitDialog = ({
           <GluuButton
             onClick={handleAccept}
             disabled={!isValid}
-            backgroundColor={isDark ? customColors.statusActive : customColors.statusActiveBg}
-            textColor={isDark ? customColors.white : customColors.statusActive}
+            backgroundColor={customColors.statusActive}
+            textColor={customColors.white}
             borderColor="transparent"
             padding="8px 28px"
             useOpacityOnHover
@@ -214,7 +217,20 @@ GluuCommitDialog.propTypes = {
   modal: PropTypes.bool.isRequired,
   onAccept: PropTypes.func.isRequired,
   formik: PropTypes.object,
+  operations: PropTypes.arrayOf(PropTypes.object),
   placeholderLabel: PropTypes.string,
   label: PropTypes.string,
+  alertMessage: PropTypes.string,
+  alertSeverity: PropTypes.oneOf(['error', 'warning', 'info', 'success']),
+  inputType: PropTypes.oneOf([
+    'text',
+    'textarea',
+    'email',
+    'password',
+    'number',
+    'tel',
+    'url',
+    'search',
+  ]),
   isLicenseLabel: PropTypes.bool,
 }
