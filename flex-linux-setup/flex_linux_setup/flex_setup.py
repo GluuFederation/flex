@@ -328,6 +328,9 @@ class flex_installer(JettyInstaller):
         self.adimin_ui_bin_url = 'https://jenkins.gluu.org/npm/admin_ui/main/built/admin-ui-main-built.tar.gz'
         self.policy_store_path = os.path.join(self.templates_dir, 'policy-store.json')
         self.schema_file = os.path.join(self.flex_setup_dir, 'flex_schema.json')
+        self.java_security_fn = os.path.join(self.templates_dir, 'java.security')
+        self.config_api_base_dir = os.path.join(config_api_installer.jetty_base, config_api_installer.service_name)
+        self.java_security_dir = os.path.join(self.config_api_base_dir, 'etc/jetty/security')
 
         if not argsp.download_exit:
             self.dbUtils.bind(force=True)
@@ -615,6 +618,9 @@ class flex_installer(JettyInstaller):
         )
         config_api_installer.run([base.paths.cmd_chmod, '+x', os.path.join(Config.jansOptBinFolder, 'admin-ui')])
 
+        self.tls13_settings()
+
+
     def install_config_api_plugin(self):
 
         old_plugin = os.path.join(config_api_installer.libDir, 'admin-ui-plugin.jar')
@@ -655,6 +661,39 @@ class flex_installer(JettyInstaller):
         config_api_installer.set_class_path(glob.glob(os.path.join(config_api_installer.libDir, '*.jar')))
 
         self.rewrite_cli_ini()
+
+
+    def tls13_settings(self):
+
+        if not os.path.exists(self.java_security_fn):
+            return
+
+        os.makedirs(self.java_security_dir, exist_ok=True)
+        config_api_installer.copyFile(self.java_security_fn, self.java_security_dir)
+
+        config_api_server_ini_fn = os.path.join(self.config_api_base_dir, 'start.d/server.ini')
+        if os.path.exists(config_api_server_ini_fn):
+            java_security_prefix = '-Djava.security.properties'
+            java_security_prop_line = f'{java_security_prefix} = ./' + Path(self.java_security_dir).relative_to(self.config_api_base_dir).joinpath(os.path.basename(self.java_security_fn)).as_posix()
+            config_api_server_ini_content = config_api_installer.readFile(config_api_server_ini_fn)
+            config_api_server_ini_content_list = config_api_server_ini_content.splitlines()
+            write_fn = False
+            for i, l in enumerate(config_api_server_ini_content_list[:]):
+                ls = l.strip()
+                if ls == java_security_prop_line:
+                    break
+                lsl = ls.split('=')
+                if len(ls) > 1:
+                    if lsl[0].strip() == java_security_prefix:
+                        config_api_server_ini_content_list[i] = java_security_prop_line
+                        write_fn = True
+                        break
+            else:
+                config_api_server_ini_content_list.append(java_security_prop_line)
+                write_fn = True
+
+            if write_fn:
+                config_api_installer.writeFile(config_api_server_ini_fn, '\n'.join(config_api_server_ini_content_list))
 
     def install_casa(self):
         Config.install_casa = True
