@@ -22,40 +22,29 @@ import type {
 import { updateToast } from '@/redux/features/toastSlice'
 import { getErrorMessage, type ApiError } from 'Plugins/schema/utils/errorHandler'
 import { logAudit } from '@/utils/AuditLogger'
+import { isValidUrl } from '@/utils/validation'
 import type { RootState as AuditRootState } from '@/redux/sagas/types/audit'
 import { UPDATE } from '@/audit/UserActionType'
 import {
   Box,
-  Typography,
-  Paper,
   TextField,
   FormControlLabel,
   Radio,
   RadioGroup,
   IconButton,
-  Alert,
-  Stack,
-  FormControl,
-  FormLabel,
   Link,
-  ThemeProvider,
-  createTheme,
 } from '@mui/material'
 import { RefreshOutlined, InfoOutlined } from '@mui/icons-material'
 import GluuTooltip from '@/routes/Apps/Gluu/GluuTooltip'
 import { ADMIN_UI_CEDARLING_CONFIG } from 'Plugins/admin/redux/audit/Resources'
 import { useQueryClient } from '@tanstack/react-query'
 import customColors from '@/customColors'
-
-const isValidUrl = (url: string): boolean => {
-  if (!url.trim()) return true
-  try {
-    const parsed = new URL(url)
-    return parsed.protocol === 'http:' || parsed.protocol === 'https:'
-  } catch {
-    return false
-  }
-}
+import { GluuPageContent } from '@/components'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
+import { useTheme } from 'Context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
+import { useStyles } from './CedarlingConfigPage.style'
 
 const CedarlingConfigPage: React.FC = () => {
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
@@ -67,16 +56,27 @@ const CedarlingConfigPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false)
   const queryClient = useQueryClient()
 
-  const muiTheme = useMemo(() => {
-    const primaryColor = customColors.logo
-    return createTheme({
-      palette: {
-        primary: {
-          main: primaryColor,
-        },
-      },
-    })
-  }, [])
+  const { state: themeState } = useTheme()
+  const currentTheme = themeState?.theme || DEFAULT_THEME
+  const isDark = currentTheme === THEME_DARK
+  const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
+
+  const cedarThemeColors = useMemo(
+    () => ({
+      cardBg: 'transparent',
+      navbarBorder:
+        themeColors.navbar?.border ??
+        (isDark ? customColors.cedarCardBorderDark : customColors.cedarInfoBorderLight),
+      text: isDark ? customColors.white : customColors.primaryDark,
+      alertText: isDark ? customColors.cedarTextSecondaryDark : customColors.cedarInfoTextLight,
+      infoBg: isDark ? customColors.cedarCardBgDark : customColors.cedarInfoBgLight,
+      infoBorder: isDark ? customColors.cedarCardBorderDark : customColors.cedarInfoBorderLight,
+      inputBg: isDark ? customColors.darkInputBg : customColors.white,
+    }),
+    [isDark, themeColors.navbar?.border],
+  )
+
+  const { classes } = useStyles({ themeColors: cedarThemeColors, isDark })
 
   const editAdminuiConfMutation = useEditAdminuiConf()
   const syncRoleToScopesMappingsMutation = useSyncRoleToScopesMappings()
@@ -94,7 +94,7 @@ const CedarlingConfigPage: React.FC = () => {
 
   const urlError = useMemo(() => {
     if (!urlTouched) return ''
-    if (!auiPolicyStoreUrl.trim()) return t('messages.is_required')
+    if (!auiPolicyStoreUrl.trim()) return t('messages.field_required')
     if (!isValidUrl(auiPolicyStoreUrl)) return t('messages.invalid_url_error')
     return ''
   }, [auiPolicyStoreUrl, urlTouched, t])
@@ -115,7 +115,7 @@ const CedarlingConfigPage: React.FC = () => {
       }
       //when user tries to save remote policy store with empty URL
       if (auiPolicyStoreUrl.trim() === '') {
-        const errorMessage = `${t('messages.error_in_saving')} field: ${t('fields.auiPolicyStoreUrl')} ${t('messages.is_required')}`
+        const errorMessage = `${t('fields.auiPolicyStoreUrl')}: ${t('messages.field_required')}`
         dispatch(updateToast(true, 'error', errorMessage))
         return
       }
@@ -279,170 +279,158 @@ const CedarlingConfigPage: React.FC = () => {
   return (
     <GluuLoader blocking={isFetching || isLoading}>
       <GluuViewWrapper canShow={canReadSecurity}>
-        <Paper
-          elevation={1}
-          sx={{
-            px: 2,
-            py: 3,
-            borderRadius: 2,
-            minHeight: 500,
-          }}
-        >
-          <Box sx={{ maxWidth: '100%', mx: 'auto' }}>
-            <Typography
-              variant="h5"
-              sx={{ fontWeight: 600, color: 'text.primary', textAlign: 'center', mb: 3 }}
-            >
-              {t('documentation.cedarlingConfig.title')}
-            </Typography>
-
-            <Alert
-              severity="info"
-              icon={<InfoOutlined />}
-              sx={{
-                'mb': 3,
-                '& .MuiAlert-message': { width: '100%' },
-              }}
-            >
-              <Typography variant="body2" color="text.primary">
-                {t('documentation.cedarlingConfig.steps')}{' '}
-              </Typography>
-              <Typography variant="body2" sx={{ mb: 1 }}>
-                {t('documentation.cedarlingConfig.point1')}{' '}
-                <Link
-                  href="https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/tree/agama-lab-policy-designer"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  sx={{ fontWeight: 500 }}
-                >
-                  GluuFlexAdminUIPolicyStore
-                </Link>
-                .
-              </Typography>
-              <Typography variant="body2" sx={{ mb: 1 }}>
-                {t('documentation.cedarlingConfig.point2')}{' '}
-                <Link
-                  href="https://cloud.gluu.org/agama-lab"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  sx={{ fontWeight: 500 }}
-                >
-                  Agama Lab&apos;s Policy Designer
-                </Link>
-                .
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {t('documentation.cedarlingConfig.point3')}{' '}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {t('documentation.cedarlingConfig.point4')}{' '}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {t('documentation.cedarlingConfig.point5')}{' '}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {t('documentation.cedarlingConfig.point6')}{' '}
-              </Typography>
-            </Alert>
-
-            <form onSubmit={handleSubmit}>
-              <Stack spacing={3}>
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
-                  <TextField
-                    id="auiPolicyStoreUrl"
-                    label={t('fields.auiPolicyStoreUrl')}
-                    placeholder="https://raw.githubusercontent.com/..."
-                    type="url"
-                    value={auiPolicyStoreUrl}
-                    onChange={handleInputChange}
-                    onBlur={handleInputBlur}
-                    disabled={isInputDisabled}
-                    error={!!urlError}
-                    helperText={urlError}
-                    fullWidth
-                    size="small"
-                    sx={{ flex: 1 }}
+        <GluuPageContent>
+          <Box className={classes.configCard}>
+            <Box className={classes.formContent}>
+              {/* Info Alert Box */}
+              <Box className={classes.alertWrapper}>
+                <Box className={classes.alertBox}>
+                  <InfoOutlined
+                    className={classes.alertIcon}
+                    sx={{ color: cedarThemeColors.alertText }}
                   />
-                  {!isRefreshButtonHidden && (
-                    <GluuTooltip
-                      doc_category={'cedarlingConfig'}
-                      doc_entry={'updateRemotePolicyStoreOnServer'}
+                  <GluuText variant="p" className={classes.alertStepTitle} disableThemeColor>
+                    {t('documentation.cedarlingConfig.steps')}
+                  </GluuText>
+                  <GluuText variant="p" className={classes.alertBody} disableThemeColor>
+                    {t('documentation.cedarlingConfig.point1')}{' '}
+                    <Link
+                      href="https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/tree/agama-lab-policy-designer"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      sx={{ fontWeight: 500, color: cedarThemeColors.text }}
                     >
-                      <IconButton
-                        type="button"
-                        aria-label="refresh"
-                        onClick={handleSetRemotePolicyStoreAsDefault}
-                        disabled={isInputDisabled}
-                        sx={{
-                          'mt': 0.5,
-                          'color': customColors.logo,
-                          '&:hover': {
-                            backgroundColor: `${customColors.logo}14`,
-                          },
-                        }}
+                      GluuFlexAdminUIPolicyStore
+                    </Link>
+                    .
+                  </GluuText>
+                  <GluuText variant="p" className={classes.alertBody} disableThemeColor>
+                    {t('documentation.cedarlingConfig.point2')}{' '}
+                    <Link
+                      href="https://cloud.gluu.org/agama-lab"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      sx={{ fontWeight: 500, color: cedarThemeColors.text }}
+                    >
+                      Agama Lab&apos;s Policy Designer
+                    </Link>
+                    .
+                  </GluuText>
+                  <GluuText variant="p" className={classes.alertBody} disableThemeColor>
+                    {t('documentation.cedarlingConfig.point3')}
+                  </GluuText>
+                  <GluuText variant="p" className={classes.alertBody} disableThemeColor>
+                    {t('documentation.cedarlingConfig.point4')}
+                  </GluuText>
+                  <GluuText variant="p" className={classes.alertBody} disableThemeColor>
+                    {t('documentation.cedarlingConfig.point5')}
+                  </GluuText>
+                  <GluuText variant="p" className={classes.alertBody} disableThemeColor>
+                    {t('documentation.cedarlingConfig.point6')}
+                  </GluuText>
+                </Box>
+              </Box>
+
+              {/* Form */}
+              <form onSubmit={handleSubmit}>
+                {/* Policy Store URL Field */}
+                <Box className={classes.inputSection}>
+                  <GluuText variant="div" className={classes.fieldLabel} disableThemeColor>
+                    {t('fields.auiPolicyStoreUrl')}:
+                  </GluuText>
+                  <Box className={classes.fieldRow}>
+                    <TextField
+                      id="auiPolicyStoreUrl"
+                      placeholder={t('placeholders.policy_uri')}
+                      type="url"
+                      value={auiPolicyStoreUrl}
+                      onChange={handleInputChange}
+                      onBlur={handleInputBlur}
+                      disabled={isInputDisabled}
+                      error={!!urlError}
+                      helperText={urlError}
+                      fullWidth
+                      className={classes.inputField}
+                      sx={{ flex: 1 }}
+                    />
+                    {!isRefreshButtonHidden && (
+                      <GluuTooltip
+                        doc_category={'cedarlingConfig'}
+                        doc_entry={'updateRemotePolicyStoreOnServer'}
                       >
-                        <RefreshOutlined />
-                      </IconButton>
-                    </GluuTooltip>
-                  )}
+                        <IconButton
+                          type="button"
+                          aria-label="refresh"
+                          onClick={handleSetRemotePolicyStoreAsDefault}
+                          disabled={isInputDisabled}
+                          sx={{
+                            'mt': 0.5,
+                            'color': customColors.logo,
+                            '&:hover': {
+                              backgroundColor: `${customColors.logo}14`,
+                            },
+                          }}
+                        >
+                          <RefreshOutlined />
+                        </IconButton>
+                      </GluuTooltip>
+                    )}
+                  </Box>
                 </Box>
 
-                <FormControl component="fieldset">
-                  <FormLabel
-                    component="legend"
-                    sx={{
-                      'fontWeight': 500,
-                      'color': 'text.primary',
-                      'mb': 1,
-                      '&.Mui-focused': { color: 'text.primary' },
-                    }}
+                {/* Policy Retrieval Point */}
+                <Box className={classes.radioSection}>
+                  <GluuText variant="div" className={classes.radioLabel} disableThemeColor>
+                    {t('fields.cedarlingPolicyStoreRetrievalPoint')}:
+                  </GluuText>
+                  <RadioGroup
+                    row
+                    name="cedarlingPolicyStoreRetrievalPoint"
+                    value={cedarlingPolicyStoreRetrievalPoint}
+                    onChange={handleRadioChange}
+                    sx={{ gap: '25px' }}
                   >
-                    {t('fields.cedarlingPolicyStoreRetrievalPoint')}
-                  </FormLabel>
-                  <ThemeProvider theme={muiTheme}>
-                    <RadioGroup
-                      row
-                      name="cedarlingPolicyStoreRetrievalPoint"
-                      value={cedarlingPolicyStoreRetrievalPoint}
-                      onChange={handleRadioChange}
-                    >
-                      <FormControlLabel
-                        value="remote"
-                        control={<Radio color="primary" size="small" />}
-                        label={
-                          <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                            Remote
-                          </Typography>
-                        }
-                        disabled={isInputDisabled}
-                      />
-                      <FormControlLabel
-                        value="default"
-                        control={<Radio color="primary" size="small" />}
-                        label={
-                          <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                            Default
-                          </Typography>
-                        }
-                        disabled={isInputDisabled}
-                      />
-                    </RadioGroup>
-                  </ThemeProvider>
-                  <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5 }}>
+                    <FormControlLabel
+                      value="remote"
+                      control={<Radio className={classes.radio} size="small" />}
+                      label={
+                        <GluuText variant="span" className={classes.radioText} disableThemeColor>
+                          {t('messages.remote')}
+                        </GluuText>
+                      }
+                      disabled={isInputDisabled}
+                      sx={{ marginRight: 0 }}
+                    />
+                    <FormControlLabel
+                      value="default"
+                      control={<Radio className={classes.radio} size="small" />}
+                      label={
+                        <GluuText variant="span" className={classes.radioText} disableThemeColor>
+                          {t('messages.default')}
+                        </GluuText>
+                      }
+                      disabled={isInputDisabled}
+                      sx={{ marginRight: 0 }}
+                    />
+                  </RadioGroup>
+                  <GluuText variant="p" className={classes.helperText} disableThemeColor>
                     {t('documentation.cedarlingConfig.useRemotePolicyStore')}
-                  </Typography>
-                </FormControl>
+                  </GluuText>
+                </Box>
 
-                <GluuFormFooter
-                  showBack={true}
-                  showApply={canWriteSecurity}
-                  disableApply={isLoading}
-                  isLoading={isLoading}
-                />
-              </Stack>
-            </form>
+                {/* Buttons */}
+                <Box className={classes.buttonSection}>
+                  <GluuFormFooter
+                    showBack={true}
+                    showApply={canWriteSecurity}
+                    disableApply={isLoading}
+                    isLoading={isLoading}
+                  />
+                </Box>
+              </form>
+            </Box>
           </Box>
-        </Paper>
+        </GluuPageContent>
       </GluuViewWrapper>
     </GluuLoader>
   )

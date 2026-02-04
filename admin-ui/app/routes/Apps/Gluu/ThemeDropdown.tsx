@@ -2,6 +2,7 @@ import React, { useMemo, useCallback, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import Box from '@mui/material/Box'
 import { GluuDropdown, type GluuDropdownOption, ChevronIcon } from 'Components'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useTheme } from '@/context/theme/themeContext'
 import { THEME_LIGHT, THEME_DARK, isValidTheme, type ThemeValue } from '@/context/theme/constants'
 import { useStyles } from './styles/ThemeDropdown.style'
@@ -73,11 +74,19 @@ export const ThemeDropdownComponent = memo<ThemeDropdownComponentProps>(({ userI
     () => [
       {
         value: THEME_LIGHT,
-        label: <span className={classes.optionLabel}>{t('themes.light')}</span>,
+        label: (
+          <GluuText variant="span" className={classes.optionLabel} disableThemeColor>
+            {t('themes.light')}
+          </GluuText>
+        ),
       },
       {
         value: THEME_DARK,
-        label: <span className={classes.optionLabel}>{t('themes.dark')}</span>,
+        label: (
+          <GluuText variant="span" className={classes.optionLabel} disableThemeColor>
+            {t('themes.dark')}
+          </GluuText>
+        ),
       },
     ],
     [classes, t],
@@ -87,7 +96,9 @@ export const ThemeDropdownComponent = memo<ThemeDropdownComponentProps>(({ userI
     <GluuDropdown
       renderTrigger={(isOpen) => (
         <Box className={classes.trigger}>
-          <span>{t('themes.theme')}</span>
+          <GluuText variant="span" disableThemeColor>
+            {t('themes.theme')}
+          </GluuText>
           <Box className={`${classes.chevron} ${isOpen ? classes.chevronOpen : ''}`}>
             <ChevronIcon />
           </Box>

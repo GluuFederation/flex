@@ -707,6 +707,8 @@
     "partial_update_failure": "Certaines configurations n'ont pas pu être mises à jour. Veuillez vérifier et réessayer.",
     "min_characters": "Minimum {{count}} caractères",
     "field_required": "Ce champ est obligatoire",
+    "remote": "Distant",
+    "default": "Par défaut",
     "credentials": "Credentials",
     "view_configuration": "Afficher la configuration",
     "new_role": "Nouveau rôle",
@@ -1732,7 +1734,7 @@
       "point3": "3. Effectuer les modifications nécessaires dans les politiques pour le contrôle d’accès de l’Admin UI et enregistrer les changements.",
       "point4": "4. Assurez-vous que le nom d’hôte du point de terminaison de configuration OpenID correspond au nom d’hôte de votre fournisseur OpenID.",
       "point5": "5. Copier l’URL du magasin de politiques.",
-      "point6": "6. Ouvrez l’écran de configuration du magasin de politiques Cedarling dans l’Admin UI et ajoutez l’URL du magasin de politiques copiée dans le champ Magasin de politiques distant de l’Admin UI. Définissez le champ Point de récupération des politiques sur Distant afin d’utiliser l’URL du magasin de politiques distant pour le contrôle d’accès de l’interface graphique.",
+      "point6": "6. Ouvrez l’écran de configuration du magasin de politiques Cedarling dans l’Admin UI et ajoutez l’URL du magasin de politiques copiée dans le champ Magasin de politiques distant de l’Admin UI. Définissez le champ Point de récupération des politiques sur Distant afin d’utiliser l’URL du magasin de politiques distant pour le contrôle d’accès de l’Admin UI.",
       "useRemotePolicyStore": "Il est recommandé de définir cette option sur « Par défaut » en production. Si cette option est définie, le stockage de l’interface d’administration sera utilisé pour l’autorisation Cedarling. Activez le mode « Par défaut » et utilisez le bouton d’actualisation pour enregistrer ou mettre à jour les politiques GitHub sur le serveur de l’interface d’administration.",
       "updateRemotePolicyStoreOnServer": "Cliquez ici pour mettre à jour le fichier JSON du magasin de politiques par défaut avec la version disponible à partir de l'URL distante configurée."
     },

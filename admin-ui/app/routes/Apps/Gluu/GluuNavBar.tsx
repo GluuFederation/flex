@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { ErrorBoundary } from 'react-error-boundary'
 import Box from '@mui/material/Box'
 import { Nav, NavItem, Notifications, SidebarTrigger, ChevronIcon } from 'Components'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { DropdownProfile } from 'Routes/components/Dropdowns/DropdownProfile'
 import type { UserInfo } from 'Redux/features/types/authTypes'
 import { LanguageMenu } from './LanguageMenu'
@@ -96,9 +97,14 @@ const GluuNavBar = () => {
                 </NavItem>
               </Nav>
             )}
-            <h3 className={classes.pageTitle} id="page-title-navbar">
+            <GluuText
+              variant="h3"
+              className={classes.pageTitle}
+              id="page-title-navbar"
+              disableThemeColor
+            >
               {pageTitle}
-            </h3>
+            </GluuText>
           </Box>
           <Box className={classes.rightSection}>
             <Box className={`${classes.navbarItem} ${classes.iconButton}`}>
@@ -118,7 +124,9 @@ const GluuNavBar = () => {
               renderTrigger={(isOpen: boolean) => (
                 <Box className={`${classes.navbarItem} ${classes.userProfileContainer}`}>
                   <UserIcon size={40} className={classes.userIcon} avatarUrl={avatarUrl} />
-                  <span className={classes.userName}>{displayName}</span>
+                  <GluuText variant="span" className={classes.userName} disableThemeColor>
+                    {displayName}
+                  </GluuText>
                   <Box
                     className={`${classes.userChevron} ${isOpen ? classes.userChevronOpen : ''}`}
                   >

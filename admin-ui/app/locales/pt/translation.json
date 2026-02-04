@@ -702,6 +702,8 @@
     "partial_update_failure": "Algumas configurações não puderam ser atualizadas. Por favor, revise e tente novamente.",
     "min_characters": "Mínimo {{count}} caracteres",
     "field_required": "Este campo é obrigatório",
+    "remote": "Remoto",
+    "default": "Padrão",
     "credentials": "Credenciais",
     "view_configuration": "Ver Configuração",
     "add_idp": "Adicionar IDP SAML",
@@ -1725,7 +1727,7 @@
       "point3": "3. Fazer as modificações necessárias nas políticas para o controle de acesso da Admin UI e salvar as alterações.",
       "point4": "4. Certifique-se de que o nome do host do Endpoint de Configuração do OpenID corresponda ao nome do host do seu Provedor OpenID.",
       "point5": "5. Copiar a URL do Repositório de Políticas.",
-      "point6": "6. Abra a tela de configuração do Repositório de Políticas Cedarling na Admin UI e adicione a URL do Repositório de Políticas copiada no campo Repositório de Políticas Remoto da Admin UI. Defina o campo Ponto de Recuperação de Políticas como Remoto para usar a URL do Repositório de Políticas remoto para o controle de acesso da interface gráfica.",
+      "point6": "6. Abra a tela de configuração do Repositório de Políticas Cedarling na Admin UI e adicione a URL do Repositório de Políticas copiada no campo Repositório de Políticas Remoto da Admin UI. Defina o campo Ponto de Recuperação de Políticas como Remoto para usar a URL do Repositório de Políticas remoto para o controle de acesso da Admin UI.",
       "useRemotePolicyStore": "Recomenda-se definir como Padrão para a produção. Se definido como Padrão, será utilizado o armazenamento da interface administrativa para a autorização do Cedarling. Ative o modo Padrão e utilize o botão de atualização para armazenar ou atualizar as políticas do GitHub no servidor da interface administrativa.",
       "updateRemotePolicyStoreOnServer": "Clique aqui para atualizar o JSON do repositório de políticas padrão com a versão disponível no URL remoto configurado."
     },

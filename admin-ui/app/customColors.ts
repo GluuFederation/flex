@@ -40,6 +40,14 @@ export const customColors = {
   buttonLightBg: '#f4f6f8',
   darkBorderGradientBase: '#00d5e6',
   ribbonShadowColor: '#1a237e',
+  // Cedarling configuration specific (synced with Figma light & dark themes)
+  cedarCardBgDark: '#10375e',
+  cedarCardBorderDark: '#224f7c',
+  cedarTextSecondaryDark: '#c9dbec',
+  cedarTextTertiaryDark: '#72a1d1',
+  cedarInfoBgLight: '#e5f6fd',
+  cedarInfoBorderLight: '#a6d3e6',
+  cedarInfoTextLight: '#4f8196',
 } as const
 
 /**

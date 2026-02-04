@@ -2,6 +2,7 @@ import { useState, useEffect, useContext, useMemo, useCallback, memo, useRef } f
 import { useTranslation } from 'react-i18next'
 import Box from '@mui/material/Box'
 import { GluuDropdown, type GluuDropdownOption, ChevronIcon } from 'Components'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
 import { useStyles } from './styles/LanguageMenu.style'
@@ -88,7 +89,9 @@ const LanguageMenu = memo<LanguageMenuProps>(({ userInfo }) => {
     <GluuDropdown
       renderTrigger={(isOpen) => (
         <Box className={classes.trigger} data-testid="ACTIVE_LANG">
-          <span>{lang.toUpperCase()}</span>
+          <GluuText variant="span" disableThemeColor>
+            {lang.toUpperCase()}
+          </GluuText>
           <Box className={`${classes.chevron} ${isOpen ? classes.chevronOpen : ''}`}>
             <ChevronIcon />
           </Box>

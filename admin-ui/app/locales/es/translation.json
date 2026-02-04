@@ -858,6 +858,8 @@
     "partial_update_failure": "Algunas configuraciones no se pudieron actualizar. Por favor, revise e intente de nuevo.",
     "min_characters": "Mínimo {{count}} caracteres",
     "field_required": "Este campo es obligatorio",
+    "remote": "Remoto",
+    "default": "Predeterminado",
     "try_again_later": "Por favor intente de nuevo más tarde",
     "loading_attributes": "Cargando atributos",
     "error_processiong_request": "Error al procesar la solicitud.",
@@ -1871,7 +1873,7 @@
       "point3": "3. Realizar las modificaciones necesarias en las políticas para el control de acceso de la Admin UI y guardar los cambios.",
       "point4": "4. Asegúrese de que el nombre de host del Endpoint de Configuración de OpenID coincida con el nombre de host de su Proveedor OpenID.",
       "point5": "5. Copiar la URL del Almacén de Políticas.",
-      "point6": "6. Abra la pantalla de configuración del Almacén de Políticas de Cedarling en la Admin UI y agregue la URL del Almacén de Políticas copiada en el campo Almacén de Políticas Remoto de la Admin UI. Configure el campo Punto de Recuperación de Políticas como Remoto para usar la URL del Almacén de Políticas remoto para el control de acceso de la interfaz gráfica.",
+      "point6": "6. Abra la pantalla de configuración del Almacén de Políticas de Cedarling en la Admin UI y agregue la URL del Almacén de Políticas copiada en el campo Almacén de Políticas Remoto de la Admin UI. Configure el campo Punto de Recuperación de Políticas como Remoto para usar la URL del Almacén de Políticas remoto para el control de acceso de la Admin UI.",
       "useRemotePolicyStore": "Se recomienda establecerlo en Predeterminado para producción. Si se establece en Predeterminado, utilizará el almacenamiento de la interfaz de administración para la autorización de Cedarling. Active el modo Predeterminado y utilice el botón de actualización para guardar o actualizar las políticas de GitHub en el servidor de la interfaz de administración.",
       "updateRemotePolicyStoreOnServer": "Haga clic aquí para actualizar el JSON del almacén de políticas predeterminado con la versión disponible en la URL remota configurada."
     },
