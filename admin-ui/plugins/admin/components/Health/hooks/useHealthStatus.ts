@@ -3,7 +3,12 @@ import { useSelector } from 'react-redux'
 import { useGetServiceStatus, type JsonNode } from 'JansConfigApi'
 import type { RootState } from 'Redux/sagas/types/audit'
 import type { ServiceHealth, ServiceStatusValue, ServiceStatusResponse } from '../types'
-import { HEALTH_CACHE_CONFIG, STATUS_MAP, DEFAULT_STATUS } from '../constants'
+import {
+  HEALTH_CACHE_CONFIG,
+  HEALTH_PAGE_EXCLUDED_SERVICES,
+  STATUS_MAP,
+  DEFAULT_STATUS,
+} from '../constants'
 
 const normalizeStatus = (apiStatus: string): ServiceStatusValue => {
   const statusMap = STATUS_MAP as Record<string, ServiceStatusValue>
@@ -37,8 +42,6 @@ const transformServiceStatus = (data: JsonNode | undefined): ServiceHealth[] => 
 
   return sortServicesByStatus(services)
 }
-
-const HEALTH_PAGE_EXCLUDED_SERVICES = ['jans-lock', 'jans-link'] as const
 
 export const useHealthStatus = () => {
   const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)

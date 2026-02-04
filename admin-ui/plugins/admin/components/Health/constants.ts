@@ -10,3 +10,5 @@ export const HEALTH_CACHE_CONFIG = {
   STALE_TIME: 30 * 1000,
   GC_TIME: 60 * 1000,
 } as const
+
+export const HEALTH_PAGE_EXCLUDED_SERVICES = ['jans-lock', 'jans-link'] as const
