@@ -12,7 +12,7 @@ import {
 
 const normalizeStatus = (apiStatus: string): ServiceStatusValue => {
   const statusMap = STATUS_MAP as Record<string, ServiceStatusValue>
-  const normalized = apiStatus.toLowerCase()
+  const normalized = apiStatus.trim().toLowerCase()
   return statusMap[normalized] ?? DEFAULT_STATUS
 }
 
@@ -33,11 +33,12 @@ const transformServiceStatus = (data: JsonNode | undefined): ServiceHealth[] => 
   }
 
   const response = data as ServiceStatusResponse
+  const checkedAt = new Date()
 
   const services = Object.entries(response).map(([name, status]) => ({
     name,
     status: normalizeStatus(String(status)),
-    lastChecked: new Date(),
+    lastChecked: checkedAt,
   }))
 
   return sortServicesByStatus(services)
