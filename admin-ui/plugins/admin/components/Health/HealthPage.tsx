@@ -1,20 +1,27 @@
-import React, { useCallback } from 'react'
-import { Container, CardBody, Card, Button, Row, Col, Alert } from 'Components'
+import React, { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import Paper from '@mui/material/Paper'
 import SetTitle from 'Utils/SetTitle'
 import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
+import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
+import customColors from '@/customColors'
+import { GluuPageContent } from '@/components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
+import { GluuButton } from '@/components/GluuButton'
 import { useHealthStatus } from './hooks'
 import ServiceStatusCard from './components/ServiceStatusCard'
-import GluuText from 'Routes/Apps/Gluu/GluuText'
+import { useStyles } from './HealthPage.style'
 
 const HealthPage: React.FC = () => {
   const { t } = useTranslation()
   SetTitle(t('titles.services_health'))
 
-  const { state } = useTheme()
-  const themeColors = getThemeColor(state.theme)
+  const { state: themeState } = useTheme()
+  const currentTheme = themeState?.theme || DEFAULT_THEME
+  const isDark = currentTheme === THEME_DARK
+  const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
 
   const { services, healthyCount, totalCount, isLoading, isFetching, isError, refetch } =
     useHealthStatus()
@@ -25,58 +32,79 @@ const HealthPage: React.FC = () => {
 
   const loading = isLoading || isFetching
 
+  const healthThemeColors = useMemo(
+    () => ({
+      cardBg: isDark ? customColors.darkCardBg : customColors.white,
+      navbarBorder:
+        themeColors.navbar?.border ?? (isDark ? customColors.darkBorder : customColors.lightBorder),
+      text: isDark ? customColors.white : customColors.primaryDark,
+      refreshButtonBg: 'transparent',
+      refreshButtonBorder: isDark ? customColors.white : customColors.primaryDark,
+      refreshButtonText: isDark ? customColors.white : customColors.primaryDark,
+    }),
+    [isDark, themeColors.navbar?.border],
+  )
+
+  const { classes } = useStyles({ themeColors: healthThemeColors, isDark })
+
   return (
     <GluuLoader blocking={loading}>
-      <Container>
-        <Card className="mb-3">
-          <CardBody>
-            <Row className="mb-4 align-items-center">
-              <Col>
-                <GluuText variant="h4" className="mb-0" onLightSurface>
-                  {t('titles.services_health')}
-                </GluuText>
-                {!isLoading && !isError && totalCount > 0 && (
-                  <GluuText variant="small" secondary onLightSurface style={{ opacity: 0.9 }}>
-                    {t('messages.services_healthy_count', { healthyCount, totalCount })}
-                  </GluuText>
-                )}
-              </Col>
-              <Col xs="auto">
-                <Button
-                  style={{
-                    backgroundColor: themeColors.background,
-                    color: themeColors.fontColor,
-                    border: 'none',
-                  }}
-                  onClick={handleRefresh}
-                  disabled={loading}
-                >
-                  <i className={`fa fa-refresh me-2 ${loading ? 'fa-spin' : ''}`}></i>
-                  {t('actions.refresh')}
-                </Button>
-              </Col>
-            </Row>
-
-            {isError && (
-              <Alert color="danger" className="mb-4">
-                <i className="fa fa-exclamation-triangle me-2"></i>
-                {t('messages.error_fetching_health_status')}
-              </Alert>
+      <GluuPageContent>
+        <Paper elevation={0} className={classes.healthCard}>
+          <div className={classes.header}>
+            {!isLoading && !isError && totalCount > 0 && (
+              <GluuText variant="div" className={classes.headerTitle}>
+                {t('messages.services_healthy_count', { healthyCount, totalCount })}
+              </GluuText>
             )}
+            <div className={classes.refreshButtonWrapper}>
+              <GluuButton
+                className={classes.refreshButton}
+                onClick={handleRefresh}
+                disabled={loading}
+                outlined
+                backgroundColor="transparent"
+                borderColor={healthThemeColors.refreshButtonBorder}
+                textColor={healthThemeColors.refreshButtonText}
+                useOpacityOnHover
+              >
+                <i
+                  className={`fa fa-refresh ${loading ? 'fa-spin' : ''}`}
+                  style={{ fontSize: 16 }}
+                />
+                {t('actions.refresh')}
+              </GluuButton>
+            </div>
+            <div className={classes.headerDivider} />
+          </div>
 
-            {!isLoading && !isError && services.length === 0 && (
-              <Alert color="info">
-                <i className="fa fa-info-circle me-2"></i>
+          {isError && (
+            <div className={classes.messageBlock} style={{ color: customColors.accentRed }}>
+              <i className={`fa fa-exclamation-triangle ${classes.errorIcon}`} />
+              <GluuText variant="span">{t('messages.error_fetching_health_status')}</GluuText>
+            </div>
+          )}
+
+          {!isLoading && !isError && services.length === 0 && (
+            <div className={classes.messageBlock} style={{ color: customColors.textSecondary }}>
+              <i className={`fa fa-info-circle ${classes.infoIcon}`} />
+              <GluuText variant="span" secondary>
                 {t('messages.no_services_found')}
-              </Alert>
-            )}
+              </GluuText>
+            </div>
+          )}
 
-            {services.map((service) => (
-              <ServiceStatusCard key={service.name} service={service} themeColors={themeColors} />
-            ))}
-          </CardBody>
-        </Card>
-      </Container>
+          {!isLoading && !isError && services.length > 0 && (
+            <div className={classes.servicesGrid}>
+              {services.map((service) => (
+                <div key={service.name} className={classes.serviceCardWrapper}>
+                  <ServiceStatusCard service={service} isDark={isDark} />
+                </div>
+              ))}
+            </div>
+          )}
+        </Paper>
+      </GluuPageContent>
     </GluuLoader>
   )
 }

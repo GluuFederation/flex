@@ -1,5 +1,7 @@
 import customColors from '@/customColors'
 
+export { BORDER_RADIUS, STATUS_DETAILS } from '@/constants'
+
 export const DASHBOARD_CACHE_CONFIG = {
   STALE_TIME: 30 * 1000,
   GC_TIME: 60 * 1000,
@@ -38,6 +40,8 @@ export const getStatusColor = (status: string): string => {
   return STATUS_COLOR_MAP[status.toLowerCase()] ?? 'secondary'
 }
 
+export const USER_INFO_CHART_BREAKPOINT = 1370
+
 export const CHART_CONSTANTS = {
   MIN_MAX: 1200,
   TICK_INTERVAL: 300,
@@ -64,22 +68,3 @@ export const CHART_LEGEND_CONFIG = [
     translationKey: 'tooltips.client_credentials_access_token_count',
   },
 ] as const
-
-export const STATUS_DETAILS = [
-  { label: 'menus.oauthserver', key: 'jans-auth' },
-  { label: 'dashboard.config_api', key: 'jans-config-api' },
-  { label: 'FIDO', key: 'jans-fido2' },
-  { label: 'CASA', key: 'jans-casa' },
-  { label: 'dashboard.key_cloak', key: 'keycloak' },
-  { label: 'SCIM', key: 'jans-scim' },
-  { label: 'dashboard.jans_lock', key: 'jans-lock' },
-] as const
-
-export const BORDER_RADIUS = {
-  DEFAULT: 16,
-  LARGE: 24,
-  MEDIUM: 14,
-  SMALL: 5,
-  CIRCLE: '50%',
-  THIN: '1.5px',
-} as const

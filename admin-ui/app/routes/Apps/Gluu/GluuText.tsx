@@ -4,52 +4,17 @@ import getThemeColor from 'Context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import customColors from '@/customColors'
 
-export type GluuTextVariant =
-  | 'h1'
-  | 'h2'
-  | 'h3'
-  | 'h4'
-  | 'h5'
-  | 'h6'
-  | 'p'
-  | 'span'
-  | 'small'
-  | 'div'
+type GluuTextVariant = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span' | 'small' | 'div'
 
-export interface GluuTextProps {
-  /**
-   * The text variant to render (h1-h6, p, span, small, div)
-   * @default 'span'
-   */
+interface GluuTextProps {
   variant?: GluuTextVariant
-  /**
-   * The text content to display
-   */
   children: ReactNode
-  /**
-   * Custom CSS styles to apply
-   */
   style?: CSSProperties
-  /**
-   * Custom CSS class name
-   */
   className?: string
-  /**
-   * Whether to use secondary text color (muted/secondary)
-   * @default false
-   */
   secondary?: boolean
-  /**
-   * Whether to disable automatic theme color (use custom color from style prop)
-   * @default false
-   */
   disableThemeColor?: boolean
-  /**
-   * Use when text is rendered on a light surface (e.g. white cards) even in dark theme.
-   * Forces readable dark text colors without changing any backgrounds.
-   * @default false
-   */
   onLightSurface?: boolean
+  id?: string
 }
 
 const GluuText: React.FC<GluuTextProps> = ({
@@ -60,6 +25,7 @@ const GluuText: React.FC<GluuTextProps> = ({
   secondary = false,
   disableThemeColor = false,
   onLightSurface = false,
+  id,
 }) => {
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme || DEFAULT_THEME
@@ -93,7 +59,7 @@ const GluuText: React.FC<GluuTextProps> = ({
   const Component = variant
 
   return (
-    <Component className={className} style={combinedStyle}>
+    <Component className={className} style={combinedStyle} id={id}>
       {children}
     </Component>
   )

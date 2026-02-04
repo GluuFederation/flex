@@ -21,6 +21,8 @@ export interface GluuButtonProps {
   minHeight?: string | number
   style?: CSSProperties
   className?: string
+  useOpacityOnHover?: boolean
+  hoverOpacity?: number
   onClick?: () => void
   type?: 'button' | 'submit' | 'reset'
   title?: string

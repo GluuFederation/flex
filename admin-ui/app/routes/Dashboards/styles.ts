@@ -1,8 +1,8 @@
 import customColors from '@/customColors'
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
-import { fontFamily, fontWeights, fontSizes, letterSpacing, lineHeights } from '@/styles/fonts'
-import { BORDER_RADIUS } from './constants'
+import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
+import { BORDER_RADIUS, USER_INFO_CHART_BREAKPOINT } from './constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 
 interface DashboardThemeColors {
@@ -10,7 +10,6 @@ interface DashboardThemeColors {
   cardBorder: string
   text: string
   textSecondary: string
-  background: string
   statusCardBg: string
   statusCardBorder: string
 }
@@ -23,16 +22,9 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
 
   const cardBorderStyle = getCardBorderStyle({
     isDark,
-    borderRadius: BORDER_RADIUS.DEFAULT,
-    borderWidth: '1px',
-    gradientPosition: 'top right',
-    ellipseSize: '200% 160%',
   })
 
   return {
-    root: {
-      maxWidth: '100vw',
-    },
     flex: {
       flexGrow: 1,
       display: 'flex',
@@ -252,7 +244,6 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       width: '100%',
       height: '106px',
       padding: '0px 6px',
-      backgroundColor: themeColors.background,
       marginLeft: 0,
       marginRight: 0,
       display: 'flex',
@@ -396,42 +387,6 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
     redText: {
       color: customColors.accentRed,
     },
-    greenBlock: {
-      fontFamily,
-      background: isDark ? customColors.statusActive : customColors.statusActiveBg,
-      color: isDark ? customColors.white : customColors.statusActive,
-      borderRadius: BORDER_RADIUS.SMALL,
-      padding: '0 8px',
-      fontSize: fontSizes.sm,
-      fontWeight: fontWeights.medium,
-      lineHeight: lineHeights.base,
-      letterSpacing: letterSpacing.tight,
-      display: 'inline-flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      whiteSpace: 'nowrap',
-      width: 'fit-content',
-      height: 'fit-content',
-      boxSizing: 'border-box',
-    },
-    redBlock: {
-      fontFamily,
-      background: isDark ? customColors.statusInactive : customColors.statusInactiveBg,
-      color: isDark ? customColors.white : customColors.statusInactive,
-      borderRadius: BORDER_RADIUS.SMALL,
-      padding: '0 8px',
-      fontSize: fontSizes.sm,
-      fontWeight: fontWeights.medium,
-      lineHeight: lineHeights.base,
-      letterSpacing: letterSpacing.tight,
-      display: 'inline-flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      whiteSpace: 'nowrap',
-      width: 'fit-content',
-      height: 'fit-content',
-      boxSizing: 'border-box',
-    },
     bannerContainer: {
       marginTop: 35,
     },
@@ -453,6 +408,23 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       width: '100%',
       marginTop: '8px',
       padding: '0 8px',
+    },
+    userInfoChartRow: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 16,
+      width: '100%',
+      [`@media (min-width: ${USER_INFO_CHART_BREAKPOINT}px)`]: {
+        flexDirection: 'row',
+      },
+    },
+    userInfoChartCol: {
+      flex: '1 1 100%',
+      minWidth: 0,
+      [`@media (min-width: ${USER_INFO_CHART_BREAKPOINT}px)`]: {
+        '&:first-of-type': { flex: '5 1 0' },
+        '&:last-of-type': { flex: '7 1 0' },
+      },
     },
     legendItem: {
       fontFamily,

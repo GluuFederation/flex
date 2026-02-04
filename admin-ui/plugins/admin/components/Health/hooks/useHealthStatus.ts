@@ -3,44 +3,48 @@ import { useSelector } from 'react-redux'
 import { useGetServiceStatus, type JsonNode } from 'JansConfigApi'
 import type { RootState } from 'Redux/sagas/types/audit'
 import type { ServiceHealth, ServiceStatusValue, ServiceStatusResponse } from '../types'
-import { HEALTH_CACHE_CONFIG, STATUS_MAP, DEFAULT_STATUS } from '../constants'
+import {
+  HEALTH_CACHE_CONFIG,
+  HEALTH_PAGE_EXCLUDED_SERVICES,
+  STATUS_MAP,
+  DEFAULT_STATUS,
+} from '../constants'
 
-function normalizeStatus(apiStatus: string): ServiceStatusValue {
-  const mappedStatus = STATUS_MAP[apiStatus as keyof typeof STATUS_MAP]
-  return mappedStatus ?? DEFAULT_STATUS
+const normalizeStatus = (apiStatus: string): ServiceStatusValue => {
+  const statusMap = STATUS_MAP as Record<string, ServiceStatusValue>
+  const normalized = apiStatus.trim().toLowerCase()
+  return statusMap[normalized] ?? DEFAULT_STATUS
 }
 
 const STATUS_SORT_ORDER: Record<ServiceStatusValue, number> = {
   up: 0,
-  down: 1,
+  degraded: 1,
+  unknown: 2,
+  down: 3,
 }
 
-function sortServicesByStatus(services: ServiceHealth[]): ServiceHealth[] {
+const sortServicesByStatus = (services: ServiceHealth[]): ServiceHealth[] => {
   return [...services].sort((a, b) => STATUS_SORT_ORDER[a.status] - STATUS_SORT_ORDER[b.status])
 }
 
-function transformServiceStatus(data: JsonNode | undefined): ServiceHealth[] {
+const transformServiceStatus = (data: JsonNode | undefined): ServiceHealth[] => {
   if (!data || typeof data !== 'object') {
     return []
   }
 
   const response = data as ServiceStatusResponse
+  const checkedAt = new Date()
 
-  const services = Object.entries(response)
-    .filter(([, status]) => {
-      const statusStr = String(status).toLowerCase()
-      return statusStr !== 'not present'
-    })
-    .map(([name, status]) => ({
-      name,
-      status: normalizeStatus(String(status)),
-      lastChecked: new Date(),
-    }))
+  const services = Object.entries(response).map(([name, status]) => ({
+    name,
+    status: normalizeStatus(String(status)),
+    lastChecked: checkedAt,
+  }))
 
   return sortServicesByStatus(services)
 }
 
-export function useHealthStatus() {
+export const useHealthStatus = () => {
   const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
 
   const query = useGetServiceStatus(undefined, {
@@ -52,7 +56,15 @@ export function useHealthStatus() {
     },
   })
 
-  const services = query.data ?? []
+  const allServices = query.data ?? []
+
+  const services = useMemo(
+    () =>
+      allServices.filter(
+        (s) => !(HEALTH_PAGE_EXCLUDED_SERVICES as readonly string[]).includes(s.name),
+      ),
+    [allServices],
+  )
 
   const { healthyCount, totalCount } = useMemo(
     () => ({
@@ -64,6 +76,7 @@ export function useHealthStatus() {
 
   return {
     services,
+    allServices,
     healthyCount,
     totalCount,
     isLoading: query.isLoading,

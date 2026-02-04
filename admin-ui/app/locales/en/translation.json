@@ -94,6 +94,7 @@
     "config_api_status": "Config API Status",
     "key_cloak": "Keycloak",
     "jans_lock": "Jans Lock",
+    "casa": "CASA",
     "jans_link": "Jans Link",
     "access_denied": "Access Denied",
     "access_denied_message": "You do not have permission to access this page",
@@ -918,6 +919,8 @@
     "no_services_found": "No services found.",
     "status_online": "Online",
     "status_offline": "Offline",
+    "status_active": "Active",
+    "status_inactive": "Inactive",
     "status_degraded": "Degraded",
     "status_unknown": "Unknown",
     "no_mau_data": "No data available for the selected period.",
@@ -1034,6 +1037,9 @@
     "expires_before": "Expiration Before Date",
     "charMoreThan512": "characters over limit (maximum 512)",
     "charLessThan10": "characters required (minimum 10)",
+    "charRequiredMin": "{{count}} characters required (minimum {{min}})",
+    "charRequiredMin_one": "{{count}} character required (minimum {{min}})",
+    "charRequiredMin_other": "{{count}} characters required (minimum {{min}})",
     "more": " more"
   },
   "titles": {

@@ -1,65 +1,45 @@
-import React, { useState, useEffect, useContext, useRef, useMemo } from 'react'
-import {
-  FormGroup,
-  Col,
-  Input,
-  Button,
-  Modal,
-  Badge,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Collapse,
-} from 'reactstrap'
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
-import { ThemeContext } from 'Context/theme/themeContext'
-import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
-import getThemeColor from '@/context/theme/config'
+import { useTheme } from 'Context/theme/themeContext'
+import { THEME_DARK } from '@/context/theme/constants'
 import PropTypes from 'prop-types'
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined'
 import { useSelector } from 'react-redux'
 import { useWebhookDialogAction } from 'Utils/hooks'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
-import customColors from '@/customColors'
 import type { RootState } from '@/redux/sagas/types/audit'
-import type { GluuCommitDialogOperation, GluuCommitDialogProps, JsonValue } from './types/index'
-import { Alert, Box } from '@mui/material'
+import type { GluuCommitDialogProps } from './types/index'
+import customColors from '@/customColors'
+import { useStyles } from './styles/GluuCommitDialog.style'
+import {
+  getCommitMessageValidationError,
+  COMMIT_MESSAGE_MIN_LENGTH,
+  COMMIT_MESSAGE_MAX_LENGTH,
+} from '@/utils/validation/commitMessage'
+import GluuText from './GluuText'
 import { GluuButton } from '@/components'
 
 const USER_MESSAGE = 'user_action_message'
-
-const isJsonValueArray = (value: JsonValue): value is JsonValue[] => {
-  return Array.isArray(value)
-}
 
 const GluuCommitDialog = ({
   handler,
   modal,
   onAccept,
   formik,
-  operations,
   label,
   placeholderLabel,
-  inputType,
   feature,
   isLicenseLabel = false,
-  alertMessage,
-  alertSeverity,
 }: GluuCommitDialogProps) => {
   const { t } = useTranslation()
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
 
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state.theme || DEFAULT_THEME
-  const isDark = selectedTheme === THEME_DARK
-  const inverseTheme = isDark ? 'light' : 'dark'
-  const inverseColors = getThemeColor(inverseTheme)
-  const themeColors = getThemeColor(selectedTheme)
-  const [active, setActive] = useState(false)
-  const [isOpen, setIsOpen] = useState<number | null>(null)
+  const { state: themeState } = useTheme()
+  const isDark = themeState.theme === THEME_DARK
+  const { classes } = useStyles({ isDark })
   const [userMessage, setUserMessage] = useState('')
   const { loadingWebhooks, webhookModal } = useSelector((state: RootState) => state.webhookReducer)
 
@@ -86,264 +66,171 @@ const GluuCommitDialog = ({
 
   const prevModalRef = useRef<boolean>(false)
   useEffect(() => {
-    setActive(userMessage.length >= 10 && userMessage.length <= 512)
-
     if (modal && !prevModalRef.current) {
       setUserMessage('')
     }
     prevModalRef.current = modal
-  }, [userMessage, modal])
+  }, [modal])
 
-  function handleAccept() {
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setUserMessage(e.target.value)
+  }, [])
+
+  const messageLength = userMessage.length
+  const isValid =
+    messageLength >= COMMIT_MESSAGE_MIN_LENGTH && messageLength <= COMMIT_MESSAGE_MAX_LENGTH
+  const errorMessageText = useMemo(
+    () => getCommitMessageValidationError(messageLength, t),
+    [messageLength, t],
+  )
+
+  const titleText = useMemo(() => {
+    if (isLicenseLabel) return t('messages.licenseAuditLog')
+    if (!label || label === '') return t('messages.action_commit_question_title')
+    return label
+  }, [isLicenseLabel, label, t])
+
+  const placeholderText = useMemo(
+    () => placeholderLabel || t('placeholders.action_commit_message'),
+    [placeholderLabel, t],
+  )
+
+  const closeModal = useCallback(() => {
+    handler()
+    onCloseModal()
+    setUserMessage('')
+  }, [handler, onCloseModal])
+
+  const handleAccept = useCallback(() => {
     if (formik) {
       formik.setFieldValue('action_message', userMessage)
     }
     onAccept(userMessage)
-  }
-  const closeModal = () => {
-    handler()
-    onCloseModal()
-    setUserMessage('')
-  }
+    closeModal()
+  }, [formik, onAccept, userMessage, closeModal])
 
-  const renderBadges = (values: JsonValue[]) => {
-    return (
-      <div className="d-flex flex-column gap-1 align-items-start">
-        {values.map((data) => (
-          <Badge
-            style={{
-              width: 'fit-content',
-              backgroundColor: themeColors.background,
-              color: customColors.white,
-            }}
-            key={String(data)}
-          >
-            {JSON.stringify(data)}
-          </Badge>
-        ))}
-      </div>
-    )
-  }
+  const handleOverlayKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
+        e.preventDefault()
+        closeModal()
+      }
+    },
+    [closeModal],
+  )
 
-  const renderArrayValue = (values: JsonValue[], key: number) => {
-    if (!values.length) {
-      return (
-        <Badge
-          style={{
-            backgroundColor: themeColors.background,
-            color: customColors.white,
-          }}
-        >
-          &quot;&quot;
-        </Badge>
-      )
-    }
-
-    return (
-      <div className="d-flex flex-column gap-1 align-items-start">
-        {isOpen === key ? (
-          <Collapse isOpen={isOpen === key}>{renderBadges(values)}</Collapse>
-        ) : (
-          renderBadges(values.slice(0, 2))
-        )}
-        {values.length > 2 && (
-          <Button color="link" onClick={() => setIsOpen(isOpen !== key ? key : null)} size="sm">
-            {isOpen === key ? 'Show Less' : 'Show More'}
-            {isOpen === key ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </Button>
-        )}
-      </div>
-    )
-  }
+  const handleModalKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        closeModal()
+      }
+      e.stopPropagation()
+    },
+    [closeModal],
+  )
 
   if (!modal) {
     return <></>
   }
-  return (
-    <>
-      {(webhookModal || loadingWebhooks) && canReadWebhooks ? (
-        <>{webhookTriggerModal({ closeModal })}</>
-      ) : (
-        <Modal isOpen={modal} size={'lg'} toggle={closeModal} className="modal-outline-primary">
-          <ModalHeader toggle={closeModal} style={{ color: customColors.black }}>
-            <i
-              onClick={closeModal}
-              onKeyDown={() => {}}
-              style={{ color: customColors.logo }}
-              className="fa fa-2x fa-info fa-fw modal-icon mb-3"
-              role="img"
-              aria-hidden="true"
-            ></i>
-            <span style={{ color: customColors.black }}>
-              {isLicenseLabel
-                ? t('messages.licenseAuditLog')
-                : !label || label === ''
-                  ? t('messages.action_commit_question')
-                  : label}
-            </span>
-          </ModalHeader>
-          <ModalBody>
-            <div
-              style={{
-                overflow: 'auto',
-                maxHeight: '300px',
-                height: 'auto',
-                marginBottom: '10px',
-                overflowX: 'hidden',
-              }}
-            >
-              {alertMessage && alertSeverity && (
-                <FormGroup row>
-                  <Box mb={2}>
-                    <Alert severity={alertSeverity}>{alertMessage}</Alert>
-                  </Box>
-                </FormGroup>
-              )}
 
-              {operations?.length ? (
-                <FormGroup row>
-                  <h1
-                    style={{
-                      fontSize: '1.2rem',
-                      fontWeight: 'bold',
-                      margin: 0,
-                      color: customColors.black,
-                    }}
-                  >
-                    List of changes
-                  </h1>
-                </FormGroup>
-              ) : null}
-              {operations &&
-                operations.map((item: GluuCommitDialogOperation, key: number) => (
-                  <FormGroup row key={key}>
-                    <Col sm={1} style={{ fontWeight: 'bold', color: customColors.black }}>
-                      Set
-                    </Col>
-                    <Col
-                      sm={5}
-                      style={{
-                        overflow: 'auto',
-                        width: 300,
-                        paddingBottom: 10,
-                      }}
-                    >
-                      <Badge
-                        style={{
-                          backgroundColor: themeColors.background,
-                          color: customColors.white,
-                        }}
-                      >
-                        {item.path}
-                      </Badge>
-                    </Col>
-                    <Col sm={1} style={{ fontWeight: 'bold', color: customColors.black }}>
-                      to
-                    </Col>
-                    <Col sm={5} style={{ overflow: 'auto' }}>
-                      {isJsonValueArray(item.value) ? (
-                        renderArrayValue(item.value, key)
-                      ) : typeof item.value === 'boolean' ? (
-                        <Badge
-                          style={{
-                            backgroundColor: themeColors.background,
-                            color: customColors.white,
-                          }}
-                        >
-                          {String(item.value)}
-                        </Badge>
-                      ) : item.value === '' || item.value === null || item.value === undefined ? (
-                        <Badge
-                          style={{
-                            backgroundColor: themeColors.background,
-                            color: customColors.white,
-                          }}
-                        >
-                          &quot;&quot;
-                        </Badge>
-                      ) : typeof item.value === 'object' ? (
-                        <Badge
-                          style={{
-                            backgroundColor: themeColors.background,
-                            color: customColors.white,
-                          }}
-                        >
-                          {JSON.stringify(item.value)}
-                        </Badge>
-                      ) : (
-                        <Badge
-                          style={{
-                            backgroundColor: themeColors.background,
-                            color: customColors.white,
-                          }}
-                        >
-                          {String(item.value)}
-                        </Badge>
-                      )}
-                    </Col>
-                  </FormGroup>
-                ))}
-            </div>
-            <div>
-              <FormGroup row>
-                <Col sm={12}>
-                  <Input
-                    id={USER_MESSAGE}
-                    type={inputType || 'textarea'}
-                    name={USER_MESSAGE}
-                    onChange={(e) => setUserMessage(e.target.value)}
-                    placeholder={
-                      !placeholderLabel || placeholderLabel === ''
-                        ? t('placeholders.action_commit_message')
-                        : placeholderLabel
-                    }
-                    rows="4"
-                    value={userMessage}
-                    style={{ borderColor: inverseColors.borderColor }}
-                  />
-                  {(userMessage.length < 10 || userMessage.length > 512) && (
-                    <span
-                      style={{
-                        color: customColors.accentRed,
-                      }}
-                    >
-                      {userMessage.length < 10
-                        ? `${10 - userMessage.length} ${userMessage.length ? t('placeholders.more') : ''} ${t('placeholders.charLessThan10')}`
-                        : `${userMessage.length - 512} ${t('placeholders.charMoreThan512')}`}
-                    </span>
-                  )}
-                </Col>
-              </FormGroup>
-            </div>
-          </ModalBody>
-          <ModalFooter>
-            {active && (
-              <GluuButton theme="dark" onClick={handleAccept}>
-                <i className="fa fa-check-circle me-2"></i>
-                {t('actions.accept')}
-              </GluuButton>
-            )}
-            <GluuButton theme="dark" onClick={closeModal}>
-              <i className="fa fa-remove me-2"></i>
-              {t('actions.no')}
-            </GluuButton>
-          </ModalFooter>
-        </Modal>
-      )}
-    </>
-  )
+  const modalContent =
+    (webhookModal || loadingWebhooks) && canReadWebhooks ? (
+      <>{webhookTriggerModal({ closeModal })}</>
+    ) : (
+      <>
+        <button
+          type="button"
+          className={classes.overlay}
+          onClick={closeModal}
+          onKeyDown={handleOverlayKeyDown}
+          aria-label={t('actions.close')}
+        />
+        <div
+          className={classes.modalContainer}
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={handleModalKeyDown}
+          role="dialog"
+          tabIndex={-1}
+          aria-labelledby="commit-dialog-title"
+        >
+          <GluuButton
+            onClick={closeModal}
+            className={classes.closeButton}
+            backgroundColor="transparent"
+            textColor={isDark ? customColors.white : customColors.primaryDark}
+            borderColor="transparent"
+            padding="0"
+            minHeight="32"
+            title={t('actions.close')}
+          >
+            <CloseOutlinedIcon />
+          </GluuButton>
+          <GluuText variant="h2" className={classes.title} id="commit-dialog-title">
+            {titleText}
+          </GluuText>
+          <div className={classes.textareaContainer}>
+            <textarea
+              id={USER_MESSAGE}
+              name={USER_MESSAGE}
+              onChange={handleInputChange}
+              placeholder={placeholderText}
+              value={userMessage}
+              className={classes.textarea}
+              aria-invalid={!!errorMessageText}
+              aria-describedby={errorMessageText ? `${USER_MESSAGE}-error` : undefined}
+            />
+          </div>
+          {errorMessageText && (
+            <GluuText
+              variant="span"
+              className={classes.errorMessage}
+              style={{ color: customColors.statusInactive }}
+              id={`${USER_MESSAGE}-error`}
+            >
+              {errorMessageText}
+            </GluuText>
+          )}
+          <GluuButton
+            onClick={handleAccept}
+            disabled={!isValid}
+            backgroundColor={customColors.statusActive}
+            textColor={customColors.white}
+            borderColor="transparent"
+            padding="8px 28px"
+            useOpacityOnHover
+            className={classes.yesButton}
+          >
+            {t('actions.yes')}
+          </GluuButton>
+        </div>
+      </>
+    )
+
+  return createPortal(modalContent, document.body)
 }
 
 export default GluuCommitDialog
 GluuCommitDialog.propTypes = {
   feature: PropTypes.string,
-  operations: PropTypes.any,
-  handler: PropTypes.func,
+  handler: PropTypes.func.isRequired,
   modal: PropTypes.bool.isRequired,
-  onAccept: PropTypes.func,
-  placeholderLabel: PropTypes.string,
-  inputType: PropTypes.string,
-  label: PropTypes.string,
+  onAccept: PropTypes.func.isRequired,
   formik: PropTypes.object,
+  operations: PropTypes.arrayOf(PropTypes.object),
+  placeholderLabel: PropTypes.string,
+  label: PropTypes.string,
+  alertMessage: PropTypes.string,
+  alertSeverity: PropTypes.oneOf(['error', 'warning', 'info', 'success']),
+  inputType: PropTypes.oneOf([
+    'text',
+    'textarea',
+    'email',
+    'password',
+    'number',
+    'tel',
+    'url',
+    'search',
+  ]),
   isLicenseLabel: PropTypes.bool,
 }

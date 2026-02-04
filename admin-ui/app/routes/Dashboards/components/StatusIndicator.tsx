@@ -1,8 +1,8 @@
 import { memo } from 'react'
 import Tooltip from '@mui/material/Tooltip'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
-import { STATUS_LABEL_KEYS } from 'Plugins/admin/components/Health/constants'
-import type { ServiceStatusValue } from 'Plugins/admin/components/Health/types'
+import { STATUS_LABEL_KEYS } from '@/constants'
+import type { ServiceStatusValue } from '@/constants'
 
 type ClassesType = Record<string, string>
 

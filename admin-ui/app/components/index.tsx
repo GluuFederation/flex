@@ -11,6 +11,7 @@ import EmptyLayout from './EmptyLayout'
 import ExtendedDropdown from './ExtendedDropdown'
 import FloatGrid from './FloatGrid'
 import { GluuBadge } from './GluuBadge'
+import { GluuSpinner } from './GluuSpinner'
 import { GluuButton } from './GluuButton'
 import IconWithBadge from './IconWithBadge'
 import InputGroupAddon from './InputGroupAddon'
@@ -30,6 +31,7 @@ import SidebarTrigger from './SidebarTrigger'
 import { ThemeClass, ThemeProvider, ThemeConsumer } from './Theme'
 import { ThemeDropdown } from './ThemeDropdown'
 import { GluuDropdown } from './GluuDropdown'
+import { GluuPageContent } from './GluuPageContent'
 import { ArrowIcon, ChevronIcon } from './SVG'
 import UncontrolledTabs from './UncontrolledTabs'
 import Wizard from './Wizard'
@@ -116,6 +118,7 @@ export type {
 export type { DropdownPosition as ThemeDropdownPosition } from './GluuDropdown/types'
 export type { GluuBadgeProps, BadgeSize, BadgeTheme } from './GluuBadge/types'
 export type { GluuButtonProps, ButtonSize, ButtonTheme } from './GluuButton/types'
+export type { GluuPageContentProps } from './GluuPageContent'
 export {
   Accordion,
   AccordionHeader,
@@ -132,6 +135,7 @@ export {
   FloatGrid,
   GluuBadge,
   GluuButton,
+  GluuSpinner,
   IconWithBadge,
   InputGroupAddon,
   Layout,
@@ -154,6 +158,7 @@ export {
   ThemeProvider,
   ThemeDropdown,
   GluuDropdown,
+  GluuPageContent,
   ArrowIcon,
   ChevronIcon,
   UncontrolledTabs,

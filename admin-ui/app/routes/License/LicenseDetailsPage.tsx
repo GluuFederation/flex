@@ -1,19 +1,18 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState, useContext, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { useContext } from 'react'
-
 import { ThemeContext } from '@/context/theme/themeContext'
-import getThemeColor from '@/context/theme/config'
-import { DEFAULT_THEME } from '@/context/theme/constants'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import customColors from '@/customColors'
 import { getLicenseDetails } from 'Redux/features/licenseDetailsSlice'
-import { Card, CardBody, Container, Row, Col, Button } from 'Components'
+import { Card, CardBody, GluuPageContent } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
+import { GluuButton } from '@/components/GluuButton'
 import Alert from '@mui/material/Alert'
 import SetTitle from 'Utils/SetTitle'
 import { formatDate } from 'Utils/Util'
+import { formatLicenseFieldValue } from '@/utils/licenseUtils'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
@@ -21,8 +20,11 @@ import GluuCommitDialog from '../Apps/Gluu/GluuCommitDialog'
 import type { LicenseField } from './types'
 import type { LicenseDetailsState } from 'Redux/features/licenseDetailsSlice'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { useStyles } from './LicenseDetailsPage.style'
 
-function LicenseDetailsPage() {
+const PLACEHOLDER = '_'
+
+const LicenseDetailsPage = () => {
   const { item, loading } = useSelector(
     (state: { licenseDetailsReducer: LicenseDetailsState }) => state.licenseDetailsReducer,
   )
@@ -55,134 +57,139 @@ function LicenseDetailsPage() {
   }, [item.licenseExpired, navigateToRoute])
 
   SetTitle(t('menus.licenseDetails'))
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
-  const themeColors = getThemeColor(selectedTheme)
+  const themeContext = useContext(ThemeContext)
+  const selectedTheme = themeContext?.state?.theme || DEFAULT_THEME
+  const isDark = selectedTheme === THEME_DARK
+  const { classes } = useStyles({ isDark })
 
-  const labelStyle = {
-    color: themeColors.fontColor,
-  }
-
-  const inputBoxStyle = {
-    backgroundColor: customColors.white,
-    color: customColors.black,
-    borderColor: themeColors.fontColor + '40',
-  }
-
-  const licenseFields: LicenseField[] = [
-    { key: 'productName', label: 'fields.productName', value: item.productName },
-    { key: 'productCode', label: 'fields.productCode', value: item.productCode },
-    { key: 'licenseType', label: 'fields.licenseType', value: item.licenseType },
-    { key: 'licenseKey', label: 'fields.licenseKey', value: item.licenseKey },
-    { key: 'customerEmail', label: 'fields.customerEmail', value: item.customerEmail },
-    {
-      key: 'customerName',
-      label: 'fields.customerName',
-      value:
-        !item.customerFirstName && !item.customerLastName
-          ? '-'
-          : item.customerFirstName + ' ' + item.customerLastName,
-    },
-    { key: 'companyName', label: 'fields.companyName', value: item.companyName },
-    {
-      key: 'validityPeriod',
-      label: 'fields.validityPeriod',
-      value: item.validityPeriod ? formatDate(item.validityPeriod) : null,
-    },
-    {
-      key: 'isLicenseActive',
-      label: 'fields.isLicenseActive',
-      value: item.licenseActive ? 'Yes' : 'No',
-    },
-    {
-      key: 'isLicenseExpired',
-      label: 'fields.isLicenseExpired',
-      value: item.licenseExpired ? 'Yes' : 'No',
-    },
-  ]
-
-  const renderLicenseField = (field: LicenseField) => (
-    <Col sm={6} xs={12} key={field.key}>
-      <div className="mb-3">
-        <strong style={labelStyle}>{t(field.label)}:</strong>
-        <div className="mt-1 p-2 border rounded" style={inputBoxStyle}>
-          {field.value || 'N/A'}
-        </div>
-      </div>
-    </Col>
+  const licenseFields = useMemo<LicenseField[]>(
+    () => [
+      {
+        key: 'productName',
+        label: 'fields.productName',
+        value: loading ? PLACEHOLDER : item.productName,
+      },
+      {
+        key: 'productCode',
+        label: 'fields.productCode',
+        value: loading ? PLACEHOLDER : item.productCode,
+      },
+      {
+        key: 'licenseType',
+        label: 'fields.licenseType',
+        value: loading ? PLACEHOLDER : item.licenseType,
+      },
+      {
+        key: 'licenseKey',
+        label: 'fields.licenseKey',
+        value: loading ? PLACEHOLDER : item.licenseKey,
+      },
+      {
+        key: 'customerEmail',
+        label: 'fields.customerEmail',
+        value: loading ? PLACEHOLDER : item.customerEmail,
+      },
+      {
+        key: 'customerName',
+        label: 'fields.customerName',
+        value: loading
+          ? PLACEHOLDER
+          : [item.customerFirstName, item.customerLastName].filter(Boolean).join(' '),
+      },
+      {
+        key: 'companyName',
+        label: 'fields.companyName',
+        value: loading ? PLACEHOLDER : item.companyName,
+      },
+      {
+        key: 'validityPeriod',
+        label: 'fields.validityPeriod',
+        value: loading ? PLACEHOLDER : item.validityPeriod ? formatDate(item.validityPeriod) : null,
+      },
+      {
+        key: 'isLicenseActive',
+        label: 'fields.isLicenseActive',
+        value: loading ? PLACEHOLDER : item.licenseActive ? t('actions.yes') : t('actions.no'),
+      },
+      {
+        key: 'isLicenseExpired',
+        label: 'fields.isLicenseExpired',
+        value: loading ? PLACEHOLDER : item.licenseExpired ? t('actions.yes') : t('actions.no'),
+      },
+    ],
+    [loading, item, t],
   )
 
-  const handleReset = (message: string) => {
+  const renderLicenseField = useCallback(
+    (field: LicenseField) => {
+      const displayValue = formatLicenseFieldValue(field.value)
+      return (
+        <div key={field.key} className={classes.fieldWrapper}>
+          <GluuText variant="div" className={classes.label}>
+            {t(field.label)}:
+          </GluuText>
+          <GluuText variant="div" className={classes.value}>
+            {displayValue}
+          </GluuText>
+        </div>
+      )
+    },
+    [classes.fieldWrapper, classes.label, classes.value, t],
+  )
+
+  const handleReset = useCallback(
+    (message: string) => {
+      setModal((prev) => !prev)
+      dispatch({ type: 'license/resetConfig', message })
+    },
+    [dispatch],
+  )
+
+  const toggle = useCallback(() => {
     setModal((prev) => !prev)
-    dispatch({ type: 'license/resetConfig', message })
-  }
-  const toggle = () => {
-    setModal((prev) => !prev)
-  }
+  }, [])
+
+  const hasLicenseData = !loading && (item.licenseKey || item.productName || item.licenseEnabled)
+  const showLicenseCard = loading || hasLicenseData
 
   return (
     <GluuLoader blocking={loading}>
-      <Card style={applicationStyle.persistenceCard}>
-        <CardBody style={{ padding: '15px' }}>
-          {item.licenseEnabled ? (
-            <>
-              <Container
-                style={{
-                  backgroundColor: themeColors.lightBackground,
-                  padding: '20px',
-                  borderRadius: '8px',
-                }}
-              >
-                {licenseFields?.map((field, index) => {
-                  if (index % 2 === 0) {
-                    const nextField = licenseFields[index + 1]
-                    return (
-                      <Row className="mb-3" key={`row-${index}`}>
-                        {renderLicenseField(field)}
-                        {nextField && renderLicenseField(nextField)}
-                      </Row>
-                    )
-                  }
-                  return null
-                })}
-              </Container>
-              {canWriteLicense && (
-                <Container>
-                  <Row className="mt-4">
-                    <Col xs={12} sm={6} md={4} lg={3}>
-                      <div className="d-flex justify-content-start">
-                        <Button
-                          style={{
-                            backgroundColor: customColors.accentRed,
-                            color: customColors.white,
-                            border: 'none',
-                            fontSize: '1rem',
-                            fontWeight: 500,
-                            borderRadius: 6,
-                          }}
-                          size="md"
-                          onClick={toggle}
-                        >
-                          <i className="fa fa-undo-alt me-2"></i>
-                          {t('fields.resetLicense')}
-                        </Button>
-                      </div>
-                    </Col>
-                  </Row>
-                </Container>
-              )}
-              <GluuCommitDialog
-                handler={toggle}
-                modal={modal}
-                onAccept={(userMessage) => handleReset(userMessage)}
-                isLicenseLabel={true}
-              />
-            </>
-          ) : (
-            <Alert severity="warning">{!loading && t('messages.license_api_not_enabled')}</Alert>
-          )}
-        </CardBody>
-      </Card>
+      <GluuPageContent>
+        {showLicenseCard ? (
+          <div className={classes.licenseCard}>
+            <div className={classes.licenseContent}>
+              {licenseFields?.map((field) => renderLicenseField(field))}
+            </div>
+            {canWriteLicense && (
+              <div className={classes.buttonContainer}>
+                <GluuButton
+                  onClick={toggle}
+                  disabled={loading}
+                  backgroundColor={customColors.statusActive}
+                  textColor={customColors.white}
+                  useOpacityOnHover
+                  style={{ gap: 8 }}
+                >
+                  <i className="fa fa-refresh" style={{ fontSize: 16 }} />
+                  {t('fields.resetLicense')}
+                </GluuButton>
+              </div>
+            )}
+          </div>
+        ) : (
+          <Card className={classes.card}>
+            <CardBody className={classes.cardBody}>
+              <Alert severity="error">{t('messages.license_api_not_enabled')}</Alert>
+            </CardBody>
+          </Card>
+        )}
+        <GluuCommitDialog
+          handler={toggle}
+          modal={modal}
+          onAccept={(userMessage) => handleReset(userMessage)}
+          isLicenseLabel={true}
+        />
+      </GluuPageContent>
     </GluuLoader>
   )
 }

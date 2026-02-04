@@ -7,6 +7,8 @@ import translationFr from './locales/fr/translation.json'
 import translationPt from './locales/pt/translation.json'
 import translationEs from './locales/es/translation.json'
 
+const isDev = process.env.NODE_ENV === 'development'
+
 const i18nConfig: InitOptions = {
   resources: {
     en: {
@@ -34,6 +36,13 @@ const i18nConfig: InitOptions = {
     escapeValue: false, // React already escapes HTML for XSS protection, so we don't need i18next to escape
     // This prevents double-escaping which causes &#39; to appear instead of '
   },
+
+  parseMissingKeyHandler: isDev
+    ? (key: string, defaultValue?: string) => {
+        console.warn(`[i18n] Missing translation key: "${key}"`)
+        return defaultValue ?? key
+      }
+    : undefined,
 }
 
 i18n.use(initReactI18next).init(i18nConfig)
