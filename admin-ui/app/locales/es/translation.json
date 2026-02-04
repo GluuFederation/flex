@@ -819,6 +819,7 @@
     "insufficient_permissions_to_modify": "No tiene permiso para modificar esta configuración",
     "insufficient_token_read_permission": "El acceso a los datos del token no está concedido.",
     "action_commit_question": "Registro de auditoría: ¿Desea aplicar los cambios realizados en esta página?",
+    "action_commit_question_title": "Confirmar cambios",
     "licenseAuditLog": "¿Realmente desea restablecer la licencia existente?",
     "action_deletion_question": "¿Realmente desea eliminar este elemento?",
     "action_deletion_for": "Confirmación de eliminación para",

@@ -92,35 +92,39 @@ const CedarlingConfigPage: React.FC = () => {
   const dispatch = useDispatch()
 
   const urlError = useMemo(() => {
+    if (cedarlingPolicyStoreRetrievalPoint === 'default') return ''
     if (!urlTouched) return ''
     if (!auiPolicyStoreUrl.trim()) return t('messages.field_required')
     if (!isValidUrl(auiPolicyStoreUrl)) return t('messages.invalid_url_error')
     return ''
-  }, [auiPolicyStoreUrl, urlTouched, t])
+  }, [cedarlingPolicyStoreRetrievalPoint, auiPolicyStoreUrl, urlTouched, t])
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
       setUrlTouched(true)
-      if (
-        auiConfig?.cedarlingPolicyStoreRetrievalPoint === 'default' &&
-        cedarlingPolicyStoreRetrievalPoint === 'default' &&
-        auiPolicyStoreUrl.trim() === ''
-      ) {
-        const errorMessage = `${t('messages.default_policy_store_is_used')}`
-        dispatch(updateToast(true, 'error', errorMessage))
-        return
-      }
-      if (auiPolicyStoreUrl.trim() === '') {
-        const errorMessage = `${t('fields.auiPolicyStoreUrl')}: ${t('messages.field_required')}`
-        dispatch(updateToast(true, 'error', errorMessage))
-        return
-      }
 
-      if (!isValidUrl(auiPolicyStoreUrl)) {
-        const errorMessage = `${t('messages.error_in_saving')} field: ${t('fields.auiPolicyStoreUrl')} ${t('messages.invalid_url_error')}`
-        dispatch(updateToast(true, 'error', errorMessage))
-        return
+      if (cedarlingPolicyStoreRetrievalPoint === 'remote') {
+        if (!auiPolicyStoreUrl.trim()) {
+          dispatch(
+            updateToast(
+              true,
+              'error',
+              `${t('fields.auiPolicyStoreUrl')}: ${t('messages.field_required')}`,
+            ),
+          )
+          return
+        }
+        if (!isValidUrl(auiPolicyStoreUrl)) {
+          dispatch(
+            updateToast(
+              true,
+              'error',
+              `${t('messages.error_in_saving')} field: ${t('fields.auiPolicyStoreUrl')} ${t('messages.invalid_url_error')}`,
+            ),
+          )
+          return
+        }
       }
 
       const requestData = {
@@ -415,7 +419,11 @@ const CedarlingConfigPage: React.FC = () => {
                   <GluuFormFooter
                     showBack={true}
                     showApply={canWriteSecurity}
-                    disableApply={isLoading}
+                    disableApply={
+                      isLoading ||
+                      (cedarlingPolicyStoreRetrievalPoint === 'remote' &&
+                        (!auiPolicyStoreUrl.trim() || !isValidUrl(auiPolicyStoreUrl)))
+                    }
                     isLoading={isLoading}
                   />
                 </Box>
