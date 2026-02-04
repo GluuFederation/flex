@@ -820,6 +820,8 @@
     "permissions_count_one": "{{count}} permission",
     "permissions_count_other": "{{count}} permissions",
     "no_permissions_assigned": "Aucune permission attribuée",
+    "out_of": "sur",
+    "permission_label": "Permission",
     "see_configurations": "Voir configuration",
     "manage_configurations": "Gérer les configurations",
     "fetching_project_details": "Récupération des détails du projet...",

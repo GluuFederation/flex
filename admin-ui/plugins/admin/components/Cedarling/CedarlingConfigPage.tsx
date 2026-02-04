@@ -42,7 +42,7 @@ import customColors from '@/customColors'
 import { GluuPageContent } from '@/components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useTheme } from 'Context/theme/themeContext'
-import getThemeColor from '@/context/theme/config'
+import { themeConfig } from '@/context/theme/config'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
 import { useStyles } from './CedarlingConfigPage.style'
 
@@ -59,21 +59,20 @@ const CedarlingConfigPage: React.FC = () => {
   const { state: themeState } = useTheme()
   const currentTheme = themeState?.theme || DEFAULT_THEME
   const isDark = currentTheme === THEME_DARK
-  const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
+  const theme = themeConfig[currentTheme]
 
   const cedarThemeColors = useMemo(
     () => ({
       cardBg: 'transparent',
-      navbarBorder:
-        themeColors.navbar?.border ??
-        (isDark ? customColors.cedarCardBorderDark : customColors.cedarInfoBorderLight),
-      text: isDark ? customColors.white : customColors.primaryDark,
-      alertText: isDark ? customColors.cedarTextSecondaryDark : customColors.cedarInfoTextLight,
-      infoBg: isDark ? customColors.cedarCardBgDark : customColors.cedarInfoBgLight,
-      infoBorder: isDark ? customColors.cedarCardBorderDark : customColors.cedarInfoBorderLight,
-      inputBg: isDark ? customColors.darkInputBg : customColors.white,
+      navbarBorder: theme.navbar.border,
+      text: theme.fontColor,
+      alertText: theme.infoAlert.text,
+      infoBg: theme.infoAlert.background,
+      infoBorder: theme.infoAlert.border,
+      inputBg: theme.inputBackground,
+      placeholderText: theme.textMuted,
     }),
-    [isDark, themeColors.navbar?.border],
+    [theme],
   )
 
   const { classes } = useStyles({ themeColors: cedarThemeColors, isDark })
@@ -103,7 +102,6 @@ const CedarlingConfigPage: React.FC = () => {
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
       setUrlTouched(true)
-      // when user tries to save default policy store with empty URL
       if (
         auiConfig?.cedarlingPolicyStoreRetrievalPoint === 'default' &&
         cedarlingPolicyStoreRetrievalPoint === 'default' &&
@@ -113,7 +111,6 @@ const CedarlingConfigPage: React.FC = () => {
         dispatch(updateToast(true, 'error', errorMessage))
         return
       }
-      //when user tries to save remote policy store with empty URL
       if (auiPolicyStoreUrl.trim() === '') {
         const errorMessage = `${t('fields.auiPolicyStoreUrl')}: ${t('messages.field_required')}`
         dispatch(updateToast(true, 'error', errorMessage))
@@ -282,7 +279,6 @@ const CedarlingConfigPage: React.FC = () => {
         <GluuPageContent>
           <Box className={classes.configCard}>
             <Box className={classes.formContent}>
-              {/* Info Alert Box */}
               <Box className={classes.alertWrapper}>
                 <Box className={classes.alertBox}>
                   <InfoOutlined
@@ -331,9 +327,7 @@ const CedarlingConfigPage: React.FC = () => {
                 </Box>
               </Box>
 
-              {/* Form */}
               <form onSubmit={handleSubmit}>
-                {/* Policy Store URL Field */}
                 <Box className={classes.inputSection}>
                   <GluuText variant="div" className={classes.fieldLabel} disableThemeColor>
                     {t('fields.auiPolicyStoreUrl')}:
@@ -378,7 +372,6 @@ const CedarlingConfigPage: React.FC = () => {
                   </Box>
                 </Box>
 
-                {/* Policy Retrieval Point */}
                 <Box className={classes.radioSection}>
                   <GluuText variant="div" className={classes.radioLabel} disableThemeColor>
                     {t('fields.cedarlingPolicyStoreRetrievalPoint')}:
@@ -418,7 +411,6 @@ const CedarlingConfigPage: React.FC = () => {
                   </GluuText>
                 </Box>
 
-                {/* Buttons */}
                 <Box className={classes.buttonSection}>
                   <GluuFormFooter
                     showBack={true}

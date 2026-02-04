@@ -886,6 +886,8 @@
     "permissions_count_one": "{{count}} permiso",
     "permissions_count_other": "{{count}} permisos",
     "no_permissions_assigned": "No hay permisos asignados",
+    "out_of": "de",
+    "permission_label": "Permiso",
     "see_configurations": "Ver Configuración",
     "manage_configurations": "Gestionar Configuraciones",
     "fetching_project_details": "Obteniendo detalles del proyecto...",

@@ -12,6 +12,7 @@ interface CedarlingConfigThemeColors {
   infoBg: string
   infoBorder: string
   inputBg: string
+  placeholderText: string
 }
 
 const sectionLabelBase = {
@@ -108,8 +109,8 @@ const useStyles = makeStyles<{ themeColors: CedarlingConfigThemeColors; isDark: 
         'fontSize': fontSizes.base,
         'padding': '14px 21px',
         '&::placeholder': {
-          color: isDark ? customColors.white : customColors.textSecondary,
-          opacity: 1,
+          color: themeColors.placeholderText,
+          opacity: 0.6,
         },
       },
     },

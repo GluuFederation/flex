@@ -1,111 +1,111 @@
-import React from 'react'
-import { Accordion, AccordionSummary, AccordionDetails, Typography, Chip, Box } from '@mui/material'
-import { ExpandMore, SecurityOutlined } from '@mui/icons-material'
+import React, { useState, useMemo, useCallback } from 'react'
+import { Box, Collapse } from '@mui/material'
+import { Check, ExpandMore } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
+import { useTheme } from '@/context/theme/themeContext'
+import { themeConfig } from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import type { MappingItemProps } from './types'
-import customColors from '@/customColors'
+import { useStyles } from './styles/MappingPage.style'
 
-const MappingItem: React.FC<MappingItemProps> = React.memo(function MappingItem({ candidate }) {
+interface ExtendedMappingItemProps extends MappingItemProps {
+  allPermissions: string[]
+}
+
+const PermissionCheckbox: React.FC<{
+  permission: string
+  isChecked: boolean
+  classes: ReturnType<typeof useStyles>['classes']
+}> = React.memo(({ permission, isChecked, classes }) => (
+  <Box className={classes.permissionItem}>
+    <Box
+      className={`${classes.checkbox} ${isChecked ? classes.checkboxChecked : classes.checkboxUnchecked}`}
+    >
+      {isChecked && <Check className={classes.checkIcon} />}
+    </Box>
+    <GluuText variant="span" className={classes.permissionLabel} disableThemeColor>
+      {permission}
+    </GluuText>
+  </Box>
+))
+
+PermissionCheckbox.displayName = 'PermissionCheckbox'
+
+const MappingItem: React.FC<ExtendedMappingItemProps> = React.memo(function MappingItem({
+  candidate,
+  allPermissions,
+}) {
   const { t } = useTranslation()
+  const [isExpanded, setIsExpanded] = useState(true)
 
-  const permissionsCount = candidate?.permissions?.length || 0
+  const { state } = useTheme()
+  const isDark = state.theme === THEME_DARK
+  const currentTheme = themeConfig[state.theme]
+  const { classes } = useStyles({ isDark, theme: currentTheme })
 
-  const permissionChips = candidate?.permissions?.map((permission, idx) => (
-    <Chip
-      key={`${permission}-${idx}`}
-      label={permission}
-      size="small"
-      variant="outlined"
-      sx={{
-        borderColor: customColors.lightBorder,
-        color: customColors.primaryDark,
-        fontSize: '0.85rem',
-        fontWeight: 600,
-        height: 32,
-      }}
-    />
-  ))
+  const rolePermissions = useMemo(
+    () => new Set(candidate?.permissions || []),
+    [candidate?.permissions],
+  )
+
+  const { checkedCount, sortedPermissions } = useMemo(() => {
+    const checked: string[] = []
+    const unchecked: string[] = []
+    for (const p of allPermissions) {
+      if (rolePermissions.has(p)) checked.push(p)
+      else unchecked.push(p)
+    }
+    return {
+      checkedCount: checked.length,
+      sortedPermissions: [...checked, ...unchecked],
+    }
+  }, [allPermissions, rolePermissions])
+
+  const handleToggle = useCallback(() => {
+    setIsExpanded((prev) => !prev)
+  }, [])
+
+  const permissionCheckboxes = useMemo(() => {
+    if (!isExpanded) return null
+    return sortedPermissions.map((permission) => (
+      <PermissionCheckbox
+        key={permission}
+        permission={permission}
+        isChecked={rolePermissions.has(permission)}
+        classes={classes}
+      />
+    ))
+  }, [isExpanded, sortedPermissions, rolePermissions, classes])
 
   return (
-    <Accordion
-      sx={{
-        'mb': 1.5,
-        'border': '1px solid',
-        'borderColor': 'divider',
-        'borderRadius': '8px !important',
-        '&:before': { display: 'none' },
-        'boxShadow': '0 1px 3px rgba(0,0,0,0.08)',
-        '&.Mui-expanded': {
-          margin: '0 0 12px 0',
-        },
-      }}
-    >
-      <AccordionSummary
-        expandIcon={<ExpandMore sx={{ color: customColors.textSecondary }} />}
-        sx={{
-          'borderRadius': '8px',
-          '&:hover': {
-            backgroundColor: 'action.hover',
-          },
-          '& .MuiAccordionSummary-content': {
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          },
-        }}
-      >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-          <SecurityOutlined
-            sx={{
-              color: customColors.textSecondary,
-              fontSize: 22,
-            }}
+    <Box className={classes.roleCard}>
+      <Box className={classes.roleCardHeader} onClick={handleToggle}>
+        <GluuText variant="h3" className={classes.roleTitle} disableThemeColor>
+          {candidate?.role}
+        </GluuText>
+        <Box className={classes.roleHeaderRight}>
+          <GluuText variant="span" className={classes.permissionCount} disableThemeColor>
+            <span className={classes.permissionCountHighlight}>{checkedCount}</span>
+            {` ${t('messages.out_of')} ${allPermissions.length} ${t('messages.permission_label')}`}
+          </GluuText>
+          <ExpandMore
+            className={`${classes.chevronIcon} ${isExpanded ? classes.chevronIconOpen : ''}`}
           />
-          <Typography
-            variant="subtitle1"
-            sx={{
-              fontWeight: 600,
-              color: 'text.primary',
-            }}
-          >
-            {candidate?.role}
-          </Typography>
         </Box>
-        <Chip
-          label={t('messages.permissions_count', { count: permissionsCount })}
-          size="small"
-          sx={{
-            backgroundColor: customColors.primaryDark,
-            color: customColors.white,
-            fontWeight: 500,
-            fontSize: '0.75rem',
-            mr: 1,
-          }}
-        />
-      </AccordionSummary>
-      <AccordionDetails
-        sx={{
-          borderTop: '1px solid',
-          borderColor: 'divider',
-          pt: 2,
-          pb: 2,
-        }}
-      >
-        <Box
-          sx={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: 1,
-          }}
-        >
-          {permissionChips}
+      </Box>
+      <Collapse in={isExpanded}>
+        <Box className={classes.roleCardContent}>
+          {allPermissions.length === 0 ? (
+            <GluuText variant="p" className={classes.noPermissions} disableThemeColor>
+              {t('messages.no_permissions_assigned')}
+            </GluuText>
+          ) : (
+            <Box className={classes.permissionsGrid}>{permissionCheckboxes}</Box>
+          )}
         </Box>
-        {permissionsCount === 0 && (
-          <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
-            {t('messages.no_permissions_assigned')}
-          </Typography>
-        )}
-      </AccordionDetails>
-    </Accordion>
+      </Collapse>
+    </Box>
   )
 })
 

@@ -888,6 +888,8 @@
     "permissions_count_one": "{{count}} permission",
     "permissions_count_other": "{{count}} permissions",
     "no_permissions_assigned": "No permissions assigned",
+    "out_of": "out of",
+    "permission_label": "Permission",
     "see_configurations": "See Configuration",
     "manage_configurations": "Manage Configurations",
     "fetching_project_details": "Fetching project details...",

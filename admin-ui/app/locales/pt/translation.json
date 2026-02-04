@@ -815,6 +815,8 @@
     "permissions_count_one": "{{count}} permissão",
     "permissions_count_other": "{{count}} permissões",
     "no_permissions_assigned": "Nenhuma permissão atribuída",
+    "out_of": "de",
+    "permission_label": "Permissão",
     "see_configurations": "Voir configuration",
     "manage_configurations": "Gerenciar configurações",
     "fetching_project_details": "Buscando detalhes do projeto...",
