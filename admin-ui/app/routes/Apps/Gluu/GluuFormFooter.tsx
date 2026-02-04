@@ -54,7 +54,7 @@ const GluuFormFooter = ({
   const buttonStates = useMemo(() => {
     const hasAnyButton = Boolean(showBack) || Boolean(showCancel) || Boolean(showApply)
     const hasThreeButtons = Boolean(showBack) && Boolean(showCancel) && Boolean(showApply)
-    const hasRightGroup = hasThreeButtons || (!!showCancel && !showBack)
+    const hasRightGroup = hasThreeButtons || (!!showCancel && !showApply)
 
     return {
       showBack: Boolean(showBack),

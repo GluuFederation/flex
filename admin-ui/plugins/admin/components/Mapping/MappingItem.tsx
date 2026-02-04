@@ -37,7 +37,7 @@ const MappingItem: React.FC<ExtendedMappingItemProps> = React.memo(function Mapp
   allPermissions,
 }) {
   const { t } = useTranslation()
-  const [isExpanded, setIsExpanded] = useState(true)
+  const [isExpanded, setIsExpanded] = useState(false)
 
   const { state } = useTheme()
   const isDark = state.theme === THEME_DARK
@@ -49,22 +49,34 @@ const MappingItem: React.FC<ExtendedMappingItemProps> = React.memo(function Mapp
     [candidate?.permissions],
   )
 
-  const { checkedCount, sortedPermissions } = useMemo(() => {
+  const sortedPermissions = useMemo(() => {
     const checked: string[] = []
     const unchecked: string[] = []
     for (const p of allPermissions) {
       if (rolePermissions.has(p)) checked.push(p)
       else unchecked.push(p)
     }
-    return {
-      checkedCount: checked.length,
-      sortedPermissions: [...checked, ...unchecked],
-    }
+    return [...checked, ...unchecked]
   }, [allPermissions, rolePermissions])
 
   const handleToggle = useCallback(() => {
     setIsExpanded((prev) => !prev)
   }, [])
+
+  const contentId = useMemo(
+    () => `mapping-content-${(candidate?.role ?? '').replace(/\s+/g, '-') || 'role'}`,
+    [candidate?.role],
+  )
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault()
+        handleToggle()
+      }
+    },
+    [handleToggle],
+  )
 
   const permissionCheckboxes = useMemo(() => {
     if (!isExpanded) return null
@@ -80,13 +92,23 @@ const MappingItem: React.FC<ExtendedMappingItemProps> = React.memo(function Mapp
 
   return (
     <Box className={classes.roleCard}>
-      <Box className={classes.roleCardHeader} onClick={handleToggle}>
+      <Box
+        className={classes.roleCardHeader}
+        role="button"
+        tabIndex={0}
+        aria-expanded={isExpanded}
+        aria-controls={contentId}
+        onClick={handleToggle}
+        onKeyDown={handleKeyDown}
+      >
         <GluuText variant="h3" className={classes.roleTitle} disableThemeColor>
           {candidate?.role}
         </GluuText>
         <Box className={classes.roleHeaderRight}>
           <GluuText variant="span" className={classes.permissionCount} disableThemeColor>
-            <span className={classes.permissionCountHighlight}>{checkedCount}</span>
+            <GluuText variant="span" className={classes.permissionCountHighlight} disableThemeColor>
+              {rolePermissions.size}
+            </GluuText>
             {` ${t('messages.out_of')} ${allPermissions.length} ${t('messages.permission_label')}`}
           </GluuText>
           <ExpandMore
@@ -95,7 +117,7 @@ const MappingItem: React.FC<ExtendedMappingItemProps> = React.memo(function Mapp
         </Box>
       </Box>
       <Collapse in={isExpanded}>
-        <Box className={classes.roleCardContent}>
+        <Box id={contentId} className={classes.roleCardContent}>
           {allPermissions.length === 0 ? (
             <GluuText variant="p" className={classes.noPermissions} disableThemeColor>
               {t('messages.no_permissions_assigned')}

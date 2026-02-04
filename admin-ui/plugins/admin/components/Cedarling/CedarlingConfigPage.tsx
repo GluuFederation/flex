@@ -104,8 +104,9 @@ const CedarlingConfigPage: React.FC = () => {
       e.preventDefault()
       setUrlTouched(true)
 
+      const trimmedUrl = auiPolicyStoreUrl.trim()
       if (cedarlingPolicyStoreRetrievalPoint === 'remote') {
-        if (!auiPolicyStoreUrl.trim()) {
+        if (!trimmedUrl) {
           dispatch(
             updateToast(
               true,
@@ -128,7 +129,7 @@ const CedarlingConfigPage: React.FC = () => {
       }
 
       const requestData = {
-        auiPolicyStoreUrl,
+        auiPolicyStoreUrl: trimmedUrl,
         cedarlingPolicyStoreRetrievalPoint,
       }
 

@@ -1,7 +1,8 @@
 export const isValidUrl = (url: string): boolean => {
-  if (!url.trim()) return true
+  const trimmed = url.trim()
+  if (!trimmed) return true
   try {
-    const parsed = new URL(url)
+    const parsed = new URL(trimmed)
     return parsed.protocol === 'http:' || parsed.protocol === 'https:'
   } catch {
     return false
@@ -9,9 +10,10 @@ export const isValidUrl = (url: string): boolean => {
 }
 
 export const isValidUrlAnyProtocol = (url: string): boolean => {
-  if (!url.trim()) return true
+  const trimmed = url.trim()
+  if (!trimmed) return true
   try {
-    new URL(url)
+    new URL(trimmed)
     return true
   } catch {
     return false
