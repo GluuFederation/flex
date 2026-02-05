@@ -1,5 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
+import { alpha } from '@mui/material/styles'
 import { BORDER_RADIUS, CEDARLING_CONFIG_SPACING, SPACING } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
 import customColors from '@/customColors'
@@ -62,8 +63,8 @@ const useStyles = makeStyles<{ themeColors: CedarlingConfigThemeColors; isDark: 
       position: 'absolute',
       left: CEDARLING_CONFIG_SPACING.ALERT_ICON_LEFT,
       top: CEDARLING_CONFIG_SPACING.ALERT_ICON_TOP,
-      width: 24,
-      height: 24,
+      width: CEDARLING_CONFIG_SPACING.ICON_SIZE_MD,
+      height: CEDARLING_CONFIG_SPACING.ICON_SIZE_MD,
       color: themeColors.alertText,
     },
     alertStepTitle: {
@@ -72,7 +73,7 @@ const useStyles = makeStyles<{ themeColors: CedarlingConfigThemeColors; isDark: 
       fontSize: fontSizes.base,
       lineHeight: lineHeights.tight,
       color: themeColors.alertText,
-      marginBottom: 8,
+      marginBottom: CEDARLING_CONFIG_SPACING.ALERT_TITLE_MB,
     },
     alertBody: {
       fontFamily,
@@ -124,7 +125,7 @@ const useStyles = makeStyles<{ themeColors: CedarlingConfigThemeColors; isDark: 
         'color': themeColors.text,
         fontFamily,
         'fontSize': fontSizes.base,
-        'padding': '14px 21px',
+        'padding': `${CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL}px ${CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL}px`,
         '&::placeholder': {
           color: themeColors.placeholderText,
           opacity: 0.6,
@@ -171,7 +172,7 @@ const useStyles = makeStyles<{ themeColors: CedarlingConfigThemeColors; isDark: 
     },
     fieldRow: {
       display: 'flex',
-      alignItems: 'flex-start',
+      alignItems: 'center',
       gap: SPACING.CARD_CONTENT_GAP,
       width: '100%',
       [theme.breakpoints.down('sm')]: {
@@ -182,26 +183,21 @@ const useStyles = makeStyles<{ themeColors: CedarlingConfigThemeColors; isDark: 
     disabledPolicyTooltip: {
       fontSize: fontSizes.base,
       lineHeight: lineHeights.tight,
-      maxWidth: 320,
+      maxWidth: CEDARLING_CONFIG_SPACING.TOOLTIP_MAX_WIDTH,
     },
-    disabledUrlSpan: {
-      cursor: 'not-allowed',
+    inputFieldWrapper: {
       display: 'block',
       flex: 1,
       minWidth: 0,
-      pointerEvents: 'none',
-    },
-    inputFieldFlex: {
-      flex: 1,
     },
     radioGroup: {
-      gap: '25px',
+      gap: `${CEDARLING_CONFIG_SPACING.RADIO_GROUP_GAP}px`,
     },
     refreshIconButton: {
-      'marginTop': 4,
+      'marginTop': 0,
       'color': customColors.logo,
       '&:hover': {
-        backgroundColor: `${customColors.logo}14`,
+        backgroundColor: alpha(customColors.logo, 0.08),
       },
     },
     alertLink: {

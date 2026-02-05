@@ -61,10 +61,10 @@ export const useStyles = makeStyles<StylesParams>()((theme, { isDark }) => {
       justifyContent: 'flex-start',
     },
     resetButton: {
-      gap: 8,
+      gap: `${SPACING.CARD_CONTENT_GAP}px`,
     },
     refreshIcon: {
-      fontSize: 16,
+      fontSize: fontSizes.md,
     },
     card: {
       backgroundColor: isDark ? customColors.darkCardBg : customColors.white,

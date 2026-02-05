@@ -350,7 +350,7 @@ const CedarlingConfigPage: React.FC = () => {
                         title={t('documentation.cedarlingConfig.policyUrlDisabledWhenDefault')}
                         slotProps={{ tooltip: { className: classes.disabledPolicyTooltip } }}
                       >
-                        <Box component="span" className={classes.disabledUrlSpan}>
+                        <Box component="span" className={classes.inputFieldWrapper}>
                           <TextField
                             id="auiPolicyStoreUrl"
                             placeholder={t('placeholders.policy_uri')}
@@ -367,19 +367,21 @@ const CedarlingConfigPage: React.FC = () => {
                         </Box>
                       </Tooltip>
                     ) : (
-                      <TextField
-                        id="auiPolicyStoreUrl"
-                        placeholder={t('placeholders.policy_uri')}
-                        type="url"
-                        value={auiPolicyStoreUrl}
-                        onChange={handleInputChange}
-                        onBlur={handleInputBlur}
-                        disabled={isPolicyUrlInputDisabled}
-                        error={!!urlError}
-                        helperText={urlError}
-                        fullWidth
-                        className={`${classes.inputField} ${classes.inputFieldFlex}`}
-                      />
+                      <Box component="span" className={classes.inputFieldWrapper}>
+                        <TextField
+                          id="auiPolicyStoreUrl"
+                          placeholder={t('placeholders.policy_uri')}
+                          type="url"
+                          value={auiPolicyStoreUrl}
+                          onChange={handleInputChange}
+                          onBlur={handleInputBlur}
+                          disabled={isPolicyUrlInputDisabled}
+                          error={!!urlError}
+                          helperText={urlError}
+                          fullWidth
+                          className={classes.inputField}
+                        />
+                      </Box>
                     )}
                     {!isRefreshButtonHidden && (
                       <GluuTooltip

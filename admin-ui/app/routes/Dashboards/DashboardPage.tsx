@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDispatch } from 'react-redux'
-import { useAppSelector } from '@/redux/hooks'
+import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import { useMediaQuery } from 'react-responsive'
 import type { Dayjs } from 'dayjs'
 import Grid from '@mui/material/Grid'
@@ -46,7 +45,7 @@ const MOBILE_MEDIA_QUERY = { maxWidth: 767 }
 
 const DashboardPage = () => {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
   const themeContext = useContext(ThemeContext)
@@ -88,8 +87,9 @@ const DashboardPage = () => {
   const debouncedStartDate = useDebounce(startDate, 400)
   const debouncedEndDate = useDebounce(endDate, 400)
 
-  const { isUserInfoFetched, hasSession } = useAppSelector((state) => state.authReducer)
-  const permissions = useAppSelector((state) => state.authReducer.permissions)
+  const { isUserInfoFetched, hasSession, permissions } = useAppSelector(
+    (state) => state.authReducer,
+  )
 
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
   const { navigateToRoute } = useAppNavigation()
