@@ -2,12 +2,11 @@ import React, { useContext, useEffect, useCallback, useMemo, memo } from 'react'
 import { Container, Row, Col, Card, CardBody, Button, Badge, AvatarImage } from 'Components'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from '../Gluu/GluuErrorFallBack'
-import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from '../../../context/theme/themeContext'
 import SetTitle from 'Utils/SetTitle'
 import styles from './styles'
-import { Box, Divider, Skeleton } from '@mui/material'
+import { Box, Divider } from '@mui/material'
 import { getProfileDetails } from 'Redux/features/ProfileDetailsSlice'
 import { randomAvatar } from '../../../utilities'
 import getThemeColor from '../../../context/theme/config'
@@ -17,22 +16,43 @@ import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import type { AppDispatch, ProfileRootState, ThemeContextValue, CustomAttribute } from './types'
+import type { ThemeContextValue, CustomAttribute } from './types'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
+import GluuLoader from '../Gluu/GluuLoader'
 
 const JANS_ADMIN_UI_ROLE_ATTR = 'jansAdminUIRole'
-const SKELETON_WIDTH = '45%'
 const BADGE_PADDING = '4px 6px'
-const SKELETON_HEIGHT = 40
+const USERS_RESOURCE_ID = ADMIN_UI_RESOURCES.Users
 
-const skeletonCenterStyle = {
+const FLEX_COLUMN_GAP2 = {
   display: 'flex',
-  justifyContent: 'center',
+  flexDirection: 'column' as const,
+  gap: 2,
+}
+const FLEX_COLUMN_GAP1 = {
+  display: 'flex',
+  flexDirection: 'column' as const,
+  gap: 1,
+}
+const FIELD_ROW_STYLE = {
+  display: 'flex',
+  justifyContent: 'space-between' as const,
   alignItems: 'center',
-} as const
+  marginBottom: 1,
+}
+const ROLES_BADGES_BOX_STYLE = {
+  display: 'flex',
+  gap: '2px',
+  flexWrap: 'wrap' as const,
+  alignItems: 'end',
+  justifyContent: 'end',
+}
+const COL_PROPS = { xs: 10, md: 8, lg: 5 }
+const USERS_SCOPES = CEDAR_RESOURCE_SCOPES[USERS_RESOURCE_ID]
 
 const ProfileDetails: React.FC = () => {
   const { t } = useTranslation()
-  const dispatch = useDispatch<AppDispatch>()
+  const dispatch = useAppDispatch()
   const theme = useContext(ThemeContext) as ThemeContextValue
   const selectedTheme = useMemo(() => theme?.state?.theme ?? DEFAULT_THEME, [theme?.state?.theme])
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
@@ -41,24 +61,25 @@ const ProfileDetails: React.FC = () => {
 
   SetTitle(t('titles.profile_detail'))
 
-  const { loading, profileDetails } = useSelector(
-    (state: ProfileRootState) => state.profileDetailsReducer,
-  )
-  const authState = useSelector((state: ProfileRootState) => state.authReducer)
-  const { userinfo, token: authToken } = authState
-  const stateUserInum = (authState as { userInum?: string | null; hasSession?: boolean }).userInum
-  const hasSession = (authState as { hasSession?: boolean }).hasSession ?? false
+  const { loading, profileDetails } = useAppSelector((state) => state.profileDetailsReducer)
+  const authState = useAppSelector((state) => state.authReducer)
+  const authStateWithToken = authState as typeof authState & {
+    token?: { access_token?: string } | null
+    userInum?: string | null
+    hasSession?: boolean
+  }
+  const { userinfo, token: authToken } = authStateWithToken ?? {}
+  const stateUserInum = authStateWithToken?.userInum
+  const hasSession = authStateWithToken?.hasSession ?? false
 
   const userInum = useMemo(() => stateUserInum || userinfo?.inum, [stateUserInum, userinfo?.inum])
   const apiAccessToken = authToken?.access_token ?? null
   const canMakeApiCall = hasSession || !!apiAccessToken
 
   const { authorizeHelper, hasCedarWritePermission } = useCedarling()
-  const usersResourceId = useMemo(() => ADMIN_UI_RESOURCES.Users, [])
-  const usersScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[usersResourceId], [usersResourceId])
   const canEditProfile = useMemo(
-    () => hasCedarWritePermission(usersResourceId),
-    [hasCedarWritePermission, usersResourceId],
+    () => hasCedarWritePermission(USERS_RESOURCE_ID),
+    [hasCedarWritePermission],
   )
 
   const jansAdminUIRole = useMemo(
@@ -66,6 +87,13 @@ const ProfileDetails: React.FC = () => {
       profileDetails?.customAttributes?.find(
         (att: CustomAttribute): boolean => att?.name === JANS_ADMIN_UI_ROLE_ATTR,
       ),
+    [profileDetails?.customAttributes],
+  )
+
+  const snValue = useMemo(
+    () =>
+      profileDetails?.customAttributes?.find((att: CustomAttribute) => att?.name === 'sn')
+        ?.values?.[0],
     [profileDetails?.customAttributes],
   )
 
@@ -79,10 +107,10 @@ const ProfileDetails: React.FC = () => {
   }, [canMakeApiCall, dispatch, userInum])
 
   useEffect(() => {
-    if (usersScopes && usersScopes.length > 0) {
-      authorizeHelper(usersScopes)
+    if (USERS_SCOPES?.length) {
+      authorizeHelper(USERS_SCOPES)
     }
-  }, [authorizeHelper, usersScopes])
+  }, [authorizeHelper])
 
   const navigateToUserManagement = useCallback((): void => {
     if (!profileDetails?.inum) return
@@ -106,114 +134,87 @@ const ProfileDetails: React.FC = () => {
   }, [jansAdminUIRole?.values, selectedTheme, themeColors.fontColor])
 
   const renderField = useCallback(
-    (labelKey: string, value: string | undefined, isLoading: boolean) => {
-      if (isLoading) {
-        return <Skeleton animation="wave" />
-      }
-      return (
-        <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} mb={1}>
-          <Box fontWeight={700}>{t(labelKey)}</Box>
-          <Box>{value || '-'}</Box>
-        </Box>
-      )
-    },
+    (labelKey: string, value: string | undefined) => (
+      <Box sx={FIELD_ROW_STYLE}>
+        <Box fontWeight={700}>{t(labelKey)}</Box>
+        <Box>{value || '-'}</Box>
+      </Box>
+    ),
     [t],
   )
 
-  const renderDisplayName = useMemo(() => {
-    if (loading) {
-      return (
-        <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
-          <Skeleton width={SKELETON_WIDTH} sx={skeletonCenterStyle} animation="wave" />
-        </Box>
-      )
-    }
-    return (
+  const renderDisplayName = useMemo(
+    () => (
       <Box fontWeight={700} fontSize={'16px'} className="text-center mb-4">
         {profileDetails?.displayName}
       </Box>
-    )
-  }, [loading, profileDetails?.displayName])
+    ),
+    [profileDetails?.displayName],
+  )
 
-  const renderUserRolesField = useMemo(() => {
-    if (loading) {
-      return <Skeleton animation="wave" />
-    }
-    return (
-      <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} mb={1} gap={3}>
+  const renderUserRolesField = useMemo(
+    () => (
+      <Box sx={{ ...FIELD_ROW_STYLE, gap: 3 }}>
         <Box fontWeight={700}>{t('titles.roles')}</Box>
-        {roleBadges && (
-          <Box
-            display={'flex'}
-            gap={'2px'}
-            flexWrap={'wrap'}
-            alignItems={'end'}
-            justifyContent={'end'}
-          >
-            {roleBadges}
-          </Box>
-        )}
+        {roleBadges && <Box sx={ROLES_BADGES_BOX_STYLE}>{roleBadges}</Box>}
       </Box>
-    )
-  }, [loading, roleBadges, t])
+    ),
+    [roleBadges, t],
+  )
+
+  const editButtonStyle = useMemo(
+    () => ({
+      backgroundColor: 'transparent' as const,
+      color: customColors.primaryDark,
+      border: `1px solid ${themeColors.background}`,
+    }),
+    [themeColors.background],
+  )
 
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
-      <Container>
-        <Row className={classes.centerCard}>
-          <Col xs={10} md={8} lg={5}>
-            <Card className="" type="" color={null}>
-              <CardBody className={classes.profileCard}>
-                <React.Fragment>
-                  <Box className={`${classes.avatar_wrapper} d-flex justify-content-center my-3`}>
-                    <AvatarImage size="lg" src={avatarSrc} />
-                  </Box>
-                  <Box display={'flex'} flexDirection={'column'} gap={2}>
-                    <Box display={'flex'} flexDirection={'column'} gap={1}>
-                      {renderDisplayName}
-                      {renderField('fields.givenName', profileDetails?.givenName, loading)}
-                      <Divider />
-                      {renderField(
-                        'fields.sn',
-                        profileDetails?.customAttributes?.find(
-                          (att: CustomAttribute) => att?.name === 'sn',
-                        )?.values?.[0],
-                        loading,
-                      )}
-                      <Divider />
-                      {renderField('fields.mail', profileDetails?.mail, loading)}
-                      <Divider />
-                      {renderUserRolesField}
-                      <Divider />
-                      {renderField('fields.status', profileDetails?.status, loading)}
-                      <Divider />
-                    </Box>
-                    {canEditProfile && (
-                      <>
-                        {loading ? (
-                          <Skeleton animation="wave" height={SKELETON_HEIGHT} />
-                        ) : (
-                          <Button
-                            style={{
-                              backgroundColor: 'transparent',
-                              color: customColors.primaryDark,
-                              border: `1px solid ${themeColors.background}`,
-                            }}
-                            onClick={navigateToUserManagement}
-                          >
+      <GluuLoader blocking={loading}>
+        {!loading && (
+          <Container>
+            <Row className={classes.centerCard}>
+              <Col {...COL_PROPS}>
+                <Card className="" type="" color={null}>
+                  <CardBody className={classes.profileCard}>
+                    <React.Fragment>
+                      <Box
+                        className={`${classes.avatar_wrapper} d-flex justify-content-center my-3`}
+                      >
+                        <AvatarImage size="lg" src={avatarSrc} />
+                      </Box>
+                      <Box sx={FLEX_COLUMN_GAP2}>
+                        <Box sx={FLEX_COLUMN_GAP1}>
+                          {renderDisplayName}
+                          {renderField('fields.givenName', profileDetails?.givenName)}
+                          <Divider />
+                          {renderField('fields.sn', snValue)}
+                          <Divider />
+                          {renderField('fields.mail', profileDetails?.mail)}
+                          <Divider />
+                          {renderUserRolesField}
+                          <Divider />
+                          {renderField('fields.status', profileDetails?.status)}
+                          <Divider />
+                        </Box>
+                        {canEditProfile && (
+                          <Button style={editButtonStyle} onClick={navigateToUserManagement}>
                             <i className="fa fa-pencil me-2" />
                             {t('actions.edit')}
                           </Button>
                         )}
-                      </>
-                    )}
-                  </Box>
-                </React.Fragment>
-              </CardBody>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
+                      </Box>
+                    </React.Fragment>
+                  </CardBody>
+                </Card>
+              </Col>
+            </Row>
+          </Container>
+        )}
+      </GluuLoader>
     </ErrorBoundary>
   )
 }

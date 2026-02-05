@@ -10,6 +10,7 @@ const createLightTheme = () => {
     background,
     lightBackground: customColors.whiteSmoke,
     fontColor: text,
+    textMuted: customColors.textSecondary,
     borderColor: border,
     inputBackground: customColors.lightInputBg,
     menu: {
@@ -25,6 +26,19 @@ const createLightTheme = () => {
     dashboard: {
       supportCard: customColors.white,
     },
+    card: {
+      background: customColors.white,
+      border: customColors.lightBorder,
+    },
+    infoAlert: {
+      background: customColors.cedarInfoBgLight,
+      border: customColors.cedarInfoBorderLight,
+      text: customColors.cedarInfoTextLight,
+      icon: customColors.cedarInfoTextLight,
+    },
+    checkbox: {
+      uncheckedBorder: customColors.sidebarHoverBg,
+    },
   }
 }
 
@@ -37,6 +51,7 @@ const createDarkTheme = () => {
     background,
     lightBackground: customColors.primaryDark,
     fontColor: text,
+    textMuted: customColors.textMutedDark,
     borderColor: border,
     inputBackground: customColors.darkInputBg,
     menu: {
@@ -51,6 +66,19 @@ const createDarkTheme = () => {
     },
     dashboard: {
       supportCard: customColors.darkCardBg,
+    },
+    card: {
+      background: customColors.cedarCardBgDark,
+      border: customColors.cedarCardBorderDark,
+    },
+    infoAlert: {
+      background: customColors.cedarCardBgDark,
+      border: customColors.cedarCardBorderDark,
+      text: customColors.cedarTextSecondaryDark,
+      icon: customColors.cedarTextTertiaryDark,
+    },
+    checkbox: {
+      uncheckedBorder: customColors.cedarCardBorderDark,
     },
   }
 }

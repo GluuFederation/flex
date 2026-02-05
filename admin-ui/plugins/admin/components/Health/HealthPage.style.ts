@@ -3,6 +3,7 @@ import type { Theme } from '@mui/material/styles'
 import { SPACING, BORDER_RADIUS } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import customColors from '@/customColors'
 
 interface HealthPageThemeColors {
   cardBg: string
@@ -103,6 +104,12 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
       alignItems: 'center',
       gap: SPACING.CARD_CONTENT_GAP,
     },
+    errorMessage: {
+      color: customColors.accentRed,
+    },
+    infoMessage: {
+      color: customColors.textSecondary,
+    },
     errorIcon: {
       color: 'inherit',
       flexShrink: 0,
@@ -130,6 +137,9 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
     },
     serviceCardWrapper: {
       minWidth: 0,
+    },
+    refreshIcon: {
+      fontSize: 16,
     },
   }
 })

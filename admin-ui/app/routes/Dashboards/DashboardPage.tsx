@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import { useMediaQuery } from 'react-responsive'
 import type { Dayjs } from 'dayjs'
 import Grid from '@mui/material/Grid'
@@ -13,7 +13,6 @@ import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
 import { auditLogoutLogs } from 'Redux/features/sessionSlice'
-import type { AuthState } from 'Redux/features/types/authTypes'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuPermissionModal from 'Routes/Apps/Gluu/GluuPermissionModal'
 import { formatDate } from 'Utils/Util'
@@ -22,7 +21,6 @@ import SetTitle from 'Utils/SetTitle'
 import { useMauStats } from 'Plugins/admin/components/MAU/hooks'
 import { useHealthStatus } from 'Plugins/admin/components/Health/hooks'
 import { DEFAULT_STATUS } from '@/constants'
-import type { CedarPermissionsState } from '@/cedarling/types'
 import type { MauDateRange } from 'Plugins/admin/components/MAU/types'
 import DashboardChart from './Chart/DashboardChart'
 import { CHART_LEGEND_CONFIG, STATUS_DETAILS } from './constants'
@@ -41,15 +39,14 @@ import {
   DATE_FORMATS,
 } from '@/utils/dayjsUtils'
 
-interface RootState {
-  authReducer: AuthState
-  cedarPermissions: CedarPermissionsState
-}
+const DASHBOARD_RESOURCE_ID = ADMIN_UI_RESOURCES.Dashboard
+const DASHBOARD_SCOPES = CEDAR_RESOURCE_SCOPES[DASHBOARD_RESOURCE_ID]
+const MOBILE_MEDIA_QUERY = { maxWidth: 767 }
 
 const DashboardPage = () => {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
-  const isMobile = useMediaQuery({ maxWidth: 767 })
+  const dispatch = useAppDispatch()
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
   const themeContext = useContext(ThemeContext)
   const currentTheme = useMemo(
@@ -90,35 +87,28 @@ const DashboardPage = () => {
   const debouncedStartDate = useDebounce(startDate, 400)
   const debouncedEndDate = useDebounce(endDate, 400)
 
-  const { isUserInfoFetched, hasSession } = useSelector((state: RootState) => state.authReducer)
-  const permissions = useSelector((state: RootState) => state.authReducer.permissions)
+  const { isUserInfoFetched, hasSession, permissions } = useAppSelector(
+    (state) => state.authReducer,
+  )
 
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
   const { navigateToRoute } = useAppNavigation()
-  const cedarInitialized = useSelector((state: RootState) => state.cedarPermissions?.initialized)
-  const cedarIsInitializing = useSelector(
-    (state: RootState) => state.cedarPermissions?.isInitializing,
-  )
-
-  const dashboardResourceId = useMemo(() => ADMIN_UI_RESOURCES.Dashboard, [])
-  const dashboardScopes = useMemo(
-    () => CEDAR_RESOURCE_SCOPES[dashboardResourceId],
-    [dashboardResourceId],
-  )
+  const cedarInitialized = useAppSelector((state) => state.cedarPermissions?.initialized)
+  const cedarIsInitializing = useAppSelector((state) => state.cedarPermissions?.isInitializing)
 
   const hasViewPermissions = useMemo(() => {
     if (!cedarInitialized || cedarIsInitializing) {
       return false
     }
-    return Boolean(hasCedarReadPermission(dashboardResourceId))
-  }, [cedarInitialized, cedarIsInitializing, hasCedarReadPermission, dashboardResourceId])
+    return Boolean(hasCedarReadPermission(DASHBOARD_RESOURCE_ID))
+  }, [cedarInitialized, cedarIsInitializing, hasCedarReadPermission])
 
   SetTitle(t('menus.dashboard'))
 
   const initPermissions = useCallback(async () => {
     if (!hasSession || !cedarInitialized) return
-    await authorizeHelper(dashboardScopes)
-  }, [hasSession, cedarInitialized, authorizeHelper, dashboardScopes])
+    await authorizeHelper(DASHBOARD_SCOPES)
+  }, [hasSession, cedarInitialized, authorizeHelper])
 
   useEffect(() => {
     if (hasSession && cedarInitialized && !cedarIsInitializing) {
@@ -350,7 +340,7 @@ const DashboardPage = () => {
       {showModal}
 
       <GluuPageContent>
-        <Grid container style={{ marginBottom: 0 }}>
+        <Grid container className={classes.topGridNoMargin}>
           <Grid item xs={12}>
             <div className={classes.statusSection}>
               <div className={classes.statusContainer}>

@@ -255,6 +255,9 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
         height: '70px',
       },
     },
+    topGridNoMargin: {
+      marginBottom: 0,
+    },
     statusContainer: {
       width: '100%',
       color: themeColors.text,
