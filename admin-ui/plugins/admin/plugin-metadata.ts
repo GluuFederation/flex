@@ -1,5 +1,5 @@
 import HealthPage from './components/Health/HealthPage'
-import MappingPage from './components/Mapping/MappingPage'
+import RolePermissionMappingPage from './components/Mapping/RolePermissionMappingPage'
 
 import SettingsPage from './components/Settings/SettingsPage'
 import MauPage from './components/MAU/MauPage'
@@ -150,7 +150,7 @@ const pluginMetadata = {
     },
 
     {
-      component: MappingPage,
+      component: RolePermissionMappingPage,
       path: ROUTES.ADMIN_MAPPING,
       permission: MAPPING_READ,
     },

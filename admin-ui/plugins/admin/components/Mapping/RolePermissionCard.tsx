@@ -6,11 +6,23 @@ import { useTheme } from '@/context/theme/themeContext'
 import { themeConfig } from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
-import type { MappingItemProps } from './types'
+import {
+  REGEX_ID_SANITIZE_CHARS,
+  REGEX_ID_COLLAPSE_HYPHENS,
+  REGEX_ID_TRIM_HYPHENS,
+} from '@/utils/regex'
+import type { RolePermissionCardProps } from './types'
 import { useStyles } from './styles/MappingPage.style'
 
-interface ExtendedMappingItemProps extends MappingItemProps {
+const CONTENT_ID_PREFIX = 'mapping-content-'
+const CONTENT_ID_ROLE_FALLBACK = 'role'
+const TOGGLE_KEYS = new Set(['Enter', ' '])
+const ARIA_ASSIGNED = 'assigned'
+const ARIA_UNASSIGNED = 'unassigned'
+
+interface ExtendedRolePermissionCardProps extends RolePermissionCardProps {
   allPermissions: string[]
+  itemIndex?: number
 }
 
 const PermissionCheckbox: React.FC<{
@@ -18,11 +30,17 @@ const PermissionCheckbox: React.FC<{
   isChecked: boolean
   classes: ReturnType<typeof useStyles>['classes']
 }> = React.memo(({ permission, isChecked, classes }) => (
-  <Box className={classes.permissionItem}>
+  <Box
+    className={classes.permissionItem}
+    role="checkbox"
+    aria-checked={isChecked}
+    aria-label={`${permission}, ${isChecked ? ARIA_ASSIGNED : ARIA_UNASSIGNED}`}
+    tabIndex={0}
+  >
     <Box
       className={`${classes.checkbox} ${isChecked ? classes.checkboxChecked : classes.checkboxUnchecked}`}
     >
-      {isChecked && <Check className={classes.checkIcon} />}
+      {isChecked && <Check className={classes.checkIcon} aria-hidden={true} />}
     </Box>
     <GluuText variant="span" className={classes.permissionLabel} disableThemeColor>
       {permission}
@@ -32,10 +50,8 @@ const PermissionCheckbox: React.FC<{
 
 PermissionCheckbox.displayName = 'PermissionCheckbox'
 
-const MappingItem: React.FC<ExtendedMappingItemProps> = React.memo(function MappingItem({
-  candidate,
-  allPermissions,
-}) {
+const RolePermissionCard: React.FC<ExtendedRolePermissionCardProps> = React.memo(
+  function RolePermissionCard({ candidate, allPermissions, itemIndex = 0 }) {
   const { t } = useTranslation()
   const [isExpanded, setIsExpanded] = useState(false)
 
@@ -63,14 +79,18 @@ const MappingItem: React.FC<ExtendedMappingItemProps> = React.memo(function Mapp
     setIsExpanded((prev) => !prev)
   }, [])
 
-  const contentId = useMemo(
-    () => `mapping-content-${(candidate?.role ?? '').replace(/\s+/g, '-') || 'role'}`,
-    [candidate?.role],
-  )
+  const contentId = useMemo(() => {
+    const rolePart =
+      (candidate?.role ?? '')
+        .replace(REGEX_ID_SANITIZE_CHARS, '-')
+        .replace(REGEX_ID_COLLAPSE_HYPHENS, '-')
+        .replace(REGEX_ID_TRIM_HYPHENS, '') || CONTENT_ID_ROLE_FALLBACK
+    return `${CONTENT_ID_PREFIX}${itemIndex}-${rolePart}`
+  }, [candidate?.role, itemIndex])
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (e.key === 'Enter' || e.key === ' ') {
+      if (TOGGLE_KEYS.has(e.key)) {
         e.preventDefault()
         handleToggle()
       }
@@ -129,6 +149,7 @@ const MappingItem: React.FC<ExtendedMappingItemProps> = React.memo(function Mapp
       </Collapse>
     </Box>
   )
-})
+  }
+)
 
-export default MappingItem
+export default RolePermissionCard

@@ -1878,7 +1878,14 @@
       "point5": "5. Copiar la URL del Almacén de Políticas.",
       "point6": "6. Abra la pantalla de configuración del Almacén de Políticas de Cedarling en la Admin UI y agregue la URL del Almacén de Políticas copiada en el campo Almacén de Políticas Remoto de la Admin UI. Configure el campo Punto de Recuperación de Políticas como Remoto para usar la URL del Almacén de Políticas remoto para el control de acceso de la Admin UI.",
       "useRemotePolicyStore": "Se recomienda establecerlo en Predeterminado para producción. Si se establece en Predeterminado, utilizará el almacenamiento de la interfaz de administración para la autorización de Cedarling. Active el modo Predeterminado y utilice el botón de actualización para guardar o actualizar las políticas de GitHub en el servidor de la interfaz de administración.",
-      "updateRemotePolicyStoreOnServer": "Haga clic aquí para actualizar el JSON del almacén de políticas predeterminado con la versión disponible en la URL remota configurada."
+      "updateRemotePolicyStoreOnServer": "Haga clic aquí para actualizar el JSON del almacén de políticas predeterminado con la versión disponible en la URL remota configurada.",
+      "policyUrlDisabledWhenDefault": "La URL de la política está deshabilitada cuando se selecciona Predeterminado.",
+      "policyStoreUrlInvalidError": "La URL del almacén de políticas debe ser una URL HTTP o HTTPS válida.",
+      "agamaLabPolicyDesigner": "Diseñador de políticas de Agama Lab",
+      "gluuFlexAdminUiPolicyStoreDisplay": "Gluu Flex Admin UI Policy Store",
+      "auditPolicyStoreUrlUpdated": "Configuración de la URL del almacén de políticas actualizada",
+      "auditSyncRoleToScopesMappings": "Sincronizar función con asignaciones de ámbitos",
+      "auditSetPolicyStoreAsDefault": "Establecer almacén de políticas predeterminado"
     },
     "mappings": {
       "note_prefix": "Configurar",

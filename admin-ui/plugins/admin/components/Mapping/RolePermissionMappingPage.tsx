@@ -10,7 +10,7 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { GluuPageContent } from '@/components'
-import MappingItem from './MappingItem'
+import RolePermissionCard from './RolePermissionCard'
 import SetTitle from 'Utils/SetTitle'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
@@ -18,7 +18,10 @@ import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useMappingData } from './hooks'
 import { useStyles } from './styles/MappingPage.style'
 
-const MappingPage: React.FC = React.memo(function MappingPage() {
+const MAPPING_RESOURCE_ID = ADMIN_UI_RESOURCES.Security
+const MAPPING_SCOPES = CEDAR_RESOURCE_SCOPES[MAPPING_RESOURCE_ID] || []
+
+const RolePermissionMappingPage: React.FC = React.memo(function RolePermissionMappingPage() {
   const { t } = useTranslation()
   SetTitle(t('titles.mapping'))
 
@@ -28,13 +31,7 @@ const MappingPage: React.FC = React.memo(function MappingPage() {
   const { classes } = useStyles({ isDark, theme: currentTheme })
 
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
-
-  const mappingResourceId = ADMIN_UI_RESOURCES.Security
-  const mappingScopes = useMemo(
-    () => CEDAR_RESOURCE_SCOPES[mappingResourceId] || [],
-    [mappingResourceId],
-  )
-  const canReadMapping = hasCedarReadPermission(mappingResourceId)
+  const canReadMapping = hasCedarReadPermission(MAPPING_RESOURCE_ID)
 
   const { mapping, permissions, isLoading, isError } = useMappingData(canReadMapping)
 
@@ -44,10 +41,10 @@ const MappingPage: React.FC = React.memo(function MappingPage() {
   )
 
   useEffect(() => {
-    if (mappingScopes.length > 0) {
-      authorizeHelper(mappingScopes)
+    if (MAPPING_SCOPES.length > 0) {
+      authorizeHelper(MAPPING_SCOPES)
     }
-  }, [authorizeHelper, mappingScopes])
+  }, [authorizeHelper])
 
   return (
     <GluuLoader blocking={isLoading}>
@@ -77,10 +74,11 @@ const MappingPage: React.FC = React.memo(function MappingPage() {
           <GluuViewWrapper canShow={canReadMapping}>
             <Box>
               {mapping.map((candidate, idx) => (
-                <MappingItem
+                <RolePermissionCard
                   key={candidate?.role || idx}
                   candidate={candidate}
                   allPermissions={allPermissions}
+                  itemIndex={idx}
                 />
               ))}
             </Box>
@@ -91,4 +89,4 @@ const MappingPage: React.FC = React.memo(function MappingPage() {
   )
 })
 
-export default MappingPage
+export default RolePermissionMappingPage

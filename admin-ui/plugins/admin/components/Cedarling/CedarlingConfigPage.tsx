@@ -35,6 +35,7 @@ import {
   Link,
 } from '@mui/material'
 import { RefreshOutlined, InfoOutlined } from '@mui/icons-material'
+import Tooltip from '@mui/material/Tooltip'
 import GluuTooltip from '@/routes/Apps/Gluu/GluuTooltip'
 import { ADMIN_UI_CEDARLING_CONFIG } from 'Plugins/admin/redux/audit/Resources'
 import { useQueryClient } from '@tanstack/react-query'
@@ -95,7 +96,8 @@ const CedarlingConfigPage: React.FC = () => {
     if (cedarlingPolicyStoreRetrievalPoint === 'default') return ''
     if (!urlTouched) return ''
     if (!auiPolicyStoreUrl.trim()) return t('messages.field_required')
-    if (!isValidUrl(auiPolicyStoreUrl)) return t('messages.invalid_url_error')
+    if (!isValidUrl(auiPolicyStoreUrl))
+      return t('documentation.cedarlingConfig.policyStoreUrlInvalidError')
     return ''
   }, [cedarlingPolicyStoreRetrievalPoint, auiPolicyStoreUrl, urlTouched, t])
 
@@ -121,7 +123,7 @@ const CedarlingConfigPage: React.FC = () => {
             updateToast(
               true,
               'error',
-              `${t('messages.error_in_saving')} field: ${t('fields.auiPolicyStoreUrl')} ${t('messages.invalid_url_error')}`,
+              `${t('messages.error_in_saving')} ${t('fields.auiPolicyStoreUrl')}: ${t('documentation.cedarlingConfig.policyStoreUrlInvalidError')}`,
             ),
           )
           return
@@ -143,7 +145,7 @@ const CedarlingConfigPage: React.FC = () => {
           editAppConfigResponse?.cedarlingPolicyStoreRetrievalPoint || 'remote',
         )
 
-        let userMessage: string = 'Policy Store URL configuration updated'
+        let userMessage: string = t('documentation.cedarlingConfig.auditPolicyStoreUrlUpdated')
         await logAudit({
           userinfo: userinfo ?? undefined,
           action: UPDATE,
@@ -155,7 +157,7 @@ const CedarlingConfigPage: React.FC = () => {
 
         await syncRoleToScopesMappingsMutation.mutateAsync()
 
-        userMessage = 'sync role to scopes mappings'
+        userMessage = t('documentation.cedarlingConfig.auditSyncRoleToScopesMappings')
         await logAudit({
           userinfo: userinfo ?? undefined,
           action: UPDATE,
@@ -202,7 +204,7 @@ const CedarlingConfigPage: React.FC = () => {
 
         dispatch(updateToast(true, 'success'))
 
-        const userMessage: string = 'Set policy store as default'
+        const userMessage: string = t('documentation.cedarlingConfig.auditSetPolicyStoreAsDefault')
         await logAudit({
           userinfo: userinfo ?? undefined,
           action: UPDATE,
@@ -235,9 +237,11 @@ const CedarlingConfigPage: React.FC = () => {
   }, [])
 
   const handleRadioChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setCedarlingPolicyStoreRetrievalPoint(
-      e.target.value as AppConfigResponseCedarlingPolicyStoreRetrievalPoint,
-    )
+    const value = e.target.value as AppConfigResponseCedarlingPolicyStoreRetrievalPoint
+    setCedarlingPolicyStoreRetrievalPoint(value)
+    if (value === 'default') {
+      setAuiPolicyStoreUrl('')
+    }
   }, [])
 
   const securityResourceId = useMemo(() => ADMIN_UI_RESOURCES.Security, [])
@@ -263,6 +267,11 @@ const CedarlingConfigPage: React.FC = () => {
     [canWriteSecurity, isLoading],
   )
 
+  const isPolicyUrlInputDisabled = useMemo(
+    () => cedarlingPolicyStoreRetrievalPoint === 'default' || !canWriteSecurity || isLoading,
+    [cedarlingPolicyStoreRetrievalPoint, canWriteSecurity, isLoading],
+  )
+
   useEffect(() => {
     if (securityScopes && securityScopes.length > 0) {
       authorizeHelper(securityScopes)
@@ -271,10 +280,9 @@ const CedarlingConfigPage: React.FC = () => {
 
   useEffect(() => {
     if (isSuccess && auiConfig) {
-      setAuiPolicyStoreUrl(auiConfig?.auiPolicyStoreUrl || '')
-      setCedarlingPolicyStoreRetrievalPoint(
-        auiConfig?.cedarlingPolicyStoreRetrievalPoint || 'remote',
-      )
+      const retrievalPoint = auiConfig?.cedarlingPolicyStoreRetrievalPoint || 'remote'
+      setCedarlingPolicyStoreRetrievalPoint(retrievalPoint)
+      setAuiPolicyStoreUrl(retrievalPoint === 'default' ? '' : auiConfig?.auiPolicyStoreUrl || '')
     }
   }, [isSuccess, auiConfig])
 
@@ -301,7 +309,7 @@ const CedarlingConfigPage: React.FC = () => {
                       rel="noopener noreferrer"
                       sx={{ fontWeight: 500, color: cedarThemeColors.text }}
                     >
-                      GluuFlexAdminUIPolicyStore
+                      {t('documentation.cedarlingConfig.gluuFlexAdminUiPolicyStoreDisplay')}
                     </Link>
                     .
                   </GluuText>
@@ -313,7 +321,7 @@ const CedarlingConfigPage: React.FC = () => {
                       rel="noopener noreferrer"
                       sx={{ fontWeight: 500, color: cedarThemeColors.text }}
                     >
-                      Agama Lab&apos;s Policy Designer
+                      {t('documentation.cedarlingConfig.agamaLabPolicyDesigner')}
                     </Link>
                     .
                   </GluuText>
@@ -338,20 +346,60 @@ const CedarlingConfigPage: React.FC = () => {
                     {t('fields.auiPolicyStoreUrl')}:
                   </GluuText>
                   <Box className={classes.fieldRow}>
-                    <TextField
-                      id="auiPolicyStoreUrl"
-                      placeholder={t('placeholders.policy_uri')}
-                      type="url"
-                      value={auiPolicyStoreUrl}
-                      onChange={handleInputChange}
-                      onBlur={handleInputBlur}
-                      disabled={isInputDisabled}
-                      error={!!urlError}
-                      helperText={urlError}
-                      fullWidth
-                      className={classes.inputField}
-                      sx={{ flex: 1 }}
-                    />
+                    {cedarlingPolicyStoreRetrievalPoint === 'default' ? (
+                      <Tooltip
+                        title={t('documentation.cedarlingConfig.policyUrlDisabledWhenDefault')}
+                        slotProps={{
+                          tooltip: {
+                            sx: {
+                              fontSize: 12,
+                              lineHeight: 1,
+                              maxWidth: 320,
+                            },
+                          },
+                        }}
+                      >
+                        <Box
+                          component="span"
+                          sx={{
+                            cursor: 'not-allowed',
+                            display: 'block',
+                            flex: 1,
+                            minWidth: 0,
+                          }}
+                        >
+                          <TextField
+                            id="auiPolicyStoreUrl"
+                            placeholder={t('placeholders.policy_uri')}
+                            type="url"
+                            value={auiPolicyStoreUrl}
+                            onChange={handleInputChange}
+                            onBlur={handleInputBlur}
+                            disabled={true}
+                            error={!!urlError}
+                            helperText={urlError}
+                            fullWidth
+                            className={classes.inputField}
+                            sx={{ pointerEvents: 'none' }}
+                          />
+                        </Box>
+                      </Tooltip>
+                    ) : (
+                      <TextField
+                        id="auiPolicyStoreUrl"
+                        placeholder={t('placeholders.policy_uri')}
+                        type="url"
+                        value={auiPolicyStoreUrl}
+                        onChange={handleInputChange}
+                        onBlur={handleInputBlur}
+                        disabled={isPolicyUrlInputDisabled}
+                        error={!!urlError}
+                        helperText={urlError}
+                        fullWidth
+                        className={classes.inputField}
+                        sx={{ flex: 1 }}
+                      />
+                    )}
                     {!isRefreshButtonHidden && (
                       <GluuTooltip
                         doc_category={'cedarlingConfig'}
@@ -359,9 +407,9 @@ const CedarlingConfigPage: React.FC = () => {
                       >
                         <IconButton
                           type="button"
-                          aria-label="refresh"
+                          aria-label={t('actions.refresh')}
                           onClick={handleSetRemotePolicyStoreAsDefault}
-                          disabled={isInputDisabled}
+                          disabled={isPolicyUrlInputDisabled}
                           sx={{
                             'mt': 0.5,
                             'color': customColors.logo,

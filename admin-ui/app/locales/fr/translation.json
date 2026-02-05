@@ -1739,7 +1739,14 @@
       "point5": "5. Copier l’URL du magasin de politiques.",
       "point6": "6. Ouvrez l’écran de configuration du magasin de politiques Cedarling dans l’Admin UI et ajoutez l’URL du magasin de politiques copiée dans le champ Magasin de politiques distant de l’Admin UI. Définissez le champ Point de récupération des politiques sur Distant afin d’utiliser l’URL du magasin de politiques distant pour le contrôle d’accès de l’Admin UI.",
       "useRemotePolicyStore": "Il est recommandé de définir cette option sur « Par défaut » en production. Si cette option est définie, le stockage de l’interface d’administration sera utilisé pour l’autorisation Cedarling. Activez le mode « Par défaut » et utilisez le bouton d’actualisation pour enregistrer ou mettre à jour les politiques GitHub sur le serveur de l’interface d’administration.",
-      "updateRemotePolicyStoreOnServer": "Cliquez ici pour mettre à jour le fichier JSON du magasin de politiques par défaut avec la version disponible à partir de l'URL distante configurée."
+      "updateRemotePolicyStoreOnServer": "Cliquez ici pour mettre à jour le fichier JSON du magasin de politiques par défaut avec la version disponible à partir de l'URL distante configurée.",
+      "policyUrlDisabledWhenDefault": "L'URL de la stratégie est désactivée lorsque Par défaut est sélectionné.",
+      "policyStoreUrlInvalidError": "L'URL du magasin de politiques doit être une URL HTTP ou HTTPS valide.",
+      "agamaLabPolicyDesigner": "Concepteur de stratégies Agama Lab",
+      "gluuFlexAdminUiPolicyStoreDisplay": "Gluu Flex Admin UI Policy Store",
+      "auditPolicyStoreUrlUpdated": "Configuration de l'URL du magasin de politiques mise à jour",
+      "auditSyncRoleToScopesMappings": "Synchroniser les rôles avec les mappages de portées",
+      "auditSetPolicyStoreAsDefault": "Définir le magasin de politiques par défaut"
     },
     "mappings": {
       "note_prefix": "Configure",

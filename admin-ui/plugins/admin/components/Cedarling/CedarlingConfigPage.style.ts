@@ -81,7 +81,11 @@ const useStyles = makeStyles<{ themeColors: CedarlingConfigThemeColors; isDark: 
       color: themeColors.alertText,
     },
     inputSection: {
-      marginBottom: CEDARLING_CONFIG_SPACING.INPUT_TO_RADIO,
+      'marginBottom': CEDARLING_CONFIG_SPACING.INPUT_TO_RADIO,
+      '& .MuiFormHelperText-root': {
+        marginLeft: 0,
+        paddingLeft: 0,
+      },
     },
     fieldLabel: {
       ...sectionLabelBase,
@@ -101,6 +105,16 @@ const useStyles = makeStyles<{ themeColors: CedarlingConfigThemeColors; isDark: 
         },
         '&.Mui-focused fieldset': {
           borderColor: customColors.lightBlue,
+        },
+        '&.Mui-disabled': {
+          '& .MuiInputBase-input': {
+            'color': themeColors.text,
+            'WebkitTextFillColor': themeColors.text,
+            '&::placeholder': {
+              color: themeColors.placeholderText,
+              opacity: 0.6,
+            },
+          },
         },
       },
       '& .MuiInputBase-input': {
@@ -147,6 +161,10 @@ const useStyles = makeStyles<{ themeColors: CedarlingConfigThemeColors; isDark: 
       lineHeight: lineHeights.tight,
       color: isDark ? customColors.cedarTextSecondaryDark : customColors.cedarInfoTextLight,
       marginTop: CEDARLING_CONFIG_SPACING.HELPER_MT,
+    },
+    inputHelperText: {
+      marginLeft: 0,
+      paddingLeft: 0,
     },
     fieldRow: {
       display: 'flex',

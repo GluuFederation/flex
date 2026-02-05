@@ -2,7 +2,7 @@ import type { RolePermissionMapping, AdminRole, AdminPermission } from 'JansConf
 
 export type { RolePermissionMapping, AdminRole, AdminPermission }
 
-export interface MappingItemProps {
+export interface RolePermissionCardProps {
   candidate: RolePermissionMapping
 }
 

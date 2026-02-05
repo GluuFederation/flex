@@ -29,6 +29,21 @@ type GluuFormFooterProps = GluuFormFooterBaseProps &
     | { applyButtonType: 'button'; onApply: () => void }
   )
 
+const COMMON_BUTTON_STYLE = {
+  minHeight: BUTTON_STYLES.height,
+  padding: `${BUTTON_STYLES.paddingY}px ${BUTTON_STYLES.paddingX}px`,
+  borderRadius: BUTTON_STYLES.borderRadius,
+  fontSize: BUTTON_STYLES.fontSize,
+  fontWeight: BUTTON_STYLES.fontWeight,
+  letterSpacing: BUTTON_STYLES.letterSpacing,
+}
+
+const SHARED_BUTTON_PROPS = {
+  useOpacityOnHover: true,
+  hoverOpacity: 0.85,
+  style: COMMON_BUTTON_STYLE,
+}
+
 const GluuFormFooter = ({
   showBack,
   backButtonLabel,
@@ -90,18 +105,6 @@ const GluuFormFooter = ({
   )
   const applyLabel = useMemo(() => applyButtonLabel || t('actions.apply'), [applyButtonLabel, t])
 
-  const commonButtonStyle = useMemo(
-    () => ({
-      minHeight: BUTTON_STYLES.height,
-      padding: `${BUTTON_STYLES.paddingY}px ${BUTTON_STYLES.paddingX}px`,
-      borderRadius: BUTTON_STYLES.borderRadius,
-      fontSize: BUTTON_STYLES.fontSize,
-      fontWeight: BUTTON_STYLES.fontWeight,
-      letterSpacing: BUTTON_STYLES.letterSpacing,
-    }),
-    [],
-  )
-
   if (!buttonStates.hasAnyButton) {
     return null
   }
@@ -118,9 +121,7 @@ const GluuFormFooter = ({
             backgroundColor={buttonColors.back.backgroundColor}
             textColor={buttonColors.back.textColor}
             borderColor={buttonColors.back.borderColor}
-            useOpacityOnHover
-            hoverOpacity={0.85}
-            style={commonButtonStyle}
+            {...SHARED_BUTTON_PROPS}
           >
             {backLabel}
           </GluuButton>
@@ -136,9 +137,7 @@ const GluuFormFooter = ({
             backgroundColor={buttonColors.apply.backgroundColor}
             textColor={buttonColors.apply.textColor}
             borderColor={buttonColors.apply.borderColor}
-            useOpacityOnHover
-            hoverOpacity={0.85}
-            style={commonButtonStyle}
+            {...SHARED_BUTTON_PROPS}
           >
             {applyLabel}
           </GluuButton>
@@ -157,9 +156,7 @@ const GluuFormFooter = ({
               backgroundColor={buttonColors.apply.backgroundColor}
               textColor={buttonColors.apply.textColor}
               borderColor={buttonColors.apply.borderColor}
-              useOpacityOnHover
-              hoverOpacity={0.85}
-              style={commonButtonStyle}
+              {...SHARED_BUTTON_PROPS}
             >
               {applyLabel}
             </GluuButton>
@@ -175,9 +172,7 @@ const GluuFormFooter = ({
               textColor={buttonColors.cancel.textColor}
               borderColor={buttonColors.cancel.borderColor}
               outlined={buttonColors.cancel.outlined}
-              useOpacityOnHover
-              hoverOpacity={0.85}
-              style={commonButtonStyle}
+              {...SHARED_BUTTON_PROPS}
             >
               {cancelLabel}
             </GluuButton>
