@@ -2,290 +2,290 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://docs.gluu.org/nightly/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/CHANGELOG/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/config/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/gluu-migration/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/admin-ui/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/admin-ui/access-control/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/admin-ui/admin-menu/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/admin-ui/auth-server-interaction/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/admin-ui/auth-server-menu/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/admin-ui/configuration/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/admin-ui/faq/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/admin-ui/fido-menu/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/admin-ui/home/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/admin-ui/introduction/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/admin-ui/jans-lock-menu/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/admin-ui/left-nav-menu/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/admin-ui/logs/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/admin-ui/properties/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/admin-ui/saml-menu/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/admin-ui/scim-menu/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/admin-ui/scripts/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/admin-ui/services-menu/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/admin-ui/smtp-menu/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/admin-ui/user-claims/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/admin-ui/user-management-menu/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/admin-ui/webhooks/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/kubernetes-ops/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/kubernetes-ops/admin-ui-private/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/kubernetes-ops/upgrade/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/recipes/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/recipes/add-claims-to-token/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/recipes/getting-started-rancher/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/recipes/testing-flex-saml-sso-sptest/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/saml/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/saml/idp/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/admin/saml/proxy/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/includes/cn-system-requirements/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/install/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/install/docker-install/compose/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/install/docker-install/quick-start/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/install/flex/prerequisites/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/install/helm-install/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/install/helm-install/amazon-eks/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/install/helm-install/google-gke/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/install/helm-install/local/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/install/helm-install/microsoft-azure/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/install/helm-install/rancher/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/install/vm-install/rhel/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/install/vm-install/suse/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/install/vm-install/ubuntu/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/install/vm-install/vm-requirements/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/openbanking/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/openbanking/configuration-instructions/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/openbanking/curl/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/openbanking/install-cn/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/openbanking/install-vm/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/openbanking/jans-cli/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/openbanking/par-jarm/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/reference/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/reference/json-config/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/reference/json-config/properties/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/reference/json-config/properties/casa-properties/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/reference/json-config/properties/casaconfig-properties/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/reference/kubernetes/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/reference/kubernetes/docker-admin-ui/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/reference/kubernetes/docker-flex-monolith/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/reference/kubernetes/helm-chart/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/solo/cloud-setup/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/solo/solo-administration-guide/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/solo/solo-getting-started/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/nightly/solo/solo-subscription/</loc>
-         <lastmod>2026-02-04</lastmod>
+         <lastmod>2026-02-05</lastmod>
     </url>
 </urlset>
