@@ -7,7 +7,7 @@ import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
-import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { resetFlags } from 'Plugins/admin/redux/features/WebhookSlice'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import Toggle from 'react-toggle'
@@ -261,7 +261,7 @@ const WebhookForm: React.FC = () => {
     formikValues.httpMethod !== 'DELETE'
 
   if (loadingWebhookFeatures && id) {
-    return <GluuSuspenseLoader />
+    return <GluuLoader blocking />
   }
 
   return (
@@ -421,7 +421,7 @@ const WebhookForm: React.FC = () => {
             </FormGroup>
 
             {showBodyEditor && (
-              <Suspense fallback={<GluuSuspenseLoader />}>
+              <Suspense fallback={<GluuLoader blocking />}>
                 <GluuInputEditor
                   name="httpRequestBody"
                   language={'json'}

@@ -1,62 +1,49 @@
 import React, { useContext, useEffect, useCallback, useMemo, memo } from 'react'
-import { Container, Row, Col, Card, CardBody, Button, Badge, AvatarImage } from 'Components'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from '../Gluu/GluuErrorFallBack'
 import { useTranslation } from 'react-i18next'
-import { ThemeContext } from '../../../context/theme/themeContext'
+import { ThemeContext } from '@/context/theme/themeContext'
+import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
 import SetTitle from 'Utils/SetTitle'
 import styles from './styles'
-import { Box, Divider } from '@mui/material'
+import { Box } from '@mui/material'
 import { getProfileDetails } from 'Redux/features/ProfileDetailsSlice'
-import { randomAvatar } from '../../../utilities'
-import getThemeColor from '../../../context/theme/config'
-import { DEFAULT_THEME } from '@/context/theme/constants'
-import customColors from '@/customColors'
+import { randomAvatar } from '@/utilities'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import type { ThemeContextValue, CustomAttribute } from './types'
+import type { CustomAttribute } from './types'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import GluuLoader from '../Gluu/GluuLoader'
+import { Edit } from '@mui/icons-material'
 
 const JANS_ADMIN_UI_ROLE_ATTR = 'jansAdminUIRole'
-const BADGE_PADDING = '4px 6px'
+const SN_ATTR = 'sn'
 const USERS_RESOURCE_ID = ADMIN_UI_RESOURCES.Users
-
-const FLEX_COLUMN_GAP2 = {
-  display: 'flex',
-  flexDirection: 'column' as const,
-  gap: 2,
-}
-const FLEX_COLUMN_GAP1 = {
-  display: 'flex',
-  flexDirection: 'column' as const,
-  gap: 1,
-}
-const FIELD_ROW_STYLE = {
-  display: 'flex',
-  justifyContent: 'space-between' as const,
-  alignItems: 'center',
-  marginBottom: 1,
-}
-const ROLES_BADGES_BOX_STYLE = {
-  display: 'flex',
-  gap: '2px',
-  flexWrap: 'wrap' as const,
-  alignItems: 'end',
-  justifyContent: 'end',
-}
-const COL_PROPS = { xs: 10, md: 8, lg: 5 }
 const USERS_SCOPES = CEDAR_RESOURCE_SCOPES[USERS_RESOURCE_ID]
+const DEFAULT_FALLBACK = '-'
+
+const getValueOrFallback = <T,>(value: T | null | undefined, fallback: T): T => value ?? fallback
+
+const findCustomAttribute = (
+  attributes: CustomAttribute[] | undefined,
+  name: string,
+): CustomAttribute | undefined => attributes?.find((att) => att?.name === name)
+
+const getCustomAttributeValue = (
+  attributes: CustomAttribute[] | undefined,
+  name: string,
+  fallback: string = DEFAULT_FALLBACK,
+): string => findCustomAttribute(attributes, name)?.values?.[0] ?? fallback
 
 const ProfileDetails: React.FC = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const theme = useContext(ThemeContext) as ThemeContextValue
-  const selectedTheme = useMemo(() => theme?.state?.theme ?? DEFAULT_THEME, [theme?.state?.theme])
-  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
-  const { classes } = styles()
+  const theme = useContext(ThemeContext)
+  const currentTheme = theme?.state?.theme || DEFAULT_THEME
+  const isDark = currentTheme === THEME_DARK
+  const { classes } = styles({ isDark })
   const { navigateToRoute } = useAppNavigation()
 
   SetTitle(t('titles.profile_detail'))
@@ -82,27 +69,23 @@ const ProfileDetails: React.FC = () => {
     [hasCedarWritePermission],
   )
 
-  const jansAdminUIRole = useMemo(
-    () =>
-      profileDetails?.customAttributes?.find(
-        (att: CustomAttribute): boolean => att?.name === JANS_ADMIN_UI_ROLE_ATTR,
-      ),
-    [profileDetails?.customAttributes],
-  )
-
-  const snValue = useMemo(
-    () =>
-      profileDetails?.customAttributes?.find((att: CustomAttribute) => att?.name === 'sn')
-        ?.values?.[0],
-    [profileDetails?.customAttributes],
-  )
-
   const avatarSrc = useMemo(() => randomAvatar(), [])
 
-  useEffect(() => {
-    if (!canMakeApiCall || !userInum) {
-      return
+  // Memoized profile values using module-scope utilities
+  const { displayName, email, givenName, lastName, status, roleValue } = useMemo(() => {
+    const customAttrs = profileDetails?.customAttributes
+    return {
+      displayName: getValueOrFallback(profileDetails?.displayName, DEFAULT_FALLBACK),
+      email: getValueOrFallback(profileDetails?.mail, DEFAULT_FALLBACK),
+      givenName: getValueOrFallback(profileDetails?.givenName, DEFAULT_FALLBACK),
+      lastName: getCustomAttributeValue(customAttrs, SN_ATTR),
+      status: getValueOrFallback(profileDetails?.status, DEFAULT_FALLBACK),
+      roleValue: getCustomAttributeValue(customAttrs, JANS_ADMIN_UI_ROLE_ATTR),
     }
+  }, [profileDetails])
+
+  useEffect(() => {
+    if (!canMakeApiCall || !userInum) return
     dispatch(getProfileDetails({ pattern: userInum }))
   }, [canMakeApiCall, dispatch, userInum])
 
@@ -119,100 +102,78 @@ const ProfileDetails: React.FC = () => {
     })
   }, [profileDetails, navigateToRoute])
 
-  const roleBadges = useMemo(() => {
-    if (!jansAdminUIRole?.values?.length) return null
-    return jansAdminUIRole.values.map((role: string, index: number) => (
-      <Badge
-        key={`${role}-${index}`}
-        style={{ padding: BADGE_PADDING, color: themeColors.fontColor }}
-        color={`primary-${selectedTheme}`}
-        className="me-1"
-      >
-        {role}
-      </Badge>
-    ))
-  }, [jansAdminUIRole?.values, selectedTheme, themeColors.fontColor])
-
-  const renderField = useCallback(
-    (labelKey: string, value: string | undefined) => (
-      <Box sx={FIELD_ROW_STYLE}>
-        <Box fontWeight={700}>{t(labelKey)}</Box>
-        <Box>{value || '-'}</Box>
-      </Box>
-    ),
-    [t],
-  )
-
-  const renderDisplayName = useMemo(
-    () => (
-      <Box fontWeight={700} fontSize={'16px'} className="text-center mb-4">
-        {profileDetails?.displayName}
-      </Box>
-    ),
-    [profileDetails?.displayName],
-  )
-
-  const renderUserRolesField = useMemo(
-    () => (
-      <Box sx={{ ...FIELD_ROW_STYLE, gap: 3 }}>
-        <Box fontWeight={700}>{t('titles.roles')}</Box>
-        {roleBadges && <Box sx={ROLES_BADGES_BOX_STYLE}>{roleBadges}</Box>}
-      </Box>
-    ),
-    [roleBadges, t],
-  )
-
-  const editButtonStyle = useMemo(
-    () => ({
-      backgroundColor: 'transparent' as const,
-      color: customColors.primaryDark,
-      border: `1px solid ${themeColors.background}`,
-    }),
-    [themeColors.background],
-  )
-
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
       <GluuLoader blocking={loading}>
         {!loading && (
-          <Container>
-            <Row className={classes.centerCard}>
-              <Col {...COL_PROPS}>
-                <Card className="" type="" color={null}>
-                  <CardBody className={classes.profileCard}>
-                    <React.Fragment>
-                      <Box
-                        className={`${classes.avatar_wrapper} d-flex justify-content-center my-3`}
-                      >
-                        <AvatarImage size="lg" src={avatarSrc} />
-                      </Box>
-                      <Box sx={FLEX_COLUMN_GAP2}>
-                        <Box sx={FLEX_COLUMN_GAP1}>
-                          {renderDisplayName}
-                          {renderField('fields.givenName', profileDetails?.givenName)}
-                          <Divider />
-                          {renderField('fields.sn', snValue)}
-                          <Divider />
-                          {renderField('fields.mail', profileDetails?.mail)}
-                          <Divider />
-                          {renderUserRolesField}
-                          <Divider />
-                          {renderField('fields.status', profileDetails?.status)}
-                          <Divider />
-                        </Box>
-                        {canEditProfile && (
-                          <Button style={editButtonStyle} onClick={navigateToUserManagement}>
-                            <i className="fa fa-pencil me-2" />
-                            {t('actions.edit')}
-                          </Button>
-                        )}
-                      </Box>
-                    </React.Fragment>
-                  </CardBody>
-                </Card>
-              </Col>
-            </Row>
-          </Container>
+          <Box className={classes.pageWrapper}>
+            <Box className={classes.profileCard}>
+              {/* Avatar */}
+              <Box className={classes.avatarWrapper}>
+                <img src={avatarSrc} alt="User avatar" className={classes.avatar} />
+              </Box>
+
+              {/* Display Name */}
+              <Box className={classes.displayName}>{displayName}</Box>
+
+              {/* Email */}
+              <Box className={classes.email}>{email}</Box>
+
+              {/* Status Indicator */}
+              <Box className={classes.statusRow}>
+                <Box className={classes.statusDot} />
+                <Box className={classes.statusText}>
+                  {t('fields.status')}: {status}
+                </Box>
+              </Box>
+
+              {/* Divider */}
+              <Box className={classes.divider} />
+
+              {/* Personal Information Section */}
+              <Box className={classes.sectionTitle}>{t('titles.personal_information')}</Box>
+              <Box className={classes.infoBox}>
+                <Box className={classes.infoRow}>
+                  <Box className={classes.infoLabel}>{t('fields.givenName')}</Box>
+                  <Box className={classes.infoValue}>{givenName}</Box>
+                </Box>
+                <Box className={classes.infoRow}>
+                  <Box className={classes.infoLabel}>{t('fields.sn')}</Box>
+                  <Box className={classes.infoValue}>{lastName}</Box>
+                </Box>
+                <Box className={`${classes.infoRow} ${classes.infoRowLast}`}>
+                  <Box className={classes.infoLabel}>{t('fields.mail')}</Box>
+                  <Box className={classes.infoValue}>{email}</Box>
+                </Box>
+              </Box>
+
+              {/* Admin Roles Section */}
+              <Box className={classes.sectionTitle}>{t('titles.admin_roles')}</Box>
+              <Box className={classes.roleBox}>
+                <Box className={classes.roleLabel}>{roleValue}</Box>
+                <Box className={classes.roleBadge}>{roleValue}</Box>
+              </Box>
+
+              {/* Account Status Section */}
+              <Box className={classes.sectionTitle}>{t('titles.account_status')}</Box>
+              <Box className={classes.statusBox}>
+                <Box className={classes.statusLabel}>{t('fields.status')}:</Box>
+                <Box className={classes.statusBadge}>{status}</Box>
+              </Box>
+
+              {/* Edit Button */}
+              {canEditProfile && (
+                <button
+                  type="button"
+                  className={classes.editButton}
+                  onClick={navigateToUserManagement}
+                >
+                  <Edit className={classes.editIcon} />
+                  {t('actions.edit')}
+                </button>
+              )}
+            </Box>
+          </Box>
         )}
       </GluuLoader>
     </ErrorBoundary>

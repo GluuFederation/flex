@@ -12,7 +12,7 @@ import { SCRIPT } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import { Button } from 'reactstrap'
 import ErrorIcon from '@mui/icons-material/Error'
-import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { Skeleton, Alert } from '@mui/material'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
@@ -197,7 +197,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
   return (
     <>
       {isModalOpen && (
-        <Suspense fallback={<GluuSuspenseLoader />}>
+        <Suspense fallback={<GluuLoader blocking />}>
           <GluuScriptErrorModal
             isOpen={isModalOpen}
             error={item.scriptError?.stackTrace}
@@ -376,7 +376,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
         <FormGroup row>
           <GluuLabel label="fields.level" doc_category={SCRIPT} doc_entry="level" />
           <Col sm={9}>
-            <Suspense fallback={<GluuSuspenseLoader />}>
+            <Suspense fallback={<GluuLoader blocking />}>
               <Counter
                 counter={formik.values.level}
                 disabled={viewOnly}
@@ -409,7 +409,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
           options={modulePropertiesOptions}
           disabled={viewOnly}
         ></GluuProperties>
-        <Suspense fallback={<GluuSuspenseLoader />}>
+        <Suspense fallback={<GluuLoader blocking />}>
           <GluuInputEditor
             doc_category={SCRIPT}
             name="script"

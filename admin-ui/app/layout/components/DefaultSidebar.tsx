@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { Sidebar, SidebarTrigger } from 'Components'
 import { LogoThemed } from 'Routes/components/LogoThemed/LogoThemed'
-import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
+import GluuSidebarLoader from 'Routes/Apps/Gluu/GluuSidebarLoader'
 import {
   SidebarClose,
   SidebarHideSlim,
@@ -24,24 +24,23 @@ const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
     (state: RootState) => state.cedarPermissions,
   )
 
-  const cedarConditionalLoader = () => (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: window.innerHeight * 0.9,
-        padding: '20px',
-      }}
-    >
-      {cedarFailedStatusAfterMaxTries && !initialized ? (
+  const cedarConditionalLoader = () =>
+    cedarFailedStatusAfterMaxTries && !initialized ? (
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%',
+          minHeight: 200,
+          padding: 20,
+        }}
+      >
         <p>{t('titles.no_Cedar')}</p>
-      ) : (
-        <GluuSuspenseLoader />
-      )}
-    </div>
-  )
+      </div>
+    ) : (
+      <GluuSidebarLoader />
+    )
 
   return (
     <Sidebar>
@@ -67,7 +66,7 @@ const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
       <SidebarMobileFluid>
         <SidebarSection fluid cover>
           {initialized ? (
-            <Suspense fallback={<GluuSuspenseLoader />}>
+            <Suspense fallback={<GluuSidebarLoader />}>
               <GluuAppSidebar />
             </Suspense>
           ) : (
