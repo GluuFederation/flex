@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState, useContext, useCallback } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useAppSelector } from '@/redux/types'
 import { ThemeContext } from '@/context/theme/themeContext'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import customColors from '@/customColors'
@@ -18,16 +19,13 @@ import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import GluuCommitDialog from '../Apps/Gluu/GluuCommitDialog'
 import type { LicenseField } from './types'
-import type { LicenseDetailsState } from 'Redux/features/licenseDetailsSlice'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useStyles } from './LicenseDetailsPage.style'
 
 const PLACEHOLDER = '_'
 
 const LicenseDetailsPage = () => {
-  const { item, loading } = useSelector(
-    (state: { licenseDetailsReducer: LicenseDetailsState }) => state.licenseDetailsReducer,
-  )
+  const { item, loading } = useAppSelector((state) => state.licenseDetailsReducer)
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { hasCedarWritePermission, authorizeHelper } = useCedarling()

@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { useAppSelector } from '@/redux/types'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
@@ -23,7 +24,6 @@ import { updateToast } from '@/redux/features/toastSlice'
 import { getErrorMessage, type ApiError } from 'Plugins/schema/utils/errorHandler'
 import { logAudit } from '@/utils/AuditLogger'
 import { isValidUrl } from '@/utils/validation'
-import type { RootState as AuditRootState } from '@/redux/sagas/types/audit'
 import { UPDATE } from '@/audit/UserActionType'
 import {
   Box,
@@ -81,12 +81,8 @@ const CedarlingConfigPage: React.FC = () => {
   const editAdminuiConfMutation = useEditAdminuiConf()
   const syncRoleToScopesMappingsMutation = useSyncRoleToScopesMappings()
   const setRemotePolicyStoreAsDefaultMutation = useSetRemotePolicyStoreAsDefault()
-  const userinfo: AuditRootState['authReducer']['userinfo'] | undefined = useSelector(
-    (state: AuditRootState) => state.authReducer?.userinfo,
-  )
-  const client_id: string | undefined = useSelector(
-    (state: AuditRootState) => state.authReducer?.config?.clientId,
-  )
+  const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
+  const client_id = useAppSelector((state) => state.authReducer?.config?.clientId)
   const [cedarlingPolicyStoreRetrievalPoint, setCedarlingPolicyStoreRetrievalPoint] =
     useState<AppConfigResponseCedarlingPolicyStoreRetrievalPoint>('remote')
 

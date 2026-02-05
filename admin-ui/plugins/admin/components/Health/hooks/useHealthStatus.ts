@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
-import { useSelector } from 'react-redux'
 import { useGetServiceStatus, type JsonNode } from 'JansConfigApi'
-import type { RootState } from 'Redux/sagas/types/audit'
+import { useAppSelector } from '@/redux/types'
 import type { ServiceHealth, ServiceStatusValue, ServiceStatusResponse } from '../types'
 import {
   HEALTH_CACHE_CONFIG,
@@ -45,7 +44,7 @@ const transformServiceStatus = (data: JsonNode | undefined): ServiceHealth[] => 
 }
 
 export const useHealthStatus = () => {
-  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
+  const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
   const query = useGetServiceStatus(undefined, {
     query: {
