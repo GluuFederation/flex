@@ -210,7 +210,7 @@ const CedarlingConfigPage: React.FC = () => {
           resource: ADMIN_UI_CEDARLING_CONFIG,
           message: userMessage,
           client_id: client_id,
-          payload: {},
+          payload: { auiPolicyStoreUrl: auiConfig?.auiPolicyStoreUrl ?? auiPolicyStoreUrl ?? '' },
         })
       } catch (error) {
         console.error('Error updating Cedarling configuration:', error)
@@ -224,7 +224,15 @@ const CedarlingConfigPage: React.FC = () => {
         setIsLoading(false)
       }
     },
-    [dispatch, setRemotePolicyStoreAsDefaultMutation, userinfo, client_id, t],
+    [
+      dispatch,
+      setRemotePolicyStoreAsDefaultMutation,
+      userinfo,
+      client_id,
+      t,
+      auiConfig?.auiPolicyStoreUrl,
+      auiPolicyStoreUrl,
+    ],
   )
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {

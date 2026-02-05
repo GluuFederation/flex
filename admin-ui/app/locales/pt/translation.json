@@ -1734,13 +1734,13 @@
       "point6": "6. Abra a tela de configuração do Repositório de Políticas Cedarling na Admin UI e adicione a URL do Repositório de Políticas copiada no campo Repositório de Políticas Remoto da Admin UI. Defina o campo Ponto de Recuperação de Políticas como Remoto para usar a URL do Repositório de Políticas remoto para o controle de acesso da Admin UI.",
       "useRemotePolicyStore": "Recomenda-se definir como Padrão para a produção. Se definido como Padrão, será utilizado o armazenamento da interface administrativa para a autorização do Cedarling. Ative o modo Padrão e utilize o botão de atualização para armazenar ou atualizar as políticas do GitHub no servidor da interface administrativa.",
       "updateRemotePolicyStoreOnServer": "Clique aqui para atualizar o JSON do repositório de políticas padrão com a versão disponível no URL remoto configurado.",
-      "policyUrlDisabledWhenDefault": "O URL da política está desativado quando Predefinido está selecionado.",
+      "policyUrlDisabledWhenDefault": "O URL da política está desativado quando Padrão está selecionado.",
       "policyStoreUrlInvalidError": "O URL do repositório de políticas deve ser um URL HTTP ou HTTPS válido.",
       "agamaLabPolicyDesigner": "Agama Lab's Policy Designer",
       "gluuFlexAdminUiPolicyStoreDisplay": "Gluu Flex Admin UI Policy Store",
       "auditPolicyStoreUrlUpdated": "Configuração do URL do repositório de políticas atualizada",
-      "auditSyncRoleToScopesMappings": "Sincronizar função com mapeamentos de âmbitos",
-      "auditSetPolicyStoreAsDefault": "Definir repositório de políticas predefinido"
+      "auditSyncRoleToScopesMappings": "Sincronizar função com mapeamentos de escopos",
+      "auditSetPolicyStoreAsDefault": "Definir repositório de políticas padrão"
     },
     "mappings": {
       "note_prefix": "Configurar",

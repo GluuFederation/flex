@@ -1885,7 +1885,7 @@
       "agamaLabPolicyDesigner": "Diseñador de políticas de Agama Lab",
       "gluuFlexAdminUiPolicyStoreDisplay": "Gluu Flex Admin UI Policy Store",
       "auditPolicyStoreUrlUpdated": "Configuración de la URL del almacén de políticas actualizada",
-      "auditSyncRoleToScopesMappings": "Sincronizar función con asignaciones de ámbitos",
+      "auditSyncRoleToScopesMappings": "Sincronizar rol con asignaciones de ámbitos",
       "auditSetPolicyStoreAsDefault": "Establecer almacén de políticas predeterminado"
     },
     "mappings": {

@@ -202,4 +202,12 @@ export const useStyles = makeStyles<MappingPageStyleParams>()((_theme, { isDark,
   errorAlert: {
     marginBottom: MAPPING_SPACING.CARD_MARGIN_BOTTOM,
   },
+
+  infoEmptyState: {
+    marginBottom: MAPPING_SPACING.CARD_MARGIN_BOTTOM,
+    backgroundColor: theme.infoAlert.background,
+    border: `1px solid ${theme.infoAlert.border}`,
+    borderRadius: MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS,
+    padding: `${MAPPING_SPACING.INFO_ALERT_PADDING_VERTICAL}px ${MAPPING_SPACING.INFO_ALERT_PADDING_HORIZONTAL}px`,
+  },
 }))
