@@ -1,6 +1,3 @@
-// Centralized Redux Types
-// Usage: import { RootState, useAppSelector, useAppDispatch } from '@/redux/types'
-
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import type { Dispatch, Reducer, UnknownAction } from '@reduxjs/toolkit'
 import type { ProfileDetails } from 'Routes/Apps/Profile/types'

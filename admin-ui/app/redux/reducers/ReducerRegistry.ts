@@ -1,8 +1,6 @@
-// Reducer Registry - manages dynamic reducer registration for plugins
+import type { Reducer, UnknownAction } from '@reduxjs/toolkit'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnyReducer = (state: any, action: any) => any
-type ReducerMap = { [key: string]: AnyReducer }
+type ReducerMap = Record<string, Reducer<unknown, UnknownAction>>
 type ChangeListener = (reducers: ReducerMap) => void
 
 class ReducerRegistry {
@@ -18,8 +16,11 @@ class ReducerRegistry {
     return { ...this._reducers }
   }
 
-  register(name: string, reducer: AnyReducer): void {
-    this._reducers = { ...this._reducers, [name]: reducer }
+  register<S>(name: string, reducer: Reducer<S, UnknownAction>): void {
+    this._reducers = {
+      ...this._reducers,
+      [name]: reducer as Reducer<unknown, UnknownAction>,
+    }
     if (this._emitChange) {
       this._emitChange(this.getReducers())
     }
@@ -30,10 +31,10 @@ class ReducerRegistry {
   }
 
   hasReducer(name: string): boolean {
-    return name in this._reducers
+    return Object.prototype.hasOwnProperty.call(this._reducers, name)
   }
 
-  getReducer(name: string): AnyReducer | undefined {
+  getReducer(name: string): Reducer<unknown, UnknownAction> | undefined {
     return this._reducers[name]
   }
 }

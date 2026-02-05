@@ -5,5 +5,5 @@ export const REGEX_TRAILING_PERIOD = /\.$/
 export const REGEX_ID_SANITIZE_CHARS = /[^a-zA-Z0-9_-]/g
 /** Collapse consecutive hyphens into one. */
 export const REGEX_ID_COLLAPSE_HYPHENS = /-+/g
-/** Remove leading and trailing hyphens. */
-export const REGEX_ID_TRIM_HYPHENS = /^-|-$/g
+/** Remove one or more leading/trailing hyphens. */
+export const REGEX_ID_TRIM_HYPHENS = /^-+|-+$/g

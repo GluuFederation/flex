@@ -12,6 +12,7 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { GluuPageContent } from '@/components'
 import RolePermissionCard from './RolePermissionCard'
 import SetTitle from 'Utils/SetTitle'
+import { ROUTES } from '@/helpers/navigation'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
@@ -58,7 +59,7 @@ const RolePermissionMappingPage: React.FC = React.memo(function RolePermissionMa
             <InfoOutlined className={classes.infoIcon} />
             <GluuText variant="span" className={classes.infoText} disableThemeColor>
               {t('documentation.mappings.note_prefix')}{' '}
-              <Link to="/adm/cedarlingconfig" className={classes.infoLink}>
+              <Link to={ROUTES.ADMIN_CEDARLING_CONFIG} className={classes.infoLink}>
                 Cedarling
               </Link>{' '}
               {t('documentation.mappings.note_suffix')}
