@@ -1883,7 +1883,7 @@
       "policyUrlDisabledWhenDefault": "La URL de la política está deshabilitada cuando se selecciona Predeterminado.",
       "policyStoreUrlInvalidError": "La URL del almacén de políticas debe ser una URL HTTP o HTTPS válida.",
       "agamaLabPolicyDesigner": "Diseñador de políticas de Agama Lab",
-      "gluuFlexAdminUiPolicyStoreDisplay": "Gluu Flex Admin UI Policy Store",
+      "gluuFlexAdminUiPolicyStoreDisplay": "Almacén de políticas de la interfaz de administración de Gluu Flex",
       "auditPolicyStoreUrlUpdated": "Configuración de la URL del almacén de políticas actualizada",
       "auditSyncRoleToScopesMappings": "Sincronizar rol con asignaciones de ámbitos",
       "auditSetPolicyStoreAsDefault": "Establecer almacén de políticas predeterminado"

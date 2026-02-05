@@ -74,20 +74,21 @@ const RolePermissionMappingPage: React.FC = React.memo(function RolePermissionMa
 
           <GluuViewWrapper canShow={canReadMapping}>
             <Box>
-              {mapping.length === 0 ? (
-                <Alert severity="info" className={classes.infoEmptyState}>
-                  {t('messages.no_role_mappings_found')}
-                </Alert>
-              ) : (
-                mapping.map((candidate, idx) => (
-                  <RolePermissionCard
-                    key={candidate?.role || idx}
-                    candidate={candidate}
-                    allPermissions={allPermissions}
-                    itemIndex={idx}
-                  />
-                ))
-              )}
+              {!isError &&
+                (mapping.length === 0 ? (
+                  <Alert severity="info" className={classes.infoEmptyState}>
+                    {t('messages.no_role_mappings_found')}
+                  </Alert>
+                ) : (
+                  mapping.map((candidate, idx) => (
+                    <RolePermissionCard
+                      key={candidate?.role || idx}
+                      candidate={candidate}
+                      allPermissions={allPermissions}
+                      itemIndex={idx}
+                    />
+                  ))
+                ))}
             </Box>
           </GluuViewWrapper>
         </Box>

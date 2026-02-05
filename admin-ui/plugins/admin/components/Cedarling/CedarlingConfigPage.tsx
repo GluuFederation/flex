@@ -117,7 +117,7 @@ const CedarlingConfigPage: React.FC = () => {
           )
           return
         }
-        if (!isValidUrl(auiPolicyStoreUrl)) {
+        if (!isValidUrl(trimmedUrl)) {
           dispatch(
             updateToast(
               true,
