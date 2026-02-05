@@ -85,6 +85,8 @@ const useStyles = makeStyles<{ themeColors: CedarlingConfigThemeColors; isDark: 
       '& .MuiFormHelperText-root': {
         marginLeft: 0,
         paddingLeft: 0,
+        fontSize: fontSizes.base,
+        lineHeight: lineHeights.tight,
       },
     },
     fieldLabel: {

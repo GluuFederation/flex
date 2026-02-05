@@ -52,104 +52,95 @@ PermissionCheckbox.displayName = 'PermissionCheckbox'
 
 const RolePermissionCard: React.FC<ExtendedRolePermissionCardProps> = React.memo(
   function RolePermissionCard({ candidate, allPermissions, itemIndex = 0 }) {
-  const { t } = useTranslation()
-  const [isExpanded, setIsExpanded] = useState(false)
+    const { t } = useTranslation()
+    const [isExpanded, setIsExpanded] = useState(false)
 
-  const { state } = useTheme()
-  const isDark = state.theme === THEME_DARK
-  const currentTheme = themeConfig[state.theme]
-  const { classes } = useStyles({ isDark, theme: currentTheme })
+    const { state } = useTheme()
+    const isDark = state.theme === THEME_DARK
+    const currentTheme = themeConfig[state.theme]
+    const { classes } = useStyles({ isDark, theme: currentTheme })
 
-  const rolePermissions = useMemo(
-    () => new Set(candidate?.permissions || []),
-    [candidate?.permissions],
-  )
+    const rolePermissions = useMemo(
+      () => new Set(candidate?.permissions || []),
+      [candidate?.permissions],
+    )
 
-  const sortedPermissions = useMemo(() => {
-    const checked: string[] = []
-    const unchecked: string[] = []
-    for (const p of allPermissions) {
-      if (rolePermissions.has(p)) checked.push(p)
-      else unchecked.push(p)
-    }
-    return [...checked, ...unchecked]
-  }, [allPermissions, rolePermissions])
+    const sortedPermissions = useMemo(() => {
+      return allPermissions.filter((p) => rolePermissions.has(p)).sort()
+    }, [allPermissions, rolePermissions])
 
-  const handleToggle = useCallback(() => {
-    setIsExpanded((prev) => !prev)
-  }, [])
+    const handleToggle = useCallback(() => {
+      setIsExpanded((prev) => !prev)
+    }, [])
 
-  const contentId = useMemo(() => {
-    const rolePart =
-      (candidate?.role ?? '')
-        .replace(REGEX_ID_SANITIZE_CHARS, '-')
-        .replace(REGEX_ID_COLLAPSE_HYPHENS, '-')
-        .replace(REGEX_ID_TRIM_HYPHENS, '') || CONTENT_ID_ROLE_FALLBACK
-    return `${CONTENT_ID_PREFIX}${itemIndex}-${rolePart}`
-  }, [candidate?.role, itemIndex])
+    const contentId = useMemo(() => {
+      const rolePart =
+        (candidate?.role ?? '')
+          .replace(REGEX_ID_SANITIZE_CHARS, '-')
+          .replace(REGEX_ID_COLLAPSE_HYPHENS, '-')
+          .replace(REGEX_ID_TRIM_HYPHENS, '') || CONTENT_ID_ROLE_FALLBACK
+      return `${CONTENT_ID_PREFIX}${itemIndex}-${rolePart}`
+    }, [candidate?.role, itemIndex])
 
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (TOGGLE_KEYS.has(e.key)) {
-        e.preventDefault()
-        handleToggle()
-      }
-    },
-    [handleToggle],
-  )
+    const handleKeyDown = useCallback(
+      (e: React.KeyboardEvent) => {
+        if (TOGGLE_KEYS.has(e.key)) {
+          e.preventDefault()
+          handleToggle()
+        }
+      },
+      [handleToggle],
+    )
 
-  const permissionCheckboxes = useMemo(() => {
-    if (!isExpanded) return null
-    return sortedPermissions.map((permission) => (
-      <PermissionCheckbox
-        key={permission}
-        permission={permission}
-        isChecked={rolePermissions.has(permission)}
-        classes={classes}
-      />
-    ))
-  }, [isExpanded, sortedPermissions, rolePermissions, classes])
+    const permissionCheckboxes = useMemo(() => {
+      if (!isExpanded) return null
+      return sortedPermissions.map((permission) => (
+        <PermissionCheckbox
+          key={permission}
+          permission={permission}
+          isChecked={rolePermissions.has(permission)}
+          classes={classes}
+        />
+      ))
+    }, [isExpanded, sortedPermissions, rolePermissions, classes])
 
-  return (
-    <Box className={classes.roleCard}>
-      <Box
-        className={classes.roleCardHeader}
-        role="button"
-        tabIndex={0}
-        aria-expanded={isExpanded}
-        aria-controls={contentId}
-        onClick={handleToggle}
-        onKeyDown={handleKeyDown}
-      >
-        <GluuText variant="h3" className={classes.roleTitle} disableThemeColor>
-          {candidate?.role}
-        </GluuText>
-        <Box className={classes.roleHeaderRight}>
-          <GluuText variant="span" className={classes.permissionCount} disableThemeColor>
-            <GluuText variant="span" className={classes.permissionCountHighlight} disableThemeColor>
-              {rolePermissions.size}
-            </GluuText>
-            {` ${t('messages.out_of')} ${allPermissions.length} ${t('messages.permission_label')}`}
+    return (
+      <Box className={classes.roleCard}>
+        <Box
+          className={classes.roleCardHeader}
+          role="button"
+          tabIndex={0}
+          aria-expanded={isExpanded}
+          aria-controls={contentId}
+          onClick={handleToggle}
+          onKeyDown={handleKeyDown}
+        >
+          <GluuText variant="h3" className={classes.roleTitle} disableThemeColor>
+            {candidate?.role}
           </GluuText>
-          <ExpandMore
-            className={`${classes.chevronIcon} ${isExpanded ? classes.chevronIconOpen : ''}`}
-          />
-        </Box>
-      </Box>
-      <Collapse in={isExpanded}>
-        <Box id={contentId} className={classes.roleCardContent}>
-          {allPermissions.length === 0 ? (
-            <GluuText variant="p" className={classes.noPermissions} disableThemeColor>
-              {t('messages.no_permissions_assigned')}
+          <Box className={classes.roleHeaderRight}>
+            <GluuText variant="span" className={classes.permissionCount} disableThemeColor>
+              {t('messages.permissions_count', { count: rolePermissions.size })}
             </GluuText>
-          ) : (
-            <Box className={classes.permissionsGrid}>{permissionCheckboxes}</Box>
-          )}
+            <ExpandMore
+              className={`${classes.chevronIcon} ${isExpanded ? classes.chevronIconOpen : ''}`}
+            />
+          </Box>
         </Box>
-      </Collapse>
-    </Box>
-  )
-  }
+        <Collapse in={isExpanded}>
+          <Box id={contentId} className={classes.roleCardContent}>
+            {allPermissions.length === 0 ? (
+              <GluuText variant="p" className={classes.noPermissions} disableThemeColor>
+                {t('messages.no_permissions_assigned')}
+              </GluuText>
+            ) : (
+              <Box className={classes.permissionsGrid}>{permissionCheckboxes}</Box>
+            )}
+          </Box>
+        </Collapse>
+      </Box>
+    )
+  },
 )
 
 export default RolePermissionCard

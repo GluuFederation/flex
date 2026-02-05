@@ -412,7 +412,7 @@ const CedarlingConfigPage: React.FC = () => {
                           type="button"
                           aria-label={t('actions.refresh')}
                           onClick={handleSetRemotePolicyStoreAsDefault}
-                          disabled={isPolicyUrlInputDisabled}
+                          disabled={isInputDisabled}
                           sx={{
                             'mt': 0.5,
                             'color': customColors.logo,

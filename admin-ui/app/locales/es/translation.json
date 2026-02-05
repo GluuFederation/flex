@@ -887,6 +887,7 @@
     "no_role_mappings_found": "No se encontraron mapeos de roles",
     "permissions_count_one": "{{count}} permiso",
     "permissions_count_other": "{{count}} permisos",
+    "permissions_count": "{{count, plural, one {{count}} permiso} other {{count}} permisos}}",
     "no_permissions_assigned": "No hay permisos asignados",
     "out_of": "de",
     "permission_label": "Permiso",
