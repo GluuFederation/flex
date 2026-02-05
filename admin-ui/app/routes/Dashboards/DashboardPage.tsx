@@ -340,7 +340,7 @@ const DashboardPage = () => {
       {showModal}
 
       <GluuPageContent>
-        <Grid container style={{ marginBottom: 0 }}>
+        <Grid container className={classes.topGridNoMargin}>
           <Grid item xs={12}>
             <div className={classes.statusSection}>
               <div className={classes.statusContainer}>

@@ -18,7 +18,6 @@ const CONTENT_ID_PREFIX = 'mapping-content-'
 const CONTENT_ID_ROLE_FALLBACK = 'role'
 const TOGGLE_KEYS = new Set(['Enter', ' '])
 const ARIA_ASSIGNED = 'assigned'
-const ARIA_UNASSIGNED = 'unassigned'
 
 interface ExtendedRolePermissionCardProps extends RolePermissionCardProps {
   allPermissions: string[]
@@ -27,20 +26,18 @@ interface ExtendedRolePermissionCardProps extends RolePermissionCardProps {
 
 const PermissionCheckbox: React.FC<{
   permission: string
-  isChecked: boolean
   classes: ReturnType<typeof useStyles>['classes']
-}> = React.memo(({ permission, isChecked, classes }) => (
+}> = React.memo(({ permission, classes }) => (
   <Box
     className={classes.permissionItem}
     role="checkbox"
-    aria-checked={isChecked}
-    aria-label={`${permission}, ${isChecked ? ARIA_ASSIGNED : ARIA_UNASSIGNED}`}
+    aria-checked="true"
+    aria-readonly="true"
+    aria-label={`${permission}, ${ARIA_ASSIGNED}`}
     tabIndex={0}
   >
-    <Box
-      className={`${classes.checkbox} ${isChecked ? classes.checkboxChecked : classes.checkboxUnchecked}`}
-    >
-      {isChecked && <Check className={classes.checkIcon} aria-hidden={true} />}
+    <Box className={`${classes.checkbox} ${classes.checkboxChecked}`}>
+      <Check className={classes.checkIcon} aria-hidden={true} />
     </Box>
     <GluuText variant="span" className={classes.permissionLabel} disableThemeColor>
       {permission}
@@ -65,9 +62,10 @@ const RolePermissionCard: React.FC<ExtendedRolePermissionCardProps> = React.memo
       [candidate?.permissions],
     )
 
-    const sortedPermissions = useMemo(() => {
-      return allPermissions.filter((p) => rolePermissions.has(p)).sort()
-    }, [allPermissions, rolePermissions])
+    const sortedPermissions = useMemo(
+      () => allPermissions.filter((p) => rolePermissions.has(p)).sort(),
+      [allPermissions, rolePermissions],
+    )
 
     const handleToggle = useCallback(() => {
       setIsExpanded((prev) => !prev)
@@ -95,14 +93,9 @@ const RolePermissionCard: React.FC<ExtendedRolePermissionCardProps> = React.memo
     const permissionCheckboxes = useMemo(() => {
       if (!isExpanded) return null
       return sortedPermissions.map((permission) => (
-        <PermissionCheckbox
-          key={permission}
-          permission={permission}
-          isChecked={rolePermissions.has(permission)}
-          classes={classes}
-        />
+        <PermissionCheckbox key={permission} permission={permission} classes={classes} />
       ))
-    }, [isExpanded, sortedPermissions, rolePermissions, classes])
+    }, [isExpanded, sortedPermissions, classes])
 
     return (
       <Box className={classes.roleCard}>
@@ -129,7 +122,7 @@ const RolePermissionCard: React.FC<ExtendedRolePermissionCardProps> = React.memo
         </Box>
         <Collapse in={isExpanded}>
           <Box id={contentId} className={classes.roleCardContent}>
-            {allPermissions.length === 0 ? (
+            {sortedPermissions.length === 0 ? (
               <GluuText variant="p" className={classes.noPermissions} disableThemeColor>
                 {t('messages.no_permissions_assigned')}
               </GluuText>

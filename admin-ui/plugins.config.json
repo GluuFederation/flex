@@ -46,11 +46,6 @@
     "metadataFile": "./fido/plugin-metadata"
   },
   {
-    "order": 10,
-    "key": "saml",
-    "metadataFile": "./saml/plugin-metadata"
-  },
-  {
     "order": 11,
     "key": "jans-lock",
     "metadataFile": "./jans-lock/plugin-metadata"

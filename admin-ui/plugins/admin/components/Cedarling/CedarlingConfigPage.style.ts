@@ -64,6 +64,7 @@ const useStyles = makeStyles<{ themeColors: CedarlingConfigThemeColors; isDark: 
       top: CEDARLING_CONFIG_SPACING.ALERT_ICON_TOP,
       width: 24,
       height: 24,
+      color: themeColors.alertText,
     },
     alertStepTitle: {
       fontFamily,
@@ -176,6 +177,39 @@ const useStyles = makeStyles<{ themeColors: CedarlingConfigThemeColors; isDark: 
       [theme.breakpoints.down('sm')]: {
         flexDirection: 'column',
         alignItems: 'stretch',
+      },
+    },
+    disabledPolicyTooltip: {
+      fontSize: fontSizes.base,
+      lineHeight: lineHeights.tight,
+      maxWidth: 320,
+    },
+    disabledUrlSpan: {
+      cursor: 'not-allowed',
+      display: 'block',
+      flex: 1,
+      minWidth: 0,
+      pointerEvents: 'none',
+    },
+    inputFieldFlex: {
+      flex: 1,
+    },
+    radioGroup: {
+      gap: '25px',
+    },
+    refreshIconButton: {
+      'marginTop': 4,
+      'color': customColors.logo,
+      '&:hover': {
+        backgroundColor: `${customColors.logo}14`,
+      },
+    },
+    alertLink: {
+      'fontWeight': fontWeights.medium,
+      'color': themeColors.text,
+      'textDecoration': 'none',
+      '&:hover': {
+        textDecoration: 'underline',
       },
     },
     buttonSection: {

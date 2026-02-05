@@ -80,14 +80,17 @@ const RolePermissionMappingPage: React.FC = React.memo(function RolePermissionMa
                     {t('messages.no_role_mappings_found')}
                   </Alert>
                 ) : (
-                  mapping.map((candidate, idx) => (
-                    <RolePermissionCard
-                      key={candidate?.role || idx}
-                      candidate={candidate}
-                      allPermissions={allPermissions}
-                      itemIndex={idx}
-                    />
-                  ))
+                  mapping.map((candidate, idx) => {
+                    const roleKey = candidate?.role ?? 'role'
+                    return (
+                      <RolePermissionCard
+                        key={`${roleKey}-${idx}`}
+                        candidate={candidate}
+                        allPermissions={allPermissions}
+                        itemIndex={idx}
+                      />
+                    )
+                  })
                 ))}
             </Box>
           </GluuViewWrapper>

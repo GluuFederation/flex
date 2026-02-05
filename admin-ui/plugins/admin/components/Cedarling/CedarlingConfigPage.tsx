@@ -39,7 +39,6 @@ import Tooltip from '@mui/material/Tooltip'
 import GluuTooltip from '@/routes/Apps/Gluu/GluuTooltip'
 import { ADMIN_UI_CEDARLING_CONFIG } from 'Plugins/admin/redux/audit/Resources'
 import { useQueryClient } from '@tanstack/react-query'
-import customColors from '@/customColors'
 import { GluuPageContent } from '@/components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useTheme } from 'Context/theme/themeContext'
@@ -246,9 +245,6 @@ const CedarlingConfigPage: React.FC = () => {
   const handleRadioChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value as AppConfigResponseCedarlingPolicyStoreRetrievalPoint
     setCedarlingPolicyStoreRetrievalPoint(value)
-    if (value === 'default') {
-      setAuiPolicyStoreUrl('')
-    }
   }, [])
 
   const canReadSecurity = useMemo(
@@ -285,7 +281,7 @@ const CedarlingConfigPage: React.FC = () => {
     if (isSuccess && auiConfig) {
       const retrievalPoint = auiConfig?.cedarlingPolicyStoreRetrievalPoint || 'remote'
       setCedarlingPolicyStoreRetrievalPoint(retrievalPoint)
-      setAuiPolicyStoreUrl(retrievalPoint === 'default' ? '' : auiConfig?.auiPolicyStoreUrl || '')
+      setAuiPolicyStoreUrl(auiConfig?.auiPolicyStoreUrl || '')
     }
   }, [isSuccess, auiConfig])
 
@@ -310,7 +306,7 @@ const CedarlingConfigPage: React.FC = () => {
                       href="https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/tree/agama-lab-policy-designer"
                       target="_blank"
                       rel="noopener noreferrer"
-                      sx={{ fontWeight: 500, color: cedarThemeColors.text }}
+                      className={classes.alertLink}
                     >
                       {t('documentation.cedarlingConfig.gluuFlexAdminUiPolicyStoreDisplay')}
                     </Link>
@@ -322,7 +318,7 @@ const CedarlingConfigPage: React.FC = () => {
                       href="https://cloud.gluu.org/agama-lab"
                       target="_blank"
                       rel="noopener noreferrer"
-                      sx={{ fontWeight: 500, color: cedarThemeColors.text }}
+                      className={classes.alertLink}
                     >
                       {t('documentation.cedarlingConfig.agamaLabPolicyDesigner')}
                     </Link>
@@ -352,25 +348,9 @@ const CedarlingConfigPage: React.FC = () => {
                     {cedarlingPolicyStoreRetrievalPoint === 'default' ? (
                       <Tooltip
                         title={t('documentation.cedarlingConfig.policyUrlDisabledWhenDefault')}
-                        slotProps={{
-                          tooltip: {
-                            sx: {
-                              fontSize: 12,
-                              lineHeight: 1,
-                              maxWidth: 320,
-                            },
-                          },
-                        }}
+                        slotProps={{ tooltip: { className: classes.disabledPolicyTooltip } }}
                       >
-                        <Box
-                          component="span"
-                          sx={{
-                            cursor: 'not-allowed',
-                            display: 'block',
-                            flex: 1,
-                            minWidth: 0,
-                          }}
-                        >
+                        <Box component="span" className={classes.disabledUrlSpan}>
                           <TextField
                             id="auiPolicyStoreUrl"
                             placeholder={t('placeholders.policy_uri')}
@@ -383,7 +363,6 @@ const CedarlingConfigPage: React.FC = () => {
                             helperText={urlError}
                             fullWidth
                             className={classes.inputField}
-                            sx={{ pointerEvents: 'none' }}
                           />
                         </Box>
                       </Tooltip>
@@ -399,8 +378,7 @@ const CedarlingConfigPage: React.FC = () => {
                         error={!!urlError}
                         helperText={urlError}
                         fullWidth
-                        className={classes.inputField}
-                        sx={{ flex: 1 }}
+                        className={`${classes.inputField} ${classes.inputFieldFlex}`}
                       />
                     )}
                     {!isRefreshButtonHidden && (
@@ -413,13 +391,7 @@ const CedarlingConfigPage: React.FC = () => {
                           aria-label={t('actions.refresh')}
                           onClick={handleSetRemotePolicyStoreAsDefault}
                           disabled={isInputDisabled}
-                          sx={{
-                            'mt': 0.5,
-                            'color': customColors.logo,
-                            '&:hover': {
-                              backgroundColor: `${customColors.logo}14`,
-                            },
-                          }}
+                          className={classes.refreshIconButton}
                         >
                           <RefreshOutlined />
                         </IconButton>
@@ -437,7 +409,7 @@ const CedarlingConfigPage: React.FC = () => {
                     name="cedarlingPolicyStoreRetrievalPoint"
                     value={cedarlingPolicyStoreRetrievalPoint}
                     onChange={handleRadioChange}
-                    sx={{ gap: '25px' }}
+                    className={classes.radioGroup}
                   >
                     <FormControlLabel
                       value="remote"

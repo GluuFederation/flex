@@ -14,8 +14,6 @@ import { useHealthStatus } from './hooks'
 import ServiceStatusCard from './components/ServiceStatusCard'
 import { useStyles } from './HealthPage.style'
 
-const REFRESH_ICON_STYLE = { fontSize: 16 }
-
 const HealthPage: React.FC = () => {
   const { t } = useTranslation()
   SetTitle(t('titles.services_health'))
@@ -70,10 +68,7 @@ const HealthPage: React.FC = () => {
                 textColor={healthThemeColors.refreshButtonText}
                 useOpacityOnHover
               >
-                <i
-                  className={`fa fa-refresh ${loading ? 'fa-spin' : ''}`}
-                  style={REFRESH_ICON_STYLE}
-                />
+                <i className={`fa fa-refresh ${loading ? 'fa-spin' : ''} ${classes.refreshIcon}`} />
                 {t('actions.refresh')}
               </GluuButton>
             </div>
@@ -81,14 +76,14 @@ const HealthPage: React.FC = () => {
           </div>
 
           {isError && (
-            <div className={classes.messageBlock} style={{ color: customColors.accentRed }}>
+            <div className={`${classes.messageBlock} ${classes.errorMessage}`}>
               <i className={`fa fa-exclamation-triangle ${classes.errorIcon}`} />
               <GluuText variant="span">{t('messages.error_fetching_health_status')}</GluuText>
             </div>
           )}
 
           {!isLoading && !isError && services.length === 0 && (
-            <div className={classes.messageBlock} style={{ color: customColors.textSecondary }}>
+            <div className={`${classes.messageBlock} ${classes.infoMessage}`}>
               <i className={`fa fa-info-circle ${classes.infoIcon}`} />
               <GluuText variant="span" secondary>
                 {t('messages.no_services_found')}

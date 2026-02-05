@@ -138,14 +138,14 @@ const LicenseDetailsPage = () => {
             {canWriteLicense && (
               <div className={classes.buttonContainer}>
                 <GluuButton
+                  className={classes.resetButton}
                   onClick={toggle}
                   disabled={loading}
                   backgroundColor={customColors.statusActive}
                   textColor={customColors.white}
                   useOpacityOnHover
-                  style={{ gap: 8 }}
                 >
-                  <i className="fa fa-refresh" style={{ fontSize: 16 }} />
+                  <i className={`fa fa-refresh ${classes.refreshIcon}`} />
                   {t('fields.resetLicense')}
                 </GluuButton>
               </div>

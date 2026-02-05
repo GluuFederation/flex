@@ -1737,8 +1737,8 @@
       "updateRemotePolicyStoreOnServer": "Clique aqui para atualizar o JSON do repositório de políticas padrão com a versão disponível no URL remoto configurado.",
       "policyUrlDisabledWhenDefault": "O URL da política está desativado quando Padrão está selecionado.",
       "policyStoreUrlInvalidError": "O URL do repositório de políticas deve ser um URL HTTP ou HTTPS válido.",
-      "agamaLabPolicyDesigner": "Agama Lab's Policy Designer",
-      "gluuFlexAdminUiPolicyStoreDisplay": "Gluu Flex Admin UI Policy Store",
+      "agamaLabPolicyDesigner": "Designer de Políticas do Agama Lab",
+      "gluuFlexAdminUiPolicyStoreDisplay": "Armazenamento de Políticas da UI Administrativa Gluu Flex",
       "auditPolicyStoreUrlUpdated": "Configuração do URL do repositório de políticas atualizada",
       "auditSyncRoleToScopesMappings": "Sincronizar função com mapeamentos de escopos",
       "auditSetPolicyStoreAsDefault": "Definir repositório de políticas padrão"
