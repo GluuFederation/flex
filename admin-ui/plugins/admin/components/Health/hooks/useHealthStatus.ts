@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useGetServiceStatus, type JsonNode } from 'JansConfigApi'
-import { useAppSelector } from '@/redux/types'
+import { useAppSelector } from '@/redux/hooks'
 import type { ServiceHealth, ServiceStatusValue, ServiceStatusResponse } from '../types'
 import {
   HEALTH_CACHE_CONFIG,

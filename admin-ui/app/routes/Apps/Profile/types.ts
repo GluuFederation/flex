@@ -1,4 +1,3 @@
-import type { Dispatch, UnknownAction } from '@reduxjs/toolkit'
 import type { UserInfo } from 'Redux/features/types/authTypes'
 
 export interface CustomAttribute {
@@ -39,8 +38,6 @@ export interface ProfileRootState {
   profileDetailsReducer: ProfileDetailsState
   authReducer: AuthState
 }
-
-export type AppDispatch = Dispatch<UnknownAction>
 
 export interface ThemeContextValue {
   state: {

@@ -813,6 +813,7 @@
     "mapping_added_successfully": "Mapeamento adicionado com sucesso",
     "error_adding_mapping": "Falha ao adicionar o mapeamento",
     "error_loading_mapping": "Falha ao carregar os mapeamentos de função e permissão",
+    "no_role_mappings_found": "Nenhum mapeamento de funções encontrado",
     "permissions_count_one": "{{count}} permissão",
     "permissions_count_other": "{{count}} permissões",
     "no_permissions_assigned": "Nenhuma permissão atribuída",

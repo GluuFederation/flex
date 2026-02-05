@@ -884,6 +884,7 @@
     "mapping_added_successfully": "Mapeo agregado correctamente",
     "error_adding_mapping": "Error al agregar el mapeo",
     "error_loading_mapping": "Error al cargar los mapeos de roles y permisos",
+    "no_role_mappings_found": "No se encontraron mapeos de roles",
     "permissions_count_one": "{{count}} permiso",
     "permissions_count_other": "{{count}} permisos",
     "no_permissions_assigned": "No hay permisos asignados",

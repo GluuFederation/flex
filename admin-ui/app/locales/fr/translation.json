@@ -818,6 +818,7 @@
     "mapping_added_successfully": "Mappage ajouté avec succès",
     "error_adding_mapping": "Échec de l'ajout du mappage",
     "error_loading_mapping": "Échec du chargement des mappages rôle-permission",
+    "no_role_mappings_found": "Aucun mappage de rôles trouvé",
     "permissions_count_one": "{{count}} permission",
     "permissions_count_other": "{{count}} permissions",
     "no_permissions_assigned": "Aucune permission attribuée",

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { useDispatch } from 'react-redux'
-import { useAppSelector } from '@/redux/types'
+import { useAppSelector } from '@/redux/hooks'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
@@ -46,6 +46,9 @@ import { useTheme } from 'Context/theme/themeContext'
 import { themeConfig } from '@/context/theme/config'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
 import { useStyles } from './CedarlingConfigPage.style'
+
+const SECURITY_RESOURCE_ID = ADMIN_UI_RESOURCES.Security
+const SECURITY_SCOPES = CEDAR_RESOURCE_SCOPES[SECURITY_RESOURCE_ID] ?? []
 
 const CedarlingConfigPage: React.FC = () => {
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
@@ -240,17 +243,13 @@ const CedarlingConfigPage: React.FC = () => {
     }
   }, [])
 
-  const securityResourceId = useMemo(() => ADMIN_UI_RESOURCES.Security, [])
-  const securityScopes = useMemo(() => {
-    return CEDAR_RESOURCE_SCOPES[securityResourceId] || []
-  }, [securityResourceId])
   const canReadSecurity = useMemo(
-    () => hasCedarReadPermission(securityResourceId),
-    [hasCedarReadPermission, securityResourceId],
+    () => hasCedarReadPermission(SECURITY_RESOURCE_ID),
+    [hasCedarReadPermission],
   )
   const canWriteSecurity = useMemo(
-    () => hasCedarWritePermission(securityResourceId),
-    [hasCedarWritePermission, securityResourceId],
+    () => hasCedarWritePermission(SECURITY_RESOURCE_ID),
+    [hasCedarWritePermission],
   )
 
   const isRefreshButtonHidden = useMemo(
@@ -269,10 +268,10 @@ const CedarlingConfigPage: React.FC = () => {
   )
 
   useEffect(() => {
-    if (securityScopes && securityScopes.length > 0) {
-      authorizeHelper(securityScopes)
+    if (SECURITY_SCOPES.length > 0) {
+      authorizeHelper(SECURITY_SCOPES)
     }
-  }, [authorizeHelper, securityScopes])
+  }, [authorizeHelper])
 
   useEffect(() => {
     if (isSuccess && auiConfig) {

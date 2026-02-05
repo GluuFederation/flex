@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState, useContext, useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { useAppSelector } from '@/redux/types'
+import { useAppSelector } from '@/redux/hooks'
 import { ThemeContext } from '@/context/theme/themeContext'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import customColors from '@/customColors'
@@ -23,6 +23,21 @@ import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useStyles } from './LicenseDetailsPage.style'
 
 const PLACEHOLDER = '_'
+const LICENSE_RESOURCE_ID = ADMIN_UI_RESOURCES.License
+const LICENSE_SCOPES = CEDAR_RESOURCE_SCOPES[LICENSE_RESOURCE_ID]
+
+const LICENSE_FIELD_CONFIG: ReadonlyArray<{ key: string; label: string }> = [
+  { key: 'productName', label: 'fields.productName' },
+  { key: 'productCode', label: 'fields.productCode' },
+  { key: 'licenseType', label: 'fields.licenseType' },
+  { key: 'licenseKey', label: 'fields.licenseKey' },
+  { key: 'customerEmail', label: 'fields.customerEmail' },
+  { key: 'customerName', label: 'fields.customerName' },
+  { key: 'companyName', label: 'fields.companyName' },
+  { key: 'validityPeriod', label: 'fields.validityPeriod' },
+  { key: 'isLicenseActive', label: 'fields.isLicenseActive' },
+  { key: 'isLicenseExpired', label: 'fields.isLicenseExpired' },
+]
 
 const LicenseDetailsPage = () => {
   const { item, loading } = useAppSelector((state) => state.licenseDetailsReducer)
@@ -32,18 +47,16 @@ const LicenseDetailsPage = () => {
   const [modal, setModal] = useState(false)
   const { navigateToRoute } = useAppNavigation()
 
-  const licenseResourceId = useMemo(() => ADMIN_UI_RESOURCES.License, [])
-  const licenseScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[licenseResourceId], [licenseResourceId])
   const canWriteLicense = useMemo(
-    () => hasCedarWritePermission(licenseResourceId),
-    [hasCedarWritePermission, licenseResourceId],
+    () => hasCedarWritePermission(LICENSE_RESOURCE_ID),
+    [hasCedarWritePermission],
   )
 
   useEffect(() => {
-    if (licenseScopes && licenseScopes.length > 0) {
-      authorizeHelper(licenseScopes)
+    if (LICENSE_SCOPES?.length) {
+      authorizeHelper(LICENSE_SCOPES)
     }
-  }, [authorizeHelper, licenseScopes])
+  }, [authorizeHelper])
 
   useEffect(() => {
     dispatch(getLicenseDetails())
@@ -61,60 +74,24 @@ const LicenseDetailsPage = () => {
   const { classes } = useStyles({ isDark })
 
   const licenseFields = useMemo<LicenseField[]>(
-    () => [
-      {
-        key: 'productName',
-        label: 'fields.productName',
-        value: loading ? PLACEHOLDER : item.productName,
-      },
-      {
-        key: 'productCode',
-        label: 'fields.productCode',
-        value: loading ? PLACEHOLDER : item.productCode,
-      },
-      {
-        key: 'licenseType',
-        label: 'fields.licenseType',
-        value: loading ? PLACEHOLDER : item.licenseType,
-      },
-      {
-        key: 'licenseKey',
-        label: 'fields.licenseKey',
-        value: loading ? PLACEHOLDER : item.licenseKey,
-      },
-      {
-        key: 'customerEmail',
-        label: 'fields.customerEmail',
-        value: loading ? PLACEHOLDER : item.customerEmail,
-      },
-      {
-        key: 'customerName',
-        label: 'fields.customerName',
-        value: loading
-          ? PLACEHOLDER
-          : [item.customerFirstName, item.customerLastName].filter(Boolean).join(' '),
-      },
-      {
-        key: 'companyName',
-        label: 'fields.companyName',
-        value: loading ? PLACEHOLDER : item.companyName,
-      },
-      {
-        key: 'validityPeriod',
-        label: 'fields.validityPeriod',
-        value: loading ? PLACEHOLDER : item.validityPeriod ? formatDate(item.validityPeriod) : null,
-      },
-      {
-        key: 'isLicenseActive',
-        label: 'fields.isLicenseActive',
-        value: loading ? PLACEHOLDER : item.licenseActive ? t('actions.yes') : t('actions.no'),
-      },
-      {
-        key: 'isLicenseExpired',
-        label: 'fields.isLicenseExpired',
-        value: loading ? PLACEHOLDER : item.licenseExpired ? t('actions.yes') : t('actions.no'),
-      },
-    ],
+    () =>
+      LICENSE_FIELD_CONFIG.map(({ key, label }) => {
+        let value: string | null
+        if (loading) {
+          value = PLACEHOLDER
+        } else if (key === 'customerName') {
+          value = [item.customerFirstName, item.customerLastName].filter(Boolean).join(' ') || null
+        } else if (key === 'validityPeriod') {
+          value = item.validityPeriod ? formatDate(item.validityPeriod) : null
+        } else if (key === 'isLicenseActive') {
+          value = item.licenseActive ? t('actions.yes') : t('actions.no')
+        } else if (key === 'isLicenseExpired') {
+          value = item.licenseExpired ? t('actions.yes') : t('actions.no')
+        } else {
+          value = (item as Record<string, string | undefined>)[key] ?? null
+        }
+        return { key, label, value }
+      }),
     [loading, item, t],
   )
 

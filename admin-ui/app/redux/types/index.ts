@@ -1,5 +1,4 @@
-import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
-import type { Dispatch, Reducer, UnknownAction } from '@reduxjs/toolkit'
+import type { Reducer, UnknownAction } from '@reduxjs/toolkit'
 import type { ProfileDetails } from 'Routes/Apps/Profile/types'
 
 // Core app state types
@@ -546,10 +545,7 @@ export interface SmtpPluginState {
 export interface RootState
   extends CoreAppState, Partial<AdminPluginState & AuthServerPluginState & SmtpPluginState> {}
 
-// Dispatch and typed hooks
-export type AppDispatch = Dispatch<UnknownAction>
-export const useAppDispatch = () => useDispatch<AppDispatch>()
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
+// AppDispatch, useAppDispatch, useAppSelector: import from @/redux/hooks (canonical source using typeof store.dispatch)
 
 // Reducer registry types
 export type ReducerMap = {

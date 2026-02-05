@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
-import { useAppSelector } from '@/redux/types'
+import { useAppSelector } from '@/redux/hooks'
 import { useMediaQuery } from 'react-responsive'
 import type { Dayjs } from 'dayjs'
 import Grid from '@mui/material/Grid'
@@ -40,10 +40,14 @@ import {
   DATE_FORMATS,
 } from '@/utils/dayjsUtils'
 
+const DASHBOARD_RESOURCE_ID = ADMIN_UI_RESOURCES.Dashboard
+const DASHBOARD_SCOPES = CEDAR_RESOURCE_SCOPES[DASHBOARD_RESOURCE_ID]
+const MOBILE_MEDIA_QUERY = { maxWidth: 767 }
+
 const DashboardPage = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const isMobile = useMediaQuery({ maxWidth: 767 })
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
   const themeContext = useContext(ThemeContext)
   const currentTheme = useMemo(
@@ -92,25 +96,19 @@ const DashboardPage = () => {
   const cedarInitialized = useAppSelector((state) => state.cedarPermissions?.initialized)
   const cedarIsInitializing = useAppSelector((state) => state.cedarPermissions?.isInitializing)
 
-  const dashboardResourceId = useMemo(() => ADMIN_UI_RESOURCES.Dashboard, [])
-  const dashboardScopes = useMemo(
-    () => CEDAR_RESOURCE_SCOPES[dashboardResourceId],
-    [dashboardResourceId],
-  )
-
   const hasViewPermissions = useMemo(() => {
     if (!cedarInitialized || cedarIsInitializing) {
       return false
     }
-    return Boolean(hasCedarReadPermission(dashboardResourceId))
-  }, [cedarInitialized, cedarIsInitializing, hasCedarReadPermission, dashboardResourceId])
+    return Boolean(hasCedarReadPermission(DASHBOARD_RESOURCE_ID))
+  }, [cedarInitialized, cedarIsInitializing, hasCedarReadPermission])
 
   SetTitle(t('menus.dashboard'))
 
   const initPermissions = useCallback(async () => {
     if (!hasSession || !cedarInitialized) return
-    await authorizeHelper(dashboardScopes)
-  }, [hasSession, cedarInitialized, authorizeHelper, dashboardScopes])
+    await authorizeHelper(DASHBOARD_SCOPES)
+  }, [hasSession, cedarInitialized, authorizeHelper])
 
   useEffect(() => {
     if (hasSession && cedarInitialized && !cedarIsInitializing) {

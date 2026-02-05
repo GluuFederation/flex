@@ -14,6 +14,8 @@ import { useHealthStatus } from './hooks'
 import ServiceStatusCard from './components/ServiceStatusCard'
 import { useStyles } from './HealthPage.style'
 
+const REFRESH_ICON_STYLE = { fontSize: 16 }
+
 const HealthPage: React.FC = () => {
   const { t } = useTranslation()
   SetTitle(t('titles.services_health'))
@@ -70,7 +72,7 @@ const HealthPage: React.FC = () => {
               >
                 <i
                   className={`fa fa-refresh ${loading ? 'fa-spin' : ''}`}
-                  style={{ fontSize: 16 }}
+                  style={REFRESH_ICON_STYLE}
                 />
                 {t('actions.refresh')}
               </GluuButton>

@@ -1,18 +1,19 @@
 import type { Reducer, UnknownAction } from '@reduxjs/toolkit'
 
-type ReducerMap = Record<string, Reducer<unknown, UnknownAction>>
-type ChangeListener = (reducers: ReducerMap) => void
+// Looser type than redux/types ReducerMap: plugin keys are dynamic, not limited to keyof RootState.
+type InternalReducerMap = Record<string, Reducer<unknown, UnknownAction>>
+type ChangeListener = (reducers: InternalReducerMap) => void
 
 class ReducerRegistry {
   private _emitChange: ChangeListener | null
-  private _reducers: ReducerMap
+  private _reducers: InternalReducerMap
 
   constructor() {
     this._emitChange = null
     this._reducers = {}
   }
 
-  getReducers(): ReducerMap {
+  getReducers(): InternalReducerMap {
     return { ...this._reducers }
   }
 
