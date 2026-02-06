@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { Card, CardBody, Row, Col } from 'Components'
 import { useTranslation } from 'react-i18next'
-import { useTheme } from 'Context/theme/themeContext'
+import { useTheme } from '@/context/theme/themeContext'
 import type { MauSummary } from '../types'
 import { getChartColors } from '../constants'
 import { formatNumber, formatPercentChange } from '../utils'
@@ -63,12 +63,12 @@ const MauSummaryCards: React.FC<MauSummaryCardsProps> = ({ summary }) => {
     {
       title: t('fields.cc_tokens'),
       value: summary.clientCredentialsTokens,
-      color: chartColors.clientCredentials,
+      color: chartColors.pieClientCredentials,
     },
     {
       title: t('fields.authz_code_tokens'),
       value: summary.authCodeTokens,
-      color: chartColors.authCodeAccess,
+      color: chartColors.pieAuthCodeAccess,
     },
   ]
 

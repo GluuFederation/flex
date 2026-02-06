@@ -2,7 +2,7 @@ import { useMemo, useCallback, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import { THEME_DARK } from '@/context/theme/constants'
-import { Box } from '@mui/material'
+import { Box, Divider } from '@mui/material'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { GluuButton } from '@/components'
 import { useStyles, BUTTON_STYLES, getButtonColors } from './styles/GluuFormFooter.style'
@@ -21,6 +21,7 @@ interface GluuFormFooterBaseProps {
   applyButtonLabel?: string
   isLoading?: boolean
   className?: string
+  hideDivider?: boolean
 }
 
 type GluuFormFooterProps = GluuFormFooterBaseProps &
@@ -60,6 +61,7 @@ const GluuFormFooter = ({
   applyButtonLabel,
   isLoading = false,
   className = '',
+  hideDivider = false,
 }: GluuFormFooterProps) => {
   const { t } = useTranslation()
   const { state } = useTheme()
@@ -110,43 +112,26 @@ const GluuFormFooter = ({
   }
 
   return (
-    <Box className={`${classes.footerWrapper} ${className}`} sx={{ my: 2 }}>
-      <Box className={classes.leftGroup}>
-        {buttonStates.showBack && (
-          <GluuButton
-            type="button"
-            onClick={handleBackClick}
-            disabled={disableBack}
-            title={backLabel}
-            backgroundColor={buttonColors.back.backgroundColor}
-            textColor={buttonColors.back.textColor}
-            borderColor={buttonColors.back.borderColor}
-            {...SHARED_BUTTON_PROPS}
-          >
-            {backLabel}
-          </GluuButton>
-        )}
+    <>
+      {!hideDivider && <Divider />}
+      <Box className={`${classes.footerWrapper} ${className}`} sx={{ my: 2 }}>
+        <Box className={classes.leftGroup}>
+          {buttonStates.showBack && (
+            <GluuButton
+              type="button"
+              onClick={handleBackClick}
+              disabled={disableBack}
+              title={backLabel}
+              backgroundColor={buttonColors.back.backgroundColor}
+              textColor={buttonColors.back.textColor}
+              borderColor={buttonColors.back.borderColor}
+              {...SHARED_BUTTON_PROPS}
+            >
+              {backLabel}
+            </GluuButton>
+          )}
 
-        {!buttonStates.hasThreeButtons && buttonStates.showApply && (
-          <GluuButton
-            type={applyButtonType}
-            onClick={applyButtonType === 'button' ? onApply : undefined}
-            disabled={disableApply || isLoading}
-            loading={isLoading}
-            title={applyLabel}
-            backgroundColor={buttonColors.apply.backgroundColor}
-            textColor={buttonColors.apply.textColor}
-            borderColor={buttonColors.apply.borderColor}
-            {...SHARED_BUTTON_PROPS}
-          >
-            {applyLabel}
-          </GluuButton>
-        )}
-      </Box>
-
-      {buttonStates.hasRightGroup && (
-        <Box className={classes.rightGroup}>
-          {buttonStates.hasThreeButtons && buttonStates.showApply && (
+          {!buttonStates.hasThreeButtons && buttonStates.showApply && (
             <GluuButton
               type={applyButtonType}
               onClick={applyButtonType === 'button' ? onApply : undefined}
@@ -161,25 +146,45 @@ const GluuFormFooter = ({
               {applyLabel}
             </GluuButton>
           )}
-
-          {buttonStates.showCancel && (
-            <GluuButton
-              type="button"
-              onClick={handleCancelClick}
-              disabled={disableCancel || isLoading}
-              title={cancelLabel}
-              backgroundColor={buttonColors.cancel.backgroundColor}
-              textColor={buttonColors.cancel.textColor}
-              borderColor={buttonColors.cancel.borderColor}
-              outlined={buttonColors.cancel.outlined}
-              {...SHARED_BUTTON_PROPS}
-            >
-              {cancelLabel}
-            </GluuButton>
-          )}
         </Box>
-      )}
-    </Box>
+
+        {buttonStates.hasRightGroup && (
+          <Box className={classes.rightGroup}>
+            {buttonStates.hasThreeButtons && buttonStates.showApply && (
+              <GluuButton
+                type={applyButtonType}
+                onClick={applyButtonType === 'button' ? onApply : undefined}
+                disabled={disableApply || isLoading}
+                loading={isLoading}
+                title={applyLabel}
+                backgroundColor={buttonColors.apply.backgroundColor}
+                textColor={buttonColors.apply.textColor}
+                borderColor={buttonColors.apply.borderColor}
+                {...SHARED_BUTTON_PROPS}
+              >
+                {applyLabel}
+              </GluuButton>
+            )}
+
+            {buttonStates.showCancel && (
+              <GluuButton
+                type="button"
+                onClick={handleCancelClick}
+                disabled={disableCancel || isLoading}
+                title={cancelLabel}
+                backgroundColor={buttonColors.cancel.backgroundColor}
+                textColor={buttonColors.cancel.textColor}
+                borderColor={buttonColors.cancel.borderColor}
+                outlined={buttonColors.cancel.outlined}
+                {...SHARED_BUTTON_PROPS}
+              >
+                {cancelLabel}
+              </GluuButton>
+            )}
+          </Box>
+        )}
+      </Box>
+    </>
   )
 }
 

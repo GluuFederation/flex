@@ -1094,6 +1094,7 @@
     "ldap_authentication": "LDAP Authentication",
     "services_health": "Services Health Status",
     "mau_dashboard": "Monthly Active Users Dashboard",
+    "usage_token_analytics": "Usage & Token Analytics",
     "mau_trend": "MAU Trend Over Time",
     "token_distribution": "Token Distribution by Type",
     "token_trends": "Token Trends Over Time",
