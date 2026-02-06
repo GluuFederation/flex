@@ -23,6 +23,10 @@ export interface GluuButtonProps {
   className?: string
   useOpacityOnHover?: boolean
   hoverOpacity?: number
+  /**
+   * When true, disables hover-based background & opacity changes.
+   */
+  disableHoverStyles?: boolean
   onClick?: () => void
   type?: 'button' | 'submit' | 'reset'
   title?: string

@@ -21,6 +21,7 @@ export const fontSizes = {
 
 export const letterSpacing = {
   tight: '0.2px',
+  button: '0.28px',
   normal: '0.3px',
   wide: '0.32px',
 } as const

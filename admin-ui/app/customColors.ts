@@ -14,7 +14,6 @@ export const customColors = {
   primaryDark: '#0a2540',
   lightBorder: '#efefef',
   darkBackground: '#0b2947',
-  darkSidebar: '#0a2540',
   darkBorder: '#193f66',
   darkCardBg: '#091e34',
   darkDropdownBg: '#194169',
@@ -29,6 +28,12 @@ export const customColors = {
   statusActiveBg: '#d3f5e6',
   statusInactive: '#f13f44',
   statusInactiveBg: '#ffe6e7',
+  addPropertyBgLight: '#132E4D',
+  addPropertyTextDark: '#1A2F45',
+  customParamsBoxLight: '#F5F6F7',
+  customParamsBoxDark: '#1E3650',
+  customParamsInputDark: '#1B2F45',
+  customParamsTitleLight: '#1C3A5A',
   borderInput: '#ebebeb',
   darkInputBg: '#15395d',
   lightInputBg: '#f9fafb',
@@ -40,7 +45,6 @@ export const customColors = {
   buttonLightBg: '#f4f6f8',
   darkBorderGradientBase: '#00d5e6',
   ribbonShadowColor: '#1a237e',
-  // Cedarling configuration specific (synced with Figma light & dark themes)
   cedarCardBgDark: '#10375e',
   cedarCardBorderDark: '#224f7c',
   cedarTextSecondaryDark: '#c9dbec',
@@ -50,12 +54,6 @@ export const customColors = {
   cedarInfoTextLight: '#4f8196',
 } as const
 
-/**
- * Converts a hex color string to RGB format (e.g., "#ffffff" -> "255, 255, 255").
- * @param hex - Hex color string (with or without # prefix)
- * @param fallback - Optional fallback RGB string to return if hex is invalid (default: "0, 0, 0")
- * @returns RGB string in format "r, g, b" or the fallback if hex is invalid
- */
 export const hexToRgb = (hex: string, fallback: string = '0, 0, 0'): string => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
   if (!result) {
