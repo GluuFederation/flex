@@ -10,7 +10,6 @@ import { useMauStyles } from '../MauPage.style'
 import type { MauSummary } from '../types'
 import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
 import { getChartColors } from '../constants'
-import { formatNumber } from '../utils'
 
 interface TokenDistributionChartProps {
   summary: MauSummary
@@ -72,7 +71,6 @@ const TokenDistributionChart: React.FC<TokenDistributionChartProps> = ({ summary
                 ))}
               </Pie>
               <Tooltip
-                formatter={(value: number) => formatNumber(value)}
                 content={(props) => (
                   <TooltipDesign
                     {...(props as React.ComponentProps<typeof TooltipDesign>)}

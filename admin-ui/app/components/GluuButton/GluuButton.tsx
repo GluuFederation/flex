@@ -3,6 +3,7 @@ import { fontFamily } from '@/styles/fonts'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
+import { resolveBackgroundColor } from '@/utils/buttonUtils'
 import type { GluuButtonProps } from './types'
 
 const SIZES = {
@@ -67,17 +68,15 @@ const GluuButton: React.FC<GluuButtonProps> = (props) => {
       minHeight: minHeight ?? sizeConfig.minHeight,
       borderRadius: borderRadius ?? '6px',
       border: `1px solid ${border}`,
-      backgroundColor: disableHoverStyles
-        ? bg
-        : keepBgOnHover
-          ? bg
-          : outlined
-            ? isHovered && !isDisabled
-              ? `${bg}15`
-              : 'transparent'
-            : isHovered && !isDisabled
-              ? hoverBg
-              : bg,
+      backgroundColor: resolveBackgroundColor(
+        disableHoverStyles,
+        keepBgOnHover,
+        outlined,
+        isHovered,
+        isDisabled,
+        bg,
+        hoverBg,
+      ),
       color: outlined ? themeColors.fontColor : text,
       cursor: isDisabled ? 'not-allowed' : 'pointer',
       opacity: isDisabled ? 0.65 : keepBgOnHover ? opacityOnHover : 1,

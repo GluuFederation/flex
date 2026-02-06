@@ -75,6 +75,7 @@ export interface TooltipDesignProps {
   backgroundColor?: string
   textColor?: string
   isDark?: boolean
+  formatter?: (value: unknown) => string
 }
 
 export type ChartDataKey =

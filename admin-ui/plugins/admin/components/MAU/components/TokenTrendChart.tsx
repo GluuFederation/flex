@@ -17,7 +17,6 @@ import { THEME_DARK } from '@/context/theme/constants'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useMauStyles } from '../MauPage.style'
 import type { MauChartProps } from '../types'
-import customColors from '@/customColors'
 import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
 import { getChartColors } from '../constants'
 import { formatMonth, formatNumber } from '../utils'
@@ -51,11 +50,10 @@ const TokenTrendChart: React.FC<MauChartProps> = ({ data }) => {
         </GluuText>
         <ResponsiveContainer width="100%" height={250}>
           <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+            <CartesianGrid strokeDasharray="3 3" stroke={themeColors.borderColor} />
             <XAxis dataKey="monthLabel" tick={{ fontSize: 12 }} />
             <YAxis tick={{ fontSize: 12 }} tickFormatter={formatNumber} />
             <Tooltip
-              formatter={(value: number) => formatNumber(value)}
               content={(props) => (
                 <TooltipDesign
                   {...(props as React.ComponentProps<typeof TooltipDesign>)}

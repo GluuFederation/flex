@@ -28,6 +28,9 @@ export const customColors = {
   statusActiveBg: '#d3f5e6',
   statusInactive: '#f13f44',
   statusInactiveBg: '#ffe6e7',
+  tooltipDarkBg: '#15395D',
+  tooltipDarkBorder: '#335D87',
+  /* Light/Dark suffix = theme (light/dark mode), not visual lightness */
   addPropertyBgLight: '#132E4D',
   addPropertyTextDark: '#1A2F45',
   customParamsBoxLight: '#F5F6F7',

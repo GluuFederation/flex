@@ -62,7 +62,7 @@ export const useStyles = makeStyles<SettingsStylesParams>()((theme: Theme, { isD
     },
     settingsLabels: {
       '& label, & label h5, & label .MuiSvgIcon-root': {
-        color: `${isDark ? customColors.white : '#0A2540'} !important`,
+        color: `${isDark ? customColors.white : customColors.primaryDark} !important`,
         fontFamily: fontFamily,
         fontSize: '15px',
         fontStyle: 'normal',
@@ -148,7 +148,7 @@ export const useStyles = makeStyles<SettingsStylesParams>()((theme: Theme, { isD
       fontStyle: 'normal',
       lineHeight: 'normal',
       letterSpacing: letterSpacing.normal,
-      color: isDark ? customColors.white : '#0A2540',
+      color: isDark ? customColors.white : customColors.primaryDark,
       margin: 0,
     },
     customParamsBody: {
@@ -174,10 +174,10 @@ export const useStyles = makeStyles<SettingsStylesParams>()((theme: Theme, { isD
         color: isDark ? customColors.white : customColors.textSecondary,
       },
       '&:focus': {
-        outline: 'none',
-        border: '1px solid transparent',
         backgroundColor: isDark ? customColors.customParamsInputDark : customColors.white,
         color: isDark ? customColors.white : customColors.primaryDark,
+        border: `1px solid ${isDark ? customColors.darkBorder : customColors.primaryDark}`,
+        boxShadow: isDark ? '0 0 0 3px rgba(25, 63, 102, 0.6)' : '0 0 0 3px rgba(10, 37, 64, 0.3)',
       },
     },
     customParamsError: {

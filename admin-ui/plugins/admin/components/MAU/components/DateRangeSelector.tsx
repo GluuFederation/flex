@@ -7,13 +7,13 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import { THEME_DARK } from '@/context/theme/constants'
-import getThemeColor from '@/context/theme/config'
 import customColors from '@/customColors'
 import { GluuButton } from '@/components/GluuButton'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
 import type { DateRangeSelectorProps } from '../types'
 import { DATE_PRESETS } from '../constants'
+import { getDatePickerTextFieldSlotProps } from '../utils'
 
 const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
   startDate,
@@ -28,8 +28,8 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
   const { t } = useTranslation()
   const { state } = useTheme()
   const selectedTheme = state.theme
-  const themeColors = getThemeColor(selectedTheme)
   const isDark = selectedTheme === THEME_DARK
+  const datePickerTextFieldSlotProps = getDatePickerTextFieldSlotProps(isDark)
 
   return (
     <Grid container spacing={2} alignItems="center" justifyContent="space-between">
@@ -62,7 +62,7 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
                     style={{
                       minWidth: 110,
                       borderRadius: 8,
-                      borderColor: isDark ? 'rgba(255, 255, 255, 0.12)' : customColors.borderInput,
+                      borderColor: isDark ? customColors.darkBorder : customColors.borderInput,
                       backgroundColor: isSelected
                         ? isDark
                           ? customColors.darkInputBg
@@ -85,36 +85,7 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
                     label={t('dashboard.start_date')}
                     value={startDate}
                     onChange={onStartDateChange}
-                    slotProps={{
-                      textField: {
-                        size: 'small',
-                        InputLabelProps: { shrink: true },
-                        sx: {
-                          '& .MuiInputBase-root': {
-                            borderRadius: 1.5,
-                            backgroundColor: isDark
-                              ? customColors.darkInputBg
-                              : customColors.lightInputBg,
-                            color: isDark ? customColors.white : undefined,
-                          },
-                          '& .MuiInputBase-input': {
-                            color: isDark ? customColors.white : undefined,
-                          },
-                          '& .MuiInputLabel-root': {
-                            'color': isDark ? customColors.white : undefined,
-                            '&.Mui-focused': {
-                              color: isDark ? customColors.white : undefined,
-                            },
-                          },
-                          '& .MuiIconButton-root': {
-                            'color': isDark ? customColors.white : undefined,
-                            '& .MuiSvgIcon-root': {
-                              color: isDark ? customColors.white : undefined,
-                            },
-                          },
-                        },
-                      },
-                    }}
+                    slotProps={{ textField: datePickerTextFieldSlotProps }}
                   />
                 </Grid>
                 <Grid item>
@@ -123,36 +94,7 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
                     label={t('dashboard.end_date')}
                     value={endDate}
                     onChange={onEndDateChange}
-                    slotProps={{
-                      textField: {
-                        size: 'small',
-                        InputLabelProps: { shrink: true },
-                        sx: {
-                          '& .MuiInputBase-root': {
-                            borderRadius: 1.5,
-                            backgroundColor: isDark
-                              ? customColors.darkInputBg
-                              : customColors.lightInputBg,
-                            color: isDark ? customColors.white : undefined,
-                          },
-                          '& .MuiInputBase-input': {
-                            color: isDark ? customColors.white : undefined,
-                          },
-                          '& .MuiInputLabel-root': {
-                            'color': isDark ? customColors.white : undefined,
-                            '&.Mui-focused': {
-                              color: isDark ? customColors.white : undefined,
-                            },
-                          },
-                          '& .MuiIconButton-root': {
-                            'color': isDark ? customColors.white : undefined,
-                            '& .MuiSvgIcon-root': {
-                              color: isDark ? customColors.white : undefined,
-                            },
-                          },
-                        },
-                      },
-                    }}
+                    slotProps={{ textField: datePickerTextFieldSlotProps }}
                   />
                 </Grid>
               </Grid>

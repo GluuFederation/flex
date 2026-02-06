@@ -15,7 +15,7 @@ interface MauStylesParams {
 }
 
 export const useMauStyles = makeStyles<MauStylesParams>()((
-  theme: Theme,
+  _theme: Theme,
   { themeColors, isDark },
 ) => {
   const cardBorderStyle = getCardBorderStyle({ isDark })

@@ -130,7 +130,7 @@ const MauPage: React.FC = () => {
     <GluuLoader blocking={loading}>
       <GluuViewWrapper canShow={canViewMau}>
         <GluuPageContent>
-          <div style={{ marginBottom: 24 }}>
+          <div className="mb-4">
             <DateRangeSelector
               startDate={startDate}
               endDate={endDate}

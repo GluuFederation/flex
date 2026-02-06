@@ -1,8 +1,7 @@
 import React, { useMemo, useCallback, useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
-import { useDispatch } from 'react-redux'
-import { useAppSelector } from '@/redux/hooks'
+import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import {
   FormGroup,
   Label,
@@ -68,7 +67,7 @@ const LABEL_CONTAINER_STYLE: React.CSSProperties = {
 
 const SettingsPage: React.FC = () => {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { state: themeState } = useTheme()
   const queryClient = useQueryClient()
 
@@ -485,7 +484,7 @@ const SettingsPage: React.FC = () => {
                         const currentParams = formik.values.additionalParameters || []
                         formik.setFieldValue('additionalParameters', [
                           ...currentParams,
-                          { key: '', value: '' },
+                          { id: crypto.randomUUID(), key: '', value: '' },
                         ])
                       }}
                     >
@@ -495,8 +494,8 @@ const SettingsPage: React.FC = () => {
                   </div>
                   <div className={classes.customParamsBody}>
                     {(formik.values.additionalParameters || []).map(
-                      (param: { key?: string; value?: string }, index: number) => (
-                        <div key={index} className={classes.customParamsRow}>
+                      (param: { id: string; key?: string; value?: string }, index: number) => (
+                        <div key={param.id} className={classes.customParamsRow}>
                           <Input
                             name={`additionalParameters.${index}.key`}
                             value={param.key || ''}
@@ -521,9 +520,9 @@ const SettingsPage: React.FC = () => {
                             disableHoverStyles
                             style={{ gap: 8, flexShrink: 0 }}
                             onClick={() => {
-                              const currentParams = [...formik.values.additionalParameters]
-                              currentParams.splice(index, 1)
-                              formik.setFieldValue('additionalParameters', currentParams)
+                              const currentParams = formik.values.additionalParameters || []
+                              const newParams = currentParams.filter((p) => p.id !== param.id)
+                              formik.setFieldValue('additionalParameters', newParams)
                             }}
                           >
                             <i className="fa fa-fw fa-trash" />
