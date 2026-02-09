@@ -33,13 +33,13 @@ const GluuLabel: React.FC<GluuLabelProps> = ({
 }) => {
   const { t, i18n } = useTranslation()
 
-  const { labelColor, tooltipStyle } = useMemo(() => {
+  const { labelColor, tooltipBaseStyle } = useMemo(() => {
     const isDarkTheme = isDarkProp === true
     const darkTheme = getThemeColor(THEME_DARK)
     const lightTheme = getThemeColor(THEME_LIGHT)
     return {
       labelColor: isDarkTheme ? darkTheme.fontColor : lightTheme.fontColor,
-      tooltipStyle: isDarkTheme
+      tooltipBaseStyle: isDarkTheme
         ? {
             backgroundColor: lightTheme.menu.background,
             color: lightTheme.fontColor,
@@ -56,6 +56,15 @@ const GluuLabel: React.FC<GluuLabelProps> = ({
     [labelColor, style],
   )
 
+  const fullTooltipStyle = useMemo(
+    () => ({
+      zIndex: 101,
+      maxWidth: '45vw',
+      ...tooltipBaseStyle,
+    }),
+    [tooltipBaseStyle],
+  )
+
   return (
     <Label for={t(label)} sm={getSize(size)} data-for={doc_entry} style={labelStyle}>
       <h5
@@ -69,12 +78,7 @@ const GluuLabel: React.FC<GluuLabelProps> = ({
           {required && <span style={applicationStyle.fieldRequired}> *</span>}
           {doc_category && i18n.exists('documentation.' + doc_category + '.' + doc_entry) && (
             <>
-              <ReactTooltip
-                id={doc_entry}
-                place="right"
-                role="tooltip"
-                style={{ zIndex: 101, maxWidth: '45vw', ...tooltipStyle }}
-              >
+              <ReactTooltip id={doc_entry} place="right" role="tooltip" style={fullTooltipStyle}>
                 {t('documentation.' + doc_category + '.' + doc_entry)}
               </ReactTooltip>
               <HelpOutline

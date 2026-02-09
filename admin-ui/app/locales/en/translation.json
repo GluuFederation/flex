@@ -889,7 +889,6 @@
     "no_role_mappings_found": "No role mappings found",
     "permissions_count_one": "{{count}} permission",
     "permissions_count_other": "{{count}} permissions",
-    "permissions_count": "{{count, plural, one {{count}} permission} other {{count}} permissions}}",
     "no_permissions_assigned": "No permissions assigned",
     "out_of": "out of",
     "permission_label": "Permission",

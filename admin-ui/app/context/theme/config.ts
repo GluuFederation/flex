@@ -55,7 +55,6 @@ const createLightTheme = () => {
         backgroundColor: 'transparent',
         textColor: customColors.primaryDark,
         borderColor: customColors.primaryDark,
-        outlined: true,
       },
     },
     settings: {
@@ -64,9 +63,8 @@ const createLightTheme = () => {
       customParamsInput: customColors.whiteSmoke,
       formInputBackground: customColors.whiteSmoke,
       inputBorder: customColors.borderInput,
-      addPropertyButton: { bg: customColors.addPropertyBgLight, text: customColors.white },
+      addPropertyButton: { bg: customColors.addPropertyBgDark, text: customColors.white },
       removeButton: { bg: customColors.statusInactive, text: customColors.white },
-      errorColor: customColors.accentRed,
       errorButtonText: customColors.white,
     },
   }
@@ -126,7 +124,6 @@ const createDarkTheme = () => {
         backgroundColor: 'transparent',
         textColor: customColors.white,
         borderColor: customColors.white,
-        outlined: true,
       },
     },
     settings: {
@@ -137,7 +134,6 @@ const createDarkTheme = () => {
       inputBorder: customColors.darkBorder,
       addPropertyButton: { bg: customColors.white, text: customColors.addPropertyTextDark },
       removeButton: { bg: customColors.statusInactive, text: customColors.white },
-      errorColor: customColors.accentRed,
       errorButtonText: customColors.white,
     },
   }

@@ -104,12 +104,25 @@ const GluuThemeFormFooter = ({
     }
   }, [onCancel])
 
-  const backLabel = useMemo(() => backButtonLabel || t('actions.back'), [backButtonLabel, t])
-  const cancelLabel = useMemo(
-    () => cancelButtonLabel || t('actions.cancel'),
-    [cancelButtonLabel, t],
+  const backLabel = backButtonLabel || t('actions.back')
+  const cancelLabel = cancelButtonLabel || t('actions.cancel')
+  const applyLabel = applyButtonLabel || t('actions.apply')
+
+  const renderApplyButton = () => (
+    <GluuButton
+      type={applyButtonType}
+      onClick={applyButtonType === 'button' ? onApply : undefined}
+      disabled={disableApply || isLoading}
+      loading={isLoading}
+      title={applyLabel}
+      backgroundColor={buttonColors.apply.backgroundColor}
+      textColor={buttonColors.apply.textColor}
+      borderColor={buttonColors.apply.borderColor}
+      {...SHARED_BUTTON_PROPS}
+    >
+      {applyLabel}
+    </GluuButton>
   )
-  const applyLabel = useMemo(() => applyButtonLabel || t('actions.apply'), [applyButtonLabel, t])
 
   if (!buttonStates.hasAnyButton) {
     return null
@@ -135,40 +148,12 @@ const GluuThemeFormFooter = ({
             </GluuButton>
           )}
 
-          {!buttonStates.hasThreeButtons && buttonStates.showApply && (
-            <GluuButton
-              type={applyButtonType}
-              onClick={applyButtonType === 'button' ? onApply : undefined}
-              disabled={disableApply || isLoading}
-              loading={isLoading}
-              title={applyLabel}
-              backgroundColor={buttonColors.apply.backgroundColor}
-              textColor={buttonColors.apply.textColor}
-              borderColor={buttonColors.apply.borderColor}
-              {...SHARED_BUTTON_PROPS}
-            >
-              {applyLabel}
-            </GluuButton>
-          )}
+          {!buttonStates.hasThreeButtons && buttonStates.showApply && renderApplyButton()}
         </Box>
 
         {buttonStates.hasRightGroup && (
           <Box className={classes.rightGroup}>
-            {buttonStates.hasThreeButtons && buttonStates.showApply && (
-              <GluuButton
-                type={applyButtonType}
-                onClick={applyButtonType === 'button' ? onApply : undefined}
-                disabled={disableApply || isLoading}
-                loading={isLoading}
-                title={applyLabel}
-                backgroundColor={buttonColors.apply.backgroundColor}
-                textColor={buttonColors.apply.textColor}
-                borderColor={buttonColors.apply.borderColor}
-                {...SHARED_BUTTON_PROPS}
-              >
-                {applyLabel}
-              </GluuButton>
-            )}
+            {buttonStates.hasThreeButtons && buttonStates.showApply && renderApplyButton()}
 
             {buttonStates.showCancel && (
               <GluuButton
@@ -179,7 +164,7 @@ const GluuThemeFormFooter = ({
                 backgroundColor={buttonColors.cancel.backgroundColor}
                 textColor={buttonColors.cancel.textColor}
                 borderColor={buttonColors.cancel.borderColor}
-                outlined={buttonColors.cancel.outlined}
+                outlined
                 {...SHARED_BUTTON_PROPS}
               >
                 {cancelLabel}

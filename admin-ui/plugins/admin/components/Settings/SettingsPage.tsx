@@ -283,7 +283,7 @@ const SettingsPage: React.FC = () => {
           </div>
           <GluuButton
             size="sm"
-            backgroundColor={themeColors.settings.errorColor}
+            backgroundColor={themeColors.errorColor}
             textColor={themeColors.settings.errorButtonText}
             onClick={handleRetry}
           >

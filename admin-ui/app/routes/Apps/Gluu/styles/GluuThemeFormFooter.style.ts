@@ -39,12 +39,5 @@ export const BUTTON_STYLES = {
 }
 
 export const getButtonColors = (theme: string) => {
-  const colors = getThemeColor(theme)
-  const formFooter = colors.formFooter
-  return {
-    back: formFooter.back,
-    apply: formFooter.apply,
-    cancel: formFooter.cancel,
-  }
+  return getThemeColor(theme).formFooter
 }
-

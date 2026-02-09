@@ -9,6 +9,7 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from 'recharts'
+import type { TooltipProps } from 'recharts'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -17,6 +18,7 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useMauStyles } from '../MauPage.style'
 import type { MauChartProps } from '../types'
 import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
+import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { getChartColors } from '../constants'
 import { formatMonth, formatNumber } from '../utils'
 
@@ -54,9 +56,10 @@ const MauTrendChart: React.FC<MauChartProps> = ({ data }) => {
               tickFormatter={formatNumber}
             />
             <Tooltip
-              content={(props) => (
+              content={(props: TooltipProps<number, string>) => (
                 <TooltipDesign
-                  {...(props as React.ComponentProps<typeof TooltipDesign>)}
+                  payload={props.payload as TooltipPayloadItem[] | undefined}
+                  active={props.active}
                   backgroundColor={themeColors.dashboard.supportCard ?? themeColors.menu.background}
                   textColor={themeColors.fontColor}
                   isDark={isDark}

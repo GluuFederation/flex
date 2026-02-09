@@ -70,7 +70,7 @@ const MauSummaryCards: React.FC<MauSummaryCardsProps> = ({ summary }) => {
       title: t('fields.total_tokens'),
       value: summary.totalTokens,
       change: summary.tokenChange,
-      color: customColors.textSecondary,
+      color: chartColors.totalTokens,
     },
     {
       title: t('fields.cc_tokens'),

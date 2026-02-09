@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react'
 import { Card, CardBody } from 'Components'
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import type { TooltipProps } from 'recharts'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -9,6 +10,7 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useMauStyles } from '../MauPage.style'
 import type { MauSummary } from '../types'
 import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
+import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { getChartColors } from '../constants'
 
 interface TokenDistributionChartProps {
@@ -87,9 +89,10 @@ const TokenDistributionChart: React.FC<TokenDistributionChartProps> = ({ summary
                 ))}
               </Pie>
               <Tooltip
-                content={(props) => (
+                content={(props: TooltipProps<number, string>) => (
                   <TooltipDesign
-                    {...(props as React.ComponentProps<typeof TooltipDesign>)}
+                    payload={props.payload as TooltipPayloadItem[] | undefined}
+                    active={props.active}
                     backgroundColor={
                       themeColors.dashboard.supportCard ?? themeColors.menu.background
                     }

@@ -76,9 +76,9 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
       '& label, & label h5, & label .MuiSvgIcon-root': {
         color: `${themeColors.fontColor} !important`,
         fontFamily: fontFamily,
-        fontSize: '15px',
+        fontSize: fontSizes.base,
         fontStyle: 'normal',
-        fontWeight: 600,
+        fontWeight: fontWeights.semiBold,
         lineHeight: 'normal',
         letterSpacing: letterSpacing.normal,
       },
@@ -199,7 +199,7 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
       },
     },
     customParamsError: {
-      color: settings.errorColor,
+      color: themeColors.errorColor,
       fontSize: fontSizes.sm,
       marginTop: 4,
     },

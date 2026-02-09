@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
@@ -16,6 +16,15 @@ import type { DateRangeSelectorProps } from '../types'
 import { DATE_PRESETS } from '../constants'
 import { getDatePickerTextFieldSlotProps } from '../utils'
 
+const VIEW_BUTTON_STYLE = {
+  minWidth: 96,
+  borderRadius: 8,
+  fontFamily,
+  fontStyle: 'normal' as const,
+  lineHeight: lineHeights.normal,
+  letterSpacing: letterSpacing.button,
+}
+
 const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
   startDate,
   endDate,
@@ -31,7 +40,10 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
   const selectedTheme = state.theme
   const isDark = selectedTheme === THEME_DARK
   const themeColors = getThemeColor(selectedTheme)
-  const datePickerTextFieldSlotProps = getDatePickerTextFieldSlotProps(isDark)
+  const datePickerTextFieldSlotProps = useMemo(
+    () => getDatePickerTextFieldSlotProps(isDark),
+    [isDark],
+  )
 
   const presetButtonBg = (isSelected: boolean) =>
     isSelected
@@ -118,14 +130,7 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
               disableHoverStyles
               fontSize={fontSizes.base}
               fontWeight={fontWeights.bold}
-              style={{
-                minWidth: 96,
-                borderRadius: 8,
-                fontFamily,
-                fontStyle: 'normal',
-                lineHeight: lineHeights.normal,
-                letterSpacing: letterSpacing.button,
-              }}
+              style={VIEW_BUTTON_STYLE}
             >
               {t('actions.view')}
             </GluuButton>

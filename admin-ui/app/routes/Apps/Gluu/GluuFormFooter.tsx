@@ -3,6 +3,8 @@ import { Button, Divider } from 'Components'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
+import { DEFAULT_THEME } from '@/context/theme/constants'
+import clsx from 'clsx'
 import { Box } from '@mui/material'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
@@ -70,7 +72,7 @@ const GluuFormFooter = ({
 }: GluuFormFooterProps) => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = useMemo(() => theme?.state.theme || 'darkBlack', [theme?.state.theme])
+  const selectedTheme = useMemo(() => theme?.state.theme || DEFAULT_THEME, [theme?.state.theme])
   const { navigateToRoute } = useAppNavigation()
 
   const handleBackClick = useCallback(() => {
@@ -90,7 +92,6 @@ const GluuFormFooter = ({
   const buttonStates = useMemo(() => {
     const hasAnyButton = Boolean(showBack) || Boolean(showCancel) || Boolean(showApply)
     const hasAllThreeButtons = Boolean(showBack) && Boolean(showCancel) && Boolean(showApply)
-    const hasBackAndCancel = Boolean(showBack) && Boolean(showCancel) && !showApply
 
     return {
       showBack: Boolean(showBack),
@@ -98,7 +99,6 @@ const GluuFormFooter = ({
       showApply: Boolean(showApply),
       hasAnyButton,
       hasAllThreeButtons,
-      hasBackAndCancel,
     }
   }, [showBack, showCancel, showApply])
 
@@ -116,22 +116,20 @@ const GluuFormFooter = ({
       return { back: '', cancel: '', apply: '' }
     }
 
-    const layout = {
-      back: buttonStates.showBack ? 'd-flex' : '',
-      cancel: buttonStates.showCancel ? 'd-flex' : '',
-      apply: buttonStates.showApply ? 'd-flex' : '',
-    }
+    const back = clsx(buttonStates.showBack && 'd-flex')
 
-    if (buttonStates.showApply) {
-      layout.apply += ' ms-auto'
-      if (buttonStates.hasAllThreeButtons) {
-        layout.apply += ' me-0'
-      }
-    } else if (buttonStates.showCancel) {
-      layout.cancel += ' ms-auto'
-    }
+    const apply = clsx(
+      buttonStates.showApply && 'd-flex',
+      buttonStates.showApply && 'ms-auto',
+      buttonStates.showApply && buttonStates.hasAllThreeButtons && 'me-0',
+    )
 
-    return layout
+    const cancel = clsx(
+      buttonStates.showCancel && 'd-flex',
+      !buttonStates.showApply && buttonStates.showCancel && 'ms-auto',
+    )
+
+    return { back, cancel, apply }
   }, [buttonStates])
 
   if (!buttonStates.hasAnyButton) {
