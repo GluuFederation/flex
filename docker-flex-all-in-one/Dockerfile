@@ -53,8 +53,6 @@ COPY --from=jans-aio-src /opt/jans /opt/jans
 COPY --from=jans-aio-src /opt/prometheus /opt/prometheus
 COPY --from=jans-aio-src /usr/local/bin/facter /usr/local/bin/facter
 COPY --from=jans-aio-src /etc/nginx/jans-aio /etc/nginx/jans-aio
-COPY --from=jans-aio-src /opt/keycloak /opt/keycloak
-COPY --from=jans-aio-src /opt/idp /opt/idp
 COPY --from=jans-aio-src /var/log/adminui /var/log/adminui
 COPY --from=jans-aio-src /usr/share/java /usr/share/java
 
@@ -148,20 +146,6 @@ ENV JETTY_BASE=/opt/jans/jetty \
     CN_CASA_JAVA_OPTIONS="" \
     CN_SHARE_AUTH_CONF=false \
     CN_SQL_PASSWORD_FILE=/etc/jans/conf/sql_password \
-    CN_SAML_HTTP_HOST=127.0.0.1 \
-    CN_SAML_HTTP_PORT=8083 \
-    CN_SAML_JAVA_OPTIONS="" \
-    CN_SAML_KC_ADMIN_CREDENTIALS_FILE=/etc/jans/conf/kc_admin_creds \
-    CN_SAML_KC_DB_PASSWORD_FILE=/etc/jans/conf/kc_db_password \
-    KC_LOG_LEVEL=INFO \
-    KC_DB=mysql \
-    KC_DB_USERNAME=keycloak \
-    KC_DB_SCHEMA=keycloak \
-    KC_DB_URL_HOST=localhost \
-    KC_DB_URL_PORT=3306 \
-    KC_DB_URL_DATABASE=keycloak \
-    KC_DB_URL_PROPERTIES=?useUnicode=true&characterEncoding=UTF-8&character_set_server=utf8mb4 \
-    QUARKUS_TRANSACTION_MANAGER_ENABLE_RECOVERY=false \
     GLUU_ADMIN_UI_ENABLE_NGINX=false \
     GLUU_ADMIN_UI_PUBLIC_DIR=/var/lib/nginx/html/admin
 
@@ -219,10 +203,7 @@ RUN chown -R 1000:1000 ${JETTY_HOME}/temp \
     /var/log/nginx \
     /var/log/adminui \
     /etc/nginx/jans-aio \
-    /usr/share/java \
-    /opt/idp \
-    /opt/keycloak/logs \
-    /opt/keycloak/conf
+    /usr/share/java
 
 RUN chmod -R g=u ${JETTY_HOME}/temp \
     ${JETTY_BASE}/common/libs \
@@ -254,10 +235,7 @@ RUN chmod -R g=u ${JETTY_HOME}/temp \
     /var/log/nginx \
     /var/log/adminui \
     /etc/nginx/jans-aio \
-    /usr/share/java \
-    /opt/idp \
-    /opt/keycloak/logs \
-    /opt/keycloak/conf
+    /usr/share/java
 
 RUN chown 1000:1000 /opt/java/lib/security/cacerts \
     /run/nginx/nginx.pid \
