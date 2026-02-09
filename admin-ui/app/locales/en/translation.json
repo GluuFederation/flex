@@ -817,6 +817,7 @@
     "no_configuration_loaded": "No configuration loaded",
     "insufficient_permissions_to_modify": "You do not have permission to modify this configuration",
     "action_commit_question": "Audit log: Want to apply changes made on this page?",
+    "list_of_changes": "List of changes",
     "action_commit_question_title": "Confirm Changes",
     "licenseAuditLog": "Do you really want to reset the existing license?",
     "action_deletion_question": "Do you really want to delete this item?",

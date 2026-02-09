@@ -7,7 +7,7 @@ import { useCedarling } from '@/cedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import GluuCommitDialogLegacy from 'Routes/Apps/Gluu/GluuCommitDialogLegacy'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/types'
 import type { FormikTouched } from 'formik'
@@ -53,9 +53,7 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
     enableReinitialize: true,
     validateOnChange: true,
     validateOnBlur: true,
-    onSubmit: () => {
-      // Form submission is handled by handleFormSubmit wrapper
-    },
+    onSubmit: () => {},
   })
 
   const handleFormSubmit = useCallback(async () => {
@@ -358,7 +356,7 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
       </Form>
 
       {canWriteConfigApi && (
-        <GluuCommitDialog
+        <GluuCommitDialogLegacy
           handler={toggle}
           modal={modal}
           operations={operations}

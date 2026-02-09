@@ -10,7 +10,7 @@ import SearchIcon from '@mui/icons-material/Search'
 import { FormGroup, Card, CardBody, CardHeader, Form } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
-import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import GluuCommitDialogLegacy from 'Routes/Apps/Gluu/GluuCommitDialogLegacy'
 import PropertyBuilder from './JsonPropertyBuilder'
 import DefaultAcrInput from './DefaultAcrInput'
 import SetTitle from 'Utils/SetTitle'
@@ -430,7 +430,7 @@ const AuthPage: React.FC = () => {
           </div>
         )}
         {canWriteProperties && (
-          <GluuCommitDialog
+          <GluuCommitDialogLegacy
             handler={toggle}
             modal={modal}
             operations={operations}

@@ -2,7 +2,7 @@ import { useFormik } from 'formik'
 import React, { useState, useEffect, useMemo, useCallback, memo, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { Row, Col, Form, FormGroup, CustomInput } from 'Components'
-import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import GluuCommitDialogLegacy from 'Routes/Apps/Gluu/GluuCommitDialogLegacy'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useCedarling } from '@/cedarling'
@@ -190,7 +190,7 @@ const SamlConfigurationForm: React.FC = () => {
             </Col>
           </Row>
         )}
-        <GluuCommitDialog
+        <GluuCommitDialogLegacy
           handler={toggle}
           modal={modal}
           onAccept={submitForm}

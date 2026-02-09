@@ -166,43 +166,47 @@ const GluuCommitDialog = ({
           >
             <CloseOutlinedIcon />
           </GluuButton>
-          <GluuText variant="h2" className={classes.title} id="commit-dialog-title">
-            {titleText}
-          </GluuText>
-          <div className={classes.textareaContainer}>
-            <textarea
-              id={USER_MESSAGE}
-              name={USER_MESSAGE}
-              onChange={handleInputChange}
-              placeholder={placeholderText}
-              value={userMessage}
-              className={classes.textarea}
-              aria-invalid={!!errorMessageText}
-              aria-describedby={errorMessageText ? `${USER_MESSAGE}-error` : undefined}
-            />
-          </div>
-          {errorMessageText && (
-            <GluuText
-              variant="span"
-              className={classes.errorMessage}
-              style={{ color: customColors.statusInactive }}
-              id={`${USER_MESSAGE}-error`}
-            >
-              {errorMessageText}
+          <div className={classes.contentArea}>
+            <GluuText variant="h2" className={classes.title} id="commit-dialog-title">
+              {titleText}
             </GluuText>
-          )}
-          <GluuButton
-            onClick={handleAccept}
-            disabled={!isValid}
-            backgroundColor={customColors.statusActive}
-            textColor={customColors.white}
-            borderColor="transparent"
-            padding="8px 28px"
-            useOpacityOnHover
-            className={classes.yesButton}
-          >
-            {t('actions.yes')}
-          </GluuButton>
+            <div className={classes.textareaContainer}>
+              <textarea
+                id={USER_MESSAGE}
+                name={USER_MESSAGE}
+                onChange={handleInputChange}
+                placeholder={placeholderText}
+                value={userMessage}
+                className={classes.textarea}
+                aria-invalid={!!errorMessageText}
+                aria-describedby={errorMessageText ? `${USER_MESSAGE}-error` : undefined}
+              />
+            </div>
+            {errorMessageText && (
+              <GluuText
+                variant="span"
+                className={classes.errorMessage}
+                style={{ color: customColors.statusInactive }}
+                id={`${USER_MESSAGE}-error`}
+              >
+                {errorMessageText}
+              </GluuText>
+            )}
+            <div className={classes.buttonRow}>
+              <GluuButton
+                onClick={handleAccept}
+                disabled={!isValid}
+                backgroundColor={customColors.statusActive}
+                textColor={customColors.white}
+                borderColor="transparent"
+                padding="8px 28px"
+                useOpacityOnHover
+                className={classes.yesButton}
+              >
+                {t('actions.yes')}
+              </GluuButton>
+            </div>
+          </div>
         </div>
       </>
     )
@@ -217,7 +221,6 @@ GluuCommitDialog.propTypes = {
   modal: PropTypes.bool.isRequired,
   onAccept: PropTypes.func.isRequired,
   formik: PropTypes.object,
-  operations: PropTypes.arrayOf(PropTypes.object),
   placeholderLabel: PropTypes.string,
   label: PropTypes.string,
   alertMessage: PropTypes.string,

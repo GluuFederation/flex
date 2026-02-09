@@ -5,7 +5,7 @@ import ClientBasic from './ClientBasicPanel'
 import ClientAdvanced from './ClientAdvancedPanel'
 import ClientScript from './ClientScriptPanel'
 import ClientActiveTokens from './ClientActiveTokens'
-import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import GluuCommitDialogLegacy from 'Routes/Apps/Gluu/GluuCommitDialogLegacy'
 import { Formik } from 'formik'
 import { useTranslation } from 'react-i18next'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
@@ -75,7 +75,6 @@ function ClientWizardForm({
     [hasCedarWritePermission, clientResourceId],
   )
 
-  // Permission initialization
   useEffect(() => {
     authorizeHelper(clientScopes)
   }, [authorizeHelper, clientScopes])
@@ -564,7 +563,7 @@ function ClientWizardForm({
           )}
         </Formik>
       </Card>
-      <GluuCommitDialog
+      <GluuCommitDialogLegacy
         feature={adminUiFeatures.oidc_clients_write}
         handler={toggle}
         modal={modal}

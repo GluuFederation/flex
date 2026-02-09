@@ -6,7 +6,7 @@ import { Card, CardBody, Form, FormGroup, Col, Row } from 'Components'
 import { useFormik, setNestedObjectValues } from 'formik'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import GluuCommitDialogLegacy from 'Routes/Apps/Gluu/GluuCommitDialogLegacy'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -158,12 +158,11 @@ const WebsiteSsoServiceProviderForm = ({
     },
   })
 
-  // Revalidate form when spMetaDataSourceType changes (for conditional validation)
   useEffect(() => {
     if (formik.values.spMetaDataSourceType) {
       formik.validateForm()
     }
-  }, [formik.values.spMetaDataSourceType]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [formik.values.spMetaDataSourceType, formik.validateForm])
 
   const scopeFieldValue = useMemo<ScopeOption[]>(() => {
     const formikValue = formik.values.releasedAttributes
@@ -610,7 +609,7 @@ const WebsiteSsoServiceProviderForm = ({
                 />
               </Col>
             </Row>
-            <GluuCommitDialog
+            <GluuCommitDialogLegacy
               handler={toggle}
               modal={modal}
               onAccept={submitForm}
