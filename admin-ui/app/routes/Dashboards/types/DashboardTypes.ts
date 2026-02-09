@@ -62,9 +62,9 @@ export interface DashboardChartProps {
 }
 
 export interface TooltipPayloadItem {
-  dataKey: string
-  value: number
-  payload: Record<string, number | string>
+  dataKey?: string | number
+  value?: number
+  payload?: Record<string, unknown>
   color?: string
   name?: string
 }
@@ -75,6 +75,7 @@ export interface TooltipDesignProps {
   backgroundColor?: string
   textColor?: string
   isDark?: boolean
+  formatter?: (value: unknown) => string
 }
 
 export type ChartDataKey =

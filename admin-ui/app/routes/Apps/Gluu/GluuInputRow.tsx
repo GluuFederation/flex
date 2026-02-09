@@ -1,10 +1,36 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Col, FormGroup, Input } from 'Components'
+import type { InputProps } from 'reactstrap'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
+import type { FormikProps } from 'formik'
 import GluuLabel from './GluuLabel'
-import customColors from '@/customColors'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
-function GluuInputRow({
+interface GluuInputRowProps<T = Record<string, unknown>> {
+  label: string
+  name: string
+  type?: InputProps['type']
+  value?: string | number
+  formik?: FormikProps<T> | null
+  required?: boolean
+  lsize?: number
+  rsize?: number
+  doc_category?: string
+  disabled?: boolean
+  showError?: boolean
+  errorMessage?: string
+  handleChange?: ((event: React.ChangeEvent<HTMLInputElement>) => void) | null
+  doc_entry?: string
+  shortcode?: React.ReactNode
+  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void
+  rows?: number
+  cols?: number
+  isDark?: boolean
+}
+
+function GluuInputRow<T = Record<string, unknown>>({
   label,
   name,
   type = 'text',
@@ -23,10 +49,13 @@ function GluuInputRow({
   onFocus,
   rows,
   cols,
-}: any) {
+  isDark,
+}: GluuInputRowProps<T>) {
   const [customType, setCustomType] = useState<string | null>(null)
+  const { state } = useTheme()
+  const themeColors = getThemeColor(state?.theme ?? DEFAULT_THEME)
 
-  const setVisivility = () => {
+  const setVisivility = (): void => {
     if (customType) {
       setCustomType(null)
     } else {
@@ -41,15 +70,16 @@ function GluuInputRow({
         doc_category={doc_category}
         required={required}
         doc_entry={doc_entry || name}
+        isDark={isDark}
       />
       <Col sm={rsize} style={{ position: 'relative' }}>
         <Input
           id={name}
           data-testid={name}
-          type={customType || type}
+          type={(customType ?? type) as InputProps['type']}
           name={name}
-          value={value}
-          onChange={(event) => {
+          value={value != null ? String(value) : ''}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             if (formik) {
               formik.handleChange(event)
             }
@@ -74,9 +104,10 @@ function GluuInputRow({
             )}
           </div>
         )}
-        {showError ? <div style={{ color: customColors.accentRed }}>{errorMessage}</div> : null}
+        {showError ? <div style={{ color: themeColors.errorColor }}>{errorMessage}</div> : null}
       </Col>
     </FormGroup>
   )
 }
+
 export default GluuInputRow

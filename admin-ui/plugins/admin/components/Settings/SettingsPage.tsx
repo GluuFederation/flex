@@ -1,35 +1,19 @@
 import React, { useMemo, useCallback, useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
-import { useDispatch, useSelector } from 'react-redux'
-import {
-  Card,
-  CardBody,
-  FormGroup,
-  Col,
-  Label,
-  Badge,
-  InputGroup,
-  CustomInput,
-  Form,
-  Alert,
-  Button,
-  Input,
-  Accordion,
-  AccordionHeader,
-  AccordionBody,
-} from 'Components'
+import { useAppSelector, useAppDispatch } from '@/redux/hooks'
+import { FormGroup, InputGroup, CustomInput, Form, Alert, Input, GluuPageContent } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
+import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { SETTINGS } from 'Utils/ApiResources'
 import SetTitle from 'Utils/SetTitle'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { useTheme } from 'Context/theme/themeContext'
-import getThemeColor from 'Context/theme/config'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
 import { SIMPLE_PASSWORD_AUTH } from 'Plugins/auth-server/common/Constants'
 import {
   CedarlingLogType,
@@ -55,32 +39,25 @@ import { logAudit } from '@/utils/AuditLogger'
 import { UPDATE } from '@/audit/UserActionType'
 import { ADMIN_UI_SETTINGS } from 'Plugins/admin/redux/audit/Resources'
 import { getErrorMessage } from 'Plugins/schema/utils/errorHandler'
-import type { RootState } from '@/redux/sagas/types/audit'
-import { DEFAULT_THEME } from '@/context/theme/constants'
-import customColors from '@/customColors'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import { GluuButton } from '@/components/GluuButton'
+import { useStyles } from './SettingsPage.style'
 
 const PAGING_SIZE_OPTIONS = [1, 5, 10, 20] as const
 const DEFAULT_PAGING_SIZE = PAGING_SIZE_OPTIONS[2]
 const SCRIPTS_FETCH_LIMIT = 200
 
-const FORM_GROUP_ROW_STYLE = { justifyContent: 'space-between' }
-const LABEL_CONTAINER_STYLE: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  paddingRight: '15px',
-}
-
 const SettingsPage: React.FC = () => {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { state: themeState } = useTheme()
+  const isDark = (themeState?.theme ?? DEFAULT_THEME) === THEME_DARK
   const queryClient = useQueryClient()
 
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
 
-  const userinfo = useSelector((state: RootState) => state.authReducer?.userinfo)
-  const clientId = useSelector((state: RootState) => state.authReducer?.config?.clientId)
+  const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
+  const clientId = useAppSelector((state) => state.authReducer?.config?.clientId)
 
   const {
     data: config,
@@ -130,15 +107,9 @@ const SettingsPage: React.FC = () => {
       ? stored
       : DEFAULT_PAGING_SIZE
   }, [])
-  const selectedTheme = useMemo(() => themeState.theme || DEFAULT_THEME, [themeState.theme])
+  const selectedTheme = useMemo(() => themeState?.theme || DEFAULT_THEME, [themeState?.theme])
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
-  const badgeStyle = useMemo(
-    () => ({
-      backgroundColor: themeColors.background,
-      color: customColors.white,
-    }),
-    [themeColors.background],
-  )
+  const { classes } = useStyles({ isDark, themeColors })
   const configApiUrl = useMemo(() => {
     if (typeof window === 'undefined') return 'N/A'
     const windowWithConfig = window as Window & { configApiBaseUrl?: string }
@@ -310,9 +281,14 @@ const SettingsPage: React.FC = () => {
               <div key={`error-${idx}`}>{msg}</div>
             ))}
           </div>
-          <Button color="danger" size="sm" onClick={handleRetry}>
+          <GluuButton
+            size="sm"
+            backgroundColor={themeColors.errorColor}
+            textColor={themeColors.settings.errorButtonText}
+            onClick={handleRetry}
+          >
             {t('actions.retry')}
-          </Button>
+          </GluuButton>
         </div>
       </Alert>
     )
@@ -321,235 +297,251 @@ const SettingsPage: React.FC = () => {
   return (
     <GluuLoader blocking={loadingScripts || loadingConfig || isSubmitting}>
       <GluuViewWrapper canShow={canReadSettings}>
-        <Card style={applicationStyle.mainCard}>
-          <CardBody>
-            {renderErrorAlert()}
-            <Form onSubmit={formik.handleSubmit}>
-              <GluuInputRow
-                label="fields.gluuFlexVersion"
-                name="gluuFlexVersion"
-                type="text"
-                lsize={4}
-                rsize={8}
-                value={packageJson.version}
-                disabled={true}
-                doc_category={SETTINGS}
-                doc_entry="gluuCurrentVersion"
-              />
+        <GluuPageContent>
+          <div className={classes.settingsCard}>
+            <div className={`${classes.content} ${classes.settingsLabels}`}>
+              {renderErrorAlert()}
+              <Form onSubmit={formik.handleSubmit} className={classes.formSection}>
+                <div className={`${classes.formWithInputs} ${classes.fieldsGrid}`}>
+                  <div className={classes.fieldItem}>
+                    <GluuInputRow
+                      label="fields.gluuFlexVersion"
+                      name="gluuFlexVersion"
+                      type="text"
+                      lsize={12}
+                      rsize={12}
+                      value={packageJson.version}
+                      disabled={true}
+                      doc_category={SETTINGS}
+                      doc_entry="gluuCurrentVersion"
+                      isDark={isDark}
+                    />
+                  </div>
 
-              <FormGroup row style={FORM_GROUP_ROW_STYLE}>
-                <GluuLabel
-                  label={t('fields.config_api_url')}
-                  doc_category={SETTINGS}
-                  size={4}
-                  doc_entry="configApiUrl"
-                />
-                <Col sm={8}>
-                  <Label style={LABEL_CONTAINER_STYLE}>
-                    <h3 style={{ color: customColors.primaryDark }}>
-                      <Badge style={badgeStyle}>{configApiUrl}</Badge>
-                    </h3>
-                  </Label>
-                </Col>
-              </FormGroup>
+                  <div className={classes.fieldItem}>
+                    <GluuInputRow
+                      label="fields.config_api_url"
+                      name="configApiUrl"
+                      type="text"
+                      lsize={12}
+                      rsize={12}
+                      value={configApiUrl}
+                      disabled={true}
+                      doc_category={SETTINGS}
+                      doc_entry="configApiUrl"
+                      isDark={isDark}
+                    />
+                  </div>
 
-              <FormGroup row>
-                <GluuLabel
-                  label={t('fields.list_paging_size')}
-                  size={4}
-                  doc_category={SETTINGS}
-                  doc_entry="pageSize"
-                />
-                <Col sm={8}>
-                  <InputGroup>
-                    <CustomInput
-                      type="select"
-                      id="pagingSize"
-                      name="pagingSize"
-                      value={String(currentPagingSize)}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        handlePagingSizeChange(Number.parseInt(e.target.value, 10))
-                      }
-                      disabled={!canWriteSettings}
-                    >
-                      {PAGING_SIZE_OPTIONS.map((option) => (
-                        <option value={String(option)} key={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </CustomInput>
-                  </InputGroup>
-                </Col>
-              </FormGroup>
+                  <div className={classes.fieldItem}>
+                    <FormGroup>
+                      <GluuLabel
+                        label="fields.list_paging_size"
+                        size={12}
+                        doc_category={SETTINGS}
+                        doc_entry="pageSize"
+                        isDark={isDark}
+                      />
+                      <InputGroup>
+                        <CustomInput
+                          type="select"
+                          id="pagingSize"
+                          name="pagingSize"
+                          value={String(currentPagingSize)}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            handlePagingSizeChange(Number.parseInt(e.target.value, 10))
+                          }
+                          disabled={!canWriteSettings}
+                        >
+                          {PAGING_SIZE_OPTIONS.map((option) => (
+                            <option value={String(option)} key={option}>
+                              {option}
+                            </option>
+                          ))}
+                        </CustomInput>
+                      </InputGroup>
+                    </FormGroup>
+                  </div>
 
-              <GluuInputRow
-                label="fields.sessionTimeoutInMins"
-                name="sessionTimeoutInMins"
-                type="number"
-                formik={formik}
-                lsize={4}
-                rsize={8}
-                value={formik.values.sessionTimeoutInMins}
-                doc_category={SETTINGS}
-                doc_entry="sessionTimeoutInMins"
-                errorMessage={formik.errors.sessionTimeoutInMins}
-                showError={Boolean(
-                  formik.errors.sessionTimeoutInMins && formik.touched.sessionTimeoutInMins,
-                )}
-                disabled={!canWriteSettings}
-              />
-
-              <FormGroup row>
-                <GluuLabel
-                  size={4}
-                  doc_category={SETTINGS}
-                  doc_entry="adminui_default_acr"
-                  label={t('fields.adminui_default_acr')}
-                />
-                <Col sm={8}>
-                  <InputGroup>
-                    <CustomInput
-                      type="select"
-                      data-testid="acrValues"
-                      id="acrValues"
-                      name="acrValues"
-                      value={formik.values.acrValues}
-                      onChange={formik.handleChange}
-                      disabled={!canWriteSettings}
-                    >
-                      <option value="">{t('actions.choose')}...</option>
-                      {authScripts.map((item) => (
-                        <option key={item} value={item}>
-                          {item}
-                        </option>
-                      ))}
-                    </CustomInput>
-                  </InputGroup>
-                </Col>
-              </FormGroup>
-
-              <FormGroup row>
-                <GluuLabel
-                  size={4}
-                  doc_category={SETTINGS}
-                  doc_entry="cedarSwitch"
-                  label={t('fields.showCedarLogs?')}
-                />
-                <Col sm={8}>
-                  <GluuToogleRow
-                    isLabelVisible={false}
-                    name={t('fields.showCedarLogs?')}
-                    formik={formik}
-                    value={formik.values.cedarlingLogType === CedarlingLogType.STD_OUT}
-                    doc_category={SETTINGS}
-                    doc_entry="cedarSwitch"
-                    lsize={4}
-                    rsize={8}
-                    disabled={!canWriteSettings}
-                    handler={(event: React.ChangeEvent<HTMLInputElement>) => {
-                      formik.setFieldValue(
-                        'cedarlingLogType',
-                        event.target.checked ? CedarlingLogType.STD_OUT : CedarlingLogType.OFF,
-                      )
-                    }}
-                  />
-                </Col>
-              </FormGroup>
-
-              <Accordion className="mb-3 b-primary" initialOpen>
-                <AccordionHeader>
-                  <h5 style={{ color: customColors.primaryDark }}>
-                    {t('fields.custom_params_auth')}
-                  </h5>
-                </AccordionHeader>
-                <AccordionBody>
-                  <Button
-                    style={{
-                      float: 'right',
-                      backgroundColor: customColors.primaryDark,
-                      color: customColors.white,
-                      border: 'none',
-                      marginBottom: formik.values.additionalParameters.length > 0 ? 0 : '16px',
-                    }}
-                    type="button"
-                    disabled={!canWriteSettings}
-                    onClick={() => {
-                      const currentParams = formik.values.additionalParameters || []
-                      formik.setFieldValue('additionalParameters', [
-                        ...currentParams,
-                        { key: '', value: '' },
-                      ])
-                    }}
-                  >
-                    <i className="fa fa-fw fa-plus me-2"></i>
-                    {t('actions.add_property')}
-                  </Button>
-                  <FormGroup row>
-                    <Col sm={12}>
-                      {(formik.values.additionalParameters || []).map(
-                        (param: { key?: string; value?: string }, index: number) => (
-                          <FormGroup row key={index}>
-                            <Col sm={4}>
-                              <Input
-                                name={`additionalParameters.${index}.key`}
-                                value={param.key || ''}
-                                onChange={formik.handleChange}
-                                placeholder={t('placeholders.enter_property_key')}
-                                disabled={!canWriteSettings}
-                              />
-                            </Col>
-                            <Col sm={6}>
-                              <Input
-                                name={`additionalParameters.${index}.value`}
-                                value={param.value || ''}
-                                onChange={formik.handleChange}
-                                placeholder={t('placeholders.enter_property_value')}
-                                disabled={!canWriteSettings}
-                              />
-                            </Col>
-                            <Col sm={2}>
-                              <Button
-                                type="button"
-                                color="danger"
-                                disabled={!canWriteSettings}
-                                onClick={() => {
-                                  const currentParams = [...formik.values.additionalParameters]
-                                  currentParams.splice(index, 1)
-                                  formik.setFieldValue('additionalParameters', currentParams)
-                                }}
-                              >
-                                <i className="fa fa-fw fa-trash me-2"></i>
-                                {t('actions.remove')}
-                              </Button>
-                            </Col>
-                          </FormGroup>
-                        ),
+                  <div className={classes.fieldItem}>
+                    <GluuInputRow<SettingsFormValues>
+                      label="fields.sessionTimeoutInMins"
+                      name="sessionTimeoutInMins"
+                      type="number"
+                      formik={formik}
+                      lsize={12}
+                      rsize={12}
+                      value={formik.values.sessionTimeoutInMins}
+                      doc_category={SETTINGS}
+                      doc_entry="sessionTimeoutInMins"
+                      errorMessage={formik.errors.sessionTimeoutInMins}
+                      showError={Boolean(
+                        formik.errors.sessionTimeoutInMins && formik.touched.sessionTimeoutInMins,
                       )}
-                    </Col>
-                  </FormGroup>
+                      disabled={!canWriteSettings}
+                      isDark={isDark}
+                    />
+                  </div>
+
+                  <div className={classes.fieldItem}>
+                    <FormGroup>
+                      <GluuLabel
+                        size={12}
+                        doc_category={SETTINGS}
+                        doc_entry="adminui_default_acr"
+                        label="fields.adminui_default_acr"
+                        isDark={isDark}
+                      />
+                      <InputGroup>
+                        <CustomInput
+                          type="select"
+                          data-testid="acrValues"
+                          id="acrValues"
+                          name="acrValues"
+                          value={formik.values.acrValues}
+                          onChange={formik.handleChange}
+                          disabled={!canWriteSettings}
+                        >
+                          <option value="">{t('actions.choose')}...</option>
+                          {authScripts.map((item) => (
+                            <option key={item} value={item}>
+                              {item}
+                            </option>
+                          ))}
+                        </CustomInput>
+                      </InputGroup>
+                    </FormGroup>
+                  </div>
+
+                  <div className={classes.fieldItem}>
+                    <FormGroup>
+                      <GluuLabel
+                        size={12}
+                        doc_category={SETTINGS}
+                        doc_entry="cedarSwitch"
+                        label="fields.showCedarLogs?"
+                        isDark={isDark}
+                      />
+                      <GluuToogleRow<SettingsFormValues>
+                        isLabelVisible={false}
+                        label="fields.showCedarLogs?"
+                        name="cedarlingLogType"
+                        formik={formik}
+                        value={formik.values.cedarlingLogType === CedarlingLogType.STD_OUT}
+                        doc_category={SETTINGS}
+                        doc_entry="cedarSwitch"
+                        lsize={12}
+                        rsize={12}
+                        disabled={!canWriteSettings}
+                        isDark={isDark}
+                        handler={(event: React.ChangeEvent<HTMLInputElement>) => {
+                          formik.setFieldValue(
+                            'cedarlingLogType',
+                            event.target.checked ? CedarlingLogType.STD_OUT : CedarlingLogType.OFF,
+                          )
+                        }}
+                      />
+                    </FormGroup>
+                  </div>
+                </div>
+
+                <div className={classes.customParamsBox}>
+                  <div className={classes.customParamsHeader}>
+                    <GluuText variant="h5" disableThemeColor>
+                      <span className={classes.customParamsTitle}>
+                        {t('fields.custom_params_auth')}
+                      </span>
+                    </GluuText>
+                    <GluuButton
+                      type="button"
+                      disabled={!canWriteSettings}
+                      backgroundColor={themeColors.settings.addPropertyButton.bg}
+                      textColor={themeColors.settings.addPropertyButton.text}
+                      disableHoverStyles
+                      style={{ minWidth: 156, width: 156, gap: 8, flexShrink: 0 }}
+                      onClick={() => {
+                        const currentParams = formik.values.additionalParameters || []
+                        formik.setFieldValue('additionalParameters', [
+                          ...currentParams,
+                          { id: crypto.randomUUID(), key: '', value: '' },
+                        ])
+                      }}
+                    >
+                      <i className="fa fa-fw fa-plus" />
+                      {t('actions.add_property')}
+                    </GluuButton>
+                  </div>
+                  <div className={classes.customParamsBody}>
+                    {(formik.values.additionalParameters || []).map(
+                      (param: { id: string; key?: string; value?: string }, index: number) => (
+                        <div key={param.id} className={classes.customParamsRow}>
+                          <Input
+                            name={`additionalParameters.${index}.key`}
+                            value={param.key || ''}
+                            onChange={formik.handleChange}
+                            placeholder={t('placeholders.enter_property_key')}
+                            disabled={!canWriteSettings}
+                            className={classes.customParamsInput}
+                          />
+                          <Input
+                            name={`additionalParameters.${index}.value`}
+                            value={param.value || ''}
+                            onChange={formik.handleChange}
+                            placeholder={t('placeholders.enter_property_value')}
+                            disabled={!canWriteSettings}
+                            className={classes.customParamsInput}
+                          />
+                          <GluuButton
+                            type="button"
+                            disabled={!canWriteSettings}
+                            backgroundColor={themeColors.settings.removeButton.bg}
+                            textColor={themeColors.settings.removeButton.text}
+                            disableHoverStyles
+                            style={{
+                              minWidth: 156,
+                              width: 156,
+                              minHeight: 44,
+                              gap: 8,
+                              flexShrink: 0,
+                              alignSelf: 'stretch',
+                            }}
+                            onClick={() => {
+                              const currentParams = formik.values.additionalParameters || []
+                              const newParams = currentParams.filter((p) => p.id !== param.id)
+                              formik.setFieldValue('additionalParameters', newParams)
+                            }}
+                          >
+                            <i className="fa fa-fw fa-trash" />
+                            {t('actions.remove')}
+                          </GluuButton>
+                        </div>
+                      ),
+                    )}
+                  </div>
                   {showAdditionalParametersError &&
                     additionalParametersErrorText &&
                     additionalParametersErrorText.trim() && (
-                      <div style={{ color: customColors.accentRed }}>
+                      <div className={classes.customParamsError}>
                         {additionalParametersErrorText}
                       </div>
                     )}
-                </AccordionBody>
-              </Accordion>
+                </div>
 
-              <GluuFormFooter
-                showBack
-                showCancel={canWriteSettings}
-                onCancel={handleCancel}
-                disableCancel={!isFormChanged}
-                showApply={canWriteSettings}
-                onApply={formik.handleSubmit}
-                disableApply={!isFormChanged || hasErrors || isSubmitting}
-                applyButtonType="button"
-              />
-            </Form>
-          </CardBody>
-        </Card>
+                <GluuThemeFormFooter
+                  showBack
+                  showCancel={canWriteSettings}
+                  onCancel={handleCancel}
+                  disableCancel={!isFormChanged}
+                  showApply={canWriteSettings}
+                  onApply={formik.handleSubmit}
+                  disableApply={!isFormChanged || hasErrors || isSubmitting}
+                  applyButtonType="button"
+                  hideDivider
+                />
+              </Form>
+            </div>
+          </div>
+        </GluuPageContent>
       </GluuViewWrapper>
     </GluuLoader>
   )

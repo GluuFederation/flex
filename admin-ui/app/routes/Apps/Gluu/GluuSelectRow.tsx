@@ -19,7 +19,7 @@ interface SelectOption {
 interface GluuSelectRowProps {
   label: string
   name: string
-  value: any
+  value?: string | number
   formik: {
     handleChange: (
       event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> | SelectChangeEvent,
@@ -37,9 +37,10 @@ interface GluuSelectRowProps {
   showError?: boolean
   errorMessage?: string
   doc_entry?: string
+  isDark?: boolean
 }
 
-function GluuSelectRow({
+const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
   label,
   name,
   value,
@@ -54,7 +55,8 @@ function GluuSelectRow({
   showError = false,
   errorMessage,
   doc_entry,
-}: GluuSelectRowProps) {
+  isDark,
+}) => {
   const { t } = useTranslation()
 
   const deduplicatedValues = useMemo(() => {
@@ -94,6 +96,7 @@ function GluuSelectRow({
           doc_category={doc_category}
           doc_entry={doc_entry || name}
           required={required}
+          isDark={isDark}
         />
       </Grid>
       <Grid item xs={rsize}>
@@ -104,7 +107,7 @@ function GluuSelectRow({
             data-testid={name}
             size="small"
             name={name}
-            value={value || ''}
+            value={value != null ? String(value) : ''}
             onChange={handleSelectChange}
             displayEmpty
             sx={selectStyle}

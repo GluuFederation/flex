@@ -6,11 +6,15 @@ export type SettingsConfigData = Pick<
   'sessionTimeoutInMins' | 'acrValues' | 'cedarlingLogType' | 'additionalParameters'
 >
 
+export interface AdditionalParameterFormItem extends KeyValuePair {
+  id: string
+}
+
 export interface SettingsFormValues {
   sessionTimeoutInMins: number
   acrValues: string
   cedarlingLogType: CedarlingLogType
-  additionalParameters: KeyValuePair[]
+  additionalParameters: AdditionalParameterFormItem[]
 }
 
 export const sanitizeAdditionalParameters = (params?: KeyValuePair[] | null): KeyValuePair[] => {
@@ -36,6 +40,7 @@ export const buildSettingsInitialValues = (
   cedarlingLogType: (configData?.cedarlingLogType as CedarlingLogType) ?? CedarlingLogType.OFF,
   additionalParameters: sanitizeAdditionalParameters(configData?.additionalParameters).map(
     (param) => ({
+      id: crypto.randomUUID(),
       key: param.key || '',
       value: param.value || '',
     }),

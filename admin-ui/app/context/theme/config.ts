@@ -39,6 +39,34 @@ const createLightTheme = () => {
     checkbox: {
       uncheckedBorder: customColors.sidebarHoverBg,
     },
+    errorColor: customColors.accentRed,
+    formFooter: {
+      back: {
+        backgroundColor: customColors.statusActive,
+        textColor: customColors.white,
+        borderColor: customColors.statusActive,
+      },
+      apply: {
+        backgroundColor: customColors.primaryDark,
+        textColor: customColors.white,
+        borderColor: customColors.primaryDark,
+      },
+      cancel: {
+        backgroundColor: 'transparent',
+        textColor: customColors.primaryDark,
+        borderColor: customColors.primaryDark,
+      },
+    },
+    settings: {
+      cardBackground: customColors.white,
+      customParamsBox: customColors.white,
+      customParamsInput: customColors.whiteSmoke,
+      formInputBackground: customColors.whiteSmoke,
+      inputBorder: customColors.borderInput,
+      addPropertyButton: { bg: customColors.addPropertyBgDark, text: customColors.white },
+      removeButton: { bg: customColors.statusInactive, text: customColors.white },
+      errorButtonText: customColors.white,
+    },
   }
 }
 
@@ -79,6 +107,34 @@ const createDarkTheme = () => {
     },
     checkbox: {
       uncheckedBorder: customColors.cedarCardBorderDark,
+    },
+    errorColor: customColors.accentRed,
+    formFooter: {
+      back: {
+        backgroundColor: customColors.statusActive,
+        textColor: customColors.white,
+        borderColor: customColors.statusActive,
+      },
+      apply: {
+        backgroundColor: customColors.white,
+        textColor: customColors.primaryDark,
+        borderColor: customColors.white,
+      },
+      cancel: {
+        backgroundColor: 'transparent',
+        textColor: customColors.white,
+        borderColor: customColors.white,
+      },
+    },
+    settings: {
+      cardBackground: customColors.darkCardBg,
+      customParamsBox: customColors.darkCardBg,
+      customParamsInput: customColors.darkInputBg,
+      formInputBackground: customColors.darkInputBg,
+      inputBorder: customColors.darkBorder,
+      addPropertyButton: { bg: customColors.white, text: customColors.addPropertyTextDark },
+      removeButton: { bg: customColors.statusInactive, text: customColors.white },
+      errorButtonText: customColors.white,
     },
   }
 }

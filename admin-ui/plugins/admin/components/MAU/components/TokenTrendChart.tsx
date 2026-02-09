@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { Card, CardBody, CardHeader } from 'Components'
+import { Card, CardBody } from 'Components'
 import {
   XAxis,
   YAxis,
@@ -10,15 +10,31 @@ import {
   ResponsiveContainer,
   Legend,
 } from 'recharts'
+import type { TooltipProps } from 'recharts'
 import { useTranslation } from 'react-i18next'
-import { useTheme } from 'Context/theme/themeContext'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
+import { useMauStyles } from '../MauPage.style'
 import type { MauChartProps } from '../types'
+import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
+import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { getChartColors } from '../constants'
 import { formatMonth, formatNumber } from '../utils'
 
 const TokenTrendChart: React.FC<MauChartProps> = ({ data }) => {
   const { t } = useTranslation()
   const { state } = useTheme()
+  const themeColors = getThemeColor(state.theme)
+  const isDark = state.theme === THEME_DARK
+  const { classes } = useMauStyles({
+    themeColors: {
+      cardBg: themeColors.dashboard.supportCard ?? themeColors.menu.background,
+      text: themeColors.fontColor,
+    },
+    isDark,
+  })
   const chartColors = useMemo(() => getChartColors(state.theme), [state.theme])
 
   const chartData = data.map((entry) => ({
@@ -29,16 +45,31 @@ const TokenTrendChart: React.FC<MauChartProps> = ({ data }) => {
   }))
 
   return (
-    <Card className="h-100">
-      <CardHeader tag="h6">{t('titles.token_trends')}</CardHeader>
+    <Card className={`${classes.trendCard} h-100`}>
       <CardBody>
+        <GluuText variant="div" className={classes.trendTitle}>
+          {t('titles.token_trends')}
+        </GluuText>
         <ResponsiveContainer width="100%" height={250}>
           <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-            <XAxis dataKey="monthLabel" tick={{ fontSize: 12 }} />
-            <YAxis tick={{ fontSize: 12 }} tickFormatter={formatNumber} />
-            <Tooltip formatter={(value: number) => formatNumber(value)} />
-            <Legend />
+            <CartesianGrid strokeDasharray="3 3" stroke={themeColors.borderColor} />
+            <XAxis dataKey="monthLabel" tick={{ fill: themeColors.fontColor, fontSize: 12 }} />
+            <YAxis
+              tick={{ fill: themeColors.fontColor, fontSize: 12 }}
+              tickFormatter={formatNumber}
+            />
+            <Tooltip
+              content={(props: TooltipProps<number, string>) => (
+                <TooltipDesign
+                  payload={props.payload as TooltipPayloadItem[] | undefined}
+                  active={props.active}
+                  backgroundColor={themeColors.dashboard.supportCard ?? themeColors.menu.background}
+                  textColor={themeColors.fontColor}
+                  isDark={isDark}
+                />
+              )}
+            />
+            <Legend wrapperStyle={{ color: themeColors.fontColor }} />
             <Area
               type="monotone"
               dataKey="clientCredentials"

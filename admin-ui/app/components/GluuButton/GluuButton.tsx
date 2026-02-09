@@ -3,6 +3,7 @@ import { fontFamily } from '@/styles/fonts'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
+import { resolveBackgroundColor } from '@/utils/buttonUtils'
 import type { GluuButtonProps } from './types'
 
 const SIZES = {
@@ -32,6 +33,7 @@ const GluuButton: React.FC<GluuButtonProps> = (props) => {
     className,
     useOpacityOnHover = false,
     hoverOpacity,
+    disableHoverStyles = false,
     onClick,
     type = 'button',
     title,
@@ -50,7 +52,7 @@ const GluuButton: React.FC<GluuButtonProps> = (props) => {
     const text = textColor ?? themeColors.fontColor
     const border = borderColor ?? (isDark ? 'transparent' : themeColors.borderColor)
     const hoverBg = isDark ? themeColors.lightBackground : themeColors.borderColor
-    const keepBgOnHover = useOpacityOnHover && isHovered && !isDisabled
+    const keepBgOnHover = !disableHoverStyles && useOpacityOnHover && isHovered && !isDisabled
     const opacityOnHover = hoverOpacity ?? 0.5
 
     return {
@@ -66,15 +68,15 @@ const GluuButton: React.FC<GluuButtonProps> = (props) => {
       minHeight: minHeight ?? sizeConfig.minHeight,
       borderRadius: borderRadius ?? '6px',
       border: `1px solid ${border}`,
-      backgroundColor: keepBgOnHover
-        ? bg
-        : outlined
-          ? isHovered && !isDisabled
-            ? `${bg}15`
-            : 'transparent'
-          : isHovered && !isDisabled
-            ? hoverBg
-            : bg,
+      backgroundColor: resolveBackgroundColor(
+        disableHoverStyles,
+        keepBgOnHover,
+        outlined,
+        isHovered,
+        isDisabled,
+        bg,
+        hoverBg,
+      ),
       color: outlined ? themeColors.fontColor : text,
       cursor: isDisabled ? 'not-allowed' : 'pointer',
       opacity: isDisabled ? 0.65 : keepBgOnHover ? opacityOnHover : 1,

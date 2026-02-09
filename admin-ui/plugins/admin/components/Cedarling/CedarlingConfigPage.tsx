@@ -15,7 +15,7 @@ import {
 } from 'JansConfigApi'
 import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from '@/routes/Apps/Gluu/GluuViewWrapper'
-import GluuFormFooter from '@/routes/Apps/Gluu/GluuFormFooter'
+import GluuThemeFormFooter from '@/routes/Apps/Gluu/GluuThemeFormFooter'
 import type {
   AppConfigResponse,
   AppConfigResponseCedarlingPolicyStoreRetrievalPoint,
@@ -442,7 +442,7 @@ const CedarlingConfigPage: React.FC = () => {
                 </Box>
 
                 <Box className={classes.buttonSection}>
-                  <GluuFormFooter
+                  <GluuThemeFormFooter
                     showBack={true}
                     showApply={canWriteSecurity}
                     disableApply={

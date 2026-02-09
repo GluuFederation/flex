@@ -1,11 +1,12 @@
-import { useMemo, type CSSProperties } from 'react'
+import React, { useMemo, type CSSProperties } from 'react'
 import { Label } from 'Components'
 import 'react-tooltip/dist/react-tooltip.css'
 import { Tooltip as ReactTooltip } from 'react-tooltip'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from './styles/applicationstyle'
 import { HelpOutline } from '@mui/icons-material'
-import customColors from '@/customColors'
+import getThemeColor from '@/context/theme/config'
+import { THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
 
 interface GluuLabelProps {
   label: string
@@ -15,9 +16,12 @@ interface GluuLabelProps {
   doc_entry?: string
   style?: CSSProperties
   allowColon?: boolean
+  isDark?: boolean
 }
 
-function GluuLabel({
+const getSize = (size: number | undefined): number => (size != null ? size : 3)
+
+const GluuLabel: React.FC<GluuLabelProps> = ({
   label,
   required,
   size,
@@ -25,17 +29,24 @@ function GluuLabel({
   doc_entry,
   style,
   allowColon = true,
-}: GluuLabelProps) {
+  isDark: isDarkProp,
+}) => {
   const { t, i18n } = useTranslation()
 
-  const labelColor = useMemo(() => customColors.primaryDark, [])
-
-  function getSize() {
-    if (size != null) {
-      return size
+  const { labelColor, tooltipBaseStyle } = useMemo(() => {
+    const isDarkTheme = isDarkProp === true
+    const darkTheme = getThemeColor(THEME_DARK)
+    const lightTheme = getThemeColor(THEME_LIGHT)
+    return {
+      labelColor: isDarkTheme ? darkTheme.fontColor : lightTheme.fontColor,
+      tooltipBaseStyle: isDarkTheme
+        ? {
+            backgroundColor: lightTheme.menu.background,
+            color: lightTheme.fontColor,
+          }
+        : undefined,
     }
-    return 3
-  }
+  }, [isDarkProp])
 
   const labelStyle = useMemo(
     () => ({
@@ -45,8 +56,17 @@ function GluuLabel({
     [labelColor, style],
   )
 
+  const fullTooltipStyle = useMemo(
+    () => ({
+      zIndex: 101,
+      maxWidth: '45vw',
+      ...tooltipBaseStyle,
+    }),
+    [tooltipBaseStyle],
+  )
+
   return (
-    <Label for={t(label)} sm={getSize()} data-for={doc_entry} style={labelStyle}>
+    <Label for={t(label)} sm={getSize(size)} data-for={doc_entry} style={labelStyle}>
       <h5
         className="d-flex justify-content-between align-items-center"
         aria-label={label}
@@ -54,27 +74,22 @@ function GluuLabel({
       >
         <span className="d-flex align-items-center">
           {t(label)}
+          {allowColon && <span>:</span>}
           {required && <span style={applicationStyle.fieldRequired}> *</span>}
           {doc_category && i18n.exists('documentation.' + doc_category + '.' + doc_entry) && (
             <>
-              <ReactTooltip
-                id={doc_entry}
-                place="right"
-                role="tooltip"
-                style={{ zIndex: 101, maxWidth: '45vw' }}
-              >
+              <ReactTooltip id={doc_entry} place="right" role="tooltip" style={fullTooltipStyle}>
                 {t('documentation.' + doc_category + '.' + doc_entry)}
               </ReactTooltip>
               <HelpOutline
                 tabIndex={-1}
-                style={{ width: 18, height: 18, marginLeft: 6, marginRight: 6, color: labelColor }}
+                style={{ width: 18, height: 18, marginLeft: 0, marginRight: 6, color: labelColor }}
                 data-tooltip-id={doc_entry}
                 data-for={doc_entry}
               />
             </>
           )}
         </span>
-        {allowColon && <span>:</span>}
       </h5>
     </Label>
   )

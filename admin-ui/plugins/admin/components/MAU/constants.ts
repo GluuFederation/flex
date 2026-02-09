@@ -21,6 +21,7 @@ const sharedMauColors = {
   trendClientCredentials: customColors.mauTrendClientCredentials,
   trendAuthCodeAccess: customColors.mauTrendAuthCodeAccess,
   trendAuthCodeId: customColors.mauTrendAuthCodeId,
+  totalTokens: customColors.textSecondary,
 } as const
 
 export const CHART_COLORS_BY_THEME = {
@@ -29,7 +30,7 @@ export const CHART_COLORS_BY_THEME = {
     ...sharedMauColors,
   },
   [THEME_DARK]: {
-    mau: customColors.mauDark,
+    mau: customColors.mauAccentDark,
     ...sharedMauColors,
   },
 } as const

@@ -543,7 +543,8 @@ export interface SmtpPluginState {
 
 // RootState: core + optional plugin reducers (dynamically registered)
 export interface RootState
-  extends CoreAppState, Partial<AdminPluginState & AuthServerPluginState & SmtpPluginState> {}
+  extends CoreAppState,
+    Partial<AdminPluginState & AuthServerPluginState & SmtpPluginState> {}
 
 // AppDispatch, useAppDispatch, useAppSelector: import from @/redux/hooks (canonical source using typeof store.dispatch)
 
