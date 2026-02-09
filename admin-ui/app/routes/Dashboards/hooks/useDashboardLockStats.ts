@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/redux/hooks'
 import { useGetLockStat, type JsonNode } from 'JansConfigApi'
-import type { RootState } from 'Redux/sagas/types/audit'
 import { DASHBOARD_CACHE_CONFIG } from '../constants'
 import type { LockStatEntry } from '../types'
 
@@ -23,7 +22,7 @@ interface UseDashboardLockStatsOptions {
 
 export const useDashboardLockStats = (options: UseDashboardLockStatsOptions = {}) => {
   const { enabled = true } = options
-  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
+  const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
   const query = useGetLockStat(undefined, {
     query: {

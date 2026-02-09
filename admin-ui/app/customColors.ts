@@ -1,48 +1,63 @@
 export const customColors = {
-  logo: '#00b875',
-  darkGray: '#323c47',
-  accentRed: '#b3424a',
-  lightBlue: '#3573a6',
-  lightGray: '#eaecf1',
-  paleYellow: '#cfd76f',
-  lightGreen: '#7bc257',
-  orange: '#ff993a',
+  // Base
   white: '#ffffff',
   black: '#000000',
   whiteSmoke: '#f5f5f5',
+  lightGray: '#eaecf1',
+  darkGray: '#323c47',
+
+  // Backgrounds
   lightBackground: '#f6f6f6',
   primaryDark: '#0a2540',
-  lightBorder: '#efefef',
   darkBackground: '#0b2947',
-  darkBorder: '#193f66',
   darkCardBg: '#091e34',
   darkDropdownBg: '#194169',
+  lightInputBg: '#f9fafb',
+  darkInputBg: '#15395d',
+
+  // Borders
+  lightBorder: '#efefef',
+  darkBorder: '#193f66',
+  borderInput: '#ebebeb',
+
+  // Text
   textSecondary: '#425466',
+  textMutedDark: '#6a8096',
+
+  // Brand / accent
+  logo: '#00b875',
+  accentRed: '#b3424a',
+  lightBlue: '#3573a6',
+  lightGreen: '#7bc257',
+  orange: '#ff993a',
+  paleYellow: '#cfd76f',
+
+  // Status
+  statusActive: '#00a65d',
+  statusActiveBg: '#d3f5e6',
+  statusInactive: '#f13f44',
+  statusInactiveBg: '#ffe6e7',
+
+  // Settings / custom params
+  addPropertyTextDark: '#1A2F45',
+  customParamsBoxDark: '#1E3650',
+  customParamsInputDark: '#1B2F45',
+
+  // UI elements
+  sidebarHoverBg: '#d3d3d3',
+  buttonLightBg: '#f4f6f8',
+
+  // Charts
   mauPieClientCredentials: '#64b5f6',
   mauPieAuthCodeAccess: '#ffb74d',
   mauTrendClientCredentials: '#5daafa',
   mauTrendAuthCodeAccess: '#f9aa35',
   mauTrendAuthCodeId: '#da51f0',
-  statusActive: '#00a65d',
-  statusActiveBg: '#d3f5e6',
-  statusInactive: '#f13f44',
-  statusInactiveBg: '#ffe6e7',
-  addPropertyBgDark: '#132E4D',
-  mauAccentDark: '#00a65d',
-  addPropertyTextDark: '#1A2F45',
-  customParamsBoxDark: '#1E3650',
-  customParamsInputDark: '#1B2F45',
-  borderInput: '#ebebeb',
-  darkInputBg: '#15395d',
-  lightInputBg: '#f9fafb',
-  sidebarHoverBg: '#d3d3d3',
-  textMutedDark: '#6a8096',
   chartPurple: '#8979ff',
   chartCoral: '#ff928a',
   chartCyan: '#3cc3df',
-  buttonLightBg: '#f4f6f8',
-  darkBorderGradientBase: '#00d5e6',
-  ribbonShadowColor: '#1a237e',
+
+  // Cedar
   cedarCardBgDark: '#10375e',
   cedarCardBorderDark: '#224f7c',
   cedarTextSecondaryDark: '#c9dbec',
@@ -50,6 +65,10 @@ export const customColors = {
   cedarInfoBgLight: '#e5f6fd',
   cedarInfoBorderLight: '#a6d3e6',
   cedarInfoTextLight: '#4f8196',
+
+  // Other
+  darkBorderGradientBase: '#00d5e6',
+  ribbonShadowColor: '#1a237e',
 } as const
 
 export const hexToRgb = (hex: string, fallback: string = '0, 0, 0'): string => {

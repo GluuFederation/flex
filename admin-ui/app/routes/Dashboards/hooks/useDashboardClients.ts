@@ -1,11 +1,10 @@
 import { useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/redux/hooks'
 import { useGetOauthOpenidClients } from 'JansConfigApi'
-import type { RootState } from 'Redux/sagas/types/audit'
 import { DASHBOARD_CACHE_CONFIG } from '../constants'
 
 export const useDashboardClients = () => {
-  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
+  const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
   const query = useGetOauthOpenidClients(undefined, {
     query: {

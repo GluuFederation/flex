@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import { UPDATE } from '@/audit/UserActionType'
-import type { RootState } from '@/redux/sagas/types/audit'
+import type { RootState } from '@/redux/types'
 import type { ModifiedFields } from '../types'
 
 export function useConfigApiActions() {

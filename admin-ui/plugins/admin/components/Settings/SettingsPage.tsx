@@ -1,13 +1,13 @@
 import React, { useMemo, useCallback, useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
-import { useAppSelector, useAppDispatch } from '@/redux/hooks'
+import { useAppSelector, useAppDispatch, type RootState } from '../../../../app/redux/hooks'
 import { FormGroup, InputGroup, CustomInput, Form, Alert, Input, GluuPageContent } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
+import GluuThemeFormFooter from '@/routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { SETTINGS } from 'Utils/ApiResources'
@@ -43,6 +43,10 @@ import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { GluuButton } from '@/components/GluuButton'
 import { useStyles } from './SettingsPage.style'
 
+const toError = (err: unknown): Error => (err instanceof Error ? err : new Error(String(err)))
+
+type CustomParamItem = { id: string; key?: string; value?: string }
+
 const PAGING_SIZE_OPTIONS = [1, 5, 10, 20] as const
 const DEFAULT_PAGING_SIZE = PAGING_SIZE_OPTIONS[2]
 const SCRIPTS_FETCH_LIMIT = 200
@@ -56,8 +60,8 @@ const SettingsPage: React.FC = () => {
 
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
 
-  const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
-  const clientId = useAppSelector((state) => state.authReducer?.config?.clientId)
+  const userinfo = useAppSelector((state: RootState) => state.authReducer?.userinfo)
+  const clientId = useAppSelector((state: RootState) => state.authReducer?.config?.clientId)
 
   const {
     data: config,
@@ -193,7 +197,7 @@ const SettingsPage: React.FC = () => {
         setBaselinePagingSize(currentPagingSize)
         formikHelpers.resetForm({ values })
       } catch (error) {
-        const errorMessage = getErrorMessage(error as Error, 'messages.error_in_saving', t)
+        const errorMessage = getErrorMessage(toError(error), 'messages.error_in_saving', t)
         dispatch(updateToast(true, 'error', errorMessage))
       }
     },
@@ -263,13 +267,11 @@ const SettingsPage: React.FC = () => {
 
     const errorMessages: string[] = []
     if (isConfigError && configError) {
-      errorMessages.push(
-        getErrorMessage(configError as unknown as Error, 'messages.error_loading_config', t),
-      )
+      errorMessages.push(getErrorMessage(toError(configError), 'messages.error_loading_config', t))
     }
     if (isScriptsError && scriptsError) {
       errorMessages.push(
-        getErrorMessage(scriptsError as unknown as Error, 'messages.error_loading_scripts', t),
+        getErrorMessage(toError(scriptsError), 'messages.error_loading_scripts', t),
       )
     }
 
@@ -364,7 +366,7 @@ const SettingsPage: React.FC = () => {
                   </div>
 
                   <div className={classes.fieldItem}>
-                    <GluuInputRow<SettingsFormValues>
+                    <GluuInputRow
                       label="fields.sessionTimeoutInMins"
                       name="sessionTimeoutInMins"
                       type="number"
@@ -422,7 +424,7 @@ const SettingsPage: React.FC = () => {
                         label="fields.showCedarLogs?"
                         isDark={isDark}
                       />
-                      <GluuToogleRow<SettingsFormValues>
+                      <GluuToogleRow
                         isLabelVisible={false}
                         label="fields.showCedarLogs?"
                         name="cedarlingLogType"
@@ -457,7 +459,7 @@ const SettingsPage: React.FC = () => {
                       disabled={!canWriteSettings}
                       backgroundColor={themeColors.settings.addPropertyButton.bg}
                       textColor={themeColors.settings.addPropertyButton.text}
-                      disableHoverStyles
+                      useOpacityOnHover={false}
                       style={{ minWidth: 156, width: 156, gap: 8, flexShrink: 0 }}
                       onClick={() => {
                         const currentParams = formik.values.additionalParameters || []
@@ -472,8 +474,8 @@ const SettingsPage: React.FC = () => {
                     </GluuButton>
                   </div>
                   <div className={classes.customParamsBody}>
-                    {(formik.values.additionalParameters || []).map(
-                      (param: { id: string; key?: string; value?: string }, index: number) => (
+                    {((formik.values.additionalParameters || []) as CustomParamItem[]).map(
+                      (param, index) => (
                         <div key={param.id} className={classes.customParamsRow}>
                           <Input
                             name={`additionalParameters.${index}.key`}
@@ -496,7 +498,7 @@ const SettingsPage: React.FC = () => {
                             disabled={!canWriteSettings}
                             backgroundColor={themeColors.settings.removeButton.bg}
                             textColor={themeColors.settings.removeButton.text}
-                            disableHoverStyles
+                            useOpacityOnHover={false}
                             style={{
                               minWidth: 156,
                               width: 156,
@@ -506,7 +508,8 @@ const SettingsPage: React.FC = () => {
                               alignSelf: 'stretch',
                             }}
                             onClick={() => {
-                              const currentParams = formik.values.additionalParameters || []
+                              const currentParams = (formik.values.additionalParameters ??
+                                []) as CustomParamItem[]
                               const newParams = currentParams.filter((p) => p.id !== param.id)
                               formik.setFieldValue('additionalParameters', newParams)
                             }}

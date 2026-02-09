@@ -1,8 +1,7 @@
 import { useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { RootState, useAppSelector } from '@/redux/hooks'
 import { keepPreviousData } from '@tanstack/react-query'
 import { useGetStat, type GetStatParams, type JsonNode } from 'JansConfigApi'
-import type { RootState } from 'Redux/sagas/types/audit'
 import type { MauStatEntry, MauDateRange, RawStatEntry, MauSummary } from '../types'
 import { MAU_CACHE_CONFIG } from '../constants'
 import {
@@ -99,7 +98,7 @@ export function useMauStats(
     enabled?: boolean
   },
 ) {
-  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
+  const hasSession = useAppSelector((state: RootState) => state.authReducer?.hasSession)
 
   const params: GetStatParams = {
     start_month: formatDateForApi(dateRange.startDate),

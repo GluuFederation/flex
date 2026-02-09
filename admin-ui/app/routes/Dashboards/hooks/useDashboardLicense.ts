@@ -1,9 +1,7 @@
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/redux/hooks'
 import { useGetAdminuiLicense, type LicenseResponse } from 'JansConfigApi'
-import type { RootState } from 'Redux/sagas/types/audit'
 import { DASHBOARD_CACHE_CONFIG } from '../constants'
 
-// Clean up quotes from string fields (matching existing Redux slice behavior)
 function transformLicenseResponse(data: LicenseResponse | undefined): LicenseResponse | undefined {
   if (!data) return undefined
 
@@ -17,7 +15,7 @@ function transformLicenseResponse(data: LicenseResponse | undefined): LicenseRes
 }
 
 export const useDashboardLicense = () => {
-  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
+  const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
   return useGetAdminuiLicense({
     query: {
