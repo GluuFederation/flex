@@ -2,22 +2,12 @@ import React, { useMemo, useCallback, useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
 import { useAppSelector, useAppDispatch } from '@/redux/hooks'
-import {
-  FormGroup,
-  Label,
-  Badge,
-  InputGroup,
-  CustomInput,
-  Form,
-  Alert,
-  Input,
-  GluuPageContent,
-} from 'Components'
+import { FormGroup, InputGroup, CustomInput, Form, Alert, Input, GluuPageContent } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
+import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { SETTINGS } from 'Utils/ApiResources'
@@ -50,7 +40,6 @@ import { UPDATE } from '@/audit/UserActionType'
 import { ADMIN_UI_SETTINGS } from 'Plugins/admin/redux/audit/Resources'
 import { getErrorMessage } from 'Plugins/schema/utils/errorHandler'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
-import customColors from '@/customColors'
 import { GluuButton } from '@/components/GluuButton'
 import { useStyles } from './SettingsPage.style'
 
@@ -58,17 +47,11 @@ const PAGING_SIZE_OPTIONS = [1, 5, 10, 20] as const
 const DEFAULT_PAGING_SIZE = PAGING_SIZE_OPTIONS[2]
 const SCRIPTS_FETCH_LIMIT = 200
 
-const LABEL_CONTAINER_STYLE: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  paddingRight: '15px',
-}
-
 const SettingsPage: React.FC = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { state: themeState } = useTheme()
+  const isDark = (themeState?.theme ?? DEFAULT_THEME) === THEME_DARK
   const queryClient = useQueryClient()
 
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
@@ -126,15 +109,7 @@ const SettingsPage: React.FC = () => {
   }, [])
   const selectedTheme = useMemo(() => themeState?.theme || DEFAULT_THEME, [themeState?.theme])
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
-  const isDark = useMemo(() => selectedTheme === THEME_DARK, [selectedTheme])
-  const { classes } = useStyles({ isDark })
-  const badgeStyle = useMemo(
-    () => ({
-      backgroundColor: themeColors.background,
-      color: themeColors.fontColor,
-    }),
-    [themeColors.background, themeColors.fontColor],
-  )
+  const { classes } = useStyles({ isDark, themeColors })
   const configApiUrl = useMemo(() => {
     if (typeof window === 'undefined') return 'N/A'
     const windowWithConfig = window as Window & { configApiBaseUrl?: string }
@@ -308,8 +283,8 @@ const SettingsPage: React.FC = () => {
           </div>
           <GluuButton
             size="sm"
-            backgroundColor={customColors.accentRed}
-            textColor={customColors.white}
+            backgroundColor={themeColors.settings.errorColor}
+            textColor={themeColors.settings.errorButtonText}
             onClick={handleRetry}
           >
             {t('actions.retry')}
@@ -339,32 +314,33 @@ const SettingsPage: React.FC = () => {
                       disabled={true}
                       doc_category={SETTINGS}
                       doc_entry="gluuCurrentVersion"
+                      isDark={isDark}
+                    />
+                  </div>
+
+                  <div className={classes.fieldItem}>
+                    <GluuInputRow
+                      label="fields.config_api_url"
+                      name="configApiUrl"
+                      type="text"
+                      lsize={12}
+                      rsize={12}
+                      value={configApiUrl}
+                      disabled={true}
+                      doc_category={SETTINGS}
+                      doc_entry="configApiUrl"
+                      isDark={isDark}
                     />
                   </div>
 
                   <div className={classes.fieldItem}>
                     <FormGroup>
                       <GluuLabel
-                        label={t('fields.config_api_url')}
-                        doc_category={SETTINGS}
-                        size={12}
-                        doc_entry="configApiUrl"
-                      />
-                      <Label style={LABEL_CONTAINER_STYLE}>
-                        <GluuText variant="h5" onLightSurface>
-                          <Badge style={badgeStyle}>{configApiUrl}</Badge>
-                        </GluuText>
-                      </Label>
-                    </FormGroup>
-                  </div>
-
-                  <div className={classes.fieldItem}>
-                    <FormGroup>
-                      <GluuLabel
-                        label={t('fields.list_paging_size')}
+                        label="fields.list_paging_size"
                         size={12}
                         doc_category={SETTINGS}
                         doc_entry="pageSize"
+                        isDark={isDark}
                       />
                       <InputGroup>
                         <CustomInput
@@ -388,7 +364,7 @@ const SettingsPage: React.FC = () => {
                   </div>
 
                   <div className={classes.fieldItem}>
-                    <GluuInputRow
+                    <GluuInputRow<SettingsFormValues>
                       label="fields.sessionTimeoutInMins"
                       name="sessionTimeoutInMins"
                       type="number"
@@ -403,6 +379,7 @@ const SettingsPage: React.FC = () => {
                         formik.errors.sessionTimeoutInMins && formik.touched.sessionTimeoutInMins,
                       )}
                       disabled={!canWriteSettings}
+                      isDark={isDark}
                     />
                   </div>
 
@@ -412,7 +389,8 @@ const SettingsPage: React.FC = () => {
                         size={12}
                         doc_category={SETTINGS}
                         doc_entry="adminui_default_acr"
-                        label={t('fields.adminui_default_acr')}
+                        label="fields.adminui_default_acr"
+                        isDark={isDark}
                       />
                       <InputGroup>
                         <CustomInput
@@ -441,11 +419,13 @@ const SettingsPage: React.FC = () => {
                         size={12}
                         doc_category={SETTINGS}
                         doc_entry="cedarSwitch"
-                        label={t('fields.showCedarLogs?')}
+                        label="fields.showCedarLogs?"
+                        isDark={isDark}
                       />
-                      <GluuToogleRow
+                      <GluuToogleRow<SettingsFormValues>
                         isLabelVisible={false}
-                        name={t('fields.showCedarLogs?')}
+                        label="fields.showCedarLogs?"
+                        name="cedarlingLogType"
                         formik={formik}
                         value={formik.values.cedarlingLogType === CedarlingLogType.STD_OUT}
                         doc_category={SETTINGS}
@@ -453,6 +433,7 @@ const SettingsPage: React.FC = () => {
                         lsize={12}
                         rsize={12}
                         disabled={!canWriteSettings}
+                        isDark={isDark}
                         handler={(event: React.ChangeEvent<HTMLInputElement>) => {
                           formik.setFieldValue(
                             'cedarlingLogType',
@@ -474,12 +455,10 @@ const SettingsPage: React.FC = () => {
                     <GluuButton
                       type="button"
                       disabled={!canWriteSettings}
-                      backgroundColor={
-                        isDark ? customColors.white : customColors.addPropertyBgLight
-                      }
-                      textColor={isDark ? customColors.addPropertyTextDark : customColors.white}
+                      backgroundColor={themeColors.settings.addPropertyButton.bg}
+                      textColor={themeColors.settings.addPropertyButton.text}
                       disableHoverStyles
-                      style={{ gap: 8 }}
+                      style={{ minWidth: 156, width: 156, gap: 8, flexShrink: 0 }}
                       onClick={() => {
                         const currentParams = formik.values.additionalParameters || []
                         formik.setFieldValue('additionalParameters', [
@@ -515,10 +494,17 @@ const SettingsPage: React.FC = () => {
                           <GluuButton
                             type="button"
                             disabled={!canWriteSettings}
-                            backgroundColor={customColors.statusInactive}
-                            textColor={customColors.white}
+                            backgroundColor={themeColors.settings.removeButton.bg}
+                            textColor={themeColors.settings.removeButton.text}
                             disableHoverStyles
-                            style={{ gap: 8, flexShrink: 0 }}
+                            style={{
+                              minWidth: 156,
+                              width: 156,
+                              minHeight: 44,
+                              gap: 8,
+                              flexShrink: 0,
+                              alignSelf: 'stretch',
+                            }}
                             onClick={() => {
                               const currentParams = formik.values.additionalParameters || []
                               const newParams = currentParams.filter((p) => p.id !== param.id)
@@ -541,7 +527,7 @@ const SettingsPage: React.FC = () => {
                     )}
                 </div>
 
-                <GluuFormFooter
+                <GluuThemeFormFooter
                   showBack
                   showCancel={canWriteSettings}
                   onCancel={handleCancel}

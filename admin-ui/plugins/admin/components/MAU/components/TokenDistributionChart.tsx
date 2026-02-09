@@ -64,7 +64,23 @@ const TokenDistributionChart: React.FC<TokenDistributionChartProps> = ({ summary
                 outerRadius={90}
                 paddingAngle={2}
                 dataKey="value"
-                label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
+                label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+                  const RADIAN = Math.PI / 180
+                  const radius = innerRadius + (outerRadius - innerRadius) * 0.5
+                  const x = cx + radius * Math.cos(-midAngle * RADIAN)
+                  const y = cy + radius * Math.sin(-midAngle * RADIAN)
+                  return (
+                    <text
+                      x={x}
+                      y={y}
+                      fill={themeColors.fontColor}
+                      textAnchor="middle"
+                      dominantBaseline="central"
+                    >
+                      {`${(percent * 100).toFixed(0)}%`}
+                    </text>
+                  )
+                }}
               >
                 {data.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
@@ -82,12 +98,14 @@ const TokenDistributionChart: React.FC<TokenDistributionChartProps> = ({ summary
                   />
                 )}
               />
-              <Legend />
+              <Legend wrapperStyle={{ color: themeColors.fontColor }} />
             </PieChart>
           </ResponsiveContainer>
         ) : (
           <div className="d-flex align-items-center justify-content-center" style={{ height: 250 }}>
-            <span className="text-muted">{t('messages.no_mau_data')}</span>
+            <GluuText variant="span" secondary>
+              {t('messages.no_mau_data')}
+            </GluuText>
           </div>
         )}
       </CardBody>

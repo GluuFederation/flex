@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
+import { keepPreviousData } from '@tanstack/react-query'
 import { useGetStat, type GetStatParams, type JsonNode } from 'JansConfigApi'
 import type { RootState } from 'Redux/sagas/types/audit'
 import type { MauStatEntry, MauDateRange, RawStatEntry, MauSummary } from '../types'
@@ -116,6 +117,7 @@ export function useMauStats(
       enabled: isEnabled,
       staleTime: MAU_CACHE_CONFIG.STALE_TIME,
       gcTime: MAU_CACHE_CONFIG.GC_TIME,
+      placeholderData: keepPreviousData,
       select: (data: JsonNode[]): MauStatEntry[] => {
         const transformed = transformApiResponse(data)
         return augmentMauData(transformed, dateRange.startDate, dateRange.endDate)

@@ -19,7 +19,6 @@ import { DEFAULT_DATE_RANGE_MONTHS } from './constants'
 import type { MauDateRange } from './types'
 import {
   DateRangeSelector,
-  MauSummaryCards,
   MauTrendChart,
   TokenDistributionChart,
   TokenTrendChart,

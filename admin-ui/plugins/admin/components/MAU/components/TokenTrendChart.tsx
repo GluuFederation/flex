@@ -51,8 +51,11 @@ const TokenTrendChart: React.FC<MauChartProps> = ({ data }) => {
         <ResponsiveContainer width="100%" height={250}>
           <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke={themeColors.borderColor} />
-            <XAxis dataKey="monthLabel" tick={{ fontSize: 12 }} />
-            <YAxis tick={{ fontSize: 12 }} tickFormatter={formatNumber} />
+            <XAxis dataKey="monthLabel" tick={{ fill: themeColors.fontColor, fontSize: 12 }} />
+            <YAxis
+              tick={{ fill: themeColors.fontColor, fontSize: 12 }}
+              tickFormatter={formatNumber}
+            />
             <Tooltip
               content={(props) => (
                 <TooltipDesign
@@ -63,7 +66,7 @@ const TokenTrendChart: React.FC<MauChartProps> = ({ data }) => {
                 />
               )}
             />
-            <Legend />
+            <Legend wrapperStyle={{ color: themeColors.fontColor }} />
             <Area
               type="monotone"
               dataKey="clientCredentials"

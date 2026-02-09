@@ -816,6 +816,7 @@
     "no_role_mappings_found": "Nenhum mapeamento de funções encontrado",
     "permissions_count_one": "{{count}} permissão",
     "permissions_count_other": "{{count}} permissões",
+    "permissions_count": "{{count, plural, one {{count}} permissão} other {{count}} permissões}}",
     "no_permissions_assigned": "Nenhuma permissão atribuída",
     "out_of": "de",
     "permission_label": "Permissão",

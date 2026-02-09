@@ -1,13 +1,12 @@
-import { useMemo, useContext, type CSSProperties } from 'react'
+import React, { useMemo, type CSSProperties } from 'react'
 import { Label } from 'Components'
 import 'react-tooltip/dist/react-tooltip.css'
 import { Tooltip as ReactTooltip } from 'react-tooltip'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from './styles/applicationstyle'
 import { HelpOutline } from '@mui/icons-material'
-import customColors from '@/customColors'
-import { ThemeContext } from '@/context/theme/themeContext'
-import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import getThemeColor from '@/context/theme/config'
+import { THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
 
 interface GluuLabelProps {
   label: string
@@ -17,9 +16,12 @@ interface GluuLabelProps {
   doc_entry?: string
   style?: CSSProperties
   allowColon?: boolean
+  isDark?: boolean
 }
 
-function GluuLabel({
+const getSize = (size: number | undefined): number => (size != null ? size : 3)
+
+const GluuLabel: React.FC<GluuLabelProps> = ({
   label,
   required,
   size,
@@ -27,27 +29,24 @@ function GluuLabel({
   doc_entry,
   style,
   allowColon = true,
-}: GluuLabelProps) {
+  isDark: isDarkProp,
+}) => {
   const { t, i18n } = useTranslation()
-  const theme = useContext(ThemeContext)
 
   const { labelColor, tooltipStyle } = useMemo(() => {
-    const selectedTheme = theme?.state?.theme || DEFAULT_THEME
-    const isDarkTheme = selectedTheme === THEME_DARK
+    const isDarkTheme = isDarkProp === true
+    const darkTheme = getThemeColor(THEME_DARK)
+    const lightTheme = getThemeColor(THEME_LIGHT)
     return {
-      labelColor: isDarkTheme ? customColors.white : customColors.primaryDark,
+      labelColor: isDarkTheme ? darkTheme.fontColor : lightTheme.fontColor,
       tooltipStyle: isDarkTheme
-        ? { backgroundColor: customColors.white, color: customColors.primaryDark }
+        ? {
+            backgroundColor: lightTheme.menu.background,
+            color: lightTheme.fontColor,
+          }
         : undefined,
     }
-  }, [theme?.state?.theme])
-
-  function getSize() {
-    if (size != null) {
-      return size
-    }
-    return 3
-  }
+  }, [isDarkProp])
 
   const labelStyle = useMemo(
     () => ({
@@ -58,7 +57,7 @@ function GluuLabel({
   )
 
   return (
-    <Label for={t(label)} sm={getSize()} data-for={doc_entry} style={labelStyle}>
+    <Label for={t(label)} sm={getSize(size)} data-for={doc_entry} style={labelStyle}>
       <h5
         className="d-flex justify-content-between align-items-center"
         aria-label={label}

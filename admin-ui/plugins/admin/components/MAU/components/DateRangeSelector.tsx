@@ -1,11 +1,12 @@
 import React from 'react'
-import { ButtonGroup } from 'Components'
+import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import customColors from '@/customColors'
 import { GluuButton } from '@/components/GluuButton'
@@ -29,7 +30,14 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
   const { state } = useTheme()
   const selectedTheme = state.theme
   const isDark = selectedTheme === THEME_DARK
+  const themeColors = getThemeColor(selectedTheme)
   const datePickerTextFieldSlotProps = getDatePickerTextFieldSlotProps(isDark)
+
+  const presetButtonBg = (isSelected: boolean) =>
+    isSelected
+      ? themeColors.inputBackground
+      : (themeColors.dashboard.supportCard ?? themeColors.menu.background)
+  const presetButtonBorder = themeColors.borderColor
 
   return (
     <Grid container spacing={2} alignItems="center" justifyContent="space-between">
@@ -50,31 +58,32 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
       <Grid item>
         <Grid container spacing={2} alignItems="center">
           <Grid item>
-            <ButtonGroup size="small">
-              {DATE_PRESETS.map((preset) => {
+            <Box sx={{ display: 'flex', gap: 0 }}>
+              {DATE_PRESETS.map((preset, index) => {
                 const isSelected = selectedPreset === preset.months
+                const isFirst = index === 0
+                const isLast = index === DATE_PRESETS.length - 1
                 return (
                   <GluuButton
                     key={preset.months}
                     onClick={() => onPresetSelect(preset.months)}
                     theme={selectedTheme}
                     outlined={!isSelected}
+                    textColor={themeColors.fontColor}
+                    backgroundColor={presetButtonBg(isSelected)}
+                    borderColor={presetButtonBorder}
+                    disableHoverStyles
                     style={{
                       minWidth: 110,
-                      borderRadius: 8,
-                      borderColor: isDark ? customColors.darkBorder : customColors.borderInput,
-                      backgroundColor: isSelected
-                        ? isDark
-                          ? customColors.darkInputBg
-                          : customColors.lightInputBg
-                        : 'transparent',
+                      borderRadius: isFirst ? '8px 0 0 8px' : isLast ? '0 8px 8px 0' : 0,
+                      marginLeft: isFirst ? 0 : -1,
                     }}
                   >
                     {t(preset.labelKey)}
                   </GluuButton>
                 )
               })}
-            </ButtonGroup>
+            </Box>
           </Grid>
           <Grid item>
             <LocalizationProvider dateAdapter={AdapterDayjs}>

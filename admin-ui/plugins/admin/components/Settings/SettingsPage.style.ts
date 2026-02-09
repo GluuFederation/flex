@@ -1,20 +1,32 @@
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
-import customColors from '@/customColors'
 import { SPACING, BORDER_RADIUS } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { themeConfig } from '@/context/theme/config'
+import customColors from '@/customColors'
+
+type ThemeColors = (typeof themeConfig)[keyof typeof themeConfig]
 
 interface SettingsStylesParams {
   isDark: boolean
+  themeColors: ThemeColors
 }
 
-export const useStyles = makeStyles<SettingsStylesParams>()((theme: Theme, { isDark }) => {
+export const useStyles = makeStyles<SettingsStylesParams>()((
+  theme: Theme,
+  { isDark, themeColors },
+) => {
   const cardBorderStyle = getCardBorderStyle({ isDark })
+  const settings = themeColors.settings
+
+  // Custom params: box and inputs same background as form inputs above (per Figma)
+  const customParamsInputBorder = isDark ? customColors.darkBorder : customColors.borderInput
+  const customParamsBoxBorder = isDark ? customColors.darkBorder : customColors.borderInput
 
   return {
     settingsCard: {
-      backgroundColor: isDark ? customColors.darkCardBg : customColors.white,
+      backgroundColor: settings.cardBackground,
       ...cardBorderStyle,
       borderRadius: BORDER_RADIUS.DEFAULT,
       width: '100%',
@@ -41,7 +53,7 @@ export const useStyles = makeStyles<SettingsStylesParams>()((theme: Theme, { isD
       fontWeight: fontWeights.medium,
       fontSize: fontSizes.lg,
       lineHeight: lineHeights.tight,
-      color: isDark ? customColors.white : customColors.primaryDark,
+      color: themeColors.fontColor,
       margin: 0,
     },
     headerSubtitle: {
@@ -49,7 +61,7 @@ export const useStyles = makeStyles<SettingsStylesParams>()((theme: Theme, { isD
       fontWeight: fontWeights.medium,
       fontSize: fontSizes.sm,
       lineHeight: lineHeights.relaxed,
-      color: isDark ? customColors.textMutedDark : customColors.textSecondary,
+      color: themeColors.textMuted,
       margin: 0,
     },
     headerDivider: {
@@ -57,12 +69,12 @@ export const useStyles = makeStyles<SettingsStylesParams>()((theme: Theme, { isD
       left: 0,
       bottom: 0,
       width: '100%',
-      borderBottom: `1px solid ${isDark ? customColors.darkBorder : customColors.lightBorder}`,
+      borderBottom: `1px solid ${themeColors.borderColor}`,
       zIndex: 0,
     },
     settingsLabels: {
       '& label, & label h5, & label .MuiSvgIcon-root': {
-        color: `${isDark ? customColors.white : customColors.primaryDark} !important`,
+        color: `${themeColors.fontColor} !important`,
         fontFamily: fontFamily,
         fontSize: '15px',
         fontStyle: 'normal',
@@ -110,28 +122,28 @@ export const useStyles = makeStyles<SettingsStylesParams>()((theme: Theme, { isD
     },
     formWithInputs: {
       '& input, & select': {
-        backgroundColor: isDark ? customColors.darkInputBg : customColors.whiteSmoke,
-        border: `1px solid ${isDark ? customColors.darkBorder : customColors.borderInput}`,
+        backgroundColor: settings.formInputBackground,
+        border: `1px solid ${settings.inputBorder}`,
         borderRadius: 6,
-        color: isDark ? customColors.white : customColors.primaryDark,
+        color: themeColors.fontColor,
         padding: '8px 12px',
       },
       '& input:disabled': {
-        backgroundColor: `${isDark ? customColors.darkInputBg : customColors.whiteSmoke} !important`,
-        border: `1px solid ${isDark ? customColors.darkBorder : customColors.borderInput} !important`,
-        color: `${isDark ? customColors.white : customColors.primaryDark} !important`,
+        backgroundColor: `${settings.formInputBackground} !important`,
+        border: `1px solid ${settings.inputBorder} !important`,
+        color: `${themeColors.fontColor} !important`,
         opacity: 1,
         cursor: 'not-allowed',
       },
       '& input::placeholder': {
-        color: isDark ? customColors.textMutedDark : customColors.textSecondary,
+        color: themeColors.textMuted,
       },
     },
     customParamsBox: {
-      backgroundColor: isDark ? customColors.customParamsBoxDark : customColors.lightBackground,
+      backgroundColor: settings.formInputBackground,
       borderRadius: BORDER_RADIUS.DEFAULT,
-      border: `1px solid ${isDark ? customColors.darkBorder : customColors.borderInput}`,
-      padding: `${SPACING.CARD_PADDING}px`,
+      border: `1px solid ${customParamsBoxBorder}`,
+      padding: `12px ${SPACING.CARD_PADDING}px ${SPACING.CARD_PADDING}px`,
       width: '100%',
       boxSizing: 'border-box',
     },
@@ -139,17 +151,20 @@ export const useStyles = makeStyles<SettingsStylesParams>()((theme: Theme, { isD
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      marginBottom: SPACING.CARD_GAP,
+      alignContent: 'center',
+      marginBottom: 16,
+      gap: 12,
     },
     customParamsTitle: {
       fontFamily: fontFamily,
       fontWeight: 600,
       fontSize: '15px',
       fontStyle: 'normal',
-      lineHeight: 'normal',
+      lineHeight: 1.4,
       letterSpacing: letterSpacing.normal,
-      color: isDark ? customColors.white : customColors.primaryDark,
+      color: themeColors.fontColor,
       margin: 0,
+      padding: 0,
     },
     customParamsBody: {
       display: 'flex',
@@ -159,29 +174,32 @@ export const useStyles = makeStyles<SettingsStylesParams>()((theme: Theme, { isD
     customParamsRow: {
       display: 'flex',
       gap: SPACING.CARD_CONTENT_GAP,
-      alignItems: 'center',
+      alignItems: 'stretch',
       flexWrap: 'wrap',
     },
     customParamsInput: {
       'flex': '1 1 200px',
       'minWidth': 120,
-      'backgroundColor': isDark ? customColors.customParamsInputDark : customColors.white,
-      'border': '1px solid transparent',
+      'minHeight': 44,
+      'boxSizing': 'border-box',
+      'backgroundColor': `${settings.cardBackground} !important`,
+      'border': `1px solid ${customParamsInputBorder} !important`,
       'borderRadius': 6,
-      'padding': '8px 12px',
-      'color': isDark ? customColors.white : customColors.primaryDark,
+      'padding': '10px 12px',
+      'color': themeColors.fontColor,
       '&::placeholder': {
-        color: isDark ? customColors.white : customColors.textSecondary,
+        color: themeColors.textMuted,
       },
-      '&:focus': {
-        backgroundColor: isDark ? customColors.customParamsInputDark : customColors.white,
-        color: isDark ? customColors.white : customColors.primaryDark,
-        border: `1px solid ${isDark ? customColors.darkBorder : customColors.primaryDark}`,
-        boxShadow: isDark ? '0 0 0 3px rgba(25, 63, 102, 0.6)' : '0 0 0 3px rgba(10, 37, 64, 0.3)',
+      '&:focus, &:active': {
+        backgroundColor: `${settings.cardBackground} !important`,
+        color: themeColors.fontColor,
+        border: `1px solid ${customParamsInputBorder} !important`,
+        outline: 'none',
+        boxShadow: 'none',
       },
     },
     customParamsError: {
-      color: customColors.accentRed,
+      color: settings.errorColor,
       fontSize: fontSizes.sm,
       marginTop: 4,
     },

@@ -6,7 +6,7 @@ import Grid from '@mui/material/Grid'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import customColors, { hexToRgb } from '@/customColors'
+import { hexToRgb } from '@/customColors'
 import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
@@ -47,15 +47,15 @@ const DateRange = memo(
     const themeColors = useMemo(() => {
       const labelBg = backgroundColor || globalThemeColors.background
       const inputBg = globalThemeColors.inputBackground
-      const inputText = isDarkTheme ? customColors.white : textColor || globalThemeColors.fontColor
-      const labelText = isDarkTheme ? customColors.white : textColor || globalThemeColors.fontColor
+      const inputText = textColor || globalThemeColors.fontColor
+      const labelText = textColor || globalThemeColors.fontColor
       const borderColor = isDarkTheme ? 'transparent' : globalThemeColors.borderColor
       const popupBg = globalThemeColors.dashboard.supportCard
       const selectedBg = globalThemeColors.background
-      const selectedText = isDarkTheme ? customColors.white : globalThemeColors.fontColor
+      const selectedText = globalThemeColors.fontColor
       const hoverBg = `rgba(${hexToRgb(globalThemeColors.fontColor)}, ${isDarkTheme ? 0.08 : 0.04})`
-      const placeholderColor = isDarkTheme ? customColors.white : globalThemeColors.fontColor
-      const iconColor = isDarkTheme ? customColors.white : globalThemeColors.fontColor
+      const placeholderColor = globalThemeColors.fontColor
+      const iconColor = globalThemeColors.fontColor
 
       return {
         labelBackground: labelBg,

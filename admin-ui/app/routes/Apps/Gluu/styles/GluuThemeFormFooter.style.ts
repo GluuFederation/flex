@@ -1,5 +1,5 @@
 import { makeStyles } from 'tss-react/mui'
-import customColors from '@/customColors'
+import getThemeColor from '@/context/theme/config'
 
 interface FormFooterStyleParams {
   hasRightGroup: boolean
@@ -38,21 +38,13 @@ export const BUTTON_STYLES = {
   letterSpacing: '0.28px',
 }
 
-export const getButtonColors = (isDark: boolean) => ({
-  back: {
-    backgroundColor: customColors.statusActive,
-    textColor: customColors.white,
-    borderColor: customColors.statusActive,
-  },
-  apply: {
-    backgroundColor: isDark ? customColors.white : customColors.primaryDark,
-    textColor: isDark ? customColors.primaryDark : customColors.white,
-    borderColor: isDark ? customColors.white : customColors.primaryDark,
-  },
-  cancel: {
-    backgroundColor: 'transparent',
-    textColor: isDark ? customColors.white : customColors.primaryDark,
-    borderColor: isDark ? customColors.white : customColors.primaryDark,
-    outlined: true,
-  },
-})
+export const getButtonColors = (theme: string) => {
+  const colors = getThemeColor(theme)
+  const formFooter = colors.formFooter
+  return {
+    back: formFooter.back,
+    apply: formFooter.apply,
+    cancel: formFooter.cancel,
+  }
+}
+
