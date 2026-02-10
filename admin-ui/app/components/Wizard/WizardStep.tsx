@@ -39,6 +39,7 @@ const WizardStep: React.FC<WizardStepProps> = ({
   return (
     <a
       href="#"
+      id={_id}
       data-testid={dataTestId}
       className={stepClass}
       onClick={(e) => {

@@ -11,7 +11,6 @@ import loaderGif from 'Images/gif/loader.gif'
 type ApiKeyRedirectProps = {
   isLicenseValid: boolean
   islicenseCheckResultLoaded: boolean
-  isLicenseActivationResultLoaded?: boolean
   roleNotFound: boolean
   isConfigValid: boolean | null
 }
@@ -19,7 +18,6 @@ type ApiKeyRedirectProps = {
 function ApiKeyRedirect({
   isLicenseValid,
   islicenseCheckResultLoaded,
-  isLicenseActivationResultLoaded: _isLicenseActivationResultLoaded,
   roleNotFound,
   isConfigValid,
 }: ApiKeyRedirectProps) {

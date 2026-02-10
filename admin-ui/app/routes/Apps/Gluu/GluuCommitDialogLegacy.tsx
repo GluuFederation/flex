@@ -62,11 +62,8 @@ const GluuCommitDialogLegacy = ({
   const [userMessage, setUserMessage] = useState('')
   const { loadingWebhooks, webhookModal } = useSelector((state: RootState) => state.webhookReducer)
 
-  const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
-  const webhookScopes = useMemo(
-    () => CEDAR_RESOURCE_SCOPES[webhookResourceId] || [],
-    [webhookResourceId],
-  )
+  const webhookResourceId = ADMIN_UI_RESOURCES.Webhooks
+  const webhookScopes = CEDAR_RESOURCE_SCOPES[webhookResourceId] || []
   const canReadWebhooks = useMemo(
     () => hasCedarReadPermission(webhookResourceId),
     [hasCedarReadPermission, webhookResourceId],
@@ -91,7 +88,7 @@ const GluuCommitDialogLegacy = ({
       setUserMessage('')
     }
     prevModalRef.current = modal
-  }, [userMessage, modal])
+  }, [modal])
 
   function handleAccept() {
     if (formik) {
@@ -112,14 +109,14 @@ const GluuCommitDialogLegacy = ({
   const renderBadges = (values: JsonValue[]) => {
     return (
       <div className="d-flex flex-column gap-1 align-items-start">
-        {values.map((data) => (
+        {values.map((data, index) => (
           <Badge
             style={{
               width: 'fit-content',
               backgroundColor: themeColors.background,
               color: customColors.white,
             }}
-            key={String(data)}
+            key={`${String(data)}-${index}`}
           >
             {JSON.stringify(data)}
           </Badge>
@@ -151,7 +148,7 @@ const GluuCommitDialogLegacy = ({
         )}
         {values.length > 2 && (
           <Button color="link" onClick={() => setIsOpen(isOpen !== key ? key : null)} size="sm">
-            {isOpen === key ? 'Show Less' : 'Show More'}
+            {isOpen === key ? t('show_less') : t('show_more')}
             {isOpen === key ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </Button>
         )}
@@ -222,7 +219,7 @@ const GluuCommitDialogLegacy = ({
                 operations.map((item: GluuCommitDialogOperation, key: number) => (
                   <FormGroup row key={key}>
                     <Col sm={1} style={{ fontWeight: 'bold', color: customColors.black }}>
-                      Set
+                      {t('set')}
                     </Col>
                     <Col
                       sm={5}
@@ -242,7 +239,7 @@ const GluuCommitDialogLegacy = ({
                       </Badge>
                     </Col>
                     <Col sm={1} style={{ fontWeight: 'bold', color: customColors.black }}>
-                      to
+                      {t('to')}
                     </Col>
                     <Col sm={5} style={{ overflow: 'auto' }}>
                       {isJsonValueArray(item.value) ? (
@@ -321,18 +318,17 @@ const GluuCommitDialogLegacy = ({
             </div>
           </ModalBody>
           <ModalFooter>
-            {active && (
-              <GluuButton
-                theme="dark"
-                onClick={handleAccept}
-                backgroundColor={customColors.primaryDark}
-                textColor={customColors.white}
-                disableHoverStyles
-              >
-                <i className="fa fa-check-circle me-2" />
-                {t('actions.accept')}
-              </GluuButton>
-            )}
+            <GluuButton
+              theme="dark"
+              onClick={handleAccept}
+              backgroundColor={customColors.primaryDark}
+              textColor={customColors.white}
+              disableHoverStyles
+              disabled={!active}
+            >
+              <i className="fa fa-check-circle me-2" />
+              {t('actions.accept')}
+            </GluuButton>
             <GluuButton
               theme="dark"
               onClick={closeModal}

@@ -37,7 +37,6 @@ type ComponentWithDisplayName = React.ComponentType<Record<string, unknown>> & {
 
 interface SidebarMenuProps {
   children?: ReactNode
-  currentUrl?: string
   slim?: boolean
   disabled?: boolean
 }
@@ -168,7 +167,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ children, slim, disabled }) =
         {React.Children.map(children, (child) => {
           if (React.isValidElement(child)) {
             const type = child.type as ComponentWithDisplayName
-            if (type?.displayName === 'SidebarMenuItem' || type?.name === 'SidebarMenuItem') {
+            if (type?.displayName === 'SidebarMenuItem') {
               return React.cloneElement(
                 child as React.ReactElement<Partial<SidebarMenuItemInjectedProps>>,
                 {

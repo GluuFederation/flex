@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import GluuInputRow from '../GluuInputRow'
-import AppTestWrapper from './Components/AppTestWrapper.test'
+import AppTestWrapper from './Components/AppTestWrapper'
 
 it('Should show the input with proper text', () => {
   const LABEL = 'fields.application_type'

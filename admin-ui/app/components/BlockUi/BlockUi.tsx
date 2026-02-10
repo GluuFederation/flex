@@ -26,7 +26,7 @@ const safeActiveElement = (doc?: Document): Element => {
   let activeElement: Element
 
   try {
-    activeElement = document.activeElement ?? targetDoc.body
+    activeElement = targetDoc.activeElement ?? targetDoc.body
     if (!activeElement?.nodeName) {
       activeElement = targetDoc.body
     }
@@ -60,6 +60,7 @@ export default function BlockUi(props: BlockUiProps) {
   const helper = useRef<HTMLSpanElement>(null)
   const blocker = useRef<HTMLDivElement>(null)
   const topFocus = useRef<HTMLDivElement>(null)
+  const bottomFocus = useRef<HTMLDivElement>(null)
   const container = useRef<HTMLDivElement>(null)
   const messageContainer = useRef<HTMLDivElement>(null)
 
@@ -123,6 +124,20 @@ export default function BlockUi(props: BlockUiProps) {
     }
   }
 
+  const tabbedUpBottomFocus = (e: React.KeyboardEvent) => {
+    if (blockingTab(e)) {
+      e.preventDefault()
+      topFocus.current?.focus()
+    }
+  }
+
+  const tabbedDownBottomFocus = (e: React.KeyboardEvent) => {
+    if (blockingTab(e)) {
+      e.preventDefault()
+      topFocus.current?.focus()
+    }
+  }
+
   const tabbedUpBottom = (e: React.KeyboardEvent) => {
     if (blockingTab(e, true)) {
       topFocus.current?.focus()
@@ -168,7 +183,13 @@ export default function BlockUi(props: BlockUiProps) {
   return (
     <Tag {...attributes} className={classes} aria-busy={blocking}>
       {blocking && (
-        <div tabIndex={0} onKeyUp={tabbedUpTop} onKeyDown={tabbedDownTop} ref={topFocus}>
+        <div
+          tabIndex={0}
+          role="presentation"
+          onKeyUp={tabbedUpTop}
+          onKeyDown={tabbedDownTop}
+          ref={topFocus}
+        >
           <div className="sr-only">{message || ariaLabel}</div>
         </div>
       )}
@@ -177,6 +198,9 @@ export default function BlockUi(props: BlockUiProps) {
         <div
           className="block-ui-container"
           tabIndex={0}
+          role="dialog"
+          aria-modal="true"
+          aria-label={message ?? ariaLabel}
           ref={blocker}
           style={{ minHeight: '100px' }}
           onKeyUp={tabbedUpBottom}
@@ -193,6 +217,17 @@ export default function BlockUi(props: BlockUiProps) {
               <div aria-hidden>{React.isValidElement(Loader) ? Loader : <Loader />}</div>
             </div>
           </div>
+        </div>
+      )}
+      {blocking && (
+        <div
+          tabIndex={0}
+          role="presentation"
+          onKeyUp={tabbedUpBottomFocus}
+          onKeyDown={tabbedDownBottomFocus}
+          ref={bottomFocus}
+        >
+          <div className="sr-only">{message || ariaLabel}</div>
         </div>
       )}
       <span ref={helper} />

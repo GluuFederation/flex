@@ -490,6 +490,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
                 <div className="mt-auto pt-3 d-flex justify-content-end">
                   <GluuButton
                     type="button"
+                    className="gluu-change-password-btn"
                     onClick={toggleChangePasswordModal}
                     backgroundColor={customColors.primaryDark}
                     textColor={customColors.white}

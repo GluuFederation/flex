@@ -21,6 +21,6 @@ it('Test gluu typeahead', async () => {
       />
     </I18nextProvider>,
   )
-  expect(screen.getByText(/Application [Tt]ype/i)).toBeInTheDocument()
+  expect(screen.getByText(/Application type/i)).toBeInTheDocument()
   expect(screen.getByText(VALUE[0])).toBeInTheDocument()
 })

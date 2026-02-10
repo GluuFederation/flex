@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 import GluuInlineInput from '../GluuInlineInput'
-import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
+import AppTestWrapper from './Components/AppTestWrapper'
 
 const LABEL = 'fields.application_type'
 const NAME = 'application_type'
@@ -16,7 +16,7 @@ it('Should render a boolean select box', () => {
     </AppTestWrapper>,
   )
   const inputEl = container.querySelector<HTMLInputElement>(`input[name=${NAME}]`)
-  expect(screen.getByText(/Application [Tt]ype/i)).toBeInTheDocument()
+  expect(screen.getByText(/Application Type/i)).toBeInTheDocument()
   expect(inputEl).toBeTruthy()
   expect(inputEl!.checked).toBe(true)
   fireEvent.click(inputEl!)
@@ -24,13 +24,13 @@ it('Should render a boolean select box', () => {
 })
 
 it('Should render a typeahead component with array', () => {
-  VALUE = ['Two']
+  const arrayValue = ['Two']
   const options = ['One', 'Two', 'Three']
   render(
     <AppTestWrapper>
       <GluuInlineInput
         label={LABEL}
-        value={VALUE}
+        value={arrayValue}
         name={NAME}
         options={options}
         isArray
@@ -38,8 +38,8 @@ it('Should render a typeahead component with array', () => {
       />
     </AppTestWrapper>,
   )
-  expect(screen.getByText(/Application [Tt]ype/i)).toBeInTheDocument()
-  fireEvent.click(screen.getByText(VALUE as string))
+  expect(screen.getByText(/Application Type/i)).toBeInTheDocument()
+  fireEvent.click(screen.getByText(arrayValue[0]))
 })
 
 it('Should render a text input', () => {
@@ -49,6 +49,6 @@ it('Should render a text input', () => {
       <GluuInlineInput label={LABEL} value={VALUE} name={NAME} handler={handler} />
     </AppTestWrapper>,
   )
-  expect(screen.getByText(/Application [Tt]ype/i)).toBeInTheDocument()
+  expect(screen.getByText(/Application Type/i)).toBeInTheDocument()
   expect(screen.getByDisplayValue(VALUE as string).id).toBe(NAME)
 })

@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { CardHeader as BsCardHeader } from 'reactstrap'
 
@@ -27,12 +26,6 @@ const CardHeader: React.FC<CardHeaderProps> = (props) => {
       {children}
     </BsCardHeader>
   )
-}
-;(CardHeader as React.FC<CardHeaderProps> & { propTypes?: object }).propTypes = {
-  type: PropTypes.string,
-  color: PropTypes.string,
-  className: PropTypes.string,
-  ...(BsCardHeader as { propTypes?: object }).propTypes,
 }
 
 export { CardHeader }

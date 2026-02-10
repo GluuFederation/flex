@@ -35,10 +35,14 @@ const GluuTooltip = ({ doc_category = '', doc_entry, isDirect, children }: GluuT
     }
   }, [selectedTheme])
 
-  const tooltipContent = isDirect ? doc_category : t(`documentation.${doc_category}.${doc_entry}`)
+  const tooltipContent = isDirect
+    ? doc_category
+    : doc_category
+      ? t(`documentation.${doc_category}.${doc_entry}`)
+      : doc_entry
 
   return (
-    <div data-tooltip-id={doc_entry} data-tip data-for={doc_entry}>
+    <div data-tooltip-id={doc_entry}>
       {children}
       <ReactTooltip
         id={doc_entry}

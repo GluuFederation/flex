@@ -18,7 +18,7 @@ export default function GluuAlert({ severity, message, show }: GluuAlertProps) {
   const [open, setOpen] = useState(false)
   useEffect(() => {
     setOpen(!!show)
-  }, [!!show])
+  }, [show])
 
   const handleClose = (_event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {

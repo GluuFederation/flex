@@ -234,7 +234,7 @@ class Layout extends React.Component<LayoutProps, LayoutState> {
       [sidebar, ...navbars, content],
       'type',
     )
-    const layoutClass = classNames('layout', 'layout--animations-enabled', {})
+    const layoutClass = classNames('layout', 'layout--animations-enabled')
 
     return (
       <PageConfigContext.Provider

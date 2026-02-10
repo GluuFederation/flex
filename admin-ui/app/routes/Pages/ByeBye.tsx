@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useMemo } from 'react'
-import { useDispatch } from 'react-redux'
-import { useAppSelector } from '@/redux/hooks'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { uuidv4 } from 'Utils/Util'
 import { EmptyLayout, Label } from 'Components'
 import { logoutUser } from 'Redux/features/logoutSlice'
@@ -15,7 +14,7 @@ function ByeBye() {
   const config = useAppSelector((state) => state.authReducer.config)
   const hasSession = useAppSelector((state) => state.authReducer.hasSession)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state.theme || DEFAULT_THEME
@@ -33,7 +32,7 @@ function ByeBye() {
         }
       }
 
-      dispatch(logoutUser(undefined))
+      dispatch(logoutUser())
 
       if (config && Object.keys(config).length > 0 && config.endSessionEndpoint) {
         const state = uuidv4()

@@ -1,7 +1,7 @@
 import React from 'react'
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import GluuSelectRow from '../GluuSelectRow'
-import AppTestWrapper from './Components/AppTestWrapper.test'
+import AppTestWrapper from './Components/AppTestWrapper'
 
 const label = 'Select Option:'
 const name = 'selectName'

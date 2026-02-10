@@ -1,7 +1,7 @@
 import React from 'react'
 import { Input, FormGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
-import type { GluuAdvancedSearchProps } from './types'
+import type { GluuAdvancedSearchProps } from './types/index'
 
 function GluuAdvancedSearch({
   handler,

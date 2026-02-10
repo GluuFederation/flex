@@ -1,9 +1,9 @@
 import React from 'react'
-import type { PageConfig, ScreenSize } from './types'
+import type { PageConfig } from './types'
 
 const defaultPageConfig: PageConfig = {
   sidebarCollapsed: false,
-  screenSize: '' as ScreenSize,
+  screenSize: '',
   toggleSidebar: () => {},
   sidebarSlim: false,
   animationsDisabled: false,

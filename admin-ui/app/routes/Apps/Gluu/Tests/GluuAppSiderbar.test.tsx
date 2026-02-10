@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react'
-import { render } from '@testing-library/react'
+import { render, waitFor } from '@testing-library/react'
 import GluuAppSidebar from '../GluuAppSidebar'
 import { MemoryRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
@@ -7,6 +7,7 @@ import i18n from '../../../../i18n'
 import { I18nextProvider } from 'react-i18next'
 import { ThemeProvider } from '../../../../context/theme/themeContext'
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
+import { processMenus } from '../../../../../plugins/PluginMenuResolver'
 
 jest.spyOn(global.console, 'log').mockImplementation(jest.fn())
 jest.spyOn(global.console, 'error').mockImplementation(jest.fn())
@@ -26,6 +27,8 @@ jest.mock('@/cedarling/utility', () => ({
 jest.mock('Plugins/PluginMenuResolver', () => ({
   processMenus: jest.fn().mockResolvedValue([]),
 }))
+
+const mockProcessMenus = jest.mocked(processMenus)
 
 jest.mock('@/helpers/navigation', () => ({
   useAppNavigation: () => ({
@@ -59,7 +62,14 @@ const Wrapper = ({ children }: { children: ReactNode }) => (
   </I18nextProvider>
 )
 
-it('Should show the sidebar properly', () => {
+it('Should show the sidebar properly', async () => {
   const { container } = render(<GluuAppSidebar />, { wrapper: Wrapper })
-  expect(container.firstChild).toBeInTheDocument()
+
+  await waitFor(() => {
+    expect(mockProcessMenus).toHaveBeenCalled()
+  })
+
+  await waitFor(() => {
+    expect(container.querySelector('.sidebar-menu')).toBeInTheDocument()
+  })
 })

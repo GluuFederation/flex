@@ -1,4 +1,8 @@
 {
+  "show_more": "Afficher plus",
+  "show_less": "Afficher moins",
+  "set": "Définir",
+  "to": "à",
   "languages": {
     "french": "Français",
     "english": "English",
@@ -769,6 +773,7 @@
     "invalid_json_error": "Valeur JSON invalide.",
     "invalid_url_error": "URL invalide ou URL non autorisée.",
     "action_commit_question": "Journal d'audit : vous souhaitez appliquer les modifications apportées sur cette page ?",
+    "list_of_changes": "Liste des modifications",
     "action_commit_question_title": "Confirmer les modifications",
     "licenseAuditLog": "Voulez-vous vraiment réinitialiser la licence existante ?",
     "action_deletion_question": "Voulez-vous vraiment supprimer cet élément ?",

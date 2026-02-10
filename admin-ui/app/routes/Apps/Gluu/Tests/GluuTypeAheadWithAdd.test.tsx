@@ -1,9 +1,9 @@
 import React from 'react'
 import GluuTypeAheadWithAdd from '../GluuTypeAheadWithAdd'
 import { render, screen } from '@testing-library/react'
-import AppTestWrapper from './Components/AppTestWrapper.test'
+import AppTestWrapper from './Components/AppTestWrapper'
 
-it('Test GluuTypeAheadWithAdd component', async () => {
+it('Test GluuTypeAheadWithAdd component', () => {
   const LABEL = 'fields.application_type'
   const NAME = 'applicationType'
   const VALUE = ['Monday']
@@ -19,7 +19,7 @@ it('Test GluuTypeAheadWithAdd component', async () => {
       />
     </AppTestWrapper>,
   )
-  expect(screen.getByText(/Application [Tt]ype/i)).toBeInTheDocument()
+  expect(screen.getByText(/Application Type/i)).toBeInTheDocument()
   expect(screen.getByText('Add')).toBeInTheDocument()
   expect(screen.getByText(VALUE[0])).toBeInTheDocument()
 })

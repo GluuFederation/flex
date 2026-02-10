@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
 import GluuTooltip from '../GluuTooltip'
-import AppTestWrapper from './Components/AppTestWrapper.test'
+import AppTestWrapper from './Components/AppTestWrapper'
 import userEvent from '@testing-library/user-event'
 
 it('Test gluutooltip', async () => {
@@ -19,7 +19,7 @@ it('Test gluutooltip', async () => {
   )
   expect(mouseOverEle).toBeInTheDocument()
 
-  if (mouseOverEle) userEvent.hover(mouseOverEle)
+  if (mouseOverEle) await userEvent.hover(mouseOverEle)
 
   await waitFor(() => {
     expect(screen.getByRole('tooltip')).toHaveTextContent(/Kind of the application/i)

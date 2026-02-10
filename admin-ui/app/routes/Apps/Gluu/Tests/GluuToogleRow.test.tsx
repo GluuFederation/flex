@@ -21,7 +21,7 @@ it('Test gluutooltip', async () => {
   )
   expect(iconElement).toBeInTheDocument()
 
-  if (iconElement) userEvent.hover(iconElement)
+  if (iconElement) await userEvent.hover(iconElement)
 
   await waitFor(() => {
     expect(screen.getByRole('tooltip')).toHaveTextContent(/Kind of the application/i)

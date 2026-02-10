@@ -1,4 +1,8 @@
 {
+  "show_more": "Mostrar mais",
+  "show_less": "Mostrar menos",
+  "set": "Definir",
+  "to": "para",
   "languages": {
     "french": "Français",
     "english": "English",
@@ -764,6 +768,7 @@
     "insufficient_permissions_to_modify": "Você não tem permissão para modificar esta configuração",
     "insufficient_token_read_permission": "O acesso aos dados do token não foi concedido.",
     "action_commit_question": "Registro de auditoria: deseja aplicar as alterações feitas nesta página?",
+    "list_of_changes": "Lista de alterações",
     "action_commit_question_title": "Confirmar alterações",
     "licenseAuditLog": "Você realmente deseja redefinir a licença existente?",
     "action_deletion_question": "Tem certeza que quer deletar este item?",
