@@ -3,11 +3,13 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useFormik, type FormikProps } from 'formik'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { Button, Col, Form, FormGroup } from 'Components'
+import { Col, Form, FormGroup } from 'Components'
+import { GluuButton } from '@/components'
+import customColors from '@/customColors'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import GluuCommitDialogLegacy from 'Routes/Apps/Gluu/GluuCommitDialogLegacy'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { GetAttributesParams } from 'JansConfigApi'
@@ -486,10 +488,19 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
               </div>
               {userDetails && (
                 <div className="mt-auto pt-3 d-flex justify-content-end">
-                  <Button color={`primary-${selectedTheme}`} onClick={toggleChangePasswordModal}>
-                    <i className="fa fa-key me-2"></i>
+                  <GluuButton
+                    type="button"
+                    className="gluu-change-password-btn"
+                    onClick={toggleChangePasswordModal}
+                    backgroundColor={customColors.primaryDark}
+                    textColor={customColors.white}
+                    borderColor={customColors.primaryDark}
+                    disableHoverStyles
+                    style={{ gap: 8 }}
+                  >
+                    <i className="fa fa-key" />
                     {t('actions.change_password')}
-                  </Button>
+                  </GluuButton>
                 </div>
               )}
             </div>
@@ -514,7 +525,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
           applyButtonType="button"
           isLoading={isSubmitting}
         />
-        <GluuCommitDialog
+        <GluuCommitDialogLegacy
           handler={toggle}
           modal={modal}
           onAccept={submitForm}

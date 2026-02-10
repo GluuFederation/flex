@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, ReactElement } from 'react'
-import BlockUi from '../../../../app/components/BlockUi/BlockUi'
+import BlockUi from '../../../../app/components/BlockUi'
 import { Formik } from 'formik'
 import { Form, FormGroup, Card, Col, CardBody, InputGroup, CustomInput } from 'Components'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'

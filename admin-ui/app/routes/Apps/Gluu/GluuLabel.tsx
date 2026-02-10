@@ -37,14 +37,20 @@ const GluuLabel: React.FC<GluuLabelProps> = ({
     const isDarkTheme = isDarkProp === true
     const darkTheme = getThemeColor(THEME_DARK)
     const lightTheme = getThemeColor(THEME_LIGHT)
+
+    const tooltipStyle = isDarkTheme
+      ? {
+          backgroundColor: lightTheme.menu.background,
+          color: lightTheme.fontColor,
+        }
+      : {
+          backgroundColor: lightTheme.fontColor,
+          color: lightTheme.card.background,
+        }
+
     return {
       labelColor: isDarkTheme ? darkTheme.fontColor : lightTheme.fontColor,
-      tooltipBaseStyle: isDarkTheme
-        ? {
-            backgroundColor: lightTheme.menu.background,
-            color: lightTheme.fontColor,
-          }
-        : undefined,
+      tooltipBaseStyle: tooltipStyle,
     }
   }, [isDarkProp])
 

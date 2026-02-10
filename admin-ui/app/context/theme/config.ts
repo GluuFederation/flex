@@ -1,7 +1,45 @@
 import customColors from '@/customColors'
 import { THEME_LIGHT, THEME_DARK, DEFAULT_THEME } from './constants'
 
-const createLightTheme = () => {
+export interface FormFooterColors {
+  back: { backgroundColor: string; textColor: string; borderColor: string }
+  apply: { backgroundColor: string; textColor: string; borderColor: string }
+  cancel: { backgroundColor: string; textColor: string; borderColor: string }
+}
+
+export interface ThemeConfig {
+  background: string
+  lightBackground: string
+  fontColor: string
+  textMuted: string
+  borderColor: string
+  inputBackground: string
+  menu: { background: string; color: string }
+  navbar: { background: string; border: string; text: string; icon: string }
+  dashboard: { supportCard: string }
+  card: { background: string; border: string }
+  infoAlert: {
+    background: string
+    border: string
+    text: string
+    icon: string
+  }
+  checkbox: { uncheckedBorder: string }
+  errorColor: string
+  formFooter: FormFooterColors
+  settings: {
+    cardBackground: string
+    customParamsBox: string
+    customParamsInput: string
+    formInputBackground: string
+    inputBorder: string
+    addPropertyButton: { bg: string; text: string }
+    removeButton: { bg: string; text: string }
+    errorButtonText: string
+  }
+}
+
+const createLightTheme = (): ThemeConfig => {
   const background = customColors.lightBackground
   const text = customColors.primaryDark
   const border = customColors.lightBorder
@@ -59,18 +97,18 @@ const createLightTheme = () => {
     },
     settings: {
       cardBackground: customColors.white,
-      customParamsBox: customColors.white,
-      customParamsInput: customColors.whiteSmoke,
+      customParamsBox: customColors.whiteSmoke,
+      customParamsInput: customColors.white,
       formInputBackground: customColors.whiteSmoke,
       inputBorder: customColors.borderInput,
-      addPropertyButton: { bg: customColors.addPropertyBgDark, text: customColors.white },
+      addPropertyButton: { bg: customColors.primaryDark, text: customColors.white },
       removeButton: { bg: customColors.statusInactive, text: customColors.white },
       errorButtonText: customColors.white,
     },
   }
 }
 
-const createDarkTheme = () => {
+const createDarkTheme = (): ThemeConfig => {
   const background = customColors.darkBackground
   const text = customColors.white
   const border = customColors.darkBorder
@@ -144,7 +182,7 @@ export const themeConfig = {
   [THEME_DARK]: createDarkTheme(),
 }
 
-const getThemeColor = (config: string): (typeof themeConfig)[keyof typeof themeConfig] => {
+const getThemeColor = (config: string): ThemeConfig => {
   const validConfig = config === THEME_LIGHT || config === THEME_DARK ? config : DEFAULT_THEME
   return themeConfig[validConfig]
 }

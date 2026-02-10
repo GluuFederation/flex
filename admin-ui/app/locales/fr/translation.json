@@ -1,4 +1,8 @@
 {
+  "show_more": "Afficher plus",
+  "show_less": "Afficher moins",
+  "set": "Définir",
+  "to": "à",
   "languages": {
     "french": "Français",
     "english": "English",
@@ -701,6 +705,7 @@
   },
   "messages": {
     "add_permission": "Ajouter une autorisation",
+    "thanks_for_using_admin_ui": "Merci d'avoir utilisé l'interface d'administration.",
     "add_asset": "Add Jans Asset",
     "asset_document_error": "Document is mandatory.",
     "add_configuration": "Ajouter une configuration",
@@ -768,6 +773,7 @@
     "invalid_json_error": "Valeur JSON invalide.",
     "invalid_url_error": "URL invalide ou URL non autorisée.",
     "action_commit_question": "Journal d'audit : vous souhaitez appliquer les modifications apportées sur cette page ?",
+    "list_of_changes": "Liste des modifications",
     "action_commit_question_title": "Confirmer les modifications",
     "licenseAuditLog": "Voulez-vous vraiment réinitialiser la licence existante ?",
     "action_deletion_question": "Voulez-vous vraiment supprimer cet élément ?",
@@ -863,6 +869,10 @@
     "status_unknown": "Inconnu",
     "no_mau_data": "Aucune donnée disponible pour la période sélectionnée.",
     "error_loading_data": "Une erreur s'est produite lors du chargement des données. Veuillez réessayer.",
+    "auth_error_policy_store": "Échec du chargement du magasin de stratégies",
+    "auth_error_authorization_config": "Échec de la configuration d'autorisation",
+    "auth_error_token_fetch": "Échec de la récupération du jeton ou des informations utilisateur",
+    "auth_error_no_code": "Impossible d'obtenir le code d'autorisation",
     "mau_loading": "Chargement des statistiques...",
     "vs_previous_period": "vs période précédente",
     "try_again_later": "Veuillez réessayer plus tard",

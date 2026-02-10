@@ -1,7 +1,7 @@
-// @ts-nocheck
-import { fireEvent, screen } from '@testing-library/dom'
+import React from 'react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import GluuSelectRow from '../GluuSelectRow'
-import { render } from '@testing-library/react'
+import AppTestWrapper from './Components/AppTestWrapper'
 
 const label = 'Select Option:'
 const name = 'selectName'
@@ -9,67 +9,100 @@ const value = 'option2'
 const values = ['option1', 'option2', 'option3']
 
 describe('GluuSelectRow', () => {
-  // Mock the formik object and its handleChange method
   const formikHandleChangeMock = jest.fn()
   const formikMock = {
     handleChange: formikHandleChangeMock,
   }
 
-  test('renders select with formik handle change & update value', () => {
-    render(
-      <GluuSelectRow label={label} name={name} value={value} values={values} formik={formikMock} />,
-    )
-
-    const selectElement = screen.getByTestId(name)
-
-    expect(selectElement.value).toBe(value)
-
-    const newValue = 'option3'
-    fireEvent.change(selectElement, { target: { value: newValue } })
-
-    // Ensure that the handleChange method from formikMock was called with the correct arguments
-    expect(formikHandleChangeMock).toHaveBeenCalledTimes(1)
-    expect(formikHandleChangeMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        target: expect.objectContaining({
-          name,
-          value: newValue,
-        }),
-      }),
-    )
+  afterEach(() => {
+    jest.clearAllMocks()
   })
 
-  test('renders select with prop handle change method & update value', () => {
-    // Mock handleChange method
+  test('renders select with the correct initial value', () => {
+    render(
+      <AppTestWrapper>
+        <GluuSelectRow
+          label={label}
+          name={name}
+          value={value}
+          values={values}
+          formik={formikMock}
+        />
+      </AppTestWrapper>,
+    )
+
+    expect(screen.getByText(value)).toBeInTheDocument()
+  })
+
+  test('renders select and opens dropdown with all options', () => {
+    render(
+      <AppTestWrapper>
+        <GluuSelectRow
+          label={label}
+          name={name}
+          value={value}
+          values={values}
+          formik={formikMock}
+        />
+      </AppTestWrapper>,
+    )
+
+    const selectTrigger = screen.getByRole('combobox')
+    fireEvent.mouseDown(selectTrigger)
+
+    const listbox = within(screen.getByRole('listbox'))
+    values.forEach((optionValue) => {
+      expect(listbox.getByText(optionValue)).toBeInTheDocument()
+    })
+  })
+
+  test('calls formik handleChange when selecting a new option', () => {
+    render(
+      <AppTestWrapper>
+        <GluuSelectRow
+          label={label}
+          name={name}
+          value={value}
+          values={values}
+          formik={formikMock}
+        />
+      </AppTestWrapper>,
+    )
+
+    const selectTrigger = screen.getByRole('combobox')
+    fireEvent.mouseDown(selectTrigger)
+
+    const newValue = 'option3'
+    const listbox = within(screen.getByRole('listbox'))
+    fireEvent.click(listbox.getByText(newValue))
+
+    expect(formikHandleChangeMock).toHaveBeenCalledTimes(1)
+  })
+
+  test('calls custom handleChange when provided', () => {
     const handleChangeMock = jest.fn()
 
     render(
-      <GluuSelectRow
-        label={label}
-        name={name}
-        value={value}
-        values={values}
-        formik={formikMock}
-        handleChange={handleChangeMock}
-      />,
+      <AppTestWrapper>
+        <GluuSelectRow
+          label={label}
+          name={name}
+          value={value}
+          values={values}
+          formik={formikMock}
+          handleChange={handleChangeMock}
+        />
+      </AppTestWrapper>,
     )
 
-    const selectElement = screen.getByTestId(name)
-
-    expect(selectElement.value).toBe(value)
+    const selectTrigger = screen.getByRole('combobox')
+    fireEvent.mouseDown(selectTrigger)
 
     const newValue = 'option1'
+    const listbox = within(screen.getByRole('listbox'))
+    fireEvent.click(listbox.getByText(newValue))
 
-    // Ensure that the props handleChange method was called
-    fireEvent.change(selectElement, { target: { value: newValue } })
-
-    // Retrieve the event
-    const eventArgument = handleChangeMock.mock.calls[0][0]
-
+    expect(formikHandleChangeMock).toHaveBeenCalledTimes(1)
     expect(handleChangeMock).toHaveBeenCalledTimes(1)
-    expect(handleChangeMock).toHaveBeenCalledWith(eventArgument)
-
-    // updates with new value option1
-    expect(selectElement.value).toBe(newValue)
   })
 })

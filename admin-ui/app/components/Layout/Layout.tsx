@@ -1,58 +1,41 @@
-// @ts-nocheck
 import React from 'react'
-import ReactDOM from 'react-dom'
-import PropTypes from 'prop-types'
 import classNames from 'classnames'
 // import { Helmet } from 'react-helmet'
 import { useWithRouter as withRouter } from 'Utils/WithRouter'
-import { filter, forOwn, isUndefined, compact, differenceBy, pick, map } from 'lodash'
+import { filter, forOwn, isUndefined, compact, differenceBy, pick } from 'lodash'
 
 import { LayoutContent } from './LayoutContent'
 import { LayoutNavbar } from './LayoutNavbar'
 import { LayoutSidebar } from './LayoutSidebar'
 import { PageConfigContext } from './PageConfigContext'
 import { ThemeClass } from './../Theme'
+import type {
+  LayoutPartComponentType,
+  LayoutProps,
+  LayoutState,
+  ResponsiveBreakpoints,
+  ScreenSize,
+} from './types'
 
 import config from './../../../config.js'
 
-interface Breakpoint {
-  min?: number
-  max?: number
-}
-
-interface ResponsiveBreakpoints {
-  [key: string]: Breakpoint
-}
-
-interface LayoutProps {
-  children: React.ReactNode
-  sidebarSlim?: boolean
-  location: {
-    pathname: string
-  }
-  favIcons?: any[]
-}
-
-interface LayoutState {
-  sidebarHidden: boolean
-  navbarHidden: boolean
-  footerHidden: boolean
-  sidebarCollapsed: boolean
-  screenSize: string
-  animationsDisabled: boolean
-  pageTitle: string | null
-  pageDescription: string
-  pageKeywords: string
+function getLayoutPartName(type: React.ReactElement['type']): string | undefined {
+  if (typeof type === 'string' || type == null) return undefined
+  const part = type as LayoutPartComponentType & React.ReactElement['type']
+  return typeof part.layoutPartName === 'string' ? part.layoutPartName : undefined
 }
 
 const findChildByType = (
   children: React.ReactNode,
-  targetType: any,
+  targetType: LayoutPartComponentType,
 ): React.ReactElement | undefined => {
   let result: React.ReactElement | undefined
 
   React.Children.forEach(children, (child) => {
-    if (React.isValidElement(child) && child.type.layoutPartName === targetType.layoutPartName) {
+    if (
+      React.isValidElement(child) &&
+      getLayoutPartName(child.type) === targetType.layoutPartName
+    ) {
       result = child
     }
   })
@@ -60,11 +43,14 @@ const findChildByType = (
   return result
 }
 
-const findChildrenByType = (children: React.ReactNode, targetType: any): React.ReactElement[] => {
+const findChildrenByType = (
+  children: React.ReactNode,
+  targetType: LayoutPartComponentType,
+): React.ReactElement[] => {
   return filter(
     React.Children.toArray(children),
     (child) =>
-      React.isValidElement(child) && child.type.layoutPartName === targetType.layoutPartName,
+      React.isValidElement(child) && getLayoutPartName(child.type) === targetType.layoutPartName,
   ) as React.ReactElement[]
 }
 
@@ -79,7 +65,7 @@ const responsiveBreakpoints: ResponsiveBreakpoints = {
 class Layout extends React.Component<LayoutProps, LayoutState> {
   private lastLgSidebarCollapsed: boolean
   private containerRef: React.RefObject<HTMLDivElement>
-  private bodyElement: HTMLBodyElement | null
+  private bodyElement: HTMLElement | null
   private documentElement: HTMLElement | null
 
   constructor(props: LayoutProps) {
@@ -90,7 +76,7 @@ class Layout extends React.Component<LayoutProps, LayoutState> {
       navbarHidden: false,
       footerHidden: false,
       sidebarCollapsed: false,
-      screenSize: '',
+      screenSize: '' as ScreenSize,
       animationsDisabled: true,
       pageTitle: null,
       pageDescription: config.siteDescription,
@@ -108,7 +94,7 @@ class Layout extends React.Component<LayoutProps, LayoutState> {
     // and set it up in the context state
     const layoutAdjuster = () => {
       const { screenSize } = this.state
-      let currentScreenSize: string | undefined
+      let currentScreenSize: ScreenSize | undefined
 
       forOwn(responsiveBreakpoints, (value, key) => {
         const queryParts = [
@@ -118,13 +104,14 @@ class Layout extends React.Component<LayoutProps, LayoutState> {
         const query = compact(queryParts).join(' and ')
 
         if (window.matchMedia(query).matches) {
-          currentScreenSize = key
+          currentScreenSize = key as ScreenSize
         }
       })
 
-      if (screenSize !== currentScreenSize) {
-        this.setState({ screenSize: currentScreenSize || '' })
-        this.updateLayoutOnScreenSize(currentScreenSize || '')
+      const nextScreenSize: ScreenSize = currentScreenSize ?? ''
+      if (screenSize !== nextScreenSize) {
+        this.setState({ screenSize: nextScreenSize })
+        this.updateLayoutOnScreenSize(nextScreenSize)
       }
     }
 
@@ -197,7 +184,7 @@ class Layout extends React.Component<LayoutProps, LayoutState> {
     this.updateNavbarsPositions()
   }
 
-  updateLayoutOnScreenSize(screenSize: string) {
+  updateLayoutOnScreenSize(screenSize: ScreenSize) {
     if (screenSize === 'md' || screenSize === 'sm' || screenSize === 'xs') {
       // Save for recovering to lg later
       this.lastLgSidebarCollapsed = this.state.sidebarCollapsed
@@ -231,11 +218,14 @@ class Layout extends React.Component<LayoutProps, LayoutState> {
   }
 
   setElementsVisibility(elements: Partial<LayoutState>) {
-    this.setState(pick(elements, ['sidebarHidden', 'navbarHidden', 'footerHidden']))
+    this.setState((prev) => ({
+      ...prev,
+      ...pick(elements, ['sidebarHidden', 'navbarHidden', 'footerHidden']),
+    }))
   }
 
   render() {
-    const { children, favIcons } = this.props
+    const { children } = this.props
     const sidebar = findChildByType(children, LayoutSidebar)
     const navbars = findChildrenByType(children, LayoutNavbar)
     const content = findChildByType(children, LayoutContent)
@@ -244,9 +234,7 @@ class Layout extends React.Component<LayoutProps, LayoutState> {
       [sidebar, ...navbars, content],
       'type',
     )
-    const layoutClass = classNames('layout', 'layout--animations-enabled', {
-      //'layout--only-navbar': this.state.sidebarHidden && !this.state.navbarHidden
-    })
+    const layoutClass = classNames('layout', 'layout--animations-enabled')
 
     return (
       <PageConfigContext.Provider
@@ -259,7 +247,7 @@ class Layout extends React.Component<LayoutProps, LayoutState> {
           toggleSidebar: this.toggleSidebar.bind(this),
           setElementsVisibility: this.setElementsVisibility.bind(this),
           changeMeta: (metaData: Partial<LayoutState>) => {
-            this.setState(metaData)
+            this.setState((prev) => ({ ...prev, ...metaData }))
           },
         }}
       >

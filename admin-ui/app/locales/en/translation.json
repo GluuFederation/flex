@@ -1,4 +1,8 @@
 {
+  "show_more": "Show More",
+  "show_less": "Show Less",
+  "set": "Set",
+  "to": "to",
   "actions": {
     "accept": "Accept",
     "add_attribute_mapping": "Add Attribute Mapping",
@@ -817,6 +821,7 @@
     "no_configuration_loaded": "No configuration loaded",
     "insufficient_permissions_to_modify": "You do not have permission to modify this configuration",
     "action_commit_question": "Audit log: Want to apply changes made on this page?",
+    "list_of_changes": "List of changes",
     "action_commit_question_title": "Confirm Changes",
     "licenseAuditLog": "Do you really want to reset the existing license?",
     "action_deletion_question": "Do you really want to delete this item?",
@@ -865,6 +870,7 @@
     "loading_attribute": "Loading attribute...",
     "loading_attributes": "Loading attributes",
     "error_processiong_request": "Error in processing request.",
+    "thanks_for_using_admin_ui": "Thanks for using the Admin UI.",
     "no_data": "No data found",
     "no_scope_in_client": "No Scope data for this Client",
     "no_scope_in_spontaneous_client": "No Spontaneous Scope data for this Client",
@@ -931,6 +937,10 @@
     "status_unknown": "Unknown",
     "no_mau_data": "No data available for the selected period.",
     "error_loading_data": "An error occurred while loading data. Please try again.",
+    "auth_error_policy_store": "Failed to load policy store",
+    "auth_error_authorization_config": "Authorization configuration failed",
+    "auth_error_token_fetch": "Token or user info fetch failed",
+    "auth_error_no_code": "Unable to get authorization code",
     "mau_loading": "Loading statistics...",
     "vs_previous_period": "vs previous period"
   },

@@ -1,12 +1,11 @@
 import { useCallback } from 'react'
-import { useSelector } from 'react-redux'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import { UPDATE } from '@/audit/UserActionType'
-import type { RootState } from '@/redux/sagas/types/audit'
+import { useAppSelector } from '@/redux/hooks'
 import type { ModifiedFields } from '../types'
 
 export function useConfigApiActions() {
-  const authState = useSelector((state: RootState) => state.authReducer)
+  const authState = useAppSelector((state) => state.authReducer)
   const client_id = authState?.config?.clientId
   const userinfo = authState?.userinfo
 

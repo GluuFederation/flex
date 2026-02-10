@@ -3,7 +3,8 @@ import { Form, FormGroup, Card, CardBody, Col, CustomInput, Row } from 'Componen
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import GluuCommitDialogLegacy from 'Routes/Apps/Gluu/GluuCommitDialogLegacy'
+import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types'
 import { JSON_CONFIG } from 'Utils/ApiResources'
 import {
   LOG_LEVELS,
@@ -255,11 +256,19 @@ function LoggingPage(): React.ReactElement {
               )}
             </Formik>
 
-            <GluuCommitDialog
+            <GluuCommitDialogLegacy
               handler={closeCommitDialog}
               modal={showCommitDialog}
               onAccept={handleAccept}
               isLicenseLabel={false}
+              operations={
+                pendingValues
+                  ? (Object.entries(pendingValues.changedFields).map(([path, { newValue }]) => ({
+                      path,
+                      value: newValue,
+                    })) as GluuCommitDialogOperation[])
+                  : []
+              }
             />
           </GluuViewWrapper>
         </CardBody>

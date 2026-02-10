@@ -1,4 +1,3 @@
-import { AuthState } from '../helper/userAuditHelpers'
 import { CustomObjectAttribute, CustomUser as ApiCustomUser, JansAttribute } from 'JansConfigApi'
 
 export type CustomUser = ApiCustomUser

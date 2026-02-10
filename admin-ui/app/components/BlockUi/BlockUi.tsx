@@ -1,9 +1,43 @@
-// @ts-nocheck
 import React, { useState, useRef, useEffect } from 'react'
-import DefaultLoader from './DefaultLoader'
-import safeActiveElement from './safeActiveElement'
 
-export default function BlockUi(props) {
+interface BlockUiProps {
+  tag?: keyof JSX.IntrinsicElements
+  blocking?: boolean
+  className?: string
+  children?: React.ReactNode
+  message?: string
+  loader?: React.ComponentType
+  renderChildren?: boolean
+  keepInView?: boolean
+  ariaLabel?: string
+}
+
+const DefaultLoader = () => {
+  return (
+    <div className="loading-indicator">
+      <span className="loading-bullet">&bull;</span>
+      <span className="loading-bullet">&bull;</span>
+      <span className="loading-bullet">&bull;</span>
+    </div>
+  )
+}
+const safeActiveElement = (doc?: Document): Element => {
+  const targetDoc = doc ?? document
+  let activeElement: Element
+
+  try {
+    activeElement = targetDoc.activeElement ?? targetDoc.body
+    if (!activeElement?.nodeName) {
+      activeElement = targetDoc.body
+    }
+  } catch {
+    activeElement = targetDoc.body
+  }
+
+  return activeElement
+}
+
+export default function BlockUi(props: BlockUiProps) {
   const {
     tag: Tag = 'div',
     blocking,
@@ -20,14 +54,15 @@ export default function BlockUi(props) {
   const classes = blocking ? `block-ui ${className}` : className
   const renderChilds = !blocking || renderChildren
 
-  const [top] = useState('50%')
-  const [focused, setFocused] = useState(null)
+  const [top] = useState<string>('50%')
+  const [focused, setFocused] = useState<Element | null>(null)
 
-  const helper = useRef(null)
-  const blocker = useRef(null)
-  const topFocus = useRef(null)
-  const container = useRef(null)
-  const messageContainer = useRef(null)
+  const helper = useRef<HTMLSpanElement>(null)
+  const blocker = useRef<HTMLDivElement>(null)
+  const topFocus = useRef<HTMLDivElement>(null)
+  const bottomFocus = useRef<HTMLDivElement>(null)
+  const container = useRef<HTMLDivElement>(null)
+  const messageContainer = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (blocking) {
@@ -39,8 +74,13 @@ export default function BlockUi(props) {
       ) {
         setFocused(safeActiveElement())
         if (focused && focused !== document.body) {
-          ;(window.setImmediate || setTimeout)(
-            () => focused && typeof focused.blur === 'function' && focused.blur(),
+          const scheduleBlur = window.setImmediate || setTimeout
+          scheduleBlur(
+            () =>
+              focused &&
+              'blur' in focused &&
+              typeof (focused as HTMLElement).blur === 'function' &&
+              (focused as HTMLElement).blur(),
           )
         }
       }
@@ -48,8 +88,9 @@ export default function BlockUi(props) {
       detachListeners()
       const ae = safeActiveElement()
       if (focused && (!ae || ae === document.body || ae === topFocus.current)) {
-        if (typeof focused.focus === 'function') {
-          focused.focus()
+        if ('focus' in focused && typeof (focused as HTMLElement).focus === 'function') {
+          const el = focused as HTMLElement
+          el.focus()
         }
         setFocused(null)
       }
@@ -66,33 +107,47 @@ export default function BlockUi(props) {
     }
   }, [blocking, keepInView, focused])
 
-  const blockingTab = (e, withShift = false) => {
-    return blocking && (e.key === 'Tab' || e.keyCode === 9) && e.shiftKey == withShift
+  const blockingTab = (e: React.KeyboardEvent, withShift = false) => {
+    return blocking && (e.key === 'Tab' || e.keyCode === 9) && e.shiftKey === withShift
   }
 
-  const tabbedUpTop = (e) => {
+  const tabbedUpTop = (e: React.KeyboardEvent) => {
     if (blockingTab(e)) {
-      blocker.current.focus()
+      blocker.current?.focus()
     }
   }
 
-  const tabbedDownTop = (e) => {
+  const tabbedDownTop = (e: React.KeyboardEvent) => {
     if (blockingTab(e)) {
       e.preventDefault()
-      blocker.current.focus()
+      blocker.current?.focus()
     }
   }
 
-  const tabbedUpBottom = (e) => {
+  const tabbedUpBottomFocus = (e: React.KeyboardEvent) => {
+    if (blockingTab(e)) {
+      e.preventDefault()
+      topFocus.current?.focus()
+    }
+  }
+
+  const tabbedDownBottomFocus = (e: React.KeyboardEvent) => {
+    if (blockingTab(e)) {
+      e.preventDefault()
+      topFocus.current?.focus()
+    }
+  }
+
+  const tabbedUpBottom = (e: React.KeyboardEvent) => {
     if (blockingTab(e, true)) {
-      topFocus.current.focus()
+      topFocus.current?.focus()
     }
   }
 
-  const tabbedDownBottom = (e) => {
+  const tabbedDownBottom = (e: React.KeyboardEvent) => {
     if (blockingTab(e, true)) {
       e.preventDefault()
-      topFocus.current.focus()
+      topFocus.current?.focus()
     }
   }
 
@@ -122,13 +177,19 @@ export default function BlockUi(props) {
   }
 
   function handleScroll() {
-    keepInView()
+    keepInViewFunc()
   }
 
   return (
     <Tag {...attributes} className={classes} aria-busy={blocking}>
       {blocking && (
-        <div tabIndex="0" onKeyUp={tabbedUpTop} onKeyDown={tabbedDownTop} ref={topFocus}>
+        <div
+          tabIndex={0}
+          role="presentation"
+          onKeyUp={tabbedUpTop}
+          onKeyDown={tabbedDownTop}
+          ref={topFocus}
+        >
           <div className="sr-only">{message || ariaLabel}</div>
         </div>
       )}
@@ -136,7 +197,10 @@ export default function BlockUi(props) {
       {blocking && (
         <div
           className="block-ui-container"
-          tabIndex="0"
+          tabIndex={0}
+          role="dialog"
+          aria-modal="true"
+          aria-label={message ?? ariaLabel}
           ref={blocker}
           style={{ minHeight: '100px' }}
           onKeyUp={tabbedUpBottom}
@@ -153,6 +217,17 @@ export default function BlockUi(props) {
               <div aria-hidden>{React.isValidElement(Loader) ? Loader : <Loader />}</div>
             </div>
           </div>
+        </div>
+      )}
+      {blocking && (
+        <div
+          tabIndex={0}
+          role="presentation"
+          onKeyUp={tabbedUpBottomFocus}
+          onKeyDown={tabbedDownBottomFocus}
+          ref={bottomFocus}
+        >
+          <div className="sr-only">{message || ariaLabel}</div>
         </div>
       )}
       <span ref={helper} />

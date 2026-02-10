@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useCallback, useMemo, memo } from 'react'
-import { Container, Row, Col, Card, CardBody, Button, Badge, AvatarImage } from 'Components'
+import { Container, Row, Col, Card, CardBody, Button, AvatarImage } from 'Components'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from '../Gluu/GluuErrorFallBack'
 import { useTranslation } from 'react-i18next'
@@ -21,12 +21,11 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import GluuLoader from '../Gluu/GluuLoader'
 
 const JANS_ADMIN_UI_ROLE_ATTR = 'jansAdminUIRole'
-const BADGE_PADDING = '4px 6px'
 const USERS_RESOURCE_ID = ADMIN_UI_RESOURCES.Users
 
 const FLEX_COLUMN_GAP2 = {
-  display: 'flex',
-  flexDirection: 'column' as const,
+  display: '',
+  flexDirectionflex: 'column' as const,
   gap: 2,
 }
 const FLEX_COLUMN_GAP1 = {
@@ -39,13 +38,6 @@ const FIELD_ROW_STYLE = {
   justifyContent: 'space-between' as const,
   alignItems: 'center',
   marginBottom: 1,
-}
-const ROLES_BADGES_BOX_STYLE = {
-  display: 'flex',
-  gap: '2px',
-  flexWrap: 'wrap' as const,
-  alignItems: 'end',
-  justifyContent: 'end',
 }
 const COL_PROPS = { xs: 10, md: 8, lg: 5 }
 const USERS_SCOPES = CEDAR_RESOURCE_SCOPES[USERS_RESOURCE_ID]
@@ -119,19 +111,10 @@ const ProfileDetails: React.FC = () => {
     })
   }, [profileDetails, navigateToRoute])
 
-  const roleBadges = useMemo(() => {
-    if (!jansAdminUIRole?.values?.length) return null
-    return jansAdminUIRole.values.map((role: string, index: number) => (
-      <Badge
-        key={`${role}-${index}`}
-        style={{ padding: BADGE_PADDING, color: themeColors.fontColor }}
-        color={`primary-${selectedTheme}`}
-        className="me-1"
-      >
-        {role}
-      </Badge>
-    ))
-  }, [jansAdminUIRole?.values, selectedTheme, themeColors.fontColor])
+  const rolesValue = useMemo(
+    () => jansAdminUIRole?.values?.join(', ') ?? undefined,
+    [jansAdminUIRole?.values],
+  )
 
   const renderField = useCallback(
     (labelKey: string, value: string | undefined) => (
@@ -150,16 +133,6 @@ const ProfileDetails: React.FC = () => {
       </Box>
     ),
     [profileDetails?.displayName],
-  )
-
-  const renderUserRolesField = useMemo(
-    () => (
-      <Box sx={{ ...FIELD_ROW_STYLE, gap: 3 }}>
-        <Box fontWeight={700}>{t('titles.roles')}</Box>
-        {roleBadges && <Box sx={ROLES_BADGES_BOX_STYLE}>{roleBadges}</Box>}
-      </Box>
-    ),
-    [roleBadges, t],
   )
 
   const editButtonStyle = useMemo(
@@ -195,7 +168,7 @@ const ProfileDetails: React.FC = () => {
                           <Divider />
                           {renderField('fields.mail', profileDetails?.mail)}
                           <Divider />
-                          {renderUserRolesField}
+                          {renderField('titles.roles', rolesValue)}
                           <Divider />
                           {renderField('fields.status', profileDetails?.status)}
                           <Divider />

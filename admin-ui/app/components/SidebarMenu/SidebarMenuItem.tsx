@@ -267,3 +267,5 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
     </li>
   )
 }
+
+SidebarMenuItem.displayName = 'SidebarMenuItem'

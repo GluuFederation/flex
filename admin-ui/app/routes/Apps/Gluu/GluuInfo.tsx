@@ -5,9 +5,19 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
 import customColors from '@/customColors'
 
-export default function GluuInfo({ item, handler }: any) {
-  const theme: any = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+interface GluuInfoItem {
+  openModal: boolean
+  testStatus: boolean
+}
+
+interface GluuInfoProps {
+  item: GluuInfoItem
+  handler: () => void
+}
+
+export default function GluuInfo({ item, handler }: GluuInfoProps) {
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme?.state.theme
   const { t } = useTranslation()
 
   return (

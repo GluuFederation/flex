@@ -1,5 +1,3 @@
-import { ComponentType, FC } from 'react'
-
 export interface AccordionProps {
   initialOpen?: boolean
   onToggle?: (isOpen: boolean) => void

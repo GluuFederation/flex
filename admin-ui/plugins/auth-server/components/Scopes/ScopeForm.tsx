@@ -20,7 +20,7 @@ import GluuInumInput from 'Routes/Apps/Gluu/GluuInumInput'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
-import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import GluuCommitDialogLegacy from 'Routes/Apps/Gluu/GluuCommitDialogLegacy'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { SCOPE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
@@ -703,7 +703,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                 applyButtonType="button"
               />
 
-              <GluuCommitDialog
+              <GluuCommitDialogLegacy
                 handler={closeModal}
                 modal={modal}
                 feature={adminUiFeatures.scopes_write}

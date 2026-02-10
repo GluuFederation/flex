@@ -30,7 +30,7 @@ export const CHART_COLORS_BY_THEME = {
     ...sharedMauColors,
   },
   [THEME_DARK]: {
-    mau: customColors.mauAccentDark,
+    mau: customColors.statusActive,
     ...sharedMauColors,
   },
 } as const

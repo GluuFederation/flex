@@ -16,7 +16,7 @@ import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuRemovableInputRow from 'Routes/Apps/Gluu/GluuRemovableInputRow'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
-import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import GluuCommitDialogLegacy from 'Routes/Apps/Gluu/GluuCommitDialogLegacy'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { SSA } from 'Utils/ApiResources'
 import { useGetProperties } from 'JansConfigApi'
@@ -409,7 +409,7 @@ const SsaAddPage: React.FC = () => {
         </Card>
       </GluuLoader>
 
-      <GluuCommitDialog
+      <GluuCommitDialogLegacy
         handler={() => {
           setModal(false)
           setPendingPayload(null)

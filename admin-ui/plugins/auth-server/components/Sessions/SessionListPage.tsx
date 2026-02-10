@@ -54,7 +54,7 @@ import {
 } from 'JansConfigApi'
 import type { SessionId, SearchSessionParams } from 'JansConfigApi'
 import type { Session, TableColumn, SessionListPageProps, FilterState, ColumnState } from './types'
-import type { RootState as AuditRootState } from '@/redux/sagas/types/audit'
+import type { RootState as AuditRootState } from '@/redux/types'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import { DELETION } from '../../../../app/audit/UserActionType'
 import { SESSION } from '../../redux/audit/Resources'

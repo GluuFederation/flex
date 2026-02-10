@@ -510,3 +510,13 @@ div.text-info {
 label {
     font-size: 14px !important;
 }
+
+/* Change Password button (User Management): ensure correct appearance in prod and dev */
+.gluu-change-password-btn {
+    background-color: #0a2540 !important;
+    color: #ffffff !important;
+    border-color: #0a2540 !important;
+}
+.gluu-change-password-btn .fa {
+    color: #ffffff !important;
+}

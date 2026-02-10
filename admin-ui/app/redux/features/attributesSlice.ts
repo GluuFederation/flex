@@ -12,7 +12,7 @@ const attributesSlice = createSlice({
   name: 'attributes',
   initialState,
   reducers: {
-    getAttributesRoot: (state, action) => {
+    getAttributesRoot: (state, _action) => {
       state.loading = true
     },
     getAttributesResponseRoot: (state, action) => {

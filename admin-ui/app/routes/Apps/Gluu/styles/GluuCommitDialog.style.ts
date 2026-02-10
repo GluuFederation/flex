@@ -11,7 +11,7 @@ const OVERLAY_BG_LIGHT = `rgba(${hexToRgb(customColors.black)}, 0.8)`
 const OVERLAY_BG_DARK = `rgba(${hexToRgb(customColors.darkCardBg)}, 0.8)`
 
 const MODAL_WIDTH = 1024
-const MODAL_HEIGHT = 380
+const MODAL_HEIGHT = 420
 const HORIZONTAL_PADDING = 40
 const CONTENT_WIDTH = MODAL_WIDTH - HORIZONTAL_PADDING * 2
 
@@ -35,6 +35,17 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark }) => {
       padding: 0,
       boxSizing: 'border-box',
       overflow: 'visible',
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    contentArea: {
+      flex: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      padding: `24px ${HORIZONTAL_PADDING}px ${HORIZONTAL_PADDING}px`,
+      paddingTop: 56,
+      overflowY: 'auto',
+      gap: 16,
     },
     overlay: {
       position: 'fixed',
@@ -52,16 +63,9 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark }) => {
       fontSize: fontSizes['2xl'],
       lineHeight: '32px',
       color: isDark ? customColors.white : customColors.primaryDark,
-      marginTop: '24px',
-      marginBottom: '16px',
-      marginLeft: `${HORIZONTAL_PADDING}px`,
-      marginRight: `${HORIZONTAL_PADDING}px`,
+      margin: 0,
       paddingLeft: 0,
       textAlign: 'left',
-      width: `calc(100% - ${HORIZONTAL_PADDING * 2}px)`,
-      maxWidth: '100%',
-      position: 'relative',
-      zIndex: 1,
       wordWrap: 'break-word',
       overflowWrap: 'break-word',
     },
@@ -84,13 +88,10 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark }) => {
       },
     },
     textareaContainer: {
-      position: 'absolute',
-      top: '88px',
-      left: '50%',
-      transform: 'translateX(-50%)',
-      width: `min(${CONTENT_WIDTH}px, calc(100% - ${HORIZONTAL_PADDING * 2}px))`,
+      width: '100%',
       maxWidth: `${CONTENT_WIDTH}px`,
-      height: '160px',
+      height: '120px',
+      flexShrink: 0,
       backgroundColor: isDark ? customColors.darkInputBg : customColors.lightBackground,
       border: isDark
         ? `1px solid ${customColors.darkBorder}`
@@ -98,7 +99,6 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark }) => {
       borderRadius: '6px',
       padding: 0,
       boxSizing: 'border-box',
-      marginBottom: 0,
     },
     textarea: {
       'width': '100%',
@@ -121,25 +121,17 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark }) => {
       },
     },
     errorMessage: {
-      position: 'absolute',
-      top: '245px',
-      left: '50%',
-      transform: 'translateX(-50%)',
-      width: `min(${CONTENT_WIDTH}px, calc(100% - ${HORIZONTAL_PADDING * 2}px))`,
-      maxWidth: `${CONTENT_WIDTH}px`,
       fontFamily,
       fontWeight: fontWeights.medium,
       fontSize: fontSizes.base,
       lineHeight: lineHeights.relaxed,
       margin: 0,
-      marginTop: '2px',
-      zIndex: 2,
+    },
+    buttonRow: {
+      marginTop: 'auto',
+      paddingTop: 16,
     },
     yesButton: {
-      position: 'absolute',
-      bottom: '48px',
-      left: `${HORIZONTAL_PADDING}px`,
-      zIndex: 3,
       padding: '8px 28px',
     },
   }

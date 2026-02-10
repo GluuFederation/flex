@@ -1,9 +1,16 @@
 import customColors from '@/customColors'
 import { Box } from '@mui/material'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/redux/hooks'
+import logo192 from 'Images/logos/logo192.png'
+import backendDown from 'Images/backend-down.png'
 
-function GluuServiceDownModal({ message = '', statusCode }: any) {
-  const { authServerHost } = useSelector((state: any) => state.authReducer.config)
+interface GluuServiceDownModalProps {
+  message?: string
+  statusCode?: number | string
+}
+
+function GluuServiceDownModal({ message = '', statusCode }: GluuServiceDownModalProps) {
+  const { authServerHost } = useAppSelector((state) => state.authReducer.config)
 
   const handleRefresh = () => {
     const host = authServerHost ? `${authServerHost}/admin` : null
@@ -33,7 +40,7 @@ function GluuServiceDownModal({ message = '', statusCode }: any) {
     >
       <Box sx={{ position: 'absolute', top: 0, left: 0 }}>
         <img
-          src={require('Images/logos/logo192.png')}
+          src={logo192}
           style={{
             width: '120px',
             height: 'auto',
@@ -61,7 +68,7 @@ function GluuServiceDownModal({ message = '', statusCode }: any) {
         }}
       >
         <img
-          src={require('Images/backend-down.png')}
+          src={backendDown}
           style={{
             width: 'auto',
             height: 'auto',

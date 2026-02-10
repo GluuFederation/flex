@@ -1,5 +1,5 @@
 import { makeStyles } from 'tss-react/mui'
-import getThemeColor from '@/context/theme/config'
+import getThemeColor, { type FormFooterColors } from '@/context/theme/config'
 
 interface FormFooterStyleParams {
   hasRightGroup: boolean
@@ -38,6 +38,7 @@ export const BUTTON_STYLES = {
   letterSpacing: '0.28px',
 }
 
-export const getButtonColors = (theme: string) => {
-  return getThemeColor(theme).formFooter
+export const getButtonColors = (theme: string): FormFooterColors => {
+  const colors = getThemeColor(theme)
+  return colors.formFooter
 }

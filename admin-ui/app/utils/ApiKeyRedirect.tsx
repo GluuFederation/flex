@@ -1,26 +1,32 @@
-// @ts-nocheck
 import React from 'react'
 import { Container } from 'Components'
 import { useTranslation } from 'react-i18next'
 import ApiKey from './LicenseScreens/ApiKey'
 import GluuErrorModal from '../routes/Apps/Gluu/GluuErrorModal'
 import UploadSSA from './UploadSSA'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/redux/hooks'
 import GluuServiceDownModal from '../routes/Apps/Gluu/GluuServiceDownModal'
+import loaderGif from 'Images/gif/loader.gif'
+
+type ApiKeyRedirectProps = {
+  isLicenseValid: boolean
+  islicenseCheckResultLoaded: boolean
+  roleNotFound: boolean
+  isConfigValid: boolean | null
+}
 
 function ApiKeyRedirect({
   isLicenseValid,
   islicenseCheckResultLoaded,
-  isLicenseActivationResultLoaded,
   roleNotFound,
   isConfigValid,
-}) {
+}: ApiKeyRedirectProps) {
   const { t } = useTranslation()
-  const { isTimeout } = useSelector((state) => state.initReducer)
-  const { isValidatingFlow, isNoValidLicenseKeyFound, isUnderThresholdLimit } = useSelector(
+  const { isTimeout } = useAppSelector((state) => state.initReducer)
+  const { isValidatingFlow, isNoValidLicenseKeyFound, isUnderThresholdLimit } = useAppSelector(
     (state) => state.licenseReducer,
   )
-  const backendStatus = useSelector((state) => state.authReducer.backendStatus)
+  const backendStatus = useAppSelector((state) => state.authReducer.backendStatus)
 
   return (
     <React.Fragment>
@@ -55,7 +61,7 @@ function ApiKeyRedirect({
                         width: '260px',
                         height: 'auto',
                       }}
-                      src={require('Images/gif/loader.gif')}
+                      src={loaderGif}
                       alt="loading..."
                     />
                     <div className="initial-loader__row">Redirecting...</div>
@@ -68,7 +74,7 @@ function ApiKeyRedirect({
 
         {!backendStatus.active && (
           <GluuServiceDownModal
-            statusCode={backendStatus.statusCode}
+            statusCode={backendStatus.statusCode ?? undefined}
             message={
               backendStatus.errorMessage ||
               'Gluu Flex Admin UI is not getting any response from the backend (Jans Config Api).'

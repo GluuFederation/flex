@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import getThemeColor from '@/context/theme/config'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/redux/hooks'
 import { useWebhookDialogAction } from 'Utils/hooks'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
@@ -12,14 +12,31 @@ import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
 import { GluuButton } from '@/components'
 
-const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: any) => {
+interface DialogRow {
+  name?: string
+  inum?: string
+  id?: string
+}
+
+interface GluuDialogProps {
+  row: DialogRow
+  handler: () => void
+  modal: boolean
+  onAccept: (message: string) => void
+  subject: string
+  name?: string
+  feature: string
+}
+
+const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: GluuDialogProps) => {
   const [active, setActive] = useState(false)
   const { t } = useTranslation()
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
 
   const [userMessage, setUserMessage] = useState('')
-  const { loadingWebhooks, webhookModal } = useSelector((state: any) => state.webhookReducer)
-  const theme: any = useContext(ThemeContext)
+  const loadingWebhooks = useAppSelector((state) => state.webhookReducer?.loadingWebhooks ?? false)
+  const webhookModal = useAppSelector((state) => state.webhookReducer?.webhookModal ?? false)
+  const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state.theme || DEFAULT_THEME
   const isDark = selectedTheme === THEME_DARK
   const inverseTheme = isDark ? 'light' : 'dark'

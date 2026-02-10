@@ -2,15 +2,11 @@ import React, { useContext, useEffect, useMemo, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { ThemeContext } from '@/context/theme/themeContext'
 import getThemeColor, { themeConfig } from '@/context/theme/config'
-import { ReactNode } from 'react'
 import customColors, { hexToRgb } from '@/customColors'
 import { THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
+import type { LayoutContentProps } from './types'
 
-interface LayoutContentProps {
-  children: ReactNode
-}
-
-const LayoutContent = ({ children }: LayoutContentProps) => {
+const LayoutContent: React.FC<LayoutContentProps> & { layoutPartName: string } = ({ children }) => {
   const theme = useContext(ThemeContext)
   if (!theme) {
     throw new Error('ThemeContext must be used within a ThemeProvider')
@@ -133,7 +129,7 @@ const LayoutContent = ({ children }: LayoutContentProps) => {
 }
 
 LayoutContent.propTypes = {
-  children: PropTypes.node,
+  children: PropTypes.node as React.Validator<React.ReactNode>,
 }
 LayoutContent.layoutPartName = 'content'
 

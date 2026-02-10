@@ -35,10 +35,12 @@ it('Should render the label with internationalized text and tooltip support', as
 
   expect(screen.getByText(/Application Type/i)).toBeInTheDocument()
 
-  const iconElement: any = container.querySelector(`svg[data-tooltip-id="applicationType"]`)
+  const iconElement = container.querySelector<SVGSVGElement>(
+    `svg[data-tooltip-id="applicationType"]`,
+  )
   expect(iconElement).toBeInTheDocument()
 
-  userEvent.hover(iconElement)
+  if (iconElement) await userEvent.hover(iconElement)
 
   await waitFor(() => {
     expect(screen.getByRole('tooltip')).toHaveTextContent(/Kind of the application/i)

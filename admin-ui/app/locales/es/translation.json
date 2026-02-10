@@ -1,4 +1,8 @@
 {
+  "show_more": "Mostrar más",
+  "show_less": "Mostrar menos",
+  "set": "Establecer",
+  "to": "a",
   "actions": {
     "accept": "Aceptar",
     "add_attribute_mapping": "AceptarAgregar mapeo de atributos",
@@ -819,6 +823,7 @@
     "insufficient_permissions_to_modify": "No tiene permiso para modificar esta configuración",
     "insufficient_token_read_permission": "El acceso a los datos del token no está concedido.",
     "action_commit_question": "Registro de auditoría: ¿Desea aplicar los cambios realizados en esta página?",
+    "list_of_changes": "Lista de cambios",
     "action_commit_question_title": "Confirmar cambios",
     "licenseAuditLog": "¿Realmente desea restablecer la licencia existente?",
     "action_deletion_question": "¿Realmente desea eliminar este elemento?",
@@ -864,6 +869,7 @@
     "try_again_later": "Por favor intente de nuevo más tarde",
     "loading_attributes": "Cargando atributos",
     "error_processiong_request": "Error al procesar la solicitud.",
+    "thanks_for_using_admin_ui": "Gracias por usar la interfaz de administración.",
     "no_scope_in_client": "Sin datos de Scope para este Cliente",
     "no_scope_in_spontaneous_client": "Sin datos de Scope Espontáneo para este Cliente",
     "error_in_script": "Error en el script",
@@ -927,6 +933,10 @@
     "status_unknown": "Desconocido",
     "no_mau_data": "No hay datos disponibles para el período seleccionado.",
     "error_loading_data": "Ocurrió un error al cargar los datos. Por favor, inténtelo de nuevo.",
+    "auth_error_policy_store": "Error al cargar el almacén de políticas",
+    "auth_error_authorization_config": "Error en la configuración de autorización",
+    "auth_error_token_fetch": "Error al obtener el token o la información del usuario",
+    "auth_error_no_code": "No se pudo obtener el código de autorización",
     "mau_loading": "Cargando estadísticas...",
     "vs_previous_period": "vs período anterior"
   },
