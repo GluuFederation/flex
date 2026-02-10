@@ -3,12 +3,25 @@ import { useTranslation } from 'react-i18next'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import applicationstyle from './styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 
-const GluuScriptErrorModal = ({ title = 'Error', error, isOpen, handler }: any) => {
+interface GluuScriptErrorModalProps {
+  title?: string
+  error: string
+  isOpen: boolean
+  handler: () => void
+}
+
+const GluuScriptErrorModal = ({
+  title = 'Error',
+  error,
+  isOpen,
+  handler,
+}: GluuScriptErrorModalProps) => {
   const { t } = useTranslation()
-  const theme: any = useContext(ThemeContext)
+  const theme = useContext(ThemeContext)
   const [isCopied, setIsCopied] = useState(false)
-  const selectedTheme = theme.state.theme
+  const selectedTheme = theme?.state.theme || DEFAULT_THEME
 
   const copyToClipboard = () => {
     setIsCopied(true)

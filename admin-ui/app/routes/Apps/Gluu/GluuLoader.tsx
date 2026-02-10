@@ -9,7 +9,7 @@ const OVERLAY_BG_DARK = `rgba(${hexToRgb(customColors.darkCardBg)}, 0.8)`
 
 interface GluuLoaderProps {
   blocking: boolean
-  children: React.ReactNode
+  children?: React.ReactNode
 }
 
 const GluuLoader: React.FC<GluuLoaderProps> = memo(({ blocking, children }) => {

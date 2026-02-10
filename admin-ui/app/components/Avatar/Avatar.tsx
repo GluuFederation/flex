@@ -6,13 +6,6 @@ import reduce from 'lodash/reduce'
 import isEmpty from 'lodash/isEmpty'
 import first from 'lodash/first'
 
-interface AvatarAddOnProps {
-  small?: boolean
-  type: {
-    addOnId: string
-  }
-}
-
 interface AvatarProps {
   size?: string
   children: ReactNode

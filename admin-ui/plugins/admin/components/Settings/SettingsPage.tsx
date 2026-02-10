@@ -459,7 +459,7 @@ const SettingsPage: React.FC = () => {
                       disabled={!canWriteSettings}
                       backgroundColor={themeColors.settings.addPropertyButton.bg}
                       textColor={themeColors.settings.addPropertyButton.text}
-                      useOpacityOnHover={false}
+                      useOpacityOnHover
                       style={{ minWidth: 156, width: 156, gap: 8, flexShrink: 0 }}
                       onClick={() => {
                         const currentParams = formik.values.additionalParameters || []
@@ -498,7 +498,7 @@ const SettingsPage: React.FC = () => {
                             disabled={!canWriteSettings}
                             backgroundColor={themeColors.settings.removeButton.bg}
                             textColor={themeColors.settings.removeButton.text}
-                            useOpacityOnHover={false}
+                            useOpacityOnHover
                             style={{
                               minWidth: 156,
                               width: 156,

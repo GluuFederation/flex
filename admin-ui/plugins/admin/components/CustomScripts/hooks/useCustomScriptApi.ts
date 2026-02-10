@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useQueryClient } from '@tanstack/react-query'
-import type { UnknownAction } from '@reduxjs/toolkit'
 import {
   useGetConfigScripts,
   useGetConfigScriptsByInum,
@@ -17,7 +16,7 @@ import {
   type GetConfigScriptsParams,
   type GetConfigScriptsByTypeParams,
 } from 'JansConfigApi'
-import { CREATE, UPDATE, DELETION, FETCH } from '@/audit/UserActionType'
+import { CREATE, UPDATE, DELETION } from '@/audit/UserActionType'
 import { SCRIPT } from '../../../redux/audit/Resources'
 import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
 import { logAuditAction } from './auditUtils'

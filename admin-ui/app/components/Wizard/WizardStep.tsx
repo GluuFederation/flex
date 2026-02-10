@@ -19,7 +19,7 @@ const WizardStep: React.FC<WizardStepProps> = ({
   complete,
   disabled,
   className,
-  id,
+  'id': _id,
   onClick = () => {},
   icon,
   successIcon = <i className="fa fa-check fa-fw"></i>,

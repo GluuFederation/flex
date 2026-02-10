@@ -12,7 +12,7 @@ it('Should render a required label with internationalized text', () => {
       <GluuLabel label={labelText} required />
     </I18nextProvider>,
   )
-  expect(screen.getByText(/Application Type/i)).toBeInTheDocument()
+  expect(screen.getByText(/Application [Tt]ype/i)).toBeInTheDocument()
 })
 
 it('Should render the label with internationalized text', () => {
@@ -22,7 +22,7 @@ it('Should render the label with internationalized text', () => {
       <GluuLabel label={labelText} />
     </I18nextProvider>,
   )
-  expect(screen.getByText(/Application Type/i)).toBeInTheDocument()
+  expect(screen.getByText(/Application [Tt]ype/i)).toBeInTheDocument()
 })
 
 it('Should render the label with internationalized text and tooltip support', async () => {
@@ -33,12 +33,14 @@ it('Should render the label with internationalized text and tooltip support', as
     </I18nextProvider>,
   )
 
-  expect(screen.getByText(/Application Type/i)).toBeInTheDocument()
+  expect(screen.getByText(/Application [Tt]ype/i)).toBeInTheDocument()
 
-  const iconElement: any = container.querySelector(`svg[data-tooltip-id="applicationType"]`)
+  const iconElement = container.querySelector<SVGSVGElement>(
+    `svg[data-tooltip-id="applicationType"]`,
+  )
   expect(iconElement).toBeInTheDocument()
 
-  userEvent.hover(iconElement)
+  if (iconElement) userEvent.hover(iconElement)
 
   await waitFor(() => {
     expect(screen.getByRole('tooltip')).toHaveTextContent(/Kind of the application/i)

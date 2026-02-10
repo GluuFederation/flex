@@ -1,8 +1,9 @@
 import customColors from '@/customColors'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/redux/hooks'
+import logo192 from 'Images/logos/logo192.png'
 
 function GluuErrorModal({ message = '', description = '' }) {
-  const { authServerHost } = useSelector((state: any) => state.authReducer.config)
+  const { authServerHost } = useAppSelector((state) => state.authReducer.config)
 
   const handleRefresh = () => {
     const host = authServerHost ? `${authServerHost}/admin` : null
@@ -31,7 +32,7 @@ function GluuErrorModal({ message = '', description = '' }) {
       }}
     >
       <img
-        src={require('Images/logos/logo192.png')}
+        src={logo192}
         style={{
           width: '260px',
           height: 'auto',

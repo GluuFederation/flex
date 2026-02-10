@@ -17,7 +17,7 @@ const theme = createTheme({
 function GluuTypeAheadForDn({
   label,
   name,
-  value,
+  value: _value,
   options,
   formik,
   required,

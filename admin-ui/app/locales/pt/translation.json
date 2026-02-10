@@ -696,6 +696,7 @@
   },
   "messages": {
     "add_permission": "Adicionar permissão",
+    "thanks_for_using_admin_ui": "Obrigado por usar a interface de administração.",
     "add_asset": "Add Jans Asset",
     "asset_document_error": "Document is mandatory.",
     "add_configuration": "Adicionar configuração",
@@ -858,6 +859,10 @@
     "status_unknown": "Desconhecido",
     "no_mau_data": "Nenhum dado disponível para o período selecionado.",
     "error_loading_data": "Ocorreu um erro ao carregar os dados. Por favor, tente novamente.",
+    "auth_error_policy_store": "Falha ao carregar o repositório de políticas",
+    "auth_error_authorization_config": "Falha na configuração de autorização",
+    "auth_error_token_fetch": "Falha ao obter token ou informações do usuário",
+    "auth_error_no_code": "Não foi possível obter o código de autorização",
     "mau_loading": "Carregando estatísticas...",
     "vs_previous_period": "vs período anterior",
     "try_again_later": "Por favor, tente novamente mais tarde",

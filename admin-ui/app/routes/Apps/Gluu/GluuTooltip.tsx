@@ -7,13 +7,13 @@ import getThemeColor from '@/context/theme/config'
 import { THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
 
 interface GluuTooltipProps {
-  doc_category: string
+  doc_category?: string
   doc_entry: string
   isDirect?: boolean
   children: ReactNode
 }
 
-function GluuTooltip({ doc_category, doc_entry, isDirect, children }: GluuTooltipProps) {
+const GluuTooltip = ({ doc_category = '', doc_entry, isDirect, children }: GluuTooltipProps) => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme

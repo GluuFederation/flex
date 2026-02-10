@@ -1,5 +1,12 @@
 import React from 'react'
-const FooterText = ({ year, name, desc }: any) => (
+
+interface FooterTextProps {
+  year: string | number
+  name: string
+  desc?: string
+}
+
+const FooterText = ({ year, name, desc: _desc }: FooterTextProps) => (
   <React.Fragment>
     (C) {year} All Rights Reserved. This is the &quot;{name}&quot; designed and implemented by{' '}
     <a

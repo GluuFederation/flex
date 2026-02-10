@@ -1,4 +1,5 @@
 import React from 'react'
+import omit from 'lodash/omit'
 import { useDispatch } from 'react-redux'
 import { CardBody, Card } from 'Components'
 import CustomScriptForm from './CustomScriptForm'
@@ -28,12 +29,8 @@ function CustomScriptAddPage() {
     }
 
     try {
-      const {
-        action_message,
-        script_path: _scriptPath,
-        location_type: _locationType,
-        ...scriptData
-      } = data.customScript
+      const { action_message } = data.customScript
+      const scriptData = omit(data.customScript, ['action_message', 'script_path', 'location_type'])
 
       await createMutation.mutateAsync({
         data: scriptData as CustomScript,

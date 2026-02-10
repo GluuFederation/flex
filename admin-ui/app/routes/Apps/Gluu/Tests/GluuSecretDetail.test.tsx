@@ -13,17 +13,18 @@ it('Test GluuSecretDetail component', async () => {
         doc_category="openid_client"
         doc_entry="applicationType"
         value={VALUE}
-        up
         label={LABEL}
       />
     </AppTestWrapper>,
   )
-  screen.getByText(/Application Type/i)
+  expect(screen.getByText(/Application [Tt]ype/i)).toBeInTheDocument()
 
-  const mouseOverEle: any = container.querySelector(`div[data-tooltip-id="applicationType"]`)
+  const mouseOverEle = container.querySelector<HTMLDivElement>(
+    `div[data-tooltip-id="applicationType"]`,
+  )
   expect(mouseOverEle).toBeInTheDocument()
 
-  userEvent.hover(mouseOverEle)
+  if (mouseOverEle) userEvent.hover(mouseOverEle)
 
   await waitFor(() => {
     expect(screen.getByRole('tooltip')).toHaveTextContent(/Kind of the application/i)

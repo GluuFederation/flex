@@ -1,13 +1,10 @@
 import React from 'react'
+import type { LayoutNavbarProps } from './types'
 
 /**
  * LayoutNavbar component expects a single React element child.
  * @param children - A single React element to be rendered in the navbar layout.
  */
-interface LayoutNavbarProps {
-  children: React.ReactNode
-}
-
 type LayoutNavbarComponent = React.FC<LayoutNavbarProps> & { layoutPartName: string }
 
 const LayoutNavbar: LayoutNavbarComponent = (props) => {

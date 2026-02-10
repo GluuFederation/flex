@@ -866,6 +866,7 @@
     "loading_attribute": "Loading attribute...",
     "loading_attributes": "Loading attributes",
     "error_processiong_request": "Error in processing request.",
+    "thanks_for_using_admin_ui": "Thanks for using the Admin UI.",
     "no_data": "No data found",
     "no_scope_in_client": "No Scope data for this Client",
     "no_scope_in_spontaneous_client": "No Spontaneous Scope data for this Client",
@@ -932,6 +933,10 @@
     "status_unknown": "Unknown",
     "no_mau_data": "No data available for the selected period.",
     "error_loading_data": "An error occurred while loading data. Please try again.",
+    "auth_error_policy_store": "Failed to load policy store",
+    "auth_error_authorization_config": "Authorization configuration failed",
+    "auth_error_token_fetch": "Token or user info fetch failed",
+    "auth_error_no_code": "Unable to get authorization code",
     "mau_loading": "Loading statistics...",
     "vs_previous_period": "vs previous period"
   },

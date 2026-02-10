@@ -7,13 +7,10 @@ const LABEL = 'fields.application_type'
 const NAME = 'application_type'
 const VALUE = 'Public'
 
-it('Should show the disabled input with proper text wit sa', () => {
-  function handler() {
-    console.log('========')
-  }
+it('Should show the disabled input with proper text', () => {
   render(
     <AppTestWrapper>
-      <GluuInumInput label={LABEL} value={VALUE} name={NAME} handler={handler} formik={handler} />
+      <GluuInumInput label={LABEL} value={VALUE} name={NAME} />
     </AppTestWrapper>,
   )
   expect(screen.getByText(/Application Type/i)).toBeInTheDocument()

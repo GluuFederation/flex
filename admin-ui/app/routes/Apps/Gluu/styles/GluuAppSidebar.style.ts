@@ -1,4 +1,3 @@
-import customColors from '@/customColors'
 import { makeStyles } from 'tss-react/mui'
 
 const styles = makeStyles()({
