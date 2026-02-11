@@ -4,9 +4,10 @@ import { Card, CardBody } from '../../../../app/components'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { GluuDatePicker } from '@/components/GluuDatePicker'
+import { formatDate, diffDate, createDate, DATE_FORMATS } from '@/utils/dayjsUtils'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { Box, Grid, MenuItem, Paper, TablePagination, TextField, Tooltip } from '@mui/material'
 
@@ -16,7 +17,6 @@ import getThemeColor from 'Context/theme/config'
 import { deleteClientToken, getTokenByClient } from '../../redux/features/oidcSlice'
 import ClientActiveTokenDetailPage from './ClientActiveTokenDetailPage'
 import { Button } from 'Components'
-import { formatDate, diffDate, createDate } from '@/utils/dayjsUtils'
 import PropTypes from 'prop-types'
 import { Button as MaterialButton } from '@mui/material'
 import FilterListIcon from '@mui/icons-material/FilterList'
@@ -315,14 +315,14 @@ function ClientActiveTokens({ client }) {
                     {(searchFilter === 'expirationDate' || searchFilter === 'creationDate') && (
                       <Grid item xs={4}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <DatePicker
-                            format="MM/DD/YYYY"
+                          <GluuDatePicker
+                            format={DATE_FORMATS.DATE_PICKER_DISPLAY_US}
                             label={t('dashboard.start_date')}
                             value={pattern.dateAfter}
                             onChange={(val) => {
                               setPattern({ ...pattern, dateAfter: val })
                             }}
-                            renderInput={(params) => <TextField {...params} fullWidth />}
+                            maxDate={pattern.dateBefore}
                           />
                         </LocalizationProvider>
                       </Grid>
@@ -330,14 +330,14 @@ function ClientActiveTokens({ client }) {
                     {(searchFilter === 'expirationDate' || searchFilter === 'creationDate') && (
                       <Grid item xs={4}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <DatePicker
-                            format="MM/DD/YYYY"
+                          <GluuDatePicker
+                            format={DATE_FORMATS.DATE_PICKER_DISPLAY_US}
                             label={t('dashboard.end_date')}
                             value={pattern.dateBefore}
                             onChange={(val) => {
                               setPattern({ ...pattern, dateBefore: val })
                             }}
-                            renderInput={(params) => <TextField {...params} fullWidth />}
+                            minDate={pattern.dateAfter}
                           />
                         </LocalizationProvider>
                       </Grid>

@@ -1,15 +1,13 @@
-import React, { useEffect, useMemo, useState, useContext, useCallback } from 'react'
-import { useDispatch } from 'react-redux'
+import React, { useEffect, useMemo, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useAppSelector } from '@/redux/hooks'
-import { ThemeContext } from '@/context/theme/themeContext'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
-import customColors from '@/customColors'
-import { getLicenseDetails } from 'Redux/features/licenseDetailsSlice'
 import { Card, CardBody, GluuPageContent } from 'Components'
+import { useLicenseDetails } from './hooks/useLicenseDetails'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
-import { GluuButton } from '@/components/GluuButton'
+import { GluuRefreshButton } from '@/components/GluuSearchToolbar'
 import Alert from '@mui/material/Alert'
 import SetTitle from 'Utils/SetTitle'
 import { formatDate } from 'Utils/Util'
@@ -40,12 +38,13 @@ const LICENSE_FIELD_CONFIG: ReadonlyArray<{ key: string; label: string }> = [
 ]
 
 const LicenseDetailsPage = () => {
-  const { item, loading } = useAppSelector((state) => state.licenseDetailsReducer)
-  const dispatch = useDispatch()
+  const { navigateToRoute } = useAppNavigation()
+  const { item, loading, resetLicense, isResetting } = useLicenseDetails({
+    onResetSuccess: () => navigateToRoute(ROUTES.LOGOUT),
+  })
   const { t } = useTranslation()
   const { hasCedarWritePermission, authorizeHelper } = useCedarling()
   const [modal, setModal] = useState(false)
-  const { navigateToRoute } = useAppNavigation()
 
   const canWriteLicense = useMemo(
     () => hasCedarWritePermission(LICENSE_RESOURCE_ID),
@@ -59,19 +58,17 @@ const LicenseDetailsPage = () => {
   }, [authorizeHelper])
 
   useEffect(() => {
-    dispatch(getLicenseDetails())
-  }, [dispatch])
-  useEffect(() => {
-    if (item.licenseExpired) {
+    if (item?.licenseExpired) {
       navigateToRoute(ROUTES.LOGOUT)
     }
-  }, [item.licenseExpired, navigateToRoute])
+  }, [item?.licenseExpired, navigateToRoute])
 
   SetTitle(t('menus.licenseDetails'))
-  const themeContext = useContext(ThemeContext)
-  const selectedTheme = themeContext?.state?.theme || DEFAULT_THEME
+  const { state: themeState } = useTheme()
+  const selectedTheme = themeState?.theme ?? DEFAULT_THEME
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const isDark = selectedTheme === THEME_DARK
-  const { classes } = useStyles({ isDark })
+  const { classes } = useStyles({ themeColors, isDark })
 
   const licenseFields = useMemo<LicenseField[]>(
     () =>
@@ -115,20 +112,20 @@ const LicenseDetailsPage = () => {
   const handleReset = useCallback(
     (message: string) => {
       setModal((prev) => !prev)
-      dispatch({ type: 'license/resetConfig', message })
+      resetLicense(message)
     },
-    [dispatch],
+    [resetLicense],
   )
 
   const toggle = useCallback(() => {
     setModal((prev) => !prev)
   }, [])
 
-  const hasLicenseData = !loading && (item.licenseKey || item.productName || item.licenseEnabled)
+  const hasLicenseData = !loading && (item?.licenseKey || item?.productName || item?.licenseEnabled)
   const showLicenseCard = loading || hasLicenseData
 
   return (
-    <GluuLoader blocking={loading}>
+    <GluuLoader blocking={loading || isResetting}>
       <GluuPageContent>
         {showLicenseCard ? (
           <div className={classes.licenseCard}>
@@ -137,17 +134,13 @@ const LicenseDetailsPage = () => {
             </div>
             {canWriteLicense && (
               <div className={classes.buttonContainer}>
-                <GluuButton
+                <GluuRefreshButton
                   className={classes.resetButton}
+                  variant="primary"
                   onClick={toggle}
-                  disabled={loading}
-                  backgroundColor={customColors.statusActive}
-                  textColor={customColors.white}
-                  useOpacityOnHover
-                >
-                  <i className={`fa fa-refresh ${classes.refreshIcon}`} />
-                  {t('fields.resetLicense')}
-                </GluuButton>
+                  disabled={loading || isResetting}
+                  label={t('fields.resetLicense')}
+                />
               </div>
             )}
           </div>

@@ -3,15 +3,13 @@ import type { Theme } from '@mui/material/styles'
 import { SPACING, BORDER_RADIUS } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
-import customColors from '@/customColors'
 
 interface HealthPageThemeColors {
   cardBg: string
   navbarBorder: string
   text: string
-  refreshButtonBg: string
-  refreshButtonBorder: string
-  refreshButtonText: string
+  errorColor: string
+  infoMessageColor: string
 }
 
 const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boolean }>()((
@@ -73,30 +71,19 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
       zIndex: 10,
     },
     refreshButton: {
-      'border': `1px solid ${themeColors.refreshButtonBorder}`,
-      'borderRadius': 4,
-      'height': 44,
-      'width': 108,
-      'padding': '0 14px',
-      'display': 'flex',
-      'alignItems': 'center',
-      'justifyContent': 'flex-start',
-      'gap': 8,
-      'backgroundColor': themeColors.refreshButtonBg,
-      'cursor': 'pointer',
+      borderRadius: 4,
+      height: 44,
+      minHeight: 44,
+      minWidth: 108,
+      padding: '0 14px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      gap: 8,
       fontFamily,
-      'fontSize': fontSizes.base,
-      'fontWeight': fontWeights.medium,
-      'lineHeight': lineHeights.relaxed,
-      'color': themeColors.refreshButtonText,
-      'transition': 'opacity 0.2s ease',
-      '&:hover': {
-        opacity: 0.8,
-      },
-      '&:disabled': {
-        opacity: 0.5,
-        cursor: 'not-allowed',
-      },
+      fontSize: fontSizes.base,
+      fontWeight: fontWeights.medium,
+      lineHeight: lineHeights.relaxed,
     },
     messageBlock: {
       padding: `${SPACING.CONTENT_PADDING}px`,
@@ -105,10 +92,10 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
       gap: SPACING.CARD_CONTENT_GAP,
     },
     errorMessage: {
-      color: customColors.accentRed,
+      color: themeColors.errorColor,
     },
     infoMessage: {
-      color: customColors.textSecondary,
+      color: themeColors.infoMessageColor,
     },
     errorIcon: {
       color: 'inherit',

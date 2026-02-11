@@ -26,6 +26,7 @@ export interface ThemeConfig {
   }
   checkbox: { uncheckedBorder: string }
   errorColor: string
+  warningColor: string
   formFooter: FormFooterColors
   settings: {
     cardBackground: string
@@ -78,6 +79,7 @@ const createLightTheme = (): ThemeConfig => {
       uncheckedBorder: customColors.sidebarHoverBg,
     },
     errorColor: customColors.accentRed,
+    warningColor: customColors.orange,
     formFooter: {
       back: {
         backgroundColor: customColors.statusActive,
@@ -147,6 +149,7 @@ const createDarkTheme = (): ThemeConfig => {
       uncheckedBorder: customColors.cedarCardBorderDark,
     },
     errorColor: customColors.accentRed,
+    warningColor: customColors.orange,
     formFooter: {
       back: {
         backgroundColor: customColors.statusActive,

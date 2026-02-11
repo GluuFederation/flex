@@ -6,8 +6,9 @@ import debounce from 'lodash/debounce'
 import { CardBody, Card, Form, Col, Row, FormGroup } from 'Components'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import type { Dayjs } from 'dayjs'
+import { GluuDatePicker } from '@/components/GluuDatePicker'
+import { createDate, DATE_FORMATS } from '@/utils/dayjsUtils'
+import type { Dayjs } from '@/utils/dayjsUtils'
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
@@ -341,11 +342,12 @@ const SsaAddPage: React.FC = () => {
                             />
                             <Col sm={8}>
                               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DatePicker
-                                  format="MM/DD/YYYY"
+                                <GluuDatePicker
+                                  format={DATE_FORMATS.DATE_PICKER_DISPLAY_US}
+                                  label={t('fields.expiration_date')}
                                   value={formik.values.expirationDate as Dayjs | null}
                                   onChange={(date) => formik.setFieldValue('expirationDate', date)}
-                                  disablePast
+                                  minDate={createDate()}
                                 />
                               </LocalizationProvider>
                             </Col>

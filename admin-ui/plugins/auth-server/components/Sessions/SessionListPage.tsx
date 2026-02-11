@@ -21,9 +21,10 @@ import {
   ListItemText,
   Button as MaterialButton,
 } from '@mui/material'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { GluuDatePicker } from '@/components/GluuDatePicker'
+import { DATE_FORMATS } from '@/utils/dayjsUtils'
 import { useSelector } from 'react-redux'
 import { Button } from 'reactstrap'
 import { Card, CardBody } from 'Components'
@@ -691,19 +692,11 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
                     filterState.searchFilter === 'authenticationTime' ? (
                       <Grid item xs={4}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <DatePicker
-                            format="MM/DD/YYYY"
+                          <GluuDatePicker
+                            format={DATE_FORMATS.DATE_PICKER_DISPLAY_US}
                             label={t('dashboard.start_date')}
                             value={filterState.date}
                             onChange={handleDateChange}
-                            slotProps={{
-                              textField: {
-                                fullWidth: true,
-                                style: {
-                                  borderColor: customColors.lightBlue,
-                                },
-                              },
-                            }}
                           />
                         </LocalizationProvider>
                       </Grid>
