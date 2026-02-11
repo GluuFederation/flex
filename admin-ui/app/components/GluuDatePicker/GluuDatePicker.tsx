@@ -16,7 +16,7 @@ import type {
   GluuDatePickerRangeProps,
 } from './types'
 import { isGluuDatePickerRangeProps } from './types'
-import { useStyles } from './GluuDatePicker.style'
+import { useDatePickerStyles } from './GluuDatePicker.style'
 
 const rangePropsEqual = (a: GluuDatePickerRangeProps, b: GluuDatePickerRangeProps): boolean => {
   const startDateSame =
@@ -49,11 +49,9 @@ const GluuDatePicker = memo(
 
     const isRange = isGluuDatePickerRangeProps(props)
     const labelShrink = isRange ? !props.labelAsTitle : (props.labelShrink ?? true)
-    const displayFormat =
-      (isRange ? (props.dateFormat ?? props.format) : props.format) ??
-      DATE_FORMATS.DATE_PICKER_DISPLAY_US
+    const displayFormat = props.dateFormat ?? props.format ?? DATE_FORMATS.DATE_PICKER_DISPLAY_US
 
-    const { classes, slotProps, datePickerSx } = useStyles({
+    const { classes, slotProps, datePickerSx } = useDatePickerStyles({
       themeColors: globalThemeColors,
       isDark: isDarkTheme,
       textColor: props.textColor,
@@ -75,17 +73,19 @@ const GluuDatePicker = memo(
     }
 
     return (
-      <DatePicker
-        format={displayFormat}
-        label={props.label}
-        value={props.value ?? createDate()}
-        onChange={props.onChange}
-        onAccept={props.onAccept}
-        minDate={props.minDate}
-        maxDate={props.maxDate}
-        slotProps={slotProps}
-        sx={datePickerSx}
-      />
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <DatePicker
+          format={displayFormat}
+          label={props.label ?? ''}
+          value={props.value ?? null}
+          onChange={props.onChange}
+          onAccept={props.onAccept}
+          minDate={props.minDate}
+          maxDate={props.maxDate}
+          slotProps={slotProps}
+          sx={datePickerSx}
+        />
+      </LocalizationProvider>
     )
   },
   (prevProps, nextProps) => {
@@ -106,7 +106,9 @@ const GluuDatePicker = memo(
       prev.format === next.format &&
       prev.inputHeight === next.inputHeight &&
       prev.textColor === next.textColor &&
-      prev.backgroundColor === next.backgroundColor
+      prev.backgroundColor === next.backgroundColor &&
+      prev.minDate === next.minDate &&
+      prev.maxDate === next.maxDate
     )
   },
 )
@@ -120,7 +122,7 @@ type GluuDatePickerRangeInternalProps = GluuDatePickerRangeProps & {
     popper: { sx: SxProps<Theme> }
   }
   datePickerSx: SxProps<Theme>
-  classes: ReturnType<typeof useStyles>['classes']
+  classes: ReturnType<typeof useDatePickerStyles>['classes']
 }
 
 const GluuDatePickerRange = memo(
@@ -139,6 +141,7 @@ const GluuDatePickerRange = memo(
     classes,
   }: GluuDatePickerRangeInternalProps) => {
     const { t } = useTranslation()
+    const today = useMemo(() => createDate(), [])
 
     const pickerCommon = useMemo(
       () => ({
@@ -160,7 +163,7 @@ const GluuDatePickerRange = memo(
           onChange={isStart ? onStartDateChange : onEndDateChange}
           onAccept={isStart ? onStartDateAccept : onEndDateAccept}
           minDate={isStart ? undefined : startDate}
-          maxDate={isStart ? endDate : createDate()}
+          maxDate={isStart ? endDate : today}
         />
       )
     }

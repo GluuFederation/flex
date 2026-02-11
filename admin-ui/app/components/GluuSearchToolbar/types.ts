@@ -36,7 +36,7 @@ export interface GluuSearchToolbarProps {
   searchPlaceholder?: string
   searchLabel?: string
   searchValue?: string
-  onSearch: (value: string) => void
+  onSearch?: (value: string) => void
   onSearchSubmit?: (value: string) => void
   filters?: FilterDef[]
   dateInputs?: DateInputDef[]

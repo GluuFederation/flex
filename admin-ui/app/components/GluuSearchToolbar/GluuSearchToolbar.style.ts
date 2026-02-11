@@ -69,7 +69,7 @@ export const useStyles = makeStyles<GluuSearchToolbarStyleParams>()((
       'boxSizing': 'border-box',
       '&::placeholder': {
         color: inputColor,
-        opacity: 1,
+        opacity: 0.6,
       },
     },
     searchIcon: {
