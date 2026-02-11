@@ -57,7 +57,7 @@ COPY --from=jans-aio-src /var/log/adminui /var/log/adminui
 COPY --from=jans-aio-src /usr/share/java /usr/share/java
 
 # override persistence-loader assets
-COPY --from=flex-persistence-loader-src /app/schema /app/schema
+COPY --from=flex-persistence-loader-src /app/schema/flex_schema.json /app/schema/flex_schema.json
 
 COPY --from=flex-admin-ui-src /opt/flex/admin-ui /opt/flex/admin-ui
 COPY --from=flex-admin-ui-src /app/templates/admin-ui /app/templates/admin-ui
