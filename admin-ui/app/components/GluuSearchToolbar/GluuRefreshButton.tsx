@@ -14,7 +14,6 @@ export interface GluuRefreshButtonProps {
   variant?: 'primary' | 'outlined'
   minHeight?: number
   size?: 'sm' | 'md' | 'lg'
-  outlined?: boolean
   backgroundColor?: string
   textColor?: string
   borderColor?: string
@@ -30,7 +29,6 @@ const GluuRefreshButton: React.FC<GluuRefreshButtonProps> = ({
   variant = 'outlined',
   minHeight,
   size = 'md',
-  outlined: outlinedProp,
   backgroundColor: backgroundColorProp,
   textColor: textColorProp,
   borderColor: borderColorProp,
@@ -42,15 +40,15 @@ const GluuRefreshButton: React.FC<GluuRefreshButtonProps> = ({
 
   const displayLabel = label ?? t('actions.refresh')
 
-  const isOutlined = outlinedProp ?? variant === 'outlined'
+  const isOutlined = variant === 'outlined'
   const backgroundColor =
     backgroundColorProp ??
-    (isOutlined ? 'transparent' : themeColors.formFooter.back.backgroundColor)
+    (isOutlined ? 'transparent' : themeColors.formFooter?.back?.backgroundColor)
   const textColor =
-    textColorProp ?? (isOutlined ? themeColors.fontColor : themeColors.formFooter.back.textColor)
+    textColorProp ?? (isOutlined ? themeColors.fontColor : themeColors.formFooter?.back?.textColor)
   const borderColor =
     borderColorProp ??
-    (isOutlined ? themeColors.fontColor : themeColors.formFooter.back.borderColor)
+    (isOutlined ? themeColors.fontColor : themeColors.formFooter?.back?.borderColor)
 
   return (
     <GluuButton

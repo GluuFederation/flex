@@ -36,6 +36,7 @@ import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import SessionDetailPage from '../Sessions/SessionDetailPage'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { useCedarling } from '@/cedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
@@ -693,7 +694,7 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
                       <Grid item xs={4}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                           <GluuDatePicker
-                            format={DATE_FORMATS.DATE_PICKER_DISPLAY_US}
+                            dateFormat={DATE_FORMATS.DATE_PICKER_DISPLAY_US}
                             label={t('dashboard.start_date')}
                             value={filterState.date}
                             onChange={handleDateChange}
@@ -759,7 +760,7 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
             modal={modal}
             subject="user session revoke"
             onAccept={onRevokeConfirmed}
-            style={{ marginRight: '0px' }}
+            feature={adminUiFeatures.sessions}
           />
         ) : null}
         {!isEmpty(item) && deleteModal ? (
@@ -770,7 +771,7 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
             modal={deleteModal}
             subject="session delete"
             onAccept={onDeleteConfirmed}
-            style={{ marginRight: '0px' }}
+            feature={adminUiFeatures.sessions}
           />
         ) : null}
       </CardBody>

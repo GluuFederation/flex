@@ -2,6 +2,8 @@ import type { Dayjs } from '@/utils/dayjsUtils'
 
 interface GluuDatePickerBase {
   format?: string
+  dateFormat?: string
+  isDark?: boolean
   textColor?: string
   backgroundColor?: string
   inputHeight?: number
@@ -9,10 +11,10 @@ interface GluuDatePickerBase {
 
 export interface GluuDatePickerSingleProps extends GluuDatePickerBase {
   mode?: 'single'
-  value: Dayjs | null
+  value?: Dayjs | null
   onChange: (date: Dayjs | null) => void
   onAccept?: (date: Dayjs | null) => void
-  label: string
+  label?: string
   minDate?: Dayjs
   maxDate?: Dayjs
   labelShrink?: boolean
@@ -28,7 +30,6 @@ export interface GluuDatePickerRangeProps extends GluuDatePickerBase {
   onEndDateAccept?: (date: Dayjs | null) => void
   layout?: 'grid' | 'row'
   labelAsTitle?: boolean
-  isDark?: boolean
   dateFormat?: string
 }
 

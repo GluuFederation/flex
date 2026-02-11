@@ -290,8 +290,6 @@ const SsaAddPage: React.FC = () => {
                           rsize={8}
                           labelStyle={{ whiteSpace: 'nowrap' }}
                           value={formik.values.one_time_use}
-                          errorMessage={formik.errors.one_time_use as string | undefined}
-                          showError={!!(formik.errors.one_time_use && formik.touched.one_time_use)}
                           doc_category={SSA}
                         />
                       </Col>
@@ -307,8 +305,6 @@ const SsaAddPage: React.FC = () => {
                           rsize={8}
                           labelStyle={{ whiteSpace: 'nowrap' }}
                           value={formik.values.rotate_ssa}
-                          errorMessage={formik.errors.rotate_ssa as string | undefined}
-                          showError={!!(formik.errors.rotate_ssa && formik.touched.rotate_ssa)}
                           doc_category={SSA}
                         />
                       </Col>
@@ -324,8 +320,6 @@ const SsaAddPage: React.FC = () => {
                           rsize={8}
                           labelStyle={{ whiteSpace: 'nowrap' }}
                           value={formik.values.is_expirable}
-                          errorMessage={formik.errors.is_expirable as string | undefined}
-                          showError={!!(formik.errors.is_expirable && formik.touched.is_expirable)}
                           doc_category={SSA}
                         />
                       </Col>
@@ -344,7 +338,6 @@ const SsaAddPage: React.FC = () => {
                               <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <GluuDatePicker
                                   format={DATE_FORMATS.DATE_PICKER_DISPLAY_US}
-                                  label={t('fields.expiration_date')}
                                   value={formik.values.expirationDate as Dayjs | null}
                                   onChange={(date) => formik.setFieldValue('expirationDate', date)}
                                   minDate={createDate()}

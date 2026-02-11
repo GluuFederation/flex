@@ -1,6 +1,5 @@
 import React, { useMemo, useCallback } from 'react'
 import SearchIcon from '@mui/icons-material/Search'
-import AddIcon from '@mui/icons-material/Add'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -110,53 +109,62 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
             type="text"
             placeholder={searchPlaceholder}
             value={searchValue}
-            onChange={(e) => onSearch(e.target.value)}
+            onChange={(e) => onSearch?.(e.target.value)}
             onKeyDown={handleKeyDown}
             className={classes.searchInput}
+            aria-label={searchLabel ?? searchPlaceholder ?? 'search'}
           />
         </div>
       </div>
 
-      {filters?.map((filter) => (
-        <div key={filter.key} className={classes.fieldGroup}>
-          {filter.label && (
-            <GluuText variant="span" className={classes.fieldLabel} disableThemeColor>
-              {filter.label}
-            </GluuText>
-          )}
-          <select
-            className={classes.filterSelect}
-            style={{ width: filter.width ?? 160 }}
-            value={filter.value}
-            onChange={(e) => filter.onChange(e.target.value)}
-          >
-            {filter.options.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-        </div>
-      ))}
+      {filters?.map((filter) => {
+        const filterId = `${filter.key}-select`
+        return (
+          <div key={filter.key} className={classes.fieldGroup}>
+            {filter.label && (
+              <label htmlFor={filterId} className={classes.fieldLabel}>
+                {filter.label}
+              </label>
+            )}
+            <select
+              id={filterId}
+              className={classes.filterSelect}
+              style={{ width: filter.width ?? 160 }}
+              value={filter.value}
+              onChange={(e) => filter.onChange(e.target.value)}
+            >
+              {filter.options.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        )
+      })}
 
-      {dateInputs?.map((dateInput) => (
-        <div key={dateInput.key} className={classes.fieldGroup}>
-          {dateInput.label && (
-            <GluuText variant="span" className={classes.fieldLabel} disableThemeColor>
-              {dateInput.label}
-            </GluuText>
-          )}
-          <input
-            type="date"
-            className={classes.dateInput}
-            style={{ width: dateInput.width ?? 255 }}
-            value={dateInput.value}
-            onChange={(e) => dateInput.onChange(e.target.value)}
-            max={dateInput.max}
-            min={dateInput.min}
-          />
-        </div>
-      ))}
+      {dateInputs?.map((dateInput) => {
+        const dateInputId = `${dateInput.key}-date`
+        return (
+          <div key={dateInput.key} className={classes.fieldGroup}>
+            {dateInput.label && (
+              <label htmlFor={dateInputId} className={classes.fieldLabel}>
+                {dateInput.label}
+              </label>
+            )}
+            <input
+              id={dateInputId}
+              type="date"
+              className={classes.dateInput}
+              style={{ width: dateInput.width ?? 255 }}
+              value={dateInput.value}
+              onChange={(e) => dateInput.onChange(e.target.value)}
+              max={dateInput.max}
+              min={dateInput.min}
+            />
+          </div>
+        )
+      })}
 
       {showBuiltInDateRange ? (
         <div className={classes.dateRangeSlot}>
@@ -206,7 +214,7 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
             borderColor={primaryButtonColors.backgroundColor}
             useOpacityOnHover
           >
-            {primaryAction.icon ?? <AddIcon sx={iconSx} />}
+            {primaryAction.icon ?? <SearchIcon sx={iconSx} />}
             {primaryAction.label}
           </GluuButton>
         )}

@@ -2,19 +2,23 @@ import type { ReactNode } from 'react'
 
 export type SortDirection = 'asc' | 'desc' | null
 
-export interface ColumnDef<T> {
-  key: string
+export type ColumnKey<T> = Extract<keyof T, string>
+
+export interface ColumnDef<T, K extends ColumnKey<T> = ColumnKey<T>> {
+  key: K
   label: string
   width?: string | number
   minWidth?: string | number
   sortable?: boolean
   align?: 'left' | 'center' | 'right'
-  render?: (value: T[keyof T], row: T, rowIndex: number) => ReactNode
+  render?: (value: T[K], row: T, rowIndex: number) => ReactNode
 }
 
 export interface ActionDef<T> {
   icon: ReactNode | string
   tooltip?: string
+  ariaLabel?: string
+  id?: string | number
   onClick: (row: T) => void
   show?: (row: T) => boolean
   color?: string

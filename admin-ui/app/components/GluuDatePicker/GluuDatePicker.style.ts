@@ -54,45 +54,42 @@ const buildPickerThemeColors = (
   }
 }
 
-const useLayoutStyles = makeStyles<{ labelColor: string }>()((_, { labelColor }) => ({
-  pickerWrapper: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '6px',
-    minWidth: 0,
-    flex: '1 1 0',
-  },
-  rangeRowContainer: {
-    'display': 'flex',
-    'gap': 16,
-    'width': '100%',
-    'minWidth': 0,
-    '& > *': { flex: '1 1 0', minWidth: 0 },
-  },
-  rangeGridContainer: {
-    width: '100%',
-  },
-  titleLabel: {
+const useLayoutStyles = makeStyles<{ labelColor: string }>()((_, { labelColor }) => {
+  const titleLabelBase = {
     fontFamily,
     fontSize: fontSizes.base,
     fontWeight: fontWeights.semiBold,
     color: labelColor,
     letterSpacing: letterSpacing.normal,
-    marginBottom: 0,
-    display: 'block',
-  },
-  titleLabelGrid: {
-    fontFamily,
-    fontSize: fontSizes.base,
-    fontWeight: fontWeights.semiBold,
-    color: labelColor,
-    letterSpacing: letterSpacing.normal,
-    marginBottom: '6px',
-    display: 'block',
-  },
-}))
+    display: 'block' as const,
+  }
+  return {
+    pickerWrapper: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '6px',
+      minWidth: 0,
+      flex: '1 1 0',
+    },
+    rangeRowContainer: {
+      'display': 'flex',
+      'gap': 16,
+      'width': '100%',
+      'minWidth': 0,
+      '& > *': { flex: '1 1 0', minWidth: 0 },
+    },
+    rangeGridContainer: {
+      width: '100%',
+    },
+    titleLabel: { ...titleLabelBase, marginBottom: 0 },
+    titleLabelGrid: { ...titleLabelBase, marginBottom: '6px' },
+  }
+})
 
-const buildCommonInputStyles = (tc: PickerThemeColors): SxProps<Theme> => ({
+/** Plain object sx so it can be safely spread (SxProps can be array/callback/false). */
+type PickerSxObject = Record<string, unknown>
+
+const buildCommonInputStyles = (tc: PickerThemeColors): PickerSxObject => ({
   '& .MuiInputLabel-root': {
     'color': tc.labelColor,
     '&.Mui-focused': { color: tc.labelColor },
@@ -110,13 +107,13 @@ const buildCommonInputStyles = (tc: PickerThemeColors): SxProps<Theme> => ({
 
 const buildTextFieldSx = (
   tc: PickerThemeColors,
-  common: SxProps<Theme>,
+  common: PickerSxObject,
   inputHeight?: number,
 ): SxProps<Theme> => ({
   'width': '100%',
   'maxWidth': '100%',
   'boxSizing': 'border-box',
-  ...common,
+  ...(common as SxProps<Theme>),
   '& .MuiInputBase-root': {
     color: tc.inputTextColor,
     backgroundColor: tc.inputBackground,
@@ -173,13 +170,13 @@ const buildPopperSx = (tc: PickerThemeColors): SxProps<Theme> => ({
   },
 })
 
-const buildDatePickerRootSx = (tc: PickerThemeColors, common: SxProps<Theme>): SxProps<Theme> => ({
+const buildDatePickerRootSx = (tc: PickerThemeColors, common: PickerSxObject): SxProps<Theme> => ({
   'width': '100%',
   'maxWidth': '100%',
   'minWidth': 0,
   'flex': '1 1 auto',
   'boxSizing': 'border-box',
-  ...common,
+  ...(common as SxProps<Theme>),
   '& .MuiInputLabel-sizeSmall': {
     fontFamily,
     'padding': '0px 2px',
@@ -192,7 +189,7 @@ const buildDatePickerRootSx = (tc: PickerThemeColors, common: SxProps<Theme>): S
   },
 })
 
-export const useStyles = (params: GluuDatePickerStyleParams) => {
+export const useDatePickerStyles = (params: GluuDatePickerStyleParams) => {
   const {
     themeColors,
     isDark,

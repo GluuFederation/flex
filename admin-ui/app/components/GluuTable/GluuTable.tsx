@@ -10,7 +10,7 @@ import GluuText from '@/routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
 import { GluuSpinner } from '@/components/GluuSpinner'
 import { useStyles } from './GluuTable.style'
-import type { GluuTableProps, SortDirection } from './types'
+import type { GluuTableProps, SortDirection, ColumnKey } from './types'
 import { ChevronIcon } from '@/components/SVG'
 
 function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
@@ -80,13 +80,15 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
         <div className={classes.actionsCell}>
           {actions.map((action, idx) => {
             if (action.show && !action.show(row)) return null
+            const actionLabel = action.ariaLabel ?? action.tooltip ?? t('fields.actions')
             return (
               <button
-                key={idx}
+                key={action.id ?? idx}
                 type="button"
                 className={classes.actionButton}
                 style={action.color ? { color: action.color } : undefined}
                 title={action.tooltip}
+                aria-label={actionLabel}
                 onClick={() => action.onClick(row)}
               >
                 {typeof action.icon === 'string' ? (
@@ -130,14 +132,10 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
                     }}
                   >
                     {isSortable ? (
-                      <span
+                      <button
+                        type="button"
                         className={classes.sortableHeader}
-                        role="button"
-                        tabIndex={0}
                         onClick={() => handleSort(col.key)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') handleSort(col.key)
-                        }}
                       >
                         {col.label}
                         <span className={classes.sortIconWrap}>
@@ -154,7 +152,7 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
                             }}
                           />
                         </span>
-                      </span>
+                      </button>
                     ) : (
                       col.label
                     )}
@@ -186,15 +184,20 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
                 const isExpanded = expandedRows.has(rowKey)
                 return (
                   <React.Fragment key={rowKey}>
-                    <tr
-                      className={classes.row}
-                      onMouseEnter={(e) => e.currentTarget.classList.add(classes.rowHover)}
-                      onMouseLeave={(e) => e.currentTarget.classList.remove(classes.rowHover)}
-                    >
+                    <tr className={classes.row}>
                       {expandable && (
                         <td
                           className={`${classes.cell} ${classes.cellExpand}`}
+                          role="button"
+                          tabIndex={0}
+                          aria-expanded={isExpanded}
                           onClick={() => toggleRow(rowKey)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault()
+                              toggleRow(rowKey)
+                            }
+                          }}
                         >
                           <ExpandMoreIcon
                             className={`${classes.expandIcon} ${isExpanded ? classes.expandIconOpen : ''}`}
@@ -203,7 +206,8 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
                         </td>
                       )}
                       {columns.map((col) => {
-                        const value = (row as Record<string, T[keyof T]>)[col.key]
+                        const key = col.key as ColumnKey<T>
+                        const value = (row as T)[key]
                         return (
                           <td
                             key={col.key}
@@ -264,9 +268,9 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
             </div>
 
             <span>
-              {pagination.page * pagination.rowsPerPage + 1}-
-              {Math.min((pagination.page + 1) * pagination.rowsPerPage, pagination.totalItems)}{' '}
-              {t('fields.of')} {pagination.totalItems}
+              {pagination.totalItems === 0
+                ? `0-0 ${t('fields.of')} 0`
+                : `${pagination.page * pagination.rowsPerPage + 1}-${Math.min((pagination.page + 1) * pagination.rowsPerPage, pagination.totalItems)} ${t('fields.of')} ${pagination.totalItems}`}
             </span>
 
             <div className={classes.paginationNav}>

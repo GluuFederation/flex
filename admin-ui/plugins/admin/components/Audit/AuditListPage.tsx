@@ -52,6 +52,9 @@ const getLogDisplayText = (row: AuditRow): string => {
   return `${row.timestamp}     ${row.content}`
 }
 
+const initialStartDate = subtractDate(createDate(), 14, 'day')
+const initialEndDate = createDate()
+
 const AuditListPage: React.FC = () => {
   const { t } = useTranslation()
   SetTitle(t('menus.audit_logs'))
@@ -76,22 +79,20 @@ const AuditListPage: React.FC = () => {
   const [limit, setLimit] = useState(10)
   const [pattern, setPattern] = useState('')
   const [pageNumber, setPageNumber] = useState(0)
-  const [startDateStr, setStartDateStr] = useState(() =>
-    toIsoDate(subtractDate(createDate(), 14, 'day')),
-  )
-  const [endDateStr, setEndDateStr] = useState(() => toIsoDate(createDate()))
+  const [startDateStr, setStartDateStr] = useState(() => toIsoDate(initialStartDate))
+  const [endDateStr, setEndDateStr] = useState(() => toIsoDate(initialEndDate))
   const [queryParams, setQueryParams] = useState<GetAuditDataParams>(() => ({
     limit: 10,
     startIndex: 0,
-    start_date: dateConverter(subtractDate(createDate(), 14, 'day')),
-    end_date: dateConverter(createDate()),
+    start_date: dateConverter(initialStartDate),
+    end_date: dateConverter(initialEndDate),
   }))
 
   const { data, isLoading, isFetching, isError } = useGetAuditData(queryParams, {
     query: { enabled: canReadAuditLogs },
   })
 
-  const loading = useMemo(() => isLoading || isFetching, [isLoading, isFetching])
+  const loading = isLoading || isFetching
 
   const totalItems = data?.totalEntriesCount ?? 0
   const entries = data?.entries ?? []
@@ -139,6 +140,7 @@ const AuditListPage: React.FC = () => {
   const handleRefresh = useCallback(() => {
     if (!filterState.hasBothDates) return
     setPageNumber(0)
+    setPattern('')
     setQueryParams(buildQueryParams(limit, 0, '', filterState))
   }, [buildQueryParams, limit, filterState])
 
@@ -324,4 +326,4 @@ const AuditListPage: React.FC = () => {
   )
 }
 
-export default React.memo(AuditListPage)
+export default AuditListPage

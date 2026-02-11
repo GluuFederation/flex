@@ -71,6 +71,11 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       cursor: 'pointer',
       display: 'inline-flex',
       alignItems: 'center',
+      background: 'none',
+      border: 'none',
+      padding: 0,
+      font: 'inherit',
+      color: 'inherit',
     },
     sortIconWrap: {
       marginLeft: 4,
@@ -92,11 +97,11 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       cursor: 'pointer',
     },
     row: {
-      backgroundColor: rowBg,
-      transition: 'background-color 0.15s ease',
-    },
-    rowHover: {
-      backgroundColor: hoverBg,
+      'backgroundColor': rowBg,
+      'transition': 'background-color 0.15s ease',
+      '&:hover': {
+        backgroundColor: hoverBg,
+      },
     },
     expandedPanel: {
       backgroundColor: expandedBg,
@@ -167,6 +172,8 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       'outline': 'none',
       '&:focus': {
         outline: 'none',
+        boxShadow: `0 0 0 2px ${paginationAccent}`,
+        border: `1px solid ${paginationAccent}`,
       },
     },
     paginationSelectIcon: {
