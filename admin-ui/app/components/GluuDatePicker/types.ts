@@ -3,7 +3,6 @@ import type { Dayjs } from '@/utils/dayjsUtils'
 interface GluuDatePickerBase {
   format?: string
   dateFormat?: string
-  isDark?: boolean
   textColor?: string
   backgroundColor?: string
   inputHeight?: number
@@ -30,7 +29,6 @@ export interface GluuDatePickerRangeProps extends GluuDatePickerBase {
   onEndDateAccept?: (date: Dayjs | null) => void
   layout?: 'grid' | 'row'
   labelAsTitle?: boolean
-  dateFormat?: string
 }
 
 export type GluuDatePickerProps = GluuDatePickerSingleProps | GluuDatePickerRangeProps

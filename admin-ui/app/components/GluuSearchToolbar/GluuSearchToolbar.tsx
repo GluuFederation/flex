@@ -85,8 +85,8 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
 
   const primaryButtonColors = useMemo(
     () => ({
-      backgroundColor: themeColors.formFooter.apply.backgroundColor,
-      textColor: themeColors.formFooter.apply.textColor,
+      backgroundColor: themeColors.formFooter?.apply?.backgroundColor,
+      textColor: themeColors.formFooter?.apply?.textColor,
     }),
     [themeColors],
   )
@@ -182,7 +182,6 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
             onEndDateAccept={dateRange.onEndDateAccept}
             textColor={themeColors.fontColor}
             backgroundColor={themeColors.settings?.cardBackground ?? themeColors.card.background}
-            isDark={isDark}
           />
         </div>
       ) : (

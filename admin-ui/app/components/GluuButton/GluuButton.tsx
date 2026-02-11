@@ -20,7 +20,7 @@ const GluuButton: React.FC<GluuButtonProps> = (props) => {
     disabled = false,
     loading = false,
     block = false,
-    theme: themeProp,
+    'theme': themeProp,
     backgroundColor,
     textColor,
     borderColor,
@@ -37,6 +37,8 @@ const GluuButton: React.FC<GluuButtonProps> = (props) => {
     onClick,
     type = 'button',
     title,
+    'aria-expanded': ariaExpanded,
+    'aria-label': ariaLabel,
   } = props
 
   const [isHovered, setIsHovered] = useState(false)
@@ -117,6 +119,8 @@ const GluuButton: React.FC<GluuButtonProps> = (props) => {
       onClick={handleClick}
       disabled={isDisabled}
       title={title}
+      aria-expanded={ariaExpanded}
+      aria-label={ariaLabel}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

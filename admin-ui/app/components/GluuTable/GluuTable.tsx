@@ -102,7 +102,7 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
         </div>
       )
     },
-    [actions, classes],
+    [actions, classes, t],
   )
 
   return (
@@ -186,23 +186,31 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
                   <React.Fragment key={rowKey}>
                     <tr className={classes.row}>
                       {expandable && (
-                        <td
-                          className={`${classes.cell} ${classes.cellExpand}`}
-                          role="button"
-                          tabIndex={0}
-                          aria-expanded={isExpanded}
-                          onClick={() => toggleRow(rowKey)}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                              e.preventDefault()
-                              toggleRow(rowKey)
+                        <td className={`${classes.cell} ${classes.cellExpand}`}>
+                          <GluuButton
+                            type="button"
+                            className={classes.expandButton}
+                            aria-expanded={isExpanded}
+                            aria-label={t('fields.expand_row', {
+                              defaultValue: isExpanded ? 'Collapse row' : 'Expand row',
+                            })}
+                            title={
+                              isExpanded
+                                ? t('messages.collapse', { defaultValue: 'Collapse' })
+                                : t('messages.expand', { defaultValue: 'Expand' })
                             }
-                          }}
-                        >
-                          <ExpandMoreIcon
-                            className={`${classes.expandIcon} ${isExpanded ? classes.expandIconOpen : ''}`}
-                            sx={{ fontSize: 20, color: themeColors.fontColor }}
-                          />
+                            onClick={() => toggleRow(rowKey)}
+                            backgroundColor="transparent"
+                            borderColor="transparent"
+                            textColor={themeColors.fontColor}
+                            minHeight={32}
+                            disableHoverStyles
+                          >
+                            <ExpandMoreIcon
+                              className={`${classes.expandIcon} ${isExpanded ? classes.expandIconOpen : ''}`}
+                              sx={{ fontSize: 20, color: themeColors.fontColor }}
+                            />
+                          </GluuButton>
                         </td>
                       )}
                       {columns.map((col) => {

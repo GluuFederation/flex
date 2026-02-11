@@ -94,7 +94,16 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
     cellExpand: {
       width: 40,
       padding: '14px 8px',
+    },
+    expandButton: {
+      background: 'none',
+      border: 'none',
       cursor: 'pointer',
+      padding: 0,
+      display: 'inline-flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '100%',
     },
     row: {
       'backgroundColor': rowBg,
@@ -125,6 +134,12 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       'color': themeColors.fontColor,
       'transition': 'opacity 0.15s ease',
       '&:hover': { opacity: 0.6 },
+      '&:focus': { outline: 'none' },
+      '&:focus-visible': {
+        outline: 'none',
+        boxShadow: `0 0 0 2px ${paginationAccent}`,
+        borderRadius: '4px',
+      },
     },
     loadingOverlay: {
       position: 'absolute',

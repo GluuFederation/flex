@@ -32,6 +32,19 @@ export interface PrimaryActionDef {
   disabled?: boolean
 }
 
+interface DateRangeConfig {
+  startDate: Dayjs | null
+  endDate: Dayjs | null
+  onStartDateChange: (date: Dayjs | null) => void
+  onEndDateChange: (date: Dayjs | null) => void
+  onStartDateAccept?: (date: Dayjs | null) => void
+  onEndDateAccept?: (date: Dayjs | null) => void
+  dateFormat?: string
+  layout?: 'grid' | 'row'
+  labelAsTitle?: boolean
+  inputHeight?: number
+}
+
 export interface GluuSearchToolbarProps {
   searchPlaceholder?: string
   searchLabel?: string
@@ -40,20 +53,7 @@ export interface GluuSearchToolbarProps {
   onSearchSubmit?: (value: string) => void
   filters?: FilterDef[]
   dateInputs?: DateInputDef[]
-
-  dateRange?: {
-    startDate: Dayjs | null
-    endDate: Dayjs | null
-    onStartDateChange: (date: Dayjs | null) => void
-    onEndDateChange: (date: Dayjs | null) => void
-    onStartDateAccept?: (date: Dayjs | null) => void
-    onEndDateAccept?: (date: Dayjs | null) => void
-
-    dateFormat?: string
-    layout?: 'grid' | 'row'
-    labelAsTitle?: boolean
-    inputHeight?: number
-  }
+  dateRange?: DateRangeConfig
   dateRangeSlot?: ReactNode
   onRefresh?: () => void
   primaryAction?: PrimaryActionDef

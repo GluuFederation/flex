@@ -22,7 +22,8 @@ const getNestedValue = (obj: Record<string, JsonValue>, path: string): JsonValue
   }, obj as JsonValue)
 }
 
-export const hasValue = <T>(value: T): value is NonNullable<T> => !!value
+export const hasValue = <T>(value: T): value is NonNullable<T> =>
+  value !== null && value !== undefined
 
 export const hasBothDates = (startDate: DateLike, endDate: DateLike): boolean =>
   !!startDate && !!endDate
@@ -38,12 +39,9 @@ export const isStartAfterEnd = (startDate: DateLike, endDate: DateLike): boolean
 export const dateConverter = (date: DateLike, datePattern = 'DD-MM-YYYY'): string =>
   formatDate(date, datePattern)
 
-export const clearInputById = (id: string): void => {
-  const el = document.getElementById(id)
-  if (el && 'value' in el) {
-    const input = el as HTMLInputElement
-    input.value = ''
-  }
+/** Clears a React-controlled input by calling its state setter. Prefer this over direct DOM mutation. */
+export const clearControlledInput = (setValue: (v: string) => void): void => {
+  setValue('')
 }
 
 /** Re-export for backward compatibility; prefer importing REGEX_AUDIT_LIST_TIMESTAMP from @/utils/regex. */
@@ -75,7 +73,7 @@ export const webhookOutputObject = (
     url.match(REGEX_BRACED_PLACEHOLDER)?.forEach((placeholder) => {
       const key = placeholder.slice(1, -1)
       const value = key?.includes('.')
-        ? getNestedProperty(createdFeatureValue, key)
+        ? getNestedValue(createdFeatureValue, key)
         : createdFeatureValue[key]
 
       if (value !== undefined) {
@@ -110,25 +108,6 @@ export const webhookOutputObject = (
       url: webhook.url ?? '',
     }
   })
-}
-
-function getNestedProperty(obj: Record<string, JsonValue>, path: string): JsonValue | undefined {
-  const keys = path.split('.')
-  let current: JsonValue | undefined = obj
-
-  for (const key of keys) {
-    if (
-      current == null ||
-      typeof current !== 'object' ||
-      Array.isArray(current) ||
-      !(key in current)
-    ) {
-      return undefined
-    }
-    current = (current as Record<string, JsonValue>)[key]
-  }
-
-  return current
 }
 
 export const adminUiFeatures = {

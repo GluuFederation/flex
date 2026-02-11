@@ -52,9 +52,6 @@ const getLogDisplayText = (row: AuditRow): string => {
   return `${row.timestamp}     ${row.content}`
 }
 
-const initialStartDate = subtractDate(createDate(), 14, 'day')
-const initialEndDate = createDate()
-
 const AuditListPage: React.FC = () => {
   const { t } = useTranslation()
   SetTitle(t('menus.audit_logs'))
@@ -79,14 +76,20 @@ const AuditListPage: React.FC = () => {
   const [limit, setLimit] = useState(10)
   const [pattern, setPattern] = useState('')
   const [pageNumber, setPageNumber] = useState(0)
-  const [startDateStr, setStartDateStr] = useState(() => toIsoDate(initialStartDate))
-  const [endDateStr, setEndDateStr] = useState(() => toIsoDate(initialEndDate))
-  const [queryParams, setQueryParams] = useState<GetAuditDataParams>(() => ({
-    limit: 10,
-    startIndex: 0,
-    start_date: dateConverter(initialStartDate),
-    end_date: dateConverter(initialEndDate),
-  }))
+  const [startDateStr, setStartDateStr] = useState(() =>
+    toIsoDate(subtractDate(createDate(), 14, 'day')),
+  )
+  const [endDateStr, setEndDateStr] = useState(() => toIsoDate(createDate()))
+  const [queryParams, setQueryParams] = useState<GetAuditDataParams>(() => {
+    const start = subtractDate(createDate(), 14, 'day')
+    const end = createDate()
+    return {
+      limit: 10,
+      startIndex: 0,
+      start_date: dateConverter(start),
+      end_date: dateConverter(end),
+    }
+  })
 
   const { data, isLoading, isFetching, isError } = useGetAuditData(queryParams, {
     query: { enabled: canReadAuditLogs },

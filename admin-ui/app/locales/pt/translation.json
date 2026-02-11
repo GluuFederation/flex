@@ -872,6 +872,7 @@
     "mau_loading": "Carregando estatísticas...",
     "vs_previous_period": "vs período anterior",
     "try_again_later": "Por favor, tente novamente mais tarde",
+    "error_processing_request": "Erro ao processar a solicitação.",
     "no_data": "Nenhum dado encontrado",
     "no_data_available": "Nenhum dado disponível",
     "loading": "Carregando",

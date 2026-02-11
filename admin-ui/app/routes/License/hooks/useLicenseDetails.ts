@@ -96,7 +96,7 @@ export const useLicenseDetails = (options: UseLicenseDetailsOptions = {}) => {
           return
         }
         const message =
-          error instanceof Error ? error.message : t('messages.error_processiong_request')
+          error instanceof Error ? error.message : t('messages.error_processing_request')
         dispatch(updateToast(true, 'error', message))
         if (process.env.NODE_ENV === 'development' && error != null) {
           console.error('License reset failed:', error)

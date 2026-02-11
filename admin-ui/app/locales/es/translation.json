@@ -869,7 +869,7 @@
     "default": "Predeterminado",
     "try_again_later": "Por favor intente de nuevo más tarde",
     "loading_attributes": "Cargando atributos",
-    "error_processiong_request": "Error al procesar la solicitud.",
+    "error_processing_request": "Error al procesar la solicitud.",
     "thanks_for_using_admin_ui": "Gracias por usar la interfaz de administración.",
     "no_scope_in_client": "Sin datos de Scope para este Cliente",
     "no_scope_in_spontaneous_client": "Sin datos de Scope Espontáneo para este Cliente",

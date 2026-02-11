@@ -112,7 +112,7 @@ function AliasesListPage(): React.ReactElement {
             ? error.message
             : typeof error === 'object' && error !== null && 'message' in error
               ? String((error as { message: unknown }).message)
-              : t('messages.error_processiong_request')
+              : t('messages.error_processing_request')
         dispatch(updateToast(true, 'error', `${t('messages.error_in_saving')} ${errorMessage}`))
       }
     },
@@ -142,7 +142,7 @@ function AliasesListPage(): React.ReactElement {
       setSelectedRow(null)
       setShowAddModal(false)
     } else if (wasLoading && !isLoading && saveError) {
-      const errorMessage = t('messages.error_processiong_request')
+      const errorMessage = t('messages.error_processing_request')
       dispatch(updateToast(true, 'error', `${t('messages.error_in_saving')} ${errorMessage}`))
     }
   }, [loading, saveError, dispatch, t])
@@ -259,7 +259,7 @@ function AliasesListPage(): React.ReactElement {
             ? error.message
             : typeof error === 'object' && error !== null && 'message' in error
               ? String((error as { message: unknown }).message)
-              : t('messages.error_processiong_request')
+              : t('messages.error_processing_request')
         dispatch(updateToast(true, 'error', `${t('messages.error_in_saving')} ${errorMessage}`))
       }
     },
