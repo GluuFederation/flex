@@ -45,7 +45,7 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark }) => {
       padding: `24px ${HORIZONTAL_PADDING}px ${HORIZONTAL_PADDING}px`,
       paddingTop: 56,
       overflowY: 'auto',
-      gap: 16,
+      gap: 8,
     },
     overlay: {
       position: 'fixed',
@@ -129,7 +129,7 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark }) => {
     },
     buttonRow: {
       marginTop: 'auto',
-      paddingTop: 16,
+      paddingTop: 8,
     },
     yesButton: {
       padding: '8px 28px',

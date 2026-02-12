@@ -553,6 +553,10 @@
     "givenName": "Given Name",
     "sn": "Last Name",
     "mail": "Email",
+    "role": "Role",
+    "admin": "Admin",
+    "statusLabel": "Status:",
+    "active": "Active",
     "resources": "Resources",
     "resourceId": "Resource id",
     "scopeSelection": "Scope Selection",
@@ -1059,6 +1063,10 @@
     "more": " more"
   },
   "titles": {
+    "personal_information": "Personal Information",
+    "admin_roles": "Admin Roles",
+    "account_status": "Account Status",
+    "profile_detail": "Profile Detail",
     "activeTokens": "Active Tokens",
     "acrs": "ACRs",
     "active_users": "Actives Users && Access Token Stats",

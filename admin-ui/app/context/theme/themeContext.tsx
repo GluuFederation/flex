@@ -172,6 +172,13 @@ export function ThemeProvider(props: ThemeProviderProps) {
     }
   }, [])
 
+  // Toggle theme class on html; variable values are defined in main.scss (theme-dark / theme-light)
+  useEffect(() => {
+    if (typeof document === 'undefined') return
+    document.documentElement.classList.remove('theme-dark', 'theme-light')
+    document.documentElement.classList.add(`theme-${state.theme}`)
+  }, [state.theme])
+
   return <ThemeContext.Provider value={{ state, dispatch }}>{props.children}</ThemeContext.Provider>
 }
 

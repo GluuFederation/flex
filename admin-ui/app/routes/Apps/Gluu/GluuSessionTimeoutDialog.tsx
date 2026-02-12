@@ -18,33 +18,36 @@ const Transition = React.forwardRef<HTMLDivElement, SlideProps>((props, ref) => 
 })
 
 const SessionTimeoutDialog = ({ open, countdown, onLogout, onContinue }: any) => {
-  const classes: any = styles()
-  const theme: any = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const themeContext: any = useContext(ThemeContext)
+  const isDark = themeContext.state.theme === 'dark'
+  const { classes } = styles({ isDark })
 
   return (
     <Dialog open={open} classes={{ paper: classes.dialog }} TransitionComponent={Transition}>
-      <DialogTitle>Session Timeout</DialogTitle>
-      <DialogContent>
-        <Typography variant="body2">
-          The current session is about to expire in{' '}
-          <span className={classes.countdown}>{countdown}</span> seconds.
+      <DialogTitle className={classes.title} sx={{ p: 0, mb: 1.5 }}>
+        Session Timeout
+      </DialogTitle>
+      <DialogContent sx={{ p: 0 }}>
+        <Typography className={classes.contentText}>
+          The current session is about to expire in <span>{countdown}</span> seconds.
         </Typography>
-        <Typography variant="body2">{`Would you like to continue the session?`}</Typography>
+        <Typography
+          className={classes.contentText}
+        >{`Would you like to continue the session?`}</Typography>
       </DialogContent>
-      <DialogActions>
+      <DialogActions className={classes.actionArea} sx={{ p: 0 }}>
         <Button
           onClick={onLogout}
           variant="contained"
           className={clsx(classes.logout, classes.button)}
+          color="success"
         >
           Logout
         </Button>
         <Button
           onClick={onContinue}
-          color={`primary-${selectedTheme}`}
-          variant="contained"
-          className={classes.button}
+          variant="outlined"
+          className={clsx(classes.continue, classes.button)}
         >
           Continue Session
         </Button>

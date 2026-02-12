@@ -628,6 +628,9 @@
     "customerName": "nome do cliente",
     "licenseDetails": "Detalhes da licença",
     "role": "Função",
+    "admin": "Administrador",
+    "statusLabel": "Status:",
+    "active": "Ativo",
     "permissions": "Permissões",
     "deletable": "Apagável",
     "email": "E-mail",
@@ -978,6 +981,9 @@
     "more": " mais"
   },
   "titles": {
+    "personal_information": "Informações pessoais",
+    "admin_roles": "Funções de administrador",
+    "account_status": "Status da conta",
     "acrs": "ACRs",
     "assets": "Jans Assets",
     "asset_add": "Adding new Jans Asset",
