@@ -746,6 +746,7 @@
     "add_webhook": "Adicionar Webhook",
     "webhook_form_description": "Configure o webhook para receber notificações quando eventos específicos ocorrerem.",
     "no_webhooks_found": "Nenhum webhook encontrado",
+    "no_shortcodes_found": "Nenhum shortcode encontrado!",
     "create_first_webhook": "Crie seu primeiro webhook para começar",
     "http_method_error": "Por favor, selecione um método HTTP.",
     "display_name_error": "Por favor, insira um nome de exibição.",

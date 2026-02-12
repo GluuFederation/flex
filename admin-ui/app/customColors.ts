@@ -57,6 +57,10 @@ export const customColors = {
   chartCoral: '#ff928a',
   chartCyan: '#3cc3df',
 
+  //Table
+  tableHeaderTextLight: '#4F6377',
+  tableHeaderTextDark: '#88AFD7',
+
   // Cedar
   cedarCardBgDark: '#10375e',
   cedarCardBorderDark: '#224f7c',

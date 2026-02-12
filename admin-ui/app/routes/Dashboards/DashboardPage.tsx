@@ -26,7 +26,7 @@ import DashboardChart from './Chart/DashboardChart'
 import { CHART_LEGEND_CONFIG, STATUS_DETAILS } from './constants'
 import { GluuDatePicker } from '@/components/GluuDatePicker'
 import { useDashboardLicense, useDashboardClients, useDashboardLockStats } from './hooks'
-import styles from './styles'
+import { useStyles } from './DashboardPage.style'
 import { GluuPageContent } from '@/components'
 import { StatusIndicator, SummaryCard, UserInfoItem } from './components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
@@ -76,7 +76,7 @@ const DashboardPage = () => {
     }
   }, [isDark])
 
-  const { classes } = styles({
+  const { classes } = useStyles({
     themeColors: dashboardThemeColors,
     isDark,
   })
@@ -420,7 +420,6 @@ const DashboardPage = () => {
                         onEndDateAccept={handleEndDateChange}
                         textColor={dashboardThemeColors.text}
                         backgroundColor={dashboardThemeColors.cardBg}
-                        isDark={isDark}
                       />
                     </div>
                     <div className={classes.desktopChartStyle}>

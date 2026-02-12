@@ -724,6 +724,7 @@
     "add_webhook": "Ajouter un Webhook",
     "webhook_form_description": "Configurez le webhook pour recevoir des notifications lorsque des événements spécifiques se produisent.",
     "no_webhooks_found": "Aucun webhook trouvé",
+    "no_shortcodes_found": "Aucun shortcode trouvé !",
     "create_first_webhook": "Créez votre premier webhook pour commencer",
     "no_spaces": "ne doit pas contenir d'espaces",
     "permission_name_error": "Veuillez vous assurer que le nom de la permission comporte au moins 5 caractères.",
@@ -1072,6 +1073,9 @@
     "create_identity_provider": "Créer un Fournisseur d'Identité",
     "view_identity_provider": "Voir le Fournisseur d'Identité",
     "delete_identity_provider": "Supprimer le Fournisseur d'Identité",
+    "webhooks": "Webhooks",
+    "add_webhook": "Ajouter un Webhook",
+    "edit_webhook": "Modifier le Webhook",
     "authentication": "Authentification"
   },
   "links": {

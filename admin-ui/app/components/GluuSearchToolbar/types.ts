@@ -49,6 +49,7 @@ export interface GluuSearchToolbarProps {
   searchPlaceholder?: string
   searchLabel?: string
   searchValue?: string
+  searchFieldWidth?: number | string
   onSearch?: (value: string) => void
   onSearchSubmit?: (value: string) => void
   filters?: FilterDef[]

@@ -17,6 +17,7 @@ export interface ThemeConfig {
   menu: { background: string; color: string }
   navbar: { background: string; border: string; text: string; icon: string }
   dashboard: { supportCard: string }
+  table: { headerText: string }
   card: { background: string; border: string }
   infoAlert: {
     background: string
@@ -71,6 +72,9 @@ const createLightTheme = (): ThemeConfig => {
     },
     dashboard: {
       supportCard: customColors.white,
+    },
+    table: {
+      headerText: customColors.tableHeaderTextLight,
     },
     card: {
       background: customColors.white,
@@ -148,6 +152,9 @@ const createDarkTheme = (): ThemeConfig => {
     },
     dashboard: {
       supportCard: customColors.darkCardBg,
+    },
+    table: {
+      headerText: customColors.tableHeaderTextDark,
     },
     card: {
       background: customColors.cedarCardBgDark,
