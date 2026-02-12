@@ -7,17 +7,19 @@ export const DEFAULT_INPUT_HEIGHT = 52
 interface GluuSearchToolbarStyleParams {
   themeColors: ThemeConfig
   isDark: boolean
+  searchFieldWidth?: number | string
 }
 
 export const useStyles = makeStyles<GluuSearchToolbarStyleParams>()((
   _,
-  { themeColors, isDark },
+  { themeColors, isDark, searchFieldWidth },
 ) => {
   const inputBg = themeColors.inputBackground
   const inputBorder = isDark ? 'transparent' : themeColors.borderColor
   const inputColor = themeColors.fontColor
 
   const inputHeightPx = `${DEFAULT_INPUT_HEIGHT}px`
+
   return {
     container: {
       display: 'flex',
@@ -41,8 +43,9 @@ export const useStyles = makeStyles<GluuSearchToolbarStyleParams>()((
       display: 'flex',
       flexDirection: 'column',
       gap: '6px',
-      flex: 1,
-      minWidth: '220px',
+      ...(searchFieldWidth != null
+        ? { width: searchFieldWidth, flex: '0 0 auto' as const }
+        : { flex: 1, minWidth: '220px' }),
     },
     fieldLabel: {
       fontSize: fontSizes.base,

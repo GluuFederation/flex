@@ -1,7 +1,5 @@
-import React, { useState, memo } from 'react'
+import React, { useState, useRef, useMemo, memo } from 'react'
 import Popover from '@mui/material/Popover'
-import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import List from '@mui/material/List'
@@ -12,14 +10,22 @@ import { Tooltip as ReactTooltip } from 'react-tooltip'
 import { useTranslation } from 'react-i18next'
 import applicationstyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ShortCodesIcon } from '@/components/SVG'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
+import { GluuButton } from '@/components/GluuButton'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
 import type { ShortcodePopoverProps, ShortcodeLabelProps } from './types'
 
 const Label: React.FC<ShortcodeLabelProps> = ({ doc_category, doc_entry, label }) => {
   const { t, i18n } = useTranslation()
+  const { state: themeState } = useTheme()
+  const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
 
   return (
     <Box display="flex" gap={0.5}>
-      <Typography color="black">{t(label)}</Typography>
+      <GluuText variant="span" disableThemeColor style={{ color: themeColors.fontColor }}>
+        {t(label)}
+      </GluuText>
       {doc_category && i18n.exists(doc_category) && (
         <>
           <ReactTooltip
@@ -46,37 +52,54 @@ const ShortcodePopover: React.FC<ShortcodePopoverProps> = ({
   buttonWrapperStyles = {},
   handleSelectShortcode,
 }) => {
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
+  const { t } = useTranslation()
+  const { state: themeState } = useTheme()
+  const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
+  const anchorRef = useRef<HTMLDivElement>(null)
+  const [open, setOpen] = useState(false)
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget)
+  const handleClick = () => {
+    setOpen((prev) => !prev)
   }
 
   const handleClose = () => {
-    setAnchorEl(null)
+    setOpen(false)
   }
 
-  const open = Boolean(anchorEl)
   const id = open ? 'shortcode-popover' : undefined
 
   return (
     <div
+      ref={anchorRef}
       style={{
         ...(applicationstyle.shortCodesWrapperStyles as React.CSSProperties),
         ...buttonWrapperStyles,
       }}
     >
-      <Button aria-describedby={id} variant="text" sx={{ border: 0 }} onClick={handleClick}>
+      <GluuButton
+        type="button"
+        aria-describedby={id}
+        onClick={handleClick}
+        backgroundColor="transparent"
+        borderColor="transparent"
+        disableHoverStyles
+      >
         <ShortCodesIcon />
-      </Button>
+      </GluuButton>
       <Popover
         id={id}
         open={open}
-        anchorEl={anchorEl}
+        anchorEl={anchorRef.current}
         onClose={handleClose}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'left',
+        }}
+        PaperProps={{
+          sx: {
+            backgroundColor: themeColors.settings?.cardBackground ?? themeColors.card?.background,
+            border: `1px solid ${themeColors.borderColor}`,
+          },
         }}
       >
         <Box
@@ -112,7 +135,13 @@ const ShortcodePopover: React.FC<ShortcodePopoverProps> = ({
               ))}
             </List>
           ) : (
-            <Typography sx={{ p: 2 }}>No shortcodes found!</Typography>
+            <GluuText
+              variant="p"
+              disableThemeColor
+              style={{ padding: 16, color: themeColors.fontColor }}
+            >
+              {t('messages.no_shortcodes_found')}
+            </GluuText>
           )}
         </Box>
       </Popover>

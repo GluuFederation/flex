@@ -38,6 +38,7 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
     searchPlaceholder = 'Search Pattern',
     searchLabel,
     searchValue = '',
+    searchFieldWidth,
     onSearch,
     onSearchSubmit,
     filters,
@@ -54,7 +55,7 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
   const { state } = useTheme()
   const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
   const isDark = state.theme === THEME_DARK
-  const { classes } = useStyles({ themeColors, isDark })
+  const { classes } = useStyles({ themeColors, isDark, searchFieldWidth })
 
   const dateValidation = useDateRangeValidation(
     dateRange?.startDate ?? null,

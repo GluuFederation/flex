@@ -14,7 +14,7 @@ interface DashboardThemeColors {
   statusCardBorder: string
 }
 
-const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }>()((
+const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }>()((
   theme: Theme,
   params,
 ) => {
@@ -364,8 +364,8 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
       display: 'flex',
       gap: '16px',
       width: '100%',
-      maxWidth: '516px',
       marginBottom: '16px',
+      boxSizing: 'border-box',
     },
     chartContainer: {
       width: '100%',
@@ -454,4 +454,4 @@ const styles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }
   }
 })
 
-export default styles
+export { useStyles }

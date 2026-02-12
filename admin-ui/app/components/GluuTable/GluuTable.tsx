@@ -1,7 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -61,17 +59,18 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
   const handleSort = useCallback(
     (columnKey: string) => {
       if (!onSort) return
-      let nextDirection: SortDirection = 'asc'
-      if (sortColumn === columnKey) {
-        if (sortDirection === 'asc') nextDirection = 'desc'
-        else if (sortDirection === 'desc') nextDirection = null
-      }
+      // Two-state cycle: original order ↔ reversed (no asc)
+      const isSameColumn = sortColumn === columnKey
+      const nextDirection: SortDirection = isSameColumn && sortDirection === 'desc' ? null : 'desc'
       onSort(columnKey, nextDirection)
     },
     [onSort, sortColumn, sortDirection],
   )
 
-  const totalCols = (expandable ? 1 : 0) + columns.length + (actions?.length ? 1 : 0)
+  const totalCols = useMemo(
+    () => (expandable ? 1 : 0) + columns.length + (actions?.length ? 1 : 0),
+    [expandable, columns.length, actions?.length],
+  )
 
   const renderActionCell = useCallback(
     (row: T) => {
@@ -134,22 +133,19 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
                     {isSortable ? (
                       <button
                         type="button"
-                        className={classes.sortableHeader}
+                        className={
+                          isActive
+                            ? `${classes.sortableHeader} ${classes.sortableHeaderActive}`
+                            : classes.sortableHeader
+                        }
                         onClick={() => handleSort(col.key)}
                       >
                         {col.label}
-                        <span className={classes.sortIconWrap}>
-                          <ArrowUpwardIcon
-                            sx={{
-                              fontSize: 12,
-                              opacity: isActive && sortDirection === 'asc' ? 1 : 0.25,
-                            }}
-                          />
-                          <ArrowDownwardIcon
-                            sx={{
-                              fontSize: 12,
-                              opacity: isActive && sortDirection === 'desc' ? 1 : 0.25,
-                            }}
+                        <span className={classes.sortIconWrap} data-sort-icon>
+                          <ChevronIcon
+                            width={14}
+                            height={14}
+                            direction={isActive && sortDirection === 'desc' ? 'down' : 'up'}
                           />
                         </span>
                       </button>

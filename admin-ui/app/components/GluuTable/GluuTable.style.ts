@@ -24,7 +24,7 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
     ? (themeColors.settings?.cardBackground ?? themeColors.card.background)
     : themeColors.lightBackground
   const headerBg = isDark ? customColors.darkBackground : customColors.buttonLightBg
-  const headerColor = isDark ? customColors.cedarTextTertiaryDark : customColors.textSecondary
+  const headerColor = themeColors.table.headerText
   const paginationAccent =
     themeColors.formFooter?.back?.backgroundColor ?? customColors.statusActive
 
@@ -68,20 +68,30 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       textAlign: 'center',
     },
     sortableHeader: {
-      cursor: 'pointer',
-      display: 'inline-flex',
-      alignItems: 'center',
-      background: 'none',
-      border: 'none',
-      padding: 0,
-      font: 'inherit',
-      color: 'inherit',
+      'cursor': 'pointer',
+      'display': 'inline-flex',
+      'alignItems': 'center',
+      'background': 'none',
+      'border': 'none',
+      'padding': 0,
+      'font': 'inherit',
+      'color': headerColor,
+      '&:hover [data-sort-icon]': {
+        opacity: 1,
+      },
+    },
+    sortableHeaderActive: {
+      '& [data-sort-icon]': {
+        opacity: 1,
+      },
     },
     sortIconWrap: {
       marginLeft: 4,
       flexShrink: 0,
       display: 'inline-flex',
-      flexDirection: 'column',
+      alignItems: 'center',
+      opacity: 0,
+      transition: 'opacity 0.15s ease',
     },
     cell: {
       padding: '14px 16px',
