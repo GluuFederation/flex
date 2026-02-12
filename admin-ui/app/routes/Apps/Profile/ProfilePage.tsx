@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useCallback, useMemo, memo } from 'react'
-import { Container, Row, Col, GluuBadge } from 'Components'
+import { GluuBadge } from 'Components'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from '../Gluu/GluuErrorFallBack'
 import { useTranslation } from 'react-i18next'

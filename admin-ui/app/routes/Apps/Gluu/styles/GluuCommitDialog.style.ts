@@ -45,7 +45,7 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark }) => {
       padding: `24px ${HORIZONTAL_PADDING}px ${HORIZONTAL_PADDING}px`,
       paddingTop: 56,
       overflowY: 'auto',
-      gap: 8,
+      gap: 16,
     },
     overlay: {
       position: 'fixed',
