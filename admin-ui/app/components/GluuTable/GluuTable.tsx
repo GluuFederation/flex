@@ -12,6 +12,23 @@ import { GluuSpinner } from '@/components/GluuSpinner'
 import { useStyles } from './GluuTable.style'
 import type { GluuTableProps, SortDirection, ColumnKey } from './types'
 import { ChevronIcon } from '@/components/SVG'
+import { BORDER_RADIUS } from '@/constants'
+import { getRowsPerPageOptions } from '@/utils/pagingUtils'
+
+const T_KEYS = {
+  FIELDS_ACTIONS: 'fields.actions',
+  FIELDS_EXPAND_ROW: 'fields.expand_row',
+  FIELDS_OF: 'fields.of',
+  FIELDS_ROWS_PER_PAGE: 'fields.rows_per_page',
+  MESSAGES_LOADING: 'messages.loading',
+  MESSAGES_NO_DATA: 'messages.no_data_available',
+  MESSAGES_COLLAPSE: 'messages.collapse',
+  MESSAGES_EXPAND: 'messages.expand',
+  MESSAGES_PREVIOUS_PAGE: 'messages.previous_page',
+  MESSAGES_NEXT_PAGE: 'messages.next_page',
+} as const
+
+const SORT_ICON_SX = { fontSize: 12 } as const
 
 function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
   const {
@@ -28,6 +45,7 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
     getRowKey,
     emptyMessage,
     stickyHeader = false,
+    tableClassName,
   } = props
 
   const { t } = useTranslation()
@@ -35,8 +53,12 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
   const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
   const isDark = state.theme === THEME_DARK
   const { classes } = useStyles({ isDark, themeColors, stickyHeader })
+  const expandButtonBg = themeColors.table.expandButtonBg
 
   const [expandedRows, setExpandedRows] = useState<Set<string | number>>(new Set())
+
+  const totalCols = (expandable ? 1 : 0) + columns.length + (actions?.length ? 1 : 0)
+  const defaultEmptyMessage = useMemo(() => t(T_KEYS.MESSAGES_NO_DATA), [t])
 
   const toggleRow = useCallback((key: string | number) => {
     setExpandedRows((prev) => {
@@ -71,8 +93,6 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
     [onSort, sortColumn, sortDirection],
   )
 
-  const totalCols = (expandable ? 1 : 0) + columns.length + (actions?.length ? 1 : 0)
-
   const renderActionCell = useCallback(
     (row: T) => {
       if (!actions?.length) return null
@@ -80,7 +100,7 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
         <div className={classes.actionsCell}>
           {actions.map((action, idx) => {
             if (action.show && !action.show(row)) return null
-            const actionLabel = action.ariaLabel ?? action.tooltip ?? t('fields.actions')
+            const actionLabel = action.ariaLabel ?? action.tooltip ?? t(T_KEYS.FIELDS_ACTIONS)
             return (
               <button
                 key={action.id ?? idx}
@@ -109,12 +129,12 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
     <div className={classes.root}>
       {loading && (
         <div className={classes.loadingOverlay}>
-          <GluuSpinner size={32} aria-label={t('messages.loading')} />
+          <GluuSpinner size={32} aria-label={t(T_KEYS.MESSAGES_LOADING)} />
         </div>
       )}
 
       <div className={classes.wrapper}>
-        <table className={classes.table}>
+        <table className={[classes.table, tableClassName].filter(Boolean).join(' ')}>
           <thead>
             <tr>
               {expandable && <th className={`${classes.headerCell} ${classes.headerCellExpand}`} />}
@@ -137,24 +157,28 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
                         className={classes.sortableHeader}
                         onClick={() => handleSort(col.key)}
                       >
-                        {col.label}
+                        <GluuText variant="span" disableThemeColor>
+                          {col.label}
+                        </GluuText>
                         <span className={classes.sortIconWrap}>
                           <ArrowUpwardIcon
                             sx={{
-                              fontSize: 12,
+                              ...SORT_ICON_SX,
                               opacity: isActive && sortDirection === 'asc' ? 1 : 0.25,
                             }}
                           />
                           <ArrowDownwardIcon
                             sx={{
-                              fontSize: 12,
+                              ...SORT_ICON_SX,
                               opacity: isActive && sortDirection === 'desc' ? 1 : 0.25,
                             }}
                           />
                         </span>
                       </button>
                     ) : (
-                      col.label
+                      <GluuText variant="span" disableThemeColor>
+                        {col.label}
+                      </GluuText>
                     )}
                   </th>
                 )
@@ -164,7 +188,9 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
                   className={`${classes.headerCell} ${classes.headerCellActions}`}
                   style={{ width: actions.length * 40 + 16 }}
                 >
-                  {t('fields.actions')}
+                  <GluuText variant="span" disableThemeColor>
+                    {t(T_KEYS.FIELDS_ACTIONS)}
+                  </GluuText>
                 </th>
               )}
             </tr>
@@ -174,7 +200,7 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
               <tr>
                 <td colSpan={totalCols} className={classes.emptyRow}>
                   <GluuText variant="span" disableThemeColor>
-                    {emptyMessage ?? t('messages.no_data_available')}
+                    {emptyMessage ?? defaultEmptyMessage}
                   </GluuText>
                 </td>
               </tr>
@@ -184,26 +210,30 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
                 const isExpanded = expandedRows.has(rowKey)
                 return (
                   <React.Fragment key={rowKey}>
-                    <tr className={classes.row}>
+                    <tr
+                      className={`${classes.row} ${expandable && isExpanded ? classes.rowExpanded : ''}`}
+                    >
                       {expandable && (
                         <td className={`${classes.cell} ${classes.cellExpand}`}>
                           <GluuButton
                             type="button"
                             className={classes.expandButton}
                             aria-expanded={isExpanded}
-                            aria-label={t('fields.expand_row', {
+                            aria-label={t(T_KEYS.FIELDS_EXPAND_ROW, {
                               defaultValue: isExpanded ? 'Collapse row' : 'Expand row',
                             })}
                             title={
                               isExpanded
-                                ? t('messages.collapse', { defaultValue: 'Collapse' })
-                                : t('messages.expand', { defaultValue: 'Expand' })
+                                ? t(T_KEYS.MESSAGES_COLLAPSE, { defaultValue: 'Collapse' })
+                                : t(T_KEYS.MESSAGES_EXPAND, { defaultValue: 'Expand' })
                             }
                             onClick={() => toggleRow(rowKey)}
-                            backgroundColor="transparent"
+                            backgroundColor={expandButtonBg}
                             borderColor="transparent"
+                            borderRadius={BORDER_RADIUS.CIRCLE}
                             textColor={themeColors.fontColor}
-                            minHeight={32}
+                            minHeight="28px"
+                            padding="6px"
                             disableHoverStyles
                           >
                             <ExpandMoreIcon
@@ -213,20 +243,30 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
                           </GluuButton>
                         </td>
                       )}
-                      {columns.map((col) => {
+                      {columns.map((col, colIdx) => {
                         const key = col.key as ColumnKey<T>
                         const value = (row as T)[key]
+                        const isFirstColumn = expandable && colIdx === 0
                         return (
                           <td
                             key={col.key}
-                            className={classes.cell}
+                            className={`${classes.cell} ${isFirstColumn ? classes.cellFirst : ''}`}
                             style={{
                               textAlign: col.align || 'left',
                               width: col.width,
                               minWidth: col.minWidth,
                             }}
                           >
-                            {col.render ? col.render(value, row, rowIdx) : String(value ?? '')}
+                            {col.render ? (
+                              col.render(value, row, rowIdx, {
+                                isExpanded,
+                                rowKey,
+                              })
+                            ) : (
+                              <GluuText variant="span" disableThemeColor>
+                                {String(value ?? '')}
+                              </GluuText>
+                            )}
                           </td>
                         )
                       })}
@@ -236,7 +276,7 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
                         </td>
                       )}
                     </tr>
-                    {expandable && isExpanded && renderExpandedRow && (
+                    {expandable && isExpanded && renderExpandedRow != null && (
                       <tr>
                         <td colSpan={totalCols} className={classes.expandedPanel}>
                           {renderExpandedRow(row)}
@@ -252,14 +292,16 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
 
         {pagination && (
           <div className={classes.paginationBar}>
-            <span>{t('fields.rows_per_page')}:</span>
+            <GluuText variant="span" disableThemeColor>
+              {t(T_KEYS.FIELDS_ROWS_PER_PAGE)}:
+            </GluuText>
             <div className={classes.paginationSelectWrap}>
               <select
                 className={classes.paginationSelect}
                 value={pagination.rowsPerPage}
                 onChange={(e) => pagination.onRowsPerPageChange(Number(e.target.value))}
               >
-                {(pagination.rowsPerPageOptions ?? [5, 10, 25, 50]).map((opt) => (
+                {(pagination.rowsPerPageOptions ?? getRowsPerPageOptions()).map((opt) => (
                   <option key={opt} value={opt}>
                     {opt}
                   </option>
@@ -275,11 +317,11 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
               </span>
             </div>
 
-            <span>
+            <GluuText variant="span" disableThemeColor>
               {pagination.totalItems === 0
-                ? `0-0 ${t('fields.of')} 0`
-                : `${pagination.page * pagination.rowsPerPage + 1}-${Math.min((pagination.page + 1) * pagination.rowsPerPage, pagination.totalItems)} ${t('fields.of')} ${pagination.totalItems}`}
-            </span>
+                ? `0-0 ${t(T_KEYS.FIELDS_OF)} 0`
+                : `${pagination.page * pagination.rowsPerPage + 1}-${Math.min((pagination.page + 1) * pagination.rowsPerPage, pagination.totalItems)} ${t(T_KEYS.FIELDS_OF)} ${pagination.totalItems}`}
+            </GluuText>
 
             <div className={classes.paginationNav}>
               <GluuButton
@@ -287,7 +329,7 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
                 className={`${classes.paginationButton} ${pagination.page === 0 ? classes.paginationButtonDisabled : ''}`}
                 disabled={pagination.page === 0}
                 onClick={() => pagination.onPageChange(pagination.page - 1)}
-                title={t('messages.previous_page')}
+                title={t(T_KEYS.MESSAGES_PREVIOUS_PAGE)}
                 backgroundColor="transparent"
                 borderColor="transparent"
                 textColor={
@@ -304,7 +346,7 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
                 className={`${classes.paginationButton} ${(pagination.page + 1) * pagination.rowsPerPage >= pagination.totalItems ? classes.paginationButtonDisabled : ''}`}
                 disabled={(pagination.page + 1) * pagination.rowsPerPage >= pagination.totalItems}
                 onClick={() => pagination.onPageChange(pagination.page + 1)}
-                title={t('messages.next_page')}
+                title={t(T_KEYS.MESSAGES_NEXT_PAGE)}
                 backgroundColor="transparent"
                 borderColor="transparent"
                 textColor={

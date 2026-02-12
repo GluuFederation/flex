@@ -985,6 +985,7 @@
   },
   "titles": {
     "acrs": "ACRs",
+    "audit_logs": "Admin UI Logs de Auditoria",
     "assets": "Jans Assets",
     "asset_add": "Adding new Jans Asset",
     "asset_edit": "Editing new Jans Asset",

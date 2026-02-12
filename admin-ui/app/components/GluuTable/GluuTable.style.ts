@@ -1,11 +1,10 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
 import { BORDER_RADIUS } from '@/constants'
-import customColors, { hexToRgb } from '@/customColors'
+import { hexToRgb } from '@/customColors'
 import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
 
-const LOADING_OVERLAY_BG_DARK = `rgba(${hexToRgb(customColors.black)}, 0.4)`
-const LOADING_OVERLAY_BG_LIGHT = `rgba(${hexToRgb(customColors.white)}, 0.6)`
+const EXPAND_BUTTON_SIZE = 28
 
 interface GluuTableStyleParams {
   isDark: boolean
@@ -17,16 +16,17 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
   _,
   { isDark, themeColors, stickyHeader },
 ) => {
-  const rowBg = themeColors.settings?.cardBackground ?? themeColors.card.background
+  const rowBg = themeColors.table.background
   const rowBorder = themeColors.borderColor
-  const hoverBg = isDark ? customColors.darkDropdownBg : customColors.lightBackground
+  const hoverBg = themeColors.table.rowHoverBg
+  const expandIconBg = themeColors.table.expandButtonBg
   const expandedBg = isDark
     ? (themeColors.settings?.cardBackground ?? themeColors.card.background)
     : themeColors.lightBackground
-  const headerBg = isDark ? customColors.darkBackground : customColors.buttonLightBg
-  const headerColor = isDark ? customColors.cedarTextTertiaryDark : customColors.textSecondary
-  const paginationAccent =
-    themeColors.formFooter?.back?.backgroundColor ?? customColors.statusActive
+  const headerBg = themeColors.table.headerBg
+  const headerColor = themeColors.table.headerColor
+  const paginationAccent = themeColors.formFooter.back.backgroundColor
+  const loadingOverlayBg = `rgba(${hexToRgb(themeColors.background)}, ${isDark ? 0.4 : 0.6})`
 
   return {
     root: {
@@ -34,7 +34,9 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
     },
     wrapper: {
       width: '100%',
-      overflowX: 'auto',
+      maxWidth: '100%',
+      minWidth: 0,
+      overflowX: 'hidden',
       borderRadius: BORDER_RADIUS.DEFAULT,
       border: `1px solid ${rowBorder}`,
       backgroundColor: rowBg,
@@ -42,6 +44,7 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
     },
     table: {
       width: '100%',
+      tableLayout: 'fixed',
       borderCollapse: 'collapse',
       fontSize: fontSizes.base,
     },
@@ -59,10 +62,12 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       top: stickyHeader ? 0 : undefined,
       zIndex: stickyHeader ? 1 : undefined,
       lineHeight: '28px',
+      verticalAlign: 'middle',
     },
     headerCellExpand: {
       width: 40,
       padding: '14px 8px',
+      verticalAlign: 'middle',
     },
     headerCellActions: {
       textAlign: 'center',
@@ -90,20 +95,34 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       borderBottom: `1px solid ${rowBorder}`,
       verticalAlign: 'middle',
       lineHeight: '28px',
+      overflowWrap: 'break-word',
+      wordBreak: 'break-word',
+      minWidth: 0,
+    },
+    cellFirst: {
+      verticalAlign: 'top',
     },
     cellExpand: {
       width: 40,
       padding: '14px 8px',
+      verticalAlign: 'top',
+      display: 'flex',
+      alignItems: 'flex-start',
+      justifyContent: 'flex-start',
     },
     expandButton: {
-      background: 'none',
+      backgroundColor: expandIconBg,
       border: 'none',
+      borderRadius: BORDER_RADIUS.CIRCLE,
       cursor: 'pointer',
-      padding: 0,
+      padding: '6px',
       display: 'inline-flex',
       alignItems: 'center',
       justifyContent: 'center',
-      width: '100%',
+      width: EXPAND_BUTTON_SIZE,
+      height: EXPAND_BUTTON_SIZE,
+      boxSizing: 'border-box',
+      flexShrink: 0,
     },
     row: {
       'backgroundColor': rowBg,
@@ -112,10 +131,22 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
         backgroundColor: hoverBg,
       },
     },
+    rowExpanded: {
+      '& td': {
+        borderBottom: 'none',
+      },
+    },
     expandedPanel: {
+      width: '100%',
+      boxSizing: 'border-box',
+      verticalAlign: 'top',
       backgroundColor: expandedBg,
       padding: '16px 24px',
-      borderBottom: `1px solid ${rowBorder}`,
+      borderBottom: 'none',
+      boxShadow: `0 1px 0 0 ${rowBorder}`,
+      overflowWrap: 'break-word',
+      wordBreak: 'break-word',
+      minWidth: 0,
     },
     actionsCell: {
       display: 'flex',
@@ -147,7 +178,7 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: isDark ? LOADING_OVERLAY_BG_DARK : LOADING_OVERLAY_BG_LIGHT,
+      backgroundColor: loadingOverlayBg,
       zIndex: 10,
       borderRadius: BORDER_RADIUS.DEFAULT,
     },
@@ -232,9 +263,10 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       display: 'inline-flex',
       flexShrink: 0,
       transition: 'transform 0.2s ease',
+      transform: 'rotate(-90deg)',
     },
     expandIconOpen: {
-      transform: 'rotate(90deg)',
+      transform: 'none',
     },
   }
 })

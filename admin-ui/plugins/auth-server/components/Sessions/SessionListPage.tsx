@@ -47,7 +47,7 @@ import GetAppIcon from '@mui/icons-material/GetApp'
 import ViewColumnIcon from '@mui/icons-material/ViewColumn'
 import { DeleteOutlined } from '@mui/icons-material'
 import customColors from '@/customColors'
-import { getPagingSize } from '@/utils/pagingUtils'
+import { getDefaultPagingSize } from '@/utils/pagingUtils'
 import {
   useGetSessions,
   useDeleteSession,
@@ -171,7 +171,7 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
     updatedColumns: [],
   })
 
-  const pageSize = getPagingSize()
+  const pageSize = getDefaultPagingSize()
   const toggle = () => setModal(!modal)
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme || DEFAULT_THEME

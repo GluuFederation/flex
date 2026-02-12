@@ -1090,6 +1090,7 @@
     "all_custom_scripts": "Custom Scripts",
     "all_oidc_clients": "OpenID Clients",
     "all_scopes": "OAuth/OpenID Scopes",
+    "audit_logs": "Admin UI Audit Log",
     "webhooks": "Webhooks",
     "authentication": "Authentication",
     "couchbase_authentication": "Couchbase Authentication",

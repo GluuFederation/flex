@@ -4,6 +4,11 @@ export type SortDirection = 'asc' | 'desc' | null
 
 export type ColumnKey<T> = Extract<keyof T, string>
 
+export interface ExpandContext {
+  isExpanded: boolean
+  rowKey: string | number
+}
+
 export interface ColumnDef<T, K extends ColumnKey<T> = ColumnKey<T>> {
   key: K
   label: string
@@ -11,7 +16,7 @@ export interface ColumnDef<T, K extends ColumnKey<T> = ColumnKey<T>> {
   minWidth?: string | number
   sortable?: boolean
   align?: 'left' | 'center' | 'right'
-  render?: (value: T[K], row: T, rowIndex: number) => ReactNode
+  render?: (value: T[K], row: T, rowIndex: number, context?: ExpandContext) => ReactNode
 }
 
 export interface ActionDef<T> {
@@ -47,4 +52,6 @@ export interface GluuTableProps<T> {
   getRowKey?: (item: T, index: number) => string | number
   emptyMessage?: string
   stickyHeader?: boolean
+  /** Optional class applied to the <table> for parent overrides (e.g. Audit) */
+  tableClassName?: string
 }
