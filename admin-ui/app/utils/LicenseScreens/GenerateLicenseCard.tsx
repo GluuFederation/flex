@@ -19,9 +19,7 @@ function GenerateLicenseCard() {
   const currentTheme = theme?.state?.theme ?? DEFAULT_THEME
   const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
   const { classes } = useStyles({ themeColors })
-  const generatingTrialKey = useAppSelector(
-    (state) => state.licenseReducer.generatingTrialKey,
-  )
+  const generatingTrialKey = useAppSelector((state) => state.licenseReducer.generatingTrialKey)
 
   const handleGenerate = () => {
     dispatch(generateTrialLicense())
@@ -33,9 +31,7 @@ function GenerateLicenseCard() {
         <Typography className={classes.title} component="div" gutterBottom>
           {t('licenseCard.freeTrial')}
         </Typography>
-        <Typography className={classes.description}>
-          {t('licenseCard.description')}
-        </Typography>
+        <Typography className={classes.description}>{t('licenseCard.description')}</Typography>
       </CardContent>
       <CardActions className={classes.cardActions}>
         <button

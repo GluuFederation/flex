@@ -19,7 +19,7 @@ import { useCedarling } from '@/cedarling'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
 import getThemeColor from '@/context/theme/config'
-import { DEFAULT_THEME } from '@/context/theme/constants'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 
 const JANS_ADMIN_UI_ROLE_ATTR = 'jansAdminUIRole'
 const USERS_RESOURCE_ID = ADMIN_UI_RESOURCES.Users
@@ -53,7 +53,7 @@ const ProfileDetails: React.FC = () => {
   const dispatch = useAppDispatch()
   const theme = useContext(ThemeContext) as ThemeContextValue
   const currentTheme = theme?.state?.theme ?? DEFAULT_THEME
-  const isDark = currentTheme === 'dark'
+  const isDark = currentTheme === THEME_DARK
   const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
   const { classes } = styles({ themeColors, isDark })
   const { navigateToRoute } = useAppNavigation()
@@ -128,8 +128,8 @@ const ProfileDetails: React.FC = () => {
 
   const adminBadgeColors = useMemo(
     () => ({
-      bg: themeColors.formFooter.back.backgroundColor,
-      text: themeColors.formFooter.back.textColor,
+      bg: themeColors.formFooter?.back?.backgroundColor,
+      text: themeColors.formFooter?.back?.textColor,
     }),
     [themeColors],
   )
@@ -138,12 +138,12 @@ const ProfileDetails: React.FC = () => {
     const isActive = profileDetails?.status === 'active' || !profileDetails?.status
     return isActive
       ? {
-          bg: themeColors.formFooter.back.backgroundColor,
-          text: themeColors.formFooter.back.textColor,
+          bg: themeColors.formFooter?.back?.backgroundColor,
+          text: themeColors.formFooter?.back?.textColor,
         }
       : {
-          bg: themeColors.settings.removeButton.bg,
-          text: themeColors.settings.removeButton.text,
+          bg: themeColors.settings?.removeButton?.bg,
+          text: themeColors.settings?.removeButton?.text,
         }
   }, [profileDetails?.status, themeColors])
 

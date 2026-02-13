@@ -545,7 +545,6 @@
     "role": "Rol",
     "admin": "Administrador",
     "statusLabel": "Estado:",
-    "active": "Activo",
     "permissions": "Permisos",
     "deletable": "Eliminable",
     "email": "Correo",
