@@ -68,6 +68,16 @@
     "add_custom_attributes": "Add custom attributes",
     "refresh": "Refresh"
   },
+  "redirecting": "Redirecting...",
+  "serviceDownFallback": "Gluu Flex Admin UI is not getting any response from the backend (Jans Config Api).",
+  "roleNotFoundMessage": "Unauthorized User",
+  "roleNotFoundDescription": "The logged-in user does not have a valid role. Logging out of Admin UI",
+  "licenseCard": {
+    "freeTrial": "Free Trial",
+    "description": "Start your free trial to manage and configure your Auth Server using simplified web interface.",
+    "generating": "Generating please wait...",
+    "start30Days": "Start 30 days trial"
+  },
   "dashboard": {
     "summary_title": "Actives Users & Access Token Stats",
     "oidc_clients_count": "OIDC Clients Count",
@@ -553,10 +563,8 @@
     "givenName": "Given Name",
     "sn": "Last Name",
     "mail": "Email",
-    "role": "Role",
     "admin": "Admin",
     "statusLabel": "Status:",
-    "active": "Active",
     "resources": "Resources",
     "resourceId": "Resource id",
     "scopeSelection": "Scope Selection",
@@ -1073,7 +1081,6 @@
     "personal_information": "Personal Information",
     "admin_roles": "Admin Roles",
     "account_status": "Account Status",
-    "profile_detail": "Profile Detail",
     "activeTokens": "Active Tokens",
     "acrs": "ACRs",
     "active_users": "Actives Users && Access Token Stats",

@@ -25,6 +25,29 @@ const JANS_ADMIN_UI_ROLE_ATTR = 'jansAdminUIRole'
 const USERS_RESOURCE_ID = ADMIN_UI_RESOURCES.Users
 const USERS_SCOPES = CEDAR_RESOURCE_SCOPES[USERS_RESOURCE_ID]
 
+interface InfoRowProps {
+  label: string
+  value?: string
+  index: number
+  classes: {
+    dataRow: string
+    dataRowEven: string
+    dataRowOdd: string
+    dataLabel: string
+    dataValue: string
+  }
+}
+
+const InfoRow = memo(({ label, value, index, classes }: InfoRowProps) => (
+  <Box
+    className={`${classes.dataRow} ${index % 2 === 0 ? classes.dataRowEven : classes.dataRowOdd}`}
+  >
+    <GluuText className={classes.dataLabel}>{label}</GluuText>
+    <GluuText className={classes.dataValue}>{value || '-'}</GluuText>
+  </Box>
+))
+InfoRow.displayName = 'InfoRow'
+
 const ProfileDetails: React.FC = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -124,16 +147,6 @@ const ProfileDetails: React.FC = () => {
         }
   }, [profileDetails?.status, themeColors])
 
-  // Personal Info Rows
-  const renderInfoRow = (label: string, value: string | undefined, index: number) => (
-    <Box
-      className={`${classes.dataRow} ${index % 2 === 0 ? classes.dataRowEven : classes.dataRowOdd}`}
-    >
-      <GluuText className={classes.dataLabel}>{label}</GluuText>
-      <GluuText className={classes.dataValue}>{value || '-'}</GluuText>
-    </Box>
-  )
-
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
       <GluuLoader blocking={loading}>
@@ -165,19 +178,34 @@ const ProfileDetails: React.FC = () => {
               {/* Personal Information */}
               <Box width="100%">
                 <GluuText variant="h6" className={classes.sectionTitle}>
-                  {t('titles.personal_information') || 'Personal Information'}
+                  {t('titles.personal_information', { defaultValue: 'Personal Information' })}
                 </GluuText>
                 <Box className={classes.dataContainer}>
-                  {renderInfoRow(t('fields.givenName'), profileDetails?.givenName, 0)}
-                  {renderInfoRow(t('fields.sn') || 'Last Name', snValue, 1)}
-                  {renderInfoRow(t('fields.mail'), profileDetails?.mail, 2)}
+                  <InfoRow
+                    label={t('fields.givenName')}
+                    value={profileDetails?.givenName}
+                    index={0}
+                    classes={classes}
+                  />
+                  <InfoRow
+                    label={t('fields.sn', { defaultValue: 'Last Name' })}
+                    value={snValue}
+                    index={1}
+                    classes={classes}
+                  />
+                  <InfoRow
+                    label={t('fields.mail')}
+                    value={profileDetails?.mail}
+                    index={2}
+                    classes={classes}
+                  />
                 </Box>
               </Box>
 
               {/* Admin Roles */}
               <Box width="100%">
                 <GluuText variant="h6" className={classes.sectionTitle}>
-                  {t('titles.admin_roles') || 'Admin Roles'}
+                  {t('titles.admin_roles', { defaultValue: 'Admin Roles' })}
                 </GluuText>
                 <Box className={classes.roleContainer}>
                   <GluuText className={classes.roleLabel}>{t('fields.admin')}:</GluuText>
@@ -195,7 +223,7 @@ const ProfileDetails: React.FC = () => {
               {/* Account Status */}
               <Box width="100%">
                 <GluuText variant="h6" className={classes.sectionTitle}>
-                  {t('titles.account_status') || 'Account Status'}
+                  {t('titles.account_status', { defaultValue: 'Account Status' })}
                 </GluuText>
                 <Box className={classes.roleContainer}>
                   <GluuText className={classes.roleLabel}>{t('fields.statusLabel')}</GluuText>

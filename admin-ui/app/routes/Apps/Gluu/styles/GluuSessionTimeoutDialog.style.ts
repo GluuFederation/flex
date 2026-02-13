@@ -1,12 +1,12 @@
 import { makeStyles } from 'tss-react/mui'
-import customColors from '@/customColors'
+import customColors, { hexToRgb } from '@/customColors'
 
 const styles = makeStyles<{ isDark: boolean }>()((theme, { isDark }) => ({
   dialog: {
     padding: theme.spacing(5),
     borderRadius: 20,
     width: 550,
-    height: 259,
+    minHeight: 259,
     display: 'flex',
     flexDirection: 'column',
     backgroundColor: isDark ? customColors.darkCardBg : customColors.white,
@@ -19,7 +19,7 @@ const styles = makeStyles<{ isDark: boolean }>()((theme, { isDark }) => ({
     fontStyle: 'normal',
     fontWeight: 700,
     lineHeight: '45px',
-    color: isDark ? '#FFF' : '#0B2947',
+    color: isDark ? customColors.white : customColors.darkBackground,
     paddingBottom: theme.spacing(0.5),
   },
   contentText: {
@@ -29,7 +29,7 @@ const styles = makeStyles<{ isDark: boolean }>()((theme, { isDark }) => ({
     fontWeight: 500,
     lineHeight: '24px',
     letterSpacing: '0.36px',
-    color: isDark ? '#819EBC' : '#425466',
+    color: isDark ? customColors.textMutedDark : customColors.textSecondary,
     marginBottom: theme.spacing(0.5),
   },
   actionArea: {
@@ -43,7 +43,7 @@ const styles = makeStyles<{ isDark: boolean }>()((theme, { isDark }) => ({
     textTransform: 'none',
     padding: theme.spacing(1, 4),
     fontFamily: 'Mona-Sans, sans-serif',
-    fontSize: ' 16px',
+    fontSize: '16px',
     fontWeight: 600,
   },
   logout: {
@@ -52,12 +52,12 @@ const styles = makeStyles<{ isDark: boolean }>()((theme, { isDark }) => ({
   },
   continue: {
     'color': isDark ? customColors.white : customColors.primaryDark,
-    'borderColor': isDark ? 'rgba(255, 255, 255, 0.3)' : '#D0D5DD',
+    'borderColor': isDark ? `rgba(${hexToRgb(customColors.white)}, 0.3)` : customColors.lightBorder,
     'backgroundColor': 'transparent',
     '&:hover': {
       color: isDark ? customColors.white : customColors.primaryDark,
       backgroundColor: 'transparent',
-      borderColor: isDark ? 'rgba(255, 255, 255, 0.3)' : '#D0D5DD',
+      borderColor: isDark ? `rgba(${hexToRgb(customColors.white)}, 0.3)` : customColors.lightBorder,
     },
   },
 }))

@@ -3,6 +3,17 @@ import { Theme } from '@mui/material'
 import type { ThemeConfig } from '@/context/theme/config'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 
+const statusBadgeBase = {
+  display: 'flex' as const,
+  padding: '8px',
+  justifyContent: 'center' as const,
+  alignItems: 'center' as const,
+  gap: '6px',
+  borderRadius: 6,
+  fontSize: '0.8rem',
+  fontWeight: 600,
+}
+
 const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
   (theme: Theme, { themeColors, isDark }) => ({
     mainContainer: {
@@ -135,28 +146,14 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
       color: themeColors.textMuted,
     },
     statusBadge: {
-      display: 'flex',
-      padding: '8px',
-      justifyContent: 'center',
-      alignItems: 'center',
-      gap: '6px',
-      borderRadius: 6,
+      ...statusBadgeBase,
       backgroundColor: themeColors.formFooter.back.backgroundColor,
       color: themeColors.formFooter.back.textColor,
-      fontSize: '0.8rem',
-      fontWeight: 600,
     },
     statusBadgeInactive: {
-      display: 'flex',
-      padding: '8px',
-      justifyContent: 'center',
-      alignItems: 'center',
-      gap: '6px',
-      borderRadius: 6,
+      ...statusBadgeBase,
       backgroundColor: themeColors.settings.removeButton.bg,
       color: themeColors.settings.removeButton.text,
-      fontSize: '0.8rem',
-      fontWeight: 600,
     },
     editButton: {
       width: '100%',

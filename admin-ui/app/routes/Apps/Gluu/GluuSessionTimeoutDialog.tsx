@@ -12,14 +12,27 @@ import { Button } from 'Components'
 import clsx from 'clsx'
 import styles from './styles/GluuSessionTimeoutDialog.style'
 import { ThemeContext } from 'Context/theme/themeContext'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+
+export interface SessionTimeoutDialogProps {
+  open: boolean
+  countdown: number
+  onLogout: () => void
+  onContinue: () => void
+}
 
 const Transition = React.forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
   return <Slide direction="up" ref={ref} {...props} />
 })
 
-const SessionTimeoutDialog = ({ open, countdown, onLogout, onContinue }: any) => {
-  const themeContext: any = useContext(ThemeContext)
-  const isDark = themeContext.state.theme === 'dark'
+const SessionTimeoutDialog = ({
+  open,
+  countdown,
+  onLogout,
+  onContinue,
+}: SessionTimeoutDialogProps) => {
+  const theme = useContext(ThemeContext)
+  const isDark = (theme?.state?.theme ?? DEFAULT_THEME) === THEME_DARK
   const { classes } = styles({ isDark })
 
   return (
@@ -40,7 +53,6 @@ const SessionTimeoutDialog = ({ open, countdown, onLogout, onContinue }: any) =>
           onClick={onLogout}
           variant="contained"
           className={clsx(classes.logout, classes.button)}
-          color="success"
         >
           Logout
         </Button>

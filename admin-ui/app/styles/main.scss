@@ -8,17 +8,18 @@
 html.theme-dark {
     --initial-page-bg: #0b2947;
     --theme-input-bg: #15395d;
-    --theme-input-color: #ffffff;
-    --theme-button-primary-bg: #ffffff;
+    --theme-input-color: #fff;
+    --theme-button-primary-bg: #fff;
     --theme-button-primary-text: #0a2540;
-    --theme-button-primary-border: #ffffff;
+    --theme-button-primary-border: #fff;
 }
+
 html.theme-light {
     --initial-page-bg: #f6f6f6;
     --theme-input-bg: #f9fafb;
     --theme-input-color: #0a2540;
     --theme-button-primary-bg: #0a2540;
-    --theme-button-primary-text: #ffffff;
+    --theme-button-primary-text: #fff;
     --theme-button-primary-border: #0a2540;
 }
 
@@ -28,6 +29,7 @@ body {
         "Droid Sans", "Helvetica Neue", sans-serif !important;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
     /* Theme-picked background (set by themeContext + index.html script) */
     background: var(--initial-page-bg) !important;
 }

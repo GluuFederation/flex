@@ -54,21 +54,12 @@ function ApiKeyRedirect({
       <>
         <div className={classes.redirectingScreen} aria-live="polite" aria-busy="true">
           <img className={classes.loaderImage} src={loaderGif} alt="" />
-          <div className={`initial-loader__row ${classes.redirectingText}`}>Redirecting...</div>
+          <div className={`initial-loader__row ${classes.redirectingText}`}>{t('redirecting')}</div>
         </div>
-        {!backendStatus.active && (
-          <GluuServiceDownModal
-            statusCode={backendStatus.statusCode ?? undefined}
-            message={
-              backendStatus.errorMessage ||
-              'Gluu Flex Admin UI is not getting any response from the backend (Jans Config Api).'
-            }
-          />
-        )}
         {roleNotFound && (
           <GluuErrorModal
-            message={t('Unauthorized User')}
-            description={'The logged-in user do not have valid role. Logging out of Admin UI'}
+            message={t('roleNotFoundMessage')}
+            description={t('roleNotFoundDescription')}
           />
         )}
       </>
@@ -78,7 +69,7 @@ function ApiKeyRedirect({
   return (
     <React.Fragment>
       <Container>
-        {isConfigValid == false ? (
+        {isConfigValid === false ? (
           <UploadSSA />
         ) : !isTimeout && isUnderThresholdLimit ? (
           !isLicenseValid &&
@@ -93,17 +84,14 @@ function ApiKeyRedirect({
         {!backendStatus.active && (
           <GluuServiceDownModal
             statusCode={backendStatus.statusCode ?? undefined}
-            message={
-              backendStatus.errorMessage ||
-              'Gluu Flex Admin UI is not getting any response from the backend (Jans Config Api).'
-            }
+            message={backendStatus.errorMessage || t('serviceDownFallback')}
           />
         )}
 
         {roleNotFound && (
           <GluuErrorModal
-            message={t('Unauthorized User')}
-            description={'The logged-in user do not have valid role. Logging out of Admin UI'}
+            message={t('roleNotFoundMessage')}
+            description={t('roleNotFoundDescription')}
           />
         )}
       </Container>
