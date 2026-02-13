@@ -2,7 +2,7 @@ import { useRef, useCallback, useMemo } from 'react'
 import { useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
-import { useAppSelector } from '@/redux/hooks'
+import { useAppSelector, getRootState } from '@/redux/hooks'
 import {
   useGetAdminuiLicense,
   useLicenseConfigDelete,
@@ -14,9 +14,9 @@ import { postUserAction } from '@/redux/api/backend-api'
 import { auditLogoutLogs } from '@/redux/features/sessionSlice'
 import { updateToast } from '@/redux/features/toastSlice'
 import { REGEX_SURROUNDING_QUOTES } from '@/utils/regex'
+import { isDevelopment } from '@/utils/env'
 import { API_LICENSE } from '@/audit/Resources'
 import { DELETION } from '@/audit/UserActionType'
-import store from 'Redux/store'
 import type { RootState } from '@/redux/types'
 import type { AuditLog } from '@/redux/sagas/types/audit'
 
@@ -76,7 +76,7 @@ export const useLicenseDetails = (options: UseLicenseDetailsOptions = {}) => {
     mutation: {
       onSuccess: async () => {
         queryClient.invalidateQueries({ queryKey: getGetAdminuiLicenseQueryKey() })
-        const currentState = store.getState()
+        const currentState = getRootState()
         const audit = createAuditLog(currentState)
         if (audit) {
           addAdditionalData(audit, DELETION, API_LICENSE, {})
@@ -84,7 +84,9 @@ export const useLicenseDetails = (options: UseLicenseDetailsOptions = {}) => {
           try {
             await postUserAction(audit)
           } catch (e) {
-            console.error('License reset audit post failed:', e)
+            if (isDevelopment) {
+              console.error('License reset audit post failed:', e)
+            }
           }
         }
         dispatch(updateToast(true, 'success', t('messages.license_reset_success')))
@@ -98,7 +100,7 @@ export const useLicenseDetails = (options: UseLicenseDetailsOptions = {}) => {
         const message =
           error instanceof Error ? error.message : t('messages.error_processing_request')
         dispatch(updateToast(true, 'error', message))
-        if (process.env.NODE_ENV === 'development' && error != null) {
+        if (isDevelopment && error != null) {
           console.error('License reset failed:', error)
         }
       },

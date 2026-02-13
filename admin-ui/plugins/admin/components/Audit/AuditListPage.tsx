@@ -59,7 +59,7 @@ const AuditListPage: React.FC = () => {
 
   const canReadAuditLogs = useMemo(
     () => hasCedarReadPermission(AUDIT_LOGS_RESOURCE_ID),
-    [hasCedarReadPermission, AUDIT_LOGS_RESOURCE_ID],
+    [hasCedarReadPermission],
   )
 
   useEffect(() => {

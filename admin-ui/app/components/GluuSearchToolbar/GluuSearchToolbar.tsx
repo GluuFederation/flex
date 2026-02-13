@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react'
+import React, { useMemo, useCallback, useRef, useEffect } from 'react'
 import SearchIcon from '@mui/icons-material/Search'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
@@ -77,13 +77,18 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
     : (primaryAction?.disabled ?? false)
   const refreshDisabled = showBuiltInDateRange ? dateValidation.invalid : false
 
+  const searchValueRef = useRef(searchValue)
+  useEffect(() => {
+    searchValueRef.current = searchValue
+  }, [searchValue])
+
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter' && onSearchSubmit) {
-        onSearchSubmit(searchValue)
+        onSearchSubmit(searchValueRef.current)
       }
     },
-    [onSearchSubmit, searchValue],
+    [onSearchSubmit],
   )
 
   const primaryButtonColors = useMemo(

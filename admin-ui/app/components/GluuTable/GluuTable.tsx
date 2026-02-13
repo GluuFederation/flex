@@ -17,7 +17,6 @@ import { getRowsPerPageOptions } from '@/utils/pagingUtils'
 
 const T_KEYS = {
   FIELDS_ACTIONS: 'fields.actions',
-  FIELDS_EXPAND_ROW: 'fields.expand_row',
   FIELDS_OF: 'fields.of',
   FIELDS_ROWS_PER_PAGE: 'fields.rows_per_page',
   MESSAGES_LOADING: 'messages.loading',
@@ -227,9 +226,10 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
                               type="button"
                               className={classes.expandButton}
                               aria-expanded={isExpanded}
-                              aria-label={t(T_KEYS.FIELDS_EXPAND_ROW, {
-                                defaultValue: isExpanded ? 'Collapse row' : 'Expand row',
-                              })}
+                              aria-label={t(
+                                isExpanded ? T_KEYS.MESSAGES_COLLAPSE : T_KEYS.MESSAGES_EXPAND,
+                                { defaultValue: isExpanded ? 'Collapse row' : 'Expand row' },
+                              )}
                               title={
                                 isExpanded
                                   ? t(T_KEYS.MESSAGES_COLLAPSE, { defaultValue: 'Collapse' })

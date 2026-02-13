@@ -1,7 +1,7 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
 import { BORDER_RADIUS, OPACITY } from '@/constants'
-import { hexToRgb } from '@/customColors'
+import { getLoadingOverlayRgba } from '@/customColors'
 import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
 
 export const EXPAND_BUTTON_SIZE = 32
@@ -25,8 +25,8 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
     : themeColors.lightBackground
   const headerBg = themeColors.table.headerBg
   const headerColor = themeColors.table.headerColor
-  const paginationAccent = themeColors.formFooter.back.backgroundColor
-  const loadingOverlayBg = `rgba(${hexToRgb(themeColors.background)}, ${isDark ? 0.4 : 0.6})`
+  const paginationAccent = themeColors.formFooter?.back?.backgroundColor ?? themeColors.borderColor
+  const loadingOverlayBg = getLoadingOverlayRgba(themeColors.background, isDark ? 0.4 : 0.6)
 
   return {
     root: {
@@ -207,7 +207,7 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       justifyContent: 'center',
       gap: '8px',
       padding: '14px 20px',
-      border: `1px solid ${rowBorder}`,
+      borderTop: `1px solid ${rowBorder}`,
       borderBottomLeftRadius: BORDER_RADIUS.DEFAULT,
       borderBottomRightRadius: BORDER_RADIUS.DEFAULT,
       backgroundColor: rowBg,
