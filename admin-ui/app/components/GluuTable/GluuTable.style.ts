@@ -4,7 +4,7 @@ import { BORDER_RADIUS } from '@/constants'
 import { hexToRgb } from '@/customColors'
 import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
 
-const EXPAND_BUTTON_SIZE = 28
+export const EXPAND_BUTTON_SIZE = 32
 
 interface GluuTableStyleParams {
   isDark: boolean
@@ -33,14 +33,22 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       position: 'relative',
     },
     wrapper: {
-      width: '100%',
-      maxWidth: '100%',
-      minWidth: 0,
-      overflowX: 'hidden',
-      borderRadius: BORDER_RADIUS.DEFAULT,
-      border: `1px solid ${rowBorder}`,
-      backgroundColor: rowBg,
+      'width': '100%',
+      'maxWidth': '100%',
+      'minWidth': 0,
+      'overflowX': 'hidden',
+      'borderRadius': BORDER_RADIUS.DEFAULT,
+      'border': `1px solid ${rowBorder}`,
+      'backgroundColor': rowBg,
       fontFamily,
+      '& table tbody td:not([data-divider-cell])': {
+        border: 'none',
+        borderBottom: 'none',
+      },
+      '& table td[data-divider-cell]': {
+        padding: 0,
+        lineHeight: 0,
+      },
     },
     table: {
       width: '100%',
@@ -92,12 +100,24 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       padding: '14px 16px',
       color: themeColors.fontColor,
       fontSize: fontSizes.base,
-      borderBottom: `1px solid ${rowBorder}`,
       verticalAlign: 'middle',
       lineHeight: '28px',
       overflowWrap: 'break-word',
       wordBreak: 'break-word',
       minWidth: 0,
+    },
+    dividerRow: {
+      backgroundColor: 'transparent',
+    },
+    dividerCell: {
+      height: 0,
+      padding: 0,
+      border: 'none',
+      borderBottom: `1px solid ${rowBorder}`,
+      lineHeight: 0,
+      fontSize: 0,
+      overflow: 'hidden',
+      boxSizing: 'border-box',
     },
     cellFirst: {
       verticalAlign: 'top',
@@ -112,8 +132,9 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
     },
     expandButton: {
       backgroundColor: expandIconBg,
-      border: 'none',
+      border: `1px solid ${rowBorder}`,
       borderRadius: BORDER_RADIUS.CIRCLE,
+      boxShadow: `0 0 0 1px ${rowBorder}`,
       cursor: 'pointer',
       padding: '6px',
       display: 'inline-flex',
@@ -121,8 +142,11 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       justifyContent: 'center',
       width: EXPAND_BUTTON_SIZE,
       height: EXPAND_BUTTON_SIZE,
+      minWidth: EXPAND_BUTTON_SIZE,
+      minHeight: EXPAND_BUTTON_SIZE,
       boxSizing: 'border-box',
       flexShrink: 0,
+      overflow: 'hidden',
     },
     row: {
       'backgroundColor': rowBg,
@@ -131,19 +155,12 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
         backgroundColor: hoverBg,
       },
     },
-    rowExpanded: {
-      '& td': {
-        borderBottom: 'none',
-      },
-    },
     expandedPanel: {
       width: '100%',
       boxSizing: 'border-box',
       verticalAlign: 'top',
       backgroundColor: expandedBg,
       padding: '16px 24px',
-      borderBottom: 'none',
-      boxShadow: `0 1px 0 0 ${rowBorder}`,
       overflowWrap: 'break-word',
       wordBreak: 'break-word',
       minWidth: 0,

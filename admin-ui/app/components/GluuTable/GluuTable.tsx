@@ -9,7 +9,7 @@ import { THEME_DARK } from '@/context/theme/constants'
 import GluuText from '@/routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
 import { GluuSpinner } from '@/components/GluuSpinner'
-import { useStyles } from './GluuTable.style'
+import { useStyles, EXPAND_BUTTON_SIZE } from './GluuTable.style'
 import type { GluuTableProps, SortDirection, ColumnKey } from './types'
 import { ChevronIcon } from '@/components/SVG'
 import { BORDER_RADIUS } from '@/constants'
@@ -210,9 +210,7 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
                 const isExpanded = expandedRows.has(rowKey)
                 return (
                   <React.Fragment key={rowKey}>
-                    <tr
-                      className={`${classes.row} ${expandable && isExpanded ? classes.rowExpanded : ''}`}
-                    >
+                    <tr className={classes.row}>
                       {expandable && (
                         <td className={`${classes.cell} ${classes.cellExpand}`}>
                           <GluuButton
@@ -229,12 +227,18 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
                             }
                             onClick={() => toggleRow(rowKey)}
                             backgroundColor={expandButtonBg}
-                            borderColor="transparent"
+                            borderColor={themeColors.borderColor}
                             borderRadius={BORDER_RADIUS.CIRCLE}
                             textColor={themeColors.fontColor}
-                            minHeight="28px"
+                            minHeight={EXPAND_BUTTON_SIZE}
                             padding="6px"
                             disableHoverStyles
+                            style={{
+                              width: EXPAND_BUTTON_SIZE,
+                              height: EXPAND_BUTTON_SIZE,
+                              minWidth: EXPAND_BUTTON_SIZE,
+                              minHeight: EXPAND_BUTTON_SIZE,
+                            }}
                           >
                             <ExpandMoreIcon
                               className={`${classes.expandIcon} ${isExpanded ? classes.expandIconOpen : ''}`}
@@ -283,6 +287,9 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
                         </td>
                       </tr>
                     )}
+                    <tr className={classes.dividerRow} aria-hidden="true">
+                      <td colSpan={totalCols} className={classes.dividerCell} data-divider-cell />
+                    </tr>
                   </React.Fragment>
                 )
               })

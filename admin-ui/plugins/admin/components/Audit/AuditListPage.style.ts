@@ -60,13 +60,13 @@ const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
         verticalAlign: 'middle',
         lineHeight: '28px',
       },
-      '& table th:nth-child(1), & table td:nth-child(1)': {
+      '& table th:nth-child(1), & table td:not([data-divider-cell]):nth-child(1)': {
         padding: '14px 8px',
       },
-      '& table th:nth-child(2), & table td:nth-child(2)': {
+      '& table th:nth-child(2), & table td:not([data-divider-cell]):nth-child(2)': {
         padding: '14px 16px',
       },
-      '& table th:nth-child(3), & table td:nth-child(3)': {
+      '& table th:nth-child(3), & table td:not([data-divider-cell]):nth-child(3)': {
         padding: `14px ${SPACING.SECTION_GAP}px`,
       },
     },
