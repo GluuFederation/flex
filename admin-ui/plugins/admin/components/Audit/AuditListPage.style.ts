@@ -52,7 +52,7 @@ const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
         minWidth: 0,
       },
       '& table td': {
-        verticalAlign: 'top',
+        verticalAlign: 'middle',
         minWidth: 0,
         lineHeight: '28px',
       },
@@ -71,15 +71,12 @@ const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
       },
     },
     logEntryCell: {
-      'display': 'flex',
-      'alignItems': 'flex-start',
-      'gap': `${SPACING.SECTION_GAP}px`,
-      'flexWrap': 'nowrap',
-      'minWidth': 0,
-      'lineHeight': '28px',
-      '& > *': {
-        alignSelf: 'flex-start',
-      },
+      display: 'flex',
+      alignItems: 'center',
+      gap: `${SPACING.SECTION_GAP}px`,
+      flexWrap: 'nowrap',
+      minWidth: 0,
+      lineHeight: '28px',
     },
     logEntryContent: {
       minWidth: 0,
@@ -99,6 +96,7 @@ const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
       alignItems: 'center',
       gap: '6px',
       lineHeight: 1,
+      verticalAlign: 'middle',
     },
     searchActionIcon: {
       fontSize: 20,

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react'
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
@@ -13,7 +13,11 @@ import { useStyles, EXPAND_BUTTON_SIZE } from './GluuTable.style'
 import type { GluuTableProps, SortDirection, ColumnKey } from './types'
 import { ChevronIcon } from '@/components/SVG'
 import { BORDER_RADIUS } from '@/constants'
-import { getRowsPerPageOptions } from '@/utils/pagingUtils'
+import {
+  getDefaultPagingSize,
+  getRowsPerPageOptions,
+  PAGING_SIZE_CHANGED_EVENT,
+} from '@/utils/pagingUtils'
 
 const T_KEYS = {
   FIELDS_ACTIONS: 'fields.actions',
@@ -45,6 +49,7 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
     emptyMessage,
     stickyHeader = false,
     tableClassName,
+    onPagingSizeSync,
   } = props
 
   const { t } = useTranslation()
@@ -59,6 +64,31 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
   useEffect(() => {
     setExpandedRows(new Set())
   }, [data])
+
+  const rowsPerPageRef = useRef(pagination?.rowsPerPage ?? 0)
+  rowsPerPageRef.current = pagination?.rowsPerPage ?? 0
+  useEffect(() => {
+    if (!pagination || !onPagingSizeSync) return
+    const notifyIfChanged = (newSize: number) => {
+      if (newSize !== rowsPerPageRef.current) onPagingSizeSync(newSize)
+    }
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent<number>).detail
+      const newSize = detail != null && Number.isInteger(detail) ? detail : getDefaultPagingSize()
+      notifyIfChanged(newSize)
+    }
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        notifyIfChanged(getDefaultPagingSize())
+      }
+    }
+    window.addEventListener(PAGING_SIZE_CHANGED_EVENT, handler)
+    document.addEventListener('visibilitychange', onVisibilityChange)
+    return () => {
+      window.removeEventListener(PAGING_SIZE_CHANGED_EVENT, handler)
+      document.removeEventListener('visibilitychange', onVisibilityChange)
+    }
+  }, [pagination, onPagingSizeSync])
 
   const totalCols = (expandable ? 1 : 0) + columns.length + (actions?.length ? 1 : 0)
   const defaultEmptyMessage = useMemo(() => t(T_KEYS.MESSAGES_NO_DATA), [t])
@@ -78,7 +108,8 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
   const resolveRowKey = useCallback(
     (item: T, index: number): string | number => {
       if (getRowKey) return getRowKey(item, index)
-      return index
+      const row = item as { id?: string | number }
+      return row.id ?? index
     },
     [getRowKey],
   )

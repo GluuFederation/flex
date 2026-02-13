@@ -45,6 +45,7 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
     avatar: {
       width: 100,
       height: 100,
+      borderRadius: '50%',
       border: `4px solid ${themeColors.card.background}`,
       boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
     },
@@ -165,6 +166,9 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
       textTransform: 'none',
       borderRadius: 8,
       fontSize: '1rem',
+    },
+    editButtonIcon: {
+      marginRight: 8,
     },
   }),
 )

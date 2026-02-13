@@ -155,12 +155,7 @@ const ProfileDetails: React.FC = () => {
             <Box className={classes.profileCard}>
               {/* Header Section */}
               <Box className={classes.avatarContainer}>
-                <img
-                  src={avatarSrc}
-                  alt="Avatar"
-                  className={classes.avatar}
-                  style={{ borderRadius: '50%' }}
-                />
+                <img src={avatarSrc} alt="Avatar" className={classes.avatar} />
               </Box>
 
               <Box textAlign="center">
@@ -245,10 +240,10 @@ const ProfileDetails: React.FC = () => {
                   disableHoverStyles
                   className={classes.editButton}
                   onClick={navigateToUserManagement}
-                  backgroundColor={themeColors.formFooter.back.backgroundColor}
-                  textColor={themeColors.formFooter.back.textColor}
+                  backgroundColor={themeColors.formFooter?.back?.backgroundColor}
+                  textColor={themeColors.formFooter?.back?.textColor}
                 >
-                  <i className="fa fa-pencil" style={{ marginRight: 8 }} />
+                  <i className={`fa fa-pencil ${classes.editButtonIcon}`} />
                   {t('actions.edit')}
                 </GluuButton>
               )}
