@@ -82,6 +82,9 @@ export const hexToRgb = (hex: string, fallback: string = '0, 0, 0'): string => {
   return `${r}, ${g}, ${b}`
 }
 
+export const getLoadingOverlayRgba = (hexColor: string, opacity: number): string =>
+  `rgba(${hexToRgb(hexColor)}, ${opacity})`
+
 export type CustomColorKeys = keyof typeof customColors
 
 export default customColors

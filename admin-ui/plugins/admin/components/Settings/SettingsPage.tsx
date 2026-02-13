@@ -21,7 +21,11 @@ import {
   ADMIN_UI_RESOURCES,
   CEDAR_RESOURCE_SCOPES,
 } from '@/cedarling'
-import { getPagingSize, savePagingSize as savePagingSizeToStorage } from 'Utils/pagingUtils'
+import {
+  getDefaultPagingSize,
+  savePagingSize as savePagingSizeToStorage,
+  ROWS_PER_PAGE_OPTIONS,
+} from 'Utils/pagingUtils'
 import packageJson from '../../../../package.json'
 import { getSettingsValidationSchema } from 'Plugins/admin/helper/validations/settingsValidation'
 import { buildSettingsInitialValues, type SettingsFormValues } from 'Plugins/admin/helper/settings'
@@ -47,8 +51,6 @@ const toError = (err: unknown): Error => (err instanceof Error ? err : new Error
 
 type CustomParamItem = { id: string; key?: string; value?: string }
 
-const PAGING_SIZE_OPTIONS = [1, 5, 10, 20] as const
-const DEFAULT_PAGING_SIZE = PAGING_SIZE_OPTIONS[2]
 const SCRIPTS_FETCH_LIMIT = 200
 
 const SettingsPage: React.FC = () => {
@@ -105,12 +107,7 @@ const SettingsPage: React.FC = () => {
   }, [authorizeHelper, settingsScopes])
 
   const validationSchema = useMemo(() => getSettingsValidationSchema(t), [t])
-  const savedPagingSize = useMemo(() => {
-    const stored = getPagingSize(DEFAULT_PAGING_SIZE)
-    return PAGING_SIZE_OPTIONS.includes(stored as (typeof PAGING_SIZE_OPTIONS)[number])
-      ? stored
-      : DEFAULT_PAGING_SIZE
-  }, [])
+  const savedPagingSize = useMemo(() => getDefaultPagingSize(), [])
   const selectedTheme = useMemo(() => themeState?.theme || DEFAULT_THEME, [themeState?.theme])
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { classes } = useStyles({ isDark, themeColors })
@@ -355,7 +352,7 @@ const SettingsPage: React.FC = () => {
                           }
                           disabled={!canWriteSettings}
                         >
-                          {PAGING_SIZE_OPTIONS.map((option) => (
+                          {ROWS_PER_PAGE_OPTIONS.map((option) => (
                             <option value={String(option)} key={option}>
                               {option}
                             </option>

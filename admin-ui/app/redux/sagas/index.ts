@@ -9,7 +9,6 @@ import healthSaga from './HealthSaga'
 import authSagas from './AuthSaga'
 import initSaga from './InitSaga'
 import licenseSaga from './LicenseSaga'
-import licenseDetailsSaga from './LicenseDetailsSaga'
 import oidcDiscoverySaga from './OidcDiscoverySaga'
 import process from 'Plugins/PluginSagasResolver'
 import attributes from './AttributesSaga'
@@ -27,7 +26,6 @@ export default function* rootSaga() {
     oidcDiscoverySaga(),
     mauSaga(),
     healthSaga(),
-    licenseDetailsSaga(),
     attributes(),
     profileDetails(),
     lockSaga(),

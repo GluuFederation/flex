@@ -1,20 +1,17 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
-import { THEME_DARK } from '@/context/theme/constants'
 import customColors from '@/customColors'
 import { GluuButton } from '@/components/GluuButton'
+import { GluuDatePicker } from '@/components/GluuDatePicker'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
+import { DATE_FORMATS } from '@/utils/dayjsUtils'
 import type { DateRangeSelectorProps } from '../types'
 import { DATE_PRESETS } from '../constants'
-import { getDatePickerTextFieldSlotProps } from '../utils'
 
 const VIEW_BUTTON_STYLE = {
   minWidth: 96,
@@ -38,12 +35,7 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
   const { t } = useTranslation()
   const { state } = useTheme()
   const selectedTheme = state.theme
-  const isDark = selectedTheme === THEME_DARK
   const themeColors = getThemeColor(selectedTheme)
-  const datePickerTextFieldSlotProps = useMemo(
-    () => getDatePickerTextFieldSlotProps(isDark),
-    [isDark],
-  )
 
   const presetButtonBg = (isSelected: boolean) =>
     isSelected
@@ -98,28 +90,15 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
             </Box>
           </Grid>
           <Grid item>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <Grid container spacing={2}>
-                <Grid item>
-                  <DatePicker
-                    format="MM/DD/YYYY"
-                    label={t('dashboard.start_date')}
-                    value={startDate}
-                    onChange={onStartDateChange}
-                    slotProps={{ textField: datePickerTextFieldSlotProps }}
-                  />
-                </Grid>
-                <Grid item>
-                  <DatePicker
-                    format="MM/DD/YYYY"
-                    label={t('dashboard.end_date')}
-                    value={endDate}
-                    onChange={onEndDateChange}
-                    slotProps={{ textField: datePickerTextFieldSlotProps }}
-                  />
-                </Grid>
-              </Grid>
-            </LocalizationProvider>
+            <GluuDatePicker
+              mode="range"
+              layout="row"
+              format={DATE_FORMATS.DATE_PICKER_DISPLAY_US}
+              startDate={startDate}
+              endDate={endDate}
+              onStartDateChange={onStartDateChange}
+              onEndDateChange={onEndDateChange}
+            />
           </Grid>
           <Grid item>
             <GluuButton

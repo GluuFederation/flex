@@ -1,19 +1,22 @@
 import { makeStyles } from 'tss-react/mui'
-import customColors from '@/customColors'
+import type { ThemeConfig } from '@/context/theme/config'
 import { SPACING } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 
 interface StylesParams {
+  themeColors: ThemeConfig
   isDark: boolean
 }
 
-export const useStyles = makeStyles<StylesParams>()((theme, { isDark }) => {
+export const useStyles = makeStyles<StylesParams>()((theme, { themeColors, isDark }) => {
   const cardBorderStyle = getCardBorderStyle({ isDark })
+
+  const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
 
   return {
     licenseCard: {
-      backgroundColor: isDark ? customColors.darkCardBg : customColors.white,
+      backgroundColor: cardBg,
       borderRadius: '16px',
       padding: `${SPACING.CONTENT_PADDING}px`,
       width: '100%',
@@ -42,7 +45,7 @@ export const useStyles = makeStyles<StylesParams>()((theme, { isDark }) => {
       fontSize: fontSizes.md,
       fontWeight: fontWeights.medium,
       lineHeight: lineHeights.loose,
-      color: isDark ? customColors.textMutedDark : customColors.textSecondary,
+      color: themeColors.textMuted,
       margin: 0,
       padding: 0,
     },
@@ -51,7 +54,7 @@ export const useStyles = makeStyles<StylesParams>()((theme, { isDark }) => {
       fontSize: fontSizes.lg,
       fontWeight: fontWeights.bold,
       lineHeight: lineHeights.loose,
-      color: isDark ? customColors.white : customColors.primaryDark,
+      color: themeColors.fontColor,
       margin: 0,
       padding: 0,
     },
@@ -62,15 +65,13 @@ export const useStyles = makeStyles<StylesParams>()((theme, { isDark }) => {
     },
     resetButton: {
       gap: `${SPACING.CARD_CONTENT_GAP}px`,
-    },
-    refreshIcon: {
-      fontSize: fontSizes.md,
+      minWidth: 130,
     },
     card: {
-      backgroundColor: isDark ? customColors.darkCardBg : customColors.white,
+      backgroundColor: cardBg,
       borderRadius: '16px',
-      border: isDark ? `1.5px solid ${customColors.darkBorder}` : 'none',
-      boxShadow: isDark ? 'none' : `0px 4px 11px 0px ${customColors.black}`,
+      border: `1px solid ${themeColors.card.border}`,
+      boxShadow: 'none',
       padding: 0,
     },
     cardBody: {

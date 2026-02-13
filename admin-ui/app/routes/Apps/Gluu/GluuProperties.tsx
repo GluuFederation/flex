@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Tooltip as ReactTooltip } from 'react-tooltip'
 import { HelpOutline } from '@mui/icons-material'
 import customColors from '@/customColors'
+import { isDevelopment } from '@/utils/env'
 
 // Property type definitions
 type KeyValueProperty = { key: string; value: string }
@@ -25,7 +26,7 @@ const syncFormikProperties = (
 ) => {
   if (!formik || !compName) return
 
-  if (process.env.NODE_ENV === 'development' && properties.length > 0) {
+  if (isDevelopment && properties.length > 0) {
     const hasKeyValue = properties.some((p: any) => 'key' in p && 'value' in p)
     const hasSourceDest = properties.some((p: any) => 'source' in p && 'destination' in p)
     const hasApiFormat = properties.some((p: any) => 'value1' in p && 'value2' in p)
@@ -44,7 +45,7 @@ const syncFormikProperties = (
 
   if (!isKeys && !multiProperties) {
     const valuesOnly = properties.filter(isKeyValueProperty).map((item) => item.value)
-    if (process.env.NODE_ENV === 'development' && valuesOnly.length < properties.length) {
+    if (isDevelopment && valuesOnly.length < properties.length) {
       console.warn(
         `GluuProperties[${compName}]: Filtered out ${properties.length - valuesOnly.length} properties due to type mismatch`,
       )
@@ -55,7 +56,7 @@ const syncFormikProperties = (
       value1: p.key,
       value2: p.value,
     }))
-    if (process.env.NODE_ENV === 'development' && apiFormat.length < properties.length) {
+    if (isDevelopment && apiFormat.length < properties.length) {
       console.warn(
         `GluuProperties[${compName}]: Filtered out ${properties.length - apiFormat.length} properties due to type mismatch`,
       )
@@ -63,7 +64,7 @@ const syncFormikProperties = (
     formik.setFieldValue(compName, apiFormat)
   } else {
     const validProperties = properties.filter(isSourceDestinationProperty)
-    if (process.env.NODE_ENV === 'development' && validProperties.length < properties.length) {
+    if (isDevelopment && validProperties.length < properties.length) {
       console.warn(
         `GluuProperties[${compName}]: Filtered out ${properties.length - validProperties.length} properties due to type mismatch`,
       )

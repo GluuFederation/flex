@@ -1,4 +1,4 @@
-import customColors from '@/customColors'
+import customColors, { hexToRgb } from '@/customColors'
 import { THEME_LIGHT, THEME_DARK, DEFAULT_THEME } from './constants'
 
 export interface FormFooterColors {
@@ -26,7 +26,15 @@ export interface ThemeConfig {
   }
   checkbox: { uncheckedBorder: string }
   errorColor: string
+  warningColor: string
   formFooter: FormFooterColors
+  table: {
+    background: string
+    rowHoverBg: string
+    headerBg: string
+    headerColor: string
+    expandButtonBg: string
+  }
   settings: {
     cardBackground: string
     customParamsBox: string
@@ -78,6 +86,7 @@ const createLightTheme = (): ThemeConfig => {
       uncheckedBorder: customColors.sidebarHoverBg,
     },
     errorColor: customColors.accentRed,
+    warningColor: customColors.orange,
     formFooter: {
       back: {
         backgroundColor: customColors.statusActive,
@@ -94,6 +103,13 @@ const createLightTheme = (): ThemeConfig => {
         textColor: customColors.primaryDark,
         borderColor: customColors.primaryDark,
       },
+    },
+    table: {
+      background: customColors.buttonLightBg,
+      rowHoverBg: customColors.lightBackground,
+      headerBg: customColors.buttonLightBg,
+      headerColor: customColors.textSecondary,
+      expandButtonBg: `rgba(${hexToRgb(customColors.primaryDark)}, 0.06)`,
     },
     settings: {
       cardBackground: customColors.white,
@@ -147,6 +163,7 @@ const createDarkTheme = (): ThemeConfig => {
       uncheckedBorder: customColors.cedarCardBorderDark,
     },
     errorColor: customColors.accentRed,
+    warningColor: customColors.orange,
     formFooter: {
       back: {
         backgroundColor: customColors.statusActive,
@@ -163,6 +180,13 @@ const createDarkTheme = (): ThemeConfig => {
         textColor: customColors.white,
         borderColor: customColors.white,
       },
+    },
+    table: {
+      background: customColors.darkBackground,
+      rowHoverBg: customColors.darkDropdownBg,
+      headerBg: customColors.darkBackground,
+      headerColor: customColors.cedarTextTertiaryDark,
+      expandButtonBg: `rgba(${hexToRgb(customColors.white)}, 0.1)`,
     },
     settings: {
       cardBackground: customColors.darkCardBg,

@@ -15,6 +15,8 @@ export const DATE_FORMATS = {
   DATETIME_LONG: 'ddd, MMM DD, YYYY h:mm:ss A',
   MONTH_KEY: 'YYYYMM',
   TOKEN_DATETIME: 'YYYY/DD/MM HH:mm:ss',
+  DATE_PICKER_DISPLAY: 'DD-MM-YYYY',
+  DATE_PICKER_DISPLAY_US: 'MM/DD/YYYY',
 } as const
 
 export const diffDate = (

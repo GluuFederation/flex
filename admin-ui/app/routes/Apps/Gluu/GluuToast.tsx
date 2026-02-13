@@ -16,7 +16,7 @@ function GluuToast() {
         {message == ''
           ? type == 'success'
             ? t('messages.success_in_saving')
-            : t('messages.error_processiong_request')
+            : t('messages.error_processing_request')
           : message}
       </div>
     )
