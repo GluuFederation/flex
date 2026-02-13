@@ -129,7 +129,7 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark }) => {
     },
     buttonRow: {
       marginTop: 'auto',
-      paddingTop: 16,
+      paddingTop: 8,
     },
     yesButton: {
       padding: '8px 28px',

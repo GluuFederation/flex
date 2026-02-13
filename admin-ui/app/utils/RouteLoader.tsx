@@ -1,5 +1,4 @@
 import React, { Suspense, lazy, ComponentType } from 'react'
-import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
 
 type LazyRouteWrapper<P extends Record<string, unknown> = Record<string, unknown>> =
   ComponentType<P> & {
@@ -12,7 +11,7 @@ export const createLazyRoute = <P extends Record<string, unknown> = Record<strin
   const LazyComponent = lazy(importFn)
 
   const Wrapper = (props: P) => (
-    <Suspense fallback={<GluuSuspenseLoader />}>
+    <Suspense fallback={null}>
       {/* @ts-expect-error Known TypeScript limitation: React.lazy() doesn't preserve generic type parameters. Runtime safety guaranteed by importFn. */}
       <LazyComponent {...props} />
     </Suspense>

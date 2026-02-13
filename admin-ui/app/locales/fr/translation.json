@@ -387,7 +387,7 @@
     "sort_by": "Trier Par",
     "results_per_page": "Résultats par page",
     "activate": "Activer",
-    "active": "Active",
+    "active": "Actif",
     "application_type": "Type de demande",
     "attributes": "Les attributs",
     "attribute_edit_type": "Type de modification d'attribut",
@@ -616,6 +616,8 @@
     "customerName": "Nom du client",
     "licenseDetails": "Détails de la licence",
     "role": "Rôle",
+    "admin": "Administrateur",
+    "statusLabel": "Statut :",
     "permissions": "Permissions",
     "deletable": "Supprimable",
     "email": "E-mail",
@@ -993,6 +995,9 @@
     "more": " plus"
   },
   "titles": {
+    "personal_information": "Informations personnelles",
+    "admin_roles": "Rôles d'administrateur",
+    "account_status": "Statut du compte",
     "acrs": "ACR",
     "audit_logs": "Admin UI Logs d'audit",
     "assets": "Jans Assets",

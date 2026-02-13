@@ -543,6 +543,8 @@
     "binaryAttributes": "Atributos Binarios",
     "certificateAttributes": "Atributos de Certificado",
     "role": "Rol",
+    "admin": "Administrador",
+    "statusLabel": "Estado:",
     "permissions": "Permisos",
     "deletable": "Eliminable",
     "email": "Correo",
@@ -1056,6 +1058,9 @@
     "more": " más"
   },
   "titles": {
+    "personal_information": "Información personal",
+    "admin_roles": "Roles de administrador",
+    "account_status": "Estado de la cuenta",
     "activeTokens": "Tokens activos",
     "acrs": "ACRs",
     "active_users": "Usuarios activos y estadísticas de tokens de acceso",

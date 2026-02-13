@@ -518,7 +518,8 @@ export interface SmtpPluginState {
 }
 
 export interface RootState
-  extends CoreAppState, Partial<AdminPluginState & AuthServerPluginState & SmtpPluginState> {}
+  extends CoreAppState,
+    Partial<AdminPluginState & AuthServerPluginState & SmtpPluginState> {}
 
 export type ReducerMap = {
   [K in keyof RootState]?: Reducer<RootState[K], UnknownAction>
