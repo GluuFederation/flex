@@ -1,8 +1,12 @@
+import { useState, useCallback } from 'react'
+
 export const ROWS_PER_PAGE_OPTIONS = [5, 10, 25, 50] as const
 
 export const DEFAULT_PAGING_SIZE = 10
 
 const STORAGE_KEY = 'gluu.pagingSize'
+
+export const PAGING_SIZE_CHANGED_EVENT = 'gluu:pagingSizeChanged'
 
 export const getPagingSize = (defaultSize: number = DEFAULT_PAGING_SIZE): number => {
   if (typeof window === 'undefined' || !window.localStorage) {
@@ -53,7 +57,20 @@ export const savePagingSize = (size: number): void => {
 
   try {
     localStorage.setItem(STORAGE_KEY, String(validSize))
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent(PAGING_SIZE_CHANGED_EVENT, { detail: validSize }))
+    }
   } catch (error) {
     console.warn('Failed to save paging size to localStorage:', error)
   }
+}
+
+export function usePaginationState() {
+  const [limit, setLimit] = useState(getDefaultPagingSize)
+  const [pageNumber, setPageNumber] = useState(0)
+  const onPagingSizeSync = useCallback((newSize: number) => {
+    setLimit(newSize)
+    setPageNumber(0)
+  }, [])
+  return { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync }
 }

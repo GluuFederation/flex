@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react'
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { createDate, subtractDate, isValidDate, isAfterDate } from '@/utils/dayjsUtils'
 import type { Dayjs } from '@/utils/dayjsUtils'
@@ -21,7 +21,11 @@ import { useStyles } from './AuditListPage.style'
 import { auditListTimestampRegex, dateConverter, hasBothDates } from 'Plugins/admin/helper/utils'
 import { useGetAuditData, GetAuditDataParams } from 'JansConfigApi'
 import type { AuditRow } from './types'
-import { getDefaultPagingSize, getRowsPerPageOptions } from '@/utils/pagingUtils'
+import {
+  getDefaultPagingSize,
+  getRowsPerPageOptions,
+  usePaginationState,
+} from '@/utils/pagingUtils'
 
 const AUDIT_LOGS_RESOURCE_ID = ADMIN_UI_RESOURCES.AuditLogs
 const AUDIT_LOGS_SCOPES = CEDAR_RESOURCE_SCOPES[AUDIT_LOGS_RESOURCE_ID] ?? []
@@ -34,8 +38,6 @@ const T_KEYS = {
   MSG_NO_DATA: 'messages.no_data',
   PLACEHOLDER_SEARCH_PATTERN: 'placeholders.search_pattern',
 } as const
-
-const getAuditRowKey = (row: AuditRow) => row.id
 
 const splitTimestamp = (timestamp: string): { datePart: string; timePart: string } => {
   if (!timestamp) return { datePart: '', timePart: '' }
@@ -68,9 +70,8 @@ const AuditListPage: React.FC = () => {
     }
   }, [authorizeHelper])
 
-  const [limit, setLimit] = useState(getDefaultPagingSize)
+  const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
   const [pattern, setPattern] = useState('')
-  const [pageNumber, setPageNumber] = useState(0)
   const [startDate, setStartDate] = useState<Dayjs | null>(() =>
     subtractDate(createDate(), 14, 'day'),
   )
@@ -121,6 +122,19 @@ const AuditListPage: React.FC = () => {
       return params
     },
     [],
+  )
+
+  const patternRef = useRef(pattern)
+  const filterStateRef = useRef(filterState)
+  patternRef.current = pattern
+  filterStateRef.current = filterState
+
+  const handlePagingSizeSync = useCallback(
+    (newSize: number) => {
+      onPagingSizeSync(newSize)
+      setQueryParams(buildQueryParams(newSize, 0, patternRef.current, filterStateRef.current))
+    },
+    [buildQueryParams, onPagingSizeSync],
   )
 
   const handleSearch = useCallback(() => {
@@ -373,7 +387,7 @@ const AuditListPage: React.FC = () => {
               loading={false}
               expandable
               pagination={pagination}
-              getRowKey={getAuditRowKey}
+              onPagingSizeSync={handlePagingSizeSync}
               emptyMessage={emptyMessage}
             />
           </div>

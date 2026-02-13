@@ -38,6 +38,9 @@ export interface PaginationConfig {
   onRowsPerPageChange: (rowsPerPage: number) => void
 }
 
+/** When Settings (or another tab) changes paging size, GluuTable can notify so the parent can sync and refetch. Optional. */
+export type OnPagingSizeSync = (newSize: number) => void
+
 export interface GluuTableProps<T> {
   columns: ColumnDef<T>[]
   data: T[]
@@ -54,4 +57,6 @@ export interface GluuTableProps<T> {
   stickyHeader?: boolean
   /** Optional class applied to the <table> for parent overrides (e.g. Audit) */
   tableClassName?: string
+  /** When provided with pagination, GluuTable listens for paging-size changes (Settings / visibility) and calls this so the parent can sync and refetch. */
+  onPagingSizeSync?: OnPagingSizeSync
 }
