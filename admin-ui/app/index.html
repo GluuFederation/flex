@@ -37,7 +37,6 @@
     <% } %> <% if (config.options.chunks) { %> <%= config.options.chunks.css %>
     <% } %>
 
-    <!-- Theme class for first paint; variable values come from main.scss (theme-dark / theme-light). -->
     <style>
       html.theme-dark { --initial-page-bg: #0b2947; }
       html.theme-light { --initial-page-bg: #f6f6f6; }
@@ -51,43 +50,8 @@
         } catch (e) {}
       })();
     </script>
-
-    <!-- Static loader disabled: only one loader (theme-based) is shown by the app to avoid double loader. -->
-    <!--
-    <style>
-      @keyframes spin { 100% { transform: rotate(360deg); } }
-      .initial-loader-wrap {
-        top: 0; left: 0; width: 100vw; height: 100vh;
-        display: flex; justify-content: center; align-items: center;
-        position: fixed; z-index: 99999; background-color: white;
-      }
-      .initial-loader__row { display: flex; justify-content: center; align-items: center; padding: 0.5rem; }
-    </style>
-    -->
   </head>
   <body>
-    <!-- Static "Admin UI is loading" loader commented out - app shows a single theme-based loader (Redirecting... / Upload SSA / ApiKey) -->
-    <!--
-    <div class="initial-loader-wrap">
-      <div class="initial-loader">
-        <div class="initial-loader__row">
-          <img src="https://res.cloudinary.com/hamharry/image/upload/v1656079882/loader_w8ptw0.gif" alt="loading" width="260px" />
-        </div>
-        <div class="initial-loader__row">AdminUI is loading...</div>
-      </div>
-    </div>
-    <script>
-      (function() {
-        document.addEventListener("readystatechange", function() {
-          if (document.readyState === "complete") {
-            var el = document.querySelector(".initial-loader-wrap");
-            if (el && el.parentNode) el.parentNode.removeChild(el);
-          }
-        });
-      })();
-    </script>
-    -->
-
     <script src="/admin/env-config.js" defer></script>
 
     <div id="root"><%= config.innerHtml || '' %></div>
