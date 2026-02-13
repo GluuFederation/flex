@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS } from '@/constants'
+import { BORDER_RADIUS, OPACITY } from '@/constants'
 import { hexToRgb } from '@/customColors'
 import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
 
@@ -36,7 +36,7 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       'width': '100%',
       'maxWidth': '100%',
       'minWidth': 0,
-      'overflowX': 'hidden',
+      'overflowX': 'auto',
       'borderRadius': BORDER_RADIUS.DEFAULT,
       'border': `1px solid ${rowBorder}`,
       'backgroundColor': rowBg,
@@ -126,6 +126,8 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       width: 40,
       padding: '14px 8px',
       verticalAlign: 'top',
+    },
+    cellExpandInner: {
       display: 'flex',
       alignItems: 'flex-start',
       justifyContent: 'flex-start',
@@ -181,7 +183,7 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       'justifyContent': 'center',
       'color': themeColors.fontColor,
       'transition': 'opacity 0.15s ease',
-      '&:hover': { opacity: 0.6 },
+      '&:hover': { opacity: OPACITY.DIMMED },
       '&:focus': { outline: 'none' },
       '&:focus-visible': {
         outline: 'none',
@@ -233,7 +235,7 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       'cursor': 'pointer',
       'appearance': 'none',
       'outline': 'none',
-      '&:focus': {
+      '&:focus-visible': {
         outline: 'none',
         boxShadow: `0 0 0 2px ${paginationAccent}`,
         border: `1px solid ${paginationAccent}`,
@@ -261,7 +263,7 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       transition: 'opacity 0.15s ease',
     },
     paginationButtonDisabled: {
-      opacity: 0.4,
+      opacity: OPACITY.DIMMED,
       cursor: 'not-allowed',
       color: themeColors.textMuted,
     },

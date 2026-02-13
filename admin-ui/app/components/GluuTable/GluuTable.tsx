@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
@@ -56,6 +56,10 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
   const expandButtonBg = themeColors.table.expandButtonBg
 
   const [expandedRows, setExpandedRows] = useState<Set<string | number>>(new Set())
+
+  useEffect(() => {
+    setExpandedRows(new Set())
+  }, [data])
 
   const totalCols = (expandable ? 1 : 0) + columns.length + (actions?.length ? 1 : 0)
   const defaultEmptyMessage = useMemo(() => t(T_KEYS.MESSAGES_NO_DATA), [t])
@@ -124,6 +128,11 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
     },
     [actions, classes, t],
   )
+
+  const isFirstPage = pagination ? pagination.page === 0 : false
+  const isLastPage = pagination
+    ? (pagination.page + 1) * pagination.rowsPerPage >= pagination.totalItems
+    : false
 
   return (
     <div className={classes.root}>
@@ -213,38 +222,40 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
                     <tr className={classes.row}>
                       {expandable && (
                         <td className={`${classes.cell} ${classes.cellExpand}`}>
-                          <GluuButton
-                            type="button"
-                            className={classes.expandButton}
-                            aria-expanded={isExpanded}
-                            aria-label={t(T_KEYS.FIELDS_EXPAND_ROW, {
-                              defaultValue: isExpanded ? 'Collapse row' : 'Expand row',
-                            })}
-                            title={
-                              isExpanded
-                                ? t(T_KEYS.MESSAGES_COLLAPSE, { defaultValue: 'Collapse' })
-                                : t(T_KEYS.MESSAGES_EXPAND, { defaultValue: 'Expand' })
-                            }
-                            onClick={() => toggleRow(rowKey)}
-                            backgroundColor={expandButtonBg}
-                            borderColor={themeColors.borderColor}
-                            borderRadius={BORDER_RADIUS.CIRCLE}
-                            textColor={themeColors.fontColor}
-                            minHeight={EXPAND_BUTTON_SIZE}
-                            padding="6px"
-                            disableHoverStyles
-                            style={{
-                              width: EXPAND_BUTTON_SIZE,
-                              height: EXPAND_BUTTON_SIZE,
-                              minWidth: EXPAND_BUTTON_SIZE,
-                              minHeight: EXPAND_BUTTON_SIZE,
-                            }}
-                          >
-                            <ExpandMoreIcon
-                              className={`${classes.expandIcon} ${isExpanded ? classes.expandIconOpen : ''}`}
-                              sx={{ fontSize: 20, color: themeColors.fontColor }}
-                            />
-                          </GluuButton>
+                          <div className={classes.cellExpandInner}>
+                            <GluuButton
+                              type="button"
+                              className={classes.expandButton}
+                              aria-expanded={isExpanded}
+                              aria-label={t(T_KEYS.FIELDS_EXPAND_ROW, {
+                                defaultValue: isExpanded ? 'Collapse row' : 'Expand row',
+                              })}
+                              title={
+                                isExpanded
+                                  ? t(T_KEYS.MESSAGES_COLLAPSE, { defaultValue: 'Collapse' })
+                                  : t(T_KEYS.MESSAGES_EXPAND, { defaultValue: 'Expand' })
+                              }
+                              onClick={() => toggleRow(rowKey)}
+                              backgroundColor={expandButtonBg}
+                              borderColor={themeColors.borderColor}
+                              borderRadius={BORDER_RADIUS.CIRCLE}
+                              textColor={themeColors.fontColor}
+                              minHeight={EXPAND_BUTTON_SIZE}
+                              padding="6px"
+                              disableHoverStyles
+                              style={{
+                                width: EXPAND_BUTTON_SIZE,
+                                height: EXPAND_BUTTON_SIZE,
+                                minWidth: EXPAND_BUTTON_SIZE,
+                                minHeight: EXPAND_BUTTON_SIZE,
+                              }}
+                            >
+                              <ExpandMoreIcon
+                                className={`${classes.expandIcon} ${isExpanded ? classes.expandIconOpen : ''}`}
+                                sx={{ fontSize: 20, color: themeColors.fontColor }}
+                              />
+                            </GluuButton>
+                          </div>
                         </td>
                       )}
                       {columns.map((col, colIdx) => {
@@ -333,14 +344,14 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
             <div className={classes.paginationNav}>
               <GluuButton
                 type="button"
-                className={`${classes.paginationButton} ${pagination.page === 0 ? classes.paginationButtonDisabled : ''}`}
-                disabled={pagination.page === 0}
+                className={`${classes.paginationButton} ${isFirstPage ? classes.paginationButtonDisabled : ''}`}
+                disabled={isFirstPage}
                 onClick={() => pagination.onPageChange(pagination.page - 1)}
                 title={t(T_KEYS.MESSAGES_PREVIOUS_PAGE)}
                 backgroundColor="transparent"
                 borderColor="transparent"
                 textColor={
-                  pagination.page === 0
+                  isFirstPage
                     ? themeColors.textMuted
                     : (themeColors.formFooter?.back?.backgroundColor ?? themeColors.fontColor)
                 }
@@ -350,14 +361,14 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
               </GluuButton>
               <GluuButton
                 type="button"
-                className={`${classes.paginationButton} ${(pagination.page + 1) * pagination.rowsPerPage >= pagination.totalItems ? classes.paginationButtonDisabled : ''}`}
-                disabled={(pagination.page + 1) * pagination.rowsPerPage >= pagination.totalItems}
+                className={`${classes.paginationButton} ${isLastPage ? classes.paginationButtonDisabled : ''}`}
+                disabled={isLastPage}
                 onClick={() => pagination.onPageChange(pagination.page + 1)}
                 title={t(T_KEYS.MESSAGES_NEXT_PAGE)}
                 backgroundColor="transparent"
                 borderColor="transparent"
                 textColor={
-                  (pagination.page + 1) * pagination.rowsPerPage >= pagination.totalItems
+                  isLastPage
                     ? themeColors.textMuted
                     : (themeColors.formFooter?.back?.backgroundColor ?? themeColors.fontColor)
                 }

@@ -33,9 +33,16 @@ function useDateRangeValidation(startDate: Dayjs | null, endDate: Dayjs | null) 
   }, [startDate, endDate])
 }
 
+const PLACEHOLDER_KEY = 'placeholders.search_pattern'
+
+const DEFAULT_DATES = {
+  start: subtractDate(createDate(), 14, 'day'),
+  end: createDate(),
+}
+
 const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
   const {
-    searchPlaceholder = 'Search Pattern',
+    searchPlaceholder,
     searchLabel,
     searchValue = '',
     onSearch,
@@ -56,19 +63,15 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
   const isDark = state.theme === THEME_DARK
   const { classes } = useStyles({ themeColors, isDark })
 
+  const effectivePlaceholder =
+    searchPlaceholder ?? t(PLACEHOLDER_KEY, { defaultValue: 'Search pattern' })
+
   const dateValidation = useDateRangeValidation(
     dateRange?.startDate ?? null,
     dateRange?.endDate ?? null,
   )
 
   const showBuiltInDateRange = dateRange != null
-  const defaultDates = useMemo(
-    () => ({
-      start: subtractDate(createDate(), 14, 'day'),
-      end: createDate(),
-    }),
-    [],
-  )
   const primaryDisabled = showBuiltInDateRange
     ? dateValidation.invalid
     : (primaryAction?.disabled ?? false)
@@ -91,8 +94,6 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
     [themeColors],
   )
 
-  const iconSx = useMemo(() => ({ fontSize: 20 }), [])
-
   return (
     <div className={classes.container}>
       <div className={classes.fieldGroupSearch}>
@@ -103,16 +104,16 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
         )}
         <div className={classes.searchWrapper}>
           <span className={classes.searchIcon}>
-            <SearchIcon sx={iconSx} />
+            <SearchIcon className={classes.searchIconSvg} />
           </span>
           <input
             type="text"
-            placeholder={searchPlaceholder}
+            placeholder={effectivePlaceholder}
             value={searchValue}
             onChange={(e) => onSearch?.(e.target.value)}
             onKeyDown={handleKeyDown}
             className={classes.searchInput}
-            aria-label={searchLabel ?? searchPlaceholder ?? 'search'}
+            aria-label={searchLabel ?? effectivePlaceholder ?? 'search'}
           />
         </div>
       </div>
@@ -174,14 +175,14 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
             labelAsTitle={dateRange.labelAsTitle ?? true}
             inputHeight={dateRange.inputHeight ?? DEFAULT_INPUT_HEIGHT}
             dateFormat={dateRange.dateFormat ?? DATE_FORMATS.DATE_PICKER_DISPLAY}
-            startDate={dateRange.startDate ?? defaultDates.start}
-            endDate={dateRange.endDate ?? defaultDates.end}
+            startDate={dateRange.startDate ?? DEFAULT_DATES.start}
+            endDate={dateRange.endDate ?? DEFAULT_DATES.end}
             onStartDateChange={dateRange.onStartDateChange}
             onEndDateChange={dateRange.onEndDateChange}
             onStartDateAccept={dateRange.onStartDateAccept}
             onEndDateAccept={dateRange.onEndDateAccept}
             textColor={themeColors.fontColor}
-            backgroundColor={themeColors.settings?.cardBackground ?? themeColors.card.background}
+            backgroundColor={themeColors.settings?.cardBackground ?? themeColors.card?.background}
           />
         </div>
       ) : (
@@ -213,7 +214,7 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
             borderColor={primaryButtonColors.backgroundColor}
             useOpacityOnHover
           >
-            {primaryAction.icon ?? <SearchIcon sx={iconSx} />}
+            {primaryAction.icon ?? <SearchIcon className={classes.searchIconSvg} />}
             {primaryAction.label}
           </GluuButton>
         )}

@@ -209,9 +209,9 @@ const AuditListPage: React.FC = () => {
 
   const dateBadgeColors = useMemo(
     () => ({
-      backgroundColor: themeColors.formFooter.apply.backgroundColor,
-      textColor: themeColors.formFooter.apply.textColor,
-      borderColor: themeColors.formFooter.apply.borderColor,
+      backgroundColor: themeColors.formFooter?.apply?.backgroundColor,
+      textColor: themeColors.formFooter?.apply?.textColor,
+      borderColor: themeColors.formFooter?.apply?.borderColor,
     }),
     [themeColors],
   )
@@ -366,6 +366,7 @@ const AuditListPage: React.FC = () => {
           </div>
 
           <div className={classes.tableCard}>
+            {/* loading={false}: page-level GluuLoader already shows blocking overlay; table loading state intentionally suppressed */}
             <GluuTable<AuditRow>
               columns={columns}
               data={auditRows}

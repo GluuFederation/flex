@@ -42,6 +42,11 @@ export const savePagingSize = (size: number): void => {
     return
   }
 
+  if (!(ROWS_PER_PAGE_OPTIONS as readonly number[]).includes(validSize)) {
+    console.warn('Invalid paging size:', validSize, '- must be one of', ROWS_PER_PAGE_OPTIONS)
+    return
+  }
+
   if (typeof window === 'undefined' || !window.localStorage) {
     return
   }

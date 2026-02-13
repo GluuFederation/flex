@@ -3,6 +3,7 @@ import { fontFamily } from '@/styles/fonts'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
+import { OPACITY } from '@/constants'
 import { resolveBackgroundColor } from '@/utils/buttonUtils'
 import type { GluuButtonProps } from './types'
 
@@ -55,7 +56,7 @@ const GluuButton: React.FC<GluuButtonProps> = (props) => {
     const border = borderColor ?? (isDark ? 'transparent' : themeColors.borderColor)
     const hoverBg = isDark ? themeColors.lightBackground : themeColors.borderColor
     const keepBgOnHover = !disableHoverStyles && useOpacityOnHover && isHovered && !isDisabled
-    const opacityOnHover = hoverOpacity ?? 0.5
+    const opacityOnHover = hoverOpacity ?? OPACITY.DIMMED
 
     return {
       display: 'inline-flex',
@@ -81,7 +82,7 @@ const GluuButton: React.FC<GluuButtonProps> = (props) => {
       ),
       color: outlined ? themeColors.fontColor : text,
       cursor: isDisabled ? 'not-allowed' : 'pointer',
-      opacity: isDisabled ? 0.65 : keepBgOnHover ? opacityOnHover : 1,
+      opacity: isDisabled ? OPACITY.DIMMED : keepBgOnHover ? opacityOnHover : 1,
       width: block ? '100%' : 'auto',
       transition: 'background-color 0.15s ease-in-out, opacity 0.15s ease-in-out',
       ...style,

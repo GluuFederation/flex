@@ -81,6 +81,10 @@ export const useStyles = makeStyles<GluuSearchToolbarStyleParams>()((
       display: 'flex',
       color: inputColor,
     },
+    searchIconSvg: {
+      fontSize: 20,
+      color: 'inherit',
+    },
     filterSelect: {
       height: inputHeightPx,
       padding: '0 12px',

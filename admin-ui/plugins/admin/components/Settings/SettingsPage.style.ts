@@ -146,6 +146,9 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
         cursor: 'not-allowed',
       },
       '& select:disabled': {
+        backgroundColor: `${settings.formInputBackground} !important`,
+        border: `1px solid ${settings.inputBorder} !important`,
+        color: `${themeColors.fontColor} !important`,
         opacity: 1,
         cursor: 'not-allowed',
       },

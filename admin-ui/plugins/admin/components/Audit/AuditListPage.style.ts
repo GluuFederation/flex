@@ -12,7 +12,7 @@ const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
     isDark,
     borderRadius: BORDER_RADIUS.DEFAULT,
   })
-  const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
+  const cardBg = themeColors.settings?.cardBackground ?? themeColors.card?.background
 
   return {
     page: {
@@ -23,8 +23,8 @@ const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
       backgroundColor: cardBg,
       ...cardBorderStyle,
       borderRadius: BORDER_RADIUS.DEFAULT,
-      padding: '24px 20px',
-      marginBottom: '20px',
+      padding: `${SPACING.CARD_PADDING}px 20px`,
+      marginBottom: `${SPACING.CARD_GAP}px`,
       position: 'relative',
       zIndex: 0,
       overflow: 'visible',
@@ -43,9 +43,9 @@ const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
       'backgroundColor': cardBg,
       ...cardBorderStyle,
       'borderRadius': BORDER_RADIUS.DEFAULT,
-      'padding': '20px',
+      'padding': `${SPACING.CARD_PADDING}px`,
       'position': 'relative',
-      'overflowX': 'hidden',
+      'overflowX': 'auto',
       'overflowY': 'visible',
       'boxSizing': 'border-box',
       '& table': {

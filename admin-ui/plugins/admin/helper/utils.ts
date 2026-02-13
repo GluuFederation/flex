@@ -12,13 +12,16 @@ export type DateLike = string | number | Date | Dayjs | null | undefined
 export interface JsonObject {
   [key: string]: JsonValue
 }
-export type JsonValue = string | number | boolean | null | JsonObject
+export type JsonValue = string | number | boolean | null | JsonObject | JsonValue[]
 
 const getNestedValue = (obj: Record<string, JsonValue>, path: string): JsonValue | undefined => {
   return path.split('.').reduce<JsonValue | undefined>((acc, part) => {
-    return acc != null && typeof acc === 'object' && !Array.isArray(acc) && part in acc
-      ? (acc as Record<string, JsonValue>)[part]
-      : undefined
+    if (acc == null || typeof acc !== 'object') return undefined
+    if (Array.isArray(acc)) {
+      const index = Number(part)
+      return Number.isInteger(index) && index >= 0 && index < acc.length ? acc[index] : undefined
+    }
+    return part in acc ? (acc as Record<string, JsonValue>)[part] : undefined
   }, obj as JsonValue)
 }
 
@@ -39,12 +42,9 @@ export const isStartAfterEnd = (startDate: DateLike, endDate: DateLike): boolean
 export const dateConverter = (date: DateLike, datePattern = 'DD-MM-YYYY'): string =>
   formatDate(date, datePattern)
 
-/** Clears a React-controlled input by calling its state setter. Prefer this over direct DOM mutation. */
 export const clearControlledInput = (setValue: (v: string) => void): void => {
   setValue('')
 }
-
-/** Re-export for backward compatibility; prefer importing REGEX_AUDIT_LIST_TIMESTAMP from @/utils/regex. */
 export const auditListTimestampRegex = REGEX_AUDIT_LIST_TIMESTAMP
 
 export interface WebhookOutputItem {
@@ -83,21 +83,21 @@ export const webhookOutputObject = (
     })
 
     if (webhook.httpRequestBody) {
-      Object.entries(webhook.httpRequestBody).forEach(([key, templateValue]) => {
+      Object.keys(webhook.httpRequestBody).forEach((key) => {
+        const templateValue = webhook.httpRequestBody![key]
         if (typeof templateValue === 'string' && templateValue.includes('{')) {
+          let currentValue = templateValue
           templateValue.match(REGEX_BRACED_PLACEHOLDER)?.forEach((placeholder) => {
             const placeholderKey = placeholder.slice(1, -1)
             const value = placeholderKey.includes('.')
-              ? getNestedValue(createdFeatureValue, placeholderKey)
+              ? getNestedValue(createdFeatureValue as Record<string, JsonValue>, placeholderKey)
               : createdFeatureValue[placeholderKey]
-            if (value !== undefined && webhook.httpRequestBody) {
-              webhook.httpRequestBody[key] = (templateValue as string).replace(
-                regexForBracedKey(placeholderKey),
-                String(value),
-              )
+            if (value !== undefined) {
+              currentValue = currentValue.replace(regexForBracedKey(placeholderKey), String(value))
               shortcodeValueMap[placeholderKey] = value
             }
           })
+          webhook.httpRequestBody![key] = currentValue
         }
       })
     }

@@ -76,7 +76,7 @@ export const useLicenseDetails = (options: UseLicenseDetailsOptions = {}) => {
     mutation: {
       onSuccess: async () => {
         queryClient.invalidateQueries({ queryKey: getGetAdminuiLicenseQueryKey() })
-        const currentState = store.getState() as unknown as RootState
+        const currentState = store.getState()
         const audit = createAuditLog(currentState)
         if (audit) {
           addAdditionalData(audit, DELETION, API_LICENSE, {})
