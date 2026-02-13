@@ -8,6 +8,7 @@ import { cloneDeep } from 'lodash'
 import { JansAttribute, useGetAttributesByInum } from 'JansConfigApi'
 import { AttributeItem } from '../types/AttributeListPage.types'
 import { useTranslation } from 'react-i18next'
+import { REGEX_LEADING_COLON } from '@/utils/regex'
 import { getErrorMessage } from '../../utils/errorHandler'
 import { getDefaultAttributeItem } from '../../utils/formHelpers'
 import { DEFAULT_ATTRIBUTE_VALIDATION } from '../../helper/utils'
@@ -16,7 +17,7 @@ function AttributeViewPage(): JSX.Element {
   const { gid } = useParams<{ gid: string }>()
   const { t } = useTranslation()
 
-  const inum = gid?.replace(/^:/, '') || ''
+  const inum = gid?.replace(REGEX_LEADING_COLON, '') || ''
 
   const {
     data: attribute,

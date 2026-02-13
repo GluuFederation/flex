@@ -24,7 +24,7 @@ import { DEFAULT_STATUS } from '@/constants'
 import type { MauDateRange } from 'Plugins/admin/components/MAU/types'
 import DashboardChart from './Chart/DashboardChart'
 import { CHART_LEGEND_CONFIG, STATUS_DETAILS } from './constants'
-import DateRange from './DateRange'
+import { GluuDatePicker } from '@/components/GluuDatePicker'
 import { useDashboardLicense, useDashboardClients, useDashboardLockStats } from './hooks'
 import styles from './styles'
 import { GluuPageContent } from '@/components'
@@ -409,7 +409,9 @@ const DashboardPage = () => {
                       {t('dashboard.access_tokens_graph')}
                     </GluuText>
                     <div className={classes.chartDatePickers}>
-                      <DateRange
+                      <GluuDatePicker
+                        mode="range"
+                        dateFormat={DATE_FORMATS.DATE_PICKER_DISPLAY}
                         startDate={startDate}
                         endDate={endDate}
                         onStartDateChange={handleStartDateChange}

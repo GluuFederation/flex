@@ -6,8 +6,6 @@ export {
   augmentMauData,
 } from './dataAugmentation'
 
-export { getDatePickerTextFieldSlotProps } from './datePicker'
-
 export {
   formatMonth,
   formatNumber,

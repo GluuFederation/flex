@@ -18,7 +18,7 @@ import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import customColors from '@/customColors'
-import { getPagingSize } from '@/utils/pagingUtils'
+import { getDefaultPagingSize } from '@/utils/pagingUtils'
 import { useSetAtom } from 'jotai'
 import { useQueryClient } from '@tanstack/react-query'
 import { updateToast } from 'Redux/features/toastSlice'
@@ -119,7 +119,7 @@ function LdapListPage(): ReactElement {
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const bgThemeColor = { background: themeColors.background }
 
-  const pageSize = getPagingSize()
+  const pageSize = getDefaultPagingSize()
 
   SetTitle(t('titles.ldap_authentication'))
 

@@ -6,8 +6,7 @@ import translationEn from './locales/en/translation.json'
 import translationFr from './locales/fr/translation.json'
 import translationPt from './locales/pt/translation.json'
 import translationEs from './locales/es/translation.json'
-
-const isDev = process.env.NODE_ENV === 'development'
+import { isDevelopment } from './utils/env'
 
 const i18nConfig: InitOptions = {
   resources: {
@@ -37,7 +36,7 @@ const i18nConfig: InitOptions = {
     // This prevents double-escaping which causes &#39; to appear instead of '
   },
 
-  parseMissingKeyHandler: isDev
+  parseMissingKeyHandler: isDevelopment
     ? (key: string, defaultValue?: string) => {
         console.warn(`[i18n] Missing translation key: "${key}"`)
         return defaultValue ?? key

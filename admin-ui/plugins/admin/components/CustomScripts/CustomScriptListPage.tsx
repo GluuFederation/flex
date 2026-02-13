@@ -39,7 +39,7 @@ import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { getPagingSize } from '@/utils/pagingUtils'
+import { getDefaultPagingSize } from '@/utils/pagingUtils'
 import { useCustomScriptsByType, useDeleteCustomScript, useCustomScriptTypes } from './hooks'
 import { DEFAULT_SCRIPT_TYPE } from './constants'
 import type { CustomScript } from 'JansConfigApi'
@@ -62,7 +62,7 @@ const CustomScriptListPage: React.FC = () => {
     authorizeHelper,
   } = useCedarling()
 
-  const pageSize = getPagingSize()
+  const pageSize = getDefaultPagingSize()
   const [pattern, setPattern] = useState<string>('')
   const [scriptType, setScriptType] = useState<string>(DEFAULT_SCRIPT_TYPE)
   const [sortBy, setSortBy] = useState<string>('')

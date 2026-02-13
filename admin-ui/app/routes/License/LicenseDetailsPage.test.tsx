@@ -1,9 +1,35 @@
 import React, { ReactNode } from 'react'
 import { render, screen } from '@testing-library/react'
-import LicenseDetailsPage from './LicenseDetailsPage'
 import { Provider } from 'react-redux'
-import AppTestWrapper from '../Apps/Gluu/Tests/Components/AppTestWrapper.test'
-import { combineReducers, configureStore } from '@reduxjs/toolkit'
+import { configureStore } from '@reduxjs/toolkit'
+import LicenseDetailsPage from './LicenseDetailsPage'
+import AppTestWrapper from '../Apps/Gluu/Tests/Components/AppTestWrapper'
+
+jest.mock('@/cedarling', () => ({
+  useCedarling: () => ({
+    hasCedarWritePermission: () => true,
+    hasCedarReadPermission: () => true,
+    authorizeHelper: jest.fn(),
+  }),
+}))
+
+jest.mock('@/cedarling/utility', () => ({
+  ADMIN_UI_RESOURCES: { License: 'License', Webhooks: 'Webhooks' },
+}))
+
+jest.mock('@/cedarling/constants/resourceScopes', () => ({
+  CEDAR_RESOURCE_SCOPES: {
+    License: [{ permission: 'read', resourceId: 'License' }],
+    Webhooks: [],
+  },
+}))
+
+jest.mock('../Apps/Gluu/GluuCommitDialog', () => ({
+  __esModule: true,
+  default: function MockGluuCommitDialog() {
+    return null
+  },
+}))
 
 const mockLicense = {
   companyName: 'Gluu',
@@ -11,8 +37,8 @@ const mockLicense = {
   customerFirstName: 'Arnab',
   customerLastName: 'Dutta',
   licenseActive: true,
-  licenseEnable: true,
   licenseEnabled: true,
+  licenseExpired: false,
   licenseKey: 'TEST_LICENSE_KEY',
   licenseType: 'TIME_LIMITED',
   maxActivations: 14,
@@ -21,16 +47,21 @@ const mockLicense = {
   validityPeriod: '2022-10-01T00:00Z',
 }
 
-const INIT_LICENSE_DETAIL_STATE = {
-  item: mockLicense,
-  loading: false,
-}
+jest.mock('./hooks/useLicenseDetails', () => ({
+  useLicenseDetails: () => ({
+    item: mockLicense,
+    loading: false,
+    refetch: jest.fn(),
+    queryKey: [],
+    resetLicense: jest.fn(),
+    isResetting: false,
+  }),
+}))
 
 const store = configureStore({
-  reducer: combineReducers({
-    licenseDetailsReducer: (state = INIT_LICENSE_DETAIL_STATE) => state,
-    noReducer: (state = {}) => state,
-  }),
+  reducer: {
+    authReducer: (state = { hasSession: true }) => state,
+  },
 })
 
 const Wrapper = ({ children }: { children: ReactNode }) => (

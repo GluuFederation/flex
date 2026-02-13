@@ -21,9 +21,10 @@ import {
   ListItemText,
   Button as MaterialButton,
 } from '@mui/material'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { GluuDatePicker } from '@/components/GluuDatePicker'
+import { DATE_FORMATS } from '@/utils/dayjsUtils'
 import { useSelector } from 'react-redux'
 import { Button } from 'reactstrap'
 import { Card, CardBody } from 'Components'
@@ -35,6 +36,7 @@ import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import SessionDetailPage from '../Sessions/SessionDetailPage'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { useCedarling } from '@/cedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
@@ -45,7 +47,7 @@ import GetAppIcon from '@mui/icons-material/GetApp'
 import ViewColumnIcon from '@mui/icons-material/ViewColumn'
 import { DeleteOutlined } from '@mui/icons-material'
 import customColors from '@/customColors'
-import { getPagingSize } from '@/utils/pagingUtils'
+import { getDefaultPagingSize } from '@/utils/pagingUtils'
 import {
   useGetSessions,
   useDeleteSession,
@@ -169,7 +171,7 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
     updatedColumns: [],
   })
 
-  const pageSize = getPagingSize()
+  const pageSize = getDefaultPagingSize()
   const toggle = () => setModal(!modal)
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme || DEFAULT_THEME
@@ -691,19 +693,11 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
                     filterState.searchFilter === 'authenticationTime' ? (
                       <Grid item xs={4}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <DatePicker
-                            format="MM/DD/YYYY"
+                          <GluuDatePicker
+                            dateFormat={DATE_FORMATS.DATE_PICKER_DISPLAY_US}
                             label={t('dashboard.start_date')}
                             value={filterState.date}
                             onChange={handleDateChange}
-                            slotProps={{
-                              textField: {
-                                fullWidth: true,
-                                style: {
-                                  borderColor: customColors.lightBlue,
-                                },
-                              },
-                            }}
                           />
                         </LocalizationProvider>
                       </Grid>
@@ -766,7 +760,7 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
             modal={modal}
             subject="user session revoke"
             onAccept={onRevokeConfirmed}
-            style={{ marginRight: '0px' }}
+            feature={adminUiFeatures.sessions}
           />
         ) : null}
         {!isEmpty(item) && deleteModal ? (
@@ -777,7 +771,7 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
             modal={deleteModal}
             subject="session delete"
             onAccept={onDeleteConfirmed}
-            style={{ marginRight: '0px' }}
+            feature={adminUiFeatures.sessions}
           />
         ) : null}
       </CardBody>

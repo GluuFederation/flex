@@ -6,6 +6,7 @@ import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
 import { CREATE } from '../../audit/UserActionType'
 import { initAudit } from '../sagas/SagaUtils'
+import { isDevelopment } from '@/utils/env'
 
 const API_USERS = '/api/v1/users'
 
@@ -16,7 +17,7 @@ interface ApiResponse {
 export function* auditLogoutLogsSaga({
   payload,
 }: PayloadAction<{ message: string }>): Generator<any, boolean, any> {
-  if (process.env.NODE_ENV === 'development') {
+  if (isDevelopment) {
     console.log('Logout audit:', payload.message)
   }
 
@@ -36,7 +37,7 @@ export function* auditLogoutLogsSaga({
         const response = yield call(fetchApiTokenWithDefaultScopes)
         yield call(deleteAdminUiSession, response?.access_token)
       } catch (recoveryError) {
-        if (process.env.NODE_ENV === 'development') {
+        if (isDevelopment) {
           console.error('Session cleanup failed:', recoveryError)
         }
       }
@@ -44,7 +45,7 @@ export function* auditLogoutLogsSaga({
       return false
     }
     yield put(auditLogoutLogsResponse(false))
-    if (process.env.NODE_ENV === 'development') {
+    if (isDevelopment) {
       console.error('Error:', e)
     }
     return false

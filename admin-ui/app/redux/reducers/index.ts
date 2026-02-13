@@ -7,7 +7,6 @@ import authReducer from '../features/authSlice'
 import { reducer as initReducer } from '../features/initSlice'
 import logoutReducer from '../features/logoutSlice'
 import licenseReducer from '../features/licenseSlice'
-import { reducer as licenseDetailsReducer } from '../features/licenseDetailsSlice'
 import oidcDiscoveryReducer from '../features/oidcDiscoverySlice'
 import attributesReducerRoot from '../features/attributesSlice'
 import toastReducer from '../features/toastSlice'
@@ -23,7 +22,6 @@ const appReducers = {
   oidcDiscoveryReducer,
   mauReducer,
   healthReducer,
-  licenseDetailsReducer,
   attributesReducerRoot,
   toastReducer,
   profileDetailsReducer,

@@ -84,29 +84,6 @@ export interface LicenseState {
   isValidatingFlow: boolean
 }
 
-// License Details State
-export interface LicenseDetailsItem {
-  companyName?: string
-  customerEmail?: string
-  customerFirstName?: string
-  customerLastName?: string
-  licenseActive?: boolean
-  licenseEnable?: boolean
-  licenseEnabled?: boolean
-  licenseKey?: string
-  licenseType?: string
-  maxActivations?: number
-  productCode?: string
-  productName?: string
-  validityPeriod?: string
-  licenseExpired?: boolean
-}
-
-export interface LicenseDetailsState {
-  item: LicenseDetailsItem
-  loading: boolean
-}
-
 // OIDC Discovery State
 export interface OidcDiscoveryState {
   configuration: Record<string, unknown>
@@ -504,7 +481,6 @@ export interface CoreAppState {
   initReducer: InitState
   logoutReducer: LogoutState
   licenseReducer: LicenseState
-  licenseDetailsReducer: LicenseDetailsState
   oidcDiscoveryReducer: OidcDiscoveryState
   mauReducer: MauState
   healthReducer: HealthState
@@ -541,14 +517,9 @@ export interface SmtpPluginState {
   smtpsReducer: SmtpState
 }
 
-// RootState: core + optional plugin reducers (dynamically registered)
 export interface RootState
-  extends CoreAppState,
-    Partial<AdminPluginState & AuthServerPluginState & SmtpPluginState> {}
+  extends CoreAppState, Partial<AdminPluginState & AuthServerPluginState & SmtpPluginState> {}
 
-// AppDispatch, useAppDispatch, useAppSelector: import from @/redux/hooks (canonical source using typeof store.dispatch)
-
-// Reducer registry types
 export type ReducerMap = {
   [K in keyof RootState]?: Reducer<RootState[K], UnknownAction>
 }

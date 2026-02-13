@@ -8,6 +8,7 @@ import React, {
   useRef,
 } from 'react'
 import { DEFAULT_THEME, isValidTheme, type ThemeValue } from './constants'
+import { isDevelopment } from '@/utils/env'
 
 type ThemeState = {
   theme: ThemeValue
@@ -54,7 +55,7 @@ const extractUserTheme = (currentInum?: string | null): ThemeValue => {
 
     return DEFAULT_THEME
   } catch (e) {
-    if (process.env.NODE_ENV === 'development') {
+    if (isDevelopment) {
       console.error('Failed to extract user theme, using default:', e)
     }
     return DEFAULT_THEME
@@ -81,7 +82,7 @@ const getInitialTheme = (): ThemeValue => {
     window.localStorage.setItem('initTheme', DEFAULT_THEME)
     return DEFAULT_THEME
   } catch (e) {
-    if (process.env.NODE_ENV === 'development') {
+    if (isDevelopment) {
       console.error('Failed to get initial theme, using default:', e)
     }
     try {
@@ -152,7 +153,7 @@ export function ThemeProvider(props: ThemeProviderProps) {
 
       hasSyncedRef.current = true
     } catch (e) {
-      if (process.env.NODE_ENV === 'development') {
+      if (isDevelopment) {
         console.error('Failed to sync theme in useEffect, ensuring default:', e)
       }
       try {
@@ -165,7 +166,7 @@ export function ThemeProvider(props: ThemeProviderProps) {
         }
         hasSyncedRef.current = true
       } catch (error) {
-        if (process.env.NODE_ENV === 'development') {
+        if (isDevelopment) {
           console.error(error)
         }
       }

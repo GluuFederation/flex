@@ -1,3 +1,7 @@
+export const OPACITY = {
+  DIMMED: 0.5,
+} as const
+
 export const SPACING = {
   PAGE: 24,
   CONTENT_PADDING: 40,

@@ -1,328 +1,113 @@
-import React, { useState, useMemo, useContext, useCallback } from 'react'
-import dayjs, { Dayjs } from 'dayjs'
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import {
-  Box,
-  Paper,
-  Typography,
-  TextField,
-  Button,
-  IconButton,
-  Chip,
-  Skeleton,
-  TablePagination,
-  InputAdornment,
-  Tooltip,
-  keyframes,
-} from '@mui/material'
-import {
-  Search as SearchIcon,
-  Refresh as RefreshIcon,
-  Schedule as ScheduleIcon,
-  Article as ArticleIcon,
-  ErrorOutline as ErrorOutlineIcon,
-} from '@mui/icons-material'
-import MaterialTable, { Column } from '@material-table/core'
+import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ThemeContext } from 'Context/theme/themeContext'
-import getThemeColor from 'Context/theme/config'
-import { customColors } from '@/customColors'
+import { createDate, subtractDate, isValidDate, isAfterDate } from '@/utils/dayjsUtils'
+import type { Dayjs } from '@/utils/dayjsUtils'
+import SearchIcon from '@mui/icons-material/Search'
+import AccessTimeIcon from '@mui/icons-material/AccessTime'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
+import { useCedarling } from '@/cedarling'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { GluuTable } from '@/components/GluuTable'
+import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
+import { GluuBadge } from '@/components/GluuBadge'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
 import SetTitle from 'Utils/SetTitle'
-import {
-  auditListTimestampRegex,
-  dateConverter,
-  hasBothDates,
-  hasOnlyOneDate,
-  isStartAfterEnd,
-  isValidDate,
-} from 'Plugins/admin/helper/utils'
+import { useStyles } from './AuditListPage.style'
+import { auditListTimestampRegex, dateConverter, hasBothDates } from 'Plugins/admin/helper/utils'
 import { useGetAuditData, GetAuditDataParams } from 'JansConfigApi'
-import { AuditRow, AuditSearchProps } from './types'
-import { DEFAULT_THEME } from '@/context/theme/constants'
+import type { AuditRow } from './types'
+import { getDefaultPagingSize, getRowsPerPageOptions } from '@/utils/pagingUtils'
 
-const PAGE_SIZE_OPTIONS = [10, 25, 50, 100]
+const AUDIT_LOGS_RESOURCE_ID = ADMIN_UI_RESOURCES.AuditLogs
+const AUDIT_LOGS_SCOPES = CEDAR_RESOURCE_SCOPES[AUDIT_LOGS_RESOURCE_ID] ?? []
 
-const spin = keyframes`
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-`
-
-const STYLES = {
-  container: {
-    minHeight: '70vh',
-    p: 3,
-  },
-  filterBox: {
-    mb: 3,
-    p: 2.5,
-    borderRadius: 2,
-  },
-  filterRow: {
-    display: 'flex',
-    gap: 2,
-    alignItems: 'center',
-    flexWrap: 'wrap',
-  },
-  searchField: {
-    'minWidth': 280,
-    '& .MuiOutlinedInput-root': {
-      borderRadius: 1.5,
-    },
-  },
-  datePicker: {
-    'minWidth': 160,
-    '& .MuiOutlinedInput-root': {
-      borderRadius: 1.5,
-    },
-  },
-  tableContainer: {
-    borderRadius: 2,
-    overflow: 'hidden',
-  },
-  emptyState: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    py: 10,
-    px: 4,
-  },
-  logEntry: {
-    display: 'flex',
-    alignItems: 'flex-start',
-    gap: 1.5,
-    py: 0.5,
-  },
-  logContent: {
-    fontSize: '0.875rem',
-    lineHeight: 1.6,
-    wordBreak: 'break-word' as const,
-  },
+const T_KEYS = {
+  TITLE_AUDIT_LOGS: 'titles.audit_logs',
+  FIELD_LOG_ENTRY: 'fields.log_entry',
+  ACTION_SEARCH: 'actions.search',
+  MSG_ERROR_LOADING: 'messages.error_loading_data',
+  MSG_NO_DATA: 'messages.no_data',
+  PLACEHOLDER_SEARCH_PATTERN: 'placeholders.search_pattern',
 } as const
 
-const LoadingSkeleton: React.FC = () => (
-  <Box p={2}>
-    {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-      <Box key={i} display="flex" alignItems="center" gap={2} mb={1.5}>
-        <Skeleton variant="rounded" width={40} height={32} />
-        <Skeleton variant="rounded" width={100} height={28} sx={{ borderRadius: 3 }} />
-        <Skeleton variant="text" sx={{ flex: 1 }} height={24} />
-      </Box>
-    ))}
-  </Box>
-)
+const getAuditRowKey = (row: AuditRow) => row.id
 
-const EmptyState: React.FC = () => {
-  const { t } = useTranslation()
-  return (
-    <Box sx={STYLES.emptyState}>
-      <ArticleIcon sx={{ fontSize: 64, color: customColors.lightGray, mb: 2 }} />
-      <Typography variant="h6" color="textSecondary" gutterBottom>
-        {t('messages.no_data')}
-      </Typography>
-      <Typography variant="body2" color="textSecondary" textAlign="center">
-        {t('messages.adjust_filters')}
-      </Typography>
-    </Box>
-  )
-}
-
-interface ErrorStateProps {
-  onRetry: () => void
-}
-
-const ErrorState: React.FC<ErrorStateProps> = ({ onRetry }) => {
-  const { t } = useTranslation()
-  return (
-    <Box sx={STYLES.emptyState}>
-      <ErrorOutlineIcon sx={{ fontSize: 64, color: customColors.accentRed, mb: 2 }} />
-      <Typography variant="h6" color="error" gutterBottom>
-        {t('messages.error_loading_data')}
-      </Typography>
-      <Typography variant="body2" color="textSecondary" textAlign="center" mb={2}>
-        {t('messages.try_again_later')}
-      </Typography>
-      <Button variant="outlined" color="error" onClick={onRetry} startIcon={<RefreshIcon />}>
-        {t('actions.retry')}
-      </Button>
-    </Box>
-  )
-}
-
-const AuditSearch: React.FC<AuditSearchProps> = ({
-  pattern,
-  startDate,
-  endDate,
-  isLoading,
-  onPatternChange,
-  onStartDateChange,
-  onEndDateChange,
-  onSearch,
-  onRefresh,
-  isSearchDisabled,
-}) => {
-  const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
-  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
-
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === 'Enter' && !isSearchDisabled) {
-        onSearch()
-      }
-    },
-    [isSearchDisabled, onSearch],
-  )
-
-  return (
-    <Paper
-      elevation={0}
-      sx={{
-        ...STYLES.filterBox,
-        backgroundColor: customColors.white,
-        border: `1px solid ${customColors.lightGray}`,
-      }}
-    >
-      <Box sx={STYLES.filterRow}>
-        <TextField
-          size="small"
-          label={t('placeholders.search_pattern')}
-          value={pattern}
-          onChange={(e) => onPatternChange(e.target.value)}
-          onKeyDown={handleKeyDown}
-          sx={STYLES.searchField}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon sx={{ color: customColors.darkBackground }} />
-              </InputAdornment>
-            ),
-          }}
-        />
-
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker
-            label={t('dashboard.start_date')}
-            value={startDate}
-            onChange={onStartDateChange}
-            format="DD/MM/YYYY"
-            slotProps={{
-              textField: {
-                size: 'small',
-                sx: STYLES.datePicker,
-              },
-            }}
-          />
-          <DatePicker
-            label={t('dashboard.end_date')}
-            value={endDate}
-            onChange={onEndDateChange}
-            format="DD/MM/YYYY"
-            maxDate={dayjs()}
-            slotProps={{
-              textField: {
-                size: 'small',
-                sx: STYLES.datePicker,
-              },
-            }}
-          />
-        </LocalizationProvider>
-
-        <Box sx={{ display: 'flex', gap: 1, ml: 'auto' }}>
-          <Tooltip title={t('actions.refresh')}>
-            <IconButton
-              onClick={onRefresh}
-              disabled={isLoading}
-              sx={{
-                'backgroundColor': themeColors.background,
-                'color': themeColors.fontColor,
-                '&:hover': { backgroundColor: themeColors.background, opacity: 0.8 },
-              }}
-            >
-              <RefreshIcon
-                sx={{
-                  animation: isLoading ? `${spin} 1s linear infinite` : 'none',
-                }}
-              />
-            </IconButton>
-          </Tooltip>
-
-          <Button
-            variant="contained"
-            onClick={onSearch}
-            disabled={isSearchDisabled || isLoading}
-            startIcon={<SearchIcon />}
-            sx={{
-              'px': 3,
-              'borderRadius': 1.5,
-              'backgroundColor': themeColors.background,
-              'color': themeColors.fontColor,
-              '&:hover': { backgroundColor: themeColors.background, opacity: 0.9 },
-              'textTransform': 'none',
-              'fontWeight': 600,
-            }}
-          >
-            {t('actions.search')}
-          </Button>
-        </Box>
-      </Box>
-    </Paper>
-  )
+const splitTimestamp = (timestamp: string): { datePart: string; timePart: string } => {
+  if (!timestamp) return { datePart: '', timePart: '' }
+  const spaceIdx = timestamp.indexOf(' ')
+  if (spaceIdx === -1) return { datePart: timestamp, timePart: '' }
+  return {
+    datePart: timestamp.slice(0, spaceIdx),
+    timePart: timestamp.slice(spaceIdx + 1),
+  }
 }
 
 const AuditListPage: React.FC = () => {
   const { t } = useTranslation()
-  SetTitle(t('menus.audit_logs'))
+  const { state: themeState } = useTheme()
+  const isDark = themeState.theme === THEME_DARK
+  const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
+  const { classes } = useStyles({ isDark, themeColors })
+  const { hasCedarReadPermission, authorizeHelper } = useCedarling()
 
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
-  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+  SetTitle(t(T_KEYS.TITLE_AUDIT_LOGS))
 
-  const [limit, setLimit] = useState<number>(10)
-  const [pattern, setPattern] = useState<string>('')
-  const [pageNumber, setPageNumber] = useState<number>(0)
-  const [startDate, setStartDate] = useState<Dayjs | null>(dayjs().subtract(14, 'day'))
-  const [endDate, setEndDate] = useState<Dayjs | null>(dayjs())
-  const [queryParams, setQueryParams] = useState<GetAuditDataParams>(() => ({
-    limit: 10,
-    startIndex: 0,
-    start_date: dateConverter(dayjs().subtract(14, 'day')),
-    end_date: dateConverter(dayjs()),
-  }))
+  const canReadAuditLogs = useMemo(
+    () => hasCedarReadPermission(AUDIT_LOGS_RESOURCE_ID),
+    [hasCedarReadPermission],
+  )
 
-  const { data, isLoading, isError, refetch } = useGetAuditData(queryParams)
+  useEffect(() => {
+    if (AUDIT_LOGS_SCOPES.length > 0) {
+      authorizeHelper(AUDIT_LOGS_SCOPES)
+    }
+  }, [authorizeHelper])
 
-  const totalItems = data?.totalEntriesCount ?? 0
-  const entries = data?.entries ?? []
+  const [limit, setLimit] = useState(getDefaultPagingSize)
+  const [pattern, setPattern] = useState('')
+  const [pageNumber, setPageNumber] = useState(0)
+  const [startDate, setStartDate] = useState<Dayjs | null>(() =>
+    subtractDate(createDate(), 14, 'day'),
+  )
+  const [endDate, setEndDate] = useState<Dayjs | null>(() => createDate())
+  const [queryParams, setQueryParams] = useState<GetAuditDataParams>(() => {
+    const start = subtractDate(createDate(), 14, 'day')
+    const end = createDate()
+    return {
+      limit: getDefaultPagingSize(),
+      startIndex: 0,
+      start_date: dateConverter(start),
+      end_date: dateConverter(end),
+    }
+  })
 
-  const filters = useMemo(
+  const { data, isLoading, isFetching, isError } = useGetAuditData(queryParams, {
+    query: { enabled: canReadAuditLogs },
+  })
+  const loading = useMemo(() => isLoading || isFetching, [isLoading, isFetching])
+  const totalItems = useMemo(() => data?.totalEntriesCount ?? 0, [data?.totalEntriesCount])
+  const entries = useMemo(() => data?.entries ?? [], [data?.entries])
+
+  const filterState = useMemo(
     () => ({
       hasBothDates: hasBothDates(startDate, endDate),
-      hasOnlyOneDate: hasOnlyOneDate(startDate, endDate),
-      isStartAfterEnd: isStartAfterEnd(startDate, endDate),
-      startDateStr: isValidDate(startDate) ? dateConverter(startDate) : '',
-      endDateStr: isValidDate(endDate) ? dateConverter(endDate) : '',
+      startDateApi: isValidDate(startDate) ? dateConverter(startDate) : '',
+      endDateApi: isValidDate(endDate) ? dateConverter(endDate) : '',
     }),
     [startDate, endDate],
   )
-
-  const isSearchDisabled = useMemo(() => {
-    if (filters.isStartAfterEnd) return true
-    if (filters.hasOnlyOneDate) return true
-    if (pattern.trim() && !startDate && !endDate) return false
-    if (filters.hasBothDates) return false
-    return true
-  }, [filters, pattern, startDate, endDate])
 
   const buildQueryParams = useCallback(
     (
       currentLimit: number,
       currentStartIndex: number,
       currentPattern: string,
-      currentFilters: typeof filters,
+      currentFilters: typeof filterState,
     ): GetAuditDataParams => {
       const params: GetAuditDataParams = {
         limit: currentLimit,
@@ -330,8 +115,8 @@ const AuditListPage: React.FC = () => {
       }
       if (currentPattern.trim()) params.pattern = currentPattern.trim()
       if (currentFilters.hasBothDates) {
-        params.start_date = currentFilters.startDateStr
-        params.end_date = currentFilters.endDateStr
+        params.start_date = currentFilters.startDateApi
+        params.end_date = currentFilters.endDateApi
       }
       return params
     },
@@ -339,121 +124,160 @@ const AuditListPage: React.FC = () => {
   )
 
   const handleSearch = useCallback(() => {
-    if (isSearchDisabled) return
+    if (!filterState.hasBothDates) return
     setPageNumber(0)
-    setQueryParams(buildQueryParams(limit, 0, pattern, filters))
-  }, [isSearchDisabled, buildQueryParams, limit, pattern, filters])
+    const nextParams = buildQueryParams(limit, 0, pattern, filterState)
+    setQueryParams(nextParams)
+  }, [buildQueryParams, limit, pattern, filterState])
 
   const handleRefresh = useCallback(() => {
-    refetch()
-  }, [refetch])
+    if (!filterState.hasBothDates) return
+    setPageNumber(0)
+    setPattern('')
+    setQueryParams(buildQueryParams(limit, 0, '', filterState))
+  }, [buildQueryParams, limit, filterState])
 
-  const onPageChange = useCallback(
-    (_: React.MouseEvent<HTMLButtonElement> | null, page: number) => {
-      setPageNumber(page)
-      setQueryParams(buildQueryParams(limit, page * limit, pattern, filters))
+  const handleStartDateChange = useCallback((date: Dayjs | null) => {
+    setStartDate(date)
+  }, [])
+  const handleEndDateChange = useCallback((date: Dayjs | null) => {
+    setEndDate(date)
+  }, [])
+
+  const refreshWithNewDates = useCallback(
+    (newStartApi: string, newEndApi: string) => {
+      if (!newStartApi || !newEndApi) return
+      setPageNumber(0)
+      setQueryParams(
+        buildQueryParams(limit, 0, pattern, {
+          hasBothDates: true,
+          startDateApi: newStartApi,
+          endDateApi: newEndApi,
+        }),
+      )
     },
-    [buildQueryParams, limit, pattern, filters],
+    [buildQueryParams, limit, pattern],
   )
 
-  const onRowsPerPageChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const newLimit = parseInt(event.target.value, 10)
+  const handleStartDateAccept = useCallback(
+    (date: Dayjs | null) => {
+      setStartDate(date)
+      if (
+        date &&
+        endDate &&
+        isValidDate(date) &&
+        isValidDate(endDate) &&
+        !isAfterDate(date, endDate)
+      ) {
+        refreshWithNewDates(dateConverter(date), dateConverter(endDate))
+      }
+    },
+    [endDate, refreshWithNewDates],
+  )
+  const handleEndDateAccept = useCallback(
+    (date: Dayjs | null) => {
+      setEndDate(date)
+      if (
+        date &&
+        startDate &&
+        isValidDate(startDate) &&
+        isValidDate(date) &&
+        !isAfterDate(startDate, date)
+      ) {
+        refreshWithNewDates(dateConverter(startDate), dateConverter(date))
+      }
+    },
+    [startDate, refreshWithNewDates],
+  )
+
+  const handlePageChange = useCallback(
+    (page: number) => {
+      setPageNumber(page)
+      setQueryParams(buildQueryParams(limit, page * limit, pattern, filterState))
+    },
+    [buildQueryParams, limit, pattern, filterState],
+  )
+
+  const handleRowsPerPageChange = useCallback(
+    (newLimit: number) => {
       setPageNumber(0)
       setLimit(newLimit)
-      setQueryParams(buildQueryParams(newLimit, 0, pattern, filters))
+      setQueryParams(buildQueryParams(newLimit, 0, pattern, filterState))
     },
-    [buildQueryParams, pattern, filters],
+    [buildQueryParams, pattern, filterState],
   )
 
-  const tableColumns: Column<AuditRow>[] = useMemo(
+  const dateBadgeColors = useMemo(
+    () => ({
+      backgroundColor: themeColors.formFooter?.apply?.backgroundColor,
+      textColor: themeColors.formFooter?.apply?.textColor,
+      borderColor: themeColors.formFooter?.apply?.borderColor,
+    }),
+    [themeColors],
+  )
+
+  const columns: ColumnDef<AuditRow>[] = useMemo(
     () => [
       {
-        title: '#',
-        field: 'serial',
+        key: 'serial',
+        label: '#',
         width: 60,
-        cellStyle: {
-          width: 60,
-          padding: '12px 16px',
-          textAlign: 'center' as const,
-          fontWeight: 500,
-          color: customColors.darkGray,
-        },
-        headerStyle: {
-          width: 60,
-          textAlign: 'center' as const,
-        },
-        render: (rowData: AuditRow) => (
-          <Typography variant="body2" fontWeight={500} color="textSecondary">
-            {rowData.serial}
-          </Typography>
-        ),
+        align: 'left' as const,
+        sortable: false,
       },
       {
-        title: t('fields.log_entry'),
-        field: 'log',
-        cellStyle: {
-          padding: '12px 16px',
-        },
-        render: (rowData: AuditRow) => {
-          const { timestamp, content } = rowData
-
-          if (timestamp) {
-            const dateOnly = timestamp.split(' ')[0] || timestamp
-            const timeOnly = timestamp.split(' ')[1] || ''
-
+        key: 'log',
+        label: t(T_KEYS.FIELD_LOG_ENTRY),
+        sortable: false,
+        render: (
+          _value: AuditRow[keyof AuditRow],
+          row: AuditRow,
+          _rowIdx: number,
+          context?: { isExpanded: boolean },
+        ) => {
+          const isExpanded = context?.isExpanded ?? false
+          if (!row.timestamp) {
             return (
-              <Box sx={STYLES.logEntry}>
-                <Chip
-                  icon={<ScheduleIcon sx={{ fontSize: 14 }} />}
-                  label={dateOnly}
-                  size="small"
-                  sx={{
-                    'backgroundColor': customColors.darkBackground,
-                    'color': customColors.white,
-                    'fontWeight': 600,
-                    'fontSize': '0.75rem',
-                    '& .MuiChip-icon': { color: customColors.white },
-                  }}
-                />
-                {timeOnly && (
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      color: `${customColors.black} !important`, // Override MUI global text color
-                      fontFamily: 'monospace',
-                      minWidth: 90,
-                    }}
-                  >
-                    {timeOnly}
-                  </Typography>
-                )}
-                <Typography
-                  sx={{
-                    ...STYLES.logContent,
-                    color: `${customColors.black} !important`, // Override MUI global text color
-                  }}
-                >
-                  {content}
-                </Typography>
-              </Box>
+              <div
+                className={`${classes.logEntryContent} ${!isExpanded ? classes.logEntryContentCollapsed : ''}`}
+              >
+                {row.content}
+              </div>
             )
           }
-
           return (
-            <Typography
-              sx={{
-                ...STYLES.logContent,
-                color: `${customColors.black} !important`, // Override MUI global text color
-              }}
-            >
-              {content}
-            </Typography>
+            <div className={classes.logEntryCell}>
+              <GluuBadge
+                pill
+                size="md"
+                backgroundColor={dateBadgeColors.backgroundColor}
+                textColor={dateBadgeColors.textColor}
+                borderColor={dateBadgeColors.borderColor}
+                className={classes.dateBadge}
+              >
+                <AccessTimeIcon className={classes.accessTimeIcon} />
+                {row.datePart}
+              </GluuBadge>
+              {row.timePart ? <span>{row.timePart}</span> : null}
+              <div
+                className={`${classes.logEntryContent} ${!isExpanded ? classes.logEntryContentCollapsed : ''}`}
+              >
+                {row.content}
+              </div>
+            </div>
           )
         },
       },
     ],
-    [t],
+    [
+      t,
+      classes.logEntryCell,
+      classes.logEntryContent,
+      classes.logEntryContentCollapsed,
+      classes.dateBadge,
+      classes.accessTimeIcon,
+      dateBadgeColors,
+    ],
   )
 
   const auditRows: AuditRow[] = useMemo(() => {
@@ -463,129 +287,99 @@ const AuditListPage: React.FC = () => {
       const match = auditString.match(auditListTimestampRegex)
       const timestamp = match?.[1] ?? ''
       const content = match?.[2] ?? auditString
+      const { datePart, timePart } = splitTimestamp(timestamp)
       return {
         id: startSerial + idx + 1,
         serial: startSerial + idx + 1,
         log: auditString,
         timestamp,
+        datePart,
+        timePart,
         content,
       }
     })
   }, [entries, pageNumber, limit])
 
-  const renderTable = () => {
-    if (isLoading) return <LoadingSkeleton />
-    if (isError) return <ErrorState onRetry={refetch} />
-    if (!auditRows.length) return <EmptyState />
+  const pagination: PaginationConfig = useMemo(
+    () => ({
+      page: pageNumber,
+      rowsPerPage: limit,
+      totalItems,
+      rowsPerPageOptions: getRowsPerPageOptions(),
+      onPageChange: handlePageChange,
+      onRowsPerPageChange: handleRowsPerPageChange,
+    }),
+    [pageNumber, limit, totalItems, handlePageChange, handleRowsPerPageChange],
+  )
 
-    return (
-      <MaterialTable<AuditRow>
-        components={{
-          Container: (props) => <Paper {...props} elevation={0} />,
-          Pagination: () => (
-            <TablePagination
-              component="div"
-              count={totalItems}
-              page={pageNumber}
-              onPageChange={onPageChange}
-              rowsPerPage={limit}
-              onRowsPerPageChange={onRowsPerPageChange}
-              rowsPerPageOptions={PAGE_SIZE_OPTIONS}
-              sx={{
-                'borderTop': `1px solid ${customColors.lightGray}`,
-                '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
-                  fontWeight: 500,
-                },
-              }}
-            />
-          ),
-        }}
-        columns={tableColumns}
-        data={auditRows}
-        title=""
-        options={{
-          toolbar: false,
-          search: false,
-          selection: false,
-          paging: true,
-          pageSize: limit,
-          draggable: false,
-          sorting: false,
-          headerStyle: {
-            backgroundColor: themeColors.background,
-            color: themeColors.fontColor,
-            fontWeight: 600,
-            fontSize: '0.875rem',
-            textTransform: 'uppercase' as const,
-            padding: '14px 16px',
-          },
-        }}
-      />
-    )
-  }
+  const searchPrimaryAction = useMemo(
+    () => ({
+      label: t(T_KEYS.ACTION_SEARCH),
+      icon: <SearchIcon className={classes.searchActionIcon} />,
+      onClick: handleSearch,
+    }),
+    [t, handleSearch, classes.searchActionIcon],
+  )
+
+  const dateRangeConfig = useMemo(
+    () => ({
+      startDate,
+      endDate,
+      onStartDateChange: handleStartDateChange,
+      onEndDateChange: handleEndDateChange,
+      onStartDateAccept: handleStartDateAccept,
+      onEndDateAccept: handleEndDateAccept,
+    }),
+    [
+      startDate,
+      endDate,
+      handleStartDateChange,
+      handleEndDateChange,
+      handleStartDateAccept,
+      handleEndDateAccept,
+    ],
+  )
+
+  const emptyMessage = useMemo(
+    () => (isError ? t(T_KEYS.MSG_ERROR_LOADING) : t(T_KEYS.MSG_NO_DATA)),
+    [isError, t],
+  )
 
   return (
-    <Paper
-      elevation={0}
-      sx={{ ...STYLES.container, backgroundColor: customColors.white, borderRadius: 3 }}
-    >
-      <Box mb={3}>
-        <Typography variant="h5" fontWeight={600} color={customColors.darkGray} gutterBottom>
-          {t('menus.audit_logs')}
-        </Typography>
-        <Typography variant="body2" color="textSecondary">
-          {t('messages.audit_description')}
-        </Typography>
-      </Box>
+    <GluuLoader blocking={loading}>
+      <div className={classes.page}>
+        <GluuViewWrapper canShow={canReadAuditLogs}>
+          <div className={classes.searchCard}>
+            <div className={classes.searchCardContent}>
+              <GluuSearchToolbar
+                searchLabel={`${t(T_KEYS.PLACEHOLDER_SEARCH_PATTERN)}:`}
+                searchPlaceholder={t(T_KEYS.PLACEHOLDER_SEARCH_PATTERN)}
+                searchValue={pattern}
+                onSearch={setPattern}
+                onSearchSubmit={handleSearch}
+                dateRange={dateRangeConfig}
+                onRefresh={handleRefresh}
+                refreshLoading={loading}
+                primaryAction={searchPrimaryAction}
+              />
+            </div>
+          </div>
 
-      <AuditSearch
-        pattern={pattern}
-        startDate={startDate}
-        endDate={endDate}
-        isLoading={isLoading}
-        onPatternChange={setPattern}
-        onStartDateChange={setStartDate}
-        onEndDateChange={setEndDate}
-        onSearch={handleSearch}
-        onRefresh={handleRefresh}
-        isSearchDisabled={isSearchDisabled}
-      />
-
-      {filters.isStartAfterEnd && (
-        <Box mb={2}>
-          <Typography color="error" variant="body2">
-            {t('messages.start_date_after_end')}
-          </Typography>
-        </Box>
-      )}
-
-      {filters.hasOnlyOneDate && (
-        <Box mb={2}>
-          <Typography color="warning.main" variant="body2">
-            {t('messages.both_dates_required')}
-          </Typography>
-        </Box>
-      )}
-
-      <Paper
-        elevation={0}
-        sx={{ ...STYLES.tableContainer, border: `1px solid ${customColors.lightGray}` }}
-      >
-        {renderTable()}
-      </Paper>
-
-      {!isLoading && !isError && auditRows.length > 0 && (
-        <Box mt={2} display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="body2" color="textSecondary">
-            {t('messages.showing_entries', {
-              start: pageNumber * limit + 1,
-              end: Math.min((pageNumber + 1) * limit, totalItems),
-              total: totalItems,
-            })}
-          </Typography>
-        </Box>
-      )}
-    </Paper>
+          <div className={classes.tableCard}>
+            {/* loading={false}: page-level GluuLoader already shows blocking overlay; table loading state intentionally suppressed */}
+            <GluuTable<AuditRow>
+              columns={columns}
+              data={auditRows}
+              loading={false}
+              expandable
+              pagination={pagination}
+              getRowKey={getAuditRowKey}
+              emptyMessage={emptyMessage}
+            />
+          </div>
+        </GluuViewWrapper>
+      </div>
+    </GluuLoader>
   )
 }
 

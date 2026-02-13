@@ -30,6 +30,7 @@ import { SidebarMenuItem, SidebarMenu } from './SidebarMenu'
 import SidebarTrigger from './SidebarTrigger'
 import { ThemeClass, ThemeProvider, ThemeConsumer } from './Theme'
 import { ThemeDropdown } from './ThemeDropdown'
+import { GluuDatePicker } from './GluuDatePicker'
 import { GluuDropdown } from './GluuDropdown'
 import { GluuPageContent } from './GluuPageContent'
 import { ArrowIcon, ChevronIcon } from './SVG'
@@ -119,6 +120,11 @@ export type { DropdownPosition as ThemeDropdownPosition } from './GluuDropdown/t
 export type { GluuBadgeProps, BadgeSize, BadgeTheme } from './GluuBadge/types'
 export type { GluuButtonProps, ButtonSize, ButtonTheme } from './GluuButton/types'
 export type { GluuPageContentProps } from './GluuPageContent'
+export type {
+  GluuDatePickerProps,
+  GluuDatePickerSingleProps,
+  GluuDatePickerRangeProps,
+} from './GluuDatePicker'
 export {
   Accordion,
   AccordionHeader,
@@ -135,6 +141,7 @@ export {
   FloatGrid,
   GluuBadge,
   GluuButton,
+  GluuDatePicker,
   GluuSpinner,
   IconWithBadge,
   InputGroupAddon,
