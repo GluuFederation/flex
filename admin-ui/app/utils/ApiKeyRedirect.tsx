@@ -3,6 +3,7 @@ import { Container } from 'Components'
 import { useTranslation } from 'react-i18next'
 import ApiKey from './LicenseScreens/ApiKey'
 import GluuErrorModal from '../routes/Apps/Gluu/GluuErrorModal'
+import GluuText from '../routes/Apps/Gluu/GluuText'
 import UploadSSA from './UploadSSA'
 import { useAppSelector } from '@/redux/hooks'
 import GluuServiceDownModal from '../routes/Apps/Gluu/GluuServiceDownModal'
@@ -54,7 +55,9 @@ function ApiKeyRedirect({
       <>
         <div className={classes.redirectingScreen} aria-live="polite" aria-busy="true">
           <img className={classes.loaderImage} src={loaderGif} alt="" />
-          <div className={`initial-loader__row ${classes.redirectingText}`}>{t('redirecting')}</div>
+          <GluuText className={`initial-loader__row ${classes.redirectingText}`}>
+            {t('licenseScreen.redirecting')}
+          </GluuText>
         </div>
         {roleNotFound && (
           <GluuErrorModal

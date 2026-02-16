@@ -1,4 +1,5 @@
 import React, { useContext, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import logo from 'Images/logos/logo192.png'
 import { useSelector } from 'react-redux'
 import { Box } from '@mui/material'
@@ -8,8 +9,10 @@ import { DEFAULT_THEME } from '@/context/theme/constants'
 import type { RootState } from '@/redux/types'
 import useStyles from '../styles/LicenseScreen.style'
 import GenerateLicenseCard from './GenerateLicenseCard'
+import GluuText from '../../routes/Apps/Gluu/GluuText'
 
 function ApiKey() {
+  const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const currentTheme = theme?.state?.theme ?? DEFAULT_THEME
   const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
@@ -34,12 +37,14 @@ function ApiKey() {
           </div>
         </div>
         <div className="row">
-          <div className={`col-md-8 text-center h2 mx-auto mb-3 ${classes.title}`}>
-            Welcome to Admin UI
-          </div>
+          <Box className={`col-md-8 text-center mx-auto mb-3 ${classes.title}`}>
+            <GluuText variant="h2">{t('licenseScreen.welcomeTitle')}</GluuText>
+          </Box>
         </div>
         <div className="row">
-          <div className={`col-md-8 text-center mx-auto mb-3 ${classes.error}`}>{serverError}</div>
+          <Box className={`col-md-8 text-center mx-auto mb-3 ${classes.error}`}>
+            <GluuText>{serverError}</GluuText>
+          </Box>
         </div>
         <Box className="row mt-3">
           <Box className={`mx-auto col-md-8 ${classes.cardWrapper}`}>

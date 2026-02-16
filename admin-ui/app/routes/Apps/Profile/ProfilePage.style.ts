@@ -32,7 +32,7 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
       width: '100%',
       borderRadius: 20,
       backgroundColor: themeColors.card.background,
-      padding: theme.spacing(3.5), // 28px
+      padding: theme.spacing(3.5),
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',

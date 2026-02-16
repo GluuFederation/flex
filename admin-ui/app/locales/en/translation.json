@@ -78,6 +78,20 @@
     "generating": "Generating please wait...",
     "start30Days": "Start 30 days trial"
   },
+  "sessionTimeout": {
+    "title": "Session Timeout",
+    "messageExpire": "The current session is about to expire in {{count}} seconds.",
+    "messageContinue": "Would you like to continue the session?",
+    "logout": "Logout",
+    "continueSession": "Continue Session"
+  },
+  "licenseScreen": {
+    "redirecting": "Redirecting...",
+    "welcomeTitle": "Welcome to Admin UI",
+    "uploadSsaLabel": "Please upload ssa here :",
+    "selectedFile": "Selected File :",
+    "dropzoneHint": "Drag 'n' drop .jwt file here, or click to select file"
+  },
   "dashboard": {
     "summary_title": "Actives Users & Access Token Stats",
     "oidc_clients_count": "OIDC Clients Count",

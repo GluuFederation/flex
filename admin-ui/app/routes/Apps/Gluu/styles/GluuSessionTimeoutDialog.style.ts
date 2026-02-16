@@ -1,7 +1,7 @@
 import { makeStyles } from 'tss-react/mui'
-import customColors, { hexToRgb } from '@/customColors'
+import type { ThemeConfig } from '@/context/theme/config'
 
-const styles = makeStyles<{ isDark: boolean }>()((theme, { isDark }) => ({
+const styles = makeStyles<{ themeColors: ThemeConfig }>()((theme, { themeColors }) => ({
   dialog: {
     padding: theme.spacing(5),
     borderRadius: 20,
@@ -9,7 +9,7 @@ const styles = makeStyles<{ isDark: boolean }>()((theme, { isDark }) => ({
     minHeight: 259,
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: isDark ? customColors.darkCardBg : customColors.white,
+    backgroundColor: themeColors.card?.background ?? themeColors.background,
     backgroundImage: 'none',
     boxSizing: 'border-box',
   },
@@ -19,7 +19,7 @@ const styles = makeStyles<{ isDark: boolean }>()((theme, { isDark }) => ({
     fontStyle: 'normal',
     fontWeight: 700,
     lineHeight: '45px',
-    color: isDark ? customColors.white : customColors.darkBackground,
+    color: themeColors.fontColor,
     paddingBottom: theme.spacing(0.5),
   },
   contentText: {
@@ -29,7 +29,7 @@ const styles = makeStyles<{ isDark: boolean }>()((theme, { isDark }) => ({
     fontWeight: 500,
     lineHeight: '24px',
     letterSpacing: '0.36px',
-    color: isDark ? customColors.textMutedDark : customColors.textSecondary,
+    color: themeColors.textMuted,
     marginBottom: theme.spacing(0.5),
   },
   actionArea: {
@@ -47,17 +47,18 @@ const styles = makeStyles<{ isDark: boolean }>()((theme, { isDark }) => ({
     fontWeight: 600,
   },
   logout: {
-    color: customColors.white,
-    backgroundColor: customColors.statusActive,
+    color: themeColors.settings?.removeButton?.text ?? themeColors.formFooter?.back?.textColor,
+    backgroundColor:
+      themeColors.settings?.removeButton?.bg ?? themeColors.formFooter?.back?.backgroundColor,
   },
   continue: {
-    'color': isDark ? customColors.white : customColors.primaryDark,
-    'borderColor': isDark ? `rgba(${hexToRgb(customColors.white)}, 0.3)` : customColors.lightBorder,
+    'color': themeColors.fontColor,
+    'borderColor': themeColors.borderColor,
     'backgroundColor': 'transparent',
     '&:hover': {
-      color: isDark ? customColors.white : customColors.primaryDark,
-      backgroundColor: 'transparent',
-      borderColor: isDark ? `rgba(${hexToRgb(customColors.white)}, 0.3)` : customColors.lightBorder,
+      color: themeColors.fontColor,
+      backgroundColor: themeColors.lightBackground,
+      borderColor: themeColors.borderColor,
     },
   },
 }))

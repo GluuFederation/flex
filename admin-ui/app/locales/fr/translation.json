@@ -193,6 +193,20 @@
     "copy_to_clipboard": "Copier dans le presse-papier",
     "refresh": "Actualiser"
   },
+  "sessionTimeout": {
+    "title": "Expiration de la session",
+    "messageExpire": "La session actuelle expirera dans {{count}} secondes.",
+    "messageContinue": "Voulez-vous continuer la session ?",
+    "logout": "Déconnexion",
+    "continueSession": "Continuer la session"
+  },
+  "licenseScreen": {
+    "redirecting": "Redirection...",
+    "welcomeTitle": "Bienvenue sur Admin UI",
+    "uploadSsaLabel": "Veuillez télécharger le SSA ici :",
+    "selectedFile": "Fichier sélectionné :",
+    "dropzoneHint": "Glissez-déposez le fichier .jwt ici ou cliquez pour sélectionner"
+  },
   "fields": {
     "actions": "Actions",
     "asset_name": "Asset Name",

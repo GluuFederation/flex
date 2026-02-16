@@ -190,6 +190,20 @@
     "copy_to_clipboard": "Copiar para área de transferência",
     "refresh": "Atualizar"
   },
+  "sessionTimeout": {
+    "title": "Tempo limite da sessão",
+    "messageExpire": "A sessão atual expirará em {{count}} segundos.",
+    "messageContinue": "Deseja continuar a sessão?",
+    "logout": "Sair",
+    "continueSession": "Continuar sessão"
+  },
+  "licenseScreen": {
+    "redirecting": "Redirecionando...",
+    "welcomeTitle": "Bem-vindo ao Admin UI",
+    "uploadSsaLabel": "Por favor, envie o SSA aqui :",
+    "selectedFile": "Arquivo selecionado :",
+    "dropzoneHint": "Arraste e solte o arquivo .jwt aqui ou clique para selecionar"
+  },
   "fields": {
     "actions": "Ações",
     "asset_name": "Asset Name",

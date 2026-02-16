@@ -20,6 +20,7 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import { devWarn } from '@/utils/env'
 
 const JANS_ADMIN_UI_ROLE_ATTR = 'jansAdminUIRole'
 const USERS_RESOURCE_ID = ADMIN_UI_RESOURCES.Users
@@ -135,16 +136,27 @@ const ProfileDetails: React.FC = () => {
   )
 
   const statusBadgeColors = useMemo(() => {
-    const isActive = profileDetails?.status === 'active' || !profileDetails?.status
-    return isActive
-      ? {
-          bg: themeColors.formFooter?.back?.backgroundColor,
-          text: themeColors.formFooter?.back?.textColor,
-        }
-      : {
-          bg: themeColors.settings?.removeButton?.bg,
-          text: themeColors.settings?.removeButton?.text,
-        }
+    const status = profileDetails?.status
+    if (status === 'active') {
+      return {
+        bg: themeColors.formFooter?.back?.backgroundColor,
+        text: themeColors.formFooter?.back?.textColor,
+      }
+    }
+    if (status == null) {
+      devWarn('[ProfilePage] profileDetails.status is null/undefined', {
+        status: profileDetails?.status,
+        hasProfileDetails: !!profileDetails,
+      })
+      return {
+        bg: themeColors.inputBackground,
+        text: themeColors.textMuted,
+      }
+    }
+    return {
+      bg: themeColors.settings?.removeButton?.bg,
+      text: themeColors.settings?.removeButton?.text,
+    }
   }, [profileDetails?.status, themeColors])
 
   return (
@@ -153,7 +165,6 @@ const ProfileDetails: React.FC = () => {
         {!loading && (
           <Box className={classes.mainContainer}>
             <Box className={classes.profileCard}>
-              {/* Header Section */}
               <Box className={classes.avatarContainer}>
                 <img src={avatarSrc} alt="Avatar" className={classes.avatar} />
               </Box>
@@ -165,12 +176,18 @@ const ProfileDetails: React.FC = () => {
                 <GluuText variant="div" className={classes.emailText}>
                   {profileDetails?.mail || '-'}
                 </GluuText>
-                <Box mt={1} className={classes.activeStatusText}>
-                  {t('fields.statusLabel')} {profileDetails?.status || t('fields.active')}
+                <Box mt={1}>
+                  <GluuText variant="div" className={classes.activeStatusText}>
+                    {t('fields.statusLabel')}{' '}
+                    {profileDetails?.status === 'active'
+                      ? t('fields.active')
+                      : profileDetails?.status == null
+                        ? t('dashboard.unknown')
+                        : (profileDetails?.status ?? '-')}
+                  </GluuText>
                 </Box>
               </Box>
 
-              {/* Personal Information */}
               <Box width="100%">
                 <GluuText variant="h6" className={classes.sectionTitle}>
                   {t('titles.personal_information', { defaultValue: 'Personal Information' })}
@@ -197,7 +214,6 @@ const ProfileDetails: React.FC = () => {
                 </Box>
               </Box>
 
-              {/* Admin Roles */}
               <Box width="100%">
                 <GluuText variant="h6" className={classes.sectionTitle}>
                   {t('titles.admin_roles', { defaultValue: 'Admin Roles' })}
@@ -215,7 +231,6 @@ const ProfileDetails: React.FC = () => {
                 </Box>
               </Box>
 
-              {/* Account Status */}
               <Box width="100%">
                 <GluuText variant="h6" className={classes.sectionTitle}>
                   {t('titles.account_status', { defaultValue: 'Account Status' })}
@@ -228,12 +243,15 @@ const ProfileDetails: React.FC = () => {
                     textColor={statusBadgeColors.text}
                     borderColor={statusBadgeColors.bg}
                   >
-                    {profileDetails?.status || t('fields.active')}
+                    {profileDetails?.status === 'active'
+                      ? t('fields.active')
+                      : profileDetails?.status == null
+                        ? t('dashboard.unknown')
+                        : (profileDetails?.status ?? '-')}
                   </GluuBadge>
                 </Box>
               </Box>
 
-              {/* Edit Button */}
               {canEditProfile && (
                 <GluuButton
                   block
