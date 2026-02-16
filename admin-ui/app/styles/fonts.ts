@@ -10,7 +10,9 @@ export const fontSizes = {
   'xs': '10px',
   'sm': '12px',
   'base': '14px',
+  'description': '15px',
   'md': '16px',
+  'content': '18px',
   'lg': '20px',
   'xl': '22px',
   '2xl': '24px',
@@ -23,6 +25,7 @@ export const letterSpacing = {
   tight: '0.2px',
   button: '0.28px',
   normal: '0.3px',
+  content: '0.36px',
   wide: '0.32px',
 } as const
 

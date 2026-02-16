@@ -1,5 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
+import { fontFamily, fontSizes, fontWeights, letterSpacing, lineHeights } from '@/styles/fonts'
 
 const useStyles = makeStyles<{ themeColors: ThemeConfig }>()((theme, { themeColors }) => ({
   card: {
@@ -9,6 +10,7 @@ const useStyles = makeStyles<{ themeColors: ThemeConfig }>()((theme, { themeColo
     backgroundColor: themeColors.card.background,
     border: `1px solid ${themeColors.formFooter.back.borderColor}`,
     borderRadius: '8px',
+    boxShadow: 'none',
   },
   cardContent: {
     paddingBottom: theme.spacing(1),
@@ -25,12 +27,12 @@ const useStyles = makeStyles<{ themeColors: ThemeConfig }>()((theme, { themeColo
   },
   description: {
     color: themeColors.textMuted,
-    fontFamily: 'Mona-Sans, sans-serif',
-    fontSize: '15px',
+    fontFamily,
+    fontSize: fontSizes.description,
     fontStyle: 'normal',
-    fontWeight: 500,
-    lineHeight: '24px',
-    letterSpacing: '0.3px',
+    fontWeight: fontWeights.medium,
+    lineHeight: lineHeights.base,
+    letterSpacing: letterSpacing.normal,
     marginBottom: theme.spacing(1),
   },
   cardActions: {

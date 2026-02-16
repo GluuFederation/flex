@@ -34,8 +34,10 @@ function ApiKey() {
           </div>
         </div>
         <div className="row">
-          <Box className={`col-md-8 text-center mx-auto mb-3 ${classes.title}`}>
-            <GluuText variant="h2">{t('licenseScreen.welcomeTitle')}</GluuText>
+          <Box className="col-md-8 text-center mx-auto mb-3">
+            <GluuText variant="h2" className={classes.title} disableThemeColor>
+              {t('licenseScreen.welcomeTitle')}
+            </GluuText>
           </Box>
         </div>
         <div className="row">

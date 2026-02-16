@@ -420,7 +420,6 @@ const DashboardPage = () => {
                         onEndDateAccept={handleEndDateChange}
                         textColor={dashboardThemeColors.text}
                         backgroundColor={dashboardThemeColors.cardBg}
-                        isDark={isDark}
                       />
                     </div>
                     <div className={classes.desktopChartStyle}>

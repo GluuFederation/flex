@@ -1,5 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
+import { fontFamily, fontSizes, fontWeights, letterSpacing, lineHeights } from '@/styles/fonts'
 
 const useStyles = makeStyles<{ themeColors: ThemeConfig }>()((theme, { themeColors }) => ({
   'logo': {
@@ -13,9 +14,10 @@ const useStyles = makeStyles<{ themeColors: ThemeConfig }>()((theme, { themeColo
     fontWeight: 600,
     lineHeight: 'normal',
     letterSpacing: '0.3px',
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(3),
   },
   'dropzone': {
+    'marginTop': theme.spacing(1),
     'borderRadius': '6px',
     'border': `1px solid ${themeColors.infoAlert.border}`,
     'background': themeColors.infoAlert.background,
@@ -27,6 +29,8 @@ const useStyles = makeStyles<{ themeColors: ThemeConfig }>()((theme, { themeColo
   },
   'error': {
     color: themeColors.errorColor,
+    marginTop: theme.spacing(2),
+    display: 'block',
   },
   'dropzoneText': {
     color: themeColors.infoAlert.text,
@@ -46,12 +50,12 @@ const useStyles = makeStyles<{ themeColors: ThemeConfig }>()((theme, { themeColo
     border: `1px solid ${themeColors.formFooter.back.borderColor}`,
     backgroundColor: themeColors.formFooter.back.backgroundColor,
     color: themeColors.formFooter.back.textColor,
-    fontFamily: 'Mona-Sans, sans-serif',
-    fontSize: '14px',
+    fontFamily,
+    fontSize: fontSizes.base,
     fontStyle: 'normal',
-    fontWeight: 700,
-    lineHeight: 'normal',
-    letterSpacing: '0.28px',
+    fontWeight: fontWeights.bold,
+    lineHeight: lineHeights.normal,
+    letterSpacing: letterSpacing.button,
   },
   'loaderOuter': {
     position: 'absolute',

@@ -27,12 +27,14 @@ function GenerateLicenseCard() {
   }
 
   return (
-    <Card className={classes.card}>
+    <Card className={classes.card} elevation={0}>
       <CardContent className={classes.cardContent}>
         <GluuText variant="div" className={classes.title}>
           {t('licenseCard.freeTrial')}
         </GluuText>
-        <GluuText className={classes.description}>{t('licenseCard.description')}</GluuText>
+        <GluuText className={classes.description} disableThemeColor>
+          {t('licenseCard.description')}
+        </GluuText>
       </CardContent>
       <CardActions className={classes.cardActions}>
         <GluuButton

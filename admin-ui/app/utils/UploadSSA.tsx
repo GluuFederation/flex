@@ -109,12 +109,19 @@ function UploadSSA() {
                 </GluuText>
               )}
             </div>
-            {error && <GluuText className={classes.error}>{error}</GluuText>}
+            {error && (
+              <GluuText className={classes.error} disableThemeColor>
+                {error}
+              </GluuText>
+            )}
             <div className="mt-4">
               <GluuButton
                 disabled={isLoading}
                 className={classes.button}
                 onClick={() => submitData()}
+                backgroundColor={themeColors.formFooter?.back?.backgroundColor}
+                textColor={themeColors.formFooter?.back?.textColor}
+                disableHoverStyles
               >
                 {t('actions.submit')}
               </GluuButton>
