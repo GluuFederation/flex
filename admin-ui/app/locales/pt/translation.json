@@ -200,9 +200,9 @@
   "licenseScreen": {
     "redirecting": "Redirecionando...",
     "welcomeTitle": "Bem-vindo ao Admin UI",
-    "uploadSsaLabel": "Por favor, envie o SSA aqui :",
-    "selectedFile": "Arquivo selecionado :",
-    "dropzoneHint": "Arraste e solte o arquivo .jwt aqui ou clique para selecionar"
+    "uploadSsaLabel": "Por favor, envie o SSA aqui:",
+    "selectedFile": "Arquivo selecionado:",
+    "dropzoneHint": "Arraste e solte o arquivo .jwt aqui, ou clique para selecionar"
   },
   "fields": {
     "actions": "Ações",
@@ -643,7 +643,7 @@
     "licenseDetails": "Detalhes da licença",
     "role": "Função",
     "admin": "Administrador",
-    "statusLabel": "Status:",
+    "statusLabel": "Status",
     "permissions": "Permissões",
     "deletable": "Apagável",
     "email": "E-mail",

@@ -195,7 +195,8 @@
   },
   "sessionTimeout": {
     "title": "Expiration de la session",
-    "messageExpire": "La session actuelle expirera dans {{count}} secondes.",
+    "messageExpire_one": "La session actuelle expirera dans {{count}} seconde.",
+    "messageExpire_other": "La session actuelle expirera dans {{count}} secondes.",
     "messageContinue": "Voulez-vous continuer la session ?",
     "logout": "Déconnexion",
     "continueSession": "Continuer la session"
@@ -631,7 +632,7 @@
     "licenseDetails": "Détails de la licence",
     "role": "Rôle",
     "admin": "Administrateur",
-    "statusLabel": "Statut :",
+    "statusLabel": "Statut",
     "permissions": "Permissions",
     "deletable": "Supprimable",
     "email": "E-mail",

@@ -159,6 +159,16 @@ const ProfileDetails: React.FC = () => {
     }
   }, [profileDetails?.status, themeColors])
 
+  const statusLabel = useMemo(
+    () =>
+      profileDetails?.status === 'active'
+        ? t('fields.active')
+        : profileDetails?.status == null
+          ? t('dashboard.unknown')
+          : (profileDetails?.status ?? '-'),
+    [profileDetails?.status, t],
+  )
+
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
       <GluuLoader blocking={loading}>
@@ -178,12 +188,7 @@ const ProfileDetails: React.FC = () => {
                 </GluuText>
                 <Box mt={1}>
                   <GluuText variant="div" className={classes.activeStatusText}>
-                    {t('fields.statusLabel')}{' '}
-                    {profileDetails?.status === 'active'
-                      ? t('fields.active')
-                      : profileDetails?.status == null
-                        ? t('dashboard.unknown')
-                        : (profileDetails?.status ?? '-')}
+                    {t('fields.statusLabel')}: {statusLabel}
                   </GluuText>
                 </Box>
               </Box>
@@ -236,18 +241,14 @@ const ProfileDetails: React.FC = () => {
                   {t('titles.account_status', { defaultValue: 'Account Status' })}
                 </GluuText>
                 <Box className={classes.roleContainer}>
-                  <GluuText className={classes.roleLabel}>{t('fields.statusLabel')}</GluuText>
+                  <GluuText className={classes.roleLabel}>{t('fields.statusLabel')}:</GluuText>
                   <GluuBadge
                     size="sm"
                     backgroundColor={statusBadgeColors.bg}
                     textColor={statusBadgeColors.text}
                     borderColor={statusBadgeColors.bg}
                   >
-                    {profileDetails?.status === 'active'
-                      ? t('fields.active')
-                      : profileDetails?.status == null
-                        ? t('dashboard.unknown')
-                        : (profileDetails?.status ?? '-')}
+                    {statusLabel}
                   </GluuBadge>
                 </Box>
               </Box>

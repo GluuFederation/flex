@@ -1,12 +1,11 @@
 import React, { useContext, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import logo from 'Images/logos/logo192.png'
-import { useSelector } from 'react-redux'
 import { Box } from '@mui/material'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
-import type { RootState } from '@/redux/types'
+import { useAppSelector } from '@/redux/hooks'
 import useStyles from '../styles/LicenseScreen.style'
 import GenerateLicenseCard from './GenerateLicenseCard'
 import GluuText from '../../routes/Apps/Gluu/GluuText'
@@ -17,11 +16,9 @@ function ApiKey() {
   const currentTheme = theme?.state?.theme ?? DEFAULT_THEME
   const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
   const { classes } = useStyles({ themeColors })
-  const serverError = useSelector((state: RootState) => state.licenseReducer.error)
-  const isLoading = useSelector((state: RootState) => state.licenseReducer.isLoading)
-  const generatingTrialKey = useSelector(
-    (state: RootState) => state.licenseReducer.generatingTrialKey,
-  )
+  const serverError = useAppSelector((state) => state.licenseReducer.error)
+  const isLoading = useAppSelector((state) => state.licenseReducer.isLoading)
+  const generatingTrialKey = useAppSelector((state) => state.licenseReducer.generatingTrialKey)
 
   return (
     <div>

@@ -578,7 +578,7 @@
     "sn": "Last Name",
     "mail": "Email",
     "admin": "Admin",
-    "statusLabel": "Status:",
+    "statusLabel": "Status",
     "resources": "Resources",
     "resourceId": "Resource id",
     "scopeSelection": "Scope Selection",

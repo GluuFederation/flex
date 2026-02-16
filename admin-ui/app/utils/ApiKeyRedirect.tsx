@@ -37,18 +37,19 @@ function ApiKeyRedirect({
   )
   const backendStatus = useAppSelector((state) => state.authReducer.backendStatus)
 
+  const shouldShowApiKey =
+    !isLicenseValid &&
+    islicenseCheckResultLoaded &&
+    isConfigValid &&
+    !isValidatingFlow &&
+    isNoValidLicenseKeyFound
+
   const showRedirectingLoader =
     isConfigValid !== false &&
     !isTimeout &&
     isUnderThresholdLimit &&
     backendStatus.active &&
-    !(
-      !isLicenseValid &&
-      islicenseCheckResultLoaded &&
-      isConfigValid &&
-      !isValidatingFlow &&
-      isNoValidLicenseKeyFound
-    )
+    !shouldShowApiKey
 
   if (showRedirectingLoader) {
     return (
@@ -75,11 +76,7 @@ function ApiKeyRedirect({
         {isConfigValid === false ? (
           <UploadSSA />
         ) : !isTimeout && isUnderThresholdLimit ? (
-          !isLicenseValid &&
-          islicenseCheckResultLoaded &&
-          isConfigValid &&
-          !isValidatingFlow &&
-          isNoValidLicenseKeyFound ? (
+          shouldShowApiKey ? (
             <ApiKey />
           ) : null
         ) : null}
