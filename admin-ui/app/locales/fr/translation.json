@@ -193,6 +193,15 @@
     "copy_to_clipboard": "Copier dans le presse-papier",
     "refresh": "Actualiser"
   },
+  "serviceDownFallback": "Gluu Flex Admin UI ne reçoit aucune réponse du backend (Jans Config Api).",
+  "roleNotFoundMessage": "Utilisateur non autorisé",
+  "roleNotFoundDescription": "L'utilisateur connecté n'a pas de rôle valide. Déconnexion de Admin UI",
+  "licenseCard": {
+    "freeTrial": "Essai gratuit",
+    "description": "Démarrez votre essai gratuit pour gérer et configurer votre serveur d'authentification avec une interface web simplifiée.",
+    "generating": "Génération en cours, veuillez patienter...",
+    "start30Days": "Démarrer l'essai de 30 jours"
+  },
   "sessionTimeout": {
     "title": "Expiration de la session",
     "messageExpire_one": "La session actuelle expirera dans {{count}} seconde.",

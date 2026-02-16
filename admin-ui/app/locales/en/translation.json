@@ -68,7 +68,6 @@
     "add_custom_attributes": "Add custom attributes",
     "refresh": "Refresh"
   },
-  "redirecting": "Redirecting...",
   "serviceDownFallback": "Gluu Flex Admin UI is not getting any response from the backend (Jans Config Api).",
   "roleNotFoundMessage": "Unauthorized User",
   "roleNotFoundDescription": "The logged-in user does not have a valid role. Logging out of Admin UI",

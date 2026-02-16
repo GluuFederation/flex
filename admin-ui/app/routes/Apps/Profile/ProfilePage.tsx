@@ -119,13 +119,11 @@ const ProfileDetails: React.FC = () => {
     })
   }, [profileDetails, navigateToRoute])
 
-  const rolesValue = useMemo(
-    () =>
-      jansAdminUIRole?.values
-        ?.map((role) => role.charAt(0).toUpperCase() + role.slice(1))
-        .join(', ') ?? '-',
-    [jansAdminUIRole?.values],
-  )
+  const rolesValue = useMemo(() => {
+    const values = jansAdminUIRole?.values
+    if (!Array.isArray(values) || values.length === 0) return '-'
+    return values.map((role) => role.charAt(0).toUpperCase() + role.slice(1)).join(', ')
+  }, [jansAdminUIRole?.values])
 
   const adminBadgeColors = useMemo(
     () => ({
