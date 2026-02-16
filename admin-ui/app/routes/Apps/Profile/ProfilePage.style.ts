@@ -2,6 +2,8 @@ import { makeStyles } from 'tss-react/mui'
 import { Theme } from '@mui/material'
 import type { ThemeConfig } from '@/context/theme/config'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { fontFamily, fontSizes, fontWeights, letterSpacing, lineHeights } from '@/styles/fonts'
+import customColors from '@/customColors'
 
 const statusBadgeBase = {
   display: 'flex' as const,
@@ -26,12 +28,12 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
     profileCard: {
       ...getCardBorderStyle({
         isDark,
-        borderRadius: 20,
+        borderRadius: 16,
       }),
       maxWidth: 600,
       width: '100%',
-      borderRadius: 20,
-      backgroundColor: themeColors.card.background,
+      borderRadius: 16,
+      backgroundColor: isDark ? customColors.darkCardBg : themeColors.card.background,
       padding: theme.spacing(3.5),
       display: 'flex',
       flexDirection: 'column',
@@ -40,7 +42,7 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
     },
     avatarContainer: {
       position: 'relative',
-      marginBottom: theme.spacing(1),
+      marginBottom: theme.spacing(0.5),
     },
     avatar: {
       width: 100,
@@ -65,34 +67,97 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
       fontWeight: 600,
       letterSpacing: '0.48px',
       color: themeColors.fontColor,
-      marginBottom: theme.spacing(0.5),
-    },
-    emailText: {
-      fontFamily: 'Mona-Sans, sans-serif',
-      fontSize: '18px',
-      fontWeight: 500,
-      letterSpacing: '0.36px',
-      color: themeColors.textMuted,
       marginBottom: theme.spacing(1),
     },
-    activeStatusText: {
+    emailText: {
+      color: themeColors.profileEmailTextColor,
+      fontFamily,
+      fontSize: fontSizes.content,
+      fontStyle: 'normal',
+      fontWeight: fontWeights.medium,
+      lineHeight: lineHeights.normal,
+      letterSpacing: letterSpacing.content,
+      marginBottom: theme.spacing(1),
+    },
+    profileHeaderStatusWrap: {
+      marginTop: 0,
+    },
+    statusRow: {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      gap: theme.spacing(1),
+      gap: 13,
+      fontFamily: 'Mona-Sans, sans-serif',
+      fontSize: '16px',
+      fontWeight: 600,
+      lineHeight: '28px',
+    },
+    statusKeyValueWrap: {
+      display: 'inline',
+      whiteSpace: 'nowrap',
+    },
+    statusDot: {
+      width: 16,
+      height: 16,
+      borderRadius: '50%',
+      flexShrink: 0,
+    },
+    statusDotActive: {
+      backgroundColor: themeColors.formFooter.back.backgroundColor,
+    },
+    statusDotInactive: {
+      backgroundColor: themeColors.settings.removeButton.bg,
+    },
+    statusLabelActive: {
       fontFamily: 'Mona-Sans, sans-serif',
       fontSize: '16px',
       fontWeight: 600,
       lineHeight: '28px',
       color: themeColors.formFooter.back.backgroundColor,
     },
-    sectionTitle: {
-      alignSelf: 'flex-start',
+    statusLabelInactive: {
       fontFamily: 'Mona-Sans, sans-serif',
-      fontWeight: 500,
-      fontSize: '20px',
+      fontSize: '16px',
+      fontWeight: 600,
+      lineHeight: '28px',
+      color: themeColors.settings.removeButton.bg,
+    },
+    statusValueActive: {
+      fontFamily: 'Mona-Sans, sans-serif',
+      fontSize: '16px',
+      fontWeight: 600,
+      lineHeight: '28px',
+      color: themeColors.formFooter.back.backgroundColor,
+    },
+    statusValueInactive: {
+      fontFamily: 'Mona-Sans, sans-serif',
+      fontSize: '16px',
+      fontWeight: 600,
+      lineHeight: '28px',
+      color: themeColors.settings.removeButton.bg,
+    },
+    statusDividerWrapper: {
+      width: '100%',
+      marginTop: theme.spacing(2),
+    },
+    statusDivider: {
+      margin: 0,
+      width: 530,
+      minWidth: 530,
+      flexShrink: 0,
+      borderWidth: '2px 0 0 0',
+      borderColor: themeColors.navbar.border,
+      opacity: 0.75,
+    },
+    sectionTitle: {
+      color: themeColors.sectionTitleColor,
+      fontFamily,
+      fontSize: fontSizes.lg,
+      fontStyle: 'normal',
+      fontWeight: fontWeights.medium,
+      lineHeight: lineHeights.normal,
       letterSpacing: '0.4px',
-      color: themeColors.fontColor,
+      alignSelf: 'flex-start',
       marginBottom: theme.spacing(1),
       marginTop: theme.spacing(1),
     },
@@ -119,16 +184,20 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
       backgroundColor: themeColors.settings.formInputBackground,
     },
     dataLabel: {
-      fontFamily: 'Mona-Sans, sans-serif',
-      fontSize: '16px',
-      fontWeight: 500,
-      lineHeight: '32px',
-      color: themeColors.textMuted,
+      color: themeColors.personalInfoLabelColor,
+      fontFamily,
+      fontSize: fontSizes.md,
+      fontStyle: 'normal',
+      fontWeight: fontWeights.medium,
+      lineHeight: lineHeights.loose,
     },
     dataValue: {
-      color: themeColors.fontColor,
-      fontWeight: 600,
-      fontSize: '0.95rem',
+      color: themeColors.personalInfoValueColor,
+      fontFamily,
+      fontSize: fontSizes.md,
+      fontStyle: 'normal',
+      fontWeight: fontWeights.bold,
+      lineHeight: lineHeights.loose,
     },
     roleContainer: {
       width: '100%',
@@ -139,12 +208,25 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
       justifyContent: 'space-between',
       alignItems: 'center',
     },
+    accountStatusContainer: {
+      width: '100%',
+      padding: theme.spacing(2),
+      backgroundColor: themeColors.settings.formInputBackground,
+      borderRadius: 8,
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    accountStatusPill: {
+      borderRadius: 5,
+    },
     roleLabel: {
-      fontFamily: 'Mona-Sans, sans-serif',
-      fontSize: '16px',
-      fontWeight: 500,
-      lineHeight: '32px',
-      color: themeColors.textMuted,
+      color: themeColors.personalInfoLabelColor,
+      fontFamily,
+      fontSize: fontSizes.md,
+      fontStyle: 'normal',
+      fontWeight: fontWeights.medium,
+      lineHeight: lineHeights.loose,
     },
     statusBadge: {
       ...statusBadgeBase,

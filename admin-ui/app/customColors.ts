@@ -23,6 +23,7 @@ export const customColors = {
   // Text
   textSecondary: '#425466',
   textMutedDark: '#6a8096',
+  profileEmailText: '#6d8cac',
 
   // Brand / accent
   logo: '#00b875',
