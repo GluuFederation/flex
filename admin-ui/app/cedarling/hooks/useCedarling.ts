@@ -165,14 +165,6 @@ export function useCedarling(): UseCedarlingReturn {
         const rawMessage = toMessage(error)
         const truncated = rawMessage.length > 25 ? rawMessage.slice(0, 25) + '…' : rawMessage
         dispatch(updateToast(true, 'error', `Authorization error: ${truncated}`))
-        if (cacheKey) {
-          dispatch(
-            setCedarlingPermission({
-              resourceId: cacheKey,
-              isAuthorized: false,
-            }),
-          )
-        }
         return {
           isAuthorized: false,
           error: error instanceof Error ? error.message : 'Unknown error',

@@ -112,11 +112,10 @@ const PermissionsPolicyInitializer = () => {
       .initialize(bootstrapConfig)
       .then(() => {
         retryCount.current = { tryCount: 0, callMethod: false }
-        dispatch(setCedarlingInitialized(true)) // reducer also sets isInitializing = false
+        dispatch(setCedarlingInitialized(true))
         console.log('✅ Cedarling initialized!')
       })
       .catch(() => {
-        dispatch(setCedarlingInitializing(false))
         retryCount.current.tryCount += 1
         console.warn(`❌ Cedarling got failed. Retrying in 1000ms`)
 
