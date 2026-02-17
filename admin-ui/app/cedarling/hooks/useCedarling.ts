@@ -140,11 +140,11 @@ export function useCedarling(): UseCedarlingReturn {
 
       const actionLabel = getActionLabelFromUrl(url)
 
-      let cacheKey: string | undefined
       try {
-        const buildResult = buildAuthorizationRequest(resolvedResourceId, actionLabel)
-        cacheKey = buildResult.cacheKey
-        const { request, cachedDecision } = buildResult
+        const { request, cacheKey, cachedDecision } = buildAuthorizationRequest(
+          resolvedResourceId,
+          actionLabel,
+        )
         if (cachedDecision !== undefined) {
           return { isAuthorized: cachedDecision }
         }
