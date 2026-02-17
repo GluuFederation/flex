@@ -140,11 +140,11 @@ export function useCedarling(): UseCedarlingReturn {
 
       const actionLabel = getActionLabelFromUrl(url)
 
+      let cacheKey: string | undefined
       try {
-        const { request, cacheKey, cachedDecision } = buildAuthorizationRequest(
-          resolvedResourceId,
-          actionLabel,
-        )
+        const buildResult = buildAuthorizationRequest(resolvedResourceId, actionLabel)
+        cacheKey = buildResult.cacheKey
+        const { request, cachedDecision } = buildResult
         if (cachedDecision !== undefined) {
           return { isAuthorized: cachedDecision }
         }
@@ -165,6 +165,14 @@ export function useCedarling(): UseCedarlingReturn {
         const rawMessage = toMessage(error)
         const truncated = rawMessage.length > 25 ? rawMessage.slice(0, 25) + '…' : rawMessage
         dispatch(updateToast(true, 'error', `Authorization error: ${truncated}`))
+        if (cacheKey) {
+          dispatch(
+            setCedarlingPermission({
+              resourceId: cacheKey,
+              isAuthorized: false,
+            }),
+          )
+        }
         return {
           isAuthorized: false,
           error: error instanceof Error ? error.message : 'Unknown error',

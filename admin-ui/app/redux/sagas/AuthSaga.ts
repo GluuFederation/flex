@@ -2,6 +2,7 @@
 
 import { all, call, fork, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import {
+  getOAuth2Config,
   getOAuth2ConfigResponse,
   getAPIAccessTokenResponse,
   getUserLocationResponse,
@@ -119,6 +120,7 @@ function* getAPIAccessTokenWorker(jwt) {
           yield put(
             createAdminUiSession({ ujwt: jwt.payload, apiProtectionToken: response.access_token }),
           )
+          yield put(getOAuth2Config({ access_token: response.access_token }))
         } else {
           console.error('Failed to obtain API token for session creation')
           yield put(
