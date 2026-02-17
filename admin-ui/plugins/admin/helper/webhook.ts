@@ -21,8 +21,8 @@ export const sanitizeWebhookHeaders = (headers?: WebhookHeader[] | null) => {
   }
 
   return headers.map((header) => ({
-    source: header?.source ?? header?.key ?? '',
-    destination: header?.destination ?? header?.value ?? '',
+    key: header?.key ?? header?.source ?? '',
+    value: header?.value ?? header?.destination ?? '',
   }))
 }
 

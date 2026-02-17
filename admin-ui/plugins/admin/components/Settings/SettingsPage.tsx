@@ -444,8 +444,12 @@ const SettingsPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className={classes.customParamsBox}>
-                  <div className={classes.customParamsHeader}>
+                <div
+                  className={`${classes.customParamsBox} ${(formik.values.additionalParameters || []).length === 0 ? classes.customParamsBoxEmpty : ''}`.trim()}
+                >
+                  <div
+                    className={`${classes.customParamsHeader} ${(formik.values.additionalParameters || []).length === 0 ? classes.customParamsHeaderEmpty : ''}`.trim()}
+                  >
                     <GluuText variant="h5" disableThemeColor>
                       <span className={classes.customParamsTitle}>
                         {t('fields.custom_params_auth')}
@@ -457,7 +461,7 @@ const SettingsPage: React.FC = () => {
                       backgroundColor={themeColors.settings.addPropertyButton.bg}
                       textColor={themeColors.settings.addPropertyButton.text}
                       useOpacityOnHover
-                      style={{ minWidth: 156, width: 156, gap: 8, flexShrink: 0 }}
+                      className={classes.customParamsActionBtn}
                       onClick={() => {
                         const currentParams = formik.values.additionalParameters || []
                         formik.setFieldValue('additionalParameters', [
@@ -496,14 +500,7 @@ const SettingsPage: React.FC = () => {
                             backgroundColor={themeColors.settings.removeButton.bg}
                             textColor={themeColors.settings.removeButton.text}
                             useOpacityOnHover
-                            style={{
-                              minWidth: 156,
-                              width: 156,
-                              minHeight: 44,
-                              gap: 8,
-                              flexShrink: 0,
-                              alignSelf: 'stretch',
-                            }}
+                            className={classes.customParamsActionBtn}
                             onClick={() => {
                               const currentParams = (formik.values.additionalParameters ??
                                 []) as CustomParamItem[]

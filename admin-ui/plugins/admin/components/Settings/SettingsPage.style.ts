@@ -20,9 +20,7 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
   const cardBorderStyle = getCardBorderStyle({ isDark })
   const settings = themeColors.settings
 
-  // Custom params: box and inputs same background as form inputs above (per Figma)
-  const customParamsInputBorder = isDark ? customColors.darkBorder : customColors.borderInput
-  const customParamsBoxBorder = isDark ? customColors.darkBorder : customColors.borderInput
+  const customParamsBorder = isDark ? customColors.darkBorder : customColors.borderInput
 
   return {
     settingsCard: {
@@ -159,18 +157,23 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
     customParamsBox: {
       backgroundColor: settings.formInputBackground,
       borderRadius: BORDER_RADIUS.DEFAULT,
-      border: `1px solid ${customParamsBoxBorder}`,
+      border: `1px solid ${customParamsBorder}`,
       padding: `12px ${SPACING.CARD_PADDING}px ${SPACING.CARD_PADDING}px`,
       width: '100%',
       boxSizing: 'border-box',
+    },
+    customParamsBoxEmpty: {
+      paddingBottom: 12,
     },
     customParamsHeader: {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      alignContent: 'center',
       marginBottom: 16,
       gap: 12,
+    },
+    customParamsHeaderEmpty: {
+      marginBottom: 0,
     },
     customParamsTitle: {
       fontFamily: fontFamily,
@@ -191,8 +194,16 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
     customParamsRow: {
       display: 'flex',
       gap: SPACING.CARD_CONTENT_GAP,
-      alignItems: 'stretch',
+      alignItems: 'center',
       flexWrap: 'wrap',
+    },
+    customParamsActionBtn: {
+      minWidth: 156,
+      width: 156,
+      minHeight: '44px !important',
+      height: '44px !important',
+      gap: 8,
+      flexShrink: 0,
     },
     customParamsInput: {
       'flex': '1 1 200px',
@@ -200,7 +211,7 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
       'minHeight': 44,
       'boxSizing': 'border-box',
       'backgroundColor': `${settings.cardBackground} !important`,
-      'border': `1px solid ${customParamsInputBorder} !important`,
+      'border': `1px solid ${customParamsBorder} !important`,
       'borderRadius': 6,
       'padding': '10px 12px',
       'color': themeColors.fontColor,
@@ -210,7 +221,7 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
       '&:focus, &:active': {
         backgroundColor: `${settings.cardBackground} !important`,
         color: themeColors.fontColor,
-        border: `1px solid ${customParamsInputBorder} !important`,
+        border: `1px solid ${customParamsBorder} !important`,
         outline: 'none',
         boxShadow: 'none',
       },

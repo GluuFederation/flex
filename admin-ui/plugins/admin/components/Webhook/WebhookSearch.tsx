@@ -65,7 +65,7 @@ const WebhookSearch: React.FC<WebhookSearchProps> = ({
 
   const handleSortByChange = useCallback(
     (event: SelectChangeEvent<WebhookSortBy>) => {
-      onSortByChange(event.target.value)
+      onSortByChange(event.target.value as WebhookSortBy)
     },
     [onSortByChange],
   )

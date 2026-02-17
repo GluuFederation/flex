@@ -1,5 +1,5 @@
 import React from 'react'
-import { fireEvent, render, screen, within } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import GluuSelectRow from '../GluuSelectRow'
 import AppTestWrapper from './Components/AppTestWrapper'
 
@@ -31,10 +31,11 @@ describe('GluuSelectRow', () => {
       </AppTestWrapper>,
     )
 
-    expect(screen.getByText(value)).toBeInTheDocument()
+    const select = screen.getByRole('combobox')
+    expect(select).toHaveValue(value)
   })
 
-  test('renders select and opens dropdown with all options', () => {
+  test('renders select with all options', () => {
     render(
       <AppTestWrapper>
         <GluuSelectRow
@@ -47,13 +48,11 @@ describe('GluuSelectRow', () => {
       </AppTestWrapper>,
     )
 
-    const selectTrigger = screen.getByRole('combobox')
-    fireEvent.mouseDown(selectTrigger)
-
-    const listbox = within(screen.getByRole('listbox'))
+    const select = screen.getByRole('combobox')
     values.forEach((optionValue) => {
-      expect(listbox.getByText(optionValue)).toBeInTheDocument()
+      expect(screen.getByRole('option', { name: optionValue })).toBeInTheDocument()
     })
+    expect(select).toHaveValue(value)
   })
 
   test('calls formik handleChange when selecting a new option', () => {
@@ -69,12 +68,8 @@ describe('GluuSelectRow', () => {
       </AppTestWrapper>,
     )
 
-    const selectTrigger = screen.getByRole('combobox')
-    fireEvent.mouseDown(selectTrigger)
-
-    const newValue = 'option3'
-    const listbox = within(screen.getByRole('listbox'))
-    fireEvent.click(listbox.getByText(newValue))
+    const select = screen.getByRole('combobox')
+    fireEvent.change(select, { target: { value: 'option3' } })
 
     expect(formikHandleChangeMock).toHaveBeenCalledTimes(1)
   })
@@ -95,12 +90,8 @@ describe('GluuSelectRow', () => {
       </AppTestWrapper>,
     )
 
-    const selectTrigger = screen.getByRole('combobox')
-    fireEvent.mouseDown(selectTrigger)
-
-    const newValue = 'option1'
-    const listbox = within(screen.getByRole('listbox'))
-    fireEvent.click(listbox.getByText(newValue))
+    const select = screen.getByRole('combobox')
+    fireEvent.change(select, { target: { value: 'option1' } })
 
     expect(formikHandleChangeMock).toHaveBeenCalledTimes(1)
     expect(handleChangeMock).toHaveBeenCalledTimes(1)

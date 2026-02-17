@@ -281,11 +281,11 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
                       {columns.map((col, colIdx) => {
                         const key = col.key as ColumnKey<T>
                         const value = (row as T)[key]
-                        const isFirstColumn = expandable && colIdx === 0
+                        const isFirstLineColumn = expandable && colIdx <= 1
                         return (
                           <td
                             key={col.key}
-                            className={`${classes.cell} ${isFirstColumn ? classes.cellFirst : ''}`}
+                            className={`${classes.cell} ${isFirstLineColumn ? classes.cellFirst : ''}`}
                             style={{
                               textAlign: col.align || 'left',
                               width: col.width,

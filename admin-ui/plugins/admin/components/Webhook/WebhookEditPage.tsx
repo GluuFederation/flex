@@ -8,9 +8,8 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import SetTitle from 'Utils/SetTitle'
-import GluuText from 'Routes/Apps/Gluu/GluuText'
 import WebhookForm from './WebhookForm'
-import { useStyles } from './WebhookFormPage.style'
+import { useStyles } from './styles/WebhookFormPage.style'
 
 const WebhookEditPage: React.FC = () => {
   const { t } = useTranslation()
@@ -32,14 +31,8 @@ const WebhookEditPage: React.FC = () => {
     <GluuPageContent>
       <GluuViewWrapper canShow={canReadWebhooks}>
         <div className={classes.formCard}>
-          <div className={classes.header}>
-            <GluuText variant="h1" className={classes.headerTitle}>
-              {t('titles.edit_webhook', { defaultValue: 'Edit Webhook' })}
-            </GluuText>
-            <div className={classes.headerDivider} />
-          </div>
           <div className={classes.content}>
-            <WebhookForm variant="page" />
+            <WebhookForm />
           </div>
         </div>
       </GluuViewWrapper>

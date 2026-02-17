@@ -1,20 +1,19 @@
 import React, { useEffect, useState, useCallback, useMemo, memo } from 'react'
 import { DeleteOutlined, Edit, Add } from '@mui/icons-material'
-import { Chip } from '@mui/material'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
-import customColors from '@/customColors'
+import { GluuBadge } from '@/components/GluuBadge'
 import { useCedarling } from '@/cedarling'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useDispatch } from 'react-redux'
+import { updateToast } from 'Redux/features/toastSlice'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import SetTitle from 'Utils/SetTitle'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { setSelectedWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useGetAllWebhooks } from 'JansConfigApi'
@@ -24,24 +23,29 @@ import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
 import type { FilterDef } from '@/components/GluuSearchToolbar/types'
 import type { WebhookEntry } from './types'
-import { fontFamily } from '@/styles/fonts'
-import { useStyles } from './WebhookListPage.style'
+import { useStyles } from './styles/WebhookListPage.style'
+import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 
-const LIMIT_OPTIONS = [5, 10, 25, 50]
-const SEARCH_FIELD_WIDTH = 280
+const FILTER_WIDTH = 255
+const LIMIT_OPTIONS = getRowsPerPageOptions()
 
-const getHttpMethodColor = (
-  method: string,
-): 'info' | 'success' | 'error' | 'warning' | 'default' => {
-  const colorMap: Record<string, 'info' | 'success' | 'error' | 'warning'> = {
-    GET: 'info',
-    POST: 'success',
-    PUT: 'warning',
-    PATCH: 'warning',
-    DELETE: 'error',
-  }
-  return colorMap[method] || 'default'
+const SORT_COLUMNS = ['inum', 'displayName', 'url', 'httpMethod', 'jansEnabled'] as const
+const DEFAULT_SERVER_SORT: { column: string; desc: boolean } = { column: 'inum', desc: false }
+const WEBHOOK_RESOURCE_ID = ADMIN_UI_RESOURCES.Webhooks
+
+const sortRows = <T,>(rows: T[], column: keyof T & string, desc: boolean): T[] => {
+  const sorted = [...rows].sort((a, b) => {
+    const aVal = a[column]
+    const bVal = b[column]
+    if (typeof aVal === 'boolean' && typeof bVal === 'boolean') {
+      return aVal === bVal ? 0 : aVal ? -1 : 1
+    }
+    return String(aVal ?? '').localeCompare(String(bVal ?? ''), undefined, { sensitivity: 'base' })
+  })
+  return desc ? sorted.reverse() : sorted
 }
+const WEBHOOK_SCOPES = CEDAR_RESOURCE_SCOPES[WEBHOOK_RESOURCE_ID] ?? []
+const TOAST_TYPE_ERROR = 'error'
 
 const WebhookListPage: React.FC = () => {
   const dispatch = useDispatch()
@@ -53,38 +57,32 @@ const WebhookListPage: React.FC = () => {
     authorizeHelper,
   } = useCedarling()
 
-  const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
-  const webhookScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[webhookResourceId], [webhookResourceId])
-
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
-  const darkThemeColors = useMemo(() => getThemeColor('dark'), [])
-  const lightThemeColors = useMemo(() => getThemeColor('light'), [])
   const isDarkTheme = themeState.theme === THEME_DARK
-  const { classes } = useStyles({ isDark: isDarkTheme, themeColors })
+  const { classes, badgeStyles } = useStyles({ isDark: isDarkTheme, themeColors })
 
-  const [pageNumber, setPageNumber] = useState(0)
-  const [limit, setLimit] = useState(10)
+  const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
   const [pattern, setPattern] = useState('')
-  const [reversed, setReversed] = useState(false)
-  const [sortColumn, setSortColumn] = useState<string | null>(null)
   const [modal, setModal] = useState(false)
   const [deleteData, setDeleteData] = useState<WebhookEntry | null>(null)
+  const [serverSort, setServerSort] = useState(DEFAULT_SERVER_SORT)
+  const [clientSort, setClientSort] = useState<{ column: string; desc: boolean } | null>(null)
 
   SetTitle(t('titles.webhooks'))
 
   const canReadWebhooks = useMemo(
-    () => hasCedarReadPermission(webhookResourceId),
-    [hasCedarReadPermission, webhookResourceId],
+    () => hasCedarReadPermission(WEBHOOK_RESOURCE_ID),
+    [hasCedarReadPermission],
   )
   const canWriteWebhooks = useMemo(
-    () => hasCedarWritePermission(webhookResourceId),
-    [hasCedarWritePermission, webhookResourceId],
+    () => hasCedarWritePermission(WEBHOOK_RESOURCE_ID),
+    [hasCedarWritePermission],
   )
   const canDeleteWebhooks = useMemo(
-    () => hasCedarDeletePermission(webhookResourceId),
-    [hasCedarDeletePermission, webhookResourceId],
+    () => hasCedarDeletePermission(WEBHOOK_RESOURCE_ID),
+    [hasCedarDeletePermission],
   )
 
   const { data, isLoading, refetch } = useGetAllWebhooks(
@@ -92,6 +90,8 @@ const WebhookListPage: React.FC = () => {
       limit,
       pattern: pattern || undefined,
       startIndex: pageNumber * limit,
+      sortBy: serverSort.column,
+      sortOrder: serverSort.desc ? 'descending' : 'ascending',
     },
     {
       query: {
@@ -104,61 +104,76 @@ const WebhookListPage: React.FC = () => {
   const totalItems = useMemo(() => data?.totalEntriesCount || 0, [data])
 
   const webhooks = useMemo(
-    () => (reversed ? [...webhooksRaw].reverse() : webhooksRaw),
-    [webhooksRaw, reversed],
+    () =>
+      clientSort
+        ? sortRows(webhooksRaw, clientSort.column as keyof WebhookEntry & string, clientSort.desc)
+        : webhooksRaw,
+    [webhooksRaw, clientSort],
   )
 
+  const effectivePage = useMemo(() => {
+    const maxPage = totalItems > 0 ? Math.max(0, Math.ceil(totalItems / limit) - 1) : 0
+    return Math.min(pageNumber, maxPage)
+  }, [pageNumber, totalItems, limit])
+
   useEffect(() => {
-    if (totalItems > 0 && pageNumber * limit >= totalItems) {
-      const lastPage = Math.max(0, Math.ceil(totalItems / limit) - 1)
-      setPageNumber(lastPage)
+    if (totalItems > 0 && pageNumber > effectivePage) {
+      setPageNumber(effectivePage)
     }
-  }, [totalItems, pageNumber, limit])
+  }, [totalItems, pageNumber, limit, effectivePage])
 
   const { deleteWebhook, isLoading: isDeleting } = useDeleteWebhookWithAudit()
 
   useEffect(() => {
-    if (webhookScopes && webhookScopes.length > 0) {
-      authorizeHelper(webhookScopes)
+    if (WEBHOOK_SCOPES.length > 0) {
+      authorizeHelper(WEBHOOK_SCOPES)
     }
-  }, [authorizeHelper, webhookScopes])
+  }, [authorizeHelper])
 
   const toggle = useCallback(() => setModal((prev) => !prev), [])
 
   const submitForm = useCallback(
     async (userMessage: string) => {
-      toggle()
-      if (deleteData?.inum) {
-        await deleteWebhook(deleteData.inum, userMessage)
+      const inumToDelete = deleteData?.inum
+      setDeleteData(null)
+      if (inumToDelete) {
+        try {
+          await deleteWebhook(inumToDelete, userMessage)
+          refetch()
+        } catch (error) {
+          const message =
+            (error as { response?: { data?: { responseMessage?: string } } })?.response?.data
+              ?.responseMessage ??
+            (error as Error)?.message ??
+            t('messages.failed_to_delete_webhook')
+          dispatch(updateToast(true, TOAST_TYPE_ERROR, message))
+        }
       }
     },
-    [toggle, deleteData, deleteWebhook],
+    [deleteData, deleteWebhook, refetch, dispatch, t],
   )
 
   const navigateToAddPage = useCallback(() => {
-    dispatch(setSelectedWebhook(null))
     navigateToRoute(ROUTES.WEBHOOK_ADD)
-  }, [dispatch, navigateToRoute])
+  }, [navigateToRoute])
 
   const navigateToEditPage = useCallback(
     (rowData: WebhookEntry) => {
       if (!rowData?.inum) return
-      dispatch(setSelectedWebhook(rowData))
       navigateToRoute(ROUTES.WEBHOOK_EDIT(rowData.inum))
     },
-    [dispatch, navigateToRoute],
+    [navigateToRoute],
   )
 
   const handleSearchSubmit = useCallback(() => {
     setPageNumber(0)
   }, [])
 
-  const handleLimitChange = useCallback((newLimit: number) => {
-    setLimit(newLimit)
-    setPageNumber(0)
-  }, [])
-
   const handleRefresh = useCallback(() => {
+    setPageNumber(0)
+    setPattern('')
+    setServerSort(DEFAULT_SERVER_SORT)
+    setClientSort(null)
     refetch()
   }, [refetch])
 
@@ -171,42 +186,65 @@ const WebhookListPage: React.FC = () => {
     setPageNumber(0)
   }, [])
 
+  const handlePagingSizeSync = useCallback(
+    (newSize: number) => {
+      onPagingSizeSync(newSize)
+    },
+    [onPagingSizeSync],
+  )
+
   const handleSort = useCallback((columnKey: string, direction: 'asc' | 'desc' | null) => {
-    setSortColumn(direction ? columnKey : null)
-    setReversed(direction === 'desc')
+    setClientSort(direction ? { column: columnKey, desc: direction === 'desc' } : null)
   }, [])
+
+  const handleSortByFilter = useCallback((value: string) => {
+    setServerSort({ column: value || 'inum', desc: false })
+    setClientSort(null)
+  }, [])
+
+  const sortOptions = useMemo(
+    () =>
+      SORT_COLUMNS.map((value) => ({
+        value,
+        label:
+          value === 'inum'
+            ? t('fields.inum')
+            : value === 'displayName'
+              ? t('fields.name')
+              : value === 'url'
+                ? t('fields.url')
+                : value === 'httpMethod'
+                  ? t('fields.http_method')
+                  : t('fields.status'),
+      })),
+    [t],
+  )
 
   const filters: FilterDef[] = useMemo(
     () => [
       {
-        key: 'limit',
-        label: `${t('fields.results_per_page')}:`,
-        value: String(limit),
-        options: LIMIT_OPTIONS.map((n) => ({ value: String(n), label: String(n) })),
-        onChange: (v) => handleLimitChange(Number(v)),
-        width: 100,
+        key: 'sortBy',
+        label: `${t('fields.sort_by')}:`,
+        value: serverSort.column,
+        options: sortOptions,
+        onChange: handleSortByFilter,
+        width: FILTER_WIDTH,
       },
     ],
-    [t, limit, handleLimitChange],
+    [t, serverSort.column, handleSortByFilter, sortOptions],
   )
 
-  const searchLabel = useMemo(
-    () => `${t('placeholders.search_pattern', { defaultValue: 'Pattern' })}:`,
-    [t],
-  )
-  const searchPlaceholder = useMemo(
-    () => t('placeholders.search_pattern', { defaultValue: 'Search Pattern' }),
-    [t],
-  )
+  const searchLabel = useMemo(() => `${t('fields.pattern')}:`, [t])
+  const searchPlaceholder = useMemo(() => t('placeholders.search_pattern'), [t])
 
   const primaryAction = useMemo(
     () => ({
-      label: t('messages.add_webhook', { defaultValue: 'Add Webhooks' }),
-      icon: <Add sx={{ fontSize: 20 }} />,
+      label: t('messages.add_webhook'),
+      icon: <Add className={classes.addIcon} />,
       onClick: navigateToAddPage,
       disabled: !canWriteWebhooks,
     }),
-    [t, navigateToAddPage, canWriteWebhooks],
+    [t, navigateToAddPage, canWriteWebhooks, classes],
   )
 
   const columns: ColumnDef<WebhookEntry>[] = useMemo(
@@ -216,14 +254,7 @@ const WebhookListPage: React.FC = () => {
         label: t('fields.name'),
         sortable: true,
         render: (_value, row) => (
-          <GluuText
-            variant="span"
-            disableThemeColor
-            style={{
-              color: row.jansEnabled ? themeColors.fontColor : customColors.textSecondary,
-              fontWeight: 500,
-            }}
-          >
+          <GluuText variant="span" disableThemeColor className={classes.cellDisplayName}>
             {row.displayName}
           </GluuText>
         ),
@@ -234,16 +265,7 @@ const WebhookListPage: React.FC = () => {
         width: '35%',
         sortable: true,
         render: (_value, row) => (
-          <GluuText
-            variant="span"
-            disableThemeColor
-            style={{
-              color: row.jansEnabled ? themeColors.fontColor : customColors.textSecondary,
-              wordBreak: 'break-all',
-              maxWidth: '350px',
-              fontFamily: fontFamily,
-            }}
-          >
+          <GluuText variant="span" disableThemeColor className={classes.cellUrl}>
             {row.url}
           </GluuText>
         ),
@@ -252,23 +274,27 @@ const WebhookListPage: React.FC = () => {
         key: 'httpMethod',
         label: t('fields.http_method'),
         sortable: true,
-        render: (_value, row) => (
-          <Chip
-            label={row.httpMethod}
-            size="small"
-            color={getHttpMethodColor(row.httpMethod || '')}
-            variant="outlined"
-            sx={
-              row.jansEnabled
-                ? {
-                    'color': themeColors.fontColor,
-                    'borderColor': themeColors.fontColor,
-                    '& .MuiChip-label': { color: themeColors.fontColor },
-                  }
-                : undefined
-            }
-          />
-        ),
+        render: (_value, row) => {
+          const upper = (row.httpMethod || '').toUpperCase()
+          const methodStyle =
+            upper === 'GET' || upper === 'POST'
+              ? badgeStyles.httpMethodBadgeGetPost
+              : upper === 'PUT' || upper === 'PATCH'
+                ? badgeStyles.httpMethodBadgePutPatch
+                : upper === 'DELETE'
+                  ? badgeStyles.httpMethodBadgeDelete
+                  : badgeStyles.httpMethodBadgeDefault
+          return (
+            <GluuBadge
+              size="md"
+              backgroundColor={methodStyle.backgroundColor}
+              textColor={methodStyle.textColor}
+              borderColor={methodStyle.borderColor}
+            >
+              {row.httpMethod}
+            </GluuBadge>
+          )
+        },
       },
       {
         key: 'jansEnabled',
@@ -276,26 +302,23 @@ const WebhookListPage: React.FC = () => {
         sortable: true,
         render: (_value, row) => {
           const isEnabled = row.jansEnabled === true
+          const style = isEnabled ? badgeStyles.statusBadgeEnabled : badgeStyles.statusBadgeDisabled
           return (
-            <Chip
-              label={isEnabled ? t('options.enabled') : t('options.disabled')}
-              size="small"
-              sx={{
-                minWidth: 80,
-                fontWeight: 500,
-                backgroundColor: darkThemeColors.background,
-                color: darkThemeColors.fontColor,
-                border: isEnabled
-                  ? `1px solid ${lightThemeColors.borderColor}`
-                  : `1px solid ${darkThemeColors.borderColor}`,
-                opacity: isEnabled ? 1 : 0.6,
-              }}
-            />
+            <GluuBadge
+              size="md"
+              backgroundColor={style.backgroundColor}
+              textColor={style.textColor}
+              borderColor={style.borderColor}
+              borderRadius={5}
+              className={classes.statusBadge}
+            >
+              {isEnabled ? t('options.enabled') : t('options.disabled')}
+            </GluuBadge>
           )
         },
       },
     ],
-    [t, themeColors, darkThemeColors, lightThemeColors],
+    [t, classes, badgeStyles],
   )
 
   const actions = useMemo(() => {
@@ -307,7 +330,7 @@ const WebhookListPage: React.FC = () => {
     }> = []
     if (canWriteWebhooks) {
       list.push({
-        icon: <Edit sx={{ fontSize: 18 }} />,
+        icon: <Edit className={classes.editIcon} />,
         tooltip: t('actions.edit'),
         id: 'editWebhook',
         onClick: navigateToEditPage,
@@ -315,7 +338,7 @@ const WebhookListPage: React.FC = () => {
     }
     if (canDeleteWebhooks) {
       list.push({
-        icon: <DeleteOutlined sx={{ fontSize: 18 }} />,
+        icon: <DeleteOutlined className={classes.editIcon} />,
         tooltip: t('actions.delete'),
         id: 'deleteWebhook',
         onClick: (row) => {
@@ -325,25 +348,25 @@ const WebhookListPage: React.FC = () => {
       })
     }
     return list
-  }, [canWriteWebhooks, canDeleteWebhooks, t, navigateToEditPage, toggle])
+  }, [canWriteWebhooks, canDeleteWebhooks, t, navigateToEditPage, toggle, classes])
 
   const pagination: PaginationConfig = useMemo(
     () => ({
-      page: pageNumber,
+      page: effectivePage,
       rowsPerPage: limit,
       totalItems,
       rowsPerPageOptions: LIMIT_OPTIONS,
       onPageChange: handlePageChange,
       onRowsPerPageChange: handleRowsPerPageChange,
     }),
-    [pageNumber, limit, totalItems, handlePageChange, handleRowsPerPageChange],
+    [effectivePage, limit, totalItems, handlePageChange, handleRowsPerPageChange],
   )
 
   const getRowKey = useCallback((row: WebhookEntry) => row.inum ?? '', [])
 
   const emptyMessage = useMemo(() => {
     if (!pattern && totalItems === 0) {
-      return t('messages.no_webhooks_found', { defaultValue: 'No webhooks found' })
+      return t('messages.no_webhooks_found')
     }
     return t('messages.no_data')
   }, [pattern, totalItems, t])
@@ -360,14 +383,13 @@ const WebhookListPage: React.FC = () => {
                 searchLabel={searchLabel}
                 searchPlaceholder={searchPlaceholder}
                 searchValue={pattern}
-                searchFieldWidth={SEARCH_FIELD_WIDTH}
+                searchOnType
                 onSearch={setPattern}
                 onSearchSubmit={handleSearchSubmit}
                 filters={filters}
                 onRefresh={canReadWebhooks ? handleRefresh : undefined}
                 refreshLoading={isLoading}
                 primaryAction={primaryAction}
-                refreshButtonVariant="outlined"
               />
             </div>
           </div>
@@ -378,16 +400,26 @@ const WebhookListPage: React.FC = () => {
               data={webhooks}
               loading={false}
               pagination={pagination}
+              onPagingSizeSync={handlePagingSizeSync}
               actions={actions}
-              sortColumn={sortColumn}
-              sortDirection={reversed ? 'desc' : null}
+              sortColumn={clientSort?.column ?? null}
+              sortDirection={clientSort ? (clientSort.desc ? 'desc' : 'asc') : null}
               onSort={handleSort}
               getRowKey={getRowKey}
               emptyMessage={emptyMessage}
             />
           </div>
         </GluuViewWrapper>
-        <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} />
+        <GluuCommitDialog
+          handler={toggle}
+          modal={modal}
+          onAccept={submitForm}
+          label={
+            modal && deleteData
+              ? `${t('messages.action_deletion_for')} ${t('messages.webhook_entity')} (${deleteData.url || ''}${deleteData.inum ? `-${deleteData.inum}` : ''})`
+              : ''
+          }
+        />
       </div>
     </GluuLoader>
   )

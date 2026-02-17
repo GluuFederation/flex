@@ -67,7 +67,7 @@ export default {
     right: 0,
     marginRight: '0.5rem',
     top: '50%',
-    transform: 'translateY(-70%)',
+    transform: 'translateY(-50%)',
   },
   globalSearch: {
     width: '100%',

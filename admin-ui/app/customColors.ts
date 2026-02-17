@@ -38,6 +38,12 @@ export const customColors = {
   statusInactive: '#f13f44',
   statusInactiveBg: '#ffe6e7',
 
+  // Disabled Badge
+  disabledBadgeLightBg: '#D9E1E8',
+  disabledBadgeLightText: '#425466',
+  disabledBadgeDarkBg: '#13385D',
+  disabledBadgeDarkText: '#90B5D9',
+
   // Settings / custom params
   addPropertyTextDark: '#1A2F45',
   customParamsBoxDark: '#1E3650',
@@ -57,9 +63,15 @@ export const customColors = {
   chartCoral: '#ff928a',
   chartCyan: '#3cc3df',
 
-  //Table
+  // Table
   tableHeaderTextLight: '#4F6377',
   tableHeaderTextDark: '#88AFD7',
+  tableRowBgDark: '#091e34',
+  tableRowBgLight: '#FFFFFF',
+  tableHeaderBgDark: '#0b2947',
+  tableHeaderLight: '#F4F6F8',
+  tableExpandButtonBgLight: '#F4F6F8',
+  tableExpandButtonBgDark: '#0B2947',
 
   // Cedar
   cedarCardBgDark: '#10375e',

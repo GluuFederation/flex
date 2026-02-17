@@ -12,12 +12,8 @@ import {
 } from 'JansConfigApi'
 import type { RolePermissionMapping } from 'JansConfigApi'
 import { updateToast } from 'Redux/features/toastSlice'
-import { extractErrorMessage } from '../../../../schema/utils/errorHandler'
-
-export interface MutationCallbacks {
-  onSuccess?: () => void
-  onError?: (error: unknown) => void
-}
+import { extractErrorMessage, type ApiError } from '../../../../schema/utils/errorHandler'
+import type { MutationCallbacks } from '../types'
 
 export const useMappingData = (enabled: boolean = true) => {
   const mappingQuery = useGetAllAdminuiRolePermissions({
@@ -65,10 +61,10 @@ export const useUpdateMappingWithAudit = (callbacks?: MutationCallbacks) => {
           updateToast(
             true,
             'error',
-            extractErrorMessage(error, t('messages.error_updating_mapping')),
+            extractErrorMessage(error as Error | ApiError, t('messages.error_updating_mapping')),
           ),
         )
-        callbacksRef.current?.onError?.(error)
+        callbacksRef.current?.onError?.(error instanceof Error ? error : new Error(String(error)))
         throw error
       }
     },
@@ -104,10 +100,10 @@ export const useAddMappingWithAudit = (callbacks?: MutationCallbacks) => {
           updateToast(
             true,
             'error',
-            extractErrorMessage(error, t('messages.error_adding_mapping')),
+            extractErrorMessage(error as Error | ApiError, t('messages.error_adding_mapping')),
           ),
         )
-        callbacksRef.current?.onError?.(error)
+        callbacksRef.current?.onError?.(error instanceof Error ? error : new Error(String(error)))
         throw error
       }
     },

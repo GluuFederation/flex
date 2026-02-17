@@ -7,21 +7,12 @@ import {
   useDeleteWebhookByInum,
   getGetAllWebhooksQueryKey,
 } from 'JansConfigApi'
+import queryUtils from '@/utils/queryUtils'
+import { isDevelopment } from '@/utils/env'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useWebhookAudit, CREATE, UPDATE, DELETION } from './useWebhookAudit'
-import type { WebhookEntry } from '../types'
+import type { WebhookEntry, MutationCallbacks } from '../types'
 
-export interface MutationCallbacks {
-  onSuccess?: () => void
-  onError?: (error: unknown) => void
-}
-
-/**
- * Extracts error message from webhook API responses.
- * Note: The webhook API returns `responseMessage` in error responses, which differs from
- * other APIs that use `message` (see plugins/schema/utils/errorHandler.ts).
- * This is intentional and matches the Jans Config API response structure for webhook endpoints.
- */
 const extractErrorMessage = (error: unknown, fallback: string): string =>
   (error as { response?: { data?: { responseMessage?: string } } })?.response?.data
     ?.responseMessage ||
@@ -43,14 +34,16 @@ export const useCreateWebhookWithAudit = (callbacks?: MutationCallbacks) => {
         logAction(CREATE, 'webhook', {
           action_message: userMessage,
           action_data: data,
-        }).catch((auditError) => console.error('Audit logging failed:', auditError))
+        }).catch((auditError) => {
+          if (isDevelopment) console.error('Audit logging failed:', auditError)
+        })
         dispatch(updateToast(true, 'success', 'Webhook created successfully'))
-        queryClient.invalidateQueries({ queryKey: getGetAllWebhooksQueryKey() })
+        queryUtils.invalidateQueriesByKey(queryClient, getGetAllWebhooksQueryKey())
         callbacksRef.current?.onSuccess?.()
         return result
       } catch (error: unknown) {
         dispatch(updateToast(true, 'error', extractErrorMessage(error, 'Failed to create webhook')))
-        callbacksRef.current?.onError?.(error)
+        callbacksRef.current?.onError?.(error instanceof Error ? error : new Error(String(error)))
         throw error
       }
     },
@@ -80,14 +73,16 @@ export const useUpdateWebhookWithAudit = (callbacks?: MutationCallbacks) => {
         logAction(UPDATE, 'webhook', {
           action_message: userMessage,
           action_data: data,
-        }).catch((auditError) => console.error('Audit logging failed:', auditError))
+        }).catch((auditError) => {
+          if (isDevelopment) console.error('Audit logging failed:', auditError)
+        })
         dispatch(updateToast(true, 'success', 'Webhook updated successfully'))
-        queryClient.invalidateQueries({ queryKey: getGetAllWebhooksQueryKey() })
+        queryUtils.invalidateQueriesByKey(queryClient, getGetAllWebhooksQueryKey())
         callbacksRef.current?.onSuccess?.()
         return result
       } catch (error: unknown) {
         dispatch(updateToast(true, 'error', extractErrorMessage(error, 'Failed to update webhook')))
-        callbacksRef.current?.onError?.(error)
+        callbacksRef.current?.onError?.(error instanceof Error ? error : new Error(String(error)))
         throw error
       }
     },
@@ -117,14 +112,16 @@ export const useDeleteWebhookWithAudit = (callbacks?: MutationCallbacks) => {
         logAction(DELETION, 'webhook', {
           action_message: userMessage,
           action_data: { inum },
-        }).catch((auditError) => console.error('Audit logging failed:', auditError))
+        }).catch((auditError) => {
+          if (isDevelopment) console.error('Audit logging failed:', auditError)
+        })
         dispatch(updateToast(true, 'success', 'Webhook deleted successfully'))
-        queryClient.invalidateQueries({ queryKey: getGetAllWebhooksQueryKey() })
+        queryUtils.invalidateQueriesByKey(queryClient, getGetAllWebhooksQueryKey())
         callbacksRef.current?.onSuccess?.()
         return result
       } catch (error: unknown) {
         dispatch(updateToast(true, 'error', extractErrorMessage(error, 'Failed to delete webhook')))
-        callbacksRef.current?.onError?.(error)
+        callbacksRef.current?.onError?.(error instanceof Error ? error : new Error(String(error)))
         throw error
       }
     },

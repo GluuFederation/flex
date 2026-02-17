@@ -23,8 +23,8 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
   const expandedBg = isDark
     ? (themeColors.settings?.cardBackground ?? themeColors.card.background)
     : themeColors.lightBackground
-  const headerBg = isDark ? customColors.darkBackground : customColors.buttonLightBg
-  const headerColor = themeColors.table.headerText
+  const headerBg = themeColors.table.headerBg
+  const headerColor = themeColors.table.headerColor
   const paginationAccent =
     themeColors.formFooter?.back?.backgroundColor ?? customColors.statusActive
   const loadingOverlayBg = getLoadingOverlayRgba(themeColors.background, isDark ? 0.4 : 0.6)
@@ -111,7 +111,7 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       padding: '14px 16px',
       color: themeColors.fontColor,
       fontSize: fontSizes.base,
-      verticalAlign: 'middle',
+      verticalAlign: 'top',
       lineHeight: '28px',
       overflowWrap: 'break-word',
       wordBreak: 'break-word',

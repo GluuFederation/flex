@@ -2,35 +2,14 @@ import React, { useState } from 'react'
 import { Col, FormGroup, Input } from 'Components'
 import type { InputProps } from 'reactstrap'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
-import type { FormikProps } from 'formik'
 import GluuLabel from './GluuLabel'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
+import { useStyles } from './styles/GluuInputRow.style'
+import type { GluuInputRowProps } from './types/GluuInputRow.types'
 
-interface GluuInputRowProps<T = Record<string, unknown>> {
-  label: string
-  name: string
-  type?: InputProps['type']
-  value?: string | number
-  formik?: FormikProps<T> | null
-  required?: boolean
-  lsize?: number
-  rsize?: number
-  doc_category?: string
-  disabled?: boolean
-  showError?: boolean
-  errorMessage?: string
-  handleChange?: ((event: React.ChangeEvent<HTMLInputElement>) => void) | null
-  doc_entry?: string
-  shortcode?: React.ReactNode
-  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void
-  rows?: number
-  cols?: number
-  isDark?: boolean
-}
-
-function GluuInputRow<T = Record<string, unknown>>({
+const GluuInputRow = <T = Record<string, unknown>,>({
   label,
   name,
   type = 'text',
@@ -50,10 +29,12 @@ function GluuInputRow<T = Record<string, unknown>>({
   rows,
   cols,
   isDark,
-}: GluuInputRowProps<T>) {
+  placeholder,
+}: GluuInputRowProps<T>) => {
   const [customType, setCustomType] = useState<string | null>(null)
   const { state } = useTheme()
   const themeColors = getThemeColor(state?.theme ?? DEFAULT_THEME)
+  const { classes } = useStyles({ errorColor: themeColors.errorColor })
 
   const setVisivility = (): void => {
     if (customType) {
@@ -62,6 +43,7 @@ function GluuInputRow<T = Record<string, unknown>>({
       setCustomType('text')
     }
   }
+
   return (
     <FormGroup row>
       <GluuLabel
@@ -72,7 +54,7 @@ function GluuInputRow<T = Record<string, unknown>>({
         doc_entry={doc_entry || name}
         isDark={isDark}
       />
-      <Col sm={rsize} style={{ position: 'relative' }}>
+      <Col sm={rsize} className={classes.colWrapper}>
         <Input
           id={name}
           data-testid={name}
@@ -93,10 +75,12 @@ function GluuInputRow<T = Record<string, unknown>>({
           disabled={disabled}
           rows={rows}
           cols={cols}
+          placeholder={placeholder}
+          className={shortcode ? classes.inputWithShortcode : undefined}
         />
         {shortcode}
         {type == 'password' && (
-          <div style={{ position: 'absolute', right: 20, top: 7 }}>
+          <div className={classes.passwordToggle}>
             {customType == 'text' ? (
               <Visibility onClick={() => setVisivility()} />
             ) : (
@@ -104,7 +88,7 @@ function GluuInputRow<T = Record<string, unknown>>({
             )}
           </div>
         )}
-        {showError ? <div style={{ color: themeColors.errorColor }}>{errorMessage}</div> : null}
+        {showError ? <div className={classes.error}>{errorMessage}</div> : null}
       </Col>
     </FormGroup>
   )

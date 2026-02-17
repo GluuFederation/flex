@@ -4,6 +4,11 @@ import type { WebhookEntry, AuiFeature, GetAllWebhooksParams, KeyValuePair } fro
 
 export type { WebhookEntry, AuiFeature, GetAllWebhooksParams, KeyValuePair }
 
+export type MutationCallbacks = {
+  onSuccess?: () => void
+  onError?: (error: Error) => void
+}
+
 export interface WebhookFormValues {
   displayName: string
   url: string
