@@ -507,7 +507,7 @@ export function useDeleteIdentityProvider() {
   const auditContext = useAuditContext()
   const baseMutation = useMutation({
     mutationFn: async ({ inum }: { inum: string }): Promise<void> => {
-      await AXIOS_INSTANCE.delete(`/kc/saml/idp/${inum}`)
+      await AXIOS_INSTANCE.delete(`/kc/saml/idp/${encodeURIComponent(inum)}`)
     },
   })
 
@@ -673,7 +673,7 @@ export function useDeleteTrustRelationshipMutation() {
   const auditContext = useAuditContext()
   const baseMutation = useMutation({
     mutationFn: async ({ id }: { id: string }): Promise<void> => {
-      await AXIOS_INSTANCE.delete(`/kc/saml/trust-relationship/${id}`)
+      await AXIOS_INSTANCE.delete(`/kc/saml/trust-relationship/${encodeURIComponent(id)}`)
     },
   })
 
