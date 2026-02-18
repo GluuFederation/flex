@@ -13,7 +13,7 @@ import type {
   RootFields,
   CleanableValue,
 } from '../types/formValues'
-import type { IdentityProvider, TrustRelationship, SamlAppConfiguration } from 'JansConfigApi'
+import type { IdentityProvider, TrustRelationship, SamlAppConfiguration } from '../components/hooks'
 
 type IdentityProviderWithMetaDataFN = IdentityProvider & {
   idpMetaDataFN?: string

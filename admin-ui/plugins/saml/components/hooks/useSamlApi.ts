@@ -1,31 +1,93 @@
 import { useCallback, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useQueryClient, useMutation } from '@tanstack/react-query'
-import {
-  useGetSamlProperties,
-  usePutSamlProperties,
-  useGetSamlIdentityProvider,
-  useDeleteSamlIdentityProvider,
-  useGetTrustRelationships,
-  useDeleteTrustRelationship,
-  getGetSamlPropertiesQueryKey,
-  getGetSamlIdentityProviderQueryKey,
-  getGetTrustRelationshipsQueryKey,
-  TrustRelationshipSpMetaDataSourceType,
-  type SamlAppConfiguration,
-  type IdentityProvider as OrvalIdentityProvider,
-  type TrustRelationship as OrvalTrustRelationship,
-  type BrokerIdentityProviderForm,
-  type TrustRelationshipForm,
-  type GetSamlIdentityProviderParams,
-  type IdentityProviderPagedResult,
-} from 'JansConfigApi'
+import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query'
 import { AXIOS_INSTANCE } from '../../../../api-client'
 import { updateToast } from 'Redux/features/toastSlice'
 import { logAuditUserAction, type BasicUserInfo } from 'Utils/AuditLogger'
 import { CREATE, UPDATE, DELETION } from '@/audit/UserActionType'
 import { AUDIT_RESOURCE_NAMES } from '../../helper/constants'
 import type { RootState } from '@/redux/sagas/types/audit'
+
+// ============================================================================
+// Local SAML types (generated JansConfigApi has no SAML endpoints – all defined here)
+// ============================================================================
+
+export const TrustRelationshipSpMetaDataSourceType = {
+  FILE: 'FILE',
+  URL: 'URL',
+  MANUAL: 'MANUAL',
+} as const
+
+export type SamlAppConfiguration = {
+  enabled?: boolean
+  selectedIdp?: string
+  ignoreValidation?: boolean
+  applicationName?: string
+  [key: string]: unknown
+}
+
+export interface OrvalIdentityProvider {
+  inum?: string
+  name?: string
+  displayName?: string
+  description?: string
+  enabled?: boolean
+  idpMetaDataFN?: string
+  trustEmail?: boolean
+  linkOnly?: boolean
+  creatorId?: string
+  dn?: string
+  providerId?: string
+  realm?: string
+  addReadTokenRoleOnCreate?: boolean
+  authenticateByDefault?: boolean
+  storeToken?: boolean
+  baseDn?: string
+  singleSignOnServiceUrl?: string
+  nameIDPolicyFormat?: string
+  idpEntityId?: string
+  singleLogoutServiceUrl?: string
+  signingCertificate?: string
+  encryptionPublicKey?: string
+  principalAttribute?: string
+  principalType?: string
+  validateSignature?: string
+}
+
+export interface OrvalTrustRelationship {
+  inum?: string
+  name?: string
+  displayName?: string
+  description?: string
+  enabled?: boolean
+  spMetaDataSourceType?: string
+  spMetaDataFN?: string
+  spMetaDataURL?: string
+  spLogoutURL?: string
+  releasedAttributes?: string[]
+  redirectUris?: string[]
+  clientAuthenticatorType?: string
+  profileConfigurations?: Record<string, { name: string; signResponses: string }>
+  dn?: string
+  validationLog?: string[]
+  validationStatus?: string
+  secret?: string
+  status?: string
+  owner?: string
+  consentRequired?: boolean
+  metaLocation?: string
+  baseDn?: string
+  registrationAccessToken?: string
+  baseUrl?: string
+  alwaysDisplayInConsole?: boolean
+  samlMetadata?: {
+    nameIDPolicyFormat?: string
+    entityId?: string
+    singleLogoutServiceUrl?: string
+    jansAssertionConsumerServiceGetURL?: string
+    jansAssertionConsumerServicePostURL?: string
+  }
+}
 
 export interface IdentityProvider extends OrvalIdentityProvider {
   idpMetaDataFN?: string
@@ -39,12 +101,46 @@ export interface IdentityProvider extends OrvalIdentityProvider {
     principalAttribute?: string
     principalType?: string
     validateSignature?: string
-    [key: string]: unknown
   }
 }
 
 export interface TrustRelationship extends OrvalTrustRelationship {
   spMetaDataFN?: string
+}
+
+export interface BrokerIdentityProviderForm {
+  identityProvider: Record<string, unknown>
+  metaDataFile?: File | Blob
+}
+
+export interface TrustRelationshipForm {
+  trustRelationship: TrustRelationship | Record<string, unknown>
+  metaDataFile?: File | Blob
+}
+
+export interface GetSamlIdentityProviderParams {
+  startIndex?: number
+  limit?: number
+  pattern?: string
+}
+
+export interface IdentityProviderPagedResult {
+  entries?: IdentityProvider[]
+  totalEntriesCount?: number
+}
+
+function getGetSamlPropertiesQueryKey(): readonly unknown[] {
+  return ['kc', 'saml', 'properties'] as const
+}
+
+function getGetSamlIdentityProviderQueryKey(
+  params?: GetSamlIdentityProviderParams,
+): readonly unknown[] {
+  return ['kc', 'saml', 'idp', params ?? {}] as const
+}
+
+function getGetTrustRelationshipsQueryKey(): readonly unknown[] {
+  return ['kc', 'saml', 'trust-relationships'] as const
 }
 
 const SAML_CACHE_CONFIG = {
@@ -57,16 +153,6 @@ export const SAML_QUERY_KEYS = {
   identityProviders: getGetSamlIdentityProviderQueryKey,
   trustRelationships: getGetTrustRelationshipsQueryKey,
 } as const
-
-export type {
-  SamlAppConfiguration,
-  BrokerIdentityProviderForm,
-  TrustRelationshipForm,
-  GetSamlIdentityProviderParams,
-  IdentityProviderPagedResult,
-}
-
-export { TrustRelationshipSpMetaDataSourceType }
 
 // ============================================================================
 // Custom API functions for multipart uploads (matching main branch approach)
@@ -231,18 +317,21 @@ interface DeleteTrustRelationshipParams {
 }
 
 // ============================================================================
-// SAML Configuration hooks (using orval)
+// SAML Configuration hooks (local – not in generated JansConfigApi)
 // ============================================================================
 
 export function useSamlConfiguration() {
   const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
 
-  return useGetSamlProperties({
-    query: {
-      enabled: hasSession === true,
-      staleTime: SAML_CACHE_CONFIG.STALE_TIME,
-      gcTime: SAML_CACHE_CONFIG.GC_TIME,
+  return useQuery({
+    queryKey: getGetSamlPropertiesQueryKey(),
+    queryFn: async (): Promise<SamlAppConfiguration> => {
+      const { data } = await AXIOS_INSTANCE.get<SamlAppConfiguration>('/kc/saml/properties')
+      return data ?? {}
     },
+    enabled: hasSession === true,
+    staleTime: SAML_CACHE_CONFIG.STALE_TIME,
+    gcTime: SAML_CACHE_CONFIG.GC_TIME,
   })
 }
 
@@ -250,7 +339,15 @@ export function useUpdateSamlConfiguration() {
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
   const auditContext = useAuditContext()
-  const baseMutation = usePutSamlProperties()
+  const baseMutation = useMutation({
+    mutationFn: async ({ data }: { data: SamlAppConfiguration }): Promise<SamlAppConfiguration> => {
+      const { data: result } = await AXIOS_INSTANCE.put<SamlAppConfiguration>(
+        '/kc/saml/properties',
+        data,
+      )
+      return result ?? {}
+    },
+  })
 
   const logAudit = useCallback(
     createAuditLogger<SamlAppConfiguration>(
@@ -281,18 +378,23 @@ export function useUpdateSamlConfiguration() {
 }
 
 // ============================================================================
-// Identity Provider hooks
+// Identity Provider hooks (local – not in generated JansConfigApi)
 // ============================================================================
 
 export function useIdentityProviders(params?: GetSamlIdentityProviderParams) {
   const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
 
-  return useGetSamlIdentityProvider(params, {
-    query: {
-      enabled: hasSession === true,
-      staleTime: SAML_CACHE_CONFIG.STALE_TIME,
-      gcTime: SAML_CACHE_CONFIG.GC_TIME,
+  return useQuery({
+    queryKey: getGetSamlIdentityProviderQueryKey(params),
+    queryFn: async (): Promise<IdentityProviderPagedResult> => {
+      const { data } = await AXIOS_INSTANCE.get<IdentityProviderPagedResult>('/kc/saml/idp', {
+        params: params ?? {},
+      })
+      return data ?? { entries: [], totalEntriesCount: 0 }
     },
+    enabled: hasSession === true,
+    staleTime: SAML_CACHE_CONFIG.STALE_TIME,
+    gcTime: SAML_CACHE_CONFIG.GC_TIME,
   })
 }
 
@@ -398,12 +500,16 @@ export function useUpdateIdentityProvider() {
   }
 }
 
-// Uses orval hook (DELETE doesn't need special FormData handling)
+// Local mutation (DELETE not in generated JansConfigApi)
 export function useDeleteIdentityProvider() {
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
   const auditContext = useAuditContext()
-  const baseMutation = useDeleteSamlIdentityProvider()
+  const baseMutation = useMutation({
+    mutationFn: async ({ inum }: { inum: string }): Promise<void> => {
+      await AXIOS_INSTANCE.delete(`/kc/saml/idp/${encodeURIComponent(inum)}`)
+    },
+  })
 
   const logAudit = useCallback(
     createAuditLogger<string>(
@@ -440,18 +546,21 @@ export function useDeleteIdentityProvider() {
 }
 
 // ============================================================================
-// Trust Relationship hooks
+// Trust Relationship hooks (local – not in generated JansConfigApi)
 // ============================================================================
 
 export function useTrustRelationships() {
   const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
 
-  return useGetTrustRelationships({
-    query: {
-      enabled: hasSession === true,
-      staleTime: SAML_CACHE_CONFIG.STALE_TIME,
-      gcTime: SAML_CACHE_CONFIG.GC_TIME,
+  return useQuery({
+    queryKey: getGetTrustRelationshipsQueryKey(),
+    queryFn: async (): Promise<TrustRelationship[]> => {
+      const { data } = await AXIOS_INSTANCE.get<TrustRelationship[]>('/kc/saml/trust-relationships')
+      return data ?? []
     },
+    enabled: hasSession === true,
+    staleTime: SAML_CACHE_CONFIG.STALE_TIME,
+    gcTime: SAML_CACHE_CONFIG.GC_TIME,
   })
 }
 
@@ -557,12 +666,16 @@ export function useUpdateTrustRelationship() {
   }
 }
 
-// Uses orval hook (DELETE doesn't need special FormData handling)
+// Local mutation (DELETE not in generated JansConfigApi)
 export function useDeleteTrustRelationshipMutation() {
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
   const auditContext = useAuditContext()
-  const baseMutation = useDeleteTrustRelationship()
+  const baseMutation = useMutation({
+    mutationFn: async ({ id }: { id: string }): Promise<void> => {
+      await AXIOS_INSTANCE.delete(`/kc/saml/trust-relationship/${encodeURIComponent(id)}`)
+    },
+  })
 
   const logAudit = useCallback(
     createAuditLogger<string>(
