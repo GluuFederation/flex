@@ -113,6 +113,20 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
         gridTemplateColumns: '1fr',
       },
     },
+    descriptionEnabledRow: {
+      'gridColumn': '1 / -1',
+      'display': DISPLAY_FLEX,
+      'gap': SPACING.SECTION_GAP,
+      'alignItems': 'flex-start',
+      'minWidth': 0,
+      '& > div': {
+        flex: '1 1 0',
+        minWidth: 0,
+      },
+      [theme.breakpoints.down('md')]: {
+        flexDirection: FLEX_DIRECTION_COLUMN,
+      },
+    },
     headersBox: {
       'backgroundColor': headersBoxBg,
       'borderRadius': MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS,
@@ -187,6 +201,9 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
       color: themeColors.errorColor,
       fontSize: fontSizes.sm,
       marginTop: 4,
+    },
+    extraPaddingTop: {
+      paddingTop: 8,
     },
     fieldItem: {
       'width': WIDTH_FULL,

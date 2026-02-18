@@ -339,7 +339,7 @@ const WebhookForm: React.FC = () => {
                 isDark={isDark}
               />
             </div>
-            <div className={classes.fieldItem}>
+            <div className={`${classes.fieldItem} ${classes.extraPaddingTop}`}>
               <GluuSelectRow
                 name="auiFeatureIds"
                 label="fields.aui_feature_ids"
@@ -413,36 +413,38 @@ const WebhookForm: React.FC = () => {
                 isDark={isDark}
               />
             </div>
-            <div className={classes.fieldItem}>
-              <GluuInputRow
-                label="fields.description"
-                formik={formik}
-                value={formikValues?.description}
-                doc_category={WEBHOOK}
-                doc_entry="description"
-                lsize={12}
-                rsize={12}
-                name="description"
-                placeholder={t('placeholders.webhook_description')}
-                isDark={isDark}
-              />
-            </div>
-            <div className={classes.fieldItem}>
-              <FormGroup>
-                <GluuLabel
-                  label="options.enabled"
-                  size={12}
+            <div className={classes.descriptionEnabledRow}>
+              <div className={classes.fieldItem}>
+                <GluuInputRow
+                  label="fields.description"
+                  formik={formik}
+                  value={formikValues?.description}
                   doc_category={WEBHOOK}
-                  doc_entry="enabled"
+                  doc_entry="description"
+                  lsize={12}
+                  rsize={12}
+                  name="description"
+                  placeholder={t('placeholders.webhook_description')}
                   isDark={isDark}
                 />
-                <Toggle
-                  id="jansEnabled"
-                  name="jansEnabled"
-                  onChange={formik.handleChange}
-                  checked={formikValues.jansEnabled}
-                />
-              </FormGroup>
+              </div>
+              <div className={classes.fieldItem}>
+                <FormGroup>
+                  <GluuLabel
+                    label="options.enabled"
+                    size={12}
+                    doc_category={WEBHOOK}
+                    doc_entry="enabled"
+                    isDark={isDark}
+                  />
+                  <Toggle
+                    id="jansEnabled"
+                    name="jansEnabled"
+                    onChange={formik.handleChange}
+                    checked={formikValues.jansEnabled}
+                  />
+                </FormGroup>
+              </div>
             </div>
             <div className={classes.fieldItemFullWidth}>
               <div
