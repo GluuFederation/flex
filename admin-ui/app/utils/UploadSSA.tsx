@@ -1,49 +1,68 @@
-// @ts-nocheck
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { Container } from 'Components'
 import { useDropzone } from 'react-dropzone'
 import logo from 'Images/logos/logo192.png'
-import { Button } from 'reactstrap'
 import { ThemeContext } from 'Context/theme/themeContext'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
 import { useSelector, useDispatch } from 'react-redux'
 import { uploadNewSsaToken } from '../redux/actions'
-import './LicenseScreens/style.css'
+import type { RootState } from '@/redux/types'
+import getThemeColor from '@/context/theme/config'
+import { DEFAULT_THEME } from '@/context/theme/constants'
+import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
+import useStyles from './styles/UploadSSA.style'
+import GluuText from '../routes/Apps/Gluu/GluuText'
+import { GluuButton } from '@/components/GluuButton'
+
 function UploadSSA() {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
-  const isLoading = useSelector((state) => state.licenseReducer.isLoading)
-  const error = useSelector((state) => state.licenseReducer.errorSSA)
+  const currentTheme = theme?.state?.theme ?? DEFAULT_THEME
+  const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
+  const { classes } = useStyles({ themeColors })
+  const pageStyle: React.CSSProperties = useMemo(
+    () => ({
+      minHeight: '100vh',
+      width: '100vw',
+      marginLeft: 'calc(-50vw + 50%)',
+      marginRight: 'calc(-50vw + 50%)',
+      backgroundColor: themeColors.background,
+    }),
+    [themeColors.background],
+  )
+  const isLoading = useSelector((state: RootState) => state.licenseReducer.isLoading)
+  const error = useSelector((state: RootState) => state.licenseReducer.errorSSA)
 
-  const [selectedFileName, setSelectedFileName] = useState(null)
-  const [selectedFile, setSelectedFile] = useState(null)
-  const [jwt, setJWT] = useState(null)
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [jwt, setJWT] = useState<string | null>(null)
 
-  const readJWTFile = () => {
+  const readJWTFile = useCallback(() => {
+    if (!selectedFile) return
     const reader = new FileReader()
 
     reader.onload = () => {
       const token = reader.result
-      setJWT(token)
+      setJWT(typeof token === 'string' ? token : null)
     }
 
     const blob = new Blob([selectedFile])
     reader.readAsText(blob)
-  }
+  }, [selectedFile])
 
   useEffect(() => {
     if (selectedFile) {
       readJWTFile()
     }
-  }, [selectedFile])
+  }, [selectedFile, readJWTFile])
 
-  const onDrop = useCallback((acceptedFiles) => {
+  const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0]
-    setSelectedFileName(file.name)
-    setSelectedFile(file)
+    if (file) {
+      setSelectedFileName(file.name)
+      setSelectedFile(file)
+    }
   }, [])
   const {
     getRootProps: getRootProps1,
@@ -63,42 +82,52 @@ function UploadSSA() {
   }
 
   return (
-    <React.Fragment>
-      <Container>
-        {isLoading && (
-          <div className="loader-outer">
-            <div className="loader"></div>
-          </div>
-        )}
-        <div className="row">
-          <div className="col-md-12 text-center mt-5 mb-5">
-            <img src={logo} style={{ maxWidth: '200px' }} className="img-fluid" />
-          </div>
-          <div className="col-md-12">
-            <div>Please upload ssa here :</div>
-            <div {...getRootProps1()} className={isDragActive1 ? 'active' : 'dropzone'}>
-              <input {...getInputProps1()} />
-              {selectedFileName ? (
-                <strong>Selected File : {selectedFileName}</strong>
-              ) : (
-                <p>Drag &apos;n&apos; drop .jwt file here, or click to select file</p>
-              )}
+    <div style={pageStyle}>
+      <GluuLoader blocking={isLoading}>
+        <Container>
+          <div className="row">
+            <div className="col-md-12 text-center mt-5 mb-5">
+              <img src={logo} className={`img-fluid ${classes.logo}`} alt="Logo" />
             </div>
-            <div className="text-sm text-danger">{error}</div>
-            <div className="mt-4">
-              <Button
-                disabled={isLoading}
-                color={`primary-${selectedTheme}`}
-                style={applicationStyle.buttonStyle}
-                onClick={() => submitData()}
+            <div className="col-md-12">
+              <GluuText className={classes.label}>{t('licenseScreen.uploadSsaLabel')}</GluuText>
+              <div
+                {...getRootProps1()}
+                className={`${isDragActive1 ? 'active' : 'dropzone'} ${classes.dropzone}`}
               >
-                {t('actions.submit')}
-              </Button>
+                <input {...getInputProps1()} />
+                {selectedFileName ? (
+                  <GluuText className={classes.dropzoneText}>
+                    {t('licenseScreen.selectedFile')} {selectedFileName}
+                  </GluuText>
+                ) : (
+                  <GluuText variant="p" className={classes.dropzoneText}>
+                    {t('licenseScreen.dropzoneHint')}
+                  </GluuText>
+                )}
+              </div>
+              {error && (
+                <GluuText className={classes.error} disableThemeColor>
+                  {error}
+                </GluuText>
+              )}
+              <div className="mt-4">
+                <GluuButton
+                  disabled={!selectedFile || isLoading}
+                  className={classes.button}
+                  onClick={() => submitData()}
+                  backgroundColor={themeColors.formFooter?.back?.backgroundColor}
+                  textColor={themeColors.formFooter?.back?.textColor}
+                  useOpacityOnHover
+                >
+                  {t('actions.submit')}
+                </GluuButton>
+              </div>
             </div>
           </div>
-        </div>
-      </Container>
-    </React.Fragment>
+        </Container>
+      </GluuLoader>
+    </div>
   )
 }
 export default UploadSSA

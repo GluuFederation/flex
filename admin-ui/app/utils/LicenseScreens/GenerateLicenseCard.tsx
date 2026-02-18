@@ -1,40 +1,53 @@
-// @ts-nocheck
-import React from 'react'
+import React, { useContext, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
-import Typography from '@mui/material/Typography'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { useAppSelector } from '@/redux/hooks'
+import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { DEFAULT_THEME } from '@/context/theme/constants'
+import useStyles from '../styles/GenerateLicenseCard.style'
 import { generateTrialLicense } from '../../redux/actions'
+import GluuText from '../../routes/Apps/Gluu/GluuText'
+import { GluuButton } from '@/components/GluuButton'
 
 const GenerateLicenseCard = () => {
+  const { t } = useTranslation()
   const dispatch = useDispatch()
-  const generatingTrialKey = useSelector((state) => state.licenseReducer.generatingTrialKey)
+  const theme = useContext(ThemeContext)
+  const currentTheme = theme?.state?.theme ?? DEFAULT_THEME
+  const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
+  const { classes } = useStyles({ themeColors })
+  const generatingTrialKey = useAppSelector((state) => state.licenseReducer.generatingTrialKey)
 
-  const generateLicenseKey = () => {
+  const handleGenerate = () => {
     dispatch(generateTrialLicense())
   }
 
   return (
-    <Card className="license-card">
-      <CardContent>
-        <Typography variant="h5" component="div" gutterBottom>
-          Free Trial
-        </Typography>
-        <Typography>
-          Start your free trial to manage and configure your Auth Server using simplified web
-          interface.
-        </Typography>
+    <Card className={classes.card} elevation={0}>
+      <CardContent className={classes.cardContent}>
+        <GluuText variant="div" className={classes.title}>
+          {t('licenseCard.freeTrial')}
+        </GluuText>
+        <GluuText className={classes.description} disableThemeColor>
+          {t('licenseCard.description')}
+        </GluuText>
       </CardContent>
-      <CardActions className="license-card-actions">
-        <button
+      <CardActions className={classes.cardActions}>
+        <GluuButton
           type="button"
           disabled={generatingTrialKey}
-          onClick={() => generateLicenseKey()}
-          className="btn license-generate-btn"
+          onClick={handleGenerate}
+          className={classes.button}
+          backgroundColor={themeColors.formFooter?.back?.backgroundColor}
+          textColor={themeColors.formFooter?.back?.textColor}
+          useOpacityOnHover
         >
-          {generatingTrialKey ? 'Generating please wait...' : 'Start 30 days trial'}
-        </button>
+          {generatingTrialKey ? t('licenseCard.generating') : t('licenseCard.start30Days')}
+        </GluuButton>
       </CardActions>
     </Card>
   )

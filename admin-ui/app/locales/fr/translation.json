@@ -193,6 +193,30 @@
     "copy_to_clipboard": "Copier dans le presse-papier",
     "refresh": "Actualiser"
   },
+  "serviceDownFallback": "Gluu Flex Admin UI ne reçoit aucune réponse du backend (Jans Config Api).",
+  "roleNotFoundMessage": "Utilisateur non autorisé",
+  "roleNotFoundDescription": "L'utilisateur connecté n'a pas de rôle valide. Déconnexion de Admin UI",
+  "licenseCard": {
+    "freeTrial": "Essai gratuit",
+    "description": "Démarrez votre essai gratuit pour gérer et configurer votre serveur d'authentification avec une interface web simplifiée.",
+    "generating": "Génération en cours, veuillez patienter...",
+    "start30Days": "Démarrer l'essai de 30 jours"
+  },
+  "sessionTimeout": {
+    "title": "Expiration de la session",
+    "messageExpire_one": "La session actuelle expirera dans {{count}} seconde.",
+    "messageExpire_other": "La session actuelle expirera dans {{count}} secondes.",
+    "messageContinue": "Voulez-vous continuer la session ?",
+    "logout": "Déconnexion",
+    "continueSession": "Continuer la session"
+  },
+  "licenseScreen": {
+    "redirecting": "Redirection...",
+    "welcomeTitle": "Bienvenue sur Admin UI",
+    "uploadSsaLabel": "Veuillez télécharger le SSA ici :",
+    "selectedFile": "Fichier sélectionné :",
+    "dropzoneHint": "Glissez-déposez le fichier .jwt ici ou cliquez pour sélectionner"
+  },
   "fields": {
     "actions": "Actions",
     "asset_name": "Asset Name",
@@ -387,7 +411,7 @@
     "sort_by": "Trier Par",
     "results_per_page": "Résultats par page",
     "activate": "Activer",
-    "active": "Active",
+    "active": "Actif",
     "application_type": "Type de demande",
     "attributes": "Les attributs",
     "attribute_edit_type": "Type de modification d'attribut",
@@ -616,6 +640,8 @@
     "customerName": "Nom du client",
     "licenseDetails": "Détails de la licence",
     "role": "Rôle",
+    "admin": "Administrateur",
+    "statusLabel": "Statut",
     "permissions": "Permissions",
     "deletable": "Supprimable",
     "email": "E-mail",
@@ -993,6 +1019,9 @@
     "more": " plus"
   },
   "titles": {
+    "personal_information": "Informations personnelles",
+    "admin_roles": "Rôles d'administrateur",
+    "account_status": "Statut du compte",
     "acrs": "ACR",
     "audit_logs": "Admin UI Logs d'audit",
     "assets": "Jans Assets",

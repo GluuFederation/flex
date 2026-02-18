@@ -50,8 +50,8 @@ const DashboardPage = () => {
 
   const themeContext = useContext(ThemeContext)
   const currentTheme = useMemo(
-    () => themeContext?.state.theme || DEFAULT_THEME,
-    [themeContext?.state.theme],
+    () => themeContext?.state?.theme || DEFAULT_THEME,
+    [themeContext?.state?.theme],
   )
   const isDark = currentTheme === THEME_DARK
   const dashboardThemeColors = useMemo(() => {
@@ -420,7 +420,6 @@ const DashboardPage = () => {
                         onEndDateAccept={handleEndDateChange}
                         textColor={dashboardThemeColors.text}
                         backgroundColor={dashboardThemeColors.cardBg}
-                        isDark={isDark}
                       />
                     </div>
                     <div className={classes.desktopChartStyle}>

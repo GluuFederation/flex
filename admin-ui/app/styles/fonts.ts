@@ -10,10 +10,13 @@ export const fontSizes = {
   'xs': '10px',
   'sm': '12px',
   'base': '14px',
+  'description': '15px',
   'md': '16px',
+  'content': '18px',
   'lg': '20px',
   'xl': '22px',
   '2xl': '24px',
+  '2.5xl': '30px',
   '3xl': '36px',
   '4xl': '48px',
   'chartAxis': '10.798px',
@@ -24,6 +27,7 @@ export const letterSpacing = {
   button: '0.28px',
   normal: '0.3px',
   wide: '0.32px',
+  content: '0.36px',
 } as const
 
 export const lineHeights = {
@@ -32,4 +36,7 @@ export const lineHeights = {
   base: '24px',
   relaxed: '28px',
   loose: '32px',
+  XLose: '36',
+  XXLoose: '40',
+  XXXLoose: '44',
 } as const

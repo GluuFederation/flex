@@ -5,7 +5,6 @@ import LockOpenIcon from '@mui/icons-material/LockOpen'
 import { Paper, TablePagination } from '@mui/material'
 import UserDetailViewPage from './UserDetailViewPage'
 import User2FADevicesModal from './User2FADevicesModal'
-import { getAttributesRoot } from 'Redux/features/attributesSlice'
 import { useDispatch } from 'react-redux'
 import { Card, CardBody } from '../../../app/components'
 import { useTranslation } from 'react-i18next'
@@ -151,27 +150,18 @@ function UserList(): JSX.Element {
     (row: UserTableRowData): void => {
       const userId = row.tableData?.uuid || row.inum
       if (!userId) return
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { tableData, ...userData } = row
+      void tableData
       navigateToRoute(ROUTES.USER_EDIT(userId), { state: { selectedUser: userData as CustomUser } })
     },
     [navigateToRoute],
   )
 
-  const handleOptionsChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement> & { keyCode?: number }): void => {
-      if (event.target.name === 'limit') {
-        const newLimit = parseInt(event.target.value, 10)
-        setLimit(newLimit)
-      } else if (event.target.name === 'pattern') {
-        const newPattern = event.target.value
-        if (event.keyCode === 13) {
-          setPattern(newPattern || undefined)
-        }
-      }
-    },
-    [],
-  )
+  const handleSearchKeyDown = useCallback((event: React.KeyboardEvent<HTMLInputElement>): void => {
+    if (event.key === 'Enter') {
+      setPattern(event.currentTarget.value || undefined)
+    }
+  }, [])
 
   const GluuSearch = useCallback(() => {
     return (
@@ -180,11 +170,11 @@ function UserList(): JSX.Element {
         patternId={PATTERN_ID}
         limit={limit}
         pattern={pattern}
-        handler={handleOptionsChange}
+        onKeyDown={handleSearchKeyDown}
         showLimit={false}
       />
     )
-  }, [limit, pattern, handleOptionsChange])
+  }, [limit, pattern, handleSearchKeyDown])
 
   const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
   const LockedOpenIcon = useCallback(() => <LockOpenIcon />, [])
@@ -285,27 +275,6 @@ function UserList(): JSX.Element {
     setPageNumber(0)
     setLimit(count)
   }, [])
-
-  useEffect(() => {
-    if (!usersList?.length) return
-
-    const usedAttributes = new Set<string>()
-    for (const user of usersList) {
-      user.customAttributes?.forEach((attribute) => {
-        if (attribute.name) {
-          usedAttributes.add(attribute.name)
-        }
-      })
-    }
-
-    if (usedAttributes.size > 0) {
-      dispatch(
-        getAttributesRoot({
-          options: { pattern: Array.from(usedAttributes).toString(), limit: 100 },
-        }),
-      )
-    }
-  }, [usersList, dispatch])
 
   const PaperContainer = useCallback(
     (props: React.ComponentProps<typeof Paper>) => <Paper {...props} elevation={0} />,

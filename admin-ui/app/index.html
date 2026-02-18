@@ -37,89 +37,22 @@
     <% } %> <% if (config.options.chunks) { %> <%= config.options.chunks.css %>
     <% } %>
 
-    <!-- Loader Style -->
     <style>
-      @keyframes spin {
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-      .initial-loader-wrap {
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-family: -apple-system, "Helvetica Neue", Helvetica, "Segoe UI",
-          Arial, sans-serif;
-        font-size: 12px;
-        position: fixed;
-        z-index: 99999;
-        background-color: white;
-        transition: opacity 200ms cubic-bezier(0.215, 0.61, 0.355, 1);
-      }
-      .loaded .initial-loader-wrap {
-        opacity: 0;
-      }
-      .initial-loader {
-        min-width: 240px;
-        color: #212529;
-        line-height: 1.5;
-      }
-      .initial-loader__row {
-        display: flex;
-        justify-content:center;
-        align-items: center;
-        text-align: center;
-        padding: 0.5rem;
-        color: #212529;
-      }
-      .initial-loader h1 {
-        margin: 0;
-        color: #0d7bff;
-        font-size: 30px;
-        font-weight: 600;
-        line-height: 1.2;
-      }
-      .initial-loader svg#loader-circle {
-        transform-origin: 50% 50%;
-        animation: spin 0.5s linear infinite;
-      }
+      html.theme-dark { --initial-page-bg: #0b2947; }
+      html.theme-light { --initial-page-bg: #f6f6f6; }
+      html, body { background-color: var(--initial-page-bg, #0b2947); min-height: 100%; margin: 0; }
     </style>
-  </head>
-  <body>
-    <!-- START Loader -->
-    <div class="initial-loader-wrap">
-      <div class="initial-loader">
-        <div class="initial-loader__row">
-          <img src="https://res.cloudinary.com/hamharry/image/upload/v1656079882/loader_w8ptw0.gif" alt="loading" width="260px" />
-        </div>
-        <div class="initial-loader__row">
-          AdminUI is loading...
-        </div>
-      </div>
-    </div>
-    <script src="/admin/env-config.js" defer></script>
     <script>
       (function() {
-        var bodyElement = document.querySelector("body");
-        bodyElement.classList.add("loading");
-        document.addEventListener("readystatechange", function() {
-          if (document.readyState === "complete") {
-            var bodyElement = document.querySelector("body");
-            var loaderElement = document.querySelector(".initial-loader-wrap");
-            bodyElement.classList.add("loaded");
-            setTimeout(function() {
-              bodyElement.removeChild(loaderElement);
-              bodyElement.classList.remove("loading", "loaded");
-            }, 500);
-          }
-        });
+        try {
+          var theme = localStorage.getItem('initTheme') === 'light' ? 'theme-light' : 'theme-dark';
+          document.documentElement.classList.add(theme);
+        } catch (e) {}
       })();
     </script>
-    <!-- END Loader -->
+  </head>
+  <body>
+    <script src="/admin/env-config.js" defer></script>
 
     <div id="root"><%= config.innerHtml || '' %></div>
 

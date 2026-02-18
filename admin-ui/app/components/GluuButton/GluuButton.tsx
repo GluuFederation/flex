@@ -80,7 +80,7 @@ const GluuButton: React.FC<GluuButtonProps> = (props) => {
         bg,
         hoverBg,
       ),
-      color: outlined ? themeColors.fontColor : text,
+      color: outlined ? (textColor ?? themeColors.fontColor) : text,
       cursor: isDisabled ? 'not-allowed' : 'pointer',
       opacity: isDisabled ? OPACITY.DIMMED : keepBgOnHover ? opacityOnHover : 1,
       width: block ? '100%' : 'auto',

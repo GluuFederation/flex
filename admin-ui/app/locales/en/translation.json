@@ -68,6 +68,29 @@
     "add_custom_attributes": "Add custom attributes",
     "refresh": "Refresh"
   },
+  "serviceDownFallback": "Gluu Flex Admin UI is not getting any response from the backend (Jans Config Api).",
+  "roleNotFoundMessage": "Unauthorized User",
+  "roleNotFoundDescription": "The logged-in user does not have a valid role. Logging out of Admin UI",
+  "licenseCard": {
+    "freeTrial": "Free Trial",
+    "description": "Start your free trial to manage and configure your Auth Server using simplified web interface.",
+    "generating": "Generating please wait...",
+    "start30Days": "Start 30 days trial"
+  },
+  "sessionTimeout": {
+    "title": "Session Timeout",
+    "messageExpire": "The current session is about to expire in {{count}} seconds.",
+    "messageContinue": "Would you like to continue the session?",
+    "logout": "Logout",
+    "continueSession": "Continue Session"
+  },
+  "licenseScreen": {
+    "redirecting": "Redirecting...",
+    "welcomeTitle": "Welcome to Admin UI",
+    "uploadSsaLabel": "Please upload ssa here :",
+    "selectedFile": "Selected File :",
+    "dropzoneHint": "Drag 'n' drop .jwt file here, or click to select file"
+  },
   "dashboard": {
     "summary_title": "Actives Users & Access Token Stats",
     "oidc_clients_count": "OIDC Clients Count",
@@ -553,6 +576,8 @@
     "givenName": "Given Name",
     "sn": "Last Name",
     "mail": "Email",
+    "admin": "Admin",
+    "statusLabel": "Status",
     "resources": "Resources",
     "resourceId": "Resource id",
     "scopeSelection": "Scope Selection",
@@ -1066,6 +1091,9 @@
     "more": " more"
   },
   "titles": {
+    "personal_information": "Personal Information",
+    "admin_roles": "Admin Roles",
+    "account_status": "Account Status",
     "activeTokens": "Active Tokens",
     "acrs": "ACRs",
     "active_users": "Actives Users && Access Token Stats",

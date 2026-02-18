@@ -1,54 +1,67 @@
 import React, { useContext, useEffect, useCallback, useMemo, memo } from 'react'
-import { Container, Row, Col, Card, CardBody, Button, AvatarImage } from 'Components'
+import { GluuBadge } from 'Components'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from '../Gluu/GluuErrorFallBack'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from '../../../context/theme/themeContext'
 import SetTitle from 'Utils/SetTitle'
-import styles from './styles'
+import styles from './ProfilePage.style'
 import { Box, Divider } from '@mui/material'
 import { getProfileDetails } from 'Redux/features/ProfileDetailsSlice'
 import { randomAvatar } from '../../../utilities'
-import getThemeColor from '../../../context/theme/config'
-import { DEFAULT_THEME } from '@/context/theme/constants'
-import customColors from '@/customColors'
-import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import type { ThemeContextValue, CustomAttribute } from './types'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import GluuLoader from '../Gluu/GluuLoader'
+import { useCedarling } from '@/cedarling'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
+import { GluuButton } from '@/components/GluuButton'
+import getThemeColor from '@/context/theme/config'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import customColors from '@/customColors'
+import { devWarn } from '@/utils/env'
 
 const JANS_ADMIN_UI_ROLE_ATTR = 'jansAdminUIRole'
 const USERS_RESOURCE_ID = ADMIN_UI_RESOURCES.Users
-
-const FLEX_COLUMN_GAP2 = {
-  display: '',
-  flexDirectionflex: 'column' as const,
-  gap: 2,
-}
-const FLEX_COLUMN_GAP1 = {
-  display: 'flex',
-  flexDirection: 'column' as const,
-  gap: 1,
-}
-const FIELD_ROW_STYLE = {
-  display: 'flex',
-  justifyContent: 'space-between' as const,
-  alignItems: 'center',
-  marginBottom: 1,
-}
-const COL_PROPS = { xs: 10, md: 8, lg: 5 }
 const USERS_SCOPES = CEDAR_RESOURCE_SCOPES[USERS_RESOURCE_ID]
+
+interface InfoRowProps {
+  label: string
+  value?: string
+  index: number
+  classes: {
+    dataRow: string
+    dataRowEven: string
+    dataRowOdd: string
+    dataLabel: string
+    dataValue: string
+  }
+}
+
+const InfoRow = memo(({ label, value, index, classes }: InfoRowProps) => (
+  <Box
+    className={`${classes.dataRow} ${index % 2 === 0 ? classes.dataRowEven : classes.dataRowOdd}`}
+  >
+    <GluuText className={classes.dataLabel} disableThemeColor>
+      {label}
+    </GluuText>
+    <GluuText className={classes.dataValue} disableThemeColor>
+      {value || '-'}
+    </GluuText>
+  </Box>
+))
+InfoRow.displayName = 'InfoRow'
 
 const ProfileDetails: React.FC = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const theme = useContext(ThemeContext) as ThemeContextValue
-  const selectedTheme = useMemo(() => theme?.state?.theme ?? DEFAULT_THEME, [theme?.state?.theme])
-  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
-  const { classes } = styles()
+  const currentTheme = theme?.state?.theme ?? DEFAULT_THEME
+  const isDark = currentTheme === THEME_DARK
+  const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
+  const { classes } = styles({ themeColors, isDark })
   const { navigateToRoute } = useAppNavigation()
 
   SetTitle(t('titles.profile_detail'))
@@ -111,81 +124,212 @@ const ProfileDetails: React.FC = () => {
     })
   }, [profileDetails, navigateToRoute])
 
-  const rolesValue = useMemo(
-    () => jansAdminUIRole?.values?.join(', ') ?? undefined,
-    [jansAdminUIRole?.values],
-  )
+  const rolesValue = useMemo(() => {
+    const values = jansAdminUIRole?.values
+    if (!Array.isArray(values) || values.length === 0) return '-'
+    return values.map((role) => role.charAt(0).toUpperCase() + role.slice(1)).join(', ')
+  }, [jansAdminUIRole?.values])
 
-  const renderField = useCallback(
-    (labelKey: string, value: string | undefined) => (
-      <Box sx={FIELD_ROW_STYLE}>
-        <Box fontWeight={700}>{t(labelKey)}</Box>
-        <Box>{value || '-'}</Box>
-      </Box>
-    ),
-    [t],
-  )
-
-  const renderDisplayName = useMemo(
-    () => (
-      <Box fontWeight={700} fontSize={'16px'} className="text-center mb-4">
-        {profileDetails?.displayName}
-      </Box>
-    ),
-    [profileDetails?.displayName],
-  )
-
-  const editButtonStyle = useMemo(
+  const adminBadgeColors = useMemo(
     () => ({
-      backgroundColor: 'transparent' as const,
-      color: customColors.primaryDark,
-      border: `1px solid ${themeColors.background}`,
+      bg: themeColors.formFooter?.back?.backgroundColor,
+      text: themeColors.formFooter?.back?.textColor,
     }),
-    [themeColors.background],
+    [themeColors],
+  )
+
+  const statusBadgeColors = useMemo(() => {
+    const status = profileDetails?.status
+    if (status === 'active') {
+      return {
+        bg: themeColors.formFooter?.back?.backgroundColor,
+        text: themeColors.formFooter?.back?.textColor,
+      }
+    }
+    if (status == null) {
+      devWarn('[ProfilePage] profileDetails.status is null/undefined', {
+        status: profileDetails?.status,
+        hasProfileDetails: !!profileDetails,
+      })
+      return {
+        bg: themeColors.inputBackground,
+        text: themeColors.textMuted,
+      }
+    }
+    return {
+      bg: themeColors.settings?.removeButton?.bg,
+      text: themeColors.settings?.removeButton?.text,
+    }
+  }, [profileDetails?.status, themeColors])
+
+  const accountStatusPillColors = useMemo(() => {
+    const status = profileDetails?.status
+    if (status === 'active') {
+      return {
+        bg: customColors.statusActiveBg,
+        text: customColors.statusActive,
+      }
+    }
+    if (status == null) {
+      return {
+        bg: themeColors.inputBackground,
+        text: themeColors.textMuted,
+      }
+    }
+    return {
+      bg: themeColors.settings?.removeButton?.bg,
+      text: themeColors.settings?.removeButton?.text,
+    }
+  }, [profileDetails?.status, themeColors])
+
+  const statusLabel = useMemo(
+    () =>
+      profileDetails?.status === 'active'
+        ? t('fields.active')
+        : profileDetails?.status == null
+          ? t('dashboard.unknown')
+          : (profileDetails?.status ?? '-'),
+    [profileDetails?.status, t],
   )
 
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
       <GluuLoader blocking={loading}>
         {!loading && (
-          <Container>
-            <Row className={classes.centerCard}>
-              <Col {...COL_PROPS}>
-                <Card className="" type="" color={null}>
-                  <CardBody className={classes.profileCard}>
-                    <React.Fragment>
-                      <Box
-                        className={`${classes.avatar_wrapper} d-flex justify-content-center my-3`}
+          <Box className={classes.mainContainer}>
+            <Box className={classes.profileCard}>
+              <Box className={classes.avatarContainer}>
+                <img src={avatarSrc} alt="Avatar" className={classes.avatar} />
+              </Box>
+
+              <Box textAlign="center">
+                <GluuText variant="h5" className={classes.nameText}>
+                  {profileDetails?.displayName || '-'}
+                </GluuText>
+                <GluuText variant="div" className={classes.emailText} disableThemeColor>
+                  {profileDetails?.mail || '-'}
+                </GluuText>
+                <Box className={classes.profileHeaderStatusWrap} width="100%">
+                  <Box className={classes.statusRow}>
+                    <div
+                      className={`${classes.statusDot} ${
+                        profileDetails?.status === 'active'
+                          ? classes.statusDotActive
+                          : classes.statusDotInactive
+                      }`}
+                    />
+                    <Box component="span" className={classes.statusKeyValueWrap}>
+                      <GluuText
+                        variant="span"
+                        className={
+                          profileDetails?.status === 'active'
+                            ? classes.statusLabelActive
+                            : classes.statusLabelInactive
+                        }
+                        disableThemeColor
                       >
-                        <AvatarImage size="lg" src={avatarSrc} />
-                      </Box>
-                      <Box sx={FLEX_COLUMN_GAP2}>
-                        <Box sx={FLEX_COLUMN_GAP1}>
-                          {renderDisplayName}
-                          {renderField('fields.givenName', profileDetails?.givenName)}
-                          <Divider />
-                          {renderField('fields.sn', snValue)}
-                          <Divider />
-                          {renderField('fields.mail', profileDetails?.mail)}
-                          <Divider />
-                          {renderField('titles.roles', rolesValue)}
-                          <Divider />
-                          {renderField('fields.status', profileDetails?.status)}
-                          <Divider />
-                        </Box>
-                        {canEditProfile && (
-                          <Button style={editButtonStyle} onClick={navigateToUserManagement}>
-                            <i className="fa fa-pencil me-2" />
-                            {t('actions.edit')}
-                          </Button>
-                        )}
-                      </Box>
-                    </React.Fragment>
-                  </CardBody>
-                </Card>
-              </Col>
-            </Row>
-          </Container>
+                        {t('fields.statusLabel')}:
+                      </GluuText>
+                      <GluuText
+                        variant="span"
+                        className={
+                          profileDetails?.status === 'active'
+                            ? classes.statusValueActive
+                            : classes.statusValueInactive
+                        }
+                        disableThemeColor
+                      >
+                        {statusLabel}
+                      </GluuText>
+                    </Box>
+                  </Box>
+                  <Box className={classes.statusDividerWrapper}>
+                    <Divider className={classes.statusDivider} />
+                  </Box>
+                </Box>
+              </Box>
+
+              <Box width="100%">
+                <GluuText variant="h6" className={classes.sectionTitle} disableThemeColor>
+                  {t('titles.personal_information', { defaultValue: 'Personal Information' })}
+                </GluuText>
+                <Box className={classes.dataContainer}>
+                  <InfoRow
+                    label={t('fields.givenName')}
+                    value={profileDetails?.givenName}
+                    index={0}
+                    classes={classes}
+                  />
+                  <InfoRow
+                    label={t('fields.sn', { defaultValue: 'Last Name' })}
+                    value={snValue}
+                    index={1}
+                    classes={classes}
+                  />
+                  <InfoRow
+                    label={t('fields.mail')}
+                    value={profileDetails?.mail}
+                    index={2}
+                    classes={classes}
+                  />
+                </Box>
+              </Box>
+
+              <Box width="100%">
+                <GluuText variant="h6" className={classes.sectionTitle} disableThemeColor>
+                  {t('titles.admin_roles', { defaultValue: 'Admin Roles' })}
+                </GluuText>
+                <Box className={classes.roleContainer}>
+                  <GluuText className={classes.roleLabel} disableThemeColor>
+                    {t('fields.admin')}:
+                  </GluuText>
+                  <GluuBadge
+                    size="sm"
+                    backgroundColor={adminBadgeColors.bg}
+                    textColor={adminBadgeColors.text}
+                    borderColor={adminBadgeColors.bg}
+                  >
+                    {rolesValue}
+                  </GluuBadge>
+                </Box>
+              </Box>
+
+              <Box width="100%">
+                <GluuText variant="h6" className={classes.sectionTitle} disableThemeColor>
+                  {t('titles.account_status', { defaultValue: 'Account Status' })}
+                </GluuText>
+                <Box className={classes.accountStatusContainer}>
+                  <GluuText className={classes.roleLabel} disableThemeColor>
+                    {t('fields.statusLabel')}:
+                  </GluuText>
+                  <GluuBadge
+                    size="sm"
+                    className={classes.accountStatusPill}
+                    borderRadius={5}
+                    backgroundColor={accountStatusPillColors.bg}
+                    textColor={accountStatusPillColors.text}
+                    borderColor={accountStatusPillColors.bg}
+                  >
+                    {statusLabel}
+                  </GluuBadge>
+                </Box>
+              </Box>
+
+              {canEditProfile && (
+                <GluuButton
+                  block
+                  disableHoverStyles
+                  className={classes.editButton}
+                  onClick={navigateToUserManagement}
+                  backgroundColor={themeColors.formFooter?.back?.backgroundColor}
+                  textColor={themeColors.formFooter?.back?.textColor}
+                >
+                  <i className={`fa fa-pencil ${classes.editButtonIcon}`} />
+                  {t('actions.edit')}
+                </GluuButton>
+              )}
+            </Box>
+          </Box>
         )}
       </GluuLoader>
     </ErrorBoundary>
