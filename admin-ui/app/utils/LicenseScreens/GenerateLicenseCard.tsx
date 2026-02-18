@@ -13,7 +13,7 @@ import { generateTrialLicense } from '../../redux/actions'
 import GluuText from '../../routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
 
-function GenerateLicenseCard() {
+const GenerateLicenseCard = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const theme = useContext(ThemeContext)

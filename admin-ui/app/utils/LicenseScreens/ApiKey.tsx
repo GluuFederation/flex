@@ -10,7 +10,7 @@ import useStyles from '../styles/LicenseScreen.style'
 import GenerateLicenseCard from './GenerateLicenseCard'
 import GluuText from '../../routes/Apps/Gluu/GluuText'
 
-function ApiKey() {
+const ApiKey = () => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const currentTheme = theme?.state?.theme ?? DEFAULT_THEME
@@ -41,8 +41,10 @@ function ApiKey() {
           </Box>
         </div>
         <div className="row">
-          <Box className={`col-md-8 text-center mx-auto mb-3 ${classes.error}`}>
-            <GluuText>{serverError}</GluuText>
+          <Box className="col-md-8 text-center mx-auto mb-3">
+            <GluuText className={classes.error} disableThemeColor>
+              {serverError}
+            </GluuText>
           </Box>
         </div>
         <Box className="row mt-3">

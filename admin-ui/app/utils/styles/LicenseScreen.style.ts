@@ -1,5 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
+import { fontSizes, fontWeights } from '@/styles/fonts'
 
 const useStyles = makeStyles<{ themeColors: ThemeConfig }>()((_theme, { themeColors }) => ({
   'title': {
@@ -12,6 +13,8 @@ const useStyles = makeStyles<{ themeColors: ThemeConfig }>()((_theme, { themeCol
   },
   'error': {
     color: themeColors.errorColor,
+    fontSize: fontSizes.xl,
+    fontWeight: fontWeights.semiBold,
   },
   'loaderOuter': {
     position: 'absolute',
