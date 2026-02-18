@@ -1,86 +1,118 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import SessionTimeoutDialog from './GluuSessionTimeoutDialog'
 import { withIdleTimer } from 'react-idle-timer'
-import { useDispatch, useSelector } from 'react-redux'
-import { auditLogoutLogs } from 'Redux/features/sessionSlice'
+import type { IIdleTimer } from 'react-idle-timer'
+import { useAppSelector, useAppDispatch } from '@/redux/hooks'
+import { auditLogoutLogs, setSessionTimeoutDialogOpen } from 'Redux/features/sessionSlice'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { resetCedarlingState } from '@/redux/features/cedarPermissionsSlice'
+import { cedarlingClient } from '@/cedarling'
 
-let countdownInterval: any
-let timeout: any
+type TimerHandle = ReturnType<typeof setTimeout>
+type IntervalHandle = ReturnType<typeof setInterval>
 
-const IdleTimerComponent = ({ children }: any) => children
-const IdleTimer = withIdleTimer(IdleTimerComponent)
+const IDLE_DIALOG_DELAY_MS = 1000
+const COUNTDOWN_SECONDS = 10
 
-const SessionTimeout = ({ isAuthenticated }: any) => {
+const IdleTimerPassthrough = (_props: IIdleTimer): React.ReactElement | null => null
+const IdleTimer = withIdleTimer(IdleTimerPassthrough)
+
+export interface SessionTimeoutProps {
+  isAuthenticated: boolean
+}
+
+const SessionTimeout = ({ isAuthenticated }: SessionTimeoutProps) => {
   const [timeoutModalOpen, setTimeoutModalOpen] = useState(false)
   const [timeoutCountdown, setTimeoutCountdown] = useState(0)
-  const idleTimer = useRef(null)
+  const idleTimer = useRef<IIdleTimer | null>(null)
+  const timers = useRef<{ timeout?: TimerHandle; countdownInterval?: IntervalHandle }>({})
   const sessionTimeout =
-    useSelector((state: any) => state.authReducer?.config?.sessionTimeoutInMins) || 5
-  const { logoutAuditSucceeded } = useSelector((state: any) => state.logoutAuditReducer)
+    useAppSelector((state) => state.authReducer?.config?.sessionTimeoutInMins) ?? 5
+  const { logoutAuditSucceeded } = useAppSelector((state) => state.logoutAuditReducer)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { navigateToRoute } = useAppNavigation()
 
-  const clearSessionTimeout = () => {
-    clearTimeout(timeout)
-  }
-
-  const clearSessionInterval = () => {
-    clearInterval(countdownInterval)
-  }
-
-  const handleLogout = (isTimedOut = false) => {
-    try {
-      setTimeoutModalOpen(false)
-      clearSessionInterval()
-      clearSessionTimeout()
-      dispatch(
-        auditLogoutLogs({
-          message: isTimedOut ? 'User session timed out' : 'User logged out mannually',
-        }),
-      )
-    } catch (err) {
-      console.error(err)
+  const clearSessionInterval = useCallback(() => {
+    if (timers.current.countdownInterval != null) {
+      clearInterval(timers.current.countdownInterval)
+      timers.current.countdownInterval = undefined
     }
-  }
+  }, [])
 
-  const handleContinue = () => {
+  const clearSessionTimeout = useCallback(() => {
+    if (timers.current.timeout != null) {
+      clearTimeout(timers.current.timeout)
+      timers.current.timeout = undefined
+    }
+  }, [])
+
+  const handleLogout = useCallback(
+    (isTimedOut = false) => {
+      try {
+        setTimeoutModalOpen(false)
+        dispatch(setSessionTimeoutDialogOpen(false))
+        clearSessionInterval()
+        clearSessionTimeout()
+        cedarlingClient.reset()
+        dispatch(resetCedarlingState())
+        dispatch(
+          auditLogoutLogs({
+            message: isTimedOut ? 'User session timed out' : 'User logged out manually',
+          }),
+        )
+      } catch (err) {
+        console.error(err)
+      }
+    },
+    [dispatch, clearSessionInterval, clearSessionTimeout],
+  )
+
+  const handleContinue = useCallback(() => {
     setTimeoutModalOpen(false)
+    dispatch(setSessionTimeoutDialogOpen(false))
     clearSessionInterval()
     clearSessionTimeout()
-  }
+    idleTimer.current?.reset()
+  }, [dispatch, clearSessionInterval, clearSessionTimeout])
 
-  const onActive = () => {
+  const onActive = useCallback(() => {
     if (!timeoutModalOpen) {
       clearSessionInterval()
       clearSessionTimeout()
     }
-  }
+  }, [timeoutModalOpen, clearSessionInterval, clearSessionTimeout])
 
-  const onIdle = () => {
-    const delay = 1000 * 1
+  const onIdle = useCallback(() => {
     if (isAuthenticated && !timeoutModalOpen) {
-      timeout = setTimeout(() => {
-        let countDown = 10
+      timers.current.timeout = setTimeout(() => {
+        let countDown = COUNTDOWN_SECONDS
+        dispatch(setSessionTimeoutDialogOpen(true))
         setTimeoutModalOpen(true)
         setTimeoutCountdown(countDown)
-        countdownInterval = setInterval(() => {
+        timers.current.countdownInterval = setInterval(() => {
           if (countDown > 0) {
             setTimeoutCountdown(--countDown)
           } else {
             handleLogout(true)
           }
         }, 1000)
-      }, delay)
+      }, IDLE_DIALOG_DELAY_MS)
     }
-  }
+  }, [isAuthenticated, timeoutModalOpen, dispatch, handleLogout])
 
   useEffect(() => {
     if (logoutAuditSucceeded === true) {
       navigateToRoute(ROUTES.LOGOUT)
     }
   }, [logoutAuditSucceeded, navigateToRoute])
+
+  useEffect(() => {
+    return () => {
+      clearSessionInterval()
+      clearSessionTimeout()
+    }
+  }, [clearSessionInterval, clearSessionTimeout])
 
   return (
     <>

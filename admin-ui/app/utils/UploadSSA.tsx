@@ -4,9 +4,8 @@ import { useDropzone } from 'react-dropzone'
 import logo from 'Images/logos/logo192.png'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { useTranslation } from 'react-i18next'
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import { uploadNewSsaToken } from '../redux/actions'
-import type { RootState } from '@/redux/types'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
@@ -15,7 +14,7 @@ import GluuText from '../routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
 
 function UploadSSA() {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const currentTheme = theme?.state?.theme ?? DEFAULT_THEME
@@ -31,8 +30,8 @@ function UploadSSA() {
     }),
     [themeColors.background],
   )
-  const isLoading = useSelector((state: RootState) => state.licenseReducer.isLoading)
-  const error = useSelector((state: RootState) => state.licenseReducer.errorSSA)
+  const isLoading = useAppSelector((state) => state.licenseReducer.isLoading)
+  const error = useAppSelector((state) => state.licenseReducer.errorSSA)
 
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)

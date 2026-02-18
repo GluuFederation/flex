@@ -1,6 +1,6 @@
 import React, { Suspense, lazy } from 'react'
 import { Link } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/redux/hooks'
 import { Sidebar, SidebarTrigger } from 'Components'
 import { LogoThemed } from 'Routes/components/LogoThemed/LogoThemed'
 import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
@@ -12,7 +12,6 @@ import {
 } from '@/components/Sidebar'
 import type { DefaultSidebarProps } from './types'
 import { useTranslation } from 'react-i18next'
-import { RootState } from '@/cedarling'
 import { ROUTES } from '@/helpers/navigation'
 
 const GluuAppSidebar = lazy(() => import('Routes/Apps/Gluu/GluuAppSidebar'))
@@ -20,8 +19,8 @@ const GluuAppSidebar = lazy(() => import('Routes/Apps/Gluu/GluuAppSidebar'))
 const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
   const { t } = useTranslation()
 
-  const { initialized, cedarFailedStatusAfterMaxTries } = useSelector(
-    (state: RootState) => state.cedarPermissions,
+  const { initialized, cedarFailedStatusAfterMaxTries } = useAppSelector(
+    (state) => state.cedarPermissions,
   )
 
   const cedarConditionalLoader = () => (
@@ -45,15 +44,11 @@ const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
 
   return (
     <Sidebar>
-      {/* START SIDEBAR-OVERLAY: Close (x) */}
       <SidebarClose>
         <SidebarTrigger tag={'a'} href="#">
-          <i className="fa fa-times-circle fa-fw"></i>
+          <i className="fa fa-times-circle fa-fw" />
         </SidebarTrigger>
       </SidebarClose>
-      {/* START SIDEBAR-OVERLAY: Close (x) */}
-
-      {/* START SIDEBAR: Only for Desktop */}
       <SidebarHideSlim>
         <SidebarSection>
           <Link to={ROUTES.ROOT} className="sidebar__brand">
@@ -61,9 +56,6 @@ const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
           </Link>
         </SidebarSection>
       </SidebarHideSlim>
-      {/* END SIDEBAR: Only for Desktop */}
-
-      {/* START SIDEBAR: Only for Mobile */}
       <SidebarMobileFluid>
         <SidebarSection fluid cover>
           {initialized ? (
@@ -75,7 +67,6 @@ const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
           )}
         </SidebarSection>
       </SidebarMobileFluid>
-      {/* END SIDEBAR: Only for Mobile */}
     </Sidebar>
   )
 }

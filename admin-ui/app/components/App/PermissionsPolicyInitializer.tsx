@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { useEffect, useState, useRef } from 'react'
 import {
   setCedarFailedStatusAfterMaxTries,
@@ -6,27 +6,11 @@ import {
   setCedarlingInitializing,
 } from '../../redux/features/cedarPermissionsSlice'
 import { cedarlingClient, CedarlingLogType } from '@/cedarling'
+import type { BootStrapConfig } from '@/cedarling'
 import bootstrap from '@/cedarling/config/cedarling-bootstrap-TBAC.json'
-// Extended state interface for this component
-interface ExtendedRootState {
-  authReducer: {
-    hasSession?: boolean
-    config?: {
-      cedarlingLogType?: CedarlingLogType
-    }
-  }
-  mappingReducer: {
-    items: unknown[]
-  }
-  cedarPermissions: {
-    initialized: boolean
-    isInitializing: boolean
-    policyStoreJson: string
-  }
-}
 
 const PermissionsPolicyInitializer = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const retryCount = useRef({
     tryCount: 0,
@@ -35,36 +19,31 @@ const PermissionsPolicyInitializer = () => {
 
   const [maxRetries] = useState(10)
 
-  const hasSession = useSelector((state: ExtendedRootState) => state.authReducer.hasSession)
-  const { initialized, isInitializing, policyStoreJson } = useSelector(
-    (state: ExtendedRootState) => state.cedarPermissions,
+  const hasSession = useAppSelector((state) => state.authReducer.hasSession)
+  const { initialized, isInitializing, policyStoreJson } = useAppSelector(
+    (state) => state.cedarPermissions,
   )
   const cedarlingLogType =
-    useSelector((state: ExtendedRootState) => state.authReducer?.config?.cedarlingLogType) ||
-    CedarlingLogType.OFF
+    useAppSelector((state) => state.authReducer?.config?.cedarlingLogType) || CedarlingLogType.OFF
 
   useEffect(() => {
-    // Helper function to check if policyStoreJson is valid
     const isValidPolicyStore = (policyStore: string | unknown): boolean => {
       if (!policyStore) {
         return false
       }
 
-      // If it's a string, check if it's not empty and is valid JSON
       if (typeof policyStore === 'string') {
         if (policyStore.trim() === '') {
           return false
         }
         try {
           const parsed = JSON.parse(policyStore)
-          // Check if it's an object (not a string, number, etc.)
           return typeof parsed === 'object' && parsed !== null
         } catch {
           return false
         }
       }
 
-      // If it's an object, check if it's a valid object
       if (typeof policyStore === 'object' && policyStore !== null) {
         return true
       }
@@ -84,16 +63,12 @@ const PermissionsPolicyInitializer = () => {
 
     dispatch(setCedarlingInitializing(true))
 
-    // Ensure policyStoreJson is properly formatted as a JSON string
-    // If it's already a string, use it; if it's an object, stringify it
     let policyStoreString: string
     try {
       if (typeof policyStoreJson === 'string') {
-        // Already a string, but verify it's valid JSON
         JSON.parse(policyStoreJson)
         policyStoreString = policyStoreJson
       } else {
-        // It's an object, stringify it
         policyStoreString = JSON.stringify(policyStoreJson)
       }
     } catch (error) {
@@ -102,9 +77,9 @@ const PermissionsPolicyInitializer = () => {
       return
     }
 
-    const bootstrapConfig = {
+    const bootstrapConfig: BootStrapConfig = {
       ...bootstrap,
-      CEDARLING_LOG_TYPE: cedarlingLogType,
+      CEDARLING_LOG_TYPE: cedarlingLogType as string,
       CEDARLING_POLICY_STORE_LOCAL: policyStoreString,
     }
 
@@ -121,7 +96,7 @@ const PermissionsPolicyInitializer = () => {
 
         if (retryCount.current.tryCount < maxRetries) {
           setTimeout(() => {
-            dispatch(setCedarlingInitialized(false)) // Triggers re-run of useEffect
+            dispatch(setCedarlingInitialized(false))
           }, 1000)
         } else {
           console.error('❌ Max retry attempts reached. Cedarling init failed permanently.')

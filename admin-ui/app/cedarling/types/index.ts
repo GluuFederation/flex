@@ -3,11 +3,21 @@ export interface CedarlingConstants {
   readonly ACTION_TYPE: string
   readonly RESOURCE_TYPE: string
 }
+
 export interface IPermissionWithTags {
   permission: string
   tag: string
   defaultPermissionInToken?: boolean
 }
+
+// JSON-serializable value (for context, bootstrap, and metadata)
+export type JsonValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JsonValue[]
+  | { [key: string]: JsonValue }
 
 // Principal Types
 export interface IPrincipal {
@@ -17,10 +27,16 @@ export interface IPrincipal {
   sub: string | null
   type: string
 }
+
 export interface IToken {
   access_token: string
   id_token: string
   userinfo_token: string
+}
+
+// JWT payload shape for expiry check (only fields we use)
+export interface JwtPayloadExp {
+  exp?: number
 }
 
 // Resource Types
@@ -32,22 +48,22 @@ export interface ICedarEntityMappingResource {
 }
 
 // Authorization Request
-
 export interface TokenAuthorizationRequest {
   tokens: IToken
   action: string
   resource: ICedarEntityMappingResource
-  context: Record<string, unknown>
+  context: Record<string, JsonValue>
 }
 
-// Authorization Response
+// Authorization Response (no index signature — only known fields from WASM)
+export interface AuthorizationDiagnostics {
+  reason?: string[]
+  errors?: string[]
+}
+
 export interface AuthorizationResponse {
   decision: boolean
-  diagnostics?: {
-    reason?: string[]
-    errors?: string[]
-  }
-  [key: string]: unknown
+  diagnostics?: AuthorizationDiagnostics
 }
 
 // Authorization Result
@@ -57,15 +73,16 @@ export interface AuthorizationResult {
   error?: string
 }
 
-// Policy Store Configuration
+// Policy Store Configuration (bootstrap config values are JSON-like)
 export interface BootStrapConfig {
-  [key: string]: unknown
+  [key: string]: JsonValue
 }
 
 // Cedarling Client Interface
 export interface ICedarlingClient {
   initialize: (BootStrapConfig: BootStrapConfig) => Promise<void>
   token_authorize: (request: TokenAuthorizationRequest) => Promise<AuthorizationResponse>
+  reset: () => void
 }
 
 // Redux State Types for Cedar Permissions
@@ -124,16 +141,6 @@ export interface AuthReducerState {
   }
 }
 
-// Root State (partial interface for Cedar operations)
-export interface RootState {
-  authReducer: AuthReducerState
-  cedarPermissions: CedarPermissionsState
-  apiPermissionReducer: {
-    items: ApiPermission[]
-    loading: boolean
-  }
-}
-
 // Policy Generation Types
 export interface Permission {
   name: string
@@ -170,8 +177,7 @@ export interface TrustedIssuer {
   name?: string
   description?: string
   openid_configuration_endpoint: string
-  token_metadata?: Record<string, unknown>
-  [key: string]: unknown
+  token_metadata?: Record<string, JsonValue>
 }
 
 /**
@@ -182,7 +188,6 @@ export interface ExtendedPolicyStore extends RuntimePolicyStore {
   name?: string
   description?: string
   schema?: string
-  [key: string]: unknown
 }
 
 /**
@@ -191,7 +196,6 @@ export interface ExtendedPolicyStore extends RuntimePolicyStore {
 export interface ExtendedPolicyStoreConfig {
   policy_stores: Record<string, ExtendedPolicyStore>
   cedar_version?: string
-  [key: string]: unknown
 }
 
 export type AdminUiFeatureResource =

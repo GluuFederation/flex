@@ -21,6 +21,7 @@ export interface UserInfo {
 
 export interface AuthConfig {
   clientId?: string
+  sessionTimeoutInMins?: number
   [key: string]: unknown
 }
 
@@ -170,6 +171,7 @@ export interface CedarPermissionsState {
 export interface SessionState {
   logoutAuditInFlight: boolean
   logoutAuditSucceeded: boolean | null
+  sessionTimeoutDialogOpen: boolean
 }
 
 // Lock State
@@ -518,8 +520,7 @@ export interface SmtpPluginState {
 }
 
 export interface RootState
-  extends CoreAppState,
-    Partial<AdminPluginState & AuthServerPluginState & SmtpPluginState> {}
+  extends CoreAppState, Partial<AdminPluginState & AuthServerPluginState & SmtpPluginState> {}
 
 export type ReducerMap = {
   [K in keyof RootState]?: Reducer<RootState[K], UnknownAction>

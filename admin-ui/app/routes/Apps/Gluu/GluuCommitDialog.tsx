@@ -5,12 +5,11 @@ import { useTheme } from 'Context/theme/themeContext'
 import { THEME_DARK } from '@/context/theme/constants'
 import PropTypes from 'prop-types'
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/redux/hooks'
 import { useWebhookDialogAction } from 'Utils/hooks'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
-import type { RootState } from '@/redux/sagas/types/audit'
 import type { GluuCommitDialogProps } from './types/index'
 import customColors from '@/customColors'
 import { useStyles } from './styles/GluuCommitDialog.style'
@@ -41,7 +40,9 @@ const GluuCommitDialog = ({
   const isDark = themeState.theme === THEME_DARK
   const { classes } = useStyles({ isDark })
   const [userMessage, setUserMessage] = useState('')
-  const { loadingWebhooks, webhookModal } = useSelector((state: RootState) => state.webhookReducer)
+  const webhookReducer = useAppSelector((state) => state.webhookReducer)
+  const loadingWebhooks = webhookReducer?.loadingWebhooks ?? false
+  const webhookModal = webhookReducer?.webhookModal ?? false
 
   const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
   const webhookScopes = useMemo(

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useMemo, useCallback, useRef } from 'react'
 import { SidebarMenu, SidebarMenuItem } from 'Components'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/redux/hooks'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
 import { processMenus } from 'Plugins/PluginMenuResolver'
@@ -35,7 +35,6 @@ import type {
   VisibilityConditions,
   MenuIconMap,
   ThemeContextState,
-  SidebarRootState,
 } from '../../../components/Sidebar'
 
 const VISIBILITY_CONDITIONS: VisibilityConditions = {
@@ -61,15 +60,11 @@ const MENU_ICON_MAP: MenuIconMap = {
   saml: <SamlIcon className="menu-icon" />,
 } as const
 
-type RootState = SidebarRootState
-
-const selectHealth = (state: RootState) => state.healthReducer.health
-const selectLogoutAuditSucceeded = (state: RootState): boolean | null =>
-  state.logoutAuditReducer.logoutAuditSucceeded
-
-function GluuAppSidebar(): JSX.Element {
-  const health = useSelector(selectHealth)
-  const logoutAuditSucceeded = useSelector(selectLogoutAuditSucceeded)
+const GluuAppSidebar = (): JSX.Element => {
+  const health = useAppSelector((state) => state.healthReducer.health)
+  const logoutAuditSucceeded = useAppSelector(
+    (state) => state.logoutAuditReducer.logoutAuditSucceeded,
+  )
   const [pluginMenus, setPluginMenus] = useState<PluginMenu[]>([])
   const didAnimateMenusRef = useRef<boolean>(false)
   const isReady = pluginMenus.length > 0

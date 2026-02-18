@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { RootState, useAppSelector } from '@/redux/hooks'
+import { useAppSelector } from '@/redux/hooks'
 import { keepPreviousData } from '@tanstack/react-query'
 import { useGetStat, type GetStatParams, type JsonNode } from 'JansConfigApi'
 import type { MauStatEntry, MauDateRange, RawStatEntry, MauSummary } from '../types'
@@ -98,7 +98,7 @@ export function useMauStats(
     enabled?: boolean
   },
 ) {
-  const hasSession = useAppSelector((state: RootState) => state.authReducer?.hasSession)
+  const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
   const params: GetStatParams = {
     start_month: formatDateForApi(dateRange.startDate),
