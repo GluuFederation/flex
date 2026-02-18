@@ -17,6 +17,7 @@ import {
   useGetPropertiesPersistence,
 } from 'JansConfigApi'
 import { useQueryClient } from '@tanstack/react-query'
+import { getAttributesRoot } from 'Redux/features/attributesSlice'
 import { updateToast } from 'Redux/features/toastSlice'
 import { logUserUpdate, getErrorMessage } from '../helper/userAuditHelpers'
 import { triggerUserWebhook } from '../helper/userWebhookHelpers'
@@ -32,7 +33,7 @@ import { AXIOS_INSTANCE } from '../../../api-client'
 
 function UserEditPage() {
   const dispatch = useDispatch()
-  const { navigateToRoute, navigateBack } = useAppNavigation()
+  const { navigateBack } = useAppNavigation()
   const location = useLocation()
   const queryClient = useQueryClient()
   const { t } = useTranslation()
@@ -40,9 +41,16 @@ function UserEditPage() {
   const [userDetails] = useState<CustomUser | null>(location.state?.selectedUser ?? null)
   useEffect(() => {
     if (!userDetails) {
-      navigateToRoute(ROUTES.USER_MANAGEMENT)
+      navigateBack(ROUTES.USER_MANAGEMENT)
+      return
     }
-  }, [userDetails, navigateToRoute])
+    const attrNames = userDetails.customAttributes
+      ?.map((a) => a.name)
+      .filter((name): name is string => !!name)
+    if (attrNames?.length) {
+      dispatch(getAttributesRoot({ options: { pattern: attrNames.join(','), limit: 100 } }))
+    }
+  }, [userDetails, dispatch])
 
   const { data: attributesData, isLoading: loadingAttributes } = useGetAttributes({
     limit: 200,
