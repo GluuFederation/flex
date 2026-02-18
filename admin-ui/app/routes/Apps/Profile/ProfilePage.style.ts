@@ -1,6 +1,7 @@
 import { makeStyles } from 'tss-react/mui'
 import { Theme } from '@mui/material'
 import type { ThemeConfig } from '@/context/theme/config'
+import { BORDER_RADIUS, MAPPING_SPACING } from '@/constants/ui'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { fontFamily, fontSizes, fontWeights, letterSpacing, lineHeights } from '@/styles/fonts'
 import customColors from '@/customColors'
@@ -11,9 +12,9 @@ const statusBadgeBase = {
   justifyContent: 'center' as const,
   alignItems: 'center' as const,
   gap: '6px',
-  borderRadius: 6,
-  fontSize: '0.8rem',
-  fontWeight: 600,
+  borderRadius: MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS,
+  fontSize: fontSizes.sm,
+  fontWeight: fontWeights.semiBold,
 }
 
 const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
@@ -28,11 +29,11 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
     profileCard: {
       ...getCardBorderStyle({
         isDark,
-        borderRadius: 16,
+        borderRadius: BORDER_RADIUS.DEFAULT,
       }),
       maxWidth: 600,
       width: '100%',
-      borderRadius: 16,
+      borderRadius: BORDER_RADIUS.DEFAULT,
       backgroundColor: isDark ? customColors.darkCardBg : themeColors.card.background,
       padding: theme.spacing(3.5),
       display: 'flex',
@@ -62,10 +63,10 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
       border: `2px solid ${themeColors.card.background}`,
     },
     nameText: {
-      fontFamily: 'Mona-Sans, sans-serif',
-      fontSize: '24px',
-      fontWeight: 600,
-      letterSpacing: '0.48px',
+      fontFamily,
+      fontSize: fontSizes['2xl'],
+      fontWeight: fontWeights.semiBold,
+      letterSpacing: letterSpacing.content,
       color: themeColors.fontColor,
       marginBottom: theme.spacing(1),
     },
@@ -87,10 +88,10 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
       alignItems: 'center',
       justifyContent: 'center',
       gap: 13,
-      fontFamily: 'Mona-Sans, sans-serif',
-      fontSize: '16px',
-      fontWeight: 600,
-      lineHeight: '28px',
+      fontFamily,
+      fontSize: fontSizes.md,
+      fontWeight: fontWeights.semiBold,
+      lineHeight: lineHeights.relaxed,
     },
     statusKeyValueWrap: {
       display: 'inline',
@@ -109,31 +110,31 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
       backgroundColor: themeColors.settings.removeButton.bg,
     },
     statusLabelActive: {
-      fontFamily: 'Mona-Sans, sans-serif',
-      fontSize: '16px',
-      fontWeight: 600,
-      lineHeight: '28px',
+      fontFamily,
+      fontSize: fontSizes.md,
+      fontWeight: fontWeights.semiBold,
+      lineHeight: lineHeights.relaxed,
       color: themeColors.formFooter.back.backgroundColor,
     },
     statusLabelInactive: {
-      fontFamily: 'Mona-Sans, sans-serif',
-      fontSize: '16px',
-      fontWeight: 600,
-      lineHeight: '28px',
+      fontFamily,
+      fontSize: fontSizes.md,
+      fontWeight: fontWeights.semiBold,
+      lineHeight: lineHeights.relaxed,
       color: themeColors.settings.removeButton.bg,
     },
     statusValueActive: {
-      fontFamily: 'Mona-Sans, sans-serif',
-      fontSize: '16px',
-      fontWeight: 600,
-      lineHeight: '28px',
+      fontFamily,
+      fontSize: fontSizes.md,
+      fontWeight: fontWeights.semiBold,
+      lineHeight: lineHeights.relaxed,
       color: themeColors.formFooter.back.backgroundColor,
     },
     statusValueInactive: {
-      fontFamily: 'Mona-Sans, sans-serif',
-      fontSize: '16px',
-      fontWeight: 600,
-      lineHeight: '28px',
+      fontFamily,
+      fontSize: fontSizes.md,
+      fontWeight: fontWeights.semiBold,
+      lineHeight: lineHeights.relaxed,
       color: themeColors.settings.removeButton.bg,
     },
     statusDividerWrapper: {
@@ -154,9 +155,9 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
       fontFamily,
       fontSize: fontSizes.lg,
       fontStyle: 'normal',
-      fontWeight: fontWeights.medium,
+      fontWeight: fontWeights.semiBold,
       lineHeight: lineHeights.normal,
-      letterSpacing: '0.4px',
+      letterSpacing: letterSpacing.content,
       alignSelf: 'flex-start',
       marginBottom: theme.spacing(1),
       marginTop: theme.spacing(1),
@@ -218,7 +219,7 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
       alignItems: 'center',
     },
     accountStatusPill: {
-      borderRadius: 5,
+      borderRadius: BORDER_RADIUS.SMALL,
     },
     roleLabel: {
       color: themeColors.personalInfoLabelColor,
@@ -244,10 +245,11 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
       padding: theme.spacing(1.5),
       backgroundColor: themeColors.formFooter.back.backgroundColor,
       color: themeColors.formFooter.back.textColor,
-      fontWeight: 600,
+      fontFamily,
+      fontWeight: fontWeights.semiBold,
+      fontSize: fontSizes.md,
       textTransform: 'none',
-      borderRadius: 8,
-      fontSize: '1rem',
+      borderRadius: BORDER_RADIUS.MEDIUM,
     },
     editButtonIcon: {
       marginRight: 8,

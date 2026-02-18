@@ -44,6 +44,7 @@ const GenerateLicenseCard = () => {
           className={classes.button}
           backgroundColor={themeColors.formFooter?.back?.backgroundColor}
           textColor={themeColors.formFooter?.back?.textColor}
+          useOpacityOnHover
         >
           {generatingTrialKey ? t('licenseCard.generating') : t('licenseCard.start30Days')}
         </GluuButton>

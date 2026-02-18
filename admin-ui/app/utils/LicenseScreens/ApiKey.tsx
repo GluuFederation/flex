@@ -6,6 +6,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import { useAppSelector } from '@/redux/hooks'
+import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 import useStyles from '../styles/LicenseScreen.style'
 import GenerateLicenseCard from './GenerateLicenseCard'
 import GluuText from '../../routes/Apps/Gluu/GluuText'
@@ -21,12 +22,7 @@ const ApiKey = () => {
   const generatingTrialKey = useAppSelector((state) => state.licenseReducer.generatingTrialKey)
 
   return (
-    <div>
-      {(isLoading || generatingTrialKey) && (
-        <div className={classes.loaderOuter}>
-          <div className={classes.loader} />
-        </div>
-      )}
+    <GluuLoader blocking={isLoading || generatingTrialKey}>
       <div className="container">
         <div className="row">
           <div className="col-md-12 text-center my-5">
@@ -53,7 +49,7 @@ const ApiKey = () => {
           </Box>
         </Box>
       </div>
-    </div>
+    </GluuLoader>
   )
 }
 export default ApiKey

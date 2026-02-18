@@ -1,5 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
+import { fontFamily } from '@/styles/fonts'
 
 const useStyles = makeStyles<{ themeColors: ThemeConfig }>()((_theme, { themeColors }) => ({
   redirectingScreen: {
@@ -21,6 +22,7 @@ const useStyles = makeStyles<{ themeColors: ThemeConfig }>()((_theme, { themeCol
     height: 'auto',
   },
   redirectingText: {
+    fontFamily,
     color: themeColors.fontColor,
     marginTop: 16,
     textAlign: 'center',

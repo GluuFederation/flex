@@ -1,5 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
+import { MAPPING_SPACING } from '@/constants/ui'
 import { fontFamily, fontSizes, fontWeights, letterSpacing, lineHeights } from '@/styles/fonts'
 
 const useStyles = makeStyles<{ themeColors: ThemeConfig }>()((theme, { themeColors }) => ({
@@ -17,12 +18,12 @@ const useStyles = makeStyles<{ themeColors: ThemeConfig }>()((theme, { themeColo
   },
   title: {
     color: themeColors.fontColor,
-    fontFamily: 'Mona-Sans, sans-serif',
-    fontSize: '20px',
+    fontFamily,
+    fontSize: fontSizes.lg,
     fontStyle: 'normal',
-    fontWeight: 600,
-    lineHeight: 'normal',
-    letterSpacing: '0.4px',
+    fontWeight: fontWeights.semiBold,
+    lineHeight: lineHeights.normal,
+    letterSpacing: letterSpacing.content,
     marginBottom: theme.spacing(1),
   },
   description: {
@@ -44,13 +45,13 @@ const useStyles = makeStyles<{ themeColors: ThemeConfig }>()((theme, { themeColo
     'padding': '20px 28px',
     'justifyContent': 'center',
     'alignItems': 'center',
-    'borderRadius': '6px',
+    'borderRadius': `${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px`,
     'border': `1px solid ${themeColors.formFooter.back.borderColor}`,
     'backgroundColor': themeColors.formFooter.back.backgroundColor,
     'color': themeColors.formFooter.back.textColor,
-    'fontFamily': 'Mona-Sans, sans-serif',
-    'fontSize': '14px',
-    'fontWeight': 700,
+    fontFamily,
+    'fontSize': fontSizes.base,
+    'fontWeight': fontWeights.bold,
     'cursor': 'pointer',
     '&:disabled': {
       opacity: 0.7,

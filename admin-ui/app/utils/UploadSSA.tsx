@@ -9,6 +9,7 @@ import { uploadNewSsaToken } from '../redux/actions'
 import type { RootState } from '@/redux/types'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
+import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 import useStyles from './styles/UploadSSA.style'
 import GluuText from '../routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
@@ -82,53 +83,50 @@ function UploadSSA() {
 
   return (
     <div style={pageStyle}>
-      <Container>
-        {isLoading && (
-          <div className={classes.loaderOuter}>
-            <div className={classes.loader} />
-          </div>
-        )}
-        <div className="row">
-          <div className="col-md-12 text-center mt-5 mb-5">
-            <img src={logo} className={`img-fluid ${classes.logo}`} alt="Logo" />
-          </div>
-          <div className="col-md-12">
-            <GluuText className={classes.label}>{t('licenseScreen.uploadSsaLabel')}</GluuText>
-            <div
-              {...getRootProps1()}
-              className={`${isDragActive1 ? 'active' : 'dropzone'} ${classes.dropzone}`}
-            >
-              <input {...getInputProps1()} />
-              {selectedFileName ? (
-                <GluuText className={classes.dropzoneText}>
-                  {t('licenseScreen.selectedFile')} {selectedFileName}
-                </GluuText>
-              ) : (
-                <GluuText variant="p" className={classes.dropzoneText}>
-                  {t('licenseScreen.dropzoneHint')}
+      <GluuLoader blocking={isLoading}>
+        <Container>
+          <div className="row">
+            <div className="col-md-12 text-center mt-5 mb-5">
+              <img src={logo} className={`img-fluid ${classes.logo}`} alt="Logo" />
+            </div>
+            <div className="col-md-12">
+              <GluuText className={classes.label}>{t('licenseScreen.uploadSsaLabel')}</GluuText>
+              <div
+                {...getRootProps1()}
+                className={`${isDragActive1 ? 'active' : 'dropzone'} ${classes.dropzone}`}
+              >
+                <input {...getInputProps1()} />
+                {selectedFileName ? (
+                  <GluuText className={classes.dropzoneText}>
+                    {t('licenseScreen.selectedFile')} {selectedFileName}
+                  </GluuText>
+                ) : (
+                  <GluuText variant="p" className={classes.dropzoneText}>
+                    {t('licenseScreen.dropzoneHint')}
+                  </GluuText>
+                )}
+              </div>
+              {error && (
+                <GluuText className={classes.error} disableThemeColor>
+                  {error}
                 </GluuText>
               )}
-            </div>
-            {error && (
-              <GluuText className={classes.error} disableThemeColor>
-                {error}
-              </GluuText>
-            )}
-            <div className="mt-4">
-              <GluuButton
-                disabled={isLoading}
-                className={classes.button}
-                onClick={() => submitData()}
-                backgroundColor={themeColors.formFooter?.back?.backgroundColor}
-                textColor={themeColors.formFooter?.back?.textColor}
-                disableHoverStyles
-              >
-                {t('actions.submit')}
-              </GluuButton>
+              <div className="mt-4">
+                <GluuButton
+                  disabled={!selectedFile || isLoading}
+                  className={classes.button}
+                  onClick={() => submitData()}
+                  backgroundColor={themeColors.formFooter?.back?.backgroundColor}
+                  textColor={themeColors.formFooter?.back?.textColor}
+                  useOpacityOnHover
+                >
+                  {t('actions.submit')}
+                </GluuButton>
+              </div>
             </div>
           </div>
-        </div>
-      </Container>
+        </Container>
+      </GluuLoader>
     </div>
   )
 }

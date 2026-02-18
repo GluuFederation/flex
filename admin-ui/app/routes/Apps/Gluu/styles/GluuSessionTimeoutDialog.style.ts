@@ -1,9 +1,10 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
+import { BORDER_RADIUS, MAPPING_SPACING } from '@/constants/ui'
 import { fontFamily, fontSizes, fontWeights, letterSpacing, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 
-const DIALOG_BORDER_RADIUS = 16
+const DIALOG_BORDER_RADIUS = BORDER_RADIUS.DEFAULT
 
 const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()((
   theme,
@@ -34,7 +35,7 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()((
       fontFamily,
       fontSize: fontSizes['3xl'],
       fontStyle: 'normal',
-      fontWeight: fontWeights.bold,
+      fontWeight: fontWeights.semiBold,
       lineHeight: '45px',
       color: themeColors.fontColor,
     },
@@ -60,18 +61,18 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()((
     button: {
       textTransform: 'none',
       padding: theme.spacing(1, 4),
-      fontFamily: 'Mona-Sans, sans-serif',
-      fontSize: '16px',
-      fontWeight: 600,
+      fontFamily,
+      fontSize: fontSizes.md,
+      fontWeight: fontWeights.semiBold,
     },
     logout: {
-      borderRadius: 8,
+      borderRadius: BORDER_RADIUS.SMALL_MEDIUM,
       color: themeColors.formFooter?.back?.textColor,
       backgroundColor: themeColors.formFooter?.back?.backgroundColor,
       borderColor: themeColors.formFooter?.back?.backgroundColor,
     },
     continue: {
-      'borderRadius': 6,
+      'borderRadius': MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS,
       'border': `1px solid ${themeColors.formFooter?.cancel?.borderColor ?? themeColors.borderColor}`,
       fontFamily,
       'fontSize': fontSizes.base,

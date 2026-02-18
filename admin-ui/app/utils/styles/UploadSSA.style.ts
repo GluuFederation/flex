@@ -1,52 +1,55 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
+import { MAPPING_SPACING } from '@/constants/ui'
 import { fontFamily, fontSizes, fontWeights, letterSpacing, lineHeights } from '@/styles/fonts'
 
 const useStyles = makeStyles<{ themeColors: ThemeConfig }>()((theme, { themeColors }) => ({
-  'logo': {
+  logo: {
     maxWidth: 200,
   },
-  'label': {
+  label: {
     color: themeColors.fontColor,
-    fontFamily: 'Mona-Sans, sans-serif',
-    fontSize: '15px',
+    fontFamily,
+    fontSize: fontSizes.description,
     fontStyle: 'normal',
-    fontWeight: 600,
-    lineHeight: 'normal',
-    letterSpacing: '0.3px',
+    fontWeight: fontWeights.semiBold,
+    lineHeight: lineHeights.normal,
+    letterSpacing: letterSpacing.normal,
     marginBottom: theme.spacing(3),
   },
-  'dropzone': {
+  dropzone: {
     'marginTop': theme.spacing(1),
-    'borderRadius': '6px',
+    'borderRadius': `${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px`,
     'border': `1px solid ${themeColors.infoAlert.border}`,
     'background': themeColors.infoAlert.background,
     '&:hover': {
-      borderRadius: '6px',
+      borderRadius: `${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px`,
       border: `1px solid ${themeColors.infoAlert.border}`,
       background: themeColors.infoAlert.background,
     },
   },
-  'error': {
+  error: {
     color: themeColors.errorColor,
+    fontSize: fontSizes.xl,
+    fontWeight: fontWeights.semiBold,
     marginTop: theme.spacing(2),
     display: 'block',
   },
-  'dropzoneText': {
+  dropzoneText: {
     color: themeColors.infoAlert.text,
-    fontFamily: 'Mona-Sans, sans-serif',
-    fontSize: '14px',
+    fontFamily,
+    fontSize: fontSizes.base,
     fontStyle: 'normal',
-    fontWeight: 500,
-    lineHeight: '22px',
+    fontWeight: fontWeights.medium,
+    lineHeight: lineHeights.tight,
   },
-  'button': {
+  button: {
     display: 'inline-flex',
     height: '40px',
     padding: '20px 28px',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: '6px',
+    borderRadius: `${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px`,
     border: `1px solid ${themeColors.formFooter.back.borderColor}`,
     backgroundColor: themeColors.formFooter.back.backgroundColor,
     color: themeColors.formFooter.back.textColor,
@@ -56,31 +59,6 @@ const useStyles = makeStyles<{ themeColors: ThemeConfig }>()((theme, { themeColo
     fontWeight: fontWeights.bold,
     lineHeight: lineHeights.normal,
     letterSpacing: letterSpacing.button,
-  },
-  'loaderOuter': {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: themeColors.background,
-    opacity: 0.9,
-    zIndex: 999,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  'loader': {
-    border: `4px solid ${themeColors.lightBackground}`,
-    borderTop: `4px solid ${themeColors.formFooter.back.backgroundColor}`,
-    borderRadius: '50%',
-    width: 40,
-    height: 40,
-    animation: '$spin 2s linear infinite',
-  },
-  '@keyframes spin': {
-    '0%': { transform: 'rotate(0deg)' },
-    '100%': { transform: 'rotate(360deg)' },
   },
 }))
 
