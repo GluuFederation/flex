@@ -165,10 +165,6 @@ export function useCedarling(): UseCedarlingReturn {
         const isAuthorized = response?.decision === true
         const wasmError = response?.diagnostics?.errors?.[0]
 
-        if (!isAuthorized && wasmError) {
-          dispatch(updateToast(true, 'error', `Authorization failed: ${wasmError}`))
-        }
-
         dispatch(
           setCedarlingPermission({
             resourceId: cacheKey,

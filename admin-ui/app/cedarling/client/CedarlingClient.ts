@@ -9,6 +9,9 @@ import type {
 let cedarling: Cedarling | null = null
 let cedarlingInitialized: boolean = false
 let initializationPromise: Promise<void> | null = null
+let wasmInitTime = 0
+let wasmCallCount = 0
+let lastSuccessfulCallTime = 0
 
 type PendingReject = (error: Error) => void
 const pendingWasmCalls = new Set<PendingReject>()
@@ -69,6 +72,7 @@ const initialize = async (bootStrapConfig: BootStrapConfig): Promise<void> => {
       lastStep = 'createInstance'
       cedarling = await init(bootStrapConfig)
       cedarlingInitialized = true
+      wasmInitTime = Date.now()
       console.log('[Cedarling] init step', JSON.stringify({ step: 'createInstance', done: true }))
       console.log('[Cedarling] init result', JSON.stringify({ ok: true, ready: true }))
     } catch (err) {
@@ -86,6 +90,20 @@ const initialize = async (bootStrapConfig: BootStrapConfig): Promise<void> => {
   return initializationPromise
 }
 
+const decodeJwtExp = (
+  jwt: string,
+): { exp: number | null; expired: boolean; expiresInSec: number } => {
+  try {
+    const payload = JSON.parse(atob(jwt.split('.')[1]))
+    const exp: number | null = typeof payload.exp === 'number' ? payload.exp : null
+    if (exp === null) return { exp: null, expired: false, expiresInSec: 0 }
+    const nowSec = Math.floor(Date.now() / 1000)
+    return { exp, expired: nowSec >= exp, expiresInSec: exp - nowSec }
+  } catch {
+    return { exp: null, expired: false, expiresInSec: 0 }
+  }
+}
+
 const sanitize = (req: TokenAuthorizationRequest) => {
   const id = req.resource?.cedar_entity_mapping?.id ?? '?'
   const t = req.tokens
@@ -96,6 +114,11 @@ const sanitize = (req: TokenAuthorizationRequest) => {
       access: t?.access_token ? `${t.access_token.length}B` : 'missing',
       id: t?.id_token ? `${t.id_token.length}B` : 'missing',
       userinfo: t?.userinfo_token ? `${t.userinfo_token.length}B` : 'missing',
+    },
+    tokenExpiry: {
+      access: t?.access_token ? decodeJwtExp(t.access_token) : null,
+      id: t?.id_token ? decodeJwtExp(t.id_token) : null,
+      userinfo: t?.userinfo_token ? decodeJwtExp(t.userinfo_token) : null,
     },
   }
 }
@@ -111,8 +134,18 @@ const token_authorize = async (
     throw new Error('Cedarling not initialized')
   }
 
+  wasmCallCount++
   const info = sanitize(request)
-  console.log('[Cedarling] WASM authorize', JSON.stringify(info))
+  const env = {
+    callNumber: wasmCallCount,
+    secSinceInit: Math.round((Date.now() - wasmInitTime) / 1000),
+    secSinceLastSuccess: lastSuccessfulCallTime
+      ? Math.round((Date.now() - lastSuccessfulCallTime) / 1000)
+      : 'first',
+    tabVisible: typeof document !== 'undefined' ? !document.hidden : 'unknown',
+    visibilityState: typeof document !== 'undefined' ? document.visibilityState : 'unknown',
+  }
+  console.log('[Cedarling] WASM authorize', JSON.stringify({ ...info, env }))
 
   try {
     const result: AuthorizeResult = await new Promise<AuthorizeResult>((resolve, reject) => {
@@ -137,6 +170,7 @@ const token_authorize = async (
       }
       setTimeout(run, 0)
     })
+    lastSuccessfulCallTime = Date.now()
     console.log(
       '[Cedarling] WASM result',
       JSON.stringify({
