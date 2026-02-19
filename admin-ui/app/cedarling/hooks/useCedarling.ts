@@ -146,8 +146,20 @@ export function useCedarling(): UseCedarlingReturn {
           actionLabel,
         )
         if (cachedDecision !== undefined) {
+          console.log(
+            '[Cedarling] cache hit',
+            JSON.stringify({
+              resourceId: resolvedResourceId,
+              action: actionLabel,
+              decision: cachedDecision,
+            }),
+          )
           return { isAuthorized: cachedDecision }
         }
+        console.log(
+          '[Cedarling] authorize',
+          JSON.stringify({ resourceId: resolvedResourceId, action: actionLabel, target: 'WASM' }),
+        )
         const response = await cedarlingClient.token_authorize(request)
 
         const isAuthorized = response?.decision === true
@@ -188,6 +200,10 @@ export function useCedarling(): UseCedarlingReturn {
       if (!resourceScopes || resourceScopes.length === 0) {
         return []
       }
+      console.log(
+        '[Cedarling] authorizeHelper batch',
+        JSON.stringify({ scopeCount: resourceScopes.length }),
+      )
 
       // Deduplicate by (resourceId, action) to avoid redundant API calls
       // Map structure: key -> { entry, indices[] }
