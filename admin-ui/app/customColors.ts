@@ -23,7 +23,6 @@ export const customColors = {
   // Text
   textSecondary: '#425466',
   textMutedDark: '#6a8096',
-  profileEmailText: '#6d8cac',
 
   // Brand / accent
   logo: '#00b875',
@@ -103,5 +102,21 @@ export const getLoadingOverlayRgba = (hexColor: string, opacity: number): string
   `rgba(${hexToRgb(hexColor)}, ${opacity})`
 
 export type CustomColorKeys = keyof typeof customColors
+
+/** Convert camelCase to kebab-case for CSS variable names */
+function toKebabCase(str: string): string {
+  return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
+}
+
+/** CSS custom properties from customColors; also --custom-*-rgb for rgba(var(--custom-*-rgb), opacity) in SCSS. */
+export function getCustomColorsAsCssVars(): Record<string, string> {
+  const vars: Record<string, string> = {}
+  for (const [key, value] of Object.entries(customColors)) {
+    const kebab = toKebabCase(key)
+    vars[`--custom-${kebab}`] = value
+    vars[`--custom-${kebab}-rgb`] = hexToRgb(value)
+  }
+  return vars
+}
 
 export default customColors

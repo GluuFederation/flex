@@ -3,6 +3,7 @@ import { makeStyles } from 'tss-react/mui'
 import type { SxProps, Theme } from '@mui/material/styles'
 import type { ThemeConfig } from '@/context/theme/config'
 import { hexToRgb } from '@/customColors'
+import { OPACITY } from '@/constants/ui'
 import { fontFamily, fontSizes, fontWeights, letterSpacing } from '@/styles/fonts'
 
 const TEXT_FIELD_SIZE = 'small' as const
@@ -38,7 +39,7 @@ const buildPickerThemeColors = (
 ): PickerThemeColors => {
   const inputText = textColor || themeConfig.fontColor
   const borderColor = isDark ? 'transparent' : themeConfig.borderColor
-  const hoverBg = `rgba(${hexToRgb(themeConfig.fontColor)}, ${isDark ? 0.08 : 0.04})`
+  const hoverBg = `rgba(${hexToRgb(themeConfig.fontColor)}, ${isDark ? OPACITY.HOVER_DARK : OPACITY.HOVER_LIGHT})`
   return {
     labelBackground: backgroundColor || themeConfig.background,
     inputBackground: themeConfig.inputBackground,

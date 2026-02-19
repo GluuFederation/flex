@@ -12,8 +12,6 @@ export interface ThemeConfig {
   lightBackground: string
   fontColor: string
   textMuted: string
-  profileEmailTextColor: string
-
   personalInfoValueColor: string
   personalInfoLabelColor: string
   sectionTitleColor: string
@@ -63,7 +61,6 @@ const createLightTheme = (): ThemeConfig => {
     lightBackground: customColors.whiteSmoke,
     fontColor: text,
     textMuted: customColors.textSecondary,
-    profileEmailTextColor: customColors.profileEmailText,
     personalInfoValueColor: customColors.primaryDark,
     personalInfoLabelColor: customColors.primaryDark,
     sectionTitleColor: customColors.primaryDark,
@@ -145,7 +142,6 @@ const createDarkTheme = (): ThemeConfig => {
     lightBackground: customColors.primaryDark,
     fontColor: text,
     textMuted: customColors.textMutedDark,
-    profileEmailTextColor: customColors.profileEmailText,
     personalInfoValueColor: customColors.white,
     personalInfoLabelColor: customColors.white,
     sectionTitleColor: customColors.white,

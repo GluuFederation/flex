@@ -1,16 +1,14 @@
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
-import { SPACING, BORDER_RADIUS } from '@/constants'
+import { SPACING, BORDER_RADIUS, MAPPING_SPACING } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
-import { themeConfig } from '@/context/theme/config'
+import type { ThemeConfig } from '@/context/theme/config'
 import customColors from '@/customColors'
-
-type ThemeColors = (typeof themeConfig)[keyof typeof themeConfig]
 
 interface SettingsStylesParams {
   isDark: boolean
-  themeColors: ThemeColors
+  themeColors: ThemeConfig
 }
 
 export const useStyles = makeStyles<SettingsStylesParams>()((
@@ -122,19 +120,21 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
       '& input, & select': {
         backgroundColor: settings.formInputBackground,
         border: `1px solid ${settings.inputBorder}`,
-        borderRadius: 6,
+        borderRadius: MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS,
         color: themeColors.fontColor,
         padding: '8px 12px',
+      },
+      '& input:focus, & select:focus': {
+        backgroundColor: `${settings.formInputBackground} !important`,
+        color: `${themeColors.fontColor} !important`,
+        border: `1px solid ${settings.inputBorder}`,
+        outline: 'none',
+        boxShadow: 'none',
       },
       '& select': {
         appearance: 'none',
         WebkitAppearance: 'none',
         MozAppearance: 'none',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'right 12px center',
-        backgroundSize: '12px 8px',
-        paddingRight: 36,
-        backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='${(themeColors.fontColor ?? '#fff').replace(/#/g, '%23')}' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e")`,
       },
       '& input:disabled': {
         backgroundColor: `${settings.formInputBackground} !important`,
@@ -177,8 +177,8 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
     },
     customParamsTitle: {
       fontFamily: fontFamily,
-      fontWeight: 600,
-      fontSize: '15px',
+      fontWeight: fontWeights.semiBold,
+      fontSize: fontSizes.description,
       fontStyle: 'normal',
       lineHeight: 1.4,
       letterSpacing: letterSpacing.normal,
@@ -212,7 +212,7 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
       'boxSizing': 'border-box',
       'backgroundColor': `${settings.cardBackground} !important`,
       'border': `1px solid ${customParamsBorder} !important`,
-      'borderRadius': 6,
+      'borderRadius': MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS,
       'padding': '10px 12px',
       'color': themeColors.fontColor,
       '&::placeholder': {

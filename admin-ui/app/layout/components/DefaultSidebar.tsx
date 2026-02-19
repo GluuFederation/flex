@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { Sidebar, SidebarTrigger } from 'Components'
 import { LogoThemed } from 'Routes/components/LogoThemed/LogoThemed'
 import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
+import GluuText from '@/routes/Apps/Gluu/GluuText'
 import {
   SidebarClose,
   SidebarHideSlim,
@@ -14,41 +15,35 @@ import type { DefaultSidebarProps } from './types'
 import { useTranslation } from 'react-i18next'
 import { RootState } from '@/cedarling'
 import { ROUTES } from '@/helpers/navigation'
+import { useStyles } from './DefaultSidebar.style'
 
 const GluuAppSidebar = lazy(() => import('Routes/Apps/Gluu/GluuAppSidebar'))
 
 const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
   const { t } = useTranslation()
+  const { classes } = useStyles()
 
   const { initialized, cedarFailedStatusAfterMaxTries } = useSelector(
     (state: RootState) => state.cedarPermissions,
   )
 
-  const cedarConditionalLoader = () => (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: window.innerHeight * 0.9,
-        padding: '20px',
-      }}
-    >
-      {cedarFailedStatusAfterMaxTries && !initialized ? (
-        <p>{t('titles.no_Cedar')}</p>
-      ) : (
+  const cedarConditionalLoader = () =>
+    cedarFailedStatusAfterMaxTries && !initialized ? (
+      <div className={classes.cedarMessageRoot}>
+        <GluuText variant="p">{t('titles.no_Cedar')}</GluuText>
+      </div>
+    ) : (
+      <div className={classes.sidebarLoaderRoot}>
         <GluuSuspenseLoader />
-      )}
-    </div>
-  )
+      </div>
+    )
 
   return (
     <Sidebar>
       {/* START SIDEBAR-OVERLAY: Close (x) */}
       <SidebarClose>
         <SidebarTrigger tag={'a'} href="#">
-          <i className="fa fa-times-circle fa-fw"></i>
+          <i className="fa fa-times-circle fa-fw" />
         </SidebarTrigger>
       </SidebarClose>
       {/* START SIDEBAR-OVERLAY: Close (x) */}
@@ -67,7 +62,13 @@ const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
       <SidebarMobileFluid>
         <SidebarSection fluid cover>
           {initialized ? (
-            <Suspense fallback={<GluuSuspenseLoader />}>
+            <Suspense
+              fallback={
+                <div className={classes.sidebarLoaderRoot}>
+                  <GluuSuspenseLoader />
+                </div>
+              }
+            >
               <GluuAppSidebar />
             </Suspense>
           ) : (

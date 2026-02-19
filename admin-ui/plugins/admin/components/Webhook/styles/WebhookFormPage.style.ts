@@ -3,14 +3,12 @@ import type { Theme } from '@mui/material/styles'
 import { SPACING, BORDER_RADIUS, CEDARLING_CONFIG_SPACING, MAPPING_SPACING } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
-import { themeConfig } from '@/context/theme/config'
+import type { ThemeConfig } from '@/context/theme/config'
 import customColors from '@/customColors'
-
-type ThemeColors = (typeof themeConfig)[keyof typeof themeConfig]
 
 interface WebhookFormPageStylesParams {
   isDark: boolean
-  themeColors: ThemeColors
+  themeColors: ThemeConfig
 }
 
 const WIDTH_FULL = '100%'
