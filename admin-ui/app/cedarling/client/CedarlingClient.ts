@@ -85,7 +85,16 @@ const token_authorize = async (
   console.log('[Cedarling] WASM authorize', JSON.stringify(info))
 
   try {
-    const result: AuthorizeResult = await cedarling.authorize(request)
+    const result: AuthorizeResult = await new Promise<AuthorizeResult>((resolve, reject) => {
+      const run = () => {
+        try {
+          cedarling!.authorize(request).then(resolve, reject)
+        } catch (syncError) {
+          reject(syncError)
+        }
+      }
+      setTimeout(run, 0)
+    })
     console.log(
       '[Cedarling] WASM result',
       JSON.stringify({
@@ -118,16 +127,13 @@ const token_authorize = async (
       }),
     )
 
-    if (isWasmBug) {
-      console.warn(
-        '[Cedarling] WASM stack overflow/unreachable – returning deny. Report to cedarling_wasm maintainers.',
-      )
-      return {
-        decision: false,
-        diagnostics: { errors: [message] },
-      } as AuthorizationResponse
-    }
-    throw error
+    console.warn(
+      '[Cedarling] WASM error – returning deny. Report to cedarling_wasm maintainers if wasmBug.',
+    )
+    return {
+      decision: false,
+      diagnostics: { errors: [message] },
+    } as AuthorizationResponse
   }
 }
 
