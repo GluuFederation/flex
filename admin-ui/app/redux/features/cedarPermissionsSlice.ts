@@ -35,14 +35,6 @@ const cedarPermissionsSlice = createSlice({
     setPolicyStoreJson: (state, action: PayloadAction<string>) => {
       state.policyStoreJson = action.payload
     },
-    resetCedarlingState: (state) => {
-      state.permissions = {}
-      state.loading = false
-      state.error = null
-      state.initialized = null
-      state.isInitializing = false
-      state.cedarFailedStatusAfterMaxTries = null
-    },
   },
 })
 
@@ -53,6 +45,5 @@ export const {
   setCedarlingInitializing,
   setCedarFailedStatusAfterMaxTries,
   setPolicyStoreJson,
-  resetCedarlingState,
 } = cedarPermissionsSlice.actions
 export default cedarPermissionsSlice.reducer

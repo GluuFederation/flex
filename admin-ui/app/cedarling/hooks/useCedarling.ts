@@ -1,13 +1,9 @@
+import { useSelector, useDispatch } from 'react-redux'
 import { useCallback } from 'react'
-import { useAppSelector, useAppDispatch } from '@/redux/hooks'
-import { setCedarlingPermission, resetCedarlingState } from '@/redux/features/cedarPermissionsSlice'
-import {
-  cedarlingClient,
-  buildCedarPermissionKey,
-  CEDARLING_CONSTANTS,
-  isAnyTokenExpired,
-} from '@/cedarling'
+import { setCedarlingPermission } from '@/redux/features/cedarPermissionsSlice'
+import { cedarlingClient, buildCedarPermissionKey, CEDARLING_CONSTANTS } from '@/cedarling'
 import type {
+  RootState,
   UseCedarlingReturn,
   AuthorizationResult,
   ResourceScopeEntry,
@@ -17,26 +13,16 @@ import type {
 import { OPENID, REVOKE_SESSION, SCIM_BULK, SSA_ADMIN, SSA_DEVELOPER } from '@/utils/PermChecker'
 import { updateToast } from '@/redux/features/toastSlice'
 
-const isWasmCrashError = (error: unknown): boolean => {
-  if (error instanceof RangeError) return true
-  const msg = error instanceof Error ? error.message : typeof error === 'string' ? error : ''
-  return (
-    msg.includes('Maximum call stack') ||
-    msg.includes('unreachable') ||
-    (error instanceof Error && error.constructor?.name === 'RuntimeError')
-  )
-}
-
 export function useCedarling(): UseCedarlingReturn {
   const { ACTION_TYPE, RESOURCE_TYPE } = CEDARLING_CONSTANTS
 
-  const dispatch = useAppDispatch()
+  const dispatch = useDispatch()
 
   const {
     userinfo_jwt: userinfo_token,
     idToken: id_token,
     jwtToken: access_token,
-  } = useAppSelector((state) => state.authReducer)
+  } = useSelector((state: RootState) => state.authReducer)
 
   const {
     permissions: permissionsByResourceId,
@@ -44,10 +30,7 @@ export function useCedarling(): UseCedarlingReturn {
     error,
     initialized: cedarlingInitialized,
     isInitializing,
-  } = useAppSelector((state) => state.cedarPermissions)
-  const sessionTimeoutDialogOpen = useAppSelector(
-    (state) => state.logoutAuditReducer?.sessionTimeoutDialogOpen === true,
-  )
+  } = useSelector((state: RootState) => state.cedarPermissions)
   const executeUrls = new Set([SSA_ADMIN, SSA_DEVELOPER, SCIM_BULK, REVOKE_SESSION, OPENID])
 
   const getActionLabelFromUrl = useCallback((url: string): CedarAction => {
@@ -148,14 +131,6 @@ export function useCedarling(): UseCedarlingReturn {
         }
       }
 
-      if (sessionTimeoutDialogOpen) {
-        return { isAuthorized: false, error: 'Session timeout dialog open' }
-      }
-
-      if (isAnyTokenExpired({ access_token, id_token, userinfo_token })) {
-        return { isAuthorized: false, error: 'Token expired' }
-      }
-
       if (!resolvedResourceId) {
         return {
           isAuthorized: false,
@@ -188,24 +163,8 @@ export function useCedarling(): UseCedarlingReturn {
         const toMessage = (err: unknown): string =>
           err instanceof Error ? err.message : typeof err === 'string' ? err : 'Unknown error'
         const rawMessage = toMessage(error)
-
-        const isWasmCrash = isWasmCrashError(error)
-        const isTokenExpired = rawMessage.includes('Token expired')
-
-        if (isWasmCrash) {
-          console.error(
-            '[Cedarling] Call stack / WASM crash detected (e.g. Maximum call stack size exceeded). State reset.',
-            error,
-          )
-          cedarlingClient.reset()
-          dispatch(resetCedarlingState())
-        }
-
-        if (!isTokenExpired) {
-          const truncated = rawMessage.length > 25 ? rawMessage.slice(0, 25) + '…' : rawMessage
-          dispatch(updateToast(true, 'error', `Authorization error: ${truncated}`))
-        }
-
+        const truncated = rawMessage.length > 25 ? rawMessage.slice(0, 25) + '…' : rawMessage
+        dispatch(updateToast(true, 'error', `Authorization error: ${truncated}`))
         return {
           isAuthorized: false,
           error: rawMessage,
@@ -221,7 +180,6 @@ export function useCedarling(): UseCedarlingReturn {
       userinfo_token,
       cedarlingInitialized,
       isInitializing,
-      sessionTimeoutDialogOpen,
     ],
   )
 

@@ -171,7 +171,6 @@ export interface CedarPermissionsState {
 export interface SessionState {
   logoutAuditInFlight: boolean
   logoutAuditSucceeded: boolean | null
-  sessionTimeoutDialogOpen: boolean
 }
 
 // Lock State

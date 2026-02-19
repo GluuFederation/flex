@@ -5,21 +5,10 @@ import type {
   AuthorizationResponse,
   TokenAuthorizationRequest,
 } from '@/cedarling'
-import { isAnyTokenExpired } from '@/cedarling/utility/tokenExpiry'
 
 let cedarling: Cedarling | null = null
 let cedarlingInitialized: boolean = false
 let initializationPromise: Promise<void> | null = null
-
-const isWasmCrashError = (error: unknown): boolean => {
-  if (error instanceof RangeError) return true
-  const msg = error instanceof Error ? error.message : typeof error === 'string' ? error : ''
-  return (
-    msg.includes('Maximum call stack') ||
-    msg.includes('unreachable') ||
-    (error instanceof Error && error.constructor?.name === 'RuntimeError')
-  )
-}
 
 const initialize = async (bootStrapConfig: BootStrapConfig): Promise<void> => {
   if (cedarlingInitialized) {
@@ -45,21 +34,11 @@ const initialize = async (bootStrapConfig: BootStrapConfig): Promise<void> => {
   return initializationPromise
 }
 
-const reset = (): void => {
-  cedarling = null
-  cedarlingInitialized = false
-  initializationPromise = null
-}
-
 const token_authorize = async (
   request: TokenAuthorizationRequest,
 ): Promise<AuthorizationResponse> => {
   if (!cedarlingInitialized || !cedarling) {
     throw new Error('Cedarling not initialized')
-  }
-
-  if (isAnyTokenExpired(request.tokens)) {
-    throw new Error('Token expired — skipping WASM authorization')
   }
 
   try {
@@ -69,15 +48,7 @@ const token_authorize = async (
       decision: result.decision,
     } as AuthorizationResponse
   } catch (error) {
-    if (isWasmCrashError(error)) {
-      console.error(
-        '[Cedarling] Call stack / WASM crash detected (e.g. Maximum call stack size exceeded). Instance reset.',
-        error,
-      )
-      reset()
-    } else {
-      console.error('Error during authorization:', error)
-    }
+    console.error('Error during authorization:', error)
     throw error
   }
 }
@@ -85,5 +56,4 @@ const token_authorize = async (
 export const cedarlingClient: ICedarlingClient = {
   initialize,
   token_authorize,
-  reset,
 }

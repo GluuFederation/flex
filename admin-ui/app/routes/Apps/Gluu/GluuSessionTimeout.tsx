@@ -3,10 +3,8 @@ import SessionTimeoutDialog from './GluuSessionTimeoutDialog'
 import { withIdleTimer } from 'react-idle-timer'
 import type { IIdleTimer } from 'react-idle-timer'
 import { useAppSelector, useAppDispatch } from '@/redux/hooks'
-import { auditLogoutLogs, setSessionTimeoutDialogOpen } from 'Redux/features/sessionSlice'
+import { auditLogoutLogs } from 'Redux/features/sessionSlice'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { resetCedarlingState } from '@/redux/features/cedarPermissionsSlice'
-import { cedarlingClient } from '@/cedarling'
 
 type TimerHandle = ReturnType<typeof setTimeout>
 type IntervalHandle = ReturnType<typeof setInterval>
@@ -51,11 +49,8 @@ const SessionTimeout = ({ isAuthenticated }: SessionTimeoutProps) => {
     (isTimedOut = false) => {
       try {
         setTimeoutModalOpen(false)
-        dispatch(setSessionTimeoutDialogOpen(false))
         clearSessionInterval()
         clearSessionTimeout()
-        cedarlingClient.reset()
-        dispatch(resetCedarlingState())
         dispatch(
           auditLogoutLogs({
             message: isTimedOut ? 'User session timed out' : 'User logged out manually',
@@ -70,11 +65,10 @@ const SessionTimeout = ({ isAuthenticated }: SessionTimeoutProps) => {
 
   const handleContinue = useCallback(() => {
     setTimeoutModalOpen(false)
-    dispatch(setSessionTimeoutDialogOpen(false))
     clearSessionInterval()
     clearSessionTimeout()
     idleTimer.current?.reset()
-  }, [dispatch, clearSessionInterval, clearSessionTimeout])
+  }, [clearSessionInterval, clearSessionTimeout])
 
   const onActive = useCallback(() => {
     if (!timeoutModalOpen) {
@@ -87,7 +81,6 @@ const SessionTimeout = ({ isAuthenticated }: SessionTimeoutProps) => {
     if (isAuthenticated && !timeoutModalOpen) {
       timers.current.timeout = setTimeout(() => {
         let countDown = COUNTDOWN_SECONDS
-        dispatch(setSessionTimeoutDialogOpen(true))
         setTimeoutModalOpen(true)
         setTimeoutCountdown(countDown)
         timers.current.countdownInterval = setInterval(() => {
@@ -99,7 +92,7 @@ const SessionTimeout = ({ isAuthenticated }: SessionTimeoutProps) => {
         }, 1000)
       }, IDLE_DIALOG_DELAY_MS)
     }
-  }, [isAuthenticated, timeoutModalOpen, dispatch, handleLogout])
+  }, [isAuthenticated, timeoutModalOpen, handleLogout])
 
   useEffect(() => {
     if (logoutAuditSucceeded === true) {

@@ -82,7 +82,6 @@ export interface BootStrapConfig {
 export interface ICedarlingClient {
   initialize: (BootStrapConfig: BootStrapConfig) => Promise<void>
   token_authorize: (request: TokenAuthorizationRequest) => Promise<AuthorizationResponse>
-  reset: () => void
 }
 
 // Redux State Types for Cedar Permissions
@@ -138,6 +137,16 @@ export interface AuthReducerState {
   userinfo?: {
     jansAdminUIRole: string
     sub: string
+  }
+}
+
+// Root State (partial interface for Cedar operations)
+export interface RootState {
+  authReducer: AuthReducerState
+  cedarPermissions: CedarPermissionsState
+  apiPermissionReducer: {
+    items: ApiPermission[]
+    loading: boolean
   }
 }
 

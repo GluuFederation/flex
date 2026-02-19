@@ -4,4 +4,3 @@ export {
   findPermissionByUrl,
   buildCedarPermissionKey,
 } from './resources'
-export { isJwtExpired, isAnyTokenExpired } from './tokenExpiry'
