@@ -18,4 +18,4 @@ export {
   type GetSamlIdentityProviderParams,
   type IdentityProviderPagedResult,
 } from './useSamlApi'
-export { TrustRelationshipSpMetaDataSourceType } from 'JansConfigApi'
+export { TrustRelationshipSpMetaDataSourceType } from './useSamlApi'
