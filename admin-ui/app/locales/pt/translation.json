@@ -190,6 +190,29 @@
     "copy_to_clipboard": "Copiar para área de transferência",
     "refresh": "Atualizar"
   },
+  "serviceDownFallback": "Gluu Flex Admin UI não está recebendo resposta do backend (Jans Config Api).",
+  "roleNotFoundMessage": "Usuário não autorizado",
+  "roleNotFoundDescription": "O usuário conectado não possui um perfil válido. Encerrando sessão do Admin UI",
+  "licenseCard": {
+    "freeTrial": "Avaliação gratuita",
+    "description": "Inicie sua avaliação gratuita para gerenciar e configurar seu servidor de autenticação com interface web simplificada.",
+    "generating": "Gerando, aguarde...",
+    "start30Days": "Iniciar avaliação de 30 dias"
+  },
+  "sessionTimeout": {
+    "title": "Tempo limite da sessão",
+    "messageExpire": "A sessão atual expirará em {{count}} segundos.",
+    "messageContinue": "Deseja continuar a sessão?",
+    "logout": "Sair",
+    "continueSession": "Continuar sessão"
+  },
+  "licenseScreen": {
+    "redirecting": "Redirecionando...",
+    "welcomeTitle": "Bem-vindo ao Admin UI",
+    "uploadSsaLabel": "Por favor, envie o SSA aqui:",
+    "selectedFile": "Arquivo selecionado:",
+    "dropzoneHint": "Arraste e solte o arquivo .jwt aqui, ou clique para selecionar"
+  },
   "fields": {
     "actions": "Ações",
     "asset_name": "Asset Name",
@@ -372,7 +395,7 @@
     "parLifetime": "Vida útil necessária",
     "requirePar": "Exigir PAR",
     "activate": "ativar",
-    "active": "Ativa",
+    "active": "Ativo",
     "application_type": "tipo de aplicação",
     "attributes": "Atributos",
     "attribute_edit_type": "Tipo de edição de atributo",
@@ -629,6 +652,8 @@
     "customerName": "nome do cliente",
     "licenseDetails": "Detalhes da licença",
     "role": "Função",
+    "admin": "Administrador",
+    "statusLabel": "Status",
     "permissions": "Permissões",
     "deletable": "Apagável",
     "email": "E-mail",
@@ -992,6 +1017,9 @@
     "more": " mais"
   },
   "titles": {
+    "personal_information": "Informações pessoais",
+    "admin_roles": "Funções de administrador",
+    "account_status": "Status da conta",
     "acrs": "ACRs",
     "audit_logs": "Admin UI Logs de Auditoria",
     "webhooks": "Webhooks",

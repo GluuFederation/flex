@@ -1,8 +1,16 @@
 import { makeStyles } from 'tss-react/mui'
+import { keyframes } from '@emotion/react'
 import customColors, { hexToRgb } from '@/customColors'
 
 const TRACK_COLOR_DARK = `rgba(${hexToRgb(customColors.white)}, 0.12)`
 const TRACK_COLOR_LIGHT = `rgba(${hexToRgb(customColors.black)}, 0.08)`
+
+const SPIN_DURATION = '0.8s'
+
+const spinKeyframes = keyframes({
+  '0%': { transform: 'rotate(0deg)' },
+  '100%': { transform: 'rotate(360deg)' },
+})
 
 interface GluuSpinnerStyleParams {
   size: number
@@ -10,11 +18,7 @@ interface GluuSpinnerStyleParams {
 }
 
 const useStyles = makeStyles<GluuSpinnerStyleParams>()((_, { size, isDark }) => ({
-  '@keyframes spin': {
-    '0%': { transform: 'rotate(0deg)' },
-    '100%': { transform: 'rotate(360deg)' },
-  },
-  'spinner': {
+  spinner: {
     display: 'block',
     width: size,
     height: size,
@@ -23,7 +27,8 @@ const useStyles = makeStyles<GluuSpinnerStyleParams>()((_, { size, isDark }) => 
       isDark ? TRACK_COLOR_DARK : TRACK_COLOR_LIGHT
     }`,
     borderTopColor: customColors.logo,
-    animation: 'spin 0.8s linear infinite',
+    animation: `${spinKeyframes} ${SPIN_DURATION} linear infinite`,
+    willChange: 'transform',
     flexShrink: 0,
   },
 }))

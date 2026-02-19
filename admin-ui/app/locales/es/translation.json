@@ -68,6 +68,29 @@
     "add_custom_attributes": "Agregar atributos personalizados",
     "refresh": "Actualizar"
   },
+  "serviceDownFallback": "Gluu Flex Admin UI no recibe respuesta del backend (Jans Config Api).",
+  "roleNotFoundMessage": "Usuario no autorizado",
+  "roleNotFoundDescription": "El usuario conectado no tiene un rol válido. Cerrando sesión de Admin UI",
+  "licenseCard": {
+    "freeTrial": "Prueba gratuita",
+    "description": "Comience su prueba gratuita para gestionar y configurar su servidor de autenticación con una interfaz web simplificada.",
+    "generating": "Generando, espere por favor...",
+    "start30Days": "Iniciar prueba de 30 días"
+  },
+  "sessionTimeout": {
+    "title": "Sesión expirada",
+    "messageExpire": "La sesión actual expirará en {{count}} segundos.",
+    "messageContinue": "¿Desea continuar la sesión?",
+    "logout": "Cerrar sesión",
+    "continueSession": "Continuar sesión"
+  },
+  "licenseScreen": {
+    "redirecting": "Redirigiendo...",
+    "welcomeTitle": "Bienvenido a Admin UI",
+    "uploadSsaLabel": "Por favor suba el SSA aquí :",
+    "selectedFile": "Archivo seleccionado :",
+    "dropzoneHint": "Arrastre y suelte el archivo .jwt aquí, o haga clic para seleccionar"
+  },
   "dashboard": {
     "summary_title": "Usuarios Activos y Estadísticas de Tokens de Acceso",
     "oidc_clients_count": "Número de Clientes OIDC",
@@ -544,6 +567,8 @@
     "binaryAttributes": "Atributos Binarios",
     "certificateAttributes": "Atributos de Certificado",
     "role": "Rol",
+    "admin": "Administrador",
+    "statusLabel": "Estado",
     "permissions": "Permisos",
     "deletable": "Eliminable",
     "email": "Correo",
@@ -1062,6 +1087,9 @@
     "more": " más"
   },
   "titles": {
+    "personal_information": "Información personal",
+    "admin_roles": "Roles de administrador",
+    "account_status": "Estado de la cuenta",
     "activeTokens": "Tokens activos",
     "acrs": "ACRs",
     "active_users": "Usuarios activos y estadísticas de tokens de acceso",

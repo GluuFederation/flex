@@ -6,7 +6,7 @@ import queryString from 'query-string'
 import { uuidv4 } from './Util'
 import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import SessionTimeout from 'Routes/Apps/Gluu/GluuSessionTimeout'
-import { checkLicenseConfigValid, getOAuth2Config, getUserInfoResponse } from '../redux/actions'
+import { checkLicenseConfigValid, getUserInfoResponse } from '../redux/actions'
 import { getAPIAccessToken, checkLicensePresent } from 'Redux/actions'
 import GluuTimeoutModal from 'Routes/Apps/Gluu/GluuTimeoutModal'
 import GluuErrorModal from 'Routes/Apps/Gluu/GluuErrorModal'
@@ -192,7 +192,7 @@ export default function AppAuthProvider({ children }: Readonly<AppAuthProviderPr
           })
 
           let authConfigs: AuthorizationServiceConfiguration | null = null
-          dispatch(getOAuth2Config(undefined))
+          // Config is fetched after getAPIAccessToken (in saga) to avoid a second api-protection-token call
           let idToken: string | undefined
           let oauthAccessToken: string | undefined
 
@@ -237,7 +237,7 @@ export default function AppAuthProvider({ children }: Readonly<AppAuthProviderPr
                 return
               }
 
-              dispatch(getAPIAccessToken(ujwt))
+              // Rely on useEffect to dispatch getAPIAccessToken when userinfo/userinfo_jwt are set (avoids duplicate api-protection-token + session calls)
               setShowAdminUI(true)
             })
             .catch((oError: Error) => {
