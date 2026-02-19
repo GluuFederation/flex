@@ -163,6 +163,11 @@ export function useCedarling(): UseCedarlingReturn {
         const response = await cedarlingClient.token_authorize(request)
 
         const isAuthorized = response?.decision === true
+        const wasmError = response?.diagnostics?.errors?.[0]
+
+        if (!isAuthorized && wasmError) {
+          dispatch(updateToast(true, 'error', `Authorization failed: ${wasmError}`))
+        }
 
         dispatch(
           setCedarlingPermission({
@@ -170,13 +175,13 @@ export function useCedarling(): UseCedarlingReturn {
             isAuthorized,
           }),
         )
-        return { isAuthorized, response }
+        return { isAuthorized, response, error: wasmError }
       } catch (error) {
         const toMessage = (err: unknown): string =>
           err instanceof Error ? err.message : typeof err === 'string' ? err : 'Unknown error'
         const rawMessage = toMessage(error)
-        const truncated = rawMessage.length > 25 ? rawMessage.slice(0, 25) + '…' : rawMessage
-        dispatch(updateToast(true, 'error', `Authorization error: ${truncated}`))
+        const displayMessage = rawMessage.length > 80 ? rawMessage.slice(0, 80) + '…' : rawMessage
+        dispatch(updateToast(true, 'error', `Authorization error: ${displayMessage}`))
         return {
           isAuthorized: false,
           error: rawMessage,

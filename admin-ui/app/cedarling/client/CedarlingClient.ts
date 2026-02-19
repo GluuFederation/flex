@@ -99,14 +99,34 @@ const token_authorize = async (
       decision: result.decision,
     } as AuthorizationResponse
   } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    const stack = error instanceof Error ? error.stack : undefined
+    const isWasmBug =
+      error instanceof RangeError ||
+      (error instanceof Error && error.name === 'RuntimeError') ||
+      message.includes('Maximum call stack size exceeded') ||
+      message.includes('unreachable')
+
     console.error(
       '[Cedarling] WASM error',
       JSON.stringify({
         resourceId: info.resourceId,
         action: info.action,
-        error: error instanceof Error ? error.message : String(error),
+        error: message,
+        wasmBug: isWasmBug,
+        stack: stack ?? undefined,
       }),
     )
+
+    if (isWasmBug) {
+      console.warn(
+        '[Cedarling] WASM stack overflow/unreachable – returning deny. Report to cedarling_wasm maintainers.',
+      )
+      return {
+        decision: false,
+        diagnostics: { errors: [message] },
+      } as AuthorizationResponse
+    }
     throw error
   }
 }
