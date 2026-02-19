@@ -10,6 +10,36 @@ let cedarling: Cedarling | null = null
 let cedarlingInitialized: boolean = false
 let initializationPromise: Promise<void> | null = null
 
+type PendingReject = (error: Error) => void
+const pendingWasmCalls = new Set<PendingReject>()
+let lastWasmCrashTime = 0
+const FOLLOWUP_WINDOW_MS = 5000
+
+const isWasmCrash = (msg: string): boolean =>
+  msg.includes('Maximum call stack size exceeded') || msg.includes('unreachable')
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('error', (event) => {
+    const msg = event.message ?? ''
+    if (!isWasmCrash(msg)) return
+
+    if (pendingWasmCalls.size > 0) {
+      event.preventDefault()
+      lastWasmCrashTime = Date.now()
+      const err = new Error(msg)
+      console.error(
+        '[Cedarling] global caught WASM crash',
+        JSON.stringify({ error: msg, pendingCalls: pendingWasmCalls.size }),
+      )
+      pendingWasmCalls.forEach((reject) => reject(err))
+      pendingWasmCalls.clear()
+    } else if (Date.now() - lastWasmCrashTime < FOLLOWUP_WINDOW_MS) {
+      event.preventDefault()
+      console.warn('[Cedarling] suppressed follow-up WASM error', JSON.stringify({ error: msg }))
+    }
+  })
+}
+
 const initialize = async (bootStrapConfig: BootStrapConfig): Promise<void> => {
   if (cedarlingInitialized) {
     console.log(
@@ -86,10 +116,22 @@ const token_authorize = async (
 
   try {
     const result: AuthorizeResult = await new Promise<AuthorizeResult>((resolve, reject) => {
+      pendingWasmCalls.add(reject)
+      const cleanup = () => pendingWasmCalls.delete(reject)
       const run = () => {
         try {
-          cedarling!.authorize(request).then(resolve, reject)
+          cedarling!.authorize(request).then(
+            (r) => {
+              cleanup()
+              resolve(r)
+            },
+            (e) => {
+              cleanup()
+              reject(e)
+            },
+          )
         } catch (syncError) {
+          cleanup()
           reject(syncError)
         }
       }
