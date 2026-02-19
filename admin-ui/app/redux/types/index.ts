@@ -22,6 +22,8 @@ export interface UserInfo {
 export interface AuthConfig {
   clientId?: string
   sessionTimeoutInMins?: number
+  sessionTimeoutCountdownSeconds?: number
+  sessionTimeoutDialogDelayMs?: number
   [key: string]: unknown
 }
 
