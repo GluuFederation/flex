@@ -3,6 +3,7 @@ import AppLayout from '../../layout/default'
 import { RoutedContent } from '../../routes/index'
 import AppAuthProvider from 'Utils/AppAuthProvider'
 import PermissionsPolicyInitializer from './PermissionsPolicyInitializer'
+import CedarPermissionsPreloader from './CedarPermissionsPreloader'
 import { LazyRoutes } from 'Utils/RouteLoader'
 import { ROUTES } from '@/helpers/navigation'
 
@@ -21,6 +22,7 @@ export default function AuthenticatedRouteSelector() {
         <LazyRoutes.GluuToast />
         <LazyRoutes.GluuWebhookErrorDialog />
         <PermissionsPolicyInitializer />
+        <CedarPermissionsPreloader />
       </AppLayout>
     </AppAuthProvider>
   )

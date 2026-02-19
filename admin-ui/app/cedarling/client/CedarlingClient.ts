@@ -147,22 +147,6 @@ const token_authorize = async (
   }
   console.log('[Cedarling] WASM authorize', JSON.stringify({ ...info, env }))
 
-  const accessExpiry = info.tokenExpiry.access
-  if (accessExpiry?.expired) {
-    console.warn(
-      '[Cedarling] WASM skipped – access_token expired',
-      JSON.stringify({
-        resourceId: info.resourceId,
-        action: info.action,
-        expiredAgoSec: Math.abs(accessExpiry.expiresInSec),
-      }),
-    )
-    return {
-      decision: false,
-      diagnostics: { errors: [`access_token expired ${Math.abs(accessExpiry.expiresInSec)}s ago`] },
-    } as AuthorizationResponse
-  }
-
   try {
     const result: AuthorizeResult = await new Promise<AuthorizeResult>((resolve, reject) => {
       pendingWasmCalls.add(reject)
