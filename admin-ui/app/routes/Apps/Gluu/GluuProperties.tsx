@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { FormGroup, Col, Button, Accordion, AccordionHeader, AccordionBody } from 'Components'
 import GluuPropertyItem from './GluuPropertyItem'
 import { useTranslation } from 'react-i18next'
-import { Tooltip as ReactTooltip } from 'react-tooltip'
 import { HelpOutline } from '@mui/icons-material'
+import GluuTooltip from './GluuTooltip'
 import customColors from '@/customColors'
 import { isDevelopment } from '@/utils/env'
 
@@ -147,14 +147,7 @@ function GluuProperties({
 
           {tooltip && i18n.exists(tooltip) && (
             <>
-              <ReactTooltip
-                id={tooltip}
-                place="right"
-                role="tooltip"
-                style={{ zIndex: 101, maxWidth: '45vw' }}
-              >
-                {t(tooltip)}
-              </ReactTooltip>
+              <GluuTooltip tooltipOnly doc_entry={tooltip} content={t(tooltip)} place="right" />
               <HelpOutline
                 tabIndex={-1}
                 style={{ width: 18, height: 18, marginLeft: 6, marginRight: 6 }}

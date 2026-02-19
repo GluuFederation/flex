@@ -17,6 +17,7 @@ import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useGetAllWebhooks } from 'JansConfigApi'
+import type { PagedResultEntriesItem } from 'JansConfigApi'
 import { useDeleteWebhookWithAudit } from './hooks'
 import { GluuTable } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
@@ -26,7 +27,10 @@ import type { WebhookEntry } from './types'
 import { useStyles } from './styles/WebhookListPage.style'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 
-const FILTER_WIDTH = 255
+const toWebhookEntries = (entries: PagedResultEntriesItem[] | undefined): WebhookEntry[] => {
+  return (entries ?? []) as unknown as WebhookEntry[]
+}
+
 const LIMIT_OPTIONS = getRowsPerPageOptions()
 
 const SORT_COLUMNS = ['inum', 'displayName', 'url', 'httpMethod', 'jansEnabled'] as const
@@ -100,7 +104,7 @@ const WebhookListPage: React.FC = () => {
     },
   )
 
-  const webhooksRaw = useMemo(() => (data?.entries || []) as unknown as WebhookEntry[], [data])
+  const webhooksRaw = useMemo(() => toWebhookEntries(data?.entries), [data])
   const totalItems = useMemo(() => data?.totalEntriesCount || 0, [data])
 
   const webhooks = useMemo(
@@ -228,7 +232,7 @@ const WebhookListPage: React.FC = () => {
         value: serverSort.column,
         options: sortOptions,
         onChange: handleSortByFilter,
-        width: FILTER_WIDTH,
+        width: 180,
       },
     ],
     [t, serverSort.column, handleSortByFilter, sortOptions],
@@ -290,6 +294,7 @@ const WebhookListPage: React.FC = () => {
               backgroundColor={methodStyle.backgroundColor}
               textColor={methodStyle.textColor}
               borderColor={methodStyle.borderColor}
+              className={classes.httpMethodBadge}
             >
               {row.httpMethod}
             </GluuBadge>

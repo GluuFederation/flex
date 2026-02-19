@@ -25,6 +25,7 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       color: themeColors.fontColor,
     },
     statusBadge: { minWidth: 80 },
+    httpMethodBadge: { width: 72, minWidth: 72, maxWidth: 72, boxSizing: 'border-box' },
     editIcon: { fontSize: 18 },
     addIcon: { fontSize: 20 },
     searchCard: {

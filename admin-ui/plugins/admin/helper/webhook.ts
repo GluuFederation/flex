@@ -1,3 +1,5 @@
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+
 interface WebhookHeader {
   key?: string | null
   value?: string | null
@@ -6,7 +8,7 @@ interface WebhookHeader {
 }
 
 interface WebhookData {
-  httpRequestBody?: unknown
+  httpRequestBody?: JsonValue
   httpMethod?: string | null
   url?: string | null
   displayName?: string | null

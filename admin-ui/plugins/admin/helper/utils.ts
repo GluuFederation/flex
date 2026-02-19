@@ -6,13 +6,11 @@ import {
   regexForBracedKey,
 } from '@/utils/regex'
 import { isValidDate as isValidDateUtil, isAfterDate, formatDate } from '@/utils/dayjsUtils'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
 export type DateLike = string | number | Date | Dayjs | null | undefined
 
-export interface JsonObject {
-  [key: string]: JsonValue
-}
-export type JsonValue = string | number | boolean | null | JsonObject | JsonValue[]
+export type { JsonValue }
 
 const getNestedValue = (obj: Record<string, JsonValue>, path: string): JsonValue | undefined => {
   return path.split('.').reduce<JsonValue | undefined>((acc, part) => {

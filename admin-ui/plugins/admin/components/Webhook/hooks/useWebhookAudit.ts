@@ -22,7 +22,15 @@ export const useWebhookAudit = () => {
   const ipAddress = useSelector((state: RootState) => state.authReducer.location.IPv4)
   const userinfo = useSelector((state: RootState) => state.authReducer.userinfo)
 
-  const initAudit = useCallback((): Record<string, unknown> => {
+  interface AuditInit {
+    client_id: string
+    ip_address: string
+    status: string
+    performedBy: { user_inum: string; userId: string }
+    [key: string]: string | { user_inum: string; userId: string } | object
+  }
+
+  const initAudit = useCallback((): AuditInit => {
     return {
       client_id: clientId,
       ip_address: ipAddress,
@@ -34,6 +42,8 @@ export const useWebhookAudit = () => {
     }
   }, [clientId, ipAddress, userinfo])
 
+  type ActionData = Record<string, string | number | boolean | object | null>
+
   const logAction = useCallback(
     async (
       actionType: ActionType,
@@ -42,7 +52,7 @@ export const useWebhookAudit = () => {
     ) => {
       const audit = initAudit()
       addAdditionalData(audit, actionType, resource, {
-        action: payload as { action_message?: string; action_data?: Record<string, unknown> },
+        action: payload as { action_message?: string; action_data?: ActionData },
       })
       await postUserAction(audit)
     },

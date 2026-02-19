@@ -22,6 +22,8 @@ const GAP_SM = 12
 const FIELD_VERTICAL_PADDING = 4
 const HEADERS_BOX_PADDING_TOP = 15
 const CONTENT_PADDING_H = 52
+const HEADERS_INPUT_MIN_WIDTH = 180
+const HEADERS_ACTION_BTN_WIDTH = 156
 
 export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
   theme: Theme,
@@ -180,16 +182,17 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
       flexWrap: 'wrap',
     },
     headersInput: {
-      flex: '1 1 200px',
-      minWidth: 120,
+      flex: '1 1 0',
+      minWidth: HEADERS_INPUT_MIN_WIDTH,
+      maxWidth: '50%',
       minHeight: CEDARLING_CONFIG_SPACING.INPUT_HEIGHT,
       boxSizing: BOX_SIZING_BORDER,
       borderRadius: MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS,
       padding: `${CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL}px ${CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL}px`,
     },
     headersActionBtn: {
-      minWidth: 156,
-      width: 156,
+      minWidth: HEADERS_ACTION_BTN_WIDTH,
+      width: HEADERS_ACTION_BTN_WIDTH,
       minHeight: '44px !important',
       height: '44px !important',
       gap: 8,
