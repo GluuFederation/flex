@@ -202,7 +202,7 @@
     "redux-persist": "^6.0.0",
     "redux-saga": "^1.2.3",
     "tss-react": "^4.8.2",
-    "unzipper": "^0.10.11",
+    "unzipper": "^0.12.1",
     "uuid": "^10.0.0",
     "yup": "^1.4.0"
   },
