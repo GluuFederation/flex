@@ -147,13 +147,14 @@ const GluuInputRow = <T = Record<string, unknown>,>({
         )}
         {shortcode}
         {type === 'password' && (
-          <div className={classes.passwordToggle}>
-            {customType === 'text' ? (
-              <Visibility onClick={setVisibility} />
-            ) : (
-              <VisibilityOff onClick={setVisibility} />
-            )}
-          </div>
+          <button
+            type="button"
+            className={classes.passwordToggle}
+            onClick={setVisibility}
+            aria-label="Toggle password visibility"
+          >
+            {customType === 'text' ? <Visibility /> : <VisibilityOff />}
+          </button>
         )}
         {showError ? (
           <GluuText variant="span" className={classes.error} data-field-error disableThemeColor>

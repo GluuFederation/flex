@@ -6,8 +6,7 @@ import { useCedarling } from '@/cedarling'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import { useDispatch } from 'react-redux'
-import { updateToast } from 'Redux/features/toastSlice'
+import { isDevelopment } from '@/utils/env'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -34,6 +33,13 @@ const toWebhookEntries = (entries: PagedResultEntriesItem[] | undefined): Webhoo
 const LIMIT_OPTIONS = getRowsPerPageOptions()
 
 const SORT_COLUMNS = ['inum', 'displayName', 'url', 'httpMethod', 'jansEnabled'] as const
+const SORT_COLUMN_LABELS: Record<string, string> = {
+  inum: 'fields.inum',
+  displayName: 'fields.name',
+  url: 'fields.url',
+  httpMethod: 'fields.http_method',
+  jansEnabled: 'fields.status',
+}
 const DEFAULT_SERVER_SORT: { column: string; desc: boolean } = { column: 'inum', desc: false }
 const WEBHOOK_RESOURCE_ID = ADMIN_UI_RESOURCES.Webhooks
 
@@ -49,10 +55,7 @@ const sortRows = <T,>(rows: T[], column: keyof T & string, desc: boolean): T[] =
   return desc ? sorted.reverse() : sorted
 }
 const WEBHOOK_SCOPES = CEDAR_RESOURCE_SCOPES[WEBHOOK_RESOURCE_ID] ?? []
-const TOAST_TYPE_ERROR = 'error'
-
 const WebhookListPage: React.FC = () => {
-  const dispatch = useDispatch()
   const { navigateToRoute } = useAppNavigation()
   const {
     hasCedarReadPermission,
@@ -145,16 +148,11 @@ const WebhookListPage: React.FC = () => {
           await deleteWebhook(inumToDelete, userMessage)
           refetch()
         } catch (error) {
-          const message =
-            (error as { response?: { data?: { responseMessage?: string } } })?.response?.data
-              ?.responseMessage ??
-            (error as Error)?.message ??
-            t('messages.failed_to_delete_webhook')
-          dispatch(updateToast(true, TOAST_TYPE_ERROR, message))
+          if (isDevelopment) console.error('Delete webhook failed:', error)
         }
       }
     },
-    [deleteData, deleteWebhook, refetch, dispatch, t],
+    [deleteData, deleteWebhook, refetch, t],
   )
 
   const navigateToAddPage = useCallback(() => {
@@ -210,16 +208,7 @@ const WebhookListPage: React.FC = () => {
     () =>
       SORT_COLUMNS.map((value) => ({
         value,
-        label:
-          value === 'inum'
-            ? t('fields.inum')
-            : value === 'displayName'
-              ? t('fields.name')
-              : value === 'url'
-                ? t('fields.url')
-                : value === 'httpMethod'
-                  ? t('fields.http_method')
-                  : t('fields.status'),
+        label: t(SORT_COLUMN_LABELS[value] || 'fields.status'),
       })),
     [t],
   )
@@ -367,7 +356,10 @@ const WebhookListPage: React.FC = () => {
     [effectivePage, limit, totalItems, handlePageChange, handleRowsPerPageChange],
   )
 
-  const getRowKey = useCallback((row: WebhookEntry) => row.inum ?? '', [])
+  const getRowKey = useCallback(
+    (row: WebhookEntry, index: number) => row.inum ?? `no-inum-${index}`,
+    [],
+  )
 
   const emptyMessage = useMemo(() => {
     if (!pattern && totalItems === 0) {

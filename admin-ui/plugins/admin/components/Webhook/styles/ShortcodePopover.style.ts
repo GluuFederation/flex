@@ -59,7 +59,6 @@ export const useStyles = makeStyles<ShortcodePopoverStylesParams>()((_theme, { t
       marginLeft: HELP_ICON_MARGIN,
       marginRight: HELP_ICON_MARGIN,
       color: themeColors.fontColor,
-      fill: themeColors.fontColor,
     },
   }
 })

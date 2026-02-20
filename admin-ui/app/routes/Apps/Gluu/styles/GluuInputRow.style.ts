@@ -18,6 +18,12 @@ export const useStyles = makeStyles<GluuInputRowStyleParams>()(
       position: 'absolute',
       right: 20,
       top: 7,
+      background: 'none',
+      border: 'none',
+      padding: 0,
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
     },
     error: {
       display: 'block',

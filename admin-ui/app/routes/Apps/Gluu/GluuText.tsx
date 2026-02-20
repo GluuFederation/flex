@@ -57,7 +57,7 @@ const GluuText: React.FC<GluuTextProps> = ({
   const Component = variant
 
   return (
-    <Component className={className} style={combinedStyle} id={id} {...rest}>
+    <Component {...rest} className={className} style={combinedStyle} id={id}>
       {children}
     </Component>
   )

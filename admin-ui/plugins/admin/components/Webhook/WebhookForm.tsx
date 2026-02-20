@@ -248,6 +248,24 @@ const WebhookForm: React.FC = () => {
     [cursorPosition, formikValues.url, formikValues.httpRequestBody, setFieldValue],
   )
 
+  const handleHttpRequestBodyCursorChange = useCallback(
+    (value: { cursor: { row: number; column: number; document?: { $lines: string[] } } }) => {
+      setTimeout(() => {
+        const cursorPos = value.cursor
+        const lines = cursorPos?.document?.$lines
+        let index = 0
+        if (lines) {
+          for (let i = 0; i < cursorPos.row; i++) {
+            index += lines[i].length + 1
+          }
+        }
+        index += cursorPos.column
+        setCursorPosition((prev) => ({ ...prev, httpRequestBody: index }))
+      }, 0)
+    },
+    [],
+  )
+
   const addHeader = useCallback(() => {
     const current = formikValues.httpHeaders || []
     setFieldValue('httpHeaders', [...current, { key: '', value: '' }])
@@ -571,22 +589,7 @@ const WebhookForm: React.FC = () => {
                     lsize={12}
                     rsize={12}
                     required
-                    onCursorChange={(value: {
-                      cursor: { row: number; column: number; document?: { $lines: string[] } }
-                    }) => {
-                      setTimeout(() => {
-                        const cursorPos = value.cursor
-                        const lines = cursorPos?.document?.$lines
-                        let index = 0
-                        if (lines) {
-                          for (let i = 0; i < cursorPos.row; i++) {
-                            index += lines[i].length + 1
-                          }
-                        }
-                        index += cursorPos.column
-                        setCursorPosition((prev) => ({ ...prev, httpRequestBody: index }))
-                      }, 0)
-                    }}
+                    onCursorChange={handleHttpRequestBodyCursorChange}
                     theme={isDark ? 'monokai' : 'xcode'}
                     doc_category={WEBHOOK}
                     doc_entry="http_request_body"

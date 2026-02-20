@@ -414,8 +414,12 @@ html {
     border-top-right-radius: 16px;
 }
 
-.MuiTableCell-head .MuiTableSortLabel-root:hover {
+html.theme-light .MuiTableCell-head .MuiTableSortLabel-root:hover {
     color: var(--custom-table-header-text-light);
+}
+
+html.theme-dark .MuiTableCell-head .MuiTableSortLabel-root:hover {
+    color: var(--custom-table-header-text-dark);
 }
 
 .nav-item > a.nav-link {

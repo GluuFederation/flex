@@ -22,10 +22,10 @@ interface AuditInit {
   ip_address: string
   status: string
   performedBy: { user_inum: string; userId: string }
-  [key: string]: string | { user_inum: string; userId: string } | unknown
+  [key: string]: string | { user_inum: string; userId: string } | object
 }
 
-type ActionData = Record<string, string | number | boolean | unknown | null>
+type ActionData = Record<string, string | number | boolean | object | null>
 
 export const useWebhookAudit = () => {
   const clientId = useSelector((state: RootState) => state.authReducer.config.clientId)

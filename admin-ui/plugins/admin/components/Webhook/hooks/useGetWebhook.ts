@@ -13,7 +13,7 @@ export function useGetWebhook(webhookId: string | undefined) {
         enabled: Boolean(webhookId),
         select: (data): WebhookEntry | undefined => {
           const entries = (data as PagedWebhookResult)?.entries ?? []
-          return webhookId ? entries.find((e) => e.inum === webhookId) : entries[0]
+          return entries.find((e) => e.inum === webhookId)
         },
       },
     },
