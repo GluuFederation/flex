@@ -237,6 +237,7 @@ const SettingsPage: React.FC = () => {
     if (isScriptsError) refetchScripts()
   }, [isConfigError, isScriptsError, refetchConfig, refetchScripts])
 
+  const isAdditionalParamsEmpty = (formik.values.additionalParameters || []).length === 0
   const additionalParametersError = formik.errors?.additionalParameters
   const showAdditionalParametersError = Boolean(
     additionalParametersError && (formik.submitCount > 0 || formik.touched?.additionalParameters),
@@ -347,7 +348,6 @@ const SettingsPage: React.FC = () => {
                       disabled={!canWriteSettings}
                       isDark={isDark}
                       handleChange={(e) => {
-                        formik.handleChange(e)
                         const n = Number.parseInt(e.target.value, 10)
                         if (!Number.isNaN(n)) handlePagingSizeChange(n)
                       }}
@@ -423,10 +423,10 @@ const SettingsPage: React.FC = () => {
                 </div>
 
                 <div
-                  className={`${classes.customParamsBox} ${(formik.values.additionalParameters || []).length === 0 ? classes.customParamsBoxEmpty : ''}`.trim()}
+                  className={`${classes.customParamsBox} ${isAdditionalParamsEmpty ? classes.customParamsBoxEmpty : ''}`.trim()}
                 >
                   <div
-                    className={`${classes.customParamsHeader} ${(formik.values.additionalParameters || []).length === 0 ? classes.customParamsHeaderEmpty : ''}`.trim()}
+                    className={`${classes.customParamsHeader} ${isAdditionalParamsEmpty ? classes.customParamsHeaderEmpty : ''}`.trim()}
                   >
                     <GluuText variant="h5" disableThemeColor>
                       <span className={classes.customParamsTitle}>

@@ -61,7 +61,10 @@ export const useUpdateMappingWithAudit = (callbacks?: MutationCallbacks) => {
           updateToast(
             true,
             'error',
-            extractErrorMessage(error as Error | ApiError, t('messages.error_updating_mapping')),
+            extractErrorMessage(
+              error as Error | ApiError | Record<string, never>,
+              t('messages.error_updating_mapping'),
+            ),
           ),
         )
         callbacksRef.current?.onError?.(error instanceof Error ? error : new Error(String(error)))
@@ -100,7 +103,10 @@ export const useAddMappingWithAudit = (callbacks?: MutationCallbacks) => {
           updateToast(
             true,
             'error',
-            extractErrorMessage(error as Error | ApiError, t('messages.error_adding_mapping')),
+            extractErrorMessage(
+              error as Error | ApiError | Record<string, never>,
+              t('messages.error_adding_mapping'),
+            ),
           ),
         )
         callbacksRef.current?.onError?.(error instanceof Error ? error : new Error(String(error)))

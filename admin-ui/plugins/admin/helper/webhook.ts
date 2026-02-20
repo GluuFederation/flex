@@ -8,7 +8,7 @@ interface WebhookHeader {
 }
 
 interface WebhookData {
-  httpRequestBody?: JsonValue
+  httpRequestBody?: JsonValue | object | string
   httpMethod?: string | null
   url?: string | null
   displayName?: string | null

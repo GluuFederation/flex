@@ -343,7 +343,7 @@ const WebhookListPage: React.FC = () => {
     }
     if (canDeleteWebhooks) {
       list.push({
-        icon: <DeleteOutlined className={classes.editIcon} />,
+        icon: <DeleteOutlined className={classes.deleteIcon} />,
         tooltip: t('actions.delete'),
         id: 'deleteWebhook',
         onClick: (row) => {
@@ -421,7 +421,7 @@ const WebhookListPage: React.FC = () => {
           onAccept={submitForm}
           label={
             modal && deleteData
-              ? `${t('messages.action_deletion_for')} ${t('messages.webhook_entity')} (${deleteData.url || ''}${deleteData.inum ? `-${deleteData.inum}` : ''})`
+              ? `${t('messages.action_deletion_for')} ${t('messages.webhook_entity')} (${[deleteData.url, deleteData.inum].filter(Boolean).join('-')})`
               : ''
           }
         />

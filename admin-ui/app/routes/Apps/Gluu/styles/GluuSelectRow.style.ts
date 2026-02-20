@@ -9,12 +9,18 @@ export const useStyles = makeStyles<GluuSelectRowStyleParams>()((_theme, { fontC
   colWrapper: {
     position: 'relative',
   },
+  selectWrapper: {
+    position: 'relative',
+  },
   select: {
-    paddingRight: 44,
-    WebkitAppearance: 'none',
-    MozAppearance: 'none',
-    appearance: 'none',
-    backgroundImage: 'none',
+    'paddingRight': '44px !important',
+    'WebkitAppearance': 'none',
+    'MozAppearance': 'none',
+    'appearance': 'none',
+    'backgroundImage': 'none !important',
+    '&:focus': {
+      backgroundImage: 'none !important',
+    },
   },
   chevronWrapper: {
     position: 'absolute',
@@ -26,8 +32,10 @@ export const useStyles = makeStyles<GluuSelectRowStyleParams>()((_theme, { fontC
     alignItems: 'center',
     justifyContent: 'center',
     color: fontColor,
+    zIndex: 6,
   },
   error: {
+    display: 'block',
     color: customColors.accentRed,
     marginTop: 4,
     fontSize: 12,

@@ -4,7 +4,7 @@ type GluuInputEditorCursorValue = {
   cursor: {
     row: number
     column: number
-    document?: { $lines: string[] }
+    document?: { $lines: string[]; getAllLines(): string[] }
   }
 }
 

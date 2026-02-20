@@ -14,7 +14,11 @@ export type GluuInputRowProps<T = Record<string, unknown>> = {
   disabled?: boolean
   showError?: boolean
   errorMessage?: string
-  handleChange?: ((event: React.ChangeEvent<HTMLInputElement>) => void) | null
+  handleChange?:
+    | ((
+        event: React.ChangeEvent<HTMLInputElement> | { target: { name: string; value: string } },
+      ) => void)
+    | null
   doc_entry?: string
   shortcode?: React.ReactNode
   onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void

@@ -22,5 +22,6 @@ export function useGetWebhook(webhookId: string | undefined) {
   return {
     ...result,
     webhook: result.data,
+    isPending: result.status === 'pending' || result.isFetching,
   }
 }

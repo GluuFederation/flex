@@ -49,6 +49,7 @@ const Label: React.FC<ShortcodeLabelProps> = ({ doc_category, doc_entry, label, 
 const ShortcodePopover: React.FC<ShortcodePopoverProps> = ({
   codes,
   buttonWrapperStyles = {},
+  buttonWrapperClassName,
   handleSelectShortcode,
 }) => {
   const { t } = useTranslation()
@@ -68,14 +69,26 @@ const ShortcodePopover: React.FC<ShortcodePopoverProps> = ({
 
   const id = open ? 'shortcode-popover' : undefined
 
+  const baseStyles = applicationstyle.shortCodesWrapperStyles as React.CSSProperties
+  const wrapperStyles = buttonWrapperClassName
+    ? buttonWrapperStyles
+    : { ...baseStyles, ...buttonWrapperStyles }
+
   return (
     <div
       ref={anchorRef}
-      style={{
-        ...(applicationstyle.shortCodesWrapperStyles as React.CSSProperties),
-        ...buttonWrapperStyles,
-      }}
+      className={buttonWrapperClassName}
+      style={wrapperStyles}
+      data-tooltip-id="shortcode-icon-tooltip"
     >
+      <GluuTooltip
+        tooltipOnly
+        doc_entry="shortcode-icon-tooltip"
+        content={t('tooltips.insert_shortcode')}
+        place="top"
+        zIndex={1400}
+        positionStrategy="fixed"
+      />
       <GluuButton
         type="button"
         aria-describedby={id}

@@ -1,14 +1,12 @@
 import type { QueryClient, QueryKey, InvalidateQueryFilters } from '@tanstack/react-query'
 
+const STALE_TIME = 5 * 60 * 1000
+const GC_TIME = 10 * 60 * 1000
+
 export const queryDefaults = {
-  staleTimeMs: 5 * 60 * 1000, //300 seconds
-  gcTimeMs: 10 * 60 * 1000, //600 seconds
-  refetchOnWindowFocus: false,
   queryOptions: {
-    staleTimeMs: 5 * 60 * 1000, //300 seconds
-    staleTime: 5 * 60 * 1000,
-    gcTimeMs: 10 * 60 * 1000, //600 seconds
-    gcTime: 10 * 60 * 1000,
+    staleTime: STALE_TIME,
+    gcTime: GC_TIME,
     refetchOnWindowFocus: false,
   } as const,
 } as const
@@ -21,9 +19,8 @@ export function invalidateQueriesByKey(
   return queryClient.invalidateQueries({ queryKey, ...options })
 }
 
-export function removeQueriesByKey(queryClient: QueryClient, queryKey: QueryKey): Promise<void> {
+export function removeQueriesByKey(queryClient: QueryClient, queryKey: QueryKey): void {
   queryClient.removeQueries({ queryKey })
-  return Promise.resolve()
 }
 
 export function refetchQueriesByKey(

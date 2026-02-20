@@ -198,12 +198,14 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
       flexWrap: 'wrap',
     },
     customParamsActionBtn: {
-      minWidth: 156,
-      width: 156,
-      minHeight: '44px !important',
-      height: '44px !important',
-      gap: 8,
-      flexShrink: 0,
+      '&&': {
+        minWidth: 156,
+        width: 156,
+        minHeight: 44,
+        height: 44,
+        gap: 8,
+        flexShrink: 0,
+      },
     },
     customParamsInput: {
       'flex': '1 1 200px',

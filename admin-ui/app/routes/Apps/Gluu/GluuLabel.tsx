@@ -79,7 +79,6 @@ const GluuLabel: React.FC<GluuLabelProps> = ({
                     marginLeft: 0,
                     marginRight: 6,
                     color: labelColor,
-                    fill: labelColor,
                   }}
                   data-tooltip-id={doc_entry}
                   data-for={doc_entry}

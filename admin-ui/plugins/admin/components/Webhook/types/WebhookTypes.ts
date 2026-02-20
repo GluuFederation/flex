@@ -42,6 +42,7 @@ export interface ShortcodeField {
 export interface ShortcodePopoverProps {
   codes: ShortcodeField[]
   buttonWrapperStyles?: CSSProperties
+  buttonWrapperClassName?: string
   handleSelectShortcode: (code: string) => void
 }
 

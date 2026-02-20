@@ -1,10 +1,16 @@
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
-import { SPACING, BORDER_RADIUS, CEDARLING_CONFIG_SPACING, MAPPING_SPACING } from '@/constants'
+import {
+  SPACING,
+  BORDER_RADIUS,
+  CEDARLING_CONFIG_SPACING,
+  MAPPING_SPACING,
+  OPACITY,
+} from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import type { ThemeConfig } from '@/context/theme/config'
-import customColors from '@/customColors'
+import customColors, { getLoadingOverlayRgba } from '@/customColors'
 
 interface WebhookFormPageStylesParams {
   isDark: boolean
@@ -24,6 +30,9 @@ const HEADERS_BOX_PADDING_TOP = 15
 const CONTENT_PADDING_H = 52
 const HEADERS_INPUT_MIN_WIDTH = 180
 const HEADERS_ACTION_BTN_WIDTH = 156
+const ALERT_ICON_SIZE = 20
+const EDITOR_FALLBACK_MIN_HEIGHT = 120
+const ERROR_SPACE = 20
 
 export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
   theme: Theme,
@@ -37,8 +46,8 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
   const cardBg = settings?.cardBackground ?? themeColors.card.background
   const formInputBg = settings?.formInputBackground ?? themeColors.inputBackground
   const inputBorderColor = settings?.inputBorder ?? themeColors.borderColor
-  const headersBoxBg = settings?.customParamsInput ?? formInputBg
-  const headersInputBg = settings?.customParamsBox ?? cardBg
+  const headersBoxBg = settings?.customParamsBox ?? cardBg
+  const headersInputBg = settings?.customParamsInput ?? formInputBg
   const headersBorderColor =
     settings?.inputBorder ?? (isDark ? customColors.darkBorder : customColors.borderInput)
 
@@ -86,6 +95,7 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
     alertIcon: {
       flexShrink: 0,
       color: infoText,
+      fontSize: ALERT_ICON_SIZE,
     },
     alertText: {
       fontFamily: fontFamily,
@@ -107,7 +117,7 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
       columnGap: SPACING.SECTION_GAP,
       rowGap: SPACING.CARD_CONTENT_GAP,
       width: WIDTH_FULL,
-      alignItems: 'center',
+      alignItems: 'start',
       minWidth: 0,
       [theme.breakpoints.down('md')]: {
         gridTemplateColumns: '1fr',
@@ -134,10 +144,11 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
       'padding': `${HEADERS_BOX_PADDING_TOP}px ${CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL}px 33px`,
       'width': WIDTH_FULL,
       'boxSizing': BOX_SIZING_BORDER,
-      '& > div:first-child label, & > div:first-child label h5, & > div:first-child label span': {
-        fontSize: '15px !important',
-        fontWeight: '700 !important',
-      },
+      '& > div:first-of-type label, & > div:first-of-type label h5, & > div:first-of-type label span':
+        {
+          fontSize: '15px !important',
+          fontWeight: '700 !important',
+        },
       '&& input': {
         backgroundColor: `${headersInputBg} !important`,
         border: `1px solid ${inputBorderColor} !important`,
@@ -234,6 +245,12 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
         maxWidth: WIDTH_FULL,
         paddingLeft: MARGIN_ZERO_IMPORTANT,
         paddingRight: MARGIN_ZERO_IMPORTANT,
+        position: 'relative',
+        paddingBottom: ERROR_SPACE,
+      },
+      '& [data-field-error]': {
+        position: 'absolute',
+        fontSize: '12px !important',
       },
       '& .input-group': {
         margin: MARGIN_ZERO_IMPORTANT,
@@ -287,6 +304,14 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
         marginTop: -2,
         marginBottom: -2,
       },
+      '& input:focus, & input:active, & select:focus, & select:active, & .custom-select:focus, & .custom-select:active':
+        {
+          backgroundColor: `${formInputBg} !important`,
+          color: `${themeColors.fontColor} !important`,
+          border: `1px solid ${inputBorderColor} !important`,
+          outline: OUTLINE_NONE,
+          boxShadow: OUTLINE_NONE,
+        },
       '& input:disabled, & select:disabled, & .custom-select:disabled': {
         backgroundColor: `${formInputBg} !important`,
         border: `1px solid ${inputBorderColor} !important`,
@@ -299,6 +324,55 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
       },
       '& input.form-control, & input[type="text"], & textarea.form-control': {
         color: `${themeColors.fontColor} !important`,
+      },
+      '& input:-webkit-autofill, & input:-webkit-autofill:hover, & input:-webkit-autofill:focus, & input:-webkit-autofill:active':
+        {
+          WebkitBoxShadow: `0 0 0 100px ${formInputBg} inset !important`,
+          WebkitTextFillColor: `${themeColors.fontColor} !important`,
+          backgroundColor: `${formInputBg} !important`,
+          transition: 'background-color 5000s ease-in-out 0s',
+        },
+    },
+    editorFallback: {
+      minHeight: EDITOR_FALLBACK_MIN_HEIGHT,
+    },
+    editorTheme: {
+      '& .ace_editor': {
+        backgroundColor: `${formInputBg} !important`,
+        color: `${themeColors.fontColor} !important`,
+        borderRadius: MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS,
+        border: `1px solid ${inputBorderColor}`,
+      },
+      '& .ace_editor .ace_print-margin': {
+        display: 'none',
+      },
+      '& .ace_editor .ace_gutter': {
+        backgroundColor: `${formInputBg} !important`,
+        color: `${themeColors.textMuted} !important`,
+      },
+      '& .ace_editor .ace_content': {
+        backgroundColor: `${formInputBg} !important`,
+        color: `${themeColors.fontColor} !important`,
+      },
+      '& .ace_editor .ace_cursor': {
+        color: `${themeColors.fontColor} !important`,
+      },
+      '& .ace_editor .ace_active-line': {
+        background: `${getLoadingOverlayRgba(isDark ? customColors.white : customColors.black, isDark ? OPACITY.HOVER_DARK : OPACITY.HOVER_LIGHT)} !important`,
+      },
+      '& .ace_editor .ace_gutter-active-line': {
+        background: `${getLoadingOverlayRgba(isDark ? customColors.white : customColors.black, isDark ? OPACITY.HOVER_DARK : OPACITY.HOVER_LIGHT)} !important`,
+      },
+    },
+    editorShortcode: {
+      'position': 'absolute',
+      'top': 0,
+      'right': 0,
+      'zIndex': 1,
+      'margin': 0,
+      '& button': {
+        padding: '2px 24px !important',
+        minHeight: 'auto !important',
       },
     },
   }

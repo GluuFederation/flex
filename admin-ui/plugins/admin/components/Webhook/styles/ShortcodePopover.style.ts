@@ -44,7 +44,7 @@ export const useStyles = makeStyles<ShortcodePopoverStylesParams>()((_theme, { t
       color: 'inherit',
     },
     divider: {
-      borderColor: themeColors.fontColor,
+      borderColor: themeColors.borderColor,
     },
     emptyMessage: {
       padding: EMPTY_MESSAGE_PADDING,

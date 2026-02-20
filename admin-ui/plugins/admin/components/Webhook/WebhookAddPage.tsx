@@ -11,6 +11,8 @@ import SetTitle from 'Utils/SetTitle'
 import WebhookForm from './WebhookForm'
 import { useStyles } from './styles/WebhookFormPage.style'
 
+const webhookResourceId = ADMIN_UI_RESOURCES.Webhooks
+
 const WebhookAddPage: React.FC = () => {
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
@@ -19,7 +21,6 @@ const WebhookAddPage: React.FC = () => {
   const { classes } = useStyles({ isDark, themeColors })
 
   const { hasCedarReadPermission } = useCedarling()
-  const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
   const canReadWebhooks = useMemo(
     () => hasCedarReadPermission(webhookResourceId),
     [hasCedarReadPermission, webhookResourceId],

@@ -1,34 +1,36 @@
 import React, { Suspense, useCallback, useState, useEffect, useMemo, memo, useRef } from 'react'
+import { useParams } from 'react-router'
+import { useTranslation } from 'react-i18next'
+import { useDispatch } from 'react-redux'
+import { useFormik } from 'formik'
+import isEqual from 'lodash/isEqual'
+import Toggle from 'react-toggle'
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
+
 import { Form, FormGroup, Input } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
-import { useFormik } from 'formik'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import { useTranslation } from 'react-i18next'
-import { useDispatch } from 'react-redux'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import { resetFlags } from 'Plugins/admin/redux/features/WebhookSlice'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import Toggle from 'react-toggle'
-import { WEBHOOK } from 'Utils/ApiResources'
-import ShortcodePopover from './ShortcodePopover'
-import shortCodes from 'Plugins/admin/helper/shortCodes.json'
-import { isValid } from './WebhookURLChecker'
-import isEqual from 'lodash/isEqual'
-import { getWebhookValidationSchema } from 'Plugins/admin/helper/validations/webhookValidation'
-import { buildWebhookInitialValues } from 'Plugins/admin/helper/webhook'
-import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { isDevelopment } from '@/utils/env'
-import { useParams } from 'react-router'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
+import GluuInputEditor from 'Routes/Apps/Gluu/GluuInputEditor'
+import { GluuButton } from '@/components'
 import { useGetAllFeatures, useGetFeaturesByWebhookId } from 'JansConfigApi'
 import { useGetWebhook, useCreateWebhookWithAudit, useUpdateWebhookWithAudit } from './hooks'
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
-import GluuText from 'Routes/Apps/Gluu/GluuText'
-import { GluuButton } from '@/components'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { isDevelopment } from '@/utils/env'
+import { resetFlags } from 'Plugins/admin/redux/features/WebhookSlice'
+import { WEBHOOK } from 'Utils/ApiResources'
+import { isValid } from './WebhookURLChecker'
+import { getWebhookValidationSchema } from 'Plugins/admin/helper/validations/webhookValidation'
+import { buildWebhookInitialValues } from 'Plugins/admin/helper/webhook'
+import shortCodes from 'Plugins/admin/helper/shortCodes.json'
+import ShortcodePopover from './ShortcodePopover'
 import { useStyles as useFormPageStyles } from './styles/WebhookFormPage.style'
 import type {
   WebhookFormValues,
@@ -38,8 +40,6 @@ import type {
   HttpHeader,
   WebhookEntry,
 } from './types'
-
-import GluuInputEditor from 'Routes/Apps/Gluu/GluuInputEditor'
 
 const HTTP_METHODS = [
   { value: 'GET', label: 'GET' },
@@ -51,23 +51,37 @@ const HTTP_METHODS = [
 
 const WebhookForm: React.FC = () => {
   const { id } = useParams<{ id?: string }>()
+  const { t, i18n } = useTranslation()
   const dispatch = useDispatch()
-  const { t } = useTranslation()
   const { navigateBack } = useAppNavigation()
+
   const { state: themeState } = useTheme()
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
   const isDark = themeState.theme === THEME_DARK
   const { classes } = useFormPageStyles({ isDark, themeColors })
 
-  const { webhook: selectedWebhook, isLoading: loadingWebhook } = useGetWebhook(id)
+  const { webhook: selectedWebhook, isPending: webhookPending } = useGetWebhook(id)
+  const {
+    data: featuresData,
+    status: featuresStatus,
+    isFetching: featuresFetching,
+  } = useGetAllFeatures()
+  const {
+    data: webhookFeaturesData,
+    status: webhookFeaturesStatus,
+    isFetching: webhookFeaturesFetching,
+  } = useGetFeaturesByWebhookId(id ?? 'skip', { query: { enabled: Boolean(id) } })
 
-  const { data: featuresData, isLoading: loadingFeatures } = useGetAllFeatures()
+  const featuresLoading = featuresStatus === 'pending' || featuresFetching
+  const webhookFeaturesLoading = webhookFeaturesStatus === 'pending' || webhookFeaturesFetching
   const features = useMemo(() => featuresData || [], [featuresData])
 
-  const { data: webhookFeaturesData, isLoading: loadingWebhookFeatures } =
-    useGetFeaturesByWebhookId(id ?? 'skip', {
-      query: { enabled: Boolean(id) },
-    })
+  const { createWebhook, isLoading: isCreating } = useCreateWebhookWithAudit({
+    onSuccess: () => navigateBack(ROUTES.WEBHOOK_LIST),
+  })
+  const { updateWebhook, isLoading: isUpdating } = useUpdateWebhookWithAudit({
+    onSuccess: () => navigateBack(ROUTES.WEBHOOK_LIST),
+  })
 
   const initialSelectedFeatures = useMemo(() => {
     if (Array.isArray(webhookFeaturesData) && webhookFeaturesData.length > 0) {
@@ -90,26 +104,7 @@ const WebhookForm: React.FC = () => {
     [selectedWebhook],
   )
 
-  const { createWebhook, isLoading: isCreating } = useCreateWebhookWithAudit({
-    onSuccess: () => navigateBack(ROUTES.WEBHOOK_LIST),
-  })
-
-  const { updateWebhook, isLoading: isUpdating } = useUpdateWebhookWithAudit({
-    onSuccess: () => navigateBack(ROUTES.WEBHOOK_LIST),
-  })
-
-  const isLoading = isCreating || isUpdating || (Boolean(id) && loadingWebhook)
-
-  const formik = useFormik<WebhookFormValues>({
-    initialValues: initialFormValues,
-    enableReinitialize: true,
-    validationSchema: getWebhookValidationSchema(t),
-    onSubmit: (values, formikHelpers) => {
-      const isInvalid = validatePayload(values, formikHelpers.setFieldError)
-      if (isInvalid) return
-      openCommitDialog()
-    },
-  })
+  const typedShortCodes = useMemo(() => shortCodes as ShortCodesConfig, [])
 
   const [cursorPosition, setCursorPosition] = useState<CursorPosition>({
     url: 0,
@@ -119,34 +114,20 @@ const WebhookForm: React.FC = () => {
   const [selectedFeatures, setSelectedFeatures] = useState<AuiFeature[]>(initialSelectedFeatures)
   const [baselineSelectedFeatures, setBaselineSelectedFeatures] =
     useState<AuiFeature[]>(initialSelectedFeatures)
+  const headersBodyRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    setSelectedFeatures(initialSelectedFeatures)
-    setBaselineSelectedFeatures(initialSelectedFeatures)
-  }, [initialSelectedFeatures])
+  const validationSchema = useMemo(() => getWebhookValidationSchema(t), [t, i18n.language])
 
-  const openCommitDialog = useCallback(() => setShowCommitDialog(true), [])
-  const closeCommitDialog = useCallback(() => setShowCommitDialog(false), [])
-
-  const validatePayload = useCallback(
-    (values: WebhookFormValues, setFieldError: (field: string, message: string) => void) => {
-      let hasError = false
-      if (values.httpRequestBody) {
-        try {
-          JSON.parse(values.httpRequestBody)
-        } catch {
-          hasError = true
-          setFieldError('httpRequestBody', t('messages.invalid_json_error'))
-        }
-      }
-      if (values.url && !isValid(values.url)) {
-        hasError = true
-        setFieldError('url', t('messages.invalid_url_error'))
-      }
-      return hasError
+  const formik = useFormik<WebhookFormValues>({
+    initialValues: initialFormValues,
+    enableReinitialize: true,
+    validationSchema,
+    onSubmit: (values, formikHelpers) => {
+      const isInvalid = validatePayload(values, formikHelpers.setFieldError)
+      if (isInvalid) return
+      openCommitDialog()
     },
-    [t],
-  )
+  })
 
   const {
     values: formikValues,
@@ -155,6 +136,142 @@ const WebhookForm: React.FC = () => {
     setFieldError,
     dirty: formikDirty,
   } = formik
+
+  const isLoading = isCreating || isUpdating || (Boolean(id) && webhookPending)
+  const formLoading = useMemo(() => {
+    if (isCreating || isUpdating) return true
+    if (id) return webhookPending || webhookFeaturesLoading || !selectedWebhook
+    return featuresLoading
+  }, [
+    id,
+    webhookPending,
+    webhookFeaturesLoading,
+    selectedWebhook,
+    featuresLoading,
+    isCreating,
+    isUpdating,
+  ])
+
+  const featureShortcodes = useMemo(
+    () =>
+      selectedFeatures?.[0]?.auiFeatureId
+        ? (typedShortCodes?.[selectedFeatures[0].auiFeatureId]?.fields ?? [])
+        : [],
+    [selectedFeatures, typedShortCodes],
+  )
+
+  const isFeatureSelectionChanged = useMemo(
+    () => !isEqual(selectedFeatures, baselineSelectedFeatures),
+    [selectedFeatures, baselineSelectedFeatures],
+  )
+  const isFormChanged = formikDirty || isFeatureSelectionChanged
+
+  const showBodyEditor = useMemo(
+    () =>
+      Boolean(
+        formikValues.httpMethod &&
+        formikValues.httpMethod !== 'GET' &&
+        formikValues.httpMethod !== 'DELETE',
+      ),
+    [formikValues.httpMethod],
+  )
+
+  const headerInputBg = themeColors.settings?.customParamsBox ?? themeColors.inputBackground
+  const headersError = formik.errors.httpHeaders
+  const showHeadersError = !!(headersError && formik.touched.httpHeaders)
+  const formDescription = useMemo(
+    () =>
+      t('messages.webhook_form_description', {
+        defaultValue: 'Configure webhook to receive notifications when specific events occur.',
+      }),
+    [t],
+  )
+
+  const openCommitDialog = useCallback(() => setShowCommitDialog(true), [])
+  const closeCommitDialog = useCallback(() => setShowCommitDialog(false), [])
+
+  const validatePayload = useCallback(
+    (values: WebhookFormValues, setError: (field: string, message: string) => void) => {
+      let hasError = false
+      if (values.httpRequestBody) {
+        try {
+          JSON.parse(values.httpRequestBody)
+        } catch {
+          hasError = true
+          setError('httpRequestBody', t('messages.invalid_json_error'))
+        }
+      }
+      if (values.url && !isValid(values.url)) {
+        hasError = true
+        setError('url', t('messages.invalid_url_error'))
+      }
+      return hasError
+    },
+    [t],
+  )
+
+  const handleFeatureChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
+      const featureId = (e.target as HTMLSelectElement).value
+      const feature = (Array.isArray(features) ? features : []).find(
+        (f: AuiFeature) => (f.auiFeatureId ?? '') === featureId,
+      )
+      setSelectedFeatures(feature ? [feature] : [])
+    },
+    [features],
+  )
+
+  const handleCancel = useCallback(() => {
+    resetForm({ values: initialFormValues })
+    setSelectedFeatures([...baselineSelectedFeatures])
+  }, [resetForm, baselineSelectedFeatures, initialFormValues])
+
+  const handleBack = useCallback(() => {
+    navigateBack(ROUTES.WEBHOOK_LIST)
+  }, [navigateBack])
+
+  const handleSelectShortcode = useCallback(
+    (code: string, name: 'url' | 'httpRequestBody', withString = false) => {
+      const _code = withString ? '"${' + code + '}"' : '${' + code + '}'
+      const currentPosition = cursorPosition[name]
+      let value = formikValues[name] || ''
+      if (currentPosition >= 0 && value) {
+        value = value.slice(0, currentPosition) + _code + value.slice(currentPosition)
+      } else if (value) {
+        value += _code
+      } else {
+        value = _code
+      }
+      setCursorPosition((prev) => ({ ...prev, [name]: currentPosition + _code.length }))
+      setFieldValue(name, value)
+    },
+    [cursorPosition, formikValues.url, formikValues.httpRequestBody, setFieldValue],
+  )
+
+  const addHeader = useCallback(() => {
+    const current = formikValues.httpHeaders || []
+    setFieldValue('httpHeaders', [...current, { key: '', value: '' }])
+  }, [formikValues.httpHeaders, setFieldValue])
+
+  const removeHeader = useCallback(
+    (index: number) => {
+      const current = formikValues.httpHeaders || []
+      setFieldValue(
+        'httpHeaders',
+        current.filter((_, i) => i !== index),
+      )
+    },
+    [formikValues.httpHeaders, setFieldValue],
+  )
+
+  const changeHeader = useCallback(
+    (index: number, field: keyof HttpHeader, newValue: string) => {
+      const current = [...(formikValues.httpHeaders || [])]
+      current[index] = { ...current[index], [field]: newValue }
+      setFieldValue('httpHeaders', current)
+    },
+    [formikValues.httpHeaders, setFieldValue],
+  )
 
   const submitForm = useCallback(
     async (userMessage: string) => {
@@ -195,7 +312,6 @@ const WebhookForm: React.FC = () => {
         } else {
           await createWebhook(payload, userMessage)
         }
-
         resetForm({ values: formikValues })
         setBaselineSelectedFeatures([...selectedFeatures])
       } catch (error) {
@@ -217,84 +333,22 @@ const WebhookForm: React.FC = () => {
   )
 
   useEffect(() => {
-    return () => {
+    setSelectedFeatures(initialSelectedFeatures)
+    setBaselineSelectedFeatures(initialSelectedFeatures)
+  }, [initialSelectedFeatures])
+
+  useEffect(() => {
+    if (Object.keys(formik.errors).length > 0) {
+      formik.validateForm()
+    }
+  }, [i18n.language])
+
+  useEffect(
+    () => () => {
       dispatch(resetFlags())
-    }
-  }, [dispatch])
-
-  const typedShortCodes = shortCodes as ShortCodesConfig
-  const featureShortcodes = selectedFeatures?.[0]?.auiFeatureId
-    ? typedShortCodes?.[selectedFeatures[0].auiFeatureId]?.fields || []
-    : []
-
-  const handleCancel = useCallback(() => {
-    resetForm({ values: initialFormValues })
-    setSelectedFeatures([...baselineSelectedFeatures])
-  }, [resetForm, baselineSelectedFeatures, initialFormValues])
-
-  const isFeatureSelectionChanged = useMemo(
-    () => !isEqual(selectedFeatures, baselineSelectedFeatures),
-    [selectedFeatures, baselineSelectedFeatures],
-  )
-
-  const isFormChanged = formikDirty || isFeatureSelectionChanged
-
-  const handleBack = useCallback(() => {
-    navigateBack(ROUTES.WEBHOOK_LIST)
-  }, [navigateBack])
-
-  const handleSelectShortcode = (
-    code: string,
-    name: 'url' | 'httpRequestBody',
-    withString = false,
-  ) => {
-    const _code = withString ? '"${' + code + '}"' : '${' + code + '}'
-    const currentPosition = cursorPosition[name]
-    let value = formikValues[name] || ''
-    if (currentPosition >= 0 && value) {
-      value = value.slice(0, currentPosition) + _code + value.slice(currentPosition)
-    } else if (value) {
-      value += _code
-    } else {
-      value = _code
-    }
-
-    setCursorPosition((prev) => ({ ...prev, [name]: currentPosition + _code.length }))
-    setFieldValue(name, value)
-  }
-
-  const addHeader = useCallback(() => {
-    const current = formikValues.httpHeaders || []
-    setFieldValue('httpHeaders', [...current, { key: '', value: '' }])
-  }, [formikValues.httpHeaders, setFieldValue])
-
-  const removeHeader = useCallback(
-    (index: number) => {
-      const current = formikValues.httpHeaders || []
-      setFieldValue(
-        'httpHeaders',
-        current.filter((_, i) => i !== index),
-      )
     },
-    [formikValues.httpHeaders, setFieldValue],
+    [dispatch],
   )
-
-  const changeHeader = useCallback(
-    (index: number, field: keyof HttpHeader, newValue: string) => {
-      const current = [...(formikValues.httpHeaders || [])]
-      current[index] = { ...current[index], [field]: newValue }
-      setFieldValue('httpHeaders', current)
-    },
-    [formikValues.httpHeaders, setFieldValue],
-  )
-
-  const showBodyEditor =
-    formikValues.httpMethod &&
-    formikValues.httpMethod !== 'GET' &&
-    formikValues.httpMethod !== 'DELETE'
-
-  const headersBodyRef = useRef<HTMLDivElement>(null)
-  const headerInputBg = themeColors.settings?.customParamsBox ?? themeColors.inputBackground
 
   useEffect(() => {
     const container = headersBodyRef.current
@@ -305,18 +359,11 @@ const WebhookForm: React.FC = () => {
     })
   }, [headerInputBg, formikValues.httpHeaders])
 
-  const formLoading = Boolean(loadingWebhookFeatures && id)
-  const formDescription = t('messages.webhook_form_description', {
-    defaultValue: 'Configure webhook to receive notifications when specific events occur.',
-  })
-  const headersError = formik.errors.httpHeaders
-  const showHeadersError = !!(headersError && formik.touched.httpHeaders)
-
   return (
     <GluuLoader blocking={formLoading}>
       <>
         <div className={classes.alertBox}>
-          <InfoOutlinedIcon className={classes.alertIcon} sx={{ fontSize: 20 }} />
+          <InfoOutlinedIcon className={classes.alertIcon} />
           <GluuText variant="p" className={classes.alertText} disableThemeColor>
             {formDescription}
           </GluuText>
@@ -329,11 +376,11 @@ const WebhookForm: React.FC = () => {
                 formik={formik}
                 value={formikValues?.displayName}
                 lsize={12}
-                doc_entry="webhook_name"
                 rsize={12}
                 required
                 name="displayName"
                 doc_category={WEBHOOK}
+                doc_entry="webhook_name"
                 errorMessage={formik.errors.displayName}
                 showError={!!(formik.errors.displayName && formik.touched.displayName)}
                 isDark={isDark}
@@ -343,15 +390,7 @@ const WebhookForm: React.FC = () => {
               <GluuSelectRow
                 name="auiFeatureIds"
                 label="fields.aui_feature_ids"
-                formik={{
-                  handleChange: (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
-                    const id = (e.target as HTMLSelectElement).value
-                    const feature = (Array.isArray(features) ? features : []).find(
-                      (f: AuiFeature) => (f.auiFeatureId ?? '') === id,
-                    )
-                    setSelectedFeatures(feature ? [feature] : [])
-                  },
-                }}
+                formik={{ handleChange: handleFeatureChange }}
                 value={selectedFeatures[0]?.auiFeatureId ?? ''}
                 values={adminUiFeatureOptions}
                 lsize={12}
@@ -359,7 +398,7 @@ const WebhookForm: React.FC = () => {
                 doc_category={WEBHOOK}
                 doc_entry="aui_feature_ids"
                 isDark={isDark}
-                disabled={loadingFeatures}
+                disabled={featuresLoading}
               />
             </div>
             <div className={classes.fieldItem}>
@@ -370,9 +409,12 @@ const WebhookForm: React.FC = () => {
                 lsize={12}
                 rsize={12}
                 required
+                name="url"
                 doc_category={WEBHOOK}
-                handleChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                  const currentPosition = event.target.selectionStart || 0
+                doc_entry="url"
+                handleChange={(event) => {
+                  const target = event.target as HTMLInputElement
+                  const currentPosition = target.selectionStart || 0
                   setCursorPosition((prev) => ({ ...prev, url: currentPosition }))
                 }}
                 onFocus={(event: React.FocusEvent<HTMLInputElement>) => {
@@ -383,8 +425,6 @@ const WebhookForm: React.FC = () => {
                     }))
                   }, 0)
                 }}
-                doc_entry="url"
-                name="url"
                 errorMessage={formik.errors.url}
                 showError={!!(formik.errors.url && formik.touched.url)}
                 shortcode={
@@ -401,15 +441,15 @@ const WebhookForm: React.FC = () => {
                 label="fields.http_method"
                 formik={formik}
                 value={formikValues?.httpMethod}
-                doc_category={WEBHOOK}
-                doc_entry="http_method"
                 values={HTTP_METHODS}
                 lsize={12}
                 rsize={12}
                 required
+                name="httpMethod"
+                doc_category={WEBHOOK}
+                doc_entry="http_method"
                 errorMessage={formik.errors.httpMethod}
                 showError={!!(formik.errors.httpMethod && formik.touched.httpMethod)}
-                name="httpMethod"
                 isDark={isDark}
               />
             </div>
@@ -419,11 +459,11 @@ const WebhookForm: React.FC = () => {
                   label="fields.description"
                   formik={formik}
                   value={formikValues?.description}
-                  doc_category={WEBHOOK}
-                  doc_entry="description"
                   lsize={12}
                   rsize={12}
                   name="description"
+                  doc_category={WEBHOOK}
+                  doc_entry="description"
                   placeholder={t('placeholders.webhook_description')}
                   isDark={isDark}
                 />
@@ -454,11 +494,11 @@ const WebhookForm: React.FC = () => {
                   className={`${classes.headersHeader} ${(formikValues.httpHeaders || []).length === 0 ? classes.headersHeaderEmpty : ''}`.trim()}
                 >
                   <GluuLabel
-                    doc_category={WEBHOOK}
-                    doc_entry="http_headers"
                     label="fields.http_headers"
                     size={4}
                     allowColon={false}
+                    doc_category={WEBHOOK}
+                    doc_entry="http_headers"
                     isDark={isDark}
                   />
                   <GluuButton
@@ -516,11 +556,11 @@ const WebhookForm: React.FC = () => {
               </div>
             </div>
             {showBodyEditor && (
-              <div className={classes.fieldItemFullWidth}>
+              <div className={`${classes.fieldItemFullWidth} ${classes.editorTheme}`}>
                 <Suspense
                   fallback={
-                    <GluuLoader blocking={true}>
-                      <div style={{ minHeight: 120 }} />
+                    <GluuLoader blocking>
+                      <div className={classes.editorFallback} />
                     </GluuLoader>
                   }
                 >
@@ -529,8 +569,8 @@ const WebhookForm: React.FC = () => {
                     language="json"
                     label="fields.http_request_body"
                     lsize={12}
-                    required
                     rsize={12}
+                    required
                     onCursorChange={(value: {
                       cursor: { row: number; column: number; document?: { $lines: string[] } }
                     }) => {
@@ -547,7 +587,7 @@ const WebhookForm: React.FC = () => {
                         setCursorPosition((prev) => ({ ...prev, httpRequestBody: index }))
                       }, 0)
                     }}
-                    theme="xcode"
+                    theme={isDark ? 'monokai' : 'xcode'}
                     doc_category={WEBHOOK}
                     doc_entry="http_request_body"
                     formik={formik}
@@ -559,7 +599,7 @@ const WebhookForm: React.FC = () => {
                     shortcode={
                       <ShortcodePopover
                         codes={featureShortcodes}
-                        buttonWrapperStyles={{ top: '10%', zIndex: 1, marginRight: '2.5rem' }}
+                        buttonWrapperClassName={classes.editorShortcode}
                         handleSelectShortcode={(code) =>
                           handleSelectShortcode(code, 'httpRequestBody', true)
                         }

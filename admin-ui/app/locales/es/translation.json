@@ -814,10 +814,10 @@
     "error_message": "Mensaje de Error",
     "default_policy_store_is_used": "La interfaz de administración (Admin UI) ya utiliza el almacén de políticas predeterminado para el control de acceso.",
     "webhook_dialog_note": "NOTA: La ejecución del Webhook ha fallado y no podrá continuar en este momento.",
-    "http_method_error": "Seleccione un Método HTTP.",
-    "request_body_error": "El cuerpo de la solicitud HTTP es obligatorio para el método HTTP seleccionado",
-    "display_name_error": "Ingrese el nombre para mostrar.",
-    "url_error": "Ingrese la URL.",
+    "http_method_error": "Por favor seleccione el Método HTTP.",
+    "request_body_error": "El Cuerpo de la Solicitud es obligatorio para el método HTTP seleccionado.",
+    "display_name_error": "Por favor ingrese el Nombre del Webhook.",
+    "url_error": "Por favor ingrese la URL.",
     "missing_required_permission": "Falta el permiso requerido",
     "session_timeout_error": "El tiempo de espera de sesión debe ser de al menos 1 minuto",
     "session_timeout_required_error": "El tiempo de espera de sesión es obligatorio",
@@ -996,6 +996,7 @@
     "invalid_pattern": "Formato inválido"
   },
   "tooltips": {
+    "insert_shortcode": "Insertar código corto",
     "add_attribute": "Añadir atributo",
     "add_ldap": "Añadir LDAP",
     "advanced_search_options": "Opciones de búsqueda avanzada",

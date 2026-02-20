@@ -20,7 +20,10 @@ export const useStyles = makeStyles<GluuInputRowStyleParams>()(
       top: 7,
     },
     error: {
+      display: 'block',
       color: errorColor,
+      fontSize: 12,
+      marginTop: 4,
     },
 
     numberWrapper: {

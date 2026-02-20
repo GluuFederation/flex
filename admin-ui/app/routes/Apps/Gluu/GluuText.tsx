@@ -6,15 +6,12 @@ import customColors from '@/customColors'
 
 type GluuTextVariant = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span' | 'small' | 'div'
 
-interface GluuTextProps {
+interface GluuTextProps extends React.HTMLAttributes<HTMLElement> {
   variant?: GluuTextVariant
   children: ReactNode
-  style?: CSSProperties
-  className?: string
   secondary?: boolean
   disableThemeColor?: boolean
   onLightSurface?: boolean
-  id?: string
 }
 
 const GluuText: React.FC<GluuTextProps> = ({
@@ -26,6 +23,7 @@ const GluuText: React.FC<GluuTextProps> = ({
   disableThemeColor = false,
   onLightSurface = false,
   id,
+  ...rest
 }) => {
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme || DEFAULT_THEME
@@ -59,7 +57,7 @@ const GluuText: React.FC<GluuTextProps> = ({
   const Component = variant
 
   return (
-    <Component className={className} style={combinedStyle} id={id}>
+    <Component className={className} style={combinedStyle} id={id} {...rest}>
       {children}
     </Component>
   )

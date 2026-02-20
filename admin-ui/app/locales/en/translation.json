@@ -813,9 +813,9 @@
     "role_name_error": "Please ensure the role name is at least 5 characters long.",
     "error_message": "Error Message",
     "webhook_dialog_note": "NOTE: Webhook execution has failed, and you won't be able to continue at the moment.",
-    "http_method_error": "Please select a HTTP Method.",
-    "request_body_error": "HTTP Request Body is required for selected HTTP Method",
-    "display_name_error": "Please enter display name.",
+    "http_method_error": "Please select HTTP Method.",
+    "request_body_error": "Request Body is required for selected HTTP Method.",
+    "display_name_error": "Please enter Webhook Name.",
     "url_error": "Please enter URL.",
     "missing_required_permission": "Missing required permission",
     "session_timeout_error": "Session timeout must be at least 1 minute",
@@ -1000,6 +1000,7 @@
     "invalid_pattern": "Invalid format"
   },
   "tooltips": {
+    "insert_shortcode": "Insert shortcode",
     "add_attribute": "Add attribute",
     "add_user": "Add User",
     "edit_user": "Edit User",

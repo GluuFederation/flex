@@ -4,6 +4,7 @@ import type { InputProps } from 'reactstrap'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import { ChevronIcon } from '@/components/SVG'
 import GluuLabel from './GluuLabel'
+import GluuText from './GluuText'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
@@ -63,7 +64,7 @@ const GluuInputRow = <T = Record<string, unknown>,>({
       formik.setFieldValue(name, next)
     }
     if (handleChange) {
-      handleChange({ target: { name, value: String(next) } } as React.ChangeEvent<HTMLInputElement>)
+      handleChange({ target: { name, value: String(next) } })
     }
   }, [formik, handleChange, name, numValue])
   const stepDown = useCallback(() => {
@@ -74,7 +75,7 @@ const GluuInputRow = <T = Record<string, unknown>,>({
       formik.setFieldValue(name, next)
     }
     if (handleChange) {
-      handleChange({ target: { name, value: String(next) } } as React.ChangeEvent<HTMLInputElement>)
+      handleChange({ target: { name, value: String(next) } })
     }
   }, [formik, handleChange, name, numValue])
 
@@ -154,7 +155,11 @@ const GluuInputRow = <T = Record<string, unknown>,>({
             )}
           </div>
         )}
-        {showError ? <div className={classes.error}>{errorMessage}</div> : null}
+        {showError ? (
+          <GluuText variant="span" className={classes.error} data-field-error disableThemeColor>
+            {errorMessage}
+          </GluuText>
+        ) : null}
       </Col>
     </FormGroup>
   )

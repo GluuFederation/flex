@@ -17,18 +17,20 @@ interface RootState {
 
 type ActionType = typeof CREATE | typeof UPDATE | typeof DELETION | typeof FETCH
 
+interface AuditInit {
+  client_id: string
+  ip_address: string
+  status: string
+  performedBy: { user_inum: string; userId: string }
+  [key: string]: string | { user_inum: string; userId: string } | unknown
+}
+
+type ActionData = Record<string, string | number | boolean | unknown | null>
+
 export const useWebhookAudit = () => {
   const clientId = useSelector((state: RootState) => state.authReducer.config.clientId)
   const ipAddress = useSelector((state: RootState) => state.authReducer.location.IPv4)
   const userinfo = useSelector((state: RootState) => state.authReducer.userinfo)
-
-  interface AuditInit {
-    client_id: string
-    ip_address: string
-    status: string
-    performedBy: { user_inum: string; userId: string }
-    [key: string]: string | { user_inum: string; userId: string } | object
-  }
 
   const initAudit = useCallback((): AuditInit => {
     return {
@@ -41,8 +43,6 @@ export const useWebhookAudit = () => {
       },
     }
   }, [clientId, ipAddress, userinfo])
-
-  type ActionData = Record<string, string | number | boolean | object | null>
 
   const logAction = useCallback(
     async (
