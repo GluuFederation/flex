@@ -1,36 +1,19 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import { Col, FormGroup, Input } from 'Components'
 import type { InputProps } from 'reactstrap'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
-import type { FormikProps } from 'formik'
+import { ChevronIcon } from '@/components/SVG'
 import GluuLabel from './GluuLabel'
+import GluuText from './GluuText'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
-import { DEFAULT_THEME } from '@/context/theme/constants'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import { getLoadingOverlayRgba } from '@/customColors'
+import { OPACITY } from '@/constants/ui'
+import { useStyles } from './styles/GluuInputRow.style'
+import type { GluuInputRowProps } from './types/GluuInputRow.types'
 
-interface GluuInputRowProps<T = Record<string, unknown>> {
-  label: string
-  name: string
-  type?: InputProps['type']
-  value?: string | number
-  formik?: FormikProps<T> | null
-  required?: boolean
-  lsize?: number
-  rsize?: number
-  doc_category?: string
-  disabled?: boolean
-  showError?: boolean
-  errorMessage?: string
-  handleChange?: ((event: React.ChangeEvent<HTMLInputElement>) => void) | null
-  doc_entry?: string
-  shortcode?: React.ReactNode
-  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void
-  rows?: number
-  cols?: number
-  isDark?: boolean
-}
-
-function GluuInputRow<T = Record<string, unknown>>({
+const GluuInputRow = <T = Record<string, unknown>,>({
   label,
   name,
   type = 'text',
@@ -50,18 +33,80 @@ function GluuInputRow<T = Record<string, unknown>>({
   rows,
   cols,
   isDark,
-}: GluuInputRowProps<T>) {
+  placeholder,
+}: GluuInputRowProps<T>) => {
   const [customType, setCustomType] = useState<string | null>(null)
   const { state } = useTheme()
-  const themeColors = getThemeColor(state?.theme ?? DEFAULT_THEME)
+  const themeColors = useMemo(() => getThemeColor(state?.theme ?? DEFAULT_THEME), [state?.theme])
+  const isDarkTheme = isDark ?? state?.theme === THEME_DARK
+  const stepperHoverBg = useMemo(
+    () =>
+      getLoadingOverlayRgba(
+        themeColors.fontColor,
+        isDarkTheme ? OPACITY.HOVER_DARK : OPACITY.HOVER_LIGHT,
+      ),
+    [themeColors.fontColor, isDarkTheme],
+  )
+  const { classes } = useStyles({
+    errorColor: themeColors.errorColor,
+    fontColor: themeColors.fontColor,
+    stepperHoverBg,
+  })
 
-  const setVisivility = (): void => {
-    if (customType) {
-      setCustomType(null)
-    } else {
-      setCustomType('text')
+  const setVisibility = useCallback((): void => {
+    setCustomType((prev) => (prev ? null : 'text'))
+  }, [])
+
+  const numValue = type === 'number' && value !== '' && value != null ? Number(value) : NaN
+  const stepUp = useCallback(() => {
+    const next = (Number.isNaN(numValue) ? 0 : numValue) + 1
+    if (formik) {
+      formik.setFieldValue(name, next)
     }
-  }
+    if (handleChange) {
+      handleChange({ target: { name, value: String(next) } })
+    }
+  }, [formik, handleChange, name, numValue])
+  const stepDown = useCallback(() => {
+    const current = Number.isNaN(numValue) ? 0 : numValue
+    if (current <= 0) return
+    const next = Math.max(0, current - 1)
+    if (formik) {
+      formik.setFieldValue(name, next)
+    }
+    if (handleChange) {
+      handleChange({ target: { name, value: String(next) } })
+    }
+  }, [formik, handleChange, name, numValue])
+
+  const inputEl = (
+    <Input
+      id={name}
+      data-testid={name}
+      type={(customType ?? type) as InputProps['type']}
+      name={name}
+      value={value != null ? String(value) : ''}
+      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+        if (formik) {
+          formik.handleChange(event)
+        }
+        if (handleChange) {
+          handleChange(event)
+        }
+      }}
+      onBlur={formik?.handleBlur}
+      onFocus={onFocus}
+      onKeyDown={(evt) =>
+        evt.key.toLowerCase() === 'e' && type === 'number' && evt.preventDefault()
+      }
+      disabled={disabled}
+      rows={rows}
+      cols={cols}
+      placeholder={placeholder}
+      className={shortcode ? classes.inputWithShortcode : undefined}
+    />
+  )
+
   return (
     <FormGroup row>
       <GluuLabel
@@ -72,42 +117,57 @@ function GluuInputRow<T = Record<string, unknown>>({
         doc_entry={doc_entry || name}
         isDark={isDark}
       />
-      <Col sm={rsize} style={{ position: 'relative' }}>
-        <Input
-          id={name}
-          data-testid={name}
-          type={(customType ?? type) as InputProps['type']}
-          name={name}
-          value={value != null ? String(value) : ''}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            if (formik) {
-              formik.handleChange(event)
-            }
-            if (handleChange) {
-              handleChange(event)
-            }
-          }}
-          onBlur={formik?.handleBlur}
-          onFocus={onFocus}
-          onKeyDown={(evt) => evt.key === 'e' && type === 'number' && evt.preventDefault()}
-          disabled={disabled}
-          rows={rows}
-          cols={cols}
-        />
-        {shortcode}
-        {type == 'password' && (
-          <div style={{ position: 'absolute', right: 20, top: 7 }}>
-            {customType == 'text' ? (
-              <Visibility onClick={() => setVisivility()} />
-            ) : (
-              <VisibilityOff onClick={() => setVisivility()} />
-            )}
+      <Col sm={rsize} className={classes.colWrapper}>
+        {type === 'number' ? (
+          <div className={classes.numberWrapper}>
+            {inputEl}
+            <div className={classes.numberStepper} aria-hidden>
+              <button
+                type="button"
+                className={classes.numberStepperBtn}
+                onClick={stepUp}
+                disabled={disabled}
+                tabIndex={-1}
+                aria-label="Increment"
+              >
+                <ChevronIcon width={16} height={16} direction="up" />
+              </button>
+              <button
+                type="button"
+                className={classes.numberStepperBtn}
+                onClick={stepDown}
+                disabled={disabled || Number.isNaN(numValue) || numValue <= 0}
+                tabIndex={-1}
+                aria-label="Decrement"
+              >
+                <ChevronIcon width={16} height={16} direction="down" />
+              </button>
+            </div>
           </div>
+        ) : (
+          inputEl
         )}
-        {showError ? <div style={{ color: themeColors.errorColor }}>{errorMessage}</div> : null}
+        {shortcode}
+        {type === 'password' && (
+          <button
+            type="button"
+            className={classes.passwordToggle}
+            onClick={setVisibility}
+            aria-label="Toggle password visibility"
+          >
+            {customType === 'text' ? <Visibility /> : <VisibilityOff />}
+          </button>
+        )}
+        {showError ? (
+          <GluuText variant="span" className={classes.error} data-field-error disableThemeColor>
+            {errorMessage}
+          </GluuText>
+        ) : null}
       </Col>
     </FormGroup>
   )
 }
+
+GluuInputRow.displayName = 'GluuInputRow'
 
 export default GluuInputRow

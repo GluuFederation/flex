@@ -1,10 +1,11 @@
-import React, { useMemo, useCallback, useRef, useEffect } from 'react'
+import React, { useMemo, useCallback, useRef, useEffect, useState } from 'react'
 import SearchIcon from '@mui/icons-material/Search'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import { GluuButton } from '@/components/GluuButton'
+import { ChevronIcon } from '@/components/SVG'
 import GluuText from '@/routes/Apps/Gluu/GluuText'
 import GluuRefreshButton from './GluuRefreshButton'
 import { GluuDatePicker } from '@/components/GluuDatePicker'
@@ -16,6 +17,7 @@ import {
   isAfterDate,
 } from '@/utils/dayjsUtils'
 import type { Dayjs } from '@/utils/dayjsUtils'
+import { useDebounce } from '@/utils/hooks/useDebounce'
 import { useStyles, DEFAULT_INPUT_HEIGHT } from './GluuSearchToolbar.style'
 import type { GluuSearchToolbarProps } from './types'
 
@@ -45,6 +47,8 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
     searchPlaceholder,
     searchLabel,
     searchValue = '',
+    searchFieldWidth,
+    searchOnType = false,
     onSearch,
     onSearchSubmit,
     filters,
@@ -61,10 +65,26 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
   const { state } = useTheme()
   const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
   const isDark = state.theme === THEME_DARK
-  const { classes } = useStyles({ themeColors, isDark })
+  const { classes } = useStyles({ themeColors, isDark, searchFieldWidth })
 
   const effectivePlaceholder =
     searchPlaceholder ?? t(PLACEHOLDER_KEY, { defaultValue: 'Search pattern' })
+
+  const [localSearch, setLocalSearch] = useState(searchValue)
+  const lastNotifiedRef = useRef(searchValue)
+  const debouncedSearch = useDebounce(localSearch, 300)
+
+  useEffect(() => {
+    if (searchValue !== lastNotifiedRef.current) {
+      lastNotifiedRef.current = searchValue
+      setLocalSearch(searchValue)
+      return
+    }
+    if (searchOnType && debouncedSearch !== lastNotifiedRef.current) {
+      lastNotifiedRef.current = debouncedSearch
+      onSearch?.(debouncedSearch)
+    }
+  }, [searchOnType, debouncedSearch, onSearch, searchValue])
 
   const dateValidation = useDateRangeValidation(
     dateRange?.startDate ?? null,
@@ -77,18 +97,19 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
     : (primaryAction?.disabled ?? false)
   const refreshDisabled = showBuiltInDateRange ? dateValidation.invalid : false
 
-  const searchValueRef = useRef(searchValue)
-  useEffect(() => {
-    searchValueRef.current = searchValue
-  }, [searchValue])
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setLocalSearch(e.target.value)
+  }, [])
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Enter' && onSearchSubmit) {
-        onSearchSubmit(searchValueRef.current)
+      if (e.key === 'Enter') {
+        lastNotifiedRef.current = localSearch
+        onSearch?.(localSearch)
+        onSearchSubmit?.(localSearch)
       }
     },
-    [onSearchSubmit],
+    [onSearch, onSearchSubmit, localSearch],
   )
 
   const primaryButtonColors = useMemo(
@@ -114,8 +135,8 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
           <input
             type="text"
             placeholder={effectivePlaceholder}
-            value={searchValue}
-            onChange={(e) => onSearch?.(e.target.value)}
+            value={localSearch}
+            onChange={handleSearchChange}
             onKeyDown={handleKeyDown}
             className={classes.searchInput}
             aria-label={searchLabel ?? effectivePlaceholder ?? 'search'}
@@ -132,19 +153,24 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
                 {filter.label}
               </label>
             )}
-            <select
-              id={filterId}
-              className={classes.filterSelect}
-              style={{ width: filter.width ?? 160 }}
-              value={filter.value}
-              onChange={(e) => filter.onChange(e.target.value)}
-            >
-              {filter.options.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
+            <div className={classes.filterSelectWrapper} style={{ width: filter.width ?? 160 }}>
+              <select
+                id={filterId}
+                className={classes.filterSelect}
+                style={{ width: '100%' }}
+                value={filter.value}
+                onChange={(e) => filter.onChange(e.target.value)}
+              >
+                {filter.options.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+              <span className={classes.filterSelectChevron}>
+                <ChevronIcon width={20} height={20} direction="down" />
+              </span>
+            </div>
           </div>
         )
       })}

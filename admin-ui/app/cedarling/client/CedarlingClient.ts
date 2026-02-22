@@ -5,6 +5,7 @@ import type {
   AuthorizationResponse,
   TokenAuthorizationRequest,
 } from '@/cedarling'
+import { devLogger } from '@/utils/devLogger'
 
 let cedarling: Cedarling | null = null
 let cedarlingInitialized: boolean = false
@@ -25,7 +26,7 @@ const initialize = async (bootStrapConfig: BootStrapConfig): Promise<void> => {
       cedarling = await init(bootStrapConfig)
       cedarlingInitialized = true
     } catch (err) {
-      console.error('Error during Cedarling init:', err)
+      devLogger.error('Error during Cedarling init:', err)
       initializationPromise = null // Reset on error to allow retry
       throw err
     }
@@ -48,7 +49,7 @@ const token_authorize = async (
       decision: result.decision,
     } as AuthorizationResponse
   } catch (error) {
-    console.error('Error during authorization:', error)
+    devLogger.error('Error during authorization:', error)
     throw error
   }
 }

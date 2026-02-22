@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useMemo, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { ThemeContext } from '@/context/theme/themeContext'
 import getThemeColor, { themeConfig } from '@/context/theme/config'
-import customColors, { hexToRgb } from '@/customColors'
+import customColors, { hexToRgb, getCustomColorsAsCssVars } from '@/customColors'
 import { THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
 import type { LayoutContentProps } from './types'
 
@@ -63,6 +63,18 @@ const LayoutContent: React.FC<LayoutContentProps> & { layoutPartName: string } =
       menuColors.hoverBackground,
     ],
   )
+
+  useEffect(() => {
+    const customVars = getCustomColorsAsCssVars()
+    Object.entries(customVars).forEach(([property, value]) => {
+      document.documentElement.style.setProperty(property, value)
+    })
+    return () => {
+      Object.keys(customVars).forEach((property) => {
+        document.documentElement.style.removeProperty(property)
+      })
+    }
+  }, [])
 
   useEffect(() => {
     if (!layoutElementRef.current) {

@@ -1,4 +1,4 @@
-import customColors, { hexToRgb } from '@/customColors'
+import customColors from '@/customColors'
 import { THEME_LIGHT, THEME_DARK, DEFAULT_THEME } from './constants'
 
 export interface FormFooterColors {
@@ -12,8 +12,6 @@ export interface ThemeConfig {
   lightBackground: string
   fontColor: string
   textMuted: string
-  profileEmailTextColor: string
-
   personalInfoValueColor: string
   personalInfoLabelColor: string
   sectionTitleColor: string
@@ -34,6 +32,7 @@ export interface ThemeConfig {
   warningColor: string
   formFooter: FormFooterColors
   table: {
+    headerText: string
     background: string
     rowHoverBg: string
     headerBg: string
@@ -62,7 +61,6 @@ const createLightTheme = (): ThemeConfig => {
     lightBackground: customColors.whiteSmoke,
     fontColor: text,
     textMuted: customColors.textSecondary,
-    profileEmailTextColor: customColors.profileEmailText,
     personalInfoValueColor: customColors.primaryDark,
     personalInfoLabelColor: customColors.primaryDark,
     sectionTitleColor: customColors.primaryDark,
@@ -114,11 +112,12 @@ const createLightTheme = (): ThemeConfig => {
       },
     },
     table: {
-      background: customColors.buttonLightBg,
+      headerText: customColors.tableHeaderTextLight,
+      background: customColors.tableRowBgLight,
       rowHoverBg: customColors.lightBackground,
-      headerBg: customColors.buttonLightBg,
-      headerColor: customColors.textSecondary,
-      expandButtonBg: `rgba(${hexToRgb(customColors.primaryDark)}, 0.06)`,
+      headerBg: customColors.tableHeaderLight,
+      headerColor: customColors.tableHeaderTextLight,
+      expandButtonBg: customColors.tableExpandButtonBgLight,
     },
     settings: {
       cardBackground: customColors.white,
@@ -143,7 +142,6 @@ const createDarkTheme = (): ThemeConfig => {
     lightBackground: customColors.primaryDark,
     fontColor: text,
     textMuted: customColors.textMutedDark,
-    profileEmailTextColor: customColors.profileEmailText,
     personalInfoValueColor: customColors.white,
     personalInfoLabelColor: customColors.white,
     sectionTitleColor: customColors.white,
@@ -195,11 +193,12 @@ const createDarkTheme = (): ThemeConfig => {
       },
     },
     table: {
-      background: customColors.darkBackground,
+      headerText: customColors.tableHeaderTextDark,
+      background: customColors.tableRowBgDark,
       rowHoverBg: customColors.darkDropdownBg,
-      headerBg: customColors.darkBackground,
-      headerColor: customColors.cedarTextTertiaryDark,
-      expandButtonBg: `rgba(${hexToRgb(customColors.white)}, 0.1)`,
+      headerBg: customColors.tableHeaderBgDark,
+      headerColor: customColors.tableHeaderTextDark,
+      expandButtonBg: customColors.tableExpandButtonBgDark,
     },
     settings: {
       cardBackground: customColors.darkCardBg,

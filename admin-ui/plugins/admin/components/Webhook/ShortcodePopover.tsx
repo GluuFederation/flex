@@ -1,37 +1,42 @@
-import React, { useState, memo } from 'react'
+import React, { useState, useRef, useMemo, memo } from 'react'
 import Popover from '@mui/material/Popover'
-import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import List from '@mui/material/List'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import { HelpOutline } from '@mui/icons-material'
-import { Tooltip as ReactTooltip } from 'react-tooltip'
 import { useTranslation } from 'react-i18next'
+import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import applicationstyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ShortCodesIcon } from '@/components/SVG'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
+import { GluuButton } from '@/components/GluuButton'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { useStyles } from './styles/ShortcodePopover.style'
 import type { ShortcodePopoverProps, ShortcodeLabelProps } from './types'
 
-const Label: React.FC<ShortcodeLabelProps> = ({ doc_category, doc_entry, label }) => {
+const Label: React.FC<ShortcodeLabelProps> = ({ doc_category, doc_entry, label, classes }) => {
   const { t, i18n } = useTranslation()
 
   return (
     <Box display="flex" gap={0.5}>
-      <Typography color="black">{t(label)}</Typography>
+      <GluuText variant="span" disableThemeColor className={classes.labelText}>
+        {t(label)}
+      </GluuText>
       {doc_category && i18n.exists(doc_category) && (
         <>
-          <ReactTooltip
-            id={doc_entry}
+          <GluuTooltip
+            tooltipOnly
+            doc_entry={doc_entry}
+            content={t(doc_category)}
             place="right"
-            role="tooltip"
-            style={{ zIndex: 101, maxWidth: '45vw' }}
-          >
-            {t(doc_category)}
-          </ReactTooltip>
+            zIndex={1400}
+            positionStrategy="fixed"
+          />
           <HelpOutline
-            style={{ width: 18, height: 18, marginLeft: 6, marginRight: 6 }}
+            className={classes.helpIcon}
             data-tooltip-id={doc_entry}
             data-for={doc_entry}
           />
@@ -44,58 +49,76 @@ const Label: React.FC<ShortcodeLabelProps> = ({ doc_category, doc_entry, label }
 const ShortcodePopover: React.FC<ShortcodePopoverProps> = ({
   codes,
   buttonWrapperStyles = {},
+  buttonWrapperClassName,
   handleSelectShortcode,
 }) => {
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
+  const { t } = useTranslation()
+  const { state: themeState } = useTheme()
+  const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
+  const { classes } = useStyles({ themeColors })
+  const anchorRef = useRef<HTMLDivElement>(null)
+  const [open, setOpen] = useState(false)
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget)
+  const handleClick = () => {
+    setOpen((prev) => !prev)
   }
 
   const handleClose = () => {
-    setAnchorEl(null)
+    setOpen(false)
   }
 
-  const open = Boolean(anchorEl)
   const id = open ? 'shortcode-popover' : undefined
+
+  const baseStyles = applicationstyle.shortCodesWrapperStyles as React.CSSProperties
+  const wrapperStyles = buttonWrapperClassName
+    ? buttonWrapperStyles
+    : { ...baseStyles, ...buttonWrapperStyles }
 
   return (
     <div
-      style={{
-        ...(applicationstyle.shortCodesWrapperStyles as React.CSSProperties),
-        ...buttonWrapperStyles,
-      }}
+      ref={anchorRef}
+      className={buttonWrapperClassName}
+      style={wrapperStyles}
+      data-tooltip-id="shortcode-icon-tooltip"
     >
-      <Button aria-describedby={id} variant="text" sx={{ border: 0 }} onClick={handleClick}>
+      <GluuTooltip
+        tooltipOnly
+        doc_entry="shortcode-icon-tooltip"
+        content={t('tooltips.insert_shortcode')}
+        place="top"
+        zIndex={1400}
+        positionStrategy="fixed"
+      />
+      <GluuButton
+        type="button"
+        aria-describedby={id}
+        onClick={handleClick}
+        backgroundColor="transparent"
+        borderColor="transparent"
+        disableHoverStyles
+      >
         <ShortCodesIcon />
-      </Button>
+      </GluuButton>
       <Popover
         id={id}
         open={open}
-        anchorEl={anchorEl}
+        anchorEl={anchorRef.current}
         onClose={handleClose}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'left',
         }}
+        PaperProps={{ className: classes.paper }}
       >
-        <Box
-          display="flex"
-          flexDirection="column"
-          sx={{
-            maxHeight: '300px',
-            overflowY: 'auto',
-            minWidth: '320px',
-          }}
-        >
+        <Box display="flex" flexDirection="column" className={classes.content}>
           {codes?.length ? (
-            <List>
+            <List className={classes.list}>
               {codes.map((code, index) => (
                 <React.Fragment key={code.key}>
                   <ListItemButton
                     onClick={() => handleSelectShortcode(code.key)}
                     component="button"
-                    sx={{ width: '100%' }}
+                    className={classes.listItemButton}
                   >
                     <ListItemText
                       primary={
@@ -103,16 +126,20 @@ const ShortcodePopover: React.FC<ShortcodePopoverProps> = ({
                           doc_category={code.description}
                           doc_entry={code.key + code.label}
                           label={code.label}
+                          classes={classes}
                         />
                       }
+                      className={classes.listItemText}
                     />
                   </ListItemButton>
-                  {index + 1 !== codes.length && <Divider />}
+                  {index + 1 !== codes.length && <Divider className={classes.divider} />}
                 </React.Fragment>
               ))}
             </List>
           ) : (
-            <Typography sx={{ p: 2 }}>No shortcodes found!</Typography>
+            <GluuText variant="p" disableThemeColor className={classes.emptyMessage}>
+              {t('messages.no_shortcodes_found')}
+            </GluuText>
           )}
         </Box>
       </Popover>

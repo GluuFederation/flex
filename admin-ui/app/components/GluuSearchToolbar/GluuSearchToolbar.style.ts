@@ -7,17 +7,19 @@ export const DEFAULT_INPUT_HEIGHT = 52
 interface GluuSearchToolbarStyleParams {
   themeColors: ThemeConfig
   isDark: boolean
+  searchFieldWidth?: number | string
 }
 
 export const useStyles = makeStyles<GluuSearchToolbarStyleParams>()((
   _,
-  { themeColors, isDark },
+  { themeColors, isDark, searchFieldWidth },
 ) => {
   const inputBg = themeColors.inputBackground
   const inputBorder = isDark ? 'transparent' : themeColors.borderColor
   const inputColor = themeColors.fontColor
 
   const inputHeightPx = `${DEFAULT_INPUT_HEIGHT}px`
+
   return {
     container: {
       display: 'flex',
@@ -41,8 +43,9 @@ export const useStyles = makeStyles<GluuSearchToolbarStyleParams>()((
       display: 'flex',
       flexDirection: 'column',
       gap: '6px',
-      flex: 1,
-      minWidth: '220px',
+      ...(searchFieldWidth != null
+        ? { width: searchFieldWidth, flex: '0 0 auto' as const }
+        : { flex: 1, minWidth: '220px' }),
     },
     fieldLabel: {
       fontSize: fontSizes.base,
@@ -85,9 +88,15 @@ export const useStyles = makeStyles<GluuSearchToolbarStyleParams>()((
       fontSize: 20,
       color: 'inherit',
     },
+    filterSelectWrapper: {
+      position: 'relative',
+      display: 'flex',
+      alignItems: 'center',
+      color: inputColor,
+    },
     filterSelect: {
       height: inputHeightPx,
-      padding: '0 12px',
+      padding: '0 36px 0 20px',
       border: `1px solid ${inputBorder}`,
       borderRadius: '6px',
       backgroundColor: inputBg,
@@ -97,8 +106,18 @@ export const useStyles = makeStyles<GluuSearchToolbarStyleParams>()((
       fontFamily,
       cursor: 'pointer',
       outline: 'none',
-      appearance: 'auto',
+      appearance: 'none',
+      WebkitAppearance: 'none',
+      MozAppearance: 'none',
       boxSizing: 'border-box',
+    },
+    filterSelectChevron: {
+      position: 'absolute',
+      right: 14,
+      top: '50%',
+      transform: 'translateY(-50%)',
+      pointerEvents: 'none',
+      display: 'flex',
     },
     dateInput: {
       height: inputHeightPx,

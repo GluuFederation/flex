@@ -1,6 +1,13 @@
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { WebhookSliceState } from 'Plugins/admin/redux/features/WebhookSlice'
 
-// Define types for the audit log structure
+export type AuditRecord = Record<string, string | number | boolean | object | null | undefined>
+
+export interface HttpErrorLike {
+  response?: { status?: number }
+  status?: number
+}
+
 export interface PerformedBy {
   user_inum: string
   userId: string
@@ -8,7 +15,7 @@ export interface PerformedBy {
 
 export interface AuditLogHeaders {
   Authorization?: string
-  [key: string]: any
+  [key: string]: string | undefined
 }
 
 export interface AuditLog {
@@ -17,9 +24,11 @@ export interface AuditLog {
   ip_address?: string
   status?: string
   performedBy?: PerformedBy
-  [key: string]: any
+  action?: string
+  resource?: string
+  payload?: Record<string, JsonValue>
 }
-// Define types for Redux state structure
+
 export interface AuthState {
   config: {
     clientId: string
@@ -40,4 +49,12 @@ export interface AuthState {
 export interface RootState {
   authReducer: AuthState
   webhookReducer: WebhookSliceState
+}
+
+export interface SagaError {
+  response?: {
+    status?: number
+    body?: { responseMessage?: string }
+  }
+  message?: string
 }

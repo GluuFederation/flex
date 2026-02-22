@@ -1,45 +1,38 @@
+import type { AdminPermission, LicenseRequest, LicenseResponse, SSARequest } from 'JansConfigApi'
+import type {
+  AdminUILicenseApiInterface,
+  LicenseRequestPayload,
+  SSARequestPayload,
+} from './types/LicenseApi'
 import { handleResponse, handleError } from 'Utils/ApiUtils'
+import { devLogger } from '@/utils/devLogger'
 
-interface ApiInterface {
-  isLicenseActive: (callback: (error: any, data: any) => void) => void
-  checkAdminuiLicenseConfig: (callback: (error: any, data: any) => void) => void
-  activateAdminuiLicense: (options: any, callback: (error: any, data: any) => void) => void
-  adminuiPostSsa: (options: any, callback: (error: any, data: any, response: any) => void) => void
-  addAdminuiPermission: (options: any, callback: (error: any, data: any) => void) => void
-  editAdminuiPermission: (options: any, callback: (error: any, data: any) => void) => void
-  deleteAdminuiPermission: (options: any, callback: (error: any, data: any) => void) => void
-  getTrialLicense: (callback: (error: any, data: any) => void) => void
-  retrieveLicense: (callback: (error: any, data: any) => void) => void
-}
-
-interface LicenseRequest {
-  payload: any
-}
-
-interface AdminPermission {
-  [key: string]: any
-}
+export type {
+  AdminUILicenseApiInterface,
+  LicenseRequestPayload,
+  SSARequestPayload,
+} from './types/LicenseApi'
 
 const MAX_RETRIES = 1
 
 export default class LicenseApi {
-  private api: ApiInterface
+  private api: AdminUILicenseApiInterface
 
-  constructor(api: ApiInterface) {
+  constructor(api: AdminUILicenseApiInterface) {
     this.api = api
   }
 
-  getIsActive = (): Promise<any> => {
+  getIsActive = (): Promise<LicenseResponse | null> => {
     const retries = 0
 
     return new Promise((resolve, reject) => {
       const makeRequest = (retries: number) => {
-        new Promise((resolve, reject) => {
+        new Promise<LicenseResponse | null>((resolveInner, reject) => {
           this.api.isLicenseActive((error, data) => {
             if (error) {
               reject(error)
             } else {
-              resolve(data)
+              resolveInner(data)
             }
           })
         })
@@ -48,7 +41,7 @@ export default class LicenseApi {
           })
           .catch((error) => {
             if (retries < MAX_RETRIES) {
-              console.error(`Request failed. Retrying... (${retries + 1}/${MAX_RETRIES})`)
+              devLogger.error(`Request failed. Retrying... (${retries + 1}/${MAX_RETRIES})`)
               retries++
               makeRequest(retries)
             } else {
@@ -60,16 +53,16 @@ export default class LicenseApi {
     })
   }
 
-  checkAdminuiLicenseConfig = (): Promise<any> => {
+  checkAdminuiLicenseConfig = (): Promise<LicenseResponse | null> => {
     const retries = 0
     return new Promise((resolve, reject) => {
       const makeRequest = (retries: number) => {
-        new Promise((resolve, reject) => {
+        new Promise<LicenseResponse | null>((resolveInner, reject) => {
           this.api.checkAdminuiLicenseConfig((error, data) => {
             if (error) {
               reject(error)
             } else {
-              resolve(data)
+              resolveInner(data)
             }
           })
         })
@@ -78,7 +71,7 @@ export default class LicenseApi {
           })
           .catch((error) => {
             if (retries < MAX_RETRIES) {
-              console.error(`Request failed. Retrying... (${retries + 1}/${MAX_RETRIES})`)
+              devLogger.error(`Request failed. Retrying... (${retries + 1}/${MAX_RETRIES})`)
               retries++
               makeRequest(retries)
             } else {
@@ -90,19 +83,19 @@ export default class LicenseApi {
     })
   }
 
-  submitLicenseKey = (data: LicenseRequest): Promise<any> => {
-    const options: { licenseRequest: any } = {
+  submitLicenseKey = (data: LicenseRequestPayload): Promise<LicenseResponse | null> => {
+    const options: { licenseRequest: LicenseRequest } = {
       licenseRequest: data.payload,
     }
     return new Promise((resolve, reject) => {
       this.api.activateAdminuiLicense(options, (error, data) => {
-        handleResponse(error, reject, resolve, data, null)
+        handleResponse(error, reject, (d) => resolve(d as LicenseResponse | null), data, null)
       })
     })
   }
 
-  uploadSSAtoken = (data: LicenseRequest): Promise<any> => {
-    const option: { sSARequest: any } = {
+  uploadSSAtoken = (data: SSARequestPayload): Promise<unknown> => {
+    const option: { sSARequest: SSARequest } = {
       sSARequest: data.payload,
     }
     return new Promise((resolve, reject) => {
@@ -112,51 +105,51 @@ export default class LicenseApi {
     })
   }
 
-  addPermission = (data: AdminPermission): Promise<any> => {
+  addPermission = (data: AdminPermission): Promise<AdminPermission[] | null> => {
     const options: { adminPermission: AdminPermission } = {
       adminPermission: data,
     }
     return new Promise((resolve, reject) => {
       this.api.addAdminuiPermission(options, (error, data) => {
-        handleResponse(error, reject, resolve, data, null)
+        handleResponse(error, reject, (d) => resolve(d as AdminPermission[] | null), data, null)
       })
     })
   }
 
-  editPermission = (data: AdminPermission): Promise<any> => {
+  editPermission = (data: AdminPermission): Promise<AdminPermission[] | null> => {
     const options: { adminPermission: AdminPermission } = {
       adminPermission: data,
     }
     return new Promise((resolve, reject) => {
       this.api.editAdminuiPermission(options, (error, data) => {
-        handleResponse(error, reject, resolve, data, null)
+        handleResponse(error, reject, (d) => resolve(d as AdminPermission[] | null), data, null)
       })
     })
   }
 
-  deletePermission = (data: AdminPermission): Promise<any> => {
+  deletePermission = (data: AdminPermission): Promise<AdminPermission[] | null> => {
     const options: { adminPermission: AdminPermission } = {
       adminPermission: data,
     }
     return new Promise((resolve, reject) => {
       this.api.deleteAdminuiPermission(options, (error, data) => {
-        handleResponse(error, reject, resolve, data, null)
+        handleResponse(error, reject, (d) => resolve(d as AdminPermission[] | null), data, null)
       })
     })
   }
 
-  getTrialLicense = (): Promise<any> => {
+  getTrialLicense = (): Promise<LicenseResponse | null> => {
     return new Promise((resolve, reject) => {
       this.api.getTrialLicense((error, data) => {
-        handleResponse(error, reject, resolve, data, null)
+        handleResponse(error, reject, (d) => resolve(d as LicenseResponse | null), data, null)
       })
     })
   }
 
-  retrieveLicense = (): Promise<any> => {
+  retrieveLicense = (): Promise<LicenseResponse | null> => {
     return new Promise((resolve, reject) => {
       this.api.retrieveLicense((error, data) => {
-        handleResponse(error, reject, resolve, data, null)
+        handleResponse(error, reject, (d) => resolve(d as LicenseResponse | null), data, null)
       })
     })
   }

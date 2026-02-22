@@ -1,3 +1,5 @@
+export type AuditRecord = Record<string, string | number | boolean | object | null | undefined>
+
 export interface AuditLog {
   headers: Record<string, string>
   client_id?: string
@@ -10,8 +12,8 @@ export interface AuditLog {
   action?: string
   resource?: string
   message?: string
-  modifiedFields?: Record<string, unknown>
+  modifiedFields?: AuditRecord
   performedOn?: string | Date
-  payload?: Record<string, unknown>
+  payload?: AuditRecord
   date?: Date
 }

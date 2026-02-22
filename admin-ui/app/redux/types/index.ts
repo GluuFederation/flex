@@ -1,7 +1,9 @@
 import type { Reducer, UnknownAction } from '@reduxjs/toolkit'
 import type { ProfileDetails } from 'Routes/Apps/Profile/types'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import type { WebhookTriggerResponseItem } from 'Plugins/admin/redux/types/webhook'
 
-// Core app state types
+export type { WebhookTriggerResponseItem }
 
 // Auth
 export interface BackendStatus {
@@ -21,12 +23,14 @@ export interface UserInfo {
 
 export interface AuthConfig {
   clientId?: string
-  [key: string]: unknown
+  endSessionEndpoint?: string
+  postLogoutRedirectUri?: string
+  [key: string]: string | number | boolean | undefined
 }
 
 export interface AuthLocation {
   IPv4?: string
-  [key: string]: unknown
+  [key: string]: string | number | boolean | undefined
 }
 
 export interface AuthState {
@@ -44,7 +48,7 @@ export interface AuthState {
   codeVerifier: string | null
   backendStatus: BackendStatus
   loadingConfig: boolean
-  authState?: unknown
+  authState?: Record<string, string | number | boolean>
   userInum?: string | null
   isUserInfoFetched: boolean
   hasSession: boolean
@@ -180,51 +184,6 @@ export interface LockState {
 
 // Admin plugin state types
 
-// API Role
-export interface ApiRoleItem {
-  inum?: string
-  role?: string
-  description?: string
-  deletable?: boolean
-  [key: string]: unknown
-}
-
-export interface ApiRoleState {
-  items: ApiRoleItem[]
-  item?: ApiRoleItem
-  loading: boolean
-}
-
-// API Permission State
-export interface ApiPermissionItem {
-  inum?: string
-  permission?: string
-  description?: string
-  defaultPermissionInToken?: boolean
-  [key: string]: unknown
-}
-
-export interface ApiPermissionState {
-  items: ApiPermissionItem[]
-  item?: ApiPermissionItem
-  loading: boolean
-  saveOperationFlag: boolean
-  errorInSaveOperationFlag: boolean
-}
-
-// Mapping State (role-permission)
-export interface MappingItem {
-  role?: string
-  permissions?: string[]
-  [key: string]: unknown
-}
-
-export interface MappingState {
-  items: MappingItem[]
-  serverItems: MappingItem[]
-  loading: boolean
-}
-
 // Webhook State
 export interface WebhookEntry {
   inum?: string
@@ -244,30 +203,19 @@ export interface AuiFeature {
   [key: string]: unknown
 }
 
-export interface TriggerPayload {
+export interface StoredTriggerPayload {
   feature: string | null
-  payload: unknown
+  payload: JsonValue
 }
 
 export interface WebhookState {
-  webhooks: WebhookEntry[]
-  loading: boolean
-  saveOperationFlag: boolean
-  errorInSaveOperationFlag: boolean
-  totalItems: number
-  entriesCount: number
-  selectedWebhook: WebhookEntry | null
-  loadingFeatures: boolean
-  features: AuiFeature[]
-  webhookFeatures: AuiFeature[]
-  loadingWebhookFeatures: boolean
   loadingWebhooks: boolean
   featureWebhooks: WebhookEntry[]
   webhookModal: boolean
   triggerWebhookInProgress: boolean
   triggerWebhookMessage: string
-  webhookTriggerErrors: unknown[]
-  triggerPayload: TriggerPayload
+  webhookTriggerErrors: WebhookTriggerResponseItem[]
+  triggerPayload: StoredTriggerPayload
   featureToTrigger: string
   showErrorModal: boolean
 }
@@ -482,7 +430,6 @@ export interface CoreAppState {
   logoutReducer: LogoutState
   licenseReducer: LicenseState
   oidcDiscoveryReducer: OidcDiscoveryState
-  mauReducer: MauState
   healthReducer: HealthState
   attributesReducerRoot: AttributesState
   toastReducer: ToastState
@@ -494,9 +441,7 @@ export interface CoreAppState {
 
 // Admin plugin reducers
 export interface AdminPluginState {
-  apiRoleReducer: ApiRoleState
-  apiPermissionReducer: ApiPermissionState
-  mappingReducer: MappingState
+  mauReducer: MauState
   webhookReducer: WebhookState
   assetReducer: AssetState
   customScriptReducer: CustomScriptState
@@ -518,8 +463,7 @@ export interface SmtpPluginState {
 }
 
 export interface RootState
-  extends CoreAppState,
-    Partial<AdminPluginState & AuthServerPluginState & SmtpPluginState> {}
+  extends CoreAppState, Partial<AdminPluginState & AuthServerPluginState & SmtpPluginState> {}
 
 export type ReducerMap = {
   [K in keyof RootState]?: Reducer<RootState[K], UnknownAction>

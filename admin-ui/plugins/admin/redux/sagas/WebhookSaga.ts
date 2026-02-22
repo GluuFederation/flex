@@ -1,295 +1,92 @@
+import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
+import i18n from 'i18next'
+import type { SelectEffect } from 'redux-saga/effects'
+import type { SagaIterator } from 'redux-saga'
+import type { PayloadAction } from '@reduxjs/toolkit'
 import {
-  call,
-  all,
-  put,
-  fork,
-  takeLatest,
-  select,
-  CallEffect,
-  PutEffect,
-  SelectEffect,
-  ForkEffect,
-  AllEffect,
-} from 'redux-saga/effects'
-import {
-  getWebhook,
-  getWebhookResponse,
-  createWebhookResponse,
-  deleteWebhookResponse,
-  updateWebhookResponse,
-  getFeaturesResponse,
-  getFeaturesByWebhookIdResponse,
+  getWebhooksByFeatureId as getWebhooksByFeatureIdAction,
   getWebhooksByFeatureIdResponse,
   setTriggerWebhookResponse,
   setWebhookModal,
   setWebhookTriggerErrors,
   setFeatureToTrigger,
   setShowErrorModal,
+  triggerWebhook as triggerWebhookAction,
 } from 'Plugins/admin/redux/features/WebhookSlice'
-import { CREATE, FETCH, DELETION, UPDATE } from '../../../../app/audit/UserActionType'
+import { FETCH } from '../../../../app/audit/UserActionType'
 import { updateToast } from 'Redux/features/toastSlice'
 import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
-import WebhookApi from '../api/WebhookApi'
+import WebhookApi from 'Plugins/admin/redux/api/WebhookApi'
 import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
-const JansConfigApi = require('jans_config_api')
+import type { UserActionPayload } from 'Redux/api/backend-api'
+import * as JansConfigApi from 'jans_config_api'
 import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 import { webhookOutputObject } from 'Plugins/admin/helper/utils'
 import {
-  RootState,
-  Webhook,
-  WebhookActionPayload,
-  FeatureActionPayload,
-  TriggerWebhookPayload,
-  AuditLog,
-  ApiError,
-  WebhookResponse,
-} from './types'
+  getErrorMessage,
+  isHttpLikeError,
+  type AuditRecord,
+  type HttpErrorLike,
+  type SagaErrorShape,
+} from './types/common'
+import type { RootState } from './types/state'
+import type {
+  WebhookEntry,
+  TriggerWebhookSagaPayload,
+  WebhookTriggerResponseItem,
+  WebhooksByFeatureIdApiResponse,
+  TriggerWebhookApiResponse,
+} from './types/webhook'
 
-function* newFunction(): Generator<SelectEffect, WebhookApi, any> {
+function* createWebhookApi(): Generator<SelectEffect, WebhookApi, string> {
   const issuer: string = yield select((state: RootState) => state.authReducer.issuer)
   const api = new JansConfigApi.AdminUIWebhooksApi(getClient(JansConfigApi, null, issuer))
   return new WebhookApi(api)
 }
 
-export function* getWebhooks({
-  payload,
-}: {
-  payload: WebhookActionPayload
-}): Generator<CallEffect | PutEffect | SelectEffect, any, any> {
-  const audit: AuditLog = yield call(initAudit)
-  try {
-    payload = payload || { action: {} }
-    addAdditionalData(audit, FETCH, 'webhook', payload)
-    const webhookApi: WebhookApi = yield call(newFunction)
-    const data: any = yield call(webhookApi.getAllWebhooks, payload.action)
-    yield put(getWebhookResponse({ data }))
-    yield call(postUserAction, audit)
-    return data
-  } catch (e: unknown) {
-    const error = e as ApiError
-    yield put(
-      updateToast(
-        true,
-        'error',
-        error?.response?.body?.responseMessage || error.message || 'Unknown error',
-      ),
-    )
-    yield put(getWebhookResponse({ data: null }))
-    if (isFourZeroThreeError(error)) {
-      yield* redirectToLogout()
-      return
-    }
-    return error
-  }
-}
-
-export function* createWebhook({
-  payload,
-}: {
-  payload: WebhookActionPayload
-}): Generator<CallEffect | PutEffect | SelectEffect, any, any> {
-  const audit: AuditLog = yield call(initAudit)
-  try {
-    addAdditionalData(audit, CREATE, 'webhook', payload)
-    const webhookApi: WebhookApi = yield call(newFunction)
-    const data: any = yield call(webhookApi.createWebhook, payload.action?.action_data)
-    yield put(createWebhookResponse({ data }))
-    yield call(postUserAction, audit)
-    return data
-  } catch (e: unknown) {
-    const error = e as ApiError
-    yield put(
-      updateToast(
-        true,
-        'error',
-        error?.response?.body?.responseMessage || error.message || 'Unknown error',
-      ),
-    )
-    yield put(createWebhookResponse({ data: null }))
-    if (isFourZeroThreeError(error)) {
-      yield* redirectToLogout()
-      return
-    }
-    return error
-  }
-}
-
-export function* deleteWebhook({
-  payload,
-}: {
-  payload: WebhookActionPayload
-}): Generator<CallEffect | PutEffect | SelectEffect, any, any> {
-  const audit: AuditLog = yield call(initAudit)
-  try {
-    addAdditionalData(audit, DELETION, 'webhook', payload)
-    const webhookApi: WebhookApi = yield call(newFunction)
-    const data: any = yield call(webhookApi.deleteWebhookByInum, payload.action?.action_data?.inum)
-    yield put(deleteWebhookResponse())
-    yield call(postUserAction, audit)
-    yield put(getWebhook({}))
-    return data
-  } catch (e: unknown) {
-    const error = e as ApiError
-    yield put(
-      updateToast(
-        true,
-        'error',
-        error?.response?.body?.responseMessage || error.message || 'Unknown error',
-      ),
-    )
-    yield put(deleteWebhookResponse())
-    if (isFourZeroThreeError(error)) {
-      yield* redirectToLogout()
-      return
-    }
-    return error
-  }
-}
-
-export function* updateWebhook({
-  payload,
-}: {
-  payload: WebhookActionPayload
-}): Generator<CallEffect | PutEffect | SelectEffect, any, any> {
-  const audit: AuditLog = yield call(initAudit)
-  try {
-    addAdditionalData(audit, UPDATE, 'webhook', payload)
-    const webhookApi: WebhookApi = yield call(newFunction)
-    const data: any = yield call(webhookApi.updateWebhook, payload.action?.action_data)
-    yield put(updateWebhookResponse({ data }))
-    yield call(postUserAction, audit)
-    yield put(getWebhook({}))
-    return data
-  } catch (e: unknown) {
-    const error = e as ApiError
-    yield put(
-      updateToast(
-        true,
-        'error',
-        error?.response?.body?.responseMessage || error.message || 'Unknown error',
-      ),
-    )
-    yield put(updateWebhookResponse({ data: null }))
-    if (isFourZeroThreeError(error)) {
-      yield* redirectToLogout()
-      return
-    }
-    return error
-  }
-}
-
-export function* getFeatures(): Generator<CallEffect | PutEffect | SelectEffect, any, any> {
-  const audit: AuditLog = yield call(initAudit)
-  try {
-    addAdditionalData(audit, FETCH, 'webhook', {})
-    const webhookApi: WebhookApi = yield call(newFunction)
-    const data: any = yield call(webhookApi.getAllFeatures)
-    yield put(getFeaturesResponse(data?.body || []))
-    yield call(postUserAction, audit)
-    return data
-  } catch (e: unknown) {
-    const error = e as ApiError
-    console.log('error: ', error)
-    yield put(
-      updateToast(
-        true,
-        'error',
-        error?.response?.body?.responseMessage || error.message || 'Unknown error',
-      ),
-    )
-    yield put(getFeaturesResponse([]))
-    if (isFourZeroThreeError(error)) {
-      yield* redirectToLogout()
-      return
-    }
-    return error
-  }
-}
-
-export function* getFeaturesByWebhookId({
-  payload,
-}: {
-  payload: FeatureActionPayload
-}): Generator<CallEffect | PutEffect | SelectEffect, any, any> {
-  const audit: AuditLog = yield call(initAudit)
-  try {
-    addAdditionalData(audit, FETCH, 'webhook', payload)
-    const webhookApi: WebhookApi = yield call(newFunction)
-    const data: any = yield call(webhookApi.getFeaturesByWebhookId, payload.webhookId || payload)
-    yield put(getFeaturesByWebhookIdResponse(data?.body || []))
-    yield call(postUserAction, audit)
-    return data
-  } catch (e: unknown) {
-    const error = e as ApiError
-    console.log('error: ', error)
-    yield put(
-      updateToast(
-        true,
-        'error',
-        error?.response?.body?.responseMessage || error.message || 'Unknown error',
-      ),
-    )
-    yield put(getFeaturesByWebhookIdResponse([]))
-    if (isFourZeroThreeError(error)) {
-      yield* redirectToLogout()
-      return
-    }
-    return error
-  }
-}
-
 export function* getWebhooksByFeatureId({
   payload,
-}: {
-  payload: string
-}): Generator<CallEffect | PutEffect | SelectEffect, any, any> {
-  const audit: AuditLog = yield call(initAudit)
+}: PayloadAction<string>): SagaIterator<WebhooksByFeatureIdApiResponse | void> {
+  const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, FETCH, `/webhook/${payload}`, payload)
-    const webhookApi: WebhookApi = yield call(newFunction)
-    const data: any = yield call(webhookApi.getWebhooksByFeatureId, payload)
-    if (data?.body?.length && data?.body?.filter((item: Webhook) => item.jansEnabled)?.length) {
+    addAdditionalData(audit as AuditRecord, FETCH, `/webhook/${payload}`, {})
+    const webhookApi: WebhookApi = yield* createWebhookApi()
+    const data: WebhooksByFeatureIdApiResponse = yield call(
+      webhookApi.getWebhooksByFeatureId,
+      payload,
+    )
+    const webhooks: WebhookEntry[] = data?.body ?? []
+    const hasEnabledWebhooks = webhooks.some((item) => item.jansEnabled)
+    if (webhooks.length && hasEnabledWebhooks) {
       yield put(setWebhookModal(true))
     }
-    yield put(getWebhooksByFeatureIdResponse(data?.body || []))
-    yield call(postUserAction, audit)
+    yield put(getWebhooksByFeatureIdResponse(webhooks))
+    yield call(postUserAction, audit as UserActionPayload)
     return data
-  } catch (e: unknown) {
-    const error = e as ApiError
-    console.log('error: ', error)
-    yield put(
-      updateToast(
-        true,
-        'error',
-        error?.response?.body?.responseMessage || error.message || 'Unknown error',
-      ),
-    )
+  } catch (e) {
+    const errMsg = getErrorMessage(e as Error | SagaErrorShape)
+    yield put(updateToast(true, 'error', errMsg))
     yield put(getWebhooksByFeatureIdResponse([]))
-    if (isFourZeroThreeError(error)) {
+    if (isHttpLikeError(e as Error | SagaErrorShape) && isFourZeroThreeError(e as HttpErrorLike)) {
       yield* redirectToLogout()
-      return
     }
-    return error
   }
 }
 
 export function* triggerWebhook({
   payload,
-}: {
-  payload: TriggerWebhookPayload
-}): Generator<CallEffect | PutEffect | SelectEffect, any, any> {
-  const audit: AuditLog = yield call(initAudit)
+}: PayloadAction<TriggerWebhookSagaPayload>): SagaIterator<TriggerWebhookApiResponse | void> {
+  const audit = yield* initAudit()
+  let featureToTrigger = ''
   try {
-    const webhookApi: WebhookApi = yield call(newFunction)
-    const featureToTrigger: string = yield select(
-      (state: RootState) => state.webhookReducer.featureToTrigger,
-    )
-    const featureWebhooks: Webhook[] = yield select(
+    const webhookApi: WebhookApi = yield* createWebhookApi()
+    featureToTrigger = yield select((state: RootState) => state.webhookReducer.featureToTrigger)
+    const featureWebhooks: WebhookEntry[] = yield select(
       (state: RootState) => state.webhookReducer.featureWebhooks,
     )
-    const enabledFeatureWebhooks: Webhook[] = featureWebhooks?.filter(
-      (item: Webhook) => item.jansEnabled,
+    const enabledFeatureWebhooks = (featureWebhooks ?? []).filter(
+      (item: WebhookEntry) => item.jansEnabled,
     )
 
     if (!enabledFeatureWebhooks.length || !featureToTrigger) {
@@ -297,115 +94,71 @@ export function* triggerWebhook({
       return
     }
 
-    const outputObject = webhookOutputObject(enabledFeatureWebhooks, payload.createdFeatureValue)
-    const data: any = yield call(webhookApi.triggerWebhook, {
+    const outputObject = webhookOutputObject(
+      enabledFeatureWebhooks as Parameters<typeof webhookOutputObject>[0],
+      payload.createdFeatureValue,
+    )
+    const data: TriggerWebhookApiResponse = yield call(webhookApi.triggerWebhook, {
       feature: featureToTrigger,
       outputObject,
     })
 
-    const action_data = data?.body
-      ?.map((body: WebhookResponse) => {
-        for (const output of outputObject) {
-          if (output.inum === body?.responseObject?.inum) {
-            return {
-              ...body,
-              url: output?.url,
-            }
-          }
-        }
+    const responseItems = data?.body ?? []
+    const enrichedResults = responseItems
+      .map((body: WebhookTriggerResponseItem) => {
+        const matchedOutput = outputObject.find(
+          (output) => output.webhookId === body?.responseObject?.inum,
+        )
+        return matchedOutput ? { ...body, url: matchedOutput.url } : null
       })
-      ?.filter((item: any) => item)
+      .filter((item): item is WebhookTriggerResponseItem & { url: string } => item !== null)
 
-    addAdditionalData(audit, FETCH, `/webhook/${featureToTrigger}`, {
-      action: { action_data: action_data || [] },
+    addAdditionalData(audit as AuditRecord, FETCH, `/webhook/${featureToTrigger}`, {
+      action: { action_data: { results: enrichedResults } },
     })
     yield put(setFeatureToTrigger(''))
-    const all_succeded = data?.body?.every((item: WebhookResponse) => item.success)
-    if (all_succeded) {
+
+    const allSucceeded = responseItems.every((item: WebhookTriggerResponseItem) => item.success)
+    if (allSucceeded) {
       yield put(setShowErrorModal(false))
       yield put(setWebhookModal(false))
       yield put(setTriggerWebhookResponse(''))
-      yield put(updateToast(true, 'success', 'All webhooks triggered successfully.'))
+      yield put(
+        updateToast(true, 'success', i18n.t('messages.all_webhooks_triggered_successfully')),
+      )
     } else {
-      const errors = data?.body
-        ?.map((item: WebhookResponse) => !item.success && item)
-        ?.filter((err: any) => err)
+      const errors = responseItems.filter((item: WebhookTriggerResponseItem) => !item.success)
       yield put(setWebhookTriggerErrors(errors))
-      yield put(setTriggerWebhookResponse('Something went wrong while triggering webhook.'))
-      yield put(updateToast(true, 'error', 'Something went wrong while triggering webhook.'))
+      yield put(setTriggerWebhookResponse(i18n.t('messages.failed_to_trigger_webhook')))
+      yield put(updateToast(true, 'error', i18n.t('messages.failed_to_trigger_webhook')))
       yield put(setShowErrorModal(true))
     }
-    yield call(postUserAction, audit)
+    yield call(postUserAction, audit as UserActionPayload)
     return data
-  } catch (e: unknown) {
-    const error = e as ApiError
-    console.log('error: ', error)
-    yield put(
-      updateToast(
-        true,
-        'error',
-        error?.response?.body?.responseMessage || error.message || 'Unknown error',
-      ),
-    )
+  } catch (e) {
+    const errMsg = getErrorMessage(e as Error | SagaErrorShape)
+    yield put(updateToast(true, 'error', errMsg))
     yield put(setWebhookModal(true))
-    yield put(
-      setTriggerWebhookResponse(
-        error?.response?.body?.responseMessage || error.message || 'Unknown error',
-      ),
-    )
-    if (isFourZeroThreeError(error)) {
+    yield put(setTriggerWebhookResponse(errMsg))
+    addAdditionalData(audit as AuditRecord, FETCH, `/webhook/${featureToTrigger || 'trigger'}`, {
+      action: { action_data: { error: errMsg, success: false } },
+    })
+    yield call(postUserAction, audit as UserActionPayload)
+    if (isHttpLikeError(e as Error | SagaErrorShape) && isFourZeroThreeError(e as HttpErrorLike)) {
       yield* redirectToLogout()
       return
     }
-    addAdditionalData(audit, FETCH, `/webhook/${payload}`, {
-      action: { action_data: { error: error, success: false } },
-    })
-    yield call(postUserAction, audit)
-    return error
   }
 }
 
-export function* watchGetWebhook(): Generator<ForkEffect<never>, void, unknown> {
-  yield takeLatest('webhook/getWebhook' as any, getWebhooks)
+export function* watchGetWebhooksByFeatureId(): SagaIterator<void> {
+  yield takeLatest(getWebhooksByFeatureIdAction.type, getWebhooksByFeatureId)
 }
 
-export function* watchCreateWebhook(): Generator<ForkEffect<never>, void, unknown> {
-  yield takeLatest('webhook/createWebhook' as any, createWebhook)
+export function* watchGetTriggerWebhook(): SagaIterator<void> {
+  yield takeLatest(triggerWebhookAction.type, triggerWebhook)
 }
 
-export function* watchDeleteWebhook(): Generator<ForkEffect<never>, void, unknown> {
-  yield takeLatest('webhook/deleteWebhook' as any, deleteWebhook)
-}
-
-export function* watchUpdateWebhook(): Generator<ForkEffect<never>, void, unknown> {
-  yield takeLatest('webhook/updateWebhook' as any, updateWebhook)
-}
-
-export function* watchGetFeatures(): Generator<ForkEffect<never>, void, unknown> {
-  yield takeLatest('webhook/getFeatures' as any, getFeatures)
-}
-
-export function* watchGetFeaturesByWebhookId(): Generator<ForkEffect<never>, void, unknown> {
-  yield takeLatest('webhook/getFeaturesByWebhookId' as any, getFeaturesByWebhookId)
-}
-
-export function* watchGetWebhooksByFeatureId(): Generator<ForkEffect<never>, void, unknown> {
-  yield takeLatest('webhook/getWebhooksByFeatureId' as any, getWebhooksByFeatureId)
-}
-
-export function* watchGetTriggerWebhook(): Generator<ForkEffect<never>, void, unknown> {
-  yield takeLatest('webhook/triggerWebhook' as any, triggerWebhook)
-}
-
-export default function* rootSaga(): Generator<AllEffect<ForkEffect<void>>, void, unknown> {
-  yield all([
-    fork(watchGetWebhook),
-    fork(watchCreateWebhook),
-    fork(watchDeleteWebhook),
-    fork(watchUpdateWebhook),
-    fork(watchGetFeatures),
-    fork(watchGetFeaturesByWebhookId),
-    fork(watchGetWebhooksByFeatureId),
-    fork(watchGetTriggerWebhook),
-  ])
+export default function* rootSaga(): SagaIterator<void> {
+  yield all([fork(watchGetWebhooksByFeatureId), fork(watchGetTriggerWebhook)])
 }

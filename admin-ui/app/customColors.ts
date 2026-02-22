@@ -23,7 +23,6 @@ export const customColors = {
   // Text
   textSecondary: '#425466',
   textMutedDark: '#6a8096',
-  profileEmailText: '#6d8cac',
 
   // Brand / accent
   logo: '#00b875',
@@ -38,6 +37,12 @@ export const customColors = {
   statusActiveBg: '#d3f5e6',
   statusInactive: '#f13f44',
   statusInactiveBg: '#ffe6e7',
+
+  // Disabled Badge
+  disabledBadgeLightBg: '#D9E1E8',
+  disabledBadgeLightText: '#425466',
+  disabledBadgeDarkBg: '#13385D',
+  disabledBadgeDarkText: '#90B5D9',
 
   // Settings / custom params
   addPropertyTextDark: '#1A2F45',
@@ -57,6 +62,16 @@ export const customColors = {
   chartPurple: '#8979ff',
   chartCoral: '#ff928a',
   chartCyan: '#3cc3df',
+
+  // Table
+  tableHeaderTextLight: '#4F6377',
+  tableHeaderTextDark: '#88AFD7',
+  tableRowBgDark: '#091e34',
+  tableRowBgLight: '#FFFFFF',
+  tableHeaderBgDark: '#0b2947',
+  tableHeaderLight: '#F4F6F8',
+  tableExpandButtonBgLight: '#F4F6F8',
+  tableExpandButtonBgDark: '#0B2947',
 
   // Cedar
   cedarCardBgDark: '#10375e',
@@ -87,5 +102,24 @@ export const getLoadingOverlayRgba = (hexColor: string, opacity: number): string
   `rgba(${hexToRgb(hexColor)}, ${opacity})`
 
 export type CustomColorKeys = keyof typeof customColors
+
+/** Convert camelCase to kebab-case for CSS variable names */
+function toKebabCase(str: string): string {
+  return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
+}
+
+const CUSTOM_COLORS_CSS_VARS: Readonly<Record<string, string>> = (() => {
+  const vars: Record<string, string> = {}
+  for (const [key, value] of Object.entries(customColors)) {
+    const kebab = toKebabCase(key)
+    vars[`--custom-${kebab}`] = value
+    vars[`--custom-${kebab}-rgb`] = hexToRgb(value)
+  }
+  return Object.freeze(vars)
+})()
+
+export function getCustomColorsAsCssVars(): Readonly<Record<string, string>> {
+  return CUSTOM_COLORS_CSS_VARS
+}
 
 export default customColors
