@@ -73,7 +73,6 @@ const isPrivateOrLocalhost = (hostname: string): boolean => {
 const PATTERN =
   /^https:\/\/(([\w-]+\.)+[\w-]+|\[[\da-fA-F:]+\])(:\d+)?(\/[^\s?#]*)?(\?[^\s#]*)?(#[^\s]*)?$/i
 
-/** Replaces ${...} placeholders so URL structure can be validated while allowing params in URL */
 const normalizeUrlForValidation = (url: string): string => url.replace(REGEX_URL_PLACEHOLDER, 'x')
 
 const isAllowed = (url: string): boolean => {

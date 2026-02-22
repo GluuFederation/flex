@@ -14,14 +14,16 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { useWebhookAudit, CREATE, UPDATE, DELETION } from './useWebhookAudit'
 import type { WebhookEntry, MutationCallbacks } from '../types'
 
-interface ApiError {
+interface WebhookApiError {
   response?: { data?: { responseMessage?: string } }
 }
 
-type MutationError = Error | ApiError
+type MutationError = Error | WebhookApiError
 
-const extractErrorMessage = (error: MutationError, fallback: string): string =>
-  (error as ApiError)?.response?.data?.responseMessage || (error as Error)?.message || fallback
+const extractWebhookErrorMessage = (error: MutationError, fallback: string): string =>
+  (error as WebhookApiError)?.response?.data?.responseMessage ||
+  (error as Error)?.message ||
+  fallback
 
 export const useCreateWebhookWithAudit = (callbacks?: MutationCallbacks) => {
   const { t } = useTranslation()
@@ -52,7 +54,7 @@ export const useCreateWebhookWithAudit = (callbacks?: MutationCallbacks) => {
           updateToast(
             true,
             'error',
-            extractErrorMessage(err, t('messages.failed_to_create_webhook')),
+            extractWebhookErrorMessage(err, t('messages.failed_to_create_webhook')),
           ),
         )
         callbacksRef.current?.onError?.(err instanceof Error ? err : new Error(String(err)))
@@ -99,7 +101,7 @@ export const useUpdateWebhookWithAudit = (callbacks?: MutationCallbacks) => {
           updateToast(
             true,
             'error',
-            extractErrorMessage(err, t('messages.failed_to_update_webhook')),
+            extractWebhookErrorMessage(err, t('messages.failed_to_update_webhook')),
           ),
         )
         callbacksRef.current?.onError?.(err instanceof Error ? err : new Error(String(err)))
@@ -146,7 +148,7 @@ export const useDeleteWebhookWithAudit = (callbacks?: MutationCallbacks) => {
           updateToast(
             true,
             'error',
-            extractErrorMessage(err, t('messages.failed_to_delete_webhook')),
+            extractWebhookErrorMessage(err, t('messages.failed_to_delete_webhook')),
           ),
         )
         callbacksRef.current?.onError?.(err instanceof Error ? err : new Error(String(err)))

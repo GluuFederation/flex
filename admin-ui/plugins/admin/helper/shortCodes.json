@@ -864,7 +864,7 @@
       },
       {
         "key": "userId",
-        "label": "documentation.user.userName",
+        "label": "documentation.user.userId",
         "description": "documentation.user.userId"
       },
       {
@@ -893,7 +893,7 @@
       },
       {
         "key": "userId",
-        "label": "documentation.user.userName",
+        "label": "documentation.user.userId",
         "description": "documentation.user.userId"
       }
     ]

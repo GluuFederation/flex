@@ -1,6 +1,6 @@
 import { handleError } from 'Utils/ApiUtils'
 
-interface HealthData {
+export interface HealthData {
   status?: string
   db_status?: string
 }

@@ -6,12 +6,20 @@ import { logoutUser } from 'Redux/features/logoutSlice'
 import { useTranslation } from 'react-i18next'
 import { setAuthState } from '../../redux/features/authSlice'
 import { deleteAdminUiSession as deleteSession } from 'Redux/api/backend-api'
+import type { AuthConfig } from 'Redux/types'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import getThemeColor from '@/context/theme/config'
+import { devLogger } from '@/utils/devLogger'
 
-function ByeBye() {
-  const config = useAppSelector((state) => state.authReducer.config)
+const EmptyLayoutSection = (
+  EmptyLayout as React.ComponentType<{ children?: React.ReactNode }> & {
+    Section: React.ComponentType<{ center?: boolean; children?: React.ReactNode }>
+  }
+).Section
+
+const ByeBye = () => {
+  const config = useAppSelector((state) => state.authReducer.config) as AuthConfig
   const hasSession = useAppSelector((state) => state.authReducer.hasSession)
 
   const dispatch = useAppDispatch()
@@ -28,7 +36,7 @@ function ByeBye() {
         try {
           await deleteSession()
         } catch (error) {
-          console.error('Error deleting admin UI session:', error)
+          devLogger.error('Error deleting admin UI session:', error)
         }
       }
 
@@ -52,11 +60,11 @@ function ByeBye() {
       className="fullscreen"
       style={{ backgroundColor: themeColors.background, minHeight: '100vh' }}
     >
-      <EmptyLayout.Section center>
+      <EmptyLayoutSection center>
         <Label style={{ fontSize: '2em', fontWeight: 'bold', color: themeColors.fontColor }}>
           {t('messages.thanks_for_using_admin_ui')}
         </Label>
-      </EmptyLayout.Section>
+      </EmptyLayoutSection>
     </div>
   )
 }

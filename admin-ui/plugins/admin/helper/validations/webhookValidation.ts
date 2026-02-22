@@ -1,6 +1,8 @@
 import * as Yup from 'yup'
 import type { TFunction } from 'i18next'
-import { hasHttpBody } from 'Plugins/admin/helper/webhook'
+import { hasHttpBody as hasHttpBodyStrict } from 'Plugins/admin/helper/webhook'
+
+const hasHttpBody = (method?: string): boolean => hasHttpBodyStrict(method ?? '')
 
 export const getWebhookValidationSchema = (t: TFunction) =>
   Yup.object().shape({

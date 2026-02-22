@@ -148,7 +148,7 @@ const WebhookListPage: React.FC = () => {
         }
       }
     },
-    [deleteData, deleteWebhook, refetch, t],
+    [deleteData, deleteWebhook, refetch],
   )
 
   const navigateToAddPage = useCallback(() => {
@@ -165,7 +165,8 @@ const WebhookListPage: React.FC = () => {
 
   const handleSearchSubmit = useCallback(() => {
     setPageNumber(0)
-  }, [])
+    refetch()
+  }, [refetch])
 
   const handleRefresh = useCallback(() => {
     setPageNumber(0)

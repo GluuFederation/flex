@@ -70,7 +70,7 @@ const GluuInputRow = <T = Record<string, unknown>,>({
   const stepDown = useCallback(() => {
     const current = Number.isNaN(numValue) ? 0 : numValue
     if (current <= 0) return
-    const next = current - 1
+    const next = Math.max(0, current - 1)
     if (formik) {
       formik.setFieldValue(name, next)
     }
@@ -96,7 +96,9 @@ const GluuInputRow = <T = Record<string, unknown>,>({
       }}
       onBlur={formik?.handleBlur}
       onFocus={onFocus}
-      onKeyDown={(evt) => evt.key === 'e' && type === 'number' && evt.preventDefault()}
+      onKeyDown={(evt) =>
+        evt.key.toLowerCase() === 'e' && type === 'number' && evt.preventDefault()
+      }
       disabled={disabled}
       rows={rows}
       cols={cols}

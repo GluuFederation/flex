@@ -4,8 +4,8 @@ import type { WebhookOutputItem } from 'Plugins/admin/helper/utils'
 
 export type { WebhookEntry, WebhookOutputItem }
 
+export type { WebhookTriggerResponseItem } from '../../types/webhook'
 export type {
-  WebhookTriggerResponseItem,
   WebhooksByFeatureIdApiResponse,
   TriggerWebhookApiResponse,
   TriggerWebhookApiPayload,

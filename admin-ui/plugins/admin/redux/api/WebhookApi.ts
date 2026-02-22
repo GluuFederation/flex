@@ -1,21 +1,9 @@
 import { handleError } from 'Utils/ApiUtils'
 import type { WebhookEntry } from 'JansConfigApi'
+import type { WebhookTriggerResponseItem } from '../types/webhook'
+import type { WebhookOutputItem } from 'Plugins/admin/helper/utils'
 
-export interface WebhookTriggerResponseItem {
-  success: boolean
-  responseMessage?: string
-  responseObject?: {
-    inum?: string
-    webhookId?: string
-    webhookName?: string
-  }
-}
-
-export interface WebhookOutputItem {
-  webhookId: string
-  shortcodeValueMap: Record<string, string | number | boolean | null | object>
-  url: string
-}
+export type { WebhookTriggerResponseItem, WebhookOutputItem }
 
 export interface WebhooksByFeatureIdApiResponse {
   body?: WebhookEntry[]

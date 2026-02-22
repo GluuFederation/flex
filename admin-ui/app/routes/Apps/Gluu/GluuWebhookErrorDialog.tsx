@@ -15,7 +15,7 @@ import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
-import type { WebhookTriggerResponseItem } from 'Plugins/admin/redux/sagas/types/webhook'
+import type { WebhookTriggerResponseItem } from 'Plugins/admin/redux/types/webhook'
 
 const GluuWebhookErrorDialog = () => {
   const { t } = useTranslation()

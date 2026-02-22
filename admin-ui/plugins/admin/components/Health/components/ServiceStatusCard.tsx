@@ -58,17 +58,21 @@ const ServiceStatusCard: React.FC<ServiceStatusCardProps> = memo(({ service, isD
   }, [service.status, isDark])
 
   return (
-    <div className={classes.card}>
+    <div className={classes.card} data-testid={`service-card-${service.name}`}>
       <div className={classes.content}>
         <div className={classes.textContainer}>
-          <GluuText variant="div" className={classes.serviceName}>
+          <GluuText
+            variant="div"
+            className={classes.serviceName}
+            data-testid={`service-name-${service.name}`}
+          >
             {displayName}
           </GluuText>
           <GluuText variant="div" className={classes.serviceMessage}>
             {statusMessage}
           </GluuText>
         </div>
-        <div className={classes.statusBadge}>
+        <div className={classes.statusBadge} data-testid={`service-status-${service.name}`}>
           <GluuBadge
             size="md"
             backgroundColor={badgeColors.bg}

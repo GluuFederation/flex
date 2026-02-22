@@ -12,6 +12,7 @@ import HealthCheckApi from '../api/HealthCheckApi'
 import { initAudit, redirectToLogout } from '../sagas/SagaUtils'
 import { isHttpLikeError } from 'Plugins/admin/redux/sagas/types/common'
 import * as JansConfigApi from 'jans_config_api'
+import { devLogger } from '@/utils/devLogger'
 
 function* createHealthApi(): Generator<SelectEffect, HealthApi, string> {
   const issuer: string = yield select(
@@ -62,7 +63,8 @@ export function* getHealthServerStatus({
     )
     yield put(getHealthServerStatusResponse({ data }))
     yield call(postUserAction, audit)
-  } catch {
+  } catch (err) {
+    devLogger.warn('getHealthServerStatus failed', err)
     yield put(getHealthServerStatusResponse(null))
   }
 }

@@ -1,7 +1,9 @@
 import type { Reducer, UnknownAction } from '@reduxjs/toolkit'
 import type { ProfileDetails } from 'Routes/Apps/Profile/types'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import type { WebhookTriggerResponseItem } from 'Plugins/admin/redux/types/webhook'
 
-// Core app state types
+export type { WebhookTriggerResponseItem }
 
 // Auth
 export interface BackendStatus {
@@ -21,12 +23,14 @@ export interface UserInfo {
 
 export interface AuthConfig {
   clientId?: string
-  [key: string]: unknown
+  endSessionEndpoint?: string
+  postLogoutRedirectUri?: string
+  [key: string]: string | number | boolean | undefined
 }
 
 export interface AuthLocation {
   IPv4?: string
-  [key: string]: unknown
+  [key: string]: string | number | boolean | undefined
 }
 
 export interface AuthState {
@@ -44,7 +48,7 @@ export interface AuthState {
   codeVerifier: string | null
   backendStatus: BackendStatus
   loadingConfig: boolean
-  authState?: unknown
+  authState?: Record<string, string | number | boolean>
   userInum?: string | null
   isUserInfoFetched: boolean
   hasSession: boolean
@@ -199,19 +203,9 @@ export interface AuiFeature {
   [key: string]: unknown
 }
 
-export interface WebhookTriggerResponseItem {
-  success: boolean
-  responseMessage?: string
-  responseObject?: {
-    inum?: string
-    webhookId?: string
-    webhookName?: string
-  }
-}
-
 export interface StoredTriggerPayload {
   feature: string | null
-  payload: string | number | boolean | object | null
+  payload: JsonValue
 }
 
 export interface WebhookState {

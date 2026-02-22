@@ -1,27 +1,16 @@
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { WebhookEntry } from 'JansConfigApi'
-import type { TriggerPayload } from 'Plugins/admin/components/Webhook/types'
-import type { WebhookTriggerResponseItem } from '../sagas/types/webhook'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import type {
+  WebhookSliceState,
+  WebhookSliceTriggerPayload,
+  WebhookTriggerResponseItem,
+  TriggerPayloadActionPayload,
+  TriggerWebhookReducerPayload,
+} from '../types/webhook'
 
-type SerializableValue = string | number | boolean | object | null
-
-interface StoredTriggerPayload {
-  feature: string | null
-  payload: SerializableValue
-}
-
-export interface WebhookSliceState {
-  loadingWebhooks: boolean
-  featureWebhooks: WebhookEntry[]
-  webhookModal: boolean
-  triggerWebhookInProgress: boolean
-  triggerWebhookMessage: string
-  webhookTriggerErrors: WebhookTriggerResponseItem[]
-  triggerPayload: StoredTriggerPayload
-  featureToTrigger: string
-  showErrorModal: boolean
-}
+export type { WebhookSliceState, WebhookSliceTriggerPayload }
 
 const initialState: WebhookSliceState = {
   loadingWebhooks: false,
@@ -32,7 +21,7 @@ const initialState: WebhookSliceState = {
   webhookTriggerErrors: [],
   triggerPayload: {
     feature: null,
-    payload: null,
+    payload: null as JsonValue,
   },
   featureToTrigger: '',
   showErrorModal: false,
@@ -52,11 +41,14 @@ const webhookSlice = createSlice({
     setWebhookModal: (state, action: PayloadAction<boolean>) => {
       state.webhookModal = action.payload
     },
-    triggerWebhook: (state, action: PayloadAction<TriggerPayload>) => {
+    triggerWebhook: (state, action: PayloadAction<TriggerWebhookReducerPayload>) => {
       state.triggerWebhookInProgress = true
-      state.triggerPayload = {
-        feature: action.payload?.feature ?? null,
-        payload: (action.payload?.payload ?? null) as SerializableValue,
+      const p = action.payload as TriggerPayloadActionPayload
+      if ('feature' in p || 'payload' in p) {
+        Object.assign(state.triggerPayload, {
+          feature: p?.feature ?? null,
+          payload: (p?.payload ?? null) as JsonValue,
+        })
       }
     },
     setTriggerWebhookResponse: (state, action: PayloadAction<string>) => {
@@ -66,11 +58,12 @@ const webhookSlice = createSlice({
     setWebhookTriggerErrors: (state, action: PayloadAction<WebhookTriggerResponseItem[]>) => {
       state.webhookTriggerErrors = action.payload
     },
-    setTriggerPayload: (state, action: PayloadAction<TriggerPayload>) => {
-      state.triggerPayload = {
-        feature: action.payload?.feature ?? null,
-        payload: (action.payload?.payload ?? null) as SerializableValue,
-      }
+    setTriggerPayload: (state, action: PayloadAction<TriggerPayloadActionPayload>) => {
+      const p = action.payload
+      Object.assign(state.triggerPayload, {
+        feature: p?.feature ?? null,
+        payload: (p?.payload ?? null) as JsonValue,
+      })
     },
     setFeatureToTrigger: (state, action: PayloadAction<string>) => {
       state.featureToTrigger = action.payload

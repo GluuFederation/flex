@@ -1,8 +1,5 @@
-// @ts-nocheck
-/**
- * License Sagas
- */
 import { all, call, fork, put, takeEvery } from 'redux-saga/effects'
+import type { SagaIterator } from 'redux-saga'
 import {
   checkLicenseConfigValidResponse,
   checkLicensePresentResponse,
@@ -15,24 +12,37 @@ import {
   setValidatingFlow,
   setApiDefaultToken,
   setLicenseError,
+  checkLicensePresent,
+  checkUserLicenceKey,
+  checkLicenseConfigValid,
+  uploadNewSsaToken as uploadNewSsaTokenAction,
+  generateTrialLicense,
+  retrieveLicenseKey as retrieveLicenseKeyAction,
 } from '../actions'
 import LicenseApi from 'Redux/api/LicenseApi'
+import type {
+  LicenseApiGenericResponse,
+  LicenseRequestPayload,
+  SSARequestPayload,
+} from 'Redux/api/types/LicenseApi'
 import { getClientWithToken, getClient } from 'Redux/api/base'
+import type { ApiTokenResponse } from 'Redux/api/types/BackendApi'
 import { fetchApiTokenWithDefaultScopes } from 'Redux/api/backend-api'
 import MauApi from 'Redux/api/MauApi'
 import { getYearMonth } from '../../utils/Util'
+import { devLogger } from '@/utils/devLogger'
+import * as JansConfigApi from 'jans_config_api'
+import type { SagaError } from './types/audit'
 
-const JansConfigApi = require('jans_config_api')
-
-let defaultToken
+let defaultToken: ApiTokenResponse | undefined
 
 export function* getAccessToken() {
   if (!defaultToken) {
     try {
-      defaultToken = yield call(fetchApiTokenWithDefaultScopes)
+      defaultToken = (yield call(fetchApiTokenWithDefaultScopes)) as ApiTokenResponse
       yield put(setApiDefaultToken(defaultToken))
     } catch (error) {
-      console.error('Failed to fetch API token with default scopes', error)
+      devLogger.error('Failed to fetch API token with default scopes', error)
       throw error
     }
   }
@@ -40,98 +50,104 @@ export function* getAccessToken() {
 }
 
 function* getApiTokenWithDefaultScopes() {
-  const { access_token } = yield call(getAccessToken)
-
-  const api = new JansConfigApi.AdminUILicenseApi(getClientWithToken(JansConfigApi, access_token))
+  const token = (yield call(getAccessToken)) as ApiTokenResponse
+  const api = new JansConfigApi.AdminUILicenseApi(
+    getClientWithToken(JansConfigApi, token.access_token),
+  )
   return new LicenseApi(api)
 }
 
 function* newFunction() {
-  const tokenResponse = yield call(getAccessToken)
-  const { access_token, issuer } = tokenResponse
+  const tokenResponse = (yield call(getAccessToken)) as ApiTokenResponse & { issuer?: string }
+  const access_token = tokenResponse.access_token
+  const issuer = tokenResponse.issuer ?? null
   const api = new JansConfigApi.StatisticsUserApi(getClient(JansConfigApi, access_token, issuer))
   return new MauApi(api)
 }
 
-function* checkLicensePresentWorker() {
+function* checkLicensePresentWorker(_action?: { type: string }) {
   try {
     const licenseApi = yield* getApiTokenWithDefaultScopes()
-    const response = yield call(licenseApi.getIsActive)
+    const response = (yield call(licenseApi.getIsActive)) as LicenseApiGenericResponse | null
     if (!response?.success) {
       yield* retrieveLicenseKey()
     } else {
-      const mauThreshold = response.responseObject?.find((item) => item?.name === 'mau_threshold')
-      yield* checkMauThreshold(parseInt(mauThreshold?.value))
+      const arr = Array.isArray(response.responseObject) ? response.responseObject : []
+      const mauThreshold = arr.find((item) => item?.name === 'mau_threshold')
+      yield* checkMauThreshold(parseInt(mauThreshold?.value ?? '', 10))
     }
   } catch (error) {
-    console.log('Error in checking License present.', error)
+    devLogger.log('Error in checking License present.', error)
     yield* retrieveLicenseKey()
   }
 }
 
-function* retrieveLicenseKey() {
+function getLicenseErrorMessage(error: Error | SagaError): string {
+  if (typeof (error as SagaError).response?.body?.responseMessage === 'string') {
+    return (error as SagaError).response!.body!.responseMessage!
+  }
+  return error instanceof Error ? error.message : String(error)
+}
+
+function* retrieveLicenseKey(_action?: { type: string }) {
   try {
     const licenseApi = yield* getApiTokenWithDefaultScopes()
-    const response = yield call(licenseApi.retrieveLicense)
+    const response = (yield call(licenseApi.retrieveLicense)) as LicenseApiGenericResponse | null
+    const responseObj = response?.responseObject
+    const licenseKey =
+      typeof responseObj === 'object' && responseObj !== null && !Array.isArray(responseObj)
+        ? responseObj['licenseKey']
+        : undefined
 
-    if (response?.responseObject?.['licenseKey']) {
+    if (licenseKey) {
       try {
-        const activateLicense = yield call(licenseApi.submitLicenseKey, {
-          payload: {
-            licenseKey: response.responseObject['licenseKey'],
-          },
-        })
+        const activateLicense = (yield call(licenseApi.submitLicenseKey, {
+          payload: { licenseKey },
+        })) as LicenseApiGenericResponse | null
 
         yield put(generateTrialLicenseResponse(activateLicense))
         yield put(setValidatingFlow({ isValidatingFlow: true }))
 
-        const mauThreshold = activateLicense.responseObject?.find(
-          (item) => item?.name === 'mau_threshold',
-        )
-        yield* checkMauThreshold(parseInt(mauThreshold?.value))
-      } catch (error) {
-        const errorMessage = error?.response?.body?.responseMessage || error.message
-        yield put(setLicenseError(errorMessage))
+        const arr =
+          activateLicense?.responseObject && Array.isArray(activateLicense.responseObject)
+            ? activateLicense.responseObject
+            : []
+        const mauThreshold = arr.find((item) => item?.name === 'mau_threshold')
+        yield* checkMauThreshold(parseInt(mauThreshold?.value ?? '', 10))
+      } catch (err) {
+        yield put(setLicenseError(getLicenseErrorMessage(err as Error | SagaError)))
         yield put(retrieveLicenseKeyResponse({ isNoValidLicenseKeyFound: true }))
         yield put(checkLicensePresentResponse({ isLicenseValid: false }))
         yield put(generateTrialLicenseResponse(null))
       }
     }
-  } catch (error) {
-    const errorMessage = error?.response?.body?.responseMessage || error.message
-    console.log('Error in generating key.', error)
-    yield put(setLicenseError(errorMessage))
+  } catch (err) {
+    yield put(setLicenseError(getLicenseErrorMessage(err as Error | SagaError)))
+    devLogger.log('Error in generating key.', err)
     yield put(retrieveLicenseKeyResponse({ isNoValidLicenseKeyFound: true }))
     yield put(checkLicensePresentResponse({ isLicenseValid: false }))
     yield put(generateTrialLicenseResponse(null))
   }
 }
 
-function* checkMauThreshold(mau_threshold) {
+function* checkMauThreshold(mau_threshold: number) {
   const mauApi = yield* newFunction()
   try {
-    const data = yield call(mauApi.getMau, { month: getYearMonth(new Date()) })
+    const data = (yield call(mauApi.getMau, { month: getYearMonth(new Date()) })) as
+      | Array<{ monthly_active_users?: number }>
+      | undefined
     const limit = (mau_threshold * 15) / 100 + mau_threshold
-    if (limit > data?.[0]?.monthly_active_users || data?.length === 0) {
-      // under MAU limit
-      yield put(
-        checkLicensePresentResponse({
-          isLicenseValid: true,
-        }),
-      )
+    const firstMau = data?.[0]?.monthly_active_users
+    if (limit > (firstMau ?? 0) || !data?.length) {
+      yield put(checkLicensePresentResponse({ isLicenseValid: true }))
       yield put(checkThresholdLimit({ isUnderThresholdLimit: true }))
     } else {
       yield put(checkThresholdLimit({ isUnderThresholdLimit: false }))
-      yield put(
-        checkLicensePresentResponse({
-          isLicenseValid: false,
-        }),
-      )
+      yield put(checkLicensePresentResponse({ isLicenseValid: false }))
     }
-  } catch (error) {
-    console.log(error)
-    const errorMessage = error?.response?.body?.responseMessage || error.message
-    yield put(setLicenseError(errorMessage))
+  } catch (err) {
+    devLogger.log(err)
+    yield put(setLicenseError(getLicenseErrorMessage(err as Error | SagaError)))
     yield put(retrieveLicenseKeyResponse({ isNoValidLicenseKeyFound: true }))
     yield put(checkLicensePresentResponse({ isLicenseValid: false }))
   } finally {
@@ -139,54 +155,65 @@ function* checkMauThreshold(mau_threshold) {
   }
 }
 
-function* generateTrailLicenseKey() {
+function* generateTrailLicenseKey(_action?: { type: string }): SagaIterator {
   try {
     const licenseApi = yield* getApiTokenWithDefaultScopes()
-    const response = yield call(licenseApi.getTrialLicense)
+    const response = (yield call(licenseApi.getTrialLicense)) as LicenseApiGenericResponse | null
 
-    if (response?.responseObject?.['license-key']) {
+    const responseObj = response?.responseObject
+    const licenseKeyVal =
+      typeof responseObj === 'object' && responseObj !== null && !Array.isArray(responseObj)
+        ? responseObj['license-key']
+        : undefined
+
+    if (licenseKeyVal) {
       try {
-        const activateLicense = yield call(licenseApi.submitLicenseKey, {
-          payload: {
-            licenseKey: response.responseObject['license-key'],
-          },
-        })
+        const activateLicense = (yield call(licenseApi.submitLicenseKey, {
+          payload: { licenseKey: licenseKeyVal },
+        })) as LicenseApiGenericResponse | null
         yield put(generateTrialLicenseResponse(activateLicense))
         yield put(
           checkLicensePresentResponse({
-            isLicenseValid: activateLicense?.success,
+            isLicenseValid: activateLicense?.success ?? false,
           }),
         )
         yield put(checkUserLicenseKeyResponse(activateLicense))
-      } catch (error) {
-        const errorMessage = error?.response?.body?.responseMessage || error.message
+      } catch (err) {
         yield put(checkLicensePresentResponse({ isLicenseValid: false }))
         yield put(generateTrialLicenseResponse(null))
-        yield put(setLicenseError(errorMessage))
+        yield put(setLicenseError(getLicenseErrorMessage(err as Error | SagaError)))
       }
     }
-  } catch (error) {
-    const errorMessage = error?.response?.body?.responseMessage || error.message
-    console.log('Error in generating key.', error)
+  } catch (err) {
+    yield put(setLicenseError(getLicenseErrorMessage(err as Error | SagaError)))
+    devLogger.log('Error in generating key.', err)
     yield put(checkLicensePresentResponse({ isLicenseValid: false }))
     yield put(generateTrialLicenseResponse(null))
-    yield put(setLicenseError(errorMessage))
   }
 }
 
-function* activateCheckUserLicenseKey({ payload }) {
+function* activateCheckUserLicenseKey(action: { payload: LicenseRequestPayload }): SagaIterator {
+  const { payload } = action
   try {
     const licenseApi = yield* getApiTokenWithDefaultScopes()
-    const response = yield call(licenseApi.submitLicenseKey, payload)
+    const response = (yield call(
+      licenseApi.submitLicenseKey,
+      payload,
+    )) as LicenseApiGenericResponse | null
     yield put(checkUserLicenseKeyResponse(response))
-  } catch (error) {
-    console.log(error)
+  } catch (err) {
+    devLogger.log(err)
   }
 }
-function* uploadNewSsaToken({ payload }) {
+
+function* uploadNewSsaToken(action: { type: string; payload: SSARequestPayload }) {
+  const { payload } = action
   try {
     const licenseApi = yield* getApiTokenWithDefaultScopes()
-    const response = yield call(licenseApi.uploadSSAtoken, payload)
+    const response = (yield call(
+      licenseApi.uploadSSAtoken,
+      payload,
+    )) as LicenseApiGenericResponse | null
     if (!response?.success) {
       yield put(
         uploadNewSsaTokenResponse(
@@ -194,36 +221,36 @@ function* uploadNewSsaToken({ payload }) {
         ),
       )
     }
-    yield put(checkLicenseConfigValidResponse(response?.success))
+    yield put(checkLicenseConfigValidResponse(response?.success ?? false))
     yield put(getOAuth2Config(defaultToken))
-    // window.location.reload()
-  } catch (error) {
+  } catch (err) {
     yield put(checkLicenseConfigValidResponse(false))
-    console.log(error)
-    yield put(uploadNewSsaTokenResponse(error?.response?.body?.responseMessage || error.message))
+    devLogger.log(err)
+    yield put(uploadNewSsaTokenResponse(getLicenseErrorMessage(err as Error | SagaError)))
   }
 }
 
-function* checkAdminuiLicenseConfig() {
+function* checkAdminuiLicenseConfig(_action?: { type: string }) {
   try {
     const licenseApi = yield* getApiTokenWithDefaultScopes()
     yield put(getOAuth2Config(defaultToken))
-    const response = yield call(licenseApi.checkAdminuiLicenseConfig)
-    yield put(checkLicenseConfigValidResponse(response?.success))
+    const response = (yield call(
+      licenseApi.checkAdminuiLicenseConfig,
+    )) as LicenseApiGenericResponse | null
+    yield put(checkLicenseConfigValidResponse(response?.success ?? false))
   } catch (error) {
-    console.log(error)
+    devLogger.log(error)
     yield put(checkLicenseConfigValidResponse(false))
   }
 }
 
-//watcher sagas
-export function* checkLicensePresentWatcher() {
-  yield takeEvery('license/checkLicensePresent', checkLicensePresentWorker)
-  yield takeEvery('license/checkUserLicenceKey', activateCheckUserLicenseKey)
-  yield takeEvery('license/checkLicenseConfigValid', checkAdminuiLicenseConfig)
-  yield takeEvery('license/uploadNewSsaToken', uploadNewSsaToken)
-  yield takeEvery('license/generateTrialLicense', generateTrailLicenseKey)
-  yield takeEvery('license/retrieveLicenseKey', retrieveLicenseKey)
+export function* checkLicensePresentWatcher(): SagaIterator {
+  yield takeEvery(checkLicensePresent, checkLicensePresentWorker)
+  yield takeEvery(checkUserLicenceKey, activateCheckUserLicenseKey)
+  yield takeEvery(checkLicenseConfigValid, checkAdminuiLicenseConfig)
+  yield takeEvery(uploadNewSsaTokenAction, uploadNewSsaToken)
+  yield takeEvery(generateTrialLicense, generateTrailLicenseKey)
+  yield takeEvery(retrieveLicenseKeyAction, retrieveLicenseKey)
 }
 
 /**

@@ -26,6 +26,7 @@ import {
 } from 'Redux/features/authSlice'
 import { isFourZeroThreeError } from 'Utils/TokenController'
 import { redirectToLogout } from 'Redux/sagas/SagaUtils'
+import { devLogger } from '@/utils/devLogger'
 
 function* getApiTokenWithDefaultScopes() {
   try {
@@ -69,7 +70,7 @@ function* getOAuth2ConfigWorker({ payload }) {
       return
     }
   } catch (error) {
-    console.error('Problems getting OAuth2 configuration.', error?.response?.data || error)
+    devLogger.error('Problems getting OAuth2 configuration.', error?.response?.data || error)
     if (isFourZeroThreeError(error)) {
       yield* redirectToLogout()
       return
@@ -122,7 +123,7 @@ function* getAPIAccessTokenWorker(jwt) {
           )
           yield put(getOAuth2Config({ access_token: response.access_token }))
         } else {
-          console.error('Failed to obtain API token for session creation')
+          devLogger.error('Failed to obtain API token for session creation')
           yield put(
             createAdminUiSessionResponse({ success: false, error: 'Failed to obtain API token' }),
           )
@@ -130,7 +131,7 @@ function* getAPIAccessTokenWorker(jwt) {
       }
     }
   } catch (error) {
-    console.error('Problems getting API Access Token.', error?.response?.data || error)
+    devLogger.error('Problems getting API Access Token.', error?.response?.data || error)
     yield put(
       setBackendStatus({
         active: false,
@@ -153,7 +154,7 @@ function* getLocationWorker() {
       return
     }
   } catch (error) {
-    console.error('Problem getting user location.', error?.response?.data || error)
+    devLogger.error('Problem getting user location.', error?.response?.data || error)
   }
 }
 
@@ -165,7 +166,7 @@ function* createAdminUiSessionWorker({ payload }) {
   } catch (error) {
     const errorMessage =
       error?.response?.data?.message || error?.response?.data?.responseMessage || error?.message
-    console.error('Problems creating Admin UI session.', error?.response?.data || error)
+    devLogger.error('Problems creating Admin UI session.', error?.response?.data || error)
     if (isFourZeroThreeError(error)) {
       yield* redirectToLogout()
       return
@@ -178,7 +179,7 @@ function* deleteAdminUiSessionWorker() {
   try {
     yield call(deleteAdminUiSessionApi)
   } catch (error) {
-    console.error('Problems deleting Admin UI session.', error?.response?.data || error)
+    devLogger.error('Problems deleting Admin UI session.', error?.response?.data || error)
   } finally {
     yield put(deleteAdminUiSessionResponse())
   }

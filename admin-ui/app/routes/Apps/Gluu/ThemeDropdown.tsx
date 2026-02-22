@@ -5,6 +5,7 @@ import { GluuDropdown, type GluuDropdownOption, ChevronIcon } from 'Components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useTheme } from '@/context/theme/themeContext'
 import { THEME_LIGHT, THEME_DARK, isValidTheme, type ThemeValue } from '@/context/theme/constants'
+import { devLogger } from '@/utils/devLogger'
 import { useStyles } from './styles/ThemeDropdown.style'
 import type { ThemeDropdownComponentProps } from './types'
 
@@ -18,7 +19,7 @@ export const ThemeDropdownComponent = memo<ThemeDropdownComponentProps>(({ userI
   const onChangeTheme = useCallback(
     (value: string) => {
       if (!isValidTheme(value)) {
-        console.warn('Invalid theme value:', value)
+        devLogger.warn('Invalid theme value:', value)
         return
       }
 
@@ -57,7 +58,7 @@ export const ThemeDropdownComponent = memo<ThemeDropdownComponentProps>(({ userI
 
         localStorage.setItem('userConfig', JSON.stringify(newConfig))
       } catch (e) {
-        console.debug('Failed to parse userConfig:', e)
+        devLogger.debug('Failed to parse userConfig:', e)
         const newConfig = {
           lang: {},
           theme: { [inum]: themeValue },

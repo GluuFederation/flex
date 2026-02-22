@@ -7,6 +7,7 @@ import {
 } from '../../redux/features/cedarPermissionsSlice'
 import { cedarlingClient, CedarlingLogType } from '@/cedarling'
 import bootstrap from '@/cedarling/config/cedarling-bootstrap-TBAC.json'
+import { devLogger } from '@/utils/devLogger'
 // Extended state interface for this component
 interface ExtendedRootState {
   authReducer: {
@@ -94,7 +95,7 @@ const PermissionsPolicyInitializer = () => {
         policyStoreString = JSON.stringify(policyStoreJson)
       }
     } catch (error) {
-      console.error('Invalid policy store JSON format:', error)
+      devLogger.error('Invalid policy store JSON format:', error)
       dispatch(setCedarlingInitializing(false))
       return
     }
@@ -110,18 +111,18 @@ const PermissionsPolicyInitializer = () => {
       .then(() => {
         retryCount.current = { tryCount: 0, callMethod: false }
         dispatch(setCedarlingInitialized(true))
-        console.log('✅ Cedarling initialized!')
+        devLogger.log('✅ Cedarling initialized!')
       })
       .catch(() => {
         retryCount.current.tryCount += 1
-        console.warn(`❌ Cedarling got failed. Retrying in 1000ms`)
+        devLogger.warn(`❌ Cedarling got failed. Retrying in 1000ms`)
 
         if (retryCount.current.tryCount < maxRetries) {
           setTimeout(() => {
             dispatch(setCedarlingInitialized(false)) // Triggers re-run of useEffect
           }, 1000)
         } else {
-          console.error('❌ Max retry attempts reached. Cedarling init failed permanently.')
+          devLogger.error('❌ Max retry attempts reached. Cedarling init failed permanently.')
           dispatch(setCedarFailedStatusAfterMaxTries())
         }
       })

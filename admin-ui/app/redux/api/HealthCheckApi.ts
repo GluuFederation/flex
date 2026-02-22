@@ -1,10 +1,10 @@
 import { handleError } from 'Utils/ApiUtils'
 
-interface ServiceStatusInput {
+export interface ServiceStatusInput {
   [key: string]: string
 }
 
-interface ServiceStatusResponse {
+export interface ServiceStatusResponse {
   [serviceName: string]: string
 }
 

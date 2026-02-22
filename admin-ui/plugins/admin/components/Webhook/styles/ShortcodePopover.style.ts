@@ -7,9 +7,15 @@ interface ShortcodePopoverStylesParams {
 
 const HELP_ICON_SIZE = 18
 const HELP_ICON_MARGIN = 6
+const MAX_POPOVER_HEIGHT = '300px'
+const MIN_POPOVER_WIDTH = 200
+const MAX_POPOVER_WIDTH = 260
 
 export const useStyles = makeStyles<ShortcodePopoverStylesParams>()((_theme, { themeColors }) => {
-  const paperBg = themeColors.settings?.cardBackground ?? themeColors.card?.background
+  const paperBg =
+    themeColors.settings?.cardBackground ??
+    themeColors.card?.background ??
+    themeColors.inputBackground
   const hoverBg = themeColors.settings?.customParamsBox ?? themeColors.inputBackground
 
   return {
@@ -19,11 +25,11 @@ export const useStyles = makeStyles<ShortcodePopoverStylesParams>()((_theme, { t
       color: themeColors.fontColor,
     },
     content: {
-      maxHeight: '300px',
+      maxHeight: MAX_POPOVER_HEIGHT,
       overflowY: 'auto',
       width: '100%',
-      minWidth: 200,
-      maxWidth: 260,
+      minWidth: MIN_POPOVER_WIDTH,
+      maxWidth: MAX_POPOVER_WIDTH,
     },
     list: {
       color: themeColors.fontColor,

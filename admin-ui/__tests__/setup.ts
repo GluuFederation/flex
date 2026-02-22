@@ -11,6 +11,10 @@ beforeAll(async () => {
   }
 })
 
+afterAll(() => {
+  jest.restoreAllMocks()
+})
+
 jest.spyOn(global.console, 'log').mockImplementation(jest.fn())
 jest.spyOn(global.console, 'warn').mockImplementation(jest.fn())
 
@@ -19,8 +23,6 @@ jest.spyOn(global.console, 'error').mockImplementation((...args: unknown[]) => {
   const shouldSuppress =
     msg.includes('Problems getting API access token') ||
     msg.includes('Problems posting user action audit log') ||
-    msg.includes('_t is not a function') ||
-    msg.includes('was not wrapped in act') ||
     msg.includes('suspended resource finished loading') ||
     (msg.includes('Failed prop type') && msg.includes('timeout') && msg.includes('Fade'))
 
@@ -31,9 +33,9 @@ jest.spyOn(global.console, 'error').mockImplementation((...args: unknown[]) => {
 jest.setTimeout(30000)
 
 HTMLAnchorElement.prototype.click = jest.fn()
-;(
-  globalThis as unknown as { window: { URL: { createObjectURL: () => void } } }
-).window.URL.createObjectURL = jest.fn()
+if (typeof globalThis.URL !== 'undefined') {
+  globalThis.URL.createObjectURL = jest.fn()
+}
 
 global.ResizeObserver = ResizeObserverPolyfill
 

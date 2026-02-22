@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from 'react'
-import { useDispatch } from 'react-redux'
-import { useAppSelector } from '@/redux/hooks'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import {
   getWebhooksByFeatureId,
@@ -34,7 +33,7 @@ interface WebhookTriggerModalProps {
 }
 
 const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
 
   const { t } = useTranslation()
@@ -42,10 +41,16 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
   const { state: themeState } = useTheme()
   const selectedTheme = themeState.theme
 
-  const { featureWebhooks, loadingWebhooks, webhookModal, triggerWebhookInProgress } =
-    useAppSelector((state) => state.webhookReducer)
+  const webhookState = useAppSelector((state) => state.webhookReducer)
+  const featureWebhooks = webhookState?.featureWebhooks ?? []
+  const loadingWebhooks = webhookState?.loadingWebhooks ?? false
+  const webhookModal = webhookState?.webhookModal ?? false
+  const triggerWebhookInProgress = webhookState?.triggerWebhookInProgress ?? false
 
-  const enabledFeatureWebhooks = featureWebhooks.filter((item) => item.jansEnabled)
+  const enabledFeatureWebhooks = useMemo(
+    () => featureWebhooks.filter((item) => Boolean(item.jansEnabled)),
+    [featureWebhooks],
+  )
 
   const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
   const webhookScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[webhookResourceId], [webhookResourceId])
@@ -79,7 +84,7 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
 
   useEffect(() => {
     dispatch(setWebhookModal(enabledFeatureWebhooks?.length > 0))
-  }, [featureWebhooks?.length])
+  }, [enabledFeatureWebhooks, dispatch])
 
   const handleAcceptWebhookTrigger = () => {
     dispatch(setWebhookModal(false))
@@ -123,7 +128,7 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
         {!loadingWebhooks ? (
           <>
             <ModalBody>
-              <Box flex flexDirection="column" px={2}>
+              <Box sx={{ display: 'flex', flexDirection: 'column' }} px={2}>
                 <p style={{ fontWeight: 600 }}>{t('messages.webhook_dialog_dec')}</p>
               </Box>
               {enabledFeatureWebhooks?.length ? (
@@ -141,7 +146,7 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
                   <TableBody>
                     {enabledFeatureWebhooks.map((item) => (
                       <TableRow
-                        key={`${item.displayName}-${item.url}`}
+                        key={item.inum}
                         sx={{
                           '&:last-child td, &:last-child th': {
                             border: 0,

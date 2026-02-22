@@ -1,10 +1,10 @@
-interface Role {
+interface RoleFixture {
   role: string
   description: string
   scopes: string[]
 }
 
-export const roles: Role[] = [
+export const roles: RoleFixture[] = [
   {
     role: 'api-admin',
     description:
@@ -41,5 +41,3 @@ export const roles: Role[] = [
     ],
   },
 ]
-
-export default roles
