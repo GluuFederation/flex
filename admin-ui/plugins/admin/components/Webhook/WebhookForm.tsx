@@ -1,7 +1,6 @@
-import React, { Suspense, useCallback, useState, useEffect, useMemo, memo, useRef } from 'react'
+import React, { Suspense, useCallback, useState, useEffect, useMemo, memo } from 'react'
 import { useParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import isEqual from 'lodash/isEqual'
 import Toggle from 'react-toggle'
@@ -24,11 +23,15 @@ import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { isDevelopment } from '@/utils/env'
-import { resetFlags } from 'Plugins/admin/redux/features/WebhookSlice'
 import { WEBHOOK } from 'Utils/ApiResources'
 import { isValid } from './WebhookURLChecker'
 import { getWebhookValidationSchema } from 'Plugins/admin/helper/validations/webhookValidation'
-import { buildWebhookInitialValues } from 'Plugins/admin/helper/webhook'
+import {
+  buildWebhookInitialValues,
+  hasHttpBody,
+  HTTP_METHODS,
+  isLastHeaderComplete,
+} from 'Plugins/admin/helper/webhook'
 import shortCodes from 'Plugins/admin/helper/shortCodes.json'
 import ShortcodePopover from './ShortcodePopover'
 import { useStyles as useFormPageStyles } from './styles/WebhookFormPage.style'
@@ -41,18 +44,9 @@ import type {
   WebhookEntry,
 } from './types'
 
-const HTTP_METHODS = [
-  { value: 'GET', label: 'GET' },
-  { value: 'POST', label: 'POST' },
-  { value: 'PUT', label: 'PUT' },
-  { value: 'PATCH', label: 'PATCH' },
-  { value: 'DELETE', label: 'DELETE' },
-]
-
 const WebhookForm: React.FC = () => {
   const { id } = useParams<{ id?: string }>()
   const { t, i18n } = useTranslation()
-  const dispatch = useDispatch()
   const { navigateBack } = useAppNavigation()
 
   const { state: themeState } = useTheme()
@@ -114,7 +108,6 @@ const WebhookForm: React.FC = () => {
   const [selectedFeatures, setSelectedFeatures] = useState<AuiFeature[]>(initialSelectedFeatures)
   const [baselineSelectedFeatures, setBaselineSelectedFeatures] =
     useState<AuiFeature[]>(initialSelectedFeatures)
-  const headersBodyRef = useRef<HTMLDivElement>(null)
 
   const validationSchema = useMemo(() => getWebhookValidationSchema(t), [t, i18n.language])
 
@@ -166,19 +159,20 @@ const WebhookForm: React.FC = () => {
   )
   const isFormChanged = formikDirty || isFeatureSelectionChanged
 
-  const showBodyEditor = useMemo(
-    () =>
-      Boolean(
-        formikValues.httpMethod &&
-        formikValues.httpMethod !== 'GET' &&
-        formikValues.httpMethod !== 'DELETE',
-      ),
-    [formikValues.httpMethod],
-  )
+  const showBodyEditor = Boolean(formikValues.httpMethod && hasHttpBody(formikValues.httpMethod))
 
-  const headerInputBg = themeColors.settings?.customParamsBox ?? themeColors.inputBackground
   const headersError = formik.errors.httpHeaders
-  const showHeadersError = !!(headersError && formik.touched.httpHeaders)
+  const noHeaders = (formikValues.httpHeaders ?? []).length === 0
+  const headersRequiredAndEmpty = hasHttpBody(formikValues.httpMethod) && noHeaders
+  const showHeadersError =
+    (headersError && typeof headersError === 'string') || headersRequiredAndEmpty
+  const headersErrorMessage =
+    (typeof headersError === 'string' ? headersError : null) ??
+    (headersRequiredAndEmpty ? t('messages.http_headers_required') : '')
+  const canAddHeader = useMemo(
+    () => isLastHeaderComplete(formikValues.httpHeaders || []),
+    [formikValues.httpHeaders],
+  )
   const formDescription = useMemo(
     () =>
       t('messages.webhook_form_description', {
@@ -282,6 +276,17 @@ const WebhookForm: React.FC = () => {
     [formikValues.httpHeaders, setFieldValue],
   )
 
+  const handleHttpMethodChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
+      formik.handleChange(e)
+      const value = (e.target as HTMLSelectElement).value
+      if (hasHttpBody(value) && (formikValues.httpHeaders ?? []).length === 0) {
+        setFieldValue('httpHeaders', [{ key: '', value: '' }])
+      }
+    },
+    [formik.handleChange, formikValues.httpHeaders, setFieldValue],
+  )
+
   const changeHeader = useCallback(
     (index: number, field: keyof HttpHeader, newValue: string) => {
       const current = [...(formikValues.httpHeaders || [])]
@@ -360,22 +365,6 @@ const WebhookForm: React.FC = () => {
       formik.validateForm()
     }
   }, [i18n.language])
-
-  useEffect(
-    () => () => {
-      dispatch(resetFlags())
-    },
-    [dispatch],
-  )
-
-  useEffect(() => {
-    const container = headersBodyRef.current
-    if (!container) return
-    container.querySelectorAll('input').forEach((el) => {
-      const input = el as HTMLInputElement
-      input.style.setProperty('background-color', headerInputBg, 'important')
-    })
-  }, [headerInputBg, formikValues.httpHeaders])
 
   return (
     <GluuLoader blocking={formLoading}>
@@ -457,7 +446,7 @@ const WebhookForm: React.FC = () => {
             <div className={classes.fieldItem}>
               <GluuSelectRow
                 label="fields.http_method"
-                formik={formik}
+                formik={{ ...formik, handleChange: handleHttpMethodChange }}
                 value={formikValues?.httpMethod}
                 values={HTTP_METHODS}
                 lsize={12}
@@ -526,12 +515,13 @@ const WebhookForm: React.FC = () => {
                     useOpacityOnHover
                     className={classes.headersActionBtn}
                     onClick={addHeader}
+                    disabled={!canAddHeader}
                   >
                     <i className="fa fa-fw fa-plus" />
                     {t('actions.add_header')}
                   </GluuButton>
                 </div>
-                <div ref={headersBodyRef} className={classes.headersBody}>
+                <div className={classes.headersBody}>
                   {(formikValues.httpHeaders || []).map((header, index) => (
                     <div key={index} className={classes.headersRow}>
                       <Input
@@ -566,10 +556,8 @@ const WebhookForm: React.FC = () => {
                     </div>
                   ))}
                 </div>
-                {showHeadersError && (
-                  <div className={classes.headersError}>
-                    {typeof headersError === 'string' ? headersError : ''}
-                  </div>
+                {showHeadersError && headersErrorMessage && (
+                  <div className={classes.headersError}>{headersErrorMessage}</div>
                 )}
               </div>
             </div>

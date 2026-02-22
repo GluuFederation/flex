@@ -1,4 +1,10 @@
-export const roles = [
+interface Role {
+  role: string
+  description: string
+  scopes: string[]
+}
+
+export const roles: Role[] = [
   {
     role: 'api-admin',
     description:

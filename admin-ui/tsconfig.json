@@ -19,26 +19,32 @@
     "paths": {
       "@/*": ["app/*"],
       "Components": ["app/components"],
+      "Components/*": ["app/components/*"],
       "Routes/*": ["app/routes/*"],
       "Plugins/*": ["plugins/*"],
       "Context/*": ["app/context/*"],
+      "context/*": ["app/context/*"],
       "Utils/*": ["app/utils/*"],
+      "Styles/*": ["app/styles/*"],
       "Redux/*": ["app/redux/*"],
       "Images/*": ["app/images/*"],
       "Contexts/*": ["app/contexts/*"],
       "SVG/*": ["app/components/SVG/*"],
       "JansConfigApi": ["jans_config_api_orval/src/JansConfigApi.ts"]
     },
-    "plugins": [
-      {
-        "name": "typescript-plugin-css-modules"
-      }
-    ],
+    "plugins": [{ "name": "typescript-plugin-css-modules" }],
     "outDir": "./dist",
     "rootDir": ".",
     "sourceMap": true,
     "typeRoots": ["./node_modules/@types", "./build/types"]
   },
-  "include": ["app/**/*", "build/**/*", "plugins/**/*", "app/types/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.test.tsx"]
+  "include": [
+    "app/**/*",
+    "build/**/*",
+    "plugins/**/*",
+    "app/types/**/*",
+    "__mocks__/**/*",
+    "__tests__/**/*"
+  ],
+  "exclude": ["node_modules", "dist"]
 }

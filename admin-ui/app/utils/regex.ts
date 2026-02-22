@@ -20,6 +20,9 @@ export const REGEX_AUDIT_LIST_TIMESTAMP = /^(\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}
 /** Matches braced placeholders like {key} or {some.key}; use with .match() for finding all placeholders in a string. */
 export const REGEX_BRACED_PLACEHOLDER = /\{([^{}]+?)\}/g
 
+/** Matches URL/shortcode placeholders like ${inum} or ${name}; use with .replace() to normalize URLs before validation. */
+export const REGEX_URL_PLACEHOLDER = /\$\{[^}]*\}/g
+
 /** Escapes regex-special characters in a string so it can be used literally in a RegExp. */
 function escapeRegexSpecialChars(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')

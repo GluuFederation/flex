@@ -54,7 +54,7 @@ export interface WebhookOutputItem {
 interface WebhookWithBody {
   inum?: string
   url?: string
-  httpRequestBody?: Record<string, JsonValue>
+  httpRequestBody?: Record<string, string | number | boolean | null | object>
 }
 
 export const webhookOutputObject = (

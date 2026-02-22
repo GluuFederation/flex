@@ -4,7 +4,6 @@
 import { all } from 'redux-saga/effects'
 
 // sagas
-import mauSaga from './MauSaga'
 import healthSaga from './HealthSaga'
 import authSagas from './AuthSaga'
 import initSaga from './InitSaga'
@@ -24,7 +23,6 @@ export default function* rootSaga() {
     initSaga(),
     licenseSaga(),
     oidcDiscoverySaga(),
-    mauSaga(),
     healthSaga(),
     attributes(),
     profileDetails(),

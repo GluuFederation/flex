@@ -1,6 +1,6 @@
-// @ts-nocheck
-import React, { useCallback, useContext, useEffect, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useCallback, useEffect, useMemo } from 'react'
+import { useDispatch } from 'react-redux'
+import { useAppSelector } from '@/redux/hooks'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import {
   getWebhooksByFeatureId,
@@ -10,8 +10,7 @@ import {
   setTriggerWebhookResponse,
   setFeatureToTrigger,
 } from 'Plugins/admin/redux/features/WebhookSlice'
-import PropTypes from 'prop-types'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { useTheme } from 'Context/theme/themeContext'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
 import Table from '@mui/material/Table'
@@ -25,18 +24,26 @@ import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
 
-const useWebhookDialogAction = ({ feature, modal }) => {
+interface UseWebhookDialogActionProps {
+  feature: string
+  modal: boolean
+}
+
+interface WebhookTriggerModalProps {
+  closeModal: () => void
+}
+
+const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps) => {
   const dispatch = useDispatch()
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
 
   const { t } = useTranslation()
 
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const { state: themeState } = useTheme()
+  const selectedTheme = themeState.theme
 
-  const { featureWebhooks, loadingWebhooks, webhookModal, triggerWebhookInProgress } = useSelector(
-    (state) => state.webhookReducer,
-  )
+  const { featureWebhooks, loadingWebhooks, webhookModal, triggerWebhookInProgress } =
+    useAppSelector((state) => state.webhookReducer)
 
   const enabledFeatureWebhooks = featureWebhooks.filter((item) => item.jansEnabled)
 
@@ -79,7 +86,7 @@ const useWebhookDialogAction = ({ feature, modal }) => {
     dispatch(setFeatureToTrigger(feature))
   }
 
-  const webhookTriggerModal = ({ closeModal }) => {
+  const webhookTriggerModal = ({ closeModal }: WebhookTriggerModalProps) => {
     const closeWebhookTriggerModal = () => {
       closeModal()
       dispatch(setFeatureToTrigger(''))
@@ -105,7 +112,6 @@ const useWebhookDialogAction = ({ feature, modal }) => {
                 onClick={closeWebhookTriggerModal}
                 onKeyDown={() => {}}
                 style={{ color: customColors.logo }}
-                code
                 className="fa fa-2x fa-info fa-fw modal-icon mb-3"
                 role="img"
                 aria-hidden="true"
@@ -135,7 +141,7 @@ const useWebhookDialogAction = ({ feature, modal }) => {
                   <TableBody>
                     {enabledFeatureWebhooks.map((item) => (
                       <TableRow
-                        key={item.displayName + item.url}
+                        key={`${item.displayName}-${item.url}`}
                         sx={{
                           '&:last-child td, &:last-child th': {
                             border: 0,
@@ -182,7 +188,3 @@ const useWebhookDialogAction = ({ feature, modal }) => {
 }
 
 export default useWebhookDialogAction
-useWebhookDialogAction.propTypes = {
-  feature: PropTypes.string,
-  modal: PropTypes.bool,
-}

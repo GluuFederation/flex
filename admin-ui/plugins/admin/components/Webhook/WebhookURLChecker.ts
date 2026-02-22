@@ -1,3 +1,5 @@
+import { REGEX_URL_PLACEHOLDER } from '@/utils/regex'
+
 const BLOCKED_SCHEMES = [
   'http',
   'ftp',
@@ -71,6 +73,9 @@ const isPrivateOrLocalhost = (hostname: string): boolean => {
 const PATTERN =
   /^https:\/\/(([\w-]+\.)+[\w-]+|\[[\da-fA-F:]+\])(:\d+)?(\/[^\s?#]*)?(\?[^\s#]*)?(#[^\s]*)?$/i
 
+/** Replaces ${...} placeholders so URL structure can be validated while allowing params in URL */
+const normalizeUrlForValidation = (url: string): string => url.replace(REGEX_URL_PLACEHOLDER, 'x')
+
 const isAllowed = (url: string): boolean => {
   try {
     const parsed = new URL(url)
@@ -90,10 +95,14 @@ const isAllowed = (url: string): boolean => {
 }
 
 export const isValid = (url: string | undefined | null): boolean => {
-  if (url === undefined || url === null || !isAllowed(url)) {
+  if (url === undefined || url === null) {
     return false
   }
-  return PATTERN.test(url)
+  const normalized = normalizeUrlForValidation(url)
+  if (!isAllowed(normalized)) {
+    return false
+  }
+  return PATTERN.test(normalized)
 }
 
 export { isAllowed }

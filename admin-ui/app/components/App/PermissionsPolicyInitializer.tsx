@@ -15,9 +15,6 @@ interface ExtendedRootState {
       cedarlingLogType?: CedarlingLogType
     }
   }
-  mappingReducer: {
-    items: unknown[]
-  }
   cedarPermissions: {
     initialized: boolean
     isInitializing: boolean

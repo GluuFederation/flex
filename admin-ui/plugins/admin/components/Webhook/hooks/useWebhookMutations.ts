@@ -1,4 +1,5 @@
 import { useCallback, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import { useQueryClient } from '@tanstack/react-query'
 import {
@@ -23,6 +24,7 @@ const extractErrorMessage = (error: MutationError, fallback: string): string =>
   (error as ApiError)?.response?.data?.responseMessage || (error as Error)?.message || fallback
 
 export const useCreateWebhookWithAudit = (callbacks?: MutationCallbacks) => {
+  const { t } = useTranslation()
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
   const { logAction } = useWebhookAudit()
@@ -40,18 +42,24 @@ export const useCreateWebhookWithAudit = (callbacks?: MutationCallbacks) => {
         }).catch((auditError) => {
           if (isDevelopment) console.error('Audit logging failed:', auditError)
         })
-        dispatch(updateToast(true, 'success', 'Webhook created successfully'))
+        dispatch(updateToast(true, 'success', t('messages.webhook_created_successfully')))
         queryUtils.invalidateQueriesByKey(queryClient, getGetAllWebhooksQueryKey())
         callbacksRef.current?.onSuccess?.()
         return result
       } catch (error) {
         const err = error as MutationError
-        dispatch(updateToast(true, 'error', extractErrorMessage(err, 'Failed to create webhook')))
+        dispatch(
+          updateToast(
+            true,
+            'error',
+            extractErrorMessage(err, t('messages.failed_to_create_webhook')),
+          ),
+        )
         callbacksRef.current?.onError?.(err instanceof Error ? err : new Error(String(err)))
         throw error
       }
     },
-    [mutation, logAction, dispatch, queryClient],
+    [mutation, logAction, dispatch, queryClient, t],
   )
 
   return {
@@ -63,6 +71,7 @@ export const useCreateWebhookWithAudit = (callbacks?: MutationCallbacks) => {
 }
 
 export const useUpdateWebhookWithAudit = (callbacks?: MutationCallbacks) => {
+  const { t } = useTranslation()
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
   const { logAction } = useWebhookAudit()
@@ -80,18 +89,24 @@ export const useUpdateWebhookWithAudit = (callbacks?: MutationCallbacks) => {
         }).catch((auditError) => {
           if (isDevelopment) console.error('Audit logging failed:', auditError)
         })
-        dispatch(updateToast(true, 'success', 'Webhook updated successfully'))
+        dispatch(updateToast(true, 'success', t('messages.webhook_updated_successfully')))
         queryUtils.invalidateQueriesByKey(queryClient, getGetAllWebhooksQueryKey())
         callbacksRef.current?.onSuccess?.()
         return result
       } catch (error) {
         const err = error as MutationError
-        dispatch(updateToast(true, 'error', extractErrorMessage(err, 'Failed to update webhook')))
+        dispatch(
+          updateToast(
+            true,
+            'error',
+            extractErrorMessage(err, t('messages.failed_to_update_webhook')),
+          ),
+        )
         callbacksRef.current?.onError?.(err instanceof Error ? err : new Error(String(err)))
         throw error
       }
     },
-    [mutation, logAction, dispatch, queryClient],
+    [mutation, logAction, dispatch, queryClient, t],
   )
 
   return {
@@ -103,6 +118,7 @@ export const useUpdateWebhookWithAudit = (callbacks?: MutationCallbacks) => {
 }
 
 export const useDeleteWebhookWithAudit = (callbacks?: MutationCallbacks) => {
+  const { t } = useTranslation()
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
   const { logAction } = useWebhookAudit()
@@ -120,18 +136,24 @@ export const useDeleteWebhookWithAudit = (callbacks?: MutationCallbacks) => {
         }).catch((auditError) => {
           if (isDevelopment) console.error('Audit logging failed:', auditError)
         })
-        dispatch(updateToast(true, 'success', 'Webhook deleted successfully'))
+        dispatch(updateToast(true, 'success', t('messages.webhook_deleted_successfully')))
         queryUtils.invalidateQueriesByKey(queryClient, getGetAllWebhooksQueryKey())
         callbacksRef.current?.onSuccess?.()
         return result
       } catch (error) {
         const err = error as MutationError
-        dispatch(updateToast(true, 'error', extractErrorMessage(err, 'Failed to delete webhook')))
+        dispatch(
+          updateToast(
+            true,
+            'error',
+            extractErrorMessage(err, t('messages.failed_to_delete_webhook')),
+          ),
+        )
         callbacksRef.current?.onError?.(err instanceof Error ? err : new Error(String(err)))
         throw error
       }
     },
-    [mutation, logAction, dispatch, queryClient],
+    [mutation, logAction, dispatch, queryClient, t],
   )
 
   return {

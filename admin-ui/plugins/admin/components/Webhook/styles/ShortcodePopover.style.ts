@@ -5,12 +5,8 @@ interface ShortcodePopoverStylesParams {
   themeColors: ThemeConfig
 }
 
-const CONTENT_MAX_HEIGHT = '300px'
-const CONTENT_MIN_WIDTH = 200
-const CONTENT_MAX_WIDTH = 260
 const HELP_ICON_SIZE = 18
 const HELP_ICON_MARGIN = 6
-const EMPTY_MESSAGE_PADDING = 16
 
 export const useStyles = makeStyles<ShortcodePopoverStylesParams>()((_theme, { themeColors }) => {
   const paperBg = themeColors.settings?.cardBackground ?? themeColors.card?.background
@@ -23,11 +19,11 @@ export const useStyles = makeStyles<ShortcodePopoverStylesParams>()((_theme, { t
       color: themeColors.fontColor,
     },
     content: {
-      maxHeight: CONTENT_MAX_HEIGHT,
+      maxHeight: '300px',
       overflowY: 'auto',
       width: '100%',
-      minWidth: CONTENT_MIN_WIDTH,
-      maxWidth: CONTENT_MAX_WIDTH,
+      minWidth: 200,
+      maxWidth: 260,
     },
     list: {
       color: themeColors.fontColor,
@@ -47,7 +43,11 @@ export const useStyles = makeStyles<ShortcodePopoverStylesParams>()((_theme, { t
       borderColor: themeColors.borderColor,
     },
     emptyMessage: {
-      padding: EMPTY_MESSAGE_PADDING,
+      margin: 0,
+      padding: '12px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
       color: themeColors.fontColor,
     },
     labelText: {

@@ -180,51 +180,6 @@ export interface LockState {
 
 // Admin plugin state types
 
-// API Role
-export interface ApiRoleItem {
-  inum?: string
-  role?: string
-  description?: string
-  deletable?: boolean
-  [key: string]: unknown
-}
-
-export interface ApiRoleState {
-  items: ApiRoleItem[]
-  item?: ApiRoleItem
-  loading: boolean
-}
-
-// API Permission State
-export interface ApiPermissionItem {
-  inum?: string
-  permission?: string
-  description?: string
-  defaultPermissionInToken?: boolean
-  [key: string]: unknown
-}
-
-export interface ApiPermissionState {
-  items: ApiPermissionItem[]
-  item?: ApiPermissionItem
-  loading: boolean
-  saveOperationFlag: boolean
-  errorInSaveOperationFlag: boolean
-}
-
-// Mapping State (role-permission)
-export interface MappingItem {
-  role?: string
-  permissions?: string[]
-  [key: string]: unknown
-}
-
-export interface MappingState {
-  items: MappingItem[]
-  serverItems: MappingItem[]
-  loading: boolean
-}
-
 // Webhook State
 export interface WebhookEntry {
   inum?: string
@@ -244,30 +199,29 @@ export interface AuiFeature {
   [key: string]: unknown
 }
 
-export interface TriggerPayload {
+export interface WebhookTriggerResponseItem {
+  success: boolean
+  responseMessage?: string
+  responseObject?: {
+    inum?: string
+    webhookId?: string
+    webhookName?: string
+  }
+}
+
+export interface StoredTriggerPayload {
   feature: string | null
-  payload: unknown
+  payload: string | number | boolean | object | null
 }
 
 export interface WebhookState {
-  webhooks: WebhookEntry[]
-  loading: boolean
-  saveOperationFlag: boolean
-  errorInSaveOperationFlag: boolean
-  totalItems: number
-  entriesCount: number
-  selectedWebhook: WebhookEntry | null
-  loadingFeatures: boolean
-  features: AuiFeature[]
-  webhookFeatures: AuiFeature[]
-  loadingWebhookFeatures: boolean
   loadingWebhooks: boolean
   featureWebhooks: WebhookEntry[]
   webhookModal: boolean
   triggerWebhookInProgress: boolean
   triggerWebhookMessage: string
-  webhookTriggerErrors: unknown[]
-  triggerPayload: TriggerPayload
+  webhookTriggerErrors: WebhookTriggerResponseItem[]
+  triggerPayload: StoredTriggerPayload
   featureToTrigger: string
   showErrorModal: boolean
 }
@@ -482,7 +436,6 @@ export interface CoreAppState {
   logoutReducer: LogoutState
   licenseReducer: LicenseState
   oidcDiscoveryReducer: OidcDiscoveryState
-  mauReducer: MauState
   healthReducer: HealthState
   attributesReducerRoot: AttributesState
   toastReducer: ToastState
@@ -494,9 +447,7 @@ export interface CoreAppState {
 
 // Admin plugin reducers
 export interface AdminPluginState {
-  apiRoleReducer: ApiRoleState
-  apiPermissionReducer: ApiPermissionState
-  mappingReducer: MappingState
+  mauReducer: MauState
   webhookReducer: WebhookState
   assetReducer: AssetState
   customScriptReducer: CustomScriptState

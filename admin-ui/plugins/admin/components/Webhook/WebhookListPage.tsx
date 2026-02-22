@@ -16,19 +16,15 @@ import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useGetAllWebhooks } from 'JansConfigApi'
-import type { PagedResultEntriesItem } from 'JansConfigApi'
 import { useDeleteWebhookWithAudit } from './hooks'
 import { GluuTable } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
 import type { FilterDef } from '@/components/GluuSearchToolbar/types'
 import type { WebhookEntry } from './types'
+import { toWebhookEntries } from 'Plugins/admin/helper/webhook'
 import { useStyles } from './styles/WebhookListPage.style'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
-
-const toWebhookEntries = (entries: PagedResultEntriesItem[] | undefined): WebhookEntry[] => {
-  return (entries ?? []) as unknown as WebhookEntry[]
-}
 
 const LIMIT_OPTIONS = getRowsPerPageOptions()
 
