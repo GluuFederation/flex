@@ -95,7 +95,7 @@ const PermissionsPolicyInitializer = () => {
         policyStoreString = JSON.stringify(policyStoreJson)
       }
     } catch (error) {
-      devLogger.error('Invalid policy store JSON format:', error)
+      console.error('Invalid policy store JSON format:', error)
       dispatch(setCedarlingInitializing(false))
       return
     }
@@ -122,6 +122,7 @@ const PermissionsPolicyInitializer = () => {
             dispatch(setCedarlingInitialized(false)) // Triggers re-run of useEffect
           }, 1000)
         } else {
+          console.error('❌ Max retry attempts reached. Cedarling init failed permanently.')
           devLogger.error('❌ Max retry attempts reached. Cedarling init failed permanently.')
           dispatch(setCedarFailedStatusAfterMaxTries())
         }

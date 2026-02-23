@@ -1,4 +1,5 @@
-import { all, call, fork, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
+import { all, call, fork, put, select } from 'redux-saga/effects'
+import { takeEvery, takeLatest } from './effects'
 import {
   getOAuth2Config,
   getOAuth2ConfigResponse,
@@ -20,16 +21,16 @@ import { updateToast } from 'Redux/features/toastSlice'
 import {
   createAdminUiSession,
   createAdminUiSessionResponse,
+  deleteAdminUiSession,
   deleteAdminUiSessionResponse,
+  getAPIAccessToken,
+  getUserLocation,
+  putConfigWorker as putConfigWorkerAction,
 } from 'Redux/features/authSlice'
 import { isFourZeroThreeError } from 'Utils/TokenController'
 import { redirectToLogout } from 'Redux/sagas/SagaUtils'
+import type { ApiErrorLike } from './types/audit'
 import { devLogger } from '@/utils/devLogger'
-
-interface ApiErrorLike {
-  response?: { data?: { responseMessage?: string; message?: string }; status?: number }
-  message?: string
-}
 
 function* getApiTokenWithDefaultScopes(): Generator<unknown, string | null, unknown> {
   try {
@@ -53,7 +54,12 @@ function* getApiTokenWithDefaultScopes(): Generator<unknown, string | null, unkn
   }
 }
 
-function* getOAuth2ConfigWorker({ payload }: { payload?: { access_token?: string } }): Generator {
+function* getOAuth2ConfigWorker({
+  payload,
+}: {
+  type: string
+  payload?: { access_token?: string }
+}): Generator {
   try {
     const hasSession = yield select((state) => state.authReducer.hasSession)
 
@@ -91,6 +97,7 @@ function* getOAuth2ConfigWorker({ payload }: { payload?: { access_token?: string
 export function* putConfigWorker({
   payload,
 }: {
+  type: string
   payload: Record<string, unknown> & {
     _meta?: { cedarlingLogTypeChanged?: boolean; toastMessage?: string }
   }
@@ -120,9 +127,9 @@ export function* putConfigWorker({
   }
 }
 
-function* getAPIAccessTokenWorker(jwt: { payload?: string }): Generator {
+function* getAPIAccessTokenWorker(action: { type: string; payload?: string }): Generator {
   try {
-    if (jwt?.payload) {
+    if (action?.payload) {
       const response = yield call(fetchApiTokenWithDefaultScopes)
       if (response) {
         yield put(
@@ -134,7 +141,10 @@ function* getAPIAccessTokenWorker(jwt: { payload?: string }): Generator {
 
         if (response.access_token) {
           yield put(
-            createAdminUiSession({ ujwt: jwt.payload, apiProtectionToken: response.access_token }),
+            createAdminUiSession({
+              ujwt: action.payload,
+              apiProtectionToken: response.access_token,
+            }),
           )
           yield put(getOAuth2Config({ access_token: response.access_token }))
         } else {
@@ -162,7 +172,7 @@ function* getAPIAccessTokenWorker(jwt: { payload?: string }): Generator {
   }
 }
 
-function* getLocationWorker(): Generator<unknown, void, unknown> {
+function* getLocationWorker(_action: { type: string }): Generator<unknown, void, unknown> {
   try {
     const response = (yield call(getUserIpAndLocation)) as Awaited<
       ReturnType<typeof getUserIpAndLocation>
@@ -180,8 +190,9 @@ function* getLocationWorker(): Generator<unknown, void, unknown> {
 function* createAdminUiSessionWorker({
   payload,
 }: {
+  type: string
   payload: { ujwt: string; apiProtectionToken: string }
-}): Generator<unknown, void, unknown> {
+}): Generator {
   try {
     const { ujwt, apiProtectionToken } = payload
     yield call(createAdminUiSessionApi, ujwt, apiProtectionToken)
@@ -192,15 +203,14 @@ function* createAdminUiSessionWorker({
       err?.response?.data?.message ?? err?.response?.data?.responseMessage ?? err?.message ?? ''
     devLogger.error('Problems creating Admin UI session.', err?.response?.data ?? error)
     if (isFourZeroThreeError(err)) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      yield* (redirectToLogout as any)()
+      yield* redirectToLogout()
       return
     }
     yield put(createAdminUiSessionResponse({ success: false, error: errorMessage }))
   }
 }
 
-function* deleteAdminUiSessionWorker() {
+function* deleteAdminUiSessionWorker(_action: { type: string }) {
   try {
     yield call(deleteAdminUiSessionApi)
   } catch (error: unknown) {
@@ -212,29 +222,23 @@ function* deleteAdminUiSessionWorker() {
 }
 
 export function* getApiTokenWatcher(): Generator {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  yield (takeEvery as any)('auth/getAPIAccessToken', getAPIAccessTokenWorker)
+  yield takeEvery(getAPIAccessToken.type, getAPIAccessTokenWorker)
 }
 
 export function* getOAuth2ConfigWatcher(): Generator {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  yield (takeEvery as any)('auth/getOAuth2Config', getOAuth2ConfigWorker)
+  yield takeEvery(getOAuth2Config.type, getOAuth2ConfigWorker)
 }
 export function* getLocationWatcher(): Generator {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  yield (takeEvery as any)('auth/getUserLocation', getLocationWorker)
+  yield takeEvery(getUserLocation.type, getLocationWorker)
 }
 export function* putConfigWorkerWatcher(): Generator {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  yield (takeEvery as any)('auth/putConfigWorker', putConfigWorker)
+  yield takeEvery(putConfigWorkerAction.type, putConfigWorker)
 }
 export function* createAdminUiSessionWatcher(): Generator {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  yield (takeLatest as any)('auth/createAdminUiSession', createAdminUiSessionWorker)
+  yield takeLatest(createAdminUiSession.type, createAdminUiSessionWorker)
 }
 export function* deleteAdminUiSessionWatcher(): Generator {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  yield (takeEvery as any)('auth/deleteAdminUiSession', deleteAdminUiSessionWorker)
+  yield takeEvery(deleteAdminUiSession.type, deleteAdminUiSessionWorker)
 }
 
 export default function* rootSaga() {

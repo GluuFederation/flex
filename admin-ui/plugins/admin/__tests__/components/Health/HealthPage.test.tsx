@@ -36,6 +36,6 @@ describe('HealthPage', () => {
   it('shows active status badges', () => {
     render(<HealthPage />, { wrapper: Wrapper })
     const badges = screen.getAllByText('Active')
-    expect(badges.length).toBe(2)
+    expect(badges).toHaveLength(2)
   })
 })

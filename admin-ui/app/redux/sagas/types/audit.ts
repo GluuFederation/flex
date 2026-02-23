@@ -58,3 +58,9 @@ export interface SagaError {
   }
   message?: string
 }
+
+/** API error shape with response.data for saga catch blocks */
+export interface ApiErrorLike {
+  response?: { data?: { responseMessage?: string; message?: string }; status?: number }
+  message?: string
+}

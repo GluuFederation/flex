@@ -7,7 +7,12 @@ const originalError = console.error.bind(console)
 
 beforeAll(async () => {
   if (!i18n.isInitialized) {
-    await i18n.init()
+    try {
+      await i18n.init()
+    } catch (error) {
+      console.error('i18n.init() failed:', (error as Error).message, (error as Error).stack)
+      throw error
+    }
   }
 })
 
@@ -34,7 +39,15 @@ jest.setTimeout(30000)
 
 jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(jest.fn())
 if (typeof globalThis.URL !== 'undefined') {
-  globalThis.URL.createObjectURL = jest.fn()
+  if ('createObjectURL' in globalThis.URL) {
+    jest.spyOn(globalThis.URL, 'createObjectURL').mockImplementation(jest.fn())
+  } else {
+    Object.defineProperty(globalThis.URL, 'createObjectURL', {
+      value: jest.fn(),
+      configurable: true,
+      writable: true,
+    })
+  }
 }
 
 global.ResizeObserver = ResizeObserverPolyfill

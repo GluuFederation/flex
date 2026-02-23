@@ -1118,7 +1118,6 @@
     "view_identity_provider": "Voir le Fournisseur d'Identité",
     "delete_identity_provider": "Supprimer le Fournisseur d'Identité",
     "webhooks": "Webhooks",
-    "add_webhook": "Ajouter un Webhook",
     "edit_webhook": "Modifier le Webhook",
     "authentication": "Authentification"
   },

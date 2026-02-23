@@ -26,7 +26,7 @@ const WebhookAddPage: React.FC = () => {
     [hasCedarReadPermission, webhookResourceId],
   )
 
-  SetTitle(t('titles.add_webhook', { defaultValue: 'Add Webhook' }))
+  SetTitle(t('messages.add_webhook', { defaultValue: 'Add Webhook' }))
 
   return (
     <GluuPageContent>

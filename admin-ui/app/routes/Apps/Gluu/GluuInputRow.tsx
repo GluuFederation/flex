@@ -128,7 +128,6 @@ const GluuInputRow = <T = Record<string, unknown>,>({
                 onClick={stepUp}
                 disabled={disabled}
                 tabIndex={-1}
-                aria-label="Increment"
               >
                 <ChevronIcon width={16} height={16} direction="up" />
               </button>
@@ -138,7 +137,6 @@ const GluuInputRow = <T = Record<string, unknown>,>({
                 onClick={stepDown}
                 disabled={disabled || Number.isNaN(numValue) || numValue <= 0}
                 tabIndex={-1}
-                aria-label="Decrement"
               >
                 <ChevronIcon width={16} height={16} direction="down" />
               </button>

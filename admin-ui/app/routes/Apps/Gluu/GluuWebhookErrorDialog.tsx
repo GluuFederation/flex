@@ -76,9 +76,9 @@ const GluuWebhookErrorDialog = () => {
           ) : null}
           {(webhookTriggerErrors?.length ?? 0) > 0 ? (
             <ul>
-              {(webhookTriggerErrors ?? []).map((item: WebhookTriggerResponseItem) => (
+              {(webhookTriggerErrors ?? []).map((item: WebhookTriggerResponseItem, index) => (
                 <li
-                  key={item.responseMessage}
+                  key={`${item.responseObject?.webhookId ?? ''}-${item.responseObject?.webhookName ?? ''}-${index}`}
                   style={{
                     color: customColors.accentRed,
                     display: 'flex',

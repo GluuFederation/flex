@@ -185,13 +185,6 @@ const WebhookListPage: React.FC = () => {
     setPageNumber(0)
   }, [])
 
-  const handlePagingSizeSync = useCallback(
-    (newSize: number) => {
-      onPagingSizeSync(newSize)
-    },
-    [onPagingSizeSync],
-  )
-
   const handleSort = useCallback((columnKey: string, direction: 'asc' | 'desc' | null) => {
     setClientSort(direction ? { column: columnKey, desc: direction === 'desc' } : null)
   }, [])
@@ -199,6 +192,7 @@ const WebhookListPage: React.FC = () => {
   const handleSortByFilter = useCallback((value: string) => {
     setServerSort({ column: value || 'inum', desc: false })
     setClientSort(null)
+    setPageNumber(0)
   }, [])
 
   const sortOptions = useMemo(
@@ -237,6 +231,18 @@ const WebhookListPage: React.FC = () => {
     [t, navigateToAddPage, canWriteWebhooks, classes],
   )
 
+  const httpMethodBadgeMap = useMemo(
+    () =>
+      ({
+        GET: badgeStyles.httpMethodBadgeGetPost,
+        POST: badgeStyles.httpMethodBadgeGetPost,
+        PUT: badgeStyles.httpMethodBadgePutPatch,
+        PATCH: badgeStyles.httpMethodBadgePutPatch,
+        DELETE: badgeStyles.httpMethodBadgeDelete,
+      }) as Record<string, { backgroundColor: string; textColor: string; borderColor: string }>,
+    [badgeStyles],
+  )
+
   const columns: ColumnDef<WebhookEntry>[] = useMemo(
     () => [
       {
@@ -266,16 +272,6 @@ const WebhookListPage: React.FC = () => {
         sortable: true,
         render: (_value, row) => {
           const upper = (row.httpMethod || '').toUpperCase()
-          const httpMethodBadgeMap: Record<
-            string,
-            { backgroundColor: string; textColor: string; borderColor: string }
-          > = {
-            GET: badgeStyles.httpMethodBadgeGetPost,
-            POST: badgeStyles.httpMethodBadgeGetPost,
-            PUT: badgeStyles.httpMethodBadgePutPatch,
-            PATCH: badgeStyles.httpMethodBadgePutPatch,
-            DELETE: badgeStyles.httpMethodBadgeDelete,
-          }
           const methodStyle = httpMethodBadgeMap[upper] ?? badgeStyles.httpMethodBadgeDefault
           return (
             <GluuBadge
@@ -312,7 +308,7 @@ const WebhookListPage: React.FC = () => {
         },
       },
     ],
-    [t, classes, badgeStyles],
+    [t, classes, badgeStyles, httpMethodBadgeMap],
   )
 
   const actions = useMemo(() => {
@@ -397,7 +393,7 @@ const WebhookListPage: React.FC = () => {
               data={webhooks}
               loading={false}
               pagination={pagination}
-              onPagingSizeSync={handlePagingSizeSync}
+              onPagingSizeSync={onPagingSizeSync}
               actions={actions}
               sortColumn={clientSort?.column ?? null}
               sortDirection={clientSort ? (clientSort.desc ? 'desc' : 'asc') : null}

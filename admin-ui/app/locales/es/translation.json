@@ -1005,7 +1005,7 @@
     "invalid_pattern": "Formato inválido"
   },
   "tooltips": {
-    "insert_shortcode": "Insertar código corto",
+    "insert_shortcode": "Insertar shortcode",
     "add_attribute": "Añadir atributo",
     "add_ldap": "Añadir LDAP",
     "advanced_search_options": "Opciones de búsqueda avanzada",
@@ -1128,7 +1128,6 @@
     "all_scopes": "Scopes OAuth/OpenID",
     "audit_logs": "Admin UI Registros de Auditoría",
     "webhooks": "Webhooks",
-    "add_webhook": "Agregar Webhook",
     "edit_webhook": "Editar Webhook",
     "authentication": "Autenticación",
     "couchbase_authentication": "Autenticación Couchbase",
