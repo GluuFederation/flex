@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo, memo } from 'react'
+import React, { useState, useRef, useMemo, useCallback, memo } from 'react'
 import Popover from '@mui/material/Popover'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
@@ -51,6 +51,7 @@ const ShortcodePopover: React.FC<ShortcodePopoverProps> = ({
   buttonWrapperStyles = {},
   buttonWrapperClassName,
   handleSelectShortcode,
+  disabled = false,
 }) => {
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
@@ -59,13 +60,23 @@ const ShortcodePopover: React.FC<ShortcodePopoverProps> = ({
   const anchorRef = useRef<HTMLDivElement>(null)
   const [open, setOpen] = useState(false)
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
+    if (disabled) return
     setOpen((prev) => !prev)
-  }
+  }, [disabled])
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setOpen(false)
-  }
+  }, [])
+
+  const handleShortcodeSelect = useCallback(
+    (key: string) => {
+      if (disabled) return
+      handleSelectShortcode(key)
+      handleClose()
+    },
+    [handleSelectShortcode, handleClose, disabled],
+  )
 
   const id = open ? 'shortcode-popover' : undefined
 
@@ -96,6 +107,7 @@ const ShortcodePopover: React.FC<ShortcodePopoverProps> = ({
         backgroundColor="transparent"
         borderColor="transparent"
         disableHoverStyles
+        disabled={disabled}
       >
         <ShortCodesIcon />
       </GluuButton>
@@ -116,7 +128,7 @@ const ShortcodePopover: React.FC<ShortcodePopoverProps> = ({
               {codes.map((code, index) => (
                 <React.Fragment key={code.key}>
                   <ListItemButton
-                    onClick={() => handleSelectShortcode(code.key)}
+                    onClick={() => handleShortcodeSelect(code.key)}
                     component="button"
                     className={classes.listItemButton}
                   >

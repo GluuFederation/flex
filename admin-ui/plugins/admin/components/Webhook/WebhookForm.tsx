@@ -226,6 +226,7 @@ const WebhookForm: React.FC = () => {
 
   const handleSelectShortcode = useCallback(
     (code: string, name: 'url' | 'httpRequestBody', withString = false) => {
+      if (name === 'url' && !formikValues.url?.trim()) return
       const _code = withString ? '"${' + code + '}"' : '${' + code + '}'
       const currentPosition = cursorPosition[name]
       let value = formikValues[name] || ''
@@ -438,6 +439,7 @@ const WebhookForm: React.FC = () => {
                   <ShortcodePopover
                     codes={featureShortcodes}
                     handleSelectShortcode={(code) => handleSelectShortcode(code, 'url')}
+                    disabled={!formikValues.url?.trim()}
                   />
                 }
                 isDark={isDark}

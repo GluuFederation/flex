@@ -44,6 +44,7 @@ export interface ShortcodePopoverProps {
   buttonWrapperStyles?: CSSProperties
   buttonWrapperClassName?: string
   handleSelectShortcode: (code: string) => void
+  disabled?: boolean
 }
 
 export interface ShortcodeLabelProps {
