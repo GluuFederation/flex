@@ -1,7 +1,6 @@
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import type { InitOptions } from 'i18next'
-
 import translationEn from './locales/en/translation.json'
 import translationFr from './locales/fr/translation.json'
 import translationPt from './locales/pt/translation.json'
@@ -10,12 +9,12 @@ import { isDevelopment } from './utils/env'
 
 const handleMissingKey = (key: string, defaultValue?: string): string => {
   if (isDevelopment) {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports -- use require for react-toastify
+    const { toast } = require('react-toastify')
     console.warn(
       `[i18n] Missing translation key: "${key}"`,
       defaultValue !== undefined ? `(default: "${defaultValue}")` : '',
     )
-    // eslint-disable-next-line @typescript-eslint/no-require-imports -- use require for react-toastify
-    const { toast } = require('react-toastify')
     toast.warning(`[i18n] Missing translation key: "${key}"`, {
       autoClose: 5000,
       toastId: `i18n-missing-${key}`,

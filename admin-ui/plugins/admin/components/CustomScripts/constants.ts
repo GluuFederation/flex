@@ -1,8 +1,14 @@
+import { DEFAULT_STALE_TIME, DEFAULT_GC_TIME } from '@/utils/queryUtils'
+
 export const DEFAULT_SCRIPT_TYPE = 'person_authentication'
 
+export const QUERY_KEY_PREFIX_SCRIPTS_BY_TYPE = '/api/v1/config/scripts/type/'
+export const QUERY_KEY_PREFIX_SCRIPTS = '/api/v1/config/scripts/'
+export const QUERY_KEY_GET_CONFIG_SCRIPTS_BY_TYPE = 'getConfigScriptsByType'
+
 export const SCRIPT_CACHE_CONFIG = {
-  STALE_TIME: 5 * 60 * 1000,
-  GC_TIME: 10 * 60 * 1000,
+  STALE_TIME: DEFAULT_STALE_TIME,
+  GC_TIME: DEFAULT_GC_TIME,
   SINGLE_SCRIPT_STALE_TIME: 2 * 60 * 1000,
   SCRIPT_TYPES_STALE_TIME: 30 * 60 * 1000,
   SCRIPT_TYPES_GC_TIME: 60 * 60 * 1000,
@@ -15,6 +21,6 @@ export const SAML_ACRS_OPTIONS = [
 ]
 
 export const PROGRAMMING_LANGUAGES = [
-  { value: 'java', label: 'Java' },
-  { value: 'python', label: 'Jython' },
+  { value: 'java', labelKey: 'options.java' as const },
+  { value: 'python', labelKey: 'options.jython' as const },
 ]

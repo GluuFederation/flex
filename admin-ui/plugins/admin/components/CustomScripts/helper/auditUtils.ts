@@ -1,13 +1,15 @@
+import { devLogger } from '@/utils/devLogger'
 import { addAdditionalData, type AdditionalPayload } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
-import store from 'Redux/store'
-import type { RootState, AuditLog } from 'Redux/sagas/types/audit'
+import { getRootState, type RootState } from '@/redux/hooks'
+import type { AuditLog } from 'Redux/sagas/types/audit'
+import type { UserActionPayload } from 'Redux/api/types/BackendApi'
 
 const createAuditLog = (state: RootState): AuditLog | null => {
   const { userinfo, config, location } = state.authReducer
 
   if (!userinfo?.inum || !userinfo?.name) {
-    console.warn('Cannot create audit log: Missing required auth data')
+    devLogger.warn('Cannot create audit log: Missing required auth data')
     return null
   }
 
@@ -27,18 +29,23 @@ export const logAuditAction = async (
   resource: string,
   data: AdditionalPayload,
 ): Promise<void> => {
-  const currentState = store.getState() as unknown as RootState
+  const currentState = getRootState()
   const audit = createAuditLog(currentState)
 
   if (!audit) {
     return
   }
 
-  addAdditionalData(audit, actionType, resource, data)
+  addAdditionalData(
+    audit as Record<string, string | number | boolean | object | null | undefined>,
+    actionType,
+    resource,
+    data,
+  )
 
-  const result = await postUserAction(audit)
-
-  if (result === -1) {
-    console.error(`Audit logging failed for ${actionType}: postUserAction returned -1`)
+  try {
+    await postUserAction(audit as UserActionPayload)
+  } catch (error) {
+    devLogger.error(`Audit logging failed for ${actionType}:`, error)
   }
 }

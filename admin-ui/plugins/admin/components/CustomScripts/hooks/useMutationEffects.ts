@@ -1,24 +1,34 @@
 import { useEffect, useRef } from 'react'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from '@/redux/hooks'
 import { useTranslation } from 'react-i18next'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import type { UseMutationResult } from '@tanstack/react-query'
 
-interface UseMutationEffectsOptions<TData = unknown, TError = unknown, TVariables = unknown> {
-  mutation: UseMutationResult<TData, TError, TVariables, unknown>
+interface UseMutationEffectsOptions<
+  TData = object,
+  TError = Error,
+  TVariables = void,
+  TContext = void,
+> {
+  mutation: UseMutationResult<TData, TError, TVariables, TContext>
   successMessage: string
   errorMessage: string
   navigateOnSuccess?: boolean
 }
 
-export function useMutationEffects<TData = unknown, TError = unknown, TVariables = unknown>({
+export const useMutationEffects = <
+  TData = object,
+  TError = Error,
+  TVariables = void,
+  TContext = void,
+>({
   mutation,
   successMessage,
   errorMessage,
   navigateOnSuccess = true,
-}: UseMutationEffectsOptions<TData, TError, TVariables>) {
-  const dispatch = useDispatch()
+}: UseMutationEffectsOptions<TData, TError, TVariables, TContext>) => {
+  const dispatch = useAppDispatch()
   const { navigateBack } = useAppNavigation()
   const { t } = useTranslation()
   const successHandledRef = useRef(false)
@@ -53,7 +63,7 @@ export function useMutationEffects<TData = unknown, TError = unknown, TVariables
         error instanceof Error
           ? error.message
           : error && typeof error === 'object' && 'message' in error
-            ? String((error as { message: unknown }).message)
+            ? String((error as { message: string }).message)
             : t(errorMessage)
       dispatch(updateToast(true, 'error', errorMsg))
     }

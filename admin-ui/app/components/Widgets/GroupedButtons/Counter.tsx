@@ -7,6 +7,7 @@ interface CounterProps {
   disabled: boolean
   counter?: number
   onCounterChange: (value: number) => void
+  valueStyle?: React.CSSProperties
 }
 
 interface CounterState {
@@ -32,6 +33,7 @@ class Counter extends React.Component<CounterProps, CounterState> {
 
   render() {
     const displayCounter = this.state.counter > 0
+    const { valueStyle } = this.props
 
     return (
       <ButtonGroup
@@ -48,7 +50,11 @@ class Counter extends React.Component<CounterProps, CounterState> {
         >
           +
         </Button>
-        {displayCounter && <Button disabled>{this.state.counter}</Button>}
+        {displayCounter && (
+          <Button disabled style={valueStyle}>
+            {this.state.counter}
+          </Button>
+        )}
         {displayCounter && (
           <Button
             style={{

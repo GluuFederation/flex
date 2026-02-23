@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { useQueryClient } from '@tanstack/react-query'
 import {
   useGetConfigScripts,
@@ -18,10 +18,17 @@ import {
 } from 'JansConfigApi'
 import { CREATE, UPDATE, DELETION } from '@/audit/UserActionType'
 import { SCRIPT } from '../../../redux/audit/Resources'
+import { devLogger } from '@/utils/devLogger'
 import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
-import { logAuditAction } from './auditUtils'
-import { SCRIPT_CACHE_CONFIG } from '../constants'
-import type { RootState } from 'Redux/sagas/types/audit'
+import type { TriggerWebhookReducerPayload } from 'Plugins/admin/redux/types/webhook'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import type { AdditionalPayload } from 'Utils/TokenController'
+import { logAuditAction } from '../helper'
+import {
+  SCRIPT_CACHE_CONFIG,
+  QUERY_KEY_PREFIX_SCRIPTS_BY_TYPE,
+  QUERY_KEY_PREFIX_SCRIPTS,
+} from '../constants'
 import type { ScriptType } from '../types/customScript'
 
 export type { ScriptType }
@@ -31,22 +38,26 @@ interface WebhookPayload {
 }
 
 const useWebhookTrigger = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   return useCallback(
     (payload: WebhookPayload) => {
       try {
-        dispatch(triggerWebhook(payload))
+        dispatch(
+          triggerWebhook({
+            createdFeatureValue: payload.createdFeatureValue as Record<string, JsonValue>,
+          } as TriggerWebhookReducerPayload),
+        )
       } catch (error) {
-        console.error('Failed to trigger webhook:', error)
+        devLogger.error('Failed to trigger webhook:', error)
       }
     },
     [dispatch],
   )
 }
 
-export function useCustomScripts(params?: GetConfigScriptsParams) {
-  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
+export const useCustomScripts = (params?: GetConfigScriptsParams) => {
+  const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
   return useGetConfigScripts(params, {
     query: {
@@ -57,11 +68,11 @@ export function useCustomScripts(params?: GetConfigScriptsParams) {
   })
 }
 
-export function useCustomScriptsByType(
+export const useCustomScriptsByType = (
   type: string,
   params?: Omit<GetConfigScriptsByTypeParams, 'type'>,
-) {
-  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
+) => {
+  const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
   return useGetConfigScriptsByType(type, params, {
     query: {
@@ -72,8 +83,8 @@ export function useCustomScriptsByType(
   })
 }
 
-export function useCustomScript(inum: string) {
-  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
+export const useCustomScript = (inum: string) => {
+  const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
   return useGetConfigScriptsByInum(inum, {
     query: {
@@ -83,7 +94,7 @@ export function useCustomScript(inum: string) {
   })
 }
 
-export function useCreateCustomScript() {
+export const useCreateCustomScript = () => {
   const queryClient = useQueryClient()
   const webhookTrigger = useWebhookTrigger()
   const baseMutation = usePostConfigScripts()
@@ -104,17 +115,17 @@ export function useCreateCustomScript() {
       webhookTrigger({ createdFeatureValue: result })
       await logAuditAction(CREATE, SCRIPT, {
         action: {
-          action_data: structuredClone(variables.data) as Record<string, unknown>,
+          action_data: structuredClone(variables.data),
+          action_message: actionMessage,
         },
-        message: actionMessage,
-      })
+      } as AdditionalPayload)
 
       return result
     },
   }
 }
 
-export function useUpdateCustomScript() {
+export const useUpdateCustomScript = () => {
   const queryClient = useQueryClient()
   const webhookTrigger = useWebhookTrigger()
   const baseMutation = usePutConfigScripts()
@@ -140,17 +151,17 @@ export function useUpdateCustomScript() {
       webhookTrigger({ createdFeatureValue: result })
       await logAuditAction(UPDATE, SCRIPT, {
         action: {
-          action_data: structuredClone(variables.data) as Record<string, unknown>,
+          action_data: structuredClone(variables.data),
+          action_message: actionMessage,
         },
-        message: actionMessage,
-      })
+      } as AdditionalPayload)
 
       return result
     },
   }
 }
 
-export function useDeleteCustomScript() {
+export const useDeleteCustomScript = () => {
   const queryClient = useQueryClient()
   const webhookTrigger = useWebhookTrigger()
   const baseMutation = useDeleteConfigScriptsByInum()
@@ -171,8 +182,8 @@ export function useDeleteCustomScript() {
             }
             const key = queryKey[0]
             return (
-              key.startsWith('/api/v1/config/scripts/type/') ||
-              key.startsWith('/api/v1/config/scripts/')
+              key.startsWith(QUERY_KEY_PREFIX_SCRIPTS_BY_TYPE) ||
+              key.startsWith(QUERY_KEY_PREFIX_SCRIPTS)
             )
           },
         }),
@@ -189,8 +200,8 @@ export function useDeleteCustomScript() {
   }
 }
 
-export function useCustomScriptTypes() {
-  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
+export const useCustomScriptTypes = () => {
+  const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
   return useGetCustomScriptType({
     query: {
@@ -226,7 +237,7 @@ export function useCustomScriptTypes() {
   })
 }
 
-export function useCustomScriptOperations() {
+export const useCustomScriptOperations = () => {
   const createMutation = useCreateCustomScript()
   const updateMutation = useUpdateCustomScript()
   const deleteMutation = useDeleteCustomScript()

@@ -1,4 +1,4 @@
-export type AuditRecord = Record<string, string | number | boolean | object | null | undefined>
+import type { AuditRecord } from './common'
 
 export interface AuditLog {
   headers: Record<string, string>

@@ -45,8 +45,7 @@ const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
       'borderRadius': BORDER_RADIUS.DEFAULT,
       'padding': `${SPACING.CARD_PADDING}px`,
       'position': 'relative',
-      'overflowX': 'auto',
-      'overflowY': 'visible',
+      'overflow': 'visible',
       'boxSizing': 'border-box',
       '& table': {
         minWidth: 0,

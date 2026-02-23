@@ -13,7 +13,7 @@ export const getModuleProperty = (
 }
 
 export const transformToFormValues = (
-  item: CustomScriptItem | CustomScript | Record<string, never>,
+  item: CustomScriptItem | CustomScript | Partial<CustomScriptItem>,
 ): FormValues => {
   return {
     name: item.name || '',

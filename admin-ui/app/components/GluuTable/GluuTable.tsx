@@ -7,10 +7,9 @@ import { THEME_DARK } from '@/context/theme/constants'
 import GluuText from '@/routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
 import { GluuSpinner } from '@/components/GluuSpinner'
-import { useStyles, EXPAND_BUTTON_SIZE } from './GluuTable.style'
+import { useStyles } from './GluuTable.style'
 import type { GluuTableProps, SortDirection, ColumnKey } from './types'
 import { ChevronIcon } from '@/components/SVG'
-import { BORDER_RADIUS } from '@/constants'
 import {
   getDefaultPagingSize,
   getRowsPerPageOptions,
@@ -29,7 +28,7 @@ const T_KEYS = {
   MESSAGES_NEXT_PAGE: 'messages.next_page',
 } as const
 
-function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
+const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
   const {
     columns,
     data,
@@ -53,8 +52,6 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
   const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
   const isDark = state.theme === THEME_DARK
   const { classes } = useStyles({ isDark, themeColors, stickyHeader })
-  const expandButtonBg = themeColors.table.expandButtonBg
-
   const [expandedRows, setExpandedRows] = useState<Set<string | number>>(new Set())
 
   useEffect(() => {
@@ -166,239 +163,232 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
         </div>
       )}
 
-      <div className={classes.wrapper}>
-        <table className={[classes.table, tableClassName].filter(Boolean).join(' ')}>
-          <thead>
-            <tr>
-              {expandable && <th className={`${classes.headerCell} ${classes.headerCellExpand}`} />}
-              {columns.map((col) => {
-                const isSortable = col.sortable !== false && onSort
-                const isActive = sortColumn === col.key
-                return (
-                  <th
-                    key={col.key}
-                    className={classes.headerCell}
-                    style={{
-                      width: col.width,
-                      minWidth: col.minWidth,
-                      textAlign: col.align || 'left',
-                    }}
-                  >
-                    {isSortable ? (
-                      <button
-                        type="button"
-                        className={
-                          isActive
-                            ? `${classes.sortableHeader} ${classes.sortableHeaderActive}`
-                            : classes.sortableHeader
-                        }
-                        onClick={() => handleSort(col.key)}
-                      >
-                        {col.label}
-                        <span className={classes.sortIconWrap} data-sort-icon>
-                          <ChevronIcon
-                            width={14}
-                            height={14}
-                            direction={isActive && sortDirection === 'desc' ? 'down' : 'up'}
-                          />
-                        </span>
-                      </button>
-                    ) : (
-                      <GluuText variant="span" disableThemeColor>
-                        {col.label}
-                      </GluuText>
-                    )}
-                  </th>
-                )
-              })}
-              {actions && actions.length > 0 && (
-                <th
-                  className={`${classes.headerCell} ${classes.headerCellActions}`}
-                  style={{ width: actions.length * 40 + 16 }}
-                >
-                  <GluuText variant="span" disableThemeColor>
-                    {t(T_KEYS.FIELDS_ACTIONS)}
-                  </GluuText>
-                </th>
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            {data.length === 0 ? (
+      <div className={classes.borderWrapper}>
+        <div className={classes.wrapper} data-gluu-table>
+          <table className={[classes.table, tableClassName].filter(Boolean).join(' ')}>
+            <thead>
               <tr>
-                <td colSpan={totalCols} className={classes.emptyRow}>
-                  <GluuText variant="span" disableThemeColor>
-                    {emptyMessage ?? defaultEmptyMessage}
-                  </GluuText>
-                </td>
+                {expandable && (
+                  <th className={`${classes.headerCell} ${classes.headerCellExpand}`} />
+                )}
+                {columns.map((col) => {
+                  const isSortable = col.sortable !== false && onSort
+                  const isActive = sortColumn === col.key
+                  return (
+                    <th
+                      key={col.key}
+                      className={classes.headerCell}
+                      style={{
+                        width: col.width,
+                        minWidth: col.minWidth,
+                        textAlign: col.align || 'left',
+                      }}
+                    >
+                      {isSortable ? (
+                        <button
+                          type="button"
+                          className={
+                            isActive
+                              ? `${classes.sortableHeader} ${classes.sortableHeaderActive}`
+                              : classes.sortableHeader
+                          }
+                          onClick={() => handleSort(col.key)}
+                        >
+                          {col.label}
+                          <span className={classes.sortIconWrap} data-sort-icon>
+                            <ChevronIcon
+                              width={14}
+                              height={14}
+                              direction={isActive && sortDirection === 'desc' ? 'down' : 'up'}
+                            />
+                          </span>
+                        </button>
+                      ) : (
+                        <GluuText variant="span" disableThemeColor>
+                          {col.label}
+                        </GluuText>
+                      )}
+                    </th>
+                  )
+                })}
+                {actions && actions.length > 0 && (
+                  <th
+                    className={`${classes.headerCell} ${classes.headerCellActions}`}
+                    style={{ width: actions.length * 40 + 16 }}
+                  >
+                    <GluuText variant="span" disableThemeColor>
+                      {t(T_KEYS.FIELDS_ACTIONS)}
+                    </GluuText>
+                  </th>
+                )}
               </tr>
-            ) : (
-              data.map((row, rowIdx) => {
-                const rowKey = resolveRowKey(row, rowIdx)
-                const isExpanded = expandedRows.has(rowKey)
-                return (
-                  <React.Fragment key={rowKey}>
-                    <tr className={classes.row}>
-                      {expandable && (
-                        <td className={`${classes.cell} ${classes.cellExpand}`}>
-                          <div className={classes.cellExpandInner}>
-                            <GluuButton
-                              type="button"
-                              className={classes.expandButton}
-                              aria-expanded={isExpanded}
-                              aria-label={t(
-                                isExpanded ? T_KEYS.MESSAGES_COLLAPSE : T_KEYS.MESSAGES_EXPAND,
-                                { defaultValue: isExpanded ? 'Collapse row' : 'Expand row' },
-                              )}
-                              title={
-                                isExpanded
-                                  ? t(T_KEYS.MESSAGES_COLLAPSE, { defaultValue: 'Collapse' })
-                                  : t(T_KEYS.MESSAGES_EXPAND, { defaultValue: 'Expand' })
-                              }
-                              onClick={() => toggleRow(rowKey)}
-                              backgroundColor={expandButtonBg}
-                              borderColor={themeColors.borderColor}
-                              borderRadius={BORDER_RADIUS.CIRCLE}
-                              textColor={themeColors.fontColor}
-                              minHeight={EXPAND_BUTTON_SIZE}
-                              padding="6px"
-                              disableHoverStyles
+            </thead>
+            <tbody>
+              {data.length === 0 ? (
+                <tr>
+                  <td colSpan={totalCols} className={classes.emptyRow}>
+                    <GluuText variant="span" disableThemeColor>
+                      {emptyMessage ?? defaultEmptyMessage}
+                    </GluuText>
+                  </td>
+                </tr>
+              ) : (
+                data.map((row, rowIdx) => {
+                  const rowKey = resolveRowKey(row, rowIdx)
+                  const isExpanded = expandedRows.has(rowKey)
+                  return (
+                    <React.Fragment key={rowKey}>
+                      <tr className={classes.row}>
+                        {expandable && (
+                          <td className={`${classes.cell} ${classes.cellExpand}`}>
+                            <div className={classes.cellExpandInner}>
+                              <button
+                                type="button"
+                                className={classes.expandButton}
+                                data-expand-button
+                                aria-expanded={isExpanded}
+                                aria-label={t(
+                                  isExpanded ? T_KEYS.MESSAGES_COLLAPSE : T_KEYS.MESSAGES_EXPAND,
+                                  { defaultValue: isExpanded ? 'Collapse row' : 'Expand row' },
+                                )}
+                                title={
+                                  isExpanded
+                                    ? t(T_KEYS.MESSAGES_COLLAPSE, { defaultValue: 'Collapse' })
+                                    : t(T_KEYS.MESSAGES_EXPAND, { defaultValue: 'Expand' })
+                                }
+                                onClick={() => toggleRow(rowKey)}
+                                style={{ color: themeColors.fontColor }}
+                              >
+                                <ExpandMoreIcon
+                                  className={`${classes.expandIcon} ${isExpanded ? classes.expandIconOpen : ''}`}
+                                  sx={{ fontSize: 20, color: 'inherit' }}
+                                />
+                              </button>
+                            </div>
+                          </td>
+                        )}
+                        {columns.map((col, colIdx) => {
+                          const key = col.key as ColumnKey<T>
+                          const value = (row as T)[key]
+                          const isFirstLineColumn = expandable && colIdx <= 1
+                          return (
+                            <td
+                              key={col.key}
+                              className={`${classes.cell} ${isFirstLineColumn ? classes.cellFirst : ''}`}
                               style={{
-                                width: EXPAND_BUTTON_SIZE,
-                                height: EXPAND_BUTTON_SIZE,
-                                minWidth: EXPAND_BUTTON_SIZE,
-                                minHeight: EXPAND_BUTTON_SIZE,
+                                textAlign: col.align || 'left',
+                                width: col.width,
+                                minWidth: col.minWidth,
                               }}
                             >
-                              <ExpandMoreIcon
-                                className={`${classes.expandIcon} ${isExpanded ? classes.expandIconOpen : ''}`}
-                                sx={{ fontSize: 20, color: themeColors.fontColor }}
-                              />
-                            </GluuButton>
-                          </div>
-                        </td>
-                      )}
-                      {columns.map((col, colIdx) => {
-                        const key = col.key as ColumnKey<T>
-                        const value = (row as T)[key]
-                        const isFirstLineColumn = expandable && colIdx <= 1
-                        return (
-                          <td
-                            key={col.key}
-                            className={`${classes.cell} ${isFirstLineColumn ? classes.cellFirst : ''}`}
-                            style={{
-                              textAlign: col.align || 'left',
-                              width: col.width,
-                              minWidth: col.minWidth,
-                            }}
-                          >
-                            {col.render ? (
-                              col.render(value, row, rowIdx, {
-                                isExpanded,
-                                rowKey,
-                              })
-                            ) : (
-                              <GluuText variant="span" disableThemeColor>
-                                {String(value ?? '')}
-                              </GluuText>
-                            )}
+                              {col.render ? (
+                                col.render(value, row, rowIdx, {
+                                  isExpanded,
+                                  rowKey,
+                                })
+                              ) : (
+                                <GluuText variant="span" disableThemeColor>
+                                  {String(value ?? '')}
+                                </GluuText>
+                              )}
+                            </td>
+                          )
+                        })}
+                        {actions && actions.length > 0 && (
+                          <td className={classes.cell} style={{ textAlign: 'center' }}>
+                            {renderActionCell(row)}
                           </td>
-                        )
-                      })}
-                      {actions && actions.length > 0 && (
-                        <td className={classes.cell} style={{ textAlign: 'center' }}>
-                          {renderActionCell(row)}
-                        </td>
-                      )}
-                    </tr>
-                    {expandable && isExpanded && renderExpandedRow != null && (
-                      <tr>
-                        <td colSpan={totalCols} className={classes.expandedPanel}>
-                          {renderExpandedRow(row)}
-                        </td>
+                        )}
                       </tr>
-                    )}
-                    <tr className={classes.dividerRow} aria-hidden="true">
-                      <td colSpan={totalCols} className={classes.dividerCell} data-divider-cell />
-                    </tr>
-                  </React.Fragment>
-                )
-              })
-            )}
-          </tbody>
-        </table>
+                      {expandable && isExpanded && renderExpandedRow != null && (
+                        <tr>
+                          <td colSpan={totalCols} className={classes.expandedPanel}>
+                            {renderExpandedRow(row)}
+                          </td>
+                        </tr>
+                      )}
+                      <tr className={classes.dividerRow} aria-hidden="true">
+                        <td colSpan={totalCols} className={classes.dividerCell} data-divider-cell />
+                      </tr>
+                    </React.Fragment>
+                  )
+                })
+              )}
+            </tbody>
+          </table>
 
-        {pagination && (
-          <div className={classes.paginationBar}>
-            <GluuText variant="span" disableThemeColor>
-              {t(T_KEYS.FIELDS_ROWS_PER_PAGE)}:
-            </GluuText>
-            <div className={classes.paginationSelectWrap}>
-              <select
-                className={classes.paginationSelect}
-                value={pagination.rowsPerPage}
-                onChange={(e) => pagination.onRowsPerPageChange(Number(e.target.value))}
-              >
-                {(pagination.rowsPerPageOptions ?? getRowsPerPageOptions()).map((opt) => (
-                  <option key={opt} value={opt}>
-                    {opt}
-                  </option>
-                ))}
-              </select>
-              <span
-                className={classes.paginationSelectIcon}
-                style={{
-                  color: themeColors.formFooter?.back?.backgroundColor ?? themeColors.fontColor,
-                }}
-              >
-                <ChevronIcon width={18} height={18} />
-              </span>
+          {pagination && (
+            <div className={classes.paginationBar}>
+              <GluuText variant="span" disableThemeColor>
+                {t(T_KEYS.FIELDS_ROWS_PER_PAGE)}:
+              </GluuText>
+              <div className={classes.paginationSelectWrap}>
+                <select
+                  className={classes.paginationSelect}
+                  value={pagination.rowsPerPage}
+                  onChange={(e) => pagination.onRowsPerPageChange(Number(e.target.value))}
+                >
+                  {(pagination.rowsPerPageOptions ?? getRowsPerPageOptions()).map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
+                <span
+                  className={classes.paginationSelectIcon}
+                  style={{
+                    color: themeColors.formFooter?.back?.backgroundColor ?? themeColors.fontColor,
+                  }}
+                >
+                  <ChevronIcon width={18} height={18} />
+                </span>
+              </div>
+
+              <GluuText variant="span" disableThemeColor>
+                {pagination.totalItems === 0
+                  ? `0-0 ${t(T_KEYS.FIELDS_OF)} 0`
+                  : `${pagination.page * pagination.rowsPerPage + 1}-${Math.min((pagination.page + 1) * pagination.rowsPerPage, pagination.totalItems)} ${t(T_KEYS.FIELDS_OF)} ${pagination.totalItems}`}
+              </GluuText>
+
+              <div className={classes.paginationNav}>
+                <GluuButton
+                  type="button"
+                  className={`${classes.paginationButton} ${isFirstPage ? classes.paginationButtonDisabled : ''}`}
+                  disabled={isFirstPage}
+                  onClick={() => pagination.onPageChange(pagination.page - 1)}
+                  title={t(T_KEYS.MESSAGES_PREVIOUS_PAGE)}
+                  backgroundColor="transparent"
+                  borderColor="transparent"
+                  textColor={
+                    isFirstPage
+                      ? themeColors.textMuted
+                      : (themeColors.formFooter?.back?.backgroundColor ?? themeColors.fontColor)
+                  }
+                  minHeight={40}
+                >
+                  <ChevronIcon width={20} height={20} direction="left" />
+                </GluuButton>
+                <GluuButton
+                  type="button"
+                  className={`${classes.paginationButton} ${isLastPage ? classes.paginationButtonDisabled : ''}`}
+                  disabled={isLastPage}
+                  onClick={() => pagination.onPageChange(pagination.page + 1)}
+                  title={t(T_KEYS.MESSAGES_NEXT_PAGE)}
+                  backgroundColor="transparent"
+                  borderColor="transparent"
+                  textColor={
+                    isLastPage
+                      ? themeColors.textMuted
+                      : (themeColors.formFooter?.back?.backgroundColor ?? themeColors.fontColor)
+                  }
+                  minHeight={40}
+                >
+                  <ChevronIcon width={20} height={20} direction="right" />
+                </GluuButton>
+              </div>
             </div>
-
-            <GluuText variant="span" disableThemeColor>
-              {pagination.totalItems === 0
-                ? `0-0 ${t(T_KEYS.FIELDS_OF)} 0`
-                : `${pagination.page * pagination.rowsPerPage + 1}-${Math.min((pagination.page + 1) * pagination.rowsPerPage, pagination.totalItems)} ${t(T_KEYS.FIELDS_OF)} ${pagination.totalItems}`}
-            </GluuText>
-
-            <div className={classes.paginationNav}>
-              <GluuButton
-                type="button"
-                className={`${classes.paginationButton} ${isFirstPage ? classes.paginationButtonDisabled : ''}`}
-                disabled={isFirstPage}
-                onClick={() => pagination.onPageChange(pagination.page - 1)}
-                title={t(T_KEYS.MESSAGES_PREVIOUS_PAGE)}
-                backgroundColor="transparent"
-                borderColor="transparent"
-                textColor={
-                  isFirstPage
-                    ? themeColors.textMuted
-                    : (themeColors.formFooter?.back?.backgroundColor ?? themeColors.fontColor)
-                }
-                minHeight={40}
-              >
-                <ChevronIcon width={20} height={20} direction="left" />
-              </GluuButton>
-              <GluuButton
-                type="button"
-                className={`${classes.paginationButton} ${isLastPage ? classes.paginationButtonDisabled : ''}`}
-                disabled={isLastPage}
-                onClick={() => pagination.onPageChange(pagination.page + 1)}
-                title={t(T_KEYS.MESSAGES_NEXT_PAGE)}
-                backgroundColor="transparent"
-                borderColor="transparent"
-                textColor={
-                  isLastPage
-                    ? themeColors.textMuted
-                    : (themeColors.formFooter?.back?.backgroundColor ?? themeColors.fontColor)
-                }
-                minHeight={40}
-              >
-                <ChevronIcon width={20} height={20} direction="right" />
-              </GluuButton>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   )

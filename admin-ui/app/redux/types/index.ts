@@ -292,20 +292,6 @@ export interface CustomScriptItem {
   revision?: number
 }
 
-export interface CustomScriptState {
-  items: CustomScriptItem[]
-  item?: CustomScriptItem
-  loading: boolean
-  view: boolean
-  saveOperationFlag: boolean
-  errorInSaveOperationFlag: boolean
-  totalItems: number
-  entriesCount: number
-  scriptTypes: ScriptType[]
-  hasFetchedScriptTypes: boolean
-  loadingScriptTypes: boolean
-}
-
 // Auth server plugin state types
 
 // OIDC Client
@@ -444,7 +430,6 @@ export interface AdminPluginState {
   mauReducer: MauState
   webhookReducer: WebhookState
   assetReducer: AssetState
-  customScriptReducer: CustomScriptState
 }
 
 // Auth server plugin reducers

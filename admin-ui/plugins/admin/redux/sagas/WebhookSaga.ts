@@ -30,7 +30,7 @@ import {
   type HttpErrorLike,
   type SagaErrorShape,
 } from './types/common'
-import type { RootState } from './types/state'
+import type { RootState } from '@/redux/hooks'
 import type {
   WebhookEntry,
   TriggerWebhookSagaPayload,
@@ -81,9 +81,11 @@ export function* triggerWebhook({
   let featureToTrigger = ''
   try {
     const webhookApi: WebhookApi = yield* createWebhookApi()
-    featureToTrigger = yield select((state: RootState) => state.webhookReducer.featureToTrigger)
+    featureToTrigger = yield select(
+      (state: RootState) => state.webhookReducer?.featureToTrigger ?? '',
+    )
     const featureWebhooks: WebhookEntry[] = yield select(
-      (state: RootState) => state.webhookReducer.featureWebhooks,
+      (state: RootState) => state.webhookReducer?.featureWebhooks ?? [],
     )
     const enabledFeatureWebhooks = (featureWebhooks ?? []).filter(
       (item: WebhookEntry) => item.jansEnabled,

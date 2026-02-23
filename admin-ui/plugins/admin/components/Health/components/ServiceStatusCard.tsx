@@ -4,6 +4,9 @@ import type { TFunction } from 'i18next'
 import { GluuBadge } from 'Components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import customColors from '@/customColors'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 import { REGEX_TRAILING_PERIOD } from '@/utils/regex'
 import type { ServiceStatusCardProps, ServiceHealth } from '../types'
 import { formatServiceName } from '../utils'
@@ -28,6 +31,11 @@ const getStatusMessage = (service: ServiceHealth, t: TFunction): string => {
 
 const ServiceStatusCard: React.FC<ServiceStatusCardProps> = memo(({ service, isDark }) => {
   const { t } = useTranslation()
+  const theme = useTheme()
+  const themeColors = useMemo(
+    () => getThemeColor(theme?.state?.theme ?? DEFAULT_THEME),
+    [theme?.state?.theme],
+  )
   const { classes } = useStyles({ isDark })
   const displayName = useMemo(() => formatServiceName(service.name), [service.name])
   const statusMessage = useMemo(
@@ -39,8 +47,8 @@ const ServiceStatusCard: React.FC<ServiceStatusCardProps> = memo(({ service, isD
     switch (service.status) {
       case 'up':
         return {
-          bg: isDark ? customColors.statusActive : customColors.statusActiveBg,
-          text: isDark ? customColors.white : customColors.statusActive,
+          bg: isDark ? themeColors.badges.filledBadgeBg : themeColors.badges.statusActiveBg,
+          text: isDark ? themeColors.badges.filledBadgeText : themeColors.badges.statusActive,
         }
       case 'down':
         return {
@@ -55,7 +63,7 @@ const ServiceStatusCard: React.FC<ServiceStatusCardProps> = memo(({ service, isD
           text: isDark ? customColors.white : customColors.statusInactive,
         }
     }
-  }, [service.status, isDark])
+  }, [service.status, isDark, themeColors])
 
   return (
     <div className={classes.card} data-testid={`service-card-${service.name}`}>

@@ -9,6 +9,7 @@ import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useCedarling } from '@/cedarling'
 import customColors, { hexToRgb } from '@/customColors'
+import getThemeColor from '@/context/theme/config'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
@@ -55,6 +56,7 @@ const DashboardPage = () => {
   )
   const isDark = currentTheme === THEME_DARK
   const dashboardThemeColors = useMemo(() => {
+    const theme = getThemeColor(currentTheme)
     const baseColors = isDark
       ? {
           cardBg: customColors.darkCardBg,
@@ -73,8 +75,9 @@ const DashboardPage = () => {
       ...baseColors,
       statusCardBg: baseColors.cardBg,
       statusCardBorder: baseColors.cardBorder,
+      statusActive: theme.badges.statusActive,
     }
-  }, [isDark])
+  }, [isDark, currentTheme])
 
   const { classes } = useStyles({
     themeColors: dashboardThemeColors,
@@ -246,14 +249,15 @@ const DashboardPage = () => {
     [allServices],
   )
 
-  const visibleStatusDetails = useMemo(
-    () =>
-      STATUS_DETAILS.filter(({ key }) => {
-        const service = allServices.find((s) => s.name === key)
-        return service?.status === 'up' || service?.status === 'down'
-      }),
-    [allServices],
-  )
+  const visibleStatusDetails = useMemo(() => {
+    if (healthLoading) {
+      return [...STATUS_DETAILS]
+    }
+    return STATUS_DETAILS.filter(({ key }) => {
+      const service = allServices.find((s) => s.name === key)
+      return service?.status === 'up' || service?.status === 'down'
+    })
+  }, [allServices, healthLoading])
 
   const handleLogout = useCallback(() => {
     if (hasSession) {
@@ -282,7 +286,6 @@ const DashboardPage = () => {
       licenseLoading ||
       clientsLoading ||
       mauLoading ||
-      healthLoading ||
       lockLoading ||
       cedarIsInitializing ||
       (!cedarInitialized && !permissions)
@@ -291,7 +294,6 @@ const DashboardPage = () => {
     licenseLoading,
     clientsLoading,
     mauLoading,
-    healthLoading,
     lockLoading,
     cedarIsInitializing,
     cedarInitialized,

@@ -4,6 +4,7 @@ import {
   getGetConfigScriptsByTypeQueryKey,
   type CustomScript,
 } from 'JansConfigApi'
+import { QUERY_KEY_GET_CONFIG_SCRIPTS_BY_TYPE } from '../constants'
 import {
   useCreateCustomScript,
   useUpdateCustomScript,
@@ -11,7 +12,7 @@ import {
   useCustomScriptTypes,
 } from './useCustomScriptApi'
 
-export function useCustomScriptActions() {
+export const useCustomScriptActions = () => {
   const queryClient = useQueryClient()
 
   const createMutation = useCreateCustomScript()
@@ -39,7 +40,7 @@ export function useCustomScriptActions() {
     if (type) {
       queryClient.invalidateQueries({ queryKey: getGetConfigScriptsByTypeQueryKey(type) })
     } else {
-      queryClient.invalidateQueries({ queryKey: ['getConfigScriptsByType'] })
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY_GET_CONFIG_SCRIPTS_BY_TYPE] })
     }
   }
 
@@ -66,7 +67,7 @@ interface LegacyScriptAction {
   startIndex?: number
 }
 
-export function useCustomScriptLegacyActions() {
+export const useCustomScriptLegacyActions = () => {
   const queryClient = useQueryClient()
 
   return {

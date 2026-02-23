@@ -7,10 +7,6 @@ export interface CustomScriptFormProps {
   viewOnly?: boolean
 }
 
-export interface CustomScriptDetailPageProps {
-  row: CustomScriptItem | CustomScript
-}
-
 export interface FormValues {
   name: string
   description: string

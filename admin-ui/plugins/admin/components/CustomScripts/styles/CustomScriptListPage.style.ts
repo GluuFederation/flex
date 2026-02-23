@@ -4,8 +4,6 @@ import type { ThemeConfig } from '@/context/theme/config'
 import { BORDER_RADIUS } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { fontFamily } from '@/styles/fonts'
-import customColors from '@/customColors'
-
 const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
   _,
   { isDark, themeColors },
@@ -17,17 +15,23 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   return {
     page: { fontFamily, paddingTop: 24 },
-    cellDisplayName: { color: themeColors.fontColor, fontWeight: 500 },
-    cellUrl: {
-      wordBreak: 'break-all',
-      maxWidth: '350px',
+    cellName: { color: themeColors.fontColor, fontWeight: 600 },
+    cellDescription: {
+      display: 'block',
+      minWidth: 0,
+      maxWidth: '100%',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
       fontFamily,
       color: themeColors.fontColor,
     },
-    statusBadge: { minWidth: 80 },
-    httpMethodBadge: { width: 72, minWidth: 72, maxWidth: 72, boxSizing: 'border-box' },
+    scriptTypeBadge: { minWidth: 80 },
+    errorBadgeMargin: { marginLeft: 8 },
+    enabledBadge: { minWidth: 60 },
     editIcon: { fontSize: 18 },
     deleteIcon: { fontSize: 18 },
+    viewIcon: { fontSize: 18 },
     addIcon: { fontSize: 20 },
     searchCard: {
       width: '100%',
@@ -63,46 +67,41 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       '& table td': { verticalAlign: 'middle', minWidth: 0, lineHeight: '28px' },
       '& table th': { verticalAlign: 'middle', lineHeight: '28px' },
     },
+    errorMessage: {
+      color: themeColors.errorColor,
+      marginBottom: 16,
+    },
   }
 })
 
 export function useStyles(params: { isDark: boolean; themeColors: ThemeConfig }) {
   const { classes } = useStylesBase(params)
-  const { isDark, themeColors } = params
-  const badgeStyles = useMemo(
-    () => ({
-      statusBadgeEnabled: {
-        backgroundColor: themeColors.badges.filledBadgeBg,
-        textColor: themeColors.badges.filledBadgeText,
+  const { themeColors } = params
+  const badgeStyles = useMemo(() => {
+    const activeBg = themeColors.badges.filledBadgeBg
+    const activeText = themeColors.badges.filledBadgeText
+    return {
+      scriptTypeBadge: {
+        backgroundColor: themeColors.badges.statusActiveBg,
+        textColor: themeColors.badges.statusActive,
+        borderColor: themeColors.badges.statusActiveBg,
+      },
+      enabledBadge: {
+        backgroundColor: activeBg,
+        textColor: activeText,
         borderColor: 'transparent',
       },
-      statusBadgeDisabled: {
+      disabledBadge: {
         backgroundColor: themeColors.badges.disabledBg,
         textColor: themeColors.badges.disabledText,
         borderColor: 'transparent',
       },
-      httpMethodBadgeGetPost: {
-        backgroundColor: themeColors.badges.filledBadgeBg,
-        textColor: themeColors.badges.filledBadgeText,
+      errorBadge: {
+        backgroundColor: themeColors.errorColor,
+        textColor: activeText,
         borderColor: 'transparent',
       },
-      httpMethodBadgePutPatch: {
-        backgroundColor: customColors.orange,
-        textColor: customColors.white,
-        borderColor: 'transparent',
-      },
-      httpMethodBadgeDelete: {
-        backgroundColor: customColors.statusInactive,
-        textColor: customColors.white,
-        borderColor: 'transparent',
-      },
-      httpMethodBadgeDefault: {
-        backgroundColor: isDark ? customColors.darkBackground : customColors.buttonLightBg,
-        textColor: isDark ? customColors.white : customColors.primaryDark,
-        borderColor: isDark ? customColors.darkBorder : customColors.lightBorder,
-      },
-    }),
-    [isDark, themeColors],
-  )
+    }
+  }, [themeColors])
   return { classes, badgeStyles }
 }

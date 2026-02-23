@@ -1,21 +1,42 @@
-import React from 'react'
-import { useDispatch } from 'react-redux'
+import React, { memo, useMemo } from 'react'
+import { useAppDispatch } from '@/redux/hooks'
 import { useParams, useMatch } from 'react-router-dom'
-import { CardBody, Card } from 'Components'
-import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import CustomScriptForm from './CustomScriptForm'
-import { updateToast } from 'Redux/features/toastSlice'
 import { useTranslation } from 'react-i18next'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
+import { GluuPageContent } from '@/components'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { Alert, Box } from '@mui/material'
 import { useCustomScript, useUpdateCustomScript, useMutationEffects } from './hooks'
+import CustomScriptForm from './CustomScriptForm'
+import { useStyles } from './styles/CustomScriptFormPage.style'
+import { devLogger } from '@/utils/devLogger'
+import { updateToast } from 'Redux/features/toastSlice'
+import { useCedarling } from '@/cedarling'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import SetTitle from 'Utils/SetTitle'
 import { ROUTES } from '@/helpers/navigation'
 import type { CustomScript } from 'JansConfigApi'
 import type { SubmitData } from './types'
 
-function CustomScriptEditPage() {
+const scriptsResourceId = ADMIN_UI_RESOURCES.Scripts
+
+const CustomScriptEditPage: React.FC = () => {
   const { id: inum } = useParams<{ id: string }>()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { t } = useTranslation()
+  const { state: themeState } = useTheme()
+  const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
+  const isDark = themeState.theme === THEME_DARK
+  const { classes } = useStyles({ isDark, themeColors })
+
+  const { hasCedarReadPermission } = useCedarling()
+  const canRead = useMemo(
+    () => hasCedarReadPermission(scriptsResourceId),
+    [hasCedarReadPermission, scriptsResourceId],
+  )
 
   const viewMatch = useMatch(ROUTES.CUSTOM_SCRIPT_VIEW_TEMPLATE)
 
@@ -44,50 +65,64 @@ function CustomScriptEditPage() {
         actionMessage: action_message,
       })
     } catch (error) {
-      console.error('Failed to update script:', error)
+      devLogger.error('Failed to update script:', error)
     }
   }
 
+  SetTitle(t('titles.edit_script'))
+
   if (loadingScript) {
     return (
-      <GluuLoader blocking={true}>
-        <Card className="mb-3" type="border" color={null}>
-          <CardBody>
-            <Box sx={{ p: 3, textAlign: 'center' }}>{t('messages.loading_script')}</Box>
-          </CardBody>
-        </Card>
-      </GluuLoader>
+      <GluuPageContent>
+        <GluuViewWrapper canShow={canRead}>
+          <GluuLoader blocking>
+            <div className={classes.formCard}>
+              <div className={classes.content}>
+                <Box sx={{ p: 3, textAlign: 'center' }}>{t('messages.loading_script')}</Box>
+              </div>
+            </div>
+          </GluuLoader>
+        </GluuViewWrapper>
+      </GluuPageContent>
     )
   }
 
   if (fetchError || !script) {
     return (
-      <Card className="mb-3" type="border" color={null}>
-        <CardBody>
-          <Alert severity="error">
-            <Box>
-              <strong>{t('messages.error_loading_script')}</strong>
-            </Box>
-            <Box sx={{ mt: 1 }}>
-              {fetchError && typeof fetchError === 'object' && 'message' in fetchError
-                ? (fetchError as { message: string }).message
-                : t('messages.script_not_found')}
-            </Box>
-          </Alert>
-        </CardBody>
-      </Card>
+      <GluuPageContent>
+        <GluuViewWrapper canShow={canRead}>
+          <div className={classes.formCard}>
+            <div className={classes.content}>
+              <Alert severity="error">
+                <Box>
+                  <strong>{t('messages.error_loading_script')}</strong>
+                </Box>
+                <Box sx={{ mt: 1 }}>
+                  {fetchError && typeof fetchError === 'object' && 'message' in fetchError
+                    ? (fetchError as { message: string }).message
+                    : t('messages.script_not_found')}
+                </Box>
+              </Alert>
+            </div>
+          </div>
+        </GluuViewWrapper>
+      </GluuPageContent>
     )
   }
 
   return (
-    <GluuLoader blocking={updateMutation.isPending}>
-      <Card className="mb-3" type="border" color={null}>
-        <CardBody>
-          <CustomScriptForm item={script} viewOnly={!!viewMatch} handleSubmit={handleSubmit} />
-        </CardBody>
-      </Card>
-    </GluuLoader>
+    <GluuPageContent>
+      <GluuViewWrapper canShow={canRead}>
+        <GluuLoader blocking={updateMutation.isPending}>
+          <div className={classes.formCard}>
+            <div className={classes.content}>
+              <CustomScriptForm item={script} viewOnly={!!viewMatch} handleSubmit={handleSubmit} />
+            </div>
+          </div>
+        </GluuLoader>
+      </GluuViewWrapper>
+    </GluuPageContent>
   )
 }
 
-export default CustomScriptEditPage
+export default memo(CustomScriptEditPage)

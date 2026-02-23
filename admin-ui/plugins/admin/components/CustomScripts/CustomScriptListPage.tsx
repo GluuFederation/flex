@@ -1,51 +1,42 @@
-import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
-import MaterialTable from '@material-table/core'
-import {
-  DeleteOutlined,
-  AddOutlined,
-  EditOutlined,
-  VisibilityOutlined,
-  ErrorOutline,
-} from '@mui/icons-material'
-import {
-  Paper,
-  Box,
-  TextField,
-  MenuItem,
-  IconButton,
-  Button,
-  Chip,
-  Alert,
-  InputAdornment,
-  Stack,
-  Typography,
-  Tooltip,
-} from '@mui/material'
-import SearchIcon from '@mui/icons-material/Search'
-import RefreshIcon from '@mui/icons-material/Refresh'
-import ClearIcon from '@mui/icons-material/Clear'
-import SwapVertIcon from '@mui/icons-material/SwapVert'
-import { useDispatch } from 'react-redux'
-import { Card, CardBody } from 'Components'
-import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
+import React, { useState, useEffect, useContext, useCallback, useMemo, memo } from 'react'
+import { DeleteOutlined, Edit, Add, VisibilityOutlined } from '@mui/icons-material'
+import { useAppDispatch } from '@/redux/hooks'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
+import { GluuBadge } from '@/components/GluuBadge'
+import { GluuTable } from '@/components/GluuTable'
+import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import CustomScriptDetailPage from './CustomScriptDetailPage'
+import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import { useTranslation } from 'react-i18next'
-import { useCedarling, CEDAR_RESOURCE_SCOPES, ADMIN_UI_RESOURCES } from '@/cedarling'
-import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import SetTitle from 'Utils/SetTitle'
+import { useCedarling, CEDAR_RESOURCE_SCOPES, ADMIN_UI_RESOURCES } from '@/cedarling'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
-import customColors from '@/customColors'
+import { devLogger } from '@/utils/devLogger'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { getDefaultPagingSize } from '@/utils/pagingUtils'
+import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
+import { GluuDetailGrid } from '@/components/GluuDetailGrid'
 import { useCustomScriptsByType, useDeleteCustomScript, useCustomScriptTypes } from './hooks'
-import { DEFAULT_SCRIPT_TYPE } from './constants'
+import { useStyles } from './styles/CustomScriptListPage.style'
+import { SCRIPT } from 'Utils/ApiResources'
 import type { CustomScript } from 'JansConfigApi'
-import type { Column, Action } from '@material-table/core'
+import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
+import type { FilterDef } from '@/components/GluuSearchToolbar/types'
 import type { ScriptError } from './types/customScript'
-import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import { DEFAULT_SCRIPT_TYPE } from './constants'
+
+const LIMIT_OPTIONS = getRowsPerPageOptions()
+
+const SORT_COLUMNS = ['inum', 'description', 'scriptType'] as const
+const SORT_COLUMN_LABELS: Record<string, string> = {
+  inum: 'fields.inum',
+  description: 'fields.description',
+  scriptType: 'fields.script_type',
+}
 
 interface ScriptTableRow extends CustomScript {
   scriptError?: ScriptError
@@ -53,7 +44,7 @@ interface ScriptTableRow extends CustomScript {
 
 const CustomScriptListPage: React.FC = () => {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { navigateToRoute } = useAppNavigation()
   const {
     hasCedarReadPermission,
@@ -62,22 +53,19 @@ const CustomScriptListPage: React.FC = () => {
     authorizeHelper,
   } = useCedarling()
 
-  const pageSize = getDefaultPagingSize()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = useMemo(() => theme?.state?.theme || DEFAULT_THEME, [theme?.state?.theme])
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+  const isDarkTheme = selectedTheme === THEME_DARK
+  const { classes, badgeStyles } = useStyles({ isDark: isDarkTheme, themeColors })
+
+  const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
   const [pattern, setPattern] = useState<string>('')
   const [scriptType, setScriptType] = useState<string>(DEFAULT_SCRIPT_TYPE)
   const [sortBy, setSortBy] = useState<string>('')
   const [sortOrder, setSortOrder] = useState<'ascending' | 'descending'>('ascending')
   const [modal, setModal] = useState(false)
   const [itemToDelete, setItemToDelete] = useState<CustomScript | null>(null)
-
-  const theme = useContext(ThemeContext)
-
-  const selectedTheme = useMemo(() => theme?.state?.theme || DEFAULT_THEME, [theme?.state?.theme])
-  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
-  const darkThemeColors = useMemo(() => getThemeColor('dark'), [])
-  const lightThemeColors = useMemo(() => getThemeColor('light'), [])
-
-  const isDarkTheme = useMemo(() => selectedTheme === THEME_DARK, [selectedTheme])
 
   const scriptsResourceId = ADMIN_UI_RESOURCES.Scripts
   const scriptScopes = CEDAR_RESOURCE_SCOPES[scriptsResourceId] || []
@@ -108,13 +96,15 @@ const CustomScriptListPage: React.FC = () => {
     pattern: pattern || undefined,
     sortBy: sortBy || undefined,
     sortOrder: sortBy ? sortOrder : undefined,
+    limit,
+    startIndex: pageNumber * limit + 1,
   })
 
   const { data: scriptTypes, isLoading: loadingTypes } = useCustomScriptTypes()
-
   const deleteMutation = useDeleteCustomScript()
 
   const scripts = (scriptsResponse?.entries || []) as ScriptTableRow[]
+  const totalItems = scriptsResponse?.totalEntriesCount ?? 0
 
   SetTitle(t('titles.scripts'))
 
@@ -155,10 +145,10 @@ const CustomScriptListPage: React.FC = () => {
         dispatch(updateToast(true, 'success', t('messages.script_deleted_successfully')))
         setModal(false)
         setItemToDelete(null)
-      } catch (error) {
-        console.error('Failed to delete custom script:', error)
+      } catch (err) {
+        devLogger.error('Failed to delete custom script:', err)
         const errorMessage =
-          error instanceof Error ? error.message : t('messages.error_deleting_script')
+          err instanceof Error ? err.message : t('messages.error_deleting_script')
         dispatch(updateToast(true, 'error', errorMessage))
       }
     },
@@ -166,409 +156,390 @@ const CustomScriptListPage: React.FC = () => {
   )
 
   const handleRefresh = useCallback(() => {
+    setPageNumber(0)
     refetch()
   }, [refetch])
 
-  const handleSearchClear = useCallback(() => {
-    setPattern('')
+  const handleSearchSubmit = useCallback(() => {
+    setPageNumber(0)
+    refetch()
+  }, [refetch])
+
+  const handleTypeChange = useCallback((value: string) => {
+    setScriptType(value)
+    setPageNumber(0)
   }, [])
 
-  const handleTypeChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setScriptType(event.target.value)
+  const handleSortByFilter = useCallback((value: string) => {
+    setSortBy(value)
+    setPageNumber(0)
   }, [])
 
-  const handlePatternChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setPattern(event.target.value)
+  const handlePageChange = useCallback((page: number) => {
+    setPageNumber(page)
   }, [])
 
-  const handlePatternKeyDown = useCallback(
-    (event: React.KeyboardEvent<HTMLDivElement>) => {
-      if (event.key === 'Enter') {
-        refetch()
-      }
-    },
-    [refetch],
+  const handleRowsPerPageChange = useCallback((rowsPerPage: number) => {
+    setLimit(rowsPerPage)
+    setPageNumber(0)
+  }, [])
+
+  const handleSort = useCallback((columnKey: string, direction: 'asc' | 'desc' | null) => {
+    setSortBy(direction ? columnKey : '')
+    setSortOrder(direction === 'desc' ? 'descending' : 'ascending')
+    setPageNumber(0)
+  }, [])
+
+  const sortOptions = useMemo(
+    () => [
+      { value: '', label: t('options.none') },
+      ...SORT_COLUMNS.map((value) => ({
+        value,
+        label: t(SORT_COLUMN_LABELS[value] || 'fields.status'),
+      })),
+    ],
+    [t],
   )
 
-  const handleSortByChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value
-    setSortBy(value)
-  }, [])
+  const scriptTypeOptions = useMemo(
+    () =>
+      (scriptTypes || []).map((type) => ({
+        value: type.value,
+        label: type.name,
+      })),
+    [scriptTypes],
+  )
 
-  const handleSortOrderToggle = useCallback(() => {
-    setSortOrder((prev) => (prev === 'ascending' ? 'descending' : 'ascending'))
-  }, [])
-  const columns: Column<ScriptTableRow>[] = useMemo(
+  const filters: FilterDef[] = useMemo(
     () => [
       {
-        title: t('fields.name'),
-        field: 'name',
-        render: (rowData: ScriptTableRow) => (
-          <Box>
-            <Typography
-              variant="body2"
-              fontWeight={700}
-              sx={{
-                mt: 0.5,
-                opacity: rowData.enabled ? 1 : 0.6,
-              }}
-            >
-              {rowData.name}
-            </Typography>
-            {rowData.scriptError?.stackTrace && (
-              <Tooltip title={t('tooltips.script_has_errors')}>
-                <Chip
-                  size="small"
-                  icon={<ErrorOutline sx={{ fontSize: 16 }} />}
-                  label={t('fields.error')}
-                  color="error"
-                />
-              </Tooltip>
-            )}
-          </Box>
-        ),
+        key: 'scriptType',
+        label: `${t('fields.script_type')}:`,
+        value: scriptType,
+        options: scriptTypeOptions,
+        onChange: handleTypeChange,
+        width: 220,
       },
       {
-        title: t('fields.description'),
-        field: 'description',
-        render: (rowData: ScriptTableRow) => {
-          const isEnabled = rowData.enabled === true
-          return (
-            <Typography
-              variant="body2"
-              sx={{
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                maxWidth: 300,
-                color: isEnabled ? customColors.white : lightThemeColors.fontColor,
-                opacity: isEnabled ? 0.9 : 0.6,
-              }}
-            >
-              {rowData.description || '—'}
-            </Typography>
-          )
-        },
-      },
-      {
-        title: t('fields.script_type'),
-        field: 'scriptType',
-        render: (rowData: ScriptTableRow) => {
-          const isEnabled = rowData.enabled === true
-          return (
-            <Chip
-              label={rowData.scriptType}
-              size="small"
-              variant="outlined"
-              sx={{
-                'fontFamily': 'monospace',
-                'fontSize': '0.75rem',
-                'borderRadius': 1,
-                'color': isEnabled ? customColors.white : customColors.primaryDark,
-                'borderColor': isEnabled ? customColors.white : customColors.lightBorder,
-                'backgroundColor': isEnabled ? 'transparent' : 'transparent',
-                '& .MuiChip-label': {
-                  color: isEnabled ? customColors.white : customColors.primaryDark,
-                },
-              }}
-            />
-          )
-        },
-      },
-      {
-        title: t('options.enabled'),
-        field: 'enabled',
-        type: 'boolean',
-        render: (rowData: ScriptTableRow) => {
-          const isEnabled = rowData.enabled === true
-          return (
-            <Chip
-              label={rowData.enabled ? t('options.yes') : t('options.no')}
-              size="small"
-              sx={{
-                minWidth: 60,
-                fontWeight: 500,
-                backgroundColor: darkThemeColors.background,
-                color: darkThemeColors.fontColor,
-                border: isEnabled
-                  ? `1px solid ${lightThemeColors.borderColor}`
-                  : `1px solid ${darkThemeColors.borderColor}`,
-                opacity: isEnabled ? 1 : 0.6,
-              }}
-            />
-          )
-        },
-      },
-      {
-        title: t('fields.actions'),
-        field: 'actions',
-        sorting: false,
-        render: (rowData: ScriptTableRow) => {
-          const isEnabled = rowData.enabled === true
-          const iconColor = isEnabled ? customColors.white : customColors.darkGray
-          return (
-            <Box sx={{ display: 'flex', gap: 1 }}>
-              {canWrite && (
-                <Tooltip title={t('messages.edit_script')}>
-                  <IconButton size="small" onClick={() => handleEdit(rowData)}>
-                    <EditOutlined sx={{ fontSize: 20, color: iconColor }} />
-                  </IconButton>
-                </Tooltip>
-              )}
-              {canRead && (
-                <Tooltip title={t('messages.view_script_details')}>
-                  <IconButton size="small" onClick={() => handleView(rowData)}>
-                    <VisibilityOutlined sx={{ fontSize: 20, color: iconColor }} />
-                  </IconButton>
-                </Tooltip>
-              )}
-              {canDelete && (
-                <Tooltip title={t('messages.delete_script')}>
-                  <IconButton size="small" onClick={() => handleDeleteClick(rowData)}>
-                    <DeleteOutlined sx={{ fontSize: 20, color: iconColor }} />
-                  </IconButton>
-                </Tooltip>
-              )}
-            </Box>
-          )
-        },
+        key: 'sortBy',
+        label: `${t('fields.sort_by')}:`,
+        value: sortBy,
+        options: sortOptions,
+        onChange: handleSortByFilter,
+        width: 180,
       },
     ],
-    [
-      t,
-      themeColors,
-      darkThemeColors,
-      customColors,
-      isDarkTheme,
-      canWrite,
-      canRead,
-      canDelete,
-      handleEdit,
-      handleView,
-      handleDeleteClick,
-    ],
+    [t, scriptType, scriptTypeOptions, sortBy, sortOptions, handleTypeChange, handleSortByFilter],
   )
 
-  const actions: Action<ScriptTableRow>[] = useMemo(() => {
-    const actionList: Action<ScriptTableRow>[] = []
+  const searchLabel = useMemo(() => `${t('fields.scripts')}:`, [t])
+  const searchPlaceholder = useMemo(() => t('placeholders.search_scripts'), [t])
 
-    if (canWrite) {
-      actionList.push({
-        icon: () => (
-          <Button
-            variant="contained"
-            startIcon={<AddOutlined />}
-            size="small"
-            sx={{
-              'textTransform': 'none',
-              'backgroundColor': themeColors.background,
-              'color': themeColors.fontColor,
-              '&:hover': {
-                backgroundColor: customColors.darkGray,
-              },
-            }}
-          >
-            {t('messages.add_script')}
-          </Button>
+  const primaryAction = useMemo(
+    () => ({
+      label: t('messages.add_script'),
+      icon: <Add className={classes.addIcon} />,
+      onClick: handleAdd,
+      disabled: !canWrite,
+    }),
+    [t, handleAdd, canWrite, classes],
+  )
+
+  const columns: ColumnDef<ScriptTableRow>[] = useMemo(
+    () => [
+      {
+        key: 'name',
+        label: t('fields.name'),
+        sortable: true,
+        render: (_value, row) => (
+          <div>
+            <GluuText variant="span" disableThemeColor className={classes.cellName}>
+              {row.name}
+            </GluuText>
+            {row.scriptError?.stackTrace && (
+              <GluuBadge
+                size="sm"
+                backgroundColor={badgeStyles.errorBadge.backgroundColor}
+                textColor={badgeStyles.errorBadge.textColor}
+                borderColor={badgeStyles.errorBadge.borderColor}
+                className={classes.errorBadgeMargin}
+              >
+                {t('fields.error')}
+              </GluuBadge>
+            )}
+          </div>
         ),
-        isFreeAction: true,
-        onClick: handleAdd,
-        tooltip: t('messages.add_script'),
+      },
+      {
+        key: 'description',
+        label: t('fields.description'),
+        sortable: true,
+        width: '35%',
+        render: (_value, row) => {
+          const desc = row.description || '—'
+          return (
+            <GluuText
+              variant="span"
+              disableThemeColor
+              className={classes.cellDescription}
+              title={typeof desc === 'string' ? desc : undefined}
+            >
+              {desc}
+            </GluuText>
+          )
+        },
+      },
+      {
+        key: 'scriptType',
+        label: t('fields.script_type'),
+        sortable: true,
+        render: (_value, row) => (
+          <GluuBadge
+            size="md"
+            backgroundColor={badgeStyles.scriptTypeBadge.backgroundColor}
+            textColor={badgeStyles.scriptTypeBadge.textColor}
+            borderColor={badgeStyles.scriptTypeBadge.borderColor}
+            className={classes.scriptTypeBadge}
+          >
+            {row.scriptType}
+          </GluuBadge>
+        ),
+      },
+      {
+        key: 'enabled',
+        label: t('options.enabled'),
+        sortable: false,
+        render: (_value, row) => {
+          const isEnabled = row.enabled === true
+          const style = isEnabled ? badgeStyles.enabledBadge : badgeStyles.disabledBadge
+          return (
+            <GluuBadge
+              size="md"
+              backgroundColor={style.backgroundColor}
+              textColor={style.textColor}
+              borderColor={style.borderColor}
+              borderRadius={5}
+              className={classes.enabledBadge}
+            >
+              {row.enabled ? t('options.yes') : t('options.no')}
+            </GluuBadge>
+          )
+        },
+      },
+    ],
+    [t, classes, badgeStyles],
+  )
+
+  const actions = useMemo(() => {
+    const list: Array<{
+      icon: React.ReactNode
+      tooltip: string
+      id?: string
+      onClick: (row: ScriptTableRow) => void
+    }> = []
+    if (canWrite) {
+      list.push({
+        icon: <Edit className={classes.editIcon} />,
+        tooltip: t('messages.edit_script'),
+        id: 'editScript',
+        onClick: handleEdit,
       })
     }
+    if (canRead) {
+      list.push({
+        icon: <VisibilityOutlined className={classes.viewIcon} />,
+        tooltip: t('messages.view_script_details'),
+        id: 'viewScript',
+        onClick: handleView,
+      })
+    }
+    if (canDelete) {
+      list.push({
+        icon: <DeleteOutlined className={classes.deleteIcon} />,
+        tooltip: t('messages.delete_script'),
+        id: 'deleteScript',
+        onClick: handleDeleteClick,
+      })
+    }
+    return list
+  }, [canWrite, canRead, canDelete, t, handleEdit, handleView, handleDeleteClick, classes])
 
-    return actionList
-  }, [canWrite, t, handleAdd, themeColors, customColors])
+  const effectivePage = useMemo(() => {
+    const maxPage = totalItems > 0 ? Math.max(0, Math.ceil(totalItems / limit) - 1) : 0
+    return Math.min(pageNumber, maxPage)
+  }, [pageNumber, totalItems, limit])
 
-  const tableOptions = useMemo(
+  useEffect(() => {
+    if (totalItems > 0 && pageNumber > effectivePage) {
+      setPageNumber(effectivePage)
+    }
+  }, [totalItems, pageNumber, limit, effectivePage])
+
+  const pagination: PaginationConfig = useMemo(
     () => ({
-      search: false,
-      idSynonym: 'inum',
-      selection: false,
-      pageSize: pageSize,
-      headerStyle: {
-        backgroundColor: themeColors.background,
-        color: themeColors.fontColor,
-        fontWeight: 600,
-        fontSize: '0.875rem',
-        borderBottom: '2px solid #e0e0e0',
-      },
-      rowStyle: (rowData: ScriptTableRow) => {
-        const hasError = rowData.scriptError?.stackTrace
-
-        if (hasError) {
-          return {
-            backgroundColor: `${customColors.accentRed}15`,
-            color: customColors.darkGray,
-            fontSize: '0.875rem',
-          }
-        }
-
-        if (rowData.enabled) {
-          return {
-            backgroundColor: darkThemeColors.background,
-            color: darkThemeColors.fontColor,
-            fontSize: '0.875rem',
-          }
-        }
-
-        return {
-          backgroundColor: customColors.white,
-          color: customColors.darkGray,
-          fontSize: '0.875rem',
-        }
-      },
+      page: effectivePage,
+      rowsPerPage: limit,
+      totalItems,
+      rowsPerPageOptions: LIMIT_OPTIONS,
+      onPageChange: handlePageChange,
+      onRowsPerPageChange: handleRowsPerPageChange,
     }),
-    [pageSize, themeColors, darkThemeColors, customColors, isDarkTheme],
+    [effectivePage, limit, totalItems, handlePageChange, handleRowsPerPageChange],
   )
+
+  const getRowKey = useCallback(
+    (row: ScriptTableRow, index: number) => row.inum ?? `no-inum-${index}`,
+    [],
+  )
+
+  const emptyMessage = useMemo(() => {
+    if (!pattern && scripts.length === 0) {
+      return t('messages.no_scripts_found')
+    }
+    return t('messages.no_data')
+  }, [pattern, scripts.length, t])
+
+  const detailLabelStyle = useMemo(
+    () => ({ color: themeColors.fontColor }),
+    [themeColors.fontColor],
+  )
+
+  const getScriptDetailFields = useCallback(
+    (row: ScriptTableRow) => [
+      { label: 'fields.inum', value: row.inum, doc_entry: 'inum', doc_category: SCRIPT },
+      {
+        label: 'fields.location_type',
+        value: row.locationType,
+        doc_entry: 'locationType',
+        doc_category: SCRIPT,
+      },
+      {
+        label: 'fields.internal',
+        value: row.internal ? t('options.true') : t('options.false'),
+        doc_entry: 'internal',
+        doc_category: SCRIPT,
+        isBadge: true,
+        badgeBackgroundColor: row.internal
+          ? themeColors.badges.statusActiveBg
+          : themeColors.badges.disabledBg,
+        badgeTextColor: row.internal
+          ? themeColors.badges.statusActive
+          : themeColors.badges.disabledText,
+      },
+      {
+        label: 'fields.programming_language',
+        value: row.programmingLanguage,
+        doc_entry: 'programmingLanguage',
+        doc_category: SCRIPT,
+      },
+      { label: 'fields.level', value: row.level, doc_entry: 'level', doc_category: SCRIPT },
+      { label: 'fields.name', value: row.name, doc_entry: 'name', doc_category: SCRIPT },
+      {
+        label: 'fields.description',
+        value: row.description,
+        doc_entry: 'description',
+        doc_category: SCRIPT,
+      },
+      {
+        label: 'options.enabled',
+        value: row.enabled ? t('options.true') : t('options.false'),
+        doc_entry: 'enabled',
+        doc_category: SCRIPT,
+        isBadge: true,
+        badgeBackgroundColor: row.enabled
+          ? themeColors.badges.statusActiveBg
+          : themeColors.badges.disabledBg,
+        badgeTextColor: row.enabled
+          ? themeColors.badges.statusActive
+          : themeColors.badges.disabledText,
+      },
+      {
+        label: 'fields.script_type',
+        value: row.scriptType,
+        doc_entry: 'scriptType',
+        doc_category: SCRIPT,
+        isBadge: true,
+        badgeBackgroundColor: themeColors.badges.statusActiveBg,
+        badgeTextColor: themeColors.badges.statusActive,
+      },
+      {
+        label: 'fields.revision',
+        value: row.revision,
+        doc_entry: 'revision',
+        doc_category: SCRIPT,
+      },
+    ],
+    [t, themeColors],
+  )
+
+  const loading = isLoading || deleteMutation.isPending
 
   if (error) {
     return (
-      <Card>
-        <CardBody>
+      <GluuLoader blocking={false}>
+        <div className={classes.page}>
           <GluuViewWrapper canShow={canRead}>
-            <Alert severity="error" sx={{ mb: 2 }}>
-              <Typography variant="h6" gutterBottom>
-                {t('messages.error_loading_scripts')}
-              </Typography>
-              <Typography variant="body2">
-                {error && typeof error === 'object' && 'message' in error
-                  ? (error as { message: string }).message
-                  : String(error)}
-              </Typography>
-            </Alert>
-            <Button
-              variant="contained"
-              onClick={handleRefresh}
-              startIcon={<RefreshIcon />}
-              sx={{ textTransform: 'none' }}
-            >
-              {t('actions.retry')}
-            </Button>
+            <div className={classes.searchCard}>
+              <div className={classes.searchCardContent}>
+                <div className={classes.errorMessage}>{t('messages.error_loading_scripts')}</div>
+                <GluuText variant="p" disableThemeColor>
+                  {error && typeof error === 'object' && 'message' in error
+                    ? (error as { message: string }).message
+                    : String(error)}
+                </GluuText>
+              </div>
+            </div>
           </GluuViewWrapper>
-        </CardBody>
-      </Card>
+        </div>
+      </GluuLoader>
     )
   }
 
   return (
-    <Card>
-      <CardBody>
+    <GluuLoader blocking={loading}>
+      <div className={classes.page}>
         <GluuViewWrapper canShow={canRead}>
-          <Box sx={{ mb: 3 }}>
-            <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap" useFlexGap>
-              <TextField
-                size="small"
-                label={t('fields.search')}
-                placeholder={t('placeholders.search_scripts')}
-                value={pattern}
-                onChange={handlePatternChange}
-                onKeyDown={handlePatternKeyDown}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon fontSize="small" />
-                    </InputAdornment>
-                  ),
-                  endAdornment: pattern && (
-                    <InputAdornment position="end">
-                      <IconButton size="small" onClick={handleSearchClear} edge="end">
-                        <ClearIcon fontSize="small" />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{ minWidth: 300 }}
+          <div className={classes.searchCard}>
+            <div className={classes.searchCardContent}>
+              <GluuSearchToolbar
+                searchLabel={searchLabel}
+                searchPlaceholder={searchPlaceholder}
+                searchValue={pattern}
+                searchOnType
+                onSearch={setPattern}
+                onSearchSubmit={handleSearchSubmit}
+                filters={filters}
+                onRefresh={canRead ? handleRefresh : undefined}
+                refreshLoading={isLoading || loadingTypes}
+                primaryAction={primaryAction}
               />
+            </div>
+          </div>
 
-              <TextField
-                select
-                size="small"
-                label={t('fields.script_type')}
-                value={scriptType}
-                onChange={handleTypeChange}
-                disabled={loadingTypes}
-                sx={{
-                  minWidth: 220,
-                }}
-              >
-                {(scriptTypes || []).map((type) => (
-                  <MenuItem key={type.value} value={type.value}>
-                    {type.name}
-                  </MenuItem>
-                ))}
-              </TextField>
-
-              <TextField
-                select
-                size="small"
-                label={t('fields.sort_by')}
-                value={sortBy}
-                onChange={handleSortByChange}
-                sx={{ minWidth: 180 }}
-              >
-                <MenuItem value="">{t('options.none')}</MenuItem>
-                <MenuItem value="inum">{t('fields.inum')}</MenuItem>
-                <MenuItem value="description">{t('fields.description')}</MenuItem>
-              </TextField>
-
-              {sortBy && (
-                <Tooltip title={t('tooltips.toggle_sort_order')}>
-                  <IconButton
-                    onClick={handleSortOrderToggle}
-                    size="small"
-                    sx={{
-                      transition: 'transform 0.3s ease-in-out',
-                    }}
-                  >
-                    <SwapVertIcon
-                      sx={{
-                        transform: sortOrder === 'descending' ? 'rotate(180deg)' : 'rotate(0deg)',
-                        transition: 'transform 0.3s ease-in-out',
-                      }}
-                    />
-                  </IconButton>
-                </Tooltip>
+          <div className={classes.tableCard}>
+            <GluuTable<ScriptTableRow>
+              columns={columns}
+              data={scripts}
+              loading={false}
+              expandable
+              renderExpandedRow={(row) => (
+                <GluuDetailGrid
+                  fields={getScriptDetailFields(row)}
+                  labelStyle={detailLabelStyle}
+                  defaultDocCategory={SCRIPT}
+                  layout="column"
+                />
               )}
-
-              <Tooltip title={t('tooltips.refresh_data')}>
-                <IconButton
-                  onClick={handleRefresh}
-                  size="small"
-                  sx={{
-                    'color': customColors.lightBlue,
-                    '&:hover': {
-                      backgroundColor: `${customColors.lightBlue}20`,
-                    },
-                  }}
-                >
-                  <RefreshIcon />
-                </IconButton>
-              </Tooltip>
-            </Stack>
-          </Box>
-
-          <MaterialTable
-            columns={columns}
-            data={scripts}
-            isLoading={isLoading || deleteMutation.isPending}
-            title=""
-            actions={actions}
-            options={tableOptions}
-            components={{
-              Container: (props) => <Paper {...props} elevation={0} />,
-            }}
-            detailPanel={({ rowData }: { rowData: ScriptTableRow }) => (
-              <Box sx={{ p: 2, backgroundColor: themeColors.lightBackground }}>
-                <CustomScriptDetailPage row={rowData} />
-              </Box>
-            )}
-            localization={{
-              body: {
-                emptyDataSourceMessage: t('messages.no_scripts_found'),
-              },
-            }}
-          />
+              pagination={pagination}
+              onPagingSizeSync={onPagingSizeSync}
+              actions={actions}
+              sortColumn={sortBy || null}
+              sortDirection={sortBy ? (sortOrder === 'descending' ? 'desc' : 'asc') : null}
+              onSort={handleSort}
+              getRowKey={getRowKey}
+              emptyMessage={emptyMessage}
+            />
+          </div>
         </GluuViewWrapper>
 
         {canDelete && itemToDelete && (
@@ -585,9 +556,9 @@ const CustomScriptListPage: React.FC = () => {
             feature={adminUiFeatures.custom_script_delete}
           />
         )}
-      </CardBody>
-    </Card>
+      </div>
+    </GluuLoader>
   )
 }
 
-export default CustomScriptListPage
+export default memo(CustomScriptListPage)

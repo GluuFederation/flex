@@ -1,9 +1,12 @@
-import React, { ChangeEvent } from 'react'
+import React, { ChangeEvent, useMemo } from 'react'
 import { Col, FormGroup, Input, InputGroup, CustomInput } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { SCRIPT } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
-import customColors from '@/customColors'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { DEFAULT_THEME } from '@/context/theme/constants'
+import { useStyles } from './styles/PersonAuthenticationFields.style'
 import { SAML_ACRS_OPTIONS } from './constants'
 import type { FormikProps } from 'formik'
 import type { FormValues } from './types'
@@ -22,6 +25,12 @@ export const PersonAuthenticationFields: React.FC<PersonAuthenticationFieldsProp
   getModuleProperty,
 }) => {
   const { t } = useTranslation()
+  const { state: themeState } = useTheme()
+  const themeColors = useMemo(
+    () => getThemeColor(themeState?.theme ?? DEFAULT_THEME),
+    [themeState?.theme],
+  )
+  const { classes } = useStyles({ themeColors })
 
   return (
     <>
@@ -36,9 +45,11 @@ export const PersonAuthenticationFields: React.FC<PersonAuthenticationFieldsProp
             multiple
             disabled={viewOnly}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
-              const target = e.target as unknown as HTMLSelectElement
-              const values = Array.from(target.selectedOptions).map((o) => o.value)
-              formik.setFieldValue('aliases', values)
+              const target = e.target
+              if (target instanceof HTMLSelectElement) {
+                const values = Array.from(target.selectedOptions).map((o) => o.value)
+                formik.setFieldValue('aliases', values)
+              }
             }}
           >
             {SAML_ACRS_OPTIONS.map((acr) => (
@@ -51,7 +62,12 @@ export const PersonAuthenticationFields: React.FC<PersonAuthenticationFieldsProp
       </FormGroup>
 
       <FormGroup row>
-        <GluuLabel label="Interactive" required doc_category={SCRIPT} doc_entry="usage_type" />
+        <GluuLabel
+          label="fields.interactive"
+          required
+          doc_category={SCRIPT}
+          doc_entry="usage_type"
+        />
         <Col sm={9}>
           <InputGroup>
             <CustomInput
@@ -60,20 +76,18 @@ export const PersonAuthenticationFields: React.FC<PersonAuthenticationFieldsProp
               name="usage_type"
               disabled={viewOnly}
               value={getModuleProperty('usage_type', formik.values.moduleProperties) || ''}
-              onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
                 usageTypeChange(e.target.value)
               }}
             >
               <option value="">{t('options.choose')}...</option>
-              <option value="interactive">Web</option>
-              <option value="service">Native</option>
-              <option value="both">Both methods</option>
+              <option value="interactive">{t('options.usage_type_web')}</option>
+              <option value="service">{t('options.usage_type_native')}</option>
+              <option value="both">{t('options.usage_type_both')}</option>
             </CustomInput>
           </InputGroup>
           {formik.errors.moduleProperties && formik.touched.moduleProperties && (
-            <div style={{ color: customColors.accentRed }}>
-              {String(formik.errors.moduleProperties)}
-            </div>
+            <div className={classes.errorText}>{String(formik.errors.moduleProperties)}</div>
           )}
         </Col>
       </FormGroup>

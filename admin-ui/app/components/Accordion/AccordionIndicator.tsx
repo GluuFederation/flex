@@ -6,7 +6,7 @@ import { Consumer } from './context'
 interface AccordionIndicatorProps {
   open?: ReactNode
   closed?: ReactNode
-  className?: any
+  className?: string
 }
 
 export const AccordionIndicator: React.FC<AccordionIndicatorProps> = ({

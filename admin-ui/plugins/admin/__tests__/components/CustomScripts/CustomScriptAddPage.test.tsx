@@ -3,7 +3,6 @@ import { render, screen } from '@testing-library/react'
 import CustomScriptAddPage from 'Plugins/admin/components/CustomScripts/CustomScriptAddPage'
 import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import item from './item.test'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 
@@ -39,7 +38,6 @@ jest.mock('JansConfigApi', () => ({
 const store = configureStore({
   reducer: combineReducers({
     authReducer: (state = { hasSession: true, permissions: [] }) => state,
-    customScriptReducer: (state = { items: [item], loading: false }) => state,
     webhookReducer: (
       state = {
         featureWebhooks: [],
