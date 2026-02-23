@@ -32,7 +32,7 @@ jest.spyOn(global.console, 'error').mockImplementation((...args: unknown[]) => {
 
 jest.setTimeout(30000)
 
-HTMLAnchorElement.prototype.click = jest.fn()
+jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(jest.fn())
 if (typeof globalThis.URL !== 'undefined') {
   globalThis.URL.createObjectURL = jest.fn()
 }

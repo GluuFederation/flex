@@ -147,7 +147,7 @@ const GluuInputRow = <T = Record<string, unknown>,>({
         ) : (
           inputEl
         )}
-        {shortcode}
+        {type !== 'number' ? shortcode : null}
         {type === 'password' && (
           <button
             type="button"

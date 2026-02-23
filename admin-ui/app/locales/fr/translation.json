@@ -783,7 +783,7 @@
     "webhook_dialog_note": "NOTE : L'exécution du webhook a échoué, et vous ne pourrez pas continuer pour le moment.",
     "webhook_dialog_dec": "Dans le cadre du processus de soumission, le système déclenchera automatiquement les webhooks associés suivants pour effectuer des tâches de traitement supplémentaires.",
     "add_idp": "Ajouter un IDP SAML",
-    "request_body_error": "Le Corps de la Requête est requis pour la méthode HTTP sélectionnée.",
+    "request_body_error": "Le corps de la requête est requis pour la méthode HTTP sélectionnée.",
     "http_headers_required": "Au moins un en-tête HTTP est requis pour les requêtes POST, PUT ou PATCH.",
     "view_idp_details": "Voir les détails de l'IDP",
     "edit_idp": "Modifier un IDP SAML",
@@ -794,6 +794,7 @@
     "select_message_provider_type": "Veuillez sélectionner le type de fournisseur de messages",
     "license_api_not_enabled": "L'API de licence n'est pas activée pour cette application.",
     "license_reset_success": "Licence réinitialisée avec succès. Redirection...",
+    "license_invalid_ssa": "SSA invalide. Veuillez contacter l'équipe Gluu pour vérifier si le SSA est correct.",
     "edit_configuration": "Supprimer la configuration",
     "add_role": "Ajouter un rôle",
     "fido_config_updated_successfully": "Configuration FIDO mise à jour avec succès",
@@ -949,7 +950,7 @@
     "invalid_pattern": "Format invalide"
   },
   "tooltips": {
-    "insert_shortcode": "Insérer un code court",
+    "insert_shortcode": "Insérer un shortcode",
     "add_attribute": "Ajouter un attribut",
     "add_ldap": "Ajouter LDAP",
     "add_user": "Ajouter un utilisateur",
@@ -1337,7 +1338,7 @@
     },
     "licence": {
       "productName": "La licence est enregistrée sous le produit suivant.",
-      "productCode": "Le code court est utilisé dans nos appels API afin d'identifier le produit.",
+      "productCode": "Le shortcode est utilisé dans nos appels API afin d'identifier le produit.",
       "licenseType": "Le type de licence (par exemple : licences perpétuelles, basées sur le temps, d'abonnement et à consommation).",
       "licenseKey": "La clé de licence.",
       "customerEmail": "L'adresse e-mail du client de la licence enregistrée.",

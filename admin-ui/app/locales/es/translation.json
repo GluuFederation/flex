@@ -840,6 +840,7 @@
     "delete_identity_provider": "Eliminar Proveedor de Identidad",
     "license_api_not_enabled": "La API de Licencia no está habilitada para esta aplicación.",
     "license_reset_success": "Licencia restablecida correctamente. Redirigiendo...",
+    "license_invalid_ssa": "SSA inválido. Por favor, contacte al equipo de Gluu para verificar si el SSA es correcto.",
     "edit_configuration": "Editar Configuración",
     "delete_configuration": "Eliminar Configuración",
     "select_message_provider_type": "Seleccione el tipo de proveedor de mensajes",

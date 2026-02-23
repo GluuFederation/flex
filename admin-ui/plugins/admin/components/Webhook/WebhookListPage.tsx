@@ -138,11 +138,11 @@ const WebhookListPage: React.FC = () => {
   const submitForm = useCallback(
     async (userMessage: string) => {
       const inumToDelete = deleteData?.inum
-      setDeleteData(null)
       if (inumToDelete) {
         try {
           await deleteWebhook(inumToDelete, userMessage)
           refetch()
+          setDeleteData(null)
         } catch (error) {
           if (isDevelopment) console.error('Delete webhook failed:', error)
         }
@@ -266,14 +266,17 @@ const WebhookListPage: React.FC = () => {
         sortable: true,
         render: (_value, row) => {
           const upper = (row.httpMethod || '').toUpperCase()
-          const methodStyle =
-            upper === 'GET' || upper === 'POST'
-              ? badgeStyles.httpMethodBadgeGetPost
-              : upper === 'PUT' || upper === 'PATCH'
-                ? badgeStyles.httpMethodBadgePutPatch
-                : upper === 'DELETE'
-                  ? badgeStyles.httpMethodBadgeDelete
-                  : badgeStyles.httpMethodBadgeDefault
+          const httpMethodBadgeMap: Record<
+            string,
+            { backgroundColor: string; textColor: string; borderColor: string }
+          > = {
+            GET: badgeStyles.httpMethodBadgeGetPost,
+            POST: badgeStyles.httpMethodBadgeGetPost,
+            PUT: badgeStyles.httpMethodBadgePutPatch,
+            PATCH: badgeStyles.httpMethodBadgePutPatch,
+            DELETE: badgeStyles.httpMethodBadgeDelete,
+          }
+          const methodStyle = httpMethodBadgeMap[upper] ?? badgeStyles.httpMethodBadgeDefault
           return (
             <GluuBadge
               size="md"

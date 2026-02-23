@@ -794,6 +794,7 @@
     "invalid_url_error": "URL inválido ou URL não permitido.",
     "license_api_not_enabled": "A API de licença não está habilitada para este aplicativo.",
     "license_reset_success": "Licença redefinida com sucesso. Redirecionando...",
+    "license_invalid_ssa": "SSA inválido. Entre em contato com a equipe Gluu para verificar se o SSA está correto.",
     "adding_new_permission": "Adicionando nova permissão",
     "role_permission_mapping_description": "Gerenciar mapeamentos de funções para permissões para a UI de administração",
     "add_role": "Adicionar função",

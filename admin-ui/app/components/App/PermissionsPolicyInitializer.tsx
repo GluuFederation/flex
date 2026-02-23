@@ -115,7 +115,7 @@ const PermissionsPolicyInitializer = () => {
       })
       .catch(() => {
         retryCount.current.tryCount += 1
-        devLogger.warn(`❌ Cedarling got failed. Retrying in 1000ms`)
+        devLogger.warn(`❌ Cedarling initialization failed. Retrying in 1000ms`)
 
         if (retryCount.current.tryCount < maxRetries) {
           setTimeout(() => {

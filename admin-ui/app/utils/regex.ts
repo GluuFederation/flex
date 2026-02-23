@@ -23,6 +23,10 @@ export const REGEX_BRACED_PLACEHOLDER = /\{([^{}]+?)\}/g
 /** Matches URL/shortcode placeholders like ${inum} or ${name}; use with .replace() to normalize URLs before validation. */
 export const REGEX_URL_PLACEHOLDER = /\$\{[^}]*\}/g
 
+/** Validates normalized webhook URL format: https://host[:port][/path][?query][#hash]. Host: domain or IPv6. */
+export const REGEX_WEBHOOK_URL =
+  /^https:\/\/(([\w-]+\.)+[\w-]+|\[[\da-fA-F:]+\])(:\d+)?(\/[^\s?#]*)?(\?[^\s#]*)?(#[^\s]*)?$/i
+
 /** Escapes regex-special characters in a string so it can be used literally in a RegExp. */
 function escapeRegexSpecialChars(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')

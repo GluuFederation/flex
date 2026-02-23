@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useMemo } from 'react'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { uuidv4 } from 'Utils/Util'
-import { EmptyLayout, Label } from 'Components'
+import { EmptyLayoutSection, Label } from 'Components'
 import { logoutUser } from 'Redux/features/logoutSlice'
 import { useTranslation } from 'react-i18next'
 import { setAuthState } from '../../redux/features/authSlice'
@@ -11,12 +11,6 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import getThemeColor from '@/context/theme/config'
 import { devLogger } from '@/utils/devLogger'
-
-const EmptyLayoutSection = (
-  EmptyLayout as React.ComponentType<{ children?: React.ReactNode }> & {
-    Section: React.ComponentType<{ center?: boolean; children?: React.ReactNode }>
-  }
-).Section
 
 const ByeBye = () => {
   const config = useAppSelector((state) => state.authReducer.config) as AuthConfig

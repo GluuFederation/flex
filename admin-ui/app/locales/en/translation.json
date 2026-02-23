@@ -839,6 +839,7 @@
     "delete_identity_provider": "Delete Identity Provider",
     "license_api_not_enabled": "The License API is not enabled for this application.",
     "license_reset_success": "License reset successfully. Redirecting...",
+    "license_invalid_ssa": "Invalid SSA. Please contact Gluu's team to verify if SSA is correct.",
     "edit_configuration": "Edit Configuration",
     "delete_configuration": "Delete Configuration",
     "select_message_provider_type": "Please select message provider type",

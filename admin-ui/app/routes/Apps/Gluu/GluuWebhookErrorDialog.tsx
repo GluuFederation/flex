@@ -22,12 +22,6 @@ const GluuWebhookErrorDialog = () => {
   const dispatch = useDispatch()
   const webhookState = useAppSelector((state) => state.webhookReducer)
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
-
-  if (!webhookState) return null
-
-  const { triggerWebhookMessage, webhookTriggerErrors, triggerWebhookInProgress, showErrorModal } =
-    webhookState
-
   const { state: themeState } = useTheme()
   const selectedTheme = themeState.theme
 
@@ -43,6 +37,11 @@ const GluuWebhookErrorDialog = () => {
       authorizeHelper(webhookScopes)
     }
   }, [authorizeHelper, webhookScopes])
+
+  const { triggerWebhookMessage, webhookTriggerErrors, triggerWebhookInProgress, showErrorModal } =
+    webhookState ?? {}
+
+  if (!webhookState) return null
 
   const closeModal = () => {
     dispatch(setShowErrorModal(!showErrorModal))
@@ -75,9 +74,9 @@ const GluuWebhookErrorDialog = () => {
               {triggerWebhookMessage}
             </Box>
           ) : null}
-          {webhookTriggerErrors.length ? (
+          {(webhookTriggerErrors?.length ?? 0) > 0 ? (
             <ul>
-              {webhookTriggerErrors.map((item: WebhookTriggerResponseItem) => (
+              {(webhookTriggerErrors ?? []).map((item: WebhookTriggerResponseItem) => (
                 <li
                   key={item.responseMessage}
                   style={{
