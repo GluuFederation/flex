@@ -26,4 +26,6 @@ export type GluuInputRowProps<T = Record<string, unknown>> = {
   cols?: number
   isDark?: boolean
   placeholder?: string
+  /** Optional class name for the input element (e.g. from parent for overrides) */
+  inputClassName?: string
 }

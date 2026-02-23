@@ -1,5 +1,5 @@
 import type { JsonPatch } from 'JansConfigApi'
-import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/types'
+import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/types/index'
 import type { Accordion } from 'Components'
 import type React from 'react'
 import type { UserAction, ActionData } from 'Utils/PermChecker'

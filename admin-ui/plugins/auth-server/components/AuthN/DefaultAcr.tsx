@@ -24,6 +24,7 @@ import { buildAgamaFlowsArray, buildDropdownOptions, type DropdownOption } from 
 import { updateToast } from 'Redux/features/toastSlice'
 import { useAcrAudit } from './hooks'
 import { DEFAULT_THEME } from '@/context/theme/constants'
+import customColors from '@/customColors'
 
 interface CustomScript {
   name: string
@@ -205,7 +206,14 @@ function DefaultAcr(): React.ReactElement {
     >
       <Form onSubmit={handleSubmit}>
         <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} />
-        <div style={{ padding: '3vh' }}>
+        <style>{`
+          .default-acr-labels-black label,
+          .default-acr-labels-black label h5,
+          .default-acr-labels-black label span,
+          .default-acr-labels-black h5,
+          .default-acr-labels-black .MuiSvgIcon-root { color: ${customColors.black} !important; }
+        `}</style>
+        <div className="default-acr-labels-black" style={{ padding: '3vh' }}>
           <GluuViewWrapper canShow={canReadAuth}>
             <DefaultAcrInput
               name="defaultAcr"

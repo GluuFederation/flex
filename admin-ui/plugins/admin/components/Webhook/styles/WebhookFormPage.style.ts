@@ -256,6 +256,18 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
         margin: MARGIN_ZERO_IMPORTANT,
       },
     },
+    urlFieldItem: {
+      '& [class*="col"]': {
+        overflow: 'hidden',
+      },
+      /* Override form input padding/overflow so URL text doesn't merge with shortcode icon (higher specificity than formWithInputs) */
+      '&& input': {
+        paddingRight: 52,
+        overflowX: 'auto',
+        overflowY: 'hidden',
+        minWidth: 0,
+      },
+    },
     fieldItemFullWidth: {
       'width': WIDTH_FULL,
       'gridColumn': '1 / -1',

@@ -34,6 +34,7 @@ const GluuInputRow = <T = Record<string, unknown>,>({
   cols,
   isDark,
   placeholder,
+  inputClassName,
 }: GluuInputRowProps<T>) => {
   const [customType, setCustomType] = useState<string | null>(null)
   const { state } = useTheme()
@@ -103,7 +104,9 @@ const GluuInputRow = <T = Record<string, unknown>,>({
       rows={rows}
       cols={cols}
       placeholder={placeholder}
-      className={shortcode ? classes.inputWithShortcode : undefined}
+      className={[shortcode ? classes.inputWithShortcode : undefined, inputClassName]
+        .filter(Boolean)
+        .join(' ')}
     />
   )
 
