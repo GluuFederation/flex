@@ -82,9 +82,22 @@ export function* triggerWebhook({
   try {
     const webhookApi: WebhookApi = yield* createWebhookApi()
     featureToTrigger = yield select((state: RootState) => state.webhookReducer.featureToTrigger)
-    const featureWebhooks: WebhookEntry[] = yield select(
+    let featureWebhooks: WebhookEntry[] = yield select(
       (state: RootState) => state.webhookReducer.featureWebhooks,
     )
+
+    const featureFromPayload = payload?.feature
+    if (featureFromPayload && !featureToTrigger) {
+      featureToTrigger = featureFromPayload
+      yield put(setFeatureToTrigger(featureFromPayload))
+      const data: WebhooksByFeatureIdApiResponse = yield call(
+        webhookApi.getWebhooksByFeatureId,
+        featureFromPayload,
+      )
+      featureWebhooks = data?.body ?? []
+      yield put(getWebhooksByFeatureIdResponse(featureWebhooks))
+    }
+
     const enabledFeatureWebhooks = (featureWebhooks ?? []).filter(
       (item: WebhookEntry) => item.jansEnabled,
     )

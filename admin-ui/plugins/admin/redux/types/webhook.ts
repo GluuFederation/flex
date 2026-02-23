@@ -31,6 +31,7 @@ export interface TriggerPayloadActionPayload {
 
 export interface TriggerWebhookActionPayload {
   createdFeatureValue?: Record<string, JsonValue>
+  feature?: string
 }
 
 export type TriggerWebhookReducerPayload = TriggerPayloadActionPayload | TriggerWebhookActionPayload
