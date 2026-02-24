@@ -228,240 +228,251 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
         </Alert>
       )}
       <Form onSubmit={formik.handleSubmit}>
-        {item.inum && (
-          <GluuInumInput
-            label="fields.inum"
-            name="inum"
-            lsize={3}
-            rsize={9}
-            value={item.inum}
-            doc_category={SCRIPT}
-          />
-        )}
-
-        <FormGroup row>
-          <GluuLabel label="fields.name" required doc_category={SCRIPT} doc_entry="name" />
-          <Col sm={9}>
-            <Input
-              placeholder={t('placeholders.name')}
-              id="name"
-              valid={formik.touched.name && !formik.errors.name}
-              invalid={formik.touched.name && !!formik.errors.name}
-              name="name"
-              disabled={viewOnly}
-              value={formik.values.name}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+        <style>{`
+          .custom-script-form-labels-black label,
+          .custom-script-form-labels-black label h5,
+          .custom-script-form-labels-black label span,
+          .custom-script-form-labels-black h5,
+          .custom-script-form-labels-black .MuiSvgIcon-root { color: ${customColors.black} !important; }
+        `}</style>
+        <div className="custom-script-form-labels-black">
+          {item.inum && (
+            <GluuInumInput
+              label="fields.inum"
+              name="inum"
+              lsize={3}
+              rsize={9}
+              value={item.inum}
+              doc_category={SCRIPT}
             />
-            {formik.errors.name && formik.touched.name && (
-              <div style={{ color: customColors.accentRed, marginTop: '4px' }}>
-                {String(formik.errors.name)}
-              </div>
-            )}
-          </Col>
-        </FormGroup>
+          )}
 
-        <FormGroup row>
-          <GluuLabel label="fields.description" doc_category={SCRIPT} doc_entry="description" />
-          <Col sm={9}>
-            <InputGroup>
+          <FormGroup row>
+            <GluuLabel label="fields.name" required doc_category={SCRIPT} doc_entry="name" />
+            <Col sm={9}>
               <Input
-                placeholder={t('placeholders.description')}
-                valid={formik.touched.description && !formik.errors.description}
-                invalid={formik.touched.description && !!formik.errors.description}
-                id="description"
-                name="description"
+                placeholder={t('placeholders.name')}
+                id="name"
+                valid={formik.touched.name && !formik.errors.name}
+                invalid={formik.touched.name && !!formik.errors.name}
+                name="name"
                 disabled={viewOnly}
-                value={formik.values.description}
+                value={formik.values.name}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               />
-              {formik.errors.description && formik.touched.description && (
+              {formik.errors.name && formik.touched.name && (
                 <div style={{ color: customColors.accentRed, marginTop: '4px' }}>
-                  {String(formik.errors.description)}
+                  {String(formik.errors.name)}
                 </div>
               )}
-            </InputGroup>
-          </Col>
-        </FormGroup>
-        {scriptTypeState === 'person_authentication' && (
-          <PersonAuthenticationFields
-            formik={formik}
-            viewOnly={viewOnly}
-            usageTypeChange={usageTypeChange}
-            getModuleProperty={getModuleProperty}
-          />
-        )}
+            </Col>
+          </FormGroup>
 
-        <FormGroup row>
-          <GluuLabel
-            label="fields.script_type"
-            required
-            doc_category={SCRIPT}
-            doc_entry="scriptType"
-          />
-          <Col sm={9}>
-            {loadingScriptTypes ? (
-              <Skeleton variant="text" width="100%" sx={{ fontSize: '3rem' }} />
-            ) : (
+          <FormGroup row>
+            <GluuLabel label="fields.description" doc_category={SCRIPT} doc_entry="description" />
+            <Col sm={9}>
+              <InputGroup>
+                <Input
+                  placeholder={t('placeholders.description')}
+                  valid={formik.touched.description && !formik.errors.description}
+                  invalid={formik.touched.description && !!formik.errors.description}
+                  id="description"
+                  name="description"
+                  disabled={viewOnly}
+                  value={formik.values.description}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                />
+                {formik.errors.description && formik.touched.description && (
+                  <div style={{ color: customColors.accentRed, marginTop: '4px' }}>
+                    {String(formik.errors.description)}
+                  </div>
+                )}
+              </InputGroup>
+            </Col>
+          </FormGroup>
+          {scriptTypeState === 'person_authentication' && (
+            <PersonAuthenticationFields
+              formik={formik}
+              viewOnly={viewOnly}
+              usageTypeChange={usageTypeChange}
+              getModuleProperty={getModuleProperty}
+            />
+          )}
+
+          <FormGroup row>
+            <GluuLabel
+              label="fields.script_type"
+              required
+              doc_category={SCRIPT}
+              doc_entry="scriptType"
+            />
+            <Col sm={9}>
+              {loadingScriptTypes ? (
+                <Skeleton variant="text" width="100%" sx={{ fontSize: '3rem' }} />
+              ) : (
+                <InputGroup>
+                  <CustomInput
+                    type="select"
+                    id="scriptType"
+                    name="scriptType"
+                    value={formik.values.scriptType}
+                    disabled={viewOnly || isEditMode}
+                    onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                      formik.setFieldValue('scriptType', e.target.value, true)
+                      formik.setFieldTouched('scriptType', true)
+                    }}
+                    onBlur={formik.handleBlur}
+                  >
+                    <option value="">{t('options.choose')}...</option>
+                    {scriptTypes.map((ele: ScriptType) => (
+                      <option key={ele.value} value={ele.value}>
+                        {ele.name}
+                      </option>
+                    ))}
+                  </CustomInput>
+                </InputGroup>
+              )}
+              {formik.errors.scriptType &&
+              formik.touched.scriptType &&
+              !formik.values.scriptType ? (
+                <div style={{ color: customColors.accentRed, marginTop: '4px' }}>
+                  {String(formik.errors.scriptType)}
+                </div>
+              ) : null}
+            </Col>
+          </FormGroup>
+
+          <FormGroup row>
+            <GluuLabel
+              label="fields.programming_language"
+              required
+              doc_category={SCRIPT}
+              doc_entry="programmingLanguage"
+            />
+            <Col sm={9}>
               <InputGroup>
                 <CustomInput
                   type="select"
-                  id="scriptType"
-                  name="scriptType"
-                  value={formik.values.scriptType}
-                  disabled={viewOnly || isEditMode}
+                  id="programmingLanguage"
+                  name="programmingLanguage"
+                  value={formik.values.programmingLanguage}
+                  disabled={viewOnly}
                   onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                    formik.setFieldValue('scriptType', e.target.value, true)
-                    formik.setFieldTouched('scriptType', true)
+                    formik.setFieldValue('programmingLanguage', e.target.value)
+                    formik.setFieldTouched('programmingLanguage', true)
                   }}
                   onBlur={formik.handleBlur}
                 >
                   <option value="">{t('options.choose')}...</option>
-                  {scriptTypes.map((ele: ScriptType) => (
-                    <option key={ele.value} value={ele.value}>
-                      {ele.name}
+                  {PROGRAMMING_LANGUAGES.map((lang) => (
+                    <option key={lang.value} value={lang.value}>
+                      {lang.label}
                     </option>
                   ))}
                 </CustomInput>
               </InputGroup>
-            )}
-            {formik.errors.scriptType && formik.touched.scriptType && !formik.values.scriptType ? (
-              <div style={{ color: customColors.accentRed, marginTop: '4px' }}>
-                {String(formik.errors.scriptType)}
-              </div>
-            ) : null}
-          </Col>
-        </FormGroup>
+              {formik.errors.programmingLanguage &&
+                formik.touched.programmingLanguage &&
+                !formik.values.programmingLanguage && (
+                  <div style={{ color: customColors.accentRed, marginTop: '4px' }}>
+                    {String(formik.errors.programmingLanguage)}
+                  </div>
+                )}
+            </Col>
+          </FormGroup>
 
-        <FormGroup row>
-          <GluuLabel
-            label="fields.programming_language"
-            required
-            doc_category={SCRIPT}
-            doc_entry="programmingLanguage"
-          />
-          <Col sm={9}>
-            <InputGroup>
-              <CustomInput
-                type="select"
-                id="programmingLanguage"
-                name="programmingLanguage"
-                value={formik.values.programmingLanguage}
-                disabled={viewOnly}
-                onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                  formik.setFieldValue('programmingLanguage', e.target.value)
-                  formik.setFieldTouched('programmingLanguage', true)
-                }}
-                onBlur={formik.handleBlur}
-              >
-                <option value="">{t('options.choose')}...</option>
-                {PROGRAMMING_LANGUAGES.map((lang) => (
-                  <option key={lang.value} value={lang.value}>
-                    {lang.label}
-                  </option>
-                ))}
-              </CustomInput>
-            </InputGroup>
-            {formik.errors.programmingLanguage &&
-              formik.touched.programmingLanguage &&
-              !formik.values.programmingLanguage && (
+          <FormGroup row>
+            <GluuLabel label="fields.level" doc_category={SCRIPT} doc_entry="level" />
+            <Col sm={9}>
+              <Suspense fallback={<GluuSuspenseLoader />}>
+                <Counter
+                  counter={formik.values.level}
+                  disabled={viewOnly}
+                  onCounterChange={onLevelChange}
+                />
+              </Suspense>
+              <Input type="hidden" id="level" value={formik.values.level} />
+              {formik.errors.level && formik.touched.level && (
                 <div style={{ color: customColors.accentRed, marginTop: '4px' }}>
-                  {String(formik.errors.programmingLanguage)}
+                  {String(formik.errors.level)}
                 </div>
               )}
-          </Col>
-        </FormGroup>
-
-        <FormGroup row>
-          <GluuLabel label="fields.level" doc_category={SCRIPT} doc_entry="level" />
-          <Col sm={9}>
-            <Suspense fallback={<GluuSuspenseLoader />}>
-              <Counter
-                counter={formik.values.level}
-                disabled={viewOnly}
-                onCounterChange={onLevelChange}
-              />
-            </Suspense>
-            <Input type="hidden" id="level" value={formik.values.level} />
-            {formik.errors.level && formik.touched.level && (
-              <div style={{ color: customColors.accentRed, marginTop: '4px' }}>
-                {String(formik.errors.level)}
-              </div>
-            )}
-          </Col>
-        </FormGroup>
-        <GluuProperties
-          compName="configurationProperties"
-          label="fields.custom_properties"
-          formik={formik}
-          keyPlaceholder="placeholders.enter_property_key"
-          valuePlaceholder="placeholders.enter_property_value"
-          options={configurationPropertiesOptions}
-          disabled={viewOnly}
-        ></GluuProperties>
-        <GluuProperties
-          compName="moduleProperties"
-          label="fields.module_properties"
-          formik={formik}
-          keyPlaceholder="placeholders.enter_property_key"
-          valuePlaceholder="placeholders.enter_property_value"
-          options={modulePropertiesOptions}
-          disabled={viewOnly}
-        ></GluuProperties>
-        <Suspense fallback={<GluuSuspenseLoader />}>
-          <GluuInputEditor
-            doc_category={SCRIPT}
-            name="script"
-            language={formik.values.programmingLanguage?.toLowerCase()}
-            label="fields.script"
-            lsize={2}
-            rsize={10}
+            </Col>
+          </FormGroup>
+          <GluuProperties
+            compName="configurationProperties"
+            label="fields.custom_properties"
             formik={formik}
-            value={formik.values.script}
-            readOnly={viewOnly}
-            errorMessage={formik.errors.script}
-            showError={formik.errors.script && formik.touched.script}
-            required={true}
-          />
-        </Suspense>
-
-        <FormGroup row>
-          <GluuLabel label="options.enabled" size={3} doc_category={SCRIPT} doc_entry="enabled" />
-          <Col sm={1}>
-            <Toggle
-              id="enabled"
-              name="enabled"
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                formik.setFieldValue('enabled', e.target.checked)
-              }
-              checked={Boolean(formik.values.enabled)}
-              disabled={viewOnly}
+            keyPlaceholder="placeholders.enter_property_key"
+            valuePlaceholder="placeholders.enter_property_value"
+            options={configurationPropertiesOptions}
+            disabled={viewOnly}
+          ></GluuProperties>
+          <GluuProperties
+            compName="moduleProperties"
+            label="fields.module_properties"
+            formik={formik}
+            keyPlaceholder="placeholders.enter_property_key"
+            valuePlaceholder="placeholders.enter_property_value"
+            options={modulePropertiesOptions}
+            disabled={viewOnly}
+          ></GluuProperties>
+          <Suspense fallback={<GluuSuspenseLoader />}>
+            <GluuInputEditor
+              doc_category={SCRIPT}
+              name="script"
+              language={formik.values.programmingLanguage?.toLowerCase()}
+              label="fields.script"
+              lsize={2}
+              rsize={10}
+              formik={formik}
+              value={formik.values.script}
+              readOnly={viewOnly}
+              errorMessage={formik.errors.script}
+              showError={formik.errors.script && formik.touched.script}
+              required={true}
             />
-          </Col>
-        </FormGroup>
-        {viewOnly ? (
-          <GluuFormFooter
-            showBack={true}
-            showCancel={false}
-            showApply={false}
-            onBack={handleNavigateBack}
-          />
-        ) : (
-          <GluuFormFooter
-            showBack={true}
-            showCancel={true}
-            showApply={true}
-            onBack={handleNavigateBack}
-            onApply={toggle}
-            onCancel={handleCancel}
-            disableBack={false}
-            disableCancel={!formik.dirty}
-            disableApply={!formik.isValid || !formik.dirty}
-            applyButtonType="button"
-            isLoading={formik.isSubmitting ?? false}
-          />
-        )}
+          </Suspense>
+
+          <FormGroup row>
+            <GluuLabel label="options.enabled" size={3} doc_category={SCRIPT} doc_entry="enabled" />
+            <Col sm={1}>
+              <Toggle
+                id="enabled"
+                name="enabled"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  formik.setFieldValue('enabled', e.target.checked)
+                }
+                checked={Boolean(formik.values.enabled)}
+                disabled={viewOnly}
+              />
+            </Col>
+          </FormGroup>
+          {viewOnly ? (
+            <GluuFormFooter
+              showBack={true}
+              showCancel={false}
+              showApply={false}
+              onBack={handleNavigateBack}
+            />
+          ) : (
+            <GluuFormFooter
+              showBack={true}
+              showCancel={true}
+              showApply={true}
+              onBack={handleNavigateBack}
+              onApply={toggle}
+              onCancel={handleCancel}
+              disableBack={false}
+              disableCancel={!formik.dirty}
+              disableApply={!formik.isValid || !formik.dirty}
+              applyButtonType="button"
+              isLoading={formik.isSubmitting ?? false}
+            />
+          )}
+        </div>
         <GluuCommitDialog
           handler={toggle}
           modal={modal}

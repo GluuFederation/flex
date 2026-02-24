@@ -1,7 +1,8 @@
-// @ts-nocheck
+import type React from 'react'
 import { EmptyLayout } from './EmptyLayout'
 import { EmptyLayoutSection } from './EmptyLayoutSection'
+;(EmptyLayout as React.ComponentType & { Section: typeof EmptyLayoutSection }).Section =
+  EmptyLayoutSection
 
-EmptyLayout.Section = EmptyLayoutSection
-
+export { EmptyLayoutSection }
 export default EmptyLayout

@@ -1,6 +1,7 @@
-import { useContext, useMemo, useEffect } from 'react'
+import { useMemo, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { useAppSelector } from '@/redux/hooks'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import {
   setShowErrorModal,
@@ -9,21 +10,20 @@ import {
 } from 'Plugins/admin/redux/features/WebhookSlice'
 import { Box } from '@mui/material'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { useTheme } from 'Context/theme/themeContext'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
+import type { WebhookTriggerResponseItem } from 'Plugins/admin/redux/types/webhook'
 
 const GluuWebhookErrorDialog = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const { triggerWebhookMessage, webhookTriggerErrors, triggerWebhookInProgress, showErrorModal } =
-    useSelector((state: any) => state.webhookReducer)
+  const webhookState = useAppSelector((state) => state.webhookReducer)
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
-
-  const theme: any = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const { state: themeState } = useTheme()
+  const selectedTheme = themeState.theme
 
   const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
   const webhookScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[webhookResourceId], [webhookResourceId])
@@ -37,6 +37,11 @@ const GluuWebhookErrorDialog = () => {
       authorizeHelper(webhookScopes)
     }
   }, [authorizeHelper, webhookScopes])
+
+  const { triggerWebhookMessage, webhookTriggerErrors, triggerWebhookInProgress, showErrorModal } =
+    webhookState ?? {}
+
+  if (!webhookState) return null
 
   const closeModal = () => {
     dispatch(setShowErrorModal(!showErrorModal))
@@ -69,11 +74,11 @@ const GluuWebhookErrorDialog = () => {
               {triggerWebhookMessage}
             </Box>
           ) : null}
-          {webhookTriggerErrors.length ? (
+          {(webhookTriggerErrors?.length ?? 0) > 0 ? (
             <ul>
-              {webhookTriggerErrors.map((item: any) => (
+              {(webhookTriggerErrors ?? []).map((item: WebhookTriggerResponseItem, index) => (
                 <li
-                  key={item.responseMessage}
+                  key={`${item.responseObject?.webhookId ?? ''}-${item.responseObject?.webhookName ?? ''}-${index}`}
                   style={{
                     color: customColors.accentRed,
                     display: 'flex',
@@ -94,10 +99,10 @@ const GluuWebhookErrorDialog = () => {
                     }}
                   />
                   <span>
-                    {t('fields.webhook_id')}: {item.responseObject.webhookId}
+                    {t('fields.webhook_id')}: {item.responseObject?.webhookId}
                   </span>
                   <span>
-                    {t('fields.webhook_name')}: {item.responseObject.webhookName}
+                    {t('fields.webhook_name')}: {item.responseObject?.webhookName}
                   </span>
                   <span>
                     {t('messages.error_message')}: {item.responseMessage}

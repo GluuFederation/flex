@@ -1,59 +1,75 @@
-import { useContext, useMemo, type ReactNode } from 'react'
+import { useMemo, type ReactNode } from 'react'
 import 'react-tooltip/dist/react-tooltip.css'
 import { Tooltip as ReactTooltip } from 'react-tooltip'
 import { useTranslation } from 'react-i18next'
-import { ThemeContext } from 'Context/theme/themeContext'
-import getThemeColor from '@/context/theme/config'
-import { THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
+import { useTheme } from '@/context/theme/themeContext'
+import { THEME_DARK } from '@/context/theme/constants'
+import { DEFAULT_Z_INDEX, getLabelTooltipStyle } from './styles/GluuTooltip.style'
 
 interface GluuTooltipProps {
   doc_category?: string
   doc_entry: string
   isDirect?: boolean
-  children: ReactNode
+  children?: ReactNode
+  tooltipOnly?: boolean
+  zIndex?: number
+  place?: 'top' | 'right' | 'bottom' | 'left'
+  content?: ReactNode
+  positionStrategy?: 'absolute' | 'fixed'
 }
 
-const GluuTooltip = ({ doc_category = '', doc_entry, isDirect, children }: GluuTooltipProps) => {
+const GluuTooltip = ({
+  doc_category = '',
+  doc_entry,
+  isDirect,
+  children,
+  tooltipOnly = false,
+  zIndex = DEFAULT_Z_INDEX,
+  place = 'bottom',
+  content: contentOverride,
+  positionStrategy,
+}: GluuTooltipProps) => {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme
+  const { state: themeState } = useTheme()
+  const selectedTheme = themeState?.theme
+  const isDarkTheme = selectedTheme === THEME_DARK
 
-  const tooltipStyle = useMemo(() => {
-    const lightTheme = getThemeColor(THEME_LIGHT)
-    const isDarkTheme = selectedTheme === THEME_DARK
+  const tooltipStyle = useMemo(
+    () => getLabelTooltipStyle(isDarkTheme, zIndex),
+    [isDarkTheme, zIndex],
+  )
 
-    if (isDarkTheme) {
-      return {
-        backgroundColor: lightTheme.menu.background,
-        color: lightTheme.fontColor,
-      }
-    }
+  const tooltipContent =
+    contentOverride !== undefined
+      ? contentOverride
+      : isDirect
+        ? doc_category
+        : doc_category
+          ? t(`documentation.${doc_category}.${doc_entry}`)
+          : doc_entry
 
-    return {
-      backgroundColor: lightTheme.fontColor,
-      color: lightTheme.card.background,
-    }
-  }, [selectedTheme])
+  const tooltipElement = (
+    <ReactTooltip
+      id={doc_entry}
+      className={`type-${selectedTheme ?? 'light'}`}
+      data-testid={doc_entry}
+      place={place}
+      role="tooltip"
+      style={tooltipStyle}
+      positionStrategy={positionStrategy}
+    >
+      {tooltipContent}
+    </ReactTooltip>
+  )
 
-  const tooltipContent = isDirect
-    ? doc_category
-    : doc_category
-      ? t(`documentation.${doc_category}.${doc_entry}`)
-      : doc_entry
+  if (tooltipOnly) {
+    return tooltipElement
+  }
 
   return (
     <div data-tooltip-id={doc_entry}>
-      {children}
-      <ReactTooltip
-        id={doc_entry}
-        className={`type-${selectedTheme ?? 'light'}`}
-        data-testid={doc_entry}
-        place="bottom"
-        role="tooltip"
-        style={{ zIndex: 101, maxWidth: '45vw', ...tooltipStyle }}
-      >
-        {tooltipContent}
-      </ReactTooltip>
+      {children ?? null}
+      {tooltipElement}
     </div>
   )
 }

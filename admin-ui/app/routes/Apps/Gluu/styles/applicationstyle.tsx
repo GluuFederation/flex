@@ -66,8 +66,8 @@ export default {
     position: 'absolute',
     right: 0,
     marginRight: '0.5rem',
-    top: '50%',
-    transform: 'translateY(-70%)',
+    top: 6,
+    zIndex: 1,
   },
   globalSearch: {
     width: '100%',

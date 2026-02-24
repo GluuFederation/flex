@@ -152,317 +152,330 @@ const AuthNForm = ({ item, handleSubmit, isSubmitting = false }: AuthNFormProps)
           formik.handleSubmit()
         }}
       >
-        <FormGroup row>
-          <Col sm={12}>
-            <GluuInputRow
-              name="acr"
-              label="fields.acr"
-              value={formik.values.acr || ''}
-              formik={formik}
-              lsize={4}
-              rsize={8}
-              disabled={true}
-              showError={!!(formik.errors.acr && formik.touched.acr)}
-              errorMessage={formik.errors.acr}
-              required={true}
-            />
-          </Col>
-        </FormGroup>
-
-        <FormGroup row>
-          <Col sm={12}>
-            <GluuInputRow
-              name="level"
-              label="fields.level"
-              value={formik.values.level || ''}
-              formik={formik}
-              lsize={4}
-              rsize={8}
-              type="number"
-              disabled={item.name === 'simple_password_auth'}
-              showError={!!(formik.errors.level && formik.touched.level)}
-              errorMessage={formik.errors.level}
-              required={true}
-            />
-          </Col>
-        </FormGroup>
-
-        <FormGroup row>
-          <GluuLabel label="fields.default_authn_method" size={4} />
-          <Col sm={8}>
-            <InputGroup>
-              <CustomInput
-                type="select"
-                id="defaultAuthNMethod"
-                name="defaultAuthNMethod"
-                value={String(formik.values.defaultAuthNMethod)}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                disabled={false}
-              >
-                <option value="">{t('actions.choose')}...</option>
-                <option value="true">true</option>
-                <option value="false">false</option>
-              </CustomInput>
-            </InputGroup>
-            {formik.errors.defaultAuthNMethod && formik.touched.defaultAuthNMethod && (
-              <div style={{ color: customColors.accentRed, fontSize: '12px', marginTop: '4px' }}>
-                {formik.errors.defaultAuthNMethod}
-              </div>
-            )}
-          </Col>
-        </FormGroup>
-
-        {(item.name === 'simple_password_auth' || item.name === 'myAuthnScript') && (
+        <style>{`
+          .authn-form-labels-black label,
+          .authn-form-labels-black label h5,
+          .authn-form-labels-black label span,
+          .authn-form-labels-black h5,
+          .authn-form-labels-black .MuiSvgIcon-root { color: ${customColors.black} !important; }
+        `}</style>
+        <div className="authn-form-labels-black">
           <FormGroup row>
-            <GluuLabel label="fields.saml_acr" size={4} />
-            <Col sm={8}>
-              <Input
-                id="samlACR"
-                name="samlACR"
-                value={formik.values.samlACR}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                disabled={item.name === 'simple_password_auth'}
-              />
-              {formik.errors.samlACR && formik.touched.samlACR && (
-                <div style={{ color: customColors.accentRed, fontSize: '12px', marginTop: '4px' }}>
-                  {formik.errors.samlACR}
-                </div>
-              )}
-            </Col>
-          </FormGroup>
-        )}
-
-        {(item.name === 'simple_password_auth' || item.name === 'myAuthnScript') && (
-          <FormGroup row>
-            <GluuLabel label="fields.description" size={4} />
-            <Col sm={8}>
-              <Input
-                id="description"
-                name="description"
-                value={formik.values.description}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                disabled={item.name === 'simple_password_auth'}
-              />
-              {formik.errors.description && formik.touched.description && (
-                <div style={{ color: customColors.accentRed, fontSize: '12px', marginTop: '4px' }}>
-                  {formik.errors.description}
-                </div>
-              )}
-            </Col>
-          </FormGroup>
-        )}
-
-        {item.name === 'simple_password_auth' && (
-          <FormGroup row>
-            <GluuLabel label="fields.primary_key" size={4} />
-            <Col sm={8}>
-              <Input
-                id="primaryKey"
-                name="primaryKey"
-                value={item?.primaryKey || ''}
-                onChange={formik.handleChange}
-                disabled={item.name === 'simple_password_auth'}
-              />
-            </Col>
-          </FormGroup>
-        )}
-        {item.name === 'simple_password_auth' && (
-          <FormGroup row>
-            <GluuLabel label="fields.password_attribute" size={4} />
-            <Col sm={8}>
-              <Input
-                id="passwordAttribute"
-                name="passwordAttribute"
-                value={formik.values.passwordAttribute}
-                onChange={formik.handleChange}
-                disabled={item.name === 'simple_password_auth'}
-              />
-            </Col>
-          </FormGroup>
-        )}
-
-        {item.name === 'myAuthnScript' && (
-          <Row>
-            <GluuLabel label="fields.script_properties" size={4} />
-            <Col sm={8}>
-              <GluuProperties
-                compName="configurationProperties"
-                label="fields.custom_properties"
+            <Col sm={12}>
+              <GluuInputRow
+                name="acr"
+                label="fields.acr"
+                value={formik.values.acr || ''}
                 formik={formik}
-                keyPlaceholder={t('placeholders.enter_property_key')}
-                valuePlaceholder={t('placeholders.enter_property_value')}
-                options={getPropertiesConfig(item)}
-                defaultValue={item.passwordAttribute}
-              ></GluuProperties>
+                lsize={4}
+                rsize={8}
+                disabled={true}
+                showError={!!(formik.errors.acr && formik.touched.acr)}
+                errorMessage={formik.errors.acr}
+                required={true}
+              />
             </Col>
-          </Row>
-        )}
+          </FormGroup>
 
-        {item.name === 'simple_password_auth' && (
           <FormGroup row>
-            <GluuLabel label="fields.hash_algorithm" size={4} />
+            <Col sm={12}>
+              <GluuInputRow
+                name="level"
+                label="fields.level"
+                value={formik.values.level || ''}
+                formik={formik}
+                lsize={4}
+                rsize={8}
+                type="number"
+                disabled={item.name === 'simple_password_auth'}
+                showError={!!(formik.errors.level && formik.touched.level)}
+                errorMessage={formik.errors.level}
+                required={true}
+              />
+            </Col>
+          </FormGroup>
+
+          <FormGroup row>
+            <GluuLabel label="fields.default_authn_method" size={4} />
             <Col sm={8}>
               <InputGroup>
                 <CustomInput
                   type="select"
-                  id="hashAlgorithm"
-                  name="hashAlgorithm"
-                  value={formik.values.hashAlgorithm}
+                  id="defaultAuthNMethod"
+                  name="defaultAuthNMethod"
+                  value={String(formik.values.defaultAuthNMethod)}
                   onChange={formik.handleChange}
-                  disabled={item.name === 'simple_password_auth'}
+                  onBlur={formik.handleBlur}
+                  disabled={false}
                 >
                   <option value="">{t('actions.choose')}...</option>
-                  <option value="bcrypt">bcrypt</option>
+                  <option value="true">true</option>
+                  <option value="false">false</option>
                 </CustomInput>
               </InputGroup>
+              {formik.errors.defaultAuthNMethod && formik.touched.defaultAuthNMethod && (
+                <div style={{ color: customColors.accentRed, fontSize: '12px', marginTop: '4px' }}>
+                  {formik.errors.defaultAuthNMethod}
+                </div>
+              )}
             </Col>
           </FormGroup>
-        )}
 
-        {item.name === 'default_ldap_password' && (
-          <>
+          {(item.name === 'simple_password_auth' || item.name === 'myAuthnScript') && (
             <FormGroup row>
-              <GluuLabel label="fields.bind_dn" size={4} />
+              <GluuLabel label="fields.saml_acr" size={4} />
               <Col sm={8}>
                 <Input
-                  id="bindDN"
-                  name="bindDN"
-                  value={formik.values.bindDN}
+                  id="samlACR"
+                  name="samlACR"
+                  value={formik.values.samlACR}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
+                  disabled={item.name === 'simple_password_auth'}
                 />
-                {formik.errors.bindDN && formik.touched.bindDN && (
+                {formik.errors.samlACR && formik.touched.samlACR && (
                   <div
                     style={{ color: customColors.accentRed, fontSize: '12px', marginTop: '4px' }}
                   >
-                    {formik.errors.bindDN}
+                    {formik.errors.samlACR}
                   </div>
                 )}
               </Col>
             </FormGroup>
+          )}
 
+          {(item.name === 'simple_password_auth' || item.name === 'myAuthnScript') && (
             <FormGroup row>
-              <GluuLabel label="fields.max_connections" size={4} />
+              <GluuLabel label="fields.description" size={4} />
               <Col sm={8}>
                 <Input
-                  id="maxConnections"
-                  name="maxConnections"
-                  type="number"
-                  value={formik.values.maxConnections}
+                  id="description"
+                  name="description"
+                  value={formik.values.description}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
+                  disabled={item.name === 'simple_password_auth'}
                 />
-                {formik.errors.maxConnections && formik.touched.maxConnections && (
+                {formik.errors.description && formik.touched.description && (
                   <div
                     style={{ color: customColors.accentRed, fontSize: '12px', marginTop: '4px' }}
                   >
-                    {formik.errors.maxConnections}
+                    {formik.errors.description}
                   </div>
                 )}
               </Col>
             </FormGroup>
+          )}
 
+          {item.name === 'simple_password_auth' && (
             <FormGroup row>
-              <GluuLabel label="fields.remote_primary_key" size={4} />
+              <GluuLabel label="fields.primary_key" size={4} />
               <Col sm={8}>
                 <Input
-                  id="remotePrimaryKey"
-                  name="remotePrimaryKey"
-                  value={formik.values.remotePrimaryKey}
+                  id="primaryKey"
+                  name="primaryKey"
+                  value={item?.primaryKey || ''}
                   onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  disabled={item.name === 'simple_password_auth'}
                 />
               </Col>
             </FormGroup>
-
+          )}
+          {item.name === 'simple_password_auth' && (
             <FormGroup row>
-              <GluuLabel label="fields.local_primary_key" size={4} />
+              <GluuLabel label="fields.password_attribute" size={4} />
               <Col sm={8}>
                 <Input
-                  id="localPrimaryKey"
-                  name="localPrimaryKey"
-                  value={formik.values.localPrimaryKey}
+                  id="passwordAttribute"
+                  name="passwordAttribute"
+                  value={formik.values.passwordAttribute}
                   onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  disabled={item.name === 'simple_password_auth'}
                 />
               </Col>
             </FormGroup>
+          )}
 
-            <GluuTypeAhead
-              name="servers"
-              label="fields.remote_ldap_server_post"
-              formik={formik}
-              required={true}
-              options={[]}
-              value={Array.isArray(formik.values.servers) ? formik.values.servers : []}
-              showError={!!(formik.errors.servers && formik.touched.servers)}
-              errorMessage={formik.errors.servers as string}
-            />
-
-            {formik.errors.servers && formik.touched.servers ? (
-              <div style={{ color: customColors.accentRed }}>{formik.errors.servers}</div>
-            ) : null}
-
-            <GluuTypeAhead
-              name="baseDNs"
-              label="fields.base_dns"
-              formik={formik}
-              options={[]}
-              value={Array.isArray(formik.values.baseDNs) ? formik.values.baseDNs : []}
-              showError={!!(formik.errors.baseDNs && formik.touched.baseDNs)}
-              errorMessage={formik.errors.baseDNs as string}
-            />
-
-            <FormGroup row>
-              <GluuLabel label="fields.bind_password" size={4} />
+          {item.name === 'myAuthnScript' && (
+            <Row>
+              <GluuLabel label="fields.script_properties" size={4} />
               <Col sm={8}>
-                <Input
-                  id="bindPassword"
-                  name="bindPassword"
-                  type="password"
-                  value={formik.values.bindPassword}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                />
+                <GluuProperties
+                  compName="configurationProperties"
+                  label="fields.custom_properties"
+                  formik={formik}
+                  keyPlaceholder={t('placeholders.enter_property_key')}
+                  valuePlaceholder={t('placeholders.enter_property_value')}
+                  options={getPropertiesConfig(item)}
+                  defaultValue={item.passwordAttribute}
+                ></GluuProperties>
               </Col>
-            </FormGroup>
+            </Row>
+          )}
 
+          {item.name === 'simple_password_auth' && (
             <FormGroup row>
-              <GluuLabel label="fields.use_ssl" doc_entry="use_ssl" />
-              <Col sm={9}>
+              <GluuLabel label="fields.hash_algorithm" size={4} />
+              <Col sm={8}>
                 <InputGroup>
-                  <Input
-                    placeholder={t('placeholders.use_ssl')}
-                    id="useSSL"
-                    type="checkbox"
-                    checked={formik.values.useSSL}
+                  <CustomInput
+                    type="select"
+                    id="hashAlgorithm"
+                    name="hashAlgorithm"
+                    value={formik.values.hashAlgorithm}
                     onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  />
+                    disabled={item.name === 'simple_password_auth'}
+                  >
+                    <option value="">{t('actions.choose')}...</option>
+                    <option value="bcrypt">bcrypt</option>
+                  </CustomInput>
                 </InputGroup>
               </Col>
             </FormGroup>
+          )}
 
-            <FormGroup row>
-              <GluuLabel label="fields.enabled" doc_entry="enabled" />
-              <Col sm={9}>
-                <InputGroup>
+          {item.name === 'default_ldap_password' && (
+            <>
+              <FormGroup row>
+                <GluuLabel label="fields.bind_dn" size={4} />
+                <Col sm={8}>
                   <Input
-                    placeholder={t('placeholders.enabled')}
-                    id="enabled"
-                    type="checkbox"
-                    checked={formik.values.enabled}
+                    id="bindDN"
+                    name="bindDN"
+                    value={formik.values.bindDN}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                   />
-                </InputGroup>
-              </Col>
-            </FormGroup>
-          </>
-        )}
+                  {formik.errors.bindDN && formik.touched.bindDN && (
+                    <div
+                      style={{ color: customColors.accentRed, fontSize: '12px', marginTop: '4px' }}
+                    >
+                      {formik.errors.bindDN}
+                    </div>
+                  )}
+                </Col>
+              </FormGroup>
+
+              <FormGroup row>
+                <GluuLabel label="fields.max_connections" size={4} />
+                <Col sm={8}>
+                  <Input
+                    id="maxConnections"
+                    name="maxConnections"
+                    type="number"
+                    value={formik.values.maxConnections}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                  {formik.errors.maxConnections && formik.touched.maxConnections && (
+                    <div
+                      style={{ color: customColors.accentRed, fontSize: '12px', marginTop: '4px' }}
+                    >
+                      {formik.errors.maxConnections}
+                    </div>
+                  )}
+                </Col>
+              </FormGroup>
+
+              <FormGroup row>
+                <GluuLabel label="fields.remote_primary_key" size={4} />
+                <Col sm={8}>
+                  <Input
+                    id="remotePrimaryKey"
+                    name="remotePrimaryKey"
+                    value={formik.values.remotePrimaryKey}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                </Col>
+              </FormGroup>
+
+              <FormGroup row>
+                <GluuLabel label="fields.local_primary_key" size={4} />
+                <Col sm={8}>
+                  <Input
+                    id="localPrimaryKey"
+                    name="localPrimaryKey"
+                    value={formik.values.localPrimaryKey}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                </Col>
+              </FormGroup>
+
+              <GluuTypeAhead
+                name="servers"
+                label="fields.remote_ldap_server_post"
+                formik={formik}
+                required={true}
+                options={[]}
+                value={Array.isArray(formik.values.servers) ? formik.values.servers : []}
+                showError={!!(formik.errors.servers && formik.touched.servers)}
+                errorMessage={formik.errors.servers as string}
+              />
+
+              {formik.errors.servers && formik.touched.servers ? (
+                <div style={{ color: customColors.accentRed }}>{formik.errors.servers}</div>
+              ) : null}
+
+              <GluuTypeAhead
+                name="baseDNs"
+                label="fields.base_dns"
+                formik={formik}
+                options={[]}
+                value={Array.isArray(formik.values.baseDNs) ? formik.values.baseDNs : []}
+                showError={!!(formik.errors.baseDNs && formik.touched.baseDNs)}
+                errorMessage={formik.errors.baseDNs as string}
+              />
+
+              <FormGroup row>
+                <GluuLabel label="fields.bind_password" size={4} />
+                <Col sm={8}>
+                  <Input
+                    id="bindPassword"
+                    name="bindPassword"
+                    type="password"
+                    value={formik.values.bindPassword}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                </Col>
+              </FormGroup>
+
+              <FormGroup row>
+                <GluuLabel label="fields.use_ssl" doc_entry="use_ssl" />
+                <Col sm={9}>
+                  <InputGroup>
+                    <Input
+                      placeholder={t('placeholders.use_ssl')}
+                      id="useSSL"
+                      type="checkbox"
+                      checked={formik.values.useSSL}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                    />
+                  </InputGroup>
+                </Col>
+              </FormGroup>
+
+              <FormGroup row>
+                <GluuLabel label="fields.enabled" doc_entry="enabled" />
+                <Col sm={9}>
+                  <InputGroup>
+                    <Input
+                      placeholder={t('placeholders.enabled')}
+                      id="enabled"
+                      type="checkbox"
+                      checked={formik.values.enabled}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                    />
+                  </InputGroup>
+                </Col>
+              </FormGroup>
+            </>
+          )}
+        </div>
         <GluuFormFooter
           showBack={true}
           onBack={handleNavigateBack}

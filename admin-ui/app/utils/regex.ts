@@ -20,6 +20,13 @@ export const REGEX_AUDIT_LIST_TIMESTAMP = /^(\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}
 /** Matches braced placeholders like {key} or {some.key}; use with .match() for finding all placeholders in a string. */
 export const REGEX_BRACED_PLACEHOLDER = /\{([^{}]+?)\}/g
 
+/** Matches URL/shortcode placeholders like ${inum} or ${name}; use with .replace() to normalize URLs before validation. */
+export const REGEX_URL_PLACEHOLDER = /\$\{[^}]*\}/g
+
+/** Validates normalized webhook URL format: https://host[:port][/path][?query][#hash]. Host: domain, IPv4, or IPv6. Port: 1–5 digits (0–65535). */
+export const REGEX_WEBHOOK_URL =
+  /^https:\/\/(([\w-]+\.)+[\w-]+|\[[\da-fA-F:]+\])(:\d{1,5})?(\/[^\s?#]*)?(\?[^\s#]*)?(#[^\s]*)?$/i
+
 /** Escapes regex-special characters in a string so it can be used literally in a RegExp. */
 function escapeRegexSpecialChars(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')

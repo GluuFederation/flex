@@ -9,6 +9,7 @@ import ScimFieldRenderer from './ScimFieldRenderer'
 import { SCIM_FIELD_CONFIGS } from './fieldConfigurations'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import type { ScimConfigurationProps, ScimFormValues } from '../types'
+import customColors from '@/customColors'
 
 const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
   scimConfiguration,
@@ -71,35 +72,43 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
 
   return (
     <Form onSubmit={handleFormSubmit} className="mt-4">
-      <FormGroup row>
-        {SCIM_FIELD_CONFIGS.map((fieldConfig) => (
-          <ScimFieldRenderer key={fieldConfig.name} config={fieldConfig} formik={formik} />
-        ))}
-      </FormGroup>
+      <style>{`
+        .scim-config-labels-black label,
+        .scim-config-labels-black label h5,
+        .scim-config-labels-black label span,
+        .scim-config-labels-black .MuiSvgIcon-root { color: ${customColors.black} !important; }
+      `}</style>
+      <div className="scim-config-labels-black">
+        <FormGroup row>
+          {SCIM_FIELD_CONFIGS.map((fieldConfig) => (
+            <ScimFieldRenderer key={fieldConfig.name} config={fieldConfig} formik={formik} />
+          ))}
+        </FormGroup>
 
-      <Row>
-        <Col>
-          <GluuFormFooter
-            showBack={true}
-            showCancel={true}
-            showApply={canWriteScim}
-            onApply={toggle}
-            onCancel={handleCancel}
-            disableBack={false}
-            disableCancel={!isFormDirty}
-            disableApply={!isFormValid || !isFormDirty}
-            applyButtonType="submit"
-            isLoading={isSubmitting ?? false}
-          />
-        </Col>
-      </Row>
-      <GluuCommitDialog
-        handler={toggle}
-        modal={modal}
-        onAccept={submitForm}
-        feature={adminUiFeatures.scim_configuration_edit}
-        formik={formik}
-      />
+        <Row>
+          <Col>
+            <GluuFormFooter
+              showBack={true}
+              showCancel={true}
+              showApply={canWriteScim}
+              onApply={toggle}
+              onCancel={handleCancel}
+              disableBack={false}
+              disableCancel={!isFormDirty}
+              disableApply={!isFormValid || !isFormDirty}
+              applyButtonType="submit"
+              isLoading={isSubmitting ?? false}
+            />
+          </Col>
+        </Row>
+        <GluuCommitDialog
+          handler={toggle}
+          modal={modal}
+          onAccept={submitForm}
+          feature={adminUiFeatures.scim_configuration_edit}
+          formik={formik}
+        />
+      </div>
     </Form>
   )
 }

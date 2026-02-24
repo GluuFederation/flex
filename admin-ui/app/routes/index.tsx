@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Route, Routes, Navigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { ROUTES } from '@/helpers/navigation'
+import { devLogger } from '@/utils/devLogger'
 
 // ----------- Layout Imports ---------------
 import { processRoutes, processRoutesSync } from 'Plugins/PluginMenuResolver'
@@ -21,7 +22,7 @@ export const RoutedContent = () => {
         const routes = await processRoutes()
         setPluginMenus(routes)
       } catch (error) {
-        console.error('Failed to load plugins:', error)
+        devLogger.error('Failed to load plugins:', error)
         // Fallback to sync loading
         setPluginMenus(processRoutesSync())
       }

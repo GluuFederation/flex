@@ -143,14 +143,14 @@ const MauPage: React.FC = () => {
           </div>
 
           {isError && (
-            <Alert color="danger" className="mb-4">
+            <Alert color="danger" className="mb-4" fade={false}>
               <i className="fa fa-exclamation-triangle me-2"></i>
               {t('messages.error_loading_data')}
             </Alert>
           )}
 
           {!isLoading && !isError && !hasData && (
-            <Alert color="info" className="mb-4">
+            <Alert color="info" className="mb-4" fade={false}>
               <i className="fa fa-info-circle me-2"></i>
               {t('messages.no_mau_data')}
             </Alert>

@@ -1,7 +1,7 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
 import { BORDER_RADIUS, OPACITY } from '@/constants'
-import { getLoadingOverlayRgba } from '@/customColors'
+import customColors, { getLoadingOverlayRgba } from '@/customColors'
 import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
 
 export const EXPAND_BUTTON_SIZE = 32
@@ -25,7 +25,8 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
     : themeColors.lightBackground
   const headerBg = themeColors.table.headerBg
   const headerColor = themeColors.table.headerColor
-  const paginationAccent = themeColors.formFooter?.back?.backgroundColor ?? themeColors.borderColor
+  const paginationAccent =
+    themeColors.formFooter?.back?.backgroundColor ?? customColors.statusActive
   const loadingOverlayBg = getLoadingOverlayRgba(themeColors.background, isDark ? 0.4 : 0.6)
 
   return {
@@ -81,26 +82,36 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       textAlign: 'center',
     },
     sortableHeader: {
-      cursor: 'pointer',
-      display: 'inline-flex',
-      alignItems: 'center',
-      background: 'none',
-      border: 'none',
-      padding: 0,
-      font: 'inherit',
-      color: 'inherit',
+      'cursor': 'pointer',
+      'display': 'inline-flex',
+      'alignItems': 'center',
+      'background': 'none',
+      'border': 'none',
+      'padding': 0,
+      'font': 'inherit',
+      'color': headerColor,
+      '&:hover [data-sort-icon]': {
+        opacity: 1,
+      },
+    },
+    sortableHeaderActive: {
+      '& [data-sort-icon]': {
+        opacity: 1,
+      },
     },
     sortIconWrap: {
       marginLeft: 4,
       flexShrink: 0,
       display: 'inline-flex',
-      flexDirection: 'column',
+      alignItems: 'center',
+      opacity: 0,
+      transition: 'opacity 0.15s ease',
     },
     cell: {
       padding: '14px 16px',
       color: themeColors.fontColor,
       fontSize: fontSizes.base,
-      verticalAlign: 'middle',
+      verticalAlign: 'top',
       lineHeight: '28px',
       overflowWrap: 'break-word',
       wordBreak: 'break-word',

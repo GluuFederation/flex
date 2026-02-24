@@ -4,6 +4,7 @@ import { withIdleTimer } from 'react-idle-timer'
 import { useDispatch, useSelector } from 'react-redux'
 import { auditLogoutLogs } from 'Redux/features/sessionSlice'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { devLogger } from '@/utils/devLogger'
 
 let countdownInterval: any
 let timeout: any
@@ -41,7 +42,7 @@ const SessionTimeout = ({ isAuthenticated }: any) => {
         }),
       )
     } catch (err) {
-      console.error(err)
+      devLogger.error(err)
     }
   }
 

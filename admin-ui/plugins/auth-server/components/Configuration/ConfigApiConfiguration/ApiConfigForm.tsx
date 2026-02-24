@@ -9,7 +9,7 @@ import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import GluuCommitDialogLegacy from 'Routes/Apps/Gluu/GluuCommitDialogLegacy'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
-import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/types'
+import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/types/index'
 import type { FormikTouched } from 'formik'
 import JsonPropertyBuilderConfigApi from './JsonPropertyBuilderConfigApi'
 import {
@@ -20,6 +20,7 @@ import {
 } from './utils'
 import type { ApiAppConfiguration, JsonPatch } from './types'
 import type { PropertyValue } from '../types'
+import customColors from '@/customColors'
 
 interface ApiConfigFormProps {
   configuration: ApiAppConfiguration
@@ -311,7 +312,14 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
         }}
         style={{ display: 'flex', flexDirection: 'column', minHeight: '100%' }}
       >
-        <div style={{ flex: 1, paddingBottom: '100px' }}>
+        <style>{`
+          .config-api-labels-black label,
+          .config-api-labels-black label h5,
+          .config-api-labels-black label span,
+          .config-api-labels-black h5,
+          .config-api-labels-black .MuiSvgIcon-root { color: ${customColors.black} !important; }
+        `}</style>
+        <div className="config-api-labels-black" style={{ flex: 1, paddingBottom: '100px' }}>
           {propertyKeys.map((propKey) => {
             const isDisabled = READ_ONLY_FIELDS.includes(propKey)
             const propValue = currentValues[propKey as keyof ApiAppConfiguration]

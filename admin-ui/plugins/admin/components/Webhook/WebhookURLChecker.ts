@@ -1,3 +1,5 @@
+import { REGEX_URL_PLACEHOLDER, REGEX_WEBHOOK_URL } from '@/utils/regex'
+
 const BLOCKED_SCHEMES = [
   'http',
   'ftp',
@@ -68,8 +70,13 @@ const isPrivateOrLocalhost = (hostname: string): boolean => {
   return false
 }
 
-const PATTERN =
-  /^https:\/\/(([\w-]+\.)+[\w-]+|\[[\da-fA-F:]+\])(:\d+)?(\/[^\s?#]*)?(\?[^\s#]*)?(#[^\s]*)?$/i
+const normalizeUrlForValidation = (url: string): string =>
+  url.replace(REGEX_URL_PLACEHOLDER, (match, offset, fullString) => {
+    const beforeMatch = fullString.slice(0, offset)
+    const afterMatch = fullString.slice(offset + match.length)
+    const isPortPosition = beforeMatch.endsWith(':') && !afterMatch.startsWith('@')
+    return isPortPosition ? '8080' : 'x'
+  })
 
 const isAllowed = (url: string): boolean => {
   try {
@@ -90,10 +97,14 @@ const isAllowed = (url: string): boolean => {
 }
 
 export const isValid = (url: string | undefined | null): boolean => {
-  if (url === undefined || url === null || !isAllowed(url)) {
+  if (url === undefined || url === null) {
     return false
   }
-  return PATTERN.test(url)
+  const normalized = normalizeUrlForValidation(url)
+  if (!isAllowed(normalized)) {
+    return false
+  }
+  return REGEX_WEBHOOK_URL.test(normalized)
 }
 
 export { isAllowed }

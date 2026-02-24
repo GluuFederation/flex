@@ -1,3 +1,4 @@
+import React from 'react'
 import { Col, FormGroup } from 'Components'
 import GluuLabel from '../Gluu/GluuLabel'
 import AceEditor from 'react-ace'
@@ -6,16 +7,17 @@ import 'ace-builds/src-noconflict/mode-python'
 import 'ace-builds/src-noconflict/theme-xcode'
 import 'ace-builds/src-noconflict/theme-monokai'
 import 'ace-builds/src-noconflict/ext-language_tools'
-import customColors from '@/customColors'
+import { useStyles } from './styles/GluuInputEditor.style'
+import type { GluuInputEditorProps } from './types/GluuInputEditor.types'
 
-function GluuInputEditor({
+const GluuInputEditor = <T extends object>({
   name,
   language,
   value,
   formik,
-  required,
-  lsize,
-  rsize,
+  required = false,
+  lsize = 3,
+  rsize = 9,
   doc_category,
   readOnly = false,
   label,
@@ -27,21 +29,25 @@ function GluuInputEditor({
   shortcode,
   onCursorChange,
   width = '100%',
-}: any) {
-  const handleChange = (scripts: any) => {
-    formik.handleChange(name)(scripts)
+  isDark,
+}: GluuInputEditorProps<T>): React.ReactElement => {
+  const { classes } = useStyles()
+
+  const handleChange = (scripts: string) => {
+    formik.setFieldValue(name, scripts)
   }
 
   return (
     <FormGroup row>
       <GluuLabel
         doc_category={doc_category}
-        doc_entry={doc_entry || name}
+        doc_entry={doc_entry ?? name}
         label={label}
         size={lsize}
         required={required}
+        isDark={isDark}
       />
-      <Col sm={rsize} style={{ position: 'relative' }}>
+      <Col sm={rsize} className={classes.colWrapper}>
         {shortcode}
         <AceEditor
           mode={language}
@@ -53,14 +59,15 @@ function GluuInputEditor({
           onCursorChange={onCursorChange}
           width={width}
           height="300px"
-          onChange={(e) => handleChange(e)}
+          onChange={handleChange}
           name={name}
-          value={value}
+          value={value ?? ''}
           editorProps={{ $blockScrolling: true }}
         />
-        {showError ? <div style={{ color: customColors.accentRed }}>{errorMessage}</div> : null}
+        {showError && errorMessage ? <div className={classes.error}>{errorMessage}</div> : null}
       </Col>
     </FormGroup>
   )
 }
+
 export default GluuInputEditor

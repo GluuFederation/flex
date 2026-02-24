@@ -7,6 +7,7 @@ import {
 } from '../../redux/features/cedarPermissionsSlice'
 import { cedarlingClient, CedarlingLogType } from '@/cedarling'
 import bootstrap from '@/cedarling/config/cedarling-bootstrap-TBAC.json'
+import { devLogger } from '@/utils/devLogger'
 // Extended state interface for this component
 interface ExtendedRootState {
   authReducer: {
@@ -14,9 +15,6 @@ interface ExtendedRootState {
     config?: {
       cedarlingLogType?: CedarlingLogType
     }
-  }
-  mappingReducer: {
-    items: unknown[]
   }
   cedarPermissions: {
     initialized: boolean
@@ -113,11 +111,11 @@ const PermissionsPolicyInitializer = () => {
       .then(() => {
         retryCount.current = { tryCount: 0, callMethod: false }
         dispatch(setCedarlingInitialized(true))
-        console.log('✅ Cedarling initialized!')
+        devLogger.log('✅ Cedarling initialized!')
       })
       .catch(() => {
         retryCount.current.tryCount += 1
-        console.warn(`❌ Cedarling got failed. Retrying in 1000ms`)
+        devLogger.warn(`❌ Cedarling initialization failed. Retrying in 1000ms`)
 
         if (retryCount.current.tryCount < maxRetries) {
           setTimeout(() => {
@@ -125,6 +123,7 @@ const PermissionsPolicyInitializer = () => {
           }, 1000)
         } else {
           console.error('❌ Max retry attempts reached. Cedarling init failed permanently.')
+          devLogger.error('❌ Max retry attempts reached. Cedarling init failed permanently.')
           dispatch(setCedarFailedStatusAfterMaxTries())
         }
       })

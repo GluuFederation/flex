@@ -6,7 +6,7 @@ import { getClient } from '../api/base'
 import { initAudit, redirectToLogout } from '../sagas/SagaUtils'
 import LockApi from '../api/LockApi'
 import { getLockStatusResponse } from '../features/lockSlice'
-const JansConfigApi = require('jans_config_api')
+import * as JansConfigApi from 'jans_config_api'
 
 function* newFunction() {
   const issuer = yield select((state) => state.authReducer.issuer)

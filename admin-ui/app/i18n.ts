@@ -8,6 +8,22 @@ import translationPt from './locales/pt/translation.json'
 import translationEs from './locales/es/translation.json'
 import { isDevelopment } from './utils/env'
 
+const handleMissingKey = (key: string, defaultValue?: string): string => {
+  if (isDevelopment) {
+    console.warn(
+      `[i18n] Missing translation key: "${key}"`,
+      defaultValue !== undefined ? `(default: "${defaultValue}")` : '',
+    )
+    // eslint-disable-next-line @typescript-eslint/no-require-imports -- use require for react-toastify
+    const { toast } = require('react-toastify')
+    toast.warning(`[i18n] Missing translation key: "${key}"`, {
+      autoClose: 5000,
+      toastId: `i18n-missing-${key}`,
+    })
+  }
+  return defaultValue ?? key
+}
+
 const i18nConfig: InitOptions = {
   resources: {
     en: {
@@ -32,16 +48,10 @@ const i18nConfig: InitOptions = {
     useSuspense: false,
   },
   interpolation: {
-    escapeValue: false, // React already escapes HTML for XSS protection, so we don't need i18next to escape
-    // This prevents double-escaping which causes &#39; to appear instead of '
+    escapeValue: false,
   },
 
-  parseMissingKeyHandler: isDevelopment
-    ? (key: string, defaultValue?: string) => {
-        console.warn(`[i18n] Missing translation key: "${key}"`)
-        return defaultValue ?? key
-      }
-    : undefined,
+  parseMissingKeyHandler: isDevelopment ? handleMissingKey : undefined,
 }
 
 i18n.use(initReactI18next).init(i18nConfig)

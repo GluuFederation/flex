@@ -1,7 +1,6 @@
 /**
  * App Reducers
  */
-import { reducer as mauReducer } from 'Plugins/admin/redux/features/mauSlice'
 import healthReducer from '../features/healthSlice'
 import authReducer from '../features/authSlice'
 import { reducer as initReducer } from '../features/initSlice'
@@ -20,7 +19,6 @@ const appReducers = {
   logoutReducer,
   licenseReducer,
   oidcDiscoveryReducer,
-  mauReducer,
   healthReducer,
   attributesReducerRoot,
   toastReducer,

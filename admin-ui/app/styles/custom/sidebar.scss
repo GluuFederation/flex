@@ -8,8 +8,8 @@
 }
 
 .custom-sidebar-container {
-    background-color: var(--theme-sidebar-background, #fcfcfc);
-    box-shadow: var(--theme-sidebar-shadow, 0px 0px 1rem 0px rgba(0, 0, 0, 0.15));
+    background-color: var(--theme-sidebar-background, var(--custom-white-smoke));
+    box-shadow: var(--theme-sidebar-shadow, 0px 0px 1rem 0px rgba(var(--custom-black-rgb), 0.15));
 
     .sidebar-menu {
         padding-top: 34px;
@@ -17,24 +17,24 @@
     }
 
     .sidebar-menu__entry__link {
-        color: var(--theme-menu-text-color, #323b47);
+        color: var(--theme-menu-text-color, var(--custom-dark-gray));
         @include sidebar-entry-typography;
     }
 
     .sidebar-submenu__entry__link {
-        color: var(--theme-menu-text-color, #323b47);
+        color: var(--theme-menu-text-color, var(--custom-dark-gray));
         @include sidebar-entry-typography;
     }
 
     .sidebar-menu__entry__link:hover {
-        color: var(--theme-menu-text-color-hover, #323b47);
+        color: var(--theme-menu-text-color-hover, var(--custom-dark-gray));
     }
     .sidebar-submenu__entry__link:hover {
-        color: var(--theme-menu-text-color-hover, #323b47);
+        color: var(--theme-menu-text-color-hover, var(--custom-dark-gray));
     }
 
     .sidebar-menu__entry__icon {
-        color: var(--theme-menu-icon-color, #323b47);
+        color: var(--theme-menu-icon-color, var(--custom-dark-gray));
     }
 }
 
@@ -56,17 +56,27 @@
 }
 
 .custom-sidebar-container .sidebar-menu__entry {
+    &:not(.open) > .sidebar-submenu {
+        pointer-events: none;
+    }
+    &:not(.open) {
+        overflow: hidden;
+    }
+    &.open > .sidebar-submenu {
+        overflow: visible;
+    }
+
     .sidebar-menu__entry__link {
         padding-top: 16px;
         padding-bottom: 16px;
     }
 
     .sidebar-menu__entry__link:hover {
-        background: var(--theme-menu-hover-background, #d3d3d3);
+        background: var(--theme-menu-hover-background, var(--custom-sidebar-hover-bg));
     }
 
     .sidebar-submenu .sidebar-submenu__entry .sidebar-submenu__entry__link:hover {
-        background: var(--theme-menu-hover-background, #d3d3d3);
+        background: var(--theme-menu-hover-background, var(--custom-sidebar-hover-bg));
     }
 }
 
@@ -75,7 +85,7 @@
 }
 
 .sidebar__section:has(.sidebar__brand) {
-    border-bottom: 1px solid var(--theme-navbar-border, #e5e7eb);
+    border-bottom: 1px solid var(--theme-navbar-border, var(--custom-light-border));
     position: relative;
     z-index: 1;
     padding-right: 1.5rem;
@@ -92,7 +102,7 @@
         right: 0;
         left: 100%;
         height: 1px;
-        background-color: var(--theme-navbar-border, #e5e7eb);
+        background-color: var(--theme-navbar-border, var(--custom-light-border));
         pointer-events: none;
     }
 }

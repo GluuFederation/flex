@@ -361,9 +361,16 @@ function AliasesListPage(): React.ReactElement {
 
       <Modal isOpen={showAddModal} toggle={handleCancel}>
         <Form onSubmit={handleFormSubmit}>
+          <style>{`
+            .edit-mapping-labels-black label,
+            .edit-mapping-labels-black label h5,
+            .edit-mapping-labels-black label span,
+            .edit-mapping-labels-black h5,
+            .edit-mapping-labels-black .MuiSvgIcon-root { color: ${customColors.black} !important; }
+          `}</style>
           <ModalHeader style={{ padding: '1rem' }}>{modalTitle}</ModalHeader>
 
-          <ModalBody style={{ paddingTop: '1rem' }}>
+          <ModalBody style={{ paddingTop: '1rem' }} className="edit-mapping-labels-black">
             <GluuInputRow
               label="fields.mapping"
               name="mapping"
