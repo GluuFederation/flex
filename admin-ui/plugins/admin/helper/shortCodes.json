@@ -844,42 +844,42 @@
     "fields": [
       {
         "key": "givenName",
-        "label": "First Name",
+        "label": "documentation.user.givenName",
         "description": "documentation.user.givenName"
       },
       {
         "key": "inum",
-        "label": "INUM",
+        "label": "documentation.user.INUM",
         "description": "documentation.user.INUM"
       },
       {
         "key": "middleName",
-        "label": "Middle Name",
+        "label": "documentation.user.middleName",
         "description": "documentation.user.middleName"
       },
       {
         "key": "sn",
-        "label": "Last Name",
+        "label": "documentation.user.sn",
         "description": "documentation.user.sn"
       },
       {
         "key": "userId",
-        "label": "User Name",
+        "label": "documentation.user.userId",
         "description": "documentation.user.userId"
       },
       {
         "key": "displayName",
-        "label": "Display Name",
+        "label": "documentation.user.displayName",
         "description": "documentation.user.displayName"
       },
       {
         "key": "mail",
-        "label": "Email",
+        "label": "documentation.user.mail",
         "description": "documentation.user.mail"
       },
       {
         "key": "status",
-        "label": "Status",
+        "label": "documentation.user.status",
         "description": "documentation.user.status"
       }
     ]
@@ -888,12 +888,12 @@
     "fields": [
       {
         "key": "inum",
-        "label": "INUM",
+        "label": "documentation.user.INUM",
         "description": "documentation.user.INUM"
       },
       {
         "key": "userId",
-        "label": "User Name",
+        "label": "documentation.user.userId",
         "description": "documentation.user.userId"
       }
     ]

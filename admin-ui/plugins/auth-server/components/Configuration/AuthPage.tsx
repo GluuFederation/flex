@@ -37,7 +37,7 @@ import {
 } from './Properties/utils'
 import { createAppConfigurationSchema } from './Properties/utils/validations'
 import type { AppConfiguration, RootState, JsonPatch, AcrPutOperation, Script } from './types'
-import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/types'
+import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/types/index'
 import type { UserAction, ActionData } from 'Utils/PermChecker'
 
 const AuthPage: React.FC = () => {
@@ -376,7 +376,13 @@ const AuthPage: React.FC = () => {
             }}
             style={{ display: 'flex', flexDirection: 'column', minHeight: '100%' }}
           >
-            <div style={{ flex: 1, paddingBottom: '100px' }}>
+            <style>{`
+              .auth-props-labels-black label,
+              .auth-props-labels-black label h5,
+              .auth-props-labels-black label span,
+              .auth-props-labels-black .MuiSvgIcon-root { color: ${customColors.black} !important; }
+            `}</style>
+            <div className="auth-props-labels-black" style={{ flex: 1, paddingBottom: '100px' }}>
               {propertiesData.length > 0 &&
                 propertiesData.map(({ propKey, propValue }) => (
                   <PropertyBuilder

@@ -128,10 +128,6 @@ export interface AuthReducerState {
 export interface RootState {
   authReducer: AuthReducerState
   cedarPermissions: CedarPermissionsState
-  apiPermissionReducer: {
-    items: ApiPermission[]
-    loading: boolean
-  }
 }
 
 // Policy Generation Types

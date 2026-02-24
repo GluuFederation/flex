@@ -1,28 +1,21 @@
 import store from 'Redux/store'
+import type { AppDispatch } from '@/redux/hooks'
+import { devLogger } from '@/utils/devLogger'
+import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { CustomUser } from '../types/UserApiTypes'
-
-interface WebhookAction {
-  type: 'webhook/triggerWebhook'
-  payload: {
-    createdFeatureValue: CustomUser | Record<string, string | number | boolean | null | undefined>
-  }
-}
-
-interface StoreWithDispatch {
-  dispatch: (action: WebhookAction) => void
-}
 
 export function triggerUserWebhook(data: CustomUser): void {
   try {
-    const dispatch = (store as StoreWithDispatch).dispatch
-    dispatch({
-      type: 'webhook/triggerWebhook',
-      payload: {
-        createdFeatureValue: data as CustomUser &
-          Record<string, string | number | boolean | null | undefined>,
-      },
-    })
+    const dispatch: AppDispatch = store.dispatch
+    dispatch(
+      triggerWebhook({
+        createdFeatureValue: data as Record<string, JsonValue>,
+        feature: adminUiFeatures.users_edit,
+      }),
+    )
   } catch (error) {
-    console.error('Failed to trigger webhook:', error)
+    devLogger.error('Failed to trigger webhook:', error)
   }
 }

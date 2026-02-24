@@ -71,7 +71,7 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
       marginBottom: theme.spacing(1),
     },
     emailText: {
-      color: themeColors.profileEmailTextColor,
+      color: themeColors.table.headerColor,
       fontFamily,
       fontSize: fontSizes.content,
       fontStyle: 'normal',

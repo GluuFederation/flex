@@ -27,6 +27,7 @@ import {
   LockIcon,
 } from '../../../components/SVG'
 import { AdminUiFeatureResource, useCedarling } from '@/cedarling'
+import { devLogger } from '@/utils/devLogger'
 import { CEDARLING_BYPASS } from '@/cedarling/utility'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import type {
@@ -117,7 +118,7 @@ function GluuAppSidebar(): JSX.Element {
               return item
             }
             if (!item.resourceKey) {
-              console.warn('[Sidebar] Missing resourceKey for menu item', item.path ?? item.title)
+              devLogger.warn('[Sidebar] Missing resourceKey for menu item', item.path ?? item.title)
               return null
             }
             const { isAuthorized } = await authorize([

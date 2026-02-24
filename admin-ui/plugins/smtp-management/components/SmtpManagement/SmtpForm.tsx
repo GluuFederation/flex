@@ -25,6 +25,7 @@ import {
   toSmtpConfiguration,
   validationSchema,
 } from 'Plugins/smtp-management/helper'
+import customColors from '@/customColors'
 
 function SmtpForm(props: Readonly<SmtpFormProps>) {
   const { item, handleSubmit, allowSmtpKeystoreEdit, onTestSmtp, formikRef, readOnly } = props
@@ -111,7 +112,10 @@ function SmtpForm(props: Readonly<SmtpFormProps>) {
   }
 
   const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> | SelectChangeEvent,
+    event:
+      | React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+      | SelectChangeEvent
+      | { target: { name: string; value: string } },
   ): void => {
     const target = event.target
 
@@ -138,252 +142,260 @@ function SmtpForm(props: Readonly<SmtpFormProps>) {
         formik.handleSubmit()
       }}
     >
-      <FormGroup row>
-        <Col sm={8}>
-          <GluuInputRow
-            label="fields.smtp_host"
-            name="host"
-            value={formik.values.host || ''}
-            formik={formik}
-            lsize={3}
-            rsize={9}
-            showError={formik.touched.host && !!formik.errors.host}
-            errorMessage={formik.errors.host as string}
-            handleChange={handleChange}
-            required
-          />
-        </Col>
-        <Col sm={8}>
-          <GluuInputRow
-            label="fields.smtp_port"
-            name="port"
-            value={formik.values.port || ''}
-            formik={formik}
-            lsize={3}
-            rsize={9}
-            showError={formik.touched.port && !!formik.errors.port}
-            errorMessage={formik.errors.port as string}
-            handleChange={handleChange}
-            type="number"
-            required
-          />
-        </Col>
-        <Col sm={8}>
-          <GluuSelectRow
-            label="fields.connect_protection"
-            name="connect_protection"
-            value={formik.values.connect_protection || ''}
-            values={Object.values(smtpConstants.CONNECT_PROTECTION)}
-            formik={formik}
-            lsize={3}
-            rsize={9}
-            showError={formik.touched.connect_protection && !!formik.errors.connect_protection}
-            errorMessage={formik.errors.connect_protection as string}
-            handleChange={handleChange}
-            required
-          />
-        </Col>
+      <style>{`
+        .smtp-form-labels-black label,
+        .smtp-form-labels-black label h5,
+        .smtp-form-labels-black label span,
+        .smtp-form-labels-black .MuiSvgIcon-root { color: ${customColors.black} !important; }
+      `}</style>
+      <div className="smtp-form-labels-black">
+        <FormGroup row>
+          <Col sm={8}>
+            <GluuInputRow
+              label="fields.smtp_host"
+              name="host"
+              value={formik.values.host || ''}
+              formik={formik}
+              lsize={3}
+              rsize={9}
+              showError={formik.touched.host && !!formik.errors.host}
+              errorMessage={formik.errors.host as string}
+              handleChange={handleChange}
+              required
+            />
+          </Col>
+          <Col sm={8}>
+            <GluuInputRow
+              label="fields.smtp_port"
+              name="port"
+              value={formik.values.port || ''}
+              formik={formik}
+              lsize={3}
+              rsize={9}
+              showError={formik.touched.port && !!formik.errors.port}
+              errorMessage={formik.errors.port as string}
+              handleChange={handleChange}
+              type="number"
+              required
+            />
+          </Col>
+          <Col sm={8}>
+            <GluuSelectRow
+              label="fields.connect_protection"
+              name="connect_protection"
+              value={formik.values.connect_protection || ''}
+              values={Object.values(smtpConstants.CONNECT_PROTECTION)}
+              formik={formik}
+              lsize={3}
+              rsize={9}
+              showError={formik.touched.connect_protection && !!formik.errors.connect_protection}
+              errorMessage={formik.errors.connect_protection as string}
+              handleChange={handleChange}
+              required
+            />
+          </Col>
 
-        <Col sm={8}>
-          <GluuInputRow
-            label="fields.from_name"
-            name="from_name"
-            value={formik.values.from_name || ''}
-            formik={formik}
-            lsize={3}
-            rsize={9}
-            showError={formik.touched.from_name && !!formik.errors.from_name}
-            errorMessage={formik.errors.from_name as string}
-            handleChange={handleChange}
-            required
-          />
-        </Col>
+          <Col sm={8}>
+            <GluuInputRow
+              label="fields.from_name"
+              name="from_name"
+              value={formik.values.from_name || ''}
+              formik={formik}
+              lsize={3}
+              rsize={9}
+              showError={formik.touched.from_name && !!formik.errors.from_name}
+              errorMessage={formik.errors.from_name as string}
+              handleChange={handleChange}
+              required
+            />
+          </Col>
 
-        <Col sm={8}>
-          <GluuInputRow
-            label="fields.from_email_address"
-            name="from_email_address"
-            value={formik.values.from_email_address || ''}
-            formik={formik}
-            lsize={3}
-            rsize={9}
-            showError={formik.touched.from_email_address && !!formik.errors.from_email_address}
-            errorMessage={formik.errors.from_email_address as string}
-            handleChange={handleChange}
-            required
-          />
-        </Col>
-        <Col sm={8}>
-          <GluuToogleRow
-            label="fields.requires_authentication"
-            name="requires_authentication"
-            handler={(e: React.ChangeEvent<HTMLInputElement>) => {
-              formik.setFieldValue('requires_authentication', e.target.checked)
-              handleChange(e)
-            }}
-            lsize={5}
-            rsize={7}
-            value={formik.values.requires_authentication || false}
-          />
-        </Col>
+          <Col sm={8}>
+            <GluuInputRow
+              label="fields.from_email_address"
+              name="from_email_address"
+              value={formik.values.from_email_address || ''}
+              formik={formik}
+              lsize={3}
+              rsize={9}
+              showError={formik.touched.from_email_address && !!formik.errors.from_email_address}
+              errorMessage={formik.errors.from_email_address as string}
+              handleChange={handleChange}
+              required
+            />
+          </Col>
+          <Col sm={8}>
+            <GluuToogleRow
+              label="fields.requires_authentication"
+              name="requires_authentication"
+              handler={(e: React.ChangeEvent<HTMLInputElement>) => {
+                formik.setFieldValue('requires_authentication', e.target.checked)
+                handleChange(e)
+              }}
+              lsize={5}
+              rsize={7}
+              value={formik.values.requires_authentication || false}
+            />
+          </Col>
 
-        <Col sm={8}>
-          <GluuInputRow
-            label="fields.smtp_user_name"
-            name="smtp_authentication_account_username"
-            value={formik.values.smtp_authentication_account_username || ''}
-            formik={formik}
-            lsize={3}
-            rsize={9}
-            showError={
-              formik.touched.smtp_authentication_account_username &&
-              !!formik.errors.smtp_authentication_account_username
-            }
-            errorMessage={formik.errors.smtp_authentication_account_username as string}
-            handleChange={handleChange}
-            required={formik.values.requires_authentication}
-          />
-        </Col>
+          <Col sm={8}>
+            <GluuInputRow
+              label="fields.smtp_user_name"
+              name="smtp_authentication_account_username"
+              value={formik.values.smtp_authentication_account_username || ''}
+              formik={formik}
+              lsize={3}
+              rsize={9}
+              showError={
+                formik.touched.smtp_authentication_account_username &&
+                !!formik.errors.smtp_authentication_account_username
+              }
+              errorMessage={formik.errors.smtp_authentication_account_username as string}
+              handleChange={handleChange}
+              required={formik.values.requires_authentication}
+            />
+          </Col>
 
-        <Col sm={8}>
-          <GluuInputRow
-            label="fields.smtp_user_password"
-            name="smtp_authentication_account_password"
-            value={formik.values.smtp_authentication_account_password || ''}
-            formik={formik}
-            lsize={3}
-            rsize={9}
-            showError={
-              formik.touched.smtp_authentication_account_password &&
-              !!formik.errors.smtp_authentication_account_password
-            }
-            errorMessage={formik.errors.smtp_authentication_account_password as string}
-            handleChange={handleChange}
-            type="password"
-            required={formik.values.requires_authentication}
-          />
-        </Col>
-        <Col sm={8}>
-          <GluuToogleRow
-            label="fields.trust_host"
-            name="trust_host"
-            handler={(e: React.ChangeEvent<HTMLInputElement>) => {
-              formik.setFieldValue('trust_host', e.target.checked)
-              handleChange(e)
-            }}
-            lsize={5}
-            rsize={7}
-            value={formik.values.trust_host || false}
-          />
-        </Col>
-        <Col sm={8}>
-          <GluuToogleRow
-            label="fields.allow_keystore_edit"
-            name="allowKeystoreEdit"
-            handler={(e: React.ChangeEvent<HTMLInputElement>) => {
-              formik.setFieldValue('allowKeystoreEdit', e.target.checked)
-              dispatch(putConfigWorker({ allowSmtpKeystoreEdit: e.target.checked }))
-            }}
-            lsize={5}
-            rsize={7}
-            value={allowSmtpKeystoreEdit}
-          />
-        </Col>
-        <Col sm={8}>
-          <GluuInputRow
-            label="fields.key_store"
-            name="key_store"
-            value={formik.values.key_store || ''}
-            formik={formik}
-            lsize={3}
-            rsize={9}
-            showError={formik.touched.key_store && !!formik.errors.key_store}
-            errorMessage={formik.errors.key_store as string}
-            handleChange={handleChange}
-            disabled={!allowSmtpKeystoreEdit}
-          />
-        </Col>
+          <Col sm={8}>
+            <GluuInputRow
+              label="fields.smtp_user_password"
+              name="smtp_authentication_account_password"
+              value={formik.values.smtp_authentication_account_password || ''}
+              formik={formik}
+              lsize={3}
+              rsize={9}
+              showError={
+                formik.touched.smtp_authentication_account_password &&
+                !!formik.errors.smtp_authentication_account_password
+              }
+              errorMessage={formik.errors.smtp_authentication_account_password as string}
+              handleChange={handleChange}
+              type="password"
+              required={formik.values.requires_authentication}
+            />
+          </Col>
+          <Col sm={8}>
+            <GluuToogleRow
+              label="fields.trust_host"
+              name="trust_host"
+              handler={(e: React.ChangeEvent<HTMLInputElement>) => {
+                formik.setFieldValue('trust_host', e.target.checked)
+                handleChange(e)
+              }}
+              lsize={5}
+              rsize={7}
+              value={formik.values.trust_host || false}
+            />
+          </Col>
+          <Col sm={8}>
+            <GluuToogleRow
+              label="fields.allow_keystore_edit"
+              name="allowKeystoreEdit"
+              handler={(e: React.ChangeEvent<HTMLInputElement>) => {
+                formik.setFieldValue('allowKeystoreEdit', e.target.checked)
+                dispatch(putConfigWorker({ allowSmtpKeystoreEdit: e.target.checked }))
+              }}
+              lsize={5}
+              rsize={7}
+              value={allowSmtpKeystoreEdit}
+            />
+          </Col>
+          <Col sm={8}>
+            <GluuInputRow
+              label="fields.key_store"
+              name="key_store"
+              value={formik.values.key_store || ''}
+              formik={formik}
+              lsize={3}
+              rsize={9}
+              showError={formik.touched.key_store && !!formik.errors.key_store}
+              errorMessage={formik.errors.key_store as string}
+              handleChange={handleChange}
+              disabled={!allowSmtpKeystoreEdit}
+            />
+          </Col>
 
-        <Col sm={8}>
-          <GluuInputRow
-            label="fields.key_store_password"
-            name="key_store_password"
-            value={formik.values.key_store_password || ''}
-            formik={formik}
-            lsize={3}
-            rsize={9}
-            showError={formik.touched.key_store_password && !!formik.errors.key_store_password}
-            errorMessage={formik.errors.key_store_password as string}
-            handleChange={handleChange}
-            type="password"
-            disabled={!allowSmtpKeystoreEdit}
-          />
-        </Col>
+          <Col sm={8}>
+            <GluuInputRow
+              label="fields.key_store_password"
+              name="key_store_password"
+              value={formik.values.key_store_password || ''}
+              formik={formik}
+              lsize={3}
+              rsize={9}
+              showError={formik.touched.key_store_password && !!formik.errors.key_store_password}
+              errorMessage={formik.errors.key_store_password as string}
+              handleChange={handleChange}
+              type="password"
+              disabled={!allowSmtpKeystoreEdit}
+            />
+          </Col>
 
-        <Col sm={8}>
-          <GluuInputRow
-            label="fields.key_store_alias"
-            name="key_store_alias"
-            value={formik.values.key_store_alias || ''}
-            formik={formik}
-            lsize={3}
-            rsize={9}
-            showError={formik.touched.key_store_alias && !!formik.errors.key_store_alias}
-            errorMessage={formik.errors.key_store_alias as string}
-            handleChange={handleChange}
-            disabled={!allowSmtpKeystoreEdit}
-          />
-        </Col>
+          <Col sm={8}>
+            <GluuInputRow
+              label="fields.key_store_alias"
+              name="key_store_alias"
+              value={formik.values.key_store_alias || ''}
+              formik={formik}
+              lsize={3}
+              rsize={9}
+              showError={formik.touched.key_store_alias && !!formik.errors.key_store_alias}
+              errorMessage={formik.errors.key_store_alias as string}
+              handleChange={handleChange}
+              disabled={!allowSmtpKeystoreEdit}
+            />
+          </Col>
 
-        <Col sm={8}>
-          <GluuInputRow
-            label="fields.signing_algorithm"
-            name="signing_algorithm"
-            value={formik.values.signing_algorithm || ''}
-            formik={formik}
-            lsize={3}
-            rsize={9}
-            showError={formik.touched.signing_algorithm && !!formik.errors.signing_algorithm}
-            errorMessage={formik.errors.signing_algorithm as string}
-            handleChange={handleChange}
-            disabled={!allowSmtpKeystoreEdit}
-          />
-        </Col>
-      </FormGroup>
-      {testButtonEnabled && !readOnly && (
-        <Row className="mb-2">
+          <Col sm={8}>
+            <GluuInputRow
+              label="fields.signing_algorithm"
+              name="signing_algorithm"
+              value={formik.values.signing_algorithm || ''}
+              formik={formik}
+              lsize={3}
+              rsize={9}
+              showError={formik.touched.signing_algorithm && !!formik.errors.signing_algorithm}
+              errorMessage={formik.errors.signing_algorithm as string}
+              handleChange={handleChange}
+              disabled={!allowSmtpKeystoreEdit}
+            />
+          </Col>
+        </FormGroup>
+        {testButtonEnabled && !readOnly && (
+          <Row className="mb-2">
+            <Col>
+              <button type="button" className="btn btn-secondary" onClick={testSmtpConfig}>
+                {t('actions.test')}
+              </button>
+            </Col>
+          </Row>
+        )}
+
+        <Row>
           <Col>
-            <button type="button" className="btn btn-secondary" onClick={testSmtpConfig}>
-              {t('actions.test')}
-            </button>
+            <GluuFormFooter
+              showBack={true}
+              showCancel={true}
+              showApply={!readOnly}
+              onApply={toggle}
+              onCancel={handleCancel}
+              disableCancel={!formik.dirty}
+              disableApply={!formik.isValid || !formik.dirty}
+              applyButtonType="button"
+              isLoading={formik.isSubmitting ?? false}
+            />
           </Col>
         </Row>
-      )}
-
-      <Row>
-        <Col>
-          <GluuFormFooter
-            showBack={true}
-            showCancel={true}
-            showApply={!readOnly}
-            onApply={toggle}
-            onCancel={handleCancel}
-            disableCancel={!formik.dirty}
-            disableApply={!formik.isValid || !formik.dirty}
-            applyButtonType="button"
-            isLoading={formik.isSubmitting ?? false}
+        {!readOnly && (
+          <GluuCommitDialog
+            feature={adminUiFeatures.smtp_configuration_edit}
+            handler={toggle}
+            modal={modal}
+            onAccept={submitForm}
+            formik={formik}
           />
-        </Col>
-      </Row>
-      {!readOnly && (
-        <GluuCommitDialog
-          feature={adminUiFeatures.smtp_configuration_edit}
-          handler={toggle}
-          modal={modal}
-          onAccept={submitForm}
-          formik={formik}
-        />
-      )}
+        )}
+      </div>
     </Form>
   )
 }

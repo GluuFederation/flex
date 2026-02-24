@@ -12,7 +12,6 @@ export interface ModifiedFields extends Record<string, unknown> {
 
 export function useAuthServerPropertiesActions() {
   const authState = useSelector((state: RootState) => state.authReducer)
-  const token = authState?.token?.access_token
   const client_id = authState?.config?.clientId
   const userinfo = authState?.userinfo
 
@@ -20,7 +19,6 @@ export function useAuthServerPropertiesActions() {
     async (message: string, modifiedFields?: ModifiedFields) => {
       try {
         await logAuditUserAction({
-          token,
           userinfo,
           action: UPDATE,
           resource: 'Authentication Server Configuration',
@@ -35,7 +33,7 @@ export function useAuthServerPropertiesActions() {
         return false
       }
     },
-    [token, userinfo, client_id],
+    [userinfo, client_id],
   )
 
   return {

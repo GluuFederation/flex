@@ -1,5 +1,6 @@
 import React, { Suspense, lazy, ComponentType } from 'react'
-import { devWarn } from '@/utils/env'
+import { isDevelopment } from '@/utils/env'
+import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 
 type LazyRouteWrapper<P extends Record<string, unknown> = Record<string, unknown>> =
   ComponentType<P> & {
@@ -12,7 +13,7 @@ export const createLazyRoute = <P extends Record<string, unknown> = Record<strin
   const LazyComponent = lazy(importFn)
 
   const Wrapper = (props: P) => (
-    <Suspense fallback={null}>
+    <Suspense fallback={<GluuLoader blocking />}>
       {/* @ts-expect-error lazy() does not preserve generic type params */}
       <LazyComponent {...props} />
     </Suspense>
@@ -41,18 +42,22 @@ export const loadPluginRoute = (pluginName: string, routePath?: string): LazyRou
 
   return createLazyRoute(() =>
     import(`../../plugins/${pluginName}/components/${componentPath}`).catch((err) => {
-      devWarn(`Failed to load plugin route: ${pluginName}/${componentPath}`, {
-        pluginName,
-        componentPath,
-        error: err,
-      })
-      return import(`../../plugins/${pluginName}/components/index`).catch((fallbackErr) => {
-        devWarn(`Failed to load fallback plugin index for: ${pluginName}`, {
+      if (isDevelopment) {
+        console.warn(`Failed to load plugin route: ${pluginName}/${componentPath}`, {
           pluginName,
           componentPath,
-          primaryError: err,
-          fallbackError: fallbackErr,
+          error: err,
         })
+      }
+      return import(`../../plugins/${pluginName}/components/index`).catch((fallbackErr) => {
+        if (isDevelopment) {
+          console.warn(`Failed to load fallback plugin index for: ${pluginName}`, {
+            pluginName,
+            componentPath,
+            primaryError: err,
+            fallbackError: fallbackErr,
+          })
+        }
         throw fallbackErr
       })
     }),
@@ -64,7 +69,7 @@ export const preloadRoute = (routeName: keyof typeof LazyRoutes): void => {
   if (route && 'preload' in route) {
     const lazyRoute = route as LazyRouteWrapper
     lazyRoute.preload().catch((error) => {
-      devWarn(`Failed to preload route: ${routeName}`, error)
+      if (isDevelopment) console.warn(`Failed to preload route: ${routeName}`, error)
     })
   }
 }

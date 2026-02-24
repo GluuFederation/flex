@@ -15,13 +15,13 @@ import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import type { ThemeContextValue, CustomAttribute } from './types'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import GluuLoader from '../Gluu/GluuLoader'
+import GluuViewWrapper from '../Gluu/GluuViewWrapper'
 import { useCedarling } from '@/cedarling'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import customColors from '@/customColors'
-import { devWarn } from '@/utils/env'
 
 const JANS_ADMIN_UI_ROLE_ATTR = 'jansAdminUIRole'
 const USERS_RESOURCE_ID = ADMIN_UI_RESOURCES.Users
@@ -81,7 +81,11 @@ const ProfileDetails: React.FC = () => {
   const apiAccessToken = authToken?.access_token ?? null
   const canMakeApiCall = hasSession || !!apiAccessToken
 
-  const { authorizeHelper, hasCedarWritePermission } = useCedarling()
+  const { authorizeHelper, hasCedarReadPermission, hasCedarWritePermission } = useCedarling()
+  const canReadProfile = useMemo(
+    () => hasCedarReadPermission(USERS_RESOURCE_ID),
+    [hasCedarReadPermission],
+  )
   const canEditProfile = useMemo(
     () => hasCedarWritePermission(USERS_RESOURCE_ID),
     [hasCedarWritePermission],
@@ -138,30 +142,6 @@ const ProfileDetails: React.FC = () => {
     [themeColors],
   )
 
-  const statusBadgeColors = useMemo(() => {
-    const status = profileDetails?.status
-    if (status === 'active') {
-      return {
-        bg: themeColors.formFooter?.back?.backgroundColor,
-        text: themeColors.formFooter?.back?.textColor,
-      }
-    }
-    if (status == null) {
-      devWarn('[ProfilePage] profileDetails.status is null/undefined', {
-        status: profileDetails?.status,
-        hasProfileDetails: !!profileDetails,
-      })
-      return {
-        bg: themeColors.inputBackground,
-        text: themeColors.textMuted,
-      }
-    }
-    return {
-      bg: themeColors.settings?.removeButton?.bg,
-      text: themeColors.settings?.removeButton?.text,
-    }
-  }, [profileDetails?.status, themeColors])
-
   const accountStatusPillColors = useMemo(() => {
     const status = profileDetails?.status
     if (status === 'active') {
@@ -192,10 +172,13 @@ const ProfileDetails: React.FC = () => {
     [profileDetails?.status, t],
   )
 
+  const displayName = profileDetails?.displayName ?? userinfo?.name ?? userinfo?.email ?? '-'
+  const displayMail = profileDetails?.mail ?? userinfo?.email ?? '-'
+
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
-      <GluuLoader blocking={loading}>
-        {!loading && (
+      <GluuViewWrapper canShow={canReadProfile}>
+        <GluuLoader blocking={loading}>
           <Box className={classes.mainContainer}>
             <Box className={classes.profileCard}>
               <Box className={classes.avatarContainer}>
@@ -204,10 +187,10 @@ const ProfileDetails: React.FC = () => {
 
               <Box textAlign="center">
                 <GluuText variant="h5" className={classes.nameText}>
-                  {profileDetails?.displayName || '-'}
+                  {displayName}
                 </GluuText>
                 <GluuText variant="div" className={classes.emailText} disableThemeColor>
-                  {profileDetails?.mail || '-'}
+                  {displayMail}
                 </GluuText>
                 <Box className={classes.profileHeaderStatusWrap} width="100%">
                   <Box className={classes.statusRow}>
@@ -330,8 +313,8 @@ const ProfileDetails: React.FC = () => {
               )}
             </Box>
           </Box>
-        )}
-      </GluuLoader>
+        </GluuLoader>
+      </GluuViewWrapper>
     </ErrorBoundary>
   )
 }

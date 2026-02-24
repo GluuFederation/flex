@@ -14,13 +14,13 @@
 }
 
 .page-title {
-    color: var(--theme-navbar-text, var(--theme-text-color, #fff));
+    color: var(--theme-navbar-text, var(--theme-text-color, var(--custom-white)));
     position: relative;
     top: 14px;
 }
 
 .sidebar-submenu__entry.active:not(.open) > .sidebar-submenu__entry__link {
-    color: var(--theme-menu-text-color-active, var(--theme-menu-text-color, #323b47)) !important;
+    color: var(--theme-menu-text-color-active, var(--theme-menu-text-color, var(--custom-dark-gray))) !important;
 }
 
 .sidebar-menu {

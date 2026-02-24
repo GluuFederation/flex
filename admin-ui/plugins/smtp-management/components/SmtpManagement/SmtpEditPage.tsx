@@ -197,7 +197,7 @@ function SmtpEditPage() {
 
   return (
     <GluuLoader blocking={isLoading || putSmtpMutation.isPending || testSmtpMutation.isPending}>
-      {showTestModal && (
+      {showTestModal && testStatus !== null && (
         <GluuInfo item={{ testStatus, openModal: showTestModal }} handler={handleCloseTestModal} />
       )}
       <Card className="mb-3" style={applicationStyle.mainCard}>

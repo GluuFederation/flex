@@ -20,12 +20,12 @@ type ApiKeyRedirectProps = {
   isConfigValid: boolean | null
 }
 
-function ApiKeyRedirect({
+const ApiKeyRedirect = ({
   isLicenseValid,
   islicenseCheckResultLoaded,
   roleNotFound,
   isConfigValid,
-}: ApiKeyRedirectProps) {
+}: ApiKeyRedirectProps) => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const currentTheme = theme?.state?.theme ?? DEFAULT_THEME
@@ -45,11 +45,13 @@ function ApiKeyRedirect({
     isNoValidLicenseKeyFound
 
   const showRedirectingLoader =
-    isConfigValid !== false &&
-    !isTimeout &&
-    isUnderThresholdLimit &&
-    backendStatus.active &&
-    !shouldShowApiKey
+    !islicenseCheckResultLoaded ||
+    isConfigValid === null ||
+    (isConfigValid !== false &&
+      !isTimeout &&
+      isUnderThresholdLimit &&
+      backendStatus.active &&
+      !shouldShowApiKey)
 
   if (showRedirectingLoader) {
     return (

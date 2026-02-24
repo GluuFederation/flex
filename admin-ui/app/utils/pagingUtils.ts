@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import { devLogger } from '@/utils/devLogger'
 
 export const ROWS_PER_PAGE_OPTIONS = [5, 10, 25, 50] as const
 
@@ -25,7 +26,7 @@ export const getPagingSize = (defaultSize: number = DEFAULT_PAGING_SIZE): number
 
     return defaultSize
   } catch (error) {
-    console.warn('Failed to read paging size from localStorage:', error)
+    devLogger.warn('Failed to read paging size from localStorage:', error)
     return defaultSize
   }
 }
@@ -42,12 +43,12 @@ export const getRowsPerPageOptions = (): number[] => [...ROWS_PER_PAGE_OPTIONS]
 export const savePagingSize = (size: number): void => {
   const validSize = Math.floor(size)
   if (validSize <= 0) {
-    console.warn('Invalid paging size:', size, '- must be a positive integer')
+    devLogger.warn('Invalid paging size:', size, '- must be a positive integer')
     return
   }
 
   if (!(ROWS_PER_PAGE_OPTIONS as readonly number[]).includes(validSize)) {
-    console.warn('Invalid paging size:', validSize, '- must be one of', ROWS_PER_PAGE_OPTIONS)
+    devLogger.warn('Invalid paging size:', validSize, '- must be one of', ROWS_PER_PAGE_OPTIONS)
     return
   }
 
@@ -61,7 +62,7 @@ export const savePagingSize = (size: number): void => {
       window.dispatchEvent(new CustomEvent(PAGING_SIZE_CHANGED_EVENT, { detail: validSize }))
     }
   } catch (error) {
-    console.warn('Failed to save paging size to localStorage:', error)
+    devLogger.warn('Failed to save paging size to localStorage:', error)
   }
 }
 

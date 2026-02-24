@@ -1,5 +1,9 @@
 export const OPACITY = {
   DIMMED: 0.5,
+
+  HOVER_LIGHT: 0.04,
+
+  HOVER_DARK: 0.08,
 } as const
 
 export const SPACING = {

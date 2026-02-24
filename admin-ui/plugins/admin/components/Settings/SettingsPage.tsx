@@ -2,10 +2,11 @@ import React, { useMemo, useCallback, useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
 import { useAppSelector, useAppDispatch, type RootState } from '../../../../app/redux/hooks'
-import { FormGroup, InputGroup, CustomInput, Form, Alert, Input, GluuPageContent } from 'Components'
+import { FormGroup, Form, Alert, Input, GluuPageContent } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuThemeFormFooter from '@/routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -236,6 +237,7 @@ const SettingsPage: React.FC = () => {
     if (isScriptsError) refetchScripts()
   }, [isConfigError, isScriptsError, refetchConfig, refetchScripts])
 
+  const isAdditionalParamsEmpty = (formik.values.additionalParameters || []).length === 0
   const additionalParametersError = formik.errors?.additionalParameters
   const showAdditionalParametersError = Boolean(
     additionalParametersError && (formik.submitCount > 0 || formik.touched?.additionalParameters),
@@ -333,33 +335,23 @@ const SettingsPage: React.FC = () => {
                   </div>
 
                   <div className={classes.fieldItem}>
-                    <FormGroup>
-                      <GluuLabel
-                        label="fields.list_paging_size"
-                        size={12}
-                        doc_category={SETTINGS}
-                        doc_entry="pageSize"
-                        isDark={isDark}
-                      />
-                      <InputGroup>
-                        <CustomInput
-                          type="select"
-                          id="pagingSize"
-                          name="pagingSize"
-                          value={String(currentPagingSize)}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            handlePagingSizeChange(Number.parseInt(e.target.value, 10))
-                          }
-                          disabled={!canWriteSettings}
-                        >
-                          {ROWS_PER_PAGE_OPTIONS.map((option) => (
-                            <option value={String(option)} key={option}>
-                              {option}
-                            </option>
-                          ))}
-                        </CustomInput>
-                      </InputGroup>
-                    </FormGroup>
+                    <GluuSelectRow
+                      label="fields.list_paging_size"
+                      name="pagingSize"
+                      value={currentPagingSize}
+                      formik={formik}
+                      values={ROWS_PER_PAGE_OPTIONS.map((n) => String(n))}
+                      lsize={12}
+                      rsize={12}
+                      doc_category={SETTINGS}
+                      doc_entry="pageSize"
+                      disabled={!canWriteSettings}
+                      isDark={isDark}
+                      handleChange={(e) => {
+                        const n = Number.parseInt(e.target.value, 10)
+                        if (!Number.isNaN(n)) handlePagingSizeChange(n)
+                      }}
+                    />
                   </div>
 
                   <div className={classes.fieldItem}>
@@ -383,33 +375,19 @@ const SettingsPage: React.FC = () => {
                   </div>
 
                   <div className={classes.fieldItem}>
-                    <FormGroup>
-                      <GluuLabel
-                        size={12}
-                        doc_category={SETTINGS}
-                        doc_entry="adminui_default_acr"
-                        label="fields.adminui_default_acr"
-                        isDark={isDark}
-                      />
-                      <InputGroup>
-                        <CustomInput
-                          type="select"
-                          data-testid="acrValues"
-                          id="acrValues"
-                          name="acrValues"
-                          value={formik.values.acrValues}
-                          onChange={formik.handleChange}
-                          disabled={!canWriteSettings}
-                        >
-                          <option value="">{t('actions.choose')}...</option>
-                          {authScripts.map((item) => (
-                            <option key={item} value={item}>
-                              {item}
-                            </option>
-                          ))}
-                        </CustomInput>
-                      </InputGroup>
-                    </FormGroup>
+                    <GluuSelectRow
+                      label="fields.adminui_default_acr"
+                      name="acrValues"
+                      value={formik.values.acrValues}
+                      formik={formik}
+                      values={authScripts}
+                      lsize={12}
+                      rsize={12}
+                      doc_category={SETTINGS}
+                      doc_entry="adminui_default_acr"
+                      disabled={!canWriteSettings}
+                      isDark={isDark}
+                    />
                   </div>
 
                   <div className={classes.fieldItem}>
@@ -444,8 +422,12 @@ const SettingsPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className={classes.customParamsBox}>
-                  <div className={classes.customParamsHeader}>
+                <div
+                  className={`${classes.customParamsBox} ${isAdditionalParamsEmpty ? classes.customParamsBoxEmpty : ''}`.trim()}
+                >
+                  <div
+                    className={`${classes.customParamsHeader} ${isAdditionalParamsEmpty ? classes.customParamsHeaderEmpty : ''}`.trim()}
+                  >
                     <GluuText variant="h5" disableThemeColor>
                       <span className={classes.customParamsTitle}>
                         {t('fields.custom_params_auth')}
@@ -457,7 +439,7 @@ const SettingsPage: React.FC = () => {
                       backgroundColor={themeColors.settings.addPropertyButton.bg}
                       textColor={themeColors.settings.addPropertyButton.text}
                       useOpacityOnHover
-                      style={{ minWidth: 156, width: 156, gap: 8, flexShrink: 0 }}
+                      className={classes.customParamsActionBtn}
                       onClick={() => {
                         const currentParams = formik.values.additionalParameters || []
                         formik.setFieldValue('additionalParameters', [
@@ -496,14 +478,7 @@ const SettingsPage: React.FC = () => {
                             backgroundColor={themeColors.settings.removeButton.bg}
                             textColor={themeColors.settings.removeButton.text}
                             useOpacityOnHover
-                            style={{
-                              minWidth: 156,
-                              width: 156,
-                              minHeight: 44,
-                              gap: 8,
-                              flexShrink: 0,
-                              alignSelf: 'stretch',
-                            }}
+                            className={classes.customParamsActionBtn}
                             onClick={() => {
                               const currentParams = (formik.values.additionalParameters ??
                                 []) as CustomParamItem[]

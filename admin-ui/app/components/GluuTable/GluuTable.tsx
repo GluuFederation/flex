@@ -1,7 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -30,8 +28,6 @@ const T_KEYS = {
   MESSAGES_PREVIOUS_PAGE: 'messages.previous_page',
   MESSAGES_NEXT_PAGE: 'messages.next_page',
 } as const
-
-const SORT_ICON_SX = { fontSize: 12 } as const
 
 function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
   const {
@@ -117,11 +113,9 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
   const handleSort = useCallback(
     (columnKey: string) => {
       if (!onSort) return
-      let nextDirection: SortDirection = 'asc'
-      if (sortColumn === columnKey) {
-        if (sortDirection === 'asc') nextDirection = 'desc'
-        else if (sortDirection === 'desc') nextDirection = null
-      }
+      // Two-state cycle: original order ↔ reversed (no asc)
+      const isSameColumn = sortColumn === columnKey
+      const nextDirection: SortDirection = isSameColumn && sortDirection === 'desc' ? null : 'desc'
       onSort(columnKey, nextDirection)
     },
     [onSort, sortColumn, sortDirection],
@@ -193,24 +187,19 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
                     {isSortable ? (
                       <button
                         type="button"
-                        className={classes.sortableHeader}
+                        className={
+                          isActive
+                            ? `${classes.sortableHeader} ${classes.sortableHeaderActive}`
+                            : classes.sortableHeader
+                        }
                         onClick={() => handleSort(col.key)}
                       >
-                        <GluuText variant="span" disableThemeColor>
-                          {col.label}
-                        </GluuText>
-                        <span className={classes.sortIconWrap}>
-                          <ArrowUpwardIcon
-                            sx={{
-                              ...SORT_ICON_SX,
-                              opacity: isActive && sortDirection === 'asc' ? 1 : 0.25,
-                            }}
-                          />
-                          <ArrowDownwardIcon
-                            sx={{
-                              ...SORT_ICON_SX,
-                              opacity: isActive && sortDirection === 'desc' ? 1 : 0.25,
-                            }}
+                        {col.label}
+                        <span className={classes.sortIconWrap} data-sort-icon>
+                          <ChevronIcon
+                            width={14}
+                            height={14}
+                            direction={isActive && sortDirection === 'desc' ? 'down' : 'up'}
                           />
                         </span>
                       </button>
@@ -292,11 +281,11 @@ function GluuTable<T>(props: Readonly<GluuTableProps<T>>) {
                       {columns.map((col, colIdx) => {
                         const key = col.key as ColumnKey<T>
                         const value = (row as T)[key]
-                        const isFirstColumn = expandable && colIdx === 0
+                        const isFirstLineColumn = expandable && colIdx <= 1
                         return (
                           <td
                             key={col.key}
-                            className={`${classes.cell} ${isFirstColumn ? classes.cellFirst : ''}`}
+                            className={`${classes.cell} ${isFirstLineColumn ? classes.cellFirst : ''}`}
                             style={{
                               textAlign: col.align || 'left',
                               width: col.width,

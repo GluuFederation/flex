@@ -1,6 +1,6 @@
 import { CustomScriptItem } from '../../features/types/customScript'
 import { ScriptType } from '../../features/types/customScript'
-import type { WebhookSliceState } from '../../features/WebhookSlice'
+import type { WebhookSliceState } from '../../types/webhook'
 
 export interface RootState {
   authReducer: {
