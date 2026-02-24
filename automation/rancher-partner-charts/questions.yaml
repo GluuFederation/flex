@@ -53,14 +53,14 @@ questions:
     group: "OpenBanking Distribution"
     description: "Internal Java Keystore (JKS) alias used to locate the Open Banking private signing key. To ensure correct internal mapping, this string must identically match your cnObStaticSigningKeyKid"
     type: string
-    label: Open banking external signing AS Alias
+    label: Open banking internal signing AS Alias
 - variable: global.cnObStaticSigningKeyKid
-  default: "Wy44xWSlcWnMiEc8iq9s2G"
+  default: "XkwIzWy44xWSlcWnMiEc8iq9s2G"
   required: true
   group: "OpenBanking Distribution"
   description: "External Key ID (kid) stamped onto the header of outgoing JWTs. This tells receiving parties which public key to fetch from your JWKS URI to verify the signature."
   type: string
-  label: Open banking  signing AS kid
+  label: Open banking signing AS kid
   show_if: "global.distribution=openbanking"
 - variable: global.cnObTransportAlias
   default: ""

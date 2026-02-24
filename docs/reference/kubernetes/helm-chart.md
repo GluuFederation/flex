@@ -439,12 +439,12 @@ Kubernetes: `>=v1.23.0-0`
 | global.cnConfiguratorKeyFile | string | `"/etc/jans/conf/configuration.key"` | Path to the file that contains the key to encrypt/decrypt the configuration schema file. |
 | global.cnDocumentStoreType | string | `"DB"` | Document store type to use for shibboleth files DB. |
 | global.cnGoogleApplicationCredentials | string | `"/etc/jans/conf/google-credentials.json"` | Base64 encoded service account. The sa must have roles/secretmanager.admin to use Google secrets. Leave as this is a sensible default. |
-| global.cnObInternalSigningAlias | string | `""` | Open banking external signing AS Alias. This is a kid value.Used in SSA Validation, kid used while encoding a JWT sent to token URL i.e. XkwIzWy44xWSlcWnMiEc8iq9s2G |
+| global.cnObInternalSigningAlias | string | `""` | Internal Java Keystore (JKS) alias used to locate the Open Banking private signing key. To ensure correct internal mapping, this string must identically match your "cnObStaticSigningKeyKid". |
 | global.cnObExtSigningJwksCrt | string | `""` | Open banking external signing jwks AS certificate authority string. Used in SSA Validation. This must be encoded using base64.. Used when `.global.cnObExtSigningJwksUri` is set. |
 | global.cnObExtSigningJwksKey | string | `""` | Open banking external signing jwks AS key string. Used in SSA Validation. This must be encoded using base64. Used when `.global.cnObExtSigningJwksUri` is set. |
 | global.cnObExtSigningJwksKeyPassPhrase | string | `""` | Open banking external signing jwks AS key passphrase to unlock provided key. This must be encoded using base64. Used when `.global.cnObExtSigningJwksUri` is set. |
 | global.cnObExtSigningJwksUri | string | `""` | Open banking external signing jwks uri. Used in SSA Validation. |
-| global.cnObStaticSigningKeyKid | string | `""` | Open banking  signing AS kid to force the AS to use a specific signing key. i.e. Wy44xWSlcWnMiEc8iq9s2G |
+| global.cnObStaticSigningKeyKid | string | `""` | External Key ID (kid) stamped onto the header of outgoing JWTs. This tells receiving parties which public key to fetch from your JWKS URI to verify the signature. |
 | global.cnObTransportAlias | string | `""` | Open banking transport Alias used inside the JVM. |
 | global.cnObTransportCrt | string | `""` | Open banking AS transport crt. Used in SSA Validation. This must be encoded using base64. |
 | global.cnObTransportKey | string | `""` | Open banking AS transport key. Used in SSA Validation. This must be encoded using base64. |

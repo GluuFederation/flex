@@ -487,16 +487,16 @@ variable "ob_ext_signing_jwks_key_passphrase" {
   description = "External signing jwks AS key passphrase to unlock provided key. This must be encoded using base64. Used when `.global.cnObExtSigningJwksUri` is set."
 }
 
-variable "ob_ext_signing_alias" {
+variable "ob_internal_signing_alias" {
   type        = string
   default     = ""
-  description = "External signing AS Alias. This is a kid value.Used in SSA Validation, kid used while encoding a JWT sent to token URL i.e. XkwIzWy44xWSlcWnMiEc8iq9s2G"
+  description = "Internal Java Keystore (JKS) alias used to locate the Open Banking private signing key. To ensure correct internal mapping, this string must identically match your "cnObStaticSigningKeyKid"."
 }
 
 variable "ob_static_signing_key_kid" {
   type        = string
   default     = ""
-  description = "Signing AS kid to force the AS to use a specific signing key. i.e. Wy44xWSlcWnMiEc8iq9s2G"
+  description = "External Key ID (kid) stamped onto the header of outgoing JWTs. This tells receiving parties which public key to fetch from your JWKS URI to verify the signature"
 }
 
 variable "ob_transport_crt" {
