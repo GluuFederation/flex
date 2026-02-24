@@ -27,7 +27,7 @@ data:
   {{ if .Values.global.cnObExtSigningJwksUri }}
   CN_OB_EXT_SIGNING_JWKS_URI: {{ .Values.global.cnObExtSigningJwksUri | quote }}
   CN_OB_AS_TRANSPORT_ALIAS: {{ .Values.global.cnObTransportAlias | quote }}
-  CN_OB_EXT_SIGNING_ALIAS: {{ .Values.global.cnObInternalSigningAlias | quote }}
+  CN_OB_INTERNAL_SIGNING_ALIAS: {{ .Values.global.cnObInternalSigningAlias | quote }}
   # force the AS to use a specific signing key
   CN_OB_STATIC_KID: {{ .Values.global.cnObStaticSigningKeyKid | quote }}
   {{- end }}
