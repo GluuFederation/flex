@@ -1,8 +1,8 @@
 import type { ThemeConfig } from '@/context/theme/config'
 
 export const OPACITY = {
-  HOVER_LIGHT: 0.2,
-  HOVER_DARK: 0.4,
+  HOVER_LIGHT: 0.04,
+  HOVER_DARK: 0.08,
   DISABLED: 0.5,
 } as const
 

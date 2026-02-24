@@ -49,7 +49,6 @@ const i18nConfig: InitOptions = {
   interpolation: {
     escapeValue: false,
   },
-
   parseMissingKeyHandler: isDevelopment ? handleMissingKey : undefined,
 }
 

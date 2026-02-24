@@ -1,6 +1,7 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { Provider } from 'react-redux'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import item from './item.test'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
@@ -15,18 +16,33 @@ jest.mock('@/cedarling', () => ({
 }))
 
 jest.mock('@/cedarling/utility', () => ({
-  ADMIN_UI_RESOURCES: { Webhooks: 'webhooks' },
+  ADMIN_UI_RESOURCES: { Webhooks: 'webhooks', CustomScripts: 'customscripts' },
 }))
 
 jest.mock('@/cedarling/constants/resourceScopes', () => ({
-  CEDAR_RESOURCE_SCOPES: { webhooks: [] },
+  CEDAR_RESOURCE_SCOPES: { webhooks: [], customscripts: [] },
 }))
 
-jest.mock('JansConfigApi', () => ({
-  useGetCustomScriptType: jest.fn(() => ({
+jest.mock('Plugins/admin/components/CustomScripts/hooks', () => ({
+  useCustomScriptTypes: jest.fn(() => ({
     data: [],
     isLoading: false,
   })),
+  useCustomScript: jest.fn(() => ({ data: null, isLoading: false })),
+  useUpdateCustomScript: jest.fn(() => ({ mutateAsync: jest.fn(), isLoading: false })),
+  useMutationEffects: jest.fn(),
+}))
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: jest.fn(() => jest.fn()),
+}))
+
+jest.mock('JansConfigApi', () => ({
+  useGetCustomScriptType: jest.fn(() => ({ data: [], isLoading: false })),
+  useGetConfigScripts: jest.fn(() => ({ data: { entries: [] }, isLoading: false })),
+  useGetConfigScriptsByInum: jest.fn(() => ({ data: null, isLoading: false })),
+  useGetConfigScriptsByType: jest.fn(() => ({ data: { entries: [] }, isLoading: false })),
 }))
 
 const store = configureStore({
@@ -44,12 +60,18 @@ const store = configureStore({
   }),
 })
 
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false } },
+})
+
 const handleSubmit = jest.fn()
 
 const Wrapper = ({ children }: { children: React.ReactNode }) => (
-  <AppTestWrapper>
-    <Provider store={store}>{children}</Provider>
-  </AppTestWrapper>
+  <QueryClientProvider client={queryClient}>
+    <AppTestWrapper>
+      <Provider store={store}>{children}</Provider>
+    </AppTestWrapper>
+  </QueryClientProvider>
 )
 
 it('Should render the Custom Script form page properly', async () => {
