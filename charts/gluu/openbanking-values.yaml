@@ -386,7 +386,7 @@ global:
   cnObExtSigningJwksKeyPassPhrase: ""
   # -- External Key ID (kid) stamped onto the header of outgoing JWTs. This tells receiving parties which public key to fetch from your JWKS URI to verify the signature.
   cnObStaticSigningKeyKid: "XkwIzWy44xWSlcWnMiEc8iq9s2G"        
-  # -- Internal Java Keystore (JKS) alias used to locate the Open Banking private signing key. To ensure correct internal mapping, this string must identically match your "cnObStaticSigningKeyKid".
+  # -- Internal Java Keystore (JKS) alias used to locate the Open Banking private signing key. To ensure correct internal mapping, this string must identically match your 'cnObStaticSigningKeyKid'.
   cnObInternalSigningAlias: "XkwIzWy44xWSlcWnMiEc8iq9s2G"
   # -- Open banking AS transport crt. Used in SSA Validation. This must be encoded using base64.
   cnObTransportCrt: ""

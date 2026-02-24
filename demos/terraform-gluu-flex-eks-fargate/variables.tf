@@ -490,7 +490,7 @@ variable "ob_ext_signing_jwks_key_passphrase" {
 variable "ob_internal_signing_alias" {
   type        = string
   default     = ""
-  description = "Internal Java Keystore (JKS) alias used to locate the Open Banking private signing key. To ensure correct internal mapping, this string must identically match your "cnObStaticSigningKeyKid"."
+  description = "Internal Java Keystore (JKS) alias used to locate the Open Banking private signing key. To ensure correct internal mapping, this string must identically match your 'cnObStaticSigningKeyKid'."
 }
 
 variable "ob_static_signing_key_kid" {

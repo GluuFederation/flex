@@ -439,7 +439,7 @@ Kubernetes: `>=v1.23.0-0`
 | global.cnConfiguratorKeyFile | string | `"/etc/jans/conf/configuration.key"` | Path to the file that contains the key to encrypt/decrypt the configuration schema file. |
 | global.cnDocumentStoreType | string | `"DB"` | Document store type to use for shibboleth files DB. |
 | global.cnGoogleApplicationCredentials | string | `"/etc/jans/conf/google-credentials.json"` | Base64 encoded service account. The sa must have roles/secretmanager.admin to use Google secrets. Leave as this is a sensible default. |
-| global.cnObInternalSigningAlias | string | `""` | Internal Java Keystore (JKS) alias used to locate the Open Banking private signing key. To ensure correct internal mapping, this string must identically match your "cnObStaticSigningKeyKid". |
+| global.cnObInternalSigningAlias | string | `""` | Internal Java Keystore (JKS) alias used to locate the Open Banking private signing key. To ensure correct internal mapping, this string must identically match your 'cnObStaticSigningKeyKid'. |
 | global.cnObExtSigningJwksCrt | string | `""` | Open banking external signing jwks AS certificate authority string. Used in SSA Validation. This must be encoded using base64.. Used when `.global.cnObExtSigningJwksUri` is set. |
 | global.cnObExtSigningJwksKey | string | `""` | Open banking external signing jwks AS key string. Used in SSA Validation. This must be encoded using base64. Used when `.global.cnObExtSigningJwksUri` is set. |
 | global.cnObExtSigningJwksKeyPassPhrase | string | `""` | Open banking external signing jwks AS key passphrase to unlock provided key. This must be encoded using base64. Used when `.global.cnObExtSigningJwksUri` is set. |
