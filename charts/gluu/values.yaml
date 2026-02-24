@@ -1116,17 +1116,17 @@ global:
   # -- Persistence backend to run Gluu with hybrid|sql.
   cnPersistenceType: sql
   # -- Open banking external signing jwks uri. Used in SSA Validation.
-  cnObExtSigningJwksUri: ""
-  # -- Open banking external signing jwks AS certificate authority string. Used in SSA Validation. This must be encoded using base64.. Used when `.global.cnObExtSigningJwksUri` is set.
+  cnObExtSigningJwksUri: "https://mykeystore.openbanking.wow/xxxxx/xxxxx.jwks"
+  # -- Open banking external signing jwks AS certificate authority string. Used in SSA Validation. This must be encoded using base64. Used when `.global.cnObExtSigningJwksUri` is set.
   cnObExtSigningJwksCrt: ""
   # -- Open banking external signing jwks AS key string. Used in SSA Validation. This must be encoded using base64. Used when `.global.cnObExtSigningJwksUri` is set.
   cnObExtSigningJwksKey: ""
   # -- Open banking external signing jwks AS key passphrase to unlock provided key. This must be encoded using base64. Used when `.global.cnObExtSigningJwksUri` is set.
   cnObExtSigningJwksKeyPassPhrase: ""
-  # -- Open banking external signing AS Alias. This is a kid value.Used in SSA Validation, kid used while encoding a JWT sent to token URL i.e. XkwIzWy44xWSlcWnMiEc8iq9s2G
-  cnObExtSigningAlias: ""
-  # -- Open banking  signing AS kid to force the AS to use a specific signing key. i.e. Wy44xWSlcWnMiEc8iq9s2G
-  cnObStaticSigningKeyKid: ""
+  # -- External Key ID (kid) stamped onto the header of outgoing JWTs. This tells receiving parties which public key to fetch from your JWKS URI to verify the signature.
+  cnObStaticSigningKeyKid: "XkwIzWy44xWSlcWnMiEc8iq9s2G"        
+  # -- Internal Java Keystore (JKS) alias used to locate the Open Banking private signing key. To ensure correct internal mapping, this string must identically match your "cnObStaticSigningKeyKid".
+  cnObInternalSigningAlias: "XkwIzWy44xWSlcWnMiEc8iq9s2G"
   # -- Open banking AS transport crt. Used in SSA Validation. This must be encoded using base64.
   cnObTransportCrt: ""
   # -- Open banking AS transport key. Used in SSA Validation. This must be encoded using base64.

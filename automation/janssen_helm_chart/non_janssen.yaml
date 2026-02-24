@@ -10,7 +10,7 @@ global:
   cnObExtSigningJwksCrt: None
   cnObExtSigningJwksKey: None
   cnObExtSigningJwksKeyPassPhrase: None
-  cnObExtSigningAlias: None
+  cnObInternalSigningAlias: None
   cnObStaticSigningKeyKid: None
   cnObTransportCrt: None
   cnObTransportKey: None
