@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS } from '@/constants'
+import { BORDER_RADIUS, SPACING, MAPPING_SPACING } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { fontFamily } from '@/styles/fonts'
 const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
@@ -14,7 +14,7 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
   })
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   return {
-    page: { fontFamily, paddingTop: 24 },
+    page: { fontFamily, paddingTop: SPACING.PAGE },
     cellName: { color: themeColors.fontColor, fontWeight: 600 },
     cellDescription: {
       display: 'block',
@@ -27,7 +27,7 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       color: themeColors.fontColor,
     },
     scriptTypeBadge: { minWidth: 80 },
-    errorBadgeMargin: { marginLeft: 8 },
+    errorBadgeMargin: { marginLeft: SPACING.CARD_CONTENT_GAP },
     enabledBadge: { minWidth: 60 },
     editIcon: { fontSize: 18 },
     deleteIcon: { fontSize: 18 },
@@ -38,7 +38,7 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       backgroundColor: cardBg,
       ...cardBorderStyle,
       borderRadius: BORDER_RADIUS.DEFAULT,
-      padding: '24px 20px',
+      padding: `${SPACING.PAGE}px 20px`,
       marginBottom: '20px',
       position: 'relative',
       zIndex: 0,
@@ -55,7 +55,7 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       'width': '100%',
       'maxWidth': '100%',
       'minWidth': 0,
-      'marginTop': 24,
+      'marginTop': SPACING.PAGE,
       'backgroundColor': cardBg,
       ...cardBorderStyle,
       'borderRadius': BORDER_RADIUS.DEFAULT,
@@ -64,12 +64,12 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       'overflow': 'visible',
       'boxSizing': 'border-box',
       '& table': { minWidth: 0 },
-      '& table td': { verticalAlign: 'middle', minWidth: 0, lineHeight: '28px' },
+      '& table td': { verticalAlign: 'top', minWidth: 0, lineHeight: '28px' },
       '& table th': { verticalAlign: 'middle', lineHeight: '28px' },
     },
     errorMessage: {
       color: themeColors.errorColor,
-      marginBottom: 16,
+      marginBottom: MAPPING_SPACING.CARD_MARGIN_BOTTOM,
     },
   }
 })

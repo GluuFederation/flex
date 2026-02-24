@@ -4,7 +4,7 @@ import { useAtomValue } from 'jotai'
 import AuthNForm from './AuthNForm'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useTranslation } from 'react-i18next'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationStyle'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import {
   usePutAcrs,

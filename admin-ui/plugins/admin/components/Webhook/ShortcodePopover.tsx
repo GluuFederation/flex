@@ -8,7 +8,7 @@ import ListItemText from '@mui/material/ListItemText'
 import { HelpOutline } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
-import applicationstyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationStyle'
 import { ShortCodesIcon } from '@/components/SVG'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
@@ -80,7 +80,7 @@ const ShortcodePopover: React.FC<ShortcodePopoverProps> = ({
 
   const id = open ? 'shortcode-popover' : undefined
 
-  const baseStyles = applicationstyle.shortCodesWrapperStyles as React.CSSProperties
+  const baseStyles = applicationStyle.shortCodesWrapperStyles as React.CSSProperties
   const wrapperStyles = buttonWrapperClassName
     ? buttonWrapperStyles
     : { ...baseStyles, ...buttonWrapperStyles }

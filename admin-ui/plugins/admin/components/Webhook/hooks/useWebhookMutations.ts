@@ -7,6 +7,7 @@ import {
   usePutWebhook,
   useDeleteWebhookByInum,
   getGetAllWebhooksQueryKey,
+  getGetFeaturesByWebhookIdQueryKey,
 } from 'JansConfigApi'
 import queryUtils from '@/utils/queryUtils'
 import { isDevelopment } from '@/utils/env'
@@ -93,6 +94,12 @@ export const useUpdateWebhookWithAudit = (callbacks?: MutationCallbacks) => {
         })
         dispatch(updateToast(true, 'success', t('messages.webhook_updated_successfully')))
         queryUtils.invalidateQueriesByKey(queryClient, getGetAllWebhooksQueryKey())
+        if (data.inum) {
+          queryUtils.invalidateQueriesByKey(
+            queryClient,
+            getGetFeaturesByWebhookIdQueryKey(data.inum),
+          )
+        }
         callbacksRef.current?.onSuccess?.()
         return result
       } catch (error) {

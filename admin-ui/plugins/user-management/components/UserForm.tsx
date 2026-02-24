@@ -305,7 +305,16 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
           handleApply()
         }}
       >
-        <FormGroup row>
+        <style>{`
+          .user-form-labels-black label,
+          .user-form-labels-black label h5,
+          .user-form-labels-black label span,
+          .user-form-labels-black h5,
+          .user-form-labels-black .MuiSvgIcon-root,
+          .user-form-labels-black .bg-light,
+          .user-form-labels-black input::placeholder { color: ${customColors.black} !important; }
+        `}</style>
+        <FormGroup row className="user-form-labels-black">
           <Col sm={8}>
             <div ref={formContentRef}>
               {userDetails && (

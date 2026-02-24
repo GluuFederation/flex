@@ -10,7 +10,7 @@ import {
   setFeatureToTrigger,
 } from 'Plugins/admin/redux/features/WebhookSlice'
 import { useTheme } from 'Context/theme/themeContext'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationStyle'
 import { useTranslation } from 'react-i18next'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -24,7 +24,7 @@ import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
 
 interface UseWebhookDialogActionProps {
-  feature: string
+  feature?: string
   modal: boolean
 }
 
@@ -88,7 +88,9 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
 
   const handleAcceptWebhookTrigger = () => {
     dispatch(setWebhookModal(false))
-    dispatch(setFeatureToTrigger(feature))
+    if (feature) {
+      dispatch(setFeatureToTrigger(feature))
+    }
   }
 
   const webhookTriggerModal = ({ closeModal }: WebhookTriggerModalProps) => {

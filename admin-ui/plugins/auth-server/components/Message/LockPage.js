@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import MessageForm from './MessageForm'
 import { Card, CardBody } from 'Components'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationStyle'
 import { useDispatch, useSelector } from 'react-redux'
 import { getConfigMessage } from 'Plugins/auth-server/redux/features/MessageSlice'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'

@@ -4,7 +4,7 @@ import { Paper } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import GluuViewDetailModal from 'Routes/Apps/Gluu/GluuViewDetailsModal'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationStyle'
 import getThemeColor from '@/context/theme/config'
 import { ThemeContext } from '@/context/theme/themeContext'
 import {

@@ -260,347 +260,430 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
 
           return (
             <Form onSubmit={formikProps.handleSubmit}>
-              <FormGroup row>
-                <GluuLabel
-                  label="fields.id"
-                  size={4}
-                  required
-                  doc_category={SCOPE}
-                  doc_entry="id"
-                />
-                <Col sm={8}>
-                  <Input
-                    placeholder={t('placeholders.id')}
-                    id="id"
-                    valid={!formikProps.errors.id && !formikProps.touched.id && init}
-                    name="id"
-                    value={formikProps.values.id ?? ''}
-                    onKeyUp={activate}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      formikProps.handleChange(e)
-                      setModifiedFields({
-                        ...modifiedFields,
-                        Id: e.target.value,
-                      })
-                    }}
-                  />
-                </Col>
-                <ErrorMessage name="id">
-                  {(msg) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
-                </ErrorMessage>
-              </FormGroup>
-              {scope.inum && (
-                <GluuInumInput
-                  label="fields.inum"
-                  name="inum"
-                  value={scope.inum}
-                  doc_category={SCOPE}
-                  handleChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    formikProps.handleChange(e)
-                    setModifiedFields({
-                      ...modifiedFields,
-                      Inum: e.target.value,
-                    })
-                  }}
-                />
-              )}
-
-              <FormGroup row>
-                <GluuLabel
-                  label="fields.displayname"
-                  size={4}
-                  required
-                  doc_category={SCOPE}
-                  doc_entry="displayName"
-                />
-                <Col sm={8}>
-                  <Input
-                    placeholder={t('placeholders.display_name')}
-                    id="displayName"
-                    valid={
-                      !formikProps.errors.displayName && !formikProps.touched.displayName && init
-                    }
-                    name="displayName"
-                    value={formikProps.values.displayName ?? ''}
-                    onKeyUp={activate}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      formikProps.handleChange(e)
-                      setModifiedFields({
-                        ...modifiedFields,
-                        'Display Name': e.target.value,
-                      })
-                    }}
-                  />
-                </Col>
-                <ErrorMessage name="displayName">
-                  {(msg) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
-                </ErrorMessage>
-              </FormGroup>
-
-              <FormGroup row>
-                <GluuLabel
-                  label="fields.description"
-                  size={4}
-                  doc_category={SCOPE}
-                  doc_entry="description"
-                />
-                <Col sm={8}>
-                  <Input
-                    type="textarea"
-                    placeholder={t('placeholders.description')}
-                    maxLength={4000}
-                    id="description"
-                    name="description"
-                    value={formikProps.values.description ?? ''}
-                    onKeyUp={activate}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      formikProps.handleChange(e)
-                      setModifiedFields({
-                        ...modifiedFields,
-                        Description: e.target.value,
-                      })
-                    }}
-                  />
-                </Col>
-              </FormGroup>
-              {!showSpontaneousPanel && (
-                <div>
-                  <GluuToogleRow
-                    label="fields.default_scope"
-                    name="defaultScope"
-                    formik={formikProps}
-                    value={formikProps.values.defaultScope}
-                    doc_category={SCOPE}
-                    handler={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      setModifiedFields({
-                        ...modifiedFields,
-                        'Default Scope': e.target.checked,
-                      })
-                    }}
-                  />
-                  <GluuToogleRow
-                    label="fields.show_in_configuration_endpoint"
-                    name="attributes.showInConfigurationEndpoint"
-                    formik={formikProps}
-                    value={formikProps.values.attributes?.showInConfigurationEndpoint}
-                    doc_category={SCOPE}
-                    handler={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      setModifiedFields({
-                        ...modifiedFields,
-                        'Show in Configuration Endpoint': e.target.checked,
-                      })
-                    }}
-                  />
-                </div>
-              )}
-              {showSpontaneousPanel ? (
+              <style>{`
+                .scope-form-labels-black label,
+                .scope-form-labels-black label h5,
+                .scope-form-labels-black label span,
+                .scope-form-labels-black h5,
+                .scope-form-labels-black .MuiSvgIcon-root { color: ${customColors.black} !important; }
+              `}</style>
+              <div className="scope-form-labels-black">
                 <FormGroup row>
                   <GluuLabel
-                    label="fields.scope_type"
-                    size={4}
-                    doc_category={SCOPE}
-                    doc_entry="scopeType"
-                  />
-                  <Col sm={8}>
-                    <Badge key={scope.inum} style={badgeStyle}>
-                      {formikProps.values.scopeType || scope.scopeType}
-                    </Badge>
-                  </Col>
-                </FormGroup>
-              ) : (
-                <FormGroup row>
-                  <GluuLabel
-                    label="fields.scope_type"
+                    label="fields.id"
                     size={4}
                     required
                     doc_category={SCOPE}
-                    doc_entry="scopeType"
+                    doc_entry="id"
                   />
                   <Col sm={8}>
-                    <InputGroup>
-                      <CustomInput
-                        type="select"
-                        id="scopeType"
-                        name="scopeType"
-                        value={formikProps.values.scopeType ?? ''}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                          const nextValue = e.target.value
-                          handleScopeTypeChangeInternal(nextValue)
-                          setModifiedFields({
-                            ...modifiedFields,
-                            'Scope Type': nextValue,
-                          })
-                        }}
-                      >
-                        <option value="">{t('actions.choose')}...</option>
-                        <option value="oauth">OAuth</option>
-                        <option value="openid">OpenID</option>
-                        <option value="dynamic">Dynamic</option>
-                        <option value="uma">UMA</option>
-                      </CustomInput>
-                    </InputGroup>
-                  </Col>
-                  <ErrorMessage name="scopeType">
-                    {(msg) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
-                  </ErrorMessage>
-                </FormGroup>
-              )}
-              {showDynamicPanel && (
-                <>
-                  <GluuTypeAheadForDn
-                    name="dynamicScopeScripts"
-                    label="fields.dynamic_scope_scripts"
-                    formik={formikProps}
-                    required
-                    value={getMapping(
-                      formikProps.values.dynamicScopeScripts as string[] | undefined,
-                      dynamicScopeScripts,
-                    )}
-                    defaultSelected={
-                      formikProps.values['dynamicScopeScripts']?.length
-                        ? getMapping(
-                            [...(formikProps.values['dynamicScopeScripts'] as string[]).flat()],
-                            dynamicScopeScripts,
-                          )
-                        : []
-                    }
-                    options={dynamicScopeScripts}
-                    doc_category={SCOPE}
-                    onChange={(values: { name: string }[]) => {
-                      formikProps.setFieldTouched('dynamicScopeScripts', true, false)
-                      setModifiedFields({
-                        ...modifiedFields,
-                        'Dynamic Scope Scripts': values?.map((item) => item.name),
-                      })
-                    }}
-                  />
-                  <ErrorMessage name="dynamicScopeScripts">
-                    {(msg) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
-                  </ErrorMessage>
-                </>
-              )}
-              {(showClaimsPanel || showDynamicPanel) && (
-                <Accordion className="mb-2 b-primary" initialOpen>
-                  <AccordionBody>
-                    <FormGroup row> </FormGroup>
-                    <GluuTypeAheadForDn
-                      name="claims"
-                      label="fields.claims"
-                      formik={formikProps}
-                      required={showClaimsPanel || showDynamicPanel}
-                      value={getMapping(formikProps.values.claims as string[] | undefined, claims)}
-                      defaultSelected={
-                        formikProps.values['claims']?.length
-                          ? getMapping(
-                              [...(formikProps.values['claims'] as string[]).flat()],
-                              claims,
-                            )
-                          : []
-                      }
-                      options={claims}
-                      doc_category={SCOPE}
-                      placeholder="Search by display name or claim name"
-                      onSearch={onSearch}
-                      onChange={(values: { name: string }[]) => {
-                        formikProps.setFieldTouched('claims', true, false)
+                    <Input
+                      placeholder={t('placeholders.id')}
+                      id="id"
+                      valid={!formikProps.errors.id && !formikProps.touched.id && init}
+                      name="id"
+                      value={formikProps.values.id ?? ''}
+                      onKeyUp={activate}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        formikProps.handleChange(e)
                         setModifiedFields({
                           ...modifiedFields,
-                          Claims: values?.map((item) => item.name),
+                          Id: e.target.value,
                         })
                       }}
                     />
-                    <ErrorMessage name="claims">
-                      {(msg) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
-                    </ErrorMessage>
-                  </AccordionBody>
-                </Accordion>
-              )}
-              {showUmaPanel && (
-                <>
+                  </Col>
+                  <ErrorMessage name="id">
+                    {(msg) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
+                  </ErrorMessage>
+                </FormGroup>
+                {scope.inum && (
+                  <GluuInumInput
+                    label="fields.inum"
+                    name="inum"
+                    value={scope.inum}
+                    doc_category={SCOPE}
+                    handleChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      formikProps.handleChange(e)
+                      setModifiedFields({
+                        ...modifiedFields,
+                        Inum: e.target.value,
+                      })
+                    }}
+                  />
+                )}
+
+                <FormGroup row>
+                  <GluuLabel
+                    label="fields.displayname"
+                    size={4}
+                    required
+                    doc_category={SCOPE}
+                    doc_entry="displayName"
+                  />
+                  <Col sm={8}>
+                    <Input
+                      placeholder={t('placeholders.display_name')}
+                      id="displayName"
+                      valid={
+                        !formikProps.errors.displayName && !formikProps.touched.displayName && init
+                      }
+                      name="displayName"
+                      value={formikProps.values.displayName ?? ''}
+                      onKeyUp={activate}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        formikProps.handleChange(e)
+                        setModifiedFields({
+                          ...modifiedFields,
+                          'Display Name': e.target.value,
+                        })
+                      }}
+                    />
+                  </Col>
+                  <ErrorMessage name="displayName">
+                    {(msg) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
+                  </ErrorMessage>
+                </FormGroup>
+
+                <FormGroup row>
+                  <GluuLabel
+                    label="fields.description"
+                    size={4}
+                    doc_category={SCOPE}
+                    doc_entry="description"
+                  />
+                  <Col sm={8}>
+                    <Input
+                      type="textarea"
+                      placeholder={t('placeholders.description')}
+                      maxLength={4000}
+                      id="description"
+                      name="description"
+                      value={formikProps.values.description ?? ''}
+                      onKeyUp={activate}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        formikProps.handleChange(e)
+                        setModifiedFields({
+                          ...modifiedFields,
+                          Description: e.target.value,
+                        })
+                      }}
+                    />
+                  </Col>
+                </FormGroup>
+                {!showSpontaneousPanel && (
+                  <div>
+                    <GluuToogleRow
+                      label="fields.default_scope"
+                      name="defaultScope"
+                      formik={formikProps}
+                      value={formikProps.values.defaultScope}
+                      doc_category={SCOPE}
+                      handler={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        setModifiedFields({
+                          ...modifiedFields,
+                          'Default Scope': e.target.checked,
+                        })
+                      }}
+                    />
+                    <GluuToogleRow
+                      label="fields.show_in_configuration_endpoint"
+                      name="attributes.showInConfigurationEndpoint"
+                      formik={formikProps}
+                      value={formikProps.values.attributes?.showInConfigurationEndpoint}
+                      doc_category={SCOPE}
+                      handler={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        setModifiedFields({
+                          ...modifiedFields,
+                          'Show in Configuration Endpoint': e.target.checked,
+                        })
+                      }}
+                    />
+                  </div>
+                )}
+                {showSpontaneousPanel ? (
                   <FormGroup row>
-                    <GluuLabel label="fields.iconUrl" size={4} required={!isExistingScope} />
+                    <GluuLabel
+                      label="fields.scope_type"
+                      size={4}
+                      doc_category={SCOPE}
+                      doc_entry="scopeType"
+                    />
                     <Col sm={8}>
-                      <Input
-                        placeholder={t('placeholders.icon_url')}
-                        id="iconUrl"
-                        name="iconUrl"
-                        required={!isExistingScope}
-                        invalid={Boolean(formikProps.touched.iconUrl && formikProps.errors.iconUrl)}
-                        value={formikProps.values.iconUrl ?? ''}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                          formikProps.handleChange(e)
-                          setModifiedFields({
-                            ...modifiedFields,
-                            'Icon Url': e.target.value,
-                          })
-                        }}
-                        disabled={scope.inum ? true : false}
-                      />
+                      <Badge key={scope.inum} style={badgeStyle}>
+                        {formikProps.values.scopeType || scope.scopeType}
+                      </Badge>
                     </Col>
-                    <ErrorMessage name="iconUrl">
+                  </FormGroup>
+                ) : (
+                  <FormGroup row>
+                    <GluuLabel
+                      label="fields.scope_type"
+                      size={4}
+                      required
+                      doc_category={SCOPE}
+                      doc_entry="scopeType"
+                    />
+                    <Col sm={8}>
+                      <InputGroup>
+                        <CustomInput
+                          type="select"
+                          id="scopeType"
+                          name="scopeType"
+                          value={formikProps.values.scopeType ?? ''}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            const nextValue = e.target.value
+                            handleScopeTypeChangeInternal(nextValue)
+                            setModifiedFields({
+                              ...modifiedFields,
+                              'Scope Type': nextValue,
+                            })
+                          }}
+                        >
+                          <option value="">{t('actions.choose')}...</option>
+                          <option value="oauth">OAuth</option>
+                          <option value="openid">OpenID</option>
+                          <option value="dynamic">Dynamic</option>
+                          <option value="uma">UMA</option>
+                        </CustomInput>
+                      </InputGroup>
+                    </Col>
+                    <ErrorMessage name="scopeType">
                       {(msg) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
                     </ErrorMessage>
                   </FormGroup>
+                )}
+                {showDynamicPanel && (
+                  <>
+                    <GluuTypeAheadForDn
+                      name="dynamicScopeScripts"
+                      label="fields.dynamic_scope_scripts"
+                      formik={formikProps}
+                      required
+                      value={getMapping(
+                        formikProps.values.dynamicScopeScripts as string[] | undefined,
+                        dynamicScopeScripts,
+                      )}
+                      defaultSelected={
+                        formikProps.values['dynamicScopeScripts']?.length
+                          ? getMapping(
+                              [...(formikProps.values['dynamicScopeScripts'] as string[]).flat()],
+                              dynamicScopeScripts,
+                            )
+                          : []
+                      }
+                      options={dynamicScopeScripts}
+                      doc_category={SCOPE}
+                      onChange={(values: { name: string }[]) => {
+                        formikProps.setFieldTouched('dynamicScopeScripts', true, false)
+                        setModifiedFields({
+                          ...modifiedFields,
+                          'Dynamic Scope Scripts': values?.map((item) => item.name),
+                        })
+                      }}
+                    />
+                    <ErrorMessage name="dynamicScopeScripts">
+                      {(msg) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
+                    </ErrorMessage>
+                  </>
+                )}
+                {(showClaimsPanel || showDynamicPanel) && (
                   <Accordion className="mb-2 b-primary" initialOpen>
-                    <AccordionHeader className="text-primary">
-                      {t('fields.umaAuthorizationPolicies').toUpperCase()}
-                    </AccordionHeader>
                     <AccordionBody>
                       <FormGroup row> </FormGroup>
                       <GluuTypeAheadForDn
-                        name="umaAuthorizationPolicies"
-                        label="fields.umaAuthorizationPolicies"
+                        name="claims"
+                        label="fields.claims"
                         formik={formikProps}
-                        required={!isExistingScope}
+                        required={showClaimsPanel || showDynamicPanel}
                         value={getMapping(
-                          formikProps.values.umaAuthorizationPolicies as string[] | undefined,
-                          umaAuthorizationPolicies,
+                          formikProps.values.claims as string[] | undefined,
+                          claims,
                         )}
-                        disabled={scope.inum ? true : false}
-                        options={umaAuthorizationPolicies}
-                        doc_category={SCOPE}
                         defaultSelected={
-                          formikProps.values['umaAuthorizationPolicies']?.length
+                          formikProps.values['claims']?.length
                             ? getMapping(
-                                [
-                                  ...(
-                                    formikProps.values['umaAuthorizationPolicies'] as string[]
-                                  ).flat(),
-                                ],
-                                umaAuthorizationPolicies,
+                                [...(formikProps.values['claims'] as string[]).flat()],
+                                claims,
                               )
                             : []
                         }
-                        onChange={(value: { name: string }[]) => {
-                          formikProps.setFieldTouched('umaAuthorizationPolicies', true, false)
+                        options={claims}
+                        doc_category={SCOPE}
+                        placeholder="Search by display name or claim name"
+                        onSearch={onSearch}
+                        onChange={(values: { name: string }[]) => {
+                          formikProps.setFieldTouched('claims', true, false)
                           setModifiedFields({
                             ...modifiedFields,
-                            'UMA Authorization Policies': value?.map((item) => item.name),
+                            Claims: values?.map((item) => item.name),
                           })
                         }}
                       />
-                      <ErrorMessage name="umaAuthorizationPolicies">
+                      <ErrorMessage name="claims">
                         {(msg) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
                       </ErrorMessage>
                     </AccordionBody>
                   </Accordion>
-                  {scope.inum && (
-                    <>
-                      <FormGroup row>
-                        <GluuLabel label="fields.associatedClients" size={4} />
-                        <Col sm={8}>
-                          {client.map((item, key) => (
-                            <div key={'uma-client' + key}>
-                              <a
-                                onClick={() => goToClientViewPage(item.inum, item)}
-                                className="common-link"
+                )}
+                {showUmaPanel && (
+                  <>
+                    <FormGroup row>
+                      <GluuLabel label="fields.iconUrl" size={4} required={!isExistingScope} />
+                      <Col sm={8}>
+                        <Input
+                          placeholder={t('placeholders.icon_url')}
+                          id="iconUrl"
+                          name="iconUrl"
+                          required={!isExistingScope}
+                          invalid={Boolean(
+                            formikProps.touched.iconUrl && formikProps.errors.iconUrl,
+                          )}
+                          value={formikProps.values.iconUrl ?? ''}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            formikProps.handleChange(e)
+                            setModifiedFields({
+                              ...modifiedFields,
+                              'Icon Url': e.target.value,
+                            })
+                          }}
+                          disabled={scope.inum ? true : false}
+                        />
+                      </Col>
+                      <ErrorMessage name="iconUrl">
+                        {(msg) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
+                      </ErrorMessage>
+                    </FormGroup>
+                    <Accordion className="mb-2 b-primary" initialOpen>
+                      <AccordionHeader className="text-primary">
+                        {t('fields.umaAuthorizationPolicies').toUpperCase()}
+                      </AccordionHeader>
+                      <AccordionBody>
+                        <FormGroup row> </FormGroup>
+                        <GluuTypeAheadForDn
+                          name="umaAuthorizationPolicies"
+                          label="fields.umaAuthorizationPolicies"
+                          formik={formikProps}
+                          required={!isExistingScope}
+                          value={getMapping(
+                            formikProps.values.umaAuthorizationPolicies as string[] | undefined,
+                            umaAuthorizationPolicies,
+                          )}
+                          disabled={scope.inum ? true : false}
+                          options={umaAuthorizationPolicies}
+                          doc_category={SCOPE}
+                          defaultSelected={
+                            formikProps.values['umaAuthorizationPolicies']?.length
+                              ? getMapping(
+                                  [
+                                    ...(
+                                      formikProps.values['umaAuthorizationPolicies'] as string[]
+                                    ).flat(),
+                                  ],
+                                  umaAuthorizationPolicies,
+                                )
+                              : []
+                          }
+                          onChange={(value: { name: string }[]) => {
+                            formikProps.setFieldTouched('umaAuthorizationPolicies', true, false)
+                            setModifiedFields({
+                              ...modifiedFields,
+                              'UMA Authorization Policies': value?.map((item) => item.name),
+                            })
+                          }}
+                        />
+                        <ErrorMessage name="umaAuthorizationPolicies">
+                          {(msg) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
+                        </ErrorMessage>
+                      </AccordionBody>
+                    </Accordion>
+                    {scope.inum && (
+                      <>
+                        <FormGroup row>
+                          <GluuLabel label="fields.associatedClients" size={4} />
+                          <Col sm={8}>
+                            {client.map((item, key) => (
+                              <div key={'uma-client' + key}>
+                                <a
+                                  onClick={() => goToClientViewPage(item.inum, item)}
+                                  className="common-link"
+                                >
+                                  {item.displayName ? item.displayName : item.inum}
+                                </a>
+                              </div>
+                            ))}
+                          </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                          <GluuLabel label="fields.creationDate" size={4} />
+                          <Col sm={8}>
+                            <Input
+                              defaultValue={formatDate(
+                                scope.creationDate,
+                                DATE_FORMATS.DATETIME_SECONDS,
+                              )}
+                              disabled={true}
+                            />
+                          </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                          <GluuLabel label="fields.creatorType" size={4} />
+                          <Col sm={8}>
+                            <Input
+                              defaultValue={
+                                ['CLIENT', 'USER'].includes(scope.creatorType || '')
+                                  ? scope.creatorType + ' (' + scope.creatorId + ')' || ''
+                                  : scope.creatorType
+                              }
+                              disabled={true}
+                            />
+                          </Col>
+                        </FormGroup>
+                      </>
+                    )}
+                  </>
+                )}
+                {showSpontaneousPanel && (
+                  <Accordion className="mb-2 b-primary" initialOpen>
+                    <AccordionHeader className="text-primary">
+                      {t('fields.spontaneous_scopes').toUpperCase()}
+                    </AccordionHeader>
+                    <AccordionBody>
+                      <FormGroup row> </FormGroup>
+                      <GluuTooltip doc_category={SCOPE} doc_entry="spontaneousClientId">
+                        <FormGroup row>
+                          <GluuLabel label="fields.spontaneous_client_id" size={4} />
+                          <Col sm={8}>
+                            {client.map((item, key) => (
+                              <div key={'spontaneous-client' + key}>
+                                <a
+                                  onClick={() => goToClientViewPage(item.inum, item)}
+                                  className="common-link"
+                                >
+                                  {item.displayName ? item.displayName : item.inum}
+                                </a>
+                              </div>
+                            ))}
+                          </Col>
+                        </FormGroup>
+                      </GluuTooltip>
+
+                      <GluuTooltip doc_category={SCOPE} doc_entry="spontaneousClientScopes">
+                        <FormGroup row>
+                          <GluuLabel label="fields.spontaneous_client_scopes" size={4} />
+                          <Col sm={8}>
+                            {scope?.attributes?.spontaneousClientScopes?.map((item, index) => (
+                              <div
+                                style={{ maxWidth: 140, overflow: 'auto' }}
+                                key={`scope-${index}-${item}`}
                               >
-                                {item.displayName ? item.displayName : item.inum}
-                              </a>
-                            </div>
-                          ))}
-                        </Col>
-                      </FormGroup>
+                                <Badge style={badgeStyle}>{item}</Badge>
+                              </div>
+                            ))}
+                          </Col>
+                        </FormGroup>
+                      </GluuTooltip>
+
                       <FormGroup row>
                         <GluuLabel label="fields.creationDate" size={4} />
                         <Col sm={8}>
@@ -613,80 +696,11 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                           />
                         </Col>
                       </FormGroup>
-                      <FormGroup row>
-                        <GluuLabel label="fields.creatorType" size={4} />
-                        <Col sm={8}>
-                          <Input
-                            defaultValue={
-                              ['CLIENT', 'USER'].includes(scope.creatorType || '')
-                                ? scope.creatorType + ' (' + scope.creatorId + ')' || ''
-                                : scope.creatorType
-                            }
-                            disabled={true}
-                          />
-                        </Col>
-                      </FormGroup>
-                    </>
-                  )}
-                </>
-              )}
-              {showSpontaneousPanel && (
-                <Accordion className="mb-2 b-primary" initialOpen>
-                  <AccordionHeader className="text-primary">
-                    {t('fields.spontaneous_scopes').toUpperCase()}
-                  </AccordionHeader>
-                  <AccordionBody>
-                    <FormGroup row> </FormGroup>
-                    <GluuTooltip doc_category={SCOPE} doc_entry="spontaneousClientId">
-                      <FormGroup row>
-                        <GluuLabel label="fields.spontaneous_client_id" size={4} />
-                        <Col sm={8}>
-                          {client.map((item, key) => (
-                            <div key={'spontaneous-client' + key}>
-                              <a
-                                onClick={() => goToClientViewPage(item.inum, item)}
-                                className="common-link"
-                              >
-                                {item.displayName ? item.displayName : item.inum}
-                              </a>
-                            </div>
-                          ))}
-                        </Col>
-                      </FormGroup>
-                    </GluuTooltip>
-
-                    <GluuTooltip doc_category={SCOPE} doc_entry="spontaneousClientScopes">
-                      <FormGroup row>
-                        <GluuLabel label="fields.spontaneous_client_scopes" size={4} />
-                        <Col sm={8}>
-                          {scope?.attributes?.spontaneousClientScopes?.map((item, index) => (
-                            <div
-                              style={{ maxWidth: 140, overflow: 'auto' }}
-                              key={`scope-${index}-${item}`}
-                            >
-                              <Badge style={badgeStyle}>{item}</Badge>
-                            </div>
-                          ))}
-                        </Col>
-                      </FormGroup>
-                    </GluuTooltip>
-
-                    <FormGroup row>
-                      <GluuLabel label="fields.creationDate" size={4} />
-                      <Col sm={8}>
-                        <Input
-                          defaultValue={formatDate(
-                            scope.creationDate,
-                            DATE_FORMATS.DATETIME_SECONDS,
-                          )}
-                          disabled={true}
-                        />
-                      </Col>
-                    </FormGroup>
-                  </AccordionBody>
-                </Accordion>
-              )}
-              <FormGroup row></FormGroup>
+                    </AccordionBody>
+                  </Accordion>
+                )}
+                <FormGroup row></FormGroup>
+              </div>
               <GluuFormFooter
                 showBack={true}
                 onBack={handleNavigateBack}

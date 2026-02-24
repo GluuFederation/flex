@@ -1,11 +1,16 @@
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
-import { SPACING, BORDER_RADIUS, CEDARLING_CONFIG_SPACING, MAPPING_SPACING } from '@/constants'
+import {
+  SPACING,
+  BORDER_RADIUS,
+  CEDARLING_CONFIG_SPACING,
+  MAPPING_SPACING,
+  getHoverOpacity,
+} from '@/constants'
 import { fontFamily, fontWeights, fontSizes } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import type { ThemeConfig } from '@/context/theme/config'
 import customColors, { getLoadingOverlayRgba } from '@/customColors'
-import { OPACITY } from '@/constants/ui'
 
 interface CustomScriptFormPageStylesParams {
   isDark: boolean
@@ -139,11 +144,50 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
       marginTop: 4,
     },
     errorButton: {
-      backgroundColor: themeColors.errorColor,
-      color:
+      'backgroundColor': themeColors.errorColor,
+      'color':
         themeColors.settings?.errorButtonText ??
         themeColors.formFooter?.back?.textColor ??
         customColors.white,
+      'border': 'none',
+      '&:hover': {
+        opacity: getHoverOpacity(isDark),
+        backgroundColor: themeColors.errorColor,
+        color:
+          themeColors.settings?.errorButtonText ??
+          themeColors.formFooter?.back?.textColor ??
+          customColors.white,
+      },
+      '&:focus': {
+        opacity: getHoverOpacity(isDark),
+        backgroundColor: themeColors.errorColor,
+        color:
+          themeColors.settings?.errorButtonText ??
+          themeColors.formFooter?.back?.textColor ??
+          customColors.white,
+      },
+    },
+    errorAlert: {
+      'width': '100%',
+      'maxWidth': 'none',
+      'boxSizing': 'border-box',
+      'marginBottom': SPACING.PAGE,
+      'padding': CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
+      'backgroundColor': `${getLoadingOverlayRgba(customColors.accentRed, isDark ? 0.28 : 0.22)} !important`,
+      'color': `${themeColors.fontColor} !important`,
+      'border': 'none',
+      'display': 'flex',
+      'alignItems': 'center',
+      '& .MuiAlert-message': {
+        flex: 1,
+        color: `${themeColors.fontColor} !important`,
+      },
+      '& .MuiAlert-icon': {
+        color: `${themeColors.fontColor} !important`,
+      },
+    },
+    errorAlertText: {
+      color: themeColors.fontColor,
     },
     fieldItemFullWidth: {
       'width': WIDTH_FULL,
@@ -225,7 +269,7 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
       'backgroundColor': headersBoxBg,
       'borderRadius': MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS,
       'border': `1px solid ${headersBorderColor}`,
-      'padding': `15px ${CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL}px 33px`,
+      'padding': `15px ${CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL}px ${MAPPING_SPACING.CARD_PADDING}px`,
       'width': WIDTH_FULL,
       'boxSizing': BOX_SIZING_BORDER,
       '& input': {
@@ -262,10 +306,10 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
         color: `${themeColors.fontColor} !important`,
       },
       '& .ace_editor .ace_active-line': {
-        background: `${getLoadingOverlayRgba(isDark ? customColors.white : customColors.black, isDark ? OPACITY.HOVER_DARK : OPACITY.HOVER_LIGHT)} !important`,
+        background: `${getLoadingOverlayRgba(isDark ? customColors.white : customColors.black, getHoverOpacity(isDark))} !important`,
       },
       '& .ace_editor .ace_gutter-active-line': {
-        background: `${getLoadingOverlayRgba(isDark ? customColors.white : customColors.black, isDark ? OPACITY.HOVER_DARK : OPACITY.HOVER_LIGHT)} !important`,
+        background: `${getLoadingOverlayRgba(isDark ? customColors.white : customColors.black, getHoverOpacity(isDark))} !important`,
       },
     },
   }

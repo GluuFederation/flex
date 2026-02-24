@@ -13,6 +13,7 @@ export type {
 
 export interface TriggerWebhookSagaPayload {
   createdFeatureValue: Record<string, JsonValue>
+  feature?: string
 }
 
 export interface SagaApiError {

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Card } from 'Components'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationStyle'
 import AssetForm from './AssetForm'
 import { useTranslation } from 'react-i18next'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'

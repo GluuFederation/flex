@@ -5,7 +5,7 @@ import {
   BORDER_RADIUS,
   CEDARLING_CONFIG_SPACING,
   MAPPING_SPACING,
-  OPACITY,
+  getHoverOpacity,
 } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
@@ -90,7 +90,7 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
       color: infoText,
       width: WIDTH_FULL,
       boxSizing: BOX_SIZING_BORDER,
-      marginBottom: 16,
+      marginBottom: MAPPING_SPACING.CARD_MARGIN_BOTTOM,
     },
     alertIcon: {
       flexShrink: 0,
@@ -141,7 +141,7 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
       'backgroundColor': headersBoxBg,
       'borderRadius': MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS,
       'border': `1px solid ${headersBorderColor}`,
-      'padding': `${HEADERS_BOX_PADDING_TOP}px ${CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL}px 33px`,
+      'padding': `${HEADERS_BOX_PADDING_TOP}px ${CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL}px ${MAPPING_SPACING.CARD_PADDING}px`,
       'width': WIDTH_FULL,
       'boxSizing': BOX_SIZING_BORDER,
       '& > div:first-of-type label, & > div:first-of-type label h5, & > div:first-of-type label span':
@@ -256,6 +256,18 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
         margin: MARGIN_ZERO_IMPORTANT,
       },
     },
+    urlFieldItem: {
+      '& [class*="col"]': {
+        overflow: 'hidden',
+      },
+      /* Override form input padding/overflow so URL text doesn't merge with shortcode icon (higher specificity than formWithInputs) */
+      '&& input': {
+        paddingRight: 52,
+        overflowX: 'auto',
+        overflowY: 'hidden',
+        minWidth: 0,
+      },
+    },
     fieldItemFullWidth: {
       'width': WIDTH_FULL,
       'gridColumn': '1 / -1',
@@ -358,10 +370,10 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
         color: `${themeColors.fontColor} !important`,
       },
       '& .ace_editor .ace_active-line': {
-        background: `${getLoadingOverlayRgba(isDark ? customColors.white : customColors.black, isDark ? OPACITY.HOVER_DARK : OPACITY.HOVER_LIGHT)} !important`,
+        background: `${getLoadingOverlayRgba(isDark ? customColors.white : customColors.black, getHoverOpacity(isDark))} !important`,
       },
       '& .ace_editor .ace_gutter-active-line': {
-        background: `${getLoadingOverlayRgba(isDark ? customColors.white : customColors.black, isDark ? OPACITY.HOVER_DARK : OPACITY.HOVER_LIGHT)} !important`,
+        background: `${getLoadingOverlayRgba(isDark ? customColors.white : customColors.black, getHoverOpacity(isDark))} !important`,
       },
     },
     editorShortcode: {

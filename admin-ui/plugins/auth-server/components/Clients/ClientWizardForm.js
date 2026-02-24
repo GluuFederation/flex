@@ -12,7 +12,7 @@ import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useCedarling } from '@/cedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationStyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import ClientTokensPanel from './ClientTokensPanel'
 import ClientLogoutPanel from './ClientLogoutPanel'
@@ -25,6 +25,7 @@ import { cloneDeep } from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import customColors from '@/customColors'
 
 const sequence = [
   'Basic',
@@ -392,91 +393,102 @@ function ClientWizardForm({
                   </Button>
                 </div>
                 <CardBody className="d-flex justify-content-center pt-3 wizard-wrapper">
-                  <Wizard
-                    activeStep={currentStep}
-                    onStepChanged={changeStep}
-                    initialActiveStep={sequence[0]}
-                  >
-                    <WizardStep
-                      data-testid={sequence[0]}
-                      id={setId(0)}
-                      icon={<i className="fa fa-shopping-basket fa-fw"></i>}
-                      complete={isComplete(sequence[0])}
+                  <style>{`
+                    .client-form-labels-black label,
+                    .client-form-labels-black label h5,
+                    .client-form-labels-black label span,
+                    .client-form-labels-black h5,
+                    .client-form-labels-black .MuiSvgIcon-root { color: ${customColors.black} !important; }
+                  `}</style>
+                  <div className="client-form-labels-black" style={{ width: '100%' }}>
+                    <Wizard
+                      activeStep={currentStep}
+                      onStepChanged={changeStep}
+                      initialActiveStep={sequence[0]}
                     >
-                      {t('titles.client_basic')}
-                    </WizardStep>
-                    <WizardStep
-                      data-testid={sequence[1]}
-                      id={setId(1)}
-                      icon={<i className="fa fa-credit-card fa-fw"></i>}
-                      complete={isComplete(sequence[1])}
-                    >
-                      {t('titles.token')}
-                    </WizardStep>
-                    <WizardStep
-                      data-testid={sequence[2]}
-                      id={setId(2)}
-                      icon={<i className="fa fa-credit-card fa-fw"></i>}
-                      complete={isComplete(sequence[2])}
-                    >
-                      {t('titles.log_out')}
-                    </WizardStep>
-                    <WizardStep
-                      data-testid={sequence[3]}
-                      id={setId(3)}
-                      icon={<i className="fa fa-credit-card fa-fw"></i>}
-                      complete={isComplete(sequence[3])}
-                    >
-                      {t('titles.software_info')}
-                    </WizardStep>
-                    <WizardStep
-                      data-testid={sequence[4]}
-                      id={setId(4)}
-                      icon={<i className="fa fa-credit-card fa-fw"></i>}
-                      complete={isComplete(sequence[4])}
-                    >
-                      {t('titles.CIBA_PAR_UMA')}
-                    </WizardStep>
-                    <WizardStep
-                      data-testid={sequence[5]}
-                      id={setId(5)}
-                      icon={<i className="fa fa-credit-card fa-fw"></i>}
-                      complete={isComplete(sequence[5])}
-                    >
-                      {t('titles.encryption_signing')}
-                    </WizardStep>
-                    <WizardStep
-                      data-testid={sequence[6]}
-                      id={setId(6)}
-                      icon={<i className="fa fa-cube fa-fw"></i>}
-                      complete={isComplete(sequence[6])}
-                    >
-                      {t('titles.client_advanced')}
-                    </WizardStep>
-                    <WizardStep
-                      data-testid={sequence[7]}
-                      id={setId(7)}
-                      icon={<i className="fa fa-credit-card fa-fw"></i>}
-                      complete={isComplete(sequence[7])}
-                    >
-                      {t('titles.client_scripts')}
-                    </WizardStep>
-
-                    {isEdit ? (
                       <WizardStep
-                        data-testid={sequence[8]}
-                        id={setId(8)}
-                        icon={<i className="fa fa-credit-card fa-fw"></i>}
-                        complete={isComplete(sequence[8])}
+                        data-testid={sequence[0]}
+                        id={setId(0)}
+                        icon={<i className="fa fa-shopping-basket fa-fw"></i>}
+                        complete={isComplete(sequence[0])}
                       >
-                        {t('titles.activeTokens')}
+                        {t('titles.client_basic')}
                       </WizardStep>
-                    ) : (
-                      <></>
-                    )}
-                  </Wizard>
+                      <WizardStep
+                        data-testid={sequence[1]}
+                        id={setId(1)}
+                        icon={<i className="fa fa-credit-card fa-fw"></i>}
+                        complete={isComplete(sequence[1])}
+                      >
+                        {t('titles.token')}
+                      </WizardStep>
+                      <WizardStep
+                        data-testid={sequence[2]}
+                        id={setId(2)}
+                        icon={<i className="fa fa-credit-card fa-fw"></i>}
+                        complete={isComplete(sequence[2])}
+                      >
+                        {t('titles.log_out')}
+                      </WizardStep>
+                      <WizardStep
+                        data-testid={sequence[3]}
+                        id={setId(3)}
+                        icon={<i className="fa fa-credit-card fa-fw"></i>}
+                        complete={isComplete(sequence[3])}
+                      >
+                        {t('titles.software_info')}
+                      </WizardStep>
+                      <WizardStep
+                        data-testid={sequence[4]}
+                        id={setId(4)}
+                        icon={<i className="fa fa-credit-card fa-fw"></i>}
+                        complete={isComplete(sequence[4])}
+                      >
+                        {t('titles.CIBA_PAR_UMA')}
+                      </WizardStep>
+                      <WizardStep
+                        data-testid={sequence[5]}
+                        id={setId(5)}
+                        icon={<i className="fa fa-credit-card fa-fw"></i>}
+                        complete={isComplete(sequence[5])}
+                      >
+                        {t('titles.encryption_signing')}
+                      </WizardStep>
+                      <WizardStep
+                        data-testid={sequence[6]}
+                        id={setId(6)}
+                        icon={<i className="fa fa-cube fa-fw"></i>}
+                        complete={isComplete(sequence[6])}
+                      >
+                        {t('titles.client_advanced')}
+                      </WizardStep>
+                      <WizardStep
+                        data-testid={sequence[7]}
+                        id={setId(7)}
+                        icon={<i className="fa fa-credit-card fa-fw"></i>}
+                        complete={isComplete(sequence[7])}
+                      >
+                        {t('titles.client_scripts')}
+                      </WizardStep>
+
+                      {isEdit ? (
+                        <WizardStep
+                          data-testid={sequence[8]}
+                          id={setId(8)}
+                          icon={<i className="fa fa-credit-card fa-fw"></i>}
+                          complete={isComplete(sequence[8])}
+                        >
+                          {t('titles.activeTokens')}
+                        </WizardStep>
+                      ) : (
+                        <></>
+                      )}
+                    </Wizard>
+                  </div>
                 </CardBody>
-                <CardBody className="p-2">{activeClientStep(formik)}</CardBody>
+                <CardBody className="p-2 client-form-labels-black">
+                  {activeClientStep(formik)}
+                </CardBody>
                 <CardFooter className="p-4 bt-0">
                   <div className="d-flex">
                     <div style={{ flex: 1 }}>

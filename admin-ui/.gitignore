@@ -22,6 +22,9 @@ plugins_repo
 .env.*
 *.local
 
+# Cursor rules (local AI guidance, not committed)
+.cursor/rules/
+
 # ESLint cache
 .eslintcache
 .vscode/*

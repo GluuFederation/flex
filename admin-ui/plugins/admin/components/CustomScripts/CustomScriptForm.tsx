@@ -17,6 +17,7 @@ import { Button } from 'reactstrap'
 import ErrorIcon from '@mui/icons-material/Error'
 import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
 import { Skeleton, Alert } from '@mui/material'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -36,7 +37,7 @@ import { getCustomScriptValidationSchema, transformToFormValues, getModuleProper
 import { PROGRAMMING_LANGUAGES } from './constants'
 import { PersonAuthenticationFields } from './PersonAuthenticationFields'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-const GluuScriptErrorModal = lazy(() => import('Routes/Apps/Gluu/GluuScriptErrorModal'))
+import GluuScriptErrorModal from 'Routes/Apps/Gluu/GluuScriptErrorModal'
 const Counter = lazy(() => import('@/components/Widgets/GroupedButtons/Counter'))
 const GluuInputEditor = lazy(() => import('Routes/Apps/Gluu/GluuInputEditor'))
 
@@ -207,28 +208,26 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
 
   return (
     <>
-      {isModalOpen && (
-        <Suspense fallback={<GluuSuspenseLoader />}>
-          <GluuScriptErrorModal
-            isOpen={isModalOpen}
-            error={item.scriptError?.stackTrace ?? ''}
-            handler={closeErrorModal}
-          />
-        </Suspense>
-      )}
+      <GluuScriptErrorModal
+        isOpen={isModalOpen}
+        error={item.scriptError?.stackTrace ?? ''}
+        handler={closeErrorModal}
+      />
 
       {item?.scriptError?.stackTrace && (
         <Alert
           severity="error"
           icon={<ErrorIcon />}
-          sx={{ mb: 3 }}
+          className={classes.errorAlert}
           action={
             <Button size="small" className={classes.errorButton} onClick={showErrorModal}>
               {t('actions.show_error')}
             </Button>
           }
         >
-          {t('messages.error_in_script')}
+          <GluuText variant="span" disableThemeColor className={classes.errorAlertText}>
+            {t('messages.error_in_script')}
+          </GluuText>
         </Alert>
       )}
       <Form onSubmit={formik.handleSubmit} className={classes.formSection}>

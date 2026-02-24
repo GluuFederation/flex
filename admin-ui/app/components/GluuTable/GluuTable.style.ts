@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, OPACITY, SPACING } from '@/constants'
+import { BORDER_RADIUS, getHoverOpacity, OPACITY, SPACING } from '@/constants'
 import customColors, { getLoadingOverlayRgba } from '@/customColors'
 import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
 
@@ -198,7 +198,7 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
     actionsCell: {
       display: 'flex',
       gap: '8px',
-      alignItems: 'center',
+      alignItems: 'flex-start',
     },
     actionButton: {
       'background': 'none',
@@ -211,7 +211,7 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       'justifyContent': 'center',
       'color': themeColors.fontColor,
       'transition': 'opacity 0.15s ease',
-      '&:hover': { opacity: OPACITY.DIMMED },
+      '&:hover': { opacity: 1 - getHoverOpacity(isDark) },
       '&:focus': { outline: 'none' },
       '&:focus-visible': {
         outline: 'none',
@@ -291,7 +291,7 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       transition: 'opacity 0.15s ease',
     },
     paginationButtonDisabled: {
-      opacity: OPACITY.DIMMED,
+      opacity: OPACITY.DISABLED,
       cursor: 'not-allowed',
       color: themeColors.textMuted,
     },

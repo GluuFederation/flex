@@ -16,7 +16,7 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import { ThemeContext } from 'Context/theme/themeContext'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationStyle'
 import getThemeColor from 'Context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import SetTitle from 'Utils/SetTitle'
@@ -361,9 +361,16 @@ function AliasesListPage(): React.ReactElement {
 
       <Modal isOpen={showAddModal} toggle={handleCancel}>
         <Form onSubmit={handleFormSubmit}>
+          <style>{`
+            .edit-mapping-labels-black label,
+            .edit-mapping-labels-black label h5,
+            .edit-mapping-labels-black label span,
+            .edit-mapping-labels-black h5,
+            .edit-mapping-labels-black .MuiSvgIcon-root { color: ${customColors.black} !important; }
+          `}</style>
           <ModalHeader style={{ padding: '1rem' }}>{modalTitle}</ModalHeader>
 
-          <ModalBody style={{ paddingTop: '1rem' }}>
+          <ModalBody style={{ paddingTop: '1rem' }} className="edit-mapping-labels-black">
             <GluuInputRow
               label="fields.mapping"
               name="mapping"

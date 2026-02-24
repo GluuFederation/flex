@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS } from '@/constants'
+import { BORDER_RADIUS, SPACING } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { fontFamily } from '@/styles/fonts'
 import customColors from '@/customColors'
@@ -16,7 +16,7 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
   })
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   return {
-    page: { fontFamily, paddingTop: 24 },
+    page: { fontFamily, paddingTop: SPACING.PAGE },
     cellDisplayName: { color: themeColors.fontColor, fontWeight: 500 },
     cellUrl: {
       wordBreak: 'break-all',
@@ -34,7 +34,7 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       backgroundColor: cardBg,
       ...cardBorderStyle,
       borderRadius: BORDER_RADIUS.DEFAULT,
-      padding: '24px 20px',
+      padding: `${SPACING.PAGE}px 20px`,
       marginBottom: '20px',
       position: 'relative',
       zIndex: 0,
@@ -51,7 +51,7 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       'width': '100%',
       'maxWidth': '100%',
       'minWidth': 0,
-      'marginTop': 24,
+      'marginTop': SPACING.PAGE,
       'backgroundColor': cardBg,
       ...cardBorderStyle,
       'borderRadius': BORDER_RADIUS.DEFAULT,

@@ -420,10 +420,10 @@ const CustomScriptListPage: React.FC = () => {
         doc_category: SCRIPT,
         isBadge: true,
         badgeBackgroundColor: row.internal
-          ? themeColors.badges.statusActiveBg
+          ? themeColors.badges.filledBadgeBg
           : themeColors.badges.disabledBg,
         badgeTextColor: row.internal
-          ? themeColors.badges.statusActive
+          ? themeColors.badges.filledBadgeText
           : themeColors.badges.disabledText,
       },
       {
@@ -447,10 +447,10 @@ const CustomScriptListPage: React.FC = () => {
         doc_category: SCRIPT,
         isBadge: true,
         badgeBackgroundColor: row.enabled
-          ? themeColors.badges.statusActiveBg
+          ? themeColors.badges.filledBadgeBg
           : themeColors.badges.disabledBg,
         badgeTextColor: row.enabled
-          ? themeColors.badges.statusActive
+          ? themeColors.badges.filledBadgeText
           : themeColors.badges.disabledText,
       },
       {

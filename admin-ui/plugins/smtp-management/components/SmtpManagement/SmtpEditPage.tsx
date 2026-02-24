@@ -7,7 +7,7 @@ import SetTitle from 'Utils/SetTitle'
 import { useTranslation } from 'react-i18next'
 import { useSelector, useDispatch } from 'react-redux'
 import { useQueryClient } from '@tanstack/react-query'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationStyle'
 import SmtpForm from './SmtpForm'
 import GluuInfo from '../../../../app/routes/Apps/Gluu/GluuInfo'
 import {
@@ -197,7 +197,7 @@ function SmtpEditPage() {
 
   return (
     <GluuLoader blocking={isLoading || putSmtpMutation.isPending || testSmtpMutation.isPending}>
-      {showTestModal && (
+      {showTestModal && testStatus !== null && (
         <GluuInfo item={{ testStatus, openModal: showTestModal }} handler={handleCloseTestModal} />
       )}
       <Card className="mb-3" style={applicationStyle.mainCard}>

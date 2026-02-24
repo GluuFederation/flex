@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, SPACING } from '@/constants'
+import { BORDER_RADIUS, SPACING, CEDARLING_CONFIG_SPACING, MAPPING_SPACING } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { fontFamily } from '@/styles/fonts'
 
@@ -51,7 +51,7 @@ const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
         minWidth: 0,
       },
       '& table td': {
-        verticalAlign: 'middle',
+        verticalAlign: 'top',
         minWidth: 0,
         lineHeight: '28px',
       },
@@ -60,18 +60,18 @@ const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
         lineHeight: '28px',
       },
       '& table th:nth-of-type(1), & table td:not([data-divider-cell]):nth-of-type(1)': {
-        padding: '14px 8px',
+        padding: `12px ${SPACING.CARD_CONTENT_GAP}px`,
       },
       '& table th:nth-of-type(2), & table td:not([data-divider-cell]):nth-of-type(2)': {
-        padding: '14px 16px',
+        padding: `${CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL}px ${MAPPING_SPACING.CARD_MARGIN_BOTTOM}px`,
       },
       '& table th:nth-of-type(3), & table td:not([data-divider-cell]):nth-of-type(3)': {
-        padding: `14px ${SPACING.SECTION_GAP}px`,
+        padding: `${CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL}px ${SPACING.SECTION_GAP}px`,
       },
     },
     logEntryCell: {
       display: 'flex',
-      alignItems: 'center',
+      alignItems: 'flex-start',
       gap: `${SPACING.SECTION_GAP}px`,
       flexWrap: 'nowrap',
       minWidth: 0,

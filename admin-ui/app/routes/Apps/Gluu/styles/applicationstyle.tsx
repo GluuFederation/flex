@@ -67,6 +67,7 @@ export default {
     right: 0,
     marginRight: '0.5rem',
     top: 6,
+    zIndex: 1,
   },
   globalSearch: {
     width: '100%',

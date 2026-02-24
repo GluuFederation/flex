@@ -4,7 +4,7 @@ import { UncontrolledTabsTabContent } from '@/components/UncontrolledTabs/Uncont
 import JwkListPage from './Jwks/JwkListPage'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationStyle'
 import { useCedarling } from '@/cedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'

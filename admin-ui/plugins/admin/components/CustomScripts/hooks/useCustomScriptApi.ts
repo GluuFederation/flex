@@ -90,6 +90,7 @@ export const useCustomScript = (inum: string) => {
     query: {
       enabled: !!inum && hasSession === true,
       staleTime: SCRIPT_CACHE_CONFIG.SINGLE_SCRIPT_STALE_TIME,
+      refetchOnMount: 'always',
     },
   })
 }
@@ -136,14 +137,18 @@ export const useUpdateCustomScript = () => {
       const { actionMessage, ...baseVariables } = variables
       const result = await baseMutation.mutateAsync(baseVariables)
 
+      const inumToInvalidate = result.inum ?? variables.data.inum
+      if (inumToInvalidate) {
+        queryClient.setQueryData(getGetConfigScriptsByInumQueryKey(inumToInvalidate), result)
+      }
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: getGetConfigScriptsQueryKey() }),
         queryClient.invalidateQueries({
           queryKey: getGetConfigScriptsByTypeQueryKey(variables.data.scriptType || ''),
         }),
-        result.inum
+        inumToInvalidate
           ? queryClient.invalidateQueries({
-              queryKey: getGetConfigScriptsByInumQueryKey(result.inum),
+              queryKey: getGetConfigScriptsByInumQueryKey(inumToInvalidate),
             })
           : Promise.resolve(),
       ])

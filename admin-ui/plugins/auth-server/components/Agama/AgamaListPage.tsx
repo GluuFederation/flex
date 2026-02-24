@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Card, Input } from 'Components'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationStyle'
 import { useTranslation } from 'react-i18next'
 import useSetTitle from 'Utils/SetTitle'
 import { useAgamaActions } from './hooks/useAgamaActions'

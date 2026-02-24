@@ -409,7 +409,7 @@ const WebhookForm: React.FC = () => {
                 disabled={featuresLoading}
               />
             </div>
-            <div className={classes.fieldItem}>
+            <div className={`${classes.fieldItem} ${classes.urlFieldItem}`}>
               <GluuInputRow
                 label="fields.webhook_url"
                 formik={formik}
