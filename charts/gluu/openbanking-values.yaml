@@ -668,7 +668,7 @@ global:
   cnPersistenceType: sql
   # -- Open banking external signing jwks uri. Used in SSA Validation.
   cnObExtSigningJwksUri: "https://mykeystore.openbanking.wow/xxxxx/xxxxx.jwks"
-  # -- Open banking external signing jwks AS certificate authority string. Used in SSA Validation. This must be encoded using base64.. Used when `.global.cnObExtSigningJwksUri` is set.
+  # -- Open banking external signing jwks AS certificate authority string. Used in SSA Validation. This must be encoded using base64. Used when `.global.cnObExtSigningJwksUri` is set.
   cnObExtSigningJwksCrt: ""
   # -- Open banking external signing jwks AS key string. Used in SSA Validation. This must be encoded using base64. Used when `.global.cnObExtSigningJwksUri` is set.
   cnObExtSigningJwksKey: ""
