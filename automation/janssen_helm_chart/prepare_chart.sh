@@ -28,7 +28,7 @@ remove_all() {
   | sed '/CN_CASA_ENABLED/d' \
   | sed '/CN_OB_EXT_SIGNING_JWKS_URI/d' \
   | sed '/CN_OB_AS_TRANSPORT_ALIAS/d' \
-  | sed '/CN_OB_EXT_SIGNING_ALIAS/d' \
+  | sed '/CN_OB_INTERNAL_SIGNING_ALIAS/d' \
   | sed '/CN_OB_STATIC_KID/d' \
   | sed '/CN_PASSPORT_ENABLED/d' \
   | sed '/cnJackrabbitCluster/d' \

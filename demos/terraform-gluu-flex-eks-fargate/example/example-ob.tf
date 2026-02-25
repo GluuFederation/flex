@@ -24,7 +24,7 @@ module "gluu" {
   ob_ext_signing_jwks_crt            = ""
   ob_ext_signing_jwks_key            = ""
   ob_ext_signing_jwks_key_passphrase = ""
-  ob_ext_signing_alias               = ""
+  ob_internal_signing_alias          = ""
   ob_static_signing_key_kid          = ""
   ob_transport_crt                   = ""
   ob_transport_key                   = ""
