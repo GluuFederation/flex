@@ -11,8 +11,8 @@ export const getHoverOpacity = (isDark: boolean): number => {
 }
 
 export const SCROLLBAR = {
-  WIDTH: 6,
-  HEIGHT: 6,
+  WIDTH: 4,
+  HEIGHT: 4,
   BORDER_RADIUS: 4,
 } as const
 

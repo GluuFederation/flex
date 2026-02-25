@@ -59,15 +59,31 @@ const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
         verticalAlign: 'middle',
         lineHeight: '28px',
       },
-      '& table th:nth-of-type(1), & table td:not([data-divider-cell]):nth-of-type(1)': {
-        padding: `12px ${SPACING.CARD_CONTENT_GAP}px`,
+      // Audit-only: column widths scoped to data-audit-table (no effect on other GluuTable instances)
+      '& [data-audit-table] table col:nth-of-type(1)': { width: '10% !important' },
+      '& [data-audit-table] table th:nth-of-type(1), & [data-audit-table] table td:not([data-divider-cell]):nth-of-type(1)':
+        {
+          width: '10% !important',
+          minWidth: '10% !important',
+          maxWidth: '10% !important',
+          padding: `12px ${SPACING.CARD_CONTENT_GAP}px`,
+        },
+      '& [data-audit-table] table col:nth-of-type(2)': {
+        width: '48px !important',
+        minWidth: '48px !important',
+        maxWidth: '48px !important',
       },
-      '& table th:nth-of-type(2), & table td:not([data-divider-cell]):nth-of-type(2)': {
-        padding: `${CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL}px ${MAPPING_SPACING.CARD_MARGIN_BOTTOM}px`,
-      },
-      '& table th:nth-of-type(3), & table td:not([data-divider-cell]):nth-of-type(3)': {
-        padding: `${CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL}px ${SPACING.SECTION_GAP}px`,
-      },
+      '& [data-audit-table] table th:nth-of-type(2), & [data-audit-table] table td:not([data-divider-cell]):nth-of-type(2)':
+        {
+          width: '48px !important',
+          minWidth: '48px !important',
+          maxWidth: '48px !important',
+          padding: `${CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL}px ${MAPPING_SPACING.CARD_MARGIN_BOTTOM}px`,
+        },
+      '& [data-audit-table] table th:nth-of-type(3), & [data-audit-table] table td:not([data-divider-cell]):nth-of-type(3)':
+        {
+          padding: `${CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL}px ${SPACING.SECTION_GAP}px`,
+        },
     },
     logEntryCell: {
       display: 'flex',

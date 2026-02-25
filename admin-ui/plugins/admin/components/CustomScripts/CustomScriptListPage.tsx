@@ -7,7 +7,7 @@ import { GluuTable } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -37,6 +37,10 @@ const SORT_COLUMN_LABELS: Record<string, string> = {
   description: 'fields.description',
   scriptType: 'fields.script_type',
 }
+
+const DELETE_SUBJECT_SCRIPT = 'script'
+const EMPTY_DESCRIPTION_PLACEHOLDER = '—'
+const FEATURE_CUSTOM_SCRIPT_DELETE = adminUiFeatures.custom_script_delete
 
 interface ScriptTableRow extends CustomScript {
   scriptError?: ScriptError
@@ -68,7 +72,10 @@ const CustomScriptListPage: React.FC = () => {
   const [itemToDelete, setItemToDelete] = useState<CustomScript | null>(null)
 
   const scriptsResourceId = ADMIN_UI_RESOURCES.Scripts
-  const scriptScopes = CEDAR_RESOURCE_SCOPES[scriptsResourceId] || []
+  const scriptScopes = useMemo(
+    () => CEDAR_RESOURCE_SCOPES[scriptsResourceId] ?? [],
+    [scriptsResourceId],
+  )
 
   const canRead = useMemo(
     () => hasCedarReadPermission(scriptsResourceId),
@@ -90,7 +97,6 @@ const CustomScriptListPage: React.FC = () => {
   const {
     data: scriptsResponse,
     isLoading,
-    error,
     refetch,
   } = useCustomScriptsByType(scriptType, {
     pattern: pattern || undefined,
@@ -155,15 +161,10 @@ const CustomScriptListPage: React.FC = () => {
     [deleteMutation, dispatch, t],
   )
 
-  const handleRefresh = useCallback(() => {
+  const handleResetAndRefetch = useCallback(() => {
     setPageNumber(0)
     refetch()
-  }, [refetch])
-
-  const handleSearchSubmit = useCallback(() => {
-    setPageNumber(0)
-    refetch()
-  }, [refetch])
+  }, [refetch, setPageNumber])
 
   const handleTypeChange = useCallback((value: string) => {
     setScriptType(value)
@@ -181,12 +182,6 @@ const CustomScriptListPage: React.FC = () => {
 
   const handleRowsPerPageChange = useCallback((rowsPerPage: number) => {
     setLimit(rowsPerPage)
-    setPageNumber(0)
-  }, [])
-
-  const handleSort = useCallback((columnKey: string, direction: 'asc' | 'desc' | null) => {
-    setSortBy(direction ? columnKey : '')
-    setSortOrder(direction === 'desc' ? 'descending' : 'ascending')
     setPageNumber(0)
   }, [])
 
@@ -252,7 +247,7 @@ const CustomScriptListPage: React.FC = () => {
         label: t('fields.name'),
         sortable: true,
         render: (_value, row) => (
-          <div>
+          <div className={classes.cellNameWrap}>
             <GluuText variant="span" disableThemeColor className={classes.cellName}>
               {row.name}
             </GluuText>
@@ -262,7 +257,6 @@ const CustomScriptListPage: React.FC = () => {
                 backgroundColor={badgeStyles.errorBadge.backgroundColor}
                 textColor={badgeStyles.errorBadge.textColor}
                 borderColor={badgeStyles.errorBadge.borderColor}
-                className={classes.errorBadgeMargin}
               >
                 {t('fields.error')}
               </GluuBadge>
@@ -276,7 +270,7 @@ const CustomScriptListPage: React.FC = () => {
         sortable: true,
         width: '35%',
         render: (_value, row) => {
-          const desc = row.description || '—'
+          const desc = row.description ?? EMPTY_DESCRIPTION_PLACEHOLDER
           return (
             <GluuText
               variant="span"
@@ -392,6 +386,26 @@ const CustomScriptListPage: React.FC = () => {
     [],
   )
 
+  const handleCloseDeleteModal = useCallback(() => {
+    setModal(false)
+    setItemToDelete(null)
+  }, [])
+
+  const handleDeleteAccept = useCallback(
+    (message: string) => {
+      handleDeleteConfirm(message, itemToDelete?.inum)
+    },
+    [handleDeleteConfirm, itemToDelete?.inum],
+  )
+
+  const deleteDialogLabel = useMemo(
+    () =>
+      itemToDelete
+        ? `${t('messages.action_deletion_for')} ${DELETE_SUBJECT_SCRIPT} (${itemToDelete.name ?? ''}${itemToDelete.inum ? `-${itemToDelete.inum}` : ''})`
+        : '',
+    [t, itemToDelete],
+  )
+
   const emptyMessage = useMemo(() => {
     if (!pattern && scripts.length === 0) {
       return t('messages.no_scripts_found')
@@ -472,28 +486,19 @@ const CustomScriptListPage: React.FC = () => {
     [t, themeColors],
   )
 
-  const loading = isLoading || deleteMutation.isPending
+  const renderExpandedRow = useCallback(
+    (row: ScriptTableRow) => (
+      <GluuDetailGrid
+        fields={getScriptDetailFields(row)}
+        labelStyle={detailLabelStyle}
+        defaultDocCategory={SCRIPT}
+        layout="column"
+      />
+    ),
+    [getScriptDetailFields, detailLabelStyle],
+  )
 
-  if (error) {
-    return (
-      <GluuLoader blocking={false}>
-        <div className={classes.page}>
-          <GluuViewWrapper canShow={canRead}>
-            <div className={classes.searchCard}>
-              <div className={classes.searchCardContent}>
-                <div className={classes.errorMessage}>{t('messages.error_loading_scripts')}</div>
-                <GluuText variant="p" disableThemeColor>
-                  {error && typeof error === 'object' && 'message' in error
-                    ? (error as { message: string }).message
-                    : String(error)}
-                </GluuText>
-              </div>
-            </div>
-          </GluuViewWrapper>
-        </div>
-      </GluuLoader>
-    )
-  }
+  const loading = isLoading || deleteMutation.isPending
 
   return (
     <GluuLoader blocking={loading}>
@@ -507,9 +512,9 @@ const CustomScriptListPage: React.FC = () => {
                 searchValue={pattern}
                 searchOnType
                 onSearch={setPattern}
-                onSearchSubmit={handleSearchSubmit}
+                onSearchSubmit={handleResetAndRefetch}
                 filters={filters}
-                onRefresh={canRead ? handleRefresh : undefined}
+                onRefresh={canRead ? handleResetAndRefetch : undefined}
                 refreshLoading={isLoading || loadingTypes}
                 primaryAction={primaryAction}
               />
@@ -522,20 +527,10 @@ const CustomScriptListPage: React.FC = () => {
               data={scripts}
               loading={false}
               expandable
-              renderExpandedRow={(row) => (
-                <GluuDetailGrid
-                  fields={getScriptDetailFields(row)}
-                  labelStyle={detailLabelStyle}
-                  defaultDocCategory={SCRIPT}
-                  layout="column"
-                />
-              )}
+              renderExpandedRow={renderExpandedRow}
               pagination={pagination}
               onPagingSizeSync={onPagingSizeSync}
               actions={actions}
-              sortColumn={sortBy || null}
-              sortDirection={sortBy ? (sortOrder === 'descending' ? 'desc' : 'asc') : null}
-              onSort={handleSort}
               getRowKey={getRowKey}
               emptyMessage={emptyMessage}
             />
@@ -543,17 +538,12 @@ const CustomScriptListPage: React.FC = () => {
         </GluuViewWrapper>
 
         {canDelete && itemToDelete && (
-          <GluuDialog
-            row={itemToDelete}
-            name={itemToDelete.name}
-            handler={() => {
-              setModal(false)
-              setItemToDelete(null)
-            }}
+          <GluuCommitDialog
+            handler={handleCloseDeleteModal}
             modal={modal}
-            subject="script"
-            onAccept={(message: string) => handleDeleteConfirm(message, itemToDelete?.inum)}
-            feature={adminUiFeatures.custom_script_delete}
+            onAccept={handleDeleteAccept}
+            label={deleteDialogLabel}
+            feature={FEATURE_CUSTOM_SCRIPT_DELETE}
           />
         )}
       </div>

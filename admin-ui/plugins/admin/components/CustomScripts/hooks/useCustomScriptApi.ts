@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { useQueryClient } from '@tanstack/react-query'
 import {
@@ -24,6 +24,8 @@ import type { TriggerWebhookReducerPayload } from 'Plugins/admin/redux/types/web
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { AdditionalPayload } from 'Utils/TokenController'
 import { logAuditAction } from '../helper'
+import { getApiErrorDetail } from '../helper/utils'
+import { updateToast } from '@/redux/features/toastSlice'
 import {
   SCRIPT_CACHE_CONFIG,
   QUERY_KEY_PREFIX_SCRIPTS_BY_TYPE,
@@ -64,6 +66,7 @@ export const useCustomScripts = (params?: GetConfigScriptsParams) => {
       enabled: hasSession === true,
       staleTime: SCRIPT_CACHE_CONFIG.STALE_TIME,
       gcTime: SCRIPT_CACHE_CONFIG.GC_TIME,
+      retry: false,
     },
   })
 }
@@ -72,15 +75,26 @@ export const useCustomScriptsByType = (
   type: string,
   params?: Omit<GetConfigScriptsByTypeParams, 'type'>,
 ) => {
+  const dispatch = useAppDispatch()
   const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
-  return useGetConfigScriptsByType(type, params, {
+  const result = useGetConfigScriptsByType(type, params, {
     query: {
       enabled: !!type && hasSession === true,
       staleTime: SCRIPT_CACHE_CONFIG.STALE_TIME,
       gcTime: SCRIPT_CACHE_CONFIG.GC_TIME,
+      retry: false,
     },
   })
+
+  const queryError = result.error
+  useEffect(() => {
+    if (queryError) {
+      dispatch(updateToast(true, 'error', getApiErrorDetail(queryError)))
+    }
+  }, [queryError, dispatch])
+
+  return result
 }
 
 export const useCustomScript = (inum: string) => {
@@ -91,6 +105,7 @@ export const useCustomScript = (inum: string) => {
       enabled: !!inum && hasSession === true,
       staleTime: SCRIPT_CACHE_CONFIG.SINGLE_SCRIPT_STALE_TIME,
       refetchOnMount: 'always',
+      retry: false,
     },
   })
 }
@@ -211,6 +226,7 @@ export const useCustomScriptTypes = () => {
   return useGetCustomScriptType({
     query: {
       enabled: hasSession === true,
+      retry: false,
       select: (data: string[]): ScriptType[] => {
         if (!data || !Array.isArray(data)) {
           return []

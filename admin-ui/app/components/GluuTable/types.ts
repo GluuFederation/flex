@@ -14,6 +14,7 @@ export interface ColumnDef<T, K extends ColumnKey<T> = ColumnKey<T>> {
   label: string
   width?: string | number
   minWidth?: string | number
+  maxWidth?: string | number
   sortable?: boolean
   align?: 'left' | 'center' | 'right'
   render?: (value: T[K], row: T, rowIndex: number, context?: ExpandContext) => ReactNode
@@ -49,14 +50,13 @@ export interface GluuTableProps<T> {
   renderExpandedRow?: (item: T) => ReactNode
   pagination?: PaginationConfig
   actions?: ActionDef<T>[]
-  sortColumn?: string | null
-  sortDirection?: SortDirection
-  onSort?: (columnKey: string, direction: SortDirection) => void
   getRowKey?: (item: T, index: number) => string | number
   emptyMessage?: string
   stickyHeader?: boolean
   /** Optional class applied to the <table> for parent overrides (e.g. Audit) */
   tableClassName?: string
+  /** Optional: override expand column width. Pass number (px) or string (e.g. "10%"). When provided, expand column uses this size. */
+  expandColumnWidth?: number | string
   /** When provided with pagination, GluuTable listens for paging-size changes (Settings / visibility) and calls this so the parent can sync and refetch. */
   onPagingSizeSync?: OnPagingSizeSync
 }

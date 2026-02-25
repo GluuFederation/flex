@@ -5,6 +5,7 @@ import customColors, { getLoadingOverlayRgba } from '@/customColors'
 import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
 
 export const EXPAND_BUTTON_SIZE = 32
+export const TABLE_MIN_WIDTH = 1280
 
 interface GluuTableStyleParams {
   isDark: boolean
@@ -41,7 +42,8 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       'width': '100%',
       'maxWidth': '100%',
       'minWidth': 0,
-      'overflow': 'visible',
+      'overflowX': 'auto',
+      'overflowY': 'visible',
       'borderRadius': BORDER_RADIUS.DEFAULT,
       'backgroundColor': rowBg,
       fontFamily,
@@ -66,24 +68,62 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
     },
     table: {
       width: '100%',
+      [`@media (max-width: ${TABLE_MIN_WIDTH - 1}px)`]: {
+        minWidth: TABLE_MIN_WIDTH,
+      },
       tableLayout: 'fixed',
       borderCollapse: 'collapse',
       fontSize: fontSizes.base,
     },
     headerCell: {
-      backgroundColor: headerBg,
-      color: headerColor,
-      fontWeight: fontWeights.bold,
-      fontSize: fontSizes.base,
-      padding: '14px 16px',
-      textAlign: 'left',
-      whiteSpace: 'nowrap',
-      userSelect: 'none',
-      position: stickyHeader ? 'sticky' : 'relative',
-      top: stickyHeader ? 0 : undefined,
-      zIndex: stickyHeader ? 1 : undefined,
-      lineHeight: '28px',
-      verticalAlign: 'middle',
+      'backgroundColor': headerBg,
+      'color': headerColor,
+      'fontWeight': fontWeights.bold,
+      'fontSize': fontSizes.base,
+      'padding': '14px 16px',
+      'textAlign': 'left',
+      'whiteSpace': 'nowrap',
+      'userSelect': 'none',
+      'position': stickyHeader ? 'sticky' : 'relative',
+      'top': stickyHeader ? 0 : undefined,
+      'zIndex': stickyHeader ? 1 : undefined,
+      'lineHeight': '28px',
+      'verticalAlign': 'middle',
+      '&:hover [data-sort-icon]': {
+        opacity: 1,
+      },
+    },
+    headerCellResizable: {
+      paddingRight: 20,
+    },
+    resizeHandle: {
+      'position': 'absolute',
+      'top': 0,
+      'right': 0,
+      'width': 6,
+      'height': '100%',
+      'cursor': 'col-resize',
+      'zIndex': 2,
+      '&::after': {
+        content: '""',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 2,
+        height: '60%',
+        minHeight: 20,
+        backgroundColor: rowBorder,
+        borderRadius: 1,
+        opacity: 0.6,
+        transition: 'opacity 0.15s ease',
+      },
+      '&:hover::after': {
+        opacity: 1,
+      },
+      '&:active::after': {
+        opacity: 1,
+      },
     },
     headerCellExpand: {
       width: 40,
@@ -95,13 +135,21 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
     },
     sortableHeader: {
       'cursor': 'pointer',
-      'display': 'inline-flex',
+      'display': 'flex',
       'alignItems': 'center',
+      'justifyContent': 'flex-start',
+      'position': 'absolute',
+      'left': 0,
+      'top': 0,
+      'right': 6,
+      'bottom': 0,
+      'width': 'auto',
+      'padding': '14px 16px',
       'background': 'none',
       'border': 'none',
-      'padding': 0,
       'font': 'inherit',
       'color': headerColor,
+      'textAlign': 'inherit',
       '&:hover [data-sort-icon]': {
         opacity: 1,
       },
@@ -112,7 +160,7 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       },
     },
     sortIconWrap: {
-      marginLeft: 4,
+      marginLeft: 10,
       flexShrink: 0,
       display: 'inline-flex',
       alignItems: 'center',
@@ -182,7 +230,17 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       'backgroundColor': rowBg,
       'transition': 'background-color 0.15s ease',
       '&:hover': {
-        backgroundColor: hoverBg,
+        '& td': {
+          backgroundColor: hoverBg,
+        },
+        '& td:first-of-type': {
+          borderTopLeftRadius: BORDER_RADIUS.SMALL_MEDIUM,
+          borderBottomLeftRadius: BORDER_RADIUS.SMALL_MEDIUM,
+        },
+        '& td:last-of-type': {
+          borderTopRightRadius: BORDER_RADIUS.SMALL_MEDIUM,
+          borderBottomRightRadius: BORDER_RADIUS.SMALL_MEDIUM,
+        },
       },
     },
     expandedPanel: {

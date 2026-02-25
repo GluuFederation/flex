@@ -1,6 +1,5 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { getScrollbarStyles } from '@/constants/ui'
 import applicationStyle from './applicationStyle'
 
 const MODAL_MIN_WIDTH = '60vw'
@@ -69,7 +68,6 @@ export const useStyles = makeStyles<{ themeColors: ThemeConfig }>()((_theme, { t
     fontFamily: 'monospace',
     fontSize: ERROR_FONT_SIZE,
     border: 'none',
-    ...getScrollbarStyles(themeColors),
   },
   footer: {
     padding: '16px',

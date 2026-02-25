@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { ThemeContext } from '@/context/theme/themeContext'
 import getThemeColor, { themeConfig } from '@/context/theme/config'
 import customColors, { hexToRgb, getCustomColorsAsCssVars } from '@/customColors'
+import { SCROLLBAR } from '@/constants'
 import { THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
 import type { LayoutContentProps } from './types'
 
@@ -38,6 +39,9 @@ const LayoutContent: React.FC<LayoutContentProps> & { layoutPartName: string } =
 
   const cssVariables = useMemo(
     () => ({
+      '--theme-scrollbar-width': `${SCROLLBAR.WIDTH}px`,
+      '--theme-scrollbar-height': `${SCROLLBAR.HEIGHT}px`,
+      '--theme-scrollbar-radius': `${SCROLLBAR.BORDER_RADIUS}px`,
       '--theme-sidebar-background': themeColors.menu.background,
       '--theme-navbar-background': themeColors.navbar.background,
       '--theme-navbar-border': themeColors.navbar.border,

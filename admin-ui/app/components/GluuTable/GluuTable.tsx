@@ -16,6 +16,89 @@ import {
   PAGING_SIZE_CHANGED_EVENT,
 } from '@/utils/pagingUtils'
 
+const MIN_COL_WIDTH = 60
+const BASE_WEIGHT = 1
+const CONTENT_WEIGHT_FACTOR = 0.02
+const MIN_PCT = 14
+const MAX_PCT = 42
+
+const parseMinWidth = (col: { minWidth?: string | number }): number | undefined => {
+  const mw = col.minWidth
+  if (typeof mw === 'number' && mw > 0) return mw
+  if (typeof mw === 'string') {
+    const px = parseInt(mw, 10)
+    if (!Number.isNaN(px)) return px
+  }
+  return undefined
+}
+
+const parseMaxWidth = (col: { maxWidth?: string | number }): string | undefined => {
+  const mw = col.maxWidth
+  if (mw == null) return undefined
+  if (typeof mw === 'number' && mw > 0) return `${mw}px`
+  if (typeof mw === 'string' && mw.trim()) return mw.trim()
+  return undefined
+}
+
+/** Parse parent-provided column width to CSS value. Returns undefined if not provided. */
+const parseColumnWidth = (col: { width?: string | number }): string | undefined => {
+  const w = col.width
+  if (w == null) return undefined
+  if (typeof w === 'number' && w > 0) return `${w}px`
+  if (typeof w === 'string' && w.trim()) return w.trim()
+  return undefined
+}
+
+const EMPTY_TABLE_ESTIMATE = 15
+
+function computeContentBasedWidths<T>(
+  columns: { key: string; label: string; render?: unknown }[],
+  data: T[],
+): Record<string, string> {
+  const totalCols = columns.length
+  if (totalCols === 0) return {}
+
+  const scores: number[] = columns.map((col) => {
+    const headerLen = col.label.length
+    let maxContentLen = headerLen
+    for (const row of data) {
+      const val = (row as Record<string, unknown>)[col.key]
+      const len = String(val ?? '').length
+      maxContentLen = Math.max(maxContentLen, len)
+    }
+    if (data.length === 0) {
+      maxContentLen = Math.max(maxContentLen, EMPTY_TABLE_ESTIMATE)
+    }
+    return BASE_WEIGHT + maxContentLen * CONTENT_WEIGHT_FACTOR
+  })
+
+  const totalScore = scores.reduce((a, b) => a + b, 0)
+  const rawPcts = scores.map((s) => (s / totalScore) * 100)
+  const clamped = rawPcts.map((p) => Math.max(MIN_PCT, Math.min(MAX_PCT, p)))
+  const sumClamped = clamped.reduce((a, b) => a + b, 0)
+  const pcts =
+    sumClamped > 0 ? clamped.map((p) => (p / sumClamped) * 100) : clamped.map(() => 100 / totalCols)
+
+  return Object.fromEntries(columns.map((col, i) => [col.key, `${pcts[i].toFixed(1)}%`]))
+}
+
+function compareValues(a: unknown, b: unknown, direction: 'asc' | 'desc'): number {
+  const emptyA = a == null || a === ''
+  const emptyB = b == null || b === ''
+  if (emptyA && emptyB) return 0
+  if (emptyA) return direction === 'asc' ? 1 : 1
+  if (emptyB) return direction === 'asc' ? -1 : -1
+  let cmp: number
+  if (typeof a === 'number' && typeof b === 'number') {
+    cmp = a - b
+  } else if (typeof a === 'boolean' && typeof b === 'boolean') {
+    cmp = (a ? 1 : 0) - (b ? 1 : 0)
+  } else {
+    cmp = String(a).localeCompare(String(b), undefined, { numeric: true })
+  }
+  return direction === 'desc' ? -cmp : cmp
+}
+
 const T_KEYS = {
   FIELDS_ACTIONS: 'fields.actions',
   FIELDS_OF: 'fields.of',
@@ -37,22 +120,128 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
     renderExpandedRow,
     pagination,
     actions,
-    sortColumn = null,
-    sortDirection = null,
-    onSort,
     getRowKey,
     emptyMessage,
     stickyHeader = false,
     tableClassName,
     onPagingSizeSync,
+    expandColumnWidth,
   } = props
 
   const { t } = useTranslation()
   const { state } = useTheme()
   const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
   const isDark = state.theme === THEME_DARK
-  const { classes } = useStyles({ isDark, themeColors, stickyHeader })
   const [expandedRows, setExpandedRows] = useState<Set<string | number>>(new Set())
+  const [resizedColumnWidths, setResizedColumnWidths] = useState<Record<string, number>>({})
+  const [sortColumn, setSortColumn] = useState<string | null>(null)
+  const [sortDirection, setSortDirection] = useState<SortDirection>(null)
+
+  const sortedData = useMemo(() => {
+    if (!sortColumn || !sortDirection) return data
+    const dir = sortDirection === 'desc' ? 'desc' : 'asc'
+    return [...data].sort((rowA, rowB) => {
+      const a = (rowA as Record<string, unknown>)[sortColumn]
+      const b = (rowB as Record<string, unknown>)[sortColumn]
+      return compareValues(a, b, dir)
+    })
+  }, [data, sortColumn, sortDirection])
+
+  const computedWidths = useMemo(() => computeContentBasedWidths(columns, data), [columns, data])
+  const effectiveWidths = useMemo(() => {
+    const out: Record<string, string> = {}
+    for (const col of columns) {
+      const parentWidth = parseColumnWidth(col)
+      const resized = resizedColumnWidths[col.key]
+      out[col.key] =
+        parentWidth ??
+        (resized != null ? `${resized}%` : (computedWidths[col.key] ?? `${100 / columns.length}%`))
+    }
+    return out
+  }, [columns, resizedColumnWidths, computedWidths])
+
+  const { classes } = useStyles({ isDark, themeColors, stickyHeader })
+
+  const tableRef = useRef<HTMLTableElement>(null)
+  const headerCellRefs = useRef<Map<string, HTMLTableCellElement>>(new Map())
+
+  const setHeaderCellRef = useCallback((colKey: string, el: HTMLTableCellElement | null) => {
+    if (el) {
+      headerCellRefs.current.set(colKey, el)
+    } else {
+      headerCellRefs.current.delete(colKey)
+    }
+  }, [])
+
+  const handleResizeStart = useCallback(
+    (colKey: string, clientX: number, resizeHandle: HTMLElement) => {
+      const th = headerCellRefs.current.get(colKey) ?? resizeHandle.closest('th')
+      if (!th) return
+      const colIndex = columns.findIndex((c) => c.key === colKey)
+      const nextCol = colIndex >= 0 ? columns[colIndex + 1] : undefined
+      const nextTh = nextCol ? headerCellRefs.current.get(nextCol.key) : undefined
+
+      const table = tableRef.current
+      const tableWidth = table?.getBoundingClientRect().width ?? 0
+      const startWidthI = th.getBoundingClientRect().width
+      const startWidthNext = nextTh?.getBoundingClientRect().width ?? 0
+      let totalDelta = 0
+      let lastClientX = clientX
+
+      const onMove = (ev: { clientX: number }) => {
+        totalDelta += ev.clientX - lastClientX
+        lastClientX = ev.clientX
+
+        if (nextCol && tableWidth > 0) {
+          const minPx = MIN_COL_WIDTH
+          let newWidthI = startWidthI + totalDelta
+          let newWidthNext = startWidthNext - totalDelta
+          if (newWidthI < minPx) {
+            newWidthI = minPx
+            newWidthNext = startWidthI + startWidthNext - minPx
+          } else if (newWidthNext < minPx) {
+            newWidthNext = minPx
+            newWidthI = startWidthI + startWidthNext - minPx
+          }
+          const pctI = (newWidthI / tableWidth) * 100
+          const pctNext = (newWidthNext / tableWidth) * 100
+          setResizedColumnWidths((prev) => ({
+            ...prev,
+            [colKey]: Math.round(pctI * 10) / 10,
+            [nextCol.key]: Math.round(pctNext * 10) / 10,
+          }))
+        } else if (tableWidth > 0) {
+          const minPx = MIN_COL_WIDTH
+          const newWidthI = Math.max(minPx, startWidthI + totalDelta)
+          const pctI = (newWidthI / tableWidth) * 100
+          setResizedColumnWidths((prev) => ({ ...prev, [colKey]: Math.round(pctI * 10) / 10 }))
+        }
+      }
+
+      const onUp = () => {
+        document.body.style.cursor = ''
+        document.body.style.userSelect = ''
+        window.removeEventListener('mousemove', onMoveMouse)
+        window.removeEventListener('mouseup', onUpMouse)
+        window.removeEventListener('touchmove', onMoveTouch)
+        window.removeEventListener('touchend', onUpTouch)
+      }
+      const onMoveMouse = (ev: MouseEvent) => onMove(ev)
+      const onUpMouse = () => onUp()
+      const onMoveTouch = (ev: TouchEvent) => {
+        ev.preventDefault()
+        if (ev.touches.length > 0) onMove(ev.touches[0])
+      }
+      const onUpTouch = () => onUp()
+      document.body.style.cursor = 'col-resize'
+      document.body.style.userSelect = 'none'
+      window.addEventListener('mousemove', onMoveMouse)
+      window.addEventListener('mouseup', onUpMouse)
+      window.addEventListener('touchmove', onMoveTouch as EventListener, { passive: false })
+      window.addEventListener('touchend', onUpTouch)
+    },
+    [columns],
+  )
 
   useEffect(() => {
     setExpandedRows(new Set())
@@ -109,13 +298,16 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
 
   const handleSort = useCallback(
     (columnKey: string) => {
-      if (!onSort) return
-      // Two-state cycle: original order ↔ reversed (no asc)
       const isSameColumn = sortColumn === columnKey
-      const nextDirection: SortDirection = isSameColumn && sortDirection === 'desc' ? null : 'desc'
-      onSort(columnKey, nextDirection)
+      const nextDirection: SortDirection = !isSameColumn
+        ? 'asc'
+        : sortDirection === 'asc'
+          ? 'desc'
+          : null
+      setSortColumn(nextDirection ? columnKey : null)
+      setSortDirection(nextDirection)
     },
-    [onSort, sortColumn, sortDirection],
+    [sortColumn, sortDirection],
   )
 
   const renderActionCell = useCallback(
@@ -165,22 +357,57 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
 
       <div className={classes.borderWrapper}>
         <div className={classes.wrapper} data-gluu-table>
-          <table className={[classes.table, tableClassName].filter(Boolean).join(' ')}>
+          <table
+            ref={tableRef}
+            className={[classes.table, tableClassName].filter(Boolean).join(' ')}
+          >
+            <colgroup>
+              {expandable && <col style={{ width: expandColumnWidth ?? 40 }} />}
+              {columns.map((col) => {
+                const w = effectiveWidths[col.key]
+                const minW = parseMinWidth(col)
+                const maxW = parseMaxWidth(col)
+                return (
+                  <col
+                    key={col.key}
+                    style={{
+                      width: w,
+                      ...(minW != null && { minWidth: minW }),
+                      ...(maxW != null && { maxWidth: maxW }),
+                    }}
+                  />
+                )
+              })}
+              {actions && actions.length > 0 && <col style={{ width: actions.length * 40 + 16 }} />}
+            </colgroup>
             <thead>
               <tr>
                 {expandable && (
-                  <th className={`${classes.headerCell} ${classes.headerCellExpand}`} />
+                  <th
+                    className={`${classes.headerCell} ${classes.headerCellExpand}`}
+                    style={
+                      expandColumnWidth != null
+                        ? {
+                            width: expandColumnWidth,
+                            minWidth: expandColumnWidth,
+                            maxWidth: expandColumnWidth,
+                          }
+                        : undefined
+                    }
+                  />
                 )}
                 {columns.map((col) => {
-                  const isSortable = col.sortable !== false && onSort
+                  const isSortable = col.sortable !== false
                   const isActive = sortColumn === col.key
                   return (
                     <th
+                      ref={(el) => setHeaderCellRef(col.key, el)}
                       key={col.key}
-                      className={classes.headerCell}
+                      className={`${classes.headerCell} ${classes.headerCellResizable}`}
                       style={{
-                        width: col.width,
-                        minWidth: col.minWidth,
+                        width: effectiveWidths[col.key],
+                        ...(parseMinWidth(col) != null && { minWidth: parseMinWidth(col) }),
+                        ...(parseMaxWidth(col) != null && { maxWidth: parseMaxWidth(col) }),
                         textAlign: col.align || 'left',
                       }}
                     >
@@ -208,6 +435,23 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
                           {col.label}
                         </GluuText>
                       )}
+                      <div
+                        role="separator"
+                        aria-orientation="vertical"
+                        aria-label="Resize column"
+                        className={classes.resizeHandle}
+                        onMouseDown={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleResizeStart(col.key, e.clientX, e.currentTarget)
+                        }}
+                        onTouchStart={(e) => {
+                          e.preventDefault()
+                          if (e.touches.length > 0) {
+                            handleResizeStart(col.key, e.touches[0].clientX, e.currentTarget)
+                          }
+                        }}
+                      />
                     </th>
                   )
                 })}
@@ -224,7 +468,7 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
               </tr>
             </thead>
             <tbody>
-              {data.length === 0 ? (
+              {sortedData.length === 0 ? (
                 <tr>
                   <td colSpan={totalCols} className={classes.emptyRow}>
                     <GluuText variant="span" disableThemeColor>
@@ -233,14 +477,25 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
                   </td>
                 </tr>
               ) : (
-                data.map((row, rowIdx) => {
+                sortedData.map((row, rowIdx) => {
                   const rowKey = resolveRowKey(row, rowIdx)
                   const isExpanded = expandedRows.has(rowKey)
                   return (
                     <React.Fragment key={rowKey}>
                       <tr className={classes.row}>
                         {expandable && (
-                          <td className={`${classes.cell} ${classes.cellExpand}`}>
+                          <td
+                            className={`${classes.cell} ${classes.cellExpand}`}
+                            style={
+                              expandColumnWidth != null
+                                ? {
+                                    width: expandColumnWidth,
+                                    minWidth: expandColumnWidth,
+                                    maxWidth: expandColumnWidth,
+                                  }
+                                : undefined
+                            }
+                          >
                             <div className={classes.cellExpandInner}>
                               <button
                                 type="button"
@@ -276,9 +531,10 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
                               key={col.key}
                               className={`${classes.cell} ${isFirstLineColumn ? classes.cellFirst : ''}`}
                               style={{
+                                width: effectiveWidths[col.key],
+                                ...(parseMinWidth(col) != null && { minWidth: parseMinWidth(col) }),
+                                ...(parseMaxWidth(col) != null && { maxWidth: parseMaxWidth(col) }),
                                 textAlign: col.align || 'left',
-                                width: col.width,
-                                minWidth: col.minWidth,
                               }}
                             >
                               {col.render ? (

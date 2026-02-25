@@ -1,7 +1,21 @@
 import { CustomScriptItem, ModuleProperty, ConfigurationProperty } from '../types/customScript'
+
 import { FormValues } from '../types/forms'
 import { filterEmptyObjects } from 'Utils/Util'
 import type { CustomScript, SimpleCustomProperty } from 'JansConfigApi'
+
+export const getApiErrorDetail = (error: unknown): string => {
+  if (error && typeof error === 'object' && 'response' in error) {
+    const err = error as { response?: { data?: string | { message?: string } }; message?: string }
+    const data = err.response?.data
+    if (typeof data === 'string' && data.trim()) return data
+    if (data && typeof data === 'object' && typeof data.message === 'string') return data.message
+  }
+  if (error && typeof error === 'object' && 'message' in error) {
+    return (error as { message: string }).message
+  }
+  return String(error ?? '')
+}
 
 export const getModuleProperty = (
   key: string,

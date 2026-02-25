@@ -13,6 +13,7 @@ import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { GluuTable } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import { GluuBadge } from '@/components/GluuBadge'
+import GluuText from '@/routes/Apps/Gluu/GluuText'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
@@ -235,7 +236,9 @@ const AuditListPage: React.FC = () => {
       {
         key: 'serial',
         label: '#',
-        width: 60,
+        width: 48,
+        minWidth: 48,
+        maxWidth: 48,
         align: 'left' as const,
         sortable: false,
       },
@@ -252,15 +255,17 @@ const AuditListPage: React.FC = () => {
           const isExpanded = context?.isExpanded ?? false
           if (!row.timestamp) {
             return (
-              <div
+              <GluuText
+                variant="div"
+                disableThemeColor
                 className={`${classes.logEntryContent} ${!isExpanded ? classes.logEntryContentCollapsed : ''}`}
               >
                 {row.content}
-              </div>
+              </GluuText>
             )
           }
           return (
-            <div className={classes.logEntryCell}>
+            <GluuText variant="div" disableThemeColor className={classes.logEntryCell}>
               <GluuBadge
                 pill
                 size="md"
@@ -272,13 +277,19 @@ const AuditListPage: React.FC = () => {
                 <AccessTimeIcon className={classes.accessTimeIcon} />
                 {row.datePart}
               </GluuBadge>
-              {row.timePart ? <span>{row.timePart}</span> : null}
-              <div
+              {row.timePart ? (
+                <GluuText variant="span" disableThemeColor>
+                  {row.timePart}
+                </GluuText>
+              ) : null}
+              <GluuText
+                variant="div"
+                disableThemeColor
                 className={`${classes.logEntryContent} ${!isExpanded ? classes.logEntryContentCollapsed : ''}`}
               >
                 {row.content}
-              </div>
-            </div>
+              </GluuText>
+            </GluuText>
           )
         },
       },
@@ -380,16 +391,18 @@ const AuditListPage: React.FC = () => {
           </div>
 
           <div className={classes.tableCard}>
-            {/* loading={false}: page-level GluuLoader already shows blocking overlay; table loading state intentionally suppressed */}
-            <GluuTable<AuditRow>
-              columns={columns}
-              data={auditRows}
-              loading={false}
-              expandable
-              pagination={pagination}
-              onPagingSizeSync={handlePagingSizeSync}
-              emptyMessage={emptyMessage}
-            />
+            <div data-audit-table>
+              <GluuTable<AuditRow>
+                columns={columns}
+                data={auditRows}
+                loading={false}
+                expandable
+                expandColumnWidth="10%"
+                pagination={pagination}
+                onPagingSizeSync={handlePagingSizeSync}
+                emptyMessage={emptyMessage}
+              />
+            </div>
           </div>
         </GluuViewWrapper>
       </div>

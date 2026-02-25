@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, SPACING, MAPPING_SPACING } from '@/constants'
+import { BORDER_RADIUS, SPACING } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { fontFamily } from '@/styles/fonts'
 const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
@@ -15,6 +15,13 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   return {
     page: { fontFamily, paddingTop: SPACING.PAGE },
+    cellNameWrap: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      alignItems: 'center',
+      gap: 6,
+      minWidth: 0,
+    },
     cellName: { color: themeColors.fontColor, fontWeight: 600 },
     cellDescription: {
       display: 'block',
@@ -26,9 +33,8 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       fontFamily,
       color: themeColors.fontColor,
     },
-    scriptTypeBadge: { minWidth: 80 },
-    errorBadgeMargin: { marginLeft: SPACING.CARD_CONTENT_GAP },
-    enabledBadge: { minWidth: 60 },
+    scriptTypeBadge: { minWidth: 90 },
+    enabledBadge: { minWidth: 64 },
     editIcon: { fontSize: 18 },
     deleteIcon: { fontSize: 18 },
     viewIcon: { fontSize: 18 },
@@ -63,13 +69,8 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       'position': 'relative',
       'overflow': 'visible',
       'boxSizing': 'border-box',
-      '& table': { minWidth: 0 },
       '& table td': { verticalAlign: 'top', minWidth: 0, lineHeight: '28px' },
       '& table th': { verticalAlign: 'middle', lineHeight: '28px' },
-    },
-    errorMessage: {
-      color: themeColors.errorColor,
-      marginBottom: MAPPING_SPACING.CARD_MARGIN_BOTTOM,
     },
   }
 })

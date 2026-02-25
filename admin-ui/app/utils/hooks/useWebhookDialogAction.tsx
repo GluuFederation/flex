@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo } from 'react'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import {
   getWebhooksByFeatureId,
   getWebhooksByFeatureIdResponse,
@@ -111,9 +112,7 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
         className="modal-outline-primary"
       >
         <ModalHeader toggle={closeWebhookTriggerModal}>
-          {loadingWebhooks ? (
-            <>Loading....</>
-          ) : (
+          {!loadingWebhooks && (
             <>
               <i
                 onClick={closeWebhookTriggerModal}
@@ -127,7 +126,13 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
             </>
           )}
         </ModalHeader>
-        {!loadingWebhooks ? (
+        {loadingWebhooks ? (
+          <ModalBody>
+            <GluuLoader blocking>
+              <div style={{ minHeight: 120 }} />
+            </GluuLoader>
+          </ModalBody>
+        ) : (
           <>
             <ModalBody>
               <Box sx={{ display: 'flex', flexDirection: 'column' }} px={2}>
@@ -184,8 +189,6 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
               </Button>
             </ModalFooter>
           </>
-        ) : (
-          <></>
         )}
       </Modal>
     )
