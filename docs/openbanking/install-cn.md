@@ -13,7 +13,7 @@ Use the listing below for a detailed estimation of the minimum required resource
 | auth-key-rotation | 0.3      | 0.3GB | N/A        | 64 Bit         | No [Strongly recommended]          |
 | cleanup - job     | 0.3      | 0.3GB | N/A        | 64 Bit         | No [Strongly recommended]          |
 | nginx             | 1        | 1GB   | N/A        | 64 Bit         | No                                 |
-| config-api        | 1        | 1GB   | N/A        | 64 Bit         | No                                 |
+| config-api        | 1.2      | 1GB   | N/A        | 64 Bit         | No                                 |
 
 ## Installation
 
