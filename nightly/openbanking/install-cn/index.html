@@ -2824,7 +2824,7 @@
 <h3 id="install-using-helmproduction-ready">Install using Helm(production-ready)<a class="headerlink" href="#install-using-helmproduction-ready" title="Permanent link">#</a></h3>
 <ul>
 <li>
-<p>The below certificates and keys are needed to complete the installation.</p>
+<p>To complete this installation in a production environment, you must obtain official Open Banking certificates. This requires generating private keys locally and submitting a Certificate Signing Request (CSR) to your Open Banking Directory (e.g., OBIE) to receive the corresponding signed certificates. Self-signed certificates should only be used for testing. Ensure you have the following files ready:</p>
 <table>
 <thead>
 <tr>
@@ -2846,24 +2846,24 @@
 <td>Used in nginx as a certificate authority</td>
 </tr>
 <tr>
-<td>OB AS Transport key</td>
+<td>OB AS Transport key <code>obtransport.key</code></td>
 <td>Used for mTLS. This will also be added to the JVM</td>
 </tr>
 <tr>
-<td>OB AS Transport crt</td>
+<td>OB AS Transport crt <code>obtransport.pem</code></td>
 <td>Used for mTLS. This will also be added to the JVM</td>
 </tr>
 <tr>
-<td>OB AS signing crt</td>
+<td>OB AS signing crt <code>obsigning.pem</code></td>
 <td>Added to the JVM. Used in SSA Validation</td>
 </tr>
 <tr>
-<td>OB AS signing key</td>
+<td>OB AS signing key <code>obsigning.key</code></td>
 <td>Added to the JVM. Used in SSA Validation</td>
 </tr>
 <tr>
-<td>OB transport truststore</td>
-<td>Used in SSA Validation. Generated from OB Root CA nd Issuing CA</td>
+<td>OB transport truststore <code>ob-transport-truststore.p12</code></td>
+<td>Used in SSA Validation. Generated from OB Root CA and Issuing CA</td>
 </tr>
 </tbody>
 </table>
@@ -2936,21 +2936,18 @@ kubectl<span class="w"> </span>create<span class="w"> </span>secret<span class="
 kubectl<span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span>cn<span class="w"> </span>-n<span class="w"> </span>gluu<span class="w"> </span>--template<span class="o">={{</span>.data.ssl_cert<span class="o">}}</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-d<span class="w"> </span>&gt;<span class="w"> </span>server.crt
 kubectl<span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span>cn<span class="w"> </span>-n<span class="w"> </span>gluu<span class="w"> </span>--template<span class="o">={{</span>.data.ssl_key<span class="o">}}</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-d<span class="w"> </span>&gt;<span class="w"> </span>server.key
 
-kubectl<span class="w"> </span>create<span class="w"> </span>secret<span class="w"> </span>generic<span class="w"> </span>ca-secret<span class="w"> </span>-n<span class="w"> </span>gluu<span class="w"> </span>--from-file<span class="o">=</span>tls.crt<span class="o">=</span>server.crt<span class="w"> </span>--from-file<span class="o">=</span>tls.key<span class="o">=</span>server.key<span class="w"> </span>--from-file<span class="o">=</span>ca.crt<span class="o">=</span>ca.crt
+kubectl<span class="w"> </span>create<span class="w"> </span>secret<span class="w"> </span>generic<span class="w"> </span>tls-ob-ca-certificates<span class="w"> </span>-n<span class="w"> </span>gluu<span class="w"> </span>--from-file<span class="o">=</span>tls.crt<span class="o">=</span>server.crt<span class="w"> </span>--from-file<span class="o">=</span>tls.key<span class="o">=</span>server.key<span class="w"> </span>--from-file<span class="o">=</span>ca.crt<span class="o">=</span>ca.crt
 </code></pre></div>
 </li>
 <li>
 <p>Inject OBIE signed certs, keys and uri: </p>
 <ol>
 <li>
-<p>When using OBIE signed certificates and keys, there are  many objects that can be injected. The certificate signing pem file i.e <code>obsigning.pem</code>, the signing key i.e <code>obsigning-oajsdij8927123.key</code>, the certificate transport pem file i.e <code>obtransport.pem</code>, the transport key i.e <code>obtransport-sdfe4234234.key</code>, the transport truststore p12 i.e <code>ob-transport-truststore.p12</code>, and the jwks uri <code>https://mykeystore.openbanking.wow/xxxxx/xxxxx.jwks</code>.</p>
-</li>
-<li>
-<p>base64 encrypt all <code>.pem</code> and <code>.key</code> files.</p>
+<p>base64 encode all <code>.pem</code> and <code>.key</code> files.</p>
 <div class="highlight"><pre><span></span><code>cat<span class="w"> </span>obsigning.pem<span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;\n&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>obsigningbase64.pem
-cat<span class="w"> </span>obsigning-oajsdij8927123.key<span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;\n&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>obsigningbase64.key
+cat<span class="w"> </span>obsigning.key<span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;\n&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>obsigningbase64.key
 cat<span class="w"> </span>obtransport.pem<span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;\n&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>obtransportbase64.pem
-cat<span class="w"> </span>obtransport-sdfe4234234.key<span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;\n&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>obtransportbase64.key
+cat<span class="w"> </span>obtransport.key<span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;\n&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>obtransportbase64.key
 </code></pre></div>
 </li>
 <li>
@@ -2960,28 +2957,36 @@ keytool<span class="w"> </span>-importcert<span class="w"> </span>-file<span cla
 </code></pre></div>
 </li>
 <li>
-<p>base64 encrypt the <code>ob-transport-truststore.p12</code></p>
+<p>base64 encode the <code>ob-transport-truststore.p12</code></p>
 <div class="highlight"><pre><span></span><code>cat<span class="w"> </span>ob-transport-truststore.p12<span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;\n&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>obtransporttruststorebase64.pem
 </code></pre></div>
 </li>
 <li>
-<p>Add the kid as the alias for the JKS used for the OB AS external signing crt. This is a kid value.Used in SSA Validation, kid used while encoding a JWT sent to token URL i.e XkwIzWy44xWSlcWnMiEc8iq9s2G. This kid value should exist inside the jwks uri endpoint.</p>
+<p>Configure your Signing Key IDs: You must define both the external identifier for your signing key and its internal Java Keystore label. To ensure the system correctly maps the outgoing signature to the internal private key, these two values must be identical:</p>
+<ul>
+<li>
+<p><code>cnObStaticSigningKeyKid</code> (External ID): This is the unique Key ID (kid) provided by your Open Banking Directory (e.g., <code>XkwIzWy44xWSlcWnMiEc8iq9s2G</code>). Gluu stamps this ID onto the header of outgoing JWTs so receiving parties know which public key to fetch from your JWKS URI. This exact kid must exist at your published JWKS endpoint.</p>
+</li>
+<li>
+<p><code>cnObInternalSigningAlias</code> (Internal Label): This is the internal label ("alias") used by the Authorization Server to locate your private key inside its local Java Keystore (.jks). Set this to match your kid value exactly(<code>cnObStaticSigningKeyKid</code>).</p>
+</li>
+</ul>
 </li>
 <li>
 <p>Add those values to <code>override.yaml</code>:
 <div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nt">global</span><span class="p">:</span>
 <span class="w">    </span><span class="c1"># -- Open banking external signing jwks uri. Used in SSA Validation.</span>
-<span class="w">    </span><span class="nt">cnObExtSigningJwksUri</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;JWKS</span><span class="nv"> </span><span class="s">URI&gt;&quot;</span>
-<span class="w">    </span><span class="c1"># -- Open banking external signing jwks AS certificate authority string. Used in SSA Validation. This must be encoded using base64.. Used when `.global.cnObExtSigningJwksUri` is set.</span>
+<span class="w">    </span><span class="nt">cnObExtSigningJwksUri</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://mykeystore.openbanking.wow/xxxxx/xxxxx.jwks&quot;</span>
+<span class="w">    </span><span class="c1"># -- Open banking external signing jwks AS certificate authority string. Used in SSA Validation. This must be encoded using base64. Used when `.global.cnObExtSigningJwksUri` is set.</span>
 <span class="w">    </span><span class="nt">cnObExtSigningJwksCrt</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;base64 string in obsigningbase64.pem&gt;</span>
 <span class="w">    </span><span class="c1"># -- Open banking external signing jwks AS key string. Used in SSA Validation. This must be encoded using base64. Used when `.global.cnObExtSigningJwksUri` is set.</span>
 <span class="w">    </span><span class="nt">cnObExtSigningJwksKey</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;base64 string in obsigningbase64.key&gt;</span>
 <span class="w">    </span><span class="c1"># -- Open banking external signing jwks AS key passphrase to unlock provided key. This must be encoded using base64. Used when `.global.cnObExtSigningJwksUri` is set.</span>
 <span class="w">    </span><span class="nt">cnObExtSigningJwksKeyPassPhrase</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;base64 string passphrase of obsigningbase64.key&gt;</span>
-<span class="w">    </span><span class="c1"># -- Open banking external signing AS Alias. This is a kid value. Used in SSA Validation, kid used while encoding a JWT sent to token URL i.e. XkwIzWy44xWSlcWnMiEc8iq9s2G</span>
-<span class="w">    </span><span class="nt">cnObExtSigningAlias</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;Alias of the entry inside the keystore ob-ext-signing.jks&gt;</span>
-<span class="w">    </span><span class="c1"># -- Open banking signing AS kid to force the AS to use a specific signing key. i.e. Wy44xWSlcWnMiEc8iq9s2G</span>
-<span class="w">    </span><span class="nt">cnObStaticSigningKeyKid</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;Alias of the entry inside the keystore ob-ext-signing.jks&gt;</span>
+<span class="w">    </span><span class="c1"># -- External Key ID (kid) stamped onto the header of outgoing JWTs. This tells receiving parties which public key to fetch from your JWKS URI to verify the signature.</span>
+<span class="w">    </span><span class="nt">cnObStaticSigningKeyKid</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;XkwIzWy44xWSlcWnMiEc8iq9s2G&quot;</span><span class="w">        </span>
+<span class="w">    </span><span class="c1"># -- Internal Java Keystore (JKS) alias used to locate the Open Banking private signing key. To ensure correct internal mapping, this string must identically match your `cnObStaticSigningKeyKid`.</span>
+<span class="w">    </span><span class="nt">cnObInternalSigningAlias</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;XkwIzWy44xWSlcWnMiEc8iq9s2G&quot;</span>
 <span class="w">    </span><span class="c1"># -- Open banking AS transport crt. Used in SSA Validation. This must be encoded using base64.</span>
 <span class="w">    </span><span class="nt">cnObTransportCrt</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;base64 string in obtransportbase64.pem&gt;</span>
 <span class="w">    </span><span class="c1"># -- Open banking AS transport key. Used in SSA Validation. This must be encoded using base64.</span>
@@ -3018,7 +3023,7 @@ wget<span class="w"> </span>https://raw.githubusercontent.com/GluuFederation/fle
 <p>After running the script, you can go ahead and <a href="#testing-the-setup">test the setup</a>.</p>
 <h2 id="testing-the-setup">Testing the setup<a class="headerlink" href="#testing-the-setup" title="Permanent link">#</a></h2>
 <p>After successful installation, you can access and test the Gluu Open Banking Platform using either <a href="https://docs.gluu.org/head/openbanking/curl/">curl</a> or <a href="https://docs.gluu.org/head/openbanking/jans-cli/">Jans-CLI</a>.</p>
-<h2 id="changing-the-signing-key-kid-for-the-as-dynamically">Changing the  signing key kid for the AS dynamically<a class="headerlink" href="#changing-the-signing-key-kid-for-the-as-dynamically" title="Permanent link">#</a></h2>
+<h2 id="changing-the-signing-key-kid-for-the-as-dynamically">Changing the signing key kid for the AS dynamically<a class="headerlink" href="#changing-the-signing-key-kid-for-the-as-dynamically" title="Permanent link">#</a></h2>
 <ol>
 <li>
 <p>Get a client id and its associated password. We will use the jans-config-api client id and secret</p>
@@ -3067,8 +3072,8 @@ kubectl<span class="w"> </span>rollout<span class="w"> </span>restart<span class
 <span class="w">                </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">custom-scopes</span>
 <span class="w">    </span><span class="nt">volumeMounts</span><span class="p">:</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">custom-scopes</span>
-<span class="w">            </span><span class="l l-Scalar l-Scalar-Plain">mountPath</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;/app/templates/scopes.ob.ldif&quot;</span>
-<span class="w">            </span><span class="nt">subPath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">scopes.ob.ldif</span>
+<span class="w">          </span><span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/app/templates/scopes.ob.ldif&quot;</span>
+<span class="w">          </span><span class="nt">subPath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">scopes.ob.ldif</span>
 </code></pre></div>
 </li>
 <li>
@@ -3097,7 +3102,7 @@ kubectl<span class="w"> </span>rollout<span class="w"> </span>restart<span class
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="January 6, 2026 11:07:54 UTC"><span class="timeago" datetime="2026-01-06T11:07:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="January 6, 2026 11:07:54 UTC">2026-01-06</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="February 25, 2026 07:40:19 UTC"><span class="timeago" datetime="2026-02-25T07:40:19+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="February 25, 2026 07:40:19 UTC">2026-02-25</span>
   </span>
 
     
