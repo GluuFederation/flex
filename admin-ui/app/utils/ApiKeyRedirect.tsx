@@ -72,9 +72,9 @@ const ApiKeyRedirect = ({
   return (
     <React.Fragment>
       <Container>
-        {isConfigValid === false ? (
+        {isConfigValid === false && backendStatus.active ? (
           <UploadSSA />
-        ) : !isTimeout && isUnderThresholdLimit ? (
+        ) : isConfigValid === false ? null : !isTimeout && isUnderThresholdLimit ? (
           shouldShowApiKey ? (
             <ApiKey />
           ) : null
