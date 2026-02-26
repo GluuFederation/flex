@@ -120,6 +120,9 @@ function* retrieveLicenseKey(_action?: { type: string }) {
         yield put(checkLicensePresentResponse({ isLicenseValid: false }))
         yield put(generateTrialLicenseResponse(null))
       }
+    } else {
+      yield put(retrieveLicenseKeyResponse({ isNoValidLicenseKeyFound: true }))
+      yield put(checkLicensePresentResponse({ isLicenseValid: false }))
     }
   } catch (err) {
     yield put(setLicenseError(getLicenseErrorMessage(err as Error | SagaError)))

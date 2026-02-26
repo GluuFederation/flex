@@ -45,13 +45,10 @@ const ApiKeyRedirect = ({
     isNoValidLicenseKeyFound
 
   const showRedirectingLoader =
-    !islicenseCheckResultLoaded ||
-    isConfigValid === null ||
-    (isConfigValid !== false &&
-      !isTimeout &&
-      isUnderThresholdLimit &&
-      backendStatus.active &&
-      !shouldShowApiKey)
+    isConfigValid !== false &&
+    (!islicenseCheckResultLoaded ||
+      isConfigValid === null ||
+      (!isTimeout && isUnderThresholdLimit && backendStatus.active && !shouldShowApiKey))
 
   if (showRedirectingLoader) {
     return (
