@@ -12,6 +12,7 @@ import {
   setValidatingFlow,
   setApiDefaultToken,
   setLicenseError,
+  setBackendStatus,
   checkLicensePresent,
   checkUserLicenceKey,
   checkLicenseConfigValid,
@@ -32,9 +33,16 @@ import MauApi from 'Redux/api/MauApi'
 import { getYearMonth } from '../../utils/Util'
 import { devLogger } from '@/utils/devLogger'
 import * as JansConfigApi from 'jans_config_api'
-import type { SagaError } from './types/audit'
+import type { ApiErrorLike, SagaError } from './types/audit'
 
 let defaultToken: ApiTokenResponse | undefined
+
+const getBackendStatusFromError = (error: unknown) => {
+  const err = error as ApiErrorLike
+  const statusCode = typeof err?.response?.status === 'number' ? err.response.status : null
+  const errorMessage = err?.response?.data?.responseMessage ?? err?.response?.data?.message ?? null
+  return { active: false as const, errorMessage: errorMessage ?? null, statusCode }
+}
 
 export function* getAccessToken() {
   if (!defaultToken) {
@@ -43,6 +51,7 @@ export function* getAccessToken() {
       yield put(setApiDefaultToken(defaultToken))
     } catch (error) {
       devLogger.error('Failed to fetch API token with default scopes', error)
+      yield put(setBackendStatus(getBackendStatusFromError(error)))
       throw error
     }
   }
