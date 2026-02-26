@@ -1,5 +1,7 @@
 import React, { useCallback, useMemo } from 'react'
 import { FormGroup, Col, CustomInput, InputGroup } from 'Components'
+import Autocomplete from '@mui/material/Autocomplete'
+import TextField from '@mui/material/TextField'
 import { ChevronIcon } from '@/components/SVG'
 import GluuLabel from './GluuLabel'
 import GluuText from './GluuText'
@@ -7,6 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
+import { MAPPING_SPACING } from '@/constants'
 import { useStyles } from './styles/GluuSelectRow.style'
 import type { GluuSelectRowProps, SelectOption } from './types/GluuSelectRow.types'
 
@@ -38,6 +41,11 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
   errorMessage,
   doc_entry,
   isDark,
+  freeSolo,
+  onValueChange,
+  inputHeight,
+  inputPaddingTop,
+  inputPaddingBottom,
 }) => {
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
@@ -46,6 +54,66 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
     [themeState?.theme],
   )
   const { classes } = useStyles({ fontColor: themeColors.fontColor })
+
+  const formInputBg = themeColors.settings?.formInputBackground ?? themeColors.inputBackground
+  const inputBorderColor = themeColors.settings?.inputBorder ?? themeColors.borderColor
+
+  const autocompleteSx = useMemo(
+    () =>
+      freeSolo
+        ? {
+            width: '100%',
+            '& .MuiOutlinedInput-root': {
+              backgroundColor: `${formInputBg} !important`,
+              height: inputHeight ?? 40,
+              borderRadius: `${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px !important`,
+              overflow: 'hidden',
+              border: `1px solid ${inputBorderColor}`,
+              outline: 'none',
+              boxShadow: 'none',
+              color: `${themeColors.fontColor} !important`,
+              caretColor: themeColors.fontColor,
+              '& .MuiOutlinedInput-notchedOutline': { display: 'none' },
+              '& fieldset': { display: 'none', border: 'none' },
+              '&:hover': {
+                border: `1px solid ${inputBorderColor}`,
+                backgroundColor: `${formInputBg} !important`,
+                outline: 'none',
+                boxShadow: 'none',
+              },
+              '&.Mui-focused': {
+                border: `1px solid ${inputBorderColor} !important`,
+                backgroundColor: `${formInputBg} !important`,
+                outline: 'none',
+                boxShadow: 'none',
+              },
+              '& .MuiOutlinedInput-input': {
+                paddingTop: inputPaddingTop ?? 8,
+                paddingBottom: inputPaddingBottom ?? 8,
+                paddingLeft: 21,
+                paddingRight: 21,
+                boxSizing: 'border-box',
+                border: 'none !important',
+                borderRadius: 0,
+                outline: 'none',
+                backgroundColor: 'transparent !important',
+                boxShadow: 'none !important',
+                color: `${themeColors.fontColor} !important`,
+                caretColor: themeColors.fontColor,
+              },
+            },
+          }
+        : undefined,
+    [
+      freeSolo,
+      formInputBg,
+      inputBorderColor,
+      themeColors.fontColor,
+      inputHeight,
+      inputPaddingTop,
+      inputPaddingBottom,
+    ],
+  )
 
   const handleSelectChange = useCallback(
     (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -58,8 +126,49 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
   )
 
   const displayValue = value != null ? String(value) : ''
+  const options = useMemo(
+    () => deduplicateSelectValues(values).map((item) => (typeof item === 'string' ? item : item.value)),
+    [values],
+  )
 
-  return (
+  const content = freeSolo ? (
+    <FormGroup row>
+      <GluuLabel
+        label={label}
+        size={lsize}
+        doc_category={doc_category}
+        doc_entry={doc_entry || name}
+        required={required}
+        isDark={isDark}
+      />
+      <Col sm={rsize} className={classes.colWrapper}>
+        <Autocomplete
+          id={name}
+          freeSolo
+          disableClearable
+          options={options}
+          value={displayValue || null}
+          onChange={(_event, newValue) => {
+            onValueChange?.(newValue ? String(newValue) : null)
+          }}
+          onBlur={() => formik.handleBlur({ target: { name } } as React.FocusEvent<HTMLInputElement>)}
+          disabled={disabled}
+          sx={autocompleteSx}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              name={name}
+              placeholder={`${t('actions.choose')}...`}
+              error={showError && Boolean(errorMessage)}
+              helperText={showError ? errorMessage : undefined}
+              size="small"
+              fullWidth
+            />
+          )}
+        />
+      </Col>
+    </FormGroup>
+  ) : (
     <FormGroup row>
       <GluuLabel
         label={label}
@@ -107,6 +216,8 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
       </Col>
     </FormGroup>
   )
+
+  return content
 }
 
 export default GluuSelectRow

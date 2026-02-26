@@ -1,6 +1,3 @@
-// Asset API Types based on JansAssetsApi.js and related models
-
-// Base Document interface
 export interface Document {
   dn?: string
   inum?: string
@@ -8,7 +5,7 @@ export interface Document {
   filePath?: string
   description?: string
   document?: string
-  creationDate?: Date
+  creationDate?: string | Date
   service?: string
   level?: number
   revision?: number
@@ -16,7 +13,14 @@ export interface Document {
   baseDn?: string
 }
 
-// Paged result for document listing
+export interface AssetUploadResponse extends Document {
+  displayName?: string
+  jansModuleProperty?: string[]
+  jansLevel?: string
+  jansRevision?: string
+  jansEnabled?: boolean
+}
+
 export interface DocumentPagedResult {
   start?: number
   totalEntriesCount?: number
@@ -24,7 +28,6 @@ export interface DocumentPagedResult {
   entries?: Document[]
 }
 
-// Generic paged result
 export interface PagedResult {
   start?: number
   totalEntriesCount?: number
@@ -32,7 +35,6 @@ export interface PagedResult {
   entries?: unknown[]
 }
 
-// Asset directory mapping
 export interface AssetDirMapping {
   directory?: string
   type?: string[]
@@ -40,14 +42,12 @@ export interface AssetDirMapping {
   jansServiceModule?: string[]
 }
 
-// API Error interface
 export interface ApiError {
   code?: string
   message?: string
   description?: string
 }
 
-// Options for getting all assets
 export interface GetAllAssetsOptions {
   limit?: number
   pattern?: string
@@ -58,7 +58,6 @@ export interface GetAllAssetsOptions {
   fieldValuePair?: string
 }
 
-// Asset form data for create/update operations
 export interface AssetFormData {
   fileName: string
   description: string
@@ -71,7 +70,6 @@ export interface AssetFormData {
   [key: string]: unknown
 }
 
-// Asset create payload
 export interface CreateAssetPayload {
   payload: {
     action: {
@@ -80,7 +78,6 @@ export interface CreateAssetPayload {
   }
 }
 
-// Asset update payload
 export interface UpdateAssetPayload {
   payload: {
     action: {
@@ -89,7 +86,6 @@ export interface UpdateAssetPayload {
   }
 }
 
-// Interface for the underlying JansAssetsApi
 export interface IJansAssetsApi {
   deleteAsset(
     inum: string,
@@ -141,14 +137,12 @@ export interface IJansAssetsApi {
   ): unknown
 }
 
-// Generic API response wrapper
 export interface ApiResponse<T = unknown> {
   data?: T
   error?: ApiError
   status?: number
 }
 
-// Asset state interfaces for Redux
 export interface AssetState {
   items: Document[]
   selectedAsset: Document | null
@@ -160,7 +154,6 @@ export interface AssetState {
   dirMappings: AssetDirMapping[]
 }
 
-// Action payload interfaces
 export interface GetAssetsPayload {
   action: GetAllAssetsOptions
 }
@@ -183,7 +176,6 @@ export interface LoadServiceAssetPayload {
   serviceName: string
 }
 
-// Error handling interface for sagas
 export interface SagaError {
   response?: {
     body?: {
