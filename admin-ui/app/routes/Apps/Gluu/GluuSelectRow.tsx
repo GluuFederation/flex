@@ -62,17 +62,17 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
     () =>
       freeSolo
         ? {
-            width: '100%',
+            'width': '100%',
             '& .MuiOutlinedInput-root': {
-              backgroundColor: `${formInputBg} !important`,
-              height: inputHeight ?? 40,
-              borderRadius: `${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px !important`,
-              overflow: 'hidden',
-              border: `1px solid ${inputBorderColor}`,
-              outline: 'none',
-              boxShadow: 'none',
-              color: `${themeColors.fontColor} !important`,
-              caretColor: themeColors.fontColor,
+              'backgroundColor': `${formInputBg} !important`,
+              'height': inputHeight ?? 40,
+              'borderRadius': `${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px !important`,
+              'overflow': 'hidden',
+              'border': `1px solid ${inputBorderColor}`,
+              'outline': 'none',
+              'boxShadow': 'none',
+              'color': `${themeColors.fontColor} !important`,
+              'caretColor': themeColors.fontColor,
               '& .MuiOutlinedInput-notchedOutline': { display: 'none' },
               '& fieldset': { display: 'none', border: 'none' },
               '&:hover': {
@@ -127,7 +127,8 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
 
   const displayValue = value != null ? String(value) : ''
   const options = useMemo(
-    () => deduplicateSelectValues(values).map((item) => (typeof item === 'string' ? item : item.value)),
+    () =>
+      deduplicateSelectValues(values).map((item) => (typeof item === 'string' ? item : item.value)),
     [values],
   )
 
@@ -147,11 +148,13 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
           freeSolo
           disableClearable
           options={options}
-          value={displayValue || null}
+          value={displayValue || undefined}
           onChange={(_event, newValue) => {
             onValueChange?.(newValue ? String(newValue) : null)
           }}
-          onBlur={() => formik.handleBlur({ target: { name } } as React.FocusEvent<HTMLInputElement>)}
+          onBlur={() =>
+            formik.handleBlur?.({ target: { name } } as React.FocusEvent<HTMLInputElement>)
+          }
           disabled={disabled}
           sx={autocompleteSx}
           renderInput={(params) => (

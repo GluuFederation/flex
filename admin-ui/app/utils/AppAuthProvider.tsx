@@ -1,4 +1,4 @@
-import React, { useState, useEffect, type ReactNode } from 'react'
+import React, { useState, useEffect, useRef, type ReactNode } from 'react'
 import ApiKeyRedirect from './ApiKeyRedirect'
 import { useLocation } from 'react-router'
 import { NoHashQueryStringUtils, saveIssuer, getIssuer } from './TokenController'
@@ -25,7 +25,11 @@ import {
   AuthorizationError,
 } from '@openid/appauth'
 import type { AuthorizationResponse } from '@openid/appauth'
-import { fetchPolicyStore, fetchUserInformation } from 'Redux/api/backend-api'
+import {
+  fetchPolicyStore,
+  fetchUserInformation,
+  type FetchUserInfoResult,
+} from 'Redux/api/backend-api'
 import { jwtDecode } from 'jwt-decode'
 import type { UserInfo } from '@/redux/features/types/authTypes'
 
@@ -77,12 +81,14 @@ export default function AppAuthProvider({ children }: Readonly<AppAuthProviderPr
     }
   }, [dispatch, hasSession, userinfo, userinfo_jwt])
 
+  const hasDispatchedConfigCheck = useRef(false)
   useEffect(() => {
     const params = queryString.parse(location.search)
-    if (!(params.code && params.scope && params.state)) {
+    if (!(params.code && params.scope && params.state) && !hasDispatchedConfigCheck.current) {
+      hasDispatchedConfigCheck.current = true
       dispatch(checkLicenseConfigValid(undefined))
     }
-  }, [])
+  }, [dispatch])
 
   useEffect(() => {
     const params = queryString.parse(location.search)
@@ -99,7 +105,7 @@ export default function AppAuthProvider({ children }: Readonly<AppAuthProviderPr
     if (hasSession) {
       fetchPolicyStore()
         .then((policyStoreResponse) => {
-          if (isMounted) {
+          if (isMounted && policyStoreResponse.data) {
             const policyStoreJson = policyStoreResponse.data.responseObject
             dispatch({
               type: 'cedarPermissions/setPolicyStoreJson',
@@ -192,7 +198,7 @@ export default function AppAuthProvider({ children }: Readonly<AppAuthProviderPr
           })
 
           let authConfigs: AuthorizationServiceConfiguration | null = null
-          // Config is fetched after getAPIAccessToken (in saga) to avoid a second api-protection-token call
+
           let idToken: string | undefined
           let oauthAccessToken: string | undefined
 
@@ -210,8 +216,9 @@ export default function AppAuthProvider({ children }: Readonly<AppAuthProviderPr
                 token_type: token.tokenType,
               })
             })
-            .then((ujwt: string) => {
-              if (!ujwt) return
+            .then((value: FetchUserInfoResult) => {
+              if (value === -1) return
+              const ujwt = value
 
               const decoded = jwtDecode<UserInfo>(ujwt)
               dispatch(
