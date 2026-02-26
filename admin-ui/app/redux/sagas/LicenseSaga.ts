@@ -12,6 +12,7 @@ import {
   setValidatingFlow,
   setApiDefaultToken,
   setLicenseError,
+  setBackendStatus,
   checkLicensePresent,
   checkUserLicenceKey,
   checkLicenseConfigValid,
@@ -32,17 +33,29 @@ import MauApi from 'Redux/api/MauApi'
 import { getYearMonth } from '../../utils/Util'
 import { devLogger } from '@/utils/devLogger'
 import * as JansConfigApi from 'jans_config_api'
-import type { SagaError } from './types/audit'
+import type { ApiErrorLike, SagaError } from './types/audit'
 
 let defaultToken: ApiTokenResponse | undefined
+
+const getBackendStatusFromError = (error: unknown) => {
+  const err = error as ApiErrorLike
+  const statusCode = typeof err?.response?.status === 'number' ? err.response.status : null
+  const errorMessage =
+    err?.response?.data?.responseMessage ??
+    err?.response?.data?.message ??
+    (err instanceof Error ? err.message : error != null ? String(error) : 'Network error')
+  return { active: false as const, errorMessage, statusCode }
+}
 
 export function* getAccessToken() {
   if (!defaultToken) {
     try {
       defaultToken = (yield call(fetchApiTokenWithDefaultScopes)) as ApiTokenResponse
       yield put(setApiDefaultToken(defaultToken))
+      yield put(setBackendStatus({ active: true, errorMessage: null, statusCode: null }))
     } catch (error) {
       devLogger.error('Failed to fetch API token with default scopes', error)
+      yield put(setBackendStatus(getBackendStatusFromError(error)))
       throw error
     }
   }
@@ -120,6 +133,10 @@ function* retrieveLicenseKey(_action?: { type: string }) {
         yield put(checkLicensePresentResponse({ isLicenseValid: false }))
         yield put(generateTrialLicenseResponse(null))
       }
+    } else {
+      yield put(retrieveLicenseKeyResponse({ isNoValidLicenseKeyFound: true }))
+      yield put(checkLicensePresentResponse({ isLicenseValid: false }))
+      yield put(generateTrialLicenseResponse(null))
     }
   } catch (err) {
     yield put(setLicenseError(getLicenseErrorMessage(err as Error | SagaError)))
