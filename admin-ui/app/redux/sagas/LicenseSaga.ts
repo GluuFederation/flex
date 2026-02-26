@@ -40,8 +40,11 @@ let defaultToken: ApiTokenResponse | undefined
 const getBackendStatusFromError = (error: unknown) => {
   const err = error as ApiErrorLike
   const statusCode = typeof err?.response?.status === 'number' ? err.response.status : null
-  const errorMessage = err?.response?.data?.responseMessage ?? err?.response?.data?.message ?? null
-  return { active: false as const, errorMessage: errorMessage ?? null, statusCode }
+  const errorMessage =
+    err?.response?.data?.responseMessage ??
+    err?.response?.data?.message ??
+    (err instanceof Error ? err.message : error != null ? String(error) : 'Network error')
+  return { active: false as const, errorMessage, statusCode }
 }
 
 export function* getAccessToken() {
@@ -49,6 +52,7 @@ export function* getAccessToken() {
     try {
       defaultToken = (yield call(fetchApiTokenWithDefaultScopes)) as ApiTokenResponse
       yield put(setApiDefaultToken(defaultToken))
+      yield put(setBackendStatus({ active: true, errorMessage: null, statusCode: null }))
     } catch (error) {
       devLogger.error('Failed to fetch API token with default scopes', error)
       yield put(setBackendStatus(getBackendStatusFromError(error)))
