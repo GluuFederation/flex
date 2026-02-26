@@ -29,12 +29,7 @@ import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useAcrAudit } from '../AuthN/hooks'
-import {
-  generateLabel,
-  isRenamedKey,
-  renamedFieldFromObject,
-  useAuthServerPropertiesActions,
-} from './Properties/utils'
+import { generateLabel, isRenamedKey, renamedFieldFromObject } from './Properties/utils'
 import { createAppConfigurationSchema } from './Properties/utils/validations'
 import type { AppConfiguration, RootState, JsonPatch, AcrPutOperation, Script } from './types'
 import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/types/index'
@@ -48,7 +43,6 @@ const AuthPage: React.FC = () => {
   const queryClient = useQueryClient()
   const { navigateBack } = useAppNavigation()
   const { hasCedarWritePermission, authorizeHelper } = useCedarling()
-  const { logAuthServerPropertiesUpdate } = useAuthServerPropertiesActions()
   const { logAcrUpdate } = useAcrAudit()
   const configuration = useSelector((state: RootState) => state.jsonConfigReducer.configuration)
   const scripts = useSelector((state: RootState) => state.initReducer.scripts)
@@ -304,21 +298,8 @@ const AuthPage: React.FC = () => {
             console.error('Error updating ACR:', error)
           }
         }
-        let auditSuccess = true
-        try {
-          const auditPayload = {
-            requestBody: patches,
-            ...(put && put.value ? { defaultAcr: put.value } : {}),
-          }
-          auditSuccess = await logAuthServerPropertiesUpdate(message, auditPayload)
-        } catch (auditError) {
-          console.error('Error logging audit:', auditError)
-          auditSuccess = false
-        }
-        if (auditSuccess) {
+        if (patches.length === 0) {
           toast.success(t('messages.success_in_saving'))
-        } else {
-          toast.warning(t('messages.success_in_saving_audit_failed'))
         }
       } catch (err) {
         console.error('Error updating auth server properties:', err)
@@ -327,14 +308,13 @@ const AuthPage: React.FC = () => {
         toast.error(errorMsg)
       }
     },
-    [patches, put, acrs, dispatch, putAcrsMutation, logAcrUpdate, logAuthServerPropertiesUpdate, t],
+    [patches, put, acrs, dispatch, putAcrsMutation, logAcrUpdate, t],
   )
   const submitForm = useCallback(
     async (message: string) => {
-      toggle()
       await handleSubmit(message)
     },
-    [toggle, handleSubmit],
+    [handleSubmit],
   )
 
   return (
