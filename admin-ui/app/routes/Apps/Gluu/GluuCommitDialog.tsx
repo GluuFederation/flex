@@ -104,10 +104,10 @@ const GluuCommitDialog = ({
 
   const handleAccept = useCallback(async () => {
     if (isSubmitting) return
+    setIsSubmitting(true)
     if (formik) {
       formik.setFieldValue('action_message', userMessage)
     }
-    setIsSubmitting(true)
     try {
       const result = onAccept(userMessage)
       await Promise.resolve(result)
