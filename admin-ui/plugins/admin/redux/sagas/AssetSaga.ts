@@ -21,8 +21,8 @@ import {
   UpdateAssetSagaPayload,
   type AssetAuditPayload,
 } from '../features/types/asset'
-import { Document, AssetFormData } from '../../components/Assets/types/AssetApiTypes'
-import { AssetRootState } from './types/asset'
+import type { Document, AssetFormData } from '../../components/Assets/types/AssetApiTypes'
+import type { AssetRootState } from './types/asset'
 import {
   getErrorMessage,
   isHttpLikeError,

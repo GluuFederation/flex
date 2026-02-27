@@ -27,6 +27,7 @@ import customColors from '@/customColors'
 import { useStyles } from './JansAssetListPage.style'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import { invalidateQueriesByKey } from '@/utils/queryUtils'
+import { devLogger } from '@/utils/devLogger'
 import { T_KEYS } from './constants'
 
 const LIMIT_OPTIONS = getRowsPerPageOptions()
@@ -175,12 +176,12 @@ const JansAssetListPage: React.FC = () => {
           await deleteAsset(inumToDelete, userMessage)
           refetch()
           setDeleteData(null)
-        } catch {
-          /* Error handled by deleteAsset mutation */
+        } catch (err) {
+          devLogger.error('[Asset delete] submitForm failed', err)
         }
       }
     },
-    [deleteData, deleteAsset, refetch],
+    [deleteData, deleteAsset, refetch, setDeleteData],
   )
 
   const searchLabel = useMemo(() => `${t(T_KEYS.FIELD_PATTERN)}:`, [t])
