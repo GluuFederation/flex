@@ -241,7 +241,7 @@ spec:
       urlRewrite:
         path:
           type: ReplaceFullPath
-          replaceFullPath: /jans-auth/restv1/authzen-configuration
+          replaceFullPath: /restv1/authzen-configuration
     backendRefs:
     - name: {{ $authSvc }}
       port: 8080
