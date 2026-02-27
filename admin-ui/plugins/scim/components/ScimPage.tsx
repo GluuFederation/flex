@@ -143,7 +143,7 @@ const ScimPage: React.FC = () => {
   })
 
   const handleSubmit = useCallback(
-    (formValues: ScimFormValues): void => {
+    (formValues: ScimFormValues): void | Promise<unknown> => {
       if (!scimConfiguration) {
         dispatch(updateToast(true, 'error', t('messages.no_configuration_loaded')))
         return
@@ -155,7 +155,7 @@ const ScimPage: React.FC = () => {
         return
       }
       userMessageRef.current = action_message || ''
-      patchScimMutation.mutate({ data: patches })
+      return patchScimMutation.mutateAsync({ data: patches })
     },
     [scimConfiguration, patchScimMutation, dispatch, t],
   )

@@ -88,7 +88,6 @@ function SmtpForm(props: Readonly<SmtpFormProps>) {
       return
     }
 
-    toggle()
     const trimmedValues = trimObjectStrings(
       formik.values as unknown as Record<string, unknown>,
     ) as unknown as SmtpFormValues
