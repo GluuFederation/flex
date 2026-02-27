@@ -3,7 +3,9 @@ import type { PutEffect, SelectEffect } from 'redux-saga/effects'
 import { SagaIterator } from 'redux-saga'
 import { PayloadAction } from '@reduxjs/toolkit'
 import {
+  createJansAsset as createJansAssetAction,
   createJansAssetResponse,
+  updateJansAsset as updateJansAssetAction,
   updateJansAssetResponse,
 } from 'Plugins/admin/redux/features/AssetSlice'
 import { CREATE, UPDATE } from '../../../../app/audit/UserActionType'
@@ -108,11 +110,11 @@ function* errorToast(errMsg: string): Generator<PutEffect, void, void> {
 }
 
 export function* watchCreateJansAsset(): SagaIterator<void> {
-  yield takeLatest('asset/createJansAsset', createJansAsset)
+  yield takeLatest(createJansAssetAction.type, createJansAsset)
 }
 
 export function* watchUpdateJansAsset(): SagaIterator<void> {
-  yield takeLatest('asset/updateJansAsset', updateJansAsset)
+  yield takeLatest(updateJansAssetAction.type, updateJansAsset)
 }
 
 export default function* rootSaga(): SagaIterator<void> {

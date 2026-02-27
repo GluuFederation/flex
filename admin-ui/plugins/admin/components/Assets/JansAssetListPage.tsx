@@ -247,7 +247,7 @@ const JansAssetListPage: React.FC = () => {
               borderRadius={5}
               className={classes.statusBadge}
             >
-              {isEnabled ? 'true' : 'false'}
+              {isEnabled ? t('options.enabled') : t('options.disabled')}
             </GluuBadge>
           )
         },
@@ -297,7 +297,10 @@ const JansAssetListPage: React.FC = () => {
     [effectivePage, limit, totalItems, handlePageChange, handleRowsPerPageChange],
   )
 
-  const getRowKey = useCallback((row: Document) => row.inum ?? '', [])
+  const getRowKey = useCallback(
+    (row: Document, index: number) => row.inum ?? `no-inum-${index}`,
+    [],
+  )
 
   const emptyMessage = useMemo(() => {
     if (!pattern && totalItems === 0) {

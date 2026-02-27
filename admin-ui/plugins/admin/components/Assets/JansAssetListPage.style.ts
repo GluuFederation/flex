@@ -19,7 +19,7 @@ export const useStyles = makeStyles<AssetListPageStylesParams>()((_, { isDark, t
   return {
     page: {
       fontFamily,
-      paddingTop: 24,
+      paddingTop: SPACING.PAGE,
     },
     cellFileName: {
       color: themeColors.fontColor,
@@ -66,7 +66,7 @@ export const useStyles = makeStyles<AssetListPageStylesParams>()((_, { isDark, t
       'width': '100%',
       'maxWidth': '100%',
       'minWidth': 0,
-      'marginTop': 24,
+      'marginTop': SPACING.SECTION_GAP,
       'backgroundColor': cardBg,
       ...cardBorderStyle,
       'borderRadius': BORDER_RADIUS.DEFAULT,
