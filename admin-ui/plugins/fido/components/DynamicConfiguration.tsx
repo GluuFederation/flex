@@ -53,10 +53,9 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
       if (readOnly) {
         return
       }
-      toggle()
       handleSubmit(formik.values, userMessage)
     },
-    [handleSubmit, toggle, formik.values, readOnly],
+    [handleSubmit, formik.values, readOnly],
   )
 
   const handleCancel = useCallback(() => {
