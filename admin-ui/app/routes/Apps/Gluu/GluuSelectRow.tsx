@@ -128,7 +128,9 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
   const displayValue = value != null ? String(value) : ''
   const options = useMemo(
     () =>
-      deduplicateSelectValues(values).map((item) => (typeof item === 'string' ? item : item.value)),
+      deduplicateSelectValues(values).map((item) =>
+        typeof item === 'string' ? item : (item.label ?? item.value),
+      ),
     [values],
   )
 
@@ -150,6 +152,10 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
           options={options}
           value={displayValue || undefined}
           onChange={(_event, newValue) => {
+            const value = newValue ? String(newValue) : ''
+            formik.handleChange({
+              target: { name, value },
+            } as React.ChangeEvent<HTMLInputElement>)
             onValueChange?.(newValue ? String(newValue) : null)
           }}
           onBlur={() =>
@@ -198,7 +204,7 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
               <option value="">{t('actions.choose')}...</option>
               {deduplicateSelectValues(values).map((item) => {
                 const optionValue = typeof item === 'string' ? item : item.value
-                const optionLabel = typeof item === 'string' ? item : item.label
+                const optionLabel = typeof item === 'string' ? item : (item.label ?? item.value)
                 return (
                   <option key={optionValue} value={optionValue}>
                     {optionLabel}

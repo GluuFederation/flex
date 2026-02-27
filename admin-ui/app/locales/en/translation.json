@@ -786,7 +786,7 @@
     "add_permission": "Add Permission",
     "add_asset": "Add Jans Asset",
     "asset_document_error": "Document is mandatory.",
-    "service_required": "Related Services is required.",
+    "service_required": "Related Services are required.",
     "add_configuration": "Add Configuration",
     "credentials": "Credentials",
     "collapse": "Collapse",

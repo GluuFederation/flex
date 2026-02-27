@@ -1,38 +1,16 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import { Provider } from 'react-redux'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
+import { QueryClient } from '@tanstack/react-query'
+import {
+  createAssetTestStore,
+  createAssetTestQueryClient,
+  createAssetTestWrapper,
+} from './assetTestUtils'
 import JansAssetEditPage from 'Plugins/admin/components/Assets/JansAssetEditPage'
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useParams: jest.fn(() => ({ id: 'test-inum-123' })),
-}))
-
-jest.mock('@/cedarling', () => ({
-  useCedarling: jest.fn(() => ({
-    hasCedarReadPermission: jest.fn(() => true),
-    hasCedarWritePermission: jest.fn(() => true),
-    authorizeHelper: jest.fn(),
-  })),
-}))
-
-jest.mock('@/cedarling/utility', () => ({
-  ADMIN_UI_RESOURCES: { Assets: 'assets' },
-}))
-
-jest.mock('@/cedarling/constants/resourceScopes', () => ({
-  CEDAR_RESOURCE_SCOPES: { assets: [] },
-}))
-
-jest.mock('Plugins/admin/components/Assets/hooks', () => ({
-  useAssetServices: jest.fn(() => ({ data: ['service1', 'service2'], isLoading: false })),
-}))
-
-jest.mock('JansConfigApi', () => ({
-  getGetAllAssetsQueryKey: jest.fn(() => ['assets']),
 }))
 
 const assetReducerState = {
@@ -56,38 +34,24 @@ const assetReducerState = {
   showErrorModal: false,
 }
 
-const store = configureStore({
-  reducer: combineReducers({
-    authReducer: (state = { permissions: [] }) => state,
-    assetReducer: (state = assetReducerState) => state,
-    webhookReducer: (
-      state = {
-        featureWebhooks: [],
-        loadingWebhooks: false,
-        webhookModal: false,
-        triggerWebhookInProgress: false,
-      },
-    ) => state,
-    noReducer: (state = {}) => state,
-  }),
-})
-
-const queryClient = new QueryClient({
-  defaultOptions: { queries: { retry: false } },
-})
-
-const Wrapper = ({ children }: { children: React.ReactNode }) => (
-  <QueryClientProvider client={queryClient}>
-    <AppTestWrapper>
-      <Provider store={store}>{children}</Provider>
-    </AppTestWrapper>
-  </QueryClientProvider>
-)
-
 describe('JansAssetEditPage', () => {
+  let store: ReturnType<typeof createAssetTestStore>
+  let queryClient: QueryClient
+  let Wrapper: ReturnType<typeof createAssetTestWrapper>
+
+  beforeEach(() => {
+    queryClient = createAssetTestQueryClient()
+    store = createAssetTestStore(assetReducerState)
+    Wrapper = createAssetTestWrapper(store, queryClient)
+  })
+
+  afterEach(() => {
+    queryClient.clear()
+  })
+
   it('renders the asset edit page with form fields', async () => {
     render(<JansAssetEditPage />, { wrapper: Wrapper })
     expect(await screen.findByText(/Name/i)).toBeInTheDocument()
-    expect(screen.getByText(/Description/i)).toBeInTheDocument()
+    expect(await screen.findByText(/Description/i)).toBeInTheDocument()
   })
 })

@@ -125,7 +125,9 @@ export default class AssetApi {
     const assetFile: Blob | File =
       body.document instanceof File
         ? body.document
-        : new Blob([body.document as BlobPart], { type: 'application/octet-stream' })
+        : body.document instanceof Blob
+          ? body.document
+          : new Blob([body.document as BlobPart], { type: 'application/octet-stream' })
     const documentBlob = new Blob([JSON.stringify({ ...document })], {
       type: 'application/json',
     })

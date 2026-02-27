@@ -125,7 +125,13 @@ const AssetForm: React.FC = () => {
     if (formik.touched.document || formik.submitCount > 0) {
       void formik.validateForm()
     }
-  }, [formik.values.document, formik.touched.document, formik.submitCount, i18n.language])
+  }, [
+    formik.values.document,
+    formik.touched.document,
+    formik.submitCount,
+    i18n.language,
+    formik.validateForm,
+  ])
 
   const openCommitDialog: ToggleHandler = useCallback(() => {
     setShowCommitDialog(true)
@@ -158,11 +164,20 @@ const AssetForm: React.FC = () => {
     [closeCommitDialog, formik, id, selectedAsset, userAction, dispatch],
   )
 
-  if (saveOperationFlag && !errorInSaveOperationFlag) {
-    invalidateQueriesByKey(queryClient, getGetAllAssetsQueryKey())
-    navigateBack(ROUTES.ASSETS_LIST)
-    dispatch(resetFlags())
-  }
+  useEffect(() => {
+    if (saveOperationFlag && !errorInSaveOperationFlag) {
+      invalidateQueriesByKey(queryClient, getGetAllAssetsQueryKey())
+      navigateBack(ROUTES.ASSETS_LIST)
+      dispatch(resetFlags())
+    }
+  }, [
+    saveOperationFlag,
+    errorInSaveOperationFlag,
+    queryClient,
+    navigateBack,
+    dispatch,
+    getGetAllAssetsQueryKey,
+  ])
 
   const handleCancel = useCallback(() => {
     formik.resetForm({ values: initialValues })

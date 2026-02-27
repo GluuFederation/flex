@@ -15,11 +15,12 @@ interface AssetApiError {
 type MutationError = Error | AssetApiError
 
 const extractAssetErrorMessage = (error: MutationError, fallback: string): string =>
-  (error as AssetApiError)?.response?.data?.responseMessage ||
-  (error as Error)?.message ||
-  fallback
+  (error as AssetApiError)?.response?.data?.responseMessage || (error as Error)?.message || fallback
 
-export const useDeleteAssetWithAudit = (callbacks?: { onSuccess?: () => void; onError?: (err: Error) => void }) => {
+export const useDeleteAssetWithAudit = (callbacks?: {
+  onSuccess?: () => void
+  onError?: (err: Error) => void
+}) => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
@@ -35,7 +36,11 @@ export const useDeleteAssetWithAudit = (callbacks?: { onSuccess?: () => void; on
         logAction(DELETION, 'asset', {
           action_message: userMessage,
           action_data: { inum },
-        }).catch(() => {})
+        }).catch((err) => {
+          const auditError = err instanceof Error ? err : new Error(String(err))
+          callbacksRef.current?.onError?.(auditError)
+          console.error(`[Asset audit] logAction failed for asset inum=${inum}`, auditError)
+        })
         dispatch(updateToast(true, 'success', t(T_KEYS.MSG_ASSET_DELETED_SUCCESSFULLY)))
         await invalidateQueriesByKey(queryClient, getGetAllAssetsQueryKey())
         callbacksRef.current?.onSuccess?.()
@@ -43,7 +48,11 @@ export const useDeleteAssetWithAudit = (callbacks?: { onSuccess?: () => void; on
       } catch (error) {
         const err = error as MutationError
         dispatch(
-          updateToast(true, 'error', extractAssetErrorMessage(err, t(T_KEYS.MSG_FAILED_TO_DELETE_ASSET))),
+          updateToast(
+            true,
+            'error',
+            extractAssetErrorMessage(err, t(T_KEYS.MSG_FAILED_TO_DELETE_ASSET)),
+          ),
         )
         callbacksRef.current?.onError?.(err instanceof Error ? err : new Error(String(err)))
         throw error

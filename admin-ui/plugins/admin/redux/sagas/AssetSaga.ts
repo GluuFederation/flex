@@ -9,7 +9,6 @@ import {
 import { CREATE, UPDATE } from '../../../../app/audit/UserActionType'
 import { updateToast } from 'Redux/features/toastSlice'
 import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
-import type { AdditionalPayload } from 'Utils/TokenController'
 import AssetApi from '../api/AssetApi'
 import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
@@ -18,6 +17,7 @@ import { redirectToLogout } from 'Redux/sagas/SagaUtils'
 import {
   CreateAssetSagaPayload,
   UpdateAssetSagaPayload,
+  type AssetAuditPayload,
 } from '../features/types/asset'
 import { Document, AssetFormData } from '../../components/Assets/types/AssetApiTypes'
 import { AssetRootState } from './types/asset'
@@ -44,8 +44,8 @@ export function* createJansAsset({
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit as AuditRecord, CREATE, 'asset', {
-      action: { action_data: payload.action.action_data as unknown as Record<string, unknown> },
-    } as AdditionalPayload)
+      action: { action_data: payload.action.action_data },
+    } as AssetAuditPayload)
     const assetApi: AssetApi = yield* createAssetApi()
     const data: Document = yield call(
       [assetApi, assetApi.createJansAsset],
@@ -72,8 +72,8 @@ export function* updateJansAsset({
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit as AuditRecord, UPDATE, 'asset', {
-      action: { action_data: payload.action.action_data as unknown as Record<string, unknown> },
-    } as AdditionalPayload)
+      action: { action_data: payload.action.action_data },
+    } as AssetAuditPayload)
     const assetApi: AssetApi = yield* createAssetApi()
     const data: Document = yield call(
       [assetApi, assetApi.updateJansAsset],
@@ -107,8 +107,5 @@ export function* watchUpdateJansAsset(): SagaIterator<void> {
 }
 
 export default function* rootSaga(): SagaIterator<void> {
-  yield all([
-    fork(watchCreateJansAsset),
-    fork(watchUpdateJansAsset),
-  ])
+  yield all([fork(watchCreateJansAsset), fork(watchUpdateJansAsset)])
 }

@@ -728,7 +728,7 @@
   "messages": {
     "add_permission": "Adicionar permissão",
     "thanks_for_using_admin_ui": "Obrigado por usar a interface de administração.",
-    "add_asset": "Adicionar Jans Asset",
+    "add_asset": "Adicionar recurso Jans",
     "asset_document_error": "O documento é obrigatório.",
     "service_required": "Serviços relacionados são obrigatórios.",
     "add_configuration": "Adicionar configuração",

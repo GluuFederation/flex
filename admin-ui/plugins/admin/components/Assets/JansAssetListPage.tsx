@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback, useMemo, memo } from 'react'
+import React, { useEffect, useState, useCallback, useMemo, memo } from 'react'
 import { DeleteOutlined, Edit, Add } from '@mui/icons-material'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuBadge } from '@/components/GluuBadge'
@@ -53,7 +53,6 @@ const JansAssetListPage: React.FC = () => {
   const [pattern, setPattern] = useState('')
   const [modal, setModal] = useState(false)
   const [deleteData, setDeleteData] = useState<Document | null>(null)
-  const [isRefreshing, setIsRefreshing] = useState(false)
 
   SetTitle(t(T_KEYS.TITLE_ASSETS))
 
@@ -103,19 +102,6 @@ const JansAssetListPage: React.FC = () => {
     }
   }, [authorizeHelper])
 
-  const prevIsFetchingRef = useRef(false)
-  useEffect(() => {
-    if (!isRefreshing) {
-      prevIsFetchingRef.current = isFetching
-      return
-    }
-    const wasFetching = prevIsFetchingRef.current
-    prevIsFetchingRef.current = isFetching
-    if (wasFetching && !isFetching) {
-      setIsRefreshing(false)
-    }
-  }, [isRefreshing, isFetching])
-
   const { deleteAsset, isLoading: isDeleting } = useDeleteAssetWithAudit()
 
   const toggle = useCallback(() => setModal((prev) => !prev), [])
@@ -142,7 +128,6 @@ const JansAssetListPage: React.FC = () => {
   const handleRefresh = useCallback(() => {
     setPageNumber(0)
     setPattern('')
-    setIsRefreshing(true)
     const refreshParams = { limit, pattern: undefined, startIndex: 0 }
     invalidateQueriesByKey(queryClient, getGetAllAssetsQueryKey(refreshParams))
   }, [queryClient, limit])
@@ -182,12 +167,14 @@ const JansAssetListPage: React.FC = () => {
   const searchPlaceholder = useMemo(() => t(T_KEYS.PLACEHOLDER_SEARCH_PATTERN), [t])
 
   const primaryAction = useMemo(
-    () => ({
-      label: t(T_KEYS.MSG_ADD_ASSET),
-      icon: <Add className={classes.addIcon} />,
-      onClick: navigateToAddPage,
-      disabled: !canWriteAssets,
-    }),
+    () =>
+      canWriteAssets
+        ? {
+            label: t(T_KEYS.MSG_ADD_ASSET),
+            icon: <Add className={classes.addIcon} />,
+            onClick: navigateToAddPage,
+          }
+        : undefined,
     [t, navigateToAddPage, canWriteAssets, classes],
   )
 
@@ -299,7 +286,7 @@ const JansAssetListPage: React.FC = () => {
     return t(T_KEYS.MSG_NO_DATA)
   }, [pattern, totalItems, t])
 
-  const loading = isLoading || isFetching || isDeleting || isRefreshing
+  const loading = isLoading || isFetching || isDeleting
 
   return (
     <GluuLoader blocking={loading}>

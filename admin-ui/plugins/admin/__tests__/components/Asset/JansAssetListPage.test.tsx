@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import JansAssetListPage from 'Plugins/admin/components/Assets/JansAssetListPage'
+import { useCedarling } from '@/cedarling'
 
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({
@@ -12,6 +13,9 @@ jest.mock('@/cedarling', () => ({
     hasCedarWritePermission: jest.fn(() => true),
     hasCedarDeletePermission: jest.fn(() => true),
     authorizeHelper: jest.fn(),
+    authorize: jest.fn(),
+    isLoading: false,
+    error: null,
   })),
 }))
 
@@ -93,5 +97,31 @@ describe('JansAssetListPage', () => {
   it('renders Add Jans Asset button when user has write permission', () => {
     render(<JansAssetListPage />, { wrapper: Wrapper })
     expect(screen.getByText(/Add Jans Asset/i)).toBeInTheDocument()
+  })
+
+  it('does not render Add Jans Asset button when user lacks write permission', () => {
+    jest.mocked(useCedarling).mockReturnValue({
+      hasCedarReadPermission: jest.fn(() => true),
+      hasCedarWritePermission: jest.fn(() => false),
+      hasCedarDeletePermission: jest.fn(() => true),
+      authorizeHelper: jest.fn(),
+      authorize: jest.fn(),
+      isLoading: false,
+      error: null,
+    })
+    render(<JansAssetListPage />, { wrapper: Wrapper })
+    expect(screen.queryByText(/Add Jans Asset/i)).not.toBeInTheDocument()
+  })
+
+  afterEach(() => {
+    jest.mocked(useCedarling).mockImplementation(() => ({
+      hasCedarReadPermission: jest.fn(() => true),
+      hasCedarWritePermission: jest.fn(() => true),
+      hasCedarDeletePermission: jest.fn(() => true),
+      authorizeHelper: jest.fn(),
+      authorize: jest.fn(),
+      isLoading: false,
+      error: null,
+    }))
   })
 })
