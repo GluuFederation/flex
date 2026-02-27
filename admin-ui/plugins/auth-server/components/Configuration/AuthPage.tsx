@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector, useStore } from 'react-redux'
 import { useQueryClient } from '@tanstack/react-query'
 import { useFormik, setIn } from 'formik'
 import * as Yup from 'yup'
@@ -40,11 +40,13 @@ const AuthPage: React.FC = () => {
   SetTitle(t('titles.jans_json_property'))
 
   const dispatch = useDispatch()
+  const store = useStore()
   const queryClient = useQueryClient()
   const { navigateBack } = useAppNavigation()
   const { hasCedarWritePermission, authorizeHelper } = useCedarling()
   const { logAcrUpdate } = useAcrAudit()
   const configuration = useSelector((state: RootState) => state.jsonConfigReducer.configuration)
+  const jsonConfigLoading = useSelector((state: RootState) => state.jsonConfigReducer.loading)
   const scripts = useSelector((state: RootState) => state.initReducer.scripts)
   const { data: acrs, isLoading: acrLoading } = useGetAcrs({
     query: { staleTime: 30000 },
@@ -288,6 +290,16 @@ const AuthPage: React.FC = () => {
           } as unknown as ActionData
           buildPayload(userAction, message, postBody)
           dispatch(patchJsonConfig({ action: userAction }))
+          await new Promise<void>((resolve) => {
+            const unsub = store.subscribe(() => {
+              const loading = (store.getState() as { jsonConfigReducer?: { loading?: boolean } })
+                ?.jsonConfigReducer?.loading
+              if (!loading) {
+                unsub()
+                resolve()
+              }
+            })
+          })
         }
         if (put && put.value) {
           const newAcr = { defaultAcr: put.value || acrs?.defaultAcr }
@@ -308,7 +320,7 @@ const AuthPage: React.FC = () => {
         toast.error(errorMsg)
       }
     },
-    [patches, put, acrs, dispatch, putAcrsMutation, logAcrUpdate, t],
+    [patches, put, acrs, dispatch, store, putAcrsMutation, logAcrUpdate, t],
   )
   const submitForm = useCallback(
     async (message: string) => {
@@ -318,7 +330,9 @@ const AuthPage: React.FC = () => {
   )
 
   return (
-    <GluuLoader blocking={isConfigEmpty || acrLoading || putAcrsMutation.isPending}>
+    <GluuLoader
+      blocking={isConfigEmpty || acrLoading || putAcrsMutation.isPending || jsonConfigLoading}
+    >
       <Card style={{ borderRadius: 24 }}>
         <CardHeader>
           <div style={{ display: 'flex' }}>

@@ -41,6 +41,7 @@ const GluuCommitDialog = ({
   const isDark = themeState.theme === THEME_DARK
   const { classes } = useStyles({ isDark })
   const [userMessage, setUserMessage] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const { loadingWebhooks, webhookModal } = useSelector((state: RootState) => state.webhookReducer)
 
   const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
@@ -102,13 +103,19 @@ const GluuCommitDialog = ({
   }, [handler, onCloseModal])
 
   const handleAccept = useCallback(async () => {
+    if (isSubmitting) return
     if (formik) {
       formik.setFieldValue('action_message', userMessage)
     }
-    const result = onAccept(userMessage)
-    await Promise.resolve(result)
-    closeModal()
-  }, [formik, onAccept, userMessage, closeModal])
+    setIsSubmitting(true)
+    try {
+      const result = onAccept(userMessage)
+      await Promise.resolve(result)
+      closeModal()
+    } finally {
+      setIsSubmitting(false)
+    }
+  }, [formik, onAccept, userMessage, closeModal, isSubmitting])
 
   const handleOverlayKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -196,7 +203,7 @@ const GluuCommitDialog = ({
             <div className={classes.buttonRow}>
               <GluuButton
                 onClick={handleAccept}
-                disabled={!isValid}
+                disabled={!isValid || isSubmitting}
                 backgroundColor={customColors.statusActive}
                 textColor={customColors.white}
                 borderColor="transparent"

@@ -51,8 +51,11 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
   }, [formik.values])
 
   const submitForm = useCallback(
-    (userMessage: string): void => {
-      handleSubmit({ ...formik.values, action_message: userMessage })
+    (userMessage: string): void | Promise<unknown> => {
+      return handleSubmit({
+        ...formik.values,
+        action_message: userMessage,
+      }) as void | Promise<unknown>
     },
     [handleSubmit, formik.values],
   )
