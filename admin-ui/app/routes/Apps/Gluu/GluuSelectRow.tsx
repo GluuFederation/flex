@@ -10,6 +10,7 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import { MAPPING_SPACING } from '@/constants'
+import customColors from '@/customColors'
 import { useStyles } from './styles/GluuSelectRow.style'
 import type { GluuSelectRowProps, SelectOption } from './types/GluuSelectRow.types'
 
@@ -81,11 +82,10 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
                 outline: 'none',
                 boxShadow: 'none',
               },
-              '&.Mui-focused': {
+              '&.Mui-focused, &.Mui-focusVisible': {
                 border: `1px solid ${inputBorderColor} !important`,
                 backgroundColor: `${formInputBg} !important`,
-                outline: 'none',
-                boxShadow: 'none',
+                boxShadow: `0 0 0 2px ${customColors.lightBlue}`,
               },
               '& .MuiOutlinedInput-input': {
                 paddingTop: inputPaddingTop ?? 8,

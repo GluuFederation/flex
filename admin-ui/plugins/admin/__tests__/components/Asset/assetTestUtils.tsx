@@ -55,20 +55,23 @@ const defaultWebhookReducerState = {
   triggerWebhookInProgress: false,
 }
 
+const defaultAuthReducerState = {
+  permissions: [] as string[],
+  config: { clientId: '' },
+  location: { IPv4: '' },
+  userinfo: null as { name: string; inum: string } | null,
+}
+
 export function createAssetTestStore(assetReducerState = defaultAssetReducerState): Store {
   return configureStore({
     reducer: combineReducers({
-      authReducer: (state = { permissions: [] }) => state,
+      authReducer: (state = defaultAuthReducerState) => state,
       assetReducer: (state = assetReducerState) => state,
       webhookReducer: (state = defaultWebhookReducerState) => state,
       noReducer: (state = {}) => state,
     }),
   })
 }
-
-export const queryClient = new QueryClient({
-  defaultOptions: { queries: { retry: false } },
-})
 
 export function createAssetTestQueryClient(): QueryClient {
   return new QueryClient({
@@ -77,7 +80,7 @@ export function createAssetTestQueryClient(): QueryClient {
 }
 
 export function createAssetTestWrapper(store: Store, client?: QueryClient) {
-  const queryClientToUse = client ?? queryClient
+  const queryClientToUse = client ?? createAssetTestQueryClient()
   return function Wrapper({ children }: { children: React.ReactNode }) {
     return (
       <QueryClientProvider client={queryClientToUse}>

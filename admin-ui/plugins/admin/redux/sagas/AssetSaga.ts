@@ -31,6 +31,7 @@ import {
 
 import * as JansConfigApi from 'jans_config_api'
 import { initAudit } from 'Redux/sagas/SagaUtils'
+import { devLogger } from '@/utils/devLogger'
 
 function* createAssetApi(): Generator<SelectEffect, AssetApi, string> {
   const issuer: string = yield select((state: AssetRootState) => state.authReducer.issuer)
@@ -52,7 +53,11 @@ export function* createJansAsset({
       payload.action.action_data as AssetFormData,
     )
     yield put(createJansAssetResponse({ data }))
-    yield call(postUserAction, audit as UserActionPayload)
+    try {
+      yield call(postUserAction, audit as UserActionPayload)
+    } catch (auditError) {
+      devLogger.error('Asset audit postUserAction failed', auditError)
+    }
     return data
   } catch (e) {
     const errMsg = getErrorMessage(e as Error | SagaErrorShape)
@@ -80,7 +85,11 @@ export function* updateJansAsset({
       payload.action.action_data as AssetFormData,
     )
     yield put(updateJansAssetResponse({ data }))
-    yield call(postUserAction, audit as UserActionPayload)
+    try {
+      yield call(postUserAction, audit as UserActionPayload)
+    } catch (auditError) {
+      devLogger.error('Asset audit postUserAction failed', auditError)
+    }
     return data
   } catch (e) {
     const errMsg = getErrorMessage(e as Error | SagaErrorShape)
