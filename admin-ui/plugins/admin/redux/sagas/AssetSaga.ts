@@ -41,7 +41,7 @@ function* createAssetApi(): Generator<SelectEffect, AssetApi, string> {
 
 export function* createJansAsset({
   payload,
-}: PayloadAction<CreateAssetSagaPayload['payload']>): SagaIterator<Document | unknown> {
+}: PayloadAction<CreateAssetSagaPayload['payload']>): SagaIterator<Document | Error | undefined> {
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit as AuditRecord, CREATE, 'asset', {
@@ -65,15 +65,15 @@ export function* createJansAsset({
     yield put(createJansAssetResponse({ data: null }))
     if (isHttpLikeError(e as Error | SagaErrorShape) && isFourZeroThreeError(e as HttpErrorLike)) {
       yield* redirectToLogout()
-      return
+      return undefined
     }
-    return e
+    return e as Error
   }
 }
 
 export function* updateJansAsset({
   payload,
-}: PayloadAction<UpdateAssetSagaPayload['payload']>): SagaIterator<Document | unknown> {
+}: PayloadAction<UpdateAssetSagaPayload['payload']>): SagaIterator<Document | Error | undefined> {
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit as AuditRecord, UPDATE, 'asset', {
@@ -97,9 +97,9 @@ export function* updateJansAsset({
     yield put(updateJansAssetResponse({ data: null }))
     if (isHttpLikeError(e as Error | SagaErrorShape) && isFourZeroThreeError(e as HttpErrorLike)) {
       yield* redirectToLogout()
-      return
+      return undefined
     }
-    return e
+    return e as Error
   }
 }
 

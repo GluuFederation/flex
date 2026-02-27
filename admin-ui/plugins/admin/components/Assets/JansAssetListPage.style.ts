@@ -1,15 +1,15 @@
-import { useMemo } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
 import { BORDER_RADIUS, SPACING } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { fontFamily } from '@/styles/fonts'
-import customColors from '@/customColors'
 
-const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
-  _,
-  { isDark, themeColors },
-) => {
+interface AssetListPageStylesParams {
+  isDark: boolean
+  themeColors: ThemeConfig
+}
+
+export const useStyles = makeStyles<AssetListPageStylesParams>()((_, { isDark, themeColors }) => {
   const cardBorderStyle = getCardBorderStyle({
     isDark,
     borderRadius: BORDER_RADIUS.DEFAULT,
@@ -90,30 +90,3 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
     },
   }
 })
-
-export function useStyles(params: { isDark: boolean; themeColors: ThemeConfig }) {
-  const { classes } = useStylesBase(params)
-  const { isDark } = params
-
-  const badgeStyles = useMemo(
-    () => ({
-      statusBadgeEnabled: {
-        backgroundColor: customColors.statusActive,
-        textColor: customColors.white,
-        borderColor: 'transparent',
-      },
-      statusBadgeDisabled: {
-        backgroundColor: isDark
-          ? customColors.disabledBadgeDarkBg
-          : customColors.disabledBadgeLightBg,
-        textColor: isDark
-          ? customColors.disabledBadgeDarkText
-          : customColors.disabledBadgeLightText,
-        borderColor: 'transparent',
-      },
-    }),
-    [isDark],
-  )
-
-  return { classes, badgeStyles }
-}

@@ -3,10 +3,10 @@ import type { Document } from '../components/Assets/types/AssetApiTypes'
 
 /** Normalize service from API (may be service, jansService, or jansModuleProperty[0]) */
 export function getServiceFromAsset(
-  asset: Document | Record<string, unknown> | null | undefined,
+  asset: Document | Record<string, string | number | boolean | object | null | undefined> | null | undefined,
 ): string | undefined {
   if (!asset || typeof asset !== 'object') return undefined
-  const rec = asset as Record<string, unknown>
+  const rec = asset as Record<string, string | number | boolean | object | null | undefined>
   if (typeof rec.service === 'string' && rec.service) return rec.service
   if (typeof rec.jansService === 'string' && rec.jansService) return rec.jansService
   const arr = rec.jansModuleProperty
@@ -14,21 +14,27 @@ export function getServiceFromAsset(
   return undefined
 }
 
-function toDocumentValue(val: unknown, fallback: string): string | File | Blob | null {
+function toDocumentValue(
+  val: string | number | boolean | File | Blob | object | null | undefined,
+  fallback: string,
+): string | File | Blob | null {
   if (typeof val === 'string') return val
   if (val instanceof File || val instanceof Blob) return val
   return val != null ? String(val) : fallback
 }
 
-function toStringValue(val: unknown, fallback: string): string {
+function toStringValue(
+  val: string | number | boolean | object | null | undefined,
+  fallback: string,
+): string {
   return typeof val === 'string' ? val : val != null ? String(val) : fallback
 }
 
 export const buildAssetInitialValues = (
-  asset?: Document | Record<string, unknown> | null,
+  asset?: Document | Record<string, string | number | boolean | object | null | undefined> | null,
 ): AssetFormValues => {
   const service = getServiceFromAsset(asset)
-  const rec = asset as Record<string, unknown> | undefined
+  const rec = asset as Record<string, string | number | boolean | object | null | undefined> | undefined
   const doc = asset as Document | undefined
   const fileName = toStringValue(doc?.fileName ?? rec?.displayName ?? rec?.fileName, '')
   return {

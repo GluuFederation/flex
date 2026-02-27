@@ -29,7 +29,7 @@ type ActionData = Record<string, string | number | boolean | object | null>
 
 interface LogActionPayload {
   action_message?: string
-  action_data?: Record<string, unknown>
+  action_data?: Record<string, string | number | boolean | object | null>
 }
 
 export const useAssetAudit = () => {

@@ -34,10 +34,10 @@ export interface AssetState {
 // Action payload interfaces
 export interface AssetActionPayload {
   action?: {
-    action_data?: unknown
-    [key: string]: unknown
+    action_data?: AssetFormData
+    [key: string]: string | number | boolean | object | AssetFormData | undefined
   }
-  [key: string]: unknown
+  [key: string]: string | number | boolean | object | AssetFormData | undefined
 }
 
 export interface AssetResponsePayload {

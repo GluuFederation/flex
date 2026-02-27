@@ -23,6 +23,7 @@ import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { GluuTable } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
+import customColors from '@/customColors'
 import { useStyles } from './JansAssetListPage.style'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import { invalidateQueriesByKey } from '@/utils/queryUtils'
@@ -47,7 +48,26 @@ const JansAssetListPage: React.FC = () => {
   const { state: themeState } = useTheme()
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
   const isDarkTheme = themeState.theme === THEME_DARK
-  const { classes, badgeStyles } = useStyles({ isDark: isDarkTheme, themeColors })
+  const { classes } = useStyles({ isDark: isDarkTheme, themeColors })
+  const badgeStyles = useMemo(
+    () => ({
+      statusBadgeEnabled: {
+        backgroundColor: customColors.statusActive,
+        textColor: customColors.white,
+        borderColor: 'transparent',
+      },
+      statusBadgeDisabled: {
+        backgroundColor: isDarkTheme
+          ? customColors.disabledBadgeDarkBg
+          : customColors.disabledBadgeLightBg,
+        textColor: isDarkTheme
+          ? customColors.disabledBadgeDarkText
+          : customColors.disabledBadgeLightText,
+        borderColor: 'transparent',
+      },
+    }),
+    [isDarkTheme],
+  )
 
   const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
   const [pattern, setPattern] = useState('')

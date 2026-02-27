@@ -282,11 +282,12 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
         border: 'none !important',
         backgroundColor: 'transparent !important',
       },
-      '& .dropzone .btn:hover, & .dropzone .btn:focus, & .dropzone button:hover, & .dropzone button:focus': {
-        color: `${isDark ? customColors.dropzoneText : infoText} !important`,
-        border: 'none !important',
-        backgroundColor: 'transparent !important',
-      },
+      '& .dropzone .btn:hover, & .dropzone .btn:focus, & .dropzone button:hover, & .dropzone button:focus':
+        {
+          color: `${isDark ? customColors.dropzoneText : infoText} !important`,
+          border: 'none !important',
+          backgroundColor: 'transparent !important',
+        },
     },
     serviceSelectField: {},
     toggleRow: {

@@ -1,4 +1,4 @@
-import { handleResponse } from 'Utils/ApiUtils'
+import { handleResponse, handleTypedResponse } from 'Utils/ApiUtils'
 import axios from 'Redux/api/axios'
 import {
   Document,
@@ -22,7 +22,7 @@ export default class AssetApi {
   getAssetDirMapping = (): Promise<AssetDirMapping[]> => {
     return new Promise<AssetDirMapping[]>((resolve, reject) => {
       this.api.getAssetDirMapping((error: Error | null, data?: AssetDirMapping[]) => {
-        handleResponse(error, reject, resolve as (data: unknown) => void, data)
+        handleTypedResponse(error, reject, resolve, data, undefined)
       })
     })
   }
@@ -45,9 +45,7 @@ export default class AssetApi {
         .postForm('/api/v1/jans-assets/upload', formData, {
           withCredentials: true,
         })
-        .then((result) =>
-          handleResponse(null, reject, resolve as (data: unknown) => void, result?.data),
-        )
+        .then((result) => handleTypedResponse(null, reject, resolve, result?.data, undefined))
         .catch((error) =>
           handleResponse(error, reject, resolve as (data: unknown) => void, undefined),
         )
@@ -75,9 +73,7 @@ export default class AssetApi {
         .putForm('/api/v1/jans-assets/upload', formData, {
           withCredentials: true,
         })
-        .then((result) =>
-          handleResponse(null, reject, resolve as (data: unknown) => void, result?.data),
-        )
+        .then((result) => handleTypedResponse(null, reject, resolve, result?.data, undefined))
         .catch((error) =>
           handleResponse(error, reject, resolve as (data: unknown) => void, undefined),
         )
@@ -90,7 +86,7 @@ export default class AssetApi {
   getJansAssetByInum = (inum: string): Promise<PagedResult> => {
     return new Promise<PagedResult>((resolve, reject) => {
       this.api.getAssetByInum(inum, (error: Error | null, data?: PagedResult) => {
-        handleResponse(error, reject, resolve as (data: unknown) => void, data)
+        handleTypedResponse(error, reject, resolve, data, undefined)
       })
     })
   }
@@ -101,7 +97,7 @@ export default class AssetApi {
   getJansAssetByName = (name: string): Promise<DocumentPagedResult> => {
     return new Promise<DocumentPagedResult>((resolve, reject) => {
       this.api.getAssetByName(name, (error: Error | null, data?: DocumentPagedResult) => {
-        handleResponse(error, reject, resolve as (data: unknown) => void, data)
+        handleTypedResponse(error, reject, resolve, data, undefined)
       })
     })
   }
@@ -112,7 +108,7 @@ export default class AssetApi {
   loadServiceAsset = (serviceName: string): Promise<string> => {
     return new Promise<string>((resolve, reject) => {
       this.api.loadServiceAsset(serviceName, (error: Error | null, data?: string) => {
-        handleResponse(error, reject, resolve as (data: unknown) => void, data)
+        handleTypedResponse(error, reject, resolve, data, undefined)
       })
     })
   }

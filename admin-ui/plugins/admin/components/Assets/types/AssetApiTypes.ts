@@ -32,7 +32,7 @@ export interface PagedResult {
   start?: number
   totalEntriesCount?: number
   entriesCount?: number
-  entries?: unknown[]
+  entries?: Document[]
 }
 
 export interface AssetDirMapping {
@@ -67,7 +67,7 @@ export interface AssetFormData {
   inum?: string
   dn?: string
   baseDn?: string
-  [key: string]: unknown
+  [key: string]: string | number | boolean | object | string[] | File | Blob | null | undefined
 }
 
 export interface CreateAssetPayload {
@@ -89,55 +89,53 @@ export interface UpdateAssetPayload {
 export interface IJansAssetsApi {
   deleteAsset(
     inum: string,
-    callback: (error: Error | null, data?: unknown, response?: unknown) => void,
-  ): unknown
+    callback: (error: Error | null, data?: Document, response?: object) => void,
+  ): void
 
   getAllAssets(
     opts: GetAllAssetsOptions,
-    callback: (error: Error | null, data?: DocumentPagedResult, response?: unknown) => void,
-  ): unknown
+    callback: (error: Error | null, data?: DocumentPagedResult, response?: object) => void,
+  ): void
 
   getAssetByInum(
     inum: string,
-    callback: (error: Error | null, data?: PagedResult, response?: unknown) => void,
-  ): unknown
+    callback: (error: Error | null, data?: PagedResult, response?: object) => void,
+  ): void
 
   getAssetByName(
     name: string,
-    callback: (error: Error | null, data?: DocumentPagedResult, response?: unknown) => void,
-  ): unknown
+    callback: (error: Error | null, data?: DocumentPagedResult, response?: object) => void,
+  ): void
 
   getAssetDirMapping(
-    callback: (error: Error | null, data?: AssetDirMapping[], response?: unknown) => void,
-  ): unknown
+    callback: (error: Error | null, data?: AssetDirMapping[], response?: object) => void,
+  ): void
 
   getAssetServices(
-    callback: (error: Error | null, data?: string[], response?: unknown) => void,
-  ): unknown
+    callback: (error: Error | null, data?: string[], response?: object) => void,
+  ): void
 
-  getAssetTypes(
-    callback: (error: Error | null, data?: string[], response?: unknown) => void,
-  ): unknown
+  getAssetTypes(callback: (error: Error | null, data?: string[], response?: object) => void): void
 
   loadServiceAsset(
     serviceName: string,
-    callback: (error: Error | null, data?: string, response?: unknown) => void,
-  ): unknown
+    callback: (error: Error | null, data?: string, response?: object) => void,
+  ): void
 
   postNewAsset(
     document: Document,
     assetFile: File,
-    callback: (error: Error | null, data?: Document, response?: unknown) => void,
-  ): unknown
+    callback: (error: Error | null, data?: Document, response?: object) => void,
+  ): void
 
   putAsset(
     document: Document,
     assetFile: File,
-    callback: (error: Error | null, data?: Document, response?: unknown) => void,
-  ): unknown
+    callback: (error: Error | null, data?: Document, response?: object) => void,
+  ): void
 }
 
-export interface ApiResponse<T = unknown> {
+export interface ApiResponse<T = Document> {
   data?: T
   error?: ApiError
   status?: number
