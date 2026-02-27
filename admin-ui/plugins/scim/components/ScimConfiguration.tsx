@@ -52,10 +52,9 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
 
   const submitForm = useCallback(
     (userMessage: string): void => {
-      toggle()
       handleSubmit({ ...formik.values, action_message: userMessage })
     },
-    [handleSubmit, toggle, formik.values],
+    [handleSubmit, formik.values],
   )
 
   const handleCancel = useCallback(() => {

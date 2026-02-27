@@ -90,11 +90,12 @@ const GluuCommitDialogLegacy = ({
     prevModalRef.current = modal
   }, [modal])
 
-  function handleAccept() {
+  async function handleAccept() {
     if (formik) {
       formik.setFieldValue('action_message', userMessage)
     }
-    onAccept(userMessage)
+    const result = onAccept(userMessage)
+    await Promise.resolve(result)
     handler()
     onCloseModal()
     setUserMessage('')

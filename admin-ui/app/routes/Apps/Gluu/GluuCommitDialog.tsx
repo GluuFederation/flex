@@ -101,11 +101,12 @@ const GluuCommitDialog = ({
     setUserMessage('')
   }, [handler, onCloseModal])
 
-  const handleAccept = useCallback(() => {
+  const handleAccept = useCallback(async () => {
     if (formik) {
       formik.setFieldValue('action_message', userMessage)
     }
-    onAccept(userMessage)
+    const result = onAccept(userMessage)
+    await Promise.resolve(result)
     closeModal()
   }, [formik, onAccept, userMessage, closeModal])
 
