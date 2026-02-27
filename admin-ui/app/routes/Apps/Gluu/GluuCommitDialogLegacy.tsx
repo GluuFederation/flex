@@ -60,6 +60,7 @@ const GluuCommitDialogLegacy = ({
   const themeColors = getThemeColor(selectedTheme)
   const [isOpen, setIsOpen] = useState<number | null>(null)
   const [userMessage, setUserMessage] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const { loadingWebhooks, webhookModal } = useSelector((state: RootState) => state.webhookReducer)
 
   const webhookResourceId = ADMIN_UI_RESOURCES.Webhooks
@@ -90,14 +91,21 @@ const GluuCommitDialogLegacy = ({
     prevModalRef.current = modal
   }, [modal])
 
-  function handleAccept() {
+  async function handleAccept() {
+    if (isSubmitting) return
     if (formik) {
       formik.setFieldValue('action_message', userMessage)
     }
-    onAccept(userMessage)
-    handler()
-    onCloseModal()
-    setUserMessage('')
+    setIsSubmitting(true)
+    try {
+      const result = onAccept(userMessage)
+      await Promise.resolve(result)
+    } finally {
+      setIsSubmitting(false)
+      handler()
+      onCloseModal()
+      setUserMessage('')
+    }
   }
 
   const closeModal = () => {
@@ -324,7 +332,7 @@ const GluuCommitDialogLegacy = ({
               backgroundColor={customColors.primaryDark}
               textColor={customColors.white}
               disableHoverStyles
-              disabled={!active}
+              disabled={!active || isSubmitting}
             >
               <i className="fa fa-check-circle me-2" />
               {t('actions.accept')}
