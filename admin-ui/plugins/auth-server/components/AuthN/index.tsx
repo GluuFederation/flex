@@ -3,7 +3,7 @@ import AuthNListPage from './AuthNListPage'
 import { useTranslation } from 'react-i18next'
 import GluuTabs from 'Routes/Apps/Gluu/GluuTabs'
 import { Card } from 'Components'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationStyle'
+import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 
 import AgamaListPage from '../Agama/AgamaListPage'
 import AliasesListPage from '../Agama/AgamaAliasListPage'

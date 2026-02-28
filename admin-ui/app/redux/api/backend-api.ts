@@ -2,6 +2,8 @@ import type { AppConfigResponse } from 'JansConfigApi'
 import type {
   ApiTokenResponse,
   FetchUserInfoParams,
+  FetchUserInfoResult,
+  PolicyStoreApiResponse,
   PutServerConfigPayload,
   UserActionPayload,
   UserIpAndLocationResponse,
@@ -13,6 +15,7 @@ import { devLogger } from '@/utils/devLogger'
 export type {
   ApiTokenResponse,
   FetchUserInfoParams,
+  FetchUserInfoResult,
   PutServerConfigPayload,
   UserActionPayload,
   UserIpAndLocationResponse,
@@ -55,15 +58,15 @@ export const getUserIpAndLocation = (): Promise<UserIpAndLocationResponse | -1> 
     })
 }
 
-// Retrieve user information
+// Retrieve user information (OIDC userinfo endpoint returns JWT string)
 export const fetchUserInformation = ({
   userInfoEndpoint,
   token_type,
   access_token,
-}: FetchUserInfoParams): Promise<Record<string, unknown> | -1> => {
+}: FetchUserInfoParams): Promise<FetchUserInfoResult> => {
   const headers = { Authorization: `${token_type} ${access_token}` }
   return axios
-    .get<Record<string, unknown>>(userInfoEndpoint, { headers })
+    .get<string>(userInfoEndpoint, { headers })
     .then((response) => response.data)
     .catch((error) => {
       devLogger.error('Problems fetching user information with the provided code.', error)
@@ -126,12 +129,12 @@ export const fetchApiTokenWithDefaultScopes = (): Promise<ApiTokenResponse> => {
 
 export const fetchPolicyStore = (
   token?: string,
-): Promise<{ status?: number; data?: Record<string, string | number | boolean> }> => {
+): Promise<{ status?: number; data?: PolicyStoreApiResponse }> => {
   const config = token
     ? { headers: { Authorization: `Bearer ${token}` } }
     : { withCredentials: true }
   return axios
-    .get('/admin-ui/security/policyStore', config)
+    .get<PolicyStoreApiResponse>('/admin-ui/security/policyStore', config)
     .then((response) => ({ status: response.status, data: response.data }))
     .catch((error) => {
       devLogger.error('Problems fetching policy store.', error)

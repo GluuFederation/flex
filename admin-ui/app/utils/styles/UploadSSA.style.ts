@@ -19,6 +19,12 @@ const useStyles = makeStyles<{ themeColors: ThemeConfig }>()((theme, { themeColo
   },
   dropzone: {
     'marginTop': theme.spacing(1),
+    'minHeight': '80px',
+    'display': 'flex',
+    'alignItems': 'center',
+    'justifyContent': 'center',
+    'padding': theme.spacing(2),
+    'boxSizing': 'border-box',
     'borderRadius': `${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px`,
     'border': `1px solid ${themeColors.infoAlert.border}`,
     'background': themeColors.infoAlert.background,
@@ -30,7 +36,7 @@ const useStyles = makeStyles<{ themeColors: ThemeConfig }>()((theme, { themeColo
   },
   error: {
     color: themeColors.errorColor,
-    fontSize: fontSizes.xl,
+    fontSize: fontSizes.content,
     fontWeight: fontWeights.semiBold,
     marginTop: theme.spacing(2),
     display: 'block',
@@ -42,6 +48,8 @@ const useStyles = makeStyles<{ themeColors: ThemeConfig }>()((theme, { themeColo
     fontStyle: 'normal',
     fontWeight: fontWeights.medium,
     lineHeight: lineHeights.tight,
+    margin: 0,
+    textAlign: 'center',
   },
   button: {
     display: 'inline-flex',

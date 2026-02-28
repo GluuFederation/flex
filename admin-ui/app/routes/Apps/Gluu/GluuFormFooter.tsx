@@ -1,7 +1,7 @@
 import { useContext, useMemo, useCallback, memo } from 'react'
 import { Button, Divider } from 'Components'
 import { useTranslation } from 'react-i18next'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationStyle'
+import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import clsx from 'clsx'

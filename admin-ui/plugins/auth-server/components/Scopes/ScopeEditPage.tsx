@@ -11,7 +11,7 @@ import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { updateToast } from 'Redux/features/toastSlice'
 import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
 import { useTranslation } from 'react-i18next'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationStyle'
+import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import {
   useGetOauthScopesByInum,
   usePutOauthScopes,

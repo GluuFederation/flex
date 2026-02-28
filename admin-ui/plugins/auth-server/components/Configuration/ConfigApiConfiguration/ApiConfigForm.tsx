@@ -256,7 +256,6 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
 
   const submitForm = useCallback(
     async (userMessage: string) => {
-      toggle()
       try {
         await onSubmit(patches, userMessage)
         setPatches([])
@@ -265,7 +264,7 @@ const ApiConfigForm: React.FC<ApiConfigFormProps> = ({ configuration, onSubmit }
         toast.error(t('messages.error_in_saving'))
       }
     },
-    [toggle, onSubmit, patches, t],
+    [onSubmit, patches, t],
   )
 
   const handleBack = useCallback(() => {

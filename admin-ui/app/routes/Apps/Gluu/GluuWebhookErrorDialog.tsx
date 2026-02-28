@@ -9,7 +9,7 @@ import {
   setTriggerWebhookResponse,
 } from 'Plugins/admin/redux/features/WebhookSlice'
 import { Box } from '@mui/material'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationStyle'
+import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { useTheme } from 'Context/theme/themeContext'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'

@@ -12,7 +12,7 @@ import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import ClientDetailPage from '../Clients/ClientDetailPage'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationStyle'
+import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { useTranslation } from 'react-i18next'
 import {
   LIMIT_ID,

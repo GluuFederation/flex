@@ -7,7 +7,7 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import StaticConfiguration from './StaticConfiguration'
 import DynamicConfiguration from './DynamicConfiguration'
 import SetTitle from 'Utils/SetTitle'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationStyle'
+import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { fidoConstants, createFidoConfigPayload, getModifiedFields } from '../helper'
 import {
   useGetPropertiesFido2,

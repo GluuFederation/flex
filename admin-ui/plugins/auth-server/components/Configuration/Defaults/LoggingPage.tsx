@@ -14,7 +14,7 @@ import {
   getChangedFields,
 } from './utils'
 import type { LoggingFormValues } from './utils'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationStyle'
+import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import customColors from '@/customColors'
 import { useDispatch } from 'react-redux'
 import { Formik } from 'formik'

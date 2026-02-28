@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { useQueryClient } from '@tanstack/react-query'
 import SetTitle from 'Utils/SetTitle'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationStyle'
+import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { Card, CardBody } from 'Components'
@@ -143,7 +143,7 @@ const ScimPage: React.FC = () => {
   })
 
   const handleSubmit = useCallback(
-    (formValues: ScimFormValues): void => {
+    (formValues: ScimFormValues): void | Promise<unknown> => {
       if (!scimConfiguration) {
         dispatch(updateToast(true, 'error', t('messages.no_configuration_loaded')))
         return
@@ -155,7 +155,7 @@ const ScimPage: React.FC = () => {
         return
       }
       userMessageRef.current = action_message || ''
-      patchScimMutation.mutate({ data: patches })
+      return patchScimMutation.mutateAsync({ data: patches })
     },
     [scimConfiguration, patchScimMutation, dispatch, t],
   )

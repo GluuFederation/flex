@@ -1,6 +1,6 @@
 import React from 'react'
 import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts'
-import applicationStyle from '../../Apps/Gluu/styles/applicationStyle'
+import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import customColors from '@/customColors'
 import type { ReportPiChartItemProps, PieChartLabelProps } from '../types'
 

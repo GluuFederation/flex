@@ -45,13 +45,10 @@ const ApiKeyRedirect = ({
     isNoValidLicenseKeyFound
 
   const showRedirectingLoader =
-    !islicenseCheckResultLoaded ||
-    isConfigValid === null ||
-    (isConfigValid !== false &&
-      !isTimeout &&
-      isUnderThresholdLimit &&
-      backendStatus.active &&
-      !shouldShowApiKey)
+    isConfigValid !== false &&
+    (!islicenseCheckResultLoaded ||
+      isConfigValid === null ||
+      (!isTimeout && isUnderThresholdLimit && backendStatus.active && !shouldShowApiKey))
 
   if (showRedirectingLoader) {
     return (
@@ -75,9 +72,9 @@ const ApiKeyRedirect = ({
   return (
     <React.Fragment>
       <Container>
-        {isConfigValid === false ? (
+        {isConfigValid === false && backendStatus.active ? (
           <UploadSSA />
-        ) : !isTimeout && isUnderThresholdLimit ? (
+        ) : isConfigValid === false ? null : !isTimeout && isUnderThresholdLimit ? (
           shouldShowApiKey ? (
             <ApiKey />
           ) : null

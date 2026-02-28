@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo } from 'react'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
-import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import {
   getWebhooksByFeatureId,
   getWebhooksByFeatureIdResponse,
@@ -11,7 +10,7 @@ import {
   setFeatureToTrigger,
 } from 'Plugins/admin/redux/features/WebhookSlice'
 import { useTheme } from 'Context/theme/themeContext'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationStyle'
+import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { useTranslation } from 'react-i18next'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -23,6 +22,7 @@ import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 
 interface UseWebhookDialogActionProps {
   feature?: string
@@ -128,9 +128,7 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
         </ModalHeader>
         {loadingWebhooks ? (
           <ModalBody>
-            <GluuLoader blocking>
-              <div style={{ minHeight: 120 }} />
-            </GluuLoader>
+            <GluuLoader blocking />
           </ModalBody>
         ) : (
           <>
