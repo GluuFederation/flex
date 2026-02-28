@@ -22,6 +22,7 @@ import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 
 interface UseWebhookDialogActionProps {
   feature?: string
@@ -111,9 +112,7 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
         className="modal-outline-primary"
       >
         <ModalHeader toggle={closeWebhookTriggerModal}>
-          {loadingWebhooks ? (
-            <>Loading....</>
-          ) : (
+          {!loadingWebhooks && (
             <>
               <i
                 onClick={closeWebhookTriggerModal}
@@ -127,7 +126,11 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
             </>
           )}
         </ModalHeader>
-        {!loadingWebhooks ? (
+        {loadingWebhooks ? (
+          <ModalBody>
+            <GluuLoader blocking />
+          </ModalBody>
+        ) : (
           <>
             <ModalBody>
               <Box sx={{ display: 'flex', flexDirection: 'column' }} px={2}>
@@ -184,8 +187,6 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
               </Button>
             </ModalFooter>
           </>
-        ) : (
-          <></>
         )}
       </Modal>
     )
