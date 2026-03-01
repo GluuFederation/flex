@@ -508,4 +508,67 @@ spec:
   {{- end }}
 {{- end }}
 
+{{- if or (index .Values.global "auth-server" "ingress" "authServerProtectedToken") (index .Values.global "auth-server" "ingress" "authServerProtectedRegister") }}
+---
+{{- /* ======================================================== */}}
+{{- /* ROUTE: SECURE APPS (PROTECTED HTTPS TRAFFIC)             */}}
+{{- /* These endpoints serve the app when reached on HTTPS      */}}
+{{- /* ======================================================== */}}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ $fullName }}-routes-protected
+  namespace: {{ $namespace }}
+  labels:
+    app: {{ $fullName }}-routes
+{{- if .Values.gatewayApi.routeLabels }}
+{{- toYaml .Values.gatewayApi.routeLabels | nindent 4 }}
+{{- end }}
+{{- if .Values.gatewayApi.routeAnnotations }}
+  annotations:
+{{- toYaml .Values.gatewayApi.routeAnnotations | nindent 4 }}
+{{- end }}
+spec:
+  parentRefs:
+  - name: {{ .Values.gatewayApi.name }}
+    sectionName: https
+  hostnames:
+  - {{ .Values.global.fqdn | quote }}
+  rules:
+
+  {{- /* 1. Auth Server protected token (/jans-auth/restv1/token) */}}
+  {{- if index .Values.global "auth-server" "ingress" "authServerProtectedToken" }}
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /jans-auth/restv1/token
+    filters:
+    - type: URLRewrite
+      urlRewrite:
+        path:
+          type: ReplacePrefixMatch
+          replacePrefixMatch: /restv1/token
+    backendRefs:
+    - name: {{ $authSvc }}
+      port: 8080
+  {{- end }}
+
+  {{- /* 2. Auth Server protected register (/jans-auth/restv1/register) */}}
+  {{- if index .Values.global "auth-server" "ingress" "authServerProtectedRegister" }}
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /jans-auth/restv1/register
+    filters:
+    - type: URLRewrite
+      urlRewrite:
+        path:
+          type: ReplacePrefixMatch
+          replacePrefixMatch: /restv1/register
+    backendRefs:
+    - name: {{ $authSvc }}
+      port: 8080
+  {{- end }}
+{{- end }}
+
 {{- end }}
