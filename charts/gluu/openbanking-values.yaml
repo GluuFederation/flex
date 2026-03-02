@@ -47,7 +47,7 @@ auth-server:
     # -- Image pullPolicy to use for deploying.
     pullPolicy: IfNotPresent
     # -- Image  to use for deploying.
-    repository: ghcr.io/janssenproject/jans/auth-server
+    repository: gluufederation/openbanking-auth-server
     # -- Image  tag to use for deploying.
     tag: 0.0.0-nightly
     # -- Image Pull Secrets
@@ -930,7 +930,7 @@ persistence:
     # -- Image pullPolicy to use for deploying.
     pullPolicy: IfNotPresent
     # -- Image  to use for deploying.
-    repository: ghcr.io/gluufederation/flex/persistence-loader
+    repository: gluufederation/openbanking-persistence-loader
     # -- Image  tag to use for deploying.
     tag: 0.0.0-nightly
     # -- Image Pull Secrets
