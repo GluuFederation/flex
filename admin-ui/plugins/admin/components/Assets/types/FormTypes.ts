@@ -1,7 +1,7 @@
 import { FormikProps } from 'formik'
 import { Document } from './AssetApiTypes'
 
-export interface AssetFormValues extends Record<string, unknown> {
+export interface AssetFormValues extends Record<string, string | number | boolean | object | string[] | File | Blob | null | undefined> {
   creationDate: string | Date
   document: string | File | Blob | null
   fileName: string

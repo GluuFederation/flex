@@ -34,6 +34,13 @@ export interface FetchUserInfoParams {
   access_token: string
 }
 
+export type FetchUserInfoResult = string | -1
+
+/** Policy store API response shape */
+export interface PolicyStoreApiResponse {
+  responseObject: string
+}
+
 /** Geolocation API response (geolocation-db.com) */
 export interface UserIpAndLocationResponse {
   [key: string]: unknown

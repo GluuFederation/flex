@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector, useStore } from 'react-redux'
 import { useQueryClient } from '@tanstack/react-query'
 import { useFormik, setIn } from 'formik'
 import * as Yup from 'yup'
@@ -29,12 +29,7 @@ import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useAcrAudit } from '../AuthN/hooks'
-import {
-  generateLabel,
-  isRenamedKey,
-  renamedFieldFromObject,
-  useAuthServerPropertiesActions,
-} from './Properties/utils'
+import { generateLabel, isRenamedKey, renamedFieldFromObject } from './Properties/utils'
 import { createAppConfigurationSchema } from './Properties/utils/validations'
 import type { AppConfiguration, RootState, JsonPatch, AcrPutOperation, Script } from './types'
 import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/types/index'
@@ -45,12 +40,13 @@ const AuthPage: React.FC = () => {
   SetTitle(t('titles.jans_json_property'))
 
   const dispatch = useDispatch()
+  const store = useStore()
   const queryClient = useQueryClient()
   const { navigateBack } = useAppNavigation()
   const { hasCedarWritePermission, authorizeHelper } = useCedarling()
-  const { logAuthServerPropertiesUpdate } = useAuthServerPropertiesActions()
   const { logAcrUpdate } = useAcrAudit()
   const configuration = useSelector((state: RootState) => state.jsonConfigReducer.configuration)
+  const jsonConfigLoading = useSelector((state: RootState) => state.jsonConfigReducer.loading)
   const scripts = useSelector((state: RootState) => state.initReducer.scripts)
   const { data: acrs, isLoading: acrLoading } = useGetAcrs({
     query: { staleTime: 30000 },
@@ -294,6 +290,16 @@ const AuthPage: React.FC = () => {
           } as unknown as ActionData
           buildPayload(userAction, message, postBody)
           dispatch(patchJsonConfig({ action: userAction }))
+          await new Promise<void>((resolve) => {
+            const unsub = store.subscribe(() => {
+              const loading = (store.getState() as { jsonConfigReducer?: { loading?: boolean } })
+                ?.jsonConfigReducer?.loading
+              if (!loading) {
+                unsub()
+                resolve()
+              }
+            })
+          })
         }
         if (put && put.value) {
           const newAcr = { defaultAcr: put.value || acrs?.defaultAcr }
@@ -304,21 +310,8 @@ const AuthPage: React.FC = () => {
             console.error('Error updating ACR:', error)
           }
         }
-        let auditSuccess = true
-        try {
-          const auditPayload = {
-            requestBody: patches,
-            ...(put && put.value ? { defaultAcr: put.value } : {}),
-          }
-          auditSuccess = await logAuthServerPropertiesUpdate(message, auditPayload)
-        } catch (auditError) {
-          console.error('Error logging audit:', auditError)
-          auditSuccess = false
-        }
-        if (auditSuccess) {
+        if (patches.length === 0) {
           toast.success(t('messages.success_in_saving'))
-        } else {
-          toast.warning(t('messages.success_in_saving_audit_failed'))
         }
       } catch (err) {
         console.error('Error updating auth server properties:', err)
@@ -327,18 +320,19 @@ const AuthPage: React.FC = () => {
         toast.error(errorMsg)
       }
     },
-    [patches, put, acrs, dispatch, putAcrsMutation, logAcrUpdate, logAuthServerPropertiesUpdate, t],
+    [patches, put, acrs, dispatch, store, putAcrsMutation, logAcrUpdate, t],
   )
   const submitForm = useCallback(
     async (message: string) => {
-      toggle()
       await handleSubmit(message)
     },
-    [toggle, handleSubmit],
+    [handleSubmit],
   )
 
   return (
-    <GluuLoader blocking={isConfigEmpty || acrLoading || putAcrsMutation.isPending}>
+    <GluuLoader
+      blocking={isConfigEmpty || acrLoading || putAcrsMutation.isPending || jsonConfigLoading}
+    >
       <Card style={{ borderRadius: 24 }}>
         <CardHeader>
           <div style={{ display: 'flex' }}>

@@ -1,11 +1,10 @@
-import { handleResponse } from 'Utils/ApiUtils'
+import { handleResponse, handleTypedResponse } from 'Utils/ApiUtils'
 import axios from 'Redux/api/axios'
 import {
   Document,
   DocumentPagedResult,
   PagedResult,
   AssetDirMapping,
-  GetAllAssetsOptions,
   AssetFormData,
   IJansAssetsApi,
 } from '../../components/Assets/types/AssetApiTypes'
@@ -18,45 +17,12 @@ export default class AssetApi {
   }
 
   /**
-   * Get all Jans assets - compatible with saga usage
-   */
-  getAllJansAssets = (opts?: GetAllAssetsOptions): Promise<DocumentPagedResult> => {
-    return new Promise<DocumentPagedResult>((resolve, reject) => {
-      this.api.getAllAssets(opts || {}, (error: Error | null, data?: DocumentPagedResult) => {
-        handleResponse(error, reject, resolve as (data: unknown) => void, data)
-      })
-    })
-  }
-
-  /**
-   * Get asset services - compatible with saga usage
-   */
-  getAssetServices = (): Promise<string[]> => {
-    return new Promise<string[]>((resolve, reject) => {
-      this.api.getAssetServices((error: Error | null, data?: string[]) => {
-        handleResponse(error, reject, resolve as (data: unknown) => void, data)
-      })
-    })
-  }
-
-  /**
-   * Get asset types - compatible with saga usage
-   */
-  getAssetTypes = (): Promise<string[]> => {
-    return new Promise<string[]>((resolve, reject) => {
-      this.api.getAssetTypes((error: Error | null, data?: string[]) => {
-        handleResponse(error, reject, resolve as (data: unknown) => void, data)
-      })
-    })
-  }
-
-  /**
    * Get asset directory mappings
    */
   getAssetDirMapping = (): Promise<AssetDirMapping[]> => {
     return new Promise<AssetDirMapping[]>((resolve, reject) => {
       this.api.getAssetDirMapping((error: Error | null, data?: AssetDirMapping[]) => {
-        handleResponse(error, reject, resolve as (data: unknown) => void, data)
+        handleTypedResponse(error, reject, resolve, data, undefined)
       })
     })
   }
@@ -79,7 +45,7 @@ export default class AssetApi {
         .postForm('/api/v1/jans-assets/upload', formData, {
           withCredentials: true,
         })
-        .then((result) => handleResponse(null, reject, resolve as (data: unknown) => void, result))
+        .then((result) => handleTypedResponse(null, reject, resolve, result?.data, undefined))
         .catch((error) =>
           handleResponse(error, reject, resolve as (data: unknown) => void, undefined),
         )
@@ -107,21 +73,10 @@ export default class AssetApi {
         .putForm('/api/v1/jans-assets/upload', formData, {
           withCredentials: true,
         })
-        .then((result) => handleResponse(null, reject, resolve as (data: unknown) => void, result))
+        .then((result) => handleTypedResponse(null, reject, resolve, result?.data, undefined))
         .catch((error) =>
           handleResponse(error, reject, resolve as (data: unknown) => void, undefined),
         )
-    })
-  }
-
-  /**
-   * Delete Jans asset by inum - compatible with saga usage
-   */
-  deleteJansAssetByInum = (inum: string): Promise<void> => {
-    return new Promise<void>((resolve, reject) => {
-      this.api.deleteAsset(inum, (error: Error | null, data?: unknown) => {
-        handleResponse(error, reject, resolve as (data: unknown) => void, data)
-      })
     })
   }
 
@@ -131,7 +86,7 @@ export default class AssetApi {
   getJansAssetByInum = (inum: string): Promise<PagedResult> => {
     return new Promise<PagedResult>((resolve, reject) => {
       this.api.getAssetByInum(inum, (error: Error | null, data?: PagedResult) => {
-        handleResponse(error, reject, resolve as (data: unknown) => void, data)
+        handleTypedResponse(error, reject, resolve, data, undefined)
       })
     })
   }
@@ -142,7 +97,7 @@ export default class AssetApi {
   getJansAssetByName = (name: string): Promise<DocumentPagedResult> => {
     return new Promise<DocumentPagedResult>((resolve, reject) => {
       this.api.getAssetByName(name, (error: Error | null, data?: DocumentPagedResult) => {
-        handleResponse(error, reject, resolve as (data: unknown) => void, data)
+        handleTypedResponse(error, reject, resolve, data, undefined)
       })
     })
   }
@@ -153,7 +108,7 @@ export default class AssetApi {
   loadServiceAsset = (serviceName: string): Promise<string> => {
     return new Promise<string>((resolve, reject) => {
       this.api.loadServiceAsset(serviceName, (error: Error | null, data?: string) => {
-        handleResponse(error, reject, resolve as (data: unknown) => void, data)
+        handleTypedResponse(error, reject, resolve, data, undefined)
       })
     })
   }
@@ -163,21 +118,17 @@ export default class AssetApi {
    */
   private buildFormData(body: AssetFormData, document: Document): FormData {
     const formData = new FormData()
-    const assetFileBlob = new Blob([body.document], {
-      type: 'application/octet-stream',
+    const assetFile: Blob | File =
+      body.document instanceof File
+        ? body.document
+        : body.document instanceof Blob
+          ? body.document
+          : new Blob([body.document as BlobPart], { type: 'application/octet-stream' })
+    const documentBlob = new Blob([JSON.stringify({ ...document })], {
+      type: 'application/json',
     })
-    const documentBlob = new Blob(
-      [
-        JSON.stringify({
-          ...document,
-        }),
-      ],
-      {
-        type: 'application/json',
-      },
-    )
     formData.append('document', documentBlob)
-    formData.append('assetFile', assetFileBlob)
+    formData.append('assetFile', assetFile)
     return formData
   }
 }
