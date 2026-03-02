@@ -52,7 +52,8 @@ const GluuInputEditor = <T extends object>({
         <AceEditor
           mode={language}
           readOnly={readOnly}
-          setOptions={{ useWorker: false }}
+          wrapEnabled
+          setOptions={{ useWorker: false, hScrollBarAlwaysVisible: false }}
           theme={theme}
           placeholder={placeholder}
           fontSize={16}

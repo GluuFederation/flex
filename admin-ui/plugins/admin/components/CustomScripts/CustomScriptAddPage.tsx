@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react'
+import React, { memo, useCallback, useMemo } from 'react'
 import omit from 'lodash/omit'
 import { useAppDispatch } from '@/redux/hooks'
 import { useTranslation } from 'react-i18next'
@@ -43,24 +43,31 @@ const CustomScriptAddPage: React.FC = () => {
     errorMessage: 'messages.error_adding_script',
   })
 
-  const handleSubmit = async (data: SubmitData) => {
-    if (!data?.customScript) {
-      dispatch(updateToast(true, 'error', t('messages.invalid_script_data')))
-      return
-    }
+  const handleSubmit = useCallback(
+    async (data: SubmitData) => {
+      if (!data?.customScript) {
+        dispatch(updateToast(true, 'error', t('messages.invalid_script_data')))
+        return
+      }
 
-    try {
-      const { action_message } = data.customScript
-      const scriptData = omit(data.customScript, ['action_message', 'script_path', 'location_type'])
+      try {
+        const { action_message } = data.customScript
+        const scriptData = omit(data.customScript, [
+          'action_message',
+          'script_path',
+          'location_type',
+        ])
 
-      await createMutation.mutateAsync({
-        data: scriptData as CustomScript,
-        actionMessage: action_message,
-      })
-    } catch (error) {
-      devLogger.error('Failed to create script:', error)
-    }
-  }
+        await createMutation.mutateAsync({
+          data: scriptData as CustomScript,
+          actionMessage: action_message,
+        })
+      } catch (error) {
+        devLogger.error('Failed to create script:', error)
+      }
+    },
+    [createMutation, dispatch, t],
+  )
 
   SetTitle(t('messages.add_script', { defaultValue: 'Add Script' }))
 

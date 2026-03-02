@@ -1,19 +1,17 @@
-import React, { ChangeEvent, useMemo } from 'react'
-import { Col, FormGroup, Input, InputGroup, CustomInput } from 'Components'
+import React, { ChangeEvent, useCallback, useMemo } from 'react'
+import { Col, FormGroup, Input } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { SCRIPT } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
-import { useTheme } from '@/context/theme/themeContext'
-import getThemeColor from '@/context/theme/config'
-import { DEFAULT_THEME } from '@/context/theme/constants'
-import { useStyles } from './styles/PersonAuthenticationFields.style'
-import { SAML_ACRS_OPTIONS } from './constants'
+import { SAML_ACRS_OPTIONS, INTERACTIVE_OPTIONS } from './constants'
 import type { FormikProps } from 'formik'
 import type { FormValues } from './types'
 
 interface PersonAuthenticationFieldsProps {
   formik: FormikProps<FormValues>
   viewOnly?: boolean
+  isDark?: boolean
   usageTypeChange: (value: string) => void
   getModuleProperty: (key: string, properties: FormValues['moduleProperties']) => string | undefined
 }
@@ -21,22 +19,54 @@ interface PersonAuthenticationFieldsProps {
 export const PersonAuthenticationFields: React.FC<PersonAuthenticationFieldsProps> = ({
   formik,
   viewOnly,
+  isDark,
   usageTypeChange,
   getModuleProperty,
 }) => {
   const { t } = useTranslation()
-  const { state: themeState } = useTheme()
-  const themeColors = useMemo(
-    () => getThemeColor(themeState?.theme ?? DEFAULT_THEME),
-    [themeState?.theme],
+
+  const interactiveOptions = useMemo(
+    () => [
+      { value: '', label: `${t('options.choose')}...` },
+      ...INTERACTIVE_OPTIONS.map((opt) => ({
+        value: opt.value,
+        label: t(opt.labelKey),
+      })),
+    ],
+    [t],
   )
-  const { classes } = useStyles({ themeColors })
+
+  const interactiveFormik = useMemo(
+    () => ({
+      handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        usageTypeChange(e.target.value)
+      },
+    }),
+    [usageTypeChange],
+  )
+
+  const handleAliasChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const target = e.target
+      if (target instanceof HTMLSelectElement) {
+        const values = Array.from(target.selectedOptions).map((o) => o.value)
+        formik.setFieldValue('aliases', values)
+      }
+    },
+    [formik],
+  )
 
   return (
     <>
       <FormGroup row>
-        <GluuLabel label="fields.saml_acrs" doc_category={SCRIPT} doc_entry="aliases" />
-        <Col sm={9}>
+        <GluuLabel
+          label="fields.saml_acrs"
+          size={12}
+          doc_category={SCRIPT}
+          doc_entry="aliases"
+          isDark={isDark}
+        />
+        <Col sm={12}>
           <Input
             type="select"
             name="aliases"
@@ -44,13 +74,7 @@ export const PersonAuthenticationFields: React.FC<PersonAuthenticationFieldsProp
             value={formik.values.aliases}
             multiple
             disabled={viewOnly}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => {
-              const target = e.target
-              if (target instanceof HTMLSelectElement) {
-                const values = Array.from(target.selectedOptions).map((o) => o.value)
-                formik.setFieldValue('aliases', values)
-              }
-            }}
+            onChange={handleAliasChange}
           >
             {SAML_ACRS_OPTIONS.map((acr) => (
               <option key={acr} value={acr}>
@@ -61,36 +85,26 @@ export const PersonAuthenticationFields: React.FC<PersonAuthenticationFieldsProp
         </Col>
       </FormGroup>
 
-      <FormGroup row>
-        <GluuLabel
-          label="fields.interactive"
-          required
-          doc_category={SCRIPT}
-          doc_entry="usage_type"
-        />
-        <Col sm={9}>
-          <InputGroup>
-            <CustomInput
-              type="select"
-              id="usage_type"
-              name="usage_type"
-              disabled={viewOnly}
-              value={getModuleProperty('usage_type', formik.values.moduleProperties) || ''}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                usageTypeChange(e.target.value)
-              }}
-            >
-              <option value="">{t('options.choose')}...</option>
-              <option value="interactive">{t('options.usage_type_web')}</option>
-              <option value="service">{t('options.usage_type_native')}</option>
-              <option value="both">{t('options.usage_type_both')}</option>
-            </CustomInput>
-          </InputGroup>
-          {formik.errors.moduleProperties && formik.touched.moduleProperties && (
-            <div className={classes.errorText}>{String(formik.errors.moduleProperties)}</div>
-          )}
-        </Col>
-      </FormGroup>
+      <GluuSelectRow
+        label="fields.interactive"
+        name="usage_type"
+        value={getModuleProperty('usage_type', formik.values.moduleProperties) || ''}
+        formik={interactiveFormik}
+        values={interactiveOptions}
+        lsize={12}
+        rsize={12}
+        required
+        doc_category={SCRIPT}
+        doc_entry="usage_type"
+        disabled={viewOnly}
+        errorMessage={
+          formik.errors.moduleProperties && formik.touched.moduleProperties
+            ? String(formik.errors.moduleProperties)
+            : undefined
+        }
+        showError={!!(formik.errors.moduleProperties && formik.touched.moduleProperties)}
+        isDark={isDark}
+      />
     </>
   )
 }

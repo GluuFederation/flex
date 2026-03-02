@@ -8,7 +8,7 @@ import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuInumInput from 'Routes/Apps/Gluu/GluuInumInput'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
-import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
+import { GluuButton } from '@/components/GluuButton'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { SCRIPT } from 'Utils/ApiResources'
@@ -32,24 +32,47 @@ import {
 } from './types'
 import { CustomScriptItem } from './types/customScript'
 import { useCustomScriptTypes } from './hooks'
-import { filterEmptyObjects, mapPropertyToKeyValue } from 'Utils/Util'
+import { filterEmptyObjects } from 'Utils/Util'
 import { getCustomScriptValidationSchema, transformToFormValues, getModuleProperty } from './helper'
-import { PROGRAMMING_LANGUAGES } from './constants'
+import {
+  PROGRAMMING_LANGUAGES,
+  LOCATION_TYPES,
+  LOCATION_TYPE_DB,
+  DEFAULT_SCRIPT_TYPE,
+} from './constants'
 import { PersonAuthenticationFields } from './PersonAuthenticationFields'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import GluuScriptErrorModal from 'Routes/Apps/Gluu/GluuScriptErrorModal'
 const Counter = lazy(() => import('@/components/Widgets/GroupedButtons/Counter'))
 const GluuInputEditor = lazy(() => import('Routes/Apps/Gluu/GluuInputEditor'))
 
-function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScriptFormProps) {
+const COUNTER_VALUE_OPACITY = 0.8
+
+const transformPropertyForApi = (
+  prop: ModuleProperty | ConfigurationProperty,
+): ModuleProperty | ConfigurationProperty => {
+  const baseResult: Record<string, string | boolean | undefined> = {
+    value1: prop.key || prop.value1 || '',
+    value2: prop.value || prop.value2 || '',
+  }
+  if (prop.hide !== undefined) {
+    baseResult.hide = prop.hide
+  }
+  if ('description' in prop && prop.description) {
+    baseResult.description = prop.description
+  }
+  return baseResult as ModuleProperty | ConfigurationProperty
+}
+
+const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScriptFormProps) => {
   const { navigateBack } = useAppNavigation()
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
   const isDark = themeState.theme === THEME_DARK
   const { classes } = useStyles({ isDark, themeColors })
-  const [modal, setModal] = useState<boolean>(false)
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+  const [modal, setModal] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const isEditMode = Boolean(item?.inum)
 
@@ -62,22 +85,6 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
   const handleNavigateBack = useCallback(() => {
     navigateBack(ROUTES.CUSTOM_SCRIPT_LIST)
   }, [navigateBack])
-
-  const transformPropertyForApi = (
-    prop: ModuleProperty | ConfigurationProperty,
-  ): ModuleProperty | ConfigurationProperty => {
-    const baseResult: Record<string, string | boolean | undefined> = {
-      value1: prop.key || prop.value1 || '',
-      value2: prop.value || prop.value2 || '',
-    }
-    if (prop.hide !== undefined) {
-      baseResult.hide = prop.hide
-    }
-    if ('description' in prop && prop.description) {
-      baseResult.description = prop.description
-    }
-    return baseResult as ModuleProperty | ConfigurationProperty
-  }
 
   const validationSchema = useMemo(() => getCustomScriptValidationSchema(t), [t])
 
@@ -123,7 +130,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
 
       const customScript: CustomScriptItem = {
         ...base,
-        locationType: 'db',
+        locationType: LOCATION_TYPE_DB,
         locationPath: undefined,
         script: values.script,
       }
@@ -196,13 +203,61 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
     toggle()
   }, [formik, toggle])
 
-  const configurationPropertiesOptions = useMemo(() => {
-    return filterEmptyObjects(formik.values.configurationProperties)?.map(mapPropertyToKeyValue)
-  }, [formik.values.configurationProperties])
+  const addConfigurationProperty = useCallback(() => {
+    const current = formik.values.configurationProperties || []
+    formik.setFieldValue('configurationProperties', [...current, { value1: '', value2: '' }])
+  }, [formik])
 
-  const modulePropertiesOptions = useMemo(() => {
-    return filterEmptyObjects(formik.values.moduleProperties)?.map(mapPropertyToKeyValue)
-  }, [formik.values.moduleProperties])
+  const removeConfigurationProperty = useCallback(
+    (index: number) => {
+      const current = formik.values.configurationProperties || []
+      formik.setFieldValue(
+        'configurationProperties',
+        current.filter((_, i) => i !== index),
+      )
+    },
+    [formik],
+  )
+
+  const addModuleProperty = useCallback(() => {
+    const current = formik.values.moduleProperties || []
+    formik.setFieldValue('moduleProperties', [...current, { value1: '', value2: '' }])
+  }, [formik])
+
+  const removeModuleProperty = useCallback(
+    (index: number) => {
+      const current = formik.values.moduleProperties || []
+      formik.setFieldValue(
+        'moduleProperties',
+        current.filter((_, i) => i !== index),
+      )
+    },
+    [formik],
+  )
+
+  const counterValueStyle = useMemo(
+    () => ({ color: themeColors.fontColor, opacity: COUNTER_VALUE_OPACITY }),
+    [themeColors.fontColor],
+  )
+
+  const scriptTypeChangeHandler = useMemo(
+    () => ({
+      handleChange: (e: ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
+        const target = e.target as HTMLSelectElement
+        formik.setFieldValue('scriptType', target.value, true)
+        formik.setFieldTouched('scriptType', true)
+      },
+    }),
+    [formik],
+  )
+
+  const commitDialogFormik = useMemo(
+    () => ({
+      setFieldValue: (field: string, value: string, shouldValidate?: boolean) =>
+        formik.setFieldValue(field, value, shouldValidate),
+    }),
+    [formik],
+  )
 
   const scriptTypeState = formik.values.scriptType
 
@@ -237,8 +292,8 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
               <GluuInumInput
                 label="fields.inum"
                 name="inum"
-                lsize={3}
-                rsize={9}
+                lsize={12}
+                rsize={12}
                 value={item.inum}
                 doc_category={SCRIPT}
               />
@@ -287,13 +342,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
                 label="fields.script_type"
                 name="scriptType"
                 value={formik.values.scriptType}
-                formik={{
-                  handleChange: (e: ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
-                    const target = e.target as HTMLSelectElement
-                    formik.setFieldValue('scriptType', target.value, true)
-                    formik.setFieldTouched('scriptType', true)
-                  },
-                }}
+                formik={scriptTypeChangeHandler}
                 values={[
                   { value: '', label: `${t('options.choose')}...` },
                   ...scriptTypes.map((ele: ScriptType) => ({ value: ele.value, label: ele.name })),
@@ -347,33 +396,63 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
           </div>
 
           <div className={classes.fieldItem}>
-            <FormGroup row>
-              <GluuLabel
-                label="fields.level"
-                size={12}
-                doc_category={SCRIPT}
-                doc_entry="level"
-                isDark={isDark}
-              />
-              <Suspense fallback={<GluuSuspenseLoader />}>
-                <Counter
-                  counter={formik.values.level}
-                  disabled={viewOnly}
-                  onCounterChange={onLevelChange}
-                  valueStyle={{
-                    color: themeColors.fontColor,
-                    opacity: 0.8,
-                  }}
-                />
-              </Suspense>
-              <Input type="hidden" id="level" value={formik.values.level} />
-              {formik.errors.level && formik.touched.level && (
-                <div className={classes.levelError}>{String(formik.errors.level)}</div>
-              )}
-            </FormGroup>
+            <GluuSelectRow
+              label="fields.location_type"
+              name="location_type"
+              value={formik.values.location_type}
+              formik={formik}
+              values={LOCATION_TYPES.map((loc) => ({
+                value: loc.value,
+                label: t(loc.labelKey),
+              }))}
+              lsize={12}
+              rsize={12}
+              doc_category={SCRIPT}
+              doc_entry="locationType"
+              disabled={viewOnly}
+              isDark={isDark}
+            />
           </div>
-          <div className={classes.descriptionEnabledRow}>
-            <div className={classes.fieldItem} />
+          <div className={classes.fieldItem}>
+            <GluuInputRow
+              label="fields.script_path"
+              formik={formik}
+              value={formik.values.script_path}
+              lsize={12}
+              rsize={12}
+              name="script_path"
+              doc_category={SCRIPT}
+              doc_entry="locationPath"
+              placeholder={t('placeholders.enter_here')}
+              disabled={viewOnly || formik.values.location_type === LOCATION_TYPE_DB}
+              isDark={isDark}
+            />
+          </div>
+
+          <div className={classes.levelEnabledRow}>
+            <div className={classes.fieldItem}>
+              <FormGroup row>
+                <GluuLabel
+                  label="fields.level"
+                  size={12}
+                  doc_category={SCRIPT}
+                  doc_entry="level"
+                  isDark={isDark}
+                />
+                <Suspense fallback={<GluuSuspenseLoader />}>
+                  <Counter
+                    counter={formik.values.level}
+                    disabled={viewOnly}
+                    onCounterChange={onLevelChange}
+                    valueStyle={counterValueStyle}
+                  />
+                </Suspense>
+                <Input type="hidden" id="level" value={formik.values.level} />
+                {formik.errors.level && formik.touched.level && (
+                  <div className={classes.levelError}>{String(formik.errors.level)}</div>
+                )}
+              </FormGroup>
+            </div>
             <div className={classes.fieldItem}>
               <FormGroup>
                 <GluuLabel
@@ -396,11 +475,12 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
             </div>
           </div>
 
-          {scriptTypeState === 'person_authentication' && (
+          {scriptTypeState === DEFAULT_SCRIPT_TYPE && (
             <div className={classes.fieldItemFullWidth}>
               <PersonAuthenticationFields
                 formik={formik}
                 viewOnly={viewOnly}
+                isDark={isDark}
                 usageTypeChange={usageTypeChange}
                 getModuleProperty={getModuleProperty}
               />
@@ -408,25 +488,122 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
           )}
 
           <div className={classes.fieldItemFullWidth}>
-            <div className={classes.propertiesBox}>
-              <GluuProperties
-                compName="configurationProperties"
-                label="fields.custom_properties"
-                formik={formik}
-                keyPlaceholder="placeholders.enter_property_key"
-                valuePlaceholder="placeholders.enter_property_value"
-                options={configurationPropertiesOptions}
-                disabled={viewOnly}
-              />
-              <GluuProperties
-                compName="moduleProperties"
-                label="fields.module_properties"
-                formik={formik}
-                keyPlaceholder="placeholders.enter_property_key"
-                valuePlaceholder="placeholders.enter_property_value"
-                options={modulePropertiesOptions}
-                disabled={viewOnly}
-              />
+            <div
+              className={`${classes.propsBox} ${!formik.values.configurationProperties?.length ? classes.propsBoxEmpty : ''}`.trim()}
+            >
+              <div
+                className={`${classes.propsHeader} ${!formik.values.configurationProperties?.length ? classes.propsHeaderEmpty : ''}`.trim()}
+              >
+                <GluuText variant="h5" disableThemeColor>
+                  <span className={classes.propsTitle}>{t('fields.custom_properties')}</span>
+                </GluuText>
+                <GluuButton
+                  type="button"
+                  disabled={viewOnly}
+                  backgroundColor={themeColors.settings.addPropertyButton.bg}
+                  textColor={themeColors.settings.addPropertyButton.text}
+                  useOpacityOnHover
+                  className={classes.propsActionBtn}
+                  onClick={addConfigurationProperty}
+                >
+                  <i className="fa fa-fw fa-plus" />
+                  {t('actions.add_property')}
+                </GluuButton>
+              </div>
+              <div className={classes.propsBody}>
+                {(formik.values.configurationProperties || []).map((prop, index) => (
+                  <div key={index} className={classes.propsRow}>
+                    <Input
+                      name={`configurationProperties.${index}.value1`}
+                      value={prop.value1 || prop.key || ''}
+                      onChange={formik.handleChange}
+                      placeholder={t('placeholders.enter_property_key')}
+                      disabled={viewOnly}
+                      className={classes.propsInput}
+                    />
+                    <Input
+                      name={`configurationProperties.${index}.value2`}
+                      value={prop.value2 || prop.value || ''}
+                      onChange={formik.handleChange}
+                      placeholder={t('placeholders.enter_property_value')}
+                      disabled={viewOnly}
+                      className={classes.propsInput}
+                    />
+                    <GluuButton
+                      type="button"
+                      disabled={viewOnly}
+                      backgroundColor={themeColors.settings.removeButton.bg}
+                      textColor={themeColors.settings.removeButton.text}
+                      useOpacityOnHover
+                      className={classes.propsActionBtn}
+                      onClick={() => removeConfigurationProperty(index)}
+                    >
+                      <i className="fa fa-fw fa-trash" />
+                      {t('actions.remove')}
+                    </GluuButton>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className={classes.fieldItemFullWidth}>
+            <div
+              className={`${classes.propsBox} ${!formik.values.moduleProperties?.length ? classes.propsBoxEmpty : ''}`.trim()}
+            >
+              <div
+                className={`${classes.propsHeader} ${!formik.values.moduleProperties?.length ? classes.propsHeaderEmpty : ''}`.trim()}
+              >
+                <GluuText variant="h5" disableThemeColor>
+                  <span className={classes.propsTitle}>{t('fields.module_properties')}</span>
+                </GluuText>
+                <GluuButton
+                  type="button"
+                  disabled={viewOnly}
+                  backgroundColor={themeColors.settings.addPropertyButton.bg}
+                  textColor={themeColors.settings.addPropertyButton.text}
+                  useOpacityOnHover
+                  className={classes.propsActionBtn}
+                  onClick={addModuleProperty}
+                >
+                  <i className="fa fa-fw fa-plus" />
+                  {t('actions.add_property')}
+                </GluuButton>
+              </div>
+              <div className={classes.propsBody}>
+                {(formik.values.moduleProperties || []).map((prop, index) => (
+                  <div key={index} className={classes.propsRow}>
+                    <Input
+                      name={`moduleProperties.${index}.value1`}
+                      value={prop.value1 || ''}
+                      onChange={formik.handleChange}
+                      placeholder={t('placeholders.enter_property_key')}
+                      disabled={viewOnly}
+                      className={classes.propsInput}
+                    />
+                    <Input
+                      name={`moduleProperties.${index}.value2`}
+                      value={prop.value2 || ''}
+                      onChange={formik.handleChange}
+                      placeholder={t('placeholders.enter_property_value')}
+                      disabled={viewOnly}
+                      className={classes.propsInput}
+                    />
+                    <GluuButton
+                      type="button"
+                      disabled={viewOnly}
+                      backgroundColor={themeColors.settings.removeButton.bg}
+                      textColor={themeColors.settings.removeButton.text}
+                      useOpacityOnHover
+                      className={classes.propsActionBtn}
+                      onClick={() => removeModuleProperty(index)}
+                    >
+                      <i className="fa fa-fw fa-trash" />
+                      {t('actions.remove')}
+                    </GluuButton>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -475,10 +652,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
           handler={toggle}
           modal={modal}
           onAccept={handleDialogAccept}
-          formik={{
-            setFieldValue: (field: string, value: string, shouldValidate?: boolean) =>
-              formik.setFieldValue(field, value, shouldValidate),
-          }}
+          formik={commitDialogFormik}
           feature={adminUiFeatures.custom_script_write}
         />
       </Form>

@@ -27,6 +27,7 @@ import type { CustomScript } from 'JansConfigApi'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
 import type { FilterDef } from '@/components/GluuSearchToolbar/types'
 import type { ScriptError } from './types/customScript'
+import { BORDER_RADIUS } from '@/constants'
 import { DEFAULT_SCRIPT_TYPE } from './constants'
 
 const LIMIT_OPTIONS = getRowsPerPageOptions()
@@ -41,6 +42,11 @@ const SORT_COLUMN_LABELS: Record<string, string> = {
 const DELETE_SUBJECT_SCRIPT = 'script'
 const EMPTY_DESCRIPTION_PLACEHOLDER = '—'
 const FEATURE_CUSTOM_SCRIPT_DELETE = adminUiFeatures.custom_script_delete
+
+type DisplayValue = string | number | boolean | null | undefined
+
+const displayOrDash = (value: DisplayValue): DisplayValue =>
+  value === null || value === undefined || value === '' ? '−' : value
 
 interface ScriptTableRow extends CustomScript {
   scriptError?: ScriptError
@@ -312,7 +318,7 @@ const CustomScriptListPage: React.FC = () => {
               backgroundColor={style.backgroundColor}
               textColor={style.textColor}
               borderColor={style.borderColor}
-              borderRadius={5}
+              borderRadius={BORDER_RADIUS.SMALL}
               className={classes.enabledBadge}
             >
               {row.enabled ? t('options.yes') : t('options.no')}
@@ -420,16 +426,21 @@ const CustomScriptListPage: React.FC = () => {
 
   const getScriptDetailFields = useCallback(
     (row: ScriptTableRow) => [
-      { label: 'fields.inum', value: row.inum, doc_entry: 'inum', doc_category: SCRIPT },
+      {
+        label: 'fields.inum',
+        value: displayOrDash(row.inum),
+        doc_entry: 'inum',
+        doc_category: SCRIPT,
+      },
       {
         label: 'fields.location_type',
-        value: row.locationType,
+        value: displayOrDash(row.locationType),
         doc_entry: 'locationType',
         doc_category: SCRIPT,
       },
       {
         label: 'fields.internal',
-        value: row.internal ? t('options.true') : t('options.false'),
+        value: row.internal ? t('options.yes') : t('options.no'),
         doc_entry: 'internal',
         doc_category: SCRIPT,
         isBadge: true,
@@ -442,21 +453,31 @@ const CustomScriptListPage: React.FC = () => {
       },
       {
         label: 'fields.programming_language',
-        value: row.programmingLanguage,
+        value: displayOrDash(row.programmingLanguage),
         doc_entry: 'programmingLanguage',
         doc_category: SCRIPT,
       },
-      { label: 'fields.level', value: row.level, doc_entry: 'level', doc_category: SCRIPT },
-      { label: 'fields.name', value: row.name, doc_entry: 'name', doc_category: SCRIPT },
+      {
+        label: 'fields.level',
+        value: displayOrDash(row.level),
+        doc_entry: 'level',
+        doc_category: SCRIPT,
+      },
+      {
+        label: 'fields.name',
+        value: displayOrDash(row.name),
+        doc_entry: 'name',
+        doc_category: SCRIPT,
+      },
       {
         label: 'fields.description',
-        value: row.description,
+        value: displayOrDash(row.description),
         doc_entry: 'description',
         doc_category: SCRIPT,
       },
       {
         label: 'options.enabled',
-        value: row.enabled ? t('options.true') : t('options.false'),
+        value: row.enabled ? t('options.yes') : t('options.no'),
         doc_entry: 'enabled',
         doc_category: SCRIPT,
         isBadge: true,
@@ -469,7 +490,7 @@ const CustomScriptListPage: React.FC = () => {
       },
       {
         label: 'fields.script_type',
-        value: row.scriptType,
+        value: displayOrDash(row.scriptType),
         doc_entry: 'scriptType',
         doc_category: SCRIPT,
         isBadge: true,
@@ -478,7 +499,7 @@ const CustomScriptListPage: React.FC = () => {
       },
       {
         label: 'fields.revision',
-        value: row.revision,
+        value: displayOrDash(row.revision),
         doc_entry: 'revision',
         doc_category: SCRIPT,
       },

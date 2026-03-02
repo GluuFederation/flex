@@ -47,7 +47,7 @@ export const BORDER_RADIUS = {
   LARGE: 24,
   MEDIUM: 14,
   SMALL_MEDIUM: 8,
-  SMALL: 5,
+  SMALL: 6,
   CIRCLE: '50%',
   THIN: '1.5px',
 } as const

@@ -3,7 +3,16 @@ import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
 import { BORDER_RADIUS, SPACING } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
-import { fontFamily } from '@/styles/fonts'
+import { fontFamily, fontWeights, lineHeights } from '@/styles/fonts'
+
+const ICON_SIZE_SM = 18
+const ICON_SIZE_MD = 20
+const NAME_GAP = 6
+const SCRIPT_TYPE_MIN_WIDTH = 90
+const ENABLED_MIN_WIDTH = 64
+const CARD_INNER_PADDING = 20
+const TABLE_LINE_HEIGHT = lineHeights.relaxed
+
 const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
   _,
   { isDark, themeColors },
@@ -19,10 +28,10 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       display: 'flex',
       flexWrap: 'nowrap',
       alignItems: 'baseline',
-      gap: 6,
+      gap: NAME_GAP,
       minWidth: 0,
     },
-    cellName: { color: themeColors.fontColor, fontWeight: 600 },
+    cellName: { color: themeColors.fontColor, fontWeight: fontWeights.semiBold },
     cellDescription: {
       display: 'block',
       minWidth: 0,
@@ -33,19 +42,19 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       fontFamily,
       color: themeColors.fontColor,
     },
-    scriptTypeBadge: { minWidth: 90 },
-    enabledBadge: { minWidth: 64 },
-    editIcon: { fontSize: 18 },
-    deleteIcon: { fontSize: 18 },
-    viewIcon: { fontSize: 18 },
-    addIcon: { fontSize: 20 },
+    scriptTypeBadge: { minWidth: SCRIPT_TYPE_MIN_WIDTH },
+    enabledBadge: { minWidth: ENABLED_MIN_WIDTH },
+    editIcon: { fontSize: ICON_SIZE_SM },
+    deleteIcon: { fontSize: ICON_SIZE_SM },
+    viewIcon: { fontSize: ICON_SIZE_SM },
+    addIcon: { fontSize: ICON_SIZE_MD },
     searchCard: {
       width: '100%',
       backgroundColor: cardBg,
       ...cardBorderStyle,
       borderRadius: BORDER_RADIUS.DEFAULT,
-      padding: `${SPACING.PAGE}px 20px`,
-      marginBottom: '20px',
+      padding: `${SPACING.PAGE}px ${CARD_INNER_PADDING}px`,
+      marginBottom: `${CARD_INNER_PADDING}px`,
       position: 'relative',
       zIndex: 0,
       overflow: 'visible',
@@ -65,12 +74,12 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       'backgroundColor': cardBg,
       ...cardBorderStyle,
       'borderRadius': BORDER_RADIUS.DEFAULT,
-      'padding': '20px',
+      'padding': `${CARD_INNER_PADDING}px`,
       'position': 'relative',
       'overflow': 'visible',
       'boxSizing': 'border-box',
-      '& table td': { verticalAlign: 'top', minWidth: 0, lineHeight: '28px' },
-      '& table th': { verticalAlign: 'middle', lineHeight: '28px' },
+      '& table td': { verticalAlign: 'top', minWidth: 0, lineHeight: TABLE_LINE_HEIGHT },
+      '& table th': { verticalAlign: 'middle', lineHeight: TABLE_LINE_HEIGHT },
     },
   }
 })

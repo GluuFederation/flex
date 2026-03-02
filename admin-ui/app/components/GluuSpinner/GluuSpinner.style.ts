@@ -2,9 +2,6 @@ import { makeStyles } from 'tss-react/mui'
 import { keyframes } from '@emotion/react'
 import customColors, { hexToRgb } from '@/customColors'
 
-const TRACK_COLOR_DARK = `rgba(${hexToRgb(customColors.white)}, 0.12)`
-const TRACK_COLOR_LIGHT = `rgba(${hexToRgb(customColors.black)}, 0.08)`
-
 const SPIN_DURATION = '0.8s'
 
 const spinKeyframes = keyframes({
@@ -23,9 +20,8 @@ const useStyles = makeStyles<GluuSpinnerStyleParams>()((_, { size, isDark }) => 
     width: size,
     height: size,
     borderRadius: '50%',
-    border: `${Math.max(3, Math.floor(size / 12))}px solid ${
-      isDark ? TRACK_COLOR_DARK : TRACK_COLOR_LIGHT
-    }`,
+    // single colored arc instead of full solid ring
+    border: `${Math.max(3, Math.floor(size / 12))}px solid transparent`,
     borderTopColor: customColors.logo,
     animation: `${spinKeyframes} ${SPIN_DURATION} linear infinite`,
     willChange: 'transform',

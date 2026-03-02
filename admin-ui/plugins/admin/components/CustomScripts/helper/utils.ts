@@ -2,6 +2,7 @@ import { CustomScriptItem, ModuleProperty, ConfigurationProperty } from '../type
 
 import { FormValues } from '../types/forms'
 import { filterEmptyObjects } from 'Utils/Util'
+import { LOCATION_TYPE_DB } from '../constants'
 import type { CustomScript, SimpleCustomProperty } from 'JansConfigApi'
 
 export const getApiErrorDetail = (error: unknown): string => {
@@ -65,7 +66,7 @@ export const transformToFormValues = (
     configurationProperties: rawConfig.map(normalizeProperty) as ConfigurationProperty[],
     script_path: '',
     locationPath: undefined,
-    location_type: 'db',
+    location_type: LOCATION_TYPE_DB,
     enabled: item.enabled !== undefined ? item.enabled : true,
     action_message: '',
   }

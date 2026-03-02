@@ -1,5 +1,6 @@
 import * as Yup from 'yup'
 import type { TFunction } from 'i18next'
+import { DEFAULT_SCRIPT_TYPE } from '../constants'
 
 export const getCustomScriptValidationSchema = (t: TFunction) =>
   Yup.object({
@@ -30,7 +31,7 @@ export const getCustomScriptValidationSchema = (t: TFunction) =>
       )
       .when('scriptType', (values, schema) => {
         const scriptType = values[0] as string
-        if (scriptType !== 'person_authentication') {
+        if (scriptType !== DEFAULT_SCRIPT_TYPE) {
           return schema
         }
 

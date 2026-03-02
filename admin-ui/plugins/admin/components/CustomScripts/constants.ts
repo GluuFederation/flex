@@ -24,3 +24,17 @@ export const PROGRAMMING_LANGUAGES = [
   { value: 'java', labelKey: 'options.java' as const },
   { value: 'python', labelKey: 'options.jython' as const },
 ]
+
+export const LOCATION_TYPE_DB = 'db'
+export const LOCATION_TYPE_FILE = 'file'
+
+export const LOCATION_TYPES = [
+  { value: LOCATION_TYPE_DB, labelKey: 'options.database' as const },
+  { value: LOCATION_TYPE_FILE, labelKey: 'options.file' as const },
+]
+
+export const INTERACTIVE_OPTIONS = [
+  { value: 'interactive', labelKey: 'options.usage_type_web' as const },
+  { value: 'service', labelKey: 'options.usage_type_native' as const },
+  { value: 'both', labelKey: 'options.usage_type_both' as const },
+]

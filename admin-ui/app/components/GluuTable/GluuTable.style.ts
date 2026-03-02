@@ -53,8 +53,8 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       '& table td[data-divider-cell]': {
         padding: 0,
         lineHeight: 0,
+        borderTop: `1px solid ${rowBorder} !important`,
       },
-      // Expand button: default (unhover), row-hover, and icon-hover styles
       '& tbody tr [data-expand-button]': {
         backgroundColor: expandButtonHoverBg,
         transition: 'background-color 0.15s ease',
@@ -232,14 +232,6 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       '&:hover': {
         '& td': {
           backgroundColor: hoverBg,
-        },
-        '& td:first-of-type': {
-          borderTopLeftRadius: BORDER_RADIUS.SMALL_MEDIUM,
-          borderBottomLeftRadius: BORDER_RADIUS.SMALL_MEDIUM,
-        },
-        '& td:last-of-type': {
-          borderTopRightRadius: BORDER_RADIUS.SMALL_MEDIUM,
-          borderBottomRightRadius: BORDER_RADIUS.SMALL_MEDIUM,
         },
       },
     },
