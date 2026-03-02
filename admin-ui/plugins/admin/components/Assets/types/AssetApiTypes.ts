@@ -1,6 +1,3 @@
-// Asset API Types based on JansAssetsApi.js and related models
-
-// Base Document interface
 export interface Document {
   dn?: string
   inum?: string
@@ -8,7 +5,7 @@ export interface Document {
   filePath?: string
   description?: string
   document?: string
-  creationDate?: Date
+  creationDate?: string | Date
   service?: string
   level?: number
   revision?: number
@@ -16,7 +13,14 @@ export interface Document {
   baseDn?: string
 }
 
-// Paged result for document listing
+export interface AssetUploadResponse extends Document {
+  displayName?: string
+  jansModuleProperty?: string[]
+  jansLevel?: string
+  jansRevision?: string
+  jansEnabled?: boolean
+}
+
 export interface DocumentPagedResult {
   start?: number
   totalEntriesCount?: number
@@ -24,15 +28,13 @@ export interface DocumentPagedResult {
   entries?: Document[]
 }
 
-// Generic paged result
 export interface PagedResult {
   start?: number
   totalEntriesCount?: number
   entriesCount?: number
-  entries?: unknown[]
+  entries?: Document[]
 }
 
-// Asset directory mapping
 export interface AssetDirMapping {
   directory?: string
   type?: string[]
@@ -40,14 +42,12 @@ export interface AssetDirMapping {
   jansServiceModule?: string[]
 }
 
-// API Error interface
 export interface ApiError {
   code?: string
   message?: string
   description?: string
 }
 
-// Options for getting all assets
 export interface GetAllAssetsOptions {
   limit?: number
   pattern?: string
@@ -58,7 +58,6 @@ export interface GetAllAssetsOptions {
   fieldValuePair?: string
 }
 
-// Asset form data for create/update operations
 export interface AssetFormData {
   fileName: string
   description: string
@@ -68,10 +67,9 @@ export interface AssetFormData {
   inum?: string
   dn?: string
   baseDn?: string
-  [key: string]: unknown
+  [key: string]: string | number | boolean | object | string[] | File | Blob | null | undefined
 }
 
-// Asset create payload
 export interface CreateAssetPayload {
   payload: {
     action: {
@@ -80,7 +78,6 @@ export interface CreateAssetPayload {
   }
 }
 
-// Asset update payload
 export interface UpdateAssetPayload {
   payload: {
     action: {
@@ -89,66 +86,61 @@ export interface UpdateAssetPayload {
   }
 }
 
-// Interface for the underlying JansAssetsApi
 export interface IJansAssetsApi {
   deleteAsset(
     inum: string,
-    callback: (error: Error | null, data?: unknown, response?: unknown) => void,
-  ): unknown
+    callback: (error: Error | null, data?: Document, response?: object) => void,
+  ): void
 
   getAllAssets(
     opts: GetAllAssetsOptions,
-    callback: (error: Error | null, data?: DocumentPagedResult, response?: unknown) => void,
-  ): unknown
+    callback: (error: Error | null, data?: DocumentPagedResult, response?: object) => void,
+  ): void
 
   getAssetByInum(
     inum: string,
-    callback: (error: Error | null, data?: PagedResult, response?: unknown) => void,
-  ): unknown
+    callback: (error: Error | null, data?: PagedResult, response?: object) => void,
+  ): void
 
   getAssetByName(
     name: string,
-    callback: (error: Error | null, data?: DocumentPagedResult, response?: unknown) => void,
-  ): unknown
+    callback: (error: Error | null, data?: DocumentPagedResult, response?: object) => void,
+  ): void
 
   getAssetDirMapping(
-    callback: (error: Error | null, data?: AssetDirMapping[], response?: unknown) => void,
-  ): unknown
+    callback: (error: Error | null, data?: AssetDirMapping[], response?: object) => void,
+  ): void
 
   getAssetServices(
-    callback: (error: Error | null, data?: string[], response?: unknown) => void,
-  ): unknown
+    callback: (error: Error | null, data?: string[], response?: object) => void,
+  ): void
 
-  getAssetTypes(
-    callback: (error: Error | null, data?: string[], response?: unknown) => void,
-  ): unknown
+  getAssetTypes(callback: (error: Error | null, data?: string[], response?: object) => void): void
 
   loadServiceAsset(
     serviceName: string,
-    callback: (error: Error | null, data?: string, response?: unknown) => void,
-  ): unknown
+    callback: (error: Error | null, data?: string, response?: object) => void,
+  ): void
 
   postNewAsset(
     document: Document,
     assetFile: File,
-    callback: (error: Error | null, data?: Document, response?: unknown) => void,
-  ): unknown
+    callback: (error: Error | null, data?: Document, response?: object) => void,
+  ): void
 
   putAsset(
     document: Document,
     assetFile: File,
-    callback: (error: Error | null, data?: Document, response?: unknown) => void,
-  ): unknown
+    callback: (error: Error | null, data?: Document, response?: object) => void,
+  ): void
 }
 
-// Generic API response wrapper
-export interface ApiResponse<T = unknown> {
+export interface ApiResponse<T = Document> {
   data?: T
   error?: ApiError
   status?: number
 }
 
-// Asset state interfaces for Redux
 export interface AssetState {
   items: Document[]
   selectedAsset: Document | null
@@ -160,7 +152,6 @@ export interface AssetState {
   dirMappings: AssetDirMapping[]
 }
 
-// Action payload interfaces
 export interface GetAssetsPayload {
   action: GetAllAssetsOptions
 }
@@ -183,7 +174,6 @@ export interface LoadServiceAssetPayload {
   serviceName: string
 }
 
-// Error handling interface for sagas
 export interface SagaError {
   response?: {
     body?: {
