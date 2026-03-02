@@ -2,6 +2,8 @@ import type { ReactNode } from 'react'
 
 export type SortDirection = 'asc' | 'desc' | null
 
+export type CellValue = string | number | boolean | null | undefined
+
 export type ColumnKey<T> = Extract<keyof T, string>
 
 export interface ExpandContext {

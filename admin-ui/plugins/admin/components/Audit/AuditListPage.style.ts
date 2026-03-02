@@ -59,26 +59,18 @@ const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
         verticalAlign: 'middle',
         lineHeight: '28px',
       },
-      // Audit-only: column widths scoped to data-audit-table (no effect on other GluuTable instances)
-      '& [data-audit-table] table col:nth-of-type(1)': { width: '10% !important' },
+      // Audit-only: keep compact spacing for first columns, widths come from parent column props.
       '& [data-audit-table] table th:nth-of-type(1), & [data-audit-table] table td:not([data-divider-cell]):nth-of-type(1)':
         {
-          width: '10% !important',
-          minWidth: '10% !important',
-          maxWidth: '10% !important',
           padding: `12px ${SPACING.CARD_CONTENT_GAP}px`,
         },
-      '& [data-audit-table] table col:nth-of-type(2)': {
-        width: '48px !important',
-        minWidth: '48px !important',
-        maxWidth: '48px !important',
-      },
       '& [data-audit-table] table th:nth-of-type(2), & [data-audit-table] table td:not([data-divider-cell]):nth-of-type(2)':
         {
-          width: '48px !important',
-          minWidth: '48px !important',
-          maxWidth: '48px !important',
           padding: `${CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL}px ${MAPPING_SPACING.CARD_MARGIN_BOTTOM}px`,
+        },
+      '& [data-audit-table] table th:nth-of-type(1), & [data-audit-table] table td:not([data-divider-cell]):nth-of-type(1), & [data-audit-table] table th:nth-of-type(2), & [data-audit-table] table td:not([data-divider-cell]):nth-of-type(2)':
+        {
+          whiteSpace: 'nowrap',
         },
       '& [data-audit-table] table th:nth-of-type(3), & [data-audit-table] table td:not([data-divider-cell]):nth-of-type(3)':
         {

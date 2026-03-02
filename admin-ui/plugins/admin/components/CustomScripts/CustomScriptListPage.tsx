@@ -31,11 +31,11 @@ import { DEFAULT_SCRIPT_TYPE } from './constants'
 
 const LIMIT_OPTIONS = getRowsPerPageOptions()
 
-const SORT_COLUMNS = ['inum', 'description', 'scriptType'] as const
+const SORT_COLUMNS = ['inum', 'description', 'name'] as const
 const SORT_COLUMN_LABELS: Record<string, string> = {
   inum: 'fields.inum',
   description: 'fields.description',
-  scriptType: 'fields.script_type',
+  name: 'fields.name',
 }
 
 const DELETE_SUBJECT_SCRIPT = 'script'
@@ -64,10 +64,10 @@ const CustomScriptListPage: React.FC = () => {
   const { classes, badgeStyles } = useStyles({ isDark: isDarkTheme, themeColors })
 
   const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
-  const [pattern, setPattern] = useState<string>('')
+  const [pattern, setPattern] = useState('')
   const [scriptType, setScriptType] = useState<string>(DEFAULT_SCRIPT_TYPE)
   const [sortBy, setSortBy] = useState<string>('')
-  const [sortOrder, setSortOrder] = useState<'ascending' | 'descending'>('ascending')
+
   const [modal, setModal] = useState(false)
   const [itemToDelete, setItemToDelete] = useState<CustomScript | null>(null)
 
@@ -101,7 +101,7 @@ const CustomScriptListPage: React.FC = () => {
   } = useCustomScriptsByType(scriptType, {
     pattern: pattern || undefined,
     sortBy: sortBy || undefined,
-    sortOrder: sortBy ? sortOrder : undefined,
+    sortOrder: sortBy ? 'ascending' : undefined,
     limit,
     startIndex: pageNumber * limit + 1,
   })
@@ -241,7 +241,7 @@ const CustomScriptListPage: React.FC = () => {
   )
 
   const columns: ColumnDef<ScriptTableRow>[] = useMemo(
-    () => [
+    (): ColumnDef<ScriptTableRow>[] => [
       {
         key: 'name',
         label: t('fields.name'),
@@ -302,7 +302,7 @@ const CustomScriptListPage: React.FC = () => {
       {
         key: 'enabled',
         label: t('options.enabled'),
-        sortable: false,
+        sortable: true,
         render: (_value, row) => {
           const isEnabled = row.enabled === true
           const style = isEnabled ? badgeStyles.enabledBadge : badgeStyles.disabledBadge

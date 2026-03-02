@@ -51,6 +51,7 @@ export interface GluuSearchToolbarProps {
   searchValue?: string
   searchFieldWidth?: number | string
   searchOnType?: boolean
+  searchDebounceMs?: number
   onSearch?: (value: string) => void
   onSearchSubmit?: (value: string) => void
   filters?: FilterDef[]

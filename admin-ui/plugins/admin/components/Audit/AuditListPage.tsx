@@ -231,20 +231,26 @@ const AuditListPage: React.FC = () => {
     [themeColors],
   )
 
+  const serialColumnWidth = useMemo(() => {
+    const digitsFromTotal = String(Math.max(totalItems, 0)).length
+    const digits = Math.max(digitsFromTotal, 6)
+    return `${digits + 3}ch`
+  }, [totalItems])
+
   const columns: ColumnDef<AuditRow>[] = useMemo(
     () => [
       {
         key: 'serial',
         label: '#',
-        width: 48,
+        width: serialColumnWidth,
         minWidth: 48,
-        maxWidth: 48,
         align: 'left' as const,
         sortable: false,
       },
       {
         key: 'log',
         label: t(T_KEYS.FIELD_LOG_ENTRY),
+        width: 'auto',
         sortable: false,
         render: (
           _value: AuditRow[keyof AuditRow],
@@ -302,6 +308,7 @@ const AuditListPage: React.FC = () => {
       classes.dateBadge,
       classes.accessTimeIcon,
       dateBadgeColors,
+      serialColumnWidth,
     ],
   )
 
@@ -397,7 +404,7 @@ const AuditListPage: React.FC = () => {
                 data={auditRows}
                 loading={false}
                 expandable
-                expandColumnWidth="10%"
+                expandColumnWidth={40}
                 pagination={pagination}
                 onPagingSizeSync={handlePagingSizeSync}
                 emptyMessage={emptyMessage}

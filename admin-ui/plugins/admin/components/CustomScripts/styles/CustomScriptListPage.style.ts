@@ -17,8 +17,8 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
     page: { fontFamily, paddingTop: SPACING.PAGE },
     cellNameWrap: {
       display: 'flex',
-      flexWrap: 'wrap',
-      alignItems: 'center',
+      flexWrap: 'nowrap',
+      alignItems: 'baseline',
       gap: 6,
       minWidth: 0,
     },

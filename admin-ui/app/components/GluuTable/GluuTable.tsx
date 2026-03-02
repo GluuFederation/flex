@@ -8,7 +8,7 @@ import GluuText from '@/routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
 import { GluuSpinner } from '@/components/GluuSpinner'
 import { useStyles } from './GluuTable.style'
-import type { GluuTableProps, SortDirection, ColumnKey } from './types'
+import type { CellValue, ColumnKey, GluuTableProps, SortDirection } from './types'
 import { ChevronIcon } from '@/components/SVG'
 import {
   getDefaultPagingSize,
@@ -17,10 +17,6 @@ import {
 } from '@/utils/pagingUtils'
 
 const MIN_COL_WIDTH = 60
-const BASE_WEIGHT = 1
-const CONTENT_WEIGHT_FACTOR = 0.02
-const MIN_PCT = 14
-const MAX_PCT = 42
 
 const parseMinWidth = (col: { minWidth?: string | number }): number | undefined => {
   const mw = col.minWidth
@@ -40,7 +36,6 @@ const parseMaxWidth = (col: { maxWidth?: string | number }): string | undefined 
   return undefined
 }
 
-/** Parse parent-provided column width to CSS value. Returns undefined if not provided. */
 const parseColumnWidth = (col: { width?: string | number }): string | undefined => {
   const w = col.width
   if (w == null) return undefined
@@ -51,10 +46,10 @@ const parseColumnWidth = (col: { width?: string | number }): string | undefined 
 
 const EMPTY_TABLE_ESTIMATE = 15
 
-function computeContentBasedWidths<T>(
-  columns: { key: string; label: string; render?: unknown }[],
+const computeContentBasedWidths = <T,>(
+  columns: { key: ColumnKey<T>; label: string }[],
   data: T[],
-): Record<string, string> {
+): Record<string, string> => {
   const totalCols = columns.length
   if (totalCols === 0) return {}
 
@@ -62,19 +57,18 @@ function computeContentBasedWidths<T>(
     const headerLen = col.label.length
     let maxContentLen = headerLen
     for (const row of data) {
-      const val = (row as Record<string, unknown>)[col.key]
-      const len = String(val ?? '').length
+      const len = String(row[col.key] ?? '').length
       maxContentLen = Math.max(maxContentLen, len)
     }
     if (data.length === 0) {
       maxContentLen = Math.max(maxContentLen, EMPTY_TABLE_ESTIMATE)
     }
-    return BASE_WEIGHT + maxContentLen * CONTENT_WEIGHT_FACTOR
+    return 1 + maxContentLen * 0.02
   })
 
   const totalScore = scores.reduce((a, b) => a + b, 0)
   const rawPcts = scores.map((s) => (s / totalScore) * 100)
-  const clamped = rawPcts.map((p) => Math.max(MIN_PCT, Math.min(MAX_PCT, p)))
+  const clamped = rawPcts.map((p) => Math.max(14, Math.min(42, p)))
   const sumClamped = clamped.reduce((a, b) => a + b, 0)
   const pcts =
     sumClamped > 0 ? clamped.map((p) => (p / sumClamped) * 100) : clamped.map(() => 100 / totalCols)
@@ -82,12 +76,12 @@ function computeContentBasedWidths<T>(
   return Object.fromEntries(columns.map((col, i) => [col.key, `${pcts[i].toFixed(1)}%`]))
 }
 
-function compareValues(a: unknown, b: unknown, direction: 'asc' | 'desc'): number {
+const compareValues = (a: CellValue, b: CellValue, direction: 'asc' | 'desc'): number => {
   const emptyA = a == null || a === ''
   const emptyB = b == null || b === ''
   if (emptyA && emptyB) return 0
-  if (emptyA) return direction === 'asc' ? 1 : 1
-  if (emptyB) return direction === 'asc' ? -1 : -1
+  if (emptyA) return 1
+  if (emptyB) return -1
   let cmp: number
   if (typeof a === 'number' && typeof b === 'number') {
     cmp = a - b
@@ -134,18 +128,22 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
   const isDark = state.theme === THEME_DARK
   const [expandedRows, setExpandedRows] = useState<Set<string | number>>(new Set())
   const [resizedColumnWidths, setResizedColumnWidths] = useState<Record<string, number>>({})
-  const [sortColumn, setSortColumn] = useState<string | null>(null)
-  const [sortDirection, setSortDirection] = useState<SortDirection>(null)
+  const [sortState, setSortState] = useState<{ column: string | null; direction: SortDirection }>({
+    column: null,
+    direction: null,
+  })
 
   const sortedData = useMemo(() => {
-    if (!sortColumn || !sortDirection) return data
-    const dir = sortDirection === 'desc' ? 'desc' : 'asc'
-    return [...data].sort((rowA, rowB) => {
-      const a = (rowA as Record<string, unknown>)[sortColumn]
-      const b = (rowB as Record<string, unknown>)[sortColumn]
-      return compareValues(a, b, dir)
+    if (!sortState.column || !sortState.direction) return data
+    const dir = sortState.direction
+    const colKey = sortState.column as ColumnKey<T>
+    const indexed = data.map((item, idx) => ({ item, idx }))
+    indexed.sort((a, b) => {
+      const cmp = compareValues(a.item[colKey] as CellValue, b.item[colKey] as CellValue, dir)
+      return cmp !== 0 ? cmp : a.idx - b.idx
     })
-  }, [data, sortColumn, sortDirection])
+    return indexed.map(({ item }) => item)
+  }, [data, sortState])
 
   const computedWidths = useMemo(() => computeContentBasedWidths(columns, data), [columns, data])
   const effectiveWidths = useMemo(() => {
@@ -296,19 +294,20 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
     [getRowKey],
   )
 
-  const handleSort = useCallback(
-    (columnKey: string) => {
-      const isSameColumn = sortColumn === columnKey
+  const handleSort = useCallback((columnKey: string) => {
+    setSortState((prev) => {
+      const isSameColumn = prev.column === columnKey
       const nextDirection: SortDirection = !isSameColumn
         ? 'asc'
-        : sortDirection === 'asc'
+        : prev.direction === 'asc'
           ? 'desc'
           : null
-      setSortColumn(nextDirection ? columnKey : null)
-      setSortDirection(nextDirection)
-    },
-    [sortColumn, sortDirection],
-  )
+      return {
+        column: nextDirection ? columnKey : null,
+        direction: nextDirection,
+      }
+    })
+  }, [])
 
   const renderActionCell = useCallback(
     (row: T) => {
@@ -398,7 +397,7 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
                 )}
                 {columns.map((col) => {
                   const isSortable = col.sortable !== false
-                  const isActive = sortColumn === col.key
+                  const isActive = sortState.column === col.key
                   return (
                     <th
                       ref={(el) => setHeaderCellRef(col.key, el)}
@@ -426,7 +425,7 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
                             <ChevronIcon
                               width={14}
                               height={14}
-                              direction={isActive && sortDirection === 'desc' ? 'down' : 'up'}
+                              direction={isActive && sortState.direction === 'asc' ? 'up' : 'down'}
                             />
                           </span>
                         </button>
