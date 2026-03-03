@@ -37,7 +37,7 @@ Use the listing below for a detailed estimation of the minimum required resource
         ```bash
         wget https://raw.githubusercontent.com/GluuFederation/flex/main/charts/gluu/openbanking-values.yaml
         ```
-  - Based on the provider/platform you're using, you can follow the [docs](../install/helm-install/README.md) to install your platform prerequistes, nginx-ingress, and the yaml changes needed in `openbanking-values.yaml` based on the Gluu persistence choosed.
+  - Based on the provider/platform you're using, you can follow the [docs](../install/helm-install/README.md) to install your platform prerequisites, nginx-ingress, and the yaml changes needed in `openbanking-values.yaml` based on the Gluu persistence choosed.
 
   - The `auth-server` and `persistence` images are hosted in a private repository and require authentication to pull:
 
