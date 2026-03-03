@@ -8,12 +8,6 @@ const BODY_MAX_HEIGHT = '60vh'
 const ERROR_FONT_SIZE = 12
 const HOVER_OPACITY = 0.85
 
-export const getModalStyle = (_themeColors: ThemeConfig) => ({
-  minWidth: MODAL_MIN_WIDTH,
-  border: 'none',
-  outline: 'none',
-})
-
 export const useStyles = makeStyles<{ themeColors: ThemeConfig }>()((_theme, { themeColors }) => ({
   modalWrapper: {
     'display': 'flex !important',
@@ -22,13 +16,20 @@ export const useStyles = makeStyles<{ themeColors: ThemeConfig }>()((_theme, { t
     'border': 'none',
     'outline': 'none',
     '& .modal-dialog': {
-      margin: 0,
+      minWidth: MODAL_MIN_WIDTH,
+      maxWidth: MODAL_MIN_WIDTH,
+      margin: '0 auto',
       border: 'none',
       outline: 'none',
     },
     '& .modal-content': {
+      minWidth: MODAL_MIN_WIDTH,
       border: 'none',
       outline: 'none',
+      backgroundColor: themeColors.card.background,
+    },
+    '& .modal-body': {
+      backgroundColor: themeColors.card.background,
     },
   },
   buttonHoverOpacity: {
@@ -80,17 +81,14 @@ export const useStyles = makeStyles<{ themeColors: ThemeConfig }>()((_theme, { t
     fontFamily: 'monospace',
     fontSize: ERROR_FONT_SIZE,
   },
-}))
-
-export const getFooterButtonStyles = (themeColors: ThemeConfig) => ({
-  cancelButtonStyle: {
+  cancelButton: {
     backgroundColor: themeColors.formFooter.cancel.backgroundColor,
     color: themeColors.formFooter.cancel.textColor,
     border: `1px solid ${themeColors.formFooter.cancel.borderColor}`,
     ...applicationStyle.buttonFlexIconStyles,
   },
-  applyButtonStyle: {
+  applyButton: {
     ...applicationStyle.buttonStyle,
     ...applicationStyle.buttonFlexIconStyles,
   },
-})
+}))

@@ -4,11 +4,7 @@ import { Modal, ModalBody } from 'reactstrap'
 import GluuText from './GluuText'
 import { GluuButton } from '@/components/GluuButton'
 import GluuFormFooter from './GluuFormFooter'
-import {
-  useStyles,
-  getModalStyle,
-  getFooterButtonStyles,
-} from './styles/GluuScriptErrorModal.style'
+import { useStyles } from './styles/GluuScriptErrorModal.style'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
@@ -32,8 +28,6 @@ const GluuScriptErrorModal = ({
   const selectedTheme = theme?.state.theme ?? DEFAULT_THEME
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { classes } = useStyles({ themeColors })
-  const modalStyle = useMemo(() => getModalStyle(themeColors), [themeColors])
-  const footerButtonStyles = useMemo(() => getFooterButtonStyles(themeColors), [themeColors])
 
   const handleClose = useCallback(() => {
     setIsCopied(false)
@@ -52,7 +46,6 @@ const GluuScriptErrorModal = ({
     <Modal
       centered
       isOpen={isOpen}
-      style={modalStyle}
       toggle={handleClose}
       className="modal-outline-primary"
       modalClassName={classes.modalWrapper}
@@ -85,15 +78,13 @@ const GluuScriptErrorModal = ({
           cancelButtonLabel={cancelLabel}
           onCancel={copyToClipboard}
           disableCancel={isCopied}
-          cancelButtonStyle={footerButtonStyles.cancelButtonStyle}
-          cancelButtonClassName={classes.buttonHoverOpacity}
+          cancelButtonClassName={`${classes.cancelButton} ${classes.buttonHoverOpacity}`}
           cancelIconClass="fa fa-copy"
           showApply
           applyButtonType="button"
           applyButtonLabel={t('actions.close')}
           onApply={handleClose}
-          applyButtonStyle={footerButtonStyles.applyButtonStyle}
-          applyButtonClassName={classes.buttonHoverOpacity}
+          applyButtonClassName={`${classes.applyButton} ${classes.buttonHoverOpacity}`}
           applyIconClass="fa fa-times-circle"
         />
       </div>
