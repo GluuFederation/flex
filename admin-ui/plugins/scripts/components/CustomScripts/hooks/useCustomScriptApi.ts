@@ -17,7 +17,7 @@ import {
   type GetConfigScriptsByTypeParams,
 } from 'JansConfigApi'
 import { CREATE, UPDATE, DELETION } from '@/audit/UserActionType'
-import { SCRIPT } from '../../../redux/audit/Resources'
+import { SCRIPT } from 'Plugins/admin/redux/audit/Resources'
 import { devLogger } from '@/utils/devLogger'
 import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
 import type { TriggerWebhookReducerPayload } from 'Plugins/admin/redux/types/webhook'
@@ -32,8 +32,6 @@ import {
   QUERY_KEY_PREFIX_SCRIPTS,
 } from '../constants'
 import type { ScriptType } from '../types/customScript'
-
-export type { ScriptType }
 
 interface WebhookPayload {
   createdFeatureValue: CustomScript | { inum: string }

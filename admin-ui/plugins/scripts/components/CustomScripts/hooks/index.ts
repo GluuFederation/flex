@@ -7,8 +7,9 @@ export {
   useDeleteCustomScript,
   useCustomScriptTypes,
   useCustomScriptOperations,
-  type ScriptType,
 } from './useCustomScriptApi'
+
+export type { ScriptType } from '../types/customScript'
 
 export { useCustomScriptActions, useCustomScriptLegacyActions } from './useCustomScriptActions'
 

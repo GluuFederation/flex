@@ -5,17 +5,24 @@ import { filterEmptyObjects } from 'Utils/Util'
 import { LOCATION_TYPE_DB } from '../constants'
 import type { CustomScript, SimpleCustomProperty } from 'JansConfigApi'
 
-export const getApiErrorDetail = (error: unknown): string => {
-  if (error && typeof error === 'object' && 'response' in error) {
-    const err = error as { response?: { data?: string | { message?: string } }; message?: string }
-    const data = err.response?.data
+interface ApiError {
+  response?: { data?: string | { message?: string } }
+  message?: string
+}
+
+export const getApiErrorDetail = (error: Error | ApiError | string | null | undefined): string => {
+  if (!error) return ''
+  if (typeof error === 'string') return error
+
+  if ('response' in error) {
+    const data = (error as ApiError).response?.data
     if (typeof data === 'string' && data.trim()) return data
     if (data && typeof data === 'object' && typeof data.message === 'string') return data.message
   }
-  if (error && typeof error === 'object' && 'message' in error) {
-    return (error as { message: string }).message
+  if ('message' in error && typeof error.message === 'string') {
+    return error.message
   }
-  return String(error ?? '')
+  return String(error)
 }
 
 export const getModuleProperty = (
@@ -31,7 +38,7 @@ type PropertyInput =
   | ConfigurationProperty
   | ModuleProperty
   | SimpleCustomProperty
-  | Record<string, unknown>
+  | Record<string, string | boolean | undefined>
 
 type PropertyLike = { key?: string; value?: string; value1?: string; value2?: string }
 

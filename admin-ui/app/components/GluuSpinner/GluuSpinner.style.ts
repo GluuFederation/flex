@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import { keyframes } from '@emotion/react'
-import customColors, { hexToRgb } from '@/customColors'
+import customColors from '@/customColors'
 
 const SPIN_DURATION = '0.8s'
 
@@ -11,16 +11,14 @@ const spinKeyframes = keyframes({
 
 interface GluuSpinnerStyleParams {
   size: number
-  isDark: boolean
 }
 
-const useStyles = makeStyles<GluuSpinnerStyleParams>()((_, { size, isDark }) => ({
+const useStyles = makeStyles<GluuSpinnerStyleParams>()((_, { size }) => ({
   spinner: {
     display: 'block',
     width: size,
     height: size,
     borderRadius: '50%',
-    // single colored arc instead of full solid ring
     border: `${Math.max(3, Math.floor(size / 12))}px solid transparent`,
     borderTopColor: customColors.logo,
     animation: `${spinKeyframes} ${SPIN_DURATION} linear infinite`,
