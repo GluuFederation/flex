@@ -39,6 +39,27 @@ Use the listing below for a detailed estimation of the minimum required resource
         ```
   - Based on the provider/platform you're using, you can follow the [docs](../install/helm-install/README.md) to install your platform prerequistes, nginx-ingress, and the yaml changes needed in `openbanking-values.yaml` based on the Gluu persistence choosed.
 
+  - The `auth-server` and `persistence` images are hosted in a private repository and require authentication to pull:
+
+    - Create a Kubernetes secret in the `gluu` namespace using your provided registry credentials:
+
+        ```bash
+        kubectl create secret docker-registry -n gluu regcred --docker-server=https://index.docker.io/v1/ --docker-username=<some-username> --docker-password=<some-password>
+        ```
+
+    - Update `openbanking-values.yaml`:
+
+        ```yaml
+        auth-server:
+            image:
+                pullSecrets:
+                - name: regcred
+        persistence:
+            image:
+                pullSecrets:
+                - name: regcred
+        ```
+
   - To enable mTLS in ingress-nginx, add the following to your `openbanking-values.yaml`:
       ```yaml
       nginx-ingress:
