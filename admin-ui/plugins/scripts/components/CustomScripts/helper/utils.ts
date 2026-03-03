@@ -6,6 +6,7 @@ import { LOCATION_TYPE_DB } from '../constants'
 import type { CustomScript, SimpleCustomProperty } from 'JansConfigApi'
 import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import type { TFunction } from 'i18next'
 
 interface ApiError {
   response?: { data?: string | { message?: string } }
@@ -74,9 +75,9 @@ export const transformToFormValues = (
     aliases: item.aliases ?? [],
     moduleProperties: rawModule.map(normalizeProperty) as ModuleProperty[],
     configurationProperties: rawConfig.map(normalizeProperty) as ConfigurationProperty[],
-    script_path: '',
-    locationPath: undefined,
-    location_type: LOCATION_TYPE_DB,
+    script_path: item.locationPath ?? '',
+    locationPath: item.locationPath ?? undefined,
+    location_type: item.locationType ?? LOCATION_TYPE_DB,
     enabled: item.enabled !== undefined ? item.enabled : true,
     action_message: '',
   }
@@ -125,6 +126,7 @@ const addPropertyChanges = (
 export const buildChangedFieldOperations = (
   initial: FormValues,
   current: FormValues,
+  t: TFunction,
 ): GluuCommitDialogOperation[] => {
   const operations: GluuCommitDialogOperation[] = []
 
@@ -138,27 +140,31 @@ export const buildChangedFieldOperations = (
     }
   }
 
-  addIfChanged('name', initial.name ?? null, current.name ?? null)
-  addIfChanged('description', initial.description ?? null, current.description ?? null)
-  addIfChanged('scriptType', initial.scriptType ?? null, current.scriptType ?? null)
+  addIfChanged(t('fields.name'), initial.name ?? null, current.name ?? null)
+  addIfChanged(t('fields.description'), initial.description ?? null, current.description ?? null)
+  addIfChanged(t('fields.script_type'), initial.scriptType ?? null, current.scriptType ?? null)
   addIfChanged(
-    'programmingLanguage',
+    t('fields.programming_language'),
     initial.programmingLanguage ?? null,
     current.programmingLanguage ?? null,
   )
-  addIfChanged('level', initial.level ?? null, current.level ?? null)
+  addIfChanged(t('fields.level'), initial.level ?? null, current.level ?? null)
   addIfChanged(
-    'enabled',
+    t('fields.enabled'),
     (initial.enabled as JsonValue) ?? null,
     (current.enabled as JsonValue) ?? null,
   )
-  addIfChanged('location_type', initial.location_type ?? null, current.location_type ?? null)
-  addIfChanged('script_path', initial.script_path ?? null, current.script_path ?? null)
+  addIfChanged(
+    t('fields.location_type'),
+    initial.location_type ?? null,
+    current.location_type ?? null,
+  )
+  addIfChanged(t('fields.script_path'), initial.script_path ?? null, current.script_path ?? null)
   if ((initial.script ?? '') !== (current.script ?? '')) {
     const scriptPreview = (current.script ?? '').replace(/\s+/g, ' ').trim()
     const maxLen = 40
     operations.push({
-      path: 'script',
+      path: t('fields.script'),
       value:
         scriptPreview.length > maxLen
           ? `${scriptPreview.slice(0, maxLen)}...`
@@ -166,17 +172,17 @@ export const buildChangedFieldOperations = (
     })
   }
   if (JSON.stringify(initial.aliases) !== JSON.stringify(current.aliases)) {
-    operations.push({ path: 'aliases', value: (current.aliases ?? null) as JsonValue })
+    operations.push({ path: t('fields.aliases'), value: (current.aliases ?? null) as JsonValue })
   }
   addPropertyChanges(
     operations,
-    'moduleProperties',
+    t('fields.module_properties'),
     initial.moduleProperties,
     current.moduleProperties,
   )
   addPropertyChanges(
     operations,
-    'configurationProperties',
+    t('fields.custom_properties'),
     initial.configurationProperties,
     current.configurationProperties,
   )

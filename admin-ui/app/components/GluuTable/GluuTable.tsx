@@ -18,13 +18,10 @@ import {
 
 const MIN_COL_WIDTH = 60
 
-const parseMinWidth = (col: { minWidth?: string | number }): number | undefined => {
+const parseMinWidth = (col: { minWidth?: string | number }): string | number | undefined => {
   const mw = col.minWidth
   if (typeof mw === 'number' && mw > 0) return mw
-  if (typeof mw === 'string') {
-    const px = parseInt(mw, 10)
-    if (!Number.isNaN(px)) return px
-  }
+  if (typeof mw === 'string') return mw.trim()
   return undefined
 }
 

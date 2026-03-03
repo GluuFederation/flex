@@ -29,10 +29,10 @@ const CustomScriptAddPage: React.FC = () => {
   const isDark = themeState.theme === THEME_DARK
   const { classes } = useStyles({ isDark, themeColors })
 
-  const { hasCedarReadPermission } = useCedarling()
-  const canRead = useMemo(
-    () => hasCedarReadPermission(scriptsResourceId),
-    [hasCedarReadPermission, scriptsResourceId],
+  const { hasCedarWritePermission } = useCedarling()
+  const canWrite = useMemo(
+    () => hasCedarWritePermission(scriptsResourceId),
+    [hasCedarWritePermission, scriptsResourceId],
   )
 
   const createMutation = useCreateCustomScript()
@@ -73,7 +73,7 @@ const CustomScriptAddPage: React.FC = () => {
 
   return (
     <GluuPageContent>
-      <GluuViewWrapper canShow={canRead}>
+      <GluuViewWrapper canShow={canWrite}>
         <GluuLoader blocking={createMutation.isPending}>
           <div className={classes.formCard}>
             <div className={classes.content}>

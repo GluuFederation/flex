@@ -35,10 +35,14 @@ const CustomScriptEditPage: React.FC = () => {
 
   SetTitle(t('titles.edit_script'))
 
-  const { hasCedarReadPermission } = useCedarling()
+  const { hasCedarReadPermission, hasCedarWritePermission } = useCedarling()
   const canRead = useMemo(
     () => hasCedarReadPermission(scriptsResourceId),
     [hasCedarReadPermission, scriptsResourceId],
+  )
+  const canWrite = useMemo(
+    () => hasCedarWritePermission(scriptsResourceId),
+    [hasCedarWritePermission, scriptsResourceId],
   )
 
   const viewMatch = useMatch(ROUTES.CUSTOM_SCRIPT_VIEW_TEMPLATE)
@@ -108,7 +112,7 @@ const CustomScriptEditPage: React.FC = () => {
             <div className={classes.content}>
               <CustomScriptForm
                 item={script ?? {}}
-                viewOnly={!!viewMatch || loadingScript}
+                viewOnly={!!viewMatch || loadingScript || !canWrite}
                 handleSubmit={handleSubmit}
               />
             </div>

@@ -43,6 +43,7 @@ import {
   PROGRAMMING_LANGUAGES,
   LOCATION_TYPES,
   LOCATION_TYPE_DB,
+  LOCATION_TYPE_FILE,
   DEFAULT_SCRIPT_TYPE,
 } from './constants'
 import { PersonAuthenticationFields } from './PersonAuthenticationFields'
@@ -137,10 +138,14 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
         enabled: booleanEnabled,
       }
 
+      const selectedLocationType = values.location_type || LOCATION_TYPE_DB
       const customScript: CustomScriptItem = {
         ...base,
-        locationType: LOCATION_TYPE_DB,
-        locationPath: undefined,
+        locationType: selectedLocationType,
+        locationPath:
+          selectedLocationType === LOCATION_TYPE_FILE
+            ? values.script_path?.trim() || undefined
+            : undefined,
         script: values.script,
       }
 
@@ -270,10 +275,10 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
   const scriptTypeState = formik.values.scriptType
 
   const openCommitDialogWithChanges = useCallback(() => {
-    const operations = buildChangedFieldOperations(initialValues, formik.values)
+    const operations = buildChangedFieldOperations(initialValues, formik.values, t)
     setCommitOperations(operations)
     toggle()
-  }, [initialValues, formik.values, toggle])
+  }, [initialValues, formik.values, toggle, t])
 
   return (
     <>
@@ -289,7 +294,7 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
           icon={<ErrorIcon />}
           className={classes.errorAlert}
           action={
-            <Button size="small" className={classes.errorButton} onClick={showErrorModal}>
+            <Button size="sm" className={classes.errorButton} onClick={showErrorModal}>
               {t('actions.show_error')}
             </Button>
           }

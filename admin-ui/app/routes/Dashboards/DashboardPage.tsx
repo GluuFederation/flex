@@ -255,7 +255,7 @@ const DashboardPage = () => {
     }
     return STATUS_DETAILS.filter(({ key }) => {
       const service = allServices.find((s) => s.name === key)
-      return service?.status === 'up' || service?.status === 'down'
+      return service?.status != null
     })
   }, [allServices, healthLoading])
 

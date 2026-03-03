@@ -8,6 +8,7 @@ import { useStyles } from './styles/GluuScriptErrorModal.style'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
+import { devLogger } from '@/utils/devLogger'
 
 interface GluuScriptErrorModalProps {
   title?: string
@@ -34,10 +35,14 @@ const GluuScriptErrorModal = ({
     handler()
   }, [handler])
 
-  const copyToClipboard = useCallback(() => {
+  const copyToClipboard = useCallback(async () => {
     if (isCopied) return
-    setIsCopied(true)
-    navigator.clipboard.writeText(error)
+    try {
+      await navigator.clipboard.writeText(error)
+      setIsCopied(true)
+    } catch (clipboardError) {
+      devLogger.error('Failed to copy script error to clipboard:', clipboardError)
+    }
   }, [error, isCopied])
 
   const cancelLabel = isCopied ? t('messages.copied') : t('actions.copy_to_clipboard')

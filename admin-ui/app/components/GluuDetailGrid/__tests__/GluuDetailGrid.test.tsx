@@ -32,5 +32,7 @@ it('renders with defaultDocCategory', () => {
 
 it('renders with labelStyle', () => {
   render(<GluuDetailGrid fields={mockFields} labelStyle={{ color: 'red' }} />, { wrapper: Wrapper })
-  expect(screen.getByText(/Inum/i)).toBeInTheDocument()
+  const label = screen.getByText(/Inum/i)
+  expect(label).toBeInTheDocument()
+  expect(label).toHaveStyle({ color: 'red' })
 })

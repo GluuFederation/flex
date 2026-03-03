@@ -176,6 +176,7 @@ describe('CustomScriptForm', () => {
       await screen.findByText(/Name/)
       expect(screen.getByText(/Back/i)).toBeInTheDocument()
       expect(screen.getByText(/Cancel/i)).toBeInTheDocument()
+      expect(screen.getByText(/Apply/i)).toBeInTheDocument()
     })
   })
 
@@ -281,12 +282,12 @@ describe('CustomScriptForm', () => {
       const nameInput = await screen.findByTestId('name')
       fireEvent.change(nameInput, { target: { value: 'updated_script' } })
 
+      const applyBtn = await screen.findByText(/Apply/i)
+      expect(applyBtn).toBeInTheDocument()
       await waitFor(() => {
-        const applyBtn = screen.queryByText(/Apply/i)
-        if (applyBtn && !applyBtn.closest('button')?.disabled) {
-          fireEvent.click(applyBtn)
-        }
+        expect(applyBtn.closest('button')).not.toBeDisabled()
       })
+      fireEvent.click(applyBtn)
     })
   })
 })

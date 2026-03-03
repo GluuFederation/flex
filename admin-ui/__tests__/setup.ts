@@ -29,7 +29,6 @@ jest.spyOn(global.console, 'error').mockImplementation((...args: unknown[]) => {
     msg.includes('Problems getting API access token') ||
     msg.includes('Problems posting user action audit log') ||
     msg.includes('suspended resource finished loading') ||
-    msg.includes('not wrapped in act(') ||
     (msg.includes('Failed prop type') && msg.includes('timeout') && msg.includes('Fade'))
 
   if (shouldSuppress) return

@@ -56,14 +56,14 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
         borderTop: `1px solid ${rowBorder} !important`,
       },
       '& tbody tr [data-expand-button]': {
-        backgroundColor: expandButtonHoverBg,
+        backgroundColor: expandButtonBg,
         transition: 'background-color 0.15s ease',
       },
       '& tbody tr:hover [data-expand-button]': {
-        backgroundColor: expandButtonBg,
+        backgroundColor: expandButtonHoverBg,
       },
       '& tbody tr [data-expand-button]:hover': {
-        backgroundColor: expandButtonBg,
+        backgroundColor: expandButtonHoverBg,
       },
     },
     table: {
