@@ -246,52 +246,6 @@ export interface AssetState {
   showErrorModal: boolean
 }
 
-// Custom Script State
-export interface ScriptError {
-  type?: string
-  message?: string
-  stackTrace?: string
-}
-
-export interface ScriptType {
-  value: string
-  name: string
-}
-
-export interface ModuleProperty {
-  value1: string
-  value2: string
-  description?: string
-  hide?: boolean
-}
-
-export interface ConfigurationProperty {
-  key?: string
-  value?: string
-  value1?: string
-  value2?: string
-  hide?: boolean
-}
-
-export interface CustomScriptItem {
-  inum?: string
-  name?: string
-  description?: string
-  scriptType?: string
-  programmingLanguage?: string
-  level?: number
-  script?: string
-  aliases?: string[]
-  moduleProperties?: ModuleProperty[]
-  configurationProperties?: ConfigurationProperty[]
-  locationPath?: string
-  locationType?: string
-  enabled?: boolean
-  scriptError?: ScriptError
-  internal?: boolean
-  revision?: number
-}
-
 // Auth server plugin state types
 
 // OIDC Client
