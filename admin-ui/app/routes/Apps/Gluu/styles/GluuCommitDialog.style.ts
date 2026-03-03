@@ -82,7 +82,11 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark }) => {
       'display': 'flex',
       'alignItems': 'center',
       'justifyContent': 'center',
+      'fontSize': '1.5rem',
       'color': isDark ? customColors.white : customColors.primaryDark,
+      '& i': {
+        fontSize: 'inherit',
+      },
       '&:hover': {
         opacity: 0.5,
       },

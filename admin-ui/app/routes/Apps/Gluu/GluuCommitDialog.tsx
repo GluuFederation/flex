@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from 'Context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import PropTypes from 'prop-types'
-import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined'
 import { useSelector } from 'react-redux'
 import { useWebhookDialogAction } from 'Utils/hooks'
 import { useCedarling } from '@/cedarling'
@@ -39,6 +39,7 @@ const GluuCommitDialog = ({
 
   const { state: themeState } = useTheme()
   const isDark = themeState.theme === THEME_DARK
+  const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
   const { classes } = useStyles({ isDark })
   const [userMessage, setUserMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -166,13 +167,13 @@ const GluuCommitDialog = ({
             onClick={closeModal}
             className={classes.closeButton}
             backgroundColor="transparent"
-            textColor={isDark ? customColors.white : customColors.primaryDark}
+            textColor={themeColors.fontColor}
             borderColor="transparent"
             padding="0"
             minHeight="32"
             title={t('actions.close')}
           >
-            <CloseOutlinedIcon />
+            <i className="fa fa-times" aria-hidden />
           </GluuButton>
           <div className={classes.contentArea}>
             <GluuText variant="h2" className={classes.title} id="commit-dialog-title">

@@ -13,6 +13,7 @@ import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { GluuTable } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import { GluuBadge } from '@/components/GluuBadge'
+import GluuText from '@/routes/Apps/Gluu/GluuText'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
@@ -230,18 +231,26 @@ const AuditListPage: React.FC = () => {
     [themeColors],
   )
 
+  const serialColumnWidth = useMemo(() => {
+    const digitsFromTotal = String(Math.max(totalItems, 0)).length
+    const digits = Math.max(digitsFromTotal, 6)
+    return `${digits + 3}ch`
+  }, [totalItems])
+
   const columns: ColumnDef<AuditRow>[] = useMemo(
     () => [
       {
         key: 'serial',
         label: '#',
-        width: 60,
+        width: serialColumnWidth,
+        minWidth: 48,
         align: 'left' as const,
         sortable: false,
       },
       {
         key: 'log',
         label: t(T_KEYS.FIELD_LOG_ENTRY),
+        width: 'auto',
         sortable: false,
         render: (
           _value: AuditRow[keyof AuditRow],
@@ -252,15 +261,17 @@ const AuditListPage: React.FC = () => {
           const isExpanded = context?.isExpanded ?? false
           if (!row.timestamp) {
             return (
-              <div
+              <GluuText
+                variant="div"
+                disableThemeColor
                 className={`${classes.logEntryContent} ${!isExpanded ? classes.logEntryContentCollapsed : ''}`}
               >
                 {row.content}
-              </div>
+              </GluuText>
             )
           }
           return (
-            <div className={classes.logEntryCell}>
+            <GluuText variant="div" disableThemeColor className={classes.logEntryCell}>
               <GluuBadge
                 pill
                 size="md"
@@ -272,13 +283,19 @@ const AuditListPage: React.FC = () => {
                 <AccessTimeIcon className={classes.accessTimeIcon} />
                 {row.datePart}
               </GluuBadge>
-              {row.timePart ? <span>{row.timePart}</span> : null}
-              <div
+              {row.timePart ? (
+                <GluuText variant="span" disableThemeColor>
+                  {row.timePart}
+                </GluuText>
+              ) : null}
+              <GluuText
+                variant="div"
+                disableThemeColor
                 className={`${classes.logEntryContent} ${!isExpanded ? classes.logEntryContentCollapsed : ''}`}
               >
                 {row.content}
-              </div>
-            </div>
+              </GluuText>
+            </GluuText>
           )
         },
       },
@@ -291,6 +308,7 @@ const AuditListPage: React.FC = () => {
       classes.dateBadge,
       classes.accessTimeIcon,
       dateBadgeColors,
+      serialColumnWidth,
     ],
   )
 
@@ -380,16 +398,18 @@ const AuditListPage: React.FC = () => {
           </div>
 
           <div className={classes.tableCard}>
-            {/* loading={false}: page-level GluuLoader already shows blocking overlay; table loading state intentionally suppressed */}
-            <GluuTable<AuditRow>
-              columns={columns}
-              data={auditRows}
-              loading={false}
-              expandable
-              pagination={pagination}
-              onPagingSizeSync={handlePagingSizeSync}
-              emptyMessage={emptyMessage}
-            />
+            <div data-audit-table>
+              <GluuTable<AuditRow>
+                columns={columns}
+                data={auditRows}
+                loading={false}
+                expandable
+                expandColumnWidth={40}
+                pagination={pagination}
+                onPagingSizeSync={handlePagingSizeSync}
+                emptyMessage={emptyMessage}
+              />
+            </div>
           </div>
         </GluuViewWrapper>
       </div>

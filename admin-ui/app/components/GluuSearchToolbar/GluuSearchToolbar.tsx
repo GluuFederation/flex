@@ -49,6 +49,7 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
     searchValue = '',
     searchFieldWidth,
     searchOnType = false,
+    searchDebounceMs = 500,
     onSearch,
     onSearchSubmit,
     filters,
@@ -72,7 +73,7 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
 
   const [localSearch, setLocalSearch] = useState(searchValue)
   const lastNotifiedRef = useRef(searchValue)
-  const debouncedSearch = useDebounce(localSearch, 300)
+  const debouncedSearch = useDebounce(localSearch, searchDebounceMs)
 
   useEffect(() => {
     if (searchValue !== lastNotifiedRef.current) {

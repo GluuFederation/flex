@@ -10,7 +10,7 @@ import {
   setFeatureToTrigger,
 } from 'Plugins/admin/redux/features/WebhookSlice'
 import { useTheme } from 'Context/theme/themeContext'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { useTranslation } from 'react-i18next'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'

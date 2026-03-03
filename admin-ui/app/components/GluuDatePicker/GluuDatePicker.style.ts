@@ -2,8 +2,8 @@ import { useMemo } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import type { SxProps, Theme } from '@mui/material/styles'
 import type { ThemeConfig } from '@/context/theme/config'
-import { hexToRgb } from '@/customColors'
-import { OPACITY } from '@/constants/ui'
+import { getLoadingOverlayRgba } from '@/customColors'
+import { getHoverOpacity } from '@/constants'
 import { fontFamily, fontSizes, fontWeights, letterSpacing } from '@/styles/fonts'
 
 const TEXT_FIELD_SIZE = 'small' as const
@@ -39,7 +39,7 @@ const buildPickerThemeColors = (
 ): PickerThemeColors => {
   const inputText = textColor || themeConfig.fontColor
   const borderColor = isDark ? 'transparent' : themeConfig.borderColor
-  const hoverBg = `rgba(${hexToRgb(themeConfig.fontColor)}, ${isDark ? OPACITY.HOVER_DARK : OPACITY.HOVER_LIGHT})`
+  const hoverBg = getLoadingOverlayRgba(themeConfig.fontColor, getHoverOpacity(isDark))
   return {
     labelBackground: backgroundColor || themeConfig.background,
     inputBackground: themeConfig.inputBackground,

@@ -52,11 +52,12 @@ import LockPage from './components/Message/LockPage'
 import AuthNPage from './components/AuthN'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { ROUTES } from '@/helpers/navigation'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 
 const AgamaListPage = lazy(() => import('./components/Agama/AgamaListPage'))
 function AgamaListPageWrapper() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<GluuLoader blocking />}>
       <AgamaListPage />
     </Suspense>
   )
@@ -116,21 +117,12 @@ const pluginMetadata = {
           permission: API_CONFIG_READ,
           resourceKey: ADMIN_UI_RESOURCES.ConfigApiConfiguration,
         },
-        // {
-        //   title: 'menus.configuration',
-        //   children: [],
-        // },
         {
           title: 'menus.sessions',
           path: ROUTES.AUTH_SERVER_SESSIONS,
           permission: SESSION_READ,
           resourceKey: ADMIN_UI_RESOURCES.Session,
         },
-        // {
-        //   title: 'menus.lock ',
-        //   path: PLUGIN_BASE_APTH + '/lock',
-        //   permission: MESSAGE_READ,
-        // },
       ],
     },
   ],
