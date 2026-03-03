@@ -2,20 +2,28 @@ import { makeStyles } from 'tss-react/mui'
 import customColors, { hexToRgb } from '@/customColors'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import type { ThemeConfig } from '@/context/theme/config'
 
 interface StylesParams {
   isDark: boolean
+  themeColors: ThemeConfig
 }
 
 const OVERLAY_BG_LIGHT = `rgba(${hexToRgb(customColors.black)}, 0.8)`
 const OVERLAY_BG_DARK = `rgba(${hexToRgb(customColors.darkCardBg)}, 0.8)`
 
-const MODAL_WIDTH = 1024
-const MODAL_HEIGHT = 420
-const HORIZONTAL_PADDING = 40
-const CONTENT_WIDTH = MODAL_WIDTH - HORIZONTAL_PADDING * 2
+const MODAL_WIDTH = 1007
+const CONTENT_WIDTH = 898
+const CONTENT_GAP = 16
+const TITLE_BOTTOM_SPACING = 24
+const TEXTAREA_HEIGHT = 161
+const OPERATIONS_MAX_HEIGHT = 140
+const CLOSE_BUTTON_SIZE = 32
+const CLOSE_BUTTON_OFFSET = 16
+const BUTTON_MIN_HEIGHT = '40px'
+const BUTTON_PADDING = '8px 28px'
 
-export const useStyles = makeStyles<StylesParams>()((_theme, { isDark }) => {
+export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColors }) => {
   const cardBorderStyle = getCardBorderStyle({ isDark })
 
   return {
@@ -29,23 +37,18 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark }) => {
       borderRadius: '16px',
       width: `min(${MODAL_WIDTH}px, 90vw)`,
       maxWidth: `${MODAL_WIDTH}px`,
-      height: `min(${MODAL_HEIGHT}px, 90vh)`,
-      maxHeight: `${MODAL_HEIGHT}px`,
+      maxHeight: '90vh',
       zIndex: 1050,
       padding: 0,
       boxSizing: 'border-box',
       overflow: 'visible',
-      display: 'flex',
-      flexDirection: 'column',
     },
     contentArea: {
-      flex: 1,
       display: 'flex',
       flexDirection: 'column',
-      padding: `24px ${HORIZONTAL_PADDING}px ${HORIZONTAL_PADDING}px`,
-      paddingTop: 56,
+      padding: '55px',
+      gap: CONTENT_GAP,
       overflowY: 'auto',
-      gap: 16,
     },
     overlay: {
       position: 'fixed',
@@ -60,10 +63,11 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark }) => {
     title: {
       fontFamily,
       fontWeight: fontWeights.bold,
-      fontSize: fontSizes['2xl'],
-      lineHeight: '32px',
-      color: isDark ? customColors.white : customColors.primaryDark,
+      fontSize: fontSizes['3xl'],
+      lineHeight: lineHeights.XXXLoose,
+      color: themeColors.fontColor,
       margin: 0,
+      paddingBottom: TITLE_BOTTOM_SPACING,
       paddingLeft: 0,
       textAlign: 'left',
       wordWrap: 'break-word',
@@ -71,10 +75,11 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark }) => {
     },
     closeButton: {
       'position': 'absolute',
-      'top': '12px',
-      'right': '12px',
-      'width': '56px',
-      'height': '40px',
+      'top': `${CLOSE_BUTTON_OFFSET}px`,
+      'right': `${CLOSE_BUTTON_OFFSET}px`,
+      'width': `${CLOSE_BUTTON_SIZE}px`,
+      'height': `${CLOSE_BUTTON_SIZE}px`,
+      'minHeight': `${CLOSE_BUTTON_SIZE}px`,
       'padding': 0,
       'border': 'none',
       'background': 'transparent',
@@ -82,24 +87,25 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark }) => {
       'display': 'flex',
       'alignItems': 'center',
       'justifyContent': 'center',
-      'fontSize': '1.5rem',
-      'color': isDark ? customColors.white : customColors.primaryDark,
+      'fontSize': fontSizes.content,
+      'lineHeight': 1,
+      'color': themeColors.fontColor,
+      'borderRadius': '50%',
       '& i': {
         fontSize: 'inherit',
+        lineHeight: 1,
       },
       '&:hover': {
-        opacity: 0.5,
+        opacity: 0.6,
       },
     },
     textareaContainer: {
       width: '100%',
       maxWidth: `${CONTENT_WIDTH}px`,
-      height: '120px',
+      height: `${TEXTAREA_HEIGHT}px`,
       flexShrink: 0,
       backgroundColor: isDark ? customColors.darkInputBg : customColors.lightBackground,
-      border: isDark
-        ? `1px solid ${customColors.darkBorder}`
-        : `1px solid ${customColors.borderInput}`,
+      border: isDark ? `1px solid ${customColors.darkBorder}` : 'none',
       borderRadius: '6px',
       padding: 0,
       boxSizing: 'border-box',
@@ -115,7 +121,7 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark }) => {
       'fontSize': fontSizes.base,
       'fontWeight': fontWeights.medium,
       'lineHeight': lineHeights.relaxed,
-      'color': isDark ? customColors.white : customColors.primaryDark,
+      'color': themeColors.fontColor,
       'resize': 'none',
       'outline': 'none',
       'boxSizing': 'border-box',
@@ -131,12 +137,66 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark }) => {
       lineHeight: lineHeights.relaxed,
       margin: 0,
     },
+    operationsList: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 8,
+      maxHeight: OPERATIONS_MAX_HEIGHT,
+      overflowY: 'auto',
+      overflowX: 'hidden',
+      width: '80%',
+      alignSelf: 'flex-start',
+    },
+    operationsTitle: {
+      fontFamily,
+      fontWeight: fontWeights.bold,
+      fontSize: fontSizes.xl,
+      lineHeight: lineHeights.normal,
+      color: themeColors.fontColor,
+      margin: '0 0 8px 0',
+    },
+    operationRow: {
+      display: 'grid',
+      gridTemplateColumns: 'auto 2fr auto 1fr',
+      alignItems: 'center',
+      columnGap: 12,
+      paddingBottom: 4,
+    },
+    operationLabel: {
+      fontFamily,
+      fontWeight: fontWeights.bold,
+      fontSize: fontSizes.md,
+      color: themeColors.fontColor,
+      textAlign: 'center',
+      whiteSpace: 'nowrap' as const,
+    },
+    operationBadge: {
+      fontFamily,
+      fontWeight: fontWeights.medium,
+      fontSize: fontSizes.sm,
+      lineHeight: lineHeights.normal,
+      backgroundColor: themeColors.fontColor,
+      color: themeColors.card.background,
+      borderRadius: 4,
+      padding: '4px 10px',
+      width: 'fit-content',
+      maxWidth: '100%',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap' as const,
+    },
     buttonRow: {
-      marginTop: 'auto',
-      paddingTop: 8,
+      display: 'flex',
+      alignItems: 'center',
+      gap: 12,
     },
     yesButton: {
-      padding: '8px 28px',
+      minHeight: BUTTON_MIN_HEIGHT,
+      padding: BUTTON_PADDING,
+    },
+    noButton: {
+      minHeight: BUTTON_MIN_HEIGHT,
+      padding: BUTTON_PADDING,
     },
   }
 })

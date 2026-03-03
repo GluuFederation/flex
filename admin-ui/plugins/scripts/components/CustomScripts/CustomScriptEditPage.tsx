@@ -33,6 +33,8 @@ const CustomScriptEditPage: React.FC = () => {
   const isDark = themeState.theme === THEME_DARK
   const { classes } = useStyles({ isDark, themeColors })
 
+  SetTitle(t('titles.edit_script'))
+
   const { hasCedarReadPermission } = useCedarling()
   const canRead = useMemo(
     () => hasCedarReadPermission(scriptsResourceId),
@@ -73,8 +75,6 @@ const CustomScriptEditPage: React.FC = () => {
     [updateMutation, dispatch, t],
   )
 
-  SetTitle(t('titles.edit_script'))
-
   if (fetchError && !loadingScript) {
     return (
       <GluuPageContent>
@@ -99,7 +99,6 @@ const CustomScriptEditPage: React.FC = () => {
   }
 
   const isBlocking = loadingScript || updateMutation.isPending
-  const formItem = script ?? {}
 
   return (
     <GluuPageContent>
@@ -108,7 +107,7 @@ const CustomScriptEditPage: React.FC = () => {
           <div className={classes.formCard}>
             <div className={classes.content}>
               <CustomScriptForm
-                item={formItem}
+                item={script ?? {}}
                 viewOnly={!!viewMatch || loadingScript}
                 handleSubmit={handleSubmit}
               />

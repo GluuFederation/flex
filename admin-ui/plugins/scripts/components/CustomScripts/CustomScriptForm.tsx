@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useState, ChangeEvent, useMemo, useCallback } from 'react'
+import React, { useState, ChangeEvent, useMemo, useCallback } from 'react'
 import type { FormikProps } from 'formik'
 import { useFormik, setNestedObjectValues } from 'formik'
 import type { FormikTouched } from 'formik'
@@ -15,7 +15,7 @@ import { SCRIPT } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import { Button } from 'reactstrap'
 import ErrorIcon from '@mui/icons-material/Error'
-import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
+
 import { Skeleton, Alert } from '@mui/material'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
@@ -33,7 +33,12 @@ import {
 import { CustomScriptItem } from './types/customScript'
 import { useCustomScriptTypes } from './hooks'
 import { filterEmptyObjects } from 'Utils/Util'
-import { getCustomScriptValidationSchema, transformToFormValues, getModuleProperty } from './helper'
+import {
+  getCustomScriptValidationSchema,
+  transformToFormValues,
+  getModuleProperty,
+  buildChangedFieldOperations,
+} from './helper'
 import {
   PROGRAMMING_LANGUAGES,
   LOCATION_TYPES,
@@ -43,8 +48,9 @@ import {
 import { PersonAuthenticationFields } from './PersonAuthenticationFields'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import GluuScriptErrorModal from 'Routes/Apps/Gluu/GluuScriptErrorModal'
-const Counter = lazy(() => import('@/components/Widgets/GroupedButtons/Counter'))
-const GluuInputEditor = lazy(() => import('Routes/Apps/Gluu/GluuInputEditor'))
+import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
+import Counter from '@/components/Widgets/GroupedButtons/Counter'
+import GluuInputEditor from 'Routes/Apps/Gluu/GluuInputEditor'
 
 const COUNTER_VALUE_OPACITY = 0.8
 
@@ -52,8 +58,8 @@ const transformPropertyForApi = (
   prop: ModuleProperty | ConfigurationProperty,
 ): ModuleProperty | ConfigurationProperty => {
   const baseResult: Record<string, string | boolean | undefined> = {
-    value1: prop.key || prop.value1 || '',
-    value2: prop.value || prop.value2 || '',
+    value1: prop.value1 || '',
+    value2: prop.value2 || '',
   }
   if (prop.hide !== undefined) {
     baseResult.hide = prop.hide
@@ -73,6 +79,7 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
   const { classes } = useStyles({ isDark, themeColors })
   const [modal, setModal] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [commitOperations, setCommitOperations] = useState<GluuCommitDialogOperation[]>([])
 
   const isEditMode = Boolean(item?.inum)
 
@@ -88,8 +95,10 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
 
   const validationSchema = useMemo(() => getCustomScriptValidationSchema(t), [t])
 
+  const initialValues = useMemo(() => transformToFormValues(item), [item.inum])
+
   const formik = useFormik<FormValues>({
-    initialValues: transformToFormValues(item),
+    initialValues,
     validationSchema,
     enableReinitialize: true,
     validateOnMount: false,
@@ -187,9 +196,8 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
   const closeErrorModal = useCallback((): void => setIsModalOpen(false), [])
 
   const handleCancel = useCallback(() => {
-    const resetValues = transformToFormValues(item)
-    formik.resetForm({ values: resetValues })
-  }, [formik, item])
+    formik.resetForm({ values: initialValues })
+  }, [formik, initialValues])
 
   const handleDialogAccept = useCallback(async () => {
     const errors = await formik.validateForm()
@@ -260,6 +268,12 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
   )
 
   const scriptTypeState = formik.values.scriptType
+
+  const openCommitDialogWithChanges = useCallback(() => {
+    const operations = buildChangedFieldOperations(initialValues, formik.values)
+    setCommitOperations(operations)
+    toggle()
+  }, [initialValues, formik.values, toggle])
 
   return (
     <>
@@ -439,14 +453,12 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
                   doc_entry="level"
                   isDark={isDark}
                 />
-                <Suspense fallback={<GluuSuspenseLoader />}>
-                  <Counter
-                    counter={formik.values.level}
-                    disabled={viewOnly}
-                    onCounterChange={onLevelChange}
-                    valueStyle={counterValueStyle}
-                  />
-                </Suspense>
+                <Counter
+                  counter={formik.values.level}
+                  disabled={viewOnly}
+                  onCounterChange={onLevelChange}
+                  valueStyle={counterValueStyle}
+                />
                 <Input type="hidden" id="level" value={formik.values.level} />
                 {formik.errors.level && formik.touched.level && (
                   <div className={classes.levelError}>{String(formik.errors.level)}</div>
@@ -515,16 +527,18 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
                   <div key={index} className={classes.propsRow}>
                     <Input
                       name={`configurationProperties.${index}.value1`}
-                      value={prop.value1 || prop.key || ''}
+                      value={prop.value1 || ''}
                       onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
                       placeholder={t('placeholders.enter_property_key')}
                       disabled={viewOnly}
                       className={classes.propsInput}
                     />
                     <Input
                       name={`configurationProperties.${index}.value2`}
-                      value={prop.value2 || prop.value || ''}
+                      value={prop.value2 || ''}
                       onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
                       placeholder={t('placeholders.enter_property_value')}
                       disabled={viewOnly}
                       className={classes.propsInput}
@@ -577,6 +591,7 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
                       name={`moduleProperties.${index}.value1`}
                       value={prop.value1 || ''}
                       onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
                       placeholder={t('placeholders.enter_property_key')}
                       disabled={viewOnly}
                       className={classes.propsInput}
@@ -585,6 +600,7 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
                       name={`moduleProperties.${index}.value2`}
                       value={prop.value2 || ''}
                       onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
                       placeholder={t('placeholders.enter_property_value')}
                       disabled={viewOnly}
                       className={classes.propsInput}
@@ -608,23 +624,21 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
           </div>
 
           <div className={`${classes.fieldItemFullWidth} ${classes.editorTheme}`}>
-            <Suspense fallback={<GluuSuspenseLoader />}>
-              <GluuInputEditor
-                doc_category={SCRIPT}
-                name="script"
-                language={formik.values.programmingLanguage?.toLowerCase() ?? ''}
-                label="fields.script"
-                lsize={12}
-                rsize={12}
-                formik={formik as FormikProps<object>}
-                value={formik.values.script}
-                readOnly={viewOnly}
-                errorMessage={formik.errors.script}
-                showError={!!(formik.errors.script && formik.touched.script)}
-                required
-                isDark={isDark}
-              />
-            </Suspense>
+            <GluuInputEditor
+              doc_category={SCRIPT}
+              name="script"
+              language={formik.values.programmingLanguage?.toLowerCase() ?? ''}
+              label="fields.script"
+              lsize={12}
+              rsize={12}
+              formik={formik as FormikProps<object>}
+              value={formik.values.script}
+              readOnly={viewOnly}
+              errorMessage={formik.errors.script}
+              showError={!!(formik.errors.script && formik.touched.script)}
+              required
+              isDark={isDark}
+            />
           </div>
         </div>
         {viewOnly ? (
@@ -642,8 +656,8 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
             onCancel={handleCancel}
             disableCancel={!formik.dirty}
             showApply
-            onApply={toggle}
-            disableApply={!formik.isValid || !formik.dirty}
+            onApply={openCommitDialogWithChanges}
+            disableApply={!formik.dirty}
             applyButtonType="button"
             isLoading={formik.isSubmitting ?? false}
           />
@@ -654,6 +668,7 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
           onAccept={handleDialogAccept}
           formik={commitDialogFormik}
           feature={adminUiFeatures.custom_script_write}
+          operations={commitOperations}
         />
       </Form>
     </>

@@ -36,7 +36,7 @@ export const lineHeights = {
   base: '24px',
   relaxed: '28px',
   loose: '32px',
-  XLose: '36',
-  XXLoose: '40',
-  XXXLoose: '44',
+  XLose: '36px',
+  XXLoose: '40px',
+  XXXLoose: '44px',
 } as const

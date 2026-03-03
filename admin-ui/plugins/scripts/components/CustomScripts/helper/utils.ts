@@ -4,6 +4,8 @@ import { FormValues } from '../types/forms'
 import { filterEmptyObjects } from 'Utils/Util'
 import { LOCATION_TYPE_DB } from '../constants'
 import type { CustomScript, SimpleCustomProperty } from 'JansConfigApi'
+import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
 interface ApiError {
   response?: { data?: string | { message?: string } }
@@ -44,16 +46,17 @@ type PropertyLike = { key?: string; value?: string; value1?: string; value2?: st
 
 export const normalizeProperty = (p: PropertyInput): ConfigurationProperty | ModuleProperty => {
   const q = p as PropertyLike
-  const key = (q.key ?? q.value1 ?? '').toString().trim()
-  const value = (q.value ?? q.value2 ?? '').toString().trim()
-  const base = { value1: key, value2: value, key, value }
+  const base: Record<string, string | boolean> = {
+    value1: (q.key ?? q.value1 ?? '').toString().trim(),
+    value2: (q.value ?? q.value2 ?? '').toString().trim(),
+  }
   if ('description' in p && p.description != null) {
-    return { ...base, description: String(p.description) }
+    base.description = String(p.description)
   }
   if ('hide' in p && p.hide != null) {
-    return { ...base, hide: Boolean(p.hide) }
+    base.hide = Boolean(p.hide)
   }
-  return base as ConfigurationProperty
+  return base as ConfigurationProperty | ModuleProperty
 }
 
 export const transformToFormValues = (
@@ -77,4 +80,106 @@ export const transformToFormValues = (
     enabled: item.enabled !== undefined ? item.enabled : true,
     action_message: '',
   }
+}
+
+const getPropertyKey = (prop: ModuleProperty | ConfigurationProperty): string => prop.value1 || ''
+
+const getPropertyValue = (prop: ModuleProperty | ConfigurationProperty): string => prop.value2 || ''
+
+const addPropertyChanges = (
+  operations: GluuCommitDialogOperation[],
+  label: string,
+  initialProps: Array<ModuleProperty | ConfigurationProperty>,
+  currentProps: Array<ModuleProperty | ConfigurationProperty>,
+): void => {
+  const initialMap = new Map<string, string>()
+  for (const prop of initialProps || []) {
+    const key = getPropertyKey(prop)
+    if (key) initialMap.set(key, getPropertyValue(prop))
+  }
+
+  const currentMap = new Map<string, string>()
+  for (const prop of currentProps || []) {
+    const key = getPropertyKey(prop)
+    if (key) currentMap.set(key, getPropertyValue(prop))
+  }
+
+  // Added or changed
+  for (const [key, value] of currentMap) {
+    const oldValue = initialMap.get(key)
+    if (oldValue === undefined) {
+      operations.push({ path: `${label} [${key}]`, value: value || '""' })
+    } else if (oldValue !== value) {
+      operations.push({ path: `${label} [${key}]`, value: value || '""' })
+    }
+  }
+
+  // Removed
+  for (const [key] of initialMap) {
+    if (!currentMap.has(key)) {
+      operations.push({ path: `${label} [${key}]`, value: '(removed)' })
+    }
+  }
+}
+
+export const buildChangedFieldOperations = (
+  initial: FormValues,
+  current: FormValues,
+): GluuCommitDialogOperation[] => {
+  const operations: GluuCommitDialogOperation[] = []
+
+  const addIfChanged = (
+    path: string,
+    oldValue: JsonValue | undefined,
+    newValue: JsonValue | undefined,
+  ) => {
+    if (oldValue !== newValue) {
+      operations.push({ path, value: newValue ?? null })
+    }
+  }
+
+  addIfChanged('name', initial.name ?? null, current.name ?? null)
+  addIfChanged('description', initial.description ?? null, current.description ?? null)
+  addIfChanged('scriptType', initial.scriptType ?? null, current.scriptType ?? null)
+  addIfChanged(
+    'programmingLanguage',
+    initial.programmingLanguage ?? null,
+    current.programmingLanguage ?? null,
+  )
+  addIfChanged('level', initial.level ?? null, current.level ?? null)
+  addIfChanged(
+    'enabled',
+    (initial.enabled as JsonValue) ?? null,
+    (current.enabled as JsonValue) ?? null,
+  )
+  addIfChanged('location_type', initial.location_type ?? null, current.location_type ?? null)
+  addIfChanged('script_path', initial.script_path ?? null, current.script_path ?? null)
+  if ((initial.script ?? '') !== (current.script ?? '')) {
+    const scriptPreview = (current.script ?? '').replace(/\s+/g, ' ').trim()
+    const maxLen = 40
+    operations.push({
+      path: 'script',
+      value:
+        scriptPreview.length > maxLen
+          ? `${scriptPreview.slice(0, maxLen)}...`
+          : scriptPreview || '(cleared)',
+    })
+  }
+  if (JSON.stringify(initial.aliases) !== JSON.stringify(current.aliases)) {
+    operations.push({ path: 'aliases', value: (current.aliases ?? null) as JsonValue })
+  }
+  addPropertyChanges(
+    operations,
+    'moduleProperties',
+    initial.moduleProperties,
+    current.moduleProperties,
+  )
+  addPropertyChanges(
+    operations,
+    'configurationProperties',
+    initial.configurationProperties,
+    current.configurationProperties,
+  )
+
+  return operations
 }

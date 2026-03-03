@@ -33,6 +33,7 @@ const GluuCommitDialog = ({
   placeholderLabel,
   feature,
   isLicenseLabel = false,
+  operations = [],
 }: GluuCommitDialogProps) => {
   const { t } = useTranslation()
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
@@ -40,10 +41,11 @@ const GluuCommitDialog = ({
   const { state: themeState } = useTheme()
   const isDark = themeState.theme === THEME_DARK
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
-  const { classes } = useStyles({ isDark })
+  const hasOperations = operations.length > 0
+  const { classes } = useStyles({ isDark, themeColors })
   const [userMessage, setUserMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const { loadingWebhooks, webhookModal } = useSelector((state: RootState) => state.webhookReducer)
+  const { webhookModal } = useSelector((state: RootState) => state.webhookReducer)
 
   const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
   const webhookScopes = useMemo(
@@ -144,7 +146,7 @@ const GluuCommitDialog = ({
   }
 
   const modalContent =
-    (webhookModal || loadingWebhooks) && canReadWebhooks ? (
+    webhookModal && canReadWebhooks ? (
       <>{webhookTriggerModal({ closeModal })}</>
     ) : (
       <>
@@ -163,22 +165,38 @@ const GluuCommitDialog = ({
           tabIndex={-1}
           aria-labelledby="commit-dialog-title"
         >
-          <GluuButton
+          <button
+            type="button"
             onClick={closeModal}
             className={classes.closeButton}
-            backgroundColor="transparent"
-            textColor={themeColors.fontColor}
-            borderColor="transparent"
-            padding="0"
-            minHeight="32"
+            aria-label={t('actions.close')}
             title={t('actions.close')}
           >
             <i className="fa fa-times" aria-hidden />
-          </GluuButton>
+          </button>
           <div className={classes.contentArea}>
             <GluuText variant="h2" className={classes.title} id="commit-dialog-title">
               {titleText}
             </GluuText>
+            {hasOperations && (
+              <div className={classes.operationsList}>
+                <GluuText variant="h5" className={classes.operationsTitle}>
+                  {t('messages.list_of_changes')}
+                </GluuText>
+                {operations.map((operation) => (
+                  <div key={operation.path} className={classes.operationRow}>
+                    <span className={classes.operationLabel}>{t('set')}</span>
+                    <span className={classes.operationBadge}>{operation.path}</span>
+                    <span className={classes.operationLabel}>{t('to')}</span>
+                    <span className={classes.operationBadge}>
+                      {operation.value === null || operation.value === ''
+                        ? '""'
+                        : String(operation.value)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
             <div className={classes.textareaContainer}>
               <textarea
                 id={USER_MESSAGE}
@@ -191,16 +209,17 @@ const GluuCommitDialog = ({
                 aria-describedby={errorMessageText ? `${USER_MESSAGE}-error` : undefined}
               />
             </div>
-            {errorMessageText && (
-              <GluuText
-                variant="span"
-                className={classes.errorMessage}
-                style={{ color: customColors.statusInactive }}
-                id={`${USER_MESSAGE}-error`}
-              >
-                {errorMessageText}
-              </GluuText>
-            )}
+            <GluuText
+              variant="span"
+              className={classes.errorMessage}
+              style={{
+                color: customColors.statusInactive,
+                visibility: errorMessageText ? 'visible' : 'hidden',
+              }}
+              id={`${USER_MESSAGE}-error`}
+            >
+              {errorMessageText || '\u00A0'}
+            </GluuText>
             <div className={classes.buttonRow}>
               <GluuButton
                 onClick={handleAccept}
@@ -209,6 +228,7 @@ const GluuCommitDialog = ({
                 textColor={customColors.white}
                 borderColor="transparent"
                 padding="8px 28px"
+                minHeight="40"
                 useOpacityOnHover
                 className={classes.yesButton}
               >

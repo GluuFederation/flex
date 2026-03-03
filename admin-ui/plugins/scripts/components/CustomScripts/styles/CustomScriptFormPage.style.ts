@@ -273,7 +273,7 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
       },
     },
     formLabels: {
-      '& label, & label h5, & label .MuiSvgIcon-root': {
+      '& label, & label h5, & label h5 span, & label .MuiSvgIcon-root': {
         color: `${themeColors.fontColor} !important`,
         fontFamily: `${fontFamily} !important`,
         fontSize: `${fontSizes.base} !important`,

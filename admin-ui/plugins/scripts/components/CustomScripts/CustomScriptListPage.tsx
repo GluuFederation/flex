@@ -202,14 +202,15 @@ const CustomScriptListPage: React.FC = () => {
     [t],
   )
 
-  const scriptTypeOptions = useMemo(
-    () =>
-      (scriptTypes || []).map((type) => ({
+  const scriptTypeOptions = useMemo(() => {
+    if (scriptTypes && scriptTypes.length > 0) {
+      return scriptTypes.map((type) => ({
         value: type.value,
         label: type.name,
-      })),
-    [scriptTypes],
-  )
+      }))
+    }
+    return [{ value: DEFAULT_SCRIPT_TYPE, label: 'Person Authentication' }]
+  }, [scriptTypes])
 
   const filters: FilterDef[] = useMemo(
     () => [

@@ -6,21 +6,19 @@ export const getCustomScriptValidationSchema = (t: TFunction) =>
   Yup.object({
     name: Yup.string()
       .matches(/^[a-zA-Z0-9_]+$/, t('messages.script_name_pattern'))
-      .min(2, t('messages.script_min_characters', { count: 2 }))
-      .required(t('messages.script_required')),
+      .min(3, t('messages.script_name_min', { count: 3 }))
+      .required(t('messages.script_name_required')),
     description: Yup.string(),
-    scriptType: Yup.string()
-      .min(2, t('messages.script_min_characters', { count: 2 }))
-      .required(t('messages.script_required')),
+    scriptType: Yup.string().required(t('messages.script_type_required')),
     programmingLanguage: Yup.string()
-      .min(3, t('messages.script_min_length_3'))
-      .required(t('messages.script_required')),
+      .min(3, t('messages.script_language_min', { count: 3 }))
+      .required(t('messages.script_language_required')),
     level: Yup.number()
       .typeError(t('messages.script_level_number'))
       .integer(t('messages.script_level_integer'))
       .min(0, t('messages.script_level_non_negative'))
-      .required(t('messages.script_required')),
-    script: Yup.string().required(t('messages.script_required')),
+      .required(t('messages.script_level_required')),
+    script: Yup.string().required(t('messages.script_code_required')),
 
     moduleProperties: Yup.array()
       .of(
