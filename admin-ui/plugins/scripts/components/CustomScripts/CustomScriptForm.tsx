@@ -17,7 +17,7 @@ import ErrorIcon from '@mui/icons-material/Error'
 
 import { Skeleton, Alert } from '@mui/material'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { FEATURE_CUSTOM_SCRIPT_WRITE } from './constants'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
@@ -710,7 +710,7 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
           modal={modal}
           onAccept={submitForm}
           formik={commitDialogFormik}
-          feature={adminUiFeatures.custom_script_write}
+          feature={FEATURE_CUSTOM_SCRIPT_WRITE}
           operations={commitOperations}
           autoCloseOnAccept
         />

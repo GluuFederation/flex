@@ -14,7 +14,6 @@ import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import SetTitle from 'Utils/SetTitle'
 import { useCedarling, CEDAR_RESOURCE_SCOPES, ADMIN_UI_RESOURCES } from '@/cedarling'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { devLogger } from '@/utils/devLogger'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
@@ -28,20 +27,18 @@ import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
 import type { FilterDef } from '@/components/GluuSearchToolbar/types'
 import type { ScriptError } from './types/customScript'
 import { BORDER_RADIUS } from '@/constants'
-import { DEFAULT_SCRIPT_TYPE } from './constants'
+import {
+  DEFAULT_SCRIPT_TYPE,
+  SORT_COLUMNS,
+  SORT_COLUMN_LABELS,
+  DEFAULT_SORT_BY,
+  FEATURE_CUSTOM_SCRIPT_DELETE,
+} from './constants'
 
 const LIMIT_OPTIONS = getRowsPerPageOptions()
 
-const SORT_COLUMNS = ['inum', 'description', 'name'] as const
-const SORT_COLUMN_LABELS: Record<string, string> = {
-  inum: 'fields.inum',
-  description: 'fields.description',
-  name: 'fields.name',
-}
-
 const DELETE_SUBJECT_SCRIPT = 'script'
 const EMPTY_DESCRIPTION_PLACEHOLDER = '—'
-const FEATURE_CUSTOM_SCRIPT_DELETE = adminUiFeatures.custom_script_delete
 
 type DisplayValue = string | number | boolean | null | undefined
 
@@ -76,7 +73,7 @@ const CustomScriptListPage: React.FC = () => {
   const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
   const [pattern, setPattern] = useState('')
   const [scriptType, setScriptType] = useState<string>(DEFAULT_SCRIPT_TYPE)
-  const [sortBy, setSortBy] = useState<string>('')
+  const [sortBy, setSortBy] = useState<string>(DEFAULT_SORT_BY)
 
   const [modal, setModal] = useState(false)
   const [itemToDelete, setItemToDelete] = useState<CustomScript | null>(null)
@@ -258,6 +255,11 @@ const CustomScriptListPage: React.FC = () => {
 
   const columns: ColumnDef<ScriptTableRow>[] = useMemo(
     (): ColumnDef<ScriptTableRow>[] => [
+      {
+        key: 'inum',
+        label: t('fields.inum'),
+        sortable: true,
+      },
       {
         key: 'name',
         label: t('fields.name'),

@@ -38,3 +38,13 @@ export const INTERACTIVE_OPTIONS = [
   { value: 'service', labelKey: 'options.usage_type_native' as const },
   { value: 'both', labelKey: 'options.usage_type_both' as const },
 ]
+
+export const SORT_COLUMNS = ['inum', 'description'] as const
+export const SORT_COLUMN_LABELS: Record<string, string> = {
+  inum: 'fields.inum',
+  description: 'fields.description',
+}
+export const DEFAULT_SORT_BY = 'inum'
+
+export const FEATURE_CUSTOM_SCRIPT_WRITE = 'custom_script_write'
+export const FEATURE_CUSTOM_SCRIPT_DELETE = 'custom_script_delete'
