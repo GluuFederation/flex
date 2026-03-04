@@ -165,9 +165,6 @@ jobs:
         run: |
           poetry run mike deploy --push "$VERSION"
 
-
-
-
       - name: Update mike version aliases
         id: set_versions
         run: |
