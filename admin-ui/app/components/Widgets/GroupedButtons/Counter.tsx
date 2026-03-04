@@ -7,15 +7,9 @@ interface CounterProps {
   disabled: boolean
   counter?: number
   onCounterChange: (value: number) => void
-  valueStyle?: React.CSSProperties
 }
 
-const Counter: React.FC<CounterProps> = ({
-  disabled,
-  counter = 0,
-  onCounterChange,
-  valueStyle,
-}) => {
+const Counter: React.FC<CounterProps> = ({ disabled, counter = 0, onCounterChange }) => {
   const { classes } = useStyles()
 
   const handleDecrement = useCallback(() => {
@@ -38,7 +32,7 @@ const Counter: React.FC<CounterProps> = ({
         </Button>
       )}
       {counter > 0 && (
-        <Button disabled style={valueStyle} className={classes.valueButton}>
+        <Button disabled className={classes.valueButton}>
           {counter}
         </Button>
       )}

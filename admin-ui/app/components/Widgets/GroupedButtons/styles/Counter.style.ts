@@ -1,6 +1,7 @@
 import { makeStyles } from 'tss-react/mui'
 import customColors from '@/customColors'
 import { fontSizes, fontWeights } from '@/styles/fonts'
+import { OPACITY } from '@/constants'
 
 export const useStyles = makeStyles()(() => {
   const border = `1px solid ${customColors.lightBlue}`
@@ -21,6 +22,7 @@ export const useStyles = makeStyles()(() => {
       minWidth: 44,
       fontSize: fontSizes.base,
       fontWeight: fontWeights.medium,
+      opacity: OPACITY.DISABLED,
     },
   }
 })

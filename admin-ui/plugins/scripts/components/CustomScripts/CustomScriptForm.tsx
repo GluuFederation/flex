@@ -14,7 +14,6 @@ import { SCRIPT } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import { Button } from 'reactstrap'
 import ErrorIcon from '@mui/icons-material/Error'
-
 import { Skeleton, Alert } from '@mui/material'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { FEATURE_CUSTOM_SCRIPT_WRITE } from './constants'
@@ -52,8 +51,6 @@ import GluuScriptErrorModal from 'Routes/Apps/Gluu/GluuScriptErrorModal'
 import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
 import Counter from '@/components/Widgets/GroupedButtons/Counter'
 import GluuInputEditor from 'Routes/Apps/Gluu/GluuInputEditor'
-
-const COUNTER_VALUE_OPACITY = 0.8
 
 const transformPropertyForApi = (
   prop: ModuleProperty | ConfigurationProperty,
@@ -250,11 +247,6 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
       )
     },
     [formik],
-  )
-
-  const counterValueStyle = useMemo(
-    () => ({ color: themeColors.fontColor, opacity: COUNTER_VALUE_OPACITY }),
-    [themeColors.fontColor],
   )
 
   const scriptTypeChangeHandler = useMemo(
@@ -503,7 +495,6 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
                   counter={formik.values.level}
                   disabled={viewOnly}
                   onCounterChange={onLevelChange}
-                  valueStyle={counterValueStyle}
                 />
                 <Input type="hidden" id="level" value={formik.values.level} />
                 {formik.errors.level && formik.touched.level && (
