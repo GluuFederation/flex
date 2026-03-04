@@ -175,7 +175,7 @@ export const buildChangedFieldOperations = (
     })
   }
   if (JSON.stringify(initial.aliases) !== JSON.stringify(current.aliases)) {
-    operations.push({ path: t('fields.aliases'), value: (current.aliases ?? null) as JsonValue })
+    operations.push({ path: t('fields.saml_acrs'), value: (current.aliases ?? null) as JsonValue })
   }
   addPropertyChanges(
     operations,

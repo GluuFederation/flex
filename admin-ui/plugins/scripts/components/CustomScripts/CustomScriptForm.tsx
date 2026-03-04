@@ -110,11 +110,12 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
     validateOnMount: false,
     validateOnChange: true,
     validateOnBlur: true,
-    onSubmit: () => {
+    onSubmit: (_values, { setSubmitting }) => {
       const operations = isEditMode
         ? buildChangedFieldOperations(initialValues, formik.values, t)
         : []
       setCommitOperations(operations)
+      setSubmitting(false)
       toggle()
     },
   })
