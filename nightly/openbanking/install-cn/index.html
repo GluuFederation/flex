@@ -2772,7 +2772,6 @@
 <th>Service</th>
 <th>CPU Unit</th>
 <th>RAM</th>
-<th>Disk Space</th>
 <th>Processor Type</th>
 <th>Required</th>
 </tr>
@@ -2782,7 +2781,6 @@
 <td>Auth server</td>
 <td>2.5</td>
 <td>2.5GB</td>
-<td>N/A</td>
 <td>64 Bit</td>
 <td>Yes</td>
 </tr>
@@ -2790,7 +2788,6 @@
 <td>config - job</td>
 <td>0.3</td>
 <td>0.3GB</td>
-<td>N/A</td>
 <td>64 Bit</td>
 <td>Yes on fresh installs</td>
 </tr>
@@ -2798,7 +2795,6 @@
 <td>persistence - job</td>
 <td>0.3</td>
 <td>0.3GB</td>
-<td>N/A</td>
 <td>64 Bit</td>
 <td>Yes on fresh installs</td>
 </tr>
@@ -2806,7 +2802,6 @@
 <td>auth-server-key-rotation - job</td>
 <td>0.3</td>
 <td>0.3GB</td>
-<td>N/A</td>
 <td>64 Bit</td>
 <td>No [Strongly recommended]</td>
 </tr>
@@ -2814,7 +2809,6 @@
 <td>cleanup - job</td>
 <td>0.3</td>
 <td>0.3GB</td>
-<td>N/A</td>
 <td>64 Bit</td>
 <td>No [Strongly recommended]</td>
 </tr>
@@ -2822,15 +2816,13 @@
 <td>nginx</td>
 <td>1</td>
 <td>1GB</td>
-<td>N/A</td>
 <td>64 Bit</td>
 <td>No</td>
 </tr>
 <tr>
 <td>config-api</td>
-<td>1.2</td>
-<td>1GB</td>
-<td>N/A</td>
+<td>1</td>
+<td>1.2GB</td>
 <td>64 Bit</td>
 <td>No</td>
 </tr>
@@ -2850,11 +2842,11 @@
 </thead>
 <tbody>
 <tr>
-<td>OB Issuing CA</td>
+<td>OB Root CA</td>
 <td>Used in nginx as a certificate authority</td>
 </tr>
 <tr>
-<td>OB Root CA</td>
+<td>OB Issuing CA</td>
 <td>Used in nginx as a certificate authority</td>
 </tr>
 <tr>
@@ -2870,6 +2862,10 @@
 <td>Used for mTLS. This will also be added to the JVM</td>
 </tr>
 <tr>
+<td>OB transport truststore <code>ob-transport-truststore.p12</code></td>
+<td>Used in SSA Validation. Generated from OB Root CA and Issuing CA</td>
+</tr>
+<tr>
 <td>OB AS signing crt <code>obsigning.pem</code></td>
 <td>Added to the JVM. Used in SSA Validation</td>
 </tr>
@@ -2877,18 +2873,41 @@
 <td>OB AS signing key <code>obsigning.key</code></td>
 <td>Added to the JVM. Used in SSA Validation</td>
 </tr>
-<tr>
-<td>OB transport truststore <code>ob-transport-truststore.p12</code></td>
-<td>Used in SSA Validation. Generated from OB Root CA and Issuing CA</td>
-</tr>
 </tbody>
 </table>
 </li>
 <li>
-<p>Based on the provider/platform you're using, you can follow the <a href="../../install/helm-install/">docs</a> to install your platform prerequistes, nginx-ingress, and the yaml changes needed in <code>override.yaml</code> based on the Gluu persistence choosed.</p>
+<p>Download the Open Banking values file <code>openbanking-values.yaml</code>:
+        <div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://raw.githubusercontent.com/GluuFederation/flex/main/charts/gluu/openbanking-values.yaml
+</code></pre></div></p>
 </li>
 <li>
-<p>To enable mTLS in ingress-nginx, add the following to your <code>override.yaml</code>:
+<p>Based on the provider/platform you're using, you can follow the <a href="../../install/helm-install/">docs</a> to install your platform prerequisites, nginx-ingress, and the yaml changes needed in <code>openbanking-values.yaml</code> based on the Gluu persistence choosed.</p>
+</li>
+<li>
+<p>The <code>auth-server</code> and <code>persistence</code> images are hosted in a private repository and require authentication to pull:</p>
+<ul>
+<li>
+<p>Create a Kubernetes secret in the <code>gluu</code> namespace using your provided registry credentials:</p>
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>create<span class="w"> </span>secret<span class="w"> </span>docker-registry<span class="w"> </span>-n<span class="w"> </span>gluu<span class="w"> </span>regcred<span class="w"> </span>--docker-server<span class="o">=</span>https://index.docker.io/v1/<span class="w"> </span>--docker-username<span class="o">=</span>&lt;some-username&gt;<span class="w"> </span>--docker-password<span class="o">=</span>&lt;some-password&gt;
+</code></pre></div>
+</li>
+<li>
+<p>Update <code>openbanking-values.yaml</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">auth-server</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">pullSecrets</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">regcred</span>
+<span class="nt">persistence</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">pullSecrets</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">regcred</span>
+</code></pre></div>
+</li>
+</ul>
+</li>
+<li>
+<p>To enable mTLS in ingress-nginx, add the following to your <code>openbanking-values.yaml</code>:
       <div class="highlight"><pre><span></span><code><span class="nt">nginx-ingress</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">ingress</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">additionalAnnotations</span><span class="p">:</span>
@@ -2989,7 +3008,7 @@ keytool<span class="w"> </span>-importcert<span class="w"> </span>-file<span cla
 </ul>
 </li>
 <li>
-<p>Add those values to <code>override.yaml</code>:
+<p>Add those values to <code>openbanking-values.yaml</code>:
 <div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nt">global</span><span class="p">:</span>
 <span class="w">    </span><span class="c1"># -- Open banking external signing jwks uri. Used in SSA Validation.</span>
 <span class="w">    </span><span class="nt">cnObExtSigningJwksUri</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://mykeystore.openbanking.wow/xxxxx/xxxxx.jwks&quot;</span>
@@ -3023,10 +3042,10 @@ keytool<span class="w"> </span>-importcert<span class="w"> </span>-file<span cla
 <p>The above password is needed in custom scripts such as the <code>Client Registration script</code></p>
 </li>
 <li>
-<p>After finishing all the tweaks to the <code>override.yaml</code> file, run <code>helm install</code> or <code>helm upgrade</code> if <code>Gluu</code> is already installed</p>
+<p>After finishing all the tweaks to the <code>openbanking-values.yaml</code> file, run <code>helm install</code> or <code>helm upgrade</code> if <code>Gluu</code> is already installed</p>
 <div class="highlight"><pre><span></span><code>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>gluu-flex<span class="w"> </span>https://docs.gluu.org/charts
 helm<span class="w"> </span>repo<span class="w"> </span>update
-helm<span class="w"> </span>install<span class="w"> </span>gluu<span class="w"> </span>gluu-flex/gluu<span class="w"> </span>-n<span class="w"> </span>gluu<span class="w"> </span>-f<span class="w"> </span>override.yaml
+helm<span class="w"> </span>install<span class="w"> </span>gluu<span class="w"> </span>gluu-flex/gluu<span class="w"> </span>-n<span class="w"> </span>gluu<span class="w"> </span>-f<span class="w"> </span>openbanking-values.yaml
 </code></pre></div>
 </li>
 </ul>
@@ -3042,25 +3061,31 @@ wget<span class="w"> </span>https://raw.githubusercontent.com/GluuFederation/fle
 <h2 id="changing-the-signing-key-kid-for-the-as-dynamically">Changing the signing key kid for the AS dynamically<a class="headerlink" href="#changing-the-signing-key-kid-for-the-as-dynamically" title="Permanent link">#</a></h2>
 <ol>
 <li>
-<p>Get a client id and its associated password. We will use the jans-config-api client id and secret</p>
+<p>Get a client id and its associated password. We will use the <code>jans-config-api</code> client id and secret:</p>
 <div class="highlight"><pre><span></span><code><span class="nv">TESTCLIENT</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>cm<span class="w"> </span>cn<span class="w"> </span>-n<span class="w"> </span>gluu<span class="w"> </span>--template<span class="o">={{</span>.data.jca_client_id<span class="o">}}</span><span class="k">)</span>
 <span class="nv">TESTCLIENTSECRET</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span>cn<span class="w"> </span>-n<span class="w"> </span>gluu<span class="w"> </span>--template<span class="o">={{</span>.data.jca_client_pw<span class="o">}}</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-d<span class="k">)</span>
 </code></pre></div>
 </li>
 <li>
-<p>Get a token. To pass mTLS, we will use client.crt and client.key:</p>
-<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-k<span class="w"> </span>-u<span class="w"> </span><span class="nv">$TESTCLIENT</span>:<span class="nv">$TESTCLIENTSECRET</span><span class="w"> </span>https://&lt;FQDN&gt;/jans-auth/restv1/token<span class="w"> </span>-d<span class="w"> </span><span class="s2">&quot;grant_type=client_credentials&amp;scope=https://jans.io/oauth/jans-auth-server/config/properties.write&quot;</span><span class="w"> </span>--cert<span class="w"> </span>client.crt<span class="w"> </span>--key<span class="w"> </span>client.key
+<p>Get a token. To pass the mTLS network boundary, you must use your Open Banking transport certificates (replace <code>obtransport.pem</code> and <code>obtransport.key</code> with your actual filenames):</p>
+<div class="highlight"><pre><span></span><code><span class="nv">TOKEN</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-s<span class="w"> </span>-k<span class="w"> </span>-u<span class="w"> </span><span class="nv">$TESTCLIENT</span>:<span class="nv">$TESTCLIENTSECRET</span><span class="w"> </span>https://&lt;FQDN&gt;/jans-auth/restv1/token<span class="w"> </span>-d<span class="w"> </span><span class="s2">&quot;grant_type=client_credentials&amp;scope=[https://jans.io/oauth/jans-auth-server/config/properties.write](https://jans.io/oauth/jans-auth-server/config/properties.write)&quot;</span><span class="w"> </span>--cert<span class="w"> </span>obtransport.pem<span class="w"> </span>--key<span class="w"> </span>obtransport.key<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-o<span class="w"> </span><span class="s1">&#39;&quot;access_token&quot;:&quot;[^&quot;]*&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="s1">&#39;&quot;&#39;</span><span class="w"> </span>-f4<span class="k">)</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;My Token is: </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span>
 </code></pre></div>
 </li>
 <li>
 <p>Add the entry <code>staticKid</code> to force the AS to use a specific signing key. Please modify <code>XhCYDfFM7UFXHfykNaLk1aLCnZM</code> to the kid to be used:          </p>
-<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-k<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span><span class="s2">&quot;https://&lt;FQDN&gt;/jans-config-api/api/v1/jans-auth-server/config&quot;</span><span class="w"> </span>-H<span class="w">  </span><span class="s2">&quot;accept: application/json&quot;</span><span class="w"> </span>-H<span class="w">  </span><span class="s2">&quot;Content-Type: application/json-patch+json&quot;</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization:Bearer 170e8412-1d55-4b19-ssss-8fcdeaafb954&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s2">&quot;[{\&quot;op\&quot;:\&quot;add\&quot;,\&quot;path\&quot;:\&quot;/staticKid\&quot;,\&quot;value\&quot;:\&quot;XhCYDfFM7UFXHfykNaLk1aLCnZM\&quot;}]&quot;</span>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-k<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span><span class="s2">&quot;https://&lt;FQDN&gt;/jans-config-api/api/v1/jans-auth-server/config&quot;</span><span class="w"> </span><span class="se">\</span>
+-H<span class="w"> </span><span class="s2">&quot;accept: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json-patch+json&quot;</span><span class="w"> </span><span class="se">\</span>
+-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+-d<span class="w"> </span><span class="s1">&#39;[{&quot;op&quot;:&quot;add&quot;,&quot;path&quot;:&quot;/staticKid&quot;,&quot;value&quot;:&quot;XhCYDfFM7UFXHfykNaLk1aLCnZM&quot;}]&#39;</span>
 </code></pre></div>
 </li>
 <li>
 <p>Perform a rolling restart for the auth-server and config-api deployments.</p>
-<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>rollout<span class="w"> </span>restart<span class="w"> </span>deployment<span class="w"> </span>&lt;gluu-release-name&gt;-auth-server<span class="w"> </span>-n<span class="w"> </span>gluu
-kubectl<span class="w"> </span>rollout<span class="w"> </span>restart<span class="w"> </span>deployment<span class="w"> </span>&lt;gluu-release-name&gt;-config-api<span class="w"> </span>-n<span class="w"> </span>gluu
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>rollout<span class="w"> </span>restart<span class="w"> </span>deployment<span class="w"> </span>gluu-auth-server<span class="w"> </span>-n<span class="w"> </span>gluu
+kubectl<span class="w"> </span>rollout<span class="w"> </span>restart<span class="w"> </span>deployment<span class="w"> </span>gluu-config-api<span class="w"> </span>-n<span class="w"> </span>gluu
 </code></pre></div>
 </li>
 </ol>
@@ -3080,7 +3105,7 @@ kubectl<span class="w"> </span>rollout<span class="w"> </span>restart<span class
 </code></pre></div>
 </li>
 <li>
-<p>Mount the configmap in your override.yaml under <code>persistence.volumes</code> and <code>persistence.volumeMounts</code></p>
+<p>Mount the configmap in your openbanking-values.yaml under <code>persistence.volumes</code> and <code>persistence.volumeMounts</code></p>
 <div class="highlight"><pre><span></span><code><span class="nt">persistence</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">custom-scopes</span>
@@ -3118,7 +3143,7 @@ kubectl<span class="w"> </span>rollout<span class="w"> </span>restart<span class
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="March 2, 2026 10:41:47 UTC"><span class="timeago" datetime="2026-03-02T10:41:47+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="March 2, 2026 10:41:47 UTC">2026-03-02</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="March 4, 2026 02:51:51 UTC"><span class="timeago" datetime="2026-03-04T02:51:51+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="March 4, 2026 02:51:51 UTC">2026-03-04</span>
   </span>
 
     
