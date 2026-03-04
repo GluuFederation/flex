@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react'
 import { Col, FormGroup } from 'Components'
-import { Checkbox, FormControlLabel } from '@mui/material'
+import { Input } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { SCRIPT } from 'Utils/ApiResources'
@@ -65,20 +65,27 @@ export const PersonAuthenticationFields: React.FC<PersonAuthenticationFieldsProp
           isDark={isDark}
         />
         <Col sm={12}>
-          {SAML_ACRS_OPTIONS.map((acr) => (
-            <FormControlLabel
-              key={acr}
-              control={
-                <Checkbox
-                  checked={(formik.values.aliases || []).includes(acr)}
-                  onChange={() => handleAliasToggle(acr)}
-                  disabled={viewOnly}
-                  size="small"
-                />
-              }
-              label={acr}
-            />
-          ))}
+          <Input
+            type="select"
+            multiple
+            name="aliases"
+            id="aliases"
+            value={formik.values.aliases || []}
+            disabled={viewOnly}
+          >
+            {SAML_ACRS_OPTIONS.map((acr) => (
+              <option
+                key={acr}
+                value={acr}
+                onMouseDown={(e) => {
+                  e.preventDefault()
+                  handleAliasToggle(acr)
+                }}
+              >
+                {acr}
+              </option>
+            ))}
+          </Input>
         </Col>
       </FormGroup>
 

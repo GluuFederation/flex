@@ -248,7 +248,7 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
       },
     },
     errorAlertText: {
-      color: `${customColors.white} !important`,
+      color: `${themeColors.fontColor} !important`,
     },
     errorAlertIcon: {
       fontSize: ERROR_ICON_SIZE,

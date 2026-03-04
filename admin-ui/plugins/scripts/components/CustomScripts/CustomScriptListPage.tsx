@@ -18,7 +18,7 @@ import { devLogger } from '@/utils/devLogger'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
-import { GluuDetailGrid } from '@/components/GluuDetailGrid'
+import { GluuDetailGrid, type GluuDetailGridField } from '@/components/GluuDetailGrid'
 import { useCustomScriptsByType, useDeleteCustomScript, useCustomScriptTypes } from './hooks'
 import { useStyles } from './styles/CustomScriptListPage.style'
 import { SCRIPT } from 'Utils/ApiResources'
@@ -40,7 +40,7 @@ const LIMIT_OPTIONS = getRowsPerPageOptions()
 const DELETE_SUBJECT_SCRIPT = 'script'
 const EMPTY_DESCRIPTION_PLACEHOLDER = '—'
 
-type DisplayValue = string | number | boolean | null | undefined
+type DisplayValue = GluuDetailGridField['value']
 
 const displayOrDash = (value: DisplayValue): DisplayValue =>
   value === null || value === undefined || value === '' ? '−' : value

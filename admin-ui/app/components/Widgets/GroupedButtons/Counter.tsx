@@ -29,9 +29,13 @@ const Counter: React.FC<CounterProps> = ({
   const showValue = counter > 0
 
   return (
-    <ButtonGroup disabled={disabled} size="small" aria-label="counter buttons">
+    <ButtonGroup size="small" aria-label="counter buttons">
       {showValue && (
-        <Button className={classes.stepButton} onClick={handleDecrement} aria-label="decrement">
+        <Button
+          className={classes.stepButton}
+          onClick={disabled ? undefined : handleDecrement}
+          aria-label="decrement"
+        >
           -
         </Button>
       )}
@@ -40,7 +44,11 @@ const Counter: React.FC<CounterProps> = ({
           {counter}
         </Button>
       )}
-      <Button className={classes.stepButton} onClick={handleIncrement} aria-label="increment">
+      <Button
+        className={classes.stepButton}
+        onClick={disabled ? undefined : handleIncrement}
+        aria-label="increment"
+      >
         +
       </Button>
     </ButtonGroup>
