@@ -356,6 +356,7 @@ const WebhookListPage: React.FC = () => {
                 onRefresh={canReadWebhooks ? handleRefresh : undefined}
                 refreshLoading={isLoading}
                 primaryAction={primaryAction}
+                disabled={loading}
               />
             </div>
           </div>

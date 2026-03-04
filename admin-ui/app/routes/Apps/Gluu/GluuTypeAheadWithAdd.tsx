@@ -39,6 +39,7 @@ const GluuTypeAheadWithAdd = ({
   rsize = 8,
   disabled = false,
   handler = null,
+  multiple = true,
 }: GluuTypeAheadWithAddProps) => {
   const [items, setItems] = useState<string[]>(value ?? [])
   const [opts, setOpts] = useState<string[]>(options ?? [])
@@ -120,7 +121,7 @@ const GluuTypeAheadWithAdd = ({
           onChange={(selected) => handleChange(name, selected as string[])}
           id={name}
           data-testid={name}
-          multiple={true}
+          multiple={multiple}
           selected={items}
           options={opts}
         />

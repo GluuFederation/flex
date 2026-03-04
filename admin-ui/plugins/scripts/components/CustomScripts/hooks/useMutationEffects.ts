@@ -59,16 +59,22 @@ export const useMutationEffects = <
     if (mutation.isError && !errorHandledRef.current) {
       errorHandledRef.current = true
       const error = mutation.error
+      const axiosData =
+        error && typeof error === 'object' && 'response' in error
+          ? (error as { response?: { data?: unknown } }).response?.data
+          : undefined
+      const responseMessage =
+        typeof axiosData === 'string'
+          ? axiosData
+          : axiosData && typeof axiosData === 'object' && 'message' in axiosData
+            ? String((axiosData as { message: string }).message)
+            : undefined
       const errorMsg =
-        error instanceof Error
-          ? error.message
-          : error && typeof error === 'object' && 'message' in error
-            ? String((error as { message: string }).message)
-            : t(errorMessage)
+        responseMessage || (error instanceof Error ? error.message : undefined) || t(errorMessage)
       dispatch(updateToast(true, 'error', errorMsg))
     }
-    if (mutation.isIdle) {
+    if (!mutation.isError) {
       errorHandledRef.current = false
     }
-  }, [mutation.isError, mutation.isIdle, mutation.error, dispatch, t, errorMessage])
+  }, [mutation.isError, mutation.error, dispatch, t, errorMessage])
 }

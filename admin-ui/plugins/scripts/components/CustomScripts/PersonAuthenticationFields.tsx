@@ -1,5 +1,6 @@
-import React, { ChangeEvent, useCallback, useMemo } from 'react'
-import { Col, FormGroup, Input } from 'Components'
+import React, { useCallback, useMemo } from 'react'
+import { Col, FormGroup } from 'Components'
+import { Checkbox, FormControlLabel } from '@mui/material'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { SCRIPT } from 'Utils/ApiResources'
@@ -26,13 +27,11 @@ export const PersonAuthenticationFields: React.FC<PersonAuthenticationFieldsProp
   const { t } = useTranslation()
 
   const interactiveOptions = useMemo(
-    () => [
-      { value: '', label: `${t('options.choose')}...` },
-      ...INTERACTIVE_OPTIONS.map((opt) => ({
+    () =>
+      INTERACTIVE_OPTIONS.map((opt) => ({
         value: opt.value,
         label: t(opt.labelKey),
       })),
-    ],
     [t],
   )
 
@@ -46,13 +45,11 @@ export const PersonAuthenticationFields: React.FC<PersonAuthenticationFieldsProp
     [formik, usageTypeChange],
   )
 
-  const handleAliasChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      const target = e.target
-      if (target instanceof HTMLSelectElement) {
-        const values = Array.from(target.selectedOptions).map((o) => o.value)
-        formik.setFieldValue('aliases', values)
-      }
+  const handleAliasToggle = useCallback(
+    (acr: string) => {
+      const current = formik.values.aliases || []
+      const updated = current.includes(acr) ? current.filter((a) => a !== acr) : [...current, acr]
+      formik.setFieldValue('aliases', updated)
     },
     [formik],
   )
@@ -68,21 +65,20 @@ export const PersonAuthenticationFields: React.FC<PersonAuthenticationFieldsProp
           isDark={isDark}
         />
         <Col sm={12}>
-          <Input
-            type="select"
-            name="aliases"
-            id="aliases"
-            value={formik.values.aliases}
-            multiple
-            disabled={viewOnly}
-            onChange={handleAliasChange}
-          >
-            {SAML_ACRS_OPTIONS.map((acr) => (
-              <option key={acr} value={acr}>
-                {acr}
-              </option>
-            ))}
-          </Input>
+          {SAML_ACRS_OPTIONS.map((acr) => (
+            <FormControlLabel
+              key={acr}
+              control={
+                <Checkbox
+                  checked={(formik.values.aliases || []).includes(acr)}
+                  onChange={() => handleAliasToggle(acr)}
+                  disabled={viewOnly}
+                  size="small"
+                />
+              }
+              label={acr}
+            />
+          ))}
         </Col>
       </FormGroup>
 

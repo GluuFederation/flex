@@ -64,9 +64,13 @@ const CustomScriptListPage: React.FC = () => {
   } = useCedarling()
 
   const theme = useContext(ThemeContext)
-  const selectedTheme = useMemo(() => theme?.state?.theme || DEFAULT_THEME, [theme?.state?.theme])
-  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
-  const isDarkTheme = selectedTheme === THEME_DARK
+  const { themeColors, isDarkTheme } = useMemo(() => {
+    const selected = theme?.state?.theme || DEFAULT_THEME
+    return {
+      themeColors: getThemeColor(selected),
+      isDarkTheme: selected === THEME_DARK,
+    }
+  }, [theme?.state?.theme])
   const { classes, badgeStyles } = useStyles({ isDark: isDarkTheme, themeColors })
 
   const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
@@ -115,8 +119,13 @@ const CustomScriptListPage: React.FC = () => {
   const { data: scriptTypes, isLoading: loadingTypes } = useCustomScriptTypes()
   const deleteMutation = useDeleteCustomScript()
 
-  const scripts = (scriptsResponse?.entries || []) as ScriptTableRow[]
-  const totalItems = scriptsResponse?.totalEntriesCount ?? 0
+  const { scripts, totalItems } = useMemo(
+    () => ({
+      scripts: (scriptsResponse?.entries || []) as ScriptTableRow[],
+      totalItems: scriptsResponse?.totalEntriesCount ?? 0,
+    }),
+    [scriptsResponse],
+  )
 
   SetTitle(t('titles.scripts'))
 
@@ -520,7 +529,10 @@ const CustomScriptListPage: React.FC = () => {
     [getScriptDetailFields, detailLabelStyle],
   )
 
-  const loading = isLoading || deleteMutation.isPending
+  const loading = useMemo(
+    () => isLoading || deleteMutation.isPending,
+    [isLoading, deleteMutation.isPending],
+  )
 
   return (
     <GluuLoader blocking={loading}>
@@ -539,6 +551,7 @@ const CustomScriptListPage: React.FC = () => {
                 onRefresh={canRead ? handleResetAndRefetch : undefined}
                 refreshLoading={isLoading || loadingTypes}
                 primaryAction={primaryAction}
+                disabled={loading}
               />
             </div>
           </div>
@@ -566,6 +579,7 @@ const CustomScriptListPage: React.FC = () => {
             onAccept={handleDeleteAccept}
             label={deleteDialogLabel}
             feature={FEATURE_CUSTOM_SCRIPT_DELETE}
+            autoCloseOnAccept
           />
         )}
       </div>

@@ -75,6 +75,10 @@ export const useStyles = makeStyles<GluuSearchToolbarStyleParams>()((
         opacity: 0.6,
       },
     },
+    searchInputDisabled: {
+      opacity: 0.5,
+      cursor: 'not-allowed',
+    },
     searchIcon: {
       position: 'absolute',
       left: '12px',

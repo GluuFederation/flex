@@ -34,6 +34,7 @@ const GluuCommitDialog = ({
   feature,
   isLicenseLabel = false,
   operations = [],
+  autoCloseOnAccept = false,
 }: GluuCommitDialogProps) => {
   const { t } = useTranslation()
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
@@ -114,11 +115,16 @@ const GluuCommitDialog = ({
     try {
       const result = onAccept(userMessage)
       await Promise.resolve(result)
-      closeModal()
+      if (!autoCloseOnAccept) {
+        closeModal()
+      }
     } finally {
       setIsSubmitting(false)
+      if (autoCloseOnAccept) {
+        closeModal()
+      }
     }
-  }, [formik, onAccept, userMessage, closeModal, isSubmitting])
+  }, [formik, onAccept, userMessage, closeModal, isSubmitting, autoCloseOnAccept])
 
   const handleOverlayKeyDown = useCallback(
     (e: React.KeyboardEvent) => {

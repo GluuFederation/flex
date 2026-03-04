@@ -2,7 +2,7 @@ import { CustomScriptItem, ModuleProperty, ConfigurationProperty } from '../type
 
 import { FormValues } from '../types/forms'
 import { filterEmptyObjects } from 'Utils/Util'
-import { LOCATION_TYPE_DB } from '../constants'
+import { LOCATION_TYPE_DB, LOCATION_TYPE_FILE } from '../constants'
 import type { CustomScript, SimpleCustomProperty } from 'JansConfigApi'
 import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
@@ -59,6 +59,9 @@ export const normalizeProperty = (p: PropertyInput): ConfigurationProperty | Mod
   }
   return base as ConfigurationProperty | ModuleProperty
 }
+
+export const isFileLocationType = (locationType: string | undefined): boolean =>
+  locationType === LOCATION_TYPE_FILE
 
 export const transformToFormValues = (
   item: CustomScriptItem | CustomScript | Partial<CustomScriptItem>,

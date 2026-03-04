@@ -13,7 +13,6 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useCustomScript, useUpdateCustomScript, useMutationEffects } from './hooks'
 import CustomScriptForm from './CustomScriptForm'
 import { useStyles } from './styles/CustomScriptFormPage.style'
-import { devLogger } from '@/utils/devLogger'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
@@ -29,11 +28,16 @@ const CustomScriptEditPage: React.FC = () => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
-  const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
-  const isDark = themeState.theme === THEME_DARK
+  const { themeColors, isDark } = useMemo(
+    () => ({
+      themeColors: getThemeColor(themeState.theme),
+      isDark: themeState.theme === THEME_DARK,
+    }),
+    [themeState.theme],
+  )
   const { classes } = useStyles({ isDark, themeColors })
 
-  SetTitle(t('titles.edit_script'))
+  SetTitle(t('titles.edit_script', { defaultValue: 'Edit Custom Script' }))
 
   const { hasCedarReadPermission, hasCedarWritePermission } = useCedarling()
   const canRead = useMemo(
@@ -64,17 +68,13 @@ const CustomScriptEditPage: React.FC = () => {
         return
       }
 
-      try {
-        const { action_message, script_path, location_type, ...scriptData } = data.customScript
-        void script_path
-        void location_type
-        await updateMutation.mutateAsync({
-          data: scriptData as CustomScript,
-          actionMessage: action_message,
-        })
-      } catch (error) {
-        devLogger.error('Failed to update script:', error)
-      }
+      const { action_message, script_path, location_type, ...scriptData } = data.customScript
+      void script_path
+      void location_type
+      await updateMutation.mutateAsync({
+        data: scriptData as CustomScript,
+        actionMessage: action_message,
+      })
     },
     [updateMutation, dispatch, t],
   )
@@ -87,9 +87,6 @@ const CustomScriptEditPage: React.FC = () => {
             <div className={classes.content}>
               <Alert severity="error" className={classes.errorBox}>
                 <GluuText variant="span" disableThemeColor>
-                  <strong>{t('messages.error_loading_script')}</strong>
-                </GluuText>
-                <GluuText variant="p" disableThemeColor style={{ marginTop: 8 }}>
                   {fetchError && typeof fetchError === 'object' && 'message' in fetchError
                     ? (fetchError as { message: string }).message
                     : t('messages.script_not_found')}
@@ -102,7 +99,10 @@ const CustomScriptEditPage: React.FC = () => {
     )
   }
 
-  const isBlocking = loadingScript || updateMutation.isPending
+  const isBlocking = useMemo(
+    () => loadingScript || updateMutation.isPending,
+    [loadingScript, updateMutation.isPending],
+  )
 
   return (
     <GluuPageContent>

@@ -1,7 +1,6 @@
 import React, { useState, ChangeEvent, useMemo, useCallback } from 'react'
 import type { FormikProps } from 'formik'
-import { useFormik, setNestedObjectValues } from 'formik'
-import type { FormikTouched } from 'formik'
+import { useFormik } from 'formik'
 import Toggle from 'react-toggle'
 import { Form, FormGroup, Input } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
@@ -29,8 +28,8 @@ import {
   ModuleProperty,
   ConfigurationProperty,
   ScriptType,
+  CustomScriptItem,
 } from './types'
-import { CustomScriptItem } from './types/customScript'
 import { useCustomScriptTypes } from './hooks'
 import { filterEmptyObjects } from 'Utils/Util'
 import {
@@ -38,6 +37,7 @@ import {
   transformToFormValues,
   getModuleProperty,
   buildChangedFieldOperations,
+  isFileLocationType,
 } from './helper'
 import {
   PROGRAMMING_LANGUAGES,
@@ -75,14 +75,19 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
   const { navigateBack } = useAppNavigation()
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
-  const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
-  const isDark = themeState.theme === THEME_DARK
+  const { themeColors, isDark } = useMemo(
+    () => ({
+      themeColors: getThemeColor(themeState.theme),
+      isDark: themeState.theme === THEME_DARK,
+    }),
+    [themeState.theme],
+  )
   const { classes } = useStyles({ isDark, themeColors })
   const [modal, setModal] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [commitOperations, setCommitOperations] = useState<GluuCommitDialogOperation[]>([])
 
-  const isEditMode = Boolean(item?.inum)
+  const isEditMode = useMemo(() => Boolean(item?.inum), [item?.inum])
 
   const { data: scriptTypes = [], isLoading: loadingScriptTypes } = useCustomScriptTypes()
 
@@ -105,58 +110,12 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
     validateOnMount: false,
     validateOnChange: true,
     validateOnBlur: true,
-    onSubmit: (values: FormValues) => {
-      const mappedConfigurationProperties: ConfigurationProperty[] | undefined =
-        values.configurationProperties
-          ? (filterEmptyObjects(values.configurationProperties).map(
-              transformPropertyForApi,
-            ) as ConfigurationProperty[])
-          : undefined
-
-      const mappedModuleProperties: ModuleProperty[] | undefined = values.moduleProperties
-        ? (filterEmptyObjects(values.moduleProperties).map(
-            transformPropertyForApi,
-          ) as ModuleProperty[])
-        : undefined
-
-      const booleanEnabled: boolean | undefined = Array.isArray(values.enabled)
-        ? values.enabled.length > 0
-        : typeof values.enabled === 'boolean'
-          ? values.enabled
-          : undefined
-
-      const base: CustomScriptItem = {
-        ...item,
-        name: values.name,
-        description: values.description,
-        scriptType: values.scriptType,
-        programmingLanguage: values.programmingLanguage,
-        level: values.level,
-        aliases: values.aliases && values.aliases.length ? values.aliases : undefined,
-        moduleProperties: mappedModuleProperties,
-        configurationProperties: mappedConfigurationProperties,
-        enabled: booleanEnabled,
-      }
-
-      const selectedLocationType = values.location_type || LOCATION_TYPE_DB
-      const customScript: CustomScriptItem = {
-        ...base,
-        locationType: selectedLocationType,
-        locationPath:
-          selectedLocationType === LOCATION_TYPE_FILE
-            ? values.script_path?.trim() || undefined
-            : undefined,
-        script: values.script,
-      }
-
-      const actionMessage = values.action_message?.trim()
-
-      const reqBody = {
-        customScript: actionMessage
-          ? { ...customScript, action_message: actionMessage }
-          : customScript,
-      }
-      handleSubmit(reqBody)
+    onSubmit: () => {
+      const operations = isEditMode
+        ? buildChangedFieldOperations(initialValues, formik.values, t)
+        : []
+      setCommitOperations(operations)
+      toggle()
     },
   })
 
@@ -204,17 +163,61 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
     formik.resetForm({ values: initialValues })
   }, [formik, initialValues])
 
-  const handleDialogAccept = useCallback(async () => {
-    const errors = await formik.validateForm()
-    if (Object.keys(errors).length > 0) {
-      const touched = setNestedObjectValues(errors, true) as FormikTouched<FormValues>
-      formik.setTouched(touched)
-      toggle()
-      return
-    }
-    formik.handleSubmit()
-    toggle()
-  }, [formik, toggle])
+  const submitForm = useCallback(
+    async (userMessage: string) => {
+      const values = formik.values
+
+      const mappedConfigurationProperties: ConfigurationProperty[] | undefined =
+        values.configurationProperties
+          ? (filterEmptyObjects(values.configurationProperties).map(
+              transformPropertyForApi,
+            ) as ConfigurationProperty[])
+          : undefined
+
+      const mappedModuleProperties: ModuleProperty[] | undefined = values.moduleProperties
+        ? (filterEmptyObjects(values.moduleProperties).map(
+            transformPropertyForApi,
+          ) as ModuleProperty[])
+        : undefined
+
+      const booleanEnabled: boolean | undefined = Array.isArray(values.enabled)
+        ? values.enabled.length > 0
+        : typeof values.enabled === 'boolean'
+          ? values.enabled
+          : undefined
+
+      const selectedLocationType = values.location_type || LOCATION_TYPE_DB
+
+      const customScript: CustomScriptItem = {
+        ...item,
+        name: values.name,
+        description: values.description,
+        scriptType: values.scriptType,
+        programmingLanguage: values.programmingLanguage,
+        level: values.level,
+        aliases: values.aliases && values.aliases.length ? values.aliases : undefined,
+        moduleProperties: mappedModuleProperties,
+        configurationProperties: mappedConfigurationProperties,
+        enabled: booleanEnabled,
+        locationType: selectedLocationType,
+        locationPath:
+          selectedLocationType === LOCATION_TYPE_FILE
+            ? values.script_path?.trim() || undefined
+            : undefined,
+        script: values.script,
+      }
+
+      const actionMessage = userMessage?.trim()
+      const reqBody = {
+        customScript: actionMessage
+          ? { ...customScript, action_message: actionMessage }
+          : customScript,
+      }
+
+      await handleSubmit(reqBody)
+    },
+    [formik.values, item, handleSubmit],
+  )
 
   const addConfigurationProperty = useCallback(() => {
     const current = formik.values.configurationProperties || []
@@ -255,10 +258,18 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
 
   const scriptTypeChangeHandler = useMemo(
     () => ({
-      handleChange: (e: ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
+      handleChange: async (e: ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
         const target = e.target as HTMLSelectElement
-        formik.setFieldValue('scriptType', target.value, true)
-        formik.setFieldTouched('scriptType', true)
+        const newType = target.value
+        await formik.setFieldValue('scriptType', newType, false)
+        if (newType !== DEFAULT_SCRIPT_TYPE) {
+          const cleaned = (formik.values.moduleProperties || []).filter(
+            (p) => p.value1 !== 'usage_type',
+          )
+          await formik.setFieldValue('moduleProperties', cleaned, false)
+        }
+        formik.setFieldTouched('scriptType', true, false)
+        formik.validateForm()
       },
     }),
     [formik],
@@ -272,13 +283,47 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
     [formik],
   )
 
-  const scriptTypeState = formik.values.scriptType
+  const scriptTypeSelectOptions = useMemo(
+    () =>
+      scriptTypes.map((ele: ScriptType) => ({
+        value: ele.value,
+        label: ele.name,
+      })),
+    [scriptTypes],
+  )
 
-  const openCommitDialogWithChanges = useCallback(() => {
-    const operations = buildChangedFieldOperations(initialValues, formik.values, t)
-    setCommitOperations(operations)
-    toggle()
-  }, [initialValues, formik.values, toggle, t])
+  const programmingLanguageOptions = useMemo(
+    () =>
+      PROGRAMMING_LANGUAGES.map((lang) => ({
+        value: lang.value,
+        label: t(lang.labelKey),
+      })),
+    [t],
+  )
+
+  const locationTypeOptions = useMemo(
+    () =>
+      LOCATION_TYPES.map((loc) => ({
+        value: loc.value,
+        label: t(loc.labelKey),
+      })),
+    [t],
+  )
+
+  const handleEnabledToggle = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      formik.setFieldValue('enabled', e.target.checked)
+    },
+    [formik],
+  )
+
+  const { isPersonAuth, isFileLocation } = useMemo(
+    () => ({
+      isPersonAuth: formik.values.scriptType === DEFAULT_SCRIPT_TYPE,
+      isFileLocation: isFileLocationType(formik.values.location_type),
+    }),
+    [formik.values.scriptType, formik.values.location_type],
+  )
 
   return (
     <>
@@ -291,7 +336,7 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
       {item?.scriptError?.stackTrace && (
         <Alert
           severity="error"
-          icon={<ErrorIcon />}
+          icon={<ErrorIcon className={classes.errorAlertIcon} />}
           className={classes.errorAlert}
           action={
             <Button size="sm" className={classes.errorButton} onClick={showErrorModal}>
@@ -362,10 +407,7 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
                 name="scriptType"
                 value={formik.values.scriptType}
                 formik={scriptTypeChangeHandler}
-                values={[
-                  { value: '', label: `${t('options.choose')}...` },
-                  ...scriptTypes.map((ele: ScriptType) => ({ value: ele.value, label: ele.name })),
-                ]}
+                values={scriptTypeSelectOptions}
                 lsize={12}
                 rsize={12}
                 required
@@ -390,13 +432,7 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
               name="programmingLanguage"
               value={formik.values.programmingLanguage}
               formik={formik}
-              values={[
-                { value: '', label: `${t('options.choose')}...` },
-                ...PROGRAMMING_LANGUAGES.map((lang) => ({
-                  value: lang.value,
-                  label: t(lang.labelKey),
-                })),
-              ]}
+              values={programmingLanguageOptions}
               lsize={12}
               rsize={12}
               required
@@ -420,10 +456,7 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
               name="location_type"
               value={formik.values.location_type}
               formik={formik}
-              values={LOCATION_TYPES.map((loc) => ({
-                value: loc.value,
-                label: t(loc.labelKey),
-              }))}
+              values={locationTypeOptions}
               lsize={12}
               rsize={12}
               doc_category={SCRIPT}
@@ -436,14 +469,21 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
             <GluuInputRow
               label="fields.script_path"
               formik={formik}
-              value={formik.values.script_path}
+              value={isFileLocation ? formik.values.script_path : ''}
               lsize={12}
               rsize={12}
+              required={isFileLocation}
               name="script_path"
               doc_category={SCRIPT}
               doc_entry="locationPath"
-              placeholder={t('placeholders.enter_here')}
-              disabled={viewOnly || formik.values.location_type === LOCATION_TYPE_DB}
+              placeholder={
+                isFileLocation ? t('placeholders.script_path') : t('placeholders.database_selected')
+              }
+              disabled={viewOnly || !isFileLocation}
+              errorMessage={formik.errors.script_path}
+              showError={
+                !!(isFileLocation && formik.errors.script_path && formik.touched.script_path)
+              }
               isDark={isDark}
             />
           </div>
@@ -482,9 +522,7 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
                 <Toggle
                   id="enabled"
                   name="enabled"
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    formik.setFieldValue('enabled', e.target.checked)
-                  }
+                  onChange={handleEnabledToggle}
                   checked={Boolean(formik.values.enabled)}
                   disabled={viewOnly}
                 />
@@ -492,7 +530,7 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
             </div>
           </div>
 
-          {scriptTypeState === DEFAULT_SCRIPT_TYPE && (
+          {isPersonAuth && (
             <div className={classes.fieldItemFullWidth}>
               <PersonAuthenticationFields
                 formik={formik}
@@ -661,8 +699,8 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
             onCancel={handleCancel}
             disableCancel={!formik.dirty}
             showApply
-            onApply={openCommitDialogWithChanges}
-            disableApply={!formik.dirty}
+            onApply={formik.handleSubmit}
+            disableApply={!formik.dirty || !formik.isValid}
             applyButtonType="button"
             isLoading={formik.isSubmitting ?? false}
           />
@@ -670,10 +708,11 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
         <GluuCommitDialog
           handler={toggle}
           modal={modal}
-          onAccept={handleDialogAccept}
+          onAccept={submitForm}
           formik={commitDialogFormik}
           feature={adminUiFeatures.custom_script_write}
           operations={commitOperations}
+          autoCloseOnAccept
         />
       </Form>
     </>

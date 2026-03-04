@@ -63,8 +63,8 @@ const GluuScriptErrorModal = ({
           type="button"
           size="sm"
           onClick={handleClose}
-          className={classes.closeButton}
-          aria-label="Close"
+          className={`${classes.closeButton} ${classes.buttonHoverOpacity}`}
+          aria-label={t('actions.close')}
           backgroundColor="transparent"
           borderColor="transparent"
           textColor={themeColors.fontColor}
@@ -83,13 +83,13 @@ const GluuScriptErrorModal = ({
           cancelButtonLabel={cancelLabel}
           onCancel={copyToClipboard}
           disableCancel={isCopied}
-          cancelButtonClassName={`${classes.cancelButton} ${classes.buttonHoverOpacity}`}
+          cancelButtonClassName={classes.cancelButton}
           cancelIconClass="fa fa-copy"
           showApply
           applyButtonType="button"
           applyButtonLabel={t('actions.close')}
           onApply={handleClose}
-          applyButtonClassName={`${classes.applyButton} ${classes.buttonHoverOpacity}`}
+          applyButtonClassName={classes.applyButton}
           applyIconClass="fa fa-times-circle"
         />
       </div>

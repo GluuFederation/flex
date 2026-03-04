@@ -12,6 +12,9 @@ html.theme-dark {
     --theme-button-primary-border: var(--custom-white);
     --theme-scrollbar-track: var(--custom-dark-card-bg);
     --theme-scrollbar-thumb: var(--custom-cedar-card-border-dark);
+    --theme-scrollbar-width: 4px;
+    --theme-scrollbar-height: 4px;
+    --theme-scrollbar-radius: 4px;
 }
 
 html.theme-light {
@@ -22,6 +25,9 @@ html.theme-light {
     --theme-button-primary-border: var(--custom-primary-dark);
     --theme-scrollbar-track: var(--custom-white);
     --theme-scrollbar-thumb: var(--custom-sidebar-hover-bg);
+    --theme-scrollbar-width: 4px;
+    --theme-scrollbar-height: 4px;
+    --theme-scrollbar-radius: 4px;
 }
 
 * {

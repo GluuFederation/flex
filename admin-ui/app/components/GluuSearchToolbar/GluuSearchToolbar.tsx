@@ -60,6 +60,7 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
     primaryAction,
     refreshLoading = false,
     refreshButtonVariant = 'outlined',
+    disabled = false,
   } = props
 
   const { t } = useTranslation()
@@ -137,9 +138,10 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
             type="text"
             placeholder={effectivePlaceholder}
             value={localSearch}
-            onChange={handleSearchChange}
-            onKeyDown={handleKeyDown}
-            className={classes.searchInput}
+            onChange={disabled ? undefined : handleSearchChange}
+            onKeyDown={disabled ? undefined : handleKeyDown}
+            readOnly={disabled}
+            className={`${classes.searchInput}${disabled ? ` ${classes.searchInputDisabled}` : ''}`}
             aria-label={searchLabel ?? effectivePlaceholder ?? 'search'}
           />
         </div>

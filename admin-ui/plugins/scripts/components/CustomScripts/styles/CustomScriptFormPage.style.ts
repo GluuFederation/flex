@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
-import { SPACING, BORDER_RADIUS, getHoverOpacity } from '@/constants'
+import { SPACING, BORDER_RADIUS, getHoverOpacity, MAPPING_SPACING } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, letterSpacing, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import type { ThemeConfig } from '@/context/theme/config'
@@ -15,11 +15,11 @@ const WIDTH_FULL = '100%'
 const BOX_SIZING_BORDER = 'border-box'
 const DISPLAY_FLEX = 'flex'
 const FLEX_DIRECTION_COLUMN = 'column'
-const MARGIN_ZERO_IMPORTANT = '0 !important'
+const MARGIN_ZERO = 0
 const OUTLINE_NONE = 'none'
 const FIELD_VERTICAL_PADDING = 4
 const ERROR_SPACE = 20
-const LABEL_MARGIN_BOTTOM = '6px !important'
+const LABEL_MARGIN_BOTTOM = 6
 const FORM_CARD_MIN_HEIGHT = 400
 const CONTENT_HORIZONTAL_PADDING = 52
 const CONTENT_GAP = 0
@@ -39,12 +39,14 @@ const INPUT_PADDING_VERTICAL = 14
 const INPUT_PADDING_HORIZONTAL = 21
 const BTN_PADDING = '6px 16px'
 const LOADING_MIN_HEIGHT = 300
+const ERROR_ICON_SIZE = MAPPING_SPACING.INFO_ICON_SIZE
 
 export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
   theme: Theme,
   { isDark, themeColors },
 ) => {
   const cardBorderStyle = getCardBorderStyle({ isDark })
+  const hoverOpacity = getHoverOpacity(isDark)
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   const formInputBg = themeColors.settings?.formInputBackground ?? themeColors.inputBackground
   const inputBorderColor = themeColors.settings?.inputBorder ?? themeColors.borderColor
@@ -132,15 +134,21 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
       justifyContent: 'center',
     },
     errorBox: {
-      'backgroundColor': `${getLoadingOverlayRgba(customColors.accentRed, isDark ? 0.18 : 0.12)} !important`,
+      'backgroundColor': `${getLoadingOverlayRgba(customColors.accentRed, isDark ? 0.15 : 0.06)} !important`,
       'borderRadius': BORDER_RADIUS.SMALL,
-      'padding': SPACING.PAGE,
-      'color': `${themeColors.fontColor} !important`,
+      'padding': `${INPUT_PADDING_VERTICAL}px ${SPACING.CARD_PADDING}px`,
+      'border': `1px solid ${getLoadingOverlayRgba(customColors.accentRed, isDark ? 0.4 : 0.25)}`,
+      'minHeight': INPUT_HEIGHT,
+      'display': 'flex',
+      'alignItems': 'center',
       '& .MuiAlert-message': {
-        color: `${themeColors.fontColor} !important`,
+        flex: 1,
+        color: `${customColors.white} !important`,
       },
       '& .MuiAlert-icon': {
-        color: `${themeColors.fontColor} !important`,
+        color: `${themeColors.errorColor} !important`,
+        alignItems: 'center',
+        fontSize: ERROR_ICON_SIZE,
       },
     },
     fieldItem: {
@@ -150,27 +158,27 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
       '& .form-group': {
         display: DISPLAY_FLEX,
         flexDirection: FLEX_DIRECTION_COLUMN,
-        margin: MARGIN_ZERO_IMPORTANT,
-        padding: MARGIN_ZERO_IMPORTANT,
+        margin: MARGIN_ZERO,
+        padding: MARGIN_ZERO,
       },
       '& .form-group.row': {
-        marginLeft: MARGIN_ZERO_IMPORTANT,
-        marginRight: MARGIN_ZERO_IMPORTANT,
+        marginLeft: MARGIN_ZERO,
+        marginRight: MARGIN_ZERO,
       },
       '& .form-group > label': {
         flex: '0 0 auto',
         width: WIDTH_FULL,
         maxWidth: WIDTH_FULL,
-        paddingLeft: MARGIN_ZERO_IMPORTANT,
-        paddingRight: MARGIN_ZERO_IMPORTANT,
+        paddingLeft: MARGIN_ZERO,
+        paddingRight: MARGIN_ZERO,
         marginBottom: LABEL_MARGIN_BOTTOM,
       },
       '& .form-group [class*="col"]': {
         flex: '0 0 100%',
         width: WIDTH_FULL,
         maxWidth: WIDTH_FULL,
-        paddingLeft: MARGIN_ZERO_IMPORTANT,
-        paddingRight: MARGIN_ZERO_IMPORTANT,
+        paddingLeft: MARGIN_ZERO,
+        paddingRight: MARGIN_ZERO,
         position: 'relative',
         paddingBottom: ERROR_SPACE,
       },
@@ -179,7 +187,7 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
         fontSize: `${fontSizes.sm} !important`,
       },
       '& .input-group': {
-        margin: MARGIN_ZERO_IMPORTANT,
+        margin: MARGIN_ZERO,
       },
     },
     levelError: {
@@ -217,17 +225,22 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
       'minHeight': INPUT_HEIGHT,
       'padding': `${INPUT_PADDING_VERTICAL}px ${SPACING.CARD_PADDING}px`,
       'backgroundColor': `${getLoadingOverlayRgba(customColors.accentRed, isDark ? 0.15 : 0.06)} !important`,
-      'color': `${themeColors.fontColor} !important`,
+      'color': `${themeColors.formFooter.back.textColor} !important`,
       'border': `1px solid ${getLoadingOverlayRgba(customColors.accentRed, isDark ? 0.4 : 0.25)}`,
       'borderRadius': `${BORDER_RADIUS.SMALL}px !important`,
       'display': 'flex',
       'alignItems': 'center',
+      '&:hover': {
+        opacity: 1 - hoverOpacity,
+      },
       '& .MuiAlert-message': {
         flex: 1,
-        color: `${themeColors.fontColor} !important`,
+        color: `${customColors.white} !important`,
       },
       '& .MuiAlert-icon': {
         color: `${themeColors.errorColor} !important`,
+        alignItems: 'center',
+        fontSize: ERROR_ICON_SIZE,
       },
       '& .MuiAlert-action': {
         padding: 0,
@@ -235,7 +248,10 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
       },
     },
     errorAlertText: {
-      color: themeColors.fontColor,
+      color: `${customColors.white} !important`,
+    },
+    errorAlertIcon: {
+      fontSize: ERROR_ICON_SIZE,
     },
     fieldItemFullWidth: {
       'width': WIDTH_FULL,
@@ -246,30 +262,30 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
       '& .form-group': {
         display: DISPLAY_FLEX,
         flexDirection: FLEX_DIRECTION_COLUMN,
-        margin: MARGIN_ZERO_IMPORTANT,
-        padding: MARGIN_ZERO_IMPORTANT,
+        margin: MARGIN_ZERO,
+        padding: MARGIN_ZERO,
       },
       '& .form-group.row': {
-        marginLeft: MARGIN_ZERO_IMPORTANT,
-        marginRight: MARGIN_ZERO_IMPORTANT,
+        marginLeft: MARGIN_ZERO,
+        marginRight: MARGIN_ZERO,
       },
       '& .form-group > label': {
         flex: '0 0 auto',
         width: WIDTH_FULL,
         maxWidth: WIDTH_FULL,
-        paddingLeft: MARGIN_ZERO_IMPORTANT,
-        paddingRight: MARGIN_ZERO_IMPORTANT,
+        paddingLeft: MARGIN_ZERO,
+        paddingRight: MARGIN_ZERO,
         marginBottom: LABEL_MARGIN_BOTTOM,
       },
       '& .form-group [class*="col"]': {
         flex: '0 0 100%',
         width: WIDTH_FULL,
         maxWidth: WIDTH_FULL,
-        paddingLeft: MARGIN_ZERO_IMPORTANT,
-        paddingRight: MARGIN_ZERO_IMPORTANT,
+        paddingLeft: MARGIN_ZERO,
+        paddingRight: MARGIN_ZERO,
       },
       '& .input-group': {
-        margin: MARGIN_ZERO_IMPORTANT,
+        margin: MARGIN_ZERO,
       },
     },
     formLabels: {

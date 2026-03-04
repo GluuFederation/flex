@@ -11,7 +11,6 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import SetTitle from 'Utils/SetTitle'
-import { devLogger } from '@/utils/devLogger'
 import { updateToast } from 'Redux/features/toastSlice'
 import CustomScriptForm from './CustomScriptForm'
 import { useCreateCustomScript, useMutationEffects } from './hooks'
@@ -25,8 +24,13 @@ const CustomScriptAddPage: React.FC = () => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
-  const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
-  const isDark = themeState.theme === THEME_DARK
+  const { themeColors, isDark } = useMemo(
+    () => ({
+      themeColors: getThemeColor(themeState.theme),
+      isDark: themeState.theme === THEME_DARK,
+    }),
+    [themeState.theme],
+  )
   const { classes } = useStyles({ isDark, themeColors })
 
   const { hasCedarWritePermission } = useCedarling()
@@ -50,26 +54,18 @@ const CustomScriptAddPage: React.FC = () => {
         return
       }
 
-      try {
-        const { action_message } = data.customScript
-        const scriptData = omit(data.customScript, [
-          'action_message',
-          'script_path',
-          'location_type',
-        ])
+      const { action_message } = data.customScript
+      const scriptData = omit(data.customScript, ['action_message', 'script_path', 'location_type'])
 
-        await createMutation.mutateAsync({
-          data: scriptData as CustomScript,
-          actionMessage: action_message,
-        })
-      } catch (error) {
-        devLogger.error('Failed to create script:', error)
-      }
+      await createMutation.mutateAsync({
+        data: scriptData as CustomScript,
+        actionMessage: action_message,
+      })
     },
     [createMutation, dispatch, t],
   )
 
-  SetTitle(t('messages.add_script', { defaultValue: 'Add Script' }))
+  SetTitle(t('messages.add_script', { defaultValue: 'Add Custom Script' }))
 
   return (
     <GluuPageContent>

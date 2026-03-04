@@ -393,6 +393,7 @@ const AuditListPage: React.FC = () => {
                 onRefresh={handleRefresh}
                 refreshLoading={loading}
                 primaryAction={searchPrimaryAction}
+                disabled={loading}
               />
             </div>
           </div>

@@ -62,4 +62,5 @@ export interface GluuSearchToolbarProps {
   primaryAction?: PrimaryActionDef
   refreshLoading?: boolean
   refreshButtonVariant?: 'primary' | 'outlined'
+  disabled?: boolean
 }
