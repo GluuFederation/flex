@@ -1,14 +1,16 @@
 import { makeStyles } from 'tss-react/mui'
-import customColors from '@/customColors'
 import { fontSizes, fontWeights } from '@/styles/fonts'
-import { OPACITY } from '@/constants'
 
-export const useStyles = makeStyles()(() => {
-  const border = `1px solid ${customColors.lightBlue}`
+interface CounterStyleParams {
+  fontColor: string
+}
+
+export const useStyles = makeStyles<CounterStyleParams>()((_theme, { fontColor }) => {
+  const border = `1px solid ${fontColor}`
 
   return {
     stepButton: {
-      'color': customColors.lightBlue,
+      'color': fontColor,
       'border': border,
       'minWidth': 32,
       'fontSize': fontSizes.md,
@@ -19,10 +21,10 @@ export const useStyles = makeStyles()(() => {
       },
     },
     valueButton: {
-      minWidth: 44,
-      fontSize: fontSizes.base,
-      fontWeight: fontWeights.medium,
-      opacity: OPACITY.DISABLED,
+      'minWidth': 44,
+      'fontSize': fontSizes.base,
+      'fontWeight': fontWeights.medium,
+      'color': `${fontColor} !important`,
     },
   }
 })

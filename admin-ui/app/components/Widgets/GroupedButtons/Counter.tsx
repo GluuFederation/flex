@@ -1,6 +1,8 @@
-import React, { memo, useCallback } from 'react'
+import React, { memo, useCallback, useMemo } from 'react'
 import Button from '@mui/material/Button'
 import ButtonGroup from '@mui/material/ButtonGroup'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
 import { useStyles } from './styles/Counter.style'
 
 interface CounterProps {
@@ -10,7 +12,12 @@ interface CounterProps {
 }
 
 const Counter: React.FC<CounterProps> = ({ disabled, counter = 0, onCounterChange }) => {
-  const { classes } = useStyles()
+  const { state: themeState } = useTheme()
+  const fontColor = useMemo(
+    () => getThemeColor(themeState.theme).fontColor,
+    [themeState.theme],
+  )
+  const { classes } = useStyles({ fontColor })
 
   const handleDecrement = useCallback(() => {
     onCounterChange(counter - 1)

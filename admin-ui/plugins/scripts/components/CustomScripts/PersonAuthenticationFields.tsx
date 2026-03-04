@@ -37,12 +37,12 @@ export const PersonAuthenticationFields: React.FC<PersonAuthenticationFieldsProp
 
   const interactiveFormik = useMemo(
     () => ({
-      ...formik,
       handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         usageTypeChange(e.target.value)
       },
+      handleBlur: formik.handleBlur,
     }),
-    [formik, usageTypeChange],
+    [formik.handleBlur, usageTypeChange],
   )
 
   const handleAliasToggle = useCallback(
