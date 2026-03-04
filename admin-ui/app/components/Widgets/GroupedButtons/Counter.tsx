@@ -13,10 +13,7 @@ interface CounterProps {
 
 const Counter: React.FC<CounterProps> = ({ disabled, counter = 0, onCounterChange }) => {
   const { state: themeState } = useTheme()
-  const fontColor = useMemo(
-    () => getThemeColor(themeState.theme).fontColor,
-    [themeState.theme],
-  )
+  const fontColor = useMemo(() => getThemeColor(themeState.theme).fontColor, [themeState.theme])
   const { classes } = useStyles({ fontColor })
 
   const handleDecrement = useCallback(() => {

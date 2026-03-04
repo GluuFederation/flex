@@ -21,10 +21,10 @@ export const useStyles = makeStyles<CounterStyleParams>()((_theme, { fontColor }
       },
     },
     valueButton: {
-      'minWidth': 44,
-      'fontSize': fontSizes.base,
-      'fontWeight': fontWeights.medium,
-      'color': `${fontColor} !important`,
+      minWidth: 44,
+      fontSize: fontSizes.base,
+      fontWeight: fontWeights.medium,
+      color: `${fontColor} !important`,
     },
   }
 })
