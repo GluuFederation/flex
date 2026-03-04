@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import type { TFunction } from 'i18next'
-import { DEFAULT_SCRIPT_TYPE, LOCATION_TYPE_FILE } from '../constants'
+import { DEFAULT_SCRIPT_TYPE } from '../constants'
 
 export const getCustomScriptValidationSchema = (t: TFunction) =>
   Yup.object({
@@ -19,11 +19,6 @@ export const getCustomScriptValidationSchema = (t: TFunction) =>
       .min(0, t('messages.script_level_non_negative'))
       .required(t('messages.script_level_required')),
     script: Yup.string().required(t('messages.script_code_required')),
-    script_path: Yup.string().when('location_type', {
-      is: LOCATION_TYPE_FILE,
-      then: (schema) => schema.required(t('messages.script_path_required')),
-      otherwise: (schema) => schema.optional(),
-    }),
 
     moduleProperties: Yup.array()
       .of(

@@ -17,9 +17,6 @@ export interface FormValues {
   aliases: string[]
   moduleProperties: ModuleProperty[]
   configurationProperties: ConfigurationProperty[]
-  script_path: string
-  locationPath?: string
-  location_type: string
   enabled?: boolean | string[]
   action_message?: string
 }

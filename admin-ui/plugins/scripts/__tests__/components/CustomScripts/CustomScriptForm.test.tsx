@@ -10,10 +10,7 @@ const item = {
   script: '',
   scriptType: 'person_authentication',
   programmingLanguage: 'python',
-  moduleProperties: [
-    { value1: 'usage_type', value2: 'interactive' },
-    { value1: 'location_type', value2: 'ldap' },
-  ],
+  moduleProperties: [{ value1: 'usage_type', value2: 'interactive' }],
   level: 10,
   dn: 'inum=A51E-76DA,ou=scripts,o=jans',
   inum: 'A51E-76DA',
@@ -129,12 +126,6 @@ describe('CustomScriptForm', () => {
       await screen.findByText(/Programming Language/)
       const langSelect = screen.getByTestId('programmingLanguage') as HTMLSelectElement
       expect(langSelect.value).toBe(item.programmingLanguage)
-    })
-
-    it('renders Location Type and Script Path fields', async () => {
-      render(<CustomScriptForm item={item} handleSubmit={handleSubmit} />, { wrapper: Wrapper })
-      expect(await screen.findByText(/Location Type/)).toBeInTheDocument()
-      expect(screen.getByText(/Script Path/)).toBeInTheDocument()
     })
 
     it('renders Level counter with item level', async () => {

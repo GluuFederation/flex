@@ -445,12 +445,6 @@ const CustomScriptListPage: React.FC = () => {
         doc_category: SCRIPT,
       },
       {
-        label: 'fields.location_type',
-        value: displayOrDash(row.locationType),
-        doc_entry: 'locationType',
-        doc_category: SCRIPT,
-      },
-      {
         label: 'fields.internal',
         value: row.internal ? t('options.yes') : t('options.no'),
         doc_entry: 'internal',

@@ -68,9 +68,7 @@ const CustomScriptEditPage: React.FC = () => {
         return
       }
 
-      const { action_message, script_path, location_type, ...scriptData } = data.customScript
-      void script_path
-      void location_type
+      const { action_message, ...scriptData } = data.customScript
       await updateMutation.mutateAsync({
         data: scriptData as CustomScript,
         actionMessage: action_message,

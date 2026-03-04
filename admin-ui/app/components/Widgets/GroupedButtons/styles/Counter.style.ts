@@ -1,5 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import { fontSizes, fontWeights } from '@/styles/fonts'
+import { OPACITY } from '@/constants'
 
 interface CounterStyleParams {
   fontColor: string
@@ -18,6 +19,14 @@ export const useStyles = makeStyles<CounterStyleParams>()((_theme, { fontColor }
 
       '&.MuiButtonGroup-groupedHorizontal:not(:last-of-type)': {
         borderRight: border,
+      },
+
+      '&.Mui-disabled': {
+        color: fontColor,
+        border,
+        opacity: OPACITY.DISABLED,
+        cursor: 'not-allowed',
+        pointerEvents: 'auto',
       },
     },
     valueButton: {

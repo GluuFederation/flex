@@ -36,15 +36,8 @@ import {
   transformToFormValues,
   getModuleProperty,
   buildChangedFieldOperations,
-  isFileLocationType,
 } from './helper'
-import {
-  PROGRAMMING_LANGUAGES,
-  LOCATION_TYPES,
-  LOCATION_TYPE_DB,
-  LOCATION_TYPE_FILE,
-  DEFAULT_SCRIPT_TYPE,
-} from './constants'
+import { PROGRAMMING_LANGUAGES, LOCATION_TYPE_DB, DEFAULT_SCRIPT_TYPE } from './constants'
 import { PersonAuthenticationFields } from './PersonAuthenticationFields'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import GluuScriptErrorModal from 'Routes/Apps/Gluu/GluuScriptErrorModal'
@@ -184,8 +177,6 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
           ? values.enabled
           : undefined
 
-      const selectedLocationType = values.location_type || LOCATION_TYPE_DB
-
       const customScript: CustomScriptItem = {
         ...item,
         name: values.name,
@@ -197,11 +188,7 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
         moduleProperties: mappedModuleProperties,
         configurationProperties: mappedConfigurationProperties,
         enabled: booleanEnabled,
-        locationType: selectedLocationType,
-        locationPath:
-          selectedLocationType === LOCATION_TYPE_FILE
-            ? values.script_path?.trim() || undefined
-            : undefined,
+        locationType: LOCATION_TYPE_DB,
         script: values.script,
       }
 
@@ -294,15 +281,6 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
     [t],
   )
 
-  const locationTypeOptions = useMemo(
-    () =>
-      LOCATION_TYPES.map((loc) => ({
-        value: loc.value,
-        label: t(loc.labelKey),
-      })),
-    [t],
-  )
-
   const handleEnabledToggle = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       formik.setFieldValue('enabled', e.target.checked)
@@ -310,12 +288,9 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
     [formik],
   )
 
-  const { isPersonAuth, isFileLocation } = useMemo(
-    () => ({
-      isPersonAuth: formik.values.scriptType === DEFAULT_SCRIPT_TYPE,
-      isFileLocation: isFileLocationType(formik.values.location_type),
-    }),
-    [formik.values.scriptType, formik.values.location_type],
+  const isPersonAuth = useMemo(
+    () => formik.values.scriptType === DEFAULT_SCRIPT_TYPE,
+    [formik.values.scriptType],
   )
 
   return (
@@ -353,6 +328,7 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
                 rsize={12}
                 value={item.inum}
                 doc_category={SCRIPT}
+                isDark={isDark}
               />
             </div>
           )}
@@ -372,6 +348,7 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
               errorMessage={formik.errors.name}
               showError={!!(formik.errors.name && formik.touched.name)}
               isDark={isDark}
+              disabled={viewOnly}
             />
           </div>
           <div className={classes.fieldItem}>
@@ -388,6 +365,7 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
               errorMessage={formik.errors.description}
               showError={!!(formik.errors.description && formik.touched.description)}
               isDark={isDark}
+              disabled={viewOnly}
             />
           </div>
 
@@ -440,44 +418,7 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
                 )
               }
               isDark={isDark}
-            />
-          </div>
-
-          <div className={classes.fieldItem}>
-            <GluuSelectRow
-              label="fields.location_type"
-              name="location_type"
-              value={formik.values.location_type}
-              formik={formik}
-              values={locationTypeOptions}
-              lsize={12}
-              rsize={12}
-              doc_category={SCRIPT}
-              doc_entry="locationType"
               disabled={viewOnly}
-              isDark={isDark}
-            />
-          </div>
-          <div className={classes.fieldItem}>
-            <GluuInputRow
-              label="fields.script_path"
-              formik={formik}
-              value={isFileLocation ? formik.values.script_path : ''}
-              lsize={12}
-              rsize={12}
-              required={isFileLocation}
-              name="script_path"
-              doc_category={SCRIPT}
-              doc_entry="locationPath"
-              placeholder={
-                isFileLocation ? t('placeholders.script_path') : t('placeholders.database_selected')
-              }
-              disabled={viewOnly || !isFileLocation}
-              errorMessage={formik.errors.script_path}
-              showError={
-                !!(isFileLocation && formik.errors.script_path && formik.touched.script_path)
-              }
-              isDark={isDark}
             />
           </div>
 

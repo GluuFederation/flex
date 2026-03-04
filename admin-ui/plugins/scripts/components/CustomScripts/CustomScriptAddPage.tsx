@@ -55,7 +55,7 @@ const CustomScriptAddPage: React.FC = () => {
       }
 
       const { action_message } = data.customScript
-      const scriptData = omit(data.customScript, ['action_message', 'script_path', 'location_type'])
+      const scriptData = omit(data.customScript, ['action_message'])
 
       await createMutation.mutateAsync({
         data: scriptData as CustomScript,

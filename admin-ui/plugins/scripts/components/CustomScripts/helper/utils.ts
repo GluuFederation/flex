@@ -2,7 +2,6 @@ import { CustomScriptItem, ModuleProperty, ConfigurationProperty } from '../type
 
 import { FormValues } from '../types/forms'
 import { filterEmptyObjects } from 'Utils/Util'
-import { LOCATION_TYPE_DB, LOCATION_TYPE_FILE } from '../constants'
 import type { CustomScript, SimpleCustomProperty } from 'JansConfigApi'
 import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
@@ -60,9 +59,6 @@ export const normalizeProperty = (p: PropertyInput): ConfigurationProperty | Mod
   return base as ConfigurationProperty | ModuleProperty
 }
 
-export const isFileLocationType = (locationType: string | undefined): boolean =>
-  locationType === LOCATION_TYPE_FILE
-
 export const transformToFormValues = (
   item: CustomScriptItem | CustomScript | Partial<CustomScriptItem>,
 ): FormValues => {
@@ -78,9 +74,6 @@ export const transformToFormValues = (
     aliases: item.aliases ?? [],
     moduleProperties: rawModule.map(normalizeProperty) as ModuleProperty[],
     configurationProperties: rawConfig.map(normalizeProperty) as ConfigurationProperty[],
-    script_path: item.locationPath ?? '',
-    locationPath: item.locationPath ?? undefined,
-    location_type: item.locationType ?? LOCATION_TYPE_DB,
     enabled: item.enabled !== undefined ? item.enabled : true,
     action_message: '',
   }
@@ -157,12 +150,6 @@ export const buildChangedFieldOperations = (
     (initial.enabled as JsonValue) ?? null,
     (current.enabled as JsonValue) ?? null,
   )
-  addIfChanged(
-    t('fields.location_type'),
-    initial.location_type ?? null,
-    current.location_type ?? null,
-  )
-  addIfChanged(t('fields.script_path'), initial.script_path ?? null, current.script_path ?? null)
   if ((initial.script ?? '') !== (current.script ?? '')) {
     const scriptPreview = (current.script ?? '').replace(/\s+/g, ' ').trim()
     const maxLen = 40

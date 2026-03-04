@@ -79,7 +79,7 @@ export const PersonAuthenticationFields: React.FC<PersonAuthenticationFieldsProp
                 value={acr}
                 onMouseDown={(e) => {
                   e.preventDefault()
-                  handleAliasToggle(acr)
+                  if (!viewOnly) handleAliasToggle(acr)
                 }}
               >
                 {acr}

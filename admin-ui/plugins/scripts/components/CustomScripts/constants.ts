@@ -26,12 +26,6 @@ export const PROGRAMMING_LANGUAGES = [
 ]
 
 export const LOCATION_TYPE_DB = 'db'
-export const LOCATION_TYPE_FILE = 'file'
-
-export const LOCATION_TYPES = [
-  { value: LOCATION_TYPE_DB, labelKey: 'options.database' as const },
-  { value: LOCATION_TYPE_FILE, labelKey: 'options.file' as const },
-]
 
 export const INTERACTIVE_OPTIONS = [
   { value: 'interactive', labelKey: 'options.usage_type_web' as const },

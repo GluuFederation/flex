@@ -42,6 +42,4 @@ export interface CustomScriptItem {
   revision?: number
   scriptError?: ScriptError
   action_message?: string
-  script_path?: string
-  location_type?: string
 }

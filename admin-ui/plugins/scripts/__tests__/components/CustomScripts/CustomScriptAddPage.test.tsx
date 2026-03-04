@@ -104,12 +104,6 @@ describe('CustomScriptAddPage', () => {
     expect(langSelect.value).toBe('python')
   })
 
-  it('renders Location Type and Script Path fields', async () => {
-    render(<CustomScriptAddPage />, { wrapper: Wrapper })
-    expect(await screen.findByText(/Location Type/)).toBeInTheDocument()
-    expect(screen.getByText(/Script Path/)).toBeInTheDocument()
-  })
-
   it('renders Level counter defaulting to 1', async () => {
     render(<CustomScriptAddPage />, { wrapper: Wrapper })
     expect(await screen.findByText(/Level/)).toBeInTheDocument()
