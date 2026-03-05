@@ -9,7 +9,7 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { getLoadingOverlayRgba } from '@/customColors'
-import { OPACITY } from '@/constants/ui'
+import { getHoverOpacity } from '@/constants'
 import { useStyles } from './styles/GluuInputRow.style'
 import type { GluuInputRowProps } from './types/GluuInputRow.types'
 
@@ -41,11 +41,7 @@ const GluuInputRow = <T = Record<string, unknown>,>({
   const themeColors = useMemo(() => getThemeColor(state?.theme ?? DEFAULT_THEME), [state?.theme])
   const isDarkTheme = isDark ?? state?.theme === THEME_DARK
   const stepperHoverBg = useMemo(
-    () =>
-      getLoadingOverlayRgba(
-        themeColors.fontColor,
-        isDarkTheme ? OPACITY.HOVER_DARK : OPACITY.HOVER_LIGHT,
-      ),
+    () => getLoadingOverlayRgba(themeColors.fontColor, getHoverOpacity(isDarkTheme)),
     [themeColors.fontColor, isDarkTheme],
   )
   const { classes } = useStyles({

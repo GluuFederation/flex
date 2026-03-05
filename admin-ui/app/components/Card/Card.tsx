@@ -5,10 +5,10 @@ import { Card as BsCard } from 'reactstrap'
 import classes from './Card.scss'
 
 interface CardProps extends Omit<React.ComponentProps<typeof BsCard>, 'color'> {
-  children: any
+  children: React.ReactNode
   type?: string
   color?: string | null
-  className?: any
+  className?: string
 }
 
 const Card = ({ children, type = 'border', color = null, className, ...otherProps }: CardProps) => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, type ChangeEvent, type ReactElement } from 'react'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { useTranslation } from 'react-i18next'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { Col, InputGroup, CustomInput, FormGroup, Button } from 'Components'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { type DropdownOption } from '../AuthN/helper/acrUtils'

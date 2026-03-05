@@ -59,7 +59,7 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
       width: 14,
       height: 14,
       borderRadius: '50%',
-      backgroundColor: themeColors.formFooter.back.backgroundColor,
+      backgroundColor: themeColors.badges.filledBadgeBg,
       border: `2px solid ${themeColors.card.background}`,
     },
     nameText: {
@@ -104,7 +104,7 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
       flexShrink: 0,
     },
     statusDotActive: {
-      backgroundColor: themeColors.formFooter.back.backgroundColor,
+      backgroundColor: themeColors.badges.filledBadgeBg,
     },
     statusDotInactive: {
       backgroundColor: themeColors.settings.removeButton.bg,
@@ -114,7 +114,7 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
       fontSize: fontSizes.md,
       fontWeight: fontWeights.semiBold,
       lineHeight: lineHeights.relaxed,
-      color: themeColors.formFooter.back.backgroundColor,
+      color: themeColors.badges.filledBadgeBg,
     },
     statusLabelInactive: {
       fontFamily,
@@ -128,7 +128,7 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
       fontSize: fontSizes.md,
       fontWeight: fontWeights.semiBold,
       lineHeight: lineHeights.relaxed,
-      color: themeColors.formFooter.back.backgroundColor,
+      color: themeColors.badges.filledBadgeBg,
     },
     statusValueInactive: {
       fontFamily,
@@ -231,8 +231,8 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
     },
     statusBadge: {
       ...statusBadgeBase,
-      backgroundColor: themeColors.formFooter.back.backgroundColor,
-      color: themeColors.formFooter.back.textColor,
+      backgroundColor: themeColors.badges.filledBadgeBg,
+      color: themeColors.badges.filledBadgeText,
     },
     statusBadgeInactive: {
       ...statusBadgeBase,

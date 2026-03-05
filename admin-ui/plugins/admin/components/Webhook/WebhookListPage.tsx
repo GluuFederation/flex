@@ -38,18 +38,6 @@ const SORT_COLUMN_LABELS: Record<string, string> = {
 }
 const DEFAULT_SERVER_SORT: { column: string; desc: boolean } = { column: 'inum', desc: false }
 const WEBHOOK_RESOURCE_ID = ADMIN_UI_RESOURCES.Webhooks
-
-const sortRows = <T,>(rows: T[], column: keyof T & string, desc: boolean): T[] => {
-  const sorted = [...rows].sort((a, b) => {
-    const aVal = a[column]
-    const bVal = b[column]
-    if (typeof aVal === 'boolean' && typeof bVal === 'boolean') {
-      return aVal === bVal ? 0 : aVal ? -1 : 1
-    }
-    return String(aVal ?? '').localeCompare(String(bVal ?? ''), undefined, { sensitivity: 'base' })
-  })
-  return desc ? sorted.reverse() : sorted
-}
 const WEBHOOK_SCOPES = CEDAR_RESOURCE_SCOPES[WEBHOOK_RESOURCE_ID] ?? []
 const WebhookListPage: React.FC = () => {
   const { navigateToRoute } = useAppNavigation()
@@ -71,7 +59,6 @@ const WebhookListPage: React.FC = () => {
   const [modal, setModal] = useState(false)
   const [deleteData, setDeleteData] = useState<WebhookEntry | null>(null)
   const [serverSort, setServerSort] = useState(DEFAULT_SERVER_SORT)
-  const [clientSort, setClientSort] = useState<{ column: string; desc: boolean } | null>(null)
 
   SetTitle(t('titles.webhooks'))
 
@@ -103,16 +90,8 @@ const WebhookListPage: React.FC = () => {
     },
   )
 
-  const webhooksRaw = useMemo(() => toWebhookEntries(data?.entries), [data])
+  const webhooks = useMemo(() => toWebhookEntries(data?.entries), [data])
   const totalItems = useMemo(() => data?.totalEntriesCount || 0, [data])
-
-  const webhooks = useMemo(
-    () =>
-      clientSort
-        ? sortRows(webhooksRaw, clientSort.column as keyof WebhookEntry & string, clientSort.desc)
-        : webhooksRaw,
-    [webhooksRaw, clientSort],
-  )
 
   const effectivePage = useMemo(() => {
     const maxPage = totalItems > 0 ? Math.max(0, Math.ceil(totalItems / limit) - 1) : 0
@@ -172,7 +151,6 @@ const WebhookListPage: React.FC = () => {
     setPageNumber(0)
     setPattern('')
     setServerSort(DEFAULT_SERVER_SORT)
-    setClientSort(null)
     refetch()
   }, [refetch])
 
@@ -185,13 +163,8 @@ const WebhookListPage: React.FC = () => {
     setPageNumber(0)
   }, [])
 
-  const handleSort = useCallback((columnKey: string, direction: 'asc' | 'desc' | null) => {
-    setClientSort(direction ? { column: columnKey, desc: direction === 'desc' } : null)
-  }, [])
-
   const handleSortByFilter = useCallback((value: string) => {
     setServerSort({ column: value || 'inum', desc: false })
-    setClientSort(null)
     setPageNumber(0)
   }, [])
 
@@ -383,6 +356,7 @@ const WebhookListPage: React.FC = () => {
                 onRefresh={canReadWebhooks ? handleRefresh : undefined}
                 refreshLoading={isLoading}
                 primaryAction={primaryAction}
+                disabled={loading}
               />
             </div>
           </div>
@@ -395,9 +369,6 @@ const WebhookListPage: React.FC = () => {
               pagination={pagination}
               onPagingSizeSync={onPagingSizeSync}
               actions={actions}
-              sortColumn={clientSort?.column ?? null}
-              sortDirection={clientSort ? (clientSort.desc ? 'desc' : 'asc') : null}
-              onSort={handleSort}
               getRowKey={getRowKey}
               emptyMessage={emptyMessage}
             />

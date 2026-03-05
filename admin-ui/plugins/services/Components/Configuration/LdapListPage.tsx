@@ -7,7 +7,7 @@ import { useCedarling, ADMIN_UI_RESOURCES, CEDAR_RESOURCE_SCOPES } from '@/cedar
 import { Badge } from 'reactstrap'
 import { Paper } from '@mui/material'
 import { Card, CardBody } from 'Components'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import LdapDetailPage from './LdapDetailPage'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'

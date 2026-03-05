@@ -110,7 +110,37 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
       },
     },
     fieldItem: {
-      width: '100%',
+      'width': '100%',
+      'minWidth': 0,
+      'boxSizing': 'border-box' as const,
+      '& .form-group': {
+        display: 'flex',
+        flexDirection: 'column',
+        margin: 0,
+        padding: 0,
+      },
+      '& .form-group.row': {
+        marginLeft: 0,
+        marginRight: 0,
+      },
+      '& .form-group > label': {
+        flex: '0 0 auto',
+        width: '100%',
+        maxWidth: '100%',
+        paddingLeft: 0,
+        paddingRight: 0,
+        marginBottom: 6,
+      },
+      '& .form-group [class*="col"]': {
+        flex: '0 0 100%',
+        width: '100%',
+        maxWidth: '100%',
+        paddingLeft: 0,
+        paddingRight: 0,
+      },
+      '& .input-group': {
+        margin: 0,
+      },
     },
     fieldItemFullWidth: {
       width: '100%',

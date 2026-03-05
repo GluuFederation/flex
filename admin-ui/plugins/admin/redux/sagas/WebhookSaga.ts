@@ -30,7 +30,7 @@ import {
   type HttpErrorLike,
   type SagaErrorShape,
 } from './types/common'
-import type { RootState } from './types/state'
+import type { RootState } from 'Redux/sagas/types/audit'
 import type {
   WebhookEntry,
   TriggerWebhookSagaPayload,
