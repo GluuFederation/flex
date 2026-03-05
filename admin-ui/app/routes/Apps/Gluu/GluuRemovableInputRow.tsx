@@ -1,7 +1,7 @@
 import { Col, FormGroup, Input } from 'Components'
 import GluuLabel from './GluuLabel'
 import GluuTooltip from './GluuTooltip'
-import applicationStyle from './styles/applicationstyle'
+import applicationStyle from './styles/applicationStyle'
 import GluuToogle from 'Routes/Apps/Gluu/GluuToogle'
 import PropTypes from 'prop-types'
 import customColors from '@/customColors'

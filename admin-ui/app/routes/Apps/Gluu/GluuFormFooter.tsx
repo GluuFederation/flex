@@ -1,7 +1,7 @@
 import { useContext, useMemo, useCallback, memo } from 'react'
 import { Button, Divider } from 'Components'
 import { useTranslation } from 'react-i18next'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import clsx from 'clsx'
@@ -25,9 +25,15 @@ interface GluuFormFooterBaseProps {
   cancelButtonLabel?: string
   onCancel?: () => void
   disableCancel?: boolean
+  cancelButtonStyle?: React.CSSProperties
+  cancelButtonClassName?: string
+  cancelIconClass?: string
   showApply?: boolean
   disableApply?: boolean
   applyButtonLabel?: string
+  applyButtonStyle?: React.CSSProperties
+  applyButtonClassName?: string
+  applyIconClass?: string
   isLoading?: boolean
   className?: string
 }
@@ -62,11 +68,17 @@ const GluuFormFooter = ({
   cancelButtonLabel,
   onCancel,
   disableCancel,
+  cancelButtonStyle,
+  cancelButtonClassName = '',
+  cancelIconClass = 'fa fa-undo',
   showApply,
   onApply,
   disableApply,
   applyButtonType = 'submit',
   applyButtonLabel,
+  applyButtonStyle,
+  applyButtonClassName = '',
+  applyIconClass = 'fa fa-check-circle',
   isLoading = false,
   className = '',
 }: GluuFormFooterProps) => {
@@ -167,30 +179,24 @@ const GluuFormFooter = ({
               <Button
                 type="submit"
                 color={buttonColor}
-                style={BUTTON_STYLE}
+                style={applyButtonStyle ?? BUTTON_STYLE}
+                className={applyButtonClassName}
                 disabled={disableApply || isLoading}
                 aria-label={applyLabel}
               >
-                <ButtonLabel
-                  isLoading={isLoading}
-                  iconClass="fa fa-check-circle"
-                  label={applyLabel}
-                />
+                <ButtonLabel isLoading={isLoading} iconClass={applyIconClass} label={applyLabel} />
               </Button>
             ) : (
               <Button
                 type="button"
                 color={buttonColor}
-                style={BUTTON_STYLE}
+                style={applyButtonStyle ?? BUTTON_STYLE}
+                className={applyButtonClassName}
                 onClick={onApply}
                 disabled={disableApply || isLoading}
                 aria-label={applyLabel}
               >
-                <ButtonLabel
-                  isLoading={isLoading}
-                  iconClass="fa fa-check-circle"
-                  label={applyLabel}
-                />
+                <ButtonLabel isLoading={isLoading} iconClass={applyIconClass} label={applyLabel} />
               </Button>
             )}
           </Box>
@@ -199,14 +205,14 @@ const GluuFormFooter = ({
         {buttonStates.showCancel && (
           <Button
             color={buttonColor}
-            style={BUTTON_STYLE}
+            style={cancelButtonStyle ?? BUTTON_STYLE}
+            className={`${buttonLayout.cancel}${buttonStates.hasAllThreeButtons ? ' ms-4' : ''} ${cancelButtonClassName}`.trim()}
             type="button"
             onClick={handleCancelClick}
-            className={`${buttonLayout.cancel}${buttonStates.hasAllThreeButtons ? ' ms-4' : ''}`}
             disabled={disableCancel || isLoading}
             aria-label={cancelLabel}
           >
-            <ButtonLabel isLoading={false} iconClass="fa fa-undo" label={cancelLabel} />
+            <ButtonLabel isLoading={false} iconClass={cancelIconClass} label={cancelLabel} />
           </Button>
         )}
       </Box>

@@ -30,6 +30,14 @@ export interface ThemeConfig {
   checkbox: { uncheckedBorder: string }
   errorColor: string
   warningColor: string
+  badges: {
+    statusActiveBg: string
+    statusActive: string
+    filledBadgeBg: string
+    filledBadgeText: string
+    disabledBg: string
+    disabledText: string
+  }
   formFooter: FormFooterColors
   table: {
     headerText: string
@@ -38,6 +46,7 @@ export interface ThemeConfig {
     headerBg: string
     headerColor: string
     expandButtonBg: string
+    expandButtonHoverBg: string
   }
   settings: {
     cardBackground: string
@@ -94,6 +103,14 @@ const createLightTheme = (): ThemeConfig => {
     },
     errorColor: customColors.accentRed,
     warningColor: customColors.orange,
+    badges: {
+      statusActiveBg: customColors.statusActiveBg,
+      statusActive: customColors.statusActive,
+      filledBadgeBg: customColors.statusActive,
+      filledBadgeText: customColors.white,
+      disabledBg: customColors.disabledBadgeLightBg,
+      disabledText: customColors.disabledBadgeLightText,
+    },
     formFooter: {
       back: {
         backgroundColor: customColors.statusActive,
@@ -118,6 +135,7 @@ const createLightTheme = (): ThemeConfig => {
       headerBg: customColors.tableHeaderLight,
       headerColor: customColors.tableHeaderTextLight,
       expandButtonBg: customColors.tableExpandButtonBgLight,
+      expandButtonHoverBg: customColors.white,
     },
     settings: {
       cardBackground: customColors.white,
@@ -175,6 +193,14 @@ const createDarkTheme = (): ThemeConfig => {
     },
     errorColor: customColors.accentRed,
     warningColor: customColors.orange,
+    badges: {
+      statusActiveBg: customColors.statusActiveBg,
+      statusActive: customColors.statusActive,
+      filledBadgeBg: customColors.statusActive,
+      filledBadgeText: customColors.white,
+      disabledBg: customColors.disabledBadgeDarkBg,
+      disabledText: customColors.disabledBadgeDarkText,
+    },
     formFooter: {
       back: {
         backgroundColor: customColors.statusActive,
@@ -199,6 +225,7 @@ const createDarkTheme = (): ThemeConfig => {
       headerBg: customColors.tableHeaderBgDark,
       headerColor: customColors.tableHeaderTextDark,
       expandButtonBg: customColors.tableExpandButtonBgDark,
+      expandButtonHoverBg: customColors.darkDropdownBg,
     },
     settings: {
       cardBackground: customColors.darkCardBg,

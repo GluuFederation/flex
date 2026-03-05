@@ -2,7 +2,7 @@ import React, { useState, useContext, useCallback, useEffect, useMemo } from 're
 import GluuLabel from './GluuLabel'
 import GluuToogle from './GluuToogle'
 import { Typeahead } from 'react-bootstrap-typeahead'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { Col, FormGroup, Input, Button } from 'Components'
 import { ThemeContext } from 'Context/theme/themeContext'
 import customColors from '@/customColors'

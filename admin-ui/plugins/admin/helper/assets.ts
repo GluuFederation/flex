@@ -3,7 +3,11 @@ import type { Document } from '../components/Assets/types/AssetApiTypes'
 
 /** Normalize service from API (may be service, jansService, or jansModuleProperty[0]) */
 export function getServiceFromAsset(
-  asset: Document | Record<string, string | number | boolean | object | null | undefined> | null | undefined,
+  asset:
+    | Document
+    | Record<string, string | number | boolean | object | null | undefined>
+    | null
+    | undefined,
 ): string | undefined {
   if (!asset || typeof asset !== 'object') return undefined
   const rec = asset as Record<string, string | number | boolean | object | null | undefined>
@@ -34,7 +38,9 @@ export const buildAssetInitialValues = (
   asset?: Document | Record<string, string | number | boolean | object | null | undefined> | null,
 ): AssetFormValues => {
   const service = getServiceFromAsset(asset)
-  const rec = asset as Record<string, string | number | boolean | object | null | undefined> | undefined
+  const rec = asset as
+    | Record<string, string | number | boolean | object | null | undefined>
+    | undefined
   const doc = asset as Document | undefined
   const fileName = toStringValue(doc?.fileName ?? rec?.displayName ?? rec?.fileName, '')
   return {

@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback } from 'react'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { Card, CardBody } from 'Components'
 import GluuTabs from 'Routes/Apps/Gluu/GluuTabs'
 import SetTitle from 'Utils/SetTitle'

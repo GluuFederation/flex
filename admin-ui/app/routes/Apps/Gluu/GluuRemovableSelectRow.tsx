@@ -2,7 +2,7 @@ import GluuLabel from './GluuLabel'
 import { Col, FormGroup, CustomInput, InputGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
 import GluuTooltip from './GluuTooltip'
-import applicationstyle from './styles/applicationstyle'
+import applicationStyle from './styles/applicationStyle'
 import customColors from '@/customColors'
 import { FormikProps } from 'formik'
 import React from 'react'
@@ -77,7 +77,7 @@ function GluuRemovableSelectRow({
           </InputGroup>
         </Col>
         <div
-          style={applicationstyle.removableInputRow as React.CSSProperties}
+          style={applicationStyle.removableInputRow as React.CSSProperties}
           onClick={() => handler()}
         >
           <i className={'fa fa-fw fa-close'} style={{ color: customColors.accentRed }}></i>

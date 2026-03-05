@@ -1,9 +1,13 @@
-// @ts-nocheck
 import React from 'react'
-import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
-export const Divider = ({ position, children, className }) => {
+interface DividerProps {
+  position?: 'center' | 'right'
+  children?: React.ReactNode
+  className?: string
+}
+
+export const Divider: React.FC<DividerProps> = ({ position, children, className }) => {
   const dividerClass = classNames(
     {
       'hr-text-center': position === 'center',
@@ -14,10 +18,4 @@ export const Divider = ({ position, children, className }) => {
   )
 
   return <div className={dividerClass}>{children}</div>
-}
-
-Divider.propTypes = {
-  position: PropTypes.string,
-  className: PropTypes.string,
-  children: PropTypes.node,
 }
