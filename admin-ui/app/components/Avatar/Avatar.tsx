@@ -17,14 +17,26 @@ interface AvatarProps {
 const Avatar: React.FC<AvatarProps> = (props) => {
   const avatarClass = classNames('avatar', `avatar--${props.size}`, props.className)
   const addOnsdArr = React.Children.toArray(props.addOns)
-  const badge = find(addOnsdArr, (avatarAddOn: any) => avatarAddOn.type.addOnId === 'avatar--badge')
+  type AddOnElement = React.ReactElement<{ addOnId?: string }> & {
+    type: { addOnId?: string }
+    props?: { small?: boolean }
+  }
+  const badge = find(
+    addOnsdArr,
+    (avatarAddOn: React.ReactNode) =>
+      React.isValidElement(avatarAddOn) &&
+      (avatarAddOn as AddOnElement).type?.addOnId === 'avatar--badge',
+  )
   const icons = filter(
     addOnsdArr,
-    (avatarAddOn: any) => avatarAddOn.type.addOnId === 'avatar--icon',
+    (avatarAddOn: React.ReactNode) =>
+      React.isValidElement(avatarAddOn) &&
+      (avatarAddOn as AddOnElement).type?.addOnId === 'avatar--icon',
   )
   const isNested = reduce(
     addOnsdArr,
-    (acc: boolean, avatarAddOn: any) => acc || !!avatarAddOn.props.small,
+    (acc: boolean, avatarAddOn: React.ReactNode) =>
+      acc || (React.isValidElement(avatarAddOn) && !!(avatarAddOn as AddOnElement).props?.small),
     false,
   )
 

@@ -51,7 +51,3 @@ if (typeof globalThis.URL !== 'undefined') {
 }
 
 global.ResizeObserver = ResizeObserverPolyfill
-
-it('Jans-admin UI test setup', () => {
-  expect(true).toBeTruthy()
-})

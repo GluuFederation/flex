@@ -1,7 +1,7 @@
 import React, { useMemo, type CSSProperties } from 'react'
 import { Label } from 'Components'
 import { useTranslation } from 'react-i18next'
-import applicationStyle from './styles/applicationstyle'
+import applicationStyle from './styles/applicationStyle'
 import { HelpOutline } from '@mui/icons-material'
 import getThemeColor from '@/context/theme/config'
 import { useTheme } from '@/context/theme/themeContext'

@@ -34,7 +34,9 @@ const GluuInputEditor = <T extends object>({
   const { classes } = useStyles()
 
   const handleChange = (scripts: string) => {
-    formik.setFieldValue(name, scripts)
+    if (!readOnly) {
+      formik.setFieldValue(name, scripts)
+    }
   }
 
   return (
@@ -52,7 +54,8 @@ const GluuInputEditor = <T extends object>({
         <AceEditor
           mode={language}
           readOnly={readOnly}
-          setOptions={{ useWorker: false }}
+          wrapEnabled
+          setOptions={{ useWorker: false, hScrollBarAlwaysVisible: false }}
           theme={theme}
           placeholder={placeholder}
           fontSize={16}
@@ -63,6 +66,7 @@ const GluuInputEditor = <T extends object>({
           name={name}
           value={value ?? ''}
           editorProps={{ $blockScrolling: true }}
+          highlightActiveLine={!readOnly}
         />
         {showError && errorMessage ? <div className={classes.error}>{errorMessage}</div> : null}
       </Col>

@@ -2,7 +2,7 @@ import GluuLabel from './GluuLabel'
 import { Col, FormGroup, InputGroup } from 'Components'
 import GluuTooltip from './GluuTooltip'
 import { Typeahead } from 'react-bootstrap-typeahead'
-import applicationstyle from './styles/applicationstyle'
+import applicationStyle from './styles/applicationStyle'
 import customColors from '@/customColors'
 import { FormikProps } from 'formik'
 import React from 'react'
@@ -117,7 +117,7 @@ function GluuRemovableTypeAhead({
           </InputGroup>
         </Col>
         <div
-          style={applicationstyle.removableInputRow as React.CSSProperties}
+          style={applicationStyle.removableInputRow as React.CSSProperties}
           onClick={() => handler()}
         >
           <i className={'fa fa-fw fa-close'} style={{ color: customColors.accentRed }}></i>
