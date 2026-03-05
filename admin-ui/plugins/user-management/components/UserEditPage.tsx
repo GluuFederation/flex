@@ -180,7 +180,11 @@ function UserEditPage() {
             </Alert>
           )}
           <GluuLoader blocking={loadingAttributes || loadingPersistence || isSubmitting}>
-            <UserForm onSubmitData={submitData} userDetails={userDetails} isSubmitting={isSubmitting} />
+            <UserForm
+              onSubmitData={submitData}
+              userDetails={userDetails}
+              isSubmitting={isSubmitting}
+            />
           </GluuLoader>
         </div>
       </div>

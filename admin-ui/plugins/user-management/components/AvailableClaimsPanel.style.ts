@@ -8,8 +8,13 @@ interface AvailableClaimsPanelStylesParams {
   isDark: boolean
 }
 
-export const useStyles = makeStyles<AvailableClaimsPanelStylesParams>()((_, { themeColors, isDark }) => {
-  const claimsBg = isDark ? '#15395D' : (themeColors.settings?.cardBackground ?? themeColors.card.background)
+export const useStyles = makeStyles<AvailableClaimsPanelStylesParams>()((
+  _,
+  { themeColors, isDark },
+) => {
+  const claimsBg = isDark
+    ? '#15395D'
+    : (themeColors.settings?.cardBackground ?? themeColors.card.background)
   const claimsInnerBg = isDark ? '#091E34' : themeColors.background
   const selectionBg = customColors.claimsSelectionBg
 
@@ -31,13 +36,13 @@ export const useStyles = makeStyles<AvailableClaimsPanelStylesParams>()((_, { th
       color: `${themeColors.fontColor} !important`,
     },
     content: {
-      padding: 16,
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 12,
-      minHeight: 0,
-      flex: 1,
-      overflow: 'hidden',
+      'padding': 16,
+      'display': 'flex',
+      'flexDirection': 'column',
+      'gap': 12,
+      'minHeight': 0,
+      'flex': 1,
+      'overflow': 'hidden',
       '& input[type="search"], & input.form-control': {
         backgroundColor: `${claimsInnerBg} !important`,
         color: `${themeColors.fontColor} !important`,

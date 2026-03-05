@@ -254,14 +254,7 @@ function UserList(): JSX.Element {
       onPageChange: handlePageChange,
       onRowsPerPageChange: handleRowsPerPageChange,
     }),
-    [
-      effectivePage,
-      limit,
-      totalItems,
-      LIMIT_OPTIONS,
-      handlePageChange,
-      handleRowsPerPageChange,
-    ],
+    [effectivePage, limit, totalItems, LIMIT_OPTIONS, handlePageChange, handleRowsPerPageChange],
   )
 
   const getRowKey = useCallback(
@@ -270,10 +263,7 @@ function UserList(): JSX.Element {
   )
 
   const searchLabel = useMemo(() => `${t('fields.search', { defaultValue: 'Search' })}:`, [t])
-  const searchPlaceholder = useMemo(
-    () => t('placeholders.search', { defaultValue: 'Search' }),
-    [t],
-  )
+  const searchPlaceholder = useMemo(() => t('placeholders.search', { defaultValue: 'Search' }), [t])
 
   const primaryAction = useMemo(
     () =>

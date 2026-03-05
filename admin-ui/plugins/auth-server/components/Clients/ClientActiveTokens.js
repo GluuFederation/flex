@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
 import MaterialTable from '@material-table/core'
 import { Card, CardBody } from '../../../../app/components'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'

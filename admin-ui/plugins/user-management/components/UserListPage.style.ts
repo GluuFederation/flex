@@ -40,17 +40,17 @@ export const useStyles = makeStyles<UserListPageStylesParams>()((_, { isDark, th
       pointerEvents: 'auto',
     },
     tableCard: {
-      width: '100%',
-      maxWidth: '100%',
-      minWidth: 0,
-      marginTop: SPACING.SECTION_GAP,
-      backgroundColor: cardBg,
+      'width': '100%',
+      'maxWidth': '100%',
+      'minWidth': 0,
+      'marginTop': SPACING.SECTION_GAP,
+      'backgroundColor': cardBg,
       ...cardBorderStyle,
-      borderRadius: BORDER_RADIUS.DEFAULT,
-      padding: `${SPACING.CARD_PADDING}px`,
-      position: 'relative',
-      overflow: 'visible',
-      boxSizing: 'border-box',
+      'borderRadius': BORDER_RADIUS.DEFAULT,
+      'padding': `${SPACING.CARD_PADDING}px`,
+      'position': 'relative',
+      'overflow': 'visible',
+      'boxSizing': 'border-box',
       '& table': {
         minWidth: 0,
       },
@@ -72,4 +72,3 @@ export const useStyles = makeStyles<UserListPageStylesParams>()((_, { isDark, th
     },
   }
 })
-

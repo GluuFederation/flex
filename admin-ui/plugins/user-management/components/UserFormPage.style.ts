@@ -34,4 +34,3 @@ export const useStyles = makeStyles<UserFormPageStylesParams>()((_, { isDark, th
     },
   }
 })
-

@@ -42,11 +42,7 @@ const GluuViewDetailModal = ({
       className={`modal-outline-primary ${modalClassName}`.trim()}
     >
       {customHeader ?? (
-        <ModalHeader
-          toggle={handleClose}
-          className={headerClassName}
-          style={headerStyle}
-        >
+        <ModalHeader toggle={handleClose} className={headerClassName} style={headerStyle}>
           {displayTitle}
         </ModalHeader>
       )}

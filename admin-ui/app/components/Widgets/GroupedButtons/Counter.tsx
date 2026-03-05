@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { memo, useCallback, useMemo } from 'react'
 import Button from '@mui/material/Button'
 import ButtonGroup from '@mui/material/ButtonGroup'
-import customColors from '@/customColors'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { useStyles } from './styles/Counter.style'
 
 interface CounterProps {
   disabled: boolean
@@ -9,60 +11,46 @@ interface CounterProps {
   onCounterChange: (value: number) => void
 }
 
-interface CounterState {
-  disabled: boolean
-  counter: number
-}
+const Counter: React.FC<CounterProps> = ({ disabled, counter = 0, onCounterChange }) => {
+  const { state: themeState } = useTheme()
+  const fontColor = useMemo(() => getThemeColor(themeState.theme).fontColor, [themeState.theme])
+  const { classes } = useStyles({ fontColor })
 
-class Counter extends React.Component<CounterProps, CounterState> {
-  state: CounterState = {
-    disabled: this.props.disabled,
-    counter: this.props.counter ? this.props.counter : 0,
-  }
+  const handleDecrement = useCallback(() => {
+    onCounterChange(counter - 1)
+  }, [counter, onCounterChange])
 
-  handleIncrement = async () => {
-    await this.setState((state) => ({ counter: state.counter + 1 }))
-    await this.props.onCounterChange(this.state.counter)
-  }
+  const handleIncrement = useCallback(() => {
+    onCounterChange(counter + 1)
+  }, [counter, onCounterChange])
 
-  handleDecrement = async () => {
-    await this.setState((state) => ({ counter: state.counter - 1 }))
-    await this.props.onCounterChange(this.state.counter)
-  }
-
-  render() {
-    const displayCounter = this.state.counter > 0
-
-    return (
-      <ButtonGroup
-        disabled={this.state.disabled}
-        size="small"
-        aria-label="small outlined button group"
-      >
+  return (
+    <ButtonGroup size="small" aria-label="counter buttons">
+      {counter > 0 && (
         <Button
-          style={{
-            color: customColors.lightBlue,
-            border: `1px solid ${customColors.lightBlue}`,
-          }}
-          onClick={this.handleIncrement}
+          className={classes.stepButton}
+          onClick={handleDecrement}
+          disabled={disabled}
+          aria-label="decrement"
         >
-          +
+          -
         </Button>
-        {displayCounter && <Button disabled>{this.state.counter}</Button>}
-        {displayCounter && (
-          <Button
-            style={{
-              color: customColors.lightBlue,
-              border: `1px solid ${customColors.lightBlue}`,
-            }}
-            onClick={this.handleDecrement}
-          >
-            -
-          </Button>
-        )}
-      </ButtonGroup>
-    )
-  }
+      )}
+      {counter > 0 && (
+        <Button disabled className={classes.valueButton}>
+          {counter}
+        </Button>
+      )}
+      <Button
+        className={classes.stepButton}
+        onClick={handleIncrement}
+        disabled={disabled}
+        aria-label="increment"
+      >
+        +
+      </Button>
+    </ButtonGroup>
+  )
 }
 
-export default Counter
+export default memo(Counter)

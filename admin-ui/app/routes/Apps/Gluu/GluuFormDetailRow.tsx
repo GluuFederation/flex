@@ -1,6 +1,6 @@
 import { memo, CSSProperties, useMemo, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
-import { FormGroup, Label, Badge } from 'Components'
+import { FormGroup, Label, Badge, GluuBadge } from 'Components'
 import GluuTooltip from './GluuTooltip'
 import customColors from '@/customColors'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -12,13 +12,18 @@ interface GluuFormDetailRowProps {
   value?: string | number | boolean | null
   isBadge?: boolean
   badgeColor?: string
+  badgeBackgroundColor?: string
+  badgeTextColor?: string
   lsize?: number
   rsize?: number
   doc_category?: string
   doc_entry?: string
   isDirect?: boolean
   labelStyle?: CSSProperties
+  valueStyle?: CSSProperties
   rowClassName?: string
+  /** When 'column', label stacks above value (avoids overlap on narrow screens) */
+  layout?: 'row' | 'column'
 }
 
 const defaultLabelStyle: CSSProperties = { fontWeight: 'bold' }
@@ -28,13 +33,17 @@ function GluuFormDetailRow({
   value,
   isBadge,
   badgeColor,
+  badgeBackgroundColor,
+  badgeTextColor,
   lsize = 6,
   rsize = 6,
   doc_category,
   doc_entry,
   isDirect = false,
   labelStyle,
+  valueStyle,
   rowClassName,
+  layout = 'row',
 }: GluuFormDetailRowProps) {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
@@ -44,17 +53,18 @@ function GluuFormDetailRow({
   const appliedLabelStyle: CSSProperties = useMemo(
     () => ({
       ...defaultLabelStyle,
-      color: customColors.black,
+      color: themeColors.textMuted ?? themeColors.fontColor,
       ...labelStyle,
     }),
-    [labelStyle],
+    [labelStyle, themeColors.textMuted, themeColors.fontColor],
   )
 
   const valueLabelStyle: CSSProperties = useMemo(
     () => ({
-      color: customColors.black,
+      color: themeColors.fontColor,
+      ...valueStyle,
     }),
-    [],
+    [themeColors.fontColor, valueStyle],
   )
 
   const badgeStyle: CSSProperties = useMemo(
@@ -65,15 +75,33 @@ function GluuFormDetailRow({
     [themeColors.background],
   )
 
+  const formGroupProps = {
+    row: layout === 'row',
+    className: rowClassName,
+    style:
+      layout === 'column'
+        ? { display: 'flex', flexDirection: 'column' as const, gap: 4 }
+        : undefined,
+  }
+
   return (
     <GluuTooltip doc_category={doc_category} isDirect={isDirect} doc_entry={doc_entry || label}>
-      <FormGroup row className={rowClassName}>
-        <Label for={label} style={appliedLabelStyle} sm={lsize}>
+      <FormGroup {...formGroupProps}>
+        <Label for={label} style={appliedLabelStyle} sm={layout === 'row' ? lsize : 12}>
           {t(label)}:
         </Label>
-        <Label for={value?.toString()} style={valueLabelStyle} sm={rsize}>
+        <Label for={value?.toString()} style={valueLabelStyle} sm={layout === 'row' ? rsize : 12}>
           {!isBadge ? (
             value
+          ) : badgeBackgroundColor != null && badgeTextColor != null ? (
+            <GluuBadge
+              size="sm"
+              backgroundColor={badgeBackgroundColor}
+              textColor={badgeTextColor}
+              borderColor={badgeBackgroundColor}
+            >
+              {value}
+            </GluuBadge>
           ) : (
             <Badge style={badgeColor ? undefined : badgeStyle} color={badgeColor}>
               {value}

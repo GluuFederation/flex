@@ -1,16 +1,24 @@
-// @ts-nocheck
 import React from 'react'
 import classNames from 'classnames'
 import { Input as RSCustomInput } from 'reactstrap'
 
-const CustomInput = (props) => {
-  const { className, ...otherProps } = props
+type CustomInputProps = React.ComponentProps<typeof RSCustomInput>
+
+const CustomInput: React.FC<CustomInputProps> = (props) => {
+  const { className, label, name, ...otherProps } = props
   const inputClass = classNames(className, {
-    'custom-control-empty': !props.label,
+    'custom-control-empty': !label,
   })
 
-  return <RSCustomInput data-testid={props.name} className={inputClass} {...otherProps} />
+  return (
+    <RSCustomInput
+      data-testid={name}
+      className={inputClass}
+      label={label}
+      name={name}
+      {...otherProps}
+    />
+  )
 }
-CustomInput.propTypes = { ...RSCustomInput.propTypes }
 
 export { CustomInput }

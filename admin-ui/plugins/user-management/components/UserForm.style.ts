@@ -17,9 +17,9 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
   return {
     formRoot: {
       fontFamily,
-      display: 'flex',
-      alignItems: 'stretch',
-      flexWrap: 'wrap' as const,
+      'display': 'flex',
+      'alignItems': 'stretch',
+      'flexWrap': 'wrap' as const,
 
       '& > [class*="col-"]': {
         display: 'flex',
@@ -97,9 +97,9 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
       boxSizing: 'border-box',
     },
     fieldsGrid: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-      gap: 18,
+      'display': 'grid',
+      'gridTemplateColumns': 'repeat(2, minmax(0, 1fr))',
+      'gap': 18,
       '@media (max-width: 900px)': {
         gridTemplateColumns: '1fr',
       },
@@ -108,11 +108,11 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
       gridColumn: '1 / -1',
     },
     roleCard: {
-      backgroundColor: formInputBg,
-      border: `1px solid ${inputBorderColor}`,
-      borderRadius: BORDER_RADIUS.DEFAULT,
-      padding: 16,
-      boxSizing: 'border-box',
+      'backgroundColor': formInputBg,
+      'border': `1px solid ${inputBorderColor}`,
+      'borderRadius': BORDER_RADIUS.DEFAULT,
+      'padding': 16,
+      'boxSizing': 'border-box',
       '& .rbt .form-control': {
         borderRadius: '0 !important',
       },
@@ -123,18 +123,18 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
       marginBottom: 12,
     },
     roleControls: {
-      display: 'grid',
-      gridTemplateColumns: 'minmax(0, 1fr) auto auto',
-      gap: 12,
-      alignItems: 'center',
+      'display': 'grid',
+      'gridTemplateColumns': 'minmax(0, 1fr) auto auto',
+      'gap': 12,
+      'alignItems': 'center',
       '@media (max-width: 900px)': {
         gridTemplateColumns: '1fr',
       },
     },
     roleButtons: {
-      display: 'flex',
-      gap: 12,
-      justifyContent: 'flex-end',
+      'display': 'flex',
+      'gap': 12,
+      'justifyContent': 'flex-end',
       '@media (max-width: 900px)': {
         justifyContent: 'flex-start',
       },
@@ -171,4 +171,3 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
     },
   }
 })
-

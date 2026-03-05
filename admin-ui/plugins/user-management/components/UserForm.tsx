@@ -63,13 +63,12 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
     return ''
   }, [])
 
-  const {
-    data: rolesData,
-    isLoading: rolesLoading,
-    isError: rolesError,
-  } = useGetAllAdminuiRoles()
+  const { data: rolesData, isLoading: rolesLoading, isError: rolesError } = useGetAllAdminuiRoles()
   const rolesToBeShown: string[] = useMemo(
-    () => (rolesData ?? []).map((roleItem) => roleItem.role).filter((role): role is string => Boolean(role)),
+    () =>
+      (rolesData ?? [])
+        .map((roleItem) => roleItem.role)
+        .filter((role): role is string => Boolean(role)),
     [rolesData],
   )
 
@@ -368,7 +367,9 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
                     placeholder="Enter Here"
                     showError={Boolean(formik.touched.givenName && formik.errors.givenName)}
                     errorMessage={
-                      typeof formik.errors.givenName === 'string' ? formik.errors.givenName : undefined
+                      typeof formik.errors.givenName === 'string'
+                        ? formik.errors.givenName
+                        : undefined
                     }
                     handleChange={handleChange}
                   />
@@ -383,7 +384,9 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
                     placeholder="Enter Here"
                     showError={Boolean(formik.touched.middleName && formik.errors.middleName)}
                     errorMessage={
-                      typeof formik.errors.middleName === 'string' ? formik.errors.middleName : undefined
+                      typeof formik.errors.middleName === 'string'
+                        ? formik.errors.middleName
+                        : undefined
                     }
                     handleChange={handleChange}
                   />
@@ -399,7 +402,9 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
                     rsize={12}
                     placeholder="Enter Here"
                     showError={Boolean(formik.touched.sn && formik.errors.sn)}
-                    errorMessage={typeof formik.errors.sn === 'string' ? formik.errors.sn : undefined}
+                    errorMessage={
+                      typeof formik.errors.sn === 'string' ? formik.errors.sn : undefined
+                    }
                     handleChange={handleChange}
                   />
                   <GluuInputRow
@@ -449,7 +454,9 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
                     rsize={12}
                     placeholder="Enter Here"
                     showError={Boolean(formik.touched.mail && formik.errors.mail)}
-                    errorMessage={typeof formik.errors.mail === 'string' ? formik.errors.mail : undefined}
+                    errorMessage={
+                      typeof formik.errors.mail === 'string' ? formik.errors.mail : undefined
+                    }
                     handleChange={handleChange}
                   />
 
@@ -577,7 +584,6 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
                     </div>
                   )}
                 </div>
-
               </div>
 
               {nonRoleClaims.map((data, index) => (
@@ -630,10 +636,17 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
           onBack={handleNavigateBack}
           showCancel
           onCancel={handleCancel}
-          disableCancel={isSubmitting || (!formik.dirty && Object.keys(modifiedFields).length === 0)}
+          disableCancel={
+            isSubmitting || (!formik.dirty && Object.keys(modifiedFields).length === 0)
+          }
           showApply
           onApply={handleApply}
-          disableApply={shouldDisableApplyButton(isSubmitting, formik.dirty, formik.isValid, modifiedFields)}
+          disableApply={shouldDisableApplyButton(
+            isSubmitting,
+            formik.dirty,
+            formik.isValid,
+            modifiedFields,
+          )}
           applyButtonType="button"
           isLoading={isSubmitting}
         />

@@ -50,15 +50,14 @@ const UserDetailViewPage = ({ row }: RowProps) => {
   }, [rowData])
 
   const fields = useMemo(
-    () =>
-      [
-        { label: `${t('fields.name')}:`, value: rowData.displayName ?? '' },
-        { label: `${t('fields.email')}:`, value: rowData.mail ?? '' },
-        { label: `${t('fields.givenName')}:`, value: rowData.givenName ?? '' },
-        { label: 'jansAdminUIRole:', value: roleValue },
-        { label: `${t('fields.userName')}:`, value: rowData.userId ?? '' },
-        { label: `${t('fields.lastName', { defaultValue: 'Last Name' })}:`, value: lastName },
-      ],
+    () => [
+      { label: `${t('fields.name')}:`, value: rowData.displayName ?? '' },
+      { label: `${t('fields.email')}:`, value: rowData.mail ?? '' },
+      { label: `${t('fields.givenName')}:`, value: rowData.givenName ?? '' },
+      { label: 'jansAdminUIRole:', value: roleValue },
+      { label: `${t('fields.userName')}:`, value: rowData.userId ?? '' },
+      { label: `${t('fields.lastName', { defaultValue: 'Last Name' })}:`, value: lastName },
+    ],
     [t, rowData.displayName, rowData.mail, rowData.givenName, roleValue, rowData.userId, lastName],
   )
 
@@ -67,12 +66,12 @@ const UserDetailViewPage = ({ row }: RowProps) => {
       <div className={classes.divider} aria-hidden="true" />
       <div className={classes.content}>
         <div className={classes.grid}>
-        {fields.map((f) => (
-          <div key={f.label} className={classes.field}>
-            <div className={classes.label}>{sanitizeValue(f.label)}</div>
-            <div className={classes.value}>{sanitizeValue(f.value) || '—'}</div>
-          </div>
-        ))}
+          {fields.map((f) => (
+            <div key={f.label} className={classes.field}>
+              <div className={classes.label}>{sanitizeValue(f.label)}</div>
+              <div className={classes.value}>{sanitizeValue(f.value) || '—'}</div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

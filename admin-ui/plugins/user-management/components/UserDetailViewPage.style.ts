@@ -32,9 +32,9 @@ export const useStyles = makeStyles<UserDetailViewPageStylesParams>()((_, { them
       paddingRight: 28,
     },
     grid: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
-      gap: '20px 56px',
+      'display': 'grid',
+      'gridTemplateColumns': 'repeat(4, minmax(0, 1fr))',
+      'gap': '20px 56px',
       '@media (max-width: 1200px)': {
         gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
       },
@@ -63,4 +63,3 @@ export const useStyles = makeStyles<UserDetailViewPageStylesParams>()((_, { them
     },
   }
 })
-

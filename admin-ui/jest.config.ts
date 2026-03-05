@@ -28,6 +28,7 @@ const config: Config = {
     '^Utils(.*)$': '<rootDir>/app/utils$1',
     '^JansConfigApi$': '<rootDir>/jans_config_api_orval/src/JansConfigApi.ts',
   },
+  testMatch: ['**/__tests__/**/*.test.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
   testPathIgnorePatterns: ['<rootDir>/jans_config_api/'],
   transformIgnorePatterns: [
     'node_modules/(?!(query-string|decode-uri-component|uuid|split-on-first|filter-obj)/)',

@@ -327,6 +327,7 @@ const JansAssetListPage: React.FC = () => {
                 onSearchSubmit={handleSearchSubmit}
                 onRefresh={canReadAssets ? handleRefresh : undefined}
                 primaryAction={primaryAction}
+                disabled={loading}
               />
             </div>
           </div>
