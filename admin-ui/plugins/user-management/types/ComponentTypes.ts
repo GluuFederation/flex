@@ -8,6 +8,10 @@ export interface UserEditFormValues {
   displayName?: string
   status?: string
   givenName?: string
+  middleName?: string
+  sn?: string
+  userPassword?: string
+  userConfirmPassword?: string
   birthdate?: string | null
   [key: string]: string | string[] | boolean | null | undefined
 }

@@ -11,6 +11,7 @@ export const customColors = {
   primaryDark: '#0a2540',
   darkBackground: '#0b2947',
   darkCardBg: '#091e34',
+  userFormPageBg: '#1A3150',
   darkDropdownBg: '#194169',
   lightInputBg: '#f9fafb',
   darkInputBg: '#15395d',
@@ -38,6 +39,10 @@ export const customColors = {
   statusActiveBg: '#d3f5e6',
   statusInactive: '#f13f44',
   statusInactiveBg: '#ffe6e7',
+
+  // Claims selection (light theme - Available Claims panel hover/selection)
+  claimsSelectionBorder: '#8FE4BF',
+  claimsSelectionBg: '#B6F6DA',
 
   // Disabled Badge
   disabledBadgeLightBg: '#D9E1E8',

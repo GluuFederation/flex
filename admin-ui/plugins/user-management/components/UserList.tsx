@@ -1,24 +1,18 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react'
-import MaterialTable, { Action } from '@material-table/core'
-import { DeleteOutlined } from '@mui/icons-material'
+import { DeleteOutlined, Edit, Add } from '@mui/icons-material'
 import LockOpenIcon from '@mui/icons-material/LockOpen'
-import { Paper, TablePagination } from '@mui/material'
 import UserDetailViewPage from './UserDetailViewPage'
 import User2FADevicesModal from './User2FADevicesModal'
 import { useDispatch } from 'react-redux'
-import { Card, CardBody } from '../../../app/components'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useCedarling } from '@/cedarling'
-import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import SetTitle from 'Utils/SetTitle'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
-import { LIMIT_ID, PATTERN_ID } from '../common/Constants'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
 import { useGetUser, useDeleteUser, getGetUserQueryKey } from 'JansConfigApi'
@@ -30,6 +24,12 @@ import { triggerUserWebhook } from '../helper/userWebhookHelpers'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import { GluuTable } from '@/components/GluuTable'
+import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
+import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
+import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
+import { invalidateQueriesByKey } from '@/utils/queryUtils'
+import { useStyles } from './UserListPage.style'
 
 function UserList(): JSX.Element {
   const {
@@ -47,9 +47,9 @@ function UserList(): JSX.Element {
   const [selectedUserFor2FA, setSelectedUserFor2FA] = useState<UserTableRowData | null>(null)
   const [deleteData, setDeleteData] = useState<UserTableRowData | null>(null)
 
-  const [pageNumber, setPageNumber] = useState<number>(0)
-  const [limit, setLimit] = useState<number>(10)
-  const [pattern, setPattern] = useState<string | undefined>(undefined)
+  const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
+  const [pattern, setPattern] = useState<string>('')
+  const LIMIT_OPTIONS = useMemo(() => getRowsPerPageOptions(), [])
 
   // React Query hooks for data fetching
   const usersResourceId = useMemo(() => ADMIN_UI_RESOURCES.Users, [])
@@ -80,7 +80,7 @@ function UserList(): JSX.Element {
   } = useGetUser(
     {
       limit,
-      pattern,
+      pattern: pattern || undefined,
       startIndex: pageNumber * limit,
     },
     {
@@ -109,7 +109,7 @@ function UserList(): JSX.Element {
     },
   })
 
-  const toggle = (): void => setModal(!modal)
+  const toggle = useCallback((): void => setModal((prev) => !prev), [])
   const submitForm = (message: string): void => {
     toggle()
     if (deleteData?.inum) {
@@ -120,15 +120,9 @@ function UserList(): JSX.Element {
   const { state: themeState } = useTheme()
   const selectedTheme = themeState.theme || DEFAULT_THEME
   const themeColors = getThemeColor(selectedTheme)
-  const bgThemeColor = { background: themeColors.background }
   const isDark = selectedTheme === THEME_DARK
   const iconDefaultColor = isDark ? themeColors.fontColor : customColors.darkGray
-  const iconPrimaryColor = isDark ? themeColors.fontColor : customColors.lightBlue
   SetTitle(t('titles.user_management'))
-  const myActions: (
-    | Action<UserTableRowData>
-    | ((rowData: UserTableRowData) => Action<UserTableRowData>)
-  )[] = []
 
   const { navigateToRoute } = useAppNavigation()
 
@@ -157,148 +151,143 @@ function UserList(): JSX.Element {
     [navigateToRoute],
   )
 
-  const handleSearchKeyDown = useCallback((event: React.KeyboardEvent<HTMLInputElement>): void => {
-    if (event.key === 'Enter') {
-      setPattern(event.currentTarget.value || undefined)
+  const { classes } = useStyles({ isDark, themeColors })
+
+  const effectivePage = useMemo(() => {
+    const maxPage = totalItems > 0 ? Math.max(0, Math.ceil(totalItems / limit) - 1) : 0
+    return Math.min(pageNumber, maxPage)
+  }, [pageNumber, totalItems, limit])
+
+  useEffect(() => {
+    if (totalItems > 0 && pageNumber > effectivePage) {
+      setPageNumber(effectivePage)
     }
-  }, [])
+  }, [totalItems, pageNumber, limit, effectivePage, setPageNumber])
 
-  const GluuSearch = useCallback(() => {
-    return (
-      <GluuAdvancedSearch
-        limitId={LIMIT_ID}
-        patternId={PATTERN_ID}
-        limit={limit}
-        pattern={pattern}
-        onKeyDown={handleSearchKeyDown}
-        showLimit={false}
-      />
-    )
-  }, [limit, pattern, handleSearchKeyDown])
-
-  const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
-  const LockedOpenIcon = useCallback(() => <LockOpenIcon />, [])
-
-  if (canReadUsers) {
-    myActions.push({
-      icon: GluuSearch,
-      tooltip: `${t('messages.advanced_search')}`,
-      iconProps: {
-        color: 'primary',
-        style: {
-          borderColor: iconPrimaryColor,
-        },
-      },
-      isFreeAction: true,
-      onClick: () => {},
-    })
-    myActions.push({
-      icon: 'refresh',
-      tooltip: `${t('messages.refresh')}`,
-      iconProps: { color: 'primary', style: { color: iconPrimaryColor } },
-      isFreeAction: true,
-      onClick: () => {
-        refetchUsers()
-      },
-    })
-  }
-
-  if (canWriteUsers) {
-    myActions.push({
-      icon: 'add',
-      tooltip: `${t('tooltips.add_user')}`,
-      iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
-      isFreeAction: true,
-      onClick: () => handleGoToUserAddPage(),
-    })
-    myActions.push((rowData: UserTableRowData) => ({
-      icon: 'edit',
-      tooltip: `${t('tooltips.edit_user')}`,
-      iconProps: {
-        id: 'editScope' + (rowData.inum || ''),
-      },
-      onClick: (
-        _event: React.MouseEvent<HTMLElement>,
-        data: UserTableRowData | UserTableRowData[],
-      ) => {
-        const rowData = Array.isArray(data) ? data[0] : data
-        if (rowData) handleGoToUserEditPage(rowData)
-      },
-      disabled: !canWriteUsers,
-    }))
-    myActions.push((rowData: UserTableRowData) => ({
-      icon: LockedOpenIcon,
-      iconProps: {
-        id: 'viewDetail' + (rowData.inum || ''),
-        style: { color: iconDefaultColor },
-      },
-      tooltip: `${t('messages.credentials')}`,
-      onClick: (
-        _event: React.MouseEvent<HTMLElement>,
-        data: UserTableRowData | UserTableRowData[],
-      ) => {
-        const rowData = Array.isArray(data) ? data[0] : data
-        if (rowData) handleView2FADetails(rowData)
-      },
-      disabled: !canWriteUsers,
-    }))
-  }
-
-  if (canDeleteUsers) {
-    myActions.push((rowData: UserTableRowData) => ({
-      icon: DeleteOutlinedIcon,
-      tooltip: `${t('tooltips.delete_user')}`,
-      iconProps: {
-        color: 'secondary',
-        id: 'deleteClient' + (rowData.inum || ''),
-        style: { color: iconDefaultColor },
-      },
-      onClick: (
-        _event: React.MouseEvent<HTMLElement>,
-        data: UserTableRowData | UserTableRowData[],
-      ) => {
-        const rowData = Array.isArray(data) ? data[0] : data
-        if (rowData) {
-          setDeleteData(rowData)
-          toggle()
-        }
-      },
-      disabled: false,
-    }))
-  }
-
-  const onPageChangeClick = useCallback((page: number): void => {
-    setPageNumber(page)
-  }, [])
-
-  const onRowCountChangeClick = useCallback((count: number): void => {
+  const handleSearchSubmit = useCallback(() => {
     setPageNumber(0)
-    setLimit(count)
-  }, [])
+    refetchUsers()
+  }, [refetchUsers, setPageNumber])
 
-  const PaperContainer = useCallback(
-    (props: React.ComponentProps<typeof Paper>) => <Paper {...props} elevation={0} />,
+  const handleRefresh = useCallback(() => {
+    setPageNumber(0)
+    setPattern('')
+    invalidateQueriesByKey(queryClient, getGetUserQueryKey())
+  }, [queryClient, setPageNumber])
+
+  const handlePageChange = useCallback(
+    (page: number) => {
+      setPageNumber(page)
+    },
+    [setPageNumber],
+  )
+
+  const handleRowsPerPageChange = useCallback(
+    (rowsPerPage: number) => {
+      setLimit(rowsPerPage)
+      setPageNumber(0)
+    },
+    [setLimit, setPageNumber],
+  )
+
+  const columns: ColumnDef<UserTableRowData>[] = useMemo(
+    () => [
+      { key: 'displayName', label: t('fields.name') },
+      { key: 'userId', label: t('fields.userName') },
+      { key: 'mail', label: t('fields.email') },
+    ],
+    [t],
+  )
+
+  const actions = useMemo(() => {
+    const list: Array<{
+      icon: React.ReactNode
+      tooltip: string
+      id?: string
+      onClick: (row: UserTableRowData) => void
+    }> = []
+
+    if (canWriteUsers) {
+      list.push({
+        icon: <Edit className={classes.actionIcon} />,
+        tooltip: t('tooltips.edit_user'),
+        id: 'editUser',
+        onClick: handleGoToUserEditPage,
+      })
+      list.push({
+        icon: <LockOpenIcon className={classes.actionIcon} />,
+        tooltip: t('messages.credentials'),
+        id: 'userCredentials',
+        onClick: handleView2FADetails,
+      })
+    }
+
+    if (canDeleteUsers) {
+      list.push({
+        icon: <DeleteOutlined className={classes.actionIcon} />,
+        tooltip: t('tooltips.delete_user'),
+        id: 'deleteUser',
+        onClick: (row) => {
+          setDeleteData(row)
+          toggle()
+        },
+      })
+    }
+
+    return list
+  }, [
+    canWriteUsers,
+    canDeleteUsers,
+    t,
+    handleGoToUserEditPage,
+    handleView2FADetails,
+    classes.actionIcon,
+    toggle,
+  ])
+
+  const pagination: PaginationConfig = useMemo(
+    () => ({
+      page: effectivePage,
+      rowsPerPage: limit,
+      totalItems,
+      rowsPerPageOptions: LIMIT_OPTIONS,
+      onPageChange: handlePageChange,
+      onRowsPerPageChange: handleRowsPerPageChange,
+    }),
+    [
+      effectivePage,
+      limit,
+      totalItems,
+      LIMIT_OPTIONS,
+      handlePageChange,
+      handleRowsPerPageChange,
+    ],
+  )
+
+  const getRowKey = useCallback(
+    (row: UserTableRowData, index: number) => row.inum ?? row.userId ?? `no-inum-${index}`,
     [],
   )
 
-  const DetailPanel = useCallback((rowData: { rowData: UserTableRowData }) => {
-    return <UserDetailViewPage row={rowData} />
-  }, [])
-
-  const PaginationWrapper = useCallback(
-    () => (
-      <TablePagination
-        count={totalItems}
-        page={pageNumber}
-        onPageChange={(_event, page) => {
-          onPageChangeClick(page)
-        }}
-        rowsPerPage={limit}
-        onRowsPerPageChange={(event) => onRowCountChangeClick(parseInt(event.target.value, 10))}
-      />
-    ),
-    [pageNumber, totalItems, limit, onPageChangeClick, onRowCountChangeClick],
+  const searchLabel = useMemo(() => `${t('fields.search', { defaultValue: 'Search' })}:`, [t])
+  const searchPlaceholder = useMemo(
+    () => t('placeholders.search', { defaultValue: 'Search' }),
+    [t],
   )
+
+  const primaryAction = useMemo(
+    () =>
+      canWriteUsers
+        ? {
+            label: t('tooltips.add_user', { defaultValue: 'Add user' }),
+            icon: <Add className={classes.addIcon} />,
+            onClick: handleGoToUserAddPage,
+          }
+        : undefined,
+    [canWriteUsers, t, handleGoToUserAddPage, classes.addIcon],
+  )
+
+  const emptyMessage = useMemo(() => t('messages.no_data_available'), [t])
 
   return (
     <GluuLoader blocking={loading}>
@@ -308,51 +297,46 @@ function UserList(): JSX.Element {
         userDetails={selectedUserFor2FA}
         theme={selectedTheme}
       />
-      <Card style={applicationStyle.mainCard}>
-        <CardBody>
-          <GluuViewWrapper canShow={canReadUsers}>
-            <MaterialTable<UserTableRowData>
-              key={limit}
-              components={{
-                Container: PaperContainer,
-                Pagination: PaginationWrapper,
-              }}
-              columns={[
-                {
-                  title: `${t('fields.name')}`,
-                  field: 'displayName',
-                },
-                { title: `${t('fields.userName')}`, field: 'userId' },
-                { title: `${t('fields.email')}`, field: 'mail' },
-              ]}
+      <div className={classes.page}>
+        <GluuViewWrapper canShow={canReadUsers}>
+          <div className={classes.searchCard}>
+            <div className={classes.searchCardContent}>
+              <GluuSearchToolbar
+                searchLabel={searchLabel}
+                searchPlaceholder={searchPlaceholder}
+                searchValue={pattern}
+                searchOnType
+                onSearch={setPattern}
+                onSearchSubmit={handleSearchSubmit}
+                onRefresh={canReadUsers ? handleRefresh : undefined}
+                primaryAction={primaryAction}
+              />
+            </div>
+          </div>
+
+          <div className={classes.tableCard}>
+            {/* loading forced to false: GluuLoader already shows a blocking overlay when loading; avoids double indicators */}
+            <GluuTable<UserTableRowData>
+              columns={columns}
               data={usersList}
-              isLoading={loading}
-              title=""
-              actions={myActions}
-              options={{
-                search: false,
-                idSynonym: 'inum',
-                searchFieldAlignment: 'left',
-                selection: false,
-                pageSize: limit,
-                headerStyle: {
-                  ...applicationStyle.tableHeaderStyle,
-                  ...bgThemeColor,
-                  color: themeColors.fontColor,
-                } as React.CSSProperties,
-                actionsColumnIndex: -1,
-              }}
-              detailPanel={DetailPanel}
+              loading={false}
+              pagination={pagination}
+              onPagingSizeSync={onPagingSizeSync}
+              actions={actions}
+              getRowKey={getRowKey}
+              emptyMessage={emptyMessage}
+              expandable
+              renderExpandedRow={(row) => <UserDetailViewPage row={{ rowData: row }} />}
             />
-          </GluuViewWrapper>
-        </CardBody>
+          </div>
+        </GluuViewWrapper>
         <GluuCommitDialog
           handler={toggle}
           modal={modal}
           feature={adminUiFeatures.users_delete}
           onAccept={submitForm}
         />
-      </Card>
+      </div>
     </GluuLoader>
   )
 }

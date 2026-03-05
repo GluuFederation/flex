@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { Container, CardBody, Card } from '../../../app/components'
 import UserForm from './UserForm'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import { GluuPageContent } from '@/components'
 import { UserEditFormValues, ModifiedFields } from '../types/ComponentTypes'
 import { usePostUser, getGetUserQueryKey, useGetAttributes } from 'JansConfigApi'
 import { useQueryClient } from '@tanstack/react-query'
@@ -14,12 +14,21 @@ import { triggerUserWebhook } from '../helper/userWebhookHelpers'
 import { mapToPersonAttributes, buildCustomAttributesFromValues } from '../utils'
 import { PersonAttribute } from '../types/UserApiTypes'
 import type { CustomUser } from '../types/UserApiTypes'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
+import { useStyles } from './UserFormPage.style'
 
 function UserAddPage() {
   const dispatch = useDispatch()
   const { navigateBack } = useAppNavigation()
   const queryClient = useQueryClient()
   const { t } = useTranslation()
+  const { state: themeState } = useTheme()
+  const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
+  const isDark = themeState.theme === THEME_DARK
+  const { classes } = useStyles({ isDark, themeColors })
+
   const { data: attributesData, isLoading: loadingAttributes } = useGetAttributes({
     limit: 200,
     status: 'ACTIVE',
@@ -65,15 +74,15 @@ function UserAddPage() {
   }
 
   return (
-    <Container>
-      <Card type="border" color={null} className="mb-3">
-        <CardBody>
+    <GluuPageContent>
+      <div className={classes.page}>
+        <div className={classes.formCard}>
           <GluuLoader blocking={loadingAttributes || isSubmitting}>
             <UserForm onSubmitData={submitData} isSubmitting={isSubmitting} />
           </GluuLoader>
-        </CardBody>
-      </Card>
-    </Container>
+        </div>
+      </div>
+    </GluuPageContent>
   )
 }
 export default UserAddPage

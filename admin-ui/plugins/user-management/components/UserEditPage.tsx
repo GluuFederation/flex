@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { Container, CardBody, Card } from 'Components'
 import UserForm from './UserForm'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import { GluuPageContent } from '@/components'
 import Alert from '@mui/material/Alert'
 import { UserEditFormValues, ModifiedFields } from '../types/ComponentTypes'
 import { PersonAttribute, CustomUser } from '../types/UserApiTypes'
@@ -30,6 +30,10 @@ import {
 import { revokeSessionWhenFieldsModifiedInUserForm } from '../helper/constants'
 import { isPersistenceInfo } from 'Plugins/services/Components/Configuration/types'
 import { AXIOS_INSTANCE } from '../../../api-client'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
+import { useStyles } from './UserFormPage.style'
 
 function UserEditPage() {
   const dispatch = useDispatch()
@@ -37,6 +41,10 @@ function UserEditPage() {
   const location = useLocation()
   const queryClient = useQueryClient()
   const { t } = useTranslation()
+  const { state: themeState } = useTheme()
+  const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
+  const isDark = themeState.theme === THEME_DARK
+  const { classes } = useStyles({ isDark, themeColors })
 
   const [userDetails] = useState<CustomUser | null>(location.state?.selectedUser ?? null)
   useEffect(() => {
@@ -163,24 +171,20 @@ function UserEditPage() {
   )
 
   return (
-    <Container>
-      <Card type="border" color={null} className="mb-3">
-        <CardBody>
+    <GluuPageContent>
+      <div className={classes.page}>
+        <div className={classes.formCard}>
           {persistenceError && (
             <Alert severity="warning" sx={{ mb: 2 }}>
               {t('messages.persistence_config_load_failed_detail')}
             </Alert>
           )}
           <GluuLoader blocking={loadingAttributes || loadingPersistence || isSubmitting}>
-            <UserForm
-              onSubmitData={submitData}
-              userDetails={userDetails}
-              isSubmitting={isSubmitting}
-            />
+            <UserForm onSubmitData={submitData} userDetails={userDetails} isSubmitting={isSubmitting} />
           </GluuLoader>
-        </CardBody>
-      </Card>
-    </Container>
+        </div>
+      </div>
+    </GluuPageContent>
   )
 }
 export default UserEditPage

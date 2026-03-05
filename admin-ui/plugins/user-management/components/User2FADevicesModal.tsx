@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useCallback, useContext, useRef, useMemo } from 'react'
-import MaterialTable from '@material-table/core'
-import { Paper } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
+import { DeleteOutlined } from '@mui/icons-material'
 import GluuViewDetailModal from 'Routes/Apps/Gluu/GluuViewDetailsModal'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import { GluuTable } from '@/components/GluuTable'
+import type { ColumnDef, PaginationConfig, ActionDef } from '@/components/GluuTable'
 import getThemeColor from '@/context/theme/config'
 import { ThemeContext } from '@/context/theme/themeContext'
 import {
@@ -16,7 +16,6 @@ import {
 import { useQueryClient } from '@tanstack/react-query'
 import { updateToast } from 'Redux/features/toastSlice'
 import { formatDate } from '@/utils/dayjsUtils'
-import customColors from '@/customColors'
 import UserDeviceDetailViewPage from './UserDeviceDetailViewPage'
 import {
   DeviceData,
@@ -28,7 +27,8 @@ import {
   CustomUser,
 } from '../types'
 import { getErrorMessage, logUserUpdate } from '../helper/userAuditHelpers'
-import { DEFAULT_THEME } from '@/context/theme/constants'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import { useStyles } from './User2FADevicesModal.style'
 
 interface User2FADevicesModalProps {
   isOpen: boolean
@@ -47,7 +47,8 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
     [theme, themeContext?.state?.theme],
   )
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
-  const bgThemeColor = { background: themeColors.background }
+  const isDark = selectedTheme === THEME_DARK
+  const { classes } = useStyles({ isDark, themeColors })
 
   const [faDetails, setFADetails] = useState<DeviceData[]>([])
   const [otpDevicesList, setOTPDevicesList] = useState<DeviceData[]>([])
@@ -174,6 +175,11 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
     })
   }, [processedFidoDetails, otpDevicesList])
 
+  // Reset pagination when user or data changes
+  useEffect(() => {
+    setPage(0)
+  }, [userDetails?.inum, faDetails.length])
+
   const updateUserData = useCallback(
     (values: string): void => {
       if (!userDetails) return
@@ -218,57 +224,90 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
     [userDetails, deleteFido2Mutation, updateUserData, otpDevicesList],
   )
 
-  const DetailPanelForDevices = useCallback((rowData: { rowData: DeviceData }) => {
-    return <UserDeviceDetailViewPage row={rowData} />
-  }, [])
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
 
-  const PaperContainer = useCallback(
-    (props: React.ComponentProps<typeof Paper>) => <Paper {...props} elevation={0} />,
-    [],
+  const columns: ColumnDef<DeviceData>[] = useMemo(
+    () => [
+      { key: 'nickName', label: t('fields.nickName') },
+      { key: 'modality', label: t('fields.modality') },
+      { key: 'dateAdded', label: t('fields.dateAdded') },
+      { key: 'type', label: t('fields.authType') },
+    ],
+    [t],
   )
 
+  const actions: ActionDef<DeviceData>[] = useMemo(
+    () => [
+      {
+        icon: <DeleteOutlined sx={{ fontSize: 18 }} />,
+        tooltip: t('actions.delete'),
+        onClick: handleRemove2Fa,
+      },
+    ],
+    [t, handleRemove2Fa],
+  )
+
+  const pagination: PaginationConfig = useMemo(
+    () => ({
+      page,
+      rowsPerPage,
+      totalItems: faDetails.length,
+      rowsPerPageOptions: [5, 10, 25],
+      onPageChange: setPage,
+      onRowsPerPageChange: (newSize) => {
+        setRowsPerPage(newSize)
+        setPage(0)
+      },
+    }),
+    [page, rowsPerPage, faDetails.length],
+  )
+
+  const paginatedData = useMemo(() => {
+    const start = page * rowsPerPage
+    return faDetails.slice(start, start + rowsPerPage)
+  }, [faDetails, page, rowsPerPage])
+
+  const renderExpandedRow = useCallback((row: DeviceData) => {
+    return <UserDeviceDetailViewPage row={{ rowData: row }} />
+  }, [])
+
   return (
-    <GluuViewDetailModal isOpen={isOpen} handleClose={onClose}>
-      <MaterialTable<DeviceData>
-        components={{
-          Container: PaperContainer,
-        }}
-        columns={[
-          { title: `${t('fields.nickName')}`, field: 'nickName' },
-          { title: `${t('fields.modality')}`, field: 'modality' },
-          { title: `${t('fields.dateAdded')}`, field: 'dateAdded' },
-          { title: `${t('fields.authType')}`, field: 'type' },
-        ]}
-        data={faDetails}
-        isLoading={false}
-        title=""
-        options={{
-          search: false,
-          paging: false,
-          toolbar: false,
-          idSynonym: 'id',
-          selection: false,
-          rowStyle: () => ({
-            backgroundColor: customColors.white,
-          }),
-          headerStyle: {
-            ...applicationStyle.tableHeaderStyle,
-            ...bgThemeColor,
-            color: themeColors.fontColor,
-          } as React.CSSProperties,
-          actionsColumnIndex: -1,
-        }}
-        editable={{
-          isDeleteHidden: () => false,
-          onRowDelete: (oldData: DeviceData) => {
-            return new Promise<void>((resolve) => {
-              handleRemove2Fa(oldData)
-              resolve()
-            })
-          },
-        }}
-        detailPanel={DetailPanelForDevices}
-      />
+    <GluuViewDetailModal
+      isOpen={isOpen}
+      handleClose={onClose}
+      hideFooter
+      modalClassName={classes.modal2FA}
+      modalStyle={{ minWidth: 700, maxWidth: '80vw' }}
+      contentClassName={classes.modalContent}
+      contentStyle={{ overflowX: 'visible' }}
+      customHeader={
+        <div className={`modal-header ${classes.modalHeader}`}>
+          <div className={classes.headerTopRow}>
+            <button
+              type="button"
+              className="btn-close"
+              aria-label={t('actions.close')}
+              onClick={onClose}
+            />
+          </div>
+          <h5 className={classes.modalTitle}>{t('messages.2FA_details')}</h5>
+        </div>
+      }
+    >
+      <div className={classes.tableWrapper}>
+        <GluuTable<DeviceData>
+          columns={columns}
+          data={paginatedData}
+          loading={false}
+          pagination={pagination}
+          actions={actions}
+          getRowKey={(row, index) => row.id ?? `row-${index}`}
+          emptyMessage={t('messages.no_data_available')}
+          expandable
+          renderExpandedRow={renderExpandedRow}
+        />
+      </div>
     </GluuViewDetailModal>
   )
 }

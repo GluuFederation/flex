@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useCallback, useMemo, useRef } from 'react'
+import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useFormik, type FormikProps } from 'formik'
@@ -10,9 +10,8 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuCommitDialogLegacy from 'Routes/Apps/Gluu/GluuCommitDialogLegacy'
-import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
-import { ThemeContext } from 'Context/theme/themeContext'
-import { GetAttributesParams } from 'JansConfigApi'
+import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
+import { GetAttributesParams, useGetAllAdminuiRoles } from 'JansConfigApi'
 import UserClaimEntry from './UserClaimEntry'
 import PasswordChangeModal from './PasswordChangeModal'
 import AvailableClaimsPanel from './AvailableClaimsPanel'
@@ -20,15 +19,20 @@ import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { getUserValidationSchema, initializeCustomAttributes } from '../helper/validations'
 import { buildFormOperations, shouldDisableApplyButton } from '../utils'
 import { revokeSessionWhenFieldsModifiedInUserForm } from '../helper/constants'
+import { JANS_ADMIN_UI_ROLE_ATTR } from '../common/Constants'
+import { Typeahead } from 'react-bootstrap-typeahead'
 import {
   UserFormProps,
   FormOperation,
   ModifiedFields,
   UserEditFormValues,
 } from '../types/ComponentTypes'
-import { ThemeContext as ThemeContextType } from '../types/CommonTypes'
 import { PersonAttribute } from '../types/UserApiTypes'
 import { setupCustomAttributes } from '../utils'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
+import { useStyles } from './UserForm.style'
 
 function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<UserFormProps>) {
   const dispatch = useDispatch()
@@ -45,7 +49,29 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
   const [changePasswordModal, setChangePasswordModal] = useState(false)
   const [modifiedFields, setModifiedFields] = useState<ModifiedFields>({})
   const [operations, setOperations] = useState<FormOperation[]>([])
-  const [claimsPanelHeight, setClaimsPanelHeight] = useState<number>()
+  const [pendingRole, setPendingRole] = useState<string>('')
+
+  const resolveRoleOptionValue = useCallback((opt: unknown): string => {
+    if (typeof opt === 'string') return opt
+    if (opt && typeof opt === 'object') {
+      const rec = opt as Record<string, unknown>
+      const role = rec.role
+      if (typeof role === 'string') return role
+      const label = rec.label
+      if (typeof label === 'string') return label
+    }
+    return ''
+  }, [])
+
+  const {
+    data: rolesData,
+    isLoading: rolesLoading,
+    isError: rolesError,
+  } = useGetAllAdminuiRoles()
+  const rolesToBeShown: string[] = useMemo(
+    () => (rolesData ?? []).map((roleItem) => roleItem.role).filter((role): role is string => Boolean(role)),
+    [rolesData],
+  )
 
   const { items: personAttributes, loading } = useSelector(
     (state: { attributesReducerRoot: { items: PersonAttribute[]; loading: boolean } }) =>
@@ -61,8 +87,11 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
   )
   const memoizedPersonAttributes = useMemo(() => personAttributes, [personAttributesKey])
 
-  const theme = useContext(ThemeContext) as ThemeContextType
-  const selectedTheme = theme.state.theme
+  const { state: themeState } = useTheme()
+  const selectedTheme = themeState.theme
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+  const isDark = selectedTheme === THEME_DARK
+  const { classes } = useStyles({ isDark, themeColors })
   const options = useMemo(() => ({}) as Partial<GetAttributesParams>, [])
   const initialValues = useMemo(
     () => initializeCustomAttributes(userDetails || null, memoizedPersonAttributes),
@@ -256,40 +285,44 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
     [formik, updateModifiedFields],
   )
 
-  useEffect(() => {
-    const element = formContentRef.current
-    if (!element) {
-      return
-    }
-
-    const updateHeight = () => {
-      const newHeight = element.offsetHeight
-      setClaimsPanelHeight((prev) => (prev !== newHeight ? newHeight : prev))
-    }
-
-    updateHeight()
-
-    let resizeObserver: ResizeObserver | null = null
-    const hasResizeObserver = typeof window !== 'undefined' && 'ResizeObserver' in window
-
-    if (hasResizeObserver) {
-      resizeObserver = new ResizeObserver(() => {
-        updateHeight()
-      })
-      resizeObserver.observe(element)
-    } else {
-      window.addEventListener('resize', updateHeight)
-    }
-
-    return () => {
-      resizeObserver?.disconnect()
-      if (!hasResizeObserver) {
-        window.removeEventListener('resize', updateHeight)
-      }
-    }
-  }, [])
-
   const blockingLoader = loading || isSubmitting
+
+  const roleClaim = useMemo(
+    () => selectedClaims.find((c) => c.name === JANS_ADMIN_UI_ROLE_ATTR),
+    [selectedClaims],
+  )
+  const nonRoleClaims = useMemo(
+    () => selectedClaims.filter((c) => c.name !== JANS_ADMIN_UI_ROLE_ATTR),
+    [selectedClaims],
+  )
+
+  const selectedRoles = useMemo(() => {
+    const raw = formik.values[JANS_ADMIN_UI_ROLE_ATTR]
+    if (Array.isArray(raw)) return raw.filter((v): v is string => typeof v === 'string')
+    return []
+  }, [formik.values])
+
+  const addRole = useCallback(() => {
+    const value = pendingRole.trim()
+    if (!value) return
+    if (selectedRoles.includes(value)) return
+    const next = [...selectedRoles, value]
+    formik.setFieldValue(JANS_ADMIN_UI_ROLE_ATTR, next)
+    formik.setFieldTouched(JANS_ADMIN_UI_ROLE_ATTR, true, false)
+    updateModifiedFields(JANS_ADMIN_UI_ROLE_ATTR, next)
+    setPendingRole('')
+  }, [pendingRole, selectedRoles, formik, updateModifiedFields])
+
+  const removeRole = useCallback(() => {
+    const value = pendingRole.trim()
+    const target = value || selectedRoles[selectedRoles.length - 1]
+    if (!target) return
+    const next = selectedRoles.filter((r) => r !== target)
+    formik.setFieldValue(JANS_ADMIN_UI_ROLE_ATTR, next)
+    formik.setFieldTouched(JANS_ADMIN_UI_ROLE_ATTR, true, false)
+    updateModifiedFields(JANS_ADMIN_UI_ROLE_ATTR, next)
+    setPendingRole('')
+  }, [pendingRole, selectedRoles, formik, updateModifiedFields])
 
   return (
     <GluuLoader blocking={blockingLoader}>
@@ -305,161 +338,249 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
           handleApply()
         }}
       >
-        <style>{`
-          .user-form-labels-black label,
-          .user-form-labels-black label h5,
-          .user-form-labels-black label span,
-          .user-form-labels-black h5,
-          .user-form-labels-black .MuiSvgIcon-root,
-          .user-form-labels-black .bg-light,
-          .user-form-labels-black input::placeholder { color: ${customColors.black} !important; }
-        `}</style>
-        <FormGroup row className="user-form-labels-black">
+        <FormGroup row className={classes.formRoot}>
           <Col sm={8}>
-            <div ref={formContentRef}>
-              {userDetails && (
-                <GluuInputRow
-                  label="INUM"
-                  name="inum"
-                  doc_category={DOC_SECTION}
-                  value={userDetails.inum || ''}
-                  lsize={3}
-                  rsize={9}
-                  formik={formik}
-                  disabled={true}
-                />
-              )}
-              <GluuInputRow
-                doc_category={DOC_SECTION}
-                label="First Name"
-                name="givenName"
-                required
-                value={formik.values.givenName || ''}
-                formik={formik}
-                lsize={3}
-                rsize={9}
-                showError={formik.errors.givenName && formik.touched.givenName}
-                errorMessage={formik.errors.givenName}
-                handleChange={handleChange}
-              />
-              <GluuInputRow
-                doc_category={DOC_SECTION}
-                label="Middle Name"
-                name="middleName"
-                value={formik.values.middleName || ''}
-                formik={formik}
-                lsize={3}
-                rsize={9}
-                showError={formik.errors.middleName && formik.touched.middleName}
-                errorMessage={formik.errors.middleName}
-                handleChange={handleChange}
-              />
+            <div ref={formContentRef} className={classes.leftStack}>
+              <div className={classes.sectionCard}>
+                {userDetails && (
+                  <GluuInputRow
+                    label="INUM"
+                    name="inum"
+                    doc_category={DOC_SECTION}
+                    value={userDetails.inum || ''}
+                    lsize={12}
+                    rsize={12}
+                    formik={formik}
+                    disabled={true}
+                  />
+                )}
 
-              <GluuInputRow
-                doc_category={DOC_SECTION}
-                label="Last Name"
-                name="sn"
-                required
-                value={formik.values.sn || ''}
-                formik={formik}
-                lsize={3}
-                rsize={9}
-                showError={formik.errors.sn && formik.touched.sn}
-                errorMessage={formik.errors.sn}
-                handleChange={handleChange}
-              />
-              <GluuInputRow
-                doc_category={DOC_SECTION}
-                label="User Name"
-                name="userId"
-                required
-                value={formik.values.userId || ''}
-                formik={formik}
-                lsize={3}
-                rsize={9}
-                showError={formik.errors.userId && formik.touched.userId}
-                errorMessage={formik.errors.userId}
-                handleChange={handleChange}
-              />
-              <GluuInputRow
-                doc_category={DOC_SECTION}
-                label="Display Name"
-                name="displayName"
-                required
-                value={formik.values.displayName || ''}
-                formik={formik}
-                lsize={3}
-                rsize={9}
-                showError={formik.errors.displayName && formik.touched.displayName}
-                errorMessage={formik.errors.displayName}
-                handleChange={handleChange}
-              />
-              <GluuInputRow
-                doc_category={DOC_SECTION}
-                label="Email"
-                name="mail"
-                required
-                type="email"
-                value={formik.values.mail || ''}
-                formik={formik}
-                lsize={3}
-                rsize={9}
-                showError={formik.errors.mail && formik.touched.mail}
-                errorMessage={formik.errors.mail}
-                handleChange={handleChange}
-              />
+                <div className={classes.fieldsGrid}>
+                  <GluuInputRow
+                    doc_category={DOC_SECTION}
+                    label="First Name"
+                    name="givenName"
+                    required
+                    value={formik.values.givenName || ''}
+                    formik={formik}
+                    lsize={12}
+                    rsize={12}
+                    placeholder="Enter Here"
+                    showError={Boolean(formik.touched.givenName && formik.errors.givenName)}
+                    errorMessage={
+                      typeof formik.errors.givenName === 'string' ? formik.errors.givenName : undefined
+                    }
+                    handleChange={handleChange}
+                  />
+                  <GluuInputRow
+                    doc_category={DOC_SECTION}
+                    label="Middle Name"
+                    name="middleName"
+                    value={formik.values.middleName || ''}
+                    formik={formik}
+                    lsize={12}
+                    rsize={12}
+                    placeholder="Enter Here"
+                    showError={Boolean(formik.touched.middleName && formik.errors.middleName)}
+                    errorMessage={
+                      typeof formik.errors.middleName === 'string' ? formik.errors.middleName : undefined
+                    }
+                    handleChange={handleChange}
+                  />
 
-              <GluuSelectRow
-                doc_category={DOC_SECTION}
-                label="Status"
-                name="status"
-                value={formik.values.status || ''}
-                values={['active', 'inactive']}
-                formik={formik}
-                lsize={3}
-                rsize={9}
-                handleChange={handleChange}
-              />
+                  <GluuInputRow
+                    doc_category={DOC_SECTION}
+                    label="Last Name"
+                    name="sn"
+                    required
+                    value={formik.values.sn || ''}
+                    formik={formik}
+                    lsize={12}
+                    rsize={12}
+                    placeholder="Enter Here"
+                    showError={Boolean(formik.touched.sn && formik.errors.sn)}
+                    errorMessage={typeof formik.errors.sn === 'string' ? formik.errors.sn : undefined}
+                    handleChange={handleChange}
+                  />
+                  <GluuInputRow
+                    doc_category={DOC_SECTION}
+                    label="User Name"
+                    name="userId"
+                    required
+                    value={formik.values.userId || ''}
+                    formik={formik}
+                    lsize={12}
+                    rsize={12}
+                    placeholder="Enter Here"
+                    showError={Boolean(formik.touched.userId && formik.errors.userId)}
+                    errorMessage={
+                      typeof formik.errors.userId === 'string' ? formik.errors.userId : undefined
+                    }
+                    handleChange={handleChange}
+                  />
 
-              {!userDetails && (
-                <GluuInputRow
-                  doc_category={DOC_SECTION}
-                  label="Password"
-                  required
-                  name="userPassword"
-                  type="password"
-                  value={formik.values.userPassword || ''}
-                  formik={formik}
-                  lsize={3}
-                  rsize={9}
-                  showError={
-                    !!formik.errors.userPassword &&
-                    (formik.touched.userPassword || !!formik.values.userPassword)
-                  }
-                  errorMessage={formik.errors.userPassword}
-                  handleChange={handleChange}
-                />
-              )}
-              {!userDetails && (
-                <GluuInputRow
-                  doc_category={DOC_SECTION}
-                  label="Confirm Password"
-                  required
-                  name="userConfirmPassword"
-                  type="password"
-                  value={formik.values.userConfirmPassword || ''}
-                  formik={formik}
-                  lsize={3}
-                  rsize={9}
-                  showError={
-                    !!formik.errors.userConfirmPassword &&
-                    (formik.touched.userConfirmPassword || !!formik.values.userConfirmPassword)
-                  }
-                  errorMessage={formik.errors.userConfirmPassword}
-                  handleChange={handleChange}
-                />
-              )}
-              {selectedClaims.map((data, index) => (
+                  <GluuInputRow
+                    doc_category={DOC_SECTION}
+                    label="Display Name"
+                    name="displayName"
+                    required
+                    value={formik.values.displayName || ''}
+                    formik={formik}
+                    lsize={12}
+                    rsize={12}
+                    placeholder="Enter Here"
+                    showError={Boolean(formik.touched.displayName && formik.errors.displayName)}
+                    errorMessage={
+                      typeof formik.errors.displayName === 'string'
+                        ? formik.errors.displayName
+                        : undefined
+                    }
+                    handleChange={handleChange}
+                  />
+                  <GluuInputRow
+                    doc_category={DOC_SECTION}
+                    label="Email"
+                    name="mail"
+                    required
+                    type="email"
+                    value={formik.values.mail || ''}
+                    formik={formik}
+                    lsize={12}
+                    rsize={12}
+                    placeholder="Enter Here"
+                    showError={Boolean(formik.touched.mail && formik.errors.mail)}
+                    errorMessage={typeof formik.errors.mail === 'string' ? formik.errors.mail : undefined}
+                    handleChange={handleChange}
+                  />
+
+                  {!userDetails && (
+                    <GluuInputRow
+                      doc_category={DOC_SECTION}
+                      label="Password"
+                      required
+                      name="userPassword"
+                      type="password"
+                      value={formik.values.userPassword || ''}
+                      formik={formik}
+                      lsize={12}
+                      rsize={12}
+                      placeholder="Enter Here"
+                      showError={
+                        !!formik.errors.userPassword &&
+                        (formik.touched.userPassword || !!formik.values.userPassword)
+                      }
+                      errorMessage={
+                        typeof formik.errors.userPassword === 'string'
+                          ? formik.errors.userPassword
+                          : undefined
+                      }
+                      handleChange={handleChange}
+                    />
+                  )}
+                  {!userDetails && (
+                    <GluuInputRow
+                      doc_category={DOC_SECTION}
+                      label="Confirm Password"
+                      required
+                      name="userConfirmPassword"
+                      type="password"
+                      value={formik.values.userConfirmPassword || ''}
+                      formik={formik}
+                      lsize={12}
+                      rsize={12}
+                      placeholder="Enter Here"
+                      showError={
+                        !!formik.errors.userConfirmPassword &&
+                        (formik.touched.userConfirmPassword || !!formik.values.userConfirmPassword)
+                      }
+                      errorMessage={
+                        typeof formik.errors.userConfirmPassword === 'string'
+                          ? formik.errors.userConfirmPassword
+                          : undefined
+                      }
+                      handleChange={handleChange}
+                    />
+                  )}
+
+                  <div className={classes.fullRow}>
+                    <GluuSelectRow
+                      doc_category={DOC_SECTION}
+                      label="Status"
+                      name="status"
+                      value={formik.values.status || ''}
+                      values={['active', 'inactive']}
+                      formik={formik}
+                      lsize={12}
+                      rsize={12}
+                      handleChange={handleChange}
+                    />
+                  </div>
+
+                  {roleClaim && (
+                    <div className={`${classes.fullRow} ${classes.roleCard}`}>
+                      <div className={classes.roleHeader}>User Role:</div>
+                      <div className={classes.roleControls}>
+                        <Typeahead
+                          id="userRoleSearch"
+                          multiple={false}
+                          emptyLabel=""
+                          selected={pendingRole ? [pendingRole] : []}
+                          onChange={(selected) => {
+                            setPendingRole(resolveRoleOptionValue((selected as unknown[])?.[0]))
+                          }}
+                          onInputChange={(text) => setPendingRole(text)}
+                          options={rolesToBeShown}
+                          placeholder={
+                            rolesLoading
+                              ? 'Loading roles...'
+                              : rolesError
+                                ? 'Failed to load roles'
+                                : 'Search Here'
+                          }
+                          disabled={rolesLoading || rolesError}
+                        />
+                        <div className={classes.roleButtons}>
+                          <GluuButton
+                            type="button"
+                            onClick={addRole}
+                            backgroundColor={customColors.white}
+                            textColor={customColors.statusInactive}
+                            borderColor={customColors.white}
+                            disableHoverStyles
+                            style={{ gap: 8, minWidth: 92 }}
+                          >
+                            <span style={{ fontSize: 18, lineHeight: 1 }}>＋</span> Add
+                          </GluuButton>
+                          <GluuButton
+                            type="button"
+                            onClick={removeRole}
+                            backgroundColor={customColors.statusInactive}
+                            textColor={customColors.white}
+                            borderColor={customColors.statusInactive}
+                            disableHoverStyles
+                            style={{ gap: 8, minWidth: 110 }}
+                          >
+                            <i className="fa fa-trash" /> Remove
+                          </GluuButton>
+                        </div>
+                      </div>
+
+                      {selectedRoles.length > 0 && (
+                        <div className={classes.roleTags}>
+                          {selectedRoles.map((r) => (
+                            <span key={r} className={classes.roleTag}>
+                              {r}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+              </div>
+
+              {nonRoleClaims.map((data, index) => (
                 <UserClaimEntry
                   key={data.name}
                   entry={index}
@@ -470,67 +591,49 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
                   modifiedFields={modifiedFields}
                 />
               ))}
-            </div>
-          </Col>
-          <Col sm={4}>
-            <div
-              className="d-flex flex-column"
-              style={{
-                minHeight: 0,
-                height:
-                  claimsPanelHeight && claimsPanelHeight > 0 ? `${claimsPanelHeight}px` : 'auto',
-              }}
-            >
-              <div
-                className="flex-grow-1 d-flex flex-column overflow-hidden"
-                style={{ minHeight: 0 }}
-              >
-                <AvailableClaimsPanel
-                  searchClaims={searchClaims}
-                  setSearchClaims={setSearchClaims}
-                  personAttributes={memoizedPersonAttributes}
-                  selectedClaims={selectedClaims}
-                  setSelectedClaimsToState={setSelectedClaimsToState}
-                  dispatch={dispatch}
-                  options={options}
-                />
-              </div>
+
               {userDetails && (
-                <div className="mt-auto pt-3 d-flex justify-content-end">
+                <div className={classes.changePasswordRow}>
                   <GluuButton
                     type="button"
                     className="gluu-change-password-btn"
                     onClick={toggleChangePasswordModal}
-                    backgroundColor={customColors.primaryDark}
-                    textColor={customColors.white}
-                    borderColor={customColors.primaryDark}
+                    backgroundColor={customColors.white}
+                    textColor={customColors.primaryDark}
+                    borderColor={customColors.white}
                     disableHoverStyles
-                    style={{ gap: 8 }}
+                    style={{ gap: 8, fontWeight: 600 }}
                   >
-                    <i className="fa fa-key" />
                     {t('actions.change_password')}
                   </GluuButton>
                 </div>
               )}
             </div>
           </Col>
+          <Col sm={4}>
+            <div className={`d-flex flex-column ${classes.claimsPanelWrap}`}>
+              <AvailableClaimsPanel
+                searchClaims={searchClaims}
+                setSearchClaims={setSearchClaims}
+                personAttributes={memoizedPersonAttributes}
+                selectedClaims={selectedClaims}
+                setSelectedClaimsToState={setSelectedClaimsToState}
+                dispatch={dispatch}
+                options={options}
+              />
+            </div>
+          </Col>
         </FormGroup>
-        <GluuFormFooter
-          showBack={true}
+
+        <GluuThemeFormFooter
+          showBack
           onBack={handleNavigateBack}
-          showCancel={true}
+          showCancel
           onCancel={handleCancel}
-          disableCancel={
-            isSubmitting || (!formik.dirty && Object.keys(modifiedFields).length === 0)
-          }
-          showApply={true}
+          disableCancel={isSubmitting || (!formik.dirty && Object.keys(modifiedFields).length === 0)}
+          showApply
           onApply={handleApply}
-          disableApply={shouldDisableApplyButton(
-            isSubmitting,
-            formik.dirty,
-            formik.isValid,
-            modifiedFields,
-          )}
+          disableApply={shouldDisableApplyButton(isSubmitting, formik.dirty, formik.isValid, modifiedFields)}
           applyButtonType="button"
           isLoading={isSubmitting}
         />

@@ -13,21 +13,39 @@ export const useStyles = makeStyles<GluuInputRowStyleParams>()((
   const borderColor = fontColor ? `${fontColor}40` : theme.palette.divider
   return {
     colWrapper: {
-      position: 'relative',
+      'position': 'relative',
+      '& input:focus, & input:active': {
+        outline: 'none !important',
+        boxShadow: 'none !important',
+      },
     },
     inputWithShortcode: {
       paddingRight: 44,
     },
+    passwordInputWrapper: {
+      position: 'relative',
+      display: 'block',
+      width: '100%',
+    },
+    passwordInputPadding: {
+      paddingRight: 44,
+    },
     passwordToggle: {
-      position: 'absolute',
-      right: 20,
-      top: 7,
-      background: 'none',
-      border: 'none',
-      padding: 0,
-      cursor: 'pointer',
-      display: 'flex',
-      alignItems: 'center',
+      'position': 'absolute',
+      'right': 18,
+      'top': '50%',
+      'transform': 'translateY(-50%)',
+      'background': 'none',
+      'border': 'none',
+      'padding': 0,
+      'cursor': 'pointer',
+      'display': 'flex',
+      'alignItems': 'center',
+      'justifyContent': 'center',
+      'color': fontColor ?? 'inherit',
+      '& .MuiSvgIcon-root': {
+        fontSize: 22,
+      },
     },
     error: {
       display: 'block',

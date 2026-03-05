@@ -104,7 +104,11 @@ const GluuInputRow = <T = Record<string, unknown>,>({
       rows={rows}
       cols={cols}
       placeholder={placeholder}
-      className={[shortcode ? classes.inputWithShortcode : undefined, inputClassName]
+      className={[
+        shortcode ? classes.inputWithShortcode : undefined,
+        type === 'password' ? classes.passwordInputPadding : undefined,
+        inputClassName,
+      ]
         .filter(Boolean)
         .join(' ')}
     />
@@ -145,20 +149,22 @@ const GluuInputRow = <T = Record<string, unknown>,>({
               </button>
             </div>
           </div>
+        ) : type === 'password' ? (
+          <div className={classes.passwordInputWrapper}>
+            {inputEl}
+            <button
+              type="button"
+              className={classes.passwordToggle}
+              onClick={setVisibility}
+              aria-label="Toggle password visibility"
+            >
+              {customType === 'text' ? <Visibility /> : <VisibilityOff />}
+            </button>
+          </div>
         ) : (
           inputEl
         )}
         {type !== 'number' ? shortcode : null}
-        {type === 'password' && (
-          <button
-            type="button"
-            className={classes.passwordToggle}
-            onClick={setVisibility}
-            aria-label="Toggle password visibility"
-          >
-            {customType === 'text' ? <Visibility /> : <VisibilityOff />}
-          </button>
-        )}
         {showError ? (
           <GluuText variant="span" className={classes.error} data-field-error disableThemeColor>
             {errorMessage}

@@ -5,6 +5,10 @@ import { USER_PASSWORD_ATTR } from '../common/Constants'
 import { Dispatch } from '@reduxjs/toolkit'
 import { GetAttributesParams } from 'JansConfigApi'
 import { getAttributesRoot } from 'Redux/features/attributesSlice'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
+import { useStyles } from './AvailableClaimsPanel.style'
 
 const USED_CLAIMS = new Set([
   'userId',
@@ -38,6 +42,11 @@ const AvailableClaimsPanel = ({
   options,
   setSearchPattern,
 }: AvailableClaimsPanelProps) => {
+  const { state: themeState } = useTheme()
+  const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
+  const isDark = themeState.theme === THEME_DARK
+  const { classes } = useStyles({ themeColors, isDark })
+
   // Support both patterns: direct dispatch or callback
   const debouncedSetPattern = useMemo(
     () =>
@@ -74,50 +83,56 @@ const AvailableClaimsPanel = ({
   )
 
   return (
-    <div className="border border-light d-flex flex-column h-100" style={{ minHeight: 0 }}>
-      <div className="bg-light text-bold p-2">Available Claims</div>
-      <input
-        type="search"
-        id="availableClaimsSearch"
-        name="availableClaimsSearch"
-        className="form-control mb-2"
-        placeholder="Search Claims Here "
-        onChange={(e) => {
-          handleSearchChange(e.target.value)
-        }}
-        value={searchClaims}
-      />
-      <ul className="list-group flex-grow-1 overflow-auto mb-0" style={{ minHeight: 0 }}>
-        {personAttributes.map((data: PersonAttribute, key: number) => {
-          const name = data.displayName?.toLowerCase() || ''
-          const alreadyAddedClaim = selectedClaims.some(
-            (el: PersonAttribute) => el.name === data.name,
-          )
-          if (
-            data.status &&
-            data.status.toLowerCase() === 'active' &&
-            !USED_CLAIMS.has(data.name)
-          ) {
+    <div className={classes.root}>
+      <div className={classes.header}>Available Claims</div>
+      <div className={classes.content}>
+        <input
+          type="search"
+          id="availableClaimsSearch"
+          name="availableClaimsSearch"
+          className={`form-control ${classes.search}`}
+          placeholder="Search Claims Here"
+          onChange={(e) => {
+            handleSearchChange(e.target.value)
+          }}
+          value={searchClaims}
+        />
+        <ul className={classes.list}>
+          {personAttributes.map((data: PersonAttribute, key: number) => {
+            const name = data.displayName?.toLowerCase() || ''
+            const alreadyAddedClaim = selectedClaims.some(
+              (el: PersonAttribute) => el.name === data.name,
+            )
             if (
-              (name.includes(searchClaims.toLowerCase()) || searchClaims === '') &&
-              !alreadyAddedClaim
+              data.status &&
+              data.status.toLowerCase() === 'active' &&
+              !USED_CLAIMS.has(data.name)
             ) {
-              return (
-                <li className="list-group-item" key={'list' + key} title="Click to add to the form">
-                  <button
-                    type="button"
-                    className="btn btn-link p-0 text-start"
-                    onClick={() => setSelectedClaimsToState(data)}
+              if (
+                (name.includes(searchClaims.toLowerCase()) || searchClaims === '') &&
+                !alreadyAddedClaim
+              ) {
+                return (
+                  <li
+                    className={classes.listItem}
+                    key={'list' + key}
+                    title="Click to add to the form"
                   >
-                    {data.displayName}
-                  </button>
-                </li>
-              )
+                    <button
+                      type="button"
+                      className={classes.itemButton}
+                      onClick={() => setSelectedClaimsToState(data)}
+                    >
+                      {data.displayName}
+                    </button>
+                  </li>
+                )
+              }
             }
-          }
-          return null
-        })}
-      </ul>
+            return null
+          })}
+        </ul>
+      </div>
     </div>
   )
 }

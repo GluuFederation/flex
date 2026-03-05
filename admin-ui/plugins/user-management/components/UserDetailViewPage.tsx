@@ -1,106 +1,80 @@
-import { Fragment } from 'react'
-import { Row, Col } from 'Components'
-import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
-import { formatDate, parseDateStrict } from '@/utils/dayjsUtils'
+import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import DOMPurify from 'dompurify'
-import customColors from '@/customColors'
-import { BIRTHDATE_ATTR } from '../common/Constants'
 import { RowProps } from 'Plugins/user-management/types/UserApiTypes'
-import { CustomObjectAttribute, useGetAttributes } from 'JansConfigApi'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
+import { useStyles } from './UserDetailViewPage.style'
 
 const UserDetailViewPage = ({ row }: RowProps) => {
   const { rowData } = row
-  const DOC_SECTION = 'user'
-  const { data: attributesData } = useGetAttributes({
-    limit: 200,
-    status: 'ACTIVE',
-  })
-  const personAttributes = attributesData?.entries || []
-
-  const getCustomAttributeById = (id: string) => {
-    return personAttributes.find((attr) => attr.name === id) || null
-  }
+  const { t } = useTranslation()
+  const { state: themeState } = useTheme()
+  const themeColors = getThemeColor(themeState.theme)
+  const { classes } = useStyles({ isDark: themeState.theme === THEME_DARK, themeColors })
 
   const sanitizeValue = (value: string): string => {
     return DOMPurify.sanitize(value, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] })
   }
 
-  return (
-    <div style={{ backgroundColor: customColors.whiteSmoke, padding: '16px', width: '100%' }}>
-      <Row>
-        <Col sm={6} xl={4}>
-          <GluuFormDetailRow
-            label="fields.name"
-            value={sanitizeValue(rowData.displayName || '')}
-            doc_category={DOC_SECTION}
-            doc_entry="displayName"
-          />
-        </Col>
-        <Col sm={6} xl={4}>
-          <GluuFormDetailRow
-            label="fields.givenName"
-            value={sanitizeValue(rowData.givenName || '')}
-            doc_category={DOC_SECTION}
-            doc_entry="givenName"
-          />
-        </Col>
-        <Col sm={6} xl={4}>
-          <GluuFormDetailRow
-            label="fields.userName"
-            value={sanitizeValue(rowData.userId || '')}
-            doc_category={DOC_SECTION}
-            doc_entry="userId"
-          />
-        </Col>
-        <Col sm={6} xl={4}>
-          <GluuFormDetailRow
-            label="fields.email"
-            doc_entry="mail"
-            value={sanitizeValue(rowData?.mail || '')}
-            doc_category={DOC_SECTION}
-          />
-        </Col>
-        {rowData.customAttributes?.map((data: CustomObjectAttribute, key: number) => {
-          let valueToShow = ''
-          if (data.name === BIRTHDATE_ATTR) {
-            const raw = data?.values?.[0]
-            const birthdatePattern = /^\d{4}-\d{2}-\d{2}$/
-            if (typeof raw === 'string' && birthdatePattern.test(raw)) {
-              const parsed = parseDateStrict(raw, 'YYYY-MM-DD')
-              valueToShow = parsed ? formatDate(parsed, 'YYYY-MM-DD') : ''
-            } else {
-              valueToShow = ''
-            }
-          } else {
-            valueToShow = data.multiValued
-              ? data?.values?.join(', ') || ''
-              : (typeof data.value === 'string' ? data.value : JSON.stringify(data.value)) || ''
-          }
+  const roleValue = useMemo(() => {
+    const attrs = (rowData as unknown as { customAttributes?: Array<Record<string, unknown>> })
+      ?.customAttributes
+    if (!Array.isArray(attrs)) return ''
+    const roleAttr = attrs.find((a) => a?.name === 'jansAdminUIRole')
+    if (!roleAttr) return ''
 
-          return (
-            <Fragment key={'customAttributes' + key}>
-              {valueToShow !== '' ? (
-                <Col sm={6} xl={4} key={'customAttributes' + key}>
-                  <GluuFormDetailRow
-                    label={sanitizeValue(
-                      String(
-                        getCustomAttributeById(data?.name || '')?.displayName || data?.name || '',
-                      ),
-                    )}
-                    doc_category={sanitizeValue(
-                      String(
-                        getCustomAttributeById(data?.name || '')?.description || data?.name || '',
-                      ),
-                    )}
-                    isDirect={true}
-                    value={sanitizeValue(String(valueToShow))}
-                  />
-                </Col>
-              ) : null}
-            </Fragment>
-          )
-        })}
-      </Row>
+    const asAny = roleAttr as {
+      value?: unknown
+      values?: unknown
+      multiValued?: boolean
+    }
+
+    if (Array.isArray(asAny.values)) {
+      const values = asAny.values.filter((v): v is string => typeof v === 'string')
+      return values.join(', ')
+    }
+
+    return typeof asAny.value === 'string'
+      ? asAny.value
+      : typeof asAny.value === 'number' || typeof asAny.value === 'boolean'
+        ? String(asAny.value)
+        : ''
+  }, [rowData])
+
+  const lastName = useMemo(() => {
+    const familyName = (rowData as { familyName?: string }).familyName
+    const sn = (rowData as unknown as { sn?: string }).sn
+    return familyName || sn || ''
+  }, [rowData])
+
+  const fields = useMemo(
+    () =>
+      [
+        { label: `${t('fields.name')}:`, value: rowData.displayName ?? '' },
+        { label: `${t('fields.email')}:`, value: rowData.mail ?? '' },
+        { label: `${t('fields.givenName')}:`, value: rowData.givenName ?? '' },
+        { label: 'jansAdminUIRole:', value: roleValue },
+        { label: `${t('fields.userName')}:`, value: rowData.userId ?? '' },
+        { label: `${t('fields.lastName', { defaultValue: 'Last Name' })}:`, value: lastName },
+      ],
+    [t, rowData.displayName, rowData.mail, rowData.givenName, roleValue, rowData.userId, lastName],
+  )
+
+  return (
+    <div className={classes.panel}>
+      <div className={classes.divider} aria-hidden="true" />
+      <div className={classes.content}>
+        <div className={classes.grid}>
+        {fields.map((f) => (
+          <div key={f.label} className={classes.field}>
+            <div className={classes.label}>{sanitizeValue(f.label)}</div>
+            <div className={classes.value}>{sanitizeValue(f.value) || '—'}</div>
+          </div>
+        ))}
+        </div>
+      </div>
     </div>
   )
 }
