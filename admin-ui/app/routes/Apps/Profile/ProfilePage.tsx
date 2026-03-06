@@ -21,7 +21,6 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
-import customColors from '@/customColors'
 
 const JANS_ADMIN_UI_ROLE_ATTR = 'jansAdminUIRole'
 const USERS_RESOURCE_ID = ADMIN_UI_RESOURCES.Users
@@ -136,8 +135,8 @@ const ProfileDetails: React.FC = () => {
 
   const adminBadgeColors = useMemo(
     () => ({
-      bg: themeColors.formFooter?.back?.backgroundColor,
-      text: themeColors.formFooter?.back?.textColor,
+      bg: themeColors.badges.filledBadgeBg,
+      text: themeColors.badges.filledBadgeText,
     }),
     [themeColors],
   )
@@ -146,8 +145,8 @@ const ProfileDetails: React.FC = () => {
     const status = profileDetails?.status
     if (status === 'active') {
       return {
-        bg: customColors.statusActiveBg,
-        text: customColors.statusActive,
+        bg: themeColors.badges.statusActiveBg,
+        text: themeColors.badges.statusActive,
       }
     }
     if (status == null) {

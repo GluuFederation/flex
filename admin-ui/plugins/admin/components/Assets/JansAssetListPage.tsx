@@ -1,38 +1,42 @@
-import React, { useEffect, useState, useContext, useCallback, useMemo } from 'react'
-import MaterialTable, { Action, Column } from '@material-table/core'
-import { DeleteOutlined, Edit } from '@mui/icons-material'
-import { Paper, TablePagination } from '@mui/material'
-import { Card, CardBody } from 'Components'
+import React, { useEffect, useState, useCallback, useMemo, memo } from 'react'
+import { DeleteOutlined, Edit, Add } from '@mui/icons-material'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
+import { GluuBadge } from '@/components/GluuBadge'
 import { useCedarling } from '@/cedarling'
-import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
-import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import { useDispatch, useSelector } from 'react-redux'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import { useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { ThemeContext } from 'Context/theme/themeContext'
-import getThemeColor from 'Context/theme/config'
-import { LIMIT_ID, PATTERN_ID } from 'Plugins/admin/common/Constants'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
 import SetTitle from 'Utils/SetTitle'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import {
-  fetchJansAssets,
-  deleteJansAsset,
-  setSelectedAsset,
-  getAssetServices,
-  getAssetTypes,
-} from 'Plugins/admin/redux/features/AssetSlice'
-import customColors from '../../../../app/customColors'
+import { setSelectedAsset } from 'Plugins/admin/redux/features/AssetSlice'
+import { useQueryClient } from '@tanstack/react-query'
+import { useGetAllAssets, getGetAllAssetsQueryKey, type Document } from 'JansConfigApi'
+import { useDeleteAssetWithAudit } from './hooks'
 import { formatDate } from '@/utils/dayjsUtils'
-import { Document, RootState } from './types'
-import { DeleteAssetSagaPayload } from 'Plugins/admin/redux/features/types'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
-import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import { GluuTable } from '@/components/GluuTable'
+import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
+import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
+import customColors from '@/customColors'
+import { useStyles } from './JansAssetListPage.style'
+import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
+import { invalidateQueriesByKey } from '@/utils/queryUtils'
+import { devLogger } from '@/utils/devLogger'
+import { T_KEYS } from './constants'
+
+const LIMIT_OPTIONS = getRowsPerPageOptions()
+const ASSET_RESOURCE_ID = ADMIN_UI_RESOURCES.Assets
+const ASSET_SCOPES = CEDAR_RESOURCE_SCOPES[ASSET_RESOURCE_ID] ?? []
 
 const JansAssetListPage: React.FC = () => {
   const dispatch = useDispatch()
+  const queryClient = useQueryClient()
   const { navigateToRoute } = useAppNavigation()
   const {
     hasCedarReadPermission,
@@ -40,306 +44,320 @@ const JansAssetListPage: React.FC = () => {
     hasCedarDeletePermission,
     authorizeHelper,
   } = useCedarling()
-  const assetsResourceId = useMemo(() => ADMIN_UI_RESOURCES.Assets, [])
-  const assetScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[assetsResourceId], [assetsResourceId])
 
   const { t } = useTranslation()
-  SetTitle(t('titles.assets'))
-  const [pageNumber, setPageNumber] = useState<number>(0)
-  const { totalItems, assets } = useSelector((state: RootState) => state.assetReducer)
-  const loadingAssets = useSelector((state: RootState) => state.assetReducer.loadingAssets)
-  const { permissions: cedarPermissions } = useSelector(
-    (state: RootState) => state.cedarPermissions,
+  const { state: themeState } = useTheme()
+  const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
+  const isDarkTheme = themeState.theme === THEME_DARK
+  const { classes } = useStyles({ isDark: isDarkTheme, themeColors })
+  const badgeStyles = useMemo(
+    () => ({
+      statusBadgeEnabled: {
+        backgroundColor: customColors.statusActive,
+        textColor: customColors.white,
+        borderColor: 'transparent',
+      },
+      statusBadgeDisabled: {
+        backgroundColor: isDarkTheme
+          ? customColors.disabledBadgeDarkBg
+          : customColors.disabledBadgeLightBg,
+        textColor: isDarkTheme
+          ? customColors.disabledBadgeDarkText
+          : customColors.disabledBadgeLightText,
+        borderColor: 'transparent',
+      },
+    }),
+    [isDarkTheme],
   )
 
-  const [myActions, setMyActions] = useState<Action<Document>[]>([])
-  const options: Record<string, string | number | undefined> = {}
-  const [limit, setLimit] = useState<number>(10)
-  const [pattern, setPattern] = useState<string | undefined>(undefined)
-  let memoLimit: number = limit
-  let memoPattern: string | undefined = pattern
-  const [modal, setModal] = useState<boolean>(false)
+  const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
+  const [pattern, setPattern] = useState('')
+  const [modal, setModal] = useState(false)
   const [deleteData, setDeleteData] = useState<Document | null>(null)
 
-  const toggle = (): void => setModal(!modal)
+  SetTitle(t(T_KEYS.TITLE_ASSETS))
 
-  const navigateToAddPage = useCallback((): void => {
+  const canReadAssets = useMemo(
+    () => hasCedarReadPermission(ASSET_RESOURCE_ID),
+    [hasCedarReadPermission],
+  )
+  const canWriteAssets = useMemo(
+    () => hasCedarWritePermission(ASSET_RESOURCE_ID),
+    [hasCedarWritePermission],
+  )
+  const canDeleteAssets = useMemo(
+    () => hasCedarDeletePermission(ASSET_RESOURCE_ID),
+    [hasCedarDeletePermission],
+  )
+
+  const { data, isLoading, isFetching, refetch } = useGetAllAssets(
+    {
+      limit,
+      pattern: pattern || undefined,
+      startIndex: pageNumber * limit,
+    },
+    {
+      query: {
+        enabled: canReadAssets,
+      },
+    },
+  )
+
+  const assets = useMemo(() => data?.entries ?? [], [data])
+  const totalItems = useMemo(() => data?.totalEntriesCount ?? 0, [data])
+
+  const effectivePage = useMemo(() => {
+    const maxPage = totalItems > 0 ? Math.max(0, Math.ceil(totalItems / limit) - 1) : 0
+    return Math.min(pageNumber, maxPage)
+  }, [pageNumber, totalItems, limit])
+
+  useEffect(() => {
+    if (totalItems > 0 && pageNumber > effectivePage) {
+      setPageNumber(effectivePage)
+    }
+  }, [totalItems, pageNumber, limit, effectivePage, setPageNumber])
+
+  useEffect(() => {
+    if (ASSET_SCOPES.length > 0) {
+      authorizeHelper(ASSET_SCOPES)
+    }
+  }, [authorizeHelper])
+
+  const { deleteAsset, isLoading: isDeleting } = useDeleteAssetWithAudit()
+
+  const toggle = useCallback(() => setModal((prev) => !prev), [])
+
+  const navigateToAddPage = useCallback(() => {
     dispatch(setSelectedAsset({}))
     navigateToRoute(ROUTES.ASSET_ADD)
   }, [dispatch, navigateToRoute])
 
   const navigateToEditPage = useCallback(
-    (data: Document): void => {
-      if (!data?.inum) return
-      dispatch(setSelectedAsset(data))
-      navigateToRoute(ROUTES.ASSET_EDIT(data.inum))
+    (rowData: Document) => {
+      if (!rowData?.inum) return
+      dispatch(setSelectedAsset(rowData))
+      navigateToRoute(ROUTES.ASSET_EDIT(rowData.inum))
     },
     [dispatch, navigateToRoute],
   )
 
-  const handleOptionsChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement> | React.KeyboardEvent<HTMLInputElement>) => {
-      const target = event.target as HTMLInputElement
-      if (target.name === 'limit') {
-        memoLimit = Number(target.value)
-      } else if (target.name === 'pattern') {
-        memoPattern = String(target.value) || undefined
-        if ('keyCode' in event && event.keyCode === 13) {
-          const newOptions = {
-            limit: limit,
-            pattern: memoPattern,
-          }
-          dispatch(fetchJansAssets(newOptions))
+  const handleSearchSubmit = useCallback(() => {
+    setPageNumber(0)
+    refetch()
+  }, [refetch])
+
+  const handleRefresh = useCallback(() => {
+    setPageNumber(0)
+    setPattern('')
+    const refreshParams = { limit, pattern: undefined, startIndex: 0 }
+    invalidateQueriesByKey(queryClient, getGetAllAssetsQueryKey(refreshParams))
+  }, [queryClient, limit])
+
+  const handlePageChange = useCallback(
+    (page: number) => {
+      setPageNumber(page)
+    },
+    [setPageNumber],
+  )
+
+  const handleRowsPerPageChange = useCallback(
+    (rowsPerPage: number) => {
+      setLimit(rowsPerPage)
+      setPageNumber(0)
+    },
+    [setLimit, setPageNumber],
+  )
+
+  const submitForm = useCallback(
+    async (userMessage: string) => {
+      const inumToDelete = deleteData?.inum
+      if (inumToDelete) {
+        try {
+          await deleteAsset(inumToDelete, userMessage)
+          refetch()
+          setDeleteData(null)
+        } catch (err) {
+          devLogger.error('[Asset delete] submitForm failed', err)
         }
       }
     },
-    [limit, dispatch],
+    [deleteData, deleteAsset, refetch, setDeleteData],
   )
 
-  // Initialize Cedar permissions
-  useEffect(() => {
-    const initPermissions = async () => {
-      await authorizeHelper(assetScopes)
-    }
-    initPermissions()
-    dispatch(getAssetTypes())
-    options['limit'] = 10
-    dispatch(fetchJansAssets(options))
-    dispatch(getAssetServices())
-  }, [dispatch, authorizeHelper, assetScopes])
+  const searchLabel = useMemo(() => `${t(T_KEYS.FIELD_PATTERN)}:`, [t])
+  const searchPlaceholder = useMemo(() => t(T_KEYS.PLACEHOLDER_SEARCH_PATTERN), [t])
 
-  const canReadAssets = useMemo(
-    () => hasCedarReadPermission(assetsResourceId),
-    [hasCedarReadPermission, assetsResourceId],
-  )
-  const canWriteAssets = useMemo(
-    () => hasCedarWritePermission(assetsResourceId),
-    [hasCedarWritePermission, assetsResourceId],
-  )
-  const canDeleteAssets = useMemo(
-    () => hasCedarDeletePermission(assetsResourceId),
-    [hasCedarDeletePermission, assetsResourceId],
+  const primaryAction = useMemo(
+    () =>
+      canWriteAssets
+        ? {
+            label: t(T_KEYS.MSG_ADD_ASSET),
+            icon: <Add className={classes.addIcon} />,
+            onClick: navigateToAddPage,
+          }
+        : undefined,
+    [t, navigateToAddPage, canWriteAssets, classes],
   )
 
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
-  const themeColors = getThemeColor(selectedTheme)
-  const isDarkTheme = selectedTheme === THEME_DARK
-
-  useEffect(() => {
-    const actions: Action<Document>[] = []
-
-    if (canReadAssets) {
-      actions.push({
-        icon: () => (
-          <GluuAdvancedSearch
-            limitId={LIMIT_ID}
-            patternId={PATTERN_ID}
-            limit={limit}
-            pattern={pattern}
-            handler={handleOptionsChange}
-            showLimit={false}
-          />
+  const columns: ColumnDef<Document>[] = useMemo(
+    () => [
+      {
+        key: 'fileName',
+        label: t(T_KEYS.FIELD_NAME),
+        sortable: true,
+        render: (_value, row) => (
+          <GluuText variant="span" disableThemeColor className={classes.cellFileName}>
+            {row.fileName}
+          </GluuText>
         ),
-        tooltip: `${t('messages.advanced_search')}`,
-        iconProps: { color: 'primary' },
-        isFreeAction: true,
-        onClick: () => {},
-      })
-
-      actions.push({
-        icon: 'refresh',
-        tooltip: `${t('messages.refresh')}`,
-        iconProps: { color: 'primary' },
-        isFreeAction: true,
-        onClick: () => {
-          setLimit(memoLimit)
-          setPattern(memoPattern)
-          dispatch(fetchJansAssets({ limit: memoLimit, pattern: memoPattern }))
+      },
+      {
+        key: 'description',
+        label: t(T_KEYS.FIELD_DESCRIPTION),
+        width: '35%',
+        sortable: true,
+        render: (_value, row) => (
+          <GluuText variant="span" disableThemeColor className={classes.cellDescription}>
+            {row.description}
+          </GluuText>
+        ),
+      },
+      {
+        key: 'creationDate',
+        label: t(T_KEYS.FIELD_CREATION_DATE),
+        sortable: true,
+        render: (_value, row) => (
+          <GluuText variant="span" disableThemeColor className={classes.cellDate}>
+            {row.creationDate ? formatDate(row.creationDate, 'YYYY-MM-DD') : ''}
+          </GluuText>
+        ),
+      },
+      {
+        key: 'enabled',
+        label: t(T_KEYS.FIELD_ENABLED),
+        sortable: true,
+        render: (_value, row) => {
+          const isEnabled = row.enabled === true
+          const style = isEnabled ? badgeStyles.statusBadgeEnabled : badgeStyles.statusBadgeDisabled
+          return (
+            <GluuBadge
+              size="md"
+              backgroundColor={style.backgroundColor}
+              textColor={style.textColor}
+              borderColor={style.borderColor}
+              borderRadius={5}
+              className={classes.statusBadge}
+            >
+              {isEnabled ? t('options.enabled') : t('options.disabled')}
+            </GluuBadge>
+          )
         },
-      })
-    }
+      },
+    ],
+    [t, classes, badgeStyles],
+  )
 
+  const actions = useMemo(() => {
+    const list: Array<{
+      icon: React.ReactNode
+      tooltip: string
+      id?: string
+      onClick: (row: Document) => void
+    }> = []
     if (canWriteAssets) {
-      actions.push({
-        icon: 'add',
-        tooltip: `${t('messages.add_asset')}`,
-        iconProps: { color: 'primary' },
-        isFreeAction: true,
-        onClick: navigateToAddPage,
-      })
-
-      actions.push({
-        icon: () => <Edit style={{ color: customColors.darkGray }} />,
-        tooltip: `${t('messages.edit')}`,
-        onClick: (event: React.MouseEvent, rowData: Document | Document[]) => {
-          if (!Array.isArray(rowData)) {
-            navigateToEditPage(rowData)
-          }
-        },
+      list.push({
+        icon: <Edit className={classes.editIcon} />,
+        tooltip: t(T_KEYS.ACTION_EDIT),
+        id: 'editAsset',
+        onClick: navigateToEditPage,
       })
     }
-
     if (canDeleteAssets) {
-      actions.push({
-        icon: () => <DeleteOutlined style={{ color: customColors.darkGray }} />,
-        tooltip: `${t('messages.delete')}`,
-        onClick: (event: React.MouseEvent, rowData: Document | Document[]) => {
-          if (!Array.isArray(rowData)) {
-            setDeleteData(rowData)
-            toggle()
-          }
+      list.push({
+        icon: <DeleteOutlined className={classes.editIcon} />,
+        tooltip: t(T_KEYS.ACTION_DELETE),
+        id: 'deleteAsset',
+        onClick: (row) => {
+          setDeleteData(row)
+          toggle()
         },
-        disabled: false,
       })
     }
+    return list
+  }, [canWriteAssets, canDeleteAssets, t, navigateToEditPage, toggle, classes])
 
-    setMyActions(actions)
-  }, [
-    cedarPermissions,
-    limit,
-    pattern,
-    t,
-    navigateToAddPage,
-    navigateToEditPage,
-    hasCedarReadPermission,
-    hasCedarWritePermission,
-    hasCedarDeletePermission,
-    handleOptionsChange,
-    dispatch,
-    isDarkTheme,
-  ])
+  const pagination: PaginationConfig = useMemo(
+    () => ({
+      page: effectivePage,
+      rowsPerPage: limit,
+      totalItems,
+      rowsPerPageOptions: LIMIT_OPTIONS,
+      onPageChange: handlePageChange,
+      onRowsPerPageChange: handleRowsPerPageChange,
+    }),
+    [effectivePage, limit, totalItems, handlePageChange, handleRowsPerPageChange],
+  )
 
-  const PaperContainer = useCallback(
-    (props: React.ComponentProps<typeof Paper>) => <Paper {...props} elevation={0} />,
+  const getRowKey = useCallback(
+    (row: Document, index: number) => row.inum ?? `no-inum-${index}`,
     [],
   )
-  const bgThemeColor = { background: themeColors.background }
 
-  const submitForm = useCallback(
-    (userMessage: string) => {
-      toggle()
-      if (deleteData?.inum) {
-        dispatch(
-          deleteJansAsset({
-            action_message: userMessage,
-            action: { action_data: { inum: deleteData.inum } },
-          } as DeleteAssetSagaPayload),
-        )
-      }
-    },
-    [deleteData, dispatch],
-  )
+  const emptyMessage = useMemo(() => {
+    if (!pattern && totalItems === 0) {
+      return t(T_KEYS.MSG_NO_ASSETS_FOUND)
+    }
+    return t(T_KEYS.MSG_NO_DATA)
+  }, [pattern, totalItems, t])
 
-  const onPageChangeClick = useCallback(
-    (page: number) => {
-      const startCount = page * limit
-      const newOptions = {
-        startIndex: parseInt(String(startCount)),
-        limit: limit,
-        pattern: pattern,
-      }
-      setPageNumber(page)
-      dispatch(fetchJansAssets(newOptions))
-    },
-    [limit, pattern, dispatch],
-  )
-
-  const onRowCountChangeClick = useCallback(
-    (count: number) => {
-      const newOptions = {
-        limit: count,
-        pattern: pattern,
-      }
-      setPageNumber(0)
-      setLimit(count)
-      dispatch(fetchJansAssets(newOptions))
-    },
-    [pattern, dispatch],
-  )
-
-  const PaginationWrapper = useCallback(
-    () => (
-      <TablePagination
-        count={totalItems}
-        page={pageNumber}
-        onPageChange={(event: React.MouseEvent<HTMLButtonElement> | null, page: number) => {
-          onPageChangeClick(page)
-        }}
-        rowsPerPage={limit}
-        onRowsPerPageChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-          onRowCountChangeClick(parseInt(event.target.value, 10))
-        }}
-      />
-    ),
-    [pageNumber, totalItems, onPageChangeClick, limit, onRowCountChangeClick],
-  )
+  const loading = isLoading || isFetching || isDeleting
 
   return (
-    <GluuLoader blocking={loadingAssets}>
-      <Card style={applicationStyle.mainCard}>
-        <CardBody>
-          <GluuViewWrapper canShow={canReadAssets}>
-            <MaterialTable<Document>
-              components={{
-                Container: PaperContainer,
-                Pagination: PaginationWrapper,
-              }}
-              columns={
-                [
-                  {
-                    title: `${t('fields.name')}`,
-                    field: 'fileName',
-                  },
-                  {
-                    title: `${t('fields.description')}`,
-                    field: 'description',
-                    width: '40%',
-                    render: (rowData: Document) => (
-                      <div style={{ wordWrap: 'break-word', maxWidth: '420px' }}>
-                        {rowData.description}
-                      </div>
-                    ),
-                  },
-                  {
-                    title: `${t('fields.creationDate')}`,
-                    field: 'creationDate',
-                    render: (rowData: Document) => (
-                      <div style={{ wordWrap: 'break-word', maxWidth: '420px' }}>
-                        {rowData.creationDate ? formatDate(rowData.creationDate, 'YYYY-MM-DD') : ''}
-                      </div>
-                    ),
-                  },
-                  { title: `${t('fields.enabled')}`, field: 'enabled' },
-                ] as Column<Document>[]
-              }
+    <GluuLoader blocking={loading}>
+      <div className={classes.page}>
+        <GluuViewWrapper canShow={canReadAssets}>
+          <div className={classes.searchCard}>
+            <div className={classes.searchCardContent}>
+              <GluuSearchToolbar
+                searchLabel={searchLabel}
+                searchPlaceholder={searchPlaceholder}
+                searchValue={pattern}
+                searchOnType
+                onSearch={setPattern}
+                onSearchSubmit={handleSearchSubmit}
+                onRefresh={canReadAssets ? handleRefresh : undefined}
+                primaryAction={primaryAction}
+                disabled={loading}
+              />
+            </div>
+          </div>
+
+          <div className={classes.tableCard}>
+            <GluuTable<Document>
+              columns={columns}
               data={assets || []}
-              isLoading={loadingAssets}
-              title=""
-              actions={myActions}
-              options={{
-                search: false,
-                idSynonym: 'inum',
-                searchFieldAlignment: 'left',
-                selection: false,
-                pageSize: limit,
-                rowStyle: (_rowData: Document, index: number) => ({
-                  backgroundColor: index % 2 === 0 ? customColors.white : customColors.whiteSmoke,
-                }),
-                headerStyle: {
-                  ...applicationStyle.tableHeaderStyle,
-                  ...bgThemeColor,
-                  color: themeColors.fontColor,
-                } as React.CSSProperties,
-                actionsColumnIndex: -1,
-              }}
+              loading={false}
+              pagination={pagination}
+              onPagingSizeSync={onPagingSizeSync}
+              actions={actions}
+              getRowKey={getRowKey}
+              emptyMessage={emptyMessage}
             />
-          </GluuViewWrapper>
-        </CardBody>
-        <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} />
-      </Card>
+          </div>
+        </GluuViewWrapper>
+        <GluuCommitDialog
+          handler={toggle}
+          modal={modal}
+          onAccept={submitForm}
+          label={
+            modal && deleteData
+              ? `${t(T_KEYS.MSG_ACTION_DELETION_FOR)} ${t(T_KEYS.MSG_ASSET_ENTITY)} (${deleteData.fileName || ''}${deleteData.inum ? `-${deleteData.inum}` : ''})`
+              : ''
+          }
+        />
+      </div>
     </GluuLoader>
   )
 }
 
-export default JansAssetListPage
+export default memo(JansAssetListPage)

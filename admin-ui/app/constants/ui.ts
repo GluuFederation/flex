@@ -1,10 +1,37 @@
+import type { ThemeConfig } from '@/context/theme/config'
+
 export const OPACITY = {
-  DIMMED: 0.5,
-
   HOVER_LIGHT: 0.04,
-
   HOVER_DARK: 0.08,
+  DISABLED: 0.5,
 } as const
+
+export const getHoverOpacity = (isDark: boolean): number => {
+  return isDark ? OPACITY.HOVER_DARK : OPACITY.HOVER_LIGHT
+}
+
+export const SCROLLBAR = {
+  WIDTH: 4,
+  HEIGHT: 4,
+  BORDER_RADIUS: 4,
+} as const
+
+export const getScrollbarStyles = (themeColors: ThemeConfig) => ({
+  '&::-webkit-scrollbar': {
+    width: SCROLLBAR.WIDTH,
+    height: SCROLLBAR.HEIGHT,
+  },
+  '&::-webkit-scrollbar-track': {
+    backgroundColor: themeColors.card.background,
+  },
+  '&::-webkit-scrollbar-thumb': {
+    backgroundColor: themeColors.borderColor,
+    borderRadius: SCROLLBAR.BORDER_RADIUS,
+  },
+  '&::-webkit-scrollbar-corner': {
+    backgroundColor: themeColors.card.background,
+  },
+})
 
 export const SPACING = {
   PAGE: 24,
@@ -20,7 +47,7 @@ export const BORDER_RADIUS = {
   LARGE: 24,
   MEDIUM: 14,
   SMALL_MEDIUM: 8,
-  SMALL: 5,
+  SMALL: 6,
   CIRCLE: '50%',
   THIN: '1.5px',
 } as const

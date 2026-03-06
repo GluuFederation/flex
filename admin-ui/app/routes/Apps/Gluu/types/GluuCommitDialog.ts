@@ -8,7 +8,7 @@ export interface GluuCommitDialogOperation {
 export interface GluuCommitDialogProps {
   handler: () => void
   modal: boolean
-  onAccept: (message: string) => void
+  onAccept: (message: string) => void | Promise<void>
   formik?: {
     setFieldValue: (
       field: string,
@@ -24,4 +24,5 @@ export interface GluuCommitDialogProps {
   inputType?: 'text' | 'textarea' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search'
   feature?: string
   isLicenseLabel?: boolean
+  autoCloseOnAccept?: boolean
 }

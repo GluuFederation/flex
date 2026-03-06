@@ -1,9 +1,19 @@
 // Type definitions for Asset functionality
+import type { AdditionalPayload } from 'Utils/TokenController'
 import {
   Document,
   DocumentPagedResult,
   AssetDirMapping,
+  AssetFormData,
 } from '../../../components/Assets/types/AssetApiTypes'
+
+/** Payload for asset audit logging - types action_data as AssetFormData */
+export interface AssetAuditPayload extends AdditionalPayload {
+  action?: {
+    action_data?: AssetFormData
+    action_message?: string
+  }
+}
 
 // Redux state interface for assets
 export interface AssetState {
@@ -24,10 +34,10 @@ export interface AssetState {
 // Action payload interfaces
 export interface AssetActionPayload {
   action?: {
-    action_data?: unknown
-    [key: string]: unknown
+    action_data?: AssetFormData
+    [key: string]: string | number | boolean | object | AssetFormData | undefined
   }
-  [key: string]: unknown
+  [key: string]: string | number | boolean | object | AssetFormData | undefined
 }
 
 export interface AssetResponsePayload {

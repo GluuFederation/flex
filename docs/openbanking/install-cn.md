@@ -5,14 +5,15 @@
 
 Use the listing below for a detailed estimation of the minimum required resources. The table contains the default resources recommendation per service. Depending on the use of each service the resources need may increase or decrease.
 
-|Service           | CPU Unit   |    RAM      |   Disk Space     | Processor Type | Required                                    |
-|------------------|------------|-------------|------------------|----------------|---------------------------------------------|
-|Auth-server       | 2.5        |    2.5GB    |   N/A            |  64 Bit        | Yes                                         |
-|config - job      | 0.5        |    0.5GB    |   N/A            |  64 Bit        | Yes on fresh installs                       |
-|persistence - job | 0.5        |    0.5GB    |   N/A            |  64 Bit        | Yes on fresh installs                       |
-|nginx             | 1          |    1GB      |   N/A            |  64 Bit        | Yes if not ALB or Istio                     |
-|config-api        | 1          |    1GB      |   N/A            |  64 Bit        | No                                          |
-
+| Service                        | CPU Unit | RAM   | Processor Type | Required                 |
+|--------------------------------|----------|-------|----------------|--------------------------|
+| Auth server                    | 2.5      | 2.5GB | 64 Bit         | Yes                      |
+| config - job                   | 0.3      | 0.3GB | 64 Bit         | Yes on fresh installs    |
+| persistence - job              | 0.3      | 0.3GB | 64 Bit         | Yes on fresh installs    |
+| auth-server-key-rotation - job | 0.3      | 0.3GB | 64 Bit         | No [Strongly recommended]|
+| cleanup - job                  | 0.3      | 0.3GB | 64 Bit         | No [Strongly recommended]|
+| nginx                          | 1        | 1GB   | 64 Bit         | No                       |
+| config-api                     | 1        | 1.2GB | 64 Bit         | No                       |
 
 ## Installation
 
@@ -23,18 +24,43 @@ Use the listing below for a detailed estimation of the minimum required resource
 
     | Certificate / key                | Description                                                                             |
     |----------------------------------|-----------------------------------------------------------------------------------------|
-    |OB Issuing CA                     | Used in nginx as a certificate authority                                                |
     |OB Root CA                        | Used in nginx as a certificate authority                                                |
+    |OB Issuing CA                     | Used in nginx as a certificate authority                                                |
     |OB Signing CA                     | Used in nginx as a certificate authority                                                |
     |OB AS Transport key `obtransport.key`              | Used for mTLS. This will also be added to the JVM                                       |
     |OB AS Transport crt `obtransport.pem`              | Used for mTLS. This will also be added to the JVM                                       |
+    |OB transport truststore `ob-transport-truststore.p12`       | Used in SSA Validation. Generated from OB Root CA and Issuing CA                        |
     |OB AS signing crt `obsigning.pem`            | Added to the JVM. Used in SSA Validation                                                | 
     |OB AS signing key `obsigning.key`                | Added to the JVM. Used in SSA Validation                                                |
-    |OB transport truststore `ob-transport-truststore.p12`       | Used in SSA Validation. Generated from OB Root CA and Issuing CA                        |
 
-  - Based on the provider/platform you're using, you can follow the [docs](../install/helm-install/README.md) to install your platform prerequistes, nginx-ingress, and the yaml changes needed in `override.yaml` based on the Gluu persistence choosed.
+  - Download the Open Banking values file `openbanking-values.yaml`:
+        ```bash
+        wget https://raw.githubusercontent.com/GluuFederation/flex/main/charts/gluu/openbanking-values.yaml
+        ```
+  - Based on the provider/platform you're using, you can follow the [docs](../install/helm-install/README.md) to install your platform prerequisites, nginx-ingress, and the yaml changes needed in `openbanking-values.yaml` based on the Gluu persistence choosed.
 
-  - To enable mTLS in ingress-nginx, add the following to your `override.yaml`:
+  - The `auth-server` and `persistence` images are hosted in a private repository and require authentication to pull:
+
+    - Create a Kubernetes secret in the `gluu` namespace using your provided registry credentials:
+
+        ```bash
+        kubectl create secret docker-registry -n gluu regcred --docker-server=https://index.docker.io/v1/ --docker-username=<some-username> --docker-password=<some-password>
+        ```
+
+    - Update `openbanking-values.yaml`:
+
+        ```yaml
+        auth-server:
+            image:
+                pullSecrets:
+                - name: regcred
+        persistence:
+            image:
+                pullSecrets:
+                - name: regcred
+        ```
+
+  - To enable mTLS in ingress-nginx, add the following to your `openbanking-values.yaml`:
       ```yaml
       nginx-ingress:
         ingress:
@@ -121,7 +147,7 @@ Use the listing below for a detailed estimation of the minimum required resource
 
         - `cnObInternalSigningAlias` (Internal Label): This is the internal label ("alias") used by the Authorization Server to locate your private key inside its local Java Keystore (.jks). Set this to match your kid value exactly(`cnObStaticSigningKeyKid`).
 
-    1. Add those values to `override.yaml`:
+    1. Add those values to `openbanking-values.yaml`:
     ```yaml
       global:
         # -- Open banking external signing jwks uri. Used in SSA Validation.
@@ -154,12 +180,12 @@ Use the listing below for a detailed estimation of the minimum required resource
       
       The above password is needed in custom scripts such as the `Client Registration script`
 
-   - After finishing all the tweaks to the `override.yaml` file, run `helm install` or `helm upgrade` if `Gluu` is already installed
+   - After finishing all the tweaks to the `openbanking-values.yaml` file, run `helm install` or `helm upgrade` if `Gluu` is already installed
 
     ```bash
     helm repo add gluu-flex https://docs.gluu.org/charts
     helm repo update
-    helm install gluu gluu-flex/gluu -n gluu -f override.yaml
+    helm install gluu gluu-flex/gluu -n gluu -f openbanking-values.yaml
     ```
 
 ### Install on microK8s(development/testing)
@@ -183,30 +209,36 @@ After successful installation, you can access and test the Gluu Open Banking Pla
 ## Changing the signing key kid for the AS dynamically
 
 
-1.  Get a client id and its associated password. We will use the jans-config-api client id and secret
+1.  Get a client id and its associated password. We will use the `jans-config-api` client id and secret:
 
     ```bash
     TESTCLIENT=$(kubectl get cm cn -n gluu --template={{.data.jca_client_id}})
     TESTCLIENTSECRET=$(kubectl get secret cn -n gluu --template={{.data.jca_client_pw}} | base64 -d)
     ```
 
-1.  Get a token. To pass mTLS, we will use client.crt and client.key:
+1.  Get a token. To pass the mTLS network boundary, you must use your Open Banking transport certificates (replace `obtransport.pem` and `obtransport.key` with your actual filenames):
 
     ```bash
-    curl -k -u $TESTCLIENT:$TESTCLIENTSECRET https://<FQDN>/jans-auth/restv1/token -d "grant_type=client_credentials&scope=https://jans.io/oauth/jans-auth-server/config/properties.write" --cert client.crt --key client.key
+    TOKEN=$(curl -s -k -u $TESTCLIENT:$TESTCLIENTSECRET https://<FQDN>/jans-auth/restv1/token -d "grant_type=client_credentials&scope=[https://jans.io/oauth/jans-auth-server/config/properties.write](https://jans.io/oauth/jans-auth-server/config/properties.write)" --cert obtransport.pem --key obtransport.key | grep -o '"access_token":"[^"]*' | cut -d'"' -f4)
+
+    echo "My Token is: $TOKEN"
     ```
 
 1.  Add the entry `staticKid` to force the AS to use a specific signing key. Please modify `XhCYDfFM7UFXHfykNaLk1aLCnZM` to the kid to be used:          
 
     ```bash
-    curl -k -X PATCH "https://<FQDN>/jans-config-api/api/v1/jans-auth-server/config" -H  "accept: application/json" -H  "Content-Type: application/json-patch+json" -H "Authorization:Bearer 170e8412-1d55-4b19-ssss-8fcdeaafb954" -d "[{\"op\":\"add\",\"path\":\"/staticKid\",\"value\":\"XhCYDfFM7UFXHfykNaLk1aLCnZM\"}]"
+    curl -k -X PATCH "https://<FQDN>/jans-config-api/api/v1/jans-auth-server/config" \
+    -H "accept: application/json" \
+    -H "Content-Type: application/json-patch+json" \
+    -H "Authorization: Bearer $TOKEN" \
+    -d '[{"op":"add","path":"/staticKid","value":"XhCYDfFM7UFXHfykNaLk1aLCnZM"}]'
     ```
 
 1.  Perform a rolling restart for the auth-server and config-api deployments.
 
     ```bash
-    kubectl rollout restart deployment <gluu-release-name>-auth-server -n gluu
-    kubectl rollout restart deployment <gluu-release-name>-config-api -n gluu
+    kubectl rollout restart deployment gluu-auth-server -n gluu
+    kubectl rollout restart deployment gluu-config-api -n gluu
     ```
 
 
@@ -226,7 +258,7 @@ After successful installation, you can access and test the Gluu Open Banking Pla
 	kubectl create cm custom-scopes -n gluu --from-file=scopes.ob.ldif
 	```
 
-1. Mount the configmap in your override.yaml under `persistence.volumes` and `persistence.volumeMounts`
+1. Mount the configmap in your openbanking-values.yaml under `persistence.volumes` and `persistence.volumeMounts`
 
 	```yaml
 	persistence:

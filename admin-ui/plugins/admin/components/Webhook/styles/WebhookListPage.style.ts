@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS } from '@/constants'
+import { BORDER_RADIUS, SPACING } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { fontFamily } from '@/styles/fonts'
 import customColors from '@/customColors'
@@ -16,7 +16,7 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
   })
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   return {
-    page: { fontFamily, paddingTop: 24 },
+    page: { fontFamily, paddingTop: SPACING.PAGE },
     cellDisplayName: { color: themeColors.fontColor, fontWeight: 500 },
     cellUrl: {
       wordBreak: 'break-all',
@@ -34,7 +34,7 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       backgroundColor: cardBg,
       ...cardBorderStyle,
       borderRadius: BORDER_RADIUS.DEFAULT,
-      padding: '24px 20px',
+      padding: `${SPACING.PAGE}px 20px`,
       marginBottom: '20px',
       position: 'relative',
       zIndex: 0,
@@ -51,14 +51,13 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       'width': '100%',
       'maxWidth': '100%',
       'minWidth': 0,
-      'marginTop': 24,
+      'marginTop': SPACING.PAGE,
       'backgroundColor': cardBg,
       ...cardBorderStyle,
       'borderRadius': BORDER_RADIUS.DEFAULT,
       'padding': '20px',
       'position': 'relative',
-      'overflowX': 'auto',
-      'overflowY': 'visible',
+      'overflow': 'visible',
       'boxSizing': 'border-box',
       '& table': { minWidth: 0 },
       '& table td': { verticalAlign: 'middle', minWidth: 0, lineHeight: '28px' },
@@ -69,26 +68,22 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
 
 export function useStyles(params: { isDark: boolean; themeColors: ThemeConfig }) {
   const { classes } = useStylesBase(params)
-  const { isDark } = params
+  const { isDark, themeColors } = params
   const badgeStyles = useMemo(
     () => ({
       statusBadgeEnabled: {
-        backgroundColor: customColors.statusActive,
-        textColor: customColors.white,
+        backgroundColor: themeColors.badges.filledBadgeBg,
+        textColor: themeColors.badges.filledBadgeText,
         borderColor: 'transparent',
       },
       statusBadgeDisabled: {
-        backgroundColor: isDark
-          ? customColors.disabledBadgeDarkBg
-          : customColors.disabledBadgeLightBg,
-        textColor: isDark
-          ? customColors.disabledBadgeDarkText
-          : customColors.disabledBadgeLightText,
+        backgroundColor: themeColors.badges.disabledBg,
+        textColor: themeColors.badges.disabledText,
         borderColor: 'transparent',
       },
       httpMethodBadgeGetPost: {
-        backgroundColor: customColors.statusActive,
-        textColor: customColors.white,
+        backgroundColor: themeColors.badges.filledBadgeBg,
+        textColor: themeColors.badges.filledBadgeText,
         borderColor: 'transparent',
       },
       httpMethodBadgePutPatch: {
@@ -107,7 +102,7 @@ export function useStyles(params: { isDark: boolean; themeColors: ThemeConfig })
         borderColor: isDark ? customColors.darkBorder : customColors.lightBorder,
       },
     }),
-    [isDark],
+    [isDark, themeColors],
   )
   return { classes, badgeStyles }
 }

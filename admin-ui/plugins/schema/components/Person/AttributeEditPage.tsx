@@ -5,7 +5,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { CardBody, Card } from 'Components'
 import AttributeForm from 'Plugins/schema/components/Person/AttributeForm'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { cloneDeep } from 'lodash'
 import type {
   AttributeItem,

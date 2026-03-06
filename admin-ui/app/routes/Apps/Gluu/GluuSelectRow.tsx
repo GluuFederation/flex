@@ -1,5 +1,7 @@
 import React, { useCallback, useMemo } from 'react'
 import { FormGroup, Col, CustomInput, InputGroup } from 'Components'
+import Autocomplete from '@mui/material/Autocomplete'
+import TextField from '@mui/material/TextField'
 import { ChevronIcon } from '@/components/SVG'
 import GluuLabel from './GluuLabel'
 import GluuText from './GluuText'
@@ -38,6 +40,11 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
   errorMessage,
   doc_entry,
   isDark,
+  freeSolo,
+  onValueChange,
+  inputHeight,
+  inputPaddingTop,
+  inputPaddingBottom,
 }) => {
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
@@ -45,7 +52,12 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
     () => getThemeColor(themeState?.theme ?? DEFAULT_THEME),
     [themeState?.theme],
   )
-  const { classes } = useStyles({ fontColor: themeColors.fontColor })
+  const { classes } = useStyles({
+    themeColors,
+    inputHeight: inputHeight ?? 40,
+    inputPaddingTop: inputPaddingTop ?? 8,
+    inputPaddingBottom: inputPaddingBottom ?? 8,
+  })
 
   const handleSelectChange = useCallback(
     (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -58,8 +70,58 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
   )
 
   const displayValue = value != null ? String(value) : ''
+  const options = useMemo(
+    () =>
+      deduplicateSelectValues(values).map((item) =>
+        typeof item === 'string' ? item : (item.label ?? item.value),
+      ),
+    [values],
+  )
 
-  return (
+  const content = freeSolo ? (
+    <FormGroup row>
+      <GluuLabel
+        label={label}
+        size={lsize}
+        doc_category={doc_category}
+        doc_entry={doc_entry || name}
+        required={required}
+        isDark={isDark}
+      />
+      <Col sm={rsize} className={classes.colWrapper}>
+        <Autocomplete
+          id={name}
+          freeSolo
+          disableClearable
+          options={options}
+          value={displayValue || undefined}
+          onChange={(_event, newValue) => {
+            const value = newValue ? String(newValue) : ''
+            formik.handleChange({
+              target: { name, value },
+            } as React.ChangeEvent<HTMLInputElement>)
+            onValueChange?.(newValue ? String(newValue) : null)
+          }}
+          onBlur={() =>
+            formik.handleBlur?.({ target: { name } } as React.FocusEvent<HTMLInputElement>)
+          }
+          disabled={disabled}
+          className={classes.autocompleteRoot}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              name={name}
+              placeholder={`${t('actions.choose')}...`}
+              error={showError && Boolean(errorMessage)}
+              helperText={showError ? errorMessage : undefined}
+              size="small"
+              fullWidth
+            />
+          )}
+        />
+      </Col>
+    </FormGroup>
+  ) : (
     <FormGroup row>
       <GluuLabel
         label={label}
@@ -86,7 +148,7 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
               <option value="">{t('actions.choose')}...</option>
               {deduplicateSelectValues(values).map((item) => {
                 const optionValue = typeof item === 'string' ? item : item.value
-                const optionLabel = typeof item === 'string' ? item : item.label
+                const optionLabel = typeof item === 'string' ? item : (item.label ?? item.value)
                 return (
                   <option key={optionValue} value={optionValue}>
                     {optionLabel}
@@ -107,6 +169,8 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
       </Col>
     </FormGroup>
   )
+
+  return content
 }
 
 export default GluuSelectRow

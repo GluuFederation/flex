@@ -12,6 +12,7 @@ interface DashboardThemeColors {
   textSecondary: string
   statusCardBg: string
   statusCardBorder: string
+  statusActive: string
 }
 
 const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }>()((
@@ -302,7 +303,7 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       flexShrink: 0,
     },
     statusDotActive: {
-      backgroundColor: customColors.statusActive,
+      backgroundColor: themeColors.statusActive,
     },
     statusDotInactive: {
       backgroundColor: customColors.statusInactive,

@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from 'Context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import PropTypes from 'prop-types'
-import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined'
 import { useSelector } from 'react-redux'
 import { useWebhookDialogAction } from 'Utils/hooks'
 import { useCedarling } from '@/cedarling'
@@ -33,16 +33,20 @@ const GluuCommitDialog = ({
   placeholderLabel,
   feature,
   isLicenseLabel = false,
+  operations = [],
+  autoCloseOnAccept = false,
 }: GluuCommitDialogProps) => {
   const { t } = useTranslation()
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
 
   const { state: themeState } = useTheme()
   const isDark = themeState.theme === THEME_DARK
-  const { classes } = useStyles({ isDark })
+  const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
+  const hasOperations = operations.length > 0
+  const { classes } = useStyles({ isDark, themeColors })
   const [userMessage, setUserMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const { loadingWebhooks, webhookModal } = useSelector((state: RootState) => state.webhookReducer)
+  const { webhookModal } = useSelector((state: RootState) => state.webhookReducer)
 
   const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
   const webhookScopes = useMemo(
@@ -111,11 +115,16 @@ const GluuCommitDialog = ({
     try {
       const result = onAccept(userMessage)
       await Promise.resolve(result)
-      closeModal()
+      if (!autoCloseOnAccept) {
+        closeModal()
+      }
     } finally {
       setIsSubmitting(false)
+      if (autoCloseOnAccept) {
+        closeModal()
+      }
     }
-  }, [formik, onAccept, userMessage, closeModal, isSubmitting])
+  }, [formik, onAccept, userMessage, closeModal, isSubmitting, autoCloseOnAccept])
 
   const handleOverlayKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -143,7 +152,7 @@ const GluuCommitDialog = ({
   }
 
   const modalContent =
-    (webhookModal || loadingWebhooks) && canReadWebhooks ? (
+    webhookModal && canReadWebhooks ? (
       <>{webhookTriggerModal({ closeModal })}</>
     ) : (
       <>
@@ -162,22 +171,38 @@ const GluuCommitDialog = ({
           tabIndex={-1}
           aria-labelledby="commit-dialog-title"
         >
-          <GluuButton
+          <button
+            type="button"
             onClick={closeModal}
             className={classes.closeButton}
-            backgroundColor="transparent"
-            textColor={isDark ? customColors.white : customColors.primaryDark}
-            borderColor="transparent"
-            padding="0"
-            minHeight="32"
+            aria-label={t('actions.close')}
             title={t('actions.close')}
           >
-            <CloseOutlinedIcon />
-          </GluuButton>
+            <i className="fa fa-times" aria-hidden />
+          </button>
           <div className={classes.contentArea}>
             <GluuText variant="h2" className={classes.title} id="commit-dialog-title">
               {titleText}
             </GluuText>
+            {hasOperations && (
+              <div className={classes.operationsList}>
+                <GluuText variant="h5" className={classes.operationsTitle}>
+                  {t('messages.list_of_changes')}
+                </GluuText>
+                {operations.map((operation) => (
+                  <div key={operation.path} className={classes.operationRow}>
+                    <span className={classes.operationLabel}>{t('set')}</span>
+                    <span className={classes.operationBadge}>{operation.path}</span>
+                    <span className={classes.operationLabel}>{t('to')}</span>
+                    <span className={classes.operationBadge}>
+                      {operation.value === null || operation.value === ''
+                        ? '""'
+                        : String(operation.value)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
             <div className={classes.textareaContainer}>
               <textarea
                 id={USER_MESSAGE}
@@ -190,16 +215,17 @@ const GluuCommitDialog = ({
                 aria-describedby={errorMessageText ? `${USER_MESSAGE}-error` : undefined}
               />
             </div>
-            {errorMessageText && (
-              <GluuText
-                variant="span"
-                className={classes.errorMessage}
-                style={{ color: customColors.statusInactive }}
-                id={`${USER_MESSAGE}-error`}
-              >
-                {errorMessageText}
-              </GluuText>
-            )}
+            <GluuText
+              variant="span"
+              className={classes.errorMessage}
+              style={{
+                color: customColors.statusInactive,
+                visibility: errorMessageText ? 'visible' : 'hidden',
+              }}
+              id={`${USER_MESSAGE}-error`}
+            >
+              {errorMessageText || '\u00A0'}
+            </GluuText>
             <div className={classes.buttonRow}>
               <GluuButton
                 onClick={handleAccept}
@@ -208,6 +234,7 @@ const GluuCommitDialog = ({
                 textColor={customColors.white}
                 borderColor="transparent"
                 padding="8px 28px"
+                minHeight="40"
                 useOpacityOnHover
                 className={classes.yesButton}
               >
