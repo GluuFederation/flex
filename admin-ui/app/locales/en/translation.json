@@ -1010,7 +1010,8 @@
     "auth_error_token_fetch": "Token or user info fetch failed",
     "auth_error_no_code": "Unable to get authorization code",
     "mau_loading": "Loading statistics...",
-    "vs_previous_period": "vs previous period"
+    "vs_previous_period": "vs previous period",
+    "no_valid_role_logout": "The logged-in user does not have a valid role. You will be logged out in {{seconds}} seconds."
   },
   "errors": {
     "attribute_create_failed": "Error creating attribute",

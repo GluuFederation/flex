@@ -950,7 +950,8 @@
     "audit_description": "Afficher et rechercher les journaux d'audit du système dans une plage de dates",
     "showing_entries": "Affichage de {{start}} à {{end}} sur {{total}} entrées",
     "start_date_after_end": "La date de début ne peut pas être postérieure à la date de fin",
-    "both_dates_required": "Les dates de début et de fin sont requises pour le filtrage par plage de dates"
+    "both_dates_required": "Les dates de début et de fin sont requises pour le filtrage par plage de dates",
+    "no_valid_role_logout": "L'utilisateur n'a pas de rôle valide. Déconnexion dans {{seconds}} secondes."
   },
   "errors": {
     "attribute_create_failed": "Erreur lors de la création de l'attribut",
