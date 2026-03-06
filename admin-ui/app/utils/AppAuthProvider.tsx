@@ -10,6 +10,8 @@ import { checkLicenseConfigValid, getUserInfoResponse } from '../redux/actions'
 import { getAPIAccessToken, checkLicensePresent } from 'Redux/actions'
 import GluuTimeoutModal from 'Routes/Apps/Gluu/GluuTimeoutModal'
 import GluuErrorModal from 'Routes/Apps/Gluu/GluuErrorModal'
+import GluuToast from 'Routes/Apps/Gluu/GluuToast'
+import { toast } from 'react-toastify'
 import { updateToast } from 'Redux/features/toastSlice'
 import {
   FetchRequestor,
@@ -30,6 +32,7 @@ import {
   fetchUserInformation,
   type FetchUserInfoResult,
 } from 'Redux/api/backend-api'
+import { useTranslation } from 'react-i18next'
 import { jwtDecode } from 'jwt-decode'
 import type { UserInfo } from '@/redux/features/types/authTypes'
 
@@ -50,9 +53,12 @@ interface AppAuthProviderProps {
   children: ReactNode
 }
 
+const LOGOUT_DELAY_SECONDS = 10
+
 export default function AppAuthProvider({ children }: Readonly<AppAuthProviderProps>) {
   const dispatch = useAppDispatch()
   const location = useLocation()
+  const { t } = useTranslation()
   const [roleNotFound, setRoleNotFound] = useState(false)
   const [showAdminUI, setShowAdminUI] = useState(false)
   const {
@@ -236,11 +242,16 @@ export default function AppAuthProvider({ children }: Readonly<AppAuthProviderPr
 
               if (!hasValidRole) {
                 setShowAdminUI(false)
-                alert('The logged-in user do not have valid role. Logging out of Admin UI')
                 setRoleNotFound(true)
                 const state = uuidv4()
                 const sessionEndpoint = `${authConfigs?.endSessionEndpoint ?? ''}?state=${state}&post_logout_redirect_uri=${localStorage.getItem('postLogoutRedirectUri') ?? ''}`
-                window.location.href = sessionEndpoint
+                const redirect = () => {
+                  window.location.href = sessionEndpoint
+                }
+                toast.error(t('messages.no_valid_role_logout', { seconds: LOGOUT_DELAY_SECONDS }), {
+                  autoClose: LOGOUT_DELAY_SECONDS * 1000,
+                  onClose: redirect,
+                })
                 return
               }
 
@@ -274,6 +285,7 @@ export default function AppAuthProvider({ children }: Readonly<AppAuthProviderPr
 
   return (
     <React.Fragment>
+      <GluuToast />
       <SessionTimeout isAuthenticated={showAdminUI} />
       <GluuTimeoutModal
         description={
