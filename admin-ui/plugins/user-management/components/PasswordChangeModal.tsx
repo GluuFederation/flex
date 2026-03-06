@@ -254,6 +254,7 @@ const PasswordChangeModal = ({
                   formik={passwordFormik}
                   lsize={4}
                   rsize={8}
+                  isDark={false}
                   showError={
                     !!passwordFormik.errors.userPassword &&
                     (passwordFormik.touched.userPassword || !!passwordFormik.values.userPassword)
@@ -270,6 +271,7 @@ const PasswordChangeModal = ({
                   formik={passwordFormik}
                   lsize={4}
                   rsize={8}
+                  isDark={false}
                   showError={
                     !!passwordFormik.errors.userConfirmPassword &&
                     (passwordFormik.touched.userConfirmPassword ||
