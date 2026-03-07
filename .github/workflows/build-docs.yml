@@ -134,6 +134,7 @@ jobs:
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
         run: |
           mkdir -p docs/overrides docs/assets/js
+          git show origin/main:mkdocs.yml > mkdocs.yml
           git show origin/main:docs/overrides/main.html > docs/overrides/main.html
           git show origin/main:docs/assets/js/reo.js > docs/assets/js/reo.js
 
