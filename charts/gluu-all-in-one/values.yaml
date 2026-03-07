@@ -246,9 +246,9 @@ auth-server:
     authServerProtectedToken: false
     # -- Enable mTLS on Auth server endpoint /jans-auth/restv1/register.
     authServerProtectedRegister: false
-    # -- Enable endpoint /.well-known/lock-server-configuration
+    # -- Enable endpoint /.well-known/lock-server-configuration (if enabled, auth-server.lockEnabled must be enabled)
     lockConfigEnabled: false
-    # -- Enable gRPC endpoint /io.jans.lock.audit.AuditService
+    # -- Enable gRPC endpoint /io.jans.lock.audit.AuditService (if enabled, auth-server.lockEnabled must be enabled)
     lockAuditEnabled: false
     # -- Lock config ingress resource labels. key app is taken
     lockConfigLabels: {}
