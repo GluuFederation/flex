@@ -15,10 +15,10 @@ RECOMMENDATION:
 {{- end }}
 
 {{- with .Values.global.gatewayApi }}
-{{- if .enabled -}}
-*********************************************************************************
-***              WARNING: GATEWAY API CONFIGURATION                           ***
-*********************************************************************************
+{{ if .enabled }}
+********************************************************************************
+***              WARNING: GATEWAY API CONFIGURATION                          ***
+********************************************************************************
 
 The legacy flag `global.gatewayApi.enabled` is set to TRUE. Any configuration
 previously managed by `gatewayApi` will be ignored. See the following sections
@@ -44,6 +44,6 @@ ATTRIBUTE CHANGES:
 | `gatewayApi.routeLabels`          | `gateway-api.routes.labels`           |
 | `gatewayApi.routeAnnotations`     | `gateway-api.routes.annotations`      |
 
-*********************************************************************************
+********************************************************************************
 {{- end }}
 {{- end }}

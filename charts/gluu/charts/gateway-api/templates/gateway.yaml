@@ -6,9 +6,8 @@ kind: Gateway
 metadata:
   name: {{ .Values.gateway.name }}
   namespace: {{ $namespace }}
-  labels:
-    app: {{ $fullName }}-gateway
 {{- if .Values.gateway.labels }}
+  labels:
 {{- toYaml .Values.gateway.labels | nindent 4 }}
 {{- end }}
 {{- if .Values.gateway.annotations }}

@@ -8,9 +8,8 @@ kind: Gateway
 metadata:
   name: {{ index .Values "gateway-api" "gateway" "name" }}
   namespace: {{ $namespace }}
-  labels:
-    app: {{ $fullName }}-gateway
 {{- if index .Values "gateway-api" "gateway" "labels" }}
+  labels:
 {{- toYaml (index .Values "gateway-api" "gateway" "labels") | nindent 4 }}
 {{- end }}
 {{- if index .Values "gateway-api" "gateway" "annotations" }}
@@ -107,9 +106,8 @@ kind: HTTPRoute
 metadata:
   name: {{ $fullName }}-routes-public
   namespace: {{ $namespace }}
-  labels:
-    app: {{ $fullName }}-routes
 {{- if index .Values "gateway-api" "routes" "labels" }}
+  labels:
 {{- toYaml (index .Values "gateway-api" "routes" "labels") | nindent 4 }}
 {{- end }}
 {{- if index .Values "gateway-api" "routes" "annotations" }}
@@ -350,9 +348,8 @@ kind: HTTPRoute
 metadata:
   name: {{ $fullName }}-routes-secure
   namespace: {{ $namespace }}
-  labels:
-    app: {{ $fullName }}-routes
 {{- if index .Values "gateway-api" "routes" "labels" }}
+  labels:
 {{- toYaml (index .Values "gateway-api" "routes" "labels") | nindent 4 }}
 {{- end }}
 {{- if index .Values "gateway-api" "routes" "annotations" }}
@@ -432,9 +429,8 @@ kind: HTTPRoute
 metadata:
   name: {{ $fullName }}-routes-redirect
   namespace: {{ $namespace }}
-  labels:
-    app: {{ $fullName }}-routes
 {{- if index .Values "gateway-api" "routes" "labels" }}
+  labels:
 {{- toYaml (index .Values "gateway-api" "routes" "labels") | nindent 4 }}
 {{- end }}
 {{- if index .Values "gateway-api" "routes" "annotations" }}
@@ -532,9 +528,8 @@ kind: GRPCRoute
 metadata:
   name: {{ $fullName }}-grpc-routes
   namespace: {{ $namespace }}
-  labels:
-    app: {{ $fullName }}-routes
 {{- if index .Values "gateway-api" "routes" "labels" }}
+  labels:
 {{- toYaml (index .Values "gateway-api" "routes" "labels") | nindent 4 }}
 {{- end }}
 {{- if index .Values "gateway-api" "routes" "annotations" }}
@@ -596,9 +591,8 @@ kind: HTTPRoute
 metadata:
   name: {{ $fullName }}-routes-protected
   namespace: {{ $namespace }}
-  labels:
-    app: {{ $fullName }}-routes
 {{- if index .Values "gateway-api" "routes" "labels" }}
+  labels:
 {{- toYaml (index .Values "gateway-api" "routes" "labels") | nindent 4 }}
 {{- end }}
 {{- if index .Values "gateway-api" "routes" "annotations" }}
