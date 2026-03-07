@@ -33,7 +33,7 @@ spec:
     parametersRef:
       group: microgateway.airlock.com
       kind: GatewayParameters
-      name: airlock-gw-params
+      name: {{ $fullName }}-airlock-gw-params
     {{- end }}
   {{- end }}
   {{- if and (.Values.gateway.attachLbIp) (.Values.global.lbIp) }}
@@ -60,7 +60,7 @@ spec:
 apiVersion: microgateway.airlock.com/v1alpha1
 kind: GatewayParameters
 metadata:
-  name: airlock-gw-params
+  name: {{ $fullName }}-airlock-gw-params
   namespace: {{ $namespace }}
 spec:
   kubernetes:
