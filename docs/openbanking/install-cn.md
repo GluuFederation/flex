@@ -75,10 +75,12 @@ Use the listing below for a detailed estimation of the minimum required resource
 
   - Enable `authServerProtectedToken` and `authServerProtectedRegister`:
       ```yaml
-      global
+      global:
         auth-server:
           ingress:
+            # -- Enable mTLS on Auth server endpoint /jans-auth/restv1/token.
             authServerProtectedToken: true
+            # -- Enable mTLS on Auth server endpoint /jans-auth/restv1/register.
             authServerProtectedRegister: true
       ```
 
