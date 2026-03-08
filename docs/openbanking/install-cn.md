@@ -69,14 +69,6 @@ Use the listing below for a detailed estimation of the minimum required resource
                 nginx.ingress.kubernetes.io/auth-tls-secret: "gluu/tls-ob-ca-certificates"
                 nginx.ingress.kubernetes.io/auth-tls-verify-depth: "1"
                 nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true"
-            path: /
-            hosts:
-            - demoexample.gluu.org
-            # -- Secrets holding HTTPS CA cert and key.
-            tls:
-            - secretName: tls-ob-ca-certificates
-            hosts:
-            - demoexample.gluu.org
       ```
 
       Adding these annotations will enable [client certificate authentication](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#client-certificate-authentication).
@@ -123,32 +115,7 @@ Use the listing below for a detailed estimation of the minimum required resource
     kubectl create secret generic tls-ob-ca-certificates -n gluu --from-file=tls.crt=server.crt --from-file=tls.key=server.key --from-file=ca.crt=ca.crt
     ```
 
--  Mount SSL certificate and key as files from `tls-ob-ca-certificates` in the config job:
-    ```yaml
-    config:
-        volumes:
-            - name: web-cert
-                secret:
-                secretName: tls-ob-ca-certificates
-                items:
-                    - key: web_https.crt
-                    path: web_https.crt
-            - name: web-key
-                secret:
-                secretName: tls-ob-ca-certificates
-                items:
-                    - key: web_https.key
-                    path: web_https.key
-        volumeMounts:
-            - name: web-cert
-            mountPath: /etc/certs/web_https.crt
-            subPath: web_https.crt
-            - name: web-key
-            mountPath: /etc/certs/web_https.key
-            subPath: web_https.key
-    ```
-
-1.  Inject OBIE certificates, keys and uri: 
+1.  Inject OBIE certificates, keys and URI: 
 
     1.  base64 encode all `.pem` and `.key` files.
 

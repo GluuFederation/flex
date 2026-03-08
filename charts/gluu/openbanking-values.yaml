@@ -9,11 +9,6 @@ auth-server:
     tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
-    ingress:
-      # -- Enable mTLS on Auth server endpoint /jans-auth/restv1/token.
-      authServerProtectedToken: true
-      # -- Enable mTLS on Auth server endpoint /jans-auth/restv1/register.
-      authServerProtectedRegister: true
 # -- Configuration parameters for setup and initial configuration secret and config layers used by Gluu services.
 config:
   configmap:
@@ -44,7 +39,13 @@ global:
     enabled: false
     ingress: 
       # -- Enable Admin UI endpoints in either istio or nginx ingress depending on users choice
-      adminUiEnabled: false      
+      adminUiEnabled: false
+  auth-server:
+    ingress:
+      # -- Enable mTLS on Auth server endpoint /jans-auth/restv1/token.
+      authServerProtectedToken: true
+      # -- Enable mTLS on Auth server endpoint /jans-auth/restv1/register.
+      authServerProtectedRegister: true
   casa:
     # -- Boolean flag to enable/disable the casa chart.
     enabled: false
