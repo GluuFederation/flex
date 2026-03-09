@@ -164,13 +164,9 @@ const GluuCommitDialogLegacy = ({
     )
   }
 
-  if (!modal) {
-    return <></>
-  }
-
   return (
     <>
-      {(webhookModal || loadingWebhooks) && canReadWebhooks ? (
+      {(webhookModal || loadingWebhooks) && canReadWebhooks && modal ? (
         <>{webhookTriggerModal({ closeModal })}</>
       ) : (
         <Modal isOpen={modal} size="lg" toggle={closeModal} className="modal-outline-primary">
