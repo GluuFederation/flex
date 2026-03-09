@@ -22,6 +22,7 @@ spec:
             emptyDir: {}
           - name: gateway-ca-cert
             secret:
+              defaultMode: 0664
               secretName: {{ .Release.Name }}-gateway-ca-cert
 {{- end }}
 
