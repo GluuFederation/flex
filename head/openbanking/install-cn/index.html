@@ -2287,15 +2287,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#install-on-microk8sdevelopmenttesting" class="md-nav__link">
-    <span class="md-ellipsis">
-      Install on microK8s(development/testing)
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -2703,15 +2694,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#install-on-microk8sdevelopmenttesting" class="md-nav__link">
-    <span class="md-ellipsis">
-      Install on microK8s(development/testing)
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -2910,20 +2892,22 @@
 <p>To enable mTLS in ingress-nginx, add the following to your <code>openbanking-values.yaml</code>:
       <div class="highlight"><pre><span></span><code><span class="nt">nginx-ingress</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">ingress</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">additionalAnnotations</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">nginx.ingress.kubernetes.io/auth-tls-verify-client</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;optional&quot;</span>
-<span class="w">      </span><span class="nt">nginx.ingress.kubernetes.io/auth-tls-secret</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;gluu/tls-ob-ca-certificates&quot;</span>
-<span class="w">      </span><span class="nt">nginx.ingress.kubernetes.io/auth-tls-verify-depth</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1&quot;</span>
-<span class="w">      </span><span class="nt">nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
+<span class="w">      </span><span class="nt">additionalAnnotations</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">nginx.ingress.kubernetes.io/auth-tls-verify-client</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;optional&quot;</span>
+<span class="w">          </span><span class="nt">nginx.ingress.kubernetes.io/auth-tls-secret</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;gluu/tls-ob-ca-certificates&quot;</span>
+<span class="w">          </span><span class="nt">nginx.ingress.kubernetes.io/auth-tls-verify-depth</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1&quot;</span>
+<span class="w">          </span><span class="nt">nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
 </code></pre></div></p>
 <p>Adding these annotations will enable <a href="https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#client-certificate-authentication">client certificate authentication</a>.</p>
 </li>
 <li>
 <p>Enable <code>authServerProtectedToken</code> and <code>authServerProtectedRegister</code>:
-      <div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">global</span>
-<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">auth-server</span><span class="p p-Indicator">:</span>
+      <div class="highlight"><pre><span></span><code><span class="nt">global</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">auth-server</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">ingress</span><span class="p">:</span>
+<span class="w">      </span><span class="c1"># -- Enable mTLS on Auth server endpoint /jans-auth/restv1/token.</span>
 <span class="w">      </span><span class="nt">authServerProtectedToken</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="c1"># -- Enable mTLS on Auth server endpoint /jans-auth/restv1/register.</span>
 <span class="w">      </span><span class="nt">authServerProtectedRegister</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 </code></pre></div></p>
 </li>
@@ -2975,7 +2959,7 @@ kubectl<span class="w"> </span>create<span class="w"> </span>secret<span class="
 </code></pre></div>
 </li>
 <li>
-<p>Inject OBIE signed certs, keys and uri: </p>
+<p>Inject OBIE certificates, keys and URI: </p>
 <ol>
 <li>
 <p>base64 encode all <code>.pem</code> and <code>.key</code> files.</p>
@@ -3049,13 +3033,6 @@ helm<span class="w"> </span>install<span class="w"> </span>gluu<span class="w"> 
 </code></pre></div>
 </li>
 </ul>
-<h3 id="install-on-microk8sdevelopmenttesting">Install on microK8s(development/testing)<a class="headerlink" href="#install-on-microk8sdevelopmenttesting" title="Permanent link">#</a></h3>
-<p>On your Ubuntu VM, run the following commands:</p>
-<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>su<span class="w"> </span>-
-wget<span class="w"> </span>https://raw.githubusercontent.com/GluuFederation/flex/main/automation/startopenabankingdemo.sh<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>chmod<span class="w"> </span>u+x<span class="w"> </span>startopenabankingdemo.sh<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>./startopenabankingdemo.sh
-</code></pre></div>
-<p>Running this script will install the Gluu Open Banking Platform with mTLS enabled along with the mysql backend as a persistence.</p>
-<p>After running the script, you can go ahead and <a href="#testing-the-setup">test the setup</a>.</p>
 <h2 id="testing-the-setup">Testing the setup<a class="headerlink" href="#testing-the-setup" title="Permanent link">#</a></h2>
 <p>After successful installation, you can access and test the Gluu Open Banking Platform using either <a href="https://docs.gluu.org/head/openbanking/curl/">curl</a> or <a href="https://docs.gluu.org/head/openbanking/jans-cli/">Jans-CLI</a>.</p>
 <h2 id="changing-the-signing-key-kid-for-the-as-dynamically">Changing the signing key kid for the AS dynamically<a class="headerlink" href="#changing-the-signing-key-kid-for-the-as-dynamically" title="Permanent link">#</a></h2>
@@ -3068,14 +3045,14 @@ wget<span class="w"> </span>https://raw.githubusercontent.com/GluuFederation/fle
 </li>
 <li>
 <p>Get a token. To pass the mTLS network boundary, you must use your Open Banking transport certificates (replace <code>obtransport.pem</code> and <code>obtransport.key</code> with your actual filenames):</p>
-<div class="highlight"><pre><span></span><code><span class="nv">TOKEN</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-s<span class="w"> </span>-k<span class="w"> </span>-u<span class="w"> </span><span class="nv">$TESTCLIENT</span>:<span class="nv">$TESTCLIENTSECRET</span><span class="w"> </span>https://&lt;FQDN&gt;/jans-auth/restv1/token<span class="w"> </span>-d<span class="w"> </span><span class="s2">&quot;grant_type=client_credentials&amp;scope=[https://jans.io/oauth/jans-auth-server/config/properties.write](https://jans.io/oauth/jans-auth-server/config/properties.write)&quot;</span><span class="w"> </span>--cert<span class="w"> </span>obtransport.pem<span class="w"> </span>--key<span class="w"> </span>obtransport.key<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-o<span class="w"> </span><span class="s1">&#39;&quot;access_token&quot;:&quot;[^&quot;]*&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="s1">&#39;&quot;&#39;</span><span class="w"> </span>-f4<span class="k">)</span>
+<div class="highlight"><pre><span></span><code><span class="nv">TOKEN</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-s<span class="w"> </span>-k<span class="w"> </span>-u<span class="w"> </span><span class="nv">$TESTCLIENT</span>:<span class="nv">$TESTCLIENTSECRET</span><span class="w"> </span>https://demoexample.gluu.org/jans-auth/restv1/token<span class="w"> </span>-d<span class="w"> </span><span class="s2">&quot;grant_type=client_credentials&amp;scope=https://jans.io/oauth/jans-auth-server/config/properties.write&quot;</span><span class="w"> </span>--cert<span class="w"> </span>obtransport.pem<span class="w"> </span>--key<span class="w"> </span>obtransport.key<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-o<span class="w"> </span><span class="s1">&#39;&quot;access_token&quot;:&quot;[^&quot;]*&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="s1">&#39;&quot;&#39;</span><span class="w"> </span>-f4<span class="k">)</span>
 
 <span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;My Token is: </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span>
 </code></pre></div>
 </li>
 <li>
 <p>Add the entry <code>staticKid</code> to force the AS to use a specific signing key. Please modify <code>XhCYDfFM7UFXHfykNaLk1aLCnZM</code> to the kid to be used:          </p>
-<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-k<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span><span class="s2">&quot;https://&lt;FQDN&gt;/jans-config-api/api/v1/jans-auth-server/config&quot;</span><span class="w"> </span><span class="se">\</span>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-k<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span><span class="s2">&quot;https://demoexample.gluu.org/jans-config-api/api/v1/jans-auth-server/config&quot;</span><span class="w"> </span><span class="se">\</span>
 -H<span class="w"> </span><span class="s2">&quot;accept: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 -H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json-patch+json&quot;</span><span class="w"> </span><span class="se">\</span>
 -H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
@@ -3143,7 +3120,7 @@ kubectl<span class="w"> </span>rollout<span class="w"> </span>restart<span class
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="March 4, 2026 02:51:51 UTC"><span class="timeago" datetime="2026-03-04T02:51:51+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="March 4, 2026 02:51:51 UTC">2026-03-04</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="March 9, 2026 07:56:57 UTC"><span class="timeago" datetime="2026-03-09T07:56:57+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="March 9, 2026 07:56:57 UTC">2026-03-09</span>
   </span>
 
     
