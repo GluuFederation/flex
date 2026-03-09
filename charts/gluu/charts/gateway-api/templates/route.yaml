@@ -508,6 +508,13 @@ spec:
         path:
           type: ReplacePrefixMatch
           replacePrefixMatch: /restv1/token
+    {{- if and (eq .Values.gateway.className "nginx") (.Values.gateway.verifyClientCertProtection) (.Values.additionalConfig.nginx.enableClientCertSnippets) }}
+    - type: ExtensionRef
+      extensionRef:
+        group: gateway.nginx.org
+        kind: SnippetsFilter
+        name: {{ .Release.Name }}-nginx-verify-client
+    {{- end }}
     backendRefs:
     - name: {{ $authSvc }}
       port: 8080
@@ -525,6 +532,13 @@ spec:
         path:
           type: ReplacePrefixMatch
           replacePrefixMatch: /restv1/register
+    {{- if and (eq .Values.gateway.className "nginx") (.Values.gateway.verifyClientCertProtection) (.Values.additionalConfig.nginx.enableClientCertSnippets) }}
+    - type: ExtensionRef
+      extensionRef:
+        group: gateway.nginx.org
+        kind: SnippetsFilter
+        name: {{ .Release.Name }}-nginx-verify-client
+    {{- end }}
     backendRefs:
     - name: {{ $authSvc }}
       port: 8080

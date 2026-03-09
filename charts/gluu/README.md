@@ -344,8 +344,8 @@ Kubernetes: `>=v1.23.0-0`
 | fido2.usrEnvs.secret | object | `{}` | Add custom secret envs to the service variable1: value1 |
 | fido2.volumeMounts | list | `[]` | Configure any additional volumesMounts that need to be attached to the containers |
 | fido2.volumes | list | `[]` | Configure any additional volumes that need to be attached to the pod |
-| gateway-api | object | `{"additionalConfig":{"airlock":{"createLbService":false},"cilium":{"ipPoolBlocks":[]},"envoy":{"createGatewayClass":false},"istio":{},"kgateway":{},"nginx":{},"traefik":{}},"gateway":{"annotations":{},"attachLbIp":false,"className":"nginx","httpPort":80,"httpsPort":443,"infrastructure":{"annotations":{},"labels":{},"parametersRef":{}},"labels":{},"name":"gluu-gateway","tlsSecretName":"tls-certificate"},"routes":{"annotations":{},"labels":{}}}` | Gateway API implementation. We support all GA-conformant implementations (e.g., 'nginx', 'istio', 'traefik'). See https://gateway-api.sigs.k8s.io/implementations/#conformant |
-| gateway-api.additionalConfig | object | `{"airlock":{"createLbService":false},"cilium":{"ipPoolBlocks":[]},"envoy":{"createGatewayClass":false},"istio":{},"kgateway":{},"nginx":{},"traefik":{}}` | Additional configuration for Specific Gateway API implementation |
+| gateway-api | object | `{"additionalConfig":{"airlock":{"createLbService":false},"cilium":{"ipPoolBlocks":[]},"envoy":{"createGatewayClass":false},"istio":{},"kgateway":{},"nginx":{"enableClientCertSnippets":false},"traefik":{}},"gateway":{"annotations":{},"attachLbIp":false,"caCert":"","className":"nginx","httpPort":80,"httpsPort":443,"infrastructure":{"annotations":{},"labels":{},"parametersRef":{}},"labels":{},"name":"gluu-gateway","tlsSecretName":"tls-certificate","verifyClientCertProtection":false},"routes":{"annotations":{},"labels":{}}}` | Gateway API implementation. We support all GA-conformant implementations (e.g., 'nginx', 'istio', 'traefik'). See https://gateway-api.sigs.k8s.io/implementations/#conformant |
+| gateway-api.additionalConfig | object | `{"airlock":{"createLbService":false},"cilium":{"ipPoolBlocks":[]},"envoy":{"createGatewayClass":false},"istio":{},"kgateway":{},"nginx":{"enableClientCertSnippets":false},"traefik":{}}` | Additional configuration for Specific Gateway API implementation |
 | gateway-api.additionalConfig.airlock | object | `{"createLbService":false}` | Configuration for Airlock Microgateway |
 | gateway-api.additionalConfig.airlock.createLbService | bool | `false` | Create LoadBalancer service using GatewayParameters (by default airlock-microgateway doesn't create the service). See https://docs.airlock.com/microgateway/latest/index/api/crds/gateway-parameters/v1alpha1/ for details. The GatewayParameters will be attached to gateway.infrastructure.parametersRef only if it's empty. |
 | gateway-api.additionalConfig.cilium | object | `{"ipPoolBlocks":[]}` | Configuration for Cilium. |
@@ -354,21 +354,24 @@ Kubernetes: `>=v1.23.0-0`
 | gateway-api.additionalConfig.envoy.createGatewayClass | bool | `false` | Create GatewayClass named `envoy` (by default Envoy doesn't create gatewayclass). The `envoy` name can be set as value of `gateway.className` attribute. |
 | gateway-api.additionalConfig.istio | object | `{}` | Configuration for Istio. |
 | gateway-api.additionalConfig.kgateway | object | `{}` | Configuration for kgateway. |
-| gateway-api.additionalConfig.nginx | object | `{}` | Configuration for NGINX Fabric. |
+| gateway-api.additionalConfig.nginx | object | `{"enableClientCertSnippets":false}` | Configuration for NGINX Fabric. |
+| gateway-api.additionalConfig.nginx.enableClientCertSnippets | bool | `false` | Enable client certificate verification using Snippets and NginxProxy. Snippet support must be enabled during NGINX installation (otherwise endpoints will return HTTP status code 500). See https://docs.nginx.com/nginx-gateway-fabric/traffic-management/snippets#setup The NginxProxy will be attached to gateway.infrastructure.parametersRef only if it's empty. |
 | gateway-api.additionalConfig.traefik | object | `{}` | Configuration for Traefik. |
-| gateway-api.gateway | object | `{"annotations":{},"attachLbIp":false,"className":"nginx","httpPort":80,"httpsPort":443,"infrastructure":{"annotations":{},"labels":{},"parametersRef":{}},"labels":{},"name":"gluu-gateway","tlsSecretName":"tls-certificate"}` | Configuration for Gateway resource |
+| gateway-api.gateway | object | `{"annotations":{},"attachLbIp":false,"caCert":"","className":"nginx","httpPort":80,"httpsPort":443,"infrastructure":{"annotations":{},"labels":{},"parametersRef":{}},"labels":{},"name":"gluu-gateway","tlsSecretName":"tls-certificate","verifyClientCertProtection":false}` | Configuration for Gateway resource |
 | gateway-api.gateway.annotations | object | `{}` | Specific annotations for the Gateway resource |
 | gateway-api.gateway.attachLbIp | bool | `false` | Attach global.lbIp to Gateway spec.addresses with IPAddress type (enable this if loadbalancer doesn't assign IP address to Gateway automatically) |
+| gateway-api.gateway.caCert | string | `""` | Base64-encoded string of CA certificate used to sign client/server certificate. Required if using client cert authentication. |
 | gateway-api.gateway.className | string | `"nginx"` | Set the gatewayClassName corresponding to your installed controller. |
 | gateway-api.gateway.httpPort | int | `80` | Gateway http port number |
 | gateway-api.gateway.httpsPort | int | `443` | Gateway https port number |
 | gateway-api.gateway.infrastructure | object | `{"annotations":{},"labels":{},"parametersRef":{}}` | Gateway spec.infrastructure |
 | gateway-api.gateway.infrastructure.annotations | object | `{}` | Specific annotations for the infrastructure |
 | gateway-api.gateway.infrastructure.labels | object | `{}` | Specific labels for the infrastructure |
-| gateway-api.gateway.infrastructure.parametersRef | object | `{}` | Specific parametersRef for the infrastructure Some gateway implementation like `airlock-microgateway` may need to attach GatewayParameters to create Loadbalancer service automatically. |
+| gateway-api.gateway.infrastructure.parametersRef | object | `{}` | Specific parametersRef for the infrastructure |
 | gateway-api.gateway.labels | object | `{}` | Specific labels for the Gateway resource |
 | gateway-api.gateway.name | string | `"gluu-gateway"` | The name of the Gateway resource to be created |
 | gateway-api.gateway.tlsSecretName | string | `"tls-certificate"` | Secret containing the TLS certificate for the Gateway |
+| gateway-api.gateway.verifyClientCertProtection | bool | `false` | Verify client certificate for protected endpoints (if enabled, caCert must be set). See additionalConfig for implementation-wise configuration (if any). |
 | gateway-api.routes | object | `{"annotations":{},"labels":{}}` | Configuration for HTTPRoute and its related resources |
 | gateway-api.routes.annotations | object | `{}` | Specific annotations for the HTTPRoute resource |
 | gateway-api.routes.labels | object | `{}` | Specific labels for the HTTPRoute resource |

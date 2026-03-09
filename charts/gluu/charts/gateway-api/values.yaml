@@ -13,6 +13,11 @@ gateway:
   httpsPort: 443
   # -- Secret containing the TLS certificate for the Gateway
   tlsSecretName: tls-certificate
+  # -- Base64-encoded string of CA certificate used to sign client/server certificate. Required if using client cert authentication.
+  caCert: ""
+  # -- Verify client certificate for protected endpoints (if enabled, caCert must be set).
+  # See additionalConfig for implementation-wise configuration (if any).
+  verifyClientCertProtection: false
   # -- Attach global.lbIp to Gateway spec.addresses with IPAddress type (enable this if loadbalancer doesn't assign IP address to Gateway automatically)
   attachLbIp: false
   # -- Specific labels for the Gateway resource
@@ -22,7 +27,6 @@ gateway:
   # -- Gateway spec.infrastructure
   infrastructure:
     # -- Specific parametersRef for the infrastructure
-    # Some gateway implementation like `airlock-microgateway` may need to attach GatewayParameters to create Loadbalancer service automatically.
     parametersRef: {}
     # -- Specific labels for the infrastructure
     labels: {}
@@ -37,7 +41,12 @@ routes:
 # -- Additional configuration for Specific Gateway API implementation
 additionalConfig:
   # -- Configuration for NGINX Fabric.
-  nginx: {}
+  nginx:
+    # -- Enable client certificate verification using Snippets and NginxProxy.
+    # Snippet support must be enabled during NGINX installation (otherwise endpoints will return HTTP status code 500).
+    # See https://docs.nginx.com/nginx-gateway-fabric/traffic-management/snippets#setup
+    # The NginxProxy will be attached to gateway.infrastructure.parametersRef only if it's empty.
+    enableClientCertSnippets: false
   # -- Configuration for Traefik.
   traefik: {}
   # -- Configuration for Istio.
