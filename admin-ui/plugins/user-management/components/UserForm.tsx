@@ -89,6 +89,10 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
     setModal((prev) => !prev)
   }, [])
 
+  const closeModal = useCallback(() => {
+    setModal(false)
+  }, [])
+
   const handleApply = useCallback(() => {
     const hasModifiedFields = Object.keys(modifiedFields).length > 0
     const isFormChanged = formik.dirty || hasModifiedFields
@@ -135,10 +139,10 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
       if (isSubmitting) {
         return
       }
-      toggle()
+      closeModal()
       onSubmitData(formik.values, modifiedFields, usermessage)
     },
-    [toggle, onSubmitData, formik.values, modifiedFields, isSubmitting],
+    [closeModal, onSubmitData, formik.values, modifiedFields, isSubmitting],
   )
 
   const setSelectedClaimsToState = useCallback((data: PersonAttribute) => {
@@ -534,7 +538,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
           isLoading={isSubmitting}
         />
         <GluuCommitDialogLegacy
-          handler={toggle}
+          handler={closeModal}
           modal={modal}
           onAccept={submitForm}
           feature={adminUiFeatures.users_edit}
