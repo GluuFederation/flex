@@ -64,21 +64,23 @@ Use the listing below for a detailed estimation of the minimum required resource
       ```yaml
       nginx-ingress:
         ingress:
-          additionalAnnotations:
-            nginx.ingress.kubernetes.io/auth-tls-verify-client: "optional"
-            nginx.ingress.kubernetes.io/auth-tls-secret: "gluu/tls-ob-ca-certificates"
-            nginx.ingress.kubernetes.io/auth-tls-verify-depth: "1"
-            nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true"
+            additionalAnnotations:
+                nginx.ingress.kubernetes.io/auth-tls-verify-client: "optional"
+                nginx.ingress.kubernetes.io/auth-tls-secret: "gluu/tls-ob-ca-certificates"
+                nginx.ingress.kubernetes.io/auth-tls-verify-depth: "1"
+                nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true"
       ```
 
       Adding these annotations will enable [client certificate authentication](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#client-certificate-authentication).
 
   - Enable `authServerProtectedToken` and `authServerProtectedRegister`:
       ```yaml
-      global
+      global:
         auth-server:
           ingress:
+            # -- Enable mTLS on Auth server endpoint /jans-auth/restv1/token.
             authServerProtectedToken: true
+            # -- Enable mTLS on Auth server endpoint /jans-auth/restv1/register.
             authServerProtectedRegister: true
       ```
 
@@ -115,7 +117,7 @@ Use the listing below for a detailed estimation of the minimum required resource
     kubectl create secret generic tls-ob-ca-certificates -n gluu --from-file=tls.crt=server.crt --from-file=tls.key=server.key --from-file=ca.crt=ca.crt
     ```
 
-1.  Inject OBIE signed certs, keys and uri: 
+1.  Inject OBIE certificates, keys and URI: 
 
     1.  base64 encode all `.pem` and `.key` files.
 
@@ -188,19 +190,6 @@ Use the listing below for a detailed estimation of the minimum required resource
     helm install gluu gluu-flex/gluu -n gluu -f openbanking-values.yaml
     ```
 
-### Install on microK8s(development/testing)
-
-On your Ubuntu VM, run the following commands:
-
-```bash
-sudo su -
-wget https://raw.githubusercontent.com/GluuFederation/flex/main/automation/startopenabankingdemo.sh && chmod u+x startopenabankingdemo.sh && ./startopenabankingdemo.sh
-```
-
-Running this script will install the Gluu Open Banking Platform with mTLS enabled along with the mysql backend as a persistence.
-
-After running the script, you can go ahead and [test the setup](#testing-the-setup).
-
 ## Testing the setup
 
 After successful installation, you can access and test the Gluu Open Banking Platform using either [curl](https://docs.gluu.org/head/openbanking/curl/) or [Jans-CLI](https://docs.gluu.org/head/openbanking/jans-cli/).
@@ -219,7 +208,7 @@ After successful installation, you can access and test the Gluu Open Banking Pla
 1.  Get a token. To pass the mTLS network boundary, you must use your Open Banking transport certificates (replace `obtransport.pem` and `obtransport.key` with your actual filenames):
 
     ```bash
-    TOKEN=$(curl -s -k -u $TESTCLIENT:$TESTCLIENTSECRET https://<FQDN>/jans-auth/restv1/token -d "grant_type=client_credentials&scope=[https://jans.io/oauth/jans-auth-server/config/properties.write](https://jans.io/oauth/jans-auth-server/config/properties.write)" --cert obtransport.pem --key obtransport.key | grep -o '"access_token":"[^"]*' | cut -d'"' -f4)
+    TOKEN=$(curl -s -k -u $TESTCLIENT:$TESTCLIENTSECRET https://demoexample.gluu.org/jans-auth/restv1/token -d "grant_type=client_credentials&scope=https://jans.io/oauth/jans-auth-server/config/properties.write" --cert obtransport.pem --key obtransport.key | grep -o '"access_token":"[^"]*' | cut -d'"' -f4)
 
     echo "My Token is: $TOKEN"
     ```
@@ -227,7 +216,7 @@ After successful installation, you can access and test the Gluu Open Banking Pla
 1.  Add the entry `staticKid` to force the AS to use a specific signing key. Please modify `XhCYDfFM7UFXHfykNaLk1aLCnZM` to the kid to be used:          
 
     ```bash
-    curl -k -X PATCH "https://<FQDN>/jans-config-api/api/v1/jans-auth-server/config" \
+    curl -k -X PATCH "https://demoexample.gluu.org/jans-config-api/api/v1/jans-auth-server/config" \
     -H "accept: application/json" \
     -H "Content-Type: application/json-patch+json" \
     -H "Authorization: Bearer $TOKEN" \
