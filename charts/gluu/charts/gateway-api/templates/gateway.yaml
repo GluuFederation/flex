@@ -6,21 +6,27 @@ kind: Gateway
 metadata:
   name: {{ .Values.gateway.name }}
   namespace: {{ $namespace }}
-{{- if .Values.gateway.labels }}
   labels:
-{{- toYaml .Values.gateway.labels | nindent 4 }}
-{{- end }}
-{{- if .Values.gateway.annotations }}
+    app: {{ $fullName }}-gateway
+    {{- if .Values.gateway.labels }}
+    {{- toYaml .Values.gateway.labels | nindent 4 }}
+    {{- end }}
+  {{- if .Values.gateway.annotations }}
   annotations:
-{{- toYaml .Values.gateway.annotations | nindent 4 }}
-{{- end }}
+    {{- toYaml .Values.gateway.annotations | nindent 4 }}
+  {{- end }}
 spec:
   gatewayClassName: {{ .Values.gateway.className }}
   infrastructure:
     labels:
+      app: {{ $fullName }}-gateway-infrastructure
+      {{- if .Values.gateway.infrastructure.labels }}
       {{- toYaml .Values.gateway.infrastructure.labels | nindent 6 }}
+      {{- end }}
+    {{- if .Values.gateway.infrastructure.annotations }}
     annotations:
       {{- toYaml .Values.gateway.infrastructure.annotations | nindent 6 }}
+    {{- end }}
     {{- if .Values.gateway.infrastructure.parametersRef }}
     parametersRef:
       {{- toYaml .Values.gateway.infrastructure.parametersRef | nindent 6 }}

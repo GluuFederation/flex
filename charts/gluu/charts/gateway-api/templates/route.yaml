@@ -16,14 +16,15 @@ kind: HTTPRoute
 metadata:
   name: {{ $fullName }}-routes-public
   namespace: {{ $namespace }}
-{{- if .Values.routes.labels }}
   labels:
-{{- toYaml .Values.routes.labels | nindent 4 }}
-{{- end }}
-{{- if .Values.routes.annotations }}
+    app: {{ $fullName }}-routes
+    {{- if .Values.routes.labels }}
+    {{- toYaml .Values.routes.labels | nindent 4 }}
+    {{- end }}
+  {{- if .Values.routes.annotations }}
   annotations:
-{{- toYaml .Values.routes.annotations | nindent 4 }}
-{{- end }}
+    {{- toYaml .Values.routes.annotations | nindent 4 }}
+  {{- end }}
 spec:
   parentRefs:
   - name: {{ .Values.gateway.name }}
@@ -233,14 +234,15 @@ kind: HTTPRoute
 metadata:
   name: {{ $fullName }}-routes-secure
   namespace: {{ $namespace }}
-{{- if .Values.routes.labels }}
   labels:
-{{- toYaml .Values.routes.labels | nindent 4 }}
-{{- end }}
-{{- if .Values.routes.annotations }}
+    app: {{ $fullName }}-routes
+    {{- if .Values.routes.labels }}
+    {{- toYaml .Values.routes.labels | nindent 4 }}
+    {{- end }}
+  {{- if .Values.routes.annotations }}
   annotations:
-{{- toYaml .Values.routes.annotations | nindent 4 }}
-{{- end }}
+    {{- toYaml .Values.routes.annotations | nindent 4 }}
+  {{- end }}
 spec:
   parentRefs:
   - name: {{ .Values.gateway.name }}
@@ -320,14 +322,15 @@ kind: HTTPRoute
 metadata:
   name: {{ $fullName }}-routes-redirect
   namespace: {{ $namespace }}
-{{- if .Values.routes.labels }}
   labels:
-{{- toYaml .Values.routes.labels | nindent 4 }}
-{{- end }}
-{{- if .Values.routes.annotations }}
+    app: {{ $fullName }}-routes
+    {{- if .Values.routes.labels }}
+    {{- toYaml .Values.routes.labels | nindent 4 }}
+    {{- end }}
+  {{- if .Values.routes.annotations }}
   annotations:
-{{- toYaml .Values.routes.annotations | nindent 4 }}
-{{- end }}
+    {{- toYaml .Values.routes.annotations | nindent 4 }}
+  {{- end }}
 spec:
   parentRefs:
   - name: {{ .Values.gateway.name }}
@@ -417,14 +420,15 @@ kind: GRPCRoute
 metadata:
   name: {{ $fullName }}-grpc-routes
   namespace: {{ $namespace }}
-{{- if .Values.routes.labels }}
   labels:
-{{- toYaml .Values.routes.labels | nindent 4 }}
-{{- end }}
-{{- if .Values.routes.annotations }}
+    app: {{ $fullName }}-routes
+    {{- if .Values.routes.labels }}
+    {{- toYaml .Values.routes.labels | nindent 4 }}
+    {{- end }}
+  {{- if .Values.routes.annotations }}
   annotations:
-{{- toYaml .Values.routes.annotations | nindent 4 }}
-{{- end }}
+    {{- toYaml .Values.routes.annotations | nindent 4 }}
+  {{- end }}
 spec:
   parentRefs:
   - name: {{ .Values.gateway.name }}
@@ -480,14 +484,15 @@ kind: HTTPRoute
 metadata:
   name: {{ $fullName }}-routes-protected
   namespace: {{ $namespace }}
-{{- if .Values.routes.labels }}
   labels:
-{{- toYaml .Values.routes.labels | nindent 4 }}
-{{- end }}
-{{- if .Values.routes.annotations }}
+    app: {{ $fullName }}-routes
+    {{- if .Values.routes.labels }}
+    {{- toYaml .Values.routes.labels | nindent 4 }}
+    {{- end }}
+  {{- if .Values.routes.annotations }}
   annotations:
-{{- toYaml .Values.routes.annotations | nindent 4 }}
-{{- end }}
+    {{- toYaml .Values.routes.annotations | nindent 4 }}
+  {{- end }}
 spec:
   parentRefs:
   - name: {{ .Values.gateway.name }}
