@@ -37,7 +37,7 @@ global:
   admin-ui:
     # -- Boolean flag to enable/disable the admin-ui chart and admin ui config api plugin.
     enabled: false
-    ingress: 
+    ingress:
       # -- Enable Admin UI endpoints in either istio or nginx ingress depending on users choice
       adminUiEnabled: false
   auth-server:
