@@ -1,3 +1,7 @@
 export { smtpConstants } from './constants'
-export { transformToFormValues, toSmtpConfiguration } from './utils'
-export { validationSchema } from './validations'
+export {
+  transformToFormValues,
+  toSmtpConfiguration,
+  buildSmtpChangedFieldOperations,
+} from './utils'
+export { getSmtpValidationSchema } from './validations'

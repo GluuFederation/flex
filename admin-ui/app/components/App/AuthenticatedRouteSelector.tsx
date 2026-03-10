@@ -18,7 +18,6 @@ export default function AuthenticatedRouteSelector() {
     <AppAuthProvider>
       <AppLayout>
         <RoutedContent />
-        <LazyRoutes.GluuToast />
         <LazyRoutes.GluuWebhookErrorDialog />
         <PermissionsPolicyInitializer />
       </AppLayout>

@@ -11,6 +11,9 @@ yarn.lock
 plugins_repo
 
 
+# MCP config (contains secrets)
+.mcp.json
+
 # Editor directories and files
 .DS_Store
 .project
