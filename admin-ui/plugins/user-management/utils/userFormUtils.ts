@@ -147,12 +147,22 @@ export const setupCustomAttributes = (
         const firstValue = customAttr.values[0] as string | boolean | object
 
         if (isBoolean && firstValue !== undefined && firstValue !== null) {
-          const boolValue =
-            typeof firstValue === 'boolean'
-              ? firstValue
-              : typeof firstValue === 'string'
-                ? firstValue.toLowerCase() === 'true'
-                : Boolean(firstValue)
+          let boolValue: boolean
+          if (typeof firstValue === 'boolean') {
+            boolValue = firstValue
+          } else if (typeof firstValue === 'string') {
+            boolValue = firstValue.toLowerCase() === 'true'
+          } else if (typeof firstValue === 'object') {
+            const obj = firstValue as Record<string, unknown>
+            boolValue =
+              'value' in obj && typeof obj.value === 'boolean'
+                ? (obj.value as boolean)
+                : 'val' in obj && typeof obj.val === 'boolean'
+                  ? (obj.val as boolean)
+                  : Boolean(firstValue)
+          } else {
+            boolValue = Boolean(firstValue)
+          }
           if (customAttr.name === 'emailVerified' && boolValue === false) {
             continue
           }

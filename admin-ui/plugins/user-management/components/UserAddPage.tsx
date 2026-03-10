@@ -70,6 +70,8 @@ const UserAddPage = () => {
         status: values.status as 'active' | 'inactive' | undefined,
         userPassword: values.userPassword as string | undefined,
         givenName: values.givenName || '',
+        sn: values.sn || '',
+        middleName: values.middleName || '',
         customAttributes,
         action_message: message,
       }

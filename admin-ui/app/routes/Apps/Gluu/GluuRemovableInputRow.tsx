@@ -102,7 +102,12 @@ function GluuRemovableInputRow<TValues extends FormikValues = FormikValues>({
             height: 32,
             padding: 6,
           }}
-          onKeyDown={() => handler()}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              if (e.key === ' ') e.preventDefault()
+              handler()
+            }
+          }}
           onClick={() => handler()}
         >
           <i

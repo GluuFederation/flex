@@ -12,7 +12,7 @@ interface UserFormPageStylesParams {
 export const useStyles = makeStyles<UserFormPageStylesParams>()((_, { isDark, themeColors }) => {
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
 
-  const cardBorderStyle = getCardBorderStyle({ isDark })
+  const cardBorderStyle = getCardBorderStyle({ isDark, borderRadius: BORDER_RADIUS.DEFAULT })
 
   return {
     page: {

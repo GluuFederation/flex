@@ -2,7 +2,6 @@ import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
 
 interface UserDetailViewPageStylesParams {
-  isDark: boolean
   themeColors: ThemeConfig
 }
 

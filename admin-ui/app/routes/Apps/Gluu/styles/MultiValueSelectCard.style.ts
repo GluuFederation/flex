@@ -182,8 +182,20 @@ export const useStyles = makeStyles<MultiValueSelectCardStyleParams>()((
       'minWidth': 32,
       'minHeight': 32,
       'padding': 6,
+      'background': 'transparent',
+      'border': 'none',
+      'boxShadow': 'none',
+      'color': themeColors.fontColor,
+      '&:hover': {
+        opacity: 0.8,
+      },
+      '&:focus-visible': {
+        outline: `2px solid ${themeColors.fontColor}`,
+        outlineOffset: 2,
+      },
       '& i': {
         fontSize: 16,
+        color: 'inherit',
       },
     },
   }

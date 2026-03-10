@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import GluuRemovableInputRow from 'Routes/Apps/Gluu/GluuRemovableInputRow'
 import GluuRemovableSelectRow from 'Routes/Apps/Gluu/GluuRemovableSelectRow'
 import MultiValueSelectCard from 'Routes/Apps/Gluu/MultiValueSelectCard'
@@ -15,6 +16,7 @@ const UserClaimEntry = ({
   modifiedFields,
   setModifiedFields,
 }: UserClaimEntryProps) => {
+  const { t } = useTranslation()
   const doHandle = useCallback(() => {
     handler(data.name)
   }, [handler, data.name])
@@ -40,9 +42,9 @@ const UserClaimEntry = ({
     (next: string[]) => {
       formik.setFieldValue(data.name, next)
       formik.setFieldTouched(data.name, true, false)
-      setModifiedFields({ ...modifiedFields, [data.name]: next })
+      setModifiedFields((prev) => ({ ...prev, [data.name]: next }))
     },
-    [data.name, formik, modifiedFields, setModifiedFields],
+    [data.name, formik, setModifiedFields],
   )
 
   return (
@@ -58,9 +60,9 @@ const UserClaimEntry = ({
           placeholder={
             isRolesUnavailable
               ? rolesLoading
-                ? 'Loading roles...'
-                : 'Failed to load roles'
-              : 'Search Here'
+                ? t('messages.loading_roles')
+                : t('messages.failed_load_roles')
+              : t('placeholders.search_here')
           }
           allowCustom={!isRoleField}
           onRemoveField={doHandle}

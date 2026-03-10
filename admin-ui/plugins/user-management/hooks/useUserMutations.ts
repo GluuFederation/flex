@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
 import { useDeleteUser, getGetUserQueryKey } from 'JansConfigApi'
 import queryUtils from '@/utils/queryUtils'
-import { isDevelopment } from '@/utils/env'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import type { CaughtError } from '../types/ErrorTypes'
@@ -29,7 +28,8 @@ export const useDeleteUserWithAudit = (callbacks?: MutationCallbacks) => {
       try {
         await mutation.mutateAsync({ inum })
         await logUserDeletion(inum, userData).catch((auditError) => {
-          if (isDevelopment) console.error('Audit logging failed:', auditError)
+          console.error('Audit logging failed:', auditError, { inum, userData })
+          dispatch(updateToast(true, 'warning', t('messages.audit_logging_failed')))
         })
         if (userData) {
           triggerUserWebhook(userData)

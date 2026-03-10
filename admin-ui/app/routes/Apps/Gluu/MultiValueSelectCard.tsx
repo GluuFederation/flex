@@ -36,6 +36,7 @@ const MultiValueSelectCard = ({
   const availableOptions = options.filter((opt) => !selectedItems.includes(opt))
 
   const handleAdd = useCallback(() => {
+    if (disabled) return
     const trimmed = pendingValue.trim()
     if (!trimmed) return
     if (selectedItems.includes(trimmed)) return
@@ -43,22 +44,24 @@ const MultiValueSelectCard = ({
     onChange(next)
     setPendingValue('')
     onBlur?.()
-  }, [pendingValue, selectedItems, onChange, onBlur])
+  }, [disabled, pendingValue, selectedItems, onChange, onBlur])
 
   const handleRemove = useCallback(() => {
+    if (disabled) return
     if (selectedItems.length === 0) return
     const next = selectedItems.slice(0, -1)
     onChange(next)
     onBlur?.()
-  }, [selectedItems, onChange, onBlur])
+  }, [disabled, selectedItems, onChange, onBlur])
 
   const handleRemoveByName = useCallback(
     (itemName: string) => {
+      if (disabled) return
       const next = selectedItems.filter((r) => r !== itemName)
       onChange(next)
       onBlur?.()
     },
-    [selectedItems, onChange, onBlur],
+    [disabled, selectedItems, onChange, onBlur],
   )
 
   const content = (
@@ -85,7 +88,9 @@ const MultiValueSelectCard = ({
             type="button"
             className={classes.addButton}
             onClick={handleAdd}
-            disabled={allowCustom ? !pendingValue.trim() : availableOptions.length === 0}
+            disabled={
+              disabled || (allowCustom ? !pendingValue.trim() : availableOptions.length === 0)
+            }
             backgroundColor={themeColors.formFooter.apply.backgroundColor}
             textColor={themeColors.formFooter.apply.textColor}
             borderColor={themeColors.formFooter.apply.borderColor}
@@ -98,7 +103,7 @@ const MultiValueSelectCard = ({
             type="button"
             className={classes.removeButton}
             onClick={handleRemove}
-            disabled={selectedItems.length === 0}
+            disabled={disabled || selectedItems.length === 0}
             backgroundColor={customColors.statusInactive}
             textColor={customColors.white}
             borderColor={customColors.statusInactive}
@@ -118,6 +123,8 @@ const MultiValueSelectCard = ({
                 type="button"
                 className={classes.tagRemove}
                 onClick={() => handleRemoveByName(r)}
+                disabled={disabled}
+                aria-disabled={disabled}
                 aria-label={`Remove ${r}`}
               >
                 ✕
@@ -133,16 +140,14 @@ const MultiValueSelectCard = ({
     return (
       <div className={classes.wrapper}>
         <div className={classes.cardWrapper}>{content}</div>
-        <div
+        <button
+          type="button"
           className={classes.removeFieldButton}
           onClick={onRemoveField}
-          onKeyDown={(e) => e.key === 'Enter' && onRemoveField()}
-          role="button"
-          tabIndex={0}
           aria-label="Remove field"
         >
           <i className="fa fa-fw fa-close" style={{ color: themeColors.fontColor }} />
-        </div>
+        </button>
       </div>
     )
   }

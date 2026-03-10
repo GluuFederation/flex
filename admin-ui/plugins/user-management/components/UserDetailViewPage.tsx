@@ -4,7 +4,6 @@ import DOMPurify from 'dompurify'
 import { RowProps } from 'Plugins/user-management/types/UserApiTypes'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
-import { THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './UserDetailViewPage.style'
 
 const sanitizeValue = (value: string): string =>
@@ -15,8 +14,7 @@ const UserDetailViewPage = ({ row }: RowProps) => {
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
-  const isDark = themeState.theme === THEME_DARK
-  const { classes } = useStyles({ isDark, themeColors })
+  const { classes } = useStyles({ themeColors })
 
   interface CustomAttrWithValues {
     name?: string
@@ -56,7 +54,7 @@ const UserDetailViewPage = ({ row }: RowProps) => {
       { label: `${t('fields.name')}:`, value: rowData.displayName ?? '' },
       { label: `${t('fields.email')}:`, value: rowData.mail ?? '' },
       { label: `${t('fields.givenName')}:`, value: rowData.givenName ?? '' },
-      { label: 'jansAdminUIRole:', value: roleValue },
+      { label: `${t('fields.userRole')}:`, value: roleValue },
       { label: `${t('fields.userName')}:`, value: rowData.userId ?? '' },
       { label: `${t('fields.lastName', { defaultValue: 'Last Name' })}:`, value: lastName },
     ],

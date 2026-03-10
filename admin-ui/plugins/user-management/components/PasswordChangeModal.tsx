@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useMemo, useEffect, useState, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { useFormik } from 'formik'
 import { useTranslation } from 'react-i18next'
@@ -173,12 +173,12 @@ const PasswordChangeModal = ({
     onSubmit: handlePasswordSubmit,
   })
 
-  const resetFormRef = useRef(passwordFormik.resetForm)
-  resetFormRef.current = passwordFormik.resetForm
+  const formikRef = useRef(passwordFormik)
+  formikRef.current = passwordFormik
 
   useEffect(() => {
     if (!isOpen) {
-      resetFormRef.current()
+      formikRef.current.resetForm()
       setPassword('')
       setShowPassword(false)
       setShowConfirmPassword(false)
@@ -249,7 +249,7 @@ const PasswordChangeModal = ({
         aria-label={t('actions.close')}
       />
       <div
-        className={commitClasses.modalContainer}
+        className={`${commitClasses.modalContainer} ${formClasses.modalContainer}`}
         onClick={(e) => e.stopPropagation()}
         onKeyDown={handleModalKeyDown}
         role="dialog"
@@ -294,7 +294,6 @@ const PasswordChangeModal = ({
                     className={formClasses.toggleButton}
                     onClick={() => setShowPassword((prev) => !prev)}
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
-                    tabIndex={-1}
                   >
                     <i className={showPassword ? 'fa fa-eye' : 'fa fa-eye-slash'} />
                   </button>
@@ -329,7 +328,6 @@ const PasswordChangeModal = ({
                     className={formClasses.toggleButton}
                     onClick={() => setShowConfirmPassword((prev) => !prev)}
                     aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
-                    tabIndex={-1}
                   >
                     <i className={showConfirmPassword ? 'fa fa-eye' : 'fa fa-eye-slash'} />
                   </button>

@@ -24,6 +24,11 @@ const CLOSE_BUTTON_OFFSET = 16
 const BUTTON_MIN_HEIGHT = '40px'
 const BUTTON_PADDING = '8px 28px'
 
+const CONTENT_BUTTONS_PADDING = CEDARLING_CONFIG_SPACING.BUTTONS_MT + 5
+const CHECKBOX_LABEL_GAP_ADJUST = MAPPING_SPACING.CHECKBOX_LABEL_GAP - 1
+const BORDER_RADIUS_SMALL_ADJUST = BORDER_RADIUS.SMALL - 2
+const CHECKBOX_LABEL_GAP_PLUS = MAPPING_SPACING.CHECKBOX_LABEL_GAP + 3
+
 export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColors }) => {
   const cardBorderStyle = getCardBorderStyle({ isDark })
   const modalBg = isDark ? customColors.darkCardBg : customColors.lightBackground
@@ -48,7 +53,7 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
     contentArea: {
       display: 'flex',
       flexDirection: 'column',
-      padding: `${CEDARLING_CONFIG_SPACING.BUTTONS_MT + 5}px`,
+      padding: `${CONTENT_BUTTONS_PADDING}px`,
       gap: CONTENT_GAP,
       overflowY: 'auto',
     },
@@ -142,7 +147,7 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
     operationsList: {
       display: 'flex',
       flexDirection: 'column',
-      gap: MAPPING_SPACING.CHECKBOX_LABEL_GAP - 1,
+      gap: CHECKBOX_LABEL_GAP_ADJUST,
       maxHeight: OPERATIONS_MAX_HEIGHT,
       overflowY: 'auto',
       overflowX: 'hidden',
@@ -155,7 +160,7 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       fontSize: fontSizes.xl,
       lineHeight: lineHeights.normal,
       color: themeColors.fontColor,
-      margin: `0 0 ${MAPPING_SPACING.CHECKBOX_LABEL_GAP - 1}px 0`,
+      margin: `0 0 ${CHECKBOX_LABEL_GAP_ADJUST}px 0`,
     },
     operationRow: {
       display: 'grid',
@@ -179,7 +184,7 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       lineHeight: lineHeights.normal,
       backgroundColor: themeColors.fontColor,
       color: themeColors.card.background,
-      borderRadius: BORDER_RADIUS.SMALL - 2,
+      borderRadius: BORDER_RADIUS_SMALL_ADJUST,
       padding: '4px 10px',
       width: 'fit-content',
       maxWidth: '100%',
@@ -190,7 +195,7 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
     buttonRow: {
       display: 'flex',
       alignItems: 'center',
-      gap: MAPPING_SPACING.CHECKBOX_LABEL_GAP + 3,
+      gap: CHECKBOX_LABEL_GAP_PLUS,
     },
     yesButton: {
       minHeight: BUTTON_MIN_HEIGHT,

@@ -5,6 +5,8 @@ import { CEDARLING_CONFIG_SPACING, MAPPING_SPACING } from '@/constants'
 import type { ThemeConfig } from '@/context/theme/config'
 
 const WEBHOOK_MODAL_Z_INDEX = 10050
+const WEBHOOK_TABLE_MIN_WIDTH = 650
+const CHECKBOX_LABEL_EXTRA_GAP = 3
 
 interface StylesParams {
   isDark: boolean
@@ -58,7 +60,7 @@ export const useWebhookTriggerModalStyles = makeStyles<StylesParams>()((
     },
     tableWrapper: {
       'marginTop': CEDARLING_CONFIG_SPACING.ALERT_TO_INPUT,
-      'minWidth': 650,
+      'minWidth': WEBHOOK_TABLE_MIN_WIDTH,
       '& .MuiTableCell-root': {
         borderBottom: `1px solid ${borderColor}`,
       },
@@ -66,8 +68,17 @@ export const useWebhookTriggerModalStyles = makeStyles<StylesParams>()((
     buttonRow: {
       display: 'flex',
       alignItems: 'center',
-      gap: MAPPING_SPACING.CHECKBOX_LABEL_GAP + 3,
+      gap: MAPPING_SPACING.CHECKBOX_LABEL_GAP + CHECKBOX_LABEL_EXTRA_GAP,
       marginTop: CEDARLING_CONFIG_SPACING.BUTTONS_MT,
+    },
+    loadingOverlay: {
+      position: 'absolute',
+      inset: 0,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: cardBg,
+      zIndex: 1,
     },
   }
 })

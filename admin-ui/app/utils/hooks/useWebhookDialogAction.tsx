@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import {
@@ -22,7 +22,7 @@ import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
-import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import { GluuSpinner } from '@/components/GluuSpinner'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components'
 import { useStyles as useCommitDialogStyles } from '@/routes/Apps/Gluu/styles/GluuCommitDialog.style'
@@ -99,6 +99,37 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
     }
   }, [modal, feature, canReadWebhooks, loadingWebhooks, enabledFeatureWebhooks, dispatch])
 
+  const hasInitiatedCheckRef = useRef(false)
+  if (modal && canReadWebhooks && feature && loadingWebhooks) hasInitiatedCheckRef.current = true
+  if (!modal) hasInitiatedCheckRef.current = false
+
+  const webhookCheckComplete = useMemo(() => {
+    const needsCheck = modal && canReadWebhooks && feature
+    if (!needsCheck) return true
+    return hasInitiatedCheckRef.current && !loadingWebhooks
+  }, [modal, canReadWebhooks, feature, loadingWebhooks])
+
+  const modalRef = useRef<HTMLDivElement>(null)
+  const previouslyFocusedRef = useRef<Element | null>(null)
+
+  useEffect(() => {
+    if (webhookModal && canReadWebhooks) {
+      previouslyFocusedRef.current = document.activeElement as Element | null
+      const frame = requestAnimationFrame(() => {
+        modalRef.current?.focus()
+      })
+      return () => {
+        cancelAnimationFrame(frame)
+        if (
+          previouslyFocusedRef.current &&
+          typeof (previouslyFocusedRef.current as HTMLElement).focus === 'function'
+        ) {
+          ;(previouslyFocusedRef.current as HTMLElement).focus()
+        }
+      }
+    }
+  }, [webhookModal, canReadWebhooks])
+
   const handleAcceptWebhookTrigger = () => {
     dispatch(setWebhookModal(false))
     if (feature) {
@@ -119,10 +150,36 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
       }
     }
 
+    const FOCUSABLE_SELECTOR =
+      'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]'
+    const getFocusableElements = (container: HTMLElement): HTMLElement[] =>
+      Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
+        (el) => el.offsetParent !== null,
+      )
+
     const handleModalKeyDown = (e: React.KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault()
         closeWebhookTriggerModal()
+        e.stopPropagation()
+        return
+      }
+      if (e.key === 'Tab') {
+        const container = e.currentTarget as HTMLElement
+        const focusable = getFocusableElements(container)
+        if (focusable.length === 0) return
+        const currentIndex = focusable.indexOf(document.activeElement as HTMLElement)
+        const nextIndex = e.shiftKey
+          ? currentIndex <= 0
+            ? focusable.length - 1
+            : currentIndex - 1
+          : currentIndex >= focusable.length - 1
+            ? 0
+            : currentIndex + 1
+        e.preventDefault()
+        focusable[nextIndex]?.focus()
+        e.stopPropagation()
+        return
       }
       e.stopPropagation()
     }
@@ -139,10 +196,12 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
           aria-label={t('actions.close')}
         />
         <div
+          ref={modalRef}
           className={`${commitClasses.modalContainer} ${webhookClasses.modalContainer}`}
           onClick={(e) => e.stopPropagation()}
           onKeyDown={handleModalKeyDown}
           role="dialog"
+          aria-modal="true"
           tabIndex={-1}
           aria-labelledby="webhook-modal-title"
         >
@@ -155,7 +214,10 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
           >
             <i className="fa fa-times" aria-hidden />
           </button>
-          <div className={`${commitClasses.contentArea} ${webhookClasses.contentArea}`}>
+          <div
+            className={`${commitClasses.contentArea} ${webhookClasses.contentArea}`}
+            style={{ position: 'relative', ...(loadingWebhooks && { minHeight: 240 }) }}
+          >
             <div className={webhookClasses.titleWithDescription}>
               <GluuText variant="h2" className={webhookClasses.title} id="webhook-modal-title">
                 {t('messages.webhook_execution_information')}
@@ -166,10 +228,9 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
             </div>
 
             {loadingWebhooks ? (
-              <GluuLoader
-                blocking
-                overlayBackgroundColor={!isDark ? customColors.lightBackground : undefined}
-              />
+              <div className={webhookClasses.loadingOverlay} aria-busy>
+                <GluuSpinner size={80} aria-label="Loading" />
+              </div>
             ) : (
               <>
                 {enabledFeatureWebhooks?.length ? (
@@ -232,7 +293,7 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
     return createPortal(modalContent, document.body)
   }
 
-  return { onCloseModal, webhookTriggerModal }
+  return { onCloseModal, webhookTriggerModal, webhookCheckComplete }
 }
 
 export default useWebhookDialogAction

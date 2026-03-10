@@ -1,6 +1,7 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
 import customColors from '@/customColors'
+import { BORDER_RADIUS } from '@/constants'
 import { fontFamily } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 
@@ -17,20 +18,20 @@ export const useStyles = makeStyles<User2FADevicesModalStylesParams>()((
     ? (themeColors.settings?.cardBackground ?? themeColors.card.background)
     : customColors.white
   const borderColor = themeColors.borderColor
-  const accentGreen = customColors.claimsSelectionBorder
+  const paginationAccentColor = customColors.claimsSelectionBorder
   const tableBorderColor = themeColors.borderColor
   const tableBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   /* Same border as dashboard, health, license, asset, webhook */
   const modalCardBorderStyle = getCardBorderStyle({
     isDark,
-    borderRadius: 12,
+    borderRadius: BORDER_RADIUS.DEFAULT,
   })
 
   return {
     modal2FA: {
       '& .modal-content': {
         ...modalCardBorderStyle,
-        borderRadius: 12,
+        borderRadius: BORDER_RADIUS.DEFAULT,
         backgroundColor: modalBg,
         overflow: 'visible',
       },
@@ -42,8 +43,8 @@ export const useStyles = makeStyles<User2FADevicesModalStylesParams>()((
       alignItems: 'stretch !important',
       backgroundColor: modalBg,
       borderBottom: `1px solid ${borderColor}`,
-      borderTopLeftRadius: 12,
-      borderTopRightRadius: 12,
+      borderTopLeftRadius: BORDER_RADIUS.DEFAULT,
+      borderTopRightRadius: BORDER_RADIUS.DEFAULT,
       padding: '0 !important',
     },
     headerTopRow: {
@@ -77,7 +78,7 @@ export const useStyles = makeStyles<User2FADevicesModalStylesParams>()((
       color: themeColors.fontColor,
       /* Figma: padding around table - 24px all sides */
       padding: 24,
-      borderRadius: '0 0 12px 12px',
+      borderRadius: `0 0 ${BORDER_RADIUS.DEFAULT}px ${BORDER_RADIUS.DEFAULT}px`,
     },
     tableWrapper: {
       /* Prevent horizontal scroll - table fits within modal */
@@ -115,10 +116,10 @@ export const useStyles = makeStyles<User2FADevicesModalStylesParams>()((
         borderTopColor: tableBorderColor,
       },
       '& [class*="paginationButton"]:not([disabled])': {
-        color: `${accentGreen} !important`,
+        color: `${paginationAccentColor} !important`,
       },
       '& [class*="paginationSelectIcon"]': {
-        color: `${accentGreen} !important`,
+        color: `${paginationAccentColor} !important`,
       },
     },
   }

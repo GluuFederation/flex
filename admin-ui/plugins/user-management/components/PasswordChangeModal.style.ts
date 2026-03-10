@@ -1,4 +1,5 @@
 import { makeStyles } from 'tss-react/mui'
+import customColors from '@/customColors'
 import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
 import { CEDARLING_CONFIG_SPACING, MAPPING_SPACING } from '@/constants'
 import type { ThemeConfig } from '@/context/theme/config'
@@ -10,11 +11,18 @@ interface StylesParams {
 
 export const usePasswordModalStyles = makeStyles<StylesParams>()((
   _theme,
-  { isDark: _isDark, themeColors },
+  { isDark, themeColors },
 ) => {
   const inputBorderColor = themeColors.settings?.inputBorder ?? themeColors.borderColor
+  /* Match Add User form: white background, light gray inputs in light theme */
+  const modalBg = isDark
+    ? customColors.darkCardBg
+    : (themeColors.settings?.cardBackground ?? themeColors.card.background)
 
   return {
+    modalContainer: {
+      backgroundColor: modalBg,
+    },
     fieldsRow: {
       'display': 'grid',
       'gridTemplateColumns': '1fr 1fr',
@@ -59,7 +67,7 @@ export const usePasswordModalStyles = makeStyles<StylesParams>()((
         color: themeColors.textMuted,
         opacity: 1,
       },
-      '&:focus': {
+      '&:focus, &:focus-visible': {
         outline: 'none',
         boxShadow: 'none',
       },

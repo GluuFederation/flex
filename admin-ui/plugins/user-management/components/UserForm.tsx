@@ -163,7 +163,7 @@ const UserForm = ({
   const isEmptyValue = useCallback((value: FormFieldValue): boolean => {
     if (value === null || value === undefined) return true
     if (typeof value === 'string') return value.trim() === ''
-    if (Array.isArray(value)) return value.length === 0
+    // if (Array.isArray(value)) return value.length === 0
     return false
   }, [])
 
@@ -326,7 +326,7 @@ const UserForm = ({
                     formik={formik}
                     lsize={12}
                     rsize={12}
-                    placeholder="Enter Here"
+                    placeholder={t('placeholders.enter_here')}
                     showError={Boolean(formik.touched.givenName && formik.errors.givenName)}
                     errorMessage={
                       typeof formik.errors.givenName === 'string'
@@ -343,7 +343,7 @@ const UserForm = ({
                     formik={formik}
                     lsize={12}
                     rsize={12}
-                    placeholder="Enter Here"
+                    placeholder={t('placeholders.enter_here')}
                     showError={Boolean(formik.touched.middleName && formik.errors.middleName)}
                     errorMessage={
                       typeof formik.errors.middleName === 'string'
@@ -362,7 +362,7 @@ const UserForm = ({
                     formik={formik}
                     lsize={12}
                     rsize={12}
-                    placeholder="Enter Here"
+                    placeholder={t('placeholders.enter_here')}
                     showError={Boolean(formik.touched.sn && formik.errors.sn)}
                     errorMessage={
                       typeof formik.errors.sn === 'string' ? formik.errors.sn : undefined
@@ -378,7 +378,7 @@ const UserForm = ({
                     formik={formik}
                     lsize={12}
                     rsize={12}
-                    placeholder="Enter Here"
+                    placeholder={t('placeholders.enter_here')}
                     showError={Boolean(formik.touched.userId && formik.errors.userId)}
                     errorMessage={
                       typeof formik.errors.userId === 'string' ? formik.errors.userId : undefined
@@ -395,7 +395,7 @@ const UserForm = ({
                     formik={formik}
                     lsize={12}
                     rsize={12}
-                    placeholder="Enter Here"
+                    placeholder={t('placeholders.enter_here')}
                     showError={Boolean(formik.touched.displayName && formik.errors.displayName)}
                     errorMessage={
                       typeof formik.errors.displayName === 'string'
@@ -414,7 +414,7 @@ const UserForm = ({
                     formik={formik}
                     lsize={12}
                     rsize={12}
-                    placeholder="Enter Here"
+                    placeholder={t('placeholders.enter_here')}
                     showError={Boolean(formik.touched.mail && formik.errors.mail)}
                     errorMessage={
                       typeof formik.errors.mail === 'string' ? formik.errors.mail : undefined
@@ -433,7 +433,7 @@ const UserForm = ({
                       formik={formik}
                       lsize={12}
                       rsize={12}
-                      placeholder="Enter Here"
+                      placeholder={t('placeholders.enter_here')}
                       showError={
                         !!formik.errors.userPassword &&
                         (formik.touched.userPassword || !!formik.values.userPassword)
@@ -457,7 +457,7 @@ const UserForm = ({
                       formik={formik}
                       lsize={12}
                       rsize={12}
-                      placeholder="Enter Here"
+                      placeholder={t('placeholders.enter_here')}
                       showError={
                         !!formik.errors.userConfirmPassword &&
                         (formik.touched.userConfirmPassword || !!formik.values.userConfirmPassword)
@@ -496,10 +496,10 @@ const UserForm = ({
                         disabled={rolesLoading || rolesError}
                         placeholder={
                           rolesLoading
-                            ? 'Loading roles...'
+                            ? t('messages.loading_roles')
                             : rolesError
-                              ? 'Failed to load roles'
-                              : 'Search Here'
+                              ? t('messages.failed_load_roles')
+                              : t('placeholders.search_here')
                         }
                         allowCustom={false}
                         doc_category={roleClaim.description}

@@ -30,13 +30,12 @@ const UserFormCommitDialog = ({
   const webhookResourceId = ADMIN_UI_RESOURCES.Webhooks
   const canReadWebhooks = hasCedarReadPermission(webhookResourceId)
   const webhookModal = useAppSelector((state) => state.webhookReducer?.webhookModal ?? false)
-  const { webhookTriggerModal, onCloseModal } = useWebhookDialogAction({
+  const { webhookTriggerModal, onCloseModal, webhookCheckComplete } = useWebhookDialogAction({
     feature: adminUiFeatures.users_edit,
     modal,
   })
-
   const showWebhookFirst = modal && webhookModal && canReadWebhooks
-  const showCommitDialog = modal && !showWebhookFirst
+  const showCommitDialog = modal && webhookCheckComplete && !showWebhookFirst
 
   const handleClose = useCallback(() => {
     handler()

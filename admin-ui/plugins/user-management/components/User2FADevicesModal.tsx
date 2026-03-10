@@ -55,12 +55,15 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
   const [otpDevicesList, setOTPDevicesList] = useState<DeviceData[]>([])
   const initializedRef = useRef<string | null>(null)
 
-  const { data: fidoRegistrationData, refetch: refetchFido2Details } =
-    useGetRegistrationEntriesFido2(userDetails?.userId?.toLowerCase() || '', {
-      query: {
-        enabled: isOpen && !!userDetails?.userId,
-      },
-    })
+  const {
+    data: fidoRegistrationData,
+    refetch: refetchFido2Details,
+    isLoading: isFido2Loading,
+  } = useGetRegistrationEntriesFido2(userDetails?.userId?.toLowerCase() || '', {
+    query: {
+      enabled: isOpen && !!userDetails?.userId,
+    },
+  })
 
   const fidoDetails = useMemo(() => fidoRegistrationData?.entries || [], [fidoRegistrationData])
 
@@ -302,7 +305,7 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
         <GluuTable<DeviceData>
           columns={columns}
           data={paginatedData}
-          loading={false}
+          loading={isFido2Loading}
           pagination={pagination}
           actions={actions}
           getRowKey={(row, index) => row.id ?? `row-${index}`}
