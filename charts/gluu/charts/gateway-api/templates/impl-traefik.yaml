@@ -1,0 +1,45 @@
+{{- if eq .Values.gateway.className "traefik" }}
+
+{{- if .Values.gateway.verifyClientCertProtection }}
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ .Release.Name }}-traefik-pass-client-cert
+  namespace: {{ .Release.Namespace }}
+spec:
+  passTLSClientCert:
+    pem: true
+
+{{- /* Start of TLSOption definition */}}
+{{- if .Values.gateway.caCert }}
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  # Traefik only recognizes TLSOption named `default`
+  name: default
+  namespace: {{ .Release.Namespace }}
+spec:
+  clientAuth:
+    secretNames:
+      - {{ .Release.Name }}-gateway-ca-cert
+    clientAuthType: VerifyClientCertIfGiven
+
+---
+
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: {{ .Release.Name }}-traefik-verify-client
+  namespace: {{ .Release.Namespace }}
+spec:
+  clientAuth:
+    secretNames:
+      - {{ .Release.Name }}-gateway-ca-cert
+    clientAuthType: RequireAndVerifyClientCert
+{{- end }}
+{{- /* End of TLSOption definition */}}
+
+{{- end }}
+
+{{- end }}
