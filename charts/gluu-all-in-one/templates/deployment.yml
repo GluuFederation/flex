@@ -77,8 +77,8 @@ spec:
             value: {{ include "saml.customJavaOptions" . | trim }}
           - name: CN_SCIM_JAVA_OPTIONS
             value: {{ include "scim.customJavaOptions" . | trim }}
-          {{- include "flex-all-in-one.usr-envs" . | indent 12 }}
-          {{- include "flex-all-in-one.usr-secret-envs" . | indent 12 }}
+          {{- include "flex-all-in-one.usr-envs" . | indent 10 }}
+          {{- include "flex-all-in-one.usr-secret-envs" . | indent 10 }}
         securityContext:
           runAsUser: 1000
           runAsNonRoot: true
