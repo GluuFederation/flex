@@ -190,8 +190,6 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
   const updateModifiedFields = useCallback(
     (name: string, value: unknown) => {
       setModifiedFields((prev) => {
-        // Empty arrays represent intentional clearing of multi-valued fields (e.g. roles)
-        // and must be preserved in modifiedFields so the change is sent to the API.
         if (isEmptyValue(value) && !Array.isArray(value)) {
           const { [name]: _removed, ...rest } = prev
           void _removed
