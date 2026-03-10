@@ -77,6 +77,10 @@
     "add_custom_attributes": "Add custom attributes",
     "refresh": "Refresh"
   },
+  "password": {
+    "show": "Show password",
+    "hide": "Hide password"
+  },
   "serviceDownFallback": "Gluu Flex Admin UI is not getting any response from the backend (Jans Config Api).",
   "roleNotFoundMessage": "Unauthorized User",
   "roleNotFoundDescription": "The logged-in user does not have a valid role. Logging out of Admin UI",
@@ -921,6 +925,7 @@
     "view_client_details": "View client details",
     "view_2FA_details": "View 2FA details",
     "2FA_details": "2FA details",
+    "details": "Details",
     "view_script_details": "View custom script details",
     "add_new_user": "Add User",
     "error_in_saving": "Error in saving.",
@@ -1000,8 +1005,9 @@
     "user_created_successfully": "User created successfully",
     "user_updated_successfully": "User updated successfully",
     "user_deleted_successfully": "User deleted successfully",
-    "audit_logging_failed": "User deleted successfully, but audit logging failed.",
+    "audit_logging_failed": "The action completed, but audit logging failed.",
     "password_changed_successfully": "Password changed successfully",
+    "session_revoke_failed": "Password was changed but session could not be revoked. The user may still be signed in.",
     "persistence_config_load_failed": "Failed to load persistence configuration",
     "persistence_config_load_failed_detail": "Could not load persistence configuration. LDAP-specific settings may not be applied correctly.",
     "revokeUserSession": "The user's session will be revoked as one or more of the following fields have been modified: Password, Status, Admin Role.",

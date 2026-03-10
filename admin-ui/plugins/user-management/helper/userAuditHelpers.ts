@@ -158,7 +158,6 @@ export const logUserDeletion = async (inum: string, userData?: CustomUser): Prom
     })
   } catch (error) {
     console.error('Failed to log user deletion:', error)
-    throw error
   }
 }
 

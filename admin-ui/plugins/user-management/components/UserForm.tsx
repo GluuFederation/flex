@@ -163,7 +163,7 @@ const UserForm = ({
   const isEmptyValue = useCallback((value: FormFieldValue): boolean => {
     if (value === null || value === undefined) return true
     if (typeof value === 'string') return value.trim() === ''
-    // if (Array.isArray(value)) return value.length === 0
+    if (Array.isArray(value)) return value.length === 0
     return false
   }, [])
 
@@ -188,7 +188,7 @@ const UserForm = ({
   const updateModifiedFields = useCallback(
     (name: string, value: FormFieldValue) => {
       setModifiedFields((prev) => {
-        if (isEmptyValue(value)) {
+        if (isEmptyValue(value) && !Array.isArray(value)) {
           const { [name]: _removed, ...rest } = prev
           void _removed
           return rest
@@ -229,7 +229,8 @@ const UserForm = ({
         const cleanedFields: Record<string, string | string[] | boolean> = {}
 
         for (const [key, value] of Object.entries(newFields)) {
-          if (!isEmptyValue(value)) {
+          // Preserve empty arrays as they represent intentional clearing of multi-valued fields
+          if (!isEmptyValue(value) || Array.isArray(value)) {
             cleanedFields[key] = value
           }
         }
@@ -580,6 +581,7 @@ const UserForm = ({
           formik={formik as FormikProps<UserEditFormValues>}
           operations={commitDialogOperations}
           autoCloseOnAccept
+          webhookFeature={userDetails ? 'users_edit' : 'users_add'}
         />
       </Form>
     </GluuLoader>

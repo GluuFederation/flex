@@ -6,6 +6,7 @@ import GluuToogle from 'Routes/Apps/Gluu/GluuToogle'
 import PropTypes from 'prop-types'
 import { FormikProps } from 'formik'
 import React, { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { InputProps } from 'reactstrap'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -46,6 +47,7 @@ function GluuRemovableInputRow<TValues extends FormikValues = FormikValues>({
   modifiedFields,
   setModifiedFields,
 }: GluuRemovableInputRowProps<TValues>) {
+  const { t } = useTranslation()
   const { state: themeState } = useTheme()
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
   const currentValue = formik.values[name as keyof TValues] as string | boolean | undefined
@@ -94,27 +96,28 @@ function GluuRemovableInputRow<TValues extends FormikValues = FormikValues>({
             </Col>
           </>
         )}
-        <div
-          role="button"
+        <button
+          type="button"
+          aria-label={t('actions.remove')}
           style={{
             ...(applicationStyle.removableInputRow as React.CSSProperties),
             width: 32,
             height: 32,
             padding: 6,
-          }}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              if (e.key === ' ') e.preventDefault()
-              handler()
-            }
+            background: 'transparent',
+            border: 'none',
+            boxShadow: 'none',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
           onClick={() => handler()}
         >
           <i
             className={'fa fa-fw fa-close'}
             style={{ color: themeColors.fontColor, fontSize: 16 }}
-          ></i>
-        </div>
+          />
+        </button>
       </FormGroup>
     </GluuTooltip>
   )

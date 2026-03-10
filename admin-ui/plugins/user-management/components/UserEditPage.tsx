@@ -89,6 +89,35 @@ const UserEditPage = () => {
   const updateUserMutation = usePutUser({
     mutation: {
       onSuccess: async (data, variables) => {
+        const payload = variables.data as {
+          dn?: string
+          modifiedFields?: Array<Record<string, unknown>>
+        }
+        const modifiedFieldsArray = payload?.modifiedFields ?? []
+        const modifiedKeys = new Set(modifiedFieldsArray.flatMap((m) => Object.keys(m)))
+        const anyKeyPresent = revokeSessionWhenFieldsModifiedInUserForm.some((key) =>
+          modifiedKeys.has(key),
+        )
+        const userDn = payload?.dn
+
+        if (anyKeyPresent) {
+          if (!userDn) {
+            console.error('Cannot revoke session: user DN is undefined')
+            dispatch(updateToast(true, 'warning', t('messages.session_revoke_failed')))
+            return
+          }
+          try {
+            await revokeSessionMutation.mutateAsync({ userDn })
+            await AXIOS_INSTANCE.delete(
+              `/app/admin-ui/oauth2/session/${encodeURIComponent(userDn)}`,
+            )
+          } catch (error) {
+            console.error('Failed to revoke user session:', error)
+            dispatch(updateToast(true, 'warning', t('messages.session_revoke_failed')))
+            return
+          }
+        }
+
         dispatch(setWebhookModal(false))
         dispatch(updateToast(true, 'success', t('messages.user_updated_successfully')))
         await logUserUpdate(data, variables.data)
@@ -139,23 +168,6 @@ const UserEditPage = () => {
           action_message: userMessage,
         } as CustomUser,
       })
-      const anyKeyPresent = revokeSessionWhenFieldsModifiedInUserForm.some((key) =>
-        Object.prototype.hasOwnProperty.call(modifiedFields, key),
-      )
-      if (anyKeyPresent) {
-        const userDn = userDetails?.dn
-        if (!userDn) {
-          console.error('Cannot revoke session: user DN is undefined')
-          return
-        }
-        // Revoke user session after successful update of user details
-        try {
-          await revokeSessionMutation.mutateAsync({ userDn })
-          await AXIOS_INSTANCE.delete(`/app/admin-ui/oauth2/session/${encodeURIComponent(userDn)}`)
-        } catch (error) {
-          console.error('Failed to revoke user session:', error)
-        }
-      }
     },
     [
       personAttributes,
@@ -163,7 +175,6 @@ const UserEditPage = () => {
       persistenceType,
       standardFields,
       updateUserMutation,
-      revokeSessionMutation,
     ],
   )
 

@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Col, FormGroup, Input } from 'Components'
 import type { InputProps } from 'reactstrap'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
@@ -36,6 +37,7 @@ const GluuInputRow = <T = Record<string, unknown>,>({
   placeholder,
   inputClassName,
 }: GluuInputRowProps<T>) => {
+  const { t } = useTranslation()
   const [customType, setCustomType] = useState<string | null>(null)
   const { state } = useTheme()
   const themeColors = useMemo(() => getThemeColor(state?.theme ?? DEFAULT_THEME), [state?.theme])
@@ -152,7 +154,7 @@ const GluuInputRow = <T = Record<string, unknown>,>({
               type="button"
               className={classes.passwordToggle}
               onClick={setVisibility}
-              aria-label="Toggle password visibility"
+              aria-label={t(customType === 'text' ? 'password.hide' : 'password.show')}
             >
               {customType === 'text' ? <Visibility /> : <VisibilityOff />}
             </button>

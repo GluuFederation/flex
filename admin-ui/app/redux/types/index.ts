@@ -139,6 +139,7 @@ export interface ToastState {
   showToast: boolean
   message: string
   type: ToastType
+  onCloseRedirectUrl: string
 }
 
 // Profile Details State

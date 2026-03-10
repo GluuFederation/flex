@@ -1,13 +1,9 @@
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import DOMPurify from 'dompurify'
 import { RowProps } from 'Plugins/user-management/types/UserApiTypes'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { useStyles } from './UserDetailViewPage.style'
-
-const sanitizeValue = (value: string): string =>
-  DOMPurify.sanitize(value, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] })
 
 const UserDetailViewPage = ({ row }: RowProps) => {
   const { rowData } = row
@@ -68,8 +64,8 @@ const UserDetailViewPage = ({ row }: RowProps) => {
         <div className={classes.grid}>
           {fields.map((f) => (
             <div key={f.label} className={classes.field}>
-              <div className={classes.label}>{sanitizeValue(f.label)}</div>
-              <div className={classes.value}>{sanitizeValue(f.value) || '—'}</div>
+              <div className={classes.label}>{f.label}</div>
+              <div className={classes.value}>{f.value || '—'}</div>
             </div>
           ))}
         </div>

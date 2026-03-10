@@ -55,9 +55,9 @@ export const useStyles = makeStyles<User2FADevicesModalStylesParams>()((
       '& .btn-close': {
         margin: 0,
         padding: '0.5rem',
-        color: `${customColors.white} !important`,
+        color: isDark ? `${customColors.white} !important` : `${themeColors.fontColor} !important`,
         opacity: 1,
-        filter: 'brightness(0) invert(1)',
+        ...(isDark && { filter: 'brightness(0) invert(1)' }),
       },
       '& .btn-close:hover': {
         opacity: 0.8,

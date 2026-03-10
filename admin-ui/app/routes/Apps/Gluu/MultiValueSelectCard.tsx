@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import Autocomplete from '@mui/material/Autocomplete'
 import TextField from '@mui/material/TextField'
 import { GluuButton } from '@/components'
@@ -18,11 +19,12 @@ const MultiValueSelectCard = ({
   onChange,
   onBlur,
   disabled,
-  placeholder = 'Search Here',
+  placeholder,
   allowCustom = false,
   onRemoveField,
   doc_category: _doc_category,
 }: MultiValueSelectCardProps) => {
+  const { t } = useTranslation()
   const { state: themeState } = useTheme()
   const selectedTheme = themeState?.theme ?? DEFAULT_THEME
   const themeColors = getThemeColor(selectedTheme)
@@ -39,12 +41,13 @@ const MultiValueSelectCard = ({
     if (disabled) return
     const trimmed = pendingValue.trim()
     if (!trimmed) return
+    if (!allowCustom && !options.includes(trimmed)) return
     if (selectedItems.includes(trimmed)) return
     const next = [...selectedItems, trimmed]
     onChange(next)
     setPendingValue('')
     onBlur?.()
-  }, [disabled, pendingValue, selectedItems, onChange, onBlur])
+  }, [disabled, allowCustom, options, pendingValue, selectedItems, onChange, onBlur])
 
   const handleRemove = useCallback(() => {
     if (disabled) return
@@ -73,14 +76,21 @@ const MultiValueSelectCard = ({
           disableClearable
           options={availableOptions}
           value={pendingValue || undefined}
-          inputValue={pendingValue}
-          onInputChange={(_event, newInputValue) => setPendingValue(newInputValue)}
+          inputValue={allowCustom ? pendingValue : undefined}
+          onInputChange={(_event, newInputValue) => {
+            if (allowCustom) setPendingValue(newInputValue)
+          }}
           onChange={(_event, newValue) => setPendingValue(newValue ? String(newValue) : '')}
           disabled={disabled}
           className={classes.autocomplete}
           popupIcon={<ChevronIcon />}
           renderInput={(params) => (
-            <TextField {...params} placeholder={placeholder} size="small" fullWidth />
+            <TextField
+              {...params}
+              placeholder={placeholder ?? t('placeholders.search_here')}
+              size="small"
+              fullWidth
+            />
           )}
         />
         <div className={classes.buttons}>
@@ -89,7 +99,10 @@ const MultiValueSelectCard = ({
             className={classes.addButton}
             onClick={handleAdd}
             disabled={
-              disabled || (allowCustom ? !pendingValue.trim() : availableOptions.length === 0)
+              disabled ||
+              (allowCustom
+                ? !pendingValue.trim()
+                : availableOptions.length === 0 || !options.includes(pendingValue.trim()))
             }
             backgroundColor={themeColors.formFooter.apply.backgroundColor}
             textColor={themeColors.formFooter.apply.textColor}
@@ -97,7 +110,7 @@ const MultiValueSelectCard = ({
             useOpacityOnHover
             style={{ gap: 8, minWidth: 92 }}
           >
-            <span style={{ fontSize: 18, lineHeight: 1 }}>＋</span> Add
+            <span style={{ fontSize: 18, lineHeight: 1 }}>＋</span> {t('actions.add')}
           </GluuButton>
           <GluuButton
             type="button"
@@ -110,7 +123,7 @@ const MultiValueSelectCard = ({
             disableHoverStyles
             style={{ gap: 8, minWidth: 110 }}
           >
-            <i className="fa fa-trash" /> Remove
+            <i className="fa fa-trash" /> {t('actions.remove')}
           </GluuButton>
         </div>
       </div>
@@ -125,7 +138,7 @@ const MultiValueSelectCard = ({
                 onClick={() => handleRemoveByName(r)}
                 disabled={disabled}
                 aria-disabled={disabled}
-                aria-label={`Remove ${r}`}
+                aria-label={`${t('actions.remove')} ${r}`}
               >
                 ✕
               </button>
@@ -144,7 +157,7 @@ const MultiValueSelectCard = ({
           type="button"
           className={classes.removeFieldButton}
           onClick={onRemoveField}
-          aria-label="Remove field"
+          aria-label={t('actions.remove')}
         >
           <i className="fa fa-fw fa-close" style={{ color: themeColors.fontColor }} />
         </button>

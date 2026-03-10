@@ -32,7 +32,7 @@ const GluuViewDetailModal = ({
   customHeader,
 }: GluuViewDetailModalProps) => {
   const { t } = useTranslation()
-  const displayTitle = title ?? t('messages.2FA_details')
+  const displayTitle = title ?? t('messages.details')
   return (
     <Modal
       centered

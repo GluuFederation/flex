@@ -4,7 +4,7 @@ import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useAppSelector } from '@/redux/hooks'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useWebhookDialogAction } from 'Utils/hooks'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { adminUiFeatures, type AdminUiFeatureKey } from 'Plugins/admin/helper/utils'
 import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
 import type { FormikProps } from 'formik'
 import type { UserEditFormValues } from '../types/ComponentTypes'
@@ -16,6 +16,7 @@ interface UserFormCommitDialogProps {
   formik: FormikProps<UserEditFormValues>
   operations: GluuCommitDialogOperation[]
   autoCloseOnAccept?: boolean
+  webhookFeature: AdminUiFeatureKey
 }
 
 const UserFormCommitDialog = ({
@@ -25,13 +26,14 @@ const UserFormCommitDialog = ({
   formik,
   operations,
   autoCloseOnAccept = false,
+  webhookFeature,
 }: UserFormCommitDialogProps) => {
   const { hasCedarReadPermission } = useCedarling()
   const webhookResourceId = ADMIN_UI_RESOURCES.Webhooks
   const canReadWebhooks = hasCedarReadPermission(webhookResourceId)
   const webhookModal = useAppSelector((state) => state.webhookReducer?.webhookModal ?? false)
   const { webhookTriggerModal, onCloseModal, webhookCheckComplete } = useWebhookDialogAction({
-    feature: adminUiFeatures.users_edit,
+    feature: adminUiFeatures[webhookFeature],
     modal,
   })
   const showWebhookFirst = modal && webhookModal && canReadWebhooks

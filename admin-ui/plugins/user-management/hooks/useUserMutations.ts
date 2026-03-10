@@ -27,21 +27,42 @@ export const useDeleteUserWithAudit = (callbacks?: MutationCallbacks) => {
     async (inum: string, userMessage?: string, userData?: CustomUser) => {
       try {
         await mutation.mutateAsync({ inum })
-        await logUserDeletion(inum, userData).catch((auditError) => {
-          console.error('Audit logging failed:', auditError, { inum, userData })
-          dispatch(updateToast(true, 'warning', t('messages.audit_logging_failed')))
-        })
-        if (userData) {
-          triggerUserWebhook(userData)
-        }
-        dispatch(updateToast(true, 'success', t('messages.user_deleted_successfully')))
-        queryUtils.invalidateQueriesByKey(queryClient, getGetUserQueryKey())
-        callbacksRef.current?.onSuccess?.()
       } catch (error) {
         const errMsg = getErrorMessage(error as CaughtError)
         dispatch(updateToast(true, 'error', errMsg))
         callbacksRef.current?.onError?.(error instanceof Error ? error : new Error(String(error)))
         throw error
+      }
+
+      try {
+        await logUserDeletion(inum, userData)
+      } catch (auditError) {
+        console.error('Audit logging failed:', auditError, { inum })
+        dispatch(updateToast(true, 'warning', t('messages.audit_logging_failed')))
+      }
+
+      if (userData) {
+        try {
+          triggerUserWebhook(userData)
+        } catch (webhookError) {
+          console.error('Webhook trigger failed:', webhookError, { inum })
+          dispatch(updateToast(true, 'warning', t('messages.audit_logging_failed')))
+        }
+      }
+
+      try {
+        await queryUtils.invalidateQueriesByKey(queryClient, getGetUserQueryKey())
+      } catch (invalidateError) {
+        console.error('Query invalidation failed after delete:', invalidateError, { inum })
+        dispatch(updateToast(true, 'warning', t('messages.audit_logging_failed')))
+      }
+
+      try {
+        dispatch(updateToast(true, 'success', t('messages.user_deleted_successfully')))
+        callbacksRef.current?.onSuccess?.()
+      } catch (callbackError) {
+        console.error('Post-delete callback failed:', callbackError, { inum })
+        dispatch(updateToast(true, 'warning', t('messages.audit_logging_failed')))
       }
     },
     [mutation, dispatch, queryClient, t],

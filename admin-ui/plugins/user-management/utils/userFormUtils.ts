@@ -40,7 +40,7 @@ const processBirthdateAttribute = (
   const rawDate =
     attrValues.length > 0
       ? toDateLike(attrValues[0] as object)
-      : attrSingleValue
+      : attrSingleValue != null
         ? toDateLike(attrSingleValue as object)
         : null
 
@@ -153,12 +153,12 @@ export const setupCustomAttributes = (
           } else if (typeof firstValue === 'string') {
             boolValue = firstValue.toLowerCase() === 'true'
           } else if (typeof firstValue === 'object') {
-            const obj = firstValue as Record<string, unknown>
+            const obj = firstValue as Record<string, string | number | boolean>
             boolValue =
               'value' in obj && typeof obj.value === 'boolean'
-                ? (obj.value as boolean)
+                ? obj.value
                 : 'val' in obj && typeof obj.val === 'boolean'
-                  ? (obj.val as boolean)
+                  ? obj.val
                   : Boolean(firstValue)
           } else {
             boolValue = Boolean(firstValue)

@@ -77,6 +77,10 @@
     "add_custom_attributes": "Agregar atributos personalizados",
     "refresh": "Actualizar"
   },
+  "password": {
+    "show": "Mostrar contraseña",
+    "hide": "Ocultar contraseña"
+  },
   "serviceDownFallback": "Gluu Flex Admin UI no recibe respuesta del backend (Jans Config Api).",
   "roleNotFoundMessage": "Usuario no autorizado",
   "roleNotFoundDescription": "El usuario conectado no tiene un rol válido. Cerrando sesión de Admin UI",
@@ -572,7 +576,6 @@
     "customerEmail": "Correo del Cliente",
     "customerName": "Nombre del Cliente",
     "licenseDetails": "Detalles de la Licencia",
-    "username": "Usuario",
     "connectionUris": "URIs de Conexión",
     "schemaName": "Nombre del Esquema",
     "passwordEncryptionMethod": "Método de Cifrado de Contraseña",
@@ -922,6 +925,7 @@
     "view_client_details": "Ver detalles del cliente",
     "view_2FA_details": "Ver detalles de 2FA",
     "2FA_details": "Detalles de 2FA",
+    "details": "Detalles",
     "view_script_details": "Ver detalles del script personalizado",
     "add_new_user": "Agregar Usuario",
     "error_in_saving": "Error al guardar.",
@@ -997,8 +1001,9 @@
     "user_created_successfully": "Usuario creado exitosamente",
     "user_updated_successfully": "Usuario actualizado exitosamente",
     "user_deleted_successfully": "Usuario eliminado exitosamente",
-    "audit_logging_failed": "Usuario eliminado exitosamente, pero falló el registro de auditoría.",
+    "audit_logging_failed": "La acción se completó, pero falló el registro de auditoría.",
     "password_changed_successfully": "Contraseña cambiada exitosamente",
+    "session_revoke_failed": "La contraseña se cambió pero no se pudo revocar la sesión. El usuario puede seguir conectado.",
     "revokeUserSession": "La sesión del usuario será revocada, ya que uno o más de los siguientes campos han sido modificados: contraseña, estado, rol de administrador.",
     "device_deleted_successfully": "Dispositivo eliminado exitosamente",
     "loading_roles": "Cargando roles...",

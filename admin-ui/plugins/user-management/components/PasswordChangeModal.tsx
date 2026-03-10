@@ -74,13 +74,8 @@ const PasswordChangeModal = ({
   const changePasswordMutation = usePatchUserByInum({
     mutation: {
       onSuccess: async (data: CustomUser) => {
-        dispatch(updateToast(true, 'success', t('messages.password_changed_successfully')))
         await triggerUserWebhook(data)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
-        setPasswordModal(false)
-        toggle()
-        setPassword('')
-        onSuccess?.()
       },
       onError: (error: CaughtError) => {
         const errorMessage = getErrorMessage(error)
@@ -143,20 +138,35 @@ const PasswordChangeModal = ({
       const userDn = userDetails?.dn
       if (!userDn) {
         console.error('Failed to revoke user session: missing user DN')
-      } else {
-        try {
-          await revokeSessionMutation.mutateAsync({ userDn })
-          await AXIOS_INSTANCE.delete(`/app/admin-ui/oauth2/session/${encodeURIComponent(userDn)}`)
-        } catch (error) {
-          console.error('Failed to revoke user session:', error)
-        }
+        dispatch(
+          updateToast(true, 'warning', t('messages.session_revoke_failed')),
+        )
+        return
+      }
+      try {
+        await revokeSessionMutation.mutateAsync({ userDn })
+        await AXIOS_INSTANCE.delete(
+          `/app/admin-ui/oauth2/session/${encodeURIComponent(userDn)}`,
+        )
+        dispatch(
+          updateToast(true, 'success', t('messages.password_changed_successfully')),
+        )
+        setPasswordModal(false)
+        toggle()
+        setPassword('')
+        onSuccess?.()
+      } catch (error) {
+        console.error('Failed to revoke user session:', error)
+        dispatch(
+          updateToast(true, 'warning', t('messages.session_revoke_failed')),
+        )
       }
 
       logPasswordChange(userDetails.inum, auditPayload).catch((error) => {
         console.error('Failed to log password change:', error)
       })
     },
-    [userDetails, password, changePasswordMutation],
+    [userDetails, password, changePasswordMutation, revokeSessionMutation, dispatch, toggle, onSuccess, t],
   )
 
   const handlePasswordSubmit = useCallback((values: PasswordChangeFormValues) => {
@@ -293,7 +303,7 @@ const PasswordChangeModal = ({
                     type="button"
                     className={formClasses.toggleButton}
                     onClick={() => setShowPassword((prev) => !prev)}
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    aria-label={showPassword ? t('password.hide') : t('password.show')}
                   >
                     <i className={showPassword ? 'fa fa-eye' : 'fa fa-eye-slash'} />
                   </button>
@@ -327,7 +337,7 @@ const PasswordChangeModal = ({
                     type="button"
                     className={formClasses.toggleButton}
                     onClick={() => setShowConfirmPassword((prev) => !prev)}
-                    aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                    aria-label={showConfirmPassword ? t('password.hide') : t('password.show')}
                   >
                     <i className={showConfirmPassword ? 'fa fa-eye' : 'fa fa-eye-slash'} />
                   </button>

@@ -71,7 +71,7 @@ const UserClaimEntry = ({
       )}
       {data.name !== COUNTRY_ATTR && !data.oxMultiValuedAttribute && (
         <GluuRemovableInputRow
-          label={data.displayName || ''}
+          label={data.displayName || data.name}
           name={data.name}
           isDirect={true}
           value={
@@ -91,7 +91,7 @@ const UserClaimEntry = ({
       )}
       {data.name === COUNTRY_ATTR && !data.oxMultiValuedAttribute && (
         <GluuRemovableSelectRow
-          label={data.displayName || ''}
+          label={data.displayName || data.name}
           name={data.name}
           doc_category={typeof data.description === 'string' ? data.description : undefined}
           isDirect={true}
