@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
 import { isNumber } from 'lodash'
 import classNames from 'classnames'
 import { withPageConfig } from 'Components/Layout'
@@ -18,21 +18,24 @@ interface SectionProps {
 }
 
 const EmptyLayoutBase = ({ pageConfig, children, className }: EmptyLayoutProps) => {
+  const setVisibilityRef = useRef(pageConfig?.setElementsVisibility)
+  setVisibilityRef.current = pageConfig?.setElementsVisibility
+
   useEffect(() => {
-    pageConfig?.setElementsVisibility?.({
+    setVisibilityRef.current?.({
       navbarHidden: true,
       sidebarHidden: true,
       footerHidden: true,
     })
 
     return () => {
-      pageConfig?.setElementsVisibility?.({
+      setVisibilityRef.current?.({
         navbarHidden: false,
         sidebarHidden: false,
         footerHidden: false,
       })
     }
-  }, [pageConfig])
+  }, [])
 
   const emptyLayoutClass = classNames('fullscreen', className)
   return <div className={emptyLayoutClass}>{children}</div>
@@ -46,7 +49,7 @@ const Section = ({ className, children, center, width = '420px' }: SectionProps)
   return (
     <div className={sectionClass}>
       {center ? (
-        <div className="fullscrenn__section__child" style={{ maxWidth }}>
+        <div className="fullscreen__section__child" style={{ maxWidth }}>
           {children}
         </div>
       ) : (

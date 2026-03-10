@@ -93,7 +93,9 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
   const formik = useFormik<SmtpFormValues>({
     initialValues,
     onSubmit: () => {
-      if (!readOnly) toggle()
+      if (readOnly) return
+      setCommitOperations(buildSmtpChangedFieldOperations(initialValues, formik.values, t))
+      toggle()
     },
     validationSchema: smtpValidationSchema,
     validateOnMount: true,
@@ -101,10 +103,8 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
   })
 
   const handleApply = useCallback(() => {
-    if (readOnly) return
-    setCommitOperations(buildSmtpChangedFieldOperations(initialValues, formik.values, t))
-    toggle()
-  }, [readOnly, initialValues, formik.values, t, toggle])
+    formik.handleSubmit()
+  }, [formik])
 
   useEffect(() => {
     if (formikRef) {
@@ -133,9 +133,18 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
         toast.error(t('messages.mandatory_fields_required'))
         return
       }
-      const trimmedValues = trimObjectStrings(
-        formik.values as unknown as Record<string, unknown>,
-      ) as unknown as SmtpFormValues
+      const { smtp_authentication_account_password, key_store_password, ...rest } = formik.values
+      const trimmedRest = trimObjectStrings(
+        rest as unknown as Record<string, unknown>,
+      ) as unknown as Omit<
+        SmtpFormValues,
+        'smtp_authentication_account_password' | 'key_store_password'
+      >
+      const trimmedValues: SmtpFormValues = {
+        ...trimmedRest,
+        smtp_authentication_account_password,
+        key_store_password,
+      }
       handleSubmit(toSmtpConfiguration(trimmedValues), userMessage)
     },
     [readOnly, formik, handleSubmit, t],

@@ -47,7 +47,7 @@ const GluuInfo = ({ item, handler }: GluuInfoProps) => {
         </div>
         {!item.testStatus && (
           <GluuText variant="p" className={classes.detailText}>
-            {t('actions.server_response')}: false
+            {t('actions.server_response')}: {t('actions.server_fails_smtp')}
           </GluuText>
         )}
       </ModalBody>
