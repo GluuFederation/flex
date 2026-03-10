@@ -77,8 +77,10 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
   const [optimisticKeystoreEdit, setOptimisticKeystoreEdit] = useState(allowSmtpKeystoreEdit)
 
   useEffect(() => {
-    setOptimisticKeystoreEdit(allowSmtpKeystoreEdit)
-  }, [allowSmtpKeystoreEdit])
+    if (!loadingConfig) {
+      setOptimisticKeystoreEdit(allowSmtpKeystoreEdit)
+    }
+  }, [allowSmtpKeystoreEdit, loadingConfig])
 
   const toggle = useCallback(() => {
     if (readOnly) return
@@ -124,7 +126,9 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
       const errors = await formik.validateForm()
       if (Object.keys(errors).length > 0) {
         const touched: Record<string, boolean> = {}
-        Object.keys(errors).forEach((k) => (touched[k] = true))
+        for (const k of Object.keys(errors)) {
+          touched[k] = true
+        }
         formik.setTouched(touched)
         toast.error(t('messages.mandatory_fields_required'))
         return

@@ -32,7 +32,6 @@ export const useStyles = makeStyles<GluuInputRowStyleParams>()((
       '&:disabled': {
         opacity: 0.5,
         cursor: 'not-allowed',
-        pointerEvents: 'none',
       },
     },
     error: {

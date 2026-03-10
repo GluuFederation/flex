@@ -59,7 +59,7 @@ const GluuTooltip = ({
       role="tooltip"
       style={tooltipStyle}
       positionStrategy={positionStrategy}
-      {...(offset && { offset })}
+      {...(offset !== undefined && { offset })}
     >
       {tooltipContent}
     </ReactTooltip>

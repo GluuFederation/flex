@@ -333,6 +333,10 @@ describe('SmtpForm', () => {
       await act(async () => {
         fireEvent.click(applyBtn)
       })
+
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
     })
   })
 })

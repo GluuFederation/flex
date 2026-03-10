@@ -42,7 +42,7 @@ const GluuInfo = ({ item, handler }: GluuInfoProps) => {
             }}
           />
           <GluuText variant="p" className={classes.statusMessage}>
-            {item.testStatus ? t('actions.server_success_stmp') : t('actions.server_fails_smtp')}
+            {item.testStatus ? t('actions.server_success_smtp') : t('actions.server_fails_smtp')}
           </GluuText>
         </div>
         {!item.testStatus && (

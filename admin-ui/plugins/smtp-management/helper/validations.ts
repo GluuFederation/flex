@@ -17,14 +17,14 @@ export const getSmtpValidationSchema = (t: TFunction) =>
       .email(t('messages.smtp_email_invalid'))
       .required(t('messages.smtp_from_email_required')),
     requires_authentication: Yup.boolean(),
-    smtp_authentication_account_username: Yup.string().when('requires_authentication', {
-      is: true,
-      then: (schema) => schema.required(t('messages.smtp_username_required')),
-      otherwise: (schema) => schema.notRequired(),
-    }),
-    smtp_authentication_account_password: Yup.string().when('requires_authentication', {
-      is: true,
-      then: (schema) => schema.required(t('messages.smtp_password_required')),
-      otherwise: (schema) => schema.notRequired(),
-    }),
+    smtp_authentication_account_username: Yup.string().when(
+      'requires_authentication',
+      (values, schema) =>
+        values[0] ? schema.required(t('messages.smtp_username_required')) : schema.nullable(),
+    ),
+    smtp_authentication_account_password: Yup.string().when(
+      'requires_authentication',
+      (values, schema) =>
+        values[0] ? schema.required(t('messages.smtp_password_required')) : schema.nullable(),
+    ),
   })
