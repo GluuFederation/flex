@@ -2876,6 +2876,7 @@
             <div class="md-content" data-md-component="content">
               <article class="md-content__inner md-typeset">
                 
+
                   
 
   <nav class="md-tags" >
@@ -2944,7 +2945,7 @@
 <ul>
 <li>Download the release package from the Github Flex
   <a href="https://github.com/gluufederation/flex/releases">Releases</a>
-<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/nightly/flex-0.0.0-nightly.el8.x86_64.rpm<span class="w"> </span>-P<span class="w"> </span>/tmp
+<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable.el8.x86_64.rpm<span class="w"> </span>-P<span class="w"> </span>/tmp
 </code></pre></div></li>
 <li>GPG key is used to ensure the authenticity of the downloaded package during the installation process. If the key is
   not found, the <a href="#install-the-release-package">installation step</a> would fail. Use the commands below to download and
@@ -2958,16 +2959,16 @@
 </ul>
 <p>Verify integrity of the downloaded package by verifying published <code>sha256sum</code>.</p>
 <ul>
-<li>Go to the <a href="https://github.com/gluufederation/flex/releases">Flex Project Releases page</a> and copy the <code>sha256sum</code> value for the <code>flex-0.0.0-nightly.el8.x86_64.rpm</code> file:</li>
+<li>Go to the <a href="https://github.com/gluufederation/flex/releases">Flex Project Releases page</a> and copy the <code>sha256sum</code> value for the <code>flex-replace-flex-version-stable.el8.x86_64.rpm</code> file:</li>
 <li>Replace <code>paste-release-sha256sum</code> in the command below with the actual checksum you copied from the release page, and run the following command:
-      <div class="highlight"><span class="filename">Command</span><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;paste-release-sha256sum flex-0.0.0-nightly.el8.x86_64.rpm&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">&#39;s/^sha256://&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>flex-0.0.0-nightly.el8.x86_64.rpm.sha256sum<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sha256sum<span class="w"> </span>-c<span class="w"> </span>flex-0.0.0-nightly.el8.x86_64.rpm.sha256sum
+      <div class="highlight"><span class="filename">Command</span><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;paste-release-sha256sum flex-replace-flex-version-stable.el8.x86_64.rpm&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">&#39;s/^sha256://&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>flex-replace-flex-version-stable.el8.x86_64.rpm.sha256sum<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sha256sum<span class="w"> </span>-c<span class="w"> </span>flex-replace-flex-version-stable.el8.x86_64.rpm.sha256sum
 </code></pre></div></li>
 <li>Output similar to below should confirm the integrity of the downloaded package.
-    <div class="highlight"><span class="filename">Command</span><pre><span></span><code>flex-0.0.0-nightly.el8.x86_64.rpm:<span class="w"> </span>OK
+    <div class="highlight"><span class="filename">Command</span><pre><span></span><code>flex-replace-flex-version-stable.el8.x86_64.rpm:<span class="w"> </span>OK
 </code></pre></div></li>
 </ul>
 <h3 id="install-the-release-package">Install the Release Package<a class="headerlink" href="#install-the-release-package" title="Permanent link">#</a></h3>
-<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>./flex-0.0.0-nightly.el8.x86_64.rpm
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>./flex-replace-flex-version-stable.el8.x86_64.rpm
 </code></pre></div>
 <h2 id="run-the-setup-script">Run the setup script<a class="headerlink" href="#run-the-setup-script" title="Permanent link">#</a></h2>
 <p>Execute the setup script with command below:
@@ -3176,6 +3177,7 @@ Remove packages:
 
 
                 
+
               </article>
             </div>
           
@@ -3233,6 +3235,7 @@ Remove packages:
       <script id="__config" type="application/json">{"base": "../../..", "features": ["toc.autohide - search.suggest - search.highlight", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.indexes"], "search": "../../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "stable", "provider": "mike"}}</script>
     
     
+
       <script src="../../../assets/javascripts/bundle.13a4f30d.min.js"></script>
       
         <script src="../../../js/timeago.min.js"></script>
@@ -3240,5 +3243,16 @@ Remove packages:
         <script src="../../../js/timeago_mkdocs_material.js"></script>
       
     
+
+
+<img referrerpolicy="no-referrer-when-downgrade"
+     src="https://static.scarf.sh/a.png?x-pxid=2c347abc-a9b4-4c4b-bdc9-2682edbcc0c9"
+     width="0" height="0"/>
+
+
+  <script src="../../../assets/js/reo.js" defer></script>
+
+
+
   </body>
 </html>
