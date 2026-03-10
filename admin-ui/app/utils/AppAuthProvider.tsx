@@ -10,8 +10,6 @@ import { checkLicenseConfigValid, getUserInfoResponse } from '../redux/actions'
 import { getAPIAccessToken, checkLicensePresent } from 'Redux/actions'
 import GluuTimeoutModal from 'Routes/Apps/Gluu/GluuTimeoutModal'
 import GluuErrorModal from 'Routes/Apps/Gluu/GluuErrorModal'
-import GluuToast from 'Routes/Apps/Gluu/GluuToast'
-import { toast } from 'react-toastify'
 import { updateToast } from 'Redux/features/toastSlice'
 import {
   FetchRequestor,
@@ -245,17 +243,17 @@ export default function AppAuthProvider({ children }: Readonly<AppAuthProviderPr
                 setRoleNotFound(true)
                 const state = uuidv4()
                 const sessionEndpoint = `${authConfigs?.endSessionEndpoint ?? ''}?state=${state}&post_logout_redirect_uri=${localStorage.getItem('postLogoutRedirectUri') ?? ''}`
-                const redirect = () => {
-                  window.location.href = sessionEndpoint
-                }
-                toast.error(t('messages.no_valid_role_logout', { seconds: LOGOUT_DELAY_SECONDS }), {
-                  autoClose: LOGOUT_DELAY_SECONDS * 1000,
-                  onClose: redirect,
-                })
+                dispatch(
+                  updateToast(
+                    true,
+                    'error',
+                    t('messages.no_valid_role_logout', { seconds: LOGOUT_DELAY_SECONDS }),
+                    sessionEndpoint,
+                  ),
+                )
                 return
               }
 
-              // Rely on useEffect to dispatch getAPIAccessToken when userinfo/userinfo_jwt are set (avoids duplicate api-protection-token + session calls)
               setShowAdminUI(true)
             })
             .catch((oError: Error) => {
@@ -285,7 +283,6 @@ export default function AppAuthProvider({ children }: Readonly<AppAuthProviderPr
 
   return (
     <React.Fragment>
-      <GluuToast />
       <SessionTimeout isAuthenticated={showAdminUI} />
       <GluuTimeoutModal
         description={
