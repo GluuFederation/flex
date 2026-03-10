@@ -242,7 +242,15 @@ export default function AppAuthProvider({ children }: Readonly<AppAuthProviderPr
                 setShowAdminUI(false)
                 setRoleNotFound(true)
                 const state = uuidv4()
-                const sessionEndpoint = `${authConfigs?.endSessionEndpoint ?? ''}?state=${state}&post_logout_redirect_uri=${localStorage.getItem('postLogoutRedirectUri') ?? ''}`
+                const endSessionUrl = new URL(
+                  authConfigs?.endSessionEndpoint || window.location.origin,
+                )
+                endSessionUrl.searchParams.set('state', state)
+                endSessionUrl.searchParams.set(
+                  'post_logout_redirect_uri',
+                  localStorage.getItem('postLogoutRedirectUri') ?? '',
+                )
+                const sessionEndpoint = endSessionUrl.toString()
                 dispatch(
                   updateToast(
                     true,
