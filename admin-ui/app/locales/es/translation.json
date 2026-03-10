@@ -1023,7 +1023,8 @@
     "auth_error_token_fetch": "Error al obtener el token o la información del usuario",
     "auth_error_no_code": "No se pudo obtener el código de autorización",
     "mau_loading": "Cargando estadísticas...",
-    "vs_previous_period": "vs período anterior"
+    "vs_previous_period": "vs período anterior",
+    "no_valid_role_logout": "El usuario no tiene un rol válido. Se cerrará la sesión en {{seconds}} segundos."
   },
   "errors": {
     "attribute_create_failed": "Error al crear el atributo",
