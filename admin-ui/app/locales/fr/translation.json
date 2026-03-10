@@ -838,6 +838,7 @@
     "smtp_port_required": "Le numéro de port est requis.",
     "smtp_port_range": "Le port doit être compris entre 1 et 65535.",
     "smtp_port_integer": "Le port doit être un nombre entier.",
+    "smtp_port_numeric": "Le port doit être un nombre valide.",
     "smtp_connect_protection_required": "La protection de connexion est requise.",
     "smtp_from_name_required": "Le nom de l'expéditeur est requis.",
     "smtp_email_invalid": "Veuillez entrer une adresse e-mail valide.",

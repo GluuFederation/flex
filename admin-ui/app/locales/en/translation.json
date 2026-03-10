@@ -877,6 +877,7 @@
     "smtp_port_required": "Port number is required.",
     "smtp_port_range": "Port must be between 1 and 65535.",
     "smtp_port_integer": "Port must be an integer.",
+    "smtp_port_numeric": "Port must be a valid number.",
     "smtp_connect_protection_required": "Connection protection is required.",
     "smtp_from_name_required": "From name is required.",
     "smtp_email_invalid": "Please enter a valid email address.",

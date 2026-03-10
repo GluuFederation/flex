@@ -59,9 +59,8 @@ const Section = ({ className, children, center, width = '420px' }: SectionProps)
   )
 }
 
-const EmptyLayout = withPageConfig(EmptyLayoutBase) as ReturnType<typeof withPageConfig> & {
-  Section: typeof Section
-}
+const _EmptyLayout = withPageConfig(EmptyLayoutBase)
+const EmptyLayout = _EmptyLayout as typeof _EmptyLayout & { Section: typeof Section }
 EmptyLayout.Section = Section
 
 export { EmptyLayout }

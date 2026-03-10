@@ -839,6 +839,7 @@
     "smtp_port_required": "O número da porta é obrigatório.",
     "smtp_port_range": "A porta deve estar entre 1 e 65535.",
     "smtp_port_integer": "A porta deve ser um número inteiro.",
+    "smtp_port_numeric": "A porta deve ser um número válido.",
     "smtp_connect_protection_required": "A proteção de conexão é obrigatória.",
     "smtp_from_name_required": "O nome do remetente é obrigatório.",
     "smtp_email_invalid": "Insira um endereço de e-mail válido.",

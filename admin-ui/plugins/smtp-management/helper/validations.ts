@@ -8,6 +8,7 @@ export const getSmtpValidationSchema = (t: TFunction) =>
       .transform((_value, original) =>
         original === '' || original == null ? undefined : Number(original),
       )
+      .typeError(t('messages.smtp_port_numeric'))
       .required(t('messages.smtp_port_required'))
       .min(1, t('messages.smtp_port_range'))
       .max(65535, t('messages.smtp_port_range'))
