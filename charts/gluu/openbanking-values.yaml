@@ -94,7 +94,7 @@ global:
     additionalAnnotations: { }
     # -- Override the gateway that can be created by default. This is used when istio ingress has already been setup and the gateway exists.
     gateways: [ ]
-  # -- The Loadbalancer IP created by nginx or istio on clouds that provide static IPs. This is not needed if `global.fqdn` is globally resolvable.
+  # -- The Loadbalancer IP created by the ingress controller or gateway implementation on clouds that provide static IPs. This is not needed if `global.fqdn` is globally resolvable.
   lbIp: 22.22.22.22
   gateway-api:
     # -- Boolean flag to enable/disable the Kubernetes Gateway and HTTPRoute resources.
