@@ -190,7 +190,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
   const updateModifiedFields = useCallback(
     (name: string, value: unknown) => {
       setModifiedFields((prev) => {
-        if (isEmptyValue(value)) {
+        if (isEmptyValue(value) && !Array.isArray(value)) {
           const { [name]: _removed, ...rest } = prev
           void _removed
           return rest
@@ -231,7 +231,8 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
         const cleanedFields: Record<string, string | string[] | boolean> = {}
 
         for (const [key, value] of Object.entries(newFields)) {
-          if (!isEmptyValue(value)) {
+          // Preserve empty arrays as they represent intentional clearing of multi-valued fields
+          if (!isEmptyValue(value) || Array.isArray(value)) {
             cleanedFields[key] = value
           }
         }
