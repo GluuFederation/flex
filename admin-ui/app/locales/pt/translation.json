@@ -961,7 +961,8 @@
     "audit_description": "Visualizar e pesquisar registros de auditoria do sistema dentro de um intervalo de datas",
     "showing_entries": "Mostrando {{start}} a {{end}} de {{total}} entradas",
     "start_date_after_end": "A data de início não pode ser posterior à data de fim",
-    "both_dates_required": "As datas de início e fim são obrigatórias para filtragem por intervalo de datas"
+    "both_dates_required": "As datas de início e fim são obrigatórias para filtragem por intervalo de datas",
+    "no_valid_role_logout": "O utilizador não possui um papel válido. Sessão será encerrada em {{seconds}} segundos."
   },
   "errors": {
     "attribute_create_failed": "Erro ao criar atributo",

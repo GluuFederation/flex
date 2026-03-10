@@ -1,41 +1,10 @@
-{{- if .Values.gatewayApi.enabled -}}
+{{- if index .Values "gateway-api" "enabled" -}}
+
 {{- $fullName := include "flex-all-in-one.fullname" . -}}
+{{- $namespace := .Release.Namespace -}}
 {{- $svcName := .Values.service.name -}}
 {{- $svcPort := .Values.service.port -}}
-apiVersion: gateway.networking.k8s.io/v1
-kind: Gateway
-metadata:
-  name: {{ .Values.gatewayApi.name }}
-  namespace: {{ .Release.Namespace }}
-  labels:
-    app: {{ $fullName }}-gateway
-{{- if .Values.gatewayApi.gatewayLabels }}
-{{- toYaml .Values.gatewayApi.gatewayLabels | nindent 4 }}
-{{- end }}
-{{- if .Values.gatewayApi.gatewayAnnotations }}
-  annotations:
-{{- toYaml .Values.gatewayApi.gatewayAnnotations | nindent 4 }}
-{{- end }}
-spec:
-  gatewayClassName: {{ .Values.gatewayApi.gatewayClassName }}
-  {{- if .Values.lbIp }}
-  addresses:
-  - type: IPAddress
-    value: {{ .Values.lbIp }}
-  {{- end }}
-  listeners:
-  - name: http
-    port: {{ .Values.gatewayApi.httpPort }}
-    protocol: HTTP
-  - name: https
-    port: {{ .Values.gatewayApi.httpsPort }}
-    protocol: HTTPS
-    tls:
-      mode: Terminate
-      certificateRefs:
-      - name: {{ .Values.gatewayApi.tlsSecretName }}
 
----
 {{- /* ======================================================== */}}
 {{- /* ROUTE 1: PUBLIC CONFIGURATION (HTTP & HTTPS)             */}}
 {{- /* These endpoints can be accessible via HTTP (No Redirect) */}}
@@ -44,24 +13,25 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: {{ $fullName }}-routes-public
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ $namespace }}
   labels:
     app: {{ $fullName }}-routes
-{{- if .Values.gatewayApi.routeLabels }}
-{{- toYaml .Values.gatewayApi.routeLabels | nindent 4 }}
-{{- end }}
-{{- if .Values.gatewayApi.routeAnnotations }}
+    {{- if index .Values "gateway-api" "routes" "labels" }}
+    {{- toYaml (index .Values "gateway-api" "routes" "labels") | nindent 4 }}
+    {{- end }}
+  {{- if index .Values "gateway-api" "routes" "annotations" }}
   annotations:
-{{- toYaml .Values.gatewayApi.routeAnnotations | nindent 4 }}
-{{- end }}
+    {{- toYaml (index .Values "gateway-api" "routes" "annotations") | nindent 4 }}
+  {{- end }}
 spec:
   parentRefs:
-  - name: {{ .Values.gatewayApi.name }}
+  - name: {{ index .Values "gateway-api" "gateway" "name" }}
     # No sectionName: Attaches to ALL listeners (HTTP and HTTPS)
   hostnames:
   - {{ .Values.fqdn | quote }}
   rules:
-  
+  {{- /* DONT remove `/jans-auth` prefix in filters; they will be stripped in AIO image internally */}}
+
   {{- /* 1. OpenID Configuration */}}
   {{- if index .Values "auth-server" "ingress" "openidConfigEnabled" }}
   - matches:
@@ -265,25 +235,8 @@ spec:
     - name: {{ $svcName }}
       port: {{ $svcPort }}
   {{- end }}
-  
-  {{- /* 13. Jans Lock */}}
-  {{- if and (index .Values "auth-server" "lockEnabled") (index .Values "auth-server" "ingress" "lockEnabled") }}
-  - matches:
-    - path:
-        type: Exact
-        value: /jans-lock
-    filters:
-    - type: URLRewrite
-      urlRewrite:
-        path:
-          type: ReplaceFullPath
-          replaceFullPath: /jans-auth
-    backendRefs:
-    - name: {{ $svcName }}
-      port: {{ $svcPort }}
-  {{- end }}
 
-  {{- /* 14. Admin UI */}}
+  {{- /* 13. Admin UI */}}
   {{- if index .Values "admin-ui" "ingress" "adminUiEnabled" }}
   - matches:
     - path:
@@ -303,19 +256,19 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: {{ $fullName }}-routes-secure
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ $namespace }}
   labels:
     app: {{ $fullName }}-routes
-{{- if .Values.gatewayApi.routeLabels }}
-{{- toYaml .Values.gatewayApi.routeLabels | nindent 4 }}
-{{- end }}
-{{- if .Values.gatewayApi.routeAnnotations }}
+    {{- if index .Values "gateway-api" "routes" "labels" }}
+    {{- toYaml (index .Values "gateway-api" "routes" "labels") | nindent 4 }}
+    {{- end }}
+  {{- if index .Values "gateway-api" "routes" "annotations" }}
   annotations:
-{{- toYaml .Values.gatewayApi.routeAnnotations | nindent 4 }}
-{{- end }}
+    {{- toYaml (index .Values "gateway-api" "routes" "annotations") | nindent 4 }}
+  {{- end }}
 spec:
   parentRefs:
-  - name: {{ .Values.gatewayApi.name }}
+  - name: {{ index .Values "gateway-api" "gateway" "name" }}
     sectionName: https  # ONLY LISTEN ON HTTPS
   hostnames:
   - {{ .Values.fqdn | quote }}
@@ -376,17 +329,6 @@ spec:
       port: {{ $svcPort }}
   {{- end }}
 
-  {{- /* 6. SAML (/kc) */}}
-  {{- if .Values.saml.ingress.samlEnabled }}
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /kc
-    backendRefs:
-    - name: {{ $svcName }}
-      port: {{ $svcPort }}
-  {{- end }}
-
 ---
 {{- /* ======================================================== */}}
 {{- /* ROUTE 3: SECURE APPS (HTTP REDIRECT)                     */}}
@@ -396,26 +338,26 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: {{ $fullName }}-routes-redirect
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ $namespace }}
   labels:
     app: {{ $fullName }}-routes
-{{- if .Values.gatewayApi.routeLabels }}
-{{- toYaml .Values.gatewayApi.routeLabels | nindent 4 }}
-{{- end }}
-{{- if .Values.gatewayApi.routeAnnotations }}
+    {{- if index .Values "gateway-api" "routes" "labels" }}
+    {{- toYaml (index .Values "gateway-api" "routes" "labels") | nindent 4 }}
+    {{- end }}
+  {{- if index .Values "gateway-api" "routes" "annotations" }}
   annotations:
-{{- toYaml .Values.gatewayApi.routeAnnotations | nindent 4 }}
-{{- end }}
+    {{- toYaml (index .Values "gateway-api" "routes" "annotations") | nindent 4 }}
+  {{- end }}
 spec:
   parentRefs:
-  - name: {{ .Values.gatewayApi.name }}
+  - name: {{ index .Values "gateway-api" "gateway" "name" }}
     sectionName: http  # ONLY LISTEN ON HTTP
   hostnames:
   - {{ .Values.fqdn | quote }}
   rules:
-  
+
   {{- /* Same 6 Rules, but with Redirect Filter instead of BackendRef */}}
-  
+
   {{- /* 1. Auth Server Redirect */}}
   {{- if index .Values "auth-server" "ingress" "authServerEnabled" }}
   - matches:
@@ -481,17 +423,142 @@ spec:
         statusCode: 301
   {{- end }}
 
-  {{- /* 6. SAML Redirect */}}
-  {{- if .Values.saml.ingress.samlEnabled }}
+{{- if and (index .Values "auth-server" "lockEnabled") (index .Values "auth-server" "ingress" "lockAuditEnabled") }}
+---
+{{- /* ======================================================== */}}
+{{- /* ROUTE 4: gRPC APPS                                       */}}
+{{- /* These endpoints use gRPC                                 */}}
+{{- /* ======================================================== */}}
+apiVersion: gateway.networking.k8s.io/v1
+{{- if or (eq (index .Values "gateway-api" "gateway" "className") "istio") (eq (index .Values "gateway-api" "gateway" "className") "airlock-microgateway") }}
+{{- /* Use HTTPRoute in istio to avoid routes being overriden by another route type */}}
+kind: HTTPRoute
+{{- else }}
+kind: GRPCRoute
+{{- end }}
+metadata:
+  name: {{ $fullName }}-grpc-routes
+  namespace: {{ $namespace }}
+  labels:
+    app: {{ $fullName }}-routes
+    {{- if index .Values "gateway-api" "routes" "labels" }}
+    {{- toYaml (index .Values "gateway-api" "routes" "labels") | nindent 4 }}
+    {{- end }}
+  {{- if index .Values "gateway-api" "routes" "annotations" }}
+  annotations:
+    {{- toYaml (index .Values "gateway-api" "routes" "annotations") | nindent 4 }}
+  {{- end }}
+spec:
+  parentRefs:
+  - name: {{ index .Values "gateway-api" "gateway" "name" }}
+    sectionName: https
+  hostnames:
+  - {{ .Values.fqdn | quote }}
+  rules:
+  {{- /* 1. Lock Server Audit */}}
+  {{- /* List all routable methods explicitly to satisfy different gateway implementation */}}
+  {{- if or (eq (index .Values "gateway-api" "gateway" "className") "istio") (eq (index .Values "gateway-api" "gateway" "className") "airlock-microgateway") }}
+  {{- /* HTTPRoute matches for istio */}}
   - matches:
     - path:
         type: PathPrefix
-        value: /kc
-    filters:
-    - type: RequestRedirect
-      requestRedirect:
-        scheme: https
-        statusCode: 301
+        value: /io.jans.lock.audit.AuditService
+    backendRefs:
+    - name: {{ $svcName }}-grpc
+      port: 50051
+  {{- else }}
+  - matches:
+    - method:
+        service: io.jans.lock.audit.AuditService
+        method: ProcessLog
+    - method:
+        service: io.jans.lock.audit.AuditService
+        method: ProcessBulkLog
+    - method:
+        service: io.jans.lock.audit.AuditService
+        method: ProcessHealth
+    - method:
+        service: io.jans.lock.audit.AuditService
+        method: ProcessBulkHealth
+    - method:
+        service: io.jans.lock.audit.AuditService
+        method: ProcessTelemetry
+    - method:
+        service: io.jans.lock.audit.AuditService
+        method: ProcessBulkTelemetry
+    backendRefs:
+    - name: {{ $svcName }}-grpc
+      port: 50051
   {{- end }}
+{{- end }}
+
+{{- if or (index .Values "auth-server" "ingress" "authServerProtectedToken") (index .Values "auth-server" "ingress" "authServerProtectedRegister") }}
+---
+{{- /* ======================================================== */}}
+{{- /* ROUTE: SECURE APPS (PROTECTED HTTPS TRAFFIC)             */}}
+{{- /* These endpoints serve the app when reached on HTTPS      */}}
+{{- /* ======================================================== */}}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ $fullName }}-routes-protected
+  namespace: {{ $namespace }}
+  labels:
+    app: {{ $fullName }}-routes
+    {{- if index .Values "gateway-api" "routes" "labels" }}
+    {{- toYaml (index .Values "gateway-api" "routes" "labels") | nindent 4 }}
+    {{- end }}
+  {{- if index .Values "gateway-api" "routes" "annotations" }}
+  annotations:
+    {{- toYaml (index .Values "gateway-api" "routes" "annotations") | nindent 4 }}
+  {{- end }}
+spec:
+  parentRefs:
+  - name: {{ index .Values "gateway-api" "gateway" "name" }}
+    sectionName: https
+  hostnames:
+  - {{ .Values.fqdn | quote }}
+  rules:
+
+  {{- /* DONT remove `/jans-auth` prefix in filters; they will be stripped in AIO image internally */}}
+
+  {{- /* 1. Auth Server protected token (/jans-auth/restv1/token) */}}
+  {{- if index .Values "auth-server" "ingress" "authServerProtectedToken" }}
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /jans-auth/restv1/token
+    {{- if and (eq (index .Values "gateway-api" "gateway" "className") "nginx") (index .Values "gateway-api" "gateway" "verifyClientCertProtection") (index .Values "gateway-api" "additionalConfig" "nginx" "enableClientCertSnippets") }}
+    filters:
+    - type: ExtensionRef
+      extensionRef:
+        group: gateway.nginx.org
+        kind: SnippetsFilter
+        name: {{ .Release.Name }}-nginx-verify-client
+    {{- end }}
+    backendRefs:
+    - name: {{ $svcName }}
+      port: {{ $svcPort }}
+  {{- end }}
+
+  {{- /* 2. Auth Server protected register (/jans-auth/restv1/register) */}}
+  {{- if index .Values "auth-server" "ingress" "authServerProtectedRegister" }}
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /jans-auth/restv1/register
+    {{- if and (eq (index .Values "gateway-api" "gateway" "className") "nginx") (index .Values "gateway-api" "gateway" "verifyClientCertProtection") (index .Values "gateway-api" "additionalConfig" "nginx" "enableClientCertSnippets") }}
+    filters:
+    - type: ExtensionRef
+      extensionRef:
+        group: gateway.nginx.org
+        kind: SnippetsFilter
+        name: {{ .Release.Name }}-nginx-verify-client
+    {{- end }}
+    backendRefs:
+    - name: {{ $svcName }}
+      port: {{ $svcPort }}
+  {{- end }}
+{{- end }}
 
 {{- end }}
