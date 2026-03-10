@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useFormik, type FormikProps } from 'formik'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
@@ -9,18 +8,17 @@ import customColors from '@/customColors'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import GluuCommitDialogLegacy from 'Routes/Apps/Gluu/GluuCommitDialogLegacy'
+import UserFormCommitDialog from './UserFormCommitDialog'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
-import { GetAttributesParams, useGetAllAdminuiRoles } from 'JansConfigApi'
+import { useGetAllAdminuiRoles } from 'JansConfigApi'
 import UserClaimEntry from './UserClaimEntry'
 import PasswordChangeModal from './PasswordChangeModal'
 import AvailableClaimsPanel from './AvailableClaimsPanel'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { getUserValidationSchema, initializeCustomAttributes } from '../helper/validations'
 import { buildFormOperations, shouldDisableApplyButton } from '../utils'
-import { revokeSessionWhenFieldsModifiedInUserForm } from '../helper/constants'
 import { JANS_ADMIN_UI_ROLE_ATTR } from '../common/Constants'
-import { Typeahead } from 'react-bootstrap-typeahead'
+import MultiValueSelectCard from 'Routes/Apps/Gluu/MultiValueSelectCard'
+import type { FormFieldValue } from '../types/CommonTypes'
 import {
   UserFormProps,
   FormOperation,
@@ -34,34 +32,21 @@ import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './UserForm.style'
 
-function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<UserFormProps>) {
-  const dispatch = useDispatch()
+const UserForm = ({
+  onSubmitData,
+  userDetails,
+  personAttributes,
+  isSubmitting = false,
+}: Readonly<UserFormProps>) => {
   const { navigateBack } = useAppNavigation()
   const { t } = useTranslation()
   const DOC_SECTION = 'user'
   const [searchClaims, setSearchClaims] = useState('')
-  const [alertMessage, setAlertMessage] = useState('')
-  const [alertSeverity, setAlertSeverity] = useState<
-    'error' | 'warning' | 'info' | 'success' | undefined
-  >(undefined)
   const [selectedClaims, setSelectedClaims] = useState<PersonAttribute[]>([])
   const [modal, setModal] = useState(false)
   const [changePasswordModal, setChangePasswordModal] = useState(false)
   const [modifiedFields, setModifiedFields] = useState<ModifiedFields>({})
   const [operations, setOperations] = useState<FormOperation[]>([])
-  const [pendingRole, setPendingRole] = useState<string>('')
-
-  const resolveRoleOptionValue = useCallback((opt: unknown): string => {
-    if (typeof opt === 'string') return opt
-    if (opt && typeof opt === 'object') {
-      const rec = opt as Record<string, unknown>
-      const role = rec.role
-      if (typeof role === 'string') return role
-      const label = rec.label
-      if (typeof label === 'string') return label
-    }
-    return ''
-  }, [])
 
   const { data: rolesData, isLoading: rolesLoading, isError: rolesError } = useGetAllAdminuiRoles()
   const rolesToBeShown: string[] = useMemo(
@@ -70,11 +55,6 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
         .map((roleItem) => roleItem.role)
         .filter((role): role is string => Boolean(role)),
     [rolesData],
-  )
-
-  const { items: personAttributes, loading } = useSelector(
-    (state: { attributesReducerRoot: { items: PersonAttribute[]; loading: boolean } }) =>
-      state.attributesReducerRoot,
   )
 
   const personAttributesKey = useMemo(
@@ -91,7 +71,6 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const isDark = selectedTheme === THEME_DARK
   const { classes } = useStyles({ isDark, themeColors })
-  const options = useMemo(() => ({}) as Partial<GetAttributesParams>, [])
   const initialValues = useMemo(
     () => initializeCustomAttributes(userDetails || null, memoizedPersonAttributes),
     [userDetails, memoizedPersonAttributes],
@@ -125,17 +104,9 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
       return
     }
 
-    const anyKeyPresent = revokeSessionWhenFieldsModifiedInUserForm.some(
-      (key) => key in modifiedFields,
-    )
-    if (anyKeyPresent) {
-      setAlertMessage(t('messages.revokeUserSession'))
-      setAlertSeverity('warning')
-    }
-
     setOperations(buildFormOperations(modifiedFields))
     toggle()
-  }, [isSubmitting, formik.dirty, formik.isValid, modifiedFields, toggle, t])
+  }, [isSubmitting, formik.dirty, formik.isValid, modifiedFields, toggle])
 
   const handleNavigateBack = useCallback(() => {
     navigateBack(ROUTES.USER_MANAGEMENT)
@@ -161,12 +132,11 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
   const submitForm = useCallback(
     (usermessage: string) => {
       if (isSubmitting) {
-        return
+        return Promise.resolve()
       }
-      toggle()
-      onSubmitData(formik.values, modifiedFields, usermessage)
+      return onSubmitData(formik.values, modifiedFields, usermessage)
     },
-    [toggle, onSubmitData, formik.values, modifiedFields, isSubmitting],
+    [onSubmitData, formik.values, modifiedFields, isSubmitting],
   )
 
   const setSelectedClaimsToState = useCallback((data: PersonAttribute) => {
@@ -190,7 +160,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
     initializedRef.current = `${userKey}-${attrsKey}`
   }, [userDetails?.inum, personAttributesKey, memoizedPersonAttributes, setSelectedClaims])
 
-  const isEmptyValue = useCallback((value: unknown): boolean => {
+  const isEmptyValue = useCallback((value: FormFieldValue): boolean => {
     if (value === null || value === undefined) return true
     if (typeof value === 'string') return value.trim() === ''
     if (Array.isArray(value)) return value.length === 0
@@ -216,7 +186,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
   }, [modifiedFields, resetFormToInitialCustomAttributes])
 
   const updateModifiedFields = useCallback(
-    (name: string, value: unknown) => {
+    (name: string, value: FormFieldValue) => {
       setModifiedFields((prev) => {
         if (isEmptyValue(value)) {
           const { [name]: _removed, ...rest } = prev
@@ -274,7 +244,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
     (
       e:
         | React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-        | { target: { name: string; value: unknown } },
+        | { target: { name: string; value: FormFieldValue } },
     ) => {
       const { name, value } = e.target
       formik.setFieldValue(name, value)
@@ -284,7 +254,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
     [formik, updateModifiedFields],
   )
 
-  const blockingLoader = loading || isSubmitting
+  const blockingLoader = isSubmitting
 
   const roleClaim = useMemo(
     () => selectedClaims.find((c) => c.name === JANS_ADMIN_UI_ROLE_ATTR),
@@ -301,27 +271,19 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
     return []
   }, [formik.values])
 
-  const addRole = useCallback(() => {
-    const value = pendingRole.trim()
-    if (!value) return
-    if (selectedRoles.includes(value)) return
-    const next = [...selectedRoles, value]
-    formik.setFieldValue(JANS_ADMIN_UI_ROLE_ATTR, next)
-    formik.setFieldTouched(JANS_ADMIN_UI_ROLE_ATTR, true, false)
-    updateModifiedFields(JANS_ADMIN_UI_ROLE_ATTR, next)
-    setPendingRole('')
-  }, [pendingRole, selectedRoles, formik, updateModifiedFields])
+  const commitDialogOperations = useMemo(
+    () => operations.map(({ path, value }) => ({ path, value })),
+    [operations],
+  )
 
-  const removeRole = useCallback(() => {
-    const value = pendingRole.trim()
-    const target = value || selectedRoles[selectedRoles.length - 1]
-    if (!target) return
-    const next = selectedRoles.filter((r) => r !== target)
-    formik.setFieldValue(JANS_ADMIN_UI_ROLE_ATTR, next)
-    formik.setFieldTouched(JANS_ADMIN_UI_ROLE_ATTR, true, false)
-    updateModifiedFields(JANS_ADMIN_UI_ROLE_ATTR, next)
-    setPendingRole('')
-  }, [pendingRole, selectedRoles, formik, updateModifiedFields])
+  const handleRoleChange = useCallback(
+    (next: string[]) => {
+      formik.setFieldValue(JANS_ADMIN_UI_ROLE_ATTR, next)
+      formik.setFieldTouched(JANS_ADMIN_UI_ROLE_ATTR, true, false)
+      updateModifiedFields(JANS_ADMIN_UI_ROLE_ATTR, next)
+    },
+    [formik, updateModifiedFields],
+  )
 
   return (
     <GluuLoader blocking={blockingLoader}>
@@ -343,7 +305,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
               <div className={classes.sectionCard}>
                 {userDetails && (
                   <GluuInputRow
-                    label="INUM"
+                    label="fields.INUM"
                     name="inum"
                     doc_category={DOC_SECTION}
                     value={userDetails.inum || ''}
@@ -357,7 +319,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
                 <div className={classes.fieldsGrid}>
                   <GluuInputRow
                     doc_category={DOC_SECTION}
-                    label="First Name"
+                    label="fields.firstName"
                     name="givenName"
                     required
                     value={formik.values.givenName || ''}
@@ -375,7 +337,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
                   />
                   <GluuInputRow
                     doc_category={DOC_SECTION}
-                    label="Middle Name"
+                    label="fields.middleName"
                     name="middleName"
                     value={formik.values.middleName || ''}
                     formik={formik}
@@ -393,7 +355,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
 
                   <GluuInputRow
                     doc_category={DOC_SECTION}
-                    label="Last Name"
+                    label="fields.sn"
                     name="sn"
                     required
                     value={formik.values.sn || ''}
@@ -409,7 +371,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
                   />
                   <GluuInputRow
                     doc_category={DOC_SECTION}
-                    label="User Name"
+                    label="fields.userName"
                     name="userId"
                     required
                     value={formik.values.userId || ''}
@@ -426,7 +388,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
 
                   <GluuInputRow
                     doc_category={DOC_SECTION}
-                    label="Display Name"
+                    label="fields.displayName"
                     name="displayName"
                     required
                     value={formik.values.displayName || ''}
@@ -444,7 +406,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
                   />
                   <GluuInputRow
                     doc_category={DOC_SECTION}
-                    label="Email"
+                    label="fields.mail"
                     name="mail"
                     required
                     type="email"
@@ -463,7 +425,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
                   {!userDetails && (
                     <GluuInputRow
                       doc_category={DOC_SECTION}
-                      label="Password"
+                      label="fields.password"
                       required
                       name="userPassword"
                       type="password"
@@ -487,7 +449,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
                   {!userDetails && (
                     <GluuInputRow
                       doc_category={DOC_SECTION}
-                      label="Confirm Password"
+                      label="fields.confirm_password"
                       required
                       name="userConfirmPassword"
                       type="password"
@@ -512,7 +474,7 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
                   <div className={classes.fullRow}>
                     <GluuSelectRow
                       doc_category={DOC_SECTION}
-                      label="Status"
+                      label="fields.status"
                       name="status"
                       value={formik.values.status || ''}
                       values={['active', 'inactive']}
@@ -524,96 +486,59 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
                   </div>
 
                   {roleClaim && (
-                    <div className={`${classes.fullRow} ${classes.roleCard}`}>
-                      <div className={classes.roleHeader}>User Role:</div>
-                      <div className={classes.roleControls}>
-                        <Typeahead
-                          id="userRoleSearch"
-                          multiple={false}
-                          emptyLabel=""
-                          selected={pendingRole ? [pendingRole] : []}
-                          onChange={(selected) => {
-                            setPendingRole(resolveRoleOptionValue((selected as unknown[])?.[0]))
-                          }}
-                          onInputChange={(text) => setPendingRole(text)}
-                          options={rolesToBeShown}
-                          placeholder={
-                            rolesLoading
-                              ? 'Loading roles...'
-                              : rolesError
-                                ? 'Failed to load roles'
-                                : 'Search Here'
-                          }
-                          disabled={rolesLoading || rolesError}
-                        />
-                        <div className={classes.roleButtons}>
-                          <GluuButton
-                            type="button"
-                            onClick={addRole}
-                            backgroundColor={customColors.white}
-                            textColor={customColors.statusInactive}
-                            borderColor={customColors.white}
-                            disableHoverStyles
-                            style={{ gap: 8, minWidth: 92 }}
-                          >
-                            <span style={{ fontSize: 18, lineHeight: 1 }}>＋</span> Add
-                          </GluuButton>
-                          <GluuButton
-                            type="button"
-                            onClick={removeRole}
-                            backgroundColor={customColors.statusInactive}
-                            textColor={customColors.white}
-                            borderColor={customColors.statusInactive}
-                            disableHoverStyles
-                            style={{ gap: 8, minWidth: 110 }}
-                          >
-                            <i className="fa fa-trash" /> Remove
-                          </GluuButton>
-                        </div>
-                      </div>
-
-                      {selectedRoles.length > 0 && (
-                        <div className={classes.roleTags}>
-                          {selectedRoles.map((r) => (
-                            <span key={r} className={classes.roleTag}>
-                              {r}
-                            </span>
-                          ))}
-                        </div>
-                      )}
+                    <div className={classes.fullRow}>
+                      <MultiValueSelectCard
+                        label={t('fields.userRole')}
+                        name={JANS_ADMIN_UI_ROLE_ATTR}
+                        value={selectedRoles}
+                        options={rolesToBeShown}
+                        onChange={handleRoleChange}
+                        disabled={rolesLoading || rolesError}
+                        placeholder={
+                          rolesLoading
+                            ? 'Loading roles...'
+                            : rolesError
+                              ? 'Failed to load roles'
+                              : 'Search Here'
+                        }
+                        allowCustom={false}
+                        doc_category={roleClaim.description}
+                      />
                     </div>
                   )}
                 </div>
-              </div>
 
-              {nonRoleClaims.map((data, index) => (
-                <UserClaimEntry
-                  key={data.name}
-                  entry={index}
-                  data={data}
-                  formik={formik}
-                  handler={removeSelectedClaimsFromState}
-                  setModifiedFields={setModifiedFieldsWrapper}
-                  modifiedFields={modifiedFields}
-                />
-              ))}
-
-              {userDetails && (
-                <div className={classes.changePasswordRow}>
-                  <GluuButton
-                    type="button"
-                    className="gluu-change-password-btn"
-                    onClick={toggleChangePasswordModal}
-                    backgroundColor={customColors.white}
-                    textColor={customColors.primaryDark}
-                    borderColor={customColors.white}
-                    disableHoverStyles
-                    style={{ gap: 8, fontWeight: 600 }}
-                  >
-                    {t('actions.change_password')}
-                  </GluuButton>
+                <div className={classes.dynamicClaimsWrap}>
+                  {nonRoleClaims.map((data, index) => (
+                    <UserClaimEntry
+                      key={data.name}
+                      entry={index}
+                      data={data}
+                      formik={formik}
+                      handler={removeSelectedClaimsFromState}
+                      setModifiedFields={setModifiedFieldsWrapper}
+                      modifiedFields={modifiedFields}
+                    />
+                  ))}
                 </div>
-              )}
+
+                {userDetails && (
+                  <div className={classes.changePasswordRow}>
+                    <GluuButton
+                      type="button"
+                      className={`gluu-change-password-btn ${classes.changePasswordButton}`}
+                      onClick={toggleChangePasswordModal}
+                      backgroundColor={customColors.white}
+                      textColor={themeColors.fontColor}
+                      borderColor={themeColors.borderColor}
+                      disableHoverStyles
+                      style={{ gap: 8 }}
+                    >
+                      {t('actions.change_password')}
+                    </GluuButton>
+                  </div>
+                )}
+              </div>
             </div>
           </Col>
           <Col sm={4}>
@@ -624,8 +549,6 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
                 personAttributes={memoizedPersonAttributes}
                 selectedClaims={selectedClaims}
                 setSelectedClaimsToState={setSelectedClaimsToState}
-                dispatch={dispatch}
-                options={options}
               />
             </div>
           </Col>
@@ -650,15 +573,13 @@ function UserForm({ onSubmitData, userDetails, isSubmitting = false }: Readonly<
           applyButtonType="button"
           isLoading={isSubmitting}
         />
-        <GluuCommitDialogLegacy
+        <UserFormCommitDialog
           handler={toggle}
           modal={modal}
           onAccept={submitForm}
-          feature={adminUiFeatures.users_edit}
           formik={formik as FormikProps<UserEditFormValues>}
-          operations={operations}
-          alertMessage={alertMessage}
-          alertSeverity={alertSeverity}
+          operations={commitDialogOperations}
+          autoCloseOnAccept
         />
       </Form>
     </GluuLoader>

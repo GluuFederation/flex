@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback, useContext, useRef, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDispatch } from 'react-redux'
 import { DeleteOutlined } from '@mui/icons-material'
 import GluuViewDetailModal from 'Routes/Apps/Gluu/GluuViewDetailsModal'
 import { GluuTable } from '@/components/GluuTable'
@@ -14,6 +13,7 @@ import {
   getGetUserQueryKey,
 } from 'JansConfigApi'
 import { useQueryClient } from '@tanstack/react-query'
+import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import { formatDate } from '@/utils/dayjsUtils'
 import UserDeviceDetailViewPage from './UserDeviceDetailViewPage'
@@ -26,6 +26,7 @@ import {
   FidoRegistrationEntry,
   CustomUser,
 } from '../types'
+import type { CaughtError } from '../types/ErrorTypes'
 import { getErrorMessage, logUserUpdate } from '../helper/userAuditHelpers'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './User2FADevicesModal.style'
@@ -39,7 +40,7 @@ interface User2FADevicesModalProps {
 
 const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADevicesModalProps) => {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const themeContext = useContext(ThemeContext)
   const selectedTheme = useMemo(
@@ -70,7 +71,7 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
         dispatch(updateToast(true, 'success', t('messages.device_deleted_successfully')))
         await refetchFido2Details()
       },
-      onError: (error: unknown) => {
+      onError: (error: CaughtError) => {
         const errMsg = getErrorMessage(error)
         dispatch(updateToast(true, 'error', errMsg))
       },
@@ -85,7 +86,7 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
         await logUserUpdate(data, variables.data as CustomUser)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
       },
-      onError: (error: unknown) => {
+      onError: (error: CaughtError) => {
         const errMsg = getErrorMessage(error)
         dispatch(updateToast(true, 'error', errMsg))
       },
@@ -221,7 +222,7 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
         }
       }
     },
-    [userDetails, deleteFido2Mutation, updateUserData, otpDevicesList],
+    [userDetails, deleteFido2Mutation, updateUserData],
   )
 
   const [page, setPage] = useState(0)
@@ -248,6 +249,11 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
     [t, handleRemove2Fa],
   )
 
+  const handleRowsPerPageChange = useCallback((newSize: number) => {
+    setRowsPerPage(newSize)
+    setPage(0)
+  }, [])
+
   const pagination: PaginationConfig = useMemo(
     () => ({
       page,
@@ -255,12 +261,9 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
       totalItems: faDetails.length,
       rowsPerPageOptions: [5, 10, 25],
       onPageChange: setPage,
-      onRowsPerPageChange: (newSize) => {
-        setRowsPerPage(newSize)
-        setPage(0)
-      },
+      onRowsPerPageChange: handleRowsPerPageChange,
     }),
-    [page, rowsPerPage, faDetails.length],
+    [page, rowsPerPage, faDetails.length, handleRowsPerPageChange],
   )
 
   const paginatedData = useMemo(() => {

@@ -3,7 +3,6 @@ import { useLocation } from 'react-router-dom'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import UserForm from './UserForm'
 import { useTranslation } from 'react-i18next'
-import { useDispatch } from 'react-redux'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { GluuPageContent } from '@/components'
 import Alert from '@mui/material/Alert'
@@ -15,10 +14,13 @@ import {
   useGetAttributes,
   useRevokeUserSession,
   useGetPropertiesPersistence,
+  type JansAttribute,
 } from 'JansConfigApi'
 import { useQueryClient } from '@tanstack/react-query'
-import { getAttributesRoot } from 'Redux/features/attributesSlice'
+import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
+import { setWebhookModal } from 'Plugins/admin/redux/features/WebhookSlice'
+import type { CaughtError } from '../types/ErrorTypes'
 import { logUserUpdate, getErrorMessage } from '../helper/userAuditHelpers'
 import { triggerUserWebhook } from '../helper/userWebhookHelpers'
 import {
@@ -35,8 +37,8 @@ import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './UserFormPage.style'
 
-function UserEditPage() {
-  const dispatch = useDispatch()
+const UserEditPage = () => {
+  const dispatch = useAppDispatch()
   const { navigateBack } = useAppNavigation()
   const location = useLocation()
   const queryClient = useQueryClient()
@@ -52,20 +54,14 @@ function UserEditPage() {
       navigateBack(ROUTES.USER_MANAGEMENT)
       return
     }
-    const attrNames = userDetails.customAttributes
-      ?.map((a) => a.name)
-      .filter((name): name is string => !!name)
-    if (attrNames?.length) {
-      dispatch(getAttributesRoot({ options: { pattern: attrNames.join(','), limit: 100 } }))
-    }
-  }, [userDetails, dispatch])
+  }, [userDetails, navigateBack])
 
   const { data: attributesData, isLoading: loadingAttributes } = useGetAttributes({
     limit: 200,
     status: 'ACTIVE',
   })
   const personAttributes = useMemo<PersonAttribute[]>(
-    () => mapToPersonAttributes(attributesData?.entries),
+    () => mapToPersonAttributes(attributesData?.entries as JansAttribute[] | undefined),
     [attributesData?.entries],
   )
 
@@ -93,13 +89,14 @@ function UserEditPage() {
   const updateUserMutation = usePutUser({
     mutation: {
       onSuccess: async (data, variables) => {
+        dispatch(setWebhookModal(false))
         dispatch(updateToast(true, 'success', t('messages.user_updated_successfully')))
         await logUserUpdate(data, variables.data)
         triggerUserWebhook(data)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
         navigateBack(ROUTES.USER_MANAGEMENT)
       },
-      onError: (error: unknown) => {
+      onError: (error: CaughtError) => {
         const errMsg = getErrorMessage(error)
         dispatch(updateToast(true, 'error', errMsg))
       },
@@ -123,7 +120,7 @@ function UserEditPage() {
       )
       const standardFieldValues = getStandardFieldValues(values, standardFields)
 
-      updateUserMutation.mutate({
+      await updateUserMutation.mutateAsync({
         data: {
           inum: userDetails?.inum,
           ...standardFieldValues,
@@ -183,6 +180,7 @@ function UserEditPage() {
             <UserForm
               onSubmitData={submitData}
               userDetails={userDetails}
+              personAttributes={personAttributes}
               isSubmitting={isSubmitting}
             />
           </GluuLoader>
@@ -191,4 +189,4 @@ function UserEditPage() {
     </GluuPageContent>
   )
 }
-export default UserEditPage
+export default React.memo(UserEditPage)

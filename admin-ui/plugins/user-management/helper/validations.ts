@@ -88,7 +88,9 @@ const getUserProperty = (
   if (!userDetails) return undefined
 
   // Check if property exists directly on userDetails
-  const directValue = (userDetails as Record<string, unknown>)[propertyName]
+  const directValue = (userDetails as Record<string, string | string[] | boolean | object>)[
+    propertyName
+  ]
   if (directValue && typeof directValue === 'string') {
     return directValue
   }
@@ -117,10 +119,17 @@ const processBirthdateAttribute = (
   const attrSingleValue = customAttr.value
   if (!customAttr.name) return
 
+  const toDateLike = (v: object): string | number | Date | null => {
+    if (typeof v === 'string' || typeof v === 'number' || v instanceof Date) return v
+    if (v && typeof v === 'object' && 'value' in v) return toDateLike((v as { value: object }).value)
+    return null
+  }
   const rawDate =
     attrValues.length > 0
-      ? (attrValues[0] as unknown as string | number | Date | null)
-      : (attrSingleValue as unknown as string | number | Date | null)
+      ? toDateLike(attrValues[0] as object)
+      : attrSingleValue
+        ? toDateLike(attrSingleValue as object)
+        : null
 
   if (rawDate !== undefined && rawDate !== null) {
     if (isValidDate(rawDate)) {

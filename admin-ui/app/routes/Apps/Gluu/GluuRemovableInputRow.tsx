@@ -4,10 +4,11 @@ import GluuTooltip from './GluuTooltip'
 import applicationStyle from './styles/applicationStyle'
 import GluuToogle from 'Routes/Apps/Gluu/GluuToogle'
 import PropTypes from 'prop-types'
-import customColors from '@/customColors'
 import { FormikProps } from 'formik'
-import React from 'react'
+import React, { useMemo } from 'react'
 import type { InputProps } from 'reactstrap'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
 
 type ModifiedFieldValue = string | string[] | boolean
 type FormikValues = Record<string, unknown>
@@ -45,6 +46,8 @@ function GluuRemovableInputRow<TValues extends FormikValues = FormikValues>({
   modifiedFields,
   setModifiedFields,
 }: GluuRemovableInputRowProps<TValues>) {
+  const { state: themeState } = useTheme()
+  const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
   const currentValue = formik.values[name as keyof TValues] as string | boolean | undefined
   const isChecked = (formik.values[name as keyof TValues] as boolean | undefined) ?? false
 
@@ -93,11 +96,19 @@ function GluuRemovableInputRow<TValues extends FormikValues = FormikValues>({
         )}
         <div
           role="button"
-          style={applicationStyle.removableInputRow as React.CSSProperties}
+          style={{
+            ...(applicationStyle.removableInputRow as React.CSSProperties),
+            width: 32,
+            height: 32,
+            padding: 6,
+          }}
           onKeyDown={() => handler()}
           onClick={() => handler()}
         >
-          <i className={'fa fa-fw fa-close'} style={{ color: customColors.accentRed }}></i>
+          <i
+            className={'fa fa-fw fa-close'}
+            style={{ color: themeColors.fontColor, fontSize: 16 }}
+          ></i>
         </div>
       </FormGroup>
     </GluuTooltip>

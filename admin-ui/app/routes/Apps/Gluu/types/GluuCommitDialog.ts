@@ -22,6 +22,7 @@ export interface GluuCommitDialogProps {
   alertMessage?: string
   alertSeverity?: 'error' | 'warning' | 'info' | 'success'
   inputType?: 'text' | 'textarea' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search'
+  /** @deprecated Unused - webhook is decoupled from commit dialog. Kept for backward compatibility. */
   feature?: string
   isLicenseLabel?: boolean
   autoCloseOnAccept?: boolean

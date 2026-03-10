@@ -18,8 +18,8 @@ export const useStyles = makeStyles<User2FADevicesModalStylesParams>()((
     : customColors.white
   const borderColor = themeColors.borderColor
   const accentGreen = customColors.claimsSelectionBorder
-  const tableBorderColor = '#193F66'
-  const tableBg = '#091E34'
+  const tableBorderColor = themeColors.borderColor
+  const tableBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   /* Same border as dashboard, health, license, asset, webhook */
   const modalCardBorderStyle = getCardBorderStyle({
     isDark,
@@ -63,7 +63,7 @@ export const useStyles = makeStyles<User2FADevicesModalStylesParams>()((
       },
     },
     modalTitle: {
-      color: '#FFF',
+      color: themeColors.fontColor,
       fontFamily,
       fontSize: 36,
       fontWeight: 700,

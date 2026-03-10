@@ -86,4 +86,4 @@ const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
     </div>
   )
 }
-export default UserDeviceDetailViewPage
+export default React.memo(UserDeviceDetailViewPage)

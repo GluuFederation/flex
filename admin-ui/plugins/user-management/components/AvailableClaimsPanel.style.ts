@@ -1,7 +1,7 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-
-import customColors from '@/customColors'
+import { fontFamily } from '@/styles/fonts'
+import { getLoadingOverlayRgba } from '@/customColors'
 
 interface AvailableClaimsPanelStylesParams {
   themeColors: ThemeConfig
@@ -12,55 +12,96 @@ export const useStyles = makeStyles<AvailableClaimsPanelStylesParams>()((
   _,
   { themeColors, isDark },
 ) => {
-  const claimsBg = isDark
-    ? '#15395D'
-    : (themeColors.settings?.cardBackground ?? themeColors.card.background)
-  const claimsInnerBg = isDark ? '#091E34' : themeColors.background
-  const selectionBg = customColors.claimsSelectionBg
+  const claimsBg = isDark ? themeColors.inputBackground : themeColors.background
+  const claimsInnerBg = themeColors.settings?.cardBackground ?? themeColors.card.background
+  const selectionBg = themeColors.availableClaims.selectionBackground
+  const selectionColor = themeColors.availableClaims.selectionColor
+  const focusOutline = themeColors.availableClaims.focusOutline
+  const dividerColor = getLoadingOverlayRgba(themeColors.fontColor, isDark ? 0.25 : 0.18)
 
   return {
     root: {
       backgroundColor: `${claimsBg} !important`,
-      border: 'none',
+      border: isDark ? 'none' : `1px solid ${themeColors.borderColor}`,
       borderRadius: 6,
       display: 'flex',
       flexDirection: 'column',
       minHeight: 0,
+      minWidth: 0,
       overflow: 'hidden',
       flex: 1,
+      width: '100%',
     },
     header: {
       backgroundColor: `${claimsBg} !important`,
       padding: '14px 16px',
-      fontWeight: 600,
       color: `${themeColors.fontColor} !important`,
+      fontFamily,
+      fontSize: 18,
+      fontStyle: 'normal',
+      fontWeight: 700,
+      lineHeight: '32px',
+    },
+    divider: {
+      height: 1,
+      width: '100%',
+      flexShrink: 0,
+      backgroundColor: dividerColor,
     },
     content: {
       'padding': 16,
       'display': 'flex',
       'flexDirection': 'column',
       'gap': 12,
+      'flex': '1 1 auto',
       'minHeight': 0,
-      'flex': 1,
-      'overflow': 'hidden',
       '& input[type="search"], & input.form-control': {
         backgroundColor: `${claimsInnerBg} !important`,
         color: `${themeColors.fontColor} !important`,
       },
     },
+    searchWrapper: {
+      position: 'relative',
+      width: '100%',
+      flexShrink: 0,
+    },
     search: {
       width: '100%',
+      flexShrink: 0,
       borderRadius: 6,
       border: 'none !important',
       backgroundColor: `${claimsInnerBg} !important`,
       color: `${themeColors.fontColor} !important`,
+      paddingRight: 36,
+      boxSizing: 'border-box',
+    },
+    searchClearButton: {
+      'position': 'absolute',
+      'right': 10,
+      'top': '50%',
+      'transform': 'translateY(-50%)',
+      'background': 'transparent',
+      'border': 'none',
+      'cursor': 'pointer',
+      'padding': 4,
+      'display': 'flex',
+      'alignItems': 'center',
+      'justifyContent': 'center',
+      'color': themeColors.fontColor,
+      'fontSize': 16,
+      '&:hover': {
+        opacity: 0.8,
+      },
     },
     list: {
       listStyle: 'none',
       padding: 0,
       margin: 0,
-      flex: 1,
-      overflow: 'auto',
+      alignSelf: 'flex-start',
+      width: '100%',
+      maxHeight: '100%',
+      overflowY: 'auto',
+      overflowX: 'hidden',
       borderRadius: 6,
       border: 'none',
       backgroundColor: `${claimsInnerBg} !important`,
@@ -80,10 +121,10 @@ export const useStyles = makeStyles<AvailableClaimsPanelStylesParams>()((
       'lineHeight': '20px',
       '&:hover': {
         backgroundColor: selectionBg,
-        color: customColors.statusActive,
+        color: selectionColor,
       },
       '&:focus-visible': {
-        outline: `2px solid ${customColors.lightBlue}`,
+        outline: `2px solid ${focusOutline}`,
         outlineOffset: -2,
       },
     },

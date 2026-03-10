@@ -1,8 +1,7 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
 import { CEDARLING_CONFIG_SPACING, MAPPING_SPACING, BORDER_RADIUS } from '@/constants'
-import { fontFamily, fontSizes, fontWeights, letterSpacing } from '@/styles/fonts'
-import customColors from '@/customColors'
+import { fontFamily, fontSizes, fontWeights, letterSpacing, lineHeights } from '@/styles/fonts'
 
 interface UserFormStylesParams {
   isDark: boolean
@@ -11,8 +10,8 @@ interface UserFormStylesParams {
 
 export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeColors }) => {
   const settings = themeColors.settings
-  const formInputBg = settings?.formInputBackground ?? themeColors.inputBackground
   const inputBorderColor = settings?.inputBorder ?? themeColors.borderColor
+  const inputBg = settings?.cardBackground ?? themeColors.card.background
 
   return {
     formRoot: {
@@ -41,10 +40,10 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
         color: `${themeColors.textMuted} !important`,
       },
 
-      '& input, & select, & textarea, & .custom-select': {
-        backgroundColor: `${formInputBg} !important`,
+      '& input:not(.MuiOutlinedInput-input), & select, & textarea, & .custom-select': {
+        backgroundColor: `${inputBg} !important`,
         border: `1px solid ${inputBorderColor} !important`,
-        borderRadius: 0,
+        borderRadius: MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS,
         color: `${themeColors.fontColor} !important`,
         caretColor: themeColors.fontColor,
         minHeight: CEDARLING_CONFIG_SPACING.INPUT_HEIGHT,
@@ -61,6 +60,9 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
 
       '& input:focus, & input:active, & select:focus, & select:active, & textarea:focus, & textarea:active, & .custom-select:focus, & .custom-select:active, & .form-control:focus, & .form-control:active':
         {
+          backgroundColor: `${inputBg} !important`,
+          color: `${themeColors.fontColor} !important`,
+          border: `1px solid ${inputBorderColor} !important`,
           outline: 'none !important',
           boxShadow: 'none !important',
         },
@@ -72,10 +74,10 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
 
       '& input:-webkit-autofill, & input:-webkit-autofill:hover, & input:-webkit-autofill:focus, & input:-webkit-autofill:active':
         {
-          WebkitBoxShadow: `0 0 0 100px ${formInputBg} inset !important`,
+          WebkitBoxShadow: `0 0 0 100px ${inputBg} inset !important`,
           WebkitTextFillColor: `${themeColors.fontColor} !important`,
           color: `${themeColors.fontColor} !important`,
-          backgroundColor: `${formInputBg} !important`,
+          backgroundColor: `${inputBg} !important`,
           transition: 'background-color 5000s ease-in-out 0s',
         },
     },
@@ -88,10 +90,9 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
       flex: 1,
     },
     sectionCard: {
-      backgroundColor: isDark
-        ? '#15395D'
-        : (themeColors.settings?.cardBackground ?? themeColors.card.background),
-      border: `1px solid ${themeColors.borderColor}`,
+      /* Match Available Claims panel: lighter blue in dark, background in light */
+      backgroundColor: isDark ? themeColors.inputBackground : themeColors.background,
+      border: isDark ? 'none' : `1px solid ${themeColors.borderColor}`,
       borderRadius: BORDER_RADIUS.DEFAULT,
       padding: 20,
       boxSizing: 'border-box',
@@ -107,57 +108,6 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
     fullRow: {
       gridColumn: '1 / -1',
     },
-    roleCard: {
-      'backgroundColor': formInputBg,
-      'border': `1px solid ${inputBorderColor}`,
-      'borderRadius': BORDER_RADIUS.DEFAULT,
-      'padding': 16,
-      'boxSizing': 'border-box',
-      '& .rbt .form-control': {
-        borderRadius: '0 !important',
-      },
-    },
-    roleHeader: {
-      color: themeColors.fontColor,
-      fontWeight: 600,
-      marginBottom: 12,
-    },
-    roleControls: {
-      'display': 'grid',
-      'gridTemplateColumns': 'minmax(0, 1fr) auto auto',
-      'gap': 12,
-      'alignItems': 'center',
-      '@media (max-width: 900px)': {
-        gridTemplateColumns: '1fr',
-      },
-    },
-    roleButtons: {
-      'display': 'flex',
-      'gap': 12,
-      'justifyContent': 'flex-end',
-      '@media (max-width: 900px)': {
-        justifyContent: 'flex-start',
-      },
-    },
-    roleTags: {
-      marginTop: 12,
-      display: 'flex',
-      gap: 10,
-      flexWrap: 'wrap',
-    },
-    roleTag: {
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: 6,
-      padding: '4px 10px',
-      borderRadius: 999,
-      backgroundColor: customColors.statusActiveBg,
-      color: customColors.statusActive,
-      border: `1px solid ${customColors.statusActive}`,
-      fontSize: 12,
-      lineHeight: '18px',
-      fontWeight: 600,
-    },
     claimsPanelWrap: {
       flex: 1,
       minHeight: 0,
@@ -168,6 +118,27 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
       display: 'flex',
       justifyContent: 'flex-start',
       alignItems: 'center',
+      marginTop: 24,
+    },
+    dynamicClaimsWrap: {
+      marginTop: 18,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 18,
+    },
+    changePasswordButton: {
+      display: 'inline-flex',
+      height: 52,
+      padding: '20px 28px',
+      justifyContent: 'center',
+      alignItems: 'center',
+      color: themeColors.fontColor,
+      fontFamily,
+      fontSize: fontSizes.base,
+      fontStyle: 'normal',
+      fontWeight: fontWeights.bold,
+      lineHeight: lineHeights.normal,
+      letterSpacing: letterSpacing.button,
     },
   }
 })

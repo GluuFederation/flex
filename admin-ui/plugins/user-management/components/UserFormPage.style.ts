@@ -3,7 +3,6 @@ import type { ThemeConfig } from '@/context/theme/config'
 import { BORDER_RADIUS, SPACING } from '@/constants'
 import { fontFamily } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
-import customColors from '@/customColors'
 
 interface UserFormPageStylesParams {
   isDark: boolean
@@ -11,9 +10,7 @@ interface UserFormPageStylesParams {
 }
 
 export const useStyles = makeStyles<UserFormPageStylesParams>()((_, { isDark, themeColors }) => {
-  const cardBg = isDark
-    ? customColors.userFormPageBg
-    : (themeColors.settings?.cardBackground ?? themeColors.card.background)
+  const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
 
   const cardBorderStyle = getCardBorderStyle({ isDark })
 

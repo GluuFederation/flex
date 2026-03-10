@@ -3,7 +3,6 @@ import { DeleteOutlined, Edit, Add } from '@mui/icons-material'
 import LockOpenIcon from '@mui/icons-material/LockOpen'
 import UserDetailViewPage from './UserDetailViewPage'
 import User2FADevicesModal from './User2FADevicesModal'
-import { useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
@@ -13,14 +12,11 @@ import SetTitle from 'Utils/SetTitle'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
-import customColors from '@/customColors'
-import { useGetUser, useDeleteUser, getGetUserQueryKey } from 'JansConfigApi'
+import { useGetUser, getGetUserQueryKey } from 'JansConfigApi'
 import { useQueryClient } from '@tanstack/react-query'
+import { isDevelopment } from '@/utils/env'
 import { UserTableRowData, CustomUser } from '../types'
-import { updateToast } from 'Redux/features/toastSlice'
-import { logUserDeletion, getErrorMessage } from '../helper/userAuditHelpers'
-import { triggerUserWebhook } from '../helper/userWebhookHelpers'
+import { useDeleteUserWithAudit } from '../hooks/useUserMutations'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
@@ -31,14 +27,13 @@ import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import { invalidateQueriesByKey } from '@/utils/queryUtils'
 import { useStyles } from './UserListPage.style'
 
-function UserList(): JSX.Element {
+const UserList = (): JSX.Element => {
   const {
     authorizeHelper,
     hasCedarReadPermission,
     hasCedarWritePermission,
     hasCedarDeletePermission,
   } = useCedarling()
-  const dispatch = useDispatch()
   const queryClient = useQueryClient()
 
   const { t } = useTranslation()
@@ -90,38 +85,40 @@ function UserList(): JSX.Element {
     },
   )
 
-  const usersList: UserTableRowData[] = (usersData?.entries as UserTableRowData[]) ?? []
+  const usersList = useMemo(
+    () => (usersData?.entries as UserTableRowData[]) ?? [],
+    [usersData?.entries],
+  )
   const totalItems = usersData?.totalEntriesCount || 0
-  const loading = loadingUsers
 
-  const deleteUserMutation = useDeleteUser({
-    mutation: {
-      onSuccess: async (_data, variables) => {
-        dispatch(updateToast(true, 'success', t('messages.user_deleted_successfully')))
-        await logUserDeletion(variables.inum, (deleteData as CustomUser) || undefined)
-        await triggerUserWebhook(deleteData as Record<string, unknown>)
-        queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
-      },
-      onError: (error: unknown) => {
-        const errMsg = getErrorMessage(error)
-        dispatch(updateToast(true, 'error', errMsg))
-      },
-    },
-  })
+  const { deleteUser, isLoading: isDeleting } = useDeleteUserWithAudit()
 
+  const loading = loadingUsers || isDeleting
   const toggle = useCallback((): void => setModal((prev) => !prev), [])
-  const submitForm = (message: string): void => {
-    toggle()
-    if (deleteData?.inum) {
-      deleteData.action_message = message
-      deleteUserMutation.mutate({ inum: deleteData.inum })
-    }
-  }
+
+  const submitForm = useCallback(
+    async (userMessage: string) => {
+      const inumToDelete = deleteData?.inum
+      const userDataToDelete = deleteData as CustomUser | undefined
+      if (inumToDelete) {
+        try {
+          const userWithMessage = userDataToDelete
+            ? { ...userDataToDelete, action_message: userMessage }
+            : undefined
+          await deleteUser(inumToDelete, userMessage, userWithMessage)
+          refetchUsers()
+          setDeleteData(null)
+        } catch (error) {
+          if (isDevelopment) console.error('Delete user failed:', error)
+        }
+      }
+    },
+    [deleteData, deleteUser, refetchUsers],
+  )
   const { state: themeState } = useTheme()
   const selectedTheme = themeState.theme || DEFAULT_THEME
-  const themeColors = getThemeColor(selectedTheme)
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const isDark = selectedTheme === THEME_DARK
-  const iconDefaultColor = isDark ? themeColors.fontColor : customColors.darkGray
   SetTitle(t('titles.user_management'))
 
   const { navigateToRoute } = useAppNavigation()
@@ -279,6 +276,11 @@ function UserList(): JSX.Element {
 
   const emptyMessage = useMemo(() => t('messages.no_data_available'), [t])
 
+  const renderExpandedRow = useCallback(
+    (row: UserTableRowData) => <UserDetailViewPage row={{ rowData: row }} />,
+    [],
+  )
+
   return (
     <GluuLoader blocking={loading}>
       <User2FADevicesModal
@@ -316,18 +318,22 @@ function UserList(): JSX.Element {
               getRowKey={getRowKey}
               emptyMessage={emptyMessage}
               expandable
-              renderExpandedRow={(row) => <UserDetailViewPage row={{ rowData: row }} />}
+              renderExpandedRow={renderExpandedRow}
             />
           </div>
         </GluuViewWrapper>
         <GluuCommitDialog
           handler={toggle}
           modal={modal}
-          feature={adminUiFeatures.users_delete}
           onAccept={submitForm}
+          label={
+            modal && deleteData
+              ? `${t('messages.action_deletion_for')} ${t('messages.user_entity')} (${[deleteData.displayName, deleteData.userId, deleteData.inum].filter(Boolean).join(' - ')})`
+              : ''
+          }
         />
       </div>
     </GluuLoader>
   )
 }
-export default UserList
+export default React.memo(UserList)

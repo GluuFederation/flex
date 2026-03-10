@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import DOMPurify from 'dompurify'
 import { RowProps } from 'Plugins/user-management/types/UserApiTypes'
@@ -7,45 +7,47 @@ import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './UserDetailViewPage.style'
 
+const sanitizeValue = (value: string): string =>
+  DOMPurify.sanitize(value, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] })
+
 const UserDetailViewPage = ({ row }: RowProps) => {
   const { rowData } = row
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
-  const themeColors = getThemeColor(themeState.theme)
-  const { classes } = useStyles({ isDark: themeState.theme === THEME_DARK, themeColors })
+  const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
+  const isDark = themeState.theme === THEME_DARK
+  const { classes } = useStyles({ isDark, themeColors })
 
-  const sanitizeValue = (value: string): string => {
-    return DOMPurify.sanitize(value, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] })
+  interface CustomAttrWithValues {
+    name?: string
+    value?: string | number | boolean
+    values?: (string | number | boolean)[]
+    multiValued?: boolean
   }
 
   const roleValue = useMemo(() => {
-    const attrs = (rowData as unknown as { customAttributes?: Array<Record<string, unknown>> })
-      ?.customAttributes
+    const attrs = (rowData as { customAttributes?: CustomAttrWithValues[] })?.customAttributes
     if (!Array.isArray(attrs)) return ''
-    const roleAttr = attrs.find((a) => a?.name === 'jansAdminUIRole')
+    const roleAttr = attrs.find((a) => a?.name === 'jansAdminUIRole') as
+      | CustomAttrWithValues
+      | undefined
     if (!roleAttr) return ''
 
-    const asAny = roleAttr as {
-      value?: unknown
-      values?: unknown
-      multiValued?: boolean
-    }
-
-    if (Array.isArray(asAny.values)) {
-      const values = asAny.values.filter((v): v is string => typeof v === 'string')
+    if (Array.isArray(roleAttr.values)) {
+      const values = roleAttr.values.filter((v): v is string => typeof v === 'string')
       return values.join(', ')
     }
 
-    return typeof asAny.value === 'string'
-      ? asAny.value
-      : typeof asAny.value === 'number' || typeof asAny.value === 'boolean'
-        ? String(asAny.value)
+    return typeof roleAttr.value === 'string'
+      ? roleAttr.value
+      : typeof roleAttr.value === 'number' || typeof roleAttr.value === 'boolean'
+        ? String(roleAttr.value)
         : ''
   }, [rowData])
 
   const lastName = useMemo(() => {
     const familyName = (rowData as { familyName?: string }).familyName
-    const sn = (rowData as unknown as { sn?: string }).sn
+    const sn = (rowData as { sn?: string }).sn
     return familyName || sn || ''
   }, [rowData])
 
@@ -78,4 +80,4 @@ const UserDetailViewPage = ({ row }: RowProps) => {
   )
 }
 
-export default UserDetailViewPage
+export default React.memo(UserDetailViewPage)

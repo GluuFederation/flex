@@ -6,7 +6,7 @@ import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { CustomUser } from '../types/UserApiTypes'
 
-export function triggerUserWebhook(data: CustomUser): void {
+export const triggerUserWebhook = (data: CustomUser): void => {
   try {
     const dispatch: AppDispatch = store.dispatch
     dispatch(

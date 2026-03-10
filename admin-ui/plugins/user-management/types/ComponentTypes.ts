@@ -33,8 +33,9 @@ export interface UserFormProps {
     values: UserEditFormValues,
     modifiedFields: ModifiedFields,
     usermessage: string,
-  ) => void
+  ) => void | Promise<void>
   userDetails?: CustomUser | null
+  personAttributes: PersonAttribute[]
   isSubmitting?: boolean
 }
 

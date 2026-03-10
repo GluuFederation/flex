@@ -132,18 +132,6 @@ export interface HealthState {
   loading: boolean
 }
 
-// Attributes State
-export interface AttributeItem {
-  displayName?: string
-  [key: string]: unknown
-}
-
-export interface AttributesState {
-  items: AttributeItem[]
-  loading: boolean
-  initLoading: boolean
-}
-
 // Toast State
 export type ToastType = 'success' | 'error' | 'warning' | 'info'
 
@@ -371,7 +359,6 @@ export interface CoreAppState {
   licenseReducer: LicenseState
   oidcDiscoveryReducer: OidcDiscoveryState
   healthReducer: HealthState
-  attributesReducerRoot: AttributesState
   toastReducer: ToastState
   profileDetailsReducer: ProfileDetailsState
   cedarPermissions: CedarPermissionsState

@@ -585,7 +585,7 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
                       style={{
                         borderColor: customColors.lightBlue,
                       }}
-                      label="Username"
+                      label={t('fields.username')}
                       variant="outlined"
                     />
                   )}
