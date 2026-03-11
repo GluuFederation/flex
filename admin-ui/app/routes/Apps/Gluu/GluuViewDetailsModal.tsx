@@ -13,7 +13,6 @@ interface GluuViewDetailModalProps {
   headerStyle?: React.CSSProperties
   modalClassName?: string
   modalStyle?: React.CSSProperties
-  /** Custom header content - when provided, replaces default ModalHeader (for layout like 2FA: close on row 1, title on row 2) */
   customHeader?: React.ReactNode
 }
 

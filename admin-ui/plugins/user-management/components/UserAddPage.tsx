@@ -17,6 +17,7 @@ import { updateToast } from 'Redux/features/toastSlice'
 import type { CaughtError } from '../types/ErrorTypes'
 import { logUserCreation, getErrorMessage } from '../helper/userAuditHelpers'
 import { triggerUserWebhook } from '../helper/userWebhookHelpers'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { mapToPersonAttributes, buildCustomAttributesFromValues } from '../utils'
 import { PersonAttribute } from '../types/UserApiTypes'
 import type { CustomUser } from '../types/UserApiTypes'
@@ -48,7 +49,7 @@ const UserAddPage = () => {
       onSuccess: async (data, variables) => {
         dispatch(updateToast(true, 'success', t('messages.user_created_successfully')))
         await logUserCreation(data, variables.data)
-        triggerUserWebhook(data)
+        triggerUserWebhook(data, adminUiFeatures.users_add)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
         navigateBack(ROUTES.USER_MANAGEMENT)
       },

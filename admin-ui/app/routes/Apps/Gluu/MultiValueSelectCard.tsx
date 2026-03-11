@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import Autocomplete from '@mui/material/Autocomplete'
 import TextField from '@mui/material/TextField'
 import { GluuButton } from '@/components'
-import customColors from '@/customColors'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
@@ -117,9 +116,9 @@ const MultiValueSelectCard = ({
             className={classes.removeButton}
             onClick={handleRemove}
             disabled={disabled || selectedItems.length === 0}
-            backgroundColor={customColors.statusInactive}
-            textColor={customColors.white}
-            borderColor={customColors.statusInactive}
+            backgroundColor={themeColors.settings.removeButton.bg}
+            textColor={themeColors.settings.removeButton.text}
+            borderColor={themeColors.settings.removeButton.bg}
             disableHoverStyles
             style={{ gap: 8, minWidth: 110 }}
           >

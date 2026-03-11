@@ -31,6 +31,7 @@ import { Card, CardBody } from 'Components'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -483,7 +484,7 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
     if (loading) {
       return (
         <div style={{ textAlign: 'center', padding: '20px' }}>
-          <p>{t('messages.request_waiting_message')}</p>
+          <GluuText variant="p">{t('messages.request_waiting_message')}</GluuText>
         </div>
       )
     }
@@ -499,7 +500,7 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
         : t('messages.no_sessions_found')
       return (
         <div style={{ textAlign: 'center', padding: '20px' }}>
-          <p>{message}</p>
+          <GluuText variant="p">{message}</GluuText>
         </div>
       )
     }

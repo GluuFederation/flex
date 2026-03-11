@@ -12,7 +12,6 @@ import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import type { RootState } from '@/redux/sagas/types/audit'
 import type { GluuCommitDialogProps } from './types/index'
-import customColors from '@/customColors'
 import { useStyles } from './styles/GluuCommitDialog.style'
 import {
   getCommitMessageValidationError,
@@ -217,7 +216,7 @@ const GluuCommitDialog = ({
               variant="span"
               className={classes.errorMessage}
               style={{
-                color: customColors.statusInactive,
+                color: themeColors.settings.removeButton.bg,
                 visibility: errorMessageText ? 'visible' : 'hidden',
               }}
               id={`${USER_MESSAGE}-error`}
@@ -228,8 +227,8 @@ const GluuCommitDialog = ({
               <GluuButton
                 onClick={handleAccept}
                 disabled={!isValid || isSubmitting}
-                backgroundColor={customColors.statusActive}
-                textColor={customColors.white}
+                backgroundColor={themeColors.formFooter.back.backgroundColor}
+                textColor={themeColors.formFooter.back.textColor}
                 borderColor="transparent"
                 padding="8px 28px"
                 minHeight="40"

@@ -6,13 +6,16 @@ import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { CustomUser } from '../types/UserApiTypes'
 
-export const triggerUserWebhook = (data: CustomUser): void => {
+export const triggerUserWebhook = (
+  data: CustomUser,
+  feature: string = adminUiFeatures.users_edit,
+): void => {
   try {
     const dispatch: AppDispatch = store.dispatch
     dispatch(
       triggerWebhook({
         createdFeatureValue: data as Record<string, JsonValue>,
-        feature: adminUiFeatures.users_edit,
+        feature,
       }),
     )
   } catch (error) {

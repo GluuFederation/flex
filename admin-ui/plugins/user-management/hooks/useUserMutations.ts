@@ -8,6 +8,7 @@ import { updateToast } from 'Redux/features/toastSlice'
 import type { CaughtError } from '../types/ErrorTypes'
 import { logUserDeletion, getErrorMessage } from '../helper/userAuditHelpers'
 import { triggerUserWebhook } from '../helper/userWebhookHelpers'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import type { CustomUser } from '../types'
 
 export interface MutationCallbacks {
@@ -41,13 +42,21 @@ export const useDeleteUserWithAudit = (callbacks?: MutationCallbacks) => {
         dispatch(updateToast(true, 'warning', t('messages.audit_logging_failed')))
       }
 
+      console.log('[Webhook] Delete flow:', {
+        hasUserData: !!userData,
+        inum,
+        feature: adminUiFeatures.users_delete,
+      })
       if (userData) {
         try {
-          triggerUserWebhook(userData)
+          triggerUserWebhook(userData, adminUiFeatures.users_delete)
+          console.log('[Webhook] Delete: triggerUserWebhook called successfully')
         } catch (webhookError) {
           console.error('Webhook trigger failed:', webhookError, { inum })
           dispatch(updateToast(true, 'warning', t('messages.webhook_trigger_failed')))
         }
+      } else {
+        console.warn('[Webhook] Delete: skipped — userData is undefined')
       }
 
       try {

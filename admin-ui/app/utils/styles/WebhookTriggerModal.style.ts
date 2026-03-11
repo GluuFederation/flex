@@ -27,6 +27,7 @@ export const useWebhookTriggerModalStyles = makeStyles<StylesParams>()((
     },
     modalContainer: {
       ...cardBorderStyle,
+      position: 'fixed',
       zIndex: WEBHOOK_MODAL_Z_INDEX + 1,
       backgroundColor: cardBg,
       outline: 'none',

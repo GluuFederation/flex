@@ -23,6 +23,7 @@ import { setWebhookModal } from 'Plugins/admin/redux/features/WebhookSlice'
 import type { CaughtError } from '../types/ErrorTypes'
 import { logUserUpdate, getErrorMessage } from '../helper/userAuditHelpers'
 import { triggerUserWebhook } from '../helper/userWebhookHelpers'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import {
   mapToPersonAttributes,
   buildCustomAttributesFromValues,
@@ -131,7 +132,7 @@ const UserEditPage = () => {
         } catch {
           dispatch(updateToast(true, 'error', t('messages.audit_logging_failed')))
         }
-        triggerUserWebhook(data)
+        triggerUserWebhook(data, adminUiFeatures.users_edit)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
         navigateBack(ROUTES.USER_MANAGEMENT)
       },
