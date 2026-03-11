@@ -52,7 +52,9 @@ const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
 
       {deviceData?.deviceData && (
         <Row>
-          <GluuText variant="h5" style={{ borderBottom: '2px solid', fontWeight: 'bold' }}>Device Information</GluuText>
+          <GluuText variant="h5" style={{ borderBottom: '2px solid', fontWeight: 'bold' }}>
+            Device Information
+          </GluuText>
           <Col sm={6} xl={4}>
             <GluuFormDetailRow
               label="fields.deviceName"

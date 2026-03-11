@@ -42,21 +42,13 @@ export const useDeleteUserWithAudit = (callbacks?: MutationCallbacks) => {
         dispatch(updateToast(true, 'warning', t('messages.audit_logging_failed')))
       }
 
-      console.log('[Webhook] Delete flow:', {
-        hasUserData: !!userData,
-        inum,
-        feature: adminUiFeatures.users_delete,
-      })
       if (userData) {
         try {
           triggerUserWebhook(userData, adminUiFeatures.users_delete)
-          console.log('[Webhook] Delete: triggerUserWebhook called successfully')
         } catch (webhookError) {
           console.error('Webhook trigger failed:', webhookError, { inum })
           dispatch(updateToast(true, 'warning', t('messages.webhook_trigger_failed')))
         }
-      } else {
-        console.warn('[Webhook] Delete: skipped — userData is undefined')
       }
 
       try {
