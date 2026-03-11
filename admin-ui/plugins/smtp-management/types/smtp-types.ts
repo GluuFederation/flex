@@ -1,3 +1,4 @@
+import type { FormikProps } from 'formik'
 import { SmtpConfiguration, SmtpTest } from 'JansConfigApi'
 
 export type ConnectProtection = 'None' | 'StartTls' | 'SslTls'
@@ -21,10 +22,11 @@ export interface SmtpFormValues {
 
 // Props for SmtpForm component
 export interface SmtpFormProps {
-  item: SmtpConfiguration
+  item: SmtpConfiguration | undefined
   handleSubmit: (data: SmtpConfiguration, userMessage: string) => void
   allowSmtpKeystoreEdit: boolean
   onTestSmtp: (testData: SmtpTest) => void
-  formikRef?: React.MutableRefObject<any>
+  formikRef?: React.MutableRefObject<FormikProps<SmtpFormValues> | null>
   readOnly: boolean
+  testButtonEnabled: boolean
 }

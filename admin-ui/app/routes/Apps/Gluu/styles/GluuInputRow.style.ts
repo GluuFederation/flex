@@ -10,7 +10,6 @@ export const useStyles = makeStyles<GluuInputRowStyleParams>()((
   theme,
   { errorColor, fontColor, stepperHoverBg },
 ) => {
-  const borderColor = fontColor ? `${fontColor}40` : theme.palette.divider
   return {
     colWrapper: {
       'position': 'relative',
@@ -33,7 +32,7 @@ export const useStyles = makeStyles<GluuInputRowStyleParams>()((
     },
     passwordToggle: {
       'position': 'absolute',
-      'right': 18,
+      'right': 20,
       'top': '50%',
       'transform': 'translateY(-50%)',
       'background': 'none',
@@ -42,10 +41,10 @@ export const useStyles = makeStyles<GluuInputRowStyleParams>()((
       'cursor': 'pointer',
       'display': 'flex',
       'alignItems': 'center',
-      'justifyContent': 'center',
       'color': fontColor ?? 'inherit',
-      '& .MuiSvgIcon-root': {
-        fontSize: 22,
+      '&:disabled': {
+        opacity: 0.5,
+        cursor: 'not-allowed',
       },
     },
     error: {
@@ -78,7 +77,7 @@ export const useStyles = makeStyles<GluuInputRowStyleParams>()((
       'width': 36,
       'display': 'flex',
       'flexDirection': 'column',
-      'borderLeft': `1px solid ${borderColor}`,
+      'borderLeft': 'none',
       'pointerEvents': 'none',
       '& button': {
         pointerEvents: 'auto',
@@ -104,7 +103,7 @@ export const useStyles = makeStyles<GluuInputRowStyleParams>()((
         cursor: 'not-allowed',
       },
       '&:first-of-type': {
-        borderBottom: `1px solid ${borderColor}`,
+        borderBottom: 'none',
       },
     },
   }

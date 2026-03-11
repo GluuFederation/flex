@@ -2,12 +2,14 @@ import React, { useCallback, useState, useRef, useEffect, useMemo } from 'react'
 import { FormikProps } from 'formik'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import { CardBody, Card } from 'Components'
+import { GluuPageContent } from '@/components'
 import SetTitle from 'Utils/SetTitle'
 import { useTranslation } from 'react-i18next'
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppDispatch, useAppSelector, getRootState } from '@/redux/hooks'
 import { useQueryClient } from '@tanstack/react-query'
-import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
 import SmtpForm from './SmtpForm'
 import GluuInfo from '../../../../app/routes/Apps/Gluu/GluuInfo'
 import {
@@ -21,12 +23,11 @@ import {
 import { updateToast } from 'Redux/features/toastSlice'
 import { UPDATE } from '@/audit/UserActionType'
 import { logAuditUserAction } from '@/utils/AuditLogger'
-import store from 'Redux/store'
-import { SmtpRootState } from 'Plugins/smtp-management/redux/types/SmtpApi.type'
 import { SmtpFormValues } from 'Plugins/smtp-management/types'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { useStyles } from './styles/SmtpFormPage.style'
 
 const API_SMTP = 'api-smtp-configuration'
 
@@ -34,26 +35,6 @@ interface ApiError {
   response?: {
     data?: {
       message?: string
-    }
-  }
-}
-
-// Extended state interface for SmtpEditPage with additional audit fields
-interface SmtpEditPageRootState extends SmtpRootState {
-  authReducer: SmtpRootState['authReducer'] & {
-    config?: {
-      allowSmtpKeystoreEdit?: boolean
-      clientId?: string
-    }
-    token?: {
-      access_token?: string
-    }
-    userinfo?: {
-      name?: string
-      inum?: string
-    }
-    location?: {
-      IPv4?: string
     }
   }
 }
@@ -83,15 +64,25 @@ function buildPatches(
   return patches
 }
 
-function SmtpEditPage() {
+const SmtpEditPage = () => {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const [testStatus, setTestStatus] = useState<boolean | null>(null)
   const [showTestModal, setShowTestModal] = useState(false)
   const formikRef = useRef<FormikProps<SmtpFormValues> | null>(null)
   const { data: smtpConfiguration, isLoading } = useGetConfigSmtp()
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
+  const { state: themeState } = useTheme()
+  const { themeColors, isDark } = useMemo(
+    () => ({
+      themeColors: getThemeColor(themeState.theme),
+      isDark: themeState.theme === THEME_DARK,
+    }),
+    [themeState.theme],
+  )
+  const { classes } = useStyles({ isDark, themeColors })
+
   const smtpResourceId = useMemo(() => ADMIN_UI_RESOURCES.SMTP, [])
   const smtpScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[smtpResourceId], [smtpResourceId])
   const canReadSmtp = useMemo(
@@ -108,6 +99,9 @@ function SmtpEditPage() {
       authorizeHelper(smtpScopes)
     }
   }, [authorizeHelper, smtpScopes])
+
+  const testButtonEnabled = !!smtpConfiguration
+
   const putSmtpMutation = usePutConfigSmtp({
     mutation: {
       onSuccess: () => {
@@ -143,17 +137,16 @@ function SmtpEditPage() {
     },
   })
 
-  const allowSmtpKeystoreEdit = useSelector(
-    (state: SmtpEditPageRootState) => state.authReducer?.config?.allowSmtpKeystoreEdit as boolean,
+  const allowSmtpKeystoreEdit = useAppSelector(
+    (state) => state.authReducer?.config?.allowSmtpKeystoreEdit as boolean,
   )
+
   SetTitle(t('menus.stmp_management'))
 
   const handleSubmit = useCallback(
     async (data: SmtpConfiguration, userMessage: string) => {
-      if (!canWriteSmtp) {
-        return
-      }
-      const state = store.getState() as unknown as SmtpEditPageRootState
+      if (!canWriteSmtp) return
+      const state = getRootState()
       putSmtpMutation.mutate(
         { data },
         {
@@ -182,9 +175,7 @@ function SmtpEditPage() {
 
   const handleTestSmtp = useCallback(
     (testData: SmtpTest) => {
-      if (!canWriteSmtp) {
-        return
-      }
+      if (!canWriteSmtp) return
       testSmtpMutation.mutate({ data: testData })
     },
     [testSmtpMutation, canWriteSmtp],
@@ -195,15 +186,20 @@ function SmtpEditPage() {
     setTestStatus(null)
   }, [])
 
+  const isBlocking = useMemo(
+    () => isLoading || putSmtpMutation.isPending || testSmtpMutation.isPending,
+    [isLoading, putSmtpMutation.isPending, testSmtpMutation.isPending],
+  )
+
   return (
-    <GluuLoader blocking={isLoading || putSmtpMutation.isPending || testSmtpMutation.isPending}>
+    <GluuPageContent>
       {showTestModal && testStatus !== null && (
         <GluuInfo item={{ testStatus, openModal: showTestModal }} handler={handleCloseTestModal} />
       )}
-      <Card className="mb-3" style={applicationStyle.mainCard}>
-        <CardBody>
-          <GluuViewWrapper canShow={canReadSmtp}>
-            {!isLoading && smtpConfiguration && (
+      <GluuViewWrapper canShow={canReadSmtp}>
+        <GluuLoader blocking={isBlocking}>
+          <div className={classes.formCard}>
+            <div className={classes.content}>
               <SmtpForm
                 item={smtpConfiguration}
                 allowSmtpKeystoreEdit={allowSmtpKeystoreEdit}
@@ -211,12 +207,14 @@ function SmtpEditPage() {
                 onTestSmtp={handleTestSmtp}
                 formikRef={formikRef}
                 readOnly={!canWriteSmtp}
+                testButtonEnabled={testButtonEnabled}
               />
-            )}
-          </GluuViewWrapper>
-        </CardBody>
-      </Card>
-    </GluuLoader>
+            </div>
+          </div>
+        </GluuLoader>
+      </GluuViewWrapper>
+    </GluuPageContent>
   )
 }
+
 export default SmtpEditPage

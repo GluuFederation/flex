@@ -7,19 +7,14 @@ import Card from './Card'
 import CardHeader from './CardHeader'
 import CustomInput from './CustomInput'
 import Divider from './Divider'
-import EmptyLayout, { EmptyLayoutSection } from './EmptyLayout'
+import { EmptyLayout } from './EmptyLayout'
 import ExtendedDropdown from './ExtendedDropdown'
-import FloatGrid from './FloatGrid'
 import { GluuBadge } from './GluuBadge'
 import { GluuSpinner } from './GluuSpinner'
 import { GluuButton } from './GluuButton'
-import IconWithBadge from './IconWithBadge'
-import InputGroupAddon from './InputGroupAddon'
 import Layout, { withPageConfig, setupPage } from './Layout'
 import Nav from './Nav'
 import Navbar from './Navbar'
-import NavSearch from './NavSearch'
-import NavbarThemeProvider from './NavbarThemeProvider'
 import NestedDropdown from './NestedDropdown'
 import Notifications from './Notifications'
 import OuterClick from './OuterClick'
@@ -136,20 +131,14 @@ export {
   CustomInput,
   Divider,
   EmptyLayout,
-  EmptyLayoutSection,
   ExtendedDropdown,
-  FloatGrid,
   GluuBadge,
   GluuButton,
   GluuDatePicker,
   GluuSpinner,
-  IconWithBadge,
-  InputGroupAddon,
   Layout,
   Nav,
   Navbar,
-  NavSearch,
-  NavbarThemeProvider,
   NestedDropdown,
   Notifications,
   withPageConfig,

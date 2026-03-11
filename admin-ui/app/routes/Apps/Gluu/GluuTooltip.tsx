@@ -16,6 +16,7 @@ interface GluuTooltipProps {
   place?: 'top' | 'right' | 'bottom' | 'left'
   content?: ReactNode
   positionStrategy?: 'absolute' | 'fixed'
+  offset?: number
 }
 
 const GluuTooltip = ({
@@ -28,6 +29,7 @@ const GluuTooltip = ({
   place = 'bottom',
   content: contentOverride,
   positionStrategy,
+  offset,
 }: GluuTooltipProps) => {
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
@@ -57,6 +59,7 @@ const GluuTooltip = ({
       role="tooltip"
       style={tooltipStyle}
       positionStrategy={positionStrategy}
+      {...(offset !== undefined && { offset })}
     >
       {tooltipContent}
     </ReactTooltip>
