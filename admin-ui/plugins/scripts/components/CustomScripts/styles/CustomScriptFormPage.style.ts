@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
-import { SPACING, BORDER_RADIUS, getHoverOpacity, MAPPING_SPACING } from '@/constants'
+import { SPACING, BORDER_RADIUS, getHoverOpacity, MAPPING_SPACING, OPACITY } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, letterSpacing, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import type { ThemeConfig } from '@/context/theme/config'
@@ -334,7 +334,7 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
       },
       '& input::placeholder': {
         color: `${themeColors.textMuted} !important`,
-        opacity: '0.6 !important',
+        opacity: `${OPACITY.PLACEHOLDER} !important`,
       },
       '& input.form-control, & input[type="text"], & textarea.form-control': {
         color: `${themeColors.fontColor} !important`,
@@ -408,7 +408,7 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
       'fontSize': fontSizes.base,
       '&::placeholder': {
         color: `${themeColors.textMuted} !important`,
-        opacity: '0.6 !important',
+        opacity: `${OPACITY.PLACEHOLDER} !important`,
       },
       '&:focus, &:active': {
         backgroundColor: `${headersInputBg} !important`,

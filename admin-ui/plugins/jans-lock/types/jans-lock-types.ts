@@ -25,14 +25,5 @@ export interface JansLockConfigFormValues {
   tokenUrl?: string
 }
 
-export interface JansLockConfigurationProps {
-  // Component props can be added here if needed in the future
-}
-
-export interface CreateJansLockPayloadParams {
-  formValues: JansLockConfigFormValues
-  originalConfig: Record<string, unknown>
-}
-
 // Use JsonPatch type from JansConfigApi
 export type PatchOperation = JsonPatch

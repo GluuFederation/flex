@@ -1,9 +1,13 @@
-import { useContext } from 'react'
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
-import { ThemeContext } from 'Context/theme/themeContext'
-import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
+import { useMemo } from 'react'
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import { useTranslation } from 'react-i18next'
+import { useTheme } from 'Context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
 import customColors from '@/customColors'
+import GluuText from './GluuText'
+import { GluuButton } from '@/components'
+import { useStyles } from './styles/GluuInfo.style'
 
 interface GluuInfoItem {
   openModal: boolean
@@ -15,41 +19,53 @@ interface GluuInfoProps {
   handler: () => void
 }
 
-export default function GluuInfo({ item, handler }: GluuInfoProps) {
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state.theme
+const GluuInfo = ({ item, handler }: GluuInfoProps) => {
+  const { state: themeState } = useTheme()
+  const isDark = themeState.theme === THEME_DARK
+  const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
   const { t } = useTranslation()
+  const { classes } = useStyles({ isDark, themeColors })
 
   return (
-    <Modal isOpen={item.openModal} className="modal-outline-primary">
-      <ModalHeader>
-        <i
-          style={{ color: customColors.accentRed }}
-          className="fa fa-2x fa-item fa-fw modal-icon mb-3"
-        ></i>
+    <Modal isOpen={item.openModal} toggle={handler} className="modal-outline-primary">
+      <ModalHeader toggle={handler} className={classes.modalHeader}>
+        <GluuText variant="span" className={classes.title}>
+          {t('titles.smtp_test_result')}
+        </GluuText>
       </ModalHeader>
-      <ModalBody>
-        {item.testStatus ? (
-          <p>{t('actions.server_success_stmp')}</p>
-        ) : (
-          <p>{t('actions.server_fails_smtp')}</p>
-        )}
-        {!item.testStatus && <p>{t('actions.server_code')}: 200</p>}
+      <ModalBody className={classes.modalBody}>
+        <div className={classes.statusRow}>
+          <i
+            className={`fa fa-2x ${item.testStatus ? 'fa-check-circle' : 'fa-times-circle'}`}
+            style={{
+              color: item.testStatus ? customColors.statusActive : customColors.statusInactive,
+            }}
+          />
+          <GluuText variant="p" className={classes.statusMessage}>
+            {item.testStatus ? t('actions.server_success_smtp') : t('actions.server_fails_smtp')}
+          </GluuText>
+        </div>
         {!item.testStatus && (
-          <p>
-            {t('actions.server_response')}: {item.testStatus ? 'true' : 'false'}
-          </p>
+          <GluuText variant="p" className={classes.detailText}>
+            {t('actions.server_response')}: {t('actions.server_fails_smtp')}
+          </GluuText>
         )}
       </ModalBody>
-      <ModalFooter>
-        <Button
-          color={`primary-${selectedTheme}`}
-          style={applicationStyle.buttonStyle}
+      <ModalFooter className={classes.modalFooter}>
+        <GluuButton
           onClick={handler}
+          backgroundColor={customColors.statusActive}
+          textColor={customColors.white}
+          borderColor="transparent"
+          padding="8px 28px"
+          minHeight="40"
+          useOpacityOnHover
         >
           {t('actions.ok')}
-        </Button>
+        </GluuButton>
       </ModalFooter>
     </Modal>
   )
 }
+
+export default GluuInfo

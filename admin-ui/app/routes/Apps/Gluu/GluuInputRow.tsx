@@ -151,6 +151,7 @@ const GluuInputRow = <T = Record<string, unknown>,>({
             className={classes.passwordToggle}
             onClick={setVisibility}
             aria-label="Toggle password visibility"
+            disabled={disabled}
           >
             {customType === 'text' ? <Visibility /> : <VisibilityOff />}
           </button>

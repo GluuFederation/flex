@@ -1,39 +1,66 @@
-// @ts-nocheck
-import React from 'react'
-import PropTypes from 'prop-types'
+import { useEffect, useRef, type ReactNode } from 'react'
+import { isNumber } from 'lodash'
 import classNames from 'classnames'
 import { withPageConfig } from 'Components/Layout'
+import type { PageConfig } from 'Components/Layout/types'
 
-class EmptyLayout extends React.Component {
-  static propTypes = {
-    pageConfig: PropTypes.object.isRequired,
-    children: PropTypes.node.isRequired,
-    className: PropTypes.string,
-  }
+interface EmptyLayoutProps {
+  pageConfig?: PageConfig | null
+  children: ReactNode
+  className?: string
+}
 
-  componentDidMount() {
-    this.props.pageConfig.setElementsVisibility({
+interface SectionProps {
+  className?: string
+  children: ReactNode
+  center?: boolean
+  width?: number | string
+}
+
+const EmptyLayoutBase = ({ pageConfig, children, className }: EmptyLayoutProps) => {
+  const setVisibilityRef = useRef(pageConfig?.setElementsVisibility)
+  setVisibilityRef.current = pageConfig?.setElementsVisibility
+
+  useEffect(() => {
+    setVisibilityRef.current?.({
       navbarHidden: true,
       sidebarHidden: true,
       footerHidden: true,
     })
-  }
 
-  componentWillUnmount() {
-    this.props.pageConfig.setElementsVisibility({
-      navbarHidden: false,
-      sidebarHidden: false,
-      footerHidden: false,
-    })
-  }
+    return () => {
+      setVisibilityRef.current?.({
+        navbarHidden: false,
+        sidebarHidden: false,
+        footerHidden: false,
+      })
+    }
+  }, [])
 
-  render() {
-    const emptyLayoutClass = classNames('fullscreen', this.props.className)
-
-    return <div className={emptyLayoutClass}>{this.props.children}</div>
-  }
+  const emptyLayoutClass = classNames('fullscreen', className)
+  return <div className={emptyLayoutClass}>{children}</div>
 }
 
-const PageConfigEmptyLayout = withPageConfig(EmptyLayout)
+const Section = ({ className, children, center, width = '420px' }: SectionProps) => {
+  const sectionClass = classNames(className, 'fullscreen__section', {
+    'fullscreen__section--center': center,
+  })
+  const maxWidth = isNumber(width) ? `${width}px` : width
+  return (
+    <div className={sectionClass}>
+      {center ? (
+        <div className="fullscreen__section__child" style={{ maxWidth }}>
+          {children}
+        </div>
+      ) : (
+        children
+      )}
+    </div>
+  )
+}
 
-export { PageConfigEmptyLayout as EmptyLayout }
+const _EmptyLayout = withPageConfig(EmptyLayoutBase)
+const EmptyLayout = _EmptyLayout as typeof _EmptyLayout & { Section: typeof Section }
+EmptyLayout.Section = Section
+
+export { EmptyLayout }
