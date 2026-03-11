@@ -28,7 +28,7 @@ import { PersonAttribute } from '../types/UserApiTypes'
 import { setupCustomAttributes } from '../utils'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
-import { THEME_DARK } from '@/context/theme/constants'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './UserForm.style'
 
 const UserForm = ({
@@ -66,7 +66,7 @@ const UserForm = ({
   const memoizedPersonAttributes = useMemo(() => personAttributes, [personAttributesKey])
 
   const { state: themeState } = useTheme()
-  const selectedTheme = themeState.theme
+  const selectedTheme = themeState?.theme ?? DEFAULT_THEME
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const isDark = selectedTheme === THEME_DARK
   const { classes } = useStyles({ isDark, themeColors })

@@ -105,6 +105,8 @@ export function* triggerWebhook({
     if (!enabledFeatureWebhooks.length || !featureToTrigger) {
       yield put(setFeatureToTrigger(''))
       yield put(setTriggerWebhookResponse(''))
+      yield put(setWebhookTriggerErrors([]))
+      yield put(setShowErrorModal(false))
       return
     }
 

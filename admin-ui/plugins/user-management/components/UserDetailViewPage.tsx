@@ -74,4 +74,4 @@ const UserDetailViewPage = ({ row }: RowProps) => {
   )
 }
 
-export default React.memo(UserDetailViewPage)
+export default UserDetailViewPage

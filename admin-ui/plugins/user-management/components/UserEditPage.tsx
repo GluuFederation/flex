@@ -34,7 +34,7 @@ import { isPersistenceInfo } from 'Plugins/services/Components/Configuration/typ
 import { AXIOS_INSTANCE } from '../../../api-client'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
-import { THEME_DARK } from '@/context/theme/constants'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './UserFormPage.style'
 
 const UserEditPage = () => {
@@ -44,8 +44,11 @@ const UserEditPage = () => {
   const queryClient = useQueryClient()
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
-  const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
-  const isDark = themeState.theme === THEME_DARK
+  const themeColors = useMemo(
+    () => getThemeColor(themeState?.theme ?? DEFAULT_THEME),
+    [themeState?.theme],
+  )
+  const isDark = (themeState?.theme ?? DEFAULT_THEME) === THEME_DARK
   const { classes } = useStyles({ isDark, themeColors })
 
   const [userDetails] = useState<CustomUser | null>(location.state?.selectedUser ?? null)

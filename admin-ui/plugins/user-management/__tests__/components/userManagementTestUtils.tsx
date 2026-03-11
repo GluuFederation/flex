@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import type { Store } from '@reduxjs/toolkit'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
+import type { AuthState } from 'Redux/features/types/authTypes'
 
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({
@@ -59,17 +60,43 @@ jest.mock('Plugins/user-management/hooks/useUserMutations', () => ({
 }))
 
 const defaultWebhookReducerState = {
-  featureWebhooks: [],
   loadingWebhooks: false,
+  featureWebhooks: [] as unknown[],
   webhookModal: false,
   triggerWebhookInProgress: false,
+  triggerWebhookMessage: '',
+  webhookTriggerErrors: [] as unknown[],
+  triggerPayload: {
+    feature: null as string | null,
+    payload: null as unknown,
+  },
+  featureToTrigger: '',
+  showErrorModal: false,
 }
 
-const defaultAuthReducerState = {
-  permissions: [] as string[],
-  config: { clientId: '' },
+const defaultAuthReducerState: AuthState = {
+  isAuthenticated: false,
+  userinfo: null,
+  userinfo_jwt: null,
+  idToken: null,
+  jwtToken: null,
+  issuer: null,
+  permissions: [],
   location: { IPv4: '' },
-  userinfo: null as { name: string; inum: string } | null,
+  config: { clientId: '' },
+  codeChallenge: null,
+  codeChallengeMethod: 'S256',
+  codeVerifier: null,
+  backendStatus: {
+    active: true,
+    errorMessage: null,
+    statusCode: null,
+  },
+  loadingConfig: false,
+  authState: undefined,
+  userInum: null,
+  isUserInfoFetched: false,
+  hasSession: false,
 }
 
 export function createUserManagementTestStore(): Store {
@@ -77,7 +104,6 @@ export function createUserManagementTestStore(): Store {
     reducer: combineReducers({
       authReducer: (state = defaultAuthReducerState) => state,
       webhookReducer: (state = defaultWebhookReducerState) => state,
-      noReducer: (state = {}) => state,
     }),
   })
 }

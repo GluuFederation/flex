@@ -139,28 +139,21 @@ const PasswordChangeModal = ({
       let showSuccessAndClose = true
       if (!userDn) {
         console.warn('Cannot revoke user session: missing user DN')
-        dispatch(
-          updateToast(true, 'warning', t('messages.session_revoke_failed')),
-        )
+        dispatch(updateToast(true, 'warning', t('messages.session_revoke_failed')))
+        showSuccessAndClose = false
       } else {
         try {
           await revokeSessionMutation.mutateAsync({ userDn })
-          await AXIOS_INSTANCE.delete(
-            `/app/admin-ui/oauth2/session/${encodeURIComponent(userDn)}`,
-          )
+          await AXIOS_INSTANCE.delete(`/app/admin-ui/oauth2/session/${encodeURIComponent(userDn)}`)
         } catch (error) {
           console.error('Failed to revoke user session:', error)
-          dispatch(
-            updateToast(true, 'warning', t('messages.session_revoke_failed')),
-          )
+          dispatch(updateToast(true, 'warning', t('messages.session_revoke_failed')))
           showSuccessAndClose = false
         }
       }
 
       if (showSuccessAndClose) {
-        dispatch(
-          updateToast(true, 'success', t('messages.password_changed_successfully')),
-        )
+        dispatch(updateToast(true, 'success', t('messages.password_changed_successfully')))
         setPasswordModal(false)
         toggle()
         setPassword('')
@@ -171,7 +164,16 @@ const PasswordChangeModal = ({
         console.error('Failed to log password change:', error)
       })
     },
-    [userDetails, password, changePasswordMutation, revokeSessionMutation, dispatch, toggle, onSuccess, t],
+    [
+      userDetails,
+      password,
+      changePasswordMutation,
+      revokeSessionMutation,
+      dispatch,
+      toggle,
+      onSuccess,
+      t,
+    ],
   )
 
   const handlePasswordSubmit = useCallback((values: PasswordChangeFormValues) => {
