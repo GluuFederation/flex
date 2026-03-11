@@ -165,22 +165,9 @@ const GluuInputRow = <T = Record<string, unknown>,>({
           inputEl
         )}
         {type !== 'number' ? shortcode : null}
-        {type === 'password' && (
-          <button
-            type="button"
-            className={classes.passwordToggle}
-            onClick={setVisibility}
-            aria-label="Toggle password visibility"
-            disabled={disabled}
-          >
-            {customType === 'text' ? <Visibility /> : <VisibilityOff />}
-          </button>
-        )}
-        {showError ? (
-          <GluuText variant="span" className={classes.error} data-field-error disableThemeColor>
-            {errorMessage}
-          </GluuText>
-        ) : null}
+        <GluuText variant="span" className={classes.error} data-field-error disableThemeColor>
+          {showError ? errorMessage : '\u00A0'}
+        </GluuText>
       </Col>
     </FormGroup>
   )

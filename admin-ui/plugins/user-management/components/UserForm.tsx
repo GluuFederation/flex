@@ -577,7 +577,7 @@ const UserForm = ({
           modal={modal}
           onAccept={submitForm}
           formik={formik as FormikProps<UserEditFormValues>}
-          operations={commitDialogOperations}
+          operations={userDetails ? commitDialogOperations : []}
           autoCloseOnAccept
           webhookFeature={userDetails ? 'users_edit' : 'users_add'}
         />

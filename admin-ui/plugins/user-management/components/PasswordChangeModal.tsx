@@ -312,7 +312,7 @@ const PasswordChangeModal = ({
                     onClick={() => setShowPassword((prev) => !prev)}
                     aria-label={showPassword ? t('password.hide') : t('password.show')}
                   >
-                    <i className={showPassword ? 'fa fa-eye' : 'fa fa-eye-slash'} />
+                    <i className={showPassword ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash'} />
                   </button>
                 </div>
                 <div className={formClasses.errorText}>
@@ -346,7 +346,9 @@ const PasswordChangeModal = ({
                     onClick={() => setShowConfirmPassword((prev) => !prev)}
                     aria-label={showConfirmPassword ? t('password.hide') : t('password.show')}
                   >
-                    <i className={showConfirmPassword ? 'fa fa-eye' : 'fa fa-eye-slash'} />
+                    <i
+                      className={showConfirmPassword ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash'}
+                    />
                   </button>
                 </div>
                 <div className={formClasses.errorText}>
