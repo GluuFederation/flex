@@ -103,24 +103,31 @@ const UserEditPage = () => {
         if (anyKeyPresent) {
           if (!userDn) {
             console.error('Cannot revoke session: user DN is undefined')
-            dispatch(updateToast(true, 'warning', t('messages.session_revoke_failed')))
-            return
-          }
-          try {
-            await revokeSessionMutation.mutateAsync({ userDn })
-            await AXIOS_INSTANCE.delete(
-              `/app/admin-ui/oauth2/session/${encodeURIComponent(userDn)}`,
+            dispatch(
+              updateToast(true, 'warning', t('messages.session_revoke_failed_changes_saved')),
             )
-          } catch (error) {
-            console.error('Failed to revoke user session:', error)
-            dispatch(updateToast(true, 'warning', t('messages.session_revoke_failed')))
-            return
+          } else {
+            try {
+              await revokeSessionMutation.mutateAsync({ userDn })
+              await AXIOS_INSTANCE.delete(
+                `/app/admin-ui/oauth2/session/${encodeURIComponent(userDn)}`,
+              )
+            } catch (error) {
+              console.error('Failed to revoke user session:', error)
+              dispatch(
+                updateToast(true, 'warning', t('messages.session_revoke_failed_changes_saved')),
+              )
+            }
           }
         }
 
         dispatch(setWebhookModal(false))
         dispatch(updateToast(true, 'success', t('messages.user_updated_successfully')))
-        await logUserUpdate(data, variables.data)
+        try {
+          await logUserUpdate(data, variables.data)
+        } catch {
+          dispatch(updateToast(true, 'error', t('messages.audit_logging_failed')))
+        }
         triggerUserWebhook(data)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
         navigateBack(ROUTES.USER_MANAGEMENT)
@@ -169,13 +176,7 @@ const UserEditPage = () => {
         } as CustomUser,
       })
     },
-    [
-      personAttributes,
-      userDetails,
-      persistenceType,
-      standardFields,
-      updateUserMutation,
-    ],
+    [personAttributes, userDetails, persistenceType, standardFields, updateUserMutation],
   )
 
   return (

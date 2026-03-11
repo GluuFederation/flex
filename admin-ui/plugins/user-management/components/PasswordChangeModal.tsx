@@ -136,18 +136,28 @@ const PasswordChangeModal = ({
       })
 
       const userDn = userDetails?.dn
+      let showSuccessAndClose = true
       if (!userDn) {
-        console.error('Failed to revoke user session: missing user DN')
+        console.warn('Cannot revoke user session: missing user DN')
         dispatch(
           updateToast(true, 'warning', t('messages.session_revoke_failed')),
         )
-        return
+      } else {
+        try {
+          await revokeSessionMutation.mutateAsync({ userDn })
+          await AXIOS_INSTANCE.delete(
+            `/app/admin-ui/oauth2/session/${encodeURIComponent(userDn)}`,
+          )
+        } catch (error) {
+          console.error('Failed to revoke user session:', error)
+          dispatch(
+            updateToast(true, 'warning', t('messages.session_revoke_failed')),
+          )
+          showSuccessAndClose = false
+        }
       }
-      try {
-        await revokeSessionMutation.mutateAsync({ userDn })
-        await AXIOS_INSTANCE.delete(
-          `/app/admin-ui/oauth2/session/${encodeURIComponent(userDn)}`,
-        )
+
+      if (showSuccessAndClose) {
         dispatch(
           updateToast(true, 'success', t('messages.password_changed_successfully')),
         )
@@ -155,11 +165,6 @@ const PasswordChangeModal = ({
         toggle()
         setPassword('')
         onSuccess?.()
-      } catch (error) {
-        console.error('Failed to revoke user session:', error)
-        dispatch(
-          updateToast(true, 'warning', t('messages.session_revoke_failed')),
-        )
       }
 
       logPasswordChange(userDetails.inum, auditPayload).catch((error) => {
@@ -190,6 +195,7 @@ const PasswordChangeModal = ({
     if (!isOpen) {
       formikRef.current.resetForm()
       setPassword('')
+      setPasswordModal(false)
       setShowPassword(false)
       setShowConfirmPassword(false)
     }

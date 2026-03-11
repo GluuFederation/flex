@@ -81,9 +81,9 @@ export const useStyles = makeStyles<User2FADevicesModalStylesParams>()((
       borderRadius: `0 0 ${BORDER_RADIUS.DEFAULT}px ${BORDER_RADIUS.DEFAULT}px`,
     },
     tableWrapper: {
-      /* Prevent horizontal scroll - table fits within modal */
+      /* Allow horizontal scroll when table content is wide */
       '& > div, & > div > div:last-child': {
-        overflowX: 'visible',
+        overflowX: 'auto',
       },
       /* Override GluuTable wrapper - table styles */
       '& > div > div:last-child': {

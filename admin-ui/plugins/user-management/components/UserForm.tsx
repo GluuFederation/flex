@@ -4,7 +4,6 @@ import { useFormik, type FormikProps } from 'formik'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { Col, Form, FormGroup } from 'Components'
 import { GluuButton } from '@/components'
-import customColors from '@/customColors'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -529,7 +528,6 @@ const UserForm = ({
                       type="button"
                       className={`gluu-change-password-btn ${classes.changePasswordButton}`}
                       onClick={toggleChangePasswordModal}
-                      backgroundColor={customColors.white}
                       textColor={themeColors.fontColor}
                       borderColor={themeColors.borderColor}
                       disableHoverStyles

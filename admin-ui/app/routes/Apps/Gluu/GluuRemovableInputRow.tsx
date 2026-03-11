@@ -111,7 +111,7 @@ function GluuRemovableInputRow<TValues extends FormikValues = FormikValues>({
             alignItems: 'center',
             justifyContent: 'center',
           }}
-          onClick={() => handler()}
+          onClick={handler}
         >
           <i
             className={'fa fa-fw fa-close'}

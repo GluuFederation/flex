@@ -52,7 +52,7 @@ const UserDetailViewPage = ({ row }: RowProps) => {
       { label: `${t('fields.givenName')}:`, value: rowData.givenName ?? '' },
       { label: `${t('fields.userRole')}:`, value: roleValue },
       { label: `${t('fields.userName')}:`, value: rowData.userId ?? '' },
-      { label: `${t('fields.lastName', { defaultValue: 'Last Name' })}:`, value: lastName },
+      { label: `${t('fields.lastName', { defaultValue: t('fields.sn') })}:`, value: lastName },
     ],
     [t, rowData.displayName, rowData.mail, rowData.givenName, roleValue, rowData.userId, lastName],
   )

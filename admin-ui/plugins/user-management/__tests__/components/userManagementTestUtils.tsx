@@ -92,8 +92,11 @@ export function createUserManagementTestWrapper(
   store: Store,
   client?: QueryClient,
 ): (props: { children: React.ReactNode }) => JSX.Element {
-  const queryClientToUse = client ?? createUserManagementQueryClient()
   return function Wrapper({ children }: { children: React.ReactNode }) {
+    const queryClientToUse = React.useMemo(
+      () => client ?? createUserManagementQueryClient(),
+      [client],
+    )
     return (
       <QueryClientProvider client={queryClientToUse}>
         <AppTestWrapper>

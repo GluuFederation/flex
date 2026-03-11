@@ -46,7 +46,7 @@ export const useDeleteUserWithAudit = (callbacks?: MutationCallbacks) => {
           triggerUserWebhook(userData)
         } catch (webhookError) {
           console.error('Webhook trigger failed:', webhookError, { inum })
-          dispatch(updateToast(true, 'warning', t('messages.audit_logging_failed')))
+          dispatch(updateToast(true, 'warning', t('messages.webhook_trigger_failed')))
         }
       }
 
@@ -54,7 +54,7 @@ export const useDeleteUserWithAudit = (callbacks?: MutationCallbacks) => {
         await queryUtils.invalidateQueriesByKey(queryClient, getGetUserQueryKey())
       } catch (invalidateError) {
         console.error('Query invalidation failed after delete:', invalidateError, { inum })
-        dispatch(updateToast(true, 'warning', t('messages.audit_logging_failed')))
+        dispatch(updateToast(true, 'warning', t('messages.query_invalidation_failed')))
       }
 
       try {
@@ -62,7 +62,7 @@ export const useDeleteUserWithAudit = (callbacks?: MutationCallbacks) => {
         callbacksRef.current?.onSuccess?.()
       } catch (callbackError) {
         console.error('Post-delete callback failed:', callbackError, { inum })
-        dispatch(updateToast(true, 'warning', t('messages.audit_logging_failed')))
+        dispatch(updateToast(true, 'warning', t('messages.post_delete_callback_failed')))
       }
     },
     [mutation, dispatch, queryClient, t],
