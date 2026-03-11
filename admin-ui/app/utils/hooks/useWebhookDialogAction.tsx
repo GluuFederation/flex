@@ -21,8 +21,6 @@ import TableRow from '@mui/material/TableRow'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
-import customColors from '@/customColors'
-import { GluuSpinner } from '@/components/GluuSpinner'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components'
 import { useStyles as useCommitDialogStyles } from '@/routes/Apps/Gluu/styles/GluuCommitDialog.style'
@@ -94,7 +92,7 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
     if (!modal) {
       dispatch(setWebhookModal(false))
     } else if (feature && canReadWebhooks) {
-      const showWebhookFlow = loadingWebhooks || (enabledFeatureWebhooks?.length ?? 0) > 0
+      const showWebhookFlow = !loadingWebhooks && (enabledFeatureWebhooks?.length ?? 0) > 0
       dispatch(setWebhookModal(showWebhookFlow))
     }
   }, [modal, feature, canReadWebhooks, loadingWebhooks, enabledFeatureWebhooks, dispatch])
@@ -214,77 +212,66 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
           >
             <i className="fa fa-times" aria-hidden />
           </button>
-          <div
-            className={`${commitClasses.contentArea} ${webhookClasses.contentArea}`}
-            style={{ position: 'relative', ...(loadingWebhooks && { minHeight: 240 }) }}
-          >
+          <div className={`${commitClasses.contentArea} ${webhookClasses.contentArea}`}>
             <div className={webhookClasses.titleWithDescription}>
               <GluuText variant="h2" className={webhookClasses.title} id="webhook-modal-title">
                 {t('messages.webhook_execution_information')}
               </GluuText>
-              {!loadingWebhooks && (
-                <p className={webhookClasses.description}>{t('messages.webhook_dialog_dec')}</p>
-              )}
+              <GluuText variant="p" className={webhookClasses.description}>
+                {t('messages.webhook_dialog_dec')}
+              </GluuText>
             </div>
 
-            {loadingWebhooks ? (
-              <div className={webhookClasses.loadingOverlay} aria-busy>
-                <GluuSpinner size={80} aria-label="Loading" />
-              </div>
-            ) : (
-              <>
-                {enabledFeatureWebhooks?.length ? (
-                  <Table
-                    className={webhookClasses.tableWrapper}
-                    aria-label="webhook table"
-                    sx={{
-                      '& .MuiTableCell-root': {
-                        color: themeColors.fontColor,
-                        borderColor: isDark ? customColors.darkBorder : customColors.lightBorder,
-                      },
-                      '& .MuiTableHead-root .MuiTableCell-root': {
-                        fontWeight: 600,
-                        fontSize: 16,
-                      },
-                    }}
-                  >
-                    <TableHead>
-                      <TableRow>
-                        <TableCell align="left" sx={{ width: '50%' }}>
-                          {t('fields.webhook_name')}
-                        </TableCell>
-                        <TableCell sx={{ width: '50%' }}>{t('fields.webhook_id')}</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {enabledFeatureWebhooks.map((item) => (
-                        <TableRow key={item.inum}>
-                          <TableCell component="th" scope="row">
-                            {item.displayName}
-                          </TableCell>
-                          <TableCell align="left">{item.inum}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                ) : null}
-                <div className={webhookClasses.buttonRow}>
-                  <GluuButton
-                    disabled={triggerWebhookInProgress}
-                    backgroundColor={customColors.statusActive}
-                    textColor={customColors.white}
-                    borderColor="transparent"
-                    padding="8px 28px"
-                    minHeight="40"
-                    useOpacityOnHover
-                    className={commitClasses.yesButton}
-                    onClick={handleAcceptWebhookTrigger}
-                  >
-                    {t('actions.accept')}
-                  </GluuButton>
-                </div>
-              </>
-            )}
+            {enabledFeatureWebhooks?.length ? (
+              <Table
+                className={webhookClasses.tableWrapper}
+                aria-label="webhook table"
+                sx={{
+                  '& .MuiTableCell-root': {
+                    color: themeColors.fontColor,
+                    borderColor: themeColors.borderColor,
+                  },
+                  '& .MuiTableHead-root .MuiTableCell-root': {
+                    fontWeight: 600,
+                    fontSize: 16,
+                  },
+                }}
+              >
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="left" sx={{ width: '50%' }}>
+                      {t('fields.webhook_name')}
+                    </TableCell>
+                    <TableCell sx={{ width: '50%' }}>{t('fields.webhook_id')}</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {enabledFeatureWebhooks.map((item) => (
+                    <TableRow key={item.inum}>
+                      <TableCell component="th" scope="row">
+                        {item.displayName}
+                      </TableCell>
+                      <TableCell align="left">{item.inum}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : null}
+            <div className={webhookClasses.buttonRow}>
+              <GluuButton
+                disabled={triggerWebhookInProgress}
+                backgroundColor={themeColors.badges.statusActive}
+                textColor={themeColors.badges.filledBadgeText}
+                borderColor="transparent"
+                padding="8px 28px"
+                minHeight="40"
+                useOpacityOnHover
+                className={commitClasses.yesButton}
+                onClick={handleAcceptWebhookTrigger}
+              >
+                {t('actions.accept')}
+              </GluuButton>
+            </div>
           </div>
         </div>
       </>

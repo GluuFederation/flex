@@ -1,5 +1,5 @@
 import { makeStyles } from 'tss-react/mui'
-import customColors, { hexToRgb } from '@/customColors'
+import customColors, { getLoadingOverlayRgba } from '@/customColors'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { BORDER_RADIUS, CEDARLING_CONFIG_SPACING, MAPPING_SPACING, OPACITY } from '@/constants'
@@ -10,8 +10,8 @@ interface StylesParams {
   themeColors: ThemeConfig
 }
 
-const OVERLAY_BG_LIGHT = `rgba(${hexToRgb(customColors.black)}, 0.4)`
-const OVERLAY_BG_DARK = `rgba(${hexToRgb(customColors.darkCardBg)}, 0.8)`
+const OVERLAY_BG_LIGHT = getLoadingOverlayRgba(customColors.black, 0.8)
+const OVERLAY_BG_DARK = getLoadingOverlayRgba(customColors.darkCardBg, 0.8)
 
 const MODAL_WIDTH = 1007
 const CONTENT_WIDTH = 898
@@ -31,7 +31,7 @@ const CHECKBOX_LABEL_GAP_PLUS = MAPPING_SPACING.CHECKBOX_LABEL_GAP + 3
 
 export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColors }) => {
   const cardBorderStyle = getCardBorderStyle({ isDark })
-  const modalBg = isDark ? customColors.darkCardBg : customColors.lightBackground
+  const modalBg = themeColors.settings?.cardBackground ?? themeColors.card.background
 
   return {
     modalContainer: {

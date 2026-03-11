@@ -8,7 +8,6 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { GluuButton } from '@/components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import customColors from '@/customColors'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
@@ -363,8 +362,8 @@ const PasswordChangeModal = ({
               <GluuButton
                 type="submit"
                 disabled={isApplyDisabled || isLoading}
-                backgroundColor={customColors.statusActive}
-                textColor={customColors.white}
+                backgroundColor={themeColors.badges.statusActive}
+                textColor={themeColors.badges.filledBadgeText}
                 borderColor="transparent"
                 padding="8px 28px"
                 minHeight="40"

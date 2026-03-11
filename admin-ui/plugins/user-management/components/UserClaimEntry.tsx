@@ -5,6 +5,7 @@ import GluuRemovableSelectRow from 'Routes/Apps/Gluu/GluuRemovableSelectRow'
 import MultiValueSelectCard from 'Routes/Apps/Gluu/MultiValueSelectCard'
 import { countries } from 'Plugins/user-management/common/countries'
 import { JANS_ADMIN_UI_ROLE_ATTR, COUNTRY_ATTR } from '../common/Constants'
+import { getClaimLabel, getClaimLabelKey } from '../utils/claimLabelUtils'
 import { useGetAllAdminuiRoles } from 'JansConfigApi'
 import { UserClaimEntryProps } from '../types/ComponentTypes'
 
@@ -17,6 +18,17 @@ const UserClaimEntry = ({
   setModifiedFields,
 }: UserClaimEntryProps) => {
   const { t } = useTranslation()
+
+  const claimLabelKey = useMemo(
+    () => getClaimLabelKey(t, data.name, data.displayName),
+    [t, data.name, data.displayName],
+  )
+
+  const claimLabel = useMemo(
+    () => getClaimLabel(t, data.name, data.displayName),
+    [t, data.name, data.displayName],
+  )
+
   const doHandle = useCallback(() => {
     handler(data.name)
   }, [handler, data.name])
@@ -51,7 +63,7 @@ const UserClaimEntry = ({
     <div key={entry}>
       {data.oxMultiValuedAttribute && (
         <MultiValueSelectCard
-          label={data.displayName || data.name}
+          label={claimLabel}
           name={data.name}
           value={multiValue}
           options={multiValueOptions}
@@ -71,7 +83,7 @@ const UserClaimEntry = ({
       )}
       {data.name !== COUNTRY_ATTR && !data.oxMultiValuedAttribute && (
         <GluuRemovableInputRow
-          label={data.displayName || data.name}
+          label={claimLabelKey}
           name={data.name}
           isDirect={true}
           value={
@@ -91,7 +103,7 @@ const UserClaimEntry = ({
       )}
       {data.name === COUNTRY_ATTR && !data.oxMultiValuedAttribute && (
         <GluuRemovableSelectRow
-          label={data.displayName || data.name}
+          label={claimLabelKey}
           name={data.name}
           doc_category={typeof data.description === 'string' ? data.description : undefined}
           isDirect={true}

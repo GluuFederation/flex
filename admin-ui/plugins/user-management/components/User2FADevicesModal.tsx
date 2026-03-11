@@ -2,6 +2,8 @@ import React, { useEffect, useState, useCallback, useContext, useRef, useMemo } 
 import { useTranslation } from 'react-i18next'
 import { DeleteOutlined } from '@mui/icons-material'
 import GluuViewDetailModal from 'Routes/Apps/Gluu/GluuViewDetailsModal'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuTable } from '@/components/GluuTable'
 import type { ColumnDef, PaginationConfig, ActionDef } from '@/components/GluuTable'
 import getThemeColor from '@/context/theme/config'
@@ -279,42 +281,45 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
   }, [])
 
   return (
-    <GluuViewDetailModal
-      isOpen={isOpen}
-      handleClose={onClose}
-      hideFooter
-      modalClassName={classes.modal2FA}
-      modalStyle={{ minWidth: 700, maxWidth: '80vw' }}
-      contentClassName={classes.modalContent}
-      contentStyle={{ overflowX: 'visible' }}
-      customHeader={
-        <div className={`modal-header ${classes.modalHeader}`}>
-          <div className={classes.headerTopRow}>
-            <button
-              type="button"
-              className="btn-close"
-              aria-label={t('actions.close')}
-              onClick={onClose}
-            />
+    <GluuLoader blocking={isFido2Loading}>
+      <GluuViewDetailModal
+        isOpen={isOpen}
+        handleClose={onClose}
+        hideFooter
+        modalClassName={classes.modal2FA}
+        modalStyle={{ minWidth: 700, maxWidth: '80vw' }}
+        contentClassName={classes.modalContent}
+        contentStyle={{ overflowX: 'visible' }}
+        customHeader={
+          <div className={`modal-header ${classes.modalHeader}`}>
+            <div className={classes.headerTopRow}>
+              <button
+                type="button"
+                className="btn-close"
+                aria-label={t('actions.close')}
+                onClick={onClose}
+              />
+            </div>
+            <GluuText variant="h5" className={classes.modalTitle}>
+              {t('messages.2FA_details')}
+            </GluuText>
           </div>
-          <h5 className={classes.modalTitle}>{t('messages.2FA_details')}</h5>
+        }
+      >
+        <div className={classes.tableWrapper}>
+          <GluuTable<DeviceData>
+            columns={columns}
+            data={paginatedData}
+            pagination={pagination}
+            actions={actions}
+            getRowKey={(row, index) => row.id ?? `row-${index}`}
+            emptyMessage={t('messages.no_data_available')}
+            expandable
+            renderExpandedRow={renderExpandedRow}
+          />
         </div>
-      }
-    >
-      <div className={classes.tableWrapper}>
-        <GluuTable<DeviceData>
-          columns={columns}
-          data={paginatedData}
-          loading={isFido2Loading}
-          pagination={pagination}
-          actions={actions}
-          getRowKey={(row, index) => row.id ?? `row-${index}`}
-          emptyMessage={t('messages.no_data_available')}
-          expandable
-          renderExpandedRow={renderExpandedRow}
-        />
-      </div>
-    </GluuViewDetailModal>
+      </GluuViewDetailModal>
+    </GluuLoader>
   )
 }
 

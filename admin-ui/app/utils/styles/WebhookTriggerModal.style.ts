@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
-import customColors, { hexToRgb } from '@/customColors'
 import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
+import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { CEDARLING_CONFIG_SPACING, MAPPING_SPACING } from '@/constants'
 import type { ThemeConfig } from '@/context/theme/config'
 
@@ -17,8 +17,8 @@ export const useWebhookTriggerModalStyles = makeStyles<StylesParams>()((
   _theme,
   { isDark, themeColors },
 ) => {
-  const blackRgba = hexToRgb(customColors.black)
-  const cardBg = isDark ? customColors.darkCardBg : customColors.lightBackground
+  const cardBorderStyle = getCardBorderStyle({ isDark })
+  const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   const borderColor = themeColors.borderColor
 
   return {
@@ -26,11 +26,10 @@ export const useWebhookTriggerModalStyles = makeStyles<StylesParams>()((
       zIndex: WEBHOOK_MODAL_Z_INDEX,
     },
     modalContainer: {
+      ...cardBorderStyle,
       zIndex: WEBHOOK_MODAL_Z_INDEX + 1,
       backgroundColor: cardBg,
-      boxShadow: isDark
-        ? `0 25px 50px -12px rgba(${blackRgba}, 0.5), 0 0 0 1px rgba(${blackRgba}, 0.2)`
-        : `0 25px 50px -12px rgba(${blackRgba}, 0.25), 0 0 0 1px rgba(${blackRgba}, 0.05)`,
+      outline: 'none',
     },
     titleWithDescription: {
       display: 'flex',
@@ -61,6 +60,8 @@ export const useWebhookTriggerModalStyles = makeStyles<StylesParams>()((
     tableWrapper: {
       'marginTop': CEDARLING_CONFIG_SPACING.ALERT_TO_INPUT,
       'minWidth': WEBHOOK_TABLE_MIN_WIDTH,
+      'maxHeight': 300,
+      'overflowY': 'auto',
       '& .MuiTableCell-root': {
         borderBottom: `1px solid ${borderColor}`,
       },
@@ -70,15 +71,6 @@ export const useWebhookTriggerModalStyles = makeStyles<StylesParams>()((
       alignItems: 'center',
       gap: MAPPING_SPACING.CHECKBOX_LABEL_GAP + CHECKBOX_LABEL_EXTRA_GAP,
       marginTop: CEDARLING_CONFIG_SPACING.BUTTONS_MT,
-    },
-    loadingOverlay: {
-      position: 'absolute',
-      inset: 0,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: cardBg,
-      zIndex: 1,
     },
   }
 })

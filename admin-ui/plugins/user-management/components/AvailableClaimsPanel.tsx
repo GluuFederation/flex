@@ -1,4 +1,5 @@
 import React, { useMemo, useCallback } from 'react'
+import { getClaimLabel } from '../utils/claimLabelUtils'
 import { useTranslation } from 'react-i18next'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { PersonAttribute } from '../types/UserApiTypes'
@@ -52,14 +53,14 @@ const AvailableClaimsPanel = ({
     if (searchTrimmed === '') return []
     const searchLower = searchTrimmed.toLowerCase()
     return personAttributes.filter((data: PersonAttribute) => {
-      const name = data.displayName?.toLowerCase() || ''
+      const label = getClaimLabel(t, data.name, data.displayName).toLowerCase()
       const alreadyAddedClaim = selectedClaims.some((el: PersonAttribute) => el.name === data.name)
       const isActive = data.status?.toLowerCase() === 'active'
       const notUsed = !USED_CLAIMS.has(data.name)
-      const matchesSearch = name.includes(searchLower)
+      const matchesSearch = label.includes(searchLower)
       return Boolean(isActive && notUsed && matchesSearch && !alreadyAddedClaim)
     })
-  }, [personAttributes, searchClaims, selectedClaims])
+  }, [personAttributes, searchClaims, selectedClaims, t])
 
   return (
     <div className={classes.root}>
@@ -101,7 +102,7 @@ const AvailableClaimsPanel = ({
                   className={classes.itemButton}
                   onClick={() => setSelectedClaimsToState(data)}
                 >
-                  {data.displayName}
+                  {getClaimLabel(t, data.name, data.displayName)}
                 </button>
               </li>
             ))}

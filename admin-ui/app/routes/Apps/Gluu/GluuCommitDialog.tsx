@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from 'Context/theme/themeContext'
@@ -69,12 +69,10 @@ const GluuCommitDialog = ({
     modal,
   })
 
-  const prevModalRef = useRef<boolean>(false)
   useEffect(() => {
-    if (modal && !prevModalRef.current) {
+    if (modal) {
       setUserMessage('')
     }
-    prevModalRef.current = modal
   }, [modal])
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {

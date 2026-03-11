@@ -14,14 +14,11 @@ export const useStyles = makeStyles<User2FADevicesModalStylesParams>()((
   _,
   { isDark, themeColors },
 ) => {
-  const modalBg = isDark
-    ? (themeColors.settings?.cardBackground ?? themeColors.card.background)
-    : customColors.white
+  const modalBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   const borderColor = themeColors.borderColor
   const paginationAccentColor = customColors.claimsSelectionBorder
   const tableBorderColor = themeColors.borderColor
   const tableBg = themeColors.settings?.cardBackground ?? themeColors.card.background
-  /* Same border as dashboard, health, license, asset, webhook */
   const modalCardBorderStyle = getCardBorderStyle({
     isDark,
     borderRadius: BORDER_RADIUS.DEFAULT,
@@ -36,7 +33,6 @@ export const useStyles = makeStyles<User2FADevicesModalStylesParams>()((
         overflow: 'visible',
       },
     },
-    /* Row 1 = X top-right, Row 2 = heading left-aligned */
     modalHeader: {
       display: 'flex !important',
       flexDirection: 'column !important' as 'column',
@@ -55,7 +51,7 @@ export const useStyles = makeStyles<User2FADevicesModalStylesParams>()((
       '& .btn-close': {
         margin: 0,
         padding: '0.5rem',
-        color: isDark ? `${customColors.white} !important` : `${themeColors.fontColor} !important`,
+        color: `${themeColors.fontColor} !important`,
         opacity: 1,
         ...(isDark && { filter: 'brightness(0) invert(1)' }),
       },
@@ -76,16 +72,13 @@ export const useStyles = makeStyles<User2FADevicesModalStylesParams>()((
     modalContent: {
       backgroundColor: modalBg,
       color: themeColors.fontColor,
-      /* Figma: padding around table - 24px all sides */
       padding: 24,
       borderRadius: `0 0 ${BORDER_RADIUS.DEFAULT}px ${BORDER_RADIUS.DEFAULT}px`,
     },
     tableWrapper: {
-      /* Allow horizontal scroll when table content is wide */
       '& > div, & > div > div:last-child': {
         overflowX: 'auto',
       },
-      /* Override GluuTable wrapper - table styles */
       '& > div > div:last-child': {
         borderRadius: 10,
         border: `1px solid ${tableBorderColor}`,
