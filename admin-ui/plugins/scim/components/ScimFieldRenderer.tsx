@@ -1,98 +1,107 @@
-import React from 'react'
-import { Col } from 'Components'
+import React, { useMemo } from 'react'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import { DOC_CATEGORY } from '../helper'
-import type { FieldConfig } from './fieldConfigurations'
+import type { FieldConfig } from './constants'
 import type { FormikProps } from 'formik'
 import type { ScimFormValues } from '../types'
 
 interface ScimFieldRendererProps {
   config: FieldConfig
   formik: FormikProps<ScimFormValues>
-  lsize?: number
-  rsize?: number
+  fieldItemClass: string
+  fieldItemFullWidthClass: string
 }
 
-/**
- * Renders a single SCIM form field based on configuration
- */
+const LABEL_SIZE = 12
+const INPUT_SIZE = 12
+const EMPTY_OPTIONS: string[] = []
+
 const ScimFieldRenderer: React.FC<ScimFieldRendererProps> = ({
   config,
   formik,
-  lsize = 3,
-  rsize = 9,
+  fieldItemClass,
+  fieldItemFullWidthClass,
 }) => {
-  const { name, label, type, disabled = false, selectOptions } = config
+  const { name, label, type, disabled = false, selectOptions, colSize = 12 } = config
 
-  // Get field value
   const value = formik.values[name]
   const error = formik.errors[name]
   const touched = formik.touched[name]
 
+  const itemClass = colSize === 12 ? fieldItemFullWidthClass : fieldItemClass
+
+  const stableOptions = useMemo(
+    () => (selectOptions ? [...selectOptions] : EMPTY_OPTIONS),
+    [selectOptions],
+  )
+
   switch (type) {
     case 'text':
       return (
-        <Col sm={12}>
+        <div className={itemClass}>
           <GluuInputRow
             label={label}
             name={name}
             value={(value as string) || ''}
             formik={formik}
-            lsize={lsize}
-            rsize={rsize}
+            lsize={LABEL_SIZE}
+            rsize={INPUT_SIZE}
             disabled={disabled}
             showError={!!(error && touched)}
             errorMessage={error as string}
+            doc_category={DOC_CATEGORY}
           />
-        </Col>
+        </div>
       )
 
     case 'number':
       return (
-        <Col sm={12}>
+        <div className={itemClass}>
           <GluuInputRow
             label={label}
             name={name}
             type="number"
             value={value !== '' && value != null ? value.toString() : ''}
             formik={formik}
-            lsize={lsize}
-            rsize={rsize}
+            lsize={LABEL_SIZE}
+            rsize={INPUT_SIZE}
             showError={!!(error && touched)}
             errorMessage={error as string}
+            doc_category={DOC_CATEGORY}
           />
-        </Col>
+        </div>
       )
 
     case 'select':
       return (
-        <Col sm={12}>
+        <div className={itemClass}>
           <GluuSelectRow
             label={label}
             name={name}
             value={value as string}
-            values={selectOptions ? [...selectOptions] : []}
+            values={stableOptions}
             formik={formik}
-            lsize={lsize}
-            rsize={rsize}
+            lsize={LABEL_SIZE}
+            rsize={INPUT_SIZE}
+            doc_category={DOC_CATEGORY}
           />
-        </Col>
+        </div>
       )
 
     case 'toggle':
       return (
-        <Col sm={12}>
+        <div className={itemClass}>
           <GluuToggleRow
             label={label}
             name={name}
             formik={formik}
-            lsize={lsize}
-            rsize={rsize}
+            lsize={LABEL_SIZE}
+            rsize={INPUT_SIZE}
             doc_category={DOC_CATEGORY}
           />
-        </Col>
+        </div>
       )
 
     default:

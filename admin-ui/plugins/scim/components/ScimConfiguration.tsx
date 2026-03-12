@@ -1,15 +1,25 @@
 import { useFormik, FormikProps } from 'formik'
 import React, { useState, useCallback, useMemo } from 'react'
-import { Row, Col, Form, FormGroup } from 'Components'
+import { useTranslation } from 'react-i18next'
+import { Form } from 'Components'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import GluuFormFooter from '@/routes/Apps/Gluu/GluuFormFooter'
-import { scimConfigurationSchema } from '../helper/schema'
-import { transformToFormValues, createJsonPatchFromDifferences } from '../helper'
+import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
+import { getScimConfigurationSchema } from '../helper/validations'
+import {
+  transformToFormValues,
+  createJsonPatchFromDifferences,
+  buildScimChangedFieldOperations,
+} from '../helper'
 import ScimFieldRenderer from './ScimFieldRenderer'
-import { SCIM_FIELD_CONFIGS } from './fieldConfigurations'
+import { SCIM_FIELD_CONFIGS } from './constants'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import type { ScimConfigurationProps, ScimFormValues } from '../types'
-import customColors from '@/customColors'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
+import { useStyles } from './styles/ScimFormPage.style'
+
+const SCIM_EDIT_FEATURE = adminUiFeatures.scim_configuration_edit
 
 const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
   scimConfiguration,
@@ -17,15 +27,31 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
   isSubmitting,
   canWriteScim = false,
 }) => {
+  const { t } = useTranslation()
   const [modal, setModal] = useState<boolean>(false)
+  const validationSchema = useMemo(() => getScimConfigurationSchema(t), [t])
+  const { state: themeState } = useTheme()
+  const { themeColors, isDark } = useMemo(
+    () => ({
+      themeColors: getThemeColor(themeState.theme),
+      isDark: themeState.theme === THEME_DARK,
+    }),
+    [themeState.theme],
+  )
+  const { classes } = useStyles({ isDark, themeColors })
 
   const toggle = useCallback((): void => {
     setModal((prev) => !prev)
   }, [])
 
+  const initialFormValues = useMemo(
+    () => transformToFormValues(scimConfiguration),
+    [scimConfiguration],
+  )
+
   const formik: FormikProps<ScimFormValues> = useFormik<ScimFormValues>({
-    initialValues: transformToFormValues(scimConfiguration),
-    validationSchema: scimConfigurationSchema,
+    initialValues: initialFormValues,
+    validationSchema,
     onSubmit: toggle,
     enableReinitialize: true,
   })
@@ -47,70 +73,71 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
     if (!formik.values) {
       return false
     }
-    return scimConfigurationSchema.isValidSync(formik.values)
-  }, [formik.values])
+    return validationSchema.isValidSync(formik.values)
+  }, [formik.values, validationSchema])
+
+  const commitOperations = useMemo(
+    () => buildScimChangedFieldOperations(initialFormValues, formik.values, t),
+    [initialFormValues, formik.values, t],
+  )
 
   const submitForm = useCallback(
-    (userMessage: string): void | Promise<unknown> => {
-      return handleSubmit({
+    async (userMessage: string): Promise<void> => {
+      await handleSubmit({
         ...formik.values,
         action_message: userMessage,
-      }) as void | Promise<unknown>
+      })
     },
     [handleSubmit, formik.values],
   )
 
   const handleCancel = useCallback(() => {
     formik.resetForm()
-  }, [formik])
+  }, [formik.resetForm])
 
   const handleFormSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>): void => {
       e.preventDefault()
       formik.handleSubmit()
     },
-    [formik],
+    [formik.handleSubmit],
   )
 
   return (
-    <Form onSubmit={handleFormSubmit} className="mt-4">
-      <style>{`
-        .scim-config-labels-black label,
-        .scim-config-labels-black label h5,
-        .scim-config-labels-black label span,
-        .scim-config-labels-black .MuiSvgIcon-root { color: ${customColors.black} !important; }
-      `}</style>
-      <div className="scim-config-labels-black">
-        <FormGroup row>
+    <Form onSubmit={handleFormSubmit}>
+      <div className={classes.formSection}>
+        <div className={`${classes.fieldsGrid} ${classes.formLabels} ${classes.formWithInputs}`}>
           {SCIM_FIELD_CONFIGS.map((fieldConfig) => (
-            <ScimFieldRenderer key={fieldConfig.name} config={fieldConfig} formik={formik} />
-          ))}
-        </FormGroup>
-
-        <Row>
-          <Col>
-            <GluuFormFooter
-              showBack={true}
-              showCancel={true}
-              showApply={canWriteScim}
-              onApply={toggle}
-              onCancel={handleCancel}
-              disableBack={false}
-              disableCancel={!isFormDirty}
-              disableApply={!isFormValid || !isFormDirty}
-              applyButtonType="submit"
-              isLoading={isSubmitting ?? false}
+            <ScimFieldRenderer
+              key={fieldConfig.name}
+              config={fieldConfig}
+              formik={formik}
+              fieldItemClass={classes.fieldItem}
+              fieldItemFullWidthClass={classes.fieldItemFullWidth}
             />
-          </Col>
-        </Row>
-        <GluuCommitDialog
-          handler={toggle}
-          modal={modal}
-          onAccept={submitForm}
-          feature={adminUiFeatures.scim_configuration_edit}
-          formik={formik}
-        />
+          ))}
+        </div>
       </div>
+
+      <GluuThemeFormFooter
+        showBack
+        showCancel
+        showApply={canWriteScim}
+        onApply={toggle}
+        onCancel={handleCancel}
+        disableCancel={!isFormDirty}
+        disableApply={!isFormValid || !isFormDirty}
+        applyButtonType="submit"
+        isLoading={isSubmitting ?? false}
+      />
+      <GluuCommitDialog
+        handler={toggle}
+        modal={modal}
+        onAccept={submitForm}
+        feature={SCIM_EDIT_FEATURE}
+        formik={formik}
+        operations={commitOperations}
+      />
     </Form>
   )
 }

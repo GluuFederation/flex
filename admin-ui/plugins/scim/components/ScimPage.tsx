@@ -3,10 +3,9 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { useQueryClient } from '@tanstack/react-query'
 import SetTitle from 'Utils/SetTitle'
-import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import { Card, CardBody } from 'Components'
+import { GluuPageContent } from '@/components'
 import ScimConfiguration from './ScimConfiguration'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useGetScimConfig, usePatchScimConfig, getGetScimConfigQueryKey } from 'JansConfigApi'
@@ -19,6 +18,10 @@ import type { JsonPatch } from 'JansConfigApi'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
+import { useStyles } from './styles/ScimFormPage.style'
 
 interface ApiErrorResponse {
   response?: {
@@ -73,6 +76,16 @@ const ScimPage: React.FC = () => {
     }
   }, [authorizeHelper, scimScopes])
 
+  const { state: themeState } = useTheme()
+  const { themeColors, isDark } = useMemo(
+    () => ({
+      themeColors: getThemeColor(themeState.theme),
+      isDark: themeState.theme === THEME_DARK,
+    }),
+    [themeState.theme],
+  )
+  const { classes } = useStyles({ isDark, themeColors })
+
   const { data: scimConfiguration, isLoading } = useGetScimConfig()
   const userMessageRef = React.useRef<string>('')
 
@@ -109,10 +122,10 @@ const ScimPage: React.FC = () => {
         return { previousConfig }
       },
       onSuccess: async (_data: unknown, variables: { data: JsonPatch[] }) => {
-        dispatch(updateToast(true, 'success'))
+        dispatch(updateToast(true, 'success', t('messages.success_in_saving')))
         queryClient.invalidateQueries({ queryKey: getGetScimConfigQueryKey() })
         try {
-          const userMessage: string = userMessageRef.current || 'SCIM configuration updated'
+          const userMessage: string = userMessageRef.current || t('messages.success_in_saving')
           await logAudit({
             userinfo: userinfo ?? undefined,
             action: PATCH,
@@ -161,20 +174,22 @@ const ScimPage: React.FC = () => {
   )
 
   return (
-    <GluuLoader blocking={isLoading || patchScimMutation.isPending}>
-      <Card className="mb-3" style={applicationStyle.mainCard}>
-        <CardBody>
-          <GluuViewWrapper canShow={canReadScim}>
-            <ScimConfiguration
-              scimConfiguration={scimConfiguration}
-              handleSubmit={handleSubmit}
-              isSubmitting={patchScimMutation.isPending}
-              canWriteScim={canWriteScim}
-            />
-          </GluuViewWrapper>
-        </CardBody>
-      </Card>
-    </GluuLoader>
+    <GluuPageContent>
+      <GluuViewWrapper canShow={canReadScim}>
+        <GluuLoader blocking={isLoading || patchScimMutation.isPending}>
+          <div className={classes.formCard}>
+            <div className={classes.content}>
+              <ScimConfiguration
+                scimConfiguration={scimConfiguration}
+                handleSubmit={handleSubmit}
+                isSubmitting={patchScimMutation.isPending}
+                canWriteScim={canWriteScim}
+              />
+            </div>
+          </div>
+        </GluuLoader>
+      </GluuViewWrapper>
+    </GluuPageContent>
   )
 }
 

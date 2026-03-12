@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useMemo, useCallback, useRef } from 'react'
 import { SidebarMenu, SidebarMenuItem } from 'Components'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/redux/hooks'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
 import { processMenus } from 'Plugins/PluginMenuResolver'
@@ -69,8 +69,8 @@ const selectLogoutAuditSucceeded = (state: RootState): boolean | null =>
   state.logoutAuditReducer.logoutAuditSucceeded
 
 function GluuAppSidebar(): JSX.Element {
-  const health = useSelector(selectHealth)
-  const logoutAuditSucceeded = useSelector(selectLogoutAuditSucceeded)
+  const health = useAppSelector(selectHealth)
+  const logoutAuditSucceeded = useAppSelector(selectLogoutAuditSucceeded)
   const [pluginMenus, setPluginMenus] = useState<PluginMenu[]>([])
   const didAnimateMenusRef = useRef<boolean>(false)
   const isReady = pluginMenus.length > 0

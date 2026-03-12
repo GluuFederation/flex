@@ -1,5 +1,9 @@
 import { AppConfiguration3, JsonPatch } from 'JansConfigApi'
+import type { TFunction } from 'i18next'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/GluuCommitDialog'
 import { ScimFormValues } from '../types'
+import { SCIM_FIELD_CONFIGS } from '../components/constants'
 
 /**
  * Converts boolean-like values to actual boolean type
@@ -139,6 +143,28 @@ export const createJsonPatchFromDifferences = (
   )
 
   return patches
+}
+
+/**
+ * Builds a list of changed field operations by comparing initial and current form values.
+ */
+export const buildScimChangedFieldOperations = (
+  initial: ScimFormValues,
+  current: ScimFormValues,
+  t: TFunction,
+): GluuCommitDialogOperation[] => {
+  const operations: GluuCommitDialogOperation[] = []
+
+  for (const { name, label, disabled } of SCIM_FIELD_CONFIGS) {
+    if (disabled) continue
+    const oldVal = initial[name]
+    const newVal = current[name]
+    if (String(oldVal ?? '') !== String(newVal ?? '')) {
+      operations.push({ path: t(label), value: (newVal as JsonValue) ?? null })
+    }
+  }
+
+  return operations
 }
 
 export { toBooleanValue }

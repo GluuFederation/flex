@@ -1,9 +1,8 @@
-import { useSelector, useDispatch } from 'react-redux'
 import { useCallback } from 'react'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { setCedarlingPermission } from '@/redux/features/cedarPermissionsSlice'
 import { cedarlingClient, buildCedarPermissionKey, CEDARLING_CONSTANTS } from '@/cedarling'
 import type {
-  RootState,
   UseCedarlingReturn,
   AuthorizationResult,
   ResourceScopeEntry,
@@ -16,13 +15,13 @@ import { updateToast } from '@/redux/features/toastSlice'
 export function useCedarling(): UseCedarlingReturn {
   const { ACTION_TYPE, RESOURCE_TYPE } = CEDARLING_CONSTANTS
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const {
     userinfo_jwt: userinfo_token,
     idToken: id_token,
     jwtToken: access_token,
-  } = useSelector((state: RootState) => state.authReducer)
+  } = useAppSelector((state) => state.authReducer)
 
   const {
     permissions: permissionsByResourceId,
@@ -30,7 +29,7 @@ export function useCedarling(): UseCedarlingReturn {
     error,
     initialized: cedarlingInitialized,
     isInitializing,
-  } = useSelector((state: RootState) => state.cedarPermissions)
+  } = useAppSelector((state) => state.cedarPermissions)
   const executeUrls = new Set([SSA_ADMIN, SSA_DEVELOPER, SCIM_BULK, REVOKE_SESSION, OPENID])
 
   const getActionLabelFromUrl = useCallback((url: string): CedarAction => {
