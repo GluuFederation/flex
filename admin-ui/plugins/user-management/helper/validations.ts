@@ -121,7 +121,8 @@ const processBirthdateAttribute = (
 
   const toDateLike = (v: object): string | number | Date | null => {
     if (typeof v === 'string' || typeof v === 'number' || v instanceof Date) return v
-    if (v && typeof v === 'object' && 'value' in v) return toDateLike((v as { value: object }).value)
+    if (v && typeof v === 'object' && 'value' in v)
+      return toDateLike((v as { value: object }).value)
     return null
   }
   const rawDate =
