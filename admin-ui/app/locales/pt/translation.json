@@ -1030,7 +1030,17 @@
     "invalid_number": "Deve ser um número válido",
     "invalid_email": "Deve ser um endereço de e-mail válido",
     "invalid_json": "Deve ser um JSON válido",
-    "invalid_pattern": "Formato inválido"
+    "invalid_pattern": "Formato inválido",
+    "password_required": "A senha é obrigatória.",
+    "password_format": "Mín. 8 caracteres com maiúscula, minúscula, número e caractere especial",
+    "confirm_password_required": "A confirmação de senha é obrigatória.",
+    "confirm_password_required_when_set": "A confirmação é obrigatória quando uma senha é fornecida",
+    "passwords_must_match": "As senhas devem coincidir",
+    "display_name_required": "O nome de exibição é obrigatório.",
+    "first_name_required": "O primeiro nome é obrigatório.",
+    "last_name_required": "O sobrenome é obrigatório.",
+    "username_required": "O nome de usuário é obrigatório.",
+    "email_required": "O e-mail é obrigatório."
   },
   "tooltips": {
     "insert_shortcode": "Inserir código de atalho",

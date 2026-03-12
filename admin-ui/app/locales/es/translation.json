@@ -1072,7 +1072,17 @@
     "invalid_number": "Debe ser un número válido",
     "invalid_email": "Debe ser una dirección de correo válida",
     "invalid_json": "Debe ser JSON válido",
-    "invalid_pattern": "Formato inválido"
+    "invalid_pattern": "Formato inválido",
+    "password_required": "La contraseña es obligatoria.",
+    "password_format": "Mín. 8 caracteres con mayúscula, minúscula, número y carácter especial",
+    "confirm_password_required": "La confirmación de contraseña es obligatoria.",
+    "confirm_password_required_when_set": "Se requiere confirmar la contraseña cuando se proporciona una contraseña",
+    "passwords_must_match": "Las contraseñas deben coincidir",
+    "display_name_required": "El nombre de visualización es obligatorio.",
+    "first_name_required": "El nombre es obligatorio.",
+    "last_name_required": "El apellido es obligatorio.",
+    "username_required": "El nombre de usuario es obligatorio.",
+    "email_required": "El correo electrónico es obligatorio."
   },
   "tooltips": {
     "add_user": "Agregar usuario",

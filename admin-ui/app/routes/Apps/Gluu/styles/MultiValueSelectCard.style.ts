@@ -3,7 +3,6 @@ import type { ThemeConfig } from '@/context/theme/config'
 import { CEDARLING_CONFIG_SPACING, MAPPING_SPACING } from '@/constants'
 import { fontFamily, fontSizes, fontWeights, letterSpacing, lineHeights } from '@/styles/fonts'
 import applicationStyle from './applicationStyle'
-import { customColors } from '@/customColors'
 
 interface MultiValueSelectCardStyleParams {
   themeColors: ThemeConfig
@@ -44,9 +43,9 @@ export const useStyles = makeStyles<MultiValueSelectCardStyleParams>()((_, { the
     select: {
       'width': '100%',
       'minHeight': CEDARLING_CONFIG_SPACING.INPUT_HEIGHT,
-      'backgroundColor': customColors.darkBorder,
+      'backgroundColor': themeColors.inputBackground,
       '&&': {
-        backgroundColor: `${customColors.darkBorder} !important`,
+        backgroundColor: `${themeColors.inputBackground} !important`,
       },
       'color': themeColors.fontColor,
       'border': `1px solid ${inputBorderColor}`,

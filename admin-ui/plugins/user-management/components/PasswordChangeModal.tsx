@@ -8,10 +8,12 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { GluuButton } from '@/components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import { Divider } from '@mui/material'
+import { BUTTON_STYLES } from 'Routes/Apps/Gluu/styles/GluuThemeFormFooter.style'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
-import { passwordChangeValidationSchema } from '../helper/validations'
+import { getPasswordChangeValidationSchema } from '../helper/validations'
 import {
   usePatchUserByInum,
   getGetUserQueryKey,
@@ -173,7 +175,7 @@ const PasswordChangeModal = ({
 
   const passwordFormik = useFormik<PasswordChangeFormValues>({
     initialValues,
-    validationSchema: passwordChangeValidationSchema,
+    validationSchema: getPasswordChangeValidationSchema(),
     validateOnChange: true,
     validateOnBlur: true,
     validateOnMount: false,
@@ -351,18 +353,25 @@ const PasswordChangeModal = ({
               </div>
             </div>
 
-            <div className={commitClasses.buttonRow}>
+            <Divider sx={{ mt: 2 }} />
+            <div style={{ paddingTop: 16, paddingBottom: 8 }}>
               <GluuButton
                 type="submit"
                 disabled={isApplyDisabled || isLoading}
-                backgroundColor={themeColors.badges.statusActive}
-                textColor={themeColors.badges.filledBadgeText}
-                borderColor="transparent"
-                padding="8px 28px"
-                minHeight="40"
-                useOpacityOnHover
                 loading={isLoading}
-                className={commitClasses.yesButton}
+                backgroundColor={themeColors.formFooter.back.backgroundColor}
+                textColor={themeColors.formFooter.back.textColor}
+                borderColor={themeColors.formFooter.back.borderColor}
+                useOpacityOnHover
+                hoverOpacity={0.85}
+                style={{
+                  minHeight: BUTTON_STYLES.height,
+                  padding: `${BUTTON_STYLES.paddingY}px ${BUTTON_STYLES.paddingX}px`,
+                  borderRadius: BUTTON_STYLES.borderRadius,
+                  fontSize: BUTTON_STYLES.fontSize,
+                  fontWeight: BUTTON_STYLES.fontWeight,
+                  letterSpacing: BUTTON_STYLES.letterSpacing,
+                }}
               >
                 {t('actions.change_password')}
               </GluuButton>

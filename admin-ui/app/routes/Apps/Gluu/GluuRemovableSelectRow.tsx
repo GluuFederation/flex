@@ -1,7 +1,6 @@
 import GluuLabel from './GluuLabel'
 import { CustomInput, InputGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
-import GluuTooltip from './GluuTooltip'
 import { FormikProps } from 'formik'
 import React, { useMemo } from 'react'
 import { useTheme } from '@/context/theme/themeContext'
@@ -53,62 +52,66 @@ function GluuRemovableSelectRow({
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
 
   return (
-    <GluuTooltip doc_category={doc_category} isDirect={isDirect} doc_entry={name}>
-      <div>
-        <GluuLabel label={label} size={lsize} />
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <InputGroup style={{ flex: 1, minWidth: 0 }}>
-            <CustomInput
-              type="select"
-              id={name}
-              data-testid={name}
-              name={name}
-              value={currentValue}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setModifiedFields({
-                  ...modifiedFields,
-                  [name]: e.target.value,
-                })
-                formik.handleChange(e)
-              }}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              {values.map((item) => (
-                <option value={item.cca2} key={item.cca2}>
-                  {item.name}
-                </option>
-              ))}
-            </CustomInput>
-          </InputGroup>
-          {!hideRemoveButton && (
-            <button
-              type="button"
-              aria-label={t('actions.remove')}
-              style={{
-                width: 32,
-                height: 32,
-                minWidth: 32,
-                minHeight: 32,
-                padding: 6,
-                background: 'transparent',
-                border: 'none',
-                boxShadow: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0,
-              }}
-              onClick={() => handler()}
-            >
-              <i
-                className={'fa fa-fw fa-close'}
-                style={{ color: themeColors.fontColor, fontSize: 16 }}
-              />
-            </button>
-          )}
-        </div>
+    <div>
+      <GluuLabel
+        label={label}
+        size={lsize}
+        doc_category={doc_category}
+        doc_entry={name}
+        isDirect={isDirect}
+      />
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <InputGroup style={{ flex: 1, minWidth: 0 }}>
+          <CustomInput
+            type="select"
+            id={name}
+            data-testid={name}
+            name={name}
+            value={currentValue}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setModifiedFields({
+                ...modifiedFields,
+                [name]: e.target.value,
+              })
+              formik.handleChange(e)
+            }}
+          >
+            <option value="">{t('actions.choose')}...</option>
+            {values.map((item) => (
+              <option value={item.cca2} key={item.cca2}>
+                {item.name}
+              </option>
+            ))}
+          </CustomInput>
+        </InputGroup>
+        {!hideRemoveButton && (
+          <button
+            type="button"
+            aria-label={t('actions.remove')}
+            style={{
+              width: 32,
+              height: 32,
+              minWidth: 32,
+              minHeight: 32,
+              padding: 6,
+              background: 'transparent',
+              border: 'none',
+              boxShadow: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}
+            onClick={() => handler()}
+          >
+            <i
+              className={'fa fa-fw fa-close'}
+              style={{ color: themeColors.fontColor, fontSize: 16 }}
+            />
+          </button>
+        )}
       </div>
-    </GluuTooltip>
+    </div>
   )
 }
 export default GluuRemovableSelectRow

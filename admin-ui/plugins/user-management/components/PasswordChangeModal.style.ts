@@ -34,7 +34,7 @@ export const usePasswordModalStyles = makeStyles<StylesParams>()((
     fieldGroup: {
       display: 'flex',
       flexDirection: 'column',
-      gap: 8,
+      gap: 6,
     },
     fieldLabel: {
       fontFamily,
@@ -70,7 +70,16 @@ export const usePasswordModalStyles = makeStyles<StylesParams>()((
       '&:focus, &:focus-visible': {
         outline: 'none',
         boxShadow: 'none',
+        backgroundColor: themeColors.inputBackground,
+        color: themeColors.fontColor,
       },
+      '&:-webkit-autofill, &:-webkit-autofill:hover, &:-webkit-autofill:focus, &:-webkit-autofill:active':
+        {
+          WebkitBoxShadow: `0 0 0 100px ${themeColors.inputBackground} inset !important`,
+          WebkitTextFillColor: `${themeColors.fontColor} !important`,
+          caretColor: themeColors.fontColor,
+          transition: 'background-color 5000s ease-in-out 0s',
+        },
     },
     inputWrapper: {
       position: 'relative',
@@ -101,6 +110,7 @@ export const usePasswordModalStyles = makeStyles<StylesParams>()((
       fontSize: fontSizes.sm,
       color: themeColors.errorColor,
       margin: 0,
+      marginTop: -3,
       minHeight: 18,
     },
   }

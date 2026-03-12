@@ -1037,7 +1037,17 @@
     "invalid_number": "Doit être un nombre valide",
     "invalid_email": "Doit être une adresse e-mail valide",
     "invalid_json": "Doit être du JSON valide",
-    "invalid_pattern": "Format invalide"
+    "invalid_pattern": "Format invalide",
+    "password_required": "Le mot de passe est obligatoire.",
+    "password_format": "Min. 8 caractères avec majuscule, minuscule, chiffre et caractère spécial",
+    "confirm_password_required": "La confirmation du mot de passe est obligatoire.",
+    "confirm_password_required_when_set": "La confirmation est requise lorsqu'un mot de passe est fourni",
+    "passwords_must_match": "Les mots de passe doivent correspondre",
+    "display_name_required": "Le nom d'affichage est obligatoire.",
+    "first_name_required": "Le prénom est obligatoire.",
+    "last_name_required": "Le nom de famille est obligatoire.",
+    "username_required": "Le nom d'utilisateur est obligatoire.",
+    "email_required": "L'adresse e-mail est obligatoire."
   },
   "tooltips": {
     "insert_shortcode": "Insérer un shortcode",

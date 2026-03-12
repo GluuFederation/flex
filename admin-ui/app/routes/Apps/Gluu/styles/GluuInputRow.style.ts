@@ -51,7 +51,7 @@ export const useStyles = makeStyles<GluuInputRowStyleParams>()((
       display: 'block',
       color: errorColor,
       fontSize: 12,
-      marginTop: 4,
+      marginTop: 1,
     },
 
     numberWrapper: {

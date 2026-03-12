@@ -1,6 +1,5 @@
 import { Input } from 'Components'
 import GluuLabel from './GluuLabel'
-import GluuTooltip from './GluuTooltip'
 import GluuToogle from 'Routes/Apps/Gluu/GluuToogle'
 import PropTypes from 'prop-types'
 import { FormikProps } from 'formik'
@@ -79,52 +78,62 @@ const GluuRemovableInputRow = <TValues extends FormikValues = FormikValues>({
 
   if (isBoolean) {
     return (
-      <GluuTooltip doc_category={doc_category} isDirect={isDirect} doc_entry={name}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <GluuLabel label={label} size={3} required={required} />
-          <GluuToogle
-            name={name}
-            id={name}
-            formik={formik}
-            value={isChecked}
-            handler={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setModifiedFields({
-                ...modifiedFields,
-                [name]: e.target.checked,
-              })
-              formik.setFieldValue(name, e.target.checked)
-            }}
-          />
-          {!hideRemoveButton && <div style={{ marginLeft: 'auto' }}>{removeButton}</div>}
-        </div>
-      </GluuTooltip>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <GluuLabel
+          label={label}
+          size={3}
+          required={required}
+          doc_category={doc_category}
+          doc_entry={name}
+          isDirect={isDirect}
+        />
+        <GluuToogle
+          name={name}
+          id={name}
+          formik={formik}
+          value={isChecked}
+          handler={(e: React.ChangeEvent<HTMLInputElement>) => {
+            setModifiedFields({
+              ...modifiedFields,
+              [name]: e.target.checked,
+            })
+            formik.setFieldValue(name, e.target.checked)
+          }}
+        />
+        {!hideRemoveButton && <div style={{ marginLeft: 'auto' }}>{removeButton}</div>}
+      </div>
     )
   }
 
   return (
-    <GluuTooltip doc_category={doc_category} isDirect={isDirect} doc_entry={name}>
-      <div style={{ width: '100%' }}>
-        <GluuLabel label={label} size={lsize} required={required} />
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Input
-            id={name}
-            data-testid={name}
-            type={type}
-            name={name}
-            style={{ flex: 1, minWidth: 0 }}
-            value={(currentValue as string) ?? (value as string) ?? ''}
-            onChange={(e) => {
-              setModifiedFields({
-                ...modifiedFields,
-                [name]: e.target.value,
-              })
-              formik.handleChange(e)
-            }}
-          />
-          {!hideRemoveButton && removeButton}
-        </div>
+    <div style={{ width: '100%' }}>
+      <GluuLabel
+        label={label}
+        size={lsize}
+        required={required}
+        doc_category={doc_category}
+        doc_entry={name}
+        isDirect={isDirect}
+      />
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <Input
+          id={name}
+          data-testid={name}
+          type={type}
+          name={name}
+          style={{ flex: 1, minWidth: 0 }}
+          value={(currentValue as string) ?? (value as string) ?? ''}
+          onChange={(e) => {
+            setModifiedFields({
+              ...modifiedFields,
+              [name]: e.target.value,
+            })
+            formik.handleChange(e)
+          }}
+        />
+        {!hideRemoveButton && removeButton}
       </div>
-    </GluuTooltip>
+    </div>
   )
 }
 

@@ -1076,7 +1076,17 @@
     "invalid_number": "Must be a valid number",
     "invalid_email": "Must be a valid email address",
     "invalid_json": "Must be valid JSON",
-    "invalid_pattern": "Invalid format"
+    "invalid_pattern": "Invalid format",
+    "password_required": "Password is required.",
+    "password_format": "Min 8 chars with uppercase, lowercase, number & special char",
+    "confirm_password_required": "Confirm password is required.",
+    "confirm_password_required_when_set": "Confirm password is required when password is provided",
+    "passwords_must_match": "Passwords must match",
+    "display_name_required": "Display name is required.",
+    "first_name_required": "First name is required.",
+    "last_name_required": "Last name is required.",
+    "username_required": "User name is required.",
+    "email_required": "Email is required."
   },
   "tooltips": {
     "insert_shortcode": "Insert shortcode",
