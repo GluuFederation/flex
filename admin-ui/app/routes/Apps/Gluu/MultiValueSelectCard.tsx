@@ -107,9 +107,8 @@ const MultiValueSelectCard = ({
             textColor={themeColors.formFooter.apply.textColor}
             borderColor={themeColors.formFooter.apply.borderColor}
             useOpacityOnHover
-            style={{ gap: 8, minWidth: 92 }}
           >
-            <span style={{ fontSize: 18, lineHeight: 1 }}>＋</span> {t('actions.add')}
+            <i className="fa fa-fw fa-plus" /> {t('actions.add')}
           </GluuButton>
           <GluuButton
             type="button"
@@ -120,9 +119,8 @@ const MultiValueSelectCard = ({
             textColor={themeColors.settings.removeButton.text}
             borderColor={themeColors.settings.removeButton.bg}
             disableHoverStyles
-            style={{ gap: 8, minWidth: 110 }}
           >
-            <i className="fa fa-trash" /> {t('actions.remove')}
+            <i className="fa fa-fw fa-trash" /> {t('actions.remove')}
           </GluuButton>
         </div>
       </div>
