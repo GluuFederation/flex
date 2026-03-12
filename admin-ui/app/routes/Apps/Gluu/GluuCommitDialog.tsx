@@ -6,6 +6,7 @@ import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
+import Alert from '@mui/material/Alert'
 import { useWebhookDialogAction } from 'Utils/hooks'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
@@ -34,6 +35,8 @@ const GluuCommitDialog = ({
   isLicenseLabel = false,
   operations = [],
   autoCloseOnAccept = false,
+  alertMessage,
+  alertSeverity = 'warning',
 }: GluuCommitDialogProps) => {
   const { t } = useTranslation()
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
@@ -178,6 +181,11 @@ const GluuCommitDialog = ({
             <i className="fa fa-times" aria-hidden />
           </button>
           <div className={classes.contentArea}>
+            {alertMessage && (
+              <Alert severity={alertSeverity} sx={{ mb: 1 }}>
+                {alertMessage}
+              </Alert>
+            )}
             <GluuText variant="h2" className={classes.title} id="commit-dialog-title">
               {titleText}
             </GluuText>

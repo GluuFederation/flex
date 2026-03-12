@@ -1,11 +1,9 @@
 import React, { useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import Autocomplete from '@mui/material/Autocomplete'
-import TextField from '@mui/material/TextField'
 import { GluuButton } from '@/components'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
-import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 import { useStyles } from './styles/MultiValueSelectCard.style'
 import type { MultiValueSelectCardProps } from './types/MultiValueSelectCard.types'
 import { ChevronIcon } from '@/components/SVG'
@@ -27,8 +25,7 @@ const MultiValueSelectCard = ({
   const { state: themeState } = useTheme()
   const selectedTheme = themeState?.theme ?? DEFAULT_THEME
   const themeColors = getThemeColor(selectedTheme)
-  const isDark = selectedTheme === THEME_DARK
-  const { classes } = useStyles({ isDark, themeColors })
+  const { classes } = useStyles({ themeColors })
 
   const [pendingValue, setPendingValue] = useState('')
   const selectedItems = Array.isArray(value)
@@ -48,14 +45,6 @@ const MultiValueSelectCard = ({
     onBlur?.()
   }, [disabled, allowCustom, options, pendingValue, selectedItems, onChange, onBlur])
 
-  const handleRemove = useCallback(() => {
-    if (disabled) return
-    if (selectedItems.length === 0) return
-    const next = selectedItems.slice(0, -1)
-    onChange(next)
-    onBlur?.()
-  }, [disabled, selectedItems, onChange, onBlur])
-
   const handleRemoveByName = useCallback(
     (itemName: string) => {
       if (disabled) return
@@ -66,63 +55,49 @@ const MultiValueSelectCard = ({
     [disabled, selectedItems, onChange, onBlur],
   )
 
+  const handleSelectChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    setPendingValue(e.target.value)
+  }, [])
+
   const content = (
     <div className={classes.card}>
       <div className={classes.header}>{label}:</div>
       <div className={classes.controls}>
-        <Autocomplete
-          freeSolo={allowCustom}
-          disableClearable
-          options={availableOptions}
-          value={pendingValue || undefined}
-          inputValue={allowCustom ? pendingValue : undefined}
-          onInputChange={(_event, newInputValue) => {
-            if (allowCustom) setPendingValue(newInputValue)
-          }}
-          onChange={(_event, newValue) => setPendingValue(newValue ? String(newValue) : '')}
-          disabled={disabled}
-          className={classes.autocomplete}
-          popupIcon={<ChevronIcon />}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              placeholder={placeholder ?? t('placeholders.search_here')}
-              size="small"
-              fullWidth
-            />
-          )}
-        />
-        <div className={classes.buttons}>
-          <GluuButton
-            type="button"
-            className={classes.addButton}
-            onClick={handleAdd}
-            disabled={
-              disabled ||
-              (allowCustom
-                ? !pendingValue.trim()
-                : availableOptions.length === 0 || !options.includes(pendingValue.trim()))
-            }
-            backgroundColor={themeColors.formFooter.apply.backgroundColor}
-            textColor={themeColors.formFooter.apply.textColor}
-            borderColor={themeColors.formFooter.apply.borderColor}
-            useOpacityOnHover
+        <div className={classes.selectWrapper}>
+          <select
+            value={pendingValue}
+            onChange={handleSelectChange}
+            disabled={disabled}
+            className={classes.select}
           >
-            <i className="fa fa-fw fa-plus" /> {t('actions.add')}
-          </GluuButton>
-          <GluuButton
-            type="button"
-            className={classes.removeButton}
-            onClick={handleRemove}
-            disabled={disabled || selectedItems.length === 0}
-            backgroundColor={themeColors.settings.removeButton.bg}
-            textColor={themeColors.settings.removeButton.text}
-            borderColor={themeColors.settings.removeButton.bg}
-            disableHoverStyles
-          >
-            <i className="fa fa-fw fa-trash" /> {t('actions.remove')}
-          </GluuButton>
+            <option value="">{placeholder ?? t('placeholders.search_here')}</option>
+            {availableOptions.map((opt) => (
+              <option key={opt} value={opt}>
+                {opt}
+              </option>
+            ))}
+          </select>
+          <span className={classes.chevronWrapper} aria-hidden>
+            <ChevronIcon width={20} height={20} direction="down" />
+          </span>
         </div>
+        <GluuButton
+          type="button"
+          className={classes.addButton}
+          onClick={handleAdd}
+          disabled={
+            disabled ||
+            (allowCustom
+              ? !pendingValue.trim()
+              : availableOptions.length === 0 || !options.includes(pendingValue.trim()))
+          }
+          backgroundColor={themeColors.formFooter.apply.backgroundColor}
+          textColor={themeColors.formFooter.apply.textColor}
+          borderColor={themeColors.formFooter.apply.borderColor}
+          useOpacityOnHover
+        >
+          <i className="fa fa-fw fa-plus" /> {t('actions.add')}
+        </GluuButton>
       </div>
       {selectedItems.length > 0 && (
         <div className={classes.tags}>

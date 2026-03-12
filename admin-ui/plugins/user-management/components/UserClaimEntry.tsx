@@ -8,7 +8,6 @@ import { JANS_ADMIN_UI_ROLE_ATTR, COUNTRY_ATTR } from '../common/Constants'
 import { getClaimLabel, getClaimLabelKey } from '../utils/claimLabelUtils'
 import { useGetAllAdminuiRoles } from 'JansConfigApi'
 import { UserClaimEntryProps } from '../types/ComponentTypes'
-
 const UserClaimEntry = ({
   data,
   entry,
@@ -59,65 +58,68 @@ const UserClaimEntry = ({
     [data.name, formik, setModifiedFields],
   )
 
-  return (
-    <div key={entry}>
-      {data.oxMultiValuedAttribute && (
-        <MultiValueSelectCard
-          label={claimLabel}
-          name={data.name}
-          value={multiValue}
-          options={multiValueOptions}
-          onChange={handleMultiValueChange}
-          disabled={isRolesUnavailable}
-          placeholder={
-            isRolesUnavailable
-              ? rolesLoading
-                ? t('messages.loading_roles')
-                : t('messages.failed_load_roles')
-              : t('placeholders.search_here')
-          }
-          allowCustom={!isRoleField}
-          onRemoveField={doHandle}
-          doc_category={data.description}
-        />
-      )}
-      {data.name !== COUNTRY_ATTR && !data.oxMultiValuedAttribute && (
-        <GluuRemovableInputRow
-          label={claimLabelKey}
-          name={data.name}
-          isDirect={true}
-          value={
-            data?.dataType?.toLowerCase() === 'boolean'
-              ? Boolean(formik.values[data.name])
-              : String(formik.values[data.name] ?? '')
-          }
-          formik={formik}
-          handler={doHandle}
-          modifiedFields={modifiedFields}
-          setModifiedFields={setModifiedFields}
-          doc_category={typeof data.description === 'string' ? data.description : undefined}
-          lsize={3}
-          rsize={9}
-          isBoolean={data?.dataType?.toLowerCase() === 'boolean'}
-        />
-      )}
-      {data.name === COUNTRY_ATTR && !data.oxMultiValuedAttribute && (
-        <GluuRemovableSelectRow
-          label={claimLabelKey}
-          name={data.name}
-          doc_category={typeof data.description === 'string' ? data.description : undefined}
-          isDirect={true}
-          value={String(formik.values[data.name] ?? '')}
-          values={countries}
-          formik={formik as React.ComponentProps<typeof GluuRemovableSelectRow>['formik']}
-          modifiedFields={modifiedFields}
-          setModifiedFields={setModifiedFields}
-          handler={doHandle}
-          lsize={3}
-          rsize={9}
-        />
-      )}
-    </div>
-  )
+  let fieldContent: React.ReactNode = null
+
+  if (data.oxMultiValuedAttribute) {
+    fieldContent = (
+      <MultiValueSelectCard
+        label={claimLabel}
+        name={data.name}
+        value={multiValue}
+        options={multiValueOptions}
+        onChange={handleMultiValueChange}
+        disabled={isRolesUnavailable}
+        placeholder={
+          isRolesUnavailable
+            ? rolesLoading
+              ? t('messages.loading_roles')
+              : t('messages.failed_load_roles')
+            : t('placeholders.search_here')
+        }
+        allowCustom={!isRoleField}
+        doc_category={data.description}
+        onRemoveField={doHandle}
+      />
+    )
+  } else if (data.name === COUNTRY_ATTR) {
+    fieldContent = (
+      <GluuRemovableSelectRow
+        label={claimLabelKey}
+        name={data.name}
+        doc_category={typeof data.description === 'string' ? data.description : undefined}
+        isDirect={true}
+        value={String(formik.values[data.name] ?? '')}
+        values={countries}
+        formik={formik as React.ComponentProps<typeof GluuRemovableSelectRow>['formik']}
+        modifiedFields={modifiedFields}
+        setModifiedFields={setModifiedFields}
+        handler={doHandle}
+        lsize={12}
+        rsize={12}
+      />
+    )
+  } else {
+    fieldContent = (
+      <GluuRemovableInputRow
+        label={claimLabelKey}
+        name={data.name}
+        isDirect={true}
+        value={
+          data?.dataType?.toLowerCase() === 'boolean'
+            ? Boolean(formik.values[data.name])
+            : String(formik.values[data.name] ?? '')
+        }
+        formik={formik}
+        handler={doHandle}
+        modifiedFields={modifiedFields}
+        setModifiedFields={setModifiedFields}
+        doc_category={typeof data.description === 'string' ? data.description : undefined}
+        lsize={12}
+        isBoolean={data?.dataType?.toLowerCase() === 'boolean'}
+      />
+    )
+  }
+
+  return <div key={entry}>{fieldContent}</div>
 }
 export default React.memo(UserClaimEntry)

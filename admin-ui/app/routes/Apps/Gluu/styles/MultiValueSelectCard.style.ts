@@ -1,31 +1,24 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { CEDARLING_CONFIG_SPACING, MAPPING_SPACING, BORDER_RADIUS } from '@/constants'
+import { CEDARLING_CONFIG_SPACING, MAPPING_SPACING } from '@/constants'
 import { fontFamily, fontSizes, fontWeights, letterSpacing, lineHeights } from '@/styles/fonts'
-import customColors from '@/customColors'
 import applicationStyle from './applicationStyle'
+import { customColors } from '@/customColors'
 
 interface MultiValueSelectCardStyleParams {
-  isDark: boolean
   themeColors: ThemeConfig
 }
 
-export const useStyles = makeStyles<MultiValueSelectCardStyleParams>()((
-  _,
-  { isDark, themeColors },
-) => {
+export const useStyles = makeStyles<MultiValueSelectCardStyleParams>()((_, { themeColors }) => {
   const settings = themeColors.settings
   const inputBorderColor = settings?.inputBorder ?? themeColors.borderColor
   const leftFieldBg = themeColors.settings?.cardBackground ?? themeColors.card.background
-  const formInputBg = isDark
-    ? (settings?.formInputBackground ?? themeColors.inputBackground)
-    : (settings?.cardBackground ?? themeColors.card.background)
 
   return {
     card: {
       backgroundColor: leftFieldBg,
       border: `1px solid ${inputBorderColor}`,
-      borderRadius: BORDER_RADIUS.DEFAULT,
+      borderRadius: MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS,
       padding: 16,
       boxSizing: 'border-box',
     },
@@ -36,69 +29,62 @@ export const useStyles = makeStyles<MultiValueSelectCardStyleParams>()((
     },
     controls: {
       'display': 'grid',
-      'gridTemplateColumns': 'minmax(0, 1fr) auto auto',
+      'gridTemplateColumns': 'minmax(0, 1fr) auto',
       'gap': 12,
       'alignItems': 'center',
       '@media (max-width: 900px)': {
         gridTemplateColumns: '1fr',
       },
     },
-    autocomplete: {
+    selectWrapper: {
+      position: 'relative',
+      flex: '1 1 0',
+      minWidth: 0,
+    },
+    select: {
       'width': '100%',
-      'flex': '1 1 0',
-      'minWidth': 0,
-      '& .MuiOutlinedInput-root': {
-        'backgroundColor': `${formInputBg} !important`,
-        'minHeight': CEDARLING_CONFIG_SPACING.INPUT_HEIGHT,
-        'borderRadius': `${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px !important`,
-        'overflow': 'hidden',
-        'border': `1px solid ${inputBorderColor}`,
-        'outline': 'none',
-        'boxShadow': 'none',
-        'color': `${themeColors.fontColor} !important`,
-        'caretColor': themeColors.fontColor,
-        '& .MuiOutlinedInput-notchedOutline': { display: 'none' },
-        '& fieldset': { display: 'none', border: 'none' },
-        '&:hover': {
-          border: `1px solid ${inputBorderColor}`,
-          backgroundColor: `${formInputBg} !important`,
-        },
-        '&.Mui-focused, &.Mui-focusVisible': {
-          border: `1px solid ${inputBorderColor} !important`,
-          backgroundColor: `${formInputBg} !important`,
-          boxShadow: 'none',
-          outline: 'none',
-        },
-        '& .MuiOutlinedInput-input': {
-          paddingTop: CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
-          paddingBottom: CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
-          paddingLeft: 21,
-          paddingRight: 21,
-          boxSizing: 'border-box',
-          border: 'none !important',
-          borderRadius: 0,
-          outline: 'none',
-          backgroundColor: 'transparent !important',
-          boxShadow: 'none !important',
-          color: `${themeColors.fontColor} !important`,
-          caretColor: themeColors.fontColor,
-        },
-        '& .MuiOutlinedInput-input::placeholder': {
-          color: `${themeColors.textMuted} !important`,
-          opacity: '1 !important',
-        },
+      'minHeight': CEDARLING_CONFIG_SPACING.INPUT_HEIGHT,
+      'backgroundColor': customColors.darkBorder,
+      '&&': {
+        backgroundColor: `${customColors.darkBorder} !important`,
       },
-      '& .MuiAutocomplete-popupIndicator, & .MuiAutocomplete-clearIndicator': {
-        color: `${themeColors.fontColor} !important`,
+      'color': themeColors.fontColor,
+      'border': `1px solid ${inputBorderColor}`,
+      'borderRadius': `${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px`,
+      'paddingTop': CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
+      'paddingBottom': CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
+      'paddingLeft': 21,
+      'paddingRight': 44,
+      'boxSizing': 'border-box' as const,
+      'fontSize': 14,
+      'fontFamily': 'inherit',
+      'WebkitAppearance': 'none' as const,
+      'MozAppearance': 'none' as const,
+      'appearance': 'none' as const,
+      'backgroundImage': 'none',
+      'outline': 'none',
+      'cursor': 'pointer',
+      '&:focus': {
+        backgroundImage: 'none',
+        outline: 'none',
+        boxShadow: 'none',
+      },
+      '&:disabled': {
+        opacity: 0.6,
+        cursor: 'not-allowed',
       },
     },
-    buttons: {
-      'display': 'flex',
-      'gap': 12,
-      'justifyContent': 'flex-end',
-      '@media (max-width: 900px)': {
-        justifyContent: 'flex-start',
-      },
+    chevronWrapper: {
+      position: 'absolute',
+      right: 20,
+      top: '50%',
+      transform: 'translateY(-50%)',
+      pointerEvents: 'none' as const,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: themeColors.fontColor,
+      zIndex: 6,
     },
     addButton: {
       '&&': {
@@ -120,20 +106,6 @@ export const useStyles = makeStyles<MultiValueSelectCardStyleParams>()((
       },
       '& *': {
         color: 'inherit',
-      },
-    },
-    removeButton: {
-      '&&': {
-        display: 'inline-flex',
-        minHeight: 44,
-        height: 44,
-        padding: '8px 20px',
-        gap: 8,
-        flexShrink: 0,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 6,
-        background: themeColors.settings?.removeButton?.bg ?? customColors.statusInactive,
       },
     },
     tags: {
@@ -192,9 +164,11 @@ export const useStyles = makeStyles<MultiValueSelectCardStyleParams>()((
       'minWidth': 32,
       'minHeight': 32,
       'padding': 6,
+      'marginRight': 0,
       'background': 'transparent',
       'border': 'none',
       'boxShadow': 'none',
+      'flexShrink': 0,
       'color': themeColors.fontColor,
       '&:hover': {
         opacity: 0.8,

@@ -285,6 +285,10 @@ const UserForm = ({
     [formik, updateModifiedFields],
   )
 
+  const handleRemoveRole = useCallback(() => {
+    removeSelectedClaimsFromState(JANS_ADMIN_UI_ROLE_ATTR)
+  }, [removeSelectedClaimsFromState])
+
   return (
     <GluuLoader blocking={blockingLoader}>
       <PasswordChangeModal
@@ -502,6 +506,7 @@ const UserForm = ({
                               : t('placeholders.search_here')
                         }
                         allowCustom={false}
+                        onRemoveField={handleRemoveRole}
                         doc_category={roleClaim.description}
                       />
                     </div>

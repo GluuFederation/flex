@@ -22,8 +22,6 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { setWebhookModal } from 'Plugins/admin/redux/features/WebhookSlice'
 import type { CaughtError } from '../types/ErrorTypes'
 import { logUserUpdate, getErrorMessage } from '../helper/userAuditHelpers'
-import { triggerUserWebhook } from '../helper/userWebhookHelpers'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import {
   mapToPersonAttributes,
   buildCustomAttributesFromValues,
@@ -104,24 +102,14 @@ const UserEditPage = () => {
         )
         const userDn = payload?.dn
 
-        if (anyKeyPresent) {
-          if (!userDn) {
-            console.error('Cannot revoke session: user DN is undefined')
-            dispatch(
-              updateToast(true, 'warning', t('messages.session_revoke_failed_changes_saved')),
+        if (anyKeyPresent && userDn) {
+          try {
+            await revokeSessionMutation.mutateAsync({ userDn })
+            await AXIOS_INSTANCE.delete(
+              `/app/admin-ui/oauth2/session/${encodeURIComponent(userDn)}`,
             )
-          } else {
-            try {
-              await revokeSessionMutation.mutateAsync({ userDn })
-              await AXIOS_INSTANCE.delete(
-                `/app/admin-ui/oauth2/session/${encodeURIComponent(userDn)}`,
-              )
-            } catch (error) {
-              console.error('Failed to revoke user session:', error)
-              dispatch(
-                updateToast(true, 'warning', t('messages.session_revoke_failed_changes_saved')),
-              )
-            }
+          } catch {
+            // Silently ignore — 404 means the user has no active session
           }
         }
 
@@ -132,7 +120,6 @@ const UserEditPage = () => {
         } catch {
           dispatch(updateToast(true, 'error', t('messages.audit_logging_failed')))
         }
-        triggerUserWebhook(data, adminUiFeatures.users_edit)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
         navigateBack(ROUTES.USER_MANAGEMENT)
       },

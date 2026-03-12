@@ -135,29 +135,20 @@ const PasswordChangeModal = ({
       })
 
       const userDn = userDetails?.dn
-      let showSuccessAndClose = true
-      if (!userDn) {
-        console.warn('Cannot revoke user session: missing user DN')
-        dispatch(updateToast(true, 'warning', t('messages.session_revoke_failed')))
-        showSuccessAndClose = false
-      } else {
+      if (userDn) {
         try {
           await revokeSessionMutation.mutateAsync({ userDn })
           await AXIOS_INSTANCE.delete(`/app/admin-ui/oauth2/session/${encodeURIComponent(userDn)}`)
-        } catch (error) {
-          console.error('Failed to revoke user session:', error)
-          dispatch(updateToast(true, 'warning', t('messages.session_revoke_failed')))
-          showSuccessAndClose = false
+        } catch {
+          // Silently ignore — 404 means the user has no active session
         }
       }
 
-      if (showSuccessAndClose) {
-        dispatch(updateToast(true, 'success', t('messages.password_changed_successfully')))
-        setPasswordModal(false)
-        toggle()
-        setPassword('')
-        onSuccess?.()
-      }
+      dispatch(updateToast(true, 'success', t('messages.password_changed_successfully')))
+      setPasswordModal(false)
+      toggle()
+      setPassword('')
+      onSuccess?.()
 
       logPasswordChange(userDetails.inum, auditPayload).catch((error) => {
         console.error('Failed to log password change:', error)
