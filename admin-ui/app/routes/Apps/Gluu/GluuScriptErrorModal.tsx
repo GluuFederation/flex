@@ -1,13 +1,13 @@
 import { memo, useContext, useState, useCallback, useMemo } from 'react'
+import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
-import { Modal, ModalBody } from 'reactstrap'
-import GluuText from './GluuText'
-import { GluuButton } from '@/components/GluuButton'
 import GluuFormFooter from './GluuFormFooter'
+import GluuText from './GluuText'
 import { useStyles } from './styles/GluuScriptErrorModal.style'
+import { useStyles as useCommitDialogStyles } from './styles/GluuCommitDialog.style'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
-import { DEFAULT_THEME } from '@/context/theme/constants'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { devLogger } from '@/utils/devLogger'
 
 interface GluuScriptErrorModalProps {
@@ -27,8 +27,10 @@ const GluuScriptErrorModal = ({
   const theme = useContext(ThemeContext)
   const [isCopied, setIsCopied] = useState(false)
   const selectedTheme = theme?.state.theme ?? DEFAULT_THEME
+  const isDark = selectedTheme === THEME_DARK
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
-  const { classes } = useStyles({ themeColors })
+  const { classes } = useStyles({ isDark, themeColors })
+  const { classes: commitClasses } = useCommitDialogStyles({ isDark, themeColors })
 
   const handleClose = useCallback(() => {
     setIsCopied(false)
@@ -45,56 +47,80 @@ const GluuScriptErrorModal = ({
     }
   }, [error, isCopied])
 
-  const cancelLabel = isCopied ? t('messages.copied') : t('actions.copy_to_clipboard')
+  const handleOverlayKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        handleClose()
+      }
+    },
+    [handleClose],
+  )
 
-  return (
-    <Modal
-      centered
-      isOpen={isOpen}
-      toggle={handleClose}
-      className="modal-outline-primary"
-      modalClassName={classes.modalWrapper}
-    >
-      <div className={classes.header}>
-        <GluuText variant="h5" disableThemeColor className={classes.titleText}>
-          {title}
-        </GluuText>
-        <GluuButton
+  const handleModalKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        handleClose()
+      }
+      e.stopPropagation()
+    },
+    [handleClose],
+  )
+
+  if (!isOpen) return null
+
+  const copyLabel = isCopied ? t('messages.copied') : t('actions.copy_to_clipboard')
+
+  const modalContent = (
+    <>
+      <button
+        type="button"
+        className={commitClasses.overlay}
+        onClick={handleClose}
+        onKeyDown={handleOverlayKeyDown}
+        aria-label={t('actions.close')}
+      />
+      <div
+        className={`${commitClasses.modalContainer} ${classes.modalContainer}`}
+        onClick={(e) => e.stopPropagation()}
+        onKeyDown={handleModalKeyDown}
+        role="dialog"
+        tabIndex={-1}
+        aria-labelledby="script-error-title"
+      >
+        <button
           type="button"
-          size="sm"
           onClick={handleClose}
-          className={`${classes.closeButton} ${classes.buttonHoverOpacity}`}
+          className={commitClasses.closeButton}
           aria-label={t('actions.close')}
-          backgroundColor="transparent"
-          borderColor="transparent"
-          textColor={themeColors.fontColor}
+          title={t('actions.close')}
         >
           <i className="fa fa-times" aria-hidden />
-        </GluuButton>
+        </button>
+        <div className={commitClasses.contentArea}>
+          <GluuText variant="h2" className={commitClasses.title} id="script-error-title">
+            {title}
+          </GluuText>
+          <div className={classes.errorBody}>
+            <GluuText variant="p" disableThemeColor className={classes.errorText}>
+              {error}
+            </GluuText>
+          </div>
+          <GluuFormFooter
+            showApply
+            applyButtonType="button"
+            applyButtonLabel={copyLabel}
+            onApply={copyToClipboard}
+            disableApply={isCopied}
+            applyIconClass="fa fa-copy"
+          />
+        </div>
       </div>
-      <ModalBody className={classes.body}>
-        <GluuText variant="p" disableThemeColor className={classes.errorText}>
-          {error}
-        </GluuText>
-      </ModalBody>
-      <div className={classes.footer}>
-        <GluuFormFooter
-          showCancel
-          cancelButtonLabel={cancelLabel}
-          onCancel={copyToClipboard}
-          disableCancel={isCopied}
-          cancelButtonClassName={classes.cancelButton}
-          cancelIconClass="fa fa-copy"
-          showApply
-          applyButtonType="button"
-          applyButtonLabel={t('actions.close')}
-          onApply={handleClose}
-          applyButtonClassName={classes.applyButton}
-          applyIconClass="fa fa-times-circle"
-        />
-      </div>
-    </Modal>
+    </>
   )
+
+  return createPortal(modalContent, document.body)
 }
 
 export default memo(GluuScriptErrorModal)

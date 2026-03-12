@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { CEDARLING_CONFIG_SPACING, MAPPING_SPACING, BORDER_RADIUS } from '@/constants'
+import { CEDARLING_CONFIG_SPACING, MAPPING_SPACING, BORDER_RADIUS, SPACING } from '@/constants'
 import { fontFamily, fontSizes, fontWeights, letterSpacing, lineHeights } from '@/styles/fonts'
 
 interface UserFormStylesParams {
@@ -85,7 +85,7 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
     leftStack: {
       display: 'flex',
       flexDirection: 'column',
-      gap: 18,
+      gap: SPACING.CARD_CONTENT_GAP,
       minWidth: 0,
       flex: 1,
     },
@@ -100,7 +100,8 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
     fieldsGrid: {
       'display': 'grid',
       'gridTemplateColumns': 'repeat(2, minmax(0, 1fr))',
-      'gap': 18,
+      'columnGap': SPACING.SECTION_GAP,
+      'rowGap': SPACING.CARD_CONTENT_GAP,
       '@media (max-width: 900px)': {
         gridTemplateColumns: '1fr',
       },
@@ -121,10 +122,10 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
       marginTop: 24,
     },
     dynamicClaimsWrap: {
-      marginTop: 18,
+      marginTop: SPACING.CARD_CONTENT_GAP,
       display: 'flex',
       flexDirection: 'column',
-      gap: 18,
+      gap: SPACING.CARD_CONTENT_GAP,
     },
     changePasswordButton: {
       display: 'inline-flex',

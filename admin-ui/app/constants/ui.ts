@@ -34,6 +34,12 @@ export const getScrollbarStyles = (themeColors: ThemeConfig) => ({
   },
 })
 
+export const MODAL = {
+  WIDTH: 1007,
+  MAX_VW: '90vw',
+  MAX_VH: '90vh',
+} as const
+
 export const SPACING = {
   PAGE: 24,
   CONTENT_PADDING: 40,

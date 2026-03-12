@@ -2,7 +2,13 @@ import { makeStyles } from 'tss-react/mui'
 import customColors, { getLoadingOverlayRgba } from '@/customColors'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
-import { BORDER_RADIUS, CEDARLING_CONFIG_SPACING, MAPPING_SPACING, OPACITY } from '@/constants'
+import {
+  BORDER_RADIUS,
+  CEDARLING_CONFIG_SPACING,
+  MAPPING_SPACING,
+  MODAL,
+  OPACITY,
+} from '@/constants'
 import type { ThemeConfig } from '@/context/theme/config'
 
 interface StylesParams {
@@ -13,7 +19,6 @@ interface StylesParams {
 const OVERLAY_BG_LIGHT = getLoadingOverlayRgba(customColors.black, 0.8)
 const OVERLAY_BG_DARK = getLoadingOverlayRgba(customColors.darkCardBg, 0.8)
 
-const MODAL_WIDTH = 1007
 const CONTENT_WIDTH = 898
 const CONTENT_GAP = 16
 const TITLE_BOTTOM_SPACING = 24
@@ -42,9 +47,9 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       transform: 'translate(-50%, -50%)',
       backgroundColor: modalBg,
       borderRadius: BORDER_RADIUS.DEFAULT,
-      width: `min(${MODAL_WIDTH}px, 90vw)`,
-      maxWidth: `${MODAL_WIDTH}px`,
-      maxHeight: '90vh',
+      width: `min(${MODAL.WIDTH}px, ${MODAL.MAX_VW})`,
+      maxWidth: `${MODAL.WIDTH}px`,
+      maxHeight: MODAL.MAX_VH,
       zIndex: 1050,
       padding: 0,
       boxSizing: 'border-box',
