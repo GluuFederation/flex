@@ -117,20 +117,16 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
         maxWidth: '100%',
         paddingLeft: 0,
         paddingRight: 0,
-        position: 'relative',
-        paddingBottom: 20,
       },
       '& > .form-group [data-field-error]': {
-        position: 'absolute',
-        left: 12,
-        fontSize: `${fontSizes.sm} !important`,
+        display: 'none !important',
       },
     },
     fieldsGrid: {
       'display': 'grid',
       'gridTemplateColumns': 'repeat(2, minmax(0, 1fr))',
       'columnGap': SPACING.SECTION_GAP,
-      'rowGap': SPACING.CARD_CONTENT_GAP,
+      'rowGap': 0,
       '@media (max-width: 900px)': {
         gridTemplateColumns: '1fr',
       },
@@ -138,7 +134,10 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
         display: 'flex',
         flexDirection: 'column',
         margin: '0 !important',
-        padding: 0,
+        paddingTop: 0,
+        paddingLeft: 0,
+        paddingRight: 0,
+        paddingBottom: SPACING.CARD_CONTENT_GAP,
       },
       '& .form-group.row': {
         marginLeft: '0 !important',
@@ -159,12 +158,15 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
         paddingLeft: 0,
         paddingRight: 0,
         position: 'relative',
-        paddingBottom: 20,
+        paddingBottom: 16,
       },
       '& [data-field-error]': {
         position: 'absolute',
-        left: 12,
         fontSize: `${fontSizes.sm} !important`,
+      },
+      /* Non-form-group grid cells (fullRow wrappers with MultiValueSelectCard) */
+      '& > div:not(.form-group)': {
+        paddingBottom: SPACING.CARD_CONTENT_GAP,
       },
     },
     fullRow: {
@@ -184,10 +186,16 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
     dynamicClaimsWrap: {
       'display': 'flex',
       'flexDirection': 'column',
-      'gap': SPACING.CARD_CONTENT_GAP,
+      'gap': 0,
+      '& > *': {
+        paddingBottom: SPACING.CARD_CONTENT_GAP,
+      },
       '& .form-group': {
         margin: '0 !important',
-        padding: 0,
+        paddingTop: 0,
+        paddingLeft: 0,
+        paddingRight: 0,
+        paddingBottom: 0,
       },
       '& .form-group.row': {
         marginLeft: '0 !important',
@@ -208,11 +216,10 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
         paddingLeft: 0,
         paddingRight: 0,
         position: 'relative',
-        paddingBottom: 20,
+        paddingBottom: 16,
       },
       '& [data-field-error]': {
         position: 'absolute',
-        left: 12,
         fontSize: `${fontSizes.sm} !important`,
       },
     },

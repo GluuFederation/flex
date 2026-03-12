@@ -60,10 +60,6 @@ export interface ThemeConfig {
   }
   /** Available Claims panel (User Management) */
   availableClaims: {
-    panelBackground: string
-    contentBackground: string
-    selectionBackground: string
-    selectionColor: string
     focusOutline: string
   }
 }
@@ -156,10 +152,6 @@ const createLightTheme = (): ThemeConfig => {
       errorButtonText: customColors.white,
     },
     availableClaims: {
-      panelBackground: background,
-      contentBackground: customColors.white,
-      selectionBackground: customColors.claimsSelectionBg,
-      selectionColor: customColors.statusActive,
       focusOutline: customColors.lightBlue,
     },
   }
@@ -253,10 +245,6 @@ const createDarkTheme = (): ThemeConfig => {
       errorButtonText: customColors.white,
     },
     availableClaims: {
-      panelBackground: customColors.darkInputBg,
-      contentBackground: customColors.darkCardBg,
-      selectionBackground: customColors.claimsSelectionBgDark,
-      selectionColor: customColors.statusActive,
       focusOutline: customColors.lightBlue,
     },
   }

@@ -40,10 +40,8 @@ export const customColors = {
   statusInactive: '#f13f44',
   statusInactiveBg: '#ffe6e7',
 
-  // Claims selection (Available Claims panel hover/selection)
+  // Claims selection (Available Claims panel)
   claimsSelectionBorder: '#8FE4BF',
-  claimsSelectionBg: '#B6F6DA',
-  claimsSelectionBgDark: '#1a4535',
 
   // Disabled Badge
   disabledBadgeLightBg: '#D9E1E8',

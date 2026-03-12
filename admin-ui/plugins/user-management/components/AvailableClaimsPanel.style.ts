@@ -14,8 +14,7 @@ export const useStyles = makeStyles<AvailableClaimsPanelStylesParams>()((
 ) => {
   const claimsBg = isDark ? themeColors.inputBackground : themeColors.background
   const claimsInnerBg = themeColors.settings?.cardBackground ?? themeColors.card.background
-  const selectionBg = themeColors.availableClaims.selectionBackground
-  const selectionColor = themeColors.availableClaims.selectionColor
+  const hoverBg = getLoadingOverlayRgba(themeColors.fontColor, isDark ? 0.12 : 0.08)
   const focusOutline = themeColors.availableClaims.focusOutline
   const dividerColor = getLoadingOverlayRgba(themeColors.fontColor, isDark ? 0.25 : 0.18)
 
@@ -120,8 +119,7 @@ export const useStyles = makeStyles<AvailableClaimsPanelStylesParams>()((
       'fontSize': 14,
       'lineHeight': '20px',
       '&:hover': {
-        backgroundColor: selectionBg,
-        color: selectionColor,
+        backgroundColor: hoverBg,
       },
       '&:focus-visible': {
         outline: `2px solid ${focusOutline}`,

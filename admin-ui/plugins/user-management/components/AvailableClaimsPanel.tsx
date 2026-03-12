@@ -77,6 +77,7 @@ const AvailableClaimsPanel = ({
             className={`form-control ${classes.search}`}
             placeholder={t('placeholders.search_claims_here')}
             aria-label={t('placeholders.search_claims_here')}
+            autoComplete="off"
             onChange={(e) => {
               handleSearchChange(e.target.value)
             }}
