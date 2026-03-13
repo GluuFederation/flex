@@ -7,6 +7,7 @@ import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import { GluuButton } from '@/components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { Divider } from '@mui/material'
 import { BUTTON_STYLES } from 'Routes/Apps/Gluu/styles/GluuThemeFormFooter.style'
@@ -245,7 +246,7 @@ const PasswordChangeModal = ({
   if (!isOpen) return null
 
   const modalContent = (
-    <>
+    <GluuLoader blocking={isLoading}>
       <GluuCommitDialog
         handler={handleCommitDialogCancel}
         modal={passwordModal}
@@ -379,7 +380,7 @@ const PasswordChangeModal = ({
           </form>
         </div>
       </div>
-    </>
+    </GluuLoader>
   )
 
   return createPortal(modalContent, document.body)

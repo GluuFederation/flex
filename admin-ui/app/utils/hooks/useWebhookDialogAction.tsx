@@ -2,13 +2,13 @@ import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import {
-  getWebhooksByFeatureId,
   getWebhooksByFeatureIdResponse,
   setWebhookModal,
   setWebhookTriggerErrors,
   setTriggerWebhookResponse,
   setFeatureToTrigger,
 } from 'Plugins/admin/redux/features/WebhookSlice'
+import { useGetWebhooksByFeatureId, type WebhookEntry } from 'JansConfigApi'
 import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
@@ -35,6 +35,17 @@ interface WebhookTriggerModalProps {
   closeModal: () => void
 }
 
+const WEBHOOK_RESOURCE_ID = ADMIN_UI_RESOURCES.Webhooks
+const WEBHOOK_SCOPES = CEDAR_RESOURCE_SCOPES[WEBHOOK_RESOURCE_ID]
+
+const FOCUSABLE_SELECTOR =
+  'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]'
+
+const getFocusableElements = (container: HTMLElement): HTMLElement[] =>
+  Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
+    (el) => el.offsetParent !== null,
+  )
+
 const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps) => {
   const dispatch = useAppDispatch()
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
@@ -48,26 +59,45 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
   const { classes: webhookClasses } = useWebhookTriggerModalStyles({ isDark, themeColors })
 
   const webhookState = useAppSelector((state) => state.webhookReducer)
-  const featureWebhooks = webhookState?.featureWebhooks ?? []
-  const loadingWebhooks = webhookState?.loadingWebhooks ?? false
   const webhookModal = webhookState?.webhookModal ?? false
   const triggerWebhookInProgress = webhookState?.triggerWebhookInProgress ?? false
+
+  const canReadWebhooks = useMemo(
+    () => hasCedarReadPermission(WEBHOOK_RESOURCE_ID),
+    [hasCedarReadPermission],
+  )
+
+  const queryEnabled = canReadWebhooks && modal && !!feature
+  const {
+    data: rawWebhookData,
+    isFetching: loadingWebhooks,
+    isFetched,
+  } = useGetWebhooksByFeatureId(feature ?? '', {
+    query: {
+      enabled: queryEnabled,
+    },
+  })
+
+  const featureWebhooks = useMemo(
+    () => (Array.isArray(rawWebhookData) ? (rawWebhookData as WebhookEntry[]) : []),
+    [rawWebhookData],
+  )
 
   const enabledFeatureWebhooks = useMemo(
     () => featureWebhooks.filter((item) => Boolean(item.jansEnabled)),
     [featureWebhooks],
   )
 
-  const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
-  const webhookScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[webhookResourceId], [webhookResourceId])
-  const canReadWebhooks = useMemo(
-    () => hasCedarReadPermission(webhookResourceId),
-    [hasCedarReadPermission, webhookResourceId],
-  )
+  // Sync to Redux so the trigger saga can read featureWebhooks from state
+  useEffect(() => {
+    if (isFetched) {
+      dispatch(getWebhooksByFeatureIdResponse(featureWebhooks))
+    }
+  }, [featureWebhooks, isFetched, dispatch])
 
   useEffect(() => {
-    authorizeHelper(webhookScopes)
-  }, [authorizeHelper, webhookScopes])
+    authorizeHelper(WEBHOOK_SCOPES)
+  }, [authorizeHelper])
 
   const onCloseModal = useCallback(() => {
     dispatch(setWebhookModal(false))
@@ -75,18 +105,6 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
     dispatch(setTriggerWebhookResponse(''))
     dispatch(setFeatureToTrigger(''))
   }, [dispatch])
-
-  useEffect(() => {
-    if (canReadWebhooks) {
-      if (modal) {
-        if (feature) {
-          dispatch(getWebhooksByFeatureId(feature))
-        } else {
-          dispatch(getWebhooksByFeatureIdResponse([]))
-        }
-      }
-    }
-  }, [canReadWebhooks, modal, feature, dispatch])
 
   useEffect(() => {
     if (!modal) {
@@ -97,15 +115,10 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
     }
   }, [modal, feature, canReadWebhooks, loadingWebhooks, enabledFeatureWebhooks, dispatch])
 
-  const hasInitiatedCheckRef = useRef(false)
-  if (modal && canReadWebhooks && feature && loadingWebhooks) hasInitiatedCheckRef.current = true
-  if (!modal) hasInitiatedCheckRef.current = false
-
   const webhookCheckComplete = useMemo(() => {
-    const needsCheck = modal && canReadWebhooks && feature
-    if (!needsCheck) return true
-    return hasInitiatedCheckRef.current && !loadingWebhooks
-  }, [modal, canReadWebhooks, feature, loadingWebhooks])
+    if (!queryEnabled) return true
+    return isFetched && !loadingWebhooks
+  }, [queryEnabled, isFetched, loadingWebhooks])
 
   const modalRef = useRef<HTMLDivElement>(null)
   const previouslyFocusedRef = useRef<Element | null>(null)
@@ -118,11 +131,9 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
       })
       return () => {
         cancelAnimationFrame(frame)
-        if (
-          previouslyFocusedRef.current &&
-          typeof (previouslyFocusedRef.current as HTMLElement).focus === 'function'
-        ) {
-          ;(previouslyFocusedRef.current as HTMLElement).focus()
+        const prevEl = previouslyFocusedRef.current as HTMLElement | null
+        if (prevEl && typeof prevEl.focus === 'function') {
+          prevEl.focus()
         }
       }
     }
@@ -147,13 +158,6 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
         closeWebhookTriggerModal()
       }
     }
-
-    const FOCUSABLE_SELECTOR =
-      'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]'
-    const getFocusableElements = (container: HTMLElement): HTMLElement[] =>
-      Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
-        (el) => el.offsetParent !== null,
-      )
 
     const handleModalKeyDown = (e: React.KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -280,7 +284,12 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
     return createPortal(modalContent, document.body)
   }
 
-  return { onCloseModal, webhookTriggerModal, webhookCheckComplete }
+  return {
+    onCloseModal,
+    webhookTriggerModal,
+    webhookCheckComplete,
+    isLoadingWebhooks: loadingWebhooks,
+  }
 }
 
 export default useWebhookDialogAction

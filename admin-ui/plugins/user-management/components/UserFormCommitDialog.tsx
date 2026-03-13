@@ -4,6 +4,7 @@ import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useAppSelector } from '@/redux/hooks'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useWebhookDialogAction } from 'Utils/hooks'
 import { adminUiFeatures, type AdminUiFeatureKey } from 'Plugins/admin/helper/utils'
 import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
@@ -35,10 +36,11 @@ const UserFormCommitDialog = ({
   const webhookResourceId = ADMIN_UI_RESOURCES.Webhooks
   const canReadWebhooks = hasCedarReadPermission(webhookResourceId)
   const webhookModal = useAppSelector((state) => state.webhookReducer?.webhookModal ?? false)
-  const { webhookTriggerModal, onCloseModal, webhookCheckComplete } = useWebhookDialogAction({
-    feature: adminUiFeatures[webhookFeature],
-    modal,
-  })
+  const { webhookTriggerModal, onCloseModal, webhookCheckComplete, isLoadingWebhooks } =
+    useWebhookDialogAction({
+      feature: adminUiFeatures[webhookFeature],
+      modal,
+    })
   const showWebhookFirst = modal && webhookModal && canReadWebhooks
   const showCommitDialog = modal && webhookCheckComplete && !showWebhookFirst
 
@@ -53,6 +55,10 @@ const UserFormCommitDialog = ({
     handler()
     onCloseModal()
   }, [handler, onCloseModal])
+
+  if (modal && isLoadingWebhooks) {
+    return <GluuLoader blocking />
+  }
 
   if (showWebhookFirst) {
     return <>{webhookTriggerModal({ closeModal: handleClose })}</>

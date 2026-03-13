@@ -71,9 +71,7 @@ const UserEditPage = () => {
     data: persistenceData,
     isLoading: loadingPersistence,
     isError: persistenceError,
-  } = useGetPropertiesPersistence({
-    query: { staleTime: 30000 },
-  })
+  } = useGetPropertiesPersistence()
   const persistenceType = isPersistenceInfo(persistenceData)
     ? persistenceData.persistenceType
     : undefined
