@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import {
@@ -62,12 +62,11 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
   const webhookModal = webhookState?.webhookModal ?? false
   const triggerWebhookInProgress = webhookState?.triggerWebhookInProgress ?? false
 
-  const canReadWebhooks = useMemo(
-    () => hasCedarReadPermission(WEBHOOK_RESOURCE_ID),
-    [hasCedarReadPermission],
-  )
+  const cedarDecision = hasCedarReadPermission(WEBHOOK_RESOURCE_ID)
+  const cedarDecisionMade = cedarDecision !== undefined
+  const canReadWebhooks = cedarDecision === true
+  const queryEnabled = canReadWebhooks && modal && Boolean(feature)
 
-  const queryEnabled = canReadWebhooks && modal && !!feature
   const {
     data: rawWebhookData,
     isFetching: loadingWebhooks,
@@ -75,6 +74,8 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
   } = useGetWebhooksByFeatureId(feature ?? '', {
     query: {
       enabled: queryEnabled,
+      refetchOnWindowFocus: false,
+      staleTime: 30_000,
     },
   })
 
@@ -88,7 +89,6 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
     [featureWebhooks],
   )
 
-  // Sync to Redux so the trigger saga can read featureWebhooks from state
   useEffect(() => {
     if (isFetched) {
       dispatch(getWebhooksByFeatureIdResponse(featureWebhooks))
@@ -106,19 +106,52 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
     dispatch(setFeatureToTrigger(''))
   }, [dispatch])
 
+  const [webhookModalDetermined, setWebhookModalDetermined] = useState(false)
+
   useEffect(() => {
     if (!modal) {
+      setWebhookModalDetermined(false)
       dispatch(setWebhookModal(false))
+    } else if (feature && cedarDecisionMade && !canReadWebhooks) {
+      dispatch(setWebhookModal(false))
+      setWebhookModalDetermined(true)
     } else if (feature && canReadWebhooks) {
       const showWebhookFlow = !loadingWebhooks && (enabledFeatureWebhooks?.length ?? 0) > 0
       dispatch(setWebhookModal(showWebhookFlow))
+      if (!loadingWebhooks) {
+        setWebhookModalDetermined(true)
+      }
     }
-  }, [modal, feature, canReadWebhooks, loadingWebhooks, enabledFeatureWebhooks, dispatch])
+  }, [
+    modal,
+    feature,
+    canReadWebhooks,
+    cedarDecisionMade,
+    loadingWebhooks,
+    enabledFeatureWebhooks,
+    dispatch,
+  ])
 
   const webhookCheckComplete = useMemo(() => {
+    if (!modal) return false
+    if (!feature) return true
+    if (!cedarDecisionMade) return false
     if (!queryEnabled) return true
-    return isFetched && !loadingWebhooks
-  }, [queryEnabled, isFetched, loadingWebhooks])
+    return isFetched && !loadingWebhooks && webhookModalDetermined
+  }, [
+    modal,
+    feature,
+    cedarDecisionMade,
+    queryEnabled,
+    isFetched,
+    loadingWebhooks,
+    webhookModalDetermined,
+  ])
+
+  const willShowWebhookModal = useMemo(
+    () => webhookModalDetermined && canReadWebhooks && (enabledFeatureWebhooks?.length ?? 0) > 0,
+    [webhookModalDetermined, canReadWebhooks, enabledFeatureWebhooks],
+  )
 
   const modalRef = useRef<HTMLDivElement>(null)
   const previouslyFocusedRef = useRef<Element | null>(null)
@@ -288,6 +321,7 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
     onCloseModal,
     webhookTriggerModal,
     webhookCheckComplete,
+    willShowWebhookModal,
     isLoadingWebhooks: loadingWebhooks,
   }
 }

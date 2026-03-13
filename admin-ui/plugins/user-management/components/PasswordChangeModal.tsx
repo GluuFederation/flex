@@ -251,6 +251,8 @@ const PasswordChangeModal = ({
         handler={handleCommitDialogCancel}
         modal={passwordModal}
         onAccept={submitChangePassword}
+        alertMessage={t('messages.revokeUserSession')}
+        alertSeverity="warning"
       />
       <button
         type="button"

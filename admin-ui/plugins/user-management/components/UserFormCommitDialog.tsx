@@ -33,16 +33,12 @@ const UserFormCommitDialog = ({
 }: UserFormCommitDialogProps) => {
   const { t } = useTranslation()
   const { hasCedarReadPermission } = useCedarling()
-  const webhookResourceId = ADMIN_UI_RESOURCES.Webhooks
-  const canReadWebhooks = hasCedarReadPermission(webhookResourceId)
+  const canReadWebhooks = hasCedarReadPermission(ADMIN_UI_RESOURCES.Webhooks)
   const webhookModal = useAppSelector((state) => state.webhookReducer?.webhookModal ?? false)
-  const { webhookTriggerModal, onCloseModal, webhookCheckComplete, isLoadingWebhooks } =
-    useWebhookDialogAction({
-      feature: adminUiFeatures[webhookFeature],
-      modal,
-    })
-  const showWebhookFirst = modal && webhookModal && canReadWebhooks
-  const showCommitDialog = modal && webhookCheckComplete && !showWebhookFirst
+  const { webhookTriggerModal, onCloseModal, webhookCheckComplete } = useWebhookDialogAction({
+    feature: adminUiFeatures[webhookFeature],
+    modal,
+  })
 
   const sessionRevokeAlert = useMemo(() => {
     const hasSessionRevokingField = operations.some((op) =>
@@ -56,18 +52,20 @@ const UserFormCommitDialog = ({
     onCloseModal()
   }, [handler, onCloseModal])
 
-  if (modal && isLoadingWebhooks) {
+  // Show loader until webhook check is fully resolved — prevents any blink
+  if (modal && !webhookCheckComplete) {
     return <GluuLoader blocking />
   }
 
-  if (showWebhookFirst) {
+  // webhookCheckComplete=true: Redux webhookModal is guaranteed consistent now
+  if (webhookModal && canReadWebhooks) {
     return <>{webhookTriggerModal({ closeModal: handleClose })}</>
   }
 
   return (
     <GluuCommitDialog
       handler={handleClose}
-      modal={showCommitDialog}
+      modal={modal && webhookCheckComplete}
       onAccept={onAccept}
       formik={formik}
       operations={operations}

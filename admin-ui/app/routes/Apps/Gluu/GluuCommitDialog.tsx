@@ -21,6 +21,7 @@ import {
 } from '@/utils/validation/commitMessage'
 import GluuText from './GluuText'
 import { GluuButton } from '@/components'
+import GluuLoader from './GluuLoader'
 
 const USER_MESSAGE = 'user_action_message'
 
@@ -66,7 +67,7 @@ const GluuCommitDialog = ({
     }
   }, [authorizeHelper, webhookScopes])
 
-  const { webhookTriggerModal, onCloseModal } = useWebhookDialogAction({
+  const { webhookTriggerModal, onCloseModal, webhookCheckComplete } = useWebhookDialogAction({
     feature,
     modal,
   })
@@ -149,6 +150,10 @@ const GluuCommitDialog = ({
 
   if (!modal) {
     return <></>
+  }
+
+  if (!webhookCheckComplete) {
+    return createPortal(<GluuLoader blocking />, document.body)
   }
 
   const modalContent =

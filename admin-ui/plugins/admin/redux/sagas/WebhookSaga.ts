@@ -91,12 +91,15 @@ export function* triggerWebhook({
     if (featureFromPayload) {
       featureToTrigger = featureFromPayload
       yield put(setFeatureToTrigger(featureFromPayload))
-      const data: WebhooksByFeatureIdApiResponse = yield call(
-        webhookApi.getWebhooksByFeatureId,
-        featureFromPayload,
-      )
-      featureWebhooks = data?.body ?? []
-      yield put(getWebhooksByFeatureIdResponse(featureWebhooks))
+
+      if (!featureWebhooks?.length) {
+        const data: WebhooksByFeatureIdApiResponse = yield call(
+          webhookApi.getWebhooksByFeatureId,
+          featureFromPayload,
+        )
+        featureWebhooks = data?.body ?? []
+        yield put(getWebhooksByFeatureIdResponse(featureWebhooks))
+      }
     }
 
     const enabledFeatureWebhooks = (featureWebhooks ?? []).filter(
