@@ -52,12 +52,10 @@ const UserFormCommitDialog = ({
     onCloseModal()
   }, [handler, onCloseModal])
 
-  // Show loader until webhook check is fully resolved — prevents any blink
   if (modal && !webhookCheckComplete) {
     return <GluuLoader blocking />
   }
 
-  // webhookCheckComplete=true: Redux webhookModal is guaranteed consistent now
   if (webhookModal && canReadWebhooks) {
     return <>{webhookTriggerModal({ closeModal: handleClose })}</>
   }
