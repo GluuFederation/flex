@@ -29,6 +29,8 @@ import {
   getStandardFieldValues,
 } from '../utils'
 import { revokeSessionWhenFieldsModifiedInUserForm } from '../helper/constants'
+import { triggerUserWebhook } from '../helper/userWebhookHelpers'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { isPersistenceInfo } from 'Plugins/services/Components/Configuration/types'
 import { AXIOS_INSTANCE } from '../../../api-client'
 import { useTheme } from '@/context/theme/themeContext'
@@ -118,6 +120,7 @@ const UserEditPage = () => {
         } catch {
           dispatch(updateToast(true, 'error', t('messages.audit_logging_failed')))
         }
+        triggerUserWebhook(data as CustomUser, adminUiFeatures.users_edit)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
         navigateBack(ROUTES.USER_MANAGEMENT)
       },

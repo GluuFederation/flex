@@ -840,45 +840,6 @@
       }
     ]
   },
-  "users_add": {
-    "fields": [
-      {
-        "key": "givenName",
-        "label": "documentation.user.givenName",
-        "description": "documentation.user.givenName"
-      },
-      {
-        "key": "middleName",
-        "label": "documentation.user.middleName",
-        "description": "documentation.user.middleName"
-      },
-      {
-        "key": "sn",
-        "label": "documentation.user.sn",
-        "description": "documentation.user.sn"
-      },
-      {
-        "key": "userId",
-        "label": "documentation.user.userId",
-        "description": "documentation.user.userId"
-      },
-      {
-        "key": "displayName",
-        "label": "documentation.user.displayName",
-        "description": "documentation.user.displayName"
-      },
-      {
-        "key": "mail",
-        "label": "documentation.user.mail",
-        "description": "documentation.user.mail"
-      },
-      {
-        "key": "status",
-        "label": "documentation.user.status",
-        "description": "documentation.user.status"
-      }
-    ]
-  },
   "users_edit": {
     "fields": [
       {

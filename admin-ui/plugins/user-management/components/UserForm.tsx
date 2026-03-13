@@ -584,7 +584,7 @@ const UserForm = ({
           formik={formik as FormikProps<UserEditFormValues>}
           operations={userDetails ? commitDialogOperations : []}
           autoCloseOnAccept
-          webhookFeature={userDetails ? 'users_edit' : 'users_add'}
+          webhookFeature="users_edit"
         />
       </Form>
     </GluuLoader>
