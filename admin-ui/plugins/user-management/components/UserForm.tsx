@@ -81,6 +81,18 @@ const UserForm = ({
 
   const initializedRef = useRef<string | null>(null)
   const formContentRef = useRef<HTMLDivElement | null>(null)
+  const [formHeight, setFormHeight] = useState<number | undefined>(undefined)
+
+  useEffect(() => {
+    const el = formContentRef.current
+    if (!el) return
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0]
+      if (entry) setFormHeight(entry.contentRect.height)
+    })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
   const formik = useFormik<UserEditFormValues>({
     initialValues: initialValues,
     enableReinitialize: true,
@@ -546,7 +558,10 @@ const UserForm = ({
             </div>
           </Col>
           <Col sm={4}>
-            <div className={`d-flex flex-column ${classes.claimsPanelWrap}`}>
+            <div
+              className={`d-flex flex-column ${classes.claimsPanelWrap}`}
+              style={formHeight ? { maxHeight: formHeight } : undefined}
+            >
               <AvailableClaimsPanel
                 searchClaims={searchClaims}
                 setSearchClaims={setSearchClaims}
