@@ -1,8 +1,9 @@
-import store from 'Redux/store'
+import { getRootState } from 'Redux/hooks'
+import type { RootState } from 'Redux/types'
 import { logAuditUserAction } from 'Utils/AuditLogger'
+import type { CaughtError, ApiErrorLike } from '../types/ErrorTypes'
 import { FETCH, DELETION, UPDATE, CREATE } from '../../../app/audit/UserActionType'
 import { API_USERS } from '../../../app/audit/Resources'
-import { CustomObjectAttribute } from 'JansConfigApi'
 import { CustomUser } from '../types/UserApiTypes'
 import { USER_PASSWORD_ATTR } from '../common/Constants'
 
@@ -17,31 +18,14 @@ export interface AuditLog {
   message?: string
 }
 
-export interface AuthState {
-  issuer: string
-  userinfo_jwt: string
-  config: {
-    clientId: string
-  }
-  location: {
-    IPv4: string
-  }
-  userinfo: {
-    name: string
-    inum: string
-  }
-}
-
 const SENSITIVE_CUSTOM_ATTRS: string[] = [USER_PASSWORD_ATTR]
 
 const isSensitiveCustomAttr = (name?: string): boolean => {
   return !!name && SENSITIVE_CUSTOM_ATTRS.includes(name)
 }
 
-type CustomAttributeValueItem = CustomObjectAttribute['values'] extends (infer T)[] ? T : never
-
 export interface AuditPayload extends CustomUser {
-  modifiedFields?: Record<string, unknown>
+  modifiedFields?: Record<string, string | string[] | boolean>
   performedOn?: {
     user_inum?: string
     userId?: string
@@ -53,7 +37,7 @@ export interface AuditPayload extends CustomUser {
   jsonPatchString?: string
 }
 
-function redactSensitiveData(payload: AuditPayload): void {
+const redactSensitiveData = (payload: AuditPayload): void => {
   if (payload.userPassword) {
     payload.userPassword = '[REDACTED]'
   }
@@ -68,10 +52,9 @@ function redactSensitiveData(payload: AuditPayload): void {
   if (payload.customAttributes && payload.customAttributes.length > 0) {
     payload.customAttributes = payload.customAttributes.map((attr) => {
       if (isSensitiveCustomAttr(attr.name)) {
-        const redactedValue = '[REDACTED]' as CustomAttributeValueItem
         const redactedValues =
           attr.values && Array.isArray(attr.values)
-            ? (attr.values.map(() => redactedValue) as CustomObjectAttribute['values'])
+            ? attr.values.map(() => ({ value: '[REDACTED]' }))
             : undefined
         return {
           ...attr,
@@ -83,27 +66,27 @@ function redactSensitiveData(payload: AuditPayload): void {
   }
 }
 
-export function initAudit(): AuditLog {
-  const state = store.getState() as unknown as { authReducer: AuthState }
-  const authReducer: AuthState = state.authReducer
+export const initAudit = (): AuditLog => {
+  const state: RootState = getRootState()
+  const authReducer = state.authReducer
   const auditlog: AuditLog = {}
   const client_id = authReducer.config?.clientId || ''
   const ip_address = authReducer.location?.IPv4 || ''
   const userinfo = authReducer.userinfo
-  const author = userinfo ? userinfo.name : '-'
-  const inum = userinfo ? userinfo.inum : '-'
+  const author = (userinfo?.name ?? userinfo?.user_name) || '-'
+  const inum = userinfo?.inum || '-'
   auditlog.client_id = client_id
   auditlog.ip_address = ip_address
   auditlog.status = 'success'
-  auditlog.performedBy = { user_inum: inum, userId: author }
+  auditlog.performedBy = { user_inum: String(inum), userId: String(author) }
 
   return auditlog
 }
 
-export async function logUserCreation(data: CustomUser, payload: CustomUser): Promise<void> {
+export const logUserCreation = async (data: CustomUser, payload: CustomUser): Promise<void> => {
   try {
-    const state = store.getState() as unknown as { authReducer: AuthState }
-    const authReducer: AuthState = state.authReducer
+    const state = getRootState()
+    const authReducer = state.authReducer
     const client_id = authReducer.config?.clientId || ''
     const userinfo = authReducer.userinfo
 
@@ -128,10 +111,10 @@ export async function logUserCreation(data: CustomUser, payload: CustomUser): Pr
   }
 }
 
-export async function logUserUpdate(data: CustomUser, payload: CustomUser): Promise<void> {
+export const logUserUpdate = async (data: CustomUser, payload: CustomUser): Promise<void> => {
   try {
-    const state = store.getState() as unknown as { authReducer: AuthState }
-    const authReducer: AuthState = state.authReducer
+    const state = getRootState()
+    const authReducer = state.authReducer
     const client_id = authReducer.config?.clientId || ''
     const userinfo = authReducer.userinfo
 
@@ -156,10 +139,10 @@ export async function logUserUpdate(data: CustomUser, payload: CustomUser): Prom
   }
 }
 
-export async function logUserDeletion(inum: string, userData?: CustomUser): Promise<void> {
+export const logUserDeletion = async (inum: string, userData?: CustomUser): Promise<void> => {
   try {
-    const state = store.getState() as unknown as { authReducer: AuthState }
-    const authReducer: AuthState = state.authReducer
+    const state = getRootState()
+    const authReducer = state.authReducer
     const client_id = authReducer.config?.clientId || ''
     const userinfo = authReducer.userinfo
     const payload = userData || { inum }
@@ -178,10 +161,12 @@ export async function logUserDeletion(inum: string, userData?: CustomUser): Prom
   }
 }
 
-export async function logUserFetch(payload: Record<string, unknown>): Promise<void> {
+export const logUserFetch = async (
+  payload: Record<string, string | string[] | boolean | object | object[]>,
+): Promise<void> => {
   try {
-    const state = store.getState() as unknown as { authReducer: AuthState }
-    const authReducer: AuthState = state.authReducer
+    const state = getRootState()
+    const authReducer = state.authReducer
     const client_id = authReducer.config?.clientId || ''
     const userinfo = authReducer.userinfo
 
@@ -198,13 +183,13 @@ export async function logUserFetch(payload: Record<string, unknown>): Promise<vo
   }
 }
 
-export async function logPasswordChange(
+export const logPasswordChange = async (
   inum: string,
-  payload: Record<string, unknown>,
-): Promise<void> {
+  payload: Record<string, string | string[] | boolean | object | object[]>,
+): Promise<void> => {
   try {
-    const state = store.getState() as unknown as { authReducer: AuthState }
-    const authReducer: AuthState = state.authReducer
+    const state = getRootState()
+    const authReducer = state.authReducer
     const client_id = authReducer.config?.clientId || ''
     const userinfo = authReducer.userinfo
 
@@ -256,12 +241,12 @@ const pickFirstString = (...values: Array<string | undefined>): string | undefin
   return undefined
 }
 
-export function getErrorMessage(error: unknown): string {
+export const getErrorMessage = (error: CaughtError): string => {
   if (typeof error === 'string') {
     return error
   }
   if (typeof error === 'object' && error !== null) {
-    const err = error as ErrorResponse
+    const err = error as ApiErrorLike
     const status = err.response?.status
     const data = err.response?.data
     const body = err.response?.body
@@ -281,5 +266,5 @@ export function getErrorMessage(error: unknown): string {
 
     return message || description || err?.response?.text || err?.message || 'An error occurred'
   }
-  return 'An unknown error occurred'
+  return 'An error occurred'
 }

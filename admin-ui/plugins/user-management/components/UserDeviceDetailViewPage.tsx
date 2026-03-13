@@ -1,16 +1,20 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Row, Col } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
-import customColors from '@/customColors'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
 import { UserDeviceDetailViewPageProps } from '../types/ComponentTypes'
 
 const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
   const { rowData } = row
   const deviceData = rowData
   const DOC_SECTION = 'user'
+  const { state: themeState } = useTheme()
+  const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
 
   return (
-    <div style={{ backgroundColor: customColors.whiteSmoke, padding: '16px', width: '100%' }}>
+    <div style={{ backgroundColor: themeColors.lightBackground, padding: '16px', width: '100%' }}>
       <Row>
         <Col sm={6} xl={4}>
           <GluuFormDetailRow
@@ -48,7 +52,9 @@ const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
 
       {deviceData?.deviceData && (
         <Row>
-          <h5 style={{ borderBottom: '2px solid', fontWeight: 'bold' }}>Device Information</h5>
+          <GluuText variant="h5" style={{ borderBottom: '2px solid', fontWeight: 'bold' }}>
+            Device Information
+          </GluuText>
           <Col sm={6} xl={4}>
             <GluuFormDetailRow
               label="fields.deviceName"
@@ -86,4 +92,4 @@ const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
     </div>
   )
 }
-export default UserDeviceDetailViewPage
+export default React.memo(UserDeviceDetailViewPage)

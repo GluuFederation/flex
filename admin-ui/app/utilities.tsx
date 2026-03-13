@@ -6,7 +6,7 @@ declare const require: {
     regExp: RegExp,
   ) => {
     keys: () => string[];
-    (id: string): any
+    (id: string): string
   }
 }
 

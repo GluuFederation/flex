@@ -7,14 +7,27 @@ interface GluuInputRowStyleParams {
 }
 
 export const useStyles = makeStyles<GluuInputRowStyleParams>()((
-  _theme,
+  theme,
   { errorColor, fontColor, stepperHoverBg },
 ) => {
   return {
     colWrapper: {
-      position: 'relative',
+      'position': 'relative',
+      '& input:focus, & input:focus-visible, & input:active': {
+        outline: `2px solid ${theme.palette.primary.main}`,
+        outlineOffset: 2,
+        boxShadow: 'none',
+      },
     },
     inputWithShortcode: {
+      paddingRight: 44,
+    },
+    passwordInputWrapper: {
+      position: 'relative',
+      display: 'block',
+      width: '100%',
+    },
+    passwordInputPadding: {
       paddingRight: 44,
     },
     passwordToggle: {
@@ -38,7 +51,7 @@ export const useStyles = makeStyles<GluuInputRowStyleParams>()((
       display: 'block',
       color: errorColor,
       fontSize: 12,
-      marginTop: 4,
+      marginTop: 1,
     },
 
     numberWrapper: {

@@ -33,4 +33,5 @@ plugins_repo
 .eslintcache
 .vscode/*
 !.vscode/extensions.json
+.claude/
 configApiSpecs.yaml

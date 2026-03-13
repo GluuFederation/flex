@@ -8,6 +8,10 @@ export interface UserEditFormValues {
   displayName?: string
   status?: string
   givenName?: string
+  middleName?: string
+  sn?: string
+  userPassword?: string
+  userConfirmPassword?: string
   birthdate?: string | null
   [key: string]: string | string[] | boolean | null | undefined
 }
@@ -29,8 +33,9 @@ export interface UserFormProps {
     values: UserEditFormValues,
     modifiedFields: ModifiedFields,
     usermessage: string,
-  ) => void
+  ) => void | Promise<void>
   userDetails?: CustomUser | null
+  personAttributes: PersonAttribute[]
   isSubmitting?: boolean
 }
 

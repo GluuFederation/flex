@@ -72,6 +72,7 @@ export const PersonAuthenticationFields: React.FC<PersonAuthenticationFieldsProp
             id="aliases"
             value={formik.values.aliases || []}
             disabled={viewOnly}
+            onChange={() => {}}
           >
             {SAML_ACRS_OPTIONS.map((acr) => (
               <option

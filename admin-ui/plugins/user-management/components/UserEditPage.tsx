@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { Container, CardBody, Card } from 'Components'
 import UserForm from './UserForm'
 import { useTranslation } from 'react-i18next'
-import { useDispatch } from 'react-redux'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import { GluuPageContent } from '@/components'
 import Alert from '@mui/material/Alert'
 import { UserEditFormValues, ModifiedFields } from '../types/ComponentTypes'
 import { PersonAttribute, CustomUser } from '../types/UserApiTypes'
@@ -15,12 +14,14 @@ import {
   useGetAttributes,
   useRevokeUserSession,
   useGetPropertiesPersistence,
+  type JansAttribute,
 } from 'JansConfigApi'
 import { useQueryClient } from '@tanstack/react-query'
-import { getAttributesRoot } from 'Redux/features/attributesSlice'
+import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
+import { setWebhookModal } from 'Plugins/admin/redux/features/WebhookSlice'
+import type { CaughtError } from '../types/ErrorTypes'
 import { logUserUpdate, getErrorMessage } from '../helper/userAuditHelpers'
-import { triggerUserWebhook } from '../helper/userWebhookHelpers'
 import {
   mapToPersonAttributes,
   buildCustomAttributesFromValues,
@@ -28,15 +29,28 @@ import {
   getStandardFieldValues,
 } from '../utils'
 import { revokeSessionWhenFieldsModifiedInUserForm } from '../helper/constants'
+import { triggerUserWebhook } from '../helper/userWebhookHelpers'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { isPersistenceInfo } from 'Plugins/services/Components/Configuration/types'
 import { AXIOS_INSTANCE } from '../../../api-client'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import { useStyles } from './UserFormPage.style'
 
-function UserEditPage() {
-  const dispatch = useDispatch()
+const UserEditPage = () => {
+  const dispatch = useAppDispatch()
   const { navigateBack } = useAppNavigation()
   const location = useLocation()
   const queryClient = useQueryClient()
   const { t } = useTranslation()
+  const { state: themeState } = useTheme()
+  const themeColors = useMemo(
+    () => getThemeColor(themeState?.theme ?? DEFAULT_THEME),
+    [themeState?.theme],
+  )
+  const isDark = (themeState?.theme ?? DEFAULT_THEME) === THEME_DARK
+  const { classes } = useStyles({ isDark, themeColors })
 
   const [userDetails] = useState<CustomUser | null>(location.state?.selectedUser ?? null)
   useEffect(() => {
@@ -44,20 +58,14 @@ function UserEditPage() {
       navigateBack(ROUTES.USER_MANAGEMENT)
       return
     }
-    const attrNames = userDetails.customAttributes
-      ?.map((a) => a.name)
-      .filter((name): name is string => !!name)
-    if (attrNames?.length) {
-      dispatch(getAttributesRoot({ options: { pattern: attrNames.join(','), limit: 100 } }))
-    }
-  }, [userDetails, dispatch])
+  }, [userDetails, navigateBack])
 
   const { data: attributesData, isLoading: loadingAttributes } = useGetAttributes({
     limit: 200,
     status: 'ACTIVE',
   })
   const personAttributes = useMemo<PersonAttribute[]>(
-    () => mapToPersonAttributes(attributesData?.entries),
+    () => mapToPersonAttributes(attributesData?.entries as JansAttribute[] | undefined),
     [attributesData?.entries],
   )
 
@@ -65,9 +73,7 @@ function UserEditPage() {
     data: persistenceData,
     isLoading: loadingPersistence,
     isError: persistenceError,
-  } = useGetPropertiesPersistence({
-    query: { staleTime: 30000 },
-  })
+  } = useGetPropertiesPersistence()
   const persistenceType = isPersistenceInfo(persistenceData)
     ? persistenceData.persistenceType
     : undefined
@@ -85,13 +91,40 @@ function UserEditPage() {
   const updateUserMutation = usePutUser({
     mutation: {
       onSuccess: async (data, variables) => {
+        const payload = variables.data as {
+          dn?: string
+          modifiedFields?: Array<Record<string, unknown>>
+        }
+        const modifiedFieldsArray = payload?.modifiedFields ?? []
+        const modifiedKeys = new Set(modifiedFieldsArray.flatMap((m) => Object.keys(m)))
+        const anyKeyPresent = revokeSessionWhenFieldsModifiedInUserForm.some((key) =>
+          modifiedKeys.has(key),
+        )
+        const userDn = payload?.dn
+
+        if (anyKeyPresent && userDn) {
+          try {
+            await revokeSessionMutation.mutateAsync({ userDn })
+            await AXIOS_INSTANCE.delete(
+              `/app/admin-ui/oauth2/session/${encodeURIComponent(userDn)}`,
+            )
+          } catch {
+            // Silently ignore — 404 means the user has no active session
+          }
+        }
+
+        dispatch(setWebhookModal(false))
         dispatch(updateToast(true, 'success', t('messages.user_updated_successfully')))
-        await logUserUpdate(data, variables.data)
-        triggerUserWebhook(data)
+        try {
+          await logUserUpdate(data, variables.data)
+        } catch {
+          dispatch(updateToast(true, 'error', t('messages.audit_logging_failed')))
+        }
+        triggerUserWebhook(data as CustomUser, adminUiFeatures.users_edit)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
         navigateBack(ROUTES.USER_MANAGEMENT)
       },
-      onError: (error: unknown) => {
+      onError: (error: CaughtError) => {
         const errMsg = getErrorMessage(error)
         dispatch(updateToast(true, 'error', errMsg))
       },
@@ -115,7 +148,7 @@ function UserEditPage() {
       )
       const standardFieldValues = getStandardFieldValues(values, standardFields)
 
-      updateUserMutation.mutate({
+      await updateUserMutation.mutateAsync({
         data: {
           inum: userDetails?.inum,
           ...standardFieldValues,
@@ -134,38 +167,14 @@ function UserEditPage() {
           action_message: userMessage,
         } as CustomUser,
       })
-      const anyKeyPresent = revokeSessionWhenFieldsModifiedInUserForm.some((key) =>
-        Object.prototype.hasOwnProperty.call(modifiedFields, key),
-      )
-      if (anyKeyPresent) {
-        const userDn = userDetails?.dn
-        if (!userDn) {
-          console.error('Cannot revoke session: user DN is undefined')
-          return
-        }
-        // Revoke user session after successful update of user details
-        try {
-          await revokeSessionMutation.mutateAsync({ userDn })
-          await AXIOS_INSTANCE.delete(`/app/admin-ui/oauth2/session/${encodeURIComponent(userDn)}`)
-        } catch (error) {
-          console.error('Failed to revoke user session:', error)
-        }
-      }
     },
-    [
-      personAttributes,
-      userDetails,
-      persistenceType,
-      standardFields,
-      updateUserMutation,
-      revokeSessionMutation,
-    ],
+    [personAttributes, userDetails, persistenceType, standardFields, updateUserMutation],
   )
 
   return (
-    <Container>
-      <Card type="border" color={null} className="mb-3">
-        <CardBody>
+    <GluuPageContent>
+      <div className={classes.page}>
+        <div className={classes.formCard}>
           {persistenceError && (
             <Alert severity="warning" sx={{ mb: 2 }}>
               {t('messages.persistence_config_load_failed_detail')}
@@ -175,12 +184,13 @@ function UserEditPage() {
             <UserForm
               onSubmitData={submitData}
               userDetails={userDetails}
+              personAttributes={personAttributes}
               isSubmitting={isSubmitting}
             />
           </GluuLoader>
-        </CardBody>
-      </Card>
-    </Container>
+        </div>
+      </div>
+    </GluuPageContent>
   )
 }
-export default UserEditPage
+export default React.memo(UserEditPage)

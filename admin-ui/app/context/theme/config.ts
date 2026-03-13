@@ -58,6 +58,10 @@ export interface ThemeConfig {
     removeButton: { bg: string; text: string }
     errorButtonText: string
   }
+  /** Available Claims panel (User Management) */
+  availableClaims: {
+    focusOutline: string
+  }
 }
 
 const createLightTheme = (): ThemeConfig => {
@@ -146,6 +150,9 @@ const createLightTheme = (): ThemeConfig => {
       addPropertyButton: { bg: customColors.primaryDark, text: customColors.white },
       removeButton: { bg: customColors.statusInactive, text: customColors.white },
       errorButtonText: customColors.white,
+    },
+    availableClaims: {
+      focusOutline: customColors.lightBlue,
     },
   }
 }
@@ -236,6 +243,9 @@ const createDarkTheme = (): ThemeConfig => {
       addPropertyButton: { bg: customColors.white, text: customColors.addPropertyTextDark },
       removeButton: { bg: customColors.statusInactive, text: customColors.white },
       errorButtonText: customColors.white,
+    },
+    availableClaims: {
+      focusOutline: customColors.lightBlue,
     },
   }
 }

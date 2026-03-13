@@ -15,7 +15,7 @@ function GluuToast() {
   const ToastDesign = () => {
     return (
       <div style={{ textAlign: 'left' }}>
-        <strong>{type == 'success' ? 'Success' : 'Error'}</strong>
+        <strong>{type == 'success' ? t('messages.success') : t('messages.error')}</strong>
         <br />
         {message == ''
           ? type == 'success'

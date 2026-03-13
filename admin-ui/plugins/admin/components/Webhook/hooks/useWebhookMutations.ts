@@ -26,6 +26,12 @@ const extractWebhookErrorMessage = (error: MutationError, fallback: string): str
   (error as Error)?.message ||
   fallback
 
+const invalidateWebhooksByFeatureQueries = (queryClient: ReturnType<typeof useQueryClient>) => {
+  queryClient.invalidateQueries({
+    predicate: (query) => String(query.queryKey?.[0] ?? '').includes('/admin-ui/webhook/'),
+  })
+}
+
 export const useCreateWebhookWithAudit = (callbacks?: MutationCallbacks) => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
@@ -47,6 +53,7 @@ export const useCreateWebhookWithAudit = (callbacks?: MutationCallbacks) => {
         })
         dispatch(updateToast(true, 'success', t('messages.webhook_created_successfully')))
         queryUtils.invalidateQueriesByKey(queryClient, getGetAllWebhooksQueryKey())
+        invalidateWebhooksByFeatureQueries(queryClient)
         callbacksRef.current?.onSuccess?.()
         return result
       } catch (error) {
@@ -94,6 +101,7 @@ export const useUpdateWebhookWithAudit = (callbacks?: MutationCallbacks) => {
         })
         dispatch(updateToast(true, 'success', t('messages.webhook_updated_successfully')))
         queryUtils.invalidateQueriesByKey(queryClient, getGetAllWebhooksQueryKey())
+        invalidateWebhooksByFeatureQueries(queryClient)
         if (data.inum) {
           queryUtils.invalidateQueriesByKey(
             queryClient,
@@ -147,6 +155,7 @@ export const useDeleteWebhookWithAudit = (callbacks?: MutationCallbacks) => {
         })
         dispatch(updateToast(true, 'success', t('messages.webhook_deleted_successfully')))
         queryUtils.invalidateQueriesByKey(queryClient, getGetAllWebhooksQueryKey())
+        invalidateWebhooksByFeatureQueries(queryClient)
         callbacksRef.current?.onSuccess?.()
         return result
       } catch (error) {
