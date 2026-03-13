@@ -107,14 +107,13 @@ const UserList = (): JSX.Element => {
             ? { ...userDataToDelete, action_message: userMessage }
             : undefined
           await deleteUser(inumToDelete, userMessage, userWithMessage)
-          refetchUsers()
           setDeleteData(null)
         } catch (error) {
           if (isDevelopment) console.error('Delete user failed:', error)
         }
       }
     },
-    [deleteData, deleteUser, refetchUsers],
+    [deleteData, deleteUser],
   )
   const { state: themeState } = useTheme()
   const selectedTheme = themeState.theme || DEFAULT_THEME
