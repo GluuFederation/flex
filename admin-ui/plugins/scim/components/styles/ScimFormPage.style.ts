@@ -2,56 +2,27 @@ import { makeStyles } from 'tss-react/mui'
 import { alpha } from '@mui/material/styles'
 import type { Theme } from '@mui/material/styles'
 import { SPACING, BORDER_RADIUS, OPACITY } from '@/constants'
-import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import type { ThemeConfig } from '@/context/theme/config'
+import {
+  createFormGroupOverrides,
+  createFormLabelStyles,
+  createFormInputStyles,
+  createFormInputFocusStyles,
+  createFormInputAutofillStyles,
+} from '@/styles/formStyles'
 
 type ScimFormPageStylesParams = {
   isDark: boolean
   themeColors: ThemeConfig
 }
 
-const LABEL_MARGIN_BOTTOM = 6
 const FORM_CARD_MIN_HEIGHT = 400
 const CONTENT_HORIZONTAL_PADDING = 52
 const SELECT_ARROW_SPACE = 44
 const SELECT_NUDGE = -2
-const INPUT_HEIGHT = 52
-const INPUT_PADDING_VERTICAL = 14
-const INPUT_PADDING_HORIZONTAL = 21
 const ERROR_SPACE = 20
 
-const formGroupOverrides = {
-  '& .form-group': {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    margin: 0,
-    padding: 0,
-  },
-  '& .form-group.row': {
-    marginLeft: 0,
-    marginRight: 0,
-  },
-  '& .form-group > label': {
-    flex: '0 0 auto',
-    width: '100%',
-    maxWidth: '100%',
-    paddingLeft: 0,
-    paddingRight: 0,
-    paddingTop: 0,
-    paddingBottom: 0,
-    marginBottom: LABEL_MARGIN_BOTTOM,
-  },
-  '& .form-group div[class*="col"]': {
-    flex: '0 0 100%',
-    width: '100%',
-    maxWidth: '100%',
-    paddingLeft: 0,
-    paddingRight: 0,
-  },
-  '& .input-group': {
-    margin: 0,
-  },
-}
+const formGroupBase = createFormGroupOverrides()
 
 export const useStyles = makeStyles<ScimFormPageStylesParams>()((
   theme: Theme,
@@ -60,6 +31,12 @@ export const useStyles = makeStyles<ScimFormPageStylesParams>()((
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   const formInputBg = themeColors.settings?.formInputBackground ?? themeColors.inputBackground
   const inputBorderColor = themeColors.settings?.inputBorder ?? themeColors.borderColor
+  const inputColors = {
+    inputBg: formInputBg,
+    inputBorderColor,
+    fontColor: themeColors.fontColor,
+    textMuted: themeColors.textMuted,
+  }
 
   return {
     formCard: {
@@ -107,30 +84,22 @@ export const useStyles = makeStyles<ScimFormPageStylesParams>()((
       'width': '100%',
       'minWidth': 0,
       'boxSizing': 'border-box',
-      ...formGroupOverrides,
-      '& .form-group div[class*="col"]': {
-        ...formGroupOverrides['& .form-group div[class*="col"]'],
+      ...formGroupBase,
+      '& .form-group [class*="col"]': {
+        ...formGroupBase['& .form-group [class*="col"]'],
         position: 'relative',
         paddingBottom: ERROR_SPACE,
-      },
-      '& [data-field-error]': {
-        position: 'absolute',
-        fontSize: `${fontSizes.sm} !important`,
       },
     },
     fieldItemFullWidth: {
       'width': '100%',
       'gridColumn': '1 / -1',
       'boxSizing': 'border-box',
-      ...formGroupOverrides,
-      '& .form-group div[class*="col"]': {
-        ...formGroupOverrides['& .form-group div[class*="col"]'],
+      ...formGroupBase,
+      '& .form-group [class*="col"]': {
+        ...formGroupBase['& .form-group [class*="col"]'],
         position: 'relative',
         paddingBottom: ERROR_SPACE,
-      },
-      '& [data-field-error]': {
-        position: 'absolute',
-        fontSize: `${fontSizes.sm} !important`,
       },
     },
     togglesRow: {
@@ -147,29 +116,12 @@ export const useStyles = makeStyles<ScimFormPageStylesParams>()((
         flexDirection: 'column',
       },
     },
-    formLabels: {
-      '& label, & label h5, & label h5 span, & label .MuiSvgIcon-root': {
-        color: `${themeColors.fontColor} !important`,
-        fontFamily: `${fontFamily} !important`,
-        fontSize: `${fontSizes.base} !important`,
-        fontStyle: 'normal',
-        fontWeight: `${fontWeights.semiBold} !important`,
-        lineHeight: `${lineHeights.normal} !important`,
-        margin: '0 !important',
-      },
-    },
+    formLabels: createFormLabelStyles(themeColors.fontColor),
     formWithInputs: {
       '& input, & select, & .custom-select': {
+        ...createFormInputStyles(inputColors),
         backgroundColor: `${formInputBg} !important`,
-        border: `1px solid ${inputBorderColor}`,
         borderRadius: BORDER_RADIUS.SMALL,
-        color: `${themeColors.fontColor} !important`,
-        minHeight: INPUT_HEIGHT,
-        height: 'auto',
-        paddingTop: INPUT_PADDING_VERTICAL,
-        paddingBottom: INPUT_PADDING_VERTICAL,
-        paddingLeft: INPUT_PADDING_HORIZONTAL,
-        paddingRight: INPUT_PADDING_HORIZONTAL,
       },
       '& select, & .custom-select': {
         paddingRight: SELECT_ARROW_SPACE,
@@ -178,12 +130,8 @@ export const useStyles = makeStyles<ScimFormPageStylesParams>()((
       },
       '& input:focus, & input:focus-visible, & input:active, & select:focus, & select:focus-visible, & select:active':
         {
-          backgroundColor: `${formInputBg} !important`,
-          color: `${themeColors.fontColor} !important`,
-          border: `1px solid ${inputBorderColor} !important`,
-          outline: 'none !important',
+          ...createFormInputFocusStyles(inputColors),
           outlineOffset: '0 !important',
-          boxShadow: 'none !important',
         },
       '& input:disabled, & select:disabled': {
         backgroundColor: `${formInputBg} !important`,
@@ -196,10 +144,8 @@ export const useStyles = makeStyles<ScimFormPageStylesParams>()((
         opacity: OPACITY.PLACEHOLDER,
       },
       '& input:-webkit-autofill, & input:-webkit-autofill:hover, & input:-webkit-autofill:focus': {
-        WebkitBoxShadow: `0 0 0 100px ${formInputBg} inset !important`,
-        WebkitTextFillColor: `${themeColors.fontColor} !important`,
+        ...createFormInputAutofillStyles(inputColors),
         backgroundColor: `${formInputBg} !important`,
-        transition: 'background-color 5000s ease-in-out 0s',
       },
     },
   }

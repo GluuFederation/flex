@@ -2,6 +2,8 @@ import { AppConfiguration3, JsonPatch } from 'JansConfigApi'
 import type { TFunction } from 'i18next'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/GluuCommitDialog'
+import { triggerWebhookForFeature } from '@/utils/triggerWebhookForFeature'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { ScimFormValues } from '../types'
 import { SCIM_FIELD_CONFIGS } from '../components/constants'
 
@@ -153,6 +155,13 @@ export const buildScimChangedFieldOperations = (
   }
 
   return operations
+}
+
+export const triggerScimWebhook = (
+  data: AppConfiguration3,
+  feature: string = adminUiFeatures.scim_configuration_edit,
+): void => {
+  triggerWebhookForFeature(data as Record<string, JsonValue>, feature)
 }
 
 export { toBooleanValue }

@@ -67,6 +67,7 @@ const ScimFieldRenderer: React.FC<ScimFieldRendererProps> = ({
             formik={formik}
             lsize={LABEL_SIZE}
             rsize={INPUT_SIZE}
+            disabled={disabled}
             showError={!!(error && touched)}
             errorMessage={error as string}
             doc_category={DOC_CATEGORY}
@@ -85,6 +86,7 @@ const ScimFieldRenderer: React.FC<ScimFieldRendererProps> = ({
             formik={formik}
             lsize={LABEL_SIZE}
             rsize={INPUT_SIZE}
+            disabled={disabled}
             doc_category={DOC_CATEGORY}
           />
         </div>
@@ -99,6 +101,7 @@ const ScimFieldRenderer: React.FC<ScimFieldRendererProps> = ({
             formik={formik}
             lsize={LABEL_SIZE}
             rsize={INPUT_SIZE}
+            disabled={disabled}
             doc_category={DOC_CATEGORY}
           />
         </div>

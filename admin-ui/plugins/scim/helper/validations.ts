@@ -12,6 +12,9 @@ const isSecureUrl = (value: string | undefined): boolean => {
   }
 }
 
+const emptyStringToNull = (value: number | null, original: string | number) =>
+  original === '' ? null : value
+
 export const getScimConfigurationSchema = (t: TFunction) =>
   Yup.object({
     baseDN: Yup.string(),
@@ -28,16 +31,22 @@ export const getScimConfigurationSchema = (t: TFunction) =>
       t('messages.scim_protection_mode_invalid'),
     ),
     maxCount: Yup.number()
+      .nullable()
+      .transform(emptyStringToNull)
       .typeError(t('messages.scim_max_count_type'))
       .positive(t('messages.scim_max_count_positive'))
       .integer(t('messages.scim_max_count_integer'))
       .max(2147483647, t('messages.scim_max_count_max')),
     bulkMaxOperations: Yup.number()
+      .nullable()
+      .transform(emptyStringToNull)
       .typeError(t('messages.scim_bulk_max_operations_type'))
       .positive(t('messages.scim_bulk_max_operations_positive'))
       .integer(t('messages.scim_bulk_max_operations_integer'))
       .max(100000, t('messages.scim_bulk_max_operations_max')),
     bulkMaxPayloadSize: Yup.number()
+      .nullable()
+      .transform(emptyStringToNull)
       .typeError(t('messages.scim_bulk_max_payload_type'))
       .positive(t('messages.scim_bulk_max_payload_positive'))
       .integer(t('messages.scim_bulk_max_payload_integer'))
@@ -46,11 +55,15 @@ export const getScimConfigurationSchema = (t: TFunction) =>
     loggingLevel: Yup.string(),
     loggingLayout: Yup.string(),
     metricReporterInterval: Yup.number()
+      .nullable()
+      .transform(emptyStringToNull)
       .typeError(t('messages.scim_metric_interval_type'))
       .positive(t('messages.scim_metric_interval_positive'))
       .integer(t('messages.scim_metric_interval_integer'))
       .max(86400, t('messages.scim_metric_interval_max')),
     metricReporterKeepDataDays: Yup.number()
+      .nullable()
+      .transform(emptyStringToNull)
       .typeError(t('messages.scim_metric_keep_days_type'))
       .positive(t('messages.scim_metric_keep_days_positive'))
       .integer(t('messages.scim_metric_keep_days_integer'))

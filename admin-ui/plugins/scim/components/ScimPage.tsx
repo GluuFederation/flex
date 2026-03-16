@@ -9,7 +9,8 @@ import { GluuPageContent } from '@/components'
 import ScimConfiguration from './ScimConfiguration'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useGetScimConfig, usePatchScimConfig, getGetScimConfigQueryKey } from 'JansConfigApi'
-import { createJsonPatchFromDifferences, AUDIT_RESOURCE } from '../helper'
+import { createJsonPatchFromDifferences, AUDIT_RESOURCE, triggerScimWebhook } from '../helper'
+import { setWebhookModal } from 'Plugins/admin/redux/features/WebhookSlice'
 import type { ScimFormValues, ApiErrorResponse, MutationContext, AppConfiguration3 } from '../types'
 import { logAudit } from 'Utils/AuditLogger'
 import { PATCH } from '@/audit/UserActionType'
@@ -106,9 +107,10 @@ const ScimPage: React.FC = () => {
         }
         return { previousConfig }
       },
-      onSuccess: async (_data: AppConfiguration3, variables: { data: JsonPatch[] }) => {
+      onSuccess: async (data: AppConfiguration3, variables: { data: JsonPatch[] }) => {
+        dispatch(setWebhookModal(false))
         dispatch(updateToast(true, 'success', t('messages.success_in_saving')))
-        queryClient.invalidateQueries({ queryKey: getGetScimConfigQueryKey() })
+        triggerScimWebhook(data)
         const userMessage: string = userMessageRef.current || t('messages.success_in_saving')
         await logAudit({
           userinfo: userinfo ?? undefined,

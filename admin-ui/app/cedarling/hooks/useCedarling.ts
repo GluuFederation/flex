@@ -12,6 +12,8 @@ import type {
 import { OPENID, REVOKE_SESSION, SCIM_BULK, SSA_ADMIN, SSA_DEVELOPER } from '@/utils/PermChecker'
 import { updateToast } from '@/redux/features/toastSlice'
 
+const executeUrls = new Set([SSA_ADMIN, SSA_DEVELOPER, SCIM_BULK, REVOKE_SESSION, OPENID])
+
 export function useCedarling(): UseCedarlingReturn {
   const { ACTION_TYPE, RESOURCE_TYPE } = CEDARLING_CONSTANTS
 
@@ -30,7 +32,6 @@ export function useCedarling(): UseCedarlingReturn {
     initialized: cedarlingInitialized,
     isInitializing,
   } = useAppSelector((state) => state.cedarPermissions)
-  const executeUrls = new Set([SSA_ADMIN, SSA_DEVELOPER, SCIM_BULK, REVOKE_SESSION, OPENID])
 
   const getActionLabelFromUrl = useCallback((url: string): CedarAction => {
     const lowerUrl = url.toLowerCase()

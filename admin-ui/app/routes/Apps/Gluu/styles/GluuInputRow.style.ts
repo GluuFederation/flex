@@ -13,9 +13,14 @@ export const useStyles = makeStyles<GluuInputRowStyleParams>()((
   return {
     colWrapper: {
       'position': 'relative',
-      '& input:focus, & input:focus-visible, & input:active': {
+      '& input:focus, & input:active': {
         outline: 'none',
         boxShadow: 'none',
+      },
+      '& input:focus-visible': {
+        outline: '2px solid currentColor',
+        outlineOffset: -2,
+        borderRadius: 'inherit',
       },
     },
     inputWithShortcode: {

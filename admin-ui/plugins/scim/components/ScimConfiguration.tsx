@@ -2,16 +2,14 @@ import { useFormik, FormikProps } from 'formik'
 import React, { useState, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Form } from 'Components'
-import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import GluuWebhookCommitDialog from 'Routes/Apps/Gluu/GluuWebhookCommitDialog'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import { getScimConfigurationSchema } from '../helper/validations'
 import { transformToFormValues, buildScimChangedFieldOperations } from '../helper'
 import ScimFieldRenderer from './ScimFieldRenderer'
 import { SCIM_FIELD_CONFIGS } from './constants'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import type { ScimConfigurationProps, ScimFormValues } from '../types'
-
-const SCIM_EDIT_FEATURE = adminUiFeatures.scim_configuration_edit
 
 const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
   scimConfiguration,
@@ -57,14 +55,14 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
 
   const handleCancel = useCallback(() => {
     formik.resetForm()
-  }, [formik.resetForm])
+  }, [formik])
 
   const handleFormSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>): void => {
       e.preventDefault()
       formik.handleSubmit()
     },
-    [formik.handleSubmit],
+    [formik],
   )
 
   return (
@@ -94,13 +92,13 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
         applyButtonType="submit"
         isLoading={isSubmitting ?? false}
       />
-      <GluuCommitDialog
+      <GluuWebhookCommitDialog
         handler={toggle}
         modal={modal}
         onAccept={submitForm}
-        feature={SCIM_EDIT_FEATURE}
         formik={formik}
         operations={commitOperations}
+        webhookFeature={adminUiFeatures.scim_configuration_edit}
       />
     </Form>
   )

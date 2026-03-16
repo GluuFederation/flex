@@ -76,11 +76,14 @@ export const useLicenseDetails = (options: UseLicenseDetailsOptions = {}) => {
       onSuccess: async () => {
         queryClient.invalidateQueries({ queryKey: getGetAdminuiLicenseQueryKey() })
         const currentState = getRootState()
-        const audit = createAuditLog(currentState)
-        if (audit) {
-          audit.action = DELETION
-          audit.resource = API_LICENSE
-          audit.message = pendingMessageRef.current
+        const baseAudit = createAuditLog(currentState)
+        if (baseAudit) {
+          const audit = {
+            ...baseAudit,
+            action: DELETION,
+            resource: API_LICENSE,
+            message: pendingMessageRef.current,
+          }
           try {
             await postUserAction(audit)
           } catch (e) {
