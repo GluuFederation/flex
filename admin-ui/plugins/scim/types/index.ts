@@ -13,6 +13,8 @@ export type ScimFormValues = {
   userExtensionSchemaURI: string
   loggingLevel: string
   loggingLayout: string
+  externalLoggerConfiguration: string
+  disableExternalLoggerConfiguration: boolean
   metricReporterInterval: number | string
   metricReporterKeepDataDays: number | string
   metricReporterEnabled: boolean

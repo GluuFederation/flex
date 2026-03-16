@@ -626,6 +626,7 @@
     "logging_level": "Logging Level",
     "logging_layout": "Logging Layout",
     "external_logger_configuration": "External Logger Configuration",
+    "disable_external_logger_configuration": "Disable External Logger",
     "metric_reporter_interval": "Metric Reporter Interval",
     "metric_reporter_keep_data_days": "Metric Reporter Keep Data Days",
     "metric_reporter_enabled": "Enable Metric Reporter",

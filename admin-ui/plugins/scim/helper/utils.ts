@@ -29,6 +29,10 @@ export const transformToFormValues = (config: AppConfiguration3 | undefined): Sc
     userExtensionSchemaURI: config?.userExtensionSchemaURI || '',
     loggingLevel: config?.loggingLevel || '',
     loggingLayout: config?.loggingLayout || '',
+    externalLoggerConfiguration: config?.externalLoggerConfiguration || '',
+    disableExternalLoggerConfiguration: toBooleanValue(
+      (config as Record<string, JsonValue | undefined>)?.disableExternalLoggerConfiguration,
+    ),
     metricReporterInterval: config?.metricReporterInterval ?? '',
     metricReporterKeepDataDays: config?.metricReporterKeepDataDays ?? '',
     metricReporterEnabled: toBooleanValue(config?.metricReporterEnabled),
@@ -99,6 +103,16 @@ export const createJsonPatchFromDifferences = (
   )
   addPatchIfDifferent('loggingLevel', originalConfig.loggingLevel, formValues.loggingLevel)
   addPatchIfDifferent('loggingLayout', originalConfig.loggingLayout, formValues.loggingLayout)
+  addPatchIfDifferent(
+    'externalLoggerConfiguration',
+    originalConfig.externalLoggerConfiguration,
+    formValues.externalLoggerConfiguration,
+  )
+  addPatchIfDifferent(
+    'disableExternalLoggerConfiguration',
+    (originalConfig as Record<string, JsonValue | undefined>).disableExternalLoggerConfiguration,
+    formValues.disableExternalLoggerConfiguration,
+  )
   addPatchIfDifferent(
     'metricReporterInterval',
     originalConfig.metricReporterInterval,

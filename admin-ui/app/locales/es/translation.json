@@ -626,6 +626,7 @@
     "logging_level": "Nivel de Registro",
     "logging_layout": "Formato de Registro",
     "external_logger_configuration": "Configuración de Logger Externo",
+    "disable_external_logger_configuration": "Deshabilitar Logger Externo",
     "metric_reporter_interval": "Intervalo del Informe de Métricas",
     "metric_reporter_keep_data_days": "Días para Mantener Datos del Informe de Métricas",
     "metric_reporter_enabled": "Habilitar Informe de Métricas",

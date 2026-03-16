@@ -369,6 +369,7 @@
     "logging_level": "Nível de Registo",
     "logging_layout": "Layout de Registo",
     "external_logger_configuration": "Configuração de Registo Externo",
+    "disable_external_logger_configuration": "Desativar Registo Externo",
     "metric_reporter_interval": "Intervalo do Relatório de Métricas",
     "metric_reporter_keep_data_days": "Dias de Manutenção de Dados do Relatório de Métricas",
     "metric_reporter_enabled": "Ativar Relatório de Métricas",

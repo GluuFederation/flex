@@ -54,6 +54,8 @@ export const getScimConfigurationSchema = (t: TFunction) =>
     userExtensionSchemaURI: Yup.string(),
     loggingLevel: Yup.string(),
     loggingLayout: Yup.string(),
+    externalLoggerConfiguration: Yup.string(),
+    disableExternalLoggerConfiguration: Yup.boolean(),
     metricReporterInterval: Yup.number()
       .nullable()
       .transform(emptyStringToNull)

@@ -52,9 +52,9 @@ export const SCIM_FIELD_CONFIGS: FieldConfig[] = [
     colSize: 6,
   },
   {
-    name: 'maxCount',
-    label: 'fields.max_count',
-    type: 'number',
+    name: 'userExtensionSchemaURI',
+    label: 'fields.user_extension_schema_uri',
+    type: 'text',
     colSize: 6,
   },
   {
@@ -70,9 +70,21 @@ export const SCIM_FIELD_CONFIGS: FieldConfig[] = [
     colSize: 6,
   },
   {
-    name: 'userExtensionSchemaURI',
-    label: 'fields.user_extension_schema_uri',
-    type: 'text',
+    name: 'metricReporterInterval',
+    label: 'fields.metric_reporter_interval',
+    type: 'number',
+    colSize: 6,
+  },
+  {
+    name: 'metricReporterKeepDataDays',
+    label: 'fields.metric_reporter_keep_data_days',
+    type: 'number',
+    colSize: 6,
+  },
+  {
+    name: 'maxCount',
+    label: 'fields.max_count',
+    type: 'number',
     colSize: 6,
   },
   {
@@ -89,15 +101,15 @@ export const SCIM_FIELD_CONFIGS: FieldConfig[] = [
     colSize: 6,
   },
   {
-    name: 'metricReporterInterval',
-    label: 'fields.metric_reporter_interval',
-    type: 'number',
+    name: 'externalLoggerConfiguration',
+    label: 'fields.external_logger_configuration',
+    type: 'text',
     colSize: 6,
   },
   {
-    name: 'metricReporterKeepDataDays',
-    label: 'fields.metric_reporter_keep_data_days',
-    type: 'number',
+    name: 'disableExternalLoggerConfiguration',
+    label: 'fields.disable_external_logger_configuration',
+    type: 'toggle',
     colSize: 6,
   },
   {
