@@ -63,11 +63,7 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
       },
 
       '& input:-webkit-autofill, & input:-webkit-autofill:hover, & input:-webkit-autofill:focus, & input:-webkit-autofill:active':
-        {
-          ...createFormInputAutofillStyles(inputColors),
-          backgroundColor: `${inputBg} !important`,
-          color: `${themeColors.fontColor} !important`,
-        },
+        createFormInputAutofillStyles(inputColors),
     },
 
     leftStack: {

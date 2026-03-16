@@ -2,7 +2,7 @@ import * as Yup from 'yup'
 import type { TFunction } from 'i18next'
 import { PROTECTION_MODES } from './constants'
 
-const isSecureUrl = (value: string | undefined): boolean => {
+const isValidHttpUrl = (value: string | undefined): boolean => {
   if (!value) return true
   try {
     const url = new URL(value)
@@ -21,7 +21,7 @@ export const getScimConfigurationSchema = (t: TFunction) =>
     applicationUrl: Yup.string().test(
       'valid-secure-url',
       t('messages.scim_application_url_invalid'),
-      isSecureUrl,
+      isValidHttpUrl,
     ),
     baseEndpoint: Yup.string(),
     personCustomObjectClass: Yup.string(),
