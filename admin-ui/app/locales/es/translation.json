@@ -785,6 +785,7 @@
     "add_community_project": "Agregar un Proyecto de la Comunidad"
   },
   "messages": {
+    "multi_select_hint": "Ingrese varios elementos seleccionando del menú desplegable que aparece después de ingresar cada elemento.",
     "add_permission": "Agregar Permiso",
     "add_asset": "Agregar Jans Asset",
     "asset_document_error": "El documento es obligatorio.",
@@ -1030,7 +1031,18 @@
     "attribute_load_failed": "Error al cargar el atributo",
     "cannot_contain_spaces": "{{field}} no puede contener espacios",
     "cannot_be_empty": "{{field}} no puede estar vacío",
-    "must_be_valid_url": "{{field}} debe ser una URL válida"
+    "must_be_valid_url": "{{field}} debe ser una URL válida",
+    "required": "Este campo es obligatorio",
+    "name_no_spaces": "El nombre no debe contener espacios",
+    "positive_number": "Debe ser un número positivo",
+    "min_greater_than_max": "La longitud mínima debe ser menor que la longitud máxima",
+    "name_required": "El nombre es obligatorio",
+    "display_name_required": "El nombre para mostrar es obligatorio",
+    "description_required": "La descripción es obligatoria",
+    "status_required": "El estado es obligatorio",
+    "data_type_required": "El tipo de dato es obligatorio",
+    "edit_type_required": "El tipo de edición es obligatorio",
+    "view_type_required": "El tipo de visualización es obligatorio"
   },
   "validation_messages": {
     "invalid_url_format": "Formato de URL inválido",
@@ -1164,6 +1176,8 @@
     "edit_idp": "Editar IDP",
     "application_settings": "Configuración de la aplicación",
     "jans_kc_ink": "Jans KC Link",
+    "edit_attribute": "Editar Atributo",
+    "view_attribute": "Ver Atributo",
     "all_attributes": "Atributos/Claims",
     "all_custom_scripts": "Scripts personalizados",
     "all_oidc_clients": "Clientes OpenID",

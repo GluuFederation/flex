@@ -1,122 +1,95 @@
-import React, { useContext, useMemo } from 'react'
-import { Container, Badge, Row, Col, FormGroup, Label } from 'Components'
-import { useTranslation } from 'react-i18next'
+import { useContext, useMemo, memo } from 'react'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import customColors from '@/customColors'
 import { DEFAULT_THEME } from '@/context/theme/constants'
+import { GluuDetailGrid, type GluuDetailGridField } from '@/components/GluuDetailGrid'
+import { API_ATTRIBUTE } from '../../constants'
 import type {
   AttributeDetailPageProps,
   DetailThemeContextType,
 } from '../types/AttributeListPage.types'
 
+const displayOrDash = (value: string | null | undefined): string =>
+  value === null || value === undefined || value === '' ? '—' : value
+
 const AttributeDetailPage = ({ row }: AttributeDetailPageProps): JSX.Element => {
-  const { t } = useTranslation()
   const theme = useContext(ThemeContext) as DetailThemeContextType
   const selectedTheme = theme?.state?.theme || DEFAULT_THEME
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
 
   const labelStyle = useMemo(
-    () => ({
-      fontWeight: 'bold' as const,
-      color: customColors.black,
-    }),
-    [],
+    () => ({ color: themeColors.fontColor }),
+    [themeColors.fontColor],
   )
 
-  const valueStyle = useMemo(
-    () => ({
-      color: customColors.black,
-    }),
-    [],
-  )
+  const isActive = row.status?.toLowerCase() === 'active'
 
-  const badgeStyle = useMemo(
-    () => ({
-      backgroundColor: themeColors.background,
-      color: customColors.white,
-      marginRight: '4px',
-      marginBottom: '4px',
-    }),
-    [themeColors.background],
+  const fields: GluuDetailGridField[] = useMemo(
+    () => [
+      {
+        label: 'fields.name',
+        value: displayOrDash(row.name),
+        doc_entry: 'name',
+        doc_category: API_ATTRIBUTE,
+      },
+      {
+        label: 'fields.displayname',
+        value: displayOrDash(row.displayName),
+        doc_entry: 'displayName',
+        doc_category: API_ATTRIBUTE,
+      },
+      {
+        label: 'fields.status',
+        value: displayOrDash(row.status),
+        doc_entry: 'status',
+        doc_category: API_ATTRIBUTE,
+        isBadge: true,
+        badgeBackgroundColor: isActive
+          ? themeColors.badges.statusActiveBg
+          : customColors.statusInactiveBg,
+        badgeTextColor: isActive ? themeColors.badges.statusActive : customColors.statusInactive,
+      },
+      {
+        label: 'fields.attribute_edit_type',
+        value: Array.isArray(row.editType) && row.editType.length > 0
+          ? row.editType.join(', ')
+          : '—',
+        doc_entry: 'editType',
+        doc_category: API_ATTRIBUTE,
+        isBadge: Array.isArray(row.editType) && row.editType.length > 0,
+        badgeBackgroundColor: themeColors.badges.filledBadgeBg,
+        badgeTextColor: themeColors.badges.filledBadgeText,
+      },
+      {
+        label: 'fields.attribute_view_type',
+        value: Array.isArray(row.viewType) && row.viewType.length > 0
+          ? row.viewType.join(', ')
+          : '—',
+        doc_entry: 'viewType',
+        doc_category: API_ATTRIBUTE,
+        isBadge: Array.isArray(row.viewType) && row.viewType.length > 0,
+        badgeBackgroundColor: themeColors.badges.filledBadgeBg,
+        badgeTextColor: themeColors.badges.filledBadgeText,
+      },
+      {
+        label: 'fields.description',
+        value: displayOrDash(row.description),
+        doc_entry: 'description',
+        doc_category: API_ATTRIBUTE,
+      },
+    ],
+    [row, isActive, themeColors],
   )
 
   return (
-    <React.Fragment>
-      <Container style={{ backgroundColor: customColors.whiteSmoke }}>
-        <Row>
-          <Col sm={6}>
-            <FormGroup row>
-              <Label for="input" sm={6} style={labelStyle}>
-                {t('fields.name')}:
-              </Label>
-              <Label for="input" sm={6} style={valueStyle}>
-                {row.name}
-              </Label>
-            </FormGroup>
-          </Col>
-          <Col sm={6}>
-            <FormGroup row>
-              <Label for="input" sm={6} style={labelStyle}>
-                {t('fields.displayname')}:
-              </Label>
-              <Label for="input" sm={6} style={valueStyle}>
-                {row.displayName}
-              </Label>
-            </FormGroup>
-          </Col>
-        </Row>
-        <Row>
-          <Col sm={6}>
-            <FormGroup row>
-              <Label sm={6} style={labelStyle}>
-                {t('fields.description')}:
-              </Label>
-              <Label sm={6} style={valueStyle}>
-                {row.description}
-              </Label>
-            </FormGroup>
-          </Col>
-          <Col sm={6}>
-            <FormGroup row>
-              <Label sm={6} style={labelStyle}>
-                {t('fields.status')}:
-              </Label>
-              <Label sm={6} style={valueStyle}>
-                <Badge style={badgeStyle}>{row.status}</Badge>
-              </Label>
-            </FormGroup>
-          </Col>
-        </Row>
-        <Row>
-          <Col sm={3}>
-            <Label sm={12} style={labelStyle}>
-              {t('fields.attribute_edit_type')}:
-            </Label>
-          </Col>
-          <Col sm={3}>
-            {Array.from(row.editType || []).map((item: string) => (
-              <Badge key={item} style={badgeStyle}>
-                {item}
-              </Badge>
-            ))}
-          </Col>
-          <Col sm={3}>
-            <Label sm={12} style={labelStyle}>
-              {t('fields.attribute_view_type')}:
-            </Label>
-          </Col>
-          <Col sm={3}>
-            {Array.from(row.viewType || []).map((item: string) => (
-              <Badge key={item} style={badgeStyle}>
-                {item}
-              </Badge>
-            ))}
-          </Col>
-        </Row>
-      </Container>
-    </React.Fragment>
+    <GluuDetailGrid
+      fields={fields}
+      labelStyle={labelStyle}
+      defaultDocCategory={API_ATTRIBUTE}
+      layout="column"
+    />
   )
 }
 
-export default AttributeDetailPage
+export default memo(AttributeDetailPage)

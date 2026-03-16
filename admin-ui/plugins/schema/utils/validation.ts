@@ -1,38 +1,37 @@
 import * as Yup from 'yup'
-import { useTranslation } from 'react-i18next'
 import { useMemo } from 'react'
 import type { AttributeFormValues } from '../components/types/AttributeListPage.types'
 
-const buildAttributeSchemaParts = (t: (key: string) => string, validationEnabled = true) => {
+const buildAttributeSchemaParts = (validationEnabled = true) => {
   return {
     name: Yup.string()
       .trim()
-      .matches(/^[^\s]+$/, t('errors.name_no_spaces') || 'Name must not contain spaces')
-      .required(t('errors.required') || 'Required!')
-      .min(1, t('errors.required') || 'Required!'),
+      .matches(/^[^\s]+$/, 'errors.name_no_spaces')
+      .required('errors.name_required')
+      .min(1, 'errors.name_required'),
     displayName: Yup.string()
       .trim()
-      .required(t('errors.required') || 'Required!')
-      .min(1, t('errors.required') || 'Required!'),
+      .required('errors.display_name_required')
+      .min(1, 'errors.display_name_required'),
     description: Yup.string()
       .trim()
-      .required(t('errors.required') || 'Required!')
-      .min(1, t('errors.required') || 'Required!'),
+      .required('errors.description_required')
+      .min(1, 'errors.description_required'),
     status: Yup.string()
-      .required(t('errors.required') || 'Required!')
-      .min(1, t('errors.required') || 'Required!'),
+      .required('errors.status_required')
+      .min(1, 'errors.status_required'),
     dataType: Yup.string()
-      .required(t('errors.required') || 'Required!')
-      .min(1, t('errors.required') || 'Required!'),
+      .required('errors.data_type_required')
+      .min(1, 'errors.data_type_required'),
     editType: Yup.array()
       .of(Yup.string())
-      .min(1, t('errors.required') || 'Required!')
-      .required(t('errors.required') || 'Required!'),
+      .min(1, 'errors.edit_type_required')
+      .required('errors.edit_type_required'),
     usageType: Yup.array().of(Yup.string()).nullable(),
     viewType: Yup.array()
       .of(Yup.string())
-      .min(1, t('errors.required') || 'Required!')
-      .required(t('errors.required') || 'Required!'),
+      .min(1, 'errors.view_type_required')
+      .required('errors.view_type_required'),
     maxLength: validationEnabled
       ? Yup.number()
           .nullable()
@@ -42,7 +41,7 @@ const buildAttributeSchemaParts = (t: (key: string) => string, validationEnabled
             }
             return value
           })
-          .positive(t('errors.positive_number') || 'Must be a positive number')
+          .positive('errors.positive_number')
       : Yup.number()
           .nullable()
           .transform((value) => (value === '' ? null : value)),
@@ -55,7 +54,7 @@ const buildAttributeSchemaParts = (t: (key: string) => string, validationEnabled
             }
             return value
           })
-          .positive(t('errors.positive_number') || 'Must be a positive number')
+          .positive('errors.positive_number')
           .when(
             'maxLength',
             (maxLengthValue: number | null | undefined | (number | null | undefined)[], schema) => {
@@ -64,7 +63,7 @@ const buildAttributeSchemaParts = (t: (key: string) => string, validationEnabled
               if (maxLength !== null && maxLength !== undefined) {
                 return schema.test(
                   'min-max',
-                  t('errors.min_greater_than_max') || 'Min length must be less than max length',
+                  'errors.min_greater_than_max',
                   function (value: number | null | undefined) {
                     const maxLengthFromParent = this.parent.maxLength as number | null | undefined
                     if (
@@ -105,17 +104,12 @@ const buildAttributeSchemaParts = (t: (key: string) => string, validationEnabled
 }
 
 export const useAttributeValidationSchema = (validationEnabled = true) => {
-  const { t } = useTranslation()
-
   return useMemo(
-    () => Yup.object<AttributeFormValues>(buildAttributeSchemaParts(t, validationEnabled)),
-    [t, validationEnabled],
+    () => Yup.object<AttributeFormValues>(buildAttributeSchemaParts(validationEnabled)),
+    [validationEnabled],
   )
 }
 
-export const getAttributeValidationSchema = (
-  t: (key: string) => string,
-  validationEnabled = true,
-) => {
-  return Yup.object<AttributeFormValues>(buildAttributeSchemaParts(t, validationEnabled))
+export const getAttributeValidationSchema = (validationEnabled = true) => {
+  return Yup.object<AttributeFormValues>(buildAttributeSchemaParts(validationEnabled))
 }

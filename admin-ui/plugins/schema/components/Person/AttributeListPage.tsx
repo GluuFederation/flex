@@ -1,511 +1,498 @@
-import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
-import MaterialTable, { Action, Column, Options } from '@material-table/core'
-import { DeleteOutlined } from '@mui/icons-material'
+import React, { useState, useEffect, useContext, useCallback, useMemo, memo } from 'react'
+import { DeleteOutlined, Edit, Add, VisibilityOutlined } from '@mui/icons-material'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import {
-  Paper,
-  TablePagination,
-  Box,
-  TextField,
-  MenuItem,
-  IconButton,
-  Button,
-  InputAdornment,
-} from '@mui/material'
-import SearchIcon from '@mui/icons-material/Search'
-import SwapVertIcon from '@mui/icons-material/SwapVert'
-import ClearIcon from '@mui/icons-material/Clear'
-import RefreshIcon from '@mui/icons-material/Refresh'
-import { useDispatch } from 'react-redux'
-import { useQueryClient } from '@tanstack/react-query'
-import { Badge } from 'reactstrap'
-import { Card, CardBody } from 'Components'
-import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
-import AttributeDetailPage from './AttributeDetailPage'
+import { GluuBadge } from '@/components/GluuBadge'
+import { GluuTable } from '@/components/GluuTable'
+import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
-import { useCedarling } from '@/cedarling'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
-import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
-import customColors from '@/customColors'
-import styled from 'styled-components'
-import {
-  JansAttribute,
-  useGetAttributes,
-  useDeleteAttributesByInum,
-  getGetAttributesQueryKey,
-} from 'JansConfigApi'
-import { updateToast } from 'Redux/features/toastSlice'
-import { DELETION } from '@/audit/UserActionType'
-import { useSchemaAuditLogger } from '../../hooks/useSchemaAuditLogger'
-import { useSchemaWebhook } from '../../hooks/useSchemaWebhook'
-import { API_ATTRIBUTE } from '../../constants'
-import { getErrorMessage } from '../../utils/errorHandler'
-import type { StyledBadgeProps } from '../types/AttributeListPage.types'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import SetTitle from 'Utils/SetTitle'
+import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
-import { DEFAULT_THEME } from '@/context/theme/constants'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
+import { useQueryClient } from '@tanstack/react-query'
+import { useAttributes, useDeleteAttribute, useMutationEffects, toAttributeList } from '../../hooks'
+import { useStyles } from './styles/AttributeListPage.style'
+import { getGetAttributesQueryKey } from 'JansConfigApi'
+import type { JansAttribute } from 'JansConfigApi'
+import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
+import type { FilterDef } from '@/components/GluuSearchToolbar/types'
 
-type AttributeIdentifier = Pick<JansAttribute, 'inum' | 'name'>
+const LIMIT_OPTIONS = getRowsPerPageOptions()
 
-const StyledBadge = styled(Badge)<StyledBadgeProps>`
-  background-color: ${(props) =>
-    props.status?.toLowerCase() === 'active'
-      ? customColors.darkGray
-      : customColors.paleYellow} !important;
-  color: ${customColors.white} !important;
-`
+type DisplayValue = string | number | boolean | null | undefined
+const displayOrDash = (value: DisplayValue): string =>
+  value === null || value === undefined || value === '' ? '—' : String(value)
 
-function AttributeListPage(): JSX.Element {
+const AttributeListPage: React.FC = () => {
+  const { t } = useTranslation()
+  const queryClient = useQueryClient()
+  const { navigateToRoute } = useAppNavigation()
+
   const {
     authorizeHelper,
     hasCedarReadPermission,
     hasCedarWritePermission,
     hasCedarDeletePermission,
   } = useCedarling()
-  const { t } = useTranslation()
-  const dispatch = useDispatch()
-  const queryClient = useQueryClient()
-  const { logAudit } = useSchemaAuditLogger()
-  const { triggerAttributeWebhook } = useSchemaWebhook()
-  const pageSize = useMemo(() => {
-    const stored = localStorage.getItem('paggingSize')
-    return stored ? parseInt(stored) : 10
-  }, [])
-
-  const [limit, setLimit] = useState<number>(pageSize)
-  const [pageNumber, setPageNumber] = useState<number>(0)
-  const [pattern, setPattern] = useState<string | null>(null)
-  const [startIndex, setStartIndex] = useState<number>(0)
-  const [status, setStatus] = useState<string | null>(null)
-  const [sortBy, setSortBy] = useState<string | null>(null)
-  const [sortOrder, setSortOrder] = useState<'ascending' | 'descending'>('ascending')
 
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme ?? DEFAULT_THEME
-  const themeColors = getThemeColor(selectedTheme)
-  const bgThemeColor = { background: themeColors.background }
+  const { themeColors, isDarkTheme } = useMemo(() => {
+    const selected = theme?.state?.theme || DEFAULT_THEME
+    return {
+      themeColors: getThemeColor(selected),
+      isDarkTheme: selected === THEME_DARK,
+    }
+  }, [theme?.state?.theme])
+  const { classes, badgeStyles } = useStyles({ isDark: isDarkTheme, themeColors })
 
-  const { data: attributesData, isLoading } = useGetAttributes({
-    limit,
-    ...(pattern && { pattern }),
-    startIndex,
-    ...(status && { status }),
-    ...(sortBy && { sortBy }),
-    ...(sortBy && sortOrder && { sortOrder }),
-  })
+  const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
+  const [pattern, setPattern] = useState('')
+  const [status, setStatus] = useState('')
+  const [sortBy, setSortBy] = useState('')
 
-  const attributes = (attributesData?.entries || []) as unknown as JansAttribute[]
-  const totalItems = attributesData?.totalEntriesCount || 0
-
-  const deleteAttributeMutation = useDeleteAttributesByInum({
-    mutation: {
-      onSuccess: () => {
-        dispatch(updateToast(true, 'success'))
-        queryClient.invalidateQueries({ queryKey: getGetAttributesQueryKey() })
-      },
-      onError: (error: Error | Record<string, never>) => {
-        const errorMessage = getErrorMessage(error, 'errors.attribute_delete_failed', t)
-        dispatch(updateToast(true, 'error', errorMessage))
-      },
-    },
-  })
+  const [modal, setModal] = useState(false)
+  const [itemToDelete, setItemToDelete] = useState<JansAttribute>({} as JansAttribute)
 
   const attributeResourceId = useMemo(() => ADMIN_UI_RESOURCES.Attributes, [])
-  const attributeScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[ADMIN_UI_RESOURCES.Attributes], [])
-  const canReadAttributes = useMemo(
+  const attributeScopes = useMemo(
+    () => CEDAR_RESOURCE_SCOPES[attributeResourceId] ?? [],
+    [attributeResourceId],
+  )
+
+  const canRead = useMemo(
     () => hasCedarReadPermission(attributeResourceId),
     [hasCedarReadPermission, attributeResourceId],
   )
-  const canWriteAttributes = useMemo(
+  const canWrite = useMemo(
     () => hasCedarWritePermission(attributeResourceId),
     [hasCedarWritePermission, attributeResourceId],
   )
-  const canDeleteAttributes = useMemo(
+  const canDelete = useMemo(
     () => hasCedarDeletePermission(attributeResourceId),
     [hasCedarDeletePermission, attributeResourceId],
   )
 
   useEffect(() => {
-    if (attributeScopes && attributeScopes.length > 0) {
+    if (attributeScopes.length > 0) {
       authorizeHelper(attributeScopes)
     }
-  }, [authorizeHelper])
+  }, [authorizeHelper, attributeScopes])
+
+  const startIndex = useMemo(() => pageNumber * limit, [pageNumber, limit])
+
+  const { data: attributesData, isLoading } = useAttributes({
+    limit,
+    startIndex,
+    ...(pattern && { pattern }),
+    ...(status && { status }),
+    ...(sortBy && { sortBy, sortOrder: 'ascending' }),
+  })
+
+  const attributes = useMemo(() => toAttributeList(attributesData?.entries), [attributesData])
+  const totalItems = attributesData?.totalEntriesCount || 0
+
+  const deleteAttributeMutation = useDeleteAttribute()
+
+  useMutationEffects({
+    mutation: deleteAttributeMutation,
+    successMessage: 'messages.attribute_deleted_successfully',
+    errorMessage: 'errors.attribute_delete_failed',
+    navigateOnSuccess: false,
+  })
 
   SetTitle(t('fields.attributes'))
 
-  const { navigateToRoute } = useAppNavigation()
-  const [item, setItem] = useState<JansAttribute>({} as JansAttribute)
-  const [modal, setModal] = useState<boolean>(false)
-  const toggle = (): void => setModal(!modal)
+  const handleAdd = useCallback(() => {
+    navigateToRoute(ROUTES.ATTRIBUTE_ADD)
+  }, [navigateToRoute])
 
-  const handlePatternChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    const value = event.target.value
-    setPattern(value)
-  }
-
-  const handlePatternKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
-    if (event.key === 'Enter') {
-      setPageNumber(0)
-      setStartIndex(0)
-    }
-  }
-
-  const handleStatusChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    const value = event.target.value
-    setStatus(value === 'all' ? null : value.toUpperCase())
-    setPageNumber(0)
-    setStartIndex(0)
-  }
-
-  const handleSortByChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    const value = event.target.value
-    setSortBy(value === 'none' ? null : value)
-    setPageNumber(0)
-    setStartIndex(0)
-  }
-
-  const handleSortOrderToggle = (): void => {
-    setSortOrder(sortOrder === 'ascending' ? 'descending' : 'ascending')
-  }
-
-  const handleClearFilters = (): void => {
-    setPattern(null)
-    setStatus(null)
-    setSortBy(null)
-    setSortOrder('ascending')
-    setPageNumber(0)
-    setStartIndex(0)
-  }
-
-  const onPageChangeClick = (page: number): void => {
-    const newStartIndex = page * limit
-    setStartIndex(newStartIndex)
-    setPageNumber(page)
-  }
-
-  const onRowCountChangeClick = (count: number): void => {
-    setStartIndex(0)
-    setPageNumber(0)
-    setLimit(count)
-  }
-
-  const handleGoToAttributeEditPage = useCallback(
-    (row: JansAttribute): void => {
+  const handleEdit = useCallback(
+    (row: JansAttribute) => {
       if (!row?.inum) return
       navigateToRoute(ROUTES.ATTRIBUTE_EDIT(row.inum))
     },
     [navigateToRoute],
   )
 
-  const handleGoToAttributeViewPage = useCallback(
-    (row: JansAttribute): void => {
+  const handleView = useCallback(
+    (row: JansAttribute) => {
       if (!row?.inum) return
       navigateToRoute(ROUTES.ATTRIBUTE_VIEW(row.inum))
     },
     [navigateToRoute],
   )
 
-  const handleAttribueDelete = useCallback(
-    (row: JansAttribute): void => {
-      setItem(row)
-      toggle()
+  const handleDeleteClick = useCallback((row: JansAttribute) => {
+    setItemToDelete(row)
+    setModal(true)
+  }, [])
+
+  const handleCloseDeleteModal = useCallback(() => {
+    setModal(false)
+    setItemToDelete({} as JansAttribute)
+  }, [])
+
+  const handleDeleteConfirm = useCallback(
+    async (_message: string, inum?: string) => {
+      if (!inum) return
+      await deleteAttributeMutation.mutateAsync({
+        inum,
+        name: itemToDelete.name,
+        userMessage: `Deleted attribute ${itemToDelete.name ?? itemToDelete.inum}`,
+      })
+      setModal(false)
+      setItemToDelete({} as JansAttribute)
     },
-    [toggle],
+    [deleteAttributeMutation, itemToDelete],
   )
 
-  const handleGoToAttributeAddPage = useCallback((): void => {
-    navigateToRoute(ROUTES.ATTRIBUTE_ADD)
-  }, [navigateToRoute])
-
-  const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
-
-  const attributeActions = useMemo<
-    (Action<JansAttribute> | ((rowData: JansAttribute) => Action<JansAttribute>))[]
-  >(() => {
-    const actions: Array<
-      Action<JansAttribute> | ((rowData: JansAttribute) => Action<JansAttribute>)
-    > = []
-
-    if (canReadAttributes) {
-      actions.push({
-        icon: 'visibility',
-        tooltip: `${t('tooltips.view_attribute')}`,
-        onClick: (event, rowData) => handleGoToAttributeViewPage(rowData as JansAttribute),
-        disabled: false,
-      })
-    }
-
-    if (canWriteAttributes) {
-      actions.push({
-        icon: 'edit',
-        tooltip: `${t('tooltips.edit_attribute')}`,
-        onClick: (event, rowData) => handleGoToAttributeEditPage(rowData as JansAttribute),
-        disabled: !canWriteAttributes,
-      })
-      actions.push({
-        icon: 'add',
-        tooltip: `${t('tooltips.add_attribute')}`,
-        iconProps: {
-          style: { color: customColors.lightBlue },
-        },
-        isFreeAction: true,
-        onClick: () => handleGoToAttributeAddPage(),
-        disabled: !canWriteAttributes,
-      })
-    }
-
-    if (canDeleteAttributes) {
-      actions.push({
-        icon: DeleteOutlinedIcon,
-        tooltip: `${t('tooltips.delete_attribute')}`,
-        onClick: (event, rowData) => handleAttribueDelete(rowData as JansAttribute),
-        disabled: !canDeleteAttributes,
-      })
-    }
-
-    return actions
-  }, [
-    canReadAttributes,
-    canWriteAttributes,
-    canDeleteAttributes,
-    t,
-    handleGoToAttributeViewPage,
-    handleGoToAttributeEditPage,
-    handleGoToAttributeAddPage,
-    handleAttribueDelete,
-    DeleteOutlinedIcon,
-  ])
-
-  const DetailsPanel = useCallback(
-    (rowData: { rowData: JansAttribute }) => <AttributeDetailPage row={rowData.rowData} />,
-    [],
+  const handleDeleteAccept = useCallback(
+    (message: string) => {
+      handleDeleteConfirm(message, itemToDelete?.inum)
+    },
+    [handleDeleteConfirm, itemToDelete?.inum],
   )
 
-  function onDeletionConfirmed(): void {
-    if (item.inum) {
-      deleteAttributeMutation.mutate(
-        { inum: item.inum },
-        {
-          onSuccess: () => {
-            const deletedAttribute: AttributeIdentifier = {
-              inum: item.inum,
-              name: item.name,
-            }
-
-            logAudit({
-              action: DELETION,
-              resource: API_ATTRIBUTE,
-              message: `Deleted attribute ${item.name ?? item.inum}`,
-              payload: deletedAttribute,
-            })
-
-            triggerAttributeWebhook(deletedAttribute)
-          },
-        },
-      )
-    }
-    toggle()
-  }
-
-  const PaginationWrapper = useCallback(
-    () => (
-      <TablePagination
-        count={totalItems}
-        page={pageNumber}
-        onPageChange={(prop, page) => {
-          onPageChangeClick(page)
-        }}
-        rowsPerPage={limit}
-        onRowsPerPageChange={(event) => onRowCountChangeClick(parseInt(event.target.value))}
-      />
-    ),
-    [pageNumber, totalItems, limit],
+  const deleteDialogLabel = useMemo(
+    () =>
+      itemToDelete?.inum
+        ? `${t('messages.action_deletion_for')} attribute (${itemToDelete.name ?? ''}${itemToDelete.inum ? `-${itemToDelete.inum}` : ''})`
+        : '',
+    [t, itemToDelete],
   )
 
-  const PaperContainer = useCallback(
-    (props: React.ComponentProps<typeof Paper>) => <Paper {...props} elevation={0} />,
-    [],
+  const handleRefresh = useCallback(() => {
+    setPattern('')
+    setStatus('')
+    setSortBy('')
+    setPageNumber(0)
+    queryClient.removeQueries({ queryKey: getGetAttributesQueryKey() })
+  }, [queryClient, setPageNumber])
+
+  const handlePatternSearch = useCallback(
+    (value: string) => {
+      setPattern(value)
+      setPageNumber(0)
+    },
+    [setPageNumber],
   )
 
-  const columns: Column<JansAttribute>[] = useMemo(
+  const handleStatusChange = useCallback(
+    (value: string) => {
+      setStatus(value === 'all' ? '' : value.toUpperCase())
+      setPageNumber(0)
+    },
+    [setPageNumber],
+  )
+
+  const handleSortByChange = useCallback(
+    (value: string) => {
+      setSortBy(value === 'none' ? '' : value)
+      setPageNumber(0)
+    },
+    [setPageNumber],
+  )
+
+  const handlePageChange = useCallback((page: number) => setPageNumber(page), [setPageNumber])
+  const handleRowsPerPageChange = useCallback(
+    (rowsPerPage: number) => {
+      setLimit(rowsPerPage)
+      setPageNumber(0)
+    },
+    [setLimit, setPageNumber],
+  )
+
+  const statusOptions = useMemo(
     () => [
-      { title: `${t('fields.inum')}`, field: 'inum' },
-      { title: `${t('fields.displayname')}`, field: 'displayName' },
-      {
-        title: `${t('fields.status')}`,
-        field: 'status',
-        type: 'boolean',
-        render: (rowData) => {
-          const normalizedStatus = rowData.status?.toLowerCase() ?? 'inactive'
-          return <StyledBadge status={normalizedStatus}>{rowData.status}</StyledBadge>
-        },
-      },
+      { value: 'all', label: t('options.all') },
+      { value: 'active', label: t('options.enabled') },
+      { value: 'inactive', label: t('options.disabled') },
     ],
     [t],
   )
 
-  const tableOptions: Options<JansAttribute> = useMemo(
+  const sortByOptions = useMemo(
+    () => [
+      { value: 'none', label: t('options.none') },
+      { value: 'displayName', label: t('fields.displayname') },
+      { value: 'inum', label: t('fields.inum') },
+    ],
+    [t],
+  )
+
+  const filters: FilterDef[] = useMemo(
+    () => [
+      {
+        key: 'status',
+        label: `${t('fields.status')}:`,
+        value: status ? status.toLowerCase() : 'all',
+        options: statusOptions,
+        onChange: handleStatusChange,
+        width: 140,
+      },
+      {
+        key: 'sortBy',
+        label: `${t('fields.sort_by')}:`,
+        value: sortBy || 'none',
+        options: sortByOptions,
+        onChange: handleSortByChange,
+        width: 180,
+      },
+    ],
+    [t, status, statusOptions, sortBy, sortByOptions, handleStatusChange, handleSortByChange],
+  )
+
+  const primaryAction = useMemo(
     () => ({
-      search: false,
-      idSynonym: 'inum',
-      selection: false,
-      searchFieldAlignment: 'left',
-      pageSize: limit,
-      headerStyle: {
-        ...applicationStyle.tableHeaderStyle,
-        ...bgThemeColor,
-        color: themeColors.fontColor,
-      } as React.CSSProperties,
-      actionsColumnIndex: -1,
+      label: t('tooltips.add_attribute'),
+      icon: <Add className={classes.addIcon} />,
+      onClick: handleAdd,
+      disabled: !canWrite,
     }),
-    [limit, bgThemeColor, themeColors.fontColor],
+    [t, handleAdd, canWrite, classes.addIcon],
+  )
+
+  const columns: ColumnDef<JansAttribute>[] = useMemo(
+    () => [
+      {
+        key: 'inum',
+        label: t('fields.inum'),
+        sortable: true,
+        render: (_value, row) => <span className={classes.cellText}>{row.inum}</span>,
+      },
+      {
+        key: 'displayName',
+        label: t('fields.displayname'),
+        sortable: true,
+        render: (_value, row) => <span className={classes.cellText}>{row.displayName}</span>,
+      },
+      {
+        key: 'status',
+        label: t('fields.status'),
+        sortable: false,
+        render: (_value, row) => {
+          const isActive = row.status?.toLowerCase() === 'active'
+          const style = isActive ? badgeStyles.statusEnabledBadge : badgeStyles.statusDisabledBadge
+          return (
+            <GluuBadge
+              size="md"
+              backgroundColor={style.backgroundColor}
+              textColor={style.textColor}
+              borderColor={style.borderColor}
+              borderRadius={6}
+              className={classes.statusBadge}
+            >
+              {isActive ? t('options.enabled') : t('options.disabled')}
+            </GluuBadge>
+          )
+        },
+      },
+    ],
+    [t, classes, badgeStyles],
+  )
+
+  const actions = useMemo(() => {
+    const list: Array<{
+      icon: React.ReactNode
+      tooltip: string
+      id?: string
+      onClick: (row: JansAttribute) => void
+    }> = []
+
+    if (canWrite) {
+      list.push({
+        icon: <Edit className={classes.editIcon} />,
+        tooltip: t('tooltips.edit_attribute'),
+        id: 'editAttribute',
+        onClick: handleEdit,
+      })
+    }
+    if (canRead) {
+      list.push({
+        icon: <VisibilityOutlined className={classes.viewIcon} />,
+        tooltip: t('tooltips.view_attribute'),
+        id: 'viewAttribute',
+        onClick: handleView,
+      })
+    }
+    if (canDelete) {
+      list.push({
+        icon: <DeleteOutlined className={classes.deleteIcon} />,
+        tooltip: t('tooltips.delete_attribute'),
+        id: 'deleteAttribute',
+        onClick: handleDeleteClick,
+      })
+    }
+    return list
+  }, [canWrite, canRead, canDelete, t, handleEdit, handleView, handleDeleteClick, classes])
+
+  const pagination: PaginationConfig = useMemo(
+    () => ({
+      page: pageNumber,
+      rowsPerPage: limit,
+      totalItems,
+      rowsPerPageOptions: LIMIT_OPTIONS,
+      onPageChange: handlePageChange,
+      onRowsPerPageChange: handleRowsPerPageChange,
+    }),
+    [pageNumber, limit, totalItems, handlePageChange, handleRowsPerPageChange],
+  )
+
+  const getRowKey = useCallback(
+    (row: JansAttribute, index: number) => row.inum ?? `no-inum-${index}`,
+    [],
+  )
+
+  const renderExpandedRow = useCallback(
+    (row: JansAttribute) => {
+      const isActive = row.status?.toLowerCase() === 'active'
+      const statusStyle = isActive
+        ? badgeStyles.statusEnabledBadge
+        : badgeStyles.statusDisabledBadge
+
+      const editTypeArr = Array.isArray(row.editType) ? row.editType : []
+      const viewTypeArr = Array.isArray(row.viewType) ? row.viewType : []
+
+      return (
+        <div className={classes.expandedGrid}>
+          <div className={classes.expandedField}>
+            <span className={classes.expandedLabel}>{t('fields.name')}:</span>
+            <span className={classes.expandedValue}>{displayOrDash(row.name)}</span>
+          </div>
+          <div className={classes.expandedField}>
+            <span className={classes.expandedLabel}>{t('fields.displayname')}:</span>
+            <span className={classes.expandedValue}>{displayOrDash(row.displayName)}</span>
+          </div>
+          <div className={classes.expandedField}>
+            <span className={classes.expandedLabel}>{t('fields.status')}:</span>
+            <div>
+              <GluuBadge
+                size="sm"
+                backgroundColor={statusStyle.backgroundColor}
+                textColor={statusStyle.textColor}
+                borderColor={statusStyle.borderColor}
+                borderRadius={6}
+              >
+                {isActive ? t('options.enabled') : t('options.disabled')}
+              </GluuBadge>
+            </div>
+          </div>
+          <div className={classes.expandedField}>
+            <span className={classes.expandedLabel}>{t('fields.attribute_edit_type')}:</span>
+            <div className={classes.expandedBadgeList}>
+              {editTypeArr.length > 0 ? (
+                editTypeArr.map((v) => (
+                  <GluuBadge
+                    key={v}
+                    size="sm"
+                    backgroundColor={badgeStyles.filledBadge.backgroundColor}
+                    textColor={badgeStyles.filledBadge.textColor}
+                    borderColor={badgeStyles.filledBadge.borderColor}
+                    borderRadius={6}
+                  >
+                    {v}
+                  </GluuBadge>
+                ))
+              ) : (
+                <span className={classes.expandedValue}>—</span>
+              )}
+            </div>
+          </div>
+          <div className={classes.expandedField}>
+            <span className={classes.expandedLabel}>{t('fields.attribute_view_type')}:</span>
+            <div className={classes.expandedBadgeList}>
+              {viewTypeArr.length > 0 ? (
+                viewTypeArr.map((v) => (
+                  <GluuBadge
+                    key={v}
+                    size="sm"
+                    backgroundColor={badgeStyles.filledBadge.backgroundColor}
+                    textColor={badgeStyles.filledBadge.textColor}
+                    borderColor={badgeStyles.filledBadge.borderColor}
+                    borderRadius={6}
+                  >
+                    {v}
+                  </GluuBadge>
+                ))
+              ) : (
+                <span className={classes.expandedValue}>—</span>
+              )}
+            </div>
+          </div>
+          <div className={classes.expandedDescField}>
+            <span className={classes.expandedLabel}>{t('fields.description')}:</span>
+            <span className={classes.expandedValue}>{displayOrDash(row.description)}</span>
+          </div>
+        </div>
+      )
+    },
+    [classes, badgeStyles, t],
+  )
+
+  const loading = useMemo(
+    () => isLoading || deleteAttributeMutation.isPending,
+    [isLoading, deleteAttributeMutation.isPending],
   )
 
   return (
-    <Card style={applicationStyle.mainCard}>
-      <CardBody>
-        <GluuViewWrapper canShow={canReadAttributes}>
-          <Box
-            sx={{
-              mb: '10px',
-              p: 1,
-              backgroundColor: '#fff',
-              borderRadius: 1,
-              border: '1px solid #e0e0e0',
-            }}
-          >
-            <Box
-              sx={{
-                display: 'flex',
-                gap: 2,
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
-                <TextField
-                  size="small"
-                  placeholder={t('placeholders.search_pattern')}
-                  name="pattern"
-                  value={pattern ?? ''}
-                  onChange={handlePatternChange}
-                  onKeyDown={handlePatternKeyDown}
-                  sx={{ width: '250px' }}
-                  inputProps={{
-                    'aria-label': t('placeholders.search_pattern'),
-                  }}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <SearchIcon
-                          fontSize="small"
-                          sx={{
-                            color: customColors.lightBlue,
-                            pointerEvents: 'none',
-                          }}
-                        />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-                <TextField
-                  select
-                  size="small"
-                  value={status?.toLowerCase() || 'all'}
-                  onChange={handleStatusChange}
-                  sx={{ width: '140px' }}
-                  label={t('fields.status')}
-                >
-                  <MenuItem value="all">{t('options.all')}</MenuItem>
-                  <MenuItem value="active">{t('options.active')}</MenuItem>
-                  <MenuItem value="inactive">{t('options.inactive')}</MenuItem>
-                </TextField>
-                <TextField
-                  select
-                  size="small"
-                  value={sortBy || 'none'}
-                  onChange={handleSortByChange}
-                  sx={{ width: '180px' }}
-                  label={t('fields.sort_by')}
-                >
-                  <MenuItem value="none">{t('options.none')}</MenuItem>
-                  <MenuItem value="displayName">{t('fields.displayname')}</MenuItem>
-                  <MenuItem value="inum">{t('fields.inum')}</MenuItem>
-                </TextField>
-                {sortBy && sortBy !== 'none' && (
-                  <IconButton
-                    size="small"
-                    onClick={handleSortOrderToggle}
-                    title={
-                      sortOrder === 'ascending' ? t('options.ascending') : t('options.descending')
-                    }
-                    aria-label={
-                      sortOrder === 'ascending'
-                        ? t('tooltips.sort_descending')
-                        : t('tooltips.sort_ascending')
-                    }
-                    sx={{ color: customColors.lightBlue }}
-                  >
-                    <SwapVertIcon />
-                  </IconButton>
-                )}
-                <Button
-                  size="small"
-                  startIcon={<ClearIcon />}
-                  onClick={handleClearFilters}
-                  aria-label={t('tooltips.clear_filters')}
-                  sx={{ color: customColors.lightBlue }}
-                >
-                  {t('actions.clear')}
-                </Button>
-              </Box>
-              <IconButton
-                size="small"
-                onClick={() =>
-                  queryClient.invalidateQueries({ queryKey: getGetAttributesQueryKey() })
-                }
-                title={t('tooltips.refresh_data')}
-                aria-label={t('tooltips.refresh_data')}
-                sx={{ color: customColors.lightBlue }}
-              >
-                <RefreshIcon />
-              </IconButton>
-            </Box>
-          </Box>
+    <GluuLoader blocking={loading}>
+      <div className={classes.page}>
+        <GluuViewWrapper canShow={canRead}>
+          <div className={classes.searchCard}>
+            <div className={classes.searchCardContent}>
+              <GluuSearchToolbar
+                searchLabel={`${t('fields.pattern')}:`}
+                searchPlaceholder={t('placeholders.search_pattern')}
+                searchValue={pattern}
+                searchOnType
+                onSearch={handlePatternSearch}
+                onSearchSubmit={handleRefresh}
+                filters={filters}
+                onRefresh={canRead ? handleRefresh : undefined}
+                refreshLoading={isLoading}
+                primaryAction={primaryAction}
+                disabled={loading}
+              />
+            </div>
+          </div>
 
-          <MaterialTable
-            key={attributes ? attributes.length : 0}
-            components={{
-              Container: PaperContainer,
-              Pagination: PaginationWrapper,
-            }}
-            columns={columns}
-            data={attributes}
-            isLoading={isLoading}
-            title=""
-            actions={attributeActions}
-            options={tableOptions}
-            detailPanel={DetailsPanel}
-          />
+          <div className={classes.tableCard}>
+            <GluuTable<JansAttribute>
+              columns={columns}
+              data={attributes}
+              loading={false}
+              expandable
+              renderExpandedRow={renderExpandedRow}
+              pagination={pagination}
+              onPagingSizeSync={onPagingSizeSync}
+              actions={actions}
+              getRowKey={getRowKey}
+              emptyMessage={t('messages.no_data')}
+            />
+          </div>
         </GluuViewWrapper>
-        {canDeleteAttributes && (
-          <GluuDialog
-            row={item}
-            handler={toggle}
+
+        {canDelete && itemToDelete?.inum && (
+          <GluuCommitDialog
+            handler={handleCloseDeleteModal}
             modal={modal}
-            subject="attribute"
-            name={item.displayName}
-            onAccept={onDeletionConfirmed}
+            onAccept={handleDeleteAccept}
+            label={deleteDialogLabel}
             feature={adminUiFeatures.attributes_delete}
+            autoCloseOnAccept
           />
         )}
-      </CardBody>
-    </Card>
+      </div>
+    </GluuLoader>
   )
 }
 
-export default AttributeListPage
+export default memo(AttributeListPage)

@@ -1,16 +1,21 @@
-import React, { useState, useMemo, useCallback, memo } from 'react'
-import { Formik, ErrorMessage, FormikProps } from 'formik'
-import { Col, InputGroup, CustomInput, Form, FormGroup, Input } from 'Components'
-import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
-import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import React, { useState, useMemo, useCallback, memo, useContext } from 'react'
+import { Formik, FormikProps } from 'formik'
+import { Form } from 'Components'
+import type { MultiSelectOption } from 'Routes/Apps/Gluu/types/GluuMultiSelectRow.types'
+import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuInumInput from 'Routes/Apps/Gluu/GluuInumInput'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import GluuMultiSelectRow from 'Routes/Apps/Gluu/GluuMultiSelectRow'
 import { ATTRIBUTE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
-import customColors from '@/customColors'
+import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import { useStyles } from './styles/AttributeFormPage.style'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useAttributeValidationSchema } from '../../utils/validation'
 import {
@@ -23,30 +28,31 @@ import {
 } from '../../utils/formHelpers'
 import type { AttributeFormProps, AttributeFormValues } from '../types/AttributeListPage.types'
 
-const createMultiSelectHandler = (
-  fieldName: 'editType' | 'viewType' | 'usageType',
-  setFieldValue: (field: string, value: string[]) => void,
-) => {
-  return (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target instanceof HTMLSelectElement) {
-      const options = e.target.options
-      const selectedValues: string[] = []
-      for (let i = 0; i < options.length; i++) {
-        if (options[i].selected) {
-          selectedValues.push(options[i].value)
-        }
-      }
-      setFieldValue(fieldName, selectedValues)
-    }
-  }
-}
+const EDIT_VIEW_OPTIONS: MultiSelectOption[] = [
+  { value: 'admin', label: 'Admin' },
+  { value: 'user', label: 'User' },
+]
+
+const USAGE_TYPE_OPTIONS: MultiSelectOption[] = [
+  { value: 'openid', label: 'OpenID' },
+]
 
 const AttributeForm = memo(function AttributeForm(props: AttributeFormProps) {
   const { item, customOnSubmit, hideButtons } = props
   const { t } = useTranslation()
   const { navigateBack } = useAppNavigation()
-  const [init, setInit] = useState<boolean>(false)
   const [modal, setModal] = useState<boolean>(false)
+
+  const theme = useContext(ThemeContext)
+  const { themeColors, isDark } = useMemo(() => {
+    const selected = (theme as { state?: { theme?: string } })?.state?.theme || DEFAULT_THEME
+    return {
+      themeColors: getThemeColor(selected),
+      isDark: selected === THEME_DARK,
+    }
+  }, [(theme as { state?: { theme?: string } })?.state?.theme])
+
+  const { classes } = useStyles({ isDark, themeColors })
 
   // Memoized initial values
   const initialValues = useInitialAttributeValues(item)
@@ -91,10 +97,6 @@ const AttributeForm = memo(function AttributeForm(props: AttributeFormProps) {
     })
   }, [])
 
-  const toggle = useCallback(() => {
-    setInit(true)
-  }, [])
-
   const submitForm = useCallback(
     (userMessage: string, formikValues: AttributeFormValues): void => {
       handleAttributeSubmit({
@@ -108,7 +110,6 @@ const AttributeForm = memo(function AttributeForm(props: AttributeFormProps) {
     [item, customOnSubmit, validation],
   )
 
-  // Memoized navigation handlers
   // Uses navigateBack with explicit fallback to attributes list (conforms to global navigation policy)
   const handleBack = useCallback(() => {
     navigateBack(ROUTES.ATTRIBUTES_LIST)
@@ -151,338 +152,354 @@ const AttributeForm = memo(function AttributeForm(props: AttributeFormProps) {
 
         const canApply = formValid && (isCreateMode || formHasChanged)
 
-        const handleEditTypeChange = createMultiSelectHandler('editType', formik.setFieldValue)
-        const handleViewTypeChange = createMultiSelectHandler('viewType', formik.setFieldValue)
-        const handleUsageTypeChange = createMultiSelectHandler('usageType', formik.setFieldValue)
-
         return (
           <Form onSubmit={formik.handleSubmit}>
-            <style>{`
-              .attribute-form-labels-black label,
-              .attribute-form-labels-black label h5,
-              .attribute-form-labels-black label span,
-              .attribute-form-labels-black .MuiSvgIcon-root { color: ${customColors.black} !important; }
-            `}</style>
-            <div className="attribute-form-labels-black">
-              {item.inum && (
-                <GluuInumInput
-                  label="fields.inum"
-                  name="inum"
-                  lsize={3}
-                  rsize={9}
-                  value={item.inum}
-                  doc_category={ATTRIBUTE}
-                />
-              )}
-              <FormGroup row>
-                <GluuLabel label="fields.name" required doc_category={ATTRIBUTE} doc_entry="name" />
-                <Col sm={9}>
-                  <Input
-                    placeholder={t('placeholders.enter_the_attribute_name')}
-                    id="name"
-                    valid={!formik.errors.name && !formik.touched.name && init}
+            <div className={`${classes.formLabels} ${classes.formWithInputs}`}>
+              {/* 2-column grid layout matching Figma design */}
+              <div className={classes.formGrid}>
+                {item.inum && (
+                  <div className={`${classes.fieldItem} ${classes.inumFullWidth}`}>
+                    <GluuInumInput
+                      label="fields.inum"
+                      name="inum"
+                      lsize={12}
+                      rsize={12}
+                      value={item.inum}
+                      doc_category={ATTRIBUTE}
+                      isDark={isDark}
+                    />
+                  </div>
+                )}
+
+                {/* Row 1: Name | Display Name */}
+                <div className={classes.fieldItem}>
+                  <GluuInputRow
+                    label="fields.name"
                     name="name"
+                    formik={formik}
+                    lsize={12}
+                    rsize={12}
                     value={formik.values.name}
-                    onKeyUp={toggle}
-                    onChange={formik.handleChange}
+                    doc_category={ATTRIBUTE}
+                    doc_entry="name"
+                    placeholder={t('placeholders.enter_the_attribute_name')}
+                    errorMessage={formik.errors.name ? t(formik.errors.name) : undefined}
+                    showError={!!(formik.errors.name && formik.touched.name)}
+                    disabled={isViewMode}
+                    required
                   />
-                  <ErrorMessage name="name">
-                    {(msg: string) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
-                  </ErrorMessage>
-                </Col>
-              </FormGroup>
+                </div>
 
-              <FormGroup row>
-                <GluuLabel
-                  label="fields.displayname"
-                  required
-                  doc_category={ATTRIBUTE}
-                  doc_entry="displayName"
-                />
-                <Col sm={9}>
-                  <InputGroup>
-                    <Input
-                      placeholder={t('placeholders.enter_the_attribute_display_name')}
-                      valid={!formik.errors.displayName && !formik.touched.displayName && init}
-                      id="displayName"
-                      name="displayName"
-                      value={formik.values.displayName}
-                      onChange={formik.handleChange}
-                    />
-                  </InputGroup>
-                  <ErrorMessage name="displayName">
-                    {(msg: string) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
-                  </ErrorMessage>
-                </Col>
-              </FormGroup>
+                <div className={classes.fieldItem}>
+                  <GluuInputRow
+                    label="fields.displayname"
+                    name="displayName"
+                    formik={formik}
+                    lsize={12}
+                    rsize={12}
+                    value={formik.values.displayName}
+                    doc_category={ATTRIBUTE}
+                    doc_entry="displayName"
+                    placeholder={t('placeholders.enter_the_attribute_display_name')}
+                    errorMessage={
+                      formik.errors.displayName ? t(formik.errors.displayName) : undefined
+                    }
+                    showError={!!(formik.errors.displayName && formik.touched.displayName)}
+                    disabled={isViewMode}
+                    required
+                  />
+                </div>
 
-              <FormGroup row>
-                <GluuLabel
-                  label="fields.description"
-                  required
-                  doc_category={ATTRIBUTE}
-                  doc_entry="description"
-                />
-                <Col sm={9}>
-                  <InputGroup>
-                    <Input
-                      type="textarea"
-                      rows="3"
-                      placeholder={t('placeholders.enter_the_attribute_description')}
-                      id="description"
-                      name="description"
-                      value={formik.values.description}
-                      onChange={formik.handleChange}
-                    />
-                  </InputGroup>
-                  <ErrorMessage name="description">
-                    {(msg: string) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
-                  </ErrorMessage>
-                </Col>
-              </FormGroup>
+                {/* Row 2: Description | Status */}
+                <div className={classes.fieldItem}>
+                  <GluuInputRow
+                    label="fields.description"
+                    name="description"
+                    formik={formik}
+                    lsize={12}
+                    rsize={12}
+                    value={formik.values.description}
+                    doc_category={ATTRIBUTE}
+                    doc_entry="description"
+                    placeholder={t('placeholders.enter_the_attribute_description')}
+                    errorMessage={
+                      formik.errors.description ? t(formik.errors.description) : undefined
+                    }
+                    showError={!!(formik.errors.description && formik.touched.description)}
+                    disabled={isViewMode}
+                    required
+                  />
+                </div>
 
-              <FormGroup row>
-                <GluuLabel
-                  label="fields.status"
-                  required
-                  doc_category={ATTRIBUTE}
-                  doc_entry="status"
-                />
-                <Col sm={9}>
-                  <InputGroup>
-                    <CustomInput
-                      type="select"
-                      id="status"
-                      name="status"
-                      value={formik.values.status}
-                      onChange={formik.handleChange}
-                    >
-                      <option value="">{t('options.choose')}...</option>
-                      <option value="active">{t('options.active')}</option>
-                      <option value="inactive">{t('options.inactive')}</option>
-                    </CustomInput>
-                  </InputGroup>
-                  <ErrorMessage name="status">
-                    {(msg: string) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
-                  </ErrorMessage>
-                </Col>
-              </FormGroup>
+                <div className={classes.fieldItem}>
+                  <GluuSelectRow
+                    label="fields.status"
+                    name="status"
+                    formik={formik}
+                    lsize={12}
+                    rsize={12}
+                    value={formik.values.status}
+                    doc_category={ATTRIBUTE}
+                    doc_entry="status"
+                    values={[
+                      { value: 'active', label: t('options.active') },
+                      { value: 'inactive', label: t('options.inactive') },
+                    ]}
+                    errorMessage={formik.errors.status ? t(formik.errors.status) : undefined}
+                    showError={!!(formik.errors.status && formik.touched.status)}
+                    disabled={isViewMode}
+                    required
+                  />
+                </div>
 
-              <FormGroup row>
-                <GluuLabel
-                  label="fields.data_type"
-                  required
-                  doc_category={ATTRIBUTE}
-                  doc_entry="dataType"
-                />
-                <Col sm={9}>
-                  <InputGroup>
-                    <CustomInput
-                      type="select"
-                      id="dataType"
-                      name="dataType"
-                      value={formik.values.dataType}
-                      onChange={formik.handleChange}
-                    >
-                      <option value="">{t('options.choose')}...</option>
-                      <option value="string">{t('options.string')}</option>
-                      <option value="json">{t('options.json')}</option>
-                      <option value="numeric">{t('options.numeric')}</option>
-                      <option value="binary">{t('options.binary')}</option>
-                      <option value="certificate">{t('options.certificate')}</option>
-                      <option value="date">{t('options.date')}</option>
-                      <option value="boolean">{t('options.boolean')}</option>
-                    </CustomInput>
-                  </InputGroup>
-                  <ErrorMessage name="dataType">
-                    {(msg: string) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
-                  </ErrorMessage>
-                </Col>
-              </FormGroup>
+                {/* Row 3: Data Type | oxAuth claim name */}
+                <div className={classes.fieldItem}>
+                  <GluuSelectRow
+                    label="fields.data_type"
+                    name="dataType"
+                    formik={formik}
+                    lsize={12}
+                    rsize={12}
+                    value={formik.values.dataType}
+                    doc_category={ATTRIBUTE}
+                    doc_entry="dataType"
+                    values={[
+                      { value: 'string', label: t('options.string') },
+                      { value: 'json', label: t('options.json') },
+                      { value: 'numeric', label: t('options.numeric') },
+                      { value: 'binary', label: t('options.binary') },
+                      { value: 'certificate', label: t('options.certificate') },
+                      { value: 'date', label: t('options.date') },
+                      { value: 'boolean', label: t('options.boolean') },
+                    ]}
+                    errorMessage={formik.errors.dataType ? t(formik.errors.dataType) : undefined}
+                    showError={!!(formik.errors.dataType && formik.touched.dataType)}
+                    disabled={isViewMode}
+                    required
+                  />
+                </div>
 
-              <FormGroup row>
-                <GluuLabel
-                  label="fields.edit_type"
-                  required
-                  doc_category={ATTRIBUTE}
-                  doc_entry="editType"
-                />
-                <Col sm={9}>
-                  <Input
-                    type="select"
+                <div className={classes.fieldItem}>
+                  <GluuInputRow
+                    label="fields.oxauth_claim_name"
+                    name="claimName"
+                    formik={formik}
+                    lsize={12}
+                    rsize={12}
+                    value={formik.values?.claimName ?? ''}
+                    doc_category={ATTRIBUTE}
+                    doc_entry="claimName"
+                    placeholder={t('placeholders.enter_here')}
+                    disabled={isViewMode}
+                  />
+                </div>
+
+                {/* Row 4: Edit Type | View Type */}
+                <div className={classes.fieldItem}>
+                  <GluuMultiSelectRow
+                    label="fields.edit_type"
                     name="editType"
-                    id="editType"
+                    formik={formik}
+                    lsize={12}
+                    rsize={12}
                     value={formik.values.editType}
-                    multiple
-                    onChange={handleEditTypeChange}
-                  >
-                    <option value="admin">{t('options.admin')}</option>
-                    <option value="user">{t('options.user')}</option>
-                  </Input>
-                  <ErrorMessage name="editType">
-                    {(msg: string) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
-                  </ErrorMessage>
-                </Col>
-              </FormGroup>
+                    options={EDIT_VIEW_OPTIONS}
+                    required
+                    doc_category={ATTRIBUTE}
+                    doc_entry="editType"
+                    helperText={t('messages.multi_select_hint')}
+                    showError={!!(formik.errors.editType && formik.touched.editType)}
+                    errorMessage={formik.errors.editType as string}
+                    disabled={isViewMode}
+                  />
+                </div>
 
-              <FormGroup row>
-                <GluuLabel
-                  label="fields.view_type"
-                  doc_category={ATTRIBUTE}
-                  doc_entry="viewType"
-                  required
-                />
-                <Col sm={9}>
-                  <Input
-                    type="select"
+                <div className={classes.fieldItem}>
+                  <GluuMultiSelectRow
+                    label="fields.view_type"
                     name="viewType"
-                    id="viewType"
+                    formik={formik}
+                    lsize={12}
+                    rsize={12}
                     value={formik.values.viewType}
-                    multiple
-                    onChange={handleViewTypeChange}
-                  >
-                    <option value="admin">{t('options.admin')}</option>
-                    <option value="user">{t('options.user')}</option>
-                  </Input>
-                  <ErrorMessage name="viewType">
-                    {(msg: string) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
-                  </ErrorMessage>
-                </Col>
-              </FormGroup>
+                    options={EDIT_VIEW_OPTIONS}
+                    required
+                    doc_category={ATTRIBUTE}
+                    doc_entry="viewType"
+                    helperText={t('messages.multi_select_hint')}
+                    showError={!!(formik.errors.viewType && formik.touched.viewType)}
+                    errorMessage={formik.errors.viewType as string}
+                    disabled={isViewMode}
+                  />
+                </div>
 
-              <FormGroup row>
-                <GluuLabel
-                  label="fields.usage_type"
-                  doc_category={ATTRIBUTE}
-                  doc_entry="usageType"
-                />
-                <Col sm={9}>
-                  <Input
-                    type="select"
+                {/* Row 5: Usage Type | (empty) */}
+                <div className={classes.fieldItem}>
+                  <GluuMultiSelectRow
+                    label="fields.usage_type"
                     name="usageType"
-                    id="usageType"
+                    formik={formik}
+                    lsize={12}
+                    rsize={12}
                     value={formik.values.usageType}
-                    multiple
-                    onChange={handleUsageTypeChange}
-                  >
-                    <option value="openid">{t('options.openid')}</option>
-                  </Input>
-                  <ErrorMessage name="usageType">
-                    {(msg: string) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
-                  </ErrorMessage>
-                </Col>
-              </FormGroup>
-              <GluuInputRow
-                label="fields.oxauth_claim_name"
-                name="claimName"
-                formik={formik}
-                value={formik.values?.claimName}
-                doc_category={ATTRIBUTE}
-              />
-              <FormGroup row>
-                <Col sm={4}>
+                    options={USAGE_TYPE_OPTIONS}
+                    doc_category={ATTRIBUTE}
+                    doc_entry="usageType"
+                    helperText={t('messages.multi_select_hint')}
+                    showError={!!(formik.errors.usageType && formik.touched.usageType)}
+                    errorMessage={formik.errors.usageType as string}
+                    disabled={isViewMode}
+                  />
+                </div>
+
+                {/* empty cell to keep grid alignment */}
+                <div />
+
+                {/* Row 6: Saml1 URI | Saml2 URI */}
+                <div className={classes.fieldItem}>
+                  <GluuInputRow
+                    label="fields.saml1_uri"
+                    name="saml1Uri"
+                    formik={formik}
+                    lsize={12}
+                    rsize={12}
+                    value={formik.values?.saml1Uri ?? ''}
+                    doc_category={ATTRIBUTE}
+                    doc_entry="saml1Uri"
+                    placeholder={t('placeholders.enter_here')}
+                    disabled={isViewMode}
+                  />
+                </div>
+
+                <div className={classes.fieldItem}>
+                  <GluuInputRow
+                    label="fields.saml2_uri"
+                    name="saml2Uri"
+                    formik={formik}
+                    lsize={12}
+                    rsize={12}
+                    value={formik.values?.saml2Uri ?? ''}
+                    doc_category={ATTRIBUTE}
+                    doc_entry="saml2Uri"
+                    placeholder={t('placeholders.enter_here')}
+                    disabled={isViewMode}
+                  />
+                </div>
+
+                {/* Row 7: Multivalued | Hide On Discovery */}
+                {/* Row 7: Multivalued | Hide On Discovery */}
+                <div className={classes.toggleRow}>
                   <GluuToogleRow
                     name="oxMultiValuedAttribute"
                     formik={formik}
-                    lsize={6}
-                    rsize={6}
+                    lsize={12}
+                    rsize={12}
                     label="fields.multivalued"
                     value={formik.values?.oxMultiValuedAttribute}
                     handler={(e: React.ChangeEvent<HTMLInputElement>) => {
                       formik.setFieldValue('oxMultiValuedAttribute', e.target.checked)
                     }}
                     doc_category={ATTRIBUTE}
+                    disabled={isViewMode}
                   />
-                </Col>
-                <Col sm={4}>
+                </div>
+
+                <div className={classes.toggleRow}>
                   <GluuToogleRow
                     name="jansHideOnDiscovery"
                     formik={formik}
-                    lsize={6}
-                    rsize={6}
+                    lsize={12}
+                    rsize={12}
                     label="fields.hide_on_discovery"
                     value={formik.values?.jansHideOnDiscovery}
                     doc_category={ATTRIBUTE}
+                    disabled={isViewMode}
                     handler={(e: React.ChangeEvent<HTMLInputElement>) => {
                       formik.setFieldValue('jansHideOnDiscovery', e.target.checked)
                     }}
                   />
-                </Col>
-                <Col sm={4}>
+                </div>
+
+                {/* Row 8: Include In SCIM Extension | Enable Custom Validation */}
+                <div className={classes.toggleRow}>
                   <GluuToogleRow
                     name="scimCustomAttr"
                     formik={formik}
-                    lsize={6}
-                    rsize={6}
+                    lsize={12}
+                    rsize={12}
                     label="fields.include_in_scim_extension"
                     value={formik.values?.scimCustomAttr}
                     doc_category={ATTRIBUTE}
+                    disabled={isViewMode}
                     handler={(e: React.ChangeEvent<HTMLInputElement>) => {
                       formik.setFieldValue('scimCustomAttr', e.target.checked)
                     }}
                   />
-                </Col>
-              </FormGroup>
-              <GluuToogleRow
-                name="validation"
-                label="fields.enable_custom_validation_for_this_attribute"
-                value={validation}
-                handler={() => handleValidation(formik)}
-                doc_category={ATTRIBUTE}
-              />
-              {validation && (
-                <GluuInputRow
-                  label="fields.regular_expression"
-                  name="regexp"
-                  formik={formik}
-                  value={formik.values?.regexp}
-                  doc_category={ATTRIBUTE}
-                />
-              )}
-              {validation && (
-                <FormGroup row>
-                  <Col sm={6}>
-                    <GluuInputRow
-                      label="fields.minimum_length"
-                      name="minLength"
-                      formik={formik}
-                      type="number"
-                      lsize={6}
-                      rsize={6}
-                      value={formik.values?.minLength}
-                      doc_category={ATTRIBUTE}
-                    />
-                  </Col>
-                  <Col sm={6}>
-                    <GluuInputRow
-                      label="fields.maximum_length"
-                      name="maxLength"
-                      formik={formik}
-                      type="number"
-                      lsize={4}
-                      rsize={6}
-                      value={formik.values?.maxLength}
-                      doc_category={ATTRIBUTE}
-                    />
-                  </Col>
-                </FormGroup>
-              )}
-              <GluuInputRow
-                label="fields.saml1_uri"
-                name="saml1Uri"
-                formik={formik}
-                value={formik.values?.saml1Uri}
-                doc_category={ATTRIBUTE}
-              />
-              <GluuInputRow
-                label="fields.saml2_uri"
-                name="saml2Uri"
-                formik={formik}
-                value={formik.values?.saml2Uri}
-                doc_category={ATTRIBUTE}
-              />
-              <GluuFormFooter
-                showBack={true}
+                </div>
+
+                <div className={classes.toggleRow}>
+                  <GluuToogleRow
+                    name="validation"
+                    lsize={12}
+                    rsize={12}
+                    label="fields.enable_custom_validation_for_this_attribute"
+                    value={validation}
+                    handler={() => handleValidation(formik)}
+                    doc_category={ATTRIBUTE}
+                    disabled={isViewMode}
+                  />
+                </div>
+
+                {/* Validation fields — each in its own grid cell */}
+                {validation && (
+                  <>
+                    <div className={classes.fieldItem}>
+                      <GluuInputRow
+                        label="fields.regular_expression"
+                        name="regexp"
+                        formik={formik}
+                        lsize={12}
+                        rsize={12}
+                        value={formik.values?.regexp ?? undefined}
+                        doc_category={ATTRIBUTE}
+                        placeholder={t('placeholders.enter_here')}
+                        disabled={isViewMode}
+                      />
+                    </div>
+                    <div className={classes.fieldItem}>
+                      <GluuInputRow
+                        label="fields.minimum_length"
+                        name="minLength"
+                        formik={formik}
+                        type="number"
+                        lsize={12}
+                        rsize={12}
+                        value={formik.values?.minLength ?? undefined}
+                        doc_category={ATTRIBUTE}
+                        disabled={isViewMode}
+                      />
+                    </div>
+                    <div className={classes.fieldItem}>
+                      <GluuInputRow
+                        label="fields.maximum_length"
+                        name="maxLength"
+                        formik={formik}
+                        type="number"
+                        lsize={12}
+                        rsize={12}
+                        value={formik.values?.maxLength ?? undefined}
+                        doc_category={ATTRIBUTE}
+                        disabled={isViewMode}
+                      />
+                    </div>
+                    {/* empty cell to keep grid alignment */}
+                    <div />
+                  </>
+                )}
+              </div>
+
+              <GluuThemeFormFooter
+                showBack
                 onBack={handleBack}
                 showCancel={!isViewMode}
                 onCancel={() => handleCancel(formik)}

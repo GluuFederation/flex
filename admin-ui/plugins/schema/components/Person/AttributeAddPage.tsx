@@ -1,64 +1,61 @@
-import React, { useCallback } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
-import { CardBody, Card } from 'Components'
-import AttributeForm from 'Plugins/schema/components/Person/AttributeForm'
-import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
-import { AttributeItem, SubmitData } from '../types/AttributeListPage.types'
-import { JansAttribute, usePostAttributes, getGetAttributesQueryKey } from 'JansConfigApi'
-import { updateToast } from 'Redux/features/toastSlice'
-import { useDispatch } from 'react-redux'
-import { CREATE } from '@/audit/UserActionType'
-import { useSchemaAuditLogger } from '../../hooks/useSchemaAuditLogger'
-import { useSchemaWebhook } from '../../hooks/useSchemaWebhook'
-import { API_ATTRIBUTE } from '../../constants'
+import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { getErrorMessage } from '../../utils/errorHandler'
-import type { ApiError } from '../../utils/errorHandler'
-import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
+import { GluuPageContent } from '@/components'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import { useCedarling } from '@/cedarling'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import SetTitle from 'Utils/SetTitle'
+import AttributeForm from 'Plugins/schema/components/Person/AttributeForm'
+import { useStyles } from './styles/AttributeFormPage.style'
+import { useCreateAttribute, useMutationEffects } from '../../hooks'
+import type { AttributeItem, SubmitData } from '../types/AttributeListPage.types'
+import type { JansAttribute } from 'JansConfigApi'
+
+const attributeResourceId = ADMIN_UI_RESOURCES.Attributes
 
 function AttributeAddPage(): JSX.Element {
-  const { navigateBack } = useAppNavigation()
-  const dispatch = useDispatch()
-  const queryClient = useQueryClient()
   const { t } = useTranslation()
-  const { logAudit } = useSchemaAuditLogger()
-  const { triggerAttributeWebhook } = useSchemaWebhook()
 
-  const postAttributeMutation = usePostAttributes({
-    mutation: {
-      onSuccess: () => {
-        dispatch(updateToast(true, 'success'))
-        queryClient.invalidateQueries({ queryKey: getGetAttributesQueryKey() })
-        navigateBack(ROUTES.ATTRIBUTES_LIST)
-      },
-      onError: (error: Error | ApiError | Record<string, never>) => {
-        const errorMessage = getErrorMessage(error, 'errors.attribute_create_failed', t)
-        dispatch(updateToast(true, 'error', errorMessage))
-      },
-    },
+  const { state: themeState } = useTheme()
+  const { themeColors, isDark } = useMemo(
+    () => ({
+      themeColors: getThemeColor(themeState.theme),
+      isDark: themeState.theme === THEME_DARK,
+    }),
+    [themeState.theme],
+  )
+  const { classes } = useStyles({ isDark, themeColors })
+
+  const { hasCedarWritePermission } = useCedarling()
+  const canWrite = useMemo(
+    () => hasCedarWritePermission(attributeResourceId),
+    [hasCedarWritePermission],
+  )
+
+  SetTitle(t('fields.add_attribute', { defaultValue: 'Add Attribute' }))
+
+  const createMutation = useCreateAttribute()
+
+  useMutationEffects({
+    mutation: createMutation,
+    successMessage: 'messages.attribute_added_successfully',
+    errorMessage: 'errors.attribute_create_failed',
   })
 
   const onSubmit = useCallback(
-    ({ data, userMessage }: SubmitData): void => {
+    async ({ data, userMessage }: SubmitData): Promise<void> => {
       if (data) {
-        postAttributeMutation.mutate(
-          { data: data as JansAttribute },
-          {
-            onSuccess: (createdAttribute: JansAttribute) => {
-              logAudit({
-                action: CREATE,
-                resource: API_ATTRIBUTE,
-                message: userMessage || '',
-                payload: createdAttribute,
-              })
-
-              triggerAttributeWebhook(createdAttribute)
-            },
-          },
-        )
+        await createMutation.mutateAsync({
+          data: data as JansAttribute,
+          userMessage,
+        })
       }
     },
-    [postAttributeMutation, logAudit, triggerAttributeWebhook],
+    [createMutation],
   )
 
   const defaultAttribute: Partial<AttributeItem> = {
@@ -75,13 +72,17 @@ function AttributeAddPage(): JSX.Element {
   }
 
   return (
-    <React.Fragment>
-      <Card className="mb-3" style={applicationStyle.mainCard}>
-        <CardBody>
-          <AttributeForm item={defaultAttribute as AttributeItem} customOnSubmit={onSubmit} />
-        </CardBody>
-      </Card>
-    </React.Fragment>
+    <GluuPageContent>
+      <GluuViewWrapper canShow={canWrite}>
+        <GluuLoader blocking={createMutation.isPending}>
+          <div className={classes.formCard}>
+            <div className={classes.content}>
+              <AttributeForm item={defaultAttribute as AttributeItem} customOnSubmit={onSubmit} />
+            </div>
+          </div>
+        </GluuLoader>
+      </GluuViewWrapper>
+    </GluuPageContent>
   )
 }
 

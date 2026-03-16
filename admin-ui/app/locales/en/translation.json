@@ -130,6 +130,7 @@
     "mau_clients": "Jan lock clients"
   },
   "fields": {
+    "add_attribute": "Add Attribute",
     "actions": "Actions",
     "access_token_signing_alg": "JWS alg for signing",
     "resetLicense": "Reset License",
@@ -785,6 +786,7 @@
     "add_community_project": "Add a Community Project"
   },
   "messages": {
+    "multi_select_hint": "Enter multiple items by selecting from appeared dropdown after entering each item.",
     "add_permission": "Add Permission",
     "add_asset": "Add Jans Asset",
     "asset_document_error": "Document is mandatory.",
@@ -1036,7 +1038,18 @@
     "attribute_load_failed": "Error loading attribute",
     "cannot_contain_spaces": "{{field}} cannot contain spaces",
     "cannot_be_empty": "{{field}} cannot be empty",
-    "must_be_valid_url": "{{field}} must be a valid URL"
+    "must_be_valid_url": "{{field}} must be a valid URL",
+    "required": "This field is required",
+    "name_no_spaces": "Name must not contain spaces",
+    "positive_number": "Must be a positive number",
+    "min_greater_than_max": "Min length must be less than max length",
+    "name_required": "Name is required",
+    "display_name_required": "Display Name is required",
+    "description_required": "Description is required",
+    "status_required": "Status is required",
+    "data_type_required": "Data Type is required",
+    "edit_type_required": "Edit Type is required",
+    "view_type_required": "View Type is required"
   },
   "validation_messages": {
     "invalid_url_format": "Invalid URL format",
@@ -1176,6 +1189,8 @@
     "edit_idp": "Edit IDP",
     "application_settings": "Application Settings",
     "jans_kc_ink": "Jans KC Link",
+    "edit_attribute": "Edit Attribute",
+    "view_attribute": "View Attribute",
     "all_attributes": "Attributes/Claims",
     "all_custom_scripts": "Custom Scripts",
     "all_oidc_clients": "OpenID Clients",

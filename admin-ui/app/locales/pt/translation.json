@@ -744,6 +744,7 @@
     "page_size": "Tamanho da página"
   },
   "messages": {
+    "multi_select_hint": "Insira vários itens selecionando no menu suspenso que aparece após inserir cada item.",
     "add_permission": "Adicionar permissão",
     "thanks_for_using_admin_ui": "Obrigado por usar a interface de administração.",
     "add_asset": "Adicionar recurso Jans",
@@ -987,7 +988,18 @@
     "attribute_load_failed": "Erro ao carregar atributo",
     "cannot_contain_spaces": "{{field}} não pode conter espaços",
     "cannot_be_empty": "{{field}} não pode estar vazio",
-    "must_be_valid_url": "{{field}} deve ser uma URL válida"
+    "must_be_valid_url": "{{field}} deve ser uma URL válida",
+    "required": "Este campo é obrigatório",
+    "name_no_spaces": "O nome não deve conter espaços",
+    "positive_number": "Deve ser um número positivo",
+    "min_greater_than_max": "O comprimento mínimo deve ser menor que o comprimento máximo",
+    "name_required": "O nome é obrigatório",
+    "display_name_required": "O nome de exibição é obrigatório",
+    "description_required": "A descrição é obrigatória",
+    "status_required": "O status é obrigatório",
+    "data_type_required": "O tipo de dado é obrigatório",
+    "edit_type_required": "O tipo de edição é obrigatório",
+    "view_type_required": "O tipo de visualização é obrigatório"
   },
   "validation_messages": {
     "invalid_url_format": "Formato de URL inválido",
@@ -1099,6 +1111,8 @@
     "asset_edit": "Editar recurso Jans",
     "algorithmic_keys": "Chaves Algorítmicas",
     "introspection_object": "Objeto de introspecção",
+    "edit_attribute": "Editar Atributo",
+    "view_attribute": "Ver Atributo",
     "all_attributes": "Todos os Atributos",
     "all_custom_scripts": "Todos os scripts personalizados",
     "jans_json_property": "Propriedades",

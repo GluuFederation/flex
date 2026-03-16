@@ -1,33 +1,58 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { useParams } from 'react-router-dom'
-import { CardBody, Card } from 'Components'
-import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import AttributeForm from 'Plugins/schema/components/Person/AttributeForm'
-import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
-import { cloneDeep } from 'lodash'
-import { JansAttribute, useGetAttributesByInum } from 'JansConfigApi'
-import { AttributeItem } from '../types/AttributeListPage.types'
 import { useTranslation } from 'react-i18next'
-import { REGEX_LEADING_COLON } from '@/utils/regex'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
+import { GluuPageContent } from '@/components'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import { Alert } from '@mui/material'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
+import { useCedarling } from '@/cedarling'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import SetTitle from 'Utils/SetTitle'
+import AttributeForm from 'Plugins/schema/components/Person/AttributeForm'
+import { useStyles } from './styles/AttributeFormPage.style'
+import { cloneDeep } from 'lodash'
+import { useAttribute } from '../../hooks'
 import { getErrorMessage } from '../../utils/errorHandler'
 import { getDefaultAttributeItem } from '../../utils/formHelpers'
 import { DEFAULT_ATTRIBUTE_VALIDATION } from '../../helper/utils'
+import type { AttributeItem } from '../types/AttributeListPage.types'
+import type { JansAttribute } from 'JansConfigApi'
+
+const attributeResourceId = ADMIN_UI_RESOURCES.Attributes
 
 function AttributeViewPage(): JSX.Element {
   const { gid } = useParams<{ gid: string }>()
   const { t } = useTranslation()
 
-  const inum = gid?.replace(REGEX_LEADING_COLON, '') || ''
+  const { state: themeState } = useTheme()
+  const { themeColors, isDark } = useMemo(
+    () => ({
+      themeColors: getThemeColor(themeState.theme),
+      isDark: themeState.theme === THEME_DARK,
+    }),
+    [themeState.theme],
+  )
+  const { classes } = useStyles({ isDark, themeColors })
+
+  const { hasCedarReadPermission } = useCedarling()
+  const canRead = useMemo(
+    () => hasCedarReadPermission(attributeResourceId),
+    [hasCedarReadPermission],
+  )
+
+  SetTitle(t('titles.view_attribute', { defaultValue: 'View Attribute' }))
+
+  const inum = gid?.replace(':', '') || ''
 
   const {
     data: attribute,
     isLoading,
     error: queryError,
-  } = useGetAttributesByInum(inum, {
-    query: {
-      enabled: !!inum,
-    },
-  })
+  } = useAttribute(inum)
 
   const defaultAttribute = useMemo(() => getDefaultAttributeItem(), [])
 
@@ -44,26 +69,40 @@ function AttributeViewPage(): JSX.Element {
 
   function customHandleSubmit(): void {}
 
-  if (queryError) {
+  if (queryError && !isLoading) {
     return (
-      <Card className="mb-3" style={applicationStyle.mainCard}>
-        <CardBody>{getErrorMessage(queryError, 'errors.attribute_load_failed', t)}</CardBody>
-      </Card>
+      <GluuPageContent>
+        <GluuViewWrapper canShow={canRead}>
+          <div className={classes.formCard}>
+            <div className={classes.content}>
+              <Alert severity="error">
+                <GluuText variant="span" disableThemeColor>
+                  {getErrorMessage(queryError, 'errors.attribute_load_failed', t)}
+                </GluuText>
+              </Alert>
+            </div>
+          </div>
+        </GluuViewWrapper>
+      </GluuPageContent>
     )
   }
 
   return (
-    <GluuLoader blocking={isLoading}>
-      <Card className="mb-3" style={applicationStyle.mainCard}>
-        <CardBody>
-          <AttributeForm
-            item={extensibleItems as AttributeItem}
-            customOnSubmit={customHandleSubmit}
-            hideButtons={{ save: true, back: true }}
-          />
-        </CardBody>
-      </Card>
-    </GluuLoader>
+    <GluuPageContent>
+      <GluuViewWrapper canShow={canRead}>
+        <GluuLoader blocking={isLoading}>
+          <div className={classes.formCard}>
+            <div className={classes.content}>
+              <AttributeForm
+                item={extensibleItems as AttributeItem}
+                customOnSubmit={customHandleSubmit}
+                hideButtons={{ save: true, back: true }}
+              />
+            </div>
+          </div>
+        </GluuLoader>
+      </GluuViewWrapper>
+    </GluuPageContent>
   )
 }
 

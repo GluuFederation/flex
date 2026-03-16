@@ -1,42 +1,50 @@
-import React, { useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import { useQueryClient } from '@tanstack/react-query'
-import { CardBody, Card } from 'Components'
-import AttributeForm from 'Plugins/schema/components/Person/AttributeForm'
+import { useTranslation } from 'react-i18next'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
+import { GluuPageContent } from '@/components'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
+import { Alert } from '@mui/material'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
+import { useCedarling } from '@/cedarling'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import SetTitle from 'Utils/SetTitle'
+import AttributeForm from 'Plugins/schema/components/Person/AttributeForm'
+import { useStyles } from './styles/AttributeFormPage.style'
 import { cloneDeep } from 'lodash'
-import type {
-  AttributeItem,
-  SubmitData,
-} from 'Plugins/schema/components/types/AttributeListPage.types'
+import { useAttribute, useUpdateAttribute, useMutationEffects } from '../../hooks'
 import { getDefaultAttributeItem } from '../../utils/formHelpers'
 import { DEFAULT_ATTRIBUTE_VALIDATION } from '../../helper/utils'
-import {
-  JansAttribute,
-  useGetAttributesByInum,
-  usePutAttributes,
-  getGetAttributesQueryKey,
-  getGetAttributesByInumQueryKey,
-} from 'JansConfigApi'
-import { updateToast } from 'Redux/features/toastSlice'
-import { UPDATE } from '@/audit/UserActionType'
-import { useSchemaAuditLogger } from '../../hooks/useSchemaAuditLogger'
-import { useSchemaWebhook } from '../../hooks/useSchemaWebhook'
-import { API_ATTRIBUTE } from '../../constants'
-import { useTranslation } from 'react-i18next'
 import { getErrorMessage } from '../../utils/errorHandler'
-import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import type { AttributeItem, SubmitData } from '../types/AttributeListPage.types'
+import type { JansAttribute } from 'JansConfigApi'
+
+const attributeResourceId = ADMIN_UI_RESOURCES.Attributes
 
 function AttributeEditPage(): JSX.Element {
-  const dispatch = useDispatch()
-  const queryClient = useQueryClient()
   const { gid } = useParams<{ gid: string }>()
   const { t } = useTranslation()
-  const { logAudit } = useSchemaAuditLogger()
-  const { triggerAttributeWebhook } = useSchemaWebhook()
-  const { navigateBack } = useAppNavigation()
+
+  const { state: themeState } = useTheme()
+  const { themeColors, isDark } = useMemo(
+    () => ({
+      themeColors: getThemeColor(themeState.theme),
+      isDark: themeState.theme === THEME_DARK,
+    }),
+    [themeState.theme],
+  )
+  const { classes } = useStyles({ isDark, themeColors })
+
+  const { hasCedarReadPermission } = useCedarling()
+  const canRead = useMemo(
+    () => hasCedarReadPermission(attributeResourceId),
+    [hasCedarReadPermission],
+  )
+
+  SetTitle(t('titles.edit_attribute', { defaultValue: 'Edit Attribute' }))
 
   const inum = gid?.replace(':', '') || ''
 
@@ -44,24 +52,14 @@ function AttributeEditPage(): JSX.Element {
     data: attribute,
     isLoading,
     error: queryError,
-  } = useGetAttributesByInum(inum, {
-    query: {
-      enabled: !!inum,
-    },
-  })
+  } = useAttribute(inum)
 
-  const putAttributeMutation = usePutAttributes({
-    mutation: {
-      onSuccess: () => {
-        dispatch(updateToast(true, 'success'))
-        queryClient.invalidateQueries({ queryKey: getGetAttributesQueryKey() })
-        queryClient.invalidateQueries({ queryKey: getGetAttributesByInumQueryKey(inum) })
-      },
-      onError: (error: Error | Record<string, never>) => {
-        const errorMessage = getErrorMessage(error, 'errors.attribute_update_failed', t)
-        dispatch(updateToast(true, 'error', errorMessage))
-      },
-    },
+  const updateMutation = useUpdateAttribute()
+
+  useMutationEffects({
+    mutation: updateMutation,
+    successMessage: 'messages.attribute_updated_successfully',
+    errorMessage: 'errors.attribute_update_failed',
   })
 
   const defaultAttribute = useMemo(() => getDefaultAttributeItem(), [])
@@ -78,51 +76,56 @@ function AttributeEditPage(): JSX.Element {
   }, [attribute, defaultAttribute])
 
   const customHandleSubmit = useCallback(
-    ({ data, userMessage, modifiedFields }: SubmitData): void => {
+    async ({ data, userMessage, modifiedFields }: SubmitData): Promise<void> => {
       if (data) {
-        putAttributeMutation.mutate(
-          { data: data as JansAttribute },
-          {
-            onSuccess: async (updatedAttribute: JansAttribute) => {
-              await logAudit({
-                action: UPDATE,
-                resource: API_ATTRIBUTE,
-                message: userMessage || '',
-                modifiedFields,
-              })
-
-              triggerAttributeWebhook(updatedAttribute)
-              navigateBack(ROUTES.ATTRIBUTES_LIST)
-            },
-          },
-        )
+        await updateMutation.mutateAsync({
+          data: data as JansAttribute,
+          userMessage,
+          modifiedFields,
+        })
       }
     },
-    [putAttributeMutation, logAudit, triggerAttributeWebhook, navigateBack],
+    [updateMutation],
   )
 
-  if (queryError) {
+  if (queryError && !isLoading) {
     return (
-      <Card className="mb-3" style={applicationStyle.mainCard}>
-        <CardBody>
-          {t('errors.attribute_load_failed')}:{' '}
-          {getErrorMessage(queryError, 'errors.attribute_load_failed', t)}
-        </CardBody>
-      </Card>
+      <GluuPageContent>
+        <GluuViewWrapper canShow={canRead}>
+          <div className={classes.formCard}>
+            <div className={classes.content}>
+              <Alert severity="error">
+                <GluuText variant="span" disableThemeColor>
+                  {getErrorMessage(queryError, 'errors.attribute_load_failed', t)}
+                </GluuText>
+              </Alert>
+            </div>
+          </div>
+        </GluuViewWrapper>
+      </GluuPageContent>
     )
   }
 
+  const isBlocking = useMemo(
+    () => isLoading || updateMutation.isPending,
+    [isLoading, updateMutation.isPending],
+  )
+
   return (
-    <GluuLoader blocking={isLoading || putAttributeMutation.isPending}>
-      <Card className="mb-3" style={applicationStyle.mainCard}>
-        <CardBody>
-          <AttributeForm
-            item={extensibleItems as AttributeItem}
-            customOnSubmit={customHandleSubmit}
-          />
-        </CardBody>
-      </Card>
-    </GluuLoader>
+    <GluuPageContent>
+      <GluuViewWrapper canShow={canRead}>
+        <GluuLoader blocking={isBlocking}>
+          <div className={classes.formCard}>
+            <div className={classes.content}>
+              <AttributeForm
+                item={extensibleItems as AttributeItem}
+                customOnSubmit={customHandleSubmit}
+              />
+            </div>
+          </div>
+        </GluuLoader>
+      </GluuViewWrapper>
+    </GluuPageContent>
   )
 }
 
