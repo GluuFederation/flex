@@ -7,7 +7,7 @@ import type { FieldConfig } from './constants'
 import type { FormikProps } from 'formik'
 import type { ScimFormValues } from '../types'
 
-interface ScimFieldRendererProps {
+type ScimFieldRendererProps = {
   config: FieldConfig
   formik: FormikProps<ScimFormValues>
   fieldItemClass: string

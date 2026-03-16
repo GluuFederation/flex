@@ -3,7 +3,7 @@ import type { ScimFormValues } from '../types'
 
 export type FieldType = 'text' | 'number' | 'select' | 'toggle'
 
-export interface FieldConfig {
+export type FieldConfig = {
   name: keyof ScimFormValues
   label: string
   type: FieldType
@@ -12,10 +12,6 @@ export interface FieldConfig {
   colSize?: number
 }
 
-/**
- * Configuration for all SCIM form fields
- * Order and colSize match the Figma design layout
- */
 export const SCIM_FIELD_CONFIGS: FieldConfig[] = [
   {
     name: 'baseDN',

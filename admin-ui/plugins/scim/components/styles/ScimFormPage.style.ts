@@ -5,7 +5,7 @@ import { SPACING, BORDER_RADIUS, OPACITY } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import type { ThemeConfig } from '@/context/theme/config'
 
-interface ScimFormPageStylesParams {
+type ScimFormPageStylesParams = {
   isDark: boolean
   themeColors: ThemeConfig
 }
@@ -176,17 +176,19 @@ export const useStyles = makeStyles<ScimFormPageStylesParams>()((
         marginTop: SELECT_NUDGE,
         marginBottom: SELECT_NUDGE,
       },
-      '& input:focus, & input:active, & select:focus, & select:active': {
-        backgroundColor: `${formInputBg} !important`,
-        color: `${themeColors.fontColor} !important`,
-        border: `1px solid ${inputBorderColor} !important`,
-        outline: 'none',
-        boxShadow: 'none',
-      },
+      '& input:focus, & input:focus-visible, & input:active, & select:focus, & select:focus-visible, & select:active':
+        {
+          backgroundColor: `${formInputBg} !important`,
+          color: `${themeColors.fontColor} !important`,
+          border: `1px solid ${inputBorderColor} !important`,
+          outline: 'none !important',
+          outlineOffset: '0 !important',
+          boxShadow: 'none !important',
+        },
       '& input:disabled, & select:disabled': {
-        backgroundColor: `${alpha(formInputBg, OPACITY.DISABLED)} !important`,
+        backgroundColor: `${formInputBg} !important`,
         border: `1px solid ${inputBorderColor} !important`,
-        color: `${themeColors.fontColor} !important`,
+        color: `${alpha(themeColors.fontColor, OPACITY.PLACEHOLDER)} !important`,
         cursor: 'not-allowed',
       },
       '& input::placeholder': {

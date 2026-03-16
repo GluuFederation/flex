@@ -5,19 +5,11 @@ import { Form } from 'Components'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import { getScimConfigurationSchema } from '../helper/validations'
-import {
-  transformToFormValues,
-  createJsonPatchFromDifferences,
-  buildScimChangedFieldOperations,
-} from '../helper'
+import { transformToFormValues, buildScimChangedFieldOperations } from '../helper'
 import ScimFieldRenderer from './ScimFieldRenderer'
 import { SCIM_FIELD_CONFIGS } from './constants'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import type { ScimConfigurationProps, ScimFormValues } from '../types'
-import { useTheme } from '@/context/theme/themeContext'
-import getThemeColor from '@/context/theme/config'
-import { THEME_DARK } from '@/context/theme/constants'
-import { useStyles } from './styles/ScimFormPage.style'
 
 const SCIM_EDIT_FEATURE = adminUiFeatures.scim_configuration_edit
 
@@ -26,19 +18,11 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
   handleSubmit,
   isSubmitting,
   canWriteScim = false,
+  classes,
 }) => {
   const { t } = useTranslation()
   const [modal, setModal] = useState<boolean>(false)
   const validationSchema = useMemo(() => getScimConfigurationSchema(t), [t])
-  const { state: themeState } = useTheme()
-  const { themeColors, isDark } = useMemo(
-    () => ({
-      themeColors: getThemeColor(themeState.theme),
-      isDark: themeState.theme === THEME_DARK,
-    }),
-    [themeState.theme],
-  )
-  const { classes } = useStyles({ isDark, themeColors })
 
   const toggle = useCallback((): void => {
     setModal((prev) => !prev)
@@ -55,26 +39,6 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
     onSubmit: toggle,
     enableReinitialize: true,
   })
-
-  const isFormDirty = useMemo(() => {
-    if (!scimConfiguration || !formik.values) {
-      return false
-    }
-    const { action_message, ...valuesWithoutAction } = formik.values
-    void action_message
-    const patches = createJsonPatchFromDifferences(
-      scimConfiguration,
-      valuesWithoutAction as ScimFormValues,
-    )
-    return patches.length > 0
-  }, [scimConfiguration, formik.values])
-
-  const isFormValid = useMemo(() => {
-    if (!formik.values) {
-      return false
-    }
-    return validationSchema.isValidSync(formik.values)
-  }, [formik.values, validationSchema])
 
   const commitOperations = useMemo(
     () => buildScimChangedFieldOperations(initialFormValues, formik.values, t),
@@ -125,8 +89,8 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
         showApply={canWriteScim}
         onApply={toggle}
         onCancel={handleCancel}
-        disableCancel={!isFormDirty}
-        disableApply={!isFormValid || !isFormDirty}
+        disableCancel={!formik.dirty}
+        disableApply={!formik.isValid || !formik.dirty}
         applyButtonType="submit"
         isLoading={isSubmitting ?? false}
       />

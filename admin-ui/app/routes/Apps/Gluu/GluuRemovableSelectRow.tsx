@@ -21,7 +21,6 @@ interface GluuRemovableSelectRowProps {
   formik: FormikProps<FormikValues>
   values?: CountryOption[]
   lsize?: number
-  rsize?: number
   handler: () => void
   doc_category?: string
   isDirect?: boolean
@@ -30,21 +29,20 @@ interface GluuRemovableSelectRowProps {
   setModifiedFields: React.Dispatch<React.SetStateAction<Record<string, ModifiedFieldValue>>>
 }
 
-function GluuRemovableSelectRow({
+const GluuRemovableSelectRow = ({
   label,
   name,
   value,
   formik,
   values = [],
   lsize = 12,
-  rsize = 12,
   handler,
   doc_category,
   isDirect,
   hideRemoveButton,
   modifiedFields,
   setModifiedFields,
-}: GluuRemovableSelectRowProps) {
+}: GluuRemovableSelectRowProps) => {
   const currentValue = (formik.values[name] as string | undefined) ?? value ?? ''
 
   const { t } = useTranslation()

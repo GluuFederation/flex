@@ -5,10 +5,7 @@ import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/GluuCommi
 import { ScimFormValues } from '../types'
 import { SCIM_FIELD_CONFIGS } from '../components/constants'
 
-/**
- * Converts boolean-like values to actual boolean type
- */
-const toBooleanValue = (value: unknown): boolean => {
+const toBooleanValue = (value: JsonValue | undefined): boolean => {
   if (typeof value === 'boolean') return value
   if (typeof value === 'string') {
     return value.toLowerCase() === 'true'
@@ -16,9 +13,6 @@ const toBooleanValue = (value: unknown): boolean => {
   return Boolean(value)
 }
 
-/**
- * Transforms API configuration to form-friendly values
- */
 export const transformToFormValues = (config: AppConfiguration3 | undefined): ScimFormValues => {
   return {
     baseDN: config?.baseDN || '',
@@ -43,24 +37,22 @@ export const transformToFormValues = (config: AppConfiguration3 | undefined): Sc
   }
 }
 
-/**
- * Creates JSON Patch array from form value differences
- */
 export const createJsonPatchFromDifferences = (
   originalConfig: AppConfiguration3,
   formValues: ScimFormValues,
 ): JsonPatch[] => {
   const patches: JsonPatch[] = []
 
-  // Helper to compare and create patch
-  const addPatchIfDifferent = (path: string, originalValue: unknown, newValue: unknown): void => {
-    // Handle empty string vs undefined/null comparison
+  const addPatchIfDifferent = (
+    path: string,
+    originalValue: JsonValue | undefined,
+    newValue: JsonValue | undefined,
+  ): void => {
     const normalizedOriginal = originalValue === '' ? undefined : originalValue
     const normalizedNew = newValue === '' ? undefined : newValue
 
     if (normalizedOriginal !== normalizedNew) {
       if (normalizedNew === undefined || normalizedNew === null) {
-        // Don't send null/undefined values, just skip
         return
       }
 
@@ -73,7 +65,6 @@ export const createJsonPatchFromDifferences = (
     }
   }
 
-  // Compare all fields
   addPatchIfDifferent('baseDN', originalConfig.baseDN, formValues.baseDN)
   addPatchIfDifferent('applicationUrl', originalConfig.applicationUrl, formValues.applicationUrl)
   addPatchIfDifferent('baseEndpoint', originalConfig.baseEndpoint, formValues.baseEndpoint)
@@ -145,9 +136,6 @@ export const createJsonPatchFromDifferences = (
   return patches
 }
 
-/**
- * Builds a list of changed field operations by comparing initial and current form values.
- */
 export const buildScimChangedFieldOperations = (
   initial: ScimFormValues,
   current: ScimFormValues,

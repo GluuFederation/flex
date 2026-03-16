@@ -7,15 +7,14 @@ interface GluuInputRowStyleParams {
 }
 
 export const useStyles = makeStyles<GluuInputRowStyleParams>()((
-  theme,
+  _theme,
   { errorColor, fontColor, stepperHoverBg },
 ) => {
   return {
     colWrapper: {
       'position': 'relative',
       '& input:focus, & input:focus-visible, & input:active': {
-        outline: `2px solid ${theme.palette.primary.main}`,
-        outlineOffset: 2,
+        outline: 'none',
         boxShadow: 'none',
       },
     },
