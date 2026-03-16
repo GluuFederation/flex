@@ -75,13 +75,11 @@ export const useStyles = makeStyles<GluuInputRowStyleParams>()((
     },
     numberStepper: {
       'position': 'absolute',
-      'right': 0,
-      'top': 0,
-      'bottom': 0,
-      'width': 36,
+      'right': 20,
+      'top': '50%',
+      'transform': 'translateY(-50%)',
       'display': 'flex',
       'flexDirection': 'column',
-      'borderLeft': 'none',
       'pointerEvents': 'none',
       '& button': {
         pointerEvents: 'auto',
