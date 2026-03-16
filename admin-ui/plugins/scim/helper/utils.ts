@@ -59,6 +59,9 @@ export const createJsonPatchFromDifferences = (
 
     if (normalizedOriginal !== normalizedNew) {
       if (normalizedNew === undefined || normalizedNew === null) {
+        if (normalizedOriginal !== undefined && normalizedOriginal !== null) {
+          patches.push({ op: 'remove', path: `/${path}` })
+        }
         return
       }
 
