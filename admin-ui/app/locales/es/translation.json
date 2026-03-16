@@ -1116,6 +1116,7 @@
     "id": "Introduce el id",
     "search": "Buscar",
     "search_here": "Buscar aquí",
+    "new_selection": "Nueva selección",
     "action_commit_message": "Indica el motivo de este cambio",
     "activate_ldap_configuration": "Activar configuración LDAP",
     "client_description": "Introduce la descripción del cliente",

@@ -1,4 +1,4 @@
-export interface MultiValueSelectCardProps {
+export interface UserRoleAutocompleteProps {
   label: string
   name: string
   value: string[]
@@ -7,6 +7,7 @@ export interface MultiValueSelectCardProps {
   onBlur?: () => void
   disabled?: boolean
   placeholder?: string
+  /** When true, allow typing a value not in options and adding it */
   allowCustom?: boolean
   onRemoveField?: () => void
   doc_category?: string

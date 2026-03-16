@@ -9,14 +9,11 @@ import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import UserFormCommitDialog from './UserFormCommitDialog'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
-import { useGetAllAdminuiRoles } from 'JansConfigApi'
 import UserClaimEntry from './UserClaimEntry'
 import PasswordChangeModal from './PasswordChangeModal'
 import AvailableClaimsPanel from './AvailableClaimsPanel'
 import { getUserValidationSchema, initializeCustomAttributes } from '../helper/validations'
 import { buildFormOperations, shouldDisableApplyButton } from '../utils'
-import { JANS_ADMIN_UI_ROLE_ATTR } from '../common/Constants'
-import MultiValueSelectCard from 'Routes/Apps/Gluu/MultiValueSelectCard'
 import type { FormFieldValue } from '../types/CommonTypes'
 import {
   UserFormProps,
@@ -46,15 +43,6 @@ const UserForm = ({
   const [changePasswordModal, setChangePasswordModal] = useState(false)
   const [modifiedFields, setModifiedFields] = useState<ModifiedFields>({})
   const [operations, setOperations] = useState<FormOperation[]>([])
-
-  const { data: rolesData, isLoading: rolesLoading, isError: rolesError } = useGetAllAdminuiRoles()
-  const rolesToBeShown: string[] = useMemo(
-    () =>
-      (rolesData ?? [])
-        .map((roleItem) => roleItem.role)
-        .filter((role): role is string => Boolean(role)),
-    [rolesData],
-  )
 
   const personAttributesKey = useMemo(
     () =>
@@ -268,38 +256,10 @@ const UserForm = ({
 
   const blockingLoader = isSubmitting
 
-  const roleClaim = useMemo(
-    () => selectedClaims.find((c) => c.name === JANS_ADMIN_UI_ROLE_ATTR),
-    [selectedClaims],
-  )
-  const nonRoleClaims = useMemo(
-    () => selectedClaims.filter((c) => c.name !== JANS_ADMIN_UI_ROLE_ATTR),
-    [selectedClaims],
-  )
-
-  const selectedRoles = useMemo(() => {
-    const raw = formik.values[JANS_ADMIN_UI_ROLE_ATTR]
-    if (Array.isArray(raw)) return raw.filter((v): v is string => typeof v === 'string')
-    return []
-  }, [formik.values])
-
   const commitDialogOperations = useMemo(
     () => operations.map(({ path, value }) => ({ path, value })),
     [operations],
   )
-
-  const handleRoleChange = useCallback(
-    (next: string[]) => {
-      formik.setFieldValue(JANS_ADMIN_UI_ROLE_ATTR, next)
-      formik.setFieldTouched(JANS_ADMIN_UI_ROLE_ATTR, true, false)
-      updateModifiedFields(JANS_ADMIN_UI_ROLE_ATTR, next)
-    },
-    [formik, updateModifiedFields],
-  )
-
-  const handleRemoveRole = useCallback(() => {
-    removeSelectedClaimsFromState(JANS_ADMIN_UI_ROLE_ATTR)
-  }, [removeSelectedClaimsFromState])
 
   return (
     <GluuLoader blocking={blockingLoader}>
@@ -500,33 +460,10 @@ const UserForm = ({
                       handleChange={handleChange}
                     />
                   </div>
-
-                  {roleClaim && (
-                    <div className={classes.fullRow}>
-                      <MultiValueSelectCard
-                        label={t('fields.userRole')}
-                        name={JANS_ADMIN_UI_ROLE_ATTR}
-                        value={selectedRoles}
-                        options={rolesToBeShown}
-                        onChange={handleRoleChange}
-                        disabled={rolesLoading || rolesError}
-                        placeholder={
-                          rolesLoading
-                            ? t('messages.loading_roles')
-                            : rolesError
-                              ? t('messages.failed_load_roles')
-                              : t('placeholders.search_here')
-                        }
-                        allowCustom={false}
-                        onRemoveField={handleRemoveRole}
-                        doc_category={roleClaim.description}
-                      />
-                    </div>
-                  )}
                 </div>
 
                 <div className={classes.dynamicClaimsWrap}>
-                  {nonRoleClaims.map((data, index) => (
+                  {selectedClaims.map((data, index) => (
                     <UserClaimEntry
                       key={data.name}
                       entry={index}

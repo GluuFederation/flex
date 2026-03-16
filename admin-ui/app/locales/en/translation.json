@@ -1123,6 +1123,7 @@
     "id": "Enter id",
     "search": "Search",
     "search_here": "Search Here",
+    "new_selection": "New selection",
     "action_commit_message": "Provide the reason of this change",
     "activate_ldap_configuration": "Activate ldap configuration",
     "client_description": "Enter the client description",

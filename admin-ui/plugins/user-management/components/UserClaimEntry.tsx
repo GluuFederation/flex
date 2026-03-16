@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import GluuRemovableInputRow from 'Routes/Apps/Gluu/GluuRemovableInputRow'
 import GluuRemovableSelectRow from 'Routes/Apps/Gluu/GluuRemovableSelectRow'
-import MultiValueSelectCard from 'Routes/Apps/Gluu/MultiValueSelectCard'
+import UserRoleAutocomplete from 'Routes/Apps/Gluu/UserRoleAutocomplete'
 import { countries } from 'Plugins/user-management/common/countries'
 import { JANS_ADMIN_UI_ROLE_ATTR, COUNTRY_ATTR } from '../common/Constants'
 import { getClaimLabel, getClaimLabelKey } from '../utils/claimLabelUtils'
@@ -62,7 +62,7 @@ const UserClaimEntry = ({
 
   if (data.oxMultiValuedAttribute) {
     fieldContent = (
-      <MultiValueSelectCard
+      <UserRoleAutocomplete
         label={claimLabel}
         name={data.name}
         value={multiValue}
@@ -76,7 +76,7 @@ const UserClaimEntry = ({
               : t('messages.failed_load_roles')
             : t('placeholders.search_here')
         }
-        allowCustom={!isRoleField}
+        allowCustom={data.name !== JANS_ADMIN_UI_ROLE_ATTR}
         doc_category={data.description}
         onRemoveField={doHandle}
       />

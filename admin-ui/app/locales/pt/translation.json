@@ -1071,6 +1071,7 @@
   "placeholders": {
     "id": "Enter id",
     "search": "Pesquisar",
+    "new_selection": "Nova seleção",
     "action_commit_message": "Forneça o motivo desta mudança",
     "activate_ldap_configuration": "Ativar configuração ldap",
     "client_description": "Insira a descrição do cliente",
