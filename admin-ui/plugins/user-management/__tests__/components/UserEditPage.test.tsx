@@ -1,6 +1,5 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import { QueryClient } from '@tanstack/react-query'
 import {
   createUserManagementTestStore,
   createUserManagementQueryClient,

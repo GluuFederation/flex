@@ -56,6 +56,12 @@ jest.mock('JansConfigApi', () => ({
   getGetConfigScriptsQueryKey: jest.fn(() => ['configScripts']),
   getGetConfigScriptsByTypeQueryKey: jest.fn(() => ['configScriptsByType']),
   getGetConfigScriptsByInumQueryKey: jest.fn(() => ['configScriptsByInum']),
+  useGetWebhooksByFeatureId: jest.fn(() => ({
+    data: [],
+    isLoading: false,
+    isFetching: false,
+    isFetched: true,
+  })),
 }))
 
 const mockScriptData = {

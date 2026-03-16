@@ -61,6 +61,12 @@ jest.mock('JansConfigApi', () => ({
   useGetConfigScripts: jest.fn(() => ({ data: { entries: [] }, isLoading: false })),
   useGetConfigScriptsByInum: jest.fn(() => ({ data: null, isLoading: false })),
   useGetConfigScriptsByType: jest.fn(() => ({ data: { entries: [] }, isLoading: false })),
+  useGetWebhooksByFeatureId: jest.fn(() => ({
+    data: [],
+    isLoading: false,
+    isFetching: false,
+    isFetched: true,
+  })),
 }))
 
 const store = configureStore({
