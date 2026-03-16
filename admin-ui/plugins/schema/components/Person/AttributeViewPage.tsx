@@ -48,11 +48,7 @@ function AttributeViewPage(): JSX.Element {
 
   const inum = gid?.replace(':', '') || ''
 
-  const {
-    data: attribute,
-    isLoading,
-    error: queryError,
-  } = useAttribute(inum)
+  const { data: attribute, isLoading, error: queryError } = useAttribute(inum)
 
   const defaultAttribute = useMemo(() => getDefaultAttributeItem(), [])
 

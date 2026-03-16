@@ -18,10 +18,7 @@ const AttributeDetailPage = ({ row }: AttributeDetailPageProps): JSX.Element => 
   const selectedTheme = theme?.state?.theme || DEFAULT_THEME
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
 
-  const labelStyle = useMemo(
-    () => ({ color: themeColors.fontColor }),
-    [themeColors.fontColor],
-  )
+  const labelStyle = useMemo(() => ({ color: themeColors.fontColor }), [themeColors.fontColor])
 
   const isActive = row.status?.toLowerCase() === 'active'
 
@@ -52,9 +49,8 @@ const AttributeDetailPage = ({ row }: AttributeDetailPageProps): JSX.Element => 
       },
       {
         label: 'fields.attribute_edit_type',
-        value: Array.isArray(row.editType) && row.editType.length > 0
-          ? row.editType.join(', ')
-          : '—',
+        value:
+          Array.isArray(row.editType) && row.editType.length > 0 ? row.editType.join(', ') : '—',
         doc_entry: 'editType',
         doc_category: API_ATTRIBUTE,
         isBadge: Array.isArray(row.editType) && row.editType.length > 0,
@@ -63,9 +59,8 @@ const AttributeDetailPage = ({ row }: AttributeDetailPageProps): JSX.Element => 
       },
       {
         label: 'fields.attribute_view_type',
-        value: Array.isArray(row.viewType) && row.viewType.length > 0
-          ? row.viewType.join(', ')
-          : '—',
+        value:
+          Array.isArray(row.viewType) && row.viewType.length > 0 ? row.viewType.join(', ') : '—',
         doc_entry: 'viewType',
         doc_category: API_ATTRIBUTE,
         isBadge: Array.isArray(row.viewType) && row.viewType.length > 0,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from 'Context/theme/themeContext'
@@ -6,13 +6,13 @@ import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
+import Alert from '@mui/material/Alert'
 import { useWebhookDialogAction } from 'Utils/hooks'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import type { RootState } from '@/redux/sagas/types/audit'
 import type { GluuCommitDialogProps } from './types/index'
-import customColors from '@/customColors'
 import { useStyles } from './styles/GluuCommitDialog.style'
 import {
   getCommitMessageValidationError,
@@ -21,6 +21,7 @@ import {
 } from '@/utils/validation/commitMessage'
 import GluuText from './GluuText'
 import { GluuButton } from '@/components'
+import GluuLoader from './GluuLoader'
 
 const USER_MESSAGE = 'user_action_message'
 
@@ -35,6 +36,8 @@ const GluuCommitDialog = ({
   isLicenseLabel = false,
   operations = [],
   autoCloseOnAccept = false,
+  alertMessage,
+  alertSeverity = 'warning',
 }: GluuCommitDialogProps) => {
   const { t } = useTranslation()
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
@@ -64,17 +67,15 @@ const GluuCommitDialog = ({
     }
   }, [authorizeHelper, webhookScopes])
 
-  const { webhookTriggerModal, onCloseModal } = useWebhookDialogAction({
+  const { webhookTriggerModal, onCloseModal, webhookCheckComplete } = useWebhookDialogAction({
     feature,
     modal,
   })
 
-  const prevModalRef = useRef<boolean>(false)
   useEffect(() => {
-    if (modal && !prevModalRef.current) {
+    if (modal) {
       setUserMessage('')
     }
-    prevModalRef.current = modal
   }, [modal])
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -151,6 +152,10 @@ const GluuCommitDialog = ({
     return <></>
   }
 
+  if (!webhookCheckComplete) {
+    return createPortal(<GluuLoader blocking />, document.body)
+  }
+
   const modalContent =
     webhookModal && canReadWebhooks ? (
       <>{webhookTriggerModal({ closeModal })}</>
@@ -181,6 +186,11 @@ const GluuCommitDialog = ({
             <i className="fa fa-times" aria-hidden />
           </button>
           <div className={classes.contentArea}>
+            {alertMessage && (
+              <Alert severity={alertSeverity} sx={{ mb: 1 }}>
+                {alertMessage}
+              </Alert>
+            )}
             <GluuText variant="h2" className={classes.title} id="commit-dialog-title">
               {titleText}
             </GluuText>
@@ -219,7 +229,7 @@ const GluuCommitDialog = ({
               variant="span"
               className={classes.errorMessage}
               style={{
-                color: customColors.statusInactive,
+                color: themeColors.settings.removeButton.bg,
                 visibility: errorMessageText ? 'visible' : 'hidden',
               }}
               id={`${USER_MESSAGE}-error`}
@@ -230,8 +240,8 @@ const GluuCommitDialog = ({
               <GluuButton
                 onClick={handleAccept}
                 disabled={!isValid || isSubmitting}
-                backgroundColor={customColors.statusActive}
-                textColor={customColors.white}
+                backgroundColor={themeColors.formFooter.back.backgroundColor}
+                textColor={themeColors.formFooter.back.textColor}
                 borderColor="transparent"
                 padding="8px 28px"
                 minHeight="40"

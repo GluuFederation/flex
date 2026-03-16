@@ -60,10 +60,7 @@ export const useCreateAttribute = () => {
 
   return {
     ...baseMutation,
-    mutateAsync: async (variables: {
-      data: JansAttribute
-      userMessage?: string
-    }) => {
+    mutateAsync: async (variables: { data: JansAttribute; userMessage?: string }) => {
       const { userMessage, ...baseVariables } = variables
       const result = await baseMutation.mutateAsync(baseVariables)
 

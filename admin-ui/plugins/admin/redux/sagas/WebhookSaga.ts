@@ -21,6 +21,7 @@ import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
 import type { UserActionPayload } from 'Redux/api/backend-api'
 import * as JansConfigApi from 'jans_config_api'
+import { devLogger } from '@/utils/devLogger'
 import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 import { webhookOutputObject } from 'Plugins/admin/helper/utils'
 import {
@@ -87,15 +88,18 @@ export function* triggerWebhook({
     )
 
     const featureFromPayload = payload?.feature
-    if (featureFromPayload && !featureToTrigger) {
+    if (featureFromPayload) {
       featureToTrigger = featureFromPayload
       yield put(setFeatureToTrigger(featureFromPayload))
-      const data: WebhooksByFeatureIdApiResponse = yield call(
-        webhookApi.getWebhooksByFeatureId,
-        featureFromPayload,
-      )
-      featureWebhooks = data?.body ?? []
-      yield put(getWebhooksByFeatureIdResponse(featureWebhooks))
+
+      if (!featureWebhooks?.length) {
+        const data: WebhooksByFeatureIdApiResponse = yield call(
+          webhookApi.getWebhooksByFeatureId,
+          featureFromPayload,
+        )
+        featureWebhooks = data?.body ?? []
+        yield put(getWebhooksByFeatureIdResponse(featureWebhooks))
+      }
     }
 
     const enabledFeatureWebhooks = (featureWebhooks ?? []).filter(
@@ -104,6 +108,9 @@ export function* triggerWebhook({
 
     if (!enabledFeatureWebhooks.length || !featureToTrigger) {
       yield put(setFeatureToTrigger(''))
+      yield put(setTriggerWebhookResponse(''))
+      yield put(setWebhookTriggerErrors([]))
+      yield put(setShowErrorModal(false))
       return
     }
 
@@ -131,20 +138,20 @@ export function* triggerWebhook({
     })
     yield put(setFeatureToTrigger(''))
 
-    const allSucceeded = responseItems.every((item: WebhookTriggerResponseItem) => item.success)
-    if (allSucceeded) {
-      yield put(setShowErrorModal(false))
-      yield put(setWebhookModal(false))
-      yield put(setTriggerWebhookResponse(''))
-      yield put(
-        updateToast(true, 'success', i18n.t('messages.all_webhooks_triggered_successfully')),
-      )
-    } else {
-      const errors = responseItems.filter((item: WebhookTriggerResponseItem) => !item.success)
-      yield put(setWebhookTriggerErrors(errors))
-      yield put(setTriggerWebhookResponse(i18n.t('messages.failed_to_trigger_webhook')))
-      yield put(updateToast(true, 'error', i18n.t('messages.failed_to_trigger_webhook')))
-      yield put(setShowErrorModal(true))
+    yield put(setShowErrorModal(false))
+    yield put(setWebhookModal(false))
+    yield put(setTriggerWebhookResponse(''))
+    yield put(setWebhookTriggerErrors([]))
+    yield put(updateToast(true, 'success', i18n.t('messages.all_webhooks_triggered_successfully')))
+
+    const failedItems = responseItems.filter((item: WebhookTriggerResponseItem) => !item.success)
+    if (failedItems.length) {
+      const summary = failedItems.map((item: WebhookTriggerResponseItem) => ({
+        name: item.responseObject?.webhookName ?? 'unknown',
+        id: item.responseObject?.inum ?? 'unknown',
+        message: item.responseMessage ?? 'No message',
+      }))
+      devLogger.warn(`[Webhook] ${failedItems.length} webhook(s) failed:`, summary)
     }
     yield call(postUserAction, audit as UserActionPayload)
     return data

@@ -33,9 +33,7 @@ const EDIT_VIEW_OPTIONS: MultiSelectOption[] = [
   { value: 'user', label: 'User' },
 ]
 
-const USAGE_TYPE_OPTIONS: MultiSelectOption[] = [
-  { value: 'openid', label: 'OpenID' },
-]
+const USAGE_TYPE_OPTIONS: MultiSelectOption[] = [{ value: 'openid', label: 'OpenID' }]
 
 const AttributeForm = memo(function AttributeForm(props: AttributeFormProps) {
   const { item, customOnSubmit, hideButtons } = props
