@@ -943,6 +943,7 @@
     "view_client_details": "Ver detalles del cliente",
     "view_2FA_details": "Ver detalles de 2FA",
     "2FA_details": "Detalles de 2FA",
+    "device_information": "Información del dispositivo",
     "details": "Detalles",
     "view_script_details": "Ver detalles del script personalizado",
     "add_new_user": "Agregar Usuario",

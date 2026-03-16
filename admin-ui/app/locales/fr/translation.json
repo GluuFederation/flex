@@ -906,6 +906,7 @@
     "view_client_details": "Afficher les détails du client",
     "view_2FA_details": "Afficher les détails de la 2FA",
     "2FA_details": "les détails de la 2FA",
+    "device_information": "Informations sur l'appareil",
     "details": "Détails",
     "view_script_details": "Afficher les détails du script personnalisé",
     "add_new_user": "Ajouter un utilisateur",

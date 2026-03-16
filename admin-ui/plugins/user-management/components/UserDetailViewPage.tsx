@@ -1,9 +1,17 @@
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { RowProps } from 'Plugins/user-management/types/UserApiTypes'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { useStyles } from './UserDetailViewPage.style'
+
+interface CustomAttrWithValues {
+  name?: string
+  value?: string | number | boolean
+  values?: (string | number | boolean)[]
+  multiValued?: boolean
+}
 
 const UserDetailViewPage = ({ row }: RowProps) => {
   const { rowData } = row
@@ -11,13 +19,6 @@ const UserDetailViewPage = ({ row }: RowProps) => {
   const { state: themeState } = useTheme()
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
   const { classes } = useStyles({ themeColors })
-
-  interface CustomAttrWithValues {
-    name?: string
-    value?: string | number | boolean
-    values?: (string | number | boolean)[]
-    multiValued?: boolean
-  }
 
   const roleValue = useMemo(() => {
     const attrs = (rowData as { customAttributes?: CustomAttrWithValues[] })?.customAttributes
@@ -64,8 +65,12 @@ const UserDetailViewPage = ({ row }: RowProps) => {
         <div className={classes.grid}>
           {fields.map((f) => (
             <div key={f.label} className={classes.field}>
-              <div className={classes.label}>{f.label}</div>
-              <div className={classes.value}>{f.value || '—'}</div>
+              <GluuText variant="div" className={classes.label}>
+                {f.label}
+              </GluuText>
+              <GluuText variant="div" className={classes.value}>
+                {f.value || '—'}
+              </GluuText>
             </div>
           ))}
         </div>
@@ -74,4 +79,4 @@ const UserDetailViewPage = ({ row }: RowProps) => {
   )
 }
 
-export default UserDetailViewPage
+export default React.memo(UserDetailViewPage)

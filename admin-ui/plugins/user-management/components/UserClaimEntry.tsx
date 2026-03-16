@@ -53,53 +53,72 @@ const UserClaimEntry = ({
     (next: string[]) => {
       formik.setFieldValue(data.name, next)
       formik.setFieldTouched(data.name, true, false)
-      setModifiedFields((prev) => ({ ...prev, [data.name]: next }))
+      const initial = formik.initialValues[data.name]
+      const initialArr = Array.isArray(initial)
+        ? (initial as string[]).filter((v): v is string => typeof v === 'string')
+        : []
+      const isSameAsInitial =
+        next.length === initialArr.length && next.every((v, i) => v === initialArr[i])
+      setModifiedFields((prev) => {
+        if (isSameAsInitial) {
+          const rest = { ...prev }
+          delete rest[data.name]
+          return rest
+        }
+        return { ...prev, [data.name]: next }
+      })
     },
     [data.name, formik, setModifiedFields],
   )
 
-  let fieldContent: React.ReactNode = null
-
   if (data.oxMultiValuedAttribute) {
-    fieldContent = (
-      <UserRoleAutocomplete
-        label={claimLabel}
-        name={data.name}
-        value={multiValue}
-        options={multiValueOptions}
-        onChange={handleMultiValueChange}
-        disabled={isRolesUnavailable}
-        placeholder={
-          isRolesUnavailable
-            ? rolesLoading
-              ? t('messages.loading_roles')
-              : t('messages.failed_load_roles')
-            : t('placeholders.search_here')
-        }
-        allowCustom={data.name !== JANS_ADMIN_UI_ROLE_ATTR}
-        doc_category={data.description}
-        onRemoveField={doHandle}
-      />
+    return (
+      <div key={entry}>
+        <UserRoleAutocomplete
+          label={claimLabel}
+          name={data.name}
+          value={multiValue}
+          options={multiValueOptions}
+          onChange={handleMultiValueChange}
+          disabled={isRolesUnavailable}
+          placeholder={
+            isRolesUnavailable
+              ? rolesLoading
+                ? t('messages.loading_roles')
+                : t('messages.failed_load_roles')
+              : t('placeholders.search_here')
+          }
+          allowCustom={data.name !== JANS_ADMIN_UI_ROLE_ATTR}
+          doc_category={data.description}
+          onRemoveField={doHandle}
+        />
+      </div>
     )
-  } else if (data.name === COUNTRY_ATTR) {
-    fieldContent = (
-      <GluuRemovableSelectRow
-        label={claimLabelKey}
-        name={data.name}
-        doc_category={typeof data.description === 'string' ? data.description : undefined}
-        isDirect={true}
-        value={String(formik.values[data.name] ?? '')}
-        values={countries}
-        formik={formik as React.ComponentProps<typeof GluuRemovableSelectRow>['formik']}
-        modifiedFields={modifiedFields}
-        setModifiedFields={setModifiedFields}
-        handler={doHandle}
-        lsize={12}
-        rsize={12}
-      />
+  }
+
+  if (data.name === COUNTRY_ATTR) {
+    return (
+      <div key={entry}>
+        <GluuRemovableSelectRow
+          label={claimLabelKey}
+          name={data.name}
+          doc_category={typeof data.description === 'string' ? data.description : undefined}
+          isDirect={true}
+          value={String(formik.values[data.name] ?? '')}
+          values={countries}
+          formik={formik as React.ComponentProps<typeof GluuRemovableSelectRow>['formik']}
+          modifiedFields={modifiedFields}
+          setModifiedFields={setModifiedFields}
+          handler={doHandle}
+          lsize={12}
+          rsize={12}
+        />
+      </div>
     )
-  } else {
-    fieldContent = (
+  }
+
+  return (
+    <div key={entry}>
       <GluuRemovableInputRow
         label={claimLabelKey}
         name={data.name}
@@ -117,9 +136,7 @@ const UserClaimEntry = ({
         lsize={12}
         isBoolean={data?.dataType?.toLowerCase() === 'boolean'}
       />
-    )
-  }
-
-  return <div key={entry}>{fieldContent}</div>
+    </div>
+  )
 }
 export default React.memo(UserClaimEntry)

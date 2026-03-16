@@ -13,7 +13,7 @@ import UserClaimEntry from './UserClaimEntry'
 import PasswordChangeModal from './PasswordChangeModal'
 import AvailableClaimsPanel from './AvailableClaimsPanel'
 import { getUserValidationSchema, initializeCustomAttributes } from '../helper/validations'
-import { buildFormOperations, shouldDisableApplyButton } from '../utils'
+import { buildFormOperations, shouldDisableApplyButton, isEmptyValue } from '../utils'
 import type { FormFieldValue } from '../types/CommonTypes'
 import {
   UserFormProps,
@@ -28,6 +28,8 @@ import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './UserForm.style'
 
+const DOC_SECTION = 'user'
+
 const UserForm = ({
   onSubmitData,
   userDetails,
@@ -36,7 +38,6 @@ const UserForm = ({
 }: Readonly<UserFormProps>) => {
   const { navigateBack } = useAppNavigation()
   const { t } = useTranslation()
-  const DOC_SECTION = 'user'
   const [searchClaims, setSearchClaims] = useState('')
   const [selectedClaims, setSelectedClaims] = useState<PersonAttribute[]>([])
   const [modal, setModal] = useState(false)
@@ -159,13 +160,6 @@ const UserForm = ({
     initializedRef.current = `${userKey}-${attrsKey}`
   }, [userDetails?.inum, personAttributesKey, memoizedPersonAttributes, setSelectedClaims])
 
-  const isEmptyValue = useCallback((value: FormFieldValue): boolean => {
-    if (value === null || value === undefined) return true
-    if (typeof value === 'string') return value.trim() === ''
-    if (Array.isArray(value)) return value.length === 0
-    return false
-  }, [])
-
   const resetFormToInitialCustomAttributes = useCallback(() => {
     const resetValues = initializeCustomAttributes(userDetails || null, memoizedPersonAttributes)
     formik.resetForm({ values: resetValues })
@@ -184,23 +178,20 @@ const UserForm = ({
     prevModifiedFieldsLengthRef.current = currentLength
   }, [modifiedFields, resetFormToInitialCustomAttributes])
 
-  const updateModifiedFields = useCallback(
-    (name: string, value: FormFieldValue) => {
-      setModifiedFields((prev) => {
-        if (isEmptyValue(value) && !Array.isArray(value)) {
-          const { [name]: _removed, ...rest } = prev
-          void _removed
-          return rest
-        } else {
-          return {
-            ...prev,
-            [name]: value as string | string[] | boolean,
-          }
+  const updateModifiedFields = useCallback((name: string, value: FormFieldValue) => {
+    setModifiedFields((prev) => {
+      if (isEmptyValue(value) && !Array.isArray(value)) {
+        const rest = { ...prev }
+        delete rest[name]
+        return rest
+      } else {
+        return {
+          ...prev,
+          [name]: value as string | string[] | boolean,
         }
-      })
-    },
-    [isEmptyValue],
-  )
+      }
+    })
+  }, [])
 
   const removeSelectedClaimsFromState = useCallback(
     (id: string) => {
@@ -237,7 +228,7 @@ const UserForm = ({
         return cleanedFields
       })
     },
-    [isEmptyValue],
+    [],
   )
 
   const handleChange = useCallback(
@@ -254,15 +245,13 @@ const UserForm = ({
     [formik, updateModifiedFields],
   )
 
-  const blockingLoader = isSubmitting
-
   const commitDialogOperations = useMemo(
     () => operations.map(({ path, value }) => ({ path, value })),
     [operations],
   )
 
   return (
-    <GluuLoader blocking={blockingLoader}>
+    <GluuLoader blocking={isSubmitting}>
       <PasswordChangeModal
         isOpen={changePasswordModal}
         toggle={toggleChangePasswordModal}
