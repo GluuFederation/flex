@@ -6,6 +6,7 @@ import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
+import Alert from '@mui/material/Alert'
 import { useWebhookDialogAction } from 'Utils/hooks'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
@@ -20,6 +21,7 @@ import {
 } from '@/utils/validation/commitMessage'
 import GluuText from './GluuText'
 import { GluuButton } from '@/components'
+import GluuLoader from './GluuLoader'
 
 const USER_MESSAGE = 'user_action_message'
 
@@ -34,6 +36,8 @@ const GluuCommitDialog = ({
   isLicenseLabel = false,
   operations = [],
   autoCloseOnAccept = false,
+  alertMessage,
+  alertSeverity = 'warning',
 }: GluuCommitDialogProps) => {
   const { t } = useTranslation()
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
@@ -63,7 +67,7 @@ const GluuCommitDialog = ({
     }
   }, [authorizeHelper, webhookScopes])
 
-  const { webhookTriggerModal, onCloseModal } = useWebhookDialogAction({
+  const { webhookTriggerModal, onCloseModal, webhookCheckComplete } = useWebhookDialogAction({
     feature,
     modal,
   })
@@ -148,6 +152,10 @@ const GluuCommitDialog = ({
     return <></>
   }
 
+  if (!webhookCheckComplete) {
+    return createPortal(<GluuLoader blocking />, document.body)
+  }
+
   const modalContent =
     webhookModal && canReadWebhooks ? (
       <>{webhookTriggerModal({ closeModal })}</>
@@ -178,6 +186,11 @@ const GluuCommitDialog = ({
             <i className="fa fa-times" aria-hidden />
           </button>
           <div className={classes.contentArea}>
+            {alertMessage && (
+              <Alert severity={alertSeverity} sx={{ mb: 1 }}>
+                {alertMessage}
+              </Alert>
+            )}
             <GluuText variant="h2" className={classes.title} id="commit-dialog-title">
               {titleText}
             </GluuText>

@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
-import { useAppDispatch, useAppSelector } from '@/redux/hooks'
+import { useDispatch, useSelector } from 'react-redux'
 import { handleApiTimeout } from 'Redux/features/initSlice'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -11,10 +11,10 @@ import GluuText from './GluuText'
 import GluuFormFooter from './GluuFormFooter'
 
 const GluuTimeoutModal = ({ description = '' }) => {
-  const dispatch = useAppDispatch()
+  const dispatch = useDispatch()
   const { t } = useTranslation()
-  const { isTimeout } = useAppSelector((state) => state.initReducer)
-  const { authServerHost } = useAppSelector((state) => state.authReducer.config)
+  const { isTimeout } = useSelector((state: any) => state.initReducer)
+  const { authServerHost } = useSelector((state: any) => state.authReducer.config)
   const { state: themeState } = useTheme()
   const selectedTheme = themeState?.theme ?? DEFAULT_THEME
   const isDark = selectedTheme === THEME_DARK

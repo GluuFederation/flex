@@ -17,6 +17,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { isDevelopment } from '@/utils/env'
 import { UserTableRowData, CustomUser } from '../types'
 import { useDeleteUserWithAudit } from '../hooks/useUserMutations'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
@@ -106,14 +107,13 @@ const UserList = (): JSX.Element => {
             ? { ...userDataToDelete, action_message: userMessage }
             : undefined
           await deleteUser(inumToDelete, userMessage, userWithMessage)
-          refetchUsers()
           setDeleteData(null)
         } catch (error) {
           if (isDevelopment) console.error('Delete user failed:', error)
         }
       }
     },
-    [deleteData, deleteUser, refetchUsers],
+    [deleteData, deleteUser],
   )
   const { state: themeState } = useTheme()
   const selectedTheme = themeState.theme || DEFAULT_THEME
@@ -307,7 +307,6 @@ const UserList = (): JSX.Element => {
           </div>
 
           <div className={classes.tableCard}>
-            {/* loading forced to false: GluuLoader already shows a blocking overlay when loading; avoids double indicators */}
             <GluuTable<UserTableRowData>
               columns={columns}
               data={usersList}
@@ -326,6 +325,7 @@ const UserList = (): JSX.Element => {
           handler={toggle}
           modal={modal}
           onAccept={submitForm}
+          feature={adminUiFeatures.users_delete}
           label={
             modal && deleteData
               ? `${t('messages.action_deletion_for')} ${t('messages.user_entity')} (${[deleteData.displayName, deleteData.userId, deleteData.inum].filter(Boolean).join(' - ')})`

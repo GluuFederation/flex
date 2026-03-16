@@ -9,14 +9,11 @@ import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import UserFormCommitDialog from './UserFormCommitDialog'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
-import { useGetAllAdminuiRoles } from 'JansConfigApi'
 import UserClaimEntry from './UserClaimEntry'
 import PasswordChangeModal from './PasswordChangeModal'
 import AvailableClaimsPanel from './AvailableClaimsPanel'
 import { getUserValidationSchema, initializeCustomAttributes } from '../helper/validations'
-import { buildFormOperations, shouldDisableApplyButton } from '../utils'
-import { JANS_ADMIN_UI_ROLE_ATTR } from '../common/Constants'
-import MultiValueSelectCard from 'Routes/Apps/Gluu/MultiValueSelectCard'
+import { buildFormOperations, shouldDisableApplyButton, isEmptyValue } from '../utils'
 import type { FormFieldValue } from '../types/CommonTypes'
 import {
   UserFormProps,
@@ -31,6 +28,8 @@ import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './UserForm.style'
 
+const DOC_SECTION = 'user'
+
 const UserForm = ({
   onSubmitData,
   userDetails,
@@ -39,22 +38,12 @@ const UserForm = ({
 }: Readonly<UserFormProps>) => {
   const { navigateBack } = useAppNavigation()
   const { t } = useTranslation()
-  const DOC_SECTION = 'user'
   const [searchClaims, setSearchClaims] = useState('')
   const [selectedClaims, setSelectedClaims] = useState<PersonAttribute[]>([])
   const [modal, setModal] = useState(false)
   const [changePasswordModal, setChangePasswordModal] = useState(false)
   const [modifiedFields, setModifiedFields] = useState<ModifiedFields>({})
   const [operations, setOperations] = useState<FormOperation[]>([])
-
-  const { data: rolesData, isLoading: rolesLoading, isError: rolesError } = useGetAllAdminuiRoles()
-  const rolesToBeShown: string[] = useMemo(
-    () =>
-      (rolesData ?? [])
-        .map((roleItem) => roleItem.role)
-        .filter((role): role is string => Boolean(role)),
-    [rolesData],
-  )
 
   const personAttributesKey = useMemo(
     () =>
@@ -81,6 +70,18 @@ const UserForm = ({
 
   const initializedRef = useRef<string | null>(null)
   const formContentRef = useRef<HTMLDivElement | null>(null)
+  const [formHeight, setFormHeight] = useState<number | undefined>(undefined)
+
+  useEffect(() => {
+    const el = formContentRef.current
+    if (!el) return
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0]
+      if (entry) setFormHeight(entry.contentRect.height)
+    })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
   const formik = useFormik<UserEditFormValues>({
     initialValues: initialValues,
     enableReinitialize: true,
@@ -159,13 +160,6 @@ const UserForm = ({
     initializedRef.current = `${userKey}-${attrsKey}`
   }, [userDetails?.inum, personAttributesKey, memoizedPersonAttributes, setSelectedClaims])
 
-  const isEmptyValue = useCallback((value: FormFieldValue): boolean => {
-    if (value === null || value === undefined) return true
-    if (typeof value === 'string') return value.trim() === ''
-    if (Array.isArray(value)) return value.length === 0
-    return false
-  }, [])
-
   const resetFormToInitialCustomAttributes = useCallback(() => {
     const resetValues = initializeCustomAttributes(userDetails || null, memoizedPersonAttributes)
     formik.resetForm({ values: resetValues })
@@ -184,23 +178,20 @@ const UserForm = ({
     prevModifiedFieldsLengthRef.current = currentLength
   }, [modifiedFields, resetFormToInitialCustomAttributes])
 
-  const updateModifiedFields = useCallback(
-    (name: string, value: FormFieldValue) => {
-      setModifiedFields((prev) => {
-        if (isEmptyValue(value) && !Array.isArray(value)) {
-          const { [name]: _removed, ...rest } = prev
-          void _removed
-          return rest
-        } else {
-          return {
-            ...prev,
-            [name]: value as string | string[] | boolean,
-          }
+  const updateModifiedFields = useCallback((name: string, value: FormFieldValue) => {
+    setModifiedFields((prev) => {
+      if (isEmptyValue(value) && !Array.isArray(value)) {
+        const rest = { ...prev }
+        delete rest[name]
+        return rest
+      } else {
+        return {
+          ...prev,
+          [name]: value as string | string[] | boolean,
         }
-      })
-    },
-    [isEmptyValue],
-  )
+      }
+    })
+  }, [])
 
   const removeSelectedClaimsFromState = useCallback(
     (id: string) => {
@@ -237,7 +228,7 @@ const UserForm = ({
         return cleanedFields
       })
     },
-    [isEmptyValue],
+    [],
   )
 
   const handleChange = useCallback(
@@ -254,39 +245,13 @@ const UserForm = ({
     [formik, updateModifiedFields],
   )
 
-  const blockingLoader = isSubmitting
-
-  const roleClaim = useMemo(
-    () => selectedClaims.find((c) => c.name === JANS_ADMIN_UI_ROLE_ATTR),
-    [selectedClaims],
-  )
-  const nonRoleClaims = useMemo(
-    () => selectedClaims.filter((c) => c.name !== JANS_ADMIN_UI_ROLE_ATTR),
-    [selectedClaims],
-  )
-
-  const selectedRoles = useMemo(() => {
-    const raw = formik.values[JANS_ADMIN_UI_ROLE_ATTR]
-    if (Array.isArray(raw)) return raw.filter((v): v is string => typeof v === 'string')
-    return []
-  }, [formik.values])
-
   const commitDialogOperations = useMemo(
     () => operations.map(({ path, value }) => ({ path, value })),
     [operations],
   )
 
-  const handleRoleChange = useCallback(
-    (next: string[]) => {
-      formik.setFieldValue(JANS_ADMIN_UI_ROLE_ATTR, next)
-      formik.setFieldTouched(JANS_ADMIN_UI_ROLE_ATTR, true, false)
-      updateModifiedFields(JANS_ADMIN_UI_ROLE_ATTR, next)
-    },
-    [formik, updateModifiedFields],
-  )
-
   return (
-    <GluuLoader blocking={blockingLoader}>
+    <GluuLoader blocking={isSubmitting}>
       <PasswordChangeModal
         isOpen={changePasswordModal}
         toggle={toggleChangePasswordModal}
@@ -484,32 +449,10 @@ const UserForm = ({
                       handleChange={handleChange}
                     />
                   </div>
-
-                  {roleClaim && (
-                    <div className={classes.fullRow}>
-                      <MultiValueSelectCard
-                        label={t('fields.userRole')}
-                        name={JANS_ADMIN_UI_ROLE_ATTR}
-                        value={selectedRoles}
-                        options={rolesToBeShown}
-                        onChange={handleRoleChange}
-                        disabled={rolesLoading || rolesError}
-                        placeholder={
-                          rolesLoading
-                            ? t('messages.loading_roles')
-                            : rolesError
-                              ? t('messages.failed_load_roles')
-                              : t('placeholders.search_here')
-                        }
-                        allowCustom={false}
-                        doc_category={roleClaim.description}
-                      />
-                    </div>
-                  )}
                 </div>
 
                 <div className={classes.dynamicClaimsWrap}>
-                  {nonRoleClaims.map((data, index) => (
+                  {selectedClaims.map((data, index) => (
                     <UserClaimEntry
                       key={data.name}
                       entry={index}
@@ -541,7 +484,10 @@ const UserForm = ({
             </div>
           </Col>
           <Col sm={4}>
-            <div className={`d-flex flex-column ${classes.claimsPanelWrap}`}>
+            <div
+              className={`d-flex flex-column ${classes.claimsPanelWrap}`}
+              style={formHeight ? { maxHeight: formHeight } : undefined}
+            >
               <AvailableClaimsPanel
                 searchClaims={searchClaims}
                 setSearchClaims={setSearchClaims}
@@ -579,7 +525,7 @@ const UserForm = ({
           formik={formik as FormikProps<UserEditFormValues>}
           operations={userDetails ? commitDialogOperations : []}
           autoCloseOnAccept
-          webhookFeature={userDetails ? 'users_edit' : 'users_add'}
+          webhookFeature="users_edit"
         />
       </Form>
     </GluuLoader>

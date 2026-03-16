@@ -54,6 +54,7 @@ export const useStyles = makeStyles<AvailableClaimsPanelStylesParams>()((
       'gap': 12,
       'flex': '1 1 auto',
       'minHeight': 0,
+      'overflowY': 'auto' as const,
       '& input[type="search"], & input.form-control': {
         backgroundColor: `${claimsInnerBg} !important`,
         color: `${themeColors.fontColor} !important`,

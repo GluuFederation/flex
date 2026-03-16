@@ -31,6 +31,12 @@ jest.mock('Plugins/admin/components/Assets/hooks', () => ({
 
 jest.mock('JansConfigApi', () => ({
   getGetAllAssetsQueryKey: jest.fn(() => ['assets']),
+  useGetWebhooksByFeatureId: jest.fn(() => ({
+    data: [],
+    isLoading: false,
+    isFetching: false,
+    isFetched: true,
+  })),
 }))
 
 const defaultAssetReducerState = {

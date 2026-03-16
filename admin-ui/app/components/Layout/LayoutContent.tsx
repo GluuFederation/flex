@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useMemo, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { ThemeContext } from '@/context/theme/themeContext'
 import getThemeColor, { themeConfig } from '@/context/theme/config'
-import customColors, { hexToRgb, getCustomColorsAsCssVars } from '@/customColors'
+import customColors, { getCustomColorsAsCssVars, getLoadingOverlayRgba } from '@/customColors'
 import { SCROLLBAR } from '@/constants'
 import { THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
 import type { LayoutContentProps } from './types'
@@ -25,9 +25,7 @@ const LayoutContent: React.FC<LayoutContentProps> & { layoutPartName: string } =
     const textColor = isDark ? customColors.white : customColors.textSecondary
     const textColorActive = isDark ? customColors.white : customColors.primaryDark
     const textColorHover = isDark ? customColors.white : customColors.primaryDark
-    const hoverBackground = isDark
-      ? `rgba(${hexToRgb(customColors.white)}, 0.08)`
-      : customColors.sidebarHoverBg
+    const hoverBackground = getLoadingOverlayRgba(themeColors.fontColor, 0.08)
 
     return {
       textColor,
@@ -35,7 +33,7 @@ const LayoutContent: React.FC<LayoutContentProps> & { layoutPartName: string } =
       textColorHover,
       hoverBackground,
     }
-  }, [isDark])
+  }, [isDark, themeColors.fontColor])
 
   const cssVariables = useMemo(
     () => ({

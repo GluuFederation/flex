@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Row, Col } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
@@ -6,10 +7,12 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { UserDeviceDetailViewPageProps } from '../types/ComponentTypes'
 
+const DOC_SECTION = 'user'
+
 const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
   const { rowData } = row
   const deviceData = rowData
-  const DOC_SECTION = 'user'
+  const { t } = useTranslation()
   const { state: themeState } = useTheme()
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
 
@@ -53,7 +56,7 @@ const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
       {deviceData?.deviceData && (
         <Row>
           <GluuText variant="h5" style={{ borderBottom: '2px solid', fontWeight: 'bold' }}>
-            Device Information
+            {t('messages.device_information')}
           </GluuText>
           <Col sm={6} xl={4}>
             <GluuFormDetailRow

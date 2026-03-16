@@ -18,6 +18,8 @@ const USED_CLAIMS = new Set([
   'givenName',
   'middleName',
   'sn',
+  'createdAt',
+  'updatedAt',
 ])
 
 interface AvailableClaimsPanelProps {

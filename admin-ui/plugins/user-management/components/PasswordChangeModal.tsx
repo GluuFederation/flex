@@ -7,11 +7,14 @@ import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import { GluuButton } from '@/components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import { Divider } from '@mui/material'
+import { BUTTON_STYLES } from 'Routes/Apps/Gluu/styles/GluuThemeFormFooter.style'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
-import { passwordChangeValidationSchema } from '../helper/validations'
+import { getPasswordChangeValidationSchema } from '../helper/validations'
 import {
   usePatchUserByInum,
   getGetUserQueryKey,
@@ -135,29 +138,20 @@ const PasswordChangeModal = ({
       })
 
       const userDn = userDetails?.dn
-      let showSuccessAndClose = true
-      if (!userDn) {
-        console.warn('Cannot revoke user session: missing user DN')
-        dispatch(updateToast(true, 'warning', t('messages.session_revoke_failed')))
-        showSuccessAndClose = false
-      } else {
+      if (userDn) {
         try {
           await revokeSessionMutation.mutateAsync({ userDn })
           await AXIOS_INSTANCE.delete(`/app/admin-ui/oauth2/session/${encodeURIComponent(userDn)}`)
-        } catch (error) {
-          console.error('Failed to revoke user session:', error)
-          dispatch(updateToast(true, 'warning', t('messages.session_revoke_failed')))
-          showSuccessAndClose = false
+        } catch {
+          // Silently ignore — 404 means the user has no active session
         }
       }
 
-      if (showSuccessAndClose) {
-        dispatch(updateToast(true, 'success', t('messages.password_changed_successfully')))
-        setPasswordModal(false)
-        toggle()
-        setPassword('')
-        onSuccess?.()
-      }
+      dispatch(updateToast(true, 'success', t('messages.password_changed_successfully')))
+      setPasswordModal(false)
+      toggle()
+      setPassword('')
+      onSuccess?.()
 
       logPasswordChange(userDetails.inum, auditPayload).catch((error) => {
         console.error('Failed to log password change:', error)
@@ -182,7 +176,7 @@ const PasswordChangeModal = ({
 
   const passwordFormik = useFormik<PasswordChangeFormValues>({
     initialValues,
-    validationSchema: passwordChangeValidationSchema,
+    validationSchema: getPasswordChangeValidationSchema(),
     validateOnChange: true,
     validateOnBlur: true,
     validateOnMount: false,
@@ -252,11 +246,13 @@ const PasswordChangeModal = ({
   if (!isOpen) return null
 
   const modalContent = (
-    <>
+    <GluuLoader blocking={isLoading}>
       <GluuCommitDialog
         handler={handleCommitDialogCancel}
         modal={passwordModal}
         onAccept={submitChangePassword}
+        alertMessage={t('messages.revokeUserSession')}
+        alertSeverity="warning"
       />
       <button
         type="button"
@@ -360,18 +356,25 @@ const PasswordChangeModal = ({
               </div>
             </div>
 
-            <div className={commitClasses.buttonRow}>
+            <Divider sx={{ mt: 2 }} />
+            <div style={{ paddingTop: 16, paddingBottom: 8 }}>
               <GluuButton
                 type="submit"
                 disabled={isApplyDisabled || isLoading}
-                backgroundColor={themeColors.badges.statusActive}
-                textColor={themeColors.badges.filledBadgeText}
-                borderColor="transparent"
-                padding="8px 28px"
-                minHeight="40"
-                useOpacityOnHover
                 loading={isLoading}
-                className={commitClasses.yesButton}
+                backgroundColor={themeColors.formFooter.back.backgroundColor}
+                textColor={themeColors.formFooter.back.textColor}
+                borderColor={themeColors.formFooter.back.borderColor}
+                useOpacityOnHover
+                hoverOpacity={0.85}
+                style={{
+                  minHeight: BUTTON_STYLES.height,
+                  padding: `${BUTTON_STYLES.paddingY}px ${BUTTON_STYLES.paddingX}px`,
+                  borderRadius: BUTTON_STYLES.borderRadius,
+                  fontSize: BUTTON_STYLES.fontSize,
+                  fontWeight: BUTTON_STYLES.fontWeight,
+                  letterSpacing: BUTTON_STYLES.letterSpacing,
+                }}
               >
                 {t('actions.change_password')}
               </GluuButton>
@@ -379,7 +382,7 @@ const PasswordChangeModal = ({
           </form>
         </div>
       </div>
-    </>
+    </GluuLoader>
   )
 
   return createPortal(modalContent, document.body)

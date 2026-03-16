@@ -2,13 +2,12 @@ import React, { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import GluuRemovableInputRow from 'Routes/Apps/Gluu/GluuRemovableInputRow'
 import GluuRemovableSelectRow from 'Routes/Apps/Gluu/GluuRemovableSelectRow'
-import MultiValueSelectCard from 'Routes/Apps/Gluu/MultiValueSelectCard'
+import UserRoleAutocomplete from 'Routes/Apps/Gluu/UserRoleAutocomplete'
 import { countries } from 'Plugins/user-management/common/countries'
 import { JANS_ADMIN_UI_ROLE_ATTR, COUNTRY_ATTR } from '../common/Constants'
 import { getClaimLabel, getClaimLabelKey } from '../utils/claimLabelUtils'
 import { useGetAllAdminuiRoles } from 'JansConfigApi'
 import { UserClaimEntryProps } from '../types/ComponentTypes'
-
 const UserClaimEntry = ({
   data,
   entry,
@@ -54,15 +53,28 @@ const UserClaimEntry = ({
     (next: string[]) => {
       formik.setFieldValue(data.name, next)
       formik.setFieldTouched(data.name, true, false)
-      setModifiedFields((prev) => ({ ...prev, [data.name]: next }))
+      const initial = formik.initialValues[data.name]
+      const initialArr = Array.isArray(initial)
+        ? (initial as string[]).filter((v): v is string => typeof v === 'string')
+        : []
+      const isSameAsInitial =
+        next.length === initialArr.length && next.every((v, i) => v === initialArr[i])
+      setModifiedFields((prev) => {
+        if (isSameAsInitial) {
+          const rest = { ...prev }
+          delete rest[data.name]
+          return rest
+        }
+        return { ...prev, [data.name]: next }
+      })
     },
     [data.name, formik, setModifiedFields],
   )
 
-  return (
-    <div key={entry}>
-      {data.oxMultiValuedAttribute && (
-        <MultiValueSelectCard
+  if (data.oxMultiValuedAttribute) {
+    return (
+      <div key={entry}>
+        <UserRoleAutocomplete
           label={claimLabel}
           name={data.name}
           value={multiValue}
@@ -76,32 +88,17 @@ const UserClaimEntry = ({
                 : t('messages.failed_load_roles')
               : t('placeholders.search_here')
           }
-          allowCustom={!isRoleField}
-          onRemoveField={doHandle}
+          allowCustom={data.name !== JANS_ADMIN_UI_ROLE_ATTR}
           doc_category={data.description}
+          onRemoveField={doHandle}
         />
-      )}
-      {data.name !== COUNTRY_ATTR && !data.oxMultiValuedAttribute && (
-        <GluuRemovableInputRow
-          label={claimLabelKey}
-          name={data.name}
-          isDirect={true}
-          value={
-            data?.dataType?.toLowerCase() === 'boolean'
-              ? Boolean(formik.values[data.name])
-              : String(formik.values[data.name] ?? '')
-          }
-          formik={formik}
-          handler={doHandle}
-          modifiedFields={modifiedFields}
-          setModifiedFields={setModifiedFields}
-          doc_category={typeof data.description === 'string' ? data.description : undefined}
-          lsize={3}
-          rsize={9}
-          isBoolean={data?.dataType?.toLowerCase() === 'boolean'}
-        />
-      )}
-      {data.name === COUNTRY_ATTR && !data.oxMultiValuedAttribute && (
+      </div>
+    )
+  }
+
+  if (data.name === COUNTRY_ATTR) {
+    return (
+      <div key={entry}>
         <GluuRemovableSelectRow
           label={claimLabelKey}
           name={data.name}
@@ -113,10 +110,32 @@ const UserClaimEntry = ({
           modifiedFields={modifiedFields}
           setModifiedFields={setModifiedFields}
           handler={doHandle}
-          lsize={3}
-          rsize={9}
+          lsize={12}
+          rsize={12}
         />
-      )}
+      </div>
+    )
+  }
+
+  return (
+    <div key={entry}>
+      <GluuRemovableInputRow
+        label={claimLabelKey}
+        name={data.name}
+        isDirect={true}
+        value={
+          data?.dataType?.toLowerCase() === 'boolean'
+            ? Boolean(formik.values[data.name])
+            : String(formik.values[data.name] ?? '')
+        }
+        formik={formik}
+        handler={doHandle}
+        modifiedFields={modifiedFields}
+        setModifiedFields={setModifiedFields}
+        doc_category={typeof data.description === 'string' ? data.description : undefined}
+        lsize={12}
+        isBoolean={data?.dataType?.toLowerCase() === 'boolean'}
+      />
     </div>
   )
 }

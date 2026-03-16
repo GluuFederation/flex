@@ -35,7 +35,7 @@ export const customColors = {
   paleYellow: '#cfd76f',
 
   // Status
-  statusActive: '#00a65d',
+  statusActive: '#00b875',
   statusActiveBg: '#d3f5e6',
   statusInactive: '#f13f44',
   statusInactiveBg: '#ffe6e7',

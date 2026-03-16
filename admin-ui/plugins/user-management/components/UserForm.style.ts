@@ -41,7 +41,7 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
       },
 
       '& input:not(.MuiOutlinedInput-input), & select, & textarea, & .custom-select': {
-        backgroundColor: `${inputBg} !important`,
+        backgroundColor: inputBg,
         border: `1px solid ${inputBorderColor} !important`,
         borderRadius: MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS,
         color: `${themeColors.fontColor} !important`,
@@ -60,7 +60,7 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
 
       '& input:focus, & input:active, & select:focus, & select:active, & textarea:focus, & textarea:active, & .custom-select:focus, & .custom-select:active, & .form-control:focus, & .form-control:active':
         {
-          backgroundColor: `${inputBg} !important`,
+          backgroundColor: inputBg,
           color: `${themeColors.fontColor} !important`,
           border: `1px solid ${inputBorderColor} !important`,
           outline: 'none !important',

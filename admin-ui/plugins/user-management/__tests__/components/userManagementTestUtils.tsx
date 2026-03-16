@@ -50,6 +50,12 @@ jest.mock('JansConfigApi', () => ({
   })),
   useDeleteFido2Data: jest.fn(() => ({ mutateAsync: jest.fn() })),
   usePatchUserByInum: jest.fn(() => ({ mutateAsync: jest.fn(), isPending: false })),
+  useGetWebhooksByFeatureId: jest.fn(() => ({
+    data: [],
+    isLoading: false,
+    isFetching: false,
+    isFetched: true,
+  })),
 }))
 
 jest.mock('Plugins/user-management/hooks/useUserMutations', () => ({
