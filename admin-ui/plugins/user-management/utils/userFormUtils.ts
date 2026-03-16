@@ -1,5 +1,5 @@
 import { formatDate, isValidDate } from '@/utils/dayjsUtils'
-import { CustomObjectAttribute, PagedResultEntriesItem } from 'JansConfigApi'
+import { CustomObjectAttribute, JansAttribute, PagedResultEntriesItem } from 'JansConfigApi'
 
 import { BIRTHDATE_ATTR, USER_PASSWORD_ATTR } from '../common/Constants'
 import { UserEditFormValues } from '../types/ComponentTypes'
@@ -25,6 +25,12 @@ export const getStringValue = (value: string | string[] | boolean | null | undef
   return ''
 }
 
+const toDateLike = (v: object): string | number | Date | null => {
+  if (typeof v === 'string' || typeof v === 'number' || v instanceof Date) return v
+  if (v && typeof v === 'object' && 'value' in v) return toDateLike((v as { value: object }).value)
+  return null
+}
+
 const processBirthdateAttribute = (
   customAttr: CustomObjectAttribute,
   initialValues: UserEditFormValues,
@@ -33,8 +39,10 @@ const processBirthdateAttribute = (
   const attrSingleValue = customAttr.value
   const rawDate =
     attrValues.length > 0
-      ? (attrValues[0] as unknown as string | number | Date | null)
-      : (attrSingleValue as unknown as string | number | Date | null)
+      ? toDateLike(attrValues[0] as object)
+      : attrSingleValue != null
+        ? toDateLike(attrSingleValue as object)
+        : null
 
   if (rawDate !== undefined && rawDate !== null && customAttr.name) {
     initialValues[customAttr.name] = isValidDate(rawDate) ? formatDate(rawDate, 'YYYY-MM-DD') : ''
@@ -136,16 +144,25 @@ export const setupCustomAttributes = (
       const attributeData = attributeMap.get(customAttr.name)
       if (attributeData && !usedClaims.has(customAttr.name)) {
         const isBoolean = attributeData.dataType?.toLowerCase() === 'boolean'
-        const firstValue = customAttr.values[0] as unknown
+        const firstValue = customAttr.values[0] as string | boolean | object
 
         if (isBoolean && firstValue !== undefined && firstValue !== null) {
-          const boolValue =
-            typeof firstValue === 'boolean'
-              ? firstValue
-              : typeof firstValue === 'string'
-                ? (firstValue as string).toLowerCase() === 'true'
-                : Boolean(firstValue)
-          // Special-case: skip Email Verified when initial value is false so it can be added from claims.
+          let boolValue: boolean
+          if (typeof firstValue === 'boolean') {
+            boolValue = firstValue
+          } else if (typeof firstValue === 'string') {
+            boolValue = firstValue.toLowerCase() === 'true'
+          } else if (typeof firstValue === 'object') {
+            const obj = firstValue as Record<string, string | number | boolean>
+            boolValue =
+              'value' in obj && typeof obj.value === 'boolean'
+                ? obj.value
+                : 'val' in obj && typeof obj.val === 'boolean'
+                  ? obj.val
+                  : Boolean(firstValue)
+          } else {
+            boolValue = Boolean(firstValue)
+          }
           if (customAttr.name === 'emailVerified' && boolValue === false) {
             continue
           }
@@ -159,17 +176,13 @@ export const setupCustomAttributes = (
   setSelectedClaims(tempList)
 }
 
-const isPersonAttribute = (entry: unknown): entry is PersonAttribute => {
-  if (!entry || typeof entry !== 'object') {
-    return false
-  }
-  const candidate = entry as Partial<PersonAttribute>
+const hasRequiredName = (entry: PagedResultEntriesItem | JansAttribute): boolean => {
+  if (!entry || typeof entry !== 'object') return false
+  const candidate = entry as Record<string, string>
   return typeof candidate.name === 'string' && candidate.name.trim().length > 0
 }
 
-export const mapToPersonAttributes = (entries?: PagedResultEntriesItem[]): PersonAttribute[] => {
-  if (!entries || entries.length === 0) {
-    return []
-  }
-  return (entries as unknown[]).filter(isPersonAttribute) as PersonAttribute[]
+export const mapToPersonAttributes = (entries?: JansAttribute[]): PersonAttribute[] => {
+  if (!entries || entries.length === 0) return []
+  return entries.filter((e): e is PersonAttribute => hasRequiredName(e))
 }

@@ -361,7 +361,6 @@ const SsaAddPage: React.FC = () => {
                             setModifiedFields={setModifiedFields}
                             formik={formik}
                             lsize={4}
-                            rsize={8}
                             handler={() => handleAttributeRemove(attribute)}
                             doc_category={SSA}
                           />

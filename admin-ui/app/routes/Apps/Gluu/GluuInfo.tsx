@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
-import customColors from '@/customColors'
 import GluuText from './GluuText'
 import { GluuButton } from '@/components'
 import { useStyles } from './styles/GluuInfo.style'
@@ -38,7 +37,9 @@ const GluuInfo = ({ item, handler }: GluuInfoProps) => {
           <i
             className={`fa fa-2x ${item.testStatus ? 'fa-check-circle' : 'fa-times-circle'}`}
             style={{
-              color: item.testStatus ? customColors.statusActive : customColors.statusInactive,
+              color: item.testStatus
+                ? themeColors.badges.statusActive
+                : themeColors.settings.removeButton.bg,
             }}
           />
           <GluuText variant="p" className={classes.statusMessage}>
@@ -54,8 +55,8 @@ const GluuInfo = ({ item, handler }: GluuInfoProps) => {
       <ModalFooter className={classes.modalFooter}>
         <GluuButton
           onClick={handler}
-          backgroundColor={customColors.statusActive}
-          textColor={customColors.white}
+          backgroundColor={themeColors.formFooter.back.backgroundColor}
+          textColor={themeColors.formFooter.back.textColor}
           borderColor="transparent"
           padding="8px 28px"
           minHeight="40"

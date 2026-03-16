@@ -1,6 +1,6 @@
 import { parseDateStrict } from '@/utils/dayjsUtils'
 import { CustomObjectAttribute } from 'JansConfigApi'
-import { BIRTHDATE_ATTR, JANS_ADMIN_UI_ROLE_ATTR } from '../common/Constants'
+import { BIRTHDATE_ATTR, JANS_ADMIN_UI_ROLE_ATTR, USER_ROLE_FORM_ATTR } from '../common/Constants'
 import {
   UserEditFormValues,
   FormValueEntry,
@@ -24,7 +24,10 @@ export const extractValueFromEntry = (entry: FormValueEntry, attributeName: stri
   }
   if (entry && typeof entry === 'object' && !Array.isArray(entry)) {
     const record = entry as ValueExtractionRecord
-    if ((attributeName === JANS_ADMIN_UI_ROLE_ATTR || attributeName === 'role') && record.role) {
+    if (
+      (attributeName === JANS_ADMIN_UI_ROLE_ATTR || attributeName === USER_ROLE_FORM_ATTR) &&
+      record.role
+    ) {
       return record.role.trim()
     }
     const value = record.role ?? record.value ?? record.label ?? record[attributeName]

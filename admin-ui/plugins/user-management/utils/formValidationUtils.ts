@@ -1,4 +1,12 @@
 import { ModifiedFields } from '../types/ComponentTypes'
+import type { FormFieldValue } from '../types/CommonTypes'
+
+export const isEmptyValue = (value: FormFieldValue): boolean => {
+  if (value === null || value === undefined) return true
+  if (typeof value === 'string') return value.trim() === ''
+  if (Array.isArray(value)) return value.length === 0
+  return false
+}
 
 export const shouldDisableApplyButton = (
   isSubmitting: boolean,
