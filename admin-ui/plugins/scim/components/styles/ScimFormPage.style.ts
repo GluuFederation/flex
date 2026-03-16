@@ -37,9 +37,11 @@ const formGroupOverrides = {
     maxWidth: '100%',
     paddingLeft: 0,
     paddingRight: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
     marginBottom: LABEL_MARGIN_BOTTOM,
   },
-  '& .form-group [class*="col"]': {
+  '& .form-group div[class*="col"]': {
     flex: '0 0 100%',
     width: '100%',
     maxWidth: '100%',
@@ -53,7 +55,7 @@ const formGroupOverrides = {
 
 export const useStyles = makeStyles<ScimFormPageStylesParams>()((
   theme: Theme,
-  { isDark, themeColors },
+  { isDark: _isDark, themeColors },
 ) => {
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   const formInputBg = themeColors.settings?.formInputBackground ?? themeColors.inputBackground
@@ -106,8 +108,8 @@ export const useStyles = makeStyles<ScimFormPageStylesParams>()((
       'minWidth': 0,
       'boxSizing': 'border-box',
       ...formGroupOverrides,
-      '& .form-group [class*="col"]': {
-        ...formGroupOverrides['& .form-group [class*="col"]'],
+      '& .form-group div[class*="col"]': {
+        ...formGroupOverrides['& .form-group div[class*="col"]'],
         position: 'relative',
         paddingBottom: ERROR_SPACE,
       },
@@ -121,8 +123,8 @@ export const useStyles = makeStyles<ScimFormPageStylesParams>()((
       'gridColumn': '1 / -1',
       'boxSizing': 'border-box',
       ...formGroupOverrides,
-      '& .form-group [class*="col"]': {
-        ...formGroupOverrides['& .form-group [class*="col"]'],
+      '& .form-group div[class*="col"]': {
+        ...formGroupOverrides['& .form-group div[class*="col"]'],
         position: 'relative',
         paddingBottom: ERROR_SPACE,
       },
