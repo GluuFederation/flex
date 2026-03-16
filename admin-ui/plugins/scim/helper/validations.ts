@@ -19,7 +19,7 @@ export const getScimConfigurationSchema = (t: TFunction) =>
   Yup.object({
     baseDN: Yup.string(),
     applicationUrl: Yup.string().test(
-      'valid-secure-url',
+      'valid-http-url',
       t('messages.scim_application_url_invalid'),
       isValidHttpUrl,
     ),
