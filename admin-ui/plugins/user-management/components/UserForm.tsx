@@ -7,12 +7,17 @@ import { GluuButton } from '@/components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import UserFormCommitDialog from './UserFormCommitDialog'
+import GluuWebhookCommitDialog from 'Routes/Apps/Gluu/GluuWebhookCommitDialog'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import {
+  revokeSessionWhenFieldsModifiedInUserForm,
+  getUserValidationSchema,
+  initializeCustomAttributes,
+} from '../helper'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import UserClaimEntry from './UserClaimEntry'
 import PasswordChangeModal from './PasswordChangeModal'
 import AvailableClaimsPanel from './AvailableClaimsPanel'
-import { getUserValidationSchema, initializeCustomAttributes } from '../helper/validations'
 import { buildFormOperations, shouldDisableApplyButton, isEmptyValue } from '../utils'
 import type { FormFieldValue } from '../types/CommonTypes'
 import {
@@ -518,14 +523,22 @@ const UserForm = ({
           applyButtonType="button"
           isLoading={isSubmitting}
         />
-        <UserFormCommitDialog
+        <GluuWebhookCommitDialog
           handler={toggle}
           modal={modal}
           onAccept={submitForm}
           formik={formik as FormikProps<UserEditFormValues>}
           operations={userDetails ? commitDialogOperations : []}
           autoCloseOnAccept
-          webhookFeature="users_edit"
+          webhookFeature={adminUiFeatures.users_edit}
+          alertMessage={
+            (userDetails ? commitDialogOperations : []).some((op) =>
+              revokeSessionWhenFieldsModifiedInUserForm.includes(op.path),
+            )
+              ? t('messages.revokeUserSession')
+              : undefined
+          }
+          alertSeverity="warning"
         />
       </Form>
     </GluuLoader>

@@ -15,11 +15,11 @@ jest.mock('@/cedarling', () => ({
 }))
 
 jest.mock('@/cedarling/utility', () => ({
-  ADMIN_UI_RESOURCES: { SMTP: 'smtp' },
+  ADMIN_UI_RESOURCES: { SMTP: 'SMTP', Webhooks: 'Webhooks' },
 }))
 
 jest.mock('@/cedarling/constants/resourceScopes', () => ({
-  CEDAR_RESOURCE_SCOPES: { smtp: [] },
+  CEDAR_RESOURCE_SCOPES: { SMTP: [], Webhooks: [] },
 }))
 
 jest.mock('JansConfigApi', () => ({
@@ -27,6 +27,7 @@ jest.mock('JansConfigApi', () => ({
   usePutConfigSmtp: jest.fn(() => ({ mutate: jest.fn(), isPending: false })),
   useTestConfigSmtp: jest.fn(() => ({ mutate: jest.fn(), isPending: false })),
   getGetConfigSmtpQueryKey: jest.fn(() => ['configSmtp']),
+  useGetWebhooksByFeatureId: jest.fn(() => ({ data: [], isFetching: false, isFetched: true })),
 }))
 
 const mockSmtpConfig = {

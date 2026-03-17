@@ -14,7 +14,6 @@ import { BUTTON_STYLES } from 'Routes/Apps/Gluu/styles/GluuThemeFormFooter.style
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
-import { getPasswordChangeValidationSchema } from '../helper/validations'
 import {
   usePatchUserByInum,
   getGetUserQueryKey,
@@ -22,8 +21,12 @@ import {
   useRevokeUserSession,
 } from 'JansConfigApi'
 import type { CaughtError } from '../types/ErrorTypes'
-import { logPasswordChange, getErrorMessage } from '../helper/userAuditHelpers'
-import { triggerUserWebhook } from '../helper/userWebhookHelpers'
+import {
+  getPasswordChangeValidationSchema,
+  logPasswordChange,
+  getErrorMessage,
+  triggerUserWebhook,
+} from '../helper'
 import { CustomUser } from '../types/UserApiTypes'
 import { AXIOS_INSTANCE } from '../../../api-client'
 import { useStyles as useCommitDialogStyles } from 'Routes/Apps/Gluu/styles/GluuCommitDialog.style'

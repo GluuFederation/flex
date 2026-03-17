@@ -376,6 +376,7 @@
     "logging_level": "Niveau de Journalisation",
     "logging_layout": "Disposition de la Journalisation",
     "external_logger_configuration": "Configuration du Journal Externe",
+    "disable_external_logger_configuration": "Désactiver le Journal Externe",
     "metric_reporter_interval": "Intervalle du Rapporteur de Métriques",
     "metric_reporter_keep_data_days": "Durée de Conservation des Données du Rapporteur de Métriques",
     "metric_reporter_enabled": "Activer le Rapporteur de Métriques",

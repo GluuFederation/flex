@@ -6,7 +6,7 @@ import { useCedarling } from '@/cedarling'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from '@/redux/hooks'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -35,7 +35,7 @@ const ASSET_RESOURCE_ID = ADMIN_UI_RESOURCES.Assets
 const ASSET_SCOPES = CEDAR_RESOURCE_SCOPES[ASSET_RESOURCE_ID] ?? []
 
 const JansAssetListPage: React.FC = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { navigateToRoute } = useAppNavigation()
   const {

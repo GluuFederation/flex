@@ -29,7 +29,7 @@ import {
   CustomUser,
 } from '../types'
 import type { CaughtError } from '../types/ErrorTypes'
-import { getErrorMessage, logUserUpdate } from '../helper/userAuditHelpers'
+import { getErrorMessage, logUserUpdate } from '../helper'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './User2FADevicesModal.style'
 

@@ -1,10 +1,15 @@
 import { makeStyles } from 'tss-react/mui'
 import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
-import { CEDARLING_CONFIG_SPACING, MAPPING_SPACING } from '@/constants'
 import type { ThemeConfig } from '@/context/theme/config'
+import {
+  createFormInputStyles,
+  createFormInputFocusStyles,
+  createFormInputPlaceholderStyles,
+  createFormInputAutofillStyles,
+} from '@/styles/formStyles'
 
-interface StylesParams {
+type StylesParams = {
   isDark: boolean
   themeColors: ThemeConfig
 }
@@ -16,6 +21,12 @@ export const usePasswordModalStyles = makeStyles<StylesParams>()((
   const cardBorderStyle = getCardBorderStyle({ isDark })
   const inputBorderColor = themeColors.settings?.inputBorder ?? themeColors.borderColor
   const modalBg = themeColors.settings?.cardBackground ?? themeColors.card.background
+  const inputColors = {
+    inputBg: themeColors.inputBackground,
+    inputBorderColor,
+    fontColor: themeColors.fontColor,
+    textMuted: themeColors.textMuted,
+  }
 
   return {
     modalContainer: {
@@ -52,34 +63,15 @@ export const usePasswordModalStyles = makeStyles<StylesParams>()((
     },
     fieldInput: {
       'width': '100%',
-      'backgroundColor': themeColors.inputBackground,
-      'border': `1px solid ${inputBorderColor}`,
-      'borderRadius': MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS,
-      'minHeight': CEDARLING_CONFIG_SPACING.INPUT_HEIGHT,
-      'padding': `${CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL}px ${CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL}px`,
       'boxSizing': 'border-box',
       fontFamily,
       'fontSize': fontSizes.base,
-      'color': themeColors.fontColor,
-      'caretColor': themeColors.fontColor,
       'outline': 'none',
-      '&::placeholder': {
-        color: themeColors.textMuted,
-        opacity: 1,
-      },
-      '&:focus, &:focus-visible': {
-        outline: 'none',
-        boxShadow: 'none',
-        backgroundColor: themeColors.inputBackground,
-        color: themeColors.fontColor,
-      },
+      ...createFormInputStyles(inputColors),
+      '&::placeholder': createFormInputPlaceholderStyles(themeColors.textMuted),
+      '&:focus, &:focus-visible': createFormInputFocusStyles(inputColors),
       '&:-webkit-autofill, &:-webkit-autofill:hover, &:-webkit-autofill:focus, &:-webkit-autofill:active':
-        {
-          WebkitBoxShadow: `0 0 0 100px ${themeColors.inputBackground} inset !important`,
-          WebkitTextFillColor: `${themeColors.fontColor} !important`,
-          caretColor: themeColors.fontColor,
-          transition: 'background-color 5000s ease-in-out 0s',
-        },
+        createFormInputAutofillStyles(inputColors),
     },
     inputWrapper: {
       position: 'relative',

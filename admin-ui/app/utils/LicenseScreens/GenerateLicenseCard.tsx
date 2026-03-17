@@ -3,8 +3,7 @@ import { useTranslation } from 'react-i18next'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
-import { useDispatch } from 'react-redux'
-import { useAppSelector } from '@/redux/hooks'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
@@ -15,7 +14,7 @@ import { GluuButton } from '@/components/GluuButton'
 
 const GenerateLicenseCard = () => {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const theme = useContext(ThemeContext)
   const currentTheme = theme?.state?.theme ?? DEFAULT_THEME
   const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])

@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from '@/redux/hooks'
 import { useQueryClient } from '@tanstack/react-query'
 import { useDeleteAsset, getGetAllAssetsQueryKey } from 'JansConfigApi'
 import { invalidateQueriesByKey } from '@/utils/queryUtils'
@@ -22,7 +22,7 @@ export const useDeleteAssetWithAudit = (callbacks?: {
   onError?: (err: Error) => void
 }) => {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { logAction } = useAssetAudit()
   const mutation = useDeleteAsset()
