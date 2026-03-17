@@ -1,6 +1,9 @@
 import { getRootState } from 'Redux/hooks'
 import type { RootState } from 'Redux/types'
 import { logAuditUserAction } from 'Utils/AuditLogger'
+import { triggerWebhookForFeature } from '@/utils/triggerWebhookForFeature'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { CaughtError, ApiErrorLike } from '../types/ErrorTypes'
 import { FETCH, DELETION, UPDATE, CREATE } from '../../../app/audit/UserActionType'
 import { API_USERS } from '../../../app/audit/Resources'
@@ -267,4 +270,11 @@ export const getErrorMessage = (error: CaughtError): string => {
     return message || description || err?.response?.text || err?.message || 'An error occurred'
   }
   return 'An error occurred'
+}
+
+export const triggerUserWebhook = (
+  data: CustomUser,
+  feature: string = adminUiFeatures.users_edit,
+): void => {
+  triggerWebhookForFeature(data as Record<string, JsonValue>, feature)
 }

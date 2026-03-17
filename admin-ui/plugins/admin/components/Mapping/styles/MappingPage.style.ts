@@ -45,7 +45,7 @@ export const useStyles = makeStyles<MappingPageStyleParams>()((_theme, { isDark,
 
   infoAlert: {
     backgroundColor: theme.infoAlert.background,
-    border: `1px solid ${theme.infoAlert.border}`,
+    border: 'none',
     borderRadius: MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS,
     padding: `${MAPPING_SPACING.INFO_ALERT_PADDING_VERTICAL}px ${MAPPING_SPACING.INFO_ALERT_PADDING_HORIZONTAL}px`,
     display: 'flex',
@@ -91,7 +91,6 @@ export const useStyles = makeStyles<MappingPageStyleParams>()((_theme, { isDark,
     'justifyContent': 'space-between',
     'padding': `0 ${MAPPING_SPACING.CARD_PADDING}px`,
     'height': MAPPING_SPACING.CARD_HEADER_HEIGHT,
-    'borderBottom': `1px solid ${theme.card.border}`,
     'cursor': 'pointer',
     'transition': 'background-color 0.2s ease',
     '&:hover': {
@@ -99,6 +98,10 @@ export const useStyles = makeStyles<MappingPageStyleParams>()((_theme, { isDark,
         ? `rgba(${hexToRgb(customColors.white)}, 0.02)`
         : `rgba(${hexToRgb(customColors.black)}, 0.02)`,
     },
+  },
+
+  roleCardHeaderExpanded: {
+    borderBottom: `1px solid ${theme.card.border}`,
   },
 
   roleTitle: {

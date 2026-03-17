@@ -21,15 +21,18 @@ import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import { setWebhookModal } from 'Plugins/admin/redux/features/WebhookSlice'
 import type { CaughtError } from '../types/ErrorTypes'
-import { logUserUpdate, getErrorMessage } from '../helper/userAuditHelpers'
+import {
+  logUserUpdate,
+  getErrorMessage,
+  triggerUserWebhook,
+  revokeSessionWhenFieldsModifiedInUserForm,
+} from '../helper'
 import {
   mapToPersonAttributes,
   buildCustomAttributesFromValues,
   updateCustomAttributesWithModifiedFields,
   getStandardFieldValues,
 } from '../utils'
-import { revokeSessionWhenFieldsModifiedInUserForm } from '../helper/constants'
-import { triggerUserWebhook } from '../helper/userWebhookHelpers'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { isPersistenceInfo } from 'Plugins/services/Components/Configuration/types'
 import { AXIOS_INSTANCE } from '../../../api-client'

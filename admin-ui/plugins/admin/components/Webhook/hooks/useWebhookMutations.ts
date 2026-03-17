@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from '@/redux/hooks'
 import { useQueryClient } from '@tanstack/react-query'
 import {
   usePostWebhook,
@@ -34,7 +34,7 @@ const invalidateWebhooksByFeatureQueries = (queryClient: ReturnType<typeof useQu
 
 export const useCreateWebhookWithAudit = (callbacks?: MutationCallbacks) => {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { logAction } = useWebhookAudit()
   const mutation = usePostWebhook()
@@ -82,7 +82,7 @@ export const useCreateWebhookWithAudit = (callbacks?: MutationCallbacks) => {
 
 export const useUpdateWebhookWithAudit = (callbacks?: MutationCallbacks) => {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { logAction } = useWebhookAudit()
   const mutation = usePutWebhook()
@@ -136,7 +136,7 @@ export const useUpdateWebhookWithAudit = (callbacks?: MutationCallbacks) => {
 
 export const useDeleteWebhookWithAudit = (callbacks?: MutationCallbacks) => {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { logAction } = useWebhookAudit()
   const mutation = useDeleteWebhookByInum()

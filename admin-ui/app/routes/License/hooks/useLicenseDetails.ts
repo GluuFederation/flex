@@ -1,15 +1,14 @@
 import { useRef, useCallback, useMemo } from 'react'
-import { useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
-import { useAppSelector, getRootState } from '@/redux/hooks'
+import { useAppDispatch, useAppSelector, getRootState } from '@/redux/hooks'
 import {
   useGetAdminuiLicense,
   useLicenseConfigDelete,
   getGetAdminuiLicenseQueryKey,
   type LicenseResponse,
 } from 'JansConfigApi'
-import { addAdditionalData, isFourZeroThreeError } from '@/utils/TokenController'
+import { isFourZeroThreeError } from '@/utils/TokenController'
 import { postUserAction } from '@/redux/api/backend-api'
 import { auditLogoutLogs } from '@/redux/features/sessionSlice'
 import { updateToast } from '@/redux/features/toastSlice'
@@ -18,7 +17,7 @@ import { isDevelopment } from '@/utils/env'
 import { API_LICENSE } from '@/audit/Resources'
 import { DELETION } from '@/audit/UserActionType'
 import type { RootState } from '@/redux/types'
-import type { AuditLog } from '@/redux/sagas/types/audit'
+import type { UserActionPayload } from '@/redux/api/types/BackendApi'
 
 interface UseLicenseDetailsOptions {
   onResetSuccess?: () => void
@@ -44,7 +43,7 @@ const transformLicenseResponse = (
 
 const EMPTY_ITEM: LicenseResponse = {}
 
-const createAuditLog = (state: RootState): AuditLog | null => {
+const createAuditLog = (state: RootState): UserActionPayload | null => {
   const { userinfo, config, location } = state.authReducer
   if (!userinfo?.inum || !userinfo?.name) return null
   return {
@@ -57,7 +56,7 @@ const createAuditLog = (state: RootState): AuditLog | null => {
 
 export const useLicenseDetails = (options: UseLicenseDetailsOptions = {}) => {
   const queryClient = useQueryClient()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
   const pendingMessageRef = useRef<string>('')
@@ -77,10 +76,14 @@ export const useLicenseDetails = (options: UseLicenseDetailsOptions = {}) => {
       onSuccess: async () => {
         queryClient.invalidateQueries({ queryKey: getGetAdminuiLicenseQueryKey() })
         const currentState = getRootState()
-        const audit = createAuditLog(currentState)
-        if (audit) {
-          addAdditionalData(audit, DELETION, API_LICENSE, {})
-          audit.message = pendingMessageRef.current
+        const baseAudit = createAuditLog(currentState)
+        if (baseAudit) {
+          const audit = {
+            ...baseAudit,
+            action: DELETION,
+            resource: API_LICENSE,
+            message: pendingMessageRef.current,
+          }
           try {
             await postUserAction(audit)
           } catch (e) {
