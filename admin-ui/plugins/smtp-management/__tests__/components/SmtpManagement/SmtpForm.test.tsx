@@ -15,11 +15,11 @@ jest.mock('@/cedarling', () => ({
 }))
 
 jest.mock('@/cedarling/utility', () => ({
-  ADMIN_UI_RESOURCES: { SMTP: 'smtp', Webhooks: 'webhooks' },
+  ADMIN_UI_RESOURCES: { SMTP: 'SMTP', Webhooks: 'Webhooks' },
 }))
 
 jest.mock('@/cedarling/constants/resourceScopes', () => ({
-  CEDAR_RESOURCE_SCOPES: { smtp: [], webhooks: [] },
+  CEDAR_RESOURCE_SCOPES: { SMTP: [], Webhooks: [] },
 }))
 
 jest.mock('JansConfigApi', () => ({
