@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useCallback, memo } from 'react'
 import { Formik, FormikProps } from 'formik'
+import { useTranslation } from 'react-i18next'
 import { Form } from 'Components'
 import type { MultiSelectOption } from 'Routes/Apps/Gluu/types/GluuMultiSelectRow.types'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
@@ -8,9 +9,8 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuMultiSelectRow from 'Routes/Apps/Gluu/GluuMultiSelectRow'
-import { ATTRIBUTE } from 'Utils/ApiResources'
-import { useTranslation } from 'react-i18next'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import { ATTRIBUTE } from 'Utils/ApiResources'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
@@ -52,25 +52,40 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
 
   const { classes } = useStyles({ isDark, themeColors })
 
-  // Memoized initial values
   const initialValues = useInitialAttributeValues(item)
-
-  // Memoized default empty values for create mode
   const defaultFormValues = useMemo(() => getDefaultFormValues(), [])
-
-  // Determine if we're in create mode (no inum) or edit mode (has inum)
   const isCreateMode = useMemo(() => !item.inum, [item.inum])
-
-  // Memoized initial validation state
   const initialValidationState = useMemo(() => getInitialValidationState(item), [item])
   const [validation, setValidation] = useState<boolean>(initialValidationState)
-
-  // Memoized validation schema - conditionally validates based on validation toggle
   const validationSchema = useAttributeValidationSchema(validation)
-
   const isViewMode = useMemo(() => hideButtons?.save === true, [hideButtons])
 
-  // Memoized handlers
+  const statusOptions = useMemo(
+    () => [
+      { value: 'active', label: t('options.active') },
+      { value: 'inactive', label: t('options.inactive') },
+    ],
+    [t],
+  )
+
+  const dataTypeOptions = useMemo(
+    () => [
+      { value: 'string', label: t('options.string') },
+      { value: 'json', label: t('options.json') },
+      { value: 'numeric', label: t('options.numeric') },
+      { value: 'binary', label: t('options.binary') },
+      { value: 'certificate', label: t('options.certificate') },
+      { value: 'date', label: t('options.date') },
+      { value: 'boolean', label: t('options.boolean') },
+    ],
+    [t],
+  )
+
+  const formClassName = useMemo(
+    () => `${classes.formLabels} ${classes.formWithInputs}`,
+    [classes.formLabels, classes.formWithInputs],
+  )
+
   const toggleModal = useCallback(() => {
     setModal((prev) => !prev)
   }, [])
@@ -79,7 +94,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
     setValidation((prev) => {
       const newValue = !prev
       if (!newValue) {
-        // Clear validation fields when validation is disabled
         formik.setFieldValue('regexp', null)
         formik.setFieldValue('maxLength', null)
         formik.setFieldValue('minLength', null)
@@ -104,7 +118,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
     [item, customOnSubmit, validation],
   )
 
-  // Uses navigateBack with explicit fallback to attributes list (conforms to global navigation policy)
   const handleBack = useCallback(() => {
     navigateBack(ROUTES.ATTRIBUTES_LIST)
   }, [navigateBack])
@@ -112,11 +125,9 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
   const handleCancel = useCallback(
     (formik: FormikProps<AttributeFormValues>) => {
       if (isCreateMode) {
-        // In create mode: clear all fields to default/empty state
         formik.resetForm({ values: defaultFormValues })
         setValidation(false)
       } else {
-        // In edit mode: reset to original values
         formik.resetForm({ values: initialValues })
         setValidation(initialValidationState)
       }
@@ -128,28 +139,22 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      validateOnMount={true}
-      validateOnChange={true}
-      validateOnBlur={true}
-      onSubmit={() => {
-        toggleModal()
-      }}
-      enableReinitialize={true}
+      validateOnMount
+      validateOnChange
+      validateOnBlur
+      onSubmit={toggleModal}
+      enableReinitialize
       key={item.inum || 'new'}
     >
       {(formik: FormikProps<AttributeFormValues>) => {
         const valuesChanged = hasFormChanged(initialValues, formik.values)
-        const validationStateChanged = validation !== initialValidationState
-        const formHasChanged = valuesChanged || validationStateChanged
-
+        const formHasChanged = valuesChanged || validation !== initialValidationState
         const formValid = isFormValid(formik.values, formik.errors, formik.isValid)
-
         const canApply = formValid && (isCreateMode || formHasChanged)
 
         return (
           <Form onSubmit={formik.handleSubmit}>
-            <div className={`${classes.formLabels} ${classes.formWithInputs}`}>
-              {/* 2-column grid layout matching Figma design */}
+            <div className={formClassName}>
               <div className={classes.formGrid}>
                 {item.inum && (
                   <div className={`${classes.fieldItem} ${classes.inumFullWidth}`}>
@@ -165,7 +170,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                   </div>
                 )}
 
-                {/* Row 1: Name | Display Name */}
                 <div className={classes.fieldItem}>
                   <GluuInputRow
                     label="fields.name"
@@ -204,7 +208,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                   />
                 </div>
 
-                {/* Row 2: Description | Status */}
                 <div className={classes.fieldItem}>
                   <GluuInputRow
                     label="fields.description"
@@ -235,10 +238,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     value={formik.values.status}
                     doc_category={ATTRIBUTE}
                     doc_entry="status"
-                    values={[
-                      { value: 'active', label: t('options.active') },
-                      { value: 'inactive', label: t('options.inactive') },
-                    ]}
+                    values={statusOptions}
                     errorMessage={formik.errors.status ? t(formik.errors.status) : undefined}
                     showError={!!(formik.errors.status && formik.touched.status)}
                     disabled={isViewMode}
@@ -246,7 +246,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                   />
                 </div>
 
-                {/* Row 3: Data Type | oxAuth claim name */}
                 <div className={classes.fieldItem}>
                   <GluuSelectRow
                     label="fields.data_type"
@@ -257,15 +256,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     value={formik.values.dataType}
                     doc_category={ATTRIBUTE}
                     doc_entry="dataType"
-                    values={[
-                      { value: 'string', label: t('options.string') },
-                      { value: 'json', label: t('options.json') },
-                      { value: 'numeric', label: t('options.numeric') },
-                      { value: 'binary', label: t('options.binary') },
-                      { value: 'certificate', label: t('options.certificate') },
-                      { value: 'date', label: t('options.date') },
-                      { value: 'boolean', label: t('options.boolean') },
-                    ]}
+                    values={dataTypeOptions}
                     errorMessage={formik.errors.dataType ? t(formik.errors.dataType) : undefined}
                     showError={!!(formik.errors.dataType && formik.touched.dataType)}
                     disabled={isViewMode}
@@ -288,7 +279,36 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                   />
                 </div>
 
-                {/* Row 4: Edit Type | View Type */}
+                <div className={classes.fieldItem}>
+                  <GluuInputRow
+                    label="fields.saml1_uri"
+                    name="saml1Uri"
+                    formik={formik}
+                    lsize={12}
+                    rsize={12}
+                    value={formik.values?.saml1Uri ?? ''}
+                    doc_category={ATTRIBUTE}
+                    doc_entry="saml1Uri"
+                    placeholder={t('placeholders.enter_here')}
+                    disabled={isViewMode}
+                  />
+                </div>
+
+                <div className={classes.fieldItem}>
+                  <GluuInputRow
+                    label="fields.saml2_uri"
+                    name="saml2Uri"
+                    formik={formik}
+                    lsize={12}
+                    rsize={12}
+                    value={formik.values?.saml2Uri ?? ''}
+                    doc_category={ATTRIBUTE}
+                    doc_entry="saml2Uri"
+                    placeholder={t('placeholders.enter_here')}
+                    disabled={isViewMode}
+                  />
+                </div>
+
                 <div className={classes.fieldItem}>
                   <GluuMultiSelectRow
                     label="fields.edit_type"
@@ -327,7 +347,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                   />
                 </div>
 
-                {/* Row 5: Usage Type | (empty) */}
                 <div className={classes.fieldItem}>
                   <GluuMultiSelectRow
                     label="fields.usage_type"
@@ -348,41 +367,8 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                   />
                 </div>
 
-                {/* empty cell to keep grid alignment */}
                 <div />
 
-                {/* Row 6: Saml1 URI | Saml2 URI */}
-                <div className={classes.fieldItem}>
-                  <GluuInputRow
-                    label="fields.saml1_uri"
-                    name="saml1Uri"
-                    formik={formik}
-                    lsize={12}
-                    rsize={12}
-                    value={formik.values?.saml1Uri ?? ''}
-                    doc_category={ATTRIBUTE}
-                    doc_entry="saml1Uri"
-                    placeholder={t('placeholders.enter_here')}
-                    disabled={isViewMode}
-                  />
-                </div>
-
-                <div className={classes.fieldItem}>
-                  <GluuInputRow
-                    label="fields.saml2_uri"
-                    name="saml2Uri"
-                    formik={formik}
-                    lsize={12}
-                    rsize={12}
-                    value={formik.values?.saml2Uri ?? ''}
-                    doc_category={ATTRIBUTE}
-                    doc_entry="saml2Uri"
-                    placeholder={t('placeholders.enter_here')}
-                    disabled={isViewMode}
-                  />
-                </div>
-
-                {/* Row 7: Multivalued | Hide On Discovery */}
                 <div className={classes.toggleRow}>
                   <GluuToogleRow
                     name="oxMultiValuedAttribute"
@@ -415,7 +401,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                   />
                 </div>
 
-                {/* Row 8: Include In SCIM Extension | Enable Custom Validation */}
                 <div className={classes.toggleRow}>
                   <GluuToogleRow
                     name="scimCustomAttr"
@@ -445,7 +430,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                   />
                 </div>
 
-                {/* Validation fields — each in its own grid cell */}
                 {validation && (
                   <>
                     <div className={classes.fieldItem}>
@@ -487,7 +471,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                         disabled={isViewMode}
                       />
                     </div>
-                    {/* empty cell to keep grid alignment */}
                     <div />
                   </>
                 )}
