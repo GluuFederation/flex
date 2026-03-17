@@ -5,14 +5,21 @@ const initialState = {
   showToast: false,
   message: '',
   type: 'success',
+  onCloseRedirectUrl: '',
 }
 
-export const updateToast = (showToast = false, type = 'success', message = '') => ({
+export const updateToast = (
+  showToast = false,
+  type = 'success',
+  message = '',
+  onCloseRedirectUrl = '',
+) => ({
   type: 'toast/updateToast',
   payload: {
-    showToast: showToast,
-    message: message,
-    type: type,
+    showToast,
+    message,
+    type,
+    onCloseRedirectUrl,
   },
 })
 
@@ -21,10 +28,11 @@ const toastSlice = createSlice({
   initialState,
   reducers: {
     updateToast: (state, action) => {
-      const { showToast, type, message } = action.payload
+      const { showToast, type, message, onCloseRedirectUrl = '' } = action.payload
       state.showToast = showToast
       state.type = type
       state.message = message
+      state.onCloseRedirectUrl = onCloseRedirectUrl
     },
   },
 })

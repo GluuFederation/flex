@@ -1,4 +1,5 @@
 import * as Yup from 'yup'
+import i18n from '@/i18n'
 import { formatDate, isValidDate } from '@/utils/dayjsUtils'
 import { CustomUser, PersonAttribute } from '../types/UserApiTypes'
 import { UserEditFormValues } from '../types/ComponentTypes'
@@ -14,17 +15,17 @@ export const getUserValidationSchema = (userDetails: CustomUser | null) => {
         .transform((value) => (typeof value === 'string' && value.trim() === '' ? null : value))
         .test(
           'password-validation',
-          'Password must be at least 8 characters and contain uppercase, lowercase, number, and special character',
+          () => i18n.t('validation_messages.password_format'),
           (value) => {
             if (!value) return true
             return validatePassword(value)
           },
         )
     : Yup.string()
-        .required('Password is required.')
+        .required(() => i18n.t('validation_messages.password_required'))
         .test(
           'password-validation',
-          'Password must be at least 8 characters and contain uppercase, lowercase, number, and special character',
+          () => i18n.t('validation_messages.password_format'),
           (value) => {
             if (!value) return false
             return validatePassword(value)
@@ -45,41 +46,48 @@ export const getUserValidationSchema = (userDetails: CustomUser | null) => {
           },
           then: (schema) =>
             schema
-              .required('Confirm password is required when password is provided')
-              .oneOf([Yup.ref('userPassword')], 'Passwords must match'),
+              .required(() => i18n.t('validation_messages.confirm_password_required_when_set'))
+              .oneOf([Yup.ref('userPassword')], () =>
+                i18n.t('validation_messages.passwords_must_match'),
+              ),
           otherwise: (schema) =>
-            schema.oneOf([Yup.ref('userPassword'), null], 'Passwords must match'),
+            schema.oneOf([Yup.ref('userPassword'), null], () =>
+              i18n.t('validation_messages.passwords_must_match'),
+            ),
         })
     : Yup.string()
-        .oneOf([Yup.ref('userPassword')], 'Passwords must match')
-        .required('Confirm password is required.')
+        .oneOf([Yup.ref('userPassword')], () => i18n.t('validation_messages.passwords_must_match'))
+        .required(() => i18n.t('validation_messages.confirm_password_required'))
 
   return Yup.object({
-    displayName: Yup.string().required('Display name is required.'),
-    givenName: Yup.string().required('First name is required.'),
-    sn: Yup.string().required('Last name is required.'),
-    userId: Yup.string().required('User name is required.'),
-    mail: Yup.string().email('Invalid email address').required('Email is required.'),
+    displayName: Yup.string().required(() => i18n.t('validation_messages.display_name_required')),
+    givenName: Yup.string().required(() => i18n.t('validation_messages.first_name_required')),
+    sn: Yup.string().required(() => i18n.t('validation_messages.last_name_required')),
+    userId: Yup.string().required(() => i18n.t('validation_messages.username_required')),
+    mail: Yup.string()
+      .email(() => i18n.t('validation_messages.invalid_email'))
+      .required(() => i18n.t('validation_messages.email_required')),
     userPassword: passwordSchemaBase,
     userConfirmPassword: confirmPasswordSchema,
   })
 }
 
-export const passwordChangeValidationSchema = Yup.object({
-  userPassword: Yup.string()
-    .test(
-      'password-validation',
-      'Password must be at least 8 characters and contain uppercase, lowercase, number, and special character',
-      (value) => {
-        if (!value) return false
-        return validatePassword(value)
-      },
-    )
-    .required('Password is required.'),
-  userConfirmPassword: Yup.string()
-    .oneOf([Yup.ref('userPassword')], 'Passwords must match')
-    .required('Confirm password is required.'),
-})
+export const getPasswordChangeValidationSchema = () =>
+  Yup.object({
+    userPassword: Yup.string()
+      .test(
+        'password-validation',
+        () => i18n.t('validation_messages.password_format'),
+        (value) => {
+          if (!value) return false
+          return validatePassword(value)
+        },
+      )
+      .required(() => i18n.t('validation_messages.password_required')),
+    userConfirmPassword: Yup.string()
+      .oneOf([Yup.ref('userPassword')], () => i18n.t('validation_messages.passwords_must_match'))
+      .required(() => i18n.t('validation_messages.confirm_password_required')),
+  })
 
 const getUserProperty = (
   userDetails: CustomUser | null,
@@ -88,7 +96,9 @@ const getUserProperty = (
   if (!userDetails) return undefined
 
   // Check if property exists directly on userDetails
-  const directValue = (userDetails as Record<string, unknown>)[propertyName]
+  const directValue = (userDetails as Record<string, string | string[] | boolean | object>)[
+    propertyName
+  ]
   if (directValue && typeof directValue === 'string') {
     return directValue
   }
@@ -117,10 +127,18 @@ const processBirthdateAttribute = (
   const attrSingleValue = customAttr.value
   if (!customAttr.name) return
 
+  const toDateLike = (v: object): string | number | Date | null => {
+    if (typeof v === 'string' || typeof v === 'number' || v instanceof Date) return v
+    if (v && typeof v === 'object' && 'value' in v)
+      return toDateLike((v as { value: object }).value)
+    return null
+  }
   const rawDate =
     attrValues.length > 0
-      ? (attrValues[0] as unknown as string | number | Date | null)
-      : (attrSingleValue as unknown as string | number | Date | null)
+      ? toDateLike(attrValues[0] as object)
+      : attrSingleValue
+        ? toDateLike(attrSingleValue as object)
+        : null
 
   if (rawDate !== undefined && rawDate !== null) {
     if (isValidDate(rawDate)) {

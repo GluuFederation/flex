@@ -108,7 +108,7 @@ export function* putConfigWorker({
     if (response) {
       yield put(getOAuth2ConfigResponse({ config: response }))
 
-      if (_meta?.cedarlingLogTypeChanged && _meta?.toastMessage) {
+      if (_meta?.toastMessage) {
         yield put(updateToast(true, 'success', _meta.toastMessage))
       } else {
         yield put(updateToast(true, 'success'))

@@ -36,6 +36,12 @@ jest.mock('JansConfigApi', () => ({
     refetch: jest.fn(),
   })),
   getGetAllAssetsQueryKey: jest.fn(() => ['assets']),
+  useGetWebhooksByFeatureId: jest.fn(() => ({
+    data: [],
+    isLoading: false,
+    isFetching: false,
+    isFetched: true,
+  })),
 }))
 
 jest.mock('Plugins/admin/components/Assets/hooks', () => ({

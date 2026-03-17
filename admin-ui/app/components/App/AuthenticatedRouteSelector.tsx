@@ -15,13 +15,15 @@ export default function AuthenticatedRouteSelector() {
   }
 
   return (
-    <AppAuthProvider>
-      <AppLayout>
-        <RoutedContent />
-        <LazyRoutes.GluuToast />
-        <LazyRoutes.GluuWebhookErrorDialog />
-        <PermissionsPolicyInitializer />
-      </AppLayout>
-    </AppAuthProvider>
+    <>
+      <LazyRoutes.GluuToast />
+      <AppAuthProvider>
+        <AppLayout>
+          <RoutedContent />
+          <LazyRoutes.GluuWebhookErrorDialog />
+          <PermissionsPolicyInitializer />
+        </AppLayout>
+      </AppAuthProvider>
+    </>
   )
 }

@@ -30,6 +30,12 @@ jest.mock('JansConfigApi', () => ({
     isError: false,
     refetch: jest.fn(),
   })),
+  useGetWebhooksByFeatureId: jest.fn(() => ({
+    data: [],
+    isLoading: false,
+    isFetching: false,
+    isFetched: true,
+  })),
 }))
 
 jest.mock('Plugins/admin/components/Webhook/hooks', () => ({

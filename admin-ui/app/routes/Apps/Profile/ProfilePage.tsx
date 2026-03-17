@@ -21,8 +21,8 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import { JANS_ADMIN_UI_ROLE_ATTR } from 'Plugins/user-management/common/Constants'
 
-const JANS_ADMIN_UI_ROLE_ATTR = 'jansAdminUIRole'
 const USERS_RESOURCE_ID = ADMIN_UI_RESOURCES.Users
 const USERS_SCOPES = CEDAR_RESOURCE_SCOPES[USERS_RESOURCE_ID]
 

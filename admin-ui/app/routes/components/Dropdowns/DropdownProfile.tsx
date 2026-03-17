@@ -1,17 +1,15 @@
 import { useEffect, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { auditLogoutLogs } from 'Redux/features/sessionSlice'
 import { GluuDropdown, type GluuDropdownOption } from 'Components'
-import type { DropdownProfileProps, LogoutAuditState } from './types'
+import type { DropdownProfileProps } from './types'
 
 const DropdownProfile = ({ trigger, renderTrigger, position = 'bottom' }: DropdownProfileProps) => {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
-  const { logoutAuditSucceeded } = useSelector(
-    (state: LogoutAuditState) => state.logoutAuditReducer,
-  )
+  const dispatch = useAppDispatch()
+  const { logoutAuditSucceeded } = useAppSelector((state) => state.logoutAuditReducer)
   const { navigateToRoute } = useAppNavigation()
 
   const handleLogout = useCallback(() => {

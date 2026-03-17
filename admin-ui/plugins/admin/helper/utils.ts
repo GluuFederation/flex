@@ -126,6 +126,7 @@ export const adminUiFeatures = {
   attributes_delete: 'attributes_delete',
   scim_configuration_edit: 'scim_configuration_edit',
   smtp_configuration_edit: 'smtp_configuration_edit',
+  users_add: 'users_add',
   users_edit: 'users_edit',
   users_delete: 'users_delete',
   sessions: 'sessions',

@@ -7,33 +7,55 @@ interface GluuInputRowStyleParams {
 }
 
 export const useStyles = makeStyles<GluuInputRowStyleParams>()((
-  theme,
+  _theme,
   { errorColor, fontColor, stepperHoverBg },
 ) => {
-  const borderColor = fontColor ? `${fontColor}40` : theme.palette.divider
   return {
     colWrapper: {
-      position: 'relative',
+      'position': 'relative',
+      '& input:focus, & input:active': {
+        outline: 'none',
+        boxShadow: 'none',
+      },
+      '& input:focus-visible': {
+        outline: '2px solid currentColor',
+        outlineOffset: -2,
+        borderRadius: 'inherit',
+      },
     },
     inputWithShortcode: {
       paddingRight: 44,
     },
+    passwordInputWrapper: {
+      position: 'relative',
+      display: 'block',
+      width: '100%',
+    },
+    passwordInputPadding: {
+      paddingRight: 44,
+    },
     passwordToggle: {
-      position: 'absolute',
-      right: 20,
-      top: 7,
-      background: 'none',
-      border: 'none',
-      padding: 0,
-      cursor: 'pointer',
-      display: 'flex',
-      alignItems: 'center',
+      'position': 'absolute',
+      'right': 20,
+      'top': '50%',
+      'transform': 'translateY(-50%)',
+      'background': 'none',
+      'border': 'none',
+      'padding': 0,
+      'cursor': 'pointer',
+      'display': 'flex',
+      'alignItems': 'center',
+      'color': fontColor ?? 'inherit',
+      '&:disabled': {
+        opacity: 0.5,
+        cursor: 'not-allowed',
+      },
     },
     error: {
       display: 'block',
       color: errorColor,
       fontSize: 12,
-      marginTop: 4,
+      marginTop: 1,
     },
 
     numberWrapper: {
@@ -53,13 +75,11 @@ export const useStyles = makeStyles<GluuInputRowStyleParams>()((
     },
     numberStepper: {
       'position': 'absolute',
-      'right': 0,
-      'top': 0,
-      'bottom': 0,
-      'width': 36,
+      'right': 20,
+      'top': '50%',
+      'transform': 'translateY(-50%)',
       'display': 'flex',
       'flexDirection': 'column',
-      'borderLeft': `1px solid ${borderColor}`,
       'pointerEvents': 'none',
       '& button': {
         pointerEvents: 'auto',
@@ -85,7 +105,7 @@ export const useStyles = makeStyles<GluuInputRowStyleParams>()((
         cursor: 'not-allowed',
       },
       '&:first-of-type': {
-        borderBottom: `1px solid ${borderColor}`,
+        borderBottom: 'none',
       },
     },
   }

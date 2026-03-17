@@ -1,5 +1,5 @@
-import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState, useRef } from 'react'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import {
   setCedarFailedStatusAfterMaxTries,
   setCedarlingInitialized,
@@ -8,23 +8,9 @@ import {
 import { cedarlingClient, CedarlingLogType } from '@/cedarling'
 import bootstrap from '@/cedarling/config/cedarling-bootstrap-TBAC.json'
 import { devLogger } from '@/utils/devLogger'
-// Extended state interface for this component
-interface ExtendedRootState {
-  authReducer: {
-    hasSession?: boolean
-    config?: {
-      cedarlingLogType?: CedarlingLogType
-    }
-  }
-  cedarPermissions: {
-    initialized: boolean
-    isInitializing: boolean
-    policyStoreJson: string
-  }
-}
 
 const PermissionsPolicyInitializer = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const retryCount = useRef({
     tryCount: 0,
@@ -33,13 +19,12 @@ const PermissionsPolicyInitializer = () => {
 
   const [maxRetries] = useState(10)
 
-  const hasSession = useSelector((state: ExtendedRootState) => state.authReducer.hasSession)
-  const { initialized, isInitializing, policyStoreJson } = useSelector(
-    (state: ExtendedRootState) => state.cedarPermissions,
+  const hasSession = useAppSelector((state) => state.authReducer.hasSession)
+  const { initialized, isInitializing, policyStoreJson } = useAppSelector(
+    (state) => state.cedarPermissions,
   )
   const cedarlingLogType =
-    useSelector((state: ExtendedRootState) => state.authReducer?.config?.cedarlingLogType) ||
-    CedarlingLogType.OFF
+    useAppSelector((state) => state.authReducer?.config?.cedarlingLogType) || CedarlingLogType.OFF
 
   useEffect(() => {
     // Helper function to check if policyStoreJson is valid

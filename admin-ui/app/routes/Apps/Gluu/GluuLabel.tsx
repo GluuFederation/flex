@@ -17,6 +17,7 @@ interface GluuLabelProps {
   style?: CSSProperties
   allowColon?: boolean
   isDark?: boolean
+  isDirect?: boolean
 }
 
 const getSize = (size: number | undefined): number => (size != null ? size : 3)
@@ -30,6 +31,7 @@ const GluuLabel: React.FC<GluuLabelProps> = ({
   style,
   allowColon = true,
   isDark: isDarkProp,
+  isDirect,
 }) => {
   const { t, i18n } = useTranslation()
   const { state: themeState } = useTheme()
@@ -63,12 +65,13 @@ const GluuLabel: React.FC<GluuLabelProps> = ({
           {required && <span style={applicationStyle.fieldRequired}> *</span>}
           {doc_category &&
             doc_entry &&
-            i18n.exists('documentation.' + doc_category + '.' + doc_entry) && (
+            (isDirect || i18n.exists('documentation.' + doc_category + '.' + doc_entry)) && (
               <>
                 <GluuTooltip
                   tooltipOnly
                   doc_entry={doc_entry}
                   doc_category={doc_category}
+                  isDirect={isDirect}
                   place="right"
                 />
                 <HelpOutline

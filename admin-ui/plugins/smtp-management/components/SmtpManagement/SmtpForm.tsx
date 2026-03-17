@@ -1,68 +1,110 @@
-import React, { useState, useEffect } from 'react'
-import { Row, Col, Form, FormGroup } from 'Components'
+import { useState, useEffect, useCallback, useMemo } from 'react'
+import { Form, FormGroup } from 'Components'
+import Toggle from 'react-toggle'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
-import { SelectChangeEvent } from '@mui/material'
-import { useFormik } from 'formik'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
+import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
+import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import { GluuButton } from '@/components/GluuButton'
+import { useFormik } from 'formik'
 import { useTranslation } from 'react-i18next'
-import {
-  enableTestButton,
-  disableTestButton,
-} from 'Plugins/smtp-management/redux/features/smtpSlice'
-import { useDispatch, useSelector } from 'react-redux'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { toast } from 'react-toastify'
-import { SmtpRootState } from 'Plugins/smtp-management/redux/types/SmtpApi.type'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { putConfigWorker } from 'Redux/features/authSlice'
-import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import { SmtpFormValues, SmtpFormProps } from 'Plugins/smtp-management/types'
 import { trimObjectStrings } from 'Utils/Util'
 import {
   smtpConstants,
   transformToFormValues,
   toSmtpConfiguration,
-  validationSchema,
+  getSmtpValidationSchema,
+  buildSmtpChangedFieldOperations,
 } from 'Plugins/smtp-management/helper'
-import customColors from '@/customColors'
+import { BUTTON_STYLES, getButtonColors } from 'Routes/Apps/Gluu/styles/GluuThemeFormFooter.style'
+import { useStyles } from './styles/SmtpFormPage.style'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
-function SmtpForm(props: Readonly<SmtpFormProps>) {
-  const { item, handleSubmit, allowSmtpKeystoreEdit, onTestSmtp, formikRef, readOnly } = props
+const SMTP = 'smtp'
+
+const SmtpForm = (props: Readonly<SmtpFormProps>) => {
+  const {
+    item,
+    handleSubmit,
+    allowSmtpKeystoreEdit,
+    onTestSmtp,
+    formikRef,
+    readOnly,
+    testButtonEnabled,
+  } = props
   const { t } = useTranslation()
-  const dispatch = useDispatch()
-  const [modal, setModal] = useState(false)
-  const testButtonEnabled = useSelector(
-    (state: SmtpRootState) => state.smtpsReducer.testButtonEnabled,
+  const dispatch = useAppDispatch()
+  const { navigateBack } = useAppNavigation()
+  const { state: themeState } = useTheme()
+  const { themeColors, isDark } = useMemo(
+    () => ({
+      themeColors: getThemeColor(themeState.theme),
+      isDark: themeState.theme === THEME_DARK,
+    }),
+    [themeState.theme],
+  )
+  const { classes } = useStyles({ isDark, themeColors })
+  const buttonColors = useMemo(() => getButtonColors(themeState.theme), [themeState.theme])
+  const footerButtonStyle = useMemo(
+    () => ({
+      minHeight: BUTTON_STYLES.height,
+      padding: `${BUTTON_STYLES.paddingY}px ${BUTTON_STYLES.paddingX}px`,
+      borderRadius: BUTTON_STYLES.borderRadius,
+      fontSize: BUTTON_STYLES.fontSize,
+      fontWeight: BUTTON_STYLES.fontWeight,
+      letterSpacing: BUTTON_STYLES.letterSpacing,
+    }),
+    [],
   )
 
+  const [modal, setModal] = useState(false)
+  const [commitOperations, setCommitOperations] = useState<
+    ReturnType<typeof buildSmtpChangedFieldOperations>
+  >([])
+
+  const loadingConfig = useAppSelector((state) => state.authReducer?.loadingConfig)
+  const [optimisticKeystoreEdit, setOptimisticKeystoreEdit] = useState(allowSmtpKeystoreEdit)
+
   useEffect(() => {
-    return () => {
-      if (testButtonEnabled) {
-        dispatch(disableTestButton())
-      }
+    if (!loadingConfig) {
+      setOptimisticKeystoreEdit(allowSmtpKeystoreEdit)
     }
-  }, [dispatch, testButtonEnabled])
+  }, [allowSmtpKeystoreEdit, loadingConfig])
 
-  const toggle = () => {
-    if (readOnly) {
-      return
-    }
-    setModal(!modal)
-  }
+  const toggle = useCallback(() => {
+    if (readOnly) return
+    setModal((prev) => !prev)
+  }, [readOnly])
 
-  const initialValues: SmtpFormValues = transformToFormValues(item)
+  const initialValues: SmtpFormValues = useMemo(() => transformToFormValues(item), [item])
+  const smtpValidationSchema = useMemo(() => getSmtpValidationSchema(t), [t])
 
   const formik = useFormik<SmtpFormValues>({
     initialValues,
     onSubmit: () => {
-      if (!readOnly) {
-        toggle()
-      }
+      if (readOnly) return
+      setCommitOperations(buildSmtpChangedFieldOperations(initialValues, formik.values, t))
+      toggle()
     },
-    validationSchema,
+    validationSchema: smtpValidationSchema,
     validateOnMount: true,
+    enableReinitialize: true,
   })
+
+  const handleApply = useCallback(() => {
+    formik.handleSubmit()
+  }, [formik])
 
   useEffect(() => {
     if (formikRef) {
@@ -70,35 +112,46 @@ function SmtpForm(props: Readonly<SmtpFormProps>) {
     }
   }, [formik, formikRef])
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     formik.resetForm()
-  }
+  }, [formik])
 
-  const submitForm = async (userMessage: string) => {
-    if (readOnly) {
-      return
-    }
-    const errors = await formik.validateForm()
-    if (Object.keys(errors).length > 0) {
-      // mark all fields as touched to reveal validation messages
-      const touched: Record<string, boolean> = {}
-      Object.keys(errors).forEach((k) => (touched[k] = true))
-      formik.setTouched(touched)
-      toast.error(t('messages.mandatory_fields_required'))
-      return
-    }
+  const handleNavigateBack = useCallback(() => {
+    navigateBack(ROUTES.HOME_DASHBOARD)
+  }, [navigateBack])
 
-    const trimmedValues = trimObjectStrings(
-      formik.values as unknown as Record<string, unknown>,
-    ) as unknown as SmtpFormValues
-    handleSubmit(toSmtpConfiguration(trimmedValues), userMessage)
-    dispatch(enableTestButton())
-  }
+  const submitForm = useCallback(
+    async (userMessage: string) => {
+      if (readOnly) return
+      const errors = await formik.validateForm()
+      if (Object.keys(errors).length > 0) {
+        const touched: Record<string, boolean> = {}
+        for (const k of Object.keys(errors)) {
+          touched[k] = true
+        }
+        formik.setTouched(touched)
+        toast.error(t('messages.mandatory_fields_required'))
+        return
+      }
+      const { smtp_authentication_account_password, key_store_password, ...rest } = formik.values
+      const trimmedRest = trimObjectStrings(
+        rest as unknown as Record<string, unknown>,
+      ) as unknown as Omit<
+        SmtpFormValues,
+        'smtp_authentication_account_password' | 'key_store_password'
+      >
+      const trimmedValues: SmtpFormValues = {
+        ...trimmedRest,
+        smtp_authentication_account_password,
+        key_store_password,
+      }
+      handleSubmit(toSmtpConfiguration(trimmedValues), userMessage)
+    },
+    [readOnly, formik, handleSubmit, t],
+  )
 
-  const testSmtpConfig = () => {
-    if (readOnly) {
-      return
-    }
+  const testSmtpConfig = useCallback(() => {
+    if (readOnly) return
     if (formik.isValid) {
       onTestSmtp({
         sign: true,
@@ -108,283 +161,397 @@ function SmtpForm(props: Readonly<SmtpFormProps>) {
     } else {
       toast.error(t('messages.mandatory_fields_required'))
     }
-  }
+  }, [readOnly, formik.isValid, onTestSmtp, t])
 
-  const handleChange = (
-    event:
-      | React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-      | SelectChangeEvent
-      | { target: { name: string; value: string } },
-  ): void => {
-    const target = event.target
+  const keystoreTooltip = useCallback(
+    (fieldLabel: string) =>
+      !optimisticKeystoreEdit
+        ? t('messages.keystore_field_disabled_named', { field: t(fieldLabel) })
+        : '',
+    [optimisticKeystoreEdit, t],
+  )
 
-    let name: string
-    let nextValue: string | number | boolean
-
-    if ('type' in target && target instanceof HTMLInputElement) {
-      const { type, value, checked } = target
-      name = target.name
-      nextValue = type === 'number' ? Number(value) : type === 'checkbox' ? Boolean(checked) : value
-    } else {
-      name = target.name
-      const value = target.value
-      nextValue = value === 'true' ? true : value === 'false' ? false : value
-    }
-
-    formik.setFieldValue(name, nextValue)
-  }
+  const connectProtectionOptions = useMemo(
+    () =>
+      Object.values(smtpConstants.CONNECT_PROTECTION).map((v) => ({
+        value: v,
+        label: v,
+      })),
+    [],
+  )
 
   return (
-    <Form
-      onSubmit={(e) => {
-        e.preventDefault()
-        formik.handleSubmit()
-      }}
-    >
-      <style>{`
-        .smtp-form-labels-black label,
-        .smtp-form-labels-black label h5,
-        .smtp-form-labels-black label span,
-        .smtp-form-labels-black .MuiSvgIcon-root { color: ${customColors.black} !important; }
-      `}</style>
-      <div className="smtp-form-labels-black">
-        <FormGroup row>
-          <Col sm={8}>
+    <>
+      {!readOnly && !optimisticKeystoreEdit && (
+        <>
+          <GluuTooltip
+            tooltipOnly
+            doc_entry="keystoreDisabled-key_store"
+            content={keystoreTooltip('fields.key_store')}
+            place="bottom"
+            offset={20}
+          />
+          <GluuTooltip
+            tooltipOnly
+            doc_entry="keystoreDisabled-key_store_password"
+            content={keystoreTooltip('fields.key_store_password')}
+            place="bottom"
+            offset={20}
+          />
+          <GluuTooltip
+            tooltipOnly
+            doc_entry="keystoreDisabled-key_store_alias"
+            content={keystoreTooltip('fields.key_store_alias')}
+            place="bottom"
+            offset={20}
+          />
+          <GluuTooltip
+            tooltipOnly
+            doc_entry="keystoreDisabled-signing_algorithm"
+            content={keystoreTooltip('fields.signing_algorithm')}
+            place="bottom"
+            offset={20}
+          />
+        </>
+      )}
+      <Form
+        onSubmit={(e) => {
+          e.preventDefault()
+          formik.handleSubmit()
+        }}
+        className={classes.formSection}
+      >
+        <div className={`${classes.fieldsGrid} ${classes.formLabels} ${classes.formWithInputs}`}>
+          <div className={classes.fieldItem}>
             <GluuInputRow
               label="fields.smtp_host"
               name="host"
               value={formik.values.host || ''}
               formik={formik}
-              lsize={3}
-              rsize={9}
+              lsize={12}
+              rsize={12}
               showError={formik.touched.host && !!formik.errors.host}
               errorMessage={formik.errors.host as string}
-              handleChange={handleChange}
               required
+              disabled={readOnly}
+              isDark={isDark}
+              doc_category={SMTP}
+              doc_entry="host"
             />
-          </Col>
-          <Col sm={8}>
+          </div>
+          <div className={classes.fieldItem}>
             <GluuInputRow
               label="fields.smtp_port"
               name="port"
               value={formik.values.port || ''}
               formik={formik}
-              lsize={3}
-              rsize={9}
+              lsize={12}
+              rsize={12}
               showError={formik.touched.port && !!formik.errors.port}
               errorMessage={formik.errors.port as string}
-              handleChange={handleChange}
               type="number"
               required
+              disabled={readOnly}
+              isDark={isDark}
+              doc_category={SMTP}
+              doc_entry="port"
             />
-          </Col>
-          <Col sm={8}>
+          </div>
+
+          <div className={classes.fieldItem}>
             <GluuSelectRow
               label="fields.connect_protection"
               name="connect_protection"
               value={formik.values.connect_protection || ''}
-              values={Object.values(smtpConstants.CONNECT_PROTECTION)}
+              values={connectProtectionOptions}
               formik={formik}
-              lsize={3}
-              rsize={9}
+              lsize={12}
+              rsize={12}
               showError={formik.touched.connect_protection && !!formik.errors.connect_protection}
               errorMessage={formik.errors.connect_protection as string}
-              handleChange={handleChange}
               required
+              disabled={readOnly}
+              isDark={isDark}
+              doc_category={SMTP}
+              doc_entry="connect_protection"
             />
-          </Col>
-
-          <Col sm={8}>
+          </div>
+          <div className={classes.fieldItem}>
             <GluuInputRow
               label="fields.from_name"
               name="from_name"
               value={formik.values.from_name || ''}
               formik={formik}
-              lsize={3}
-              rsize={9}
+              lsize={12}
+              rsize={12}
               showError={formik.touched.from_name && !!formik.errors.from_name}
               errorMessage={formik.errors.from_name as string}
-              handleChange={handleChange}
               required
+              disabled={readOnly}
+              isDark={isDark}
+              doc_category={SMTP}
+              doc_entry="from_name"
             />
-          </Col>
+          </div>
 
-          <Col sm={8}>
+          <div className={classes.fieldItem}>
             <GluuInputRow
               label="fields.from_email_address"
               name="from_email_address"
               value={formik.values.from_email_address || ''}
               formik={formik}
-              lsize={3}
-              rsize={9}
+              lsize={12}
+              rsize={12}
               showError={formik.touched.from_email_address && !!formik.errors.from_email_address}
               errorMessage={formik.errors.from_email_address as string}
-              handleChange={handleChange}
               required
+              disabled={readOnly}
+              isDark={isDark}
+              doc_category={SMTP}
+              doc_entry="from_email_address"
             />
-          </Col>
-          <Col sm={8}>
-            <GluuToogleRow
-              label="fields.requires_authentication"
-              name="requires_authentication"
-              handler={(e: React.ChangeEvent<HTMLInputElement>) => {
-                formik.setFieldValue('requires_authentication', e.target.checked)
-                handleChange(e)
-              }}
-              lsize={5}
-              rsize={7}
-              value={formik.values.requires_authentication || false}
-            />
-          </Col>
-
-          <Col sm={8}>
+          </div>
+          <div className={classes.fieldItem}>
             <GluuInputRow
               label="fields.smtp_user_name"
               name="smtp_authentication_account_username"
               value={formik.values.smtp_authentication_account_username || ''}
               formik={formik}
-              lsize={3}
-              rsize={9}
+              lsize={12}
+              rsize={12}
               showError={
                 formik.touched.smtp_authentication_account_username &&
                 !!formik.errors.smtp_authentication_account_username
               }
               errorMessage={formik.errors.smtp_authentication_account_username as string}
-              handleChange={handleChange}
               required={formik.values.requires_authentication}
+              disabled={readOnly}
+              isDark={isDark}
+              doc_category={SMTP}
+              doc_entry="smtp_authentication_account_username"
             />
-          </Col>
+          </div>
 
-          <Col sm={8}>
+          <div className={classes.fieldItem}>
             <GluuInputRow
               label="fields.smtp_user_password"
               name="smtp_authentication_account_password"
               value={formik.values.smtp_authentication_account_password || ''}
               formik={formik}
-              lsize={3}
-              rsize={9}
+              lsize={12}
+              rsize={12}
               showError={
                 formik.touched.smtp_authentication_account_password &&
                 !!formik.errors.smtp_authentication_account_password
               }
               errorMessage={formik.errors.smtp_authentication_account_password as string}
-              handleChange={handleChange}
               type="password"
               required={formik.values.requires_authentication}
+              disabled={readOnly}
+              isDark={isDark}
+              doc_category={SMTP}
+              doc_entry="smtp_authentication_account_password"
             />
-          </Col>
-          <Col sm={8}>
-            <GluuToogleRow
-              label="fields.trust_host"
-              name="trust_host"
-              handler={(e: React.ChangeEvent<HTMLInputElement>) => {
-                formik.setFieldValue('trust_host', e.target.checked)
-                handleChange(e)
-              }}
-              lsize={5}
-              rsize={7}
-              value={formik.values.trust_host || false}
-            />
-          </Col>
-          <Col sm={8}>
-            <GluuToogleRow
-              label="fields.allow_keystore_edit"
-              name="allowKeystoreEdit"
-              handler={(e: React.ChangeEvent<HTMLInputElement>) => {
-                formik.setFieldValue('allowKeystoreEdit', e.target.checked)
-                dispatch(putConfigWorker({ allowSmtpKeystoreEdit: e.target.checked }))
-              }}
-              lsize={5}
-              rsize={7}
-              value={allowSmtpKeystoreEdit}
-            />
-          </Col>
-          <Col sm={8}>
+          </div>
+          <div className={`${classes.fieldItem} ${classes.fieldItemRelative}`}>
             <GluuInputRow
               label="fields.key_store"
               name="key_store"
               value={formik.values.key_store || ''}
               formik={formik}
-              lsize={3}
-              rsize={9}
+              lsize={12}
+              rsize={12}
               showError={formik.touched.key_store && !!formik.errors.key_store}
               errorMessage={formik.errors.key_store as string}
-              handleChange={handleChange}
-              disabled={!allowSmtpKeystoreEdit}
+              disabled={readOnly || !optimisticKeystoreEdit}
+              isDark={isDark}
+              doc_category={SMTP}
+              doc_entry="key_store"
             />
-          </Col>
+            {!readOnly && !optimisticKeystoreEdit && (
+              <div
+                className={classes.keystoreOverlay}
+                data-tooltip-id="keystoreDisabled-key_store"
+              />
+            )}
+          </div>
 
-          <Col sm={8}>
+          <div className={`${classes.fieldItem} ${classes.fieldItemRelative}`}>
             <GluuInputRow
               label="fields.key_store_password"
               name="key_store_password"
               value={formik.values.key_store_password || ''}
               formik={formik}
-              lsize={3}
-              rsize={9}
+              lsize={12}
+              rsize={12}
               showError={formik.touched.key_store_password && !!formik.errors.key_store_password}
               errorMessage={formik.errors.key_store_password as string}
-              handleChange={handleChange}
               type="password"
-              disabled={!allowSmtpKeystoreEdit}
+              disabled={readOnly || !optimisticKeystoreEdit}
+              isDark={isDark}
+              doc_category={SMTP}
+              doc_entry="key_store_password"
             />
-          </Col>
-
-          <Col sm={8}>
+            {!readOnly && !optimisticKeystoreEdit && (
+              <div
+                className={classes.keystoreOverlay}
+                data-tooltip-id="keystoreDisabled-key_store_password"
+              />
+            )}
+          </div>
+          <div className={`${classes.fieldItem} ${classes.fieldItemRelative}`}>
             <GluuInputRow
               label="fields.key_store_alias"
               name="key_store_alias"
               value={formik.values.key_store_alias || ''}
               formik={formik}
-              lsize={3}
-              rsize={9}
+              lsize={12}
+              rsize={12}
               showError={formik.touched.key_store_alias && !!formik.errors.key_store_alias}
               errorMessage={formik.errors.key_store_alias as string}
-              handleChange={handleChange}
-              disabled={!allowSmtpKeystoreEdit}
+              disabled={readOnly || !optimisticKeystoreEdit}
+              isDark={isDark}
+              doc_category={SMTP}
+              doc_entry="key_store_alias"
             />
-          </Col>
+            {!readOnly && !optimisticKeystoreEdit && (
+              <div
+                className={classes.keystoreOverlay}
+                data-tooltip-id="keystoreDisabled-key_store_alias"
+              />
+            )}
+          </div>
 
-          <Col sm={8}>
+          <div className={`${classes.fieldItem} ${classes.fieldItemRelative}`}>
             <GluuInputRow
               label="fields.signing_algorithm"
               name="signing_algorithm"
               value={formik.values.signing_algorithm || ''}
               formik={formik}
-              lsize={3}
-              rsize={9}
+              lsize={12}
+              rsize={12}
               showError={formik.touched.signing_algorithm && !!formik.errors.signing_algorithm}
               errorMessage={formik.errors.signing_algorithm as string}
-              handleChange={handleChange}
-              disabled={!allowSmtpKeystoreEdit}
+              disabled={readOnly || !optimisticKeystoreEdit}
+              isDark={isDark}
+              doc_category={SMTP}
+              doc_entry="signing_algorithm"
             />
-          </Col>
-        </FormGroup>
-        {testButtonEnabled && !readOnly && (
-          <Row className="mb-2">
-            <Col>
-              <button type="button" className="btn btn-secondary" onClick={testSmtpConfig}>
-                {t('actions.test')}
-              </button>
-            </Col>
-          </Row>
-        )}
+            {!readOnly && !optimisticKeystoreEdit && (
+              <div
+                className={classes.keystoreOverlay}
+                data-tooltip-id="keystoreDisabled-signing_algorithm"
+              />
+            )}
+          </div>
+          <div className={classes.fieldItem}>
+            <FormGroup>
+              <GluuLabel
+                label="fields.trust_host"
+                size={12}
+                isDark={isDark}
+                doc_category={SMTP}
+                doc_entry="trust_host"
+              />
+              <Toggle
+                id="trust_host"
+                name="trust_host"
+                checked={Boolean(formik.values.trust_host)}
+                onChange={(e) => formik.setFieldValue('trust_host', e.target.checked)}
+                disabled={readOnly}
+              />
+            </FormGroup>
+          </div>
 
-        <Row>
-          <Col>
-            <GluuFormFooter
-              showBack={true}
-              showCancel={true}
-              showApply={!readOnly}
-              onApply={toggle}
-              onCancel={handleCancel}
-              disableCancel={!formik.dirty}
-              disableApply={!formik.isValid || !formik.dirty}
-              applyButtonType="button"
-              isLoading={formik.isSubmitting ?? false}
-            />
-          </Col>
-        </Row>
+          <div className={classes.fieldItem}>
+            <FormGroup>
+              <GluuLabel
+                label="fields.allow_keystore_edit"
+                size={12}
+                isDark={isDark}
+                doc_category={SMTP}
+                doc_entry="allowKeystoreEdit"
+              />
+              <GluuLoader blocking={Boolean(loadingConfig)}>
+                <Toggle
+                  id="allowKeystoreEdit"
+                  name="allowKeystoreEdit"
+                  checked={Boolean(optimisticKeystoreEdit)}
+                  onChange={(e) => {
+                    const checked = e.target.checked
+                    if (Boolean(checked) !== Boolean(allowSmtpKeystoreEdit)) {
+                      setOptimisticKeystoreEdit(checked)
+                      dispatch(
+                        putConfigWorker({
+                          allowSmtpKeystoreEdit: checked,
+                          _meta: {
+                            toastMessage: checked
+                              ? t('messages.keystore_edit_enabled')
+                              : t('messages.keystore_edit_disabled'),
+                          },
+                        }),
+                      )
+                    }
+                  }}
+                  disabled={readOnly || loadingConfig}
+                />
+              </GluuLoader>
+            </FormGroup>
+          </div>
+          <div className={classes.fieldItem}>
+            <FormGroup>
+              <GluuLabel
+                label="fields.requires_authentication"
+                size={12}
+                isDark={isDark}
+                doc_category={SMTP}
+                doc_entry="requires_authentication"
+              />
+              <Toggle
+                id="requires_authentication"
+                name="requires_authentication"
+                checked={Boolean(formik.values.requires_authentication)}
+                onChange={(e) => formik.setFieldValue('requires_authentication', e.target.checked)}
+                disabled={readOnly}
+              />
+            </FormGroup>
+          </div>
+
+          {!readOnly && (
+            <div className={classes.testButtonRow}>
+              <GluuButton
+                type="button"
+                onClick={testSmtpConfig}
+                disabled={!testButtonEnabled || formik.dirty}
+                backgroundColor={buttonColors.cancel.backgroundColor}
+                textColor={buttonColors.cancel.textColor}
+                borderColor={buttonColors.cancel.borderColor}
+                outlined
+                useOpacityOnHover
+                hoverOpacity={0.85}
+                style={footerButtonStyle}
+              >
+                {t('actions.test')}
+              </GluuButton>
+            </div>
+          )}
+        </div>
+
+        <div className={classes.formDivider} />
+        <GluuThemeFormFooter
+          showBack
+          onBack={handleNavigateBack}
+          showCancel={!readOnly}
+          onCancel={handleCancel}
+          disableCancel={!formik.dirty}
+          showApply={!readOnly}
+          onApply={handleApply}
+          disableApply={!formik.isValid || !formik.dirty}
+          applyButtonType="button"
+          isLoading={formik.isSubmitting ?? false}
+          hideDivider
+        />
+
         {!readOnly && (
           <GluuCommitDialog
             feature={adminUiFeatures.smtp_configuration_edit}
@@ -392,10 +559,12 @@ function SmtpForm(props: Readonly<SmtpFormProps>) {
             modal={modal}
             onAccept={submitForm}
             formik={formik}
+            operations={commitOperations}
           />
         )}
-      </div>
-    </Form>
+      </Form>
+    </>
   )
 }
+
 export default SmtpForm

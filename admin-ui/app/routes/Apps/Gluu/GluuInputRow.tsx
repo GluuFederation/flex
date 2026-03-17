@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Col, FormGroup, Input } from 'Components'
 import type { InputProps } from 'reactstrap'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
@@ -36,6 +37,7 @@ const GluuInputRow = <T = Record<string, unknown>,>({
   placeholder,
   inputClassName,
 }: GluuInputRowProps<T>) => {
+  const { t } = useTranslation()
   const [customType, setCustomType] = useState<string | null>(null)
   const { state } = useTheme()
   const themeColors = useMemo(() => getThemeColor(state?.theme ?? DEFAULT_THEME), [state?.theme])
@@ -100,7 +102,11 @@ const GluuInputRow = <T = Record<string, unknown>,>({
       rows={rows}
       cols={cols}
       placeholder={placeholder}
-      className={[shortcode ? classes.inputWithShortcode : undefined, inputClassName]
+      className={[
+        shortcode ? classes.inputWithShortcode : undefined,
+        type === 'password' ? classes.passwordInputPadding : undefined,
+        inputClassName,
+      ]
         .filter(Boolean)
         .join(' ')}
     />
@@ -141,25 +147,27 @@ const GluuInputRow = <T = Record<string, unknown>,>({
               </button>
             </div>
           </div>
+        ) : type === 'password' ? (
+          <div className={classes.passwordInputWrapper}>
+            {inputEl}
+            <button
+              type="button"
+              className={classes.passwordToggle}
+              onClick={setVisibility}
+              disabled={disabled}
+              aria-disabled={disabled}
+              aria-label={t(customType === 'text' ? 'password.hide' : 'password.show')}
+            >
+              {customType === 'text' ? <Visibility /> : <VisibilityOff />}
+            </button>
+          </div>
         ) : (
           inputEl
         )}
         {type !== 'number' ? shortcode : null}
-        {type === 'password' && (
-          <button
-            type="button"
-            className={classes.passwordToggle}
-            onClick={setVisibility}
-            aria-label="Toggle password visibility"
-          >
-            {customType === 'text' ? <Visibility /> : <VisibilityOff />}
-          </button>
-        )}
-        {showError ? (
-          <GluuText variant="span" className={classes.error} data-field-error disableThemeColor>
-            {errorMessage}
-          </GluuText>
-        ) : null}
+        <GluuText variant="span" className={classes.error} data-field-error disableThemeColor>
+          {showError ? errorMessage : '\u00A0'}
+        </GluuText>
       </Col>
     </FormGroup>
   )

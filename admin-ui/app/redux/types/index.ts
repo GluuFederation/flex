@@ -132,18 +132,6 @@ export interface HealthState {
   loading: boolean
 }
 
-// Attributes State
-export interface AttributeItem {
-  displayName?: string
-  [key: string]: unknown
-}
-
-export interface AttributesState {
-  items: AttributeItem[]
-  loading: boolean
-  initLoading: boolean
-}
-
 // Toast State
 export type ToastType = 'success' | 'error' | 'warning' | 'info'
 
@@ -151,6 +139,7 @@ export interface ToastState {
   showToast: boolean
   message: string
   type: ToastType
+  onCloseRedirectUrl: string
 }
 
 // Profile Details State
@@ -334,34 +323,6 @@ export interface AuthServerSessionState {
   entriesCount: number
 }
 
-// SMTP plugin state types
-
-export type ConnectProtection = 'None' | 'STARTTLS' | 'SSL/TLS'
-
-export interface SmtpConfiguration {
-  host?: string
-  port?: number
-  connect_protection?: ConnectProtection
-  from_name?: string
-  from_email_address?: string
-  requires_authentication?: boolean
-  smtp_authentication_account_username?: string
-  smtp_authentication_account_password?: string
-  trust_host?: boolean
-  key_store?: string
-  key_store_password?: string
-  key_store_alias?: string
-  signing_algorithm?: string
-}
-
-export interface SmtpState {
-  smtp: SmtpConfiguration
-  loading: boolean
-  testStatus: boolean | null
-  openModal: boolean
-  testButtonEnabled: boolean
-}
-
 // Root state: core reducers (always present)
 
 export interface CoreAppState {
@@ -371,7 +332,6 @@ export interface CoreAppState {
   licenseReducer: LicenseState
   oidcDiscoveryReducer: OidcDiscoveryState
   healthReducer: HealthState
-  attributesReducerRoot: AttributesState
   toastReducer: ToastState
   profileDetailsReducer: ProfileDetailsState
   cedarPermissions: CedarPermissionsState
@@ -396,13 +356,8 @@ export interface AuthServerPluginState {
   sessionReducer: AuthServerSessionState
 }
 
-// SMTP plugin reducers
-export interface SmtpPluginState {
-  smtpsReducer: SmtpState
-}
-
 export interface RootState
-  extends CoreAppState, Partial<AdminPluginState & AuthServerPluginState & SmtpPluginState> {}
+  extends CoreAppState, Partial<AdminPluginState & AuthServerPluginState> {}
 
 export type ReducerMap = {
   [K in keyof RootState]?: Reducer<RootState[K], UnknownAction>
