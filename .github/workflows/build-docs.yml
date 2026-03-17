@@ -205,7 +205,7 @@ jobs:
           STABLE=${{ steps.set_versions.outputs.STABLE }}
           git checkout -f gh-pages
           git pull origin gh-pages
-          mv ../gluu-*.tgz ../janssen-*.tgz.sigstore.json ./charts/
+          mv ../gluu-*.tgz ../gluu-*.tgz.sigstore.json ./charts/
           cd ./charts
           git add gluu-*.tgz gluu-*.tgz.sigstore.json && git update-index --refresh
           helm repo index .
