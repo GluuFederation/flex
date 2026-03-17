@@ -68,11 +68,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
   // Memoized validation schema - conditionally validates based on validation toggle
   const validationSchema = useAttributeValidationSchema(validation)
 
-  // Determine if this is view mode (when hideButtons is set with save and back)
-  const isViewMode = useMemo(
-    () => hideButtons?.save === true && hideButtons?.back === true,
-    [hideButtons],
-  )
+  const isViewMode = useMemo(() => hideButtons?.save === true, [hideButtons])
 
   // Memoized handlers
   const toggleModal = useCallback(() => {
@@ -459,7 +455,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                         formik={formik}
                         lsize={12}
                         rsize={12}
-                        value={formik.values?.regexp}
+                        value={formik.values?.regexp ?? undefined}
                         doc_category={ATTRIBUTE}
                         placeholder={t('placeholders.enter_here')}
                         disabled={isViewMode}
@@ -473,7 +469,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                         type="number"
                         lsize={12}
                         rsize={12}
-                        value={formik.values?.minLength}
+                        value={formik.values?.minLength ?? undefined}
                         doc_category={ATTRIBUTE}
                         disabled={isViewMode}
                       />
@@ -486,7 +482,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                         type="number"
                         lsize={12}
                         rsize={12}
-                        value={formik.values?.maxLength}
+                        value={formik.values?.maxLength ?? undefined}
                         doc_category={ATTRIBUTE}
                         disabled={isViewMode}
                       />

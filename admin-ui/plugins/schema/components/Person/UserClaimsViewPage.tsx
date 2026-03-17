@@ -105,7 +105,7 @@ function UserClaimsViewPage(): JSX.Element {
               <UserClaimsForm
                 item={extensibleItems as AttributeItem}
                 customOnSubmit={customHandleSubmit}
-                hideButtons={{ save: true, back: true }}
+                hideButtons={{ save: true, back: false }}
               />
             </div>
           </div>
