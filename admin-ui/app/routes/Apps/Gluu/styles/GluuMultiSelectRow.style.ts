@@ -144,7 +144,7 @@ export const useStyles = makeStyles<GluuMultiSelectRowStyleParams>()((
       },
     },
     checkboxChecked: {
-      'backgroundColor': customColors.white,
+      'backgroundColor': isDark ? customColors.white : customColors.statusActiveBg,
       'borderColor': customColors.statusActive,
       'color': customColors.statusActive,
       '& svg': {
