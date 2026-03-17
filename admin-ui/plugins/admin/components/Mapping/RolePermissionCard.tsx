@@ -100,7 +100,7 @@ const RolePermissionCard: React.FC<ExtendedRolePermissionCardProps> = React.memo
     return (
       <Box className={classes.roleCard}>
         <Box
-          className={classes.roleCardHeader}
+          className={`${classes.roleCardHeader} ${isExpanded ? classes.roleCardHeaderExpanded : ''}`}
           role="button"
           tabIndex={0}
           aria-expanded={isExpanded}

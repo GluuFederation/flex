@@ -7,16 +7,20 @@ interface GluuInputRowStyleParams {
 }
 
 export const useStyles = makeStyles<GluuInputRowStyleParams>()((
-  theme,
+  _theme,
   { errorColor, fontColor, stepperHoverBg },
 ) => {
   return {
     colWrapper: {
       'position': 'relative',
-      '& input:focus, & input:focus-visible, & input:active': {
-        outline: `2px solid ${theme.palette.primary.main}`,
-        outlineOffset: 2,
+      '& input:focus, & input:active': {
+        outline: 'none',
         boxShadow: 'none',
+      },
+      '& input:focus-visible': {
+        outline: '2px solid currentColor',
+        outlineOffset: -2,
+        borderRadius: 'inherit',
       },
     },
     inputWithShortcode: {
@@ -71,13 +75,11 @@ export const useStyles = makeStyles<GluuInputRowStyleParams>()((
     },
     numberStepper: {
       'position': 'absolute',
-      'right': 0,
-      'top': 0,
-      'bottom': 0,
-      'width': 36,
+      'right': 20,
+      'top': '50%',
+      'transform': 'translateY(-50%)',
       'display': 'flex',
       'flexDirection': 'column',
-      'borderLeft': 'none',
       'pointerEvents': 'none',
       '& button': {
         pointerEvents: 'auto',

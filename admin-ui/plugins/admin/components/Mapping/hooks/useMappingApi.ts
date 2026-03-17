@@ -1,5 +1,5 @@
 import { useCallback, useRef } from 'react'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from '@/redux/hooks'
 import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import {
@@ -41,7 +41,7 @@ export const useMappingData = (enabled: boolean = true) => {
 }
 
 export const useUpdateMappingWithAudit = (callbacks?: MutationCallbacks) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { t } = useTranslation()
   const mutation = useMapPermissionsToRole()
@@ -83,7 +83,7 @@ export const useUpdateMappingWithAudit = (callbacks?: MutationCallbacks) => {
 }
 
 export const useAddMappingWithAudit = (callbacks?: MutationCallbacks) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { t } = useTranslation()
   const mutation = useAddRolePermissionsMapping()

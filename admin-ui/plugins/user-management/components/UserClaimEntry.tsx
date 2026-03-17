@@ -111,7 +111,6 @@ const UserClaimEntry = ({
           setModifiedFields={setModifiedFields}
           handler={doHandle}
           lsize={12}
-          rsize={12}
         />
       </div>
     )
