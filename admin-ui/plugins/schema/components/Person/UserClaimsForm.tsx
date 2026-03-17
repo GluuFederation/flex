@@ -307,7 +307,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     doc_entry="editType"
                     helperText={t('messages.multi_select_hint')}
                     showError={!!(formik.errors.editType && formik.touched.editType)}
-                    errorMessage={formik.errors.editType as string}
+                    errorMessage={formik.errors.editType ? t(formik.errors.editType as string) : ''}
                     disabled={isViewMode}
                   />
                 </div>
@@ -326,7 +326,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     doc_entry="viewType"
                     helperText={t('messages.multi_select_hint')}
                     showError={!!(formik.errors.viewType && formik.touched.viewType)}
-                    errorMessage={formik.errors.viewType as string}
+                    errorMessage={formik.errors.viewType ? t(formik.errors.viewType as string) : ''}
                     disabled={isViewMode}
                   />
                 </div>
@@ -345,7 +345,9 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     doc_entry="usageType"
                     helperText={t('messages.multi_select_hint')}
                     showError={!!(formik.errors.usageType && formik.touched.usageType)}
-                    errorMessage={formik.errors.usageType as string}
+                    errorMessage={
+                      formik.errors.usageType ? t(formik.errors.usageType as string) : ''
+                    }
                     disabled={isViewMode}
                   />
                 </div>
@@ -496,12 +498,12 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
               </div>
 
               <GluuThemeFormFooter
-                showBack
+                showBack={!hideButtons?.back}
                 onBack={handleBack}
-                showCancel={!isViewMode}
+                showCancel={!hideButtons?.save}
                 onCancel={() => handleCancel(formik)}
                 disableCancel={!formHasChanged}
-                showApply={!isViewMode}
+                showApply={!hideButtons?.save}
                 applyButtonType="submit"
                 disableApply={!canApply}
                 isLoading={false}

@@ -1045,7 +1045,8 @@
     "status_required": "Le statut est obligatoire",
     "data_type_required": "Le type de données est obligatoire",
     "edit_type_required": "Le type d'édition est obligatoire",
-    "view_type_required": "Le type de vue est obligatoire"
+    "view_type_required": "Le type de vue est obligatoire",
+    "fetch_failed": "Échec du chargement des données : {{detail}}"
   },
   "validation_messages": {
     "invalid_url_format": "Format d'URL invalide",

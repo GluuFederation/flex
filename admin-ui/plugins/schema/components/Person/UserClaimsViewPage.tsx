@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
@@ -11,6 +11,7 @@ import { Alert } from '@mui/material'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import SetTitle from 'Utils/SetTitle'
 import UserClaimsForm from 'Plugins/schema/components/Person/UserClaimsForm'
 import { useStyles } from './styles/UserClaimsFormPage.style'
@@ -38,10 +39,22 @@ function UserClaimsViewPage(): JSX.Element {
   )
   const { classes } = useStyles({ isDark, themeColors })
 
-  const { hasCedarReadPermission } = useCedarling()
+  const { authorizeHelper, hasCedarReadPermission } = useCedarling()
+
+  const attributeScopes = useMemo(
+    () => CEDAR_RESOURCE_SCOPES[attributeResourceId] ?? [],
+    [attributeResourceId],
+  )
+
+  useEffect(() => {
+    if (attributeScopes.length > 0) {
+      authorizeHelper(attributeScopes)
+    }
+  }, [authorizeHelper, attributeScopes])
+
   const canRead = useMemo(
     () => hasCedarReadPermission(attributeResourceId),
-    [hasCedarReadPermission],
+    [hasCedarReadPermission, attributeResourceId],
   )
 
   SetTitle(t('titles.view_attribute', { defaultValue: 'View User Claim' }))

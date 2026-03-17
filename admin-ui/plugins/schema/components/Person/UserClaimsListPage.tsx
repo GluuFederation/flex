@@ -88,7 +88,12 @@ const UserClaimsListPage: React.FC = () => {
 
   const startIndex = useMemo(() => pageNumber * limit, [pageNumber, limit])
 
-  const { data: attributesData, isLoading } = useAttributes({
+  const {
+    data: attributesData,
+    isLoading,
+    isError,
+    error,
+  } = useAttributes({
     limit,
     startIndex,
     ...(pattern && { pattern }),
@@ -479,7 +484,11 @@ const UserClaimsListPage: React.FC = () => {
               onPagingSizeSync={onPagingSizeSync}
               actions={actions}
               getRowKey={getRowKey}
-              emptyMessage={t('messages.no_data')}
+              emptyMessage={
+                isError
+                  ? t('errors.fetch_failed', { detail: (error as Error)?.message })
+                  : t('messages.no_data')
+              }
             />
           </div>
         </GluuViewWrapper>

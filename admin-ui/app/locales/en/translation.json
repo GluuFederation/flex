@@ -1108,7 +1108,8 @@
     "status_required": "Status is required",
     "data_type_required": "Data Type is required",
     "edit_type_required": "Edit Type is required",
-    "view_type_required": "View Type is required"
+    "view_type_required": "View Type is required",
+    "fetch_failed": "Failed to load data: {{detail}}"
   },
   "validation_messages": {
     "invalid_url_format": "Invalid URL format",

@@ -1038,7 +1038,8 @@
     "status_required": "O status é obrigatório",
     "data_type_required": "O tipo de dado é obrigatório",
     "edit_type_required": "O tipo de edição é obrigatório",
-    "view_type_required": "O tipo de visualização é obrigatório"
+    "view_type_required": "O tipo de visualização é obrigatório",
+    "fetch_failed": "Falha ao carregar os dados: {{detail}}"
   },
   "validation_messages": {
     "invalid_url_format": "Formato de URL inválido",
