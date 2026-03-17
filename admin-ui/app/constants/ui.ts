@@ -5,6 +5,7 @@ export const OPACITY = {
   HOVER_DARK: 0.08,
   DISABLED: 0.5,
   PLACEHOLDER: 0.6,
+  FULL: 1,
 } as const
 
 export const getHoverOpacity = (isDark: boolean): number => {

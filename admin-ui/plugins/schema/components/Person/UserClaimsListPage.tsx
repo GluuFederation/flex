@@ -161,7 +161,7 @@ const UserClaimsListPage: React.FC = () => {
 
   const handleDeleteAccept = useCallback(
     (message: string) => {
-      handleDeleteConfirm(message, itemToDelete?.inum)
+      return handleDeleteConfirm(message, itemToDelete?.inum)
     },
     [handleDeleteConfirm, itemToDelete?.inum],
   )

@@ -92,6 +92,18 @@ const GluuMultiSelectRow: React.FC<GluuMultiSelectRowProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [isOpen])
 
+  // Close dropdown on Escape key
+  useEffect(() => {
+    if (!isOpen) return
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsOpen(false)
+      }
+    }
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [isOpen])
+
   const getOptionLabel = useCallback(
     (val: string) => {
       const option = options.find((o) => o.value === val)
@@ -127,7 +139,7 @@ const GluuMultiSelectRow: React.FC<GluuMultiSelectRowProps> = ({
             onClick={toggleDropdown}
             onBlur={(e) => {
               if (formik.handleBlur) {
-                e.target.setAttribute('name', name)
+                e.currentTarget.setAttribute('name', name)
                 formik.handleBlur(e)
               }
             }}

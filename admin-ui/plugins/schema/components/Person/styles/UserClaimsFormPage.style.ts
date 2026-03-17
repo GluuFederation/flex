@@ -24,6 +24,7 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
   const cardBorderStyle = getCardBorderStyle({ isDark })
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   const inputBorderColor = themeColors.settings?.inputBorder ?? themeColors.borderColor
+  const formInputBg = themeColors.settings?.formInputBackground ?? themeColors.inputBackground
 
   return {
     formCard: {
@@ -96,6 +97,11 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
       '& .input-group': {
         margin: 0,
       },
+      '& [role="combobox"][tabindex="-1"]': {
+        backgroundColor: `${formInputBg} !important`,
+        opacity: OPACITY.FULL,
+        cursor: 'not-allowed',
+      },
     },
     inumFullWidth: {
       'gridColumn': '1 / -1',
@@ -135,6 +141,10 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
         maxWidth: '100%',
         paddingLeft: 0,
         paddingRight: 0,
+      },
+      '& .react-toggle--disabled': {
+        opacity: `${OPACITY.FULL} !important`,
+        cursor: 'not-allowed',
       },
     },
     formLabels: {
@@ -178,11 +188,10 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
         },
       '& input:not([type="checkbox"]):disabled, & select:disabled, & .custom-select:disabled, & textarea:disabled':
         {
-          backgroundColor: 'var(--theme-input-bg) !important',
+          backgroundColor: `${formInputBg} !important`,
           border: `1px solid ${inputBorderColor} !important`,
-          color: 'var(--theme-input-color) !important',
-          WebkitTextFillColor: 'var(--theme-input-color) !important',
-          opacity: 1,
+          color: `${themeColors.fontColor} !important`,
+          opacity: OPACITY.FULL,
           cursor: 'not-allowed',
         },
       '& input:not([type="checkbox"]).is-valid, & input:not([type="checkbox"]).is-invalid, & select.is-valid, & select.is-invalid, & textarea.is-valid, & textarea.is-invalid':

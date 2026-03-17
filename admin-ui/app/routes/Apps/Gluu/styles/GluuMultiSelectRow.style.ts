@@ -43,12 +43,10 @@ export const useStyles = makeStyles<GluuMultiSelectRowStyleParams>()((
       borderBottomRightRadius: 0,
     },
     selectTriggerDisabled: {
-      opacity: 0.6,
       cursor: 'not-allowed',
     },
     placeholder: {
-      color: textMuted,
-      opacity: 0.7,
+      color: fontColor,
       fontSize: 14,
       userSelect: 'none' as const,
     },
