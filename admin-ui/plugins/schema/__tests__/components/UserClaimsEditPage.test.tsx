@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import AttributeEditPage from 'Plugins/schema/components/Person/AttributeEditPage'
+import UserClaimsEditPage from 'Plugins/schema/components/Person/UserClaimsEditPage'
 
 const mockAttribute = {
   inum: 'test-inum-123',
@@ -44,7 +44,7 @@ jest.mock('@/cedarling/constants/resourceScopes', () => ({
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useParams: jest.fn(() => ({ gid: ':test-inum-123' })),
+  useParams: jest.fn(() => ({ gid: 'test-inum-123' })),
 }))
 
 const mockUseAttribute = jest.fn((_inum: string) => ({
@@ -88,65 +88,65 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => (
   </QueryClientProvider>
 )
 
-describe('AttributeEditPage', () => {
+describe('UserClaimsEditPage', () => {
   describe('when attribute data is loaded', () => {
     it('renders inum field with the correct attribute inum', async () => {
-      render(<AttributeEditPage />, { wrapper: Wrapper })
+      render(<UserClaimsEditPage />, { wrapper: Wrapper })
       const inumInput = await screen.findByTestId('inum')
       expect(inumInput).toHaveValue('test-inum-123')
     })
 
     it('populates Name input with attribute name', async () => {
-      render(<AttributeEditPage />, { wrapper: Wrapper })
+      render(<UserClaimsEditPage />, { wrapper: Wrapper })
       const nameInput = await screen.findByTestId('name')
       expect(nameInput).toHaveValue('givenName')
     })
 
     it('populates Display Name input with attribute display name', async () => {
-      render(<AttributeEditPage />, { wrapper: Wrapper })
+      render(<UserClaimsEditPage />, { wrapper: Wrapper })
       const displayNameInput = await screen.findByTestId('displayName')
       expect(displayNameInput).toHaveValue('Given Name')
     })
 
     it('populates Description input with attribute description', async () => {
-      render(<AttributeEditPage />, { wrapper: Wrapper })
+      render(<UserClaimsEditPage />, { wrapper: Wrapper })
       const descInput = await screen.findByTestId('description')
       expect(descInput).toHaveValue('First Name')
     })
 
     it('renders Status select with attribute value', async () => {
-      render(<AttributeEditPage />, { wrapper: Wrapper })
+      render(<UserClaimsEditPage />, { wrapper: Wrapper })
       await screen.findByText(/Status/)
       const statusSelect = screen.getByTestId('status') as HTMLSelectElement
       expect(statusSelect.value).toBe('active')
     })
 
     it('renders Data Type select with attribute value', async () => {
-      render(<AttributeEditPage />, { wrapper: Wrapper })
+      render(<UserClaimsEditPage />, { wrapper: Wrapper })
       await screen.findByText(/Data Type/)
       const dataTypeSelect = screen.getByTestId('dataType') as HTMLSelectElement
       expect(dataTypeSelect.value).toBe('string')
     })
 
     it('renders Edit Type and View Type fields', async () => {
-      render(<AttributeEditPage />, { wrapper: Wrapper })
+      render(<UserClaimsEditPage />, { wrapper: Wrapper })
       expect(await screen.findByText(/Edit Type/)).toBeInTheDocument()
       expect(screen.getByText(/View Type/)).toBeInTheDocument()
     })
 
     it('renders Usage Type field', async () => {
-      render(<AttributeEditPage />, { wrapper: Wrapper })
+      render(<UserClaimsEditPage />, { wrapper: Wrapper })
       expect(await screen.findByText(/Usage Type/)).toBeInTheDocument()
     })
 
     it('renders Saml1 URI and Saml2 URI fields', async () => {
-      render(<AttributeEditPage />, { wrapper: Wrapper })
+      render(<UserClaimsEditPage />, { wrapper: Wrapper })
       expect(await screen.findByText(/Saml1 URI/i)).toBeInTheDocument()
       expect(screen.getByText(/Saml2 URI/i)).toBeInTheDocument()
     })
 
     it('renders toggle fields', async () => {
-      render(<AttributeEditPage />, { wrapper: Wrapper })
+      render(<UserClaimsEditPage />, { wrapper: Wrapper })
       expect(await screen.findByText(/Multivalued/)).toBeInTheDocument()
       expect(screen.getByText(/Hide On Discovery/)).toBeInTheDocument()
       expect(screen.getByText(/Include In SCIM Extension/)).toBeInTheDocument()
@@ -154,7 +154,7 @@ describe('AttributeEditPage', () => {
     })
 
     it('renders footer with Back and Cancel buttons', async () => {
-      render(<AttributeEditPage />, { wrapper: Wrapper })
+      render(<UserClaimsEditPage />, { wrapper: Wrapper })
       await screen.findByTestId('name')
       expect(screen.getByText(/Back/i)).toBeInTheDocument()
       expect(screen.getByText(/Cancel/i)).toBeInTheDocument()
@@ -179,12 +179,12 @@ describe('AttributeEditPage', () => {
     })
 
     it('renders error alert with the error message', async () => {
-      render(<AttributeEditPage />, { wrapper: Wrapper })
+      render(<UserClaimsEditPage />, { wrapper: Wrapper })
       expect(await screen.findByText(/Error loading attribute/i)).toBeInTheDocument()
     })
 
     it('does not render the form fields', async () => {
-      render(<AttributeEditPage />, { wrapper: Wrapper })
+      render(<UserClaimsEditPage />, { wrapper: Wrapper })
       await screen.findByText(/Error loading attribute/i)
       expect(screen.queryByTestId('name')).not.toBeInTheDocument()
     })

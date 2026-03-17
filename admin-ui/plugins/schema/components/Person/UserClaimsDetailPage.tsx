@@ -8,12 +8,12 @@ import { API_ATTRIBUTE } from '../../constants'
 import type {
   AttributeDetailPageProps,
   DetailThemeContextType,
-} from '../types/AttributeListPage.types'
+} from '../types/UserClaimsListPage.types'
 
 const displayOrDash = (value: string | null | undefined): string =>
   value === null || value === undefined || value === '' ? '—' : value
 
-const AttributeDetailPage = ({ row }: AttributeDetailPageProps): JSX.Element => {
+const UserClaimsDetailPage = ({ row }: AttributeDetailPageProps): JSX.Element => {
   const theme = useContext(ThemeContext) as DetailThemeContextType
   const selectedTheme = theme?.state?.theme || DEFAULT_THEME
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
@@ -87,4 +87,4 @@ const AttributeDetailPage = ({ row }: AttributeDetailPageProps): JSX.Element => 
   )
 }
 
-export default memo(AttributeDetailPage)
+export default memo(UserClaimsDetailPage)

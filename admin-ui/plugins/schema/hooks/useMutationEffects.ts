@@ -52,18 +52,10 @@ export const useMutationEffects = <
         navigateBack(ROUTES.ATTRIBUTES_LIST)
       }
     }
-    if (mutation.isIdle) {
+    if (!mutation.isSuccess) {
       successHandledRef.current = false
     }
-  }, [
-    mutation.isSuccess,
-    mutation.isIdle,
-    navigateBack,
-    dispatch,
-    t,
-    successMessage,
-    navigateOnSuccess,
-  ])
+  }, [mutation.isSuccess, navigateBack, dispatch, t, successMessage, navigateOnSuccess])
 
   useEffect(() => {
     if (mutation.isError && !errorHandledRef.current) {

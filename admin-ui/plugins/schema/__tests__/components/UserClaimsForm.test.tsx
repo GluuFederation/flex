@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
-import type { AttributeItem } from 'Plugins/schema/components/types/AttributeListPage.types'
+import type { AttributeItem } from 'Plugins/schema/components/types/UserClaimsListPage.types'
 
 const item: AttributeItem = {
   inum: 'B4B0',
@@ -46,7 +46,7 @@ const emptyItem: AttributeItem = {
   attributeValidation: { maxLength: null, regexp: null, minLength: null },
 }
 
-import AttributeForm from 'Plugins/schema/components/Person/AttributeForm'
+import UserClaimsForm from 'Plugins/schema/components/Person/UserClaimsForm'
 
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({
@@ -74,6 +74,7 @@ jest.mock('JansConfigApi', () => ({
   usePostAttributes: jest.fn(() => ({ mutate: jest.fn(), isPending: false })),
   usePutAttributes: jest.fn(() => ({ mutate: jest.fn(), isPending: false })),
   getGetAttributesQueryKey: jest.fn(() => ['attributes']),
+  useGetWebhooksByFeatureId: jest.fn(() => ({ data: [], isFetching: false, isFetched: true })),
   JansAttribute: {},
 }))
 
@@ -104,63 +105,63 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => (
   </QueryClientProvider>
 )
 
-describe('AttributeForm', () => {
+describe('UserClaimsForm', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
   describe('with existing item (edit mode)', () => {
     it('renders inum field with correct value', async () => {
-      render(<AttributeForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
+      render(<UserClaimsForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
       const inumInput = await screen.findByTestId('inum')
       expect(inumInput).toHaveValue(item.inum)
     })
 
     it('populates Name input with item name', async () => {
-      render(<AttributeForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
+      render(<UserClaimsForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
       const nameInput = await screen.findByTestId('name')
       expect(nameInput).toHaveValue(item.name)
     })
 
     it('populates Display Name input with item display name', async () => {
-      render(<AttributeForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
+      render(<UserClaimsForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
       const displayNameInput = await screen.findByTestId('displayName')
       expect(displayNameInput).toHaveValue(item.displayName)
     })
 
     it('populates Description input with item description', async () => {
-      render(<AttributeForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
+      render(<UserClaimsForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
       const descInput = await screen.findByTestId('description')
       expect(descInput).toHaveValue(item.description)
     })
 
     it('renders Status select with item value', async () => {
-      render(<AttributeForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
+      render(<UserClaimsForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
       await screen.findByText(/Status/)
       const statusSelect = screen.getByTestId('status') as HTMLSelectElement
       expect(statusSelect.value).toBe(item.status)
     })
 
     it('renders Data Type select with item value', async () => {
-      render(<AttributeForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
+      render(<UserClaimsForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
       await screen.findByText(/Data Type/)
       const dataTypeSelect = screen.getByTestId('dataType') as HTMLSelectElement
       expect(dataTypeSelect.value).toBe(item.dataType)
     })
 
     it('renders Edit Type and View Type fields', async () => {
-      render(<AttributeForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
+      render(<UserClaimsForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
       expect(await screen.findByText(/Edit Type/)).toBeInTheDocument()
       expect(screen.getByText(/View Type/)).toBeInTheDocument()
     })
 
     it('renders Usage Type field', async () => {
-      render(<AttributeForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
+      render(<UserClaimsForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
       expect(await screen.findByText(/Usage Type/)).toBeInTheDocument()
     })
 
     it('renders SAML URI fields with item values', async () => {
-      render(<AttributeForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
+      render(<UserClaimsForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
       const saml1Input = await screen.findByTestId('saml1Uri')
       expect(saml1Input).toHaveValue(item.saml1Uri)
       const saml2Input = screen.getByTestId('saml2Uri')
@@ -168,7 +169,7 @@ describe('AttributeForm', () => {
     })
 
     it('renders Multivalued toggle reflecting item state', async () => {
-      render(<AttributeForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
+      render(<UserClaimsForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
       await screen.findByText(/Multivalued/)
       const toggle = document.querySelector(
         'input#oxMultiValuedAttribute[type="checkbox"]',
@@ -178,7 +179,7 @@ describe('AttributeForm', () => {
     })
 
     it('renders Hide On Discovery toggle reflecting item state', async () => {
-      render(<AttributeForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
+      render(<UserClaimsForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
       await screen.findByText(/Hide On Discovery/)
       const toggle = document.querySelector(
         'input#jansHideOnDiscovery[type="checkbox"]',
@@ -188,7 +189,7 @@ describe('AttributeForm', () => {
     })
 
     it('renders Include In SCIM Extension toggle reflecting item state', async () => {
-      render(<AttributeForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
+      render(<UserClaimsForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
       await screen.findByText(/Include In SCIM Extension/)
       const toggle = document.querySelector(
         'input#scimCustomAttr[type="checkbox"]',
@@ -198,12 +199,12 @@ describe('AttributeForm', () => {
     })
 
     it('renders Enable Custom Validation toggle', async () => {
-      render(<AttributeForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
+      render(<UserClaimsForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
       expect(await screen.findByText(/Enable custom validation/i)).toBeInTheDocument()
     })
 
     it('does not show validation fields when validation is disabled', async () => {
-      render(<AttributeForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
+      render(<UserClaimsForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
       await screen.findByTestId('name')
       expect(screen.queryByTestId('regexp')).not.toBeInTheDocument()
       expect(screen.queryByTestId('minLength')).not.toBeInTheDocument()
@@ -211,7 +212,7 @@ describe('AttributeForm', () => {
     })
 
     it('renders footer with Back, Cancel, and Apply', async () => {
-      render(<AttributeForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
+      render(<UserClaimsForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
       await screen.findByTestId('name')
       expect(screen.getByText(/Back/i)).toBeInTheDocument()
       expect(screen.getByText(/Cancel/i)).toBeInTheDocument()
@@ -221,7 +222,7 @@ describe('AttributeForm', () => {
 
   describe('with empty item (add mode)', () => {
     it('does not render inum field', async () => {
-      render(<AttributeForm item={emptyItem} customOnSubmit={handleSubmit} />, {
+      render(<UserClaimsForm item={emptyItem} customOnSubmit={handleSubmit} />, {
         wrapper: Wrapper,
       })
       await screen.findByTestId('name')
@@ -229,7 +230,7 @@ describe('AttributeForm', () => {
     })
 
     it('renders empty Name and Description inputs', async () => {
-      render(<AttributeForm item={emptyItem} customOnSubmit={handleSubmit} />, {
+      render(<UserClaimsForm item={emptyItem} customOnSubmit={handleSubmit} />, {
         wrapper: Wrapper,
       })
       const nameInput = await screen.findByTestId('name')
@@ -239,7 +240,7 @@ describe('AttributeForm', () => {
     })
 
     it('renders Status select enabled', async () => {
-      render(<AttributeForm item={emptyItem} customOnSubmit={handleSubmit} />, {
+      render(<UserClaimsForm item={emptyItem} customOnSubmit={handleSubmit} />, {
         wrapper: Wrapper,
       })
       await screen.findByText(/Status/)
@@ -248,7 +249,7 @@ describe('AttributeForm', () => {
     })
 
     it('renders Data Type select enabled', async () => {
-      render(<AttributeForm item={emptyItem} customOnSubmit={handleSubmit} />, {
+      render(<UserClaimsForm item={emptyItem} customOnSubmit={handleSubmit} />, {
         wrapper: Wrapper,
       })
       await screen.findByText(/Data Type/)
@@ -257,7 +258,7 @@ describe('AttributeForm', () => {
     })
 
     it('defaults Multivalued toggle to unchecked', async () => {
-      render(<AttributeForm item={emptyItem} customOnSubmit={handleSubmit} />, {
+      render(<UserClaimsForm item={emptyItem} customOnSubmit={handleSubmit} />, {
         wrapper: Wrapper,
       })
       await screen.findByText(/Multivalued/)
@@ -269,7 +270,7 @@ describe('AttributeForm', () => {
     })
 
     it('defaults Hide On Discovery toggle to unchecked', async () => {
-      render(<AttributeForm item={emptyItem} customOnSubmit={handleSubmit} />, {
+      render(<UserClaimsForm item={emptyItem} customOnSubmit={handleSubmit} />, {
         wrapper: Wrapper,
       })
       await screen.findByText(/Hide On Discovery/)
@@ -286,7 +287,7 @@ describe('AttributeForm', () => {
 
     it('renders Back button and hides Cancel', async () => {
       render(
-        <AttributeForm item={item} customOnSubmit={handleSubmit} hideButtons={hideButtons} />,
+        <UserClaimsForm item={item} customOnSubmit={handleSubmit} hideButtons={hideButtons} />,
         { wrapper: Wrapper },
       )
       await screen.findByTestId('name')
@@ -296,7 +297,7 @@ describe('AttributeForm', () => {
 
     it('disables the Name input', async () => {
       render(
-        <AttributeForm item={item} customOnSubmit={handleSubmit} hideButtons={hideButtons} />,
+        <UserClaimsForm item={item} customOnSubmit={handleSubmit} hideButtons={hideButtons} />,
         { wrapper: Wrapper },
       )
       const nameInput = await screen.findByTestId('name')
@@ -305,7 +306,7 @@ describe('AttributeForm', () => {
 
     it('disables the Description input', async () => {
       render(
-        <AttributeForm item={item} customOnSubmit={handleSubmit} hideButtons={hideButtons} />,
+        <UserClaimsForm item={item} customOnSubmit={handleSubmit} hideButtons={hideButtons} />,
         { wrapper: Wrapper },
       )
       const descInput = await screen.findByTestId('description')
@@ -314,7 +315,7 @@ describe('AttributeForm', () => {
 
     it('disables the Status select', async () => {
       render(
-        <AttributeForm item={item} customOnSubmit={handleSubmit} hideButtons={hideButtons} />,
+        <UserClaimsForm item={item} customOnSubmit={handleSubmit} hideButtons={hideButtons} />,
         { wrapper: Wrapper },
       )
       await screen.findByText(/Status/)
@@ -324,7 +325,7 @@ describe('AttributeForm', () => {
 
     it('disables the Multivalued toggle', async () => {
       render(
-        <AttributeForm item={item} customOnSubmit={handleSubmit} hideButtons={hideButtons} />,
+        <UserClaimsForm item={item} customOnSubmit={handleSubmit} hideButtons={hideButtons} />,
         { wrapper: Wrapper },
       )
       await screen.findByText(/Multivalued/)
@@ -338,7 +339,7 @@ describe('AttributeForm', () => {
 
   describe('form interactions', () => {
     it('allows typing in the Name field', async () => {
-      render(<AttributeForm item={emptyItem} customOnSubmit={handleSubmit} />, {
+      render(<UserClaimsForm item={emptyItem} customOnSubmit={handleSubmit} />, {
         wrapper: Wrapper,
       })
       const nameInput = await screen.findByTestId('name')
@@ -347,7 +348,7 @@ describe('AttributeForm', () => {
     })
 
     it('allows typing in the Description field', async () => {
-      render(<AttributeForm item={emptyItem} customOnSubmit={handleSubmit} />, {
+      render(<UserClaimsForm item={emptyItem} customOnSubmit={handleSubmit} />, {
         wrapper: Wrapper,
       })
       const descInput = await screen.findByTestId('description')
@@ -356,7 +357,7 @@ describe('AttributeForm', () => {
     })
 
     it('triggers commit dialog flow when Apply is clicked on dirty form', async () => {
-      render(<AttributeForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
+      render(<UserClaimsForm item={item} customOnSubmit={handleSubmit} />, { wrapper: Wrapper })
       const nameInput = await screen.findByTestId('name')
       fireEvent.change(nameInput, { target: { value: 'updatedName' } })
 
@@ -366,10 +367,13 @@ describe('AttributeForm', () => {
         expect(applyBtn.closest('button')).not.toBeDisabled()
       })
       fireEvent.click(applyBtn)
+
+      const dialog = await screen.findByRole('dialog')
+      expect(dialog).toBeInTheDocument()
     })
 
     it('shows validation fields when Enable Custom Validation is toggled', async () => {
-      render(<AttributeForm item={emptyItem} customOnSubmit={handleSubmit} />, {
+      render(<UserClaimsForm item={emptyItem} customOnSubmit={handleSubmit} />, {
         wrapper: Wrapper,
       })
       await screen.findByText(/Enable custom validation/i)

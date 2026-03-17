@@ -418,8 +418,8 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
         backgroundColor: `${headersInputBg} !important`,
         color: themeColors.fontColor,
         border: `1px solid ${headersBorderColor} !important`,
-        outline: OUTLINE_NONE,
-        boxShadow: OUTLINE_NONE,
+        outline: `${OUTLINE_NONE} !important`,
+        boxShadow: `${OUTLINE_NONE} !important`,
       },
     },
     propsActionBtn: {

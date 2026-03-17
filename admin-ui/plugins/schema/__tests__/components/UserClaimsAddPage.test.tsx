@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import AttributeAddPage from 'Plugins/schema/components/Person/AttributeAddPage'
+import UserClaimsAddPage from 'Plugins/schema/components/Person/UserClaimsAddPage'
 import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
@@ -57,9 +57,9 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => (
   </QueryClientProvider>
 )
 
-describe('AttributeAddPage', () => {
+describe('UserClaimsAddPage', () => {
   it('renders the form with empty Name and Description inputs', async () => {
-    render(<AttributeAddPage />, { wrapper: Wrapper })
+    render(<UserClaimsAddPage />, { wrapper: Wrapper })
     const nameInput = await screen.findByTestId('name')
     expect(nameInput).toHaveValue('')
     const descInput = screen.getByTestId('description')
@@ -67,54 +67,54 @@ describe('AttributeAddPage', () => {
   })
 
   it('renders Status select with options', async () => {
-    render(<AttributeAddPage />, { wrapper: Wrapper })
+    render(<UserClaimsAddPage />, { wrapper: Wrapper })
     await screen.findByText(/Status/)
     const statusSelect = screen.getByTestId('status') as HTMLSelectElement
     expect(statusSelect).not.toBeDisabled()
   })
 
   it('renders Data Type select', async () => {
-    render(<AttributeAddPage />, { wrapper: Wrapper })
+    render(<UserClaimsAddPage />, { wrapper: Wrapper })
     await screen.findByText(/Data Type/)
     const dataTypeSelect = screen.getByTestId('dataType') as HTMLSelectElement
     expect(dataTypeSelect).not.toBeDisabled()
   })
 
   it('renders Edit Type and View Type multi-select fields', async () => {
-    render(<AttributeAddPage />, { wrapper: Wrapper })
+    render(<UserClaimsAddPage />, { wrapper: Wrapper })
     expect(await screen.findByText(/Edit Type/)).toBeInTheDocument()
     expect(screen.getByText(/View Type/)).toBeInTheDocument()
   })
 
   it('renders Usage Type multi-select field', async () => {
-    render(<AttributeAddPage />, { wrapper: Wrapper })
+    render(<UserClaimsAddPage />, { wrapper: Wrapper })
     expect(await screen.findByText(/Usage Type/)).toBeInTheDocument()
   })
 
   it('renders toggle fields for Multivalued and Hide On Discovery', async () => {
-    render(<AttributeAddPage />, { wrapper: Wrapper })
+    render(<UserClaimsAddPage />, { wrapper: Wrapper })
     expect(await screen.findByText(/Multivalued/)).toBeInTheDocument()
     expect(screen.getByText(/Hide On Discovery/)).toBeInTheDocument()
   })
 
   it('renders Include In SCIM Extension toggle', async () => {
-    render(<AttributeAddPage />, { wrapper: Wrapper })
+    render(<UserClaimsAddPage />, { wrapper: Wrapper })
     expect(await screen.findByText(/Include In SCIM Extension/)).toBeInTheDocument()
   })
 
   it('renders Enable Custom Validation toggle', async () => {
-    render(<AttributeAddPage />, { wrapper: Wrapper })
+    render(<UserClaimsAddPage />, { wrapper: Wrapper })
     expect(await screen.findByText(/Enable custom validation/i)).toBeInTheDocument()
   })
 
   it('does not render inum field for new attribute', async () => {
-    render(<AttributeAddPage />, { wrapper: Wrapper })
+    render(<UserClaimsAddPage />, { wrapper: Wrapper })
     await screen.findByTestId('name')
     expect(screen.queryByTestId('inum')).not.toBeInTheDocument()
   })
 
   it('renders footer with Back and Cancel buttons', async () => {
-    render(<AttributeAddPage />, { wrapper: Wrapper })
+    render(<UserClaimsAddPage />, { wrapper: Wrapper })
     await screen.findByTestId('name')
     expect(screen.getByText(/Back/i)).toBeInTheDocument()
     expect(screen.getByText(/Cancel/i)).toBeInTheDocument()

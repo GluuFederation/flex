@@ -1,7 +1,7 @@
-import AttributeListPage from 'Plugins/schema/components/Person/AttributeListPage'
-import AttributeAddPage from 'Plugins/schema/components/Person/AttributeAddPage'
-import AttributeEditPage from 'Plugins/schema/components/Person/AttributeEditPage'
-import AttributeViewPage from 'Plugins/schema/components/Person/AttributeViewPage'
+import UserClaimsListPage from 'Plugins/schema/components/Person/UserClaimsListPage'
+import UserClaimsAddPage from 'Plugins/schema/components/Person/UserClaimsAddPage'
+import UserClaimsEditPage from 'Plugins/schema/components/Person/UserClaimsEditPage'
+import UserClaimsViewPage from 'Plugins/schema/components/Person/UserClaimsViewPage'
 import { ATTRIBUTE_READ, ATTRIBUTE_WRITE } from 'Utils/PermChecker'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { ROUTES } from '@/helpers/navigation'
@@ -18,25 +18,25 @@ const pluginMetadata = {
   ],
   routes: [
     {
-      component: AttributeEditPage,
+      component: UserClaimsEditPage,
       path: ROUTES.ATTRIBUTE_EDIT_TEMPLATE,
       permission: ATTRIBUTE_WRITE,
       resourceKey: ADMIN_UI_RESOURCES.Attributes,
     },
     {
-      component: AttributeViewPage,
+      component: UserClaimsViewPage,
       path: ROUTES.ATTRIBUTE_VIEW_TEMPLATE,
       permission: ATTRIBUTE_READ,
       resourceKey: ADMIN_UI_RESOURCES.Attributes,
     },
     {
-      component: AttributeAddPage,
+      component: UserClaimsAddPage,
       path: ROUTES.ATTRIBUTE_ADD,
       permission: ATTRIBUTE_WRITE,
       resourceKey: ADMIN_UI_RESOURCES.Attributes,
     },
     {
-      component: AttributeListPage,
+      component: UserClaimsListPage,
       path: ROUTES.ATTRIBUTES_LIST,
       permission: ATTRIBUTE_READ,
       resourceKey: ADMIN_UI_RESOURCES.Attributes,

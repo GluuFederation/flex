@@ -7,7 +7,7 @@ import type {
   SubmitData,
   HandleAttributeSubmitParams,
   ModifiedFields,
-} from '../components/types/AttributeListPage.types'
+} from '../components/types/UserClaimsListPage.types'
 
 // Shared constant for form-level attributeValidation default (uses null for form values)
 export const DEFAULT_FORM_ATTRIBUTE_VALIDATION = {

@@ -12,19 +12,19 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import SetTitle from 'Utils/SetTitle'
-import AttributeForm from 'Plugins/schema/components/Person/AttributeForm'
-import { useStyles } from './styles/AttributeFormPage.style'
+import UserClaimsForm from 'Plugins/schema/components/Person/UserClaimsForm'
+import { useStyles } from './styles/UserClaimsFormPage.style'
 import { cloneDeep } from 'lodash'
 import { useAttribute, useUpdateAttribute, useMutationEffects } from '../../hooks'
 import { getDefaultAttributeItem } from '../../utils/formHelpers'
 import { DEFAULT_ATTRIBUTE_VALIDATION } from '../../helper/utils'
 import { getErrorMessage } from '../../utils/errorHandler'
-import type { AttributeItem, SubmitData } from '../types/AttributeListPage.types'
+import type { AttributeItem, SubmitData } from '../types/UserClaimsListPage.types'
 import type { JansAttribute } from 'JansConfigApi'
 
 const attributeResourceId = ADMIN_UI_RESOURCES.Attributes
 
-function AttributeEditPage(): JSX.Element {
+function UserClaimsEditPage(): JSX.Element {
   const { gid } = useParams<{ gid: string }>()
   const { t } = useTranslation()
 
@@ -44,7 +44,7 @@ function AttributeEditPage(): JSX.Element {
     [hasCedarReadPermission],
   )
 
-  SetTitle(t('titles.edit_attribute', { defaultValue: 'Edit Attribute' }))
+  SetTitle(t('titles.edit_attribute', { defaultValue: 'Edit User Claim' }))
 
   const inum = gid?.replace(':', '') || ''
 
@@ -84,6 +84,11 @@ function AttributeEditPage(): JSX.Element {
     [updateMutation],
   )
 
+  const isBlocking = useMemo(
+    () => isLoading || updateMutation.isPending,
+    [isLoading, updateMutation.isPending],
+  )
+
   if (queryError && !isLoading) {
     return (
       <GluuPageContent>
@@ -102,18 +107,13 @@ function AttributeEditPage(): JSX.Element {
     )
   }
 
-  const isBlocking = useMemo(
-    () => isLoading || updateMutation.isPending,
-    [isLoading, updateMutation.isPending],
-  )
-
   return (
     <GluuPageContent>
       <GluuViewWrapper canShow={canRead}>
         <GluuLoader blocking={isBlocking}>
           <div className={classes.formCard}>
             <div className={classes.content}>
-              <AttributeForm
+              <UserClaimsForm
                 item={extensibleItems as AttributeItem}
                 customOnSubmit={customHandleSubmit}
               />
@@ -125,4 +125,4 @@ function AttributeEditPage(): JSX.Element {
   )
 }
 
-export default AttributeEditPage
+export default UserClaimsEditPage

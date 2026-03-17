@@ -12,19 +12,19 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import SetTitle from 'Utils/SetTitle'
-import AttributeForm from 'Plugins/schema/components/Person/AttributeForm'
-import { useStyles } from './styles/AttributeFormPage.style'
+import UserClaimsForm from 'Plugins/schema/components/Person/UserClaimsForm'
+import { useStyles } from './styles/UserClaimsFormPage.style'
 import { cloneDeep } from 'lodash'
 import { useAttribute } from '../../hooks'
 import { getErrorMessage } from '../../utils/errorHandler'
 import { getDefaultAttributeItem } from '../../utils/formHelpers'
 import { DEFAULT_ATTRIBUTE_VALIDATION } from '../../helper/utils'
-import type { AttributeItem } from '../types/AttributeListPage.types'
+import type { AttributeItem } from '../types/UserClaimsListPage.types'
 import type { JansAttribute } from 'JansConfigApi'
 
 const attributeResourceId = ADMIN_UI_RESOURCES.Attributes
 
-function AttributeViewPage(): JSX.Element {
+function UserClaimsViewPage(): JSX.Element {
   const { gid } = useParams<{ gid: string }>()
   const { t } = useTranslation()
 
@@ -44,7 +44,7 @@ function AttributeViewPage(): JSX.Element {
     [hasCedarReadPermission],
   )
 
-  SetTitle(t('titles.view_attribute', { defaultValue: 'View Attribute' }))
+  SetTitle(t('titles.view_attribute', { defaultValue: 'View User Claim' }))
 
   const inum = gid?.replace(':', '') || ''
 
@@ -89,7 +89,7 @@ function AttributeViewPage(): JSX.Element {
         <GluuLoader blocking={isLoading}>
           <div className={classes.formCard}>
             <div className={classes.content}>
-              <AttributeForm
+              <UserClaimsForm
                 item={extensibleItems as AttributeItem}
                 customOnSubmit={customHandleSubmit}
                 hideButtons={{ save: true, back: true }}
@@ -102,4 +102,4 @@ function AttributeViewPage(): JSX.Element {
   )
 }
 
-export default AttributeViewPage
+export default UserClaimsViewPage

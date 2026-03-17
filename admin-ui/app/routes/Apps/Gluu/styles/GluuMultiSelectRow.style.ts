@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import { MAPPING_SPACING } from '@/constants'
-import customColors, { hexToRgb } from '@/customColors'
+import customColors from '@/customColors'
 import type { ThemeConfig } from '@/context/theme/config'
 
 interface GluuMultiSelectRowStyleParams {
@@ -22,24 +22,21 @@ export const useStyles = makeStyles<GluuMultiSelectRowStyleParams>()((
       position: 'relative',
     },
     selectTrigger: {
-      'position': 'relative',
-      'display': 'flex',
-      'alignItems': 'center',
-      'flexWrap': 'wrap' as const,
-      'gap': 6,
-      'minHeight': 52,
-      'padding': '8px 44px 8px 16px',
-      'backgroundColor': formInputBg,
-      'border': `1px solid ${inputBorderColor}`,
-      'borderRadius': `${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px`,
-      'cursor': 'pointer',
-      'color': fontColor,
-      'outline': 'none',
-      'boxSizing': 'border-box' as const,
-      'transition': 'border-color 0.15s ease',
-      '&:focus-within': {
-        borderColor: inputBorderColor,
-      },
+      position: 'relative',
+      display: 'flex',
+      alignItems: 'center',
+      flexWrap: 'wrap' as const,
+      gap: 6,
+      minHeight: 52,
+      padding: '8px 44px 8px 16px',
+      backgroundColor: formInputBg,
+      border: `1px solid ${inputBorderColor}`,
+      borderRadius: `${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px`,
+      cursor: 'pointer',
+      color: fontColor,
+      outline: 'none',
+      boxSizing: 'border-box' as const,
+      transition: 'border-color 0.15s ease',
     },
     selectTriggerOpen: {
       borderBottomLeftRadius: 0,
@@ -112,9 +109,6 @@ export const useStyles = makeStyles<GluuMultiSelectRowStyleParams>()((
       borderBottomRightRadius: `${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px`,
       maxHeight: 220,
       overflowY: 'auto' as const,
-      boxShadow: isDark
-        ? `0 4px 12px rgba(${hexToRgb(customColors.black)}, 0.4)`
-        : `0 4px 12px rgba(${hexToRgb(customColors.black)}, 0.08)`,
     },
     optionItem: {
       'display': 'flex',
@@ -126,11 +120,11 @@ export const useStyles = makeStyles<GluuMultiSelectRowStyleParams>()((
       'color': fontColor,
       'transition': 'background-color 0.15s ease',
       '&:hover': {
-        backgroundColor: isDark ? customColors.darkCardBg : customColors.lightGray,
+        backgroundColor: isDark ? customColors.darkDropdownBg : customColors.lightGray,
       },
     },
     optionItemSelected: {
-      backgroundColor: isDark ? customColors.darkCardBg : customColors.lightGray,
+      backgroundColor: isDark ? customColors.darkDropdownBg : customColors.lightGray,
     },
     checkbox: {
       'width': 18,
@@ -138,7 +132,7 @@ export const useStyles = makeStyles<GluuMultiSelectRowStyleParams>()((
       'borderRadius': 4,
       'border': isDark
         ? `1.2px solid ${customColors.white}`
-        : `1.2px solid ${customColors.lightGray}`,
+        : `1.2px solid ${customColors.textSecondary}`,
       'backgroundColor': isDark ? 'transparent' : customColors.white,
       'display': 'flex',
       'alignItems': 'center',
@@ -165,7 +159,7 @@ export const useStyles = makeStyles<GluuMultiSelectRowStyleParams>()((
     },
     helperText: {
       display: 'block',
-      color: isDark ? customColors.textMutedDark : customColors.textSecondary,
+      color: textMuted,
       marginTop: 4,
       fontSize: 12,
     },

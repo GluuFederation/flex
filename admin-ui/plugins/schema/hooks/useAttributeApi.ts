@@ -14,11 +14,12 @@ import {
   type PagedResultEntriesItem,
 } from 'JansConfigApi'
 import { CREATE, UPDATE, DELETION } from '@/audit/UserActionType'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { useSchemaAuditLogger } from './useSchemaAuditLogger'
 import { useSchemaWebhook } from './useSchemaWebhook'
 import { API_ATTRIBUTE, ATTRIBUTE_CACHE_CONFIG, QUERY_KEY_PREFIX_ATTRIBUTES } from '../constants'
 import type { RootState } from '@/redux/hooks'
-import type { ModifiedFields } from '../components/types/AttributeListPage.types'
+import type { ModifiedFields } from '../components/types/UserClaimsListPage.types'
 
 export const useAttributes = (params?: GetAttributesParams) => {
   const hasSession = useAppSelector((state: RootState) => state.authReducer?.hasSession)
@@ -58,9 +59,8 @@ export const useCreateAttribute = () => {
   const { triggerAttributeWebhook } = useSchemaWebhook()
   const baseMutation = usePostAttributes()
 
-  return {
-    ...baseMutation,
-    mutateAsync: async (variables: { data: JansAttribute; userMessage?: string }) => {
+  const mutateAsync = useCallback(
+    async (variables: { data: JansAttribute; userMessage?: string }) => {
       const { userMessage, ...baseVariables } = variables
       const result = await baseMutation.mutateAsync(baseVariables)
 
@@ -76,6 +76,15 @@ export const useCreateAttribute = () => {
 
       return result
     },
+    [baseMutation, queryClient, logAudit, triggerAttributeWebhook],
+  )
+
+  return {
+    ...baseMutation,
+    mutate: (...args: Parameters<typeof mutateAsync>) => {
+      mutateAsync(...args)
+    },
+    mutateAsync,
   }
 }
 
@@ -85,9 +94,8 @@ export const useUpdateAttribute = () => {
   const { triggerAttributeWebhook } = useSchemaWebhook()
   const baseMutation = usePutAttributes()
 
-  return {
-    ...baseMutation,
-    mutateAsync: async (variables: {
+  const mutateAsync = useCallback(
+    async (variables: {
       data: JansAttribute
       userMessage?: string
       modifiedFields?: ModifiedFields
@@ -118,6 +126,15 @@ export const useUpdateAttribute = () => {
 
       return result
     },
+    [baseMutation, queryClient, logAudit, triggerAttributeWebhook],
+  )
+
+  return {
+    ...baseMutation,
+    mutate: (...args: Parameters<typeof mutateAsync>) => {
+      mutateAsync(...args)
+    },
+    mutateAsync,
   }
 }
 
@@ -146,7 +163,7 @@ export const useDeleteAttribute = () => {
       ])
 
       const deleted = { inum: variables.inum, name }
-      triggerAttributeWebhook(deleted)
+      triggerAttributeWebhook(deleted, adminUiFeatures.attributes_delete)
       await logAudit({
         action: DELETION,
         resource: API_ATTRIBUTE,
@@ -161,6 +178,9 @@ export const useDeleteAttribute = () => {
 
   return {
     ...baseMutation,
+    mutate: (...args: Parameters<typeof deleteWithAudit>) => {
+      deleteWithAudit(...args)
+    },
     mutateAsync: deleteWithAudit,
   }
 }

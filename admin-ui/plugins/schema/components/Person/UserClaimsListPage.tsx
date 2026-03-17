@@ -19,7 +19,7 @@ import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAttributes, useDeleteAttribute, useMutationEffects, toAttributeList } from '../../hooks'
-import { useStyles } from './styles/AttributeListPage.style'
+import { useStyles } from './styles/UserClaimsListPage.style'
 import { getGetAttributesQueryKey } from 'JansConfigApi'
 import type { JansAttribute } from 'JansConfigApi'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
@@ -31,7 +31,7 @@ type DisplayValue = string | number | boolean | null | undefined
 const displayOrDash = (value: DisplayValue): string =>
   value === null || value === undefined || value === '' ? '—' : String(value)
 
-const AttributeListPage: React.FC = () => {
+const UserClaimsListPage: React.FC = () => {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
   const { navigateToRoute } = useAppNavigation()
@@ -59,7 +59,7 @@ const AttributeListPage: React.FC = () => {
   const [sortBy, setSortBy] = useState('')
 
   const [modal, setModal] = useState(false)
-  const [itemToDelete, setItemToDelete] = useState<JansAttribute>({} as JansAttribute)
+  const [itemToDelete, setItemToDelete] = useState<JansAttribute | null>(null)
 
   const attributeResourceId = useMemo(() => ADMIN_UI_RESOURCES.Attributes, [])
   const attributeScopes = useMemo(
@@ -108,7 +108,7 @@ const AttributeListPage: React.FC = () => {
     navigateOnSuccess: false,
   })
 
-  SetTitle(t('fields.attributes'))
+  SetTitle(t('titles.all_attributes'))
 
   const handleAdd = useCallback(() => {
     navigateToRoute(ROUTES.ATTRIBUTE_ADD)
@@ -137,19 +137,19 @@ const AttributeListPage: React.FC = () => {
 
   const handleCloseDeleteModal = useCallback(() => {
     setModal(false)
-    setItemToDelete({} as JansAttribute)
+    setItemToDelete(null)
   }, [])
 
   const handleDeleteConfirm = useCallback(
-    async (_message: string, inum?: string) => {
+    async (message: string, inum?: string) => {
       if (!inum) return
       await deleteAttributeMutation.mutateAsync({
         inum,
-        name: itemToDelete.name,
-        userMessage: `Deleted attribute ${itemToDelete.name ?? itemToDelete.inum}`,
+        name: itemToDelete?.name,
+        userMessage: message || `Deleted attribute ${itemToDelete?.name ?? itemToDelete?.inum}`,
       })
       setModal(false)
-      setItemToDelete({} as JansAttribute)
+      setItemToDelete(null)
     },
     [deleteAttributeMutation, itemToDelete],
   )
@@ -495,4 +495,4 @@ const AttributeListPage: React.FC = () => {
   )
 }
 
-export default memo(AttributeListPage)
+export default memo(UserClaimsListPage)

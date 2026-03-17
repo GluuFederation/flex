@@ -11,7 +11,7 @@ import { useStyles } from './styles/GluuMultiSelectRow.style'
 import type { GluuMultiSelectRowProps } from './types/GluuMultiSelectRow.types'
 
 const CheckIcon = memo(() => (
-  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
     <path
       d="M2 6L5 9L10 3"
       stroke="currentColor"
@@ -169,8 +169,15 @@ const GluuMultiSelectRow: React.FC<GluuMultiSelectRowProps> = ({
                     key={option.value}
                     className={`${classes.optionItem} ${isSelected ? classes.optionItemSelected : ''}`}
                     onClick={() => handleOptionClick(option.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        handleOptionClick(option.value)
+                      }
+                    }}
                     role="option"
                     aria-selected={isSelected}
+                    tabIndex={0}
                   >
                     <span
                       className={`${classes.checkbox} ${isSelected ? classes.checkboxChecked : ''}`}

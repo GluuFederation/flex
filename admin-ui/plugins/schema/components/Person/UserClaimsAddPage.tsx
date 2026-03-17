@@ -9,15 +9,15 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import SetTitle from 'Utils/SetTitle'
-import AttributeForm from 'Plugins/schema/components/Person/AttributeForm'
-import { useStyles } from './styles/AttributeFormPage.style'
+import UserClaimsForm from 'Plugins/schema/components/Person/UserClaimsForm'
+import { useStyles } from './styles/UserClaimsFormPage.style'
 import { useCreateAttribute, useMutationEffects } from '../../hooks'
-import type { AttributeItem, SubmitData } from '../types/AttributeListPage.types'
+import type { AttributeItem, SubmitData } from '../types/UserClaimsListPage.types'
 import type { JansAttribute } from 'JansConfigApi'
 
 const attributeResourceId = ADMIN_UI_RESOURCES.Attributes
 
-function AttributeAddPage(): JSX.Element {
+function UserClaimsAddPage(): JSX.Element {
   const { t } = useTranslation()
 
   const { state: themeState } = useTheme()
@@ -36,7 +36,7 @@ function AttributeAddPage(): JSX.Element {
     [hasCedarWritePermission],
   )
 
-  SetTitle(t('fields.add_attribute', { defaultValue: 'Add Attribute' }))
+  SetTitle(t('fields.add_attribute', { defaultValue: 'Add User Claim' }))
 
   const createMutation = useCreateAttribute()
 
@@ -77,7 +77,7 @@ function AttributeAddPage(): JSX.Element {
         <GluuLoader blocking={createMutation.isPending}>
           <div className={classes.formCard}>
             <div className={classes.content}>
-              <AttributeForm item={defaultAttribute as AttributeItem} customOnSubmit={onSubmit} />
+              <UserClaimsForm item={defaultAttribute as AttributeItem} customOnSubmit={onSubmit} />
             </div>
           </div>
         </GluuLoader>
@@ -86,4 +86,4 @@ function AttributeAddPage(): JSX.Element {
   )
 }
 
-export default AttributeAddPage
+export default UserClaimsAddPage

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, memo, useContext } from 'react'
+import React, { useState, useMemo, useCallback, memo } from 'react'
 import { Formik, FormikProps } from 'formik'
 import { Form } from 'Components'
 import type { MultiSelectOption } from 'Routes/Apps/Gluu/types/GluuMultiSelectRow.types'
@@ -12,10 +12,10 @@ import { ATTRIBUTE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
-import { useStyles } from './styles/AttributeFormPage.style'
+import { useStyles } from './styles/UserClaimsFormPage.style'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useAttributeValidationSchema } from '../../utils/validation'
 import {
@@ -26,7 +26,7 @@ import {
   getDefaultFormValues,
   isFormValid,
 } from '../../utils/formHelpers'
-import type { AttributeFormProps, AttributeFormValues } from '../types/AttributeListPage.types'
+import type { AttributeFormProps, AttributeFormValues } from '../types/UserClaimsListPage.types'
 
 const EDIT_VIEW_OPTIONS: MultiSelectOption[] = [
   { value: 'admin', label: 'Admin' },
@@ -35,20 +35,20 @@ const EDIT_VIEW_OPTIONS: MultiSelectOption[] = [
 
 const USAGE_TYPE_OPTIONS: MultiSelectOption[] = [{ value: 'openid', label: 'OpenID' }]
 
-const AttributeForm = memo(function AttributeForm(props: AttributeFormProps) {
+const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
   const { item, customOnSubmit, hideButtons } = props
   const { t } = useTranslation()
   const { navigateBack } = useAppNavigation()
   const [modal, setModal] = useState<boolean>(false)
 
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   const { themeColors, isDark } = useMemo(() => {
-    const selected = (theme as { state?: { theme?: string } })?.state?.theme || DEFAULT_THEME
+    const selected = theme.state.theme || DEFAULT_THEME
     return {
       themeColors: getThemeColor(selected),
       isDark: selected === THEME_DARK,
     }
-  }, [(theme as { state?: { theme?: string } })?.state?.theme])
+  }, [theme.state.theme])
 
   const { classes } = useStyles({ isDark, themeColors })
 
@@ -385,7 +385,6 @@ const AttributeForm = memo(function AttributeForm(props: AttributeFormProps) {
                 </div>
 
                 {/* Row 7: Multivalued | Hide On Discovery */}
-                {/* Row 7: Multivalued | Hide On Discovery */}
                 <div className={classes.toggleRow}>
                   <GluuToogleRow
                     name="oxMultiValuedAttribute"
@@ -522,6 +521,6 @@ const AttributeForm = memo(function AttributeForm(props: AttributeFormProps) {
   )
 })
 
-AttributeForm.displayName = 'AttributeForm'
+UserClaimsForm.displayName = 'UserClaimsForm'
 
-export default AttributeForm
+export default UserClaimsForm

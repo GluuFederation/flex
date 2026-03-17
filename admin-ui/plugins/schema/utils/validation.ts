@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import { useMemo } from 'react'
-import type { AttributeFormValues } from '../components/types/AttributeListPage.types'
+import type { AttributeFormValues } from '../components/types/UserClaimsListPage.types'
 
 const buildAttributeSchemaParts = (validationEnabled = true) => {
   return {
@@ -17,9 +17,7 @@ const buildAttributeSchemaParts = (validationEnabled = true) => {
       .trim()
       .required('errors.description_required')
       .min(1, 'errors.description_required'),
-    status: Yup.string()
-      .required('errors.status_required')
-      .min(1, 'errors.status_required'),
+    status: Yup.string().required('errors.status_required').min(1, 'errors.status_required'),
     dataType: Yup.string()
       .required('errors.data_type_required')
       .min(1, 'errors.data_type_required'),
@@ -44,7 +42,7 @@ const buildAttributeSchemaParts = (validationEnabled = true) => {
           .positive('errors.positive_number')
       : Yup.number()
           .nullable()
-          .transform((value) => (value === '' ? null : value)),
+          .transform((value, originalValue) => (originalValue === '' ? null : value)),
     minLength: validationEnabled
       ? Yup.number()
           .nullable()
@@ -83,7 +81,7 @@ const buildAttributeSchemaParts = (validationEnabled = true) => {
           )
       : Yup.number()
           .nullable()
-          .transform((value) => (value === '' ? null : value)),
+          .transform((value, originalValue) => (originalValue === '' ? null : value)),
     regexp: Yup.string()
       .nullable()
       .transform((value) => (value === '' ? null : value)),
