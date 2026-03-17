@@ -457,7 +457,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                         formik={formik}
                         lsize={12}
                         rsize={12}
-                        value={formik.values?.regexp ?? undefined}
+                        value={formik.values?.regexp}
                         doc_category={ATTRIBUTE}
                         placeholder={t('placeholders.enter_here')}
                         disabled={isViewMode}
@@ -471,7 +471,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                         type="number"
                         lsize={12}
                         rsize={12}
-                        value={formik.values?.minLength ?? undefined}
+                        value={formik.values?.minLength}
                         doc_category={ATTRIBUTE}
                         disabled={isViewMode}
                       />
@@ -484,7 +484,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                         type="number"
                         lsize={12}
                         rsize={12}
-                        value={formik.values?.maxLength ?? undefined}
+                        value={formik.values?.maxLength}
                         doc_category={ATTRIBUTE}
                         disabled={isViewMode}
                       />

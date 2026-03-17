@@ -41,12 +41,12 @@ function UserClaimsEditPage(): JSX.Element {
   const { hasCedarReadPermission } = useCedarling()
   const canRead = useMemo(
     () => hasCedarReadPermission(attributeResourceId),
-    [hasCedarReadPermission],
+    [hasCedarReadPermission, attributeResourceId],
   )
 
   SetTitle(t('titles.edit_attribute', { defaultValue: 'Edit User Claim' }))
 
-  const inum = gid?.replace(':', '') || ''
+  const inum = gid || ''
 
   const { data: attribute, isLoading, error: queryError } = useAttribute(inum)
 

@@ -46,7 +46,7 @@ function UserClaimsViewPage(): JSX.Element {
 
   SetTitle(t('titles.view_attribute', { defaultValue: 'View User Claim' }))
 
-  const inum = gid?.replace(':', '') || ''
+  const inum = gid || ''
 
   const { data: attribute, isLoading, error: queryError } = useAttribute(inum)
 

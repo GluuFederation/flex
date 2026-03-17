@@ -108,7 +108,7 @@ const UserClaimsListPage: React.FC = () => {
     navigateOnSuccess: false,
   })
 
-  SetTitle(t('titles.all_attributes'))
+  SetTitle(t('titles.all_user_claims'))
 
   const handleAdd = useCallback(() => {
     navigateToRoute(ROUTES.ATTRIBUTE_ADD)
@@ -176,6 +176,10 @@ const UserClaimsListPage: React.FC = () => {
     setPageNumber(0)
     queryClient.removeQueries({ queryKey: getGetAttributesQueryKey() })
   }, [queryClient, setPageNumber])
+
+  const handleSearchSubmit = useCallback(() => {
+    setPageNumber(0)
+  }, [setPageNumber])
 
   const handlePatternSearch = useCallback(
     (value: string) => {
@@ -454,7 +458,7 @@ const UserClaimsListPage: React.FC = () => {
                 searchValue={pattern}
                 searchOnType
                 onSearch={handlePatternSearch}
-                onSearchSubmit={handleRefresh}
+                onSearchSubmit={handleSearchSubmit}
                 filters={filters}
                 onRefresh={canRead ? handleRefresh : undefined}
                 refreshLoading={isLoading}

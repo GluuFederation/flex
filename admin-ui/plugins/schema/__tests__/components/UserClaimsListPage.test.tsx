@@ -110,8 +110,8 @@ describe('UserClaimsListPage', () => {
   it('renders action icons for edit, view, and delete', async () => {
     render(<UserClaimsListPage />, { wrapper: Wrapper })
     await screen.findByText(attributes[0].inum)
-    expect(document.querySelector('[data-testid="EditIcon"]')).toBeInTheDocument()
-    expect(document.querySelector('[data-testid="VisibilityOutlinedIcon"]')).toBeInTheDocument()
-    expect(document.querySelector('[data-testid="DeleteOutlinedIcon"]')).toBeInTheDocument()
+    expect(screen.getByTestId('EditIcon')).toBeInTheDocument()
+    expect(screen.getByTestId('VisibilityOutlinedIcon')).toBeInTheDocument()
+    expect(screen.getByTestId('DeleteOutlinedIcon')).toBeInTheDocument()
   })
 })

@@ -127,6 +127,7 @@ const GluuMultiSelectRow: React.FC<GluuMultiSelectRowProps> = ({
             onClick={toggleDropdown}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
+                if ((e.target as HTMLElement).closest('button')) return
                 e.preventDefault()
                 toggleDropdown()
               }
@@ -147,6 +148,11 @@ const GluuMultiSelectRow: React.FC<GluuMultiSelectRowProps> = ({
                       type="button"
                       className={classes.chipRemove}
                       onClick={(e) => handleRemoveChip(e, val)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.stopPropagation()
+                        }
+                      }}
                       aria-label={`Remove ${getOptionLabel(val)}`}
                     >
                       &times;

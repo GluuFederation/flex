@@ -82,7 +82,7 @@ export const useCreateAttribute = () => {
   return {
     ...baseMutation,
     mutate: (...args: Parameters<typeof mutateAsync>) => {
-      mutateAsync(...args)
+      mutateAsync(...args).catch(() => {})
     },
     mutateAsync,
   }
@@ -132,7 +132,7 @@ export const useUpdateAttribute = () => {
   return {
     ...baseMutation,
     mutate: (...args: Parameters<typeof mutateAsync>) => {
-      mutateAsync(...args)
+      mutateAsync(...args).catch(() => {})
     },
     mutateAsync,
   }
@@ -179,7 +179,7 @@ export const useDeleteAttribute = () => {
   return {
     ...baseMutation,
     mutate: (...args: Parameters<typeof deleteWithAudit>) => {
-      deleteWithAudit(...args)
+      deleteWithAudit(...args).catch(() => {})
     },
     mutateAsync: deleteWithAudit,
   }
