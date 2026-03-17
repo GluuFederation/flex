@@ -95,6 +95,18 @@
     
       <div data-md-color-scheme="default" data-md-component="outdated" hidden>
         
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),base=new URL("../../.."),outdated=__md_get("__outdated",sessionStorage,base);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -2636,7 +2648,7 @@
             <div class="md-content" data-md-component="content">
               <article class="md-content__inner md-typeset">
                 
-
+  
                   
 
   <nav class="md-tags" >
@@ -2667,7 +2679,7 @@
 
 
 <h1 id="install-gluu-server-using-rancher-marketplace">Install Gluu Server Using Rancher Marketplace<a class="headerlink" href="#install-gluu-server-using-rancher-marketplace" title="Permanent link">#</a></h1>
-<p>For a more generic <code>Gluu Flex</code> installation on Rancher, you can follow <a href="https://docs.gluu.org/nightly/admin/recipes/getting-started-rancher/">this</a> comprehensive guide.</p>
+<p>For a more generic <code>Gluu Flex</code> installation on Rancher, you can follow <a href="https://docs.gluu.org/vreplace-flex-version/admin/recipes/getting-started-rancher/">this</a> comprehensive guide.</p>
 <p>Also, there are multiple <code>Rancher</code> installation <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade#overview-of-installation-options">options</a>. For this quick start setup we will use a <a href="https://ranchermanager.docs.rancher.com/pages-for-subheaders/rancher-on-a-single-node-with-docker">single node Kubernetes install in docker with a self-signed certificate</a>.</p>
 <h2 id="installation-steps">Installation Steps<a class="headerlink" href="#installation-steps" title="Permanent link">#</a></h2>
 <div class="admonition note">
@@ -2676,7 +2688,7 @@
 Here's an <a href="https://ranchermanager.docs.rancher.com/reference-guides/single-node-rancher-in-docker/advanced-options#running-rancherrancher-and-rancherrancher-agent-on-the-same-node">example</a> on how to do that.</p>
 </div>
 <ol>
-<li>Before initiating the setup, please obtain an <a href="https://docs.gluu.org/nightly/install/flex/prerequisites/#obtaining-an-ssa">SSA</a> for Flex trial, after which you will issued a JWT.</li>
+<li>Before initiating the setup, please obtain an <a href="https://docs.gluu.org/vreplace-flex-version/install/flex/prerequisites/#obtaining-an-ssa">SSA</a> for Flex trial, after which you will issued a JWT.</li>
 <li>Provision a Linux 4 CPU, 16 GB RAM, and 50GB SSD VM with ports <code>443</code> and <code>80</code> open. Save the VM IP address. For development environments, the VM can be set up using VMWare Workstation Player or VirtualBox with Ubuntu 20.04/22.04 operating system running on a VM.</li>
 <li>Install <a href="https://docs.docker.com/engine/install/">Docker</a>.</li>
 <li>Execute
@@ -2806,14 +2818,12 @@ Here's an <a href="https://ranchermanager.docs.rancher.com/reference-guides/sing
       
     
 
-
 <img referrerpolicy="no-referrer-when-downgrade"
      src="https://static.scarf.sh/a.png?x-pxid=2c347abc-a9b4-4c4b-bdc9-2682edbcc0c9"
      width="0" height="0"/>
 
 
   <script src="../../../assets/js/reo.js" defer></script>
-
 
 
   </body>

@@ -95,6 +95,18 @@
     
       <div data-md-color-scheme="default" data-md-component="outdated" hidden>
         
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),base=new URL("../../.."),outdated=__md_get("__outdated",sessionStorage,base);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -2822,7 +2834,7 @@
             <div class="md-content" data-md-component="content">
               <article class="md-content__inner md-typeset">
                 
-
+  
                   
 
   <nav class="md-tags" >
@@ -2896,7 +2908,7 @@ of Gluu Flex on SUSE Linux distributions</p>
 <ul>
 <li>
 <p>Download the release package from the GitHub FLEX <a href="https://github.com/gluufederation/flex/releases">Releases</a>
-<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/nightly/flex-0.0.0-nightly.suse15.x86_64.rpm<span class="w"> </span>-P<span class="w"> </span>~/
+<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable.suse15.x86_64.rpm<span class="w"> </span>-P<span class="w"> </span>~/
 </code></pre></div></p>
 </li>
 <li>
@@ -2913,17 +2925,17 @@ of Gluu Flex on SUSE Linux distributions</p>
 </ul>
 <p>Verify integrity of the downloaded package by verifying published <code>sha256sum</code>.</p>
 <ul>
-<li>Go to the <a href="https://github.com/gluufederation/flex/releases">Flex Project Releases page</a> and copy the <code>sha256sum</code> value for the <code>flex-0.0.0-nightly.suse15.x86_64.rpm</code> file:</li>
+<li>Go to the <a href="https://github.com/gluufederation/flex/releases">Flex Project Releases page</a> and copy the <code>sha256sum</code> value for the <code>flex-replace-flex-version-stable.suse15.x86_64.rpm</code> file:</li>
 <li>Replace <code>paste-release-sha256sum</code> in the command below with the actual checksum you copied from the release page, and run the following command:
-      <div class="highlight"><span class="filename">Command</span><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;paste-release-sha256sum flex-0.0.0-nightly.suse15.x86_64.rpm&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">&#39;s/^sha256://&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>flex-0.0.0-nightly.suse15.x86_64.rpm.sha256sum<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sha256sum<span class="w"> </span>-c<span class="w"> </span>flex-0.0.0-nightly.suse15.x86_64.rpm.sha256sum
+      <div class="highlight"><span class="filename">Command</span><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;paste-release-sha256sum flex-replace-flex-version-stable.suse15.x86_64.rpm&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">&#39;s/^sha256://&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>flex-replace-flex-version-stable.suse15.x86_64.rpm.sha256sum<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sha256sum<span class="w"> </span>-c<span class="w"> </span>flex-replace-flex-version-stable.suse15.x86_64.rpm.sha256sum
 </code></pre></div></li>
 <li>Output similar to below should confirm the integrity of the downloaded package.
-    <div class="highlight"><span class="filename">Command</span><pre><span></span><code>flex-0.0.0-nightly.suse15.x86_64.rpm:<span class="w"> </span>OK
+    <div class="highlight"><span class="filename">Command</span><pre><span></span><code>flex-replace-flex-version-stable.suse15.x86_64.rpm:<span class="w"> </span>OK
 </code></pre></div></li>
 </ul>
 <h3 id="install-the-release-package">Install the Release Package<a class="headerlink" href="#install-the-release-package" title="Permanent link">#</a></h3>
 <p>Use SUSE <code>zypper</code> to install
-<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>zypper<span class="w"> </span>install<span class="w"> </span>~/flex-0.0.0-nightly.suse15.x86_64.rpm
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>zypper<span class="w"> </span>install<span class="w"> </span>~/flex-replace-flex-version-stable.suse15.x86_64.rpm
 </code></pre></div></p>
 <h3 id="run-the-setup-script">Run the setup script<a class="headerlink" href="#run-the-setup-script" title="Permanent link">#</a></h3>
 <ul>
@@ -3198,14 +3210,12 @@ Removing<span class="w"> </span>/etc/apache2/vhosts.d/_https_jans.conf
       
     
 
-
 <img referrerpolicy="no-referrer-when-downgrade"
      src="https://static.scarf.sh/a.png?x-pxid=2c347abc-a9b4-4c4b-bdc9-2682edbcc0c9"
      width="0" height="0"/>
 
 
   <script src="../../../assets/js/reo.js" defer></script>
-
 
 
   </body>

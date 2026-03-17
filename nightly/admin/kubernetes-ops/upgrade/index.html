@@ -90,6 +90,18 @@
     
       <div data-md-color-scheme="default" data-md-component="outdated" hidden>
         
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),base=new URL("../../.."),outdated=__md_get("__outdated",sessionStorage,base);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -2569,7 +2581,7 @@
             <div class="md-content" data-md-component="content">
               <article class="md-content__inner md-typeset">
                 
-
+  
                   
 
   <nav class="md-tags" >
@@ -2626,7 +2638,7 @@
 </li>
 <li>
 <p>Apply your upgrade:</p>
-<p><code>helm upgrade &lt;flex-release-name&gt; gluu-flex/gluu -n &lt;namespace&gt; -f override.yaml --version=0.0.0-nightly</code></p>
+<p><code>helm upgrade &lt;flex-release-name&gt; gluu-flex/gluu -n &lt;namespace&gt; -f override.yaml --version=replace-flex-version</code></p>
 </li>
 </ol>
 
@@ -2741,14 +2753,12 @@
       
     
 
-
 <img referrerpolicy="no-referrer-when-downgrade"
      src="https://static.scarf.sh/a.png?x-pxid=2c347abc-a9b4-4c4b-bdc9-2682edbcc0c9"
      width="0" height="0"/>
 
 
   <script src="../../../assets/js/reo.js" defer></script>
-
 
 
   </body>
