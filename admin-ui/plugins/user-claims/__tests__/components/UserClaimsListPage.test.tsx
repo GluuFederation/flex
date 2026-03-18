@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import UserClaimsListPage from 'Plugins/user-claims/components/Person/UserClaimsListPage'
+import UserClaimsListPage from 'Plugins/user-claims/components/UserClaimsListPage'
 import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'

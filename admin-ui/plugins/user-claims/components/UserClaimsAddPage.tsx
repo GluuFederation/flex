@@ -9,10 +9,10 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import SetTitle from 'Utils/SetTitle'
-import UserClaimsForm from 'Plugins/user-claims/components/Person/UserClaimsForm'
+import UserClaimsForm from 'Plugins/user-claims/components/UserClaimsForm'
 import { useStyles } from './styles/UserClaimsFormPage.style'
-import { useCreateAttribute, useMutationEffects } from '../../hooks'
-import type { AttributeItem, SubmitData } from '../types/UserClaimsListPage.types'
+import { useCreateAttribute, useMutationEffects } from '../hooks'
+import type { AttributeItem, SubmitData } from './types/UserClaimsListPage.types'
 import type { JansAttribute } from 'JansConfigApi'
 
 const attributeResourceId = ADMIN_UI_RESOURCES.Attributes

@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useMemo, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
@@ -11,20 +11,22 @@ import { Alert } from '@mui/material'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import SetTitle from 'Utils/SetTitle'
-import UserClaimsForm from 'Plugins/user-claims/components/Person/UserClaimsForm'
+import UserClaimsForm from 'Plugins/user-claims/components/UserClaimsForm'
 import { useStyles } from './styles/UserClaimsFormPage.style'
 import { cloneDeep } from 'lodash'
-import { useAttribute, useUpdateAttribute, useMutationEffects } from '../../hooks'
-import { getDefaultAttributeItem } from '../../utils/formHelpers'
-import { DEFAULT_ATTRIBUTE_VALIDATION } from '../../helper/utils'
-import { getErrorMessage } from '../../utils/errorHandler'
-import type { AttributeItem, SubmitData } from '../types/UserClaimsListPage.types'
+import { useAttribute } from '../hooks'
+import { getErrorMessage } from '../utils/errorHandler'
+import { getDefaultAttributeItem } from '../utils/formHelpers'
+import { DEFAULT_ATTRIBUTE_VALIDATION } from '../helper/utils'
+import type { AttributeItem } from './types/UserClaimsListPage.types'
 import type { JansAttribute } from 'JansConfigApi'
 
 const attributeResourceId = ADMIN_UI_RESOURCES.Attributes
+const attributeScopes = CEDAR_RESOURCE_SCOPES[attributeResourceId] ?? []
 
-function UserClaimsEditPage(): JSX.Element {
+const UserClaimsViewPage = (): JSX.Element => {
   const { gid } = useParams<{ gid: string }>()
   const { t } = useTranslation()
 
@@ -38,25 +40,24 @@ function UserClaimsEditPage(): JSX.Element {
   )
   const { classes } = useStyles({ isDark, themeColors })
 
-  const { hasCedarReadPermission } = useCedarling()
+  const { authorizeHelper, hasCedarReadPermission } = useCedarling()
+
+  useEffect(() => {
+    if (attributeScopes.length > 0) {
+      authorizeHelper(attributeScopes)
+    }
+  }, [authorizeHelper])
+
   const canRead = useMemo(
     () => hasCedarReadPermission(attributeResourceId),
     [hasCedarReadPermission],
   )
 
-  SetTitle(t('titles.edit_attribute', { defaultValue: 'Edit User Claim' }))
+  SetTitle(t('titles.view_attribute', { defaultValue: 'View User Claim' }))
 
   const inum = gid || ''
 
   const { data: attribute, isLoading, error: queryError } = useAttribute(inum)
-
-  const updateMutation = useUpdateAttribute()
-
-  useMutationEffects({
-    mutation: updateMutation,
-    successMessage: 'messages.attribute_updated_successfully',
-    errorMessage: 'errors.attribute_update_failed',
-  })
 
   const defaultAttribute = useMemo(() => getDefaultAttributeItem(), [])
 
@@ -71,23 +72,7 @@ function UserClaimsEditPage(): JSX.Element {
     return cloned
   }, [attribute, defaultAttribute])
 
-  const customHandleSubmit = useCallback(
-    async ({ data, userMessage, modifiedFields }: SubmitData): Promise<void> => {
-      if (data) {
-        await updateMutation.mutateAsync({
-          data: data as JansAttribute,
-          userMessage,
-          modifiedFields,
-        })
-      }
-    },
-    [updateMutation],
-  )
-
-  const isBlocking = useMemo(
-    () => isLoading || updateMutation.isPending,
-    [isLoading, updateMutation.isPending],
-  )
+  function customHandleSubmit(): void {}
 
   if (queryError && !isLoading) {
     return (
@@ -110,12 +95,13 @@ function UserClaimsEditPage(): JSX.Element {
   return (
     <GluuPageContent>
       <GluuViewWrapper canShow={canRead}>
-        <GluuLoader blocking={isBlocking}>
+        <GluuLoader blocking={isLoading}>
           <div className={classes.formCard}>
             <div className={classes.content}>
               <UserClaimsForm
                 item={extensibleItems as AttributeItem}
                 customOnSubmit={customHandleSubmit}
+                hideButtons={{ save: true, back: false }}
               />
             </div>
           </div>
@@ -125,4 +111,4 @@ function UserClaimsEditPage(): JSX.Element {
   )
 }
 
-export default UserClaimsEditPage
+export default UserClaimsViewPage

@@ -4,11 +4,11 @@ import getThemeColor from 'Context/theme/config'
 import customColors from '@/customColors'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import { GluuDetailGrid, type GluuDetailGridField } from '@/components/GluuDetailGrid'
-import { API_ATTRIBUTE } from '../../constants'
+import { API_ATTRIBUTE } from '../constants'
 import type {
   AttributeDetailPageProps,
   DetailThemeContextType,
-} from '../types/UserClaimsListPage.types'
+} from './types/UserClaimsListPage.types'
 
 const displayOrDash = (value: string | null | undefined): string =>
   value === null || value === undefined || value === '' ? '—' : value

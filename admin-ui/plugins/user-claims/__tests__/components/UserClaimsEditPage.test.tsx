@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import UserClaimsEditPage from 'Plugins/user-claims/components/Person/UserClaimsEditPage'
+import UserClaimsEditPage from 'Plugins/user-claims/components/UserClaimsEditPage'
 
 const mockAttribute = {
   inum: 'test-inum-123',

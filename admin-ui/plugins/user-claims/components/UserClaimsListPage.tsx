@@ -19,8 +19,8 @@ import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import { useQueryClient } from '@tanstack/react-query'
-import { useAttributes, useDeleteAttribute, useMutationEffects, toAttributeList } from '../../hooks'
-import { API_ATTRIBUTE } from '../../constants'
+import { useAttributes, useDeleteAttribute, useMutationEffects, toAttributeList } from '../hooks'
+import { API_ATTRIBUTE } from '../constants'
 import { useStyles } from './styles/UserClaimsListPage.style'
 import { getGetAttributesQueryKey } from 'JansConfigApi'
 import type { JansAttribute } from 'JansConfigApi'
@@ -165,7 +165,7 @@ const UserClaimsListPage: React.FC = () => {
         setItemToDelete(null)
       }
     },
-    [deleteAttributeMutation, itemToDelete],
+    [deleteAttributeMutation, itemToDelete, t],
   )
 
   const handleDeleteAccept = useCallback(

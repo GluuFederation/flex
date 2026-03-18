@@ -46,7 +46,7 @@ const emptyItem: AttributeItem = {
   attributeValidation: { maxLength: null, regexp: null, minLength: null },
 }
 
-import UserClaimsForm from 'Plugins/user-claims/components/Person/UserClaimsForm'
+import UserClaimsForm from 'Plugins/user-claims/components/UserClaimsForm'
 
 jest.mock('@/cedarling', () => {
   const { ADMIN_UI_RESOURCES, CEDAR_RESOURCE_SCOPES } = jest.requireActual('../cedarTestHelpers')
@@ -290,7 +290,7 @@ describe('UserClaimsForm', () => {
   })
 
   describe('with viewOnly mode', () => {
-    const hideButtons = { save: true }
+    const hideButtons = { save: true, back: false }
 
     it('renders Back button and hides Cancel', async () => {
       render(

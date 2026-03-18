@@ -13,7 +13,11 @@ jest.mock('@/cedarling', () => ({
     authorizeHelper: jest.fn(),
   })),
   ADMIN_UI_RESOURCES: { Lock: 'Lock', SMTP: 'SMTP', Webhooks: 'Webhooks' },
-  CEDAR_RESOURCE_SCOPES: { Lock: ['read', 'write'], SMTP: [], Webhooks: [] },
+  CEDAR_RESOURCE_SCOPES: {
+    Lock: ['read', 'write'],
+    SMTP: ['read', 'write', 'delete'],
+    Webhooks: ['read', 'write', 'delete'],
+  },
 }))
 
 jest.mock('@/cedarling/utility', () => ({
@@ -21,7 +25,10 @@ jest.mock('@/cedarling/utility', () => ({
 }))
 
 jest.mock('@/cedarling/constants/resourceScopes', () => ({
-  CEDAR_RESOURCE_SCOPES: { SMTP: [], Webhooks: [] },
+  CEDAR_RESOURCE_SCOPES: {
+    SMTP: ['read', 'write', 'delete'],
+    Webhooks: ['read', 'write', 'delete'],
+  },
 }))
 
 jest.mock('JansConfigApi', () => ({

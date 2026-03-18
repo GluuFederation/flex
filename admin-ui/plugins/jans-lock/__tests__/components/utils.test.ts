@@ -271,7 +271,7 @@ describe('createPatchOperations', () => {
     })
   })
 
-  it('skips empty arrays for add operations', () => {
+  it('does not create add operation for empty tokenChannels', () => {
     const configWithout: LockApiConfig = { ...baseConfig }
     delete configWithout.tokenChannels
     const patches = createPatchOperations(baseFormValues, configWithout)

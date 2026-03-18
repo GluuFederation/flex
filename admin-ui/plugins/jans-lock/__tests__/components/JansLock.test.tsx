@@ -57,10 +57,10 @@ const store = configureStore({
   }),
 })
 
-const createQueryClient = () => new QueryClient({ defaultOptions: { queries: { retry: false } } })
+const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
 
 const Wrapper = ({ children }: { children: React.ReactNode }) => (
-  <QueryClientProvider client={createQueryClient()}>
+  <QueryClientProvider client={queryClient}>
     <AppTestWrapper>
       <Provider store={store}>{children}</Provider>
     </AppTestWrapper>
@@ -70,6 +70,7 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => (
 describe('JansLock', () => {
   beforeEach(() => {
     mockMutate.mockClear()
+    queryClient.clear()
     jest.requireMock('@/cedarling').useCedarling.mockImplementation(() => ({
       hasCedarReadPermission: jest.fn(() => true),
       hasCedarWritePermission: jest.fn(() => true),
