@@ -37,6 +37,7 @@ export const customColors = {
   // Status
   statusActive: '#00b875',
   statusActiveBg: '#d3f5e6',
+  statusActiveBgDark: '#b6f6da',
   statusInactive: '#f13f44',
   statusInactiveBg: '#ffe6e7',
 

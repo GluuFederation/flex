@@ -322,9 +322,13 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
           backgroundColor: `${formInputBg} !important`,
           color: `${themeColors.fontColor} !important`,
           border: `1px solid ${inputBorderColor} !important`,
-          outline: OUTLINE_NONE,
-          boxShadow: OUTLINE_NONE,
+          outline: `${OUTLINE_NONE} !important`,
+          boxShadow: `${OUTLINE_NONE} !important`,
         },
+      '& input:focus-visible, & select:focus-visible': {
+        outline: `${OUTLINE_NONE} !important`,
+        boxShadow: `${OUTLINE_NONE} !important`,
+      },
       '& input:disabled, & select:disabled, & .custom-select:disabled': {
         backgroundColor: `${formInputBg} !important`,
         border: `1px solid ${inputBorderColor} !important`,
@@ -414,8 +418,8 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
         backgroundColor: `${headersInputBg} !important`,
         color: themeColors.fontColor,
         border: `1px solid ${headersBorderColor} !important`,
-        outline: OUTLINE_NONE,
-        boxShadow: OUTLINE_NONE,
+        outline: `${OUTLINE_NONE} !important`,
+        boxShadow: `${OUTLINE_NONE} !important`,
       },
     },
     propsActionBtn: {

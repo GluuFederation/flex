@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { logAuditUserAction } from '@/utils/AuditLogger'
 import type { SchemaPluginRootState } from '../types/shared'
 import type { JansAttribute } from 'JansConfigApi'
-import type { ModifiedFields } from '../components/types/AttributeListPage.types'
+import type { ModifiedFields } from '../components/types/UserClaimsListPage.types'
 import { UPDATE } from '@/audit/UserActionType'
 
 interface AuditLogParams {

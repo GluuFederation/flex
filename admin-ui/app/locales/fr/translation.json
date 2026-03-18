@@ -771,6 +771,7 @@
     "page_size": "Taille de la page"
   },
   "messages": {
+    "multi_select_hint": "Saisissez plusieurs éléments en les sélectionnant dans la liste déroulante qui s'affiche après chaque saisie.",
     "add_permission": "Ajouter une autorisation",
     "thanks_for_using_admin_ui": "Merci d'avoir utilisé l'interface d'administration.",
     "add_asset": "Ajouter une ressource Jans",
@@ -911,6 +912,9 @@
     "details": "Détails",
     "view_script_details": "Afficher les détails du script personnalisé",
     "add_new_user": "Ajouter un utilisateur",
+    "attribute_added_successfully": "Réclamation utilisateur ajoutée avec succès",
+    "attribute_updated_successfully": "Réclamation utilisateur mise à jour avec succès",
+    "attribute_deleted_successfully": "Réclamation utilisateur supprimée avec succès",
     "loading_attributes": "Chargement des attributs",
     "no_scope_in_client": "Aucune donnée d'étendue pour ce client",
     "error_in_script": "Erreur dans le script !",
@@ -1030,7 +1034,19 @@
     "attribute_load_failed": "Erreur lors du chargement de l'attribut",
     "cannot_contain_spaces": "{{field}} ne peut pas contenir d'espaces",
     "cannot_be_empty": "{{field}} ne peut pas être vide",
-    "must_be_valid_url": "{{field}} doit être une URL valide"
+    "must_be_valid_url": "{{field}} doit être une URL valide",
+    "required": "Ce champ est obligatoire",
+    "name_no_spaces": "Le nom ne doit pas contenir d'espaces",
+    "positive_number": "Doit être un nombre positif",
+    "min_greater_than_max": "La longueur minimale doit être inférieure à la longueur maximale",
+    "name_required": "Le nom est obligatoire",
+    "display_name_required": "Le nom d'affichage est obligatoire",
+    "description_required": "La description est obligatoire",
+    "status_required": "Le statut est obligatoire",
+    "data_type_required": "Le type de données est obligatoire",
+    "edit_type_required": "Le type d'édition est obligatoire",
+    "view_type_required": "Le type de vue est obligatoire",
+    "fetch_failed": "Échec du chargement des données : {{detail}}"
   },
   "validation_messages": {
     "invalid_url_format": "Format d'URL invalide",
@@ -1155,6 +1171,8 @@
     "asset_edit": "Modifier la ressource Jans",
     "algorithmic_keys": "Clés algorithmiques",
     "introspection_object": "Objet d'inspection",
+    "edit_attribute": "Modifier l'attribut",
+    "view_attribute": "Voir l'attribut",
     "all_attributes": "Tous les attributs",
     "all_custom_scripts": "Tous les scripts personnalisés",
     "jans_lock": "Verrou Jans",
