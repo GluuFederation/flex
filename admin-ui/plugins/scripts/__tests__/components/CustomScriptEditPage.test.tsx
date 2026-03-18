@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import CustomScriptEditPage from 'Plugins/scripts/components/CustomScripts/CustomScriptEditPage'
+import CustomScriptEditPage from 'Plugins/scripts/components/CustomScriptEditPage'
 
 const mockUseCustomScript = jest.fn()
 const mockUseUpdateCustomScript = jest.fn()
@@ -16,6 +16,14 @@ jest.mock('@/cedarling', () => ({
     hasCedarWritePermission: jest.fn(() => true),
     authorizeHelper: jest.fn(),
   })),
+  ADMIN_UI_RESOURCES: {
+    Security: 'Security',
+    Webhooks: 'Webhooks',
+    Lock: 'Lock',
+    Users: 'Users',
+    Attributes: 'Attributes',
+  },
+  CEDAR_RESOURCE_SCOPES: { Security: [], Webhooks: [], Lock: [], Users: [], Attributes: [] },
 }))
 
 jest.mock('@/cedarling/utility', () => ({
@@ -32,7 +40,7 @@ jest.mock('react-router-dom', () => ({
   useMatch: (pattern: string) => mockUseMatch(pattern),
 }))
 
-jest.mock('Plugins/scripts/components/CustomScripts/hooks', () => ({
+jest.mock('Plugins/scripts/components/hooks', () => ({
   useCustomScript: (inum: string) => mockUseCustomScript(inum),
   useUpdateCustomScript: () => mockUseUpdateCustomScript(),
   useCustomScriptTypes: jest.fn(() => ({

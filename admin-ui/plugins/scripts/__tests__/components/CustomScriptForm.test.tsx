@@ -20,7 +20,7 @@ const item = {
   modified: false,
   internal: false,
 }
-import CustomScriptForm from 'Plugins/scripts/components/CustomScripts/CustomScriptForm'
+import CustomScriptForm from 'Plugins/scripts/components/CustomScriptForm'
 
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({
@@ -28,6 +28,15 @@ jest.mock('@/cedarling', () => ({
     hasCedarWritePermission: jest.fn(() => true),
     authorizeHelper: jest.fn(),
   })),
+
+  ADMIN_UI_RESOURCES: {
+    Security: 'Security',
+    Webhooks: 'Webhooks',
+    Lock: 'Lock',
+    Users: 'Users',
+    Attributes: 'Attributes',
+  },
+  CEDAR_RESOURCE_SCOPES: { Security: [], Webhooks: [], Lock: [], Users: [], Attributes: [] },
 }))
 
 jest.mock('@/cedarling/utility', () => ({
@@ -38,7 +47,7 @@ jest.mock('@/cedarling/constants/resourceScopes', () => ({
   CEDAR_RESOURCE_SCOPES: { webhooks: [], customscripts: [] },
 }))
 
-jest.mock('Plugins/scripts/components/CustomScripts/hooks', () => ({
+jest.mock('Plugins/scripts/components/hooks', () => ({
   useCustomScriptTypes: jest.fn(() => ({
     data: [
       { value: 'person_authentication', name: 'Person Authentication' },

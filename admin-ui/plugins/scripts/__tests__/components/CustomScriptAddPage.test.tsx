@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import CustomScriptAddPage from 'Plugins/scripts/components/CustomScripts/CustomScriptAddPage'
+import CustomScriptAddPage from 'Plugins/scripts/components/CustomScriptAddPage'
 import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
@@ -12,6 +12,14 @@ jest.mock('@/cedarling', () => ({
     hasCedarWritePermission: jest.fn(() => true),
     authorizeHelper: jest.fn(),
   })),
+  ADMIN_UI_RESOURCES: {
+    Security: 'Security',
+    Webhooks: 'Webhooks',
+    Lock: 'Lock',
+    Users: 'Users',
+    Attributes: 'Attributes',
+  },
+  CEDAR_RESOURCE_SCOPES: { Security: [], Webhooks: [], Lock: [], Users: [], Attributes: [] },
 }))
 
 jest.mock('@/cedarling/utility', () => ({
@@ -41,7 +49,7 @@ jest.mock('JansConfigApi', () => ({
   })),
 }))
 
-jest.mock('Plugins/scripts/components/CustomScripts/hooks', () => ({
+jest.mock('Plugins/scripts/components/hooks', () => ({
   useCreateCustomScript: jest.fn(() => ({
     mutateAsync: jest.fn(),
     isPending: false,

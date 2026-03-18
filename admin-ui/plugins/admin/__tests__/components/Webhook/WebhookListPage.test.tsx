@@ -12,6 +12,14 @@ jest.mock('@/cedarling', () => ({
     hasCedarDeletePermission: jest.fn(() => true),
     authorizeHelper: jest.fn(),
   })),
+  ADMIN_UI_RESOURCES: {
+    Security: 'Security',
+    Webhooks: 'Webhooks',
+    Lock: 'Lock',
+    Users: 'Users',
+    Attributes: 'Attributes',
+  },
+  CEDAR_RESOURCE_SCOPES: { Security: [], Webhooks: [], Lock: [], Users: [], Attributes: [] },
 }))
 
 jest.mock('@/cedarling/utility', () => ({
