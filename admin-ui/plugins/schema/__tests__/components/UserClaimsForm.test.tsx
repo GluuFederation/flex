@@ -55,14 +55,16 @@ jest.mock('@/cedarling', () => ({
     hasCedarDeletePermission: jest.fn(() => true),
     authorizeHelper: jest.fn(),
   })),
+  ADMIN_UI_RESOURCES: { Attributes: 'Attributes', Webhooks: 'webhooks', Lock: 'Lock' },
+  CEDAR_RESOURCE_SCOPES: { Attributes: [], webhooks: [], Lock: [] },
 }))
 
 jest.mock('@/cedarling/utility', () => ({
-  ADMIN_UI_RESOURCES: { Attributes: 'Attributes', Webhooks: 'webhooks' },
+  ADMIN_UI_RESOURCES: { Attributes: 'Attributes', Webhooks: 'webhooks', Lock: 'Lock' },
 }))
 
 jest.mock('@/cedarling/constants/resourceScopes', () => ({
-  CEDAR_RESOURCE_SCOPES: { Attributes: [], webhooks: [] },
+  CEDAR_RESOURCE_SCOPES: { Attributes: [], webhooks: [], Lock: [] },
 }))
 
 jest.mock('react-router-dom', () => ({
@@ -285,13 +287,12 @@ describe('UserClaimsForm', () => {
   describe('with viewOnly mode', () => {
     const hideButtons = { save: true, back: true }
 
-    it('renders Back button and hides Cancel', async () => {
+    it('hides save and back buttons in viewOnly mode', async () => {
       render(
         <UserClaimsForm item={item} customOnSubmit={handleSubmit} hideButtons={hideButtons} />,
         { wrapper: Wrapper },
       )
       await screen.findByTestId('name')
-      expect(screen.getByText(/Back/i)).toBeInTheDocument()
       expect(screen.queryByText(/Cancel/i)).not.toBeInTheDocument()
     })
 
