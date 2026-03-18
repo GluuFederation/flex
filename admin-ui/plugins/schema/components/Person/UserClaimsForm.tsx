@@ -2,6 +2,7 @@ import React, { useState, useMemo, useCallback, memo } from 'react'
 import { Formik, FormikProps } from 'formik'
 import { Form } from 'Components'
 import type { MultiSelectOption } from 'Routes/Apps/Gluu/types/GluuMultiSelectRow.types'
+import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/GluuCommitDialog'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuInumInput from 'Routes/Apps/Gluu/GluuInumInput'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
@@ -25,6 +26,7 @@ import {
   hasFormChanged,
   getDefaultFormValues,
   isFormValid,
+  computeModifiedFields,
 } from '../../utils/formHelpers'
 import type { AttributeFormProps, AttributeFormValues } from '../types/UserClaimsListPage.types'
 
@@ -40,6 +42,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
   const { t } = useTranslation()
   const { navigateBack } = useAppNavigation()
   const [modal, setModal] = useState<boolean>(false)
+  const [commitOperations, setCommitOperations] = useState<GluuCommitDialogOperation[]>([])
 
   const theme = useTheme()
   const { themeColors, isDark } = useMemo(() => {
@@ -131,7 +134,16 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
       validateOnMount={true}
       validateOnChange={true}
       validateOnBlur={true}
-      onSubmit={() => {
+      onSubmit={(values) => {
+        if (!isCreateMode) {
+          const modified = computeModifiedFields(initialValues, values)
+          setCommitOperations(
+            Object.entries(modified).map(([key, value]) => ({
+              path: key,
+              value: Array.isArray(value) ? value.join(', ') : String(value ?? ''),
+            })),
+          )
+        }
         toggleModal()
       }}
       enableReinitialize={true}
@@ -510,6 +522,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                 onAccept={(userMessage: string) => submitForm(userMessage, formik.values)}
                 feature={adminUiFeatures.attributes_write}
                 formik={formik}
+                operations={commitOperations}
               />
             </div>
           </Form>
