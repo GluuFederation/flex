@@ -17,25 +17,25 @@ jest.mock('@/cedarling', () => ({
     error: null,
   })),
   ADMIN_UI_RESOURCES: {
-    Users: 'users',
-    Lock: 'lock',
-    Attributes: 'attributes',
-    Webhooks: 'webhooks',
+    Users: 'Users',
+    Lock: 'Lock',
+    Attributes: 'Attributes',
+    Webhooks: 'Webhooks',
   },
-  CEDAR_RESOURCE_SCOPES: { users: [], lock: [], attributes: [], webhooks: [] },
+  CEDAR_RESOURCE_SCOPES: { Users: [], Lock: [], Attributes: [], Webhooks: [] },
 }))
 
 jest.mock('@/cedarling/utility', () => ({
   ADMIN_UI_RESOURCES: {
-    Users: 'users',
-    Lock: 'lock',
-    Attributes: 'attributes',
-    Webhooks: 'webhooks',
+    Users: 'Users',
+    Lock: 'Lock',
+    Attributes: 'Attributes',
+    Webhooks: 'Webhooks',
   },
 }))
 
 jest.mock('@/cedarling/constants/resourceScopes', () => ({
-  CEDAR_RESOURCE_SCOPES: { users: [], lock: [], attributes: [], webhooks: [] },
+  CEDAR_RESOURCE_SCOPES: { Users: [], Lock: [], Attributes: [], Webhooks: [] },
 }))
 
 jest.mock('JansConfigApi', () => ({

@@ -137,20 +137,20 @@ describe('transformToFormValues', () => {
   })
 
   it('transforms cedarlingConfiguration policy sources', () => {
+    const jsonSource = {
+      authorizationToken: 'json-token',
+      policyStoreUri: 'https://json.example.com',
+    }
+    const zipSource = { authorizationToken: 'zip-token', policyStoreUri: 'https://zip.example.com' }
     const config: LockApiConfig = {
-      cedarlingConfiguration: {
-        policySources: [
-          { authorizationToken: 'json-token', policyStoreUri: 'https://json.example.com' },
-          { authorizationToken: 'zip-token', policyStoreUri: 'https://zip.example.com' },
-        ],
-      },
+      cedarlingConfiguration: { policySources: [jsonSource, zipSource] },
     }
 
     const result = transformToFormValues(config)
-    expect(result.policiesJsonUrisAuthorizationToken).toBe('json-token')
-    expect(result.policiesJsonUris).toBe('https://json.example.com')
-    expect(result.policiesZipUrisAuthorizationToken).toBe('zip-token')
-    expect(result.policiesZipUris).toBe('https://zip.example.com')
+    expect(result.policiesJsonUrisAuthorizationToken).toBe(jsonSource.authorizationToken)
+    expect(result.policiesJsonUris).toBe(jsonSource.policyStoreUri)
+    expect(result.policiesZipUrisAuthorizationToken).toBe(zipSource.authorizationToken)
+    expect(result.policiesZipUris).toBe(zipSource.policyStoreUri)
   })
 
   it('handles missing cedarlingConfiguration gracefully', () => {

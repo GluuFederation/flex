@@ -83,6 +83,10 @@ describe('JansLock', () => {
       hasCedarWritePermission: jest.fn(() => true),
       authorizeHelper: jest.fn(),
     }))
+    jest.requireMock('JansConfigApi').useGetLockProperties.mockImplementation(() => ({
+      data: mockLockConfig,
+      isLoading: false,
+    }))
   })
 
   it('renders without crashing', () => {
@@ -120,14 +124,15 @@ describe('JansLock', () => {
       </Wrapper>,
     )
 
-    // GluuViewWrapper renders MISSING div instead of children when canShow is not strictly true
     expect(document.querySelector('[data-testid="MISSING"]')).toBeInTheDocument()
     expect(document.querySelector('input[name="baseDN"]')).not.toBeInTheDocument()
   })
 
   it('renders loading state', () => {
-    const { useGetLockProperties } = jest.requireMock('JansConfigApi')
-    useGetLockProperties.mockReturnValueOnce({ data: undefined, isLoading: true })
+    jest.requireMock('JansConfigApi').useGetLockProperties.mockImplementation(() => ({
+      data: undefined,
+      isLoading: true,
+    }))
 
     render(
       <Wrapper>
@@ -135,7 +140,7 @@ describe('JansLock', () => {
       </Wrapper>,
     )
 
-    // GluuLoader should be blocking
+    expect(document.querySelector('[aria-busy="true"]')).toBeInTheDocument()
     expect(document.querySelector('form')).toBeInTheDocument()
   })
 
