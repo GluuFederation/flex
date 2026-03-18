@@ -41,7 +41,7 @@ function UserClaimsEditPage(): JSX.Element {
   const { hasCedarReadPermission } = useCedarling()
   const canRead = useMemo(
     () => hasCedarReadPermission(attributeResourceId),
-    [hasCedarReadPermission, attributeResourceId],
+    [hasCedarReadPermission],
   )
 
   SetTitle(t('titles.edit_attribute', { defaultValue: 'Edit User Claim' }))

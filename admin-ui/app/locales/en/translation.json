@@ -1140,7 +1140,7 @@
   },
   "tooltips": {
     "insert_shortcode": "Insert shortcode",
-    "add_attribute": "Add user claim",
+    "add_attribute": "Add User Claim",
     "add_user": "Add User",
     "edit_user": "Edit User",
     "delete_user": "Delete User",

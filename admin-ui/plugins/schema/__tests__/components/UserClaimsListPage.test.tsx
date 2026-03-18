@@ -14,16 +14,16 @@ jest.mock('@/cedarling', () => ({
     hasCedarDeletePermission: jest.fn(() => true),
     authorizeHelper: jest.fn(),
   })),
-  ADMIN_UI_RESOURCES: { Attributes: 'Attributes', Webhooks: 'webhooks', Lock: 'Lock' },
-  CEDAR_RESOURCE_SCOPES: { Attributes: [], webhooks: [], Lock: [] },
+  ADMIN_UI_RESOURCES: { Attributes: 'Attributes', Webhooks: 'webhooks', Lock: 'lock' },
+  CEDAR_RESOURCE_SCOPES: { Attributes: [], webhooks: [], lock: [] },
 }))
 
 jest.mock('@/cedarling/utility', () => ({
-  ADMIN_UI_RESOURCES: { Attributes: 'Attributes', Webhooks: 'webhooks', Lock: 'Lock' },
+  ADMIN_UI_RESOURCES: { Attributes: 'Attributes', Webhooks: 'webhooks', Lock: 'lock' },
 }))
 
 jest.mock('@/cedarling/constants/resourceScopes', () => ({
-  CEDAR_RESOURCE_SCOPES: { Attributes: [], webhooks: [], Lock: [] },
+  CEDAR_RESOURCE_SCOPES: { Attributes: [], webhooks: [] },
 }))
 
 jest.mock('JansConfigApi', () => ({
@@ -112,8 +112,8 @@ describe('UserClaimsListPage', () => {
   it('renders action icons for edit, view, and delete', async () => {
     render(<UserClaimsListPage />, { wrapper: Wrapper })
     await screen.findByText(attributes[0].inum)
-    expect(screen.getAllByTestId('EditIcon').length).toBeGreaterThan(0)
-    expect(screen.getAllByTestId('VisibilityOutlinedIcon').length).toBeGreaterThan(0)
-    expect(screen.getAllByTestId('DeleteOutlinedIcon').length).toBeGreaterThan(0)
+    expect(screen.getAllByTestId('EditIcon')[0]).toBeInTheDocument()
+    expect(screen.getAllByTestId('VisibilityOutlinedIcon')[0]).toBeInTheDocument()
+    expect(screen.getAllByTestId('DeleteOutlinedIcon')[0]).toBeInTheDocument()
   })
 })

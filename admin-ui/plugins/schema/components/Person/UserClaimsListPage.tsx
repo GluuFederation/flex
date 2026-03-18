@@ -31,6 +31,9 @@ type DisplayValue = string | number | boolean | null | undefined
 const displayOrDash = (value: DisplayValue): string =>
   value === null || value === undefined || value === '' ? '—' : String(value)
 
+const attributeResourceId = ADMIN_UI_RESOURCES.Attributes
+const attributeScopes = CEDAR_RESOURCE_SCOPES[attributeResourceId] ?? []
+
 const UserClaimsListPage: React.FC = () => {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
@@ -61,30 +64,24 @@ const UserClaimsListPage: React.FC = () => {
   const [modal, setModal] = useState(false)
   const [itemToDelete, setItemToDelete] = useState<JansAttribute | null>(null)
 
-  const attributeResourceId = useMemo(() => ADMIN_UI_RESOURCES.Attributes, [])
-  const attributeScopes = useMemo(
-    () => CEDAR_RESOURCE_SCOPES[attributeResourceId] ?? [],
-    [attributeResourceId],
-  )
-
   const canRead = useMemo(
     () => hasCedarReadPermission(attributeResourceId),
-    [hasCedarReadPermission, attributeResourceId],
+    [hasCedarReadPermission],
   )
   const canWrite = useMemo(
     () => hasCedarWritePermission(attributeResourceId),
-    [hasCedarWritePermission, attributeResourceId],
+    [hasCedarWritePermission],
   )
   const canDelete = useMemo(
     () => hasCedarDeletePermission(attributeResourceId),
-    [hasCedarDeletePermission, attributeResourceId],
+    [hasCedarDeletePermission],
   )
 
   useEffect(() => {
     if (attributeScopes.length > 0) {
       authorizeHelper(attributeScopes)
     }
-  }, [authorizeHelper, attributeScopes])
+  }, [authorizeHelper])
 
   const startIndex = useMemo(() => pageNumber * limit, [pageNumber, limit])
 
@@ -92,6 +89,7 @@ const UserClaimsListPage: React.FC = () => {
     data: attributesData,
     isLoading,
     isError,
+    error,
   } = useAttributes({
     limit,
     startIndex,
@@ -487,7 +485,11 @@ const UserClaimsListPage: React.FC = () => {
               actions={actions}
               getRowKey={getRowKey}
               emptyMessage={
-                isError ? t('errors.fetch_failed', { detail: '' }) : t('messages.no_data')
+                isError
+                  ? t('errors.fetch_failed', {
+                      detail: error instanceof Error ? error.message : '',
+                    })
+                  : t('messages.no_data')
               }
             />
           </div>

@@ -32,16 +32,16 @@ jest.mock('@/cedarling', () => ({
     hasCedarDeletePermission: jest.fn(() => true),
     authorizeHelper: jest.fn(),
   })),
-  ADMIN_UI_RESOURCES: { Attributes: 'Attributes', Webhooks: 'webhooks', Lock: 'Lock' },
-  CEDAR_RESOURCE_SCOPES: { Attributes: [], webhooks: [], Lock: [] },
+  ADMIN_UI_RESOURCES: { Attributes: 'Attributes', Webhooks: 'webhooks', Lock: 'lock' },
+  CEDAR_RESOURCE_SCOPES: { Attributes: [], webhooks: [], lock: [] },
 }))
 
 jest.mock('@/cedarling/utility', () => ({
-  ADMIN_UI_RESOURCES: { Attributes: 'Attributes', Webhooks: 'webhooks', Lock: 'Lock' },
+  ADMIN_UI_RESOURCES: { Attributes: 'Attributes', Webhooks: 'webhooks', Lock: 'lock' },
 }))
 
 jest.mock('@/cedarling/constants/resourceScopes', () => ({
-  CEDAR_RESOURCE_SCOPES: { Attributes: [], webhooks: [], Lock: [] },
+  CEDAR_RESOURCE_SCOPES: { Attributes: [], webhooks: [] },
 }))
 
 jest.mock('react-router-dom', () => ({

@@ -24,8 +24,9 @@ import type { AttributeItem } from '../types/UserClaimsListPage.types'
 import type { JansAttribute } from 'JansConfigApi'
 
 const attributeResourceId = ADMIN_UI_RESOURCES.Attributes
+const attributeScopes = CEDAR_RESOURCE_SCOPES[attributeResourceId] ?? []
 
-function UserClaimsViewPage(): JSX.Element {
+const UserClaimsViewPage = (): JSX.Element => {
   const { gid } = useParams<{ gid: string }>()
   const { t } = useTranslation()
 
@@ -41,13 +42,11 @@ function UserClaimsViewPage(): JSX.Element {
 
   const { authorizeHelper, hasCedarReadPermission } = useCedarling()
 
-  const attributeScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[attributeResourceId] ?? [], [])
-
   useEffect(() => {
     if (attributeScopes.length > 0) {
       authorizeHelper(attributeScopes)
     }
-  }, [authorizeHelper, attributeScopes])
+  }, [authorizeHelper])
 
   const canRead = useMemo(
     () => hasCedarReadPermission(attributeResourceId),

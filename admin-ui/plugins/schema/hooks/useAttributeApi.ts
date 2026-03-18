@@ -11,6 +11,7 @@ import {
   getGetAttributesByInumQueryKey,
   type JansAttribute,
   type GetAttributesParams,
+  type GetAttributesQueryResult,
   type PagedResultEntriesItem,
 } from 'JansConfigApi'
 import { CREATE, UPDATE, DELETION } from '@/audit/UserActionType'
@@ -24,7 +25,7 @@ import type { ModifiedFields } from '../components/types/UserClaimsListPage.type
 export const useAttributes = (params?: GetAttributesParams) => {
   const hasSession = useAppSelector((state: RootState) => state.authReducer?.hasSession)
 
-  return useGetAttributes(params, {
+  return useGetAttributes<GetAttributesQueryResult, Error>(params, {
     query: {
       enabled: hasSession === true,
       staleTime: ATTRIBUTE_CACHE_CONFIG.STALE_TIME,

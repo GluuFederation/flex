@@ -42,7 +42,7 @@ const JansLock: React.FC = () => {
     if (lockScopes && lockScopes.length > 0) {
       authorizeHelper(lockScopes)
     }
-  }, [authorizeHelper, lockScopes])
+  }, [authorizeHelper])
 
   const { state: themeState } = useTheme()
   const { themeColors, isDark } = useMemo(

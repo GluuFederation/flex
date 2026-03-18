@@ -763,7 +763,7 @@
     "page_size": "Tamanho da página"
   },
   "messages": {
-    "multi_select_hint": "Selecione vários itens no menu suspenso.",
+    "multi_select_hint": "Insira vários itens selecionando no menu suspenso que aparece após inserir cada item.",
     "add_permission": "Adicionar permissão",
     "thanks_for_using_admin_ui": "Obrigado por usar a interface de administração.",
     "add_asset": "Adicionar recurso Jans",

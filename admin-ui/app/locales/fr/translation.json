@@ -771,7 +771,7 @@
     "page_size": "Taille de la page"
   },
   "messages": {
-    "multi_select_hint": "Sélectionnez plusieurs éléments dans la liste déroulante.",
+    "multi_select_hint": "Saisissez plusieurs éléments en les sélectionnant dans la liste déroulante qui s'affiche après chaque saisie.",
     "add_permission": "Ajouter une autorisation",
     "thanks_for_using_admin_ui": "Merci d'avoir utilisé l'interface d'administration.",
     "add_asset": "Ajouter une ressource Jans",

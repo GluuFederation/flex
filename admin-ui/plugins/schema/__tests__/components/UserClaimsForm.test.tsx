@@ -4,7 +4,6 @@ import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
-import UserClaimsForm from 'Plugins/schema/components/Person/UserClaimsForm'
 import type { AttributeItem } from 'Plugins/schema/components/types/UserClaimsListPage.types'
 
 const item: AttributeItem = {
@@ -47,6 +46,8 @@ const emptyItem: AttributeItem = {
   attributeValidation: { maxLength: null, regexp: null, minLength: null },
 }
 
+import UserClaimsForm from 'Plugins/schema/components/Person/UserClaimsForm'
+
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({
     hasCedarReadPermission: jest.fn(() => true),
@@ -54,16 +55,16 @@ jest.mock('@/cedarling', () => ({
     hasCedarDeletePermission: jest.fn(() => true),
     authorizeHelper: jest.fn(),
   })),
-  ADMIN_UI_RESOURCES: { Attributes: 'Attributes', Webhooks: 'webhooks', Lock: 'Lock' },
-  CEDAR_RESOURCE_SCOPES: { Attributes: [], webhooks: [], Lock: [] },
+  ADMIN_UI_RESOURCES: { Attributes: 'Attributes', Webhooks: 'webhooks', Lock: 'lock' },
+  CEDAR_RESOURCE_SCOPES: { Attributes: [], webhooks: [], lock: [] },
 }))
 
 jest.mock('@/cedarling/utility', () => ({
-  ADMIN_UI_RESOURCES: { Attributes: 'Attributes', Webhooks: 'webhooks', Lock: 'Lock' },
+  ADMIN_UI_RESOURCES: { Attributes: 'Attributes', Webhooks: 'webhooks', Lock: 'lock' },
 }))
 
 jest.mock('@/cedarling/constants/resourceScopes', () => ({
-  CEDAR_RESOURCE_SCOPES: { Attributes: [], webhooks: [], Lock: [] },
+  CEDAR_RESOURCE_SCOPES: { Attributes: [], webhooks: [] },
 }))
 
 jest.mock('react-router-dom', () => ({
@@ -284,14 +285,15 @@ describe('UserClaimsForm', () => {
   })
 
   describe('with viewOnly mode', () => {
-    const hideButtons = { save: true, back: true }
+    const hideButtons = { save: true }
 
-    it('hides save and back buttons in viewOnly mode', async () => {
+    it('renders Back button and hides Cancel', async () => {
       render(
         <UserClaimsForm item={item} customOnSubmit={handleSubmit} hideButtons={hideButtons} />,
         { wrapper: Wrapper },
       )
       await screen.findByTestId('name')
+      expect(screen.getByText(/Back/i)).toBeInTheDocument()
       expect(screen.queryByText(/Cancel/i)).not.toBeInTheDocument()
     })
 
