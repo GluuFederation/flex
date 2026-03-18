@@ -18,7 +18,6 @@ export const getLockValidationSchema = (t: TFunction) =>
   Yup.object({
     cleanServiceInterval: Yup.number()
       .transform(emptyStringToNull)
-      .nullable()
       .integer(t('messages.lock_clean_service_interval_type'))
       .min(1, t('messages.lock_clean_service_interval_min'))
       .required(t('messages.lock_clean_service_interval_required'))

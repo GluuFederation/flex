@@ -990,6 +990,7 @@
     "attribute_added_successfully": "Atributo añadido con éxito",
     "attribute_updated_successfully": "Atributo actualizado con éxito",
     "attribute_deleted_successfully": "Atributo eliminado con éxito",
+    "attribute_deleted": "Atributo eliminado {{name}}",
     "loading_attributes": "Cargando atributos",
     "error_processing_request": "Error al procesar la solicitud.",
     "thanks_for_using_admin_ui": "Gracias por usar la interfaz de administración.",

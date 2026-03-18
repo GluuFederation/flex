@@ -82,10 +82,11 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({
     return validationSchema.isValidSync(formik.values)
   }, [formik.values, validationSchema])
 
-  const commitOperations = useMemo(
-    () => buildLockChangedFieldOperations(initialFormValues, formik.values, t),
-    [initialFormValues, formik.values, t],
-  )
+  const commitOperations = useMemo(() => {
+    const { trimmedValues } = trimmedValuesAndPatches
+    if (!trimmedValues) return []
+    return buildLockChangedFieldOperations(initialFormValues, trimmedValues, t)
+  }, [initialFormValues, trimmedValuesAndPatches, t])
 
   const fieldsGridClassName = useMemo(
     () => `${classes.fieldsGrid} ${classes.formLabels} ${classes.formWithInputs}`,

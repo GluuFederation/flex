@@ -923,6 +923,7 @@
     "attribute_added_successfully": "Réclamation utilisateur ajoutée avec succès",
     "attribute_updated_successfully": "Réclamation utilisateur mise à jour avec succès",
     "attribute_deleted_successfully": "Réclamation utilisateur supprimée avec succès",
+    "attribute_deleted": "Attribut supprimé {{name}}",
     "loading_attributes": "Chargement des attributs",
     "no_scope_in_client": "Aucune donnée d'étendue pour ce client",
     "error_in_script": "Erreur dans le script !",

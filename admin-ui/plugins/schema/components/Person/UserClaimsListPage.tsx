@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext, useCallback, useMemo, memo } fr
 import { DeleteOutlined, Edit, Add, VisibilityOutlined } from '@mui/icons-material'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { GluuBadge } from '@/components/GluuBadge'
+import { GluuDetailGrid, type GluuDetailGridField } from '@/components/GluuDetailGrid'
 import { GluuTable } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -19,6 +20,7 @@ import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAttributes, useDeleteAttribute, useMutationEffects, toAttributeList } from '../../hooks'
+import { API_ATTRIBUTE } from '../../constants'
 import { useStyles } from './styles/UserClaimsListPage.style'
 import { getGetAttributesQueryKey } from 'JansConfigApi'
 import type { JansAttribute } from 'JansConfigApi'
@@ -55,6 +57,11 @@ const UserClaimsListPage: React.FC = () => {
     }
   }, [theme?.state?.theme])
   const { classes, badgeStyles } = useStyles({ isDark: isDarkTheme, themeColors })
+
+  const detailLabelStyle = useMemo(
+    () => ({ color: themeColors.fontColor }),
+    [themeColors.fontColor],
+  )
 
   const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
   const [pattern, setPattern] = useState('')
@@ -149,7 +156,9 @@ const UserClaimsListPage: React.FC = () => {
         await deleteAttributeMutation.mutateAsync({
           inum,
           name: itemToDelete?.name,
-          userMessage: message || `Deleted attribute ${itemToDelete?.name ?? itemToDelete?.inum}`,
+          userMessage:
+            message ||
+            t('messages.attribute_deleted', { name: itemToDelete?.name ?? itemToDelete?.inum }),
         })
       } finally {
         setModal(false)
@@ -360,90 +369,77 @@ const UserClaimsListPage: React.FC = () => {
     [],
   )
 
-  const renderExpandedRow = useCallback(
-    (row: JansAttribute) => {
+  const getAttributeDetailFields = useCallback(
+    (row: JansAttribute): GluuDetailGridField[] => {
       const isActive = row.status?.toLowerCase() === 'active'
-      const statusStyle = isActive
-        ? badgeStyles.statusEnabledBadge
-        : badgeStyles.statusDisabledBadge
-
       const editTypeArr = Array.isArray(row.editType) ? row.editType : []
       const viewTypeArr = Array.isArray(row.viewType) ? row.viewType : []
-
-      return (
-        <div className={classes.expandedGrid}>
-          <div className={classes.expandedField}>
-            <span className={classes.expandedLabel}>{t('fields.name')}:</span>
-            <span className={classes.expandedValue}>{displayOrDash(row.name)}</span>
-          </div>
-          <div className={classes.expandedField}>
-            <span className={classes.expandedLabel}>{t('fields.displayname')}:</span>
-            <span className={classes.expandedValue}>{displayOrDash(row.displayName)}</span>
-          </div>
-          <div className={classes.expandedField}>
-            <span className={classes.expandedLabel}>{t('fields.status')}:</span>
-            <div>
-              <GluuBadge
-                size="sm"
-                backgroundColor={statusStyle.backgroundColor}
-                textColor={statusStyle.textColor}
-                borderColor={statusStyle.borderColor}
-                borderRadius={6}
-              >
-                {isActive ? t('options.enabled') : t('options.disabled')}
-              </GluuBadge>
-            </div>
-          </div>
-          <div className={classes.expandedField}>
-            <span className={classes.expandedLabel}>{t('fields.attribute_edit_type')}:</span>
-            <div className={classes.expandedBadgeList}>
-              {editTypeArr.length > 0 ? (
-                editTypeArr.map((v) => (
-                  <GluuBadge
-                    key={v}
-                    size="sm"
-                    backgroundColor={badgeStyles.filledBadge.backgroundColor}
-                    textColor={badgeStyles.filledBadge.textColor}
-                    borderColor={badgeStyles.filledBadge.borderColor}
-                    borderRadius={6}
-                  >
-                    {v}
-                  </GluuBadge>
-                ))
-              ) : (
-                <span className={classes.expandedValue}>—</span>
-              )}
-            </div>
-          </div>
-          <div className={classes.expandedField}>
-            <span className={classes.expandedLabel}>{t('fields.attribute_view_type')}:</span>
-            <div className={classes.expandedBadgeList}>
-              {viewTypeArr.length > 0 ? (
-                viewTypeArr.map((v) => (
-                  <GluuBadge
-                    key={v}
-                    size="sm"
-                    backgroundColor={badgeStyles.filledBadge.backgroundColor}
-                    textColor={badgeStyles.filledBadge.textColor}
-                    borderColor={badgeStyles.filledBadge.borderColor}
-                    borderRadius={6}
-                  >
-                    {v}
-                  </GluuBadge>
-                ))
-              ) : (
-                <span className={classes.expandedValue}>—</span>
-              )}
-            </div>
-          </div>
-          <div className={classes.expandedDescField}>
-            <span className={classes.expandedLabel}>{t('fields.description')}:</span>
-            <span className={classes.expandedValue}>{displayOrDash(row.description)}</span>
-          </div>
-        </div>
-      )
+      return [
+        {
+          label: 'fields.name',
+          value: displayOrDash(row.name),
+          doc_entry: 'name',
+          doc_category: API_ATTRIBUTE,
+        },
+        {
+          label: 'fields.displayname',
+          value: displayOrDash(row.displayName),
+          doc_entry: 'displayName',
+          doc_category: API_ATTRIBUTE,
+        },
+        {
+          label: 'fields.status',
+          value: isActive ? t('options.enabled') : t('options.disabled'),
+          doc_entry: 'status',
+          doc_category: API_ATTRIBUTE,
+          isBadge: true,
+          badgeBackgroundColor: isActive
+            ? themeColors.badges.statusActiveBg
+            : themeColors.badges.disabledBg,
+          badgeTextColor: isActive
+            ? themeColors.badges.statusActive
+            : themeColors.badges.disabledText,
+        },
+        {
+          label: 'fields.attribute_edit_type',
+          value: editTypeArr.length > 0 ? editTypeArr.join(', ') : '—',
+          doc_entry: 'editType',
+          doc_category: API_ATTRIBUTE,
+          isBadge: editTypeArr.length > 0,
+          badgeBackgroundColor: themeColors.badges.filledBadgeBg,
+          badgeTextColor: themeColors.badges.filledBadgeText,
+        },
+        {
+          label: 'fields.attribute_view_type',
+          value: viewTypeArr.length > 0 ? viewTypeArr.join(', ') : '—',
+          doc_entry: 'viewType',
+          doc_category: API_ATTRIBUTE,
+          isBadge: viewTypeArr.length > 0,
+          badgeBackgroundColor: themeColors.badges.filledBadgeBg,
+          badgeTextColor: themeColors.badges.filledBadgeText,
+        },
+        {
+          label: 'fields.description',
+          value: displayOrDash(row.description),
+          doc_entry: 'description',
+          doc_category: API_ATTRIBUTE,
+          fullWidth: true,
+        },
+      ]
     },
-    [classes, badgeStyles, t],
+    [t, themeColors],
+  )
+
+  const renderExpandedRow = useCallback(
+    (row: JansAttribute) => (
+      <GluuDetailGrid
+        fields={getAttributeDetailFields(row)}
+        labelStyle={detailLabelStyle}
+        defaultDocCategory={API_ATTRIBUTE}
+        layout="column"
+      />
+    ),
+    [getAttributeDetailFields, detailLabelStyle],
   )
 
   const loading = useMemo(

@@ -293,7 +293,6 @@ describe('createPatchOperations', () => {
       expect.objectContaining({
         policySources: [
           { authorizationToken: 'token123', policyStoreUri: 'https://json.example.com' },
-          { authorizationToken: '', policyStoreUri: '' },
         ],
       }),
     )

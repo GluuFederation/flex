@@ -77,6 +77,14 @@ export const createPatchOperations = (
 
   const normalizedValues: Record<string, unknown> = { ...flatValues }
 
+  if (typeof normalizedValues.tokenChannels === 'string') {
+    const channels = (normalizedValues.tokenChannels as string)
+      .split(',')
+      .map((c) => c.trim())
+      .filter(Boolean)
+    normalizedValues.tokenChannels = channels.length > 0 ? channels : undefined
+  }
+
   const booleanFields = [
     'metricReporterEnabled',
     'disableJdkLogger',
@@ -112,7 +120,11 @@ export const createPatchOperations = (
           })
         }
       }
-    } else if (normalizedValues[key] !== undefined && normalizedValues[key] !== '') {
+    } else if (
+      normalizedValues[key] !== undefined &&
+      normalizedValues[key] !== '' &&
+      normalizedValues[key] !== false
+    ) {
       const value = normalizedValues[key]
       const isEmptyArray = Array.isArray(value) && value.length === 0
       const isEmptyObject =
@@ -146,15 +158,19 @@ export const createPatchOperations = (
 
   if (jsonSourceChanged || zipSourceChanged) {
     const policySources = [
-      {
-        authorizationToken: policiesJsonUrisAuthorizationToken || '',
-        policyStoreUri: policiesJsonUris || '',
-      },
-      {
-        authorizationToken: policiesZipUrisAuthorizationToken || '',
-        policyStoreUri: policiesZipUris || '',
-      },
-    ]
+      policiesJsonUris || policiesJsonUrisAuthorizationToken
+        ? {
+            authorizationToken: policiesJsonUrisAuthorizationToken || '',
+            policyStoreUri: policiesJsonUris || '',
+          }
+        : null,
+      policiesZipUris || policiesZipUrisAuthorizationToken
+        ? {
+            authorizationToken: policiesZipUrisAuthorizationToken || '',
+            policyStoreUri: policiesZipUris || '',
+          }
+        : null,
+    ].filter((e): e is { authorizationToken: string; policyStoreUri: string } => e !== null)
 
     const updatedCedarling = {
       ...(cedarling || {}),

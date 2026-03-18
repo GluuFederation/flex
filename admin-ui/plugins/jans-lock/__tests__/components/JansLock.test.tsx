@@ -78,6 +78,11 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => (
 describe('JansLock', () => {
   beforeEach(() => {
     mockMutate.mockClear()
+    jest.requireMock('@/cedarling').useCedarling.mockImplementation(() => ({
+      hasCedarReadPermission: jest.fn(() => true),
+      hasCedarWritePermission: jest.fn(() => true),
+      authorizeHelper: jest.fn(),
+    }))
   })
 
   it('renders without crashing', () => {
@@ -103,12 +108,11 @@ describe('JansLock', () => {
   })
 
   it('renders when user has no read permission', () => {
-    const { useCedarling } = jest.requireMock('@/cedarling')
-    useCedarling.mockReturnValueOnce({
+    jest.requireMock('@/cedarling').useCedarling.mockImplementation(() => ({
       hasCedarReadPermission: jest.fn(() => false),
       hasCedarWritePermission: jest.fn(() => false),
       authorizeHelper: jest.fn(),
-    })
+    }))
 
     render(
       <Wrapper>
@@ -116,8 +120,9 @@ describe('JansLock', () => {
       </Wrapper>,
     )
 
-    // Component renders without crashing even with no permissions
-    expect(document.body).toBeTruthy()
+    // GluuViewWrapper renders MISSING div instead of children when canShow is not strictly true
+    expect(document.querySelector('[data-testid="MISSING"]')).toBeInTheDocument()
+    expect(document.querySelector('input[name="baseDN"]')).not.toBeInTheDocument()
   })
 
   it('renders loading state', () => {

@@ -23,7 +23,7 @@ jest.mock('@/cedarling/utility', () => ({
 }))
 
 jest.mock('@/cedarling/constants/resourceScopes', () => ({
-  CEDAR_RESOURCE_SCOPES: { Attributes: [], webhooks: [] },
+  CEDAR_RESOURCE_SCOPES: { Attributes: [], webhooks: [], lock: [] },
 }))
 
 jest.mock('JansConfigApi', () => ({

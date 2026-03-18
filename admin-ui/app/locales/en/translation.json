@@ -993,6 +993,7 @@
     "attribute_added_successfully": "User Claim added successfully",
     "attribute_updated_successfully": "User Claim updated successfully",
     "attribute_deleted_successfully": "User Claim deleted successfully",
+    "attribute_deleted": "Deleted attribute {{name}}",
     "loading_attribute": "Loading attribute...",
     "loading_attributes": "Loading attributes",
     "error_processing_request": "Error in processing request.",

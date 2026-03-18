@@ -54,6 +54,14 @@ const createWrapper = (store: ReturnType<typeof createStore>) => {
 }
 
 describe('useCedarling', () => {
+  let tokenAuthorizeMock: jest.Mock
+
+  beforeEach(() => {
+    tokenAuthorizeMock = jest.requireMock('@/cedarling/client').cedarlingClient
+      .token_authorize as jest.Mock
+    tokenAuthorizeMock.mockClear()
+  })
+
   describe('hasCedarReadPermission', () => {
     it('returns undefined when no cached permission', () => {
       const store = createStore()
@@ -167,6 +175,7 @@ describe('useCedarling', () => {
         ])
       })
       expect(authResult.isAuthorized).toBe(true)
+      expect(tokenAuthorizeMock).not.toHaveBeenCalled()
     })
   })
 
@@ -183,9 +192,7 @@ describe('useCedarling', () => {
     })
 
     it('deduplicates entries with same resourceId and action', async () => {
-      const store = createStore({
-        cedarState: { permissions: { 'Dashboard::read': true } },
-      })
+      const store = createStore()
       const { result } = renderHook(() => useCedarling(), { wrapper: createWrapper(store) })
 
       let results: { isAuthorized: boolean }[] = []
@@ -198,6 +205,8 @@ describe('useCedarling', () => {
       expect(results).toHaveLength(2)
       expect(results[0].isAuthorized).toBe(true)
       expect(results[1].isAuthorized).toBe(true)
+      // Both entries share the same resourceId+action key — only one API call should be made
+      expect(tokenAuthorizeMock).toHaveBeenCalledTimes(1)
     })
   })
 

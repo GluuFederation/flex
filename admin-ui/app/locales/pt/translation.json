@@ -916,6 +916,7 @@
     "attribute_added_successfully": "Atributo adicionado com sucesso",
     "attribute_updated_successfully": "Atributo atualizado com sucesso",
     "attribute_deleted_successfully": "Atributo excluído com sucesso",
+    "attribute_deleted": "Atributo excluído {{name}}",
     "loading_attributes": "Carregando atributos",
     "no_scope_in_client": "Sem dados de Escopo para este Cliente",
     "error_in_script": "Erro no script!",
