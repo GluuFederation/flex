@@ -1,31 +1,39 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import UserClaimsAddPage from 'Plugins/schema/components/Person/UserClaimsAddPage'
+import UserClaimsAddPage from 'Plugins/user-claims/components/Person/UserClaimsAddPage'
 import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 
-jest.mock('@/cedarling', () => ({
-  useCedarling: jest.fn(() => ({
-    hasCedarReadPermission: jest.fn(() => true),
-    hasCedarWritePermission: jest.fn(() => true),
-    hasCedarDeletePermission: jest.fn(() => true),
-    authorizeHelper: jest.fn(),
-  })),
-  ADMIN_UI_RESOURCES: { Attributes: 'Attributes', Webhooks: 'webhooks', Lock: 'lock' },
-  CEDAR_RESOURCE_SCOPES: { Attributes: [], webhooks: [], lock: [] },
-}))
+jest.mock('Plugins/PluginReducersResolver', () => ({ __esModule: true, default: jest.fn() }))
+jest.mock('Plugins/PluginSagasResolver', () => ({ __esModule: true, default: jest.fn(() => []) }))
 
-jest.mock('@/cedarling/utility', () => ({
-  ADMIN_UI_RESOURCES: { Attributes: 'Attributes', Webhooks: 'webhooks', Lock: 'lock' },
-}))
+jest.mock('@/cedarling', () => {
+  const { ADMIN_UI_RESOURCES, CEDAR_RESOURCE_SCOPES } = jest.requireActual('../cedarTestHelpers')
+  return {
+    useCedarling: jest.fn(() => ({
+      hasCedarReadPermission: jest.fn(() => true),
+      hasCedarWritePermission: jest.fn(() => true),
+      hasCedarDeletePermission: jest.fn(() => true),
+      authorizeHelper: jest.fn(),
+    })),
+    ADMIN_UI_RESOURCES: ADMIN_UI_RESOURCES,
+    CEDAR_RESOURCE_SCOPES: CEDAR_RESOURCE_SCOPES,
+  }
+})
 
-jest.mock('@/cedarling/constants/resourceScopes', () => ({
-  CEDAR_RESOURCE_SCOPES: { Attributes: [], webhooks: [] },
-}))
+jest.mock('@/cedarling/utility', () => {
+  const { ADMIN_UI_RESOURCES } = jest.requireActual('../cedarTestHelpers')
+  return { ADMIN_UI_RESOURCES: ADMIN_UI_RESOURCES }
+})
 
-jest.mock('Plugins/schema/hooks', () => ({
+jest.mock('@/cedarling/constants/resourceScopes', () => {
+  const { CEDAR_RESOURCE_SCOPES } = jest.requireActual('../cedarTestHelpers')
+  return { CEDAR_RESOURCE_SCOPES: CEDAR_RESOURCE_SCOPES }
+})
+
+jest.mock('Plugins/user-claims/hooks', () => ({
   useCreateAttribute: jest.fn(() => ({
     mutate: jest.fn(),
     mutateAsync: jest.fn(),

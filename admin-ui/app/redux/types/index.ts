@@ -132,14 +132,29 @@ export interface HealthState {
   loading: boolean
 }
 
-// Toast State
 export type ToastType = 'success' | 'error' | 'warning' | 'info'
+
+export type ToastMessageExtras = Record<string, string | number | boolean | null>
+
+export type ToastMessage =
+  | string
+  | {
+      message: string
+      extras?: ToastMessageExtras
+    }
 
 export interface ToastState {
   showToast: boolean
-  message: string
+  message: ToastMessage
   type: ToastType
   onCloseRedirectUrl: string
+}
+
+export type UpdateToastPayload = {
+  showToast: boolean
+  type: ToastType
+  message: ToastMessage
+  onCloseRedirectUrl?: string
 }
 
 // Profile Details State

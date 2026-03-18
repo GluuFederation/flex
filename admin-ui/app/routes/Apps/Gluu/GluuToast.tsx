@@ -13,15 +13,18 @@ function GluuToast() {
   const redirectUrlRef = useRef('')
 
   const ToastDesign = () => {
+    const normalizedMessage =
+      typeof message === 'string' ? message : ((message as { message?: string }).message ?? '')
+
     return (
       <div style={{ textAlign: 'left' }}>
         <strong>{type == 'success' ? t('messages.success') : t('messages.error')}</strong>
         <br />
-        {message == ''
+        {normalizedMessage == ''
           ? type == 'success'
             ? t('messages.success_in_saving')
             : t('messages.error_processing_request')
-          : message}
+          : normalizedMessage}
       </div>
     )
   }

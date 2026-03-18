@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
-import type { AttributeItem } from 'Plugins/schema/components/types/UserClaimsListPage.types'
+import type { AttributeItem } from 'Plugins/user-claims/components/types/UserClaimsListPage.types'
 
 const item: AttributeItem = {
   inum: 'B4B0',
@@ -46,26 +46,31 @@ const emptyItem: AttributeItem = {
   attributeValidation: { maxLength: null, regexp: null, minLength: null },
 }
 
-import UserClaimsForm from 'Plugins/schema/components/Person/UserClaimsForm'
+import UserClaimsForm from 'Plugins/user-claims/components/Person/UserClaimsForm'
 
-jest.mock('@/cedarling', () => ({
-  useCedarling: jest.fn(() => ({
-    hasCedarReadPermission: jest.fn(() => true),
-    hasCedarWritePermission: jest.fn(() => true),
-    hasCedarDeletePermission: jest.fn(() => true),
-    authorizeHelper: jest.fn(),
-  })),
-  ADMIN_UI_RESOURCES: { Attributes: 'Attributes', Webhooks: 'webhooks', Lock: 'lock' },
-  CEDAR_RESOURCE_SCOPES: { Attributes: [], webhooks: [], lock: [] },
-}))
+jest.mock('@/cedarling', () => {
+  const { ADMIN_UI_RESOURCES, CEDAR_RESOURCE_SCOPES } = jest.requireActual('../cedarTestHelpers')
+  return {
+    useCedarling: jest.fn(() => ({
+      hasCedarReadPermission: jest.fn(() => true),
+      hasCedarWritePermission: jest.fn(() => true),
+      hasCedarDeletePermission: jest.fn(() => true),
+      authorizeHelper: jest.fn(),
+    })),
+    ADMIN_UI_RESOURCES: ADMIN_UI_RESOURCES,
+    CEDAR_RESOURCE_SCOPES: CEDAR_RESOURCE_SCOPES,
+  }
+})
 
-jest.mock('@/cedarling/utility', () => ({
-  ADMIN_UI_RESOURCES: { Attributes: 'Attributes', Webhooks: 'webhooks', Lock: 'lock' },
-}))
+jest.mock('@/cedarling/utility', () => {
+  const { ADMIN_UI_RESOURCES } = jest.requireActual('../cedarTestHelpers')
+  return { ADMIN_UI_RESOURCES: ADMIN_UI_RESOURCES }
+})
 
-jest.mock('@/cedarling/constants/resourceScopes', () => ({
-  CEDAR_RESOURCE_SCOPES: { Attributes: [], webhooks: [] },
-}))
+jest.mock('@/cedarling/constants/resourceScopes', () => {
+  const { CEDAR_RESOURCE_SCOPES } = jest.requireActual('../cedarTestHelpers')
+  return { CEDAR_RESOURCE_SCOPES: CEDAR_RESOURCE_SCOPES }
+})
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),

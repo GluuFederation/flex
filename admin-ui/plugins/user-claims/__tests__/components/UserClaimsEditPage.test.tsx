@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import UserClaimsEditPage from 'Plugins/schema/components/Person/UserClaimsEditPage'
+import UserClaimsEditPage from 'Plugins/user-claims/components/Person/UserClaimsEditPage'
 
 const mockAttribute = {
   inum: 'test-inum-123',
@@ -25,24 +25,32 @@ const mockAttribute = {
   attributeValidation: { maxLength: null, regexp: null, minLength: null },
 }
 
-jest.mock('@/cedarling', () => ({
-  useCedarling: jest.fn(() => ({
-    hasCedarReadPermission: jest.fn(() => true),
-    hasCedarWritePermission: jest.fn(() => true),
-    hasCedarDeletePermission: jest.fn(() => true),
-    authorizeHelper: jest.fn(),
-  })),
-  ADMIN_UI_RESOURCES: { Attributes: 'Attributes', Webhooks: 'webhooks', Lock: 'lock' },
-  CEDAR_RESOURCE_SCOPES: { Attributes: [], webhooks: [], lock: [] },
-}))
+jest.mock('Plugins/PluginReducersResolver', () => ({ __esModule: true, default: jest.fn() }))
+jest.mock('Plugins/PluginSagasResolver', () => ({ __esModule: true, default: jest.fn(() => []) }))
 
-jest.mock('@/cedarling/utility', () => ({
-  ADMIN_UI_RESOURCES: { Attributes: 'Attributes', Webhooks: 'webhooks', Lock: 'lock' },
-}))
+jest.mock('@/cedarling', () => {
+  const { ADMIN_UI_RESOURCES, CEDAR_RESOURCE_SCOPES } = jest.requireActual('../cedarTestHelpers')
+  return {
+    useCedarling: jest.fn(() => ({
+      hasCedarReadPermission: jest.fn(() => true),
+      hasCedarWritePermission: jest.fn(() => true),
+      hasCedarDeletePermission: jest.fn(() => true),
+      authorizeHelper: jest.fn(),
+    })),
+    ADMIN_UI_RESOURCES: ADMIN_UI_RESOURCES,
+    CEDAR_RESOURCE_SCOPES: CEDAR_RESOURCE_SCOPES,
+  }
+})
 
-jest.mock('@/cedarling/constants/resourceScopes', () => ({
-  CEDAR_RESOURCE_SCOPES: { Attributes: [], webhooks: [] },
-}))
+jest.mock('@/cedarling/utility', () => {
+  const { ADMIN_UI_RESOURCES } = jest.requireActual('../cedarTestHelpers')
+  return { ADMIN_UI_RESOURCES: ADMIN_UI_RESOURCES }
+})
+
+jest.mock('@/cedarling/constants/resourceScopes', () => {
+  const { CEDAR_RESOURCE_SCOPES } = jest.requireActual('../cedarTestHelpers')
+  return { CEDAR_RESOURCE_SCOPES: CEDAR_RESOURCE_SCOPES }
+})
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -55,7 +63,7 @@ const mockUseAttribute = jest.fn((_inum: string) => ({
   error: null as { message: string } | null,
 }))
 
-jest.mock('Plugins/schema/hooks', () => ({
+jest.mock('Plugins/user-claims/hooks', () => ({
   useAttribute: (inum: string) => mockUseAttribute(inum),
   useUpdateAttribute: jest.fn(() => ({
     mutate: jest.fn(),

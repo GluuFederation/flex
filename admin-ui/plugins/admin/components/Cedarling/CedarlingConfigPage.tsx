@@ -20,7 +20,7 @@ import type {
   AppConfigResponseCedarlingPolicyStoreRetrievalPoint,
 } from 'JansConfigApi'
 import { updateToast } from '@/redux/features/toastSlice'
-import { getErrorMessage, type ApiError } from 'Plugins/schema/utils/errorHandler'
+import { getErrorMessage, type ApiError } from 'Plugins/user-claims/utils/errorHandler'
 import { logAudit } from '@/utils/AuditLogger'
 import { isValidUrl } from '@/utils/validation'
 import { UPDATE } from '@/audit/UserActionType'

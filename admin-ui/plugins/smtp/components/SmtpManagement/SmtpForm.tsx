@@ -18,7 +18,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { toast } from 'react-toastify'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { putConfigWorker } from 'Redux/features/authSlice'
-import { SmtpFormValues, SmtpFormProps } from 'Plugins/smtp-management/types'
+import { SmtpFormValues, SmtpFormProps } from 'Plugins/smtp/types'
 import { trimObjectStrings } from 'Utils/Util'
 import {
   smtpConstants,
@@ -26,7 +26,7 @@ import {
   toSmtpConfiguration,
   getSmtpValidationSchema,
   buildSmtpChangedFieldOperations,
-} from 'Plugins/smtp-management/helper'
+} from 'Plugins/smtp/helper'
 import { BUTTON_STYLES, getButtonColors } from 'Routes/Apps/Gluu/styles/GluuThemeFormFooter.style'
 import { useStyles } from './styles/SmtpFormPage.style'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'

@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
-import SmtpForm from 'Plugins/smtp-management/components/SmtpManagement/SmtpForm'
+import SmtpForm from 'Plugins/smtp/components/SmtpManagement/SmtpForm'
 
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({
@@ -12,6 +12,8 @@ jest.mock('@/cedarling', () => ({
     hasCedarWritePermission: jest.fn(() => true),
     authorizeHelper: jest.fn(),
   })),
+  ADMIN_UI_RESOURCES: { Lock: 'Lock', SMTP: 'SMTP', Webhooks: 'Webhooks' },
+  CEDAR_RESOURCE_SCOPES: { Lock: ['read', 'write'], SMTP: [], Webhooks: [] },
 }))
 
 jest.mock('@/cedarling/utility', () => ({

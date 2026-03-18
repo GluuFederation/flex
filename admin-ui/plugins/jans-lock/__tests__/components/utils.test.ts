@@ -341,6 +341,7 @@ describe('buildLockChangedFieldOperations', () => {
     const modified = { ...baseValues, loggingLevel: 'DEBUG' }
     const ops = buildLockChangedFieldOperations(baseValues, modified, t)
     expect(ops).toHaveLength(1)
+    expect(ops[0].path).toBe(t('fields.logging_level'))
     expect(ops[0].value).toBe('DEBUG')
   })
 
@@ -348,6 +349,7 @@ describe('buildLockChangedFieldOperations', () => {
     const modified = { ...baseValues, disableJdkLogger: true }
     const ops = buildLockChangedFieldOperations(baseValues, modified, t)
     expect(ops).toHaveLength(1)
+    expect(ops[0].path).toBe(t('fields.disable_jdk_logger'))
     expect(ops[0].value).toBe(true)
   })
 
@@ -355,6 +357,7 @@ describe('buildLockChangedFieldOperations', () => {
     const modified = { ...baseValues, cleanServiceInterval: 120 }
     const ops = buildLockChangedFieldOperations(baseValues, modified, t)
     expect(ops).toHaveLength(1)
+    expect(ops[0].path).toBe(t('fields.clean_service_interval'))
     expect(ops[0].value).toBe(120)
   })
 

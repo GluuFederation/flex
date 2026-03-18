@@ -18,14 +18,6 @@ jest.mock('@/cedarling', () => ({
   CEDAR_RESOURCE_SCOPES: { Lock: ['read', 'write'] },
 }))
 
-jest.mock('@/cedarling/utility', () => ({
-  ADMIN_UI_RESOURCES: { Lock: 'Lock' },
-}))
-
-jest.mock('@/cedarling/constants/resourceScopes', () => ({
-  CEDAR_RESOURCE_SCOPES: { Lock: ['read', 'write'] },
-}))
-
 const mockLockConfig = {
   baseDN: 'ou=lock,o=gluu',
   disableJdkLogger: true,
