@@ -39,6 +39,12 @@ describe('getLockValidationSchema', () => {
       ).resolves.toBeNull()
     })
 
+    it('accepts null value (optional)', async () => {
+      await expect(
+        schema.validateAt('metricReporterInterval', { metricReporterInterval: null }),
+      ).resolves.toBeNull()
+    })
+
     it('rejects non-integer', async () => {
       await expect(
         schema.validateAt('metricReporterInterval', { metricReporterInterval: 2.5 }),
@@ -62,6 +68,12 @@ describe('getLockValidationSchema', () => {
     it('accepts empty value (optional)', async () => {
       await expect(
         schema.validateAt('metricReporterKeepDataDays', { metricReporterKeepDataDays: '' }),
+      ).resolves.toBeNull()
+    })
+
+    it('accepts null value (optional)', async () => {
+      await expect(
+        schema.validateAt('metricReporterKeepDataDays', { metricReporterKeepDataDays: null }),
       ).resolves.toBeNull()
     })
 

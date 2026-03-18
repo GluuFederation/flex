@@ -4,6 +4,7 @@ import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
+import UserClaimsForm from 'Plugins/schema/components/Person/UserClaimsForm'
 import type { AttributeItem } from 'Plugins/schema/components/types/UserClaimsListPage.types'
 
 const item: AttributeItem = {
@@ -45,8 +46,6 @@ const emptyItem: AttributeItem = {
   required: false,
   attributeValidation: { maxLength: null, regexp: null, minLength: null },
 }
-
-import UserClaimsForm from 'Plugins/schema/components/Person/UserClaimsForm'
 
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({

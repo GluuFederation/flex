@@ -1140,7 +1140,7 @@
   },
   "tooltips": {
     "insert_shortcode": "Insert shortcode",
-    "add_attribute": "Add User Claim",
+    "add_attribute": "Add user claim",
     "add_user": "Add User",
     "edit_user": "Edit User",
     "delete_user": "Delete User",
@@ -1253,7 +1253,8 @@
     "enter_policies_json_uris_authorization_token": "Enter the JSON policy URI authorization token",
     "enter_policies_json_uris": "Enter the JSON policy URI",
     "enter_policies_zip_uris_authorization_token": "Enter the ZIP policy URI authorization token",
-    "enter_policies_zip_uris": "Enter the ZIP policy URI"
+    "enter_policies_zip_uris": "Enter the ZIP policy URI",
+    "enter_token_channels": "Enter the token channels"
   },
   "titles": {
     "smtp_test_result": "SMTP Test Result",

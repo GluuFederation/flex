@@ -32,7 +32,9 @@ export const transformToFormValues = (
 
   return {
     baseDN: (config.baseDN as string) || '',
-    tokenChannels: (config.tokenChannels as string[]) || [],
+    tokenChannels: Array.isArray(config.tokenChannels)
+      ? (config.tokenChannels as string[]).join(', ')
+      : (config.tokenChannels as string) || '',
     disableJdkLogger: toBooleanValue(config.disableJdkLogger),
     loggingLevel: (config.loggingLevel as string) || '',
     loggingLayout: (config.loggingLayout as string) || '',
@@ -143,21 +145,16 @@ export const createPatchOperations = (
     (policiesZipUris || '') !== (originalZipSource?.policyStoreUri || '')
 
   if (jsonSourceChanged || zipSourceChanged) {
-    const policySources = []
-
-    if (policiesJsonUris || policiesJsonUrisAuthorizationToken) {
-      policySources.push({
+    const policySources = [
+      {
         authorizationToken: policiesJsonUrisAuthorizationToken || '',
         policyStoreUri: policiesJsonUris || '',
-      })
-    }
-
-    if (policiesZipUris || policiesZipUrisAuthorizationToken) {
-      policySources.push({
+      },
+      {
         authorizationToken: policiesZipUrisAuthorizationToken || '',
         policyStoreUri: policiesZipUris || '',
-      })
-    }
+      },
+    ]
 
     const updatedCedarling = {
       ...(cedarling || {}),

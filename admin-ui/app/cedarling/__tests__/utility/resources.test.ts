@@ -43,8 +43,8 @@ describe('ADMIN_UI_RESOURCES', () => {
     'Lock',
   ]
 
-  it('contains all 27 resources', () => {
-    expect(Object.keys(ADMIN_UI_RESOURCES)).toHaveLength(27)
+  it('contains all expected resources', () => {
+    expect(Object.keys(ADMIN_UI_RESOURCES)).toHaveLength(expectedResources.length)
   })
 
   it.each(expectedResources)('has resource "%s" with matching key and value', (resource) => {

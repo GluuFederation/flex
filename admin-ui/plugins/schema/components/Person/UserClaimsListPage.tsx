@@ -92,7 +92,6 @@ const UserClaimsListPage: React.FC = () => {
     data: attributesData,
     isLoading,
     isError,
-    error,
   } = useAttributes({
     limit,
     startIndex,
@@ -148,13 +147,16 @@ const UserClaimsListPage: React.FC = () => {
   const handleDeleteConfirm = useCallback(
     async (message: string, inum?: string) => {
       if (!inum) return
-      await deleteAttributeMutation.mutateAsync({
-        inum,
-        name: itemToDelete?.name,
-        userMessage: message || `Deleted attribute ${itemToDelete?.name ?? itemToDelete?.inum}`,
-      })
-      setModal(false)
-      setItemToDelete(null)
+      try {
+        await deleteAttributeMutation.mutateAsync({
+          inum,
+          name: itemToDelete?.name,
+          userMessage: message || `Deleted attribute ${itemToDelete?.name ?? itemToDelete?.inum}`,
+        })
+      } finally {
+        setModal(false)
+        setItemToDelete(null)
+      }
     },
     [deleteAttributeMutation, itemToDelete],
   )
@@ -485,9 +487,7 @@ const UserClaimsListPage: React.FC = () => {
               actions={actions}
               getRowKey={getRowKey}
               emptyMessage={
-                isError
-                  ? t('errors.fetch_failed', { detail: (error as Error)?.message })
-                  : t('messages.no_data')
+                isError ? t('errors.fetch_failed', { detail: '' }) : t('messages.no_data')
               }
             />
           </div>

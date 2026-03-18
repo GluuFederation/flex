@@ -2,7 +2,7 @@ import { JsonPatch } from 'JansConfigApi'
 
 export type JansLockConfigFormValues = {
   baseDN?: string
-  tokenChannels: string[]
+  tokenChannels: string
   disableJdkLogger: boolean
   loggingLevel: string
   loggingLayout?: string

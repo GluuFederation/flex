@@ -182,15 +182,22 @@ describe('useCedarling', () => {
       expect(results).toEqual([])
     })
 
-    it('returns empty array for undefined-like input', async () => {
-      const store = createStore()
+    it('deduplicates entries with same resourceId and action', async () => {
+      const store = createStore({
+        cedarState: { permissions: { 'Dashboard::read': true } },
+      })
       const { result } = renderHook(() => useCedarling(), { wrapper: createWrapper(store) })
 
       let results: { isAuthorized: boolean }[] = []
       await act(async () => {
-        results = await result.current.authorizeHelper([])
+        results = await result.current.authorizeHelper([
+          { permission: 'https://example.com/stat-read', resourceId: 'Dashboard' },
+          { permission: 'https://example.com/stat-jans-read', resourceId: 'Dashboard' },
+        ])
       })
-      expect(results).toEqual([])
+      expect(results).toHaveLength(2)
+      expect(results[0].isAuthorized).toBe(true)
+      expect(results[1].isAuthorized).toBe(true)
     })
   })
 

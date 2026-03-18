@@ -43,7 +43,7 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => (
 
 const defaultFormValues: JansLockConfigFormValues = {
   baseDN: '',
-  tokenChannels: [],
+  tokenChannels: '',
   disableJdkLogger: false,
   loggingLevel: 'INFO',
   loggingLayout: 'text',
@@ -189,8 +189,7 @@ describe('JansLockFieldRenderer', () => {
       </Wrapper>,
     )
 
-    // Toggle renders as a custom switch, not a standard input
-    const toggle = container.querySelector('.field-item')
+    const toggle = container.querySelector('input[type="checkbox"]')
     expect(toggle).toBeInTheDocument()
   })
 

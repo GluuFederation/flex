@@ -1,5 +1,6 @@
 import { cedarlingClient } from '@/cedarling/client/CedarlingClient'
 import type { TokenAuthorizationRequest } from '@/cedarling'
+import initWasm, { init } from '@janssenproject/cedarling_wasm'
 
 // The WASM module is mocked via __mocks__/@janssenproject/cedarling_wasm.ts
 
@@ -16,7 +17,13 @@ describe('cedarlingClient', () => {
 
     it('does not re-initialize when already initialized', async () => {
       await cedarlingClient.initialize({})
+      const initWasmCallCount = (initWasm as jest.Mock).mock.calls.length
+      const initCallCount = (init as jest.Mock).mock.calls.length
+
       await expect(cedarlingClient.initialize({})).resolves.toBeUndefined()
+
+      expect((initWasm as jest.Mock).mock.calls).toHaveLength(initWasmCallCount)
+      expect((init as jest.Mock).mock.calls).toHaveLength(initCallCount)
     })
   })
 

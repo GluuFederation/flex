@@ -17,21 +17,21 @@ const emptyStringToNull = (value: number | null, original: string | number) =>
 export const getLockValidationSchema = (t: TFunction) =>
   Yup.object({
     cleanServiceInterval: Yup.number()
-      .nullable()
       .transform(emptyStringToNull)
+      .nullable()
       .integer(t('messages.lock_clean_service_interval_type'))
       .min(1, t('messages.lock_clean_service_interval_min'))
       .required(t('messages.lock_clean_service_interval_required'))
       .typeError(t('messages.lock_clean_service_interval_type')),
     metricReporterInterval: Yup.number()
-      .nullable()
       .transform(emptyStringToNull)
+      .nullable()
       .integer(t('messages.lock_metric_interval_type'))
       .min(1, t('messages.lock_metric_interval_min'))
       .typeError(t('messages.lock_metric_interval_type')),
     metricReporterKeepDataDays: Yup.number()
-      .nullable()
       .transform(emptyStringToNull)
+      .nullable()
       .integer(t('messages.lock_metric_keep_days_type'))
       .min(0, t('messages.lock_metric_keep_days_min'))
       .typeError(t('messages.lock_metric_keep_days_type')),

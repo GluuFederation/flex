@@ -16,7 +16,7 @@ interface PolicySource {
 
 interface LockApiConfig {
   baseDN?: string
-  tokenChannels?: string[]
+  tokenChannels?: string[] | string
   disableJdkLogger?: boolean | string
   loggingLevel?: string
   loggingLayout?: string
@@ -87,7 +87,7 @@ describe('transformToFormValues', () => {
     const result = transformToFormValues({})
     expect(result).toEqual({
       baseDN: '',
-      tokenChannels: [],
+      tokenChannels: '',
       disableJdkLogger: false,
       loggingLevel: '',
       loggingLayout: '',
@@ -123,7 +123,7 @@ describe('transformToFormValues', () => {
 
     const result = transformToFormValues(config)
     expect(result.baseDN).toBe('ou=lock,o=gluu')
-    expect(result.tokenChannels).toEqual(['channel1', 'channel2'])
+    expect(result.tokenChannels).toBe('channel1, channel2')
     expect(result.disableJdkLogger).toBe(true)
     expect(result.loggingLevel).toBe('INFO')
     expect(result.loggingLayout).toBe('text')
@@ -189,7 +189,7 @@ describe('transformToFormValues', () => {
 describe('createPatchOperations', () => {
   const baseConfig: LockApiConfig = {
     baseDN: 'ou=lock,o=gluu',
-    tokenChannels: [],
+    tokenChannels: '',
     disableJdkLogger: true,
     loggingLevel: 'INFO',
     loggingLayout: 'text',
@@ -207,7 +207,7 @@ describe('createPatchOperations', () => {
 
   const baseFormValues: JansLockConfigFormValues = {
     baseDN: 'ou=lock,o=gluu',
-    tokenChannels: [],
+    tokenChannels: '',
     disableJdkLogger: true,
     loggingLevel: 'INFO',
     loggingLayout: 'text',
@@ -293,6 +293,7 @@ describe('createPatchOperations', () => {
       expect.objectContaining({
         policySources: [
           { authorizationToken: 'token123', policyStoreUri: 'https://json.example.com' },
+          { authorizationToken: '', policyStoreUri: '' },
         ],
       }),
     )
@@ -315,7 +316,7 @@ describe('createPatchOperations', () => {
 describe('buildLockChangedFieldOperations', () => {
   const baseValues: JansLockConfigFormValues = {
     baseDN: '',
-    tokenChannels: [],
+    tokenChannels: '',
     disableJdkLogger: false,
     loggingLevel: 'INFO',
     loggingLayout: 'text',

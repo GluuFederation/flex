@@ -41,10 +41,7 @@ function UserClaimsViewPage(): JSX.Element {
 
   const { authorizeHelper, hasCedarReadPermission } = useCedarling()
 
-  const attributeScopes = useMemo(
-    () => CEDAR_RESOURCE_SCOPES[attributeResourceId] ?? [],
-    [attributeResourceId],
-  )
+  const attributeScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[attributeResourceId] ?? [], [])
 
   useEffect(() => {
     if (attributeScopes.length > 0) {
@@ -54,7 +51,7 @@ function UserClaimsViewPage(): JSX.Element {
 
   const canRead = useMemo(
     () => hasCedarReadPermission(attributeResourceId),
-    [hasCedarReadPermission, attributeResourceId],
+    [hasCedarReadPermission],
   )
 
   SetTitle(t('titles.view_attribute', { defaultValue: 'View User Claim' }))

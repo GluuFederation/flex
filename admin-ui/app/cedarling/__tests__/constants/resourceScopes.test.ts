@@ -1,6 +1,13 @@
 import { CEDAR_RESOURCE_SCOPES, CEDARLING_CONSTANTS } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import type { AdminUiFeatureResource } from '@/cedarling'
+import {
+  JANS_LOCK_READ,
+  JANS_LOCK_WRITE,
+  SMTP_READ,
+  SMTP_WRITE,
+  SMTP_DELETE,
+} from '@/utils/PermChecker'
 
 describe('CEDAR_RESOURCE_SCOPES', () => {
   const allResources = Object.keys(ADMIN_UI_RESOURCES) as AdminUiFeatureResource[]
@@ -34,15 +41,20 @@ describe('CEDAR_RESOURCE_SCOPES', () => {
     const lockScopes = CEDAR_RESOURCE_SCOPES.Lock
     expect(lockScopes).toHaveLength(2)
     const permissions = lockScopes.map((s) => s.permission)
-    expect(permissions.some((p) => p.includes('read') || p.includes('lock'))).toBe(true)
+    expect(permissions).toContain(JANS_LOCK_READ)
+    expect(permissions).toContain(JANS_LOCK_WRITE)
   })
 
   it('SMTP has read, write, and delete scopes', () => {
     const smtpScopes = CEDAR_RESOURCE_SCOPES.SMTP
     expect(smtpScopes).toHaveLength(3)
+    const permissions = smtpScopes.map((s) => s.permission)
+    expect(permissions).toContain(SMTP_READ)
+    expect(permissions).toContain(SMTP_WRITE)
+    expect(permissions).toContain(SMTP_DELETE)
   })
 
-  it('Dashboard has stat read scopes', () => {
+  it('Dashboard has 2 stat scopes', () => {
     const dashScopes = CEDAR_RESOURCE_SCOPES.Dashboard
     expect(dashScopes).toHaveLength(2)
   })

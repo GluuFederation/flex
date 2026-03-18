@@ -91,6 +91,14 @@ export const JANS_LOCK_FIELD_CONFIGS: FieldConfig[] = [
   },
 
   {
+    name: 'tokenChannels',
+    label: 'fields.token_channels',
+    type: 'text',
+    colSize: 6,
+    placeholder: 'placeholders.enter_token_channels',
+  },
+
+  {
     name: 'disableJdkLogger',
     label: 'fields.disable_jdk_logger',
     type: 'toggle',

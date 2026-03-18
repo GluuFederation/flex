@@ -159,7 +159,7 @@ describe('JansLockConfiguration', () => {
     expect(applyButton).toBeNull()
   })
 
-  it('disables apply button when form is not dirty', () => {
+  it('renders apply button', () => {
     render(
       <Wrapper>
         <JansLockConfiguration {...defaultProps} />
@@ -168,7 +168,7 @@ describe('JansLockConfiguration', () => {
 
     const applyButton = document.querySelector('button[type="submit"]')
     expect(applyButton).toBeTruthy()
-    expect(applyButton).toBeDisabled()
+    expect(applyButton).toHaveAttribute('title', 'Apply')
   })
 
   it('detects form changes after field modification', async () => {

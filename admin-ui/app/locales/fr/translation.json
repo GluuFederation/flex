@@ -771,7 +771,7 @@
     "page_size": "Taille de la page"
   },
   "messages": {
-    "multi_select_hint": "Saisissez plusieurs éléments en les sélectionnant dans la liste déroulante qui s'affiche après chaque saisie.",
+    "multi_select_hint": "Sélectionnez plusieurs éléments dans la liste déroulante.",
     "add_permission": "Ajouter une autorisation",
     "thanks_for_using_admin_ui": "Merci d'avoir utilisé l'interface d'administration.",
     "add_asset": "Ajouter une ressource Jans",
@@ -1176,7 +1176,8 @@
     "enter_policies_json_uris_authorization_token": "Entrez le jeton d'autorisation de l'URI de politique JSON",
     "enter_policies_json_uris": "Entrez l'URI de politique JSON",
     "enter_policies_zip_uris_authorization_token": "Entrez le jeton d'autorisation de l'URI de politique ZIP",
-    "enter_policies_zip_uris": "Entrez l'URI de politique ZIP"
+    "enter_policies_zip_uris": "Entrez l'URI de politique ZIP",
+    "enter_token_channels": "Saisir les canaux de jetons"
   },
   "titles": {
     "smtp_test_result": "Résultat du test SMTP",

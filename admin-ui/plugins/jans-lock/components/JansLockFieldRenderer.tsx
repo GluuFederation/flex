@@ -108,7 +108,6 @@ const JansLockFieldRenderer: React.FC<JansLockFieldRendererProps> = ({
             formik={formik}
             lsize={LABEL_SIZE}
             rsize={INPUT_SIZE}
-            disabled={isDisabled}
             viewOnly={isDisabled}
             doc_category={DOC_CATEGORY}
           />
