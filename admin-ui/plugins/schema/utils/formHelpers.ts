@@ -16,6 +16,11 @@ export const DEFAULT_FORM_ATTRIBUTE_VALIDATION = {
   minLength: null,
 } as const
 
+const filterNullValues = (arr: unknown[] | undefined | null): string[] => {
+  if (!Array.isArray(arr)) return []
+  return arr.filter((val): val is string => val != null && val !== '') as string[]
+}
+
 const buildInitialAttributeValues = (item: AttributeItem): AttributeFormValues => {
   return {
     ...item,
@@ -24,9 +29,9 @@ const buildInitialAttributeValues = (item: AttributeItem): AttributeFormValues =
     description: item.description || '',
     status: item.status || '',
     dataType: item.dataType || '',
-    editType: item.editType || [],
-    viewType: item.viewType || [],
-    usageType: item.usageType || [],
+    editType: filterNullValues(item.editType),
+    viewType: filterNullValues(item.viewType),
+    usageType: filterNullValues(item.usageType),
     jansHideOnDiscovery: item.jansHideOnDiscovery ?? false,
     oxMultiValuedAttribute: item.oxMultiValuedAttribute ?? false,
     attributeValidation: item.attributeValidation || { ...DEFAULT_FORM_ATTRIBUTE_VALIDATION },
