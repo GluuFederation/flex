@@ -12,9 +12,26 @@ export const useStyles = makeStyles<GluuInputRowStyleParams>()((
 ) => {
   return {
     colWrapper: {
-      position: 'relative',
+      'position': 'relative',
+      '& input:focus, & input:active': {
+        outline: 'none',
+        boxShadow: 'none',
+      },
+      '& input:focus-visible': {
+        outline: '2px solid currentColor',
+        outlineOffset: -2,
+        borderRadius: 'inherit',
+      },
     },
     inputWithShortcode: {
+      paddingRight: 44,
+    },
+    passwordInputWrapper: {
+      position: 'relative',
+      display: 'block',
+      width: '100%',
+    },
+    passwordInputPadding: {
       paddingRight: 44,
     },
     passwordToggle: {
@@ -38,7 +55,7 @@ export const useStyles = makeStyles<GluuInputRowStyleParams>()((
       display: 'block',
       color: errorColor,
       fontSize: 12,
-      marginTop: 4,
+      marginTop: 1,
     },
 
     numberWrapper: {
@@ -58,13 +75,11 @@ export const useStyles = makeStyles<GluuInputRowStyleParams>()((
     },
     numberStepper: {
       'position': 'absolute',
-      'right': 0,
-      'top': 0,
-      'bottom': 0,
-      'width': 36,
+      'right': 20,
+      'top': '50%',
+      'transform': 'translateY(-50%)',
       'display': 'flex',
       'flexDirection': 'column',
-      'borderLeft': 'none',
       'pointerEvents': 'none',
       '& button': {
         pointerEvents: 'auto',

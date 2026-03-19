@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
-import { useDispatch } from 'react-redux'
-import { useAppSelector } from '@/redux/hooks'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
@@ -21,7 +20,7 @@ import type {
   AppConfigResponseCedarlingPolicyStoreRetrievalPoint,
 } from 'JansConfigApi'
 import { updateToast } from '@/redux/features/toastSlice'
-import { getErrorMessage, type ApiError } from 'Plugins/schema/utils/errorHandler'
+import { getErrorMessage, type ApiError } from 'Plugins/user-claims/utils/errorHandler'
 import { logAudit } from '@/utils/AuditLogger'
 import { isValidUrl } from '@/utils/validation'
 import { UPDATE } from '@/audit/UserActionType'
@@ -88,7 +87,7 @@ const CedarlingConfigPage: React.FC = () => {
   const [cedarlingPolicyStoreRetrievalPoint, setCedarlingPolicyStoreRetrievalPoint] =
     useState<AppConfigResponseCedarlingPolicyStoreRetrievalPoint>('remote')
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const urlError = useMemo(() => {
     if (cedarlingPolicyStoreRetrievalPoint === 'default') return ''

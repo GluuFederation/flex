@@ -1,61 +1,54 @@
 import { useFormik, FormikProps } from 'formik'
 import React, { useState, useCallback, useMemo } from 'react'
-import { Row, Col, Form, FormGroup } from 'Components'
-import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import GluuFormFooter from '@/routes/Apps/Gluu/GluuFormFooter'
-import { scimConfigurationSchema } from '../helper/schema'
-import { transformToFormValues, createJsonPatchFromDifferences } from '../helper'
-import ScimFieldRenderer from './ScimFieldRenderer'
-import { SCIM_FIELD_CONFIGS } from './fieldConfigurations'
+import { useTranslation } from 'react-i18next'
+import { Form } from 'Components'
+import GluuWebhookCommitDialog from 'Routes/Apps/Gluu/GluuWebhookCommitDialog'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
+import { getScimConfigurationSchema } from '../helper/validations'
+import { transformToFormValues, buildScimChangedFieldOperations } from '../helper'
+import ScimFieldRenderer from './ScimFieldRenderer'
+import { SCIM_FIELD_CONFIGS } from './constants'
 import type { ScimConfigurationProps, ScimFormValues } from '../types'
-import customColors from '@/customColors'
 
 const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
   scimConfiguration,
   handleSubmit,
   isSubmitting,
   canWriteScim = false,
+  classes,
 }) => {
+  const { t } = useTranslation()
   const [modal, setModal] = useState<boolean>(false)
+  const validationSchema = useMemo(() => getScimConfigurationSchema(t), [t])
 
   const toggle = useCallback((): void => {
     setModal((prev) => !prev)
   }, [])
 
+  const initialFormValues = useMemo(
+    () => transformToFormValues(scimConfiguration),
+    [scimConfiguration],
+  )
+
   const formik: FormikProps<ScimFormValues> = useFormik<ScimFormValues>({
-    initialValues: transformToFormValues(scimConfiguration),
-    validationSchema: scimConfigurationSchema,
+    initialValues: initialFormValues,
+    validationSchema,
     onSubmit: toggle,
     enableReinitialize: true,
   })
 
-  const isFormDirty = useMemo(() => {
-    if (!scimConfiguration || !formik.values) {
-      return false
-    }
-    const { action_message, ...valuesWithoutAction } = formik.values
-    void action_message
-    const patches = createJsonPatchFromDifferences(
-      scimConfiguration,
-      valuesWithoutAction as ScimFormValues,
-    )
-    return patches.length > 0
-  }, [scimConfiguration, formik.values])
-
-  const isFormValid = useMemo(() => {
-    if (!formik.values) {
-      return false
-    }
-    return scimConfigurationSchema.isValidSync(formik.values)
-  }, [formik.values])
+  const commitOperations = useMemo(
+    () => buildScimChangedFieldOperations(initialFormValues, formik.values, t),
+    [initialFormValues, formik.values, t],
+  )
 
   const submitForm = useCallback(
-    (userMessage: string): void | Promise<unknown> => {
-      return handleSubmit({
+    async (userMessage: string): Promise<void> => {
+      await handleSubmit({
         ...formik.values,
         action_message: userMessage,
-      }) as void | Promise<unknown>
+      })
     },
     [handleSubmit, formik.values],
   )
@@ -73,44 +66,40 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
   )
 
   return (
-    <Form onSubmit={handleFormSubmit} className="mt-4">
-      <style>{`
-        .scim-config-labels-black label,
-        .scim-config-labels-black label h5,
-        .scim-config-labels-black label span,
-        .scim-config-labels-black .MuiSvgIcon-root { color: ${customColors.black} !important; }
-      `}</style>
-      <div className="scim-config-labels-black">
-        <FormGroup row>
+    <Form onSubmit={handleFormSubmit}>
+      <div className={classes.formSection}>
+        <div className={`${classes.fieldsGrid} ${classes.formLabels} ${classes.formWithInputs}`}>
           {SCIM_FIELD_CONFIGS.map((fieldConfig) => (
-            <ScimFieldRenderer key={fieldConfig.name} config={fieldConfig} formik={formik} />
-          ))}
-        </FormGroup>
-
-        <Row>
-          <Col>
-            <GluuFormFooter
-              showBack={true}
-              showCancel={true}
-              showApply={canWriteScim}
-              onApply={toggle}
-              onCancel={handleCancel}
-              disableBack={false}
-              disableCancel={!isFormDirty}
-              disableApply={!isFormValid || !isFormDirty}
-              applyButtonType="submit"
-              isLoading={isSubmitting ?? false}
+            <ScimFieldRenderer
+              key={fieldConfig.name}
+              config={fieldConfig}
+              formik={formik}
+              fieldItemClass={classes.fieldItem}
+              fieldItemFullWidthClass={classes.fieldItemFullWidth}
             />
-          </Col>
-        </Row>
-        <GluuCommitDialog
-          handler={toggle}
-          modal={modal}
-          onAccept={submitForm}
-          feature={adminUiFeatures.scim_configuration_edit}
-          formik={formik}
-        />
+          ))}
+        </div>
       </div>
+
+      <GluuThemeFormFooter
+        showBack
+        showCancel
+        showApply={canWriteScim}
+        onApply={toggle}
+        onCancel={handleCancel}
+        disableCancel={!formik.dirty}
+        disableApply={!formik.isValid || !formik.dirty}
+        applyButtonType="submit"
+        isLoading={isSubmitting ?? false}
+      />
+      <GluuWebhookCommitDialog
+        handler={toggle}
+        modal={modal}
+        onAccept={submitForm}
+        formik={formik}
+        operations={commitOperations}
+        webhookFeature={adminUiFeatures.scim_configuration_edit}
+      />
     </Form>
   )
 }

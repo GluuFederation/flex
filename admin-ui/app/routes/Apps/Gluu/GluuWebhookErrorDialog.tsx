@@ -1,7 +1,6 @@
 import { useMemo, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDispatch } from 'react-redux'
-import { useAppSelector } from '@/redux/hooks'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import {
   setShowErrorModal,
@@ -19,7 +18,7 @@ import type { WebhookTriggerResponseItem } from 'Plugins/admin/redux/types/webho
 
 const GluuWebhookErrorDialog = () => {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const webhookState = useAppSelector((state) => state.webhookReducer)
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
   const { state: themeState } = useTheme()

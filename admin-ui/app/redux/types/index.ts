@@ -132,26 +132,29 @@ export interface HealthState {
   loading: boolean
 }
 
-// Attributes State
-export interface AttributeItem {
-  displayName?: string
-  [key: string]: unknown
-}
-
-export interface AttributesState {
-  items: AttributeItem[]
-  loading: boolean
-  initLoading: boolean
-}
-
-// Toast State
 export type ToastType = 'success' | 'error' | 'warning' | 'info'
+
+export type ToastMessageExtras = Record<string, string | number | boolean | null>
+
+export type ToastMessage =
+  | string
+  | {
+      message: string
+      extras?: ToastMessageExtras
+    }
 
 export interface ToastState {
   showToast: boolean
-  message: string
+  message: ToastMessage
   type: ToastType
   onCloseRedirectUrl: string
+}
+
+export type UpdateToastPayload = {
+  showToast: boolean
+  type: ToastType
+  message: ToastMessage
+  onCloseRedirectUrl?: string
 }
 
 // Profile Details State
@@ -344,7 +347,6 @@ export interface CoreAppState {
   licenseReducer: LicenseState
   oidcDiscoveryReducer: OidcDiscoveryState
   healthReducer: HealthState
-  attributesReducerRoot: AttributesState
   toastReducer: ToastState
   profileDetailsReducer: ProfileDetailsState
   cedarPermissions: CedarPermissionsState

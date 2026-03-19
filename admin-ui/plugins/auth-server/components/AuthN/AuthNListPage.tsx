@@ -14,12 +14,12 @@ import SetTitle from 'Utils/SetTitle'
 import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import AuthNDetailPage from './AuthNDetailPage'
-import { DEFAULT_SCRIPT_TYPE } from 'Plugins/scripts/components/CustomScripts/constants'
+import { DEFAULT_SCRIPT_TYPE } from 'Plugins/scripts/components/constants'
 import { currentAuthNItemAtom, type AuthNItem } from './atoms'
 import { BUILT_IN_ACRS } from './constants'
 import { useGetAcrs, useGetConfigDatabaseLdap, type GluuLdapConfiguration } from 'JansConfigApi'
 import { DEFAULT_THEME } from '@/context/theme/constants'
-import { useCustomScriptsByType } from 'Plugins/scripts/components/CustomScripts/hooks'
+import { useCustomScriptsByType } from 'Plugins/scripts/components/hooks'
 
 interface AuthNListPageProps {
   isBuiltIn?: boolean

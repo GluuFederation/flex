@@ -1,7 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 
-const initialState = {
+import type { ToastMessage, ToastState, ToastType, UpdateToastPayload } from '../types'
+
+const initialState: ToastState = {
   showToast: false,
   message: '',
   type: 'success',
@@ -10,9 +12,9 @@ const initialState = {
 
 export const updateToast = (
   showToast = false,
-  type = 'success',
-  message = '',
-  onCloseRedirectUrl = '',
+  type: ToastType = 'success',
+  message: ToastMessage = '',
+  onCloseRedirectUrl: string = '',
 ) => ({
   type: 'toast/updateToast',
   payload: {
@@ -27,7 +29,7 @@ const toastSlice = createSlice({
   name: 'toast',
   initialState,
   reducers: {
-    updateToast: (state, action) => {
+    updateToast: (state, action: { payload: UpdateToastPayload }) => {
       const { showToast, type, message, onCloseRedirectUrl = '' } = action.payload
       state.showToast = showToast
       state.type = type

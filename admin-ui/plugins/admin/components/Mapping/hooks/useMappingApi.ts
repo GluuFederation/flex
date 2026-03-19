@@ -1,5 +1,5 @@
 import { useCallback, useRef } from 'react'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from '@/redux/hooks'
 import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import {
@@ -12,7 +12,7 @@ import {
 } from 'JansConfigApi'
 import type { RolePermissionMapping } from 'JansConfigApi'
 import { updateToast } from 'Redux/features/toastSlice'
-import { extractErrorMessage, type ApiError } from '../../../../schema/utils/errorHandler'
+import { extractErrorMessage, type ApiError } from '../../../../user-claims/utils/errorHandler'
 import type { MutationCallbacks } from '../types'
 
 export const useMappingData = (enabled: boolean = true) => {
@@ -41,7 +41,7 @@ export const useMappingData = (enabled: boolean = true) => {
 }
 
 export const useUpdateMappingWithAudit = (callbacks?: MutationCallbacks) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { t } = useTranslation()
   const mutation = useMapPermissionsToRole()
@@ -83,7 +83,7 @@ export const useUpdateMappingWithAudit = (callbacks?: MutationCallbacks) => {
 }
 
 export const useAddMappingWithAudit = (callbacks?: MutationCallbacks) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { t } = useTranslation()
   const mutation = useAddRolePermissionsMapping()

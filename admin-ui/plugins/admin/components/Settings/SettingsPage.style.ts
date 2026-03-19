@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
-import { SPACING, BORDER_RADIUS, MAPPING_SPACING } from '@/constants'
+import { SPACING, BORDER_RADIUS } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import type { ThemeConfig } from '@/context/theme/config'
@@ -80,15 +80,15 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
       },
     },
     content: {
-      paddingTop: `${SPACING.SECTION_GAP}px`,
-      paddingLeft: `${SPACING.CONTENT_PADDING}px`,
-      paddingRight: `${SPACING.CONTENT_PADDING}px`,
+      paddingTop: `${SPACING.PAGE}px`,
+      paddingLeft: 52,
+      paddingRight: 52,
       paddingBottom: `${SPACING.CONTENT_PADDING}px`,
       width: '100%',
       boxSizing: 'border-box',
       display: 'flex',
       flexDirection: 'column',
-      gap: SPACING.SECTION_GAP,
+      gap: 0,
       [theme.breakpoints.down('sm')]: {
         paddingLeft: `${SPACING.PAGE}px`,
         paddingRight: `${SPACING.PAGE}px`,
@@ -97,13 +97,13 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
     formSection: {
       display: 'flex',
       flexDirection: 'column',
-      gap: SPACING.CARD_GAP,
+      gap: 0,
     },
     fieldsGrid: {
       display: 'grid',
       gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-      columnGap: SPACING.CARD_GAP,
-      rowGap: SPACING.CARD_GAP,
+      columnGap: SPACING.SECTION_GAP,
+      rowGap: SPACING.CARD_CONTENT_GAP,
       width: '100%',
       [theme.breakpoints.down('md')]: {
         gridTemplateColumns: '1fr',
@@ -129,14 +129,22 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
         maxWidth: '100%',
         paddingLeft: 0,
         paddingRight: 0,
+        paddingTop: 0,
+        paddingBottom: 0,
         marginBottom: 6,
       },
-      '& .form-group [class*="col"]': {
+      '& .form-group div[class*="col"]': {
         flex: '0 0 100%',
         width: '100%',
         maxWidth: '100%',
         paddingLeft: 0,
         paddingRight: 0,
+        position: 'relative',
+        paddingBottom: 20,
+      },
+      '& [data-field-error]': {
+        position: 'absolute',
+        fontSize: `${fontSizes.sm} !important`,
       },
       '& .input-group': {
         margin: 0,
@@ -147,33 +155,34 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
       gridColumn: '1 / -1',
     },
     formWithInputs: {
-      '& input, & select': {
-        backgroundColor: settings.formInputBackground,
-        border: `1px solid ${settings.inputBorder}`,
-        borderRadius: MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS,
-        color: themeColors.fontColor,
-        padding: '8px 12px',
-      },
-      '& input:focus, & select:focus': {
+      '& input, & select, & .custom-select': {
         backgroundColor: `${settings.formInputBackground} !important`,
-        color: `${themeColors.fontColor} !important`,
         border: `1px solid ${settings.inputBorder}`,
-        outline: 'none',
-        boxShadow: 'none',
-      },
-      '& select': {
-        appearance: 'none',
-        WebkitAppearance: 'none',
-        MozAppearance: 'none',
-      },
-      '& input:disabled': {
-        backgroundColor: `${settings.formInputBackground} !important`,
-        border: `1px solid ${settings.inputBorder} !important`,
+        borderRadius: BORDER_RADIUS.SMALL,
         color: `${themeColors.fontColor} !important`,
-        opacity: 1,
-        cursor: 'not-allowed',
+        minHeight: 52,
+        height: 'auto',
+        paddingTop: 14,
+        paddingBottom: 14,
+        paddingLeft: 21,
+        paddingRight: 21,
       },
-      '& select:disabled': {
+      '& select, & .custom-select': {
+        paddingRight: 44,
+      },
+      '& input:focus, & input:active, & select:focus, & select:active, & .custom-select:focus, & .custom-select:active':
+        {
+          backgroundColor: `${settings.formInputBackground} !important`,
+          color: `${themeColors.fontColor} !important`,
+          border: `1px solid ${settings.inputBorder} !important`,
+          outline: 'none !important',
+          boxShadow: 'none !important',
+        },
+      '& input:focus-visible, & select:focus-visible': {
+        outline: 'none !important',
+        boxShadow: 'none !important',
+      },
+      '& input:disabled, & select:disabled, & .custom-select:disabled': {
         backgroundColor: `${settings.formInputBackground} !important`,
         border: `1px solid ${settings.inputBorder} !important`,
         color: `${themeColors.fontColor} !important`,
@@ -181,16 +190,17 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
         cursor: 'not-allowed',
       },
       '& input::placeholder': {
-        color: themeColors.textMuted,
+        color: `${themeColors.textMuted} !important`,
       },
     },
     customParamsBox: {
       backgroundColor: settings.formInputBackground,
-      borderRadius: BORDER_RADIUS.DEFAULT,
+      borderRadius: BORDER_RADIUS.SMALL,
       border: `1px solid ${customParamsBorder}`,
       padding: `12px ${SPACING.CARD_PADDING}px ${SPACING.CARD_PADDING}px`,
       width: '100%',
       boxSizing: 'border-box',
+      marginTop: SPACING.CARD_CONTENT_GAP + 20,
     },
     customParamsBoxEmpty: {
       paddingBottom: 12,
@@ -240,12 +250,15 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
     customParamsInput: {
       'flex': '1 1 200px',
       'minWidth': 120,
-      'minHeight': 44,
+      'minHeight': 52,
       'boxSizing': 'border-box',
       'backgroundColor': `${settings.cardBackground} !important`,
       'border': `1px solid ${customParamsBorder} !important`,
-      'borderRadius': MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS,
-      'padding': '10px 12px',
+      'borderRadius': BORDER_RADIUS.SMALL,
+      'paddingTop': 14,
+      'paddingBottom': 14,
+      'paddingLeft': 21,
+      'paddingRight': 21,
       'color': themeColors.fontColor,
       '&::placeholder': {
         color: themeColors.textMuted,
@@ -254,8 +267,12 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
         backgroundColor: `${settings.cardBackground} !important`,
         color: themeColors.fontColor,
         border: `1px solid ${customParamsBorder} !important`,
-        outline: 'none',
-        boxShadow: 'none',
+        outline: 'none !important',
+        boxShadow: 'none !important',
+      },
+      '&:focus-visible': {
+        outline: 'none !important',
+        boxShadow: 'none !important',
       },
     },
     customParamsError: {

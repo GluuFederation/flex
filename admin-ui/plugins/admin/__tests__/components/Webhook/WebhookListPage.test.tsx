@@ -12,14 +12,22 @@ jest.mock('@/cedarling', () => ({
     hasCedarDeletePermission: jest.fn(() => true),
     authorizeHelper: jest.fn(),
   })),
+  ADMIN_UI_RESOURCES: {
+    Security: 'Security',
+    Webhooks: 'Webhooks',
+    Lock: 'Lock',
+    Users: 'Users',
+    Attributes: 'Attributes',
+  },
+  CEDAR_RESOURCE_SCOPES: { Security: [], Webhooks: [], Lock: [], Users: [], Attributes: [] },
 }))
 
 jest.mock('@/cedarling/utility', () => ({
-  ADMIN_UI_RESOURCES: { Webhooks: 'webhooks' },
+  ADMIN_UI_RESOURCES: { Webhooks: 'Webhooks' },
 }))
 
 jest.mock('@/cedarling/constants/resourceScopes', () => ({
-  CEDAR_RESOURCE_SCOPES: { webhooks: [] },
+  CEDAR_RESOURCE_SCOPES: { Webhooks: [] },
 }))
 
 jest.mock('JansConfigApi', () => ({
@@ -29,6 +37,12 @@ jest.mock('JansConfigApi', () => ({
     isFetching: false,
     isError: false,
     refetch: jest.fn(),
+  })),
+  useGetWebhooksByFeatureId: jest.fn(() => ({
+    data: [],
+    isLoading: false,
+    isFetching: false,
+    isFetched: true,
   })),
 }))
 

@@ -5,6 +5,7 @@ export const OPACITY = {
   HOVER_DARK: 0.08,
   DISABLED: 0.5,
   PLACEHOLDER: 0.6,
+  FULL: 1,
 } as const
 
 export const getHoverOpacity = (isDark: boolean): number => {
@@ -33,6 +34,12 @@ export const getScrollbarStyles = (themeColors: ThemeConfig) => ({
     backgroundColor: themeColors.card.background,
   },
 })
+
+export const MODAL = {
+  WIDTH: 1007,
+  MAX_VW: '90vw',
+  MAX_VH: '90vh',
+} as const
 
 export const SPACING = {
   PAGE: 24,
@@ -90,8 +97,8 @@ export const MAPPING_SPACING = {
   PAGE_PADDING_TOP: 53,
   ALERT_TO_CARD: 24,
   CARD_PADDING: 33,
-  CARD_HEADER_HEIGHT: 73,
-  CARD_BORDER_RADIUS: 16,
+  CARD_HEADER_HEIGHT: 52,
+  CARD_BORDER_RADIUS: 6,
   CARD_MARGIN_BOTTOM: 16,
   PERMISSION_ROW_GAP: 20,
   PERMISSION_ITEM_GAP: 30,

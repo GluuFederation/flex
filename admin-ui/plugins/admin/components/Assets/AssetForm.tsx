@@ -10,7 +10,7 @@ import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import Toggle from 'react-toggle'
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { useQueryClient } from '@tanstack/react-query'
 import { getGetAllAssetsQueryKey } from 'JansConfigApi'
 import { invalidateQueriesByKey } from '@/utils/queryUtils'
@@ -26,7 +26,6 @@ import { ASSET } from 'Utils/ApiResources'
 import {
   AssetFormValues,
   AcceptFileTypes,
-  RootStateForAssetForm,
   RouteParams,
   FileDropHandler,
   FileClearHandler,
@@ -56,13 +55,13 @@ const AssetForm: React.FC = () => {
     [key: string]: AssetFormData | string | undefined
   }
   const userAction: AssetUserAction = {}
-  const { selectedAsset, saveOperationFlag, errorInSaveOperationFlag } = useSelector(
-    (state: RootStateForAssetForm) => state.assetReducer,
+  const { selectedAsset, saveOperationFlag, errorInSaveOperationFlag } = useAppSelector(
+    (state) => state.assetReducer!,
   )
   const { data: servicesData } = useAssetServices()
   const services = servicesData ?? []
   const { t, i18n } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { navigateBack } = useAppNavigation()
   const [showCommitDialog, setShowCommitDialog] = useState<boolean>(false)

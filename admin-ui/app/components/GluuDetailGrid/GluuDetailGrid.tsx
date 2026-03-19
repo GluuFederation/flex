@@ -18,7 +18,10 @@ const GluuDetailGrid: React.FC<GluuDetailGridProps> = ({
   return (
     <div className={`${classes.detailGrid} ${className ?? ''}`.trim()}>
       {fields.map((field, idx) => (
-        <div key={getFieldKey(field, idx)} className={classes.detailItem}>
+        <div
+          key={getFieldKey(field, idx)}
+          className={field.fullWidth ? classes.detailItemFullWidth : classes.detailItem}
+        >
           <GluuFormDetailRow
             label={field.label}
             value={field.value}

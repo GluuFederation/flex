@@ -1,7 +1,14 @@
 import { makeStyles } from 'tss-react/mui'
-import customColors, { hexToRgb } from '@/customColors'
+import customColors, { getLoadingOverlayRgba } from '@/customColors'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import {
+  BORDER_RADIUS,
+  CEDARLING_CONFIG_SPACING,
+  MAPPING_SPACING,
+  MODAL,
+  OPACITY,
+} from '@/constants'
 import type { ThemeConfig } from '@/context/theme/config'
 
 interface StylesParams {
@@ -9,10 +16,9 @@ interface StylesParams {
   themeColors: ThemeConfig
 }
 
-const OVERLAY_BG_LIGHT = `rgba(${hexToRgb(customColors.black)}, 0.8)`
-const OVERLAY_BG_DARK = `rgba(${hexToRgb(customColors.darkCardBg)}, 0.8)`
+const OVERLAY_BG_LIGHT = getLoadingOverlayRgba(customColors.black, 0.8)
+const OVERLAY_BG_DARK = getLoadingOverlayRgba(customColors.darkCardBg, 0.8)
 
-const MODAL_WIDTH = 1007
 const CONTENT_WIDTH = 898
 const CONTENT_GAP = 16
 const TITLE_BOTTOM_SPACING = 24
@@ -23,8 +29,14 @@ const CLOSE_BUTTON_OFFSET = 16
 const BUTTON_MIN_HEIGHT = '40px'
 const BUTTON_PADDING = '8px 28px'
 
+const CONTENT_BUTTONS_PADDING = CEDARLING_CONFIG_SPACING.BUTTONS_MT + 5
+const CHECKBOX_LABEL_GAP_ADJUST = MAPPING_SPACING.CHECKBOX_LABEL_GAP - 1
+const BORDER_RADIUS_SMALL_ADJUST = BORDER_RADIUS.SMALL - 2
+const CHECKBOX_LABEL_GAP_PLUS = MAPPING_SPACING.CHECKBOX_LABEL_GAP + 3
+
 export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColors }) => {
   const cardBorderStyle = getCardBorderStyle({ isDark })
+  const modalBg = themeColors.settings?.cardBackground ?? themeColors.card.background
 
   return {
     modalContainer: {
@@ -33,11 +45,11 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       top: '50%',
       left: '50%',
       transform: 'translate(-50%, -50%)',
-      backgroundColor: isDark ? customColors.darkCardBg : customColors.white,
-      borderRadius: '16px',
-      width: `min(${MODAL_WIDTH}px, 90vw)`,
-      maxWidth: `${MODAL_WIDTH}px`,
-      maxHeight: '90vh',
+      backgroundColor: modalBg,
+      borderRadius: BORDER_RADIUS.DEFAULT,
+      width: `min(${MODAL.WIDTH}px, ${MODAL.MAX_VW})`,
+      maxWidth: `${MODAL.WIDTH}px`,
+      maxHeight: MODAL.MAX_VH,
       zIndex: 1050,
       padding: 0,
       boxSizing: 'border-box',
@@ -46,7 +58,7 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
     contentArea: {
       display: 'flex',
       flexDirection: 'column',
-      padding: '55px',
+      padding: `${CONTENT_BUTTONS_PADDING}px`,
       gap: CONTENT_GAP,
       overflowY: 'auto',
     },
@@ -96,7 +108,7 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
         lineHeight: 1,
       },
       '&:hover': {
-        opacity: 0.6,
+        opacity: 1 - OPACITY.DISABLED,
       },
     },
     textareaContainer: {
@@ -104,9 +116,9 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       maxWidth: `${CONTENT_WIDTH}px`,
       height: `${TEXTAREA_HEIGHT}px`,
       flexShrink: 0,
-      backgroundColor: isDark ? customColors.darkInputBg : customColors.lightBackground,
-      border: isDark ? `1px solid ${customColors.darkBorder}` : 'none',
-      borderRadius: '6px',
+      backgroundColor: themeColors.inputBackground,
+      border: `1px solid ${themeColors.borderColor}`,
+      borderRadius: BORDER_RADIUS.SMALL,
       padding: 0,
       boxSizing: 'border-box',
     },
@@ -116,7 +128,7 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       'padding': '14px 21px',
       'backgroundColor': 'transparent',
       'border': 'none',
-      'borderRadius': '6px',
+      'borderRadius': BORDER_RADIUS.SMALL,
       fontFamily,
       'fontSize': fontSizes.base,
       'fontWeight': fontWeights.medium,
@@ -126,7 +138,7 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       'outline': 'none',
       'boxSizing': 'border-box',
       '&::placeholder': {
-        color: isDark ? customColors.textMutedDark : customColors.textSecondary,
+        color: themeColors.textMuted,
         opacity: 1,
       },
     },
@@ -140,7 +152,7 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
     operationsList: {
       display: 'flex',
       flexDirection: 'column',
-      gap: 8,
+      gap: CHECKBOX_LABEL_GAP_ADJUST,
       maxHeight: OPERATIONS_MAX_HEIGHT,
       overflowY: 'auto',
       overflowX: 'hidden',
@@ -153,7 +165,7 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       fontSize: fontSizes.xl,
       lineHeight: lineHeights.normal,
       color: themeColors.fontColor,
-      margin: '0 0 8px 0',
+      margin: `0 0 ${CHECKBOX_LABEL_GAP_ADJUST}px 0`,
     },
     operationRow: {
       display: 'grid',
@@ -177,7 +189,7 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       lineHeight: lineHeights.normal,
       backgroundColor: themeColors.fontColor,
       color: themeColors.card.background,
-      borderRadius: 4,
+      borderRadius: BORDER_RADIUS_SMALL_ADJUST,
       padding: '4px 10px',
       width: 'fit-content',
       maxWidth: '100%',
@@ -188,7 +200,7 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
     buttonRow: {
       display: 'flex',
       alignItems: 'center',
-      gap: 12,
+      gap: CHECKBOX_LABEL_GAP_PLUS,
     },
     yesButton: {
       minHeight: BUTTON_MIN_HEIGHT,
