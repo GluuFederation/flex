@@ -150,24 +150,28 @@ const JwkItem = React.memo<JwkItemWithClassesProps>(({ item, classes }) => {
             </div>
           )}
 
-          {item.x && item.y && (
+          {(item.x != null || item.y != null) && (
             <div className={classes.fieldsGrid}>
-              <div className={classes.fieldItem}>
-                <ReadOnlyField
-                  label="x"
-                  value={item.x}
-                  type="textarea"
-                  emptyPlaceholder={emptyPlaceholder}
-                />
-              </div>
-              <div className={classes.fieldItem}>
-                <ReadOnlyField
-                  label="y"
-                  value={item.y}
-                  type="textarea"
-                  emptyPlaceholder={emptyPlaceholder}
-                />
-              </div>
+              {item.x != null && (
+                <div className={classes.fieldItem}>
+                  <ReadOnlyField
+                    label="x"
+                    value={item.x}
+                    type="textarea"
+                    emptyPlaceholder={emptyPlaceholder}
+                  />
+                </div>
+              )}
+              {item.y != null && (
+                <div className={classes.fieldItem}>
+                  <ReadOnlyField
+                    label="y"
+                    value={item.y}
+                    type="textarea"
+                    emptyPlaceholder={emptyPlaceholder}
+                  />
+                </div>
+              )}
             </div>
           )}
 
