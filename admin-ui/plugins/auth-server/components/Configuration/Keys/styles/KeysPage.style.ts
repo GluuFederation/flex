@@ -1,4 +1,5 @@
 import { makeStyles } from 'tss-react/mui'
+import type { Theme } from '@mui/material/styles'
 import type { ThemeConfig } from '@/context/theme/config'
 import { SPACING, BORDER_RADIUS, MAPPING_SPACING } from '@/constants'
 import { fontSizes, fontWeights } from '@/styles/fonts'
@@ -17,7 +18,7 @@ type StyleProps = {
   themeColors: ThemeConfig
 }
 
-export const useStyles = makeStyles<StyleProps>()((_theme, { isDark, themeColors }) => {
+export const useStyles = makeStyles<StyleProps>()((theme: Theme, { isDark, themeColors }) => {
   const cardBorderStyle = getCardBorderStyle({ isDark })
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   const formInputBg = themeColors.settings?.formInputBackground ?? themeColors.inputBackground
@@ -105,6 +106,9 @@ export const useStyles = makeStyles<StyleProps>()((_theme, { isDark, themeColors
       display: 'grid',
       gridTemplateColumns: 'repeat(2, 1fr)',
       gap: SPACING.CARD_CONTENT_GAP * 2,
+      [theme.breakpoints.down('md')]: {
+        gridTemplateColumns: '1fr',
+      },
     },
     fieldItem: {
       minWidth: 0,

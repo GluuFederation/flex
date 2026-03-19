@@ -1,5 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import { alpha } from '@mui/material/styles'
+import type { Theme } from '@mui/material/styles'
 import type { ThemeConfig } from '@/context/theme/config'
 import { SPACING, BORDER_RADIUS, OPACITY, CEDARLING_CONFIG_SPACING } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
@@ -15,7 +16,7 @@ const INPUT_PADDING_VERTICAL = CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL
 const INPUT_PADDING_HORIZONTAL = CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL
 const SELECT_ARROW_SPACE = 44
 
-export const useStyles = makeStyles<StyleProps>()((_theme, { isDark, themeColors }) => {
+export const useStyles = makeStyles<StyleProps>()((theme: Theme, { isDark, themeColors }) => {
   const cardBorderStyle = getCardBorderStyle({ isDark })
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   const fontColor = themeColors.fontColor
@@ -63,6 +64,9 @@ export const useStyles = makeStyles<StyleProps>()((_theme, { isDark, themeColors
       gridTemplateColumns: '1fr 1fr',
       columnGap: SPACING.SECTION_GAP,
       rowGap: SPACING.CARD_CONTENT_GAP,
+      [theme.breakpoints.down('md')]: {
+        gridTemplateColumns: '1fr',
+      },
     },
     fieldItem: {
       minWidth: 0,

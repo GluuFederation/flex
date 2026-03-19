@@ -1,8 +1,6 @@
 import React, { ReactNode, useRef, useEffect, useCallback } from 'react'
 import some from 'lodash/some'
 
-// Safely gets the browser document object,
-// returns a simple mock for server rendering purposes
 const getDocument = (): Document | { querySelector: () => null } =>
   typeof document === 'undefined'
     ? {
@@ -12,22 +10,25 @@ const getDocument = (): Document | { querySelector: () => null } =>
       }
     : document
 
-/** Event with optional non-standard path (Chrome) */
 type DocumentClickEvent = MouseEvent | TouchEvent
-type EventWithPath = DocumentClickEvent & { path?: Array<{ id?: string }> }
 
 interface OuterClickProps {
   onClickOutside?: (evt: DocumentClickEvent) => void
   children: ReactNode
-  /** Refs to DOM elements; clicks inside these are not considered "outside" */
+
   excludedElements?: Array<React.RefObject<HTMLElement | null> | null>
   active?: boolean
 }
 
-const openSidebar = (path: Array<{ id?: string }> | undefined): boolean => {
-  const exists = path?.some((item) => item.id === 'navToggleBtn')
-  return !exists
+function getEventPath(evt: DocumentClickEvent): Array<EventTarget | null> {
+  if ('composedPath' in evt && typeof evt.composedPath === 'function') {
+    return evt.composedPath()
+  }
+  return (evt as DocumentClickEvent & { path?: Array<EventTarget | null> }).path ?? []
 }
+
+const isNavToggleClick = (evt: DocumentClickEvent): boolean =>
+  getEventPath(evt).some((node) => (node as HTMLElement | null)?.id === 'navToggleBtn')
 
 export const OuterClick: React.FC<OuterClickProps> = ({
   onClickOutside,
@@ -39,8 +40,8 @@ export const OuterClick: React.FC<OuterClickProps> = ({
   const rootElementRef = useRef<HTMLElement | null>(null)
 
   const handleDocumentClick = useCallback(
-    (evt: EventWithPath) => {
-      if (!openSidebar(evt.path)) return
+    (evt: DocumentClickEvent) => {
+      if (isNavToggleClick(evt)) return
       if (!active) return
 
       const domElement = containerRef.current

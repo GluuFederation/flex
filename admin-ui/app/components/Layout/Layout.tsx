@@ -17,6 +17,7 @@ import type {
 } from './types'
 
 import config from './../../../config.js'
+import SetTitle from 'Utils/SetTitle'
 
 function getLayoutPartName(type: React.ReactElement['type']): string | undefined {
   if (typeof type === 'string' || type == null) return undefined
@@ -154,24 +155,54 @@ const Layout: React.FC<LayoutProps> = (props) => {
     state.sidebarHidden,
     state.navbarHidden,
     state.footerHidden,
+    state.screenSize,
     children,
     updateNavbarsPositions,
   ])
 
-  const toggleSidebar = useCallback(() => {
-    setState((prev) => ({ ...prev, sidebarCollapsed: !prev.sidebarCollapsed }))
-  }, [])
+  const toggleSidebar = useCallback(() => {}, [])
 
   const setElementsVisibility = useCallback((elements: Partial<LayoutState>) => {
     setState((prev) => ({
       ...prev,
-      ...pick(elements, ['sidebarHidden', 'navbarHidden', 'footerHidden']),
+      ...pick(elements, ['navbarHidden', 'footerHidden']),
     }))
   }, [])
 
   const changeMeta = useCallback((metaData: Partial<LayoutState>) => {
     setState((prev) => ({ ...prev, ...metaData }))
   }, [])
+
+  useEffect(() => {
+    if (state.pageTitle != null) {
+      SetTitle(state.pageTitle)
+    }
+
+    if (typeof document === 'undefined') return
+
+    const descEl = document.querySelector('meta[name="description"]')
+    if (state.pageDescription != null) {
+      if (descEl) {
+        descEl.setAttribute('content', state.pageDescription)
+      } else {
+        const meta = document.createElement('meta')
+        meta.name = 'description'
+        meta.content = state.pageDescription
+        document.head.appendChild(meta)
+      }
+    }
+    const kwEl = document.querySelector('meta[name="keywords"]')
+    if (state.pageKeywords != null) {
+      if (kwEl) {
+        kwEl.setAttribute('content', state.pageKeywords)
+      } else {
+        const meta = document.createElement('meta')
+        meta.name = 'keywords'
+        meta.content = state.pageKeywords
+        document.head.appendChild(meta)
+      }
+    }
+  }, [state.pageTitle, state.pageDescription, state.pageKeywords])
 
   const sidebar = findChildByType(children, LayoutSidebar)
   const navbars = findChildrenByType(children, LayoutNavbar)
@@ -188,6 +219,7 @@ const Layout: React.FC<LayoutProps> = (props) => {
       value={{
         ...state,
         sidebarSlim: false,
+        sidebarCollapsed: false,
         toggleSidebar,
         setElementsVisibility,
         changeMeta,
@@ -196,8 +228,7 @@ const Layout: React.FC<LayoutProps> = (props) => {
       <ThemeClass>
         {(themeClass) => (
           <div className={classNames(layoutClass, themeClass)} ref={containerRef}>
-            {!state.sidebarHidden &&
-              sidebar &&
+            {sidebar &&
               React.cloneElement(sidebar, {
                 sidebarSlim: false,
                 sidebarCollapsed: false,

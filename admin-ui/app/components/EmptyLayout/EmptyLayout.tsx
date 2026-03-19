@@ -24,14 +24,12 @@ const EmptyLayoutBase = ({ pageConfig, children, className }: EmptyLayoutProps) 
   useEffect(() => {
     setVisibilityRef.current?.({
       navbarHidden: true,
-      sidebarHidden: true,
       footerHidden: true,
     })
 
     return () => {
       setVisibilityRef.current?.({
         navbarHidden: false,
-        sidebarHidden: false,
         footerHidden: false,
       })
     }

@@ -186,6 +186,7 @@
     "kc_last_update_count": "Keycloak Link Last Update Count",
     "kc_problem_count": "Keycloak Link Problem Count",
     "update_method": "Update Method",
+    "unnamed_key": "Unnamed Key",
     "released_attributes": "Released Attributes",
     "jans_assertion_consumer_service_get_url": "Jans Assertion Consumer Service GET URL",
     "jans_assertion_consumer_service_post_url": "Jans Assertion Consumer Service POST URL",

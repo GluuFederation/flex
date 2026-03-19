@@ -1,5 +1,6 @@
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
+import i18n from '@/i18n'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import JwkItem from './JwkItem'
 import { mockJwksConfig } from '../__tests__/fixtures/jwkTestData'
@@ -100,7 +101,8 @@ describe('JwkItem', () => {
   it('renders Unnamed Key when name is missing', () => {
     const itemWithoutName = { ...mockItem, name: undefined }
     render(<JwkItem item={itemWithoutName} index={0} classes={mockClasses} />, { wrapper: Wrapper })
-    expect(screen.getByText('Unnamed Key')).toBeInTheDocument()
+    const expectedLabel = i18n.t('fields.unnamed_key')
+    expect(screen.getByText(expectedLabel)).toBeInTheDocument()
   })
 
   it('applies accordionHeaderOpen class when expanded', () => {

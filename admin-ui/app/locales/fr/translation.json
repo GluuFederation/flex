@@ -283,6 +283,7 @@
     "kc_last_update_count": "Nombre de dernières mises à jour du lien Keycloak",
     "kc_problem_count": "Nombre de problèmes du lien Keycloak",
     "update_method": "Méthode de mise à jour",
+    "unnamed_key": "Clé sans nom",
     "sessionTimeoutInMins": "Délai d'expiration de la session de l'interface administrateur (en minutes)",
     "gluuFlexVersion": "Version Gluu Flex",
     "adminui_default_acr": "Méthode d'authentification de l'interface administrateur (ACR)",

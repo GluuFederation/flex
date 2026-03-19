@@ -288,6 +288,7 @@
     "kc_last_update_count": "Contagem da Última Atualização do Link Keycloak",
     "kc_problem_count": "Contagem de Problemas do Link Keycloak",
     "update_method": "Método de Atualização",
+    "unnamed_key": "Chave sem nome",
     "message_provider_type": "Tipo de provedor de mensagens",
     "ssl_key_store_file_path": "Caminho do arquivo de armazenamento de chaves SSL",
     "ssl_trust_store_password": "Senha do armazenamento de confiança SSL",

@@ -9,13 +9,22 @@ import SlimSidebarAnimate from '../dashboard-style-airframe/slim-sidebar-animate
 import SlimMenuAnimate from '../dashboard-style-airframe/slim-menu-animate'
 
 const Sidebar: React.FC<SidebarProps> = (props) => {
+  const { animationsDisabled = false, pageConfig, slim = false, children } = props
+
   const sidebarRef = useRef<HTMLDivElement>(null)
   const [entryAnimationFinished, setEntryAnimationFinished] = useState(false)
   const entryAnimateRef = useRef<SidebarEntryAnimate | null>(null)
   const slimAnimateRef = useRef<SlimSidebarAnimate | null>(null)
   const menuAnimateRef = useRef<SlimMenuAnimate | null>(null)
 
+  const animationsEnabled = !(animationsDisabled || pageConfig?.animationsDisabled)
+
   useEffect(() => {
+    if (!animationsEnabled) {
+      setEntryAnimationFinished(true)
+      return () => {}
+    }
+
     const entryAnimate = new SidebarEntryAnimate()
     const slimAnimate = new SlimSidebarAnimate()
     const menuAnimate = new SlimMenuAnimate()
@@ -36,23 +45,14 @@ const Sidebar: React.FC<SidebarProps> = (props) => {
       slimAnimate.destroy()
       menuAnimate.destroy()
     }
-  }, [])
-
-  const {
-    animationsDisabled = false,
-    collapsed = false,
-    pageConfig,
-    slim = false,
-    children,
-  } = props
+  }, [animationsEnabled])
 
   const sidebarClass = classNames(
     'sidebar custom-sidebar-container',
-    'sidebar--animations-enabled',
+    animationsEnabled && 'sidebar--animations-enabled',
     {
       'sidebar--slim': slim || pageConfig.sidebarSlim,
-      'sidebar--collapsed': collapsed || pageConfig.sidebarCollapsed,
-      'sidebar--animations-disabled': animationsDisabled || pageConfig.animationsDisabled,
+      'sidebar--animations-disabled': !animationsEnabled,
       'sidebar--animate-entry-complete': entryAnimationFinished,
     },
   )
