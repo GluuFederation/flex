@@ -48,7 +48,7 @@ To maintain system integrity and security, we recommend upgrading to the latest 
 
 ### Migration Resources:
 
-* **Breaking Changes Log:** Review our [Changelog](CHANGELOG.md) for API or configuration changes.
+* **Breaking Changes Log:** Review our [Changelog](https://github.com/GluuFederation/flex/releases) for API or configuration changes.
 * **Compatibility Matrix:** Ensure your OS and hardware meet the System Requirements for the new version.
 * **Automated Upgrade Scripts:** Available for versions the last three releases to simplify the upgrade process i.e. to upgrade to 6.0.0 from 5.14.0 the upgrade would be from 5.14.0 to 5.15.0 to 5.16.0 to 6.0.0.
 
