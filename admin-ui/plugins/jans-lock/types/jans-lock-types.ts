@@ -13,6 +13,7 @@ export type JansLockConfigFormValues = {
   metricReporterKeepDataDays: number | string
   cleanServiceInterval: number | string
   metricChannel?: string
+  pdpType?: string
   policiesJsonUrisAuthorizationToken?: string
   policiesJsonUris?: string
   policiesZipUrisAuthorizationToken?: string

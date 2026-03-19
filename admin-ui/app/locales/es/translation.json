@@ -1244,6 +1244,7 @@
     "enter_metric_reporter_interval": "Ingrese el intervalo del reportador de métricas en segundos",
     "enter_metric_reporter_keep_data_days": "Ingrese la cantidad de días para conservar los datos de métricas",
     "enter_metric_channel": "Ingrese el canal de métricas",
+    "enter_pdp_type": "Ingrese el tipo de PDP",
     "enter_clean_service_interval": "Ingrese el intervalo del servicio de limpieza en segundos",
     "enter_policies_json_uris_authorization_token": "Ingrese el token de autorización de la URI de política JSON",
     "enter_policies_json_uris": "Ingrese la URI de política JSON",

@@ -54,6 +54,13 @@ export const JANS_LOCK_FIELD_CONFIGS: FieldConfig[] = [
     placeholder: 'placeholders.enter_metric_channel',
   },
   {
+    name: 'pdpType',
+    label: 'fields.pdp_type',
+    type: 'text',
+    colSize: 6,
+    placeholder: 'placeholders.enter_pdp_type',
+  },
+  {
     name: 'cleanServiceInterval',
     label: 'fields.clean_service_interval',
     type: 'number',

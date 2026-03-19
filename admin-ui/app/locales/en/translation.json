@@ -1252,6 +1252,7 @@
     "enter_metric_reporter_interval": "Enter the metric reporter interval in seconds",
     "enter_metric_reporter_keep_data_days": "Enter the number of days to keep metric data",
     "enter_metric_channel": "Enter the metric channel",
+    "enter_pdp_type": "Enter the PDP type",
     "enter_clean_service_interval": "Enter the clean service interval in seconds",
     "enter_policies_json_uris_authorization_token": "Enter the JSON policy URI authorization token",
     "enter_policies_json_uris": "Enter the JSON policy URI",
