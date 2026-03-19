@@ -27,6 +27,7 @@ interface LockApiConfig {
   metricReporterKeepDataDays?: number | null
   cleanServiceInterval?: number | null
   metricChannel?: string
+  pdpType?: string
   cedarlingConfiguration?: {
     policySources?: PolicySource[]
   }
@@ -98,6 +99,7 @@ describe('transformToFormValues', () => {
       metricReporterKeepDataDays: '',
       cleanServiceInterval: '',
       metricChannel: '',
+      pdpType: '',
       policiesJsonUrisAuthorizationToken: '',
       policiesJsonUris: '',
       policiesZipUrisAuthorizationToken: '',
@@ -134,6 +136,7 @@ describe('transformToFormValues', () => {
     expect(result.metricReporterKeepDataDays).toBe(15)
     expect(result.cleanServiceInterval).toBe(60)
     expect(result.metricChannel).toBe('jans_channel')
+    expect(result.pdpType).toBe('')
   })
 
   it('transforms cedarlingConfiguration policy sources', () => {
@@ -200,6 +203,7 @@ describe('createPatchOperations', () => {
     metricReporterKeepDataDays: 15,
     cleanServiceInterval: 60,
     metricChannel: '',
+    pdpType: '',
     cedarlingConfiguration: {
       policySources: [],
     },
@@ -218,6 +222,7 @@ describe('createPatchOperations', () => {
     metricReporterKeepDataDays: 15,
     cleanServiceInterval: 60,
     metricChannel: '',
+    pdpType: '',
     policiesJsonUrisAuthorizationToken: '',
     policiesJsonUris: '',
     policiesZipUrisAuthorizationToken: '',
@@ -256,6 +261,17 @@ describe('createPatchOperations', () => {
       op: 'replace',
       path: '/disableJdkLogger',
       value: false,
+    })
+  })
+
+  it('creates replace operation when clearing optional string field (metricChannel)', () => {
+    const configWithChannel: LockApiConfig = { ...baseConfig, metricChannel: 'existing_channel' }
+    const modified = { ...baseFormValues, metricChannel: '' }
+    const patches = createPatchOperations(modified, configWithChannel)
+    expect(patches).toContainEqual({
+      op: 'replace',
+      path: '/metricChannel',
+      value: '',
     })
   })
 
@@ -326,6 +342,7 @@ describe('buildLockChangedFieldOperations', () => {
     metricReporterKeepDataDays: 15,
     cleanServiceInterval: 60,
     metricChannel: '',
+    pdpType: '',
     policiesJsonUrisAuthorizationToken: '',
     policiesJsonUris: '',
     policiesZipUrisAuthorizationToken: '',

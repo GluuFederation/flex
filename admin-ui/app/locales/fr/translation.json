@@ -1173,6 +1173,7 @@
     "enter_metric_reporter_interval": "Entrez l'intervalle du rapporteur de métriques en secondes",
     "enter_metric_reporter_keep_data_days": "Entrez le nombre de jours de conservation des données de métriques",
     "enter_metric_channel": "Entrez le canal de métriques",
+    "enter_pdp_type": "Entrez le type de PDP",
     "enter_clean_service_interval": "Entrez l'intervalle du service de nettoyage en secondes",
     "enter_policies_json_uris_authorization_token": "Entrez le jeton d'autorisation de l'URI de politique JSON",
     "enter_policies_json_uris": "Entrez l'URI de politique JSON",

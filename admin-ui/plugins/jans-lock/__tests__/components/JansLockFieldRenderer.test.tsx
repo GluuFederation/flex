@@ -54,6 +54,7 @@ const defaultFormValues: JansLockConfigFormValues = {
   metricReporterKeepDataDays: 15,
   cleanServiceInterval: 60,
   metricChannel: '',
+  pdpType: '',
   policiesJsonUrisAuthorizationToken: '',
   policiesJsonUris: '',
   policiesZipUrisAuthorizationToken: '',

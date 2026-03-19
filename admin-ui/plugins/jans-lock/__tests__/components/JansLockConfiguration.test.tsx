@@ -79,6 +79,7 @@ const mockConfig: JansLockConfigurationProps['lockConfig'] = {
   metricReporterKeepDataDays: 15,
   cleanServiceInterval: 60,
   metricChannel: '',
+  pdpType: '',
   cedarlingConfiguration: {
     policySources: [],
   },

@@ -54,6 +54,7 @@ export const transformToFormValues = (
         ? (config.cleanServiceInterval as number)
         : '',
     metricChannel: (config.metricChannel as string) || '',
+    pdpType: (config.pdpType as string) || '',
     policiesJsonUrisAuthorizationToken: jsonPolicySource?.authorizationToken || '',
     policiesJsonUris: jsonPolicySource?.policyStoreUri || '',
     policiesZipUrisAuthorizationToken: zipPolicySource?.authorizationToken || '',
@@ -202,6 +203,7 @@ const LOCK_FIELD_LABELS: Array<{ key: keyof JansLockConfigFormValues; label: str
   { key: 'metricReporterKeepDataDays', label: 'fields.metric_reporter_keep_data_days' },
   { key: 'cleanServiceInterval', label: 'fields.clean_service_interval' },
   { key: 'metricChannel', label: 'fields.metric_channel' },
+  { key: 'pdpType', label: 'fields.pdp_type' },
   { key: 'disableJdkLogger', label: 'fields.disable_jdk_logger' },
   {
     key: 'policiesJsonUrisAuthorizationToken',

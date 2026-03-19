@@ -44,6 +44,7 @@ describe('JANS_LOCK_FIELD_CONFIGS', () => {
       'metricReporterKeepDataDays',
       'cleanServiceInterval',
       'metricChannel',
+      'pdpType',
       'policiesJsonUrisAuthorizationToken',
       'policiesJsonUris',
       'policiesZipUrisAuthorizationToken',
