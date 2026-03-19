@@ -1,4 +1,4 @@
-import type { ChangedFields } from 'Plugins/auth-server/redux/features/types/loggingTypes'
+import type { ChangedFields } from './types'
 
 export const LOG_LEVELS = ['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR'] as const
 export const LOG_LAYOUTS = ['text', 'json'] as const

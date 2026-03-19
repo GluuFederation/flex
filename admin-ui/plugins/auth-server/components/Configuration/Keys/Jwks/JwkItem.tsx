@@ -1,171 +1,132 @@
-import React from 'react'
-import { Col, FormGroup, Input, Card, CardBody, Accordion } from 'Components'
+import React, { useState, useCallback } from 'react'
+import { FormGroup, Col, Input } from 'Components'
 import { formatDate } from '@/utils/dayjsUtils'
+import { ChevronIcon } from '@/components/SVG'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import customColors from '@/customColors'
-import type { JwkItemProps } from '../types'
-import type { AccordionComponent } from '@/components/Accordion/Accordion.d'
+import type { JwkItemWithClassesProps, ReadOnlyFieldProps } from '../types'
 import { DATE_FORMAT } from '../constants'
 
-const AccordionTyped = Accordion as unknown as AccordionComponent
+const MAX_TEXTAREA_ROWS = 8
+const MIN_TEXTAREA_ROWS = 2
+const CHARS_PER_LINE = 80
 
-const JwkItem = React.memo(function JwkItem({ item, index }: JwkItemProps): React.ReactElement {
+const getTextareaRows = (value: string): number => {
+  const lineCount = Math.ceil(value.length / CHARS_PER_LINE) + value.split('\n').length - 1
+  return Math.min(Math.max(lineCount, MIN_TEXTAREA_ROWS), MAX_TEXTAREA_ROWS)
+}
+
+const ReadOnlyField = React.memo<ReadOnlyFieldProps>(
+  ({ label, value, type = 'text', lsize = 12, rsize = 12 }) => (
+    <FormGroup row>
+      <GluuLabel label={label} size={lsize} />
+      <Col sm={rsize}>
+        <Input
+          type={type}
+          name={label}
+          data-testid={label}
+          readOnly
+          defaultValue={value}
+          {...(type === 'textarea' ? { rows: getTextareaRows(value) } : {})}
+        />
+      </Col>
+    </FormGroup>
+  ),
+)
+
+ReadOnlyField.displayName = 'ReadOnlyField'
+
+const JwkItem = React.memo<JwkItemWithClassesProps>(({ item, classes }) => {
+  const [isOpen, setIsOpen] = useState(false)
+
+  const toggle = useCallback(() => {
+    setIsOpen((prev) => !prev)
+  }, [])
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault()
+        toggle()
+      }
+    },
+    [toggle],
+  )
+
+  const headerClassName = isOpen
+    ? `${classes.accordionHeader} ${classes.accordionHeaderOpen}`
+    : classes.accordionHeader
+
   return (
-    <div style={{ marginBottom: '5px' }}>
-      <AccordionTyped>
-        <AccordionTyped.Header className="text-info">
-          <AccordionTyped.Indicator className="me-2" />
-          {item.name ?? 'Unnamed Key'}
-        </AccordionTyped.Header>
-        <AccordionTyped.Body>
-          <Card
-            style={{
-              marginBottom: '5px',
-              backgroundColor: index % 2 === 0 ? customColors.white : customColors.whiteSmoke,
-            }}
-          >
-            <CardBody>
-              <FormGroup row>
-                <GluuLabel label="description" size={2} />
-                <Col sm={10}>
-                  <Input
-                    id="description"
-                    type="textarea"
-                    data-testid="description"
-                    name="description"
-                    readOnly
-                    defaultValue={item.descr ?? ''}
-                  />
-                </Col>
-              </FormGroup>
-              <FormGroup row>
-                <GluuLabel label="crv" size={1} />
-                <Col sm={2}>
-                  <Input
-                    id="crv"
-                    data-testid="crv"
-                    name="crv"
-                    readOnly
-                    defaultValue={item.crv ?? ''}
-                  />
-                </Col>
-                <GluuLabel label="exp" size={1} />
-                <Col sm={3}>
-                  <Input
-                    id="exp"
-                    data-testid="exp"
-                    name="exp"
-                    readOnly
-                    defaultValue={item.exp != null ? formatDate(item.exp, DATE_FORMAT) : ''}
-                  />
-                </Col>
-                <GluuLabel label="use" size={1} />
-                <Col sm={2}>
-                  <Input
-                    id="use"
-                    data-testid="use"
-                    name="use"
-                    readOnly
-                    defaultValue={item.use ?? ''}
-                  />
-                </Col>
-              </FormGroup>
-              <FormGroup row>
-                <GluuLabel label="kty" size={1} />
-                <Col sm={2}>
-                  <Input
-                    id="kty"
-                    data-testid="kty"
-                    name="kty"
-                    readOnly
-                    defaultValue={item.kty ?? ''}
-                  />
-                </Col>
-                <GluuLabel label="alg" size={1} />
-                <Col sm={2}>
-                  <Input
-                    id="alg"
-                    data-testid="alg"
-                    name="alg"
-                    readOnly
-                    defaultValue={item.alg ?? ''}
-                  />
-                </Col>
-                <GluuLabel label="e" size={1} />
-                <Col sm={2}>
-                  <Input id="e" data-testid="e" name="e" readOnly defaultValue={item.e ?? ''} />
-                </Col>
-              </FormGroup>
-              <FormGroup row>
-                <GluuLabel label="kid" size={1} />
-                <Col sm={6}>
-                  <Input
-                    id="kid"
-                    data-testid="kid"
-                    name="kid"
-                    readOnly
-                    defaultValue={item.kid ?? ''}
-                  />
-                </Col>
-              </FormGroup>
-              <FormGroup row>
-                <GluuLabel label="x5c" size={1} />
-                <Col sm={11}>
-                  <Input
-                    id="x5c"
-                    type="textarea"
-                    data-testid="x5c"
-                    name="x5c"
-                    readOnly
-                    defaultValue={item.x5c?.[0] ?? ''}
-                  />
-                </Col>
-              </FormGroup>
-              {item.x && item.y && (
-                <FormGroup row>
-                  <GluuLabel label="x" size={1} />
-                  <Col sm={5}>
-                    <Input
-                      id="x"
-                      data-testid="x"
-                      type="textarea"
-                      name="x"
-                      readOnly
-                      defaultValue={item.x}
-                    />
-                  </Col>
-                  <GluuLabel label="y" size={1} />
-                  <Col sm={5}>
-                    <Input
-                      id="y"
-                      data-testid="y"
-                      type="textarea"
-                      name="y"
-                      readOnly
-                      defaultValue={item.y}
-                    />
-                  </Col>
-                </FormGroup>
-              )}
-              {item.n && (
-                <FormGroup row>
-                  <GluuLabel label="n" size={1} />
-                  <Col sm={11}>
-                    <Input
-                      id="n"
-                      data-testid="n"
-                      type="textarea"
-                      name="n"
-                      readOnly
-                      defaultValue={item.n}
-                    />
-                  </Col>
-                </FormGroup>
-              )}
-            </CardBody>
-          </Card>
-        </AccordionTyped.Body>
-      </AccordionTyped>
+    <div className={classes.accordionWrapper}>
+      <div
+        className={headerClassName}
+        onClick={toggle}
+        role="button"
+        tabIndex={0}
+        onKeyDown={handleKeyDown}
+        aria-expanded={isOpen}
+      >
+        <span>{item.name ?? 'Unnamed Key'}</span>
+        <span className={classes.accordionIcon}>
+          <ChevronIcon width={16} height={16} direction={isOpen ? 'up' : 'down'} />
+        </span>
+      </div>
+      {isOpen && (
+        <div className={classes.accordionBody}>
+          <div className={classes.fieldItemFullWidth}>
+            <ReadOnlyField label="description" value={item.descr ?? ''} type="textarea" />
+          </div>
+
+          <div className={classes.fieldsGrid}>
+            <div className={classes.fieldItem}>
+              <ReadOnlyField label="crv" value={item.crv ?? ''} />
+            </div>
+            <div className={classes.fieldItem}>
+              <ReadOnlyField
+                label="exp"
+                value={item.exp != null ? formatDate(item.exp, DATE_FORMAT) : ''}
+              />
+            </div>
+            <div className={classes.fieldItem}>
+              <ReadOnlyField label="use" value={item.use ?? ''} />
+            </div>
+            <div className={classes.fieldItem}>
+              <ReadOnlyField label="kty" value={item.kty ?? ''} />
+            </div>
+            <div className={classes.fieldItem}>
+              <ReadOnlyField label="alg" value={item.alg ?? ''} />
+            </div>
+            <div className={classes.fieldItem}>
+              <ReadOnlyField label="e" value={item.e ?? ''} />
+            </div>
+          </div>
+
+          <div className={classes.fieldItemFullWidth}>
+            <ReadOnlyField label="kid" value={item.kid ?? ''} />
+          </div>
+
+          <div className={classes.fieldItemFullWidth}>
+            <ReadOnlyField label="x5c" value={item.x5c?.[0] ?? ''} type="textarea" />
+          </div>
+
+          {item.x && item.y && (
+            <div className={classes.fieldsGrid}>
+              <div className={classes.fieldItem}>
+                <ReadOnlyField label="x" value={item.x} type="textarea" />
+              </div>
+              <div className={classes.fieldItem}>
+                <ReadOnlyField label="y" value={item.y} type="textarea" />
+              </div>
+            </div>
+          )}
+
+          {item.n && (
+            <div className={classes.fieldItemFullWidth}>
+              <ReadOnlyField label="n" value={item.n} type="textarea" />
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 })

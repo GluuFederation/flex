@@ -97,3 +97,33 @@ export const createFormInputAutofillStyles = (colors: InputStyleColors) => ({
   caretColor: colors.fontColor,
   transition: 'background-color 5000s ease-in-out 0s',
 })
+
+type InfoAlertColors = {
+  background: string
+  icon: string
+  text: string
+}
+
+export const createInfoAlertStyles = (infoAlert: InfoAlertColors) => ({
+  infoAlert: {
+    backgroundColor: infoAlert.background,
+    border: 'none',
+    borderRadius: MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS,
+    padding: `${MAPPING_SPACING.INFO_ALERT_PADDING_VERTICAL}px ${MAPPING_SPACING.INFO_ALERT_PADDING_HORIZONTAL}px`,
+    display: 'flex',
+    alignItems: 'center',
+    gap: MAPPING_SPACING.INFO_ALERT_GAP,
+  },
+  infoIcon: {
+    width: MAPPING_SPACING.INFO_ICON_SIZE,
+    height: MAPPING_SPACING.INFO_ICON_SIZE,
+    color: infoAlert.icon,
+    flexShrink: 0,
+  },
+  infoText: {
+    fontSize: fontSizes.base,
+    fontWeight: fontWeights.medium,
+    lineHeight: lineHeights.tight,
+    color: infoAlert.text,
+  },
+})

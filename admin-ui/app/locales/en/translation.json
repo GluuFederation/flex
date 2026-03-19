@@ -1000,6 +1000,8 @@
     "thanks_for_using_admin_ui": "Thanks for using the Admin UI.",
     "no_data": "No data found",
     "no_data_available": "No data available",
+    "no_jwks_found": "No JSON Web Keys found.",
+    "error_loading_jwks": "Failed to load JSON Web Keys.",
     "loading": "Loading",
     "previous_page": "Previous page",
     "next_page": "Next page",
@@ -1420,7 +1422,14 @@
     "usage_type_native": "Native",
     "usage_type_both": "Both methods",
     "java": "Java",
-    "jython": "Jython"
+    "jython": "Jython",
+    "log_level_trace": "TRACE",
+    "log_level_debug": "DEBUG",
+    "log_level_info": "INFO",
+    "log_level_warn": "WARN",
+    "log_level_error": "ERROR",
+    "log_layout_text": "Text",
+    "log_layout_json": "JSON"
   },
   "documentation": {
     "asset": {

@@ -1026,6 +1026,8 @@
     "error_processing_request": "Erreur lors du traitement de la demande.",
     "no_data": "Aucune donnée trouvée",
     "no_data_available": "Aucune donnée disponible",
+    "no_jwks_found": "Aucune clé JSON Web trouvée.",
+    "error_loading_jwks": "Échec du chargement des clés JSON Web.",
     "loading": "Chargement",
     "previous_page": "Page précédente",
     "next_page": "Page suivante",
@@ -1314,7 +1316,14 @@
     "usage_type_native": "Natif",
     "usage_type_both": "Les deux méthodes",
     "java": "Java",
-    "jython": "Jython"
+    "jython": "Jython",
+    "log_level_trace": "TRACE",
+    "log_level_debug": "DEBUG",
+    "log_level_info": "INFO",
+    "log_level_warn": "WARN",
+    "log_level_error": "ERROR",
+    "log_layout_text": "Texte",
+    "log_layout_json": "JSON"
   },
   "documentation": {
     "asset": {
