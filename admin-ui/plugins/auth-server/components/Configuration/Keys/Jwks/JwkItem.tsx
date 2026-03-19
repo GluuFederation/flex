@@ -107,7 +107,7 @@ const JwkItem = React.memo<JwkItemWithClassesProps>(({ item, classes }) => {
             <ReadOnlyField label="kid" value={item.kid ?? ''} />
           </div>
 
-          {item.x5c?.length > 0 && (
+          {Array.isArray(item.x5c) && item.x5c.length > 0 && (
             <div className={classes.fieldItemFullWidth}>
               <ReadOnlyField label="x5c" value={item.x5c[0] ?? ''} type="textarea" />
             </div>

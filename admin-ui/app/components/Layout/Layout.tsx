@@ -167,7 +167,7 @@ const Layout: React.FC<LayoutProps> = (props) => {
   const setElementsVisibility = useCallback((elements: Partial<LayoutState>) => {
     setState((prev) => ({
       ...prev,
-      ...pick(elements, ['navbarHidden', 'footerHidden']),
+      ...pick(elements, ['sidebarHidden', 'navbarHidden', 'footerHidden']),
     }))
   }, [])
 
@@ -175,11 +175,9 @@ const Layout: React.FC<LayoutProps> = (props) => {
     setState((prev) => ({ ...prev, ...metaData }))
   }, [])
 
-  useEffect(() => {
-    if (state.pageTitle != null) {
-      SetTitle(state.pageTitle)
-    }
+  SetTitle(state.pageTitle ?? '')
 
+  useEffect(() => {
     if (typeof document === 'undefined') return
 
     const descEl = document.querySelector('meta[name="description"]')
@@ -230,7 +228,8 @@ const Layout: React.FC<LayoutProps> = (props) => {
       <ThemeClass>
         {(themeClass) => (
           <div className={classNames(layoutClass, themeClass)} ref={containerRef}>
-            {sidebar &&
+            {!state.sidebarHidden &&
+              sidebar &&
               React.cloneElement(sidebar, {
                 sidebarSlim: false,
                 sidebarCollapsed: state.sidebarCollapsed,

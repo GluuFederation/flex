@@ -24,6 +24,9 @@ const Sidebar: React.FC<SidebarProps> = (props) => {
       return () => {}
     }
 
+    setEntryAnimationFinished(false)
+    let cancelled = false
+
     const entryAnimate = new SidebarEntryAnimate()
     const slimAnimate = new SlimSidebarAnimate()
     const menuAnimate = new SlimMenuAnimate()
@@ -37,9 +40,12 @@ const Sidebar: React.FC<SidebarProps> = (props) => {
       menuAnimate.assignSidebarElement(sidebarRef.current)
     }
 
-    entryAnimate.executeAnimation().then(() => setEntryAnimationFinished(true))
+    entryAnimate.executeAnimation().then(() => {
+      if (!cancelled) setEntryAnimationFinished(true)
+    })
 
     return () => {
+      cancelled = true
       entryAnimate.destroy()
       slimAnimate.destroy()
       menuAnimate.destroy()
