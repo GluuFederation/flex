@@ -7,25 +7,35 @@ import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import JansAssetListPage from 'Plugins/admin/components/Assets/JansAssetListPage'
 import { useCedarling } from '@/cedarling'
 
-jest.mock('@/cedarling', () => ({
-  useCedarling: jest.fn(() => ({
-    hasCedarReadPermission: jest.fn(() => true),
-    hasCedarWritePermission: jest.fn(() => true),
-    hasCedarDeletePermission: jest.fn(() => true),
-    authorizeHelper: jest.fn(),
-    authorize: jest.fn(),
-    isLoading: false,
-    error: null,
-  })),
-}))
+jest.mock('Plugins/PluginReducersResolver', () => ({ __esModule: true, default: jest.fn() }))
+jest.mock('Plugins/PluginSagasResolver', () => ({ __esModule: true, default: jest.fn(() => []) }))
 
-jest.mock('@/cedarling/utility', () => ({
-  ADMIN_UI_RESOURCES: { Assets: 'assets' },
-}))
+jest.mock('@/cedarling', () => {
+  const { SHARED_CEDAR_CONSTANTS } = jest.requireActual('./assetCedarTestConstants')
+  return {
+    useCedarling: jest.fn(() => ({
+      hasCedarReadPermission: jest.fn(() => true),
+      hasCedarWritePermission: jest.fn(() => true),
+      hasCedarDeletePermission: jest.fn(() => true),
+      authorizeHelper: jest.fn(),
+      authorize: jest.fn(),
+      isLoading: false,
+      error: null,
+    })),
+    ADMIN_UI_RESOURCES: SHARED_CEDAR_CONSTANTS.ADMIN_UI_RESOURCES,
+    CEDAR_RESOURCE_SCOPES: SHARED_CEDAR_CONSTANTS.CEDAR_RESOURCE_SCOPES,
+  }
+})
 
-jest.mock('@/cedarling/constants/resourceScopes', () => ({
-  CEDAR_RESOURCE_SCOPES: { assets: [] },
-}))
+jest.mock('@/cedarling/utility', () => {
+  const { SHARED_CEDAR_CONSTANTS } = jest.requireActual('./assetCedarTestConstants')
+  return { ADMIN_UI_RESOURCES: SHARED_CEDAR_CONSTANTS.ADMIN_UI_RESOURCES }
+})
+
+jest.mock('@/cedarling/constants/resourceScopes', () => {
+  const { SHARED_CEDAR_CONSTANTS } = jest.requireActual('./assetCedarTestConstants')
+  return { CEDAR_RESOURCE_SCOPES: SHARED_CEDAR_CONSTANTS.CEDAR_RESOURCE_SCOPES }
+})
 
 jest.mock('JansConfigApi', () => ({
   useGetAllAssets: jest.fn(() => ({

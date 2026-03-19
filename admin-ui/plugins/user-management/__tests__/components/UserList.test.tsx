@@ -6,6 +6,19 @@ import {
 } from './userManagementTestUtils'
 import UserList from 'Plugins/user-management/components/UserList'
 import { useCedarling } from '@/cedarling'
+import type { UseCedarlingReturn } from '@/cedarling'
+
+const makeMockCedarling = (overrides?: Partial<UseCedarlingReturn>): UseCedarlingReturn =>
+  ({
+    hasCedarReadPermission: jest.fn(() => true),
+    hasCedarWritePermission: jest.fn(() => true),
+    hasCedarDeletePermission: jest.fn(() => true),
+    authorizeHelper: jest.fn().mockResolvedValue([]),
+    authorize: jest.fn().mockResolvedValue({ decision: 'ALLOW', person_id: '' }),
+    isLoading: false,
+    error: null,
+    ...overrides,
+  }) as unknown as UseCedarlingReturn
 
 describe('UserList', () => {
   let Wrapper: React.ComponentType<{ children: React.ReactNode }>
@@ -21,29 +34,15 @@ describe('UserList', () => {
   })
 
   it('renders Add user button when user has write permission', () => {
-    jest.mocked(useCedarling).mockReturnValue({
-      hasCedarReadPermission: jest.fn(() => true),
-      hasCedarWritePermission: jest.fn(() => true),
-      hasCedarDeletePermission: jest.fn(() => true),
-      authorizeHelper: jest.fn(),
-      authorize: jest.fn(),
-      isLoading: false,
-      error: null,
-    })
+    jest.mocked(useCedarling).mockReturnValue(makeMockCedarling())
     render(<UserList />, { wrapper: Wrapper })
     expect(screen.getByText(/Add user/i)).toBeInTheDocument()
   })
 
   it('does not render Add user button when user lacks write permission', () => {
-    jest.mocked(useCedarling).mockReturnValue({
-      hasCedarReadPermission: jest.fn(() => true),
-      hasCedarWritePermission: jest.fn(() => false),
-      hasCedarDeletePermission: jest.fn(() => true),
-      authorizeHelper: jest.fn(),
-      authorize: jest.fn(),
-      isLoading: false,
-      error: null,
-    })
+    jest
+      .mocked(useCedarling)
+      .mockReturnValue(makeMockCedarling({ hasCedarWritePermission: jest.fn(() => false) }))
     render(<UserList />, { wrapper: Wrapper })
     expect(screen.queryByText(/Add user/i)).not.toBeInTheDocument()
   })
