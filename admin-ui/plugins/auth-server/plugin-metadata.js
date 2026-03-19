@@ -11,7 +11,7 @@ import SessionListPage from './components/Sessions/SessionListPage'
 
 import PropertiesPage from './components/Configuration/AuthPage'
 import KeysPage from './components/Configuration/Keys/KeysPage'
-import LoggingPage from './components/Configuration/Defaults/LoggingPage'
+import LoggingPage from './components/Configuration/Logging/LoggingPage'
 
 import ReportPage from './components/Reports/ReportPage'
 import ConfigApiPage from './components/Configuration/ConfigApiConfiguration/ConfigApiPage'

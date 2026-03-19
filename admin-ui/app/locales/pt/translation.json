@@ -288,6 +288,8 @@
     "kc_last_update_count": "Contagem da Última Atualização do Link Keycloak",
     "kc_problem_count": "Contagem de Problemas do Link Keycloak",
     "update_method": "Método de Atualização",
+    "unnamed_key": "Chave sem nome",
+    "no_value": "Sem valor",
     "message_provider_type": "Tipo de provedor de mensagens",
     "ssl_key_store_file_path": "Caminho do arquivo de armazenamento de chaves SSL",
     "ssl_trust_store_password": "Senha do armazenamento de confiança SSL",
@@ -1019,6 +1021,8 @@
     "error_processing_request": "Erro ao processar a solicitação.",
     "no_data": "Nenhum dado encontrado",
     "no_data_available": "Nenhum dado disponível",
+    "no_jwks_found": "Nenhuma chave JSON Web encontrada.",
+    "error_loading_jwks": "Falha ao carregar as chaves JSON Web.",
     "loading": "Carregando",
     "previous_page": "Página anterior",
     "next_page": "Próxima página",
@@ -1306,7 +1310,14 @@
     "usage_type_native": "Nativo",
     "usage_type_both": "Ambos os métodos",
     "java": "Java",
-    "jython": "Jython"
+    "jython": "Jython",
+    "log_level_trace": "TRACE",
+    "log_level_debug": "DEBUG",
+    "log_level_info": "INFO",
+    "log_level_warn": "WARN",
+    "log_level_error": "ERROR",
+    "log_layout_text": "Texto",
+    "log_layout_json": "JSON"
   },
   "documentation": {
     "asset": {

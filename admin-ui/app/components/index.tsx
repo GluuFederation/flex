@@ -1,34 +1,25 @@
 import Accordion from './Accordion'
 import { AccordionHeader } from './Accordion/AccordionHeader'
 import { AccordionBody } from './Accordion/AccordionBody'
-import Avatar, { AvatarAddOn } from './Avatar'
-import { AvatarImage } from './Avatar/AvatarImage'
 import Card from './Card'
 import CardHeader from './CardHeader'
 import CustomInput from './CustomInput'
 import Divider from './Divider'
 import { EmptyLayout } from './EmptyLayout'
-import ExtendedDropdown from './ExtendedDropdown'
 import { GluuBadge } from './GluuBadge'
 import { GluuSpinner } from './GluuSpinner'
 import { GluuButton } from './GluuButton'
 import Layout, { withPageConfig, setupPage } from './Layout'
-import Nav from './Nav'
-import Navbar from './Navbar'
-import NestedDropdown from './NestedDropdown'
 import Notifications from './Notifications'
 import OuterClick from './OuterClick'
-import Progress from './Progress'
 import Sidebar from './Sidebar'
 import { SidebarMenuItem, SidebarMenu } from './SidebarMenu'
-import SidebarTrigger from './SidebarTrigger'
-import { ThemeClass, ThemeProvider, ThemeConsumer } from './Theme'
+import { ThemeClass, ThemeProvider } from './Theme'
 import { ThemeDropdown } from './ThemeDropdown'
 import { GluuDatePicker } from './GluuDatePicker'
 import { GluuDropdown } from './GluuDropdown'
 import { GluuPageContent } from './GluuPageContent'
 import { ArrowIcon, ChevronIcon } from './SVG'
-import UncontrolledTabs from './UncontrolledTabs'
 import Wizard from './Wizard'
 import WizardStep from './Wizard/WizardStep'
 
@@ -84,7 +75,6 @@ export {
   ModalHeader,
   NavbarBrand,
   NavbarToggler,
-  NavItem,
   NavLink,
   Pagination,
   PaginationItem,
@@ -123,41 +113,30 @@ export {
   Accordion,
   AccordionHeader,
   AccordionBody,
-  Avatar,
-  AvatarImage,
-  AvatarAddOn,
   Card,
   CardHeader,
   CustomInput,
   Divider,
   EmptyLayout,
-  ExtendedDropdown,
   GluuBadge,
   GluuButton,
   GluuDatePicker,
   GluuSpinner,
   Layout,
-  Nav,
-  Navbar,
-  NestedDropdown,
   Notifications,
   withPageConfig,
   setupPage,
   OuterClick,
-  Progress,
   Sidebar,
   SidebarMenu,
   SidebarMenuItem,
-  SidebarTrigger,
   ThemeClass,
-  ThemeConsumer,
   ThemeProvider,
   ThemeDropdown,
   GluuDropdown,
   GluuPageContent,
   ArrowIcon,
   ChevronIcon,
-  UncontrolledTabs,
   Wizard,
   WizardStep,
 }
