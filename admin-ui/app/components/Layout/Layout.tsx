@@ -82,7 +82,7 @@ const initialLayoutState: LayoutState = {
   navbarHidden: false,
   footerHidden: false,
   sidebarCollapsed: false,
-  screenSize: '' as ScreenSize,
+  screenSize: (typeof window !== 'undefined' ? getScreenSize() : '') as ScreenSize,
   animationsDisabled: true,
   pageTitle: null,
   pageDescription: config.siteDescription,
@@ -160,7 +160,9 @@ const Layout: React.FC<LayoutProps> = (props) => {
     updateNavbarsPositions,
   ])
 
-  const toggleSidebar = useCallback(() => {}, [])
+  const toggleSidebar = useCallback(() => {
+    setState((prev) => ({ ...prev, sidebarCollapsed: !prev.sidebarCollapsed }))
+  }, [])
 
   const setElementsVisibility = useCallback((elements: Partial<LayoutState>) => {
     setState((prev) => ({
@@ -219,7 +221,7 @@ const Layout: React.FC<LayoutProps> = (props) => {
       value={{
         ...state,
         sidebarSlim: false,
-        sidebarCollapsed: false,
+        sidebarCollapsed: state.sidebarCollapsed,
         toggleSidebar,
         setElementsVisibility,
         changeMeta,
@@ -231,7 +233,7 @@ const Layout: React.FC<LayoutProps> = (props) => {
             {sidebar &&
               React.cloneElement(sidebar, {
                 sidebarSlim: false,
-                sidebarCollapsed: false,
+                sidebarCollapsed: state.sidebarCollapsed,
               })}
 
             <div className="layout__wrap">

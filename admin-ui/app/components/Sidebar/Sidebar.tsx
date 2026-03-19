@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react'
 import classNames from 'classnames'
 
-import OuterClick from '../OuterClick'
 import { withPageConfig } from '../Layout'
 import type { SidebarProps } from './types'
 import SidebarEntryAnimate from '../dashboard-style-airframe/sidebar-entry-animate'
@@ -51,18 +50,17 @@ const Sidebar: React.FC<SidebarProps> = (props) => {
     'sidebar custom-sidebar-container',
     animationsEnabled && 'sidebar--animations-enabled',
     {
-      'sidebar--slim': slim || pageConfig.sidebarSlim,
+      'sidebar--slim': slim || pageConfig?.sidebarSlim,
+      'sidebar--collapsed': pageConfig?.sidebarCollapsed,
       'sidebar--animations-disabled': !animationsEnabled,
       'sidebar--animate-entry-complete': entryAnimationFinished,
     },
   )
 
   return (
-    <OuterClick active={false}>
-      <div className={sidebarClass} ref={sidebarRef}>
-        {children}
-      </div>
-    </OuterClick>
+    <div className={sidebarClass} ref={sidebarRef}>
+      {children}
+    </div>
   )
 }
 

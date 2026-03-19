@@ -26,8 +26,8 @@ const ReadOnlyField = React.memo<ReadOnlyFieldProps>(
           name={label}
           data-testid={label}
           readOnly
-          defaultValue={value}
-          {...(type === 'textarea' ? { rows: getTextareaRows(value) } : {})}
+          value={value ?? ''}
+          {...(type === 'textarea' ? { rows: getTextareaRows(value ?? '') } : {})}
         />
       </Col>
     </FormGroup>
@@ -76,7 +76,7 @@ const JwkItem = React.memo<JwkItemWithClassesProps>(({ item, classes }) => {
       {isOpen && (
         <div className={classes.accordionBody}>
           <div className={classes.fieldItemFullWidth}>
-            <ReadOnlyField label="description" value={item.descr ?? ''} type="textarea" />
+            <ReadOnlyField label="description" value={item.descr ?? ''} />
           </div>
 
           <div className={classes.fieldsGrid}>
@@ -107,9 +107,11 @@ const JwkItem = React.memo<JwkItemWithClassesProps>(({ item, classes }) => {
             <ReadOnlyField label="kid" value={item.kid ?? ''} />
           </div>
 
-          <div className={classes.fieldItemFullWidth}>
-            <ReadOnlyField label="x5c" value={item.x5c?.[0] ?? ''} type="textarea" />
-          </div>
+          {item.x5c?.length > 0 && (
+            <div className={classes.fieldItemFullWidth}>
+              <ReadOnlyField label="x5c" value={item.x5c[0] ?? ''} type="textarea" />
+            </div>
+          )}
 
           {item.x && item.y && (
             <div className={classes.fieldsGrid}>

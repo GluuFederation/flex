@@ -38,6 +38,8 @@ export const OuterClick: React.FC<OuterClickProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const rootElementRef = useRef<HTMLElement | null>(null)
+  const excludedElementsRef = useRef(excludedElements)
+  excludedElementsRef.current = excludedElements
 
   const handleDocumentClick = useCallback(
     (evt: DocumentClickEvent) => {
@@ -46,8 +48,9 @@ export const OuterClick: React.FC<OuterClickProps> = ({
 
       const domElement = containerRef.current
       const target = evt.target as Node
+      const elements = excludedElementsRef.current
 
-      const isExcluded = some(excludedElements, (element) => {
+      const isExcluded = some(elements, (element) => {
         if (!element?.current) return false
         return element.current.contains(target)
       })
@@ -56,7 +59,7 @@ export const OuterClick: React.FC<OuterClickProps> = ({
         onClickOutside(evt)
       }
     },
-    [active, excludedElements, onClickOutside],
+    [active, onClickOutside],
   )
 
   useEffect(() => {
