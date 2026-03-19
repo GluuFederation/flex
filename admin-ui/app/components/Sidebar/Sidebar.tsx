@@ -1,62 +1,70 @@
-import React from 'react'
+import React, { useRef, useState, useEffect } from 'react'
+import classNames from 'classnames'
 
-import OuterClick from './../OuterClick'
-import { withPageConfig } from './../Layout'
-import { SidebarContent } from './SidebarContent'
-import { SidebarSection } from './SidebarSection'
-import { SidebarClose } from './SidebarClose'
-import { SidebarMobileFluid } from './SidebarMobileFluid'
-import { SidebarShowSlim } from './SidebarShowSlim'
-import { SidebarHideSlim } from './SidebarHideSlim'
+import OuterClick from '../OuterClick'
+import { withPageConfig } from '../Layout'
+import type { SidebarProps } from './types'
+import SidebarEntryAnimate from '../dashboard-style-airframe/sidebar-entry-animate'
+import SlimSidebarAnimate from '../dashboard-style-airframe/slim-sidebar-animate'
+import SlimMenuAnimate from '../dashboard-style-airframe/slim-menu-animate'
 
-export interface PageConfig {
-  sidebarCollapsed: boolean
-  screenSize: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | ''
-  toggleSidebar: () => void
-  sidebarSlim?: boolean
-  animationsDisabled?: boolean
-  [key: string]: any // for other dynamic keys like setElementsVisibility, changeMeta, etc
-}
+const Sidebar: React.FC<SidebarProps> = (props) => {
+  const sidebarRef = useRef<HTMLDivElement>(null)
+  const [entryAnimationFinished, setEntryAnimationFinished] = useState(false)
+  const entryAnimateRef = useRef<SidebarEntryAnimate | null>(null)
+  const slimAnimateRef = useRef<SlimSidebarAnimate | null>(null)
+  const menuAnimateRef = useRef<SlimMenuAnimate | null>(null)
 
-export interface SidebarProps {
-  children?: React.ReactNode
-  slim?: boolean
-  collapsed?: boolean
-  animationsDisabled?: boolean
-  pageConfig: PageConfig
-}
+  useEffect(() => {
+    const entryAnimate = new SidebarEntryAnimate()
+    const slimAnimate = new SlimSidebarAnimate()
+    const menuAnimate = new SlimMenuAnimate()
+    entryAnimateRef.current = entryAnimate
+    slimAnimateRef.current = slimAnimate
+    menuAnimateRef.current = menuAnimate
 
-const Sidebar: React.FC<SidebarProps> & {
-  Section: typeof SidebarSection
-  Close: typeof SidebarClose
-  MobileFluid: typeof SidebarMobileFluid
-  ShowSlim: typeof SidebarShowSlim
-  HideSlim: typeof SidebarHideSlim
-} = (props) => {
+    if (sidebarRef.current) {
+      entryAnimate.assignParentElement(sidebarRef.current)
+      slimAnimate.assignParentElement(sidebarRef.current)
+      menuAnimate.assignSidebarElement(sidebarRef.current)
+    }
+
+    entryAnimate.executeAnimation().then(() => setEntryAnimationFinished(true))
+
+    return () => {
+      entryAnimate.destroy()
+      slimAnimate.destroy()
+      menuAnimate.destroy()
+    }
+  }, [])
+
+  const {
+    animationsDisabled = false,
+    collapsed = false,
+    pageConfig,
+    slim = false,
+    children,
+  } = props
+
+  const sidebarClass = classNames(
+    'sidebar custom-sidebar-container',
+    'sidebar--animations-enabled',
+    {
+      'sidebar--slim': slim || pageConfig.sidebarSlim,
+      'sidebar--collapsed': collapsed || pageConfig.sidebarCollapsed,
+      'sidebar--animations-disabled': animationsDisabled || pageConfig.animationsDisabled,
+      'sidebar--animate-entry-complete': entryAnimationFinished,
+    },
+  )
+
   return (
-    <React.Fragment>
-      {/* Enable OuterClick only in sidebar overlay mode */}
-      <OuterClick
-        active={
-          !props.pageConfig.sidebarCollapsed &&
-          (props.pageConfig.screenSize === 'xs' ||
-            props.pageConfig.screenSize === 'sm' ||
-            props.pageConfig.screenSize === 'md')
-        }
-        onClickOutside={() => props.pageConfig.toggleSidebar()}
-      >
-        <SidebarContent {...props} />
-      </OuterClick>
-    </React.Fragment>
+    <OuterClick active={false}>
+      <div className={sidebarClass} ref={sidebarRef}>
+        {children}
+      </div>
+    </OuterClick>
   )
 }
-
-// Attach subcomponents to Sidebar
-Sidebar.Section = SidebarSection
-Sidebar.Close = SidebarClose
-Sidebar.MobileFluid = SidebarMobileFluid
-Sidebar.ShowSlim = SidebarShowSlim
-Sidebar.HideSlim = SidebarHideSlim
 
 const cfgSidebar = withPageConfig(Sidebar)
 

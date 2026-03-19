@@ -1,10 +1,9 @@
-import React, { ReactNode, ReactElement } from 'react'
-import ReactDOM from 'react-dom'
+import React, { ReactNode, useRef, useEffect, useCallback } from 'react'
 import some from 'lodash/some'
 
 // Safely gets the browser document object,
 // returns a simple mock for server rendering purposes
-const getDocument = () =>
+const getDocument = (): Document | { querySelector: () => null } =>
   typeof document === 'undefined'
     ? {
         querySelector() {
@@ -13,86 +12,76 @@ const getDocument = () =>
       }
     : document
 
+/** Event with optional non-standard path (Chrome) */
+type DocumentClickEvent = MouseEvent | TouchEvent
+type EventWithPath = DocumentClickEvent & { path?: Array<{ id?: string }> }
+
 interface OuterClickProps {
-  onClickOutside?: (evt: MouseEvent | TouchEvent) => void
+  onClickOutside?: (evt: DocumentClickEvent) => void
   children: ReactNode
-  excludedElements?: Array<React.Component | React.RefObject<any> | null>
+  /** Refs to DOM elements; clicks inside these are not considered "outside" */
+  excludedElements?: Array<React.RefObject<HTMLElement | null> | null>
   active?: boolean
 }
 
-class OuterClick extends React.Component<OuterClickProps> {
-  static defaultProps = {
-    onClickOutside: () => {},
-    excludedElements: [],
-    active: true,
-  }
-
-  private rootElement: HTMLElement | null = null
-  private elementRef: React.Component | Element | null = null
-
-  componentDidMount() {
-    this.rootElement = getDocument().querySelector('body')
-
-    if (this.rootElement) {
-      this.rootElement.addEventListener('click', this.handleDocumentClick as EventListener)
-      this.rootElement.addEventListener('touchstart', this.handleDocumentClick as EventListener)
-    }
-  }
-
-  componentWillUnmount() {
-    if (this.rootElement) {
-      this.rootElement.removeEventListener('click', this.handleDocumentClick as EventListener)
-      this.rootElement.removeEventListener('touchstart', this.handleDocumentClick as EventListener)
-    }
-  }
-
-  assignRef = (elementRef: React.Component | Element | null) => {
-    this.elementRef = elementRef
-  }
-
-  handleDocumentClick = (evt: MouseEvent | (TouchEvent & { path?: any[]; target: any })) => {
-    if (this.openSidebar((evt as any).path)) {
-      if (this.props.active) {
-        // eslint-disable-next-line react/no-find-dom-node
-        const domElement = ReactDOM.findDOMNode(this.elementRef) as HTMLElement | null
-
-        const isExcluded = some(this.props.excludedElements, (element) => {
-          if (!element) return false
-          let node: Element | null = null
-          // If it's a ref object, use its current
-          if (typeof (element as React.RefObject<any>).current !== 'undefined') {
-            node = ReactDOM.findDOMNode(
-              (element as React.RefObject<any>).current,
-            ) as HTMLElement | null
-          } else {
-            node = ReactDOM.findDOMNode(element as React.Component) as HTMLElement | null
-          }
-          return node && node.contains(evt.target)
-        })
-
-        if (!isExcluded && domElement && !domElement.contains(evt.target)) {
-          this.props.onClickOutside && this.props.onClickOutside(evt)
-        }
-      }
-    }
-  }
-
-  openSidebar(path: any[] | undefined) {
-    const exists = path?.some((item: any) => item.id === 'navToggleBtn')
-    if (exists) return false
-
-    return true
-  }
-
-  render() {
-    const onlyChild = React.Children.only(this.props.children)
-
-    const updatedChild = React.isValidElement(onlyChild)
-      ? React.cloneElement(onlyChild as ReactElement, { ref: this.assignRef })
-      : onlyChild
-
-    return updatedChild
-  }
+const openSidebar = (path: Array<{ id?: string }> | undefined): boolean => {
+  const exists = path?.some((item) => item.id === 'navToggleBtn')
+  return !exists
 }
 
-export { OuterClick }
+export const OuterClick: React.FC<OuterClickProps> = ({
+  onClickOutside,
+  children,
+  excludedElements = [],
+  active = true,
+}) => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const rootElementRef = useRef<HTMLElement | null>(null)
+
+  const handleDocumentClick = useCallback(
+    (evt: EventWithPath) => {
+      if (!openSidebar(evt.path)) return
+      if (!active) return
+
+      const domElement = containerRef.current
+      const target = evt.target as Node
+
+      const isExcluded = some(excludedElements, (element) => {
+        if (!element?.current) return false
+        return element.current.contains(target)
+      })
+
+      if (!isExcluded && domElement && !domElement.contains(target) && onClickOutside) {
+        onClickOutside(evt)
+      }
+    },
+    [active, excludedElements, onClickOutside],
+  )
+
+  useEffect(() => {
+    const doc = getDocument()
+    const root = doc.querySelector('body')
+    rootElementRef.current = root as HTMLElement | null
+
+    if (rootElementRef.current) {
+      rootElementRef.current.addEventListener('click', handleDocumentClick as EventListener)
+      rootElementRef.current.addEventListener('touchstart', handleDocumentClick as EventListener)
+    }
+
+    return () => {
+      if (rootElementRef.current) {
+        rootElementRef.current.removeEventListener('click', handleDocumentClick as EventListener)
+        rootElementRef.current.removeEventListener(
+          'touchstart',
+          handleDocumentClick as EventListener,
+        )
+      }
+    }
+  }, [handleDocumentClick])
+
+  return (
+    <div ref={containerRef} style={{ display: 'contents' }}>
+      {children}
+    </div>
+  )
+}
