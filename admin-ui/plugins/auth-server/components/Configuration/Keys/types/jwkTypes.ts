@@ -14,6 +14,7 @@ export type ReadOnlyFieldProps = {
   type?: 'text' | 'textarea'
   lsize?: number
   rsize?: number
+  emptyPlaceholder?: string
 }
 
 export type JwkItemWithClassesProps = JwkItemProps & {
@@ -24,7 +25,6 @@ export type JwkListPageProps = {
   classes: Record<string, string>
 }
 
-// Hook return types
 export type UseJwkApiResult = {
   jwks: WebKeysConfiguration | undefined
   isLoading: boolean

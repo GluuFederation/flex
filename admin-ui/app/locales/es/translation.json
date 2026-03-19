@@ -186,6 +186,7 @@
     "kc_problem_count": "Número de Problemas en Keycloak Link",
     "update_method": "Método de Actualización",
     "unnamed_key": "Clave sin nombre",
+    "no_value": "Sin valor",
     "released_attributes": "Atributos Publicados",
     "jans_assertion_consumer_service_get_url": "URL GET de Jans Assertion Consumer Service",
     "jans_assertion_consumer_service_post_url": "URL POST de Jans Assertion Consumer Service",

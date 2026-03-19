@@ -57,8 +57,15 @@ export const useStyles = makeStyles<StyleProps>()((theme: Theme, { isDark, theme
       'fontWeight': fontWeights.semiBold,
       'fontSize': fontSizes.base,
       'userSelect': 'none' as const,
+      'outline': 'none',
       '&:hover': {
         opacity: 0.9,
+      },
+      '&:focus': {
+        outline: 'none',
+      },
+      '&:focus-visible': {
+        outline: 'none',
       },
     },
     accordionHeaderOpen: {
