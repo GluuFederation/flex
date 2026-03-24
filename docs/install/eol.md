@@ -13,6 +13,8 @@ Our End of Life (EOL) policy is designed to provide a predictable schedule for s
 
 ### Key Milestones
 
+The table below shows general cadense of the key release milestones. Applicable from version `6.0.0` onwards.
+
 | Milestone                     | Calculation       | Description                                                         |
 |-------------------------------|-------------------|---------------------------------------------------------------------|
 | **General Availability (GA)** | $T_0$             | The date the version was publicly released.                         |
