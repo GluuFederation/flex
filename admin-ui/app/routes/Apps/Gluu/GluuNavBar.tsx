@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef, useMemo, useCallback, memo } from 'react'
+import { useEffect, useRef, useMemo, useCallback, memo } from 'react'
 import { useSelector } from 'react-redux'
 import { ErrorBoundary } from 'react-error-boundary'
 import Box from '@mui/material/Box'
-import { Nav, NavItem, Notifications, SidebarTrigger, ChevronIcon } from 'Components'
+import { Notifications, ChevronIcon } from 'Components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { DropdownProfile } from 'Routes/components/Dropdowns/DropdownProfile'
 import type { UserInfo } from 'Redux/features/types/authTypes'
@@ -14,8 +14,6 @@ import { useStyles } from './styles/GluuNavBar.style'
 import { useNavbarTheme } from './hooks/useNavbarTheme'
 import { usePageTitle } from './hooks/usePageTitle'
 
-const MOBILE_BREAKPOINT = '(max-width: 768px)'
-
 const selectUserInfo = (state: { authReducer: { userinfo: UserInfo | null } }) =>
   state.authReducer.userinfo
 
@@ -26,10 +24,6 @@ const GluuNavBar = () => {
   const { classes } = useStyles({ navbarColors })
   const pageTitle = usePageTitle()
   const navbarRef = useRef<HTMLDivElement>(null)
-
-  const [showCollapse, setShowCollapse] = useState(() =>
-    typeof window !== 'undefined' ? window.matchMedia(MOBILE_BREAKPOINT).matches : false,
-  )
 
   const applyNavbarColors = useCallback((element: HTMLElement, colors: typeof navbarColors) => {
     element.style.setProperty('background-color', colors.background, 'important')
@@ -43,16 +37,6 @@ const GluuNavBar = () => {
     if (!navbarRef.current) return
     applyNavbarColors(navbarRef.current, navbarColors)
   }, [navbarColors, applyNavbarColors])
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-
-    const mediaQuery = window.matchMedia(MOBILE_BREAKPOINT)
-    const handleChange = (e: MediaQueryListEvent) => setShowCollapse(e.matches)
-
-    mediaQuery.addEventListener('change', handleChange)
-    return () => mediaQuery.removeEventListener('change', handleChange)
-  }, [])
 
   const displayName = useMemo(() => {
     if (!userInfo) return 'User'
@@ -90,13 +74,6 @@ const GluuNavBar = () => {
       <Box ref={navbarRef} className={`${classes.navbarWrapper} navbar-themed`}>
         <Box className={classes.navbarContainer}>
           <Box className={classes.leftSection}>
-            {showCollapse && (
-              <Nav className={classes.navLeft}>
-                <NavItem>
-                  <SidebarTrigger id="navToggleBtn" />
-                </NavItem>
-              </Nav>
-            )}
             <GluuText
               variant="h3"
               className={classes.pageTitle}

@@ -1,16 +1,10 @@
 import React, { Suspense, lazy } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { Sidebar, SidebarTrigger } from 'Components'
+import { Sidebar } from 'Components'
 import { LogoThemed } from 'Routes/components/LogoThemed/LogoThemed'
 import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
 import GluuText from '@/routes/Apps/Gluu/GluuText'
-import {
-  SidebarClose,
-  SidebarHideSlim,
-  SidebarMobileFluid,
-  SidebarSection,
-} from '@/components/Sidebar'
 import type { DefaultSidebarProps } from './types'
 import { useTranslation } from 'react-i18next'
 import { RootState } from '@/cedarling'
@@ -40,27 +34,16 @@ const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
 
   return (
     <Sidebar>
-      {/* START SIDEBAR-OVERLAY: Close (x) */}
-      <SidebarClose>
-        <SidebarTrigger tag={'a'} href="#">
-          <i className="fa fa-times-circle fa-fw" />
-        </SidebarTrigger>
-      </SidebarClose>
-      {/* START SIDEBAR-OVERLAY: Close (x) */}
-
-      {/* START SIDEBAR: Only for Desktop */}
-      <SidebarHideSlim>
-        <SidebarSection>
+      <div className="sidebar__hide-slim">
+        <div className="sidebar__section">
           <Link to={ROUTES.ROOT} className="sidebar__brand">
             <LogoThemed />
           </Link>
-        </SidebarSection>
-      </SidebarHideSlim>
-      {/* END SIDEBAR: Only for Desktop */}
+        </div>
+      </div>
 
-      {/* START SIDEBAR: Only for Mobile */}
-      <SidebarMobileFluid>
-        <SidebarSection fluid cover>
+      <div className="sidebar__mobile-fluid">
+        <div className="sidebar__section sidebar__section--fluid sidebar__section--cover">
           {initialized ? (
             <Suspense
               fallback={
@@ -74,9 +57,8 @@ const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
           ) : (
             cedarConditionalLoader()
           )}
-        </SidebarSection>
-      </SidebarMobileFluid>
-      {/* END SIDEBAR: Only for Mobile */}
+        </div>
+      </div>
     </Sidebar>
   )
 }

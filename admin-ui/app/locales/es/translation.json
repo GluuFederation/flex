@@ -185,6 +185,8 @@
     "kc_last_update_count": "Número de Últimas Actualizaciones de Keycloak Link",
     "kc_problem_count": "Número de Problemas en Keycloak Link",
     "update_method": "Método de Actualización",
+    "unnamed_key": "Clave sin nombre",
+    "no_value": "Sin valor",
     "released_attributes": "Atributos Publicados",
     "jans_assertion_consumer_service_get_url": "URL GET de Jans Assertion Consumer Service",
     "jans_assertion_consumer_service_post_url": "URL POST de Jans Assertion Consumer Service",
@@ -1049,6 +1051,8 @@
     "request_timeout_title": "Tiempo de espera agotado",
     "no_data_found": "No se encontraron datos",
     "no_data_available": "No hay datos disponibles",
+    "no_jwks_found": "No se encontraron claves JSON Web.",
+    "error_loading_jwks": "Error al cargar las claves JSON Web.",
     "loading": "Cargando",
     "previous_page": "Página anterior",
     "next_page": "Página siguiente",
@@ -1412,7 +1416,14 @@
     "usage_type_native": "Nativo",
     "usage_type_both": "Ambos métodos",
     "java": "Java",
-    "jython": "Jython"
+    "jython": "Jython",
+    "log_level_trace": "TRACE",
+    "log_level_debug": "DEBUG",
+    "log_level_info": "INFO",
+    "log_level_warn": "WARN",
+    "log_level_error": "ERROR",
+    "log_layout_text": "Texto",
+    "log_layout_json": "JSON"
   },
   "documentation": {
     "asset": {

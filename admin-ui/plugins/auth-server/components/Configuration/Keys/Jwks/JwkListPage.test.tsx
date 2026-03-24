@@ -1,14 +1,27 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import JwkListPage from './JwkListPage'
-import { Provider } from 'react-redux'
-import i18n from '../../../../../../app/i18n'
-import { I18nextProvider } from 'react-i18next'
+import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import { formatDate } from '../../../../../../app/utils/dayjsUtils'
-import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import { mockJwksConfig } from '../__fixtures__/jwkTestData'
+import { mockJwksConfig } from '../__tests__/fixtures/jwkTestData'
 import { DATE_FORMAT } from '../constants'
 import { useJwkApi } from '../hooks'
+
+jest.mock('@/cedarling', () => ({
+  useCedarling: jest.fn(() => ({
+    hasCedarReadPermission: jest.fn(() => true),
+    hasCedarWritePermission: jest.fn(() => true),
+    authorizeHelper: jest.fn(),
+  })),
+}))
+
+jest.mock('@/cedarling/utility', () => ({
+  ADMIN_UI_RESOURCES: { Keys: 'Keys', Lock: 'Lock', Webhooks: 'Webhooks' },
+}))
+
+jest.mock('@/cedarling/constants/resourceScopes', () => ({
+  CEDAR_RESOURCE_SCOPES: { Keys: [], Lock: [], Webhooks: [] },
+}))
 
 jest.mock('../hooks', () => ({
   useJwkApi: jest.fn(() => ({
@@ -22,25 +35,42 @@ jest.mock('../hooks', () => ({
   })),
 }))
 
-const store = configureStore({
-  reducer: combineReducers({
-    noReducer: (state = {}) => state,
-  }),
-})
+const mockClasses: Record<string, string> = {
+  pageCard: 'pageCard',
+  sectionTitle: 'sectionTitle',
+  accordionWrapper: 'accordionWrapper',
+  accordionHeader: 'accordionHeader',
+  accordionHeaderOpen: 'accordionHeaderOpen',
+  accordionIcon: 'accordionIcon',
+  accordionBody: 'accordionBody',
+  fieldsGrid: 'fieldsGrid',
+  fieldItem: 'fieldItem',
+  fieldItemFullWidth: 'fieldItemFullWidth',
+  formLabels: 'formLabels',
+  footer: 'footer',
+  infoAlert: 'infoAlert',
+  infoIcon: 'infoIcon',
+  infoText: 'infoText',
+  divider: 'divider',
+}
 
 const Wrapper = ({ children }: { children: React.ReactNode }) => (
-  <I18nextProvider i18n={i18n}>
-    <Provider store={store}>{children}</Provider>
-  </I18nextProvider>
+  <AppTestWrapper>{children}</AppTestWrapper>
 )
 
 describe('JwkListPage', () => {
   it('should render jwks page properly', () => {
-    render(<JwkListPage />, {
+    render(<JwkListPage classes={mockClasses} />, {
       wrapper: Wrapper,
     })
-    expect(screen.getByText(/JSON Web Keys/)).toBeInTheDocument()
+
     const firstKey = mockJwksConfig.keys?.[0]
+    const headerText = firstKey?.name ?? 'Unnamed Key'
+    expect(screen.getByText(headerText)).toBeInTheDocument()
+
+    // Expand the accordion
+    fireEvent.click(screen.getByText(headerText))
+
     expect(screen.getByTestId('x5c')).toHaveValue(firstKey?.x5c?.[0] ?? '')
     expect(screen.getByTestId('kid')).toHaveValue(firstKey?.kid ?? '')
     expect(screen.getByTestId('kty')).toHaveValue(firstKey?.kty ?? '')
@@ -52,32 +82,40 @@ describe('JwkListPage', () => {
 
   it('should handle undefined exp gracefully', () => {
     const mockedUseJwkApi = useJwkApi as jest.Mock
+    const keys = mockJwksConfig.keys ?? []
     mockedUseJwkApi.mockReturnValue({
       jwks: {
-        keys: [{ ...mockJwksConfig.keys[0], exp: undefined }],
+        keys: [{ ...keys[0], exp: undefined }],
       },
       isLoading: false,
       error: null,
       refetch: jest.fn(),
     })
 
-    render(<JwkListPage />, { wrapper: Wrapper })
+    render(<JwkListPage classes={mockClasses} />, { wrapper: Wrapper })
+
+    const headerText = keys[0]?.name ?? 'Unnamed Key'
+    fireEvent.click(screen.getByText(headerText))
 
     expect(screen.getByTestId('exp')).toHaveValue('')
   })
 
   it('should handle null exp gracefully', () => {
     const mockedUseJwkApi = useJwkApi as jest.Mock
+    const keys = mockJwksConfig.keys ?? []
     mockedUseJwkApi.mockReturnValue({
       jwks: {
-        keys: [{ ...mockJwksConfig.keys[0], exp: null }],
+        keys: [{ ...keys[0], exp: null }],
       },
       isLoading: false,
       error: null,
       refetch: jest.fn(),
     })
 
-    render(<JwkListPage />, { wrapper: Wrapper })
+    render(<JwkListPage classes={mockClasses} />, { wrapper: Wrapper })
+
+    const headerText = keys[0]?.name ?? 'Unnamed Key'
+    fireEvent.click(screen.getByText(headerText))
 
     expect(screen.getByTestId('exp')).toHaveValue('')
   })

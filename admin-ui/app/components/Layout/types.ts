@@ -17,9 +17,6 @@ export type FavIconItem = {
 export type LayoutProps = {
   children: React.ReactNode
   sidebarSlim?: boolean
-  location: {
-    pathname: string
-  }
   favIcons?: FavIconItem[]
 }
 

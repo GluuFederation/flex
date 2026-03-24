@@ -1,49 +1,63 @@
-import React, { useMemo, useEffect } from 'react'
-import { UncontrolledTabs, TabPane, Card, CardBody } from 'Components'
-import { UncontrolledTabsTabContent } from '@/components/UncontrolledTabs/UncontrolledTabsTabContent'
+import React, { useMemo, useEffect, useCallback } from 'react'
 import JwkListPage from './Jwks/JwkListPage'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
-import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { useCedarling } from '@/cedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
+import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
+import { GluuPageContent } from '@/components'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
+import { useStyles } from './styles/KeysPage.style'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+
+const keysResourceId = ADMIN_UI_RESOURCES.Keys
+const keysScopes = CEDAR_RESOURCE_SCOPES[keysResourceId] || []
 
 const KeysPage: React.FC = () => {
   const { t } = useTranslation()
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
+  const { navigateBack } = useAppNavigation()
 
-  const keysResourceId = ADMIN_UI_RESOURCES.Keys
-  const keysScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[keysResourceId] || [], [keysResourceId])
+  const { state: themeState } = useTheme()
+  const { themeColors, isDark } = useMemo(
+    () => ({
+      themeColors: getThemeColor(themeState.theme),
+      isDark: themeState.theme === THEME_DARK,
+    }),
+    [themeState.theme],
+  )
+  const { classes } = useStyles({ isDark, themeColors })
 
   const canReadKeys = useMemo(
     () => hasCedarReadPermission(keysResourceId),
-    [hasCedarReadPermission, keysResourceId],
+    [hasCedarReadPermission],
   )
 
   useEffect(() => {
-    authorizeHelper(keysScopes)
-  }, [authorizeHelper, keysScopes])
+    if (keysScopes.length > 0) {
+      authorizeHelper(keysScopes)
+    }
+  }, [authorizeHelper])
+
+  const handleBack = useCallback(() => {
+    navigateBack(ROUTES.AUTH_SERVER_CONFIG_KEYS)
+  }, [navigateBack])
 
   SetTitle(t('titles.public_keys'))
 
   return (
-    <GluuViewWrapper canShow={canReadKeys}>
-      <Card style={applicationStyle.mainCard}>
-        <CardBody>
-          <UncontrolledTabs initialActiveTabId="jwkpanel">
-            <UncontrolledTabsTabContent>
-              <TabPane tabId="jwkpanel">
-                <JwkListPage />
-              </TabPane>
-            </UncontrolledTabsTabContent>
-          </UncontrolledTabs>
-          <GluuFormFooter showBack={true} showCancel={false} showApply={false} />
-        </CardBody>
-      </Card>
-    </GluuViewWrapper>
+    <GluuPageContent>
+      <GluuViewWrapper canShow={canReadKeys}>
+        <div className={classes.pageCard}>
+          <JwkListPage classes={classes} />
+        </div>
+        <GluuThemeFormFooter showBack onBack={handleBack} showCancel={false} showApply={false} />
+      </GluuViewWrapper>
+    </GluuPageContent>
   )
 }
 

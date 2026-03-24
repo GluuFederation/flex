@@ -1,16 +1,18 @@
 import React, { useMemo } from 'react'
-import { Card, CardBody, Alert } from 'Components'
-import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import { Box } from '@mui/material'
+import { InfoOutlined } from '@mui/icons-material'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import JwkItem from './JwkItem'
 import { useJwkApi } from '../hooks'
 import { useTranslation } from 'react-i18next'
+import type { JwkListPageProps } from '../types'
 
 const generateStableKey = (kid: string, index: number): string => {
   return kid || `jwk-${index}`
 }
 
-function JwkListPage(): React.ReactElement {
+const JwkListPage: React.FC<JwkListPageProps> = ({ classes }) => {
   const { t } = useTranslation()
   const { jwks, isLoading, error } = useJwkApi()
 
@@ -21,38 +23,36 @@ function JwkListPage(): React.ReactElement {
 
     return jwks.keys.map((item, index) => {
       const kid = item.kid ?? ''
-      return <JwkItem key={generateStableKey(kid, index)} item={item} index={index} />
+      return (
+        <JwkItem key={generateStableKey(kid, index)} item={item} index={index} classes={classes} />
+      )
     })
-  }, [jwks?.keys])
+  }, [jwks?.keys, classes])
 
   if (error) {
     return (
-      <>
-        <GluuLabel label="fields.json_web_keys" size={3} />
-        <Card>
-          <CardBody>
-            <Alert color="danger">
-              <h4 className="alert-heading">{t('messages.error')}</h4>
-              <p>{error.message || t('messages.error_loading_jwks')}</p>
-            </Alert>
-          </CardBody>
-        </Card>
-      </>
+      <Box className={classes.infoAlert}>
+        <InfoOutlined className={classes.infoIcon} />
+        <GluuText variant="span" className={classes.infoText} disableThemeColor>
+          {error.message || t('messages.error_loading_jwks')}
+        </GluuText>
+      </Box>
     )
   }
 
   return (
     <GluuLoader blocking={isLoading}>
-      <GluuLabel label="fields.json_web_keys" allowColon={false} size={3} />
-      <Card>
-        <CardBody>
-          {jwkItems || (
-            <Alert color="info">
-              <p>{t('messages.no_jwks_found')}</p>
-            </Alert>
-          )}
-        </CardBody>
-      </Card>
+      <GluuText variant="h5" className={classes.sectionTitle}>
+        {t('fields.json_web_keys')}
+      </GluuText>
+      {jwkItems || (
+        <Box className={classes.infoAlert}>
+          <InfoOutlined className={classes.infoIcon} />
+          <GluuText variant="span" className={classes.infoText} disableThemeColor>
+            {t('messages.no_jwks_found')}
+          </GluuText>
+        </Box>
+      )}
     </GluuLoader>
   )
 }
