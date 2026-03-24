@@ -31,8 +31,6 @@ import { BUTTON_STYLES, getButtonColors } from 'Routes/Apps/Gluu/styles/GluuThem
 import { useStyles } from './styles/SmtpFormPage.style'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
-const SMTP = 'smtp'
-
 const SmtpForm = (props: Readonly<SmtpFormProps>) => {
   const {
     item,
@@ -235,7 +233,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
               required
               disabled={readOnly}
               isDark={isDark}
-              doc_category={SMTP}
+              doc_category={smtpConstants.DOC_CATEGORY}
               doc_entry="host"
             />
           </div>
@@ -253,7 +251,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
               required
               disabled={readOnly}
               isDark={isDark}
-              doc_category={SMTP}
+              doc_category={smtpConstants.DOC_CATEGORY}
               doc_entry="port"
             />
           </div>
@@ -272,7 +270,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
               required
               disabled={readOnly}
               isDark={isDark}
-              doc_category={SMTP}
+              doc_category={smtpConstants.DOC_CATEGORY}
               doc_entry="connect_protection"
             />
           </div>
@@ -289,7 +287,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
               required
               disabled={readOnly}
               isDark={isDark}
-              doc_category={SMTP}
+              doc_category={smtpConstants.DOC_CATEGORY}
               doc_entry="from_name"
             />
           </div>
@@ -307,7 +305,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
               required
               disabled={readOnly}
               isDark={isDark}
-              doc_category={SMTP}
+              doc_category={smtpConstants.DOC_CATEGORY}
               doc_entry="from_email_address"
             />
           </div>
@@ -327,7 +325,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
               required={formik.values.requires_authentication}
               disabled={readOnly}
               isDark={isDark}
-              doc_category={SMTP}
+              doc_category={smtpConstants.DOC_CATEGORY}
               doc_entry="smtp_authentication_account_username"
             />
           </div>
@@ -349,7 +347,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
               required={formik.values.requires_authentication}
               disabled={readOnly}
               isDark={isDark}
-              doc_category={SMTP}
+              doc_category={smtpConstants.DOC_CATEGORY}
               doc_entry="smtp_authentication_account_password"
             />
           </div>
@@ -365,7 +363,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
               errorMessage={formik.errors.key_store as string}
               disabled={readOnly || !optimisticKeystoreEdit}
               isDark={isDark}
-              doc_category={SMTP}
+              doc_category={smtpConstants.DOC_CATEGORY}
               doc_entry="key_store"
             />
             {!readOnly && !optimisticKeystoreEdit && (
@@ -389,7 +387,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
               type="password"
               disabled={readOnly || !optimisticKeystoreEdit}
               isDark={isDark}
-              doc_category={SMTP}
+              doc_category={smtpConstants.DOC_CATEGORY}
               doc_entry="key_store_password"
             />
             {!readOnly && !optimisticKeystoreEdit && (
@@ -411,7 +409,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
               errorMessage={formik.errors.key_store_alias as string}
               disabled={readOnly || !optimisticKeystoreEdit}
               isDark={isDark}
-              doc_category={SMTP}
+              doc_category={smtpConstants.DOC_CATEGORY}
               doc_entry="key_store_alias"
             />
             {!readOnly && !optimisticKeystoreEdit && (
@@ -434,7 +432,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
               errorMessage={formik.errors.signing_algorithm as string}
               disabled={readOnly || !optimisticKeystoreEdit}
               isDark={isDark}
-              doc_category={SMTP}
+              doc_category={smtpConstants.DOC_CATEGORY}
               doc_entry="signing_algorithm"
             />
             {!readOnly && !optimisticKeystoreEdit && (
@@ -450,7 +448,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
                 label="fields.trust_host"
                 size={12}
                 isDark={isDark}
-                doc_category={SMTP}
+                doc_category={smtpConstants.DOC_CATEGORY}
                 doc_entry="trust_host"
               />
               <Toggle
@@ -469,7 +467,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
                 label="fields.allow_keystore_edit"
                 size={12}
                 isDark={isDark}
-                doc_category={SMTP}
+                doc_category={smtpConstants.DOC_CATEGORY}
                 doc_entry="allowKeystoreEdit"
               />
               <GluuLoader blocking={Boolean(loadingConfig)}>
@@ -504,7 +502,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
                 label="fields.requires_authentication"
                 size={12}
                 isDark={isDark}
-                doc_category={SMTP}
+                doc_category={smtpConstants.DOC_CATEGORY}
                 doc_entry="requires_authentication"
               />
               <Toggle

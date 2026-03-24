@@ -51,9 +51,12 @@ const GluuMultiSelectRow: React.FC<GluuMultiSelectRowProps> = ({
   const { classes } = useStyles({ themeColors, isDark })
 
   const [isOpen, setIsOpen] = useState(false)
+  const [selectedValues, setSelectedValues] = useState<string[]>(Array.isArray(value) ? value : [])
   const containerRef = useRef<HTMLDivElement>(null)
 
-  const selectedValues = useMemo(() => (Array.isArray(value) ? value : []), [value])
+  useEffect(() => {
+    setSelectedValues(Array.isArray(value) ? value : [])
+  }, [value])
 
   const toggleDropdown = useCallback(() => {
     if (!disabled) {
@@ -66,6 +69,7 @@ const GluuMultiSelectRow: React.FC<GluuMultiSelectRowProps> = ({
       const newValues = selectedValues.includes(optionValue)
         ? selectedValues.filter((v) => v !== optionValue)
         : [...selectedValues, optionValue]
+      setSelectedValues(newValues)
       formik.setFieldValue(name, newValues)
     },
     [selectedValues, formik, name],
@@ -75,6 +79,7 @@ const GluuMultiSelectRow: React.FC<GluuMultiSelectRowProps> = ({
     (e: React.MouseEvent, optionValue: string) => {
       e.stopPropagation()
       const newValues = selectedValues.filter((v) => v !== optionValue)
+      setSelectedValues(newValues)
       formik.setFieldValue(name, newValues)
     },
     [selectedValues, formik, name],
@@ -156,10 +161,17 @@ const GluuMultiSelectRow: React.FC<GluuMultiSelectRowProps> = ({
             tabIndex={disabled ? -1 : 0}
           >
             {selectedValues.length === 0 ? (
-              <span className={classes.placeholder}>{placeholderText}</span>
+              <GluuText variant="span" className={classes.placeholder} disableThemeColor>
+                {placeholderText}
+              </GluuText>
             ) : (
-              selectedValues.map((val) => (
-                <span key={val} className={classes.chip}>
+              selectedValues.map((val, idx) => (
+                <GluuText
+                  key={`${val}-${idx}`}
+                  variant="span"
+                  className={classes.chip}
+                  disableThemeColor
+                >
                   {getOptionLabel(val)}
                   {!disabled && (
                     <button
@@ -176,21 +188,26 @@ const GluuMultiSelectRow: React.FC<GluuMultiSelectRowProps> = ({
                       &times;
                     </button>
                   )}
-                </span>
+                </GluuText>
               ))
             )}
-            <span className={classes.chevronWrapper} aria-hidden>
+            <GluuText
+              variant="span"
+              className={classes.chevronWrapper}
+              disableThemeColor
+              aria-hidden
+            >
               <ChevronIcon width={20} height={20} direction={isOpen ? 'up' : 'down'} />
-            </span>
+            </GluuText>
           </div>
 
           {isOpen && (
             <div className={classes.dropdownList} role="listbox" aria-multiselectable="true">
-              {options.map((option) => {
+              {options.map((option, idx) => {
                 const isSelected = selectedValues.includes(option.value)
                 return (
                   <div
-                    key={option.value}
+                    key={`${option.value}-${idx}`}
                     className={`${classes.optionItem} ${isSelected ? classes.optionItemSelected : ''}`}
                     onClick={() => handleOptionClick(option.value)}
                     onKeyDown={(e) => {
@@ -203,11 +220,13 @@ const GluuMultiSelectRow: React.FC<GluuMultiSelectRowProps> = ({
                     aria-selected={isSelected}
                     tabIndex={0}
                   >
-                    <span
+                    <GluuText
+                      variant="span"
                       className={`${classes.checkbox} ${isSelected ? classes.checkboxChecked : ''}`}
+                      disableThemeColor
                     >
                       <CheckIcon />
-                    </span>
+                    </GluuText>
                     {option.label}
                   </div>
                 )

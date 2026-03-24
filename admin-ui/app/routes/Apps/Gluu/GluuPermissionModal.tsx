@@ -1,8 +1,9 @@
 import customColors from '@/customColors'
 import { useTranslation } from 'react-i18next'
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
+import type { GluuPermissionModalProps } from './types/GluuPermissionModal.types'
 
-const GluuPermissionModal = ({ handler, isOpen }: any) => {
+const GluuPermissionModal = ({ handler, isOpen }: GluuPermissionModalProps) => {
   const { t } = useTranslation()
 
   return (
