@@ -2109,6 +2109,7 @@
     },
     "cedarlingConfig": {
       "title": "Configurar el almacén de políticas de Cedarling",
+      "requiredFieldNote": "Se requiere un archivo .cjar para cargar un nuevo almacén de políticas.",
       "steps": "Pasos para configurar la URL del Almacén de Políticas Remoto",
       "point1": "1. Bifurcar el proyecto",
       "point2": "2. Abrir el repositorio bifurcado usando",
@@ -2124,7 +2125,17 @@
       "gluuFlexAdminUiPolicyStoreDisplay": "Almacén de políticas de la interfaz de administración de Gluu Flex",
       "auditPolicyStoreUrlUpdated": "Configuración de la URL del almacén de políticas actualizada",
       "auditSyncRoleToScopesMappings": "Sincronizar rol con asignaciones de ámbitos",
-      "auditSetPolicyStoreAsDefault": "Establecer almacén de políticas predeterminado"
+      "auditSetPolicyStoreAsDefault": "Establecer almacén de políticas predeterminado",
+      "selectCjarFile": "Seleccione un archivo .cjar de almacén de políticas para cargar",
+      "uploadPolicyStore": "Cargar",
+      "downloadPolicyStore": "Descargar",
+      "policyStoreUploaded": "Almacén de políticas cargado exitosamente",
+      "policyStoreDownloaded": "Almacén de políticas descargado exitosamente",
+      "noPolicyStoreToDownload": "No hay almacén de políticas disponible para descargar",
+      "uploadFailed": "Error al cargar el almacén de políticas",
+      "downloadFailed": "Error al descargar el almacén de políticas",
+      "selectFileFirst": "Por favor, seleccione primero un archivo .cjar",
+      "auditPolicyStoreUploaded": "Almacén de políticas cargado"
     },
     "mappings": {
       "note_prefix": "Configurar",

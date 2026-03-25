@@ -1,4 +1,4 @@
-import SmtpEditPage from './components/SmtpManagement/SmtpEditPage'
+import SmtpEditPage from './components/SmtpEditPage'
 import { SMTP_READ, SMTP_WRITE } from '../../app/utils/PermChecker'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { ROUTES } from '@/helpers/navigation'

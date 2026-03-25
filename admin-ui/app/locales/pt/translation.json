@@ -1956,6 +1956,7 @@
     },
     "cedarlingConfig": {
       "title": "Configurar a Política de Armazenamento Cedarling",
+      "requiredFieldNote": "É necessário um arquivo .cjar para enviar um novo repositório de políticas.",
       "steps": "Etapas para configurar a URL do Repositório de Políticas Remoto",
       "point1": "1. Fazer um fork do projeto",
       "point2": "2. Abrir o repositório bifurcado usando",
@@ -1971,7 +1972,17 @@
       "gluuFlexAdminUiPolicyStoreDisplay": "Armazenamento de Políticas da UI Administrativa Gluu Flex",
       "auditPolicyStoreUrlUpdated": "Configuração do URL do repositório de políticas atualizada",
       "auditSyncRoleToScopesMappings": "Sincronizar função com mapeamentos de escopos",
-      "auditSetPolicyStoreAsDefault": "Definir repositório de políticas padrão"
+      "auditSetPolicyStoreAsDefault": "Definir repositório de políticas padrão",
+      "selectCjarFile": "Selecione um arquivo .cjar de repositório de políticas para enviar",
+      "uploadPolicyStore": "Enviar",
+      "downloadPolicyStore": "Baixar",
+      "policyStoreUploaded": "Repositório de políticas enviado com sucesso",
+      "policyStoreDownloaded": "Repositório de políticas baixado com sucesso",
+      "noPolicyStoreToDownload": "Nenhum repositório de políticas disponível para download",
+      "uploadFailed": "Falha ao enviar o repositório de políticas",
+      "downloadFailed": "Falha ao baixar o repositório de políticas",
+      "selectFileFirst": "Por favor, selecione primeiro um arquivo .cjar",
+      "auditPolicyStoreUploaded": "Repositório de políticas enviado"
     },
     "mappings": {
       "note_prefix": "Configurar",

@@ -1,4 +1,5 @@
 import type { AppConfigResponse } from 'JansConfigApi'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
 /** Response from API protection token endpoints */
 export interface ApiTokenResponse {
@@ -21,9 +22,9 @@ export interface UserActionPayload {
   action?: string
   resource?: string
   message?: string
-  modifiedFields?: Record<string, unknown>
+  modifiedFields?: Record<string, JsonValue>
   performedOn?: string | Date
-  payload?: Record<string, unknown>
+  payload?: Record<string, JsonValue>
   date?: Date
 }
 
@@ -38,10 +39,20 @@ export type FetchUserInfoResult = string | -1
 
 /** Policy store API response shape */
 export interface PolicyStoreApiResponse {
-  responseObject: string
+  success?: boolean
+  responseMessage?: string
+  responseCode?: number
+  responseBytes?: string
 }
 
 /** Geolocation API response (geolocation-db.com) */
 export interface UserIpAndLocationResponse {
-  [key: string]: unknown
+  IPv4?: string
+  city?: string
+  country_code?: string
+  country_name?: string
+  latitude?: number
+  longitude?: number
+  postal?: string
+  state?: string
 }

@@ -1966,6 +1966,7 @@
     },
     "cedarlingConfig": {
       "title": "Configurer le magasin de politiques Cedarling",
+      "requiredFieldNote": "Un fichier .cjar est requis pour téléverser un nouveau magasin de politiques.",
       "steps": "Étapes pour configurer l’URL du magasin de politiques distant",
       "point1": "1. Forker le projet",
       "point2": "2. Ouvrir le dépôt forké en utilisant",
@@ -1981,7 +1982,17 @@
       "gluuFlexAdminUiPolicyStoreDisplay": "Gluu Flex Admin UI Policy Store",
       "auditPolicyStoreUrlUpdated": "Configuration de l'URL du magasin de politiques mise à jour",
       "auditSyncRoleToScopesMappings": "Synchroniser les rôles avec les mappages de portées",
-      "auditSetPolicyStoreAsDefault": "Définir le magasin de politiques par défaut"
+      "auditSetPolicyStoreAsDefault": "Définir le magasin de politiques par défaut",
+      "selectCjarFile": "Sélectionnez un fichier .cjar de magasin de politiques à télécharger",
+      "uploadPolicyStore": "Télécharger",
+      "downloadPolicyStore": "Télécharger",
+      "policyStoreUploaded": "Magasin de politiques téléchargé avec succès",
+      "policyStoreDownloaded": "Magasin de politiques téléchargé avec succès",
+      "noPolicyStoreToDownload": "Aucun magasin de politiques disponible au téléchargement",
+      "uploadFailed": "Échec du téléchargement du magasin de politiques",
+      "downloadFailed": "Échec du téléchargement du magasin de politiques",
+      "selectFileFirst": "Veuillez d'abord sélectionner un fichier .cjar",
+      "auditPolicyStoreUploaded": "Magasin de politiques téléchargé"
     },
     "mappings": {
       "note_prefix": "Configure",

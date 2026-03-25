@@ -1,17 +1,20 @@
-import initWasm, { init, Cedarling, AuthorizeResult } from '@janssenproject/cedarling_wasm'
+import initWasm, {
+  init_from_archive_bytes,
+  Cedarling,
+  MultiIssuerAuthorizeResult,
+} from '@janssenproject/cedarling_wasm'
 import type {
   ICedarlingClient,
   BootStrapConfig,
   AuthorizationResponse,
   TokenAuthorizationRequest,
 } from '@/cedarling'
-import { devLogger } from '@/utils/devLogger'
 
 let cedarling: Cedarling | null = null
 let cedarlingInitialized: boolean = false
 let initializationPromise: Promise<void> | null = null
 
-const initialize = async (bootStrapConfig: BootStrapConfig): Promise<void> => {
+const initialize = async (config: BootStrapConfig, policyStoreBytes: Uint8Array): Promise<void> => {
   if (cedarlingInitialized) {
     return Promise.resolve()
   }
@@ -23,10 +26,9 @@ const initialize = async (bootStrapConfig: BootStrapConfig): Promise<void> => {
   initializationPromise = (async () => {
     try {
       await initWasm()
-      cedarling = await init(bootStrapConfig)
+      cedarling = await init_from_archive_bytes(config, policyStoreBytes)
       cedarlingInitialized = true
     } catch (err) {
-      devLogger.error('Error during Cedarling init:', err)
       initializationPromise = null // Reset on error to allow retry
       throw err
     }
@@ -42,16 +44,11 @@ const token_authorize = async (
     throw new Error('Cedarling not initialized')
   }
 
-  try {
-    const result: AuthorizeResult = await cedarling.authorize(request)
-    return {
-      ...result,
-      decision: result.decision,
-    } as AuthorizationResponse
-  } catch (error) {
-    devLogger.error('Error during authorization:', error)
-    throw error
-  }
+  const result: MultiIssuerAuthorizeResult = await cedarling.authorize_multi_issuer(request)
+  return {
+    ...result,
+    decision: result.decision,
+  } as AuthorizationResponse
 }
 
 export const cedarlingClient: ICedarlingClient = {

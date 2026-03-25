@@ -1,7 +1,13 @@
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
 import { alpha } from '@mui/material/styles'
-import { BORDER_RADIUS, CEDARLING_CONFIG_SPACING, SPACING } from '@/constants'
+import {
+  BORDER_RADIUS,
+  CEDARLING_CONFIG_SPACING,
+  MAPPING_SPACING,
+  OPACITY,
+  SPACING,
+} from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
 import customColors from '@/customColors'
 
@@ -29,6 +35,7 @@ const useStyles = makeStyles<{ themeColors: CedarlingConfigThemeColors; isDark: 
   params,
 ) => {
   const { themeColors, isDark } = params
+  const textAsPlaceholder = alpha(themeColors.text, OPACITY.PLACEHOLDER)
 
   return {
     configCard: {
@@ -41,10 +48,39 @@ const useStyles = makeStyles<{ themeColors: CedarlingConfigThemeColors; isDark: 
       flexDirection: 'column',
       overflow: 'visible',
     },
+    form: {
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%',
+    },
+    formMain: {
+      width: '100%',
+      flexGrow: 0,
+    },
     formContent: {
       width: '100%',
       display: 'flex',
       flexDirection: 'column',
+    },
+    requiredFooterNote: {
+      display: 'flex',
+      alignItems: 'flex-start',
+      gap: 6,
+      marginTop: theme.spacing(0.5),
+      marginBottom: 0,
+      paddingLeft: theme.spacing(0.5),
+    },
+    requiredAsterisk: {
+      color: textAsPlaceholder,
+      fontWeight: fontWeights.bold,
+      lineHeight: lineHeights.tight,
+      flexShrink: 0,
+    },
+    requiredNoteText: {
+      fontFamily,
+      fontSize: fontSizes.sm,
+      lineHeight: lineHeights.tight,
+      color: textAsPlaceholder,
     },
     alertWrapper: {
       width: '100%',
@@ -83,12 +119,47 @@ const useStyles = makeStyles<{ themeColors: CedarlingConfigThemeColors; isDark: 
       color: themeColors.alertText,
     },
     inputSection: {
-      'marginBottom': CEDARLING_CONFIG_SPACING.INPUT_TO_RADIO,
+      'marginBottom': 0,
       '& .MuiFormHelperText-root': {
         marginLeft: 0,
         paddingLeft: 0,
         fontSize: fontSizes.base,
         lineHeight: lineHeights.tight,
+      },
+    },
+    uploadBox: {
+      'marginBottom': theme.spacing(1),
+      '& .dropzone': {
+        'border': `1px solid ${themeColors.infoBorder}`,
+        'backgroundColor': isDark ? themeColors.inputBg : themeColors.infoBg,
+        'borderRadius': `${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px`,
+        'display': 'flex',
+        'alignItems': 'center',
+        'justifyContent': 'center',
+        'padding': theme.spacing(2),
+        'textAlign': 'center',
+        'minHeight': CEDARLING_CONFIG_SPACING.DROPZONE_MIN_HEIGHT,
+        'outline': 'none',
+        '&:focus': {
+          outline: 'none',
+        },
+        '&:hover': {
+          borderColor: themeColors.infoBorder,
+          backgroundColor: isDark ? themeColors.inputBg : themeColors.infoBg,
+        },
+      },
+      '& .dropzone:has(strong), & .dropzone:has(.gluu-upload-remove)': {
+        justifyContent: 'flex-start',
+        textAlign: 'left',
+      },
+      '& .dropzone p': {
+        color: textAsPlaceholder,
+        margin: 0,
+        width: '100%',
+        textAlign: 'center',
+      },
+      '& .dropzone strong': {
+        color: themeColors.text,
       },
     },
     fieldLabel: {
@@ -116,7 +187,7 @@ const useStyles = makeStyles<{ themeColors: CedarlingConfigThemeColors; isDark: 
             'WebkitTextFillColor': themeColors.text,
             '&::placeholder': {
               color: themeColors.placeholderText,
-              opacity: 0.6,
+              opacity: OPACITY.PLACEHOLDER,
             },
           },
         },
@@ -128,7 +199,7 @@ const useStyles = makeStyles<{ themeColors: CedarlingConfigThemeColors; isDark: 
         'padding': `${CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL}px ${CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL}px`,
         '&::placeholder': {
           color: themeColors.placeholderText,
-          opacity: 0.6,
+          opacity: OPACITY.PLACEHOLDER,
         },
       },
     },

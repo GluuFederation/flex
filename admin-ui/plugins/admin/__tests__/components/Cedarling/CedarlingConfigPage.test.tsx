@@ -40,18 +40,12 @@ jest.mock('@/cedarling/constants/resourceScopes', () => ({
 }))
 
 jest.mock('JansConfigApi', () => ({
-  useGetAdminuiConf: jest.fn(() => ({
-    data: {
-      auiPolicyStoreUrl: 'https://example.com/policy',
-      cedarlingPolicyStoreRetrievalPoint: 'remote',
-    },
-    isSuccess: true,
-    isFetching: false,
-  })),
-  useEditAdminuiConf: jest.fn(() => ({ mutateAsync: jest.fn() })),
   useSyncRoleToScopesMappings: jest.fn(() => ({ mutateAsync: jest.fn() })),
-  useSetRemotePolicyStoreAsDefault: jest.fn(() => ({ mutateAsync: jest.fn() })),
-  getGetAdminuiConfQueryKey: jest.fn(() => ['adminuiConf']),
+}))
+
+jest.mock('@/redux/api/backend-api', () => ({
+  uploadPolicyStore: jest.fn().mockResolvedValue({ status: 200 }),
+  fetchPolicyStore: jest.fn().mockResolvedValue({ data: { responseBytes: '' } }),
 }))
 
 const store = configureStore({

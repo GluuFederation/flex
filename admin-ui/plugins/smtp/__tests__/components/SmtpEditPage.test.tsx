@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import SmtpEditPage from 'Plugins/smtp/components/SmtpManagement/SmtpEditPage'
+import SmtpEditPage from 'Plugins/smtp/components/SmtpEditPage'
 
 const mockGetConfigSmtp = jest.fn()
 const mockPutConfigSmtp = jest.fn()

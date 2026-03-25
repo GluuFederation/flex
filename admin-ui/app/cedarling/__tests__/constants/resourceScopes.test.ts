@@ -62,10 +62,10 @@ describe('CEDAR_RESOURCE_SCOPES', () => {
 
 describe('CEDARLING_CONSTANTS', () => {
   it('has ACTION_TYPE with correct prefix', () => {
-    expect(CEDARLING_CONSTANTS.ACTION_TYPE).toBe('Gluu::Flex::AdminUI::Action::')
+    expect(CEDARLING_CONSTANTS.ACTION_TYPE).toBe('GluuFlexAdminUI::Action::')
   })
 
   it('has RESOURCE_TYPE with correct value', () => {
-    expect(CEDARLING_CONSTANTS.RESOURCE_TYPE).toBe('Gluu::Flex::AdminUI::Resources::Features')
+    expect(CEDARLING_CONSTANTS.RESOURCE_TYPE).toBe('GluuFlexAdminUIResources::Features')
   })
 })
