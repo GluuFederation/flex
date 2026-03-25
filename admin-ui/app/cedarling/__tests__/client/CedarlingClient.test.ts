@@ -29,10 +29,12 @@ describe('cedarlingClient', () => {
   })
 
   describe('initialize', () => {
-    it('initializes without error', async () => {
-      await expect(cedarlingClient.initialize({}, testBytes)).resolves.toBeUndefined()
+    it('initializes without error and forwards bytes correctly', async () => {
+      const testConfig = {}
+      await expect(cedarlingClient.initialize(testConfig, testBytes)).resolves.toBeUndefined()
       expect(initWasm).toHaveBeenCalledTimes(1)
       expect(init_from_archive_bytes).toHaveBeenCalledTimes(1)
+      expect(init_from_archive_bytes).toHaveBeenCalledWith(testConfig, testBytes)
     })
 
     it('does not re-initialize when already initialized', async () => {

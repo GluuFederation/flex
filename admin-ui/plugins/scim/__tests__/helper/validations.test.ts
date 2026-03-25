@@ -69,6 +69,10 @@ describe('getScimConfigurationSchema', () => {
       await expect(schema.validateAt('maxCount', { maxCount: '' })).resolves.toBeNull()
     })
 
+    it('accepts null value (optional)', async () => {
+      await expect(schema.validateAt('maxCount', { maxCount: null })).resolves.toBeNull()
+    })
+
     it('accepts valid positive integer', async () => {
       await expect(schema.validateAt('maxCount', { maxCount: 200 })).resolves.toBe(200)
     })
@@ -97,6 +101,12 @@ describe('getScimConfigurationSchema', () => {
       ).resolves.toBeNull()
     })
 
+    it('accepts null value (optional)', async () => {
+      await expect(
+        schema.validateAt('bulkMaxOperations', { bulkMaxOperations: null }),
+      ).resolves.toBeNull()
+    })
+
     it('accepts valid positive integer', async () => {
       await expect(schema.validateAt('bulkMaxOperations', { bulkMaxOperations: 30 })).resolves.toBe(
         30,
@@ -114,6 +124,12 @@ describe('getScimConfigurationSchema', () => {
     it('accepts empty value (optional)', async () => {
       await expect(
         schema.validateAt('bulkMaxPayloadSize', { bulkMaxPayloadSize: '' }),
+      ).resolves.toBeNull()
+    })
+
+    it('accepts null value (optional)', async () => {
+      await expect(
+        schema.validateAt('bulkMaxPayloadSize', { bulkMaxPayloadSize: null }),
       ).resolves.toBeNull()
     })
 
@@ -137,6 +153,12 @@ describe('getScimConfigurationSchema', () => {
       ).resolves.toBeNull()
     })
 
+    it('accepts null value (optional)', async () => {
+      await expect(
+        schema.validateAt('metricReporterInterval', { metricReporterInterval: null }),
+      ).resolves.toBeNull()
+    })
+
     it('accepts valid positive integer', async () => {
       await expect(
         schema.validateAt('metricReporterInterval', { metricReporterInterval: 300 }),
@@ -154,6 +176,12 @@ describe('getScimConfigurationSchema', () => {
     it('accepts empty value (optional)', async () => {
       await expect(
         schema.validateAt('metricReporterKeepDataDays', { metricReporterKeepDataDays: '' }),
+      ).resolves.toBeNull()
+    })
+
+    it('accepts null value (optional)', async () => {
+      await expect(
+        schema.validateAt('metricReporterKeepDataDays', { metricReporterKeepDataDays: null }),
       ).resolves.toBeNull()
     })
 

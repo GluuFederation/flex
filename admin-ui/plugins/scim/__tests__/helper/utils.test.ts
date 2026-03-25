@@ -159,6 +159,41 @@ describe('transformToFormValues', () => {
     expect(result.disableJdkLogger).toBe(true)
     expect(result.metricReporterEnabled).toBe(false)
   })
+
+  it('falls back to defaults for explicit null values', () => {
+    const config = {
+      baseDN: null,
+      applicationUrl: null,
+      baseEndpoint: null,
+      personCustomObjectClass: null,
+      oxAuthIssuer: null,
+      protectionMode: null,
+      maxCount: null,
+      bulkMaxOperations: null,
+      bulkMaxPayloadSize: null,
+      metricReporterInterval: null,
+      metricReporterKeepDataDays: null,
+      disableJdkLogger: null,
+      useLocalCache: null,
+      metricReporterEnabled: null,
+    } as unknown as AppConfiguration3
+
+    const result = transformToFormValues(config)
+    expect(result.baseDN).toBe('')
+    expect(result.applicationUrl).toBe('')
+    expect(result.baseEndpoint).toBe('')
+    expect(result.personCustomObjectClass).toBe('')
+    expect(result.oxAuthIssuer).toBe('')
+    expect(result.protectionMode).toBe('')
+    expect(result.maxCount).toBe('')
+    expect(result.bulkMaxOperations).toBe('')
+    expect(result.bulkMaxPayloadSize).toBe('')
+    expect(result.metricReporterInterval).toBe('')
+    expect(result.metricReporterKeepDataDays).toBe('')
+    expect(result.disableJdkLogger).toBe(false)
+    expect(result.useLocalCache).toBe(false)
+    expect(result.metricReporterEnabled).toBe(false)
+  })
 })
 
 describe('createJsonPatchFromDifferences', () => {

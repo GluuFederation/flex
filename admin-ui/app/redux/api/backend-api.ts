@@ -25,7 +25,7 @@ const ENDPOINTS = {
   CONFIG: '/admin-ui/config',
   AUDIT_LOG: '/admin-ui/logging/audit',
   API_PROTECTION_TOKEN: '/app/admin-ui/oauth2/api-protection-token',
-  POLICY_STORE: '/admin-ui/security/policyStore_new',
+  POLICY_STORE: '/admin-ui/security/policyStore',
   SESSION: '/app/admin-ui/oauth2/session',
   GEOLOCATION_DB_JSON: 'https://geolocation-db.com/json/',
 } as const
