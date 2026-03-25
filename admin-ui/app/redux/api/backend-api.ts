@@ -27,6 +27,7 @@ const ENDPOINTS = {
   API_PROTECTION_TOKEN: '/app/admin-ui/oauth2/api-protection-token',
   POLICY_STORE: '/admin-ui/security/policyStore_new',
   SESSION: '/app/admin-ui/oauth2/session',
+  GEOLOCATION_DB_JSON: 'https://geolocation-db.com/json/',
 } as const
 
 const getAuthConfig = (token?: string) =>
@@ -46,9 +47,11 @@ export const putServerConfiguration = async (
   payload: PutServerConfigPayload,
 ): Promise<AppConfigResponse> => {
   try {
-    const response = await axios.put<AppConfigResponse>(ENDPOINTS.CONFIG, payload.props, {
-      withCredentials: true,
-    })
+    const response = await axios.put<AppConfigResponse>(
+      ENDPOINTS.CONFIG,
+      payload.props,
+      getAuthConfig(payload.token),
+    )
     return response.data
   } catch (error) {
     devLogger.error('Problems updating configuration.', error)
@@ -59,7 +62,7 @@ export const putServerConfiguration = async (
 export const getUserIpAndLocation = async (): Promise<UserIpAndLocationResponse | -1> => {
   try {
     const response = await axios_instance.get<UserIpAndLocationResponse>(
-      'https://geolocation-db.com/json/',
+      ENDPOINTS.GEOLOCATION_DB_JSON,
     )
     return response.data
   } catch (error) {
@@ -162,7 +165,6 @@ export const uploadPolicyStore = async (
     formData.append('policyStore', file)
     const response = await axios.put<PolicyStoreApiResponse>(ENDPOINTS.POLICY_STORE, formData, {
       withCredentials: true,
-      headers: { 'Content-Type': 'multipart/form-data' },
     })
     return { status: response.status, data: response.data }
   } catch (error) {

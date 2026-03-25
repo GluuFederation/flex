@@ -1,12 +1,28 @@
-import { cedarlingClient } from '@/cedarling/client/CedarlingClient'
 import type { TokenAuthorizationRequest } from '@/cedarling'
-import initWasm, { init_from_archive_bytes } from '@janssenproject/cedarling_wasm'
 
 // The WASM module is mocked via __mocks__/@janssenproject/cedarling_wasm.ts
 
 const testBytes = new Uint8Array([1, 2, 3])
 
 describe('cedarlingClient', () => {
+  let cedarlingClient: Awaited<
+    typeof import('@/cedarling/client/CedarlingClient')
+  >['cedarlingClient']
+  let initWasm: jest.Mock
+  let init_from_archive_bytes: jest.Mock
+
+  beforeEach(async () => {
+    jest.resetModules()
+    const wasmMock = await import('@janssenproject/cedarling_wasm')
+    initWasm = wasmMock.default as unknown as jest.Mock
+    init_from_archive_bytes = wasmMock.init_from_archive_bytes as unknown as jest.Mock
+    initWasm.mockClear()
+    init_from_archive_bytes.mockClear()
+
+    const mod = await import('@/cedarling/client/CedarlingClient')
+    cedarlingClient = mod.cedarlingClient
+  })
+
   it('exports initialize and token_authorize methods', () => {
     expect(typeof cedarlingClient.initialize).toBe('function')
     expect(typeof cedarlingClient.token_authorize).toBe('function')
@@ -15,17 +31,20 @@ describe('cedarlingClient', () => {
   describe('initialize', () => {
     it('initializes without error', async () => {
       await expect(cedarlingClient.initialize({}, testBytes)).resolves.toBeUndefined()
+      expect(initWasm).toHaveBeenCalledTimes(1)
+      expect(init_from_archive_bytes).toHaveBeenCalledTimes(1)
     })
 
     it('does not re-initialize when already initialized', async () => {
       await cedarlingClient.initialize({}, testBytes)
-      const initWasmCallCount = (initWasm as jest.Mock).mock.calls.length
-      const initCallCount = (init_from_archive_bytes as jest.Mock).mock.calls.length
+
+      expect(initWasm).toHaveBeenCalledTimes(1)
+      expect(init_from_archive_bytes).toHaveBeenCalledTimes(1)
 
       await expect(cedarlingClient.initialize({}, testBytes)).resolves.toBeUndefined()
 
-      expect((initWasm as jest.Mock).mock.calls).toHaveLength(initWasmCallCount)
-      expect((init_from_archive_bytes as jest.Mock).mock.calls).toHaveLength(initCallCount)
+      expect(initWasm).toHaveBeenCalledTimes(1)
+      expect(init_from_archive_bytes).toHaveBeenCalledTimes(1)
     })
   })
 
@@ -50,6 +69,23 @@ describe('cedarlingClient', () => {
       await cedarlingClient.initialize({}, testBytes)
       const response = await cedarlingClient.token_authorize(request)
       expect(response).toHaveProperty('decision')
+      expect(response.decision).toBe(true)
+    })
+
+    it('forwards request to authorize_multi_issuer', async () => {
+      await cedarlingClient.initialize({}, testBytes)
+
+      const mockCedarling = await init_from_archive_bytes.mock.results[0].value
+      await cedarlingClient.token_authorize(request)
+
+      expect(mockCedarling.authorize_multi_issuer).toHaveBeenCalledTimes(1)
+      expect(mockCedarling.authorize_multi_issuer).toHaveBeenCalledWith(request)
+    })
+
+    it('throws when not initialized', async () => {
+      await expect(cedarlingClient.token_authorize(request)).rejects.toThrow(
+        'Cedarling not initialized',
+      )
     })
   })
 })

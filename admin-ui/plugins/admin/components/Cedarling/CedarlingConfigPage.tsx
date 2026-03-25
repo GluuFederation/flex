@@ -145,7 +145,8 @@ const CedarlingConfigPage: React.FC = () => {
       setIsLoading(true)
 
       const response = await fetchPolicyStore()
-      const responseBytes = response.data?.responseBytes
+      const responseBytes =
+        response.data && 'responseBytes' in response.data ? response.data.responseBytes : undefined
 
       if (!responseBytes) {
         dispatch(
@@ -154,11 +155,7 @@ const CedarlingConfigPage: React.FC = () => {
         return
       }
 
-      const binaryString = atob(responseBytes)
-      const bytes = new Uint8Array(binaryString.length)
-      for (let i = 0; i < binaryString.length; i++) {
-        bytes[i] = binaryString.charCodeAt(i)
-      }
+      const bytes = Uint8Array.from(atob(responseBytes), (c) => c.charCodeAt(0))
 
       const blob = new Blob([bytes], { type: 'application/zip' })
       const url = URL.createObjectURL(blob)

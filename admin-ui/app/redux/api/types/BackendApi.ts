@@ -38,12 +38,10 @@ export interface FetchUserInfoParams {
 export type FetchUserInfoResult = string | -1
 
 /** Policy store API response shape */
-export interface PolicyStoreApiResponse {
-  success?: boolean
-  responseMessage?: string
-  responseCode?: number
-  responseBytes?: string
-}
+export type PolicyStoreApiResponse =
+  | { success: true; responseBytes: string; responseMessage?: string; responseCode?: number }
+  | { success: false; responseMessage?: string; responseCode?: number }
+  | { success?: undefined; responseMessage?: string; responseCode?: number }
 
 /** Geolocation API response (geolocation-db.com) */
 export interface UserIpAndLocationResponse {

@@ -101,9 +101,9 @@ const GluuUploadFile: React.FC<GluuUploadFileProps> = ({
               {selectedFile && (
                 <Box component="span" className={classes.fileSize}>
                   (
-                  {(selectedFile.size || 0) < 1000
+                  {(selectedFile.size || 0) < 1024
                     ? `${selectedFile.size} Bytes`
-                    : `${(selectedFile.size / 1000).toFixed(0)}K`}
+                    : `${(selectedFile.size / 1024).toFixed(0)} KiB`}
                   )
                 </Box>
               )}
@@ -117,9 +117,7 @@ const GluuUploadFile: React.FC<GluuUploadFileProps> = ({
                   disabled={disabled}
                   onClick={(e: MouseEvent<HTMLButtonElement>) => {
                     e.stopPropagation()
-                    if (!disabled) {
-                      clearFiles()
-                    }
+                    clearFiles()
                   }}
                 >
                   <i className="fa fa-remove me-2" />

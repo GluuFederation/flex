@@ -45,10 +45,11 @@ const token_authorize = async (
   }
 
   const result: MultiIssuerAuthorizeResult = await cedarling.authorize_multi_issuer(request)
-  return {
-    ...result,
+  const response: AuthorizationResponse = {
     decision: result.decision,
-  } as AuthorizationResponse
+    request_id: result.request_id,
+  }
+  return response
 }
 
 export const cedarlingClient: ICedarlingClient = {

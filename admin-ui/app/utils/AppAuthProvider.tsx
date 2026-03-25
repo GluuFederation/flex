@@ -110,7 +110,10 @@ export default function AppAuthProvider({ children }: Readonly<AppAuthProviderPr
       fetchPolicyStore()
         .then((policyStoreResponse) => {
           if (isMounted && policyStoreResponse.data) {
-            const policyStoreBytes = policyStoreResponse.data.responseBytes
+            const policyStoreBytes =
+              'responseBytes' in policyStoreResponse.data
+                ? policyStoreResponse.data.responseBytes
+                : undefined
             dispatch({
               type: 'cedarPermissions/setPolicyStoreBytes',
               payload: policyStoreBytes ?? '',
