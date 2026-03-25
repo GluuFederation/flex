@@ -1,31 +1,29 @@
-import React, { useEffect, useMemo, ReactElement } from 'react'
-import { Container, Row, Col, Card, CardBody } from 'Components'
-import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
+import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
-import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import SetTitle from 'Utils/SetTitle'
-import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
-import customColors from '@/customColors'
+import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import GluuThemeFormFooter from '@/routes/Apps/Gluu/GluuThemeFormFooter'
+import { GluuPageContent } from 'Components'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useGetPropertiesPersistence } from 'JansConfigApi'
-import { DEFAULT_THEME } from '@/context/theme/constants'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import { useStyles } from './PersistenceDetail.style'
+import { queryDefaults } from '@/utils/queryUtils'
 
-interface DatabaseField {
-  key: string
-  label: string
-  tooltip: string
-  value: string | undefined
-}
-
-function PersistenceDetail(): ReactElement | null {
+function PersistenceDetail() {
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
   const selectedTheme = useMemo(() => themeState.theme || DEFAULT_THEME, [themeState.theme])
+  const isDark = useMemo(() => selectedTheme === THEME_DARK, [selectedTheme])
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+  const { classes } = useStyles({ isDark, themeColors })
+
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
 
   const persistenceResourceId = useMemo(() => ADMIN_UI_RESOURCES.Persistence, [])
@@ -40,124 +38,109 @@ function PersistenceDetail(): ReactElement | null {
 
   SetTitle(t('menus.persistence'))
 
-  const { data: persistenceData, isLoading: databaseInfoLoading } = useGetPropertiesPersistence({
-    query: { staleTime: 30000, enabled: canReadPersistence },
-  })
-
-  const databaseInfo = persistenceData || {}
-
-  const labelStyle = {
-    color: themeColors.fontColor,
-  }
-
-  const inputBoxStyle = {
-    backgroundColor: customColors.white,
-    color: customColors.black,
-    borderColor: themeColors.fontColor + '40',
-  }
-
-  const databaseFields: DatabaseField[] = [
-    {
-      key: 'databaseName',
-      label: 'fields.database_name',
-      tooltip: 'tooltips.database_name',
-      value: databaseInfo.databaseName,
-    },
-    {
-      key: 'schemaName',
-      label: 'fields.schema_name',
-      tooltip: 'tooltips.schema_name',
-      value: databaseInfo.schemaName,
-    },
-    {
-      key: 'productName',
-      label: 'fields.product_name',
-      tooltip: 'tooltips.product_name',
-      value: databaseInfo.productName,
-    },
-    {
-      key: 'productVersion',
-      label: 'fields.product_version',
-      tooltip: 'tooltips.product_version',
-      value: databaseInfo.productVersion,
-    },
-    {
-      key: 'driverName',
-      label: 'fields.driver_name',
-      tooltip: 'tooltips.driver_name',
-      value: databaseInfo.driverName,
-    },
-    {
-      key: 'driverVersion',
-      label: 'fields.driver_version',
-      tooltip: 'tooltips.driver_version',
-      value: databaseInfo.driverVersion,
-    },
-  ]
-
-  const renderDatabaseField = (field: DatabaseField): ReactElement => (
-    <Col sm={6} key={field.key}>
-      <GluuTooltip doc_category={t(field.tooltip)} doc_entry={field.tooltip} isDirect={true}>
-        <div className="mb-3">
-          <strong style={labelStyle}>{t(field.label)}:</strong>
-          <div className="mt-1 p-2 border rounded" style={inputBoxStyle}>
-            {field.value || 'N/A'}
-          </div>
-        </div>
-      </GluuTooltip>
-    </Col>
-  )
-
   useEffect(() => {
     authorizeHelper(persistenceScopes)
   }, [authorizeHelper, persistenceScopes])
 
-  if (!canReadPersistence) {
-    return null
-  }
+  const { data: persistenceData, isLoading } = useGetPropertiesPersistence({
+    query: { staleTime: queryDefaults.queryOptions.staleTime, enabled: canReadPersistence },
+  })
 
-  if (databaseInfoLoading) {
-    return (
-      <Card style={applicationStyle.persistenceCard}>
-        <CardBody>
-          <div className="text-center">{t('titles.loading_database_information')}</div>
-        </CardBody>
-      </Card>
-    )
-  }
+  const databaseInfo = persistenceData || {}
 
   return (
-    <Card style={applicationStyle.persistenceCard}>
-      <CardBody
-        style={{
-          padding: '30px',
-        }}
-      >
-        <Container
-          style={{
-            backgroundColor: themeColors.lightBackground,
-            padding: '20px',
-            borderRadius: '8px',
-          }}
-        >
-          {databaseFields.map((field, index) => {
-            if (index % 2 === 0) {
-              const nextField = databaseFields[index + 1]
-              return (
-                <Row className="mb-3" key={`row-${index}`}>
-                  {renderDatabaseField(field)}
-                  {nextField && renderDatabaseField(nextField)}
-                </Row>
-              )
-            }
-            return null
-          })}
-        </Container>
-        <div className="mt-3">
-          <GluuFormFooter showBack={true} showCancel={false} showApply={false} />
-        </div>
-      </CardBody>
-    </Card>
+    <GluuLoader blocking={isLoading}>
+      <GluuViewWrapper canShow={canReadPersistence}>
+        <GluuPageContent>
+          <div className={classes.persistenceCard}>
+            <div className={`${classes.content} ${classes.formLabels} ${classes.formWithInputs}`}>
+              <div className={classes.fieldsGrid}>
+                <div className={classes.fieldItem}>
+                  <GluuInputRow
+                    label="fields.database_name"
+                    name="databaseName"
+                    value={databaseInfo.databaseName || ''}
+                    lsize={12}
+                    rsize={12}
+                    disabled
+                    isDark={isDark}
+                    doc_category="persistence"
+                    doc_entry="databaseName"
+                  />
+                </div>
+                <div className={classes.fieldItem}>
+                  <GluuInputRow
+                    label="fields.schema_name"
+                    name="schemaName"
+                    value={databaseInfo.schemaName || ''}
+                    lsize={12}
+                    rsize={12}
+                    disabled
+                    isDark={isDark}
+                    doc_category="persistence"
+                    doc_entry="schemaName"
+                  />
+                </div>
+                <div className={classes.fieldItem}>
+                  <GluuInputRow
+                    label="fields.product_name"
+                    name="productName"
+                    value={databaseInfo.productName || ''}
+                    lsize={12}
+                    rsize={12}
+                    disabled
+                    isDark={isDark}
+                    doc_category="persistence"
+                    doc_entry="productName"
+                  />
+                </div>
+                <div className={classes.fieldItem}>
+                  <GluuInputRow
+                    label="fields.product_version"
+                    name="productVersion"
+                    value={databaseInfo.productVersion || ''}
+                    lsize={12}
+                    rsize={12}
+                    disabled
+                    isDark={isDark}
+                    doc_category="persistence"
+                    doc_entry="productVersion"
+                  />
+                </div>
+                <div className={classes.fieldItem}>
+                  <GluuInputRow
+                    label="fields.driver_name"
+                    name="driverName"
+                    value={databaseInfo.driverName || ''}
+                    lsize={12}
+                    rsize={12}
+                    disabled
+                    isDark={isDark}
+                    doc_category="persistence"
+                    doc_entry="driverName"
+                  />
+                </div>
+                <div className={classes.fieldItem}>
+                  <GluuInputRow
+                    label="fields.driver_version"
+                    name="driverVersion"
+                    value={databaseInfo.driverVersion || ''}
+                    lsize={12}
+                    rsize={12}
+                    disabled
+                    isDark={isDark}
+                    doc_category="persistence"
+                    doc_entry="driverVersion"
+                  />
+                </div>
+              </div>
+
+              <GluuThemeFormFooter showBack hideDivider />
+            </div>
+          </div>
+        </GluuPageContent>
+      </GluuViewWrapper>
+    </GluuLoader>
   )
 }
 

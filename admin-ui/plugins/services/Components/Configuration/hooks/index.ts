@@ -1,15 +1,13 @@
 import { useCallback, useMemo } from 'react'
-import { useSelector } from 'react-redux'
 import { logAuditUserAction } from 'Utils/AuditLogger'
-import { CREATE, UPDATE, DELETION, PATCH } from '@/audit/UserActionType'
-import type { AuthRootState } from 'Utils/types'
-import type { GluuLdapConfiguration, CacheConfiguration } from 'JansConfigApi'
+import { PATCH } from '@/audit/UserActionType'
+import { useAppSelector } from '@/redux/hooks'
+import type { CacheConfiguration } from 'JansConfigApi'
 
-const API_LDAP = 'api-ldap'
 const API_CACHE = 'api-cache'
 
 function useAuditAuth() {
-  const authState = useSelector((state: AuthRootState) => state.authReducer)
+  const authState = useAppSelector((state) => state.authReducer)
 
   return useMemo(
     () => ({
@@ -18,79 +16,6 @@ function useAuditAuth() {
     }),
     [authState?.config?.clientId, authState?.userinfo],
   )
-}
-
-export function useLdapAudit() {
-  const { client_id, userinfo } = useAuditAuth()
-
-  const logLdapCreate = useCallback(
-    async (
-      ldap: GluuLdapConfiguration,
-      message: string,
-      modifiedFields?: Record<string, unknown>,
-    ) => {
-      try {
-        await logAuditUserAction({
-          userinfo,
-          action: CREATE,
-          resource: API_LDAP,
-          message,
-          modifiedFields,
-          performedOn: ldap.configId,
-          client_id,
-          payload: ldap,
-        })
-      } catch (error) {
-        console.error('Failed to log LDAP create audit:', error)
-      }
-    },
-    [userinfo, client_id],
-  )
-
-  const logLdapUpdate = useCallback(
-    async (
-      ldap: GluuLdapConfiguration,
-      message: string,
-      modifiedFields?: Record<string, unknown>,
-    ) => {
-      try {
-        await logAuditUserAction({
-          userinfo,
-          action: UPDATE,
-          resource: API_LDAP,
-          message,
-          modifiedFields,
-          performedOn: ldap.configId,
-          client_id,
-          payload: ldap,
-        })
-      } catch (error) {
-        console.error('Failed to log LDAP update audit:', error)
-      }
-    },
-    [userinfo, client_id],
-  )
-
-  const logLdapDelete = useCallback(
-    async (ldap: GluuLdapConfiguration, message: string) => {
-      try {
-        await logAuditUserAction({
-          userinfo,
-          action: DELETION,
-          resource: API_LDAP,
-          message,
-          performedOn: ldap.configId,
-          client_id,
-          payload: ldap,
-        })
-      } catch (error) {
-        console.error('Failed to log LDAP delete audit:', error)
-      }
-    },
-    [userinfo, client_id],
-  )
-
-  return { logLdapCreate, logLdapUpdate, logLdapDelete }
 }
 
 export function useCacheAudit() {

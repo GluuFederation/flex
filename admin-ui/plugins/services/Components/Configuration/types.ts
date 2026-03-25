@@ -1,21 +1,5 @@
-import type {
-  GluuLdapConfiguration,
-  MemcachedConfiguration,
-  RedisConfiguration,
-} from 'JansConfigApi'
+import type { MemcachedConfiguration, RedisConfiguration } from 'JansConfigApi'
 import type { FormikProps } from 'formik'
-
-export interface LdapFormProps {
-  item: GluuLdapConfiguration
-  handleSubmit: (data: { ldap: GluuLdapConfiguration } | GluuLdapConfiguration) => void
-  createLdap?: boolean
-  isLoading?: boolean
-}
-
-export interface LdapDetailPageProps {
-  row: GluuLdapConfiguration
-  testLdapConnection: (row: GluuLdapConfiguration) => void
-}
 
 export type CacheProviderType = 'IN_MEMORY' | 'MEMCACHED' | 'REDIS' | 'NATIVE_PERSISTENCE'
 
@@ -111,22 +95,19 @@ export function isNativePersistenceCache(
   return values.cacheProviderType === 'NATIVE_PERSISTENCE'
 }
 
-export interface CacheInMemoryProps {
+export interface CacheSubComponentBaseProps {
   formik: FormikProps<CacheFormValues>
+  classes: Record<string, string>
+  isDark: boolean
+  disabled?: boolean
 }
 
-export interface CacheMemcachedProps {
+export interface CacheMemcachedProps extends CacheSubComponentBaseProps {
   config: MemcachedConfiguration
-  formik: FormikProps<CacheFormValues>
 }
 
-export interface CacheNativeProps {
-  formik: FormikProps<CacheFormValues>
-}
-
-export interface CacheRedisProps {
+export interface CacheRedisProps extends CacheSubComponentBaseProps {
   config: RedisConfiguration
-  formik: FormikProps<CacheFormValues>
 }
 
 export interface PersistenceInfo {

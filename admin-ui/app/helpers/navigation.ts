@@ -120,13 +120,6 @@ const ROUTES = {
   SERVICES_CACHE: `${PLUGIN_BASE_PATHS.SERVICES}/cache`,
   SERVICES_PERSISTENCE: `${PLUGIN_BASE_PATHS.SERVICES}/persistence`,
 
-  // LDAP
-  LDAP_LIST: `${PLUGIN_BASE_PATHS.SERVICES}/ldap`,
-  LDAP_ADD: `${PLUGIN_BASE_PATHS.SERVICES}/ldap/new`,
-  LDAP_EDIT: (configId: string) =>
-    `${PLUGIN_BASE_PATHS.SERVICES}/ldap/edit/${encodeURIComponent(configId)}`,
-  LDAP_EDIT_TEMPLATE: `${PLUGIN_BASE_PATHS.SERVICES}/ldap/edit/:configId`,
-
   // ========== SAML Plugin ==========
   SAML_BASE: PLUGIN_BASE_PATHS.SAML,
   SAML_CONFIG: `${PLUGIN_BASE_PATHS.SAML}/config`,

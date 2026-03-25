@@ -1,75 +1,92 @@
-import React, { ReactElement } from 'react'
-import { Badge, FormGroup, Card, Col, CardBody, CustomInput } from 'Components'
-import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import { CACHE } from 'Utils/ApiResources'
-import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
+import React from 'react'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
-import { useTranslation } from 'react-i18next'
+import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
+import { CACHE } from 'Utils/ApiResources'
 import type { CacheMemcachedProps } from './types'
 
-function CacheMemcached({ config, formik }: CacheMemcachedProps): ReactElement {
-  const { t } = useTranslation()
+const CONNECTION_FACTORY_OPTIONS = [
+  { value: 'DEFAULT', label: 'Default' },
+  { value: 'BINARY', label: 'Binary' },
+]
 
+function CacheMemcached({ formik, classes, isDark, disabled }: CacheMemcachedProps) {
   return (
-    <Card>
-      <CardBody>
-        <GluuTooltip doc_category={CACHE} doc_entry="servers">
-          <FormGroup row>
-            <GluuLabel label="fields.servers" size={6} />
-            <Col sm={6}>
-              <Badge color="primary">{config.servers}</Badge>
-            </Col>
-          </FormGroup>
-        </GluuTooltip>
-        <GluuTooltip doc_category={CACHE} doc_entry="connectionFactoryType">
-          <FormGroup row>
-            <GluuLabel label="fields.connection_factory_type" size={6} />
-            <Col sm={6}>
-              <CustomInput
-                type="select"
-                id="connectionFactoryType"
-                name="connectionFactoryType"
-                defaultValue={config.connectionFactoryType}
-                onChange={formik.handleChange}
-              >
-                <option value="DEFAULT">{t('options.default')}</option>
-                <option value="BINARY">{t('options.binary')}</option>
-              </CustomInput>
-            </Col>
-          </FormGroup>
-        </GluuTooltip>
+    <div className={classes.sectionGrid}>
+      <div className={classes.fieldItem}>
+        <GluuInputRow
+          label="fields.servers"
+          name="memCacheServers"
+          lsize={12}
+          rsize={12}
+          formik={formik}
+          value={formik.values.memCacheServers || ''}
+          doc_category={CACHE}
+          doc_entry="servers"
+          isDark={isDark}
+          disabled={disabled}
+        />
+      </div>
+      <div className={classes.fieldItem}>
+        <GluuSelectRow
+          label="fields.connection_factory_type"
+          name="connectionFactoryType"
+          value={formik.values.connectionFactoryType || ''}
+          formik={formik}
+          values={CONNECTION_FACTORY_OPTIONS}
+          lsize={12}
+          rsize={12}
+          doc_category={CACHE}
+          doc_entry="connectionFactoryType"
+          isDark={isDark}
+          disabled={disabled}
+        />
+      </div>
+      <div className={classes.fieldItem}>
         <GluuInputRow
           label="fields.max_operation_queue_length"
           name="maxOperationQueueLength"
           type="number"
-          lsize={6}
-          rsize={6}
+          lsize={12}
+          rsize={12}
           formik={formik}
           value={formik.values.maxOperationQueueLength}
           doc_category={CACHE}
+          doc_entry="maxOperationQueueLength"
+          isDark={isDark}
+          disabled={disabled}
         />
+      </div>
+      <div className={classes.fieldItem}>
         <GluuInputRow
           label="fields.buffer_size"
           name="bufferSize"
           type="number"
+          lsize={12}
+          rsize={12}
           formik={formik}
-          lsize={6}
-          rsize={6}
           value={formik.values.bufferSize}
           doc_category={CACHE}
+          doc_entry="bufferSize"
+          isDark={isDark}
+          disabled={disabled}
         />
+      </div>
+      <div className={classes.fieldItem}>
         <GluuInputRow
           label="fields.default_put_expiration"
           name="memDefaultPutExpiration"
           type="number"
-          lsize={6}
-          rsize={6}
+          lsize={12}
+          rsize={12}
           formik={formik}
           value={formik.values.memDefaultPutExpiration}
           doc_category={CACHE}
+          doc_entry="defaultPutExpiration"
+          isDark={isDark}
+          disabled={disabled}
         />
-      </CardBody>
-    </Card>
+      </div>
+    </div>
   )
 }
 

@@ -1,25 +1,26 @@
-import React, { useEffect, useState, useMemo, ReactElement } from 'react'
-import BlockUi from '../../../../app/components/BlockUi'
-import { Formik } from 'formik'
-import { Form, FormGroup, Card, Col, CardBody, InputGroup, CustomInput } from 'Components'
-import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
-import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
+import React, { useEffect, useMemo, useCallback, useState } from 'react'
+import { Form } from 'Components'
+import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
+import { GluuPageContent } from 'Components'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import CacheInMemory from './CacheInMemory'
 import CacheRedis from './CacheRedis'
 import CacheNative from './CacheNative'
 import CacheMemcached from './CacheMemcached'
-import { useDispatch } from 'react-redux'
-import { CACHE } from 'Utils/ApiResources'
-import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import { useFormik } from 'formik'
 import { useTranslation } from 'react-i18next'
+import { CACHE } from 'Utils/ApiResources'
 import SetTitle from 'Utils/SetTitle'
-import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
-import customColors from '@/customColors'
-import { useCedarling } from '@/cedarling'
-import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import { useCedarling, ADMIN_UI_RESOURCES, CEDAR_RESOURCE_SCOPES } from '@/cedarling'
 import { useQueryClient } from '@tanstack/react-query'
+import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import {
   useGetConfigCache,
@@ -38,23 +39,39 @@ import {
   type MemcachedConfiguration,
   type NativePersistenceConfiguration,
   type RedisConfiguration,
+  CacheConfigurationCacheProviderType,
 } from 'JansConfigApi'
 import { useCacheAudit } from './hooks'
 import type { CacheFormValues, CacheProviderType } from './types'
 import { isInMemoryCache, isMemcachedCache, isRedisCache, isNativePersistenceCache } from './types'
+import { useStyles } from './CachePage.style'
+import { queryDefaults } from '@/utils/queryUtils'
 
-function CachePage(): ReactElement | null {
-  const dispatch = useDispatch()
+const CACHE_PROVIDER_OPTIONS = [
+  { value: 'IN_MEMORY', label: 'In_Memory' },
+  { value: 'MEMCACHED', label: 'Memcached' },
+  { value: 'REDIS', label: 'Redis' },
+  { value: 'NATIVE_PERSISTENCE', label: 'Native Persistence' },
+]
+
+const CachePage: React.FC = () => {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { logCacheUpdate } = useCacheAudit()
+  const { state: themeState } = useTheme()
+  const isDark = (themeState?.theme ?? DEFAULT_THEME) === THEME_DARK
+  const themeColors = useMemo(
+    () => getThemeColor(themeState?.theme ?? DEFAULT_THEME),
+    [themeState?.theme],
+  )
+  const { classes } = useStyles({ isDark, themeColors })
 
   const [modal, setModal] = useState(false)
-  const [cacheProviderType, setCacheProviderType] = useState<CacheProviderType | ''>('')
 
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
   const cacheResourceId = useMemo(() => ADMIN_UI_RESOURCES.Cache, [])
-  const cacheScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[cacheResourceId], [cacheResourceId])
+  const cacheScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[cacheResourceId] || [], [cacheResourceId])
 
   const canReadCache = useMemo(
     () => hasCedarReadPermission(cacheResourceId),
@@ -65,28 +82,35 @@ function CachePage(): ReactElement | null {
     [hasCedarWritePermission, cacheResourceId],
   )
 
-  SetTitle(t('fields.cache_configuration'))
+  const pageTitle = t('fields.cache_configuration')
+  SetTitle(pageTitle)
+
+  useEffect(() => {
+    if (cacheScopes.length > 0) {
+      authorizeHelper(cacheScopes)
+    }
+  }, [authorizeHelper, cacheScopes])
 
   const { data: cacheData = {} as CacheConfiguration, isLoading: cacheLoading } = useGetConfigCache(
     {
-      query: { staleTime: 30000, enabled: canReadCache },
+      query: { staleTime: queryDefaults.queryOptions.staleTime, enabled: canReadCache },
     },
   )
   const { data: cacheMemoryData = {} as InMemoryConfiguration, isLoading: memoryLoading } =
     useGetConfigCacheInMemory({
-      query: { staleTime: 30000, enabled: canReadCache },
+      query: { staleTime: queryDefaults.queryOptions.staleTime, enabled: canReadCache },
     })
   const { data: cacheMemData = {} as MemcachedConfiguration, isLoading: memcachedLoading } =
     useGetConfigCacheMemcached({
-      query: { staleTime: 30000, enabled: canReadCache },
+      query: { staleTime: queryDefaults.queryOptions.staleTime, enabled: canReadCache },
     })
   const { data: cacheNativeData = {} as NativePersistenceConfiguration, isLoading: nativeLoading } =
     useGetConfigCacheNativePersistence({
-      query: { staleTime: 30000, enabled: canReadCache },
+      query: { staleTime: queryDefaults.queryOptions.staleTime, enabled: canReadCache },
     })
   const { data: cacheRedisData = {} as RedisConfiguration, isLoading: redisLoading } =
     useGetConfigCacheRedis({
-      query: { staleTime: 30000, enabled: canReadCache },
+      query: { staleTime: queryDefaults.queryOptions.staleTime, enabled: canReadCache },
     })
 
   const loading = cacheLoading || memoryLoading || memcachedLoading || nativeLoading || redisLoading
@@ -98,28 +122,22 @@ function CachePage(): ReactElement | null {
       },
     },
   })
-
   const putMemoryMutation = usePutConfigCacheInMemory()
-
   const putMemcachedMutation = usePutConfigCacheMemcached()
-
   const putNativeMutation = usePutConfigCacheNativePersistence()
-
   const putRedisMutation = usePutConfigCacheRedis()
 
-  useEffect(() => {
-    authorizeHelper(cacheScopes)
-  }, [authorizeHelper, cacheScopes])
-
-  useEffect(() => {
-    if (cacheData.cacheProviderType) {
-      setCacheProviderType(cacheData.cacheProviderType)
-    }
-  }, [cacheData])
+  const isMutating =
+    patchCacheMutation.isPending ||
+    putMemoryMutation.isPending ||
+    putMemcachedMutation.isPending ||
+    putNativeMutation.isPending ||
+    putRedisMutation.isPending
 
   const initialValues = useMemo<CacheFormValues>(
     () => ({
-      cacheProviderType: (cacheData.cacheProviderType || 'IN_MEMORY') as CacheProviderType,
+      cacheProviderType: (cacheData.cacheProviderType ||
+        CacheConfigurationCacheProviderType.IN_MEMORY) as CacheProviderType,
       memCacheServers: cacheMemData.servers,
       maxOperationQueueLength: cacheMemData.maxOperationQueueLength,
       bufferSize: cacheMemData.bufferSize,
@@ -145,196 +163,218 @@ function CachePage(): ReactElement | null {
     [cacheData, cacheMemData, cacheMemoryData, cacheRedisData, cacheNativeData],
   )
 
-  function toggle(): void {
-    setModal(!modal)
-  }
+  const formik = useFormik<CacheFormValues>({
+    initialValues,
+    enableReinitialize: true,
+    onSubmit: async (values) => {
+      if (!canWriteCache) return
 
-  function handleCancel(formik: { resetForm: () => void }): () => void {
-    return () => {
-      formik.resetForm()
-      setCacheProviderType(cacheData.cacheProviderType || '')
-    }
-  }
+      try {
+        if (isNativePersistenceCache(values)) {
+          const nativeCache: NativePersistenceConfiguration = {
+            defaultPutExpiration: values.nativeDefaultPutExpiration,
+            defaultCleanupBatchSize: values.defaultCleanupBatchSize,
+            deleteExpiredOnGetRequest: values.deleteExpiredOnGetRequest,
+          }
+          await putNativeMutation.mutateAsync({ data: nativeCache })
+        }
 
-  const isMutating =
-    patchCacheMutation.isPending ||
-    putMemoryMutation.isPending ||
-    putMemcachedMutation.isPending ||
-    putNativeMutation.isPending ||
-    putRedisMutation.isPending
+        if (isInMemoryCache(values)) {
+          const memoryCache: InMemoryConfiguration = {
+            defaultPutExpiration: values.memoryDefaultPutExpiration,
+          }
+          await putMemoryMutation.mutateAsync({ data: memoryCache })
+        }
 
-  if (!canReadCache) {
-    return null
-  }
+        if (isRedisCache(values)) {
+          const redisCache: RedisConfiguration = {
+            redisProviderType: values.redisProviderType as RedisConfiguration['redisProviderType'],
+            servers: values.servers,
+            password: values.password,
+            sentinelMasterGroupName: values.sentinelMasterGroupName,
+            sslTrustStoreFilePath: values.sslTrustStoreFilePath,
+            defaultPutExpiration: values.redisDefaultPutExpiration,
+            useSSL: values.useSSL,
+            maxIdleConnections: values.maxIdleConnections,
+            maxTotalConnections: values.maxTotalConnections,
+            connectionTimeout: values.connectionTimeout,
+            soTimeout: values.soTimeout,
+            maxRetryAttempts: values.maxRetryAttempts,
+          }
+          await putRedisMutation.mutateAsync({ data: redisCache })
+        }
+
+        if (isMemcachedCache(values)) {
+          const memCache: MemcachedConfiguration = {
+            servers: values.memCacheServers,
+            maxOperationQueueLength: values.maxOperationQueueLength,
+            bufferSize: values.bufferSize,
+            defaultPutExpiration: values.memDefaultPutExpiration,
+            connectionFactoryType:
+              values.connectionFactoryType as MemcachedConfiguration['connectionFactoryType'],
+          }
+          await putMemcachedMutation.mutateAsync({ data: memCache })
+        }
+
+        if (cacheData.cacheProviderType !== values.cacheProviderType) {
+          const cache = [
+            {
+              op: 'replace' as const,
+              path: '/cacheProviderType',
+              value: values.cacheProviderType,
+            },
+          ]
+          await patchCacheMutation.mutateAsync({ data: cache })
+        }
+
+        dispatch(updateToast(true, 'success'))
+        await logCacheUpdate(
+          {
+            cacheProviderType: values.cacheProviderType as CacheConfiguration['cacheProviderType'],
+          },
+          'Cache configuration updated',
+        )
+      } catch (error) {
+        dispatch(updateToast(true, 'error'))
+        console.error('Failed to update cache config:', error)
+      }
+    },
+  })
+
+  const toggle = useCallback(() => {
+    setModal((prev) => !prev)
+  }, [])
+
+  const handleCancel = useCallback(() => {
+    formik.resetForm()
+  }, [formik])
+
+  const handleApply = useCallback(() => {
+    toggle()
+  }, [toggle])
+
+  const cacheProviderType = formik.values.cacheProviderType
+
+  const renderSectionTitle = (title: string) => (
+    <div className={classes.sectionHeader}>
+      <GluuText variant="h5" disableThemeColor>
+        <span className={classes.sectionTitle}>{title}</span>
+      </GluuText>
+    </div>
+  )
 
   return (
-    <React.Fragment>
-      <BlockUi
-        tag="div"
-        blocking={loading || isMutating}
-        keepInView={true}
-        renderChildren={true}
-        message={t('messages.request_waiting_message')}
-      >
-        <Card style={applicationStyle.mainCard}>
-          <CardBody>
-            <Formik
-              initialValues={initialValues}
-              enableReinitialize
-              onSubmit={async (values) => {
-                if (!canWriteCache) {
-                  return
-                }
-
-                try {
-                  if (isNativePersistenceCache(values)) {
-                    const nativeCache: NativePersistenceConfiguration = {
-                      defaultPutExpiration: values.nativeDefaultPutExpiration,
-                      defaultCleanupBatchSize: values.defaultCleanupBatchSize,
-                      deleteExpiredOnGetRequest: values.deleteExpiredOnGetRequest,
-                    }
-                    await putNativeMutation.mutateAsync({ data: nativeCache })
-                  }
-
-                  if (isInMemoryCache(values)) {
-                    const memoryCache: InMemoryConfiguration = {
-                      defaultPutExpiration: values.memoryDefaultPutExpiration,
-                    }
-                    await putMemoryMutation.mutateAsync({ data: memoryCache })
-                  }
-
-                  if (isRedisCache(values)) {
-                    const redisCache: RedisConfiguration = {
-                      redisProviderType:
-                        values.redisProviderType as RedisConfiguration['redisProviderType'],
-                      servers: values.servers,
-                      password: values.password,
-                      sentinelMasterGroupName: values.sentinelMasterGroupName,
-                      sslTrustStoreFilePath: values.sslTrustStoreFilePath,
-                      defaultPutExpiration: values.redisDefaultPutExpiration,
-                      useSSL: values.useSSL,
-                      maxIdleConnections: values.maxIdleConnections,
-                      maxTotalConnections: values.maxTotalConnections,
-                      connectionTimeout: values.connectionTimeout,
-                      soTimeout: values.soTimeout,
-                      maxRetryAttempts: values.maxRetryAttempts,
-                    }
-                    await putRedisMutation.mutateAsync({ data: redisCache })
-                  }
-
-                  if (isMemcachedCache(values)) {
-                    const memCache: MemcachedConfiguration = {
-                      servers: values.memCacheServers,
-                      maxOperationQueueLength: values.maxOperationQueueLength,
-                      bufferSize: values.bufferSize,
-                      defaultPutExpiration: values.memDefaultPutExpiration,
-                      connectionFactoryType:
-                        values.connectionFactoryType as MemcachedConfiguration['connectionFactoryType'],
-                    }
-                    await putMemcachedMutation.mutateAsync({ data: memCache })
-                  }
-
-                  if (cacheData.cacheProviderType !== values.cacheProviderType) {
-                    const cache = [
-                      {
-                        op: 'replace' as const,
-                        path: '/cacheProviderType',
-                        value: values.cacheProviderType,
-                      },
-                    ]
-                    await patchCacheMutation.mutateAsync({ data: cache })
-                  }
-
-                  dispatch(updateToast(true, 'success'))
-                  await logCacheUpdate(
-                    {
-                      cacheProviderType:
-                        values.cacheProviderType as CacheConfiguration['cacheProviderType'],
-                    },
-                    'Cache configuration updated',
-                  )
-                } catch (error) {
-                  dispatch(updateToast(true, 'danger'))
-                  console.error('Failed to update cache config:', error)
-                }
-              }}
-            >
-              {(formik) => (
-                <Form onSubmit={formik.handleSubmit}>
-                  <style>{`
-                    .cache-form-labels-black label,
-                    .cache-form-labels-black label h5,
-                    .cache-form-labels-black label span,
-                    .cache-form-labels-black .MuiSvgIcon-root { color: ${customColors.black} !important; }
-                  `}</style>
-                  <div className="cache-form-labels-black">
-                    <FormGroup row>
-                      <GluuLabel label="fields.cache_provider_type" size={4} />
-                      <Col sm={8}>
-                        {cacheData.cacheProviderType && (
-                          <GluuTooltip doc_category={CACHE} doc_entry="cacheProviderType">
-                            <InputGroup>
-                              <CustomInput
-                                type="select"
-                                id="cacheProviderType"
-                                name="cacheProviderType"
-                                value={cacheProviderType}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                  const value = e.target.value as CacheProviderType
-                                  setCacheProviderType(value)
-                                  formik.setFieldValue('cacheProviderType', value)
-                                }}
-                              >
-                                <option value="IN_MEMORY">{t('options.in_memory')}</option>
-                                <option value="MEMCACHED">{t('options.memcached')}</option>
-                                <option value="REDIS">{t('options.redis')}</option>
-                                <option value="NATIVE_PERSISTENCE">
-                                  {t('options.native_persistence')}
-                                </option>
-                              </CustomInput>
-                            </InputGroup>
-                          </GluuTooltip>
-                        )}
-                      </Col>
-                    </FormGroup>
-                    {cacheProviderType === 'MEMCACHED' && (
-                      <CacheMemcached config={cacheMemData} formik={formik} />
-                    )}
-                    {cacheProviderType === 'IN_MEMORY' && <CacheInMemory formik={formik} />}
-                    {cacheProviderType === 'REDIS' && (
-                      <CacheRedis config={cacheRedisData} formik={formik} />
-                    )}
-                    {cacheProviderType === 'NATIVE_PERSISTENCE' && <CacheNative formik={formik} />}
-                    <div style={{ marginTop: 16 }} />
-                    <GluuFormFooter
-                      showBack={true}
-                      showCancel={true}
-                      showApply={canWriteCache}
-                      onApply={toggle}
-                      onCancel={handleCancel(formik)}
-                      disableBack={false}
-                      disableCancel={!formik.dirty}
-                      disableApply={!formik.isValid || !formik.dirty || !canWriteCache}
-                      applyButtonType="button"
-                      isLoading={loading || isMutating}
-                    />
-                    <GluuCommitDialog
-                      handler={toggle}
-                      modal={modal}
-                      onAccept={() => {
-                        toggle()
-                        formik.handleSubmit()
-                      }}
+    <GluuLoader blocking={loading || isMutating}>
+      <GluuViewWrapper canShow={canReadCache}>
+        <GluuPageContent>
+          <div className={classes.cacheCard}>
+            <div className={`${classes.content} ${classes.formLabels}`}>
+              <Form onSubmit={formik.handleSubmit} className={classes.formSection}>
+                <div
+                  className={`${classes.fieldsGrid} ${classes.formLabels} ${classes.formWithInputs}`}
+                >
+                  <div className={`${classes.fieldItem} ${classes.fieldItemFullWidth}`}>
+                    <GluuSelectRow
+                      label="fields.cache_provider_type"
+                      name="cacheProviderType"
+                      value={formik.values.cacheProviderType}
                       formik={formik}
+                      values={CACHE_PROVIDER_OPTIONS}
+                      lsize={12}
+                      rsize={12}
+                      doc_category={CACHE}
+                      doc_entry="cacheProviderType"
+                      disabled={!canWriteCache}
+                      isDark={isDark}
                     />
                   </div>
-                </Form>
-              )}
-            </Formik>
-          </CardBody>
-        </Card>
-      </BlockUi>
-    </React.Fragment>
+                </div>
+
+                {cacheProviderType === 'IN_MEMORY' && (
+                  <div
+                    className={`${classes.sectionBox} ${classes.formWithInputs} ${classes.formLabels}`}
+                  >
+                    {renderSectionTitle(`${t('fields.in_memory_configuration')}:`)}
+                    <CacheInMemory
+                      formik={formik}
+                      classes={classes}
+                      isDark={isDark}
+                      disabled={!canWriteCache}
+                    />
+                  </div>
+                )}
+
+                {cacheProviderType === 'MEMCACHED' && (
+                  <div
+                    className={`${classes.sectionBox} ${classes.formWithInputs} ${classes.formLabels}`}
+                  >
+                    {renderSectionTitle(`${t('fields.memcached_configuration')}:`)}
+                    <CacheMemcached
+                      config={cacheMemData}
+                      formik={formik}
+                      classes={classes}
+                      isDark={isDark}
+                      disabled={!canWriteCache}
+                    />
+                  </div>
+                )}
+
+                {cacheProviderType === 'REDIS' && (
+                  <div
+                    className={`${classes.sectionBox} ${classes.formWithInputs} ${classes.formLabels}`}
+                  >
+                    {renderSectionTitle(`${t('fields.redis_configuration')}:`)}
+                    <CacheRedis
+                      config={cacheRedisData}
+                      formik={formik}
+                      classes={classes}
+                      isDark={isDark}
+                      disabled={!canWriteCache}
+                    />
+                  </div>
+                )}
+
+                {cacheProviderType === 'NATIVE_PERSISTENCE' && (
+                  <div
+                    className={`${classes.sectionBox} ${classes.formWithInputs} ${classes.formLabels}`}
+                  >
+                    {renderSectionTitle(`${t('fields.native_persistence_configuration')}:`)}
+                    <CacheNative
+                      formik={formik}
+                      classes={classes}
+                      isDark={isDark}
+                      disabled={!canWriteCache}
+                    />
+                  </div>
+                )}
+
+                <GluuThemeFormFooter
+                  showBack
+                  showCancel={canWriteCache}
+                  onCancel={handleCancel}
+                  disableCancel={!formik.dirty}
+                  showApply={canWriteCache}
+                  onApply={handleApply}
+                  disableApply={!formik.isValid || !formik.dirty || !canWriteCache}
+                  applyButtonType="button"
+                  hideDivider
+                />
+              </Form>
+
+              <GluuCommitDialog
+                handler={toggle}
+                modal={modal}
+                onAccept={() => {
+                  toggle()
+                  formik.handleSubmit()
+                }}
+                formik={formik}
+              />
+            </div>
+          </div>
+        </GluuPageContent>
+      </GluuViewWrapper>
+    </GluuLoader>
   )
 }
 

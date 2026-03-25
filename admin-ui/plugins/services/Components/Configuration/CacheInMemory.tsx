@@ -1,32 +1,27 @@
-import React, { ReactElement } from 'react'
-import { FormGroup, Card, Col, CardBody } from 'Components'
+import React from 'react'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import { CACHE } from 'Utils/ApiResources'
-import { useTranslation } from 'react-i18next'
-import type { CacheInMemoryProps } from './types'
+import type { CacheSubComponentBaseProps } from './types'
 
-function CacheInMemory({ formik }: CacheInMemoryProps): ReactElement {
-  const { t } = useTranslation()
+function CacheInMemory({ formik, classes, isDark, disabled }: CacheSubComponentBaseProps) {
   return (
-    <Card>
-      <CardBody>
-        <FormGroup row>
-          <Col xs="12" style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 15 }}>
-            {t('fields.in_memory_configuration')}:
-          </Col>
-        </FormGroup>
+    <div className={classes.sectionGrid}>
+      <div className={classes.fieldItem}>
         <GluuInputRow
           label="fields.default_put_expiration"
           name="memoryDefaultPutExpiration"
           type="number"
-          lsize={6}
-          rsize={6}
+          lsize={12}
+          rsize={12}
           formik={formik}
           value={formik.values.memoryDefaultPutExpiration}
           doc_category={CACHE}
+          doc_entry="defaultPutExpiration"
+          isDark={isDark}
+          disabled={disabled}
         />
-      </CardBody>
-    </Card>
+      </div>
+    </div>
   )
 }
 
