@@ -32,6 +32,7 @@
     "configuration_copied": "Configuration copied",
     "copy_configuration": "Copy configuration",
     "apply": "Apply",
+    "apply_filter": "Apply Filter",
     "back": "Back",
     "back_home": "Back Home",
     "cancel": "Cancel",
@@ -579,6 +580,7 @@
     "customerName": "Customer Name",
     "licenseDetails": "License Details",
     "username": "Username",
+    "value": "Value",
     "connectionUris": "Connection URIs",
     "schemaName": "Schema Name",
     "passwordEncryptionMethod": "Password Encryption Method",
@@ -1054,6 +1056,8 @@
     "user_created_successfully": "User created successfully",
     "user_updated_successfully": "User updated successfully",
     "user_deleted_successfully": "User deleted successfully",
+    "session_deleted_successfully": "Session deleted successfully",
+    "session_revoked_successfully": "Session revoked successfully",
     "audit_logging_failed": "The action completed, but audit logging failed.",
     "webhook_trigger_failed": "The action completed, but the webhook trigger failed.",
     "query_invalidation_failed": "The action completed, but query cache invalidation failed.",
@@ -1354,7 +1358,8 @@
     "edit_identity_provider": "Edit Identity Provider",
     "create_identity_provider": "Create Identity Provider",
     "view_identity_provider": "View Identity Provider",
-    "delete_identity_provider": "Delete Identity Provider"
+    "delete_identity_provider": "Delete Identity Provider",
+    "search_filter": "Search Filter"
   },
   "links": {
     "support": "https://support.gluu.org/"

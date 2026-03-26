@@ -1,6 +1,3 @@
-import React from 'react'
-import { Dayjs } from 'dayjs'
-
 // Core Session Types
 export interface SessionAttributes {
   auth_user: string
@@ -22,36 +19,8 @@ export interface Session {
   permissionGrantedMap?: Record<string, boolean>
 }
 
-export interface RootState {
-  cedarPermissions?: {
-    permissions: string[]
-  }
-}
-
-export interface SessionListPageProps {
-  row?: Session
-}
-
 export interface SessionDetailPageProps {
   row: Session
-}
-
-export interface TableColumn {
-  title: string
-  field: string
-  render?: (rowData: Session) => React.ReactNode
-}
-
-export interface FilterState {
-  limit: number
-  pattern: string | null
-  searchFilter: string | null
-  date: Dayjs | null
-}
-
-export interface ColumnState {
-  checkedColumns: string[]
-  updatedColumns: TableColumn[]
 }
 
 export type SessionState = 'authenticated' | 'unauthenticated'

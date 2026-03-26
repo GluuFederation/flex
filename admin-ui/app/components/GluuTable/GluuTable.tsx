@@ -359,13 +359,13 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
           >
             <colgroup>
               {expandable && <col style={{ width: expandColumnWidth ?? 40 }} />}
-              {columns.map((col) => {
+              {columns.map((col, colIdx) => {
                 const w = effectiveWidths[col.key]
                 const minW = parseMinWidth(col)
                 const maxW = parseMaxWidth(col)
                 return (
                   <col
-                    key={col.key}
+                    key={`${col.key}-${colIdx}`}
                     style={{
                       width: w,
                       ...(minW != null && { minWidth: minW }),
@@ -392,13 +392,13 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
                     }
                   />
                 )}
-                {columns.map((col) => {
+                {columns.map((col, colIdx) => {
                   const isSortable = col.sortable !== false
                   const isActive = sortState.column === col.key
                   return (
                     <th
                       ref={(el) => setHeaderCellRef(col.key, el)}
-                      key={col.key}
+                      key={`${col.key}-${colIdx}`}
                       className={`${classes.headerCell} ${classes.headerCellResizable}`}
                       style={{
                         width: effectiveWidths[col.key],
@@ -524,7 +524,7 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
                           const isFirstLineColumn = expandable && colIdx <= 1
                           return (
                             <td
-                              key={col.key}
+                              key={`${col.key}-${colIdx}`}
                               className={`${classes.cell} ${isFirstLineColumn ? classes.cellFirst : ''}`}
                               style={{
                                 width: effectiveWidths[col.key],

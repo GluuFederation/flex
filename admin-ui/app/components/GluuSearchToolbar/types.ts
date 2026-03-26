@@ -54,6 +54,9 @@ export interface GluuSearchToolbarProps {
   searchDebounceMs?: number
   onSearch?: (value: string) => void
   onSearchSubmit?: (value: string) => void
+  selectOptions?: FilterOption[]
+  onSelectChange?: (value: string) => void
+  selectPlaceholder?: string
   filters?: FilterDef[]
   dateInputs?: DateInputDef[]
   dateRange?: DateRangeConfig

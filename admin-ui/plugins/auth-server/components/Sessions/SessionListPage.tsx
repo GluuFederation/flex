@@ -1,118 +1,132 @@
-import React, {
-  useState,
-  useEffect,
-  useContext,
-  useCallback,
-  useMemo,
-  type SyntheticEvent,
-} from 'react'
+import React, { useState, useEffect, useCallback, useMemo, memo } from 'react'
 import isEmpty from 'lodash/isEmpty'
-import MaterialTable, { type Action } from '@material-table/core'
-import Autocomplete from '@mui/material/Autocomplete'
-import {
-  Paper,
-  TextField,
-  Box,
-  MenuItem,
-  Grid,
-  Menu,
-  Checkbox,
-  FormControl,
-  ListItemText,
-  Button as MaterialButton,
-} from '@mui/material'
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { GluuDatePicker } from '@/components/GluuDatePicker'
-import { DATE_FORMATS } from '@/utils/dayjsUtils'
-import { useSelector } from 'react-redux'
-import { Button } from 'reactstrap'
-import { Card, CardBody } from 'Components'
+import { DeleteOutlined } from '@mui/icons-material'
+import FilterListIcon from '@mui/icons-material/FilterList'
+import GetAppIcon from '@mui/icons-material/GetApp'
+import { GluuBadge } from '@/components/GluuBadge'
+import { GluuTable } from '@/components/GluuTable'
+import { GluuButton } from '@/components/GluuButton'
+import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
+import type { FilterOption } from '@/components/GluuSearchToolbar'
+import { GluuFilterPopover } from '@/components/GluuFilterPopover'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
-import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useTranslation } from 'react-i18next'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
 import SetTitle from 'Utils/SetTitle'
-import { ThemeContext } from 'Context/theme/themeContext'
-import getThemeColor from 'Context/theme/config'
-import SessionDetailPage from '../Sessions/SessionDetailPage'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { useCedarling } from '@/cedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { formatDate } from '@/utils/dayjsUtils'
-import { Dayjs } from 'dayjs'
-import FilterListIcon from '@mui/icons-material/FilterList'
-import GetAppIcon from '@mui/icons-material/GetApp'
-import ViewColumnIcon from '@mui/icons-material/ViewColumn'
-import { DeleteOutlined } from '@mui/icons-material'
-import customColors from '@/customColors'
-import { getDefaultPagingSize } from '@/utils/pagingUtils'
-import {
-  useGetSessions,
-  useDeleteSession,
-  useRevokeUserSession,
-  useSearchSession,
-} from 'JansConfigApi'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
+import { BORDER_RADIUS, ICON_SIZE } from '@/constants'
+import { useAppSelector } from '@/redux/hooks'
+import { useGetSessions, useSearchSession } from 'JansConfigApi'
 import type { SessionId, SearchSessionParams } from 'JansConfigApi'
-import type { Session, TableColumn, SessionListPageProps, FilterState, ColumnState } from './types'
-import type { RootState as AuditRootState } from '@/redux/types'
-import { logAuditUserAction } from 'Utils/AuditLogger'
-import { DELETION } from '../../../../app/audit/UserActionType'
-import { SESSION } from '../../redux/audit/Resources'
-import { DEFAULT_THEME } from '@/context/theme/constants'
+import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
+import type { FilterField } from '@/components/GluuFilterPopover'
+import type { Session } from './types'
+import { useStyles } from './styles/SessionListPage.style'
+import SessionDetailPage from './SessionDetailPage'
+import { useDeleteSessionWithAudit, useRevokeSessionWithAudit } from './hooks/useSessionMutations'
+import type { Dayjs } from 'dayjs'
 
-const SessionListPage: React.FC<SessionListPageProps> = () => {
+const LIMIT_OPTIONS = getRowsPerPageOptions()
+
+type DisplayValue = string | number | boolean | null | undefined
+const displayOrDash = (value: DisplayValue): string =>
+  value === null || value === undefined || value === '' ? '—' : String(value)
+
+const SessionListPage: React.FC = () => {
   const { hasCedarDeletePermission, authorizeHelper } = useCedarling()
   const { t } = useTranslation()
-  const {
-    data: sessionsData,
-    isLoading: sessionsLoading,
-    refetch: refetchSessions,
-  } = useGetSessions()
-  const deleteSessionMutation = useDeleteSession()
-  const revokeSessionMutation = useRevokeUserSession()
 
-  const authState = useSelector((state: AuditRootState) => state.authReducer)
-  const client_id = authState?.config?.clientId
-  const userinfo = authState?.userinfo
+  const { data: sessionsData, isLoading: sessionsLoading } = useGetSessions()
+
+  const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
+  const client_id = useAppSelector((state) => state.authReducer?.config?.clientId)
+  const auditContext = useMemo(
+    () => ({
+      userinfo,
+      client_id,
+    }),
+    [userinfo, client_id],
+  )
+
+  const { deleteSession, isLoading: isDeleting } = useDeleteSessionWithAudit(auditContext)
+  const { revokeSession, isLoading: isRevoking } = useRevokeSessionWithAudit(auditContext)
+
+  const { state: themeState } = useTheme()
+  const { themeColors, isDarkTheme } = useMemo(
+    () => ({
+      themeColors: getThemeColor(themeState.theme),
+      isDarkTheme: themeState.theme === THEME_DARK,
+    }),
+    [themeState.theme],
+  )
+  const { classes, badgeStyles } = useStyles({ isDark: isDarkTheme, themeColors })
+
+  const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
 
   const [searchParams, setSearchParams] = useState<SearchSessionParams | undefined>(undefined)
   const { data: searchData, isLoading: searchLoading } = useSearchSession(searchParams, {
-    query: {
-      enabled: !!searchParams,
-    },
+    query: { enabled: !!searchParams },
   })
 
-  const [filterState, setFilterState] = useState<FilterState>({
-    limit: 10,
-    pattern: null,
-    searchFilter: null,
-    date: null,
-  })
-
+  const [filterSearchField, setFilterSearchField] = useState('')
+  const [filterTextValue, setFilterTextValue] = useState('')
+  const [filterDateValue, setFilterDateValue] = useState<Dayjs | null>(null)
   const [isFilterApplied, setIsFilterApplied] = useState(false)
+  const [appliedFilterField, setAppliedFilterField] = useState('')
+  const [appliedFilterValue, setAppliedFilterValue] = useState('')
+  const [showFilter, setShowFilter] = useState(false)
 
-  const adaptSessionIdToSession = useCallback((sessionId: SessionId): Session => {
-    return {
+  const [deleteModal, setDeleteModal] = useState(false)
+  const [revokeModal, setRevokeModal] = useState(false)
+  const [item, setItem] = useState<Session>({} as Session)
+  const [revokeUsername, setRevokeUsername] = useState<string | null>(null)
+
+  const sessionResourceId = ADMIN_UI_RESOURCES.Session
+  const sessionScopes = useMemo(
+    () => CEDAR_RESOURCE_SCOPES[sessionResourceId] || [],
+    [sessionResourceId],
+  )
+  const canDelete = useMemo(
+    () => hasCedarDeletePermission(sessionResourceId),
+    [hasCedarDeletePermission, sessionResourceId],
+  )
+
+  useEffect(() => {
+    if (sessionScopes.length > 0) {
+      authorizeHelper(sessionScopes)
+    }
+  }, [authorizeHelper, sessionScopes])
+
+  const adaptSessionIdToSession = useCallback(
+    (sessionId: SessionId): Session => ({
       id: sessionId.id,
       userDn: sessionId.userDn,
       authenticationTime: sessionId.authenticationTime || '',
       state: sessionId.state as 'authenticated' | 'unauthenticated',
       sessionState: sessionId.sessionState,
       sessionAttributes: {
+        ...sessionId.sessionAttributes,
         auth_user: sessionId.sessionAttributes?.auth_user || '',
         remote_ip: sessionId.sessionAttributes?.remote_ip || '',
         client_id: sessionId.sessionAttributes?.client_id || '',
         acr_values: sessionId.sessionAttributes?.acr_values || '',
         sid: sessionId.sessionAttributes?.sid,
-        ...sessionId.sessionAttributes,
       },
       expirationDate: sessionId.expirationDate,
       permissionGrantedMap: sessionId.permissionGrantedMap?.permissionGranted,
-    }
-  }, [])
+    }),
+    [],
+  )
 
   const sessions = useMemo(() => {
     let rawSessions: SessionId[] = []
@@ -124,33 +138,18 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
     return rawSessions.map(adaptSessionIdToSession)
   }, [sessionsData, searchData, searchParams, adaptSessionIdToSession])
 
-  const loading = sessionsLoading || searchLoading
-
-  const tableKey = useMemo(() => {
-    if (searchParams) {
-      return `search-${JSON.stringify(searchParams)}`
-    } else if (
-      isFilterApplied &&
-      filterState.pattern &&
-      (filterState.searchFilter === 'client_id' || filterState.searchFilter === 'auth_user')
-    ) {
-      return `filter-${filterState.searchFilter}-${filterState.pattern}`
-    }
-    return 'all-sessions'
-  }, [searchParams, filterState.pattern, filterState.searchFilter, isFilterApplied])
-
   const authenticatedSessions = useMemo(() => {
     let filtered = sessions.filter((session) => session.state === 'authenticated')
 
     if (
       isFilterApplied &&
-      filterState.pattern &&
-      (filterState.searchFilter === 'client_id' || filterState.searchFilter === 'auth_user')
+      appliedFilterValue &&
+      (appliedFilterField === 'client_id' || appliedFilterField === 'auth_user')
     ) {
-      const searchValue = filterState.pattern.toLowerCase()
+      const searchValue = appliedFilterValue.toLowerCase()
       filtered = filtered.filter((session) => {
         const fieldValue =
-          filterState.searchFilter === 'client_id'
+          appliedFilterField === 'client_id'
             ? session.sessionAttributes?.client_id
             : session.sessionAttributes?.auth_user
         return fieldValue?.toLowerCase().includes(searchValue)
@@ -158,626 +157,493 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
     }
 
     return filtered
-  }, [sessions, filterState.pattern, filterState.searchFilter, isFilterApplied])
+  }, [sessions, appliedFilterValue, appliedFilterField, isFilterApplied])
 
-  const [item, setItem] = useState<Session>({} as Session)
-  const [modal, setModal] = useState<boolean>(false)
-  const [deleteModal, setDeleteModal] = useState<boolean>(false)
-  const [revokeUsername, setRevokeUsername] = useState<string | null>(null)
-  const [showFilter, setShowFilter] = useState<boolean>(false)
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
+  const totalItems = authenticatedSessions.length
 
-  const [columnState, setColumnState] = useState<ColumnState>({
-    checkedColumns: [],
-    updatedColumns: [],
-  })
+  const paginatedSessions = useMemo(() => {
+    const start = pageNumber * limit
+    return authenticatedSessions.slice(start, start + limit)
+  }, [authenticatedSessions, pageNumber, limit])
 
-  const pageSize = getDefaultPagingSize()
-  const toggle = () => setModal(!modal)
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
-  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
-  const bgThemeColor = useMemo(
-    () => ({ background: themeColors.background }),
-    [themeColors.background],
-  )
+  const loading = sessionsLoading || searchLoading || isDeleting || isRevoking
 
-  const sessionResourceId = ADMIN_UI_RESOURCES.Session
-  const sessionScopes = useMemo(
-    () => CEDAR_RESOURCE_SCOPES[sessionResourceId] || [],
-    [sessionResourceId],
-  )
+  const usernameSelectOptions: FilterOption[] = useMemo(() => {
+    const usernames = [
+      ...new Set(authenticatedSessions.map((s) => s.sessionAttributes?.auth_user).filter(Boolean)),
+    ]
+    return usernames.map((u) => ({ value: u as string, label: u as string }))
+  }, [authenticatedSessions])
 
-  const canDeleteSession = useMemo(
-    () => hasCedarDeletePermission(sessionResourceId),
-    [hasCedarDeletePermission, sessionResourceId],
-  )
+  SetTitle(t('menus.sessions'))
 
-  useEffect(() => {
-    if (sessionScopes && sessionScopes.length > 0) {
-      authorizeHelper(sessionScopes)
-    }
-  }, [authorizeHelper, sessionScopes])
-
-  const handleDeleteSession = useCallback((rowData: Session) => {
+  const handleDeleteClick = useCallback((rowData: Session) => {
     setItem(rowData)
     setDeleteModal(true)
   }, [])
 
-  const tableActions: Action<Session>[] = useMemo(
-    () =>
-      !canDeleteSession
-        ? []
-        : [
-            {
-              icon: () => (
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                  <DeleteOutlined style={{ color: customColors.darkGray }} />
-                </div>
-              ),
-              tooltip: `${t('actions.delete')}`,
-              onClick: (_event, data) => {
-                const row = Array.isArray(data) ? data[0] : data
-                if (!row) {
-                  return
-                }
-                handleDeleteSession(row)
-              },
-            },
-          ],
-    [canDeleteSession, t, handleDeleteSession],
-  )
+  const handleCloseDeleteModal = useCallback(() => {
+    setDeleteModal(false)
+    setItem({} as Session)
+  }, [])
 
-  const sessionUsername = useMemo(
-    () =>
-      authenticatedSessions.map((session) => session.sessionAttributes?.auth_user).filter(Boolean),
-    [authenticatedSessions],
-  )
-  const usernames = useMemo(() => [...new Set(sessionUsername)], [sessionUsername])
-
-  SetTitle(t('menus.sessions'))
-
-  const tableColumns = useMemo(
-    (): TableColumn[] => [
-      { title: `${t('fields.username')}`, field: 'sessionAttributes.auth_user' },
-      {
-        title: `${t('fields.ip_address')}`,
-        field: 'sessionAttributes.remote_ip',
-      },
-      {
-        title: `${t('fields.client_id_used')}`,
-        field: 'sessionAttributes.client_id',
-      },
-      {
-        title: `${t('fields.auth_time')}`,
-        field: 'authenticationTime',
-        render: (rowData: Session) => (
-          <span>
-            {rowData.authenticationTime
-              ? formatDate(rowData.authenticationTime, 'ddd, MMM DD, YYYY h:mm:ss A')
-              : ''}
-          </span>
-        ),
-      },
-      {
-        title: `${t('fields.acr')}`,
-        field: 'sessionAttributes.acr_values',
-      },
-      { title: `${t('fields.state')}`, field: 'state' },
-    ],
-    [t],
-  )
-
-  const handleCheckboxChange = useCallback(
-    (title: string) => {
-      setColumnState((prev) => {
-        const newCheckedColumns = prev.checkedColumns.includes(title)
-          ? prev.checkedColumns.filter((item) => item !== title)
-          : [...prev.checkedColumns, title]
-        const newUpdatedColumns = tableColumns.filter((column) =>
-          newCheckedColumns.includes(column.title),
-        )
-        return {
-          checkedColumns: newCheckedColumns,
-          updatedColumns: newUpdatedColumns,
-        }
-      })
+  const handleDeleteAccept = useCallback(
+    async (message: string) => {
+      const sessionId = item.id || item.sessionAttributes?.sid
+      if (!sessionId) return
+      try {
+        await deleteSession(sessionId, message, item.sessionAttributes?.auth_user)
+        setDeleteModal(false)
+        setItem({} as Session)
+      } catch {}
     },
-    [tableColumns],
+    [item, deleteSession],
   )
-
-  useEffect(() => {
-    const initialCheckedColumns = tableColumns.map((column) => column.title)
-    setColumnState({
-      checkedColumns: initialCheckedColumns,
-      updatedColumns: tableColumns,
-    })
-  }, [tableColumns])
 
   const handleRevoke = useCallback(() => {
-    if (isEmpty(authenticatedSessions)) {
-      return
-    }
+    if (isEmpty(authenticatedSessions)) return
     const row = authenticatedSessions.find(
       ({ sessionAttributes }) => sessionAttributes?.auth_user === revokeUsername,
     )
     if (row) {
       setItem(row)
-      toggle()
+      setRevokeModal(true)
     }
   }, [authenticatedSessions, revokeUsername])
 
-  const onRevokeConfirmed = useCallback(
+  const handleRevokeAccept = useCallback(
     async (message: string) => {
+      const { userDn } = item
+      if (!userDn) return
       try {
-        const { userDn } = item
-        if (userDn) {
-          await revokeSessionMutation.mutateAsync({ userDn })
-          await logAuditUserAction({
-            userinfo,
-            action: DELETION,
-            resource: SESSION,
-            message: message || 'Session revoked',
-            client_id,
-            payload: { userDn, username: item.sessionAttributes?.auth_user },
-          })
-          refetchSessions()
-        }
-        toggle()
-      } catch (error) {
-        console.error('Error revoking session:', error)
-      }
+        await revokeSession(userDn, message, item.sessionAttributes?.auth_user)
+        setRevokeModal(false)
+      } catch {}
     },
-    [item, revokeSessionMutation, refetchSessions, toggle, userinfo, client_id],
+    [item, revokeSession],
   )
 
-  const onDeleteConfirmed = useCallback(
-    async (message: string) => {
-      try {
-        const sessionId = item.id || item.sessionAttributes?.sid
-        if (sessionId) {
-          await deleteSessionMutation.mutateAsync({ sid: sessionId })
-          await logAuditUserAction({
-            userinfo,
-            action: DELETION,
-            resource: SESSION,
-            message: message || 'Session deleted',
-            client_id,
-            payload: { sessionId, username: item.sessionAttributes?.auth_user },
-          })
-          refetchSessions()
-        }
-        setDeleteModal(false)
-      } catch (error) {
-        console.error('Error deleting session:', error)
-      }
-    },
-    [item, deleteSessionMutation, refetchSessions, userinfo, client_id],
-  )
-
-  const convertToCSV = useCallback(
-    (data: Session[]) => {
-      const keys = columnState.updatedColumns.map((item) => item.title)
-
-      const header = keys.map((item) => item.replaceAll('-', ' ').toUpperCase()).join(',')
-
-      const updateData = data.map((row) => ({
-        [t('fields.username')]: row.sessionAttributes.auth_user,
-        [t('fields.ip_address')]: row.sessionAttributes.remote_ip,
-        [t('fields.client_id_used')]: row.sessionAttributes.client_id,
-        [t('fields.auth_time')]: row.authenticationTime
-          ? formatDate(row.authenticationTime, 'YYYY-MM-DD h:mm:ss A')
-          : '',
-        [t('fields.acr')]: row.sessionAttributes.acr_values,
-        [t('fields.state')]: row.state,
-      }))
-
-      const rows = updateData.map((row) => {
-        return keys.map((key) => row[key]).join(',')
-      })
-
-      return [header, ...rows].join('\n')
-    },
-    [columnState.updatedColumns, t],
-  )
-
-  const downloadCSV = useCallback(() => {
-    const csv = convertToCSV(authenticatedSessions)
-    const blob = new Blob([csv], { type: 'text/csv' })
-    const url = URL.createObjectURL(blob)
-
-    const link = document.createElement('a')
-    link.href = url
-    link.setAttribute('download', `client-tokens.csv`)
-    document.body.appendChild(link)
-    link.click()
-    link.remove()
-  }, [convertToCSV, authenticatedSessions])
-
-  const handleUsernameChange = useCallback(
-    (_: SyntheticEvent<Element, Event>, value: string | null) => {
-      setRevokeUsername(value)
-    },
-    [],
-  )
-
-  const handleFilterToggle = useCallback(() => {
-    setShowFilter(!showFilter)
-  }, [showFilter])
-
-  const handleColumnMenuOpen = useCallback((event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
+  const handleCloseRevokeModal = useCallback(() => {
+    setRevokeModal(false)
   }, [])
 
-  const handleColumnMenuClose = useCallback(() => {
-    setAnchorEl(null)
+  const handleUsernameSelectChange = useCallback((value: string) => {
+    setRevokeUsername(value || null)
+  }, [])
+
+  const handleFilterToggle = useCallback(() => {
+    setShowFilter((prev) => !prev)
+  }, [])
+
+  const handleFilterSearchFieldChange = useCallback((value: string) => {
+    setFilterSearchField(value)
+    setFilterTextValue('')
+    setFilterDateValue(null)
+    setSearchParams(undefined)
+    setIsFilterApplied(false)
+  }, [])
+
+  const handleFilterTextChange = useCallback((value: string) => {
+    setFilterTextValue(value)
+  }, [])
+
+  const handleFilterDateChange = useCallback((val: Dayjs | null) => {
+    setFilterDateValue(val)
   }, [])
 
   const handleFilterApply = useCallback(() => {
-    const { pattern, searchFilter, date } = filterState
-    if (pattern || date) {
-      const searchValue =
-        searchFilter !== 'expirationDate' && searchFilter !== 'authenticationTime'
-          ? pattern
-          : formatDate(date, 'YYYY-MM-DD')
-
-      const isSessionAttribute = searchFilter === 'client_id' || searchFilter === 'auth_user'
+    if (filterTextValue || filterDateValue) {
+      const isSessionAttribute =
+        filterSearchField === 'client_id' || filterSearchField === 'auth_user'
 
       if (isSessionAttribute) {
         setSearchParams(undefined)
+        setAppliedFilterField(filterSearchField)
+        setAppliedFilterValue(filterTextValue)
         setIsFilterApplied(true)
-      } else if (searchFilter === 'expirationDate' || searchFilter === 'authenticationTime') {
-        const searchParams: SearchSessionParams = {
-          fieldValuePair: `${searchFilter}=${searchValue}`,
+      } else if (
+        filterSearchField === 'expirationDate' ||
+        filterSearchField === 'authenticationTime'
+      ) {
+        const searchValue = formatDate(filterDateValue, 'YYYY-MM-DD')
+        setSearchParams({
+          fieldValuePair: `${filterSearchField}=${searchValue}`,
           limit: 100,
-        }
-        setSearchParams(searchParams)
+        })
         setIsFilterApplied(false)
       }
     } else {
       setSearchParams(undefined)
       setIsFilterApplied(false)
+      setAppliedFilterField('')
+      setAppliedFilterValue('')
     }
-  }, [filterState])
+    setPageNumber(0)
+    setShowFilter(false)
+  }, [filterSearchField, filterTextValue, filterDateValue, setPageNumber])
 
-  const handleFilterClose = useCallback(() => {
+  const handleFilterCancel = useCallback(() => {
     setShowFilter(false)
     setSearchParams(undefined)
     setIsFilterApplied(false)
-    setFilterState({
-      limit: 10,
-      pattern: null,
-      searchFilter: null,
-      date: null,
-    })
-  }, [])
+    setAppliedFilterField('')
+    setAppliedFilterValue('')
+    setFilterSearchField('')
+    setFilterTextValue('')
+    setFilterDateValue(null)
+    setPageNumber(0)
+  }, [setPageNumber])
 
-  const handleDetailPanel = useCallback((rowData: { rowData: Session }) => {
-    return <SessionDetailPage row={rowData.rowData} />
-  }, [])
+  const isDateFilter =
+    filterSearchField === 'expirationDate' || filterSearchField === 'authenticationTime'
 
-  const TableContainer = useCallback(
-    (props: React.ComponentProps<typeof Paper>) => <Paper {...props} elevation={0} />,
+  const filterFields: FilterField[] = useMemo(
+    () => [
+      {
+        key: 'searchFilter',
+        label: '',
+        value: filterSearchField,
+        type: 'select' as const,
+        options: [
+          { value: '', label: t('options.none') },
+          { value: 'client_id', label: t('fields.client_id_used') },
+          { value: 'auth_user', label: t('fields.username') },
+          { value: 'expirationDate', label: t('titles.expiration_date') },
+          { value: 'authenticationTime', label: t('titles.authentication_date') },
+        ],
+        onChange: handleFilterSearchFieldChange,
+      },
+      isDateFilter
+        ? {
+            key: 'value',
+            label: '',
+            value: '',
+            type: 'date' as const,
+            dateValue: filterDateValue,
+            onDateChange: handleFilterDateChange,
+            onChange: () => {},
+          }
+        : {
+            key: 'value',
+            label: '',
+            value: filterTextValue,
+            type: 'text' as const,
+            placeholder: t('placeholders.value'),
+            onChange: handleFilterTextChange,
+          },
+    ],
+    [
+      t,
+      filterSearchField,
+      filterTextValue,
+      filterDateValue,
+      isDateFilter,
+      handleFilterSearchFieldChange,
+      handleFilterTextChange,
+      handleFilterDateChange,
+    ],
+  )
+
+  const downloadCSV = useCallback(() => {
+    const keys = [
+      t('fields.username'),
+      t('fields.ip_address'),
+      t('fields.client_id_used'),
+      t('fields.auth_time'),
+      t('fields.acr'),
+      t('fields.state'),
+    ]
+    const header = keys.map((k) => k.replaceAll('-', ' ').toUpperCase()).join(',')
+    const rows = authenticatedSessions.map((row) =>
+      [
+        row.sessionAttributes.auth_user,
+        row.sessionAttributes.remote_ip,
+        row.sessionAttributes.client_id,
+        row.authenticationTime ? formatDate(row.authenticationTime, 'YYYY-MM-DD h:mm:ss A') : '',
+        row.sessionAttributes.acr_values,
+        row.state,
+      ].join(','),
+    )
+    const csv = [header, ...rows].join('\n')
+    const blob = new Blob([csv], { type: 'text/csv' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', 'sessions.csv')
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+  }, [authenticatedSessions, t])
+
+  const handlePageChange = useCallback((page: number) => setPageNumber(page), [setPageNumber])
+  const handleRowsPerPageChange = useCallback(
+    (rowsPerPage: number) => {
+      setLimit(rowsPerPage)
+      setPageNumber(0)
+    },
+    [setLimit, setPageNumber],
+  )
+
+  const columns: ColumnDef<Session>[] = useMemo(
+    () => [
+      {
+        key: 'sessionAttributes' as const,
+        label: t('fields.username'),
+        sortable: false,
+        render: (_value, row) => (
+          <GluuText variant="span" disableThemeColor className={classes.cellText}>
+            {displayOrDash(row.sessionAttributes?.auth_user)}
+          </GluuText>
+        ),
+      },
+      {
+        key: 'sessionAttributes' as const,
+        label: t('fields.ip_address'),
+        sortable: false,
+        render: (_value, row) => (
+          <GluuText variant="span" disableThemeColor className={classes.cellText}>
+            {displayOrDash(row.sessionAttributes?.remote_ip)}
+          </GluuText>
+        ),
+      },
+      {
+        key: 'sessionAttributes' as const,
+        label: t('fields.client_id_used'),
+        sortable: false,
+        render: (_value, row) => (
+          <GluuText variant="span" disableThemeColor className={classes.cellText}>
+            {displayOrDash(row.sessionAttributes?.client_id)}
+          </GluuText>
+        ),
+      },
+      {
+        key: 'authenticationTime',
+        label: t('fields.auth_time'),
+        sortable: false,
+        render: (_value, row) => (
+          <GluuText variant="span" disableThemeColor className={classes.cellText}>
+            {row.authenticationTime
+              ? formatDate(row.authenticationTime, 'ddd, MMM DD, YYYY h:mm:ss A')
+              : '—'}
+          </GluuText>
+        ),
+      },
+      {
+        key: 'sessionAttributes' as const,
+        label: t('fields.acr'),
+        sortable: false,
+        render: (_value, row) => (
+          <GluuText variant="span" disableThemeColor className={classes.cellText}>
+            {displayOrDash(row.sessionAttributes?.acr_values)}
+          </GluuText>
+        ),
+      },
+      {
+        key: 'state',
+        label: t('fields.state'),
+        sortable: false,
+        render: (_value, row) => {
+          const isAuth = row.state === 'authenticated'
+          const style = isAuth ? badgeStyles.authenticatedBadge : badgeStyles.unauthenticatedBadge
+          return (
+            <GluuBadge
+              size="md"
+              backgroundColor={style.backgroundColor}
+              textColor={style.textColor}
+              borderColor={style.borderColor}
+              borderRadius={BORDER_RADIUS.SMALL}
+              className={classes.statusBadge}
+            >
+              {row.state}
+            </GluuBadge>
+          )
+        },
+      },
+    ],
+    [t, classes, badgeStyles],
+  )
+
+  const actions = useMemo(() => {
+    if (!canDelete) return []
+    return [
+      {
+        icon: <DeleteOutlined className={classes.deleteIcon} />,
+        tooltip: t('actions.delete'),
+        id: 'deleteSession',
+        onClick: handleDeleteClick,
+      },
+    ]
+  }, [canDelete, t, handleDeleteClick, classes.deleteIcon])
+
+  const pagination: PaginationConfig = useMemo(
+    () => ({
+      page: pageNumber,
+      rowsPerPage: limit,
+      totalItems,
+      rowsPerPageOptions: LIMIT_OPTIONS,
+      onPageChange: handlePageChange,
+      onRowsPerPageChange: handleRowsPerPageChange,
+    }),
+    [pageNumber, limit, totalItems, handlePageChange, handleRowsPerPageChange],
+  )
+
+  const getRowKey = useCallback(
+    (row: Session, index: number) => row.id || row.sessionAttributes?.sid || `session-${index}`,
     [],
   )
 
-  const tableOptions = useMemo(
-    () => ({
-      idSynonym: 'username',
-      columnsButton: false,
-      search: false,
-      searchFieldAlignment: 'left' as const,
-      selection: false,
-      pageSize: pageSize,
-      headerStyle: {
-        ...applicationStyle.tableHeaderStyle,
-        ...bgThemeColor,
-        textTransform: 'uppercase' as const,
-        color: themeColors.fontColor,
-      },
-      actionsColumnIndex: -1,
-    }),
-    [pageSize, bgThemeColor, themeColors.fontColor],
+  const renderExpandedRow = useCallback((row: Session) => <SessionDetailPage row={row} />, [])
+
+  const deleteDialogLabel = useMemo(
+    () =>
+      item?.id || item?.sessionAttributes?.sid
+        ? `${t('messages.action_deletion_for')} session (${item.sessionAttributes?.auth_user ?? ''}${item.id ? `-${item.id}` : item.sessionAttributes?.sid ? `-${item.sessionAttributes.sid}` : ''})`
+        : '',
+    [t, item],
   )
 
-  const renderContent = useCallback(() => {
-    if (loading) {
-      return (
-        <div style={{ textAlign: 'center', padding: '20px' }}>
-          <GluuText variant="p">{t('messages.request_waiting_message')}</GluuText>
-        </div>
-      )
-    }
+  const revokeDialogLabel = useMemo(
+    () =>
+      item?.sessionAttributes?.auth_user
+        ? `${t('messages.action_deletion_for')} user session revoke (${item.sessionAttributes.auth_user})`
+        : '',
+    [t, item],
+  )
 
-    if (authenticatedSessions.length === 0) {
-      const isFiltering =
-        searchParams ||
-        (isFilterApplied &&
-          filterState.pattern &&
-          (filterState.searchFilter === 'client_id' || filterState.searchFilter === 'auth_user'))
-      const message = isFiltering
-        ? 'No sessions found matching your search criteria'
-        : t('messages.no_sessions_found')
-      return (
-        <div style={{ textAlign: 'center', padding: '20px' }}>
-          <GluuText variant="p">{message}</GluuText>
-        </div>
-      )
-    }
+  const filterButtonColors = useMemo(
+    () => ({
+      borderColor: themeColors.fontColor,
+      textColor: themeColors.fontColor,
+    }),
+    [isDarkTheme, themeColors],
+  )
 
-    return (
-      <MaterialTable
-        key={tableKey}
-        components={{
-          Container: TableContainer,
-        }}
-        columns={columnState.updatedColumns}
-        data={authenticatedSessions}
-        isLoading={loading}
-        title=""
-        actions={tableActions}
-        options={tableOptions}
-        detailPanel={handleDetailPanel}
-      />
-    )
-  }, [
-    loading,
-    authenticatedSessions,
-    columnState.updatedColumns,
-    tableOptions,
-    handleDetailPanel,
-    TableContainer,
-    tableKey,
-    searchParams,
-    isFilterApplied,
-    filterState.pattern,
-    filterState.searchFilter,
-    t,
-  ])
-
-  const handleSearchFilterChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value === 'null' ? null : e.target.value
-    if (value === null) {
-      setSearchParams(undefined)
-      setIsFilterApplied(false)
-    }
-    setFilterState((prev) => ({
-      ...prev,
-      pattern: null,
-      date: null,
-      searchFilter: value,
-    }))
-  }, [])
-
-  const handlePatternChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setFilterState((prev) => ({
-      ...prev,
-      pattern: e.target.value,
-    }))
-  }, [])
-
-  const handleDateChange = useCallback((val: Dayjs | null) => {
-    setFilterState((prev) => ({
-      ...prev,
-      date: val,
-    }))
-  }, [])
+  const exportButtonColors = useMemo(
+    () => ({
+      backgroundColor: themeColors.formFooter?.apply?.backgroundColor,
+      textColor: themeColors.formFooter?.apply?.textColor,
+    }),
+    [themeColors],
+  )
 
   return (
-    <Card style={applicationStyle.mainCard}>
-      <CardBody>
+    <GluuLoader blocking={loading}>
+      <div className={classes.page}>
         <GluuViewWrapper canShow>
-          <div className="d-flex justify-content-between align-items-center">
-            {canDeleteSession && (
-              <Box display="flex" justifyContent="flex-end">
-                <Box display="flex" alignItems="center" fontSize="16px" mr="20px">
-                  {t('fields.selectUserRevoke')}
-                </Box>
+          <div className={classes.searchCard}>
+            <div className={classes.searchCardContent}>
+              <div className={classes.toolbarRow}>
+                <div className={classes.searchToolbarWrapper}>
+                  <GluuSearchToolbar
+                    searchLabel={canDelete ? t('fields.selectUserRevoke') : undefined}
+                    searchPlaceholder={t('fields.username')}
+                    searchValue={revokeUsername ?? ''}
+                    selectOptions={usernameSelectOptions}
+                    onSelectChange={handleUsernameSelectChange}
+                    selectPlaceholder={t('fields.username')}
+                    disabled={loading}
+                  />
+                </div>
 
-                <Autocomplete
-                  id="combo-box-demo"
-                  options={usernames}
-                  getOptionLabel={(option) => option}
-                  style={{ width: 300 }}
-                  onChange={handleUsernameChange}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      style={{
-                        borderColor: customColors.lightBlue,
-                      }}
-                      label={t('fields.username')}
-                      variant="outlined"
-                    />
+                <div className={classes.actionsGroup}>
+                  {canDelete && (
+                    <GluuButton
+                      type="button"
+                      size="md"
+                      outlined
+                      className={classes.toolbarButton}
+                      onClick={handleRevoke}
+                      disabled={!revokeUsername}
+                      textColor={filterButtonColors.textColor}
+                      borderColor={filterButtonColors.borderColor}
+                      minHeight={52}
+                      useOpacityOnHover
+                    >
+                      {t('actions.revoke')}
+                    </GluuButton>
                   )}
-                />
-                {revokeUsername && (
-                  <Button
-                    style={{
-                      marginLeft: 20,
-                      backgroundColor: customColors.accentRed,
-                      border: 'none',
-                    }}
-                    onClick={handleRevoke}
+
+                  <GluuButton
+                    type="button"
+                    size="md"
+                    outlined
+                    className={classes.toolbarButton}
+                    onClick={handleFilterToggle}
+                    textColor={filterButtonColors.textColor}
+                    borderColor={filterButtonColors.borderColor}
+                    minHeight={52}
+                    useOpacityOnHover
                   >
-                    {t('actions.revoke')}
-                  </Button>
-                )}
-              </Box>
-            )}
-            {/* searchFilter */}
-            <Box position="relative">
-              <Box display="flex" justifyContent="flex-end" alignItems="center" p={2} width="500px">
-                <MaterialButton
-                  sx={{
-                    color: customColors.lightBlue,
-                  }}
-                  startIcon={<FilterListIcon />}
-                  onClick={handleFilterToggle}
-                >
-                  {t('titles.filters')}
-                </MaterialButton>
-                <MaterialButton
-                  onClick={downloadCSV}
-                  sx={{
-                    color: customColors.lightBlue,
-                    ml: 2,
-                  }}
-                  startIcon={<GetAppIcon />}
-                >
-                  {t('titles.export_csv')}
-                </MaterialButton>
+                    <FilterListIcon sx={{ fontSize: ICON_SIZE.SM, mr: 0.5 }} />
+                    {t('titles.filters')}
+                  </GluuButton>
 
-                <MaterialButton
-                  sx={{ ml: 2, color: customColors.lightBlue }}
-                  onClick={handleColumnMenuOpen}
-                  startIcon={<ViewColumnIcon />}
-                >
-                  Columns
-                </MaterialButton>
-              </Box>
+                  <GluuButton
+                    type="button"
+                    size="md"
+                    className={classes.toolbarButton}
+                    onClick={downloadCSV}
+                    backgroundColor={exportButtonColors.backgroundColor}
+                    textColor={exportButtonColors.textColor}
+                    borderColor={exportButtonColors.backgroundColor}
+                    minHeight={52}
+                    useOpacityOnHover
+                  >
+                    <GetAppIcon sx={{ fontSize: ICON_SIZE.SM, mr: 0.5 }} />
+                    {t('titles.export_csv')}
+                  </GluuButton>
 
-              <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleColumnMenuClose}>
-                <FormControl sx={{ m: 1, width: 200 }}>
-                  <div className="d-flex flex-column gap-2 mt-2">
-                    {tableColumns.map((column) => (
-                      <MenuItem key={column.title} value={column.title}>
-                        <Checkbox
-                          checked={columnState.checkedColumns.includes(column.title)}
-                          onChange={() => handleCheckboxChange(column.title)}
-                        />
-                        <ListItemText primary={column.title} />
-                      </MenuItem>
-                    ))}
-                  </div>
-                </FormControl>
-              </Menu>
-
-              {showFilter && (
-                <Box
-                  sx={{
-                    p: 2,
-                    mt: 2,
-                    borderRadius: 1,
-                    position: 'absolute',
-                    top: '50%',
-                    zIndex: 2,
-                    backgroundColor: customColors.white,
-                    width: '500px',
-                  }}
-                  display="flex"
-                  flexDirection="column"
-                  alignItems="center"
-                  border={`1px solid ${customColors.lightGray}`}
-                >
-                  <Grid container spacing={2} alignItems="center">
-                    <Grid item xs={4}>
-                      <TextField
-                        select
-                        label="Search Filter"
-                        value={filterState.searchFilter || ''}
-                        onChange={handleSearchFilterChange}
-                        variant="outlined"
-                        style={{ width: 150, marginTop: -3 }}
-                      >
-                        <MenuItem value="">None</MenuItem>
-                        <MenuItem value="client_id">{t('fields.client_id_used')}</MenuItem>
-                        <MenuItem value="auth_user">{t('fields.username')}</MenuItem>
-                        <MenuItem value="expirationDate">{t('titles.expiration_date')}</MenuItem>
-                        <MenuItem value="authenticationTime">
-                          {t('titles.authentication_date')}
-                        </MenuItem>
-                      </TextField>
-                    </Grid>
-
-                    {filterState.searchFilter === 'expirationDate' ||
-                    filterState.searchFilter === 'authenticationTime' ? (
-                      <Grid item xs={4}>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <GluuDatePicker
-                            dateFormat={DATE_FORMATS.DATE_PICKER_DISPLAY_US}
-                            label={t('dashboard.start_date')}
-                            value={filterState.date}
-                            onChange={handleDateChange}
-                          />
-                        </LocalizationProvider>
-                      </Grid>
-                    ) : (
-                      <Grid item xs={4}>
-                        <TextField
-                          label="Value"
-                          name="value"
-                          variant="outlined"
-                          fullWidth
-                          value={filterState.pattern || ''}
-                          onChange={handlePatternChange}
-                          style={{
-                            borderColor: customColors.lightBlue,
-                          }}
-                        />
-                      </Grid>
-                    )}
-
-                    <Grid item xs={2}>
-                      <Button
-                        style={{
-                          backgroundColor: customColors.lightBlue,
-                          color: customColors.white,
-                        }}
-                        variant="contained"
-                        color="primary"
-                        onClick={handleFilterApply}
-                      >
-                        {t('actions.apply')}
-                      </Button>
-                    </Grid>
-
-                    <Grid item xs={2}>
-                      <Button
-                        style={{
-                          backgroundColor: customColors.lightBlue,
-                          color: customColors.white,
-                        }}
-                        variant="contained"
-                        color="primary"
-                        onClick={handleFilterClose}
-                      >
-                        {t('actions.close')}
-                      </Button>
-                    </Grid>
-                  </Grid>
-                </Box>
-              )}
-            </Box>
+                  <GluuFilterPopover
+                    open={showFilter}
+                    fields={filterFields}
+                    onApply={handleFilterApply}
+                    onCancel={handleFilterCancel}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
 
-          {renderContent()}
+          <div className={classes.tableCard}>
+            <GluuTable<Session>
+              columns={columns}
+              data={paginatedSessions}
+              loading={false}
+              expandable
+              renderExpandedRow={renderExpandedRow}
+              pagination={pagination}
+              onPagingSizeSync={onPagingSizeSync}
+              actions={actions}
+              getRowKey={getRowKey}
+              emptyMessage={t('messages.no_sessions_found')}
+            />
+          </div>
         </GluuViewWrapper>
-        {!isEmpty(item) && modal ? (
-          <GluuDialog
-            row={item}
-            name={item.sessionAttributes?.auth_user}
-            handler={toggle}
-            modal={modal}
-            subject="user session revoke"
-            onAccept={onRevokeConfirmed}
-            feature={adminUiFeatures.sessions}
-          />
-        ) : null}
-        {!isEmpty(item) && deleteModal ? (
-          <GluuDialog
-            row={item}
-            name={`${item.sessionAttributes?.auth_user} (${item.id || item.sessionAttributes?.sid})`}
-            handler={() => setDeleteModal(false)}
+
+        {canDelete && deleteModal && !isEmpty(item) && (
+          <GluuCommitDialog
+            handler={handleCloseDeleteModal}
             modal={deleteModal}
-            subject="session delete"
-            onAccept={onDeleteConfirmed}
+            onAccept={handleDeleteAccept}
+            label={deleteDialogLabel}
             feature={adminUiFeatures.sessions}
+            autoCloseOnAccept
           />
-        ) : null}
-      </CardBody>
-    </Card>
+        )}
+
+        {canDelete && revokeModal && !isEmpty(item) && (
+          <GluuCommitDialog
+            handler={handleCloseRevokeModal}
+            modal={revokeModal}
+            onAccept={handleRevokeAccept}
+            label={revokeDialogLabel}
+            feature={adminUiFeatures.sessions}
+            autoCloseOnAccept
+          />
+        )}
+      </div>
+    </GluuLoader>
   )
 }
 
-export default SessionListPage
+export default memo(SessionListPage)

@@ -315,14 +315,6 @@ export interface MessageState {
   error: string | null
 }
 
-// Auth Server Session State
-export interface AuthServerSessionState {
-  sessions: unknown[]
-  loading: boolean
-  totalItems: number
-  entriesCount: number
-}
-
 // Root state: core reducers (always present)
 
 export interface CoreAppState {
@@ -353,7 +345,6 @@ export interface AuthServerPluginState {
   jsonConfigReducer: JsonConfigState
   UMAResourceReducer: UmaResourceState
   messageReducer: MessageState
-  sessionReducer: AuthServerSessionState
 }
 
 export interface RootState
