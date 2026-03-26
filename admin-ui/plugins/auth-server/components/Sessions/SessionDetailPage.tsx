@@ -26,7 +26,9 @@ const extractJansId = (userDn: string | undefined): string => {
   }
 }
 
-const safeStringify = (obj: unknown): string => {
+const safeStringify = (
+  obj: Record<string, string | boolean | undefined> | null | undefined,
+): string => {
   if (!obj) return '—'
   try {
     return JSON.stringify(obj, null, 2)

@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import mockSessions from '../fixtures/mockSessions'
+import type { Session } from 'Plugins/auth-server/components/Sessions/types'
 
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({
@@ -29,7 +30,7 @@ jest.mock('JansConfigApi', () => ({
     const sessions = jest.requireActual('../fixtures/mockSessions').default
     return {
       data: {
-        entries: sessions.map((s: Record<string, unknown>) => ({
+        entries: sessions.map((s: Session) => ({
           ...s,
           permissionGranted: s.permissionGrantedMap,
         })),
