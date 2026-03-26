@@ -195,7 +195,13 @@ const SessionListPage: React.FC = () => {
         await deleteSession(sessionId, message, item.sessionAttributes?.auth_user)
         setDeleteModal(false)
         setItem({} as Session)
-      } catch {}
+      } catch (err) {
+        console.error('Failed to delete session', {
+          sessionId,
+          auth_user: item.sessionAttributes?.auth_user,
+          err,
+        })
+      }
     },
     [item, deleteSession],
   )
@@ -218,7 +224,13 @@ const SessionListPage: React.FC = () => {
       try {
         await revokeSession(userDn, message, item.sessionAttributes?.auth_user)
         setRevokeModal(false)
-      } catch {}
+      } catch (err) {
+        console.error('Failed to revoke session', {
+          userDn,
+          auth_user: item.sessionAttributes?.auth_user,
+          err,
+        })
+      }
     },
     [item, revokeSession],
   )
@@ -373,6 +385,7 @@ const SessionListPage: React.FC = () => {
     document.body.appendChild(link)
     link.click()
     link.remove()
+    URL.revokeObjectURL(url)
   }, [authenticatedSessions, t])
 
   const handlePageChange = useCallback((page: number) => setPageNumber(page), [setPageNumber])
@@ -388,6 +401,7 @@ const SessionListPage: React.FC = () => {
     () => [
       {
         key: 'sessionAttributes' as const,
+        id: 'col_username',
         label: t('fields.username'),
         sortable: false,
         render: (_value, row) => (
@@ -398,6 +412,7 @@ const SessionListPage: React.FC = () => {
       },
       {
         key: 'sessionAttributes' as const,
+        id: 'col_ip_address',
         label: t('fields.ip_address'),
         sortable: false,
         render: (_value, row) => (
@@ -408,6 +423,7 @@ const SessionListPage: React.FC = () => {
       },
       {
         key: 'sessionAttributes' as const,
+        id: 'col_client_id',
         label: t('fields.client_id_used'),
         sortable: false,
         render: (_value, row) => (
@@ -430,6 +446,7 @@ const SessionListPage: React.FC = () => {
       },
       {
         key: 'sessionAttributes' as const,
+        id: 'col_acr_values',
         label: t('fields.acr'),
         sortable: false,
         render: (_value, row) => (
@@ -515,7 +532,7 @@ const SessionListPage: React.FC = () => {
       borderColor: themeColors.fontColor,
       textColor: themeColors.fontColor,
     }),
-    [isDarkTheme, themeColors],
+    [themeColors],
   )
 
   const exportButtonColors = useMemo(

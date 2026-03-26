@@ -5,7 +5,7 @@ import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import mockSessions from '../../utils/sessions'
+import mockSessions from '../fixtures/mockSessions'
 
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({

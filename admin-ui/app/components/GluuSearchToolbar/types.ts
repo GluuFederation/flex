@@ -45,18 +45,14 @@ interface DateRangeConfig {
   inputHeight?: number
 }
 
-export interface GluuSearchToolbarProps {
+interface GluuSearchToolbarBaseProps {
   searchPlaceholder?: string
   searchLabel?: string
-  searchValue?: string
   searchFieldWidth?: number | string
   searchOnType?: boolean
   searchDebounceMs?: number
   onSearch?: (value: string) => void
   onSearchSubmit?: (value: string) => void
-  selectOptions?: FilterOption[]
-  onSelectChange?: (value: string) => void
-  selectPlaceholder?: string
   filters?: FilterDef[]
   dateInputs?: DateInputDef[]
   dateRange?: DateRangeConfig
@@ -67,3 +63,19 @@ export interface GluuSearchToolbarProps {
   refreshButtonVariant?: 'primary' | 'outlined'
   disabled?: boolean
 }
+
+interface GluuSearchToolbarInputProps extends GluuSearchToolbarBaseProps {
+  selectOptions?: undefined
+  onSelectChange?: undefined
+  selectPlaceholder?: undefined
+  searchValue?: string
+}
+
+interface GluuSearchToolbarSelectProps extends GluuSearchToolbarBaseProps {
+  selectOptions: FilterOption[]
+  searchValue: string
+  onSelectChange: (value: string) => void
+  selectPlaceholder?: string
+}
+
+export type GluuSearchToolbarProps = GluuSearchToolbarInputProps | GluuSearchToolbarSelectProps

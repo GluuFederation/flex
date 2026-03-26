@@ -166,9 +166,9 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
               type="text"
               placeholder={effectivePlaceholder}
               value={localSearch}
-              onChange={disabled ? undefined : handleSearchChange}
-              onKeyDown={disabled ? undefined : handleKeyDown}
-              readOnly={disabled}
+              onChange={handleSearchChange}
+              onKeyDown={handleKeyDown}
+              disabled={disabled}
               className={`${classes.searchInput}${disabled ? ` ${classes.searchInputDisabled}` : ''}`}
               aria-label={searchLabel ?? effectivePlaceholder ?? 'search'}
             />

@@ -1,4 +1,4 @@
-import type { Session } from '../components/Sessions/types'
+import type { Session } from '../../components/Sessions/types'
 
 export const mockSessions: Session[] = [
   {

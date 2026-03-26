@@ -43,8 +43,10 @@ const parseColumnWidth = (col: { width?: string | number }): string | undefined 
 
 const EMPTY_TABLE_ESTIMATE = 15
 
+const colId = <T,>(col: { key: ColumnKey<T>; id?: string }): string => col.id ?? col.key
+
 const computeContentBasedWidths = <T,>(
-  columns: { key: ColumnKey<T>; label: string }[],
+  columns: { key: ColumnKey<T>; id?: string; label: string }[],
   data: T[],
 ): Record<string, string> => {
   const totalCols = columns.length
@@ -70,7 +72,7 @@ const computeContentBasedWidths = <T,>(
   const pcts =
     sumClamped > 0 ? clamped.map((p) => (p / sumClamped) * 100) : clamped.map(() => 100 / totalCols)
 
-  return Object.fromEntries(columns.map((col, i) => [col.key, `${pcts[i].toFixed(1)}%`]))
+  return Object.fromEntries(columns.map((col, i) => [colId(col), `${pcts[i].toFixed(1)}%`]))
 }
 
 const compareValues = (a: CellValue, b: CellValue, direction: 'asc' | 'desc'): number => {
@@ -133,24 +135,27 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
   const sortedData = useMemo(() => {
     if (!sortState.column || !sortState.direction) return data
     const dir = sortState.direction
-    const colKey = sortState.column as ColumnKey<T>
+    const sortCol = columns.find((c) => colId(c) === sortState.column)
+    if (!sortCol) return data
+    const colKey = sortCol.key as ColumnKey<T>
     const indexed = data.map((item, idx) => ({ item, idx }))
     indexed.sort((a, b) => {
       const cmp = compareValues(a.item[colKey] as CellValue, b.item[colKey] as CellValue, dir)
       return cmp !== 0 ? cmp : a.idx - b.idx
     })
     return indexed.map(({ item }) => item)
-  }, [data, sortState])
+  }, [data, sortState, columns])
 
   const computedWidths = useMemo(() => computeContentBasedWidths(columns, data), [columns, data])
   const effectiveWidths = useMemo(() => {
     const out: Record<string, string> = {}
     for (const col of columns) {
+      const id = colId(col)
       const parentWidth = parseColumnWidth(col)
-      const resized = resizedColumnWidths[col.key]
-      out[col.key] =
+      const resized = resizedColumnWidths[id]
+      out[id] =
         parentWidth ??
-        (resized != null ? `${resized}%` : (computedWidths[col.key] ?? `${100 / columns.length}%`))
+        (resized != null ? `${resized}%` : (computedWidths[id] ?? `${100 / columns.length}%`))
     }
     return out
   }, [columns, resizedColumnWidths, computedWidths])
@@ -172,9 +177,9 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
     (colKey: string, clientX: number, resizeHandle: HTMLElement) => {
       const th = headerCellRefs.current.get(colKey) ?? resizeHandle.closest('th')
       if (!th) return
-      const colIndex = columns.findIndex((c) => c.key === colKey)
+      const colIndex = columns.findIndex((c) => colId(c) === colKey)
       const nextCol = colIndex >= 0 ? columns[colIndex + 1] : undefined
-      const nextTh = nextCol ? headerCellRefs.current.get(nextCol.key) : undefined
+      const nextTh = nextCol ? headerCellRefs.current.get(colId(nextCol)) : undefined
 
       const table = tableRef.current
       const tableWidth = table?.getBoundingClientRect().width ?? 0
@@ -203,7 +208,7 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
           setResizedColumnWidths((prev) => ({
             ...prev,
             [colKey]: Math.round(pctI * 10) / 10,
-            [nextCol.key]: Math.round(pctNext * 10) / 10,
+            [colId(nextCol)]: Math.round(pctNext * 10) / 10,
           }))
         } else if (tableWidth > 0) {
           const minPx = MIN_COL_WIDTH
@@ -360,12 +365,12 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
             <colgroup>
               {expandable && <col style={{ width: expandColumnWidth ?? 40 }} />}
               {columns.map((col, colIdx) => {
-                const w = effectiveWidths[col.key]
+                const w = effectiveWidths[colId(col)]
                 const minW = parseMinWidth(col)
                 const maxW = parseMaxWidth(col)
                 return (
                   <col
-                    key={`${col.key}-${colIdx}`}
+                    key={`${colId(col)}-${colIdx}`}
                     style={{
                       width: w,
                       ...(minW != null && { minWidth: minW }),
@@ -394,14 +399,15 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
                 )}
                 {columns.map((col, colIdx) => {
                   const isSortable = col.sortable !== false
-                  const isActive = sortState.column === col.key
+                  const id = colId(col)
+                  const isActive = sortState.column === id
                   return (
                     <th
-                      ref={(el) => setHeaderCellRef(col.key, el)}
-                      key={`${col.key}-${colIdx}`}
+                      ref={(el) => setHeaderCellRef(id, el)}
+                      key={`${id}-${colIdx}`}
                       className={`${classes.headerCell} ${classes.headerCellResizable}`}
                       style={{
-                        width: effectiveWidths[col.key],
+                        width: effectiveWidths[id],
                         ...(parseMinWidth(col) != null && { minWidth: parseMinWidth(col) }),
                         ...(parseMaxWidth(col) != null && { maxWidth: parseMaxWidth(col) }),
                         textAlign: col.align || 'left',
@@ -415,7 +421,7 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
                               ? `${classes.sortableHeader} ${classes.sortableHeaderActive}`
                               : classes.sortableHeader
                           }
-                          onClick={() => handleSort(col.key)}
+                          onClick={() => handleSort(id)}
                         >
                           {col.label}
                           <span className={classes.sortIconWrap} data-sort-icon>
@@ -439,12 +445,12 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
                         onMouseDown={(e) => {
                           e.preventDefault()
                           e.stopPropagation()
-                          handleResizeStart(col.key, e.clientX, e.currentTarget)
+                          handleResizeStart(id, e.clientX, e.currentTarget)
                         }}
                         onTouchStart={(e) => {
                           e.preventDefault()
                           if (e.touches.length > 0) {
-                            handleResizeStart(col.key, e.touches[0].clientX, e.currentTarget)
+                            handleResizeStart(id, e.touches[0].clientX, e.currentTarget)
                           }
                         }}
                       />
@@ -521,13 +527,14 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
                         {columns.map((col, colIdx) => {
                           const key = col.key as ColumnKey<T>
                           const value = (row as T)[key]
+                          const id = colId(col)
                           const isFirstLineColumn = expandable && colIdx <= 1
                           return (
                             <td
-                              key={`${col.key}-${colIdx}`}
+                              key={`${id}-${colIdx}`}
                               className={`${classes.cell} ${isFirstLineColumn ? classes.cellFirst : ''}`}
                               style={{
-                                width: effectiveWidths[col.key],
+                                width: effectiveWidths[id],
                                 ...(parseMinWidth(col) != null && { minWidth: parseMinWidth(col) }),
                                 ...(parseMaxWidth(col) != null && { maxWidth: parseMaxWidth(col) }),
                                 textAlign: col.align || 'left',

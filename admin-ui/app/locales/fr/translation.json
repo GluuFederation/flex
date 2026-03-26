@@ -783,6 +783,8 @@
     "asset_document_error": "Le document est obligatoire.",
     "service_required": "Les services associés sont obligatoires.",
     "add_configuration": "Ajouter une configuration",
+    "error_in_deleting": "Erreur lors de la suppression.",
+    "error_in_revoking": "Erreur lors de la révocation.",
     "error_in_saving": "Erreur lors de l'enregistrement.",
     "partial_update_failure": "Certaines configurations n'ont pas pu être mises à jour. Veuillez vérifier et réessayer.",
     "min_characters": "Minimum {{count}} caractères",

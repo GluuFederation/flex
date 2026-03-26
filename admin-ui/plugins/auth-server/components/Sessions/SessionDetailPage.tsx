@@ -6,17 +6,8 @@ import { THEME_DARK } from '@/context/theme/constants'
 import { GluuBadge } from '@/components/GluuBadge'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useStyles } from './styles/SessionListPage.style'
+import { formatDate } from '@/utils/dayjsUtils'
 import type { SessionDetailPageProps } from './types'
-
-const formatDate = (date: Date | string | undefined): string => {
-  if (!date) return '—'
-  try {
-    const dateObj = typeof date === 'string' ? new Date(date) : date
-    return dateObj.toDateString()
-  } catch {
-    return '—'
-  }
-}
 
 const extractJansId = (userDn: string | undefined): string => {
   if (!userDn) return '—'
@@ -67,7 +58,7 @@ const SessionDetailPage: React.FC<SessionDetailPageProps> = ({ row }) => {
           {t('fields.expiration')}:
         </GluuText>
         <GluuText variant="span" disableThemeColor className={classes.expandedValue}>
-          {formatDate(row.expirationDate)}
+          {formatDate(row.expirationDate) || '—'}
         </GluuText>
       </div>
 

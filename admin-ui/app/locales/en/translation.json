@@ -985,6 +985,8 @@
     "details": "Details",
     "view_script_details": "View custom script details",
     "add_new_user": "Add User",
+    "error_in_deleting": "Error in deleting.",
+    "error_in_revoking": "Error in revoking.",
     "error_in_saving": "Error in saving.",
     "partial_update_failure": "Some configurations failed to update. Please review and try again.",
     "min_characters": "Minimum {{count}} characters",

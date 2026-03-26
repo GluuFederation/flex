@@ -103,7 +103,7 @@ export const useRevokeSessionWithAudit = (
       try {
         await mutation.mutateAsync({ userDn })
       } catch (error) {
-        const errMsg = error instanceof Error ? error.message : t('messages.error_in_deleting')
+        const errMsg = error instanceof Error ? error.message : t('messages.error_in_revoking')
         dispatch(updateToast(true, 'error', errMsg))
         callbacksRef.current?.onError?.(error instanceof Error ? error : new Error(String(error)))
         throw error

@@ -5,7 +5,7 @@ import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import mockSessions from '../../utils/sessions'
+import mockSessions from '../fixtures/mockSessions'
 
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({
@@ -26,7 +26,7 @@ jest.mock('@/cedarling/constants/resourceScopes', () => ({
 
 jest.mock('JansConfigApi', () => ({
   useGetSessions: jest.fn(() => {
-    const sessions = jest.requireActual('../../utils/sessions').default
+    const sessions = jest.requireActual('../fixtures/mockSessions').default
     return {
       data: {
         entries: sessions.map((s: Record<string, unknown>) => ({

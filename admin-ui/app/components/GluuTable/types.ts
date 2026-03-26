@@ -13,6 +13,7 @@ export interface ExpandContext {
 
 export interface ColumnDef<T, K extends ColumnKey<T> = ColumnKey<T>> {
   key: K
+  id?: string
   label: string
   width?: string | number
   minWidth?: string | number
