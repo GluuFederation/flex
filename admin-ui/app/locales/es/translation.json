@@ -744,7 +744,7 @@
     "securityDropdown": {
       "adminUiRoles": "Roles de la Interfaz de Administración",
       "capabilities": "Capacidades",
-      "mapping": "Mapeo",
+      "mapping": "Roles y permisos",
       "cedarlingConfig": "Cedarling"
     },
     "basic_configuration": "Configuración Básica",
