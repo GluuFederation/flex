@@ -1,5 +1,5 @@
 import React from 'react'
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
@@ -136,6 +136,10 @@ describe('CachePage', () => {
       hasCedarWritePermission: jest.fn(() => true),
       authorizeHelper: jest.fn(),
     }))
+    jest.requireMock('JansConfigApi').useGetConfigCache.mockImplementation(() => ({
+      data: { cacheProviderType: 'IN_MEMORY' },
+      isLoading: false,
+    }))
   })
 
   it('renders without crashing', () => {
@@ -190,7 +194,9 @@ describe('CachePage', () => {
       </Wrapper>,
     )
 
-    expect(document.querySelector('button')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /back/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /cancel/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /apply/i })).toBeInTheDocument()
   })
 
   it('renders when user has no read permission', () => {

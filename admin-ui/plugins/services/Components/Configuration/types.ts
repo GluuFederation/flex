@@ -1,4 +1,3 @@
-import type { MemcachedConfiguration, RedisConfiguration } from 'JansConfigApi'
 import type { FormikProps } from 'formik'
 
 export type CacheProviderType = 'IN_MEMORY' | 'MEMCACHED' | 'REDIS' | 'NATIVE_PERSISTENCE'
@@ -102,13 +101,9 @@ export interface CacheSubComponentBaseProps {
   disabled?: boolean
 }
 
-export interface CacheMemcachedProps extends CacheSubComponentBaseProps {
-  config: MemcachedConfiguration
-}
+export type CacheMemcachedProps = CacheSubComponentBaseProps
 
-export interface CacheRedisProps extends CacheSubComponentBaseProps {
-  config: RedisConfiguration
-}
+export type CacheRedisProps = CacheSubComponentBaseProps
 
 export interface PersistenceInfo {
   persistenceType?: string

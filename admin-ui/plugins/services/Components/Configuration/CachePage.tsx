@@ -228,12 +228,17 @@ const CachePage: React.FC = () => {
         }
 
         dispatch(updateToast(true, 'success'))
-        await logCacheUpdate(
-          {
-            cacheProviderType: values.cacheProviderType as CacheConfiguration['cacheProviderType'],
-          },
-          'Cache configuration updated',
-        )
+        try {
+          await logCacheUpdate(
+            {
+              cacheProviderType:
+                values.cacheProviderType as CacheConfiguration['cacheProviderType'],
+            },
+            'Cache configuration updated',
+          )
+        } catch (logError) {
+          console.error('Failed to log cache update:', logError)
+        }
       } catch (error) {
         dispatch(updateToast(true, 'error'))
         console.error('Failed to update cache config:', error)
@@ -310,7 +315,6 @@ const CachePage: React.FC = () => {
                   >
                     {renderSectionTitle(`${t('fields.memcached_configuration')}:`)}
                     <CacheMemcached
-                      config={cacheMemData}
                       formik={formik}
                       classes={classes}
                       isDark={isDark}
@@ -325,7 +329,6 @@ const CachePage: React.FC = () => {
                   >
                     {renderSectionTitle(`${t('fields.redis_configuration')}:`)}
                     <CacheRedis
-                      config={cacheRedisData}
                       formik={formik}
                       classes={classes}
                       isDark={isDark}

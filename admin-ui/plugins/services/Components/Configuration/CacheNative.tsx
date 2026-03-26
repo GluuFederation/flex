@@ -17,7 +17,7 @@ function CacheNative({ formik, classes, isDark, disabled }: CacheSubComponentBas
           lsize={12}
           rsize={12}
           formik={formik}
-          value={formik.values.nativeDefaultPutExpiration || 0}
+          value={formik.values.nativeDefaultPutExpiration ?? 0}
           doc_category={CACHE}
           doc_entry="defaultPutExpiration"
           isDark={isDark}
@@ -32,7 +32,7 @@ function CacheNative({ formik, classes, isDark, disabled }: CacheSubComponentBas
           lsize={12}
           rsize={12}
           formik={formik}
-          value={formik.values.defaultCleanupBatchSize || 0}
+          value={formik.values.defaultCleanupBatchSize ?? 0}
           doc_category={CACHE}
           doc_entry="defaultCleanupBatchSize"
           isDark={isDark}
