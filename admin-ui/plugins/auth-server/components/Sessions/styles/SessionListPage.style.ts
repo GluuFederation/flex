@@ -140,7 +140,6 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       fontSize: fontSizes.base,
       color: themeColors.fontColor,
       fontFamily,
-      whiteSpace: 'pre-wrap' as const,
     },
   }
 })
