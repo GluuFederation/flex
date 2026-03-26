@@ -17,4 +17,10 @@ export const useStyles = makeStyles()(() => ({
     overflowWrap: 'break-word',
     wordBreak: 'break-word',
   },
+  detailItemFullWidth: {
+    gridColumn: '1 / -1',
+    minWidth: 0,
+    overflowWrap: 'break-word',
+    wordBreak: 'break-word',
+  },
 }))

@@ -109,7 +109,7 @@ export interface TrustRelationship extends OrvalTrustRelationship {
 }
 
 export interface BrokerIdentityProviderForm {
-  identityProvider: Record<string, unknown>
+  identityProvider: IdentityProvider
   metaDataFile?: File | Blob
 }
 

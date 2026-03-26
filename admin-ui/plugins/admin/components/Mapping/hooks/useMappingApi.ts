@@ -12,7 +12,7 @@ import {
 } from 'JansConfigApi'
 import type { RolePermissionMapping } from 'JansConfigApi'
 import { updateToast } from 'Redux/features/toastSlice'
-import { extractErrorMessage, type ApiError } from '../../../../schema/utils/errorHandler'
+import { extractErrorMessage, type ApiError } from '../../../../user-claims/utils/errorHandler'
 import type { MutationCallbacks } from '../types'
 
 export const useMappingData = (enabled: boolean = true) => {
