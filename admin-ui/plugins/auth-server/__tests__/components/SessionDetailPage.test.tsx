@@ -90,16 +90,18 @@ describe('SessionDetailPage', () => {
 
   it('renders the permission granted map as JSON', () => {
     render(<SessionDetailPage row={testSession} />, { wrapper: Wrapper })
-    // permissionGrantedMap is stringified
     const expectedJson = JSON.stringify(testSession.permissionGrantedMap, null, 2)
-    expect(screen.getByText(expectedJson)).toBeInTheDocument()
+    expect(
+      screen.getByText((_content, node) => node?.textContent === expectedJson),
+    ).toBeInTheDocument()
   })
 
   it('renders session attributes as JSON', () => {
     render(<SessionDetailPage row={testSession} />, { wrapper: Wrapper })
-    // sessionAttributes is stringified with safeStringify
     const expectedJson = JSON.stringify(testSession.sessionAttributes, null, 2)
-    expect(screen.getByText(expectedJson)).toBeInTheDocument()
+    expect(
+      screen.getByText((_content, node) => node?.textContent === expectedJson),
+    ).toBeInTheDocument()
   })
 
   it('renders dash for missing values', () => {
