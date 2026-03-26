@@ -1983,16 +1983,16 @@
       "auditPolicyStoreUrlUpdated": "Configuration de l'URL du magasin de politiques mise à jour",
       "auditSyncRoleToScopesMappings": "Synchroniser les rôles avec les mappages de portées",
       "auditSetPolicyStoreAsDefault": "Définir le magasin de politiques par défaut",
-      "selectCjarFile": "Sélectionnez un fichier .cjar de magasin de politiques à télécharger",
-      "uploadPolicyStore": "Télécharger",
+      "selectCjarFile": "Sélectionnez un fichier .cjar de magasin de politiques à téléverser",
+      "uploadPolicyStore": "Téléverser",
       "downloadPolicyStore": "Télécharger",
-      "policyStoreUploaded": "Magasin de politiques téléchargé avec succès",
+      "policyStoreUploaded": "Magasin de politiques téléversé avec succès",
       "policyStoreDownloaded": "Magasin de politiques téléchargé avec succès",
       "noPolicyStoreToDownload": "Aucun magasin de politiques disponible au téléchargement",
-      "uploadFailed": "Échec du téléchargement du magasin de politiques",
+      "uploadFailed": "Échec du téléversement du magasin de politiques",
       "downloadFailed": "Échec du téléchargement du magasin de politiques",
-      "selectFileFirst": "Veuillez d'abord sélectionner un fichier .cjar",
-      "auditPolicyStoreUploaded": "Magasin de politiques téléchargé"
+      "selectFileFirst": "Veuillez d'abord sélectionner un fichier .cjar à téléverser",
+      "auditPolicyStoreUploaded": "Magasin de politiques téléversé"
     },
     "mappings": {
       "note_prefix": "Configure",
