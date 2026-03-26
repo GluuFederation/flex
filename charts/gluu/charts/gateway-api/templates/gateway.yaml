@@ -1,6 +1,8 @@
 {{- $fullName := include "gateway-api.fullname" . -}}
 {{- $namespace := .Release.Namespace -}}
 
+{{- /* Conditional in case the Gateway resource is created and managed externally */}}
+{{- if .Values.gateway.enabled }}
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
@@ -57,3 +59,4 @@ spec:
       mode: Terminate
       certificateRefs:
       - name: {{ .Values.gateway.tlsSecretName }}
+{{- end }}

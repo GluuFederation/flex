@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import type { ApiAppConfiguration } from '../types'
-import { LOG_LEVELS, LOG_LAYOUTS } from '../../Defaults/utils'
+import { LOG_LEVELS, LOG_LAYOUTS } from '../../Logging/utils'
 
 const configApiPropertiesSchemaShape: Record<keyof ApiAppConfiguration, Yup.AnySchema> = {
   serviceName: Yup.string().nullable(),

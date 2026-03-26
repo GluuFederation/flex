@@ -15,6 +15,7 @@ export type GluuDetailGridField = {
   valueStyle?: CSSProperties
   rowClassName?: string
   layout?: 'row' | 'column'
+  fullWidth?: boolean
 }
 
 export type GluuDetailGridProps = {

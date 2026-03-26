@@ -1,11 +1,10 @@
-import React, { useMemo, useEffect } from 'react'
+import React, { useCallback, useMemo, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import { useQueryClient } from '@tanstack/react-query'
-import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import { Card, CardBody } from 'Components'
+import { GluuPageContent } from '@/components'
 import JansLockConfiguration from './JansLockConfiguration'
 import {
   useGetLockProperties,
@@ -16,24 +15,44 @@ import { PatchOperation } from '../types'
 import SetTitle from 'Utils/SetTitle'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useCedarling, ADMIN_UI_RESOURCES, CEDAR_RESOURCE_SCOPES } from '@/cedarling'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
+import { useStyles } from './styles/JansLockFormPage.style'
+
+const lockResourceId = ADMIN_UI_RESOURCES.Lock
+const lockScopes = CEDAR_RESOURCE_SCOPES[lockResourceId]
 
 const JansLock: React.FC = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
-  const { hasCedarReadPermission, authorizeHelper } = useCedarling()
-
-  const lockResourceId = useMemo(() => ADMIN_UI_RESOURCES.Lock, [])
-  const lockScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[lockResourceId], [lockResourceId])
+  const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
 
   const canReadLock = useMemo(
     () => hasCedarReadPermission(lockResourceId),
-    [hasCedarReadPermission, lockResourceId],
+    [hasCedarReadPermission],
+  )
+  const canWriteLock = useMemo(
+    () => hasCedarWritePermission(lockResourceId),
+    [hasCedarWritePermission],
   )
 
   useEffect(() => {
-    authorizeHelper(lockScopes)
-  }, [authorizeHelper, lockScopes])
+    if (lockScopes && lockScopes.length > 0) {
+      authorizeHelper(lockScopes)
+    }
+  }, [authorizeHelper])
+
+  const { state: themeState } = useTheme()
+  const { themeColors, isDark } = useMemo(
+    () => ({
+      themeColors: getThemeColor(themeState.theme),
+      isDark: themeState.theme === THEME_DARK,
+    }),
+    [themeState.theme],
+  )
+  const { classes } = useStyles({ isDark, themeColors })
 
   SetTitle(t('titles.jans_lock'))
 
@@ -52,28 +71,31 @@ const JansLock: React.FC = () => {
     },
   })
 
-  const handleUpdate = (patchOperations: PatchOperation[]) => {
-    patchMutation.mutate({ data: patchOperations })
-  }
-
-  const loading = isLoading || patchMutation.isPending
+  const handleUpdate = useCallback(
+    (patchOperations: PatchOperation[]) => {
+      patchMutation.mutate({ data: patchOperations })
+    },
+    [patchMutation],
+  )
 
   return (
-    <GluuLoader blocking={loading}>
+    <GluuPageContent>
       <GluuViewWrapper canShow={canReadLock}>
-        <Card className="mb-3" style={applicationStyle.mainCard}>
-          <CardBody>
-            {!isLoading && lockConfiguration ? (
+        <GluuLoader blocking={isLoading || patchMutation.isPending}>
+          <div className={classes.formCard}>
+            <div className={classes.content}>
               <JansLockConfiguration
-                lockConfig={lockConfiguration as Record<string, unknown>}
+                lockConfig={(lockConfiguration as Record<string, unknown>) ?? {}}
                 onUpdate={handleUpdate}
                 isSubmitting={patchMutation.isPending}
+                canWriteLock={canWriteLock}
+                classes={classes}
               />
-            ) : null}
-          </CardBody>
-        </Card>
+            </div>
+          </div>
+        </GluuLoader>
       </GluuViewWrapper>
-    </GluuLoader>
+    </GluuPageContent>
   )
 }
 

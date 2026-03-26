@@ -4,7 +4,7 @@ import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import { useTranslation } from 'react-i18next'
 import { updateToast } from 'Redux/features/toastSlice'
 
-function GluuToast() {
+const GluuToast = () => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const { showToast, message, type, onCloseRedirectUrl } = useAppSelector(
@@ -13,15 +13,18 @@ function GluuToast() {
   const redirectUrlRef = useRef('')
 
   const ToastDesign = () => {
+    const normalizedMessage =
+      typeof message === 'string' ? message : ((message as { message?: string }).message ?? '')
+
     return (
       <div style={{ textAlign: 'left' }}>
-        <strong>{type == 'success' ? t('messages.success') : t('messages.error')}</strong>
+        <strong>{type === 'success' ? t('messages.success') : t('messages.error')}</strong>
         <br />
-        {message == ''
-          ? type == 'success'
+        {normalizedMessage === ''
+          ? type === 'success'
             ? t('messages.success_in_saving')
             : t('messages.error_processing_request')
-          : message}
+          : normalizedMessage}
       </div>
     )
   }
@@ -34,7 +37,7 @@ function GluuToast() {
 
   const showTheToast = () => {
     const options = onCloseRedirectUrl ? { onClose: handleToastClose } : {}
-    if (type == 'success') {
+    if (type === 'success') {
       toast.success(<ToastDesign />, options)
     } else {
       toast.error(<ToastDesign />, options)

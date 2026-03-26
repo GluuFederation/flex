@@ -2,6 +2,7 @@ import { makeStyles } from 'tss-react/mui'
 import customColors, { hexToRgb } from '@/customColors'
 import { fontFamily, fontWeights, fontSizes, letterSpacing, lineHeights } from '@/styles/fonts'
 import { MAPPING_SPACING } from '@/constants/ui'
+import { createInfoAlertStyles } from '@/styles/formStyles'
 
 interface ThemeColors {
   fontColor: string
@@ -43,30 +44,7 @@ export const useStyles = makeStyles<MappingPageStyleParams>()((_theme, { isDark,
     marginBottom: MAPPING_SPACING.ALERT_TO_CARD,
   },
 
-  infoAlert: {
-    backgroundColor: theme.infoAlert.background,
-    border: 'none',
-    borderRadius: MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS,
-    padding: `${MAPPING_SPACING.INFO_ALERT_PADDING_VERTICAL}px ${MAPPING_SPACING.INFO_ALERT_PADDING_HORIZONTAL}px`,
-    display: 'flex',
-    alignItems: 'center',
-    gap: MAPPING_SPACING.INFO_ALERT_GAP,
-  },
-
-  infoIcon: {
-    width: MAPPING_SPACING.INFO_ICON_SIZE,
-    height: MAPPING_SPACING.INFO_ICON_SIZE,
-    color: theme.infoAlert.icon,
-    flexShrink: 0,
-  },
-
-  infoText: {
-    fontFamily,
-    fontSize: fontSizes.base,
-    fontWeight: fontWeights.medium,
-    lineHeight: lineHeights.tight,
-    color: theme.infoAlert.text,
-  },
+  ...createInfoAlertStyles(theme.infoAlert),
 
   infoLink: {
     fontFamily,

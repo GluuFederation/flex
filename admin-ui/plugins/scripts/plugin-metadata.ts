@@ -1,7 +1,7 @@
 import { SCRIPT_READ, SCRIPT_WRITE } from '../../app/utils/PermChecker'
-import CustomScriptListPage from './components/CustomScripts/CustomScriptListPage'
-import CustomScriptAddPage from './components/CustomScripts/CustomScriptAddPage'
-import CustomScriptEditPage from './components/CustomScripts/CustomScriptEditPage'
+import CustomScriptListPage from './components/CustomScriptListPage'
+import CustomScriptAddPage from './components/CustomScriptAddPage'
+import CustomScriptEditPage from './components/CustomScriptEditPage'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { ROUTES } from '@/helpers/navigation'
 
