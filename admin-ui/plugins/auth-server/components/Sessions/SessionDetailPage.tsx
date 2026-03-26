@@ -9,15 +9,18 @@ import { useStyles } from './styles/SessionListPage.style'
 import { formatDate } from '@/utils/dayjsUtils'
 import type { SessionDetailPageProps } from './types'
 
+const JANS_ID_ATTRS = ['inum', 'jansid', 'jansuniqueid']
+
 const extractJansId = (userDn: string | undefined): string => {
   if (!userDn) return '—'
   try {
     const parts = userDn.split(',')
-    if (parts.length > 0) {
-      const firstPart = parts[0]
-      const equalIndex = firstPart.indexOf('=')
-      if (equalIndex !== -1) {
-        return firstPart.substring(equalIndex + 1)
+    for (const part of parts) {
+      const equalIndex = part.indexOf('=')
+      if (equalIndex === -1) continue
+      const attr = part.substring(0, equalIndex).trim().toLowerCase()
+      if (JANS_ID_ATTRS.includes(attr)) {
+        return part.substring(equalIndex + 1).trim()
       }
     }
     return '—'
