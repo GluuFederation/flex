@@ -9,18 +9,9 @@ import {
   SPACING,
 } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
+import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import customColors from '@/customColors'
-
-interface CedarlingConfigThemeColors {
-  cardBg: string
-  navbarBorder: string
-  text: string
-  alertText: string
-  infoBg: string
-  infoBorder: string
-  inputBg: string
-  placeholderText: string
-}
+import type { CedarlingConfigPageStyleParams } from './types'
 
 const sectionLabelBase = {
   fontFamily,
@@ -30,12 +21,15 @@ const sectionLabelBase = {
   letterSpacing: letterSpacing.normal,
 } as const
 
-const useStyles = makeStyles<{ themeColors: CedarlingConfigThemeColors; isDark: boolean }>()((
-  theme: Theme,
-  params,
-) => {
+const useStyles = makeStyles<CedarlingConfigPageStyleParams>()((theme: Theme, params) => {
   const { themeColors, isDark } = params
-  const textAsPlaceholder = alpha(themeColors.text, OPACITY.PLACEHOLDER)
+  const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
+  const formInputBg = themeColors.settings?.formInputBackground ?? themeColors.inputBackground
+  const inputBorderColor =
+    themeColors.settings?.inputBorder ??
+    themeColors.borderColor ??
+    (isDark ? customColors.darkBorder : customColors.borderInput)
+  const textAsPlaceholder = alpha(themeColors.fontColor, OPACITY.PLACEHOLDER)
 
   return {
     configCard: {
@@ -87,9 +81,9 @@ const useStyles = makeStyles<{ themeColors: CedarlingConfigThemeColors; isDark: 
       marginBottom: CEDARLING_CONFIG_SPACING.ALERT_TO_INPUT,
     },
     alertBox: {
-      backgroundColor: themeColors.infoBg,
-      border: `1px solid ${themeColors.infoBorder}`,
-      borderRadius: BORDER_RADIUS.DEFAULT,
+      ...getCardBorderStyle({ isDark, borderRadius: MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS }),
+      backgroundColor: cardBg,
+      borderRadius: `${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px`,
       padding: `${CEDARLING_CONFIG_SPACING.ALERT_PADDING_TOP}px ${CEDARLING_CONFIG_SPACING.ALERT_PADDING_RIGHT}px ${CEDARLING_CONFIG_SPACING.ALERT_PADDING_BOTTOM}px ${CEDARLING_CONFIG_SPACING.ALERT_PADDING_LEFT}px`,
       position: 'relative',
       width: '100%',
@@ -101,14 +95,14 @@ const useStyles = makeStyles<{ themeColors: CedarlingConfigThemeColors; isDark: 
       top: CEDARLING_CONFIG_SPACING.ALERT_ICON_TOP,
       width: CEDARLING_CONFIG_SPACING.ICON_SIZE_MD,
       height: CEDARLING_CONFIG_SPACING.ICON_SIZE_MD,
-      color: themeColors.alertText,
+      color: themeColors.infoAlert.text,
     },
     alertStepTitle: {
       fontFamily,
       fontWeight: fontWeights.medium,
       fontSize: fontSizes.base,
       lineHeight: lineHeights.tight,
-      color: themeColors.alertText,
+      color: themeColors.infoAlert.text,
       marginBottom: CEDARLING_CONFIG_SPACING.ALERT_TITLE_MB,
     },
     alertBody: {
@@ -116,7 +110,7 @@ const useStyles = makeStyles<{ themeColors: CedarlingConfigThemeColors; isDark: 
       fontWeight: fontWeights.medium,
       fontSize: fontSizes.base,
       lineHeight: lineHeights.tight,
-      color: themeColors.alertText,
+      color: themeColors.infoAlert.text,
     },
     inputSection: {
       'marginBottom': 0,
@@ -128,10 +122,11 @@ const useStyles = makeStyles<{ themeColors: CedarlingConfigThemeColors; isDark: 
       },
     },
     uploadBox: {
+      'marginTop': theme.spacing(5),
       'marginBottom': theme.spacing(1),
       '& .dropzone': {
-        'border': `1px solid ${themeColors.infoBorder}`,
-        'backgroundColor': isDark ? themeColors.inputBg : themeColors.infoBg,
+        'border': `1px solid ${inputBorderColor}`,
+        'backgroundColor': formInputBg,
         'borderRadius': `${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px`,
         'display': 'flex',
         'alignItems': 'center',
@@ -144,8 +139,8 @@ const useStyles = makeStyles<{ themeColors: CedarlingConfigThemeColors; isDark: 
           outline: 'none',
         },
         '&:hover': {
-          borderColor: themeColors.infoBorder,
-          backgroundColor: isDark ? themeColors.inputBg : themeColors.infoBg,
+          borderColor: inputBorderColor,
+          backgroundColor: formInputBg,
         },
       },
       '& .dropzone:has(strong), & .dropzone:has(.gluu-upload-remove)': {
@@ -159,17 +154,17 @@ const useStyles = makeStyles<{ themeColors: CedarlingConfigThemeColors; isDark: 
         textAlign: 'center',
       },
       '& .dropzone strong': {
-        color: themeColors.text,
+        color: themeColors.fontColor,
       },
     },
     fieldLabel: {
       ...sectionLabelBase,
-      color: themeColors.text,
+      color: themeColors.fontColor,
       marginBottom: CEDARLING_CONFIG_SPACING.LABEL_MB,
     },
     inputField: {
       '& .MuiOutlinedInput-root': {
-        'backgroundColor': themeColors.inputBg,
+        'backgroundColor': formInputBg,
         'borderRadius': BORDER_RADIUS.SMALL,
         'height': CEDARLING_CONFIG_SPACING.INPUT_HEIGHT,
         '& fieldset': {
@@ -183,22 +178,22 @@ const useStyles = makeStyles<{ themeColors: CedarlingConfigThemeColors; isDark: 
         },
         '&.Mui-disabled': {
           '& .MuiInputBase-input': {
-            'color': themeColors.text,
-            'WebkitTextFillColor': themeColors.text,
+            'color': themeColors.fontColor,
+            'WebkitTextFillColor': themeColors.fontColor,
             '&::placeholder': {
-              color: themeColors.placeholderText,
+              color: themeColors.textMuted,
               opacity: OPACITY.PLACEHOLDER,
             },
           },
         },
       },
       '& .MuiInputBase-input': {
-        'color': themeColors.text,
+        'color': themeColors.fontColor,
         fontFamily,
         'fontSize': fontSizes.base,
         'padding': `${CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL}px ${CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL}px`,
         '&::placeholder': {
-          color: themeColors.placeholderText,
+          color: themeColors.textMuted,
           opacity: OPACITY.PLACEHOLDER,
         },
       },
@@ -208,11 +203,11 @@ const useStyles = makeStyles<{ themeColors: CedarlingConfigThemeColors; isDark: 
     },
     radioLabel: {
       ...sectionLabelBase,
-      color: themeColors.text,
+      color: themeColors.fontColor,
       marginBottom: CEDARLING_CONFIG_SPACING.RADIO_LABEL_MB,
     },
     radio: {
-      'color': themeColors.text,
+      'color': themeColors.fontColor,
       '&.Mui-checked': {
         'color': customColors.statusActive,
         '& .MuiSvgIcon-root': {
@@ -273,7 +268,7 @@ const useStyles = makeStyles<{ themeColors: CedarlingConfigThemeColors; isDark: 
     },
     alertLink: {
       'fontWeight': fontWeights.medium,
-      'color': themeColors.text,
+      'color': themeColors.fontColor,
       'textDecoration': 'none',
       '&:hover': {
         textDecoration: 'underline',

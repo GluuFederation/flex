@@ -13,7 +13,8 @@ import { updateToast } from '@/redux/features/toastSlice'
 import { getErrorMessage, type ApiError } from 'Plugins/user-claims/utils/errorHandler'
 import { logAudit } from '@/utils/AuditLogger'
 import { UPDATE } from '@/audit/UserActionType'
-import { Box } from '@mui/material'
+import { Box, Link } from '@mui/material'
+import { InfoOutlined } from '@mui/icons-material'
 import { Form } from 'Components'
 import { ADMIN_UI_CEDARLING_CONFIG } from 'Plugins/admin/redux/audit/Resources'
 import { GluuPageContent } from '@/components'
@@ -21,7 +22,7 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import { useTheme } from 'Context/theme/themeContext'
-import { themeConfig } from '@/context/theme/config'
+import getThemeColor from '@/context/theme/config'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useStyles } from './CedarlingConfigPage.style'
@@ -45,23 +46,10 @@ const CedarlingConfigPage: React.FC = () => {
   const { state: themeState } = useTheme()
   const currentTheme = themeState?.theme || DEFAULT_THEME
   const isDark = currentTheme === THEME_DARK
-  const theme = themeConfig[currentTheme]
 
-  const cedarThemeColors = useMemo(
-    () => ({
-      cardBg: 'transparent',
-      navbarBorder: theme.navbar.border,
-      text: theme.fontColor,
-      alertText: theme.infoAlert.text,
-      infoBg: theme.infoAlert.background,
-      infoBorder: theme.infoAlert.border,
-      inputBg: theme.inputBackground,
-      placeholderText: theme.textMuted,
-    }),
-    [theme],
-  )
+  const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
 
-  const { classes } = useStyles({ themeColors: cedarThemeColors, isDark })
+  const { classes } = useStyles({ themeColors, isDark })
 
   const syncRoleToScopesMappingsMutation = useSyncRoleToScopesMappings()
   const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
@@ -199,44 +187,88 @@ const CedarlingConfigPage: React.FC = () => {
             >
               <Box className={classes.formMain}>
                 <Box className={classes.formContent}>
-                  <Box className={classes.inputSection}>
-                    <GluuLabel
-                      label="documentation.cedarlingConfig.title"
-                      size={12}
-                      required={canWriteSecurity}
-                      isDark={isDark}
-                    />
-
-                    <Box className={classes.uploadBox}>
-                      <GluuUploadFile
-                        accept={CJAR_ACCEPT}
-                        onDrop={handleFileDrop}
-                        placeholder={t('documentation.cedarlingConfig.selectCjarFile')}
-                        onClearFiles={handleClearFiles}
-                        disabled={!canWriteSecurity || isLoading}
-                        fileName={selectedFile?.name}
+                  <Box className={classes.alertWrapper}>
+                    <Box className={classes.alertBox}>
+                      <InfoOutlined
+                        className={classes.alertIcon}
+                        sx={{ color: themeColors.infoAlert.text }}
                       />
-                    </Box>
+                      <GluuText variant="p" className={classes.alertStepTitle} disableThemeColor>
+                        {t('documentation.cedarlingConfig.steps')}
+                      </GluuText>
+                      <GluuText variant="p" className={classes.alertBody} disableThemeColor>
+                        {t('documentation.cedarlingConfig.point1')}{' '}
+                        <Link
+                          href="https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/tree/agama-lab-policy-designer"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={classes.alertLink}
+                        >
+                          {t('documentation.cedarlingConfig.gluuFlexAdminUiPolicyStoreDisplay')}
+                        </Link>
+                        .
+                      </GluuText>
+                      <GluuText variant="p" className={classes.alertBody} disableThemeColor>
+                        {t('documentation.cedarlingConfig.point2')}{' '}
+                        <Link
+                          href="https://cloud.gluu.org/agama-lab"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={classes.alertLink}
+                        >
+                          {t('documentation.cedarlingConfig.agamaLabPolicyDesigner')}
+                        </Link>
+                        .
+                      </GluuText>
+                      <GluuText variant="p" className={classes.alertBody} disableThemeColor>
+                        {t('documentation.cedarlingConfig.point3')}
+                      </GluuText>
+                      <GluuText variant="p" className={classes.alertBody} disableThemeColor>
+                        {t('documentation.cedarlingConfig.point4')}
+                      </GluuText>
+                      <GluuText variant="p" className={classes.alertBody} disableThemeColor>
+                        {t('documentation.cedarlingConfig.point5')}
+                      </GluuText>
+                      <GluuText variant="p" className={classes.alertBody} disableThemeColor>
+                        {t('documentation.cedarlingConfig.point6')}
+                      </GluuText>
 
-                    {canWriteSecurity && (
-                      <Box className={classes.requiredFooterNote}>
-                        <GluuText
-                          variant="span"
-                          className={classes.requiredAsterisk}
-                          aria-hidden
-                          disableThemeColor
-                        >
-                          *
-                        </GluuText>
-                        <GluuText
-                          variant="span"
-                          className={classes.requiredNoteText}
-                          disableThemeColor
-                        >
-                          {t('documentation.cedarlingConfig.requiredFieldNote')}
-                        </GluuText>
+                      <Box className={classes.uploadBox}>
+                        <GluuLabel
+                          label="documentation.cedarlingConfig.title"
+                          size={12}
+                          required={canWriteSecurity}
+                          isDark={isDark}
+                        />
+                        <GluuUploadFile
+                          accept={CJAR_ACCEPT}
+                          onDrop={handleFileDrop}
+                          placeholder={t('documentation.cedarlingConfig.selectCjarFile')}
+                          onClearFiles={handleClearFiles}
+                          disabled={!canWriteSecurity || isLoading}
+                          fileName={selectedFile?.name}
+                        />
+                        {canWriteSecurity && (
+                          <Box className={classes.requiredFooterNote}>
+                            <GluuText
+                              variant="span"
+                              className={classes.requiredAsterisk}
+                              aria-hidden
+                              disableThemeColor
+                            >
+                              *
+                            </GluuText>
+                            <GluuText
+                              variant="span"
+                              className={classes.requiredNoteText}
+                              disableThemeColor
+                            >
+                              {t('documentation.cedarlingConfig.requiredFieldNote')}
+                            </GluuText>
+                          </Box>
+                        )}
                       </Box>
-                    )}
+                    </Box>
                   </Box>
                 </Box>
               </Box>
