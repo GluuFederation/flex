@@ -10,7 +10,7 @@ import oidcDiscoveryReducer from '../features/oidcDiscoverySlice'
 import toastReducer from '../features/toastSlice'
 import profileDetailsReducer from '../features/ProfileDetailsSlice'
 import cedarPermissionsReducer from '../features/cedarPermissionsSlice'
-import sessionReducer from '../features/sessionSlice'
+import logoutAuditReducer from '../features/sessionSlice'
 
 const appReducers = {
   authReducer,
@@ -22,7 +22,7 @@ const appReducers = {
   toastReducer,
   profileDetailsReducer,
   cedarPermissions: cedarPermissionsReducer,
-  sessionReducer,
+  logoutAuditReducer,
 }
 
 export default appReducers

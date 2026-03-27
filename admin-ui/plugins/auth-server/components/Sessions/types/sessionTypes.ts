@@ -1,7 +1,6 @@
-import React from 'react'
-import { Dayjs } from 'dayjs'
+export const SESSION_STATES = ['authenticated', 'unauthenticated'] as const
+export const [AUTHENTICATED_SESSION_STATE, UNAUTHENTICATED_SESSION_STATE] = SESSION_STATES
 
-// Core Session Types
 export interface SessionAttributes {
   auth_user: string
   remote_ip: string
@@ -15,46 +14,18 @@ export interface Session {
   id?: string
   userDn?: string
   authenticationTime: string
-  state: 'authenticated' | 'unauthenticated'
+  state: SessionState
   sessionState?: string
   sessionAttributes: SessionAttributes
   expirationDate?: Date | string
   permissionGrantedMap?: Record<string, boolean>
 }
 
-export interface RootState {
-  cedarPermissions?: {
-    permissions: string[]
-  }
-}
-
-export interface SessionListPageProps {
-  row?: Session
-}
-
 export interface SessionDetailPageProps {
   row: Session
 }
 
-export interface TableColumn {
-  title: string
-  field: string
-  render?: (rowData: Session) => React.ReactNode
-}
-
-export interface FilterState {
-  limit: number
-  pattern: string | null
-  searchFilter: string | null
-  date: Dayjs | null
-}
-
-export interface ColumnState {
-  checkedColumns: string[]
-  updatedColumns: TableColumn[]
-}
-
-export type SessionState = 'authenticated' | 'unauthenticated'
+export type SessionState = (typeof SESSION_STATES)[number]
 
 export type SearchFilterType =
   | 'client_id'
@@ -62,6 +33,16 @@ export type SearchFilterType =
   | 'expirationDate'
   | 'authenticationTime'
   | null
+
+export type MutationCallbacks = {
+  onSuccess?: () => void
+  onError?: (error: Error) => void
+}
+
+export type AuditContext = {
+  userinfo: { inum?: string; name?: string } | null | undefined
+  client_id: string | undefined
+}
 
 // Constants
 export const DOC_CATEGORY = 'sessions' as const

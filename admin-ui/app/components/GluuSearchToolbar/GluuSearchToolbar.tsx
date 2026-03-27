@@ -52,6 +52,9 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
     searchDebounceMs = 500,
     onSearch,
     onSearchSubmit,
+    selectOptions,
+    onSelectChange,
+    selectPlaceholder,
     filters,
     dateInputs,
     dateRange,
@@ -130,21 +133,47 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
             {searchLabel}
           </GluuText>
         )}
-        <div className={classes.searchWrapper}>
-          <span className={classes.searchIcon}>
-            <SearchIcon className={classes.searchIconSvg} />
-          </span>
-          <input
-            type="text"
-            placeholder={effectivePlaceholder}
-            value={localSearch}
-            onChange={disabled ? undefined : handleSearchChange}
-            onKeyDown={disabled ? undefined : handleKeyDown}
-            readOnly={disabled}
-            className={`${classes.searchInput}${disabled ? ` ${classes.searchInputDisabled}` : ''}`}
-            aria-label={searchLabel ?? effectivePlaceholder ?? 'search'}
-          />
-        </div>
+        {selectOptions ? (
+          <div className={classes.filterSelectWrapper}>
+            <select
+              className={classes.filterSelect}
+              value={searchValue}
+              onChange={(e) => onSelectChange?.(e.target.value)}
+              disabled={disabled}
+              aria-label={searchLabel ?? effectivePlaceholder ?? 'select'}
+            >
+              {selectPlaceholder && (
+                <option value="" disabled hidden>
+                  {selectPlaceholder}
+                </option>
+              )}
+              {selectOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+            <span className={classes.filterSelectChevron}>
+              <ChevronIcon width={20} height={20} direction="down" />
+            </span>
+          </div>
+        ) : (
+          <div className={classes.searchWrapper}>
+            <span className={classes.searchIcon}>
+              <SearchIcon className={classes.searchIconSvg} />
+            </span>
+            <input
+              type="text"
+              placeholder={effectivePlaceholder}
+              value={localSearch}
+              onChange={handleSearchChange}
+              onKeyDown={handleKeyDown}
+              disabled={disabled}
+              className={`${classes.searchInput}${disabled ? ` ${classes.searchInputDisabled}` : ''}`}
+              aria-label={searchLabel ?? effectivePlaceholder ?? 'search'}
+            />
+          </div>
+        )}
       </div>
 
       {filters?.map((filter) => {
@@ -156,11 +185,13 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
                 {filter.label}
               </label>
             )}
-            <div className={classes.filterSelectWrapper} style={{ width: filter.width ?? 160 }}>
+            <div
+              className={classes.filterSelectWrapper}
+              style={filter.width ? { width: filter.width } : undefined}
+            >
               <select
                 id={filterId}
                 className={classes.filterSelect}
-                style={{ width: '100%' }}
                 value={filter.value}
                 onChange={(e) => filter.onChange(e.target.value)}
               >
@@ -191,7 +222,7 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
               id={dateInputId}
               type="date"
               className={classes.dateInput}
-              style={{ width: dateInput.width ?? 255 }}
+              style={dateInput.width ? { width: dateInput.width } : undefined}
               value={dateInput.value}
               onChange={(e) => dateInput.onChange(e.target.value)}
               max={dateInput.max}
