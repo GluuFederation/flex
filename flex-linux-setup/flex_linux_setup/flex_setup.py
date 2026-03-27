@@ -588,27 +588,32 @@ class flex_installer(JettyInstaller):
         admin_ui_config_dir = os.path.join(config_api_installer.custom_config_dir, 'adminUI')
         config_api_installer.createDirs(admin_ui_config_dir)
         if os.path.exists(self.policy_store_cjar_path):
+            target_entry = 'trusted-issuers/GluuFlexAdminUI.json'
+            tmp_cjar = os.path.join(tempfile.gettempdir(), os.urandom(8).hex() + '.cjar')
 
-            out_fn = os.path.join(tempfile.gettempdir(), os.urandom(8).hex())
+            with zipfile.ZipFile(self.policy_store_cjar_path, 'r') as zin, \
+                 zipfile.ZipFile(tmp_cjar, 'w', allowZip64=True) as zout:
+                for item in zin.infolist():
+                    data = zin.read(item.filename)
+                    if item.filename == target_entry:
+                        trusted_issuers = json.loads(data.decode('utf-8'))
+                        trusted_issuers['configuration_endpoint'] = (
+                            trusted_issuers['configuration_endpoint']
+                            .replace('your-openid-provider.server', Config.hostname)
+                        )
+                        data = json.dumps(trusted_issuers, indent=2).encode('utf-8')
+                        new_info = zipfile.ZipInfo(item.filename, date_time=item.date_time)
+                        new_info.compress_type = item.compress_type
+                        new_info.external_attr = item.external_attr
+                        zout.writestr(new_info, data)
+                    else:
+                        zout.writestr(item, data)  # preserves ZipInfo metadata + data
 
-            with tempfile.TemporaryDirectory() as tmp_dir:
-                trusted_issuers_fn = os.path.join(tmp_dir, 'trusted-issuers/GluuFlexAdminUI.json')
-                print("Tempdir", tmp_dir)
-                shutil.unpack_archive(self.policy_store_cjar_path, tmp_dir, format='zip')
-                with open(trusted_issuers_fn) as f:
-                    admin_ui_trusted_issuers = json.load(f)
-
-                admin_ui_trusted_issuers['configuration_endpoint'] = admin_ui_trusted_issuers['configuration_endpoint'].replace('your-openid-provider.server', Config.hostname)
-                with open(trusted_issuers_fn, 'w') as w:
-                    json.dump(admin_ui_trusted_issuers, w, indent=2)
-
-                out_fn_with_suffix = shutil.make_archive(out_fn, format='zip', root_dir=tmp_dir)
-
-            shutil.move(out_fn_with_suffix, self.policy_store_cjar_path)
-
+            shutil.move(tmp_cjar, self.policy_store_cjar_path)
             config_api_installer.copyFile(self.policy_store_cjar_path, admin_ui_config_dir, backup=False)
 
         config_api_installer.chown(admin_ui_config_dir, Config.jetty_user, Config.jetty_group, recursive=True)
+
         resource_scopes_mapping_lidf_fn = os.path.join(self.templates_dir, 'adminUIResourceScopesMapping.ldif')
 
         self.dbUtils.import_ldif([resource_scopes_mapping_lidf_fn])
