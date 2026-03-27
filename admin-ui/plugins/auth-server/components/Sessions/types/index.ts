@@ -3,13 +3,10 @@ export type {
   Session,
   SessionAttributes,
   SessionDetailPageProps,
-  SessionListPageProps,
-  TableColumn,
-  FilterState,
-  ColumnState,
-  RootState,
   SessionState,
   SearchFilterType,
+  MutationCallbacks,
+  AuditContext,
 } from './sessionTypes'
 
 export { DOC_CATEGORY } from './sessionTypes'
