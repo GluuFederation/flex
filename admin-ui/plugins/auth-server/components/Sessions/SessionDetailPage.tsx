@@ -7,7 +7,7 @@ import { GluuBadge } from '@/components/GluuBadge'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useStyles } from './styles/SessionListPage.style'
 import { formatDate } from '@/utils/dayjsUtils'
-import type { SessionDetailPageProps } from './types'
+import { AUTHENTICATED_SESSION_STATE, type SessionDetailPageProps } from './types'
 
 const JANS_ID_ATTRS = ['inum', 'jansid', 'jansuniqueid']
 
@@ -53,8 +53,23 @@ const SessionDetailPage: React.FC<SessionDetailPageProps> = ({ row }) => {
   )
   const { classes, badgeStyles } = useStyles({ isDark: isDarkTheme, themeColors })
 
-  const isAuth = row.state === 'authenticated'
-  const stateBadge = isAuth ? badgeStyles.authenticatedBadge : badgeStyles.unauthenticatedBadge
+  const stateBadge = useMemo(
+    () =>
+      row.state === AUTHENTICATED_SESSION_STATE
+        ? badgeStyles.authenticatedBadge
+        : badgeStyles.unauthenticatedBadge,
+    [row.state, badgeStyles.authenticatedBadge, badgeStyles.unauthenticatedBadge],
+  )
+  const expirationText = useMemo(() => formatDate(row.expirationDate) || '—', [row.expirationDate])
+  const jansId = useMemo(() => extractJansId(row.userDn), [row.userDn])
+  const permissionGrantedMapText = useMemo(
+    () => safeStringify(row.permissionGrantedMap),
+    [row.permissionGrantedMap],
+  )
+  const sessionAttributesText = useMemo(
+    () => safeStringify(row.sessionAttributes),
+    [row.sessionAttributes],
+  )
 
   return (
     <div className={classes.expandedGrid}>
@@ -63,7 +78,7 @@ const SessionDetailPage: React.FC<SessionDetailPageProps> = ({ row }) => {
           {t('fields.expiration')}:
         </GluuText>
         <GluuText variant="span" disableThemeColor className={classes.expandedValue}>
-          {formatDate(row.expirationDate) || '—'}
+          {expirationText}
         </GluuText>
       </div>
 
@@ -72,7 +87,7 @@ const SessionDetailPage: React.FC<SessionDetailPageProps> = ({ row }) => {
           {t('fields.jans_id')}:
         </GluuText>
         <GluuText variant="span" disableThemeColor className={classes.expandedValue}>
-          {extractJansId(row.userDn)}
+          {jansId}
         </GluuText>
       </div>
 
@@ -98,7 +113,7 @@ const SessionDetailPage: React.FC<SessionDetailPageProps> = ({ row }) => {
           {t('fields.permission_granted_map')}:
         </GluuText>
         <GluuText variant="span" disableThemeColor className={classes.expandedValue}>
-          {safeStringify(row.permissionGrantedMap)}
+          {permissionGrantedMapText}
         </GluuText>
       </div>
 
@@ -125,7 +140,7 @@ const SessionDetailPage: React.FC<SessionDetailPageProps> = ({ row }) => {
           {t('fields.jans_sess_attr')}:
         </GluuText>
         <GluuText variant="span" disableThemeColor className={classes.expandedValue}>
-          {safeStringify(row.sessionAttributes)}
+          {sessionAttributesText}
         </GluuText>
       </div>
     </div>

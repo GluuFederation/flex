@@ -1,12 +1,13 @@
 import type { ReactNode } from 'react'
 import type { Dayjs } from '@/utils/dayjsUtils'
+import type { ThemeConfig } from '@/context/theme/config'
 
-export interface FilterFieldOption {
+export type FilterFieldOption = {
   value: string
   label: string
 }
 
-export interface FilterField {
+export type FilterField = {
   key: string
   label?: string
   value: string
@@ -20,7 +21,7 @@ export interface FilterField {
   fullWidth?: boolean
 }
 
-export interface GluuFilterPopoverProps {
+export type GluuFilterPopoverProps = {
   open: boolean
   fields: FilterField[]
   onApply: () => void
@@ -31,4 +32,11 @@ export interface GluuFilterPopoverProps {
   width?: number | string
   className?: string
   children?: ReactNode
+}
+
+export type StyleParams = {
+  themeColors: ThemeConfig
+  isDark: boolean
+  width?: number | string
+  columns: number
 }

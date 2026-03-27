@@ -8,12 +8,36 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import mockSessions from '../fixtures/mockSessions'
 import type { Session } from 'Plugins/auth-server/components/Sessions/types'
 
+jest.mock('Routes/Apps/Gluu/GluuCommitDialog', () => () => null)
+jest.mock('@/redux/hooks', () => ({
+  useAppDispatch: jest.fn(() => jest.fn()),
+  useAppSelector: jest.fn((selector: (state: Record<string, unknown>) => unknown) =>
+    selector({
+      authReducer: {
+        config: { clientId: 'test-client' },
+        userinfo: { sub: 'admin' },
+      },
+    }),
+  ),
+}))
+
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({
     hasCedarReadPermission: jest.fn(() => true),
     hasCedarWritePermission: jest.fn(() => true),
     hasCedarDeletePermission: jest.fn(() => true),
     authorizeHelper: jest.fn(),
+  })),
+}))
+
+jest.mock('Plugins/auth-server/components/Sessions/hooks/useSessionMutations', () => ({
+  useDeleteSessionWithAudit: jest.fn(() => ({
+    deleteSession: jest.fn(),
+    isLoading: false,
+  })),
+  useRevokeSessionWithAudit: jest.fn(() => ({
+    revokeSession: jest.fn(),
+    isLoading: false,
   })),
 }))
 
@@ -108,32 +132,33 @@ describe('SessionListPage', () => {
   it('renders session data in the table', async () => {
     render(<SessionListPage />, { wrapper: Wrapper })
     const username = mockSessions[0].sessionAttributes.auth_user
-    expect(await screen.findByText(username)).toBeInTheDocument()
+    const usernameEls = await screen.findAllByText(username)
+    expect(usernameEls.length).toBeGreaterThanOrEqual(1)
     const ipAddress = mockSessions[0].sessionAttributes.remote_ip
     expect(screen.getByText(ipAddress)).toBeInTheDocument()
   })
 
   it('renders the search toolbar with select dropdown', async () => {
     render(<SessionListPage />, { wrapper: Wrapper })
-    await screen.findByText(mockSessions[0].sessionAttributes.auth_user)
+    await screen.findAllByText(mockSessions[0].sessionAttributes.auth_user)
     expect(screen.getByText(/Select the user to revoke/i)).toBeInTheDocument()
   })
 
   it('renders the Filters button', async () => {
     render(<SessionListPage />, { wrapper: Wrapper })
-    await screen.findByText(mockSessions[0].sessionAttributes.auth_user)
+    await screen.findAllByText(mockSessions[0].sessionAttributes.auth_user)
     expect(screen.getByText(/Filters/i)).toBeInTheDocument()
   })
 
   it('renders the Export CSV button', async () => {
     render(<SessionListPage />, { wrapper: Wrapper })
-    await screen.findByText(mockSessions[0].sessionAttributes.auth_user)
+    await screen.findAllByText(mockSessions[0].sessionAttributes.auth_user)
     expect(screen.getByText(/Export CSV/i)).toBeInTheDocument()
   })
 
   it('renders delete action icons when user has delete permission', async () => {
     render(<SessionListPage />, { wrapper: Wrapper })
-    await screen.findByText(mockSessions[0].sessionAttributes.auth_user)
+    await screen.findAllByText(mockSessions[0].sessionAttributes.auth_user)
     const deleteIcons = screen.getAllByTestId('DeleteOutlinedIcon')
     expect(deleteIcons.length).toBeGreaterThanOrEqual(1)
   })
@@ -146,7 +171,7 @@ describe('SessionListPage', () => {
 
   it('renders pagination controls', async () => {
     render(<SessionListPage />, { wrapper: Wrapper })
-    await screen.findByText(mockSessions[0].sessionAttributes.auth_user)
+    await screen.findAllByText(mockSessions[0].sessionAttributes.auth_user)
     expect(screen.getByText(/Rows per page/i)).toBeInTheDocument()
   })
 })

@@ -5,6 +5,8 @@ export type {
   SessionDetailPageProps,
   SessionState,
   SearchFilterType,
+  MutationCallbacks,
+  AuditContext,
 } from './sessionTypes'
 
 export { DOC_CATEGORY } from './sessionTypes'

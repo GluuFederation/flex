@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -82,6 +82,7 @@ const GluuFilterPopover: React.FC<GluuFilterPopoverProps> = ({
   const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
   const isDark = state.theme === THEME_DARK
   const { classes } = useStyles({ themeColors, isDark, width, columns })
+  const popoverRef = useRef<HTMLDivElement | null>(null)
 
   const applyButtonColors = useMemo(
     () => ({
@@ -91,10 +92,26 @@ const GluuFilterPopover: React.FC<GluuFilterPopoverProps> = ({
     [themeColors],
   )
 
+  useEffect(() => {
+    if (!open) return
+
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (!popoverRef.current) return
+      if (!popoverRef.current.contains(event.target as Node)) {
+        onCancel()
+      }
+    }
+
+    document.addEventListener('mousedown', handleOutsideClick)
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick)
+    }
+  }, [open, onCancel])
+
   if (!open) return null
 
   return (
-    <div className={`${classes.container}${className ? ` ${className}` : ''}`}>
+    <div ref={popoverRef} className={`${classes.container}${className ? ` ${className}` : ''}`}>
       <div className={classes.fieldsGrid}>
         {fields.map((field) => (
           <div

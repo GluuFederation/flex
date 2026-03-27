@@ -1,35 +1,23 @@
 import { makeStyles } from 'tss-react/mui'
-import type { ThemeConfig } from '@/context/theme/config'
 import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
 import { BORDER_RADIUS, INPUT, OPACITY, FILTER_POPOVER, SPACING } from '@/constants'
-import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import type { StyleParams } from './types'
 
-interface StyleParams {
-  themeColors: ThemeConfig
-  isDark: boolean
-  width?: number | string
-  columns: number
-}
-
-export const useStyles = makeStyles<StyleParams>()((_, { themeColors, isDark, width, columns }) => {
+export const useStyles = makeStyles<StyleParams>()((_, { themeColors, width, columns }) => {
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   const inputBg = themeColors.inputBackground
-  const inputBorder = isDark ? 'transparent' : themeColors.borderColor
+  const inputBorder = themeColors.fontColor
   const inputColor = themeColors.fontColor
-
-  const cardBorderStyle = getCardBorderStyle({
-    isDark,
-    borderRadius: BORDER_RADIUS.DEFAULT,
-  })
+  const popoverBorderColor = themeColors.settings?.inputBorder ?? themeColors.borderColor
 
   return {
     container: {
-      ...cardBorderStyle,
       position: 'absolute',
       top: '100%',
       right: 0,
       zIndex: 10,
       backgroundColor: cardBg,
+      border: `1px solid ${popoverBorderColor}`,
       width: width ?? FILTER_POPOVER.WIDTH,
       borderRadius: BORDER_RADIUS.DEFAULT,
       padding: SPACING.CARD_CONTENT_GAP * 2,

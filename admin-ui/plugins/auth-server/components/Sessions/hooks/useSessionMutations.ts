@@ -8,16 +8,7 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import { DELETION } from '../../../../../app/audit/UserActionType'
 import { SESSION } from '../../../redux/audit/Resources'
-
-export interface MutationCallbacks {
-  onSuccess?: () => void
-  onError?: (error: Error) => void
-}
-
-interface AuditContext {
-  userinfo: { inum?: string; name?: string } | null | undefined
-  client_id: string | undefined
-}
+import type { MutationCallbacks, AuditContext } from '../types'
 
 const invalidateSessionQueries = async (queryClient: ReturnType<typeof useQueryClient>) => {
   await Promise.all([

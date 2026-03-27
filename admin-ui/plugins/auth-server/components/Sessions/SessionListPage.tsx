@@ -30,17 +30,38 @@ import { useGetSessions, useSearchSession } from 'JansConfigApi'
 import type { SessionId, SearchSessionParams } from 'JansConfigApi'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
 import type { FilterField } from '@/components/GluuFilterPopover'
-import type { Session } from './types'
+import { AUTHENTICATED_SESSION_STATE, type Session, type SessionState } from './types'
 import { useStyles } from './styles/SessionListPage.style'
 import SessionDetailPage from './SessionDetailPage'
 import { useDeleteSessionWithAudit, useRevokeSessionWithAudit } from './hooks/useSessionMutations'
 import type { Dayjs } from 'dayjs'
 
 const LIMIT_OPTIONS = getRowsPerPageOptions()
+const sessionResourceId = ADMIN_UI_RESOURCES.Session
+const SESSION_SCOPES = CEDAR_RESOURCE_SCOPES[sessionResourceId] || []
+const SESSION_ATTRIBUTE_FILTER_FIELDS = ['client_id', 'auth_user'] as const
+const DATE_FILTER_FIELDS = ['expirationDate', 'authenticationTime'] as const
+const FILTER_FIELD_OPTIONS = [
+  { value: '', labelKey: 'options.none' },
+  { value: 'client_id', labelKey: 'fields.client_id_used' },
+  { value: 'auth_user', labelKey: 'fields.username' },
+  { value: 'expirationDate', labelKey: 'titles.expiration_date' },
+  { value: 'authenticationTime', labelKey: 'titles.authentication_date' },
+] as const
 
 type DisplayValue = string | number | boolean | null | undefined
 const displayOrDash = (value: DisplayValue): string =>
   value === null || value === undefined || value === '' ? '—' : String(value)
+
+const isSessionAttributeFilter = (
+  field: string,
+): field is (typeof SESSION_ATTRIBUTE_FILTER_FIELDS)[number] =>
+  SESSION_ATTRIBUTE_FILTER_FIELDS.includes(
+    field as (typeof SESSION_ATTRIBUTE_FILTER_FIELDS)[number],
+  )
+
+const isDateFilterField = (field: string): field is (typeof DATE_FILTER_FIELDS)[number] =>
+  DATE_FILTER_FIELDS.includes(field as (typeof DATE_FILTER_FIELDS)[number])
 
 const SessionListPage: React.FC = () => {
   const { hasCedarDeletePermission, authorizeHelper } = useCedarling()
@@ -91,28 +112,23 @@ const SessionListPage: React.FC = () => {
   const [item, setItem] = useState<Session>({} as Session)
   const [revokeUsername, setRevokeUsername] = useState<string | null>(null)
 
-  const sessionResourceId = ADMIN_UI_RESOURCES.Session
-  const sessionScopes = useMemo(
-    () => CEDAR_RESOURCE_SCOPES[sessionResourceId] || [],
-    [sessionResourceId],
-  )
   const canDelete = useMemo(
     () => hasCedarDeletePermission(sessionResourceId),
-    [hasCedarDeletePermission, sessionResourceId],
+    [hasCedarDeletePermission],
   )
 
   useEffect(() => {
-    if (sessionScopes.length > 0) {
-      authorizeHelper(sessionScopes)
+    if (SESSION_SCOPES.length > 0) {
+      authorizeHelper(SESSION_SCOPES)
     }
-  }, [authorizeHelper, sessionScopes])
+  }, [authorizeHelper])
 
   const adaptSessionIdToSession = useCallback(
     (sessionId: SessionId): Session => ({
       id: sessionId.id,
       userDn: sessionId.userDn,
       authenticationTime: sessionId.authenticationTime || '',
-      state: sessionId.state as 'authenticated' | 'unauthenticated',
+      state: sessionId.state as SessionState,
       sessionState: sessionId.sessionState,
       sessionAttributes: {
         ...sessionId.sessionAttributes,
@@ -139,13 +155,9 @@ const SessionListPage: React.FC = () => {
   }, [sessionsData, searchData, searchParams, adaptSessionIdToSession])
 
   const authenticatedSessions = useMemo(() => {
-    let filtered = sessions.filter((session) => session.state === 'authenticated')
+    let filtered = sessions.filter((session) => session.state === AUTHENTICATED_SESSION_STATE)
 
-    if (
-      isFilterApplied &&
-      appliedFilterValue &&
-      (appliedFilterField === 'client_id' || appliedFilterField === 'auth_user')
-    ) {
+    if (isFilterApplied && appliedFilterValue && isSessionAttributeFilter(appliedFilterField)) {
       const searchValue = appliedFilterValue.toLowerCase()
       filtered = filtered.filter((session) => {
         const fieldValue =
@@ -265,18 +277,12 @@ const SessionListPage: React.FC = () => {
 
   const handleFilterApply = useCallback(() => {
     if (filterTextValue || filterDateValue) {
-      const isSessionAttribute =
-        filterSearchField === 'client_id' || filterSearchField === 'auth_user'
-
-      if (isSessionAttribute) {
+      if (isSessionAttributeFilter(filterSearchField)) {
         setSearchParams(undefined)
         setAppliedFilterField(filterSearchField)
         setAppliedFilterValue(filterTextValue)
         setIsFilterApplied(true)
-      } else if (
-        filterSearchField === 'expirationDate' ||
-        filterSearchField === 'authenticationTime'
-      ) {
+      } else if (isDateFilterField(filterSearchField)) {
         const searchValue = formatDate(filterDateValue, 'YYYY-MM-DD')
         setSearchParams({
           fieldValuePair: `${filterSearchField}=${searchValue}`,
@@ -306,8 +312,7 @@ const SessionListPage: React.FC = () => {
     setPageNumber(0)
   }, [setPageNumber])
 
-  const isDateFilter =
-    filterSearchField === 'expirationDate' || filterSearchField === 'authenticationTime'
+  const isDateFilter = isDateFilterField(filterSearchField)
 
   const filterFields: FilterField[] = useMemo(
     () => [
@@ -316,13 +321,10 @@ const SessionListPage: React.FC = () => {
         label: '',
         value: filterSearchField,
         type: 'select' as const,
-        options: [
-          { value: '', label: t('options.none') },
-          { value: 'client_id', label: t('fields.client_id_used') },
-          { value: 'auth_user', label: t('fields.username') },
-          { value: 'expirationDate', label: t('titles.expiration_date') },
-          { value: 'authenticationTime', label: t('titles.authentication_date') },
-        ],
+        options: FILTER_FIELD_OPTIONS.map((option) => ({
+          value: option.value,
+          label: t(option.labelKey),
+        })),
         onChange: handleFilterSearchFieldChange,
       },
       isDateFilter
@@ -460,7 +462,7 @@ const SessionListPage: React.FC = () => {
         label: t('fields.state'),
         sortable: false,
         render: (_value, row) => {
-          const isAuth = row.state === 'authenticated'
+          const isAuth = row.state === AUTHENTICATED_SESSION_STATE
           const style = isAuth ? badgeStyles.authenticatedBadge : badgeStyles.unauthenticatedBadge
           return (
             <GluuBadge

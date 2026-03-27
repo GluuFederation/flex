@@ -6,12 +6,12 @@ export type CellValue = string | number | boolean | null | undefined
 
 export type ColumnKey<T> = Extract<keyof T, string>
 
-export interface ExpandContext {
+export type ExpandContext = {
   isExpanded: boolean
   rowKey: string | number
 }
 
-export interface ColumnDef<T, K extends ColumnKey<T> = ColumnKey<T>> {
+export type ColumnDef<T, K extends ColumnKey<T> = ColumnKey<T>> = {
   key: K
   id?: string
   label: string
@@ -23,7 +23,7 @@ export interface ColumnDef<T, K extends ColumnKey<T> = ColumnKey<T>> {
   render?: (value: T[K], row: T, rowIndex: number, context?: ExpandContext) => ReactNode
 }
 
-export interface ActionDef<T> {
+export type ActionDef<T> = {
   icon: ReactNode | string
   tooltip?: string
   ariaLabel?: string
@@ -33,7 +33,7 @@ export interface ActionDef<T> {
   color?: string
 }
 
-export interface PaginationConfig {
+export type PaginationConfig = {
   page: number
   rowsPerPage: number
   totalItems: number
@@ -45,7 +45,7 @@ export interface PaginationConfig {
 /** When Settings (or another tab) changes paging size, GluuTable can notify so the parent can sync and refetch. Optional. */
 export type OnPagingSizeSync = (newSize: number) => void
 
-export interface GluuTableProps<T> {
+export type GluuTableProps<T> = {
   columns: ColumnDef<T>[]
   data: T[]
   loading?: boolean

@@ -67,8 +67,6 @@ describe('SessionDetailPage', () => {
 
   it('renders the Jans ID extracted from userDn', () => {
     render(<SessionDetailPage row={testSession} />, { wrapper: Wrapper })
-    // userDn = 'inum=baea0439-d11f-4fd7-a349-b9cd80fda871,ou=people,o=jans'
-    // extractJansId should return 'baea0439-d11f-4fd7-a349-b9cd80fda871'
     expect(screen.getByText('baea0439-d11f-4fd7-a349-b9cd80fda871')).toBeInTheDocument()
   })
 

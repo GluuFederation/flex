@@ -1,11 +1,11 @@
-import type { Session } from '../../components/Sessions/types'
+import { AUTHENTICATED_SESSION_STATE, type Session } from '../../components/Sessions/types'
 
 export const mockSessions: Session[] = [
   {
     id: 'session-001',
     userDn: 'inum=baea0439-d11f-4fd7-a349-b9cd80fda871,ou=people,o=jans',
     authenticationTime: '2026-01-15T15:45:12.000Z',
-    state: 'authenticated',
+    state: AUTHENTICATED_SESSION_STATE,
     sessionState:
       '5383a40a202d8c8df1572ab0f17d1064214ae8d3392942827ef031b91ed3b378.88fb1116-f2a8-4092-9980-e3bf136cbbc1',
     sessionAttributes: {
@@ -31,7 +31,7 @@ export const mockSessions: Session[] = [
     id: 'session-002',
     userDn: 'inum=c4f2e891-22ab-4c3d-9e11-7a8b1c2d3e4f,ou=people,o=jans',
     authenticationTime: '2026-01-15T15:45:12.000Z',
-    state: 'authenticated',
+    state: AUTHENTICATED_SESSION_STATE,
     sessionState:
       '7912b50c303e9d4ef2683bc1g28e2175325bf4d4503053938fg142c02fe4c489.99gc2227-g3b9-5193-0091-f4cg247dccd2',
     sessionAttributes: {
