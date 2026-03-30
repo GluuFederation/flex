@@ -1,5 +1,18 @@
 import { makeStyles } from 'tss-react/mui'
 import { BORDER_RADIUS, CEDARLING_CONFIG_SPACING, MAPPING_SPACING, SPACING } from '@/constants'
+
+const sharedInputStyles = {
+  '& input, & select, & .custom-select, & .form-control': {
+    minHeight: CEDARLING_CONFIG_SPACING.INPUT_HEIGHT,
+    height: 'auto',
+    paddingTop: CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
+    paddingBottom: CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
+    paddingLeft: CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL,
+    paddingRight: CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL,
+    borderRadius: BORDER_RADIUS.SMALL,
+  },
+}
+
 const formGroupOverrides = {
   '& .row.mb-3, & .mb-3': {
     marginBottom: '0 !important',
@@ -74,34 +87,18 @@ export const useStyles = makeStyles()(() => ({
     paddingTop: 0,
   },
   objectFieldItem: {
-    'minWidth': 0,
-    'width': '100%',
-    'boxSizing': 'border-box' as const,
+    minWidth: 0,
+    width: '100%',
+    boxSizing: 'border-box' as const,
     ...formGroupOverrides,
-    '& input, & select, & .custom-select, & .form-control': {
-      minHeight: CEDARLING_CONFIG_SPACING.INPUT_HEIGHT,
-      height: 'auto',
-      paddingTop: CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
-      paddingBottom: CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
-      paddingLeft: CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL,
-      paddingRight: CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL,
-      borderRadius: BORDER_RADIUS.SMALL,
-    },
+    ...sharedInputStyles,
   },
   objectFieldItemFullWidth: {
-    'gridColumn': '1 / -1',
-    'minWidth': 0,
-    'width': '100%',
-    'boxSizing': 'border-box' as const,
+    gridColumn: '1 / -1',
+    minWidth: 0,
+    width: '100%',
+    boxSizing: 'border-box' as const,
     ...formGroupOverrides,
-    '& input, & select, & .custom-select, & .form-control': {
-      minHeight: CEDARLING_CONFIG_SPACING.INPUT_HEIGHT,
-      height: 'auto',
-      paddingTop: CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
-      paddingBottom: CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
-      paddingLeft: CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL,
-      paddingRight: CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL,
-      borderRadius: BORDER_RADIUS.SMALL,
-    },
+    ...sharedInputStyles,
   },
 }))

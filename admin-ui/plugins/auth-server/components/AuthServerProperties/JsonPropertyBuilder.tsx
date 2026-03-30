@@ -58,57 +58,70 @@ const toPairs = <T,>(items: T[]): Array<[T, T | null]> => {
   return pairs
 }
 
-const ArrayItemSelect: React.FC<ArrayItemSelectProps> = React.memo(
-  ({ index, values, options, label, path, handler, formResetKey }) => {
-    const formikAdapter = useMemo<GluuMultiSelectRowFormik>(
-      () => ({
-        setFieldValue: (_field: string, newValues: string[]) => {
-          handler({ op: 'replace', path, value: newValues })
-        },
-      }),
-      [handler, path],
-    )
+const ArrayItemSelect = React.memo(function ArrayItemSelect({
+  index,
+  values,
+  options,
+  label,
+  path,
+  handler,
+  formResetKey,
+}: ArrayItemSelectProps) {
+  const formikAdapter = useMemo<GluuMultiSelectRowFormik>(
+    () => ({
+      setFieldValue: (_field: string, newValues: string[]) => {
+        handler({ op: 'replace', path, value: newValues })
+      },
+    }),
+    [handler, path],
+  )
 
-    return (
-      <GluuMultiSelectRow
-        key={`${path}-${formResetKey}`}
-        label={label}
-        name={String(index)}
-        value={values}
-        formik={formikAdapter}
-        options={options}
-        lsize={12}
-        rsize={12}
-      />
-    )
-  },
-)
+  return (
+    <GluuMultiSelectRow
+      key={`${path}-${formResetKey}`}
+      label={label}
+      name={String(index)}
+      value={values}
+      formik={formikAdapter}
+      options={options}
+      lsize={12}
+      rsize={12}
+    />
+  )
+})
 
-const StringArrayField: React.FC<StringArrayFieldProps> = React.memo(
-  ({ propKey, label, values, options, path, handler, lSize, formResetKey }) => {
-    const formikAdapter = useMemo<GluuMultiSelectRowFormik>(
-      () => ({
-        setFieldValue: (_field: string, newValues: string[]) => {
-          handler({ op: 'replace', path, value: newValues })
-        },
-      }),
-      [handler, path],
-    )
+const StringArrayField = React.memo(function StringArrayField({
+  propKey,
+  label,
+  values,
+  options,
+  path,
+  handler,
+  lSize,
+  formResetKey,
+}: StringArrayFieldProps) {
+  const formikAdapter = useMemo<GluuMultiSelectRowFormik>(
+    () => ({
+      setFieldValue: (_field: string, newValues: string[]) => {
+        handler({ op: 'replace', path, value: newValues })
+      },
+    }),
+    [handler, path],
+  )
 
-    return (
-      <GluuMultiSelectRow
-        key={`${path}-${formResetKey}`}
-        label={label}
-        name={propKey}
-        value={values}
-        formik={formikAdapter}
-        options={options}
-        lsize={lSize}
-        rsize={lSize}
-      />
-    )
-  },
-)
+  return (
+    <GluuMultiSelectRow
+      key={`${path}-${formResetKey}`}
+      label={label}
+      name={propKey}
+      value={values}
+      formik={formikAdapter}
+      options={options}
+      lsize={lSize}
+      rsize={lSize}
+    />
+  )
+})
 
 const JsonPropertyBuilder = ({
   propKey,
@@ -451,7 +464,7 @@ const JsonPropertyBuilder = ({
                         propValue={objectValue[objKey]}
                         handler={handler}
                         lSize={12}
-                        parentIsArray={parentIsArray}
+                        parentIsArray={false}
                         path={path}
                         errors={errors}
                         touched={touched}
