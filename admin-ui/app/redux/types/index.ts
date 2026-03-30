@@ -365,20 +365,3 @@ export type ReducerChangeListener = (reducers: ReducerMap) => void
 
 export type { AuthState as AuthReducerState }
 export type SliceState<K extends keyof RootState> = NonNullable<RootState[K]>
-
-// AppInitSaga
-export type AuthReducerShape = {
-  hasSession?: boolean
-  jwtToken?: string | null
-  idToken?: string | null
-  userinfo_jwt?: string | null
-}
-
-export type HealthReducerShape = {
-  health: Record<string, string>
-}
-
-export type HealthRaceResult = {
-  response?: boolean
-  timeout?: true
-}
