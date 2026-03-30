@@ -1,16 +1,30 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import { useFormik } from 'formik'
-import { Row, Col, Form, FormGroup } from 'Components'
+import { useTranslation } from 'react-i18next'
+import { Form, Input } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
-import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
-import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
-import { fidoConstants, validationSchema, transformToFormValues } from '../helper'
-import customColors from '@/customColors'
+import GluuWebhookCommitDialog from 'Routes/Apps/Gluu/GluuWebhookCommitDialog'
+import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
+import { GluuButton } from '@/components/GluuButton'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
+
+import {
+  fidoConstants,
+  validationSchema,
+  transformToFormValues,
+  buildChangedFieldOperations,
+  LABEL_SIZE,
+  INPUT_SIZE,
+} from '../helper'
 import { DynamicConfigurationProps, DynamicConfigFormValues } from '../types/fido'
+import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
+import { useStyles } from './styles/FidoConfiguration.style'
 
 const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
   fidoConfiguration,
@@ -18,7 +32,19 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
   isSubmitting,
   readOnly,
 }) => {
+  const { t } = useTranslation()
+  const { state: themeState } = useTheme()
+  const { themeColors, isDark } = useMemo(
+    () => ({
+      themeColors: getThemeColor(themeState.theme),
+      isDark: themeState.theme === THEME_DARK,
+    }),
+    [themeState.theme],
+  )
+  const { classes } = useStyles({ isDark, themeColors })
+
   const [modal, setModal] = useState(false)
+  const [commitOperations, setCommitOperations] = useState<GluuCommitDialogOperation[]>([])
 
   const toggle = useCallback(() => {
     setModal((prev) => !prev)
@@ -73,75 +99,86 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
     [formik, readOnly],
   )
 
-  const personCustomObjectClassOptions = useMemo(() => {
-    return (formik.values.personCustomObjectClassList || []).map((item) => ({
-      key: '',
-      value: item,
-    }))
-  }, [formik.values.personCustomObjectClassList])
+  const personCustomObjectClassList = formik.values.personCustomObjectClassList || []
+
+  const addObjectClass = useCallback(() => {
+    formik.setFieldValue('personCustomObjectClassList', [...personCustomObjectClassList, ''])
+  }, [formik, personCustomObjectClassList])
+
+  const removeObjectClass = useCallback(
+    (index: number) => {
+      const updated = [...personCustomObjectClassList]
+      updated.splice(index, 1)
+      formik.setFieldValue('personCustomObjectClassList', updated)
+    },
+    [formik, personCustomObjectClassList],
+  )
+
+  const changeObjectClass = useCallback(
+    (index: number, value: string) => {
+      const updated = [...personCustomObjectClassList]
+      updated[index] = value
+      formik.setFieldValue('personCustomObjectClassList', updated)
+    },
+    [formik, personCustomObjectClassList],
+  )
 
   return (
-    <Form onSubmit={handleFormSubmit} className="mt-3">
-      <style>{`
-        .fido-dynamic-labels-black label,
-        .fido-dynamic-labels-black label h5,
-        .fido-dynamic-labels-black label span,
-        .fido-dynamic-labels-black .MuiSvgIcon-root { color: ${customColors.black} !important; }
-      `}</style>
-      <div className="fido-dynamic-labels-black">
-        <FormGroup row>
-          <Col sm={8}>
+    <Form onSubmit={handleFormSubmit}>
+      <div className={classes.formSection}>
+        <div className={`${classes.fieldsGrid} ${classes.formLabels} ${classes.formWithInputs}`}>
+          <div className={classes.fieldItem}>
             <GluuInputRow
               label={fidoConstants.LABELS.ISSUER}
               name={fidoConstants.FORM_FIELDS.ISSUER}
               value={formik.values.issuer || ''}
               formik={formik}
-              lsize={4}
-              rsize={8}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
               required
               showError={!!(formik.errors.issuer && formik.touched.issuer)}
               errorMessage={formik.errors.issuer}
             />
-          </Col>
+          </div>
 
-          <Col sm={8}>
+          <div className={classes.fieldItem}>
             <GluuInputRow
               label={fidoConstants.LABELS.BASE_ENDPOINT}
               name={fidoConstants.FORM_FIELDS.BASE_ENDPOINT}
               value={formik.values.baseEndpoint || ''}
               formik={formik}
-              lsize={4}
-              rsize={8}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
               required
               showError={!!(formik.errors.baseEndpoint && formik.touched.baseEndpoint)}
               errorMessage={formik.errors.baseEndpoint}
             />
-          </Col>
+          </div>
 
-          <Col sm={8}>
+          <div className={classes.fieldItem}>
             <GluuInputRow
               label={fidoConstants.LABELS.CLEAN_SERVICE_INTERVAL}
               name={fidoConstants.FORM_FIELDS.CLEAN_SERVICE_INTERVAL}
               value={formik.values.cleanServiceInterval ?? ''}
               formik={formik}
-              lsize={4}
-              rsize={8}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
               showError={
                 !!(formik.errors.cleanServiceInterval && formik.touched.cleanServiceInterval)
               }
               errorMessage={formik.errors.cleanServiceInterval}
               type="number"
             />
-          </Col>
+          </div>
 
-          <Col sm={8}>
+          <div className={classes.fieldItem}>
             <GluuInputRow
               label={fidoConstants.LABELS.CLEAN_SERVICE_BATCH_CHUNK}
               name={fidoConstants.FORM_FIELDS.CLEAN_SERVICE_BATCH_CHUNK_SIZE}
               value={formik.values.cleanServiceBatchChunkSize ?? ''}
               formik={formik}
-              lsize={4}
-              rsize={8}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
               showError={
                 !!(
                   formik.errors.cleanServiceBatchChunkSize &&
@@ -151,82 +188,60 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               errorMessage={formik.errors.cleanServiceBatchChunkSize}
               type="number"
             />
-          </Col>
+          </div>
 
-          <Col sm={8}>
-            <GluuToggleRow
-              label={fidoConstants.LABELS.USE_LOCAL_CACHE}
-              name={fidoConstants.FORM_FIELDS.USE_LOCAL_CACHE}
-              formik={formik}
-              lsize={4}
-              rsize={8}
-              doc_category={fidoConstants.DOC_CATEGORY}
-            />
-          </Col>
-
-          <Col sm={8}>
-            <GluuToggleRow
-              label={fidoConstants.LABELS.DISABLE_JDK_LOGGER}
-              name={fidoConstants.FORM_FIELDS.DISABLE_JDK_LOGGER}
-              formik={formik}
-              lsize={4}
-              rsize={8}
-              doc_category={fidoConstants.DOC_CATEGORY}
-            />
-          </Col>
-
-          <Col sm={8}>
+          <div className={classes.fieldItem}>
             <GluuSelectRow
               label={fidoConstants.LABELS.LOGGING_LEVEL}
               name={fidoConstants.FORM_FIELDS.LOGGING_LEVEL}
               value={formik.values.loggingLevel}
               values={[...fidoConstants.LOGGING_LEVELS]}
               formik={formik}
-              lsize={4}
-              rsize={8}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
               showError={!!(formik.errors.loggingLevel && formik.touched.loggingLevel)}
               errorMessage={formik.errors.loggingLevel}
             />
-          </Col>
+          </div>
 
-          <Col sm={8}>
+          <div className={classes.fieldItem}>
             <GluuInputRow
               label={fidoConstants.LABELS.LOGGING_LAYOUT}
               name={fidoConstants.FORM_FIELDS.LOGGING_LAYOUT}
               value={formik.values.loggingLayout || ''}
               formik={formik}
-              lsize={4}
-              rsize={8}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
               showError={!!(formik.errors.loggingLayout && formik.touched.loggingLayout)}
               errorMessage={formik.errors.loggingLayout}
             />
-          </Col>
+          </div>
 
-          <Col sm={8}>
+          <div className={classes.fieldItem}>
             <GluuInputRow
               label={fidoConstants.LABELS.METRIC_REPORTER_INTERVAL}
               name={fidoConstants.FORM_FIELDS.METRIC_REPORTER_INTERVAL}
               type="number"
               value={formik.values.metricReporterInterval ?? ''}
               formik={formik}
-              lsize={4}
-              rsize={8}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
               showError={
                 !!(formik.errors.metricReporterInterval && formik.touched.metricReporterInterval)
               }
               errorMessage={formik.errors.metricReporterInterval}
             />
-          </Col>
+          </div>
 
-          <Col sm={8}>
+          <div className={classes.fieldItem}>
             <GluuInputRow
               label={fidoConstants.LABELS.METRIC_REPORTER_KEEP_DATA_DAYS}
               name={fidoConstants.FORM_FIELDS.METRIC_REPORTER_KEEP_DATA_DAYS}
               type="number"
               value={formik.values.metricReporterKeepDataDays ?? ''}
               formik={formik}
-              lsize={4}
-              rsize={8}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
               showError={
                 !!(
                   formik.errors.metricReporterKeepDataDays &&
@@ -235,55 +250,94 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               }
               errorMessage={formik.errors.metricReporterKeepDataDays}
             />
-          </Col>
+          </div>
 
-          <Col sm={8}>
+          <div className={classes.fieldItem}>
+            <GluuToggleRow
+              label={fidoConstants.LABELS.USE_LOCAL_CACHE}
+              name={fidoConstants.FORM_FIELDS.USE_LOCAL_CACHE}
+              formik={formik}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
+              doc_category={fidoConstants.DOC_CATEGORY}
+            />
+          </div>
+
+          <div className={classes.fieldItem}>
+            <GluuToggleRow
+              label={fidoConstants.LABELS.DISABLE_JDK_LOGGER}
+              name={fidoConstants.FORM_FIELDS.DISABLE_JDK_LOGGER}
+              formik={formik}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
+              doc_category={fidoConstants.DOC_CATEGORY}
+            />
+          </div>
+
+          <div className={classes.fieldItem}>
             <GluuToggleRow
               label={fidoConstants.LABELS.METRIC_REPORTER_ENABLED}
               name={fidoConstants.FORM_FIELDS.METRIC_REPORTER_ENABLED}
               formik={formik}
-              lsize={4}
-              rsize={8}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
               doc_category={fidoConstants.DOC_CATEGORY}
             />
-          </Col>
+          </div>
 
-          <Col sm={8}>
-            <Row>
-              <GluuLabel label={fidoConstants.LABELS.PERSON_CUSTOM_OBJECT_CLASSES} size={4} />
-              <Col sm={8}>
-                <GluuProperties
-                  compName={fidoConstants.FORM_FIELDS.PERSON_CUSTOM_OBJECT_CLASS_LIST}
-                  isInputLables={true}
-                  formik={formik}
-                  options={personCustomObjectClassOptions}
-                  isKeys={false}
-                  buttonText={fidoConstants.BUTTON_TEXT.ADD_CLASSES}
-                />
-              </Col>
-            </Row>
-          </Col>
-
-          <Col sm={8}>
+          <div className={classes.fieldItem}>
             <GluuToggleRow
               label={fidoConstants.LABELS.FIDO2_METRICS_ENABLED}
               name={fidoConstants.FORM_FIELDS.FIDO2_METRICS_ENABLED}
               formik={formik}
-              lsize={4}
-              rsize={8}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
               doc_category={fidoConstants.DOC_CATEGORY}
             />
-          </Col>
+          </div>
 
-          <Col sm={8}>
+          <div className={classes.fieldItem}>
+            <GluuToggleRow
+              label={fidoConstants.LABELS.FIDO2_DEVICE_INFO_COLLECTION}
+              name={fidoConstants.FORM_FIELDS.FIDO2_DEVICE_INFO_COLLECTION}
+              formik={formik}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
+              doc_category={fidoConstants.DOC_CATEGORY}
+            />
+          </div>
+
+          <div className={classes.fieldItem}>
+            <GluuToggleRow
+              label={fidoConstants.LABELS.FIDO2_ERROR_CATEGORIZATION}
+              name={fidoConstants.FORM_FIELDS.FIDO2_ERROR_CATEGORIZATION}
+              formik={formik}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
+              doc_category={fidoConstants.DOC_CATEGORY}
+            />
+          </div>
+
+          <div className={classes.fieldItem}>
+            <GluuToggleRow
+              label={fidoConstants.LABELS.FIDO2_PERFORMANCE_METRICS}
+              name={fidoConstants.FORM_FIELDS.FIDO2_PERFORMANCE_METRICS}
+              formik={formik}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
+              doc_category={fidoConstants.DOC_CATEGORY}
+            />
+          </div>
+
+          <div className={classes.fieldItemFullWidth}>
             <GluuInputRow
               label={fidoConstants.LABELS.FIDO2_METRICS_RETENTION_DAYS}
               name={fidoConstants.FORM_FIELDS.FIDO2_METRICS_RETENTION_DAYS}
               type="number"
               value={formik.values.fido2MetricsRetentionDays ?? ''}
               formik={formik}
-              lsize={4}
-              rsize={8}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
               showError={
                 !!(
                   formik.errors.fido2MetricsRetentionDays &&
@@ -292,61 +346,92 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               }
               errorMessage={formik.errors.fido2MetricsRetentionDays}
             />
-          </Col>
+          </div>
+        </div>
 
-          <Col sm={8}>
-            <GluuToggleRow
-              label={fidoConstants.LABELS.FIDO2_DEVICE_INFO_COLLECTION}
-              name={fidoConstants.FORM_FIELDS.FIDO2_DEVICE_INFO_COLLECTION}
-              formik={formik}
-              lsize={4}
-              rsize={8}
-              doc_category={fidoConstants.DOC_CATEGORY}
-            />
-          </Col>
-
-          <Col sm={8}>
-            <GluuToggleRow
-              label={fidoConstants.LABELS.FIDO2_ERROR_CATEGORIZATION}
-              name={fidoConstants.FORM_FIELDS.FIDO2_ERROR_CATEGORIZATION}
-              formik={formik}
-              lsize={4}
-              rsize={8}
-              doc_category={fidoConstants.DOC_CATEGORY}
-            />
-          </Col>
-
-          <Col sm={8}>
-            <GluuToggleRow
-              label={fidoConstants.LABELS.FIDO2_PERFORMANCE_METRICS}
-              name={fidoConstants.FORM_FIELDS.FIDO2_PERFORMANCE_METRICS}
-              formik={formik}
-              lsize={4}
-              rsize={8}
-              doc_category={fidoConstants.DOC_CATEGORY}
-            />
-          </Col>
-        </FormGroup>
-        <Row>
-          <Col>
-            <GluuFormFooter
-              showBack={true}
-              showCancel={true}
-              showApply={!readOnly}
-              onApply={toggle}
-              onCancel={handleCancel}
-              disableBack={false}
-              disableCancel={!formik.dirty}
-              disableApply={!formik.isValid || !formik.dirty}
-              applyButtonType="button"
-              isLoading={isSubmitting ?? false}
-            />
-          </Col>
-        </Row>
-        {!readOnly && (
-          <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} formik={formik} />
-        )}
+        <div
+          className={`${classes.propsBox} ${!personCustomObjectClassList.length ? classes.propsBoxEmpty : ''}`.trim()}
+        >
+          <div
+            className={`${classes.propsHeader} ${!personCustomObjectClassList.length ? classes.propsHeaderEmpty : ''}`.trim()}
+          >
+            <GluuText variant="h5" disableThemeColor>
+              <span className={classes.propsTitle}>
+                {t(fidoConstants.LABELS.PERSON_CUSTOM_OBJECT_CLASSES)}
+              </span>
+            </GluuText>
+            <GluuButton
+              type="button"
+              backgroundColor={themeColors.settings.addPropertyButton.bg}
+              textColor={themeColors.settings.addPropertyButton.text}
+              useOpacityOnHover
+              className={classes.propsActionBtn}
+              onClick={addObjectClass}
+            >
+              <i className="fa fa-fw fa-plus" />
+              {t(fidoConstants.BUTTON_TEXT.ADD_CLASSES)}
+            </GluuButton>
+          </div>
+          <div className={classes.propsBody}>
+            {personCustomObjectClassList.map((item, index) => (
+              <div key={index} className={classes.propsRow}>
+                <Input
+                  value={item || ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    changeObjectClass(index, e.target.value)
+                  }
+                  placeholder={t('placeholders.value')}
+                  className={classes.propsInput}
+                />
+                <GluuButton
+                  type="button"
+                  backgroundColor={themeColors.settings.removeButton.bg}
+                  textColor={themeColors.settings.removeButton.text}
+                  useOpacityOnHover
+                  className={classes.propsActionBtn}
+                  onClick={() => removeObjectClass(index)}
+                >
+                  <i className="fa fa-fw fa-trash" />
+                  {t('actions.remove')}
+                </GluuButton>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
+
+      <GluuThemeFormFooter
+        hideDivider
+        showBack
+        showCancel
+        showApply={!readOnly}
+        onApply={() => {
+          const ops = buildChangedFieldOperations(
+            initialValues,
+            formik.values,
+            fidoConstants.DYNAMIC,
+            t,
+          )
+          setCommitOperations(ops)
+          toggle()
+        }}
+        onCancel={handleCancel}
+        disableCancel={!formik.dirty}
+        disableApply={!formik.isValid || !formik.dirty}
+        applyButtonType="button"
+        isLoading={isSubmitting ?? false}
+      />
+
+      {!readOnly && (
+        <GluuWebhookCommitDialog
+          handler={toggle}
+          modal={modal}
+          onAccept={submitForm}
+          formik={formik}
+          operations={commitOperations}
+          webhookFeature={adminUiFeatures.fido_configuration_write}
+        />
+      )}
     </Form>
   )
 }
