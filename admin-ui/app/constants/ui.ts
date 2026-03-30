@@ -71,6 +71,28 @@ export const GRADIENT_POSITION = {
 
 export const ELLIPSE_SIZE = '200% 160%'
 
+export const INPUT = {
+  HEIGHT: 52,
+  PADDING_HORIZONTAL: 20,
+  PADDING_LEFT_WITH_ICON: 40,
+  CHEVRON_RIGHT: 14,
+} as const
+
+export const ICON_SIZE = {
+  SM: 18,
+  MD: 20,
+  LG: 24,
+} as const
+
+export const TOOLBAR = {
+  MIN_WIDTH: 130,
+  SEARCH_MIN_WIDTH: 220,
+} as const
+
+export const FILTER_POPOVER = {
+  WIDTH: 480,
+} as const
+
 export const CEDARLING_CONFIG_SPACING = {
   ALERT_TO_INPUT: 30,
   LABEL_MB: 7,

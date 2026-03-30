@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react'
 import type { Dayjs } from '@/utils/dayjsUtils'
 
-export interface FilterOption {
+export type FilterOption = {
   label: string
   value: string
 }
 
-export interface FilterDef {
+export type FilterDef = {
   key: string
   label: string
   value: string
@@ -15,7 +15,7 @@ export interface FilterDef {
   width?: string | number
 }
 
-export interface DateInputDef {
+export type DateInputDef = {
   key: string
   label: string
   value: string
@@ -25,14 +25,14 @@ export interface DateInputDef {
   width?: string | number
 }
 
-export interface PrimaryActionDef {
+export type PrimaryActionDef = {
   label: string
   icon?: ReactNode
   onClick: () => void
   disabled?: boolean
 }
 
-interface DateRangeConfig {
+type DateRangeConfig = {
   startDate: Dayjs | null
   endDate: Dayjs | null
   onStartDateChange: (date: Dayjs | null) => void
@@ -45,10 +45,9 @@ interface DateRangeConfig {
   inputHeight?: number
 }
 
-export interface GluuSearchToolbarProps {
+type GluuSearchToolbarBaseProps = {
   searchPlaceholder?: string
   searchLabel?: string
-  searchValue?: string
   searchFieldWidth?: number | string
   searchOnType?: boolean
   searchDebounceMs?: number
@@ -64,3 +63,19 @@ export interface GluuSearchToolbarProps {
   refreshButtonVariant?: 'primary' | 'outlined'
   disabled?: boolean
 }
+
+type GluuSearchToolbarInputProps = GluuSearchToolbarBaseProps & {
+  selectOptions?: undefined
+  onSelectChange?: undefined
+  selectPlaceholder?: undefined
+  searchValue?: string
+}
+
+type GluuSearchToolbarSelectProps = GluuSearchToolbarBaseProps & {
+  selectOptions: FilterOption[]
+  searchValue: string
+  onSelectChange: (value: string) => void
+  selectPlaceholder?: string
+}
+
+export type GluuSearchToolbarProps = GluuSearchToolbarInputProps | GluuSearchToolbarSelectProps
