@@ -1,8 +1,9 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
+import { fontFamily, fontSizes, fontWeights, letterSpacing } from '@/styles/fonts'
+import { BORDER_RADIUS, INPUT, ICON_SIZE, OPACITY, TOOLBAR } from '@/constants'
 
-export const DEFAULT_INPUT_HEIGHT = 52
+export const DEFAULT_INPUT_HEIGHT = INPUT.HEIGHT
 
 interface GluuSearchToolbarStyleParams {
   themeColors: ThemeConfig
@@ -24,7 +25,7 @@ export const useStyles = makeStyles<GluuSearchToolbarStyleParams>()((
     container: {
       display: 'flex',
       alignItems: 'flex-end',
-      gap: '10px',
+      gap: 10,
       flexWrap: 'wrap',
       fontFamily,
       width: '100%',
@@ -36,22 +37,22 @@ export const useStyles = makeStyles<GluuSearchToolbarStyleParams>()((
     fieldGroup: {
       display: 'flex',
       flexDirection: 'column',
-      gap: '6px',
+      gap: BORDER_RADIUS.SMALL,
       minWidth: 0,
     },
     fieldGroupSearch: {
       display: 'flex',
       flexDirection: 'column',
-      gap: '6px',
+      gap: BORDER_RADIUS.SMALL,
       ...(searchFieldWidth != null
         ? { width: searchFieldWidth, flex: '0 0 auto' as const }
-        : { flex: 1, minWidth: '220px' }),
+        : { flex: 1, minWidth: TOOLBAR.SEARCH_MIN_WIDTH }),
     },
     fieldLabel: {
       fontSize: fontSizes.base,
       fontWeight: fontWeights.semiBold,
       color: themeColors.fontColor,
-      letterSpacing: '0.3px',
+      letterSpacing: letterSpacing.normal,
     },
     searchWrapper: {
       position: 'relative',
@@ -60,9 +61,9 @@ export const useStyles = makeStyles<GluuSearchToolbarStyleParams>()((
     searchInput: {
       'width': '100%',
       'height': inputHeightPx,
-      'padding': '0 12px 0 40px',
+      'padding': `0 12px 0 ${INPUT.PADDING_LEFT_WITH_ICON}px`,
       'border': `1px solid ${inputBorder}`,
-      'borderRadius': '6px',
+      'borderRadius': BORDER_RADIUS.SMALL,
       'backgroundColor': inputBg,
       'color': inputColor,
       'fontSize': fontSizes.base,
@@ -72,16 +73,21 @@ export const useStyles = makeStyles<GluuSearchToolbarStyleParams>()((
       'boxSizing': 'border-box',
       '&::placeholder': {
         color: inputColor,
-        opacity: 0.6,
+        opacity: OPACITY.PLACEHOLDER,
+      },
+      '&:focus, &:focus-visible': {
+        outline: 'none',
+        boxShadow: 'none',
+        borderColor: inputBorder,
       },
     },
     searchInputDisabled: {
-      opacity: 0.5,
+      opacity: OPACITY.DISABLED,
       cursor: 'not-allowed',
     },
     searchIcon: {
       position: 'absolute',
-      left: '12px',
+      left: 12,
       top: '50%',
       transform: 'translateY(-50%)',
       pointerEvents: 'none',
@@ -89,7 +95,7 @@ export const useStyles = makeStyles<GluuSearchToolbarStyleParams>()((
       color: inputColor,
     },
     searchIconSvg: {
-      fontSize: 20,
+      fontSize: ICON_SIZE.MD,
       color: 'inherit',
     },
     filterSelectWrapper: {
@@ -97,44 +103,57 @@ export const useStyles = makeStyles<GluuSearchToolbarStyleParams>()((
       display: 'flex',
       alignItems: 'center',
       color: inputColor,
+      width: '100%',
     },
     filterSelect: {
-      height: inputHeightPx,
-      padding: '0 36px 0 20px',
-      border: `1px solid ${inputBorder}`,
-      borderRadius: '6px',
-      backgroundColor: inputBg,
-      color: inputColor,
-      fontSize: fontSizes.base,
-      fontWeight: fontWeights.medium,
+      'height': inputHeightPx,
+      'padding': `0 36px 0 ${INPUT.PADDING_HORIZONTAL}px`,
+      'border': `1px solid ${inputBorder}`,
+      'borderRadius': BORDER_RADIUS.SMALL,
+      'backgroundColor': inputBg,
+      'color': inputColor,
+      'fontSize': fontSizes.base,
+      'fontWeight': fontWeights.medium,
       fontFamily,
-      cursor: 'pointer',
-      outline: 'none',
-      appearance: 'none',
-      WebkitAppearance: 'none',
-      MozAppearance: 'none',
-      boxSizing: 'border-box',
+      'cursor': 'pointer',
+      'outline': 'none',
+      'appearance': 'none',
+      'WebkitAppearance': 'none',
+      'MozAppearance': 'none',
+      'boxSizing': 'border-box',
+      'width': '100%',
+      '&:focus, &:focus-visible': {
+        outline: 'none',
+        boxShadow: 'none',
+        borderColor: inputBorder,
+      },
     },
     filterSelectChevron: {
       position: 'absolute',
-      right: 14,
+      right: INPUT.CHEVRON_RIGHT,
       top: '50%',
       transform: 'translateY(-50%)',
       pointerEvents: 'none',
       display: 'flex',
     },
     dateInput: {
-      height: inputHeightPx,
-      padding: '0 12px',
-      border: `1px solid ${inputBorder}`,
-      borderRadius: '6px',
-      backgroundColor: inputBg,
-      color: inputColor,
-      fontSize: fontSizes.base,
-      fontWeight: fontWeights.medium,
+      'height': inputHeightPx,
+      'padding': '0 12px',
+      'border': `1px solid ${inputBorder}`,
+      'borderRadius': BORDER_RADIUS.SMALL,
+      'backgroundColor': inputBg,
+      'color': inputColor,
+      'fontSize': fontSizes.base,
+      'fontWeight': fontWeights.medium,
       fontFamily,
-      outline: 'none',
-      boxSizing: 'border-box',
+      'outline': 'none',
+      'boxSizing': 'border-box',
+      'width': 255,
+      '&:focus, &:focus-visible': {
+        outline: 'none',
+        boxShadow: 'none',
+        borderColor: inputBorder,
+      },
     },
     dateRangeSlot: {
       display: 'flex',
@@ -147,7 +166,7 @@ export const useStyles = makeStyles<GluuSearchToolbarStyleParams>()((
     },
     buttonGroup: {
       display: 'flex',
-      gap: '10px',
+      gap: 10,
       alignItems: 'flex-end',
       marginLeft: 'auto',
       position: 'relative',
@@ -156,14 +175,14 @@ export const useStyles = makeStyles<GluuSearchToolbarStyleParams>()((
       isolation: 'isolate',
     },
     toolbarButton: {
-      minWidth: 130,
+      minWidth: TOOLBAR.MIN_WIDTH,
       position: 'relative',
       zIndex: 20,
       pointerEvents: 'auto',
     },
     validationRow: {
       width: '100%',
-      marginTop: 6,
+      marginTop: BORDER_RADIUS.SMALL,
       display: 'flex',
       flexDirection: 'column',
       gap: 4,
