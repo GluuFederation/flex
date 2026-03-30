@@ -1,4 +1,4 @@
-import { all, fork, put, select, takeLatest } from 'redux-saga/effects'
+import { all, fork, select, takeLatest } from 'redux-saga/effects'
 
 let appInitCompleted = false
 
@@ -15,20 +15,12 @@ function* runAppInitIfReady(): Generator {
   const auth = (yield select(
     (state: { authReducer: AuthReducerShape }) => state.authReducer,
   )) as AuthReducerShape
-  const hasSession = auth?.hasSession
-  const idToken = auth?.idToken
-  const userinfoJwt = auth?.userinfo_jwt
 
-  if (!hasSession || !idToken || !userinfoJwt) {
+  if (!auth?.hasSession || !auth?.idToken || !auth?.userinfo_jwt) {
     return
   }
 
   appInitCompleted = true
-
-  yield put({
-    type: 'health/getHealthServerStatus',
-    payload: { action: { action_data: { service: 'all' } } },
-  })
 }
 
 function* watchAuthTokens(): Generator {

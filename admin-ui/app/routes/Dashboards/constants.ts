@@ -2,16 +2,6 @@ import customColors from '@/customColors'
 
 export { BORDER_RADIUS, STATUS_DETAILS } from '@/constants'
 
-export const DASHBOARD_CACHE_CONFIG = {
-  STALE_TIME: 30 * 1000,
-  GC_TIME: 60 * 1000,
-} as const
-
-export const REPORTS_CACHE_CONFIG = {
-  STALE_TIME: 60 * 1000,
-  GC_TIME: 2 * 60 * 1000,
-} as const
-
 export const STATUS_DISPLAY_MAP: Record<string, string> = {
   'up': 'Running',
   'down': 'Down',

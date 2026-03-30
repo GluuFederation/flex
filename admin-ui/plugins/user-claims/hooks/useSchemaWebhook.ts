@@ -6,7 +6,7 @@ import { devLogger } from '@/utils/devLogger'
 import type { JansAttribute } from 'JansConfigApi'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
-export function useSchemaWebhook() {
+export const useSchemaWebhook = () => {
   const dispatch = useDispatch()
 
   const triggerAttributeWebhook = useCallback(

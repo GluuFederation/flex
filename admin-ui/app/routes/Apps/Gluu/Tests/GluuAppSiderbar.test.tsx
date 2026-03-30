@@ -7,6 +7,7 @@ import i18n from '../../../../i18n'
 import { I18nextProvider } from 'react-i18next'
 import { ThemeProvider } from '../../../../context/theme/themeContext'
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { processMenus } from '../../../../../plugins/PluginMenuResolver'
 
 jest.spyOn(global.console, 'log').mockImplementation(jest.fn())
@@ -83,6 +84,20 @@ jest.mock('@/cedarling/utility', () => ({
   },
 }))
 
+jest.mock('Plugins/admin/components/Health/hooks', () => ({
+  useHealthStatus: () => ({
+    allServices: [],
+    services: [],
+    healthyCount: 0,
+    totalCount: 0,
+    isLoading: false,
+    isFetching: false,
+    isError: false,
+    error: null,
+    refetch: jest.fn(),
+  }),
+}))
+
 jest.mock('Plugins/PluginMenuResolver', () => ({
   processMenus: jest.fn().mockResolvedValue([]),
 }))
@@ -111,14 +126,20 @@ const store = configureStore({
   }),
 })
 
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false } },
+})
+
 const Wrapper = ({ children }: { children: ReactNode }) => (
-  <I18nextProvider i18n={i18n}>
-    <ThemeProvider>
-      <Provider store={store}>
-        <MemoryRouter initialEntries={['/admin']}>{children}</MemoryRouter>
-      </Provider>
-    </ThemeProvider>
-  </I18nextProvider>
+  <QueryClientProvider client={queryClient}>
+    <I18nextProvider i18n={i18n}>
+      <ThemeProvider>
+        <Provider store={store}>
+          <MemoryRouter initialEntries={['/admin']}>{children}</MemoryRouter>
+        </Provider>
+      </ThemeProvider>
+    </I18nextProvider>
+  </QueryClientProvider>
 )
 
 it('Should show the sidebar properly', async () => {

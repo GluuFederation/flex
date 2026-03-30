@@ -9,16 +9,16 @@ export interface ApiError {
   message?: string
 }
 
-function isApiError(error: Error | ApiError | Record<string, never>): error is ApiError {
+const isApiError = (error: Error | ApiError | Record<string, never>): error is ApiError => {
   return (
     !(error instanceof Error) && typeof error === 'object' && error !== null && 'response' in error
   )
 }
 
-function resolveErrorMessage(
+const resolveErrorMessage = (
   error: Error | ApiError | Record<string, never>,
   getFallback: () => string,
-): string {
+): string => {
   if (isApiError(error)) {
     return error?.response?.data?.message ?? error?.message ?? getFallback()
   }
@@ -28,17 +28,17 @@ function resolveErrorMessage(
   return getFallback()
 }
 
-export function getErrorMessage(
+export const getErrorMessage = (
   error: Error | ApiError | Record<string, never>,
   fallbackKey: string,
   t: (key: string) => string,
-): string {
+): string => {
   return resolveErrorMessage(error, () => t(fallbackKey))
 }
 
-export function extractErrorMessage(
+export const extractErrorMessage = (
   error: Error | ApiError | Record<string, never>,
   fallback: string,
-): string {
+): string => {
   return resolveErrorMessage(error, () => fallback)
 }

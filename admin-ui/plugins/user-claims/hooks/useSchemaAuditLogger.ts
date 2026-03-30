@@ -14,7 +14,7 @@ interface AuditLogParams {
   modifiedFields?: ModifiedFields
 }
 
-export function useSchemaAuditLogger() {
+export const useSchemaAuditLogger = () => {
   const authState = useSelector((state: SchemaPluginRootState) => state.authReducer)
 
   const logAudit = useCallback(

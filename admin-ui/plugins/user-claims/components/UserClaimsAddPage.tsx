@@ -17,7 +17,7 @@ import type { JansAttribute } from 'JansConfigApi'
 
 const attributeResourceId = ADMIN_UI_RESOURCES.Attributes
 
-function UserClaimsAddPage(): JSX.Element {
+const UserClaimsAddPage = (): JSX.Element => {
   const { t } = useTranslation()
 
   const { state: themeState } = useTheme()
