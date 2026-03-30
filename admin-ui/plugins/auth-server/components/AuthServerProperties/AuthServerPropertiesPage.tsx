@@ -10,6 +10,7 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuInlineInput from 'Routes/Apps/Gluu/GluuInlineInput'
+import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuMultiSelectRow from 'Routes/Apps/Gluu/GluuMultiSelectRow'
 import type {
   MultiSelectOption,
@@ -383,20 +384,37 @@ const AuthServerPropertiesPage: React.FC = () => {
     return filteredScripts
   }, [scripts])
   const operations = useMemo<GluuCommitDialogOperation[]>(() => {
+    const formatPatchPath = (rawPath: string): string => {
+      const segments = rawPath.replace(/^\//, '').split('/')
+      const label = t(getPropertyLabel(segments[0]))
+      if (segments.length > 1) {
+        return `${label} [${segments.slice(1).join('/')}]`
+      }
+      return label
+    }
+
+    const formatValue = (patch: JsonPatch): JsonValue => {
+      if (patch.op === 'remove') return '(removed)'
+      const val = patch.value
+      if (val === null || val === undefined) return null
+      if (typeof val === 'object') return JSON.stringify(val)
+      return val as JsonValue
+    }
+
     const patchOperations: GluuCommitDialogOperation[] = patches.map((patch) => ({
-      path: patch.path as string,
-      value: patch.op === 'remove' ? null : (patch.value as JsonValue),
+      path: formatPatchPath(patch.path as string),
+      value: formatValue(patch),
     }))
     const putOperations: GluuCommitDialogOperation[] = put
       ? [
           {
-            path: put.path,
+            path: t(getPropertyLabel(put.path.replace(/^\//, ''))),
             value: put.value as JsonValue,
           },
         ]
       : []
     return [...patchOperations, ...putOperations]
-  }, [patches, put])
+  }, [patches, put, t, getPropertyLabel])
   const hasChanges = useMemo(() => {
     return patches.length > 0 || (put && put.value && put.value !== acrs?.defaultAcr)
   }, [patches.length, put, acrs?.defaultAcr])
@@ -520,6 +538,31 @@ const AuthServerPropertiesPage: React.FC = () => {
         )
       }
 
+      if (typeof model.value === 'number') {
+        return (
+          <GluuInputRow
+            key={`${model.propKey}-${resetKey}`}
+            name={model.propKey}
+            type="number"
+            lsize={12}
+            rsize={12}
+            label={model.label}
+            value={model.value}
+            doc_category="json_properties"
+            doc_entry={model.propKey}
+            isDark={isDark}
+            handleChange={(e) => {
+              const patch: JsonPatch = {
+                op: 'replace',
+                path: `/${model.propKey}`,
+                value: Number(e.target.value),
+              }
+              patchHandler(patch)
+            }}
+          />
+        )
+      }
+
       return (
         <GluuInlineInput
           key={`${model.propKey}-${resetKey}`}
@@ -534,10 +577,19 @@ const AuthServerPropertiesPage: React.FC = () => {
           handler={patchHandler}
           path={`/${model.propKey}`}
           showSaveButtons={false}
+          placeholder={t('placeholders.type_value', { field: t(model.label) })}
         />
       )
     },
-    [patchHandler, simpleFieldModels, arrayFormikAdapters, arrayMultiSelectOptions, resetKey],
+    [
+      patchHandler,
+      simpleFieldModels,
+      arrayFormikAdapters,
+      arrayMultiSelectOptions,
+      resetKey,
+      isDark,
+      t,
+    ],
   )
 
   const simpleFieldsContent = useMemo(

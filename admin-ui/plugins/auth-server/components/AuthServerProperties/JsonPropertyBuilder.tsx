@@ -3,6 +3,7 @@ import { Accordion, FormGroup, Col } from 'Components'
 import { GluuButton } from '@/components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuInlineInput from 'Routes/Apps/Gluu/GluuInlineInput'
+import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuMultiSelectRow from 'Routes/Apps/Gluu/GluuMultiSelectRow'
 import customColors from '@/customColors'
 import { BORDER_RADIUS, CEDARLING_CONFIG_SPACING, SPACING } from '@/constants'
@@ -210,12 +211,11 @@ const JsonPropertyBuilder = ({
   const removeHandler = useCallback(() => {
     const patch: JsonPatch = {
       path,
-      value: propValue,
       op: 'remove',
     }
     handler(patch)
     setShow(false)
-  }, [path, propValue, handler])
+  }, [path, handler])
 
   if (isBoolean(propValue) || shouldRenderAsBoolean(schema)) {
     return (
@@ -254,6 +254,7 @@ const JsonPropertyBuilder = ({
           parentIsArray={parentIsArray}
           path={path}
           showSaveButtons={false}
+          placeholder={t('placeholders.type_value', { field: t(getLocalizedLabelKey(propKey)) })}
         />
         {renderError()}
       </>
@@ -263,19 +264,25 @@ const JsonPropertyBuilder = ({
   if (isNumber(propValue)) {
     return (
       <>
-        <GluuInlineInput
+        <GluuInputRow
           key={`${path}-${formResetKey}`}
-          id={propKey}
           name={propKey}
-          lsize={lSize}
           type="number"
+          lsize={lSize}
           rsize={lSize}
           label={getLocalizedLabelKey(propKey)}
-          handler={handler}
-          value={propValue}
-          parentIsArray={parentIsArray}
-          path={path}
-          showSaveButtons={false}
+          value={propValue as number}
+          doc_category="json_properties"
+          doc_entry={propKey}
+          handleChange={(e) => {
+            if (!path) return
+            const patch: JsonPatch = {
+              op: 'replace',
+              path,
+              value: Number(e.target.value),
+            }
+            handler(patch)
+          }}
         />
         {renderError()}
       </>
@@ -372,20 +379,24 @@ const JsonPropertyBuilder = ({
           </div>
         </AccordionHeader>
         <AccordionBody>
-          {arrayValue.map((nestedValue, index) => (
-            <JsonPropertyBuilder
-              key={String(index)}
-              propKey={String(index)}
-              propValue={nestedValue}
-              handler={handler}
-              lSize={lSize}
-              parentIsArray={true}
-              path={path}
-              errors={errors}
-              touched={touched}
-              formResetKey={formResetKey}
-            />
-          ))}
+          {arrayValue.length === 0 ? (
+            <GluuText variant="span">{t('messages.no_data_available')}</GluuText>
+          ) : (
+            arrayValue.map((nestedValue, index) => (
+              <JsonPropertyBuilder
+                key={String(index)}
+                propKey={String(index)}
+                propValue={nestedValue}
+                handler={handler}
+                lSize={lSize}
+                parentIsArray={true}
+                path={path}
+                errors={errors}
+                touched={touched}
+                formResetKey={formResetKey}
+              />
+            ))
+          )}
         </AccordionBody>
       </Accordion>
     )
@@ -422,23 +433,34 @@ const JsonPropertyBuilder = ({
               </div>
             </AccordionHeader>
             <AccordionBody>
-              <div className={classes.objectFieldsGrid}>
-                {Object.keys(objectValue).map((objKey) => (
-                  <div key={objKey} className={classes.objectFieldItem}>
-                    <JsonPropertyBuilder
-                      propKey={objKey}
-                      propValue={objectValue[objKey]}
-                      handler={handler}
-                      lSize={12}
-                      parentIsArray={parentIsArray}
-                      path={path}
-                      errors={errors}
-                      touched={touched}
-                      formResetKey={formResetKey}
-                    />
-                  </div>
-                ))}
-              </div>
+              {Object.keys(objectValue).length === 0 ? (
+                <GluuText variant="span">{t('messages.no_data_available')}</GluuText>
+              ) : (
+                <div className={classes.objectFieldsGrid}>
+                  {Object.keys(objectValue).map((objKey) => (
+                    <div
+                      key={objKey}
+                      className={
+                        Object.keys(objectValue).length === 1
+                          ? classes.objectFieldItemFullWidth
+                          : classes.objectFieldItem
+                      }
+                    >
+                      <JsonPropertyBuilder
+                        propKey={objKey}
+                        propValue={objectValue[objKey]}
+                        handler={handler}
+                        lSize={12}
+                        parentIsArray={parentIsArray}
+                        path={path}
+                        errors={errors}
+                        touched={touched}
+                        formResetKey={formResetKey}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
             </AccordionBody>
           </Accordion>
         )}

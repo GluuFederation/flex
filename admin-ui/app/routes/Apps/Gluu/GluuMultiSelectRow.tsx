@@ -66,26 +66,27 @@ const GluuMultiSelectRow: React.FC<GluuMultiSelectRowProps> = ({
 
   const handleOptionClick = useCallback(
     (optionValue: string) => {
+      if (disabled) return
       const newValues = selectedValues.includes(optionValue)
         ? selectedValues.filter((v) => v !== optionValue)
         : [...selectedValues, optionValue]
       setSelectedValues(newValues)
       formik.setFieldValue(name, newValues)
     },
-    [selectedValues, formik, name],
+    [selectedValues, formik, name, disabled],
   )
 
   const handleRemoveChip = useCallback(
     (e: React.MouseEvent, optionValue: string) => {
       e.stopPropagation()
+      if (disabled) return
       const newValues = selectedValues.filter((v) => v !== optionValue)
       setSelectedValues(newValues)
       formik.setFieldValue(name, newValues)
     },
-    [selectedValues, formik, name],
+    [selectedValues, formik, name, disabled],
   )
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     if (!isOpen) return
     const handleClickOutside = (e: MouseEvent) => {
@@ -97,7 +98,6 @@ const GluuMultiSelectRow: React.FC<GluuMultiSelectRowProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [isOpen])
 
-  // Close dropdown on Escape key
   useEffect(() => {
     if (!isOpen) return
     const handleEscape = (e: KeyboardEvent) => {

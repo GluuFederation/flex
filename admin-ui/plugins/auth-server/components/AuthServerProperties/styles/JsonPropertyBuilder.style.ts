@@ -88,4 +88,20 @@ export const useStyles = makeStyles()(() => ({
       borderRadius: BORDER_RADIUS.SMALL,
     },
   },
+  objectFieldItemFullWidth: {
+    'gridColumn': '1 / -1',
+    'minWidth': 0,
+    'width': '100%',
+    'boxSizing': 'border-box' as const,
+    ...formGroupOverrides,
+    '& input, & select, & .custom-select, & .form-control': {
+      minHeight: CEDARLING_CONFIG_SPACING.INPUT_HEIGHT,
+      height: 'auto',
+      paddingTop: CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
+      paddingBottom: CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
+      paddingLeft: CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL,
+      paddingRight: CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL,
+      borderRadius: BORDER_RADIUS.SMALL,
+    },
+  },
 }))

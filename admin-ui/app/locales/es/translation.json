@@ -1260,7 +1260,8 @@
     "enter_policies_json_uris": "Ingrese la URI de política JSON",
     "enter_policies_zip_uris_authorization_token": "Ingrese el token de autorización de la URI de política ZIP",
     "enter_policies_zip_uris": "Ingrese la URI de política ZIP",
-    "enter_token_channels": "Ingrese los canales de token"
+    "enter_token_channels": "Ingrese los canales de token",
+    "type_value": "Ingrese el valor de {{field}}"
   },
   "titles": {
     "smtp_test_result": "Resultado de la prueba SMTP",
