@@ -8,11 +8,13 @@ import Fido from 'Plugins/fido/components/Fido'
 
 const mockUseFidoConfig = jest.fn()
 const mockMutate = jest.fn()
+const mockHasCedarReadPermission = jest.fn(() => true)
+const mockHasCedarWritePermission = jest.fn(() => true)
 
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({
-    hasCedarReadPermission: jest.fn(() => true),
-    hasCedarWritePermission: jest.fn(() => true),
+    hasCedarReadPermission: mockHasCedarReadPermission,
+    hasCedarWritePermission: mockHasCedarWritePermission,
     authorizeHelper: jest.fn(),
   })),
   ADMIN_UI_RESOURCES: { FIDO: 'FIDO', Lock: 'Lock' },
@@ -236,6 +238,45 @@ describe('Fido', () => {
       expect(screen.getByTestId('authenticatorCertsFolder')).toHaveValue('')
       expect(screen.getByTestId('mdsCertsFolder')).toHaveValue('')
       expect(screen.getByTestId('mdsTocsFolder')).toHaveValue('')
+    })
+  })
+
+  describe('when read permission is denied', () => {
+    beforeEach(() => {
+      mockHasCedarReadPermission.mockReturnValue(false)
+      mockHasCedarWritePermission.mockReturnValue(false)
+      mockUseFidoConfig.mockReturnValue({
+        data: mockFidoConfig,
+        isLoading: false,
+      })
+    })
+
+    it('hides the page and shows missing permission message', async () => {
+      await act(async () => {
+        render(<Fido />, { wrapper: Wrapper })
+      })
+      expect(screen.getByTestId('MISSING')).toBeInTheDocument()
+      expect(screen.queryByText('Static Configuration')).not.toBeInTheDocument()
+    })
+  })
+
+  describe('when write permission is denied', () => {
+    beforeEach(() => {
+      mockHasCedarReadPermission.mockReturnValue(true)
+      mockHasCedarWritePermission.mockReturnValue(false)
+      mockUseFidoConfig.mockReturnValue({
+        data: mockFidoConfig,
+        isLoading: false,
+      })
+    })
+
+    it('renders the page in read-only mode without Apply button', async () => {
+      await act(async () => {
+        render(<Fido />, { wrapper: Wrapper })
+      })
+      expect(screen.getByTestId('WRAPPER')).toBeInTheDocument()
+      expect(screen.getByText('Static Configuration')).toBeInTheDocument()
+      expect(screen.queryByText(/Apply/i)).not.toBeInTheDocument()
     })
   })
 })

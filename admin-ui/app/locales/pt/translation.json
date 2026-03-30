@@ -1158,7 +1158,6 @@
     "smtp_server_hostname": "Digite o nome do host do servidor SMTP",
     "smtp_server_port": "Insira a porta do servidor SMTP",
     "smtp_user_name": "Insira o nome de usuário SMTP",
-    "value": "Valor",
     "enter_url": "Insira a URL",
     "enter_root_certificate": "Insira o certificado raiz",
     "smtp_user_password": "Digite a senha do usuário SMTP",
