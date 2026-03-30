@@ -6,13 +6,7 @@ import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import { CACHE } from 'Utils/ApiResources'
 import type { CacheRedisProps } from './types'
-
-const REDIS_PROVIDER_OPTIONS = [
-  { value: 'STANDALONE', label: 'Standalone' },
-  { value: 'CLUSTER', label: 'Cluster' },
-  { value: 'SHARDED', label: 'Sharded' },
-  { value: 'SENTINEL', label: 'Sentinel' },
-]
+import { REDIS_PROVIDER_OPTIONS } from '../constants'
 
 function CacheRedis({ formik, classes, isDark, disabled }: CacheRedisProps) {
   return (

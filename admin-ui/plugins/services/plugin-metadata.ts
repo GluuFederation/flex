@@ -1,5 +1,5 @@
-import CachePage from './Components/Configuration/CachePage'
-import PersistenceDetail from './Components/Configuration/PersistenceDetail'
+import CachePage from './Components/CachePage'
+import PersistenceDetail from './Components/PersistenceDetail'
 
 import { CACHE_READ, PERSISTENCE_DETAIL } from 'Utils/PermChecker'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'

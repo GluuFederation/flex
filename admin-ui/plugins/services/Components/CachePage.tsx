@@ -46,13 +46,7 @@ import type { CacheFormValues, CacheProviderType } from './types'
 import { isInMemoryCache, isMemcachedCache, isRedisCache, isNativePersistenceCache } from './types'
 import { useStyles } from './CachePage.style'
 import { queryDefaults } from '@/utils/queryUtils'
-
-const CACHE_PROVIDER_OPTIONS = [
-  { value: 'IN_MEMORY', label: 'In_Memory' },
-  { value: 'MEMCACHED', label: 'Memcached' },
-  { value: 'REDIS', label: 'Redis' },
-  { value: 'NATIVE_PERSISTENCE', label: 'Native Persistence' },
-]
+import { CACHE_PROVIDER_OPTIONS } from '../constants'
 
 const CachePage: React.FC = () => {
   const { t } = useTranslation()
@@ -166,7 +160,7 @@ const CachePage: React.FC = () => {
   const formik = useFormik<CacheFormValues>({
     initialValues,
     enableReinitialize: true,
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       if (!canWriteCache) return
 
       try {
@@ -228,6 +222,7 @@ const CachePage: React.FC = () => {
         }
 
         dispatch(updateToast(true, 'success'))
+        resetForm({ values })
         try {
           await logCacheUpdate(
             {
@@ -274,7 +269,13 @@ const CachePage: React.FC = () => {
         <GluuPageContent>
           <div className={classes.cacheCard}>
             <div className={`${classes.content} ${classes.formLabels}`}>
-              <Form onSubmit={formik.handleSubmit} className={classes.formSection}>
+              <Form
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  handleApply()
+                }}
+                className={classes.formSection}
+              >
                 <div
                   className={`${classes.fieldsGrid} ${classes.formLabels} ${classes.formWithInputs}`}
                 >

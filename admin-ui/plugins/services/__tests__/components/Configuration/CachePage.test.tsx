@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
-import CachePage from 'Plugins/services/Components/Configuration/CachePage'
+import CachePage from 'Plugins/services/Components/CachePage'
 
 const mockMutate = jest.fn()
 

@@ -34,7 +34,7 @@ import {
   getStandardFieldValues,
 } from '../utils'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
-import { isPersistenceInfo } from 'Plugins/services/Components/Configuration/types'
+import { isPersistenceInfo } from 'Plugins/services/Components/types'
 import { AXIOS_INSTANCE } from '../../../api-client'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'

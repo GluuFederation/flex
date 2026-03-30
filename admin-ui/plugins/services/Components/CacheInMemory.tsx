@@ -3,7 +3,7 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import { CACHE } from 'Utils/ApiResources'
 import type { CacheSubComponentBaseProps } from './types'
 
-function CacheInMemory({ formik, classes, isDark, disabled }: CacheSubComponentBaseProps) {
+const CacheInMemory = ({ formik, classes, isDark, disabled }: CacheSubComponentBaseProps) => {
   return (
     <div className={classes.sectionGrid}>
       <div className={classes.fieldItem}>

@@ -3,11 +3,7 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { CACHE } from 'Utils/ApiResources'
 import type { CacheMemcachedProps } from './types'
-
-const CONNECTION_FACTORY_OPTIONS = [
-  { value: 'DEFAULT', label: 'Default' },
-  { value: 'BINARY', label: 'Binary' },
-]
+import { CONNECTION_FACTORY_OPTIONS } from '../constants'
 
 function CacheMemcached({ formik, classes, isDark, disabled }: CacheMemcachedProps) {
   return (

@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
-import PersistenceDetail from 'Plugins/services/Components/Configuration/PersistenceDetail'
+import PersistenceDetail from 'Plugins/services/Components/PersistenceDetail'
 
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({
