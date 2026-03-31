@@ -1,3 +1,5 @@
+import type { JansAttribute } from 'JansConfigApi'
+
 export interface IApi {
   getAttributes: (
     opts: AttributeOptions,
@@ -13,12 +15,12 @@ export interface AttributeOptions {
   sortBy?: string
   sortOrder?: 'ascending' | 'descending'
   fieldValuePair?: string
-  [key: string]: unknown
+  [key: string]: string | number | boolean | undefined
 }
 
 export interface AttributePagedResult {
   start?: number
   totalEntriesCount?: number
   entriesCount?: number
-  entries?: unknown[]
+  entries?: JansAttribute[]
 }

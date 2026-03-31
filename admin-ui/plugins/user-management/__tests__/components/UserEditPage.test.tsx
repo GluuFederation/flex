@@ -4,7 +4,7 @@ import {
   createUserManagementTestStore,
   createUserManagementQueryClient,
   createUserManagementTestWrapper,
-} from './userManagementTestUtils'
+} from 'Plugins/user-management/__tests__/helpers/userManagementTestUtils'
 import UserEditPage from 'Plugins/user-management/components/UserEditPage'
 
 jest.mock('react-router-dom', () => ({

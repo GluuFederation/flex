@@ -30,6 +30,7 @@ import { getClientWithToken, getClient } from 'Redux/api/base'
 import type { ApiTokenResponse } from 'Redux/api/types/BackendApi'
 import { fetchApiTokenWithDefaultScopes } from 'Redux/api/backend-api'
 import MauApi from 'Redux/api/MauApi'
+import type { MauEntry } from 'Redux/types'
 import { getYearMonth } from '../../utils/Util'
 import { devLogger } from '@/utils/devLogger'
 import * as JansConfigApi from 'jans_config_api'
@@ -151,7 +152,7 @@ function* checkMauThreshold(mau_threshold: number) {
   const mauApi = yield* newFunction()
   try {
     const data = (yield call(mauApi.getMau, { month: getYearMonth(new Date()) })) as
-      | Array<{ monthly_active_users?: number }>
+      | MauEntry[]
       | undefined
     const limit = (mau_threshold * 15) / 100 + mau_threshold
     const firstMau = data?.[0]?.monthly_active_users

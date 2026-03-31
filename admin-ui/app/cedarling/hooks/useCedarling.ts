@@ -8,6 +8,7 @@ import type {
   ResourceScopeEntry,
   CedarAction,
   AdminUiFeatureResource,
+  ITokenEntry,
 } from '@/cedarling'
 import { OPENID, REVOKE_SESSION, SCIM_BULK, SSA_ADMIN, SSA_DEVELOPER } from '@/utils/PermChecker'
 import { updateToast } from '@/redux/features/toastSlice'
@@ -63,11 +64,11 @@ export function useCedarling(): UseCedarlingReturn {
         throw new Error('Required tokens are missing')
       }
 
-      const tokens = {
-        access_token,
-        id_token,
-        userinfo_token,
-      }
+      const tokens: ITokenEntry[] = [
+        { mapping: 'GluuFlexAdminUI::Access_token', payload: access_token },
+        { mapping: 'GluuFlexAdminUI::id_token', payload: id_token },
+        { mapping: 'GluuFlexAdminUI::Userinfo_token', payload: userinfo_token },
+      ]
 
       if (!resourceId) {
         throw new Error('Resource id is missing for Cedar authorization request')

@@ -204,6 +204,6 @@ export const CEDAR_RESOURCE_SCOPES: Record<AdminUiFeatureResource, ResourceScope
 } as const satisfies Record<AdminUiFeatureResource, ResourceScopeEntry[]>
 
 export const CEDARLING_CONSTANTS = {
-  ACTION_TYPE: 'Gluu::Flex::AdminUI::Action::',
-  RESOURCE_TYPE: 'Gluu::Flex::AdminUI::Resources::Features',
+  ACTION_TYPE: 'GluuFlexAdminUI::Action::',
+  RESOURCE_TYPE: 'GluuFlexAdminUIResources::Features',
 } as const

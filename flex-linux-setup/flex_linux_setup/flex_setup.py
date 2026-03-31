@@ -326,7 +326,8 @@ class flex_installer(JettyInstaller):
         self.templates_dir = os.path.join(self.flex_setup_dir, 'templates')
         self.admin_ui_config_properties_path = os.path.join(self.templates_dir, 'auiConfiguration.json')
         self.adimin_ui_bin_url = 'https://jenkins.gluu.org/npm/admin_ui/main/built/admin-ui-main-built.tar.gz'
-        self.policy_store_path = os.path.join(self.templates_dir, 'policy-store.json')
+        self.policy_store_cjar_url = 'https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/releases/download/v0.0.0/admin_ui_2_0.cjar'
+        self.policy_store_cjar_path = os.path.join(self.templates_dir, 'policy-store.cjar')
         self.schema_file = os.path.join(self.flex_setup_dir, 'flex_schema.json')
         self.java_security_fn = os.path.join(self.templates_dir, 'java.security')
         self.config_api_base_dir = os.path.join(config_api_installer.jetty_base, config_api_installer.service_name)
@@ -375,9 +376,7 @@ class flex_installer(JettyInstaller):
                 'https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/plugins/admin-ui-plugin/config/log4j2-adminui.xml'.format(
                     app_versions['JANS_BRANCH']), self.log4j2_adminui_path),
                 (self.adimin_ui_bin_url, os.path.join(Config.dist_jans_dir, os.path.basename(self.adimin_ui_bin_url))),
-                ('https://raw.githubusercontent.com/GluuFederation/GluuFlexAdminUIPolicyStore/refs/heads/main/2fb50e468d9dfefa142d1fce4fa9747efbd3a0f08de5.json',
-                    self.policy_store_path
-                ),
+                (self.policy_store_cjar_url, self.policy_store_cjar_path),
             ]
 
             if argsp.update_admin_ui:
@@ -587,20 +586,34 @@ class flex_installer(JettyInstaller):
 
         #cedarling integration
         admin_ui_config_dir = os.path.join(config_api_installer.custom_config_dir, 'adminUI')
-        if os.path.exists(self.policy_store_path):
-            # before rendering template we need to 'replace your-openid-provider.server' with current hostname
-            policy_store_content = self.readFile(self.policy_store_path)
-            policy_store_content = policy_store_content.replace('your-openid-provider.server', Config.hostname)
-            self.writeFile(self.policy_store_path, policy_store_content)
+        config_api_installer.createDirs(admin_ui_config_dir)
+        if os.path.exists(self.policy_store_cjar_path):
+            target_entry = 'trusted-issuers/GluuFlexAdminUI.json'
+            tmp_cjar = os.path.join(tempfile.gettempdir(), os.urandom(8).hex() + '.cjar')
 
-            try:
-                with open(self.policy_store_path) as f:
-                    json.load(f)  # Validates JSON format
-                    config_api_installer.renderTemplateInOut(self.policy_store_path, self.templates_dir, admin_ui_config_dir)
-            except json.JSONDecodeError as e:
-                print(f"Warning: Downloaded policy store is not valid JSON: {e}")
+            with zipfile.ZipFile(self.policy_store_cjar_path, 'r') as zin, \
+                 zipfile.ZipFile(tmp_cjar, 'w', allowZip64=True) as zout:
+                for item in zin.infolist():
+                    data = zin.read(item.filename)
+                    if item.filename == target_entry:
+                        trusted_issuers = json.loads(data.decode('utf-8'))
+                        trusted_issuers['configuration_endpoint'] = (
+                            trusted_issuers['configuration_endpoint']
+                            .replace('your-openid-provider.server', Config.hostname)
+                        )
+                        data = json.dumps(trusted_issuers, indent=2).encode('utf-8')
+                        new_info = zipfile.ZipInfo(item.filename, date_time=item.date_time)
+                        new_info.compress_type = item.compress_type
+                        new_info.external_attr = item.external_attr
+                        zout.writestr(new_info, data)
+                    else:
+                        zout.writestr(item, data)  # preserves ZipInfo metadata + data
 
-        config_api_installer.chown(admin_ui_config_dir, Config.jetty_user, Config.jetty_group)
+            shutil.move(tmp_cjar, self.policy_store_cjar_path)
+            config_api_installer.copyFile(self.policy_store_cjar_path, admin_ui_config_dir, backup=False)
+
+        config_api_installer.chown(admin_ui_config_dir, Config.jetty_user, Config.jetty_group, recursive=True)
+
         resource_scopes_mapping_lidf_fn = os.path.join(self.templates_dir, 'adminUIResourceScopesMapping.ldif')
 
         self.dbUtils.import_ldif([resource_scopes_mapping_lidf_fn])
