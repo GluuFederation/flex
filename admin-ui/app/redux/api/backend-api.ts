@@ -21,152 +21,182 @@ export type {
   UserIpAndLocationResponse,
 } from './types/BackendApi'
 
-export const fetchServerConfiguration = (token?: string): Promise<AppConfigResponse> => {
-  const config = token
-    ? { headers: { Authorization: `Bearer ${token}` } }
-    : { withCredentials: true }
-  return axios
-    .get<AppConfigResponse>('/admin-ui/config', config)
-    .then((response) => response.data)
-    .catch((error) => {
-      devLogger.error('Problems getting configuration in order to process authz code flow.', error)
-      throw error
-    })
+const ENDPOINTS = {
+  CONFIG: '/admin-ui/config',
+  AUDIT_LOG: '/admin-ui/logging/audit',
+  API_PROTECTION_TOKEN: '/app/admin-ui/oauth2/api-protection-token',
+  POLICY_STORE: '/admin-ui/security/policyStore',
+  SESSION: '/app/admin-ui/oauth2/session',
+  GEOLOCATION_DB_JSON: 'https://geolocation-db.com/json/',
+} as const
+
+const getAuthConfig = (token?: string) =>
+  token ? { headers: { Authorization: `Bearer ${token}` } } : { withCredentials: true }
+
+export const fetchServerConfiguration = async (token?: string): Promise<AppConfigResponse> => {
+  try {
+    const response = await axios.get<AppConfigResponse>(ENDPOINTS.CONFIG, getAuthConfig(token))
+    return response.data
+  } catch (error) {
+    devLogger.error('Problems getting configuration in order to process authz code flow.', error)
+    throw error
+  }
 }
 
-export const putServerConfiguration = (
+export const putServerConfiguration = async (
   payload: PutServerConfigPayload,
 ): Promise<AppConfigResponse> => {
-  const { props } = payload
-  return axios
-    .put<AppConfigResponse>('/admin-ui/config', props, { withCredentials: true })
-    .then((response) => response.data)
-    .catch((error) => {
-      devLogger.error('Problems updating configuration.', error)
-      throw error
-    })
+  try {
+    const response = await axios.put<AppConfigResponse>(
+      ENDPOINTS.CONFIG,
+      payload.props,
+      getAuthConfig(payload.token),
+    )
+    return response.data
+  } catch (error) {
+    devLogger.error('Problems updating configuration.', error)
+    throw error
+  }
 }
 
-// get user location and ip
-export const getUserIpAndLocation = (): Promise<UserIpAndLocationResponse | -1> => {
-  return axios_instance
-    .get<UserIpAndLocationResponse>('https://geolocation-db.com/json/')
-    .then((response) => response.data)
-    .catch((error) => {
-      devLogger.error('Error fetching user location and ip address', error)
-      return -1
-    })
+export const getUserIpAndLocation = async (): Promise<UserIpAndLocationResponse | -1> => {
+  try {
+    const response = await axios_instance.get<UserIpAndLocationResponse>(
+      ENDPOINTS.GEOLOCATION_DB_JSON,
+    )
+    return response.data
+  } catch (error) {
+    devLogger.error('Error fetching user location and ip address', error)
+    return -1
+  }
 }
 
-// Retrieve user information (OIDC userinfo endpoint returns JWT string)
-export const fetchUserInformation = ({
+export const fetchUserInformation = async ({
   userInfoEndpoint,
   token_type,
   access_token,
 }: FetchUserInfoParams): Promise<FetchUserInfoResult> => {
-  const headers = { Authorization: `${token_type} ${access_token}` }
-  return axios
-    .get<string>(userInfoEndpoint, { headers })
-    .then((response) => response.data)
-    .catch((error) => {
-      devLogger.error('Problems fetching user information with the provided code.', error)
-      return -1
-    })
+  try {
+    const headers = { Authorization: `${token_type} ${access_token}` }
+    const response = await axios.get<string>(userInfoEndpoint, { headers })
+    return response.data
+  } catch (error) {
+    devLogger.error('Problems fetching user information with the provided code.', error)
+    return -1
+  }
 }
 
-// post user action
-export const postUserAction = (
+export const postUserAction = async (
   userAction: UserActionPayload,
 ): Promise<{ status?: number; data?: Record<string, string | number | boolean> }> => {
-  const payload = { ...userAction }
-  delete payload.headers
-  return axios
-    .post(
-      '/admin-ui/logging/audit',
+  try {
+    const payload = { ...userAction }
+    delete payload.headers
+    const response = await axios.post(
+      ENDPOINTS.AUDIT_LOG,
       {
         headers: { 'Content-Type': 'application/json' },
         userAction: payload,
       },
       { withCredentials: true },
     )
-    .then((response) => ({ status: response.status, data: response.data }))
-    .catch((error) => {
-      devLogger.error('Problems posting user action audit log.', error)
-      throw error
-    })
+    return { status: response.status, data: response.data }
+  } catch (error) {
+    devLogger.error('Problems posting user action audit log.', error)
+    throw error
+  }
 }
 
-// Get API Access Token
-export const fetchApiAccessToken = (
+export const fetchApiAccessToken = async (
   jwt: string,
   permissionTag: string[],
 ): Promise<ApiTokenResponse | -1> => {
-  return axios
-    .post<ApiTokenResponse>('/app/admin-ui/oauth2/api-protection-token', {
+  try {
+    const response = await axios.post<ApiTokenResponse>(ENDPOINTS.API_PROTECTION_TOKEN, {
       ujwt: jwt,
       permissionTag: permissionTag || [],
     })
-    .then((response) => response.data)
-    .catch((error) => {
-      devLogger.error('Problems getting API access token in order to process api calls.', error)
-      return -1
-    })
+    return response.data
+  } catch (error) {
+    devLogger.error('Problems getting API access token in order to process api calls.', error)
+    return -1
+  }
 }
 
-export const fetchApiTokenWithDefaultScopes = (): Promise<ApiTokenResponse> => {
-  return axios
-    .post<ApiTokenResponse>(
-      '/app/admin-ui/oauth2/api-protection-token',
+export const fetchApiTokenWithDefaultScopes = async (): Promise<ApiTokenResponse> => {
+  try {
+    const response = await axios.post<ApiTokenResponse>(
+      ENDPOINTS.API_PROTECTION_TOKEN,
       {},
       { withCredentials: false },
     )
-    .then((response) => response.data)
-    .catch((error) => {
-      devLogger.error('Problems getting API access token in order to process api calls.', error)
-      throw error
-    })
+    return response.data
+  } catch (error) {
+    devLogger.error('Problems getting API access token in order to process api calls.', error)
+    throw error
+  }
 }
 
-export const fetchPolicyStore = (
+export const fetchPolicyStore = async (
   token?: string,
 ): Promise<{ status?: number; data?: PolicyStoreApiResponse }> => {
-  const config = token
-    ? { headers: { Authorization: `Bearer ${token}` } }
-    : { withCredentials: true }
-  return axios
-    .get<PolicyStoreApiResponse>('/admin-ui/security/policyStore', config)
-    .then((response) => ({ status: response.status, data: response.data }))
-    .catch((error) => {
-      devLogger.error('Problems fetching policy store.', error)
-      throw error
-    })
+  try {
+    const response = await axios.get<PolicyStoreApiResponse>(
+      ENDPOINTS.POLICY_STORE,
+      getAuthConfig(token),
+    )
+    return { status: response.status, data: response.data }
+  } catch (error) {
+    devLogger.error('Problems fetching policy store.', error)
+    throw error
+  }
 }
 
-// Create Admin UI session using UJWT
-export const createAdminUiSession = (
+export const uploadPolicyStore = async (
+  file: File,
+): Promise<{ status?: number; data?: PolicyStoreApiResponse }> => {
+  try {
+    const formData = new FormData()
+    const document = {
+      fileName: file.name,
+      description: 'Admin UI Policy Store',
+    }
+    formData.append('document', new Blob([JSON.stringify(document)], { type: 'application/json' }))
+    formData.append('policyStore', file)
+    const response = await axios.put<PolicyStoreApiResponse>(ENDPOINTS.POLICY_STORE, formData, {
+      withCredentials: true,
+    })
+    return { status: response.status, data: response.data }
+  } catch (error) {
+    devLogger.error('Problems uploading policy store.', error)
+    throw error
+  }
+}
+
+export const createAdminUiSession = async (
   ujwt: string,
   apiProtectionToken: string,
 ): Promise<unknown> => {
-  const headers = { Authorization: `Bearer ${apiProtectionToken}` }
-  return axios
-    .post('/app/admin-ui/oauth2/session', { ujwt }, { headers, withCredentials: true })
-    .then((response) => response.data)
-    .catch((error) => {
-      devLogger.error('Problems creating Admin UI session.', error)
-      throw error
-    })
+  try {
+    const headers = { Authorization: `Bearer ${apiProtectionToken}` }
+    const response = await axios.post(
+      ENDPOINTS.SESSION,
+      { ujwt },
+      { headers, withCredentials: true },
+    )
+    return response.data
+  } catch (error) {
+    devLogger.error('Problems creating Admin UI session.', error)
+    throw error
+  }
 }
 
-// Delete Admin UI session (logout)
-export const deleteAdminUiSession = (token?: string): Promise<unknown> => {
-  const config = token
-    ? { headers: { Authorization: `Bearer ${token}` } }
-    : { withCredentials: true }
-  return axios
-    .delete('/app/admin-ui/oauth2/session', config)
-    .then((response) => response.data)
-    .catch((error) => {
-      devLogger.error('Problems deleting Admin UI session.', error)
-      throw error
-    })
+export const deleteAdminUiSession = async (token?: string): Promise<unknown> => {
+  try {
+    const response = await axios.delete(ENDPOINTS.SESSION, getAuthConfig(token))
+    return response.data
+  } catch (error) {
+    devLogger.error('Problems deleting Admin UI session.', error)
+    throw error
+  }
 }
