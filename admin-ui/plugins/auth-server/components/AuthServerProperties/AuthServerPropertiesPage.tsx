@@ -3,20 +3,18 @@ import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
 import { useFormik, type FormikProps } from 'formik'
 import * as Yup from 'yup'
-import { toast } from 'react-toastify'
 import { Card, CardBody, Form } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuInlineInput from 'Routes/Apps/Gluu/GluuInlineInput'
-import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuMultiSelectRow from 'Routes/Apps/Gluu/GluuMultiSelectRow'
 import type {
   MultiSelectOption,
   GluuMultiSelectRowFormik,
 } from 'Routes/Apps/Gluu/types/GluuMultiSelectRow.types'
-import PropertyBuilder from './JsonPropertyBuilder'
+import PropertyBuilder, { NumberField } from './JsonPropertyBuilder'
 import DefaultAcrInput from './DefaultAcrInput'
 import SetTitle from 'Utils/SetTitle'
 import { buildPayload } from 'Utils/PermChecker'
@@ -232,7 +230,7 @@ const AuthServerPropertiesPage: React.FC = () => {
     return Object.entries(renamed).map(([propKey, propValue]) => ({
       propKey,
       propValue: propValue as AppConfiguration,
-      searchableLabel: generateLabel(propKey),
+      searchableLabel: generateLabel(propKey).toLowerCase(),
     }))
   }, [configuration])
 
@@ -416,8 +414,12 @@ const AuthServerPropertiesPage: React.FC = () => {
     return [...patchOperations, ...putOperations]
   }, [patches, put, t, getPropertyLabel])
   const hasChanges = useMemo(() => {
-    return patches.length > 0 || (put && put.value && put.value !== acrs?.defaultAcr)
-  }, [patches.length, put, acrs?.defaultAcr])
+    const hasPutChange = put && put.value && put.value !== acrs?.defaultAcr
+    if (hasPutChange) return true
+    if (patches.length === 0) return false
+    if (!baselineConfigurationRef.current) return patches.length > 0
+    return JSON.stringify(formik.values) !== JSON.stringify(baselineConfigurationRef.current)
+  }, [patches.length, put, acrs?.defaultAcr, formik.values])
   const patchHandler = useCallback(
     (patch: JsonPatch) => {
       if (patch.op === 'replace' && patch.path) {
@@ -484,9 +486,9 @@ const AuthServerPropertiesPage: React.FC = () => {
             console.error('Error updating ACR:', error)
           }
         }
-        if (patches.length === 0) {
-          toast.success(t('messages.success_in_saving'))
-        }
+        setPatches([])
+        setPut(null)
+        setResetKey((prev) => prev + 1)
       } catch (err) {
         console.error('Error updating auth server properties:', err)
         const errorMsg = err instanceof Error ? err.message : t('messages.error_in_saving')
@@ -540,25 +542,15 @@ const AuthServerPropertiesPage: React.FC = () => {
 
       if (typeof model.value === 'number') {
         return (
-          <GluuInputRow
+          <NumberField
             key={`${model.propKey}-${resetKey}`}
-            name={model.propKey}
-            type="number"
-            lsize={12}
-            rsize={12}
-            label={model.label}
+            propKey={model.propKey}
             value={model.value}
-            doc_category="json_properties"
-            doc_entry={model.propKey}
-            isDark={isDark}
-            handleChange={(e) => {
-              const patch: JsonPatch = {
-                op: 'replace',
-                path: `/${model.propKey}`,
-                value: Number(e.target.value),
-              }
-              patchHandler(patch)
-            }}
+            label={model.label}
+            path={`/${model.propKey}`}
+            handler={patchHandler}
+            lSize={12}
+            formResetKey={resetKey}
           />
         )
       }
@@ -581,15 +573,7 @@ const AuthServerPropertiesPage: React.FC = () => {
         />
       )
     },
-    [
-      patchHandler,
-      simpleFieldModels,
-      arrayFormikAdapters,
-      arrayMultiSelectOptions,
-      resetKey,
-      isDark,
-      t,
-    ],
+    [patchHandler, simpleFieldModels, arrayFormikAdapters, arrayMultiSelectOptions, resetKey, t],
   )
 
   const simpleFieldsContent = useMemo(
@@ -667,27 +651,29 @@ const AuthServerPropertiesPage: React.FC = () => {
                 <div className={classes.fieldsGrid}>
                   {simpleFieldsContent}
 
-                  {isConfigLoaded && (
-                    <React.Fragment key={`acr-row-${resetKey}`}>
-                      <div className={classes.fieldItem}>
-                        <DefaultAcrInput
-                          name="defaultAcr"
-                          lsize={12}
-                          rsize={12}
-                          label={DEFAULT_ACR_LABEL_KEY}
-                          handler={putHandler}
-                          value={acrs?.defaultAcr}
-                          options={authScripts}
-                          path={DEFAULT_ACR_PATH}
-                          showSaveButtons={false}
-                        />
-                      </div>
-                      <div className={classes.fieldItem}>
-                        {simpleFieldModels[ACR_CHALLENGE_KEY] &&
-                          renderSimpleField(ACR_CHALLENGE_KEY)}
-                      </div>
-                    </React.Fragment>
-                  )}
+                  {isConfigLoaded &&
+                    (t(DEFAULT_ACR_LABEL_KEY).toLowerCase().includes(deferredSearch) ||
+                      generateLabel(ACR_CHALLENGE_KEY).toLowerCase().includes(deferredSearch)) && (
+                      <React.Fragment key={`acr-row-${resetKey}`}>
+                        <div className={classes.fieldItem}>
+                          <DefaultAcrInput
+                            name="defaultAcr"
+                            lsize={12}
+                            rsize={12}
+                            label={DEFAULT_ACR_LABEL_KEY}
+                            handler={putHandler}
+                            value={acrs?.defaultAcr}
+                            options={authScripts}
+                            path={DEFAULT_ACR_PATH}
+                            showSaveButtons={false}
+                          />
+                        </div>
+                        <div className={classes.fieldItem}>
+                          {simpleFieldModels[ACR_CHALLENGE_KEY] &&
+                            renderSimpleField(ACR_CHALLENGE_KEY)}
+                        </div>
+                      </React.Fragment>
+                    )}
 
                   {complexEntries.map(({ propKey, propValue }) => (
                     <div

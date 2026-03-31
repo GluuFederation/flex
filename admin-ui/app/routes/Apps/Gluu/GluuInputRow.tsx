@@ -8,9 +8,7 @@ import GluuLabel from './GluuLabel'
 import GluuText from './GluuText'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
-import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
-import { getLoadingOverlayRgba } from '@/customColors'
-import { getHoverOpacity } from '@/constants'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 import { useStyles } from './styles/GluuInputRow.style'
 import type { GluuInputRowProps } from './types/GluuInputRow.types'
 
@@ -41,15 +39,9 @@ const GluuInputRow = <T = Record<string, unknown>,>({
   const [customType, setCustomType] = useState<string | null>(null)
   const { state } = useTheme()
   const themeColors = useMemo(() => getThemeColor(state?.theme ?? DEFAULT_THEME), [state?.theme])
-  const isDarkTheme = isDark ?? state?.theme === THEME_DARK
-  const stepperHoverBg = useMemo(
-    () => getLoadingOverlayRgba(themeColors.fontColor, getHoverOpacity(isDarkTheme)),
-    [themeColors.fontColor, isDarkTheme],
-  )
   const { classes } = useStyles({
     errorColor: themeColors.errorColor,
     fontColor: themeColors.fontColor,
-    stepperHoverBg,
   })
 
   const setVisibility = useCallback((): void => {
@@ -57,6 +49,7 @@ const GluuInputRow = <T = Record<string, unknown>,>({
   }, [])
 
   const numValue = type === 'number' && value !== '' && value != null ? Number(value) : NaN
+
   const stepUp = useCallback(() => {
     const next = (Number.isNaN(numValue) ? 0 : numValue) + 1
     if (formik) {
@@ -66,6 +59,7 @@ const GluuInputRow = <T = Record<string, unknown>,>({
       handleChange({ target: { name, value: String(next) } })
     }
   }, [formik, handleChange, name, numValue])
+
   const stepDown = useCallback(() => {
     const current = Number.isNaN(numValue) ? 0 : numValue
     if (current <= 0) return
@@ -78,38 +72,66 @@ const GluuInputRow = <T = Record<string, unknown>,>({
     }
   }, [formik, handleChange, name, numValue])
 
-  const inputEl = (
-    <Input
-      id={name}
-      data-testid={name}
-      type={(customType ?? type) as InputProps['type']}
-      name={name}
-      value={value != null ? String(value) : ''}
-      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-        if (formik) {
-          formik.handleChange(event)
-        }
-        if (handleChange) {
-          handleChange(event)
-        }
-      }}
-      onBlur={formik?.handleBlur}
-      onFocus={onFocus}
-      onKeyDown={(evt) =>
-        evt.key.toLowerCase() === 'e' && type === 'number' && evt.preventDefault()
+  const onChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (formik) {
+        formik.handleChange(event)
       }
-      disabled={disabled}
-      rows={rows}
-      cols={cols}
-      placeholder={placeholder}
-      className={[
+      if (handleChange) {
+        handleChange(event)
+      }
+    },
+    [formik, handleChange],
+  )
+
+  const onKeyDown = useCallback(
+    (evt: React.KeyboardEvent) => {
+      if (evt.key.toLowerCase() === 'e' && type === 'number') {
+        evt.preventDefault()
+      }
+    },
+    [type],
+  )
+
+  const inputClassName_ = useMemo(
+    () =>
+      [
         shortcode ? classes.inputWithShortcode : undefined,
         type === 'password' ? classes.passwordInputPadding : undefined,
         inputClassName,
       ]
         .filter(Boolean)
-        .join(' ')}
-    />
+        .join(' '),
+    [shortcode, type, classes.inputWithShortcode, classes.passwordInputPadding, inputClassName],
+  )
+
+  const displayValue = value != null ? String(value) : ''
+
+  const sharedInputProps = useMemo(
+    () => ({
+      'id': name,
+      'data-testid': name,
+      name,
+      'value': displayValue,
+      onChange,
+      'onBlur': formik?.handleBlur,
+      onFocus,
+      onKeyDown,
+      disabled,
+      placeholder,
+      'className': inputClassName_,
+    }),
+    [
+      name,
+      displayValue,
+      onChange,
+      formik?.handleBlur,
+      onFocus,
+      onKeyDown,
+      disabled,
+      placeholder,
+      inputClassName_,
+    ],
   )
 
   return (
@@ -125,7 +147,7 @@ const GluuInputRow = <T = Record<string, unknown>,>({
       <Col sm={rsize} className={classes.colWrapper}>
         {type === 'number' ? (
           <div className={classes.numberWrapper}>
-            {inputEl}
+            <Input {...sharedInputProps} type="number" />
             <div className={classes.numberStepper} aria-hidden>
               <button
                 type="button"
@@ -149,7 +171,7 @@ const GluuInputRow = <T = Record<string, unknown>,>({
           </div>
         ) : type === 'password' ? (
           <div className={classes.passwordInputWrapper}>
-            {inputEl}
+            <Input {...sharedInputProps} type={(customType ?? 'password') as InputProps['type']} />
             <button
               type="button"
               className={classes.passwordToggle}
@@ -162,7 +184,12 @@ const GluuInputRow = <T = Record<string, unknown>,>({
             </button>
           </div>
         ) : (
-          inputEl
+          <Input
+            {...sharedInputProps}
+            type={(customType ?? type) as InputProps['type']}
+            rows={rows}
+            cols={cols}
+          />
         )}
         {type !== 'number' ? shortcode : null}
         <GluuText variant="span" className={classes.error} data-field-error disableThemeColor>

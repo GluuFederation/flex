@@ -159,7 +159,7 @@ export const useStyles = makeStyles<StyleProps>()((theme: Theme, { isDark, theme
         marginLeft: '0 !important',
         marginRight: '0 !important',
       },
-      '& [class*="col-sm-10"]': {
+      '& [class*="col-sm"]': {
         flex: '0 0 100% !important',
         maxWidth: '100% !important',
         paddingLeft: '0 !important',
@@ -167,6 +167,9 @@ export const useStyles = makeStyles<StyleProps>()((theme: Theme, { isDark, theme
       },
       '& [class*="col-sm-2"]': {
         display: 'none !important',
+      },
+      '& .input-group, & .custom-select, & select': {
+        width: '100% !important',
       },
     },
     fieldItemFullWidth: {

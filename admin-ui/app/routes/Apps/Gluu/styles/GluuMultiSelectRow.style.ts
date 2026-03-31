@@ -85,8 +85,7 @@ export const useStyles = makeStyles<GluuMultiSelectRowStyleParams>()((
     chevronWrapper: {
       position: 'absolute',
       right: 16,
-      top: '50%',
-      transform: 'translateY(-50%)',
+      top: 14,
       pointerEvents: 'none',
       display: 'flex',
       alignItems: 'center',

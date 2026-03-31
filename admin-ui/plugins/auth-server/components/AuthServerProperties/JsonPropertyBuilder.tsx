@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import { Accordion, FormGroup, Col } from 'Components'
 import { GluuButton } from '@/components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
@@ -20,6 +20,7 @@ import type {
   AccordionWithSubComponents,
   AppConfiguration,
   StringArrayFieldProps,
+  PropertyValue,
 } from './types'
 import type { JsonPatch } from 'JansConfigApi'
 import {
@@ -34,6 +35,7 @@ import {
   isObjectArray,
   isObject,
   migratingTextIfRenamed,
+  sortKeysByFieldType,
 } from '../ConfigApiProperties/utils'
 
 type ArrayItemSelectProps = {
@@ -86,6 +88,56 @@ const ArrayItemSelect = React.memo(function ArrayItemSelect({
       options={options}
       lsize={12}
       rsize={12}
+    />
+  )
+})
+
+export const NumberField = React.memo(function NumberField({
+  propKey,
+  value,
+  label,
+  path,
+  handler,
+  lSize,
+  formResetKey,
+  docCategory = 'json_properties',
+}: {
+  propKey: string
+  value: number
+  label: string
+  path: string
+  handler: (patch: JsonPatch) => void
+  lSize: number
+  formResetKey: number
+  docCategory?: string
+}) {
+  const [localValue, setLocalValue] = useState<number>(value)
+
+  useEffect(() => {
+    setLocalValue(value)
+  }, [value])
+
+  const handleChange = useCallback(
+    (e: { target: { name: string; value: string } }) => {
+      const numVal = Number(e.target.value)
+      setLocalValue(numVal)
+      handler({ op: 'replace', path, value: numVal })
+    },
+    [handler, path],
+  )
+
+  return (
+    <GluuInputRow
+      key={`${path}-${formResetKey}`}
+      name={propKey}
+      type="number"
+      lsize={lSize}
+      rsize={lSize}
+      label={label}
+      value={localValue}
+      doc_category={docCategory}
+      doc_entry={propKey}
+      handleChange={handleChange}
     />
   )
 })
@@ -277,30 +329,25 @@ const JsonPropertyBuilder = ({
   if (isNumber(propValue)) {
     return (
       <>
-        <GluuInputRow
-          key={`${path}-${formResetKey}`}
-          name={propKey}
-          type="number"
-          lsize={lSize}
-          rsize={lSize}
-          label={getLocalizedLabelKey(propKey)}
+        <NumberField
+          propKey={propKey}
           value={propValue as number}
-          doc_category="json_properties"
-          doc_entry={propKey}
-          handleChange={(e) => {
-            if (!path) return
-            const patch: JsonPatch = {
-              op: 'replace',
-              path,
-              value: Number(e.target.value),
-            }
-            handler(patch)
-          }}
+          label={getLocalizedLabelKey(propKey)}
+          path={path}
+          handler={handler}
+          lSize={lSize}
+          formResetKey={formResetKey}
         />
         {renderError()}
       </>
     )
   }
+
+  const sortedObjectKeys = useMemo(() => {
+    if (!isObject(propValue)) return []
+    const objVal = propValue as AppConfiguration
+    return sortKeysByFieldType(Object.keys(objVal), objVal as Record<string, PropertyValue>)
+  }, [propValue])
 
   if (isStringArray(propValue) || isEmptyArray(propValue) || shouldRenderAsStringArray(schema)) {
     const arrayValues = (propValue as string[]) || []
@@ -450,28 +497,32 @@ const JsonPropertyBuilder = ({
                 <GluuText variant="span">{t('messages.no_data_available')}</GluuText>
               ) : (
                 <div className={classes.objectFieldsGrid}>
-                  {Object.keys(objectValue).map((objKey) => (
-                    <div
-                      key={objKey}
-                      className={
-                        Object.keys(objectValue).length === 1
-                          ? classes.objectFieldItemFullWidth
-                          : classes.objectFieldItem
-                      }
-                    >
-                      <JsonPropertyBuilder
-                        propKey={objKey}
-                        propValue={objectValue[objKey]}
-                        handler={handler}
-                        lSize={12}
-                        parentIsArray={false}
-                        path={path}
-                        errors={errors}
-                        touched={touched}
-                        formResetKey={formResetKey}
-                      />
-                    </div>
-                  ))}
+                  {sortedObjectKeys.map((objKey) => {
+                    const nestedValue = objectValue[objKey]
+                    const isComplex = isObject(nestedValue) || isObjectArray(nestedValue)
+                    return (
+                      <div
+                        key={objKey}
+                        className={
+                          isComplex || sortedObjectKeys.length === 1
+                            ? classes.objectFieldItemFullWidth
+                            : classes.objectFieldItem
+                        }
+                      >
+                        <JsonPropertyBuilder
+                          propKey={objKey}
+                          propValue={nestedValue}
+                          handler={handler}
+                          lSize={12}
+                          parentIsArray={false}
+                          path={path}
+                          errors={errors}
+                          touched={touched}
+                          formResetKey={formResetKey}
+                        />
+                      </div>
+                    )
+                  })}
                 </div>
               )}
             </AccordionBody>

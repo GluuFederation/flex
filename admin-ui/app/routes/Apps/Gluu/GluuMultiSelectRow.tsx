@@ -67,13 +67,19 @@ const GluuMultiSelectRow: React.FC<GluuMultiSelectRowProps> = ({
   const handleOptionClick = useCallback(
     (optionValue: string) => {
       if (disabled) return
-      const newValues = selectedValues.includes(optionValue)
-        ? selectedValues.filter((v) => v !== optionValue)
-        : [...selectedValues, optionValue]
+      let newValues: string[]
+      if (selectedValues.includes(optionValue)) {
+        newValues = selectedValues.filter((v) => v !== optionValue)
+      } else {
+        const optionOrder = options.map((o) => o.value)
+        newValues = [...selectedValues, optionValue].sort(
+          (a, b) => optionOrder.indexOf(a) - optionOrder.indexOf(b),
+        )
+      }
       setSelectedValues(newValues)
       formik.setFieldValue(name, newValues)
     },
-    [selectedValues, formik, name, disabled],
+    [selectedValues, formik, name, disabled, options],
   )
 
   const handleRemoveChip = useCallback(

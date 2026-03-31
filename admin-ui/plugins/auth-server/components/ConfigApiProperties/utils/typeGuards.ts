@@ -91,6 +91,23 @@ export function isObject(item: PropertyValue): item is AppConfiguration {
   return false
 }
 
+export const sortKeysByFieldType = (
+  keys: string[],
+  obj: Record<string, PropertyValue>,
+): string[] => {
+  const inputKeys = keys.filter((k) => {
+    const v = obj[k]
+    return (typeof v === 'string' || typeof v === 'number') && !isObject(v) && !isObjectArray(v)
+  })
+  const booleanKeys = keys.filter((k) => typeof obj[k] === 'boolean')
+  const arrayKeys = keys.filter((k) => {
+    const v = obj[k]
+    return (Array.isArray(v) && !isObjectArray(v)) || isEmptyArray(v)
+  })
+  const complexKeys = keys.filter((k) => isObject(obj[k]) || isObjectArray(obj[k]))
+  return [...inputKeys, ...booleanKeys, ...arrayKeys, ...complexKeys]
+}
+
 export function generateLabel(name: string): string {
   const result = name.replace(/([A-Z])/g, ' $1')
   return result.charAt(0).toUpperCase() + result.slice(1)
