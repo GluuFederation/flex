@@ -273,6 +273,7 @@
     "adminui_default_acr": "Método de autenticação da interface de administração (ACR)",
     "introspection_encrypted_response_enc": "Algoritmo de criptografia da resposta de introspeção",
     "issuer": "Emissor",
+    "authorizationChallengeDefaultAcr": "Método de autenticação padrão (ACR): ACR de desafio de autorização padrão",
     "metadata_location": "Localização dos Metadados",
     "custom_params_auth": "Parâmetros personalizados (para autenticação)",
     "released_attributes": "Atributos Liberados",
@@ -493,6 +494,7 @@
     "script": "Roteiro",
     "data_type": "Tipo de dados",
     "default_acr": "Método de autenticação padrão (ACR)",
+    "openid_configuration_response_op_metadata_suppression_list": "Lista de supressão de metadados OP da resposta de configuração OpenID",
     "default_bucket": "Bucket padrão",
     "default_cleanup_batch_size": "Tamanho de lote de limpeza padrão",
     "default_put_expiration": "Expiração de venda padrão",
@@ -1185,7 +1187,8 @@
     "enter_policies_json_uris": "Insira a URI de política JSON",
     "enter_policies_zip_uris_authorization_token": "Insira o token de autorização da URI de política ZIP",
     "enter_policies_zip_uris": "Insira a URI de política ZIP",
-    "enter_token_channels": "Insira os canais de token"
+    "enter_token_channels": "Insira os canais de token",
+    "type_value": "Insira o valor de {{field}}"
   },
   "titles": {
     "smtp_test_result": "Resultado do teste SMTP",
@@ -1206,7 +1209,7 @@
     "view_attribute": "Ver Atributo",
     "all_attributes": "Todos os Atributos",
     "all_custom_scripts": "Todos os scripts personalizados",
-    "jans_json_property": "Propriedades",
+    "jans_json_property": "Propriedades do Servidor de Autenticação",
     "cedarling_config": "Configuração Cedarling",
     "jans_lock": "Trava Jans",
     "config_api_configuration": "Configuração da API de Configuração",

@@ -5,7 +5,7 @@ import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import type { ReportCardProps } from '../types'
 
-function ReportCard({ title, data, upValue, downValue }: ReportCardProps) {
+const ReportCard = ({ title, data, upValue, downValue }: ReportCardProps) => {
   return (
     <Card className="mb-3" style={{ borderRadius: '10px' }}>
       <CardBody>

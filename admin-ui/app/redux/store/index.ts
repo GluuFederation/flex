@@ -1,5 +1,5 @@
-// @ts-nocheck
-import { configureStore, combineReducers } from '@reduxjs/toolkit'
+import { configureStore, combineReducers, Tuple } from '@reduxjs/toolkit'
+import type { Reducer, UnknownAction } from '@reduxjs/toolkit'
 import createSagaMiddleware from 'redux-saga'
 import appReducers from '../reducers'
 import RootSaga from '../sagas'
@@ -8,20 +8,30 @@ import storage from 'redux-persist/lib/storage'
 import hardSet from 'redux-persist/lib/stateReconciler/hardSet'
 import reducerRegistry from '../reducers/ReducerRegistry'
 import process from 'Plugins/PluginReducersResolver'
+
+type ReducerMap = Record<string, Reducer<unknown, UnknownAction>>
+
+declare global {
+  interface Window {
+    dsfaStore?: ReturnType<typeof configureStore>
+  }
+}
+declare const module: { hot?: { accept(dep: string, cb: () => void): void } }
+
 // create the saga middleware
 const sagaMiddleware = createSagaMiddleware()
-const middlewares = [sagaMiddleware]
+const middlewares = new Tuple(sagaMiddleware)
 const persistConfig = {
   key: 'root',
   storage,
   stateReconciler: hardSet,
 }
 // Preserve initial state for not-yet-loaded reducers
-const combine = (reducersObjects) => {
+const combine = (reducersObjects: ReducerMap) => {
   const reducerNames = Object.keys(reducersObjects)
   Object.keys(appReducers).forEach((item) => {
     if (reducerNames.indexOf(item) === -1) {
-      reducersObjects[item] = (state = null) => state
+      reducersObjects[item] = ((state: unknown = null) => state) as Reducer<unknown, UnknownAction>
     }
   })
   return combineReducers(reducersObjects)
@@ -35,22 +45,18 @@ const store = configureStore({
   reducer: persistedReducer,
 })
 
-let rootReducers
-
 sagaMiddleware.run(RootSaga)
 
 export function configStore() {
   const persistor = persistStore(store)
   window.dsfaStore = store
   reducerRegistry.setChangeListener((reds) => {
-    rootReducers = combine(reds)
-    store.replaceReducer(combine(reds))
+    store.replaceReducer(combine(reds) as unknown as typeof persistedReducer)
   })
   if (module.hot) {
-    // Enable Webpack hot module replacement for reducers
     module.hot.accept('../reducers/index', () => {
-      const nextRootReducer = require('../reducers/index')
-      store.replaceReducer(nextRootReducer)
+      const nextRootReducer = combine(reducerRegistry.getReducers())
+      store.replaceReducer(nextRootReducer as unknown as typeof persistedReducer)
     })
   }
   return { store, persistor }
