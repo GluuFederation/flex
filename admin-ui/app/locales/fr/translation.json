@@ -246,6 +246,7 @@
     "search": "Rechercher",
     "tag": "Étiqueter",
     "issuer": "Émetteur",
+    "authorizationChallengeDefaultAcr": "Méthode d'authentification par défaut (ACR) : ACR de défi d'autorisation par défaut",
     "upload": "Sélectionner un fichier à télécharger",
     "jansService": "Services associés",
     "message_provider_type": "Type de fournisseur de messages",
@@ -489,6 +490,7 @@
     "dark_mode": "Mode Nuit",
     "data_type": "Type de données",
     "default_acr": "Méthode d'authentification par défaut (ACR)",
+    "openid_configuration_response_op_metadata_suppression_list": "Liste de suppression des métadonnées OP de la réponse de configuration OpenID",
     "default_bucket": "Seau par défaut",
     "default_cleanup_batch_size": "Taille du lot de nettoyage par défaut",
     "default_put_expiration": "Expiration de vente par défaut",
@@ -1194,7 +1196,8 @@
     "enter_policies_json_uris": "Entrez l'URI de politique JSON",
     "enter_policies_zip_uris_authorization_token": "Entrez le jeton d'autorisation de l'URI de politique ZIP",
     "enter_policies_zip_uris": "Entrez l'URI de politique ZIP",
-    "enter_token_channels": "Saisir les canaux de jetons"
+    "enter_token_channels": "Saisir les canaux de jetons",
+    "type_value": "Saisir la valeur de {{field}}"
   },
   "titles": {
     "smtp_test_result": "Résultat du test SMTP",
@@ -1216,7 +1219,7 @@
     "config_api_configuration": "Configuration de l'API de configuration",
     "database_information": "Informations sur la base de données",
     "loading_database_information": "Chargement des informations de la base de données...",
-    "jans_json_property": "Propriétés",
+    "jans_json_property": "Propriétés du Serveur d'Authentification",
     "all_oidc_clients": "Tous les clients OIDC",
     "cedarling_config": "Configuration Cedarling",
     "jans_kc_link": "Lien KC Jans",

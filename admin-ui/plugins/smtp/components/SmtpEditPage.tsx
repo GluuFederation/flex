@@ -41,10 +41,10 @@ interface ApiError {
 
 type PatchOp = { op: 'add' | 'remove' | 'replace'; path: string; value?: unknown }
 
-function buildPatches(
+const buildPatches = (
   originalConfig: Partial<SmtpConfiguration> | undefined,
   updated: SmtpConfiguration,
-): PatchOp[] {
+): PatchOp[] => {
   const patches: PatchOp[] = []
   const original = originalConfig || {}
   const keys = new Set<string>([...Object.keys(original), ...Object.keys(updated)])

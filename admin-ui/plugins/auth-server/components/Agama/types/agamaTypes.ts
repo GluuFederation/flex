@@ -35,16 +35,6 @@ export type AcrMappingTableRow = AcrMapping & {
   }
 }
 
-export interface JsonConfigRootState {
-  jsonConfigReducer: {
-    configuration: {
-      acrMappings?: Record<string, string>
-    }
-    loading: boolean
-    saveError: boolean
-  }
-}
-
 export interface AgamaJsonPatch {
   op: 'add' | 'remove' | 'replace'
   path: string

@@ -314,13 +314,6 @@ export interface ScopeState {
   selectedClientScopes: ScopeItem[]
 }
 
-// JSON Config State
-export interface JsonConfigState {
-  configuration: Record<string, unknown>
-  loading: boolean
-  saveError: boolean
-}
-
 // UMA Resource State
 export interface UmaResourceItem {
   inum?: string
@@ -368,7 +361,6 @@ export interface AdminPluginState {
 export interface AuthServerPluginState {
   oidcReducer: OidcState
   scopeReducer: ScopeState
-  jsonConfigReducer: JsonConfigState
   UMAResourceReducer: UmaResourceState
   messageReducer: MessageState
 }

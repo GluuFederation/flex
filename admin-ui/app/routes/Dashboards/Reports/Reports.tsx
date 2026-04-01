@@ -15,11 +15,10 @@ import ReportCard from './ReportCard'
 import { useTranslation } from 'react-i18next'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import type { ReportCardData } from '../types'
-import { REPORTS_CACHE_CONFIG } from '../constants'
 
 type AttributeReportItem = PagedResultEntriesItem & { name: string; status?: string }
 
-function isAttributeReportItem(entry: PagedResultEntriesItem): entry is AttributeReportItem {
+const isAttributeReportItem = (entry: PagedResultEntriesItem): entry is AttributeReportItem => {
   return (
     entry !== null &&
     typeof entry === 'object' &&
@@ -28,7 +27,7 @@ function isAttributeReportItem(entry: PagedResultEntriesItem): entry is Attribut
   )
 }
 
-function Reports() {
+const Reports = () => {
   const { t } = useTranslation()
   const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
@@ -36,8 +35,6 @@ function Reports() {
     () => ({
       query: {
         enabled: hasSession === true,
-        staleTime: REPORTS_CACHE_CONFIG.STALE_TIME,
-        gcTime: REPORTS_CACHE_CONFIG.GC_TIME,
       },
     }),
     [hasSession],

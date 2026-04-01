@@ -330,6 +330,7 @@
     "dark_mode": "Dark Mode",
     "data_type": "Data Type",
     "default_acr": "Default Authentication Method (ACR)",
+    "openid_configuration_response_op_metadata_suppression_list": "OpenID Configuration Response OP Metadata Suppression List",
     "default_bucket": "Default Bucket",
     "default_cleanup_batch_size": "Default Cleanup Batch Size",
     "default_put_expiration": "Default Put Expiration",
@@ -622,6 +623,7 @@
     "export_current_config": "Export Current Config",
     "import_configuration": "Import Configuration",
     "issuer": "Issuer",
+    "authorizationChallengeDefaultAcr": "Default Authentication Method (ACR): authorization challenge default ACR",
     "base_endpoint": "Base Endpoint",
     "clean_service_interval": "Clean Service Interval",
     "clean_batch_chunk_size": "Clean Batch Chunk Size",
@@ -1270,7 +1272,8 @@
     "enter_policies_json_uris": "Enter the JSON policy URI",
     "enter_policies_zip_uris_authorization_token": "Enter the ZIP policy URI authorization token",
     "enter_policies_zip_uris": "Enter the ZIP policy URI",
-    "enter_token_channels": "Enter the token channels"
+    "enter_token_channels": "Enter the token channels",
+    "type_value": "Type {{field}} value"
   },
   "titles": {
     "smtp_test_result": "SMTP Test Result",
@@ -1334,7 +1337,7 @@
     "sql_authentication": "SQL Authentication",
     "logging": "LOGGING",
     "jwk_keys": "JWK keys",
-    "jans_json_property": "Properties",
+    "jans_json_property": "Auth Server Properties",
     "mapping": "Role/Permission Mapping",
     "cedarling_config": "Cedarling Configuration",
     "modules_properties": "Module Properties",
