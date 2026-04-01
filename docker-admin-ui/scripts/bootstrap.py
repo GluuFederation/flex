@@ -253,7 +253,6 @@ def resolve_conf_app(old_conf, new_conf):
             "cedarlingLogType": "off",
             "auiPolicyStoreUrl": "",
             "auiDefaultPolicyStorePath": policy_store,
-            "cedarlingPolicyStoreRetrievalPoint": "default"
         }
         for k, v in ui_conf_attrs.items():
             if k not in ui_conf:
