@@ -12,6 +12,7 @@ import GluuThemeFormFooter from '@/routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { SETTINGS } from 'Utils/ApiResources'
+import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import SetTitle from 'Utils/SetTitle'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -40,6 +41,7 @@ import {
 import { useQueryClient } from '@tanstack/react-query'
 import { updateToast } from '@/redux/features/toastSlice'
 import { getOAuth2ConfigResponse } from '@/redux/features/authSlice'
+import type { Config } from '@/redux/features/types/authTypes'
 import { logAudit } from '@/utils/AuditLogger'
 import { UPDATE } from '@/audit/UserActionType'
 import { ADMIN_UI_SETTINGS } from 'Plugins/admin/redux/audit/Resources'
@@ -168,7 +170,7 @@ const SettingsPage: React.FC = () => {
         })
 
         queryClient.invalidateQueries({ queryKey: getGetAdminuiConfQueryKey() })
-        dispatch(getOAuth2ConfigResponse({ config: updatedConfig }))
+        dispatch(getOAuth2ConfigResponse({ config: updatedConfig as Config }))
 
         await logAudit({
           userinfo: userinfo ?? undefined,
@@ -176,12 +178,14 @@ const SettingsPage: React.FC = () => {
           resource: ADMIN_UI_SETTINGS,
           message: 'Application settings updated',
           client_id: clientId,
-          payload: {
-            sessionTimeoutInMins: values.sessionTimeoutInMins,
-            acrValues: values.acrValues,
-            cedarlingLogType: values.cedarlingLogType,
-            additionalParameters: values.additionalParameters,
-          },
+          payload: JSON.parse(
+            JSON.stringify({
+              sessionTimeoutInMins: values.sessionTimeoutInMins,
+              acrValues: values.acrValues,
+              cedarlingLogType: values.cedarlingLogType,
+              additionalParameters: values.additionalParameters,
+            }),
+          ),
         }).catch((auditError) => {
           console.error('Audit logging failed:', auditError)
         })
@@ -371,6 +375,7 @@ const SettingsPage: React.FC = () => {
                       )}
                       disabled={!canWriteSettings}
                       isDark={isDark}
+                      placeholder={getFieldPlaceholder(t, 'fields.sessionTimeoutInMins')}
                     />
                   </div>
 

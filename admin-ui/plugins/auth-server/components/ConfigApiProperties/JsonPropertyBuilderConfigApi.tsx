@@ -144,7 +144,7 @@ const JsonPropertyBuilderConfigApi = ({
 
     setShow(false)
     handler(patch)
-  }, [path, propValue, handler, show])
+  }, [path, handler, show])
 
   const renderError = useCallback(() => {
     if (!fieldTouched || !fieldError) return null
@@ -271,7 +271,7 @@ const JsonPropertyBuilderConfigApi = ({
     const allKeys = Object.keys(objVal)
     const inputKeys = allKeys.filter((k) => {
       const v = objVal[k]
-      return (typeof v === 'string' || typeof v === 'number') && !isObject(v) && !isObjectArray(v)
+      return typeof v === 'string' || typeof v === 'number'
     })
     const booleanKeys = allKeys.filter((k) => typeof objVal[k] === 'boolean')
     const arrKeys = allKeys.filter((k) => {

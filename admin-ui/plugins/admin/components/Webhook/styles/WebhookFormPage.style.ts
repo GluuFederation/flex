@@ -45,8 +45,8 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
   const cardBg = settings?.cardBackground ?? themeColors.card.background
   const formInputBg = settings?.formInputBackground ?? themeColors.inputBackground
   const inputBorderColor = settings?.inputBorder ?? themeColors.borderColor
-  const headersBoxBg = settings?.customParamsInput ?? formInputBg
-  const headersInputBg = settings?.customParamsBox ?? cardBg
+  const headersBoxBg = settings?.formInputBackground ?? formInputBg
+  const headersInputBg = settings?.customParamsInput ?? formInputBg
   const headersBorderColor =
     settings?.inputBorder ?? (isDark ? customColors.darkBorder : customColors.borderInput)
 

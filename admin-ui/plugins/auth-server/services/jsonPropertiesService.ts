@@ -12,7 +12,6 @@ import { JSON_CONFIG } from '../redux/audit/Resources'
 import { enhanceJsonConfigAuditPayload } from '../redux/utils/auditHelpers'
 import { callFetchJsonProperties, callPatchJsonProperties } from '../api/jsonPropertiesClient'
 import { redirectSessionExpired } from '../utils/sessionExpiredRedirect'
-import type { AgamaJsonPatch } from '../components/Agama/types/agamaTypes'
 
 const createAuditLog = (): AuditLog => {
   const state = getRootState()
@@ -52,7 +51,7 @@ export const fetchAuthServerJsonProperties = async (): Promise<AppConfiguration>
 
 interface PatchActionData {
   deletedMapping?: boolean
-  requestBody?: AgamaJsonPatch[]
+  requestBody?: JsonPatch[]
 }
 
 export const patchAuthServerJsonProperties = async (
@@ -72,11 +71,7 @@ export const patchAuthServerJsonProperties = async (
     action: enhancedPayload.action,
   } as AdditionalPayload)
   try {
-    const patches = (actionData?.requestBody ?? []).map((p) => ({
-      op: p.op,
-      path: p.path,
-      ...(p.value !== undefined ? { value: p.value } : {}),
-    })) as JsonPatch[]
+    const patches = actionData?.requestBody ?? []
     const data = await callPatchJsonProperties(patches)
     await postUserAction(audit as UserActionPayload)
     return data

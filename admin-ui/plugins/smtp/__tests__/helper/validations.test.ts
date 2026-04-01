@@ -20,22 +20,24 @@ describe('getSmtpValidationSchema', () => {
   })
 
   it('rejects empty host', async () => {
-    await expect(schema.validate({ ...validData, host: '' })).rejects.toThrow()
+    await expect(schema.validateAt('host', { ...validData, host: '' })).rejects.toThrow()
   })
 
   it('rejects invalid port', async () => {
-    await expect(schema.validate({ ...validData, port: 0 })).rejects.toThrow()
-    await expect(schema.validate({ ...validData, port: 70000 })).rejects.toThrow()
+    await expect(schema.validateAt('port', { ...validData, port: 0 })).rejects.toThrow()
+    await expect(schema.validateAt('port', { ...validData, port: 70000 })).rejects.toThrow()
   })
 
   it('rejects invalid email', async () => {
     await expect(
-      schema.validate({ ...validData, from_email_address: 'not-an-email' }),
+      schema.validateAt('from_email_address', { ...validData, from_email_address: 'not-an-email' }),
     ).rejects.toThrow()
   })
 
   it('rejects empty connect_protection', async () => {
-    await expect(schema.validate({ ...validData, connect_protection: '' })).rejects.toThrow()
+    await expect(
+      schema.validateAt('connect_protection', { ...validData, connect_protection: '' }),
+    ).rejects.toThrow()
   })
 
   it('requires username when authentication is enabled', async () => {

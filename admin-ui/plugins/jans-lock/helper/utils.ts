@@ -118,6 +118,12 @@ export const createPatchOperations = (
             path: `/${key}`,
             value: normalizedValues[key],
           })
+        } else if (originalConfig[key] != null) {
+          differences.push({
+            op: 'replace',
+            path: `/${key}`,
+            value: null,
+          })
         }
       }
     } else if (

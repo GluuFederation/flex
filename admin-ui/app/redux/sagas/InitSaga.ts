@@ -50,7 +50,7 @@ function* initAttributes(): Generator<SelectEffect, InitApi, string> {
 }
 
 export function* getScripts(action: PayloadAction<SagaActionPayload>) {
-  const { payload } = action
+  const payload = action.payload ?? ({ action: {} } as SagaActionPayload)
   const audit: AuditLog = yield* initAudit()
   try {
     addAdditionalData(audit, 'FETCH SCRIPTS FOR STAT', 'SCRIPT', payload)
@@ -71,7 +71,7 @@ export function* getClients(action: PayloadAction<SagaActionPayload>) {
   const payload = action.payload ?? ({ action: {} } as SagaActionPayload)
   const audit: AuditLog = yield* initAudit()
   try {
-    addAdditionalData(audit, 'FETCH CIENTS FOR STAT', 'OIDC', payload)
+    addAdditionalData(audit, 'FETCH CLIENTS FOR STAT', 'OIDC', payload)
     const openIdApi: InitApi = yield* initClients()
     const data = (yield call(
       [openIdApi, openIdApi.getClients],
@@ -89,7 +89,7 @@ export function* getClients(action: PayloadAction<SagaActionPayload>) {
 }
 
 export function* getScopes(action: PayloadAction<SagaActionPayload>) {
-  const { payload } = action
+  const payload = action.payload ?? ({ action: {} } as SagaActionPayload)
   const audit: AuditLog = yield* initAudit()
   try {
     addAdditionalData(audit, 'FETCH SCOPES FOR STAT', 'SCOPE', payload)
@@ -110,7 +110,7 @@ export function* getScopes(action: PayloadAction<SagaActionPayload>) {
 }
 
 export function* getAttributes(action: PayloadAction<SagaActionPayload>) {
-  const { payload } = action
+  const payload = action.payload ?? ({ action: {} } as SagaActionPayload)
   const audit: AuditLog = yield* initAudit()
   try {
     addAdditionalData(audit, 'FETCH ATTRIBUTES FOR STAT', 'SCOPE', payload)

@@ -628,6 +628,7 @@ const WebhookForm: React.FC = () => {
             disableApply={!isFormChanged || !formik.isValid}
             applyButtonType="button"
             isLoading={isLoading}
+            hideDivider
           />
         </Form>
         <GluuCommitDialog

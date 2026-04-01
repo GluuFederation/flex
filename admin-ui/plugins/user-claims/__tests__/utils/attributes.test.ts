@@ -1,19 +1,19 @@
-import scopes from 'Plugins/user-claims/utils/attributes'
+import attributes from 'Plugins/user-claims/utils/attributes'
 
 describe('attributes', () => {
   it('default export is an array', () => {
-    expect(Array.isArray(scopes)).toBe(true)
+    expect(Array.isArray(attributes)).toBe(true)
   })
 
-  it('scopes array is not empty', () => {
-    expect(scopes.length).toBeGreaterThan(0)
+  it('attributes array is not empty', () => {
+    expect(attributes.length).toBeGreaterThan(0)
   })
 
-  it('each scope has required properties', () => {
-    scopes.forEach((scope) => {
-      expect(scope).toHaveProperty('name')
-      expect(scope).toHaveProperty('inum')
-      expect(scope).toHaveProperty('displayName')
+  it('each attribute has required properties', () => {
+    attributes.forEach((attribute) => {
+      expect(attribute).toHaveProperty('name')
+      expect(attribute).toHaveProperty('inum')
+      expect(attribute).toHaveProperty('displayName')
     })
   })
 })

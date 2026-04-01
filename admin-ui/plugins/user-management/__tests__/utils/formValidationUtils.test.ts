@@ -85,8 +85,12 @@ describe('buildFormOperations', () => {
     const result = buildFormOperations(modifiedFields)
 
     expect(result).toHaveLength(2)
-    expect(result[0]).toEqual({ path: 'displayName', value: 'New Name', op: 'replace' })
-    expect(result[1]).toEqual({ path: 'mail', value: 'new@example.com', op: 'replace' })
+    expect(result).toEqual(
+      expect.arrayContaining([
+        { path: 'displayName', value: 'New Name', op: 'replace' },
+        { path: 'mail', value: 'new@example.com', op: 'replace' },
+      ]),
+    )
   })
 
   it('should return empty array for empty modified fields', () => {

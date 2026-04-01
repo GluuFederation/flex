@@ -20,9 +20,9 @@ export type TestAttribute = {
 
 export type TestAttributeItem = TestAttribute & {
   usageType?: string[]
-  claimName?: string
-  saml1Uri?: string
-  saml2Uri?: string
+  claimName?: string | null
+  saml1Uri?: string | null
+  saml2Uri?: string | null
 }
 
 export type TestFormValues = {
@@ -42,9 +42,9 @@ export type TestFormValues = {
     minLength?: number | null
   }
   scimCustomAttr?: boolean
-  claimName?: string
-  saml1Uri?: string
-  saml2Uri?: string
+  claimName?: string | null
+  saml1Uri?: string | null
+  saml2Uri?: string | null
   maxLength?: number | null
   minLength?: number | null
   regexp?: string | null
