@@ -724,6 +724,7 @@
     "disable_metadata_service": "Désactiver le Service de Métadonnées",
     "enterprise_attestation": "Attestation d'Entreprise",
     "attestation_mode": "Mode d'Attestation",
+    "root_certificate": "Certificat racine",
     "hints": "Indices",
     "software_id": "Identifiant du logiciel",
     "expiration": "Expiration",

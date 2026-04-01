@@ -484,6 +484,7 @@
     "disable_metadata_service": "Desativar Serviço de Metadados",
     "enterprise_attestation": "Atestação Empresarial",
     "attestation_mode": "Modo de Atestação",
+    "root_certificate": "Certificado raiz",
     "hints": "Dicas",
     "software_id": "ID do software",
     "expiration": "Expiração",
