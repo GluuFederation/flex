@@ -33,7 +33,7 @@ const createStore = (
     initialized: true,
     isInitializing: false,
     cedarFailedStatusAfterMaxTries: null,
-    policyStoreJson: '',
+    policyStoreBytes: '',
     ...overrides.cedarState,
   }
 

@@ -12,7 +12,7 @@ export interface AdminUILicenseApiInterface {
   ) => void
   adminuiPostSsa: (
     options: { sSARequest: SSARequest },
-    callback: (error: Error | null, data: unknown, response: unknown) => void,
+    callback: (error: Error | null, data: LicenseResponse | null) => void,
   ) => void
   addAdminuiPermission: (
     options: { adminPermission: AdminPermission },

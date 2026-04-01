@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
-import SmtpForm from 'Plugins/smtp/components/SmtpManagement/SmtpForm'
+import SmtpForm from 'Plugins/smtp/components/SmtpForm'
 
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({

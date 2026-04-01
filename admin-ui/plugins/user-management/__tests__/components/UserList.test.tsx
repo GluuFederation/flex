@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react'
 import {
   createUserManagementTestStore,
   createUserManagementTestWrapper,
-} from './userManagementTestUtils'
+} from 'Plugins/user-management/__tests__/helpers/userManagementTestUtils'
 import UserList from 'Plugins/user-management/components/UserList'
 import { useCedarling } from '@/cedarling'
 import type { UseCedarlingReturn } from '@/cedarling'

@@ -37,8 +37,7 @@
     "allowSmtpKeystoreEdit": true,
     "cedarlingLogType":"off",
     "auiPolicyStoreUrl": "",
-    "auiDefaultPolicyStorePath": "./custom/config/adminUI/policy-store.json",
-    "cedarlingPolicyStoreRetrievalPoint": "default"
+    "auiDefaultPolicyStorePath": "./custom/config/adminUI/policy-store.cjar"
   },
   "licenseConfig": {
     "ssa": "%(ssa)s",

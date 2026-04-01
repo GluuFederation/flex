@@ -11,7 +11,7 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import SmtpForm from './SmtpForm'
-import GluuInfo from '../../../../app/routes/Apps/Gluu/GluuInfo'
+import GluuInfo from 'Routes/Apps/Gluu/GluuInfo'
 import {
   useGetConfigSmtp,
   usePutConfigSmtp,

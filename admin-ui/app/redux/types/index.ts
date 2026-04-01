@@ -59,6 +59,11 @@ export interface GenericItem {
   [key: string]: string | number | boolean | string[] | number[] | boolean[] | null
 }
 
+export interface PagedResult {
+  entries?: GenericItem[]
+  totalEntriesCount?: number
+}
+
 export interface InitState {
   scripts: GenericItem[]
   clients: GenericItem[]
@@ -89,9 +94,15 @@ export interface LicenseState {
 }
 
 // OIDC Discovery State
+export type OidcDiscoveryConfig = Record<string, string>
+
 export interface OidcDiscoveryState {
-  configuration: Record<string, unknown>
+  configuration: OidcDiscoveryConfig
   loading: boolean
+}
+
+export interface MauEntry {
+  monthly_active_users?: number
 }
 
 // MAU State
@@ -171,7 +182,7 @@ export interface CedarPermissionsState {
   initialized: boolean | null
   isInitializing: boolean
   cedarFailedStatusAfterMaxTries: boolean | null
-  policyStoreJson: string
+  policyStoreBytes: string
 }
 
 // Session State (logout audit)

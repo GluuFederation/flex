@@ -17,10 +17,9 @@ export interface IPrincipal {
   sub: string | null
   type: string
 }
-export interface IToken {
-  access_token: string
-  id_token: string
-  userinfo_token: string
+export interface ITokenEntry {
+  mapping: string
+  payload: string
 }
 
 // Resource Types
@@ -34,7 +33,7 @@ export interface ICedarEntityMappingResource {
 // Authorization Request
 
 export interface TokenAuthorizationRequest {
-  tokens: IToken
+  tokens: ITokenEntry[]
   action: string
   resource: ICedarEntityMappingResource
   context: Record<string, unknown>
@@ -64,7 +63,7 @@ export interface BootStrapConfig {
 
 // Cedarling Client Interface
 export interface ICedarlingClient {
-  initialize: (BootStrapConfig: BootStrapConfig) => Promise<void>
+  initialize: (config: BootStrapConfig, policyStoreBytes: Uint8Array) => Promise<void>
   token_authorize: (request: TokenAuthorizationRequest) => Promise<AuthorizationResponse>
 }
 
@@ -76,7 +75,7 @@ export interface CedarPermissionsState {
   initialized: null | boolean
   isInitializing: boolean
   cedarFailedStatusAfterMaxTries: null | boolean
-  policyStoreJson: string
+  policyStoreBytes: string
 }
 
 export interface SetCedarlingPermissionPayload {

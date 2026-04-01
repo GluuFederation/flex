@@ -4,7 +4,7 @@ import type {
   LicenseRequestPayload,
   SSARequestPayload,
 } from './types/LicenseApi'
-import { handleResponse, handleTypedResponse, handleError } from 'Utils/ApiUtils'
+import { handleTypedResponse, handleError } from 'Utils/ApiUtils'
 import { devLogger } from '@/utils/devLogger'
 
 export type {
@@ -94,13 +94,13 @@ export default class LicenseApi {
     })
   }
 
-  uploadSSAtoken = (data: SSARequestPayload): Promise<unknown> => {
+  uploadSSAtoken = (data: SSARequestPayload): Promise<LicenseResponse | null> => {
     const option: { sSARequest: SSARequest } = {
       sSARequest: data.payload,
     }
     return new Promise((resolve, reject) => {
-      this.api.adminuiPostSsa(option, (error, data, response) => {
-        handleResponse(error, reject, resolve, data, response)
+      this.api.adminuiPostSsa(option, (error, data) => {
+        handleTypedResponse<LicenseResponse | null>(error, reject, resolve, data ?? null, null)
       })
     })
   }
