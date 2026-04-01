@@ -88,6 +88,16 @@ const SessionTimeout = ({ isAuthenticated }: SessionTimeoutProps) => {
     }
   }, [isAuthenticated, timeoutModalOpen, handleLogout])
 
+  const wasAuthenticated = useRef(isAuthenticated)
+  useEffect(() => {
+    if (wasAuthenticated.current && !isAuthenticated) {
+      clearTimers()
+      setTimeoutModalOpen(false)
+      setTimeoutCountdown(0)
+    }
+    wasAuthenticated.current = isAuthenticated
+  }, [isAuthenticated, clearTimers])
+
   useEffect(() => {
     return () => clearTimers()
   }, [clearTimers])

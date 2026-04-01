@@ -59,4 +59,34 @@ describe('getSmtpValidationSchema', () => {
       }),
     ).resolves.toBeDefined()
   })
+
+  it('requires password when authentication is enabled', async () => {
+    await expect(
+      schema.validateAt('smtp_authentication_account_password', {
+        ...validData,
+        requires_authentication: true,
+        smtp_authentication_account_password: '',
+      }),
+    ).rejects.toThrow()
+  })
+
+  it('allows empty password when authentication is disabled', async () => {
+    await expect(
+      schema.validateAt('smtp_authentication_account_password', {
+        ...validData,
+        requires_authentication: false,
+        smtp_authentication_account_password: '',
+      }),
+    ).resolves.toBeDefined()
+  })
+
+  it('allows null password when authentication is disabled', async () => {
+    await expect(
+      schema.validateAt('smtp_authentication_account_password', {
+        ...validData,
+        requires_authentication: false,
+        smtp_authentication_account_password: null,
+      }),
+    ).resolves.toBeDefined()
+  })
 })
