@@ -23,8 +23,6 @@ interface UseLicenseDetailsOptions {
   onResetSuccess?: () => void
 }
 
-const LICENSE_DETAILS_STALE_TIME = 30 * 1000
-
 const stripSurroundingQuotes = (s: string | undefined): string =>
   s?.replace(REGEX_SURROUNDING_QUOTES, '') ?? ''
 
@@ -66,7 +64,6 @@ export const useLicenseDetails = (options: UseLicenseDetailsOptions = {}) => {
   const query = useGetAdminuiLicense({
     query: {
       enabled: hasSession === true,
-      staleTime: LICENSE_DETAILS_STALE_TIME,
       select: transformLicenseResponse,
     },
   })

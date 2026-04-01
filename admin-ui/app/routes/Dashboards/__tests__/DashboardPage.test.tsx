@@ -23,11 +23,18 @@ jest.mock('@/cedarling/constants/resourceScopes', () => ({
   CEDAR_RESOURCE_SCOPES: { dashboard: [] },
 }))
 
-jest.mock('Routes/Dashboards/hooks', () => ({
-  useDashboardLicense: jest.fn(() => ({
-    data: { licenseEnabled: true, productName: 'Gluu Flex', companyName: 'Gluu' },
-    isLoading: false,
+jest.mock('@/routes/License/hooks/useLicenseDetails', () => ({
+  useLicenseDetails: jest.fn(() => ({
+    item: { licenseEnabled: true, productName: 'Gluu Flex', companyName: 'Gluu' },
+    loading: false,
+    refetch: jest.fn(),
+    queryKey: [],
+    resetLicense: jest.fn(),
+    isResetting: false,
   })),
+}))
+
+jest.mock('Routes/Dashboards/hooks', () => ({
   useDashboardClients: jest.fn(() => ({
     totalCount: 5,
     isLoading: false,

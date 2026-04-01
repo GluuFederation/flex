@@ -329,6 +329,7 @@
     "dark_mode": "Modo Oscuro",
     "data_type": "Tipo de Dato",
     "default_acr": "Método de Autenticación Predeterminado (ACR)",
+    "openid_configuration_response_op_metadata_suppression_list": "Lista de supresión de metadatos OP de la respuesta de configuración OpenID",
     "default_bucket": "Bucket Predeterminado",
     "default_cleanup_batch_size": "Tamaño del Lote de Limpieza Predeterminado",
     "default_put_expiration": "Expiración de Inserción Predeterminada",
@@ -621,6 +622,7 @@
     "export_current_config": "Exportar Configuración Actual",
     "import_configuration": "Importar Configuración",
     "issuer": "Emisor",
+    "authorizationChallengeDefaultAcr": "Método de autenticación predeterminado (ACR): ACR de desafío de autorización predeterminado",
     "base_endpoint": "Endpoint Base",
     "clean_service_interval": "Intervalo del Servicio de Limpieza",
     "clean_batch_chunk_size": "Tamaño de Lote de Limpieza",
@@ -1258,7 +1260,8 @@
     "enter_policies_json_uris": "Ingrese la URI de política JSON",
     "enter_policies_zip_uris_authorization_token": "Ingrese el token de autorización de la URI de política ZIP",
     "enter_policies_zip_uris": "Ingrese la URI de política ZIP",
-    "enter_token_channels": "Ingrese los canales de token"
+    "enter_token_channels": "Ingrese los canales de token",
+    "type_value": "Ingrese el valor de {{field}}"
   },
   "titles": {
     "smtp_test_result": "Resultado de la prueba SMTP",
@@ -1321,7 +1324,7 @@
     "sql_authentication": "Autenticación SQL",
     "logging": "LOGGING",
     "jwk_keys": "Claves JWK",
-    "jans_json_property": "Propiedades",
+    "jans_json_property": "Propiedades del Servidor de Autenticación",
     "mapping": "Mapeo Rol/Permiso",
     "cedarling_config": "Configuración de Cedarling",
     "modules_properties": "Propiedades del módulo",
