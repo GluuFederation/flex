@@ -25,7 +25,6 @@ export type {
 } from './formTypes'
 
 export type {
-  ScopeDetailPageProps,
   ScopeListPageProps,
   ScopeAddPageProps,
   ScopeEditPageProps,

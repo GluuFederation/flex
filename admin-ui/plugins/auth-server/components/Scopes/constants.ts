@@ -1,5 +1,14 @@
 import type { Scope } from 'JansConfigApi'
 import type { ExtendedScope, ExtendedScopeAttributes } from './types'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+
+export const SCOPE_SORT_COLUMNS = ['inum', 'displayName'] as const
+export const SCOPE_SORT_COLUMN_LABELS: Record<string, string> = {
+  inum: 'fields.inum',
+  displayName: 'fields.displayname',
+}
+export const DEFAULT_SCOPE_SORT_BY = ''
+export const FEATURE_SCOPE_DELETE = adminUiFeatures.scopes_delete
 
 export interface ScopeWithMessage extends Scope {
   action_message?: string

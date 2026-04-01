@@ -964,6 +964,10 @@
     "delete_client": "Delete Client",
     "edit_client": "Edit Client",
     "edit_scope": "Edit Scope",
+    "delete_scope": "Delete Scope",
+    "scope_deleted_successfully": "Scope deleted successfully",
+    "error_deleting_scope": "Failed to delete scope",
+    "no_scopes_found": "No scopes found",
     "edit_script": "Edit Custom Script",
     "edit_authn": "Edit AuthN",
     "edit_acr": "Edit ACR",
@@ -1925,6 +1929,7 @@
       "attributes": {
         "showInConfigurationEndpoint": "Show this scope In Configuration Endpoint"
       },
+      "showInConfigurationEndpoint": "Show this scope In Configuration Endpoint",
       "dynamicScopeScripts": "Dynamic Scope Scripts associated with the scope.",
       "umaType": "Specifies if the scope is of type UMA.",
       "id": "The unique id for the scope"

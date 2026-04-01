@@ -21,8 +21,4 @@ export interface ScopeFormProps {
   setModifiedFields: (fields: ModifiedFields) => void
 }
 
-export interface ScopeTableRow extends ScopeWithClients {
-  tableData?: {
-    id: number
-  }
-}
+export type ScopeTableRow = ScopeWithClients
