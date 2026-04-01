@@ -6,11 +6,11 @@ import translationFr from './locales/fr/translation.json'
 import translationPt from './locales/pt/translation.json'
 import translationEs from './locales/es/translation.json'
 import { isDevelopment } from './utils/env'
+import { devLogger } from './utils/devLogger'
+import { toast } from 'react-toastify'
 
 const handleMissingKey = (key: string, defaultValue?: string): string => {
   if (isDevelopment) {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports -- use require for react-toastify
-    const { toast } = require('react-toastify')
     console.warn(
       `[i18n] Missing translation key: "${key}"`,
       defaultValue !== undefined ? `(default: "${defaultValue}")` : '',
@@ -21,6 +21,22 @@ const handleMissingKey = (key: string, defaultValue?: string): string => {
     })
   }
   return defaultValue ?? key
+}
+
+const getSavedLanguage = (): string => {
+  try {
+    const initLang = localStorage.getItem('initLang')
+    if (initLang) return initLang
+    const config = JSON.parse(localStorage.getItem('userConfig') || '{}')
+    const langs = config?.lang
+    if (langs && typeof langs === 'object') {
+      const values = Object.values(langs) as string[]
+      if (values.length > 0) return values[values.length - 1]
+    }
+  } catch (error) {
+    devLogger.warn('Failed to read saved language from localStorage:', error)
+  }
+  return 'en'
 }
 
 const i18nConfig: InitOptions = {
@@ -38,6 +54,7 @@ const i18nConfig: InitOptions = {
       translation: translationEs,
     },
   },
+  lng: getSavedLanguage(),
   fallbackLng: 'en',
   debug: false,
   ns: ['translation'],

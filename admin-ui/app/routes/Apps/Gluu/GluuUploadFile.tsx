@@ -1,10 +1,13 @@
 import type { MouseEvent } from 'react'
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useDropzone, type Accept } from 'react-dropzone'
 import { Box } from '@mui/material'
-import { Button } from 'reactstrap'
+import { Button } from 'Components'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { DEFAULT_THEME } from '@/context/theme/constants'
+import getThemeColor from '@/context/theme/config'
+import { useStyles } from './styles/GluuUploadFile.style'
 
 interface GluuUploadFileProps {
   accept?: Accept
@@ -29,16 +32,26 @@ const GluuUploadFile: React.FC<GluuUploadFileProps> = ({
   fileName = null,
   showClearButton = true,
 }) => {
+  const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = useMemo(() => {
     return theme?.state?.theme || DEFAULT_THEME
   }, [theme?.state?.theme])
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
 
   const [preDefinedFileName, setPreDefinedFileName] = useState<string | null>(fileName || null)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
+  const { classes } = useStyles({
+    fontColor: themeColors.fontColor,
+    removeDisabled: disabled,
+  })
+
   useEffect(() => {
     setPreDefinedFileName(fileName || null)
+    if (!fileName) {
+      setSelectedFile(null)
+    }
   }, [fileName])
 
   const handleDrop = useCallback(
@@ -61,37 +74,60 @@ const GluuUploadFile: React.FC<GluuUploadFileProps> = ({
     disabled,
   })
 
-  const clearFiles = useCallback(
-    (event: MouseEvent<HTMLButtonElement>) => {
-      event.stopPropagation()
-      setSelectedFile(null)
-      setPreDefinedFileName(null)
-      onClearFiles()
-    },
-    [onClearFiles],
-  )
+  const clearFiles = useCallback(() => {
+    setSelectedFile(null)
+    setPreDefinedFileName(null)
+    onClearFiles()
+  }, [onClearFiles])
+
+  const hasFile = Boolean(selectedFile || preDefinedFileName)
+  const dropzoneClassName = [
+    isDragActive1 ? 'active' : 'dropzone',
+    hasFile ? classes.dropzoneWithFile : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   return (
-    <div className="col-md-12">
-      <div {...getRootProps1()} className={isDragActive1 ? 'active' : 'dropzone'}>
+    <div className={classes.root}>
+      <div {...getRootProps1({ className: dropzoneClassName })}>
         <input {...getInputProps1()} />
-        {selectedFile || preDefinedFileName ? (
-          <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-            <Box display="flex" justifyContent="flex-start" alignItems="center" gap={1}>
-              <strong>{selectedFile?.name || preDefinedFileName}</strong>
-              {selectedFile ? (
-                <p className="m-0">({((selectedFile?.size || 0) / 1000).toFixed(0)}K)</p>
-              ) : null}
+        {hasFile ? (
+          <Box className={classes.fileRow}>
+            <Box className={classes.fileInfo}>
+              <strong className={classes.fileName}>
+                {selectedFile?.name || preDefinedFileName}
+              </strong>
+              {selectedFile && (
+                <Box component="span" className={classes.fileSize}>
+                  (
+                  {(selectedFile.size || 0) < 1024
+                    ? `${selectedFile.size} Bytes`
+                    : `${(selectedFile.size / 1024).toFixed(0)} KiB`}
+                  )
+                </Box>
+              )}
             </Box>
             {showClearButton && (
-              <Button color={`primary-${selectedTheme}`} onClick={clearFiles}>
-                <i className="fa fa-remove me-2"></i>
-                Clear
-              </Button>
+              <Box className={classes.removeWrap}>
+                <Button
+                  type="button"
+                  size="sm"
+                  className={`${classes.removeButton} gluu-upload-remove`}
+                  disabled={disabled}
+                  onClick={(e: MouseEvent<HTMLButtonElement>) => {
+                    e.stopPropagation()
+                    clearFiles()
+                  }}
+                >
+                  <i className="fa fa-remove me-2" />
+                  {t('actions.remove')}
+                </Button>
+              </Box>
             )}
           </Box>
         ) : (
-          <p className="m-0">{placeholder}</p>
+          <p className={classes.placeholder}>{placeholder}</p>
         )}
       </div>
     </div>

@@ -535,7 +535,6 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
           )}
         </div>
 
-        <div className={classes.formDivider} />
         <GluuThemeFormFooter
           showBack
           onBack={handleNavigateBack}
