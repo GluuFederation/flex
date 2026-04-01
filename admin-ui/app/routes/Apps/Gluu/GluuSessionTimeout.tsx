@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import SessionTimeoutDialog from './GluuSessionTimeoutDialog'
 import { withIdleTimer, type IIdleTimer } from 'react-idle-timer'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
@@ -10,77 +10,87 @@ type SessionTimeoutProps = {
   isAuthenticated: boolean
 }
 
-let countdownInterval: ReturnType<typeof setInterval> | null = null
-let timeout: ReturnType<typeof setTimeout> | null = null
+const COUNTDOWN_SECONDS = 10
+const DEFAULT_TIMEOUT_MINS = 5
+const IDLE_TO_MODAL_DELAY = 1000
 
 const IdleTimerComponent = ({ children }: IIdleTimer & { children?: React.ReactNode }) =>
-  children as React.ReactElement
+  (children as React.ReactElement) ?? null
 const IdleTimer = withIdleTimer(IdleTimerComponent)
 
 const SessionTimeout = ({ isAuthenticated }: SessionTimeoutProps) => {
   const [timeoutModalOpen, setTimeoutModalOpen] = useState(false)
   const [timeoutCountdown, setTimeoutCountdown] = useState(0)
-  const idleTimer = useRef(null)
+  const countdownIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
   const sessionTimeout =
-    Number(useAppSelector((state) => state.authReducer?.config?.sessionTimeoutInMins)) || 5
+    Number(useAppSelector((state) => state.authReducer?.config?.sessionTimeoutInMins)) ||
+    DEFAULT_TIMEOUT_MINS
   const { logoutAuditSucceeded } = useAppSelector((state) => state.logoutAuditReducer)
 
   const dispatch = useAppDispatch()
   const { navigateToRoute } = useAppNavigation()
 
-  const clearSessionTimeout = () => {
-    if (timeout) clearTimeout(timeout)
-  }
-
-  const clearSessionInterval = () => {
-    if (countdownInterval) clearInterval(countdownInterval)
-  }
-
-  const handleLogout = (isTimedOut = false) => {
-    try {
-      setTimeoutModalOpen(false)
-      clearSessionInterval()
-      clearSessionTimeout()
-      dispatch(
-        auditLogoutLogs({
-          message: isTimedOut ? 'User session timed out' : 'User logged out mannually',
-        }),
-      )
-    } catch (err) {
-      devLogger.error(err)
+  const clearTimers = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+      timeoutRef.current = null
     }
-  }
+    if (countdownIntervalRef.current) {
+      clearInterval(countdownIntervalRef.current)
+      countdownIntervalRef.current = null
+    }
+  }, [])
 
-  const handleContinue = () => {
+  const handleLogout = useCallback(
+    (isTimedOut = false) => {
+      try {
+        setTimeoutModalOpen(false)
+        clearTimers()
+        dispatch(
+          auditLogoutLogs({
+            message: isTimedOut ? 'User session timed out' : 'User logged out manually',
+          }),
+        )
+      } catch (err) {
+        devLogger.error(err)
+      }
+    },
+    [clearTimers, dispatch],
+  )
+
+  const handleContinue = useCallback(() => {
     setTimeoutModalOpen(false)
-    clearSessionInterval()
-    clearSessionTimeout()
-  }
+    clearTimers()
+  }, [clearTimers])
 
-  const onActive = () => {
+  const onActive = useCallback(() => {
     if (!timeoutModalOpen) {
-      clearSessionInterval()
-      clearSessionTimeout()
+      clearTimers()
     }
-  }
+  }, [timeoutModalOpen, clearTimers])
 
-  const onIdle = () => {
-    const delay = 1000 * 1
+  const onIdle = useCallback(() => {
     if (isAuthenticated && !timeoutModalOpen) {
-      timeout = setTimeout(() => {
-        let countDown = 10
+      timeoutRef.current = setTimeout(() => {
+        let countDown = COUNTDOWN_SECONDS
         setTimeoutModalOpen(true)
         setTimeoutCountdown(countDown)
-        countdownInterval = setInterval(() => {
+        countdownIntervalRef.current = setInterval(() => {
           if (countDown > 0) {
             setTimeoutCountdown(--countDown)
           } else {
             handleLogout(true)
           }
         }, 1000)
-      }, delay)
+      }, IDLE_TO_MODAL_DELAY)
     }
-  }
+  }, [isAuthenticated, timeoutModalOpen, handleLogout])
+
+  useEffect(() => {
+    return () => clearTimers()
+  }, [clearTimers])
 
   useEffect(() => {
     if (logoutAuditSucceeded === true) {
@@ -91,7 +101,7 @@ const SessionTimeout = ({ isAuthenticated }: SessionTimeoutProps) => {
   return (
     <>
       <IdleTimer
-        ref={idleTimer}
+        key={sessionTimeout}
         onActive={onActive}
         onIdle={onIdle}
         debounce={250}

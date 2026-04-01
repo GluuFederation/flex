@@ -42,7 +42,7 @@ describe('getSmtpValidationSchema', () => {
 
   it('requires username when authentication is enabled', async () => {
     await expect(
-      schema.validate({
+      schema.validateAt('smtp_authentication_account_username', {
         ...validData,
         requires_authentication: true,
         smtp_authentication_account_username: '',
@@ -52,7 +52,7 @@ describe('getSmtpValidationSchema', () => {
 
   it('allows empty username when authentication is disabled', async () => {
     await expect(
-      schema.validate({
+      schema.validateAt('smtp_authentication_account_username', {
         ...validData,
         requires_authentication: false,
         smtp_authentication_account_username: '',
