@@ -1,21 +1,15 @@
 import type { JsonValue } from './common'
 
-export interface GluuCommitDialogOperation {
+export type GluuCommitDialogOperation = {
   path: string
   value: JsonValue
 }
 
-export interface GluuCommitDialogProps {
+export type GluuCommitDialogProps = {
   handler: () => void
   modal: boolean
   onAccept: (message: string) => void | Promise<void>
-  formik?: {
-    setFieldValue: (
-      field: string,
-      value: string,
-      shouldValidate?: boolean,
-    ) => void | Promise<unknown>
-  } | null
+  formik?: { setFieldValue: (field: string, value: string) => void } | null
   operations?: GluuCommitDialogOperation[]
   label?: string
   placeholderLabel?: string

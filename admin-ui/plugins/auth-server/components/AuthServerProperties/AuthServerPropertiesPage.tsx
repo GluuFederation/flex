@@ -51,12 +51,17 @@ import {
   KEY_GROUP_ORDER,
   DEFAULT_AUTH_SERVER_CONFIG,
 } from './constants'
+import { isRenamedKey, isScriptEntry, renamedFieldFromObject } from './Properties/utils'
+import { DISCOVERY_DENY_KEYS_I18N } from './Properties/utils/constants'
 import {
+  toPairs,
   generateLabel,
-  isRenamedKey,
-  isScriptEntry,
-  renamedFieldFromObject,
-} from './Properties/utils'
+  isSimplePropertyValue as isSimplePropertyValueUtil,
+  formatPatchValue,
+  formatPatchPath,
+  isPatchNoOp,
+  hasConfigurationChanges,
+} from 'Plugins/auth-server/common/propertiesUtils'
 import { createAppConfigurationSchema } from './Properties/utils/validations'
 import type {
   AppConfiguration,
@@ -68,14 +73,6 @@ import type {
 } from './types'
 import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/types/index'
 import type { UserAction, ActionData } from 'Utils/PermChecker'
-
-const toPairs = (keys: string[]): Array<[string, string | null]> => {
-  const rows: Array<[string, string | null]> = []
-  for (let i = 0; i < keys.length; i += 2) {
-    rows.push([keys[i], keys[i + 1] ?? null])
-  }
-  return rows
-}
 
 const AuthServerPropertiesPage: React.FC = () => {
   const { t, i18n } = useTranslation()
@@ -226,7 +223,7 @@ const AuthServerPropertiesPage: React.FC = () => {
   const deferredSearch = useDeferredValue(search.toLowerCase())
 
   const searchableEntries = useMemo(() => {
-    const renamed = renamedFieldFromObject(configuration)
+    const renamed = renamedFieldFromObject(configuration, t(DISCOVERY_DENY_KEYS_I18N))
     return Object.entries(renamed).map(([propKey, propValue]) => ({
       propKey,
       propValue: propValue as AppConfiguration,
@@ -243,16 +240,10 @@ const AuthServerPropertiesPage: React.FC = () => {
       }))
   }, [searchableEntries, deferredSearch])
 
-  const isSimplePropertyValue = useCallback((value: PropertyValue): boolean => {
-    if (value == null) return true
-    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-      return true
-    }
-    if (Array.isArray(value)) {
-      return value.length === 0 || value.every((item) => typeof item === 'string')
-    }
-    return false
-  }, [])
+  const isSimplePropertyValue = useCallback(
+    (value: PropertyValue): boolean => isSimplePropertyValueUtil(value),
+    [],
+  )
 
   const getPropertyLabel = useCallback(
     (propKey: string) => {
@@ -382,26 +373,11 @@ const AuthServerPropertiesPage: React.FC = () => {
     return filteredScripts
   }, [scripts])
   const operations = useMemo<GluuCommitDialogOperation[]>(() => {
-    const formatPatchPath = (rawPath: string): string => {
-      const segments = rawPath.replace(/^\//, '').split('/')
-      const label = t(getPropertyLabel(segments[0]))
-      if (segments.length > 1) {
-        return `${label} [${segments.slice(1).join('/')}]`
-      }
-      return label
-    }
-
-    const formatValue = (patch: JsonPatch): JsonValue => {
-      if (patch.op === 'remove') return '(removed)'
-      const val = patch.value
-      if (val === null || val === undefined) return null
-      if (typeof val === 'object') return JSON.stringify(val)
-      return val as JsonValue
-    }
+    const labelResolver = (key: string) => t(getPropertyLabel(key))
 
     const patchOperations: GluuCommitDialogOperation[] = patches.map((patch) => ({
-      path: formatPatchPath(patch.path as string),
-      value: formatValue(patch),
+      path: formatPatchPath(patch.path as string, labelResolver),
+      value: formatPatchValue(patch),
     }))
     const putOperations: GluuCommitDialogOperation[] = put
       ? [
@@ -416,9 +392,7 @@ const AuthServerPropertiesPage: React.FC = () => {
   const hasChanges = useMemo(() => {
     const hasPutChange = put && put.value && put.value !== acrs?.defaultAcr
     if (hasPutChange) return true
-    if (patches.length === 0) return false
-    if (!baselineConfigurationRef.current) return patches.length > 0
-    return JSON.stringify(formik.values) !== JSON.stringify(baselineConfigurationRef.current)
+    return hasConfigurationChanges(patches.length, formik.values, baselineConfigurationRef.current)
   }, [patches.length, put, acrs?.defaultAcr, formik.values])
   const patchHandler = useCallback(
     (patch: JsonPatch) => {
@@ -431,6 +405,9 @@ const AuthServerPropertiesPage: React.FC = () => {
       }
       setPatches((existingPatches) => {
         const filteredPatches = existingPatches.filter((p) => p.path !== patch.path)
+        if (isPatchNoOp(patch, baselineConfigurationRef.current)) {
+          return filteredPatches
+        }
         return [...filteredPatches, patch]
       })
     },
@@ -681,7 +658,7 @@ const AuthServerPropertiesPage: React.FC = () => {
                       className={classes.fieldItemFullWidth}
                     >
                       <PropertyBuilder
-                        isRenamedKey={isRenamedKey(propKey)}
+                        isRenamedKey={isRenamedKey(propKey, t(DISCOVERY_DENY_KEYS_I18N))}
                         propKey={propKey}
                         propValue={propValue}
                         lSize={lSize}

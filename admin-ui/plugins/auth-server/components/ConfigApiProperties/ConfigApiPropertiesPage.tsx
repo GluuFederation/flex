@@ -1,24 +1,47 @@
-import React, { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import ConfigApiPropertiesForm from './ConfigApiPropertiesForm'
-import { Card } from 'Components'
+import { Card, CardBody } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import SetTitle from 'Utils/SetTitle'
 import { useTranslation } from 'react-i18next'
 import { useGetConfigApiProperties, usePatchConfigApiProperties } from 'JansConfigApi'
-import { useConfigApiActions } from './utils'
+import { useConfigApiActions, DEFAULT_CONFIG_API_CONFIG } from './utils'
 import { toast } from 'react-toastify'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
+import { GluuPageContent } from '@/components'
+import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
+import { useStyles } from './styles/ConfigApiPropertiesForm.style'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/index'
 import type { JsonPatch, ModifiedFields, ApiAppConfiguration, ConfigApiAuditPayload } from './types'
 
 const ConfigApiPropertiesPage = (): JSX.Element => {
   const { t } = useTranslation()
   const { logConfigApiUpdate } = useConfigApiActions()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const { state: themeState } = useTheme()
 
+  const { themeColors, isDark } = useMemo(
+    () => ({
+      themeColors: getThemeColor(themeState?.theme),
+      isDark: themeState?.theme === THEME_DARK,
+    }),
+    [themeState?.theme],
+  )
+
+  const { classes } = useStyles({ isDark, themeColors })
+
+  const [search, setSearch] = useState<string>('')
   const { data: configuration, isLoading, error, refetch } = useGetConfigApiProperties()
   const patchConfigMutation = usePatchConfigApiProperties()
 
   SetTitle(t('titles.config_api_configuration'))
+
+  const handleSearchChange = useCallback((value: string) => {
+    setSearch(value)
+  }, [])
 
   const loading = patchConfigMutation.isPending || isLoading
 
@@ -64,32 +87,57 @@ const ConfigApiPropertiesPage = (): JSX.Element => {
   if (error !== null && error !== undefined) {
     const errorText =
       typeof error === 'object' && error !== null && 'message' in error
-        ? String((error as { message: string | number | boolean | null }).message || error)
+        ? String((error as { message: JsonValue }).message || error)
         : String(error)
     return (
-      <Card style={applicationStyle.mainCard}>
-        <div className="p-4 text-danger">
-          {t('messages.error_in_loading')}: {errorText}
-        </div>
-      </Card>
+      <GluuPageContent>
+        <Card className={classes.pageCard}>
+          <CardBody>
+            <GluuText variant="div" className="text-danger" disableThemeColor>
+              {t('messages.error_in_loading')}: {errorText}
+            </GluuText>
+          </CardBody>
+        </Card>
+      </GluuPageContent>
     )
   }
 
   return (
     <GluuLoader blocking={loading}>
-      <Card style={applicationStyle.mainCard}>
-        {configuration && (
-          <ConfigApiPropertiesForm
-            configuration={configuration as ApiAppConfiguration}
-            onSubmit={handleSubmit}
-          />
-        )}
-        {errorMessage && (
-          <div className="alert alert-danger mt-3" role="alert">
-            {errorMessage}
+      <GluuPageContent>
+        <div className={classes.searchCard}>
+          <div className={classes.searchCardContent}>
+            <GluuSearchToolbar
+              searchLabel={`${t('actions.search')}:`}
+              searchValue={search}
+              searchPlaceholder={t('placeholders.search_pattern')}
+              searchOnType
+              searchDebounceMs={300}
+              onSearch={handleSearchChange}
+              onSearchSubmit={handleSearchChange}
+            />
           </div>
-        )}
-      </Card>
+        </div>
+        <Card className={classes.pageCard}>
+          <CardBody>
+            <ConfigApiPropertiesForm
+              configuration={(configuration as ApiAppConfiguration) ?? DEFAULT_CONFIG_API_CONFIG}
+              onSubmit={handleSubmit}
+              search={search}
+            />
+            {errorMessage && (
+              <GluuText
+                variant="div"
+                className={`alert alert-danger ${classes.errorAlert}`}
+                role="alert"
+                disableThemeColor
+              >
+                {errorMessage}
+              </GluuText>
+            )}
+          </CardBody>
+        </Card>
+      </GluuPageContent>
     </GluuLoader>
   )
 }

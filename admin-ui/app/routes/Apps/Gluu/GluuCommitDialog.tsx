@@ -11,7 +11,7 @@ import { useWebhookDialogAction } from 'Utils/hooks'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
-import type { RootState } from '@/redux/sagas/types/audit'
+import type { RootState } from '@/redux/sagas/types'
 import type { GluuCommitDialogProps } from './types/index'
 import { useStyles } from './styles/GluuCommitDialog.style'
 import {

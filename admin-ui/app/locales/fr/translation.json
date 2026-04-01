@@ -777,6 +777,11 @@
     "log_entry": "Entrée de journal",
     "page_size": "Taille de la page"
   },
+  "footer": {
+    "copyright": "(C) {{year}} Tous droits réservés.",
+    "designed_by": "Ceci est le \"{{name}}\" conçu et implémenté par",
+    "company_name": "Gluu Inc."
+  },
   "messages": {
     "multi_select_hint": "Saisissez plusieurs éléments en les sélectionnant dans la liste déroulante qui s'affiche après chaque saisie.",
     "add_permission": "Ajouter une autorisation",

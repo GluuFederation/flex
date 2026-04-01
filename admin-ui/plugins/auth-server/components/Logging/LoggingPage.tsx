@@ -48,7 +48,7 @@ interface PendingValues {
   changedFields: ChangedFields<Logging>
 }
 
-function LoggingPage(): React.ReactElement {
+const LoggingPage = (): React.ReactElement => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()

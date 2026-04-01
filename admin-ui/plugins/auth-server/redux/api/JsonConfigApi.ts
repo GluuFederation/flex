@@ -1,10 +1,12 @@
 import { handleResponse } from 'Utils/ApiUtils'
+import type { AppConfiguration } from '../../components/AuthServerProperties/types'
+import type { JsonPatch } from 'JansConfigApi'
 
-type PropertiesCallback = (error: Error | null, data: unknown) => void
+type PropertiesCallback = (error: Error | null, data: AppConfiguration) => void
 
 export interface ConfigurationPropertiesApiShape {
   getProperties(callback: PropertiesCallback): void
-  patchProperties(options: unknown, callback: PropertiesCallback): void
+  patchProperties(options: JsonPatch[], callback: PropertiesCallback): void
 }
 
 export default class JsonConfigApi {
@@ -14,19 +16,21 @@ export default class JsonConfigApi {
     this.api = api
   }
 
-  fetchJsonConfig = (): Promise<unknown> => {
-    return new Promise((resolve, reject) => {
+  fetchJsonConfig = async (): Promise<AppConfiguration> => {
+    const result = await new Promise((resolve, reject) => {
       this.api.getProperties((error, data) => {
         handleResponse(error, reject, resolve, data)
       })
     })
+    return result as AppConfiguration
   }
 
-  patchJsonConfig = (options: unknown): Promise<unknown> => {
-    return new Promise((resolve, reject) => {
+  patchJsonConfig = async (options: JsonPatch[]): Promise<AppConfiguration> => {
+    const result = await new Promise((resolve, reject) => {
       this.api.patchProperties(options, (error, data) => {
         handleResponse(error, reject, resolve, data)
       })
     })
+    return result as AppConfiguration
   }
 }

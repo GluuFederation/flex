@@ -1,18 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react'
 import SessionTimeoutDialog from './GluuSessionTimeoutDialog'
-import { withIdleTimer } from 'react-idle-timer'
+import { withIdleTimer, type IIdleTimer } from 'react-idle-timer'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { auditLogoutLogs } from 'Redux/features/sessionSlice'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { devLogger } from '@/utils/devLogger'
 
-let countdownInterval: any
-let timeout: any
+type SessionTimeoutProps = {
+  isAuthenticated: boolean
+}
 
-const IdleTimerComponent = ({ children }: any) => children
+let countdownInterval: ReturnType<typeof setInterval> | null = null
+let timeout: ReturnType<typeof setTimeout> | null = null
+
+const IdleTimerComponent = ({ children }: IIdleTimer & { children?: React.ReactNode }) =>
+  children as React.ReactElement
 const IdleTimer = withIdleTimer(IdleTimerComponent)
 
-const SessionTimeout = ({ isAuthenticated }: any) => {
+const SessionTimeout = ({ isAuthenticated }: SessionTimeoutProps) => {
   const [timeoutModalOpen, setTimeoutModalOpen] = useState(false)
   const [timeoutCountdown, setTimeoutCountdown] = useState(0)
   const idleTimer = useRef(null)
@@ -24,11 +29,11 @@ const SessionTimeout = ({ isAuthenticated }: any) => {
   const { navigateToRoute } = useAppNavigation()
 
   const clearSessionTimeout = () => {
-    clearTimeout(timeout)
+    if (timeout) clearTimeout(timeout)
   }
 
   const clearSessionInterval = () => {
-    clearInterval(countdownInterval)
+    if (countdownInterval) clearInterval(countdownInterval)
   }
 
   const handleLogout = (isTimedOut = false) => {

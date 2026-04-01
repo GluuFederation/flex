@@ -161,9 +161,9 @@ export function useCedarling(): UseCedarlingReturn {
         )
         return { isAuthorized, response }
       } catch (error) {
-        const toMessage = (err: unknown): string =>
+        const toMessage = (err: Error | string): string =>
           err instanceof Error ? err.message : typeof err === 'string' ? err : 'Unknown error'
-        const rawMessage = toMessage(error)
+        const rawMessage = toMessage(error as Error | string)
         const truncated = rawMessage.length > 25 ? rawMessage.slice(0, 25) + '…' : rawMessage
         dispatch(updateToast(true, 'error', `Authorization error: ${truncated}`))
         return {

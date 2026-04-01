@@ -110,7 +110,7 @@ const CustomScriptListPage: React.FC = () => {
     sortBy: sortBy || undefined,
     sortOrder: sortBy ? 'ascending' : undefined,
     limit,
-    startIndex: pageNumber * limit + 1,
+    startIndex: pageNumber * limit,
   })
 
   const { data: scriptTypes, isLoading: loadingTypes } = useCustomScriptTypes()

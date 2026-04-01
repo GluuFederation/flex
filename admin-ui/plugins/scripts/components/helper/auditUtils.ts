@@ -2,7 +2,7 @@ import { devLogger } from '@/utils/devLogger'
 import { addAdditionalData, type AdditionalPayload } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
 import { getRootState, type RootState } from '@/redux/hooks'
-import type { AuditLog } from 'Redux/sagas/types/audit'
+import type { AuditLog } from 'Redux/sagas/types'
 import type { UserActionPayload } from 'Redux/api/types/BackendApi'
 
 const createAuditLog = (state: RootState): AuditLog | null => {

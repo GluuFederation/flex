@@ -1,15 +1,18 @@
-import React, { useCallback, useState, useEffect, useMemo, useRef } from 'react'
+import React, { useCallback, useState, useEffect, useMemo, useRef, useDeferredValue } from 'react'
 import { useFormik, setIn } from 'formik'
 import { toast } from 'react-toastify'
 import { useTranslation } from 'react-i18next'
-import { FormGroup, Form } from 'Components'
+import { Form } from 'Components'
 import { useCedarling } from '@/cedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
-import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/types/index'
+import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
 import type { FormikTouched } from 'formik'
 import JsonPropertyBuilderConfigApi from './JsonPropertyBuilderConfigApi'
 import {
@@ -18,13 +21,23 @@ import {
   applyRemovePatchToValues,
   configApiPropertiesSchema,
 } from './utils'
+import {
+  toPairs,
+  generateLabel,
+  isSimplePropertyValue as isSimpleValue,
+  formatPatchValue,
+  formatPatchPath,
+  isPatchNoOp,
+  hasConfigurationChanges,
+} from 'Plugins/auth-server/common/propertiesUtils'
 import type { ApiAppConfiguration, JsonPatch } from './types'
-import type { PropertyValue } from '../AuthServerProperties/types'
-import customColors from '@/customColors'
+import type { AppConfiguration, PropertyValue } from '../AuthServerProperties/types'
+import { useStyles } from './styles/ConfigApiPropertiesForm.style'
 
 interface ConfigApiPropertiesFormProps {
   configuration: ApiAppConfiguration
   onSubmit: (patches: JsonPatch[], message: string) => Promise<void>
+  search?: string
 }
 
 const CONFIG_API_RESOURCE_ID = ADMIN_UI_RESOURCES.ConfigApiConfiguration
@@ -33,10 +46,22 @@ const configApiScopes = CEDAR_RESOURCE_SCOPES[CONFIG_API_RESOURCE_ID] || []
 const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
   configuration,
   onSubmit,
+  search = '',
 }) => {
   const { t } = useTranslation()
+  const deferredSearch = useDeferredValue(search.toLowerCase())
   const { authorizeHelper, hasCedarWritePermission } = useCedarling()
   const { navigateToRoute } = useAppNavigation()
+  const { state: themeState } = useTheme()
+  const { themeColors, isDark } = useMemo(
+    () => ({
+      themeColors: getThemeColor(themeState?.theme),
+      isDark: themeState?.theme === THEME_DARK,
+    }),
+    [themeState?.theme],
+  )
+  const { classes } = useStyles({ isDark, themeColors })
+
   const [modal, setModal] = useState(false)
   const [patches, setPatches] = useState<JsonPatch[]>([])
   const [resetKey, setResetKey] = useState(0)
@@ -101,18 +126,22 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
     }
   }, [authorizeHelper])
 
-  const operations: GluuCommitDialogOperation[] = useMemo(
-    () =>
-      patches.map((patch) => ({
-        path: patch.path as string,
-        value: patch.op === 'remove' ? null : (patch.value as JsonValue),
-      })),
-    [patches],
-  )
+  const operations: GluuCommitDialogOperation[] = useMemo(() => {
+    return patches.map((patch) => ({
+      path: formatPatchPath(patch.path as string),
+      value: formatPatchValue(patch),
+    }))
+  }, [patches])
 
-  const hasChanges = useMemo(() => {
-    return patches.length > 0 || formik.dirty
-  }, [patches.length, formik.dirty])
+  const hasChanges = useMemo(
+    () =>
+      hasConfigurationChanges(
+        patches.length,
+        formik.values as AppConfiguration,
+        baselineConfigurationRef.current as AppConfiguration,
+      ),
+    [patches.length, formik.values],
+  )
 
   const removeArrayItem = useCallback(
     (
@@ -241,6 +270,11 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
         const filteredPatches = existingPatches.filter(
           (existingPatch) => existingPatch.path !== patch.path,
         )
+
+        if (isPatchNoOp(patch, baselineConfigurationRef.current as AppConfiguration)) {
+          return filteredPatches
+        }
+
         return [...filteredPatches, patch]
       })
     },
@@ -285,8 +319,6 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
     setResetKey((prev) => prev + 1)
   }, [formik])
 
-  const propertyKeys = useMemo(() => Object.keys(configuration), [configuration])
-
   const removePatches = useMemo(() => patches.filter((p) => p.op === 'remove'), [patches])
 
   const currentValues = useMemo(() => {
@@ -305,55 +337,140 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
     return values
   }, [removePatches, resetKey])
 
+  const allEntries = useMemo(() => {
+    return Object.keys(configuration)
+      .map((propKey) => {
+        const propValue = currentValues[propKey as keyof ApiAppConfiguration]
+        if (propValue === undefined) return null
+        return {
+          propKey,
+          propValue: propValue as PropertyValue,
+          searchableLabel: generateLabel(propKey).toLowerCase(),
+        }
+      })
+      .filter(Boolean) as Array<{
+      propKey: string
+      propValue: PropertyValue
+      searchableLabel: string
+    }>
+  }, [configuration, currentValues])
+
+  const filteredEntries = useMemo(() => {
+    if (!deferredSearch) return allEntries
+    return allEntries.filter(({ searchableLabel }) => searchableLabel.includes(deferredSearch))
+  }, [allEntries, deferredSearch])
+
+  const { simpleEntryPairs, arrayEntries, complexEntries } = useMemo(() => {
+    const inputs: string[] = []
+    const booleans: string[] = []
+    const arrays: string[] = []
+    const complex: Array<{ propKey: string; propValue: PropertyValue }> = []
+
+    filteredEntries.forEach(({ propKey, propValue }) => {
+      if (!isSimpleValue(propValue)) {
+        complex.push({ propKey, propValue })
+      } else if (typeof propValue === 'boolean') {
+        booleans.push(propKey)
+      } else if (Array.isArray(propValue)) {
+        arrays.push(propKey)
+      } else {
+        inputs.push(propKey)
+      }
+    })
+
+    return {
+      simpleEntryPairs: [...toPairs(inputs), ...toPairs(booleans)],
+      arrayEntries: arrays,
+      complexEntries: complex,
+    }
+  }, [filteredEntries])
+
+  const handleFormSubmitEvent = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      handleFormSubmit()
+    },
+    [handleFormSubmit],
+  )
+
+  const readOnlySet = useMemo(() => new Set(READ_ONLY_FIELDS), [])
+
   return (
     <>
-      <Form
-        onSubmit={(e) => {
-          e.preventDefault()
-          handleFormSubmit()
-        }}
-        style={{ display: 'flex', flexDirection: 'column', minHeight: '100%' }}
-      >
-        <style>{`
-          .config-api-labels-black label,
-          .config-api-labels-black label h5,
-          .config-api-labels-black label span,
-          .config-api-labels-black h5,
-          .config-api-labels-black .MuiSvgIcon-root { color: ${customColors.black} !important; }
-        `}</style>
-        <div className="config-api-labels-black" style={{ flex: 1, paddingBottom: '100px' }}>
-          {propertyKeys.map((propKey) => {
-            const isDisabled = READ_ONLY_FIELDS.includes(propKey)
-            const propValue = currentValues[propKey as keyof ApiAppConfiguration]
+      <Form onSubmit={handleFormSubmitEvent} className={classes.form}>
+        <div className={classes.formContent}>
+          <div className={classes.fieldsGrid}>
+            {simpleEntryPairs.map(([leftKey, rightKey]) => (
+              <React.Fragment key={`pair-${leftKey}-${rightKey ?? 'none'}-${resetKey}`}>
+                <div className={classes.fieldItem}>
+                  <JsonPropertyBuilderConfigApi
+                    propKey={leftKey}
+                    propValue={currentValues[leftKey as keyof ApiAppConfiguration] as PropertyValue}
+                    lSize={12}
+                    handler={patchHandler}
+                    doc_category="config_api_properties"
+                    disabled={readOnlySet.has(leftKey)}
+                    errors={formik.errors}
+                    touched={formik.touched}
+                  />
+                </div>
+                <div className={classes.fieldItem}>
+                  {rightKey && (
+                    <JsonPropertyBuilderConfigApi
+                      propKey={rightKey}
+                      propValue={
+                        currentValues[rightKey as keyof ApiAppConfiguration] as PropertyValue
+                      }
+                      lSize={12}
+                      handler={patchHandler}
+                      doc_category="config_api_properties"
+                      disabled={readOnlySet.has(rightKey)}
+                      errors={formik.errors}
+                      touched={formik.touched}
+                    />
+                  )}
+                </div>
+              </React.Fragment>
+            ))}
 
-            if (propValue === undefined) {
-              return null
-            }
-
-            return (
-              <div key={`${propKey}-${resetKey}`}>
+            {arrayEntries.map((propKey) => (
+              <div key={`array-${propKey}-${resetKey}`} className={classes.fieldItemFullWidth}>
                 <JsonPropertyBuilderConfigApi
                   propKey={propKey}
-                  propValue={propValue as PropertyValue}
-                  lSize={6}
+                  propValue={currentValues[propKey as keyof ApiAppConfiguration] as PropertyValue}
+                  lSize={12}
                   handler={patchHandler}
                   doc_category="config_api_properties"
-                  disabled={isDisabled}
+                  disabled={readOnlySet.has(propKey)}
                   errors={formik.errors}
                   touched={formik.touched}
                 />
               </div>
-            )
-          })}
+            ))}
 
-          <FormGroup row />
+            {complexEntries.map(({ propKey, propValue }) => (
+              <div key={`complex-${propKey}-${resetKey}`} className={classes.fieldItemFullWidth}>
+                <JsonPropertyBuilderConfigApi
+                  propKey={propKey}
+                  propValue={propValue}
+                  lSize={6}
+                  handler={patchHandler}
+                  doc_category="config_api_properties"
+                  disabled={readOnlySet.has(propKey)}
+                  errors={formik.errors}
+                  touched={formik.touched}
+                />
+              </div>
+            ))}
+          </div>
         </div>
 
         {canWriteConfigApi && (
-          <div className="position-sticky bottom-0 py-3" style={{ zIndex: 10 }}>
+          <div className={classes.stickyFooter}>
             <GluuThemeFormFooter
               showBack
               onBack={handleBack}
+              backButtonLabel={t('actions.back')}
               showCancel
               onCancel={handleCancel}
               disableCancel={!hasChanges}

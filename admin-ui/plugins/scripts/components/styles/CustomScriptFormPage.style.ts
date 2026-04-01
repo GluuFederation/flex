@@ -317,18 +317,13 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
         marginTop: SELECT_NUDGE,
         marginBottom: SELECT_NUDGE,
       },
-      '& input:focus, & input:active, & select:focus, & select:active, & .custom-select:focus, & .custom-select:active':
+      '& input:focus, & input:active, & select:focus, & select:active, & .custom-select:focus, & .custom-select:active, & .form-control:focus, & .input-group:focus-within':
         {
-          backgroundColor: `${formInputBg} !important`,
-          color: `${themeColors.fontColor} !important`,
-          border: `1px solid ${inputBorderColor} !important`,
+          borderColor: `${inputBorderColor} !important`,
+          borderRadius: `${BORDER_RADIUS.SMALL}px !important`,
           outline: `${OUTLINE_NONE} !important`,
           boxShadow: `${OUTLINE_NONE} !important`,
         },
-      '& input:focus-visible, & select:focus-visible': {
-        outline: `${OUTLINE_NONE} !important`,
-        boxShadow: `${OUTLINE_NONE} !important`,
-      },
       '& input:disabled, & select:disabled, & .custom-select:disabled': {
         backgroundColor: `${formInputBg} !important`,
         border: `1px solid ${inputBorderColor} !important`,

@@ -809,6 +809,11 @@
     "upload_agama_project": "Subir Proyecto Agama",
     "add_community_project": "Agregar un Proyecto de la Comunidad"
   },
+  "footer": {
+    "copyright": "(C) {{year}} Todos los derechos reservados.",
+    "designed_by": "Este es el \"{{name}}\" diseñado e implementado por",
+    "company_name": "Gluu Inc."
+  },
   "messages": {
     "multi_select_hint": "Ingrese varios elementos seleccionando del menú desplegable que aparece después de ingresar cada elemento.",
     "add_permission": "Agregar Permiso",

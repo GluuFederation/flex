@@ -769,6 +769,11 @@
     "log_entry": "Entrada de registro",
     "page_size": "Tamanho da página"
   },
+  "footer": {
+    "copyright": "(C) {{year}} Todos os direitos reservados.",
+    "designed_by": "Este é o \"{{name}}\" projetado e implementado por",
+    "company_name": "Gluu Inc."
+  },
   "messages": {
     "multi_select_hint": "Insira vários itens selecionando no menu suspenso que aparece após inserir cada item.",
     "add_permission": "Adicionar permissão",

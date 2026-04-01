@@ -1,7 +1,9 @@
 import type { InputProps } from 'reactstrap'
 import type { FormikProps } from 'formik'
 
-export type GluuInputRowProps<T = Record<string, unknown>> = {
+import type { JsonValue } from './common'
+
+export type GluuInputRowProps<T = Record<string, JsonValue>> = {
   label: string
   name: string
   type?: InputProps['type']

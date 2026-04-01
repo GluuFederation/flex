@@ -5,9 +5,9 @@ import { useFormik } from 'formik'
 import isEqual from 'lodash/isEqual'
 import Toggle from 'react-toggle'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
-
 import { Form, FormGroup, Input } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
@@ -26,6 +26,7 @@ import { isDevelopment } from '@/utils/env'
 import { WEBHOOK } from 'Utils/ApiResources'
 import { isValid } from './WebhookURLChecker'
 import { getWebhookValidationSchema } from 'Plugins/admin/helper/validations/webhookValidation'
+import { WEBHOOK_FIELDS, type ShortcodeFieldName } from './constants'
 import {
   buildWebhookInitialValues,
   hasHttpBody,
@@ -159,11 +160,20 @@ const WebhookForm: React.FC = () => {
   )
   const isFormChanged = formikDirty || isFeatureSelectionChanged
 
-  const showBodyEditor = Boolean(formikValues.httpMethod && hasHttpBody(formikValues.httpMethod))
+  const showBodyEditor = useMemo(
+    () => Boolean(formikValues.httpMethod && hasHttpBody(formikValues.httpMethod)),
+    [formikValues.httpMethod],
+  )
 
   const headersError = formik.errors.httpHeaders
-  const noHeaders = (formikValues.httpHeaders ?? []).length === 0
-  const headersRequiredAndEmpty = hasHttpBody(formikValues.httpMethod) && noHeaders
+  const noHeaders = useMemo(
+    () => (formikValues.httpHeaders ?? []).length === 0,
+    [formikValues.httpHeaders],
+  )
+  const headersRequiredAndEmpty = useMemo(
+    () => hasHttpBody(formikValues.httpMethod) && noHeaders,
+    [formikValues.httpMethod, noHeaders],
+  )
   const showHeadersError =
     (headersError && typeof headersError === 'string') || headersRequiredAndEmpty
   const headersErrorMessage =
@@ -192,12 +202,12 @@ const WebhookForm: React.FC = () => {
           JSON.parse(values.httpRequestBody)
         } catch {
           hasError = true
-          setError('httpRequestBody', t('messages.invalid_json_error'))
+          setError(WEBHOOK_FIELDS.HTTP_REQUEST_BODY, t('messages.invalid_json_error'))
         }
       }
       if (values.url && !isValid(values.url)) {
         hasError = true
-        setError('url', t('messages.invalid_url_error'))
+        setError(WEBHOOK_FIELDS.URL, t('messages.invalid_url_error'))
       }
       return hasError
     },
@@ -225,8 +235,8 @@ const WebhookForm: React.FC = () => {
   }, [navigateBack])
 
   const handleSelectShortcode = useCallback(
-    (code: string, name: 'url' | 'httpRequestBody', withString = false) => {
-      if (name === 'url' && !formikValues.url?.trim()) return
+    (code: string, name: ShortcodeFieldName, withString = false) => {
+      if (name === WEBHOOK_FIELDS.URL && !formikValues.url?.trim()) return
       const _code = withString ? '"${' + code + '}"' : '${' + code + '}'
       const currentPosition = cursorPosition[name]
       let value = formikValues[name] || ''
@@ -263,14 +273,14 @@ const WebhookForm: React.FC = () => {
 
   const addHeader = useCallback(() => {
     const current = formikValues.httpHeaders || []
-    setFieldValue('httpHeaders', [...current, { key: '', value: '' }])
+    setFieldValue(WEBHOOK_FIELDS.HTTP_HEADERS, [...current, { key: '', value: '' }])
   }, [formikValues.httpHeaders, setFieldValue])
 
   const removeHeader = useCallback(
     (index: number) => {
       const current = formikValues.httpHeaders || []
       setFieldValue(
-        'httpHeaders',
+        WEBHOOK_FIELDS.HTTP_HEADERS,
         current.filter((_, i) => i !== index),
       )
     },
@@ -282,7 +292,7 @@ const WebhookForm: React.FC = () => {
       formik.handleChange(e)
       const value = (e.target as HTMLSelectElement).value
       if (hasHttpBody(value) && (formikValues.httpHeaders ?? []).length === 0) {
-        setFieldValue('httpHeaders', [{ key: '', value: '' }])
+        setFieldValue(WEBHOOK_FIELDS.HTTP_HEADERS, [{ key: '', value: '' }])
       }
     },
     [formik.handleChange, formikValues.httpHeaders, setFieldValue],
@@ -292,7 +302,7 @@ const WebhookForm: React.FC = () => {
     (index: number, field: keyof HttpHeader, newValue: string) => {
       const current = [...(formikValues.httpHeaders || [])]
       current[index] = { ...current[index], [field]: newValue }
-      setFieldValue('httpHeaders', current)
+      setFieldValue(WEBHOOK_FIELDS.HTTP_HEADERS, current)
     },
     [formikValues.httpHeaders, setFieldValue],
   )
@@ -322,7 +332,7 @@ const WebhookForm: React.FC = () => {
         try {
           payload.httpRequestBody = JSON.parse(formikValues.httpRequestBody)
         } catch {
-          setFieldError('httpRequestBody', t('messages.invalid_json_error'))
+          setFieldError(WEBHOOK_FIELDS.HTTP_REQUEST_BODY, t('messages.invalid_json_error'))
           return
         }
       }
@@ -392,6 +402,7 @@ const WebhookForm: React.FC = () => {
                 errorMessage={formik.errors.displayName}
                 showError={!!(formik.errors.displayName && formik.touched.displayName)}
                 isDark={isDark}
+                placeholder={getFieldPlaceholder(t, 'fields.webhook_name')}
               />
             </div>
             <div className={`${classes.fieldItem} ${classes.extraPaddingTop}`}>
@@ -438,11 +449,14 @@ const WebhookForm: React.FC = () => {
                 shortcode={
                   <ShortcodePopover
                     codes={featureShortcodes}
-                    handleSelectShortcode={(code) => handleSelectShortcode(code, 'url')}
+                    handleSelectShortcode={(code) =>
+                      handleSelectShortcode(code, WEBHOOK_FIELDS.URL)
+                    }
                     disabled={!formikValues.url?.trim()}
                   />
                 }
                 isDark={isDark}
+                placeholder={getFieldPlaceholder(t, 'fields.webhook_url')}
               />
             </div>
             <div className={classes.fieldItem}>
@@ -594,7 +608,7 @@ const WebhookForm: React.FC = () => {
                         codes={featureShortcodes}
                         buttonWrapperClassName={classes.editorShortcode}
                         handleSelectShortcode={(code) =>
-                          handleSelectShortcode(code, 'httpRequestBody', true)
+                          handleSelectShortcode(code, WEBHOOK_FIELDS.HTTP_REQUEST_BODY, true)
                         }
                       />
                     }

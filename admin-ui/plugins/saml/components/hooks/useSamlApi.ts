@@ -6,7 +6,7 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { logAuditUserAction, type BasicUserInfo } from 'Utils/AuditLogger'
 import { CREATE, UPDATE, DELETION } from '@/audit/UserActionType'
 import { AUDIT_RESOURCE_NAMES } from '../../helper/constants'
-import type { RootState } from '@/redux/sagas/types/audit'
+import type { RootState } from '@/redux/sagas/types'
 
 // ============================================================================
 // Local SAML types (generated JansConfigApi has no SAML endpoints – all defined here)

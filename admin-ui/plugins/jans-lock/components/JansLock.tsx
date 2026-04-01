@@ -5,6 +5,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { GluuPageContent } from '@/components'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import JansLockConfiguration from './JansLockConfiguration'
 import {
   useGetLockProperties,
@@ -63,7 +64,7 @@ const JansLock: React.FC = () => {
         dispatch(updateToast(true, 'success', t('messages.success_in_saving')))
         queryClient.invalidateQueries({ queryKey: getGetLockPropertiesQueryKey() })
       },
-      onError: (error: unknown) => {
+      onError: (error: Error) => {
         const err = error as { response?: { data?: { message?: string } } }
         const errorMessage = err?.response?.data?.message || t('messages.error_in_saving')
         dispatch(updateToast(true, 'error', errorMessage))
@@ -85,7 +86,7 @@ const JansLock: React.FC = () => {
           <div className={classes.formCard}>
             <div className={classes.content}>
               <JansLockConfiguration
-                lockConfig={(lockConfiguration as Record<string, unknown>) ?? {}}
+                lockConfig={(lockConfiguration as Record<string, JsonValue>) ?? {}}
                 onUpdate={handleUpdate}
                 isSubmitting={patchMutation.isPending}
                 canWriteLock={canWriteLock}

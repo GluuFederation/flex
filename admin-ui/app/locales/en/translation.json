@@ -810,6 +810,11 @@
     "upload_agama_project": "Upload Agama project",
     "add_community_project": "Add a Community Project"
   },
+  "footer": {
+    "copyright": "(C) {{year}} All Rights Reserved.",
+    "designed_by": "This is the \"{{name}}\" designed and implemented by",
+    "company_name": "Gluu Inc."
+  },
   "messages": {
     "multi_select_hint": "Enter multiple items by selecting each one from the dropdown that appears after typing an item.",
     "add_permission": "Add Permission",

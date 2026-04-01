@@ -23,7 +23,6 @@ const DISPLAY_FLEX = 'flex'
 const FLEX_DIRECTION_COLUMN = 'column'
 const MARGIN_ZERO_IMPORTANT = '0 !important'
 const OUTLINE_NONE = 'none'
-
 const GAP_SM = 12
 const FIELD_VERTICAL_PADDING = 4
 const HEADERS_BOX_PADDING_TOP = 15
@@ -46,8 +45,8 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
   const cardBg = settings?.cardBackground ?? themeColors.card.background
   const formInputBg = settings?.formInputBackground ?? themeColors.inputBackground
   const inputBorderColor = settings?.inputBorder ?? themeColors.borderColor
-  const headersBoxBg = settings?.customParamsBox ?? cardBg
-  const headersInputBg = settings?.customParamsInput ?? formInputBg
+  const headersBoxBg = settings?.customParamsInput ?? formInputBg
+  const headersInputBg = settings?.customParamsBox ?? cardBg
   const headersBorderColor =
     settings?.inputBorder ?? (isDark ? customColors.darkBorder : customColors.borderInput)
 
@@ -160,12 +159,11 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
         color: `${themeColors.textMuted} !important`,
         opacity: '1 !important',
       },
-      '&& input:focus, && input:active': {
-        backgroundColor: `${headersInputBg} !important`,
-        color: `${themeColors.fontColor} !important`,
-        border: `1px solid ${inputBorderColor} !important`,
-        outline: OUTLINE_NONE,
-        boxShadow: OUTLINE_NONE,
+      '&& input:focus, && input:active, && .form-control:focus, && .input-group:focus-within': {
+        borderColor: `${inputBorderColor} !important`,
+        borderRadius: `${BORDER_RADIUS.SMALL}px !important`,
+        outline: `${OUTLINE_NONE} !important`,
+        boxShadow: `${OUTLINE_NONE} !important`,
       },
     },
     headersBoxEmpty: {
@@ -316,13 +314,12 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
         marginTop: -2,
         marginBottom: -2,
       },
-      '& input:focus, & input:active, & select:focus, & select:active, & .custom-select:focus, & .custom-select:active':
+      '& input:focus, & input:active, & select:focus, & select:active, & .custom-select:focus, & .custom-select:active, & .form-control:focus, & .input-group:focus-within':
         {
-          backgroundColor: `${formInputBg} !important`,
-          color: `${themeColors.fontColor} !important`,
-          border: `1px solid ${inputBorderColor} !important`,
-          outline: OUTLINE_NONE,
-          boxShadow: OUTLINE_NONE,
+          borderColor: `${inputBorderColor} !important`,
+          borderRadius: `${BORDER_RADIUS.SMALL}px !important`,
+          outline: `${OUTLINE_NONE} !important`,
+          boxShadow: `${OUTLINE_NONE} !important`,
         },
       '& input:disabled, & select:disabled, & .custom-select:disabled': {
         backgroundColor: `${formInputBg} !important`,

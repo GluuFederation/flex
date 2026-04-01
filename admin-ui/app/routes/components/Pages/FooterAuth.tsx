@@ -1,16 +1,11 @@
-// @ts-nocheck
 import React from 'react'
 import classNames from 'classnames'
-import PropTypes from 'prop-types'
 import { FooterText } from '../FooterText'
 
-const FooterAuth = ({ className }) => (
+const FooterAuth = ({ className }: { className?: string }) => (
   <p className={classNames(className, 'small')}>
-    <FooterText />
+    <FooterText year={new Date().getFullYear()} name="Gluu Admin UI" />
   </p>
 )
-FooterAuth.propTypes = {
-  className: PropTypes.string,
-}
 
 export { FooterAuth }

@@ -23,6 +23,7 @@ import {
 import { updateToast } from 'Redux/features/toastSlice'
 import { UPDATE } from '@/audit/UserActionType'
 import { logAuditUserAction } from '@/utils/AuditLogger'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { SmtpFormValues } from 'Plugins/smtp/types'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
@@ -39,7 +40,7 @@ interface ApiError {
   }
 }
 
-type PatchOp = { op: 'add' | 'remove' | 'replace'; path: string; value?: unknown }
+type PatchOp = { op: 'add' | 'remove' | 'replace'; path: string; value?: JsonValue }
 
 const buildPatches = (
   originalConfig: Partial<SmtpConfiguration> | undefined,
@@ -49,8 +50,8 @@ const buildPatches = (
   const original = originalConfig || {}
   const keys = new Set<string>([...Object.keys(original), ...Object.keys(updated)])
   keys.forEach((key) => {
-    const origVal = (original as Record<string, unknown>)[key]
-    const newVal = (updated as Record<string, unknown>)[key]
+    const origVal = (original as Record<string, JsonValue>)[key]
+    const newVal = (updated as Record<string, JsonValue>)[key]
     if (JSON.stringify(origVal) !== JSON.stringify(newVal)) {
       if (newVal === undefined) {
         patches.push({ op: 'remove', path: `/${key}` })
@@ -111,7 +112,7 @@ const SmtpEditPage = () => {
           formikRef.current.resetForm({ values: formikRef.current.values })
         }
       },
-      onError: (error: unknown) => {
+      onError: (error: Error) => {
         const err = error as ApiError
         const errorMessage = err?.response?.data?.message || t('messages.smtp_config_update_failed')
         dispatch(updateToast(true, 'error', errorMessage))
@@ -127,7 +128,7 @@ const SmtpEditPage = () => {
         const message = data ? t('messages.smtp_test_success') : t('messages.smtp_test_failed')
         dispatch(updateToast(true, data ? 'success' : 'error', message))
       },
-      onError: (error: unknown) => {
+      onError: (error: Error) => {
         const err = error as ApiError
         const errorMessage = err?.response?.data?.message || t('messages.smtp_test_failed')
         dispatch(updateToast(true, 'error', errorMessage))

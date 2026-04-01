@@ -48,7 +48,7 @@ import { ROUTES } from '@/helpers/navigation'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 
 const AgamaListPage = lazy(() => import('./components/Agama/AgamaListPage'))
-function AgamaListPageWrapper() {
+const AgamaListPageWrapper = () => {
   return (
     <Suspense fallback={<GluuLoader blocking />}>
       <AgamaListPage />

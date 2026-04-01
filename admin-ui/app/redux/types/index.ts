@@ -5,7 +5,8 @@ import type { WebhookTriggerResponseItem } from 'Plugins/admin/redux/types/webho
 
 export type { WebhookTriggerResponseItem }
 
-// Auth
+export type CancellablePromise<T> = Promise<T> & { cancel?: () => void }
+
 export interface BackendStatus {
   active: boolean
   errorMessage: string | null
@@ -109,7 +110,7 @@ export interface MauEntry {
 export interface MauStatItem {
   month?: string
   mau?: number
-  [key: string]: unknown
+  [key: string]: string | number | boolean | null | undefined
 }
 
 export interface MauState {
@@ -193,7 +194,7 @@ export interface SessionState {
 
 // Lock State
 export interface LockState {
-  lockDetail: Record<string, unknown>
+  lockDetail: Record<string, JsonValue>
   loading: boolean
 }
 
@@ -208,14 +209,14 @@ export interface WebhookEntry {
   httpHeaders?: Record<string, string>
   httpRequestBody?: string
   jansEnabled?: boolean
-  [key: string]: unknown
+  [key: string]: JsonValue | Record<string, string> | undefined
 }
 
 export interface AuiFeature {
   inum?: string
   displayName?: string
   description?: string
-  [key: string]: unknown
+  [key: string]: JsonValue | undefined
 }
 
 export interface StoredTriggerPayload {
@@ -243,7 +244,7 @@ export interface AssetDocument {
   document?: string
   creationDate?: string
   jansEnabled?: boolean
-  [key: string]: unknown
+  [key: string]: JsonValue | undefined
 }
 
 export interface AssetState {
@@ -268,11 +269,11 @@ export interface OidcClientItem {
   inum?: string
   clientName?: string
   displayName?: string
-  [key: string]: unknown
+  [key: string]: JsonValue | undefined
 }
 
 export interface OidcTokensState {
-  items: unknown[]
+  items: JsonValue[]
   totalItems: number
   entriesCount: number
 }
@@ -297,7 +298,7 @@ export interface ScopeItem {
   displayName?: string
   description?: string
   scopeType?: string
-  [key: string]: unknown
+  [key: string]: JsonValue | undefined
 }
 
 export interface ScopeState {
@@ -318,7 +319,7 @@ export interface ScopeState {
 export interface UmaResourceItem {
   inum?: string
   name?: string
-  [key: string]: unknown
+  [key: string]: JsonValue | undefined
 }
 
 export interface UmaResourceState {
@@ -329,7 +330,7 @@ export interface UmaResourceState {
 
 // Message State
 export interface MessageState {
-  messages: unknown[]
+  messages: JsonValue[]
   loading: boolean
   error: string | null
 }

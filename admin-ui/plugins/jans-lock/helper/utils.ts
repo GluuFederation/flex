@@ -1,10 +1,9 @@
 import type { TFunction } from 'i18next'
-import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
-import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/GluuCommitDialog'
+import type { JsonValue, GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
 import { jansLockConstants } from './constants'
 import { JansLockConfigFormValues, PatchOperation } from '../types'
 
-export const toBooleanValue = (value: unknown): boolean => {
+export const toBooleanValue = (value: JsonValue): boolean => {
   if (typeof value === 'boolean') return value
   if (typeof value === 'string') {
     return value.toLowerCase() === jansLockConstants.BINARY_VALUES.TRUE
@@ -19,13 +18,13 @@ type CedarlingConfig = {
   }>
 }
 
-const getPolicySource = (config: Record<string, unknown>, index: number) => {
+const getPolicySource = (config: Record<string, JsonValue>, index: number) => {
   const cedarling = config.cedarlingConfiguration as CedarlingConfig | undefined
   return cedarling?.policySources?.[index]
 }
 
 export const transformToFormValues = (
-  config: Record<string, unknown> = {},
+  config: Record<string, JsonValue> = {},
 ): JansLockConfigFormValues => {
   const jsonPolicySource = getPolicySource(config, 0)
   const zipPolicySource = getPolicySource(config, 1)
@@ -64,7 +63,7 @@ export const transformToFormValues = (
 
 export const createPatchOperations = (
   formValues: JansLockConfigFormValues,
-  originalConfig: Record<string, unknown>,
+  originalConfig: Record<string, JsonValue>,
 ): PatchOperation[] => {
   const differences: PatchOperation[] = []
 
@@ -76,14 +75,14 @@ export const createPatchOperations = (
     ...flatValues
   } = formValues
 
-  const normalizedValues: Record<string, unknown> = { ...flatValues }
+  const normalizedValues: Record<string, JsonValue> = { ...flatValues }
 
   if (typeof normalizedValues.tokenChannels === 'string') {
     const channels = (normalizedValues.tokenChannels as string)
       .split(',')
       .map((c) => c.trim())
       .filter(Boolean)
-    normalizedValues.tokenChannels = channels.length > 0 ? channels : undefined
+    normalizedValues.tokenChannels = channels.length > 0 ? channels : null
   }
 
   const booleanFields = [
@@ -106,14 +105,14 @@ export const createPatchOperations = (
     if (normalizedValues[field] !== undefined && normalizedValues[field] !== '') {
       normalizedValues[field] = Number(normalizedValues[field])
     } else {
-      normalizedValues[field] = undefined
+      normalizedValues[field] = null
     }
   })
 
   for (const key in normalizedValues) {
     if (Object.prototype.hasOwnProperty.call(originalConfig, key)) {
       if (JSON.stringify(originalConfig[key]) !== JSON.stringify(normalizedValues[key])) {
-        if (normalizedValues[key] !== undefined) {
+        if (normalizedValues[key] != null) {
           differences.push({
             op: 'replace',
             path: `/${key}`,
@@ -122,7 +121,7 @@ export const createPatchOperations = (
         }
       }
     } else if (
-      normalizedValues[key] !== undefined &&
+      normalizedValues[key] != null &&
       normalizedValues[key] !== '' &&
       normalizedValues[key] !== false
     ) {
@@ -132,7 +131,7 @@ export const createPatchOperations = (
         typeof value === 'object' &&
         value !== null &&
         !Array.isArray(value) &&
-        Object.keys(value as Record<string, unknown>).length === 0
+        Object.keys(value as Record<string, JsonValue>).length === 0
 
       if (!isEmptyArray && !isEmptyObject) {
         differences.push({

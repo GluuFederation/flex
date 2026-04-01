@@ -1,4 +1,6 @@
 import { all, call, fork, put, select } from 'redux-saga/effects'
+import type { Location as AppLocation } from '../features/types/authTypes'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { takeEvery, takeLatest } from './effects'
 import {
   getOAuth2Config,
@@ -29,7 +31,7 @@ import {
 } from 'Redux/features/authSlice'
 import { isFourZeroThreeError } from 'Utils/TokenController'
 import { redirectToLogout } from 'Redux/sagas/SagaUtils'
-import type { ApiErrorLike } from './types/audit'
+import type { ApiErrorLike } from './types'
 import { devLogger } from '@/utils/devLogger'
 
 function* getApiTokenWithDefaultScopes(): Generator<unknown, string | null, unknown> {
@@ -98,8 +100,8 @@ export function* putConfigWorker({
   payload,
 }: {
   type: string
-  payload: Record<string, unknown> & {
-    _meta?: { cedarlingLogTypeChanged?: boolean; toastMessage?: string }
+  payload: Record<string, JsonValue | undefined> & {
+    _meta?: { cedarlingLogTypeChanged?: boolean; toastMessage?: string | undefined }
   }
 }): Generator {
   try {
@@ -178,7 +180,7 @@ function* getLocationWorker(_action: { type: string }): Generator<unknown, void,
       ReturnType<typeof getUserIpAndLocation>
     >
     if (response && response !== -1) {
-      yield put(getUserLocationResponse({ location: response }))
+      yield put(getUserLocationResponse({ location: response as AppLocation }))
       return
     }
   } catch (error: unknown) {

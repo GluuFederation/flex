@@ -3,6 +3,7 @@ import type { UseMutationOptions, UseQueryOptions } from '@tanstack/react-query'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import type { UserAction } from 'Utils/PermChecker'
+import type { AppConfiguration } from '../components/AuthServerProperties/types'
 import {
   fetchAuthServerJsonProperties,
   patchAuthServerJsonProperties,
@@ -10,21 +11,21 @@ import {
 
 export const authServerJsonPropertiesQueryKey = ['authServer', 'jsonProperties'] as const
 
-export function getAuthServerJsonPropertiesQueryKey() {
+export const getAuthServerJsonPropertiesQueryKey = () => {
   return authServerJsonPropertiesQueryKey
 }
 
-export function useAuthServerJsonPropertiesQuery(
+export const useAuthServerJsonPropertiesQuery = (
   options?: Omit<
     UseQueryOptions<
-      Record<string, unknown>,
+      AppConfiguration,
       Error,
-      Record<string, unknown>,
+      AppConfiguration,
       typeof authServerJsonPropertiesQueryKey
     >,
     'queryKey' | 'queryFn'
   >,
-) {
+) => {
   return useQuery({
     queryKey: authServerJsonPropertiesQueryKey,
     queryFn: () => fetchAuthServerJsonProperties(),
@@ -33,9 +34,12 @@ export function useAuthServerJsonPropertiesQuery(
   })
 }
 
-export function usePatchAuthServerJsonPropertiesMutation(
-  mutationOptions?: Omit<UseMutationOptions<unknown, Error, UserAction, unknown>, 'mutationFn'>,
-) {
+export const usePatchAuthServerJsonPropertiesMutation = (
+  mutationOptions?: Omit<
+    UseMutationOptions<AppConfiguration, Error, UserAction, AppConfiguration>,
+    'mutationFn'
+  >,
+) => {
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const {
@@ -50,7 +54,7 @@ export function usePatchAuthServerJsonPropertiesMutation(
     onSuccess: (data, variables, onMutateResult, context) => {
       dispatch(updateToast(true, 'success'))
       if (data && typeof data === 'object' && !Array.isArray(data)) {
-        queryClient.setQueryData(authServerJsonPropertiesQueryKey, data as Record<string, unknown>)
+        queryClient.setQueryData(authServerJsonPropertiesQueryKey, data)
       } else {
         queryClient.invalidateQueries({ queryKey: authServerJsonPropertiesQueryKey })
       }

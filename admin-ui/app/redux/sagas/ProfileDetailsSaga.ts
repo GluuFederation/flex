@@ -3,11 +3,13 @@ import { all, call, fork, put, select, takeLatest } from 'redux-saga/effects'
 import * as JansConfigApi from 'jans_config_api'
 import { handleTypedResponse } from 'Utils/ApiUtils'
 import { addAdditionalData } from 'Utils/TokenController'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { FETCH } from '../../audit/UserActionType'
 import { API_USERS } from '../../audit/Resources'
 import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 import { isFourZeroThreeError } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
+import type { UserActionPayload } from 'Redux/api/types/BackendApi'
 import {
   setUserProfileDetails,
   getProfileDetails,
@@ -21,9 +23,9 @@ type ConfigurationUserManagementApi = InstanceType<
 >
 
 const fetchUserByInum = (api: ConfigurationUserManagementApi, inum: string) =>
-  new Promise<Record<string, unknown>>((resolve, reject) => {
-    api.getUserByInum(inum, (error: Error | null, data?: Record<string, unknown>) => {
-      handleTypedResponse<Record<string, unknown>>(error, reject, resolve, data)
+  new Promise<Record<string, JsonValue>>((resolve, reject) => {
+    api.getUserByInum(inum, (error: Error | null, data?: Record<string, JsonValue>) => {
+      handleTypedResponse<Record<string, JsonValue>>(error, reject, resolve, data)
     })
   })
 
@@ -39,14 +41,16 @@ function* getProfileDetailsWorker({
   const audit = yield* initAudit()
   try {
     yield put(checkIsLoadingDetails(true))
-    addAdditionalData(audit, FETCH, API_USERS, payload)
-    const issuer: string | undefined = yield select((state) => state.authReducer.issuer)
+    addAdditionalData(audit, FETCH, API_USERS, payload as Record<string, JsonValue>)
+    const issuer: string | null = yield select(
+      (state: { authReducer: { issuer: string } }) => state.authReducer.issuer,
+    )
     const api = new JansConfigApi.ConfigurationUserManagementApi(
       getClient(JansConfigApi, null, issuer),
     )
     const data = yield call(fetchUserByInum, api, payload.pattern)
     yield put(setUserProfileDetails(data))
-    yield call(postUserAction, audit)
+    yield call(postUserAction, audit as UserActionPayload)
   } catch (e) {
     yield put(setUserProfileDetails(null))
     if (isFourZeroThreeError(e as { status?: number })) {

@@ -1,7 +1,17 @@
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { WebhookSliceState } from 'Plugins/admin/redux/features/WebhookSlice'
 
-export type AuditRecord = Record<string, string | number | boolean | object | null | undefined>
+export type AuditRecord = Record<
+  string,
+  JsonValue | Date | PerformedBy | AuditLogHeaders | undefined
+>
+
+export type SagaActionPayload = {
+  action: {
+    action_data?: Record<string, JsonValue>
+  }
+  options?: Record<string, JsonValue>
+}
 
 export interface HttpErrorLike {
   response?: { status?: number }
@@ -18,7 +28,7 @@ export interface AuditLogHeaders {
   [key: string]: string | undefined
 }
 
-export interface AuditLog {
+export interface AuditLog extends AuditRecord {
   headers?: AuditLogHeaders
   client_id?: string
   ip_address?: string
@@ -59,7 +69,6 @@ export interface SagaError {
   message?: string
 }
 
-/** API error shape with response.data for saga catch blocks */
 export interface ApiErrorLike {
   response?: { data?: { responseMessage?: string; message?: string }; status?: number }
   message?: string

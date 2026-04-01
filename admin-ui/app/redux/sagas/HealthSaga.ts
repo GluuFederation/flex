@@ -11,7 +11,7 @@ import HealthApi from '../api/HealthApi'
 import { getClient } from '../api/base'
 import HealthCheckApi from '../api/HealthCheckApi'
 import { initAudit, redirectToLogout } from '../sagas/SagaUtils'
-import type { RootState } from './types/audit'
+import type { RootState } from './types'
 import { isHttpLikeError } from 'Plugins/admin/redux/sagas/types/common'
 import * as JansConfigApi from 'jans_config_api'
 import { devLogger } from '@/utils/devLogger'
@@ -34,7 +34,7 @@ export function* getHealthStatus({
   const audit = yield* initAudit()
   try {
     const resolvedPayload: AdditionalPayload = payload ?? { action: {} }
-    addAdditionalData(audit as Record<string, unknown>, 'FETCH', 'Health', resolvedPayload)
+    addAdditionalData(audit, 'FETCH', 'Health', resolvedPayload)
     const healthApi: HealthApi = yield* createHealthApi()
     const data = yield call(healthApi.getHealthStatus)
     yield put(getHealthStatusResponse({ data }))
@@ -56,7 +56,7 @@ export function* getHealthServerStatus({
   const audit = yield* initAudit()
   try {
     const resolvedPayload: AdditionalPayload = payload ?? { action: {} }
-    addAdditionalData(audit as Record<string, unknown>, 'FETCH', 'Health', resolvedPayload)
+    addAdditionalData(audit, 'FETCH', 'Health', resolvedPayload)
     const healthApi: HealthCheckApi = yield* createHealthCheckApi()
     const data = yield call(
       healthApi.getHealthServerStatus,
