@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react'
+import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useFormik } from 'formik'
 import { useTranslation } from 'react-i18next'
 
@@ -25,6 +25,9 @@ import {
   INPUT_SIZE,
   HINT_OPTIONS,
   ATTESTATION_MODE_OPTIONS,
+  isLastKeyValueComplete,
+  isLastStringEntryComplete,
+  isLastMetadataServerComplete,
 } from '../helper'
 import { StaticConfigurationProps, StaticConfigFormValues } from '../types/fido'
 import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
@@ -67,14 +70,20 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
     validateOnMount: true,
   })
 
+  const configSnapshot = useRef<string>('')
+
   useEffect(() => {
     if (fidoConfiguration?.fido2Configuration) {
-      formik.resetForm({
-        values: transformToFormValues(
-          fidoConfiguration.fido2Configuration,
-          fidoConstants.STATIC,
-        ) as StaticConfigFormValues,
-      })
+      const snapshot = JSON.stringify(fidoConfiguration.fido2Configuration)
+      if (snapshot !== configSnapshot.current) {
+        configSnapshot.current = snapshot
+        formik.resetForm({
+          values: transformToFormValues(
+            fidoConfiguration.fido2Configuration,
+            fidoConstants.STATIC,
+          ) as StaticConfigFormValues,
+        })
+      }
     }
   }, [fidoConfiguration])
 
@@ -103,7 +112,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
     [formik, readOnly],
   )
 
-  // Requested Parties handlers
+
   const requestedParties = formik.values.requestedParties || []
 
   const addRequestedParty = useCallback(() => {
@@ -128,7 +137,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
     [formik, requestedParties],
   )
 
-  // Enabled FIDO Algorithms handlers
+
   const enabledFidoAlgorithms = formik.values.enabledFidoAlgorithms || []
 
   const addAlgorithm = useCallback(() => {
@@ -153,7 +162,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
     [formik, enabledFidoAlgorithms],
   )
 
-  // Metadata Servers handlers
+
   const metadataServers = formik.values.metadataServers || []
 
   const addMetadataServer = useCallback(() => {
@@ -177,6 +186,30 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
     },
     [formik, metadataServers],
   )
+
+
+  const canAddParty = useMemo(
+    () => isLastKeyValueComplete(requestedParties),
+    [requestedParties],
+  )
+  const canAddAlgorithm = useMemo(
+    () => isLastStringEntryComplete(enabledFidoAlgorithms),
+    [enabledFidoAlgorithms],
+  )
+  const canAddServer = useMemo(
+    () => isLastMetadataServerComplete(metadataServers),
+    [metadataServers],
+  )
+
+
+  const partiesError = formik.errors.requestedParties
+  const showPartiesError = typeof partiesError === 'string' && Boolean(partiesError)
+
+  const algorithmsError = formik.errors.enabledFidoAlgorithms
+  const showAlgorithmsError = typeof algorithmsError === 'string' && Boolean(algorithmsError)
+
+  const serversError = formik.errors.metadataServers
+  const showServersError = typeof serversError === 'string' && Boolean(serversError)
 
   return (
     <Form onSubmit={handleFormSubmit}>
@@ -357,6 +390,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               useOpacityOnHover
               className={classes.propsActionBtn}
               onClick={addRequestedParty}
+              disabled={!canAddParty}
             >
               <i className="fa fa-fw fa-plus" />
               {t(fidoConstants.BUTTON_TEXT.ADD_PARTY)}
@@ -394,6 +428,9 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
                 </GluuButton>
               </div>
             ))}
+            {showPartiesError && (
+              <div className={classes.propsError}>{t(partiesError as string)}</div>
+            )}
           </div>
         </div>
 
@@ -416,6 +453,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               useOpacityOnHover
               className={classes.propsActionBtn}
               onClick={addAlgorithm}
+              disabled={!canAddAlgorithm}
             >
               <i className="fa fa-fw fa-plus" />
               {t(fidoConstants.BUTTON_TEXT.ADD_ALGORITHM)}
@@ -445,6 +483,9 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
                 </GluuButton>
               </div>
             ))}
+            {showAlgorithmsError && (
+              <div className={classes.propsError}>{t(algorithmsError as string)}</div>
+            )}
           </div>
         </div>
 
@@ -465,6 +506,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               useOpacityOnHover
               className={classes.propsActionBtn}
               onClick={addMetadataServer}
+              disabled={!canAddServer}
             >
               <i className="fa fa-fw fa-plus" />
               {t(fidoConstants.BUTTON_TEXT.ADD_METADATA_SERVER)}
@@ -502,6 +544,9 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
                 </GluuButton>
               </div>
             ))}
+            {showServersError && (
+              <div className={classes.propsError}>{t(serversError as string)}</div>
+            )}
           </div>
         </div>
 

@@ -177,7 +177,7 @@ export default function GluuTabs({ tabNames, tabToShow, withNavigation = false }
   const tabElements = useMemo(
     () =>
       tabLabels.map((label, index) => (
-        <Tab data-testid={label} key={`${label}-${index}`} label={label} {...a11yProps(index)} />
+        <Tab data-testid={label} key={`tab-${index}`} label={label} {...a11yProps(index)} />
       )),
     [tabLabels],
   )
@@ -185,7 +185,7 @@ export default function GluuTabs({ tabNames, tabToShow, withNavigation = false }
   const tabPanels = useMemo(
     () =>
       tabLabels.map((label, index) => (
-        <TabPanel value={value} key={`${label}-${index}-panel`} index={index} px={0} py={2}>
+        <TabPanel value={value} key={`tabpanel-${index}`} index={index} px={0} py={2}>
           {tabToShow(label)}
         </TabPanel>
       )),

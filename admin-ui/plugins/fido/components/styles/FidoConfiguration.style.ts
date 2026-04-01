@@ -173,10 +173,12 @@ export const useStyles = makeStyles<FidoConfigStylesParams>()((
           backgroundColor: `${formInputBg} !important`,
           color: `${themeColors.fontColor} !important`,
           border: `1px solid ${inputBorderColor} !important`,
+          borderRadius: `${BORDER_RADIUS.SMALL}px !important`,
           outline: `${OUTLINE_NONE} !important`,
           boxShadow: `${OUTLINE_NONE} !important`,
         },
       '& input:focus-visible, & select:focus-visible': {
+        borderRadius: `${BORDER_RADIUS.SMALL}px !important`,
         outline: `${OUTLINE_NONE} !important`,
         boxShadow: `${OUTLINE_NONE} !important`,
       },
@@ -212,6 +214,7 @@ export const useStyles = makeStyles<FidoConfigStylesParams>()((
       '& input, & input:focus, & input:active, & input:disabled': {
         backgroundColor: `${headersInputBg} !important`,
         border: `1px solid ${headersBorderColor} !important`,
+        borderRadius: `${BORDER_RADIUS.SMALL}px !important`,
       },
     },
     propsBoxWithMargin: {
@@ -272,9 +275,15 @@ export const useStyles = makeStyles<FidoConfigStylesParams>()((
         backgroundColor: `${headersInputBg} !important`,
         color: themeColors.fontColor,
         border: `1px solid ${headersBorderColor} !important`,
+        borderRadius: `${BORDER_RADIUS.SMALL}px !important`,
         outline: `${OUTLINE_NONE} !important`,
         boxShadow: `${OUTLINE_NONE} !important`,
       },
+    },
+    propsError: {
+      color: themeColors.errorColor,
+      fontSize: fontSizes.sm,
+      marginTop: 4,
     },
     hintsSection: {
       marginTop: PROPS_HEADER_MB,

@@ -1063,7 +1063,10 @@
     "data_type_required": "O tipo de dado é obrigatório",
     "edit_type_required": "O tipo de edição é obrigatório",
     "view_type_required": "O tipo de visualização é obrigatório",
-    "fetch_failed": "Falha ao carregar os dados: {{detail}}"
+    "fetch_failed": "Falha ao carregar os dados: {{detail}}",
+    "fido_empty_row_key_value": "Nome e valor são obrigatórios para cada entrada.",
+    "fido_empty_row_value": "O valor é obrigatório para cada entrada.",
+    "fido_empty_row_metadata_server": "URL e certificado raiz são obrigatórios para cada servidor de metadados."
   },
   "validation_messages": {
     "invalid_url_format": "Formato de URL inválido",

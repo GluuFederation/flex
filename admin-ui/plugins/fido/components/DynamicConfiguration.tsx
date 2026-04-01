@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react'
+import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useFormik } from 'formik'
 import { useTranslation } from 'react-i18next'
 import { Form, Input } from 'Components'
@@ -19,6 +19,7 @@ import {
   validationSchema,
   transformToFormValues,
   buildChangedFieldOperations,
+  isLastStringEntryComplete,
   LABEL_SIZE,
   INPUT_SIZE,
 } from '../helper'
@@ -63,14 +64,20 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
     validateOnMount: true,
   })
 
+  const configSnapshot = useRef<string>('')
+
   useEffect(() => {
     if (fidoConfiguration) {
-      formik.resetForm({
-        values: transformToFormValues(
-          fidoConfiguration,
-          fidoConstants.DYNAMIC,
-        ) as DynamicConfigFormValues,
-      })
+      const snapshot = JSON.stringify(fidoConfiguration)
+      if (snapshot !== configSnapshot.current) {
+        configSnapshot.current = snapshot
+        formik.resetForm({
+          values: transformToFormValues(
+            fidoConfiguration,
+            fidoConstants.DYNAMIC,
+          ) as DynamicConfigFormValues,
+        })
+      }
     }
   }, [fidoConfiguration])
 
@@ -122,6 +129,14 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
     },
     [formik, personCustomObjectClassList],
   )
+
+  const canAddObjectClass = useMemo(
+    () => isLastStringEntryComplete(personCustomObjectClassList),
+    [personCustomObjectClassList],
+  )
+
+  const objectClassError = formik.errors.personCustomObjectClassList
+  const showObjectClassError = typeof objectClassError === 'string' && Boolean(objectClassError)
 
   return (
     <Form onSubmit={handleFormSubmit}>
@@ -367,6 +382,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               useOpacityOnHover
               className={classes.propsActionBtn}
               onClick={addObjectClass}
+              disabled={!canAddObjectClass}
             >
               <i className="fa fa-fw fa-plus" />
               {t(fidoConstants.BUTTON_TEXT.ADD_CLASSES)}
@@ -396,6 +412,9 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
                 </GluuButton>
               </div>
             ))}
+            {showObjectClassError && (
+              <div className={classes.propsError}>{t(objectClassError as string)}</div>
+            )}
           </div>
         </div>
       </div>

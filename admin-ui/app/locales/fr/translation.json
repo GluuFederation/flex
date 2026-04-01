@@ -1070,7 +1070,10 @@
     "data_type_required": "Le type de données est obligatoire",
     "edit_type_required": "Le type d'édition est obligatoire",
     "view_type_required": "Le type de vue est obligatoire",
-    "fetch_failed": "Échec du chargement des données : {{detail}}"
+    "fetch_failed": "Échec du chargement des données : {{detail}}",
+    "fido_empty_row_key_value": "Le nom et la valeur sont requis pour chaque entrée.",
+    "fido_empty_row_value": "La valeur est requise pour chaque entrée.",
+    "fido_empty_row_metadata_server": "L'URL et le certificat racine sont requis pour chaque serveur de métadonnées."
   },
   "validation_messages": {
     "invalid_url_format": "Format d'URL invalide",

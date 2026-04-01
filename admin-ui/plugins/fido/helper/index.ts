@@ -1,4 +1,9 @@
-export { validationSchema } from './validations'
+export {
+  validationSchema,
+  isLastKeyValueComplete,
+  isLastStringEntryComplete,
+  isLastMetadataServerComplete,
+} from './validations'
 export {
   transformToFormValues,
   createFidoConfigPayload,

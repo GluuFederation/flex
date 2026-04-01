@@ -1,6 +1,61 @@
 import * as Yup from 'yup'
 import { PublicKeyCredentialHints, AttestationMode } from '../types'
 
+
+export const isEveryKeyValueComplete = (
+  items: Array<{ key?: string; value?: string }>,
+): boolean => {
+  if (items.length === 0) return true
+  return items.every(
+    (item) => Boolean((item.key ?? '').trim()) && Boolean((item.value ?? '').trim()),
+  )
+}
+
+
+export const isLastKeyValueComplete = (
+  items: Array<{ key?: string; value?: string }>,
+): boolean => {
+  if (items.length === 0) return true
+  const last = items[items.length - 1]
+  return Boolean((last.key ?? '').trim()) && Boolean((last.value ?? '').trim())
+}
+
+
+export const isEveryStringEntryComplete = (items: string[]): boolean => {
+  if (items.length === 0) return true
+  return items.every((item) => Boolean((item ?? '').trim()))
+}
+
+
+export const isLastStringEntryComplete = (items: string[]): boolean => {
+  if (items.length === 0) return true
+  const last = items[items.length - 1]
+  return Boolean((last ?? '').trim())
+}
+
+
+export const isEveryMetadataServerComplete = (
+  items: Array<{ url?: string; rootCert?: string }>,
+): boolean => {
+  if (items.length === 0) return true
+  return items.every(
+    (item) => Boolean((item.url ?? '').trim()) && Boolean((item.rootCert ?? '').trim()),
+  )
+}
+
+
+export const isLastMetadataServerComplete = (
+  items: Array<{ url?: string; rootCert?: string }>,
+): boolean => {
+  if (items.length === 0) return true
+  const last = items[items.length - 1]
+  return Boolean((last.url ?? '').trim()) && Boolean((last.rootCert ?? '').trim())
+}
+
+const EMPTY_ROW_KEY_VALUE_MSG = 'errors.fido_empty_row_key_value'
+const EMPTY_ROW_VALUE_MSG = 'errors.fido_empty_row_value'
+const EMPTY_ROW_METADATA_SERVER_MSG = 'errors.fido_empty_row_metadata_server'
+
 const dynamicConfigValidationSchema = Yup.object({
   issuer: Yup.string().required('Issuer is required.'),
   baseEndpoint: Yup.string().required('Base Endpoint is required.'),
@@ -21,7 +76,12 @@ const dynamicConfigValidationSchema = Yup.object({
   metricReporterKeepDataDays: Yup.number()
     .typeError('Metric Reporter Keep Data Days must be a number.')
     .required('Metric Reporter Keep Data Days is required.'),
-  personCustomObjectClassList: Yup.array().of(Yup.string()),
+  personCustomObjectClassList: Yup.array()
+    .of(Yup.string())
+    .test('no-empty-entries', EMPTY_ROW_VALUE_MSG, (items) => {
+      if (!items || items.length === 0) return true
+      return items.every((item) => Boolean((item ?? '').trim()))
+    }),
   fido2MetricsEnabled: Yup.boolean().required('FIDO2 Metrics Enabled is required.'),
   fido2MetricsRetentionDays: Yup.number()
     .typeError('FIDO2 Metrics Retention Days must be a number.')
@@ -43,13 +103,38 @@ const staticConfigValidationSchema = Yup.object({
     .required('Authentication History Expiration is required.'),
   serverMetadataFolder: Yup.string().required('Server Metadata is required.'),
   userAutoEnrollment: Yup.boolean().required('User Auto Enrollment is required.'),
-  enabledFidoAlgorithms: Yup.array().of(Yup.string()),
-  metadataServers: Yup.array().of(
-    Yup.object({
-      url: Yup.string().required('Metadata Server URL is required.'),
-      rootCert: Yup.string().required('Root Certificate is required.'),
+  requestedParties: Yup.array()
+    .of(
+      Yup.object().shape({
+        key: Yup.string().nullable(),
+        value: Yup.string().nullable(),
+      }),
+    )
+    .test('no-empty-parties', EMPTY_ROW_KEY_VALUE_MSG, (items) => {
+      if (!items || items.length === 0) return true
+      return items.every(
+        (item) => Boolean((item?.key ?? '').trim()) && Boolean((item?.value ?? '').trim()),
+      )
     }),
-  ),
+  enabledFidoAlgorithms: Yup.array()
+    .of(Yup.string())
+    .test('no-empty-algorithms', EMPTY_ROW_VALUE_MSG, (items) => {
+      if (!items || items.length === 0) return true
+      return items.every((item) => Boolean((item ?? '').trim()))
+    }),
+  metadataServers: Yup.array()
+    .of(
+      Yup.object().shape({
+        url: Yup.string().nullable(),
+        rootCert: Yup.string().nullable(),
+      }),
+    )
+    .test('no-empty-servers', EMPTY_ROW_METADATA_SERVER_MSG, (items) => {
+      if (!items || items.length === 0) return true
+      return items.every(
+        (item) => Boolean((item?.url ?? '').trim()) && Boolean((item?.rootCert ?? '').trim()),
+      )
+    }),
   disableMetadataService: Yup.boolean().required('Disable Metadata Service is required.'),
   hints: Yup.array()
     .of(Yup.string().oneOf(Object.values(PublicKeyCredentialHints), 'Invalid hint value.'))

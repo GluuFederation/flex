@@ -169,8 +169,8 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
     },
     operationRow: {
       display: 'grid',
-      gridTemplateColumns: 'auto 2fr auto 1fr',
-      alignItems: 'center',
+      gridTemplateColumns: 'auto 1fr auto 2fr',
+      alignItems: 'start',
       columnGap: 12,
       paddingBottom: 4,
     },
@@ -193,9 +193,9 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       padding: '4px 10px',
       width: 'fit-content',
       maxWidth: '100%',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap' as const,
+      overflowWrap: 'break-word' as const,
+      wordBreak: 'break-word' as const,
+      whiteSpace: 'normal' as const,
     },
     buttonRow: {
       display: 'flex',

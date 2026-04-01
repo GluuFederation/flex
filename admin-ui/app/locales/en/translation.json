@@ -1132,7 +1132,10 @@
     "data_type_required": "Data Type is required",
     "edit_type_required": "Edit Type is required",
     "view_type_required": "View Type is required",
-    "fetch_failed": "Failed to load data: {{detail}}"
+    "fetch_failed": "Failed to load data: {{detail}}",
+    "fido_empty_row_key_value": "Both name and value are required for each entry.",
+    "fido_empty_row_value": "Value is required for each entry.",
+    "fido_empty_row_metadata_server": "Both URL and root certificate are required for each metadata server."
   },
   "validation_messages": {
     "invalid_url_format": "Invalid URL format",
