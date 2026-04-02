@@ -726,6 +726,8 @@
     "disable_metadata_service": "Désactiver le Service de Métadonnées",
     "enterprise_attestation": "Attestation d'Entreprise",
     "attestation_mode": "Mode d'Attestation",
+    "root_certificate": "Certificat racine",
+    "hints": "Indices",
     "software_id": "Identifiant du logiciel",
     "expiration": "Expiration",
     "acr": "ACR",
@@ -1068,7 +1070,10 @@
     "data_type_required": "Le type de données est obligatoire",
     "edit_type_required": "Le type d'édition est obligatoire",
     "view_type_required": "Le type de vue est obligatoire",
-    "fetch_failed": "Échec du chargement des données : {{detail}}"
+    "fetch_failed": "Échec du chargement des données : {{detail}}",
+    "fido_empty_row_key_value": "Le nom et la valeur sont requis pour chaque entrée.",
+    "fido_empty_row_value": "La valeur est requise pour chaque entrée.",
+    "fido_empty_row_metadata_server": "L'URL et le certificat racine sont requis pour chaque serveur de métadonnées."
   },
   "validation_messages": {
     "invalid_url_format": "Format d'URL invalide",
@@ -1169,6 +1174,8 @@
     "smtp_server_hostname": "Entrez le nom d'hôte du serveur SMTP",
     "smtp_server_port": "Entrez le port du serveur SMTP",
     "smtp_user_name": "Entrez le nom d'utilisateur SMTP",
+    "enter_url": "Entrez l'URL",
+    "enter_root_certificate": "Entrez le certificat racine",
     "smtp_user_password": "Entrez le mot de passe de l'utilisateur SMTP",
     "spontaneous_client_id": "Saisissez l'identifiant client spontané",
     "typeahead_holder_message": "Saisissez plusieurs éléments en les sélectionnant dans la liste déroulante qui s'affiche après avoir saisi chaque élément.",

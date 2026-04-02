@@ -1,37 +1,26 @@
 import React, { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useQueryClient } from '@tanstack/react-query'
-import { Card, CardBody } from 'Components'
 import GluuTabs from 'Routes/Apps/Gluu/GluuTabs'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import StaticConfiguration from './StaticConfiguration'
 import DynamicConfiguration from './DynamicConfiguration'
 import SetTitle from 'Utils/SetTitle'
-import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
-import { fidoConstants, createFidoConfigPayload, getModifiedFields } from '../helper'
-import {
-  useGetPropertiesFido2,
-  usePutPropertiesFido2,
-  getGetPropertiesFido2QueryKey,
-} from 'JansConfigApi'
-import { updateToast } from 'Redux/features/toastSlice'
-import { useDispatch, useSelector } from 'react-redux'
-import { DynamicConfigFormValues, StaticConfigFormValues } from '../types/fido'
-import { logAudit } from 'Utils/AuditLogger'
-import { AuthRootState } from 'Utils/types'
+import { GluuPageContent } from '@/components'
+import { fidoConstants } from '../helper'
+import { useFidoConfig, useUpdateFidoConfig } from '../hooks'
+import type { DynamicConfigFormValues, StaticConfigFormValues } from '../types/fido'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import GluuViewWrapper from '@/routes/Apps/Gluu/GluuViewWrapper'
 import { ROUTES } from '@/helpers/navigation'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
+import { useStyles } from './styles/FidoFormPage.style'
 
 const Fido: React.FC = () => {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
-  const queryClient = useQueryClient()
-  const userinfo = useSelector((state: AuthRootState) => state.authReducer.userinfo)
-  const client_id = useSelector((state: AuthRootState) => state.authReducer.config.clientId)
-  const ip_address = useSelector((state: AuthRootState) => state.authReducer.location.IPv4)
 
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
   const fidoResourceId = useMemo(() => ADMIN_UI_RESOURCES.FIDO, [])
@@ -49,20 +38,18 @@ const Fido: React.FC = () => {
     authorizeHelper(fidoScopes)
   }, [authorizeHelper, fidoScopes])
 
-  const { data: fidoConfiguration, isLoading } = useGetPropertiesFido2()
-  const putFidoMutation = usePutPropertiesFido2({
-    mutation: {
-      onSuccess: () => {
-        dispatch(updateToast(true, 'success', t('messages.fido_config_updated_successfully')))
-        queryClient.invalidateQueries({ queryKey: getGetPropertiesFido2QueryKey() })
-      },
-      onError: (error: unknown) => {
-        const err = error as { response?: { data?: { message?: string } } }
-        const errorMessage = err?.response?.data?.message || t('messages.fido_config_update_failed')
-        dispatch(updateToast(true, 'error', errorMessage))
-      },
-    },
-  })
+  const { state: themeState } = useTheme()
+  const { themeColors, isDark } = useMemo(
+    () => ({
+      themeColors: getThemeColor(themeState.theme),
+      isDark: themeState.theme === THEME_DARK,
+    }),
+    [themeState.theme],
+  )
+  const { classes } = useStyles({ isDark, themeColors })
+
+  const { data: fidoConfiguration, isLoading } = useFidoConfig()
+  const updateFidoMutation = useUpdateFidoConfig()
 
   SetTitle(t('titles.fido_management'))
 
@@ -75,49 +62,9 @@ const Fido: React.FC = () => {
       if (!canWriteFido) {
         return
       }
-      if (!fidoConfiguration) {
-        dispatch(updateToast(true, 'error', t('messages.no_configuration_loaded')))
-        return
-      }
-
-      const apiPayload = createFidoConfigPayload({
-        fidoConfiguration,
-        data,
-        type,
-      })
-      const configType = type === fidoConstants.STATIC ? 'Static' : 'Dynamic'
-      const originalConfig =
-        type === fidoConstants.STATIC ? fidoConfiguration?.fido2Configuration : fidoConfiguration
-      const modifiedFieldsOnly = getModifiedFields(data, originalConfig, type)
-
-      putFidoMutation.mutate(apiPayload, {
-        onSuccess: () => {
-          logAudit({
-            userinfo,
-            action: 'UPDATE',
-            resource: 'FIDO',
-            message: userMessage || `FIDO ${configType} configuration updated successfully`,
-            payload: data,
-            status: 'success',
-            client_id,
-            ip_address,
-            modifiedFields: modifiedFieldsOnly,
-          }).catch((auditError) => {
-            console.error('Audit logging failed:', auditError)
-          })
-        },
-      })
+      updateFidoMutation.mutate({ data, type, userMessage })
     },
-    [
-      fidoConfiguration,
-      putFidoMutation,
-      dispatch,
-      t,
-      userinfo,
-      client_id,
-      ip_address,
-      canWriteFido,
-    ],
+    [canWriteFido, updateFidoMutation],
   )
 
   const tabNames = [
@@ -127,7 +74,7 @@ const Fido: React.FC = () => {
 
   const tabToShow = useCallback(
     (tabName: string) => {
-      const isSubmitting = putFidoMutation.isPending
+      const isSubmitting = updateFidoMutation.isPending
       switch (tabName) {
         case t('menus.static_configuration'):
           return (
@@ -155,21 +102,21 @@ const Fido: React.FC = () => {
           return null
       }
     },
-    [t, handleConfigSubmit, fidoConfiguration, isLoading, putFidoMutation.isPending, canWriteFido],
+    [t, handleConfigSubmit, fidoConfiguration, updateFidoMutation.isPending, canWriteFido],
   )
 
   return (
-    <GluuLoader blocking={isLoading}>
-      <Card className="mb-3" style={applicationStyle.mainCard}>
-        <CardBody>
-          <GluuViewWrapper canShow={canReadFido}>
-            {!isLoading && (
+    <GluuPageContent>
+      <GluuViewWrapper canShow={canReadFido}>
+        <GluuLoader blocking={isLoading || updateFidoMutation.isPending}>
+          <div className={classes.formCard}>
+            <div className={classes.content}>
               <GluuTabs tabNames={tabNames} tabToShow={tabToShow} withNavigation={true} />
-            )}
-          </GluuViewWrapper>
-        </CardBody>
-      </Card>
-    </GluuLoader>
+            </div>
+          </div>
+        </GluuLoader>
+      </GluuViewWrapper>
+    </GluuPageContent>
   )
 }
 

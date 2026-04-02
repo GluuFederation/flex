@@ -662,9 +662,11 @@
     "metadata_refresh_interval": "Metadata Refresh Interval",
     "enabled_fido_algorithms": "Enabled FIDO Algorithms",
     "metadata_servers": "Metadata Servers",
+    "root_certificate": "Root Certificate",
     "disable_metadata_service": "Disable Metadata Service",
     "enterprise_attestation": "Enterprise Attestation",
     "attestation_mode": "Attestation Mode",
+    "hints": "Hints",
     "software_id": "Software ID",
     "expiration": "Expiration",
     "never": "Never",
@@ -1130,7 +1132,10 @@
     "data_type_required": "Data Type is required",
     "edit_type_required": "Edit Type is required",
     "view_type_required": "View Type is required",
-    "fetch_failed": "Failed to load data: {{detail}}"
+    "fetch_failed": "Failed to load data: {{detail}}",
+    "fido_empty_row_key_value": "Both name and value are required for each entry.",
+    "fido_empty_row_value": "Value is required for each entry.",
+    "fido_empty_row_metadata_server": "Both URL and root certificate are required for each metadata server."
   },
   "validation_messages": {
     "invalid_url_format": "Invalid URL format",
@@ -1214,6 +1219,8 @@
     "logo_uri": "Enter the logo URI",
     "name": "Enter the name",
     "value": "Enter the value",
+    "enter_url": "Enter the URL",
+    "enter_root_certificate": "Enter the root certificate",
     "policy_uri": "Enter the policy URI",
     "post_logout_redirect_uris": "Enter a post redirect URI in format (e.g. https:// or schema://) ",
     "redirect_uri": "Enter a redirect URI",
