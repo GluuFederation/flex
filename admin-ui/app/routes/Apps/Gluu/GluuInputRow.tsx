@@ -34,6 +34,7 @@ const GluuInputRow = <T = Record<string, JsonValue>,>({
   cols,
   isDark,
   placeholder,
+  allowPasswordToggleWhenDisabled = false,
   inputClassName,
 }: GluuInputRowProps<T>) => {
   const { t } = useTranslation()
@@ -177,8 +178,8 @@ const GluuInputRow = <T = Record<string, JsonValue>,>({
               type="button"
               className={classes.passwordToggle}
               onClick={setVisibility}
-              disabled={disabled}
-              aria-disabled={disabled}
+              disabled={disabled && !allowPasswordToggleWhenDisabled}
+              aria-disabled={disabled && !allowPasswordToggleWhenDisabled}
               aria-label={t(customType === 'text' ? 'password.hide' : 'password.show')}
             >
               {customType === 'text' ? <Visibility /> : <VisibilityOff />}

@@ -75,6 +75,13 @@ import type {
 import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/types/index'
 import type { UserAction, ActionData } from 'Utils/PermChecker'
 
+const propertiesResourceId = ADMIN_UI_RESOURCES.AuthenticationServerConfiguration
+const propertiesScopes = CEDAR_RESOURCE_SCOPES[propertiesResourceId] || []
+const userAction: UserAction = {
+  action_message: '',
+  action_data: null,
+}
+
 const AuthServerPropertiesPage: React.FC = () => {
   const { t, i18n } = useTranslation()
   SetTitle(t('titles.jans_json_property'))
@@ -111,22 +118,13 @@ const AuthServerPropertiesPage: React.FC = () => {
     query: { staleTime: 30000 },
   })
   const lSize = DEFAULT_FORM_LABEL_SIZE
-  const userAction: UserAction = {
-    action_message: '',
-    action_data: null,
-  }
-  const propertiesResourceId = ADMIN_UI_RESOURCES.AuthenticationServerConfiguration
-  const propertiesScopes = useMemo(
-    () => CEDAR_RESOURCE_SCOPES[propertiesResourceId] || [],
-    [propertiesResourceId],
-  )
   const canReadProperties = useMemo(
     () => hasCedarReadPermission(propertiesResourceId),
-    [hasCedarReadPermission, propertiesResourceId],
+    [hasCedarReadPermission],
   )
   const canWriteProperties = useMemo(
     () => hasCedarWritePermission(propertiesResourceId),
-    [hasCedarWritePermission, propertiesResourceId],
+    [hasCedarWritePermission],
   )
   const [modal, setModal] = useState<boolean>(false)
   const [patches, setPatches] = useState<JsonPatch[]>([])
@@ -186,7 +184,7 @@ const AuthServerPropertiesPage: React.FC = () => {
   })
   useEffect(() => {
     authorizeHelper(propertiesScopes)
-  }, [authorizeHelper, propertiesScopes])
+  }, [authorizeHelper])
   useEffect(() => {
     setFieldValueRef.current = formik.setFieldValue
     resetFormRef.current = formik.resetForm

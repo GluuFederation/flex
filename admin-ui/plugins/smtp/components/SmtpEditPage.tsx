@@ -24,7 +24,7 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { UPDATE } from '@/audit/UserActionType'
 import { logAuditUserAction } from '@/utils/AuditLogger'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
-import { SmtpFormValues } from 'Plugins/smtp/types'
+import type { SmtpFormValues, ApiError, PatchOp } from 'Plugins/smtp/types'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
@@ -32,15 +32,8 @@ import { useStyles } from './styles/SmtpFormPage.style'
 
 const API_SMTP = 'api-smtp-configuration'
 
-interface ApiError {
-  response?: {
-    data?: {
-      message?: string
-    }
-  }
-}
-
-type PatchOp = { op: 'add' | 'remove' | 'replace'; path: string; value?: JsonValue }
+const smtpResourceId = ADMIN_UI_RESOURCES.SMTP
+const smtpScopes = CEDAR_RESOURCE_SCOPES[smtpResourceId]
 
 const buildPatches = (
   originalConfig: Partial<SmtpConfiguration> | undefined,
@@ -84,22 +77,20 @@ const SmtpEditPage = () => {
   )
   const { classes } = useStyles({ isDark, themeColors })
 
-  const smtpResourceId = useMemo(() => ADMIN_UI_RESOURCES.SMTP, [])
-  const smtpScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[smtpResourceId], [smtpResourceId])
   const canReadSmtp = useMemo(
     () => hasCedarReadPermission(smtpResourceId),
-    [hasCedarReadPermission, smtpResourceId],
+    [hasCedarReadPermission],
   )
   const canWriteSmtp = useMemo(
     () => hasCedarWritePermission(smtpResourceId),
-    [hasCedarWritePermission, smtpResourceId],
+    [hasCedarWritePermission],
   )
 
   useEffect(() => {
-    if (smtpScopes && smtpScopes.length > 0) {
+    if (smtpScopes.length > 0) {
       authorizeHelper(smtpScopes)
     }
-  }, [authorizeHelper, smtpScopes])
+  }, [authorizeHelper])
 
   const testButtonEnabled = !!smtpConfiguration
 

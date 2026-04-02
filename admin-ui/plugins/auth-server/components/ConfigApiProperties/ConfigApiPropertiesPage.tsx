@@ -21,19 +21,17 @@ import { useStyles } from './styles/ConfigApiPropertiesForm.style'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/index'
 import type { JsonPatch, ModifiedFields, ApiAppConfiguration, ConfigApiAuditPayload } from './types'
 
+const configApiResourceId = ADMIN_UI_RESOURCES.ConfigApiConfiguration
+const configApiScopes = CEDAR_RESOURCE_SCOPES[configApiResourceId] || []
+
 const ConfigApiPropertiesPage = (): JSX.Element => {
   const { t } = useTranslation()
   const { logConfigApiUpdate } = useConfigApiActions()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const configApiResourceId = ADMIN_UI_RESOURCES.ConfigApiConfiguration
-  const configApiScopes = useMemo(
-    () => CEDAR_RESOURCE_SCOPES[configApiResourceId] || [],
-    [configApiResourceId],
-  )
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
   const canReadConfigApi = useMemo(
     () => hasCedarReadPermission(configApiResourceId),
-    [hasCedarReadPermission, configApiResourceId],
+    [hasCedarReadPermission],
   )
   useEffect(() => {
     if (configApiScopes.length > 0) {

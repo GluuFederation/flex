@@ -192,6 +192,29 @@ const JsonPropertyBuilderConfigApi = ({
   }
 
   if (isString(propValue) || shouldRenderAsString(schema)) {
+    const isPasswordField = propKey.toLowerCase().includes('password')
+
+    if (isPasswordField) {
+      return (
+        <>
+          <GluuInputRow
+            name={tooltipPropKey || propKey}
+            type="password"
+            lsize={lSize}
+            rsize={lSize}
+            label={getLocalizedLabelKey(propKey)}
+            value={getStringValue(propValue, schema)}
+            doc_category={doc_category}
+            doc_entry={tooltipPropKey || propKey}
+            disabled={disabled}
+            allowPasswordToggleWhenDisabled
+            placeholder={getFieldPlaceholder(t, getLocalizedLabelKey(propKey))}
+          />
+          {renderError()}
+        </>
+      )
+    }
+
     return (
       <>
         <GluuInlineInput
