@@ -1,7 +1,6 @@
 import * as Yup from 'yup'
 import { PublicKeyCredentialHints, AttestationMode } from '../types'
 
-
 export const isEveryKeyValueComplete = (
   items: Array<{ key?: string; value?: string }>,
 ): boolean => {
@@ -11,28 +10,22 @@ export const isEveryKeyValueComplete = (
   )
 }
 
-
-export const isLastKeyValueComplete = (
-  items: Array<{ key?: string; value?: string }>,
-): boolean => {
+export const isLastKeyValueComplete = (items: Array<{ key?: string; value?: string }>): boolean => {
   if (items.length === 0) return true
   const last = items[items.length - 1]
   return Boolean((last.key ?? '').trim()) && Boolean((last.value ?? '').trim())
 }
-
 
 export const isEveryStringEntryComplete = (items: string[]): boolean => {
   if (items.length === 0) return true
   return items.every((item) => Boolean((item ?? '').trim()))
 }
 
-
 export const isLastStringEntryComplete = (items: string[]): boolean => {
   if (items.length === 0) return true
   const last = items[items.length - 1]
   return Boolean((last ?? '').trim())
 }
-
 
 export const isEveryMetadataServerComplete = (
   items: Array<{ url?: string; rootCert?: string }>,
@@ -42,7 +35,6 @@ export const isEveryMetadataServerComplete = (
     (item) => Boolean((item.url ?? '').trim()) && Boolean((item.rootCert ?? '').trim()),
   )
 }
-
 
 export const isLastMetadataServerComplete = (
   items: Array<{ url?: string; rootCert?: string }>,
@@ -106,8 +98,8 @@ const staticConfigValidationSchema = Yup.object({
   requestedParties: Yup.array()
     .of(
       Yup.object().shape({
-        key: Yup.string().nullable(),
-        value: Yup.string().nullable(),
+        key: Yup.string().trim().required(EMPTY_ROW_KEY_VALUE_MSG),
+        value: Yup.string().trim().required(EMPTY_ROW_KEY_VALUE_MSG),
       }),
     )
     .test('no-empty-parties', EMPTY_ROW_KEY_VALUE_MSG, (items) => {
@@ -117,7 +109,7 @@ const staticConfigValidationSchema = Yup.object({
       )
     }),
   enabledFidoAlgorithms: Yup.array()
-    .of(Yup.string())
+    .of(Yup.string().trim().required(EMPTY_ROW_VALUE_MSG))
     .test('no-empty-algorithms', EMPTY_ROW_VALUE_MSG, (items) => {
       if (!items || items.length === 0) return true
       return items.every((item) => Boolean((item ?? '').trim()))
@@ -125,8 +117,8 @@ const staticConfigValidationSchema = Yup.object({
   metadataServers: Yup.array()
     .of(
       Yup.object().shape({
-        url: Yup.string().nullable(),
-        rootCert: Yup.string().nullable(),
+        url: Yup.string().trim().required(EMPTY_ROW_METADATA_SERVER_MSG),
+        rootCert: Yup.string().trim().required(EMPTY_ROW_METADATA_SERVER_MSG),
       }),
     )
     .test('no-empty-servers', EMPTY_ROW_METADATA_SERVER_MSG, (items) => {

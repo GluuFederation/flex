@@ -417,9 +417,10 @@ const AuthServerPropertiesPage: React.FC = () => {
     const hasPutChange = put && put.value && put.value !== acrs?.defaultAcr
     if (hasPutChange) return true
     if (patches.length === 0) return false
+    if (patches.some((p) => p.op === 'remove')) return true
     if (!baselineConfigurationRef.current) return patches.length > 0
     return JSON.stringify(formik.values) !== JSON.stringify(baselineConfigurationRef.current)
-  }, [patches.length, put, acrs?.defaultAcr, formik.values])
+  }, [patches, put, acrs?.defaultAcr, formik.values])
   const patchHandler = useCallback(
     (patch: JsonPatch) => {
       if (patch.op === 'replace' && patch.path) {
@@ -505,6 +506,7 @@ const AuthServerPropertiesPage: React.FC = () => {
         setFieldValue: (_field: string, newValues: string[]) => {
           patchHandler({ op: 'replace', path: `/${propKey}`, value: newValues })
         },
+        setFieldTouched: () => {},
       }
     }
     return adapters

@@ -5,7 +5,7 @@ export type MultiSelectOption = {
 
 export type GluuMultiSelectRowFormik = {
   setFieldValue: (field: string, value: string[]) => void
-  handleBlur?: (event: React.FocusEvent<HTMLElement>) => void
+  setFieldTouched: (field: string, isTouched?: boolean) => void
 }
 
 export type GluuMultiSelectRowProps = {
