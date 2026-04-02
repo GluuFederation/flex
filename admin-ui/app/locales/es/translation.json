@@ -1058,6 +1058,7 @@
     "add_ssa": "Agregar SSA",
     "copied": "Copiado",
     "request_timeout_title": "Tiempo de espera agotado",
+    "request_timeout_description": "La solicitud se ha terminado porque no hubo respuesta del servidor durante más de 60 segundos. Verifique su conexión de red y el estado del servidor, luego intente nuevamente.",
     "no_data_found": "No se encontraron datos",
     "no_data_available": "No hay datos disponibles",
     "no_jwks_found": "No se encontraron claves JSON Web.",

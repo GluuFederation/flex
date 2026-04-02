@@ -7,10 +7,11 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useStyles as useCommitDialogStyles } from './styles/GluuCommitDialog.style'
+import { useStyles } from './styles/GluuTimeoutModal.style'
 import GluuText from './GluuText'
 import GluuFormFooter from './GluuFormFooter'
 
-const GluuTimeoutModal = ({ description = '' }) => {
+const GluuTimeoutModal = () => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const { isTimeout } = useAppSelector((state) => state.initReducer)
@@ -19,7 +20,8 @@ const GluuTimeoutModal = ({ description = '' }) => {
   const selectedTheme = themeState?.theme ?? DEFAULT_THEME
   const isDark = selectedTheme === THEME_DARK
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
-  const { classes } = useCommitDialogStyles({ isDark, themeColors })
+  const { classes: commitClasses } = useCommitDialogStyles({ isDark, themeColors })
+  const { classes } = useStyles({ isDark, themeColors })
 
   const handleRefresh = useCallback(() => {
     dispatch(handleApiTimeout({ isTimeout: false }))
@@ -62,13 +64,13 @@ const GluuTimeoutModal = ({ description = '' }) => {
     <>
       <button
         type="button"
-        className={classes.overlay}
+        className={commitClasses.overlay}
         onClick={handler}
         onKeyDown={handleOverlayKeyDown}
         aria-label={t('actions.close')}
       />
       <div
-        className={classes.modalContainer}
+        className={`${commitClasses.modalContainer} ${classes.modalContainer}`}
         onClick={(e) => e.stopPropagation()}
         onKeyDown={handleModalKeyDown}
         role="dialog"
@@ -78,18 +80,18 @@ const GluuTimeoutModal = ({ description = '' }) => {
         <button
           type="button"
           onClick={handler}
-          className={classes.closeButton}
+          className={commitClasses.closeButton}
           aria-label={t('actions.close')}
           title={t('actions.close')}
         >
           <i className="fa fa-times" aria-hidden />
         </button>
-        <div className={classes.contentArea}>
-          <GluuText variant="h2" className={classes.title} id="timeout-modal-title">
+        <div className={commitClasses.contentArea}>
+          <GluuText variant="h2" className={commitClasses.title} id="timeout-modal-title">
             {t('messages.request_timeout_title')}
           </GluuText>
-          <GluuText variant="p" style={{ margin: 0, color: themeColors.fontColor }}>
-            {description}
+          <GluuText variant="p" className={classes.description}>
+            {t('messages.request_timeout_description')}
           </GluuText>
           <GluuFormFooter
             showApply

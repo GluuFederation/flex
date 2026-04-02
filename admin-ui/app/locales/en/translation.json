@@ -1070,6 +1070,7 @@
     "add_ssa": "Add SSA",
     "copied": "Copied",
     "request_timeout_title": "Request Timeout",
+    "request_timeout_description": "The request has been terminated as there is no response from the server for more than 60 seconds. Please check your network connection and server status, then try again.",
     "no_data_found": "No data found",
     "no_data_to_export": "No data available to export",
     "no_sessions_found": "No sessions found",

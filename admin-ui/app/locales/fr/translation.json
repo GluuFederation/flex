@@ -990,6 +990,7 @@
     "add_ssa": "Ajouter SSA",
     "copied": "Copié",
     "request_timeout_title": "Délai d'attente dépassé",
+    "request_timeout_description": "La requête a été interrompue car le serveur n'a pas répondu pendant plus de 60 secondes. Veuillez vérifier votre connexion réseau et l'état du serveur, puis réessayez.",
     "edit_acr": "Modifier ACR",
     "built_in_acr_cannot_be_edited": "L'ACR intégré ne peut pas être modifié en raison de l'absence d'identifiant (inum)",
     "no_data_found": "Aucune donnée trouvée",

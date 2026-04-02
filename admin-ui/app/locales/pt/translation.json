@@ -983,6 +983,7 @@
     "add_ssa": "Adicionar SSA",
     "copied": "Copiado",
     "request_timeout_title": "Tempo limite da solicitação",
+    "request_timeout_description": "A solicitação foi encerrada porque não houve resposta do servidor por mais de 60 segundos. Verifique sua conexão de rede e o status do servidor e tente novamente.",
     "edit_acr": "Editar ACR",
     "built_in_acr_cannot_be_edited": "O ACR integrado não pode ser editado devido à ausência do identificador (inum)",
     "no_data_found": "Nenhum dado encontrado",

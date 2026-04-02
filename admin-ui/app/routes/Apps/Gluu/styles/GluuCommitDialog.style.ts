@@ -85,6 +85,12 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       wordWrap: 'break-word',
       overflowWrap: 'break-word',
     },
+    description: {
+      margin: 0,
+      color: themeColors.fontColor,
+      fontSize: fontSizes.md,
+      lineHeight: lineHeights.normal,
+    },
     closeButton: {
       'position': 'absolute',
       'top': `${CLOSE_BUTTON_OFFSET}px`,
