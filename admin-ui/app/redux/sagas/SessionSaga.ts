@@ -1,4 +1,5 @@
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects'
+import type { SagaIterator } from 'redux-saga'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { auditLogoutLogs, auditLogoutLogsResponse } from '../features/sessionSlice'
 import { fetchApiTokenWithDefaultScopes, deleteAdminUiSession } from '../api/backend-api'
@@ -19,7 +20,7 @@ interface ApiResponse {
 
 export function* auditLogoutLogsSaga({
   payload,
-}: PayloadAction<{ message: string }>): Generator<unknown, boolean, unknown> {
+}: PayloadAction<{ message: string }>): SagaIterator<boolean> {
   if (isDevelopment) {
     console.log('Logout audit:', payload.message)
   }
@@ -55,10 +56,10 @@ export function* auditLogoutLogsSaga({
   }
 }
 
-export function* watchAuditLogoutLogs(): Generator<unknown, void, unknown> {
+export function* watchAuditLogoutLogs(): SagaIterator<void> {
   yield takeLatest(auditLogoutLogs.type, auditLogoutLogsSaga)
 }
 
-export default function* sessionSaga(): Generator<unknown, void, unknown> {
+export default function* sessionSaga(): SagaIterator<void> {
   yield all([fork(watchAuditLogoutLogs)])
 }

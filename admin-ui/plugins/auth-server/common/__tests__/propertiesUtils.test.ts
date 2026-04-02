@@ -8,7 +8,7 @@ import {
   isPatchNoOp,
   hasConfigurationChanges,
 } from '../propertiesUtils'
-import type { AppConfiguration } from '../../components/AuthServerProperties/types'
+import type { AppConfiguration, PropertyValue } from '../../components/AuthServerProperties/types'
 
 describe('toPairs', () => {
   it('pairs keys into two-column rows', () => {
@@ -71,7 +71,7 @@ describe('isSimplePropertyValue', () => {
   })
 
   it('returns false for mixed arrays', () => {
-    expect(isSimplePropertyValue([1, 'a'] as unknown as string[])).toBe(false)
+    expect(isSimplePropertyValue([1, 'a'] as PropertyValue)).toBe(false)
   })
 })
 

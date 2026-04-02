@@ -3,6 +3,7 @@ import {
   transformToFormValues,
   toJansAttribute,
 } from 'Plugins/user-claims/helper/utils'
+import type { JansAttribute } from 'JansConfigApi'
 import type { TestAttribute } from '../types/testTypes'
 
 describe('DEFAULT_ATTRIBUTE_VALIDATION', () => {
@@ -31,39 +32,39 @@ describe('transformToFormValues', () => {
   })
 
   it('maps attribute fields correctly', () => {
-    const attribute = {
+    const attribute: JansAttribute = {
       name: 'testAttr',
       displayName: 'Test Attribute',
       description: 'A test attribute',
-      status: 'ACTIVE',
-      dataType: 'STRING',
-      editType: ['ADMIN'],
-      viewType: ['ADMIN'],
+      status: 'active',
+      dataType: 'string',
+      editType: ['admin'],
+      viewType: ['admin'],
       jansHideOnDiscovery: true,
       scimCustomAttr: true,
       oxMultiValuedAttribute: false,
       custom: true,
       required: true,
-      attributeValidation: { maxLength: 100, regexp: null, minLength: 1 },
-    } as unknown as Parameters<typeof transformToFormValues>[0]
+      attributeValidation: { maxLength: 100, regexp: undefined, minLength: 1 },
+    }
 
     const result = transformToFormValues(attribute)
     expect(result.name).toBe('testAttr')
     expect(result.displayName).toBe('Test Attribute')
     expect(result.jansHideOnDiscovery).toBe(true)
-    expect(result.attributeValidation).toEqual({ maxLength: 100, regexp: null, minLength: 1 })
+    expect(result.attributeValidation).toEqual({ maxLength: 100, regexp: undefined, minLength: 1 })
   })
 
   it('uses default validation when attribute has no attributeValidation', () => {
-    const attribute = {
+    const attribute: JansAttribute = {
       name: 'noValidation',
       displayName: 'No Validation',
       description: 'desc',
-      status: 'ACTIVE',
-      dataType: 'STRING',
-      editType: ['ADMIN'],
-      viewType: ['ADMIN'],
-    } as unknown as Parameters<typeof transformToFormValues>[0]
+      status: 'active',
+      dataType: 'string',
+      editType: ['admin'],
+      viewType: ['admin'],
+    }
 
     const result = transformToFormValues(attribute)
     expect(result.attributeValidation).toEqual(DEFAULT_ATTRIBUTE_VALIDATION)
@@ -90,7 +91,7 @@ describe('toJansAttribute', () => {
 
   it('preserves values when validation is enabled', () => {
     const values = makeValues()
-    const result = toJansAttribute(values as unknown as Parameters<typeof toJansAttribute>[0], true)
+    const result = toJansAttribute(values as JansAttribute, true)
     expect(result.name).toBe('attr1')
     expect(result.displayName).toBe('Attribute 1')
     expect(result.attributeValidation).toEqual({ maxLength: 50, regexp: '^[a-z]+$', minLength: 2 })
@@ -98,10 +99,7 @@ describe('toJansAttribute', () => {
 
   it('clears validation when disabled', () => {
     const values = makeValues()
-    const result = toJansAttribute(
-      values as unknown as Parameters<typeof toJansAttribute>[0],
-      false,
-    )
+    const result = toJansAttribute(values as JansAttribute, false)
     expect(result.name).toBe('attr1')
     expect(result.attributeValidation).toBeUndefined()
   })
