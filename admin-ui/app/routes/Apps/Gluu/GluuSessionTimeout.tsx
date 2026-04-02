@@ -99,8 +99,11 @@ const SessionTimeout = ({ isAuthenticated }: SessionTimeoutProps) => {
   }, [isAuthenticated, clearTimers])
 
   useEffect(() => {
+    clearTimers()
+    setTimeoutModalOpen(false)
+    setTimeoutCountdown(0)
     return () => clearTimers()
-  }, [clearTimers])
+  }, [sessionTimeout, clearTimers])
 
   useEffect(() => {
     if (logoutAuditSucceeded === true) {

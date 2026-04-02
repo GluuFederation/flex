@@ -601,6 +601,7 @@
     "modality": "Modalidad",
     "dateAdded": "Fecha de Alta",
     "givenName": "Nombre",
+    "lastName": "Apellido",
     "sn": "Apellido",
     "mail": "Correo",
     "resources": "Recursos",
@@ -1458,6 +1459,14 @@
     "jans_link": {
       "enabled": "Esta casilla se usa para guardar y enviar los cambios. No usar a menos que el administrador del servidor haya ingresado todos los valores requeridos.",
       "useSSL": "Usa esta función si el servidor backend permite conectividad SSL."
+    },
+    "api-attribute": {
+      "name": "Nombre único del atributo.",
+      "displayName": "Nombre de visualización del atributo.",
+      "status": "Estado actual del atributo (activo o inactivo).",
+      "editType": "Determina quién puede editar este atributo (ej., admin, usuario).",
+      "viewType": "Determina quién puede ver este atributo (ej., admin, usuario).",
+      "description": "Breve descripción del propósito del atributo."
     },
     "no_category": {
       "deletable": "¿Se puede eliminar?"

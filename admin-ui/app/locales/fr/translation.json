@@ -697,6 +697,7 @@
     "modality": "Modalité",
     "dateAdded": "date ajoutée",
     "givenName": "Prénom",
+    "lastName": "Nom de famille",
     "sn": "Nom de famille",
     "mail": "Courriel",
     "status": "Statut",
@@ -1797,6 +1798,14 @@
     "jans_link": {
       "enabled": "Cette case à cocher est utilisée pour enregistrer et pousser les modifications. Ne l'utilisez que si l'administrateur du serveur a entré toutes les valeurs requises.",
       "useSSL": "Utilisez cette fonctionnalité si le serveur principal autorise la connectivité SSL."
+    },
+    "api-attribute": {
+      "name": "Nom unique de l'attribut.",
+      "displayName": "Nom d'affichage de l'attribut.",
+      "status": "Statut actuel de l'attribut (actif ou inactif).",
+      "editType": "Détermine qui peut modifier cet attribut (ex., admin, utilisateur).",
+      "viewType": "Détermine qui peut voir cet attribut (ex., admin, utilisateur).",
+      "description": "Brève description expliquant l'objectif de l'attribut."
     },
     "no_category": {
       "deletable": "Est supprimable?"

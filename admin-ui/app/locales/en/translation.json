@@ -600,6 +600,7 @@
     "modality": "Modality",
     "dateAdded": "Date Added",
     "givenName": "Given Name",
+    "lastName": "Last Name",
     "sn": "Last Name",
     "mail": "Email",
     "admin": "Admin",
@@ -1467,6 +1468,14 @@
     "jans_link": {
       "enabled": "This check-box is used to save and push the changes. Do not use this unless the server administrator has entered all the required values.",
       "useSSL": "Use this feature if the backend server allows SSL connectivity."
+    },
+    "api-attribute": {
+      "name": "Unique name of the attribute.",
+      "displayName": "User-friendly display name for the attribute.",
+      "status": "Current status of the attribute (active or inactive).",
+      "editType": "Determines who can edit this attribute (e.g., admin, user).",
+      "viewType": "Determines who can view this attribute (e.g., admin, user).",
+      "description": "Brief description explaining the purpose of the attribute."
     },
     "no_category": {
       "deletable": "Is Deletable?"

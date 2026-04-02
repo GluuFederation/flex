@@ -706,6 +706,7 @@
     "nickName": "Apelido",
     "modality": "modalidade",
     "givenName": "Nome Próprio",
+    "lastName": "Sobrenome",
     "sn": "Sobrenome",
     "mail": "E-mail",
     "dateAdded": "data adicionada",
@@ -1624,6 +1625,14 @@
     "jans_link": {
       "enabled": "Esta caixa de seleção é usada para salvar e enviar as alterações. Não use isto a menos que o administrador do servidor tenha inserido todos os valores necessários.",
       "useSSL": "Use esse recurso se o servidor de back-end permitir conectividade SSL."
+    },
+    "api-attribute": {
+      "name": "Nome exclusivo do atributo.",
+      "displayName": "Nome de exibição do atributo.",
+      "status": "Status atual do atributo (ativo ou inativo).",
+      "editType": "Determina quem pode editar este atributo (ex., admin, usuário).",
+      "viewType": "Determina quem pode visualizar este atributo (ex., admin, usuário).",
+      "description": "Breve descrição explicando a finalidade do atributo."
     },
     "no_category": {
       "deletable": "É deletável?"
