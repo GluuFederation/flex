@@ -1,3 +1,21 @@
+import { PublicKeyCredentialHints, AttestationMode } from '../types'
+import type { MultiSelectOption } from 'Routes/Apps/Gluu/types/GluuMultiSelectRow.types'
+
+export const LABEL_SIZE = 12
+export const INPUT_SIZE = 12
+
+export const HINT_OPTIONS: MultiSelectOption[] = Object.values(PublicKeyCredentialHints).map(
+  (hint) => ({
+    value: hint,
+    label: hint.charAt(0).toUpperCase() + hint.slice(1),
+  }),
+)
+
+export const ATTESTATION_MODE_OPTIONS = Object.values(AttestationMode).map((mode) => ({
+  label: mode,
+  value: mode,
+}))
+
 export const fidoConstants = {
   DOC_CATEGORY: 'fido',
   DYNAMIC: 'dynamic',
@@ -6,11 +24,11 @@ export const fidoConstants = {
   LOGGING_LEVELS: ['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL', 'OFF'],
 
   BUTTON_TEXT: {
-    ADD_CLASSES: 'actions.add_classes',
-    ADD_TYPES: 'actions.add_types',
-    ADD_PARTY: 'actions.add_party',
-    ADD_ALGORITHM: 'actions.add_algorithm',
-    ADD_METADATA_SERVER: 'actions.add_metadata_server',
+    ADD_CLASSES: 'actions.add_properties',
+    ADD_TYPES: 'actions.add_properties',
+    ADD_PARTY: 'actions.add_properties',
+    ADD_ALGORITHM: 'actions.add_properties',
+    ADD_METADATA_SERVER: 'actions.add_properties',
   } as const,
 
   FORM_FIELDS: {
@@ -42,7 +60,6 @@ export const fidoConstants = {
     SERVER_METADATA_FOLDER: 'serverMetadataFolder',
     USER_AUTO_ENROLLMENT: 'userAutoEnrollment',
     REQUESTED_PARTIES: 'requestedParties',
-    METADATA_REFRESH_INTERVAL: 'metadataRefreshInterval',
     ENABLED_FIDO_ALGORITHMS: 'enabledFidoAlgorithms',
     METADATA_SERVERS: 'metadataServers',
     DISABLE_METADATA_SERVICE: 'disableMetadataService',
@@ -80,11 +97,10 @@ export const fidoConstants = {
     SERVER_METADATA_FOLDER: 'fields.server_metadata_folder',
     USER_AUTO_ENROLLMENT: 'fields.user_auto_enrollment',
     REQUESTED_PARTIES_ID: 'fields.requested_parties_id',
-    METADATA_REFRESH_INTERVAL: 'fields.metadata_refresh_interval',
     ENABLED_FIDO_ALGORITHMS: 'fields.enabled_fido_algorithms',
     METADATA_SERVERS: 'fields.metadata_servers',
     DISABLE_METADATA_SERVICE: 'fields.disable_metadata_service',
-    HINTS: 'Hints',
+    HINTS: 'fields.hints',
     ENTERPRISE_ATTESTATION: 'fields.enterprise_attestation',
     ATTESTATION_MODE: 'fields.attestation_mode',
   } as const,
@@ -95,9 +111,4 @@ export const fidoConstants = {
   } as const,
 
   BINARY_VALUES: { TRUE: 'true', FALSE: 'false' } as const,
-
-  EMPTY_DROPDOWN_MESSAGE: {
-    ALL_AVAILABLE_HINTS_SELECTED: 'fields.allAvailableHintsSelected',
-    NO_MATCHING_OPTIONS: 'fields.noMatchingOptions',
-  } as const,
 } as const

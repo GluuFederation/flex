@@ -10,6 +10,7 @@ import { getIn } from 'formik'
 import customColors from '@/customColors'
 import { BORDER_RADIUS, CEDARLING_CONFIG_SPACING, SPACING } from '@/constants'
 import { buildKeyCandidates } from '@/utils/regex'
+import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import { useStyles } from '../AuthServerProperties/styles/JsonPropertyBuilder.style'
 import type {
   MultiSelectOption,
@@ -206,7 +207,7 @@ const JsonPropertyBuilderConfigApi = ({
           doc_category={doc_category}
           disabled={disabled}
           showSaveButtons={false}
-          placeholder={t('placeholders.type_value', { field: t(getLocalizedLabelKey(propKey)) })}
+          placeholder={getFieldPlaceholder(t, getLocalizedLabelKey(propKey))}
         />
         {renderError()}
       </>
@@ -261,6 +262,7 @@ const JsonPropertyBuilderConfigApi = ({
         if (!path) return
         handler({ op: 'replace', path, value: newValues })
       },
+      setFieldTouched: () => {},
     }),
     [handler, path],
   )

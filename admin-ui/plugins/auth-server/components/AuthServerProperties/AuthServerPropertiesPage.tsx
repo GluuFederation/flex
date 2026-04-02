@@ -38,8 +38,10 @@ import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { GluuPageContent } from '@/components'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import { buildKeyCandidates } from '@/utils/regex'
+import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import { useStyles } from './styles/AuthServerPropertiesPage.style'
 import { useAcrAudit } from '../AuthN/hooks'
 import {
@@ -60,7 +62,6 @@ import {
   formatPatchValue,
   formatPatchPath,
   isPatchNoOp,
-  hasConfigurationChanges,
 } from 'Plugins/auth-server/common/propertiesUtils'
 import { createAppConfigurationSchema } from './Properties/utils/validations'
 import type {
@@ -90,7 +91,7 @@ const AuthServerPropertiesPage: React.FC = () => {
     [themeState?.theme],
   )
   const { classes } = useStyles({ isDark, themeColors })
-  const { hasCedarWritePermission, authorizeHelper } = useCedarling()
+  const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
   const { logAcrUpdate } = useAcrAudit()
   const {
     data: serverConfigurationData,
@@ -118,6 +119,10 @@ const AuthServerPropertiesPage: React.FC = () => {
   const propertiesScopes = useMemo(
     () => CEDAR_RESOURCE_SCOPES[propertiesResourceId] || [],
     [propertiesResourceId],
+  )
+  const canReadProperties = useMemo(
+    () => hasCedarReadPermission(propertiesResourceId),
+    [hasCedarReadPermission, propertiesResourceId],
   )
   const canWriteProperties = useMemo(
     () => hasCedarWritePermission(propertiesResourceId),
@@ -392,8 +397,11 @@ const AuthServerPropertiesPage: React.FC = () => {
   const hasChanges = useMemo(() => {
     const hasPutChange = put && put.value && put.value !== acrs?.defaultAcr
     if (hasPutChange) return true
-    return hasConfigurationChanges(patches.length, formik.values, baselineConfigurationRef.current)
-  }, [patches.length, put, acrs?.defaultAcr, formik.values])
+    if (patches.length === 0) return false
+    if (patches.some((p) => p.op === 'remove')) return true
+    if (!baselineConfigurationRef.current) return patches.length > 0
+    return JSON.stringify(formik.values) !== JSON.stringify(baselineConfigurationRef.current)
+  }, [patches, put, acrs?.defaultAcr, formik.values])
   const patchHandler = useCallback(
     (patch: JsonPatch) => {
       if (patch.op === 'replace' && patch.path) {
@@ -482,6 +490,7 @@ const AuthServerPropertiesPage: React.FC = () => {
         setFieldValue: (_field: string, newValues: string[]) => {
           patchHandler({ op: 'replace', path: `/${propKey}`, value: newValues })
         },
+        setFieldTouched: () => {},
       }
     }
     return adapters
@@ -546,7 +555,7 @@ const AuthServerPropertiesPage: React.FC = () => {
           handler={patchHandler}
           path={`/${model.propKey}`}
           showSaveButtons={false}
-          placeholder={t('placeholders.type_value', { field: t(model.label) })}
+          placeholder={getFieldPlaceholder(t, model.label)}
         />
       )
     },
@@ -601,115 +610,119 @@ const AuthServerPropertiesPage: React.FC = () => {
         patchJsonPropertiesMutation.isPending
       }
     >
-      <GluuPageContent>
-        <div className={classes.searchCard}>
-          <div className={classes.searchCardContent}>
-            <GluuSearchToolbar
-              searchLabel={`${t('actions.search')}:`}
-              searchValue={search}
-              searchPlaceholder={t('placeholders.search_pattern')}
-              searchOnType
-              searchDebounceMs={300}
-              onSearch={handleSearchChange}
-              onSearchSubmit={handleSearchChange}
-            />
+      <GluuViewWrapper canShow={canReadProperties}>
+        <GluuPageContent>
+          <div className={classes.searchCard}>
+            <div className={classes.searchCardContent}>
+              <GluuSearchToolbar
+                searchLabel={`${t('actions.search')}:`}
+                searchValue={search}
+                searchPlaceholder={t('placeholders.search_pattern')}
+                searchOnType
+                searchDebounceMs={300}
+                onSearch={handleSearchChange}
+                onSearchSubmit={handleSearchChange}
+              />
+            </div>
           </div>
-        </div>
-        <Card className={classes.pageCard}>
-          <CardBody>
-            <Form
-              onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
-                e.preventDefault()
-                toggle()
-              }}
-              className={classes.form}
-            >
-              <div className={classes.formContent}>
-                <div className={classes.fieldsGrid}>
-                  {simpleFieldsContent}
+          <Card className={classes.pageCard}>
+            <CardBody>
+              <Form
+                onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+                  e.preventDefault()
+                  toggle()
+                }}
+                className={classes.form}
+              >
+                <div className={classes.formContent}>
+                  <div className={classes.fieldsGrid}>
+                    {simpleFieldsContent}
 
-                  {isConfigLoaded &&
-                    (t(DEFAULT_ACR_LABEL_KEY).toLowerCase().includes(deferredSearch) ||
-                      generateLabel(ACR_CHALLENGE_KEY).toLowerCase().includes(deferredSearch)) && (
-                      <React.Fragment key={`acr-row-${resetKey}`}>
-                        <div className={classes.fieldItem}>
-                          <DefaultAcrInput
-                            name="defaultAcr"
-                            lsize={12}
-                            rsize={12}
-                            label={DEFAULT_ACR_LABEL_KEY}
-                            handler={putHandler}
-                            value={acrs?.defaultAcr}
-                            options={authScripts}
-                            path={DEFAULT_ACR_PATH}
-                            showSaveButtons={false}
-                          />
-                        </div>
-                        <div className={classes.fieldItem}>
-                          {simpleFieldModels[ACR_CHALLENGE_KEY] &&
-                            renderSimpleField(ACR_CHALLENGE_KEY)}
-                        </div>
-                      </React.Fragment>
-                    )}
+                    {isConfigLoaded &&
+                      (t(DEFAULT_ACR_LABEL_KEY).toLowerCase().includes(deferredSearch) ||
+                        generateLabel(ACR_CHALLENGE_KEY)
+                          .toLowerCase()
+                          .includes(deferredSearch)) && (
+                        <React.Fragment key={`acr-row-${resetKey}`}>
+                          <div className={classes.fieldItem}>
+                            <DefaultAcrInput
+                              name="defaultAcr"
+                              lsize={12}
+                              rsize={12}
+                              label={DEFAULT_ACR_LABEL_KEY}
+                              handler={putHandler}
+                              value={acrs?.defaultAcr}
+                              options={authScripts}
+                              path={DEFAULT_ACR_PATH}
+                              showSaveButtons={false}
+                            />
+                          </div>
+                          <div className={classes.fieldItem}>
+                            {simpleFieldModels[ACR_CHALLENGE_KEY] &&
+                              renderSimpleField(ACR_CHALLENGE_KEY)}
+                          </div>
+                        </React.Fragment>
+                      )}
 
-                  {complexEntries.map(({ propKey, propValue }) => (
-                    <div
-                      key={`complex-${propKey}-${resetKey}`}
-                      className={classes.fieldItemFullWidth}
-                    >
-                      <PropertyBuilder
-                        isRenamedKey={isRenamedKey(propKey, t(DISCOVERY_DENY_KEYS_I18N))}
-                        propKey={propKey}
-                        propValue={propValue}
-                        lSize={lSize}
-                        handler={patchHandler}
-                        errors={formik.errors}
-                        touched={formik.touched}
-                        formResetKey={resetKey}
-                      />
-                    </div>
-                  ))}
+                    {complexEntries.map(({ propKey, propValue }) => (
+                      <div
+                        key={`complex-${propKey}-${resetKey}`}
+                        className={classes.fieldItemFullWidth}
+                      >
+                        <PropertyBuilder
+                          isRenamedKey={isRenamedKey(propKey, t(DISCOVERY_DENY_KEYS_I18N))}
+                          propKey={propKey}
+                          propValue={propValue}
+                          lSize={lSize}
+                          handler={patchHandler}
+                          errors={formik.errors}
+                          touched={formik.touched}
+                          formResetKey={resetKey}
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-              {canWriteProperties && (
-                <div className={classes.stickyFooter}>
-                  <GluuThemeFormFooter
-                    showBack
-                    onBack={handleBack}
-                    backButtonLabel={t('actions.back')}
-                    showCancel
-                    onCancel={handleCancel}
-                    disableCancel={!hasChanges}
-                    showApply
-                    disableApply={!hasChanges}
-                    hideDivider
-                    applyButtonType="button"
-                    onApply={toggle}
-                  />
-                </div>
-              )}
-            </Form>
-          </CardBody>
-          {errorMessage && (
-            <GluuText
-              variant="div"
-              className={`alert alert-danger ${classes.errorAlert}`}
-              role="alert"
-              disableThemeColor
-            >
-              {errorMessage}
-            </GluuText>
-          )}
-          {canWriteProperties && (
-            <GluuCommitDialog
-              handler={toggle}
-              modal={modal}
-              operations={operations}
-              onAccept={handleSubmit}
-            />
-          )}
-        </Card>
-      </GluuPageContent>
+                {canWriteProperties && (
+                  <div className={classes.stickyFooter}>
+                    <GluuThemeFormFooter
+                      showBack
+                      onBack={handleBack}
+                      backButtonLabel={t('actions.back')}
+                      showCancel
+                      onCancel={handleCancel}
+                      disableCancel={!hasChanges}
+                      showApply
+                      disableApply={!hasChanges}
+                      hideDivider
+                      applyButtonType="button"
+                      onApply={toggle}
+                    />
+                  </div>
+                )}
+              </Form>
+            </CardBody>
+            {errorMessage && (
+              <GluuText
+                variant="div"
+                className={`alert alert-danger ${classes.errorAlert}`}
+                role="alert"
+                disableThemeColor
+              >
+                {errorMessage}
+              </GluuText>
+            )}
+            {canWriteProperties && (
+              <GluuCommitDialog
+                handler={toggle}
+                modal={modal}
+                operations={operations}
+                onAccept={handleSubmit}
+              />
+            )}
+          </Card>
+        </GluuPageContent>
+      </GluuViewWrapper>
     </GluuLoader>
   )
 }

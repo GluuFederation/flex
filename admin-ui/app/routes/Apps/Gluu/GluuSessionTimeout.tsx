@@ -114,7 +114,7 @@ const SessionTimeout = ({ isAuthenticated }: SessionTimeoutProps) => {
   return (
     <>
       <IdleTimer
-        key={sessionTimeout}
+        key={`${sessionTimeout}-${isAuthenticated}`}
         onActive={onActive}
         onIdle={onIdle}
         debounce={250}

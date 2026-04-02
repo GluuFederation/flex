@@ -23,7 +23,7 @@ const CONTENT_WIDTH = 898
 const CONTENT_GAP = 16
 const TITLE_BOTTOM_SPACING = 24
 const TEXTAREA_HEIGHT = 161
-const OPERATIONS_MAX_HEIGHT = 140
+const OPERATIONS_MAX_HEIGHT = 240
 const CLOSE_BUTTON_SIZE = 32
 const CLOSE_BUTTON_OFFSET = 16
 const BUTTON_MIN_HEIGHT = '40px'
@@ -169,8 +169,8 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
     },
     operationRow: {
       display: 'grid',
-      gridTemplateColumns: 'auto 2fr auto 1fr',
-      alignItems: 'center',
+      gridTemplateColumns: 'auto 1fr auto 2fr',
+      alignItems: 'start',
       columnGap: 12,
       paddingBottom: 4,
     },
@@ -193,9 +193,9 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       padding: '4px 10px',
       width: 'fit-content',
       maxWidth: '100%',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap' as const,
+      overflowWrap: 'break-word' as const,
+      wordBreak: 'break-word' as const,
+      whiteSpace: 'normal' as const,
     },
     buttonRow: {
       display: 'flex',

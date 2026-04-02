@@ -380,7 +380,7 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
 
     return {
       simpleEntryPairs: [...toPairs(inputs), ...toPairs(booleans)],
-      arrayEntries: arrays,
+      arrayEntries: toPairs(arrays),
       complexEntries: complex,
     }
   }, [filteredEntries])
@@ -433,19 +433,37 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
               </React.Fragment>
             ))}
 
-            {arrayEntries.map((propKey) => (
-              <div key={`array-${propKey}-${resetKey}`} className={classes.fieldItemFullWidth}>
-                <JsonPropertyBuilderConfigApi
-                  propKey={propKey}
-                  propValue={currentValues[propKey as keyof ApiAppConfiguration] as PropertyValue}
-                  lSize={12}
-                  handler={patchHandler}
-                  doc_category="config_api_properties"
-                  disabled={readOnlySet.has(propKey)}
-                  errors={formik.errors}
-                  touched={formik.touched}
-                />
-              </div>
+            {arrayEntries.map(([leftKey, rightKey]) => (
+              <React.Fragment key={`array-${leftKey}-${rightKey ?? 'none'}-${resetKey}`}>
+                <div className={classes.fieldItem}>
+                  <JsonPropertyBuilderConfigApi
+                    propKey={leftKey}
+                    propValue={currentValues[leftKey as keyof ApiAppConfiguration] as PropertyValue}
+                    lSize={12}
+                    handler={patchHandler}
+                    doc_category="config_api_properties"
+                    disabled={readOnlySet.has(leftKey)}
+                    errors={formik.errors}
+                    touched={formik.touched}
+                  />
+                </div>
+                <div className={classes.fieldItem}>
+                  {rightKey && (
+                    <JsonPropertyBuilderConfigApi
+                      propKey={rightKey}
+                      propValue={
+                        currentValues[rightKey as keyof ApiAppConfiguration] as PropertyValue
+                      }
+                      lSize={12}
+                      handler={patchHandler}
+                      doc_category="config_api_properties"
+                      disabled={readOnlySet.has(rightKey)}
+                      errors={formik.errors}
+                      touched={formik.touched}
+                    />
+                  )}
+                </div>
+              </React.Fragment>
             ))}
 
             {complexEntries.map(({ propKey, propValue }) => (

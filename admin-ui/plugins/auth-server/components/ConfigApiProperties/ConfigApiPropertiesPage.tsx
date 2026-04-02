@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, useEffect } from 'react'
 import ConfigApiPropertiesForm from './ConfigApiPropertiesForm'
 import { Card, CardBody } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -12,6 +12,10 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import { GluuPageContent } from '@/components'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import { useCedarling } from '@/cedarling'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import { useStyles } from './styles/ConfigApiPropertiesForm.style'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/index'
@@ -21,6 +25,21 @@ const ConfigApiPropertiesPage = (): JSX.Element => {
   const { t } = useTranslation()
   const { logConfigApiUpdate } = useConfigApiActions()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const configApiResourceId = ADMIN_UI_RESOURCES.ConfigApiConfiguration
+  const configApiScopes = useMemo(
+    () => CEDAR_RESOURCE_SCOPES[configApiResourceId] || [],
+    [configApiResourceId],
+  )
+  const { hasCedarReadPermission, authorizeHelper } = useCedarling()
+  const canReadConfigApi = useMemo(
+    () => hasCedarReadPermission(configApiResourceId),
+    [hasCedarReadPermission, configApiResourceId],
+  )
+  useEffect(() => {
+    if (configApiScopes.length > 0) {
+      authorizeHelper(configApiScopes)
+    }
+  }, [authorizeHelper, configApiScopes])
   const { state: themeState } = useTheme()
 
   const { themeColors, isDark } = useMemo(
@@ -104,40 +123,42 @@ const ConfigApiPropertiesPage = (): JSX.Element => {
 
   return (
     <GluuLoader blocking={loading}>
-      <GluuPageContent>
-        <div className={classes.searchCard}>
-          <div className={classes.searchCardContent}>
-            <GluuSearchToolbar
-              searchLabel={`${t('actions.search')}:`}
-              searchValue={search}
-              searchPlaceholder={t('placeholders.search_pattern')}
-              searchOnType
-              searchDebounceMs={300}
-              onSearch={handleSearchChange}
-              onSearchSubmit={handleSearchChange}
-            />
+      <GluuViewWrapper canShow={canReadConfigApi}>
+        <GluuPageContent>
+          <div className={classes.searchCard}>
+            <div className={classes.searchCardContent}>
+              <GluuSearchToolbar
+                searchLabel={`${t('actions.search')}:`}
+                searchValue={search}
+                searchPlaceholder={t('placeholders.search_pattern')}
+                searchOnType
+                searchDebounceMs={300}
+                onSearch={handleSearchChange}
+                onSearchSubmit={handleSearchChange}
+              />
+            </div>
           </div>
-        </div>
-        <Card className={classes.pageCard}>
-          <CardBody>
-            <ConfigApiPropertiesForm
-              configuration={(configuration as ApiAppConfiguration) ?? DEFAULT_CONFIG_API_CONFIG}
-              onSubmit={handleSubmit}
-              search={search}
-            />
-            {errorMessage && (
-              <GluuText
-                variant="div"
-                className={`alert alert-danger ${classes.errorAlert}`}
-                role="alert"
-                disableThemeColor
-              >
-                {errorMessage}
-              </GluuText>
-            )}
-          </CardBody>
-        </Card>
-      </GluuPageContent>
+          <Card className={classes.pageCard}>
+            <CardBody>
+              <ConfigApiPropertiesForm
+                configuration={(configuration as ApiAppConfiguration) ?? DEFAULT_CONFIG_API_CONFIG}
+                onSubmit={handleSubmit}
+                search={search}
+              />
+              {errorMessage && (
+                <GluuText
+                  variant="div"
+                  className={`alert alert-danger ${classes.errorAlert}`}
+                  role="alert"
+                  disableThemeColor
+                >
+                  {errorMessage}
+                </GluuText>
+              )}
+            </CardBody>
+          </Card>
+        </GluuPageContent>
+      </GluuViewWrapper>
     </GluuLoader>
   )
 }

@@ -148,12 +148,7 @@ const GluuMultiSelectRow: React.FC<GluuMultiSelectRowProps> = ({
           <div
             className={triggerClasses}
             onClick={toggleDropdown}
-            onBlur={(e) => {
-              if (formik.handleBlur) {
-                e.currentTarget.setAttribute('name', name)
-                formik.handleBlur(e)
-              }
-            }}
+            onBlur={() => formik.setFieldTouched(name, true)}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 if ((e.target as HTMLElement).closest('button')) return

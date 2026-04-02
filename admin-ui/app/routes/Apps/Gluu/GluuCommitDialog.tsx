@@ -199,8 +199,8 @@ const GluuCommitDialog = ({
                 <GluuText variant="h5" className={classes.operationsTitle}>
                   {t('messages.list_of_changes')}
                 </GluuText>
-                {operations.map((operation) => (
-                  <div key={operation.path} className={classes.operationRow}>
+                {operations.map((operation, index) => (
+                  <div key={`${operation.path}-${index}`} className={classes.operationRow}>
                     <span className={classes.operationLabel}>{t('set')}</span>
                     <span className={classes.operationBadge}>{operation.path}</span>
                     <span className={classes.operationLabel}>{t('to')}</span>
