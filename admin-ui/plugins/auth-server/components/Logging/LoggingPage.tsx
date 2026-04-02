@@ -36,6 +36,7 @@ import { useStyles } from './styles/LoggingPage.style'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 const LOGGING_RESOURCE_ID = ADMIN_UI_RESOURCES.Logging
+const LOGGING_SCOPES = CEDAR_RESOURCE_SCOPES[LOGGING_RESOURCE_ID] || []
 
 const FORM_STYLE: React.CSSProperties = {
   display: 'flex',
@@ -58,8 +59,6 @@ const LoggingPage = (): React.ReactElement => {
   const updateLoggingMutation = useUpdateLoggingConfig()
 
   const loading = queryLoading || updateLoggingMutation.isPending
-
-  const loggingScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[LOGGING_RESOURCE_ID] || [], [])
 
   const canReadLogging = useMemo(
     () => !!hasCedarReadPermission(LOGGING_RESOURCE_ID),
@@ -97,10 +96,10 @@ const LoggingPage = (): React.ReactElement => {
   }, [navigateBack])
 
   useEffect(() => {
-    if (loggingScopes && loggingScopes.length > 0) {
-      authorizeHelper(loggingScopes)
+    if (LOGGING_SCOPES.length > 0) {
+      authorizeHelper(LOGGING_SCOPES)
     }
-  }, [authorizeHelper, loggingScopes])
+  }, [authorizeHelper])
 
   const initialValues: LoggingFormValues = useMemo(
     () => getLoggingInitialValues(logging),

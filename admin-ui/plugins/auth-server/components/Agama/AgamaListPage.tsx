@@ -56,7 +56,10 @@ const dateTimeFormatOptions: Intl.DateTimeFormatOptions = {
   minute: '2-digit',
 }
 
-function AgamaListPage(): React.ReactElement {
+const authResourceId = ADMIN_UI_RESOURCES.Authentication
+const authScopes = CEDAR_RESOURCE_SCOPES[authResourceId] || []
+
+const AgamaListPage: React.FC = () => {
   const {
     hasCedarReadPermission,
     hasCedarWritePermission,
@@ -95,11 +98,9 @@ function AgamaListPage(): React.ReactElement {
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
 
-  const authResourceId = useMemo(() => ADMIN_UI_RESOURCES.Authentication, [])
-  const authScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[authResourceId] || [], [authResourceId])
   const canReadAuth = useMemo(
     () => hasCedarReadPermission(authResourceId),
-    [hasCedarReadPermission, authResourceId],
+    [hasCedarReadPermission],
   )
 
   const { data: configuration = {}, isLoading: isConfigLoading } = useAuthServerJsonPropertiesQuery(
@@ -159,10 +160,10 @@ function AgamaListPage(): React.ReactElement {
   )
 
   useEffect(() => {
-    if (authScopes && authScopes.length > 0) {
+    if (authScopes.length > 0) {
       authorizeHelper(authScopes)
     }
-  }, [authorizeHelper, authScopes])
+  }, [authorizeHelper])
 
   useEffect(() => {
     if (agamaRepositoriesData) {
