@@ -206,20 +206,6 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
           </div>
 
           <div className={classes.fieldItem}>
-            <GluuSelectRow
-              label={fidoConstants.LABELS.LOGGING_LEVEL}
-              name={fidoConstants.FORM_FIELDS.LOGGING_LEVEL}
-              value={formik.values.loggingLevel}
-              values={[...fidoConstants.LOGGING_LEVELS]}
-              formik={formik}
-              lsize={LABEL_SIZE}
-              rsize={INPUT_SIZE}
-              showError={!!(formik.errors.loggingLevel && formik.touched.loggingLevel)}
-              errorMessage={formik.errors.loggingLevel}
-            />
-          </div>
-
-          <div className={classes.fieldItem}>
             <GluuInputRow
               label={fidoConstants.LABELS.LOGGING_LAYOUT}
               name={fidoConstants.FORM_FIELDS.LOGGING_LAYOUT}
@@ -264,6 +250,20 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
                 )
               }
               errorMessage={formik.errors.metricReporterKeepDataDays}
+            />
+          </div>
+
+          <div className={classes.fieldItem}>
+            <GluuSelectRow
+              label={fidoConstants.LABELS.LOGGING_LEVEL}
+              name={fidoConstants.FORM_FIELDS.LOGGING_LEVEL}
+              value={formik.values.loggingLevel}
+              values={[...fidoConstants.LOGGING_LEVELS]}
+              formik={formik}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
+              showError={!!(formik.errors.loggingLevel && formik.touched.loggingLevel)}
+              errorMessage={formik.errors.loggingLevel}
             />
           </div>
 

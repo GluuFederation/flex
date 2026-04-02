@@ -112,7 +112,6 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
     [formik, readOnly],
   )
 
-
   const requestedParties = formik.values.requestedParties || []
 
   const addRequestedParty = useCallback(() => {
@@ -136,7 +135,6 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
     },
     [formik, requestedParties],
   )
-
 
   const enabledFidoAlgorithms = formik.values.enabledFidoAlgorithms || []
 
@@ -162,7 +160,6 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
     [formik, enabledFidoAlgorithms],
   )
 
-
   const metadataServers = formik.values.metadataServers || []
 
   const addMetadataServer = useCallback(() => {
@@ -187,11 +184,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
     [formik, metadataServers],
   )
 
-
-  const canAddParty = useMemo(
-    () => isLastKeyValueComplete(requestedParties),
-    [requestedParties],
-  )
+  const canAddParty = useMemo(() => isLastKeyValueComplete(requestedParties), [requestedParties])
   const canAddAlgorithm = useMemo(
     () => isLastStringEntryComplete(enabledFidoAlgorithms),
     [enabledFidoAlgorithms],
@@ -200,7 +193,6 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
     () => isLastMetadataServerComplete(metadataServers),
     [metadataServers],
   )
-
 
   const partiesError = formik.errors.requestedParties
   const showPartiesError = typeof partiesError === 'string' && Boolean(partiesError)
@@ -317,6 +309,24 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
             />
           </div>
 
+          <div className={classes.fieldItemFullWidth}>
+            <GluuSelectRow
+              label={fidoConstants.LABELS.ATTESTATION_MODE}
+              name={fidoConstants.FORM_FIELDS.ATTESTATION_MODE}
+              value={formik.values.attestationMode || ''}
+              formik={formik}
+              values={ATTESTATION_MODE_OPTIONS}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
+              required={true}
+              showError={!!(formik.errors.attestationMode && formik.touched.attestationMode)}
+              errorMessage={formik.errors.attestationMode}
+              handleChange={(_e) => {
+                formik.setFieldTouched(fidoConstants.FORM_FIELDS.ATTESTATION_MODE, true, false)
+              }}
+            />
+          </div>
+
           <div className={classes.fieldItem}>
             <GluuToggleRow
               label={fidoConstants.LABELS.USER_AUTO_ENROLLMENT}
@@ -349,24 +359,6 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               rsize={INPUT_SIZE}
               required
               doc_category={fidoConstants.DOC_CATEGORY}
-            />
-          </div>
-
-          <div className={classes.fieldItemFullWidth}>
-            <GluuSelectRow
-              label={fidoConstants.LABELS.ATTESTATION_MODE}
-              name={fidoConstants.FORM_FIELDS.ATTESTATION_MODE}
-              value={formik.values.attestationMode || ''}
-              formik={formik}
-              values={ATTESTATION_MODE_OPTIONS}
-              lsize={LABEL_SIZE}
-              rsize={INPUT_SIZE}
-              required={true}
-              showError={!!(formik.errors.attestationMode && formik.touched.attestationMode)}
-              errorMessage={formik.errors.attestationMode}
-              handleChange={(_e) => {
-                formik.setFieldTouched(fidoConstants.FORM_FIELDS.ATTESTATION_MODE, true, false)
-              }}
             />
           </div>
         </div>
