@@ -216,11 +216,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
               required
-              showError={
-                !!(
-                  formik.errors.authenticatorCertsFolder && formik.touched.authenticatorCertsFolder
-                )
-              }
+              showError={!!formik.errors.authenticatorCertsFolder}
               errorMessage={formik.errors.authenticatorCertsFolder}
             />
           </div>
@@ -234,7 +230,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
               required
-              showError={!!(formik.errors.mdsCertsFolder && formik.touched.mdsCertsFolder)}
+              showError={!!formik.errors.mdsCertsFolder}
               errorMessage={formik.errors.mdsCertsFolder}
             />
           </div>
@@ -248,7 +244,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
               required
-              showError={!!(formik.errors.mdsTocsFolder && formik.touched.mdsTocsFolder)}
+              showError={!!formik.errors.mdsTocsFolder}
               errorMessage={formik.errors.mdsTocsFolder}
             />
           </div>
@@ -262,9 +258,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
               required
-              showError={
-                !!(formik.errors.serverMetadataFolder && formik.touched.serverMetadataFolder)
-              }
+              showError={!!formik.errors.serverMetadataFolder}
               errorMessage={formik.errors.serverMetadataFolder}
             />
           </div>
@@ -279,12 +273,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
               required
-              showError={
-                !!(
-                  formik.errors.unfinishedRequestExpiration &&
-                  formik.touched.unfinishedRequestExpiration
-                )
-              }
+              showError={!!formik.errors.unfinishedRequestExpiration}
               errorMessage={formik.errors.unfinishedRequestExpiration}
             />
           </div>
@@ -299,12 +288,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
               required
-              showError={
-                !!(
-                  formik.errors.authenticationHistoryExpiration &&
-                  formik.touched.authenticationHistoryExpiration
-                )
-              }
+              showError={!!formik.errors.authenticationHistoryExpiration}
               errorMessage={formik.errors.authenticationHistoryExpiration}
             />
           </div>
@@ -319,7 +303,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
               required={true}
-              showError={!!(formik.errors.attestationMode && formik.touched.attestationMode)}
+              showError={!!formik.errors.attestationMode}
               errorMessage={formik.errors.attestationMode}
               handleChange={(_e) => {
                 formik.setFieldTouched(fidoConstants.FORM_FIELDS.ATTESTATION_MODE, true, false)
@@ -552,7 +536,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
             lsize={LABEL_SIZE}
             rsize={INPUT_SIZE}
             required
-            showError={!!(formik.errors.hints && formik.touched.hints)}
+            showError={!!formik.errors.hints}
             errorMessage={formik.errors.hints as string}
             doc_category={fidoConstants.DOC_CATEGORY}
             helperText={t('messages.multi_select_hint')}

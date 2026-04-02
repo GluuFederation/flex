@@ -98,8 +98,8 @@ const staticConfigValidationSchema = Yup.object({
   requestedParties: Yup.array()
     .of(
       Yup.object().shape({
-        key: Yup.string().trim().required(EMPTY_ROW_KEY_VALUE_MSG),
-        value: Yup.string().trim().required(EMPTY_ROW_KEY_VALUE_MSG),
+        key: Yup.string().nullable(),
+        value: Yup.string().nullable(),
       }),
     )
     .test('no-empty-parties', EMPTY_ROW_KEY_VALUE_MSG, (items) => {
@@ -109,7 +109,7 @@ const staticConfigValidationSchema = Yup.object({
       )
     }),
   enabledFidoAlgorithms: Yup.array()
-    .of(Yup.string().trim().required(EMPTY_ROW_VALUE_MSG))
+    .of(Yup.string())
     .test('no-empty-algorithms', EMPTY_ROW_VALUE_MSG, (items) => {
       if (!items || items.length === 0) return true
       return items.every((item) => Boolean((item ?? '').trim()))
@@ -117,8 +117,8 @@ const staticConfigValidationSchema = Yup.object({
   metadataServers: Yup.array()
     .of(
       Yup.object().shape({
-        url: Yup.string().trim().required(EMPTY_ROW_METADATA_SERVER_MSG),
-        rootCert: Yup.string().trim().required(EMPTY_ROW_METADATA_SERVER_MSG),
+        url: Yup.string().nullable(),
+        rootCert: Yup.string().nullable(),
       }),
     )
     .test('no-empty-servers', EMPTY_ROW_METADATA_SERVER_MSG, (items) => {

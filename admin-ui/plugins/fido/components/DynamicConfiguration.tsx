@@ -151,7 +151,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
               required
-              showError={!!(formik.errors.issuer && formik.touched.issuer)}
+              showError={!!formik.errors.issuer}
               errorMessage={formik.errors.issuer}
             />
           </div>
@@ -165,7 +165,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
               required
-              showError={!!(formik.errors.baseEndpoint && formik.touched.baseEndpoint)}
+              showError={!!formik.errors.baseEndpoint}
               errorMessage={formik.errors.baseEndpoint}
             />
           </div>
@@ -178,9 +178,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
-              showError={
-                !!(formik.errors.cleanServiceInterval && formik.touched.cleanServiceInterval)
-              }
+              showError={!!formik.errors.cleanServiceInterval}
               errorMessage={formik.errors.cleanServiceInterval}
               type="number"
             />
@@ -194,12 +192,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
-              showError={
-                !!(
-                  formik.errors.cleanServiceBatchChunkSize &&
-                  formik.touched.cleanServiceBatchChunkSize
-                )
-              }
+              showError={!!formik.errors.cleanServiceBatchChunkSize}
               errorMessage={formik.errors.cleanServiceBatchChunkSize}
               type="number"
             />
@@ -213,7 +206,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
-              showError={!!(formik.errors.loggingLayout && formik.touched.loggingLayout)}
+              showError={!!formik.errors.loggingLayout}
               errorMessage={formik.errors.loggingLayout}
             />
           </div>
@@ -227,9 +220,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
-              showError={
-                !!(formik.errors.metricReporterInterval && formik.touched.metricReporterInterval)
-              }
+              showError={!!formik.errors.metricReporterInterval}
               errorMessage={formik.errors.metricReporterInterval}
             />
           </div>
@@ -243,12 +234,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
-              showError={
-                !!(
-                  formik.errors.metricReporterKeepDataDays &&
-                  formik.touched.metricReporterKeepDataDays
-                )
-              }
+              showError={!!formik.errors.metricReporterKeepDataDays}
               errorMessage={formik.errors.metricReporterKeepDataDays}
             />
           </div>
@@ -262,7 +248,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
-              showError={!!(formik.errors.loggingLevel && formik.touched.loggingLevel)}
+              showError={!!formik.errors.loggingLevel}
               errorMessage={formik.errors.loggingLevel}
             />
           </div>
@@ -353,12 +339,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
-              showError={
-                !!(
-                  formik.errors.fido2MetricsRetentionDays &&
-                  formik.touched.fido2MetricsRetentionDays
-                )
-              }
+              showError={!!formik.errors.fido2MetricsRetentionDays}
               errorMessage={formik.errors.fido2MetricsRetentionDays}
             />
           </div>
