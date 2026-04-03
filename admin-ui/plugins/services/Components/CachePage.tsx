@@ -48,6 +48,7 @@ import {
   isMemcachedCache,
   isRedisCache,
   isNativePersistenceCache,
+  buildCacheChangedFieldOperations,
   CACHE_PROVIDER_OPTIONS,
 } from '../helper'
 import { useStyles } from './styles/CachePage.style'
@@ -258,6 +259,18 @@ const CachePage: React.FC = () => {
     toggle()
   }, [toggle])
 
+  const commitOperations = useMemo(
+    () => buildCacheChangedFieldOperations(initialValues, formik.values, t),
+    [initialValues, formik.values, t],
+  )
+
+  const submitForm = useCallback(
+    (_userMessage: string) => {
+      formik.handleSubmit()
+    },
+    [formik],
+  )
+
   const cacheProviderType = formik.values.cacheProviderType
 
   const renderSectionTitle = (title: string) => (
@@ -373,11 +386,9 @@ const CachePage: React.FC = () => {
               <GluuCommitDialog
                 handler={toggle}
                 modal={modal}
-                onAccept={() => {
-                  toggle()
-                  formik.handleSubmit()
-                }}
+                onAccept={submitForm}
                 formik={formik}
+                operations={commitOperations}
               />
             </div>
           </div>

@@ -76,7 +76,7 @@ export const useStyles = makeStyles<CachePageStylesParams>()((
     formSection: {
       display: 'flex',
       flexDirection: 'column',
-      gap: 0,
+      gap: SPACING.SECTION_GAP,
       width: '100%',
     },
     fieldsGrid: {
@@ -178,7 +178,7 @@ export const useStyles = makeStyles<CachePageStylesParams>()((
     },
     sectionBox: {
       'backgroundColor': sectionBoxBg,
-      'borderRadius': BORDER_RADIUS.DEFAULT,
+      'borderRadius': BORDER_RADIUS.SMALL,
       'border': `1px solid ${sectionBorderColor}`,
       'padding': `${SECTION_BOX_TOP_PADDING}px ${SPACING.CARD_PADDING}px ${SPACING.CARD_PADDING}px`,
       'width': '100%',
