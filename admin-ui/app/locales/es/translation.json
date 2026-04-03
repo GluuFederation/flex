@@ -20,18 +20,15 @@
     "add_mapping": "Agregar mapeo",
     "add_header": "Agregar encabezado",
     "add_property": "Agregar propiedad",
-    "add_party": "Agregar parte",
-    "add_types": "Agregar tipos",
     "add_server": "Agregar servidor",
     "add_base_dn": "Agregar base DN",
     "change_bind_password": "Cambiar contraseña de enlace",
     "set_password": "Establecer contraseña",
-    "add_classes": "Agregar clases",
-    "add_algorithm": "Agregar Algoritmo",
-    "add_metadata_server": "Agregar Servidor de Metadatos",
+    "add_properties": "Agregar Propiedades",
     "configuration_copied": "Configuración copiada",
     "copy_configuration": "Copiar configuración",
     "apply": "Aplicar",
+    "apply_filter": "Aplicar filtro",
     "back": "Atrás",
     "back_home": "Volver al inicio",
     "cancel": "Cancelar",
@@ -328,6 +325,7 @@
     "dark_mode": "Modo Oscuro",
     "data_type": "Tipo de Dato",
     "default_acr": "Método de Autenticación Predeterminado (ACR)",
+    "openid_configuration_response_op_metadata_suppression_list": "Lista de supresión de metadatos OP de la respuesta de configuración OpenID",
     "default_bucket": "Bucket Predeterminado",
     "default_cleanup_batch_size": "Tamaño del Lote de Limpieza Predeterminado",
     "default_put_expiration": "Expiración de Inserción Predeterminada",
@@ -593,11 +591,13 @@
     "email": "Correo",
     "userName": "Nombre de Usuario",
     "username": "Nombre de usuario",
+    "value": "Valor",
     "userRole": "Rol de Jans Admin UI",
     "nickName": "Apodo",
     "modality": "Modalidad",
     "dateAdded": "Fecha de Alta",
     "givenName": "Nombre",
+    "lastName": "Apellido",
     "sn": "Apellido",
     "mail": "Correo",
     "resources": "Recursos",
@@ -619,6 +619,7 @@
     "export_current_config": "Exportar Configuración Actual",
     "import_configuration": "Importar Configuración",
     "issuer": "Emisor",
+    "authorizationChallengeDefaultAcr": "Método de autenticación predeterminado (ACR): ACR de desafío de autorización predeterminado",
     "base_endpoint": "Endpoint Base",
     "clean_service_interval": "Intervalo del Servicio de Limpieza",
     "clean_batch_chunk_size": "Tamaño de Lote de Limpieza",
@@ -660,6 +661,7 @@
     "disable_metadata_service": "Deshabilitar Servicio de Metadatos",
     "enterprise_attestation": "Atestación Empresarial",
     "attestation_mode": "Modo de Atestación",
+    "hints": "Indicaciones",
     "software_id": "ID de Software",
     "expiration": "Expiración",
     "never": "Nunca",
@@ -744,7 +746,7 @@
     "securityDropdown": {
       "adminUiRoles": "Roles de la Interfaz de Administración",
       "capabilities": "Capacidades",
-      "mapping": "Mapeo",
+      "mapping": "Roles y permisos",
       "cedarlingConfig": "Cedarling"
     },
     "basic_configuration": "Configuración Básica",
@@ -804,6 +806,11 @@
     "dynamic_configuration": "Configuración Dinámica",
     "upload_agama_project": "Subir Proyecto Agama",
     "add_community_project": "Agregar un Proyecto de la Comunidad"
+  },
+  "footer": {
+    "copyright": "(C) {{year}} Todos los derechos reservados.",
+    "designed_by": "Este es el \"{{name}}\" diseñado e implementado por",
+    "company_name": "Gluu Inc."
   },
   "messages": {
     "multi_select_hint": "Ingrese varios elementos seleccionando del menú desplegable que aparece después de ingresar cada elemento.",
@@ -982,6 +989,8 @@
     "details": "Detalles",
     "view_script_details": "Ver detalles del script personalizado",
     "add_new_user": "Agregar Usuario",
+    "error_in_deleting": "Error al eliminar.",
+    "error_in_revoking": "Error al revocar.",
     "error_in_saving": "Error al guardar.",
     "partial_update_failure": "Algunas configuraciones no se pudieron actualizar. Por favor, revise e intente de nuevo.",
     "min_characters": "Mínimo {{count}} caracteres",
@@ -1049,6 +1058,7 @@
     "add_ssa": "Agregar SSA",
     "copied": "Copiado",
     "request_timeout_title": "Tiempo de espera agotado",
+    "request_timeout_description": "La solicitud se ha terminado porque no hubo respuesta del servidor durante más de 60 segundos. Verifique su conexión de red y el estado del servidor, luego intente nuevamente.",
     "no_data_found": "No se encontraron datos",
     "no_data_available": "No hay datos disponibles",
     "no_jwks_found": "No se encontraron claves JSON Web.",
@@ -1062,6 +1072,8 @@
     "user_created_successfully": "Usuario creado exitosamente",
     "user_updated_successfully": "Usuario actualizado exitosamente",
     "user_deleted_successfully": "Usuario eliminado exitosamente",
+    "session_deleted_successfully": "Sesión eliminada exitosamente",
+    "session_revoked_successfully": "Sesión revocada exitosamente",
     "audit_logging_failed": "La acción se completó, pero falló el registro de auditoría.",
     "webhook_trigger_failed": "La acción se completó, pero falló el disparador del webhook.",
     "query_invalidation_failed": "La acción se completó, pero falló la invalidación de la caché de consultas.",
@@ -1117,7 +1129,10 @@
     "data_type_required": "El tipo de dato es obligatorio",
     "edit_type_required": "El tipo de edición es obligatorio",
     "view_type_required": "El tipo de visualización es obligatorio",
-    "fetch_failed": "Error al cargar los datos: {{detail}}"
+    "fetch_failed": "Error al cargar los datos: {{detail}}",
+    "fido_empty_row_key_value": "El nombre y el valor son obligatorios para cada entrada.",
+    "fido_empty_row_value": "El valor es obligatorio para cada entrada.",
+    "fido_empty_row_metadata_server": "La URL y el certificado raíz son obligatorios para cada servidor de metadatos."
   },
   "validation_messages": {
     "invalid_url_format": "Formato de URL inválido",
@@ -1219,6 +1234,8 @@
     "smtp_server_hostname": "Introduce el nombre de host del servidor SMTP",
     "smtp_server_port": "Introduce el puerto del servidor SMTP",
     "smtp_user_name": "Introduce el usuario SMTP",
+    "enter_url": "Introduce la URL",
+    "enter_root_certificate": "Introduce el certificado raíz",
     "smtp_user_password": "Introduce la contraseña SMTP",
     "spontaneous_client_id": "Introduce el client id espontáneo",
     "typeahead_holder_message": "Introduce múltiples elementos seleccionándolos del desplegable que aparece tras introducir cada elemento.",
@@ -1252,7 +1269,8 @@
     "enter_policies_json_uris": "Ingrese la URI de política JSON",
     "enter_policies_zip_uris_authorization_token": "Ingrese el token de autorización de la URI de política ZIP",
     "enter_policies_zip_uris": "Ingrese la URI de política ZIP",
-    "enter_token_channels": "Ingrese los canales de token"
+    "enter_token_channels": "Ingrese los canales de token",
+    "type_value": "Ingrese el valor de {{field}}"
   },
   "titles": {
     "smtp_test_result": "Resultado de la prueba SMTP",
@@ -1315,7 +1333,7 @@
     "sql_authentication": "Autenticación SQL",
     "logging": "LOGGING",
     "jwk_keys": "Claves JWK",
-    "jans_json_property": "Propiedades",
+    "jans_json_property": "Propiedades del Servidor de Autenticación",
     "mapping": "Mapeo Rol/Permiso",
     "cedarling_config": "Configuración de Cedarling",
     "modules_properties": "Propiedades del módulo",
@@ -1371,7 +1389,8 @@
     "edit_identity_provider": "Editar Proveedor de Identidad",
     "create_identity_provider": "Crear Proveedor de Identidad",
     "view_identity_provider": "Ver Proveedor de Identidad",
-    "delete_identity_provider": "Eliminar Proveedor de Identidad"
+    "delete_identity_provider": "Eliminar Proveedor de Identidad",
+    "search_filter": "Filtro de búsqueda"
   },
   "links": {
     "support": "https://support.gluu.org/"
@@ -1443,6 +1462,14 @@
     "jans_link": {
       "enabled": "Esta casilla se usa para guardar y enviar los cambios. No usar a menos que el administrador del servidor haya ingresado todos los valores requeridos.",
       "useSSL": "Usa esta función si el servidor backend permite conectividad SSL."
+    },
+    "api-attribute": {
+      "name": "Nombre único del atributo.",
+      "displayName": "Nombre de visualización del atributo.",
+      "status": "Estado actual del atributo (activo o inactivo).",
+      "editType": "Determina quién puede editar este atributo (ej., admin, usuario).",
+      "viewType": "Determina quién puede ver este atributo (ej., admin, usuario).",
+      "description": "Breve descripción del propósito del atributo."
     },
     "no_category": {
       "deletable": "¿Se puede eliminar?"
@@ -2109,13 +2136,14 @@
     },
     "cedarlingConfig": {
       "title": "Configurar el almacén de políticas de Cedarling",
-      "steps": "Pasos para configurar la URL del Almacén de Políticas Remoto",
+      "requiredFieldNote": "Se requiere un archivo .cjar para cargar un nuevo almacén de políticas.",
+      "steps": "Pasos para configurar el Almacén de Políticas",
       "point1": "1. Bifurcar el proyecto",
       "point2": "2. Abrir el repositorio bifurcado usando",
       "point3": "3. Realizar las modificaciones necesarias en las políticas para el control de acceso de la Admin UI y guardar los cambios.",
       "point4": "4. Asegúrese de que el nombre de host del Endpoint de Configuración de OpenID coincida con el nombre de host de su Proveedor OpenID.",
-      "point5": "5. Copiar la URL del Almacén de Políticas.",
-      "point6": "6. Abra la pantalla de configuración del Almacén de Políticas de Cedarling en la Admin UI y agregue la URL del Almacén de Políticas copiada en el campo Almacén de Políticas Remoto de la Admin UI. Configure el campo Punto de Recuperación de Políticas como Remoto para usar la URL del Almacén de Políticas remoto para el control de acceso de la Admin UI.",
+      "point5": "5. Publicar el almacén de políticas usando Agama Lab",
+      "point6": "6. Abra la pantalla de configuración del Almacén de Políticas de Cedarling en la Admin UI y cargue el almacén de políticas descargado de la versión de GH.",
       "useRemotePolicyStore": "Se recomienda establecerlo en Predeterminado para producción. Si se establece en Predeterminado, utilizará el almacenamiento de la interfaz de administración para la autorización de Cedarling. Active el modo Predeterminado y utilice el botón de actualización para guardar o actualizar las políticas de GitHub en el servidor de la interfaz de administración.",
       "updateRemotePolicyStoreOnServer": "Haga clic aquí para actualizar el JSON del almacén de políticas predeterminado con la versión disponible en la URL remota configurada.",
       "policyUrlDisabledWhenDefault": "La URL de la política está deshabilitada cuando se selecciona Predeterminado.",
@@ -2124,7 +2152,17 @@
       "gluuFlexAdminUiPolicyStoreDisplay": "Almacén de políticas de la interfaz de administración de Gluu Flex",
       "auditPolicyStoreUrlUpdated": "Configuración de la URL del almacén de políticas actualizada",
       "auditSyncRoleToScopesMappings": "Sincronizar rol con asignaciones de ámbitos",
-      "auditSetPolicyStoreAsDefault": "Establecer almacén de políticas predeterminado"
+      "auditSetPolicyStoreAsDefault": "Establecer almacén de políticas predeterminado",
+      "selectCjarFile": "Seleccione un archivo .cjar de almacén de políticas para cargar",
+      "uploadPolicyStore": "Cargar",
+      "downloadPolicyStore": "Descargar",
+      "policyStoreUploaded": "Almacén de políticas cargado exitosamente",
+      "policyStoreDownloaded": "Almacén de políticas descargado exitosamente",
+      "noPolicyStoreToDownload": "No hay almacén de políticas disponible para descargar",
+      "uploadFailed": "Error al cargar el almacén de políticas",
+      "downloadFailed": "Error al descargar el almacén de políticas",
+      "selectFileFirst": "Por favor, seleccione primero un archivo .cjar",
+      "auditPolicyStoreUploaded": "Almacén de políticas cargado"
     },
     "mappings": {
       "note_prefix": "Configurar",

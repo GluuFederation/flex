@@ -20,18 +20,15 @@
     "add_mapping": "Add Mapping",
     "add_header": "Add Header",
     "add_property": "Add property",
-    "add_party": "Add party",
-    "add_types": "Add Types",
     "add_server": "Add Server",
     "add_base_dn": "Add base DN",
     "change_bind_password": "Change Bind Password",
     "set_password": "Set Password",
-    "add_classes": "Add Classes",
-    "add_algorithm": "Add Algorithm",
-    "add_metadata_server": "Add Metadata Server",
+    "add_properties": "Add Properties",
     "configuration_copied": "Configuration copied",
     "copy_configuration": "Copy configuration",
     "apply": "Apply",
+    "apply_filter": "Apply Filter",
     "back": "Back",
     "back_home": "Back Home",
     "cancel": "Cancel",
@@ -329,6 +326,7 @@
     "dark_mode": "Dark Mode",
     "data_type": "Data Type",
     "default_acr": "Default Authentication Method (ACR)",
+    "openid_configuration_response_op_metadata_suppression_list": "OpenID Configuration Response OP Metadata Suppression List",
     "default_bucket": "Default Bucket",
     "default_cleanup_batch_size": "Default Cleanup Batch Size",
     "default_put_expiration": "Default Put Expiration",
@@ -581,6 +579,7 @@
     "customerName": "Customer Name",
     "licenseDetails": "License Details",
     "username": "Username",
+    "value": "Value",
     "connectionUris": "Connection URIs",
     "schemaName": "Schema Name",
     "passwordEncryptionMethod": "Password Encryption Method",
@@ -597,6 +596,7 @@
     "modality": "Modality",
     "dateAdded": "Date Added",
     "givenName": "Given Name",
+    "lastName": "Last Name",
     "sn": "Last Name",
     "mail": "Email",
     "admin": "Admin",
@@ -620,6 +620,7 @@
     "export_current_config": "Export Current Config",
     "import_configuration": "Import Configuration",
     "issuer": "Issuer",
+    "authorizationChallengeDefaultAcr": "Default Authentication Method (ACR): authorization challenge default ACR",
     "base_endpoint": "Base Endpoint",
     "clean_service_interval": "Clean Service Interval",
     "clean_batch_chunk_size": "Clean Batch Chunk Size",
@@ -658,9 +659,11 @@
     "metadata_refresh_interval": "Metadata Refresh Interval",
     "enabled_fido_algorithms": "Enabled FIDO Algorithms",
     "metadata_servers": "Metadata Servers",
+    "root_certificate": "Root Certificate",
     "disable_metadata_service": "Disable Metadata Service",
     "enterprise_attestation": "Enterprise Attestation",
     "attestation_mode": "Attestation Mode",
+    "hints": "Hints",
     "software_id": "Software ID",
     "expiration": "Expiration",
     "never": "Never",
@@ -805,6 +808,11 @@
     "dynamic_configuration": "Dynamic Configuration",
     "upload_agama_project": "Upload Agama project",
     "add_community_project": "Add a Community Project"
+  },
+  "footer": {
+    "copyright": "(C) {{year}} All Rights Reserved.",
+    "designed_by": "This is the \"{{name}}\" designed and implemented by",
+    "company_name": "Gluu Inc."
   },
   "messages": {
     "multi_select_hint": "Enter multiple items by selecting each one from the dropdown that appears after typing an item.",
@@ -983,6 +991,8 @@
     "details": "Details",
     "view_script_details": "View custom script details",
     "add_new_user": "Add User",
+    "error_in_deleting": "Error in deleting.",
+    "error_in_revoking": "Error in revoking.",
     "error_in_saving": "Error in saving.",
     "partial_update_failure": "Some configurations failed to update. Please review and try again.",
     "min_characters": "Minimum {{count}} characters",
@@ -1060,6 +1070,7 @@
     "add_ssa": "Add SSA",
     "copied": "Copied",
     "request_timeout_title": "Request Timeout",
+    "request_timeout_description": "The request has been terminated as there is no response from the server for more than 60 seconds. Please check your network connection and server status, then try again.",
     "no_data_found": "No data found",
     "no_data_to_export": "No data available to export",
     "no_sessions_found": "No sessions found",
@@ -1067,6 +1078,8 @@
     "user_created_successfully": "User created successfully",
     "user_updated_successfully": "User updated successfully",
     "user_deleted_successfully": "User deleted successfully",
+    "session_deleted_successfully": "Session deleted successfully",
+    "session_revoked_successfully": "Session revoked successfully",
     "audit_logging_failed": "The action completed, but audit logging failed.",
     "webhook_trigger_failed": "The action completed, but the webhook trigger failed.",
     "query_invalidation_failed": "The action completed, but query cache invalidation failed.",
@@ -1122,7 +1135,10 @@
     "data_type_required": "Data Type is required",
     "edit_type_required": "Edit Type is required",
     "view_type_required": "View Type is required",
-    "fetch_failed": "Failed to load data: {{detail}}"
+    "fetch_failed": "Failed to load data: {{detail}}",
+    "fido_empty_row_key_value": "Both name and value are required for each entry.",
+    "fido_empty_row_value": "Value is required for each entry.",
+    "fido_empty_row_metadata_server": "Both URL and root certificate are required for each metadata server."
   },
   "validation_messages": {
     "invalid_url_format": "Invalid URL format",
@@ -1206,6 +1222,8 @@
     "logo_uri": "Enter the logo URI",
     "name": "Enter the name",
     "value": "Enter the value",
+    "enter_url": "Enter the URL",
+    "enter_root_certificate": "Enter the root certificate",
     "policy_uri": "Enter the policy URI",
     "post_logout_redirect_uris": "Enter a post redirect URI in format (e.g. https:// or schema://) ",
     "redirect_uri": "Enter a redirect URI",
@@ -1260,7 +1278,8 @@
     "enter_policies_json_uris": "Enter the JSON policy URI",
     "enter_policies_zip_uris_authorization_token": "Enter the ZIP policy URI authorization token",
     "enter_policies_zip_uris": "Enter the ZIP policy URI",
-    "enter_token_channels": "Enter the token channels"
+    "enter_token_channels": "Enter the token channels",
+    "type_value": "Type {{field}} value"
   },
   "titles": {
     "smtp_test_result": "SMTP Test Result",
@@ -1324,7 +1343,7 @@
     "sql_authentication": "SQL Authentication",
     "logging": "LOGGING",
     "jwk_keys": "JWK keys",
-    "jans_json_property": "Properties",
+    "jans_json_property": "Auth Server Properties",
     "mapping": "Role/Permission Mapping",
     "cedarling_config": "Cedarling Configuration",
     "modules_properties": "Module Properties",
@@ -1380,7 +1399,8 @@
     "edit_identity_provider": "Edit Identity Provider",
     "create_identity_provider": "Create Identity Provider",
     "view_identity_provider": "View Identity Provider",
-    "delete_identity_provider": "Delete Identity Provider"
+    "delete_identity_provider": "Delete Identity Provider",
+    "search_filter": "Search Filter"
   },
   "links": {
     "support": "https://support.gluu.org/"
@@ -1452,6 +1472,14 @@
     "jans_link": {
       "enabled": "This check-box is used to save and push the changes. Do not use this unless the server administrator has entered all the required values.",
       "useSSL": "Use this feature if the backend server allows SSL connectivity."
+    },
+    "api-attribute": {
+      "name": "Unique name of the attribute.",
+      "displayName": "User-friendly display name for the attribute.",
+      "status": "Current status of the attribute (active or inactive).",
+      "editType": "Determines who can edit this attribute (e.g., admin, user).",
+      "viewType": "Determines who can view this attribute (e.g., admin, user).",
+      "description": "Brief description explaining the purpose of the attribute."
     },
     "no_category": {
       "deletable": "Is Deletable?"
@@ -2118,22 +2146,27 @@
     },
     "cedarlingConfig": {
       "title": "Configure Cedarling Policy Store",
-      "steps": "Steps to configure Remote Policy Store URL",
+      "steps": "Steps to configure Policy Store",
       "point1": "1. Fork the project",
       "point2": "2. Open the forked repository using",
       "point3": "3. Make the required modifications in the policies for Admin UI access control and save the changes.",
       "point4": "4. Make sure the hostname of the OpenID Configuration Endpoint matches with the hostname of your OpenId Provider.",
-      "point5": "5. Copy the Policy Store URL.",
-      "point6": "6. Open Cedarling Policy Store configuration screen on Admin UI and add the copied Policy Store URL in Admin UI Remote Policy Store field. Set Policy Retrieval Point field to Remote to use the remote Policy Store URL for the Admin UI access control.",
-      "useRemotePolicyStore": "It is recommended to set it to Default for production. If set to Default, it will use the Admin-UI storage for Cedarling authorization. Enable Default mode and use the refresh button to store or update GitHub policies on the Admin-UI Server.",
-      "updateRemotePolicyStoreOnServer": "Click here to update the default policy-store JSON with the version available from the configured remote URL.",
-      "policyUrlDisabledWhenDefault": "Policy URL is disabled when Default is selected.",
-      "policyStoreUrlInvalidError": "Policy Store URL must be a valid HTTP or HTTPS URL.",
+      "point5": "5. Release the policy store using Agama Lab",
+      "point6": "6. Open Cedarling Policy Store configuration screen on Admin UI and upload the Policy-Store downloaded from GH release.",
       "agamaLabPolicyDesigner": "Agama Lab's Policy Designer",
       "gluuFlexAdminUiPolicyStoreDisplay": "Gluu Flex Admin UI Policy Store",
-      "auditPolicyStoreUrlUpdated": "Policy Store URL configuration updated",
-      "auditSyncRoleToScopesMappings": "Sync role to scopes mappings",
-      "auditSetPolicyStoreAsDefault": "Set policy store as default"
+      "requiredFieldNote": "A .cjar file is required to upload a new policy store.",
+      "selectCjarFile": "Select a .cjar policy store file to upload",
+      "uploadPolicyStore": "Upload",
+      "downloadPolicyStore": "Download",
+      "policyStoreUploaded": "Policy store uploaded successfully",
+      "policyStoreDownloaded": "Policy store downloaded successfully",
+      "noPolicyStoreToDownload": "No policy store available to download",
+      "uploadFailed": "Failed to upload policy store",
+      "downloadFailed": "Failed to download policy store",
+      "selectFileFirst": "Please select a .cjar file first",
+      "auditPolicyStoreUploaded": "Policy store uploaded",
+      "auditSyncRoleToScopesMappings": "Sync role to scopes mappings"
     },
     "mappings": {
       "note_prefix": "Configure",

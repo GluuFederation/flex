@@ -2,12 +2,7 @@ import { useMemo } from 'react'
 import { useGetServiceStatus, type JsonNode } from 'JansConfigApi'
 import { useAppSelector } from '@/redux/hooks'
 import type { ServiceHealth, ServiceStatusValue, ServiceStatusResponse } from '../types'
-import {
-  HEALTH_CACHE_CONFIG,
-  HEALTH_PAGE_EXCLUDED_SERVICES,
-  STATUS_MAP,
-  DEFAULT_STATUS,
-} from '../constants'
+import { HEALTH_PAGE_EXCLUDED_SERVICES, STATUS_MAP, DEFAULT_STATUS } from '../constants'
 
 const normalizeStatus = (apiStatus: string): ServiceStatusValue => {
   const statusMap = STATUS_MAP as Record<string, ServiceStatusValue>
@@ -49,8 +44,6 @@ export const useHealthStatus = () => {
   const query = useGetServiceStatus(undefined, {
     query: {
       enabled: hasSession === true,
-      staleTime: HEALTH_CACHE_CONFIG.STALE_TIME,
-      gcTime: HEALTH_CACHE_CONFIG.GC_TIME,
       select: transformServiceStatus,
     },
   })

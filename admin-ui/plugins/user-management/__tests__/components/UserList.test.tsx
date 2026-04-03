@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react'
 import {
   createUserManagementTestStore,
   createUserManagementTestWrapper,
-} from './userManagementTestUtils'
+} from 'Plugins/user-management/__tests__/helpers/userManagementTestUtils'
 import UserList from 'Plugins/user-management/components/UserList'
 import { useCedarling } from '@/cedarling'
 import type { UseCedarlingReturn } from '@/cedarling'
@@ -18,7 +18,7 @@ const makeMockCedarling = (overrides?: Partial<UseCedarlingReturn>): UseCedarlin
     isLoading: false,
     error: null,
     ...overrides,
-  }) as unknown as UseCedarlingReturn
+  }) as UseCedarlingReturn
 
 describe('UserList', () => {
   let Wrapper: React.ComponentType<{ children: React.ReactNode }>

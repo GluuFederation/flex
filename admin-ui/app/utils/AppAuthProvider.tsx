@@ -110,10 +110,13 @@ export default function AppAuthProvider({ children }: Readonly<AppAuthProviderPr
       fetchPolicyStore()
         .then((policyStoreResponse) => {
           if (isMounted && policyStoreResponse.data) {
-            const policyStoreJson = policyStoreResponse.data.responseObject
+            const policyStoreBytes =
+              'responseBytes' in policyStoreResponse.data
+                ? policyStoreResponse.data.responseBytes
+                : undefined
             dispatch({
-              type: 'cedarPermissions/setPolicyStoreJson',
-              payload: policyStoreJson,
+              type: 'cedarPermissions/setPolicyStoreBytes',
+              payload: policyStoreBytes ?? '',
             })
           }
         })
@@ -292,11 +295,7 @@ export default function AppAuthProvider({ children }: Readonly<AppAuthProviderPr
   return (
     <React.Fragment>
       <SessionTimeout isAuthenticated={showAdminUI} />
-      <GluuTimeoutModal
-        description={
-          'The request has been terminated as there is no response from the server for more than 60 seconds.'
-        }
-      />
+      <GluuTimeoutModal />
       {!isUnderThresholdLimit && (
         <GluuErrorModal
           message={'Alert'}

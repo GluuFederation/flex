@@ -22,7 +22,7 @@ EXPOSE 8080
 
 RUN mkdir -p /app/static/rdbm /app/schema /app/templates/admin-ui
 
-ENV JANS_SOURCE_VERSION=1b66569673d82976da013100f5c4eaae1854547e
+ENV JANS_SOURCE_VERSION=0710555e6e1314b6c08b2b1f2bfed615d9104816
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -44,7 +44,7 @@ RUN git clone --depth ${GIT_CLONE_DEPTH} --filter blob:none --no-checkout https:
 
 WORKDIR /tmp/flex
 
-ENV FLEX_SOURCE_VERSION=e3333cec135e54c8837893a0efe757d20cfa3dbc
+ENV FLEX_SOURCE_VERSION=4f0420d0f39273937a60f4cd8bb624d042ece231
 ARG FLEX_SETUP_DIR=flex-linux-setup/flex_linux_setup
 
 RUN git clone --depth ${GIT_CLONE_DEPTH} --filter blob:none --no-checkout https://github.com/GluuFederation/flex . \

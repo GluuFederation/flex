@@ -11,6 +11,7 @@ import { createDate, DATE_FORMATS } from '@/utils/dayjsUtils'
 import type { Dayjs } from '@/utils/dayjsUtils'
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
+import customColors from '@/customColors'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
@@ -193,12 +194,13 @@ const SsaAddPage: React.FC = () => {
                     <FormGroup row>
                       <Col sm={8}>
                         <GluuInputRow
-                          label="fields.software_id"
+                          label="Software ID"
                           name="software_id"
                           formik={formik}
                           lsize={4}
                           rsize={8}
                           required
+                          isDark={false}
                           value={formik.values.software_id}
                           errorMessage={formik.errors.software_id}
                           showError={!!(formik.errors.software_id && formik.touched.software_id)}
@@ -210,12 +212,13 @@ const SsaAddPage: React.FC = () => {
                     <FormGroup row>
                       <Col sm={8}>
                         <GluuInputRow
-                          label="fields.organization"
+                          label="Organization"
                           name="org_id"
                           formik={formik}
                           lsize={4}
                           rsize={8}
                           required
+                          isDark={false}
                           value={formik.values.org_id}
                           errorMessage={formik.errors.org_id}
                           showError={!!(formik.errors.org_id && formik.touched.org_id)}
@@ -228,12 +231,13 @@ const SsaAddPage: React.FC = () => {
                     <FormGroup row>
                       <Col sm={8}>
                         <GluuInputRow
-                          label="fields.description"
+                          label="Description"
                           name="description"
                           formik={formik}
                           lsize={4}
                           required
                           rsize={8}
+                          isDark={false}
                           value={formik.values.description}
                           errorMessage={formik.errors.description}
                           showError={!!(formik.errors.description && formik.touched.description)}
@@ -246,11 +250,12 @@ const SsaAddPage: React.FC = () => {
                       <Col sm={8}>
                         <GluuTypeAhead
                           name="software_roles"
-                          label={t('fields.software_roles')}
+                          label="Software Roles"
                           formik={formik}
                           lsize={4}
                           rsize={8}
                           required
+                          isDark={false}
                           options={softwareRolesOptions}
                           value={formik.values.software_roles}
                           errorMessage={formik.errors.software_roles as string | undefined}
@@ -266,11 +271,12 @@ const SsaAddPage: React.FC = () => {
                       <Col sm={8}>
                         <GluuTypeAhead
                           name="grant_types"
-                          label="fields.grant_types"
+                          label="Grant Types"
                           formik={formik}
                           lsize={4}
                           rsize={8}
                           required
+                          isDark={false}
                           value={formik.values.grant_types}
                           errorMessage={formik.errors.grant_types as string | undefined}
                           showError={!!(formik.errors.grant_types && formik.touched.grant_types)}
@@ -285,11 +291,12 @@ const SsaAddPage: React.FC = () => {
                         <GluuToogleRow
                           name="one_time_use"
                           formik={formik}
-                          label="fields.one_time_use"
+                          label="One Time Use"
                           lsize={4}
                           rsize={8}
                           labelStyle={{ whiteSpace: 'nowrap' }}
                           value={formik.values.one_time_use}
+                          isDark={false}
                           doc_category={SSA}
                         />
                       </Col>
@@ -300,11 +307,12 @@ const SsaAddPage: React.FC = () => {
                         <GluuToogleRow
                           name="rotate_ssa"
                           formik={formik}
-                          label="fields.rotate_ssa"
+                          label="Rotate SSA"
                           lsize={4}
                           rsize={8}
                           labelStyle={{ whiteSpace: 'nowrap' }}
                           value={formik.values.rotate_ssa}
+                          isDark={false}
                           doc_category={SSA}
                         />
                       </Col>
@@ -315,11 +323,12 @@ const SsaAddPage: React.FC = () => {
                         <GluuToogleRow
                           name="is_expirable"
                           formik={formik}
-                          label="fields.is_expirable"
+                          label="Is Expirable"
                           lsize={4}
                           rsize={8}
                           labelStyle={{ whiteSpace: 'nowrap' }}
                           value={formik.values.is_expirable}
+                          isDark={false}
                           doc_category={SSA}
                         />
                       </Col>
@@ -330,9 +339,11 @@ const SsaAddPage: React.FC = () => {
                         <Col sm={8}>
                           <FormGroup row>
                             <GluuLabel
-                              label="fields.expiration_date"
+                              label="Expiration Date"
                               size={4}
                               required={formik.values.is_expirable}
+                              isDark={false}
+                              style={{ color: customColors.black }}
                             />
                             <Col sm={8}>
                               <LocalizationProvider dateAdapter={AdapterDayjs}>

@@ -35,6 +35,8 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
   const inputBorderColor = settings?.inputBorder ?? themeColors.borderColor
 
   const GAP_SM = 12
+  const nativeInputLineHeightPx =
+    CEDARLING_CONFIG_SPACING.INPUT_HEIGHT - 2 * CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL - 2
 
   return {
     formCard: {
@@ -186,25 +188,25 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
       },
     },
     formWithInputs: {
-      '& input, & select, & .custom-select': {
+      '& input:not(.MuiInputBase-input), & select, & .custom-select': {
         backgroundColor: `${formInputBg} !important`,
         border: `1px solid ${inputBorderColor}`,
         borderRadius: MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS,
         color: `${themeColors.fontColor} !important`,
         caretColor: themeColors.fontColor,
+        boxSizing: BOX_SIZING_BORDER,
+        height: CEDARLING_CONFIG_SPACING.INPUT_HEIGHT,
         minHeight: CEDARLING_CONFIG_SPACING.INPUT_HEIGHT,
-        height: 'auto',
         paddingTop: CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
         paddingBottom: CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
         paddingLeft: CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL,
         paddingRight: CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL,
+        lineHeight: `${nativeInputLineHeightPx}px`,
       },
       '& select, & .custom-select': {
         paddingRight: 44,
-        marginTop: -2,
-        marginBottom: -2,
       },
-      '& input:focus, & input:active, & select:focus, & select:active, & .custom-select:focus, & .custom-select:active':
+      '& input:not(.MuiInputBase-input):focus, & input:not(.MuiInputBase-input):active, & select:focus, & select:active, & .custom-select:focus, & .custom-select:active':
         {
           backgroundColor: `${formInputBg} !important`,
           color: `${themeColors.fontColor} !important`,
@@ -212,14 +214,14 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
           outline: OUTLINE_NONE,
           boxShadow: OUTLINE_NONE,
         },
-      '& input:disabled, & select:disabled, & .custom-select:disabled': {
+      '& input:not(.MuiInputBase-input):disabled, & select:disabled, & .custom-select:disabled': {
         backgroundColor: `${formInputBg} !important`,
         border: `1px solid ${inputBorderColor} !important`,
         color: `${themeColors.fontColor} !important`,
         opacity: 1,
         cursor: 'not-allowed',
       },
-      '& input::placeholder': {
+      '& input:not(.MuiInputBase-input)::placeholder': {
         color: themeColors.textMuted,
       },
       '& input.form-control, & input[type="text"], & textarea.form-control': {
@@ -249,7 +251,14 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
         border: 'none !important',
         backgroundColor: 'transparent !important',
         boxShadow: 'none !important',
-        minHeight: 'unset',
+        minHeight: 'unset !important',
+        height: '100% !important',
+        paddingTop: `${CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL}px !important`,
+        paddingBottom: `${CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL}px !important`,
+        paddingLeft: `${CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL}px !important`,
+        paddingRight: `${CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL}px !important`,
+        lineHeight: `${nativeInputLineHeightPx}px !important`,
+        boxSizing: 'border-box',
       },
     },
     uploadError: {
@@ -266,9 +275,16 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
         border: `1px solid ${isDark ? 'transparent' : infoBorder}`,
         borderRadius: MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS,
         padding: '24px',
-        minHeight: 100,
+        minHeight: CEDARLING_CONFIG_SPACING.DROPZONE_MIN_HEIGHT,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         cursor: 'pointer',
         textAlign: 'center',
+      },
+      '& .dropzone:has(strong)': {
+        justifyContent: 'flex-start',
+        textAlign: 'left',
       },
       '& .dropzone p': {
         color: `${isDark ? customColors.dropzoneText : infoText} !important`,
@@ -277,12 +293,12 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
       '& .dropzone strong': {
         color: `${isDark ? customColors.dropzoneText : infoText} !important`,
       },
-      '& .dropzone .btn, & .dropzone button': {
+      '& .dropzone .btn:not(.gluu-upload-remove), & .dropzone button:not(.gluu-upload-remove)': {
         color: `${isDark ? customColors.dropzoneText : infoText} !important`,
         border: 'none !important',
         backgroundColor: 'transparent !important',
       },
-      '& .dropzone .btn:hover, & .dropzone .btn:focus, & .dropzone button:hover, & .dropzone button:focus':
+      '& .dropzone .btn:not(.gluu-upload-remove):hover, & .dropzone .btn:not(.gluu-upload-remove):focus, & .dropzone button:not(.gluu-upload-remove):hover, & .dropzone button:not(.gluu-upload-remove):focus':
         {
           color: `${isDark ? customColors.dropzoneText : infoText} !important`,
           border: 'none !important',

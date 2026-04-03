@@ -109,6 +109,12 @@
 
 .sidebar-menu__entry__link,
 .sidebar-submenu__entry__link {
+    &:focus,
+    &:focus-visible {
+        outline: none;
+        box-shadow: none;
+    }
+
     > span:has(+ .sidebar-menu__entry__chevron),
     > span:has(+ .sidebar-submenu__entry__chevron) {
         flex: 0 1 auto;

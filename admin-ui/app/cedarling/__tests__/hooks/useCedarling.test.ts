@@ -33,7 +33,7 @@ const createStore = (
     initialized: true,
     isInitializing: false,
     cedarFailedStatusAfterMaxTries: null,
-    policyStoreJson: '',
+    policyStoreBytes: '',
     ...overrides.cedarState,
   }
 
@@ -48,7 +48,6 @@ const createStore = (
 
 const createWrapper = (store: ReturnType<typeof createStore>) => {
   const Wrapper = ({ children }: { children: React.ReactNode }) =>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     React.createElement(Provider, { store } as React.ComponentProps<typeof Provider>, children)
   return Wrapper
 }

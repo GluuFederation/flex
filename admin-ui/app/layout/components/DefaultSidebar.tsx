@@ -1,13 +1,12 @@
 import React, { Suspense, lazy } from 'react'
 import { Link } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/redux/hooks'
 import { Sidebar } from 'Components'
 import { LogoThemed } from 'Routes/components/LogoThemed/LogoThemed'
 import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
 import GluuText from '@/routes/Apps/Gluu/GluuText'
 import type { DefaultSidebarProps } from './types'
 import { useTranslation } from 'react-i18next'
-import { RootState } from '@/cedarling'
 import { ROUTES } from '@/helpers/navigation'
 import { useStyles } from './DefaultSidebar.style'
 
@@ -17,14 +16,14 @@ const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
   const { t } = useTranslation()
   const { classes } = useStyles()
 
-  const { initialized, cedarFailedStatusAfterMaxTries } = useSelector(
-    (state: RootState) => state.cedarPermissions,
+  const { initialized, cedarFailedStatusAfterMaxTries } = useAppSelector(
+    (state) => state.cedarPermissions,
   )
 
   const cedarConditionalLoader = () =>
     cedarFailedStatusAfterMaxTries && !initialized ? (
       <div className={classes.cedarMessageRoot}>
-        <GluuText variant="p">{t('titles.no_Cedar')}</GluuText>
+        <GluuText variant="p">{t('messages.missing_required_permission')}</GluuText>
       </div>
     ) : (
       <div className={classes.sidebarLoaderRoot}>

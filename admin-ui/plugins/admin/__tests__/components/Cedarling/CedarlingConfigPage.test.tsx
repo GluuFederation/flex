@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -39,19 +39,15 @@ jest.mock('@/cedarling/constants/resourceScopes', () => ({
   CEDAR_RESOURCE_SCOPES: { Security: [], Webhooks: [], Lock: [], Users: [], Attributes: [] },
 }))
 
+const mockMutateAsync = jest.fn().mockResolvedValue(undefined)
 jest.mock('JansConfigApi', () => ({
-  useGetAdminuiConf: jest.fn(() => ({
-    data: {
-      auiPolicyStoreUrl: 'https://example.com/policy',
-      cedarlingPolicyStoreRetrievalPoint: 'remote',
-    },
-    isSuccess: true,
-    isFetching: false,
-  })),
-  useEditAdminuiConf: jest.fn(() => ({ mutateAsync: jest.fn() })),
-  useSyncRoleToScopesMappings: jest.fn(() => ({ mutateAsync: jest.fn() })),
-  useSetRemotePolicyStoreAsDefault: jest.fn(() => ({ mutateAsync: jest.fn() })),
-  getGetAdminuiConfQueryKey: jest.fn(() => ['adminuiConf']),
+  useSyncRoleToScopesMappings: jest.fn(() => ({ mutateAsync: mockMutateAsync })),
+}))
+
+jest.mock('@/redux/api/backend-api', () => ({
+  uploadPolicyStore: jest.fn().mockResolvedValue({ status: 200 }),
+  fetchPolicyStore: jest.fn().mockResolvedValue({ data: { responseBytes: '' } }),
+  postUserAction: jest.fn().mockResolvedValue({ status: 200 }),
 }))
 
 const store = configureStore({
@@ -74,9 +70,52 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => (
 )
 
 describe('CedarlingConfigPage', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+    mockMutateAsync.mockResolvedValue(undefined)
+  })
+
   it('renders the cedarling configuration page', async () => {
     render(<CedarlingConfigPage />, { wrapper: Wrapper })
     const policyStoreElements = await screen.findAllByText(/Policy Store/i)
     expect(policyStoreElements.length).toBeGreaterThan(0)
+  })
+
+  it('uploads a .cjar file and triggers sync', async () => {
+    const { uploadPolicyStore } = jest.requireMock('@/redux/api/backend-api') as {
+      uploadPolicyStore: jest.Mock
+    }
+
+    render(<CedarlingConfigPage />, { wrapper: Wrapper })
+
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement
+    expect(input).toBeInTheDocument()
+
+    const file = new File(['policy-data'], 'test-policy.cjar', { type: 'application/zip' })
+
+    // Simulate dropzone file selection via native change event
+    const dataTransfer = {
+      files: [file],
+      items: [{ kind: 'file', type: file.type, getAsFile: () => file }],
+      types: ['Files'],
+    }
+    fireEvent.drop(input, { dataTransfer })
+
+    await waitFor(() => {
+      // The file name should appear in the UI after drop
+      expect(screen.getByText('test-policy.cjar')).toBeInTheDocument()
+    })
+
+    // Button label is the translation value "Upload"
+    const uploadButton = screen.getByText('Upload')
+    fireEvent.click(uploadButton)
+
+    await waitFor(() => {
+      expect(uploadPolicyStore).toHaveBeenCalledWith(expect.any(File))
+    })
+
+    await waitFor(() => {
+      expect(mockMutateAsync).toHaveBeenCalled()
+    })
   })
 })

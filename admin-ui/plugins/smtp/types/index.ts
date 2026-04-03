@@ -1,1 +1,7 @@
-export type { ConnectProtection, SmtpFormValues, SmtpFormProps } from './smtp-types'
+export type {
+  ConnectProtection,
+  SmtpFormValues,
+  SmtpFormProps,
+  ApiError,
+  PatchOp,
+} from './smtp-types'

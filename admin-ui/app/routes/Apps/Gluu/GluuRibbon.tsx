@@ -1,11 +1,18 @@
 import React from 'react'
-import mystyle from './styles/ribbon'
+import { useStyles } from './styles/GluuRibbon.style'
 import { useTranslation } from 'react-i18next'
 
-function GluuRibbon({ title, fromLeft, doTranslate }: any) {
+type GluuRibbonProps = {
+  title: string
+  fromLeft?: boolean
+  doTranslate?: boolean
+}
+
+const GluuRibbon = ({ title, fromLeft, doTranslate }: GluuRibbonProps) => {
   const { t } = useTranslation()
+  const { classes } = useStyles()
   return (
-    <div style={fromLeft ? mystyle.ribbon_left : (mystyle.ribbon_right as any)}>
+    <div className={fromLeft ? classes.ribbonLeft : classes.ribbonRight}>
       {doTranslate ? t(title) : title}
     </div>
   )

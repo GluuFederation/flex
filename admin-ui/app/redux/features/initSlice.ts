@@ -1,9 +1,6 @@
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-
-interface GenericItem {
-  [key: string]: string | number | boolean | string[] | number[] | boolean[] | null
-}
+import type { GenericItem } from 'Redux/types'
 
 export interface InitState {
   scripts: GenericItem[]
