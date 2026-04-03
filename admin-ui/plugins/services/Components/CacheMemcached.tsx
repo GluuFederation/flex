@@ -1,11 +1,14 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { CACHE } from 'Utils/ApiResources'
+import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import type { CacheMemcachedProps } from './types'
 import { CONNECTION_FACTORY_OPTIONS } from '../helper'
 
 const CacheMemcached = ({ formik, classes, isDark, disabled }: CacheMemcachedProps) => {
+  const { t } = useTranslation()
   return (
     <div className={classes.sectionGrid}>
       <div className={classes.fieldItem}>
@@ -20,6 +23,7 @@ const CacheMemcached = ({ formik, classes, isDark, disabled }: CacheMemcachedPro
           doc_entry="servers"
           isDark={isDark}
           disabled={disabled}
+          placeholder={getFieldPlaceholder(t, 'fields.servers')}
         />
       </div>
       <div className={classes.fieldItem}>
@@ -50,6 +54,7 @@ const CacheMemcached = ({ formik, classes, isDark, disabled }: CacheMemcachedPro
           doc_entry="maxOperationQueueLength"
           isDark={isDark}
           disabled={disabled}
+          placeholder={getFieldPlaceholder(t, 'fields.max_operation_queue_length')}
         />
       </div>
       <div className={classes.fieldItem}>
@@ -65,6 +70,7 @@ const CacheMemcached = ({ formik, classes, isDark, disabled }: CacheMemcachedPro
           doc_entry="bufferSize"
           isDark={isDark}
           disabled={disabled}
+          placeholder={getFieldPlaceholder(t, 'fields.buffer_size')}
         />
       </div>
       <div className={classes.fieldItem}>
@@ -80,6 +86,7 @@ const CacheMemcached = ({ formik, classes, isDark, disabled }: CacheMemcachedPro
           doc_entry="defaultPutExpiration"
           isDark={isDark}
           disabled={disabled}
+          placeholder={getFieldPlaceholder(t, 'fields.default_put_expiration')}
         />
       </div>
     </div>

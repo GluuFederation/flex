@@ -501,7 +501,7 @@
     "spontaneousScopesREGEX": "Expresión regular de validación de ámbitos espontáneos",
     "updateTokenScriptDns": "Actualizar Token",
     "ssl_trust_store_file": "Archivo del Almacén de Confianza SSL",
-    "ssl_trust_store_file_path": "sslTrustStoreFilePath",
+    "ssl_trust_store_file_path": "Ruta del almacén de confianza SSL",
     "ssl_trust_store_format": "Formato del Almacén de Confianza SSL",
     "ssl_trust_store_pin": "PIN del Almacén de Confianza SSL",
     "state": "Estado",

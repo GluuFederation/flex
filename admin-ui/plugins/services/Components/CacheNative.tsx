@@ -1,12 +1,15 @@
 import React from 'react'
 import { FormGroup } from 'Components'
+import { useTranslation } from 'react-i18next'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import { CACHE } from 'Utils/ApiResources'
+import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import type { CacheSubComponentBaseProps } from './types'
 
 const CacheNative = ({ formik, classes, isDark, disabled }: CacheSubComponentBaseProps) => {
+  const { t } = useTranslation()
   return (
     <div className={classes.sectionGrid}>
       <div className={classes.fieldItem}>
@@ -22,6 +25,7 @@ const CacheNative = ({ formik, classes, isDark, disabled }: CacheSubComponentBas
           doc_entry="defaultPutExpiration"
           isDark={isDark}
           disabled={disabled}
+          placeholder={getFieldPlaceholder(t, 'fields.default_put_expiration')}
         />
       </div>
       <div className={classes.fieldItem}>
@@ -37,6 +41,7 @@ const CacheNative = ({ formik, classes, isDark, disabled }: CacheSubComponentBas
           doc_entry="defaultCleanupBatchSize"
           isDark={isDark}
           disabled={disabled}
+          placeholder={getFieldPlaceholder(t, 'fields.default_cleanup_batch_size')}
         />
       </div>
       <div className={classes.fieldItem}>

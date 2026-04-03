@@ -10,7 +10,7 @@ describe('CACHE_PROVIDER_OPTIONS', () => {
   })
 
   it('contains IN_MEMORY option', () => {
-    expect(CACHE_PROVIDER_OPTIONS).toContainEqual({ value: 'IN_MEMORY', label: 'In_Memory' })
+    expect(CACHE_PROVIDER_OPTIONS).toContainEqual({ value: 'IN_MEMORY', label: 'In Memory' })
   })
 
   it('contains MEMCACHED option', () => {

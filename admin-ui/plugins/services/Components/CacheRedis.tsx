@@ -1,14 +1,17 @@
 import React from 'react'
 import { FormGroup } from 'Components'
+import { useTranslation } from 'react-i18next'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import { CACHE } from 'Utils/ApiResources'
+import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import type { CacheRedisProps } from './types'
 import { REDIS_PROVIDER_OPTIONS } from '../helper'
 
 const CacheRedis = ({ formik, classes, isDark, disabled }: CacheRedisProps) => {
+  const { t } = useTranslation()
   return (
     <div className={classes.sectionGrid}>
       <div className={classes.fieldItem}>
@@ -38,6 +41,7 @@ const CacheRedis = ({ formik, classes, isDark, disabled }: CacheRedisProps) => {
           doc_entry="servers"
           isDark={isDark}
           disabled={disabled}
+          placeholder={getFieldPlaceholder(t, 'fields.servers')}
         />
       </div>
       <div className={classes.fieldItem}>
@@ -53,6 +57,7 @@ const CacheRedis = ({ formik, classes, isDark, disabled }: CacheRedisProps) => {
           doc_entry="password"
           isDark={isDark}
           disabled={disabled}
+          placeholder={getFieldPlaceholder(t, 'fields.password')}
         />
       </div>
       <div className={classes.fieldItem}>
@@ -67,6 +72,7 @@ const CacheRedis = ({ formik, classes, isDark, disabled }: CacheRedisProps) => {
           doc_entry="sentinelMasterGroupName"
           isDark={isDark}
           disabled={disabled}
+          placeholder={getFieldPlaceholder(t, 'fields.sentinel_master_group_name')}
         />
       </div>
       <div className={classes.fieldItem}>
@@ -81,6 +87,7 @@ const CacheRedis = ({ formik, classes, isDark, disabled }: CacheRedisProps) => {
           doc_entry="sslTrustStoreFilePath"
           isDark={isDark}
           disabled={disabled}
+          placeholder={getFieldPlaceholder(t, 'fields.ssl_trust_store_file_path')}
         />
       </div>
       <div className={classes.fieldItem}>
@@ -96,6 +103,7 @@ const CacheRedis = ({ formik, classes, isDark, disabled }: CacheRedisProps) => {
           doc_entry="defaultPutExpiration"
           isDark={isDark}
           disabled={disabled}
+          placeholder={getFieldPlaceholder(t, 'fields.default_put_expiration')}
         />
       </div>
       <div className={classes.fieldItem}>
@@ -111,6 +119,7 @@ const CacheRedis = ({ formik, classes, isDark, disabled }: CacheRedisProps) => {
           doc_entry="maxRetryAttempts"
           isDark={isDark}
           disabled={disabled}
+          placeholder={getFieldPlaceholder(t, 'fields.max_retry_attempts')}
         />
       </div>
       <div className={classes.fieldItem}>
@@ -126,6 +135,7 @@ const CacheRedis = ({ formik, classes, isDark, disabled }: CacheRedisProps) => {
           doc_entry="soTimeout"
           isDark={isDark}
           disabled={disabled}
+          placeholder={getFieldPlaceholder(t, 'fields.so_timeout')}
         />
       </div>
       <div className={classes.fieldItem}>
@@ -141,6 +151,7 @@ const CacheRedis = ({ formik, classes, isDark, disabled }: CacheRedisProps) => {
           doc_entry="maxIdleConnections"
           isDark={isDark}
           disabled={disabled}
+          placeholder={getFieldPlaceholder(t, 'fields.max_idle_connections')}
         />
       </div>
       <div className={classes.fieldItem}>
@@ -156,6 +167,7 @@ const CacheRedis = ({ formik, classes, isDark, disabled }: CacheRedisProps) => {
           doc_entry="maxTotalConnections"
           isDark={isDark}
           disabled={disabled}
+          placeholder={getFieldPlaceholder(t, 'fields.max_total_connections')}
         />
       </div>
       <div className={classes.fieldItem}>
@@ -171,6 +183,7 @@ const CacheRedis = ({ formik, classes, isDark, disabled }: CacheRedisProps) => {
           doc_entry="connectionTimeout"
           isDark={isDark}
           disabled={disabled}
+          placeholder={getFieldPlaceholder(t, 'fields.connection_timeout')}
         />
       </div>
       <div className={classes.fieldItem}>

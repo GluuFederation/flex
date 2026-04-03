@@ -50,7 +50,7 @@ export const servicesConstants = {
 } as const
 
 export const CACHE_PROVIDER_OPTIONS = [
-  { value: 'IN_MEMORY', label: 'In_Memory' },
+  { value: 'IN_MEMORY', label: 'In Memory' },
   { value: 'MEMCACHED', label: 'Memcached' },
   { value: 'REDIS', label: 'Redis' },
   { value: 'NATIVE_PERSISTENCE', label: 'Native Persistence' },

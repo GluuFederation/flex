@@ -152,13 +152,15 @@ export const useStyles = makeStyles<CachePageStylesParams>()((
         marginTop: SELECT_NUDGE,
         marginBottom: SELECT_NUDGE,
       },
-      '& input:focus, & input:active, & select:focus, & select:active': {
-        backgroundColor: `${formInputBg} !important`,
-        color: `${themeColors.fontColor} !important`,
-        border: `1px solid ${inputBorderColor} !important`,
-        outline: 'none',
-        boxShadow: 'none',
-      },
+      '& input:focus, & input:focus-visible, & input:active, & select:focus, & select:focus-visible, & select:active, & .form-control:focus, & .input-group:focus-within':
+        {
+          backgroundColor: `${formInputBg} !important`,
+          color: `${themeColors.fontColor} !important`,
+          border: `1px solid ${inputBorderColor} !important`,
+          borderRadius: `${BORDER_RADIUS.SMALL}px !important`,
+          outline: 'none !important',
+          boxShadow: 'none !important',
+        },
       '& input:disabled, & select:disabled': {
         backgroundColor: `${alpha(formInputBg, OPACITY.DISABLED)} !important`,
         border: `1px solid ${inputBorderColor} !important`,
@@ -183,14 +185,23 @@ export const useStyles = makeStyles<CachePageStylesParams>()((
       'padding': `${SECTION_BOX_TOP_PADDING}px ${SPACING.CARD_PADDING}px ${SPACING.CARD_PADDING}px`,
       'width': '100%',
       'boxSizing': 'border-box',
-      '& input, & input:focus, & input:active, & input:disabled': {
-        backgroundColor: `${sectionInputBg} !important`,
-        border: `1px solid ${sectionBorderColor} !important`,
-      },
-      '& select, & select:focus, & select:active, & select:disabled, & .custom-select': {
-        backgroundColor: `${sectionInputBg} !important`,
-        border: `1px solid ${sectionBorderColor} !important`,
-      },
+      '& input, & input:focus, & input:focus-visible, & input:active, & input:disabled, & .form-control:focus':
+        {
+          backgroundColor: `${sectionInputBg} !important`,
+          border: `1px solid ${sectionBorderColor} !important`,
+          borderRadius: `${BORDER_RADIUS.SMALL}px !important`,
+          outline: 'none !important',
+          boxShadow: 'none !important',
+          color: `${themeColors.fontColor} !important`,
+        },
+      '& select, & select:focus, & select:focus-visible, & select:active, & select:disabled, & .custom-select':
+        {
+          backgroundColor: `${sectionInputBg} !important`,
+          border: `1px solid ${sectionBorderColor} !important`,
+          borderRadius: `${BORDER_RADIUS.SMALL}px !important`,
+          outline: 'none !important',
+          boxShadow: 'none !important',
+        },
     },
     sectionHeader: {
       display: 'flex',
