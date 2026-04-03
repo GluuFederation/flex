@@ -1,10 +1,12 @@
 import { useCallback } from 'react'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import { UPDATE } from '@/audit/UserActionType'
+import { CONFIG_API_CONFIGURATION } from '@/audit/Resources'
 import { useAppSelector } from '@/redux/hooks'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/index'
 import type { ModifiedFields } from '../types'
 
-export function useConfigApiActions() {
+export const useConfigApiActions = () => {
   const authState = useAppSelector((state) => state.authReducer)
   const client_id = authState?.config?.clientId
   const userinfo = authState?.userinfo
@@ -14,9 +16,9 @@ export function useConfigApiActions() {
       await logAuditUserAction({
         userinfo,
         action: UPDATE,
-        resource: 'Config API configuration',
+        resource: CONFIG_API_CONFIGURATION,
         message,
-        modifiedFields,
+        modifiedFields: modifiedFields as Record<string, JsonValue> | undefined,
         performedOn: 'config-api',
         client_id,
       })

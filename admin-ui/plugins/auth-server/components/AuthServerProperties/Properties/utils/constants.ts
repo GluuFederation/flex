@@ -1,5 +1,2 @@
-export const RENAMED_FIELDS = {
-  DISCOVERY_DENY_KEYS: 'OpenID Configuration Response OP Metadata Suppression List',
-} as const
-
-export const RENAMED_FIELD_KEYS = [RENAMED_FIELDS.DISCOVERY_DENY_KEYS] as const
+export const DISCOVERY_DENY_KEYS_I18N =
+  'fields.openid_configuration_response_op_metadata_suppression_list'

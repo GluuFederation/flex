@@ -174,11 +174,7 @@
     "add_base_dn": "Ajouter un DN de base",
     "change_bind_password": "Modifier le mot de passe de liaison",
     "set_password": "Définir le mot de passe",
-    "add_classes": "Ajouter des Classes",
-    "add_party": "Ajouter une Partie",
-    "add_types": "Ajouter des Types",
-    "add_algorithm": "Ajouter un Algorithme",
-    "add_metadata_server": "Ajouter un Serveur de Métadonnées",
+    "add_properties": "Ajouter des Propriétés",
     "choose": "Choisir",
     "deploy": "Déployer",
     "edit": "Éditer",
@@ -697,6 +693,7 @@
     "modality": "Modalité",
     "dateAdded": "date ajoutée",
     "givenName": "Prénom",
+    "lastName": "Nom de famille",
     "sn": "Nom de famille",
     "mail": "Courriel",
     "status": "Statut",
@@ -778,6 +775,11 @@
     "cedarlingPolicyStoreRetrievalPoint": "Point de récupération des politiques",
     "log_entry": "Entrée de journal",
     "page_size": "Taille de la page"
+  },
+  "footer": {
+    "copyright": "(C) {{year}} Tous droits réservés.",
+    "designed_by": "Ceci est le \"{{name}}\" conçu et implémenté par",
+    "company_name": "Gluu Inc."
   },
   "messages": {
     "multi_select_hint": "Saisissez plusieurs éléments en les sélectionnant dans la liste déroulante qui s'affiche après chaque saisie.",
@@ -988,6 +990,7 @@
     "add_ssa": "Ajouter SSA",
     "copied": "Copié",
     "request_timeout_title": "Délai d'attente dépassé",
+    "request_timeout_description": "La requête a été interrompue car le serveur n'a pas répondu pendant plus de 60 secondes. Veuillez vérifier votre connexion réseau et l'état du serveur, puis réessayez.",
     "edit_acr": "Modifier ACR",
     "built_in_acr_cannot_be_edited": "L'ACR intégré ne peut pas être modifié en raison de l'absence d'identifiant (inum)",
     "no_data_found": "Aucune donnée trouvée",
@@ -1799,6 +1802,14 @@
     "jans_link": {
       "enabled": "Cette case à cocher est utilisée pour enregistrer et pousser les modifications. Ne l'utilisez que si l'administrateur du serveur a entré toutes les valeurs requises.",
       "useSSL": "Utilisez cette fonctionnalité si le serveur principal autorise la connectivité SSL."
+    },
+    "api-attribute": {
+      "name": "Nom unique de l'attribut.",
+      "displayName": "Nom d'affichage de l'attribut.",
+      "status": "Statut actuel de l'attribut (actif ou inactif).",
+      "editType": "Détermine qui peut modifier cet attribut (ex., admin, utilisateur).",
+      "viewType": "Détermine qui peut voir cet attribut (ex., admin, utilisateur).",
+      "description": "Brève description expliquant l'objectif de l'attribut."
     },
     "no_category": {
       "deletable": "Est supprimable?"

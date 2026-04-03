@@ -34,11 +34,11 @@ import type { MauEntry } from 'Redux/types'
 import { getYearMonth } from '../../utils/Util'
 import { devLogger } from '@/utils/devLogger'
 import * as JansConfigApi from 'jans_config_api'
-import type { ApiErrorLike, SagaError } from './types/audit'
+import type { ApiErrorLike, SagaError } from './types'
 
 let defaultToken: ApiTokenResponse | undefined
 
-const getBackendStatusFromError = (error: unknown) => {
+const getBackendStatusFromError = (error: Error | ApiErrorLike) => {
   const err = error as ApiErrorLike
   const statusCode = typeof err?.response?.status === 'number' ? err.response.status : null
   const errorMessage =
@@ -56,7 +56,7 @@ export function* getAccessToken() {
       yield put(setBackendStatus({ active: true, errorMessage: null, statusCode: null }))
     } catch (error) {
       devLogger.error('Failed to fetch API token with default scopes', error)
-      yield put(setBackendStatus(getBackendStatusFromError(error)))
+      yield put(setBackendStatus(getBackendStatusFromError(error as Error | ApiErrorLike)))
       throw error
     }
   }

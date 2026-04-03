@@ -1,7 +1,9 @@
 import type { InputProps } from 'reactstrap'
 import type { FormikProps } from 'formik'
 
-export type GluuInputRowProps<T = Record<string, unknown>> = {
+import type { JsonValue } from './common'
+
+export type GluuInputRowProps<T = Record<string, JsonValue>> = {
   label: string
   name: string
   type?: InputProps['type']
@@ -26,6 +28,6 @@ export type GluuInputRowProps<T = Record<string, unknown>> = {
   cols?: number
   isDark?: boolean
   placeholder?: string
-  /** Optional class name for the input element (e.g. from parent for overrides) */
+  allowPasswordToggleWhenDisabled?: boolean
   inputClassName?: string
 }

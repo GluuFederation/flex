@@ -72,6 +72,7 @@ const UserClaimsDetailPage = ({ row }: AttributeDetailPageProps): JSX.Element =>
         value: displayOrDash(row.description),
         doc_entry: 'description',
         doc_category: API_ATTRIBUTE,
+        fullWidth: true,
       },
     ],
     [row, isActive, themeColors],

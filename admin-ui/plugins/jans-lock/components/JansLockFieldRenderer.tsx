@@ -34,8 +34,16 @@ const JansLockFieldRenderer: React.FC<JansLockFieldRendererProps> = ({
   const error = formik.errors[name]
   const touched = formik.touched[name]
 
-  const itemClass = colSize === 12 ? fieldItemFullWidthClass : fieldItemClass
-  const isDisabled = disabled || viewOnly
+  const itemClass = useMemo(
+    () => (colSize === 12 ? fieldItemFullWidthClass : fieldItemClass),
+    [colSize, fieldItemFullWidthClass, fieldItemClass],
+  )
+  const isDisabled = useMemo(() => disabled || viewOnly, [disabled, viewOnly])
+  const showError = useMemo(() => !!(error && touched), [error, touched])
+  const resolvedPlaceholder = useMemo(
+    () => (placeholder ? t(placeholder) : undefined),
+    [placeholder, t],
+  )
 
   const stableOptions = useMemo(
     () => (selectOptions ? [...selectOptions] : EMPTY_OPTIONS),
@@ -54,9 +62,9 @@ const JansLockFieldRenderer: React.FC<JansLockFieldRendererProps> = ({
             lsize={LABEL_SIZE}
             rsize={INPUT_SIZE}
             disabled={isDisabled}
-            showError={!!(error && touched)}
+            showError={showError}
             errorMessage={error as string}
-            placeholder={placeholder ? t(placeholder) : undefined}
+            placeholder={resolvedPlaceholder}
             doc_category={DOC_CATEGORY}
           />
         </div>
@@ -74,9 +82,9 @@ const JansLockFieldRenderer: React.FC<JansLockFieldRendererProps> = ({
             lsize={LABEL_SIZE}
             rsize={INPUT_SIZE}
             disabled={isDisabled}
-            showError={!!(error && touched)}
+            showError={showError}
             errorMessage={error as string}
-            placeholder={placeholder ? t(placeholder) : undefined}
+            placeholder={resolvedPlaceholder}
             doc_category={DOC_CATEGORY}
           />
         </div>

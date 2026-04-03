@@ -11,6 +11,7 @@ import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuMultiSelectRow from 'Routes/Apps/Gluu/GluuMultiSelectRow'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
+import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -218,6 +219,10 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               required
               showError={!!formik.errors.authenticatorCertsFolder}
               errorMessage={formik.errors.authenticatorCertsFolder}
+              placeholder={getFieldPlaceholder(
+                t,
+                fidoConstants.LABELS.AUTHENTICATOR_CERTIFICATES_FOLDER,
+              )}
             />
           </div>
 
@@ -232,6 +237,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               required
               showError={!!formik.errors.mdsCertsFolder}
               errorMessage={formik.errors.mdsCertsFolder}
+              placeholder={getFieldPlaceholder(t, fidoConstants.LABELS.MDS_TOC_CERTIFICATES_FOLDER)}
             />
           </div>
 
@@ -246,6 +252,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               required
               showError={!!formik.errors.mdsTocsFolder}
               errorMessage={formik.errors.mdsTocsFolder}
+              placeholder={getFieldPlaceholder(t, fidoConstants.LABELS.MDS_TOC_FILES_FOLDER)}
             />
           </div>
 
@@ -260,6 +267,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               required
               showError={!!formik.errors.serverMetadataFolder}
               errorMessage={formik.errors.serverMetadataFolder}
+              placeholder={getFieldPlaceholder(t, fidoConstants.LABELS.SERVER_METADATA_FOLDER)}
             />
           </div>
 
@@ -275,6 +283,10 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               required
               showError={!!formik.errors.unfinishedRequestExpiration}
               errorMessage={formik.errors.unfinishedRequestExpiration}
+              placeholder={getFieldPlaceholder(
+                t,
+                fidoConstants.LABELS.UNFINISHED_REQUEST_EXPIRATION,
+              )}
             />
           </div>
 
@@ -290,6 +302,10 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               required
               showError={!!formik.errors.authenticationHistoryExpiration}
               errorMessage={formik.errors.authenticationHistoryExpiration}
+              placeholder={getFieldPlaceholder(
+                t,
+                fidoConstants.LABELS.AUTHENTICATION_HISTORY_EXPIRATION,
+              )}
             />
           </div>
 
@@ -318,7 +334,6 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
-              required
               doc_category={fidoConstants.DOC_CATEGORY}
             />
           </div>
@@ -341,13 +356,11 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
-              required
               doc_category={fidoConstants.DOC_CATEGORY}
             />
           </div>
         </div>
 
-        {/* Requested Parties */}
         <div
           className={`${classes.propsBox} ${classes.propsBoxWithMargin} mb-3 ${!requestedParties.length ? classes.propsBoxEmpty : ''}`.trim()}
         >
@@ -410,7 +423,6 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
           </div>
         </div>
 
-        {/* Enabled FIDO Algorithms */}
         <div
           className={`${classes.propsBox} ${classes.propsBoxWithMargin} mb-3 ${!enabledFidoAlgorithms.length ? classes.propsBoxEmpty : ''}`.trim()}
         >
@@ -465,7 +477,6 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
           </div>
         </div>
 
-        {/* Metadata Servers */}
         <div
           className={`${classes.propsBox} ${classes.propsBoxWithMargin} mb-3 ${!metadataServers.length ? classes.propsBoxEmpty : ''}`.trim()}
         >

@@ -22,10 +22,10 @@ export interface LoggingFormValues {
   enabledOAuthAuditLogging: boolean
 }
 
-const isValidLevel = (val: unknown): val is LoggingLevel =>
+const isValidLevel = (val: string | null | undefined): val is LoggingLevel =>
   typeof val === 'string' && LOG_LEVELS.includes(val as LoggingLevel)
 
-const isValidLayout = (val: unknown): val is LoggingLayout =>
+const isValidLayout = (val: string | null | undefined): val is LoggingLayout =>
   typeof val === 'string' && LOG_LAYOUTS.includes(val as LoggingLayout)
 
 export const getLoggingInitialValues = (logging?: LoggingConfigLike | null): LoggingFormValues => {
@@ -48,11 +48,11 @@ export const getLoggingInitialValues = (logging?: LoggingConfigLike | null): Log
   }
 }
 
-export function getMergedValues<T extends object>(original: T, updated: Partial<T>): T {
+export const getMergedValues = <T extends object>(original: T, updated: Partial<T>): T => {
   return { ...original, ...updated }
 }
 
-export function getChangedFields<T extends object>(original: T, updated: T): ChangedFields<T> {
+export const getChangedFields = <T extends object>(original: T, updated: T): ChangedFields<T> => {
   const changed: ChangedFields<T> = {}
   ;(Object.keys(updated) as Array<keyof T>).forEach((key) => {
     const newValue = updated[key]

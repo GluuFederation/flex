@@ -2,10 +2,11 @@ import React, { useState, useMemo, useCallback, memo } from 'react'
 import { Formik, FormikProps } from 'formik'
 import { Form } from 'Components'
 import type { MultiSelectOption } from 'Routes/Apps/Gluu/types/GluuMultiSelectRow.types'
-import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/GluuCommitDialog'
+import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuInumInput from 'Routes/Apps/Gluu/GluuInumInput'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuMultiSelectRow from 'Routes/Apps/Gluu/GluuMultiSelectRow'
@@ -484,6 +485,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                         value={formik.values?.minLength ?? undefined}
                         doc_category={ATTRIBUTE}
                         disabled={isViewMode}
+                        placeholder={getFieldPlaceholder(t, 'fields.minimum_length')}
                       />
                     </div>
                     <div className={classes.fieldItem}>
@@ -497,9 +499,10 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                         value={formik.values?.maxLength ?? undefined}
                         doc_category={ATTRIBUTE}
                         disabled={isViewMode}
+                        placeholder={getFieldPlaceholder(t, 'fields.maximum_length')}
                       />
                     </div>
-                    {/* empty cell to keep grid alignment */}
+
                     <div />
                   </>
                 )}

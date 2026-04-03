@@ -1,5 +1,7 @@
 import React, { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import { DOC_CATEGORY } from '../helper'
@@ -24,13 +26,19 @@ const ScimFieldRenderer: React.FC<ScimFieldRendererProps> = ({
   fieldItemClass,
   fieldItemFullWidthClass,
 }) => {
+  const { t } = useTranslation()
   const { name, label, type, disabled = false, selectOptions, colSize = 12 } = config
 
   const value = formik.values[name]
   const error = formik.errors[name]
   const touched = formik.touched[name]
 
-  const itemClass = colSize === 12 ? fieldItemFullWidthClass : fieldItemClass
+  const fieldPlaceholder = useMemo(() => getFieldPlaceholder(t, label), [t, label])
+  const itemClass = useMemo(
+    () => (colSize === 12 ? fieldItemFullWidthClass : fieldItemClass),
+    [colSize, fieldItemFullWidthClass, fieldItemClass],
+  )
+  const showError = useMemo(() => !!(error && touched), [error, touched])
 
   const stableOptions = useMemo(
     () => (selectOptions ? [...selectOptions] : EMPTY_OPTIONS),
@@ -49,9 +57,10 @@ const ScimFieldRenderer: React.FC<ScimFieldRendererProps> = ({
             lsize={LABEL_SIZE}
             rsize={INPUT_SIZE}
             disabled={disabled}
-            showError={!!(error && touched)}
+            showError={showError}
             errorMessage={error as string}
             doc_category={DOC_CATEGORY}
+            placeholder={fieldPlaceholder}
           />
         </div>
       )
@@ -68,9 +77,10 @@ const ScimFieldRenderer: React.FC<ScimFieldRendererProps> = ({
             lsize={LABEL_SIZE}
             rsize={INPUT_SIZE}
             disabled={disabled}
-            showError={!!(error && touched)}
+            showError={showError}
             errorMessage={error as string}
             doc_category={DOC_CATEGORY}
+            placeholder={fieldPlaceholder}
           />
         </div>
       )
@@ -101,7 +111,7 @@ const ScimFieldRenderer: React.FC<ScimFieldRendererProps> = ({
             formik={formik}
             lsize={LABEL_SIZE}
             rsize={INPUT_SIZE}
-            disabled={disabled}
+            viewOnly={disabled}
             doc_category={DOC_CATEGORY}
           />
         </div>

@@ -18,14 +18,14 @@ import { devLogger } from '@/utils/devLogger'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
-import { GluuDetailGrid, type GluuDetailGridField } from '@/components/GluuDetailGrid'
+import { GluuDetailGrid } from '@/components/GluuDetailGrid'
 import { useCustomScriptsByType, useDeleteCustomScript, useCustomScriptTypes } from './hooks'
 import { useStyles } from './styles/CustomScriptListPage.style'
 import { SCRIPT } from 'Utils/ApiResources'
 import type { CustomScript } from 'JansConfigApi'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
 import type { FilterDef } from '@/components/GluuSearchToolbar/types'
-import type { ScriptError } from './types/customScript'
+import type { ScriptError, DisplayValue } from './types/customScript'
 import { BORDER_RADIUS } from '@/constants'
 import {
   DEFAULT_SCRIPT_TYPE,
@@ -35,12 +35,12 @@ import {
   FEATURE_CUSTOM_SCRIPT_DELETE,
 } from './constants'
 
-const LIMIT_OPTIONS = getRowsPerPageOptions()
-
 const DELETE_SUBJECT_SCRIPT = 'script'
 const EMPTY_DESCRIPTION_PLACEHOLDER = '—'
+const scriptsResourceId = ADMIN_UI_RESOURCES.Scripts
+const scriptScopes = CEDAR_RESOURCE_SCOPES[scriptsResourceId] ?? []
 
-type DisplayValue = GluuDetailGridField['value']
+const LIMIT_OPTIONS = getRowsPerPageOptions()
 
 const displayOrDash = (value: DisplayValue): DisplayValue =>
   value === null || value === undefined || value === '' ? '−' : value
@@ -78,28 +78,19 @@ const CustomScriptListPage: React.FC = () => {
   const [modal, setModal] = useState(false)
   const [itemToDelete, setItemToDelete] = useState<CustomScript | null>(null)
 
-  const scriptsResourceId = ADMIN_UI_RESOURCES.Scripts
-  const scriptScopes = useMemo(
-    () => CEDAR_RESOURCE_SCOPES[scriptsResourceId] ?? [],
-    [scriptsResourceId],
-  )
-
-  const canRead = useMemo(
-    () => hasCedarReadPermission(scriptsResourceId),
-    [hasCedarReadPermission, scriptsResourceId],
-  )
+  const canRead = useMemo(() => hasCedarReadPermission(scriptsResourceId), [hasCedarReadPermission])
   const canWrite = useMemo(
     () => hasCedarWritePermission(scriptsResourceId),
-    [hasCedarWritePermission, scriptsResourceId],
+    [hasCedarWritePermission],
   )
   const canDelete = useMemo(
     () => hasCedarDeletePermission(scriptsResourceId),
-    [hasCedarDeletePermission, scriptsResourceId],
+    [hasCedarDeletePermission],
   )
 
   useEffect(() => {
     authorizeHelper(scriptScopes)
-  }, [authorizeHelper, scriptScopes])
+  }, [authorizeHelper])
 
   const {
     data: scriptsResponse,
@@ -110,7 +101,7 @@ const CustomScriptListPage: React.FC = () => {
     sortBy: sortBy || undefined,
     sortOrder: sortBy ? 'ascending' : undefined,
     limit,
-    startIndex: pageNumber * limit + 1,
+    startIndex: pageNumber * limit,
   })
 
   const { data: scriptTypes, isLoading: loadingTypes } = useCustomScriptTypes()

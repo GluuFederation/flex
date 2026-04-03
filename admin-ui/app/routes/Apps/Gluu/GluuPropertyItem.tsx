@@ -2,8 +2,9 @@ import { FormGroup, Col, Input, Button } from 'Components'
 import { useTranslation } from 'react-i18next'
 import { Box } from '@mui/material'
 import customColors from '@/customColors'
+import type { GluuPropertyItemProps } from './types/GluuPropertyItem.types'
 
-function GluuPropertyItem({
+const GluuPropertyItem = ({
   property,
   position,
   keyPlaceholder,
@@ -20,7 +21,7 @@ function GluuPropertyItem({
   multiProperties = false,
   destinationPlaceholder = '',
   sourcePlaceholder = '',
-}: any) {
+}: GluuPropertyItemProps) => {
   const { t } = useTranslation()
   return (
     <FormGroup row>
@@ -31,7 +32,9 @@ function GluuPropertyItem({
             name={'key'}
             value={property.key}
             disabled={disabled}
-            onChange={(event) => onPropertyChange(position, event)}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              onPropertyChange(position, event)
+            }
             placeholder={keyPlaceholder ? t(keyPlaceholder) : t('placeholders.enter_property_key')}
           />
         </Col>
@@ -43,7 +46,9 @@ function GluuPropertyItem({
             name={'value'}
             value={property.value}
             disabled={disabled}
-            onChange={(event) => onPropertyChange(position, event)}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              onPropertyChange(position, event)
+            }
             placeholder={
               property.description ||
               (valuePlaceholder ? t(valuePlaceholder) : t('placeholders.enter_property_value'))
@@ -55,7 +60,9 @@ function GluuPropertyItem({
               name={'source'}
               value={property.source}
               disabled={disabled}
-              onChange={(event) => onPropertyChange(position, event)}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                onPropertyChange(position, event)
+              }
               placeholder={
                 sourcePlaceholder ? t(sourcePlaceholder) : t('placeholders.enter_source_value')
               }
@@ -64,7 +71,9 @@ function GluuPropertyItem({
               name={'destination'}
               value={property.destination}
               disabled={disabled}
-              onChange={(event) => onPropertyChange(position, event)}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                onPropertyChange(position, event)
+              }
               placeholder={
                 destinationPlaceholder
                   ? t(destinationPlaceholder)

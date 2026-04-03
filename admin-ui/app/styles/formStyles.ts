@@ -1,6 +1,19 @@
 import { CEDARLING_CONFIG_SPACING, MAPPING_SPACING } from '@/constants'
 import { fontFamily, fontSizes, fontWeights, lineHeights, letterSpacing } from '@/styles/fonts'
 
+type InfoAlertColors = {
+  background: string
+  icon: string
+  text: string
+}
+
+type InputStyleColors = {
+  inputBg: string
+  inputBorderColor: string
+  fontColor: string
+  textMuted: string
+}
+
 const LABEL_MARGIN_BOTTOM = 6
 
 export const createFormGroupOverrides = (opts?: { columnPaddingBottom?: number }) => ({
@@ -54,13 +67,6 @@ export const createFormLabelStyles = (fontColor: string) => ({
   },
 })
 
-type InputStyleColors = {
-  inputBg: string
-  inputBorderColor: string
-  fontColor: string
-  textMuted: string
-}
-
 export const createFormInputStyles = (colors: InputStyleColors) => {
   const { inputBg, inputBorderColor, fontColor } = colors
   return {
@@ -97,12 +103,6 @@ export const createFormInputAutofillStyles = (colors: InputStyleColors) => ({
   caretColor: colors.fontColor,
   transition: 'background-color 5000s ease-in-out 0s',
 })
-
-type InfoAlertColors = {
-  background: string
-  icon: string
-  text: string
-}
 
 export const createInfoAlertStyles = (infoAlert: InfoAlertColors) => ({
   infoAlert: {

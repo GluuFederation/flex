@@ -19,7 +19,7 @@ const LOGGING_CACHE_CONFIG = {
   GC_TIME: 10 * 60 * 1000,
 }
 
-export function useLoggingConfig() {
+export const useLoggingConfig = () => {
   const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
   return useGetConfigLogging({
@@ -37,7 +37,7 @@ interface UpdateLoggingParams {
   changedFields: ChangedFields<Logging>
 }
 
-export function useUpdateLoggingConfig() {
+export const useUpdateLoggingConfig = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()

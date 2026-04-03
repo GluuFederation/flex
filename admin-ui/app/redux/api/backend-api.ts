@@ -173,10 +173,7 @@ export const uploadPolicyStore = async (
   }
 }
 
-export const createAdminUiSession = async (
-  ujwt: string,
-  apiProtectionToken: string,
-): Promise<unknown> => {
+export const createAdminUiSession = async (ujwt: string, apiProtectionToken: string) => {
   try {
     const headers = { Authorization: `Bearer ${apiProtectionToken}` }
     const response = await axios.post(
@@ -191,7 +188,7 @@ export const createAdminUiSession = async (
   }
 }
 
-export const deleteAdminUiSession = async (token?: string): Promise<unknown> => {
+export const deleteAdminUiSession = async (token?: string) => {
   try {
     const response = await axios.delete(ENDPOINTS.SESSION, getAuthConfig(token))
     return response.data
