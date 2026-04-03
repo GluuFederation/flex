@@ -1,3 +1,7 @@
+export const servicesConstants = {
+  DOC_CATEGORY: 'cache',
+} as const
+
 export const CACHE_PROVIDER_OPTIONS = [
   { value: 'IN_MEMORY', label: 'In_Memory' },
   { value: 'MEMCACHED', label: 'Memcached' },

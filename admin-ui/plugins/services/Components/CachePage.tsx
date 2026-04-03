@@ -43,10 +43,15 @@ import {
 } from 'JansConfigApi'
 import { useCacheAudit } from './hooks'
 import type { CacheFormValues, CacheProviderType } from './types'
-import { isInMemoryCache, isMemcachedCache, isRedisCache, isNativePersistenceCache } from './types'
-import { useStyles } from './CachePage.style'
+import {
+  isInMemoryCache,
+  isMemcachedCache,
+  isRedisCache,
+  isNativePersistenceCache,
+  CACHE_PROVIDER_OPTIONS,
+} from '../helper'
+import { useStyles } from './styles/CachePage.style'
 import { queryDefaults } from '@/utils/queryUtils'
-import { CACHE_PROVIDER_OPTIONS } from '../constants'
 
 const CachePage: React.FC = () => {
   const { t } = useTranslation()

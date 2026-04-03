@@ -6,9 +6,9 @@ import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import { CACHE } from 'Utils/ApiResources'
 import type { CacheRedisProps } from './types'
-import { REDIS_PROVIDER_OPTIONS } from '../constants'
+import { REDIS_PROVIDER_OPTIONS } from '../helper'
 
-function CacheRedis({ formik, classes, isDark, disabled }: CacheRedisProps) {
+const CacheRedis = ({ formik, classes, isDark, disabled }: CacheRedisProps) => {
   return (
     <div className={classes.sectionGrid}>
       <div className={classes.fieldItem}>

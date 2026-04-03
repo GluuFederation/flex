@@ -70,30 +70,6 @@ export interface CacheFormValues {
   deleteExpiredOnGetRequest?: boolean
 }
 
-export function isInMemoryCache(
-  values: CacheFormValues | CacheFormValuesUnion,
-): values is InMemoryCacheFormValues {
-  return values.cacheProviderType === 'IN_MEMORY'
-}
-
-export function isMemcachedCache(
-  values: CacheFormValues | CacheFormValuesUnion,
-): values is MemcachedCacheFormValues {
-  return values.cacheProviderType === 'MEMCACHED'
-}
-
-export function isRedisCache(
-  values: CacheFormValues | CacheFormValuesUnion,
-): values is RedisCacheFormValues {
-  return values.cacheProviderType === 'REDIS'
-}
-
-export function isNativePersistenceCache(
-  values: CacheFormValues | CacheFormValuesUnion,
-): values is NativePersistenceCacheFormValues {
-  return values.cacheProviderType === 'NATIVE_PERSISTENCE'
-}
-
 export interface CacheSubComponentBaseProps {
   formik: FormikProps<CacheFormValues>
   classes: Record<string, string>
@@ -113,23 +89,4 @@ export interface PersistenceInfo {
   productVersion?: string
   driverName?: string
   driverVersion?: string
-}
-
-export function isPersistenceInfo(data: unknown): data is PersistenceInfo {
-  if (data === null || typeof data !== 'object' || Array.isArray(data)) {
-    return false
-  }
-  const obj = data as Record<string, unknown>
-  return 'persistenceType' in obj && typeof obj.persistenceType === 'string'
-}
-
-export function extractActionMessage<T extends { action_message?: string }>(
-  data: T,
-  defaultMessage: string,
-): { cleanData: Omit<T, 'action_message'>; message: string } {
-  const { action_message, ...cleanData } = data
-  return {
-    cleanData: cleanData as Omit<T, 'action_message'>,
-    message: action_message || defaultMessage,
-  }
 }

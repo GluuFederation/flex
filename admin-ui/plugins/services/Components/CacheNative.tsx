@@ -6,7 +6,7 @@ import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import { CACHE } from 'Utils/ApiResources'
 import type { CacheSubComponentBaseProps } from './types'
 
-function CacheNative({ formik, classes, isDark, disabled }: CacheSubComponentBaseProps) {
+const CacheNative = ({ formik, classes, isDark, disabled }: CacheSubComponentBaseProps) => {
   return (
     <div className={classes.sectionGrid}>
       <div className={classes.fieldItem}>

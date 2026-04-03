@@ -3,9 +3,9 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { CACHE } from 'Utils/ApiResources'
 import type { CacheMemcachedProps } from './types'
-import { CONNECTION_FACTORY_OPTIONS } from '../constants'
+import { CONNECTION_FACTORY_OPTIONS } from '../helper'
 
-function CacheMemcached({ formik, classes, isDark, disabled }: CacheMemcachedProps) {
+const CacheMemcached = ({ formik, classes, isDark, disabled }: CacheMemcachedProps) => {
   return (
     <div className={classes.sectionGrid}>
       <div className={classes.fieldItem}>

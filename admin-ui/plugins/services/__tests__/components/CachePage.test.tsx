@@ -288,14 +288,14 @@ describe('CachePage', () => {
 
   it('renders with empty config', () => {
     const api = jest.requireMock('JansConfigApi')
-    api.useGetConfigCache.mockReturnValueOnce({ data: undefined, isLoading: false })
-    api.useGetConfigCacheInMemory.mockReturnValueOnce({ data: undefined, isLoading: false })
-    api.useGetConfigCacheMemcached.mockReturnValueOnce({ data: undefined, isLoading: false })
-    api.useGetConfigCacheNativePersistence.mockReturnValueOnce({
+    api.useGetConfigCache.mockImplementation(() => ({ data: undefined, isLoading: false }))
+    api.useGetConfigCacheInMemory.mockImplementation(() => ({ data: undefined, isLoading: false }))
+    api.useGetConfigCacheMemcached.mockImplementation(() => ({ data: undefined, isLoading: false }))
+    api.useGetConfigCacheNativePersistence.mockImplementation(() => ({
       data: undefined,
       isLoading: false,
-    })
-    api.useGetConfigCacheRedis.mockReturnValueOnce({ data: undefined, isLoading: false })
+    }))
+    api.useGetConfigCacheRedis.mockImplementation(() => ({ data: undefined, isLoading: false }))
 
     render(
       <Wrapper>

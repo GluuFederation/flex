@@ -13,10 +13,10 @@ import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useGetPropertiesPersistence } from 'JansConfigApi'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
-import { useStyles } from './PersistenceDetail.style'
+import { useStyles } from './styles/PersistenceDetail.style'
 import { queryDefaults } from '@/utils/queryUtils'
 
-function PersistenceDetail() {
+const PersistenceDetail = () => {
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
   const selectedTheme = useMemo(() => themeState.theme || DEFAULT_THEME, [themeState.theme])

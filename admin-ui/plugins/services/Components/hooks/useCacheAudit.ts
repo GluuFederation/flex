@@ -3,10 +3,11 @@ import { logAuditUserAction } from 'Utils/AuditLogger'
 import { PATCH } from '@/audit/UserActionType'
 import { useAppSelector } from '@/redux/hooks'
 import type { CacheConfiguration } from 'JansConfigApi'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
 const API_CACHE = 'api-cache'
 
-function useAuditAuth() {
+const useAuditAuth = () => {
   const authState = useAppSelector((state) => state.authReducer)
 
   return useMemo(
@@ -18,14 +19,14 @@ function useAuditAuth() {
   )
 }
 
-export function useCacheAudit() {
+export const useCacheAudit = () => {
   const { client_id, userinfo } = useAuditAuth()
 
   const logCacheUpdate = useCallback(
     async (
       cache: CacheConfiguration,
       message: string,
-      modifiedFields?: Record<string, unknown>,
+      modifiedFields?: Record<string, JsonValue>,
     ) => {
       try {
         await logAuditUserAction({
@@ -36,7 +37,7 @@ export function useCacheAudit() {
           modifiedFields,
           performedOn: cache.cacheProviderType,
           client_id,
-          payload: cache,
+          payload: cache as JsonValue,
         })
       } catch (error) {
         console.error('Failed to log cache update audit:', error)
