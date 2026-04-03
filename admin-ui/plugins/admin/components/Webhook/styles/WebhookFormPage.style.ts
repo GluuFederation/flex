@@ -9,6 +9,7 @@ import {
 } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { getDynamicListStyles } from '@/styles/dynamicListStyles'
 import type { ThemeConfig } from '@/context/theme/config'
 import customColors, { getLoadingOverlayRgba } from '@/customColors'
 
@@ -23,13 +24,9 @@ const DISPLAY_FLEX = 'flex'
 const FLEX_DIRECTION_COLUMN = 'column'
 const MARGIN_ZERO_IMPORTANT = '0 !important'
 const OUTLINE_NONE = 'none'
-
 const GAP_SM = 12
 const FIELD_VERTICAL_PADDING = 4
-const HEADERS_BOX_PADDING_TOP = 15
 const CONTENT_PADDING_H = 52
-const HEADERS_INPUT_MIN_WIDTH = 180
-const HEADERS_ACTION_BTN_WIDTH = 156
 const ALERT_ICON_SIZE = 20
 const EDITOR_FALLBACK_MIN_HEIGHT = 120
 const ERROR_SPACE = 20
@@ -46,10 +43,19 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
   const cardBg = settings?.cardBackground ?? themeColors.card.background
   const formInputBg = settings?.formInputBackground ?? themeColors.inputBackground
   const inputBorderColor = settings?.inputBorder ?? themeColors.borderColor
-  const headersBoxBg = settings?.customParamsBox ?? cardBg
-  const headersInputBg = settings?.customParamsInput ?? formInputBg
+  const headersBoxBg = formInputBg
+  const headersInputBg = cardBg
   const headersBorderColor =
     settings?.inputBorder ?? (isDark ? customColors.darkBorder : customColors.borderInput)
+
+  const dl = getDynamicListStyles({
+    boxBg: headersBoxBg,
+    inputBg: headersInputBg,
+    borderColor: headersBorderColor,
+    fontColor: themeColors.fontColor,
+    textMuted: themeColors.textMuted,
+    errorColor: themeColors.errorColor,
+  })
 
   return {
     formCard: {
@@ -138,82 +144,26 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
       },
     },
     headersBox: {
-      'backgroundColor': headersBoxBg,
-      'borderRadius': MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS,
-      'border': `1px solid ${headersBorderColor}`,
-      'padding': `${HEADERS_BOX_PADDING_TOP}px ${CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL}px ${MAPPING_SPACING.CARD_PADDING}px`,
-      'width': WIDTH_FULL,
-      'boxSizing': BOX_SIZING_BORDER,
+      ...dl.listBox,
+      '&& input, && input:focus, && input:active, && input:disabled': {
+        backgroundColor: `${headersInputBg} !important`,
+        border: `1px solid ${headersBorderColor} !important`,
+        borderRadius: `${BORDER_RADIUS.SMALL}px !important`,
+      },
       '& > div:first-of-type label, & > div:first-of-type label h5, & > div:first-of-type label span':
         {
           fontSize: '15px !important',
           fontWeight: '700 !important',
         },
-      '&& input': {
-        backgroundColor: `${headersInputBg} !important`,
-        border: `1px solid ${inputBorderColor} !important`,
-        color: `${themeColors.fontColor} !important`,
-        fontFamily: fontFamily,
-        fontSize: fontSizes.base,
-      },
-      '&& input::placeholder': {
-        color: `${themeColors.textMuted} !important`,
-        opacity: '1 !important',
-      },
-      '&& input:focus, && input:active': {
-        backgroundColor: `${headersInputBg} !important`,
-        color: `${themeColors.fontColor} !important`,
-        border: `1px solid ${inputBorderColor} !important`,
-        outline: OUTLINE_NONE,
-        boxShadow: OUTLINE_NONE,
-      },
     },
-    headersBoxEmpty: {
-      paddingBottom: HEADERS_BOX_PADDING_TOP,
-    },
-    headersHeader: {
-      display: DISPLAY_FLEX,
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: 21,
-      gap: GAP_SM,
-    },
-    headersHeaderEmpty: {
-      marginBottom: 0,
-    },
-    headersBody: {
-      display: DISPLAY_FLEX,
-      flexDirection: FLEX_DIRECTION_COLUMN,
-      gap: GAP_SM,
-    },
-    headersRow: {
-      display: DISPLAY_FLEX,
-      gap: GAP_SM,
-      alignItems: 'center',
-      flexWrap: 'wrap',
-    },
-    headersInput: {
-      flex: '1 1 0',
-      minWidth: HEADERS_INPUT_MIN_WIDTH,
-      maxWidth: '50%',
-      minHeight: CEDARLING_CONFIG_SPACING.INPUT_HEIGHT,
-      boxSizing: BOX_SIZING_BORDER,
-      borderRadius: MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS,
-      padding: `${CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL}px ${CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL}px`,
-    },
-    headersActionBtn: {
-      minWidth: HEADERS_ACTION_BTN_WIDTH,
-      width: HEADERS_ACTION_BTN_WIDTH,
-      minHeight: '44px !important',
-      height: '44px !important',
-      gap: 8,
-      flexShrink: 0,
-    },
-    headersError: {
-      color: themeColors.errorColor,
-      fontSize: fontSizes.sm,
-      marginTop: 4,
-    },
+    headersBoxEmpty: dl.listBoxEmpty,
+    headersHeader: dl.listHeader,
+    headersHeaderEmpty: dl.listHeaderEmpty,
+    headersBody: dl.listBody,
+    headersRow: dl.listRow,
+    headersInput: { ...dl.listInput, maxWidth: '50%' },
+    headersActionBtn: dl.listActionBtn,
+    headersError: dl.listError,
     extraPaddingTop: {
       paddingTop: 8,
     },
@@ -316,13 +266,12 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
         marginTop: -2,
         marginBottom: -2,
       },
-      '& input:focus, & input:active, & select:focus, & select:active, & .custom-select:focus, & .custom-select:active':
+      '& input:focus, & input:active, & select:focus, & select:active, & .custom-select:focus, & .custom-select:active, & .form-control:focus, & .input-group:focus-within':
         {
-          backgroundColor: `${formInputBg} !important`,
-          color: `${themeColors.fontColor} !important`,
-          border: `1px solid ${inputBorderColor} !important`,
-          outline: OUTLINE_NONE,
-          boxShadow: OUTLINE_NONE,
+          borderColor: `${inputBorderColor} !important`,
+          borderRadius: `${BORDER_RADIUS.SMALL}px !important`,
+          outline: `${OUTLINE_NONE} !important`,
+          boxShadow: `${OUTLINE_NONE} !important`,
         },
       '& input:disabled, & select:disabled, & .custom-select:disabled': {
         backgroundColor: `${formInputBg} !important`,

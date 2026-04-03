@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext, useCallback, useMemo, useRef } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
 import { Form, FormGroup, Col } from 'Components'
@@ -25,9 +24,11 @@ import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
-import { getJsonConfig, patchJsonConfig } from 'Plugins/auth-server/redux/features/jsonConfigSlice'
-import { updateToast } from 'Redux/features/toastSlice'
-import type { AcrMappingFormValues, AcrMappingTableRow, JsonConfigRootState } from './types'
+import {
+  useAuthServerJsonPropertiesQuery,
+  usePatchAuthServerJsonPropertiesMutation,
+} from 'Plugins/auth-server/hooks/useAuthServerJsonProperties'
+import type { AcrMappingFormValues, AcrMappingTableRow } from './types'
 import {
   getAcrMappingValidationSchema,
   transformAcrMappingsToTableData,
@@ -43,16 +44,8 @@ const authScopes = CEDAR_RESOURCE_SCOPES[authResourceId]
 
 function AliasesListPage(): React.ReactElement {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
   const theme = useContext(ThemeContext)
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
-
-  const { loading, saveError } = useSelector(
-    (state: JsonConfigRootState) => state.jsonConfigReducer,
-  )
-  const configuration = useSelector(
-    (state: JsonConfigRootState) => state.jsonConfigReducer.configuration,
-  )
 
   const [showAddModal, setShowAddModal] = useState<boolean>(false)
   const [isEdit, setIsEdit] = useState<boolean>(false)
@@ -77,6 +70,17 @@ function AliasesListPage(): React.ReactElement {
     [hasCedarWritePermission],
   )
 
+  const {
+    data: configuration = {},
+    isLoading: configLoading,
+    isFetching: configFetching,
+  } = useAuthServerJsonPropertiesQuery({
+    enabled: canReadAuth,
+  })
+  const acrConfig = configuration as { acrMappings?: Record<string, string> }
+  const patchJsonMutation = usePatchAuthServerJsonPropertiesMutation()
+  const loading = configLoading || configFetching || patchJsonMutation.isPending
+
   const initialFormValues = useMemo<AcrMappingFormValues>(
     () => ({
       source: '',
@@ -87,36 +91,33 @@ function AliasesListPage(): React.ReactElement {
   const validationSchema = useMemo(() => getAcrMappingValidationSchema(t), [t])
 
   const listData = useMemo(
-    () => transformAcrMappingsToTableData(configuration?.acrMappings),
-    [configuration?.acrMappings],
+    () => transformAcrMappingsToTableData(acrConfig.acrMappings),
+    [acrConfig.acrMappings],
   )
 
   const handleSubmitCallback = useCallback(
     async (values: AcrMappingFormValues): Promise<void> => {
       try {
         const userAction: UserAction = {} as UserAction
-        const currentMappings = { ...(configuration.acrMappings ?? {}) }
+        const currentMappings = { ...(acrConfig.acrMappings ?? {}) }
         const nextMappings = prepareMappingsForUpdate(
           currentMappings,
           values,
           isEdit,
           selectedRow?.mapping,
         )
-        const postBody = buildAcrMappingPayload(nextMappings, configuration?.acrMappings)
+        const postBody = buildAcrMappingPayload(nextMappings, acrConfig.acrMappings)
 
         buildPayload(userAction, 'changes', toActionData(postBody))
-        dispatch(patchJsonConfig({ action: userAction }))
+        await patchJsonMutation.mutateAsync(userAction)
+        setIsEdit(false)
+        setSelectedRow(null)
+        setShowAddModal(false)
       } catch (error) {
-        const errorMessage =
-          error instanceof Error
-            ? error.message
-            : typeof error === 'object' && error !== null && 'message' in error
-              ? String((error as { message: unknown }).message)
-              : t('messages.error_processing_request')
-        dispatch(updateToast(true, 'error', `${t('messages.error_in_saving')} ${errorMessage}`))
+        console.error(error)
       }
     },
-    [configuration, isEdit, selectedRow, dispatch, t],
+    [acrConfig.acrMappings, isEdit, selectedRow, patchJsonMutation],
   )
 
   const formik = useFormik<AcrMappingFormValues>({
@@ -126,35 +127,16 @@ function AliasesListPage(): React.ReactElement {
     enableReinitialize: true,
   })
 
-  const previousLoadingRef = useRef<boolean>(loading)
   const formikRef = useRef(formik)
   const initialFormValuesRef = useRef(initialFormValues)
   formikRef.current = formik
   initialFormValuesRef.current = initialFormValues
 
   useEffect(() => {
-    const wasLoading = previousLoadingRef.current
-    const isLoading = loading
-    previousLoadingRef.current = loading
-
-    if (wasLoading && !isLoading && !saveError) {
-      setIsEdit(false)
-      setSelectedRow(null)
-      setShowAddModal(false)
-    } else if (wasLoading && !isLoading && saveError) {
-      const errorMessage = t('messages.error_processing_request')
-      dispatch(updateToast(true, 'error', `${t('messages.error_in_saving')} ${errorMessage}`))
-    }
-  }, [loading, saveError, dispatch, t])
-
-  useEffect(() => {
     if (authScopes && authScopes.length > 0) {
       authorizeHelper(authScopes)
     }
-    if (canReadAuth) {
-      dispatch(getJsonConfig())
-    }
-  }, [authorizeHelper, canReadAuth, dispatch, authScopes])
+  }, [authorizeHelper, authScopes])
 
   useEffect(() => {
     if (!showAddModal) {
@@ -232,9 +214,9 @@ function AliasesListPage(): React.ReactElement {
       }
       try {
         const userAction: UserAction = {} as UserAction
-        const currentMappings = { ...(configuration?.acrMappings ?? {}) }
+        const currentMappings = { ...(acrConfig.acrMappings ?? {}) }
         const updatedMappings = prepareMappingsForDelete(currentMappings, itemToDelete.mapping)
-        const postBody = buildAcrMappingDeletePayload(updatedMappings, configuration?.acrMappings)
+        const postBody = buildAcrMappingDeletePayload(updatedMappings, acrConfig.acrMappings)
 
         const basePayload = toActionData(postBody) as Record<string, unknown>
         const payloadWithDeleteInfo = {
@@ -250,20 +232,14 @@ function AliasesListPage(): React.ReactElement {
           message,
           payloadWithDeleteInfo as unknown as ReturnType<typeof toActionData>,
         )
-        dispatch(patchJsonConfig({ action: userAction }))
+        await patchJsonMutation.mutateAsync(userAction)
         setDeleteModal(false)
         setItemToDelete(null)
       } catch (error) {
-        const errorMessage =
-          error instanceof Error
-            ? error.message
-            : typeof error === 'object' && error !== null && 'message' in error
-              ? String((error as { message: unknown }).message)
-              : t('messages.error_processing_request')
-        dispatch(updateToast(true, 'error', `${t('messages.error_in_saving')} ${errorMessage}`))
+        console.error(error)
       }
     },
-    [itemToDelete, configuration, dispatch, t],
+    [itemToDelete, acrConfig.acrMappings, patchJsonMutation],
   )
 
   const shouldDisableApply = useMemo(() => {
@@ -378,7 +354,7 @@ function AliasesListPage(): React.ReactElement {
               formik={formik}
               lsize={3}
               rsize={9}
-              showError={formik.errors.mapping && formik.touched.mapping}
+              showError={Boolean(formik.errors.mapping && formik.touched.mapping)}
               errorMessage={formik.errors.mapping}
               required={true}
             />
@@ -389,7 +365,7 @@ function AliasesListPage(): React.ReactElement {
               formik={formik}
               lsize={3}
               rsize={9}
-              showError={formik.errors.source && formik.touched.source}
+              showError={Boolean(formik.errors.source && formik.touched.source)}
               errorMessage={formik.errors.source}
               required={true}
             />
@@ -429,7 +405,7 @@ function AliasesListPage(): React.ReactElement {
 
       {itemToDelete && (
         <GluuDialog
-          row={itemToDelete}
+          row={{ name: itemToDelete.mapping, id: itemToDelete.source }}
           name={itemToDelete.mapping}
           handler={() => {
             setDeleteModal(false)
@@ -438,6 +414,7 @@ function AliasesListPage(): React.ReactElement {
           modal={deleteModal}
           subject="ACR mapping"
           onAccept={handleDeleteConfirm}
+          feature=""
         />
       )}
     </>

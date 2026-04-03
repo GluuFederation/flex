@@ -4,7 +4,7 @@ import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import customColors from '@/customColors'
 import type { ReportPiChartItemProps, PieChartLabelProps } from '../types'
 
-function ReportPiChartItem({ data }: ReportPiChartItemProps) {
+const ReportPiChartItem = ({ data }: ReportPiChartItemProps) => {
   const COLORS = [customColors.lightGreen, customColors.black]
   const RADIAN = Math.PI / 180
 

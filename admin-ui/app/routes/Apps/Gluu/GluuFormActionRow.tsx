@@ -3,16 +3,17 @@ import { FormGroup, Label } from 'Components'
 import { Button, Grid } from '@mui/material'
 import GluuTooltip from './GluuTooltip'
 import { VisibilityOutlined } from '@mui/icons-material'
+import type { JsonValue } from './types/common'
 
 interface GluuFormActionRowProps {
   label: string
-  value?: unknown
+  value?: JsonValue
   lsize?: number
   rsize?: number
   doc_category?: string
   doc_entry?: string
   isDirect?: boolean
-  onActionClick?: (value: unknown) => void
+  onActionClick?: (value: JsonValue) => void
 }
 
 function GluuFormActionRow({
@@ -40,7 +41,7 @@ function GluuFormActionRow({
               variant="outlined"
               startIcon={<VisibilityOutlined />}
               onClick={() => {
-                onActionClick?.(value)
+                if (value !== undefined) onActionClick?.(value)
               }}
             >
               {t('actions.view')}

@@ -1,15 +1,16 @@
-// Core Cedarling Types
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+
 export interface CedarlingConstants {
   readonly ACTION_TYPE: string
   readonly RESOURCE_TYPE: string
 }
+
 export interface IPermissionWithTags {
   permission: string
   tag: string
   defaultPermissionInToken?: boolean
 }
 
-// Principal Types
 export interface IPrincipal {
   id: string
   role: string | null
@@ -17,12 +18,12 @@ export interface IPrincipal {
   sub: string | null
   type: string
 }
+
 export interface ITokenEntry {
   mapping: string
   payload: string
 }
 
-// Resource Types
 export interface ICedarEntityMappingResource {
   cedar_entity_mapping: {
     entity_type: string
@@ -30,44 +31,37 @@ export interface ICedarEntityMappingResource {
   }
 }
 
-// Authorization Request
-
 export interface TokenAuthorizationRequest {
   tokens: ITokenEntry[]
   action: string
   resource: ICedarEntityMappingResource
-  context: Record<string, unknown>
+  context: Record<string, JsonValue>
 }
 
-// Authorization Response
 export interface AuthorizationResponse {
   decision: boolean
   diagnostics?: {
     reason?: string[]
     errors?: string[]
   }
-  [key: string]: unknown
+  [key: string]: JsonValue | undefined
 }
 
-// Authorization Result
 export interface AuthorizationResult {
   isAuthorized: boolean
   response?: AuthorizationResponse
   error?: string
 }
 
-// Policy Store Configuration
 export interface BootStrapConfig {
-  [key: string]: unknown
+  [key: string]: JsonValue | undefined
 }
 
-// Cedarling Client Interface
 export interface ICedarlingClient {
   initialize: (config: BootStrapConfig, policyStoreBytes: Uint8Array) => Promise<void>
   token_authorize: (request: TokenAuthorizationRequest) => Promise<AuthorizationResponse>
 }
 
-// Redux State Types for Cedar Permissions
 export interface CedarPermissionsState {
   permissions: Record<string, boolean>
   loading: boolean
@@ -83,7 +77,6 @@ export interface SetCedarlingPermissionPayload {
   isAuthorized: boolean
 }
 
-// Hook Types
 export type ResourceScopeEntry = {
   permission: string
   resourceId: AdminUiFeatureResource
@@ -99,7 +92,6 @@ export interface UseCedarlingReturn {
   error: string | null
 }
 
-// API Permission interface
 export interface ApiPermission {
   permission: string
   tag: string
@@ -108,7 +100,6 @@ export interface ApiPermission {
   description?: string
 }
 
-// Auth Reducer State (partial interface for what Cedar needs)
 export interface AuthReducerState {
   userinfo_jwt?: string
   idToken?: string
@@ -123,13 +114,11 @@ export interface AuthReducerState {
   }
 }
 
-// Root State (partial interface for Cedar operations)
 export interface RootState {
   authReducer: AuthReducerState
   cedarPermissions: CedarPermissionsState
 }
 
-// Policy Generation Types
 export interface Permission {
   name: string
   tag: string
@@ -142,7 +131,6 @@ export interface RolePermissionEntry {
 
 export type RolePermissionMapping = RolePermissionEntry[]
 
-// Policy store structure for runtime usage (subset of config types)
 export interface RuntimePolicyStore {
   policies: Record<
     string,
@@ -158,35 +146,26 @@ export interface RuntimePolicyStoreConfig {
   policy_stores: Record<string, RuntimePolicyStore>
 }
 
-/**
- * Interface for trusted issuer with openid_configuration_endpoint
- */
 export interface TrustedIssuer {
   name?: string
   description?: string
   openid_configuration_endpoint: string
-  token_metadata?: Record<string, unknown>
-  [key: string]: unknown
+  token_metadata?: Record<string, JsonValue>
+  [key: string]: JsonValue | undefined
 }
 
-/**
- * Extended RuntimePolicyStore that includes trusted_issuers
- */
 export interface ExtendedPolicyStore extends RuntimePolicyStore {
   trusted_issuers?: Record<string, TrustedIssuer>
   name?: string
   description?: string
   schema?: string
-  [key: string]: unknown
+  [key: string]: JsonValue | Record<string, TrustedIssuer> | undefined
 }
 
-/**
- * Extended RuntimePolicyStoreConfig that allows for the extended store
- */
 export interface ExtendedPolicyStoreConfig {
   policy_stores: Record<string, ExtendedPolicyStore>
   cedar_version?: string
-  [key: string]: unknown
+  [key: string]: JsonValue | Record<string, ExtendedPolicyStore> | undefined
 }
 
 export type AdminUiFeatureResource =

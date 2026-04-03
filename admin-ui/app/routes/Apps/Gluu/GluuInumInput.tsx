@@ -1,8 +1,17 @@
 import { Col, FormGroup, Input } from 'Components'
 import GluuLabel from './GluuLabel'
 import customColors from '@/customColors'
+import type { GluuInumInputProps } from './types/GluuInumInput.types'
 
-const GluuInumInput = ({ label, name, value, lsize = 4, rsize = 8, doc_category, isDark }: any) => {
+const GluuInumInput = ({
+  label,
+  name,
+  value,
+  lsize = 4,
+  rsize = 8,
+  doc_category,
+  isDark,
+}: GluuInumInputProps) => {
   return (
     <FormGroup row>
       <GluuLabel

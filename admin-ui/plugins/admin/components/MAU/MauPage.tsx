@@ -24,6 +24,9 @@ import {
   TokenTrendChart,
 } from './components'
 
+const mauResourceId = ADMIN_UI_RESOURCES.MAU
+const mauScopes = CEDAR_RESOURCE_SCOPES[mauResourceId]
+
 const MauPage: React.FC = () => {
   const { t } = useTranslation()
   SetTitle(t('titles.mau_dashboard'))
@@ -64,17 +67,11 @@ const MauPage: React.FC = () => {
   const [selectedPreset, setSelectedPreset] = useState<number | null>(DEFAULT_DATE_RANGE_MONTHS)
 
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
-  const mauResourceId = ADMIN_UI_RESOURCES.MAU
-  const mauScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[mauResourceId], [mauResourceId])
-
-  const canViewMau = useMemo(
-    () => hasCedarReadPermission(mauResourceId),
-    [hasCedarReadPermission, mauResourceId],
-  )
+  const canViewMau = useMemo(() => hasCedarReadPermission(mauResourceId), [hasCedarReadPermission])
 
   useEffect(() => {
     authorizeHelper(mauScopes)
-  }, [authorizeHelper, mauScopes])
+  }, [authorizeHelper])
 
   const dateRange: MauDateRange = useMemo(() => ({ startDate, endDate }), [startDate, endDate])
 

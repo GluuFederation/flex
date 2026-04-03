@@ -1,7 +1,7 @@
 import { AppConfiguration1 } from 'JansConfigApi'
 
 // Form values for Dynamic Configuration
-export interface DynamicConfigFormValues {
+export type DynamicConfigFormValues = {
   issuer: string
   baseEndpoint: string
   cleanServiceInterval: number | string
@@ -21,7 +21,7 @@ export interface DynamicConfigFormValues {
   fido2PerformanceMetrics: boolean
 }
 
-export interface StaticConfigFormValues {
+export type StaticConfigFormValues = {
   authenticatorCertsFolder: string
   mdsCertsFolder: string
   mdsTocsFolder: string
@@ -38,38 +38,40 @@ export interface StaticConfigFormValues {
   attestationMode: string
 }
 
-export interface DynamicConfigurationProps {
+export type FidoFormValues = DynamicConfigFormValues | StaticConfigFormValues
+
+export type FidoConfigurationProps<T extends FidoFormValues> = {
   fidoConfiguration: AppConfiguration1 | undefined
-  handleSubmit: (data: DynamicConfigFormValues, userMessage?: string) => void
+  handleSubmit: (data: T, userMessage?: string) => void
   isSubmitting: boolean
   readOnly: boolean
 }
 
-export interface StaticConfigurationProps {
-  fidoConfiguration: AppConfiguration1 | undefined
-  handleSubmit: (data: StaticConfigFormValues, userMessage?: string) => void
-  isSubmitting: boolean
-  readOnly: boolean
-}
+export type DynamicConfigurationProps = FidoConfigurationProps<DynamicConfigFormValues>
+export type StaticConfigurationProps = FidoConfigurationProps<StaticConfigFormValues>
 
-export interface CreateFidoConfigPayloadParams {
+export type CreateFidoConfigPayloadParams = {
   fidoConfiguration: AppConfiguration1
   data: DynamicConfigFormValues | StaticConfigFormValues
   type: string
 }
 
-export interface PutPropertiesFido2Params {
+export type PutPropertiesFido2Params = {
   data: AppConfiguration1
 }
 
-// Minimal Formik subset used by StaticConfiguration for typeahead adapters
-export type FormikSetFieldValue<TValues> = <K extends keyof TValues>(
-  field: K,
-  value: TValues[K],
-  shouldValidate?: boolean,
-) => void
-
-export interface MinimalFormik<TValues> {
-  values: TValues
-  setFieldValue: FormikSetFieldValue<TValues>
+export type ApiErrorResponse = {
+  response?: {
+    data?: {
+      message?: string
+    }
+  }
 }
+
+export type FidoFormValuePrimitive =
+  | string
+  | number
+  | boolean
+  | string[]
+  | Array<{ key: string; value: string }>
+  | Array<{ url: string; rootCert: string }>

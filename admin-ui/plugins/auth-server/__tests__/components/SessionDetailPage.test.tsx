@@ -112,6 +112,6 @@ describe('SessionDetailPage', () => {
     }
     render(<SessionDetailPage row={sessionWithMissing} />, { wrapper: Wrapper })
     const dashes = screen.getAllByText('—')
-    expect(dashes.length).toBe(5)
+    expect(dashes).toHaveLength(5)
   })
 })

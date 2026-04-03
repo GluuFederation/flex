@@ -24,7 +24,7 @@ import type { JansAttribute } from 'JansConfigApi'
 
 const attributeResourceId = ADMIN_UI_RESOURCES.Attributes
 
-function UserClaimsEditPage(): JSX.Element {
+const UserClaimsEditPage = (): JSX.Element => {
   const { gid } = useParams<{ gid: string }>()
   const { t } = useTranslation()
 

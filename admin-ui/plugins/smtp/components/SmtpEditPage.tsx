@@ -23,7 +23,8 @@ import {
 import { updateToast } from 'Redux/features/toastSlice'
 import { UPDATE } from '@/audit/UserActionType'
 import { logAuditUserAction } from '@/utils/AuditLogger'
-import { SmtpFormValues } from 'Plugins/smtp/types'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import type { SmtpFormValues, ApiError, PatchOp } from 'Plugins/smtp/types'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
@@ -31,26 +32,19 @@ import { useStyles } from './styles/SmtpFormPage.style'
 
 const API_SMTP = 'api-smtp-configuration'
 
-interface ApiError {
-  response?: {
-    data?: {
-      message?: string
-    }
-  }
-}
+const smtpResourceId = ADMIN_UI_RESOURCES.SMTP
+const smtpScopes = CEDAR_RESOURCE_SCOPES[smtpResourceId]
 
-type PatchOp = { op: 'add' | 'remove' | 'replace'; path: string; value?: unknown }
-
-function buildPatches(
+const buildPatches = (
   originalConfig: Partial<SmtpConfiguration> | undefined,
   updated: SmtpConfiguration,
-): PatchOp[] {
+): PatchOp[] => {
   const patches: PatchOp[] = []
   const original = originalConfig || {}
   const keys = new Set<string>([...Object.keys(original), ...Object.keys(updated)])
   keys.forEach((key) => {
-    const origVal = (original as Record<string, unknown>)[key]
-    const newVal = (updated as Record<string, unknown>)[key]
+    const origVal = (original as Record<string, JsonValue>)[key]
+    const newVal = (updated as Record<string, JsonValue>)[key]
     if (JSON.stringify(origVal) !== JSON.stringify(newVal)) {
       if (newVal === undefined) {
         patches.push({ op: 'remove', path: `/${key}` })
@@ -83,22 +77,20 @@ const SmtpEditPage = () => {
   )
   const { classes } = useStyles({ isDark, themeColors })
 
-  const smtpResourceId = useMemo(() => ADMIN_UI_RESOURCES.SMTP, [])
-  const smtpScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[smtpResourceId], [smtpResourceId])
   const canReadSmtp = useMemo(
     () => hasCedarReadPermission(smtpResourceId),
-    [hasCedarReadPermission, smtpResourceId],
+    [hasCedarReadPermission],
   )
   const canWriteSmtp = useMemo(
     () => hasCedarWritePermission(smtpResourceId),
-    [hasCedarWritePermission, smtpResourceId],
+    [hasCedarWritePermission],
   )
 
   useEffect(() => {
-    if (smtpScopes && smtpScopes.length > 0) {
+    if (smtpScopes.length > 0) {
       authorizeHelper(smtpScopes)
     }
-  }, [authorizeHelper, smtpScopes])
+  }, [authorizeHelper])
 
   const testButtonEnabled = !!smtpConfiguration
 
@@ -111,7 +103,7 @@ const SmtpEditPage = () => {
           formikRef.current.resetForm({ values: formikRef.current.values })
         }
       },
-      onError: (error: unknown) => {
+      onError: (error: Error) => {
         const err = error as ApiError
         const errorMessage = err?.response?.data?.message || t('messages.smtp_config_update_failed')
         dispatch(updateToast(true, 'error', errorMessage))
@@ -127,7 +119,7 @@ const SmtpEditPage = () => {
         const message = data ? t('messages.smtp_test_success') : t('messages.smtp_test_failed')
         dispatch(updateToast(true, data ? 'success' : 'error', message))
       },
-      onError: (error: unknown) => {
+      onError: (error: Error) => {
         const err = error as ApiError
         const errorMessage = err?.response?.data?.message || t('messages.smtp_test_failed')
         dispatch(updateToast(true, 'error', errorMessage))

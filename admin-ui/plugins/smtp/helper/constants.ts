@@ -1,4 +1,5 @@
 export const smtpConstants = {
+  DOC_CATEGORY: 'smtp',
   CONNECT_PROTECTION: {
     NONE: 'None',
     START_TLS: 'StartTls',

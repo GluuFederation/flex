@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { GluuPageContent } from '@/components'
 import Alert from '@mui/material/Alert'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { UserEditFormValues, ModifiedFields } from '../types/ComponentTypes'
 import { PersonAttribute, CustomUser } from '../types/UserApiTypes'
 import {
@@ -96,7 +97,7 @@ const UserEditPage = () => {
       onSuccess: async (data, variables) => {
         const payload = variables.data as {
           dn?: string
-          modifiedFields?: Array<Record<string, unknown>>
+          modifiedFields?: Array<Record<string, JsonValue>>
         }
         const modifiedFieldsArray = payload?.modifiedFields ?? []
         const modifiedKeys = new Set(modifiedFieldsArray.flatMap((m) => Object.keys(m)))

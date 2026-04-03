@@ -26,7 +26,8 @@ import type { MauDateRange } from 'Plugins/admin/components/MAU/types'
 import DashboardChart from './Chart/DashboardChart'
 import { CHART_LEGEND_CONFIG, STATUS_DETAILS } from './constants'
 import { GluuDatePicker } from '@/components/GluuDatePicker'
-import { useDashboardLicense, useDashboardClients, useDashboardLockStats } from './hooks'
+import { useLicenseDetails } from '@/routes/License/hooks/useLicenseDetails'
+import { useDashboardClients, useDashboardLockStats } from './hooks'
 import { useStyles } from './DashboardPage.style'
 import { GluuPageContent } from '@/components'
 import { StatusIndicator, SummaryCard, UserInfoItem } from './components'
@@ -119,7 +120,7 @@ const DashboardPage = () => {
     }
   }, [hasSession, cedarInitialized, cedarIsInitializing, initPermissions])
 
-  const { data: license, isLoading: licenseLoading } = useDashboardLicense()
+  const { item: license, loading: licenseLoading } = useLicenseDetails()
   const { totalCount: totalClientsEntries, isLoading: clientsLoading } = useDashboardClients()
   const { allServices, isLoading: healthLoading } = useHealthStatus()
 

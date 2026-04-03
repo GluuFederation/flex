@@ -28,6 +28,9 @@ import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import { invalidateQueriesByKey } from '@/utils/queryUtils'
 import { useStyles } from './UserListPage.style'
 
+const usersResourceId = ADMIN_UI_RESOURCES.Users
+const usersScopes = CEDAR_RESOURCE_SCOPES[usersResourceId]
+
 const UserList = (): JSX.Element => {
   const {
     authorizeHelper,
@@ -48,26 +51,24 @@ const UserList = (): JSX.Element => {
   const LIMIT_OPTIONS = useMemo(() => getRowsPerPageOptions(), [])
 
   // React Query hooks for data fetching
-  const usersResourceId = useMemo(() => ADMIN_UI_RESOURCES.Users, [])
-  const usersScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[usersResourceId], [usersResourceId])
   const canReadUsers = useMemo(
     () => hasCedarReadPermission(usersResourceId),
-    [hasCedarReadPermission, usersResourceId],
+    [hasCedarReadPermission],
   )
   const canWriteUsers = useMemo(
     () => hasCedarWritePermission(usersResourceId),
-    [hasCedarWritePermission, usersResourceId],
+    [hasCedarWritePermission],
   )
   const canDeleteUsers = useMemo(
     () => hasCedarDeletePermission(usersResourceId),
-    [hasCedarDeletePermission, usersResourceId],
+    [hasCedarDeletePermission],
   )
 
   useEffect(() => {
-    if (usersScopes && usersScopes.length > 0) {
+    if (usersScopes.length > 0) {
       authorizeHelper(usersScopes)
     }
-  }, [authorizeHelper, usersScopes])
+  }, [authorizeHelper])
 
   const {
     data: usersData,

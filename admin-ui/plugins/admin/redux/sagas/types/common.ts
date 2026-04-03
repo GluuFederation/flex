@@ -1,4 +1,4 @@
-export type AuditRecord = Record<string, string | number | boolean | object | null | undefined>
+export type { AuditRecord } from 'Redux/sagas/types'
 
 export interface SagaErrorShape {
   response?: { body?: { responseMessage?: string }; status?: number }

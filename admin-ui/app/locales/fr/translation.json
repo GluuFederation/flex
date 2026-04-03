@@ -174,11 +174,7 @@
     "add_base_dn": "Ajouter un DN de base",
     "change_bind_password": "Modifier le mot de passe de liaison",
     "set_password": "Définir le mot de passe",
-    "add_classes": "Ajouter des Classes",
-    "add_party": "Ajouter une Partie",
-    "add_types": "Ajouter des Types",
-    "add_algorithm": "Ajouter un Algorithme",
-    "add_metadata_server": "Ajouter un Serveur de Métadonnées",
+    "add_properties": "Ajouter des Propriétés",
     "choose": "Choisir",
     "deploy": "Déployer",
     "edit": "Éditer",
@@ -246,6 +242,7 @@
     "search": "Rechercher",
     "tag": "Étiqueter",
     "issuer": "Émetteur",
+    "authorizationChallengeDefaultAcr": "Méthode d'authentification par défaut (ACR) : ACR de défi d'autorisation par défaut",
     "upload": "Sélectionner un fichier à télécharger",
     "jansService": "Services associés",
     "message_provider_type": "Type de fournisseur de messages",
@@ -489,6 +486,7 @@
     "dark_mode": "Mode Nuit",
     "data_type": "Type de données",
     "default_acr": "Méthode d'authentification par défaut (ACR)",
+    "openid_configuration_response_op_metadata_suppression_list": "Liste de suppression des métadonnées OP de la réponse de configuration OpenID",
     "default_bucket": "Seau par défaut",
     "default_cleanup_batch_size": "Taille du lot de nettoyage par défaut",
     "default_put_expiration": "Expiration de vente par défaut",
@@ -695,6 +693,7 @@
     "modality": "Modalité",
     "dateAdded": "date ajoutée",
     "givenName": "Prénom",
+    "lastName": "Nom de famille",
     "sn": "Nom de famille",
     "mail": "Courriel",
     "status": "Statut",
@@ -724,6 +723,8 @@
     "disable_metadata_service": "Désactiver le Service de Métadonnées",
     "enterprise_attestation": "Attestation d'Entreprise",
     "attestation_mode": "Mode d'Attestation",
+    "root_certificate": "Certificat racine",
+    "hints": "Indices",
     "software_id": "Identifiant du logiciel",
     "expiration": "Expiration",
     "acr": "ACR",
@@ -774,6 +775,11 @@
     "cedarlingPolicyStoreRetrievalPoint": "Point de récupération des politiques",
     "log_entry": "Entrée de journal",
     "page_size": "Taille de la page"
+  },
+  "footer": {
+    "copyright": "(C) {{year}} Tous droits réservés.",
+    "designed_by": "Ceci est le \"{{name}}\" conçu et implémenté par",
+    "company_name": "Gluu Inc."
   },
   "messages": {
     "multi_select_hint": "Saisissez plusieurs éléments en les sélectionnant dans la liste déroulante qui s'affiche après chaque saisie.",
@@ -984,6 +990,7 @@
     "add_ssa": "Ajouter SSA",
     "copied": "Copié",
     "request_timeout_title": "Délai d'attente dépassé",
+    "request_timeout_description": "La requête a été interrompue car le serveur n'a pas répondu pendant plus de 60 secondes. Veuillez vérifier votre connexion réseau et l'état du serveur, puis réessayez.",
     "edit_acr": "Modifier ACR",
     "built_in_acr_cannot_be_edited": "L'ACR intégré ne peut pas être modifié en raison de l'absence d'identifiant (inum)",
     "no_data_found": "Aucune donnée trouvée",
@@ -1066,7 +1073,10 @@
     "data_type_required": "Le type de données est obligatoire",
     "edit_type_required": "Le type d'édition est obligatoire",
     "view_type_required": "Le type de vue est obligatoire",
-    "fetch_failed": "Échec du chargement des données : {{detail}}"
+    "fetch_failed": "Échec du chargement des données : {{detail}}",
+    "fido_empty_row_key_value": "Le nom et la valeur sont requis pour chaque entrée.",
+    "fido_empty_row_value": "La valeur est requise pour chaque entrée.",
+    "fido_empty_row_metadata_server": "L'URL et le certificat racine sont requis pour chaque serveur de métadonnées."
   },
   "validation_messages": {
     "invalid_url_format": "Format d'URL invalide",
@@ -1167,6 +1177,8 @@
     "smtp_server_hostname": "Entrez le nom d'hôte du serveur SMTP",
     "smtp_server_port": "Entrez le port du serveur SMTP",
     "smtp_user_name": "Entrez le nom d'utilisateur SMTP",
+    "enter_url": "Entrez l'URL",
+    "enter_root_certificate": "Entrez le certificat racine",
     "smtp_user_password": "Entrez le mot de passe de l'utilisateur SMTP",
     "spontaneous_client_id": "Saisissez l'identifiant client spontané",
     "typeahead_holder_message": "Saisissez plusieurs éléments en les sélectionnant dans la liste déroulante qui s'affiche après avoir saisi chaque élément.",
@@ -1191,7 +1203,8 @@
     "enter_policies_json_uris": "Entrez l'URI de politique JSON",
     "enter_policies_zip_uris_authorization_token": "Entrez le jeton d'autorisation de l'URI de politique ZIP",
     "enter_policies_zip_uris": "Entrez l'URI de politique ZIP",
-    "enter_token_channels": "Saisir les canaux de jetons"
+    "enter_token_channels": "Saisir les canaux de jetons",
+    "type_value": "Saisir la valeur de {{field}}"
   },
   "titles": {
     "smtp_test_result": "Résultat du test SMTP",
@@ -1213,7 +1226,7 @@
     "config_api_configuration": "Configuration de l'API de configuration",
     "database_information": "Informations sur la base de données",
     "loading_database_information": "Chargement des informations de la base de données...",
-    "jans_json_property": "Propriétés",
+    "jans_json_property": "Propriétés du Serveur d'Authentification",
     "all_oidc_clients": "Tous les clients OIDC",
     "cedarling_config": "Configuration Cedarling",
     "jans_kc_link": "Lien KC Jans",
@@ -1789,6 +1802,14 @@
     "jans_link": {
       "enabled": "Cette case à cocher est utilisée pour enregistrer et pousser les modifications. Ne l'utilisez que si l'administrateur du serveur a entré toutes les valeurs requises.",
       "useSSL": "Utilisez cette fonctionnalité si le serveur principal autorise la connectivité SSL."
+    },
+    "api-attribute": {
+      "name": "Nom unique de l'attribut.",
+      "displayName": "Nom d'affichage de l'attribut.",
+      "status": "Statut actuel de l'attribut (actif ou inactif).",
+      "editType": "Détermine qui peut modifier cet attribut (ex., admin, utilisateur).",
+      "viewType": "Détermine qui peut voir cet attribut (ex., admin, utilisateur).",
+      "description": "Brève description expliquant l'objectif de l'attribut."
     },
     "no_category": {
       "deletable": "Est supprimable?"

@@ -20,15 +20,11 @@
     "add_mapping": "Add Mapping",
     "add_header": "Add Header",
     "add_property": "Add property",
-    "add_party": "Add party",
-    "add_types": "Add Types",
     "add_server": "Add Server",
     "add_base_dn": "Add base DN",
     "change_bind_password": "Change Bind Password",
     "set_password": "Set Password",
-    "add_classes": "Add Classes",
-    "add_algorithm": "Add Algorithm",
-    "add_metadata_server": "Add Metadata Server",
+    "add_properties": "Add Properties",
     "configuration_copied": "Configuration copied",
     "copy_configuration": "Copy configuration",
     "apply": "Apply",
@@ -330,6 +326,7 @@
     "dark_mode": "Dark Mode",
     "data_type": "Data Type",
     "default_acr": "Default Authentication Method (ACR)",
+    "openid_configuration_response_op_metadata_suppression_list": "OpenID Configuration Response OP Metadata Suppression List",
     "default_bucket": "Default Bucket",
     "default_cleanup_batch_size": "Default Cleanup Batch Size",
     "default_put_expiration": "Default Put Expiration",
@@ -599,6 +596,7 @@
     "modality": "Modality",
     "dateAdded": "Date Added",
     "givenName": "Given Name",
+    "lastName": "Last Name",
     "sn": "Last Name",
     "mail": "Email",
     "admin": "Admin",
@@ -622,6 +620,7 @@
     "export_current_config": "Export Current Config",
     "import_configuration": "Import Configuration",
     "issuer": "Issuer",
+    "authorizationChallengeDefaultAcr": "Default Authentication Method (ACR): authorization challenge default ACR",
     "base_endpoint": "Base Endpoint",
     "clean_service_interval": "Clean Service Interval",
     "clean_batch_chunk_size": "Clean Batch Chunk Size",
@@ -660,9 +659,11 @@
     "metadata_refresh_interval": "Metadata Refresh Interval",
     "enabled_fido_algorithms": "Enabled FIDO Algorithms",
     "metadata_servers": "Metadata Servers",
+    "root_certificate": "Root Certificate",
     "disable_metadata_service": "Disable Metadata Service",
     "enterprise_attestation": "Enterprise Attestation",
     "attestation_mode": "Attestation Mode",
+    "hints": "Hints",
     "software_id": "Software ID",
     "expiration": "Expiration",
     "never": "Never",
@@ -807,6 +808,11 @@
     "dynamic_configuration": "Dynamic Configuration",
     "upload_agama_project": "Upload Agama project",
     "add_community_project": "Add a Community Project"
+  },
+  "footer": {
+    "copyright": "(C) {{year}} All Rights Reserved.",
+    "designed_by": "This is the \"{{name}}\" designed and implemented by",
+    "company_name": "Gluu Inc."
   },
   "messages": {
     "multi_select_hint": "Enter multiple items by selecting each one from the dropdown that appears after typing an item.",
@@ -1064,6 +1070,7 @@
     "add_ssa": "Add SSA",
     "copied": "Copied",
     "request_timeout_title": "Request Timeout",
+    "request_timeout_description": "The request has been terminated as there is no response from the server for more than 60 seconds. Please check your network connection and server status, then try again.",
     "no_data_found": "No data found",
     "no_data_to_export": "No data available to export",
     "no_sessions_found": "No sessions found",
@@ -1128,7 +1135,10 @@
     "data_type_required": "Data Type is required",
     "edit_type_required": "Edit Type is required",
     "view_type_required": "View Type is required",
-    "fetch_failed": "Failed to load data: {{detail}}"
+    "fetch_failed": "Failed to load data: {{detail}}",
+    "fido_empty_row_key_value": "Both name and value are required for each entry.",
+    "fido_empty_row_value": "Value is required for each entry.",
+    "fido_empty_row_metadata_server": "Both URL and root certificate are required for each metadata server."
   },
   "validation_messages": {
     "invalid_url_format": "Invalid URL format",
@@ -1212,6 +1222,8 @@
     "logo_uri": "Enter the logo URI",
     "name": "Enter the name",
     "value": "Enter the value",
+    "enter_url": "Enter the URL",
+    "enter_root_certificate": "Enter the root certificate",
     "policy_uri": "Enter the policy URI",
     "post_logout_redirect_uris": "Enter a post redirect URI in format (e.g. https:// or schema://) ",
     "redirect_uri": "Enter a redirect URI",
@@ -1266,7 +1278,8 @@
     "enter_policies_json_uris": "Enter the JSON policy URI",
     "enter_policies_zip_uris_authorization_token": "Enter the ZIP policy URI authorization token",
     "enter_policies_zip_uris": "Enter the ZIP policy URI",
-    "enter_token_channels": "Enter the token channels"
+    "enter_token_channels": "Enter the token channels",
+    "type_value": "Type {{field}} value"
   },
   "titles": {
     "smtp_test_result": "SMTP Test Result",
@@ -1330,7 +1343,7 @@
     "sql_authentication": "SQL Authentication",
     "logging": "LOGGING",
     "jwk_keys": "JWK keys",
-    "jans_json_property": "Properties",
+    "jans_json_property": "Auth Server Properties",
     "mapping": "Role/Permission Mapping",
     "cedarling_config": "Cedarling Configuration",
     "modules_properties": "Module Properties",
@@ -1459,6 +1472,14 @@
     "jans_link": {
       "enabled": "This check-box is used to save and push the changes. Do not use this unless the server administrator has entered all the required values.",
       "useSSL": "Use this feature if the backend server allows SSL connectivity."
+    },
+    "api-attribute": {
+      "name": "Unique name of the attribute.",
+      "displayName": "User-friendly display name for the attribute.",
+      "status": "Current status of the attribute (active or inactive).",
+      "editType": "Determines who can edit this attribute (e.g., admin, user).",
+      "viewType": "Determines who can view this attribute (e.g., admin, user).",
+      "description": "Brief description explaining the purpose of the attribute."
     },
     "no_category": {
       "deletable": "Is Deletable?"

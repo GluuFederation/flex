@@ -16,7 +16,9 @@ import { LazyRoutes } from 'Utils/RouteLoader'
 //------ Route Definitions --------
 
 export const RoutedContent = () => {
-  const [pluginMenus, setPluginMenus] = useState<Array<any>>([])
+  const [pluginMenus, setPluginMenus] = useState<
+    Array<{ path: string; component: React.ComponentType }>
+  >([])
 
   useEffect(() => {
     const loadPlugins = async () => {

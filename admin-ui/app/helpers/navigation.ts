@@ -107,14 +107,8 @@ const ROUTES = {
   // Sessions
   AUTH_SERVER_SESSIONS: `${PLUGIN_BASE_PATHS.AUTH_SERVER}/sessions`,
 
-  // Reports
-  AUTH_SERVER_REPORTS: `${PLUGIN_BASE_PATHS.AUTH_SERVER}/reports`,
-
   // Agama
   AUTH_SERVER_AGAMA: `${PLUGIN_BASE_PATHS.AUTH_SERVER}/agama`,
-
-  // Lock
-  AUTH_SERVER_LOCK: `${PLUGIN_BASE_PATHS.AUTH_SERVER}/lock`,
 
   // ========== Services Plugin ==========
   SERVICES_CACHE: `${PLUGIN_BASE_PATHS.SERVICES}/cache`,

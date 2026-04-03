@@ -1,0 +1,2 @@
+export const DISCOVERY_DENY_KEYS_I18N =
+  'fields.openid_configuration_response_op_metadata_suppression_list'

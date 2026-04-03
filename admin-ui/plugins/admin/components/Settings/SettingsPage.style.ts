@@ -3,6 +3,7 @@ import type { Theme } from '@mui/material/styles'
 import { SPACING, BORDER_RADIUS } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { getDynamicListStyles } from '@/styles/dynamicListStyles'
 import type { ThemeConfig } from '@/context/theme/config'
 import customColors from '@/customColors'
 
@@ -19,6 +20,15 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
   const settings = themeColors.settings
 
   const customParamsBorder = isDark ? customColors.darkBorder : customColors.borderInput
+
+  const dl = getDynamicListStyles({
+    boxBg: settings.formInputBackground,
+    inputBg: settings.cardBackground,
+    borderColor: customParamsBorder,
+    fontColor: themeColors.fontColor,
+    textMuted: themeColors.textMuted,
+    errorColor: themeColors.errorColor,
+  })
 
   return {
     settingsCard: {
@@ -193,92 +203,15 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
         color: `${themeColors.textMuted} !important`,
       },
     },
-    customParamsBox: {
-      backgroundColor: settings.formInputBackground,
-      borderRadius: BORDER_RADIUS.SMALL,
-      border: `1px solid ${customParamsBorder}`,
-      padding: `12px ${SPACING.CARD_PADDING}px ${SPACING.CARD_PADDING}px`,
-      width: '100%',
-      boxSizing: 'border-box',
-      marginTop: SPACING.CARD_CONTENT_GAP + 20,
-    },
-    customParamsBoxEmpty: {
-      paddingBottom: 12,
-    },
-    customParamsHeader: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: 16,
-      gap: 12,
-    },
-    customParamsHeaderEmpty: {
-      marginBottom: 0,
-    },
-    customParamsTitle: {
-      fontFamily: fontFamily,
-      fontWeight: fontWeights.semiBold,
-      fontSize: fontSizes.description,
-      fontStyle: 'normal',
-      lineHeight: 1.4,
-      letterSpacing: letterSpacing.normal,
-      color: themeColors.fontColor,
-      margin: 0,
-      padding: 0,
-    },
-    customParamsBody: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: SPACING.CARD_CONTENT_GAP,
-    },
-    customParamsRow: {
-      display: 'flex',
-      gap: SPACING.CARD_CONTENT_GAP,
-      alignItems: 'center',
-      flexWrap: 'wrap',
-    },
-    customParamsActionBtn: {
-      '&&': {
-        minWidth: 156,
-        width: 156,
-        minHeight: 44,
-        height: 44,
-        gap: 8,
-        flexShrink: 0,
-      },
-    },
-    customParamsInput: {
-      'flex': '1 1 200px',
-      'minWidth': 120,
-      'minHeight': 52,
-      'boxSizing': 'border-box',
-      'backgroundColor': `${settings.cardBackground} !important`,
-      'border': `1px solid ${customParamsBorder} !important`,
-      'borderRadius': BORDER_RADIUS.SMALL,
-      'paddingTop': 14,
-      'paddingBottom': 14,
-      'paddingLeft': 21,
-      'paddingRight': 21,
-      'color': themeColors.fontColor,
-      '&::placeholder': {
-        color: themeColors.textMuted,
-      },
-      '&:focus, &:active': {
-        backgroundColor: `${settings.cardBackground} !important`,
-        color: themeColors.fontColor,
-        border: `1px solid ${customParamsBorder} !important`,
-        outline: 'none !important',
-        boxShadow: 'none !important',
-      },
-      '&:focus-visible': {
-        outline: 'none !important',
-        boxShadow: 'none !important',
-      },
-    },
-    customParamsError: {
-      color: themeColors.errorColor,
-      fontSize: fontSizes.sm,
-      marginTop: 4,
-    },
+    customParamsBox: { ...dl.listBox, marginTop: SPACING.CARD_CONTENT_GAP + 20 },
+    customParamsBoxEmpty: dl.listBoxEmpty,
+    customParamsHeader: dl.listHeader,
+    customParamsHeaderEmpty: dl.listHeaderEmpty,
+    customParamsTitle: dl.listTitle,
+    customParamsBody: dl.listBody,
+    customParamsRow: dl.listRow,
+    customParamsActionBtn: dl.listActionBtn,
+    customParamsInput: dl.listInput,
+    customParamsError: dl.listError,
   }
 })

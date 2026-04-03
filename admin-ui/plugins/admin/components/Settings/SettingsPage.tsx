@@ -12,6 +12,7 @@ import GluuThemeFormFooter from '@/routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { SETTINGS } from 'Utils/ApiResources'
+import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import SetTitle from 'Utils/SetTitle'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -29,7 +30,11 @@ import {
 } from 'Utils/pagingUtils'
 import packageJson from '../../../../package.json'
 import { getSettingsValidationSchema } from 'Plugins/admin/helper/validations/settingsValidation'
-import { buildSettingsInitialValues, type SettingsFormValues } from 'Plugins/admin/helper/settings'
+import {
+  buildSettingsInitialValues,
+  type SettingsFormValues,
+  type AdditionalParameterFormItem,
+} from 'Plugins/admin/helper/settings'
 import {
   useGetAdminuiConf,
   useEditAdminuiConf,
@@ -40,6 +45,7 @@ import {
 import { useQueryClient } from '@tanstack/react-query'
 import { updateToast } from '@/redux/features/toastSlice'
 import { getOAuth2ConfigResponse } from '@/redux/features/authSlice'
+import type { Config } from '@/redux/features/types/authTypes'
 import { logAudit } from '@/utils/AuditLogger'
 import { UPDATE } from '@/audit/UserActionType'
 import { ADMIN_UI_SETTINGS } from 'Plugins/admin/redux/audit/Resources'
@@ -48,10 +54,8 @@ import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { GluuButton } from '@/components/GluuButton'
 import { useStyles } from './SettingsPage.style'
 
-const toError = (err: unknown): Error => (err instanceof Error ? err : new Error(String(err)))
-
-type CustomParamItem = { id: string; key?: string; value?: string }
-
+const settingsResourceId = ADMIN_UI_RESOURCES.Settings
+const settingsScopes = CEDAR_RESOURCE_SCOPES[settingsResourceId] || []
 const SCRIPTS_FETCH_LIMIT = 200
 
 const SettingsPage: React.FC = () => {
@@ -84,18 +88,13 @@ const SettingsPage: React.FC = () => {
     refetch: refetchScripts,
   } = useGetConfigScriptsByType('person_authentication', { limit: SCRIPTS_FETCH_LIMIT })
 
-  const settingsResourceId = useMemo(() => ADMIN_UI_RESOURCES.Settings, [])
-  const settingsScopes = useMemo(
-    () => CEDAR_RESOURCE_SCOPES[settingsResourceId] || [],
-    [settingsResourceId],
-  )
   const canReadSettings = useMemo(
     () => hasCedarReadPermission(settingsResourceId),
-    [hasCedarReadPermission, settingsResourceId],
+    [hasCedarReadPermission],
   )
   const canWriteSettings = useMemo(
     () => hasCedarWritePermission(settingsResourceId),
-    [hasCedarWritePermission, settingsResourceId],
+    [hasCedarWritePermission],
   )
 
   const pageTitle = t('titles.application_settings')
@@ -105,7 +104,7 @@ const SettingsPage: React.FC = () => {
     if (settingsScopes.length > 0) {
       authorizeHelper(settingsScopes)
     }
-  }, [authorizeHelper, settingsScopes])
+  }, [authorizeHelper])
 
   const validationSchema = useMemo(() => getSettingsValidationSchema(t), [t])
   const savedPagingSize = useMemo(() => getDefaultPagingSize(), [])
@@ -154,7 +153,7 @@ const SettingsPage: React.FC = () => {
 
       try {
         const updatePayload: AppConfigResponse = {
-          sessionTimeoutInMins: values.sessionTimeoutInMins,
+          sessionTimeoutInMins: values.sessionTimeoutInMins || undefined,
           acrValues: values.acrValues,
           cedarlingLogType: values.cedarlingLogType,
           additionalParameters: values.additionalParameters.map((param) => ({
@@ -168,7 +167,7 @@ const SettingsPage: React.FC = () => {
         })
 
         queryClient.invalidateQueries({ queryKey: getGetAdminuiConfQueryKey() })
-        dispatch(getOAuth2ConfigResponse({ config: updatedConfig }))
+        dispatch(getOAuth2ConfigResponse({ config: updatedConfig as Config }))
 
         await logAudit({
           userinfo: userinfo ?? undefined,
@@ -176,12 +175,14 @@ const SettingsPage: React.FC = () => {
           resource: ADMIN_UI_SETTINGS,
           message: 'Application settings updated',
           client_id: clientId,
-          payload: {
-            sessionTimeoutInMins: values.sessionTimeoutInMins,
-            acrValues: values.acrValues,
-            cedarlingLogType: values.cedarlingLogType,
-            additionalParameters: values.additionalParameters,
-          },
+          payload: JSON.parse(
+            JSON.stringify({
+              sessionTimeoutInMins: values.sessionTimeoutInMins,
+              acrValues: values.acrValues,
+              cedarlingLogType: values.cedarlingLogType,
+              additionalParameters: values.additionalParameters,
+            }),
+          ),
         }).catch((auditError) => {
           console.error('Audit logging failed:', auditError)
         })
@@ -195,7 +196,8 @@ const SettingsPage: React.FC = () => {
         setBaselinePagingSize(currentPagingSize)
         formikHelpers.resetForm({ values })
       } catch (error) {
-        const errorMessage = getErrorMessage(toError(error), 'messages.error_in_saving', t)
+        const normalizedError = error instanceof Error ? error : new Error(String(error))
+        const errorMessage = getErrorMessage(normalizedError, 'messages.error_in_saving', t)
         dispatch(updateToast(true, 'error', errorMessage))
       }
     },
@@ -266,12 +268,12 @@ const SettingsPage: React.FC = () => {
 
     const errorMessages: string[] = []
     if (isConfigError && configError) {
-      errorMessages.push(getErrorMessage(toError(configError), 'messages.error_loading_config', t))
+      const err = configError instanceof Error ? configError : new Error(String(configError))
+      errorMessages.push(getErrorMessage(err, 'messages.error_loading_config', t))
     }
     if (isScriptsError && scriptsError) {
-      errorMessages.push(
-        getErrorMessage(toError(scriptsError), 'messages.error_loading_scripts', t),
-      )
+      const err = new Error(String(scriptsError))
+      errorMessages.push(getErrorMessage(err, 'messages.error_loading_scripts', t))
     }
 
     return (
@@ -371,6 +373,7 @@ const SettingsPage: React.FC = () => {
                       )}
                       disabled={!canWriteSettings}
                       isDark={isDark}
+                      placeholder={getFieldPlaceholder(t, 'fields.sessionTimeoutInMins')}
                     />
                   </div>
 
@@ -453,45 +456,45 @@ const SettingsPage: React.FC = () => {
                     </GluuButton>
                   </div>
                   <div className={classes.customParamsBody}>
-                    {((formik.values.additionalParameters || []) as CustomParamItem[]).map(
-                      (param, index) => (
-                        <div key={param.id} className={classes.customParamsRow}>
-                          <Input
-                            name={`additionalParameters.${index}.key`}
-                            value={param.key || ''}
-                            onChange={formik.handleChange}
-                            placeholder={t('placeholders.enter_property_key')}
-                            disabled={!canWriteSettings}
-                            className={classes.customParamsInput}
-                          />
-                          <Input
-                            name={`additionalParameters.${index}.value`}
-                            value={param.value || ''}
-                            onChange={formik.handleChange}
-                            placeholder={t('placeholders.enter_property_value')}
-                            disabled={!canWriteSettings}
-                            className={classes.customParamsInput}
-                          />
-                          <GluuButton
-                            type="button"
-                            disabled={!canWriteSettings}
-                            backgroundColor={themeColors.settings.removeButton.bg}
-                            textColor={themeColors.settings.removeButton.text}
-                            useOpacityOnHover
-                            className={classes.customParamsActionBtn}
-                            onClick={() => {
-                              const currentParams = (formik.values.additionalParameters ??
-                                []) as CustomParamItem[]
-                              const newParams = currentParams.filter((p) => p.id !== param.id)
-                              formik.setFieldValue('additionalParameters', newParams)
-                            }}
-                          >
-                            <i className="fa fa-fw fa-trash" />
-                            {t('actions.remove')}
-                          </GluuButton>
-                        </div>
-                      ),
-                    )}
+                    {(
+                      (formik.values.additionalParameters || []) as AdditionalParameterFormItem[]
+                    ).map((param, index) => (
+                      <div key={param.id} className={classes.customParamsRow}>
+                        <Input
+                          name={`additionalParameters.${index}.key`}
+                          value={param.key || ''}
+                          onChange={formik.handleChange}
+                          placeholder={t('placeholders.enter_property_key')}
+                          disabled={!canWriteSettings}
+                          className={classes.customParamsInput}
+                        />
+                        <Input
+                          name={`additionalParameters.${index}.value`}
+                          value={param.value || ''}
+                          onChange={formik.handleChange}
+                          placeholder={t('placeholders.enter_property_value')}
+                          disabled={!canWriteSettings}
+                          className={classes.customParamsInput}
+                        />
+                        <GluuButton
+                          type="button"
+                          disabled={!canWriteSettings}
+                          backgroundColor={themeColors.settings.removeButton.bg}
+                          textColor={themeColors.settings.removeButton.text}
+                          useOpacityOnHover
+                          className={classes.customParamsActionBtn}
+                          onClick={() => {
+                            const currentParams = (formik.values.additionalParameters ??
+                              []) as AdditionalParameterFormItem[]
+                            const newParams = currentParams.filter((p) => p.id !== param.id)
+                            formik.setFieldValue('additionalParameters', newParams)
+                          }}
+                        >
+                          <i className="fa fa-fw fa-trash" />
+                          {t('actions.remove')}
+                        </GluuButton>
+                      </div>
+                    ))}
                   </div>
                   {showAdditionalParametersError &&
                     additionalParametersErrorText &&
