@@ -1,7 +1,25 @@
-import store from '../store'
+import { getRootState } from '@/redux/hooks'
 
-export const getClient = (JansConfigApi: any, r_token: any, r_issuer: any) => {
-  const authState = (store.getState() as any)?.authReducer
+interface JansApiClient {
+  instance: {
+    timeout: number
+    authentications: Record<string, { accessToken: string | undefined }>
+    basePath: string
+    enableCookies: boolean
+    defaultHeaders: Record<string, string>
+  }
+}
+
+interface JansConfigApiModule {
+  ApiClient: JansApiClient
+}
+
+export const getClient = (
+  JansConfigApi: JansConfigApiModule,
+  r_token: string | null,
+  r_issuer: string | null,
+): JansApiClient['instance'] => {
+  const authState = getRootState().authReducer
   const userInum = authState?.userInum || ''
   const hasSession = authState?.hasSession || false
   const defaultClient = JansConfigApi.ApiClient.instance
@@ -22,7 +40,7 @@ export const getClient = (JansConfigApi: any, r_token: any, r_issuer: any) => {
 
   const headers = {
     'Content-Type': 'application/json',
-    'issuer': r_issuer,
+    'issuer': r_issuer ?? '',
     'jans-client': 'admin-ui',
     'User-inum': userInum,
   }
@@ -30,8 +48,11 @@ export const getClient = (JansConfigApi: any, r_token: any, r_issuer: any) => {
   return defaultClient
 }
 
-export const getClientWithToken = (JansConfigApi: any, token: any) => {
-  const authState = (store.getState() as any)?.authReducer
+export const getClientWithToken = (
+  JansConfigApi: JansConfigApiModule,
+  token: string,
+): JansApiClient['instance'] => {
+  const authState = getRootState().authReducer
   const userInum = authState?.userInum || ''
   const issuer = authState?.issuer || ''
   const hasSession = authState?.hasSession || false

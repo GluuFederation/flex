@@ -12,6 +12,7 @@ import find from 'lodash/find'
 import includes from 'lodash/includes'
 import mapValues from 'lodash/mapValues'
 import classNames from 'classnames'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { PageConfigContext } from './../Layout/PageConfigContext'
 import { SideMenuAnimate } from './../../common'
 import { MenuContext } from './MenuContext'
@@ -30,7 +31,7 @@ type SidebarMenuItemInjectedProps = {
   slim: boolean
 }
 
-type ComponentWithDisplayName = React.ComponentType<Record<string, unknown>> & {
+type ComponentWithDisplayName = React.ComponentType<Record<string, JsonValue | undefined>> & {
   displayName?: string
   name?: string
 }

@@ -18,7 +18,7 @@ const makeMockCedarling = (overrides?: Partial<UseCedarlingReturn>): UseCedarlin
     isLoading: false,
     error: null,
     ...overrides,
-  }) as unknown as UseCedarlingReturn
+  }) as UseCedarlingReturn
 
 describe('UserList', () => {
   let Wrapper: React.ComponentType<{ children: React.ReactNode }>

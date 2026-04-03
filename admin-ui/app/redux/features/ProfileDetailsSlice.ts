@@ -2,12 +2,12 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import type { ProfileDetails } from 'Routes/Apps/Profile/types'
 
-export interface ProfileDetailsRequestPayload extends Record<string, unknown> {
+export type ProfileDetailsRequestPayload = {
   pattern: string
   userId?: string | null
 }
 
-interface ProfileDetailsState {
+type ProfileDetailsState = {
   profileDetails: ProfileDetails | null
   loading: boolean
 }

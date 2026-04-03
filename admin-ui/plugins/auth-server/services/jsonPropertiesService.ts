@@ -1,17 +1,19 @@
 import { addAdditionalData, isFourZeroThreeError } from 'Utils/TokenController'
+import type { AdditionalPayload } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
 import type { UserActionPayload } from 'Redux/api/types/BackendApi'
 import { FETCH, PATCH, DELETION } from '@/audit/UserActionType'
 import { getRootState } from '@/redux/hooks'
-import type { AuditLog } from 'Redux/sagas/types/audit'
+import type { AuditLog, AuditRecord } from 'Redux/sagas/types'
 import type { UserAction } from 'Utils/PermChecker'
+import type { JsonPatch } from 'JansConfigApi'
+import type { AppConfiguration } from '../components/AuthServerProperties/types'
 import { JSON_CONFIG } from '../redux/audit/Resources'
 import { enhanceJsonConfigAuditPayload } from '../redux/utils/auditHelpers'
 import { callFetchJsonProperties, callPatchJsonProperties } from '../api/jsonPropertiesClient'
 import { redirectSessionExpired } from '../utils/sessionExpiredRedirect'
-import type { AgamaJsonPatch } from '../components/Agama/types/agamaTypes'
 
-function createAuditLog(): AuditLog {
+const createAuditLog = (): AuditLog => {
   const state = getRootState()
   const authReducer = state.authReducer
   const auditlog: AuditLog = {}
@@ -28,64 +30,53 @@ function createAuditLog(): AuditLog {
 
 type HttpErrorLike = Parameters<typeof isFourZeroThreeError>[0]
 
-async function handleForbidden(e: unknown): Promise<void> {
-  if (isFourZeroThreeError(e as HttpErrorLike)) {
+const handleForbidden = async (e: HttpErrorLike): Promise<void> => {
+  if (isFourZeroThreeError(e)) {
     await redirectSessionExpired()
   }
 }
 
-/**
- * Fetches auth server JSON configuration and records the same audit entry as the former JSON config saga.
- */
-export async function fetchAuthServerJsonProperties(): Promise<Record<string, unknown>> {
+export const fetchAuthServerJsonProperties = async (): Promise<AppConfiguration> => {
   const audit = createAuditLog()
-  addAdditionalData(
-    audit as Record<string, string | number | boolean | object | null | undefined>,
-    FETCH,
-    JSON_CONFIG,
-    {},
-  )
+  addAdditionalData(audit as AuditRecord, FETCH, JSON_CONFIG, {})
   try {
-    const data = (await callFetchJsonProperties()) as Record<string, unknown>
+    const data = await callFetchJsonProperties()
     await postUserAction(audit as UserActionPayload)
     return data
   } catch (e) {
-    await handleForbidden(e)
+    await handleForbidden(e as HttpErrorLike)
     throw e
   }
 }
 
-/**
- * PATCHes auth server JSON configuration and records audit (and relies on the caller for toast UX via React Query).
- */
-export async function patchAuthServerJsonProperties(userAction: UserAction): Promise<unknown> {
+interface PatchActionData {
+  deletedMapping?: boolean
+  requestBody?: JsonPatch[]
+}
+
+export const patchAuthServerJsonProperties = async (
+  userAction: UserAction,
+): Promise<AppConfiguration> => {
   const audit = createAuditLog()
   const payload = { action: userAction }
   const enhancedPayload = enhanceJsonConfigAuditPayload(payload, JSON_CONFIG)
-  const actionData = userAction.action_data as
-    | {
-        deletedMapping?: unknown
-        requestBody?: AgamaJsonPatch[]
-      }
-    | undefined
+  const actionData = userAction.action_data as PatchActionData | undefined
   const hasDeletedMapping = Boolean(actionData?.deletedMapping)
   const hasRemovePatch =
     Array.isArray(actionData?.requestBody) &&
     actionData.requestBody.some((patch) => patch.op === 'remove')
   const isDeleteOperation = hasDeletedMapping || hasRemovePatch
   const actionType = isDeleteOperation ? DELETION : PATCH
-  addAdditionalData(
-    audit as Record<string, string | number | boolean | object | null | undefined>,
-    actionType,
-    JSON_CONFIG,
-    enhancedPayload as unknown as Record<string, unknown>,
-  )
+  addAdditionalData(audit as AuditRecord, actionType, JSON_CONFIG, {
+    action: enhancedPayload.action,
+  } as AdditionalPayload)
   try {
-    const data = await callPatchJsonProperties(userAction.action_data)
+    const patches = actionData?.requestBody ?? []
+    const data = await callPatchJsonProperties(patches)
     await postUserAction(audit as UserActionPayload)
     return data
   } catch (e) {
-    await handleForbidden(e)
+    await handleForbidden(e as HttpErrorLike)
     throw e
   }
 }

@@ -1,23 +1,24 @@
-import { BasicQueryStringUtils } from '@openid/appauth'
+import { BasicQueryStringUtils, type LocationLike } from '@openid/appauth'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import type { AuditRecord } from 'Redux/sagas/types'
 
-type GenericRecord = Record<string, unknown>
+type AdditionalActionData = Record<string, JsonValue>
 
-type AdditionalActionData = GenericRecord & {
-  modifiedFields?: unknown
-  performedOn?: unknown
-}
-
-export type AdditionalPayload = GenericRecord & {
+export type AdditionalPayload = {
   action?: {
     action_message?: string
     action_data?: AdditionalActionData
   }
   action_message?: string
   message?: string
-  modifiedFields?: unknown
-  performedOn?: unknown
-  tableData?: unknown
+  modifiedFields?: JsonValue
+  performedOn?: JsonValue
+  tableData?: JsonValue
   omitPayload?: boolean
+  [key: string]:
+    | JsonValue
+    | { action_message?: string; action_data?: AdditionalActionData }
+    | undefined
 }
 
 type AxiosErrorLike = {
@@ -58,7 +59,7 @@ export const isValidState = (newState?: string | null): boolean => {
 }
 
 export const addAdditionalData = (
-  audit: GenericRecord,
+  audit: AuditRecord,
   action: string,
   resource: string,
   payload: AdditionalPayload = {},
@@ -128,17 +129,16 @@ export const addAdditionalData = (
   }
 
   if (!shouldOmitPayload) {
-    audit.payload = sanitizedPayload.action ? sanitizedPayload.action.action_data : sanitizedPayload
+    audit.payload = sanitizedPayload.action
+      ? (sanitizedPayload.action.action_data as JsonValue)
+      : (sanitizedPayload as JsonValue)
   }
 
   audit.date = new Date()
 }
 
 export class NoHashQueryStringUtils extends BasicQueryStringUtils {
-  parse(
-    input: Parameters<BasicQueryStringUtils['parse']>[0],
-    _useHash?: Parameters<BasicQueryStringUtils['parse']>[1],
-  ): ReturnType<BasicQueryStringUtils['parse']> {
+  parse(input: LocationLike): Record<string, string> {
     return super.parse(input, false)
   }
 }

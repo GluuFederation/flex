@@ -1,3 +1,5 @@
+import type { GluuDetailGridField } from '@/components/GluuDetailGrid'
+
 export interface ModuleProperty {
   value1: string
   value2: string
@@ -18,6 +20,8 @@ export interface ConfigurationProperty {
 export interface ScriptError {
   stackTrace?: string
 }
+
+export type DisplayValue = GluuDetailGridField['value']
 
 export interface ScriptType {
   value: string

@@ -5,6 +5,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import SetTitle from 'Utils/SetTitle'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import { Card, CardBody } from 'Components'
 import { GluuPageContent } from '@/components'
 import ScimConfiguration from './ScimConfiguration'
 import { updateToast } from 'Redux/features/toastSlice'
@@ -15,6 +16,7 @@ import type { ScimFormValues, ApiErrorResponse, MutationContext, AppConfiguratio
 import { logAudit } from 'Utils/AuditLogger'
 import { PATCH } from '@/audit/UserActionType'
 import type { JsonPatch } from 'JansConfigApi'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
@@ -93,9 +95,8 @@ const ScimPage: React.FC = () => {
                   case 'add':
                     return { ...updated, [key]: patch.value }
                   case 'remove': {
-                    const { [key]: omitted, ...rest } = updated
-                    void omitted
-                    return rest
+                    delete updated[key]
+                    return { ...updated }
                   }
                   default:
                     return updated
@@ -118,7 +119,7 @@ const ScimPage: React.FC = () => {
           resource: AUDIT_RESOURCE,
           message: userMessage,
           client_id: client_id,
-          payload: variables?.data,
+          payload: variables?.data as JsonValue[],
         })
       },
       onError: (
@@ -160,8 +161,8 @@ const ScimPage: React.FC = () => {
     <GluuPageContent>
       <GluuViewWrapper canShow={canReadScim}>
         <GluuLoader blocking={isLoading || patchScimMutation.isPending}>
-          <div className={classes.formCard}>
-            <div className={classes.content}>
+          <Card className={classes.formCard}>
+            <CardBody className={classes.content}>
               <ScimConfiguration
                 scimConfiguration={scimConfiguration}
                 handleSubmit={handleSubmit}
@@ -169,8 +170,8 @@ const ScimPage: React.FC = () => {
                 canWriteScim={canWriteScim}
                 classes={classes}
               />
-            </div>
-          </div>
+            </CardBody>
+          </Card>
         </GluuLoader>
       </GluuViewWrapper>
     </GluuPageContent>

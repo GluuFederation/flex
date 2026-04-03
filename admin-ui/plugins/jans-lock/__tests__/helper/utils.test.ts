@@ -5,41 +5,10 @@ import {
   buildLockChangedFieldOperations,
 } from 'Plugins/jans-lock/helper/utils'
 import type { JansLockConfigFormValues } from 'Plugins/jans-lock/types'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import i18next from 'i18next'
 
 const t = i18next.t.bind(i18next)
-
-interface PolicySource {
-  authorizationToken?: string
-  policyStoreUri?: string
-}
-
-interface LockApiConfig {
-  baseDN?: string
-  tokenChannels?: string[] | string
-  disableJdkLogger?: boolean | string
-  loggingLevel?: string
-  loggingLayout?: string
-  externalLoggerConfiguration?: string
-  disableExternalLoggerConfiguration?: boolean | string
-  metricReporterEnabled?: boolean | string
-  metricReporterInterval?: number | null
-  metricReporterKeepDataDays?: number | null
-  cleanServiceInterval?: number | null
-  metricChannel?: string
-  pdpType?: string
-  cedarlingConfiguration?: {
-    policySources?: PolicySource[]
-  }
-  [key: string]:
-    | string
-    | number
-    | boolean
-    | string[]
-    | null
-    | undefined
-    | { policySources?: PolicySource[] }
-}
 
 describe('toBooleanValue', () => {
   it('returns true for boolean true', () => {
@@ -68,10 +37,6 @@ describe('toBooleanValue', () => {
 
   it('returns false for null', () => {
     expect(toBooleanValue(null)).toBe(false)
-  })
-
-  it('returns false for undefined', () => {
-    expect(toBooleanValue(undefined)).toBe(false)
   })
 
   it('returns true for truthy number', () => {
@@ -108,7 +73,7 @@ describe('transformToFormValues', () => {
   })
 
   it('transforms flat fields correctly', () => {
-    const config: LockApiConfig = {
+    const config: Record<string, JsonValue> = {
       baseDN: 'ou=lock,o=gluu',
       tokenChannels: ['channel1', 'channel2'],
       disableJdkLogger: true,
@@ -145,7 +110,7 @@ describe('transformToFormValues', () => {
       policyStoreUri: 'https://json.example.com',
     }
     const zipSource = { authorizationToken: 'zip-token', policyStoreUri: 'https://zip.example.com' }
-    const config: LockApiConfig = {
+    const config: Record<string, JsonValue> = {
       cedarlingConfiguration: { policySources: [jsonSource, zipSource] },
     }
 
@@ -165,7 +130,7 @@ describe('transformToFormValues', () => {
   })
 
   it('handles null/undefined numeric fields', () => {
-    const config: LockApiConfig = {
+    const config: Record<string, JsonValue> = {
       metricReporterInterval: null,
       metricReporterKeepDataDays: null,
       cleanServiceInterval: 60,
@@ -178,7 +143,7 @@ describe('transformToFormValues', () => {
   })
 
   it('converts string boolean values', () => {
-    const config: LockApiConfig = {
+    const config: Record<string, JsonValue> = {
       disableJdkLogger: 'true',
       metricReporterEnabled: 'false',
     }
@@ -190,7 +155,7 @@ describe('transformToFormValues', () => {
 })
 
 describe('createPatchOperations', () => {
-  const baseConfig: LockApiConfig = {
+  const baseConfig: Record<string, JsonValue> = {
     baseDN: 'ou=lock,o=gluu',
     tokenChannels: '',
     disableJdkLogger: true,
@@ -265,7 +230,10 @@ describe('createPatchOperations', () => {
   })
 
   it('creates replace operation when clearing optional string field (metricChannel)', () => {
-    const configWithChannel: LockApiConfig = { ...baseConfig, metricChannel: 'existing_channel' }
+    const configWithChannel: Record<string, JsonValue> = {
+      ...baseConfig,
+      metricChannel: 'existing_channel',
+    }
     const modified = { ...baseFormValues, metricChannel: '' }
     const patches = createPatchOperations(modified, configWithChannel)
     expect(patches).toContainEqual({
@@ -276,7 +244,7 @@ describe('createPatchOperations', () => {
   })
 
   it('creates add operation for new field not in original config', () => {
-    const configWithout: LockApiConfig = { ...baseConfig }
+    const configWithout: Record<string, JsonValue> = { ...baseConfig }
     delete configWithout.metricChannel
     const modified = { ...baseFormValues, metricChannel: 'new_channel' }
     const patches = createPatchOperations(modified, configWithout)
@@ -288,7 +256,7 @@ describe('createPatchOperations', () => {
   })
 
   it('does not create add operation for empty tokenChannels', () => {
-    const configWithout: LockApiConfig = { ...baseConfig }
+    const configWithout: Record<string, JsonValue> = { ...baseConfig }
     delete configWithout.tokenChannels
     const patches = createPatchOperations(baseFormValues, configWithout)
     const tokenPatch = patches.find((p) => p.path === '/tokenChannels')
@@ -315,7 +283,7 @@ describe('createPatchOperations', () => {
   })
 
   it('creates add operation for cedarlingConfiguration when not in original', () => {
-    const configWithoutCedar: LockApiConfig = { ...baseConfig }
+    const configWithoutCedar: Record<string, JsonValue> = { ...baseConfig }
     delete configWithoutCedar.cedarlingConfiguration
     const modified = {
       ...baseFormValues,

@@ -1,3 +1,5 @@
+import type { ApiAppConfiguration } from '../types'
+
 export const READ_ONLY_FIELDS: readonly string[] = [
   'apiProtectionType',
   'apiClientId',
@@ -12,3 +14,33 @@ export const READ_ONLY_FIELDS: readonly string[] = [
   'corsConfigurationFilters',
   'serviceName',
 ]
+
+export const DEFAULT_CONFIG_API_CONFIG: ApiAppConfiguration = {
+  serviceName: '',
+  configOauthEnabled: false,
+  disableLoggerTimer: false,
+  disableAuditLogger: false,
+  customAttributeValidationEnabled: false,
+  acrValidationEnabled: false,
+  returnClientSecretInResponse: false,
+  returnEncryptedClientSecretInResponse: false,
+  apiApprovedIssuer: [],
+  apiProtectionType: '',
+  apiClientId: '',
+  apiClientPassword: '',
+  endpointInjectionEnabled: false,
+  authIssuerUrl: '',
+  authOpenidConfigurationUrl: '',
+  authOpenidIntrospectionUrl: '',
+  authOpenidTokenUrl: '',
+  authOpenidRevokeUrl: '',
+  exclusiveAuthScopes: [],
+  loggingLevel: '',
+  loggingLayout: '',
+  disableJdkLogger: false,
+  disableExternalLoggerConfiguration: false,
+  maxCount: 0,
+  acrExclusionList: [],
+  userExclusionAttributes: [],
+  userMandatoryAttributes: [],
+}

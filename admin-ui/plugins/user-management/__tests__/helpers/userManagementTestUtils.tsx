@@ -3,6 +3,7 @@ import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import type { Store } from '@reduxjs/toolkit'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import type { AuthState } from 'Redux/features/types/authTypes'
 
@@ -79,14 +80,14 @@ jest.mock('Plugins/user-management/hooks/useUserMutations', () => ({
 
 const defaultWebhookReducerState = {
   loadingWebhooks: false,
-  featureWebhooks: [] as unknown[],
+  featureWebhooks: [] as JsonValue[],
   webhookModal: false,
   triggerWebhookInProgress: false,
   triggerWebhookMessage: '',
-  webhookTriggerErrors: [] as unknown[],
+  webhookTriggerErrors: [] as JsonValue[],
   triggerPayload: {
     feature: null as string | null,
-    payload: null as unknown,
+    payload: null as JsonValue,
   },
   featureToTrigger: '',
   showErrorModal: false,

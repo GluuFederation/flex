@@ -295,11 +295,7 @@ export default function AppAuthProvider({ children }: Readonly<AppAuthProviderPr
   return (
     <React.Fragment>
       <SessionTimeout isAuthenticated={showAdminUI} />
-      <GluuTimeoutModal
-        description={
-          'The request has been terminated as there is no response from the server for more than 60 seconds.'
-        }
-      />
+      <GluuTimeoutModal />
       {!isUnderThresholdLimit && (
         <GluuErrorModal
           message={'Alert'}

@@ -20,15 +20,11 @@
     "add_mapping": "Agregar mapeo",
     "add_header": "Agregar encabezado",
     "add_property": "Agregar propiedad",
-    "add_party": "Agregar parte",
-    "add_types": "Agregar tipos",
     "add_server": "Agregar servidor",
     "add_base_dn": "Agregar base DN",
     "change_bind_password": "Cambiar contraseña de enlace",
     "set_password": "Establecer contraseña",
-    "add_classes": "Agregar clases",
-    "add_algorithm": "Agregar Algoritmo",
-    "add_metadata_server": "Agregar Servidor de Metadatos",
+    "add_properties": "Agregar Propiedades",
     "configuration_copied": "Configuración copiada",
     "copy_configuration": "Copiar configuración",
     "apply": "Aplicar",
@@ -601,6 +597,7 @@
     "modality": "Modalidad",
     "dateAdded": "Fecha de Alta",
     "givenName": "Nombre",
+    "lastName": "Apellido",
     "sn": "Apellido",
     "mail": "Correo",
     "resources": "Recursos",
@@ -809,6 +806,11 @@
     "dynamic_configuration": "Configuración Dinámica",
     "upload_agama_project": "Subir Proyecto Agama",
     "add_community_project": "Agregar un Proyecto de la Comunidad"
+  },
+  "footer": {
+    "copyright": "(C) {{year}} Todos los derechos reservados.",
+    "designed_by": "Este es el \"{{name}}\" diseñado e implementado por",
+    "company_name": "Gluu Inc."
   },
   "messages": {
     "multi_select_hint": "Ingrese varios elementos seleccionando del menú desplegable que aparece después de ingresar cada elemento.",
@@ -1056,6 +1058,7 @@
     "add_ssa": "Agregar SSA",
     "copied": "Copiado",
     "request_timeout_title": "Tiempo de espera agotado",
+    "request_timeout_description": "La solicitud se ha terminado porque no hubo respuesta del servidor durante más de 60 segundos. Verifique su conexión de red y el estado del servidor, luego intente nuevamente.",
     "no_data_found": "No se encontraron datos",
     "no_data_available": "No hay datos disponibles",
     "no_jwks_found": "No se encontraron claves JSON Web.",
@@ -1459,6 +1462,14 @@
     "jans_link": {
       "enabled": "Esta casilla se usa para guardar y enviar los cambios. No usar a menos que el administrador del servidor haya ingresado todos los valores requeridos.",
       "useSSL": "Usa esta función si el servidor backend permite conectividad SSL."
+    },
+    "api-attribute": {
+      "name": "Nombre único del atributo.",
+      "displayName": "Nombre de visualización del atributo.",
+      "status": "Estado actual del atributo (activo o inactivo).",
+      "editType": "Determina quién puede editar este atributo (ej., admin, usuario).",
+      "viewType": "Determina quién puede ver este atributo (ej., admin, usuario).",
+      "description": "Breve descripción del propósito del atributo."
     },
     "no_category": {
       "deletable": "¿Se puede eliminar?"

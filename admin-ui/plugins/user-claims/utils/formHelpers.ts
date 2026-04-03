@@ -16,7 +16,7 @@ export const DEFAULT_FORM_ATTRIBUTE_VALIDATION = {
   minLength: null,
 } as const
 
-const filterNullValues = (arr: unknown[] | undefined | null): string[] => {
+const filterNullValues = (arr: (string | null | undefined)[] | undefined | null): string[] => {
   if (!Array.isArray(arr)) return []
   return arr.filter((val): val is string => val != null && val !== '') as string[]
 }

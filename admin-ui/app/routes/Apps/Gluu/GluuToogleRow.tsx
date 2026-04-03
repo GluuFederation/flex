@@ -4,8 +4,9 @@ import { Col, FormGroup } from 'Components'
 import type { CSSProperties } from 'react'
 import GluuLabel from './GluuLabel'
 import GluuToogle from './GluuToogle'
+import type { JsonValue } from './types/common'
 
-interface GluuToogleRowProps<T = Record<string, unknown>> {
+type GluuToogleRowProps<T = Record<string, JsonValue>> = {
   label: string
   name: string
   value?: boolean
@@ -22,7 +23,7 @@ interface GluuToogleRowProps<T = Record<string, unknown>> {
   isDark?: boolean
 }
 
-function GluuToogleRow<T = Record<string, unknown>>({
+const GluuToogleRow = <T = Record<string, JsonValue>,>({
   label,
   name,
   value,
@@ -37,7 +38,7 @@ function GluuToogleRow<T = Record<string, unknown>>({
   isLabelVisible = true,
   labelStyle,
   isDark,
-}: GluuToogleRowProps<T>) {
+}: GluuToogleRowProps<T>) => {
   return (
     <FormGroup row>
       {isLabelVisible && (

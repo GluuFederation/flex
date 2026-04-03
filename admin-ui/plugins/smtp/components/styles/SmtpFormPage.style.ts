@@ -169,7 +169,7 @@ export const useStyles = makeStyles<SmtpFormPageStylesParams>()((
     formWithInputs: {
       '& input, & select, & .custom-select': {
         backgroundColor: `${formInputBg} !important`,
-        border: `1px solid ${inputBorderColor}`,
+        border: `1px solid ${inputBorderColor} !important`,
         borderRadius: BORDER_RADIUS.SMALL,
         color: `${themeColors.fontColor} !important`,
         minHeight: INPUT_HEIGHT,
@@ -184,13 +184,13 @@ export const useStyles = makeStyles<SmtpFormPageStylesParams>()((
         marginTop: SELECT_NUDGE,
         marginBottom: SELECT_NUDGE,
       },
-      '& input:focus, & input:active, & select:focus, & select:active': {
-        backgroundColor: `${formInputBg} !important`,
-        color: `${themeColors.fontColor} !important`,
-        border: `1px solid ${inputBorderColor} !important`,
-        outline: 'none',
-        boxShadow: 'none',
-      },
+      '& input:focus, & input:active, & select:focus, & select:active, & .form-control:focus, & .input-group:focus-within':
+        {
+          borderColor: `${inputBorderColor} !important`,
+          borderRadius: `${BORDER_RADIUS.SMALL}px !important`,
+          outline: 'none !important',
+          boxShadow: 'none !important',
+        },
       '& input:disabled, & select:disabled': {
         backgroundColor: `${alpha(formInputBg, OPACITY.DISABLED)} !important`,
         border: `1px solid ${inputBorderColor} !important`,

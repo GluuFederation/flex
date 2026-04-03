@@ -6,11 +6,13 @@ import { HelpOutline } from '@mui/icons-material'
 import GluuTooltip from './GluuTooltip'
 import customColors from '@/customColors'
 import { isDevelopment } from '@/utils/env'
-
-// Property type definitions
-type KeyValueProperty = { key: string; value: string }
-type SourceDestinationProperty = { source: string; destination: string }
-type Property = KeyValueProperty | SourceDestinationProperty
+import type { FormikProps } from 'formik'
+import type {
+  Property,
+  KeyValueProperty,
+  SourceDestinationProperty,
+  GluuPropertiesProps,
+} from './types/GluuProperties.types'
 
 const isKeyValueProperty = (prop: Property): prop is KeyValueProperty =>
   'key' in prop && 'value' in prop
@@ -19,7 +21,7 @@ const isSourceDestinationProperty = (prop: Property): prop is SourceDestinationP
   'source' in prop && 'destination' in prop
 
 const syncFormikProperties = (
-  formik: any,
+  formik: FormikProps<Record<string, Property[]>> | null,
   compName: string,
   properties: Property[],
   { isKeys, multiProperties }: { isKeys: boolean; multiProperties: boolean },
@@ -27,9 +29,9 @@ const syncFormikProperties = (
   if (!formik || !compName) return
 
   if (isDevelopment && properties.length > 0) {
-    const hasKeyValue = properties.some((p: any) => 'key' in p && 'value' in p)
-    const hasSourceDest = properties.some((p: any) => 'source' in p && 'destination' in p)
-    const hasApiFormat = properties.some((p: any) => 'value1' in p && 'value2' in p)
+    const hasKeyValue = properties.some((p) => 'key' in p && 'value' in p)
+    const hasSourceDest = properties.some((p) => 'source' in p && 'destination' in p)
+    const hasApiFormat = properties.some((p) => 'value1' in p && 'value2' in p)
 
     if (multiProperties && !hasSourceDest) {
       console.warn(
@@ -73,7 +75,7 @@ const syncFormikProperties = (
   }
 }
 
-function GluuProperties({
+const GluuProperties = ({
   compName,
   label,
   formik = null,
@@ -95,7 +97,7 @@ function GluuProperties({
   sourcePlaceholder,
   destinationPlaceholder,
   tooltip,
-}: any) {
+}: GluuPropertiesProps) => {
   const [properties, setProperties] = useState(options)
   const { t, i18n } = useTranslation()
 
@@ -125,21 +127,22 @@ function GluuProperties({
     syncFormikProperties(formik, compName, newProperties, { isKeys, multiProperties })
   }
 
-  const changeProperty = (position: any, e: any) => {
+  const changeProperty = (position: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     const newDataArr = [...properties]
     newDataArr[position] = { ...newDataArr[position], [name]: value }
     setProperties(newDataArr)
     syncFormikProperties(formik, compName, newDataArr, { isKeys, multiProperties })
   }
-  const removeProperty = (position: any) => {
+
+  const removeProperty = (position: number) => {
     const data = [...properties]
     data.splice(position, 1)
     setProperties(data)
     syncFormikProperties(formik, compName, data, { isKeys, multiProperties })
   }
 
-  function TooltipHeader() {
+  const TooltipHeader = () => {
     return (
       <AccordionHeader>
         <h5 className="d-flex" aria-label={label}>
@@ -184,7 +187,7 @@ function GluuProperties({
         <FormGroup row>
           <Col sm={12}>
             <FormGroup row></FormGroup>
-            {properties.map((item: any, index: any) => (
+            {properties.map((item: Property, index: number) => (
               <div key={index}>
                 {item != null && (
                   <GluuPropertyItem

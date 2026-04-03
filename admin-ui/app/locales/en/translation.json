@@ -20,15 +20,11 @@
     "add_mapping": "Add Mapping",
     "add_header": "Add Header",
     "add_property": "Add property",
-    "add_party": "Add party",
-    "add_types": "Add Types",
     "add_server": "Add Server",
     "add_base_dn": "Add base DN",
     "change_bind_password": "Change Bind Password",
     "set_password": "Set Password",
-    "add_classes": "Add Classes",
-    "add_algorithm": "Add Algorithm",
-    "add_metadata_server": "Add Metadata Server",
+    "add_properties": "Add Properties",
     "configuration_copied": "Configuration copied",
     "copy_configuration": "Copy configuration",
     "apply": "Apply",
@@ -600,6 +596,7 @@
     "modality": "Modality",
     "dateAdded": "Date Added",
     "givenName": "Given Name",
+    "lastName": "Last Name",
     "sn": "Last Name",
     "mail": "Email",
     "admin": "Admin",
@@ -811,6 +808,11 @@
     "dynamic_configuration": "Dynamic Configuration",
     "upload_agama_project": "Upload Agama project",
     "add_community_project": "Add a Community Project"
+  },
+  "footer": {
+    "copyright": "(C) {{year}} All Rights Reserved.",
+    "designed_by": "This is the \"{{name}}\" designed and implemented by",
+    "company_name": "Gluu Inc."
   },
   "messages": {
     "multi_select_hint": "Enter multiple items by selecting each one from the dropdown that appears after typing an item.",
@@ -1068,6 +1070,7 @@
     "add_ssa": "Add SSA",
     "copied": "Copied",
     "request_timeout_title": "Request Timeout",
+    "request_timeout_description": "The request has been terminated as there is no response from the server for more than 60 seconds. Please check your network connection and server status, then try again.",
     "no_data_found": "No data found",
     "no_data_to_export": "No data available to export",
     "no_sessions_found": "No sessions found",
@@ -1469,6 +1472,14 @@
     "jans_link": {
       "enabled": "This check-box is used to save and push the changes. Do not use this unless the server administrator has entered all the required values.",
       "useSSL": "Use this feature if the backend server allows SSL connectivity."
+    },
+    "api-attribute": {
+      "name": "Unique name of the attribute.",
+      "displayName": "User-friendly display name for the attribute.",
+      "status": "Current status of the attribute (active or inactive).",
+      "editType": "Determines who can edit this attribute (e.g., admin, user).",
+      "viewType": "Determines who can view this attribute (e.g., admin, user).",
+      "description": "Brief description explaining the purpose of the attribute."
     },
     "no_category": {
       "deletable": "Is Deletable?"

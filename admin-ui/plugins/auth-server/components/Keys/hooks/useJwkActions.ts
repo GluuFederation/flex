@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
-export function useJwkActions() {
+export const useJwkActions = () => {
   const { navigateToRoute } = useAppNavigation()
 
   const navigateToKeysList = useCallback(() => {

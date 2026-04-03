@@ -10,9 +10,10 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import { useStyles } from './styles/GluuInputRow.style'
+import type { JsonValue } from './types/common'
 import type { GluuInputRowProps } from './types/GluuInputRow.types'
 
-const GluuInputRow = <T = Record<string, unknown>,>({
+const GluuInputRow = <T = Record<string, JsonValue>,>({
   label,
   name,
   type = 'text',
@@ -33,6 +34,7 @@ const GluuInputRow = <T = Record<string, unknown>,>({
   cols,
   isDark,
   placeholder,
+  allowPasswordToggleWhenDisabled = false,
   inputClassName,
 }: GluuInputRowProps<T>) => {
   const { t } = useTranslation()
@@ -176,8 +178,8 @@ const GluuInputRow = <T = Record<string, unknown>,>({
               type="button"
               className={classes.passwordToggle}
               onClick={setVisibility}
-              disabled={disabled}
-              aria-disabled={disabled}
+              disabled={disabled && !allowPasswordToggleWhenDisabled}
+              aria-disabled={disabled && !allowPasswordToggleWhenDisabled}
               aria-label={t(customType === 'text' ? 'password.hide' : 'password.show')}
             >
               {customType === 'text' ? <Visibility /> : <VisibilityOff />}

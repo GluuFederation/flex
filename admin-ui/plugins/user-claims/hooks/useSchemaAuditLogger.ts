@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/redux/hooks'
 import { logAuditUserAction } from '@/utils/AuditLogger'
-import type { SchemaPluginRootState } from '../types/shared'
 import type { JansAttribute } from 'JansConfigApi'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { ModifiedFields } from '../components/types/UserClaimsListPage.types'
 import { UPDATE } from '@/audit/UserActionType'
 
@@ -15,7 +15,7 @@ interface AuditLogParams {
 }
 
 export const useSchemaAuditLogger = () => {
-  const authState = useSelector((state: SchemaPluginRootState) => state.authReducer)
+  const authState = useAppSelector((state) => state.authReducer)
 
   const logAudit = useCallback(
     async (params: AuditLogParams): Promise<void> => {
@@ -33,8 +33,8 @@ export const useSchemaAuditLogger = () => {
           message: params.message,
           extra: ipAddress ? { ip_address: ipAddress } : {},
           client_id: clientId,
-          payload: isUpdateAction ? undefined : params.payload,
-          modifiedFields: params.modifiedFields,
+          payload: isUpdateAction ? undefined : (params.payload as JsonValue),
+          modifiedFields: params.modifiedFields as Record<string, JsonValue>,
         })
       } catch (error) {
         console.error('Failed to log audit action:', error)

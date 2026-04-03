@@ -19,24 +19,25 @@ import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './styles/FidoFormPage.style'
 
+const fidoResourceId = ADMIN_UI_RESOURCES.FIDO
+const fidoScopes = CEDAR_RESOURCE_SCOPES[fidoResourceId]
+
 const Fido: React.FC = () => {
   const { t } = useTranslation()
 
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
-  const fidoResourceId = useMemo(() => ADMIN_UI_RESOURCES.FIDO, [])
-  const fidoScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[fidoResourceId], [fidoResourceId])
   const canReadFido = useMemo(
     () => hasCedarReadPermission(fidoResourceId),
-    [hasCedarReadPermission, fidoResourceId],
+    [hasCedarReadPermission],
   )
   const canWriteFido = useMemo(
     () => hasCedarWritePermission(fidoResourceId),
-    [hasCedarWritePermission, fidoResourceId],
+    [hasCedarWritePermission],
   )
 
   useEffect(() => {
     authorizeHelper(fidoScopes)
-  }, [authorizeHelper, fidoScopes])
+  }, [authorizeHelper])
 
   const { state: themeState } = useTheme()
   const { themeColors, isDark } = useMemo(
