@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { Card, Input } from 'Components'
 import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { useTranslation } from 'react-i18next'
@@ -22,8 +22,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 import InfoIcon from '@mui/icons-material/Info'
 import AgamaProjectConfigModal from './AgamaProjectConfigModal'
 import { updateToast } from 'Redux/features/toastSlice'
-import { isEmpty } from 'lodash'
-import { getJsonConfig } from 'Plugins/auth-server/redux/features/jsonConfigSlice'
+import { useAuthServerJsonPropertiesQuery } from 'Plugins/auth-server/hooks/useAuthServerJsonProperties'
 import SettingsIcon from '@mui/icons-material/Settings'
 import Checkbox from '@mui/material/Checkbox'
 import FormGroup from '@mui/material/FormGroup'
@@ -48,17 +47,6 @@ import type {
   AgamaRepositoriesResponse,
   AgamaTableRow,
 } from './types'
-
-interface RootState {
-  jsonConfigReducer: {
-    configuration: {
-      agamaConfiguration?: {
-        enabled?: boolean
-      }
-    }
-    loading: boolean
-  }
-}
 
 const dateTimeFormatOptions: Intl.DateTimeFormatOptions = {
   year: '2-digit',
@@ -102,10 +90,6 @@ function AgamaListPage(): React.ReactElement {
   const [fileLoading, setFileLoading] = useState<boolean>(false)
   const [uploadLoading, setUploadLoading] = useState<boolean>(false)
 
-  const configuration = useSelector((state: RootState) => state.jsonConfigReducer.configuration)
-  const isAgamaEnabled = configuration?.agamaConfiguration?.enabled
-  const isConfigLoading = useSelector((state: RootState) => state.jsonConfigReducer.loading)
-
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme || DEFAULT_THEME
   const themeColors = getThemeColor(selectedTheme)
@@ -117,6 +101,16 @@ function AgamaListPage(): React.ReactElement {
     () => hasCedarReadPermission(authResourceId),
     [hasCedarReadPermission, authResourceId],
   )
+
+  const { data: configuration = {}, isLoading: isConfigLoading } = useAuthServerJsonPropertiesQuery(
+    {
+      enabled: canReadAuth,
+    },
+  )
+  const agamaConfig = configuration as {
+    agamaConfiguration?: { enabled?: boolean }
+  }
+  const isAgamaEnabled = agamaConfig.agamaConfiguration?.enabled
 
   const { data: projectsResponse, isLoading: loading } = useGetAgamaPrj(
     {
@@ -169,15 +163,6 @@ function AgamaListPage(): React.ReactElement {
       authorizeHelper(authScopes)
     }
   }, [authorizeHelper, authScopes])
-
-  useEffect(() => {
-    if (!canReadAuth) {
-      return
-    }
-    if (isEmpty(configuration)) {
-      dispatch(getJsonConfig())
-    }
-  }, [dispatch, configuration, canReadAuth])
 
   useEffect(() => {
     if (agamaRepositoriesData) {

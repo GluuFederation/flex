@@ -1,3 +1,5 @@
+import type { JsonPatch } from 'JansConfigApi'
+
 export const BASE_URL = 'https://jans.io/oauth'
 
 export const PROPERTIES_READ = BASE_URL + '/jans-auth-server/config/properties.readonly'
@@ -136,6 +138,7 @@ export interface UserAction {
 // Union type for the various payload types used across the codebase
 export type ActionData =
   | Record<string, string | number | boolean | string[] | number[] | boolean[] | null> // Object payloads (most common)
+  | { requestBody: JsonPatch[] }
   | string // ID strings (inum, jti, configId, etc.)
   | number // Numeric IDs
   | string[] // Array of strings

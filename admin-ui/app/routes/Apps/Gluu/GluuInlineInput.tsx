@@ -26,6 +26,7 @@ interface GluuInlineInputProps {
   id?: string
   parentIsArray?: boolean
   showSaveButtons?: boolean
+  placeholder?: string
 }
 
 interface ThemeContextValue {
@@ -51,6 +52,7 @@ const GluuInlineInput = ({
   disabled = false,
   id,
   showSaveButtons = true,
+  placeholder,
 }: GluuInlineInputProps) => {
   const theme = useContext(ThemeContext) as ThemeContextValue
   const selectedTheme = theme.state.theme
@@ -184,6 +186,7 @@ const GluuInlineInput = ({
                 onChange={onValueChanged}
                 disabled={disabled}
                 style={disabledStyle}
+                placeholder={placeholder}
               />
             )}
             {isBoolean && (

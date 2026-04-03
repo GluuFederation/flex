@@ -329,6 +329,7 @@
     "dark_mode": "Modo Oscuro",
     "data_type": "Tipo de Dato",
     "default_acr": "Método de Autenticación Predeterminado (ACR)",
+    "openid_configuration_response_op_metadata_suppression_list": "Lista de supresión de metadatos OP de la respuesta de configuración OpenID",
     "default_bucket": "Bucket Predeterminado",
     "default_cleanup_batch_size": "Tamaño del Lote de Limpieza Predeterminado",
     "default_put_expiration": "Expiración de Inserción Predeterminada",
@@ -621,6 +622,7 @@
     "export_current_config": "Exportar Configuración Actual",
     "import_configuration": "Importar Configuración",
     "issuer": "Emisor",
+    "authorizationChallengeDefaultAcr": "Método de autenticación predeterminado (ACR): ACR de desafío de autorización predeterminado",
     "base_endpoint": "Endpoint Base",
     "clean_service_interval": "Intervalo del Servicio de Limpieza",
     "clean_batch_chunk_size": "Tamaño de Lote de Limpieza",
@@ -662,6 +664,7 @@
     "disable_metadata_service": "Deshabilitar Servicio de Metadatos",
     "enterprise_attestation": "Atestación Empresarial",
     "attestation_mode": "Modo de Atestación",
+    "hints": "Indicaciones",
     "software_id": "ID de Software",
     "expiration": "Expiración",
     "never": "Nunca",
@@ -1123,7 +1126,10 @@
     "data_type_required": "El tipo de dato es obligatorio",
     "edit_type_required": "El tipo de edición es obligatorio",
     "view_type_required": "El tipo de visualización es obligatorio",
-    "fetch_failed": "Error al cargar los datos: {{detail}}"
+    "fetch_failed": "Error al cargar los datos: {{detail}}",
+    "fido_empty_row_key_value": "El nombre y el valor son obligatorios para cada entrada.",
+    "fido_empty_row_value": "El valor es obligatorio para cada entrada.",
+    "fido_empty_row_metadata_server": "La URL y el certificado raíz son obligatorios para cada servidor de metadatos."
   },
   "validation_messages": {
     "invalid_url_format": "Formato de URL inválido",
@@ -1225,6 +1231,8 @@
     "smtp_server_hostname": "Introduce el nombre de host del servidor SMTP",
     "smtp_server_port": "Introduce el puerto del servidor SMTP",
     "smtp_user_name": "Introduce el usuario SMTP",
+    "enter_url": "Introduce la URL",
+    "enter_root_certificate": "Introduce el certificado raíz",
     "smtp_user_password": "Introduce la contraseña SMTP",
     "spontaneous_client_id": "Introduce el client id espontáneo",
     "typeahead_holder_message": "Introduce múltiples elementos seleccionándolos del desplegable que aparece tras introducir cada elemento.",
@@ -1258,7 +1266,8 @@
     "enter_policies_json_uris": "Ingrese la URI de política JSON",
     "enter_policies_zip_uris_authorization_token": "Ingrese el token de autorización de la URI de política ZIP",
     "enter_policies_zip_uris": "Ingrese la URI de política ZIP",
-    "enter_token_channels": "Ingrese los canales de token"
+    "enter_token_channels": "Ingrese los canales de token",
+    "type_value": "Ingrese el valor de {{field}}"
   },
   "titles": {
     "smtp_test_result": "Resultado de la prueba SMTP",
@@ -1321,7 +1330,7 @@
     "sql_authentication": "Autenticación SQL",
     "logging": "LOGGING",
     "jwk_keys": "Claves JWK",
-    "jans_json_property": "Propiedades",
+    "jans_json_property": "Propiedades del Servidor de Autenticación",
     "mapping": "Mapeo Rol/Permiso",
     "cedarling_config": "Configuración de Cedarling",
     "modules_properties": "Propiedades del módulo",
