@@ -67,4 +67,21 @@ spec:
 {{- end }}
 {{- /* End of Snippets definition */}}
 
+{{- /* Start of Snippets definition */}}
+{{- if (.Values.additionalConfig.nginx.enableAuditGrpcRewriteSnippets) }}
+---
+
+apiVersion: gateway.nginx.org/v1alpha1
+kind: SnippetsFilter
+metadata:
+  name: {{ .Release.Name }}-nginx-audit-grpc-rewrite
+  namespace: {{ .Release.Namespace }}
+spec:
+  snippets:
+    - context: http.server.location
+      value: |
+        rewrite ^/io.jans.lock.audit.AuditService([^?]*)? /jans-auth/io.jans.lock.audit.AuditService$1?$args? break;
+{{- end }}
+{{- /* End of Snippets definition */}}
+
 {{- end }}
