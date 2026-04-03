@@ -50,13 +50,28 @@ export const buildCacheChangedFieldOperations = (
   t: TFunction,
 ): GluuCommitDialogOperation[] => {
   const operations: GluuCommitDialogOperation[] = []
-  const fieldLabels = CACHE_FIELD_LABELS_BY_PROVIDER[current.cacheProviderType] ?? []
+  const providerChanged = initial.cacheProviderType !== current.cacheProviderType
 
-  for (const { key, label } of fieldLabels) {
+  if (providerChanged) {
+    operations.push({
+      path: t('fields.cache_provider_type'),
+      value: current.cacheProviderType as JsonValue,
+    })
+  }
+
+  const currentFields = CACHE_FIELD_LABELS_BY_PROVIDER[current.cacheProviderType] ?? []
+
+  for (const { key, label } of currentFields) {
+    if (key === 'cacheProviderType') continue
+    if (key === 'password') continue
     const oldVal = initial[key]
     const newVal = current[key]
-    if (key === 'password') continue
-    if (String(oldVal ?? '') !== String(newVal ?? '')) {
+
+    if (providerChanged) {
+      if (newVal !== undefined && newVal !== null && newVal !== '') {
+        operations.push({ path: t(label), value: (newVal as JsonValue) ?? null })
+      }
+    } else if (String(oldVal ?? '') !== String(newVal ?? '')) {
       operations.push({ path: t(label), value: (newVal as JsonValue) ?? null })
     }
   }
