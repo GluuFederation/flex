@@ -1,6 +1,6 @@
 import type { TFunction } from 'i18next'
 import type { JsonValue, GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
-import { CACHE_FIELD_LABELS } from './constants'
+import { CACHE_FIELD_LABELS_BY_PROVIDER } from './constants'
 import type {
   CacheFormValues,
   CacheFormValuesUnion,
@@ -50,8 +50,9 @@ export const buildCacheChangedFieldOperations = (
   t: TFunction,
 ): GluuCommitDialogOperation[] => {
   const operations: GluuCommitDialogOperation[] = []
+  const fieldLabels = CACHE_FIELD_LABELS_BY_PROVIDER[current.cacheProviderType] ?? []
 
-  for (const { key, label } of CACHE_FIELD_LABELS) {
+  for (const { key, label } of fieldLabels) {
     const oldVal = initial[key]
     const newVal = current[key]
     if (key === 'password') continue

@@ -1,13 +1,24 @@
 import type { CacheFormValues } from '../Components/types'
 
-export const CACHE_FIELD_LABELS: Array<{ key: keyof CacheFormValues; label: string }> = [
+type CacheFieldLabel = { key: keyof CacheFormValues; label: string }
+
+const COMMON_FIELDS: CacheFieldLabel[] = [
   { key: 'cacheProviderType', label: 'fields.cache_provider_type' },
+]
+
+const IN_MEMORY_FIELDS: CacheFieldLabel[] = [
   { key: 'memoryDefaultPutExpiration', label: 'fields.default_put_expiration' },
+]
+
+const MEMCACHED_FIELDS: CacheFieldLabel[] = [
   { key: 'memCacheServers', label: 'fields.servers' },
   { key: 'maxOperationQueueLength', label: 'fields.max_operation_queue_length' },
   { key: 'bufferSize', label: 'fields.buffer_size' },
   { key: 'memDefaultPutExpiration', label: 'fields.default_put_expiration' },
   { key: 'connectionFactoryType', label: 'fields.connection_factory_type' },
+]
+
+const REDIS_FIELDS: CacheFieldLabel[] = [
   { key: 'redisProviderType', label: 'fields.redis_provider_type' },
   { key: 'servers', label: 'fields.servers' },
   { key: 'sentinelMasterGroupName', label: 'fields.sentinel_master_group_name' },
@@ -19,10 +30,20 @@ export const CACHE_FIELD_LABELS: Array<{ key: keyof CacheFormValues; label: stri
   { key: 'connectionTimeout', label: 'fields.connection_timeout' },
   { key: 'soTimeout', label: 'fields.so_timeout' },
   { key: 'maxRetryAttempts', label: 'fields.max_retry_attempts' },
+]
+
+const NATIVE_PERSISTENCE_FIELDS: CacheFieldLabel[] = [
   { key: 'nativeDefaultPutExpiration', label: 'fields.default_put_expiration' },
   { key: 'defaultCleanupBatchSize', label: 'fields.default_cleanup_batch_size' },
   { key: 'deleteExpiredOnGetRequest', label: 'fields.delete_expired_on_get_request' },
 ]
+
+export const CACHE_FIELD_LABELS_BY_PROVIDER: Record<string, CacheFieldLabel[]> = {
+  IN_MEMORY: [...COMMON_FIELDS, ...IN_MEMORY_FIELDS],
+  MEMCACHED: [...COMMON_FIELDS, ...MEMCACHED_FIELDS],
+  REDIS: [...COMMON_FIELDS, ...REDIS_FIELDS],
+  NATIVE_PERSISTENCE: [...COMMON_FIELDS, ...NATIVE_PERSISTENCE_FIELDS],
+}
 
 export const servicesConstants = {
   DOC_CATEGORY: 'cache',
