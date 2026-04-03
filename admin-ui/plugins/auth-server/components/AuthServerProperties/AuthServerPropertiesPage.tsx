@@ -61,7 +61,6 @@ import {
   isSimplePropertyValue as isSimplePropertyValueUtil,
   formatPatchValue,
   formatPatchPath,
-  isPatchNoOp,
 } from 'Plugins/auth-server/common/propertiesUtils'
 import { createAppConfigurationSchema } from './Properties/utils/validations'
 import type {
@@ -77,10 +76,10 @@ import type { UserAction, ActionData } from 'Utils/PermChecker'
 
 const propertiesResourceId = ADMIN_UI_RESOURCES.AuthenticationServerConfiguration
 const propertiesScopes = CEDAR_RESOURCE_SCOPES[propertiesResourceId] || []
-const userAction: UserAction = {
+const createUserAction = (): UserAction => ({
   action_message: '',
   action_data: null,
-}
+})
 
 const AuthServerPropertiesPage: React.FC = () => {
   const { t, i18n } = useTranslation()
@@ -212,6 +211,7 @@ const AuthServerPropertiesPage: React.FC = () => {
   }, [serverConfiguration, isConfigLoaded, patches.length])
   useEffect(() => {
     const actionPayload: ActionData = {}
+    const userAction = createUserAction()
     buildPayload(userAction, FETCHING_JSON_PROPERTIES, actionPayload)
     dispatch(
       getScripts({
@@ -411,9 +411,6 @@ const AuthServerPropertiesPage: React.FC = () => {
       }
       setPatches((existingPatches) => {
         const filteredPatches = existingPatches.filter((p) => p.path !== patch.path)
-        if (isPatchNoOp(patch, baselineConfigurationRef.current)) {
-          return filteredPatches
-        }
         return [...filteredPatches, patch]
       })
     },
@@ -457,8 +454,9 @@ const AuthServerPropertiesPage: React.FC = () => {
       try {
         setErrorMessage(null)
         if (patches.length > 0) {
-          buildPayload(userAction, message, { requestBody: patches })
-          await patchJsonPropertiesMutation.mutateAsync(userAction)
+          const patchAction = createUserAction()
+          buildPayload(patchAction, message, { requestBody: patches })
+          await patchJsonPropertiesMutation.mutateAsync(patchAction)
         }
         if (put && put.value) {
           const newAcr = { defaultAcr: put.value || acrs?.defaultAcr }

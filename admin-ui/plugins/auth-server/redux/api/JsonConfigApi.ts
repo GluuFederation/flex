@@ -6,7 +6,7 @@ type PropertiesCallback = (error: Error | null, data: AppConfiguration) => void
 
 export interface ConfigurationPropertiesApiShape {
   getProperties(callback: PropertiesCallback): void
-  patchProperties(options: JsonPatch[], callback: PropertiesCallback): void
+  patchProperties(options: { requestBody: JsonPatch[] }, callback: PropertiesCallback): void
 }
 
 export default class JsonConfigApi {
@@ -25,9 +25,9 @@ export default class JsonConfigApi {
     return result as AppConfiguration
   }
 
-  patchJsonConfig = async (options: JsonPatch[]): Promise<AppConfiguration> => {
+  patchJsonConfig = async (patches: JsonPatch[]): Promise<AppConfiguration> => {
     const result = await new Promise((resolve, reject) => {
-      this.api.patchProperties(options, (error, data) => {
+      this.api.patchProperties({ requestBody: patches }, (error, data) => {
         handleResponse(error, reject, resolve, data)
       })
     })
