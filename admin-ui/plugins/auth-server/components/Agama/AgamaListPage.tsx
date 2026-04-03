@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from '@/redux/hooks'
 import { Card, Input } from 'Components'
 import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { useTranslation } from 'react-i18next'
@@ -67,7 +67,7 @@ const AgamaListPage: React.FC = () => {
     authorizeHelper,
   } = useCedarling()
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { logAgamaCreation, logAgamaDeletion } = useAgamaActions()
   const [myActions, setMyActions] = useState<Action<AgamaTableRow>[]>([])
@@ -133,8 +133,8 @@ const AgamaListPage: React.FC = () => {
         dispatch(updateToast(true, 'success'))
         await queryClient.invalidateQueries({ queryKey: getGetAgamaPrjQueryKey() })
       },
-      onError: (error: unknown) => {
-        const errorMessage = (error as Error)?.message || 'Failed to delete project'
+      onError: (error: Error) => {
+        const errorMessage = error.message || t('messages.error_in_saving')
         dispatch(updateToast(true, 'error', errorMessage))
       },
     },
@@ -168,7 +168,9 @@ const AgamaListPage: React.FC = () => {
   useEffect(() => {
     if (agamaRepositoriesData) {
       setAgamaRepositoriesList(
-        (agamaRepositoriesData as unknown as AgamaRepositoriesResponse) ?? { projects: [] },
+        (agamaRepositoriesData as ReturnType<typeof JSON.parse> as AgamaRepositoriesResponse) ?? {
+          projects: [],
+        },
       )
       setFileLoading(false)
     }
@@ -364,7 +366,7 @@ const AgamaListPage: React.FC = () => {
         tooltip: `${t('messages.see_project_details')}`,
         iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
         isFreeAction: false,
-        onClick: (_event: unknown, rowData: AgamaTableRow | AgamaTableRow[]) => {
+        onClick: (_event: React.MouseEvent, rowData: AgamaTableRow | AgamaTableRow[]) => {
           if (!Array.isArray(rowData)) {
             setSelectedRow(rowData)
             setShowConfigModal(true)
@@ -376,7 +378,7 @@ const AgamaListPage: React.FC = () => {
         tooltip: `${t('messages.manage_configurations')}`,
         iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
         isFreeAction: false,
-        onClick: (_event: unknown, rowData: AgamaTableRow | AgamaTableRow[]) => {
+        onClick: (_event: React.MouseEvent, rowData: AgamaTableRow | AgamaTableRow[]) => {
           if (!Array.isArray(rowData)) {
             setSelectedRow(rowData)
             setShowConfigModal(true)

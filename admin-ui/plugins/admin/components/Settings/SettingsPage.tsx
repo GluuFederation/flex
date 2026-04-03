@@ -195,7 +195,7 @@ const SettingsPage: React.FC = () => {
 
         setBaselinePagingSize(currentPagingSize)
         formikHelpers.resetForm({ values })
-      } catch (error: unknown) {
+      } catch (error) {
         const normalizedError = error instanceof Error ? error : new Error(String(error))
         const errorMessage = getErrorMessage(normalizedError, 'messages.error_in_saving', t)
         dispatch(updateToast(true, 'error', errorMessage))

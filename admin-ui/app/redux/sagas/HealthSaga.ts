@@ -39,7 +39,7 @@ export function* getHealthStatus({
     const data = yield call(healthApi.getHealthStatus)
     yield put(getHealthStatusResponse({ data }))
     yield call(postUserAction, audit as UserActionPayload)
-  } catch (e: unknown) {
+  } catch (e) {
     yield put(getHealthStatusResponse(null))
     if (
       isHttpLikeError(e as Error) &&
@@ -64,7 +64,7 @@ export function* getHealthServerStatus({
     )
     yield put(getHealthServerStatusResponse({ data }))
     yield call(postUserAction, audit as UserActionPayload)
-  } catch (e: unknown) {
+  } catch (e) {
     devLogger.warn('getHealthServerStatus failed', e)
     yield put(getHealthServerStatusResponse(null))
     if (

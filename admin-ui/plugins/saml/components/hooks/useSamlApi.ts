@@ -1,16 +1,12 @@
 import { useCallback, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query'
 import { AXIOS_INSTANCE } from '../../../../api-client'
 import { updateToast } from 'Redux/features/toastSlice'
 import { logAuditUserAction, type BasicUserInfo } from 'Utils/AuditLogger'
 import { CREATE, UPDATE, DELETION } from '@/audit/UserActionType'
 import { AUDIT_RESOURCE_NAMES } from '../../helper/constants'
-import type { RootState } from '@/redux/sagas/types'
-
-// ============================================================================
-// Local SAML types (generated JansConfigApi has no SAML endpoints – all defined here)
-// ============================================================================
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
 export const TrustRelationshipSpMetaDataSourceType = {
   FILE: 'FILE',
@@ -154,24 +150,13 @@ export const SAML_QUERY_KEYS = {
   trustRelationships: getGetTrustRelationshipsQueryKey,
 } as const
 
-// ============================================================================
-// Custom API functions for multipart uploads (matching main branch approach)
-// These use axios directly like the old SamlApi.ts did
-// ============================================================================
-
-/**
- * Creates FormData for Identity Provider operations
- * Matches the main branch approach exactly (same order and checks)
- */
 function createIdentityProviderFormData(data: BrokerIdentityProviderForm): FormData {
   const formData = new FormData()
 
-  // 1. Append metaDataFile FIRST if valid (matching main branch order)
   if (data.metaDataFile instanceof File && data.metaDataFile.size > 0) {
     formData.append('metaDataFile', data.metaDataFile)
   }
 
-  // 2. Create JSON Blob with proper content type and append (matching main branch)
   const identityProviderBlob = new Blob([JSON.stringify(data.identityProvider)], {
     type: 'application/json',
   })
@@ -180,19 +165,13 @@ function createIdentityProviderFormData(data: BrokerIdentityProviderForm): FormD
   return formData
 }
 
-/**
- * Creates FormData for Trust Relationship operations
- * Matches the main branch approach exactly (same order and checks)
- */
 function createTrustRelationshipFormData(data: TrustRelationshipForm): FormData {
   const formData = new FormData()
 
-  // 1. Append metaDataFile FIRST if valid (matching main branch order)
   if (data.metaDataFile instanceof File && data.metaDataFile.size > 0) {
     formData.append('metaDataFile', data.metaDataFile)
   }
 
-  // 2. Create JSON Blob with proper content type and append (matching main branch)
   const trustRelationshipBlob = new Blob([JSON.stringify(data.trustRelationship)], {
     type: 'application/json',
   })
@@ -201,7 +180,6 @@ function createTrustRelationshipFormData(data: TrustRelationshipForm): FormData 
   return formData
 }
 
-// API functions using axios directly (same as main branch SamlApi.ts)
 const samlApi = {
   postIdentityProvider: async (data: BrokerIdentityProviderForm): Promise<IdentityProvider> => {
     const formData = createIdentityProviderFormData(data)
@@ -234,10 +212,6 @@ const samlApi = {
   },
 }
 
-// ============================================================================
-// Audit logging utilities
-// ============================================================================
-
 interface AuditContext {
   userinfo: BasicUserInfo | null | undefined
   clientId: string | undefined
@@ -245,9 +219,9 @@ interface AuditContext {
 }
 
 function useAuditContext(): AuditContext {
-  const userinfo = useSelector((state: RootState) => state.authReducer?.userinfo)
-  const clientId = useSelector((state: RootState) => state.authReducer?.config?.clientId)
-  const ipAddress = useSelector((state: RootState) => state.authReducer?.location?.IPv4)
+  const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
+  const clientId = useAppSelector((state) => state.authReducer?.config?.clientId)
+  const ipAddress = useAppSelector((state) => state.authReducer?.location?.IPv4)
 
   return { userinfo, clientId, ipAddress }
 }
@@ -258,7 +232,7 @@ function createAuditLogger<T>(
   auditContext: AuditContext,
   action: AuditAction,
   resource: string,
-  payloadMapper: (data: T) => unknown,
+  payloadMapper: (data: T) => Record<string, T[keyof T] | T>,
 ) {
   return async (userMessage: string, data: T): Promise<void> => {
     try {
@@ -269,17 +243,13 @@ function createAuditLogger<T>(
         message: userMessage,
         extra: auditContext.ipAddress ? { ip_address: auditContext.ipAddress } : {},
         client_id: auditContext.clientId,
-        payload: payloadMapper(data),
+        payload: payloadMapper(data) as JsonValue,
       })
     } catch (error) {
       console.error(`Failed to log ${resource} audit action:`, error)
     }
   }
 }
-
-// ============================================================================
-// Hook parameter interfaces
-// ============================================================================
 
 interface UpdateSamlConfigurationParams {
   data: SamlAppConfiguration
@@ -316,12 +286,8 @@ interface DeleteTrustRelationshipParams {
   userMessage: string
 }
 
-// ============================================================================
-// SAML Configuration hooks (local – not in generated JansConfigApi)
-// ============================================================================
-
 export function useSamlConfiguration() {
-  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
+  const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
   return useQuery({
     queryKey: getGetSamlPropertiesQueryKey(),
@@ -336,7 +302,7 @@ export function useSamlConfiguration() {
 }
 
 export function useUpdateSamlConfiguration() {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const auditContext = useAuditContext()
   const baseMutation = useMutation({
@@ -377,12 +343,8 @@ export function useUpdateSamlConfiguration() {
   }
 }
 
-// ============================================================================
-// Identity Provider hooks (local – not in generated JansConfigApi)
-// ============================================================================
-
 export function useIdentityProviders(params?: GetSamlIdentityProviderParams) {
-  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
+  const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
   return useQuery({
     queryKey: getGetSamlIdentityProviderQueryKey(params),
@@ -398,9 +360,8 @@ export function useIdentityProviders(params?: GetSamlIdentityProviderParams) {
   })
 }
 
-// Uses custom axios call (matching main branch approach for multipart)
 export function useCreateIdentityProvider() {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const auditContext = useAuditContext()
   const [savedForm, setSavedForm] = useState(false)
@@ -449,9 +410,8 @@ export function useCreateIdentityProvider() {
   }
 }
 
-// Uses custom axios call (matching main branch approach for multipart)
 export function useUpdateIdentityProvider() {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const auditContext = useAuditContext()
   const [savedForm, setSavedForm] = useState(false)
@@ -500,9 +460,8 @@ export function useUpdateIdentityProvider() {
   }
 }
 
-// Local mutation (DELETE not in generated JansConfigApi)
 export function useDeleteIdentityProvider() {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const auditContext = useAuditContext()
   const baseMutation = useMutation({
@@ -545,12 +504,8 @@ export function useDeleteIdentityProvider() {
   }
 }
 
-// ============================================================================
-// Trust Relationship hooks (local – not in generated JansConfigApi)
-// ============================================================================
-
 export function useTrustRelationships() {
-  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
+  const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
   return useQuery({
     queryKey: getGetTrustRelationshipsQueryKey(),
@@ -564,9 +519,8 @@ export function useTrustRelationships() {
   })
 }
 
-// Uses custom axios call (matching main branch approach for multipart)
 export function useCreateTrustRelationship() {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const auditContext = useAuditContext()
   const [savedForm, setSavedForm] = useState(false)
@@ -615,9 +569,8 @@ export function useCreateTrustRelationship() {
   }
 }
 
-// Uses custom axios call (matching main branch approach for multipart)
 export function useUpdateTrustRelationship() {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const auditContext = useAuditContext()
   const [savedForm, setSavedForm] = useState(false)
@@ -666,9 +619,8 @@ export function useUpdateTrustRelationship() {
   }
 }
 
-// Local mutation (DELETE not in generated JansConfigApi)
 export function useDeleteTrustRelationshipMutation() {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const auditContext = useAuditContext()
   const baseMutation = useMutation({

@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from '@/redux/hooks'
 import { useQueryClient } from '@tanstack/react-query'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -26,7 +26,7 @@ const lockScopes = CEDAR_RESOURCE_SCOPES[lockResourceId]
 
 const JansLock: React.FC = () => {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
 
