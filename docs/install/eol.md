@@ -13,13 +13,13 @@ Our End of Life (EOL) policy is designed to provide a predictable schedule for s
 
 ### Key Milestones
 
-The table below shows general cadense of the key release milestones. Applicable from version `6.0.0` onwards.
+The table below shows general cadence of the key release milestones. Applicable from version `6.0.0` onwards.
 
 | Milestone                     | Calculation       | Description                                                         |
 |-------------------------------|-------------------|---------------------------------------------------------------------|
 | **General Availability (GA)** | $T_0$             | The date the version was publicly released.                         |
-| **End of Maintenance (EOM)**  | $T_0 + 12$ Months | Final date for bug fixes and security patches.                      |
-| **End of Life (EOL)**         | $T_0 + 24$ Months | Support is no longer provided; documentation moved to archives.     |
+| **End of Maintenance (EOM)**  | $T_0 + 12$ Months | End of full support and start of maintenance support. 
+| **End of Life (EOL)**         | $T_0 + 24$ Months | End of maintenence support. Documentation moved to archives.     |
 
 ---
 
