@@ -1,26 +1,33 @@
 import plugins from '../plugins.config.json'
 
-// Dynamic plugin loading with code splitting
-export async function processMenus() {
-  let pluginMenus = []
+type PluginMenu = {
+  title?: string
+  icon?: string
+  path?: string
+  order?: number
+  children?: PluginMenu[]
+}
+
+type PluginRoute = {
+  path: string
+  component: React.ComponentType
+}
+
+export const processMenus = async (): Promise<PluginMenu[]> => {
+  let pluginMenus: PluginMenu[] = []
 
   const pluginPromises = plugins.map(async (item) => {
     try {
       const pluginName = item.metadataFile?.match(/\.\/([^/]+)\/plugin-metadata/)?.[1]
       if (pluginName) {
-        const metadata = await import(
-          /* webpackChunkName: "plugin-[request]" */
-          /* webpackMode: "lazy" */
-          `./${pluginName}/plugin-metadata`
-        )
-        return metadata.default?.menus || []
+        const metadata = await import(`./${pluginName}/plugin-metadata`)
+        return (metadata.default?.menus || []) as PluginMenu[]
       }
-      // Fallback if path doesn't match expected pattern
-      const metadata = await import(/* webpackIgnore: true */ `${item.metadataFile}`)
-      return metadata.default?.menus || []
+      const metadata = await import(`${item.metadataFile}`)
+      return (metadata.default?.menus || []) as PluginMenu[]
     } catch (error) {
       console.warn(`Failed to load plugin menus: ${item.metadataFile}`, error)
-      return []
+      return [] as PluginMenu[]
     }
   })
 
@@ -35,25 +42,21 @@ export async function processMenus() {
   return pluginMenus
 }
 
-export async function processRoutes() {
-  const pluginRoutes = []
+export const processRoutes = async (): Promise<PluginRoute[]> => {
+  const pluginRoutes: PluginRoute[] = []
 
   const pluginPromises = plugins.map(async (item) => {
     try {
       const pluginName = item.metadataFile?.match(/\.\/([^/]+)\/plugin-metadata/)?.[1]
       if (pluginName) {
-        const metadata = await import(
-          /* webpackChunkName: "plugin-[request]" */
-          /* webpackMode: "lazy" */
-          `./${pluginName}/plugin-metadata`
-        )
-        return metadata.default?.routes || []
+        const metadata = await import(`./${pluginName}/plugin-metadata`)
+        return (metadata.default?.routes || []) as PluginRoute[]
       }
-      const metadata = await import(/* webpackIgnore: true */ `${item.metadataFile}`)
-      return metadata.default?.routes || []
+      const metadata = await import(`${item.metadataFile}`)
+      return (metadata.default?.routes || []) as PluginRoute[]
     } catch (error) {
       console.warn(`Failed to load plugin routes: ${item.metadataFile}`, error)
-      return []
+      return [] as PluginRoute[]
     }
   })
 
@@ -67,11 +70,11 @@ export async function processRoutes() {
   return pluginRoutes
 }
 
-// Synchronous fallback for backward compatibility
-export function processMenusSync() {
-  let pluginMenus = []
+export const processMenusSync = (): PluginMenu[] => {
+  let pluginMenus: PluginMenu[] = []
   plugins.forEach((item) => {
     try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       pluginMenus.push(...(require(`${item.metadataFile}`).default?.menus || []))
     } catch (error) {
       console.warn(`Failed to load plugin menus: ${item.metadataFile}`, error)
@@ -81,10 +84,11 @@ export function processMenusSync() {
   return pluginMenus
 }
 
-export function processRoutesSync() {
-  const pluginRoutes = []
+export const processRoutesSync = (): PluginRoute[] => {
+  const pluginRoutes: PluginRoute[] = []
   plugins.forEach((item) => {
     try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       pluginRoutes.push(...(require(`${item.metadataFile}`).default?.routes || []))
     } catch (error) {
       console.warn(`Failed to load plugin routes: ${item.metadataFile}`, error)
@@ -93,8 +97,7 @@ export function processRoutesSync() {
   return pluginRoutes
 }
 
-const sortParentMenu = (menu) => {
+const sortParentMenu = (menu: PluginMenu[]): PluginMenu[] => {
   menu.sort((a, b) => (a?.order ?? 0) - (b?.order ?? 0))
-
   return menu
 }

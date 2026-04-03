@@ -167,11 +167,7 @@
     "add_base_dn": "Adicionar DN básico",
     "change_bind_password": "Alterar Senha de Vinculação",
     "set_password": "Configurar senha",
-    "add_classes": "Adicionar Classes",
-    "add_party": "Adicionar Parte",
-    "add_types": "Adicionar Tipos",
-    "add_algorithm": "Adicionar Algoritmo",
-    "add_metadata_server": "Adicionar Servidor de Metadados",
+    "add_properties": "Adicionar Propriedades",
     "cancel": "Cancelar",
     "clear": "Limpar",
     "clear_search": "Limpar pesquisa",
@@ -708,6 +704,7 @@
     "nickName": "Apelido",
     "modality": "modalidade",
     "givenName": "Nome Próprio",
+    "lastName": "Sobrenome",
     "sn": "Sobrenome",
     "mail": "E-mail",
     "dateAdded": "data adicionada",
@@ -770,6 +767,11 @@
     "cedarlingPolicyStoreRetrievalPoint": "Ponto de Recuperação de Políticas",
     "log_entry": "Entrada de registro",
     "page_size": "Tamanho da página"
+  },
+  "footer": {
+    "copyright": "(C) {{year}} Todos os direitos reservados.",
+    "designed_by": "Este é o \"{{name}}\" projetado e implementado por",
+    "company_name": "Gluu Inc."
   },
   "messages": {
     "multi_select_hint": "Insira vários itens selecionando no menu suspenso que aparece após inserir cada item.",
@@ -981,6 +983,7 @@
     "add_ssa": "Adicionar SSA",
     "copied": "Copiado",
     "request_timeout_title": "Tempo limite da solicitação",
+    "request_timeout_description": "A solicitação foi encerrada porque não houve resposta do servidor por mais de 60 segundos. Verifique sua conexão de rede e o status do servidor e tente novamente.",
     "edit_acr": "Editar ACR",
     "built_in_acr_cannot_be_edited": "O ACR integrado não pode ser editado devido à ausência do identificador (inum)",
     "no_data_found": "Nenhum dado encontrado",
@@ -1626,6 +1629,14 @@
     "jans_link": {
       "enabled": "Esta caixa de seleção é usada para salvar e enviar as alterações. Não use isto a menos que o administrador do servidor tenha inserido todos os valores necessários.",
       "useSSL": "Use esse recurso se o servidor de back-end permitir conectividade SSL."
+    },
+    "api-attribute": {
+      "name": "Nome exclusivo do atributo.",
+      "displayName": "Nome de exibição do atributo.",
+      "status": "Status atual do atributo (ativo ou inativo).",
+      "editType": "Determina quem pode editar este atributo (ex., admin, usuário).",
+      "viewType": "Determina quem pode visualizar este atributo (ex., admin, usuário).",
+      "description": "Breve descrição explicando a finalidade do atributo."
     },
     "no_category": {
       "deletable": "É deletável?"

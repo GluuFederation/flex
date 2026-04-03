@@ -11,7 +11,7 @@ export interface AdditionalParameterFormItem extends KeyValuePair {
 }
 
 export interface SettingsFormValues {
-  sessionTimeoutInMins: number
+  sessionTimeoutInMins: number | ''
   acrValues: string
   cedarlingLogType: CedarlingLogType
   additionalParameters: AdditionalParameterFormItem[]
@@ -35,7 +35,7 @@ export const sanitizeAdditionalParameters = (params?: KeyValuePair[] | null): Ke
 export const buildSettingsInitialValues = (
   configData?: AppConfigResponse | null,
 ): SettingsFormValues => ({
-  sessionTimeoutInMins: configData?.sessionTimeoutInMins ?? 30,
+  sessionTimeoutInMins: configData?.sessionTimeoutInMins ?? '',
   acrValues: configData?.acrValues ?? '',
   cedarlingLogType: (configData?.cedarlingLogType as CedarlingLogType) ?? CedarlingLogType.OFF,
   additionalParameters: sanitizeAdditionalParameters(configData?.additionalParameters).map(

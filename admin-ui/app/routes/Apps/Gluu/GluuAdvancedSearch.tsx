@@ -3,7 +3,7 @@ import { Input, FormGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
 import type { GluuAdvancedSearchProps } from './types/index'
 
-function GluuAdvancedSearch({
+const GluuAdvancedSearch = ({
   handler,
   onChange,
   onKeyDown,
@@ -13,7 +13,7 @@ function GluuAdvancedSearch({
   pattern = '',
   showLimit = true,
   controlled = false,
-}: GluuAdvancedSearchProps) {
+}: GluuAdvancedSearchProps) => {
   const { t } = useTranslation()
 
   const handleChange: ((event: React.ChangeEvent<HTMLInputElement>) => void) | undefined = onChange

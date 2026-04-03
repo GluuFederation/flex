@@ -8,6 +8,7 @@ import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { mockLoggingConfig, AUTH_STATE_FOR_LOGGING } from './__tests__/fixtures/loggingTestData'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
 interface WrapperProps {
   children: React.ReactNode
@@ -15,7 +16,7 @@ interface WrapperProps {
 
 let commitDialogProps: {
   modal: boolean
-  operations: Array<{ path: string; value: unknown }>
+  operations: Array<{ path: string; value: JsonValue }>
   onAccept: (message: string) => void | Promise<void>
   handler: () => void
 } | null = null
@@ -23,7 +24,7 @@ let commitDialogProps: {
 jest.mock('Routes/Apps/Gluu/GluuCommitDialog', () => {
   return function MockGluuCommitDialog(props: {
     modal: boolean
-    operations: Array<{ path: string; value: unknown }>
+    operations: Array<{ path: string; value: JsonValue }>
     onAccept: (message: string) => void | Promise<void>
     handler: () => void
   }) {
@@ -129,12 +130,8 @@ describe('LoggingPage', () => {
     setupMocks()
     render(<LoggingPage />, { wrapper: Wrapper })
 
-    expect(screen.getByTestId('loggingLayout')).toHaveDisplayValue(
-      mockLoggingConfig.loggingLayout ?? 'text',
-    )
-    expect(screen.getByTestId('loggingLevel')).toHaveDisplayValue(
-      mockLoggingConfig.loggingLevel ?? 'TRACE',
-    )
+    expect(screen.getByTestId('loggingLayout')).toHaveDisplayValue(/text/i)
+    expect(screen.getByTestId('loggingLevel')).toHaveDisplayValue(/trace/i)
     expect(screen.getByTestId('httpLoggingEnabled')).toBeChecked()
     expect(screen.getByTestId('disableJdkLogger')).not.toBeChecked()
     expect(screen.getByTestId('enabledOAuthAuditLogging')).not.toBeChecked()

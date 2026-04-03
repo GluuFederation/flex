@@ -1,4 +1,3 @@
-// @ts-nocheck
 export const OIDC_CLIENT = 'openid_client'
 export const SCOPE = 'scope'
 export const ATTRIBUTE = 'attribute'

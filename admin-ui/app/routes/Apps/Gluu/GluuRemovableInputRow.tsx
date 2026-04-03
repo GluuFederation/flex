@@ -8,9 +8,10 @@ import { useTranslation } from 'react-i18next'
 import type { InputProps } from 'reactstrap'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
+import type { JsonValue } from './types/common'
 
 type ModifiedFieldValue = string | string[] | boolean
-type FormikValues = Record<string, unknown>
+type FormikValues = Record<string, JsonValue>
 
 interface GluuRemovableInputRowProps<TValues extends FormikValues = FormikValues> {
   label: string

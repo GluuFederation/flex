@@ -1,6 +1,6 @@
 import type React from 'react'
 
-export interface GluuAdvancedSearchProps {
+export type GluuAdvancedSearchProps = {
   handler?: (
     event: React.ChangeEvent<HTMLInputElement> | React.KeyboardEvent<HTMLInputElement>,
   ) => void

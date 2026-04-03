@@ -9,6 +9,7 @@ import GluuWebhookCommitDialog from 'Routes/Apps/Gluu/GluuWebhookCommitDialog'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
+import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -153,6 +154,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               required
               showError={!!formik.errors.issuer}
               errorMessage={formik.errors.issuer}
+              placeholder={getFieldPlaceholder(t, fidoConstants.LABELS.ISSUER)}
             />
           </div>
 
@@ -167,6 +169,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               required
               showError={!!formik.errors.baseEndpoint}
               errorMessage={formik.errors.baseEndpoint}
+              placeholder={getFieldPlaceholder(t, fidoConstants.LABELS.BASE_ENDPOINT)}
             />
           </div>
 
@@ -181,6 +184,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               showError={!!formik.errors.cleanServiceInterval}
               errorMessage={formik.errors.cleanServiceInterval}
               type="number"
+              placeholder={getFieldPlaceholder(t, fidoConstants.LABELS.CLEAN_SERVICE_INTERVAL)}
             />
           </div>
 
@@ -195,6 +199,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               showError={!!formik.errors.cleanServiceBatchChunkSize}
               errorMessage={formik.errors.cleanServiceBatchChunkSize}
               type="number"
+              placeholder={getFieldPlaceholder(t, fidoConstants.LABELS.CLEAN_SERVICE_BATCH_CHUNK)}
             />
           </div>
 
@@ -208,6 +213,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               rsize={INPUT_SIZE}
               showError={!!formik.errors.loggingLayout}
               errorMessage={formik.errors.loggingLayout}
+              placeholder={getFieldPlaceholder(t, fidoConstants.LABELS.LOGGING_LAYOUT)}
             />
           </div>
 
@@ -222,6 +228,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               rsize={INPUT_SIZE}
               showError={!!formik.errors.metricReporterInterval}
               errorMessage={formik.errors.metricReporterInterval}
+              placeholder={getFieldPlaceholder(t, fidoConstants.LABELS.METRIC_REPORTER_INTERVAL)}
             />
           </div>
 
@@ -236,6 +243,10 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               rsize={INPUT_SIZE}
               showError={!!formik.errors.metricReporterKeepDataDays}
               errorMessage={formik.errors.metricReporterKeepDataDays}
+              placeholder={getFieldPlaceholder(
+                t,
+                fidoConstants.LABELS.METRIC_REPORTER_KEEP_DATA_DAYS,
+              )}
             />
           </div>
 
@@ -341,6 +352,10 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               rsize={INPUT_SIZE}
               showError={!!formik.errors.fido2MetricsRetentionDays}
               errorMessage={formik.errors.fido2MetricsRetentionDays}
+              placeholder={getFieldPlaceholder(
+                t,
+                fidoConstants.LABELS.FIDO2_METRICS_RETENTION_DAYS,
+              )}
             />
           </div>
         </div>

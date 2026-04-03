@@ -4,12 +4,13 @@ import { Col, FormGroup, CustomInput, InputGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
 import { FormikProps } from 'formik'
 import { useMemo } from 'react'
+import type { JsonValue } from './types/common'
 
 interface GluuBooleanSelectBoxProps {
   label: string
   name: string
   value?: boolean | string
-  formik: FormikProps<Record<string, unknown>>
+  formik: FormikProps<Record<string, JsonValue>>
   handler?: () => void
   lsize?: number
   rsize?: number
@@ -18,7 +19,7 @@ interface GluuBooleanSelectBoxProps {
   toToggle?: boolean
 }
 
-function GluuBooleanSelectBox({
+const GluuBooleanSelectBox = ({
   label,
   name,
   value,
@@ -29,7 +30,7 @@ function GluuBooleanSelectBox({
   doc_category,
   disabled,
   toToggle = true,
-}: GluuBooleanSelectBoxProps) {
+}: GluuBooleanSelectBoxProps) => {
   const { t } = useTranslation()
   const normalizedValue = useMemo(() => {
     return typeof value === 'string' ? value === 'true' : value
@@ -45,7 +46,7 @@ function GluuBooleanSelectBox({
               id={name}
               name={name}
               data-testid={name}
-              defaultValue={value}
+              defaultValue={value != null ? String(value) : undefined}
               onChange={formik.handleChange}
               disabled={disabled}
             >

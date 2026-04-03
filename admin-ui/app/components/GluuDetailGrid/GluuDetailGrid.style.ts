@@ -1,16 +1,19 @@
 import { makeStyles } from 'tss-react/mui'
 import { SPACING } from '@/constants'
 
-/** Min width per cell for ~5 columns on desktop; prevents label/value overlap */
-const MIN_CELL_WIDTH = 160
-
-export const useStyles = makeStyles()(() => ({
+export const useStyles = makeStyles()((theme) => ({
   detailGrid: {
     display: 'grid',
-    gridTemplateColumns: `repeat(auto-fill, minmax(${MIN_CELL_WIDTH}px, 1fr))`,
+    gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',
     gap: `${SPACING.SECTION_GAP}px ${SPACING.SECTION_GAP}px`,
     width: '100%',
     minWidth: 0,
+    [theme.breakpoints.down('lg')]: {
+      gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+    },
+    [theme.breakpoints.down('sm')]: {
+      gridTemplateColumns: '1fr',
+    },
   },
   detailItem: {
     minWidth: 0,

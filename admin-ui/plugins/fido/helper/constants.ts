@@ -24,11 +24,11 @@ export const fidoConstants = {
   LOGGING_LEVELS: ['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL', 'OFF'],
 
   BUTTON_TEXT: {
-    ADD_CLASSES: 'actions.add_classes',
-    ADD_TYPES: 'actions.add_types',
-    ADD_PARTY: 'actions.add_party',
-    ADD_ALGORITHM: 'actions.add_algorithm',
-    ADD_METADATA_SERVER: 'actions.add_metadata_server',
+    ADD_CLASSES: 'actions.add_properties',
+    ADD_TYPES: 'actions.add_properties',
+    ADD_PARTY: 'actions.add_properties',
+    ADD_ALGORITHM: 'actions.add_properties',
+    ADD_METADATA_SERVER: 'actions.add_properties',
   } as const,
 
   FORM_FIELDS: {

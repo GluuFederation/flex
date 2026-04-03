@@ -28,6 +28,7 @@ import { BORDER_RADIUS, ICON_SIZE } from '@/constants'
 import { useAppSelector } from '@/redux/hooks'
 import { useGetSessions, useSearchSession } from 'JansConfigApi'
 import type { SessionId, SearchSessionParams } from 'JansConfigApi'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/index'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
 import type { FilterField } from '@/components/GluuFilterPopover'
 import { AUTHENTICATED_SESSION_STATE, type Session, type SessionState } from './types'
@@ -49,8 +50,7 @@ const FILTER_FIELD_OPTIONS = [
   { value: 'authenticationTime', labelKey: 'titles.authentication_date' },
 ] as const
 
-type DisplayValue = string | number | boolean | null | undefined
-const displayOrDash = (value: DisplayValue): string =>
+const displayOrDash = (value: JsonValue | undefined): string =>
   value === null || value === undefined || value === '' ? '—' : String(value)
 
 const isSessionAttributeFilter = (
@@ -358,7 +358,7 @@ const SessionListPage: React.FC = () => {
     ],
   )
 
-  const sanitizeCsvCell = (value: unknown): string => {
+  const sanitizeCsvCell = (value: JsonValue): string => {
     let cell = value == null ? '' : String(value)
     if (/^[=+\-@]/.test(cell)) {
       cell = "'" + cell

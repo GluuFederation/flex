@@ -3,6 +3,7 @@ import { alpha } from '@mui/material/styles'
 import type { Theme } from '@mui/material/styles'
 import { SPACING, BORDER_RADIUS, OPACITY } from '@/constants'
 import type { ThemeConfig } from '@/context/theme/config'
+import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import {
   createFormGroupOverrides,
   createFormLabelStyles,
@@ -26,7 +27,7 @@ const formGroupBase = createFormGroupOverrides()
 
 export const useStyles = makeStyles<ScimFormPageStylesParams>()((
   theme: Theme,
-  { isDark: _isDark, themeColors },
+  { isDark, themeColors },
 ) => {
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   const formInputBg = themeColors.settings?.formInputBackground ?? themeColors.inputBackground
@@ -40,16 +41,20 @@ export const useStyles = makeStyles<ScimFormPageStylesParams>()((
 
   return {
     formCard: {
-      backgroundColor: cardBg,
-      border: 'none',
-      borderRadius: BORDER_RADIUS.DEFAULT,
-      width: '100%',
-      minHeight: FORM_CARD_MIN_HEIGHT,
-      position: 'relative',
-      overflow: 'visible',
-      display: 'flex',
-      flexDirection: 'column',
-      boxSizing: 'border-box',
+      'backgroundColor': `${cardBg} !important`,
+      ...getCardBorderStyle({ isDark }),
+      'borderRadius': BORDER_RADIUS.DEFAULT,
+      'width': '100%',
+      'minHeight': FORM_CARD_MIN_HEIGHT,
+      'position': 'relative',
+      'overflow': 'visible',
+      'display': 'flex',
+      'flexDirection': 'column',
+      'boxSizing': 'border-box',
+      '& .card-body': {
+        backgroundColor: `${cardBg} !important`,
+        borderRadius: BORDER_RADIUS.DEFAULT,
+      },
     },
     content: {
       paddingTop: SPACING.PAGE,

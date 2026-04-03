@@ -87,8 +87,7 @@ const useLayoutStyles = makeStyles<{ labelColor: string }>()((_, { labelColor })
   }
 })
 
-/** Plain object sx so it can be safely spread (SxProps can be array/callback/false). */
-type PickerSxObject = Record<string, unknown>
+type PickerSxObject = SxProps<Theme>
 
 const buildCommonInputStyles = (tc: PickerThemeColors): PickerSxObject => ({
   '& .MuiInputLabel-root': {

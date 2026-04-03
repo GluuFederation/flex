@@ -30,8 +30,8 @@ jest.mock('@/cedarling/constants/resourceScopes', () => ({
 
 jest.mock('JansConfigApi', () => ({
   useGetConfigSmtp: () => mockGetConfigSmtp(),
-  usePutConfigSmtp: (opts: unknown) => mockPutConfigSmtp(opts),
-  useTestConfigSmtp: (opts: unknown) => mockTestConfigSmtp(opts),
+  usePutConfigSmtp: (opts: Record<string, jest.Mock>) => mockPutConfigSmtp(opts),
+  useTestConfigSmtp: (opts: Record<string, jest.Mock>) => mockTestConfigSmtp(opts),
   getGetConfigSmtpQueryKey: jest.fn(() => ['configSmtp']),
   useGetWebhooksByFeatureId: jest.fn(() => ({ data: [], isFetching: false, isFetched: true })),
 }))

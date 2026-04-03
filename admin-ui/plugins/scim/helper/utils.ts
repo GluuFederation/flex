@@ -1,7 +1,6 @@
 import { AppConfiguration3, JsonPatch } from 'JansConfigApi'
 import type { TFunction } from 'i18next'
-import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
-import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/GluuCommitDialog'
+import type { JsonValue, GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
 import { triggerWebhookForFeature } from '@/utils/triggerWebhookForFeature'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { ScimFormValues } from '../types'

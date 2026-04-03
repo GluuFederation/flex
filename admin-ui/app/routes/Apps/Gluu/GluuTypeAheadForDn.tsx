@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { useTranslation } from 'react-i18next'
 import type { FormikProps } from 'formik'
+import type { JsonValue } from './types/common'
 
 const theme = createTheme({
   typography: {
@@ -26,7 +27,7 @@ type TypeAheadOptionObject = {
 type TypeAheadOption = string | TypeAheadOptionObject
 
 interface GluuTypeAheadForDnProps<
-  TValues extends Record<string, unknown> = Record<string, unknown>,
+  TValues extends Record<string, JsonValue> = Record<string, JsonValue>,
   TOption extends TypeAheadOptionObject = TypeAheadOptionObject,
 > {
   label: string
@@ -44,7 +45,7 @@ interface GluuTypeAheadForDnProps<
   rsize?: number
   paginate?: boolean
   onSearch?: (query: string) => void
-  onPaginate?: (e: unknown, shownResults: number) => void
+  onPaginate?: (e: React.SyntheticEvent, shownResults: number) => void
   maxResults?: number
   isLoading?: boolean
   placeholder?: string
@@ -54,7 +55,7 @@ interface GluuTypeAheadForDnProps<
 }
 
 function GluuTypeAheadForDn<
-  TValues extends Record<string, unknown> = Record<string, unknown>,
+  TValues extends Record<string, JsonValue> = Record<string, JsonValue>,
   TOption extends TypeAheadOptionObject = TypeAheadOptionObject,
 >({
   label,
@@ -119,7 +120,7 @@ function GluuTypeAheadForDn<
               : undefined
           }
           maxResults={maxResults}
-          options={options as unknown as TypeAheadOption[]}
+          options={options as TypeAheadOption[]}
           onPaginate={onPaginate}
           paginate={paginate}
           placeholder={placeholder}
@@ -158,7 +159,7 @@ function GluuTypeAheadForDn<
           useCache={false}
           allowNew={allowNew}
           multiple={true}
-          selected={selectedValue as unknown as TypeAheadOption[]}
+          selected={selectedValue as TypeAheadOption[]}
           onSearch={onSearch}
           dropup={false}
           flip={true}

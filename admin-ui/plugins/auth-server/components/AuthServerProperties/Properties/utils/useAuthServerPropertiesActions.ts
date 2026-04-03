@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
-import { useSelector } from 'react-redux'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import { UPDATE } from '@/audit/UserActionType'
-import type { RootState } from '@/redux/sagas/types/audit'
+import { AUTH_SERVER_CONFIGURATION } from '@/audit/Resources'
+import { useAppSelector } from '@/redux/hooks'
 import type { JsonPatch } from 'JansConfigApi'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/index'
 
@@ -11,8 +11,8 @@ export interface ModifiedFields {
   defaultAcr?: string
 }
 
-export function useAuthServerPropertiesActions() {
-  const authState = useSelector((state: RootState) => state.authReducer)
+export const useAuthServerPropertiesActions = () => {
+  const authState = useAppSelector((state) => state.authReducer)
   const client_id = authState?.config?.clientId
   const userinfo = authState?.userinfo
 
@@ -22,9 +22,9 @@ export function useAuthServerPropertiesActions() {
         await logAuditUserAction({
           userinfo,
           action: UPDATE,
-          resource: 'Authentication Server Configuration',
+          resource: AUTH_SERVER_CONFIGURATION,
           message,
-          modifiedFields: modifiedFields as Record<string, JsonValue | JsonPatch[] | undefined>,
+          modifiedFields: modifiedFields as Record<string, JsonValue>,
           performedOn: 'auth-server-properties',
           client_id,
         })

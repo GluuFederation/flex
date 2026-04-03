@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import type { FormikProps } from 'formik'
 import Toggle from 'react-toggle'
+import type { JsonValue } from './types/common'
 
-interface GluuToogleProps<T = Record<string, unknown>> {
+type GluuToogleProps<T = Record<string, JsonValue>> = {
   id?: string
   name: string
   formik?: FormikProps<T> | null
@@ -11,14 +12,14 @@ interface GluuToogleProps<T = Record<string, unknown>> {
   disabled?: boolean
 }
 
-function GluuToogle<T = Record<string, unknown>>({
+const GluuToogle = <T = Record<string, JsonValue>,>({
   id,
   name,
   formik,
   value,
   handler,
   disabled,
-}: GluuToogleProps<T>) {
+}: GluuToogleProps<T>) => {
   const [checked, setChecked] = useState(value || false)
 
   useEffect(() => {

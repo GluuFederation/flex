@@ -10,6 +10,7 @@ import { BORDER_RADIUS, CEDARLING_CONFIG_SPACING, SPACING } from '@/constants'
 import { useTranslation } from 'react-i18next'
 import { getIn } from 'formik'
 import { buildKeyCandidates } from '@/utils/regex'
+import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import type {
   MultiSelectOption,
   GluuMultiSelectRowFormik,
@@ -74,6 +75,7 @@ const ArrayItemSelect = React.memo(function ArrayItemSelect({
       setFieldValue: (_field: string, newValues: string[]) => {
         handler({ op: 'replace', path, value: newValues })
       },
+      setFieldTouched: () => {},
     }),
     [handler, path],
   )
@@ -157,6 +159,7 @@ const StringArrayField = React.memo(function StringArrayField({
       setFieldValue: (_field: string, newValues: string[]) => {
         handler({ op: 'replace', path, value: newValues })
       },
+      setFieldTouched: () => {},
     }),
     [handler, path],
   )
@@ -319,7 +322,7 @@ const JsonPropertyBuilder = ({
           parentIsArray={parentIsArray}
           path={path}
           showSaveButtons={false}
-          placeholder={t('placeholders.type_value', { field: t(getLocalizedLabelKey(propKey)) })}
+          placeholder={getFieldPlaceholder(t, getLocalizedLabelKey(propKey))}
         />
         {renderError()}
       </>
