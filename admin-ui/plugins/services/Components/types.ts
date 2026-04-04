@@ -1,21 +1,4 @@
-import type {
-  GluuLdapConfiguration,
-  MemcachedConfiguration,
-  RedisConfiguration,
-} from 'JansConfigApi'
 import type { FormikProps } from 'formik'
-
-export interface LdapFormProps {
-  item: GluuLdapConfiguration
-  handleSubmit: (data: { ldap: GluuLdapConfiguration } | GluuLdapConfiguration) => void
-  createLdap?: boolean
-  isLoading?: boolean
-}
-
-export interface LdapDetailPageProps {
-  row: GluuLdapConfiguration
-  testLdapConnection: (row: GluuLdapConfiguration) => void
-}
 
 export type CacheProviderType = 'IN_MEMORY' | 'MEMCACHED' | 'REDIS' | 'NATIVE_PERSISTENCE'
 
@@ -87,47 +70,16 @@ export interface CacheFormValues {
   deleteExpiredOnGetRequest?: boolean
 }
 
-export function isInMemoryCache(
-  values: CacheFormValues | CacheFormValuesUnion,
-): values is InMemoryCacheFormValues {
-  return values.cacheProviderType === 'IN_MEMORY'
-}
-
-export function isMemcachedCache(
-  values: CacheFormValues | CacheFormValuesUnion,
-): values is MemcachedCacheFormValues {
-  return values.cacheProviderType === 'MEMCACHED'
-}
-
-export function isRedisCache(
-  values: CacheFormValues | CacheFormValuesUnion,
-): values is RedisCacheFormValues {
-  return values.cacheProviderType === 'REDIS'
-}
-
-export function isNativePersistenceCache(
-  values: CacheFormValues | CacheFormValuesUnion,
-): values is NativePersistenceCacheFormValues {
-  return values.cacheProviderType === 'NATIVE_PERSISTENCE'
-}
-
-export interface CacheInMemoryProps {
+export interface CacheSubComponentBaseProps {
   formik: FormikProps<CacheFormValues>
+  classes: Record<string, string>
+  isDark: boolean
+  disabled?: boolean
 }
 
-export interface CacheMemcachedProps {
-  config: MemcachedConfiguration
-  formik: FormikProps<CacheFormValues>
-}
+export type CacheMemcachedProps = CacheSubComponentBaseProps
 
-export interface CacheNativeProps {
-  formik: FormikProps<CacheFormValues>
-}
-
-export interface CacheRedisProps {
-  config: RedisConfiguration
-  formik: FormikProps<CacheFormValues>
-}
+export type CacheRedisProps = CacheSubComponentBaseProps
 
 export interface PersistenceInfo {
   persistenceType?: string
@@ -137,23 +89,4 @@ export interface PersistenceInfo {
   productVersion?: string
   driverName?: string
   driverVersion?: string
-}
-
-export function isPersistenceInfo(data: unknown): data is PersistenceInfo {
-  if (data === null || typeof data !== 'object' || Array.isArray(data)) {
-    return false
-  }
-  const obj = data as Record<string, unknown>
-  return 'persistenceType' in obj && typeof obj.persistenceType === 'string'
-}
-
-export function extractActionMessage<T extends { action_message?: string }>(
-  data: T,
-  defaultMessage: string,
-): { cleanData: Omit<T, 'action_message'>; message: string } {
-  const { action_message, ...cleanData } = data
-  return {
-    cleanData: cleanData as Omit<T, 'action_message'>,
-    message: action_message || defaultMessage,
-  }
 }
