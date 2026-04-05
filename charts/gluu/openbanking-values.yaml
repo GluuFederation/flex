@@ -107,14 +107,6 @@ global:
   scim:
     # -- Boolean flag to enable/disable the SCIM chart.
     enabled: false
-  # -- StorageClass section. This is not currently used by the openbanking distribution. You may specify custom parameters as needed.
-  saml:
-    # -- Boolean flag to enable/disable the saml chart.
-    enabled: false
-  # -- Path to SQL password file
-  kc-scheduler:
-    # -- Boolean flag to enable/disable the kc-scheduler cronjob chart.
-    enabled: false
   # -- Enable cleanup job
   cleanup:
     # -- Boolean flag to enable/disable the cleanup cronjob chart.
