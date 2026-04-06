@@ -24,9 +24,9 @@ The Cedarling Policy Store configuration screen helps to upload the Policy Store
  1. Fork the project [GluuFlexAdminUIPolicyStore](https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/tree/agama-lab-policy-designer).
  2. Open the forked GitHub repository using [Agama Lab's](https://cloud.gluu.org/agama-lab) Policy Designer.
  3. Make the required modifications in the policies for Admin UI access control and save the changes.
- 4. Release the policy store archive file (with .cjar extension). 
+ 4. Release the policy store archive file (with .cjar extension) from Agama Lab. 
 ![image](../../assets/admin-ui/policy-store-release-1.png)
- 5. Download the released Policy Store archive file from the releases section GitHub policy-store repository.
+ 5. Download the released Policy Store archive file (with .cjar extension) from the releases section GitHub policy-store repository.
  ![image](../../assets/admin-ui/policy-store-release-2.png)
  6. Open Cedarling Policy Store configuration screen on Admin UI and upload the Policy Store archive file.
 
