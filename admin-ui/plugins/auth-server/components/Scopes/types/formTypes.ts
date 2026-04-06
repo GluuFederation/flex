@@ -1,6 +1,7 @@
 import type { Scope, ExtendedScopeAttributes } from './scopeTypes'
 
 export interface ScopeFormValues {
+  [key: string]: unknown
   id?: string
   displayName?: string
   description?: string

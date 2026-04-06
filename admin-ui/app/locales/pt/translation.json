@@ -778,6 +778,9 @@
     "error_in_deleting": "Erro ao excluir.",
     "error_in_revoking": "Erro ao revogar.",
     "error_in_saving": "Erro ao salvar.",
+    "error_in_parsing_data": "Erro ao analisar os dados.",
+    "scope_created_successfully": "Escopo criado com sucesso.",
+    "scope_updated_successfully": "Escopo atualizado com sucesso.",
     "partial_update_failure": "Algumas configurações não puderam ser atualizadas. Por favor, revise e tente novamente.",
     "min_characters": "Mínimo {{count}} caracteres",
     "field_required": "Este campo é obrigatório",
@@ -1059,7 +1062,20 @@
     "data_type_required": "O tipo de dado é obrigatório",
     "edit_type_required": "O tipo de edição é obrigatório",
     "view_type_required": "O tipo de visualização é obrigatório",
-    "fetch_failed": "Falha ao carregar os dados: {{detail}}"
+    "fetch_failed": "Falha ao carregar os dados: {{detail}}",
+    "fido_empty_row_key_value": "Nome e valor são obrigatórios para cada entrada.",
+    "fido_empty_row_value": "O valor é obrigatório para cada entrada.",
+    "fido_empty_row_metadata_server": "URL e certificado raiz são obrigatórios para cada servidor de metadados.",
+    "scope_id_required": "O ID do escopo é obrigatório",
+    "scope_id_min_length": "O ID do escopo deve ter pelo menos 2 caracteres",
+    "scope_display_name_required": "O nome de exibição é obrigatório",
+    "scope_display_name_min_length": "O nome de exibição deve ter pelo menos 2 caracteres",
+    "scope_type_required": "O tipo de escopo é obrigatório",
+    "scope_dynamic_scripts_required": "Selecione pelo menos um script de escopo dinâmico",
+    "scope_claims_required": "Selecione pelo menos uma reivindicação",
+    "scope_uma_policies_required": "Selecione pelo menos uma política de autorização UMA",
+    "scope_icon_url_required": "A URL do ícone é obrigatória",
+    "scope_icon_url_invalid": "Insira uma URL válida"
   },
   "validation_messages": {
     "invalid_url_format": "Formato de URL inválido",
@@ -1107,7 +1123,7 @@
     "followingPermissionRequiredToBeAdded": "Precisamos adicionar as seguintes permissões essenciais à função para garantir que os usuários com essa função possam acessar a interface do usuário do administrador."
   },
   "placeholders": {
-    "id": "Enter id",
+    "id": "Digite o identificador",
     "search": "Pesquisar",
     "new_selection": "Nova seleção",
     "action_commit_message": "Forneça o motivo desta mudança",

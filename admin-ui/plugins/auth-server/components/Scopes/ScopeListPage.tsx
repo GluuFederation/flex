@@ -27,7 +27,7 @@ import {
 } from 'JansConfigApi'
 import type { Scope } from 'JansConfigApi'
 import type { ScopeTableRow } from './types'
-import { useScopeActions } from './hooks'
+import { useScopeActions, invalidateScopeQueries } from './hooks'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import { GluuDetailGrid, type GluuDetailGridField } from '@/components/GluuDetailGrid'
@@ -38,13 +38,13 @@ import {
   SCOPE_SORT_COLUMN_LABELS,
   DEFAULT_SCOPE_SORT_BY,
   FEATURE_SCOPE_DELETE,
+  EMPTY_PLACEHOLDER,
+  DELETE_SUBJECT_SCOPE,
 } from './constants'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
 import type { FilterDef } from '@/components/GluuSearchToolbar/types'
 
 const LIMIT_OPTIONS = getRowsPerPageOptions()
-const DELETE_SUBJECT_SCOPE = 'scope'
-const EMPTY_PLACEHOLDER = '—'
 
 const getScopeTypeBadgeStyle = (
   scopeTypeBadge: Record<
@@ -152,14 +152,7 @@ const ScopeListPage: React.FC = () => {
     mutation: {
       onSuccess: () => {
         dispatch(updateToast(true, 'success', t('messages.scope_deleted_successfully')))
-        queryClient.invalidateQueries({
-          predicate: (query) => {
-            const queryKey = query.queryKey[0] as string
-            return (
-              queryKey === getGetOauthScopesQueryKey()[0] || queryKey === 'getOauthScopesByInum'
-            )
-          },
-        })
+        invalidateScopeQueries(queryClient)
       },
       onError: (error: Error) => {
         const errorMessage = error?.message || t('messages.error_deleting_scope')
@@ -238,7 +231,9 @@ const ScopeListPage: React.FC = () => {
     setScopeType('')
     setSortBy(DEFAULT_SCOPE_SORT_BY)
     setPageNumber(0)
-    queryClient.removeQueries({ predicate: (query) => query.queryKey[0] === getGetOauthScopesQueryKey()[0] })
+    queryClient.removeQueries({
+      predicate: (query) => query.queryKey[0] === getGetOauthScopesQueryKey()[0],
+    })
   }, [queryClient, setPageNumber])
 
   const handleScopeTypeChange = useCallback(

@@ -79,7 +79,7 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
   }
 })
 
-export function useStyles(params: { isDark: boolean; themeColors: ThemeConfig }) {
+export const useStyles = (params: { isDark: boolean; themeColors: ThemeConfig }) => {
   const { classes } = useStylesBase(params)
   const { themeColors } = params
   const badgeStyles = useMemo(() => {
@@ -91,8 +91,8 @@ export function useStyles(params: { isDark: boolean; themeColors: ThemeConfig })
           borderColor: 'transparent',
         },
         openid: {
-          backgroundColor: customColors.lightBlue,
-          textColor: customColors.white,
+          backgroundColor: themeColors.badges.filledBadgeBg,
+          textColor: themeColors.badges.filledBadgeText,
           borderColor: 'transparent',
         },
         dynamic: {

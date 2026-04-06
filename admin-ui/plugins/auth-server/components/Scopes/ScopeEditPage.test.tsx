@@ -2,28 +2,42 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import ScopeEditPage from './ScopeEditPage'
 import { Provider } from 'react-redux'
-import scopes from './scopes.test'
-import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
+import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import type { Scope } from './types'
-import { BrowserRouter } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 // Mock orval hooks
-jest.mock('JansConfigApi', () => ({
-  useGetOauthScopesByInum: jest.fn(() => ({
-    data: scopes[0],
-    isLoading: false,
-  })),
-  usePutOauthScopes: jest.fn(() => ({
-    mutateAsync: jest.fn(),
-    isPending: false,
-    isSuccess: false,
-    isError: false,
-  })),
-}))
+jest.mock('JansConfigApi', () => {
+  const mockScopes = require('./scopes.test').default
+  return {
+    useGetOauthScopesByInum: jest.fn(() => ({
+      data: mockScopes[0],
+      isLoading: false,
+    })),
+    usePutOauthScopes: jest.fn(() => ({
+      mutateAsync: jest.fn(),
+      isPending: false,
+      isSuccess: false,
+      isError: false,
+    })),
+    useGetAttributes: jest.fn(() => ({
+      data: { entries: [] },
+      isLoading: false,
+    })),
+    useGetConfigScripts: jest.fn(() => ({
+      data: { entries: [] },
+      isLoading: false,
+    })),
+    useGetWebhooksByFeatureId: jest.fn(() => ({
+      data: [],
+      isLoading: false,
+    })),
+    getGetOauthScopesQueryKey: jest.fn(() => ['/api/v1/oauth/scopes']),
+  }
+})
 
 // Mock audit logger
-jest.mock('./hooks', () => ({
+jest.mock('./hooks/useScopeActions', () => ({
   useScopeActions: jest.fn(() => ({
     logScopeUpdate: jest.fn(),
     navigateToScopeList: jest.fn(),
@@ -45,33 +59,36 @@ const permissions = [
 ]
 const INIT_STATE = {
   permissions: permissions,
-}
-const INIT_SHARED_STATE = {
-  scopes: [scopes[0]],
-  attributes: [],
-  scripts: [],
+  userinfo: { inum: 'test-user-inum' },
 }
 
-const SCOPE_REDUCER = {
-  item: scopes[0] as Scope,
-  loading: false,
-}
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false } },
+})
 
 const store = configureStore({
   reducer: combineReducers({
     authReducer: (state = INIT_STATE) => state,
-    initReducer: (state = INIT_SHARED_STATE) => state,
+    cedarPermissions: (
+      state = {
+        permissions: {},
+        loading: false,
+        error: null,
+        initialized: false,
+        isInitializing: false,
+      },
+    ) => state,
+    webhookReducer: (state = { webhookModal: false }) => state,
     noReducer: (state = {}) => state,
-    scopeReducer: (state = SCOPE_REDUCER) => state,
   }),
 })
 
 const Wrapper = ({ children }: { children: React.ReactNode }) => (
-  <BrowserRouter>
+  <QueryClientProvider client={queryClient}>
     <AppTestWrapper>
       <Provider store={store}>{children}</Provider>
     </AppTestWrapper>
-  </BrowserRouter>
+  </QueryClientProvider>
 )
 
 it('Should render the scope edit page properly', () => {

@@ -3,22 +3,66 @@ import { render, screen } from '@testing-library/react'
 import ScopeListPage from './ScopeListPage'
 import { Provider } from 'react-redux'
 import scopes from './scopes.test'
-import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
+import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import type { Scope } from './types'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 // Mock orval hooks
-jest.mock('JansConfigApi', () => ({
-  useGetOauthScopes: jest.fn(() => ({
-    data: {
-      entries: [scopes[0]],
-      totalEntriesCount: 1,
-    },
-    isLoading: false,
-    refetch: jest.fn(),
+jest.mock('JansConfigApi', () => {
+  const mockScopes = require('./scopes.test').default
+  return {
+    useGetOauthScopes: jest.fn(() => ({
+      data: {
+        entries: [mockScopes[0]],
+        totalEntriesCount: 1,
+      },
+      isLoading: false,
+      refetch: jest.fn(),
+    })),
+    useDeleteOauthScopesByInum: jest.fn(() => ({
+      mutateAsync: jest.fn(),
+    })),
+    useGetWebhooksByFeatureId: jest.fn(() => ({
+      data: [],
+      isLoading: false,
+    })),
+  }
+})
+
+// Mock cedarling permissions
+jest.mock('@/cedarling', () => ({
+  useCedarling: jest.fn(() => ({
+    hasCedarReadPermission: jest.fn(() => true),
+    hasCedarWritePermission: jest.fn(() => true),
+    hasCedarDeletePermission: jest.fn(() => true),
+    checkPermission: jest.fn(() => true),
+    loading: false,
+    error: null,
+    initialized: true,
   })),
-  useDeleteOauthScopesByInum: jest.fn(() => ({
-    mutateAsync: jest.fn(),
+}))
+
+jest.mock('@/cedarling/constants/resourceScopes', () => ({
+  CEDAR_RESOURCE_SCOPES: {},
+}))
+
+jest.mock('@/cedarling/utility', () => ({
+  ADMIN_UI_RESOURCES: {
+    Scopes: 'scopes',
+    Webhooks: 'webhooks',
+  },
+}))
+
+jest.mock('@/cedarling/hooks/useCedarling', () => ({
+  useCedarling: jest.fn(() => ({
+    hasCedarReadPermission: jest.fn(() => true),
+    hasCedarWritePermission: jest.fn(() => true),
+    hasCedarDeletePermission: jest.fn(() => true),
+    checkPermission: jest.fn(() => true),
+    loading: false,
+    error: null,
+    initialized: true,
   })),
 }))
 
@@ -45,18 +89,25 @@ const INIT_CEDAR_STATE = {
   permissions: permissions,
 }
 
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false } },
+})
+
 const store = configureStore({
   reducer: combineReducers({
     authReducer: (state = INIT_STATE) => state,
     cedarPermissions: (state = INIT_CEDAR_STATE) => state,
+    webhookReducer: (state = { webhookModal: false }) => state,
     noReducer: (state = {}) => state,
   }),
 })
 
 const Wrapper = ({ children }: { children: React.ReactNode }) => (
-  <AppTestWrapper>
-    <Provider store={store}>{children}</Provider>
-  </AppTestWrapper>
+  <QueryClientProvider client={queryClient}>
+    <AppTestWrapper>
+      <Provider store={store}>{children}</Provider>
+    </AppTestWrapper>
+  </QueryClientProvider>
 )
 
 it('Should render the scope list page properly', () => {

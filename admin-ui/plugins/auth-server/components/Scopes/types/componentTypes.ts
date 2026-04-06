@@ -16,7 +16,6 @@ export interface ScopeFormProps {
   scripts: ScopeScript[]
   attributes: ScopeClaim[]
   handleSubmit: (data: string) => void
-  onSearch?: (value: string) => void
   modifiedFields: ModifiedFields
   setModifiedFields: (fields: ModifiedFields) => void
 }
