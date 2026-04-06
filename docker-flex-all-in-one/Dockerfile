@@ -26,12 +26,12 @@ FROM ${FLEX_PERSISTENCE_LOADER_IMAGE} AS flex-persistence-loader-src
 # app
 # ===
 
-FROM bellsoft/liberica-openjdk-alpine:17.0.12@sha256:877a6ffc273212bd3f695db2a7973a05aa1bfb88ad550ba9ffe7deb7d1e50eee
+FROM bellsoft/liberica-openjdk-alpine:17.0.18@sha256:307b95033a52c3ebcebcb883048f6ffd6c6019cf7cda06fad8febb9d1caf39a3
 
 # hadolint ignore=DL3018
 RUN apk update \
     && apk upgrade --available \
-    && apk add --no-cache tini bash curl openssl python3 py3-cryptography py3-psycopg2 py3-grpcio nodejs npm nginx \
+    && apk add --no-cache tini bash curl openssl python3 py3-cryptography py3-psycopg2 py3-grpcio nginx \
     && apk add --no-cache --virtual .build-deps git wget
 
 # -------
