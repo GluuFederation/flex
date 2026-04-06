@@ -130,7 +130,7 @@ In the Policy Store we use [default_entities](https://docs.jans.io/stable/cedarl
 
 ## Managing Admin UI's Policy Store
 
-After installation, Admin UI uses a default Policy Store (file with .cjar extension) for GUI access control. The logged-in user can use the [Cedarling configuration screen](./configuration.md#cedarling-configuration) to upload the new Policy Store file with .cjar extension, generated and published by the [Agama-Lab](https://cloud.gluu.org/agama-lab). When the Policy Store file is uploaded, the backend parses the Policy Store to determine the roles and the role-to-scope mappings. The Policy Store is used for managing GUI access control. The aggregated role-to-scope mapping (obtained by parsing the Policy Store) ensures that only the mapped scopes are added in the authorization tokens to access the appropriate protected Config API endpoints.
+After installation, Admin UI uses a default Policy Store (file with .cjar extension) for GUI access control. The logged-in user can use the [Cedarling configuration screen](./configuration.md#cedarling-configuration) to upload the new Policy Store file with .cjar extension, generated and released using [Agama-Lab's](https://cloud.gluu.org/agama-lab) Policy designer. When the Policy Store file is uploaded, the backend parses the Policy Store to determine the roles and the role-to-scope mappings. The Policy Store is used for managing GUI access control. The aggregated role-to-scope mapping (obtained by parsing the Policy Store) ensures that only the mapped scopes are added in the authorization tokens to access the appropriate protected Config API endpoints.
 
 ```mermaid
 C4Context
