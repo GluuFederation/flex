@@ -15,27 +15,21 @@ This document outlines the configuration process for Gluu Flex Admin UI, with a 
 
 Gluu Flex Admin UI uses [Cedarling](https://docs.jans.io/stable/cedarling/) for GUI access control. The role of the user is mapped with specific permissions (scopes) to ensure that the user can only access and modify functionalities relevant to their roles.
 
-The Cedarling Policy Store configuration screen helps to configure the Policy Store used for the Admin UI access control. The Gluu Flex Admin UI uses a default Policy Store after installation for GUI access control. You need to configure a remote Cedarling Policy Store using its URL and Admin UI backend will automatically synchronize roles and role-to-scope mapping as per the schema and policies defined in the Policy Store.
+The Cedarling Policy Store configuration screen helps to upload the Policy Store archive file used for the Admin UI access control. The Gluu Flex Admin UI uses a default Policy Store after installation for GUI access control. You can upload a new Cedarling Policy Store and Admin UI backend will automatically synchronize roles and role-to-scope mapping as per the schema and policies defined in the Policy Store.
 
 ![image](../../assets/admin-ui/cedarling-config.png)
-
-#### Policy Retrieval Point
-
-This feature is useful for setting PRP. It helps to prevent MITM attacks in production. There are 2 modes.
-
-1. `Remote`: In this mode, Admin UI will always use the remote policy store URL to initialize Cedarling, fetch policies, and schema.
-
-2. `Default`: It is recommended to set it to Default for production. If set to Default, it will use the Admin-UI storage for Cedarling authorization. Enable Default mode and use the refresh button to store or update GitHub policies on the Admin-UI Server.
 
 #### Steps to configure Remote Policy Store URL
 
  1. Fork the project [GluuFlexAdminUIPolicyStore](https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/tree/agama-lab-policy-designer).
- 2. Open the forked repository using [Agama Lab's](https://cloud.gluu.org/agama-lab) Policy Designer.
+ 2. Open the forked GitHub repository using [Agama Lab's](https://cloud.gluu.org/agama-lab) Policy Designer.
  3. Make the required modifications in the policies for Admin UI access control and save the changes.
- 4. Copy the Policy Store URL.
- ![image](../../assets/admin-ui/admin-ui-policy-store.png)
- 5. Open Cedarling Policy Store configuration screen on Admin UI and add the copied Policy Store URL in `Admin UI Remote Policy Store` field.
- 6. Set `Policy Retrieval Point` field to `Remote` to use the remote Policy Store URL for the GUI access control.
+ 4. Release the policy store archive file (with .cjar extension). 
+![image](../../assets/admin-ui/policy-store-release-1.png)
+ 5. Download the released Policy Store archive file from the releases section GitHub policy-store repository.
+ ![image](../../assets/admin-ui/policy-store-release-2.png)
+ 6. Open Cedarling Policy Store configuration screen on Admin UI and upload the Policy Store archive file.
+
 
 ### OIDC Client Details for Auth Server
 
