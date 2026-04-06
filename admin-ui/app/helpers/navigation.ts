@@ -107,25 +107,12 @@ const ROUTES = {
   // Sessions
   AUTH_SERVER_SESSIONS: `${PLUGIN_BASE_PATHS.AUTH_SERVER}/sessions`,
 
-  // Reports
-  AUTH_SERVER_REPORTS: `${PLUGIN_BASE_PATHS.AUTH_SERVER}/reports`,
-
   // Agama
   AUTH_SERVER_AGAMA: `${PLUGIN_BASE_PATHS.AUTH_SERVER}/agama`,
-
-  // Lock
-  AUTH_SERVER_LOCK: `${PLUGIN_BASE_PATHS.AUTH_SERVER}/lock`,
 
   // ========== Services Plugin ==========
   SERVICES_CACHE: `${PLUGIN_BASE_PATHS.SERVICES}/cache`,
   SERVICES_PERSISTENCE: `${PLUGIN_BASE_PATHS.SERVICES}/persistence`,
-
-  // LDAP
-  LDAP_LIST: `${PLUGIN_BASE_PATHS.SERVICES}/ldap`,
-  LDAP_ADD: `${PLUGIN_BASE_PATHS.SERVICES}/ldap/new`,
-  LDAP_EDIT: (configId: string) =>
-    `${PLUGIN_BASE_PATHS.SERVICES}/ldap/edit/${encodeURIComponent(configId)}`,
-  LDAP_EDIT_TEMPLATE: `${PLUGIN_BASE_PATHS.SERVICES}/ldap/edit/:configId`,
 
   // ========== SAML Plugin ==========
   SAML_BASE: PLUGIN_BASE_PATHS.SAML,

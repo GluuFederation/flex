@@ -1,4 +1,5 @@
 import { JsonPatch } from 'JansConfigApi'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
 export type JansLockConfigFormValues = {
   baseDN?: string
@@ -44,7 +45,7 @@ export type JansLockFormClasses = {
 }
 
 export type JansLockConfigurationProps = {
-  lockConfig: Record<string, unknown>
+  lockConfig: Record<string, JsonValue>
   onUpdate: (patches: PatchOperation[]) => void
   isSubmitting?: boolean
   canWriteLock?: boolean

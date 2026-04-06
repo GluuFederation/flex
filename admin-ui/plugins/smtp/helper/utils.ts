@@ -1,12 +1,9 @@
 import { SmtpConfiguration } from 'JansConfigApi'
 import type { TFunction } from 'i18next'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
-import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/GluuCommitDialog'
+import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
 import { SmtpFormValues } from '../types'
 
-/**
- * Transforms SmtpConfiguration from API to form values
- */
 export const transformToFormValues = (config: SmtpConfiguration | undefined): SmtpFormValues => {
   return {
     host: config?.host || '',
@@ -26,9 +23,6 @@ export const transformToFormValues = (config: SmtpConfiguration | undefined): Sm
   }
 }
 
-/**
- * Transforms form values to SmtpConfiguration for API submission
- */
 export const toSmtpConfiguration = (values: SmtpFormValues): SmtpConfiguration => {
   return {
     host: values.host,
@@ -47,7 +41,6 @@ export const toSmtpConfiguration = (values: SmtpFormValues): SmtpConfiguration =
   }
 }
 
-/** Field keys mapped to their translation label keys */
 const SMTP_FIELD_LABELS: { key: keyof SmtpFormValues; label: string }[] = [
   { key: 'host', label: 'fields.smtp_host' },
   { key: 'port', label: 'fields.smtp_port' },
@@ -64,9 +57,6 @@ const SMTP_FIELD_LABELS: { key: keyof SmtpFormValues; label: string }[] = [
   { key: 'signing_algorithm', label: 'fields.signing_algorithm' },
 ]
 
-/**
- * Builds a list of changed field operations by comparing initial and current form values.
- */
 export const buildSmtpChangedFieldOperations = (
   initial: SmtpFormValues,
   current: SmtpFormValues,

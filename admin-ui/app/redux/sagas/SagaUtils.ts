@@ -1,6 +1,6 @@
 import { select, put, call } from 'redux-saga/effects'
 import type { Action } from 'redux'
-import type { AuditLog, AuthState, RootState, SagaError } from './types/audit'
+import type { AuditLog, AuthState, RootState, SagaError } from './types'
 import type { ApiTokenResponse } from '../api/types/BackendApi'
 import { isFourZeroThreeError } from '../../utils/TokenController'
 import { devLogger } from '@/utils/devLogger'

@@ -30,6 +30,7 @@ import { AdminUiFeatureResource, useCedarling } from '@/cedarling'
 import { devLogger } from '@/utils/devLogger'
 import { CEDARLING_BYPASS } from '@/cedarling/utility'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { useHealthStatus } from 'Plugins/admin/components/Health/hooks'
 import type {
   MenuItem,
   PluginMenu,
@@ -62,14 +63,11 @@ const MENU_ICON_MAP: MenuIconMap = {
   saml: <SamlIcon className="menu-icon" />,
 } as const
 
-type RootState = SidebarRootState
-
-const selectHealth = (state: RootState) => state.healthReducer.health
-const selectLogoutAuditSucceeded = (state: RootState): boolean | null =>
+const selectLogoutAuditSucceeded = (state: SidebarRootState): boolean | null =>
   state.logoutAuditReducer.logoutAuditSucceeded
 
-function GluuAppSidebar(): JSX.Element {
-  const health = useAppSelector(selectHealth)
+const GluuAppSidebar = (): JSX.Element => {
+  const { allServices } = useHealthStatus()
   const logoutAuditSucceeded = useAppSelector(selectLogoutAuditSucceeded)
   const [pluginMenus, setPluginMenus] = useState<PluginMenu[]>([])
   const didAnimateMenusRef = useRef<boolean>(false)
@@ -81,7 +79,7 @@ function GluuAppSidebar(): JSX.Element {
   const { authorize } = useCedarling()
   const { navigateToRoute } = useAppNavigation()
 
-  const fetchedServersLength = useMemo((): boolean => Object.keys(health).length > 0, [health])
+  const fetchedServersLength = useMemo((): boolean => allServices.length > 0, [allServices])
 
   const sidebarMenuActiveClass = useMemo(
     (): string => `sidebar-menu-active-${selectedTheme}`,
@@ -148,9 +146,11 @@ function GluuAppSidebar(): JSX.Element {
       const healthKey = menu.path
         ? VISIBILITY_CONDITIONS[menu.path as keyof VisibilityConditions]
         : undefined
-      return healthKey ? health?.[healthKey] === 'Running' : true
+      if (!healthKey) return true
+      const service = allServices.find((s) => s.name === healthKey)
+      return service?.status === 'up'
     })
-  }, [health, fetchedServersLength])
+  }, [allServices, fetchedServersLength])
 
   const loadMenus = async () => {
     try {

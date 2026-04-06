@@ -31,7 +31,8 @@ import {
   type HttpErrorLike,
   type SagaErrorShape,
 } from './types/common'
-import type { RootState } from 'Redux/sagas/types/audit'
+import type { RootState } from 'Redux/sagas/types'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type {
   WebhookEntry,
   TriggerWebhookSagaPayload,
@@ -134,7 +135,7 @@ export function* triggerWebhook({
       .filter((item): item is WebhookTriggerResponseItem & { url: string } => item !== null)
 
     addAdditionalData(audit as AuditRecord, FETCH, `/webhook/${featureToTrigger}`, {
-      action: { action_data: { results: enrichedResults } },
+      action: { action_data: { results: enrichedResults as JsonValue } },
     })
     yield put(setFeatureToTrigger(''))
 

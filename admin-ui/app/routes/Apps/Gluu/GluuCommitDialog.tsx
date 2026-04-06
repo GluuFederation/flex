@@ -5,13 +5,12 @@ import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import PropTypes from 'prop-types'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/redux/hooks'
 import Alert from '@mui/material/Alert'
 import { useWebhookDialogAction } from 'Utils/hooks'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
-import type { RootState } from '@/redux/sagas/types/audit'
 import type { GluuCommitDialogProps } from './types/index'
 import { useStyles } from './styles/GluuCommitDialog.style'
 import {
@@ -49,7 +48,7 @@ const GluuCommitDialog = ({
   const { classes } = useStyles({ isDark, themeColors })
   const [userMessage, setUserMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const { webhookModal } = useSelector((state: RootState) => state.webhookReducer)
+  const webhookModal = useAppSelector((state) => state.webhookReducer?.webhookModal ?? false)
 
   const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
   const webhookScopes = useMemo(
@@ -199,8 +198,8 @@ const GluuCommitDialog = ({
                 <GluuText variant="h5" className={classes.operationsTitle}>
                   {t('messages.list_of_changes')}
                 </GluuText>
-                {operations.map((operation) => (
-                  <div key={operation.path} className={classes.operationRow}>
+                {operations.map((operation, index) => (
+                  <div key={`${operation.path}-${index}`} className={classes.operationRow}>
                     <span className={classes.operationLabel}>{t('set')}</span>
                     <span className={classes.operationBadge}>{operation.path}</span>
                     <span className={classes.operationLabel}>{t('to')}</span>

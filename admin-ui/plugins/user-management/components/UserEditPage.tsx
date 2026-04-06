@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { GluuPageContent } from '@/components'
 import Alert from '@mui/material/Alert'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { UserEditFormValues, ModifiedFields } from '../types/ComponentTypes'
 import { PersonAttribute, CustomUser } from '../types/UserApiTypes'
 import {
@@ -34,7 +35,7 @@ import {
   getStandardFieldValues,
 } from '../utils'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
-import { isPersistenceInfo } from 'Plugins/services/Components/Configuration/types'
+import { isPersistenceInfo } from 'Plugins/services/helper/utils'
 import { AXIOS_INSTANCE } from '../../../api-client'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -96,7 +97,7 @@ const UserEditPage = () => {
       onSuccess: async (data, variables) => {
         const payload = variables.data as {
           dn?: string
-          modifiedFields?: Array<Record<string, unknown>>
+          modifiedFields?: Array<Record<string, JsonValue>>
         }
         const modifiedFieldsArray = payload?.modifiedFields ?? []
         const modifiedKeys = new Set(modifiedFieldsArray.flatMap((m) => Object.keys(m)))

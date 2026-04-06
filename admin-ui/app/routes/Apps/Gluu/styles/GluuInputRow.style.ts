@@ -1,14 +1,14 @@
 import { makeStyles } from 'tss-react/mui'
+import { OPACITY } from '@/constants'
 
 interface GluuInputRowStyleParams {
   errorColor: string
   fontColor?: string
-  stepperHoverBg: string
 }
 
 export const useStyles = makeStyles<GluuInputRowStyleParams>()((
   _theme,
-  { errorColor, fontColor, stepperHoverBg },
+  { errorColor, fontColor },
 ) => {
   return {
     colWrapper: {
@@ -21,6 +21,10 @@ export const useStyles = makeStyles<GluuInputRowStyleParams>()((
         outline: '2px solid currentColor',
         outlineOffset: -2,
         borderRadius: 'inherit',
+      },
+      '& input:disabled': {
+        opacity: OPACITY.PLACEHOLDER,
+        cursor: 'not-allowed',
       },
     },
     inputWithShortcode: {
@@ -47,7 +51,7 @@ export const useStyles = makeStyles<GluuInputRowStyleParams>()((
       'alignItems': 'center',
       'color': fontColor ?? 'inherit',
       '&:disabled': {
-        opacity: 0.5,
+        opacity: OPACITY.DISABLED,
         cursor: 'not-allowed',
       },
     },
@@ -96,12 +100,12 @@ export const useStyles = makeStyles<GluuInputRowStyleParams>()((
       'background': 'transparent',
       'color': fontColor ?? 'inherit',
       'cursor': 'pointer',
-      'transition': 'background-color 0.15s ease',
+      'transition': 'none',
       '&:hover:not(:disabled)': {
-        backgroundColor: stepperHoverBg,
+        backgroundColor: 'transparent',
       },
       '&:disabled': {
-        opacity: 0.5,
+        opacity: OPACITY.DISABLED,
         cursor: 'not-allowed',
       },
       '&:first-of-type': {

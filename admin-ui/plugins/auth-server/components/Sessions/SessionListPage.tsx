@@ -28,6 +28,7 @@ import { BORDER_RADIUS, ICON_SIZE } from '@/constants'
 import { useAppSelector } from '@/redux/hooks'
 import { useGetSessions, useSearchSession } from 'JansConfigApi'
 import type { SessionId, SearchSessionParams } from 'JansConfigApi'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/index'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
 import type { FilterField } from '@/components/GluuFilterPopover'
 import { AUTHENTICATED_SESSION_STATE, type Session, type SessionState } from './types'
@@ -49,8 +50,7 @@ const FILTER_FIELD_OPTIONS = [
   { value: 'authenticationTime', labelKey: 'titles.authentication_date' },
 ] as const
 
-type DisplayValue = string | number | boolean | null | undefined
-const displayOrDash = (value: DisplayValue): string =>
+const displayOrDash = (value: JsonValue | undefined): string =>
   value === null || value === undefined || value === '' ? '—' : String(value)
 
 const isSessionAttributeFilter = (
@@ -358,6 +358,17 @@ const SessionListPage: React.FC = () => {
     ],
   )
 
+  const sanitizeCsvCell = (value: JsonValue): string => {
+    let cell = value == null ? '' : String(value)
+    if (/^[=+\-@]/.test(cell)) {
+      cell = "'" + cell
+    }
+    if (/[",\n\r]/.test(cell)) {
+      cell = '"' + cell.replace(/"/g, '""') + '"'
+    }
+    return cell
+  }
+
   const downloadCSV = useCallback(() => {
     const keys = [
       t('fields.username'),
@@ -367,7 +378,7 @@ const SessionListPage: React.FC = () => {
       t('fields.acr'),
       t('fields.state'),
     ]
-    const header = keys.map((k) => k.replaceAll('-', ' ').toUpperCase()).join(',')
+    const header = keys.map((k) => sanitizeCsvCell(k.replaceAll('-', ' ').toUpperCase())).join(',')
     const rows = authenticatedSessions.map((row) =>
       [
         row.sessionAttributes.auth_user,
@@ -376,7 +387,9 @@ const SessionListPage: React.FC = () => {
         row.authenticationTime ? formatDate(row.authenticationTime, 'YYYY-MM-DD h:mm:ss A') : '',
         row.sessionAttributes.acr_values,
         row.state,
-      ].join(','),
+      ]
+        .map(sanitizeCsvCell)
+        .join(','),
     )
     const csv = [header, ...rows].join('\n')
     const blob = new Blob([csv], { type: 'text/csv' })

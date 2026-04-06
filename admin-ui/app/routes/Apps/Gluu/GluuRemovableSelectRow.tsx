@@ -5,9 +5,10 @@ import { FormikProps } from 'formik'
 import React, { useMemo } from 'react'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
+import type { JsonValue } from './types/common'
 
 type ModifiedFieldValue = string | string[] | boolean
-type FormikValues = Record<string, unknown>
+type FormikValues = Record<string, JsonValue>
 
 interface CountryOption {
   name: string

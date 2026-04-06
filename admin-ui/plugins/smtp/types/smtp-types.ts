@@ -1,5 +1,6 @@
 import type { FormikProps } from 'formik'
-import { SmtpConfiguration, SmtpTest } from 'JansConfigApi'
+import type { SmtpConfiguration, SmtpTest } from 'JansConfigApi'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
 export type ConnectProtection = 'None' | 'StartTls' | 'SslTls'
 
@@ -19,6 +20,16 @@ export interface SmtpFormValues {
   key_store_alias: string
   signing_algorithm: string
 }
+
+export interface ApiError {
+  response?: {
+    data?: {
+      message?: string
+    }
+  }
+}
+
+export type PatchOp = { op: 'add' | 'remove' | 'replace'; path: string; value?: JsonValue }
 
 // Props for SmtpForm component
 export interface SmtpFormProps {

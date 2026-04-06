@@ -23,18 +23,20 @@ afterAll(() => {
 jest.spyOn(global.console, 'log').mockImplementation(jest.fn())
 jest.spyOn(global.console, 'warn').mockImplementation(jest.fn())
 
-jest.spyOn(global.console, 'error').mockImplementation((...args: unknown[]) => {
-  const msg = args.map((a) => String(a ?? '')).join(' ')
-  const shouldSuppress =
-    msg.includes('Problems getting API access token') ||
-    msg.includes('Problems posting user action audit log') ||
-    msg.includes('suspended resource finished loading') ||
-    (msg.includes('Failed prop type') && msg.includes('timeout') && msg.includes('Fade')) ||
-    msg.includes('not wrapped in act')
+jest
+  .spyOn(global.console, 'error')
+  .mockImplementation((...args: Parameters<typeof console.error>) => {
+    const msg = args.map((a) => String(a ?? '')).join(' ')
+    const shouldSuppress =
+      msg.includes('Problems getting API access token') ||
+      msg.includes('Problems posting user action audit log') ||
+      msg.includes('suspended resource finished loading') ||
+      (msg.includes('Failed prop type') && msg.includes('timeout') && msg.includes('Fade')) ||
+      msg.includes('not wrapped in act')
 
-  if (shouldSuppress) return
-  originalError(...args)
-})
+    if (shouldSuppress) return
+    originalError(...args)
+  })
 
 jest.setTimeout(30000)
 

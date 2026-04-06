@@ -54,6 +54,7 @@ export const BORDER_RADIUS = {
   DEFAULT: 16,
   LARGE: 24,
   MEDIUM: 14,
+  ACCORDION: 10,
   SMALL_MEDIUM: 8,
   SMALL: 6,
   CIRCLE: '50%',

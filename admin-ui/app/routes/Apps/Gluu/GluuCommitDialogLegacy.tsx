@@ -18,13 +18,12 @@ import getThemeColor from '@/context/theme/config'
 import PropTypes from 'prop-types'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/redux/hooks'
 import { useWebhookDialogAction } from 'Utils/hooks'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
-import type { RootState } from '@/redux/sagas/types/audit'
 import type { GluuCommitDialogOperation, GluuCommitDialogProps, JsonValue } from './types/index'
 import { Alert, Box } from '@mui/material'
 import { GluuButton } from '@/components'
@@ -61,7 +60,8 @@ const GluuCommitDialogLegacy = ({
   const [isOpen, setIsOpen] = useState<number | null>(null)
   const [userMessage, setUserMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const { loadingWebhooks, webhookModal } = useSelector((state: RootState) => state.webhookReducer)
+  const loadingWebhooks = useAppSelector((state) => state.webhookReducer?.loadingWebhooks ?? false)
+  const webhookModal = useAppSelector((state) => state.webhookReducer?.webhookModal ?? false)
 
   const webhookResourceId = ADMIN_UI_RESOURCES.Webhooks
   const webhookScopes = CEDAR_RESOURCE_SCOPES[webhookResourceId] || []

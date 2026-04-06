@@ -36,7 +36,7 @@ export const useAttributes = (params?: GetAttributesParams) => {
 }
 
 /** Type-safe cast for PagedResult entries to JansAttribute[] */
-export function toAttributeList(entries?: PagedResultEntriesItem[]): JansAttribute[] {
+export const toAttributeList = (entries?: PagedResultEntriesItem[]): JansAttribute[] => {
   if (!entries) return []
   return entries.map((entry) => Object.assign({} as JansAttribute, entry))
 }

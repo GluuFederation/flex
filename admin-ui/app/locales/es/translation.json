@@ -20,15 +20,11 @@
     "add_mapping": "Agregar mapeo",
     "add_header": "Agregar encabezado",
     "add_property": "Agregar propiedad",
-    "add_party": "Agregar parte",
-    "add_types": "Agregar tipos",
     "add_server": "Agregar servidor",
     "add_base_dn": "Agregar base DN",
     "change_bind_password": "Cambiar contraseña de enlace",
     "set_password": "Establecer contraseña",
-    "add_classes": "Agregar clases",
-    "add_algorithm": "Agregar Algoritmo",
-    "add_metadata_server": "Agregar Servidor de Metadatos",
+    "add_properties": "Agregar Propiedades",
     "configuration_copied": "Configuración copiada",
     "copy_configuration": "Copiar configuración",
     "apply": "Aplicar",
@@ -329,6 +325,7 @@
     "dark_mode": "Modo Oscuro",
     "data_type": "Tipo de Dato",
     "default_acr": "Método de Autenticación Predeterminado (ACR)",
+    "openid_configuration_response_op_metadata_suppression_list": "Lista de supresión de metadatos OP de la respuesta de configuración OpenID",
     "default_bucket": "Bucket Predeterminado",
     "default_cleanup_batch_size": "Tamaño del Lote de Limpieza Predeterminado",
     "default_put_expiration": "Expiración de Inserción Predeterminada",
@@ -504,7 +501,7 @@
     "spontaneousScopesREGEX": "Expresión regular de validación de ámbitos espontáneos",
     "updateTokenScriptDns": "Actualizar Token",
     "ssl_trust_store_file": "Archivo del Almacén de Confianza SSL",
-    "ssl_trust_store_file_path": "sslTrustStoreFilePath",
+    "ssl_trust_store_file_path": "Ruta del almacén de confianza SSL",
     "ssl_trust_store_format": "Formato del Almacén de Confianza SSL",
     "ssl_trust_store_pin": "PIN del Almacén de Confianza SSL",
     "state": "Estado",
@@ -600,6 +597,7 @@
     "modality": "Modalidad",
     "dateAdded": "Fecha de Alta",
     "givenName": "Nombre",
+    "lastName": "Apellido",
     "sn": "Apellido",
     "mail": "Correo",
     "resources": "Recursos",
@@ -621,6 +619,7 @@
     "export_current_config": "Exportar Configuración Actual",
     "import_configuration": "Importar Configuración",
     "issuer": "Emisor",
+    "authorizationChallengeDefaultAcr": "Método de autenticación predeterminado (ACR): ACR de desafío de autorización predeterminado",
     "base_endpoint": "Endpoint Base",
     "clean_service_interval": "Intervalo del Servicio de Limpieza",
     "clean_batch_chunk_size": "Tamaño de Lote de Limpieza",
@@ -662,6 +661,7 @@
     "disable_metadata_service": "Deshabilitar Servicio de Metadatos",
     "enterprise_attestation": "Atestación Empresarial",
     "attestation_mode": "Modo de Atestación",
+    "hints": "Indicaciones",
     "software_id": "ID de Software",
     "expiration": "Expiración",
     "never": "Nunca",
@@ -806,6 +806,11 @@
     "dynamic_configuration": "Configuración Dinámica",
     "upload_agama_project": "Subir Proyecto Agama",
     "add_community_project": "Agregar un Proyecto de la Comunidad"
+  },
+  "footer": {
+    "copyright": "(C) {{year}} Todos los derechos reservados.",
+    "designed_by": "Este es el \"{{name}}\" diseñado e implementado por",
+    "company_name": "Gluu Inc."
   },
   "messages": {
     "multi_select_hint": "Ingrese varios elementos seleccionando del menú desplegable que aparece después de ingresar cada elemento.",
@@ -1063,6 +1068,7 @@
     "add_ssa": "Agregar SSA",
     "copied": "Copiado",
     "request_timeout_title": "Tiempo de espera agotado",
+    "request_timeout_description": "La solicitud se ha terminado porque no hubo respuesta del servidor durante más de 60 segundos. Verifique su conexión de red y el estado del servidor, luego intente nuevamente.",
     "no_data_found": "No se encontraron datos",
     "no_data_available": "No hay datos disponibles",
     "no_jwks_found": "No se encontraron claves JSON Web.",
@@ -1249,6 +1255,8 @@
     "smtp_server_hostname": "Introduce el nombre de host del servidor SMTP",
     "smtp_server_port": "Introduce el puerto del servidor SMTP",
     "smtp_user_name": "Introduce el usuario SMTP",
+    "enter_url": "Introduce la URL",
+    "enter_root_certificate": "Introduce el certificado raíz",
     "smtp_user_password": "Introduce la contraseña SMTP",
     "spontaneous_client_id": "Introduce el client id espontáneo",
     "typeahead_holder_message": "Introduce múltiples elementos seleccionándolos del desplegable que aparece tras introducir cada elemento.",
@@ -1282,7 +1290,8 @@
     "enter_policies_json_uris": "Ingrese la URI de política JSON",
     "enter_policies_zip_uris_authorization_token": "Ingrese el token de autorización de la URI de política ZIP",
     "enter_policies_zip_uris": "Ingrese la URI de política ZIP",
-    "enter_token_channels": "Ingrese los canales de token"
+    "enter_token_channels": "Ingrese los canales de token",
+    "type_value": "Ingrese el valor de {{field}}"
   },
   "titles": {
     "smtp_test_result": "Resultado de la prueba SMTP",
@@ -1345,7 +1354,7 @@
     "sql_authentication": "Autenticación SQL",
     "logging": "LOGGING",
     "jwk_keys": "Claves JWK",
-    "jans_json_property": "Propiedades",
+    "jans_json_property": "Propiedades del Servidor de Autenticación",
     "mapping": "Mapeo Rol/Permiso",
     "cedarling_config": "Configuración de Cedarling",
     "modules_properties": "Propiedades del módulo",
@@ -1474,6 +1483,14 @@
     "jans_link": {
       "enabled": "Esta casilla se usa para guardar y enviar los cambios. No usar a menos que el administrador del servidor haya ingresado todos los valores requeridos.",
       "useSSL": "Usa esta función si el servidor backend permite conectividad SSL."
+    },
+    "api-attribute": {
+      "name": "Nombre único del atributo.",
+      "displayName": "Nombre de visualización del atributo.",
+      "status": "Estado actual del atributo (activo o inactivo).",
+      "editType": "Determina quién puede editar este atributo (ej., admin, usuario).",
+      "viewType": "Determina quién puede ver este atributo (ej., admin, usuario).",
+      "description": "Breve descripción del propósito del atributo."
     },
     "no_category": {
       "deletable": "¿Se puede eliminar?"

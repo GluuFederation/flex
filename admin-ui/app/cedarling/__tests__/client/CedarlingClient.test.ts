@@ -1,7 +1,5 @@
 import type { TokenAuthorizationRequest } from '@/cedarling'
 
-// The WASM module is mocked via __mocks__/@janssenproject/cedarling_wasm.ts
-
 const testBytes = new Uint8Array([1, 2, 3])
 
 describe('cedarlingClient', () => {
@@ -14,8 +12,8 @@ describe('cedarlingClient', () => {
   beforeEach(async () => {
     jest.resetModules()
     const wasmMock = await import('@janssenproject/cedarling_wasm')
-    initWasm = wasmMock.default as unknown as jest.Mock
-    init_from_archive_bytes = wasmMock.init_from_archive_bytes as unknown as jest.Mock
+    initWasm = wasmMock.default as jest.Mock
+    init_from_archive_bytes = wasmMock.init_from_archive_bytes as jest.Mock
     initWasm.mockClear()
     init_from_archive_bytes.mockClear()
 

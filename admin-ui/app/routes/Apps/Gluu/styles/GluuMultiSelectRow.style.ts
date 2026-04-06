@@ -25,7 +25,7 @@ export const useStyles = makeStyles<GluuMultiSelectRowStyleParams>()((
       position: 'relative',
       display: 'flex',
       alignItems: 'center',
-      flexWrap: 'wrap' as const,
+      flexWrap: 'wrap',
       gap: 6,
       minHeight: 52,
       padding: '8px 44px 8px 16px',
@@ -35,7 +35,7 @@ export const useStyles = makeStyles<GluuMultiSelectRowStyleParams>()((
       cursor: 'pointer',
       color: fontColor,
       outline: 'none',
-      boxSizing: 'border-box' as const,
+      boxSizing: 'border-box',
       transition: 'border-color 0.15s ease',
     },
     selectTriggerOpen: {
@@ -48,7 +48,7 @@ export const useStyles = makeStyles<GluuMultiSelectRowStyleParams>()((
     placeholder: {
       color: fontColor,
       fontSize: 14,
-      userSelect: 'none' as const,
+      userSelect: 'none',
     },
     chip: {
       display: 'inline-flex',
@@ -62,7 +62,7 @@ export const useStyles = makeStyles<GluuMultiSelectRowStyleParams>()((
       fontSize: 12,
       fontWeight: 600,
       lineHeight: '18px',
-      whiteSpace: 'nowrap' as const,
+      whiteSpace: 'nowrap',
     },
     chipRemove: {
       'display': 'inline-flex',
@@ -85,8 +85,7 @@ export const useStyles = makeStyles<GluuMultiSelectRowStyleParams>()((
     chevronWrapper: {
       position: 'absolute',
       right: 16,
-      top: '50%',
-      transform: 'translateY(-50%)',
+      top: 14,
       pointerEvents: 'none',
       display: 'flex',
       alignItems: 'center',
@@ -107,7 +106,7 @@ export const useStyles = makeStyles<GluuMultiSelectRowStyleParams>()((
       borderBottomLeftRadius: `${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px`,
       borderBottomRightRadius: `${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px`,
       maxHeight: 220,
-      overflowY: 'auto' as const,
+      overflowY: 'auto',
     },
     optionItem: {
       'display': 'flex',
