@@ -2,7 +2,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: {{ .Release.Name }}-istio-fido2-configuration
+  name: {{ .Release.Name }}-istio-fido2
   namespace: {{.Release.Namespace}}
   labels:
     APP_NAME: fido2

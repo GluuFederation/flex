@@ -117,7 +117,7 @@ spec:
     - uri:
         prefix: "/.well-known/lock-server-configuration"
     rewrite:
-      uri: "/jans-auth/v1/configuration"
+      uri: "/jans-auth/api/v1/configuration"
     route:
     - destination:
         host: {{ index .Values "global" "auth-server" "authServerServiceName" }}.{{ .Release.Namespace }}.svc.cluster.local
