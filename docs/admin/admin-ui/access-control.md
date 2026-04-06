@@ -246,9 +246,10 @@ when {
     context.tokens.gluuflexadminui_userinfo_token.hasTag("jansAdminUIRole") &&
     context.tokens.gluuflexadminui_userinfo_token.getTag("jansAdminUIRole").contains("admin")
 };
+
 ```
 **Principal :**
-We are using Cedarling's [Multi-Issuer Authorization](https://docs.jans.io/stable/cedarling/reference/cedarling-multi-issuer/) in Admin UI for access control which evaluates policies based purely on token entities. The cedar polies are evaluated without principal. The administrator's **role** is picked up from the context token entities.
+We are using Cedarling's [Multi-Issuer Authorization](https://docs.jans.io/stable/cedarling/reference/cedarling-multi-issuer/) in Admin UI for access control which evaluates policies based purely on token entities. The cedar policies are driven by tokens tags in the when clause. The administrator's **role** is picked up from the context token entities.
 
 **Action :**
 In this policy, we are allowing **Read**, **Write** and **Delete** actions on the resource. Here we have `action in [GluuFlexAdminUI::Action::"read", GluuFlexAdminUI::Action::"write", GluuFlexAdminUI::Action::"delete"]`. The `GluuFlexAdminUI::` is the namespace where all action entities reside.
@@ -283,4 +284,4 @@ Please see the Entity Ids of the Parent Groups and their underlying features in 
 |IdentityAndAccess|Users, Scripts, Attributes|
 |SystemAndMonitoring|Dashboard, License, MAU, Security, Settings, Webhooks, Assets, AuditLogs|
 |Service|Persistence, SMTP, SCIM, FIDO, SAML, Lock|
-|Essential Admin UI Scopes|Admin UI Session Scopes| 
+|Essential Admin UI Scopes|Admin UI Session Scopes|

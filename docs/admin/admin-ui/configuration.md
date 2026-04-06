@@ -19,12 +19,12 @@ The Cedarling Policy Store configuration screen helps to upload the Policy Store
 
 ![image](../../assets/admin-ui/cedarling-config.png)
 
-#### Steps to configure Remote Policy Store URL
+#### Steps to create and upload Policy Store archive file 
 
  1. Fork the project [GluuFlexAdminUIPolicyStore](https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/tree/agama-lab-policy-designer).
  2. Open the forked GitHub repository using [Agama Lab's](https://cloud.gluu.org/agama-lab) Policy Designer.
  3. Make the required modifications in the policies for Admin UI access control and save the changes.
- 4. Release the policy store archive file (with .cjar extension) from Agama Lab. 
+ 4. Release the policy store archive file (with .cjar extension) from Agama Lab.
 ![image](../../assets/admin-ui/policy-store-release-1.png)
  5. Download the released Policy Store archive file (with .cjar extension) from the releases section GitHub policy-store repository.
  ![image](../../assets/admin-ui/policy-store-release-2.png)
@@ -78,7 +78,7 @@ uiConfig
 |sessionTimeoutInMins|Admin UI Frontend session out time|
 |allowSmtpKeystoreEdit|Allow to edit SMTP keystore fields. The default value is `true`.|
 |cedarlingLogType|Set embeded Cedarling log-type in Admin UI. The allowed values are `off` and `std_out`.|
-|auiPolicyStoreUrl|The remote Policy Store URL|
+|auiPolicyStoreUrl|Path of Policy Store archive file|
 |auiDefaultPolicyStorePath|The path of the default Policy Store json file on Config Api pod.|
 |cedarlingPolicyStoreRetrievalPoint|The retrieval point of the Policy Store. The allowed values are `default` and `remote`.|
 
