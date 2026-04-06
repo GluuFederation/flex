@@ -43,7 +43,7 @@ spec:
               service:
                 name: {{ .Values.service.name }}
                 port:
-                  number: 8080
+                  number: {{ .Values.service.port }}
 {{- end }}
 
 ---
@@ -90,7 +90,7 @@ spec:
               service:
                 name: {{ .Values.service.name }}
                 port:
-                  number: 8080
+                  number: {{ .Values.service.port }}
 {{- end }}
 
 ---
@@ -137,7 +137,7 @@ spec:
               service:
                 name: {{ .Values.service.name }}
                 port:
-                  number: 8080
+                  number: {{ .Values.service.port }}
 {{- end }}
 
 ---
@@ -184,7 +184,7 @@ spec:
               service:
                 name: {{ .Values.service.name }}
                 port:
-                  number: 8080
+                  number: {{ .Values.service.port }}
 
 {{- end }}
 
@@ -232,7 +232,7 @@ spec:
               service:
                 name: {{ .Values.service.name }}
                 port:
-                  number: 8080
+                  number: {{ .Values.service.port }}
 {{- end }}
 
 ---
@@ -279,7 +279,7 @@ spec:
               service:
                 name: {{ .Values.service.name }}
                 port:
-                  number: 8080
+                  number: {{ .Values.service.port }}
 {{- end }}
 
 ---
@@ -325,7 +325,7 @@ spec:
               service:
                 name: {{ .Values.service.name }}
                 port:
-                  number: 8080
+                  number: {{ .Values.service.port }}
 {{- end }}
 
 ---
@@ -371,7 +371,7 @@ spec:
               service:
                 name: {{ .Values.service.name }}
                 port:
-                  number: 8080
+                  number: {{ .Values.service.port }}
 {{- end }}
 
 ---
@@ -419,7 +419,7 @@ spec:
               service:
                 name: {{ .Values.service.name }}
                 port:
-                  number: 8080
+                  number: {{ .Values.service.port }}
 {{- end }}
 
 ---
@@ -465,7 +465,7 @@ spec:
               service:
                 name: {{ .Values.service.name }}
                 port:
-                  number: 8080
+                  number: {{ .Values.service.port }}
 {{- end }}
 
 ---
@@ -513,7 +513,7 @@ spec:
               service:
                 name: {{ .Values.service.name }}
                 port:
-                  number: 8080
+                  number: {{ .Values.service.port }}
 {{- end }}
 
 ---
@@ -559,7 +559,7 @@ spec:
               service:
                 name: {{ .Values.service.name }}
                 port:
-                  number: 8080
+                  number: {{ .Values.service.port }}
 {{- end }}
 
 ---
@@ -608,7 +608,7 @@ spec:
               service:
                 name: {{ .Values.service.name }}
                 port:
-                  number: 8080
+                  number: {{ .Values.service.port }}
 {{- end }}
 
 ---
@@ -656,7 +656,7 @@ spec:
               service:
                 name: {{ .Values.service.name }}
                 port:
-                  number: 8080
+                  number: {{ .Values.service.port }}
 {{- end }}
 
 ---
@@ -703,7 +703,7 @@ spec:
               service:
                 name: {{ .Values.service.name }}
                 port:
-                  number: 8080
+                  number: {{ .Values.service.port }}
 {{- end }}
 
 {{- end }}

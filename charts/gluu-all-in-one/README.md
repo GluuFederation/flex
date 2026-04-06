@@ -382,7 +382,7 @@ Kubernetes: `>=v1.23.0-0`
 | scim.ingress.scimLabels | object | `{}` | SCIM ingress resource labels. key app is taken |
 | scim.scimServiceName | string | `"scim"` | Name of the scim service. Please keep it as default. |
 | service.name | string | `"http-aio"` | The name of the aio port within the aio service. Please keep it as default. |
-| service.port | int | `8080` | Port of the fido2 service. Please keep it as default. |
+| service.port | int | `8080` | Port of the aio service. Please keep it as default. |
 | service.sessionAffinity | string | `"None"` | Default set to None If you want to make sure that connections from a particular client are passed to the same Pod each time, you can select the session affinity based on the client's IP addresses by setting this to ClientIP |
 | service.sessionAffinityConfig | object | `{"clientIP":{"timeoutSeconds":10800}}` | the maximum session sticky time if sessionAffinity is ClientIP |
 | serviceAccountName | string | `"default"` | service account used by Kubernetes resources |
