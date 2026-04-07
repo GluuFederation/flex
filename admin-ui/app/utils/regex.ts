@@ -38,11 +38,11 @@ export const REGEX_WEBHOOK_URL =
   /^https:\/\/(([\w-]+\.)+[\w-]+|\[[\da-fA-F:]+\])(:\d{1,5})?(\/[^\s?#]*)?(\?[^\s#]*)?(#[^\s]*)?$/i
 
 /** Escapes regex-special characters in a string so it can be used literally in a RegExp. */
-function escapeRegexSpecialChars(s: string): string {
+const escapeRegexSpecialChars = (s: string): string => {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
 /** Builds a RegExp that matches a single braced placeholder for the given key (e.g. key="name" -> /\{name\}/g). Key is escaped so metacharacters match literally. */
-export function regexForBracedKey(key: string): RegExp {
+export const regexForBracedKey = (key: string): RegExp => {
   return new RegExp(`\\{${escapeRegexSpecialChars(key)}\\}`, 'g')
 }
