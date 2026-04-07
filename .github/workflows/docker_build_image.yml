@@ -135,29 +135,7 @@ jobs:
           fi
           echo "tags=${TAGS}" >> $GITHUB_OUTPUT
           echo "build=${BUILD}" >> $GITHUB_OUTPUT
-          if [[ "flex-all-in-one" =~ "${{ matrix.docker-images }}" ]]; then
-            echo "Waiting for all images to be built before building the all-in-one image"
-            TEMP_IMG="admin-ui persistence-loader"
-            for img in $TEMP_IMG; do
-              max_retries=30
-              retry_count=0
-              while true; do
-                echo "Attempting to pull $img image"
-                if docker pull ghcr.io/$REPOSITORY/$img:$VERSION; then
-                  echo "$img image pulled successfully"
-                  break
-                else
-                  retry_count=$((retry_count + 1))
-                  if [ $retry_count -ge $max_retries ]; then
-                    echo "Failed to pull $img image after $max_retries attempts"
-                    exit 1
-                  fi
-                  echo "Failed to pull $img image, retrying in 20 seconds (attempt $retry_count/$max_retries)"
-                  sleep 20
-                fi
-              done
-            done
-          fi
+         
 
       # UPDATE BUILD DATES INSIDE THE DOCKERFILE BEFORE BUILDING THE DEV IMAGES TRIGGERED BY JENKINS
       - name: Setup Python 3.10
