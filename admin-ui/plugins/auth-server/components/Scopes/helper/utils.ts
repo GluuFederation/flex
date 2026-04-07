@@ -1,5 +1,5 @@
 import type { ScopeFormValues, ExtendedScope, ExtendedScopeAttributes } from '../types'
-import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/GluuCommitDialog'
+import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/GluuCommitDialog.types'
 
 export interface ScopePanelVisibility {
   showClaimsPanel: boolean

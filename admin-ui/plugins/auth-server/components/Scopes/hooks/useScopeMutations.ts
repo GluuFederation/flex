@@ -11,6 +11,7 @@ import type { ModifiedFields } from '../types'
 import type { ScopeWithMessage } from '../constants'
 import { SCOPE_INUM_QUERY_KEY } from '../constants'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import { devLogger } from '@/utils/devLogger'
 
 export const invalidateScopeQueries = (queryClient: ReturnType<typeof useQueryClient>) => {
   return queryClient.invalidateQueries({
@@ -36,7 +37,7 @@ export const useCreateScope = () => {
       try {
         parsedData = JSON.parse(data) as ScopeWithMessage
       } catch (error) {
-        console.error('Error parsing scope data:', error)
+        devLogger.error('Error parsing scope data:', error)
         throw new Error(t('messages.error_in_parsing_data'))
       }
 
@@ -49,7 +50,9 @@ export const useCreateScope = () => {
 
       const successMessage =
         response?.id || response?.displayName
-          ? `Scope '${response.id || response.displayName}' created successfully`
+          ? t('messages.scope_created_successfully_with_name', {
+              name: response.id || response.displayName,
+            })
           : t('messages.scope_created_successfully')
 
       dispatch(updateToast(true, 'success', successMessage))
@@ -58,7 +61,7 @@ export const useCreateScope = () => {
       try {
         await logScopeCreation(parsedData as Scope, message, modifiedFields)
       } catch (auditError) {
-        console.error('Audit logging failed:', auditError)
+        devLogger.error('Audit logging failed:', auditError)
       }
 
       navigateToScopeList()
@@ -89,7 +92,7 @@ export const useUpdateScope = () => {
       try {
         parsedData = JSON.parse(data) as ScopeWithMessage
       } catch (error) {
-        console.error('Error parsing scope data:', error)
+        devLogger.error('Error parsing scope data:', error)
         throw new Error(t('messages.error_in_parsing_data'))
       }
 
@@ -102,7 +105,9 @@ export const useUpdateScope = () => {
 
       const successMessage =
         response?.id || response?.displayName
-          ? `Scope '${response.id || response.displayName}' updated successfully`
+          ? t('messages.scope_updated_successfully_with_name', {
+              name: response.id || response.displayName,
+            })
           : t('messages.scope_updated_successfully')
 
       dispatch(updateToast(true, 'success', successMessage))
@@ -111,7 +116,7 @@ export const useUpdateScope = () => {
       try {
         await logScopeUpdate(parsedData as Scope, message, modifiedFields)
       } catch (auditError) {
-        console.error('Audit logging failed:', auditError)
+        devLogger.error('Audit logging failed:', auditError)
       }
 
       navigateToScopeList()

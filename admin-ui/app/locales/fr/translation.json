@@ -798,6 +798,8 @@
     "error_in_parsing_data": "Erreur lors de l'analyse des données.",
     "scope_created_successfully": "Portée créée avec succès.",
     "scope_updated_successfully": "Portée mise à jour avec succès.",
+    "scope_created_successfully_with_name": "Portée '{{name}}' créée avec succès",
+    "scope_updated_successfully_with_name": "Portée '{{name}}' mise à jour avec succès",
     "partial_update_failure": "Certaines configurations n'ont pas pu être mises à jour. Veuillez vérifier et réessayer.",
     "min_characters": "Minimum {{count}} caractères",
     "field_required": "Ce champ est obligatoire",

@@ -30,7 +30,7 @@ import { formatDate, DATE_FORMATS } from '@/utils/dayjsUtils'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
 import type { ScopeFormProps, ScopeFormValues, ScopeClient, ExtendedScope } from './types'
-import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/GluuCommitDialog'
+import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/GluuCommitDialog.types'
 import { SCOPE_TYPE_OPTIONS, CREATOR_TYPES } from './constants'
 import {
   buildScopeInitialValues,
@@ -190,8 +190,15 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
             ...scope.attributes,
             ...values.attributes,
           },
-          creatorType: 'user',
-          creatorId: authReducer.userinfo.inum,
+          ...(isExistingScope
+            ? {
+                creatorType: scope.creatorType,
+                creatorId: scope.creatorId,
+              }
+            : {
+                creatorType: 'user',
+                creatorId: authReducer.userinfo.inum,
+              }),
         } as Partial<ExtendedScope>
 
         if (result.attributes && scope.attributes) {
@@ -209,6 +216,10 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
         const handleScopeTypeChangeInternal = (type: string) => {
           applyScopeTypeVisibility(type)
           const updatedValues = applyScopeTypeDefaults(formikProps.values, type)
+          if (type !== 'uma') {
+            updatedValues.iconUrl = ''
+            updatedValues.umaAuthorizationPolicies = []
+          }
           formikProps.setValues(updatedValues, false)
 
           const updatedTouched: Partial<Record<keyof ScopeFormValues, boolean>> = {
@@ -654,6 +665,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
               )}
 
               <GluuThemeFormFooter
+                hideDivider
                 showBack={true}
                 onBack={handleNavigateBack}
                 showCancel={true}

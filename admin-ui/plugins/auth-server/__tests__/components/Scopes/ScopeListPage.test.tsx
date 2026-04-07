@@ -1,16 +1,19 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import ScopeListPage from './ScopeListPage'
+import ScopeListPage from 'Plugins/auth-server/components/Scopes/ScopeListPage'
 import { Provider } from 'react-redux'
-import scopes from './scopes.test'
+import scopes from '../../fixtures/mockScopes'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import type { Scope } from './types'
+import type { Scope } from 'Plugins/auth-server/components/Scopes/types'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+jest.mock('Plugins/PluginReducersResolver', () => ({ __esModule: true, default: jest.fn() }))
+jest.mock('Plugins/PluginSagasResolver', () => ({ __esModule: true, default: jest.fn(() => []) }))
 
 // Mock orval hooks
 jest.mock('JansConfigApi', () => {
-  const mockScopes = require('./scopes.test').default
+  const mockScopes = require('../../fixtures/mockScopes').default
   return {
     useGetOauthScopes: jest.fn(() => ({
       data: {
@@ -37,6 +40,7 @@ jest.mock('@/cedarling', () => ({
     hasCedarWritePermission: jest.fn(() => true),
     hasCedarDeletePermission: jest.fn(() => true),
     checkPermission: jest.fn(() => true),
+    authorizeHelper: jest.fn(),
     loading: false,
     error: null,
     initialized: true,
@@ -67,7 +71,7 @@ jest.mock('@/cedarling/hooks/useCedarling', () => ({
 }))
 
 // Mock audit logger
-jest.mock('./hooks', () => ({
+jest.mock('Plugins/auth-server/components/Scopes/hooks', () => ({
   useScopeActions: jest.fn(() => ({
     logScopeDeletion: jest.fn(),
     navigateToScopeList: jest.fn(),

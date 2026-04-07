@@ -1,6 +1,7 @@
 export const fontFamily = "'Mona-Sans', sans-serif"
 
 export const fontWeights = {
+  regular: 400,
   medium: 500,
   semiBold: 600,
   bold: 700,

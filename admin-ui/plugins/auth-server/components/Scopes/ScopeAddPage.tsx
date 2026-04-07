@@ -11,6 +11,7 @@ import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './styles/ScopeFormPage.style'
+import { devLogger } from '@/utils/devLogger'
 
 const ScopeAddPage: React.FC = () => {
   const { t } = useTranslation()
@@ -25,8 +26,8 @@ const ScopeAddPage: React.FC = () => {
   )
   const { classes } = useStyles({ isDark, themeColors })
 
-  const { attributes, isLoading: attributesLoading } = useScopeAttributes()
-  const { scripts, isLoading: scriptsLoading } = useScopeScripts()
+  const { attributes, isLoading: attributesLoading, error: attributesError } = useScopeAttributes()
+  const { scripts, isLoading: scriptsLoading, error: scriptsError } = useScopeScripts()
 
   const { createScope, isPending } = useCreateScope()
 
@@ -39,7 +40,7 @@ const ScopeAddPage: React.FC = () => {
       try {
         await createScope(data, modifiedFields)
       } catch (error) {
-        console.error('Error creating scope:', error)
+        devLogger.error('Error creating scope:', error)
         setErrorMessage(error instanceof Error ? error.message : t('messages.error_in_saving'))
       }
     },
@@ -47,6 +48,7 @@ const ScopeAddPage: React.FC = () => {
   )
 
   const loading = isPending || attributesLoading || scriptsLoading
+  const hasLoadError = !!attributesError || !!scriptsError
 
   return (
     <GluuPageContent>
@@ -56,18 +58,22 @@ const ScopeAddPage: React.FC = () => {
           message={errorMessage || t('messages.error_in_saving')}
           show={!!errorMessage}
         />
-        <div className={classes.formCard}>
-          <div className={classes.content}>
-            <ScopeForm
-              scope={INITIAL_SCOPE}
-              scripts={scripts}
-              attributes={attributes}
-              handleSubmit={handleSubmit}
-              modifiedFields={modifiedFields}
-              setModifiedFields={setModifiedFields}
-            />
+        {hasLoadError ? (
+          <GluuAlert severity="error" message={t('messages.error_loading_data')} show={true} />
+        ) : (
+          <div className={classes.formCard}>
+            <div className={classes.content}>
+              <ScopeForm
+                scope={INITIAL_SCOPE}
+                scripts={scripts}
+                attributes={attributes}
+                handleSubmit={handleSubmit}
+                modifiedFields={modifiedFields}
+                setModifiedFields={setModifiedFields}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </GluuLoader>
     </GluuPageContent>
   )

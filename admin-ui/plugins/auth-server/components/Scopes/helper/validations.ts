@@ -21,12 +21,12 @@ export const getScopeValidationSchema = ({
     dynamicScopeScripts: stringArraySchema().when('scopeType', {
       is: (scopeType: string) => scopeType === 'dynamic',
       then: (schema) =>
-        schema.min(1, 'errors.scope_dynamic_scripts_required').required('errors.scope_dynamic_scripts_required'),
+        schema.min(1, 'errors.scope_dynamic_scripts_required'),
       otherwise: (schema) => schema.notRequired(),
     }),
     claims: stringArraySchema().when('scopeType', {
       is: (scopeType: string) => scopeType === 'openid' || scopeType === 'dynamic',
-      then: (schema) => schema.min(1, 'errors.scope_claims_required').required('errors.scope_claims_required'),
+      then: (schema) => schema.min(1, 'errors.scope_claims_required'),
       otherwise: (schema) => schema.notRequired(),
     }),
     umaAuthorizationPolicies: stringArraySchema().when('scopeType', {
@@ -34,7 +34,7 @@ export const getScopeValidationSchema = ({
       then: (schema) =>
         isExistingScope
           ? schema.notRequired()
-          : schema.min(1, 'errors.scope_uma_policies_required').required('errors.scope_uma_policies_required'),
+          : schema.min(1, 'errors.scope_uma_policies_required'),
       otherwise: (schema) => schema.notRequired(),
     }),
     iconUrl: Yup.string()

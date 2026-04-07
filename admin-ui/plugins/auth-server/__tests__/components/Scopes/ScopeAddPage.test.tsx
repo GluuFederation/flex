@@ -1,61 +1,48 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import ScopeEditPage from './ScopeEditPage'
+import ScopeAddPage from 'Plugins/auth-server/components/Scopes/ScopeAddPage'
 import { Provider } from 'react-redux'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 // Mock orval hooks
-jest.mock('JansConfigApi', () => {
-  const mockScopes = require('./scopes.test').default
-  return {
-    useGetOauthScopesByInum: jest.fn(() => ({
-      data: mockScopes[0],
-      isLoading: false,
-    })),
-    usePutOauthScopes: jest.fn(() => ({
-      mutateAsync: jest.fn(),
-      isPending: false,
-      isSuccess: false,
-      isError: false,
-    })),
-    useGetAttributes: jest.fn(() => ({
-      data: { entries: [] },
-      isLoading: false,
-    })),
-    useGetConfigScripts: jest.fn(() => ({
-      data: { entries: [] },
-      isLoading: false,
-    })),
-    useGetWebhooksByFeatureId: jest.fn(() => ({
-      data: [],
-      isLoading: false,
-    })),
-    getGetOauthScopesQueryKey: jest.fn(() => ['/api/v1/oauth/scopes']),
-  }
-})
+jest.mock('JansConfigApi', () => ({
+  usePostOauthScopes: jest.fn(() => ({
+    mutateAsync: jest.fn(),
+    isPending: false,
+    isSuccess: false,
+    isError: false,
+  })),
+  useGetAttributes: jest.fn(() => ({
+    data: { entries: [] },
+    isLoading: false,
+  })),
+  useGetConfigScripts: jest.fn(() => ({
+    data: { entries: [] },
+    isLoading: false,
+  })),
+  useGetWebhooksByFeatureId: jest.fn(() => ({
+    data: [],
+    isLoading: false,
+  })),
+  getGetOauthScopesQueryKey: jest.fn(() => ['/api/v1/oauth/scopes']),
+}))
 
 // Mock audit logger
-jest.mock('./hooks/useScopeActions', () => ({
+jest.mock('Plugins/auth-server/components/Scopes/hooks/useScopeActions', () => ({
   useScopeActions: jest.fn(() => ({
-    logScopeUpdate: jest.fn(),
+    logScopeCreation: jest.fn(),
     navigateToScopeList: jest.fn(),
     navigateToScopeAdd: jest.fn(),
     navigateToScopeEdit: jest.fn(),
   })),
 }))
 
-// Mock useParams
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useParams: () => ({ id: ':test-inum' }),
-}))
-
 const permissions = [
-  'https://jans.io/oauth/config/scopes.readonly',
-  'https://jans.io/oauth/config/scopes.write',
-  'https://jans.io/oauth/config/scopes.delete',
+  'https://jans.io/oauth/config/openid/clients.readonly',
+  'https://jans.io/oauth/config/openid/clients.write',
+  'https://jans.io/oauth/config/openid/clients.delete',
 ]
 const INIT_STATE = {
   permissions: permissions,
@@ -91,8 +78,8 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => (
   </QueryClientProvider>
 )
 
-it('Should render the scope edit page properly', () => {
-  render(<ScopeEditPage />, {
+it('Should render the scope add page properly', () => {
+  render(<ScopeAddPage />, {
     wrapper: Wrapper,
   })
   screen.getByText(/Display Name/)

@@ -14,6 +14,7 @@ import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './styles/ScopeFormPage.style'
+import { devLogger } from '@/utils/devLogger'
 
 const ScopeEditPage: React.FC = () => {
   const { t } = useTranslation()
@@ -82,7 +83,7 @@ const ScopeEditPage: React.FC = () => {
       try {
         await updateScope(data, modifiedFields)
       } catch (error) {
-        console.error('Error updating scope:', error)
+        devLogger.error('Error updating scope:', error)
         setErrorMessage(error instanceof Error ? error.message : t('messages.error_in_saving'))
       }
     },
@@ -94,11 +95,7 @@ const ScopeEditPage: React.FC = () => {
   return (
     <GluuPageContent>
       <GluuLoader blocking={loading}>
-        <GluuAlert
-          severity="error"
-          message={errorMessage || t('messages.error_in_saving')}
-          show={!!errorMessage}
-        />
+        <GluuAlert severity="error" message={errorMessage} show={!!errorMessage} />
         <div className={classes.formCard}>
           <div className={classes.content}>
             <ScopeForm

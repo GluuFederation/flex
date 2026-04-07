@@ -29,11 +29,6 @@ export interface ScopeClient {
 export interface ExtendedScope extends Scope {
   clients?: ScopeClient[]
   attributes?: ExtendedScopeAttributes
-  iconUrl?: string
-  umaAuthorizationPolicies?: string[]
-  creationDate?: string | Date
-  creatorType?: string
-  creatorId?: string
   spontaneousClientScopes?: string[]
 }
 

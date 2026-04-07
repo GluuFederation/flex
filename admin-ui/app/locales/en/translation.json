@@ -1001,6 +1001,8 @@
     "error_in_parsing_data": "Error parsing data.",
     "scope_created_successfully": "Scope created successfully.",
     "scope_updated_successfully": "Scope updated successfully.",
+    "scope_created_successfully_with_name": "Scope '{{name}}' created successfully",
+    "scope_updated_successfully_with_name": "Scope '{{name}}' updated successfully",
     "partial_update_failure": "Some configurations failed to update. Please review and try again.",
     "min_characters": "Minimum {{count}} characters",
     "field_required": "This field is required",
@@ -1964,7 +1966,6 @@
       "attributes": {
         "showInConfigurationEndpoint": "Show this scope In Configuration Endpoint"
       },
-      "showInConfigurationEndpoint": "Show this scope In Configuration Endpoint",
       "dynamicScopeScripts": "Dynamic Scope Scripts associated with the scope.",
       "umaType": "Specifies if the scope is of type UMA.",
       "id": "The unique id for the scope"

@@ -24,6 +24,8 @@ interface RootState {
   authReducer: AuthState
 }
 
+const toJsonValue = (value: Scope): JsonValue => JSON.parse(JSON.stringify(value)) as JsonValue
+
 export const useScopeActions = () => {
   const { navigateToRoute } = useAppNavigation()
   const authState = useSelector((state: RootState) => state.authReducer)
@@ -40,7 +42,7 @@ export const useScopeActions = () => {
         modifiedFields: modifiedFields as Record<string, JsonValue>,
         performedOn: scope.id || scope.inum,
         client_id,
-        payload: scope as unknown as JsonValue,
+        payload: toJsonValue(scope),
       })
     },
     [userinfo, client_id],
@@ -56,7 +58,7 @@ export const useScopeActions = () => {
         modifiedFields: modifiedFields as Record<string, JsonValue>,
         performedOn: scope.id || scope.inum,
         client_id,
-        payload: scope as unknown as JsonValue,
+        payload: toJsonValue(scope),
       })
     },
     [userinfo, client_id],
@@ -71,7 +73,7 @@ export const useScopeActions = () => {
         message,
         performedOn: scope.id || scope.inum,
         client_id,
-        payload: { inum: scope.inum, id: scope.id } as unknown as JsonValue,
+        payload: { inum: scope.inum ?? null, id: scope.id ?? null },
       })
     },
     [userinfo, client_id],

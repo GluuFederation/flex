@@ -27,6 +27,8 @@ import {
 } from 'JansConfigApi'
 import type { Scope } from 'JansConfigApi'
 import type { ScopeTableRow } from './types'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import { devLogger } from '@/utils/devLogger'
 import { useScopeActions, invalidateScopeQueries } from './hooks'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
@@ -202,12 +204,16 @@ const ScopeListPage: React.FC = () => {
 
       try {
         await deleteScope.mutateAsync({ inum: itemToDelete.inum })
-        dispatch(triggerWebhook({ createdFeatureValue: { ...itemToDelete } }))
+        dispatch(
+          triggerWebhook({
+            createdFeatureValue: { ...itemToDelete } as Record<string, JsonValue>,
+          }),
+        )
         await logScopeDeletion(itemToDelete, message)
         setModal(false)
         setItemToDelete(null)
       } catch (error) {
-        console.error('Error deleting scope:', error)
+        devLogger.error('Error deleting scope:', error)
       }
     },
     [itemToDelete, deleteScope, logScopeDeletion, dispatch],
@@ -516,7 +522,7 @@ const ScopeListPage: React.FC = () => {
       {
         label: 'fields.show_in_configuration_endpoint',
         value: row.attributes?.showInConfigurationEndpoint ? t('options.yes') : t('options.no'),
-        doc_entry: 'showInConfigurationEndpoint',
+        doc_entry: 'attributes.showInConfigurationEndpoint',
         doc_category: SCOPE,
         isBadge: true,
         badgeBackgroundColor: row.attributes?.showInConfigurationEndpoint

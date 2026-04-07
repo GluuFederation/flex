@@ -4,6 +4,20 @@ import type { GetAttributesParams } from 'JansConfigApi'
 import type { ScopeScript, ScopeClaim } from '../types'
 import { SCOPE_CACHE_CONFIG, DEFAULT_ATTRIBUTES_LIMIT } from '../constants'
 
+interface AttributeEntry {
+  dn?: string
+  name?: string
+  key?: string
+}
+
+interface ConfigScriptEntry {
+  dn?: string
+  name?: string
+  inum?: string
+  scriptType?: string
+  enabled?: boolean
+}
+
 export const useScopeAttributes = (params?: GetAttributesParams) => {
   const queryParams = useMemo<GetAttributesParams>(
     () => ({
@@ -29,9 +43,9 @@ export const useScopeAttributes = (params?: GetAttributesParams) => {
 
   const attributes = useMemo<ScopeClaim[]>(() => {
     if (!data?.entries) return []
-    return (data.entries as unknown as ScopeClaim[]).map((item) => ({
-      dn: item.dn,
-      name: item.name,
+    return (data.entries as AttributeEntry[]).map((item) => ({
+      dn: item.dn ?? '',
+      name: item.name ?? '',
       key: item.key,
     }))
   }, [data])
@@ -56,9 +70,9 @@ export const useScopeScripts = () => {
 
   const scripts = useMemo<ScopeScript[]>(() => {
     if (!data?.entries) return []
-    return (data.entries as unknown as ScopeScript[]).map((item) => ({
-      dn: item.dn,
-      name: item.name,
+    return (data.entries as ConfigScriptEntry[]).map((item) => ({
+      dn: item.dn ?? '',
+      name: item.name ?? '',
       inum: item.inum,
       scriptType: item.scriptType,
       enabled: item.enabled,

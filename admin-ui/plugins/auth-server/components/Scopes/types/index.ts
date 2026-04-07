@@ -21,10 +21,10 @@ export type {
   ScopeFormValues,
   ModifiedFields,
   ScopeFormSubmitData,
-  UserActionPayload,
 } from './formTypes'
 
 export type {
+  ScopeDetailPageProps,
   ScopeListPageProps,
   ScopeAddPageProps,
   ScopeEditPageProps,
