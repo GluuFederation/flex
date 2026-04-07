@@ -14,7 +14,7 @@ export default defineConfig({
       prettier: true,
       override: {
         mutator: {
-          path: './api-client.ts',
+          path: './orval-mutator.ts',
           name: 'customInstance',
         },
         query: {

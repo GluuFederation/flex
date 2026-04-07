@@ -2,34 +2,13 @@ import { Input } from 'Components'
 import GluuLabel from './GluuLabel'
 import GluuToogle from 'Routes/Apps/Gluu/GluuToogle'
 import PropTypes from 'prop-types'
-import { FormikProps } from 'formik'
+import type { FormikValues } from 'formik'
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { InputProps } from 'reactstrap'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
-import type { JsonValue } from './types/common'
-
-type ModifiedFieldValue = string | string[] | boolean
-type FormikValues = Record<string, JsonValue>
-
-interface GluuRemovableInputRowProps<TValues extends FormikValues = FormikValues> {
-  label: string
-  name: string
-  type?: InputProps['type']
-  value?: string | boolean
-  formik: FormikProps<TValues>
-  required?: boolean
-  lsize?: number
-  rsize?: number
-  handler: () => void
-  doc_category?: string
-  isDirect?: boolean
-  isBoolean?: boolean
-  hideRemoveButton?: boolean
-  modifiedFields: Record<string, ModifiedFieldValue>
-  setModifiedFields: React.Dispatch<React.SetStateAction<Record<string, ModifiedFieldValue>>>
-}
+import { useStyles } from './styles/GluuRemovableInputRow.style'
+import type { GluuRemovableInputRowProps } from './types'
 
 const GluuRemovableInputRow = <TValues extends FormikValues = FormikValues>({
   label,
@@ -50,6 +29,7 @@ const GluuRemovableInputRow = <TValues extends FormikValues = FormikValues>({
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
+  const { classes } = useStyles({ fontColor: themeColors.fontColor })
   const currentValue = formik.values[name as keyof TValues] as string | boolean | undefined
   const isChecked = (formik.values[name as keyof TValues] as boolean | undefined) ?? false
 
@@ -57,29 +37,16 @@ const GluuRemovableInputRow = <TValues extends FormikValues = FormikValues>({
     <button
       type="button"
       aria-label={t('actions.remove')}
-      style={{
-        width: 32,
-        height: 32,
-        minWidth: 32,
-        minHeight: 32,
-        padding: 6,
-        background: 'transparent',
-        border: 'none',
-        boxShadow: 'none',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexShrink: 0,
-      }}
+      className={classes.removeButton}
       onClick={handler}
     >
-      <i className={'fa fa-fw fa-close'} style={{ color: themeColors.fontColor, fontSize: 16 }} />
+      <i className={`fa fa-fw fa-close ${classes.removeIcon}`} />
     </button>
   )
 
   if (isBoolean) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+      <div className={classes.booleanRow}>
         <GluuLabel
           label={label}
           size={3}
@@ -101,13 +68,13 @@ const GluuRemovableInputRow = <TValues extends FormikValues = FormikValues>({
             formik.setFieldValue(name, e.target.checked)
           }}
         />
-        {!hideRemoveButton && <div style={{ marginLeft: 'auto' }}>{removeButton}</div>}
+        {!hideRemoveButton && <div className={classes.booleanRemoveWrapper}>{removeButton}</div>}
       </div>
     )
   }
 
   return (
-    <div style={{ width: '100%' }}>
+    <div className={classes.inputWrapper}>
       <GluuLabel
         label={label}
         size={lsize}
@@ -116,13 +83,13 @@ const GluuRemovableInputRow = <TValues extends FormikValues = FormikValues>({
         doc_entry={name}
         isDirect={isDirect}
       />
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+      <div className={classes.inputRow}>
         <Input
           id={name}
           data-testid={name}
           type={type}
           name={name}
-          style={{ flex: 1, minWidth: 0 }}
+          className={classes.input}
           value={(currentValue as string) ?? (value as string) ?? ''}
           onChange={(e) => {
             setModifiedFields({

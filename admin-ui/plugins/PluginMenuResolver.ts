@@ -1,17 +1,5 @@
 import plugins from '../plugins.config.json'
-
-type PluginMenu = {
-  title?: string
-  icon?: string
-  path?: string
-  order?: number
-  children?: PluginMenu[]
-}
-
-type PluginRoute = {
-  path: string
-  component: React.ComponentType
-}
+import { loadPluginMetadata, type PluginMenu, type PluginRoute } from './internal'
 
 export const processMenus = async (): Promise<PluginMenu[]> => {
   let pluginMenus: PluginMenu[] = []
@@ -74,8 +62,7 @@ export const processMenusSync = (): PluginMenu[] => {
   let pluginMenus: PluginMenu[] = []
   plugins.forEach((item) => {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      pluginMenus.push(...(require(`${item.metadataFile}`).default?.menus || []))
+      pluginMenus.push(...(loadPluginMetadata(item.metadataFile).default?.menus || []))
     } catch (error) {
       console.warn(`Failed to load plugin menus: ${item.metadataFile}`, error)
     }
@@ -88,8 +75,7 @@ export const processRoutesSync = (): PluginRoute[] => {
   const pluginRoutes: PluginRoute[] = []
   plugins.forEach((item) => {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      pluginRoutes.push(...(require(`${item.metadataFile}`).default?.routes || []))
+      pluginRoutes.push(...(loadPluginMetadata(item.metadataFile).default?.routes || []))
     } catch (error) {
       console.warn(`Failed to load plugin routes: ${item.metadataFile}`, error)
     }

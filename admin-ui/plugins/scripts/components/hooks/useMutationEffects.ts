@@ -61,13 +61,13 @@ export const useMutationEffects = <
       const error = mutation.error
       const axiosData =
         error && typeof error === 'object' && 'response' in error
-          ? (error as { response?: { data?: unknown } }).response?.data
+          ? (error as { response?: { data?: string | { message?: string } } }).response?.data
           : undefined
       const responseMessage =
         typeof axiosData === 'string'
           ? axiosData
           : axiosData && typeof axiosData === 'object' && 'message' in axiosData
-            ? String((axiosData as { message: string }).message)
+            ? String(axiosData.message)
             : undefined
       const errorMsg =
         responseMessage || (error instanceof Error ? error.message : undefined) || t(errorMessage)

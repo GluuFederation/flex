@@ -5,25 +5,7 @@ import { useAppSelector } from '@/redux/hooks'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useWebhookDialogAction } from 'Utils/hooks'
-import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
-
-type GluuWebhookCommitDialogProps = {
-  handler: () => void
-  modal: boolean
-  onAccept: (message: string) => void | Promise<void>
-  formik?: {
-    setFieldValue: (
-      field: string,
-      value: string,
-      shouldValidate?: boolean,
-    ) => void | Promise<unknown>
-  } | null
-  operations?: GluuCommitDialogOperation[]
-  webhookFeature: string
-  autoCloseOnAccept?: boolean
-  alertMessage?: string
-  alertSeverity?: 'error' | 'warning' | 'info' | 'success'
-}
+import { GluuWebhookCommitDialogProps } from './types'
 
 const GluuWebhookCommitDialog: React.FC<GluuWebhookCommitDialogProps> = ({
   handler,

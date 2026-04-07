@@ -39,6 +39,7 @@ export interface AgamaJsonPatch {
   op: 'add' | 'remove' | 'replace'
   path: string
   value?: Record<string, string>
+  [key: string]: unknown
 }
 
 export interface AgamaJsonPatchRequestBody {

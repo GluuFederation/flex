@@ -64,10 +64,8 @@ export function formatDate(date?: string): string {
 }
 
 export const trimObjectStrings = <T extends object>(obj: T): T => {
-  const source = obj as unknown as Record<string, unknown>
   const trimmed: Record<string, unknown> = {}
-  for (const key in source) {
-    const value = source[key]
+  for (const [key, value] of Object.entries(obj)) {
     if (typeof value === 'string') {
       trimmed[key] = value.trim()
     } else if (value && typeof value === 'object' && !Array.isArray(value)) {

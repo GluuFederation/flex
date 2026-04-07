@@ -19,7 +19,7 @@ export interface LogAuditParams {
   extra?: Record<string, JsonValue>
   status?: string
   client_id?: string
-  payload?: JsonValue
+  payload?: object | string | number | boolean | null
 }
 
 export async function logAuditUserAction({

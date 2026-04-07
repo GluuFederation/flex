@@ -67,9 +67,9 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
         // Plugin chunks - each plugin gets its own chunk
         plugins: {
           test: /[\\/]plugins[\\/]/,
-          name: (module: any) => {
-            const context = (module && module.context) || ''
-            const match = context && context.match(/[\\/]plugins[\\/]([^\\/]+)[\\/]/)
+          name: (module: webpack.Module) => {
+            const context = module.context ?? ''
+            const match = context.match(/[\\/]plugins[\\/]([^\\/]+)[\\/]/)
             return match && match[1] ? `plugin-${match[1]}` : 'plugin-common'
           },
           chunks: 'all',

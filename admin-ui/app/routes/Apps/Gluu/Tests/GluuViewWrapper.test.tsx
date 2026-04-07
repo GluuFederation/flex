@@ -19,7 +19,9 @@ it('Check view wrapper with show', () => {
 it('Check view wrapper with no show', () => {
   render(
     <I18nextProvider i18n={i18n}>
-      <GluuViewWrapper />
+      <GluuViewWrapper>
+        <p>hidden content</p>
+      </GluuViewWrapper>
     </I18nextProvider>,
   )
   expect(screen.getByTestId('MISSING')).toHaveTextContent('Missing required permission')

@@ -92,7 +92,7 @@ export const useLicenseDetails = (options: UseLicenseDetailsOptions = {}) => {
         dispatch(updateToast(true, 'success', t('messages.license_reset_success')))
         onResetSuccessRef.current?.()
       },
-      onError: (error: unknown) => {
+      onError: (error: Error) => {
         if (isFourZeroThreeError(error as Parameters<typeof isFourZeroThreeError>[0])) {
           dispatch(auditLogoutLogs({ message: 'Session expired' }))
           return

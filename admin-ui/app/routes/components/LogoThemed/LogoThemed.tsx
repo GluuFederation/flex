@@ -4,12 +4,7 @@ import { ThemeContext } from '@/context/theme/themeContext'
 import { THEME_DARK, THEME_LIGHT, DEFAULT_THEME } from '@/context/theme/constants'
 import logoImage from '../../../images/logos/logo192.png'
 
-interface LogoThemedProps {
-  className?: string
-  width?: string | number
-  height?: string | number
-  [key: string]: unknown
-}
+type LogoThemedProps = Omit<React.ImgHTMLAttributes<HTMLImageElement>, 'src' | 'alt' | 'style'>
 
 const LOGO_FILTERS = {
   [THEME_DARK]: 'brightness(0) invert(1)',
