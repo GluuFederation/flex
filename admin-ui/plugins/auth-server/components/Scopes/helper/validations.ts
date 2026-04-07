@@ -22,8 +22,7 @@ export const getScopeValidationSchema = ({
     scopeType: Yup.string().trim().required('errors.scope_type_required'),
     dynamicScopeScripts: stringArraySchema().when('scopeType', {
       is: (scopeType: string) => scopeType === 'dynamic',
-      then: (schema) =>
-        schema.min(1, 'errors.scope_dynamic_scripts_required'),
+      then: (schema) => schema.min(1, 'errors.scope_dynamic_scripts_required'),
       otherwise: (schema) => schema.notRequired(),
     }),
     claims: stringArraySchema().when('scopeType', {
@@ -46,7 +45,9 @@ export const getScopeValidationSchema = ({
         then: (schema) =>
           isExistingScope
             ? schema.notRequired()
-            : schema.required('errors.scope_icon_url_required').url('errors.scope_icon_url_invalid'),
+            : schema
+                .required('errors.scope_icon_url_required')
+                .url('errors.scope_icon_url_invalid'),
         otherwise: (schema) => schema.notRequired(),
       }),
   })

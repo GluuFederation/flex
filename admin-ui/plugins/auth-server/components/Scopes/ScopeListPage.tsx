@@ -20,16 +20,12 @@ import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { updateToast } from 'Redux/features/toastSlice'
 import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
 import { useQueryClient } from '@tanstack/react-query'
-import {
-  useGetOauthScopes,
-  useDeleteOauthScopesByInum,
-  getGetOauthScopesQueryKey,
-} from 'JansConfigApi'
+import { useDeleteOauthScopesByInum } from 'JansConfigApi'
 import type { Scope } from 'JansConfigApi'
 import type { ScopeTableRow } from './types'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { devLogger } from '@/utils/devLogger'
-import { useScopeActions, invalidateScopeQueries } from './hooks'
+import { useScopes, useScopeActions, invalidateScopeQueries } from './hooks'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useDebounce } from '@/utils/hooks/useDebounce'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
@@ -135,23 +131,7 @@ const ScopeListPage: React.FC = () => {
     [limit, startIndex, debouncedPattern, scopeType, sortBy],
   )
 
-  const scopesQueryOptions = useMemo(
-    () => ({
-      query: {
-        refetchOnMount: 'always' as const,
-        refetchOnWindowFocus: false,
-        refetchOnReconnect: true,
-        staleTime: 30000,
-      },
-    }),
-    [],
-  )
-
-  const {
-    data: scopesResponse,
-    isLoading,
-    isFetching,
-  } = useGetOauthScopes(scopesQueryParams, scopesQueryOptions)
+  const { data: scopesResponse, isLoading, refetch } = useScopes(scopesQueryParams)
 
   const deleteScope = useDeleteOauthScopesByInum({
     mutation: {
@@ -240,10 +220,8 @@ const ScopeListPage: React.FC = () => {
     setScopeType('')
     setSortBy(DEFAULT_SCOPE_SORT_BY)
     setPageNumber(0)
-    queryClient.invalidateQueries({
-      predicate: (query) => query.queryKey[0] === getGetOauthScopesQueryKey()[0],
-    })
-  }, [queryClient, setPageNumber])
+    refetch()
+  }, [refetch, setPageNumber])
 
   const handleScopeTypeChange = useCallback(
     (value: string) => {
@@ -600,8 +578,8 @@ const ScopeListPage: React.FC = () => {
   }, [pattern, scopes.length, t])
 
   const loading = useMemo(
-    () => isLoading || isFetching || deleteScope.isPending,
-    [isLoading, isFetching, deleteScope.isPending],
+    () => isLoading || deleteScope.isPending,
+    [isLoading, deleteScope.isPending],
   )
 
   return (
@@ -619,7 +597,7 @@ const ScopeListPage: React.FC = () => {
                 onSearchSubmit={handleSearchSubmit}
                 filters={filters}
                 onRefresh={canRead ? handleRefresh : undefined}
-                refreshLoading={isLoading || isFetching}
+                refreshLoading={isLoading}
                 primaryAction={primaryAction}
                 disabled={loading}
               />

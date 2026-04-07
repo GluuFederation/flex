@@ -1,8 +1,24 @@
 import { useMemo } from 'react'
-import { useGetAttributes, useGetConfigScripts } from 'JansConfigApi'
-import type { GetAttributesParams } from 'JansConfigApi'
+import { useGetAttributes, useGetConfigScripts, useGetOauthScopes } from 'JansConfigApi'
+import type { GetAttributesParams, GetOauthScopesParams } from 'JansConfigApi'
 import type { ScopeScript, ScopeClaim } from '../types'
 import { SCOPE_CACHE_CONFIG, DEFAULT_ATTRIBUTES_LIMIT } from '../constants'
+
+export const useScopes = (params: GetOauthScopesParams) => {
+  const queryOptions = useMemo(
+    () => ({
+      query: {
+        staleTime: SCOPE_CACHE_CONFIG.staleTime,
+        gcTime: SCOPE_CACHE_CONFIG.gcTime,
+        refetchOnWindowFocus: false,
+        retry: false,
+      },
+    }),
+    [],
+  )
+
+  return useGetOauthScopes(params, queryOptions)
+}
 
 interface AttributeEntry {
   dn?: string
