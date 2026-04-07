@@ -3,18 +3,7 @@ import { FormGroup, Label } from 'Components'
 import { Button, Grid } from '@mui/material'
 import GluuTooltip from './GluuTooltip'
 import { VisibilityOutlined } from '@mui/icons-material'
-import type { JsonValue } from './types/common'
-
-interface GluuFormActionRowProps {
-  label: string
-  value?: JsonValue
-  lsize?: number
-  rsize?: number
-  doc_category?: string
-  doc_entry?: string
-  isDirect?: boolean
-  onActionClick?: (value: JsonValue) => void
-}
+import type { GluuFormActionRowProps } from './types'
 
 function GluuFormActionRow({
   label,

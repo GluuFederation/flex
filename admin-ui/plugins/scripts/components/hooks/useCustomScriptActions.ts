@@ -11,6 +11,7 @@ import {
   useDeleteCustomScript,
   useCustomScriptTypes,
 } from './useCustomScriptApi'
+import type { LegacyScriptAction } from '../types'
 
 export const useCustomScriptActions = () => {
   const queryClient = useQueryClient()
@@ -58,13 +59,6 @@ export const useCustomScriptActions = () => {
     refetchScripts,
     refetchScriptsByType,
   }
-}
-
-interface LegacyScriptAction {
-  type: string
-  limit?: number
-  pattern?: string
-  startIndex?: number
 }
 
 export const useCustomScriptLegacyActions = () => {

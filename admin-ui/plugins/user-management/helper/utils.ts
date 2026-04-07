@@ -4,40 +4,18 @@ import { logAuditUserAction } from 'Utils/AuditLogger'
 import { triggerWebhookForFeature } from '@/utils/triggerWebhookForFeature'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
-import type { CaughtError, ApiErrorLike } from '../types/ErrorTypes'
+import type { AuditLog, AuditPayload, CaughtError, ApiErrorLike } from '../types'
 import { FETCH, DELETION, UPDATE, CREATE } from '../../../app/audit/UserActionType'
 import { API_USERS } from '../../../app/audit/Resources'
 import { CustomUser } from '../types/UserApiTypes'
 import { USER_PASSWORD_ATTR } from '../common/Constants'
 
-export interface AuditLog {
-  client_id?: string
-  ip_address?: string
-  status?: string
-  performedBy?: {
-    user_inum: string
-    userId: string
-  }
-  message?: string
-}
+export type { AuditLog, AuditPayload }
 
 const SENSITIVE_CUSTOM_ATTRS: string[] = [USER_PASSWORD_ATTR]
 
 const isSensitiveCustomAttr = (name?: string): boolean => {
   return !!name && SENSITIVE_CUSTOM_ATTRS.includes(name)
-}
-
-export interface AuditPayload extends CustomUser {
-  modifiedFields?: Record<string, string | string[] | boolean>
-  performedOn?: {
-    user_inum?: string
-    userId?: string
-  }
-  action_message?: string
-  message?: string
-  userPassword?: string
-  userConfirmPassword?: string
-  jsonPatchString?: string
 }
 
 const redactSensitiveData = (payload: AuditPayload): void => {
@@ -217,23 +195,7 @@ export const logPasswordChange = async (
   }
 }
 
-export interface ErrorResponse {
-  response?: {
-    status?: number
-    data?: {
-      message?: string
-      description?: string
-      error_description?: string
-    }
-    body?: {
-      description?: string
-      message?: string
-      error_description?: string
-    }
-    text?: string
-  }
-  message?: string
-}
+export type { ErrorResponse } from '../types'
 
 const pickFirstString = (...values: Array<string | undefined>): string | undefined => {
   for (const value of values) {

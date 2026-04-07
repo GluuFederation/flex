@@ -16,7 +16,7 @@ import type {
 const MAX_STRING_LENGTH = 500
 const MAX_DEPTH = 5
 
-function sanitizeValue(value: unknown, depth: number): unknown {
+const sanitizeValue = (value: unknown, depth: number): unknown => {
   if (depth > MAX_DEPTH) return '[REDACTED]'
   if (value === null || value === undefined) return value
   if (typeof value === 'number' || typeof value === 'boolean') return value
@@ -35,9 +35,9 @@ function sanitizeValue(value: unknown, depth: number): unknown {
   return '[REDACTED]'
 }
 
-function sanitizeActionData(
+const sanitizeActionData = (
   data: Record<string, unknown> | null | undefined,
-): AssetAuditActionData | undefined {
+): AssetAuditActionData | undefined => {
   if (data === null || data === undefined) return undefined
   const sanitized = sanitizeValue(data, 0)
   return typeof sanitized === 'object' && sanitized !== null && !Array.isArray(sanitized)

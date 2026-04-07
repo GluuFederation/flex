@@ -1,20 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
-
-interface GluuViewDetailModalProps {
-  isOpen: boolean
-  handleClose: () => void
-  children: React.ReactNode
-  hideFooter?: boolean
-  title?: string
-  contentClassName?: string
-  contentStyle?: React.CSSProperties
-  headerClassName?: string
-  headerStyle?: React.CSSProperties
-  modalClassName?: string
-  modalStyle?: React.CSSProperties
-  customHeader?: React.ReactNode
-}
+import type { GluuViewDetailModalProps } from './types'
 
 const GluuViewDetailModal = ({
   children,

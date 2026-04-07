@@ -1,18 +1,5 @@
 import { getRootState } from '@/redux/hooks'
-
-interface JansApiClient {
-  instance: {
-    timeout: number
-    authentications: Record<string, { accessToken: string | undefined }>
-    basePath: string
-    enableCookies: boolean
-    defaultHeaders: Record<string, string>
-  }
-}
-
-interface JansConfigApiModule {
-  ApiClient: JansApiClient
-}
+import type { JansApiClient, JansConfigApiModule } from './types/JansApiClient'
 
 export const getClient = (
   JansConfigApi: JansConfigApiModule,

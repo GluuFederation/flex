@@ -3,44 +3,22 @@ import { useSelector } from 'react-redux'
 import { postUserAction } from 'Redux/api/backend-api'
 import type { UserActionPayload } from 'Redux/api/types/BackendApi'
 import { addAdditionalData } from 'Utils/TokenController'
-import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { CREATE, UPDATE, DELETION, FETCH } from '@/audit/UserActionType'
-import type { WebhookEntry } from '../types'
-
-interface AuthState {
-  config: { clientId: string }
-  location: { IPv4: string }
-  userinfo: { name: string; inum: string } | null
-}
-
-interface RootState {
-  authReducer: AuthState
-}
-
-type ActionType = typeof CREATE | typeof UPDATE | typeof DELETION | typeof FETCH
-
-type AuditInit = {
-  client_id: string
-  ip_address: string
-  status: string
-  performedBy: { user_inum: string; userId: string }
-  [key: string]: JsonValue | { user_inum: string; userId: string } | undefined
-}
-
-type ActionData = Record<string, string | number | boolean | object | null>
-
-interface LogActionPayload {
-  action_message?: string
-  action_data?: WebhookEntry | { inum: string }
-}
+import type {
+  WebhookAuditActionData,
+  WebhookAuditActionType,
+  WebhookAuditInit,
+  WebhookAuditLogActionPayload,
+  WebhookAuditRootState,
+} from '../types'
 
 export const useWebhookAudit = () => {
-  const clientId = useSelector((state: RootState) => state.authReducer.config.clientId)
-  const ipAddress = useSelector((state: RootState) => state.authReducer.location.IPv4)
-  const userinfo = useSelector((state: RootState) => state.authReducer.userinfo)
+  const clientId = useSelector((state: WebhookAuditRootState) => state.authReducer.config.clientId)
+  const ipAddress = useSelector((state: WebhookAuditRootState) => state.authReducer.location.IPv4)
+  const userinfo = useSelector((state: WebhookAuditRootState) => state.authReducer.userinfo)
 
   const initAudit = useCallback(
-    (): AuditInit => ({
+    (): WebhookAuditInit => ({
       client_id: clientId,
       ip_address: ipAddress,
       status: 'success',
@@ -53,12 +31,16 @@ export const useWebhookAudit = () => {
   )
 
   const logAction = useCallback(
-    async (actionType: ActionType, resource: string, payload: LogActionPayload) => {
+    async (
+      actionType: WebhookAuditActionType,
+      resource: string,
+      payload: WebhookAuditLogActionPayload,
+    ) => {
       const audit = initAudit()
       addAdditionalData(audit, actionType, resource, {
         action: {
           action_message: payload.action_message,
-          action_data: payload.action_data as ActionData,
+          action_data: payload.action_data as WebhookAuditActionData,
         },
       })
       await postUserAction(audit as UserActionPayload)

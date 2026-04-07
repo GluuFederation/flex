@@ -10,11 +10,8 @@ import {
 } from 'JansConfigApi'
 import { logAudit } from 'Utils/AuditLogger'
 import { fidoConstants, createFidoConfigPayload, getModifiedFields } from '../helper'
-import type {
-  DynamicConfigFormValues,
-  StaticConfigFormValues,
-  ApiErrorResponse,
-} from '../types/fido'
+import type { ApiErrorResponse } from '../types/fido'
+import type { UpdateFidoParams } from '../types'
 import { DEFAULT_STALE_TIME, DEFAULT_GC_TIME } from 'Utils/queryUtils'
 
 const FIDO_CACHE_CONFIG = {
@@ -32,12 +29,6 @@ export function useFidoConfig() {
       gcTime: FIDO_CACHE_CONFIG.GC_TIME,
     },
   })
-}
-
-interface UpdateFidoParams {
-  data: DynamicConfigFormValues | StaticConfigFormValues
-  type: string
-  userMessage?: string
 }
 
 export function useUpdateFidoConfig() {

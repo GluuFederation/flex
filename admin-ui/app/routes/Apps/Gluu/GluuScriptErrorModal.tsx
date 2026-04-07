@@ -9,13 +9,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { devLogger } from '@/utils/devLogger'
-
-interface GluuScriptErrorModalProps {
-  title?: string
-  error: string
-  isOpen: boolean
-  handler: () => void
-}
+import type { GluuScriptErrorModalProps } from './types'
 
 const GluuScriptErrorModal = ({
   title = 'Error',

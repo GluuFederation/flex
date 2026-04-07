@@ -30,15 +30,9 @@ import {
   isPatchNoOp,
   hasConfigurationChanges,
 } from 'Plugins/auth-server/common/propertiesUtils'
-import type { ApiAppConfiguration, JsonPatch } from './types'
+import type { ApiAppConfiguration, ConfigApiPropertiesFormProps, JsonPatch } from './types'
 import type { AppConfiguration, PropertyValue } from '../AuthServerProperties/types'
 import { useStyles } from './styles/ConfigApiPropertiesForm.style'
-
-interface ConfigApiPropertiesFormProps {
-  configuration: ApiAppConfiguration
-  onSubmit: (patches: JsonPatch[], message: string) => Promise<void>
-  search?: string
-}
 
 const CONFIG_API_RESOURCE_ID = ADMIN_UI_RESOURCES.ConfigApiConfiguration
 const configApiScopes = CEDAR_RESOURCE_SCOPES[CONFIG_API_RESOURCE_ID] || []

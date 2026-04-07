@@ -4,39 +4,8 @@ import GluuTooltip from './GluuTooltip'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import applicationStyle from './styles/applicationStyle'
 import customColors from '@/customColors'
-import { FormikProps } from 'formik'
 import React from 'react'
-
-type FormikFieldValue = string | string[] | boolean | null | undefined
-type ModifiedFieldValue = string | string[] | boolean
-
-type TypeaheadOptionObject = {
-  role?: string
-  customOption?: boolean
-  label?: string
-  [key: string]: string | number | boolean | null | undefined | string[]
-}
-
-type TypeaheadOption = string | TypeaheadOptionObject
-type FormikValues = Record<string, FormikFieldValue>
-
-interface GluuRemovableTypeAheadProps {
-  label: string
-  name: string
-  value?: TypeaheadOption[]
-  formik: FormikProps<FormikValues>
-  lsize?: number
-  rsize?: number
-  handler: () => void
-  doc_category?: string
-  options?: TypeaheadOption[]
-  isDirect?: boolean
-  allowNew?: boolean
-  modifiedFields?: Record<string, ModifiedFieldValue>
-  setModifiedFields?: React.Dispatch<React.SetStateAction<Record<string, ModifiedFieldValue>>>
-  disabled?: boolean
-  placeholder?: string
-}
+import type { GluuRemovableTypeAheadProps, TypeaheadOption } from './types'
 
 const extractValueFromOption = (item: TypeaheadOption, fieldName: string): string | null => {
   if (typeof item === 'string') {

@@ -7,14 +7,9 @@ import { invalidateQueriesByKey } from '@/utils/queryUtils'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useAssetAudit, DELETION } from './useAssetAudit'
 import { T_KEYS } from '../constants'
+import type { AssetApiError, AssetMutationError } from '../types'
 
-interface AssetApiError {
-  response?: { data?: { responseMessage?: string } }
-}
-
-type MutationError = Error | AssetApiError
-
-const extractAssetErrorMessage = (error: MutationError, fallback: string): string =>
+const extractAssetErrorMessage = (error: AssetMutationError, fallback: string): string =>
   (error as AssetApiError)?.response?.data?.responseMessage || (error as Error)?.message || fallback
 
 export const useDeleteAssetWithAudit = (callbacks?: {
@@ -46,7 +41,7 @@ export const useDeleteAssetWithAudit = (callbacks?: {
         callbacksRef.current?.onSuccess?.()
         return result
       } catch (error) {
-        const err = error as MutationError
+        const err = error as AssetMutationError
         dispatch(
           updateToast(
             true,

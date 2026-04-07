@@ -1,8 +1,5 @@
-import { FormikProps } from 'formik'
-import { TFunction } from 'i18next'
 import { UserPatchRequest } from 'JansConfigApi'
 import { CustomUser } from './UserApiTypes'
-import { UserEditFormValues } from './ComponentTypes'
 import { PersonAttribute } from './UserApiTypes'
 
 export type ExtendedCustomUser = CustomUser & {
@@ -20,17 +17,7 @@ export type PasswordPatchPayload = UserPatchRequest & {
   message: string
 }
 
-export interface PasswordChangeModalProps {
-  isOpen: boolean
-  toggle: () => void
-  formik: FormikProps<UserEditFormValues>
-  passwordError: string
-  selectedTheme: string
-  t: TFunction
-  onPasswordChange: () => void
-}
-
-export interface AvailableClaimsPanelProps {
+export type AvailableClaimsPanelProps = {
   searchClaims: string
   setSearchClaims: (value: string) => void
   personAttributes: PersonAttribute[]

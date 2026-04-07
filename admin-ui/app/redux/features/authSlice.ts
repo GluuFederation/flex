@@ -1,17 +1,7 @@
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { BackendStatus, UserInfo, Config, Location, AuthState } from './types/authTypes'
-
-interface ApiTokenPayload {
-  access_token?: string
-  issuer?: string
-  scopes?: string[]
-}
-
-interface PutConfigMeta {
-  cedarlingLogTypeChanged?: boolean
-  toastMessage?: string
-}
+import type { ApiTokenPayload, PutConfigMeta } from './types'
 
 const initialState: AuthState = {
   isAuthenticated: false,

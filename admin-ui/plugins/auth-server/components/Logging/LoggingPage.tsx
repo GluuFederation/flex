@@ -23,9 +23,8 @@ import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
-import type { Logging } from 'JansConfigApi'
 import { loggingValidationSchema } from './validations'
-import type { ChangedFields } from './types'
+import type { PendingValues } from './types'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import { GluuPageContent } from '@/components'
@@ -42,11 +41,6 @@ const FORM_STYLE: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
   minHeight: '100%',
-}
-
-interface PendingValues {
-  mergedValues: Logging
-  changedFields: ChangedFields<Logging>
 }
 
 const LoggingPage = (): React.ReactElement => {

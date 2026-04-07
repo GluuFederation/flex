@@ -1,34 +1,10 @@
 import GluuLabel from './GluuLabel'
 import { CustomInput, InputGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
-import { FormikProps } from 'formik'
 import React, { useMemo } from 'react'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
-import type { JsonValue } from './types/common'
-
-type ModifiedFieldValue = string | string[] | boolean
-type FormikValues = Record<string, JsonValue>
-
-interface CountryOption {
-  name: string
-  cca2: string
-}
-
-interface GluuRemovableSelectRowProps {
-  label: string
-  name: string
-  value?: string
-  formik: FormikProps<FormikValues>
-  values?: CountryOption[]
-  lsize?: number
-  handler: () => void
-  doc_category?: string
-  isDirect?: boolean
-  hideRemoveButton?: boolean
-  modifiedFields: Record<string, ModifiedFieldValue>
-  setModifiedFields: React.Dispatch<React.SetStateAction<Record<string, ModifiedFieldValue>>>
-}
+import type { GluuRemovableSelectRowProps } from './types'
 
 const GluuRemovableSelectRow = ({
   label,

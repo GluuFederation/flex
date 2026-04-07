@@ -4,7 +4,7 @@ import type { FormikErrors, FormikTouched } from 'formik'
 import type { ApiAppConfiguration } from './configApiTypes'
 import { Accordion } from 'Components'
 
-export interface JsonPropertyBuilderConfigApiProps {
+export type JsonPropertyBuilderConfigApiProps = {
   propKey: string
   propValue: PropertyValue
   lSize: number
@@ -18,6 +18,12 @@ export interface JsonPropertyBuilderConfigApiProps {
   disabled?: boolean
   errors?: FormikErrors<ApiAppConfiguration>
   touched?: FormikTouched<ApiAppConfiguration>
+}
+
+export type ConfigApiPropertiesFormProps = {
+  configuration: ApiAppConfiguration
+  onSubmit: (patches: JsonPatch[], message: string) => Promise<void>
+  search?: string
 }
 
 export type AccordionWithSubComponents = typeof Accordion & {

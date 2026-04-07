@@ -20,7 +20,7 @@ import {
   UserPatchRequest,
   useRevokeUserSession,
 } from 'JansConfigApi'
-import type { CaughtError } from '../types/ErrorTypes'
+import type { CaughtError, PasswordChangeFormValues, PasswordChangeModalProps } from '../types'
 import {
   getPasswordChangeValidationSchema,
   logPasswordChange,
@@ -31,19 +31,6 @@ import { CustomUser } from '../types/UserApiTypes'
 import { AXIOS_INSTANCE } from '../../../api-client'
 import { useStyles as useCommitDialogStyles } from 'Routes/Apps/Gluu/styles/GluuCommitDialog.style'
 import { usePasswordModalStyles } from './PasswordChangeModal.style'
-
-interface PasswordChangeFormValues {
-  userPassword: string
-  userConfirmPassword: string
-}
-
-interface PasswordChangeModalProps {
-  isOpen: boolean
-  toggle: () => void
-  selectedTheme: string
-  userDetails: CustomUser | null
-  onSuccess?: () => void
-}
 
 const PasswordChangeModal = ({
   isOpen,

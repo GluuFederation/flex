@@ -32,7 +32,6 @@ import {
   type SagaErrorShape,
 } from './types/common'
 import type { RootState } from 'Redux/sagas/types'
-import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type {
   WebhookEntry,
   TriggerWebhookSagaPayload,

@@ -1,29 +1,11 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { Button, Divider } from 'Components'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import { Box } from '@mui/material'
-
-interface GluuCommitFooterProps {
-  extraOnClick?: () => void
-  saveHandler?: () => void
-  extraLabel?: string
-  hideButtons?: {
-    save?: boolean
-    back?: boolean
-  }
-  disableButtons?: {
-    save?: boolean
-    back?: boolean
-  }
-  type?: 'button' | 'submit'
-  disableBackButton?: boolean
-  cancelHandler?: () => void
-  backButtonLabel?: string
-  backButtonHandler?: () => void
-}
+import type { GluuCommitFooterProps } from './types'
 
 function GluuCommitFooter({
   extraOnClick,

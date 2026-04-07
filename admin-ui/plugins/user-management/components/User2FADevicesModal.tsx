@@ -21,24 +21,17 @@ import { formatDate } from '@/utils/dayjsUtils'
 import UserDeviceDetailViewPage from './UserDeviceDetailViewPage'
 import {
   DeviceData,
-  UserTableRowData,
   CustomAttribute,
   OTPDevicesData,
   OTPDevice,
   FidoRegistrationEntry,
   CustomUser,
+  User2FADevicesModalProps,
 } from '../types'
 import type { CaughtError } from '../types/ErrorTypes'
 import { getErrorMessage, logUserUpdate } from '../helper'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './User2FADevicesModal.style'
-
-interface User2FADevicesModalProps {
-  isOpen: boolean
-  onClose: () => void
-  userDetails: UserTableRowData | null
-  theme: string
-}
 
 const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADevicesModalProps) => {
   const { t } = useTranslation()

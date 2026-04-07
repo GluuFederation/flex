@@ -7,25 +7,7 @@ import customColors from '@/customColors'
 import { useAppNavigation } from '@/helpers/navigation'
 import { useTheme } from '@/context/theme/themeContext'
 import { THEME_DARK } from '@/context/theme/constants'
-
-interface NamedTab {
-  name: string
-  path?: string | null
-}
-
-interface NavigationTab extends NamedTab {
-  path: string
-}
-
-type TabItem = string | NamedTab
-
-interface TabPanelProps {
-  children?: React.ReactNode
-  value: number
-  px?: number
-  py?: number
-  index: number
-}
+import type { GluuTabsProps, NavigationTab, TabItem, TabPanelProps } from './types'
 
 const a11yProps = (index: number) => {
   return {
@@ -69,12 +51,6 @@ const isNavigationTab = (tab: TabItem | null): tab is NavigationTab => {
 const initTabValue = (tabNames: TabItem[], pathname: string) => {
   const tabIndex = tabNames.findIndex((tab) => isNavigationTab(tab) && tab.path === pathname)
   return tabIndex >= 0 ? tabIndex : 0
-}
-
-interface GluuTabsProps {
-  tabNames: TabItem[]
-  tabToShow: (tabName: string) => React.ReactNode
-  withNavigation?: boolean
 }
 
 export default function GluuTabs({ tabNames, tabToShow, withNavigation = false }: GluuTabsProps) {

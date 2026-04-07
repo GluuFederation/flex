@@ -1,18 +1,9 @@
-import React, { useContext, useMemo, CSSProperties, ReactNode } from 'react'
+import React, { useContext, useMemo, CSSProperties } from 'react'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import customColors from '@/customColors'
-
-type GluuTextVariant = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span' | 'small' | 'div'
-
-interface GluuTextProps extends React.HTMLAttributes<HTMLElement> {
-  variant?: GluuTextVariant
-  children: ReactNode
-  secondary?: boolean
-  disableThemeColor?: boolean
-  onLightSurface?: boolean
-}
+import type { GluuTextProps } from './types'
 
 const GluuText: React.FC<GluuTextProps> = ({
   variant = 'span',
