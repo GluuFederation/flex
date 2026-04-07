@@ -52,7 +52,7 @@ export const logSsaDeletion = async (
       resource: SSA_RESOURCE,
       message: message || 'SSA deleted successfully',
       client_id,
-      payload: toJsonObject(payload || { jti }),
+      payload: toJsonObject({ ...(payload || {}), jti }),
     })
   } catch (error) {
     console.error('Failed to log SSA deletion:', error)
