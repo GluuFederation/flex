@@ -1,9 +1,7 @@
 import * as Yup from 'yup'
 
-const requiredMessage = 'Required!'
-
 const stringArraySchema = () =>
-  Yup.array().of(Yup.string().trim().required(requiredMessage)).ensure()
+  Yup.array().of(Yup.string().trim().required('errors.required')).ensure()
 
 interface ScopeValidationOptions {
   isExistingScope?: boolean
@@ -13,18 +11,23 @@ export const getScopeValidationSchema = ({
   isExistingScope = false,
 }: ScopeValidationOptions = {}) =>
   Yup.object({
-    id: Yup.string().min(2, 'id 2 characters').required(requiredMessage),
-    displayName: Yup.string().min(2, 'displayName 2 characters').required(requiredMessage),
-    scopeType: Yup.string().trim().required(requiredMessage),
+    id: Yup.string()
+      .trim()
+      .required('errors.scope_id_required')
+      .min(2, 'errors.scope_id_min_length'),
+    displayName: Yup.string()
+      .trim()
+      .required('errors.scope_display_name_required')
+      .min(2, 'errors.scope_display_name_min_length'),
+    scopeType: Yup.string().trim().required('errors.scope_type_required'),
     dynamicScopeScripts: stringArraySchema().when('scopeType', {
       is: (scopeType: string) => scopeType === 'dynamic',
-      then: (schema) =>
-        schema.min(1, 'Select at least one dynamic scope script').required(requiredMessage),
+      then: (schema) => schema.min(1, 'errors.scope_dynamic_scripts_required'),
       otherwise: (schema) => schema.notRequired(),
     }),
     claims: stringArraySchema().when('scopeType', {
       is: (scopeType: string) => scopeType === 'openid' || scopeType === 'dynamic',
-      then: (schema) => schema.min(1, 'Select at least one claim').required(requiredMessage),
+      then: (schema) => schema.min(1, 'errors.scope_claims_required'),
       otherwise: (schema) => schema.notRequired(),
     }),
     umaAuthorizationPolicies: stringArraySchema().when('scopeType', {
@@ -32,7 +35,7 @@ export const getScopeValidationSchema = ({
       then: (schema) =>
         isExistingScope
           ? schema.notRequired()
-          : schema.min(1, 'Select at least one UMA authorization policy').required(requiredMessage),
+          : schema.min(1, 'errors.scope_uma_policies_required'),
       otherwise: (schema) => schema.notRequired(),
     }),
     iconUrl: Yup.string()
@@ -42,7 +45,9 @@ export const getScopeValidationSchema = ({
         then: (schema) =>
           isExistingScope
             ? schema.notRequired()
-            : schema.required(requiredMessage).url('Enter a valid URL'),
+            : schema
+                .required('errors.scope_icon_url_required')
+                .url('errors.scope_icon_url_invalid'),
         otherwise: (schema) => schema.notRequired(),
       }),
   })

@@ -21,7 +21,6 @@ export type {
   ScopeFormValues,
   ModifiedFields,
   ScopeFormSubmitData,
-  UserActionPayload,
 } from './formTypes'
 
 export type {

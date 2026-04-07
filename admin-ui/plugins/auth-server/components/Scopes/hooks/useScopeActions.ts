@@ -4,6 +4,7 @@ import { logAuditUserAction } from 'Utils/AuditLogger'
 import { CREATE, UPDATE, DELETION } from '../../../../../app/audit/UserActionType'
 import { SCOPE } from '../../../redux/audit/Resources'
 import type { Scope, ModifiedFields } from '../types'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 interface AuthState {
@@ -23,7 +24,9 @@ interface RootState {
   authReducer: AuthState
 }
 
-export function useScopeActions() {
+const toJsonValue = (value: Scope): JsonValue => JSON.parse(JSON.stringify(value)) as JsonValue
+
+export const useScopeActions = () => {
   const { navigateToRoute } = useAppNavigation()
   const authState = useSelector((state: RootState) => state.authReducer)
   const client_id = authState?.config?.clientId
@@ -36,10 +39,10 @@ export function useScopeActions() {
         action: CREATE,
         resource: SCOPE,
         message,
-        modifiedFields,
+        modifiedFields: modifiedFields as Record<string, JsonValue>,
         performedOn: scope.id || scope.inum,
         client_id,
-        payload: scope,
+        payload: toJsonValue(scope),
       })
     },
     [userinfo, client_id],
@@ -52,10 +55,10 @@ export function useScopeActions() {
         action: UPDATE,
         resource: SCOPE,
         message,
-        modifiedFields,
+        modifiedFields: modifiedFields as Record<string, JsonValue>,
         performedOn: scope.id || scope.inum,
         client_id,
-        payload: scope,
+        payload: toJsonValue(scope),
       })
     },
     [userinfo, client_id],
@@ -70,7 +73,7 @@ export function useScopeActions() {
         message,
         performedOn: scope.id || scope.inum,
         client_id,
-        payload: { inum: scope.inum, id: scope.id },
+        payload: { inum: scope.inum ?? null, id: scope.id ?? null },
       })
     },
     [userinfo, client_id],
