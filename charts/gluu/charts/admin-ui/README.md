@@ -36,7 +36,7 @@ Kubernetes: `>=v1.23.0-0`
 | hpa.metrics | list | `[]` | metrics if targetCPUUtilizationPercentage is not set |
 | image.pullPolicy | string | `"IfNotPresent"` | Image pullPolicy to use for deploying. |
 | image.pullSecrets | list | `[]` | Image Pull Secrets |
-| image.repository | string | `"gluufederation/admin-ui"` | Image  to use for deploying. |
+| image.repository | string | `"ghcr.io/gluufederation/flex/admin-ui"` | Image  to use for deploying. |
 | image.tag | string | `"0.0.0-nightly"` | Image  tag to use for deploying. |
 | lifecycle | object | `{}` |  |
 | livenessProbe | object | `{"failureThreshold":20,"initialDelaySeconds":60,"periodSeconds":25,"tcpSocket":{"port":8080},"timeoutSeconds":5}` | Configure the liveness healthcheck for the admin ui if needed. |

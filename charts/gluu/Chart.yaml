@@ -20,10 +20,6 @@ annotations:
       image: ghcr.io/janssenproject/jans/casa:0.0.0-nightly
     - name: admin-ui
       image: ghcr.io/gluufederation/flex/admin-ui:0.0.0-nightly
-    - name: saml
-      image: ghcr.io/janssenproject/jans/saml:0.0.0-nightly
-    - name: kc-scheduler
-      image: ghcr.io/janssenproject/jans/cloudtools:0.0.0-nightly
   artifacthub.io/license: Apache-2.0
   catalog.cattle.io/certified: partner
   catalog.cattle.io/release-name: gluu
@@ -83,14 +79,6 @@ dependencies:
 
     - name: cn-istio-ingress
       condition: global.istio.ingress
-      version: 0.0.0-nightly
-
-    - name: saml
-      condition: global.saml.enabled
-      version: 0.0.0-nightly
-
-    - name: kc-scheduler
-      condition: global.kc-scheduler.enabled
       version: 0.0.0-nightly
 
     - name: cleanup
