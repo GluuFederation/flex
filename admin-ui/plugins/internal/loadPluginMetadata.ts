@@ -1,9 +1,9 @@
 import type { PluginMetadataModule } from './types'
-import { REGEX_PLUGIN_METADATA_FILE, REGEX_SCRIPT_EXTENSION } from '@/utils/regex'
+import { REGEX_SCRIPT_EXTENSION } from '@/utils/regex'
 
 let context: RequireContext | null = null
 try {
-  context = require.context('..', true, REGEX_PLUGIN_METADATA_FILE)
+  context = require.context('..', true, /plugin-metadata\.(?:tsx?|jsx?)$/)
 } catch (err) {
   console.error(
     '[loadPluginMetadata] require.context failed; no plugin metadata will be available',

@@ -30,9 +30,6 @@ export const REGEX_SPACE_OR_HYPHEN_SEQUENCE = /[\s-]+/g
 /** One or more non-alphanumeric characters; used to compact labels into key-safe tokens. */
 export const REGEX_NON_ALPHANUMERIC_SEQUENCE = /[^a-zA-Z0-9]+/g
 
-/** Matches plugin-metadata files (any script extension); used by require.context to discover plugin metadata modules. */
-export const REGEX_PLUGIN_METADATA_FILE = /plugin-metadata\.(?:tsx?|jsx?)$/
-
 /** Strips a script file extension (.ts, .tsx, .js, .jsx) from a path; used to normalize module keys. */
 export const REGEX_SCRIPT_EXTENSION = /\.(?:tsx?|jsx?)$/
 
