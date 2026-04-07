@@ -162,11 +162,12 @@ const SsaListPage: React.FC = () => {
           org_id: deleteData.ssa.org_id,
         })
         setDeleteData(null)
+        toggle()
       } catch (error) {
         console.error('Delete SSA failed:', error)
       }
     },
-    [deleteData, revokeSsa],
+    [deleteData, revokeSsa, toggle],
   )
 
   const handlePageChange = useCallback((page: number) => setPageNumber(page), [setPageNumber])

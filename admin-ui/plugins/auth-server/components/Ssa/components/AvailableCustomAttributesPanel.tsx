@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react'
+import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useTheme } from '@/context/theme/themeContext'
@@ -19,13 +19,6 @@ const AvailableCustomAttributesPanel: React.FC<CustomAttributesPanelProps> = ({
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
   const isDark = themeState.theme === THEME_DARK
   const { classes } = useStyles({ themeColors, isDark })
-
-  const handleSearchChange = useCallback(
-    (value: string) => {
-      onSearchChange(value)
-    },
-    [onSearchChange],
-  )
 
   const visibleOptions = useMemo(() => {
     const searchTrimmed = searchInputValue.trim()
@@ -54,14 +47,14 @@ const AvailableCustomAttributesPanel: React.FC<CustomAttributesPanelProps> = ({
             placeholder={t('placeholders.search_attribute_here')}
             aria-label={t('placeholders.search_attribute_here')}
             autoComplete="off"
-            onChange={(e) => handleSearchChange(e.target.value)}
+            onChange={(e) => onSearchChange(e.target.value)}
             value={searchInputValue}
           />
           {searchInputValue && (
             <button
               type="button"
               className={classes.searchClearButton}
-              onClick={() => handleSearchChange('')}
+              onClick={() => onSearchChange('')}
               aria-label={t('actions.clear_search')}
             >
               <i className="fa fa-fw fa-close" />

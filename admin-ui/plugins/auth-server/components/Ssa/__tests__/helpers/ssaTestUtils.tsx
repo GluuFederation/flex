@@ -78,19 +78,23 @@ jest.mock('../../hooks/useSsaMutations', () => ({
   useRevokeSsaWithAudit: jest.fn(() => ({
     revokeSsa: jest.fn(),
     isLoading: false,
+    isError: false,
+    error: null,
   })),
 }))
 
+type WebhookRecord = Record<string, string>
+
 const defaultWebhookReducerState = {
   loadingWebhooks: false,
-  featureWebhooks: [] as unknown[],
+  featureWebhooks: [] as WebhookRecord[],
   webhookModal: false,
   triggerWebhookInProgress: false,
   triggerWebhookMessage: '',
-  webhookTriggerErrors: [] as unknown[],
+  webhookTriggerErrors: [] as WebhookRecord[],
   triggerPayload: {
-    feature: null as string | null,
-    payload: null as unknown,
+    feature: '',
+    payload: {} as WebhookRecord,
   },
   featureToTrigger: '',
   showErrorModal: false,
@@ -121,33 +125,31 @@ const defaultAuthReducerState: AuthState = {
   hasSession: false,
 }
 
-export function createSsaTestStore(): Store {
-  return configureStore({
+export const createSsaTestStore = (): Store =>
+  configureStore({
     reducer: combineReducers({
       authReducer: (state = defaultAuthReducerState) => state,
       webhookReducer: (state = defaultWebhookReducerState) => state,
     }),
   })
-}
 
-export function createSsaQueryClient(): QueryClient {
-  return new QueryClient({
+export const createSsaQueryClient = (): QueryClient =>
+  new QueryClient({
     defaultOptions: { queries: { retry: false } },
   })
-}
 
-export function createSsaTestWrapper(
+export const createSsaTestWrapper = (
   store: Store,
   client?: QueryClient,
-): (props: { children: React.ReactNode }) => JSX.Element {
-  return function Wrapper({ children }: { children: React.ReactNode }) {
-    const queryClientToUse = React.useMemo(() => client ?? createSsaQueryClient(), [client])
-    return (
-      <QueryClientProvider client={queryClientToUse}>
-        <AppTestWrapper>
-          <Provider store={store}>{children}</Provider>
-        </AppTestWrapper>
-      </QueryClientProvider>
-    )
-  }
+): ((props: { children: React.ReactNode }) => JSX.Element) => {
+  const queryClientToUse = client ?? createSsaQueryClient()
+  const Wrapper = ({ children }: { children: React.ReactNode }) => (
+    <QueryClientProvider client={queryClientToUse}>
+      <AppTestWrapper>
+        <Provider store={store}>{children}</Provider>
+      </AppTestWrapper>
+    </QueryClientProvider>
+  )
+  Wrapper.displayName = 'SsaTestWrapper'
+  return Wrapper
 }

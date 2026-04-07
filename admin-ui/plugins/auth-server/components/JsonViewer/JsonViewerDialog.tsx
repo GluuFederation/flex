@@ -9,6 +9,8 @@ import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import type { ThemeValue } from '@/context/theme/constants'
 import customColors from '@/customColors'
+import { useAppDispatch } from '@/redux/hooks'
+import { updateToast } from 'Redux/features/toastSlice'
 import JsonViewer from './JsonViewer'
 import { useStyles } from './JsonViewerDialog.style'
 
@@ -32,6 +34,7 @@ const JsonViewerDialog: React.FC<JsonViewerDialogProps> = ({
   expanded = true,
 }) => {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const { state: themeState } = useTheme()
   const selectedTheme = themeProp || themeState.theme || DEFAULT_THEME
   const isDark = selectedTheme === THEME_DARK
@@ -53,9 +56,11 @@ const JsonViewerDialog: React.FC<JsonViewerDialogProps> = ({
       await navigator.clipboard.writeText(text)
       setIsCopied(true)
     } catch (err) {
+      const detail = err instanceof Error ? err.message : String(err)
       console.error('Failed to copy to clipboard:', err)
+      dispatch(updateToast(true, 'error', `Failed to copy to clipboard: ${detail}`))
     }
-  }, [data, isCopied])
+  }, [data, isCopied, dispatch])
 
   const handleOverlayKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -71,9 +76,9 @@ const JsonViewerDialog: React.FC<JsonViewerDialogProps> = ({
     (e: React.KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault()
+        e.stopPropagation()
         handleClose()
       }
-      e.stopPropagation()
     },
     [handleClose],
   )
@@ -106,7 +111,7 @@ const JsonViewerDialog: React.FC<JsonViewerDialogProps> = ({
           aria-label={t('actions.close')}
           title={t('actions.close')}
         >
-          <i className="fa fa-times" aria-hidden />
+          <i className="fa fa-times" aria-hidden="true" />
         </button>
         <div className={commitClasses.contentArea}>
           <GluuText variant="h2" className={commitClasses.title} id="json-viewer-title">

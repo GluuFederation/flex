@@ -5,6 +5,14 @@ import SsaListPage from '../../components/SsaListPage'
 import { useCedarling } from '@/cedarling'
 import type { UseCedarlingReturn } from '@/cedarling'
 
+jest.mock('@/cedarling', () => ({
+  useCedarling: jest.fn(),
+  ADMIN_UI_RESOURCES: {
+    SSA: 'SSA',
+  },
+  CEDAR_RESOURCE_SCOPES: { SSA: [] },
+}))
+
 const makeMockCedarling = (overrides?: Partial<UseCedarlingReturn>): UseCedarlingReturn =>
   ({
     hasCedarReadPermission: jest.fn(() => true),
@@ -15,12 +23,14 @@ const makeMockCedarling = (overrides?: Partial<UseCedarlingReturn>): UseCedarlin
     isLoading: false,
     error: null,
     ...overrides,
-  }) as unknown as UseCedarlingReturn
+  }) as Partial<UseCedarlingReturn> as UseCedarlingReturn
 
 describe('SsaListPage', () => {
   let Wrapper: React.ComponentType<{ children: React.ReactNode }>
 
   beforeEach(() => {
+    jest.clearAllMocks()
+    jest.mocked(useCedarling).mockReturnValue(makeMockCedarling())
     const store = createSsaTestStore()
     Wrapper = createSsaTestWrapper(store)
   })
@@ -31,7 +41,6 @@ describe('SsaListPage', () => {
   })
 
   it('renders Add SSA button when user has write permission', () => {
-    jest.mocked(useCedarling).mockReturnValue(makeMockCedarling())
     render(<SsaListPage />, { wrapper: Wrapper })
     expect(screen.getByText(/Add SSA/i)).toBeInTheDocument()
   })

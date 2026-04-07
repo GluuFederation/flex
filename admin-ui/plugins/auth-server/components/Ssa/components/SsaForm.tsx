@@ -66,8 +66,6 @@ const SsaForm: React.FC<SsaFormProps> = ({
     },
   })
 
-  const setFieldValue = formik.setFieldValue
-
   useEffect(() => {
     if (!formContentRef.current) return
     const observer = new ResizeObserver(([entry]) => {
@@ -103,22 +101,22 @@ const SsaForm: React.FC<SsaFormProps> = ({
   const handleAttributeSelect = useCallback(
     (attribute: string) => {
       setSelectedAttributes((prev) => [...prev, attribute])
-      setFieldValue(attribute, '')
+      formik.setFieldValue(attribute, '')
     },
-    [setFieldValue],
+    [formik],
   )
 
   const handleAttributeRemove = useCallback(
     (attribute: string) => {
       setSelectedAttributes((prev) => prev.filter((attr) => attr !== attribute))
-      setFieldValue(attribute, '')
+      formik.setFieldValue(attribute, '')
       setModifiedFields((prev) => {
         const newFields = { ...prev }
         delete newFields[attribute]
         return newFields
       })
     },
-    [setFieldValue],
+    [formik],
   )
 
   const isFormDirty = useMemo(
@@ -315,6 +313,10 @@ const SsaForm: React.FC<SsaFormProps> = ({
                       value={formik.values[attribute] as string}
                       modifiedFields={modifiedFields}
                       setModifiedFields={setModifiedFields}
+                      // GluuRemovableInputRow constrains FormikProps to Record<string, JsonValue>;
+                      // SsaFormValues includes a Dayjs `expirationDate` (not JsonValue), but this row
+                      // only ever reads the dynamic string-valued custom attribute fields, so the cast
+                      // is safe at runtime.
                       formik={formik as object as FormikProps<Record<string, JsonValue>>}
                       lsize={12}
                       handler={() => handleAttributeRemove(attribute)}
@@ -354,6 +356,7 @@ const SsaForm: React.FC<SsaFormProps> = ({
             formik.dirty,
             formik.isValid,
             modifiedFields,
+            selectedAttributes,
           )}
           applyButtonType="button"
           isLoading={isSubmitting}

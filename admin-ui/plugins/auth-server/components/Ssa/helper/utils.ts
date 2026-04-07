@@ -1,20 +1,26 @@
 import { getRootState } from 'Redux/hooks'
 import { logAuditUserAction } from 'Utils/AuditLogger'
-import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import type { JsonObject } from 'Routes/Apps/Gluu/types/common'
 import type { CaughtError, ApiErrorLike } from '../types/ErrorTypes'
 import type { SsaAuditLogPayload } from '../types/SsaFormTypes'
+import type { SsaFormValues } from '../types/SsaApiTypes'
 import { CREATE, DELETION } from '../../../../../app/audit/UserActionType'
 import { SSA as SSA_RESOURCE } from '../../../redux/audit/Resources'
 
-export const logSsaCreation = async (
-  payload: SsaAuditLogPayload,
-  message?: string,
-): Promise<void> => {
+const toJsonObject = (input: object): JsonObject => JSON.parse(JSON.stringify(input)) as JsonObject
+
+export const logSsaCreation = async (payload: SsaFormValues, message?: string): Promise<void> => {
   try {
     const state = getRootState()
     const authReducer = state.authReducer
     const client_id = authReducer.config?.clientId || ''
     const userinfo = authReducer.userinfo
+
+    const { expirationDate, ...rest } = payload
+    const serialized: JsonObject = toJsonObject(rest)
+    if (expirationDate) {
+      serialized.expirationDate = expirationDate.toISOString()
+    }
 
     await logAuditUserAction({
       userinfo,
@@ -22,7 +28,7 @@ export const logSsaCreation = async (
       resource: SSA_RESOURCE,
       message: message || 'SSA created successfully',
       client_id,
-      payload: payload as unknown as JsonValue,
+      payload: serialized,
     })
   } catch (error) {
     console.error('Failed to log SSA creation:', error)
@@ -46,7 +52,7 @@ export const logSsaDeletion = async (
       resource: SSA_RESOURCE,
       message: message || 'SSA deleted successfully',
       client_id,
-      payload: (payload || { jti }) as unknown as JsonValue,
+      payload: toJsonObject(payload || { jti }),
     })
   } catch (error) {
     console.error('Failed to log SSA deletion:', error)

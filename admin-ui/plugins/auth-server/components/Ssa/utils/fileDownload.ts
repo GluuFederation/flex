@@ -1,4 +1,15 @@
-export function downloadJwtFile(jwtString: string, softwareId: string): void {
+const MAX_SOFTWARE_ID_LENGTH = 64
+
+const sanitizeFilenameSegment = (value: string): string => {
+  const cleaned = value
+    .replace(/[^A-Za-z0-9._-]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^[-_.]+|[-_.]+$/g, '')
+    .slice(0, MAX_SOFTWARE_ID_LENGTH)
+  return cleaned || 'ssa'
+}
+
+export const downloadJwtFile = (jwtString: string, softwareId: string): void => {
   const blob = new Blob([jwtString], { type: 'text/plain' })
   const link = document.createElement('a')
   const objectUrl = URL.createObjectURL(blob)
@@ -15,14 +26,15 @@ export function downloadJwtFile(jwtString: string, softwareId: string): void {
     })
     .replace(/[/:,]/g, '-')
     .replace(/\s/g, '_')
-  link.download = `ssa-${softwareId}-${dateStr}.jwt`
+  const sanitizedId = sanitizeFilenameSegment(softwareId)
+  link.download = `ssa-${sanitizedId}-${dateStr}.jwt`
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)
   URL.revokeObjectURL(objectUrl)
 }
 
-export function downloadJSONFile(data: object, filename: string = 'ssa.json'): void {
+export const downloadJSONFile = (data: object, filename: string = 'ssa.json'): void => {
   let jsonData: string
   try {
     jsonData = JSON.stringify(data, null, 2)

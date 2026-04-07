@@ -18,13 +18,13 @@ export const shouldDisableApplyButton = (
   isDirty: boolean,
   isValid: boolean,
   modifiedFields: ModifiedFields,
+  selectedAttributes: string[],
 ): boolean => {
   const hasModifiedFields = Object.keys(modifiedFields).length > 0
-  const isFormChanged = isDirty || hasModifiedFields
+  const hasSelectedAttributes = selectedAttributes.length > 0
+  const isFormChanged = isDirty || hasModifiedFields || hasSelectedAttributes
 
-  if (isSubmitting || !isFormChanged) return true
-  if (!isValid) return true
-  return false
+  return isSubmitting || !isFormChanged || !isValid
 }
 
 export const hasFormChanges = (
