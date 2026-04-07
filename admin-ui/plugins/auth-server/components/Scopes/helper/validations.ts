@@ -12,11 +12,11 @@ export const getScopeValidationSchema = ({
 }: ScopeValidationOptions = {}) =>
   Yup.object({
     id: Yup.string()
-      .min(2, 'errors.scope_id_min_length')
-      .required('errors.scope_id_required'),
+      .required('errors.scope_id_required')
+      .min(2, 'errors.scope_id_min_length'),
     displayName: Yup.string()
-      .min(2, 'errors.scope_display_name_min_length')
-      .required('errors.scope_display_name_required'),
+      .required('errors.scope_display_name_required')
+      .min(2, 'errors.scope_display_name_min_length'),
     scopeType: Yup.string().trim().required('errors.scope_type_required'),
     dynamicScopeScripts: stringArraySchema().when('scopeType', {
       is: (scopeType: string) => scopeType === 'dynamic',

@@ -22,8 +22,6 @@ export const CREATOR_TYPES = ['CLIENT', 'USER'] as const
 export const EMPTY_PLACEHOLDER = '\u2014'
 export const DELETE_SUBJECT_SCOPE = 'scope'
 
-export const SCOPE_INUM_QUERY_KEY = 'getOauthScopesByInum'
-
 export const DEFAULT_ATTRIBUTES_LIMIT = 100
 
 export const SCOPE_CACHE_CONFIG = {

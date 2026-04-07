@@ -34,7 +34,7 @@ const ScopeEditPage: React.FC = () => {
   const { attributes, isLoading: attributesLoading } = useScopeAttributes()
   const { scripts, isLoading: scriptsLoading } = useScopeScripts()
 
-  const { updateScope, isPending: updatePending } = useUpdateScope()
+  const { updateScope, isPending: updatePending, isError: updateIsError } = useUpdateScope()
 
   const [modifiedFields, setModifiedFields] = useState<ModifiedFields>({})
   const [errorMessage, setErrorMessage] = useState<string>()
@@ -91,11 +91,12 @@ const ScopeEditPage: React.FC = () => {
   )
 
   const loading = updatePending || scopeLoading || attributesLoading || scriptsLoading
+  const displayError = errorMessage || (updateIsError ? t('messages.error_in_saving') : undefined)
 
   return (
     <GluuPageContent>
       <GluuLoader blocking={loading}>
-        <GluuAlert severity="error" message={errorMessage} show={!!errorMessage} />
+        <GluuAlert severity="error" message={displayError} show={!!displayError} />
         <div className={classes.formCard}>
           <div className={classes.content}>
             <ScopeForm

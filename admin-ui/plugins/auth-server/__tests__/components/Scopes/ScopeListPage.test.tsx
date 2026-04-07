@@ -93,10 +93,6 @@ const INIT_CEDAR_STATE = {
   permissions: permissions,
 }
 
-const queryClient = new QueryClient({
-  defaultOptions: { queries: { retry: false } },
-})
-
 const store = configureStore({
   reducer: combineReducers({
     authReducer: (state = INIT_STATE) => state,
@@ -106,13 +102,18 @@ const store = configureStore({
   }),
 })
 
-const Wrapper = ({ children }: { children: React.ReactNode }) => (
-  <QueryClientProvider client={queryClient}>
-    <AppTestWrapper>
-      <Provider store={store}>{children}</Provider>
-    </AppTestWrapper>
-  </QueryClientProvider>
-)
+const Wrapper = ({ children }: { children: React.ReactNode }) => {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  })
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AppTestWrapper>
+        <Provider store={store}>{children}</Provider>
+      </AppTestWrapper>
+    </QueryClientProvider>
+  )
+}
 
 it('Should render the scope list page properly', () => {
   const { container } = render(<ScopeListPage />, {
@@ -122,12 +123,12 @@ it('Should render the scope list page properly', () => {
   const id = scope.id
   const description = scope.description
 
-  screen.getByText('Description', { exact: false })
-  screen.getByText('Clients', { exact: false })
-  screen.getByPlaceholderText('search', { exact: false })
-  const colId = container.querySelector(`td[value=${id}]`)
+  expect(screen.getByText('Description', { exact: false })).toBeInTheDocument()
+  expect(screen.getByText('Clients', { exact: false })).toBeInTheDocument()
+  expect(screen.getByPlaceholderText('search', { exact: false })).toBeInTheDocument()
+  const colId = container.querySelector(`td[value="${id}"]`)
   expect(colId).toBeInTheDocument()
   if (description) {
-    screen.getByText(description)
+    expect(screen.getByText(description)).toBeInTheDocument()
   }
 })

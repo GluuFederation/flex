@@ -171,5 +171,10 @@ export const buildScopeChangedFieldOperations = (
     })
   }
 
+  // Note: spontaneousClientId and spontaneousClientScopes are intentionally not
+  // tracked here. They are read-only in the form (rendered as badges/links) and
+  // are explicitly preserved from the original scope on submit, so they can never
+  // appear as user-driven changes in the commit dialog.
+
   return operations
 }

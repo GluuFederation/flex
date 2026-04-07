@@ -62,10 +62,6 @@ const INIT_STATE = {
   userinfo: { inum: 'test-user-inum' },
 }
 
-const queryClient = new QueryClient({
-  defaultOptions: { queries: { retry: false } },
-})
-
 const store = configureStore({
   reducer: combineReducers({
     authReducer: (state = INIT_STATE) => state,
@@ -83,13 +79,18 @@ const store = configureStore({
   }),
 })
 
-const Wrapper = ({ children }: { children: React.ReactNode }) => (
-  <QueryClientProvider client={queryClient}>
-    <AppTestWrapper>
-      <Provider store={store}>{children}</Provider>
-    </AppTestWrapper>
-  </QueryClientProvider>
-)
+const Wrapper = ({ children }: { children: React.ReactNode }) => {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  })
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AppTestWrapper>
+        <Provider store={store}>{children}</Provider>
+      </AppTestWrapper>
+    </QueryClientProvider>
+  )
+}
 
 it('Should render the scope edit page properly', () => {
   render(<ScopeEditPage />, {

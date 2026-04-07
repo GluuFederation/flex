@@ -40,9 +40,11 @@ import {
   buildScopeChangedFieldOperations,
 } from './helper/utils'
 import { getScopeValidationSchema } from './helper/validations'
+import { Link } from 'react-router-dom'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
-import { useStyles } from './styles/ScopeFormPage.style'
+import { useStyles, errorTextStyle } from './styles/ScopeFormPage.style'
 
 interface RootState {
   authReducer: {
@@ -281,7 +283,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                     value={formikProps.values.id ?? ''}
                     doc_category={SCOPE}
                     doc_entry="id"
-                    placeholder={t('placeholders.enter_here')}
+                    placeholder={getFieldPlaceholder(t, 'fields.id')}
                     errorMessage={formikProps.errors.id ? t(formikProps.errors.id) : undefined}
                     showError={!!(formikProps.errors.id && formikProps.touched.id)}
                     required
@@ -304,7 +306,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                     value={formikProps.values.displayName ?? ''}
                     doc_category={SCOPE}
                     doc_entry="displayName"
-                    placeholder={t('placeholders.enter_here')}
+                    placeholder={getFieldPlaceholder(t, 'fields.displayname')}
                     errorMessage={
                       formikProps.errors.displayName ? t(formikProps.errors.displayName) : undefined
                     }
@@ -331,7 +333,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                     value={formikProps.values.description ?? ''}
                     doc_category={SCOPE}
                     doc_entry="description"
-                    placeholder={t('placeholders.enter_here')}
+                    placeholder={getFieldPlaceholder(t, 'fields.description')}
                     rows={3}
                     handleChange={(e) => {
                       setModifiedFields({
@@ -444,9 +446,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                       helperText={t('placeholders.typeahead_holder_message')}
                     />
                     {formikProps.errors.claims && (
-                      <div style={{ color: customColors.accentRed, marginTop: -12 }}>
-                        {t(formikProps.errors.claims as string)}
-                      </div>
+                      <div style={errorTextStyle}>{t(formikProps.errors.claims as string)}</div>
                     )}
                   </div>
                 )}
@@ -469,7 +469,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                       helperText={t('placeholders.typeahead_holder_message')}
                     />
                     {formikProps.errors.dynamicScopeScripts && (
-                      <div style={{ color: customColors.accentRed, marginTop: -12 }}>
+                      <div style={errorTextStyle}>
                         {t(formikProps.errors.dynamicScopeScripts as string)}
                       </div>
                     )}
@@ -492,9 +492,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                       helperText={t('placeholders.typeahead_holder_message')}
                     />
                     {formikProps.errors.claims && (
-                      <div style={{ color: customColors.accentRed, marginTop: -12 }}>
-                        {t(formikProps.errors.claims as string)}
-                      </div>
+                      <div style={errorTextStyle}>{t(formikProps.errors.claims as string)}</div>
                     )}
                   </div>
                 )}
@@ -513,7 +511,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                         value={formikProps.values.iconUrl ?? ''}
                         doc_category={SCOPE}
                         doc_entry="iconUrl"
-                        placeholder={t('placeholders.enter_here')}
+                        placeholder={getFieldPlaceholder(t, 'fields.iconUrl')}
                         errorMessage={
                           formikProps.errors.iconUrl ? t(formikProps.errors.iconUrl) : undefined
                         }
@@ -547,7 +545,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                         disabled={scope.inum ? true : false}
                       />
                       {formikProps.errors.umaAuthorizationPolicies && (
-                        <div style={{ color: customColors.accentRed, marginTop: -12 }}>
+                        <div style={errorTextStyle}>
                           {t(formikProps.errors.umaAuthorizationPolicies as string)}
                         </div>
                       )}
@@ -560,12 +558,16 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                         <Col sm={8}>
                           {client.map((item, key) => (
                             <div key={'uma-client' + key}>
-                              <a
-                                onClick={() => goToClientViewPage(item.inum, item)}
+                              <Link
+                                to={ROUTES.AUTH_SERVER_CLIENT_EDIT(item.inum)}
+                                onClick={(e) => {
+                                  e.preventDefault()
+                                  goToClientViewPage(item.inum, item)
+                                }}
                                 className="common-link"
                               >
                                 {item.displayName ? item.displayName : item.inum}
-                              </a>
+                              </Link>
                             </div>
                           ))}
                         </Col>
@@ -620,12 +622,16 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                         <Col sm={8}>
                           {client.map((item, key) => (
                             <div key={'spontaneous-client' + key}>
-                              <a
-                                onClick={() => goToClientViewPage(item.inum, item)}
+                              <Link
+                                to={ROUTES.AUTH_SERVER_CLIENT_EDIT(item.inum)}
+                                onClick={(e) => {
+                                  e.preventDefault()
+                                  goToClientViewPage(item.inum, item)
+                                }}
                                 className="common-link"
                               >
                                 {item.displayName ? item.displayName : item.inum}
-                              </a>
+                              </Link>
                             </div>
                           ))}
                         </Col>

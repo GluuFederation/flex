@@ -31,6 +31,7 @@ import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { devLogger } from '@/utils/devLogger'
 import { useScopeActions, invalidateScopeQueries } from './hooks'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { useDebounce } from '@/utils/hooks/useDebounce'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import { GluuDetailGrid, type GluuDetailGridField } from '@/components/GluuDetailGrid'
 import { SCOPE } from 'Utils/ApiResources'
@@ -120,16 +121,18 @@ const ScopeListPage: React.FC = () => {
 
   const startIndex = useMemo(() => pageNumber * limit, [pageNumber, limit])
 
+  const debouncedPattern = useDebounce(pattern, 400)
+
   const scopesQueryParams = useMemo(
     () => ({
       limit,
       startIndex,
-      ...(pattern && { pattern }),
+      ...(debouncedPattern && { pattern: debouncedPattern }),
       ...(scopeType && { type: scopeType }),
       ...(sortBy && { sortBy, sortOrder: 'ascending' as const }),
       withAssociatedClients: true as const,
     }),
-    [limit, startIndex, pattern, scopeType, sortBy],
+    [limit, startIndex, debouncedPattern, scopeType, sortBy],
   )
 
   const scopesQueryOptions = useMemo(
@@ -508,29 +511,51 @@ const ScopeListPage: React.FC = () => {
       },
       {
         label: 'fields.default_scope',
-        value: row.defaultScope ? t('options.yes') : t('options.no'),
+        value:
+          typeof row.defaultScope === 'boolean'
+            ? row.defaultScope
+              ? t('options.yes')
+              : t('options.no')
+            : EMPTY_PLACEHOLDER,
         doc_entry: 'defaultScope',
         doc_category: SCOPE,
-        isBadge: true,
-        badgeBackgroundColor: row.defaultScope
-          ? badgeStyles.trueBadge.backgroundColor
-          : badgeStyles.falseBadge.backgroundColor,
-        badgeTextColor: row.defaultScope
-          ? badgeStyles.trueBadge.textColor
-          : badgeStyles.falseBadge.textColor,
+        isBadge: typeof row.defaultScope === 'boolean',
+        badgeBackgroundColor:
+          typeof row.defaultScope === 'boolean'
+            ? row.defaultScope
+              ? badgeStyles.trueBadge.backgroundColor
+              : badgeStyles.falseBadge.backgroundColor
+            : undefined,
+        badgeTextColor:
+          typeof row.defaultScope === 'boolean'
+            ? row.defaultScope
+              ? badgeStyles.trueBadge.textColor
+              : badgeStyles.falseBadge.textColor
+            : undefined,
       },
       {
         label: 'fields.show_in_configuration_endpoint',
-        value: row.attributes?.showInConfigurationEndpoint ? t('options.yes') : t('options.no'),
+        value:
+          typeof row.attributes?.showInConfigurationEndpoint === 'boolean'
+            ? row.attributes.showInConfigurationEndpoint
+              ? t('options.yes')
+              : t('options.no')
+            : EMPTY_PLACEHOLDER,
         doc_entry: 'attributes.showInConfigurationEndpoint',
         doc_category: SCOPE,
-        isBadge: true,
-        badgeBackgroundColor: row.attributes?.showInConfigurationEndpoint
-          ? badgeStyles.trueBadge.backgroundColor
-          : badgeStyles.falseBadge.backgroundColor,
-        badgeTextColor: row.attributes?.showInConfigurationEndpoint
-          ? badgeStyles.trueBadge.textColor
-          : badgeStyles.falseBadge.textColor,
+        isBadge: typeof row.attributes?.showInConfigurationEndpoint === 'boolean',
+        badgeBackgroundColor:
+          typeof row.attributes?.showInConfigurationEndpoint === 'boolean'
+            ? row.attributes.showInConfigurationEndpoint
+              ? badgeStyles.trueBadge.backgroundColor
+              : badgeStyles.falseBadge.backgroundColor
+            : undefined,
+        badgeTextColor:
+          typeof row.attributes?.showInConfigurationEndpoint === 'boolean'
+            ? row.attributes.showInConfigurationEndpoint
+              ? badgeStyles.trueBadge.textColor
+              : badgeStyles.falseBadge.textColor
+            : undefined,
       },
       {
         label: 'fields.attributes',
