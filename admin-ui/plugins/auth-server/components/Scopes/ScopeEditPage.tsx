@@ -15,9 +15,12 @@ import getThemeColor from 'Context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './styles/ScopeFormPage.style'
 import { devLogger } from '@/utils/devLogger'
+import SetTitle from 'Utils/SetTitle'
 
 const ScopeEditPage: React.FC = () => {
   const { t } = useTranslation()
+
+  SetTitle(t('messages.edit_scope'))
 
   const { id } = useParams<{ id: string }>()
 

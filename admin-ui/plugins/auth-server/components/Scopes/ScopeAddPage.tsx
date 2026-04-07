@@ -12,9 +12,12 @@ import getThemeColor from 'Context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './styles/ScopeFormPage.style'
 import { devLogger } from '@/utils/devLogger'
+import SetTitle from 'Utils/SetTitle'
 
 const ScopeAddPage: React.FC = () => {
   const { t } = useTranslation()
+
+  SetTitle(t('messages.add_scope'))
 
   const { state: themeState } = useTheme()
   const { themeColors, isDark } = useMemo(
