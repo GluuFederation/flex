@@ -107,14 +107,6 @@ global:
   scim:
     # -- Boolean flag to enable/disable the SCIM chart.
     enabled: false
-  # -- StorageClass section. This is not currently used by the openbanking distribution. You may specify custom parameters as needed.
-  saml:
-    # -- Boolean flag to enable/disable the saml chart.
-    enabled: false
-  # -- Path to SQL password file
-  kc-scheduler:
-    # -- Boolean flag to enable/disable the kc-scheduler cronjob chart.
-    enabled: false
   # -- Enable cleanup job
   cleanup:
     # -- Boolean flag to enable/disable the cleanup cronjob chart.
@@ -167,6 +159,10 @@ gateway-api:
       # See https://docs.nginx.com/nginx-gateway-fabric/traffic-management/snippets#setup
       # The NginxProxy will be attached to gateway.infrastructure.parametersRef only if it's empty.
       enableClientCertSnippets: false
+      # -- Enable URL rewrite to forward audit gRPC requests `/io.jans.lock.audit.AuditService` to `/jans-auth/io.jans.lock.audit.AuditService`.
+      # Snippet support must be enabled during NGINX installation (otherwise endpoints will return HTTP status code 500).
+      # See https://docs.nginx.com/nginx-gateway-fabric/traffic-management/snippets#setup.
+      enableAuditGrpcRewriteSnippets: false
     # -- Configuration for Traefik.
     traefik: {}
     # -- Configuration for Istio.

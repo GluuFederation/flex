@@ -2,7 +2,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: {{ .Release.Name }}-istio-scim-config
+  name: {{ .Release.Name }}-istio-scim
   namespace: {{ .Release.Namespace }}
   labels:
     APP_NAME: scim
