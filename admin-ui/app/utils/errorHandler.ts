@@ -1,11 +1,9 @@
-import type { ApiError, CaughtError } from '../types'
+import type { ApiError, CaughtError } from './types'
 
 export type { ApiError, CaughtError }
 
 const isApiError = (error: CaughtError): error is ApiError => {
-  return (
-    !(error instanceof Error) && typeof error === 'object' && error !== null && 'response' in error
-  )
+  return typeof error === 'object' && error !== null && 'response' in error
 }
 
 const resolveErrorMessage = (error: CaughtError, getFallback: () => string): string => {

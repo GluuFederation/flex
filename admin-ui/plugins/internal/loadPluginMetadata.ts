@@ -21,7 +21,9 @@ if (context) {
   })
 }
 
-const FALLBACK_METADATA: PluginMetadataModule = { default: { menus: [], routes: [] } }
+const createFallbackMetadata = (): PluginMetadataModule => ({
+  default: { menus: [], routes: [] },
+})
 
 export const loadPluginMetadata = (path: string): PluginMetadataModule => {
   const normalized = path.replace(REGEX_SCRIPT_EXTENSION, '')
@@ -30,7 +32,15 @@ export const loadPluginMetadata = (path: string): PluginMetadataModule => {
     console.warn(
       `[loadPluginMetadata] No metadata found for path: "${path}" (normalized: "${normalized}"); using empty fallback`,
     )
-    return FALLBACK_METADATA
+    return createFallbackMetadata()
   }
-  return loader()
+  try {
+    return loader()
+  } catch (err) {
+    console.error(
+      `[loadPluginMetadata] Loader failed for path: "${path}" (normalized: "${normalized}"); using empty fallback`,
+      err,
+    )
+    return createFallbackMetadata()
+  }
 }

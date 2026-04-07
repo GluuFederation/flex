@@ -17,5 +17,4 @@ export {
   isFormValid,
 } from './formHelpers'
 
-// Error handler
-export { getErrorMessage } from './errorHandler'
+export { getErrorMessage } from '@/utils/errorHandler'

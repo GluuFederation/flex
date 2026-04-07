@@ -18,7 +18,7 @@ import { cloneDeep } from 'lodash'
 import { useAttribute, useUpdateAttribute, useMutationEffects } from '../hooks'
 import { getDefaultAttributeItem } from '../utils/formHelpers'
 import { DEFAULT_ATTRIBUTE_VALIDATION } from '../helper/utils'
-import { getErrorMessage } from '../utils/errorHandler'
+import { getErrorMessage } from '@/utils/errorHandler'
 import type { AttributeItem, SubmitData } from './types/UserClaimsListPage.types'
 import type { JansAttribute } from 'JansConfigApi'
 

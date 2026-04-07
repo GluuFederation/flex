@@ -2,20 +2,17 @@ import customColors from '@/customColors'
 import { REGEX_UUID_PLACEHOLDER_CHARS } from '@/utils/regex'
 
 export function uuidv4(): string {
-  // Use Web Crypto API if available
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
     return crypto.randomUUID()
   }
 
-  // Fallback for older browsers
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(REGEX_UUID_PLACEHOLDER_CHARS, function (c) {
-    const r = (crypto.getRandomValues(new Uint8Array(1))[0] * 16) | 0,
+    const r = crypto.getRandomValues(new Uint8Array(1))[0] & 0x0f,
       v = c == 'x' ? r : (r & 0x3) | 0x8
     return v.toString(16)
   })
 }
 
-// Predefined color palette for consistent colors
 const colorPalette: string[] = [
   customColors.logo,
   customColors.white,
@@ -28,7 +25,6 @@ const colorPalette: string[] = [
 ]
 
 export function getNewColor(index = 0): string {
-  // Use modulo to cycle through the palette
   return colorPalette[index % colorPalette.length]
 }
 

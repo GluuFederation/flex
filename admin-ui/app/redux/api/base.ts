@@ -13,10 +13,11 @@ export const getClient = (
   const defaultClient = JansConfigApi.ApiClient.instance
   defaultClient.timeout = 60000
   const jansauth = defaultClient.authentications['oauth2']
-  defaultClient.basePath =
+  defaultClient.basePath = (
     window['configApiBaseUrl'] ||
     process.env.CONFIG_API_BASE_URL ||
-    'https://admin-ui-test.gluu.org'.replace(REGEX_TRAILING_SLASHES, '')
+    'https://admin-ui-test.gluu.org'
+  ).replace(REGEX_TRAILING_SLASHES, '')
 
   if (hasSession) {
     defaultClient.enableCookies = true
@@ -47,10 +48,11 @@ export const getClientWithToken = (
   const defaultClient = JansConfigApi.ApiClient.instance
   defaultClient.timeout = 60000
   const jansauth = defaultClient.authentications['oauth2']
-  defaultClient.basePath =
+  defaultClient.basePath = (
     window['configApiBaseUrl'] ||
     process.env.CONFIG_API_BASE_URL ||
-    'https://admin-ui-test.gluu.org'.replace(REGEX_TRAILING_SLASHES, '')
+    'https://admin-ui-test.gluu.org'
+  ).replace(REGEX_TRAILING_SLASHES, '')
 
   if (hasSession) {
     defaultClient.enableCookies = true
