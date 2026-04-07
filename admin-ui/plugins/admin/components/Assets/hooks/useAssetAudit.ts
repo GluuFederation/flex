@@ -5,6 +5,13 @@ import type { UserActionPayload } from 'Redux/api/types/BackendApi'
 import { addAdditionalData } from 'Utils/TokenController'
 import { CREATE, UPDATE, DELETION, FETCH } from '@/audit/UserActionType'
 import { devLogger } from '@/utils/devLogger'
+import type {
+  AssetAuditActionData,
+  AssetAuditActionType,
+  AssetAuditInit,
+  AssetAuditLogActionPayload,
+  AssetAuditRootState,
+} from '../types'
 
 const MAX_STRING_LENGTH = 500
 const MAX_DEPTH = 5
@@ -30,48 +37,21 @@ function sanitizeValue(value: unknown, depth: number): unknown {
 
 function sanitizeActionData(
   data: Record<string, unknown> | null | undefined,
-): ActionData | undefined {
+): AssetAuditActionData | undefined {
   if (data === null || data === undefined) return undefined
   const sanitized = sanitizeValue(data, 0)
   return typeof sanitized === 'object' && sanitized !== null && !Array.isArray(sanitized)
-    ? (sanitized as ActionData)
+    ? (sanitized as AssetAuditActionData)
     : undefined
 }
 
-interface AuthState {
-  config: { clientId: string }
-  location: { IPv4: string }
-  userinfo: { name: string; inum: string } | null
-}
-
-interface RootState {
-  authReducer: AuthState
-}
-
-type ActionType = typeof CREATE | typeof UPDATE | typeof DELETION | typeof FETCH
-
-interface AuditInit {
-  client_id: string
-  ip_address: string
-  status: string
-  performedBy: { user_inum: string; userId: string }
-  [key: string]: string | { user_inum: string; userId: string } | object
-}
-
-type ActionData = Record<string, string | number | boolean | object | null>
-
-interface LogActionPayload {
-  action_message?: string
-  action_data?: Record<string, string | number | boolean | object | null>
-}
-
 export const useAssetAudit = () => {
-  const clientId = useSelector((state: RootState) => state.authReducer.config.clientId)
-  const ipAddress = useSelector((state: RootState) => state.authReducer.location.IPv4)
-  const userinfo = useSelector((state: RootState) => state.authReducer.userinfo)
+  const clientId = useSelector((state: AssetAuditRootState) => state.authReducer.config.clientId)
+  const ipAddress = useSelector((state: AssetAuditRootState) => state.authReducer.location.IPv4)
+  const userinfo = useSelector((state: AssetAuditRootState) => state.authReducer.userinfo)
 
   const initAudit = useCallback(
-    (): AuditInit => ({
+    (): AssetAuditInit => ({
       client_id: clientId,
       ip_address: ipAddress,
       status: 'success',
@@ -84,7 +64,11 @@ export const useAssetAudit = () => {
   )
 
   const logAction = useCallback(
-    async (actionType: ActionType, resource: string, payload: LogActionPayload) => {
+    async (
+      actionType: AssetAuditActionType,
+      resource: string,
+      payload: AssetAuditLogActionPayload,
+    ) => {
       const audit = initAudit()
       const sanitizedActionData = sanitizeActionData(
         payload.action_data as Record<string, unknown> | null | undefined,

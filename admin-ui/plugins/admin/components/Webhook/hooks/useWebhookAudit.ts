@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { postUserAction } from 'Redux/api/backend-api'
 import type { UserActionPayload } from 'Redux/api/types/BackendApi'
 import { addAdditionalData } from 'Utils/TokenController'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { CREATE, UPDATE, DELETION, FETCH } from '@/audit/UserActionType'
 import type { WebhookEntry } from '../types'
 
@@ -18,12 +19,12 @@ interface RootState {
 
 type ActionType = typeof CREATE | typeof UPDATE | typeof DELETION | typeof FETCH
 
-interface AuditInit {
+type AuditInit = {
   client_id: string
   ip_address: string
   status: string
   performedBy: { user_inum: string; userId: string }
-  [key: string]: string | { user_inum: string; userId: string } | object
+  [key: string]: JsonValue | { user_inum: string; userId: string } | undefined
 }
 
 type ActionData = Record<string, string | number | boolean | object | null>

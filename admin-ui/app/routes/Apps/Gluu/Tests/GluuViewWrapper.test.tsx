@@ -25,4 +25,5 @@ it('Check view wrapper with no show', () => {
     </I18nextProvider>,
   )
   expect(screen.getByTestId('MISSING')).toHaveTextContent('Missing required permission')
+  expect(screen.queryByText('hidden content')).not.toBeInTheDocument()
 })

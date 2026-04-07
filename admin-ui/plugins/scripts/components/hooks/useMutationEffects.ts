@@ -64,10 +64,13 @@ export const useMutationEffects = <
           ? (error as { response?: { data?: string | { message?: string } } }).response?.data
           : undefined
       const responseMessage =
-        typeof axiosData === 'string'
+        typeof axiosData === 'string' && axiosData.length > 0
           ? axiosData
-          : axiosData && typeof axiosData === 'object' && 'message' in axiosData
-            ? String(axiosData.message)
+          : axiosData &&
+              typeof axiosData === 'object' &&
+              typeof axiosData.message === 'string' &&
+              axiosData.message.length > 0
+            ? axiosData.message
             : undefined
       const errorMsg =
         responseMessage || (error instanceof Error ? error.message : undefined) || t(errorMessage)

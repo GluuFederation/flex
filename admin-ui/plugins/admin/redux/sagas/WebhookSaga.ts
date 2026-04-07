@@ -135,7 +135,7 @@ export function* triggerWebhook({
       .filter((item): item is WebhookTriggerResponseItem & { url: string } => item !== null)
 
     addAdditionalData(audit as AuditRecord, FETCH, `/webhook/${featureToTrigger}`, {
-      action: { action_data: { results: enrichedResults as JsonValue } },
+      action: { action_data: { results: enrichedResults } },
     })
     yield put(setFeatureToTrigger(''))
 

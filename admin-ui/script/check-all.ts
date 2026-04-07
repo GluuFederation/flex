@@ -8,7 +8,15 @@ type StepResult = {
 const run = (label: string, command: string, args: string[]): StepResult => {
   console.log(`\n\u001b[36m▶ ${label}\u001b[0m`)
   const result = spawnSync(command, args, { stdio: 'inherit', shell: true })
-  return { label, exitCode: result.status ?? 0 }
+  if (result.error) {
+    console.error(`Failed to spawn process for ${label}:`, result.error.message)
+    return { label, exitCode: 1 }
+  }
+  if (result.status === null) {
+    console.error(`Process for ${label} terminated by signal: ${result.signal ?? 'unknown'}`)
+    return { label, exitCode: 1 }
+  }
+  return { label, exitCode: result.status }
 }
 
 const formatStatus = (exitCode: number): string =>

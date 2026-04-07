@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react'
 import type { Reducer } from '@reduxjs/toolkit'
 import type { Saga } from 'redux-saga'
 
@@ -11,7 +12,7 @@ export type PluginMenu = {
 
 export type PluginRoute = {
   path: string
-  component: React.ComponentType
+  component: ComponentType
 }
 
 export type PluginReducer = {

@@ -12,7 +12,7 @@ if (context) {
   const ctx = context
   ctx.keys().forEach((key) => {
     const stripped = key.replace(/\.(?:tsx?|jsx?)$/, '')
-    moduleMap.set(stripped, () => ctx(key) as PluginMetadataModule)
+    moduleMap.set(stripped, () => ctx<PluginMetadataModule>(key))
   })
 }
 
