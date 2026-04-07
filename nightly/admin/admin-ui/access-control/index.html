@@ -2857,79 +2857,88 @@
 <li>Lock</li>
 </ul>
 </li>
+<li>Essential Admin UI Scopes<ul>
+<li>Admin UI Session</li>
 </ul>
-<p>In the Policy Store we use <a href="https://docs.jans.io/stable/cedarling/cedarling-policy-store/#default-entities">default_entities</a> to map the parent group with the sub features. For e.g. here we are showing the default entity json to map the features under <code>System and monitoring</code> parent group.</p>
-<div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;1694c954f8d9&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;uid&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gluu::Flex::AdminUI::Resources::Features&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Dashboard&quot;</span>
-<span class="w">        </span><span class="p">},</span>
+</li>
+</ul>
+<p>In the Policy Store we use <a href="https://docs.jans.io/stable/cedarling/reference/cedarling-policy-store/#default-entities">default_entities</a> to map the parent group with the sub features. For e.g. here we are showing the default entity json to map the features under <code>System and monitoring</code> parent group.</p>
+<div class="highlight"><pre><span></span><code><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;attrs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">        </span><span class="nt">&quot;uid&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Dashboard&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;GluuFlexAdminUIResources::Features&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
 <span class="w">        </span><span class="nt">&quot;parents&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">            </span><span class="p">{</span>
-<span class="w">                </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gluu::Flex::AdminUI::Resources::ParentResource&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SystemAndMonitoring&quot;</span>
+<span class="w">                </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SystemAndMonitoring&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;GluuFlexAdminUIResources::ParentResource&quot;</span>
 <span class="w">            </span><span class="p">}</span>
 <span class="w">        </span><span class="p">]</span>
 <span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;2694c954f8d8&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;uid&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gluu::Flex::AdminUI::Resources::Features&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;License&quot;</span>
-<span class="w">        </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;attrs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">        </span><span class="nt">&quot;uid&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;License&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;GluuFlexAdminUIResources::Features&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
 <span class="w">        </span><span class="nt">&quot;parents&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">            </span><span class="p">{</span>
-<span class="w">                </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gluu::Flex::AdminUI::Resources::ParentResource&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SystemAndMonitoring&quot;</span>
+<span class="w">                </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SystemAndMonitoring&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;GluuFlexAdminUIResources::ParentResource&quot;</span>
 <span class="w">            </span><span class="p">}</span>
 <span class="w">        </span><span class="p">]</span>
 <span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;3694c954f8d7&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;uid&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gluu::Flex::AdminUI::Resources::Features&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MAU&quot;</span>
-<span class="w">        </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;attrs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">        </span><span class="nt">&quot;uid&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MAU&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;GluuFlexAdminUIResources::Features&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
 <span class="w">        </span><span class="nt">&quot;parents&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">            </span><span class="p">{</span>
-<span class="w">                </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gluu::Flex::AdminUI::Resources::ParentResource&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SystemAndMonitoring&quot;</span>
+<span class="w">                </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SystemAndMonitoring&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;GluuFlexAdminUIResources::ParentResource&quot;</span>
 <span class="w">            </span><span class="p">}</span>
 <span class="w">        </span><span class="p">]</span>
 <span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;4694c954f8d6&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;uid&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gluu::Flex::AdminUI::Resources::Features&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Security&quot;</span>
-<span class="w">        </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;attrs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">        </span><span class="nt">&quot;uid&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Security&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;GluuFlexAdminUIResources::Features&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
 <span class="w">        </span><span class="nt">&quot;parents&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">            </span><span class="p">{</span>
-<span class="w">                </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gluu::Flex::AdminUI::Resources::ParentResource&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SystemAndMonitoring&quot;</span>
+<span class="w">                </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SystemAndMonitoring&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;GluuFlexAdminUIResources::ParentResource&quot;</span>
 <span class="w">            </span><span class="p">}</span>
 <span class="w">        </span><span class="p">]</span>
 <span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;6494c954f8d6&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;uid&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gluu::Flex::AdminUI::Resources::Features&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Settings&quot;</span>
-<span class="w">        </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;attrs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">        </span><span class="nt">&quot;uid&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Settings&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;GluuFlexAdminUIResources::Features&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
 <span class="w">        </span><span class="nt">&quot;parents&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">            </span><span class="p">{</span>
-<span class="w">                </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gluu::Flex::AdminUI::Resources::ParentResource&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SystemAndMonitoring&quot;</span>
+<span class="w">                </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SystemAndMonitoring&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;GluuFlexAdminUIResources::ParentResource&quot;</span>
 <span class="w">            </span><span class="p">}</span>
 <span class="w">        </span><span class="p">]</span>
 <span class="w">    </span><span class="p">},</span>
-<span class="err">...</span>
-<span class="p">}</span>
+<span class="w">    </span><span class="err">....</span>
+<span class="p">]</span>
 </code></pre></div>
 <h2 id="managing-admin-uis-policy-store">Managing Admin UI's Policy Store<a class="headerlink" href="#managing-admin-uis-policy-store" title="Permanent link">#</a></h2>
-<p>After installation, Admin UI uses a default Policy Store for GUI access control. The logged-in user can use the <a href="../configuration/#cedarling-configuration">Cedarling configuration screen</a> to configure a remote Policy Store generated by <a href="https://cloud.gluu.org/agama-lab">Agama-Lab</a> using its URL. When the Policy Store URL is configured, the backend parses the Policy Store to determine the roles and the role-to-scope mappings. The Policy Store is used for managing GUI access control. The aggregated role-to-scope mapping (obtained by parsing the Policy Store) ensures that only the mapped scopes are added in the authorization tokens to access the appropriate protected Config API endpoints.</p>
+<p>After installation, Admin UI uses a default Policy Store (file with .cjar extension) for GUI access control. The logged-in user can use the <a href="../configuration/#cedarling-configuration">Cedarling configuration screen</a> to upload the new Policy Store file with .cjar extension, generated and released using <a href="https://cloud.gluu.org/agama-lab">Agama-Lab's</a> Policy designer. When the Policy Store file is uploaded, the backend parses the Policy Store to determine the roles and the role-to-scope mappings. The Policy Store is used for managing GUI access control. The aggregated role-to-scope mapping (obtained by parsing the Policy Store) ensures that only the mapped scopes are added in the authorization tokens to access the appropriate protected Config API endpoints.</p>
 <pre class="mermaid"><code>C4Context
     title Access Control in Gluu Flex Admin UI
 
@@ -2945,7 +2954,7 @@
             Container(Frontend, "Admin UI Frontend", "Web Interface")
         }
 
-        ContainerDb(PolicyStore, "Default Policy Store", "Default Policy Store JSON File")
+        ContainerDb(PolicyStore, "Default or uploaded Policy Store", "Default or uploaded Policy Store File with .cjar extension")
     }
 
     Enterprise_Boundary(AgamaLab, "Agama Lab") {
@@ -2953,11 +2962,10 @@
     }
 
     Enterprise_Boundary(GitHub, "GitHub") {
-        ContainerDb(PolicyStoreProject, "Policy Store Project", "GitHub repository for storing remote Policy Stores")
+        ContainerDb(PolicyStoreProject, "Policy Store Project", "GitHub repository for storing and &lt;br&gt; publishing remote Policy Stores")
     }
 
-    Rel(AdminUIBackend, PolicyStore, "Use default Policy Store if &lt;br&gt;remote Policy Store URL not configured")
-    Rel(AdminUIBackend, PolicyStoreProject, "Use remote Policy Store if &lt;br&gt; remote Policy Store URL is configured")
+    Rel(AdminUIBackend, PolicyStore, "Use the Policy Store for access control in Admin UI")
     Rel(AdminUIBackend, Cedarling, "Request Policy &lt;br&gt;Store for initialization")
     Rel(PolicyDesigner, PolicyStoreProject, "Save Policy Store project to GitHub")
     Rel(Frontend, Cedarling, "Check user permissions&lt;br&gt;for UI features and actions", "TBAC Authorization")</code></pre>
@@ -2967,30 +2975,45 @@
 <p>The Cedar policies are rules which decide if the logged-in user can perform Read, Write or Delete action on a feature or not. By writing the appropriate cedar policies the administrator can manage access control in Admin UI. For e.g the below policy allows the user with role <strong>admin</strong> to perform <strong>Read</strong>, <strong>Write</strong> or <strong>Delete</strong> actions on all the features under the parent group <strong>AuthServerAndConfiguration</strong>.</p>
 <div class="highlight"><pre><span></span><code>@id(&quot;AdminCanManageAuthServerConfiguration&quot;)
 permit (
-  principal in Gluu::Flex::AdminUI::Role::&quot;admin&quot;,
-  action in [Gluu::Flex::AdminUI::Action::&quot;read&quot;,
-  Gluu::Flex::AdminUI::Action::&quot;write&quot;,
-  Gluu::Flex::AdminUI::Action::&quot;delete&quot;],
-  resource in Gluu::Flex::AdminUI::Resources::ParentResource::&quot;AuthServerAndConfiguration&quot;
-);
+  principal,
+  action in [GluuFlexAdminUI::Action::&quot;read&quot;,
+  GluuFlexAdminUI::Action::&quot;write&quot;,
+  GluuFlexAdminUI::Action::&quot;delete&quot;],
+  resource in GluuFlexAdminUIResources::ParentResource::&quot;AuthServerAndConfiguration&quot;
+)
+when {
+    context has tokens.gluuflexadminui_userinfo_token &amp;&amp;
+    context.tokens.gluuflexadminui_userinfo_token.hasTag(&quot;jansAdminUIRole&quot;) &amp;&amp;
+    context.tokens.gluuflexadminui_userinfo_token.getTag(&quot;jansAdminUIRole&quot;).contains(&quot;admin&quot;)
+};
 </code></pre></div>
 <p>Below policy gives the users with role <strong>viewer</strong> the <strong>Read</strong> access to all the features under the <strong>IdentityAndAccess</strong> parent group.</p>
 <div class="highlight"><pre><span></span><code>@id(&quot;ViewerCanViewUserIdentityAndAccess&quot;)
 permit (
-  principal in Gluu::Flex::AdminUI::Role::&quot;viewer&quot;,
-  action in Gluu::Flex::AdminUI::Action::&quot;read&quot;,
-  resource in Gluu::Flex::AdminUI::Resources::ParentResource::&quot;IdentityAndAccess&quot;
-);
+  principal,
+  action in GluuFlexAdminUI::Action::&quot;read&quot;,
+  resource in GluuFlexAdminUIResources::ParentResource::&quot;IdentityAndAccess&quot;
+)
+when {
+    context has tokens.gluuflexadminui_userinfo_token &amp;&amp;
+    context.tokens.gluuflexadminui_userinfo_token.hasTag(&quot;jansAdminUIRole&quot;) &amp;&amp;
+    context.tokens.gluuflexadminui_userinfo_token.getTag(&quot;jansAdminUIRole&quot;).contains(&quot;viewer&quot;)
+};
 </code></pre></div>
 <p>Below policy gives the users with role <strong>auditor</strong> the <strong>Read</strong>, <strong>Write</strong> and <strong>Delete</strong> access to only the <strong>Clients</strong> feature of Admin UI.</p>
 <div class="highlight"><pre><span></span><code>@id(&quot;AuditorCanManageClients&quot;)
 permit (
-  principal in Gluu::Flex::AdminUI::Role::&quot;auditor&quot;,
-  action in [Gluu::Flex::AdminUI::Action::&quot;read&quot;,
-  Gluu::Flex::AdminUI::Action::&quot;write&quot;,
-  Gluu::Flex::AdminUI::Action::&quot;delete&quot;],
-  resource in Gluu::Flex::AdminUI::Resources::Features::&quot;Clients&quot;
-);
+  principal,
+  action in [GluuFlexAdminUI::Action::&quot;read&quot;,
+  GluuFlexAdminUI::Action::&quot;write&quot;,
+  GluuFlexAdminUI::Action::&quot;delete&quot;],
+  resource in GluuFlexAdminUIResources::Features::&quot;Clients&quot;
+)
+when {
+    context has tokens.gluuflexadminui_userinfo_token &amp;&amp;
+    context.tokens.gluuflexadminui_userinfo_token.hasTag(&quot;jansAdminUIRole&quot;) &amp;&amp;
+    context.tokens.gluuflexadminui_userinfo_token.getTag(&quot;jansAdminUIRole&quot;).contains(&quot;auditor&quot;)
+};
 </code></pre></div>
 <h3 id="adding-new-roles-in-admin-ui">Adding new Roles in Admin UI<a class="headerlink" href="#adding-new-roles-in-admin-ui" title="Permanent link">#</a></h3>
 <p>To add new Admin UI user roles, the administrator just need to introduce the policies associated with those roles in the Policy Store. On saving the Policy Store the Admin UI parses it and aggregates the roles and role-to-scope mapping. The aggregated data is saved into the persistence.</p>
@@ -2998,29 +3021,39 @@ permit (
 <p>The principal element in a <a href="https://docs.cedarpolicy.com/">Cedar policy</a> represents a user, service, or other identity that can make a request to perform an action on a resource in your application. We will learn how to write an Admin UI policy using a sample scenario: a logged-in user with the <strong>admin</strong> role can manage the <strong>Auth Server and its configuration</strong>.</p>
 <p><div class="highlight"><pre><span></span><code>@id(&quot;AdminCanManageAuthServerConfiguration&quot;)
 permit (
-  principal in Gluu::Flex::AdminUI::Role::&quot;admin&quot;,
-  action in [Gluu::Flex::AdminUI::Action::&quot;read&quot;,
-  Gluu::Flex::AdminUI::Action::&quot;write&quot;,
-  Gluu::Flex::AdminUI::Action::&quot;delete&quot;],
-  resource in Gluu::Flex::AdminUI::Resources::ParentResource::&quot;AuthServerAndConfiguration&quot;
-);
+  principal,
+  action in [GluuFlexAdminUI::Action::&quot;read&quot;,
+  GluuFlexAdminUI::Action::&quot;write&quot;,
+  GluuFlexAdminUI::Action::&quot;delete&quot;],
+  resource in GluuFlexAdminUIResources::ParentResource::&quot;AuthServerAndConfiguration&quot;
+)
+when {
+    context has tokens.gluuflexadminui_userinfo_token &amp;&amp;
+    context.tokens.gluuflexadminui_userinfo_token.hasTag(&quot;jansAdminUIRole&quot;) &amp;&amp;
+    context.tokens.gluuflexadminui_userinfo_token.getTag(&quot;jansAdminUIRole&quot;).contains(&quot;admin&quot;)
+};
 </code></pre></div>
 <strong>Principal :</strong>
-We are using the administrator's <strong>role</strong> as principal while writing the policies for Admin UI. Here <code>Gluu::Flex::AdminUI::</code> is the namespace in cedar schema where the <code>Role</code> entity resides. The <strong>admin</strong> surrounded by inverted commas is the Entity Id of the <strong>Role</strong> entity and is basically the role name.</p>
+We are using Cedarling's <a href="https://docs.jans.io/stable/cedarling/reference/cedarling-multi-issuer/">Multi-Issuer Authorization</a> in Admin UI for access control which evaluates policies based purely on token entities. The cedar policies are driven by tokens tags in the when clause. The administrator's <strong>role</strong> is picked up from the context token entities.</p>
 <p><strong>Action :</strong>
-In this policy, we are allowing <strong>Read</strong>, <strong>Write</strong> and <strong>Delete</strong> actions on the resource. Here we have <code>action in [Gluu::Flex::AdminUI::Action::"read", Gluu::Flex::AdminUI::Action::"write", Gluu::Flex::AdminUI::Action::"delete"]</code>. The <code>Gluu::Flex::AdminUI::</code> is the namespace where all action entities reside.</p>
+In this policy, we are allowing <strong>Read</strong>, <strong>Write</strong> and <strong>Delete</strong> actions on the resource. Here we have <code>action in [GluuFlexAdminUI::Action::"read", GluuFlexAdminUI::Action::"write", GluuFlexAdminUI::Action::"delete"]</code>. The <code>GluuFlexAdminUI::</code> is the namespace where all action entities reside.</p>
 <p><strong>Resource :</strong>
-As we have categorised Admin UI features (or resources) into the parent groups, <code>resource in Gluu::Flex::AdminUI::Resources::ParentResource::"AuthServerAndConfiguration"</code> allows the user with role <strong>admin</strong> to perform <strong>Read</strong>, <strong>Write</strong> and <strong>Delete</strong> actions on all the features under <strong>AuthServerAndConfiguration</strong> parent group. Here <code>Gluu::Flex::AdminUI::Resources::</code> is the namespace where <strong>ParentResource</strong> entity resides. The <strong>ParentResource</strong> entity represents the parent group and <strong>AuthServerAndConfiguration</strong> in inverted commas is the entity id representing name of the parent group.</p>
+As we have categorised Admin UI features (or resources) into the parent groups, <code>resource in GluuFlexAdminUIResources::ParentResource::"AuthServerAndConfiguration"</code> allows the user with role <strong>admin</strong> to perform <strong>Read</strong>, <strong>Write</strong> and <strong>Delete</strong> actions on all the features under <strong>AuthServerAndConfiguration</strong> parent group. Here <code>GluuFlexAdminUIResources::</code> is the namespace where <strong>ParentResource</strong> entity resides. The <strong>ParentResource</strong> entity represents the parent group and <strong>AuthServerAndConfiguration</strong> in inverted commas is the entity id representing name of the parent group.</p>
 <h3 id="writing-policies-specific-admin-ui-feature-as-resource">Writing policies: Specific Admin UI Feature as Resource<a class="headerlink" href="#writing-policies-specific-admin-ui-feature-as-resource" title="Permanent link">#</a></h3>
-<p>To define policies for a specific Admin UI feature (e.g., Clients, Scopes, Users), use the format <code>Gluu::Flex::AdminUI::Resources::Features</code> followed by the resource’s Entity ID enclosed in quotation marks in resource clause. For e.g. below policy allows <strong>Read</strong>, <strong>Write</strong> and <strong>Delete</strong> action to the user with role <strong>auditor</strong> on <strong>Clients</strong> resource.</p>
+<p>To define policies for a specific Admin UI feature (e.g., Clients, Scopes, Users), use the format <code>GluuFlexAdminUIResources::Features</code> followed by the resource’s Entity ID enclosed in quotation marks in resource clause. For e.g. below policy allows <strong>Read</strong>, <strong>Write</strong> and <strong>Delete</strong> action to the user with role <strong>auditor</strong> on <strong>Clients</strong> resource.</p>
 <p><div class="highlight"><pre><span></span><code>@id(&quot;AuditorCanManageClients&quot;)
 permit (
-  principal in Gluu::Flex::AdminUI::Role::&quot;auditor&quot;,
-  action in [Gluu::Flex::AdminUI::Action::&quot;read&quot;,
-  Gluu::Flex::AdminUI::Action::&quot;write&quot;,
-  Gluu::Flex::AdminUI::Action::&quot;delete&quot;],
-  resource in Gluu::Flex::AdminUI::Resources::Features::&quot;Clients&quot;
-);
+  principal,
+  action in [GluuFlexAdminUI::Action::&quot;read&quot;,
+  GluuFlexAdminUI::Action::&quot;write&quot;,
+  GluuFlexAdminUI::Action::&quot;delete&quot;],
+  resource in GluuFlexAdminUIResources::Features::&quot;Clients&quot;
+)
+when {
+    context has tokens.gluuflexadminui_userinfo_token &amp;&amp;
+    context.tokens.gluuflexadminui_userinfo_token.hasTag(&quot;jansAdminUIRole&quot;) &amp;&amp;
+    context.tokens.gluuflexadminui_userinfo_token.getTag(&quot;jansAdminUIRole&quot;).contains(&quot;auditor&quot;)
+};
 </code></pre></div>
 Please see the Entity Ids of the Parent Groups and their underlying features in this table:</p>
 <table>
@@ -3047,6 +3080,10 @@ Please see the Entity Ids of the Parent Groups and their underlying features in 
 <td>Service</td>
 <td>Persistence, SMTP, SCIM, FIDO, SAML, Lock</td>
 </tr>
+<tr>
+<td>Essential Admin UI Scopes</td>
+<td>Admin UI Session Scopes</td>
+</tr>
 </tbody>
 </table>
 
@@ -3071,7 +3108,7 @@ Please see the Entity Ids of the Parent Groups and their underlying features in 
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="November 20, 2025 08:59:14 UTC"><span class="timeago" datetime="2025-11-20T08:59:14+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="November 20, 2025 08:59:14 UTC">2025-11-20</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="April 7, 2026 07:31:51 UTC"><span class="timeago" datetime="2026-04-07T07:31:51+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="April 7, 2026 07:31:51 UTC">2026-04-07</span>
   </span>
 
     
