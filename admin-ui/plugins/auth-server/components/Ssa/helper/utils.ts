@@ -70,7 +70,11 @@ const pickFirstString = (...values: Array<string | undefined>): string | undefin
 
 export const getErrorMessage = (error: CaughtError): string => {
   if (typeof error === 'string') {
-    return error
+    const trimmed = error.trim()
+    if (trimmed.length > 0) {
+      return trimmed
+    }
+    return 'An error occurred'
   }
   if (typeof error === 'object' && error !== null) {
     const err = error as ApiErrorLike

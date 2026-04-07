@@ -102,7 +102,7 @@ const defaultWebhookReducerState = {
 
 const defaultAuthReducerState: AuthState = {
   isAuthenticated: false,
-  userinfo: null,
+  userinfo: { inum: 'test-inum', name: 'Test User' },
   userinfo_jwt: null,
   idToken: null,
   jwtToken: null,

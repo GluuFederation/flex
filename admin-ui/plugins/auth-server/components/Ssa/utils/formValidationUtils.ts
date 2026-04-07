@@ -13,6 +13,14 @@ export const getSsaInitialValues = (): SsaFormValues => ({
   expirationDate: null as ExpirationDate,
 })
 
+export const hasFormChanges = (
+  isDirty: boolean,
+  selectedAttributes: string[],
+  modifiedFields: ModifiedFields,
+): boolean => {
+  return isDirty || selectedAttributes.length > 0 || Object.keys(modifiedFields).length > 0
+}
+
 export const shouldDisableApplyButton = (
   isSubmitting: boolean,
   isDirty: boolean,
@@ -20,17 +28,5 @@ export const shouldDisableApplyButton = (
   modifiedFields: ModifiedFields,
   selectedAttributes: string[],
 ): boolean => {
-  const hasModifiedFields = Object.keys(modifiedFields).length > 0
-  const hasSelectedAttributes = selectedAttributes.length > 0
-  const isFormChanged = isDirty || hasModifiedFields || hasSelectedAttributes
-
-  return isSubmitting || !isFormChanged || !isValid
-}
-
-export const hasFormChanges = (
-  isDirty: boolean,
-  selectedAttributes: string[],
-  modifiedFields: ModifiedFields,
-): boolean => {
-  return isDirty || selectedAttributes.length > 0 || Object.keys(modifiedFields).length > 0
+  return isSubmitting || !hasFormChanges(isDirty, selectedAttributes, modifiedFields) || !isValid
 }
