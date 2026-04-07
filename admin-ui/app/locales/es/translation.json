@@ -782,6 +782,7 @@
     "schema": "Esquema",
     "user_claims": "Atributos de Usuario",
     "available_claims": "Reclamaciones disponibles",
+    "available_custom_attributes": "Atributos personalizados disponibles",
     "scopes": "Ámbitos",
     "scripts": "Scripts",
     "services": "Servicios",

@@ -1,28 +1,11 @@
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  type UseQueryResult,
-  type UseMutationResult,
-} from '@tanstack/react-query'
-import { useSelector } from 'react-redux'
+import { useQuery, useMutation, useQueryClient, type UseQueryResult } from '@tanstack/react-query'
+import { useAppSelector } from '@/redux/hooks'
 import type { SsaData, SsaJwtResponse, SsaCreatePayload } from '../types'
 
 export const SSA_QUERY_KEYS = {
   all: ['ssas'] as const,
   detail: (jti: string) => ['ssas', jti] as const,
 } as const
-
-interface AuthState {
-  jwtToken: string | null
-  config: {
-    authServerHost: string
-  }
-}
-
-interface RootState {
-  authReducer: AuthState
-}
 
 interface ApiError extends Error {
   status?: number
@@ -136,8 +119,10 @@ const getSsaJwt = async (
 }
 
 export const useGetAllSsas = (): UseQueryResult<SsaData[], Error> => {
-  const token = useSelector((state: RootState) => state.authReducer.jwtToken)
-  const authServerHost = useSelector((state: RootState) => state.authReducer.config.authServerHost)
+  const token = useAppSelector((state) => state.authReducer.jwtToken)
+  const authServerHost = String(
+    useAppSelector((state) => state.authReducer.config.authServerHost) ?? '',
+  )
 
   return useQuery<SsaData[], Error>({
     queryKey: SSA_QUERY_KEYS.all,
@@ -156,9 +141,11 @@ export const useGetAllSsas = (): UseQueryResult<SsaData[], Error> => {
   })
 }
 
-export const useCreateSsa = (): UseMutationResult<SsaData, Error, SsaCreatePayload, unknown> => {
-  const token = useSelector((state: RootState) => state.authReducer.jwtToken)
-  const authServerHost = useSelector((state: RootState) => state.authReducer.config.authServerHost)
+export const useCreateSsa = () => {
+  const token = useAppSelector((state) => state.authReducer.jwtToken)
+  const authServerHost = String(
+    useAppSelector((state) => state.authReducer.config.authServerHost) ?? '',
+  )
   const queryClient = useQueryClient()
 
   return useMutation<SsaData, Error, SsaCreatePayload>({
@@ -169,7 +156,7 @@ export const useCreateSsa = (): UseMutationResult<SsaData, Error, SsaCreatePaylo
       if (!authServerHost) {
         throw new Error('Auth server host not configured')
       }
-      return createSsa(payload, token ?? '', authServerHost)
+      return createSsa(payload, token, authServerHost)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: SSA_QUERY_KEYS.all })
@@ -177,9 +164,11 @@ export const useCreateSsa = (): UseMutationResult<SsaData, Error, SsaCreatePaylo
   })
 }
 
-export const useGetSsaJwt = (): UseMutationResult<SsaJwtResponse, Error, string, unknown> => {
-  const token = useSelector((state: RootState) => state.authReducer.jwtToken)
-  const authServerHost = useSelector((state: RootState) => state.authReducer.config.authServerHost)
+export const useGetSsaJwt = () => {
+  const token = useAppSelector((state) => state.authReducer.jwtToken)
+  const authServerHost = String(
+    useAppSelector((state) => state.authReducer.config.authServerHost) ?? '',
+  )
 
   return useMutation<SsaJwtResponse, Error, string>({
     mutationFn: (jti: string) => {
@@ -189,7 +178,7 @@ export const useGetSsaJwt = (): UseMutationResult<SsaJwtResponse, Error, string,
       if (!authServerHost) {
         throw new Error('Auth server host not configured')
       }
-      return getSsaJwt(jti, token ?? '', authServerHost)
+      return getSsaJwt(jti, token, authServerHost)
     },
   })
 }

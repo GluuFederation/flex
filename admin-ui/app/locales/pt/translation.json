@@ -125,6 +125,7 @@
     "schema": "Esquema",
     "user_claims": "Reivindicações do usuário",
     "available_claims": "Reivindicações disponíveis",
+    "available_custom_attributes": "Atributos personalizados disponíveis",
     "scopes": "Escopos",
     "scripts": "Scripts",
     "services": "Serviços",

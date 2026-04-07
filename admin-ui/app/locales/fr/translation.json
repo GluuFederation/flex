@@ -128,6 +128,7 @@
     "schema": "Schéma",
     "user_claims": "Réclamations des utilisateurs",
     "available_claims": "Réclamations disponibles",
+    "available_custom_attributes": "Attributs personnalisés disponibles",
     "scopes": "Portées",
     "scripts": "Scénarios",
     "services": "Prestations de service",

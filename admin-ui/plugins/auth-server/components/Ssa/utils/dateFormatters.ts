@@ -1,3 +1,5 @@
+import type { Dayjs } from 'dayjs'
+
 export const formatExpirationDate = (expirationTimestamp: number, locale?: string): string => {
   if (expirationTimestamp === null || expirationTimestamp === undefined) {
     return 'Never'
@@ -11,4 +13,19 @@ export const formatExpirationDate = (expirationTimestamp: number, locale?: strin
     day: '2-digit',
     year: 'numeric',
   })
+}
+
+export const toEpochSecondsFromDayjs = (dayjsValue: Dayjs | null): number | null => {
+  try {
+    if (!dayjsValue) {
+      return null
+    }
+    const ms = dayjsValue.toDate().getTime()
+    if (Number.isFinite(ms)) {
+      return Math.floor(ms / 1000)
+    }
+    return null
+  } catch {
+    return null
+  }
 }
