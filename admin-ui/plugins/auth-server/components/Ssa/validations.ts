@@ -2,7 +2,7 @@ import * as Yup from 'yup'
 import dayjs from 'dayjs'
 import type { SsaFormValues } from './types'
 
-export const ssaValidationSchema = Yup.object<Record<keyof SsaFormValues, Yup.AnySchema>>({
+export const ssaValidationSchema = Yup.object({
   software_id: Yup.string()
     .trim()
     .required('Software ID is required')
@@ -60,6 +60,6 @@ export const ssaValidationSchema = Yup.object<Record<keyof SsaFormValues, Yup.An
 
       return dateValue.isAfter(dayjs())
     }),
-}) as Yup.ObjectSchema<SsaFormValues>
+})
 
 export default ssaValidationSchema

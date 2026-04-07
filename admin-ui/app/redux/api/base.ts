@@ -1,4 +1,5 @@
 import { getRootState } from '@/redux/hooks'
+import { REGEX_TRAILING_SLASHES } from '@/utils/regex'
 import type { JansApiClient, JansConfigApiModule } from './types/JansApiClient'
 
 export const getClient = (
@@ -15,7 +16,7 @@ export const getClient = (
   defaultClient.basePath =
     window['configApiBaseUrl'] ||
     process.env.CONFIG_API_BASE_URL ||
-    'https://admin-ui-test.gluu.org'.replace(/\/+$/, '')
+    'https://admin-ui-test.gluu.org'.replace(REGEX_TRAILING_SLASHES, '')
 
   if (hasSession) {
     defaultClient.enableCookies = true
@@ -49,7 +50,7 @@ export const getClientWithToken = (
   defaultClient.basePath =
     window['configApiBaseUrl'] ||
     process.env.CONFIG_API_BASE_URL ||
-    'https://admin-ui-test.gluu.org'.replace(/\/+$/, '')
+    'https://admin-ui-test.gluu.org'.replace(REGEX_TRAILING_SLASHES, '')
 
   if (hasSession) {
     defaultClient.enableCookies = true

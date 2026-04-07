@@ -30,7 +30,6 @@ interface CustomScript {
   name: string
   scriptType: string
   enabled: boolean
-  [key: string]: unknown
 }
 
 interface RootState {

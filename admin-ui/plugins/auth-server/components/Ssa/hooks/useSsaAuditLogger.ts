@@ -26,7 +26,7 @@ interface SsaAuditParams {
   action: string
   resource: string
   message: string
-  payload?: unknown
+  payload?: object | string | number | boolean | null
 }
 
 /**

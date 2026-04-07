@@ -24,6 +24,11 @@ import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { formatDate } from '@/utils/dayjsUtils'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
+import {
+  REGEX_CSV_FORMULA_INJECTION,
+  REGEX_CSV_SPECIAL_CHARS,
+  REGEX_DOUBLE_QUOTE,
+} from '@/utils/regex'
 import { BORDER_RADIUS, ICON_SIZE } from '@/constants'
 import { useAppSelector } from '@/redux/hooks'
 import { useGetSessions, useSearchSession } from 'JansConfigApi'
@@ -360,11 +365,11 @@ const SessionListPage: React.FC = () => {
 
   const sanitizeCsvCell = (value: JsonValue): string => {
     let cell = value == null ? '' : String(value)
-    if (/^[=+\-@]/.test(cell)) {
+    if (REGEX_CSV_FORMULA_INJECTION.test(cell)) {
       cell = "'" + cell
     }
-    if (/[",\n\r]/.test(cell)) {
-      cell = '"' + cell.replace(/"/g, '""') + '"'
+    if (REGEX_CSV_SPECIAL_CHARS.test(cell)) {
+      cell = '"' + cell.replace(REGEX_DOUBLE_QUOTE, '""') + '"'
     }
     return cell
   }

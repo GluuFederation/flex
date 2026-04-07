@@ -1,6 +1,7 @@
 import type { Dayjs } from 'dayjs'
 
-export interface SsaDetails extends Record<string, unknown> {
+export interface SsaDetails {
+  [key: string]: string | string[] | boolean
   software_id: string
   software_roles: string[]
   description: string
@@ -15,6 +16,7 @@ export interface SsaData {
   ssa: SsaDetails
   status: string
   expiration: number
+  name?: string
 }
 
 export interface SsaJwtResponse {
@@ -23,7 +25,8 @@ export interface SsaJwtResponse {
 
 export type ExpirationDate = Dayjs | null
 
-export interface SsaFormValues extends Record<string, unknown> {
+export interface SsaFormValues {
+  [key: string]: string | number | boolean | string[] | Dayjs | null | undefined
   software_id: string
   one_time_use: boolean
   org_id: string
@@ -60,5 +63,4 @@ export interface SsaAuditLogPayload {
   jti?: string
   org_id?: string
   software_id?: string
-  [key: string]: unknown
 }

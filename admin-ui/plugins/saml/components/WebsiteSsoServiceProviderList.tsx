@@ -25,7 +25,6 @@ import { DEFAULT_THEME } from '@/context/theme/constants'
 interface DeleteItem {
   inum: string
   displayName?: string
-  tableData?: Record<string, unknown>
 }
 
 const DeleteOutlinedIcon = () => <DeleteOutlined />
@@ -124,11 +123,7 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
           rowData: TrustRelationship | TrustRelationship[],
         ): void => {
           if (Array.isArray(rowData)) return
-          const { tableData, ...clean } = rowData as TrustRelationship & {
-            tableData?: unknown
-          }
-          void tableData
-          handleGoToEditPage(clean)
+          handleGoToEditPage(rowData)
         },
       })
       actions.push({
@@ -221,6 +216,7 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
           modal={modal}
           subject="saml website sso service provider"
           onAccept={onDeletionConfirmed}
+          feature="saml"
         />
       )}
     </GluuLoader>

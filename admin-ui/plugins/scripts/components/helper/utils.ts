@@ -1,4 +1,5 @@
 import { CustomScriptItem, ModuleProperty, ConfigurationProperty } from '../types/customScript'
+import { REGEX_CONSECUTIVE_WHITESPACE } from '@/utils/regex'
 
 import { FormValues } from '../types/forms'
 import { filterEmptyObjects } from 'Utils/Util'
@@ -151,7 +152,7 @@ export const buildChangedFieldOperations = (
     (current.enabled as JsonValue) ?? null,
   )
   if ((initial.script ?? '') !== (current.script ?? '')) {
-    const scriptPreview = (current.script ?? '').replace(/\s+/g, ' ').trim()
+    const scriptPreview = (current.script ?? '').replace(REGEX_CONSECUTIVE_WHITESPACE, ' ').trim()
     const maxLen = 40
     operations.push({
       path: t('fields.script'),

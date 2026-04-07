@@ -4,7 +4,7 @@ import Toggle from 'react-toggle'
 import type { JsonValue } from './types/common'
 import type { GluuToggleRowProps } from './types/GluuToggleRow.types'
 
-const GluuToggleRow = <T extends Record<string, JsonValue> = Record<string, JsonValue>>({
+const GluuToggleRow = <T extends object = Record<string, JsonValue>>({
   formik,
   label,
   viewOnly = false,
@@ -21,7 +21,7 @@ const GluuToggleRow = <T extends Record<string, JsonValue> = Record<string, Json
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             formik.setFieldValue(name, event.target.checked)
           }}
-          checked={Boolean(formik.values[name])}
+          checked={Boolean(formik.values[name as keyof T])}
           disabled={viewOnly}
         />
       </Col>

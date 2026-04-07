@@ -1,3 +1,5 @@
+import { REGEX_HEX_COLOR, REGEX_CAMEL_CASE_WORD_BOUNDARY } from '@/utils/regex'
+
 export const customColors = {
   // Base
   white: '#ffffff',
@@ -93,7 +95,7 @@ export const customColors = {
 } as const
 
 export const hexToRgb = (hex: string, fallback: string = '0, 0, 0'): string => {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  const result = REGEX_HEX_COLOR.exec(hex)
   if (!result) {
     return fallback
   }
@@ -110,7 +112,7 @@ export type CustomColorKeys = keyof typeof customColors
 
 /** Convert camelCase to kebab-case for CSS variable names */
 function toKebabCase(str: string): string {
-  return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
+  return str.replace(REGEX_CAMEL_CASE_WORD_BOUNDARY, '$1-$2').toLowerCase()
 }
 
 const CUSTOM_COLORS_CSS_VARS: Readonly<Record<string, string>> = (() => {

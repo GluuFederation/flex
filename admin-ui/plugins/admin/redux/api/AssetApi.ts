@@ -1,4 +1,4 @@
-import { handleResponse, handleTypedResponse } from 'Utils/ApiUtils'
+import { handleTypedResponse } from 'Utils/ApiUtils'
 import axios from 'Redux/api/axios'
 import {
   Document,
@@ -47,7 +47,7 @@ export default class AssetApi {
         })
         .then((result) => handleTypedResponse(null, reject, resolve, result?.data, undefined))
         .catch((error) =>
-          handleResponse(error, reject, resolve as (data: unknown) => void, undefined),
+          handleTypedResponse<Document>(error, reject, resolve, undefined, undefined),
         )
     })
   }
@@ -75,7 +75,7 @@ export default class AssetApi {
         })
         .then((result) => handleTypedResponse(null, reject, resolve, result?.data, undefined))
         .catch((error) =>
-          handleResponse(error, reject, resolve as (data: unknown) => void, undefined),
+          handleTypedResponse<Document>(error, reject, resolve, undefined, undefined),
         )
     })
   }

@@ -6,12 +6,12 @@ import { HelpOutline } from '@mui/icons-material'
 import GluuTooltip from './GluuTooltip'
 import customColors from '@/customColors'
 import { isDevelopment } from '@/utils/env'
-import type { FormikProps } from 'formik'
 import type {
   Property,
   KeyValueProperty,
   SourceDestinationProperty,
   GluuPropertiesProps,
+  GluuPropertiesFormik,
 } from './types/GluuProperties.types'
 
 const isKeyValueProperty = (prop: Property): prop is KeyValueProperty =>
@@ -21,7 +21,7 @@ const isSourceDestinationProperty = (prop: Property): prop is SourceDestinationP
   'source' in prop && 'destination' in prop
 
 const syncFormikProperties = (
-  formik: FormikProps<Record<string, Property[]>> | null,
+  formik: GluuPropertiesFormik | null,
   compName: string,
   properties: Property[],
   { isKeys, multiProperties }: { isKeys: boolean; multiProperties: boolean },

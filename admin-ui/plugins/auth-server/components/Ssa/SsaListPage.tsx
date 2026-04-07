@@ -28,6 +28,7 @@ import { DELETION } from '../../../../app/audit/UserActionType'
 import { SSA as SSA_RESOURCE } from '../../redux/audit/Resources'
 import { updateToast } from 'Redux/features/toastSlice'
 import { DEFAULT_THEME } from '@/context/theme/constants'
+import { REGEX_DATE_SEPARATOR_CHARS, REGEX_WHITESPACE_CHAR } from '@/utils/regex'
 
 const SSAListPage: React.FC = () => {
   const {
@@ -133,7 +134,7 @@ const SSAListPage: React.FC = () => {
         sx: { color: customColors.accentRed },
         id: rowData.ssa.org_id,
       },
-      onClick: (_event: unknown, rowData: SsaData | SsaData[]) => {
+      onClick: (_event: React.MouseEvent, rowData: SsaData | SsaData[]) => {
         if (rowData && !Array.isArray(rowData)) {
           handleSsaDelete(rowData)
         }
@@ -149,7 +150,7 @@ const SSAListPage: React.FC = () => {
         id: rowData.ssa.org_id,
         style: { color: customColors.lightBlue },
       },
-      onClick: (_event: unknown, rowData: SsaData | SsaData[]) => {
+      onClick: (_event: React.MouseEvent, rowData: SsaData | SsaData[]) => {
         if (rowData && !Array.isArray(rowData)) {
           handleViewSsa(rowData)
         }
@@ -163,7 +164,7 @@ const SSAListPage: React.FC = () => {
         id: rowData.ssa.org_id,
         style: { color: customColors.lightBlue },
       },
-      onClick: (_event: unknown, rowData: SsaData | SsaData[]) => {
+      onClick: (_event: React.MouseEvent, rowData: SsaData | SsaData[]) => {
         if (rowData && !Array.isArray(rowData)) {
           handleDownloadSsa(rowData)
         }
@@ -248,8 +249,8 @@ const SSAListPage: React.FC = () => {
           second: '2-digit',
           hour12: false,
         })
-        .replace(/[/:,]/g, '-')
-        .replace(/\s/g, '_')
+        .replace(REGEX_DATE_SEPARATOR_CHARS, '-')
+        .replace(REGEX_WHITESPACE_CHAR, '_')
       link.download = `ssa-${row.ssa.software_id}-${dateStr}.jwt`
       document.body.appendChild(link)
       link.click()

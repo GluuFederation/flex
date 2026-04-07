@@ -27,4 +27,4 @@ export type {
   TrustRelationship,
   TrustRelationshipForm,
   IdentityProviderPagedResult,
-} from 'JansConfigApi'
+} from '../components/hooks/useSamlApi'

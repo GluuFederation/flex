@@ -27,7 +27,7 @@ type TypeAheadOptionObject = {
 type TypeAheadOption = string | TypeAheadOptionObject
 
 interface GluuTypeAheadForDnProps<
-  TValues extends Record<string, JsonValue> = Record<string, JsonValue>,
+  TValues extends object = Record<string, JsonValue>,
   TOption extends TypeAheadOptionObject = TypeAheadOptionObject,
 > {
   label: string
@@ -55,7 +55,7 @@ interface GluuTypeAheadForDnProps<
 }
 
 function GluuTypeAheadForDn<
-  TValues extends Record<string, JsonValue> = Record<string, JsonValue>,
+  TValues extends object = Record<string, JsonValue>,
   TOption extends TypeAheadOptionObject = TypeAheadOptionObject,
 >({
   label,

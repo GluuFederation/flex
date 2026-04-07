@@ -1,3 +1,5 @@
+import type { ResourceScopeEntry } from '@/cedarling'
+
 export const SHARED_CEDAR_CONSTANTS = {
   ADMIN_UI_RESOURCES: {
     Assets: 'Assets',
@@ -7,10 +9,10 @@ export const SHARED_CEDAR_CONSTANTS = {
     Attributes: 'Attributes',
   },
   CEDAR_RESOURCE_SCOPES: {
-    Assets: [] as unknown[],
-    Webhooks: [] as unknown[],
-    Lock: [] as unknown[],
-    Users: [] as unknown[],
-    Attributes: [] as unknown[],
+    Assets: [] as ResourceScopeEntry[],
+    Webhooks: [] as ResourceScopeEntry[],
+    Lock: [] as ResourceScopeEntry[],
+    Users: [] as ResourceScopeEntry[],
+    Attributes: [] as ResourceScopeEntry[],
   },
 } as const

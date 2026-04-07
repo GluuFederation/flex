@@ -367,7 +367,7 @@ const SsaAddPage: React.FC = () => {
                             label={attribute}
                             name={attribute}
                             isDirect={true}
-                            value={formik.values[attribute] as string}
+                            value={(formik.values as Record<string, string>)[attribute]}
                             modifiedFields={modifiedFields}
                             setModifiedFields={setModifiedFields}
                             formik={formik}

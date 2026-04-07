@@ -1,4 +1,5 @@
 import type { JsonPatch } from 'JansConfigApi'
+import { REGEX_LEADING_SLASH, REGEX_UPPERCASE_LETTER } from '@/utils/regex'
 import type { AppConfiguration, PropertyValue } from '../components/AuthServerProperties/types'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/index'
 
@@ -11,7 +12,7 @@ export const toPairs = (keys: string[]): Array<[string, string | null]> => {
 }
 
 export const generateLabel = (name: string): string => {
-  const result = name.replace(/([A-Z])/g, ' $1').trim()
+  const result = name.replace(REGEX_UPPERCASE_LETTER, ' $1').trim()
   if (!result) return ''
   return result.charAt(0).toUpperCase() + result.slice(1)
 }
@@ -36,7 +37,7 @@ export const formatPatchValue = (patch: JsonPatch): JsonValue => {
 }
 
 export const getBaselineValue = (baseline: AppConfiguration, patchPath: string): PropertyValue => {
-  const segments = patchPath.replace(/^\//, '').split('/')
+  const segments = patchPath.replace(REGEX_LEADING_SLASH, '').split('/')
   let value: PropertyValue = baseline
   for (const segment of segments) {
     if (value && typeof value === 'object' && !Array.isArray(value)) {
@@ -69,7 +70,7 @@ export const formatPatchPath = (
   rawPath: string,
   labelResolver?: (key: string) => string,
 ): string => {
-  const segments = rawPath.replace(/^\//, '').split('/')
+  const segments = rawPath.replace(REGEX_LEADING_SLASH, '').split('/')
   const label = labelResolver ? labelResolver(segments[0]) : generateLabel(segments[0])
   if (segments.length > 1) {
     return `${label} [${segments.slice(1).join('/')}]`

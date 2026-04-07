@@ -1,4 +1,5 @@
 import { parseDateStrict } from '@/utils/dayjsUtils'
+import { REGEX_DATE_YYYY_MM_DD } from '@/utils/regex'
 import { BIRTHDATE_ATTR, JANS_ADMIN_UI_ROLE_ATTR, USER_ROLE_FORM_ATTR } from '../common/Constants'
 import {
   UserEditFormValues,
@@ -41,8 +42,7 @@ export const normalizeSingleValue = (value: FormValueEntry, attributeName: strin
 
   if (attributeName === BIRTHDATE_ATTR && normalized) {
     // Ensure the value strictly matches YYYY-MM-DD and is a valid date
-    const birthdatePattern = /^\d{4}-\d{2}-\d{2}$/
-    if (!birthdatePattern.test(normalized)) {
+    if (!REGEX_DATE_YYYY_MM_DD.test(normalized)) {
       return ''
     }
     const parsed = parseDateStrict(normalized, 'YYYY-MM-DD')

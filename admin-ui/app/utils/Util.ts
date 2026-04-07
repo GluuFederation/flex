@@ -1,4 +1,5 @@
 import customColors from '@/customColors'
+import { REGEX_UUID_PLACEHOLDER_CHARS } from '@/utils/regex'
 
 export function uuidv4(): string {
   // Use Web Crypto API if available
@@ -7,7 +8,7 @@ export function uuidv4(): string {
   }
 
   // Fallback for older browsers
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(REGEX_UUID_PLACEHOLDER_CHARS, function (c) {
     const r = (crypto.getRandomValues(new Uint8Array(1))[0] * 16) | 0,
       v = c == 'x' ? r : (r & 0x3) | 0x8
     return v.toString(16)
@@ -64,12 +65,12 @@ export function formatDate(date?: string): string {
 }
 
 export const trimObjectStrings = <T extends object>(obj: T): T => {
-  const trimmed: Record<string, unknown> = {}
-  for (const [key, value] of Object.entries(obj)) {
+  const trimmed: Partial<T> = {}
+  for (const [key, value] of Object.entries(obj) as [keyof T, T[keyof T]][]) {
     if (typeof value === 'string') {
-      trimmed[key] = value.trim()
+      trimmed[key] = value.trim() as T[keyof T]
     } else if (value && typeof value === 'object' && !Array.isArray(value)) {
-      trimmed[key] = trimObjectStrings(value as Record<string, unknown>)
+      trimmed[key] = trimObjectStrings(value) as T[keyof T]
     } else {
       trimmed[key] = value
     }

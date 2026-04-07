@@ -1,12 +1,13 @@
 import plugins from '../plugins.config.json'
 import { loadPluginMetadata, type PluginMenu, type PluginRoute } from './internal'
+import { REGEX_PLUGIN_NAME_FROM_PATH } from '@/utils/regex'
 
 export const processMenus = async (): Promise<PluginMenu[]> => {
   let pluginMenus: PluginMenu[] = []
 
   const pluginPromises = plugins.map(async (item) => {
     try {
-      const pluginName = item.metadataFile?.match(/\.\/([^/]+)\/plugin-metadata/)?.[1]
+      const pluginName = item.metadataFile?.match(REGEX_PLUGIN_NAME_FROM_PATH)?.[1]
       if (pluginName) {
         const metadata = await import(`./${pluginName}/plugin-metadata`)
         return (metadata.default?.menus || []) as PluginMenu[]
@@ -35,7 +36,7 @@ export const processRoutes = async (): Promise<PluginRoute[]> => {
 
   const pluginPromises = plugins.map(async (item) => {
     try {
-      const pluginName = item.metadataFile?.match(/\.\/([^/]+)\/plugin-metadata/)?.[1]
+      const pluginName = item.metadataFile?.match(REGEX_PLUGIN_NAME_FROM_PATH)?.[1]
       if (pluginName) {
         const metadata = await import(`./${pluginName}/plugin-metadata`)
         return (metadata.default?.routes || []) as PluginRoute[]

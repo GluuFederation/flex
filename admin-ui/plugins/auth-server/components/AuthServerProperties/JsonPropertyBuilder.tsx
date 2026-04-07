@@ -10,6 +10,7 @@ import { BORDER_RADIUS, CEDARLING_CONFIG_SPACING, SPACING } from '@/constants'
 import { useTranslation } from 'react-i18next'
 import { getIn } from 'formik'
 import { buildKeyCandidates } from '@/utils/stringUtils'
+import { REGEX_LEADING_SLASH } from '@/utils/regex'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import type {
   MultiSelectOption,
@@ -220,7 +221,7 @@ const JsonPropertyBuilder = ({
 
   const formikPathSegments = useMemo(() => {
     if (!path || path === '/') return [propKey]
-    const trimmed = path.replace(/^\//, '')
+    const trimmed = path.replace(REGEX_LEADING_SLASH, '')
     if (!trimmed) return [propKey]
     return trimmed.split('/')
   }, [path, propKey])

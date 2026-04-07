@@ -9,17 +9,28 @@ import mockSessions from '../fixtures/mockSessions'
 import type { Session } from 'Plugins/auth-server/components/Sessions/types'
 
 jest.mock('Routes/Apps/Gluu/GluuCommitDialog', () => () => null)
-jest.mock('@/redux/hooks', () => ({
-  useAppDispatch: jest.fn(() => jest.fn()),
-  useAppSelector: jest.fn((selector: (state: Record<string, unknown>) => unknown) =>
-    selector({
-      authReducer: {
-        config: { clientId: 'test-client' },
-        userinfo: { sub: 'admin' },
-      },
-    }),
-  ),
-}))
+type MockReduxState = {
+  authReducer: {
+    config: { clientId: string }
+    userinfo: { sub: string }
+  }
+}
+
+jest.mock('@/redux/hooks', () => {
+  const mockReduxState: MockReduxState = {
+    authReducer: {
+      config: { clientId: 'test-client' },
+      userinfo: { sub: 'admin' },
+    },
+  }
+  return {
+    useAppDispatch: jest.fn(() => jest.fn()),
+    useAppSelector: jest.fn(
+      <TSelected,>(selector: (state: MockReduxState) => TSelected): TSelected =>
+        selector(mockReduxState),
+    ),
+  }
+})
 
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({

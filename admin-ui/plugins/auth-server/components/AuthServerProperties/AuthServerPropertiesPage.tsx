@@ -41,6 +41,7 @@ import { GluuPageContent } from '@/components'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import { buildKeyCandidates } from '@/utils/stringUtils'
+import { REGEX_LEADING_SLASH, REGEX_FORWARD_SLASH } from '@/utils/regex'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import { useStyles } from './styles/AuthServerPropertiesPage.style'
 import { useAcrAudit } from '../AuthN/hooks'
@@ -385,7 +386,7 @@ const AuthServerPropertiesPage: React.FC = () => {
     const putOperations: GluuCommitDialogOperation[] = put
       ? [
           {
-            path: t(getPropertyLabel(put.path.replace(/^\//, ''))),
+            path: t(getPropertyLabel(put.path.replace(REGEX_LEADING_SLASH, ''))),
             value: put.value as JsonValue,
           },
         ]
@@ -403,8 +404,9 @@ const AuthServerPropertiesPage: React.FC = () => {
   const patchHandler = useCallback(
     (patch: JsonPatch) => {
       if (patch.op === 'replace' && patch.path) {
-        const fieldPath = typeof patch.path === 'string' ? patch.path.replace(/^\//, '') : ''
-        const formikPath = fieldPath.replace(/\//g, '.')
+        const fieldPath =
+          typeof patch.path === 'string' ? patch.path.replace(REGEX_LEADING_SLASH, '') : ''
+        const formikPath = fieldPath.replace(REGEX_FORWARD_SLASH, '.')
         if (setFieldValueRef.current) {
           setFieldValueRef.current(formikPath, patch.value, false)
         }
@@ -462,7 +464,7 @@ const AuthServerPropertiesPage: React.FC = () => {
           const newAcr = { defaultAcr: put.value || acrs?.defaultAcr }
           try {
             await putAcrsMutation.mutateAsync({ data: newAcr })
-            await logAcrUpdate(newAcr, message, { defaultAcr: newAcr.defaultAcr })
+            await logAcrUpdate(newAcr, message, { defaultAcr: newAcr.defaultAcr ?? '' })
           } catch (error) {
             console.error('Error updating ACR:', error)
           }

@@ -19,7 +19,6 @@ export type SamlAppConfiguration = {
   selectedIdp?: string
   ignoreValidation?: boolean
   applicationName?: string
-  [key: string]: unknown
 }
 
 export interface OrvalIdentityProvider {
@@ -110,7 +109,7 @@ export interface BrokerIdentityProviderForm {
 }
 
 export interface TrustRelationshipForm {
-  trustRelationship: TrustRelationship | Record<string, unknown>
+  trustRelationship: TrustRelationship | Record<string, JsonValue>
   metaDataFile?: File | Blob
 }
 
@@ -125,17 +124,15 @@ export interface IdentityProviderPagedResult {
   totalEntriesCount?: number
 }
 
-function getGetSamlPropertiesQueryKey(): readonly unknown[] {
+function getGetSamlPropertiesQueryKey() {
   return ['kc', 'saml', 'properties'] as const
 }
 
-function getGetSamlIdentityProviderQueryKey(
-  params?: GetSamlIdentityProviderParams,
-): readonly unknown[] {
+function getGetSamlIdentityProviderQueryKey(params?: GetSamlIdentityProviderParams) {
   return ['kc', 'saml', 'idp', params ?? {}] as const
 }
 
-function getGetTrustRelationshipsQueryKey(): readonly unknown[] {
+function getGetTrustRelationshipsQueryKey() {
   return ['kc', 'saml', 'trust-relationships'] as const
 }
 

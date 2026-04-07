@@ -1,4 +1,5 @@
 import type { ApiAppConfiguration, JsonPatch } from '../types'
+import { REGEX_LEADING_SLASH } from '@/utils/regex'
 import type { PropertyValue } from '../../AuthServerProperties/types'
 
 type TraversableValue = PropertyValue | PropertyValue[]
@@ -121,7 +122,7 @@ export const applyPatchToValues = (values: ApiAppConfiguration, patch: JsonPatch
 
   try {
     const pathStr = typeof patch.path === 'string' ? patch.path : ''
-    const pathParts = pathStr.replace(/^\//, '').split('/')
+    const pathParts = pathStr.replace(REGEX_LEADING_SLASH, '').split('/')
 
     if (pathParts.length === 0) {
       return
@@ -155,7 +156,7 @@ export const applyRemovePatchToValues = (values: ApiAppConfiguration, patch: Jso
 
   try {
     const pathStr = typeof patch.path === 'string' ? patch.path : ''
-    const pathParts = pathStr.replace(/^\//, '').split('/')
+    const pathParts = pathStr.replace(REGEX_LEADING_SLASH, '').split('/')
 
     const target = getNestedValue(values, pathParts)
     if (target === null) {

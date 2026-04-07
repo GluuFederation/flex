@@ -5,6 +5,7 @@ import type { UserActionPayload } from 'Redux/api/types/BackendApi'
 import { addAdditionalData } from 'Utils/TokenController'
 import { CREATE, UPDATE, DELETION, FETCH } from '@/audit/UserActionType'
 import { devLogger } from '@/utils/devLogger'
+import type { JsonValue, JsonObject } from 'Routes/Apps/Gluu/types/common'
 import type {
   AssetAuditActionData,
   AssetAuditActionType,
@@ -16,30 +17,38 @@ import type {
 const MAX_STRING_LENGTH = 500
 const MAX_DEPTH = 5
 
-const sanitizeValue = (value: unknown, depth: number): unknown => {
+type SanitizableValue = JsonValue | File | Blob | undefined
+type SanitizedValue = JsonValue | undefined
+
+const sanitizeValue = (value: SanitizableValue, depth: number): SanitizedValue => {
   if (depth > MAX_DEPTH) return '[REDACTED]'
   if (value === null || value === undefined) return value
   if (typeof value === 'number' || typeof value === 'boolean') return value
-  if (value instanceof File) return { type: 'file', name: value.name, size: value.size } as const
-  if (value instanceof Blob) return { type: 'blob', size: value.size } as const
+  if (value instanceof File) return { type: 'file', name: value.name, size: value.size }
+  if (value instanceof Blob) return { type: 'blob', size: value.size }
   if (typeof value === 'string')
     return value.length > MAX_STRING_LENGTH
       ? `${value.slice(0, MAX_STRING_LENGTH)}... [truncated]`
       : value
-  if (Array.isArray(value)) return value.map((item) => sanitizeValue(item, depth + 1))
-  if (typeof value === 'object' && value !== null) {
-    const out: Record<string, unknown> = {}
-    for (const [k, v] of Object.entries(value)) out[k] = sanitizeValue(v, depth + 1)
+  if (Array.isArray(value)) {
+    return value.map((item) => sanitizeValue(item, depth + 1) ?? null)
+  }
+  if (typeof value === 'object') {
+    const out: JsonObject = {}
+    for (const [k, v] of Object.entries(value)) {
+      const sanitized = sanitizeValue(v as SanitizableValue, depth + 1)
+      if (sanitized !== undefined) out[k] = sanitized
+    }
     return out
   }
   return '[REDACTED]'
 }
 
 const sanitizeActionData = (
-  data: Record<string, unknown> | null | undefined,
+  data: AssetAuditLogActionPayload['action_data'],
 ): AssetAuditActionData | undefined => {
   if (data === null || data === undefined) return undefined
-  const sanitized = sanitizeValue(data, 0)
+  const sanitized = sanitizeValue(data as JsonObject, 0)
   return typeof sanitized === 'object' && sanitized !== null && !Array.isArray(sanitized)
     ? (sanitized as AssetAuditActionData)
     : undefined
@@ -70,9 +79,7 @@ export const useAssetAudit = () => {
       payload: AssetAuditLogActionPayload,
     ) => {
       const audit = initAudit()
-      const sanitizedActionData = sanitizeActionData(
-        payload.action_data as Record<string, unknown> | null | undefined,
-      )
+      const sanitizedActionData = sanitizeActionData(payload.action_data)
       addAdditionalData(audit, actionType, resource, {
         action: {
           action_message: payload.action_message,

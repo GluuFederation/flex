@@ -3,7 +3,6 @@
 export type ApiPermissionItem = {
   inum?: string
   permission?: string
-  [key: string]: unknown
 }
 
 export type RolePermissionMappingEntry = {
@@ -11,16 +10,8 @@ export type RolePermissionMappingEntry = {
   permissions: string[]
 }
 
-type ActionData =
-  | { inum?: string; permission?: string; [key: string]: unknown }
-  | string
-  | null
-  | undefined
+type ActionData = { inum?: string; permission?: string } | string | null | undefined
 
-/**
- * Resolve the permission key (string) from actionData and the list of apiPermissions.
- * actionData may be an object with { inum, permission } or just an inum string.
- */
 export function resolvePermissionKey(
   actionData: ActionData,
   apiPermissions: ApiPermissionItem[] | undefined,
@@ -41,9 +32,6 @@ export function resolvePermissionKey(
   return found?.permission
 }
 
-/**
- * Find roles that contain the given permission key using the role-permission mapping from the store.
- */
 export function findRolesForPermission(
   permissionKey: string | undefined,
   rolePermissionMapping: RolePermissionMappingEntry[] | undefined,

@@ -307,7 +307,6 @@ const AuthNForm = ({ item, handleSubmit, isSubmitting = false }: AuthNFormProps)
                   keyPlaceholder={t('placeholders.enter_property_key')}
                   valuePlaceholder={t('placeholders.enter_property_value')}
                   options={getPropertiesConfig(item)}
-                  defaultValue={item.passwordAttribute}
                 ></GluuProperties>
               </Col>
             </Row>

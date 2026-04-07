@@ -2,12 +2,11 @@ import React, { Suspense, lazy, ComponentType } from 'react'
 import { isDevelopment } from '@/utils/env'
 import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 
-type LazyRouteWrapper<P extends Record<string, unknown> = Record<string, unknown>> =
-  ComponentType<P> & {
-    preload: () => Promise<{ default: ComponentType<P> }>
-  }
+type LazyRouteWrapper<P extends object = object> = ComponentType<P> & {
+  preload: () => Promise<{ default: ComponentType<P> }>
+}
 
-export const createLazyRoute = <P extends Record<string, unknown> = Record<string, unknown>>(
+export const createLazyRoute = <P extends object = object>(
   importFn: () => Promise<{ default: ComponentType<P> }>,
 ): LazyRouteWrapper<P> => {
   const LazyComponent = lazy(importFn)
