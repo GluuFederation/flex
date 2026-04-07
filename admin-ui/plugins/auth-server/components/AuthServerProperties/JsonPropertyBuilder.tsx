@@ -9,7 +9,7 @@ import customColors from '@/customColors'
 import { BORDER_RADIUS, CEDARLING_CONFIG_SPACING, SPACING } from '@/constants'
 import { useTranslation } from 'react-i18next'
 import { getIn } from 'formik'
-import { buildKeyCandidates } from '@/utils/regex'
+import { buildKeyCandidates } from '@/utils/stringUtils'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import type {
   MultiSelectOption,

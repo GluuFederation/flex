@@ -1,12 +1,12 @@
 /** Trailing period at end of string - used to strip trailing dots from status messages etc. */
 export const REGEX_TRAILING_PERIOD = /\.$/
 
-/** Replace characters that are invalid in HTML id attributes (keep alphanumeric, underscore, hyphen). */
-export const REGEX_ID_SANITIZE_CHARS = /[^a-zA-Z0-9_-]/g
-/** Collapse consecutive hyphens into one. */
-export const REGEX_ID_COLLAPSE_HYPHENS = /-+/g
-/** Remove one or more leading/trailing hyphens. */
-export const REGEX_ID_TRIM_HYPHENS = /^-+|-+$/g
+/** Matches any character that is not alphanumeric, underscore, or hyphen — i.e. not valid in a slug or HTML id. */
+export const REGEX_NON_SLUG_CHARS = /[^a-zA-Z0-9_-]/g
+/** Matches one or more consecutive hyphens; use with replace('-') to collapse runs into a single hyphen. */
+export const REGEX_CONSECUTIVE_HYPHENS = /-+/g
+/** Matches one or more leading or trailing hyphens; use with replace('') to trim. */
+export const REGEX_LEADING_TRAILING_HYPHENS = /^-+|-+$/g
 
 /** Leading colon only (e.g. strip leading colon from IDs). */
 export const REGEX_LEADING_COLON = /^:/
@@ -48,19 +48,4 @@ function escapeRegexSpecialChars(s: string): string {
 /** Builds a RegExp that matches a single braced placeholder for the given key (e.g. key="name" -> /\{name\}/g). Key is escaped so metacharacters match literally. */
 export function regexForBracedKey(key: string): RegExp {
   return new RegExp(`\\{${escapeRegexSpecialChars(key)}\\}`, 'g')
-}
-
-/** Builds translation key candidates from a raw property key (original, lower-first, snake_case variants). */
-export function buildKeyCandidates(key: string): string[] {
-  const lowerFirst = key ? `${key.charAt(0).toLowerCase()}${key.slice(1)}` : key
-  const snakeCase = key
-    .replace(REGEX_CAMEL_TO_SNAKE_BOUNDARY, '$1_$2')
-    .replace(REGEX_SPACE_OR_HYPHEN_SEQUENCE, '_')
-    .toLowerCase()
-  const compactSnakeCase = key
-    .replace(REGEX_NON_ALPHANUMERIC_SEQUENCE, '_')
-    .replace(REGEX_CAMEL_TO_SNAKE_BOUNDARY, '$1_$2')
-    .toLowerCase()
-
-  return Array.from(new Set([key, lowerFirst, snakeCase, compactSnakeCase].filter(Boolean)))
 }

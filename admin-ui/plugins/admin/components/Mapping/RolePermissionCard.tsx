@@ -7,9 +7,9 @@ import { themeConfig } from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import {
-  REGEX_ID_SANITIZE_CHARS,
-  REGEX_ID_COLLAPSE_HYPHENS,
-  REGEX_ID_TRIM_HYPHENS,
+  REGEX_NON_SLUG_CHARS,
+  REGEX_CONSECUTIVE_HYPHENS,
+  REGEX_LEADING_TRAILING_HYPHENS,
 } from '@/utils/regex'
 import type { RolePermissionCardProps } from './types'
 import { useStyles } from './styles/MappingPage.style'
@@ -74,9 +74,9 @@ const RolePermissionCard: React.FC<ExtendedRolePermissionCardProps> = React.memo
     const contentId = useMemo(() => {
       const rolePart =
         (candidate?.role ?? '')
-          .replace(REGEX_ID_SANITIZE_CHARS, '-')
-          .replace(REGEX_ID_COLLAPSE_HYPHENS, '-')
-          .replace(REGEX_ID_TRIM_HYPHENS, '') || CONTENT_ID_ROLE_FALLBACK
+          .replace(REGEX_NON_SLUG_CHARS, '-')
+          .replace(REGEX_CONSECUTIVE_HYPHENS, '-')
+          .replace(REGEX_LEADING_TRAILING_HYPHENS, '') || CONTENT_ID_ROLE_FALLBACK
       return `${CONTENT_ID_PREFIX}${itemIndex}-${rolePart}`
     }, [candidate?.role, itemIndex])
 
