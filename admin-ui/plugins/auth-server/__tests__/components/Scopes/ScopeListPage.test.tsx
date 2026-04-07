@@ -70,8 +70,10 @@ jest.mock('@/cedarling/hooks/useCedarling', () => ({
   })),
 }))
 
-// Mock audit logger
+// Mock audit logger — partial mock so useScopes and invalidateScopeQueries
+// keep their real implementations while only useScopeActions is stubbed.
 jest.mock('Plugins/auth-server/components/Scopes/hooks', () => ({
+  ...jest.requireActual('Plugins/auth-server/components/Scopes/hooks'),
   useScopeActions: jest.fn(() => ({
     logScopeDeletion: jest.fn(),
     navigateToScopeList: jest.fn(),

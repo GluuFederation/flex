@@ -1149,7 +1149,10 @@
     "scope_claims_required": "Seleccione al menos una reclamación",
     "scope_uma_policies_required": "Seleccione al menos una política de autorización UMA",
     "scope_icon_url_required": "La URL del icono es obligatoria",
-    "scope_icon_url_invalid": "Ingrese una URL válida"
+    "scope_icon_url_invalid": "Ingrese una URL válida",
+    "fido_empty_row_key_value": "Se requieren tanto el nombre como el valor para cada entrada.",
+    "fido_empty_row_value": "El valor es obligatorio para cada entrada.",
+    "fido_empty_row_metadata_server": "Se requieren tanto la URL como el certificado raíz para cada servidor de metadatos."
   },
   "validation_messages": {
     "invalid_url_format": "Formato de URL inválido",
