@@ -12,7 +12,7 @@ import {
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import { UPDATE } from '@/audit/UserActionType'
 import { API_LOGGING } from '@/audit/Resources'
-import type { ChangedFields } from '../types'
+import type { ChangedFields, UpdateLoggingParams } from '../types'
 
 const LOGGING_CACHE_CONFIG = {
   STALE_TIME: 5 * 60 * 1000,
@@ -29,12 +29,6 @@ export const useLoggingConfig = () => {
       gcTime: LOGGING_CACHE_CONFIG.GC_TIME,
     },
   })
-}
-
-interface UpdateLoggingParams {
-  data: Logging
-  userMessage: string
-  changedFields: ChangedFields<Logging>
 }
 
 export const useUpdateLoggingConfig = () => {

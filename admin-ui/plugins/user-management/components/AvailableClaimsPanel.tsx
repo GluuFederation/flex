@@ -3,6 +3,7 @@ import { getClaimLabel } from '../utils/claimLabelUtils'
 import { useTranslation } from 'react-i18next'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { PersonAttribute } from '../types/UserApiTypes'
+import type { AvailableClaimsPanelProps } from '../types'
 import { USER_PASSWORD_ATTR } from '../common/Constants'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -21,14 +22,6 @@ const USED_CLAIMS = new Set([
   'createdAt',
   'updatedAt',
 ])
-
-interface AvailableClaimsPanelProps {
-  searchClaims: string
-  setSearchClaims: (value: string) => void
-  personAttributes: PersonAttribute[]
-  selectedClaims: PersonAttribute[]
-  setSelectedClaimsToState: (data: PersonAttribute) => void
-}
 
 const AvailableClaimsPanel = ({
   searchClaims,

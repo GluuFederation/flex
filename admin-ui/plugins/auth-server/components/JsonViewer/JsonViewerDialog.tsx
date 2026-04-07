@@ -4,17 +4,8 @@ import { useTranslation } from 'react-i18next'
 import JsonViewer from './JsonViewer'
 import customColors from '@/customColors'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
-import { THEME_LIGHT, type ThemeValue } from '@/context/theme/constants'
-
-interface JsonViewerDialogProps {
-  isOpen: boolean
-  toggle: () => void
-  data?: unknown
-  isLoading?: boolean
-  title?: string
-  theme?: ThemeValue
-  expanded?: boolean
-}
+import { THEME_LIGHT } from '@/context/theme/constants'
+import type { JsonViewerDialogProps } from './types'
 
 const JsonViewerDialog: React.FC<JsonViewerDialogProps> = ({
   isOpen,

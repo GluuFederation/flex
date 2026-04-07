@@ -1,15 +1,6 @@
-interface ApiErrorResponse {
-  data?: {
-    message?: string
-  }
-}
+import type { ApiError, CaughtError } from '../types'
 
-export interface ApiError {
-  response?: ApiErrorResponse
-  message?: string
-}
-
-export type CaughtError = Error | ApiError | null | undefined
+export type { ApiError, CaughtError }
 
 const isApiError = (error: CaughtError): error is ApiError => {
   return (

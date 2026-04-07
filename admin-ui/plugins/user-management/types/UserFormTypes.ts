@@ -23,5 +23,4 @@ export type AvailableClaimsPanelProps = {
   personAttributes: PersonAttribute[]
   selectedClaims: PersonAttribute[]
   setSelectedClaimsToState: (data: PersonAttribute) => void
-  setSearchPattern: (pattern: string | undefined) => void
 }

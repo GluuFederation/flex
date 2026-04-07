@@ -22,6 +22,7 @@ import type {
   AccordionWithSubComponents,
   AppConfiguration,
   StringArrayFieldProps,
+  ArrayItemSelectProps,
   PropertyValue,
 } from './types'
 import type { JsonPatch } from 'JansConfigApi'
@@ -39,16 +40,6 @@ import {
   migratingTextIfRenamed,
   sortKeysByFieldType,
 } from '../ConfigApiProperties/utils'
-
-type ArrayItemSelectProps = {
-  index: number
-  values: string[]
-  options: MultiSelectOption[]
-  label: string
-  path: string
-  handler: (patch: JsonPatch) => void
-  formResetKey: number
-}
 
 const AccordionWithSub = Accordion as AccordionWithSubComponents
 const AccordionHeader = AccordionWithSub.Header

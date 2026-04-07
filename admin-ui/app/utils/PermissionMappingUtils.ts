@@ -1,22 +1,16 @@
 // Utilities for resolving permission keys, computing mapped roles, and building user-friendly messages
 
-export type ApiPermissionItem = {
-  inum?: string
-  permission?: string
-}
+import type { ApiPermissionItem, PermissionActionData, RolePermissionMappingEntry } from './types'
 
-export type RolePermissionMappingEntry = {
-  role: string
-  permissions: string[]
-}
-
-type ActionData = { inum?: string; permission?: string } | string | null | undefined
+export type { ApiPermissionItem, RolePermissionMappingEntry }
 
 export function resolvePermissionKey(
-  actionData: ActionData,
+  actionData: PermissionActionData,
   apiPermissions: ApiPermissionItem[] | undefined,
 ): string | undefined {
-  const isObject = (value: ActionData): value is { inum?: string; permission?: string } => {
+  const isObject = (
+    value: PermissionActionData,
+  ): value is { inum?: string; permission?: string } => {
     return typeof value === 'object' && value !== null
   }
 
@@ -60,7 +54,7 @@ export function buildMappingGuidanceMessage(
 }
 
 export function buildPermissionDeleteErrorMessage(
-  actionData: ActionData,
+  actionData: PermissionActionData,
   apiPermissions: ApiPermissionItem[] | undefined,
   rolePermissionMapping: RolePermissionMappingEntry[] | undefined,
 ): string {
