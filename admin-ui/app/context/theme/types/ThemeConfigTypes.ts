@@ -1,7 +1,9 @@
+type ButtonColor = { backgroundColor: string; textColor: string; borderColor: string }
+
 export type FormFooterColors = {
-  back: { backgroundColor: string; textColor: string; borderColor: string }
-  apply: { backgroundColor: string; textColor: string; borderColor: string }
-  cancel: { backgroundColor: string; textColor: string; borderColor: string }
+  back: ButtonColor
+  apply: ButtonColor
+  cancel: ButtonColor
 }
 
 export type ThemeConfig = {

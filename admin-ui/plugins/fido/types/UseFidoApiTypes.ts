@@ -1,7 +1,5 @@
 import type { DynamicConfigFormValues, StaticConfigFormValues } from './fido'
 
-export type UpdateFidoParams = {
-  data: DynamicConfigFormValues | StaticConfigFormValues
-  type: string
-  userMessage?: string
-}
+export type UpdateFidoParams =
+  | { type: 'static'; data: StaticConfigFormValues; userMessage?: string }
+  | { type: 'dynamic'; data: DynamicConfigFormValues; userMessage?: string }

@@ -30,6 +30,12 @@ export const REGEX_SPACE_OR_HYPHEN_SEQUENCE = /[\s-]+/g
 /** One or more non-alphanumeric characters; used to compact labels into key-safe tokens. */
 export const REGEX_NON_ALPHANUMERIC_SEQUENCE = /[^a-zA-Z0-9]+/g
 
+/** Matches plugin-metadata files (any script extension); used by require.context to discover plugin metadata modules. */
+export const REGEX_PLUGIN_METADATA_FILE = /plugin-metadata\.(?:tsx?|jsx?)$/
+
+/** Strips a script file extension (.ts, .tsx, .js, .jsx) from a path; used to normalize module keys. */
+export const REGEX_SCRIPT_EXTENSION = /\.(?:tsx?|jsx?)$/
+
 /** Validates normalized webhook URL format: https://host[:port][/path][?query][#hash]. Host: domain, IPv4, or IPv6. Port: 1–5 digits (0–65535). */
 export const REGEX_WEBHOOK_URL =
   /^https:\/\/(([\w-]+\.)+[\w-]+|\[[\da-fA-F:]+\])(:\d{1,5})?(\/[^\s?#]*)?(\?[^\s#]*)?(#[^\s]*)?$/i

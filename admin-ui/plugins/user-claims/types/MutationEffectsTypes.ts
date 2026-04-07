@@ -1,7 +1,7 @@
 import type { UseMutationResult } from '@tanstack/react-query'
 
 export type ApiErrorResponseData = {
-  message: string
+  message?: string
 }
 
 export type ApiErrorWithResponse = {

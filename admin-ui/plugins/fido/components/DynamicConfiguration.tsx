@@ -107,7 +107,10 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
     [formik, readOnly],
   )
 
-  const personCustomObjectClassList = formik.values.personCustomObjectClassList || []
+  const personCustomObjectClassList = useMemo(
+    () => formik.values.personCustomObjectClassList || [],
+    [formik.values.personCustomObjectClassList],
+  )
 
   const addObjectClass = useCallback(() => {
     formik.setFieldValue('personCustomObjectClassList', [...personCustomObjectClassList, ''])

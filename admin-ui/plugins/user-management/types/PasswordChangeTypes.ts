@@ -8,7 +8,7 @@ export type PasswordChangeFormValues = {
 export type PasswordChangeModalProps = {
   isOpen: boolean
   toggle: () => void
-  selectedTheme: string
+  selectedTheme?: string
   userDetails: CustomUser | null
   onSuccess?: () => void
 }

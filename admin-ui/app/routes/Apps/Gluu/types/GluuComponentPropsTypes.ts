@@ -289,7 +289,7 @@ export type GluuTextVariant =
 
 export type GluuTextProps = HTMLAttributes<HTMLElement> & {
   variant?: GluuTextVariant
-  children: ReactNode
+  children?: ReactNode
   secondary?: boolean
   disableThemeColor?: boolean
   onLightSurface?: boolean
