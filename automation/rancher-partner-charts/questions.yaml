@@ -600,20 +600,6 @@ questions:
     required: true
     description: "Enable endpoint /.well-known/webfinger"
     label: Enable endpoint /.well-known/webfinger
-  - variable: global.auth-server.ingress.webdiscoveryEnabled
-    default: true
-    type: boolean
-    group: "Ingress"
-    required: true
-    description: "Enable endpoint /.well-known/simple-web-discovery"
-    label: Enable endpoint /.well-known/simple-web-discovery
-  - variable: global.auth-server.ingress.u2fConfigEnabled
-    default: true
-    type: boolean
-    group: "Ingress"
-    required: true
-    description: "Enable endpoint /.well-known/fido-configuration"
-    label: Enable endpoint /.well-known/fido-configuration
   # config-api
   - variable: global.config-api.ingress.configApiEnabled
     default: true
