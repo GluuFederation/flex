@@ -955,6 +955,7 @@
     "licenseAuditLog": "¿Realmente desea restablecer la licencia existente?",
     "action_deletion_question": "¿Realmente desea eliminar este elemento?",
     "action_deletion_for": "Confirmación de eliminación para",
+    "subject_scope": "ámbito",
     "add_client": "Agregar Cliente",
     "add_scope": "Agregar Scope",
     "add_script": "Agregar Script Personalizado",

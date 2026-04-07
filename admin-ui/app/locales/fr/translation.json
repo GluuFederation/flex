@@ -913,6 +913,7 @@
     "licenseAuditLog": "Voulez-vous vraiment réinitialiser la licence existante ?",
     "action_deletion_question": "Voulez-vous vraiment supprimer cet élément ?",
     "action_deletion_for": "Confirmation de suppression pour",
+    "subject_scope": "portée",
     "add_client": "Ajouter un client",
     "add_scope": "Ajouter une portée",
     "add_script": "Ajouter un script personnalisé",

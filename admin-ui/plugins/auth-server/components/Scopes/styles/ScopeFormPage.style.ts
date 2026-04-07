@@ -22,7 +22,9 @@ const INPUT_PADDING_HORIZONTAL = 21
 const SELECT_ARROW_SPACE = 44
 const SELECT_NUDGE = -2
 const CONTENT_HORIZONTAL_PADDING = 52
+const CONTENT_HORIZONTAL_PADDING_MOBILE = 20
 const FORM_CARD_MIN_HEIGHT = 400
+const MOBILE_BREAKPOINT = 768
 
 export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, themeColors }) => {
   const cardBorderStyle = getCardBorderStyle({ isDark })
@@ -52,6 +54,10 @@ export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, t
       boxSizing: 'border-box' as const,
       display: 'flex',
       flexDirection: 'column' as const,
+      [`@media (max-width: ${MOBILE_BREAKPOINT}px)`]: {
+        paddingLeft: CONTENT_HORIZONTAL_PADDING_MOBILE,
+        paddingRight: CONTENT_HORIZONTAL_PADDING_MOBILE,
+      },
     },
     formGrid: {
       display: 'grid',
@@ -59,6 +65,9 @@ export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, t
       columnGap: SPACING.SECTION_GAP,
       rowGap: SPACING.CARD_CONTENT_GAP,
       width: '100%',
+      [`@media (max-width: ${MOBILE_BREAKPOINT}px)`]: {
+        gridTemplateColumns: '1fr',
+      },
     },
     fieldItem: {
       'width': '100%',

@@ -20,7 +20,6 @@ export const SCOPE_TYPE_OPTIONS = [
 export const CREATOR_TYPES = ['CLIENT', 'USER'] as const
 
 export const EMPTY_PLACEHOLDER = '\u2014'
-export const DELETE_SUBJECT_SCOPE = 'scope'
 
 export const DEFAULT_ATTRIBUTES_LIMIT = 100
 

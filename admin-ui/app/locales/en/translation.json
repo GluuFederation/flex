@@ -957,6 +957,7 @@
     "licenseAuditLog": "Do you really want to reset the existing license?",
     "action_deletion_question": "Do you really want to delete this item?",
     "action_deletion_for": "Deletion confirmation for",
+    "subject_scope": "scope",
     "add_client": "Add Client",
     "add_scope": "Add Scope",
     "add_script": "Add Custom Script",

@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import ScopeListPage from 'Plugins/auth-server/components/Scopes/ScopeListPage'
 import { Provider } from 'react-redux'
 import scopes from '../../fixtures/mockScopes'
@@ -126,8 +126,9 @@ it('Should render the scope list page properly', () => {
   expect(screen.getByText('Description', { exact: false })).toBeInTheDocument()
   expect(screen.getByText('Clients', { exact: false })).toBeInTheDocument()
   expect(screen.getByPlaceholderText('search', { exact: false })).toBeInTheDocument()
-  const colId = container.querySelector(`td[value="${id}"]`)
-  expect(colId).toBeInTheDocument()
+  if (id) {
+    expect(within(container).getAllByText(id).length).toBeGreaterThan(0)
+  }
   if (description) {
     expect(screen.getByText(description)).toBeInTheDocument()
   }

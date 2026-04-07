@@ -907,6 +907,7 @@
     "licenseAuditLog": "Você realmente deseja redefinir a licença existente?",
     "action_deletion_question": "Tem certeza que quer deletar este item?",
     "action_deletion_for": "Confirmação de exclusão para",
+    "subject_scope": "escopo",
     "add_client": "Adicionar Cliente",
     "add_scope": "Adicionar escopo",
     "add_script": "Adicionar Script Personalizado",

@@ -39,10 +39,10 @@ import { useStyles } from './styles/ScopeListPage.style'
 import {
   SCOPE_SORT_COLUMNS,
   SCOPE_SORT_COLUMN_LABELS,
+  SCOPE_TYPE_OPTIONS,
   DEFAULT_SCOPE_SORT_BY,
   FEATURE_SCOPE_DELETE,
   EMPTY_PLACEHOLDER,
-  DELETE_SUBJECT_SCOPE,
 } from './constants'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
 import type { FilterDef } from '@/components/GluuSearchToolbar/types'
@@ -240,7 +240,7 @@ const ScopeListPage: React.FC = () => {
     setScopeType('')
     setSortBy(DEFAULT_SCOPE_SORT_BY)
     setPageNumber(0)
-    queryClient.removeQueries({
+    queryClient.invalidateQueries({
       predicate: (query) => query.queryKey[0] === getGetOauthScopesQueryKey()[0],
     })
   }, [queryClient, setPageNumber])
@@ -280,11 +280,8 @@ const ScopeListPage: React.FC = () => {
   const scopeTypeOptions = useMemo(
     () => [
       { value: '', label: t('options.all') },
-      { value: 'oauth', label: 'OAuth' },
-      { value: 'openid', label: 'OpenID' },
-      { value: 'dynamic', label: 'Dynamic' },
+      ...SCOPE_TYPE_OPTIONS,
       { value: 'spontaneous', label: 'Spontaneous' },
-      { value: 'uma', label: 'UMA' },
     ],
     [t],
   )
@@ -590,7 +587,7 @@ const ScopeListPage: React.FC = () => {
   const deleteDialogLabel = useMemo(
     () =>
       itemToDelete
-        ? `${t('messages.action_deletion_for')} ${DELETE_SUBJECT_SCOPE} (${itemToDelete.id ?? ''}${itemToDelete.inum ? `-${itemToDelete.inum}` : ''})`
+        ? `${t('messages.action_deletion_for')} ${t('messages.subject_scope')} (${itemToDelete.id ?? ''}${itemToDelete.inum ? `-${itemToDelete.inum}` : ''})`
         : '',
     [t, itemToDelete],
   )

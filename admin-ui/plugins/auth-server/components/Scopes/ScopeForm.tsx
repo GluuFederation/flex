@@ -445,7 +445,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                       placeholder={t('placeholders.search_claims')}
                       helperText={t('placeholders.typeahead_holder_message')}
                     />
-                    {formikProps.errors.claims && (
+                    {formikProps.errors.claims && formikProps.touched.claims && (
                       <div style={errorTextStyle}>{t(formikProps.errors.claims as string)}</div>
                     )}
                   </div>
@@ -468,11 +468,12 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                       doc_category={SCOPE}
                       helperText={t('placeholders.typeahead_holder_message')}
                     />
-                    {formikProps.errors.dynamicScopeScripts && (
-                      <div style={errorTextStyle}>
-                        {t(formikProps.errors.dynamicScopeScripts as string)}
-                      </div>
-                    )}
+                    {formikProps.errors.dynamicScopeScripts &&
+                      formikProps.touched.dynamicScopeScripts && (
+                        <div style={errorTextStyle}>
+                          {t(formikProps.errors.dynamicScopeScripts as string)}
+                        </div>
+                      )}
                   </div>
                 )}
 
@@ -491,7 +492,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                       placeholder={t('placeholders.search_claims')}
                       helperText={t('placeholders.typeahead_holder_message')}
                     />
-                    {formikProps.errors.claims && (
+                    {formikProps.errors.claims && formikProps.touched.claims && (
                       <div style={errorTextStyle}>{t(formikProps.errors.claims as string)}</div>
                     )}
                   </div>
@@ -544,11 +545,12 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                         helperText={t('placeholders.typeahead_holder_message')}
                         disabled={scope.inum ? true : false}
                       />
-                      {formikProps.errors.umaAuthorizationPolicies && (
-                        <div style={errorTextStyle}>
-                          {t(formikProps.errors.umaAuthorizationPolicies as string)}
-                        </div>
-                      )}
+                      {formikProps.errors.umaAuthorizationPolicies &&
+                        formikProps.touched.umaAuthorizationPolicies && (
+                          <div style={errorTextStyle}>
+                            {t(formikProps.errors.umaAuthorizationPolicies as string)}
+                          </div>
+                        )}
                     </div>
                   </div>
                   {scope.inum && (
