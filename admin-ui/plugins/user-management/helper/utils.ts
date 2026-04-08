@@ -9,6 +9,7 @@ import { FETCH, DELETION, UPDATE, CREATE } from '../../../app/audit/UserActionTy
 import { API_USERS } from '../../../app/audit/Resources'
 import { CustomUser } from '../types/UserApiTypes'
 import { USER_PASSWORD_ATTR } from '../common/Constants'
+import { devLogger } from '@/utils/devLogger'
 
 export type { AuditLog, AuditPayload }
 
@@ -88,7 +89,7 @@ export const logUserCreation = async (data: CustomUser, payload: CustomUser): Pr
       payload: auditPayload,
     })
   } catch (error) {
-    console.error('Failed to log user creation:', error)
+    devLogger.error('Failed to log user creation:', error)
   }
 }
 
@@ -116,7 +117,7 @@ export const logUserUpdate = async (data: CustomUser, payload: CustomUser): Prom
       payload: auditPayload,
     })
   } catch (error) {
-    console.error('Failed to log user update:', error)
+    devLogger.error('Failed to log user update:', error)
   }
 }
 
@@ -138,7 +139,7 @@ export const logUserDeletion = async (inum: string, userData?: CustomUser): Prom
       payload,
     })
   } catch (error) {
-    console.error('Failed to log user deletion:', error)
+    devLogger.error('Failed to log user deletion:', error)
   }
 }
 
@@ -160,7 +161,7 @@ export const logUserFetch = async (
       payload,
     })
   } catch (error) {
-    console.error('Failed to log user fetch:', error)
+    devLogger.error('Failed to log user fetch:', error)
   }
 }
 
@@ -191,7 +192,7 @@ export const logPasswordChange = async (
       payload: auditPayload,
     })
   } catch (error) {
-    console.error('Failed to log password change:', error)
+    devLogger.error('Failed to log password change:', error)
   }
 }
 

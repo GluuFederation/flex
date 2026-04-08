@@ -23,6 +23,7 @@ import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { formatDate } from '@/utils/dayjsUtils'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { devLogger } from '@/utils/devLogger'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import {
   REGEX_CSV_FORMULA_INJECTION,
@@ -213,7 +214,7 @@ const SessionListPage: React.FC = () => {
         setDeleteModal(false)
         setItem({} as Session)
       } catch (err) {
-        console.error('Failed to delete session', {
+        devLogger.error('Failed to delete session', {
           sessionId,
           auth_user: item.sessionAttributes?.auth_user,
           err,
@@ -242,7 +243,7 @@ const SessionListPage: React.FC = () => {
         await revokeSession(userDn, message, item.sessionAttributes?.auth_user)
         setRevokeModal(false)
       } catch (err) {
-        console.error('Failed to revoke session', {
+        devLogger.error('Failed to revoke session', {
           userDn,
           auth_user: item.sessionAttributes?.auth_user,
           err,

@@ -14,7 +14,7 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { useGetUser, getGetUserQueryKey } from 'JansConfigApi'
 import { useQueryClient } from '@tanstack/react-query'
-import { isDevelopment } from '@/utils/env'
+import { devLogger } from '@/utils/devLogger'
 import { UserTableRowData, CustomUser } from '../types'
 import { useDeleteUserWithAudit } from '../hooks/useUserMutations'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
@@ -110,7 +110,7 @@ const UserList = (): JSX.Element => {
           await deleteUser(inumToDelete, userMessage, userWithMessage)
           setDeleteData(null)
         } catch (error) {
-          if (isDevelopment) console.error('Delete user failed:', error)
+          devLogger.error('Delete user failed:', error)
         }
       }
     },

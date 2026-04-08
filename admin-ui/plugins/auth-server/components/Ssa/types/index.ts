@@ -10,3 +10,5 @@ export type {
   ExpirationDate,
   SsaAuditLogPayload,
 } from './ssaTypes'
+
+export type { SsaAuthState, SsaAuditRootState, SsaAuditParams } from './ssaAuditTypes'

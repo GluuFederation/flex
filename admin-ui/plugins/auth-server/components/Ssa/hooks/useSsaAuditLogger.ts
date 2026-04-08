@@ -1,40 +1,11 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { logAuditUserAction } from 'Utils/AuditLogger'
+import { devLogger } from '@/utils/devLogger'
+import type { SsaAuditRootState, SsaAuditParams } from '../types'
 
-interface AuthState {
-  token: {
-    access_token: string
-  }
-  userinfo: {
-    inum?: string
-    name?: string
-  }
-  config: {
-    clientId: string
-  }
-  location?: {
-    IPv4?: string
-  }
-}
-
-interface RootState {
-  authReducer: AuthState
-}
-
-interface SsaAuditParams {
-  action: string
-  resource: string
-  message: string
-  payload?: object | string | number | boolean | null
-}
-
-/**
- * Custom hook for SSA audit logging
- * Uses the modern logAuditUserAction utility to maintain audit trail
- */
-export function useSsaAuditLogger() {
-  const authState = useSelector((state: RootState) => state.authReducer)
+export const useSsaAuditLogger = () => {
+  const authState = useSelector((state: SsaAuditRootState) => state.authReducer)
 
   const logAudit = useCallback(
     async (params: SsaAuditParams): Promise<void> => {
@@ -53,7 +24,7 @@ export function useSsaAuditLogger() {
           payload: params.payload,
         })
       } catch (error) {
-        console.error('Failed to log SSA audit action:', error)
+        devLogger.error('Failed to log SSA audit action:', error)
       }
     },
     [authState],

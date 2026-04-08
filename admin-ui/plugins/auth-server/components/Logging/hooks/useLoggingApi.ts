@@ -10,6 +10,7 @@ import {
   type Logging,
 } from 'JansConfigApi'
 import { logAuditUserAction } from 'Utils/AuditLogger'
+import { devLogger } from '@/utils/devLogger'
 import { UPDATE } from '@/audit/UserActionType'
 import { API_LOGGING } from '@/audit/Resources'
 import type { ChangedFields, UpdateLoggingParams } from '../types'
@@ -53,7 +54,7 @@ export const useUpdateLoggingConfig = () => {
           payload: { modifiedFields: changedFields },
         })
       } catch (error) {
-        console.error('Failed to log logging audit action:', error)
+        devLogger.error('Failed to log logging audit action:', error)
       }
     },
     [userinfo, clientId, ipAddress],

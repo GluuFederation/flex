@@ -1,6 +1,7 @@
 import React, { useCallback, useState, useEffect, useMemo, useRef, useDeferredValue } from 'react'
 import { useFormik, setIn } from 'formik'
 import { REGEX_LEADING_SLASH, REGEX_FORWARD_SLASH } from '@/utils/regex'
+import { devLogger } from '@/utils/devLogger'
 import { toast } from 'react-toastify'
 import { useTranslation } from 'react-i18next'
 import { Form } from 'Components'
@@ -294,7 +295,7 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
         await onSubmit(patches, userMessage)
         setPatches([])
       } catch (error) {
-        console.error('Error submitting form:', error)
+        devLogger.error('Error submitting form:', error)
         toast.error(t('messages.error_in_saving'))
       }
     },

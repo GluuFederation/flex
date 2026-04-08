@@ -17,6 +17,7 @@ import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
+import { devLogger } from '@/utils/devLogger'
 import { useStyles } from './styles/ConfigApiPropertiesForm.style'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/index'
 import type { JsonPatch, ModifiedFields, ApiAppConfiguration, ConfigApiAuditPayload } from './types'
@@ -82,7 +83,7 @@ const ConfigApiPropertiesPage = (): JSX.Element => {
           }
           await logConfigApiUpdate(message, auditPayload)
         } catch (auditError) {
-          console.error('Error logging audit:', auditError)
+          devLogger.error('Error logging audit:', auditError)
           auditSuccess = false
         }
 
@@ -92,7 +93,7 @@ const ConfigApiPropertiesPage = (): JSX.Element => {
           toast.warning(t('messages.success_in_saving_audit_failed'))
         }
       } catch (err) {
-        console.error('Error updating config:', err)
+        devLogger.error('Error updating config:', err)
         const errorMsg = err instanceof Error ? err.message : t('messages.error_in_saving')
         setErrorMessage(errorMsg)
         toast.error(errorMsg)

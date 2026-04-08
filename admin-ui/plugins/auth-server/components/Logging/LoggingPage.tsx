@@ -32,6 +32,7 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './styles/LoggingPage.style'
+import { devLogger } from '@/utils/devLogger'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 const LOGGING_RESOURCE_ID = ADMIN_UI_RESOURCES.Logging
@@ -132,7 +133,7 @@ const LoggingPage = (): React.ReactElement => {
   const handleSubmit = useCallback(
     (values: LoggingFormValues): void => {
       if (!logging) {
-        console.error('Cannot submit: logging data not loaded')
+        devLogger.error('Cannot submit: logging data not loaded')
         return
       }
 
@@ -164,7 +165,7 @@ const LoggingPage = (): React.ReactElement => {
         closeCommitDialog()
         setPendingValues(null)
       } catch (error) {
-        console.error('Failed to update logging config:', error)
+        devLogger.error('Failed to update logging config:', error)
         dispatch(updateToast(true, 'error', t('messages.error_processing_request')))
       }
     },

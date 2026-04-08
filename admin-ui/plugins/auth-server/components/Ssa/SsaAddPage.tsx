@@ -12,6 +12,7 @@ import type { Dayjs } from '@/utils/dayjsUtils'
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import customColors from '@/customColors'
+import { devLogger } from '@/utils/devLogger'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
@@ -168,7 +169,7 @@ const SsaAddPage: React.FC = () => {
       setModal(false)
       setPendingPayload(null)
     } catch (error) {
-      console.error('Failed to submit SSA form:', error)
+      devLogger.error('Failed to submit SSA form:', error)
       dispatch(updateToast(true, 'error'))
     }
   }

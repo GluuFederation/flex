@@ -21,6 +21,7 @@ import {
   useRevokeUserSession,
 } from 'JansConfigApi'
 import type { CaughtError, PasswordChangeFormValues, PasswordChangeModalProps } from '../types'
+import { devLogger } from '@/utils/devLogger'
 import {
   getPasswordChangeValidationSchema,
   logPasswordChange,
@@ -144,7 +145,7 @@ const PasswordChangeModal = ({
       onSuccess?.()
 
       logPasswordChange(userDetails.inum, auditPayload).catch((error) => {
-        console.error('Failed to log password change:', error)
+        devLogger.error('Failed to log password change:', error)
       })
     },
     [

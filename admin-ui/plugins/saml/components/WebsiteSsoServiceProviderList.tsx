@@ -21,6 +21,7 @@ import {
   type TrustRelationship,
 } from './hooks'
 import { DEFAULT_THEME } from '@/context/theme/constants'
+import { devLogger } from '@/utils/devLogger'
 
 interface DeleteItem {
   inum: string
@@ -101,7 +102,7 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
           userMessage: userAction.action_message,
         })
       } catch (error) {
-        console.error('Failed to delete service provider:', error)
+        devLogger.error('Failed to delete service provider:', error)
       }
     },
     [deleteTrustRelationshipMutation, item.inum, toggle],

@@ -10,11 +10,11 @@ import { devLogger } from './utils/devLogger'
 import { toast } from 'react-toastify'
 
 const handleMissingKey = (key: string, defaultValue?: string): string => {
+  devLogger.warn(
+    `[i18n] Missing translation key: "${key}"`,
+    defaultValue !== undefined ? `(default: "${defaultValue}")` : '',
+  )
   if (isDevelopment) {
-    console.warn(
-      `[i18n] Missing translation key: "${key}"`,
-      defaultValue !== undefined ? `(default: "${defaultValue}")` : '',
-    )
     toast.warning(`[i18n] Missing translation key: "${key}"`, {
       autoClose: 5000,
       toastId: `i18n-missing-${key}`,

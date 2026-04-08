@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, ComponentType } from 'react'
-import { isDevelopment } from '@/utils/env'
+import { devLogger } from '@/utils/devLogger'
 import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 
 type LazyRouteWrapper<P extends object = object> = ComponentType<P> & {
@@ -41,22 +41,18 @@ export const loadPluginRoute = (pluginName: string, routePath?: string): LazyRou
 
   return createLazyRoute(() =>
     import(`../../plugins/${pluginName}/components/${componentPath}`).catch((err) => {
-      if (isDevelopment) {
-        console.warn(`Failed to load plugin route: ${pluginName}/${componentPath}`, {
+      devLogger.warn(`Failed to load plugin route: ${pluginName}/${componentPath}`, {
+        pluginName,
+        componentPath,
+        error: err,
+      })
+      return import(`../../plugins/${pluginName}/components/index`).catch((fallbackErr) => {
+        devLogger.warn(`Failed to load fallback plugin index for: ${pluginName}`, {
           pluginName,
           componentPath,
-          error: err,
+          primaryError: err,
+          fallbackError: fallbackErr,
         })
-      }
-      return import(`../../plugins/${pluginName}/components/index`).catch((fallbackErr) => {
-        if (isDevelopment) {
-          console.warn(`Failed to load fallback plugin index for: ${pluginName}`, {
-            pluginName,
-            componentPath,
-            primaryError: err,
-            fallbackError: fallbackErr,
-          })
-        }
         throw fallbackErr
       })
     }),
@@ -68,7 +64,7 @@ export const preloadRoute = (routeName: keyof typeof LazyRoutes): void => {
   if (route && 'preload' in route) {
     const lazyRoute = route as LazyRouteWrapper
     lazyRoute.preload().catch((error) => {
-      if (isDevelopment) console.warn(`Failed to preload route: ${routeName}`, error)
+      devLogger.warn(`Failed to preload route: ${routeName}`, error)
     })
   }
 }

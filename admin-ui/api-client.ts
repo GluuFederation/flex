@@ -2,6 +2,7 @@ import { AxiosHeaders } from 'axios'
 import { getRootState } from './app/redux/hooks'
 import { fetchApiTokenWithDefaultScopes, deleteAdminUiSession } from './app/redux/api/backend-api'
 import { AXIOS_INSTANCE } from './orval-mutator'
+import { devLogger } from './app/utils/devLogger'
 
 export { customInstance, AXIOS_INSTANCE } from './orval-mutator'
 
@@ -38,7 +39,7 @@ AXIOS_INSTANCE.interceptors.response.use(
         await deleteAdminUiSession(response?.access_token)
         window.location.href = '/admin/logout'
       } catch (e) {
-        console.error('Failed to cleanup session on 403:', e)
+        devLogger.error('Failed to cleanup session on 403:', e)
       }
     }
 

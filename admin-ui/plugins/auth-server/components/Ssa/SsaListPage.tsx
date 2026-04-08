@@ -29,6 +29,7 @@ import { SSA as SSA_RESOURCE } from '../../redux/audit/Resources'
 import { updateToast } from 'Redux/features/toastSlice'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import { REGEX_DATE_SEPARATOR_CHARS, REGEX_WHITESPACE_CHAR } from '@/utils/regex'
+import { devLogger } from '@/utils/devLogger'
 
 const SSAListPage: React.FC = () => {
   const {
@@ -205,14 +206,14 @@ const SSAListPage: React.FC = () => {
           payload: { jti: item.ssa.jti, org_id: item.ssa.org_id },
         })
       } catch (auditError) {
-        console.error('Failed to log audit for SSA deletion:', auditError)
+        devLogger.error('Failed to log audit for SSA deletion:', auditError)
       }
 
       dispatch(updateToast(true, 'success'))
       toggle()
       await queryClient.invalidateQueries({ queryKey: SSA_QUERY_KEYS.all })
     } catch (error) {
-      console.error('Failed to delete SSA:', error)
+      devLogger.error('Failed to delete SSA:', error)
       dispatch(updateToast(true, 'error'))
     } finally {
       setIsDeleting(false)
@@ -226,7 +227,7 @@ const SSAListPage: React.FC = () => {
       const fetchedJwtData = await getSsaJwtMutation.mutateAsync(row.ssa.jti)
       setJwtData(fetchedJwtData)
     } catch (error) {
-      console.error('Failed to fetch SSA JWT:', error)
+      devLogger.error('Failed to fetch SSA JWT:', error)
       dispatch(updateToast(true, 'error'))
       setSsaDialogOpen(false)
     }
@@ -257,7 +258,7 @@ const SSAListPage: React.FC = () => {
       document.body.removeChild(link)
       URL.revokeObjectURL(objectUrl)
     } catch (error) {
-      console.error('Failed to download SSA JWT:', error)
+      devLogger.error('Failed to download SSA JWT:', error)
       dispatch(updateToast(true, 'error'))
     }
   }

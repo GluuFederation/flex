@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 import { Layout, ThemeProvider } from 'Components'
 import { DEFAULT_THEME, isValidTheme } from '@/context/theme/constants'
-import { isDevelopment } from '@/utils/env'
+import { devLogger } from '@/utils/devLogger'
 
 import 'Styles/bootstrap.scss'
 import 'Styles/main.scss'
@@ -38,9 +38,7 @@ const getInitialThemeStyle = (): string => {
     }
     return DEFAULT_THEME
   } catch (e) {
-    if (isDevelopment) {
-      console.error('Failed to get initial theme from localStorage:', e)
-    }
+    devLogger.error('Failed to get initial theme from localStorage:', e)
     return DEFAULT_THEME
   }
 }

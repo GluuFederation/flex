@@ -23,6 +23,7 @@ import {
 import { updateToast } from 'Redux/features/toastSlice'
 import { UPDATE } from '@/audit/UserActionType'
 import { logAuditUserAction } from '@/utils/AuditLogger'
+import { devLogger } from '@/utils/devLogger'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { SmtpFormValues, ApiError, PatchOp } from 'Plugins/smtp/types'
 import { useCedarling } from '@/cedarling'
@@ -156,7 +157,7 @@ const SmtpEditPage = () => {
               client_id: clientId,
               payload: patches,
             }).catch((error) => {
-              console.error('Failed to log audit action:', error)
+              devLogger.error('Failed to log audit action:', error)
             })
           },
         },

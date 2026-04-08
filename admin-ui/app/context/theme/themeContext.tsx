@@ -1,27 +1,9 @@
-import React, {
-  createContext,
-  useReducer,
-  useContext,
-  Dispatch,
-  ReactNode,
-  useEffect,
-  useRef,
-} from 'react'
+import React, { createContext, useReducer, useContext, ReactNode, useEffect, useRef } from 'react'
 import { DEFAULT_THEME, isValidTheme, type ThemeValue } from './constants'
-import { isDevelopment } from '@/utils/env'
+import { devLogger } from '@/utils/devLogger'
+import type { ThemeState, ThemeAction, ThemeContextType } from './types'
 
-type ThemeState = {
-  theme: ThemeValue
-}
-
-type ThemeAction = {
-  type: ThemeValue
-}
-
-export interface ThemeContextType {
-  state: ThemeState
-  dispatch: Dispatch<ThemeAction>
-}
+export type { ThemeState, ThemeAction, ThemeContextType }
 
 export const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
@@ -55,9 +37,7 @@ const extractUserTheme = (currentInum?: string | null): ThemeValue => {
 
     return DEFAULT_THEME
   } catch (e) {
-    if (isDevelopment) {
-      console.error('Failed to extract user theme, using default:', e)
-    }
+    devLogger.error('Failed to extract user theme, using default:', e)
     return DEFAULT_THEME
   }
 }
@@ -82,9 +62,7 @@ const getInitialTheme = (): ThemeValue => {
     window.localStorage.setItem('initTheme', DEFAULT_THEME)
     return DEFAULT_THEME
   } catch (e) {
-    if (isDevelopment) {
-      console.error('Failed to get initial theme, using default:', e)
-    }
+    devLogger.error('Failed to get initial theme, using default:', e)
     try {
       window.localStorage.setItem('initTheme', DEFAULT_THEME)
     } catch {
@@ -153,9 +131,7 @@ export const ThemeProvider = (props: ThemeProviderProps) => {
 
       hasSyncedRef.current = true
     } catch (e) {
-      if (isDevelopment) {
-        console.error('Failed to sync theme in useEffect, ensuring default:', e)
-      }
+      devLogger.error('Failed to sync theme in useEffect, ensuring default:', e)
       try {
         const currentTheme = window.localStorage.getItem('initTheme')
         if (!currentTheme || !isValidTheme(currentTheme)) {
@@ -166,9 +142,7 @@ export const ThemeProvider = (props: ThemeProviderProps) => {
         }
         hasSyncedRef.current = true
       } catch (error) {
-        if (isDevelopment) {
-          console.error(error)
-        }
+        devLogger.error(error)
       }
     }
   }, [])

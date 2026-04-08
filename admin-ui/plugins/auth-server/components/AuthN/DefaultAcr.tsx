@@ -25,6 +25,7 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { useAcrAudit } from './hooks'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import customColors from '@/customColors'
+import { devLogger } from '@/utils/devLogger'
 
 interface CustomScript {
   name: string
@@ -184,7 +185,7 @@ function DefaultAcr(): React.ReactElement {
         try {
           await logAcrUpdate(newAcr, userMessage, { defaultAcr: acrValue })
         } catch (auditError) {
-          console.error('Failed to log ACR update:', auditError)
+          devLogger.error('Failed to log ACR update:', auditError)
           dispatch(
             updateToast(
               true,

@@ -18,6 +18,7 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { useDispatch } from 'react-redux'
 import { currentAuthNItemAtom, type ConfigurationProperty } from './atoms'
 import { type AuthNFormValues } from './AuthNForm'
+import { devLogger } from '@/utils/devLogger'
 
 const isDefaultAuthNMethod = (value: boolean | string): boolean =>
   value === 'true' || value === true
@@ -187,7 +188,7 @@ const AuthNEditPage = (): ReactElement => {
       }
     } catch (error) {
       if (error instanceof Error && !('response' in error)) {
-        console.error('Unexpected error during form submission:', error)
+        devLogger.error('Unexpected error during form submission:', error)
         dispatch(updateToast(true, 'error', error.message || t('messages.error_in_saving')))
       }
       setIsSubmitting(false)

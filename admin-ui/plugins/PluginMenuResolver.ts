@@ -1,6 +1,7 @@
 import plugins from '../plugins.config.json'
 import { loadPluginMetadata, type PluginMenu, type PluginRoute } from './internal'
 import { REGEX_PLUGIN_NAME_FROM_PATH } from '@/utils/regex'
+import { devLogger } from '@/utils/devLogger'
 
 export const processMenus = async (): Promise<PluginMenu[]> => {
   let pluginMenus: PluginMenu[] = []
@@ -15,7 +16,7 @@ export const processMenus = async (): Promise<PluginMenu[]> => {
       const metadata = await import(`${item.metadataFile}`)
       return (metadata.default?.menus || []) as PluginMenu[]
     } catch (error) {
-      console.warn(`Failed to load plugin menus: ${item.metadataFile}`, error)
+      devLogger.warn(`Failed to load plugin menus: ${item.metadataFile}`, error)
       return [] as PluginMenu[]
     }
   })
@@ -44,7 +45,7 @@ export const processRoutes = async (): Promise<PluginRoute[]> => {
       const metadata = await import(`${item.metadataFile}`)
       return (metadata.default?.routes || []) as PluginRoute[]
     } catch (error) {
-      console.warn(`Failed to load plugin routes: ${item.metadataFile}`, error)
+      devLogger.warn(`Failed to load plugin routes: ${item.metadataFile}`, error)
       return [] as PluginRoute[]
     }
   })
@@ -65,7 +66,7 @@ export const processMenusSync = (): PluginMenu[] => {
     try {
       pluginMenus.push(...(loadPluginMetadata(item.metadataFile).default?.menus || []))
     } catch (error) {
-      console.warn(`Failed to load plugin menus: ${item.metadataFile}`, error)
+      devLogger.warn(`Failed to load plugin menus: ${item.metadataFile}`, error)
     }
   })
   pluginMenus = sortParentMenu(pluginMenus)
@@ -78,7 +79,7 @@ export const processRoutesSync = (): PluginRoute[] => {
     try {
       pluginRoutes.push(...(loadPluginMetadata(item.metadataFile).default?.routes || []))
     } catch (error) {
-      console.warn(`Failed to load plugin routes: ${item.metadataFile}`, error)
+      devLogger.warn(`Failed to load plugin routes: ${item.metadataFile}`, error)
     }
   })
   return pluginRoutes

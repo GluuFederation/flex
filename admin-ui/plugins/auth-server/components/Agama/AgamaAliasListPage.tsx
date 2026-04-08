@@ -21,6 +21,7 @@ import { DEFAULT_THEME } from '@/context/theme/constants'
 import SetTitle from 'Utils/SetTitle'
 import { buildPayload, type UserAction } from 'Utils/PermChecker'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import { devLogger } from '@/utils/devLogger'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
@@ -115,7 +116,7 @@ const AliasesListPage = (): React.ReactElement => {
         setSelectedRow(null)
         setShowAddModal(false)
       } catch (error) {
-        console.error(error)
+        devLogger.error(error)
       }
     },
     [acrConfig.acrMappings, isEdit, selectedRow, patchJsonMutation],
@@ -233,7 +234,7 @@ const AliasesListPage = (): React.ReactElement => {
         setDeleteModal(false)
         setItemToDelete(null)
       } catch (error) {
-        console.error(error)
+        devLogger.error(error)
       }
     },
     [itemToDelete, acrConfig.acrMappings, patchJsonMutation],

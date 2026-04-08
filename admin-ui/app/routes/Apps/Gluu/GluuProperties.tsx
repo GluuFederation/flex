@@ -6,6 +6,7 @@ import { HelpOutline } from '@mui/icons-material'
 import GluuTooltip from './GluuTooltip'
 import customColors from '@/customColors'
 import { isDevelopment } from '@/utils/env'
+import { devLogger } from '@/utils/devLogger'
 import type {
   Property,
   KeyValueProperty,
@@ -34,12 +35,12 @@ const syncFormikProperties = (
     const hasApiFormat = properties.some((p) => 'value1' in p && 'value2' in p)
 
     if (multiProperties && !hasSourceDest) {
-      console.warn(
+      devLogger.warn(
         `GluuProperties[${compName}]: multiProperties=true but properties lack source/destination`,
       )
     }
     if (!multiProperties && !hasKeyValue && hasApiFormat) {
-      console.error(
+      devLogger.error(
         `GluuProperties[${compName}]: Properties in API format {value1,value2}. Transform to {key,value} before passing to component.`,
       )
     }
@@ -48,7 +49,7 @@ const syncFormikProperties = (
   if (!isKeys && !multiProperties) {
     const valuesOnly = properties.filter(isKeyValueProperty).map((item) => item.value)
     if (isDevelopment && valuesOnly.length < properties.length) {
-      console.warn(
+      devLogger.warn(
         `GluuProperties[${compName}]: Filtered out ${properties.length - valuesOnly.length} properties due to type mismatch`,
       )
     }
@@ -59,7 +60,7 @@ const syncFormikProperties = (
       value2: p.value,
     }))
     if (isDevelopment && apiFormat.length < properties.length) {
-      console.warn(
+      devLogger.warn(
         `GluuProperties[${compName}]: Filtered out ${properties.length - apiFormat.length} properties due to type mismatch`,
       )
     }
@@ -67,7 +68,7 @@ const syncFormikProperties = (
   } else {
     const validProperties = properties.filter(isSourceDestinationProperty)
     if (isDevelopment && validProperties.length < properties.length) {
-      console.warn(
+      devLogger.warn(
         `GluuProperties[${compName}]: Filtered out ${properties.length - validProperties.length} properties due to type mismatch`,
       )
     }
