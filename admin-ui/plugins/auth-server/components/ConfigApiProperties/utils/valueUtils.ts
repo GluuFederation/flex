@@ -124,11 +124,8 @@ export const applyPatchToValues = (values: ApiAppConfiguration, patch: JsonPatch
     const pathStr = typeof patch.path === 'string' ? patch.path : ''
     const cleaned = pathStr.replace(REGEX_LEADING_SLASH, '').trim()
     if (cleaned === '') return
-    const pathParts = cleaned.split('/')
-
-    if (pathParts.length === 0) {
-      return
-    }
+    const pathParts = cleaned.split('/').filter(Boolean)
+    if (pathParts.length === 0) return
 
     const target = getNestedValue(values, pathParts)
     if (target === null) {
@@ -160,7 +157,8 @@ export const applyRemovePatchToValues = (values: ApiAppConfiguration, patch: Jso
     const pathStr = typeof patch.path === 'string' ? patch.path : ''
     const cleaned = pathStr.replace(REGEX_LEADING_SLASH, '').trim()
     if (cleaned === '') return
-    const pathParts = cleaned.split('/')
+    const pathParts = cleaned.split('/').filter(Boolean)
+    if (pathParts.length === 0) return
 
     const target = getNestedValue(values, pathParts)
     if (target === null) {
