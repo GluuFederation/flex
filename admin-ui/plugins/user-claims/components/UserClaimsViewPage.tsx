@@ -72,7 +72,7 @@ const UserClaimsViewPage = (): JSX.Element => {
     return cloned
   }, [attribute, defaultAttribute])
 
-  function customHandleSubmit(): void {}
+  const customHandleSubmit = (): void => {}
 
   if (queryError && !isLoading) {
     return (

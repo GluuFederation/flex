@@ -1,10 +1,8 @@
 import type { SimpleCustomProperty } from 'JansConfigApi'
+import type { ApiError as BaseApiError } from '@/utils/types'
 import type { ConfigurationProperty, ModuleProperty } from './customScript'
 
-export type ApiError = {
-  response?: { data?: string | { message?: string } }
-  message?: string
-}
+export type ApiError = BaseApiError<string | { message?: string }>
 
 export type PropertyInput =
   | ConfigurationProperty

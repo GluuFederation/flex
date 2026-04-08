@@ -1,12 +1,12 @@
 import customColors from '@/customColors'
 import { REGEX_UUID_PLACEHOLDER_CHARS } from '@/utils/regex'
 
-export function uuidv4(): string {
+export const uuidv4 = (): string => {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
     return crypto.randomUUID()
   }
 
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(REGEX_UUID_PLACEHOLDER_CHARS, function (c) {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(REGEX_UUID_PLACEHOLDER_CHARS, (c) => {
     const r = crypto.getRandomValues(new Uint8Array(1))[0] & 0x0f,
       v = c == 'x' ? r : (r & 0x3) | 0x8
     return v.toString(16)
@@ -24,9 +24,7 @@ const colorPalette: string[] = [
   customColors.lightBlue,
 ]
 
-export function getNewColor(index = 0): string {
-  return colorPalette[index % colorPalette.length]
-}
+export const getNewColor = (index = 0): string => colorPalette[index % colorPalette.length]
 
 export const getClientScopeByInum = (str: string): string => {
   const inum = str.split(',')[0]
@@ -34,11 +32,7 @@ export const getClientScopeByInum = (str: string): string => {
   return value
 }
 
-export function getYearMonth(date: Date): string {
-  return date.getFullYear() + getMonth(date)
-}
-
-export function getMonth(aDate: Date): string {
+export const getMonth = (aDate: Date): string => {
   const value = String(aDate.getMonth() + 1)
   if (value.length > 1) {
     return value
@@ -47,7 +41,9 @@ export function getMonth(aDate: Date): string {
   }
 }
 
-export function formatDate(date?: string): string {
+export const getYearMonth = (date: Date): string => date.getFullYear() + getMonth(date)
+
+export const formatDate = (date?: string): string => {
   if (!date) {
     return '-'
   }

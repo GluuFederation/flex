@@ -20,7 +20,7 @@ const theme = createTheme({
   },
 })
 
-function GluuTypeAheadForDn<
+const GluuTypeAheadForDn = <
   TValues extends object = Record<string, JsonValue>,
   TOption extends TypeAheadOptionObject = TypeAheadOptionObject,
 >({
@@ -46,7 +46,7 @@ function GluuTypeAheadForDn<
   onChange,
   hideHelperMessage,
   defaultSelected,
-}: GluuTypeAheadForDnProps<TValues, TOption>) {
+}: GluuTypeAheadForDnProps<TValues, TOption>) => {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const selectedValue = defaultSelected ?? _value ?? []

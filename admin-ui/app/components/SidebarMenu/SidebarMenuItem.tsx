@@ -135,7 +135,7 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
     return selectedTheme === THEME_DARK ? customColors.white : customColors.textSecondary
   }, [entry?.active, selectedTheme])
 
-  function getStyle(itemClass: string): CSSProperties {
+  const getStyle = (itemClass: string): CSSProperties => {
     if (
       itemClass.includes('active') &&
       itemClass.includes('submenu__entry') &&
@@ -146,7 +146,7 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
     return nonaActiveMenu
   }
 
-  function getTextStyle(itemClass: string): CSSProperties | null {
+  const getTextStyle = (itemClass: string): CSSProperties | null => {
     if (itemClass.includes('active') && itemClass.includes('submenu__entry')) {
       return { fontWeight: 'bold' }
     }

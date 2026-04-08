@@ -8,7 +8,7 @@ import { NO_TEXT_SELECT } from './sharedDropdownStyles'
 import { useStyles } from './GluuDropdown.style'
 import type { DropdownValue, GluuDropdownOption, GluuDropdownProps, DropdownState } from './types'
 
-export function GluuDropdown<T extends DropdownValue = DropdownValue>({
+export const GluuDropdown = <T extends DropdownValue = DropdownValue>({
   trigger,
   options,
   position = 'bottom',
@@ -33,7 +33,7 @@ export function GluuDropdown<T extends DropdownValue = DropdownValue>({
   renderOption,
   renderTrigger,
   centerText = false,
-}: GluuDropdownProps<T>): React.ReactElement {
+}: GluuDropdownProps<T>): React.ReactElement => {
   const [internalState, setInternalState] = useState<DropdownState>({
     isOpen: false,
     searchQuery: '',

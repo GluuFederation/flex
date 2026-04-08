@@ -1,7 +1,6 @@
 // Validation schemas
 export { useAttributeValidationSchema, getAttributeValidationSchema } from './validation'
 
-// Form helpers
 export {
   useInitialAttributeValues,
   useComputeModifiedFields,

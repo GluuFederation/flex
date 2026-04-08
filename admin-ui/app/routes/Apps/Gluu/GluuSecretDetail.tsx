@@ -8,7 +8,7 @@ import type { GluuSecretDetailProps } from './types'
 
 const defaultLabelStyle: CSSProperties = { fontWeight: 'bold', color: customColors.black }
 
-function GluuSecretDetail({
+const GluuSecretDetail = ({
   label,
   value,
   doc_category,
@@ -17,7 +17,7 @@ function GluuSecretDetail({
   rsize = 6,
   labelStyle,
   rowClassName,
-}: GluuSecretDetailProps) {
+}: GluuSecretDetailProps) => {
   const { t } = useTranslation()
   const [up, setUp] = useState(false)
 

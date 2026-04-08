@@ -7,7 +7,7 @@ import { DEFAULT_THEME } from '@/context/theme/constants'
 import { Box } from '@mui/material'
 import type { GluuCommitFooterProps } from './types'
 
-function GluuCommitFooter({
+const GluuCommitFooter = ({
   extraOnClick,
   saveHandler,
   extraLabel,
@@ -18,12 +18,12 @@ function GluuCommitFooter({
   backButtonHandler,
   disableBackButton = false,
   cancelHandler = () => {},
-}: GluuCommitFooterProps) {
+}: GluuCommitFooterProps) => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme || DEFAULT_THEME
 
-  function goBack() {
+  const goBack = () => {
     if (backButtonHandler) {
       backButtonHandler()
     } else {

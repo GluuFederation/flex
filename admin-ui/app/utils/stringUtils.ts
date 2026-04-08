@@ -4,8 +4,7 @@ import {
   REGEX_NON_ALPHANUMERIC_SEQUENCE,
 } from '@/utils/regex'
 
-/** Builds translation key candidates from a raw property key (original, lower-first, snake_case variants). */
-export function buildKeyCandidates(key: string): string[] {
+export const buildKeyCandidates = (key: string): string[] => {
   const lowerFirst = key ? `${key.charAt(0).toLowerCase()}${key.slice(1)}` : key
   const snakeCase = key
     .replace(REGEX_CAMEL_TO_SNAKE_BOUNDARY, '$1_$2')

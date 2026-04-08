@@ -32,7 +32,7 @@ const extractValueFromOption = (item: TypeaheadOption, fieldName: string): strin
   return null
 }
 
-function GluuRemovableTypeAhead({
+const GluuRemovableTypeAhead = ({
   label,
   name,
   value,
@@ -48,7 +48,7 @@ function GluuRemovableTypeAhead({
   setModifiedFields,
   disabled = false,
   placeholder,
-}: GluuRemovableTypeAheadProps) {
+}: GluuRemovableTypeAheadProps) => {
   const selectedValue = (formik.values[name] as TypeaheadOption[] | undefined) ?? value ?? []
 
   return (

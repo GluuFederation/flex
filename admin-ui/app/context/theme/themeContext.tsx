@@ -125,7 +125,7 @@ const getUserInum = (): string | null => {
   return null
 }
 
-export function ThemeProvider(props: ThemeProviderProps) {
+export const ThemeProvider = (props: ThemeProviderProps) => {
   const [state, dispatch] = useReducer(themeReducer, initialState)
   const hasSyncedRef = useRef(false)
 
@@ -173,7 +173,6 @@ export function ThemeProvider(props: ThemeProviderProps) {
     }
   }, [])
 
-  // Toggle theme class on html; variable values are defined in main.scss (theme-dark / theme-light)
   useEffect(() => {
     if (typeof document === 'undefined') return
     document.documentElement.classList.remove('theme-dark', 'theme-light')
@@ -183,7 +182,7 @@ export function ThemeProvider(props: ThemeProviderProps) {
   return <ThemeContext.Provider value={{ state, dispatch }}>{props.children}</ThemeContext.Provider>
 }
 
-export function useTheme(): ThemeContextType {
+export const useTheme = (): ThemeContextType => {
   const context = useContext(ThemeContext)
   if (!context) {
     throw new Error('useTheme must be used within a ThemeProvider')

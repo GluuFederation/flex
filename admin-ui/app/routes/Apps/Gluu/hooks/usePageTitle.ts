@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-export function usePageTitle(initialTitle = 'Dashboard'): string {
+export const usePageTitle = (initialTitle = 'Dashboard'): string => {
   const [pageTitle, setPageTitle] = useState(initialTitle)
 
   useEffect(() => {

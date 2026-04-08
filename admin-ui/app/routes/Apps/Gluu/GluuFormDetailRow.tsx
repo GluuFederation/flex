@@ -10,7 +10,7 @@ import type { GluuFormDetailRowProps } from './types'
 
 const defaultLabelStyle: CSSProperties = { fontWeight: 'bold' }
 
-function GluuFormDetailRow({
+const GluuFormDetailRow = ({
   label,
   value,
   isBadge,
@@ -26,7 +26,7 @@ function GluuFormDetailRow({
   valueStyle,
   rowClassName,
   layout = 'row',
-}: GluuFormDetailRowProps) {
+}: GluuFormDetailRowProps) => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme || DEFAULT_THEME

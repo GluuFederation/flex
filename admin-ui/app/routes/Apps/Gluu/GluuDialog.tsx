@@ -64,7 +64,7 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: G
     }
   }, [modal, row])
 
-  function handleAccept() {
+  const handleAccept = () => {
     onAccept(userMessage)
   }
   const closeModal = () => {

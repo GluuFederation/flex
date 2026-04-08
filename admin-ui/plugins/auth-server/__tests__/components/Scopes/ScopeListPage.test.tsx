@@ -5,13 +5,11 @@ import { Provider } from 'react-redux'
 import mockScopes from '../../fixtures/mockScopes'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import type { Scope } from 'Plugins/auth-server/components/Scopes/types'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 jest.mock('Plugins/PluginReducersResolver', () => ({ __esModule: true, default: jest.fn() }))
 jest.mock('Plugins/PluginSagasResolver', () => ({ __esModule: true, default: jest.fn(() => []) }))
 
-// Mock orval hooks
 jest.mock('JansConfigApi', () => {
   return {
     useGetOauthScopes: jest.fn(() => ({
@@ -32,7 +30,6 @@ jest.mock('JansConfigApi', () => {
   }
 })
 
-// Mock cedarling permissions
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({
     hasCedarReadPermission: jest.fn(() => true),
@@ -69,8 +66,6 @@ jest.mock('@/cedarling/hooks/useCedarling', () => ({
   })),
 }))
 
-// Mock audit logger — partial mock so useScopes and invalidateScopeQueries
-// keep their real implementations while only useScopeActions is stubbed.
 jest.mock('Plugins/auth-server/components/Scopes/hooks', () => ({
   ...jest.requireActual('Plugins/auth-server/components/Scopes/hooks'),
   useScopeActions: jest.fn(() => ({
@@ -120,12 +115,15 @@ it('Should render the scope list page properly', () => {
   const { container } = render(<ScopeListPage />, {
     wrapper: Wrapper,
   })
-  const scope = mockScopes[0] as Scope
-  const id = scope.id ?? ''
-  const description = scope.description ?? ''
+  const scope = mockScopes[0]
+  if (!scope) {
+    throw new Error('Test fixture mockScopes is empty — at least one scope is required')
+  }
+  const { id, description } = scope
+  if (!id || !description) {
+    throw new Error('Test fixture mockScopes[0] must have id and description set')
+  }
 
-  expect(id).not.toBe('')
-  expect(description).not.toBe('')
   expect(screen.getByText('Description', { exact: false })).toBeInTheDocument()
   expect(screen.getByText('Clients', { exact: false })).toBeInTheDocument()
   expect(screen.getByPlaceholderText('search', { exact: false })).toBeInTheDocument()

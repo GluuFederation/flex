@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useAppSelector } from '@/redux/hooks'
 import { logAuditUserAction } from '@/utils/AuditLogger'
-import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import { devLogger } from '@/utils/devLogger'
 import type { SchemaAuditLogParams } from '../types'
 import { UPDATE } from '@/audit/UserActionType'
 
@@ -24,11 +24,11 @@ export const useSchemaAuditLogger = () => {
           message: params.message,
           extra: ipAddress ? { ip_address: ipAddress } : {},
           client_id: clientId,
-          payload: isUpdateAction ? undefined : (params.payload as JsonValue),
-          modifiedFields: params.modifiedFields as Record<string, JsonValue>,
+          payload: isUpdateAction ? undefined : params.payload,
+          modifiedFields: params.modifiedFields,
         })
       } catch (error) {
-        console.error('Failed to log audit action:', error)
+        devLogger.error('[useSchemaAuditLogger] Failed to log audit action:', error)
       }
     },
     [authState],

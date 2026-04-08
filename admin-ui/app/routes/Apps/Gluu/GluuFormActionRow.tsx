@@ -5,7 +5,7 @@ import GluuTooltip from './GluuTooltip'
 import { VisibilityOutlined } from '@mui/icons-material'
 import type { GluuFormActionRowProps } from './types'
 
-function GluuFormActionRow({
+const GluuFormActionRow = ({
   label,
   value,
   lsize = 6,
@@ -14,7 +14,7 @@ function GluuFormActionRow({
   doc_entry,
   isDirect = false,
   onActionClick,
-}: GluuFormActionRowProps) {
+}: GluuFormActionRowProps) => {
   const { t } = useTranslation()
   return (
     <GluuTooltip doc_category={doc_category} isDirect={isDirect} doc_entry={doc_entry || label}>

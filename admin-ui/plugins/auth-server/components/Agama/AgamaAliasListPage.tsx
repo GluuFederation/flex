@@ -43,7 +43,7 @@ import {
 const authResourceId = ADMIN_UI_RESOURCES.Authentication
 const authScopes = CEDAR_RESOURCE_SCOPES[authResourceId]
 
-function AliasesListPage(): React.ReactElement {
+const AliasesListPage = (): React.ReactElement => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()

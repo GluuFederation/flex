@@ -48,7 +48,7 @@ const PermissionCheckbox: React.FC<{
 PermissionCheckbox.displayName = 'PermissionCheckbox'
 
 const RolePermissionCard: React.FC<ExtendedRolePermissionCardProps> = React.memo(
-  function RolePermissionCard({ candidate, allPermissions, itemIndex = 0 }) {
+  ({ candidate, allPermissions, itemIndex = 0 }) => {
     const { t } = useTranslation()
     const [isExpanded, setIsExpanded] = useState(false)
 

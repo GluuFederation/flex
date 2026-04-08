@@ -37,7 +37,7 @@ import type { OAuthConfig, AppAuthProviderProps } from '@/utils/types'
 
 const LOGOUT_DELAY_SECONDS = 10
 
-export default function AppAuthProvider({ children }: Readonly<AppAuthProviderProps>) {
+const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
   const dispatch = useAppDispatch()
   const location = useLocation()
   const { t } = useTranslation()
@@ -300,3 +300,5 @@ export default function AppAuthProvider({ children }: Readonly<AppAuthProviderPr
     </React.Fragment>
   )
 }
+
+export default AppAuthProvider

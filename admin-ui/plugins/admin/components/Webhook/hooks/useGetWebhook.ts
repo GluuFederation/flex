@@ -1,7 +1,7 @@
 import { useGetAllWebhooks } from 'JansConfigApi'
 import type { WebhookEntry, PagedWebhookResult } from '../types'
 
-export function useGetWebhook(webhookId: string | undefined) {
+export const useGetWebhook = (webhookId: string | undefined) => {
   const result = useGetAllWebhooks(
     {
       limit: 100,

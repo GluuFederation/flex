@@ -7,7 +7,7 @@ import type { Deployment } from 'JansConfigApi'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { ModifiedFields } from '../types'
 
-export function useAgamaActions() {
+export const useAgamaActions = () => {
   const authState = useAppSelector((state) => state.authReducer)
   const client_id = authState?.config?.clientId
   const userinfo = authState?.userinfo

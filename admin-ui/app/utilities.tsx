@@ -15,10 +15,6 @@ const allAvatars = ((ctx) => {
   return keys.map(ctx)
 })(require.context('./images/avatars', true, /.*/))
 
-export function randomArray<T>(arr: T[]): T {
-  return arr[0]
-}
+export const randomArray = <T,>(arr: T[]): T => arr[0]
 
-export function randomAvatar(): string {
-  return randomArray(allAvatars)
-}
+export const randomAvatar = (): string => randomArray(allAvatars)

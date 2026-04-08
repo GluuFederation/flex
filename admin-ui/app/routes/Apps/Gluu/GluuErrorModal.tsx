@@ -2,7 +2,7 @@ import customColors from '@/customColors'
 import { useAppSelector } from '@/redux/hooks'
 import logo192 from 'Images/logos/logo192.png'
 
-function GluuErrorModal({ message = '', description = '' }) {
+const GluuErrorModal = ({ message = '', description = '' }) => {
   const { authServerHost } = useAppSelector((state) => state.authReducer.config)
 
   const handleRefresh = () => {

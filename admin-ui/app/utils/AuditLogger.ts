@@ -6,7 +6,7 @@ import type { BasicUserInfo, LogAuditParams } from './types'
 
 export type { BasicUserInfo, LogAuditParams }
 
-export async function logAuditUserAction({
+export const logAuditUserAction = async ({
   userinfo,
   action,
   resource,
@@ -17,7 +17,7 @@ export async function logAuditUserAction({
   status = 'success',
   client_id,
   payload,
-}: LogAuditParams): Promise<void> {
+}: LogAuditParams): Promise<void> => {
   const audit: Partial<UserActionPayload> &
     Record<string, JsonValue | undefined | { user_inum: string; userId: string }> = {
     status,
@@ -28,12 +28,16 @@ export async function logAuditUserAction({
     client_id,
   }
 
+  const normalizedModifiedFields: Record<string, JsonValue> = modifiedFields
+    ? (JSON.parse(JSON.stringify(modifiedFields)) as Record<string, JsonValue>)
+    : {}
+
   const actionData: Record<string, JsonValue> =
     typeof payload === 'object' && payload !== null && !Array.isArray(payload)
       ? (payload as Record<string, JsonValue>)
       : {
           ...extra,
-          modifiedFields,
+          modifiedFields: normalizedModifiedFields,
           ...(performedOn ? { performedOn: String(performedOn) } : {}),
         }
 

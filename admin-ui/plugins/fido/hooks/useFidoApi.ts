@@ -19,7 +19,7 @@ const FIDO_CACHE_CONFIG = {
   GC_TIME: DEFAULT_GC_TIME,
 }
 
-export function useFidoConfig() {
+export const useFidoConfig = () => {
   const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
   return useGetPropertiesFido2({
@@ -31,7 +31,7 @@ export function useFidoConfig() {
   })
 }
 
-export function useUpdateFidoConfig() {
+export const useUpdateFidoConfig = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()

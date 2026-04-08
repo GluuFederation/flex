@@ -35,11 +35,9 @@ export interface GluuDatePickerRangeProps extends GluuDatePickerBase {
 
 export type GluuDatePickerProps = GluuDatePickerSingleProps | GluuDatePickerRangeProps
 
-export function isGluuDatePickerRangeProps(
+export const isGluuDatePickerRangeProps = (
   props: GluuDatePickerProps,
-): props is GluuDatePickerRangeProps {
-  return props.mode === 'range'
-}
+): props is GluuDatePickerRangeProps => props.mode === 'range'
 
 export type GluuDatePickerRangeInternalProps = GluuDatePickerRangeProps & {
   displayFormat: string

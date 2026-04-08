@@ -53,7 +53,7 @@ const initTabValue = (tabNames: TabItem[], pathname: string) => {
   return tabIndex >= 0 ? tabIndex : 0
 }
 
-export default function GluuTabs({ tabNames, tabToShow, withNavigation = false }: GluuTabsProps) {
+const GluuTabs = ({ tabNames, tabToShow, withNavigation = false }: GluuTabsProps) => {
   const path = useLocation()
   const { navigateToRoute } = useAppNavigation()
   const { state: themeState } = useTheme()
@@ -179,3 +179,5 @@ export default function GluuTabs({ tabNames, tabToShow, withNavigation = false }
     </Box>
   )
 }
+
+export default GluuTabs

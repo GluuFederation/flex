@@ -4,10 +4,10 @@ import type { ApiPermissionItem, PermissionActionData, RolePermissionMappingEntr
 
 export type { ApiPermissionItem, RolePermissionMappingEntry }
 
-export function resolvePermissionKey(
+export const resolvePermissionKey = (
   actionData: PermissionActionData,
   apiPermissions: ApiPermissionItem[] | undefined,
-): string | undefined {
+): string | undefined => {
   const isObject = (
     value: PermissionActionData,
   ): value is { inum?: string; permission?: string } => {
@@ -26,20 +26,20 @@ export function resolvePermissionKey(
   return found?.permission
 }
 
-export function findRolesForPermission(
+export const findRolesForPermission = (
   permissionKey: string | undefined,
   rolePermissionMapping: RolePermissionMappingEntry[] | undefined,
-): string[] {
+): string[] => {
   if (!permissionKey || !Array.isArray(rolePermissionMapping)) return []
   return rolePermissionMapping
     .filter((r) => Array.isArray(r?.permissions) && r.permissions.includes(permissionKey))
     .map((r) => r.role)
 }
 
-export function buildMappingGuidanceMessage(
+export const buildMappingGuidanceMessage = (
   permissionKey: string | undefined,
   mappedRoles: string[] | undefined,
-): string {
+): string => {
   if (!permissionKey) {
     return 'Unable to delete permission. Permission identifier not found.'
   }
@@ -53,11 +53,11 @@ export function buildMappingGuidanceMessage(
   return `Unable to delete permission "${permissionKey}". It is currently mapped to ${rolesWord}: ${rolesList}. Please remove it from the role mapping menu first.`
 }
 
-export function buildPermissionDeleteErrorMessage(
+export const buildPermissionDeleteErrorMessage = (
   actionData: PermissionActionData,
   apiPermissions: ApiPermissionItem[] | undefined,
   rolePermissionMapping: RolePermissionMappingEntry[] | undefined,
-): string {
+): string => {
   const permissionKey = resolvePermissionKey(actionData, apiPermissions)
   const mappedRoles = findRolesForPermission(permissionKey, rolePermissionMapping)
   return buildMappingGuidanceMessage(permissionKey, mappedRoles)

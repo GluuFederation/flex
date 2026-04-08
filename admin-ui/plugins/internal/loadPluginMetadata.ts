@@ -1,11 +1,12 @@
 import type { PluginMetadataModule } from './types'
 import { REGEX_SCRIPT_EXTENSION } from '@/utils/regex'
+import { devLogger } from '@/utils/devLogger'
 
 let context: RequireContext | null = null
 try {
   context = require.context('..', true, /plugin-metadata\.(?:tsx?|jsx?)$/)
 } catch (err) {
-  console.error(
+  devLogger.error(
     '[loadPluginMetadata] require.context failed; no plugin metadata will be available',
     err,
   )
@@ -29,7 +30,7 @@ export const loadPluginMetadata = (path: string): PluginMetadataModule => {
   const normalized = path.replace(REGEX_SCRIPT_EXTENSION, '')
   const loader = moduleMap.get(normalized) ?? moduleMap.get(path)
   if (!loader) {
-    console.warn(
+    devLogger.warn(
       `[loadPluginMetadata] No metadata found for path: "${path}" (normalized: "${normalized}"); using empty fallback`,
     )
     return createFallbackMetadata()
@@ -37,7 +38,7 @@ export const loadPluginMetadata = (path: string): PluginMetadataModule => {
   try {
     return loader()
   } catch (err) {
-    console.error(
+    devLogger.error(
       `[loadPluginMetadata] Loader failed for path: "${path}" (normalized: "${normalized}"); using empty fallback`,
       err,
     )

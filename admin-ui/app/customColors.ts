@@ -111,9 +111,8 @@ export const getLoadingOverlayRgba = (hexColor: string, opacity: number): string
 export type CustomColorKeys = keyof typeof customColors
 
 /** Convert camelCase to kebab-case for CSS variable names */
-function toKebabCase(str: string): string {
-  return str.replace(REGEX_CAMEL_CASE_WORD_BOUNDARY, '$1-$2').toLowerCase()
-}
+const toKebabCase = (str: string): string =>
+  str.replace(REGEX_CAMEL_CASE_WORD_BOUNDARY, '$1-$2').toLowerCase()
 
 const CUSTOM_COLORS_CSS_VARS: Readonly<Record<string, string>> = (() => {
   const vars: Record<string, string> = {}
@@ -125,8 +124,7 @@ const CUSTOM_COLORS_CSS_VARS: Readonly<Record<string, string>> = (() => {
   return Object.freeze(vars)
 })()
 
-export function getCustomColorsAsCssVars(): Readonly<Record<string, string>> {
-  return CUSTOM_COLORS_CSS_VARS
-}
+export const getCustomColorsAsCssVars = (): Readonly<Record<string, string>> =>
+  CUSTOM_COLORS_CSS_VARS
 
 export default customColors

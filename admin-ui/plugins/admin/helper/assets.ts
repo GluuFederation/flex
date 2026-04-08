@@ -2,13 +2,13 @@ import type { AssetFormValues } from '../components/Assets/types/FormTypes'
 import type { Document } from '../components/Assets/types/AssetApiTypes'
 
 /** Normalize service from API (may be service, jansService, or jansModuleProperty[0]) */
-export function getServiceFromAsset(
+export const getServiceFromAsset = (
   asset:
     | Document
     | Record<string, string | number | boolean | object | null | undefined>
     | null
     | undefined,
-): string | undefined {
+): string | undefined => {
   if (!asset || typeof asset !== 'object') return undefined
   const rec = asset as Record<string, string | number | boolean | object | null | undefined>
   if (typeof rec.service === 'string' && rec.service) return rec.service
@@ -18,21 +18,19 @@ export function getServiceFromAsset(
   return undefined
 }
 
-function toDocumentValue(
+const toDocumentValue = (
   val: string | number | boolean | File | Blob | object | null | undefined,
   fallback: string,
-): string | File | Blob | null {
+): string | File | Blob | null => {
   if (typeof val === 'string') return val
   if (val instanceof File || val instanceof Blob) return val
   return val != null ? String(val) : fallback
 }
 
-function toStringValue(
+const toStringValue = (
   val: string | number | boolean | object | null | undefined,
   fallback: string,
-): string {
-  return typeof val === 'string' ? val : val != null ? String(val) : fallback
-}
+): string => (typeof val === 'string' ? val : val != null ? String(val) : fallback)
 
 export const buildAssetInitialValues = (
   asset?: Document | Record<string, string | number | boolean | object | null | undefined> | null,
