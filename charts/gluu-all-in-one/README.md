@@ -183,8 +183,8 @@ Kubernetes: `>=v1.23.0-0`
 | cnSqlPasswordFile | string | `"/etc/jans/conf/sql_password"` | Path to SQL password file |
 | config-api.adminUiAppLoggers.adminUiAuditLogLevel | string | `"INFO"` | config-api admin-ui plugin audit log level |
 | config-api.adminUiAppLoggers.adminUiAuditLogTarget | string | `"FILE"` | config-api admin-ui plugin audit log target |
-| config-api.adminUiAppLoggers.adminUiLogLevel | string | `"INFO"` | config-api admin-ui plugin log target |
-| config-api.adminUiAppLoggers.adminUiLogTarget | string | `"FILE"` | config-api admin-ui plugin log level |
+| config-api.adminUiAppLoggers.adminUiLogLevel | string | `"INFO"` | config-api admin-ui plugin log level |
+| config-api.adminUiAppLoggers.adminUiLogTarget | string | `"FILE"` | config-api admin-ui plugin log target |
 | config-api.adminUiAppLoggers.enableStdoutLogPrefix | string | `"true"` | Enable log prefixing which enables prepending the STDOUT logs with the file name. i.e config-api_persistence ===> 2022-12-20 17:49:55,744 INFO |
 | config-api.appLoggers | object | `{"configApiLogLevel":"INFO","configApiLogTarget":"STDOUT","enableStdoutLogPrefix":"true","persistenceDurationLogLevel":"INFO","persistenceDurationLogTarget":"FILE","persistenceLogLevel":"INFO","persistenceLogTarget":"FILE","rootLogLevel":"INFO","rootLogTarget":"STDOUT","scriptLogLevel":"INFO","scriptLogTarget":"FILE"}` | App loggers can be configured to define where the logs will be redirected to and the level of each in which it should be displayed. |
 | config-api.appLoggers.configApiLogLevel | string | `"INFO"` | configapi.log level |
