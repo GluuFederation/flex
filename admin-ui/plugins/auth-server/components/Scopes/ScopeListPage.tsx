@@ -1,92 +1,71 @@
-import React, { useState, useEffect, useContext, useCallback, useMemo, useRef } from 'react'
-import MaterialTable from '@material-table/core'
-import type { Column, Action } from '@material-table/core'
-import { DeleteOutlined } from '@mui/icons-material'
-import {
-  Paper,
-  TablePagination,
-  Box,
-  TextField,
-  MenuItem,
-  IconButton,
-  Button,
-  InputAdornment,
-} from '@mui/material'
-import SearchIcon from '@mui/icons-material/Search'
-import SwapVertIcon from '@mui/icons-material/SwapVert'
-import ClearIcon from '@mui/icons-material/Clear'
-import RefreshIcon from '@mui/icons-material/Refresh'
-import { useDispatch } from 'react-redux'
-import { Badge } from 'reactstrap'
+import React, { useState, useEffect, useContext, useCallback, useMemo, memo } from 'react'
+import { DeleteOutlined, Edit, Add } from '@mui/icons-material'
 import { Link } from 'react-router-dom'
-import { Card, CardBody } from 'Components'
-import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
-import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import { useAppDispatch } from '@/redux/hooks'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
+import { GluuBadge } from '@/components/GluuBadge'
+import { GluuTable } from '@/components/GluuTable'
+import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
-import ScopeDetailPage from './ScopeDetailPage'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
+import { ThemeContext } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import SetTitle from 'Utils/SetTitle'
 import { useCedarling } from '@/cedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import SetTitle from 'Utils/SetTitle'
-import { ThemeContext } from 'Context/theme/themeContext'
-import getThemeColor from 'Context/theme/config'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
-import customColors from '@/customColors'
-import { useQueryClient } from '@tanstack/react-query'
 import { updateToast } from 'Redux/features/toastSlice'
 import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
-import {
-  useGetOauthScopes,
-  useDeleteOauthScopesByInum,
-  getGetOauthScopesQueryKey,
-} from 'JansConfigApi'
+import { useQueryClient } from '@tanstack/react-query'
+import { useDeleteOauthScopesByInum } from 'JansConfigApi'
 import type { Scope } from 'JansConfigApi'
-import type { ScopeWithClients, ScopeTableRow } from './types'
-import { useScopeActions } from './hooks'
+import type { ScopeTableRow } from './types'
+import { devLogger } from '@/utils/devLogger'
+import { useScopes, useScopeActions, invalidateScopeQueries } from './hooks'
+import { toScopeJsonRecord } from './helper/utils'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { DEFAULT_THEME } from '@/context/theme/constants'
-import { fontFamily, fontWeights } from '@/styles/fonts'
+import { useDebounce } from '@/utils/hooks/useDebounce'
+import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
+import { GluuDetailGrid, type GluuDetailGridField } from '@/components/GluuDetailGrid'
+import { SCOPE } from 'Utils/ApiResources'
+import { useStyles } from './styles/ScopeListPage.style'
+import {
+  SCOPE_SORT_COLUMNS,
+  SCOPE_SORT_COLUMN_LABELS,
+  SCOPE_TYPE_OPTIONS,
+  DEFAULT_SCOPE_SORT_BY,
+  FEATURE_SCOPE_DELETE,
+  EMPTY_PLACEHOLDER,
+} from './constants'
+import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
+import type { FilterDef } from '@/components/GluuSearchToolbar/types'
 
-interface DetailPanelProps {
-  rowData: ScopeTableRow
+const LIMIT_OPTIONS = getRowsPerPageOptions()
+
+const getScopeTypeBadgeStyle = (
+  scopeTypeBadge: Record<
+    string,
+    { backgroundColor: string; textColor: string; borderColor: string }
+  >,
+  scopeType?: string,
+) => {
+  const key = scopeType?.toLowerCase() ?? 'default'
+  return scopeTypeBadge[key] ?? scopeTypeBadge.default
 }
 
-const FILTER_BOX_STYLES = {
-  mb: '10px',
-  p: 1,
-  backgroundColor: customColors.white,
-  borderRadius: 1,
-} as const
+type DisplayValue = GluuDetailGridField['value']
 
-const FILTER_CONTAINER_STYLES = {
-  display: 'flex',
-  gap: 2,
-  alignItems: 'center',
-  justifyContent: 'space-between',
-} as const
-
-const FILTER_ITEMS_STYLES = {
-  display: 'flex',
-  gap: 2,
-  alignItems: 'center',
-  flexWrap: 'wrap',
-} as const
-
-const ICON_BUTTON_STYLES = { color: customColors.lightBlue } as const
-
-const TEXT_FIELD_WIDTH = { width: '250px' } as const
-
-const SELECT_FIELD_WIDTH = { width: '180px' } as const
+const displayOrDash = (value: DisplayValue): DisplayValue =>
+  value === null || value === undefined || value === '' ? EMPTY_PLACEHOLDER : value
 
 const ScopeListPage: React.FC = () => {
   const { t } = useTranslation()
-  const { navigateToRoute } = useAppNavigation()
-  const theme = useContext(ThemeContext)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
-
+  const { navigateToRoute } = useAppNavigation()
   const {
     hasCedarReadPermission,
     hasCedarWritePermission,
@@ -95,240 +74,94 @@ const ScopeListPage: React.FC = () => {
   } = useCedarling()
   const { logScopeDeletion } = useScopeActions()
 
-  const getInitialPageSize = (): number => {
-    const stored = localStorage.getItem('paggingSize')
-    return stored ? parseInt(stored) : 10
-  }
+  const theme = useContext(ThemeContext)
+  const { themeColors, isDarkTheme } = useMemo(() => {
+    const selected = theme?.state?.theme || DEFAULT_THEME
+    return {
+      themeColors: getThemeColor(selected),
+      isDarkTheme: selected === THEME_DARK,
+    }
+  }, [theme?.state?.theme])
+  const { classes, badgeStyles } = useStyles({ isDark: isDarkTheme, themeColors })
 
-  const [limit, setLimit] = useState<number>(getInitialPageSize())
-  const [pageNumber, setPageNumber] = useState<number>(0)
-  const [searchInput, setSearchInput] = useState<string>('')
-  const [pattern, setPattern] = useState<string | null>(null)
-  const [startIndex, setStartIndex] = useState<number>(0)
-  const [scopeType, setScopeType] = useState<string | undefined>(undefined)
-  const [sortBy, setSortBy] = useState<string | undefined>(undefined)
-  const [sortOrder, setSortOrder] = useState<'ascending' | 'descending'>('ascending')
-  const [item, setItem] = useState<Scope | null>(null)
+  const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
+  const [pattern, setPattern] = useState('')
+  const [scopeType, setScopeType] = useState<string>('')
+  const [sortBy, setSortBy] = useState<string>(DEFAULT_SCOPE_SORT_BY)
+
   const [modal, setModal] = useState(false)
-  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
-
-  const scopesQueryParams = useMemo(
-    () => ({
-      limit,
-      pattern: pattern || undefined,
-      startIndex,
-      type: scopeType || undefined,
-      sortBy: sortBy || undefined,
-      sortOrder: sortBy ? sortOrder : undefined,
-      withAssociatedClients: true as const,
-    }),
-    [limit, pattern, startIndex, scopeType, sortBy, sortOrder],
-  )
-
-  const scopesQueryOptions = useMemo(
-    () => ({
-      query: {
-        refetchOnMount: 'always' as const,
-        refetchOnWindowFocus: false,
-        refetchOnReconnect: true,
-        staleTime: 30000, // 30 seconds
-      },
-    }),
-    [],
-  )
-
-  const {
-    data: scopesResponse,
-    isLoading,
-    isFetching,
-  } = useGetOauthScopes(scopesQueryParams, scopesQueryOptions)
-
-  const loading = isLoading || isFetching
-
-  const handleDeleteSuccess = useCallback(() => {
-    dispatch(updateToast(true, 'success', 'Scope deleted successfully'))
-    queryClient.invalidateQueries({
-      predicate: (query) => {
-        const queryKey = query.queryKey[0] as string
-        return queryKey === getGetOauthScopesQueryKey()[0] || queryKey === 'getOauthScopesByInum'
-      },
-    })
-  }, [dispatch, queryClient])
-
-  const handleDeleteError = useCallback(
-    (error: Error) => {
-      const errorMessage = error?.message || 'Failed to delete scope'
-      dispatch(updateToast(true, 'error', errorMessage))
-    },
-    [dispatch],
-  )
-
-  const deleteScope = useDeleteOauthScopesByInum({
-    mutation: {
-      onSuccess: handleDeleteSuccess,
-      onError: handleDeleteError,
-    },
-  })
+  const [itemToDelete, setItemToDelete] = useState<Scope | null>(null)
 
   const scopesResourceId = ADMIN_UI_RESOURCES.Scopes
-
-  const selectedTheme = useMemo(() => theme?.state?.theme || DEFAULT_THEME, [theme?.state?.theme])
-
-  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
-
-  const bgThemeColor = useMemo(
-    () => ({ background: themeColors.background }),
-    [themeColors.background],
-  )
-
   const scopesScopes = useMemo(
-    () => CEDAR_RESOURCE_SCOPES[scopesResourceId] || [],
+    () => CEDAR_RESOURCE_SCOPES[scopesResourceId] ?? [],
     [scopesResourceId],
   )
 
-  const canReadScopes = useMemo(
+  const canRead = useMemo(
     () => hasCedarReadPermission(scopesResourceId),
     [hasCedarReadPermission, scopesResourceId],
   )
-
-  const canWriteScopes = useMemo(
+  const canWrite = useMemo(
     () => hasCedarWritePermission(scopesResourceId),
     [hasCedarWritePermission, scopesResourceId],
   )
-
-  const canDeleteScopes = useMemo(
+  const canDelete = useMemo(
     () => hasCedarDeletePermission(scopesResourceId),
     [hasCedarDeletePermission, scopesResourceId],
   )
 
-  const scopes = useMemo<ScopeWithClients[]>(
-    () => (scopesResponse?.entries || []) as ScopeWithClients[],
-    [scopesResponse?.entries],
-  )
+  useEffect(() => {
+    authorizeHelper(scopesScopes)
+  }, [authorizeHelper, scopesScopes])
 
-  const totalItems = useMemo(
-    () => scopesResponse?.totalEntriesCount || 0,
-    [scopesResponse?.totalEntriesCount],
-  )
+  const startIndex = useMemo(() => pageNumber * limit, [pageNumber, limit])
 
-  const tableOptions = useMemo(
+  const debouncedPattern = useDebounce(pattern, 400)
+
+  const scopesQueryParams = useMemo(
     () => ({
-      idSynonym: 'inum',
-      columnsButton: true,
-      search: false,
-      selection: false,
-      pageSize: limit,
-      headerStyle: {
-        ...applicationStyle.tableHeaderStyle,
-        ...bgThemeColor,
-        textTransform: applicationStyle.tableHeaderStyle.textTransform as
-          | 'uppercase'
-          | 'lowercase'
-          | 'none'
-          | 'capitalize'
-          | undefined,
-        color: themeColors.fontColor,
-      },
-      actionsColumnIndex: -1,
+      limit,
+      startIndex,
+      ...(debouncedPattern && { pattern: debouncedPattern }),
+      ...(scopeType && { type: scopeType }),
+      ...(sortBy && { sortBy, sortOrder: 'ascending' as const }),
+      withAssociatedClients: true as const,
     }),
-    [limit, bgThemeColor, themeColors.fontColor],
+    [limit, startIndex, debouncedPattern, scopeType, sortBy],
   )
 
-  const toggle = useCallback(() => setModal((prev) => !prev), [])
+  const { data: scopesResponse, isLoading, refetch } = useScopes(scopesQueryParams)
 
-  const handlePatternChange = useCallback((event: React.ChangeEvent<HTMLInputElement>): void => {
-    setSearchInput(event.target.value)
-  }, [])
-
-  const handlePatternKeyDown = useCallback(
-    (event: React.KeyboardEvent): void => {
-      if (event.key === 'Enter') {
-        if (debounceTimerRef.current) {
-          clearTimeout(debounceTimerRef.current)
-          debounceTimerRef.current = null
-        }
-        setPattern(searchInput || null)
-        setPageNumber(0)
-        setStartIndex(0)
-      }
-    },
-    [searchInput],
-  )
-
-  const handleScopeTypeChange = useCallback((event: React.ChangeEvent<HTMLInputElement>): void => {
-    const value = event.target.value
-    setScopeType(value === 'all' ? undefined : value)
-    setPageNumber(0)
-    setStartIndex(0)
-  }, [])
-
-  const handleSortByChange = useCallback((event: React.ChangeEvent<HTMLInputElement>): void => {
-    const value = event.target.value
-    setSortBy(value === 'none' ? undefined : value)
-    setPageNumber(0)
-    setStartIndex(0)
-  }, [])
-
-  const handleSortOrderToggle = useCallback((): void => {
-    setSortOrder((prev) => (prev === 'ascending' ? 'descending' : 'ascending'))
-  }, [])
-
-  const handleClearFilters = useCallback((): void => {
-    setSearchInput('')
-    setPattern(null)
-    setScopeType(undefined)
-    setSortBy(undefined)
-    setSortOrder('ascending')
-    setPageNumber(0)
-    setStartIndex(0)
-  }, [])
-
-  const handleRefresh = useCallback((): void => {
-    setStartIndex(0)
-    setPageNumber(0)
-    queryClient.invalidateQueries({
-      predicate: (query) => {
-        const queryKey = query.queryKey[0] as string
-        return queryKey === getGetOauthScopesQueryKey()[0] || queryKey === 'getOauthScopesByInum'
+  const deleteScope = useDeleteOauthScopesByInum({
+    mutation: {
+      onSuccess: () => {
+        dispatch(updateToast(true, 'success', t('messages.scope_deleted_successfully')))
+        invalidateScopeQueries(queryClient)
       },
-    })
-  }, [queryClient])
+      onError: (error: Error) => {
+        const errorMessage = error?.message || t('messages.error_deleting_scope')
+        dispatch(updateToast(true, 'error', errorMessage))
+      },
+    },
+  })
 
-  const renderClientsColumn = useCallback((rowData: ScopeTableRow) => {
-    if (!rowData.clients || !rowData.inum) {
-      return rowData.clients?.length || 0
-    }
-    return (
-      <Link to={ROUTES.AUTH_SERVER_CLIENTS_LIST_WITH_SCOPE(rowData.inum)} className="common-link">
-        {rowData.clients.length}
-      </Link>
-    )
-  }, [])
-
-  const renderScopeTypeColumn = useCallback(
-    (rowData: ScopeTableRow) => (
-      <Badge
-        key={rowData.inum}
-        style={{
-          backgroundColor: themeColors.background,
-          color: customColors.white,
-          fontWeight: fontWeights.medium,
-          fontFamily: fontFamily,
-          padding: '4px 8px',
-          borderRadius: '4px',
-        }}
-      >
-        {rowData.scopeType}
-      </Badge>
-    ),
-    [themeColors.background],
+  const { scopes, totalItems } = useMemo(
+    () => ({
+      scopes: (scopesResponse?.entries || []) as ScopeTableRow[],
+      totalItems: scopesResponse?.totalEntriesCount ?? 0,
+    }),
+    [scopesResponse],
   )
 
-  const handleGoToScopeAddPage = useCallback(() => {
+  SetTitle(t('titles.scopes'))
+
+  // Navigation handlers
+  const handleAdd = useCallback(() => {
     navigateToRoute(ROUTES.AUTH_SERVER_SCOPE_ADD)
   }, [navigateToRoute])
 
-  const handleGoToScopeEditPage = useCallback(
+  const handleEdit = useCallback(
     (row: ScopeTableRow) => {
       if (row.inum) {
         navigateToRoute(ROUTES.AUTH_SERVER_SCOPE_EDIT(row.inum))
@@ -337,330 +170,469 @@ const ScopeListPage: React.FC = () => {
     [navigateToRoute],
   )
 
-  const handleScopeDelete = useCallback(
-    (row: ScopeTableRow) => {
-      setItem(row as Scope)
-      toggle()
-    },
-    [toggle],
-  )
-
-  const onDeletionConfirmed = useCallback(
-    async (message: string) => {
-      if (!item?.inum) return
-
-      try {
-        await deleteScope.mutateAsync({ inum: item.inum })
-        dispatch(triggerWebhook({ createdFeatureValue: item }))
-        await logScopeDeletion(item, message)
-        toggle()
-      } catch (error) {
-        console.error('Error deleting scope:', error)
-      }
-    },
-    [item, deleteScope, logScopeDeletion, toggle, dispatch],
-  )
-
-  const onPageChangeClick = useCallback(
-    (page: number): void => {
-      const newStartIndex = page * limit
-      setStartIndex(newStartIndex)
-      setPageNumber(page)
-    },
-    [limit],
-  )
-
-  const onRowCountChangeClick = useCallback((count: number): void => {
-    setStartIndex(0)
-    setPageNumber(0)
-    setLimit(count)
+  // Delete handlers
+  const handleDeleteClick = useCallback((row: ScopeTableRow) => {
+    setItemToDelete(row as Scope)
+    setModal(true)
   }, [])
 
-  const handleEditClick = useCallback(
-    (data: ScopeTableRow | ScopeTableRow[]) => {
-      if (data && !Array.isArray(data)) {
-        handleGoToScopeEditPage(data)
+  const handleCloseDeleteModal = useCallback(() => {
+    setModal(false)
+    setItemToDelete(null)
+  }, [])
+
+  const handleDeleteConfirm = useCallback(
+    async (message: string) => {
+      if (!itemToDelete?.inum) return
+
+      try {
+        await deleteScope.mutateAsync({ inum: itemToDelete.inum })
+        dispatch(
+          triggerWebhook({
+            createdFeatureValue: toScopeJsonRecord(itemToDelete),
+          }),
+        )
+        await logScopeDeletion(itemToDelete, message)
+        setModal(false)
+        setItemToDelete(null)
+      } catch (error) {
+        devLogger.error('Error deleting scope:', error)
       }
     },
-    [handleGoToScopeEditPage],
+    [itemToDelete, deleteScope, logScopeDeletion, dispatch],
   )
 
-  const handleDeleteClick = useCallback(
-    (data: ScopeTableRow | ScopeTableRow[]) => {
-      if (data && !Array.isArray(data)) {
-        handleScopeDelete(data)
-      }
+  // Filter/search handlers
+  const handlePatternSearch = useCallback(
+    (value: string) => {
+      setPattern(value)
+      setPageNumber(0)
     },
-    [handleScopeDelete],
+    [setPageNumber],
   )
 
-  const DeleteIcon = () => <DeleteOutlined />
+  const handleSearchSubmit = useCallback(() => {
+    setPageNumber(0)
+  }, [setPageNumber])
 
-  const detailPanel = useCallback(
-    (props: DetailPanelProps): React.ReactElement => (
-      <ScopeDetailPage row={props.rowData as Scope} />
-    ),
-    [],
+  const handleRefresh = useCallback(() => {
+    setPattern('')
+    setScopeType('')
+    setSortBy(DEFAULT_SCOPE_SORT_BY)
+    setPageNumber(0)
+    refetch()
+  }, [refetch, setPageNumber])
+
+  const handleScopeTypeChange = useCallback(
+    (value: string) => {
+      setScopeType(value)
+      setPageNumber(0)
+    },
+    [setPageNumber],
   )
 
-  const PaperContainer = useCallback(
-    (props: React.ComponentProps<typeof Paper>) => <Paper {...props} elevation={0} />,
-    [],
+  const handleSortByChange = useCallback(
+    (value: string) => {
+      setSortBy(value)
+      setPageNumber(0)
+    },
+    [setPageNumber],
   )
 
   const handlePageChange = useCallback(
-    (_event: React.MouseEvent<HTMLButtonElement> | null, page: number) => {
-      onPageChangeClick(page)
+    (page: number) => {
+      setPageNumber(page)
     },
-    [onPageChangeClick],
+    [setPageNumber],
   )
 
   const handleRowsPerPageChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onRowCountChangeClick(parseInt(event.target.value, 10))
+    (rowsPerPage: number) => {
+      setLimit(rowsPerPage)
+      setPageNumber(0)
     },
-    [onRowCountChangeClick],
+    [setLimit, setPageNumber],
   )
 
-  const PaginationComponent = useCallback(
-    () => (
-      <TablePagination
-        count={totalItems}
-        page={pageNumber}
-        onPageChange={handlePageChange}
-        rowsPerPage={limit}
-        onRowsPerPageChange={handleRowsPerPageChange}
-      />
-    ),
-    [totalItems, pageNumber, handlePageChange, limit, handleRowsPerPageChange],
-  )
-
-  const tableColumns = useMemo<Column<ScopeTableRow>[]>(
+  // Filter definitions
+  const scopeTypeOptions = useMemo(
     () => [
-      { title: `${t('fields.id')}`, field: 'id' },
+      { value: '', label: t('options.all') },
+      ...SCOPE_TYPE_OPTIONS,
+      { value: 'spontaneous', label: 'Spontaneous' },
+    ],
+    [t],
+  )
+
+  const sortOptions = useMemo(
+    () => [
+      { value: '', label: t('options.none') },
+      ...SCOPE_SORT_COLUMNS.map((value) => ({
+        value,
+        label: t(SCOPE_SORT_COLUMN_LABELS[value] || value),
+      })),
+    ],
+    [t],
+  )
+
+  const filters: FilterDef[] = useMemo(
+    () => [
       {
-        title: `${t('menus.clients')}`,
-        field: 'dn',
-        render: renderClientsColumn,
+        key: 'scopeType',
+        label: `${t('fields.scope_type')}:`,
+        value: scopeType,
+        options: scopeTypeOptions,
+        onChange: handleScopeTypeChange,
+        width: 180,
       },
-      { title: `${t('fields.description')}`, field: 'description' },
       {
-        title: `${t('fields.scope_type')}`,
-        field: 'scopeType',
-        render: renderScopeTypeColumn,
+        key: 'sortBy',
+        label: `${t('fields.sort_by')}:`,
+        value: sortBy,
+        options: sortOptions,
+        onChange: handleSortByChange,
+        width: 180,
       },
     ],
-    [t, renderClientsColumn, renderScopeTypeColumn],
+    [
+      t,
+      scopeType,
+      scopeTypeOptions,
+      sortBy,
+      sortOptions,
+      handleScopeTypeChange,
+      handleSortByChange,
+    ],
   )
 
-  const myActions = useMemo<
-    Array<Action<ScopeTableRow> | ((rowData: ScopeTableRow) => Action<ScopeTableRow>)>
-  >(() => {
-    const actions: Array<
-      Action<ScopeTableRow> | ((rowData: ScopeTableRow) => Action<ScopeTableRow>)
-    > = []
+  const searchLabel = useMemo(() => `${t('fields.pattern')}:`, [t])
+  const searchPlaceholder = useMemo(() => t('placeholders.search_pattern'), [t])
 
-    if (canWriteScopes) {
-      actions.push((rowData: ScopeTableRow) => ({
-        icon: 'edit',
-        iconProps: {
-          id: `editScope${rowData.inum}`,
+  const primaryAction = useMemo(
+    () => ({
+      label: t('messages.add_scope'),
+      icon: <Add className={classes.addIcon} />,
+      onClick: handleAdd,
+      disabled: !canWrite,
+    }),
+    [t, handleAdd, canWrite, classes],
+  )
+
+  // Table columns
+  const columns: ColumnDef<ScopeTableRow>[] = useMemo(
+    () => [
+      {
+        key: 'id',
+        label: t('fields.id'),
+        sortable: true,
+      },
+      {
+        key: 'dn',
+        label: t('menus.clients'),
+        render: (_value, row) => {
+          if (!row.clients || !row.inum) {
+            return row.clients?.length || 0
+          }
+          return (
+            <Link
+              to={ROUTES.AUTH_SERVER_CLIENTS_LIST_WITH_SCOPE(row.inum)}
+              className={classes.clientsLink}
+            >
+              {row.clients.length}
+            </Link>
+          )
         },
-        tooltip: `${t('messages.edit_scope')}`,
-        onClick: (_event, data) => handleEditClick(data),
-        disabled: !canWriteScopes,
-      }))
-      actions.push({
-        icon: 'add',
-        tooltip: `${t('messages.add_scope')}`,
-        iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
-        isFreeAction: true,
-        onClick: handleGoToScopeAddPage,
-        disabled: !canWriteScopes,
+      },
+      {
+        key: 'description',
+        label: t('fields.description'),
+        sortable: true,
+        width: '35%',
+        render: (_value, row) => {
+          const desc = row.description ?? EMPTY_PLACEHOLDER
+          return (
+            <GluuText
+              variant="span"
+              disableThemeColor
+              className={classes.cellDescription}
+              title={typeof desc === 'string' ? desc : undefined}
+            >
+              {desc}
+            </GluuText>
+          )
+        },
+      },
+      {
+        key: 'scopeType',
+        label: t('fields.scope_type'),
+        sortable: true,
+        render: (_value, row) => {
+          const style = getScopeTypeBadgeStyle(badgeStyles.scopeTypeBadge, row.scopeType)
+          return (
+            <GluuBadge
+              size="md"
+              backgroundColor={style.backgroundColor}
+              textColor={style.textColor}
+              borderColor={style.borderColor}
+              borderRadius={6}
+              className={classes.scopeTypeBadge}
+            >
+              {row.scopeType}
+            </GluuBadge>
+          )
+        },
+      },
+    ],
+    [t, classes, badgeStyles],
+  )
+
+  // Table actions
+  const actions = useMemo(() => {
+    const list: Array<{
+      icon: React.ReactNode
+      tooltip: string
+      id?: string
+      onClick: (row: ScopeTableRow) => void
+    }> = []
+    if (canWrite) {
+      list.push({
+        icon: <Edit className={classes.editIcon} />,
+        tooltip: t('messages.edit_scope'),
+        id: 'editScope',
+        onClick: handleEdit,
       })
     }
-
-    if (canDeleteScopes) {
-      actions.push((rowData: ScopeTableRow) => ({
-        icon: DeleteIcon,
-        iconProps: {
-          color: 'secondary',
-          id: `deleteScope${rowData.inum}`,
-        },
-        tooltip: `${t('Delete Scope')}`,
-        onClick: (_event, data) => handleDeleteClick(data),
-        disabled: !canDeleteScopes,
-      }))
+    if (canDelete) {
+      list.push({
+        icon: <DeleteOutlined className={classes.deleteIcon} />,
+        tooltip: t('messages.delete_scope'),
+        id: 'deleteScope',
+        onClick: handleDeleteClick,
+      })
     }
+    return list
+  }, [canWrite, canDelete, t, handleEdit, handleDeleteClick, classes])
 
-    return actions
-  }, [
-    canWriteScopes,
-    canDeleteScopes,
-    t,
-    handleEditClick,
-    handleGoToScopeAddPage,
-    handleDeleteClick,
-  ])
+  // Pagination
+  const effectivePage = useMemo(() => {
+    const maxPage = totalItems > 0 ? Math.max(0, Math.ceil(totalItems / limit) - 1) : 0
+    return Math.min(pageNumber, maxPage)
+  }, [pageNumber, totalItems, limit])
 
-  const tableComponents = useMemo(
+  useEffect(() => {
+    if (totalItems > 0 && pageNumber > effectivePage) {
+      setPageNumber(effectivePage)
+    }
+  }, [totalItems, pageNumber, limit, effectivePage])
+
+  const pagination: PaginationConfig = useMemo(
     () => ({
-      Container: PaperContainer,
-      Pagination: PaginationComponent,
+      page: effectivePage,
+      rowsPerPage: limit,
+      totalItems,
+      rowsPerPageOptions: LIMIT_OPTIONS,
+      onPageChange: handlePageChange,
+      onRowsPerPageChange: handleRowsPerPageChange,
     }),
-    [PaperContainer, PaginationComponent],
+    [effectivePage, limit, totalItems, handlePageChange, handleRowsPerPageChange],
   )
 
-  SetTitle(t('titles.scopes'))
+  const getRowKey = useCallback(
+    (row: ScopeTableRow, index: number) => row.inum ?? `no-inum-${index}`,
+    [],
+  )
 
-  useEffect(() => {
-    authorizeHelper(scopesScopes)
-  }, [authorizeHelper, scopesScopes])
+  // Expandable row detail
+  const detailLabelStyle = useMemo(
+    () => ({ color: themeColors.fontColor }),
+    [themeColors.fontColor],
+  )
 
-  useEffect(() => {
-    debounceTimerRef.current = setTimeout(() => {
-      setPattern(searchInput || null)
-      if (searchInput !== (pattern || '')) {
-        setPageNumber(0)
-        setStartIndex(0)
-      }
-      debounceTimerRef.current = null
-    }, 500)
+  const getScopeDetailFields = useCallback(
+    (row: ScopeTableRow): GluuDetailGridField[] => [
+      {
+        label: 'fields.inum',
+        value: displayOrDash(row.inum),
+        doc_entry: 'inum',
+        doc_category: SCOPE,
+      },
+      {
+        label: 'fields.id',
+        value: displayOrDash(row.id),
+        doc_entry: 'id',
+        doc_category: SCOPE,
+      },
+      {
+        label: 'fields.description',
+        value: displayOrDash(row.description),
+        doc_entry: 'description',
+        doc_category: SCOPE,
+      },
+      {
+        label: 'fields.displayname',
+        value: displayOrDash(row.displayName),
+        doc_entry: 'displayName',
+        doc_category: SCOPE,
+      },
+      {
+        label: 'fields.scope_type',
+        value: displayOrDash(row.scopeType),
+        doc_entry: 'scopeType',
+        doc_category: SCOPE,
+        isBadge: true,
+        badgeBackgroundColor: getScopeTypeBadgeStyle(badgeStyles.scopeTypeBadge, row.scopeType)
+          .backgroundColor,
+        badgeTextColor: getScopeTypeBadgeStyle(badgeStyles.scopeTypeBadge, row.scopeType).textColor,
+      },
+      {
+        label: 'fields.default_scope',
+        value:
+          typeof row.defaultScope === 'boolean'
+            ? row.defaultScope
+              ? t('options.yes')
+              : t('options.no')
+            : EMPTY_PLACEHOLDER,
+        doc_entry: 'defaultScope',
+        doc_category: SCOPE,
+        isBadge: typeof row.defaultScope === 'boolean',
+        badgeBackgroundColor:
+          typeof row.defaultScope === 'boolean'
+            ? row.defaultScope
+              ? badgeStyles.trueBadge.backgroundColor
+              : badgeStyles.falseBadge.backgroundColor
+            : undefined,
+        badgeTextColor:
+          typeof row.defaultScope === 'boolean'
+            ? row.defaultScope
+              ? badgeStyles.trueBadge.textColor
+              : badgeStyles.falseBadge.textColor
+            : undefined,
+      },
+      {
+        label: 'fields.show_in_configuration_endpoint',
+        value:
+          typeof row.attributes?.showInConfigurationEndpoint === 'boolean'
+            ? row.attributes.showInConfigurationEndpoint
+              ? t('options.yes')
+              : t('options.no')
+            : EMPTY_PLACEHOLDER,
+        doc_entry: 'attributes.showInConfigurationEndpoint',
+        doc_category: SCOPE,
+        isBadge: typeof row.attributes?.showInConfigurationEndpoint === 'boolean',
+        badgeBackgroundColor:
+          typeof row.attributes?.showInConfigurationEndpoint === 'boolean'
+            ? row.attributes.showInConfigurationEndpoint
+              ? badgeStyles.trueBadge.backgroundColor
+              : badgeStyles.falseBadge.backgroundColor
+            : undefined,
+        badgeTextColor:
+          typeof row.attributes?.showInConfigurationEndpoint === 'boolean'
+            ? row.attributes.showInConfigurationEndpoint
+              ? badgeStyles.trueBadge.textColor
+              : badgeStyles.falseBadge.textColor
+            : undefined,
+      },
+      {
+        label: 'fields.attributes',
+        value: displayOrDash(
+          row.attributes
+            ? Object.entries(row.attributes)
+                .filter(([, v]) => v !== undefined && v !== null)
+                .map(([k, v]) => `${k}: ${String(v)}`)
+                .join(', ') || null
+            : null,
+        ),
+        doc_entry: 'attributes',
+        doc_category: SCOPE,
+      },
+    ],
+    [t, badgeStyles],
+  )
 
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current)
-        debounceTimerRef.current = null
-      }
+  const renderExpandedRow = useCallback(
+    (row: ScopeTableRow) => (
+      <GluuDetailGrid
+        fields={getScopeDetailFields(row)}
+        labelStyle={detailLabelStyle}
+        defaultDocCategory={SCOPE}
+        layout="column"
+      />
+    ),
+    [getScopeDetailFields, detailLabelStyle],
+  )
+
+  // Delete dialog
+  const deleteDialogLabel = useMemo(
+    () =>
+      itemToDelete
+        ? `${t('messages.action_deletion_for')} ${t('messages.subject_scope')} (${itemToDelete.id ?? ''}${itemToDelete.inum ? `-${itemToDelete.inum}` : ''})`
+        : '',
+    [t, itemToDelete],
+  )
+
+  const emptyMessage = useMemo(() => {
+    if (!pattern && scopes.length === 0) {
+      return t('messages.no_scopes_found')
     }
-  }, [searchInput, pattern])
+    return t('messages.no_data')
+  }, [pattern, scopes.length, t])
+
+  const loading = useMemo(
+    () => isLoading || deleteScope.isPending,
+    [isLoading, deleteScope.isPending],
+  )
 
   return (
     <GluuLoader blocking={loading}>
-      <Card style={applicationStyle.mainCard}>
-        <CardBody>
-          <GluuViewWrapper canShow={canReadScopes}>
-            <Box sx={FILTER_BOX_STYLES}>
-              <Box sx={FILTER_CONTAINER_STYLES}>
-                <Box sx={FILTER_ITEMS_STYLES}>
-                  <TextField
-                    size="small"
-                    placeholder={t('placeholders.search_pattern')}
-                    name="pattern"
-                    value={searchInput}
-                    onChange={handlePatternChange}
-                    onKeyDown={handlePatternKeyDown}
-                    sx={TEXT_FIELD_WIDTH}
-                    inputProps={{ 'aria-label': t('placeholders.search_pattern') }}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <SearchIcon
-                            fontSize="small"
-                            sx={{ color: customColors.lightBlue, pointerEvents: 'none' }}
-                          />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
+      <div className={classes.page}>
+        <GluuViewWrapper canShow={canRead}>
+          <div className={classes.searchCard}>
+            <div className={classes.searchCardContent}>
+              <GluuSearchToolbar
+                searchLabel={searchLabel}
+                searchPlaceholder={searchPlaceholder}
+                searchValue={pattern}
+                searchOnType
+                onSearch={handlePatternSearch}
+                onSearchSubmit={handleSearchSubmit}
+                filters={filters}
+                onRefresh={canRead ? handleRefresh : undefined}
+                refreshLoading={isLoading}
+                primaryAction={primaryAction}
+                disabled={loading}
+              />
+            </div>
+          </div>
 
-                  <TextField
-                    select
-                    size="small"
-                    value={scopeType || 'all'}
-                    onChange={handleScopeTypeChange}
-                    sx={SELECT_FIELD_WIDTH}
-                    label={t('fields.scope_type')}
-                  >
-                    <MenuItem value="all">{t('options.all')}</MenuItem>
-                    <MenuItem value="oauth">OAuth</MenuItem>
-                    <MenuItem value="openid">OpenID</MenuItem>
-                    <MenuItem value="dynamic">Dynamic</MenuItem>
-                    <MenuItem value="spontaneous">Spontaneous</MenuItem>
-                    <MenuItem value="uma">UMA</MenuItem>
-                  </TextField>
-
-                  <TextField
-                    select
-                    size="small"
-                    value={sortBy || 'none'}
-                    onChange={handleSortByChange}
-                    sx={SELECT_FIELD_WIDTH}
-                    label={t('fields.sort_by')}
-                  >
-                    <MenuItem value="none">{t('options.none')}</MenuItem>
-                    <MenuItem value="inum">{t('fields.inum')}</MenuItem>
-                    <MenuItem value="displayName">{t('fields.displayname')}</MenuItem>
-                  </TextField>
-
-                  {sortBy && sortBy !== 'none' && (
-                    <IconButton
-                      size="small"
-                      onClick={handleSortOrderToggle}
-                      title={
-                        sortOrder === 'ascending' ? t('options.ascending') : t('options.descending')
-                      }
-                      aria-label={
-                        sortOrder === 'ascending'
-                          ? t('tooltips.sort_descending')
-                          : t('tooltips.sort_ascending')
-                      }
-                      sx={ICON_BUTTON_STYLES}
-                    >
-                      <SwapVertIcon />
-                    </IconButton>
-                  )}
-
-                  <Button
-                    size="small"
-                    startIcon={<ClearIcon />}
-                    onClick={handleClearFilters}
-                    aria-label={t('tooltips.clear_filters')}
-                    sx={ICON_BUTTON_STYLES}
-                  >
-                    {t('actions.clear')}
-                  </Button>
-                </Box>
-
-                <IconButton
-                  size="small"
-                  onClick={handleRefresh}
-                  title={t('tooltips.refresh_data')}
-                  aria-label={t('tooltips.refresh_data')}
-                  sx={ICON_BUTTON_STYLES}
-                >
-                  <RefreshIcon />
-                </IconButton>
-              </Box>
-            </Box>
-
-            <MaterialTable
-              key={limit || 0}
-              components={tableComponents}
-              columns={tableColumns}
+          <div className={classes.tableCard}>
+            <GluuTable<ScopeTableRow>
+              columns={columns}
               data={scopes}
-              isLoading={loading}
-              title=""
-              actions={myActions}
-              options={tableOptions}
-              detailPanel={detailPanel}
+              loading={false}
+              expandable
+              renderExpandedRow={renderExpandedRow}
+              pagination={pagination}
+              onPagingSizeSync={onPagingSizeSync}
+              actions={actions}
+              getRowKey={getRowKey}
+              emptyMessage={emptyMessage}
             />
-          </GluuViewWrapper>
-          {canDeleteScopes && item && (
-            <GluuDialog
-              row={item}
-              name={item.id}
-              handler={toggle}
-              modal={modal}
-              subject="scope"
-              onAccept={onDeletionConfirmed}
-              feature={adminUiFeatures.scopes_delete}
-            />
-          )}
-        </CardBody>
-      </Card>
+          </div>
+        </GluuViewWrapper>
+
+        {canDelete && itemToDelete && (
+          <GluuCommitDialog
+            handler={handleCloseDeleteModal}
+            modal={modal}
+            onAccept={handleDeleteConfirm}
+            label={deleteDialogLabel}
+            feature={FEATURE_SCOPE_DELETE}
+            autoCloseOnAccept
+          />
+        )}
+      </div>
     </GluuLoader>
   )
 }
 
-export default ScopeListPage
+export default memo(ScopeListPage)

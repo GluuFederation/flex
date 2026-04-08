@@ -1,47 +1,16 @@
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import type { GenericItem } from 'Redux/types'
+import type {
+  ActionDataPayload,
+  ApiTimeoutPayload,
+  AttributesResponsePayload,
+  ClientsResponsePayload,
+  InitState,
+  ScopesResponsePayload,
+  ScriptsResponsePayload,
+} from './types'
 
-export interface InitState {
-  scripts: GenericItem[]
-  clients: GenericItem[]
-  scopes: GenericItem[]
-  attributes: GenericItem[]
-  totalClientsEntries: number
-  isTimeout: boolean
-  loadingScripts: boolean
-}
-
-interface ActionDataPayload {
-  [key: string]: string | number | boolean | string[] | number[] | boolean[] | null
-}
-
-interface ScriptsResponsePayload {
-  data?: {
-    entries?: GenericItem[]
-  }
-}
-
-interface ClientsResponsePayload {
-  data?: {
-    entries?: GenericItem[]
-    totalEntriesCount?: number
-  }
-}
-
-interface ScopesResponsePayload {
-  data?: GenericItem[]
-}
-
-interface AttributesResponsePayload {
-  data?: {
-    entries?: GenericItem[]
-  }
-}
-
-interface ApiTimeoutPayload {
-  isTimeout: boolean
-}
+export type { InitState }
 
 const initialState: InitState = {
   scripts: [],

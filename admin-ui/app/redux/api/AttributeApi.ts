@@ -11,7 +11,7 @@ export default class AttributeApi {
   getAllAttributes = (opts: AttributeOptions): Promise<AttributePagedResult> => {
     return new Promise<AttributePagedResult>((resolve, reject) => {
       this.api.getAttributes(opts, (error, data) => {
-        handleTypedResponse(error, reject, resolve, data ?? { entries: [] }, null)
+        handleTypedResponse(error, reject, resolve, data ?? { entries: [] })
       })
     })
   }

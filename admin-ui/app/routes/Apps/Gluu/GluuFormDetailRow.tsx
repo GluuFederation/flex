@@ -6,29 +6,11 @@ import customColors from '@/customColors'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
-
-interface GluuFormDetailRowProps {
-  label: string
-  value?: string | number | boolean | null
-  isBadge?: boolean
-  badgeColor?: string
-  badgeBackgroundColor?: string
-  badgeTextColor?: string
-  lsize?: number
-  rsize?: number
-  doc_category?: string
-  doc_entry?: string
-  isDirect?: boolean
-  labelStyle?: CSSProperties
-  valueStyle?: CSSProperties
-  rowClassName?: string
-  /** When 'column', label stacks above value (avoids overlap on narrow screens) */
-  layout?: 'row' | 'column'
-}
+import type { GluuFormDetailRowProps } from './types'
 
 const defaultLabelStyle: CSSProperties = { fontWeight: 'bold' }
 
-function GluuFormDetailRow({
+const GluuFormDetailRow = ({
   label,
   value,
   isBadge,
@@ -44,7 +26,7 @@ function GluuFormDetailRow({
   valueStyle,
   rowClassName,
   layout = 'row',
-}: GluuFormDetailRowProps) {
+}: GluuFormDetailRowProps) => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme || DEFAULT_THEME

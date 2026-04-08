@@ -60,7 +60,7 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
   })
 
   const handleSelectChange = useCallback(
-    (event: React.ChangeEvent<HTMLSelectElement>) => {
+    (event: React.ChangeEvent<HTMLInputElement>) => {
       formik.handleChange(event)
       if (handleChange) {
         handleChange(event)

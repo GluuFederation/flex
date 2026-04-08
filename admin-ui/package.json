@@ -35,7 +35,7 @@
     "lint": "eslint app/ plugins/ --ext .js,.jsx,.ts,.tsx --fix",
     "lint:check": "eslint app/ plugins/ --ext .js,.jsx,.ts,.tsx",
     "type-check": "tsc --noEmit",
-    "check:all": "npm run lint:check && npm run type-check",
+    "check:all": "tsc -p script/check-all.tsconfig.json && node .check-all-out/check-all.js",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json}\"",
     "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json}\"",
     "api": "rimraf jans_config_api && openapi-merge-cli && openapi-generator-cli generate -i ./configApiSpecs.yaml --global-property skipFormModel=false -g javascript -o jans_config_api && cd jans_config_api && npm i mocha@10.2.0 && npm install && npm run build",

@@ -1,24 +1,14 @@
 import plugins from '../plugins.config.json'
-
-type PluginMenu = {
-  title?: string
-  icon?: string
-  path?: string
-  order?: number
-  children?: PluginMenu[]
-}
-
-type PluginRoute = {
-  path: string
-  component: React.ComponentType
-}
+import { loadPluginMetadata, type PluginMenu, type PluginRoute } from './internal'
+import { REGEX_PLUGIN_NAME_FROM_PATH } from '@/utils/regex'
+import { devLogger } from '@/utils/devLogger'
 
 export const processMenus = async (): Promise<PluginMenu[]> => {
   let pluginMenus: PluginMenu[] = []
 
   const pluginPromises = plugins.map(async (item) => {
     try {
-      const pluginName = item.metadataFile?.match(/\.\/([^/]+)\/plugin-metadata/)?.[1]
+      const pluginName = item.metadataFile?.match(REGEX_PLUGIN_NAME_FROM_PATH)?.[1]
       if (pluginName) {
         const metadata = await import(`./${pluginName}/plugin-metadata`)
         return (metadata.default?.menus || []) as PluginMenu[]
@@ -26,7 +16,7 @@ export const processMenus = async (): Promise<PluginMenu[]> => {
       const metadata = await import(`${item.metadataFile}`)
       return (metadata.default?.menus || []) as PluginMenu[]
     } catch (error) {
-      console.warn(`Failed to load plugin menus: ${item.metadataFile}`, error)
+      devLogger.warn(`Failed to load plugin menus: ${item.metadataFile}`, error)
       return [] as PluginMenu[]
     }
   })
@@ -47,7 +37,7 @@ export const processRoutes = async (): Promise<PluginRoute[]> => {
 
   const pluginPromises = plugins.map(async (item) => {
     try {
-      const pluginName = item.metadataFile?.match(/\.\/([^/]+)\/plugin-metadata/)?.[1]
+      const pluginName = item.metadataFile?.match(REGEX_PLUGIN_NAME_FROM_PATH)?.[1]
       if (pluginName) {
         const metadata = await import(`./${pluginName}/plugin-metadata`)
         return (metadata.default?.routes || []) as PluginRoute[]
@@ -55,7 +45,7 @@ export const processRoutes = async (): Promise<PluginRoute[]> => {
       const metadata = await import(`${item.metadataFile}`)
       return (metadata.default?.routes || []) as PluginRoute[]
     } catch (error) {
-      console.warn(`Failed to load plugin routes: ${item.metadataFile}`, error)
+      devLogger.warn(`Failed to load plugin routes: ${item.metadataFile}`, error)
       return [] as PluginRoute[]
     }
   })
@@ -74,10 +64,9 @@ export const processMenusSync = (): PluginMenu[] => {
   let pluginMenus: PluginMenu[] = []
   plugins.forEach((item) => {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      pluginMenus.push(...(require(`${item.metadataFile}`).default?.menus || []))
+      pluginMenus.push(...(loadPluginMetadata(item.metadataFile).default?.menus || []))
     } catch (error) {
-      console.warn(`Failed to load plugin menus: ${item.metadataFile}`, error)
+      devLogger.warn(`Failed to load plugin menus: ${item.metadataFile}`, error)
     }
   })
   pluginMenus = sortParentMenu(pluginMenus)
@@ -88,10 +77,9 @@ export const processRoutesSync = (): PluginRoute[] => {
   const pluginRoutes: PluginRoute[] = []
   plugins.forEach((item) => {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      pluginRoutes.push(...(require(`${item.metadataFile}`).default?.routes || []))
+      pluginRoutes.push(...(loadPluginMetadata(item.metadataFile).default?.routes || []))
     } catch (error) {
-      console.warn(`Failed to load plugin routes: ${item.metadataFile}`, error)
+      devLogger.warn(`Failed to load plugin routes: ${item.metadataFile}`, error)
     }
   })
   return pluginRoutes

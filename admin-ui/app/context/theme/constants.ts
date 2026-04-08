@@ -6,6 +6,5 @@ export const THEME_VALUES = [THEME_LIGHT, THEME_DARK] as const
 
 export type ThemeValue = (typeof THEME_VALUES)[number]
 
-export function isValidTheme(value: string): value is ThemeValue {
-  return THEME_VALUES.includes(value as ThemeValue)
-}
+export const isValidTheme = (value: string): value is ThemeValue =>
+  THEME_VALUES.includes(value as ThemeValue)

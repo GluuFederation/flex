@@ -9,6 +9,7 @@ import { logAuditUserAction } from 'Utils/AuditLogger'
 import { DELETION } from '../../../../../app/audit/UserActionType'
 import { SESSION } from '../../../redux/audit/Resources'
 import type { MutationCallbacks, AuditContext } from '../types'
+import { devLogger } from '@/utils/devLogger'
 
 const invalidateSessionQueries = async (queryClient: ReturnType<typeof useQueryClient>) => {
   await Promise.all([
@@ -54,14 +55,14 @@ export const useDeleteSessionWithAudit = (
           payload: { sessionId, username },
         })
       } catch (auditError) {
-        console.error('Audit logging failed:', auditError)
+        devLogger.error('Audit logging failed:', auditError)
         dispatch(updateToast(true, 'warning', t('messages.audit_logging_failed')))
       }
 
       try {
         await invalidateSessionQueries(queryClient)
       } catch (invalidateError) {
-        console.error('Query invalidation failed after delete:', invalidateError)
+        devLogger.error('Query invalidation failed after delete:', invalidateError)
       }
 
       dispatch(updateToast(true, 'success', t('messages.session_deleted_successfully')))
@@ -110,14 +111,14 @@ export const useRevokeSessionWithAudit = (
           payload: { userDn, username },
         })
       } catch (auditError) {
-        console.error('Audit logging failed:', auditError)
+        devLogger.error('Audit logging failed:', auditError)
         dispatch(updateToast(true, 'warning', t('messages.audit_logging_failed')))
       }
 
       try {
         await invalidateSessionQueries(queryClient)
       } catch (invalidateError) {
-        console.error('Query invalidation failed after revoke:', invalidateError)
+        devLogger.error('Query invalidation failed after revoke:', invalidateError)
       }
 
       dispatch(updateToast(true, 'success', t('messages.session_revoked_successfully')))

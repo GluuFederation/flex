@@ -66,7 +66,7 @@ export const savePagingSize = (size: number): void => {
   }
 }
 
-export function usePaginationState() {
+export const usePaginationState = () => {
   const [limit, setLimit] = useState(getDefaultPagingSize)
   const [pageNumber, setPageNumber] = useState(0)
   const onPagingSizeSync = useCallback((newSize: number) => {

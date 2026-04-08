@@ -1,4 +1,5 @@
 import * as Yup from 'yup'
+import { REGEX_NO_WHITESPACE } from '@/utils/regex'
 import type { SamlConfigurationFormValues } from '../types'
 import type { TFunction } from 'i18next'
 import type {
@@ -37,7 +38,10 @@ const requiredWhenMetadataNotImported = (t: TFunction, fieldKey: string) =>
   })
 
 const noSpacesValidation = (t: TFunction, fieldKey: string) =>
-  Yup.string().matches(/^\S*$/, t('errors.cannot_contain_spaces', { field: t(fieldKey) }))
+  Yup.string().matches(
+    REGEX_NO_WHITESPACE,
+    t('errors.cannot_contain_spaces', { field: t(fieldKey) }),
+  )
 
 // Helper function to validate URL format
 const urlFormatTest = (t: TFunction, fieldKey: string) =>

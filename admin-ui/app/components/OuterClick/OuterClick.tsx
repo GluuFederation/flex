@@ -20,7 +20,7 @@ interface OuterClickProps {
   active?: boolean
 }
 
-function getEventPath(evt: DocumentClickEvent): Array<EventTarget | null> {
+const getEventPath = (evt: DocumentClickEvent): Array<EventTarget | null> => {
   if ('composedPath' in evt && typeof evt.composedPath === 'function') {
     return evt.composedPath()
   }

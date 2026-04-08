@@ -9,7 +9,8 @@ import { useTranslation } from 'react-i18next'
 import { getIn } from 'formik'
 import customColors from '@/customColors'
 import { BORDER_RADIUS, CEDARLING_CONFIG_SPACING, SPACING } from '@/constants'
-import { buildKeyCandidates } from '@/utils/regex'
+import { buildKeyCandidates } from '@/utils/stringUtils'
+import { REGEX_LEADING_SLASH, REGEX_FORWARD_SLASH } from '@/utils/regex'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import { useStyles } from '../AuthServerProperties/styles/JsonPropertyBuilder.style'
 import type {
@@ -116,11 +117,14 @@ const JsonPropertyBuilderConfigApi = ({
     return `${initialPath}/${propKey}`
   }, [initialPath, propKey, parentIsArray])
 
-  const uniqueId = useMemo(() => path.replace(/\//g, '-').substring(1) || propKey, [path, propKey])
+  const uniqueId = useMemo(
+    () => path.replace(REGEX_FORWARD_SLASH, '-').substring(1) || propKey,
+    [path, propKey],
+  )
 
   const formikPath = useMemo(() => {
     if (!path) return propKey
-    return path.replace(/^\//, '').replace(/\//g, '.')
+    return path.replace(REGEX_LEADING_SLASH, '').replace(REGEX_FORWARD_SLASH, '.')
   }, [path, propKey])
 
   const fieldError = useMemo(() => {

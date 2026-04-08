@@ -1,19 +1,11 @@
 import { handleError } from 'Utils/ApiUtils'
+import type {
+  HealthCheckApiInstance,
+  ServiceStatusInput,
+  ServiceStatusResponse,
+} from './types/HealthCheckApi'
 
-export interface ServiceStatusInput {
-  [key: string]: string
-}
-
-export interface ServiceStatusResponse {
-  [serviceName: string]: string
-}
-
-interface HealthCheckApiInstance {
-  getServiceStatus: (
-    input: ServiceStatusInput,
-    callback: (error: Error | null, data: ServiceStatusResponse) => void,
-  ) => void
-}
+export type { ServiceStatusInput, ServiceStatusResponse }
 
 export default class HealthCheckApi {
   private readonly api: HealthCheckApiInstance

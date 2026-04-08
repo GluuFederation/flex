@@ -96,7 +96,7 @@ function* checkLicensePresentWorker(_action?: { type: string }) {
   }
 }
 
-function getLicenseErrorMessage(error: Error | SagaError): string {
+const getLicenseErrorMessage = (error: Error | SagaError): string => {
   if (typeof (error as SagaError).response?.body?.responseMessage === 'string') {
     return (error as SagaError).response!.body!.responseMessage!
   }

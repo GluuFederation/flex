@@ -4,6 +4,7 @@ import { PATCH } from '@/audit/UserActionType'
 import { useAppSelector } from '@/redux/hooks'
 import type { CacheConfiguration } from 'JansConfigApi'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import { devLogger } from '@/utils/devLogger'
 
 const API_CACHE = 'api-cache'
 
@@ -40,7 +41,7 @@ export const useCacheAudit = () => {
           payload: cache as JsonValue,
         })
       } catch (error) {
-        console.error('Failed to log cache update audit:', error)
+        devLogger.error('Failed to log cache update audit:', error)
       }
     },
     [userinfo, client_id],

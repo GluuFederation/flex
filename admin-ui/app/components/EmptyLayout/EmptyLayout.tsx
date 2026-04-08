@@ -1,21 +1,8 @@
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useRef } from 'react'
 import { isNumber } from 'lodash'
 import classNames from 'classnames'
 import { withPageConfig } from 'Components/Layout'
-import type { PageConfig } from 'Components/Layout/types'
-
-interface EmptyLayoutProps {
-  pageConfig?: PageConfig | null
-  children: ReactNode
-  className?: string
-}
-
-interface SectionProps {
-  className?: string
-  children: ReactNode
-  center?: boolean
-  width?: number | string
-}
+import type { EmptyLayoutProps, SectionProps } from './types'
 
 const EmptyLayoutBase = ({ pageConfig, children, className }: EmptyLayoutProps) => {
   const setVisibilityRef = useRef(pageConfig?.setElementsVisibility)

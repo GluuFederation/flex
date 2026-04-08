@@ -1,4 +1,4 @@
-import React, { useMemo, type CSSProperties } from 'react'
+import React, { useMemo } from 'react'
 import { Label } from 'Components'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from './styles/applicationStyle'
@@ -7,18 +7,7 @@ import getThemeColor from '@/context/theme/config'
 import { useTheme } from '@/context/theme/themeContext'
 import { THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
 import GluuTooltip from './GluuTooltip'
-
-interface GluuLabelProps {
-  label: string
-  required?: boolean
-  size?: number
-  doc_category?: string
-  doc_entry?: string
-  style?: CSSProperties
-  allowColon?: boolean
-  isDark?: boolean
-  isDirect?: boolean
-}
+import type { GluuLabelProps } from './types'
 
 const getSize = (size: number | undefined): number => (size != null ? size : 3)
 

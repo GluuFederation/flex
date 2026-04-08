@@ -34,7 +34,7 @@ spec:
   - name: "{{ .Release.Name }}-istio-auth-server-protected-token"
     match:
     - uri:
-        prefix: "/jans-auth/restv1/token"
+        exact: "/jans-auth/restv1/token"
     route:
     - destination:
         host: {{ .Values.service.name }}.{{ .Release.Namespace }}.svc.cluster.local
@@ -46,7 +46,7 @@ spec:
   - name: "{{ .Release.Name }}-istio-auth-server-protected-register"
     match:
     - uri:
-        prefix: "/jans-auth/restv1/register"
+        exact: "/jans-auth/restv1/register"
     route:
     - destination:
         host: {{ .Values.service.name }}.{{ .Release.Namespace }}.svc.cluster.local

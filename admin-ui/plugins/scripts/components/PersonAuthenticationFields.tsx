@@ -6,16 +6,7 @@ import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { SCRIPT } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import { SAML_ACRS_OPTIONS, INTERACTIVE_OPTIONS } from './constants'
-import type { FormikProps } from 'formik'
-import type { FormValues } from './types'
-
-interface PersonAuthenticationFieldsProps {
-  formik: FormikProps<FormValues>
-  viewOnly?: boolean
-  isDark?: boolean
-  usageTypeChange: (value: string) => void
-  getModuleProperty: (key: string, properties: FormValues['moduleProperties']) => string | undefined
-}
+import type { PersonAuthenticationFieldsProps } from './types'
 
 export const PersonAuthenticationFields: React.FC<PersonAuthenticationFieldsProps> = ({
   formik,

@@ -1,20 +1,18 @@
 import customColors from '@/customColors'
+import { REGEX_UUID_PLACEHOLDER_CHARS } from '@/utils/regex'
 
-export function uuidv4(): string {
-  // Use Web Crypto API if available
+export const uuidv4 = (): string => {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
     return crypto.randomUUID()
   }
 
-  // Fallback for older browsers
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    const r = (crypto.getRandomValues(new Uint8Array(1))[0] * 16) | 0,
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(REGEX_UUID_PLACEHOLDER_CHARS, (c) => {
+    const r = crypto.getRandomValues(new Uint8Array(1))[0] & 0x0f,
       v = c == 'x' ? r : (r & 0x3) | 0x8
     return v.toString(16)
   })
 }
 
-// Predefined color palette for consistent colors
 const colorPalette: string[] = [
   customColors.logo,
   customColors.white,
@@ -26,10 +24,7 @@ const colorPalette: string[] = [
   customColors.lightBlue,
 ]
 
-export function getNewColor(index = 0): string {
-  // Use modulo to cycle through the palette
-  return colorPalette[index % colorPalette.length]
-}
+export const getNewColor = (index = 0): string => colorPalette[index % colorPalette.length]
 
 export const getClientScopeByInum = (str: string): string => {
   const inum = str.split(',')[0]
@@ -37,11 +32,7 @@ export const getClientScopeByInum = (str: string): string => {
   return value
 }
 
-export function getYearMonth(date: Date): string {
-  return date.getFullYear() + getMonth(date)
-}
-
-export function getMonth(aDate: Date): string {
+export const getMonth = (aDate: Date): string => {
   const value = String(aDate.getMonth() + 1)
   if (value.length > 1) {
     return value
@@ -50,7 +41,9 @@ export function getMonth(aDate: Date): string {
   }
 }
 
-export function formatDate(date?: string): string {
+export const getYearMonth = (date: Date): string => date.getFullYear() + getMonth(date)
+
+export const formatDate = (date?: string): string => {
   if (!date) {
     return '-'
   }
@@ -64,14 +57,12 @@ export function formatDate(date?: string): string {
 }
 
 export const trimObjectStrings = <T extends object>(obj: T): T => {
-  const source = obj as unknown as Record<string, unknown>
-  const trimmed: Record<string, unknown> = {}
-  for (const key in source) {
-    const value = source[key]
+  const trimmed: Partial<T> = {}
+  for (const [key, value] of Object.entries(obj) as [keyof T, T[keyof T]][]) {
     if (typeof value === 'string') {
-      trimmed[key] = value.trim()
+      trimmed[key] = value.trim() as T[keyof T]
     } else if (value && typeof value === 'object' && !Array.isArray(value)) {
-      trimmed[key] = trimObjectStrings(value as Record<string, unknown>)
+      trimmed[key] = trimObjectStrings(value) as T[keyof T]
     } else {
       trimmed[key] = value
     }

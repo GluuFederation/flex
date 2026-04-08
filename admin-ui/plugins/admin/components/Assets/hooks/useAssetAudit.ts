@@ -5,73 +5,62 @@ import type { UserActionPayload } from 'Redux/api/types/BackendApi'
 import { addAdditionalData } from 'Utils/TokenController'
 import { CREATE, UPDATE, DELETION, FETCH } from '@/audit/UserActionType'
 import { devLogger } from '@/utils/devLogger'
+import type { JsonValue, JsonObject } from 'Routes/Apps/Gluu/types/common'
+import type {
+  AssetAuditActionData,
+  AssetAuditActionType,
+  AssetAuditInit,
+  AssetAuditLogActionPayload,
+  AssetAuditRootState,
+} from '../types'
 
 const MAX_STRING_LENGTH = 500
 const MAX_DEPTH = 5
 
-function sanitizeValue(value: unknown, depth: number): unknown {
+type SanitizableValue = JsonValue | File | Blob | undefined
+type SanitizedValue = JsonValue | undefined
+
+const sanitizeValue = (value: SanitizableValue, depth: number): SanitizedValue => {
   if (depth > MAX_DEPTH) return '[REDACTED]'
   if (value === null || value === undefined) return value
   if (typeof value === 'number' || typeof value === 'boolean') return value
-  if (value instanceof File) return { type: 'file', name: value.name, size: value.size } as const
-  if (value instanceof Blob) return { type: 'blob', size: value.size } as const
+  if (value instanceof File) return { type: 'file', name: value.name, size: value.size }
+  if (value instanceof Blob) return { type: 'blob', size: value.size }
   if (typeof value === 'string')
     return value.length > MAX_STRING_LENGTH
       ? `${value.slice(0, MAX_STRING_LENGTH)}... [truncated]`
       : value
-  if (Array.isArray(value)) return value.map((item) => sanitizeValue(item, depth + 1))
-  if (typeof value === 'object' && value !== null) {
-    const out: Record<string, unknown> = {}
-    for (const [k, v] of Object.entries(value)) out[k] = sanitizeValue(v, depth + 1)
+  if (Array.isArray(value)) {
+    return value.map((item) => sanitizeValue(item, depth + 1) ?? null)
+  }
+  if (typeof value === 'object') {
+    const out: JsonObject = {}
+    for (const [k, v] of Object.entries(value)) {
+      const sanitized = sanitizeValue(v as SanitizableValue, depth + 1)
+      if (sanitized !== undefined) out[k] = sanitized
+    }
     return out
   }
   return '[REDACTED]'
 }
 
-function sanitizeActionData(
-  data: Record<string, unknown> | null | undefined,
-): ActionData | undefined {
+const sanitizeActionData = (
+  data: AssetAuditLogActionPayload['action_data'],
+): AssetAuditActionData | undefined => {
   if (data === null || data === undefined) return undefined
-  const sanitized = sanitizeValue(data, 0)
+  const sanitized = sanitizeValue(data as JsonObject, 0)
   return typeof sanitized === 'object' && sanitized !== null && !Array.isArray(sanitized)
-    ? (sanitized as ActionData)
+    ? (sanitized as AssetAuditActionData)
     : undefined
 }
 
-interface AuthState {
-  config: { clientId: string }
-  location: { IPv4: string }
-  userinfo: { name: string; inum: string } | null
-}
-
-interface RootState {
-  authReducer: AuthState
-}
-
-type ActionType = typeof CREATE | typeof UPDATE | typeof DELETION | typeof FETCH
-
-interface AuditInit {
-  client_id: string
-  ip_address: string
-  status: string
-  performedBy: { user_inum: string; userId: string }
-  [key: string]: string | { user_inum: string; userId: string } | object
-}
-
-type ActionData = Record<string, string | number | boolean | object | null>
-
-interface LogActionPayload {
-  action_message?: string
-  action_data?: Record<string, string | number | boolean | object | null>
-}
-
 export const useAssetAudit = () => {
-  const clientId = useSelector((state: RootState) => state.authReducer.config.clientId)
-  const ipAddress = useSelector((state: RootState) => state.authReducer.location.IPv4)
-  const userinfo = useSelector((state: RootState) => state.authReducer.userinfo)
+  const clientId = useSelector((state: AssetAuditRootState) => state.authReducer.config.clientId)
+  const ipAddress = useSelector((state: AssetAuditRootState) => state.authReducer.location.IPv4)
+  const userinfo = useSelector((state: AssetAuditRootState) => state.authReducer.userinfo)
 
   const initAudit = useCallback(
-    (): AuditInit => ({
+    (): AssetAuditInit => ({
       client_id: clientId,
       ip_address: ipAddress,
       status: 'success',
@@ -84,11 +73,13 @@ export const useAssetAudit = () => {
   )
 
   const logAction = useCallback(
-    async (actionType: ActionType, resource: string, payload: LogActionPayload) => {
+    async (
+      actionType: AssetAuditActionType,
+      resource: string,
+      payload: AssetAuditLogActionPayload,
+    ) => {
       const audit = initAudit()
-      const sanitizedActionData = sanitizeActionData(
-        payload.action_data as Record<string, unknown> | null | undefined,
-      )
+      const sanitizedActionData = sanitizeActionData(payload.action_data)
       addAdditionalData(audit, actionType, resource, {
         action: {
           action_message: payload.action_message,

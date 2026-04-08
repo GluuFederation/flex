@@ -1,16 +1,5 @@
 import { LOGGING_LEVELS, PROTECTION_MODES } from '../helper/constants'
-import type { ScimFormValues } from '../types'
-
-export type FieldType = 'text' | 'number' | 'select' | 'toggle'
-
-export type FieldConfig = {
-  name: keyof ScimFormValues
-  label: string
-  type: FieldType
-  disabled?: boolean
-  selectOptions?: readonly string[] | string[]
-  colSize?: number
-}
+import type { FieldConfig } from '../types'
 
 export const SCIM_FIELD_CONFIGS: FieldConfig[] = [
   {

@@ -1,18 +1,6 @@
 import { getRootState } from '@/redux/hooks'
-
-interface JansApiClient {
-  instance: {
-    timeout: number
-    authentications: Record<string, { accessToken: string | undefined }>
-    basePath: string
-    enableCookies: boolean
-    defaultHeaders: Record<string, string>
-  }
-}
-
-interface JansConfigApiModule {
-  ApiClient: JansApiClient
-}
+import { REGEX_TRAILING_SLASHES } from '@/utils/regex'
+import type { JansApiClient, JansConfigApiModule } from './types/JansApiClient'
 
 export const getClient = (
   JansConfigApi: JansConfigApiModule,
@@ -25,10 +13,11 @@ export const getClient = (
   const defaultClient = JansConfigApi.ApiClient.instance
   defaultClient.timeout = 60000
   const jansauth = defaultClient.authentications['oauth2']
-  defaultClient.basePath =
+  defaultClient.basePath = (
     window['configApiBaseUrl'] ||
     process.env.CONFIG_API_BASE_URL ||
-    'https://admin-ui-test.gluu.org'.replace(/\/+$/, '')
+    'https://admin-ui-test.gluu.org'
+  ).replace(REGEX_TRAILING_SLASHES, '')
 
   if (hasSession) {
     defaultClient.enableCookies = true
@@ -59,10 +48,11 @@ export const getClientWithToken = (
   const defaultClient = JansConfigApi.ApiClient.instance
   defaultClient.timeout = 60000
   const jansauth = defaultClient.authentications['oauth2']
-  defaultClient.basePath =
+  defaultClient.basePath = (
     window['configApiBaseUrl'] ||
     process.env.CONFIG_API_BASE_URL ||
-    'https://admin-ui-test.gluu.org'.replace(/\/+$/, '')
+    'https://admin-ui-test.gluu.org'
+  ).replace(REGEX_TRAILING_SLASHES, '')
 
   if (hasSession) {
     defaultClient.enableCookies = true

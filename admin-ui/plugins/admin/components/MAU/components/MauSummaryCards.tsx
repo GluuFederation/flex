@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import customColors from '@/customColors'
-import type { MauSummary } from '../types'
+import type { MauSummary, MauSummaryCardProps } from '../types'
 import { getChartColors } from '../constants'
 import { formatNumber, formatPercentChange } from '../utils'
 
@@ -12,14 +12,7 @@ interface MauSummaryCardsProps {
   summary: MauSummary
 }
 
-interface SummaryCardProps {
-  title: string
-  value: number
-  change?: number
-  color: string
-}
-
-const SummaryCard: React.FC<SummaryCardProps> = ({ title, value, change, color }) => {
+const SummaryCard: React.FC<MauSummaryCardProps> = ({ title, value, change, color }) => {
   const { t } = useTranslation()
   const showChange = change !== undefined
   const isPositive = change !== undefined && change > 0

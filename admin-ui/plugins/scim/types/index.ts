@@ -1,4 +1,5 @@
 import { AppConfiguration3, AppConfiguration3ProtectionMode } from 'JansConfigApi'
+import type { FormikProps } from 'formik'
 
 export type ScimFormValues = {
   baseDN: string
@@ -54,5 +55,22 @@ export type ScimConfigurationProps = {
   classes: ScimFormClasses
 }
 
-// Re-export AppConfiguration3 for convenience
 export type { AppConfiguration3 }
+
+export type FieldType = 'text' | 'number' | 'select' | 'toggle'
+
+export type FieldConfig = {
+  name: keyof ScimFormValues
+  label: string
+  type: FieldType
+  disabled?: boolean
+  selectOptions?: readonly string[] | string[]
+  colSize?: number
+}
+
+export type ScimFieldRendererProps = {
+  config: FieldConfig
+  formik: FormikProps<ScimFormValues>
+  fieldItemClass: string
+  fieldItemFullWidthClass: string
+}

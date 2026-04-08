@@ -19,7 +19,7 @@ import type {
 import config from './../../../config.js'
 import SetTitle from 'Utils/SetTitle'
 
-function getLayoutPartName(type: React.ReactElement['type']): string | undefined {
+const getLayoutPartName = (type: React.ReactElement['type']): string | undefined => {
   if (typeof type === 'string' || type == null) return undefined
   const part = type as LayoutPartComponentType & React.ReactElement['type']
   return typeof part.layoutPartName === 'string' ? part.layoutPartName : undefined
@@ -62,7 +62,7 @@ const responsiveBreakpoints: ResponsiveBreakpoints = {
   xl: { min: 1200 },
 }
 
-function getScreenSize(): ScreenSize {
+const getScreenSize = (): ScreenSize => {
   let currentScreenSize: ScreenSize | undefined
   forOwn(responsiveBreakpoints, (value, key) => {
     const queryParts = [

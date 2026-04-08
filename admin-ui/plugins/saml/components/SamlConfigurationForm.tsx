@@ -128,7 +128,6 @@ const SamlConfigurationForm: React.FC = () => {
               lsize={4}
               rsize={8}
               label="fields.enable_saml"
-              isBoolean={true}
               handler={handleEnabledChange}
               value={formik.values.enabled}
               doc_category={DOC_SECTION}
@@ -165,7 +164,6 @@ const SamlConfigurationForm: React.FC = () => {
               lsize={4}
               rsize={8}
               label="fields.ignore_validation"
-              isBoolean={true}
               handler={handleIgnoreValidationChange}
               value={formik.values.ignoreValidation}
               doc_category={DOC_SECTION}

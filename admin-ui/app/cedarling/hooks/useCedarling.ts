@@ -15,7 +15,7 @@ import { updateToast } from '@/redux/features/toastSlice'
 
 const executeUrls = new Set([SSA_ADMIN, SSA_DEVELOPER, SCIM_BULK, REVOKE_SESSION, OPENID])
 
-export function useCedarling(): UseCedarlingReturn {
+export const useCedarling = (): UseCedarlingReturn => {
   const { ACTION_TYPE, RESOURCE_TYPE } = CEDARLING_CONSTANTS
 
   const dispatch = useAppDispatch()

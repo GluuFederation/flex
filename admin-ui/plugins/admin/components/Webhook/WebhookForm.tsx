@@ -22,7 +22,7 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { isDevelopment } from '@/utils/env'
+import { devLogger } from '@/utils/devLogger'
 import { WEBHOOK } from 'Utils/ApiResources'
 import { isValid } from './WebhookURLChecker'
 import { getWebhookValidationSchema } from 'Plugins/admin/helper/validations/webhookValidation'
@@ -349,7 +349,7 @@ const WebhookForm: React.FC = () => {
         resetForm({ values: formikValues })
         setBaselineSelectedFeatures([...selectedFeatures])
       } catch (error) {
-        if (isDevelopment) console.error('Failed to submit webhook form:', error)
+        devLogger.error('Failed to submit webhook form:', error)
       }
     },
     [

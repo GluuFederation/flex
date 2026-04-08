@@ -36,12 +36,7 @@ export const logAuditAction = async (
     return
   }
 
-  addAdditionalData(
-    audit as Record<string, string | number | boolean | object | null | undefined>,
-    actionType,
-    resource,
-    data,
-  )
+  addAdditionalData(audit, actionType, resource, data)
 
   try {
     await postUserAction(audit as UserActionPayload)

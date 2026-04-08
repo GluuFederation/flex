@@ -9,6 +9,7 @@ import type { CaughtError } from '../types/ErrorTypes'
 import { logUserDeletion, getErrorMessage, triggerUserWebhook } from '../helper'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import type { CustomUser } from '../types'
+import { devLogger } from '@/utils/devLogger'
 
 export interface MutationCallbacks {
   onSuccess?: () => void
@@ -37,7 +38,7 @@ export const useDeleteUserWithAudit = (callbacks?: MutationCallbacks) => {
       try {
         await logUserDeletion(inum, userData)
       } catch (auditError) {
-        console.error('Audit logging failed:', auditError, { inum })
+        devLogger.error('Audit logging failed:', auditError, { inum })
         dispatch(updateToast(true, 'warning', t('messages.audit_logging_failed')))
       }
 
@@ -45,7 +46,7 @@ export const useDeleteUserWithAudit = (callbacks?: MutationCallbacks) => {
         try {
           triggerUserWebhook(userData, adminUiFeatures.users_delete)
         } catch (webhookError) {
-          console.error('Webhook trigger failed:', webhookError, { inum })
+          devLogger.error('Webhook trigger failed:', webhookError, { inum })
           dispatch(updateToast(true, 'warning', t('messages.webhook_trigger_failed')))
         }
       }
@@ -53,7 +54,7 @@ export const useDeleteUserWithAudit = (callbacks?: MutationCallbacks) => {
       try {
         await queryUtils.invalidateQueriesByKey(queryClient, getGetUserQueryKey())
       } catch (invalidateError) {
-        console.error('Query invalidation failed after delete:', invalidateError, { inum })
+        devLogger.error('Query invalidation failed after delete:', invalidateError, { inum })
         dispatch(updateToast(true, 'warning', t('messages.query_invalidation_failed')))
       }
 
@@ -61,7 +62,7 @@ export const useDeleteUserWithAudit = (callbacks?: MutationCallbacks) => {
         dispatch(updateToast(true, 'success', t('messages.user_deleted_successfully')))
         callbacksRef.current?.onSuccess?.()
       } catch (callbackError) {
-        console.error('Post-delete callback failed:', callbackError, { inum })
+        devLogger.error('Post-delete callback failed:', callbackError, { inum })
         dispatch(updateToast(true, 'warning', t('messages.post_delete_callback_failed')))
       }
     },

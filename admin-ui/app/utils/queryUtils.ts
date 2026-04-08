@@ -11,25 +11,21 @@ export const queryDefaults = {
   } as const,
 } as const
 
-export function invalidateQueriesByKey(
+export const invalidateQueriesByKey = (
   queryClient: QueryClient,
   queryKey: QueryKey,
   options?: Omit<InvalidateQueryFilters, 'queryKey'>,
-): Promise<void> {
-  return queryClient.invalidateQueries({ queryKey, ...options })
-}
+): Promise<void> => queryClient.invalidateQueries({ queryKey, ...options })
 
-export function removeQueriesByKey(queryClient: QueryClient, queryKey: QueryKey): void {
+export const removeQueriesByKey = (queryClient: QueryClient, queryKey: QueryKey): void => {
   queryClient.removeQueries({ queryKey })
 }
 
-export function refetchQueriesByKey(
+export const refetchQueriesByKey = (
   queryClient: QueryClient,
   queryKey: QueryKey,
   options?: { type?: 'active' | 'inactive' | 'all' },
-): Promise<void> {
-  return queryClient.refetchQueries({ queryKey, ...options })
-}
+): Promise<void> => queryClient.refetchQueries({ queryKey, ...options })
 
 export default {
   queryDefaults,

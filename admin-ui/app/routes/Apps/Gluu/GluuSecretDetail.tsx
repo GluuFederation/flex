@@ -4,21 +4,11 @@ import Toggle from 'react-toggle'
 import GluuTooltip from './GluuTooltip'
 import { useTranslation } from 'react-i18next'
 import customColors from '@/customColors'
-
-interface GluuSecretDetailProps {
-  label: string
-  value: string
-  doc_category?: string
-  doc_entry?: string
-  lsize?: number
-  rsize?: number
-  labelStyle?: CSSProperties
-  rowClassName?: string
-}
+import type { GluuSecretDetailProps } from './types'
 
 const defaultLabelStyle: CSSProperties = { fontWeight: 'bold', color: customColors.black }
 
-function GluuSecretDetail({
+const GluuSecretDetail = ({
   label,
   value,
   doc_category,
@@ -27,7 +17,7 @@ function GluuSecretDetail({
   rsize = 6,
   labelStyle,
   rowClassName,
-}: GluuSecretDetailProps) {
+}: GluuSecretDetailProps) => {
   const { t } = useTranslation()
   const [up, setUp] = useState(false)
 

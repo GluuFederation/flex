@@ -2,27 +2,8 @@ import { memo, useState, useCallback, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
-import GluuText from 'Routes/Apps/Gluu/GluuText'
-import { useStyles as useCommitDialogStyles } from 'Routes/Apps/Gluu/styles/GluuCommitDialog.style'
-import { useTheme } from '@/context/theme/themeContext'
-import getThemeColor from '@/context/theme/config'
-import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
-import type { ThemeValue } from '@/context/theme/constants'
-import customColors from '@/customColors'
-import { useAppDispatch } from '@/redux/hooks'
-import { updateToast } from 'Redux/features/toastSlice'
-import JsonViewer from './JsonViewer'
-import { useStyles } from './JsonViewerDialog.style'
-
-interface JsonViewerDialogProps {
-  isOpen: boolean
-  toggle: () => void
-  data?: unknown
-  isLoading?: boolean
-  title?: string
-  theme?: ThemeValue
-  expanded?: boolean
-}
+import { THEME_LIGHT } from '@/context/theme/constants'
+import type { JsonViewerDialogProps } from './types'
 
 const JsonViewerDialog: React.FC<JsonViewerDialogProps> = ({
   isOpen,

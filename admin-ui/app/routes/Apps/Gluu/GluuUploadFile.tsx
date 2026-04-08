@@ -8,16 +8,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import getThemeColor from '@/context/theme/config'
 import { useStyles } from './styles/GluuUploadFile.style'
-
-interface GluuUploadFileProps {
-  accept?: Accept
-  onDrop: (files: File[]) => void
-  placeholder: string
-  onClearFiles: () => void
-  disabled?: boolean
-  fileName?: string | null
-  showClearButton?: boolean
-}
+import type { GluuUploadFileProps } from './types'
 
 const DEFAULT_ACCEPT: Accept = {
   'application/jwt': ['.jwt'],

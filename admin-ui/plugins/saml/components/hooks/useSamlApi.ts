@@ -3,139 +3,51 @@ import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query'
 import { AXIOS_INSTANCE } from '../../../../api-client'
 import { updateToast } from 'Redux/features/toastSlice'
-import { logAuditUserAction, type BasicUserInfo } from 'Utils/AuditLogger'
+import { logAuditUserAction } from 'Utils/AuditLogger'
 import { CREATE, UPDATE, DELETION } from '@/audit/UserActionType'
 import { AUDIT_RESOURCE_NAMES } from '../../helper/constants'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import { devLogger } from '@/utils/devLogger'
+import type {
+  SamlAppConfiguration,
+  IdentityProvider,
+  TrustRelationship,
+  BrokerIdentityProviderForm,
+  TrustRelationshipForm,
+  GetSamlIdentityProviderParams,
+  IdentityProviderPagedResult,
+  SamlAuditContext,
+  UpdateSamlConfigurationParams,
+  CreateIdentityProviderParams,
+  UpdateIdentityProviderParams,
+  DeleteIdentityProviderParams,
+  CreateTrustRelationshipParams,
+  UpdateTrustRelationshipParams,
+  DeleteTrustRelationshipParams,
+} from '../../types'
 
-export const TrustRelationshipSpMetaDataSourceType = {
-  FILE: 'FILE',
-  URL: 'URL',
-  MANUAL: 'MANUAL',
-} as const
+export { TrustRelationshipSpMetaDataSourceType } from '../../types'
+export type {
+  SamlAppConfiguration,
+  OrvalIdentityProvider,
+  OrvalTrustRelationship,
+  IdentityProvider,
+  TrustRelationship,
+  BrokerIdentityProviderForm,
+  TrustRelationshipForm,
+  GetSamlIdentityProviderParams,
+  IdentityProviderPagedResult,
+} from '../../types'
 
-export type SamlAppConfiguration = {
-  enabled?: boolean
-  selectedIdp?: string
-  ignoreValidation?: boolean
-  applicationName?: string
-  [key: string]: unknown
-}
-
-export interface OrvalIdentityProvider {
-  inum?: string
-  name?: string
-  displayName?: string
-  description?: string
-  enabled?: boolean
-  idpMetaDataFN?: string
-  trustEmail?: boolean
-  linkOnly?: boolean
-  creatorId?: string
-  dn?: string
-  providerId?: string
-  realm?: string
-  addReadTokenRoleOnCreate?: boolean
-  authenticateByDefault?: boolean
-  storeToken?: boolean
-  baseDn?: string
-  singleSignOnServiceUrl?: string
-  nameIDPolicyFormat?: string
-  idpEntityId?: string
-  singleLogoutServiceUrl?: string
-  signingCertificate?: string
-  encryptionPublicKey?: string
-  principalAttribute?: string
-  principalType?: string
-  validateSignature?: string
-}
-
-export interface OrvalTrustRelationship {
-  inum?: string
-  name?: string
-  displayName?: string
-  description?: string
-  enabled?: boolean
-  spMetaDataSourceType?: string
-  spMetaDataFN?: string
-  spMetaDataURL?: string
-  spLogoutURL?: string
-  releasedAttributes?: string[]
-  redirectUris?: string[]
-  clientAuthenticatorType?: string
-  profileConfigurations?: Record<string, { name: string; signResponses: string }>
-  dn?: string
-  validationLog?: string[]
-  validationStatus?: string
-  secret?: string
-  status?: string
-  owner?: string
-  consentRequired?: boolean
-  metaLocation?: string
-  baseDn?: string
-  registrationAccessToken?: string
-  baseUrl?: string
-  alwaysDisplayInConsole?: boolean
-  samlMetadata?: {
-    nameIDPolicyFormat?: string
-    entityId?: string
-    singleLogoutServiceUrl?: string
-    jansAssertionConsumerServiceGetURL?: string
-    jansAssertionConsumerServicePostURL?: string
-  }
-}
-
-export interface IdentityProvider extends OrvalIdentityProvider {
-  idpMetaDataFN?: string
-  config?: {
-    singleSignOnServiceUrl?: string
-    nameIDPolicyFormat?: string
-    idpEntityId?: string
-    singleLogoutServiceUrl?: string
-    signingCertificate?: string
-    encryptionPublicKey?: string
-    principalAttribute?: string
-    principalType?: string
-    validateSignature?: string
-  }
-}
-
-export interface TrustRelationship extends OrvalTrustRelationship {
-  spMetaDataFN?: string
-}
-
-export interface BrokerIdentityProviderForm {
-  identityProvider: IdentityProvider
-  metaDataFile?: File | Blob
-}
-
-export interface TrustRelationshipForm {
-  trustRelationship: TrustRelationship | Record<string, unknown>
-  metaDataFile?: File | Blob
-}
-
-export interface GetSamlIdentityProviderParams {
-  startIndex?: number
-  limit?: number
-  pattern?: string
-}
-
-export interface IdentityProviderPagedResult {
-  entries?: IdentityProvider[]
-  totalEntriesCount?: number
-}
-
-function getGetSamlPropertiesQueryKey(): readonly unknown[] {
+function getGetSamlPropertiesQueryKey() {
   return ['kc', 'saml', 'properties'] as const
 }
 
-function getGetSamlIdentityProviderQueryKey(
-  params?: GetSamlIdentityProviderParams,
-): readonly unknown[] {
+function getGetSamlIdentityProviderQueryKey(params?: GetSamlIdentityProviderParams) {
   return ['kc', 'saml', 'idp', params ?? {}] as const
 }
 
-function getGetTrustRelationshipsQueryKey(): readonly unknown[] {
+function getGetTrustRelationshipsQueryKey() {
   return ['kc', 'saml', 'trust-relationships'] as const
 }
 
@@ -212,13 +124,7 @@ const samlApi = {
   },
 }
 
-interface AuditContext {
-  userinfo: BasicUserInfo | null | undefined
-  clientId: string | undefined
-  ipAddress: string | undefined
-}
-
-function useAuditContext(): AuditContext {
+function useAuditContext(): SamlAuditContext {
   const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
   const clientId = useAppSelector((state) => state.authReducer?.config?.clientId)
   const ipAddress = useAppSelector((state) => state.authReducer?.location?.IPv4)
@@ -229,7 +135,7 @@ function useAuditContext(): AuditContext {
 type AuditAction = typeof CREATE | typeof UPDATE | typeof DELETION
 
 function createAuditLogger<T>(
-  auditContext: AuditContext,
+  auditContext: SamlAuditContext,
   action: AuditAction,
   resource: string,
   payloadMapper: (data: T) => Record<string, T[keyof T] | T>,
@@ -246,44 +152,9 @@ function createAuditLogger<T>(
         payload: payloadMapper(data) as JsonValue,
       })
     } catch (error) {
-      console.error(`Failed to log ${resource} audit action:`, error)
+      devLogger.error(`Failed to log ${resource} audit action:`, error)
     }
   }
-}
-
-interface UpdateSamlConfigurationParams {
-  data: SamlAppConfiguration
-  userMessage: string
-}
-
-interface CreateIdentityProviderParams {
-  data: BrokerIdentityProviderForm
-  userMessage: string
-}
-
-interface UpdateIdentityProviderParams {
-  data: BrokerIdentityProviderForm
-  userMessage: string
-}
-
-interface DeleteIdentityProviderParams {
-  inum: string
-  userMessage: string
-}
-
-interface CreateTrustRelationshipParams {
-  data: TrustRelationshipForm
-  userMessage: string
-}
-
-interface UpdateTrustRelationshipParams {
-  data: TrustRelationshipForm
-  userMessage: string
-}
-
-interface DeleteTrustRelationshipParams {
-  id: string
-  userMessage: string
 }
 
 export function useSamlConfiguration() {

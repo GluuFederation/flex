@@ -40,6 +40,16 @@ export type StringArrayFieldProps = {
   formResetKey: number
 }
 
+export type ArrayItemSelectProps = {
+  index: number
+  values: string[]
+  options: MultiSelectOption[]
+  label: string
+  path: string
+  handler: (patch: JsonPatch) => void
+  formResetKey: number
+}
+
 export type PropertyValue =
   | string
   | number

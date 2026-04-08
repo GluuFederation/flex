@@ -1,5 +1,4 @@
 import { useState, useCallback } from 'react'
-import type { FormikProps } from 'formik'
 import { FormGroup, Col, Row, Button, Input } from 'Components'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import GluuLabel from '../Gluu/GluuLabel'
@@ -7,23 +6,7 @@ import applicationStyle from './styles/applicationStyle'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import customColors from '@/customColors'
-
-interface GluuTypeAheadWithAddProps {
-  label: string
-  name: string
-  value?: string[]
-  placeholder?: string
-  options?: string[]
-  formik: FormikProps<Record<string, unknown>>
-  validator: (value: string) => boolean
-  inputId: string
-  doc_category?: string
-  lsize?: number
-  rsize?: number
-  disabled?: boolean
-  handler?: ((name: string, updatedItems: string[]) => void) | null
-  multiple?: boolean
-}
+import type { GluuTypeAheadWithAddProps } from './types'
 
 const GluuTypeAheadWithAdd = ({
   label,

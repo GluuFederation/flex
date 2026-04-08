@@ -1,7 +1,7 @@
 import type { Reducer, UnknownAction } from '@reduxjs/toolkit'
 import type { ProfileDetails } from 'Routes/Apps/Profile/types'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
-import type { WebhookTriggerResponseItem } from 'Plugins/admin/redux/types/webhook'
+import type { WebhookTriggerResponseItem } from 'Plugins/admin/redux/types'
 
 export type { WebhookTriggerResponseItem }
 

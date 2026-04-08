@@ -4,21 +4,9 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { GluuButton } from '@/components/GluuButton'
 import { fontSizes } from '@/styles/fonts'
+import type { GluuRefreshButtonProps } from './types'
 
-export interface GluuRefreshButtonProps {
-  onClick: () => void
-  disabled?: boolean
-  label?: string
-  loading?: boolean
-  className?: string
-  variant?: 'primary' | 'outlined'
-  minHeight?: number
-  size?: 'sm' | 'md' | 'lg'
-  backgroundColor?: string
-  textColor?: string
-  borderColor?: string
-  useOpacityOnHover?: boolean
-}
+export type { GluuRefreshButtonProps }
 
 const GluuRefreshButton: React.FC<GluuRefreshButtonProps> = ({
   onClick,

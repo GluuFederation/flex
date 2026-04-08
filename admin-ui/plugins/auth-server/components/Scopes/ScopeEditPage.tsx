@@ -1,54 +1,49 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useState, useCallback, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
-import { useQueryClient } from '@tanstack/react-query'
-import { CardBody, Card } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import ScopeForm from './ScopeForm'
-import { getAttributes, getScripts } from 'Redux/features/initSlice'
-import { buildPayload } from 'Utils/PermChecker'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
-import { updateToast } from 'Redux/features/toastSlice'
-import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
 import { useTranslation } from 'react-i18next'
-import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
-import {
-  useGetOauthScopesByInum,
-  usePutOauthScopes,
-  getGetOauthScopesQueryKey,
-} from 'JansConfigApi'
-import type { Scope } from 'JansConfigApi'
-import type { ExtendedScope, ScopeScript, ScopeClaim, ModifiedFields, ScopeClient } from './types'
+import { useGetOauthScopesByInum } from 'JansConfigApi'
+import type { ExtendedScope, ScopeClient, ModifiedFields } from './types'
 import { EMPTY_SCOPE } from './types'
-import { useScopeActions } from './hooks'
-import { ScopeWithMessage, DEFAULT_SCOPE_ATTRIBUTES } from './constants'
-
-interface InitState {
-  scripts: ScopeScript[]
-  attributes: ScopeClaim[]
-}
-
-interface RootState {
-  initReducer: InitState
-}
+import { useScopeAttributes, useScopeScripts, useUpdateScope } from './hooks'
+import { DEFAULT_SCOPE_ATTRIBUTES } from './constants'
+import { GluuPageContent } from '@/components'
+import { useTheme } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import { useStyles } from './styles/ScopeFormPage.style'
+import { devLogger } from '@/utils/devLogger'
+import { REGEX_LEADING_COLON } from '@/utils/regex'
+import SetTitle from 'Utils/SetTitle'
 
 const ScopeEditPage: React.FC = () => {
   const { t } = useTranslation()
 
+  SetTitle(t('messages.edit_scope'))
+
   const { id } = useParams<{ id: string }>()
 
-  const dispatch = useDispatch()
-  const queryClient = useQueryClient()
+  const { state: themeState } = useTheme()
+  const { themeColors, isDark } = useMemo(
+    () => ({
+      themeColors: getThemeColor(themeState.theme || DEFAULT_THEME),
+      isDark: themeState.theme === THEME_DARK,
+    }),
+    [themeState.theme],
+  )
+  const { classes } = useStyles({ isDark, themeColors })
 
-  const scripts = useSelector((state: RootState) => state.initReducer.scripts)
-  const attributes = useSelector((state: RootState) => state.initReducer.attributes)
+  const { attributes, isLoading: attributesLoading } = useScopeAttributes()
+  const { scripts, isLoading: scriptsLoading } = useScopeScripts()
 
-  const { logScopeUpdate, navigateToScopeList } = useScopeActions()
+  const { updateScope, isPending: updatePending, isError: updateIsError } = useUpdateScope()
 
   const [modifiedFields, setModifiedFields] = useState<ModifiedFields>({})
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [errorMessage, setErrorMessage] = useState<string>()
 
-  const inum = useMemo(() => id?.replace(/^:/, '') || '', [id])
+  const inum = useMemo(() => id?.replace(REGEX_LEADING_COLON, '') || '', [id])
 
   const scopeQueryOptions = useMemo(
     () => ({
@@ -70,8 +65,6 @@ const ScopeEditPage: React.FC = () => {
     scopeQueryOptions,
   )
 
-  const updateScope = usePutOauthScopes()
-
   const extensibleScope = useMemo<ExtendedScope>(() => {
     if (scopeData) {
       return {
@@ -88,114 +81,40 @@ const ScopeEditPage: React.FC = () => {
     }
   }, [scopeData, inum])
 
-  const loading = useMemo(
-    () => updateScope.isPending || scopeLoading,
-    [updateScope.isPending, scopeLoading],
-  )
-
-  const handleSearch = useCallback(
-    (value: string) => {
-      dispatch({
-        type: getAttributes.type,
-        payload: { options: { pattern: value } },
-      })
-    },
-    [dispatch],
-  )
-
   const handleSubmit = useCallback(
     async (data: string) => {
-      if (!data) return
-
-      setErrorMessage(null)
-
-      let parsedData: ScopeWithMessage
+      setErrorMessage(undefined)
       try {
-        parsedData = JSON.parse(data) as ScopeWithMessage
+        await updateScope(data, modifiedFields)
       } catch (error) {
-        console.error('Error parsing scope data:', error)
-        setErrorMessage(t('messages.error_in_parsing_data'))
-        return
-      }
-
-      try {
-        const message = parsedData.action_message || ''
-        delete parsedData.action_message
-
-        const response = await updateScope.mutateAsync({ data: parsedData as Scope })
-
-        queryClient.invalidateQueries({
-          predicate: (query) => {
-            const queryKey = query.queryKey[0] as string
-            return (
-              queryKey === getGetOauthScopesQueryKey()[0] || queryKey === 'getOauthScopesByInum'
-            )
-          },
-        })
-
-        const successMessage =
-          response?.id || response?.displayName
-            ? `Scope '${response.id || response.displayName}' updated successfully`
-            : t('messages.scope_updated_successfully')
-
-        dispatch(updateToast(true, 'success', successMessage))
-        dispatch(triggerWebhook({ createdFeatureValue: response }))
-
-        try {
-          await logScopeUpdate(parsedData as Scope, message, modifiedFields)
-        } catch (auditError) {
-          console.error('Error logging audit:', auditError)
-        }
-
-        navigateToScopeList()
-      } catch (error) {
-        console.error('Error updating scope:', error)
+        devLogger.error('Error updating scope:', error)
         setErrorMessage(error instanceof Error ? error.message : t('messages.error_in_saving'))
       }
     },
-    [updateScope, logScopeUpdate, modifiedFields, navigateToScopeList, t, queryClient, dispatch],
+    [updateScope, modifiedFields, t],
   )
 
-  useEffect(() => {
-    if (attributes.length === 0) {
-      const attributeOptions: Record<string, unknown> = {}
-      buildPayload(attributeOptions, 'Fetch attributes', {})
-      dispatch({
-        type: getAttributes.type,
-        payload: { options: attributeOptions },
-      })
-    }
-    if (scripts.length === 0) {
-      const scriptAction: Record<string, unknown> = {}
-      buildPayload(scriptAction, 'Fetch custom scripts', {})
-      dispatch({
-        type: getScripts.type,
-        payload: { action: scriptAction },
-      })
-    }
-  }, [dispatch, attributes.length, scripts.length])
+  const loading = updatePending || scopeLoading || attributesLoading || scriptsLoading
+  const displayError = errorMessage || (updateIsError ? t('messages.error_in_saving') : undefined)
 
   return (
-    <GluuLoader blocking={loading}>
-      <GluuAlert
-        severity={t('titles.error')}
-        message={errorMessage || t('messages.error_in_saving')}
-        show={!!errorMessage}
-      />
-      <Card className="mb-3" style={applicationStyle.mainCard}>
-        <CardBody>
-          <ScopeForm
-            scope={extensibleScope}
-            attributes={attributes}
-            scripts={scripts}
-            handleSubmit={handleSubmit}
-            onSearch={handleSearch}
-            modifiedFields={modifiedFields}
-            setModifiedFields={setModifiedFields}
-          />
-        </CardBody>
-      </Card>
-    </GluuLoader>
+    <GluuPageContent>
+      <GluuLoader blocking={loading}>
+        <GluuAlert severity="error" message={displayError} show={!!displayError} />
+        <div className={classes.formCard}>
+          <div className={classes.content}>
+            <ScopeForm
+              scope={extensibleScope}
+              attributes={attributes}
+              scripts={scripts}
+              handleSubmit={handleSubmit}
+              modifiedFields={modifiedFields}
+              setModifiedFields={setModifiedFields}
+            />
+          </div>
+        </div>
+      </GluuLoader>
+    </GluuPageContent>
   )
 }
 

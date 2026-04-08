@@ -13,7 +13,7 @@ import useStyles from './styles/UploadSSA.style'
 import GluuText from '../routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
 
-function UploadSSA() {
+const UploadSSA = () => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)

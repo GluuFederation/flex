@@ -150,18 +150,18 @@ describe('transformToFormValues', () => {
   })
 
   it('converts string boolean values', () => {
-    const config = {
+    const config: { [K in keyof AppConfiguration3]?: string | boolean | number | null } = {
       disableJdkLogger: 'true',
       metricReporterEnabled: 'false',
-    } as unknown as AppConfiguration3
+    }
 
-    const result = transformToFormValues(config)
+    const result = transformToFormValues(config as AppConfiguration3)
     expect(result.disableJdkLogger).toBe(true)
     expect(result.metricReporterEnabled).toBe(false)
   })
 
   it('falls back to defaults for explicit null values', () => {
-    const config = {
+    const config: { [K in keyof AppConfiguration3]?: string | boolean | number | null } = {
       baseDN: null,
       applicationUrl: null,
       baseEndpoint: null,
@@ -176,9 +176,9 @@ describe('transformToFormValues', () => {
       disableJdkLogger: null,
       useLocalCache: null,
       metricReporterEnabled: null,
-    } as unknown as AppConfiguration3
+    }
 
-    const result = transformToFormValues(config)
+    const result = transformToFormValues(config as AppConfiguration3)
     expect(result.baseDN).toBe('')
     expect(result.applicationUrl).toBe('')
     expect(result.baseEndpoint).toBe('')

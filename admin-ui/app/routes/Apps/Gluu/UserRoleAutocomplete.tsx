@@ -7,18 +7,12 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './styles/UserRoleAutocomplete.style'
+import type { ModifierArguments, Obj } from '@popperjs/core'
 import type { UserRoleAutocompleteProps } from './types/UserRoleAutocomplete.types'
 
 const NEW_SELECTION_PREFIX = 'new-selection:'
 
-const sameWidthModifier = ({
-  state,
-}: {
-  state: {
-    elements: { popper: HTMLElement }
-    rects: { reference: { width: number } }
-  }
-}) => {
+const sameWidthModifier = ({ state }: ModifierArguments<Obj>): void => {
   const w = `${state.rects.reference.width}px`
   state.elements.popper.style.setProperty('width', w)
   state.elements.popper.style.setProperty('min-width', w)
@@ -124,7 +118,7 @@ const UserRoleAutocomplete = ({
                     name: 'sameWidth',
                     enabled: true,
                     phase: 'afterWrite' as const,
-                    fn: sameWidthModifier as (arg: unknown) => void,
+                    fn: sameWidthModifier,
                   },
                 ],
               },

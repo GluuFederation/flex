@@ -9,7 +9,8 @@ import customColors from '@/customColors'
 import { BORDER_RADIUS, CEDARLING_CONFIG_SPACING, SPACING } from '@/constants'
 import { useTranslation } from 'react-i18next'
 import { getIn } from 'formik'
-import { buildKeyCandidates } from '@/utils/regex'
+import { buildKeyCandidates } from '@/utils/stringUtils'
+import { REGEX_LEADING_SLASH } from '@/utils/regex'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import type {
   MultiSelectOption,
@@ -21,6 +22,7 @@ import type {
   AccordionWithSubComponents,
   AppConfiguration,
   StringArrayFieldProps,
+  ArrayItemSelectProps,
   PropertyValue,
 } from './types'
 import type { JsonPatch } from 'JansConfigApi'
@@ -38,16 +40,6 @@ import {
   migratingTextIfRenamed,
   sortKeysByFieldType,
 } from '../ConfigApiProperties/utils'
-
-type ArrayItemSelectProps = {
-  index: number
-  values: string[]
-  options: MultiSelectOption[]
-  label: string
-  path: string
-  handler: (patch: JsonPatch) => void
-  formResetKey: number
-}
 
 const AccordionWithSub = Accordion as AccordionWithSubComponents
 const AccordionHeader = AccordionWithSub.Header
@@ -220,7 +212,7 @@ const JsonPropertyBuilder = ({
 
   const formikPathSegments = useMemo(() => {
     if (!path || path === '/') return [propKey]
-    const trimmed = path.replace(/^\//, '')
+    const trimmed = path.replace(REGEX_LEADING_SLASH, '')
     if (!trimmed) return [propKey]
     return trimmed.split('/')
   }, [path, propKey])

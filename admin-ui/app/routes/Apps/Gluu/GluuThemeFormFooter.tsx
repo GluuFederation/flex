@@ -10,29 +10,7 @@ import {
   BUTTON_STYLES,
   getButtonColors,
 } from 'Routes/Apps/Gluu/styles/GluuThemeFormFooter.style'
-
-interface GluuThemeFormFooterBaseProps {
-  showBack?: boolean
-  backButtonLabel?: string
-  onBack?: () => void
-  disableBack?: boolean
-  showCancel?: boolean
-  cancelButtonLabel?: string
-  onCancel?: () => void
-  disableCancel?: boolean
-  showApply?: boolean
-  disableApply?: boolean
-  applyButtonLabel?: string
-  isLoading?: boolean
-  className?: string
-  hideDivider?: boolean
-}
-
-type GluuThemeFormFooterProps = GluuThemeFormFooterBaseProps &
-  (
-    | { applyButtonType?: 'submit'; onApply?: () => void }
-    | { applyButtonType: 'button'; onApply: () => void }
-  )
+import type { GluuThemeFormFooterProps } from './types'
 
 const COMMON_BUTTON_STYLE = {
   minHeight: BUTTON_STYLES.height,

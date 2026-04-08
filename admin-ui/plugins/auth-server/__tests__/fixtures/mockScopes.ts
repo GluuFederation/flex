@@ -1,4 +1,4 @@
-import type { Scope } from './types'
+import type { Scope } from 'Plugins/auth-server/components/Scopes/types'
 
 export const scopes: Partial<Scope>[] = [
   {
@@ -186,7 +186,6 @@ export const scopes: Partial<Scope>[] = [
     defaultScope: false,
     groupClaims: true,
     attributes: { showInConfigurationEndpoint: true },
-    oxAuthGroupClaims: true,
     umaType: false,
   },
   {

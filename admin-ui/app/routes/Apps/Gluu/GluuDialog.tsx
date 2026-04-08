@@ -12,21 +12,7 @@ import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
 import { GluuButton } from '@/components'
 
-interface DialogRow {
-  name?: string
-  inum?: string
-  id?: string
-}
-
-interface GluuDialogProps {
-  row: DialogRow
-  handler: () => void
-  modal: boolean
-  onAccept: (message: string) => void
-  subject: string
-  name?: string
-  feature: string
-}
+import type { GluuDialogProps } from './types'
 
 const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: GluuDialogProps) => {
   const [active, setActive] = useState(false)
@@ -78,7 +64,7 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: G
     }
   }, [modal, row])
 
-  function handleAccept() {
+  const handleAccept = () => {
     onAccept(userMessage)
   }
   const closeModal = () => {

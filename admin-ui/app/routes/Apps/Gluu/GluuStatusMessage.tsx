@@ -2,14 +2,7 @@ import React from 'react'
 import { Row, Col } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { customColors } from '@/customColors'
-
-interface GluuStatusMessageProps {
-  message: string
-  type: 'loading' | 'error' | 'success' | 'info'
-  labelSize?: number
-  colSize?: number
-  inline?: boolean
-}
+import type { GluuStatusMessageProps } from './types'
 
 const getColorForType = (type: GluuStatusMessageProps['type']) => {
   switch (type) {

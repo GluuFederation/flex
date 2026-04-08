@@ -23,7 +23,13 @@ import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { formatDate } from '@/utils/dayjsUtils'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { devLogger } from '@/utils/devLogger'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
+import {
+  REGEX_CSV_FORMULA_INJECTION,
+  REGEX_CSV_SPECIAL_CHARS,
+  REGEX_DOUBLE_QUOTE,
+} from '@/utils/regex'
 import { BORDER_RADIUS, ICON_SIZE } from '@/constants'
 import { useAppSelector } from '@/redux/hooks'
 import { useGetSessions, useSearchSession } from 'JansConfigApi'
@@ -208,7 +214,7 @@ const SessionListPage: React.FC = () => {
         setDeleteModal(false)
         setItem({} as Session)
       } catch (err) {
-        console.error('Failed to delete session', {
+        devLogger.error('Failed to delete session', {
           sessionId,
           auth_user: item.sessionAttributes?.auth_user,
           err,
@@ -237,7 +243,7 @@ const SessionListPage: React.FC = () => {
         await revokeSession(userDn, message, item.sessionAttributes?.auth_user)
         setRevokeModal(false)
       } catch (err) {
-        console.error('Failed to revoke session', {
+        devLogger.error('Failed to revoke session', {
           userDn,
           auth_user: item.sessionAttributes?.auth_user,
           err,
@@ -360,11 +366,11 @@ const SessionListPage: React.FC = () => {
 
   const sanitizeCsvCell = (value: JsonValue): string => {
     let cell = value == null ? '' : String(value)
-    if (/^[=+\-@]/.test(cell)) {
+    if (REGEX_CSV_FORMULA_INJECTION.test(cell)) {
       cell = "'" + cell
     }
-    if (/[",\n\r]/.test(cell)) {
-      cell = '"' + cell.replace(/"/g, '""') + '"'
+    if (REGEX_CSV_SPECIAL_CHARS.test(cell)) {
+      cell = '"' + cell.replace(REGEX_DOUBLE_QUOTE, '""') + '"'
     }
     return cell
   }

@@ -1,5 +1,6 @@
 import customColors from '@/customColors'
 import { fontFamily, fontWeights, fontSizes, letterSpacing, lineHeights } from '@/styles/fonts'
+import type { BaseOptionStylesParams, TriggerStylesParams } from './types'
 
 export const SHARED_DROPDOWN_STYLES = {
   borderRadius: '16px',
@@ -28,13 +29,6 @@ export const NO_TEXT_SELECT = {
   MozUserSelect: 'none',
   msUserSelect: 'none',
 } as const
-
-export interface BaseOptionStylesParams {
-  isDark: boolean
-  optionPadding?: string
-  optionBorderRadius?: string
-  optionGap?: string
-}
 
 export const createBaseOptionStyles = ({
   isDark,
@@ -80,12 +74,6 @@ export const createBaseOptionStyles = ({
   }
 
   return baseStyles
-}
-
-export interface TriggerStylesParams {
-  isDark: boolean
-  minWidth?: string
-  padding?: string
 }
 
 export const createTriggerStyles = ({

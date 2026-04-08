@@ -4,16 +4,7 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import { jansLockConstants } from '../helper/constants'
-import type { FormikProps } from 'formik'
-import type { FieldConfig, JansLockConfigFormValues } from '../types'
-
-type JansLockFieldRendererProps = {
-  config: FieldConfig
-  formik: FormikProps<JansLockConfigFormValues>
-  fieldItemClass: string
-  fieldItemFullWidthClass: string
-  viewOnly: boolean
-}
+import type { JansLockFieldRendererProps } from '../types'
 
 const LABEL_SIZE = 12
 const INPUT_SIZE = 12

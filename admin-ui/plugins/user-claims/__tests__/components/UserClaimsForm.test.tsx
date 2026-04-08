@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
-import type { AttributeItem } from 'Plugins/user-claims/components/types/UserClaimsListPage.types'
+import type { AttributeItem } from 'Plugins/user-claims/components/types'
 
 const item: AttributeItem = {
   inum: 'B4B0',

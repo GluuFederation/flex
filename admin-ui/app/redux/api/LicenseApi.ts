@@ -89,7 +89,7 @@ export default class LicenseApi {
     }
     return new Promise((resolve, reject) => {
       this.api.activateAdminuiLicense(options, (error, data) => {
-        handleTypedResponse<LicenseResponse | null>(error, reject, resolve, data ?? null, null)
+        handleTypedResponse<LicenseResponse | null>(error, reject, resolve, data ?? null)
       })
     })
   }
@@ -100,7 +100,7 @@ export default class LicenseApi {
     }
     return new Promise((resolve, reject) => {
       this.api.adminuiPostSsa(option, (error, data) => {
-        handleTypedResponse<LicenseResponse | null>(error, reject, resolve, data ?? null, null)
+        handleTypedResponse<LicenseResponse | null>(error, reject, resolve, data ?? null)
       })
     })
   }
@@ -111,7 +111,7 @@ export default class LicenseApi {
     }
     return new Promise((resolve, reject) => {
       this.api.addAdminuiPermission(options, (error, data) => {
-        handleTypedResponse<AdminPermission[] | null>(error, reject, resolve, data ?? null, null)
+        handleTypedResponse<AdminPermission[] | null>(error, reject, resolve, data ?? null)
       })
     })
   }
@@ -122,7 +122,7 @@ export default class LicenseApi {
     }
     return new Promise((resolve, reject) => {
       this.api.editAdminuiPermission(options, (error, data) => {
-        handleTypedResponse<AdminPermission[] | null>(error, reject, resolve, data ?? null, null)
+        handleTypedResponse<AdminPermission[] | null>(error, reject, resolve, data ?? null)
       })
     })
   }
@@ -133,7 +133,7 @@ export default class LicenseApi {
     }
     return new Promise((resolve, reject) => {
       this.api.deleteAdminuiPermission(options, (error, data) => {
-        handleTypedResponse<AdminPermission[] | null>(error, reject, resolve, data ?? null, null)
+        handleTypedResponse<AdminPermission[] | null>(error, reject, resolve, data ?? null)
       })
     })
   }
@@ -141,7 +141,7 @@ export default class LicenseApi {
   getTrialLicense = (): Promise<LicenseResponse | null> => {
     return new Promise((resolve, reject) => {
       this.api.getTrialLicense((error, data) => {
-        handleTypedResponse<LicenseResponse | null>(error, reject, resolve, data ?? null, null)
+        handleTypedResponse<LicenseResponse | null>(error, reject, resolve, data ?? null)
       })
     })
   }
@@ -149,7 +149,7 @@ export default class LicenseApi {
   retrieveLicense = (): Promise<LicenseResponse | null> => {
     return new Promise((resolve, reject) => {
       this.api.retrieveLicense((error, data) => {
-        handleTypedResponse<LicenseResponse | null>(error, reject, resolve, data ?? null, null)
+        handleTypedResponse<LicenseResponse | null>(error, reject, resolve, data ?? null)
       })
     })
   }

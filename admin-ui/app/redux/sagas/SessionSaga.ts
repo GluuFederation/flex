@@ -7,7 +7,7 @@ import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
 import { CREATE } from '../../audit/UserActionType'
 import { initAudit } from '../sagas/SagaUtils'
-import { isDevelopment } from '@/utils/env'
+import { devLogger } from '@/utils/devLogger'
 import type { AuditLog, HttpErrorLike } from './types'
 import type { UserActionPayload } from '../api/types/BackendApi'
 import type { ApiTokenResponse } from '../api/types/BackendApi'
@@ -21,9 +21,7 @@ interface ApiResponse {
 export function* auditLogoutLogsSaga({
   payload,
 }: PayloadAction<{ message: string }>): SagaIterator<boolean> {
-  if (isDevelopment) {
-    console.log('Logout audit:', payload.message)
-  }
+  devLogger.log('Logout audit:', payload.message)
 
   const audit = (yield call(initAudit)) as AuditLog
 
@@ -41,17 +39,13 @@ export function* auditLogoutLogsSaga({
         const response = (yield call(fetchApiTokenWithDefaultScopes)) as ApiTokenResponse
         yield call(deleteAdminUiSession, response?.access_token)
       } catch (recoveryError) {
-        if (isDevelopment) {
-          console.error('Session cleanup failed:', recoveryError)
-        }
+        devLogger.error('Session cleanup failed:', recoveryError)
       }
       window.location.href = '/admin/logout'
       return false
     }
     yield put(auditLogoutLogsResponse(false))
-    if (isDevelopment) {
-      console.error('Error:', e)
-    }
+    devLogger.error('Error:', e)
     return false
   }
 }

@@ -12,7 +12,7 @@ export default class LockApi {
   getLockMau = (opt: Record<string, string>): Promise<LockStatEntry[]> => {
     return new Promise((resolve, reject) => {
       this.api.getLockStat(opt, (error, data) => {
-        handleTypedResponse(error, reject, resolve, data, null)
+        handleTypedResponse(error, reject, resolve, data)
       })
     })
   }

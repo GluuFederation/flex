@@ -1,4 +1,4 @@
-import type { ChangedFields } from './types'
+import type { ChangedFields, LoggingConfigLike, LoggingFormValues } from './types'
 
 export const LOG_LEVELS = ['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR'] as const
 export const LOG_LAYOUTS = ['text', 'json'] as const
@@ -6,21 +6,7 @@ export const LOG_LAYOUTS = ['text', 'json'] as const
 export type LoggingLevel = (typeof LOG_LEVELS)[number]
 export type LoggingLayout = (typeof LOG_LAYOUTS)[number]
 
-export interface LoggingConfigLike {
-  loggingLevel?: string | null
-  loggingLayout?: string | null
-  httpLoggingEnabled?: boolean | null
-  disableJdkLogger?: boolean | null
-  enabledOAuthAuditLogging?: boolean | null
-}
-
-export interface LoggingFormValues {
-  loggingLevel: LoggingLevel
-  loggingLayout: LoggingLayout
-  httpLoggingEnabled: boolean
-  disableJdkLogger: boolean
-  enabledOAuthAuditLogging: boolean
-}
+export type { LoggingConfigLike, LoggingFormValues }
 
 const isValidLevel = (val: string | null | undefined): val is LoggingLevel =>
   typeof val === 'string' && LOG_LEVELS.includes(val as LoggingLevel)

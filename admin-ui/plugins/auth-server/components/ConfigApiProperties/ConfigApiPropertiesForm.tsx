@@ -1,5 +1,7 @@
 import React, { useCallback, useState, useEffect, useMemo, useRef, useDeferredValue } from 'react'
 import { useFormik, setIn } from 'formik'
+import { REGEX_LEADING_SLASH, REGEX_FORWARD_SLASH } from '@/utils/regex'
+import { devLogger } from '@/utils/devLogger'
 import { toast } from 'react-toastify'
 import { useTranslation } from 'react-i18next'
 import { Form } from 'Components'
@@ -30,15 +32,9 @@ import {
   isPatchNoOp,
   hasConfigurationChanges,
 } from 'Plugins/auth-server/common/propertiesUtils'
-import type { ApiAppConfiguration, JsonPatch } from './types'
+import type { ApiAppConfiguration, ConfigApiPropertiesFormProps, JsonPatch } from './types'
 import type { AppConfiguration, PropertyValue } from '../AuthServerProperties/types'
 import { useStyles } from './styles/ConfigApiPropertiesForm.style'
-
-interface ConfigApiPropertiesFormProps {
-  configuration: ApiAppConfiguration
-  onSubmit: (patches: JsonPatch[], message: string) => Promise<void>
-  search?: string
-}
 
 const CONFIG_API_RESOURCE_ID = ADMIN_UI_RESOURCES.ConfigApiConfiguration
 const configApiScopes = CEDAR_RESOURCE_SCOPES[CONFIG_API_RESOURCE_ID] || []
@@ -176,7 +172,7 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
 
       setPatches((existingPatches) => {
         const removalPath = typeof patch.path === 'string' ? patch.path : ''
-        const removalPathNormalized = removalPath.replace(/^\//, '')
+        const removalPathNormalized = removalPath.replace(REGEX_LEADING_SLASH, '')
 
         let hasExistingRemove = false
         const filteredPatches = existingPatches.filter((existingPatch) => {
@@ -186,7 +182,7 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
           }
 
           const existingPath = typeof existingPatch.path === 'string' ? existingPatch.path : ''
-          const existingPathNormalized = existingPath.replace(/^\//, '')
+          const existingPathNormalized = existingPath.replace(REGEX_LEADING_SLASH, '')
 
           if (existingPathNormalized === removalPathNormalized) {
             return false
@@ -233,7 +229,8 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
   const patchHandler = useCallback(
     (patch: JsonPatch) => {
       if (patch.op === 'remove') {
-        const fieldPath = typeof patch.path === 'string' ? patch.path.replace(/^\//, '') : ''
+        const fieldPath =
+          typeof patch.path === 'string' ? patch.path.replace(REGEX_LEADING_SLASH, '') : ''
         const pathParts = fieldPath.split('/')
 
         if (pathParts.length >= 3) {
@@ -255,8 +252,9 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
       }
 
       if (patch.op === 'replace' && patch.path) {
-        const fieldPath = typeof patch.path === 'string' ? patch.path.replace(/^\//, '') : ''
-        const formikPath = fieldPath.replace(/\//g, '.')
+        const fieldPath =
+          typeof patch.path === 'string' ? patch.path.replace(REGEX_LEADING_SLASH, '') : ''
+        const formikPath = fieldPath.replace(REGEX_FORWARD_SLASH, '.')
 
         formik.setFieldValue(formikPath, patch.value, false)
         formik.setTouched(setIn(formik.touched, formikPath, true), false)
@@ -297,7 +295,7 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
         await onSubmit(patches, userMessage)
         setPatches([])
       } catch (error) {
-        console.error('Error submitting form:', error)
+        devLogger.error('Error submitting form:', error)
         toast.error(t('messages.error_in_saving'))
       }
     },
