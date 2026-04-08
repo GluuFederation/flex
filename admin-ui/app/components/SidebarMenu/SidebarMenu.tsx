@@ -13,19 +13,11 @@ import includes from 'lodash/includes'
 import mapValues from 'lodash/mapValues'
 import classNames from 'classnames'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import type { SidebarMenuEntry } from './types'
 import { REGEX_TRAILING_SLASH } from '@/utils/regex'
 import { PageConfigContext } from './../Layout/PageConfigContext'
 import { SideMenuAnimate } from './../../common'
 import { MenuContext } from './MenuContext'
-
-type SidebarMenuEntry = {
-  id: string
-  parentId?: string
-  exact: boolean
-  url?: string
-  open?: boolean
-  active?: boolean
-}
 
 type SidebarMenuItemInjectedProps = {
   currentUrl: string

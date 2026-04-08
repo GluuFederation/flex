@@ -3,32 +3,13 @@ import { useSelector } from 'react-redux'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import { CREATE, UPDATE, DELETION } from '../../../../../app/audit/UserActionType'
 import { SCOPE } from '../../../redux/audit/Resources'
-import type { Scope, ModifiedFields } from '../types'
-import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import type { Scope, ModifiedFields, ScopeRootState } from '../types'
+import { toScopeJsonRecord } from '../helper/utils'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-
-interface AuthState {
-  token?: {
-    access_token: string
-  }
-  config?: {
-    clientId: string
-  }
-  userinfo?: {
-    inum: string
-    name: string
-  }
-}
-
-interface RootState {
-  authReducer: AuthState
-}
-
-const toJsonValue = (value: Scope): JsonValue => JSON.parse(JSON.stringify(value)) as JsonValue
 
 export const useScopeActions = () => {
   const { navigateToRoute } = useAppNavigation()
-  const authState = useSelector((state: RootState) => state.authReducer)
+  const authState = useSelector((state: ScopeRootState) => state.authReducer)
   const client_id = authState?.config?.clientId
   const userinfo = authState?.userinfo
 
@@ -39,10 +20,10 @@ export const useScopeActions = () => {
         action: CREATE,
         resource: SCOPE,
         message,
-        modifiedFields: modifiedFields as Record<string, JsonValue>,
+        modifiedFields,
         performedOn: scope.id || scope.inum,
         client_id,
-        payload: toJsonValue(scope),
+        payload: toScopeJsonRecord(scope),
       })
     },
     [userinfo, client_id],
@@ -55,10 +36,10 @@ export const useScopeActions = () => {
         action: UPDATE,
         resource: SCOPE,
         message,
-        modifiedFields: modifiedFields as Record<string, JsonValue>,
+        modifiedFields,
         performedOn: scope.id || scope.inum,
         client_id,
-        payload: toJsonValue(scope),
+        payload: toScopeJsonRecord(scope),
       })
     },
     [userinfo, client_id],

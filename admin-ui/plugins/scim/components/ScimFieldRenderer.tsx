@@ -5,16 +5,7 @@ import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import { DOC_CATEGORY } from '../helper'
-import type { FieldConfig } from './constants'
-import type { FormikProps } from 'formik'
-import type { ScimFormValues } from '../types'
-
-type ScimFieldRendererProps = {
-  config: FieldConfig
-  formik: FormikProps<ScimFormValues>
-  fieldItemClass: string
-  fieldItemFullWidthClass: string
-}
+import type { ScimFieldRendererProps } from '../types'
 
 const LABEL_SIZE = 12
 const INPUT_SIZE = 12

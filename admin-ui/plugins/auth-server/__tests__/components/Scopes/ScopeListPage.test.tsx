@@ -2,7 +2,7 @@ import React from 'react'
 import { render, screen, within } from '@testing-library/react'
 import ScopeListPage from 'Plugins/auth-server/components/Scopes/ScopeListPage'
 import { Provider } from 'react-redux'
-import scopes from '../../fixtures/mockScopes'
+import mockScopes from '../../fixtures/mockScopes'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import type { Scope } from 'Plugins/auth-server/components/Scopes/types'
@@ -13,7 +13,6 @@ jest.mock('Plugins/PluginSagasResolver', () => ({ __esModule: true, default: jes
 
 // Mock orval hooks
 jest.mock('JansConfigApi', () => {
-  const mockScopes = require('../../fixtures/mockScopes').default
   return {
     useGetOauthScopes: jest.fn(() => ({
       data: {
@@ -121,17 +120,15 @@ it('Should render the scope list page properly', () => {
   const { container } = render(<ScopeListPage />, {
     wrapper: Wrapper,
   })
-  const scope = scopes[0] as Scope
-  const id = scope.id
-  const description = scope.description
+  const scope = mockScopes[0] as Scope
+  const id = scope.id ?? ''
+  const description = scope.description ?? ''
 
+  expect(id).not.toBe('')
+  expect(description).not.toBe('')
   expect(screen.getByText('Description', { exact: false })).toBeInTheDocument()
   expect(screen.getByText('Clients', { exact: false })).toBeInTheDocument()
   expect(screen.getByPlaceholderText('search', { exact: false })).toBeInTheDocument()
-  if (id) {
-    expect(within(container).getAllByText(id).length).toBeGreaterThan(0)
-  }
-  if (description) {
-    expect(screen.getByText(description)).toBeInTheDocument()
-  }
+  expect(within(container).getAllByText(id).length).toBeGreaterThan(0)
+  expect(screen.getByText(description)).toBeInTheDocument()
 })

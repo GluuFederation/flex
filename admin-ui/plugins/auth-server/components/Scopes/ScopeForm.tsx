@@ -29,7 +29,13 @@ import getThemeColor from 'Context/theme/config'
 import { formatDate, DATE_FORMATS } from '@/utils/dayjsUtils'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
-import type { ScopeFormProps, ScopeFormValues, ScopeClient, ExtendedScope } from './types'
+import type {
+  ScopeFormProps,
+  ScopeFormValues,
+  ScopeClient,
+  ExtendedScope,
+  ScopeRootState,
+} from './types'
 import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/GluuCommitDialog.types'
 import { SCOPE_TYPE_OPTIONS, CREATOR_TYPES } from './constants'
 import {
@@ -45,14 +51,6 @@ import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useStyles, errorTextStyle } from './styles/ScopeFormPage.style'
-
-interface RootState {
-  authReducer: {
-    userinfo: {
-      inum: string
-    }
-  }
-}
 
 const ScopeForm: React.FC<ScopeFormProps> = ({
   scope,
@@ -85,7 +83,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
   const dispatch = useAppDispatch()
   const client = scope.clients || []
 
-  const authReducer = useSelector((state: RootState) => state.authReducer)
+  const authReducer = useSelector((state: ScopeRootState) => state.authReducer)
 
   const dynamicScopeScripts = useMemo(
     () =>
@@ -199,7 +197,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
               }
             : {
                 creatorType: 'user',
-                creatorId: authReducer.userinfo.inum,
+                creatorId: authReducer.userinfo?.inum ?? '',
               }),
         } as Partial<ExtendedScope>
 
@@ -418,7 +416,9 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                       }
                       showError={!!(formikProps.errors.scopeType && formikProps.touched.scopeType)}
                       required
-                      handleChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                      handleChange={(
+                        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+                      ) => {
                         const nextValue = e.target.value
                         handleScopeTypeChangeInternal(nextValue)
                         setModifiedFields({

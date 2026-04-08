@@ -5,8 +5,12 @@ import GluuLabel from '../Gluu/GluuLabel'
 import Typography from '@mui/material/Typography'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { useTranslation } from 'react-i18next'
-import type { FormikProps } from 'formik'
 import type { JsonValue } from './types/common'
+import type {
+  TypeAheadOptionObject,
+  TypeAheadOption,
+  GluuTypeAheadForDnProps,
+} from './types/GluuTypeAheadForDn.types'
 
 const theme = createTheme({
   typography: {
@@ -15,44 +19,6 @@ const theme = createTheme({
     },
   },
 })
-
-type TypeAheadOptionObject = {
-  dn?: string
-  key?: string
-  name?: string
-  customOption?: boolean
-  label?: string
-}
-
-type TypeAheadOption = string | TypeAheadOptionObject
-
-interface GluuTypeAheadForDnProps<
-  TValues extends object = Record<string, JsonValue>,
-  TOption extends TypeAheadOptionObject = TypeAheadOptionObject,
-> {
-  label: string
-  name: string
-  value?: TOption[]
-  options: TOption[]
-  formik: FormikProps<TValues>
-  required?: boolean
-  doc_category?: string
-  doc_entry?: string
-  disabled?: boolean
-  allowNew?: boolean
-  haveLabelKey?: boolean
-  lsize?: number
-  rsize?: number
-  paginate?: boolean
-  onSearch?: (query: string) => void
-  onPaginate?: (e: React.SyntheticEvent, shownResults: number) => void
-  maxResults?: number
-  isLoading?: boolean
-  placeholder?: string
-  onChange?: (selected: TOption[]) => void
-  hideHelperMessage?: boolean
-  defaultSelected?: TOption[]
-}
 
 function GluuTypeAheadForDn<
   TValues extends object = Record<string, JsonValue>,

@@ -40,6 +40,19 @@ export interface ProfileRootState {
   authReducer: AuthState
 }
 
+export type InfoRowProps = {
+  label: string
+  value?: string
+  index: number
+  classes: {
+    dataRow: string
+    dataRowEven: string
+    dataRowOdd: string
+    dataLabel: string
+    dataValue: string
+  }
+}
+
 export interface ThemeContextValue {
   state: {
     theme: string

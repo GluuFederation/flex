@@ -1,24 +1,15 @@
 import { useCallback } from 'react'
 import { useAppSelector } from '@/redux/hooks'
 import { logAuditUserAction } from '@/utils/AuditLogger'
-import type { JansAttribute } from 'JansConfigApi'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
-import type { ModifiedFields } from '../components/types/UserClaimsListPage.types'
+import type { SchemaAuditLogParams } from '../types'
 import { UPDATE } from '@/audit/UserActionType'
-
-interface AuditLogParams {
-  action: string
-  resource: string
-  message: string
-  payload?: Partial<JansAttribute>
-  modifiedFields?: ModifiedFields
-}
 
 export const useSchemaAuditLogger = () => {
   const authState = useAppSelector((state) => state.authReducer)
 
   const logAudit = useCallback(
-    async (params: AuditLogParams): Promise<void> => {
+    async (params: SchemaAuditLogParams): Promise<void> => {
       const userinfo = authState?.userinfo
       const clientId = authState?.config?.clientId
       const ipAddress = authState?.location?.IPv4

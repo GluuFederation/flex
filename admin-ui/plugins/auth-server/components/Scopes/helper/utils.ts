@@ -1,12 +1,22 @@
-import type { ScopeFormValues, ExtendedScope, ExtendedScopeAttributes } from '../types'
+import type {
+  Scope,
+  ScopeFormValues,
+  ExtendedScope,
+  ExtendedScopeAttributes,
+  ScopePanelVisibility,
+} from '../types'
 import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/GluuCommitDialog.types'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
-export interface ScopePanelVisibility {
-  showClaimsPanel: boolean
-  showDynamicPanel: boolean
-  showSpontaneousPanel: boolean
-  showUmaPanel: boolean
-}
+export type { ScopePanelVisibility }
+
+/**
+ * JSON-clones a Scope-like object into a plain Record<string, JsonValue>.
+ * Used to safely pass scope payloads into Redux actions and audit logs whose
+ * payload types only accept JSON-serializable values.
+ */
+export const toScopeJsonRecord = (value: Scope): Record<string, JsonValue> =>
+  JSON.parse(JSON.stringify(value)) as Record<string, JsonValue>
 
 const cloneScopeAttributes = (
   attributes?: ExtendedScopeAttributes,

@@ -1,7 +1,7 @@
 import type { Logging } from 'JansConfigApi'
 import type { ChangedFields } from './CommonTypes'
 
-export interface UpdateLoggingParams {
+export type UpdateLoggingParams = {
   data: Logging
   userMessage: string
   changedFields: ChangedFields<Logging>

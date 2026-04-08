@@ -32,7 +32,7 @@ export interface ExtendedScope extends Scope {
   spontaneousClientScopes?: string[]
 }
 
-export interface ScopeWithClients extends ExtendedScope {}
+export type ScopeWithClients = ExtendedScope
 
 export interface ScopeScript {
   dn: string

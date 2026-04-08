@@ -1,6 +1,7 @@
 import type { TFunction } from 'i18next'
 import type { JsonValue, GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
 import { jansLockConstants } from './constants'
+import type { CedarlingConfig } from '../types'
 import { JansLockConfigFormValues, PatchOperation } from '../types'
 
 export const toBooleanValue = (value: JsonValue): boolean => {
@@ -9,13 +10,6 @@ export const toBooleanValue = (value: JsonValue): boolean => {
     return value.toLowerCase() === jansLockConstants.BINARY_VALUES.TRUE
   }
   return Boolean(value)
-}
-
-type CedarlingConfig = {
-  policySources?: Array<{
-    authorizationToken?: string
-    policyStoreUri?: string
-  }>
 }
 
 const getPolicySource = (config: Record<string, JsonValue>, index: number) => {

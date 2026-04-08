@@ -1,13 +1,6 @@
 import customColors, { hexToRgb } from '@/customColors'
 import { BORDER_RADIUS, ELLIPSE_SIZE, GRADIENT_POSITION } from '@/constants'
-
-interface CardBorderStyleOptions {
-  isDark: boolean
-  borderRadius?: number | string
-  borderWidth?: string
-  gradientPosition?: 'top left' | 'top right' | 'bottom left' | 'bottom right' | 'center'
-  ellipseSize?: string
-}
+import type { CardBorderStyleOptions } from './types'
 
 export const getCardBorderStyle = (options: CardBorderStyleOptions) => {
   const {

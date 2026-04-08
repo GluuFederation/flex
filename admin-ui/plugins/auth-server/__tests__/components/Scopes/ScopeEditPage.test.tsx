@@ -5,10 +5,10 @@ import { Provider } from 'react-redux'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import mockScopes from '../../fixtures/mockScopes'
 
 // Mock orval hooks
 jest.mock('JansConfigApi', () => {
-  const mockScopes = require('../../fixtures/mockScopes').default
   return {
     useGetOauthScopesByInum: jest.fn(() => ({
       data: mockScopes[0],
@@ -96,7 +96,7 @@ it('Should render the scope edit page properly', () => {
   render(<ScopeEditPage />, {
     wrapper: Wrapper,
   })
-  screen.getByText(/Display Name/)
-  screen.getByText(/Description/)
-  screen.getByText(/Default Scope/)
+  expect(screen.getByText(/Display Name/)).toBeInTheDocument()
+  expect(screen.getByText(/Description/)).toBeInTheDocument()
+  expect(screen.getByText(/Default Scope/)).toBeInTheDocument()
 })

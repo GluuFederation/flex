@@ -1,7 +1,7 @@
 import type { SimpleCustomProperty } from 'JansConfigApi'
 import type { ConfigurationProperty, ModuleProperty } from './customScript'
 
-export interface ApiError {
+export type ApiError = {
   response?: { data?: string | { message?: string } }
   message?: string
 }

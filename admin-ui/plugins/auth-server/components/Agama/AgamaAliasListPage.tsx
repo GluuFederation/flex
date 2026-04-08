@@ -20,6 +20,7 @@ import getThemeColor from 'Context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import SetTitle from 'Utils/SetTitle'
 import { buildPayload, type UserAction } from 'Utils/PermChecker'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
@@ -218,8 +219,8 @@ function AliasesListPage(): React.ReactElement {
         const updatedMappings = prepareMappingsForDelete(currentMappings, itemToDelete.mapping)
         const postBody = buildAcrMappingDeletePayload(updatedMappings, acrConfig.acrMappings)
 
-        const basePayload = toActionData(postBody) as Record<string, unknown>
-        const payloadWithDeleteInfo = {
+        const basePayload = toActionData(postBody) as Record<string, JsonValue>
+        const payloadWithDeleteInfo: Record<string, JsonValue> = {
           ...basePayload,
           deletedMapping: {
             mapping: itemToDelete.mapping,
@@ -227,11 +228,7 @@ function AliasesListPage(): React.ReactElement {
           },
         }
 
-        buildPayload(
-          userAction,
-          message,
-          payloadWithDeleteInfo as unknown as ReturnType<typeof toActionData>,
-        )
+        buildPayload(userAction, message, payloadWithDeleteInfo)
         await patchJsonMutation.mutateAsync(userAction)
         setDeleteModal(false)
         setItemToDelete(null)

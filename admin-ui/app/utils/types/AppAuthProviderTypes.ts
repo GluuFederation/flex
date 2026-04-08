@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react'
 
-export interface OAuthConfigParameter {
+export type OAuthConfigParameter = {
   key?: string
   value?: string
 }
 
-export interface OAuthConfig {
+export type OAuthConfig = {
   additionalParameters?: OAuthConfigParameter[]
   acrValues?: string
   clientId?: string
@@ -13,6 +13,6 @@ export interface OAuthConfig {
   scope?: string
 }
 
-export interface AppAuthProviderProps {
+export type AppAuthProviderProps = {
   children: ReactNode
 }

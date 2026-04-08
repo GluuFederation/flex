@@ -1,7 +1,8 @@
 import type { JsonPatch } from 'JansConfigApi'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
 export type ActionData =
-  | Record<string, string | number | boolean | string[] | number[] | boolean[] | null>
+  | Record<string, JsonValue>
   | { requestBody: JsonPatch[] }
   | string
   | number

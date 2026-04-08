@@ -1,7 +1,7 @@
 import type React from 'react'
 import type { ThemeValue } from '@/context/theme/constants'
 
-export interface JsonViewerProps {
+export type JsonViewerProps = {
   data: unknown
   theme?: ThemeValue
   expanded?: boolean
@@ -9,7 +9,7 @@ export interface JsonViewerProps {
   className?: string
 }
 
-export interface JsonViewerDialogProps {
+export type JsonViewerDialogProps = {
   isOpen: boolean
   toggle: () => void
   data?: unknown

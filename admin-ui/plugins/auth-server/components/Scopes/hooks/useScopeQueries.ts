@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getAttributes, useGetConfigScripts, useGetOauthScopes } from 'JansConfigApi'
 import type { GetAttributesParams, GetOauthScopesParams } from 'JansConfigApi'
-import type { ScopeScript, ScopeClaim } from '../types'
+import type { ScopeScript, ScopeClaim, AttributeEntry, ConfigScriptEntry } from '../types'
 import { SCOPE_CACHE_CONFIG, DEFAULT_ATTRIBUTES_LIMIT } from '../constants'
 
 export const useScopes = (params: GetOauthScopesParams) => {
@@ -19,20 +19,6 @@ export const useScopes = (params: GetOauthScopesParams) => {
   )
 
   return useGetOauthScopes(params, queryOptions)
-}
-
-interface AttributeEntry {
-  dn?: string
-  name?: string
-  key?: string
-}
-
-interface ConfigScriptEntry {
-  dn?: string
-  name?: string
-  inum?: string
-  scriptType?: string
-  enabled?: boolean
 }
 
 export const useScopeAttributes = (params?: GetAttributesParams) => {
