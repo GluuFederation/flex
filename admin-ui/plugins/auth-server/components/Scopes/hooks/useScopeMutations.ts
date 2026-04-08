@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next'
 import { useScopeActions } from './useScopeActions'
 import type { ModifiedFields } from '../types'
 import type { ScopeWithMessage } from '../constants'
-import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import { toScopeJsonRecord } from '../helper/utils'
 import { devLogger } from '@/utils/devLogger'
 
 export const invalidateScopeQueries = (queryClient: ReturnType<typeof useQueryClient>) => {
@@ -67,7 +67,7 @@ export const useCreateScope = () => {
           : t('messages.scope_created_successfully')
 
       dispatch(updateToast(true, 'success', successMessage))
-      dispatch(triggerWebhook({ createdFeatureValue: response as Record<string, JsonValue> }))
+      dispatch(triggerWebhook({ createdFeatureValue: toScopeJsonRecord(response) }))
 
       try {
         await logScopeCreation(parsedData as Scope, message, modifiedFields)
@@ -126,7 +126,7 @@ export const useUpdateScope = () => {
           : t('messages.scope_updated_successfully')
 
       dispatch(updateToast(true, 'success', successMessage))
-      dispatch(triggerWebhook({ createdFeatureValue: response as Record<string, JsonValue> }))
+      dispatch(triggerWebhook({ createdFeatureValue: toScopeJsonRecord(response) }))
 
       try {
         await logScopeUpdate(parsedData as Scope, message, modifiedFields)

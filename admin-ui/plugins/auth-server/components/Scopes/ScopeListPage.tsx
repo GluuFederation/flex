@@ -23,9 +23,9 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useDeleteOauthScopesByInum } from 'JansConfigApi'
 import type { Scope } from 'JansConfigApi'
 import type { ScopeTableRow } from './types'
-import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { devLogger } from '@/utils/devLogger'
 import { useScopes, useScopeActions, invalidateScopeQueries } from './hooks'
+import { toScopeJsonRecord } from './helper/utils'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useDebounce } from '@/utils/hooks/useDebounce'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
@@ -189,7 +189,7 @@ const ScopeListPage: React.FC = () => {
         await deleteScope.mutateAsync({ inum: itemToDelete.inum })
         dispatch(
           triggerWebhook({
-            createdFeatureValue: { ...itemToDelete } as Record<string, JsonValue>,
+            createdFeatureValue: toScopeJsonRecord(itemToDelete),
           }),
         )
         await logScopeDeletion(itemToDelete, message)

@@ -13,7 +13,7 @@ export default class MauApi {
     opts['format'] = 'json'
     return new Promise((resolve, reject) => {
       this.api.getStat(opts, (error, data) => {
-        handleTypedResponse(error, reject, resolve, data, null)
+        handleTypedResponse(error, reject, resolve, data)
       })
     })
   }

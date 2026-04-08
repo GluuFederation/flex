@@ -1,6 +1,7 @@
 # build output
 dist
 .fix-orval-enums-out
+.check-all-out
 
 # dependencies
 node_modules

@@ -1,4 +1,4 @@
-export function downloadJSONFile(data: unknown, filename: string = 'ssa.json'): void {
+export function downloadJSONFile(data: object, filename: string = 'ssa.json'): void {
   let jsonData: string
   try {
     jsonData = JSON.stringify(data, null, 2)

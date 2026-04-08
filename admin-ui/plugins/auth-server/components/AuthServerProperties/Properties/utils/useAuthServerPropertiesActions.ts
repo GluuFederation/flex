@@ -5,6 +5,7 @@ import { AUTH_SERVER_CONFIGURATION } from '@/audit/Resources'
 import { useAppSelector } from '@/redux/hooks'
 import type { JsonPatch } from 'JansConfigApi'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/index'
+import { devLogger } from '@/utils/devLogger'
 
 export interface ModifiedFields {
   requestBody?: JsonPatch[]
@@ -30,7 +31,7 @@ export const useAuthServerPropertiesActions = () => {
         })
         return true
       } catch (auditError) {
-        console.error('Error logging audit:', auditError)
+        devLogger.error('Error logging audit:', auditError)
         return false
       }
     },

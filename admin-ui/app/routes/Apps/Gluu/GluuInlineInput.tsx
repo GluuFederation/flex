@@ -7,33 +7,7 @@ import { Col, FormGroup, Input, Button } from 'Components'
 import { ThemeContext } from 'Context/theme/themeContext'
 import customColors from '@/customColors'
 import type { JsonPatch } from 'JansConfigApi'
-
-interface GluuInlineInputProps {
-  label: string
-  name: string
-  type?: 'text' | 'number' | 'email' | 'password' | 'tel' | 'url'
-  value?: string | number | boolean | string[]
-  required?: boolean
-  lsize?: number
-  rsize?: number
-  isBoolean?: boolean
-  isArray?: boolean
-  handler: (patch: JsonPatch) => void
-  options?: string[]
-  path?: string
-  doc_category?: string
-  disabled?: boolean
-  id?: string
-  parentIsArray?: boolean
-  showSaveButtons?: boolean
-  placeholder?: string
-}
-
-interface ThemeContextValue {
-  state: {
-    theme: string
-  }
-}
+import type { GluuInlineInputProps, ThemeContextValue } from './types'
 
 const GluuInlineInput = ({
   label,

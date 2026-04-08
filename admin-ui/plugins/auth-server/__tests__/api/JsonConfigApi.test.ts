@@ -1,9 +1,9 @@
 jest.mock('Utils/ApiUtils', () => ({
-  handleResponse: (
+  handleResponse: <T>(
     error: Error | null,
     reject: (e: Error) => void,
-    resolve: (d: unknown) => void,
-    data: unknown,
+    resolve: (d: T) => void,
+    data: T,
   ) => {
     if (error) {
       reject(error)
@@ -14,6 +14,7 @@ jest.mock('Utils/ApiUtils', () => ({
 }))
 
 import JsonConfigApi from 'Plugins/auth-server/redux/api/JsonConfigApi'
+import type { JsonPatch } from 'JansConfigApi'
 
 describe('JsonConfigApi', () => {
   it('delegates to ConfigurationPropertiesApi-style callbacks', async () => {
@@ -28,9 +29,10 @@ describe('JsonConfigApi', () => {
     await expect(client.fetchJsonConfig()).resolves.toEqual({ ok: true })
     expect(getProperties).toHaveBeenCalled()
 
-    await expect(client.patchJsonConfig({ op: 'replace' })).resolves.toEqual({
-      patched: { op: 'replace' },
+    const patches: JsonPatch[] = [{ op: 'replace', path: '/test', value: 'x' }]
+    await expect(client.patchJsonConfig(patches)).resolves.toEqual({
+      patched: { requestBody: patches },
     })
-    expect(patchProperties).toHaveBeenCalledWith({ op: 'replace' }, expect.any(Function))
+    expect(patchProperties).toHaveBeenCalledWith({ requestBody: patches }, expect.any(Function))
   })
 })

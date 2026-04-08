@@ -1,13 +1,7 @@
 import { all, fork, select, takeLatest } from 'redux-saga/effects'
+import type { AuthReducerShape } from './types'
 
 let appInitCompleted = false
-
-type AuthReducerShape = {
-  hasSession?: boolean
-  jwtToken?: string | null
-  idToken?: string | null
-  userinfo_jwt?: string | null
-}
 
 function* runAppInitIfReady(): Generator {
   if (appInitCompleted) return

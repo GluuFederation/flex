@@ -20,11 +20,24 @@ export type {
   GetSamlIdentityProviderPayload,
 } from './payloads'
 
+export { TrustRelationshipSpMetaDataSourceType } from './samlApi'
+
 export type {
   SamlAppConfiguration,
+  OrvalIdentityProvider,
+  OrvalTrustRelationship,
   IdentityProvider,
-  BrokerIdentityProviderForm,
   TrustRelationship,
+  BrokerIdentityProviderForm,
   TrustRelationshipForm,
+  GetSamlIdentityProviderParams,
   IdentityProviderPagedResult,
-} from 'JansConfigApi'
+  SamlAuditContext,
+  UpdateSamlConfigurationParams,
+  CreateIdentityProviderParams,
+  UpdateIdentityProviderParams,
+  DeleteIdentityProviderParams,
+  CreateTrustRelationshipParams,
+  UpdateTrustRelationshipParams,
+  DeleteTrustRelationshipParams,
+} from './samlApi'

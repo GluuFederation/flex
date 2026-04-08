@@ -49,7 +49,7 @@ const TooltipDesignComponent: React.FC<TooltipDesignProps> = ({
       {payload.map((item, idx) => {
         const dataKey = String(item.dataKey ?? '')
         const label = labelMap[dataKey] || (item.payload?.name ?? item.name) || dataKey
-        const rawValue = item.payload?.[dataKey] ?? item.value
+        const rawValue = item.payload?.[dataKey] ?? item.value ?? null
         const displayValue = formatter ? formatter(rawValue) : formatTooltipValue(rawValue)
         return (
           <div

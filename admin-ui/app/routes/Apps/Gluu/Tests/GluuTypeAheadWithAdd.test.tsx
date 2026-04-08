@@ -3,8 +3,9 @@ import type { FormikProps } from 'formik'
 import GluuTypeAheadWithAdd from '../GluuTypeAheadWithAdd'
 import { render, screen } from '@testing-library/react'
 import AppTestWrapper from './Components/AppTestWrapper'
+import type { JsonObject } from '../types/common'
 
-const mockFormik = {
+const mockFormik: Partial<FormikProps<JsonObject>> = {
   setFieldValue: jest.fn(),
   values: {},
   errors: {},
@@ -27,8 +28,7 @@ const mockFormik = {
   getFieldMeta: jest.fn(),
   getFieldHelpers: jest.fn(),
   setStatus: jest.fn(),
-  setError: jest.fn(),
-} as unknown as FormikProps<Record<string, unknown>>
+}
 
 it('Test GluuTypeAheadWithAdd component', () => {
   const LABEL = 'fields.application_type'
@@ -44,8 +44,8 @@ it('Test GluuTypeAheadWithAdd component', () => {
         value={VALUE}
         label={LABEL}
         options={OPTIONS}
-        formik={mockFormik}
-        validator={(v) => Boolean(v?.trim())}
+        formik={mockFormik as FormikProps<JsonObject>}
+        validator={(v: string) => Boolean(v?.trim())}
         inputId={INPUT_ID}
       />
     </AppTestWrapper>,

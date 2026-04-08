@@ -1,6 +1,7 @@
 import type React from 'react'
 import type { LicenseResponse, Client, JansAttribute } from 'JansConfigApi'
 import type { MauStatEntry, MauDateRange } from 'Plugins/admin/components/MAU/types'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
 export type { LicenseResponse, MauStatEntry, MauDateRange }
 
@@ -64,7 +65,7 @@ export interface DashboardChartProps {
 export interface TooltipPayloadItem {
   dataKey?: string | number
   value?: number
-  payload?: Record<string, unknown>
+  payload?: Record<string, string | number | boolean | null>
   color?: string
   name?: string
 }
@@ -75,7 +76,7 @@ export interface TooltipDesignProps {
   backgroundColor?: string
   textColor?: string
   isDark?: boolean
-  formatter?: (value: unknown) => string
+  formatter?: (value: JsonValue) => string
 }
 
 export type ChartDataKey =

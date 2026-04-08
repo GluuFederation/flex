@@ -28,6 +28,8 @@ import { DELETION } from '../../../../app/audit/UserActionType'
 import { SSA as SSA_RESOURCE } from '../../redux/audit/Resources'
 import { updateToast } from 'Redux/features/toastSlice'
 import { DEFAULT_THEME } from '@/context/theme/constants'
+import { REGEX_DATE_SEPARATOR_CHARS, REGEX_WHITESPACE_CHAR } from '@/utils/regex'
+import { devLogger } from '@/utils/devLogger'
 
 const SSAListPage: React.FC = () => {
   const {
@@ -133,7 +135,7 @@ const SSAListPage: React.FC = () => {
         sx: { color: customColors.accentRed },
         id: rowData.ssa.org_id,
       },
-      onClick: (_event: unknown, rowData: SsaData | SsaData[]) => {
+      onClick: (_event: React.MouseEvent, rowData: SsaData | SsaData[]) => {
         if (rowData && !Array.isArray(rowData)) {
           handleSsaDelete(rowData)
         }
@@ -149,7 +151,7 @@ const SSAListPage: React.FC = () => {
         id: rowData.ssa.org_id,
         style: { color: customColors.lightBlue },
       },
-      onClick: (_event: unknown, rowData: SsaData | SsaData[]) => {
+      onClick: (_event: React.MouseEvent, rowData: SsaData | SsaData[]) => {
         if (rowData && !Array.isArray(rowData)) {
           handleViewSsa(rowData)
         }
@@ -163,7 +165,7 @@ const SSAListPage: React.FC = () => {
         id: rowData.ssa.org_id,
         style: { color: customColors.lightBlue },
       },
-      onClick: (_event: unknown, rowData: SsaData | SsaData[]) => {
+      onClick: (_event: React.MouseEvent, rowData: SsaData | SsaData[]) => {
         if (rowData && !Array.isArray(rowData)) {
           handleDownloadSsa(rowData)
         }
@@ -204,14 +206,14 @@ const SSAListPage: React.FC = () => {
           payload: { jti: item.ssa.jti, org_id: item.ssa.org_id },
         })
       } catch (auditError) {
-        console.error('Failed to log audit for SSA deletion:', auditError)
+        devLogger.error('Failed to log audit for SSA deletion:', auditError)
       }
 
       dispatch(updateToast(true, 'success'))
       toggle()
       await queryClient.invalidateQueries({ queryKey: SSA_QUERY_KEYS.all })
     } catch (error) {
-      console.error('Failed to delete SSA:', error)
+      devLogger.error('Failed to delete SSA:', error)
       dispatch(updateToast(true, 'error'))
     } finally {
       setIsDeleting(false)
@@ -225,7 +227,7 @@ const SSAListPage: React.FC = () => {
       const fetchedJwtData = await getSsaJwtMutation.mutateAsync(row.ssa.jti)
       setJwtData(fetchedJwtData)
     } catch (error) {
-      console.error('Failed to fetch SSA JWT:', error)
+      devLogger.error('Failed to fetch SSA JWT:', error)
       dispatch(updateToast(true, 'error'))
       setSsaDialogOpen(false)
     }
@@ -248,15 +250,15 @@ const SSAListPage: React.FC = () => {
           second: '2-digit',
           hour12: false,
         })
-        .replace(/[/:,]/g, '-')
-        .replace(/\s/g, '_')
+        .replace(REGEX_DATE_SEPARATOR_CHARS, '-')
+        .replace(REGEX_WHITESPACE_CHAR, '_')
       link.download = `ssa-${row.ssa.software_id}-${dateStr}.jwt`
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
       URL.revokeObjectURL(objectUrl)
     } catch (error) {
-      console.error('Failed to download SSA JWT:', error)
+      devLogger.error('Failed to download SSA JWT:', error)
       dispatch(updateToast(true, 'error'))
     }
   }

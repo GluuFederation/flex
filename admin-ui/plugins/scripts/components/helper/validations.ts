@@ -1,11 +1,12 @@
 import * as Yup from 'yup'
+import { REGEX_IDENTIFIER } from '@/utils/regex'
 import type { TFunction } from 'i18next'
 import { DEFAULT_SCRIPT_TYPE } from '../constants'
 
 export const getCustomScriptValidationSchema = (t: TFunction) =>
   Yup.object({
     name: Yup.string()
-      .matches(/^[a-zA-Z0-9_]+$/, t('messages.script_name_pattern'))
+      .matches(REGEX_IDENTIFIER, t('messages.script_name_pattern'))
       .min(3, t('messages.script_name_min', { count: 3 }))
       .required(t('messages.script_name_required')),
     description: Yup.string(),

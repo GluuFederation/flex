@@ -6,7 +6,7 @@ import PermissionsPolicyInitializer from './PermissionsPolicyInitializer'
 import { LazyRoutes } from 'Utils/RouteLoader'
 import { ROUTES } from '@/helpers/navigation'
 
-export default function AuthenticatedRouteSelector() {
+const AuthenticatedRouteSelector = () => {
   const location = useLocation()
   const isLogoutRoute = location.pathname === ROUTES.LOGOUT
 
@@ -27,3 +27,5 @@ export default function AuthenticatedRouteSelector() {
     </>
   )
 }
+
+export default AuthenticatedRouteSelector

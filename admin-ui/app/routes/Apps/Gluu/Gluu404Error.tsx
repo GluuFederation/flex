@@ -5,7 +5,7 @@ import { FooterAuth } from 'Routes/components/Pages/FooterAuth'
 import { useTranslation } from 'react-i18next'
 import { ROUTES } from '@/helpers/navigation'
 
-function Gluu404Error() {
+const Gluu404Error = () => {
   const { t } = useTranslation()
   return (
     <EmptyLayout>

@@ -27,6 +27,7 @@ const config: Config = {
     '^Styles(.*)$': '<rootDir>/app/styles$1',
     '^Utils(.*)$': '<rootDir>/app/utils$1',
     '^JansConfigApi$': '<rootDir>/jans_config_api_orval/src/JansConfigApi.ts',
+    'loadPluginMetadata$': '<rootDir>/__mocks__/loadPluginMetadata.ts',
   },
   testMatch: ['**/__tests__/**/*.test.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
   testPathIgnorePatterns: ['<rootDir>/jans_config_api/'],

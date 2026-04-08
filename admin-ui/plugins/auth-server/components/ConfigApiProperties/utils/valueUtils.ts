@@ -1,4 +1,6 @@
 import type { ApiAppConfiguration, JsonPatch } from '../types'
+import { REGEX_LEADING_SLASH } from '@/utils/regex'
+import { devLogger } from '@/utils/devLogger'
 import type { PropertyValue } from '../../AuthServerProperties/types'
 
 type TraversableValue = PropertyValue | PropertyValue[]
@@ -121,9 +123,11 @@ export const applyPatchToValues = (values: ApiAppConfiguration, patch: JsonPatch
 
   try {
     const pathStr = typeof patch.path === 'string' ? patch.path : ''
-    const pathParts = pathStr.replace(/^\//, '').split('/')
-
-    if (pathParts.length === 0) {
+    const cleaned = pathStr.replace(REGEX_LEADING_SLASH, '').trim()
+    if (cleaned === '') return
+    const pathParts = cleaned.split('/')
+    if (pathParts.length === 0 || pathParts.some((segment) => segment === '')) {
+      devLogger.warn('[applyPatchToValues] Rejecting malformed patch path:', pathStr)
       return
     }
 
@@ -146,7 +150,7 @@ export const applyPatchToValues = (values: ApiAppConfiguration, patch: JsonPatch
       objTarget[lastPart] = patch.value as PropertyValue
     }
   } catch (error) {
-    console.error('Error applying replace patch:', error)
+    devLogger.error('[applyPatchToValues] Error applying replace patch:', error)
   }
 }
 
@@ -155,7 +159,13 @@ export const applyRemovePatchToValues = (values: ApiAppConfiguration, patch: Jso
 
   try {
     const pathStr = typeof patch.path === 'string' ? patch.path : ''
-    const pathParts = pathStr.replace(/^\//, '').split('/')
+    const cleaned = pathStr.replace(REGEX_LEADING_SLASH, '').trim()
+    if (cleaned === '') return
+    const pathParts = cleaned.split('/')
+    if (pathParts.length === 0 || pathParts.some((segment) => segment === '')) {
+      devLogger.warn('[applyRemovePatchToValues] Rejecting malformed patch path:', pathStr)
+      return
+    }
 
     const target = getNestedValue(values, pathParts)
     if (target === null) {
@@ -173,6 +183,6 @@ export const applyRemovePatchToValues = (values: ApiAppConfiguration, patch: Jso
       target.splice(lastIndex, 1)
     }
   } catch (error) {
-    console.error('Error applying remove patch:', error)
+    devLogger.error('[applyRemovePatchToValues] Error applying remove patch:', error)
   }
 }

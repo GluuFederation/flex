@@ -3,20 +3,9 @@ import { FormGroup, Label } from 'Components'
 import { Button, Grid } from '@mui/material'
 import GluuTooltip from './GluuTooltip'
 import { VisibilityOutlined } from '@mui/icons-material'
-import type { JsonValue } from './types/common'
+import type { GluuFormActionRowProps } from './types'
 
-interface GluuFormActionRowProps {
-  label: string
-  value?: JsonValue
-  lsize?: number
-  rsize?: number
-  doc_category?: string
-  doc_entry?: string
-  isDirect?: boolean
-  onActionClick?: (value: JsonValue) => void
-}
-
-function GluuFormActionRow({
+const GluuFormActionRow = ({
   label,
   value,
   lsize = 6,
@@ -25,7 +14,7 @@ function GluuFormActionRow({
   doc_entry,
   isDirect = false,
   onActionClick,
-}: GluuFormActionRowProps) {
+}: GluuFormActionRowProps) => {
   const { t } = useTranslation()
   return (
     <GluuTooltip doc_category={doc_category} isDirect={isDirect} doc_entry={doc_entry || label}>

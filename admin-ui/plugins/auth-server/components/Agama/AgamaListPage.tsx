@@ -23,6 +23,7 @@ import InfoIcon from '@mui/icons-material/Info'
 import AgamaProjectConfigModal from './AgamaProjectConfigModal'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useAuthServerJsonPropertiesQuery } from 'Plugins/auth-server/hooks/useAuthServerJsonProperties'
+import { devLogger } from '@/utils/devLogger'
 import SettingsIcon from '@mui/icons-material/Settings'
 import Checkbox from '@mui/material/Checkbox'
 import FormGroup from '@mui/material/FormGroup'
@@ -202,7 +203,7 @@ const AgamaListPage: React.FC = () => {
       setSHAfile(null)
       setShaStatus(false)
     } catch (error) {
-      console.error('Error uploading project:', error)
+      devLogger.error('Error uploading project:', error)
       dispatch(updateToast(true, 'error', 'Failed to upload project'))
     } finally {
       setUploadLoading(false)
@@ -236,7 +237,7 @@ const AgamaListPage: React.FC = () => {
               break // Stop after finding first project name
             }
           } catch (parseError) {
-            console.error(`Error parsing JSON from ${filename}:`, parseError)
+            devLogger.error(`Error parsing JSON from ${filename}:`, parseError)
           }
         }
       }
@@ -245,7 +246,7 @@ const AgamaListPage: React.FC = () => {
         setGetProjectName(true)
       }
     } catch (error) {
-      console.error('Error reading zip file:', error)
+      devLogger.error('Error reading zip file:', error)
       toast.error('Failed to read zip file')
     }
   }, [])
@@ -436,7 +437,7 @@ const AgamaListPage: React.FC = () => {
     }
 
     reader.onerror = (error) => {
-      console.error('Error reading SHA256 file:', error)
+      devLogger.error('Error reading SHA256 file:', error)
       toast.error('Failed to read SHA256 file')
     }
 
@@ -541,7 +542,7 @@ const AgamaListPage: React.FC = () => {
       setRepoName(null)
       setFileLoading(false)
     } catch (error) {
-      console.error('Error deploying project:', error)
+      devLogger.error('Error deploying project:', error)
       toast.error('File not found or deployment failed')
       setFileLoading(false)
     }
@@ -767,7 +768,7 @@ const AgamaListPage: React.FC = () => {
         await deleteProjectMutation.mutateAsync({ name: projectName })
         await logAgamaDeletion(oldData as Deployment, `Deleted Agama project: ${projectName}`)
       } catch (error) {
-        console.error('Error deleting project:', error)
+        devLogger.error('Error deleting project:', error)
         throw error
       }
     },

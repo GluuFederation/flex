@@ -14,8 +14,8 @@ export interface ScopeFormValues {
   action_message?: string
 }
 
-export interface ModifiedFields {
-  [key: string]: string | boolean | string[] | undefined | null
+export type ModifiedFields = {
+  [key: string]: string | boolean | string[] | null
 }
 
 export interface ScopeFormSubmitData {

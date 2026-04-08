@@ -1,27 +1,9 @@
-import React, {
-  createContext,
-  useReducer,
-  useContext,
-  Dispatch,
-  ReactNode,
-  useEffect,
-  useRef,
-} from 'react'
+import React, { createContext, useReducer, useContext, ReactNode, useEffect, useRef } from 'react'
 import { DEFAULT_THEME, isValidTheme, type ThemeValue } from './constants'
-import { isDevelopment } from '@/utils/env'
+import { devLogger } from '@/utils/devLogger'
+import type { ThemeState, ThemeAction, ThemeContextType } from './types'
 
-type ThemeState = {
-  theme: ThemeValue
-}
-
-type ThemeAction = {
-  type: ThemeValue
-}
-
-export interface ThemeContextType {
-  state: ThemeState
-  dispatch: Dispatch<ThemeAction>
-}
+export type { ThemeState, ThemeAction, ThemeContextType }
 
 export const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
@@ -55,9 +37,7 @@ const extractUserTheme = (currentInum?: string | null): ThemeValue => {
 
     return DEFAULT_THEME
   } catch (e) {
-    if (isDevelopment) {
-      console.error('Failed to extract user theme, using default:', e)
-    }
+    devLogger.error('Failed to extract user theme, using default:', e)
     return DEFAULT_THEME
   }
 }
@@ -82,9 +62,7 @@ const getInitialTheme = (): ThemeValue => {
     window.localStorage.setItem('initTheme', DEFAULT_THEME)
     return DEFAULT_THEME
   } catch (e) {
-    if (isDevelopment) {
-      console.error('Failed to get initial theme, using default:', e)
-    }
+    devLogger.error('Failed to get initial theme, using default:', e)
     try {
       window.localStorage.setItem('initTheme', DEFAULT_THEME)
     } catch {
@@ -125,7 +103,7 @@ const getUserInum = (): string | null => {
   return null
 }
 
-export function ThemeProvider(props: ThemeProviderProps) {
+export const ThemeProvider = (props: ThemeProviderProps) => {
   const [state, dispatch] = useReducer(themeReducer, initialState)
   const hasSyncedRef = useRef(false)
 
@@ -153,9 +131,7 @@ export function ThemeProvider(props: ThemeProviderProps) {
 
       hasSyncedRef.current = true
     } catch (e) {
-      if (isDevelopment) {
-        console.error('Failed to sync theme in useEffect, ensuring default:', e)
-      }
+      devLogger.error('Failed to sync theme in useEffect, ensuring default:', e)
       try {
         const currentTheme = window.localStorage.getItem('initTheme')
         if (!currentTheme || !isValidTheme(currentTheme)) {
@@ -166,14 +142,11 @@ export function ThemeProvider(props: ThemeProviderProps) {
         }
         hasSyncedRef.current = true
       } catch (error) {
-        if (isDevelopment) {
-          console.error(error)
-        }
+        devLogger.error(error)
       }
     }
   }, [])
 
-  // Toggle theme class on html; variable values are defined in main.scss (theme-dark / theme-light)
   useEffect(() => {
     if (typeof document === 'undefined') return
     document.documentElement.classList.remove('theme-dark', 'theme-light')
@@ -183,7 +156,7 @@ export function ThemeProvider(props: ThemeProviderProps) {
   return <ThemeContext.Provider value={{ state, dispatch }}>{props.children}</ThemeContext.Provider>
 }
 
-export function useTheme(): ThemeContextType {
+export const useTheme = (): ThemeContextType => {
   const context = useContext(ThemeContext)
   if (!context) {
     throw new Error('useTheme must be used within a ThemeProvider')

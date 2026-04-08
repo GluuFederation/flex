@@ -1,40 +1,19 @@
 import { handleError } from 'Utils/ApiUtils'
-import type { WebhookEntry } from 'JansConfigApi'
-import type { WebhookTriggerResponseItem } from '../types/webhook'
+import type {
+  WebhookTriggerResponseItem,
+  WebhooksByFeatureIdApiResponse,
+  TriggerWebhookApiResponse,
+  TriggerWebhookApiPayload,
+  AdminUIWebhooksApiInstance,
+} from '../types/webhook'
 import type { WebhookOutputItem } from 'Plugins/admin/helper/utils'
 
-export type { WebhookTriggerResponseItem, WebhookOutputItem }
-
-export interface WebhooksByFeatureIdApiResponse {
-  body?: WebhookEntry[]
-}
-
-export interface TriggerWebhookApiResponse {
-  body?: WebhookTriggerResponseItem[]
-}
-
-export interface TriggerWebhookApiPayload {
-  feature: string
-  outputObject: WebhookOutputItem[]
-}
-
-type SdkCallback<TBody, TResponse> = (
-  error: Error | null,
-  data: TBody | null,
-  response: TResponse,
-) => void
-
-interface AdminUIWebhooksApiInstance {
-  getWebhooksByFeatureId(
-    featureId: string,
-    callback: SdkCallback<WebhookEntry[], WebhooksByFeatureIdApiResponse>,
-  ): void
-
-  triggerWebhook(
-    feature: string,
-    shortCodeRequest: { shortCodeRequest: WebhookOutputItem[] },
-    callback: SdkCallback<WebhookTriggerResponseItem[], TriggerWebhookApiResponse>,
-  ): void
+export type {
+  WebhookTriggerResponseItem,
+  WebhookOutputItem,
+  WebhooksByFeatureIdApiResponse,
+  TriggerWebhookApiResponse,
+  TriggerWebhookApiPayload,
 }
 
 export default class WebhookApi {

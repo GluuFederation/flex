@@ -15,8 +15,8 @@ it('Should render the scope detail page properly', () => {
   render(<ScopeDetailPage row={scope} />, {
     wrapper: Wrapper,
   })
-  screen.getByText(/Display Name/)
-  screen.getByText(/Description/)
-  screen.getByText(/Default Scope/)
-  screen.getByText(/Attributes/)
+  expect(screen.getByText(/Display Name/)).toBeInTheDocument()
+  expect(screen.getByText(/Description/)).toBeInTheDocument()
+  expect(screen.getByText(/Default Scope/)).toBeInTheDocument()
+  expect(screen.getByText(/Attributes/)).toBeInTheDocument()
 })

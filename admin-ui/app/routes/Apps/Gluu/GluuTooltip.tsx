@@ -1,23 +1,11 @@
-import { useMemo, type ReactNode } from 'react'
+import { useMemo } from 'react'
 import 'react-tooltip/dist/react-tooltip.css'
 import { Tooltip as ReactTooltip } from 'react-tooltip'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import { THEME_DARK } from '@/context/theme/constants'
 import { DEFAULT_Z_INDEX, getLabelTooltipStyle } from './styles/GluuTooltip.style'
-
-interface GluuTooltipProps {
-  doc_category?: string
-  doc_entry: string
-  isDirect?: boolean
-  children?: ReactNode
-  tooltipOnly?: boolean
-  zIndex?: number
-  place?: 'top' | 'right' | 'bottom' | 'left'
-  content?: ReactNode
-  positionStrategy?: 'absolute' | 'fixed'
-  offset?: number
-}
+import type { GluuTooltipProps } from './types'
 
 const GluuTooltip = ({
   doc_category = '',

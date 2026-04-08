@@ -3,15 +3,8 @@ import { JsonView, allExpanded, darkStyles, defaultStyles } from 'react-json-vie
 import 'react-json-view-lite/dist/index.css'
 import './JsonViewer.css'
 import customColors from '@/customColors'
-import { THEME_DARK, THEME_LIGHT, ThemeValue } from '@/context/theme/constants'
-
-interface JsonViewerProps {
-  data: unknown
-  theme?: ThemeValue
-  expanded?: boolean
-  style?: React.CSSProperties
-  className?: string
-}
+import { THEME_DARK, THEME_LIGHT } from '@/context/theme/constants'
+import type { JsonViewerProps } from './types'
 
 const JsonViewer: React.FC<JsonViewerProps> = ({
   data,

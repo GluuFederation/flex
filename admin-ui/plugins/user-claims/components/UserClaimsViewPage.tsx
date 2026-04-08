@@ -17,7 +17,7 @@ import UserClaimsForm from 'Plugins/user-claims/components/UserClaimsForm'
 import { useStyles } from './styles/UserClaimsFormPage.style'
 import { cloneDeep } from 'lodash'
 import { useAttribute } from '../hooks'
-import { getErrorMessage } from '../utils/errorHandler'
+import { getErrorMessage } from '@/utils/errorHandler'
 import { getDefaultAttributeItem } from '../utils/formHelpers'
 import { DEFAULT_ATTRIBUTE_VALIDATION } from '../helper/utils'
 import type { AttributeItem } from './types/UserClaimsListPage.types'
@@ -72,7 +72,7 @@ const UserClaimsViewPage = (): JSX.Element => {
     return cloned
   }, [attribute, defaultAttribute])
 
-  function customHandleSubmit(): void {}
+  const customHandleSubmit = (): void => {}
 
   if (queryError && !isLoading) {
     return (

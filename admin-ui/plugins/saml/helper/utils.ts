@@ -27,7 +27,6 @@ type IdentityProviderWithMetaDataFN = IdentityProvider & {
     principalAttribute?: string
     principalType?: string
     validateSignature?: string
-    [key: string]: unknown
   }
 }
 

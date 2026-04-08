@@ -1,68 +1,8 @@
 import customColors from '@/customColors'
 import { THEME_LIGHT, THEME_DARK, DEFAULT_THEME } from './constants'
+import type { FormFooterColors, ThemeConfig } from './types'
 
-export interface FormFooterColors {
-  back: { backgroundColor: string; textColor: string; borderColor: string }
-  apply: { backgroundColor: string; textColor: string; borderColor: string }
-  cancel: { backgroundColor: string; textColor: string; borderColor: string }
-}
-
-export interface ThemeConfig {
-  background: string
-  lightBackground: string
-  fontColor: string
-  textMuted: string
-  personalInfoValueColor: string
-  personalInfoLabelColor: string
-  sectionTitleColor: string
-  borderColor: string
-  inputBackground: string
-  menu: { background: string; color: string }
-  navbar: { background: string; border: string; text: string; icon: string }
-  dashboard: { supportCard: string }
-  card: { background: string; border: string }
-  infoAlert: {
-    background: string
-    border: string
-    text: string
-    icon: string
-  }
-  checkbox: { uncheckedBorder: string }
-  errorColor: string
-  warningColor: string
-  badges: {
-    statusActiveBg: string
-    statusActive: string
-    filledBadgeBg: string
-    filledBadgeText: string
-    disabledBg: string
-    disabledText: string
-  }
-  formFooter: FormFooterColors
-  table: {
-    headerText: string
-    background: string
-    rowHoverBg: string
-    headerBg: string
-    headerColor: string
-    expandButtonBg: string
-    expandButtonHoverBg: string
-  }
-  settings: {
-    cardBackground: string
-    customParamsBox: string
-    customParamsInput: string
-    formInputBackground: string
-    inputBorder: string
-    addPropertyButton: { bg: string; text: string }
-    removeButton: { bg: string; text: string }
-    errorButtonText: string
-  }
-  /** Available Claims panel (User Management) */
-  availableClaims: {
-    focusOutline: string
-  }
-}
+export type { FormFooterColors, ThemeConfig }
 
 const createLightTheme = (): ThemeConfig => {
   const background = customColors.lightBackground

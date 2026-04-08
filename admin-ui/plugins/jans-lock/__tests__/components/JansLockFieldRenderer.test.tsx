@@ -270,17 +270,21 @@ describe('JansLockFieldRenderer', () => {
     expect(container.querySelector('.field-item')).toBeInTheDocument()
   })
 
-  it('returns null for unknown field type', () => {
-    const config = {
-      name: 'baseDN' as const,
+  it('returns null for unrecognized field type', () => {
+    const config: Omit<FieldConfig, 'type'> & { type: string } = {
+      name: 'baseDN',
       label: 'fields.base_dn',
-      type: 'unknown' as 'text',
+      type: 'unrecognized',
       colSize: 6,
     }
 
     const { container } = render(
       <Wrapper>
-        <JansLockFieldRenderer config={config} formik={createMockFormik()} {...defaultProps} />
+        <JansLockFieldRenderer
+          config={config as FieldConfig}
+          formik={createMockFormik()}
+          {...defaultProps}
+        />
       </Wrapper>,
     )
 

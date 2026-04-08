@@ -12,7 +12,7 @@ import { randomAvatar } from '../../../utilities'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import type { ThemeContextValue, CustomAttribute } from './types'
+import type { ThemeContextValue, CustomAttribute, InfoRowProps } from './types'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import GluuLoader from '../Gluu/GluuLoader'
 import GluuViewWrapper from '../Gluu/GluuViewWrapper'
@@ -25,19 +25,6 @@ import { JANS_ADMIN_UI_ROLE_ATTR } from 'Plugins/user-management/common/Constant
 
 const USERS_RESOURCE_ID = ADMIN_UI_RESOURCES.Users
 const USERS_SCOPES = CEDAR_RESOURCE_SCOPES[USERS_RESOURCE_ID]
-
-interface InfoRowProps {
-  label: string
-  value?: string
-  index: number
-  classes: {
-    dataRow: string
-    dataRowEven: string
-    dataRowOdd: string
-    dataLabel: string
-    dataValue: string
-  }
-}
 
 const InfoRow = memo(({ label, value, index, classes }: InfoRowProps) => (
   <Box

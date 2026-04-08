@@ -1,17 +1,7 @@
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { BackendStatus, UserInfo, Config, Location, AuthState } from './types/authTypes'
-
-interface ApiTokenPayload {
-  access_token?: string
-  issuer?: string
-  scopes?: string[]
-}
-
-interface PutConfigMeta {
-  cedarlingLogTypeChanged?: boolean
-  toastMessage?: string
-}
+import type { ApiTokenPayload, PutConfigMeta } from './types'
 
 const initialState: AuthState = {
   isAuthenticated: false,
@@ -41,7 +31,6 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    // Saga trigger action
     getOAuth2Config: (_state, _action: PayloadAction<ApiTokenPayload | undefined>) => {},
     setBackendStatus: (state, action: PayloadAction<BackendStatus>) => {
       state.backendStatus.active = action.payload.active
@@ -55,7 +44,7 @@ const authSlice = createSlice({
       }
     },
     setOAuthState: (state, action: PayloadAction<{ authState: string | null }>) => {
-      state.authState = action.payload?.authState
+      state.authState = action.payload?.authState ?? undefined
     },
     setAuthState: (state, action: PayloadAction<{ state: boolean }>) => {
       state.isAuthenticated = action.payload?.state

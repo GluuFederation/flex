@@ -1,4 +1,6 @@
 import { CustomScriptItem, ModuleProperty, ConfigurationProperty } from '../types/customScript'
+import type { ApiError, PropertyInput, PropertyLike } from '../types'
+import { REGEX_CONSECUTIVE_WHITESPACE } from '@/utils/regex'
 
 import { FormValues } from '../types/forms'
 import { filterEmptyObjects } from 'Utils/Util'
@@ -6,11 +8,6 @@ import type { CustomScript, SimpleCustomProperty } from 'JansConfigApi'
 import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { TFunction } from 'i18next'
-
-interface ApiError {
-  response?: { data?: string | { message?: string } }
-  message?: string
-}
 
 export const getApiErrorDetail = (error: Error | ApiError | string | null | undefined): string => {
   if (!error) return ''
@@ -35,14 +32,6 @@ export const getModuleProperty = (
     ? (properties as Array<{ value1?: string; value2?: string }>).find((p) => p.value1 === key)
         ?.value2
     : undefined
-
-type PropertyInput =
-  | ConfigurationProperty
-  | ModuleProperty
-  | SimpleCustomProperty
-  | Record<string, string | boolean | undefined>
-
-type PropertyLike = { key?: string; value?: string; value1?: string; value2?: string }
 
 export const normalizeProperty = (p: PropertyInput): ConfigurationProperty | ModuleProperty => {
   const q = p as PropertyLike
@@ -151,7 +140,7 @@ export const buildChangedFieldOperations = (
     (current.enabled as JsonValue) ?? null,
   )
   if ((initial.script ?? '') !== (current.script ?? '')) {
-    const scriptPreview = (current.script ?? '').replace(/\s+/g, ' ').trim()
+    const scriptPreview = (current.script ?? '').replace(REGEX_CONSECUTIVE_WHITESPACE, ' ').trim()
     const maxLen = 40
     operations.push({
       path: t('fields.script'),

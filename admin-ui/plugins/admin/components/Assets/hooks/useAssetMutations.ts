@@ -7,14 +7,10 @@ import { invalidateQueriesByKey } from '@/utils/queryUtils'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useAssetAudit, DELETION } from './useAssetAudit'
 import { T_KEYS } from '../constants'
+import { devLogger } from '@/utils/devLogger'
+import type { AssetApiError, AssetMutationError } from '../types'
 
-interface AssetApiError {
-  response?: { data?: { responseMessage?: string } }
-}
-
-type MutationError = Error | AssetApiError
-
-const extractAssetErrorMessage = (error: MutationError, fallback: string): string =>
+const extractAssetErrorMessage = (error: AssetMutationError, fallback: string): string =>
   (error as AssetApiError)?.response?.data?.responseMessage || (error as Error)?.message || fallback
 
 export const useDeleteAssetWithAudit = (callbacks?: {
@@ -39,14 +35,14 @@ export const useDeleteAssetWithAudit = (callbacks?: {
         }).catch((err) => {
           const auditError = err instanceof Error ? err : new Error(String(err))
           callbacksRef.current?.onError?.(auditError)
-          console.error(`[Asset audit] logAction failed for asset inum=${inum}`, auditError)
+          devLogger.error(`[Asset audit] logAction failed for asset inum=${inum}`, auditError)
         })
         dispatch(updateToast(true, 'success', t(T_KEYS.MSG_ASSET_DELETED_SUCCESSFULLY)))
         await invalidateQueriesByKey(queryClient, getGetAllAssetsQueryKey())
         callbacksRef.current?.onSuccess?.()
         return result
       } catch (error) {
-        const err = error as MutationError
+        const err = error as AssetMutationError
         dispatch(
           updateToast(
             true,

@@ -1,4 +1,10 @@
 import { formatDate, isValidDate } from '@/utils/dayjsUtils'
+import {
+  REGEX_HAS_UPPERCASE,
+  REGEX_HAS_LOWERCASE,
+  REGEX_HAS_DIGIT,
+  REGEX_HAS_SPECIAL_CHAR,
+} from '@/utils/regex'
 import { CustomObjectAttribute, JansAttribute, PagedResultEntriesItem } from 'JansConfigApi'
 
 import { BIRTHDATE_ATTR, USER_PASSWORD_ATTR } from '../common/Constants'
@@ -8,10 +14,10 @@ import { ExtendedCustomUser } from '../types/UserFormTypes'
 
 export const validatePassword = (password: string): boolean => {
   if (!password || password.length < 8) return false
-  if (!/[A-Z]/.test(password)) return false
-  if (!/[a-z]/.test(password)) return false
-  if (!/[0-9]/.test(password)) return false
-  if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) return false
+  if (!REGEX_HAS_UPPERCASE.test(password)) return false
+  if (!REGEX_HAS_LOWERCASE.test(password)) return false
+  if (!REGEX_HAS_DIGIT.test(password)) return false
+  if (!REGEX_HAS_SPECIAL_CHAR.test(password)) return false
   return true
 }
 

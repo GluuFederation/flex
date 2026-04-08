@@ -5,16 +5,7 @@ import customColors from '@/customColors'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
-
-type ClassesType = Record<string, string>
-
-interface UserInfoItemProps {
-  item: { text: string; value: string | undefined }
-  classes: ClassesType
-  isStatus?: boolean
-  isDark?: boolean
-  t: (key: string) => string
-}
+import type { UserInfoItemProps } from '../types'
 
 export const UserInfoItem = memo<UserInfoItemProps>(({ item, classes, isStatus, isDark, t }) => {
   const theme = useTheme()

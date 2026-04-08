@@ -12,7 +12,7 @@ export default class InitApi {
   getScopes = (options: Record<string, string | number>): Promise<GenericItem[]> => {
     return new Promise((resolve, reject) => {
       this.api.getOauthScopes(options, (error, data) => {
-        handleTypedResponse(error, reject, resolve, data, null)
+        handleTypedResponse(error, reject, resolve, data)
       })
     })
   }
@@ -20,7 +20,7 @@ export default class InitApi {
   getScripts = (): Promise<PagedResult> => {
     return new Promise((resolve, reject) => {
       this.api.getConfigScripts({}, (error, data) => {
-        handleTypedResponse(error, reject, resolve, data, null)
+        handleTypedResponse(error, reject, resolve, data)
       })
     })
   }
@@ -28,7 +28,7 @@ export default class InitApi {
   getAttributes = (options: Record<string, string | number>): Promise<PagedResult> => {
     return new Promise((resolve, reject) => {
       this.api.getAttributes(options, (error, data) => {
-        handleTypedResponse(error, reject, resolve, data, null)
+        handleTypedResponse(error, reject, resolve, data)
       })
     })
   }
@@ -36,7 +36,7 @@ export default class InitApi {
   getClients = (options: Record<string, string | number>): Promise<PagedResult> => {
     return new Promise((resolve, reject) => {
       this.api.getOauthOpenidClients(options, (error, data) => {
-        handleTypedResponse(error, reject, resolve, data, null)
+        handleTypedResponse(error, reject, resolve, data)
       })
     })
   }

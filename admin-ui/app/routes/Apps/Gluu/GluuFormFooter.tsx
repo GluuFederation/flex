@@ -7,42 +7,7 @@ import { DEFAULT_THEME } from '@/context/theme/constants'
 import clsx from 'clsx'
 import { Box } from '@mui/material'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-
-interface ButtonLabelProps {
-  isLoading: boolean
-  iconClass: string
-  label: string
-  loadingIconClass?: string
-}
-
-interface GluuFormFooterBaseProps {
-  showBack?: boolean
-  backButtonLabel?: string
-  onBack?: () => void
-  disableBack?: boolean
-  backIconClass?: string
-  showCancel?: boolean
-  cancelButtonLabel?: string
-  onCancel?: () => void
-  disableCancel?: boolean
-  cancelButtonStyle?: React.CSSProperties
-  cancelButtonClassName?: string
-  cancelIconClass?: string
-  showApply?: boolean
-  disableApply?: boolean
-  applyButtonLabel?: string
-  applyButtonStyle?: React.CSSProperties
-  applyButtonClassName?: string
-  applyIconClass?: string
-  isLoading?: boolean
-  className?: string
-}
-
-type GluuFormFooterProps = GluuFormFooterBaseProps &
-  (
-    | { applyButtonType?: 'submit'; onApply?: () => void }
-    | { applyButtonType: 'button'; onApply: () => void }
-  )
+import type { ButtonLabelProps, GluuFormFooterProps } from './types'
 
 const ButtonLabel = memo((props: ButtonLabelProps) => {
   const { isLoading, iconClass, label, loadingIconClass = 'fa fa-spinner fa-spin' } = props

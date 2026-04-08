@@ -1,9 +1,11 @@
 import React from 'react'
+import type { FormikProps } from 'formik'
 import { render, screen } from '@testing-library/react'
 import GluuTypeAheadForDn from '../GluuTypeAheadForDn'
 import i18n from '../../../../i18n'
 import { I18nextProvider } from 'react-i18next'
 import { ThemeProvider } from '../../../../context/theme/themeContext'
+import type { JsonValue } from '../types'
 
 const LABEL = 'fields.application_type'
 const NAME = 'applicationType'
@@ -12,6 +14,10 @@ const OPTIONS = [
   { name: 'Monday', dn: '111111112222' },
   { name: 'Tuesday', dn: '1001112222' },
 ]
+
+const mockFormik: Partial<FormikProps<Record<string, JsonValue>>> = {
+  setFieldValue: jest.fn(),
+}
 
 it('Test gluu typeahead for dn', async () => {
   render(
@@ -23,7 +29,7 @@ it('Test gluu typeahead for dn', async () => {
           label={LABEL}
           options={OPTIONS}
           defaultSelected={VALUE}
-          formik={{ setFieldValue: jest.fn() }}
+          formik={mockFormik as FormikProps<Record<string, JsonValue>>}
         />
       </ThemeProvider>
     </I18nextProvider>,

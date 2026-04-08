@@ -11,18 +11,18 @@ import {
   calculatePercentChange,
 } from '../utils'
 
-function transformApiResponse(data: JsonNode[] | undefined): MauStatEntry[] {
+const transformApiResponse = (data: JsonNode[] | undefined): MauStatEntry[] => {
   if (!data || !Array.isArray(data)) {
     return []
   }
 
   return data.map((item) => {
-    const rawEntry = item as unknown as RawStatEntry
+    const rawEntry = item as RawStatEntry
     return transformRawStatEntry(rawEntry)
   })
 }
 
-function computeSummary(data: MauStatEntry[]): MauSummary {
+const computeSummary = (data: MauStatEntry[]): MauSummary => {
   if (data.length === 0) {
     return {
       totalMau: 0,
@@ -92,12 +92,12 @@ function computeSummary(data: MauStatEntry[]): MauSummary {
   }
 }
 
-export function useMauStats(
+export const useMauStats = (
   dateRange: MauDateRange,
   options?: {
     enabled?: boolean
   },
-) {
+) => {
   const hasSession = useAppSelector((state: RootState) => state.authReducer?.hasSession)
 
   const params: GetStatParams = {

@@ -1,14 +1,10 @@
-import Axios, { AxiosRequestConfig, AxiosHeaders } from 'axios'
+import { AxiosHeaders } from 'axios'
 import { getRootState } from './app/redux/hooks'
 import { fetchApiTokenWithDefaultScopes, deleteAdminUiSession } from './app/redux/api/backend-api'
-import type { CancellablePromise } from './app/redux/types'
+import { AXIOS_INSTANCE } from './orval-mutator'
+import { devLogger } from './app/utils/devLogger'
 
-const baseUrl =
-  (typeof window !== 'undefined' && window.configApiBaseUrl) ||
-  process.env.CONFIG_API_BASE_URL ||
-  ''
-
-export const AXIOS_INSTANCE = Axios.create({ baseURL: baseUrl, timeout: 60000 })
+export { customInstance, AXIOS_INSTANCE } from './orval-mutator'
 
 AXIOS_INSTANCE.interceptors.request.use((config) => {
   const state = getRootState()
@@ -43,29 +39,10 @@ AXIOS_INSTANCE.interceptors.response.use(
         await deleteAdminUiSession(response?.access_token)
         window.location.href = '/admin/logout'
       } catch (e) {
-        console.error('Failed to cleanup session on 403:', e)
+        devLogger.error('Failed to cleanup session on 403:', e)
       }
     }
 
     return Promise.reject(error)
   },
 )
-
-export const customInstance = <T>(
-  config: AxiosRequestConfig,
-  options?: { signal?: AbortSignal },
-): Promise<T> => {
-  const source = Axios.CancelToken.source()
-
-  const promise: CancellablePromise<T> = AXIOS_INSTANCE({
-    ...config,
-    cancelToken: source.token,
-    signal: options?.signal,
-  }).then(({ data }) => data)
-
-  promise.cancel = () => {
-    source.cancel('Operation canceled by the user.')
-  }
-
-  return promise
-}

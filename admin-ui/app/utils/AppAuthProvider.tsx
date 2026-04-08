@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, type ReactNode } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import ApiKeyRedirect from './ApiKeyRedirect'
 import { useLocation } from 'react-router'
 import { NoHashQueryStringUtils, saveIssuer, getIssuer } from './TokenController'
@@ -33,27 +33,11 @@ import {
 import { useTranslation } from 'react-i18next'
 import { jwtDecode } from 'jwt-decode'
 import type { UserInfo } from '@/redux/features/types/authTypes'
-
-interface OAuthConfigParameter {
-  key?: string
-  value?: string
-}
-
-interface OAuthConfig {
-  additionalParameters?: OAuthConfigParameter[]
-  acrValues?: string
-  clientId?: string
-  redirectUrl?: string
-  scope?: string
-}
-
-interface AppAuthProviderProps {
-  children: ReactNode
-}
+import type { OAuthConfig, AppAuthProviderProps } from '@/utils/types'
 
 const LOGOUT_DELAY_SECONDS = 10
 
-export default function AppAuthProvider({ children }: Readonly<AppAuthProviderProps>) {
+const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
   const dispatch = useAppDispatch()
   const location = useLocation()
   const { t } = useTranslation()
@@ -316,3 +300,5 @@ export default function AppAuthProvider({ children }: Readonly<AppAuthProviderPr
     </React.Fragment>
   )
 }
+
+export default AppAuthProvider

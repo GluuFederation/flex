@@ -1,13 +1,12 @@
+import { devLogger } from '@/utils/devLogger'
 import { fetchApiTokenWithDefaultScopes, fetchApiAccessToken } from 'Redux/api/backend-api'
 
 export const beforeAllAsync = async (formInitState) => {
   const { issuer, token } = global
   if (!issuer && !token) {
     try {
-      // Call the API and wait for the response.
       const response = await fetchApiTokenWithDefaultScopes()
       const accessToken = await fetchApiAccessToken(response.access_token)
-      // Set the response in the global object.
       global.issuer = accessToken.issuer
       global.token = accessToken.access_token
       formInitState(accessToken.access_token, accessToken.issuer)
@@ -17,7 +16,7 @@ export const beforeAllAsync = async (formInitState) => {
       throw new Error('Error during beforeAllAsync: ' + error.message)
     }
   } else {
-    console.log('Issuer and token already available.')
+    devLogger.log('Issuer and token already available.')
   }
 }
 

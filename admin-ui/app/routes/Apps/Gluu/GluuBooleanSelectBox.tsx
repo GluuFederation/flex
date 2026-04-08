@@ -2,22 +2,8 @@ import GluuLabel from './GluuLabel'
 import GluuToogle from './GluuToogle'
 import { Col, FormGroup, CustomInput, InputGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
-import { FormikProps } from 'formik'
 import { useMemo } from 'react'
-import type { JsonValue } from './types/common'
-
-interface GluuBooleanSelectBoxProps {
-  label: string
-  name: string
-  value?: boolean | string
-  formik: FormikProps<Record<string, JsonValue>>
-  handler?: () => void
-  lsize?: number
-  rsize?: number
-  doc_category?: string
-  disabled?: boolean
-  toToggle?: boolean
-}
+import type { GluuBooleanSelectBoxProps } from './types'
 
 const GluuBooleanSelectBox = ({
   label,

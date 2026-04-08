@@ -2,16 +2,10 @@ import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { RowProps } from 'Plugins/user-management/types/UserApiTypes'
+import type { CustomAttrWithValues } from 'Plugins/user-management/types'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { useStyles } from './UserDetailViewPage.style'
-
-interface CustomAttrWithValues {
-  name?: string
-  value?: string | number | boolean
-  values?: (string | number | boolean)[]
-  multiValued?: boolean
-}
 
 const UserDetailViewPage = ({ row }: RowProps) => {
   const { rowData } = row

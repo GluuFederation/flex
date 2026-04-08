@@ -1,4 +1,9 @@
-import { REGEX_URL_PLACEHOLDER, REGEX_WEBHOOK_URL } from '@/utils/regex'
+import {
+  REGEX_URL_PLACEHOLDER,
+  REGEX_WEBHOOK_URL,
+  REGEX_CGNAT_IP_PREFIX,
+  REGEX_PRIVATE_172_IP_PREFIX,
+} from '@/utils/regex'
 
 const BLOCKED_SCHEMES = [
   'http',
@@ -32,14 +37,14 @@ const isPrivateOrLocalhost = (hostname: string): boolean => {
   ) {
     return true
   }
-  const cgnatMatch = hostname.match(/^100\.(\d+)\./)
+  const cgnatMatch = hostname.match(REGEX_CGNAT_IP_PREFIX)
   if (cgnatMatch) {
     const secondOctet = parseInt(cgnatMatch[1], 10)
     if (secondOctet >= 64 && secondOctet <= 127) {
       return true
     }
   }
-  const match = hostname.match(/^172\.(\d+)\./)
+  const match = hostname.match(REGEX_PRIVATE_172_IP_PREFIX)
   if (match) {
     const secondOctet = parseInt(match[1], 10)
     if (secondOctet >= 16 && secondOctet <= 31) {

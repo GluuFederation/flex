@@ -15,6 +15,7 @@ import getThemeColor from 'Context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './styles/ScopeFormPage.style'
 import { devLogger } from '@/utils/devLogger'
+import { REGEX_LEADING_COLON } from '@/utils/regex'
 import SetTitle from 'Utils/SetTitle'
 
 const ScopeEditPage: React.FC = () => {
@@ -42,7 +43,7 @@ const ScopeEditPage: React.FC = () => {
   const [modifiedFields, setModifiedFields] = useState<ModifiedFields>({})
   const [errorMessage, setErrorMessage] = useState<string>()
 
-  const inum = useMemo(() => id?.replace(/^:/, '') || '', [id])
+  const inum = useMemo(() => id?.replace(REGEX_LEADING_COLON, '') || '', [id])
 
   const scopeQueryOptions = useMemo(
     () => ({

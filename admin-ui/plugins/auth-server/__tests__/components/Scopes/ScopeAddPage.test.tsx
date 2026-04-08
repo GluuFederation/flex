@@ -82,7 +82,7 @@ it('Should render the scope add page properly', () => {
   render(<ScopeAddPage />, {
     wrapper: Wrapper,
   })
-  screen.getByText(/Display Name/)
-  screen.getByText(/Description/)
-  screen.getByText(/Default Scope/)
+  expect(screen.getByText(/Display Name/)).toBeInTheDocument()
+  expect(screen.getByText(/Description/)).toBeInTheDocument()
+  expect(screen.getByText(/Default Scope/)).toBeInTheDocument()
 })

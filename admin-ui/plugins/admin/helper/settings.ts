@@ -1,21 +1,8 @@
 import { CedarlingLogType } from '@/cedarling'
 import type { AppConfigResponse, KeyValuePair } from 'JansConfigApi'
+import type { SettingsFormValues } from './types'
 
-export type SettingsConfigData = Pick<
-  AppConfigResponse,
-  'sessionTimeoutInMins' | 'acrValues' | 'cedarlingLogType' | 'additionalParameters'
->
-
-export interface AdditionalParameterFormItem extends KeyValuePair {
-  id: string
-}
-
-export interface SettingsFormValues {
-  sessionTimeoutInMins: number | ''
-  acrValues: string
-  cedarlingLogType: CedarlingLogType
-  additionalParameters: AdditionalParameterFormItem[]
-}
+export type { SettingsConfigData, AdditionalParameterFormItem, SettingsFormValues } from './types'
 
 export const sanitizeAdditionalParameters = (params?: KeyValuePair[] | null): KeyValuePair[] => {
   if (!params || !params.length) {
