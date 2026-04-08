@@ -1,9 +1,9 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import ScopeDetailPage from './ScopeDetailPage'
-import scopes from './scopes.test'
-import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
-import type { Scope } from './types'
+import ScopeDetailPage from 'Plugins/auth-server/components/Scopes/ScopeDetailPage'
+import scopes from '../../fixtures/mockScopes'
+import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
+import type { Scope } from 'Plugins/auth-server/components/Scopes/types'
 
 const Wrapper = ({ children }: { children: React.ReactNode }) => (
   <AppTestWrapper>{children}</AppTestWrapper>

@@ -30,7 +30,7 @@ spec:
   - {{ .Release.Name }}-global-gtw
 {{- end }}
   http:
-  - name: "{{ .Release.Name }}-istio-cn"
+  - name: "{{ .Release.Name }}-istio-admin-ui"
     match:
     - uri:
         prefix: "/admin"

@@ -17,12 +17,7 @@ export type {
 
 export { EMPTY_SCOPE } from './scopeTypes'
 
-export type {
-  ScopeFormValues,
-  ModifiedFields,
-  ScopeFormSubmitData,
-  UserActionPayload,
-} from './formTypes'
+export type { ScopeFormValues, ModifiedFields, ScopeFormSubmitData } from './formTypes'
 
 export type {
   ScopeDetailPageProps,

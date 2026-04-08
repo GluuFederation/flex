@@ -16,13 +16,8 @@ export interface ScopeFormProps {
   scripts: ScopeScript[]
   attributes: ScopeClaim[]
   handleSubmit: (data: string) => void
-  onSearch?: (value: string) => void
   modifiedFields: ModifiedFields
   setModifiedFields: (fields: ModifiedFields) => void
 }
 
-export interface ScopeTableRow extends ScopeWithClients {
-  tableData?: {
-    id: number
-  }
-}
+export type ScopeTableRow = ScopeWithClients

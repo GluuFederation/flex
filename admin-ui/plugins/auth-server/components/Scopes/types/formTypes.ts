@@ -22,10 +22,3 @@ export interface ScopeFormSubmitData {
   scope: Scope
   modifiedFields?: ModifiedFields
 }
-
-export interface UserActionPayload {
-  action_message?: string
-  scope?: Scope
-  modifiedFields?: ModifiedFields
-  [key: string]: unknown
-}
