@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { fontFamily } from '@/styles/fonts'
+import { fontFamily, fontSizes, fontWeights, lineHeights } from '@/styles/fonts'
 import { getLoadingOverlayRgba } from '@/customColors'
 
 interface AvailableCustomAttributesPanelStylesParams {
@@ -36,10 +36,10 @@ export const useStyles = makeStyles<AvailableCustomAttributesPanelStylesParams>(
       padding: '14px 16px',
       color: `${themeColors.fontColor} !important`,
       fontFamily,
-      fontSize: 18,
+      fontSize: fontSizes.content,
       fontStyle: 'normal',
-      fontWeight: 700,
-      lineHeight: '32px',
+      fontWeight: fontWeights.bold,
+      lineHeight: lineHeights.loose,
     },
     divider: {
       height: 1,
@@ -88,7 +88,7 @@ export const useStyles = makeStyles<AvailableCustomAttributesPanelStylesParams>(
       'alignItems': 'center',
       'justifyContent': 'center',
       'color': themeColors.fontColor,
-      'fontSize': 16,
+      'fontSize': fontSizes.md,
       '&:hover': {
         opacity: 0.8,
       },
@@ -117,8 +117,8 @@ export const useStyles = makeStyles<AvailableCustomAttributesPanelStylesParams>(
       'border': 'none',
       'cursor': 'pointer',
       'color': themeColors.fontColor,
-      'fontSize': 14,
-      'lineHeight': '20px',
+      'fontSize': fontSizes.base,
+      'lineHeight': lineHeights.normal,
       '&:hover': {
         backgroundColor: hoverBg,
       },

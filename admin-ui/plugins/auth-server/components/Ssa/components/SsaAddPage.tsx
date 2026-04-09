@@ -14,7 +14,6 @@ import SsaForm from './SsaForm'
 import { useStyles } from './styles/SsaFormPage.style'
 import { useCreateSsa } from '../hooks'
 import { logSsaCreation } from '../helper'
-import { downloadJSONFile } from '../utils/fileDownload'
 import type { SsaFormValues } from '../types/SsaApiTypes'
 
 const SsaAddPage: React.FC = () => {
@@ -44,9 +43,7 @@ const SsaAddPage: React.FC = () => {
   const handleSubmitData = useCallback(
     async (payload: SsaFormValues, userMessage: string) => {
       try {
-        const createdSsa = await createSsaMutation.mutateAsync(payload)
-
-        downloadJSONFile(createdSsa, 'ssa.json')
+        await createSsaMutation.mutateAsync(payload)
 
         await logSsaCreation(payload, userMessage)
 

@@ -8,15 +8,15 @@ export const getSsaValidationSchema = () =>
     software_id: Yup.string()
       .trim()
       .required(() => i18n.t('validation_messages.software_id_required'))
-      .min(1, () => i18n.t('validation_messages.software_id_required')),
+      .min(3, () => i18n.t('validation_messages.software_id_min_length')),
     org_id: Yup.string()
       .trim()
       .required(() => i18n.t('validation_messages.org_id_required'))
-      .min(1, () => i18n.t('validation_messages.org_id_required')),
+      .min(3, () => i18n.t('validation_messages.org_id_min_length')),
     description: Yup.string()
       .trim()
       .required(() => i18n.t('validation_messages.description_required'))
-      .min(1, () => i18n.t('validation_messages.description_required')),
+      .min(10, () => i18n.t('validation_messages.description_min_length')),
     software_roles: Yup.array()
       .of(
         Yup.mixed().test(

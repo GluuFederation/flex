@@ -9,7 +9,8 @@ import type { Dayjs } from '@/utils/dayjsUtils'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuRemovableInputRow from 'Routes/Apps/Gluu/GluuRemovableInputRow'
-import GluuMultiSelectRow from 'Routes/Apps/Gluu/GluuMultiSelectRow'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
+import UserRoleAutocomplete from 'Routes/Apps/Gluu/UserRoleAutocomplete'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { SSA } from 'Utils/ApiResources'
@@ -18,6 +19,7 @@ import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import AvailableCustomAttributesPanel from './AvailableCustomAttributesPanel'
 import { useStyles } from './styles/SsaForm.style'
 import { GRANT_TYPES } from '../helper/constants'
@@ -137,16 +139,6 @@ const SsaForm: React.FC<SsaFormProps> = ({
     setPendingPayload(null)
   }
 
-  const softwareRolesMultiSelectOptions = useMemo(
-    () => softwareRolesOptions.map((role) => ({ value: role, label: role })),
-    [softwareRolesOptions],
-  )
-
-  const grantTypesMultiSelectOptions = useMemo(
-    () => GRANT_TYPES.map((gt) => ({ value: gt, label: gt })),
-    [],
-  )
-
   const handleChange = useCallback(
     (data: { target: { name: string; value: string | string[] | boolean } }) => {
       const { name, value } = data.target
@@ -155,6 +147,17 @@ const SsaForm: React.FC<SsaFormProps> = ({
     },
     [formik],
   )
+
+  const handleAutocompleteChange = useCallback(
+    (fieldName: 'software_roles' | 'grant_types', nextValues: string[]) => {
+      formik.setFieldValue(fieldName, nextValues)
+      formik.setFieldTouched(fieldName, true, false)
+    },
+    [formik],
+  )
+
+  const softwareRolesError = Boolean(formik.touched.software_roles && formik.errors.software_roles)
+  const grantTypesError = Boolean(formik.touched.grant_types && formik.errors.grant_types)
 
   return (
     <>
@@ -204,35 +207,55 @@ const SsaForm: React.FC<SsaFormProps> = ({
                     doc_entry="org_id"
                   />
 
-                  <GluuMultiSelectRow
-                    label="fields.software_roles"
-                    name="software_roles"
-                    formik={formik}
-                    lsize={12}
-                    rsize={12}
-                    value={formik.values.software_roles}
-                    options={softwareRolesMultiSelectOptions}
-                    required
-                    doc_category={SSA}
-                    showError={Boolean(
-                      formik.touched.software_roles && formik.errors.software_roles,
+                  <div className={classes.autocompleteFieldWrap}>
+                    <div className={classes.autocompleteCardWrap}>
+                      <UserRoleAutocomplete
+                        label={t('fields.software_roles')}
+                        name="software_roles"
+                        value={formik.values.software_roles}
+                        options={softwareRolesOptions}
+                        allowCustom
+                        required
+                        onChange={(nextValues) =>
+                          handleAutocompleteChange('software_roles', nextValues)
+                        }
+                        onBlur={() => formik.setFieldTouched('software_roles', true, false)}
+                        placeholder={getFieldPlaceholder(t, 'fields.software_roles')}
+                        showError={false}
+                        doc_category={SSA}
+                      />
+                    </div>
+                    {softwareRolesError && (
+                      <GluuText disableThemeColor className={classes.autocompleteFieldError}>
+                        {(formik.errors.software_roles as string) || ''}
+                      </GluuText>
                     )}
-                    errorMessage={(formik.errors.software_roles as string) || ''}
-                  />
+                  </div>
 
-                  <GluuMultiSelectRow
-                    label="fields.grant_types"
-                    name="grant_types"
-                    formik={formik}
-                    lsize={12}
-                    rsize={12}
-                    value={formik.values.grant_types}
-                    options={grantTypesMultiSelectOptions}
-                    required
-                    doc_category={SSA}
-                    showError={Boolean(formik.touched.grant_types && formik.errors.grant_types)}
-                    errorMessage={(formik.errors.grant_types as string) || ''}
-                  />
+                  <div className={classes.autocompleteFieldWrap}>
+                    <div className={classes.autocompleteCardWrap}>
+                      <UserRoleAutocomplete
+                        label={t('fields.grant_types')}
+                        name="grant_types"
+                        value={formik.values.grant_types}
+                        options={GRANT_TYPES}
+                        allowCustom
+                        required
+                        onChange={(nextValues) =>
+                          handleAutocompleteChange('grant_types', nextValues)
+                        }
+                        onBlur={() => formik.setFieldTouched('grant_types', true, false)}
+                        placeholder={getFieldPlaceholder(t, 'fields.grant_types')}
+                        showError={false}
+                        doc_category={SSA}
+                      />
+                    </div>
+                    {grantTypesError && (
+                      <GluuText disableThemeColor className={classes.autocompleteFieldError}>
+                        {(formik.errors.grant_types as string) || ''}
+                      </GluuText>
+                    )}
+                  </div>
 
                   <div className={classes.fullRow}>
                     <GluuInputRow

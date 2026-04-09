@@ -5,6 +5,7 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import SetTitle from 'Utils/SetTitle'
+import { SSA } from 'Utils/ApiResources'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
@@ -16,16 +17,17 @@ import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import { GluuTable } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
+import { GluuDetailGrid, type GluuDetailGridField } from '@/components/GluuDetailGrid'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
+import { BORDER_RADIUS } from '@/constants'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import { GluuBadge } from '@/components/GluuBadge'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
-import SsaDetailViewPage from './SsaDetailViewPage'
 import JsonViewerDialog from '../../JsonViewer/JsonViewerDialog'
 import { useStyles } from './styles/SsaListPage.style'
 import { useQueryClient } from '@tanstack/react-query'
 import { useGetAllSsas, useGetSsaJwt, useRevokeSsaWithAudit, SSA_QUERY_KEYS } from '../hooks'
-import { formatExpirationDate } from '../utils/dateFormatters'
+import { formatExpirationDate } from '../utils'
 import { downloadJwtFile } from '../utils/fileDownload'
 import type { SsaData } from '../types/SsaApiTypes'
 import type { SsaTableRowData } from '../types/SsaFormTypes'
@@ -103,7 +105,7 @@ const SsaListPage: React.FC = () => {
   }, [rowsWithId, pattern])
 
   const totalItems = filteredRows.length
-  const { classes } = useStyles({ isDark, themeColors })
+  const { classes, cx } = useStyles({ isDark, themeColors })
 
   const toggle = useCallback((): void => setModal((prev) => !prev), [])
 
@@ -162,12 +164,11 @@ const SsaListPage: React.FC = () => {
           org_id: deleteData.ssa.org_id,
         })
         setDeleteData(null)
-        toggle()
       } catch (error) {
         console.error('Delete SSA failed:', error)
       }
     },
-    [deleteData, revokeSsa, toggle],
+    [deleteData, revokeSsa],
   )
 
   const handlePageChange = useCallback((page: number) => setPageNumber(page), [setPageNumber])
@@ -178,6 +179,48 @@ const SsaListPage: React.FC = () => {
       setPageNumber(0)
     },
     [setLimit, setPageNumber],
+  )
+
+  const getStatusMeta = useCallback(
+    (status: string | null | undefined) => {
+      const normalizedStatus = status?.trim().toLowerCase()
+
+      if (normalizedStatus === 'active') {
+        return {
+          label: t('options.active'),
+          badgeClassName: cx(classes.statusBadge, classes.filledBadge),
+          badgeBackgroundColor: themeColors.badges.filledBadgeBg,
+          badgeTextColor: themeColors.badges.filledBadgeText,
+        }
+      }
+
+      if (normalizedStatus === 'inactive') {
+        return {
+          label: t('options.inactive'),
+          badgeClassName: cx(classes.statusBadge, classes.disabledBadge),
+          badgeBackgroundColor: themeColors.badges.disabledBg,
+          badgeTextColor: themeColors.badges.disabledText,
+        }
+      }
+
+      return {
+        label: status || '',
+        badgeClassName: cx(classes.statusBadge, classes.disabledBadge),
+        badgeBackgroundColor: themeColors.badges.disabledBg,
+        badgeTextColor: themeColors.badges.disabledText,
+      }
+    },
+    [
+      classes.disabledBadge,
+      classes.filledBadge,
+      classes.statusBadge,
+      cx,
+      t,
+      themeColors.badges.disabledBg,
+      themeColors.badges.disabledText,
+      themeColors.badges.filledBadgeBg,
+      themeColors.badges.filledBadgeText,
+    ],
   )
 
   const columns: ColumnDef<SsaTableRowData>[] = useMemo(
@@ -197,16 +240,15 @@ const SsaListPage: React.FC = () => {
         {
           key: 'status',
           label: t('fields.status'),
-          render: (value) => (
-            <GluuBadge
-              size="md"
-              backgroundColor={String(value).toLowerCase() === 'active' ? '#e6f4ea' : '#fce4ec'}
-              textColor={String(value).toLowerCase() === 'active' ? '#1e7e34' : '#c62828'}
-              borderRadius={6}
-            >
-              {String(value)}
-            </GluuBadge>
-          ),
+          render: (value) => {
+            const { label, badgeClassName } = getStatusMeta(String(value))
+
+            return (
+              <GluuBadge size="md" borderRadius={BORDER_RADIUS.SMALL} className={badgeClassName}>
+                {label}
+              </GluuBadge>
+            )
+          },
         },
         {
           key: 'expiration',
@@ -214,7 +256,7 @@ const SsaListPage: React.FC = () => {
           render: (value) => formatExpirationDate(value as number),
         },
       ] as ColumnDef<SsaTableRowData>[],
-    [t],
+    [t, getStatusMeta],
   )
 
   const actions = useMemo(() => {
@@ -297,10 +339,99 @@ const SsaListPage: React.FC = () => {
   )
 
   const emptyMessage = useMemo(() => t('messages.no_data_available'), [t])
+  const detailLabelStyle = useMemo(
+    () => ({ color: themeColors.fontColor }),
+    [themeColors.fontColor],
+  )
+
+  const getDetailFields = useCallback(
+    (row: SsaTableRowData): GluuDetailGridField[] => {
+      const statusMeta = getStatusMeta(row.status)
+
+      return [
+        {
+          label: 'fields.software_id',
+          value: row.ssa.software_id || null,
+          doc_entry: 'software_id',
+          doc_category: SSA,
+        },
+        {
+          label: 'fields.description',
+          value: row.ssa.description || null,
+          doc_entry: 'description',
+          doc_category: SSA,
+        },
+        {
+          label: 'fields.status',
+          value: statusMeta.label || null,
+          doc_entry: 'status',
+          doc_category: SSA,
+          isBadge: true,
+          badgeBackgroundColor: statusMeta.badgeBackgroundColor,
+          badgeTextColor: statusMeta.badgeTextColor,
+        },
+        {
+          label: 'fields.one_time_use',
+          value: row.ssa.one_time_use ? t('options.true') : t('options.false'),
+          doc_entry: 'one_time_use',
+          doc_category: SSA,
+          isBadge: true,
+          badgeBackgroundColor: row.ssa.one_time_use
+            ? themeColors.badges.filledBadgeBg
+            : themeColors.badges.disabledBg,
+          badgeTextColor: row.ssa.one_time_use
+            ? themeColors.badges.filledBadgeText
+            : themeColors.badges.disabledText,
+        },
+        {
+          label: 'fields.rotate_ssa',
+          value: row.ssa.rotate_ssa ? t('options.true') : t('options.false'),
+          doc_entry: 'rotate_ssa',
+          doc_category: SSA,
+          isBadge: true,
+          badgeBackgroundColor: row.ssa.rotate_ssa
+            ? themeColors.badges.filledBadgeBg
+            : themeColors.badges.disabledBg,
+          badgeTextColor: row.ssa.rotate_ssa
+            ? themeColors.badges.filledBadgeText
+            : themeColors.badges.disabledText,
+        },
+        {
+          label: 'fields.organization',
+          value: row.ssa.org_id || null,
+          doc_entry: 'org_id',
+          doc_category: SSA,
+        },
+        {
+          label: 'fields.expiration',
+          value: formatExpirationDate(row.expiration),
+          doc_entry: 'expiration',
+          doc_category: SSA,
+        },
+        {
+          label: 'fields.grant_types',
+          value: row.ssa.grant_types?.join(', ') || null,
+          doc_entry: 'grant_types',
+          doc_category: SSA,
+          isBadge: true,
+          badgeBackgroundColor: themeColors.badges.statusActiveBg,
+          badgeTextColor: themeColors.badges.statusActive,
+        },
+      ]
+    },
+    [getStatusMeta, t, themeColors],
+  )
 
   const renderExpandedRow = useCallback(
-    (row: SsaTableRowData) => <SsaDetailViewPage row={row} />,
-    [],
+    (row: SsaTableRowData) => (
+      <GluuDetailGrid
+        fields={getDetailFields(row)}
+        labelStyle={detailLabelStyle}
+        defaultDocCategory={SSA}
+        layout="column"
+      />
+    ),
+    [detailLabelStyle, getDetailFields],
   )
 
   return (

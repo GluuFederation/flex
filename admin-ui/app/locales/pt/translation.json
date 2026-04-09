@@ -1162,7 +1162,10 @@
     "grant_types_min": "At least one grant type is required",
     "grant_types_required": "Grant types are required",
     "expiration_date_required": "Expiration date is required",
-    "expiration_date_future": "Expiration date must be in the future"
+    "expiration_date_future": "Expiration date must be in the future",
+    "software_id_min_length": "O ID do software deve ter pelo menos 3 caracteres",
+    "org_id_min_length": "O ID da organização deve ter pelo menos 3 caracteres",
+    "description_min_length": "A descrição deve ter pelo menos 10 caracteres"
   },
   "tooltips": {
     "insert_shortcode": "Inserir código de atalho",

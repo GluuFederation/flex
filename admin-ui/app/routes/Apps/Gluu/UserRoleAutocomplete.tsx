@@ -7,6 +7,7 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './styles/UserRoleAutocomplete.style'
+import GluuText from './GluuText'
 import type { ModifierArguments, Obj } from '@popperjs/core'
 import type { UserRoleAutocompleteProps } from './types/UserRoleAutocomplete.types'
 
@@ -31,13 +32,24 @@ const UserRoleAutocomplete = ({
   onRemoveField,
   doc_category: _doc_category,
   inputBackgroundColor,
+  withWrapper = true,
+  required = false,
+  showError = false,
+  errorMessage,
+  helperText,
 }: UserRoleAutocompleteProps) => {
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
   const selectedTheme = themeState?.theme ?? DEFAULT_THEME
   const themeColors = getThemeColor(selectedTheme)
   const isDark = selectedTheme === THEME_DARK
-  const { classes } = useStyles({ themeColors, allowCustom, isDark, inputBackgroundColor })
+  const { classes } = useStyles({
+    themeColors,
+    allowCustom,
+    isDark,
+    inputBackgroundColor,
+    withWrapper,
+  })
 
   const selectedItems = Array.isArray(value)
     ? value.filter((v): v is string => typeof v === 'string')
@@ -82,8 +94,10 @@ const UserRoleAutocomplete = ({
   )
 
   const content = (
-    <div className={classes.card}>
-      <div className={classes.header}>{label}:</div>
+    <div className={withWrapper ? classes.card : classes.plain}>
+      <div className={classes.header}>
+        {label}:{required && <span className={classes.requiredMark}>*</span>}
+      </div>
       <div className={classes.controls}>
         <div className={classes.autocompleteWrapper}>
           <Autocomplete
@@ -92,7 +106,11 @@ const UserRoleAutocomplete = ({
             onInputChange={(_e, val, reason) => {
               if (reason !== 'reset') setInputValue(val)
             }}
-            options={options}
+            options={
+              allowCustom
+                ? [...options, ...selectedItems.filter((s) => !options.includes(s))]
+                : options
+            }
             value={selectedItems}
             isOptionEqualToValue={(option, val) => option === val}
             onChange={handleChange}
@@ -145,10 +163,12 @@ const UserRoleAutocomplete = ({
               >
                 {typeof option === 'string' && option.startsWith(NEW_SELECTION_PREFIX) ? (
                   <>
-                    <span style={{ flexShrink: 0 }}>{t('placeholders.new_selection')}:&nbsp;</span>
-                    <strong style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <GluuText disableThemeColor className={classes.newSelectionPrefix}>
+                      {t('placeholders.new_selection')}:&nbsp;
+                    </GluuText>
+                    <GluuText disableThemeColor className={classes.newSelectionValue}>
                       {option.slice(NEW_SELECTION_PREFIX.length)}
-                    </strong>
+                    </GluuText>
                   </>
                 ) : (
                   option
@@ -163,6 +183,23 @@ const UserRoleAutocomplete = ({
                 fullWidth
                 inputProps={{
                   ...params.inputProps,
+                  onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => {
+                    if (allowCustom && e.key === 'Enter') {
+                      const trimmed = inputValue.trim()
+                      if (
+                        trimmed &&
+                        !options.some((o) => o.toLowerCase().includes(trimmed.toLowerCase())) &&
+                        !selectedItems.some((s) => s.toLowerCase() === trimmed.toLowerCase())
+                      ) {
+                        e.preventDefault()
+                        onChange([...selectedItems, trimmed])
+                        setInputValue('')
+                        e.currentTarget.blur()
+                        return
+                      }
+                    }
+                    params.inputProps.onKeyDown?.(e)
+                  },
                   style: {
                     ...(params.inputProps?.style as React.CSSProperties),
                     outline: 'none',
@@ -227,9 +264,9 @@ const UserRoleAutocomplete = ({
         <div className={classes.tags}>
           {selectedItems.map((item) => (
             <span key={item} className={classes.tag} title={item}>
-              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <GluuText disableThemeColor className={classes.tagLabel}>
                 {item}
-              </span>
+              </GluuText>
               <button
                 type="button"
                 className={classes.tagRemove}
@@ -246,6 +283,15 @@ const UserRoleAutocomplete = ({
           ))}
         </div>
       )}
+      {showError && errorMessage ? (
+        <GluuText disableThemeColor className={classes.error}>
+          {errorMessage}
+        </GluuText>
+      ) : helperText ? (
+        <GluuText disableThemeColor className={classes.helperText}>
+          {helperText}
+        </GluuText>
+      ) : null}
     </div>
   )
 

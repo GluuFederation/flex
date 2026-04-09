@@ -2,9 +2,9 @@ import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
 import { BORDER_RADIUS, SPACING } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
-import { fontFamily } from '@/styles/fonts'
+import { fontFamily, fontSizes, lineHeights } from '@/styles/fonts'
 
-interface SsaListPageStylesParams {
+type SsaListPageStylesParams = {
   isDark: boolean
   themeColors: ThemeConfig
 }
@@ -57,18 +57,36 @@ export const useStyles = makeStyles<SsaListPageStylesParams>()((_, { isDark, the
       '& table td': {
         verticalAlign: 'middle',
         minWidth: 0,
-        lineHeight: '28px',
+        lineHeight: lineHeights.relaxed,
       },
       '& table th': {
         verticalAlign: 'middle',
-        lineHeight: '28px',
+        lineHeight: lineHeights.relaxed,
       },
     },
     actionIcon: {
-      fontSize: 18,
+      fontSize: fontSizes.content,
     },
     addIcon: {
-      fontSize: 20,
+      fontSize: fontSizes.lg,
+    },
+    statusBadge: {
+      minWidth: 80,
+    },
+    filledBadge: {
+      backgroundColor: `${themeColors.badges.filledBadgeBg} !important`,
+      color: `${themeColors.badges.filledBadgeText} !important`,
+      border: '1px solid transparent !important',
+    },
+    disabledBadge: {
+      backgroundColor: `${themeColors.badges.disabledBg} !important`,
+      color: `${themeColors.badges.disabledText} !important`,
+      border: '1px solid transparent !important',
+    },
+    subtleActiveBadge: {
+      backgroundColor: `${themeColors.badges.statusActiveBg} !important`,
+      color: `${themeColors.badges.statusActive} !important`,
+      border: `1px solid ${themeColors.badges.statusActiveBg} !important`,
     },
   }
 })

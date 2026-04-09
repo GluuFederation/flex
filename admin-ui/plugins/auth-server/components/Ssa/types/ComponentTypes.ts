@@ -1,17 +1,13 @@
-import type { SsaFormValues, SsaData } from './SsaApiTypes'
+import type { SsaFormValues } from './SsaApiTypes'
 
-export interface SsaFormProps {
+export type SsaFormProps = {
   onSubmitData: (payload: SsaFormValues, userMessage: string) => Promise<void>
   isSubmitting: boolean
   customAttributes: string[]
   softwareRolesOptions: string[]
 }
 
-export interface SsaDetailViewPageProps {
-  row: SsaData
-}
-
-export interface CustomAttributesPanelProps {
+export type CustomAttributesPanelProps = {
   availableAttributes: string[]
   selectedAttributes: string[]
   onAttributeSelect: (attribute: string) => void

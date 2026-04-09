@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { customColors, getLoadingOverlayRgba } from '@/customColors'
+import { customColors } from '@/customColors'
 import { CEDARLING_CONFIG_SPACING, MAPPING_SPACING } from '@/constants'
 import { fontFamily, fontSizes, fontWeights, letterSpacing, lineHeights } from '@/styles/fonts'
 import applicationStyle from './applicationStyle'
@@ -10,18 +10,24 @@ interface UserRoleAutocompleteStyleParams {
   allowCustom?: boolean
   isDark?: boolean
   inputBackgroundColor?: string
+  withWrapper?: boolean
 }
 
 export const useStyles = makeStyles<UserRoleAutocompleteStyleParams>()((
   _,
-  { themeColors, allowCustom, isDark = false, inputBackgroundColor },
+  { themeColors, allowCustom, isDark = false, inputBackgroundColor, withWrapper = true },
 ) => {
   const settings = themeColors.settings
   const inputBorderColor = settings?.inputBorder ?? themeColors.borderColor
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
+  const defaultPlainInputBg = settings?.cardBackground ?? themeColors.card.background
+  const defaultWrappedInputBg =
+    settings?.formInputBackground ??
+    (isDark ? customColors.darkDropdownBg : themeColors.inputBackground)
   const inputBg =
-    inputBackgroundColor ?? (isDark ? customColors.darkDropdownBg : themeColors.inputBackground)
+    inputBackgroundColor ?? (withWrapper ? defaultWrappedInputBg : defaultPlainInputBg)
   const fontColor = themeColors.fontColor
+  const optionHoverBg = themeColors.table.rowHoverBg
 
   return {
     card: {
@@ -31,10 +37,20 @@ export const useStyles = makeStyles<UserRoleAutocompleteStyleParams>()((
       padding: 16,
       boxSizing: 'border-box',
     },
+    plain: {
+      display: 'flex',
+      flexDirection: 'column',
+      minWidth: 0,
+      width: '100%',
+    },
     header: {
       color: fontColor,
-      fontWeight: 600,
-      marginBottom: 12,
+      fontWeight: fontWeights.semiBold,
+      marginBottom: withWrapper ? 12 : 6,
+    },
+    requiredMark: {
+      color: fontColor,
+      fontSize: 'inherit',
     },
     controls: {
       'display': 'grid',
@@ -50,15 +66,28 @@ export const useStyles = makeStyles<UserRoleAutocompleteStyleParams>()((
       flex: 1,
       display: 'flex',
     },
+    newSelectionPrefix: {
+      flexShrink: 0,
+    },
+    newSelectionValue: {
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      fontWeight: fontWeights.bold,
+    },
     autocompleteRoot: {
       'position': 'relative',
       'flex': 1,
       'minWidth': 0,
       '&& .MuiOutlinedInput-root': {
         'backgroundColor': `${inputBg} !important`,
+        'minHeight': CEDARLING_CONFIG_SPACING.INPUT_HEIGHT,
+        'height': 'auto',
+        'borderRadius': `${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px !important`,
+        'overflow': 'hidden',
         'color': fontColor,
         'outline': 'none',
         'border': `1px solid ${inputBorderColor}`,
+        'caretColor': fontColor,
         '& .MuiOutlinedInput-notchedOutline': {
           display: 'none',
         },
@@ -78,6 +107,13 @@ export const useStyles = makeStyles<UserRoleAutocompleteStyleParams>()((
           'boxShadow': 'none !important',
           'border': 'none !important',
           'backgroundColor': 'transparent',
+          'paddingTop': CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
+          'paddingBottom': CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
+          'paddingLeft': CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL,
+          'paddingRight': 44,
+          'boxSizing': 'border-box',
+          'color': `${fontColor} !important`,
+          'caretColor': fontColor,
           '&:focus, &:focus-visible': {
             outline: 'none !important',
             outlineWidth: 0,
@@ -97,12 +133,19 @@ export const useStyles = makeStyles<UserRoleAutocompleteStyleParams>()((
           border: 'none !important',
         },
         '& .MuiAutocomplete-endAdornment': {
-          'right': 4,
+          'right': 12,
           'background': 'transparent',
           'border': 'none',
           'paddingLeft': 0,
           'marginLeft': 0,
           'gap': 0,
+          '& .MuiAutocomplete-popupIndicator': {
+            transform: 'rotate(0deg)',
+            transition: 'transform 0.2s ease',
+          },
+          '& .MuiAutocomplete-popupIndicatorOpen': {
+            transform: 'rotate(180deg)',
+          },
           '& .MuiIconButton-root': {
             'color': fontColor,
             'padding': 6,
@@ -115,7 +158,7 @@ export const useStyles = makeStyles<UserRoleAutocompleteStyleParams>()((
             'outline': 'none',
             'borderRadius': 4,
             '&:hover': {
-              background: getLoadingOverlayRgba(fontColor, 0.08),
+              background: optionHoverBg,
               border: 'none',
               boxShadow: 'none',
             },
@@ -123,7 +166,7 @@ export const useStyles = makeStyles<UserRoleAutocompleteStyleParams>()((
               outline: 'none',
               boxShadow: 'none',
               border: 'none',
-              background: getLoadingOverlayRgba(fontColor, 0.08),
+              background: optionHoverBg,
             },
             '&:not(:last-of-type)': { marginRight: 2 },
           },
@@ -138,8 +181,7 @@ export const useStyles = makeStyles<UserRoleAutocompleteStyleParams>()((
       },
     },
     dropdownPaper: {
-      /* Match Available Claims panel list: same background and hover */
-      'backgroundColor': cardBg,
+      'backgroundColor': `${cardBg} !important`,
       'color': fontColor,
       'borderLeft': `1px solid ${inputBorderColor}`,
       'borderRight': `1px solid ${inputBorderColor}`,
@@ -161,18 +203,18 @@ export const useStyles = makeStyles<UserRoleAutocompleteStyleParams>()((
         '& .MuiAutocomplete-option': {
           'color': fontColor,
           '&:hover': {
-            backgroundColor: getLoadingOverlayRgba(fontColor, isDark ? 0.12 : 0.08),
+            backgroundColor: optionHoverBg,
           },
           '&.Mui-focused': {
             outline: 'none',
-            backgroundColor: getLoadingOverlayRgba(fontColor, isDark ? 0.12 : 0.08),
+            backgroundColor: optionHoverBg,
           },
           '&[aria-selected="true"]': {
-            backgroundColor: themeColors.badges?.statusActiveBg ?? inputBg,
-            color: themeColors.badges?.statusActive ?? fontColor,
+            backgroundColor: themeColors.badges.statusActiveBg,
+            color: themeColors.badges.statusActive,
           },
           '&[aria-selected="true"].Mui-focused': {
-            backgroundColor: themeColors.badges?.statusActiveBg ?? inputBg,
+            backgroundColor: themeColors.badges.statusActiveBg,
             outline: 'none',
           },
         },
@@ -294,11 +336,17 @@ export const useStyles = makeStyles<UserRoleAutocompleteStyleParams>()((
       backgroundColor: themeColors.badges.statusActiveBg,
       color: themeColors.badges.statusActive,
       border: `1px solid ${themeColors.badges.statusActive}`,
-      fontSize: 12,
+      fontSize: fontSizes.sm,
       lineHeight: '18px',
-      fontWeight: 600,
+      fontWeight: fontWeights.semiBold,
       maxWidth: '100%',
       overflow: 'hidden',
+    },
+    tagLabel: {
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      color: 'inherit',
     },
     tagRemove: {
       'display': 'inline-flex',
@@ -326,6 +374,18 @@ export const useStyles = makeStyles<UserRoleAutocompleteStyleParams>()((
     cardWrapper: {
       flex: 1,
       minWidth: 0,
+    },
+    error: {
+      display: 'block',
+      color: themeColors.errorColor,
+      marginTop: 8,
+      fontSize: fontSizes.sm,
+    },
+    helperText: {
+      display: 'block',
+      color: themeColors.textMuted,
+      marginTop: 8,
+      fontSize: fontSizes.sm,
     },
     removeFieldButton: {
       ...(applicationStyle.removableInputRow as object),

@@ -112,6 +112,22 @@ export const useStyles = makeStyles<SsaFormStylesParams>()((_, { isDark, themeCo
     fullRow: {
       gridColumn: '1 / -1',
     },
+    autocompleteFieldWrap: {
+      display: 'flex',
+      flexDirection: 'column',
+      minWidth: 0,
+    },
+    autocompleteCardWrap: {
+      '& > div': {
+        paddingBottom: 24,
+      },
+    },
+    autocompleteFieldError: {
+      display: 'block',
+      color: themeColors.errorColor,
+      fontSize: 12,
+      marginTop: 4,
+    },
     datePickerCell: {
       'display': 'flex',
       'alignItems': 'center',

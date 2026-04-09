@@ -1201,7 +1201,10 @@
     "software_id_required": "El ID de software es obligatorio",
     "software_role_invalid": "El rol de software debe ser una cadena u objeto",
     "software_roles_min": "Se requiere al menos un rol de software",
-    "software_roles_required": "Los roles de software son obligatorios"
+    "software_roles_required": "Los roles de software son obligatorios",
+    "software_id_min_length": "El ID de software debe tener al menos 3 caracteres",
+    "org_id_min_length": "El ID de organización debe tener al menos 3 caracteres",
+    "description_min_length": "La descripción debe tener al menos 10 caracteres"
   },
   "tooltips": {
     "sort_ascending": "Ordenar ascendente",
@@ -1391,7 +1394,7 @@
     "token_distribution": "Distribución de Tokens por Tipo",
     "token_trends": "Tendencias de Tokens en el Tiempo",
     "sql_authentication": "Autenticación SQL",
-    "logging": "LOGGING",
+    "logging": "Registro",
     "jwk_keys": "Claves JWK",
     "jans_json_property": "Propiedades del Servidor de Autenticación",
     "mapping": "Mapeo Rol/Permiso",

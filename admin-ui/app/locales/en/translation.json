@@ -1200,7 +1200,10 @@
     "grant_types_min": "At least one grant type is required",
     "grant_types_required": "Grant types are required",
     "expiration_date_required": "Expiration date is required",
-    "expiration_date_future": "Expiration date must be in the future"
+    "expiration_date_future": "Expiration date must be in the future",
+    "software_id_min_length": "Software ID must be at least 3 characters",
+    "org_id_min_length": "Organization ID must be at least 3 characters",
+    "description_min_length": "Description must be at least 10 characters"
   },
   "tooltips": {
     "insert_shortcode": "Insert shortcode",
@@ -1390,7 +1393,7 @@
     "token_distribution": "Token Distribution by Type",
     "token_trends": "Token Trends Over Time",
     "sql_authentication": "SQL Authentication",
-    "logging": "LOGGING",
+    "logging": "Logging",
     "jwk_keys": "JWK keys",
     "jans_json_property": "Auth Server Properties",
     "mapping": "Role/Permission Mapping",
