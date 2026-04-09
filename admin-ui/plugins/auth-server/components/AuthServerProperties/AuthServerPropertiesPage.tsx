@@ -693,7 +693,6 @@ const AuthServerPropertiesPage: React.FC = () => {
                       disableCancel={!hasChanges}
                       showApply
                       disableApply={!hasChanges}
-                      hideDivider
                       applyButtonType="button"
                       onApply={toggle}
                     />

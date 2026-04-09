@@ -279,7 +279,6 @@ const LoggingPage = (): React.ReactElement => {
 
                   {canWriteLogging && (
                     <GluuThemeFormFooter
-                      hideDivider
                       showBack
                       onBack={handleBack}
                       backButtonLabel={t('actions.back')}

@@ -1,8 +1,18 @@
 import { memo, useState, useCallback, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
+import { useAppDispatch } from '@/redux/hooks'
+import { useTheme } from '@/context/theme/themeContext'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import getThemeColor from '@/context/theme/config'
+import { useStyles as useCommitDialogStyles } from 'Routes/Apps/Gluu/styles/GluuCommitDialog.style'
+import { updateToast } from '@/redux/features/toastSlice'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
-import { THEME_LIGHT } from '@/context/theme/constants'
+import { devLogger } from '@/utils/devLogger'
+import customColors from '@/customColors'
+import JsonViewer from './JsonViewer'
+import { useStyles } from './JsonViewerDialog.style'
 import type { JsonViewerDialogProps } from './types'
 
 const JsonViewerDialog: React.FC<JsonViewerDialogProps> = ({
@@ -38,7 +48,7 @@ const JsonViewerDialog: React.FC<JsonViewerDialogProps> = ({
       setIsCopied(true)
     } catch (err) {
       const detail = err instanceof Error ? err.message : String(err)
-      console.error('Failed to copy to clipboard:', err)
+      devLogger.error('Failed to copy to clipboard:', err)
       dispatch(updateToast(true, 'error', `Failed to copy to clipboard: ${detail}`))
     }
   }, [data, isCopied, dispatch])

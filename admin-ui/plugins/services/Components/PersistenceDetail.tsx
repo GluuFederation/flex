@@ -135,7 +135,7 @@ const PersistenceDetail = () => {
                 </div>
               </div>
 
-              <GluuThemeFormFooter showBack hideDivider />
+              <GluuThemeFormFooter showBack />
             </div>
           </div>
         </GluuPageContent>

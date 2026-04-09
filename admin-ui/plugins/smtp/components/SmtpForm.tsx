@@ -554,7 +554,6 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
           disableApply={!formik.isValid || !formik.dirty}
           applyButtonType="button"
           isLoading={formik.isSubmitting ?? false}
-          hideDivider
         />
 
         {!readOnly && (
