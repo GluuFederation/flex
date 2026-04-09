@@ -17,7 +17,7 @@ import getThemeColor from '@/context/theme/config'
 import { useStyles as useCommitDialogStyles } from 'Routes/Apps/Gluu/styles/GluuCommitDialog.style'
 import { updateToast } from '@/redux/features/toastSlice'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
-import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
+import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import { devLogger } from '@/utils/devLogger'
 import customColors from '@/customColors'
 import JsonViewer from './JsonViewer'
@@ -166,22 +166,26 @@ const JsonViewerDialog: FC<JsonViewerDialogProps> = ({
             {isLoading ? (
               <div className={classes.loadingContainer}>
                 <i className="fa fa-spinner fa-spin fa-2x" style={{ color: customColors.logo }} />
-                <p className={classes.loadingText}>{t('messages.request_waiting_message')}</p>
+                <GluuText variant="p" className={classes.loadingText}>
+                  {t('messages.request_waiting_message')}
+                </GluuText>
               </div>
             ) : data !== undefined ? (
-              <JsonViewer data={data} theme={selectedTheme} expanded={expanded} />
+              <JsonViewer
+                data={data}
+                theme={selectedTheme}
+                expanded={expanded}
+                backgroundColor={themeColors.card.background}
+              />
             ) : null}
           </div>
-          <div className={classes.footerWrap}>
-            <GluuFormFooter
-              showApply
-              applyButtonType="button"
-              applyButtonLabel={copyLabel}
-              onApply={copyToClipboard}
-              disableApply={isCopied || data === undefined || isLoading}
-              applyIconClass="fa fa-copy"
-            />
-          </div>
+          <GluuThemeFormFooter
+            showApply
+            applyButtonType="button"
+            applyButtonLabel={copyLabel}
+            onApply={copyToClipboard}
+            disableApply={isCopied || data === undefined || isLoading}
+          />
         </div>
       </div>
     </>

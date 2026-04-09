@@ -27,10 +27,5 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { themeColors }) =>
       fontSize: fontSizes.base,
       lineHeight: lineHeights.normal,
     },
-    footerWrap: {
-      '& hr': {
-        display: 'none',
-      },
-    },
   }
 })

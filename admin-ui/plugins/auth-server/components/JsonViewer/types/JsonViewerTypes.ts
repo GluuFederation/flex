@@ -7,6 +7,7 @@ export type JsonViewerProps = {
   expanded?: boolean
   style?: React.CSSProperties
   className?: string
+  backgroundColor?: string
 }
 
 export type JsonViewerDialogProps = {

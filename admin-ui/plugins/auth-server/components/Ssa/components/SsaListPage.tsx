@@ -26,6 +26,7 @@ import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import JsonViewerDialog from '../../JsonViewer/JsonViewerDialog'
 import { useStyles } from './styles/SsaListPage.style'
 import { useQueryClient } from '@tanstack/react-query'
+import { devLogger } from '@/utils/devLogger'
 import { useGetAllSsas, useGetSsaJwt, useRevokeSsaWithAudit, SSA_QUERY_KEYS } from '../hooks'
 import { formatExpirationDate } from '../utils'
 import { downloadJwtFile } from '../utils/fileDownload'
@@ -81,7 +82,8 @@ const SsaListPage: React.FC = () => {
   SetTitle(t('titles.ssa_management'))
 
   const { data: items = [], isLoading: loading } = useGetAllSsas()
-  const getSsaJwtMutation = useGetSsaJwt()
+  const viewSsaJwtMutation = useGetSsaJwt()
+  const downloadSsaJwtMutation = useGetSsaJwt()
   const { revokeSsa, isLoading: isDeleting } = useRevokeSsaWithAudit()
 
   const rowsWithId: SsaTableRowData[] = useMemo(
@@ -131,28 +133,28 @@ const SsaListPage: React.FC = () => {
       setJwtData(null)
       setSsaDialogOpen(true)
       try {
-        const fetchedJwtData = await getSsaJwtMutation.mutateAsync(row.ssa.jti)
+        const fetchedJwtData = await viewSsaJwtMutation.mutateAsync(row.ssa.jti)
         setJwtData(fetchedJwtData)
       } catch (error) {
-        console.error('Failed to fetch SSA JWT:', error)
+        devLogger.error('Failed to fetch SSA JWT:', error)
         dispatch(updateToast(true, 'error'))
         setSsaDialogOpen(false)
       }
     },
-    [getSsaJwtMutation, dispatch],
+    [viewSsaJwtMutation, dispatch],
   )
 
   const handleDownloadSsa = useCallback(
     async (row: SsaTableRowData): Promise<void> => {
       try {
-        const jwtResponse = await getSsaJwtMutation.mutateAsync(row.ssa.jti)
+        const jwtResponse = await downloadSsaJwtMutation.mutateAsync(row.ssa.jti)
         downloadJwtFile(jwtResponse.ssa, row.ssa.software_id)
       } catch (error) {
-        console.error('Failed to download SSA JWT:', error)
+        devLogger.error('Failed to download SSA JWT:', error)
         dispatch(updateToast(true, 'error'))
       }
     },
-    [getSsaJwtMutation, dispatch],
+    [downloadSsaJwtMutation, dispatch],
   )
 
   const submitForm = useCallback(
@@ -165,7 +167,7 @@ const SsaListPage: React.FC = () => {
         })
         setDeleteData(null)
       } catch (error) {
-        console.error('Delete SSA failed:', error)
+        devLogger.error('Delete SSA failed:', error)
       }
     },
     [deleteData, revokeSsa],
@@ -435,7 +437,7 @@ const SsaListPage: React.FC = () => {
   )
 
   return (
-    <GluuLoader blocking={loading || isDeleting}>
+    <GluuLoader blocking={loading || isDeleting || downloadSsaJwtMutation.isPending}>
       <div className={classes.page}>
         <GluuViewWrapper canShow={canReadSsa}>
           <div className={classes.searchCard}>
@@ -485,7 +487,7 @@ const SsaListPage: React.FC = () => {
             isOpen={ssaDialogOpen}
             toggle={toggleSsaDialog}
             data={jwtData}
-            isLoading={getSsaJwtMutation.isPending}
+            isLoading={viewSsaJwtMutation.isPending}
             title={t('titles.json_view')}
             theme={selectedTheme}
             expanded={true}

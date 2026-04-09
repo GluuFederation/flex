@@ -1,4 +1,5 @@
 import { getRootState } from 'Redux/hooks'
+import { devLogger } from '@/utils/devLogger'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import type { JsonObject } from 'Routes/Apps/Gluu/types/common'
 import type { CaughtError, ApiErrorLike } from '../types/ErrorTypes'
@@ -31,7 +32,7 @@ export const logSsaCreation = async (payload: SsaFormValues, message?: string): 
       payload: serialized,
     })
   } catch (error) {
-    console.error('Failed to log SSA creation:', error)
+    devLogger.error('Failed to log SSA creation:', error)
   }
 }
 
@@ -55,7 +56,7 @@ export const logSsaDeletion = async (
       payload: toJsonObject({ ...(payload || {}), jti }),
     })
   } catch (error) {
-    console.error('Failed to log SSA deletion:', error)
+    devLogger.error('Failed to log SSA deletion:', error)
   }
 }
 

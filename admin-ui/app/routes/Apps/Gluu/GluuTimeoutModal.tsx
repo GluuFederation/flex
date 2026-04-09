@@ -9,7 +9,7 @@ import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useStyles as useCommitDialogStyles } from './styles/GluuCommitDialog.style'
 import { useStyles } from './styles/GluuTimeoutModal.style'
 import GluuText from './GluuText'
-import GluuFormFooter from './GluuFormFooter'
+import GluuThemeFormFooter from './GluuThemeFormFooter'
 
 const GluuTimeoutModal = () => {
   const dispatch = useAppDispatch()
@@ -93,12 +93,11 @@ const GluuTimeoutModal = () => {
           <GluuText variant="p" className={classes.description}>
             {t('messages.request_timeout_description')}
           </GluuText>
-          <GluuFormFooter
+          <GluuThemeFormFooter
             showApply
             applyButtonType="button"
             applyButtonLabel={t('actions.try_again')}
             onApply={handleRefresh}
-            applyIconClass="fa fa-refresh"
           />
         </div>
       </div>

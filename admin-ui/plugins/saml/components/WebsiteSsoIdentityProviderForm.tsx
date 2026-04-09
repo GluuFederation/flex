@@ -6,7 +6,7 @@ import { useFormik } from 'formik'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuCommitDialogLegacy from 'Routes/Apps/Gluu/GluuCommitDialogLegacy'
-import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
+import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import { useTranslation } from 'react-i18next'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
@@ -577,14 +577,13 @@ const WebsiteSsoIdentityProviderForm = ({
             </FormGroup>
             <Row>
               <Col>
-                <GluuFormFooter
-                  showBack={true}
+                <GluuThemeFormFooter
+                  showBack
                   showCancel={!viewOnly}
                   showApply={!viewOnly}
                   onApply={toggle}
                   onCancel={handleCancel}
                   onBack={() => navigateBack(ROUTES.SAML_IDP_LIST)}
-                  disableBack={false}
                   disableCancel={!formik.dirty}
                   disableApply={isApplyDisabled}
                   applyButtonType="button"

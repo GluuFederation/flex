@@ -12,6 +12,7 @@ const JsonViewer: React.FC<JsonViewerProps> = ({
   expanded = true,
   style = {},
   className = '',
+  backgroundColor,
 }) => {
   const styles = theme === THEME_DARK ? darkStyles : defaultStyles
   const shouldExpand = expanded ? allExpanded : undefined
@@ -28,7 +29,8 @@ const JsonViewer: React.FC<JsonViewerProps> = ({
       style={{
         padding: '1rem',
         borderRadius: '4px',
-        backgroundColor: theme === THEME_DARK ? customColors.black : customColors.white,
+        backgroundColor:
+          backgroundColor ?? (theme === THEME_DARK ? customColors.black : customColors.white),
         ...style,
       }}
     >

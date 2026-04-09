@@ -23,6 +23,7 @@ import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import AvailableCustomAttributesPanel from './AvailableCustomAttributesPanel'
 import { useStyles } from './styles/SsaForm.style'
 import { GRANT_TYPES } from '../helper/constants'
+import { useSsaValidationState } from '../hooks'
 import { getSsaValidationSchema } from '../helper/validations'
 import {
   getSsaInitialValues,
@@ -132,13 +133,6 @@ const SsaForm: React.FC<SsaFormProps> = ({
     setSelectedAttributes([])
   }, [formik])
 
-  const submitForm = async (userMessage: string): Promise<void> => {
-    if (!pendingPayload) return
-    await onSubmitData(pendingPayload, userMessage)
-    setModal(false)
-    setPendingPayload(null)
-  }
-
   const handleChange = useCallback(
     (data: { target: { name: string; value: string | string[] | boolean } }) => {
       const { name, value } = data.target
@@ -156,17 +150,66 @@ const SsaForm: React.FC<SsaFormProps> = ({
     [formik],
   )
 
-  const softwareRolesError = Boolean(formik.touched.software_roles && formik.errors.software_roles)
-  const grantTypesError = Boolean(formik.touched.grant_types && formik.errors.grant_types)
+  const validationState = useSsaValidationState(formik)
+
+  const claimsPanelStyle = useMemo(
+    () => (formHeight > 0 ? { maxHeight: formHeight } : undefined),
+    [formHeight],
+  )
+
+  const disableApply = useMemo(
+    () =>
+      shouldDisableApplyButton(
+        isSubmitting,
+        formik.dirty,
+        formik.isValid,
+        modifiedFields,
+        selectedAttributes,
+      ),
+    [isSubmitting, formik.dirty, formik.isValid, modifiedFields, selectedAttributes],
+  )
+
+  const enterHerePlaceholder = useMemo(() => t('placeholders.enter_here'), [t])
+
+  const softwareRolesPlaceholder = useMemo(
+    () => getFieldPlaceholder(t, 'fields.software_roles'),
+    [t],
+  )
+
+  const grantTypesPlaceholder = useMemo(() => getFieldPlaceholder(t, 'fields.grant_types'), [t])
+
+  const handleFormSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault()
+      formik.handleSubmit()
+    },
+    [formik],
+  )
+
+  const handleApply = useCallback(() => {
+    formik.handleSubmit()
+  }, [formik])
+
+  const handleExpirationDateChange = useCallback(
+    (date: Dayjs | null) => {
+      formik.setFieldValue('expirationDate', date)
+    },
+    [formik],
+  )
+
+  const submitForm = useCallback(
+    async (userMessage: string): Promise<void> => {
+      if (!pendingPayload) return
+      await onSubmitData(pendingPayload, userMessage)
+      setModal(false)
+      setPendingPayload(null)
+    },
+    [onSubmitData, pendingPayload],
+  )
 
   return (
     <>
-      <Form
-        onSubmit={(e: React.FormEvent) => {
-          e.preventDefault()
-          formik.handleSubmit()
-        }}
-      >
+      <Form onSubmit={handleFormSubmit}>
         <FormGroup row className={classes.formRoot}>
           <Col sm={8}>
             <div ref={formContentRef} className={classes.leftStack}>
@@ -180,11 +223,9 @@ const SsaForm: React.FC<SsaFormProps> = ({
                     rsize={12}
                     required
                     value={formik.values.software_id}
-                    placeholder={t('placeholders.enter_here')}
-                    showError={Boolean(formik.touched.software_id && formik.errors.software_id)}
-                    errorMessage={
-                      typeof formik.errors.software_id === 'string' ? formik.errors.software_id : ''
-                    }
+                    placeholder={enterHerePlaceholder}
+                    showError={validationState.softwareIdError}
+                    errorMessage={validationState.softwareIdErrorMessage}
                     handleChange={handleChange}
                     doc_category={SSA}
                   />
@@ -197,11 +238,9 @@ const SsaForm: React.FC<SsaFormProps> = ({
                     rsize={12}
                     required
                     value={formik.values.org_id}
-                    placeholder={t('placeholders.enter_here')}
-                    showError={Boolean(formik.touched.org_id && formik.errors.org_id)}
-                    errorMessage={
-                      typeof formik.errors.org_id === 'string' ? formik.errors.org_id : ''
-                    }
+                    placeholder={enterHerePlaceholder}
+                    showError={validationState.organizationError}
+                    errorMessage={validationState.organizationErrorMessage}
                     handleChange={handleChange}
                     doc_category={SSA}
                     doc_entry="org_id"
@@ -220,14 +259,14 @@ const SsaForm: React.FC<SsaFormProps> = ({
                           handleAutocompleteChange('software_roles', nextValues)
                         }
                         onBlur={() => formik.setFieldTouched('software_roles', true, false)}
-                        placeholder={getFieldPlaceholder(t, 'fields.software_roles')}
+                        placeholder={softwareRolesPlaceholder}
                         showError={false}
                         doc_category={SSA}
                       />
                     </div>
-                    {softwareRolesError && (
+                    {validationState.softwareRolesError && (
                       <GluuText disableThemeColor className={classes.autocompleteFieldError}>
-                        {(formik.errors.software_roles as string) || ''}
+                        {validationState.softwareRolesErrorMessage}
                       </GluuText>
                     )}
                   </div>
@@ -245,14 +284,14 @@ const SsaForm: React.FC<SsaFormProps> = ({
                           handleAutocompleteChange('grant_types', nextValues)
                         }
                         onBlur={() => formik.setFieldTouched('grant_types', true, false)}
-                        placeholder={getFieldPlaceholder(t, 'fields.grant_types')}
+                        placeholder={grantTypesPlaceholder}
                         showError={false}
                         doc_category={SSA}
                       />
                     </div>
-                    {grantTypesError && (
+                    {validationState.grantTypesError && (
                       <GluuText disableThemeColor className={classes.autocompleteFieldError}>
-                        {(formik.errors.grant_types as string) || ''}
+                        {validationState.grantTypesErrorMessage}
                       </GluuText>
                     )}
                   </div>
@@ -266,13 +305,9 @@ const SsaForm: React.FC<SsaFormProps> = ({
                       rsize={12}
                       required
                       value={formik.values.description}
-                      placeholder={t('placeholders.enter_here')}
-                      showError={Boolean(formik.touched.description && formik.errors.description)}
-                      errorMessage={
-                        typeof formik.errors.description === 'string'
-                          ? formik.errors.description
-                          : ''
-                      }
+                      placeholder={enterHerePlaceholder}
+                      showError={validationState.descriptionError}
+                      errorMessage={validationState.descriptionErrorMessage}
                       handleChange={handleChange}
                       doc_category={SSA}
                     />
@@ -316,7 +351,7 @@ const SsaForm: React.FC<SsaFormProps> = ({
                       <GluuDatePicker
                         format={DATE_FORMATS.DATE_PICKER_DISPLAY_US}
                         value={formik.values.expirationDate as Dayjs | null}
-                        onChange={(date) => formik.setFieldValue('expirationDate', date)}
+                        onChange={handleExpirationDateChange}
                         minDate={createDate()}
                         textColor={themeColors.fontColor}
                         backgroundColor={themeColors.background}
@@ -351,10 +386,7 @@ const SsaForm: React.FC<SsaFormProps> = ({
             </div>
           </Col>
           <Col sm={4}>
-            <div
-              className={classes.claimsPanelWrap}
-              style={formHeight > 0 ? { maxHeight: formHeight } : {}}
-            >
+            <div className={classes.claimsPanelWrap} style={claimsPanelStyle}>
               <AvailableCustomAttributesPanel
                 availableAttributes={customAttributes}
                 selectedAttributes={selectedAttributes}
@@ -373,14 +405,8 @@ const SsaForm: React.FC<SsaFormProps> = ({
           onCancel={handleCancel}
           disableCancel={isSubmitting || !isFormDirty}
           showApply
-          onApply={() => formik.handleSubmit()}
-          disableApply={shouldDisableApplyButton(
-            isSubmitting,
-            formik.dirty,
-            formik.isValid,
-            modifiedFields,
-            selectedAttributes,
-          )}
+          onApply={handleApply}
+          disableApply={disableApply}
           applyButtonType="button"
           isLoading={isSubmitting}
         />

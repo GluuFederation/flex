@@ -1,7 +1,7 @@
 import { memo, useContext, useState, useCallback, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
-import GluuFormFooter from './GluuFormFooter'
+import GluuThemeFormFooter from './GluuThemeFormFooter'
 import GluuText from './GluuText'
 import { useStyles } from './styles/GluuScriptErrorModal.style'
 import { useStyles as useCommitDialogStyles } from './styles/GluuCommitDialog.style'
@@ -101,13 +101,12 @@ const GluuScriptErrorModal = ({
               {error}
             </GluuText>
           </div>
-          <GluuFormFooter
+          <GluuThemeFormFooter
             showApply
             applyButtonType="button"
             applyButtonLabel={copyLabel}
             onApply={copyToClipboard}
             disableApply={isCopied}
-            applyIconClass="fa fa-copy"
           />
         </div>
       </div>
