@@ -18,7 +18,7 @@ type SsaFormStylesParams = {
 export const useStyles = makeStyles<SsaFormStylesParams>()((_, { isDark, themeColors }) => {
   const settings = themeColors.settings
   const inputBorderColor = settings?.inputBorder ?? themeColors.borderColor
-  const inputBg = settings?.cardBackground ?? themeColors.card.background
+  const inputBg = themeColors.inputBackground
   const inputColors = {
     inputBg,
     inputBorderColor,
@@ -79,7 +79,9 @@ export const useStyles = makeStyles<SsaFormStylesParams>()((_, { isDark, themeCo
       flex: 1,
     },
     sectionCard: {
-      'backgroundColor': isDark ? themeColors.inputBackground : themeColors.background,
+      'backgroundColor': isDark
+        ? (settings?.cardBackground ?? themeColors.card.background)
+        : themeColors.background,
       'border': isDark ? 'none' : `1px solid ${themeColors.borderColor}`,
       'borderRadius': BORDER_RADIUS.DEFAULT,
       'padding': 20,

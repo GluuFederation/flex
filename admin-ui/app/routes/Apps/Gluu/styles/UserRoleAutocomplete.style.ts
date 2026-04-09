@@ -18,14 +18,14 @@ export const useStyles = makeStyles<UserRoleAutocompleteStyleParams>()((
 ) => {
   const settings = themeColors.settings
   const inputBorderColor = settings?.inputBorder ?? themeColors.borderColor
-  const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
-  const inputBg = inputBackgroundColor ?? cardBg
+  const dropdownBg = themeColors.settings?.cardBackground ?? themeColors.card.background
+  const inputBg = inputBackgroundColor ?? themeColors.inputBackground
   const fontColor = themeColors.fontColor
   const optionHoverBg = themeColors.table.rowHoverBg
 
   return {
     card: {
-      backgroundColor: cardBg,
+      backgroundColor: dropdownBg,
       border: `1px solid ${inputBorderColor}`,
       borderRadius: MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS,
       padding: 16,
@@ -175,7 +175,7 @@ export const useStyles = makeStyles<UserRoleAutocompleteStyleParams>()((
       },
     },
     dropdownPaper: {
-      'backgroundColor': `${cardBg} !important`,
+      'backgroundColor': `${dropdownBg} !important`,
       'color': fontColor,
       'borderLeft': `1px solid ${inputBorderColor}`,
       'borderRight': `1px solid ${inputBorderColor}`,
