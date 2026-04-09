@@ -1,7 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react'
-import { useSelector } from 'react-redux'
-import { useAppDispatch } from '@/redux/hooks'
-import { Formik, FormikHelpers } from 'formik'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import {
   Col,
   Form,
@@ -29,13 +27,7 @@ import getThemeColor from 'Context/theme/config'
 import { formatDate, DATE_FORMATS } from '@/utils/dayjsUtils'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
-import type {
-  ScopeFormProps,
-  ScopeFormValues,
-  ScopeClient,
-  ExtendedScope,
-  ScopeRootState,
-} from './types'
+import type { ScopeFormProps, ScopeFormValues, ScopeClient, ExtendedScope } from './types'
 import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/GluuCommitDialog.types'
 import { SCOPE_TYPE_OPTIONS, CREATOR_TYPES } from './constants'
 import {
@@ -51,6 +43,7 @@ import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useStyles, errorTextStyle } from './styles/ScopeFormPage.style'
+import { Formik, FormikHelpers } from 'formik'
 
 const ScopeForm: React.FC<ScopeFormProps> = ({
   scope,
@@ -83,7 +76,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
   const dispatch = useAppDispatch()
   const client = scope.clients || []
 
-  const authReducer = useSelector((state: ScopeRootState) => state.authReducer)
+  const authReducer = useAppSelector((state) => state.authReducer)
 
   const dynamicScopeScripts = useMemo(
     () =>
@@ -166,6 +159,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
   }, [navigateBack])
 
   const goToClientViewPage = (clientId: string, clientData?: ScopeClient) => {
+    if (!clientData) return
     dispatch(viewOnly({ view: true }))
     dispatch(setCurrentItem({ item: clientData }))
     return navigateToRoute(ROUTES.AUTH_SERVER_CLIENT_EDIT(clientId))

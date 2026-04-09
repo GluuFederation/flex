@@ -22,7 +22,7 @@ import ClientEncryptionSigningPanel from './ClientEncryptionSigningPanel'
 import { toast } from 'react-toastify'
 import { setClientSelectedScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
 import { cloneDeep } from 'lodash'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import PropTypes from 'prop-types'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
@@ -62,8 +62,8 @@ function ClientWizardForm({
   const selectedTheme = theme.state.theme
   const [modal, setModal] = useState(false)
   const [currentStep, setCurrentStep] = useState(sequence[0])
-  const dispatch = useDispatch()
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
+  const dispatch = useAppDispatch()
+  const { permissions: cedarPermissions } = useAppSelector((state) => state.cedarPermissions)
 
   const clientResourceId = ADMIN_UI_RESOURCES.Clients
   const clientScopes = useMemo(

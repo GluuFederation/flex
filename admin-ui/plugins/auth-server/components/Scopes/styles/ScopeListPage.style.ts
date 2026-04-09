@@ -71,10 +71,13 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       '& table th': { verticalAlign: 'middle', lineHeight: TABLE_LINE_HEIGHT },
     },
     clientsLink: {
-      'color': customColors.lightGreen,
+      'color': themeColors.badges.filledBadgeBg,
       'fontWeight': fontWeights.regular,
       'textDecoration': 'underline',
-      '&:hover': { color: customColors.lightGreen, textDecoration: 'underline' },
+      '&:hover': {
+        color: themeColors.badges.filledBadgeBg,
+        textDecoration: 'underline',
+      },
     },
   }
 })

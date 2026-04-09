@@ -4,7 +4,7 @@ import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import isEmpty from 'lodash/isEmpty'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/redux/hooks'
 import { formatDate } from '@/utils/dayjsUtils'
 import AceEditor from 'react-ace'
 import { Card, Col, Container, FormGroup } from 'Components'
@@ -55,7 +55,7 @@ function ClientCibaParUmaPanel({
   const [showScopeSection, setShowScopeSection] = useState('scope')
   const [confirmModal, setConfirmModal] = useState(false)
   const [scopeList, setScopeList] = useState([])
-  const rptScripts = useSelector((state) => state.initReducer.scripts)
+  const rptScripts = useAppSelector((state) => state.initReducer.scripts)
     ?.filter((item) => item.scriptType == 'uma_rpt_claims')
     ?.filter((item) => item.enabled)
     ?.map((item) => ({ dn: item.dn, name: item.name }))
@@ -97,7 +97,7 @@ function ClientCibaParUmaPanel({
     setOpen(false)
     dispatch(viewOnly(true))
     setCurrentStep(sequence[0])
-    return navigateToRoute(ROUTES.AUTH_SERVER_CLIENT_EDIT(inum.substring(0, 4)))
+    return navigateToRoute(ROUTES.AUTH_SERVER_CLIENT_EDIT(inum))
   }
 
   useEffect(() => {

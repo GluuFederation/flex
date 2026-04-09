@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback, useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
-import { useAppSelector, useAppDispatch, type RootState } from '../../../../app/redux/hooks'
+import { useAppSelector, useAppDispatch } from '../../../../app/redux/hooks'
 import { FormGroup, Form, Alert, Input, GluuPageContent } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
@@ -68,8 +68,8 @@ const SettingsPage: React.FC = () => {
 
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
 
-  const userinfo = useAppSelector((state: RootState) => state.authReducer?.userinfo)
-  const clientId = useAppSelector((state: RootState) => state.authReducer?.config?.clientId)
+  const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
+  const clientId = useAppSelector((state) => state.authReducer?.config?.clientId)
 
   const {
     data: config,

@@ -67,31 +67,38 @@ const GluuFormDetailRow = ({
   }
 
   return (
-    <GluuTooltip doc_category={doc_category} isDirect={isDirect} doc_entry={doc_entry || label}>
-      <FormGroup {...formGroupProps}>
-        <Label for={label} style={appliedLabelStyle} sm={layout === 'row' ? lsize : 12}>
+    <FormGroup {...formGroupProps}>
+      <Label for={label} style={appliedLabelStyle} sm={layout === 'row' ? lsize : 12}>
+        <span data-tooltip-id={doc_entry || label} style={{ cursor: 'help' }}>
           {t(label)}:
-        </Label>
-        <Label for={value?.toString()} style={valueLabelStyle} sm={layout === 'row' ? rsize : 12}>
-          {!isBadge ? (
-            value
-          ) : badgeBackgroundColor != null && badgeTextColor != null ? (
-            <GluuBadge
-              size="sm"
-              backgroundColor={badgeBackgroundColor}
-              textColor={badgeTextColor}
-              borderColor={badgeBackgroundColor}
-            >
-              {value}
-            </GluuBadge>
-          ) : (
-            <Badge style={badgeColor ? undefined : badgeStyle} color={badgeColor}>
-              {value}
-            </Badge>
-          )}
-        </Label>
-      </FormGroup>
-    </GluuTooltip>
+        </span>
+      </Label>
+      <GluuTooltip
+        doc_category={doc_category}
+        isDirect={isDirect}
+        doc_entry={doc_entry || label}
+        tooltipOnly
+        place="top"
+      />
+      <Label for={value?.toString()} style={valueLabelStyle} sm={layout === 'row' ? rsize : 12}>
+        {!isBadge ? (
+          value
+        ) : badgeBackgroundColor != null && badgeTextColor != null ? (
+          <GluuBadge
+            size="sm"
+            backgroundColor={badgeBackgroundColor}
+            textColor={badgeTextColor}
+            borderColor={badgeBackgroundColor}
+          >
+            {value}
+          </GluuBadge>
+        ) : (
+          <Badge style={badgeColor ? undefined : badgeStyle} color={badgeColor}>
+            {value}
+          </Badge>
+        )}
+      </Label>
+    </FormGroup>
   )
 }
 export default memo(GluuFormDetailRow)

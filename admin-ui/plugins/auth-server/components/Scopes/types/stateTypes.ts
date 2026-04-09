@@ -12,7 +12,3 @@ export type ScopeAuthState = {
   }
   userinfo?: ScopeAuthUserInfo
 }
-
-export type ScopeRootState = {
-  authReducer: ScopeAuthState
-}

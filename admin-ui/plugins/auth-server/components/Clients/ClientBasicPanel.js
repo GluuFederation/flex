@@ -13,7 +13,7 @@ import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { useTranslation } from 'react-i18next'
 import { getClientScopeByInum } from '../../../../app/utils/Util'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { PER_PAGE_SCOPES } from '../../common/Constants'
 import _debounce from 'lodash/debounce'
 import PropTypes from 'prop-types'
@@ -46,15 +46,15 @@ const ClientBasicPanel = ({
   modifiedFields,
   setModifiedFields,
 }) => {
-  const dispatch = useDispatch()
-  const totalItems = useSelector((state) => state.scopeReducer.totalItems)
-  const clientScopes = useSelector((state) => state.scopeReducer.clientScopes)?.map((item) => ({
+  const dispatch = useAppDispatch()
+  const totalItems = useAppSelector((state) => state.scopeReducer.totalItems)
+  const clientScopes = useAppSelector((state) => state.scopeReducer.clientScopes)?.map((item) => ({
     dn: item.dn,
     name: item.id,
   }))
-  const selectedClientScopes = useSelector((state) => state.scopeReducer.selectedClientScopes)
-  const isLoading = useSelector((state) => state.scopeReducer.loadingClientScopes)
-  const scopeLoading = useSelector((state) => state.scopeReducer.loading)
+  const selectedClientScopes = useAppSelector((state) => state.scopeReducer.selectedClientScopes)
+  const isLoading = useAppSelector((state) => state.scopeReducer.loadingClientScopes)
+  const scopeLoading = useAppSelector((state) => state.scopeReducer.loading)
   const clientScopeOptions = scopes?.filter((o1) => !clientScopes?.some((o2) => o1.dn === o2.dn))
   const scopeOptions = client?.scopes?.length ? clientScopeOptions : scopes
   const { t } = useTranslation()

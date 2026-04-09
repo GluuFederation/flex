@@ -97,6 +97,7 @@
   "licenseScreen": {
     "redirecting": "Redirigiendo...",
     "welcomeTitle": "Bienvenido a Admin UI",
+    "expiredTitle": "Licencia Expirada",
     "uploadSsaLabel": "Por favor suba el SSA aquí :",
     "selectedFile": "Archivo seleccionado :",
     "dropzoneHint": "Arrastre y suelte el archivo .jwt aquí, o haga clic para seleccionar"
@@ -756,7 +757,7 @@
     "keycloack_configuration": "Configuración Keycloack",
     "lock": "Bloqueo",
     "cache": "Caché",
-    "clients": "Clientes",
+    "clients": "Clientes OIDC",
     "configuration": "Configuración",
     "couchbase": "Couchbase",
     "defaults": "Valores Predeterminados",
@@ -1401,7 +1402,7 @@
     "cedarling_config": "Configuración de Cedarling",
     "modules_properties": "Propiedades del módulo",
     "oauth_server_status_title": "Estado del servidor OAuth",
-    "oidc_clients": "Clientes OpenID Connect",
+    "oidc_clients": "Clientes OIDC",
     "private_keys": "Claves privadas",
     "public_keys": "Claves públicas",
     "profile_detail": "Detalles del perfil",

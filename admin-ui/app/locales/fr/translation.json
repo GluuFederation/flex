@@ -95,7 +95,7 @@
     },
     "lock": "Verrouillage",
     "cache": "Cache",
-    "clients": "Clients",
+    "clients": "Clients OIDC",
     "service_providers": "SSO de site web",
     "identity_providers": "Courtage d'identité",
     "basic_configuration": "Configuration de base",
@@ -231,6 +231,7 @@
   "licenseScreen": {
     "redirecting": "Redirection...",
     "welcomeTitle": "Bienvenue sur Admin UI",
+    "expiredTitle": "Licence Expirée",
     "uploadSsaLabel": "Veuillez télécharger le SSA ici :",
     "selectedFile": "Fichier sélectionné :",
     "dropzoneHint": "Glissez-déposez le fichier .jwt ici ou cliquez pour sélectionner"

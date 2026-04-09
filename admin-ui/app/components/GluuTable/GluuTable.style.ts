@@ -176,6 +176,8 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       overflowWrap: 'break-word',
       wordBreak: 'break-word',
       minWidth: 0,
+      overflow: 'hidden',
+      maxWidth: 0,
     },
     dividerRow: {
       backgroundColor: 'transparent',
@@ -193,9 +195,12 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       verticalAlign: 'top',
     },
     cellExpand: {
-      width: 40,
-      padding: '14px 8px',
+      width: 72,
+      minWidth: 72,
+      maxWidth: 72,
+      padding: '14px 20px 14px 12px',
       verticalAlign: 'top',
+      overflow: 'visible',
     },
     cellExpandInner: {
       display: 'flex',

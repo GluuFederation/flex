@@ -8,6 +8,7 @@ import GluuText from '@/routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
 import { GluuSpinner } from '@/components/GluuSpinner'
 import { useStyles } from './GluuTable.style'
+import { T_KEYS } from './constants'
 import type { CellValue, ColumnKey, GluuTableProps, SortDirection } from './types'
 import { ChevronIcon } from '@/components/SVG'
 import {
@@ -17,6 +18,9 @@ import {
 } from '@/utils/pagingUtils'
 
 const MIN_COL_WIDTH = 60
+const EMPTY_TABLE_ESTIMATE = 15
+const COLUMN_MIN_PCT = 10
+const COLUMN_MAX_PCT = 30
 
 const parseMinWidth = (col: { minWidth?: string | number }): string | number | undefined => {
   const mw = col.minWidth
@@ -41,9 +45,18 @@ const parseColumnWidth = (col: { width?: string | number }): string | undefined 
   return undefined
 }
 
-const EMPTY_TABLE_ESTIMATE = 15
-
 const colId = <T,>(col: { key: ColumnKey<T>; id?: string }): string => col.id ?? col.key
+
+const estimateContentLength = (value: CellValue | CellValue[]): number => {
+  if (value == null) return 1
+  if (Array.isArray(value)) {
+    if (value.length === 0) return 1
+    return Math.max(...value.map((v) => String(v ?? '').length))
+  }
+  if (typeof value === 'boolean') return 3
+  if (typeof value === 'number') return String(value).length
+  return String(value).length
+}
 
 const computeContentBasedWidths = <T,>(
   columns: { key: ColumnKey<T>; id?: string; label: string }[],
@@ -56,18 +69,21 @@ const computeContentBasedWidths = <T,>(
     const headerLen = col.label.length
     let maxContentLen = headerLen
     for (const row of data) {
-      const len = String(row[col.key] ?? '').length
+      const rawVal = row[col.key]
+      const len = estimateContentLength(
+        Array.isArray(rawVal) ? (rawVal as CellValue[]) : (rawVal as CellValue),
+      )
       maxContentLen = Math.max(maxContentLen, len)
     }
     if (data.length === 0) {
       maxContentLen = Math.max(maxContentLen, EMPTY_TABLE_ESTIMATE)
     }
-    return 1 + maxContentLen * 0.02
+    return 1 + maxContentLen * 0.1
   })
 
   const totalScore = scores.reduce((a, b) => a + b, 0)
   const rawPcts = scores.map((s) => (s / totalScore) * 100)
-  const clamped = rawPcts.map((p) => Math.max(14, Math.min(42, p)))
+  const clamped = rawPcts.map((p) => Math.max(COLUMN_MIN_PCT, Math.min(COLUMN_MAX_PCT, p)))
   const sumClamped = clamped.reduce((a, b) => a + b, 0)
   const pcts =
     sumClamped > 0 ? clamped.map((p) => (p / sumClamped) * 100) : clamped.map(() => 100 / totalCols)
@@ -91,18 +107,6 @@ const compareValues = (a: CellValue, b: CellValue, direction: 'asc' | 'desc'): n
   }
   return direction === 'desc' ? -cmp : cmp
 }
-
-const T_KEYS = {
-  FIELDS_ACTIONS: 'fields.actions',
-  FIELDS_OF: 'fields.of',
-  FIELDS_ROWS_PER_PAGE: 'fields.rows_per_page',
-  MESSAGES_LOADING: 'messages.loading',
-  MESSAGES_NO_DATA: 'messages.no_data_available',
-  MESSAGES_COLLAPSE: 'messages.collapse',
-  MESSAGES_EXPAND: 'messages.expand',
-  MESSAGES_PREVIOUS_PAGE: 'messages.previous_page',
-  MESSAGES_NEXT_PAGE: 'messages.next_page',
-} as const
 
 const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
   const {
@@ -363,7 +367,7 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
             className={[classes.table, tableClassName].filter(Boolean).join(' ')}
           >
             <colgroup>
-              {expandable && <col style={{ width: expandColumnWidth ?? 40 }} />}
+              {expandable && <col style={{ width: expandColumnWidth ?? 72 }} />}
               {columns.map((col, colIdx) => {
                 const w = effectiveWidths[colId(col)]
                 const minW = parseMinWidth(col)

@@ -27,7 +27,8 @@ import DashboardChart from './Chart/DashboardChart'
 import { CHART_LEGEND_CONFIG, STATUS_DETAILS } from './constants'
 import { GluuDatePicker } from '@/components/GluuDatePicker'
 import { useLicenseDetails } from '@/routes/License/hooks/useLicenseDetails'
-import { useDashboardClients, useDashboardLockStats } from './hooks'
+import { useClients } from 'Plugins/auth-server/components/Clients/hooks'
+import { useDashboardLockStats } from './hooks'
 import { useStyles } from './DashboardPage.style'
 import { GluuPageContent } from '@/components'
 import { StatusIndicator, SummaryCard, UserInfoItem } from './components'
@@ -121,7 +122,7 @@ const DashboardPage = () => {
   }, [hasSession, cedarInitialized, cedarIsInitializing, initPermissions])
 
   const { item: license, loading: licenseLoading } = useLicenseDetails()
-  const { totalCount: totalClientsEntries, isLoading: clientsLoading } = useDashboardClients()
+  const { totalCount: totalClientsEntries, isLoading: clientsLoading } = useClients()
   const { allServices, isLoading: healthLoading } = useHealthStatus()
 
   const isLockServiceAvailable = useMemo(() => {
