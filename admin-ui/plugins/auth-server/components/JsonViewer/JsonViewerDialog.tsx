@@ -1,4 +1,13 @@
-import { memo, useState, useCallback, useMemo } from 'react'
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type FC,
+  type KeyboardEvent,
+} from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { useAppDispatch } from '@/redux/hooks'
@@ -15,7 +24,7 @@ import JsonViewer from './JsonViewer'
 import { useStyles } from './JsonViewerDialog.style'
 import type { JsonViewerDialogProps } from './types'
 
-const JsonViewerDialog: React.FC<JsonViewerDialogProps> = ({
+const JsonViewerDialog: FC<JsonViewerDialogProps> = ({
   isOpen,
   toggle,
   data,
@@ -33,15 +42,57 @@ const JsonViewerDialog: React.FC<JsonViewerDialogProps> = ({
   const { classes: commitClasses } = useCommitDialogStyles({ isDark, themeColors })
   const { classes } = useStyles({ isDark, themeColors })
 
+  const dialogRef = useRef<HTMLDivElement | null>(null)
+  const previouslyFocusedElementRef = useRef<HTMLElement | null>(null)
   const [isCopied, setIsCopied] = useState(false)
 
   const handleClose = useCallback(() => {
     setIsCopied(false)
+    previouslyFocusedElementRef.current?.focus()
     toggle()
   }, [toggle])
 
+  useEffect(() => {
+    if (!isOpen) return
+
+    previouslyFocusedElementRef.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null
+
+    dialogRef.current?.focus()
+
+    return () => {
+      previouslyFocusedElementRef.current?.focus()
+    }
+  }, [isOpen])
+
+  const trapFocusWithinDialog = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== 'Tab' || !dialogRef.current) return
+
+    const focusableSelectors =
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    const focusable = Array.from(
+      dialogRef.current.querySelectorAll<HTMLElement>(focusableSelectors),
+    ).filter((el) => !el.hasAttribute('disabled') && el.getAttribute('aria-hidden') !== 'true')
+
+    if (focusable.length === 0) {
+      e.preventDefault()
+      return
+    }
+
+    const firstElement = focusable[0]
+    const lastElement = focusable[focusable.length - 1]
+
+    if (e.shiftKey && document.activeElement === firstElement) {
+      e.preventDefault()
+      lastElement.focus()
+    } else if (!e.shiftKey && document.activeElement === lastElement) {
+      e.preventDefault()
+      firstElement.focus()
+    }
+  }, [])
+
   const copyToClipboard = useCallback(async () => {
-    if (isCopied || !data) return
+    if (isCopied || data === undefined) return
     try {
       const text = typeof data === 'string' ? data : JSON.stringify(data, null, 2)
       await navigator.clipboard.writeText(text)
@@ -54,7 +105,7 @@ const JsonViewerDialog: React.FC<JsonViewerDialogProps> = ({
   }, [data, isCopied, dispatch])
 
   const handleOverlayKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
+    (e: KeyboardEvent<HTMLButtonElement>) => {
       if (e.key === 'Escape') {
         e.preventDefault()
         handleClose()
@@ -64,14 +115,15 @@ const JsonViewerDialog: React.FC<JsonViewerDialogProps> = ({
   )
 
   const handleModalKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
+    (e: KeyboardEvent<HTMLDivElement>) => {
       if (e.key === 'Escape') {
         e.preventDefault()
         e.stopPropagation()
         handleClose()
       }
+      trapFocusWithinDialog(e)
     },
-    [handleClose],
+    [handleClose, trapFocusWithinDialog],
   )
 
   if (!isOpen) return null
@@ -88,10 +140,12 @@ const JsonViewerDialog: React.FC<JsonViewerDialogProps> = ({
         aria-label={t('actions.close')}
       />
       <div
+        ref={dialogRef}
         className={`${commitClasses.modalContainer} ${classes.modalContainer}`}
         onClick={(e) => e.stopPropagation()}
         onKeyDown={handleModalKeyDown}
         role="dialog"
+        aria-modal="true"
         tabIndex={-1}
         aria-labelledby="json-viewer-title"
       >
@@ -114,7 +168,7 @@ const JsonViewerDialog: React.FC<JsonViewerDialogProps> = ({
                 <i className="fa fa-spinner fa-spin fa-2x" style={{ color: customColors.logo }} />
                 <p className={classes.loadingText}>{t('messages.request_waiting_message')}</p>
               </div>
-            ) : data ? (
+            ) : data !== undefined ? (
               <JsonViewer data={data} theme={selectedTheme} expanded={expanded} />
             ) : null}
           </div>
@@ -124,7 +178,7 @@ const JsonViewerDialog: React.FC<JsonViewerDialogProps> = ({
               applyButtonType="button"
               applyButtonLabel={copyLabel}
               onApply={copyToClipboard}
-              disableApply={isCopied || !data || isLoading}
+              disableApply={isCopied || data === undefined || isLoading}
               applyIconClass="fa fa-copy"
             />
           </div>

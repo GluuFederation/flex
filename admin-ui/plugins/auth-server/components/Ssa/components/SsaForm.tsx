@@ -204,27 +204,6 @@ const SsaForm: React.FC<SsaFormProps> = ({
                     doc_entry="org_id"
                   />
 
-                  <div className={classes.fullRow}>
-                    <GluuInputRow
-                      label="fields.description"
-                      name="description"
-                      formik={formik}
-                      lsize={12}
-                      rsize={12}
-                      required
-                      value={formik.values.description}
-                      placeholder={t('placeholders.enter_here')}
-                      showError={Boolean(formik.touched.description && formik.errors.description)}
-                      errorMessage={
-                        typeof formik.errors.description === 'string'
-                          ? formik.errors.description
-                          : ''
-                      }
-                      handleChange={handleChange}
-                      doc_category={SSA}
-                    />
-                  </div>
-
                   <GluuMultiSelectRow
                     label="fields.software_roles"
                     name="software_roles"
@@ -254,6 +233,27 @@ const SsaForm: React.FC<SsaFormProps> = ({
                     showError={Boolean(formik.touched.grant_types && formik.errors.grant_types)}
                     errorMessage={(formik.errors.grant_types as string) || ''}
                   />
+
+                  <div className={classes.fullRow}>
+                    <GluuInputRow
+                      label="fields.description"
+                      name="description"
+                      formik={formik}
+                      lsize={12}
+                      rsize={12}
+                      required
+                      value={formik.values.description}
+                      placeholder={t('placeholders.enter_here')}
+                      showError={Boolean(formik.touched.description && formik.errors.description)}
+                      errorMessage={
+                        typeof formik.errors.description === 'string'
+                          ? formik.errors.description
+                          : ''
+                      }
+                      handleChange={handleChange}
+                      doc_category={SSA}
+                    />
+                  </div>
 
                   <GluuToogleRow
                     name="one_time_use"

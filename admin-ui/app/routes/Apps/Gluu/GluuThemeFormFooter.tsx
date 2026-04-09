@@ -43,7 +43,6 @@ const GluuThemeFormFooter = ({
   applyButtonLabel,
   isLoading = false,
   className = '',
-  hideDivider: _hideDivider,
 }: GluuThemeFormFooterProps) => {
   const { t } = useTranslation()
   const { state } = useTheme()
