@@ -30,13 +30,14 @@ const UserRoleAutocomplete = ({
   allowCustom = false,
   onRemoveField,
   doc_category: _doc_category,
+  inputBackgroundColor,
 }: UserRoleAutocompleteProps) => {
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
   const selectedTheme = themeState?.theme ?? DEFAULT_THEME
   const themeColors = getThemeColor(selectedTheme)
   const isDark = selectedTheme === THEME_DARK
-  const { classes } = useStyles({ themeColors, allowCustom, isDark })
+  const { classes } = useStyles({ themeColors, allowCustom, isDark, inputBackgroundColor })
 
   const selectedItems = Array.isArray(value)
     ? value.filter((v): v is string => typeof v === 'string')

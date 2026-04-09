@@ -6,14 +6,16 @@ import type { ThemeConfig } from '@/context/theme/config'
 interface GluuMultiSelectRowStyleParams {
   themeColors: ThemeConfig
   isDark: boolean
+  inputBackgroundColor?: string
 }
 
 export const useStyles = makeStyles<GluuMultiSelectRowStyleParams>()((
   _theme,
-  { themeColors, isDark },
+  { themeColors, isDark, inputBackgroundColor },
 ) => {
   const fontColor = themeColors.fontColor
-  const formInputBg = themeColors.settings?.formInputBackground ?? themeColors.inputBackground
+  const formInputBg =
+    inputBackgroundColor ?? themeColors.settings?.formInputBackground ?? themeColors.inputBackground
   const inputBorderColor = themeColors.settings?.inputBorder ?? themeColors.borderColor
   const textMuted = themeColors.textMuted ?? customColors.textSecondary
 

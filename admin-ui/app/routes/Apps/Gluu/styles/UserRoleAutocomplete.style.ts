@@ -9,16 +9,18 @@ interface UserRoleAutocompleteStyleParams {
   themeColors: ThemeConfig
   allowCustom?: boolean
   isDark?: boolean
+  inputBackgroundColor?: string
 }
 
 export const useStyles = makeStyles<UserRoleAutocompleteStyleParams>()((
   _,
-  { themeColors, allowCustom, isDark = false },
+  { themeColors, allowCustom, isDark = false, inputBackgroundColor },
 ) => {
   const settings = themeColors.settings
   const inputBorderColor = settings?.inputBorder ?? themeColors.borderColor
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
-  const inputBg = isDark ? customColors.darkDropdownBg : themeColors.inputBackground
+  const inputBg =
+    inputBackgroundColor ?? (isDark ? customColors.darkDropdownBg : themeColors.inputBackground)
   const fontColor = themeColors.fontColor
 
   return {

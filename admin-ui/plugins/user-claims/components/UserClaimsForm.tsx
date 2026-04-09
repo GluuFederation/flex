@@ -55,6 +55,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
   }, [theme.state.theme])
 
   const { classes } = useStyles({ isDark, themeColors })
+  const userClaimsMultiSelectBg = themeColors.inputBackground
 
   // Memoized initial values
   const initialValues = useInitialAttributeValues(item)
@@ -317,6 +318,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     helperText={t('messages.multi_select_hint')}
                     showError={!!(formik.errors.editType && formik.touched.editType)}
                     errorMessage={formik.errors.editType ? t(formik.errors.editType as string) : ''}
+                    inputBackgroundColor={userClaimsMultiSelectBg}
                     disabled={isViewMode}
                   />
                 </div>
@@ -336,6 +338,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     helperText={t('messages.multi_select_hint')}
                     showError={!!(formik.errors.viewType && formik.touched.viewType)}
                     errorMessage={formik.errors.viewType ? t(formik.errors.viewType as string) : ''}
+                    inputBackgroundColor={userClaimsMultiSelectBg}
                     disabled={isViewMode}
                   />
                 </div>
@@ -357,6 +360,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     errorMessage={
                       formik.errors.usageType ? t(formik.errors.usageType as string) : ''
                     }
+                    inputBackgroundColor={userClaimsMultiSelectBg}
                     disabled={isViewMode}
                   />
                 </div>
