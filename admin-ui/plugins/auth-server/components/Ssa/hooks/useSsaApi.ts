@@ -141,6 +141,38 @@ export const useGetAllSsas = (): UseQueryResult<SsaData[], Error> => {
   })
 }
 
+export const useSsaJwtQuery = (
+  jti: string | null,
+  enabled: boolean,
+): UseQueryResult<SsaJwtResponse, Error> => {
+  const token = useAppSelector((state) => state.authReducer.jwtToken)
+  const authServerHost = String(
+    useAppSelector((state) => state.authReducer.config.authServerHost) ?? '',
+  )
+
+  return useQuery<SsaJwtResponse, Error>({
+    queryKey: SSA_QUERY_KEYS.detail(jti ?? 'pending'),
+    queryFn: ({ signal }) => {
+      if (!jti) {
+        throw new Error('No SSA selected')
+      }
+      return getSsaJwt(jti, token ?? '', authServerHost, signal)
+    },
+    enabled: enabled && !!jti && !!token && !!authServerHost,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    retry: (failureCount, error) => {
+      const apiError = error as ApiError
+      if (apiError.status === 401 || apiError.status === 403) {
+        return false
+      }
+      return failureCount < 2
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+  })
+}
+
 export const useCreateSsa = () => {
   const token = useAppSelector((state) => state.authReducer.jwtToken)
   const authServerHost = String(

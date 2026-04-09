@@ -1,6 +1,5 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { customColors } from '@/customColors'
 import { CEDARLING_CONFIG_SPACING, MAPPING_SPACING } from '@/constants'
 import { fontFamily, fontSizes, fontWeights, letterSpacing, lineHeights } from '@/styles/fonts'
 import applicationStyle from './applicationStyle'
@@ -15,17 +14,12 @@ interface UserRoleAutocompleteStyleParams {
 
 export const useStyles = makeStyles<UserRoleAutocompleteStyleParams>()((
   _,
-  { themeColors, allowCustom, isDark = false, inputBackgroundColor, withWrapper = true },
+  { themeColors, allowCustom, inputBackgroundColor, withWrapper = true },
 ) => {
   const settings = themeColors.settings
   const inputBorderColor = settings?.inputBorder ?? themeColors.borderColor
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
-  const defaultPlainInputBg = settings?.cardBackground ?? themeColors.card.background
-  const defaultWrappedInputBg =
-    settings?.formInputBackground ??
-    (isDark ? customColors.darkDropdownBg : themeColors.inputBackground)
-  const inputBg =
-    inputBackgroundColor ?? (withWrapper ? defaultWrappedInputBg : defaultPlainInputBg)
+  const inputBg = inputBackgroundColor ?? cardBg
   const fontColor = themeColors.fontColor
   const optionHoverBg = themeColors.table.rowHoverBg
 

@@ -1,6 +1,5 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { fontSizes, lineHeights } from '@/styles/fonts'
 
 const BODY_MAX_HEIGHT = '50vh'
 
@@ -11,21 +10,28 @@ interface StylesParams {
 
 export const useStyles = makeStyles<StylesParams>()((_theme, { themeColors }) => {
   return {
-    modalContainer: {},
+    modalContainer: {
+      'outline': 'none',
+      'boxShadow': 'none',
+      'border': 'none !important',
+      '&:focus, &:focus-visible': {
+        outline: 'none',
+        boxShadow: 'none',
+      },
+    },
     viewerBody: {
       overflowX: 'auto',
       overflowY: 'auto',
       maxHeight: BODY_MAX_HEIGHT,
     },
-    loadingContainer: {
-      padding: '2rem',
-      textAlign: 'center',
+    viewerPlaceholder: {
+      minHeight: '240px',
+      borderRadius: '4px',
+      backgroundColor: themeColors.card.background,
     },
-    loadingText: {
-      marginTop: '1rem',
-      color: themeColors.textMuted,
-      fontSize: fontSizes.base,
-      lineHeight: lineHeights.normal,
+    footer: {
+      width: '100%',
+      justifyContent: 'flex-end !important',
     },
   }
 })

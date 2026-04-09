@@ -59,6 +59,12 @@ jest.mock('../../hooks/useSsaApi', () => ({
     data: [],
     isLoading: false,
   })),
+  useSsaJwtQuery: jest.fn(() => ({
+    data: undefined,
+    isFetching: false,
+    isError: false,
+    error: null,
+  })),
   useCreateSsa: jest.fn(() => ({
     mutateAsync: jest.fn(),
     isPending: false,

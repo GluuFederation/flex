@@ -10,6 +10,7 @@ import {
 } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useAppDispatch } from '@/redux/hooks'
 import { useTheme } from '@/context/theme/themeContext'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
@@ -19,7 +20,6 @@ import { updateToast } from '@/redux/features/toastSlice'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import { devLogger } from '@/utils/devLogger'
-import customColors from '@/customColors'
 import JsonViewer from './JsonViewer'
 import { useStyles } from './JsonViewerDialog.style'
 import type { JsonViewerDialogProps } from './types'
@@ -163,21 +163,16 @@ const JsonViewerDialog: FC<JsonViewerDialogProps> = ({
             {title}
           </GluuText>
           <div className={classes.viewerBody}>
-            {isLoading ? (
-              <div className={classes.loadingContainer}>
-                <i className="fa fa-spinner fa-spin fa-2x" style={{ color: customColors.logo }} />
-                <GluuText variant="p" className={classes.loadingText}>
-                  {t('messages.request_waiting_message')}
-                </GluuText>
-              </div>
-            ) : data !== undefined ? (
+            {data !== undefined ? (
               <JsonViewer
                 data={data}
                 theme={selectedTheme}
                 expanded={expanded}
                 backgroundColor={themeColors.card.background}
               />
-            ) : null}
+            ) : (
+              <div className={classes.viewerPlaceholder} aria-hidden="true" />
+            )}
           </div>
           <GluuThemeFormFooter
             showApply
@@ -185,13 +180,14 @@ const JsonViewerDialog: FC<JsonViewerDialogProps> = ({
             applyButtonLabel={copyLabel}
             onApply={copyToClipboard}
             disableApply={isCopied || data === undefined || isLoading}
+            className={classes.footer}
           />
         </div>
       </div>
     </>
   )
 
-  return createPortal(modalContent, document.body)
+  return createPortal(<GluuLoader blocking={isLoading}>{modalContent}</GluuLoader>, document.body)
 }
 
 JsonViewerDialog.displayName = 'JsonViewerDialog'

@@ -27,7 +27,13 @@ import JsonViewerDialog from '../../JsonViewer/JsonViewerDialog'
 import { useStyles } from './styles/SsaListPage.style'
 import { useQueryClient } from '@tanstack/react-query'
 import { devLogger } from '@/utils/devLogger'
-import { useGetAllSsas, useGetSsaJwt, useRevokeSsaWithAudit, SSA_QUERY_KEYS } from '../hooks'
+import {
+  useGetAllSsas,
+  useGetSsaJwt,
+  useRevokeSsaWithAudit,
+  useSsaJwtQuery,
+  SSA_QUERY_KEYS,
+} from '../hooks'
 import { formatExpirationDate } from '../utils'
 import { downloadJwtFile } from '../utils/fileDownload'
 import type { SsaData } from '../types/SsaApiTypes'
@@ -49,7 +55,7 @@ const SsaListPage: React.FC = () => {
   const [deleteData, setDeleteData] = useState<SsaTableRowData | null>(null)
   const [pattern, setPattern] = useState<string>('')
   const [ssaDialogOpen, setSsaDialogOpen] = useState<boolean>(false)
-  const [jwtData, setJwtData] = useState<{ ssa: string } | null>(null)
+  const [selectedSsaJti, setSelectedSsaJti] = useState<string | null>(null)
 
   const { state: themeState } = useTheme()
   const selectedTheme = themeState.theme || DEFAULT_THEME
@@ -82,8 +88,8 @@ const SsaListPage: React.FC = () => {
   SetTitle(t('titles.ssa_management'))
 
   const { data: items = [], isLoading: loading } = useGetAllSsas()
-  const viewSsaJwtMutation = useGetSsaJwt()
   const downloadSsaJwtMutation = useGetSsaJwt()
+  const ssaJwtQuery = useSsaJwtQuery(selectedSsaJti, ssaDialogOpen)
   const { revokeSsa, isLoading: isDeleting } = useRevokeSsaWithAudit()
 
   const rowsWithId: SsaTableRowData[] = useMemo(
@@ -123,26 +129,27 @@ const SsaListPage: React.FC = () => {
 
   const toggleSsaDialog = useCallback((): void => {
     setSsaDialogOpen((prev) => {
-      if (prev) setJwtData(null)
-      return !prev
+      const nextOpen = !prev
+      if (!nextOpen) {
+        setSelectedSsaJti(null)
+      }
+      return nextOpen
     })
   }, [])
 
-  const handleViewSsa = useCallback(
-    async (row: SsaTableRowData): Promise<void> => {
-      setJwtData(null)
-      setSsaDialogOpen(true)
-      try {
-        const fetchedJwtData = await viewSsaJwtMutation.mutateAsync(row.ssa.jti)
-        setJwtData(fetchedJwtData)
-      } catch (error) {
-        devLogger.error('Failed to fetch SSA JWT:', error)
-        dispatch(updateToast(true, 'error'))
-        setSsaDialogOpen(false)
-      }
-    },
-    [viewSsaJwtMutation, dispatch],
-  )
+  const handleViewSsa = useCallback((row: SsaTableRowData): void => {
+    setSelectedSsaJti(row.ssa.jti)
+    setSsaDialogOpen(true)
+  }, [])
+
+  useEffect(() => {
+    if (!ssaDialogOpen || !ssaJwtQuery.isError) return
+
+    devLogger.error('Failed to fetch SSA JWT:', ssaJwtQuery.error)
+    dispatch(updateToast(true, 'error'))
+    setSsaDialogOpen(false)
+    setSelectedSsaJti(null)
+  }, [dispatch, ssaDialogOpen, ssaJwtQuery.error, ssaJwtQuery.isError])
 
   const handleDownloadSsa = useCallback(
     async (row: SsaTableRowData): Promise<void> => {
@@ -486,8 +493,8 @@ const SsaListPage: React.FC = () => {
           <JsonViewerDialog
             isOpen={ssaDialogOpen}
             toggle={toggleSsaDialog}
-            data={jwtData}
-            isLoading={viewSsaJwtMutation.isPending}
+            data={ssaJwtQuery.data}
+            isLoading={ssaJwtQuery.isFetching && !ssaJwtQuery.data}
             title={t('titles.json_view')}
             theme={selectedTheme}
             expanded={true}
