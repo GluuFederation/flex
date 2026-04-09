@@ -94,7 +94,7 @@
     },
     "lock": "Trancar",
     "cache": "Cache",
-    "clients": "Clientes",
+    "clients": "Clientes OIDC",
     "basic_configuration": "Configuração Básica",
     "inum_configuration": "Configuração Inum",
     "sources": "Fontes",
@@ -224,6 +224,7 @@
   "licenseScreen": {
     "redirecting": "Redirecionando...",
     "welcomeTitle": "Bem-vindo ao Admin UI",
+    "expiredTitle": "Licença Expirada",
     "uploadSsaLabel": "Por favor, envie o SSA aqui:",
     "selectedFile": "Arquivo selecionado:",
     "dropzoneHint": "Arraste e solte o arquivo .jwt aqui, ou clique para selecionar"

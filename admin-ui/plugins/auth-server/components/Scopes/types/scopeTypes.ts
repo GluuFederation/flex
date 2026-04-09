@@ -6,6 +6,7 @@ import type {
   ScopeCreatorAttributes,
   GetOauthScopesParams,
 } from 'JansConfigApi'
+import type { JsonValue } from '@/routes/Apps/Gluu/types/common'
 
 export type {
   Scope,
@@ -24,6 +25,7 @@ export interface ScopeClient {
   inum: string
   displayName?: string
   dn?: string
+  [key: string]: JsonValue | undefined
 }
 
 export interface ExtendedScope extends Scope {

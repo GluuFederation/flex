@@ -1,20 +1,29 @@
-import React, { useContext, useMemo } from 'react'
+import { useContext, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import { Badge } from 'Components'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/redux/hooks'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import customColors from '@/customColors'
+import { SPONTANEOUS_SCOPE_TYPE } from './constants'
+import type { ClientShowSpontaneousScopesProps } from './types'
 
-function ClientShowSpontaneousScopes({ handler, isOpen }) {
+const ClientShowSpontaneousScopes = ({
+  handler,
+  isOpen,
+}: ClientShowSpontaneousScopesProps): JSX.Element => {
   const { t } = useTranslation()
-  const scopesByCreator = useSelector((state) => state.scopeReducer.scopesByCreator)
+  const scopesByCreator = useAppSelector((state) => state.scopeReducer?.scopesByCreator ?? [])
 
-  const printableScopes = scopesByCreator.filter((item) => item.scopeType == 'spontaneous')
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
+  const printableScopes = useMemo(
+    () => scopesByCreator.filter((item) => item.scopeType === SPONTANEOUS_SCOPE_TYPE),
+    [scopesByCreator],
+  )
+
+  const themeCtx = useContext(ThemeContext) as { state?: { theme?: string } }
+  const selectedTheme = themeCtx?.state?.theme || DEFAULT_THEME
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
 
   const badgeStyle = useMemo(
@@ -42,13 +51,11 @@ function ClientShowSpontaneousScopes({ handler, isOpen }) {
       </ModalHeader>
       <ModalBody>
         {printableScopes.length > 0 ? (
-          printableScopes?.map((scope, key) => {
-            return (
-              <div key={key}>
-                <Badge style={badgeStyle}>{scope?.id}</Badge>
-              </div>
-            )
-          })
+          printableScopes.map((scope, key) => (
+            <div key={scope.inum ?? `spontaneous-${key}`}>
+              <Badge style={badgeStyle}>{scope?.id}</Badge>
+            </div>
+          ))
         ) : (
           <div style={{ color: customColors.black }}>
             {t('messages.no_scope_in_spontaneous_client')}
@@ -57,10 +64,11 @@ function ClientShowSpontaneousScopes({ handler, isOpen }) {
       </ModalBody>
       <ModalFooter>
         <Button style={buttonStyle} onClick={handler}>
-          Close
+          {t('actions.close')}
         </Button>
       </ModalFooter>
     </Modal>
   )
 }
+
 export default ClientShowSpontaneousScopes

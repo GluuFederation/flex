@@ -1,5 +1,4 @@
 import { useCallback } from 'react'
-import { useSelector } from 'react-redux'
 import { postUserAction } from 'Redux/api/backend-api'
 import type { UserActionPayload } from 'Redux/api/types/BackendApi'
 import { addAdditionalData } from 'Utils/TokenController'
@@ -11,8 +10,8 @@ import type {
   AssetAuditActionType,
   AssetAuditInit,
   AssetAuditLogActionPayload,
-  AssetAuditRootState,
 } from '../types'
+import { useAppSelector } from '@/redux/hooks'
 
 const MAX_STRING_LENGTH = 500
 const MAX_DEPTH = 5
@@ -55,9 +54,9 @@ const sanitizeActionData = (
 }
 
 export const useAssetAudit = () => {
-  const clientId = useSelector((state: AssetAuditRootState) => state.authReducer.config.clientId)
-  const ipAddress = useSelector((state: AssetAuditRootState) => state.authReducer.location.IPv4)
-  const userinfo = useSelector((state: AssetAuditRootState) => state.authReducer.userinfo)
+  const clientId = useAppSelector((state) => state.authReducer.config.clientId ?? '')
+  const ipAddress = useAppSelector((state) => state.authReducer.location.IPv4 ?? '')
+  const userinfo = useAppSelector((state) => state.authReducer.userinfo)
 
   const initAudit = useCallback(
     (): AssetAuditInit => ({

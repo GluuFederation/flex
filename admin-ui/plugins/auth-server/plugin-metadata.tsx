@@ -19,7 +19,6 @@ import { reducer as oidcReducer } from './redux/features/oidcSlice'
 import { reducer as scopeReducer } from './redux/features/scopeSlice'
 import { reducer as umaResourceReducer } from './redux/features/umaResourceSlice'
 import scopesSaga from './redux/sagas/OAuthScopeSaga'
-import oidcSaga from './redux/sagas/OIDCSaga'
 import umaResourceSaga from './redux/sagas/UMAResourceSaga'
 
 import {
@@ -219,7 +218,7 @@ const pluginMetadata = {
     { name: 'oidcReducer', reducer: oidcReducer },
     { name: 'umaResourceReducer', reducer: umaResourceReducer },
   ],
-  sagas: [scopesSaga(), oidcSaga(), umaResourceSaga()],
+  sagas: [scopesSaga(), umaResourceSaga()],
 }
 
 export default pluginMetadata

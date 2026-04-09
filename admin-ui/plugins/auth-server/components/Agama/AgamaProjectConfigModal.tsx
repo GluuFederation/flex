@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next'
 import { Box } from '@mui/material'
 import MaterialTable from '@material-table/core'
 import type { Column } from '@material-table/core'
-import { useDispatch } from 'react-redux'
 import { updateToast } from 'Redux/features/toastSlice'
 import { isEmpty } from 'lodash'
 import AceEditor from 'react-ace'
@@ -21,6 +20,7 @@ import type {
   JsonObject,
   ApiError,
 } from './types'
+import { useAppDispatch } from '@/redux/hooks'
 
 const buttonStyle = {
   backgroundColor: customColors.primaryDark,
@@ -36,7 +36,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
   manageConfig = false,
 }) => {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const theme = useContext(ThemeContext)
   const name = row.details?.projectMetadata?.projectName || ''
   const selectedTheme = theme?.state?.theme || DEFAULT_THEME

@@ -1,6 +1,18 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
-const initialState = {
+import type { ScopeItem, ScopeState } from 'Redux/types'
+import type {
+  DeleteScopeResponsePayload,
+  EditOrAddScopeResponsePayload,
+  GetClientScopesResponsePayload,
+  GetScopeByCreatorResponsePayload,
+  GetScopeByPatternResponsePayload,
+  ScopeActionPayload,
+  ScopesResponsePayload,
+  SetCurrentScopePayload,
+} from './types'
+
+export const initialState: ScopeState = {
   items: [],
   item: {},
   loading: false,
@@ -23,41 +35,41 @@ const scopeSlice = createSlice({
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
     },
-    getScopes: (state) => {
+    getScopes: (state, _action: PayloadAction<ScopeActionPayload>) => {
       state.loading = true
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
     },
-    handleUpdateScopeResponse: (state, action) => {
-      state.loading = false
-      if (action.payload.data) {
-        state.items = action.payload.data.entries || []
-        state.totalItems = action.payload.data.totalEntriesCount
-        state.entriesCount = action.payload.data.entriesCount
-      } else {
-        state.saveOperationFlag = false
-        state.errorInSaveOperationFlag = false
-      }
-    },
-    setCurrentItem: (state, action) => {
-      state.item = action.payload.item
-      state.loading = false
-    },
-    deleteScope: (state) => {
-      state.loading = true
-      state.saveOperationFlag = false
-      state.errorInSaveOperationFlag = false
-    },
-    deleteScopeResponse: (state, action) => {
+    handleUpdateScopeResponse: (state, action: PayloadAction<ScopesResponsePayload>) => {
       state.loading = false
       if (action.payload?.data) {
-        state.items = state.items.filter((i) => i.inum !== action.payload.data)
+        state.items = action.payload.data.entries ?? []
+        state.totalItems = action.payload.data.totalEntriesCount ?? 0
+        state.entriesCount = action.payload.data.entriesCount ?? 0
       } else {
         state.saveOperationFlag = false
         state.errorInSaveOperationFlag = false
       }
     },
-    editScopeResponse: (state, action) => {
+    setCurrentItem: (state, action: PayloadAction<SetCurrentScopePayload>) => {
+      state.item = action.payload?.item ?? {}
+      state.loading = false
+    },
+    deleteScope: (state, _action: PayloadAction<ScopeActionPayload>) => {
+      state.loading = true
+      state.saveOperationFlag = false
+      state.errorInSaveOperationFlag = false
+    },
+    deleteScopeResponse: (state, action: PayloadAction<DeleteScopeResponsePayload>) => {
+      state.loading = false
+      if (action.payload?.data) {
+        state.items = state.items.filter((i) => i.inum !== action.payload?.data)
+      } else {
+        state.saveOperationFlag = false
+        state.errorInSaveOperationFlag = false
+      }
+    },
+    editScopeResponse: (state, action: PayloadAction<EditOrAddScopeResponsePayload>) => {
       state.loading = false
       state.saveOperationFlag = true
       if (action.payload?.data) {
@@ -67,7 +79,7 @@ const scopeSlice = createSlice({
         state.errorInSaveOperationFlag = true
       }
     },
-    addScopeResponse: (state, action) => {
+    addScopeResponse: (state, action: PayloadAction<EditOrAddScopeResponsePayload>) => {
       state.loading = false
       state.saveOperationFlag = true
       if (action.payload?.data) {
@@ -77,56 +89,63 @@ const scopeSlice = createSlice({
         state.errorInSaveOperationFlag = true
       }
     },
-    getScopeByPatternResponse: (state, action) => {
+    getScopeByPatternResponse: (state, action: PayloadAction<GetScopeByPatternResponsePayload>) => {
       state.loading = false
-      if (action.payload.data) {
+      if (action.payload?.data) {
         state.item = action.payload.data
       } else {
         state.saveOperationFlag = false
         state.errorInSaveOperationFlag = false
       }
     },
-    getScopeByCreatorResponse: (state, action) => {
-      state.scopesByCreator = action.payload.data
+    getScopeByCreatorResponse: (state, action: PayloadAction<GetScopeByCreatorResponsePayload>) => {
+      const payload = action.payload
+      if (Array.isArray(payload)) {
+        state.scopesByCreator = payload
+      } else {
+        state.scopesByCreator = payload?.data ?? []
+      }
     },
-    getClientScopesResponse: (state, action) => {
+    getClientScopesResponse: (state, action: PayloadAction<GetClientScopesResponsePayload>) => {
       state.loading = false
-      if (action.payload.data) {
-        state.clientScopes = action.payload.data.entries
+      if (action.payload?.data) {
+        state.clientScopes = action.payload.data.entries ?? []
         state.loadingClientScopes = false
       } else {
         state.saveOperationFlag = false
         state.errorInSaveOperationFlag = false
       }
     },
-    searchScopes: (state, action) => {
+    searchScopes: (state, _action: PayloadAction<ScopeActionPayload>) => {
       state.loading = true
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
     },
-    addScope: (state) => {
+    addScope: (state, _action: PayloadAction<ScopeActionPayload>) => {
       state.loading = true
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
     },
-    editScope: (state) => {
+    editScope: (state, _action: PayloadAction<ScopeActionPayload>) => {
       state.loading = true
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
     },
-    getScopeByCreator: () => {},
-    getScopeByInum: (state) => {
+    getScopeByCreator: (_state, _action: PayloadAction<ScopeActionPayload>) => {
+      // handled by saga
+    },
+    getScopeByInum: (state, _action: PayloadAction<ScopeActionPayload>) => {
       state.loading = true
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
     },
-    getClientScopes: (state) => {
+    getClientScopes: (state, _action: PayloadAction<ScopeActionPayload>) => {
       state.loadingClientScopes = true
     },
     emptyScopes: (state) => {
       state.items = []
     },
-    setClientSelectedScopes: (state, action) => {
+    setClientSelectedScopes: (state, action: PayloadAction<ScopeItem[]>) => {
       state.selectedClientScopes = action.payload
     },
   },
@@ -153,6 +172,6 @@ export const {
   emptyScopes,
   setClientSelectedScopes,
 } = scopeSlice.actions
-export { initialState }
-export const { actions, reducer, state } = scopeSlice
+
+export const { actions, reducer } = scopeSlice
 reducerRegistry.register('scopeReducer', reducer)

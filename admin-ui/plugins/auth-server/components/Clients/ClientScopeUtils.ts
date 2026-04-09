@@ -1,10 +1,12 @@
+import type { AddOrgFn, ClientRow, FilterClientsByScope, ScopeItem } from './types'
+
 export const findAndFilterScopeClients = (
-  scopeInum,
-  scopes,
-  nonExtensibleClients,
-  filterClientsByScope,
-  addOrg,
-) => {
+  scopeInum: string,
+  scopes: ScopeItem[],
+  nonExtensibleClients: ClientRow[],
+  filterClientsByScope: FilterClientsByScope,
+  addOrg: AddOrgFn,
+): ClientRow[] | null => {
   const foundScope = scopes.find(({ inum }) => inum === scopeInum)
 
   if (foundScope?.clients && Array.isArray(foundScope.clients) && foundScope.clients.length > 0) {
