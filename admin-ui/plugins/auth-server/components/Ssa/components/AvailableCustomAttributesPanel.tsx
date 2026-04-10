@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useDeferredValue, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useTheme } from '@/context/theme/themeContext'
@@ -19,17 +19,35 @@ const AvailableCustomAttributesPanel: React.FC<CustomAttributesPanelProps> = ({
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
   const isDark = themeState.theme === THEME_DARK
   const { classes } = useStyles({ themeColors, isDark })
+  const deferredSearchInputValue = useDeferredValue(searchInputValue)
+
+  const normalizedAttributes = useMemo(
+    () =>
+      availableAttributes.map((attribute) => ({
+        label: attribute,
+        normalized: attribute.toLowerCase(),
+      })),
+    [availableAttributes],
+  )
+
+  const selectedAttributeSet = useMemo(() => new Set(selectedAttributes), [selectedAttributes])
 
   const visibleOptions = useMemo(() => {
-    const searchTrimmed = searchInputValue.trim()
-    if (searchTrimmed === '') return []
+    const searchTrimmed = deferredSearchInputValue.trim()
     const searchLower = searchTrimmed.toLowerCase()
-    return availableAttributes.filter((attribute) => {
-      const name = attribute.toLowerCase()
-      const alreadyAdded = selectedAttributes.includes(attribute)
-      return name.includes(searchLower) && !alreadyAdded
-    })
-  }, [availableAttributes, searchInputValue, selectedAttributes])
+    return normalizedAttributes
+      .filter(({ label, normalized }) => {
+        const alreadyAdded = selectedAttributeSet.has(label)
+        if (alreadyAdded) return false
+        if (searchLower === '') return true
+        return normalized.includes(searchLower)
+      })
+      .map(({ label }) => label)
+  }, [deferredSearchInputValue, normalizedAttributes, selectedAttributeSet])
+
+  const showNoDataState =
+    availableAttributes.length === 0 ||
+    (deferredSearchInputValue.trim() !== '' && visibleOptions.length === 0)
 
   return (
     <div className={classes.root}>
@@ -77,6 +95,12 @@ const AvailableCustomAttributesPanel: React.FC<CustomAttributesPanelProps> = ({
               </li>
             ))}
           </ul>
+        ) : showNoDataState ? (
+          <div className={classes.emptyState}>
+            <GluuText disableThemeColor className={classes.emptyStateText}>
+              {t('messages.no_data_found')}
+            </GluuText>
+          </div>
         ) : null}
       </div>
     </div>

@@ -123,6 +123,9 @@ export const useStyles = makeStyles<SsaFormStylesParams>()((_, { isDark, themeCo
       '& > div': {
         paddingBottom: 24,
       },
+      '& .MuiOutlinedInput-root [role="combobox"]': {
+        backgroundColor: 'transparent !important',
+      },
     },
     autocompleteFieldError: {
       display: 'block',

@@ -9,16 +9,18 @@ interface UserRoleAutocompleteStyleParams {
   allowCustom?: boolean
   isDark?: boolean
   inputBackgroundColor?: string
+  cardBackgroundColor?: string
   withWrapper?: boolean
 }
 
 export const useStyles = makeStyles<UserRoleAutocompleteStyleParams>()((
   _,
-  { themeColors, allowCustom, inputBackgroundColor, withWrapper = true },
+  { themeColors, allowCustom, inputBackgroundColor, cardBackgroundColor, withWrapper = true },
 ) => {
   const settings = themeColors.settings
   const inputBorderColor = settings?.inputBorder ?? themeColors.borderColor
-  const dropdownBg = themeColors.settings?.cardBackground ?? themeColors.card.background
+  const dropdownBg =
+    cardBackgroundColor ?? themeColors.settings?.cardBackground ?? themeColors.card.background
   const inputBg = inputBackgroundColor ?? themeColors.inputBackground
   const fontColor = themeColors.fontColor
   const optionHoverBg = themeColors.table.rowHoverBg
@@ -151,8 +153,30 @@ export const useStyles = makeStyles<UserRoleAutocompleteStyleParams>()((
             'boxShadow': 'none',
             'outline': 'none',
             'borderRadius': 4,
+            'position': 'relative',
+            'overflow': 'hidden',
+            'isolation': 'isolate',
+            '&::after': {
+              content: '""',
+              position: 'absolute',
+              inset: 0,
+              borderRadius: 'inherit',
+              backgroundColor: 'currentColor',
+              opacity: 0,
+              transform: 'scale(0.7)',
+              transition: 'opacity 0.18s ease, transform 0.18s ease',
+              pointerEvents: 'none',
+              zIndex: 0,
+            },
+            '& > *': {
+              position: 'relative',
+              zIndex: 1,
+            },
+            '& .MuiTouchRipple-root': {
+              color: 'inherit',
+            },
             '&:hover': {
-              background: optionHoverBg,
+              backgroundColor: 'transparent',
               border: 'none',
               boxShadow: 'none',
             },
@@ -160,7 +184,15 @@ export const useStyles = makeStyles<UserRoleAutocompleteStyleParams>()((
               outline: 'none',
               boxShadow: 'none',
               border: 'none',
-              background: optionHoverBg,
+              backgroundColor: 'transparent',
+            },
+            '&:hover::after, &:focus::after, &:focus-visible::after': {
+              opacity: 0.12,
+              transform: 'scale(1)',
+            },
+            '&:active::after': {
+              opacity: 0.16,
+              transform: 'scale(1.06)',
             },
             '&:not(:last-of-type)': { marginRight: 2 },
           },

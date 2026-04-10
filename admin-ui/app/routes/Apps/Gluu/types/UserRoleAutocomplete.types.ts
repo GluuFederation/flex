@@ -12,6 +12,7 @@ export interface UserRoleAutocompleteProps {
   onRemoveField?: () => void
   doc_category?: string
   inputBackgroundColor?: string
+  cardBackgroundColor?: string
   withWrapper?: boolean
   required?: boolean
   showError?: boolean

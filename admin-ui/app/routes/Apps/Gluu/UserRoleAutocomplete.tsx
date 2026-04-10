@@ -32,6 +32,7 @@ const UserRoleAutocomplete = ({
   onRemoveField,
   doc_category: _doc_category,
   inputBackgroundColor,
+  cardBackgroundColor,
   withWrapper = true,
   required = false,
   showError = false,
@@ -48,6 +49,7 @@ const UserRoleAutocomplete = ({
     allowCustom,
     isDark,
     inputBackgroundColor,
+    cardBackgroundColor,
     withWrapper,
   })
 

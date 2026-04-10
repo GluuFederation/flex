@@ -109,6 +109,19 @@ export const useStyles = makeStyles<AvailableCustomAttributesPanelStylesParams>(
     listItem: {
       borderBottom: 'none',
     },
+    emptyState: {
+      width: '100%',
+      borderRadius: 6,
+      backgroundColor: `${innerBg} !important`,
+      padding: '10px 12px',
+      boxSizing: 'border-box',
+    },
+    emptyStateText: {
+      display: 'block',
+      color: themeColors.textMuted,
+      fontSize: fontSizes.base,
+      lineHeight: lineHeights.normal,
+    },
     itemButton: {
       'width': '100%',
       'textAlign': 'left',
