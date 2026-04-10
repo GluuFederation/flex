@@ -25,4 +25,5 @@ export type GluuMultiSelectRowProps = {
   isDark?: boolean
   helperText?: string
   placeholder?: string
+  inputBackgroundColor?: string
 }

@@ -673,7 +673,6 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
               )}
 
               <GluuThemeFormFooter
-                hideDivider
                 showBack={true}
                 onBack={handleNavigateBack}
                 showCancel={true}

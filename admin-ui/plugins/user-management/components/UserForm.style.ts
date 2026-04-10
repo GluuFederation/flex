@@ -122,8 +122,8 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
       'display': 'flex',
       'flexDirection': 'column',
       'gap': 0,
-      '& > *': {
-        paddingBottom: SPACING.CARD_CONTENT_GAP,
+      '& > * + *': {
+        marginTop: SPACING.SECTION_GAP,
       },
       ...formGroupWithErrors,
       '& .form-group': {

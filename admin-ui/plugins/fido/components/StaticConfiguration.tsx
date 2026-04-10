@@ -563,7 +563,6 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
       </div>
 
       <GluuThemeFormFooter
-        hideDivider
         showBack
         showCancel
         showApply={!readOnly}

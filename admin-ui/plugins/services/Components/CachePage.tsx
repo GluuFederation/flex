@@ -380,7 +380,6 @@ const CachePage: React.FC = () => {
                   onApply={handleApply}
                   disableApply={!formik.isValid || !formik.dirty || !canWriteCache}
                   applyButtonType="button"
-                  hideDivider
                 />
               </Form>
 
