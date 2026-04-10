@@ -1,15 +1,16 @@
 import { useQuery, useMutation, useQueryClient, type UseQueryResult } from '@tanstack/react-query'
 import { useAppSelector } from '@/redux/hooks'
+import { invalidateQueriesByKey, queryDefaults } from '@/utils/queryUtils'
 import type { SsaData, SsaJwtResponse, SsaCreatePayload } from '../types'
+
+interface ApiError extends Error {
+  status?: number
+}
 
 export const SSA_QUERY_KEYS = {
   all: ['ssas'] as const,
   detail: (jti: string) => ['ssas', jti] as const,
 } as const
-
-interface ApiError extends Error {
-  status?: number
-}
 
 const SSA_API_BASE_PATH = '/jans-auth/restv1/ssa'
 
@@ -128,16 +129,7 @@ export const useGetAllSsas = (): UseQueryResult<SsaData[], Error> => {
     queryKey: SSA_QUERY_KEYS.all,
     queryFn: ({ signal }) => fetchAllSsas(token ?? '', authServerHost, signal),
     enabled: !!token && !!authServerHost,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
-    retry: (failureCount, error) => {
-      const apiError = error as ApiError
-      if (apiError.status === 401 || apiError.status === 403) {
-        return false
-      }
-      return failureCount < 2
-    },
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    ...queryDefaults.queryOptions,
   })
 }
 
@@ -159,17 +151,7 @@ export const useSsaJwtQuery = (
       return getSsaJwt(jti, token ?? '', authServerHost, signal)
     },
     enabled: enabled && !!jti && !!token && !!authServerHost,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
-    refetchOnWindowFocus: false,
-    retry: (failureCount, error) => {
-      const apiError = error as ApiError
-      if (apiError.status === 401 || apiError.status === 403) {
-        return false
-      }
-      return failureCount < 2
-    },
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    ...queryDefaults.queryOptions,
   })
 }
 
@@ -191,7 +173,7 @@ export const useCreateSsa = () => {
       return createSsa(payload, token, authServerHost)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: SSA_QUERY_KEYS.all })
+      invalidateQueriesByKey(queryClient, SSA_QUERY_KEYS.all)
     },
   })
 }

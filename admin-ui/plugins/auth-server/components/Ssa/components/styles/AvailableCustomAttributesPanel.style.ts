@@ -1,7 +1,7 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
+import { BORDER_RADIUS, SPACING } from '@/constants'
 import { fontFamily, fontSizes, fontWeights, lineHeights } from '@/styles/fonts'
-import { getLoadingOverlayRgba } from '@/customColors'
 
 interface AvailableCustomAttributesPanelStylesParams {
   themeColors: ThemeConfig
@@ -14,15 +14,15 @@ export const useStyles = makeStyles<AvailableCustomAttributesPanelStylesParams>(
 ) => {
   const panelBg = isDark ? themeColors.inputBackground : themeColors.background
   const innerBg = themeColors.settings?.cardBackground ?? themeColors.card.background
-  const hoverBg = getLoadingOverlayRgba(themeColors.fontColor, isDark ? 0.12 : 0.08)
+  const hoverBg = themeColors.table.rowHoverBg
   const focusOutline = themeColors.availableClaims.focusOutline
-  const dividerColor = getLoadingOverlayRgba(themeColors.fontColor, isDark ? 0.25 : 0.18)
+  const dividerColor = themeColors.borderColor
 
   return {
     root: {
       backgroundColor: `${panelBg} !important`,
       border: isDark ? 'none' : `1px solid ${themeColors.borderColor}`,
-      borderRadius: 6,
+      borderRadius: BORDER_RADIUS.SMALL,
       display: 'flex',
       flexDirection: 'column',
       minHeight: 0,
@@ -48,7 +48,7 @@ export const useStyles = makeStyles<AvailableCustomAttributesPanelStylesParams>(
       backgroundColor: dividerColor,
     },
     content: {
-      'padding': 16,
+      'padding': SPACING.CARD_CONTENT_GAP * 2,
       'display': 'flex',
       'flexDirection': 'column',
       'gap': 12,
@@ -68,7 +68,7 @@ export const useStyles = makeStyles<AvailableCustomAttributesPanelStylesParams>(
     search: {
       width: '100%',
       flexShrink: 0,
-      borderRadius: 6,
+      borderRadius: BORDER_RADIUS.SMALL,
       border: 'none !important',
       backgroundColor: `${innerBg} !important`,
       color: `${themeColors.fontColor} !important`,
@@ -83,7 +83,7 @@ export const useStyles = makeStyles<AvailableCustomAttributesPanelStylesParams>(
       'background': 'transparent',
       'border': 'none',
       'cursor': 'pointer',
-      'padding': 4,
+      'padding': SPACING.CARD_CONTENT_GAP / 2,
       'display': 'flex',
       'alignItems': 'center',
       'justifyContent': 'center',
@@ -102,7 +102,7 @@ export const useStyles = makeStyles<AvailableCustomAttributesPanelStylesParams>(
       maxHeight: '100%',
       overflowY: 'auto',
       overflowX: 'hidden',
-      borderRadius: 6,
+      borderRadius: BORDER_RADIUS.SMALL,
       border: 'none',
       backgroundColor: `${innerBg} !important`,
     },
@@ -111,7 +111,7 @@ export const useStyles = makeStyles<AvailableCustomAttributesPanelStylesParams>(
     },
     emptyState: {
       width: '100%',
-      borderRadius: 6,
+      borderRadius: BORDER_RADIUS.SMALL,
       backgroundColor: `${innerBg} !important`,
       padding: '10px 12px',
       boxSizing: 'border-box',

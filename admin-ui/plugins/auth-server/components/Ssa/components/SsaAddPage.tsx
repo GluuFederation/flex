@@ -17,6 +17,9 @@ import { useCreateSsa } from '../hooks'
 import { logSsaCreation } from '../helper'
 import type { SsaFormValues } from '../types/SsaApiTypes'
 
+const EMPTY_CUSTOM_ATTRIBUTES: string[] = []
+const EMPTY_SOFTWARE_ROLE_SCOPE_MAP: Record<string, string[]> = {}
+
 const SsaAddPage: React.FC = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -30,11 +33,15 @@ const SsaAddPage: React.FC = () => {
 
   const { data: configuration, isLoading } = useGetProperties()
   const customAttributes = useMemo(
-    () => configuration?.ssaConfiguration?.ssaCustomAttributes || [],
+    () => configuration?.ssaConfiguration?.ssaCustomAttributes ?? EMPTY_CUSTOM_ATTRIBUTES,
     [configuration],
   )
   const softwareRolesOptions = useMemo(
-    () => Object.keys(configuration?.ssaConfiguration?.ssaMapSoftwareRolesToScopes || {}),
+    () =>
+      Object.keys(
+        configuration?.ssaConfiguration?.ssaMapSoftwareRolesToScopes ??
+          EMPTY_SOFTWARE_ROLE_SCOPE_MAP,
+      ),
     [configuration],
   )
 

@@ -1,7 +1,7 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
 import { BORDER_RADIUS, SPACING } from '@/constants'
-import { fontFamily } from '@/styles/fonts'
+import { fontFamily, fontSizes } from '@/styles/fonts'
 import {
   createFormGroupOverrides,
   createFormLabelStyles,
@@ -121,7 +121,7 @@ export const useStyles = makeStyles<SsaFormStylesParams>()((_, { isDark, themeCo
     },
     autocompleteCardWrap: {
       '& > div': {
-        paddingBottom: 24,
+        paddingBottom: SPACING.SECTION_GAP,
       },
       '& .MuiOutlinedInput-root [role="combobox"]': {
         backgroundColor: 'transparent !important',
@@ -130,8 +130,8 @@ export const useStyles = makeStyles<SsaFormStylesParams>()((_, { isDark, themeCo
     autocompleteFieldError: {
       display: 'block',
       color: themeColors.errorColor,
-      fontSize: 12,
-      marginTop: 4,
+      fontSize: fontSizes.sm,
+      marginTop: SPACING.CARD_CONTENT_GAP / 2,
     },
     datePickerCell: {
       'display': 'flex',

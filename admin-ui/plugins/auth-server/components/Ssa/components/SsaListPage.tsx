@@ -39,6 +39,10 @@ import { downloadJwtFile } from '../utils/fileDownload'
 import type { SsaData } from '../types/SsaApiTypes'
 import type { SsaTableRowData } from '../types/SsaFormTypes'
 
+const SSA_RESOURCE_ID = ADMIN_UI_RESOURCES.SSA
+const SSA_SCOPES = CEDAR_RESOURCE_SCOPES[SSA_RESOURCE_ID] ?? []
+const SSA_ROWS_PER_PAGE_OPTIONS = getRowsPerPageOptions()
+
 const SsaListPage: React.FC = () => {
   const {
     hasCedarReadPermission,
@@ -63,27 +67,23 @@ const SsaListPage: React.FC = () => {
   const isDark = selectedTheme === THEME_DARK
 
   const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
-  const LIMIT_OPTIONS = useMemo(() => getRowsPerPageOptions(), [])
-
-  const ssaResourceId = ADMIN_UI_RESOURCES.SSA
-  const ssaScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[ssaResourceId] || [], [ssaResourceId])
 
   const canReadSsa = useMemo(
-    () => hasCedarReadPermission(ssaResourceId),
-    [hasCedarReadPermission, ssaResourceId],
+    () => hasCedarReadPermission(SSA_RESOURCE_ID),
+    [hasCedarReadPermission],
   )
   const canWriteSsa = useMemo(
-    () => hasCedarWritePermission(ssaResourceId),
-    [hasCedarWritePermission, ssaResourceId],
+    () => hasCedarWritePermission(SSA_RESOURCE_ID),
+    [hasCedarWritePermission],
   )
   const canDeleteSsa = useMemo(
-    () => hasCedarDeletePermission(ssaResourceId),
-    [hasCedarDeletePermission, ssaResourceId],
+    () => hasCedarDeletePermission(SSA_RESOURCE_ID),
+    [hasCedarDeletePermission],
   )
 
   useEffect(() => {
-    authorizeHelper(ssaScopes)
-  }, [authorizeHelper, ssaScopes])
+    authorizeHelper(SSA_SCOPES)
+  }, [authorizeHelper])
 
   SetTitle(t('titles.ssa_management'))
 
@@ -320,11 +320,11 @@ const SsaListPage: React.FC = () => {
       page: pageNumber,
       rowsPerPage: limit,
       totalItems,
-      rowsPerPageOptions: LIMIT_OPTIONS,
+      rowsPerPageOptions: SSA_ROWS_PER_PAGE_OPTIONS,
       onPageChange: handlePageChange,
       onRowsPerPageChange: handleRowsPerPageChange,
     }),
-    [pageNumber, limit, totalItems, LIMIT_OPTIONS, handlePageChange, handleRowsPerPageChange],
+    [pageNumber, limit, totalItems, handlePageChange, handleRowsPerPageChange],
   )
 
   const getRowKey = useCallback(
