@@ -40,6 +40,7 @@ const GluuMultiSelectRow: React.FC<GluuMultiSelectRowProps> = ({
   isDark: isDarkProp,
   helperText,
   placeholder,
+  inputBackgroundColor,
 }) => {
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
@@ -48,7 +49,7 @@ const GluuMultiSelectRow: React.FC<GluuMultiSelectRowProps> = ({
     [themeState?.theme],
   )
   const isDark = isDarkProp ?? themeState?.theme === THEME_DARK
-  const { classes } = useStyles({ themeColors, isDark })
+  const { classes } = useStyles({ themeColors, isDark, inputBackgroundColor })
 
   const [isOpen, setIsOpen] = useState(false)
   const [selectedValues, setSelectedValues] = useState<string[]>(Array.isArray(value) ? value : [])

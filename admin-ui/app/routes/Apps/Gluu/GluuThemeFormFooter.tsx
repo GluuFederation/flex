@@ -2,7 +2,7 @@ import { useMemo, useCallback, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import { DEFAULT_THEME } from '@/context/theme/constants'
-import { Box, Divider } from '@mui/material'
+import { Box } from '@mui/material'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { GluuButton } from '@/components'
 import {
@@ -43,7 +43,6 @@ const GluuThemeFormFooter = ({
   applyButtonLabel,
   isLoading = false,
   className = '',
-  hideDivider = false,
 }: GluuThemeFormFooterProps) => {
   const { t } = useTranslation()
   const { state } = useTheme()
@@ -108,7 +107,6 @@ const GluuThemeFormFooter = ({
 
   return (
     <>
-      {!hideDivider && <Divider />}
       <Box className={`${classes.footerWrapper} ${className}`} sx={{ my: 2 }}>
         <Box className={classes.leftGroup}>
           {buttonStates.showBack && (

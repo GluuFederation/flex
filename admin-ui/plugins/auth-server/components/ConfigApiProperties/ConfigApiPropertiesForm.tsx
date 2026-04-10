@@ -493,7 +493,6 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
               showApply
               disableApply={!hasChanges || (patches.length === 0 && !formik.isValid)}
               applyButtonType="submit"
-              hideDivider
             />
           </div>
         )}

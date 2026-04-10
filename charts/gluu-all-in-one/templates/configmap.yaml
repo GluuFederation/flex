@@ -96,6 +96,8 @@ data:
   | replace "auditStatsLogLevel" "audit_log_level"
   | replace "lockLogTarget" "lock_log_target"
   | replace "lockLogLevel" "lock_log_level"
+  | replace "rootLogTarget" "root_log_target"
+  | replace "rootLogLevel" "root_log_level"
   | replace "enableStdoutLogPrefix" "enable_stdout_log_prefix"
   | squote
   }}
@@ -110,6 +112,8 @@ data:
   | replace "persistenceDurationLogLevel" "persistence_duration_log_level"
   | replace "scriptLogTarget" "script_log_target"
   | replace "scriptLogLevel" "script_log_level"
+  | replace "rootLogTarget" "root_log_target"
+  | replace "rootLogLevel" "root_log_level"
   | replace "enableStdoutLogPrefix" "enable_stdout_log_prefix"
   | squote
   }}
@@ -150,6 +154,8 @@ data:
   | replace "persistenceDurationLogLevel" "persistence_duration_log_level"
   | replace "scriptLogTarget" "script_log_target"
   | replace "scriptLogLevel" "script_log_level"
+  | replace "rootLogTarget" "root_log_target"
+  | replace "rootLogLevel" "root_log_level"
   | replace "enableStdoutLogPrefix" "enable_stdout_log_prefix"
   | squote
   }}
@@ -165,6 +171,21 @@ data:
   | replace "persistenceDurationLogLevel" "persistence_duration_log_level"
   | replace "scriptLogTarget" "script_log_target"
   | replace "scriptLogLevel" "script_log_level"
+  | replace "rootLogTarget" "root_log_target"
+  | replace "rootLogLevel" "root_log_level"
+  | replace "enableStdoutLogPrefix" "enable_stdout_log_prefix"
+  | squote
+  }}
+  {{- end }}
+  {{- if index .Values "admin-ui" "enabled" }}
+  # ADMIN-UI
+  ADMIN_UI_JWKS: {{ cat "http://" ( .Values.service.name ) ":8080/jans-auth/restv1/jwks" | quote | nospace }}
+  CN_ADMIN_UI_PLUGIN_LOGGERS: {{ index .Values "config-api" "adminUiAppLoggers"
+  | toJson
+  | replace "adminUiLogTarget" "admin_ui_log_target"
+  | replace "adminUiLogLevel" "admin_ui_log_level"
+  | replace "adminUiAuditLogTarget" "admin_ui_audit_log_target"
+  | replace "adminUiAuditLogLevel" "admin_ui_audit_log_level"
   | replace "enableStdoutLogPrefix" "enable_stdout_log_prefix"
   | squote
   }}
@@ -176,6 +197,8 @@ data:
   | replace "casaLogLevel" "casa_log_level"
   | replace "timerLogTarget" "timer_log_target"
   | replace "timerLogLevel" "timer_log_level"
+  | replace "rootLogTarget" "root_log_target"
+  | replace "rootLogLevel" "root_log_level"
   | replace "enableStdoutLogPrefix" "enable_stdout_log_prefix"
   | squote
   }}

@@ -515,7 +515,6 @@ const SettingsPage: React.FC = () => {
                   onApply={formik.handleSubmit}
                   disableApply={!isFormChanged || hasErrors || isSubmitting}
                   applyButtonType="button"
-                  hideDivider
                 />
               </Form>
             </div>

@@ -16,6 +16,7 @@ import LoggingPage from './components/Logging'
 import ConfigApiPage from './components/ConfigApiProperties'
 
 import { reducer as oidcReducer } from './redux/features/oidcSlice'
+
 import { reducer as scopeReducer } from './redux/features/scopeSlice'
 import { reducer as umaResourceReducer } from './redux/features/umaResourceSlice'
 import scopesSaga from './redux/sagas/OAuthScopeSaga'
@@ -36,8 +37,8 @@ import {
   API_CONFIG_READ,
 } from 'Utils/PermChecker'
 import AuthNEditPage from './components/AuthN/AuthNEditPage'
-import SsaListPage from './components/Ssa/SsaListPage'
-import SsaAddPage from './components/Ssa/SsaAddPage'
+import SsaListPage from './components/Ssa/components/SsaListPage'
+import SsaAddPage from './components/Ssa/components/SsaAddPage'
 import AuthNPage from './components/AuthN'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { ROUTES } from '@/helpers/navigation'
