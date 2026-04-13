@@ -108,14 +108,10 @@ jobs:
         sudo apt-get install -y python${{ matrix.python_version }} python${{ matrix.python_version }}-dev python${{ matrix.python_version }}-distutils
         sudo apt install -y build-essential devscripts debhelper rpm libpq-dev apache2 rsyslog postgresql postgresql-contrib
         sudo python${{ matrix.python_version }} -m ensurepip || sudo apt-get install -y python3-pip
-        sudo python${{ matrix.python_version }} -m pip install --upgrade --force-reinstall \
-          cryptography \
-          urllib3 \
-          certifi \
-          requests \
-          ruamel.yaml \
-          pymysql \
-          psycopg2-binary
+        sudo PIP_BREAK_SYSTEM_PACKAGES=1 python${{ matrix.python_version }} -m pip install \
+          --upgrade \
+          --force-reinstall \
+          cryptography urllib3 certifi requests ruamel.yaml pymysql psycopg2-binary
     - name: Get tag and version
       id: previoustag
       run: |
@@ -210,8 +206,13 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.MOWORKFLOWTOKEN }}
       run: |
+        OS="${{ matrix.name }}"
+        VERSION="${{ steps.previoustag.outputs.version }}"
+        SUFFIX="${{ matrix.asset_suffix }}"
+        
         gh release upload ${{ steps.previoustag.outputs.tag }} \
-          "${{github.workspace}}/${{ matrix.asset_path }}/flex${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}${{ matrix.asset_suffix }}#${{ env.PACKAGE_PREFIX }}${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}${{ matrix.asset_suffix }}" \
-          "${{github.workspace}}/cosign.bundle#${{ env.PACKAGE_PREFIX }}${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}${{ matrix.asset_suffix }}.sigstore.json" \
+          "${{github.workspace}}/${{ matrix.asset_path }}/flex${{ matrix.asset_prefix }}${VERSION}${SUFFIX}" \
+          "${{github.workspace}}/cosign.bundle#flex-${OS}-${VERSION}.bundle" \
+          "${{github.workspace}}/${{ matrix.asset_path }}/flex${{ matrix.asset_prefix }}${VERSION}${SUFFIX}.sigstore.json#flex-${OS}-${VERSION}${SUFFIX}.sigstore.json" \
           --repo ${{ github.repository }} \
           --clobber
