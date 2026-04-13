@@ -212,6 +212,5 @@ jobs:
         gh release upload ${{ steps.previoustag.outputs.tag }} \
           "${{github.workspace}}/${{ matrix.asset_path }}/flex${{ matrix.asset_prefix }}${VERSION}${SUFFIX}" \
           "${{github.workspace}}/cosign.bundle#flex-${OS}-${VERSION}.bundle" \
-          "${{github.workspace}}/flex${{ matrix.asset_prefix }}${VERSION}${SUFFIX}.sigstore.json#flex-${OS}-${VERSION}${SUFFIX}.sigstore.json" \
           --repo ${{ github.repository }} \
           --clobber
