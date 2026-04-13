@@ -1,85 +1,96 @@
-// @ts-nocheck
-import React from 'react'
+import React, { useContext, useMemo } from 'react'
 import { Container } from 'Components'
 import { useTranslation } from 'react-i18next'
 import ApiKey from './LicenseScreens/ApiKey'
 import GluuErrorModal from '../routes/Apps/Gluu/GluuErrorModal'
+import GluuText from '../routes/Apps/Gluu/GluuText'
 import UploadSSA from './UploadSSA'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/redux/hooks'
 import GluuServiceDownModal from '../routes/Apps/Gluu/GluuServiceDownModal'
+import loaderGif from 'Images/gif/loader.gif'
+import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { DEFAULT_THEME } from '@/context/theme/constants'
+import useStyles from './styles/ApiKeyRedirect.style'
 
-function ApiKeyRedirect({
+type ApiKeyRedirectProps = {
+  isLicenseValid: boolean
+  islicenseCheckResultLoaded: boolean
+  roleNotFound: boolean
+  isConfigValid: boolean | null
+}
+
+const ApiKeyRedirect = ({
   isLicenseValid,
   islicenseCheckResultLoaded,
-  isLicenseActivationResultLoaded,
   roleNotFound,
   isConfigValid,
-}) {
+}: ApiKeyRedirectProps) => {
   const { t } = useTranslation()
-  const { isTimeout } = useSelector((state) => state.initReducer)
-  const { isValidatingFlow, isNoValidLicenseKeyFound, isUnderThresholdLimit } = useSelector(
+  const theme = useContext(ThemeContext)
+  const currentTheme = theme?.state?.theme ?? DEFAULT_THEME
+  const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
+  const { classes } = useStyles({ themeColors })
+  const { isTimeout } = useAppSelector((state) => state.initReducer)
+  const { isValidatingFlow, isNoValidLicenseKeyFound, isUnderThresholdLimit } = useAppSelector(
     (state) => state.licenseReducer,
   )
-  const backendStatus = useSelector((state) => state.authReducer.backendStatus)
+  const backendStatus = useAppSelector((state) => state.authReducer.backendStatus)
+
+  const shouldShowApiKey =
+    !isLicenseValid &&
+    islicenseCheckResultLoaded &&
+    isConfigValid &&
+    !isValidatingFlow &&
+    isNoValidLicenseKeyFound
+
+  const showRedirectingLoader =
+    isConfigValid !== false &&
+    (!islicenseCheckResultLoaded ||
+      isConfigValid === null ||
+      (!isTimeout && isUnderThresholdLimit && backendStatus.active && !shouldShowApiKey))
+
+  if (showRedirectingLoader) {
+    return (
+      <>
+        <div className={classes.redirectingScreen} aria-live="polite" aria-busy="true">
+          <img className={classes.loaderImage} src={loaderGif} alt="" />
+          <GluuText className={`initial-loader__row ${classes.redirectingText}`}>
+            {t('licenseScreen.redirecting')}
+          </GluuText>
+        </div>
+        {roleNotFound && (
+          <GluuErrorModal
+            message={t('roleNotFoundMessage')}
+            description={t('roleNotFoundDescription')}
+          />
+        )}
+      </>
+    )
+  }
 
   return (
     <React.Fragment>
       <Container>
-        {isConfigValid == false ? (
+        {isConfigValid === false && backendStatus.active ? (
           <UploadSSA />
-        ) : (
-          !isTimeout &&
-          isUnderThresholdLimit && (
-            <>
-              {!isLicenseValid &&
-              islicenseCheckResultLoaded &&
-              isConfigValid &&
-              !isValidatingFlow &&
-              isNoValidLicenseKeyFound ? (
-                <ApiKey />
-              ) : (
-                backendStatus.active && (
-                  <div
-                    style={{
-                      backgroundColor: 'transparent',
-                      margin: 'auto',
-                      marginTop: '25%',
-                    }}
-                  >
-                    <img
-                      style={{
-                        display: 'block',
-                        marginLeft: 'auto',
-                        marginTop: 'auto',
-                        marginRight: 'auto',
-                        width: '260px',
-                        height: 'auto',
-                      }}
-                      src={require('Images/gif/loader.gif')}
-                      alt="loading..."
-                    />
-                    <div className="initial-loader__row">Redirecting...</div>
-                  </div>
-                )
-              )}
-            </>
-          )
-        )}
+        ) : isConfigValid === false ? null : !isTimeout && isUnderThresholdLimit ? (
+          shouldShowApiKey ? (
+            <ApiKey />
+          ) : null
+        ) : null}
 
         {!backendStatus.active && (
           <GluuServiceDownModal
-            statusCode={backendStatus.statusCode}
-            message={
-              backendStatus.errorMessage ||
-              'Gluu Flex Admin UI is not getting any response from the backend (Jans Config Api).'
-            }
+            statusCode={backendStatus.statusCode ?? undefined}
+            message={backendStatus.errorMessage || t('serviceDownFallback')}
           />
         )}
 
         {roleNotFound && (
           <GluuErrorModal
-            message={t('Unauthorized User')}
-            description={'The logged-in user do not have valid role. Logging out of Admin UI'}
+            message={t('roleNotFoundMessage')}
+            description={t('roleNotFoundDescription')}
           />
         )}
       </Container>

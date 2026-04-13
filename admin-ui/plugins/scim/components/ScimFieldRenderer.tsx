@@ -1,98 +1,111 @@
-import React from 'react'
-import { Col } from 'Components'
+import React, { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import { DOC_CATEGORY } from '../helper'
-import type { FieldConfig } from './fieldConfigurations'
-import type { FormikProps } from 'formik'
-import type { ScimFormValues } from '../types'
+import type { ScimFieldRendererProps } from '../types'
 
-interface ScimFieldRendererProps {
-  config: FieldConfig
-  formik: FormikProps<ScimFormValues>
-  lsize?: number
-  rsize?: number
-}
+const LABEL_SIZE = 12
+const INPUT_SIZE = 12
+const EMPTY_OPTIONS: string[] = []
 
-/**
- * Renders a single SCIM form field based on configuration
- */
 const ScimFieldRenderer: React.FC<ScimFieldRendererProps> = ({
   config,
   formik,
-  lsize = 3,
-  rsize = 9,
+  fieldItemClass,
+  fieldItemFullWidthClass,
 }) => {
-  const { name, label, type, disabled = false, selectOptions } = config
+  const { t } = useTranslation()
+  const { name, label, type, disabled = false, selectOptions, colSize = 12 } = config
 
-  // Get field value
   const value = formik.values[name]
   const error = formik.errors[name]
   const touched = formik.touched[name]
 
+  const fieldPlaceholder = useMemo(() => getFieldPlaceholder(t, label), [t, label])
+  const itemClass = useMemo(
+    () => (colSize === 12 ? fieldItemFullWidthClass : fieldItemClass),
+    [colSize, fieldItemFullWidthClass, fieldItemClass],
+  )
+  const showError = useMemo(() => !!(error && touched), [error, touched])
+
+  const stableOptions = useMemo(
+    () => (selectOptions ? [...selectOptions] : EMPTY_OPTIONS),
+    [selectOptions],
+  )
+
   switch (type) {
     case 'text':
       return (
-        <Col sm={12}>
+        <div className={itemClass}>
           <GluuInputRow
             label={label}
             name={name}
             value={(value as string) || ''}
             formik={formik}
-            lsize={lsize}
-            rsize={rsize}
+            lsize={LABEL_SIZE}
+            rsize={INPUT_SIZE}
             disabled={disabled}
-            showError={!!(error && touched)}
+            showError={showError}
             errorMessage={error as string}
+            doc_category={DOC_CATEGORY}
+            placeholder={fieldPlaceholder}
           />
-        </Col>
+        </div>
       )
 
     case 'number':
       return (
-        <Col sm={12}>
+        <div className={itemClass}>
           <GluuInputRow
             label={label}
             name={name}
             type="number"
             value={value !== '' && value != null ? value.toString() : ''}
             formik={formik}
-            lsize={lsize}
-            rsize={rsize}
-            showError={!!(error && touched)}
+            lsize={LABEL_SIZE}
+            rsize={INPUT_SIZE}
+            disabled={disabled}
+            showError={showError}
             errorMessage={error as string}
+            doc_category={DOC_CATEGORY}
+            placeholder={fieldPlaceholder}
           />
-        </Col>
+        </div>
       )
 
     case 'select':
       return (
-        <Col sm={12}>
+        <div className={itemClass}>
           <GluuSelectRow
             label={label}
             name={name}
             value={value as string}
-            values={selectOptions ? [...selectOptions] : []}
+            values={stableOptions}
             formik={formik}
-            lsize={lsize}
-            rsize={rsize}
+            lsize={LABEL_SIZE}
+            rsize={INPUT_SIZE}
+            disabled={disabled}
+            doc_category={DOC_CATEGORY}
           />
-        </Col>
+        </div>
       )
 
     case 'toggle':
       return (
-        <Col sm={12}>
+        <div className={itemClass}>
           <GluuToggleRow
             label={label}
             name={name}
             formik={formik}
-            lsize={lsize}
-            rsize={rsize}
+            lsize={LABEL_SIZE}
+            rsize={INPUT_SIZE}
+            viewOnly={disabled}
             doc_category={DOC_CATEGORY}
           />
-        </Col>
+        </div>
       )
 
     default:

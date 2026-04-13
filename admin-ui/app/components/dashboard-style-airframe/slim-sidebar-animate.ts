@@ -1,12 +1,5 @@
 import anime from 'animejs'
-
-interface SlimSidebarAnimateOptions {
-  sidebarWidth?: number
-  sidebarSlimWidth?: number
-  animationDuration?: number
-  animationStaggerDelay?: number
-  animationEasing?: string
-}
+import type { SlimSidebarAnimateOptions } from './types'
 
 export default class SlimSidebarAnimate {
   private _nodesObserver: MutationObserver

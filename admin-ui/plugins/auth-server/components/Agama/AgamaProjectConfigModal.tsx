@@ -10,6 +10,9 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { isEmpty } from 'lodash'
 import AceEditor from 'react-ace'
 import { useGetAgamaPrjByName, useGetAgamaPrjConfigs, usePutAgamaPrj } from 'JansConfigApi'
+import { DEFAULT_THEME, THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
+import { devLogger } from '@/utils/devLogger'
+import customColors from '@/customColors'
 import type {
   AgamaProjectConfigModalProps,
   FlowError,
@@ -18,6 +21,12 @@ import type {
   JsonObject,
   ApiError,
 } from './types'
+
+const buttonStyle = {
+  backgroundColor: customColors.primaryDark,
+  color: customColors.white,
+  border: 'none',
+}
 
 const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
   isOpen,
@@ -30,7 +39,15 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
   const dispatch = useDispatch()
   const theme = useContext(ThemeContext)
   const name = row.details?.projectMetadata?.projectName || ''
-  const selectedTheme = theme?.state?.theme || 'dark'
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
+
+  const aceTheme = useMemo(() => {
+    const themeMap: Record<string, string> = {
+      [THEME_LIGHT]: 'xcode',
+      [THEME_DARK]: 'monokai',
+    }
+    return themeMap[selectedTheme] || 'xcode'
+  }, [selectedTheme])
   const [configDetails, setConfigDetails] = useState<ConfigDetailsState>({
     isLoading: false,
     data: {},
@@ -65,7 +82,6 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
   const updateConfigMutation = usePutAgamaPrj({
     mutation: {
       onSuccess: (data: string | JsonObject) => {
-        // Normalise config payload to a plain object that matches ConfigDetailsState
         let normalizedData: JsonObject = {}
 
         if (typeof data === 'string') {
@@ -74,7 +90,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
             normalizedData = parsed
           } catch (e) {
             const parseError: Error = e instanceof Error ? e : new Error(String(e))
-            console.error('Failed to parse config data JSON on success:', parseError)
+            devLogger.error('Failed to parse config data JSON on success:', parseError)
           }
         } else if (data && typeof data === 'object' && !Array.isArray(data)) {
           normalizedData = structuredClone(data) as JsonObject
@@ -90,15 +106,14 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
       },
       onError: (error: ApiError) => {
         const errorMessage = getErrorMessage(error, 'Invalid JSON file')
-        console.error('Error importing config:', error)
+        devLogger.error('Error importing config:', error)
         dispatch(updateToast(true, 'error', errorMessage))
       },
     },
   })
 
-  function getErrorMessage(error: ApiError, fallback = 'An error occurred'): string {
-    return error instanceof Error ? error.message : error?.message || fallback
-  }
+  const getErrorMessage = (error: ApiError, fallback = 'An error occurred'): string =>
+    error instanceof Error ? error.message : error?.message || fallback
 
   useEffect(() => {
     if (projectDetailsData) {
@@ -143,7 +158,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
         })
       } catch (error) {
         const parseError: Error = error instanceof Error ? error : new Error(String(error))
-        console.error('Error parsing config data:', parseError)
+        devLogger.error('Error parsing config data:', parseError)
         setConfigDetails({
           isLoading: false,
           data: {},
@@ -177,18 +192,18 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
     }, 6000)
   }
 
-  async function handleImportConfig(): Promise<void> {
+  const handleImportConfig = async (): Promise<void> => {
     let parsedValue: JsonObject | null = null
     const input = document.createElement('input')
     input.type = 'file'
     input.accept = '.json'
-    input.onchange = function (event: Event) {
+    input.onchange = (event: Event) => {
       const target = event.target as HTMLInputElement
       const file = target.files?.[0]
       if (!file) return
 
       const reader = new FileReader()
-      reader.onload = async function (event: ProgressEvent<FileReader>) {
+      reader.onload = async (event: ProgressEvent<FileReader>) => {
         try {
           const result = event.target?.result
           if (typeof result !== 'string') return
@@ -204,7 +219,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
           await refetchConfig()
         } catch (error) {
           const importError: ApiError = error instanceof Error ? error : { message: String(error) }
-          console.error('Error importing config:', importError)
+          devLogger.error('Error importing config:', importError)
           const errorMessage = getErrorMessage(importError, 'Invalid JSON file')
           dispatch(updateToast(true, 'error', errorMessage))
         } finally {
@@ -214,8 +229,8 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
           }))
         }
       }
-      reader.onerror = function () {
-        console.error('Error reading file')
+      reader.onerror = () => {
+        devLogger.error('Error reading file')
         dispatch(updateToast(true, 'error', 'Failed to read file'))
         setConfigDetails((prevState) => ({
           ...prevState,
@@ -230,7 +245,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
     }, 100)
   }
 
-  function save_data(data: string): void {
+  const save_data = (data: string): void => {
     try {
       const blob = new Blob([data], { type: 'application/json' })
 
@@ -248,7 +263,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
 
       dispatch(updateToast(true, 'success', 'File saved successfully'))
     } catch (e) {
-      console.error('Error saving file:', e)
+      devLogger.error('Error saving file:', e)
       dispatch(updateToast(true, 'error', 'An error occurred while saving the file'))
     }
   }
@@ -316,15 +331,17 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
                     sx={{ margin: '8px' }}
                     style={{ gap: '12px' }}
                   >
-                    <Button onClick={handleExportSampleConfig}>
+                    <Button style={buttonStyle} onClick={handleExportSampleConfig}>
                       {t('fields.export_sample_config')}
                     </Button>
 
-                    <Button onClick={handleExportCurrentConfig}>
+                    <Button style={buttonStyle} onClick={handleExportCurrentConfig}>
                       {t('fields.export_current_config')}
                     </Button>
 
-                    <Button onClick={handleImportConfig}>{t('fields.import_configuration')}</Button>
+                    <Button style={buttonStyle} onClick={handleImportConfig}>
+                      {t('fields.import_configuration')}
+                    </Button>
                   </Box>
                 ) : (
                   <>
@@ -370,7 +387,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
                           <AceEditor
                             mode={'json'}
                             readOnly={true}
-                            theme={selectedTheme}
+                            theme={aceTheme}
                             fontSize={14}
                             width="100%"
                             height="300px"
@@ -389,7 +406,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
       </ModalBody>
       <ModalFooter>
         {!isEmpty(projectConfigs) && (
-          <Button onClick={() => !isCopied && copyToClipboard()}>
+          <Button style={buttonStyle} onClick={() => !isCopied && copyToClipboard()}>
             {isCopied ? (
               <>{t('actions.configuration_copied')}</>
             ) : (
@@ -397,7 +414,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
             )}
           </Button>
         )}
-        <Button color={`primary-${selectedTheme}`} onClick={handler}>
+        <Button style={buttonStyle} onClick={handler}>
           {t('actions.close')}
         </Button>
       </ModalFooter>

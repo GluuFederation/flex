@@ -2,37 +2,12 @@ import React, { useState, useContext, useCallback, useEffect, useMemo } from 're
 import GluuLabel from './GluuLabel'
 import GluuToogle from './GluuToogle'
 import { Typeahead } from 'react-bootstrap-typeahead'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { Col, FormGroup, Input, Button } from 'Components'
 import { ThemeContext } from 'Context/theme/themeContext'
 import customColors from '@/customColors'
 import type { JsonPatch } from 'JansConfigApi'
-
-interface GluuInlineInputProps {
-  label: string
-  name: string
-  type?: 'text' | 'number' | 'email' | 'password' | 'tel' | 'url'
-  value?: string | number | boolean | string[]
-  required?: boolean
-  lsize?: number
-  rsize?: number
-  isBoolean?: boolean
-  isArray?: boolean
-  handler: (patch: JsonPatch) => void
-  options?: string[]
-  path?: string
-  doc_category?: string
-  disabled?: boolean
-  id?: string
-  parentIsArray?: boolean
-  showSaveButtons?: boolean
-}
-
-interface ThemeContextValue {
-  state: {
-    theme: string
-  }
-}
+import type { GluuInlineInputProps, ThemeContextValue } from './types'
 
 const GluuInlineInput = ({
   label,
@@ -51,6 +26,7 @@ const GluuInlineInput = ({
   disabled = false,
   id,
   showSaveButtons = true,
+  placeholder,
 }: GluuInlineInputProps) => {
   const theme = useContext(ThemeContext) as ThemeContextValue
   const selectedTheme = theme.state.theme
@@ -184,6 +160,7 @@ const GluuInlineInput = ({
                 onChange={onValueChanged}
                 disabled={disabled}
                 style={disabledStyle}
+                placeholder={placeholder}
               />
             )}
             {isBoolean && (

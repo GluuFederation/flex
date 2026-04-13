@@ -1,19 +1,25 @@
-import React, { useCallback } from 'react'
-import { Container, CardBody, Card, Button, Row, Col, Alert } from 'Components'
+import React, { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import Paper from '@mui/material/Paper'
 import SetTitle from 'Utils/SetTitle'
-import { useTheme } from 'Context/theme/themeContext'
+import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
+import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
+import { GluuPageContent } from '@/components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
+import { GluuRefreshButton } from '@/components/GluuSearchToolbar'
 import { useHealthStatus } from './hooks'
 import ServiceStatusCard from './components/ServiceStatusCard'
+import { useStyles } from './HealthPage.style'
 
 const HealthPage: React.FC = () => {
   const { t } = useTranslation()
   SetTitle(t('titles.services_health'))
 
-  const { state } = useTheme()
-  const themeColors = getThemeColor(state.theme)
+  const { state: themeState } = useTheme()
+  const currentTheme = themeState?.theme || DEFAULT_THEME
+  const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
 
   const { services, healthyCount, totalCount, isLoading, isFetching, isError, refetch } =
     useHealthStatus()
@@ -24,48 +30,67 @@ const HealthPage: React.FC = () => {
 
   const loading = isLoading || isFetching
 
+  const healthThemeColors = useMemo(
+    () => ({
+      cardBg: themeColors.settings?.cardBackground ?? themeColors.card.background,
+      navbarBorder: themeColors.navbar?.border ?? themeColors.borderColor,
+      text: themeColors.fontColor,
+      errorColor: themeColors.errorColor,
+      infoMessageColor: themeColors.textMuted,
+    }),
+    [themeColors],
+  )
+
+  const isDark = currentTheme === THEME_DARK
+  const { classes } = useStyles({ themeColors: healthThemeColors, isDark })
+
   return (
     <GluuLoader blocking={loading}>
-      <Container>
-        <Card className="mb-3">
-          <CardBody>
-            <Row className="mb-4 align-items-center">
-              <Col>
-                <h4 className="mb-0">{t('titles.services_health')}</h4>
-                {!isLoading && !isError && totalCount > 0 && (
-                  <small className="text-muted">
-                    {t('messages.services_healthy_count', { healthyCount, totalCount })}
-                  </small>
-                )}
-              </Col>
-              <Col xs="auto">
-                <Button color={`primary-${state.theme}`} onClick={handleRefresh} disabled={loading}>
-                  <i className={`fa fa-refresh me-2 ${loading ? 'fa-spin' : ''}`}></i>
-                  {t('actions.refresh')}
-                </Button>
-              </Col>
-            </Row>
-
-            {isError && (
-              <Alert color="danger" className="mb-4">
-                <i className="fa fa-exclamation-triangle me-2"></i>
-                {t('messages.error_fetching_health_status')}
-              </Alert>
+      <GluuPageContent>
+        <Paper elevation={0} className={classes.healthCard}>
+          <div className={classes.header}>
+            {!isLoading && !isError && totalCount > 0 && (
+              <GluuText variant="div" className={classes.headerTitle}>
+                {t('messages.services_healthy_count', { healthyCount, totalCount })}
+              </GluuText>
             )}
+            <div className={classes.refreshButtonWrapper}>
+              <GluuRefreshButton
+                className={classes.refreshButton}
+                onClick={handleRefresh}
+                loading={loading}
+              />
+            </div>
+            <div className={classes.headerDivider} />
+          </div>
 
-            {!isLoading && !isError && services.length === 0 && (
-              <Alert color="info">
-                <i className="fa fa-info-circle me-2"></i>
+          {isError && (
+            <div className={`${classes.messageBlock} ${classes.errorMessage}`}>
+              <i className={`fa fa-exclamation-triangle ${classes.errorIcon}`} />
+              <GluuText variant="span">{t('messages.error_fetching_health_status')}</GluuText>
+            </div>
+          )}
+
+          {!isLoading && !isError && services.length === 0 && (
+            <div className={`${classes.messageBlock} ${classes.infoMessage}`}>
+              <i className={`fa fa-info-circle ${classes.infoIcon}`} />
+              <GluuText variant="span" secondary>
                 {t('messages.no_services_found')}
-              </Alert>
-            )}
+              </GluuText>
+            </div>
+          )}
 
-            {services.map((service) => (
-              <ServiceStatusCard key={service.name} service={service} themeColors={themeColors} />
-            ))}
-          </CardBody>
-        </Card>
-      </Container>
+          {!isLoading && !isError && services.length > 0 && (
+            <div className={classes.servicesGrid}>
+              {services.map((service) => (
+                <div key={service.name} className={classes.serviceCardWrapper}>
+                  <ServiceStatusCard service={service} isDark={isDark} />
+                </div>
+              ))}
+            </div>
+          )}
+        </Paper>
+      </GluuPageContent>
     </GluuLoader>
   )
 }

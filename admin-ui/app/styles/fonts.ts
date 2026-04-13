@@ -1,0 +1,43 @@
+export const fontFamily = "'Mona-Sans', sans-serif"
+
+export const fontWeights = {
+  regular: 400,
+  medium: 500,
+  semiBold: 600,
+  bold: 700,
+} as const
+
+export const fontSizes = {
+  'xs': '10px',
+  'sm': '12px',
+  'base': '14px',
+  'description': '15px',
+  'md': '16px',
+  'content': '18px',
+  'lg': '20px',
+  'xl': '22px',
+  '2xl': '24px',
+  '2.5xl': '30px',
+  '3xl': '36px',
+  '4xl': '48px',
+  'chartAxis': '10.798px',
+} as const
+
+export const letterSpacing = {
+  tight: '0.2px',
+  button: '0.28px',
+  normal: '0.3px',
+  wide: '0.32px',
+  content: '0.36px',
+} as const
+
+export const lineHeights = {
+  normal: 'normal',
+  tight: '22px',
+  base: '24px',
+  relaxed: '28px',
+  loose: '32px',
+  XLose: '36px',
+  XXLoose: '40px',
+  XXXLoose: '44px',
+} as const

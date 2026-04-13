@@ -1,12 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useContext,
-  useCallback,
-  useMemo,
-  type ReactElement,
-} from 'react'
-
+import React, { useState, useEffect, useCallback, useMemo, type ReactElement } from 'react'
 import MaterialTable, { type Action, type Column } from '@material-table/core'
 import { Paper } from '@mui/material'
 import { useSetAtom } from 'jotai'
@@ -15,18 +7,19 @@ import { useCedarling } from '@/cedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { useTranslation } from 'react-i18next'
 import customColors from '@/customColors'
 import SetTitle from 'Utils/SetTitle'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import AuthNDetailPage from './AuthNDetailPage'
-import { useCustomScriptsByType } from 'Plugins/admin/components/CustomScripts/hooks'
-import { DEFAULT_SCRIPT_TYPE } from 'Plugins/admin/components/CustomScripts/constants'
+import { DEFAULT_SCRIPT_TYPE } from 'Plugins/scripts/components/constants'
 import { currentAuthNItemAtom, type AuthNItem } from './atoms'
 import { BUILT_IN_ACRS } from './constants'
 import { useGetAcrs, useGetConfigDatabaseLdap, type GluuLdapConfiguration } from 'JansConfigApi'
+import { DEFAULT_THEME } from '@/context/theme/constants'
+import { useCustomScriptsByType } from 'Plugins/scripts/components/hooks'
 
 interface AuthNListPageProps {
   isBuiltIn?: boolean
@@ -46,8 +39,8 @@ const AuthNListPage = ({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
   const { t } = useTranslation()
   const setCurrentItem = useSetAtom(currentAuthNItemAtom)
   const { navigateToRoute } = useAppNavigation()
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'light'
+  const { state: themeState } = useTheme()
+  const selectedTheme = themeState.theme || DEFAULT_THEME
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = useMemo(
     () => ({ background: themeColors.background }),
@@ -226,10 +219,11 @@ const AuthNListPage = ({ isBuiltIn = false }: AuthNListPageProps): ReactElement 
       headerStyle: {
         ...applicationStyle.tableHeaderStyle,
         ...bgThemeColor,
+        color: themeColors.fontColor,
       } as React.CSSProperties,
       actionsColumnIndex: -1,
     }),
-    [isBuiltIn, bgThemeColor],
+    [isBuiltIn, bgThemeColor, themeColors.fontColor],
   )
 
   return (

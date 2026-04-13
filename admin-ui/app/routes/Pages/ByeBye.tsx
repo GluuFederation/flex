@@ -1,19 +1,26 @@
-// @ts-nocheck
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useContext, useEffect, useMemo } from 'react'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { uuidv4 } from 'Utils/Util'
 import { EmptyLayout, Label } from 'Components'
 import { logoutUser } from 'Redux/features/logoutSlice'
 import { useTranslation } from 'react-i18next'
 import { setAuthState } from '../../redux/features/authSlice'
 import { deleteAdminUiSession as deleteSession } from 'Redux/api/backend-api'
+import type { AuthConfig } from 'Redux/types'
+import { ThemeContext } from 'Context/theme/themeContext'
+import { DEFAULT_THEME } from '@/context/theme/constants'
+import getThemeColor from '@/context/theme/config'
+import { devLogger } from '@/utils/devLogger'
 
-function ByeBye() {
-  const config = useSelector((state) => state.authReducer.config)
-  const hasSession = useSelector((state) => state.authReducer.hasSession)
+const ByeBye = () => {
+  const config = useAppSelector((state) => state.authReducer.config) as AuthConfig
+  const hasSession = useAppSelector((state) => state.authReducer.hasSession)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme?.state.theme || DEFAULT_THEME
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
 
   useEffect(() => {
     const performLogout = async () => {
@@ -23,7 +30,7 @@ function ByeBye() {
         try {
           await deleteSession()
         } catch (error) {
-          console.error('Error deleting admin UI session:', error)
+          devLogger.error('Error deleting admin UI session:', error)
         }
       }
 
@@ -40,14 +47,16 @@ function ByeBye() {
     }
 
     performLogout()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
-    <div className="fullscreen">
+    <div
+      className="fullscreen"
+      style={{ backgroundColor: themeColors.background, minHeight: '100vh' }}
+    >
       <EmptyLayout.Section center>
-        <Label style={{ fontSize: '2em', fontWeight: 'bold' }}>
-          {t('Thanks for using the admin ui')}.
+        <Label style={{ fontSize: '2em', fontWeight: 'bold', color: themeColors.fontColor }}>
+          {t('messages.thanks_for_using_admin_ui')}
         </Label>
       </EmptyLayout.Section>
     </div>

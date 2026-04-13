@@ -12,56 +12,37 @@ import find from 'lodash/find'
 import includes from 'lodash/includes'
 import mapValues from 'lodash/mapValues'
 import classNames from 'classnames'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import type { SidebarMenuEntry } from './types'
+import { REGEX_TRAILING_SLASH } from '@/utils/regex'
 import { PageConfigContext } from './../Layout/PageConfigContext'
 import { SideMenuAnimate } from './../../common'
 import { MenuContext } from './MenuContext'
 
-// Types for entries and context
-interface SidebarMenuEntry {
-  id: string
-  parentId?: string
-  exact: boolean
-  url?: string
-  open?: boolean
-  active?: boolean
+type SidebarMenuItemInjectedProps = {
+  currentUrl: string
+  slim: boolean
 }
 
-interface SidebarMenuContext {
-  entries: Record<string, SidebarMenuEntry>
-  addEntry: (entry: SidebarMenuEntry) => void
-  updateEntry: (id: string, stateMods: Partial<SidebarMenuEntry>) => void
-  removeEntry: (id: string) => void
+type ComponentWithDisplayName = React.ComponentType<Record<string, JsonValue | undefined>> & {
+  displayName?: string
+  name?: string
 }
 
-// Types for injected props
-interface Location {
-  pathname: string
-  [key: string]: any
-}
-
-interface PageConfig {
-  sidebarSlim?: boolean
-  sidebarCollapsed?: boolean
-  screenSize?: string
-  [key: string]: any
-}
-
-export interface SidebarMenuProps {
+interface SidebarMenuProps {
   children?: ReactNode
-  currentUrl?: string
   slim?: boolean
   disabled?: boolean
 }
 
 const SidebarMenu: React.FC<SidebarMenuProps> = ({ children, slim, disabled }) => {
-  const location = useLocation() as Location
-  const pageConfig = useContext(PageConfigContext) as PageConfig
+  const location = useLocation()
+  const pageConfig = useContext(PageConfigContext)
   const containerRef = useRef<HTMLUListElement>(null)
   const [entries, setEntries] = useState<Record<string, SidebarMenuEntry>>({})
   const entriesRef = useRef(entries)
-  const sidebarAnimation = useRef<any>(null)
+  const sidebarAnimation = useRef<InstanceType<typeof SideMenuAnimate> | null>(null)
 
-  // Keep entriesRef in sync with entries
   useEffect(() => {
     entriesRef.current = entries
   }, [entries])
@@ -89,8 +70,9 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ children, slim, disabled }) =
 
   const removeEntry = useCallback((id: string) => {
     setEntries((prev) => {
-      const { [id]: toRemove, ...rest } = prev
-      return rest
+      const next = { ...prev }
+      delete next[id]
+      return next
     })
   }, [])
 
@@ -112,7 +94,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ children, slim, disabled }) =
       const { pathname } = location
       const noTailSlashLocation =
         pathname[pathname.length - 1] === '/' && pathname.length > 1
-          ? pathname.replace(/\/$/, '')
+          ? pathname.replace(REGEX_TRAILING_SLASH, '')
           : pathname
       return entry.exact
         ? entry.url === noTailSlashLocation
@@ -134,10 +116,11 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ children, slim, disabled }) =
     }
   }
 
-  // Animation and active entry logic
   useEffect(() => {
     sidebarAnimation.current = new SideMenuAnimate()
-    sidebarAnimation.current.assignParentElement(containerRef.current)
+    if (containerRef.current) {
+      sidebarAnimation.current.assignParentElement(containerRef.current)
+    }
     setTimeout(() => {
       setActiveEntries(true)
     }, 0)
@@ -146,13 +129,10 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ children, slim, disabled }) =
         sidebarAnimation.current.destroy()
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Update active entries on location change
   useEffect(() => {
     setActiveEntries()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname])
 
   const isSlim =
@@ -180,13 +160,15 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ children, slim, disabled }) =
       <ul className={sidebarMenuClass} ref={containerRef}>
         {React.Children.map(children, (child) => {
           if (React.isValidElement(child)) {
-            // Only pass currentUrl and slim to SidebarMenuItem
-            const type = child.type as any
-            if (type?.displayName === 'SidebarMenuItem' || type?.name === 'SidebarMenuItem') {
-              return React.cloneElement(child as React.ReactElement<any>, {
-                currentUrl: location.pathname,
-                slim: isSlim,
-              })
+            const type = child.type as ComponentWithDisplayName
+            if (type?.displayName === 'SidebarMenuItem') {
+              return React.cloneElement(
+                child as React.ReactElement<Partial<SidebarMenuItemInjectedProps>>,
+                {
+                  currentUrl: location.pathname,
+                  slim: isSlim,
+                } as SidebarMenuItemInjectedProps,
+              )
             }
           }
           return child

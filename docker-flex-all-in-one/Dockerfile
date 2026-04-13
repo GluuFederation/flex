@@ -26,12 +26,12 @@ FROM ${FLEX_PERSISTENCE_LOADER_IMAGE} AS flex-persistence-loader-src
 # app
 # ===
 
-FROM bellsoft/liberica-openjdk-alpine:17.0.12@sha256:877a6ffc273212bd3f695db2a7973a05aa1bfb88ad550ba9ffe7deb7d1e50eee
+FROM bellsoft/liberica-openjdk-alpine:17.0.18@sha256:307b95033a52c3ebcebcb883048f6ffd6c6019cf7cda06fad8febb9d1caf39a3
 
 # hadolint ignore=DL3018
 RUN apk update \
     && apk upgrade --available \
-    && apk add --no-cache tini bash curl openssl python3 py3-cryptography py3-psycopg2 py3-grpcio nodejs npm nginx \
+    && apk add --no-cache tini bash curl openssl python3 py3-cryptography py3-psycopg2 py3-grpcio nginx \
     && apk add --no-cache --virtual .build-deps git wget
 
 # -------
@@ -53,13 +53,11 @@ COPY --from=jans-aio-src /opt/jans /opt/jans
 COPY --from=jans-aio-src /opt/prometheus /opt/prometheus
 COPY --from=jans-aio-src /usr/local/bin/facter /usr/local/bin/facter
 COPY --from=jans-aio-src /etc/nginx/jans-aio /etc/nginx/jans-aio
-COPY --from=jans-aio-src /opt/keycloak /opt/keycloak
-COPY --from=jans-aio-src /opt/idp /opt/idp
 COPY --from=jans-aio-src /var/log/adminui /var/log/adminui
 COPY --from=jans-aio-src /usr/share/java /usr/share/java
 
 # override persistence-loader assets
-COPY --from=flex-persistence-loader-src /app/schema /app/schema
+COPY --from=flex-persistence-loader-src /app/schema/flex_schema.json /app/schema/flex_schema.json
 
 COPY --from=flex-admin-ui-src /opt/flex/admin-ui /opt/flex/admin-ui
 COPY --from=flex-admin-ui-src /app/templates/admin-ui /app/templates/admin-ui
@@ -71,7 +69,7 @@ RUN ln -sf /app/flex_aio/admin_ui/entrypoint.sh /app/bin/admin-ui-entrypoint.sh
 # Assets sync
 # ===========
 
-ENV JANS_SOURCE_VERSION=051440c1c1a9345480c2925ae35a60b9131c27e6
+ENV JANS_SOURCE_VERSION=1b66569673d82976da013100f5c4eaae1854547e
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the assets
@@ -148,20 +146,6 @@ ENV JETTY_BASE=/opt/jans/jetty \
     CN_CASA_JAVA_OPTIONS="" \
     CN_SHARE_AUTH_CONF=false \
     CN_SQL_PASSWORD_FILE=/etc/jans/conf/sql_password \
-    CN_SAML_HTTP_HOST=127.0.0.1 \
-    CN_SAML_HTTP_PORT=8083 \
-    CN_SAML_JAVA_OPTIONS="" \
-    CN_SAML_KC_ADMIN_CREDENTIALS_FILE=/etc/jans/conf/kc_admin_creds \
-    CN_SAML_KC_DB_PASSWORD_FILE=/etc/jans/conf/kc_db_password \
-    KC_LOG_LEVEL=INFO \
-    KC_DB=mysql \
-    KC_DB_USERNAME=keycloak \
-    KC_DB_SCHEMA=keycloak \
-    KC_DB_URL_HOST=localhost \
-    KC_DB_URL_PORT=3306 \
-    KC_DB_URL_DATABASE=keycloak \
-    KC_DB_URL_PROPERTIES=?useUnicode=true&characterEncoding=UTF-8&character_set_server=utf8mb4 \
-    QUARKUS_TRANSACTION_MANAGER_ENABLE_RECOVERY=false \
     GLUU_ADMIN_UI_ENABLE_NGINX=false \
     GLUU_ADMIN_UI_PUBLIC_DIR=/var/lib/nginx/html/admin
 
@@ -219,10 +203,7 @@ RUN chown -R 1000:1000 ${JETTY_HOME}/temp \
     /var/log/nginx \
     /var/log/adminui \
     /etc/nginx/jans-aio \
-    /usr/share/java \
-    /opt/idp \
-    /opt/keycloak/logs \
-    /opt/keycloak/conf
+    /usr/share/java
 
 RUN chmod -R g=u ${JETTY_HOME}/temp \
     ${JETTY_BASE}/common/libs \
@@ -254,10 +235,7 @@ RUN chmod -R g=u ${JETTY_HOME}/temp \
     /var/log/nginx \
     /var/log/adminui \
     /etc/nginx/jans-aio \
-    /usr/share/java \
-    /opt/idp \
-    /opt/keycloak/logs \
-    /opt/keycloak/conf
+    /usr/share/java
 
 RUN chown 1000:1000 /opt/java/lib/security/cacerts \
     /run/nginx/nginx.pid \

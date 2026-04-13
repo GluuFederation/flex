@@ -5,7 +5,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import isEmpty from 'lodash/isEmpty'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import moment from 'moment'
+import { formatDate } from '@/utils/dayjsUtils'
 import AceEditor from 'react-ace'
 import { Card, Col, Container, FormGroup } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
@@ -15,7 +15,7 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
 import { FormControlLabel, Link, Radio, RadioGroup } from '@mui/material'
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { deleteUMAResource } from 'Plugins/auth-server/redux/features/umaResourceSlice'
 import { setCurrentItem } from 'Plugins/auth-server/redux/features/scopeSlice'
 import { setCurrentItem as setCurrentItemClient } from 'Plugins/auth-server/redux/features/oidcSlice'
@@ -416,7 +416,9 @@ function ClientCibaParUmaPanel({
             <FormGroup row>
               <GluuLabel label={t('fields.creationTime')} size={3} />
               <Col sm={9} className="top-5">
-                {moment(selectedUMA?.creationDate).format('ddd, MMM DD, YYYY h:mm:ss A')}
+                {selectedUMA?.creationDate
+                  ? formatDate(selectedUMA.creationDate, 'ddd, MMM DD, YYYY h:mm:ss A')
+                  : ''}
               </Col>
             </FormGroup>
           </Card>

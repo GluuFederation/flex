@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useMemo, useCallback } from 'react'
+import React, { useEffect, useState, useMemo, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useQueryClient } from '@tanstack/react-query'
 import { useCedarling } from '@/cedarling'
@@ -17,18 +17,20 @@ import {
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { Button, Form } from 'Components'
 import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
-import { ThemeContext } from '@/context/theme/themeContext'
-import DefaultAcrInput from '../Configuration/DefaultAcrInput'
+import { useTheme } from '@/context/theme/themeContext'
+import DefaultAcrInput from '../AuthServerProperties/DefaultAcrInput'
 import { getScripts } from 'Redux/features/initSlice'
 import { buildAgamaFlowsArray, buildDropdownOptions, type DropdownOption } from './helper/acrUtils'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useAcrAudit } from './hooks'
+import { DEFAULT_THEME } from '@/context/theme/constants'
+import customColors from '@/customColors'
+import { devLogger } from '@/utils/devLogger'
 
 interface CustomScript {
   name: string
   scriptType: string
   enabled: boolean
-  [key: string]: unknown
 }
 
 interface RootState {
@@ -101,8 +103,8 @@ function DefaultAcr(): React.ReactElement {
   const [put, setPut] = useState<PutData | null>(null)
   SetTitle(t('titles.authentication'))
 
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'light'
+  const { state: themeState } = useTheme()
+  const selectedTheme = themeState.theme || DEFAULT_THEME
 
   const authResourceId = ADMIN_UI_RESOURCES.Authentication
   const authScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[authResourceId] || [], [authResourceId])
@@ -123,7 +125,7 @@ function DefaultAcr(): React.ReactElement {
   }, [authorizeHelper, authScopes])
 
   useEffect(() => {
-    dispatch(getScripts({ action: { action_data: {} } }))
+    dispatch(getScripts({ action: { action_data: null } }))
   }, [dispatch])
 
   // Surface ACR fetch failures
@@ -183,7 +185,7 @@ function DefaultAcr(): React.ReactElement {
         try {
           await logAcrUpdate(newAcr, userMessage, { defaultAcr: acrValue })
         } catch (auditError) {
-          console.error('Failed to log ACR update:', auditError)
+          devLogger.error('Failed to log ACR update:', auditError)
           dispatch(
             updateToast(
               true,
@@ -204,7 +206,14 @@ function DefaultAcr(): React.ReactElement {
     >
       <Form onSubmit={handleSubmit}>
         <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} />
-        <div style={{ padding: '3vh' }}>
+        <style>{`
+          .default-acr-labels-black label,
+          .default-acr-labels-black label h5,
+          .default-acr-labels-black label span,
+          .default-acr-labels-black h5,
+          .default-acr-labels-black .MuiSvgIcon-root { color: ${customColors.black} !important; }
+        `}</style>
+        <div className="default-acr-labels-black" style={{ padding: '3vh' }}>
           <GluuViewWrapper canShow={canReadAuth}>
             <DefaultAcrInput
               name="defaultAcr"

@@ -1,6 +1,7 @@
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { BackendStatus, UserInfo, Config, Location, AuthState } from './types/authTypes'
+import type { ApiTokenPayload, PutConfigMeta } from './types'
 
 const initialState: AuthState = {
   isAuthenticated: false,
@@ -30,8 +31,7 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    // Saga trigger action
-    getOAuth2Config: (_state, _action: PayloadAction<any>) => {},
+    getOAuth2Config: (_state, _action: PayloadAction<ApiTokenPayload | undefined>) => {},
     setBackendStatus: (state, action: PayloadAction<BackendStatus>) => {
       state.backendStatus.active = action.payload.active
       state.backendStatus.errorMessage = action.payload.errorMessage
@@ -43,13 +43,13 @@ const authSlice = createSlice({
         state.config = newDataConfigObject
       }
     },
-    setOAuthState: (state, action: PayloadAction<{ authState: any }>) => {
-      state.authState = action.payload?.authState
+    setOAuthState: (state, action: PayloadAction<{ authState: string | null }>) => {
+      state.authState = action.payload?.authState ?? undefined
     },
     setAuthState: (state, action: PayloadAction<{ state: boolean }>) => {
       state.isAuthenticated = action.payload?.state
     },
-    getUserInfo: (_state, _action: PayloadAction<any>) => {},
+    getUserInfo: (_state, _action: PayloadAction<void>) => {},
     getUserInfoResponse: (
       state,
       action: PayloadAction<{
@@ -72,7 +72,7 @@ const authSlice = createSlice({
         state.isAuthenticated = true
       }
     },
-    getAPIAccessToken: (_state, _action: PayloadAction<any>) => {},
+    getAPIAccessToken: (_state, _action: PayloadAction<string | null>) => {},
     getAPIAccessTokenResponse: (
       state,
       action: PayloadAction<{ scopes?: string[]; issuer?: string }>,
@@ -81,16 +81,16 @@ const authSlice = createSlice({
       state.permissions = action.payload?.scopes || []
       state.isAuthenticated = true
     },
-    getUserLocation: (_state, _action: PayloadAction<any>) => {},
+    getUserLocation: (_state, _action: PayloadAction<void>) => {},
     getUserLocationResponse: (state, action: PayloadAction<{ location?: Location }>) => {
       if (action.payload?.location) {
         state.location = action.payload.location
       }
     },
-    setApiDefaultToken: (state, action: PayloadAction<any>) => {
+    setApiDefaultToken: (state, action: PayloadAction<ApiTokenPayload>) => {
       state.issuer = action.payload?.issuer || null
     },
-    putConfigWorker: (state, _action: PayloadAction<any>) => {
+    putConfigWorker: (state, _action: PayloadAction<Config & { _meta?: PutConfigMeta }>) => {
       state.loadingConfig = true
     },
     putConfigWorkerResponse: (state) => {

@@ -1,8 +1,14 @@
 import type { CSSProperties, ReactNode } from 'react'
 import type { FormikProps } from 'formik'
 import type { WebhookEntry, AuiFeature, GetAllWebhooksParams, KeyValuePair } from 'JansConfigApi'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
 export type { WebhookEntry, AuiFeature, GetAllWebhooksParams, KeyValuePair }
+
+export type MutationCallbacks = {
+  onSuccess?: () => void
+  onError?: (error: Error) => void
+}
 
 export interface WebhookFormValues {
   displayName: string
@@ -36,13 +42,16 @@ export interface ShortcodeField {
 export interface ShortcodePopoverProps {
   codes: ShortcodeField[]
   buttonWrapperStyles?: CSSProperties
+  buttonWrapperClassName?: string
   handleSelectShortcode: (code: string) => void
+  disabled?: boolean
 }
 
 export interface ShortcodeLabelProps {
   doc_category?: string
   doc_entry: string
   label: string
+  classes: Record<string, string>
 }
 
 export interface WebhookListState {
@@ -63,8 +72,8 @@ export interface CursorPosition {
 
 export interface TriggerPayload {
   feature?: string | null
-  payload?: unknown
-  createdFeatureValue?: unknown
+  payload?: JsonValue
+  createdFeatureValue?: JsonValue
 }
 
 export interface WebhookActionPayload {
@@ -86,7 +95,7 @@ export interface PagedWebhookResult {
 export interface TableAction {
   icon: string | (() => ReactNode)
   tooltip: string
-  iconProps?: Record<string, unknown>
+  iconProps?: Record<string, string | number | boolean>
   isFreeAction?: boolean
   onClick: (event: React.MouseEvent, rowData?: WebhookEntry | WebhookEntry[]) => void
   disabled?: boolean

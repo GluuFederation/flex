@@ -1,22 +1,14 @@
-import moment from 'moment'
-import { CustomObjectAttribute } from 'JansConfigApi'
-import { BIRTHDATE_ATTR, JANS_ADMIN_UI_ROLE_ATTR } from '../common/Constants'
+import { parseDateStrict } from '@/utils/dayjsUtils'
+import { REGEX_DATE_YYYY_MM_DD } from '@/utils/regex'
+import { BIRTHDATE_ATTR, JANS_ADMIN_UI_ROLE_ATTR, USER_ROLE_FORM_ATTR } from '../common/Constants'
 import {
   UserEditFormValues,
   FormValueEntry,
   ModifiedFields,
   ModifiedFieldValue,
+  ValueExtractionRecord,
 } from '../types/ComponentTypes'
-import { PersonAttribute, CustomUser } from '../types/UserApiTypes'
-
-export type AttributeValue = string | boolean
-
-interface ValueExtractionRecord {
-  role?: string
-  value?: string
-  label?: string
-  [key: string]: string | undefined
-}
+import { PersonAttribute, CustomUser, CustomAttribute, AttributeValue } from '../types/UserApiTypes'
 
 export const extractValueFromEntry = (entry: FormValueEntry, attributeName: string): string => {
   if (typeof entry === 'string') {
@@ -24,7 +16,10 @@ export const extractValueFromEntry = (entry: FormValueEntry, attributeName: stri
   }
   if (entry && typeof entry === 'object' && !Array.isArray(entry)) {
     const record = entry as ValueExtractionRecord
-    if ((attributeName === JANS_ADMIN_UI_ROLE_ATTR || attributeName === 'role') && record.role) {
+    if (
+      (attributeName === JANS_ADMIN_UI_ROLE_ATTR || attributeName === USER_ROLE_FORM_ATTR) &&
+      record.role
+    ) {
       return record.role.trim()
     }
     const value = record.role ?? record.value ?? record.label ?? record[attributeName]
@@ -46,8 +41,12 @@ export const normalizeSingleValue = (value: FormValueEntry, attributeName: strin
         : ''
 
   if (attributeName === BIRTHDATE_ATTR && normalized) {
-    const m = moment(normalized, 'YYYY-MM-DD', true)
-    return m.isValid() ? m.format('YYYY-MM-DD') : ''
+    // Ensure the value strictly matches YYYY-MM-DD and is a valid date
+    if (!REGEX_DATE_YYYY_MM_DD.test(normalized)) {
+      return ''
+    }
+    const parsed = parseDateStrict(normalized, 'YYYY-MM-DD')
+    return parsed ? parsed.format('YYYY-MM-DD') : ''
   }
   return normalized
 }
@@ -87,10 +86,10 @@ export const createCustomAttribute = (
   name: string,
   values: AttributeValue[],
   multiValued: boolean,
-): CustomObjectAttribute => ({
+): CustomAttribute => ({
   name,
   multiValued,
-  values: values as unknown as CustomObjectAttribute['values'],
+  values,
 })
 
 export const isBooleanAttribute = (attributeDef?: PersonAttribute): boolean => {
@@ -101,11 +100,11 @@ export const isMultiValuedAttribute = (attributeDef?: PersonAttribute): boolean 
   return Boolean(attributeDef?.oxMultiValuedAttribute)
 }
 
-export const hadOriginalValue = (originalAttr?: CustomObjectAttribute): boolean => {
+export const hadOriginalValue = (originalAttr?: CustomAttribute): boolean => {
   if (!originalAttr) return false
   return Boolean(
     (originalAttr.values && originalAttr.values.length > 0) ||
-      (originalAttr.value !== undefined && originalAttr.value !== null),
+    (originalAttr.value !== undefined && originalAttr.value !== null),
   )
 }
 
@@ -142,11 +141,11 @@ export const createAttributeMap = (
 export const buildCustomAttributesFromValues = (
   values: UserEditFormValues,
   personAttributes: PersonAttribute[],
-): CustomObjectAttribute[] => {
+): CustomAttribute[] => {
   if (!values) return []
 
   const attributeMap = createAttributeMap(personAttributes)
-  const result: CustomObjectAttribute[] = []
+  const result: CustomAttribute[] = []
 
   Object.keys(values).forEach((attributeName) => {
     const attributeDef = attributeMap.get(attributeName)
@@ -182,13 +181,13 @@ export const buildCustomAttributesFromValues = (
 }
 
 export const updateCustomAttributesWithModifiedFields = (
-  customAttributes: CustomObjectAttribute[],
+  customAttributes: CustomAttribute[],
   modifiedFields: ModifiedFields,
   personAttributes: PersonAttribute[],
   originalUserDetails?: CustomUser | null,
-): CustomObjectAttribute[] => {
+): CustomAttribute[] => {
   const attributeMap = createAttributeMap(personAttributes)
-  const result = [...customAttributes]
+  const result: CustomAttribute[] = [...customAttributes]
 
   Object.keys(modifiedFields).forEach((attributeName) => {
     const attributeDef = attributeMap.get(attributeName)
@@ -202,7 +201,7 @@ export const updateCustomAttributesWithModifiedFields = (
       const fieldValues = processMultiValuedField(modifiedValue)
       const existingAttr = result.find((attr) => attr.name === attributeName)
       if (existingAttr) {
-        existingAttr.values = fieldValues as unknown as CustomObjectAttribute['values']
+        existingAttr.values = fieldValues
       } else {
         result.push(createCustomAttribute(attributeName, fieldValues, true))
       }
@@ -216,7 +215,7 @@ export const updateCustomAttributesWithModifiedFields = (
       const existingAttr = result.find((attr) => attr.name === attributeName)
       if (existingAttr) {
         if (isBoolean || valueToStore !== '' || hadOriginal) {
-          existingAttr.values = [valueToStore] as unknown as CustomObjectAttribute['values']
+          existingAttr.values = [valueToStore]
         } else {
           const index = result.indexOf(existingAttr)
           if (index > -1) {

@@ -4,6 +4,7 @@ import { logAuditUserAction } from 'Utils/AuditLogger'
 import { UPDATE } from '@/audit/UserActionType'
 import { API_ACRS } from '@/audit/Resources'
 import type { AuthenticationMethod } from 'JansConfigApi'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
 interface AuthState {
   token?: {
@@ -31,7 +32,7 @@ export function useAcrAudit() {
     async (
       acr: AuthenticationMethod,
       message: string,
-      modifiedFields?: Record<string, unknown>,
+      modifiedFields?: Record<string, JsonValue>,
     ) => {
       await logAuditUserAction({
         userinfo,

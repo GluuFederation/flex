@@ -1,28 +1,30 @@
-import { useSelector, useDispatch } from 'react-redux'
 import { useCallback } from 'react'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { setCedarlingPermission } from '@/redux/features/cedarPermissionsSlice'
 import { cedarlingClient, buildCedarPermissionKey, CEDARLING_CONSTANTS } from '@/cedarling'
 import type {
-  RootState,
   UseCedarlingReturn,
   AuthorizationResult,
   ResourceScopeEntry,
   CedarAction,
   AdminUiFeatureResource,
+  ITokenEntry,
 } from '@/cedarling'
 import { OPENID, REVOKE_SESSION, SCIM_BULK, SSA_ADMIN, SSA_DEVELOPER } from '@/utils/PermChecker'
 import { updateToast } from '@/redux/features/toastSlice'
 
-export function useCedarling(): UseCedarlingReturn {
+const executeUrls = new Set([SSA_ADMIN, SSA_DEVELOPER, SCIM_BULK, REVOKE_SESSION, OPENID])
+
+export const useCedarling = (): UseCedarlingReturn => {
   const { ACTION_TYPE, RESOURCE_TYPE } = CEDARLING_CONSTANTS
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const {
     userinfo_jwt: userinfo_token,
     idToken: id_token,
     jwtToken: access_token,
-  } = useSelector((state: RootState) => state.authReducer)
+  } = useAppSelector((state) => state.authReducer)
 
   const {
     permissions: permissionsByResourceId,
@@ -30,8 +32,7 @@ export function useCedarling(): UseCedarlingReturn {
     error,
     initialized: cedarlingInitialized,
     isInitializing,
-  } = useSelector((state: RootState) => state.cedarPermissions)
-  const executeUrls = new Set([SSA_ADMIN, SSA_DEVELOPER, SCIM_BULK, REVOKE_SESSION, OPENID])
+  } = useAppSelector((state) => state.cedarPermissions)
 
   const getActionLabelFromUrl = useCallback((url: string): CedarAction => {
     const lowerUrl = url.toLowerCase()
@@ -63,11 +64,11 @@ export function useCedarling(): UseCedarlingReturn {
         throw new Error('Required tokens are missing')
       }
 
-      const tokens = {
-        access_token,
-        id_token,
-        userinfo_token,
-      }
+      const tokens: ITokenEntry[] = [
+        { mapping: 'GluuFlexAdminUI::Access_token', payload: access_token },
+        { mapping: 'GluuFlexAdminUI::id_token', payload: id_token },
+        { mapping: 'GluuFlexAdminUI::Userinfo_token', payload: userinfo_token },
+      ]
 
       if (!resourceId) {
         throw new Error('Resource id is missing for Cedar authorization request')
@@ -160,9 +161,9 @@ export function useCedarling(): UseCedarlingReturn {
         )
         return { isAuthorized, response }
       } catch (error) {
-        const toMessage = (err: unknown): string =>
+        const toMessage = (err: Error | string): string =>
           err instanceof Error ? err.message : typeof err === 'string' ? err : 'Unknown error'
-        const rawMessage = toMessage(error)
+        const rawMessage = toMessage(error as Error | string)
         const truncated = rawMessage.length > 25 ? rawMessage.slice(0, 25) + '…' : rawMessage
         dispatch(updateToast(true, 'error', `Authorization error: ${truncated}`))
         return {

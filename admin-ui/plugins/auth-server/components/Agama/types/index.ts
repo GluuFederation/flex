@@ -11,7 +11,6 @@ export type {
   JsonObject,
   ApiError,
   AcrMappingTableRow,
-  JsonConfigRootState,
   AgamaJsonPatch,
   AgamaJsonPatchRequestBody,
 } from './agamaTypes'

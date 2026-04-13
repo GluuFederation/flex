@@ -1,5 +1,11 @@
-import moment from 'moment/moment'
-import { CustomObjectAttribute, PagedResultEntriesItem } from 'JansConfigApi'
+import { formatDate, isValidDate } from '@/utils/dayjsUtils'
+import {
+  REGEX_HAS_UPPERCASE,
+  REGEX_HAS_LOWERCASE,
+  REGEX_HAS_DIGIT,
+  REGEX_HAS_SPECIAL_CHAR,
+} from '@/utils/regex'
+import { CustomObjectAttribute, JansAttribute, PagedResultEntriesItem } from 'JansConfigApi'
 
 import { BIRTHDATE_ATTR, USER_PASSWORD_ATTR } from '../common/Constants'
 import { UserEditFormValues } from '../types/ComponentTypes'
@@ -8,10 +14,10 @@ import { ExtendedCustomUser } from '../types/UserFormTypes'
 
 export const validatePassword = (password: string): boolean => {
   if (!password || password.length < 8) return false
-  if (!/[A-Z]/.test(password)) return false
-  if (!/[a-z]/.test(password)) return false
-  if (!/[0-9]/.test(password)) return false
-  if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) return false
+  if (!REGEX_HAS_UPPERCASE.test(password)) return false
+  if (!REGEX_HAS_LOWERCASE.test(password)) return false
+  if (!REGEX_HAS_DIGIT.test(password)) return false
+  if (!REGEX_HAS_SPECIAL_CHAR.test(password)) return false
   return true
 }
 
@@ -25,16 +31,27 @@ export const getStringValue = (value: string | string[] | boolean | null | undef
   return ''
 }
 
+const toDateLike = (v: object): string | number | Date | null => {
+  if (typeof v === 'string' || typeof v === 'number' || v instanceof Date) return v
+  if (v && typeof v === 'object' && 'value' in v) return toDateLike((v as { value: object }).value)
+  return null
+}
+
 const processBirthdateAttribute = (
   customAttr: CustomObjectAttribute,
   initialValues: UserEditFormValues,
 ) => {
   const attrValues = customAttr.values ?? []
   const attrSingleValue = customAttr.value
-  const dateSource =
-    attrValues.length > 0 ? JSON.stringify(attrValues[0]) : JSON.stringify(attrSingleValue)
-  if (dateSource) {
-    initialValues[customAttr.name || ''] = moment(dateSource).format('YYYY-MM-DD')
+  const rawDate =
+    attrValues.length > 0
+      ? toDateLike(attrValues[0] as object)
+      : attrSingleValue != null
+        ? toDateLike(attrSingleValue as object)
+        : null
+
+  if (rawDate !== undefined && rawDate !== null && customAttr.name) {
+    initialValues[customAttr.name] = isValidDate(rawDate) ? formatDate(rawDate, 'YYYY-MM-DD') : ''
   }
 }
 
@@ -133,16 +150,25 @@ export const setupCustomAttributes = (
       const attributeData = attributeMap.get(customAttr.name)
       if (attributeData && !usedClaims.has(customAttr.name)) {
         const isBoolean = attributeData.dataType?.toLowerCase() === 'boolean'
-        const firstValue = customAttr.values[0] as unknown
+        const firstValue = customAttr.values[0] as string | boolean | object
 
         if (isBoolean && firstValue !== undefined && firstValue !== null) {
-          const boolValue =
-            typeof firstValue === 'boolean'
-              ? firstValue
-              : typeof firstValue === 'string'
-                ? (firstValue as string).toLowerCase() === 'true'
-                : Boolean(firstValue)
-          // Special-case: skip Email Verified when initial value is false so it can be added from claims.
+          let boolValue: boolean
+          if (typeof firstValue === 'boolean') {
+            boolValue = firstValue
+          } else if (typeof firstValue === 'string') {
+            boolValue = firstValue.toLowerCase() === 'true'
+          } else if (typeof firstValue === 'object') {
+            const obj = firstValue as Record<string, string | number | boolean>
+            boolValue =
+              'value' in obj && typeof obj.value === 'boolean'
+                ? obj.value
+                : 'val' in obj && typeof obj.val === 'boolean'
+                  ? obj.val
+                  : Boolean(firstValue)
+          } else {
+            boolValue = Boolean(firstValue)
+          }
           if (customAttr.name === 'emailVerified' && boolValue === false) {
             continue
           }
@@ -156,17 +182,13 @@ export const setupCustomAttributes = (
   setSelectedClaims(tempList)
 }
 
-const isPersonAttribute = (entry: unknown): entry is PersonAttribute => {
-  if (!entry || typeof entry !== 'object') {
-    return false
-  }
-  const candidate = entry as Partial<PersonAttribute>
+const hasRequiredName = (entry: PagedResultEntriesItem | JansAttribute): boolean => {
+  if (!entry || typeof entry !== 'object') return false
+  const candidate = entry as Record<string, string>
   return typeof candidate.name === 'string' && candidate.name.trim().length > 0
 }
 
-export const mapToPersonAttributes = (entries?: PagedResultEntriesItem[]): PersonAttribute[] => {
-  if (!entries || entries.length === 0) {
-    return []
-  }
-  return (entries as unknown[]).filter(isPersonAttribute) as PersonAttribute[]
+export const mapToPersonAttributes = (entries?: JansAttribute[]): PersonAttribute[] => {
+  if (!entries || entries.length === 0) return []
+  return entries.filter((e): e is PersonAttribute => hasRequiredName(e))
 }

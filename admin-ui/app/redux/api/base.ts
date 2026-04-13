@@ -1,16 +1,23 @@
-import store from '../store'
+import { getRootState } from '@/redux/hooks'
+import { REGEX_TRAILING_SLASHES } from '@/utils/regex'
+import type { JansApiClient, JansConfigApiModule } from './types/JansApiClient'
 
-export const getClient = (JansConfigApi: any, r_token: any, r_issuer: any) => {
-  const authState = (store.getState() as any)?.authReducer
+export const getClient = (
+  JansConfigApi: JansConfigApiModule,
+  r_token: string | null,
+  r_issuer: string | null,
+): JansApiClient['instance'] => {
+  const authState = getRootState().authReducer
   const userInum = authState?.userInum || ''
   const hasSession = authState?.hasSession || false
   const defaultClient = JansConfigApi.ApiClient.instance
   defaultClient.timeout = 60000
   const jansauth = defaultClient.authentications['oauth2']
-  defaultClient.basePath =
+  defaultClient.basePath = (
     window['configApiBaseUrl'] ||
     process.env.CONFIG_API_BASE_URL ||
-    'https://admin-ui-test.gluu.org'.replace(/\/+$/, '')
+    'https://admin-ui-test.gluu.org'
+  ).replace(REGEX_TRAILING_SLASHES, '')
 
   if (hasSession) {
     defaultClient.enableCookies = true
@@ -22,7 +29,7 @@ export const getClient = (JansConfigApi: any, r_token: any, r_issuer: any) => {
 
   const headers = {
     'Content-Type': 'application/json',
-    'issuer': r_issuer,
+    'issuer': r_issuer ?? '',
     'jans-client': 'admin-ui',
     'User-inum': userInum,
   }
@@ -30,18 +37,22 @@ export const getClient = (JansConfigApi: any, r_token: any, r_issuer: any) => {
   return defaultClient
 }
 
-export const getClientWithToken = (JansConfigApi: any, token: any) => {
-  const authState = (store.getState() as any)?.authReducer
+export const getClientWithToken = (
+  JansConfigApi: JansConfigApiModule,
+  token: string,
+): JansApiClient['instance'] => {
+  const authState = getRootState().authReducer
   const userInum = authState?.userInum || ''
   const issuer = authState?.issuer || ''
   const hasSession = authState?.hasSession || false
   const defaultClient = JansConfigApi.ApiClient.instance
   defaultClient.timeout = 60000
   const jansauth = defaultClient.authentications['oauth2']
-  defaultClient.basePath =
+  defaultClient.basePath = (
     window['configApiBaseUrl'] ||
     process.env.CONFIG_API_BASE_URL ||
-    'https://admin-ui-test.gluu.org'.replace(/\/+$/, '')
+    'https://admin-ui-test.gluu.org'
+  ).replace(REGEX_TRAILING_SLASHES, '')
 
   if (hasSession) {
     defaultClient.enableCookies = true

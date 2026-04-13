@@ -3,8 +3,9 @@ import { FormGroup, Label } from 'Components'
 import { Button, Grid } from '@mui/material'
 import GluuTooltip from './GluuTooltip'
 import { VisibilityOutlined } from '@mui/icons-material'
+import type { GluuFormActionRowProps } from './types'
 
-function GluuFormActionRow({
+const GluuFormActionRow = ({
   label,
   value,
   lsize = 6,
@@ -13,7 +14,7 @@ function GluuFormActionRow({
   doc_entry,
   isDirect = false,
   onActionClick,
-}: any) {
+}: GluuFormActionRowProps) => {
   const { t } = useTranslation()
   return (
     <GluuTooltip doc_category={doc_category} isDirect={isDirect} doc_entry={doc_entry || label}>
@@ -29,7 +30,7 @@ function GluuFormActionRow({
               variant="outlined"
               startIcon={<VisibilityOutlined />}
               onClick={() => {
-                onActionClick(value)
+                if (value !== undefined) onActionClick?.(value)
               }}
             >
               {t('actions.view')}

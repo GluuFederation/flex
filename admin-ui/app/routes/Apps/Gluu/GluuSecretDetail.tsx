@@ -1,23 +1,14 @@
-import { useState, memo, useCallback, CSSProperties } from 'react'
+import { useState, memo, useCallback, CSSProperties, useMemo } from 'react'
 import { FormGroup, Label, Col } from 'Components'
 import Toggle from 'react-toggle'
 import GluuTooltip from './GluuTooltip'
 import { useTranslation } from 'react-i18next'
+import customColors from '@/customColors'
+import type { GluuSecretDetailProps } from './types'
 
-interface GluuSecretDetailProps {
-  label: string
-  value: string
-  doc_category?: string
-  doc_entry?: string
-  lsize?: number
-  rsize?: number
-  labelStyle?: CSSProperties
-  rowClassName?: string
-}
+const defaultLabelStyle: CSSProperties = { fontWeight: 'bold', color: customColors.black }
 
-const defaultLabelStyle: CSSProperties = { fontWeight: 'bold' }
-
-function GluuSecretDetail({
+const GluuSecretDetail = ({
   label,
   value,
   doc_category,
@@ -26,7 +17,7 @@ function GluuSecretDetail({
   rsize = 6,
   labelStyle,
   rowClassName,
-}: GluuSecretDetailProps) {
+}: GluuSecretDetailProps) => {
   const { t } = useTranslation()
   const [up, setUp] = useState(false)
 
@@ -34,8 +25,16 @@ function GluuSecretDetail({
     setUp((prev) => !prev)
   }, [])
 
-  const appliedLabelStyle: CSSProperties = { ...defaultLabelStyle, ...labelStyle }
+  const appliedLabelStyle: CSSProperties = useMemo(
+    () => ({ ...defaultLabelStyle, ...labelStyle }),
+    [labelStyle],
+  )
   const appliedRowClassName = rowClassName || 'align-items-center mb-2'
+
+  const valueStyle: CSSProperties = useMemo(
+    () => ({ fontWeight: 'bold', color: customColors.black }),
+    [],
+  )
 
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={doc_entry || label}>
@@ -50,7 +49,7 @@ function GluuSecretDetail({
         >
           {value !== '-' && <Toggle defaultChecked={false} onChange={handleSecret} />}
           {(value === '-' || up) && (
-            <span style={{ fontWeight: 'bold' }} data-testid="secret-value">
+            <span style={valueStyle} data-testid="secret-value">
               {value}
             </span>
           )}

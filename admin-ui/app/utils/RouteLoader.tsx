@@ -1,69 +1,74 @@
 import React, { Suspense, lazy, ComponentType } from 'react'
-import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
+import { devLogger } from '@/utils/devLogger'
+import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 
-// Route loading utility
-export const createLazyRoute = (importFn: () => Promise<{ default: ComponentType<any> }>) => {
+type LazyRouteWrapper<P extends object = object> = ComponentType<P> & {
+  preload: () => Promise<{ default: ComponentType<P> }>
+}
+
+export const createLazyRoute = <P extends object = object>(
+  importFn: () => Promise<{ default: ComponentType<P> }>,
+): LazyRouteWrapper<P> => {
   const LazyComponent = lazy(importFn)
 
-  const Wrapper: any = (props: any) => (
-    <Suspense fallback={<GluuSuspenseLoader />}>
+  const Wrapper = (props: P) => (
+    <Suspense fallback={<GluuLoader blocking />}>
+      {/* @ts-expect-error lazy() does not preserve generic type params */}
       <LazyComponent {...props} />
     </Suspense>
   )
-  // Allow preloading the chunk ahead of time
-  Wrapper.preload = importFn
-  return Wrapper
+
+  const typedWrapper = Wrapper as LazyRouteWrapper<P>
+  typedWrapper.preload = importFn
+  return typedWrapper
 }
 
-// Pre-defined lazy routes for better code splitting
 export const LazyRoutes = {
-  // Dashboard routes
   DashboardPage: createLazyRoute(() => import('../routes/Dashboards/DashboardPage')),
-
-  // App routes
   ProfilePage: createLazyRoute(() => import('../routes/Apps/Profile/ProfilePage')),
   Gluu404Error: createLazyRoute(() => import('../routes/Apps/Gluu/Gluu404Error')),
   ByeBye: createLazyRoute(() => import('../routes/Pages/ByeBye')),
   GluuNavBar: createLazyRoute(() => import('../routes/Apps/Gluu/GluuNavBar')),
-
-  // Layout routes
-  // (layout demo routes removed)
-
-  // Layout components
   DefaultSidebar: createLazyRoute(() => import('../layout/components/DefaultSidebar')),
+  GluuToast: createLazyRoute(() => import('../routes/Apps/Gluu/GluuToast')),
+  GluuWebhookErrorDialog: createLazyRoute(
+    () => import('../routes/Apps/Gluu/GluuWebhookErrorDialog'),
+  ),
 }
 
-// Dynamic route loader for plugins
-export const loadPluginRoute = (pluginName: string, routePath?: string) => {
+export const loadPluginRoute = (pluginName: string, routePath?: string): LazyRouteWrapper => {
   const componentPath = routePath || `${pluginName.charAt(0).toUpperCase() + pluginName.slice(1)}`
 
   return createLazyRoute(() =>
-    import(
-      /* webpackChunkName: "plugin-[request]" */
-      /* webpackMode: "lazy" */
-      /* webpackInclude: /^[^/]+\/components\/[^/]+$/ */
-      `../../plugins/${pluginName}/components/${componentPath}`
-    ).catch(
-      () =>
-        import(
-          /* webpackChunkName: "plugin-[request]" */
-          /* webpackMode: "lazy" */
-          /* webpackInclude: /^[^/]+\/components\/index(\.(t|j)sx?)?$/ */
-          `../../plugins/${pluginName}/components/index`
-        ),
-    ),
+    import(`../../plugins/${pluginName}/components/${componentPath}`).catch((err) => {
+      devLogger.warn(`Failed to load plugin route: ${pluginName}/${componentPath}`, {
+        pluginName,
+        componentPath,
+        error: err,
+      })
+      return import(`../../plugins/${pluginName}/components/index`).catch((fallbackErr) => {
+        devLogger.warn(`Failed to load fallback plugin index for: ${pluginName}`, {
+          pluginName,
+          componentPath,
+          primaryError: err,
+          fallbackError: fallbackErr,
+        })
+        throw fallbackErr
+      })
+    }),
   )
 }
 
-// Route preloading utility
-export const preloadRoute = (routeName: keyof typeof LazyRoutes) => {
+export const preloadRoute = (routeName: keyof typeof LazyRoutes): void => {
   const route = LazyRoutes[routeName]
   if (route && 'preload' in route) {
-    return (route as { preload: () => void }).preload()
+    const lazyRoute = route as LazyRouteWrapper
+    lazyRoute.preload().catch((error) => {
+      devLogger.warn(`Failed to preload route: ${routeName}`, error)
+    })
   }
 }
 
-// Batch preload multiple routes
-export const preloadRoutes = (routeNames: (keyof typeof LazyRoutes)[]) => {
+export const preloadRoutes = (routeNames: (keyof typeof LazyRoutes)[]): void => {
   routeNames.forEach(preloadRoute)
 }

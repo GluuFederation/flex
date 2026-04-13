@@ -1,10 +1,10 @@
 import React from 'react'
 import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts'
-import applicationStyle from '../../Apps/Gluu/styles/applicationstyle'
+import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import customColors from '@/customColors'
 import type { ReportPiChartItemProps, PieChartLabelProps } from '../types'
 
-function ReportPiChartItem({ data }: ReportPiChartItemProps) {
+const ReportPiChartItem = ({ data }: ReportPiChartItemProps) => {
   const COLORS = [customColors.lightGreen, customColors.black]
   const RADIAN = Math.PI / 180
 

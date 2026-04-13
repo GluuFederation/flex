@@ -63,9 +63,8 @@ describe('perform CRUD for scopes module', () => {
       .silentRun(false)
 
     expect(result.returnValue instanceof Error).toBe(false)
-    if (result.returnValue.entries) {
-      expect(result.storeState.scopeReducer.items).toBe(result.returnValue.entries)
-    }
+    expect(result.returnValue.entries).toBeDefined()
+    expect(result.storeState.scopeReducer.items).toBe(result.returnValue.entries)
   })
 
   it('should save newly created scope', async () => {

@@ -1,188 +1,329 @@
-// @ts-nocheck
-import React, { useCallback, useContext, useEffect, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import {
-  getWebhooksByFeatureId,
   getWebhooksByFeatureIdResponse,
   setWebhookModal,
   setWebhookTriggerErrors,
   setTriggerWebhookResponse,
   setFeatureToTrigger,
 } from 'Plugins/admin/redux/features/WebhookSlice'
-import PropTypes from 'prop-types'
-import { ThemeContext } from 'Context/theme/themeContext'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import { useGetWebhooksByFeatureId, type WebhookEntry } from 'JansConfigApi'
+import { useTheme } from 'Context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
 import { useTranslation } from 'react-i18next'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import Box from '@mui/material/Box'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
-import customColors from '@/customColors'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
+import { GluuButton } from '@/components'
+import { useStyles as useCommitDialogStyles } from '@/routes/Apps/Gluu/styles/GluuCommitDialog.style'
+import { useWebhookTriggerModalStyles } from '@/utils/styles/WebhookTriggerModal.style'
 
-const useWebhookDialogAction = ({ feature, modal }) => {
-  const dispatch = useDispatch()
+interface UseWebhookDialogActionProps {
+  feature?: string
+  modal: boolean
+}
+
+interface WebhookTriggerModalProps {
+  closeModal: () => void
+}
+
+const WEBHOOK_RESOURCE_ID = ADMIN_UI_RESOURCES.Webhooks
+const WEBHOOK_SCOPES = CEDAR_RESOURCE_SCOPES[WEBHOOK_RESOURCE_ID]
+
+const FOCUSABLE_SELECTOR =
+  'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]'
+
+const getFocusableElements = (container: HTMLElement): HTMLElement[] =>
+  Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
+    (el) => el.offsetParent !== null,
+  )
+
+const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps) => {
+  const dispatch = useAppDispatch()
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
 
   const { t } = useTranslation()
 
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const { state: themeState } = useTheme()
+  const isDark = themeState.theme === THEME_DARK
+  const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
+  const { classes: commitClasses } = useCommitDialogStyles({ isDark, themeColors })
+  const { classes: webhookClasses } = useWebhookTriggerModalStyles({ isDark, themeColors })
 
-  const { featureWebhooks, loadingWebhooks, webhookModal, triggerWebhookInProgress } = useSelector(
-    (state) => state.webhookReducer,
+  const webhookState = useAppSelector((state) => state.webhookReducer)
+  const webhookModal = webhookState?.webhookModal ?? false
+  const triggerWebhookInProgress = webhookState?.triggerWebhookInProgress ?? false
+
+  const cedarDecision = hasCedarReadPermission(WEBHOOK_RESOURCE_ID)
+  const cedarDecisionMade = cedarDecision !== undefined
+  const canReadWebhooks = cedarDecision === true
+  const queryEnabled = canReadWebhooks && modal && Boolean(feature)
+
+  const {
+    data: rawWebhookData,
+    isFetching: loadingWebhooks,
+    isFetched,
+  } = useGetWebhooksByFeatureId(feature ?? '', {
+    query: {
+      enabled: queryEnabled,
+      refetchOnWindowFocus: false,
+      staleTime: 30_000,
+    },
+  })
+
+  const featureWebhooks = useMemo(
+    () => (Array.isArray(rawWebhookData) ? (rawWebhookData as WebhookEntry[]) : []),
+    [rawWebhookData],
   )
 
-  const enabledFeatureWebhooks = featureWebhooks.filter((item) => item.jansEnabled)
-
-  const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
-  const webhookScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[webhookResourceId], [webhookResourceId])
-  const canReadWebhooks = useMemo(
-    () => hasCedarReadPermission(webhookResourceId),
-    [hasCedarReadPermission, webhookResourceId],
+  const enabledFeatureWebhooks = useMemo(
+    () => featureWebhooks.filter((item) => Boolean(item.jansEnabled)),
+    [featureWebhooks],
   )
 
   useEffect(() => {
-    authorizeHelper(webhookScopes)
-  }, [authorizeHelper, webhookScopes])
+    if (isFetched) {
+      dispatch(getWebhooksByFeatureIdResponse(featureWebhooks))
+    }
+  }, [featureWebhooks, isFetched, dispatch])
+
+  useEffect(() => {
+    authorizeHelper(WEBHOOK_SCOPES)
+  }, [authorizeHelper])
 
   const onCloseModal = useCallback(() => {
-    dispatch(setWebhookModal(enabledFeatureWebhooks?.length > 0))
+    dispatch(setWebhookModal(false))
     dispatch(setWebhookTriggerErrors([]))
     dispatch(setTriggerWebhookResponse(''))
     dispatch(setFeatureToTrigger(''))
-  }, [dispatch, enabledFeatureWebhooks])
+  }, [dispatch])
+
+  const [webhookModalDetermined, setWebhookModalDetermined] = useState(false)
 
   useEffect(() => {
-    if (canReadWebhooks) {
-      if (modal) {
-        if (feature) {
-          dispatch(getWebhooksByFeatureId(feature))
-        } else {
-          dispatch(getWebhooksByFeatureIdResponse([]))
+    if (!modal) {
+      setWebhookModalDetermined(false)
+      dispatch(setWebhookModal(false))
+    } else if (feature && cedarDecisionMade && !canReadWebhooks) {
+      dispatch(setWebhookModal(false))
+      setWebhookModalDetermined(true)
+    } else if (feature && canReadWebhooks) {
+      const showWebhookFlow = !loadingWebhooks && (enabledFeatureWebhooks?.length ?? 0) > 0
+      dispatch(setWebhookModal(showWebhookFlow))
+      if (!loadingWebhooks) {
+        setWebhookModalDetermined(true)
+      }
+    }
+  }, [
+    modal,
+    feature,
+    canReadWebhooks,
+    cedarDecisionMade,
+    loadingWebhooks,
+    enabledFeatureWebhooks,
+    dispatch,
+  ])
+
+  const webhookCheckComplete = useMemo(() => {
+    if (!modal) return false
+    if (!feature) return true
+    if (!cedarDecisionMade) return false
+    if (!queryEnabled) return true
+    return isFetched && !loadingWebhooks && webhookModalDetermined
+  }, [
+    modal,
+    feature,
+    cedarDecisionMade,
+    queryEnabled,
+    isFetched,
+    loadingWebhooks,
+    webhookModalDetermined,
+  ])
+
+  const willShowWebhookModal = useMemo(
+    () => webhookModalDetermined && canReadWebhooks && (enabledFeatureWebhooks?.length ?? 0) > 0,
+    [webhookModalDetermined, canReadWebhooks, enabledFeatureWebhooks],
+  )
+
+  const modalRef = useRef<HTMLDivElement>(null)
+  const previouslyFocusedRef = useRef<Element | null>(null)
+
+  useEffect(() => {
+    if (webhookModal && canReadWebhooks) {
+      previouslyFocusedRef.current = document.activeElement as Element | null
+      const frame = requestAnimationFrame(() => {
+        modalRef.current?.focus()
+      })
+      return () => {
+        cancelAnimationFrame(frame)
+        const prevEl = previouslyFocusedRef.current as HTMLElement | null
+        if (prevEl && typeof prevEl.focus === 'function') {
+          prevEl.focus()
         }
       }
     }
-  }, [canReadWebhooks, modal, feature, dispatch])
-
-  useEffect(() => {
-    dispatch(setWebhookModal(enabledFeatureWebhooks?.length > 0))
-  }, [featureWebhooks?.length])
+  }, [webhookModal, canReadWebhooks])
 
   const handleAcceptWebhookTrigger = () => {
     dispatch(setWebhookModal(false))
-    dispatch(setFeatureToTrigger(feature))
+    if (feature) {
+      dispatch(setFeatureToTrigger(feature))
+    }
   }
 
-  const webhookTriggerModal = ({ closeModal }) => {
+  const webhookTriggerModal = ({ closeModal }: WebhookTriggerModalProps) => {
     const closeWebhookTriggerModal = () => {
       closeModal()
       dispatch(setFeatureToTrigger(''))
     }
-    return (
-      <Modal
-        isOpen={(webhookModal || loadingWebhooks) && canReadWebhooks}
-        size={'lg'}
-        toggle={() => {
-          if (!loadingWebhooks) {
-            closeModal()
-            dispatch(setFeatureToTrigger(''))
-          }
-        }}
-        className="modal-outline-primary"
-      >
-        <ModalHeader toggle={closeWebhookTriggerModal}>
-          {loadingWebhooks ? (
-            <>Loading....</>
-          ) : (
-            <>
-              <i
-                onClick={closeWebhookTriggerModal}
-                onKeyDown={() => {}}
-                style={{ color: customColors.logo }}
-                code
-                className="fa fa-2x fa-info fa-fw modal-icon mb-3"
-                role="img"
-                aria-hidden="true"
-              ></i>{' '}
-              {t('messages.webhook_execution_information')}{' '}
-            </>
-          )}
-        </ModalHeader>
-        {!loadingWebhooks ? (
-          <>
-            <ModalBody>
-              <Box flex flexDirection="column" px={2}>
-                <p style={{ fontWeight: 600 }}>{t('messages.webhook_dialog_dec')}</p>
-              </Box>
-              {enabledFeatureWebhooks?.length ? (
-                <Table sx={{ minWidth: 650, marginTop: '20px' }} aria-label="webhook table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell sx={{ fontSize: 16, fontWeight: 600, width: '50%' }} align="left">
-                        <b>{t('fields.webhook_name')}</b>
-                      </TableCell>
-                      <TableCell sx={{ fontSize: 16, fontWeight: 600, width: '50%' }}>
-                        <b>{t('fields.webhook_id')}</b>
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {enabledFeatureWebhooks.map((item) => (
-                      <TableRow
-                        key={item.displayName + item.url}
-                        sx={{
-                          '&:last-child td, &:last-child th': {
-                            border: 0,
-                          },
-                          'fontSize': 14,
-                        }}
-                      >
-                        <TableCell sx={{ fontSize: 14 }} component="th" scope="row">
-                          {item.displayName}
-                        </TableCell>
-                        <TableCell sx={{ fontSize: 16 }} align="left">
-                          {item.inum}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              ) : null}
-            </ModalBody>
-            <ModalFooter>
-              <Button
-                disabled={triggerWebhookInProgress}
-                color={`primary-${selectedTheme}`}
-                onClick={handleAcceptWebhookTrigger}
-                style={applicationStyle.buttonStyle}
+
+    const handleOverlayKeyDown = (e: React.KeyboardEvent) => {
+      if ((e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') && !loadingWebhooks) {
+        e.preventDefault()
+        closeWebhookTriggerModal()
+      }
+    }
+
+    const handleModalKeyDown = (e: React.KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        closeWebhookTriggerModal()
+        e.stopPropagation()
+        return
+      }
+      if (e.key === 'Tab') {
+        const container = e.currentTarget as HTMLElement
+        const focusable = getFocusableElements(container)
+        if (focusable.length === 0) return
+        const currentIndex = focusable.indexOf(document.activeElement as HTMLElement)
+        const nextIndex = e.shiftKey
+          ? currentIndex <= 0
+            ? focusable.length - 1
+            : currentIndex - 1
+          : currentIndex >= focusable.length - 1
+            ? 0
+            : currentIndex + 1
+        e.preventDefault()
+        focusable[nextIndex]?.focus()
+        e.stopPropagation()
+        return
+      }
+      e.stopPropagation()
+    }
+
+    if (!webhookModal || !canReadWebhooks) return null
+
+    const modalContent = (
+      <>
+        <button
+          type="button"
+          className={`${commitClasses.overlay} ${webhookClasses.overlay}`}
+          onClick={() => !loadingWebhooks && closeWebhookTriggerModal()}
+          onKeyDown={handleOverlayKeyDown}
+          aria-label={t('actions.close')}
+        />
+        <div
+          ref={modalRef}
+          className={`${commitClasses.modalContainer} ${webhookClasses.modalContainer}`}
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={handleModalKeyDown}
+          role="dialog"
+          aria-modal="true"
+          tabIndex={-1}
+          aria-labelledby="webhook-modal-title"
+        >
+          <button
+            type="button"
+            onClick={closeWebhookTriggerModal}
+            className={commitClasses.closeButton}
+            aria-label={t('actions.close')}
+            title={t('actions.close')}
+          >
+            <i className="fa fa-times" aria-hidden />
+          </button>
+          <div className={`${commitClasses.contentArea} ${webhookClasses.contentArea}`}>
+            <div className={webhookClasses.titleWithDescription}>
+              <GluuText variant="h2" className={webhookClasses.title} id="webhook-modal-title">
+                {t('messages.webhook_execution_information')}
+              </GluuText>
+              <GluuText variant="p" className={webhookClasses.description}>
+                {t('messages.webhook_dialog_dec')}
+              </GluuText>
+            </div>
+
+            {enabledFeatureWebhooks?.length ? (
+              <Table
+                className={webhookClasses.tableWrapper}
+                aria-label="webhook table"
+                sx={{
+                  '& .MuiTableCell-root': {
+                    color: themeColors.fontColor,
+                    borderColor: themeColors.borderColor,
+                  },
+                  '& .MuiTableHead-root .MuiTableCell-root': {
+                    fontWeight: 600,
+                    fontSize: 16,
+                  },
+                }}
               >
-                <i className="fa fa-check-circle me-2"></i>
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="left" sx={{ width: '50%' }}>
+                      {t('fields.webhook_name')}
+                    </TableCell>
+                    <TableCell sx={{ width: '50%' }}>{t('fields.webhook_id')}</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {enabledFeatureWebhooks.map((item) => (
+                    <TableRow key={item.inum}>
+                      <TableCell component="th" scope="row">
+                        {item.displayName}
+                      </TableCell>
+                      <TableCell align="left">{item.inum}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : null}
+            <div className={webhookClasses.buttonRow}>
+              <GluuButton
+                disabled={triggerWebhookInProgress}
+                backgroundColor={themeColors.badges.statusActive}
+                textColor={themeColors.badges.filledBadgeText}
+                borderColor="transparent"
+                padding="8px 28px"
+                minHeight="40"
+                useOpacityOnHover
+                className={commitClasses.yesButton}
+                onClick={handleAcceptWebhookTrigger}
+              >
                 {t('actions.accept')}
-              </Button>
-              <Button disabled={triggerWebhookInProgress} onClick={closeWebhookTriggerModal}>
-                <i className="fa fa-remove me-2"></i>
-                {t('actions.reject')}
-              </Button>
-            </ModalFooter>
-          </>
-        ) : (
-          <></>
-        )}
-      </Modal>
+              </GluuButton>
+            </div>
+          </div>
+        </div>
+      </>
     )
+
+    return createPortal(modalContent, document.body)
   }
 
-  return { onCloseModal, webhookTriggerModal }
+  return {
+    onCloseModal,
+    webhookTriggerModal,
+    webhookCheckComplete,
+    willShowWebhookModal,
+    isLoadingWebhooks: loadingWebhooks,
+  }
 }
 
 export default useWebhookDialogAction
-useWebhookDialogAction.propTypes = {
-  feature: PropTypes.string,
-  modal: PropTypes.bool,
-}

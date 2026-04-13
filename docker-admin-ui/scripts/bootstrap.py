@@ -36,7 +36,7 @@ def read_from_file(path):
         with open(path) as f:
             txt = f.read()
     except FileNotFoundError:
-        logger.warning(f"Unable to read {path} file; fallback to empty string")
+        logger.warning("Unable to read %s file; fallback to empty string", path)
     return txt.strip()
 
 
@@ -143,7 +143,7 @@ class PersistenceSetup:
 
     def import_ldif_files(self):
         for file_ in self.ldif_files:
-            logger.info(f"Importing {file_}")
+            logger.info("Importing %s", file_)
             self.client.create_from_ldif(file_, self.ctx)
 
     def save_config(self):
@@ -244,19 +244,28 @@ def resolve_conf_app(old_conf, new_conf):
         # add missing uiConfig
         ui_conf = old_conf.get("uiConfig", {})
 
+        policy_store = "./custom/config/adminUI/policy-store.cjar"
+
         # add top-level config under uiConfig (if missing)
         ui_conf_attrs = {
             "sessionTimeoutInMins": 30,
             "allowSmtpKeystoreEdit": True,
             "cedarlingLogType": "off",
             "auiPolicyStoreUrl": "",
-            "auiDefaultPolicyStorePath": "./custom/config/adminUI/policy-store.json",
-            "cedarlingPolicyStoreRetrievalPoint": "default"
+            "auiDefaultPolicyStorePath": policy_store,
         }
         for k, v in ui_conf_attrs.items():
             if k not in ui_conf:
                 ui_conf[k] = v
                 should_update = True
+
+        if "cedarlingPolicyStoreRetrievalPoint" in ui_conf:
+            ui_conf.pop("cedarlingPolicyStoreRetrievalPoint", None)
+            should_update = True
+
+        if ui_conf["auiDefaultPolicyStorePath"] != policy_store:
+            ui_conf["auiDefaultPolicyStorePath"] = policy_store
+            should_update = True
 
         # update/add uiConfig
         old_conf["uiConfig"] = ui_conf

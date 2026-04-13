@@ -1,31 +1,31 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import MaterialTable, { type Action } from '@material-table/core'
 import { useTranslation } from 'react-i18next'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { buildPayload, type UserAction } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { DeleteOutlined } from '@mui/icons-material'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
-import {
-  getWebsiteSsoServiceProvider,
-  deleteWebsiteSsoServiceProvider,
-} from 'Plugins/saml/redux/features/SamlSlice'
 import { PaperContainer, getServiceProviderTableCols } from '../helper/tableUtils'
 import customColors from '@/customColors'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import type { WebsiteSsoServiceProvider } from '../types/redux'
-import type { SamlRootState } from '../types/state'
+import {
+  useTrustRelationships,
+  useDeleteTrustRelationshipMutation,
+  type TrustRelationship,
+} from './hooks'
+import { DEFAULT_THEME } from '@/context/theme/constants'
+import { devLogger } from '@/utils/devLogger'
 
 interface DeleteItem {
   inum: string
   displayName?: string
-  tableData?: Record<string, unknown>
 }
 
 const DeleteOutlinedIcon = () => <DeleteOutlined />
@@ -33,23 +33,26 @@ const DeleteOutlinedIcon = () => <DeleteOutlined />
 const WebsiteSsoServiceProviderList = React.memo(() => {
   const { authorizeHelper, hasCedarReadPermission, hasCedarWritePermission } = useCedarling()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme ?? 'light'
-  const themeColors = getThemeColor(selectedTheme)
-  const bgThemeColor = useMemo(
-    () => ({ background: themeColors.background }),
-    [themeColors.background],
-  )
+  const selectedTheme = useMemo(() => theme?.state?.theme ?? DEFAULT_THEME, [theme?.state?.theme])
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const [modal, setModal] = useState(false)
   const [item, setItem] = useState<DeleteItem>({ inum: '' })
 
   const toggle = useCallback(() => setModal((prev) => !prev), [])
 
   const { t } = useTranslation()
-  const dispatch = useDispatch()
   const { navigateToRoute } = useAppNavigation()
-  const { websiteSsoServiceProviders, loadingWebsiteSsoServiceProvider } = useSelector(
-    (state: SamlRootState) => state.idpSamlReducer,
-  )
+
+  const {
+    data: websiteSsoServiceProviders = [],
+    isLoading: isInitialLoading,
+    isFetching: isFetchingData,
+    refetch,
+  } = useTrustRelationships()
+  const deleteTrustRelationshipMutation = useDeleteTrustRelationshipMutation()
+
+  const isLoading = isInitialLoading || isFetchingData || deleteTrustRelationshipMutation.isPending
+
   const samlResourceId = useMemo(() => ADMIN_UI_RESOURCES.SAML, [])
   const samlScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[samlResourceId], [samlResourceId])
   const canReadWebsiteSsoServiceProviders = useMemo(
@@ -65,15 +68,8 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
     authorizeHelper(samlScopes)
   }, [authorizeHelper, samlScopes])
 
-  useEffect(() => {
-    if (!canReadWebsiteSsoServiceProviders) {
-      return
-    }
-    dispatch(getWebsiteSsoServiceProvider())
-  }, [dispatch, canReadWebsiteSsoServiceProviders])
-
   const handleGoToEditPage = useCallback(
-    (rowData: WebsiteSsoServiceProvider, viewOnly?: boolean) => {
+    (rowData: TrustRelationship, viewOnly?: boolean) => {
       navigateToRoute(ROUTES.SAML_SP_EDIT, { state: { rowData: rowData, viewOnly: viewOnly } })
     },
     [navigateToRoute],
@@ -84,39 +80,40 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
   }, [navigateToRoute])
 
   const handleDelete = useCallback(
-    (row: WebsiteSsoServiceProvider) => {
-      setItem(row)
+    (row: TrustRelationship) => {
+      setItem({ inum: row.inum || '', displayName: row.displayName })
       toggle()
     },
     [toggle],
   )
 
   const onDeletionConfirmed = useCallback(
-    (message: string) => {
+    async (message: string) => {
+      toggle()
+
       const userAction: UserAction = {
         action_message: '',
         action_data: '',
       }
       buildPayload(userAction, message, item.inum)
-      dispatch(
-        deleteWebsiteSsoServiceProvider({
-          action: {
-            action_data: userAction.action_data as string,
-            action_message: userAction.action_message,
-          },
-        }),
-      )
-      toggle()
+      try {
+        await deleteTrustRelationshipMutation.mutateAsync({
+          id: userAction.action_data as string,
+          userMessage: userAction.action_message,
+        })
+      } catch (error) {
+        devLogger.error('Failed to delete service provider:', error)
+      }
     },
-    [dispatch, item.inum, toggle],
+    [deleteTrustRelationshipMutation, item.inum, toggle],
   )
 
   const handleRefresh = useCallback((): void => {
-    dispatch(getWebsiteSsoServiceProvider())
-  }, [dispatch])
+    refetch()
+  }, [refetch])
 
   const tableActions = useMemo(() => {
-    const actions: Action<WebsiteSsoServiceProvider>[] = []
+    const actions: Action<TrustRelationship>[] = []
     if (canWriteWebsiteSsoServiceProviders) {
       actions.push({
         icon: 'edit',
@@ -124,14 +121,10 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
         iconProps: { style: { color: customColors.darkGray } },
         onClick: (
           _event: React.MouseEvent,
-          rowData: WebsiteSsoServiceProvider | WebsiteSsoServiceProvider[],
+          rowData: TrustRelationship | TrustRelationship[],
         ): void => {
           if (Array.isArray(rowData)) return
-          const { tableData, ...clean } = rowData as WebsiteSsoServiceProvider & {
-            tableData?: unknown
-          }
-          void tableData
-          handleGoToEditPage(clean)
+          handleGoToEditPage(rowData)
         },
       })
       actions.push({
@@ -148,7 +141,7 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
         tooltip: `${t('messages.view_service_provider')}`,
         onClick: (
           _event: React.MouseEvent,
-          rowData: WebsiteSsoServiceProvider | WebsiteSsoServiceProvider[],
+          rowData: TrustRelationship | TrustRelationship[],
         ): void => {
           if (Array.isArray(rowData)) return
           handleGoToEditPage(rowData, true)
@@ -162,7 +155,7 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
         tooltip: `${t('messages.delete_service_provider')}`,
         onClick: (
           _event: React.MouseEvent,
-          rowData: WebsiteSsoServiceProvider | WebsiteSsoServiceProvider[],
+          rowData: TrustRelationship | TrustRelationship[],
         ): void => {
           if (Array.isArray(rowData)) return
           handleDelete(rowData)
@@ -190,7 +183,7 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
   const tableColumns = useMemo(() => getServiceProviderTableCols(t), [t])
 
   return (
-    <>
+    <GluuLoader blocking={isLoading}>
       <GluuViewWrapper canShow={canReadWebsiteSsoServiceProviders}>
         <MaterialTable
           components={{
@@ -198,7 +191,7 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
           }}
           columns={tableColumns}
           data={websiteSsoServiceProviders}
-          isLoading={loadingWebsiteSsoServiceProvider}
+          isLoading={isLoading}
           title=""
           actions={tableActions}
           options={{
@@ -209,7 +202,8 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
             idSynonym: 'inum',
             headerStyle: {
               ...applicationStyle.tableHeaderStyle,
-              ...bgThemeColor,
+              backgroundColor: themeColors.background,
+              color: themeColors.fontColor,
             } as React.CSSProperties,
             actionsColumnIndex: -1,
           }}
@@ -223,9 +217,10 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
           modal={modal}
           subject="saml website sso service provider"
           onAccept={onDeletionConfirmed}
+          feature="saml"
         />
       )}
-    </>
+    </GluuLoader>
   )
 })
 

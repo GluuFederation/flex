@@ -1,40 +1,13 @@
 import { useContext, useMemo, useCallback, memo } from 'react'
 import { Button, Divider } from 'Components'
 import { useTranslation } from 'react-i18next'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { ThemeContext } from 'Context/theme/themeContext'
+import { DEFAULT_THEME } from '@/context/theme/constants'
+import clsx from 'clsx'
 import { Box } from '@mui/material'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-
-interface ButtonLabelProps {
-  isLoading: boolean
-  iconClass: string
-  label: string
-  loadingIconClass?: string
-}
-
-interface GluuFormFooterBaseProps {
-  showBack?: boolean
-  backButtonLabel?: string
-  onBack?: () => void
-  disableBack?: boolean
-  backIconClass?: string
-  showCancel?: boolean
-  cancelButtonLabel?: string
-  onCancel?: () => void
-  disableCancel?: boolean
-  showApply?: boolean
-  disableApply?: boolean
-  applyButtonLabel?: string
-  isLoading?: boolean
-  className?: string
-}
-
-type GluuFormFooterProps = GluuFormFooterBaseProps &
-  (
-    | { applyButtonType?: 'submit'; onApply?: () => void }
-    | { applyButtonType: 'button'; onApply: () => void }
-  )
+import type { ButtonLabelProps, GluuFormFooterProps } from './types'
 
 const ButtonLabel = memo((props: ButtonLabelProps) => {
   const { isLoading, iconClass, label, loadingIconClass = 'fa fa-spinner fa-spin' } = props
@@ -60,17 +33,23 @@ const GluuFormFooter = ({
   cancelButtonLabel,
   onCancel,
   disableCancel,
+  cancelButtonStyle,
+  cancelButtonClassName = '',
+  cancelIconClass = 'fa fa-undo',
   showApply,
   onApply,
   disableApply,
   applyButtonType = 'submit',
   applyButtonLabel,
+  applyButtonStyle,
+  applyButtonClassName = '',
+  applyIconClass = 'fa fa-check-circle',
   isLoading = false,
   className = '',
 }: GluuFormFooterProps) => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = useMemo(() => theme?.state.theme || 'darkBlack', [theme?.state.theme])
+  const selectedTheme = useMemo(() => theme?.state.theme || DEFAULT_THEME, [theme?.state.theme])
   const { navigateToRoute } = useAppNavigation()
 
   const handleBackClick = useCallback(() => {
@@ -90,7 +69,6 @@ const GluuFormFooter = ({
   const buttonStates = useMemo(() => {
     const hasAnyButton = Boolean(showBack) || Boolean(showCancel) || Boolean(showApply)
     const hasAllThreeButtons = Boolean(showBack) && Boolean(showCancel) && Boolean(showApply)
-    const hasBackAndCancel = Boolean(showBack) && Boolean(showCancel) && !showApply
 
     return {
       showBack: Boolean(showBack),
@@ -98,7 +76,6 @@ const GluuFormFooter = ({
       showApply: Boolean(showApply),
       hasAnyButton,
       hasAllThreeButtons,
-      hasBackAndCancel,
     }
   }, [showBack, showCancel, showApply])
 
@@ -116,22 +93,20 @@ const GluuFormFooter = ({
       return { back: '', cancel: '', apply: '' }
     }
 
-    const layout = {
-      back: buttonStates.showBack ? 'd-flex' : '',
-      cancel: buttonStates.showCancel ? 'd-flex' : '',
-      apply: buttonStates.showApply ? 'd-flex' : '',
-    }
+    const back = clsx(buttonStates.showBack && 'd-flex')
 
-    if (buttonStates.showApply) {
-      layout.apply += ' ms-auto'
-      if (buttonStates.hasAllThreeButtons) {
-        layout.apply += ' me-0'
-      }
-    } else if (buttonStates.showCancel) {
-      layout.cancel += ' ms-auto'
-    }
+    const apply = clsx(
+      buttonStates.showApply && 'd-flex',
+      buttonStates.showApply && 'ms-auto',
+      buttonStates.showApply && buttonStates.hasAllThreeButtons && 'me-0',
+    )
 
-    return layout
+    const cancel = clsx(
+      buttonStates.showCancel && 'd-flex',
+      !buttonStates.showApply && buttonStates.showCancel && 'ms-auto',
+    )
+
+    return { back, cancel, apply }
   }, [buttonStates])
 
   if (!buttonStates.hasAnyButton) {
@@ -169,30 +144,24 @@ const GluuFormFooter = ({
               <Button
                 type="submit"
                 color={buttonColor}
-                style={BUTTON_STYLE}
+                style={applyButtonStyle ?? BUTTON_STYLE}
+                className={applyButtonClassName}
                 disabled={disableApply || isLoading}
                 aria-label={applyLabel}
               >
-                <ButtonLabel
-                  isLoading={isLoading}
-                  iconClass="fa fa-check-circle"
-                  label={applyLabel}
-                />
+                <ButtonLabel isLoading={isLoading} iconClass={applyIconClass} label={applyLabel} />
               </Button>
             ) : (
               <Button
                 type="button"
                 color={buttonColor}
-                style={BUTTON_STYLE}
+                style={applyButtonStyle ?? BUTTON_STYLE}
+                className={applyButtonClassName}
                 onClick={onApply}
                 disabled={disableApply || isLoading}
                 aria-label={applyLabel}
               >
-                <ButtonLabel
-                  isLoading={isLoading}
-                  iconClass="fa fa-check-circle"
-                  label={applyLabel}
-                />
+                <ButtonLabel isLoading={isLoading} iconClass={applyIconClass} label={applyLabel} />
               </Button>
             )}
           </Box>
@@ -201,14 +170,14 @@ const GluuFormFooter = ({
         {buttonStates.showCancel && (
           <Button
             color={buttonColor}
-            style={BUTTON_STYLE}
+            style={cancelButtonStyle ?? BUTTON_STYLE}
+            className={`${buttonLayout.cancel}${buttonStates.hasAllThreeButtons ? ' ms-4' : ''} ${cancelButtonClassName}`.trim()}
             type="button"
             onClick={handleCancelClick}
-            className={`${buttonLayout.cancel}${buttonStates.hasAllThreeButtons ? ' ms-4' : ''}`}
             disabled={disableCancel || isLoading}
             aria-label={cancelLabel}
           >
-            <ButtonLabel isLoading={false} iconClass="fa fa-undo" label={cancelLabel} />
+            <ButtonLabel isLoading={false} iconClass={cancelIconClass} label={cancelLabel} />
           </Button>
         )}
       </Box>

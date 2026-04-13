@@ -122,7 +122,7 @@ resource "kubernetes_config_map" "janssen_config" {
     # %{ if cn_ob_ext_signing_jwks_uri }
     CN_OB_EXT_SIGNING_JWKS_URI : var.ob_ext_signing_jwks_uri
     CN_OB_AS_TRANSPORT_ALIAS : var.ob_transport_alias
-    CN_OB_EXT_SIGNING_ALIAS : var.ob_ext_signing_alias
+    CN_OB_INTERNAL_SIGNING_ALIAS : var.ob_internal_signing_alias
     # force the AS to use a specific signing key
     CN_OB_STATIC_KID : var.ob_static_signing_key_kid
     # %{ endif }

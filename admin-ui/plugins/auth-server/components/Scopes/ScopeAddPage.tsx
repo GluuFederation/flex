@@ -1,150 +1,84 @@
-import React, { useEffect, useState, useCallback } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { useQueryClient } from '@tanstack/react-query'
-import { CardBody, Card } from 'Components'
+import React, { useState, useCallback, useMemo } from 'react'
 import ScopeForm from './ScopeForm'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import { getAttributes, getScripts } from 'Redux/features/initSlice'
-import { buildPayload } from 'Utils/PermChecker'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
-import { updateToast } from 'Redux/features/toastSlice'
-import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
 import { useTranslation } from 'react-i18next'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { usePostOauthScopes, getGetOauthScopesQueryKey } from 'JansConfigApi'
-import type { Scope } from 'JansConfigApi'
-import type { ScopeScript, ScopeClaim, ModifiedFields } from './types'
-import { useScopeActions } from './hooks'
-import { ScopeWithMessage, INITIAL_SCOPE } from './constants'
-
-interface InitState {
-  scripts: ScopeScript[]
-  attributes: ScopeClaim[]
-}
-
-interface RootState {
-  initReducer: InitState
-}
+import type { ModifiedFields } from './types'
+import { useScopeAttributes, useScopeScripts, useCreateScope } from './hooks'
+import { INITIAL_SCOPE } from './constants'
+import { GluuPageContent } from '@/components'
+import { useTheme } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import { useStyles } from './styles/ScopeFormPage.style'
+import { devLogger } from '@/utils/devLogger'
+import SetTitle from 'Utils/SetTitle'
 
 const ScopeAddPage: React.FC = () => {
   const { t } = useTranslation()
 
-  const dispatch = useDispatch()
-  const queryClient = useQueryClient()
+  SetTitle(t('messages.add_scope'))
 
-  const scripts = useSelector((state: RootState) => state.initReducer.scripts)
-  const attributes = useSelector((state: RootState) => state.initReducer.attributes)
+  const { state: themeState } = useTheme()
+  const { themeColors, isDark } = useMemo(
+    () => ({
+      themeColors: getThemeColor(themeState.theme || DEFAULT_THEME),
+      isDark: themeState.theme === THEME_DARK,
+    }),
+    [themeState.theme],
+  )
+  const { classes } = useStyles({ isDark, themeColors })
 
-  const { logScopeCreation, navigateToScopeList } = useScopeActions()
+  const { attributes, isLoading: attributesLoading, error: attributesError } = useScopeAttributes()
+  const { scripts, isLoading: scriptsLoading, error: scriptsError } = useScopeScripts()
+
+  const { createScope, isPending } = useCreateScope()
 
   const [modifiedFields, setModifiedFields] = useState<ModifiedFields>({})
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
-
-  const createScope = usePostOauthScopes()
+  const [errorMessage, setErrorMessage] = useState<string>()
 
   const handleSubmit = useCallback(
     async (data: string) => {
-      if (!data) return
-
-      setErrorMessage(null)
-
-      let parsedData: ScopeWithMessage
+      setErrorMessage(undefined)
       try {
-        parsedData = JSON.parse(data) as ScopeWithMessage
+        await createScope(data, modifiedFields)
       } catch (error) {
-        console.error('Error parsing scope data:', error)
-        setErrorMessage(t('messages.error_in_parsing_data'))
-        return
-      }
-
-      try {
-        const message = parsedData.action_message || ''
-        delete parsedData.action_message
-
-        const response = await createScope.mutateAsync({ data: parsedData as Scope })
-
-        queryClient.invalidateQueries({
-          predicate: (query) => {
-            const queryKey = query.queryKey[0] as string
-            return (
-              queryKey === getGetOauthScopesQueryKey()[0] || queryKey === 'getOauthScopesByInum'
-            )
-          },
-        })
-
-        const successMessage =
-          response?.id || response?.displayName
-            ? `Scope '${response.id || response.displayName}' created successfully`
-            : t('messages.scope_created_successfully')
-
-        dispatch(updateToast(true, 'success', successMessage))
-        dispatch(triggerWebhook({ createdFeatureValue: response }))
-
-        try {
-          await logScopeCreation(parsedData as Scope, message, modifiedFields)
-        } catch (auditError) {
-          console.error('Error logging audit:', auditError)
-        }
-
-        navigateToScopeList()
-      } catch (error) {
-        console.error('Error creating scope:', error)
+        devLogger.error('Error creating scope:', error)
         setErrorMessage(error instanceof Error ? error.message : t('messages.error_in_saving'))
       }
     },
-    [createScope, logScopeCreation, modifiedFields, navigateToScopeList, t, queryClient, dispatch],
+    [createScope, modifiedFields, t],
   )
 
-  useEffect(() => {
-    if (attributes.length === 0) {
-      const attributeOptions: Record<string, unknown> = {}
-      buildPayload(attributeOptions, 'Fetch attributes', { limit: 100 })
-      dispatch({
-        type: getAttributes.type,
-        payload: { options: attributeOptions },
-      })
-    }
-    if (scripts.length === 0) {
-      const scriptAction: Record<string, unknown> = {}
-      buildPayload(scriptAction, 'Fetch custom scripts', {})
-      dispatch({
-        type: getScripts.type,
-        payload: { action: scriptAction },
-      })
-    }
-  }, [dispatch, attributes.length, scripts.length])
-
-  const handleSearch = useCallback(
-    (value: string) => {
-      dispatch({
-        type: getAttributes.type,
-        payload: { options: { pattern: value } },
-      })
-    },
-    [dispatch],
-  )
+  const loading = isPending || attributesLoading || scriptsLoading
+  const hasLoadError = !!attributesError || !!scriptsError
 
   return (
-    <GluuLoader blocking={createScope.isPending}>
-      <GluuAlert
-        severity={t('titles.error')}
-        message={errorMessage || t('messages.error_in_saving')}
-        show={!!errorMessage}
-      />
-      <Card className="mb-3" style={applicationStyle.mainCard}>
-        <CardBody>
-          <ScopeForm
-            scope={INITIAL_SCOPE}
-            scripts={scripts}
-            attributes={attributes}
-            handleSubmit={handleSubmit}
-            onSearch={handleSearch}
-            modifiedFields={modifiedFields}
-            setModifiedFields={setModifiedFields}
-          />
-        </CardBody>
-      </Card>
-    </GluuLoader>
+    <GluuPageContent>
+      <GluuLoader blocking={loading}>
+        <GluuAlert
+          severity="error"
+          message={errorMessage || t('messages.error_in_saving')}
+          show={!!errorMessage}
+        />
+        {hasLoadError ? (
+          <GluuAlert severity="error" message={t('messages.error_loading_data')} show={true} />
+        ) : (
+          <div className={classes.formCard}>
+            <div className={classes.content}>
+              <ScopeForm
+                scope={INITIAL_SCOPE}
+                scripts={scripts}
+                attributes={attributes}
+                handleSubmit={handleSubmit}
+                modifiedFields={modifiedFields}
+                setModifiedFields={setModifiedFields}
+              />
+            </div>
+          </div>
+        )}
+      </GluuLoader>
+    </GluuPageContent>
   )
 }
 

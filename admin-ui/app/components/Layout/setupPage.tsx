@@ -1,46 +1,30 @@
-// @ts-nocheck
 import React from 'react'
 import pick from 'lodash/pick'
-import PropTypes from 'prop-types'
 import { withPageConfig } from './withPageConfig'
+import type { PageMetaConfig, PageSetupWrapProps } from './types'
 
-interface PageConfig {
-  pageTitle?: string
-  pageDescription?: string
-  pageKeywords?: string
-  changeMeta: (config: PageConfig) => void
-}
+export const setupPage =
+  (startupConfig: PageMetaConfig) => (Component: React.ComponentType<PageSetupWrapProps>) => {
+    class PageSetupWrap extends React.Component<PageSetupWrapProps> {
+      private prevConfig: PageMetaConfig = {}
 
-interface PageSetupWrapProps {
-  pageConfig: PageConfig
-  [key: string]: any
-}
+      componentDidMount() {
+        this.prevConfig = pick(this.props.pageConfig, [
+          'pageTitle',
+          'pageDescription',
+          'pageKeywords',
+        ]) as PageMetaConfig
+        this.props.pageConfig.changeMeta?.(startupConfig)
+      }
 
-export const setupPage = (startupConfig: PageConfig) => (Component: React.ComponentType<any>) => {
-  class PageSetupWrap extends React.Component<PageSetupWrapProps> {
-    private prevConfig: PageConfig
+      componentWillUnmount() {
+        this.props.pageConfig.changeMeta?.(this.prevConfig)
+      }
 
-    static propTypes = {
-      pageConfig: PropTypes.object,
+      render() {
+        return <Component {...this.props} />
+      }
     }
 
-    componentDidMount() {
-      this.prevConfig = pick(this.props.pageConfig, [
-        'pageTitle',
-        'pageDescription',
-        'pageKeywords',
-      ])
-      this.props.pageConfig.changeMeta(startupConfig)
-    }
-
-    componentWillUnmount() {
-      this.props.pageConfig.changeMeta(this.prevConfig)
-    }
-
-    render() {
-      return <Component {...this.props} />
-    }
+    return withPageConfig(PageSetupWrap as React.ComponentType<PageSetupWrapProps>)
   }
-
-  return withPageConfig(PageSetupWrap)
-}

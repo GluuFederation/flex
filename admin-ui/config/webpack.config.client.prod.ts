@@ -63,7 +63,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
           priority: 17,
         },
         utils: {
-          test: /[\\/]node_modules[\\/](lodash|moment|dayjs|axios|formik|yup)[\\/]/,
+          test: /[\\/]node_modules[\\/](lodash|dayjs|axios|formik|yup)[\\/]/,
           name: 'utils-vendor',
           chunks: 'all',
           priority: 16,
@@ -71,8 +71,8 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
         // Plugin chunks - each plugin gets its own chunk
         plugins: {
           test: /[\\/]plugins[\\/]/,
-          name: (module: any) => {
-            const pluginName = module?.context?.match(/[\\/]plugins[\\/]([^\\/]+)[\\/]/)?.[1]
+          name: (module: webpack.Module) => {
+            const pluginName = module.context?.match(/[\\/]plugins[\\/]([^\\/]+)[\\/]/)?.[1]
             return pluginName ? `plugin-${pluginName}` : 'plugin-common'
           },
           chunks: 'all',

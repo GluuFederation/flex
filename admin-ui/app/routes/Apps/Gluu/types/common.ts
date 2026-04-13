@@ -5,3 +5,5 @@ export type JsonValue =
   | null
   | { [key: string]: JsonValue }
   | JsonValue[]
+
+export type JsonObject = { [key: string]: JsonValue }

@@ -20,14 +20,14 @@ const licenseSlice = createSlice({
   name: 'license',
   initialState,
   reducers: {
-    checkLicensePresent: (state, action) => {
+    checkLicensePresent: (state, _action) => {
       state.islicenseCheckResultLoaded = false
     },
-    checkUserApi: (state, action) => {
+    checkUserApi: (state, _action) => {
       state.isLoading = true
       state.error = ''
     },
-    checkUserLicenceKey: (state, action) => {
+    checkUserLicenceKey: (state, _action) => {
       state.isLoading = true
       state.error = ''
     },
@@ -47,11 +47,11 @@ const licenseSlice = createSlice({
         state.islicenseCheckResultLoaded = true
       }
     },
-    checkLicenseConfigValid: (state, action) => {},
+    checkLicenseConfigValid: (_state, _action) => {},
     checkLicenseConfigValidResponse: (state, action) => {
       state.isConfigValid = action.payload || false
     },
-    uploadNewSsaToken: (state, action) => {
+    uploadNewSsaToken: (state, _action) => {
       state.isLoading = true
       state.errorSSA = ''
     },
@@ -62,10 +62,10 @@ const licenseSlice = createSlice({
     generateTrialLicense: (state) => {
       state.generatingTrialKey = true
     },
-    generateTrialLicenseResponse: (state) => {
+    generateTrialLicenseResponse: (state, _action) => {
       state.generatingTrialKey = false
     },
-    retrieveLicenseKey: (state, action) => {
+    retrieveLicenseKey: (state, _action) => {
       state.isLoading = true
     },
     retrieveLicenseKeyResponse: (state, action) => {

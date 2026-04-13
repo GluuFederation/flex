@@ -47,20 +47,20 @@ questions:
     type: password
     label: Open banking external signing jwks AS key passphrase
     min_length: 6
-  - variable: global.cnObExtSigningAlias
+  - variable: global.cnObInternalSigningAlias
     default: "XkwIzWy44xWSlcWnMiEc8iq9s2G"
     required: true
     group: "OpenBanking Distribution"
-    description: "Open banking external signing AS Alias. This is a kid value.Used in SSA Validation, kid used while encoding a JWT sent to token URL i.e XkwIzWy44xWSlcWnMiEc8iq9s2G"
+    description: "Internal Java Keystore (JKS) alias used to locate the Open Banking private signing key. To ensure correct internal mapping, this string must identically match your cnObStaticSigningKeyKid"
     type: string
-    label: Open banking external signing AS Alias
+    label: Open banking internal signing AS Alias
 - variable: global.cnObStaticSigningKeyKid
-  default: "Wy44xWSlcWnMiEc8iq9s2G"
+  default: "XkwIzWy44xWSlcWnMiEc8iq9s2G"
   required: true
   group: "OpenBanking Distribution"
-  description: "Open banking  signing AS kid to force the AS to use a specific signing key. i.e Wy44xWSlcWnMiEc8iq9s2G"
+  description: "External Key ID (kid) stamped onto the header of outgoing JWTs. This tells receiving parties which public key to fetch from your JWKS URI to verify the signature."
   type: string
-  label: Open banking  signing AS kid
+  label: Open banking signing AS kid
   show_if: "global.distribution=openbanking"
 - variable: global.cnObTransportAlias
   default: ""
@@ -600,20 +600,6 @@ questions:
     required: true
     description: "Enable endpoint /.well-known/webfinger"
     label: Enable endpoint /.well-known/webfinger
-  - variable: global.auth-server.ingress.webdiscoveryEnabled
-    default: true
-    type: boolean
-    group: "Ingress"
-    required: true
-    description: "Enable endpoint /.well-known/simple-web-discovery"
-    label: Enable endpoint /.well-known/simple-web-discovery
-  - variable: global.auth-server.ingress.u2fConfigEnabled
-    default: true
-    type: boolean
-    group: "Ingress"
-    required: true
-    description: "Enable endpoint /.well-known/fido-configuration"
-    label: Enable endpoint /.well-known/fido-configuration
   # config-api
   - variable: global.config-api.ingress.configApiEnabled
     default: true

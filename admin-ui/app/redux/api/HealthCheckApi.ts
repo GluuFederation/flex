@@ -1,27 +1,27 @@
-import { handleResponse } from 'Utils/ApiUtils'
+import { handleError } from 'Utils/ApiUtils'
+import type {
+  HealthCheckApiInstance,
+  ServiceStatusInput,
+  ServiceStatusResponse,
+} from './types/HealthCheckApi'
 
-interface Api {
-  getServiceStatus: (
-    input: ServiceStatusInput,
-    callback: (error: Error | null, data: any) => void,
-  ) => void
-}
-
-interface ServiceStatusInput {
-  [key: string]: any
-}
+export type { ServiceStatusInput, ServiceStatusResponse }
 
 export default class HealthCheckApi {
-  private readonly api: Api
+  private readonly api: HealthCheckApiInstance
 
-  constructor(api: Api) {
+  constructor(api: HealthCheckApiInstance) {
     this.api = api
   }
 
-  getHealthServerStatus = (input: ServiceStatusInput): Promise<any> => {
-    return new Promise((resolve, reject) => {
-      this.api.getServiceStatus(input, (error: Error | null, data: any) => {
-        handleResponse(error, reject, resolve, data, null)
+  getHealthServerStatus = (input: ServiceStatusInput): Promise<ServiceStatusResponse> => {
+    return new Promise<ServiceStatusResponse>((resolve, reject) => {
+      this.api.getServiceStatus(input, (error: Error | null, data: ServiceStatusResponse) => {
+        if (error) {
+          handleError(error, reject)
+          return
+        }
+        resolve(data)
       })
     })
   }

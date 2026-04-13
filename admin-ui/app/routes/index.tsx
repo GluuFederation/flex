@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Route, Routes, Navigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
 import { ROUTES } from '@/helpers/navigation'
+import { devLogger } from '@/utils/devLogger'
+import { useAppSelector } from '@/redux/hooks'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 
 // ----------- Layout Imports ---------------
 import { processRoutes, processRoutesSync } from 'Plugins/PluginMenuResolver'
@@ -13,7 +16,9 @@ import { LazyRoutes } from 'Utils/RouteLoader'
 //------ Route Definitions --------
 
 export const RoutedContent = () => {
-  const [pluginMenus, setPluginMenus] = useState<Array<any>>([])
+  const [pluginMenus, setPluginMenus] = useState<
+    Array<{ path: string; component: React.ComponentType }>
+  >([])
 
   useEffect(() => {
     const loadPlugins = async () => {
@@ -21,8 +26,7 @@ export const RoutedContent = () => {
         const routes = await processRoutes()
         setPluginMenus(routes)
       } catch (error) {
-        console.error('Failed to load plugins:', error)
-        // Fallback to sync loading
+        devLogger.error('Failed to load plugins:', error)
         setPluginMenus(processRoutesSync())
       }
     }
@@ -30,15 +34,27 @@ export const RoutedContent = () => {
     loadPlugins()
   }, [])
 
-  const { userinfo, config } = useSelector((state: any) => state.authReducer)
+  const { userinfo, config } = useAppSelector((state) => state.authReducer)
+  const { initialized, cedarFailedStatusAfterMaxTries } = useAppSelector(
+    (state) => state.cedarPermissions,
+  )
 
   useEffect(() => {
-    if (!userinfo.jansAdminUIRole || userinfo.jansAdminUIRole.length === 0) {
+    const roles = userinfo?.jansAdminUIRole
+    if (!roles || (Array.isArray(roles) && roles.length === 0)) {
       const state = uuidv4()
       const sessionEndpoint = `${config.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${config.postLogoutRedirectUri}`
       window.location.href = sessionEndpoint
     }
   }, [userinfo])
+
+  if (cedarFailedStatusAfterMaxTries && !initialized) {
+    return <GluuViewWrapper canShow={false}>{null}</GluuViewWrapper>
+  }
+
+  if (!initialized) {
+    return <GluuLoader blocking>{null}</GluuLoader>
+  }
 
   return (
     <Routes>

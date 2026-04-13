@@ -1,3 +1,5 @@
+{{ if index .Values "nginx-ingress" "enabled" -}}
+
 {{ if index .Values "auth-server" "ingress" "authServerProtectedToken" -}}
 {{ $fullName := include "flex-all-in-one.fullname" . -}}
 {{- $ingressPath := index .Values "nginx-ingress" "ingress" "path" -}}
@@ -48,7 +50,7 @@ spec:
               service:
                 name: {{ .Values.service.name }}
                 port:
-                  number: 8080
+                  number: {{ .Values.service.port }}
 {{- end }}
 
 ---
@@ -103,5 +105,7 @@ spec:
               service:
                 name: {{ .Values.service.name }}
                 port:
-                  number: 8080
+                  number: {{ .Values.service.port }}
+{{- end }}
+
 {{- end }}

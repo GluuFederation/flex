@@ -1,3 +1,10 @@
+import {
+  REGEX_URL_PLACEHOLDER,
+  REGEX_WEBHOOK_URL,
+  REGEX_CGNAT_IP_PREFIX,
+  REGEX_PRIVATE_172_IP_PREFIX,
+} from '@/utils/regex'
+
 const BLOCKED_SCHEMES = [
   'http',
   'ftp',
@@ -30,14 +37,14 @@ const isPrivateOrLocalhost = (hostname: string): boolean => {
   ) {
     return true
   }
-  const cgnatMatch = hostname.match(/^100\.(\d+)\./)
+  const cgnatMatch = hostname.match(REGEX_CGNAT_IP_PREFIX)
   if (cgnatMatch) {
     const secondOctet = parseInt(cgnatMatch[1], 10)
     if (secondOctet >= 64 && secondOctet <= 127) {
       return true
     }
   }
-  const match = hostname.match(/^172\.(\d+)\./)
+  const match = hostname.match(REGEX_PRIVATE_172_IP_PREFIX)
   if (match) {
     const secondOctet = parseInt(match[1], 10)
     if (secondOctet >= 16 && secondOctet <= 31) {
@@ -68,8 +75,13 @@ const isPrivateOrLocalhost = (hostname: string): boolean => {
   return false
 }
 
-const PATTERN =
-  /^https:\/\/(([\w-]+\.)+[\w-]+|\[[\da-fA-F:]+\])(:\d+)?(\/[^\s?#]*)?(\?[^\s#]*)?(#[^\s]*)?$/i
+const normalizeUrlForValidation = (url: string): string =>
+  url.replace(REGEX_URL_PLACEHOLDER, (match, offset, fullString) => {
+    const beforeMatch = fullString.slice(0, offset)
+    const afterMatch = fullString.slice(offset + match.length)
+    const isPortPosition = beforeMatch.endsWith(':') && !afterMatch.startsWith('@')
+    return isPortPosition ? '8080' : 'x'
+  })
 
 const isAllowed = (url: string): boolean => {
   try {
@@ -90,10 +102,14 @@ const isAllowed = (url: string): boolean => {
 }
 
 export const isValid = (url: string | undefined | null): boolean => {
-  if (url === undefined || url === null || !isAllowed(url)) {
+  if (url === undefined || url === null) {
     return false
   }
-  return PATTERN.test(url)
+  const normalized = normalizeUrlForValidation(url)
+  if (!isAllowed(normalized)) {
+    return false
+  }
+  return REGEX_WEBHOOK_URL.test(normalized)
 }
 
 export { isAllowed }

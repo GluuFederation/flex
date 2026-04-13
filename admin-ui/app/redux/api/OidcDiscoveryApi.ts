@@ -1,21 +1,18 @@
-import { handleResponse } from 'Utils/ApiUtils'
-
-interface Api {
-  getProperties: (callback: (error: Error | null, data: unknown) => void) => void
-}
+import { handleTypedResponse } from 'Utils/ApiUtils'
+import type { OidcDiscoveryConfig } from 'Redux/types'
+import type { OidcDiscoveryApiClient } from './types/OidcDiscoveryApi'
 
 export default class OidcDiscoveryApi {
-  private readonly api: Api
+  private readonly api: OidcDiscoveryApiClient
 
-  constructor(api: Api) {
+  constructor(api: OidcDiscoveryApiClient) {
     this.api = api
   }
 
-  // Get OIDC Discovery
-  getOidcDiscovery = (): Promise<unknown> => {
+  getOidcDiscovery = (): Promise<OidcDiscoveryConfig> => {
     return new Promise((resolve, reject) => {
       this.api.getProperties((error, data) => {
-        handleResponse(error, reject, resolve, data, null)
+        handleTypedResponse(error, reject, resolve, data)
       })
     })
   }

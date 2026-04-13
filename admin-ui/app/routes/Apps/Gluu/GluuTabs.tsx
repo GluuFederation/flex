@@ -5,25 +5,9 @@ import Box from '@mui/material/Box'
 import { useLocation } from 'react-router'
 import customColors from '@/customColors'
 import { useAppNavigation } from '@/helpers/navigation'
-
-interface NamedTab {
-  name: string
-  path?: string | null
-}
-
-interface NavigationTab extends NamedTab {
-  path: string
-}
-
-type TabItem = string | NamedTab
-
-interface TabPanelProps {
-  children?: React.ReactNode
-  value: number
-  px?: number
-  py?: number
-  index: number
-}
+import { useTheme } from '@/context/theme/themeContext'
+import { THEME_DARK } from '@/context/theme/constants'
+import type { GluuTabsProps, NavigationTab, TabItem, TabPanelProps } from './types'
 
 const a11yProps = (index: number) => {
   return {
@@ -56,11 +40,11 @@ TabPanel.displayName = 'TabPanel'
 const isNavigationTab = (tab: TabItem | null): tab is NavigationTab => {
   return Boolean(
     tab &&
-      typeof tab === 'object' &&
-      'name' in tab &&
-      'path' in tab &&
-      typeof tab.path === 'string' &&
-      tab.path.trim().length > 0,
+    typeof tab === 'object' &&
+    'name' in tab &&
+    'path' in tab &&
+    typeof tab.path === 'string' &&
+    tab.path.trim().length > 0,
   )
 }
 
@@ -69,15 +53,11 @@ const initTabValue = (tabNames: TabItem[], pathname: string) => {
   return tabIndex >= 0 ? tabIndex : 0
 }
 
-interface GluuTabsProps {
-  tabNames: TabItem[]
-  tabToShow: (tabName: string) => React.ReactNode
-  withNavigation?: boolean
-}
-
-export default function GluuTabs({ tabNames, tabToShow, withNavigation = false }: GluuTabsProps) {
+const GluuTabs = ({ tabNames, tabToShow, withNavigation = false }: GluuTabsProps) => {
   const path = useLocation()
   const { navigateToRoute } = useAppNavigation()
+  const { state: themeState } = useTheme()
+  const isDark = themeState?.theme === THEME_DARK
 
   const [value, setValue] = useState(() =>
     withNavigation ? initTabValue(tabNames, path.pathname) : 0,
@@ -104,25 +84,30 @@ export default function GluuTabs({ tabNames, tabToShow, withNavigation = false }
     [withNavigation, tabNames, navigateToRoute, path.pathname],
   )
 
+  const inactiveTabColor = isDark ? customColors.lightBlue : customColors.textSecondary
+
   const tabsSx = useMemo(
     () => ({
+      '& .MuiTab-root': {
+        color: inactiveTabColor,
+      },
       '& .MuiTab-root.Mui-selected': {
-        color: customColors.lightBlue,
+        color: customColors.statusActive,
         fontWeight: 600,
-        background: customColors.lightBlue,
+        background: customColors.statusActive,
         WebkitBackgroundClip: 'text',
         WebkitTextFillColor: 'transparent',
         backgroundClip: 'text',
         position: 'relative',
       },
       '& .MuiTabs-indicator': {
-        background: customColors.lightBlue,
+        background: customColors.statusActive,
         height: 3,
         borderRadius: '2px',
-        boxShadow: `0 2px 4px ${customColors.logo}`,
+        boxShadow: `0 2px 4px ${customColors.statusActive}`,
       },
     }),
-    [],
+    [inactiveTabColor],
   )
 
   const tabsContainerSx = useMemo(
@@ -168,7 +153,7 @@ export default function GluuTabs({ tabNames, tabToShow, withNavigation = false }
   const tabElements = useMemo(
     () =>
       tabLabels.map((label, index) => (
-        <Tab data-testid={label} key={`${label}-${index}`} label={label} {...a11yProps(index)} />
+        <Tab data-testid={label} key={`tab-${index}`} label={label} {...a11yProps(index)} />
       )),
     [tabLabels],
   )
@@ -176,7 +161,7 @@ export default function GluuTabs({ tabNames, tabToShow, withNavigation = false }
   const tabPanels = useMemo(
     () =>
       tabLabels.map((label, index) => (
-        <TabPanel value={value} key={`${label}-${index}-panel`} index={index} px={0} py={2}>
+        <TabPanel value={value} key={`tabpanel-${index}`} index={index} px={0} py={2}>
           {tabToShow(label)}
         </TabPanel>
       )),
@@ -194,3 +179,5 @@ export default function GluuTabs({ tabNames, tabToShow, withNavigation = false }
     </Box>
   )
 }
+
+export default GluuTabs

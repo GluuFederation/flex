@@ -3,29 +3,13 @@ import { useSelector } from 'react-redux'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import { CREATE, UPDATE, DELETION } from '../../../../../app/audit/UserActionType'
 import { SCOPE } from '../../../redux/audit/Resources'
-import type { Scope, ModifiedFields } from '../types'
+import type { Scope, ModifiedFields, ScopeRootState } from '../types'
+import { toScopeJsonRecord } from '../helper/utils'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
-interface AuthState {
-  token?: {
-    access_token: string
-  }
-  config?: {
-    clientId: string
-  }
-  userinfo?: {
-    inum: string
-    name: string
-  }
-}
-
-interface RootState {
-  authReducer: AuthState
-}
-
-export function useScopeActions() {
+export const useScopeActions = () => {
   const { navigateToRoute } = useAppNavigation()
-  const authState = useSelector((state: RootState) => state.authReducer)
+  const authState = useSelector((state: ScopeRootState) => state.authReducer)
   const client_id = authState?.config?.clientId
   const userinfo = authState?.userinfo
 
@@ -39,7 +23,7 @@ export function useScopeActions() {
         modifiedFields,
         performedOn: scope.id || scope.inum,
         client_id,
-        payload: scope,
+        payload: toScopeJsonRecord(scope),
       })
     },
     [userinfo, client_id],
@@ -55,7 +39,7 @@ export function useScopeActions() {
         modifiedFields,
         performedOn: scope.id || scope.inum,
         client_id,
-        payload: scope,
+        payload: toScopeJsonRecord(scope),
       })
     },
     [userinfo, client_id],
@@ -70,7 +54,7 @@ export function useScopeActions() {
         message,
         performedOn: scope.id || scope.inum,
         client_id,
-        payload: { inum: scope.inum, id: scope.id },
+        payload: { inum: scope.inum ?? null, id: scope.id ?? null },
       })
     },
     [userinfo, client_id],

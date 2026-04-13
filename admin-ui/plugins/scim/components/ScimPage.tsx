@@ -1,43 +1,38 @@
 import React, { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { useQueryClient } from '@tanstack/react-query'
 import SetTitle from 'Utils/SetTitle'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { Card, CardBody } from 'Components'
+import { GluuPageContent } from '@/components'
 import ScimConfiguration from './ScimConfiguration'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useGetScimConfig, usePatchScimConfig, getGetScimConfigQueryKey } from 'JansConfigApi'
-import { createJsonPatchFromDifferences } from '../helper'
-import type { ScimFormValues } from '../types'
+import { createJsonPatchFromDifferences, AUDIT_RESOURCE, triggerScimWebhook } from '../helper'
+import { setWebhookModal } from 'Plugins/admin/redux/features/WebhookSlice'
+import type { ScimFormValues, ApiErrorResponse, MutationContext, AppConfiguration3 } from '../types'
 import { logAudit } from 'Utils/AuditLogger'
 import { PATCH } from '@/audit/UserActionType'
-import type { RootState } from '@/redux/sagas/types/audit'
 import type { JsonPatch } from 'JansConfigApi'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
+import { useStyles } from './styles/ScimFormPage.style'
 
-interface ApiErrorResponse {
-  response?: {
-    data?: {
-      message?: string
-    }
-  }
+const scimResourceId = ADMIN_UI_RESOURCES.SCIM
+const scimScopes = CEDAR_RESOURCE_SCOPES[scimResourceId]
+
+const isApiError = (error: Error | ApiErrorResponse): error is ApiErrorResponse => {
+  return 'response' in error && typeof (error as ApiErrorResponse).response === 'object'
 }
 
-const isApiError = (error: unknown): error is ApiErrorResponse => {
-  return (
-    typeof error === 'object' &&
-    error !== null &&
-    'response' in error &&
-    typeof (error as ApiErrorResponse).response === 'object'
-  )
-}
-
-const getErrorMessage = (error: unknown, fallback: string): string => {
+const getErrorMessage = (error: Error | ApiErrorResponse, fallback: string): string => {
   if (isApiError(error) && error.response?.data?.message) {
     return error.response.data.message
   }
@@ -46,18 +41,12 @@ const getErrorMessage = (error: unknown, fallback: string): string => {
 
 const ScimPage: React.FC = () => {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
-  const userinfo: RootState['authReducer']['userinfo'] | undefined = useSelector(
-    (state: RootState) => state.authReducer?.userinfo,
-  )
-  const client_id: string | undefined = useSelector(
-    (state: RootState) => state.authReducer?.config?.clientId,
-  )
+  const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
+  const client_id = useAppSelector((state) => state.authReducer?.config?.clientId)
   SetTitle(t('titles.scim_management'))
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
-  const scimResourceId = useMemo(() => ADMIN_UI_RESOURCES.SCIM, [])
-  const scimScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[scimResourceId], [scimResourceId])
   const canReadScim = useMemo(
     () => hasCedarReadPermission(scimResourceId),
     [hasCedarReadPermission, scimResourceId],
@@ -73,6 +62,16 @@ const ScimPage: React.FC = () => {
     }
   }, [authorizeHelper, scimScopes])
 
+  const { state: themeState } = useTheme()
+  const { themeColors, isDark } = useMemo(
+    () => ({
+      themeColors: getThemeColor(themeState.theme),
+      isDark: themeState.theme === THEME_DARK,
+    }),
+    [themeState.theme],
+  )
+  const { classes } = useStyles({ isDark, themeColors })
+
   const { data: scimConfiguration, isLoading } = useGetScimConfig()
   const userMessageRef = React.useRef<string>('')
 
@@ -80,7 +79,9 @@ const ScimPage: React.FC = () => {
     mutation: {
       onMutate: async (variables: { data: JsonPatch[] }) => {
         await queryClient.cancelQueries({ queryKey: getGetScimConfigQueryKey() })
-        const previousConfig = queryClient.getQueryData(getGetScimConfigQueryKey())
+        const previousConfig = queryClient.getQueryData(getGetScimConfigQueryKey()) as
+          | AppConfiguration3
+          | undefined
         if (previousConfig && scimConfiguration) {
           queryClient.setQueryData(getGetScimConfigQueryKey(), () => {
             return variables.data.reduce(
@@ -94,9 +95,8 @@ const ScimPage: React.FC = () => {
                   case 'add':
                     return { ...updated, [key]: patch.value }
                   case 'remove': {
-                    const { [key]: omitted, ...rest } = updated
-                    void omitted
-                    return rest
+                    delete updated[key]
+                    return { ...updated }
                   }
                   default:
                     return updated
@@ -108,27 +108,24 @@ const ScimPage: React.FC = () => {
         }
         return { previousConfig }
       },
-      onSuccess: async (_data: unknown, variables: { data: JsonPatch[] }) => {
-        dispatch(updateToast(true, 'success'))
-        queryClient.invalidateQueries({ queryKey: getGetScimConfigQueryKey() })
-        try {
-          const userMessage: string = userMessageRef.current || 'SCIM configuration updated'
-          await logAudit({
-            userinfo: userinfo ?? undefined,
-            action: PATCH,
-            resource: 'update_scim_config',
-            message: userMessage,
-            client_id: client_id,
-            payload: variables?.data,
-          })
-        } catch (e: unknown) {
-          console.warn('Audit logging failed for SCIM configuration update', e)
-        }
+      onSuccess: async (data: AppConfiguration3, variables: { data: JsonPatch[] }) => {
+        dispatch(setWebhookModal(false))
+        dispatch(updateToast(true, 'success', t('messages.success_in_saving')))
+        triggerScimWebhook(data)
+        const userMessage: string = userMessageRef.current || t('messages.success_in_saving')
+        await logAudit({
+          userinfo: userinfo ?? undefined,
+          action: PATCH,
+          resource: AUDIT_RESOURCE,
+          message: userMessage,
+          client_id: client_id,
+          payload: variables?.data as JsonValue[],
+        })
       },
       onError: (
-        error: unknown,
-        _variables: unknown,
-        context: { previousConfig?: unknown } | undefined,
+        error: Error | ApiErrorResponse,
+        _variables: { data: JsonPatch[] },
+        context: MutationContext | undefined,
       ) => {
         const errorMessage = getErrorMessage(error, t('messages.error_in_saving'))
         dispatch(updateToast(true, 'error', errorMessage))
@@ -143,7 +140,7 @@ const ScimPage: React.FC = () => {
   })
 
   const handleSubmit = useCallback(
-    (formValues: ScimFormValues): void => {
+    (formValues: ScimFormValues): void | Promise<AppConfiguration3> => {
       if (!scimConfiguration) {
         dispatch(updateToast(true, 'error', t('messages.no_configuration_loaded')))
         return
@@ -155,26 +152,29 @@ const ScimPage: React.FC = () => {
         return
       }
       userMessageRef.current = action_message || ''
-      patchScimMutation.mutate({ data: patches })
+      return patchScimMutation.mutateAsync({ data: patches })
     },
     [scimConfiguration, patchScimMutation, dispatch, t],
   )
 
   return (
-    <GluuLoader blocking={isLoading || patchScimMutation.isPending}>
-      <Card className="mb-3" style={applicationStyle.mainCard}>
-        <CardBody>
-          <GluuViewWrapper canShow={canReadScim}>
-            <ScimConfiguration
-              scimConfiguration={scimConfiguration}
-              handleSubmit={handleSubmit}
-              isSubmitting={patchScimMutation.isPending}
-              canWriteScim={canWriteScim}
-            />
-          </GluuViewWrapper>
-        </CardBody>
-      </Card>
-    </GluuLoader>
+    <GluuPageContent>
+      <GluuViewWrapper canShow={canReadScim}>
+        <GluuLoader blocking={isLoading || patchScimMutation.isPending}>
+          <Card className={classes.formCard}>
+            <CardBody className={classes.content}>
+              <ScimConfiguration
+                scimConfiguration={scimConfiguration}
+                handleSubmit={handleSubmit}
+                isSubmitting={patchScimMutation.isPending}
+                canWriteScim={canWriteScim}
+                classes={classes}
+              />
+            </CardBody>
+          </Card>
+        </GluuLoader>
+      </GluuViewWrapper>
+    </GluuPageContent>
   )
 }
 

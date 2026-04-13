@@ -1,14 +1,12 @@
 import store from 'Redux/store'
 import { handleApiTimeout } from 'Redux/features/initSlice'
-const MAX_RETRIES = 1
 
-export function handleResponse(
+export const handleResponse = <T>(
   error: Error | null,
   reject: (error: Error) => void,
-  resolve: (data: unknown) => void,
-  data: unknown,
-  response?: unknown,
-): void {
+  resolve: (data: T) => void,
+  data: T,
+): void => {
   if (error) {
     reject(error)
     if (error?.message?.toLocaleLowerCase()?.includes('timeout')) {
@@ -19,14 +17,12 @@ export function handleResponse(
   }
 }
 
-// Generic version that preserves type safety
-export function handleTypedResponse<T>(
+export const handleTypedResponse = <T>(
   error: Error | null,
   reject: (error: Error) => void,
   resolve: (data: T) => void,
   data: T | undefined,
-  response?: unknown,
-): void {
+): void => {
   if (error) {
     reject(error)
     if (error?.message?.toLocaleLowerCase()?.includes('timeout')) {
@@ -39,7 +35,7 @@ export function handleTypedResponse<T>(
   }
 }
 
-export function handleError(error: Error | null, reject: (error: Error) => void): void {
+export const handleError = (error: Error | null, reject: (error: Error) => void): void => {
   if (error) {
     reject(error)
     if (error?.message?.toLocaleLowerCase()?.includes('timeout')) {
@@ -48,6 +44,6 @@ export function handleError(error: Error | null, reject: (error: Error) => void)
   }
 }
 
-export function handleSuccess(data: unknown, resolve: (data: unknown) => void): void {
+export const handleSuccess = <T>(data: T, resolve: (data: T) => void): void => {
   resolve(data)
 }

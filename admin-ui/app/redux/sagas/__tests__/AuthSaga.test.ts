@@ -9,12 +9,11 @@ import * as AuthSaga from '../AuthSaga'
 const { putConfigWorker } = AuthSaga
 
 describe('AuthSaga - putConfigWorker', () => {
-  const mockToken = 'mock-access-token'
   const mockConfig = {
     sessionTimeoutInMins: 30,
     acrValues: 'simple_password_auth',
     cedarlingLogType: 'OFF',
-    additionalParameters: [],
+    additionalParameters: [] as string[],
   }
   const mockResponse = {
     ...mockConfig,
@@ -24,14 +23,13 @@ describe('AuthSaga - putConfigWorker', () => {
   const mockState = {
     authReducer: {
       token: {
-        access_token: mockToken,
+        access_token: 'mock-access-token',
       },
     },
   }
 
   describe('when cedarlingLogType changes', () => {
-    // eslint-disable-next-line jest/expect-expect
-    it('should dispatch updateToast with custom message on success', () => {
+    it('should dispatch updateToast with custom message on success', async () => {
       const customToastMessage = 'Please relogin to view cedarling changes'
       const action = {
         type: 'auth/putConfigWorker',
@@ -44,17 +42,18 @@ describe('AuthSaga - putConfigWorker', () => {
         },
       }
 
-      return expectSaga(putConfigWorker, action)
+      const result = await expectSaga(putConfigWorker, action)
         .withState(mockState)
         .provide([[matchers.call.fn(putServerConfiguration), mockResponse]])
         .put(getOAuth2ConfigResponse({ config: mockResponse }))
         .put(updateToast(true, 'success', customToastMessage))
         .put(putConfigWorkerResponse())
         .run()
+
+      expect(result).toBeTruthy()
     })
 
-    // eslint-disable-next-line jest/expect-expect
-    it('should not dispatch custom toast message on error', () => {
+    it('should not dispatch custom toast message on error', async () => {
       const customToastMessage = 'Please relogin to view cedarling changes'
       const mockError = new Error('Network error')
       const action = {
@@ -68,35 +67,37 @@ describe('AuthSaga - putConfigWorker', () => {
         },
       }
 
-      return expectSaga(putConfigWorker, action)
+      const result = await expectSaga(putConfigWorker, action)
         .withState(mockState)
         .provide([[matchers.call.fn(putServerConfiguration), throwError(mockError)]])
         .not.put(updateToast(true, 'success', customToastMessage))
         .put(updateToast(true, 'error'))
         .put(putConfigWorkerResponse())
         .run()
+
+      expect(result).toBeTruthy()
     })
   })
 
   describe('when cedarlingLogType does not change', () => {
-    // eslint-disable-next-line jest/expect-expect
-    it('should dispatch generic success toast when no metadata provided', () => {
+    it('should dispatch generic success toast when no metadata provided', async () => {
       const action = {
         type: 'auth/putConfigWorker',
         payload: mockConfig,
       }
 
-      return expectSaga(putConfigWorker, action)
+      const result = await expectSaga(putConfigWorker, action)
         .withState(mockState)
         .provide([[matchers.call.fn(putServerConfiguration), mockResponse]])
         .put(getOAuth2ConfigResponse({ config: mockResponse }))
         .put(updateToast(true, 'success'))
         .put(putConfigWorkerResponse())
         .run()
+
+      expect(result).toBeTruthy()
     })
 
-    // eslint-disable-next-line jest/expect-expect
-    it('should dispatch generic success toast when cedarlingLogTypeChanged is false', () => {
+    it('should dispatch generic success toast when cedarlingLogTypeChanged is false', async () => {
       const action = {
         type: 'auth/putConfigWorker',
         payload: {
@@ -107,60 +108,62 @@ describe('AuthSaga - putConfigWorker', () => {
         },
       }
 
-      return expectSaga(putConfigWorker, action)
+      const result = await expectSaga(putConfigWorker, action)
         .withState(mockState)
         .provide([[matchers.call.fn(putServerConfiguration), mockResponse]])
         .put(getOAuth2ConfigResponse({ config: mockResponse }))
         .put(updateToast(true, 'success'))
         .put(putConfigWorkerResponse())
         .run()
+
+      expect(result).toBeTruthy()
     })
 
-    // eslint-disable-next-line jest/expect-expect
-    it('should dispatch generic success toast when toastMessage is undefined', () => {
+    it('should dispatch generic success toast when toastMessage is undefined', async () => {
       const action = {
         type: 'auth/putConfigWorker',
         payload: {
           ...mockConfig,
           _meta: {
             cedarlingLogTypeChanged: true,
-            toastMessage: undefined,
           },
         },
       }
 
-      return expectSaga(putConfigWorker, action)
+      const result = await expectSaga(putConfigWorker, action)
         .withState(mockState)
         .provide([[matchers.call.fn(putServerConfiguration), mockResponse]])
         .put(getOAuth2ConfigResponse({ config: mockResponse }))
         .put(updateToast(true, 'success'))
         .put(putConfigWorkerResponse())
         .run()
+
+      expect(result).toBeTruthy()
     })
   })
 
   describe('error handling', () => {
-    // eslint-disable-next-line jest/expect-expect
-    it('should dispatch error toast on failure', () => {
+    it('should dispatch error toast on failure', async () => {
       const mockError = new Error('API Error')
       const action = {
         type: 'auth/putConfigWorker',
         payload: mockConfig,
       }
 
-      return expectSaga(putConfigWorker, action)
+      const result = await expectSaga(putConfigWorker, action)
         .withState(mockState)
         .provide([[matchers.call.fn(putServerConfiguration), throwError(mockError)]])
         .not.put(getOAuth2ConfigResponse({ config: mockResponse }))
         .put(updateToast(true, 'error'))
         .put(putConfigWorkerResponse())
         .run()
+
+      expect(result).toBeTruthy()
     })
   })
 
   describe('metadata extraction', () => {
-    // eslint-disable-next-line jest/expect-expect
-    it('should not send _meta to the API', () => {
+    it('should not send _meta to the API', async () => {
       const action = {
         type: 'auth/putConfigWorker',
         payload: {
@@ -172,78 +175,82 @@ describe('AuthSaga - putConfigWorker', () => {
         },
       }
 
-      return expectSaga(putConfigWorker, action)
+      const result = await expectSaga(putConfigWorker, action)
         .withState(mockState)
         .provide([[matchers.call.fn(putServerConfiguration), mockResponse]])
         .call(putServerConfiguration, {
-          token: mockToken,
-          props: mockConfig, // Should NOT include _meta
+          props: mockConfig,
         })
         .run()
+
+      expect(result).toBeTruthy()
     })
 
-    // eslint-disable-next-line jest/expect-expect
-    it('should handle payload without _meta correctly', () => {
+    it('should handle payload without _meta correctly', async () => {
       const action = {
         type: 'auth/putConfigWorker',
         payload: mockConfig,
       }
 
-      return expectSaga(putConfigWorker, action)
+      const result = await expectSaga(putConfigWorker, action)
         .withState(mockState)
         .provide([[matchers.call.fn(putServerConfiguration), mockResponse]])
         .call(putServerConfiguration, {
-          token: mockToken,
           props: mockConfig,
         })
         .put(getOAuth2ConfigResponse({ config: mockResponse }))
         .put(updateToast(true, 'success'))
         .run()
+
+      expect(result).toBeTruthy()
     })
   })
 
   describe('response handling', () => {
-    // eslint-disable-next-line jest/expect-expect
-    it('should handle successful response with config update', () => {
+    it('should handle successful response with config update', async () => {
       const action = {
         type: 'auth/putConfigWorker',
         payload: mockConfig,
       }
 
-      return expectSaga(putConfigWorker, action)
+      const result = await expectSaga(putConfigWorker, action)
         .withState(mockState)
         .provide([[matchers.call.fn(putServerConfiguration), mockResponse]])
         .put(getOAuth2ConfigResponse({ config: mockResponse }))
         .run()
+
+      expect(result).toBeTruthy()
     })
 
-    // eslint-disable-next-line jest/expect-expect
-    it('should always call putConfigWorkerResponse in finally block', () => {
+    it('should always call putConfigWorkerResponse in finally block', async () => {
       const action = {
         type: 'auth/putConfigWorker',
         payload: mockConfig,
       }
 
-      return expectSaga(putConfigWorker, action)
+      const result = await expectSaga(putConfigWorker, action)
         .withState(mockState)
         .provide([[matchers.call.fn(putServerConfiguration), mockResponse]])
         .put(putConfigWorkerResponse())
         .run()
+
+      expect(result).toBeTruthy()
     })
 
-    // eslint-disable-next-line jest/expect-expect
-    it('should call putConfigWorkerResponse even on error', () => {
+    it('should call putConfigWorkerResponse even on error', async () => {
       const mockError = new Error('API Error')
       const action = {
         type: 'auth/putConfigWorker',
         payload: mockConfig,
       }
 
-      return expectSaga(putConfigWorker, action)
+      const result = await expectSaga(putConfigWorker, action)
         .withState(mockState)
         .provide([[matchers.call.fn(putServerConfiguration), throwError(mockError)]])
         .put(putConfigWorkerResponse())
         .run()
+
+      expect(result).toBeTruthy()
     })
   })
 })

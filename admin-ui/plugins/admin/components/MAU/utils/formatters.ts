@@ -1,6 +1,6 @@
 import { MONTH_NAMES } from '../constants'
 
-export function formatMonth(yyyymm: number): string {
+export const formatMonth = (yyyymm: number): string => {
   const str = yyyymm.toString()
   if (str.length !== 6) return str
   const year = str.substring(0, 4)
@@ -12,7 +12,7 @@ export function formatMonth(yyyymm: number): string {
   return `${monthName} ${year}`
 }
 
-export function formatNumber(num: number): string {
+export const formatNumber = (num: number): string => {
   if (num >= 1000000) {
     return `${(num / 1000000).toFixed(1)}M`
   }
@@ -22,14 +22,14 @@ export function formatNumber(num: number): string {
   return num.toLocaleString()
 }
 
-export function calculatePercentChange(current: number, previous: number): number {
+export const calculatePercentChange = (current: number, previous: number): number => {
   if (previous === 0) {
     return current > 0 ? 100 : 0
   }
   return ((current - previous) / previous) * 100
 }
 
-export function formatPercentChange(change: number): string {
+export const formatPercentChange = (change: number): string => {
   const sign = change >= 0 ? '+' : ''
   return `${sign}${change.toFixed(1)}%`
 }

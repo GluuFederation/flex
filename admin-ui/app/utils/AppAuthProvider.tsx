@@ -1,16 +1,16 @@
-// @ts-nocheck
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import ApiKeyRedirect from './ApiKeyRedirect'
 import { useLocation } from 'react-router'
 import { NoHashQueryStringUtils, saveIssuer, getIssuer } from './TokenController'
 import queryString from 'query-string'
 import { uuidv4 } from './Util'
-import { useSelector, useDispatch } from 'react-redux'
-import { getAPIAccessToken, checkLicensePresent } from 'Redux/actions'
+import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import SessionTimeout from 'Routes/Apps/Gluu/GluuSessionTimeout'
-import { checkLicenseConfigValid, getOAuth2Config, getUserInfoResponse } from '../redux/actions'
+import { checkLicenseConfigValid, getUserInfoResponse } from '../redux/actions'
+import { getAPIAccessToken, checkLicensePresent } from 'Redux/actions'
 import GluuTimeoutModal from 'Routes/Apps/Gluu/GluuTimeoutModal'
 import GluuErrorModal from 'Routes/Apps/Gluu/GluuErrorModal'
+import { updateToast } from 'Redux/features/toastSlice'
 import {
   FetchRequestor,
   AuthorizationServiceConfiguration,
@@ -22,42 +22,70 @@ import {
   BaseTokenRequestHandler,
   AuthorizationNotifier,
   GRANT_TYPE_AUTHORIZATION_CODE,
+  AuthorizationError,
 } from '@openid/appauth'
-import { fetchPolicyStore, fetchUserInformation } from 'Redux/api/backend-api'
+import type { AuthorizationResponse } from '@openid/appauth'
+import {
+  fetchPolicyStore,
+  fetchUserInformation,
+  type FetchUserInfoResult,
+} from 'Redux/api/backend-api'
+import { useTranslation } from 'react-i18next'
 import { jwtDecode } from 'jwt-decode'
+import type { UserInfo } from '@/redux/features/types/authTypes'
+import type { OAuthConfig, AppAuthProviderProps } from '@/utils/types'
 
-export default function AppAuthProvider(props) {
-  const dispatch = useDispatch()
+const LOGOUT_DELAY_SECONDS = 10
+
+const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
+  const dispatch = useAppDispatch()
   const location = useLocation()
+  const { t } = useTranslation()
   const [roleNotFound, setRoleNotFound] = useState(false)
   const [showAdminUI, setShowAdminUI] = useState(false)
-  const { config, userinfo, userinfo_jwt, issuer, hasSession } = useSelector(
-    (state) => state.authReducer,
-  )
-
   const {
-    islicenseCheckResultLoaded,
-    isLicenseActivationResultLoaded,
-    isLicenseValid,
-    isConfigValid,
-    isUnderThresholdLimit,
-  } = useSelector((state) => state.licenseReducer)
+    config: rawConfig,
+    userinfo,
+    userinfo_jwt,
+    issuer,
+    hasSession,
+  } = useAppSelector((state) => state.authReducer)
+  const config = rawConfig as OAuthConfig
+
+  const { islicenseCheckResultLoaded, isLicenseValid, isConfigValid, isUnderThresholdLimit } =
+    useAppSelector((state) => state.licenseReducer)
 
   useEffect(() => {
-    const params = queryString.parse(location.search)
-    if (!(params.code && params.scope && params.state)) {
-      dispatch(checkLicenseConfigValid())
+    if (!userinfo) return
+
+    const roles = userinfo.jansAdminUIRole
+    const hasValidRole = Array.isArray(roles) ? roles.length > 0 : Boolean(roles)
+    if (!hasValidRole) return
+
+    setShowAdminUI(true)
+
+    if (!hasSession && userinfo_jwt) {
+      dispatch(getAPIAccessToken(userinfo_jwt))
     }
-  }, [])
+  }, [dispatch, hasSession, userinfo, userinfo_jwt])
+
+  const hasDispatchedConfigCheck = useRef(false)
+  useEffect(() => {
+    const params = queryString.parse(location.search)
+    if (!(params.code && params.scope && params.state) && !hasDispatchedConfigCheck.current) {
+      hasDispatchedConfigCheck.current = true
+      dispatch(checkLicenseConfigValid(undefined))
+    }
+  }, [dispatch])
 
   useEffect(() => {
     const params = queryString.parse(location.search)
     if (isConfigValid && !(params.code && params.scope && params.state)) {
-      dispatch(checkLicensePresent())
+      dispatch(checkLicensePresent(undefined))
     }
   }, [isConfigValid])
 
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<Error | string | null>(null)
 
   useEffect(() => {
     let isMounted = true
@@ -65,15 +93,18 @@ export default function AppAuthProvider(props) {
     if (hasSession) {
       fetchPolicyStore()
         .then((policyStoreResponse) => {
-          if (isMounted) {
-            const policyStoreJson = policyStoreResponse.data.responseObject
+          if (isMounted && policyStoreResponse.data) {
+            const policyStoreBytes =
+              'responseBytes' in policyStoreResponse.data
+                ? policyStoreResponse.data.responseBytes
+                : undefined
             dispatch({
-              type: 'cedarPermissions/setPolicyStoreJson',
-              payload: policyStoreJson,
+              type: 'cedarPermissions/setPolicyStoreBytes',
+              payload: policyStoreBytes ?? '',
             })
           }
         })
-        .catch((err) => {
+        .catch((err: Error) => {
           if (isMounted) {
             setError(err)
           }
@@ -84,7 +115,6 @@ export default function AppAuthProvider(props) {
       isMounted = false
     }
   }, [hasSession, dispatch])
-  const [code, setCode] = useState(null)
 
   useEffect(() => {
     const authorizationHandler = new RedirectRequestHandler(
@@ -95,24 +125,26 @@ export default function AppAuthProvider(props) {
     )
 
     if (isLicenseValid) {
+      if (!issuer) return
+
       AuthorizationServiceConfiguration.fetchFromIssuer(issuer, new FetchRequestor())
         .then((response) => {
-          const additionalParameters = {}
+          const additionalParameters: Record<string, string> = {}
 
-          if (config?.additionalParameters?.length) {
+          if (config.additionalParameters?.length) {
             for (const { key = '', value = '' } of config.additionalParameters) {
               additionalParameters[key] = value
             }
           }
 
-          const extras = {
-            acr_values: config.acrValues,
+          const extras: Record<string, string> = {
+            ...(config.acrValues ? { acr_values: config.acrValues } : {}),
             ...additionalParameters,
           }
           const authRequest = new AuthorizationRequest({
-            client_id: config.clientId,
-            redirect_uri: config.redirectUrl,
-            scope: config.scope,
+            client_id: config.clientId ?? '',
+            redirect_uri: config.redirectUrl ?? '',
+            scope: config.scope ?? '',
             response_type: AuthorizationRequest.RESPONSE_TYPE_CODE,
             state: undefined,
             extras,
@@ -120,11 +152,12 @@ export default function AppAuthProvider(props) {
           saveIssuer(issuer)
           authorizationHandler.performAuthorizationRequest(response, authRequest)
         })
-        .catch((error) => {
-          setError(error)
+        .catch((fetchError: Error) => {
+          setError(fetchError)
         })
     }
   }, [isLicenseValid])
+  const [code, setCode] = useState<string | null>(null)
 
   useEffect(() => {
     const tokenHandler = new BaseTokenRequestHandler(new FetchRequestor())
@@ -135,82 +168,100 @@ export default function AppAuthProvider(props) {
       new DefaultCrypto(),
     )
     const notifier = new AuthorizationNotifier()
-    const issuer = getIssuer()
+    const savedIssuer = getIssuer()
 
-    notifier.setAuthorizationListener((request, response, error) => {
-      if (response) {
-        let extras = null
-        if (request.internal) {
-          extras = {}
-          extras.code_verifier = request.internal.code_verifier
-        }
-
-        const tokenRequest = new TokenRequest({
-          client_id: request.clientId,
-          redirect_uri: request.redirectUri,
-          grant_type: GRANT_TYPE_AUTHORIZATION_CODE,
-          code: response.code,
-          extras: { code_verifier: request.internal.code_verifier, scope: request.scope },
-        })
-        let authConfigs
-        dispatch(getOAuth2Config())
-        let idToken = null
-        let oauthAccessToken = null
-
-        AuthorizationServiceConfiguration.fetchFromIssuer(issuer, new FetchRequestor())
-          .then((configuration) => {
-            authConfigs = configuration
-            return tokenHandler.performTokenRequest(configuration, tokenRequest)
+    notifier.setAuthorizationListener(
+      (
+        request: AuthorizationRequest,
+        response: AuthorizationResponse | null,
+        _error: AuthorizationError | null,
+      ) => {
+        if (response && savedIssuer) {
+          const tokenRequest = new TokenRequest({
+            client_id: request.clientId,
+            redirect_uri: request.redirectUri,
+            grant_type: GRANT_TYPE_AUTHORIZATION_CODE,
+            code: response.code,
+            extras: {
+              code_verifier: request.internal?.code_verifier ?? '',
+              scope: request.scope,
+            },
           })
-          .then((token) => {
-            idToken = token?.idToken
-            oauthAccessToken = token?.accessToken
-            return fetchUserInformation({
-              userInfoEndpoint: authConfigs.userInfoEndpoint,
-              access_token: token.accessToken,
-              token_type: token.tokenType,
+
+          let authConfigs: AuthorizationServiceConfiguration | null = null
+
+          let idToken: string | undefined
+          let oauthAccessToken: string | undefined
+
+          AuthorizationServiceConfiguration.fetchFromIssuer(savedIssuer, new FetchRequestor())
+            .then((configuration) => {
+              authConfigs = configuration
+              return tokenHandler.performTokenRequest(configuration, tokenRequest)
             })
-          })
-          .then((ujwt) => {
-            if (!userinfo) {
+            .then((token) => {
+              idToken = token.idToken
+              oauthAccessToken = token.accessToken
+              return fetchUserInformation({
+                userInfoEndpoint: authConfigs?.userInfoEndpoint ?? '',
+                access_token: token.accessToken,
+                token_type: token.tokenType,
+              })
+            })
+            .then((value: FetchUserInfoResult) => {
+              if (value === -1) return
+              const ujwt = value
+
+              const decoded = jwtDecode<UserInfo>(ujwt)
               dispatch(
                 getUserInfoResponse({
-                  userinfo: jwtDecode(ujwt),
+                  userinfo: decoded,
                   ujwt,
                   idToken,
                   jwtToken: oauthAccessToken,
                   isUserInfoFetched: true,
                 }),
               )
-              dispatch(getAPIAccessToken(ujwt))
-              setShowAdminUI(true)
-            } else {
-              if (!userinfo.jansAdminUIRole || userinfo.jansAdminUIRole.length == 0) {
+
+              const roles = decoded.jansAdminUIRole
+              const hasValidRole = Array.isArray(roles) ? roles.length > 0 : Boolean(roles)
+
+              if (!hasValidRole) {
                 setShowAdminUI(false)
-                alert('The logged-in user do not have valid role. Logging out of Admin UI')
                 setRoleNotFound(true)
                 const state = uuidv4()
-                const sessionEndpoint = `${authConfigs.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${localStorage.getItem('postLogoutRedirectUri')}`
-                window.location.href = sessionEndpoint
-                return null
+                const endSessionUrl = new URL(
+                  authConfigs?.endSessionEndpoint || window.location.origin,
+                )
+                endSessionUrl.searchParams.set('state', state)
+                endSessionUrl.searchParams.set(
+                  'post_logout_redirect_uri',
+                  localStorage.getItem('postLogoutRedirectUri') ?? '',
+                )
+                const sessionEndpoint = endSessionUrl.toString()
+                dispatch(
+                  updateToast(
+                    true,
+                    'error',
+                    t('messages.no_valid_role_logout', { seconds: LOGOUT_DELAY_SECONDS }),
+                    sessionEndpoint,
+                  ),
+                )
+                return
               }
-              // Re-create session if not present
-              if (!hasSession) {
-                dispatch(getAPIAccessToken(userinfo_jwt))
-              }
-            }
-          })
-          .catch((oError) => {
-            setError(oError)
-          })
-      }
-    })
+
+              setShowAdminUI(true)
+            })
+            .catch((oError: Error) => {
+              setError(oError)
+            })
+        }
+      },
+    )
 
     const params = new URLSearchParams(location.search)
     setCode(params.get('code'))
 
     if (!code) {
-      setError('Unable to get authorization code')
       return
     }
 
@@ -218,14 +269,17 @@ export default function AppAuthProvider(props) {
     authorizationHandler.completeAuthorizationRequestIfPossible()
   }, [code])
 
+  useEffect(() => {
+    if (error) {
+      const message = error instanceof Error ? error.message : error
+      dispatch(updateToast(true, 'error', message))
+    }
+  }, [error, dispatch])
+
   return (
     <React.Fragment>
       <SessionTimeout isAuthenticated={showAdminUI} />
-      <GluuTimeoutModal
-        description={
-          'The request has been terminated as there is no response from the server for more than 60 seconds.'
-        }
-      />
+      <GluuTimeoutModal />
       {!isUnderThresholdLimit && (
         <GluuErrorModal
           message={'Alert'}
@@ -234,16 +288,17 @@ export default function AppAuthProvider(props) {
           }
         />
       )}
-      {showAdminUI && props.children}
+      {showAdminUI && children}
       {!showAdminUI && (
         <ApiKeyRedirect
           isLicenseValid={isLicenseValid}
           isConfigValid={isConfigValid}
           islicenseCheckResultLoaded={islicenseCheckResultLoaded}
-          isLicenseActivationResultLoaded={isLicenseActivationResultLoaded}
           roleNotFound={roleNotFound}
         />
       )}
     </React.Fragment>
   )
 }
+
+export default AppAuthProvider

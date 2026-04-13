@@ -1,6 +1,17 @@
+import type React from 'react'
 import type { HealthServiceKey, HealthStatusResponse } from 'Redux/features/healthSlice'
+import type { PageConfig } from '../Layout/types'
 
-// Sidebar-specific type definitions
+export type { PageConfig }
+
+export interface SidebarProps {
+  children?: React.ReactNode
+  slim?: boolean
+  collapsed?: boolean
+  animationsDisabled?: boolean
+  pageConfig: PageConfig
+}
+
 export interface MenuItem {
   icon?: string
   path?: string
@@ -11,15 +22,13 @@ export interface MenuItem {
   cedarlingPassed?: boolean
 }
 
-export interface PluginMenu extends MenuItem {}
+export type PluginMenu = MenuItem
 
-// Theme-related types for sidebar
 export interface ThemeColors {
   menu: {
     background: string
     [key: string]: string
   }
-  [key: string]: unknown
 }
 
 export interface ThemeContextState {
@@ -42,7 +51,6 @@ export interface MenuIconMap {
   readonly [key: string]: React.ReactNode
 }
 
-// Root state interface for sidebar selectors
 export interface SidebarRootState {
   authReducer: {
     token?: {

@@ -1,4 +1,5 @@
-import type { Dispatch, UnknownAction } from '@reduxjs/toolkit'
+import type { UserInfo } from 'Redux/features/types/authTypes'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
 export interface CustomAttribute {
   name: string
@@ -14,13 +15,7 @@ export interface ProfileDetails {
   sn?: string
   surname?: string
   customAttributes?: CustomAttribute[]
-  [key: string]: unknown // Allow additional properties from API
-}
-
-export interface UserInfo {
-  inum?: string
-  family_name?: string
-  [key: string]: unknown
+  [key: string]: JsonValue | CustomAttribute[] | undefined
 }
 
 export interface ProfileDetailsState {
@@ -30,7 +25,7 @@ export interface ProfileDetailsState {
 
 export interface AuthToken {
   access_token?: string
-  [key: string]: unknown
+  [key: string]: JsonValue | undefined
 }
 
 export interface AuthState {
@@ -45,7 +40,18 @@ export interface ProfileRootState {
   authReducer: AuthState
 }
 
-export type AppDispatch = Dispatch<UnknownAction>
+export type InfoRowProps = {
+  label: string
+  value?: string
+  index: number
+  classes: {
+    dataRow: string
+    dataRowEven: string
+    dataRowOdd: string
+    dataLabel: string
+    dataValue: string
+  }
+}
 
 export interface ThemeContextValue {
   state: {

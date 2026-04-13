@@ -1,4 +1,5 @@
 import type { Deployment } from 'JansConfigApi'
+import type { JsonValue, JsonObject } from 'Routes/Apps/Gluu/types/common'
 
 export interface AgamaProject extends Deployment {
   deployed_on: string
@@ -34,20 +35,11 @@ export type AcrMappingTableRow = AcrMapping & {
   }
 }
 
-export interface JsonConfigRootState {
-  jsonConfigReducer: {
-    configuration: {
-      acrMappings?: Record<string, string>
-    }
-    loading: boolean
-    saveError: boolean
-  }
-}
-
 export interface AgamaJsonPatch {
   op: 'add' | 'remove' | 'replace'
   path: string
   value?: Record<string, string>
+  [key: string]: unknown
 }
 
 export interface AgamaJsonPatchRequestBody {
@@ -64,7 +56,7 @@ export interface ProjectDetailsState {
 
 export interface ConfigDetailsState {
   isLoading: boolean
-  data: Record<string, unknown>
+  data: JsonObject
 }
 
 export interface AgamaTableRow extends AgamaProject {
@@ -74,17 +66,9 @@ export interface AgamaTableRow extends AgamaProject {
 }
 
 export interface ModifiedFields {
-  [key: string]: string | boolean | string[] | number | undefined | null | Record<string, unknown>
+  [key: string]: JsonValue
 }
 
-export type JsonValue =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: JsonValue }
-  | JsonValue[]
-
-export type JsonObject = { [key: string]: JsonValue }
+export type { JsonValue, JsonObject }
 
 export type ApiError = Error | { message?: string; status?: number; statusText?: string }

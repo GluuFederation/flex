@@ -5,6 +5,12 @@ import GluuLabel from '../Gluu/GluuLabel'
 import Typography from '@mui/material/Typography'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { useTranslation } from 'react-i18next'
+import type { JsonValue } from './types/common'
+import type {
+  TypeAheadOptionObject,
+  TypeAheadOption,
+  GluuTypeAheadForDnProps,
+} from './types/GluuTypeAheadForDn.types'
 
 const theme = createTheme({
   typography: {
@@ -14,10 +20,13 @@ const theme = createTheme({
   },
 })
 
-function GluuTypeAheadForDn({
+const GluuTypeAheadForDn = <
+  TValues extends object = Record<string, JsonValue>,
+  TOption extends TypeAheadOptionObject = TypeAheadOptionObject,
+>({
   label,
   name,
-  value,
+  value: _value,
   options,
   formik,
   required,
@@ -36,18 +45,24 @@ function GluuTypeAheadForDn({
   placeholder = undefined,
   onChange,
   hideHelperMessage,
-  defaultSelected = [],
-}: any) {
+  defaultSelected,
+}: GluuTypeAheadForDnProps<TValues, TOption>) => {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
+  const selectedValue = defaultSelected ?? _value ?? []
 
-  const getItemName = useCallback((items: any, item: any) => {
-    const data = options?.filter((e: any) => e.dn === item || item.includes(e.key))
-    return data[0]?.name
-  }, [])
+  const getItemName = useCallback(
+    (item: string) => {
+      const data = options?.filter(
+        (e) => e.dn === item || (typeof e.key === 'string' && item.includes(e.key)),
+      )
+      return data[0]?.name
+    },
+    [options],
+  )
 
-  const getKey = useCallback((option: any) => {
-    return `(Claim name: ${option.key})`
+  const getKey = useCallback((option: TypeAheadOptionObject) => {
+    return option.key ? `(Claim name: ${option.key})` : ''
   }, [])
 
   return (
@@ -64,19 +79,28 @@ function GluuTypeAheadForDn({
           isLoading={isLoading}
           labelKey={
             haveLabelKey
-              ? (opt: any) =>
-                  `${opt.name || getItemName(options, opt)} ${opt.key ? getKey(opt) : ''}`
+              ? (opt: TypeAheadOption) =>
+                  typeof opt === 'string'
+                    ? opt
+                    : `${opt.name || (opt.key ? getItemName(opt.key) : '')} ${getKey(opt)}`
               : undefined
           }
           maxResults={maxResults}
-          options={options}
+          options={options as TypeAheadOption[]}
           onPaginate={onPaginate}
           paginate={paginate}
           placeholder={placeholder}
-          renderMenuItemChildren={(option: any) => {
+          renderMenuItemChildren={(option: TypeAheadOption) => {
+            if (typeof option === 'string') {
+              return (
+                <div key={option}>
+                  <span>{option}</span>
+                </div>
+              )
+            }
             return (
-              <div key={option.name}>
-                <span>{option.name}</span>
+              <div key={option.name ?? option.dn ?? option.key ?? option.label}>
+                <span>{option.name ?? option.label ?? ''}</span>
               </div>
             )
           }}
@@ -86,11 +110,14 @@ function GluuTypeAheadForDn({
           onChange={(selected) => {
             formik.setFieldValue(
               name,
-              selected.map((item) =>
-                typeof item == 'string' ? item : item.customOption ? item.label : item.dn,
+              (selected as TypeAheadOption[]).map((item) =>
+                typeof item === 'string' ? item : item.customOption ? item.label : item.dn,
               ),
             )
-            onChange?.(selected)
+            const selectedOptions = (selected as TypeAheadOption[]).filter(
+              (item): item is TOption => typeof item !== 'string',
+            )
+            onChange?.(selectedOptions)
           }}
           disabled={disabled}
           id={name}
@@ -98,7 +125,7 @@ function GluuTypeAheadForDn({
           useCache={false}
           allowNew={allowNew}
           multiple={true}
-          selected={defaultSelected}
+          selected={selectedValue as TypeAheadOption[]}
           onSearch={onSearch}
           dropup={false}
           flip={true}

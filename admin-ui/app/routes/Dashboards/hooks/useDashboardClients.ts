@@ -1,17 +1,13 @@
 import { useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/redux/hooks'
 import { useGetOauthOpenidClients } from 'JansConfigApi'
-import type { RootState } from 'Redux/sagas/types/audit'
-import { DASHBOARD_CACHE_CONFIG } from '../constants'
 
-export function useDashboardClients() {
-  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
+export const useDashboardClients = () => {
+  const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
   const query = useGetOauthOpenidClients(undefined, {
     query: {
       enabled: hasSession === true,
-      staleTime: DASHBOARD_CACHE_CONFIG.STALE_TIME,
-      gcTime: DASHBOARD_CACHE_CONFIG.GC_TIME,
     },
   })
 
@@ -19,8 +15,8 @@ export function useDashboardClients() {
   const totalCount = query.data?.totalEntriesCount ?? 0
 
   return {
-    ...query,
     clients,
     totalCount,
+    isLoading: query.isLoading,
   }
 }

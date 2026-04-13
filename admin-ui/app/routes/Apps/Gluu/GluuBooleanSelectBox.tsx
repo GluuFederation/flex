@@ -2,8 +2,10 @@ import GluuLabel from './GluuLabel'
 import GluuToogle from './GluuToogle'
 import { Col, FormGroup, CustomInput, InputGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
+import { useMemo } from 'react'
+import type { GluuBooleanSelectBoxProps } from './types'
 
-function GluuBooleanSelectBox({
+const GluuBooleanSelectBox = ({
   label,
   name,
   value,
@@ -14,8 +16,11 @@ function GluuBooleanSelectBox({
   doc_category,
   disabled,
   toToggle = true,
-}: any) {
+}: GluuBooleanSelectBoxProps) => {
   const { t } = useTranslation()
+  const normalizedValue = useMemo(() => {
+    return typeof value === 'string' ? value === 'true' : value
+  }, [value])
   return (
     <FormGroup row>
       <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={name} />
@@ -27,7 +32,7 @@ function GluuBooleanSelectBox({
               id={name}
               name={name}
               data-testid={name}
-              defaultValue={value}
+              defaultValue={value != null ? String(value) : undefined}
               onChange={formik.handleChange}
               disabled={disabled}
             >
@@ -43,7 +48,7 @@ function GluuBooleanSelectBox({
             name={name}
             handler={handler}
             formik={formik}
-            value={value}
+            value={normalizedValue}
             disabled={disabled}
           />
         )}

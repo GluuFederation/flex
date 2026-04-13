@@ -1,3 +1,3 @@
-export { validationSchema } from './validations'
+export { getLockValidationSchema } from './validations'
 export * from './utils'
 export { jansLockConstants } from './constants'

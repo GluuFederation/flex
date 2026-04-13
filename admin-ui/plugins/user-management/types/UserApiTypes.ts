@@ -1,11 +1,13 @@
-import { AuthState } from '../helper/userAuditHelpers'
 import { CustomObjectAttribute, CustomUser as ApiCustomUser, JansAttribute } from 'JansConfigApi'
 
 export type CustomUser = ApiCustomUser
 export type PersonAttribute = JansAttribute
-export type CustomAttribute = CustomObjectAttribute
 
-export interface FidoRegistrationEntry {
+export type CustomAttribute = Omit<CustomObjectAttribute, 'values'> & {
+  values?: (string | boolean | Record<string, unknown>)[]
+}
+
+export type FidoRegistrationEntry = {
   id?: string
   challenge?: string
   username?: string
@@ -19,29 +21,31 @@ export interface FidoRegistrationEntry {
     platform?: string
     name?: string
     os_name?: string
-    osName?: string // Alternative property name for os_name
+    osName?: string
     os_version?: string
-    osVersion?: string // Alternative property name for os_version
+    osVersion?: string
   }
   registrationData?: {
-    attenstationRequest?: string
+    attestationRequest?: string
     domain?: string
-    rpId?: string // Alternative property name for domain
+    rpId?: string
     type?: string
     status?: string
     createdBy?: string
   }
 }
 
-export interface UserData {
+export type AttributeValue = string | boolean
+
+export type UserData = {
   displayName?: string
   givenName?: string
   userId?: string
   mail?: string
-  customAttributes?: CustomObjectAttribute[]
+  customAttributes?: CustomAttribute[]
 }
 
-export interface RowProps {
+export type RowProps = {
   row: {
     rowData: UserData
   }

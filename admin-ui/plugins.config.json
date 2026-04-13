@@ -23,7 +23,7 @@
   {
     "order": 5,
     "key": "user-claims",
-    "metadataFile": "./schema/plugin-metadata"
+    "metadataFile": "./user-claims/plugin-metadata"
   },
   {
     "order": 6,
@@ -33,7 +33,7 @@
   {
     "order": 7,
     "key": "smtp",
-    "metadataFile": "./smtp-management/plugin-metadata"
+    "metadataFile": "./smtp/plugin-metadata"
   },
   {
     "order": 8,
@@ -44,11 +44,6 @@
     "order": 9,
     "key": "fido",
     "metadataFile": "./fido/plugin-metadata"
-  },
-  {
-    "order": 10,
-    "key": "saml",
-    "metadataFile": "./saml/plugin-metadata"
   },
   {
     "order": 11,

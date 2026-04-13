@@ -1,29 +1,66 @@
-import { useContext } from 'react'
+import { useMemo } from 'react'
 import 'react-tooltip/dist/react-tooltip.css'
 import { Tooltip as ReactTooltip } from 'react-tooltip'
 import { useTranslation } from 'react-i18next'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { useTheme } from '@/context/theme/themeContext'
+import { THEME_DARK } from '@/context/theme/constants'
+import { DEFAULT_Z_INDEX, getLabelTooltipStyle } from './styles/GluuTooltip.style'
+import type { GluuTooltipProps } from './types'
 
-function GluuTooltip(props: any) {
+const GluuTooltip = ({
+  doc_category = '',
+  doc_entry,
+  isDirect,
+  children,
+  tooltipOnly = false,
+  zIndex = DEFAULT_Z_INDEX,
+  place = 'bottom',
+  content: contentOverride,
+  positionStrategy,
+  offset,
+}: GluuTooltipProps) => {
   const { t } = useTranslation()
-  const theme: any = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const { state: themeState } = useTheme()
+  const selectedTheme = themeState?.theme
+  const isDarkTheme = selectedTheme === THEME_DARK
+
+  const tooltipStyle = useMemo(
+    () => getLabelTooltipStyle(isDarkTheme, zIndex),
+    [isDarkTheme, zIndex],
+  )
+
+  const tooltipContent =
+    contentOverride !== undefined
+      ? contentOverride
+      : isDirect
+        ? doc_category
+        : doc_category
+          ? t(`documentation.${doc_category}.${doc_entry}`)
+          : doc_entry
+
+  const tooltipElement = (
+    <ReactTooltip
+      id={doc_entry}
+      className={`type-${selectedTheme ?? 'light'}`}
+      data-testid={doc_entry}
+      place={place}
+      role="tooltip"
+      style={tooltipStyle}
+      positionStrategy={positionStrategy}
+      {...(offset !== undefined && { offset })}
+    >
+      {tooltipContent}
+    </ReactTooltip>
+  )
+
+  if (tooltipOnly) {
+    return tooltipElement
+  }
 
   return (
-    <div data-tooltip-id={props.doc_entry} data-tip data-for={props.doc_entry}>
-      {props.children}
-      <ReactTooltip
-        id={props.doc_entry}
-        className={`type-${selectedTheme}`}
-        data-testid={props.doc_entry}
-        place="bottom"
-        role="tooltip"
-        style={{ zIndex: 101, maxWidth: '45vw' }}
-      >
-        {props.isDirect
-          ? props.doc_category
-          : t('documentation.' + props.doc_category + '.' + props.doc_entry)}
-      </ReactTooltip>
+    <div data-tooltip-id={doc_entry}>
+      {children ?? null}
+      {tooltipElement}
     </div>
   )
 }

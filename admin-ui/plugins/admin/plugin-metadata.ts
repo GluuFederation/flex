@@ -1,21 +1,14 @@
 import HealthPage from './components/Health/HealthPage'
-import MappingPage from './components/Mapping/MappingPage'
+import RolePermissionMappingPage from './components/Mapping/RolePermissionMappingPage'
 
 import SettingsPage from './components/Settings/SettingsPage'
 import MauPage from './components/MAU/MauPage'
 import WebhookListPage from './components/Webhook/WebhookListPage'
 import AuditListPage from '../admin/components/Audit/AuditListPage'
 
-import apiRoleSaga from './redux/sagas/ApiRoleSaga'
-import apiPermissionSaga from './redux/sagas/ApiPermissionSaga'
-import mappingSaga from './redux/sagas/MappingSaga'
 import webhookSaga from './redux/sagas/WebhookSaga'
 import assetSaga from './redux/sagas/AssetSaga'
 
-import { reducer as apiRoleReducer } from 'Plugins/admin/redux/features/apiRoleSlice'
-import { reducer as apiConfigReducer } from 'Plugins/admin/redux/features/apiConfigSlice'
-import { reducer as apiPermissionReducer } from 'Plugins/admin/redux/features/apiPermissionSlice'
-import { reducer as mappingReducer } from 'Plugins/admin/redux/features/mappingSlice'
 import webhookReducer from 'Plugins/admin/redux/features/WebhookSlice'
 import { reducer as assetReducer } from 'Plugins/admin/redux/features/AssetSlice'
 
@@ -150,7 +143,7 @@ const pluginMetadata = {
     },
 
     {
-      component: MappingPage,
+      component: RolePermissionMappingPage,
       path: ROUTES.ADMIN_MAPPING,
       permission: MAPPING_READ,
     },
@@ -204,14 +197,10 @@ const pluginMetadata = {
     },
   ],
   reducers: [
-    { name: 'apiConfigReducer', reducer: apiConfigReducer },
-    { name: 'apiRoleReducer', reducer: apiRoleReducer },
-    { name: 'apiPermissionReducer', reducer: apiPermissionReducer },
-    { name: 'mappingReducer', reducer: mappingReducer },
     { name: 'webhookReducer', reducer: webhookReducer },
     { name: 'assetReducer', reducer: assetReducer },
   ],
-  sagas: [apiRoleSaga(), apiPermissionSaga(), mappingSaga(), webhookSaga(), assetSaga()],
+  sagas: [webhookSaga(), assetSaga()],
 }
 
 export default pluginMetadata

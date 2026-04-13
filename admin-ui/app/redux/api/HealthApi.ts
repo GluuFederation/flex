@@ -1,7 +1,12 @@
-import { handleResponse } from 'Utils/ApiUtils'
+import { handleError } from 'Utils/ApiUtils'
+
+export interface HealthData {
+  status?: string
+  db_status?: string
+}
 
 interface AuthServerHealthCheckApi {
-  getAuthServerHealth: (callback: (error: Error | null, data: any) => void) => void
+  getAuthServerHealth: (callback: (error: Error | null, data: HealthData) => void) => void
 }
 
 export default class HealthApi {
@@ -11,10 +16,14 @@ export default class HealthApi {
     this.api = api
   }
 
-  getHealthStatus = (): Promise<any> => {
-    return new Promise((resolve, reject) => {
-      this.api.getAuthServerHealth((error: Error | null, data: any) => {
-        handleResponse(error, reject, resolve, data, null)
+  getHealthStatus = (): Promise<HealthData> => {
+    return new Promise<HealthData>((resolve, reject) => {
+      this.api.getAuthServerHealth((error: Error | null, data: HealthData) => {
+        if (error) {
+          handleError(error, reject)
+          return
+        }
+        resolve(data)
       })
     })
   }

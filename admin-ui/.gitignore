@@ -1,5 +1,7 @@
 # build output
 dist
+.fix-orval-enums-out
+.check-all-out
 
 # dependencies
 node_modules
@@ -9,6 +11,9 @@ package-lock.json
 yarn.lock
 plugins_repo
 
+
+# MCP config (contains secrets)
+.mcp.json
 
 # Editor directories and files
 .DS_Store
@@ -21,8 +26,13 @@ plugins_repo
 .env.*
 *.local
 
+# Cursor
+.cursor/
+.cursorrules
+
 # ESLint cache
 .eslintcache
 .vscode/*
 !.vscode/extensions.json
+.claude/
 configApiSpecs.yaml

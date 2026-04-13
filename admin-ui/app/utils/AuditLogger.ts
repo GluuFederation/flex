@@ -1,27 +1,12 @@
-import { addAdditionalData } from 'Utils/TokenController'
+import { addAdditionalData, type AdditionalPayload } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
-import type { AuditLog } from 'Plugins/admin/redux/sagas/types'
+import type { UserActionPayload } from 'Redux/api/types/BackendApi'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import type { BasicUserInfo, LogAuditParams } from './types'
 
-export interface BasicUserInfo {
-  inum?: string
-  name?: string
-}
+export type { BasicUserInfo, LogAuditParams }
 
-export interface LogAuditParams {
-  userinfo?: BasicUserInfo | null
-  action: string
-  resource: string
-  message: string
-  modifiedFields?: Record<string, unknown>
-  performedOn?: string | Date
-  ip_address?: string
-  extra?: Record<string, unknown>
-  status?: string
-  client_id?: string
-  payload?: unknown
-}
-
-export async function logAuditUserAction({
+export const logAuditUserAction = async ({
   userinfo,
   action,
   resource,
@@ -32,8 +17,9 @@ export async function logAuditUserAction({
   status = 'success',
   client_id,
   payload,
-}: LogAuditParams): Promise<void> {
-  const audit: AuditLog = {
+}: LogAuditParams): Promise<void> => {
+  const audit: Partial<UserActionPayload> &
+    Record<string, JsonValue | undefined | { user_inum: string; userId: string }> = {
     status,
     performedBy: {
       user_inum: userinfo?.inum ?? '-',
@@ -42,22 +28,28 @@ export async function logAuditUserAction({
     client_id,
   }
 
-  const payloadWrapper = {
+  const normalizedModifiedFields: Record<string, JsonValue> = modifiedFields
+    ? (JSON.parse(JSON.stringify(modifiedFields)) as Record<string, JsonValue>)
+    : {}
+
+  const actionData: Record<string, JsonValue> =
+    typeof payload === 'object' && payload !== null && !Array.isArray(payload)
+      ? (payload as Record<string, JsonValue>)
+      : {
+          ...extra,
+          modifiedFields: normalizedModifiedFields,
+          ...(performedOn ? { performedOn: String(performedOn) } : {}),
+        }
+
+  const payloadWrapper: AdditionalPayload = {
     action: {
       action_message: message,
-      action_data:
-        payload !== undefined
-          ? payload
-          : {
-              ...extra,
-              modifiedFields,
-              ...(performedOn ? { performedOn } : {}),
-            },
+      action_data: actionData,
     },
   }
 
   addAdditionalData(audit, action, resource, payloadWrapper)
-  await postUserAction(audit)
+  await postUserAction(audit as UserActionPayload)
 }
 
 export const logAudit = logAuditUserAction

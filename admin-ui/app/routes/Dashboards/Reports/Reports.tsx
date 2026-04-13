@@ -5,29 +5,36 @@ import {
   useGetOauthOpenidClients,
   useGetOauthScopes,
   useGetConfigScripts,
-  type JansAttribute,
   type Client,
   type Scope,
   type CustomScript,
+  type PagedResultEntriesItem,
 } from 'JansConfigApi'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/redux/hooks'
 import ReportCard from './ReportCard'
 import { useTranslation } from 'react-i18next'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import type { RootState } from 'Redux/sagas/types/audit'
 import type { ReportCardData } from '../types'
-import { REPORTS_CACHE_CONFIG } from '../constants'
 
-function Reports() {
+type AttributeReportItem = PagedResultEntriesItem & { name: string; status?: string }
+
+const isAttributeReportItem = (entry: PagedResultEntriesItem): entry is AttributeReportItem => {
+  return (
+    entry !== null &&
+    typeof entry === 'object' &&
+    'name' in entry &&
+    typeof entry['name'] === 'string'
+  )
+}
+
+const Reports = () => {
   const { t } = useTranslation()
-  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
+  const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
   const queryOptions = useMemo(
     () => ({
       query: {
         enabled: hasSession === true,
-        staleTime: REPORTS_CACHE_CONFIG.STALE_TIME,
-        gcTime: REPORTS_CACHE_CONFIG.GC_TIME,
       },
     }),
     [hasSession],
@@ -47,7 +54,7 @@ function Reports() {
     queryOptions,
   )
 
-  const attributes = (attributesData?.entries as JansAttribute[]) ?? []
+  const attributes = (attributesData?.entries ?? []).filter(isAttributeReportItem)
   const clients = (clientsData?.entries as Client[]) ?? []
   const scopes = (scopesData?.entries as Scope[]) ?? []
   const scripts = (scriptsData?.entries as CustomScript[]) ?? []

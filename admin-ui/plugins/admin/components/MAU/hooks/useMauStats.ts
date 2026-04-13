@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { RootState, useAppSelector } from '@/redux/hooks'
+import { keepPreviousData } from '@tanstack/react-query'
 import { useGetStat, type GetStatParams, type JsonNode } from 'JansConfigApi'
-import type { RootState } from 'Redux/sagas/types/audit'
 import type { MauStatEntry, MauDateRange, RawStatEntry, MauSummary } from '../types'
 import { MAU_CACHE_CONFIG } from '../constants'
 import {
@@ -11,18 +11,18 @@ import {
   calculatePercentChange,
 } from '../utils'
 
-function transformApiResponse(data: JsonNode[] | undefined): MauStatEntry[] {
+const transformApiResponse = (data: JsonNode[] | undefined): MauStatEntry[] => {
   if (!data || !Array.isArray(data)) {
     return []
   }
 
   return data.map((item) => {
-    const rawEntry = item as unknown as RawStatEntry
+    const rawEntry = item as RawStatEntry
     return transformRawStatEntry(rawEntry)
   })
 }
 
-function computeSummary(data: MauStatEntry[]): MauSummary {
+const computeSummary = (data: MauStatEntry[]): MauSummary => {
   if (data.length === 0) {
     return {
       totalMau: 0,
@@ -92,13 +92,13 @@ function computeSummary(data: MauStatEntry[]): MauSummary {
   }
 }
 
-export function useMauStats(
+export const useMauStats = (
   dateRange: MauDateRange,
   options?: {
     enabled?: boolean
   },
-) {
-  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
+) => {
+  const hasSession = useAppSelector((state: RootState) => state.authReducer?.hasSession)
 
   const params: GetStatParams = {
     start_month: formatDateForApi(dateRange.startDate),
@@ -116,6 +116,7 @@ export function useMauStats(
       enabled: isEnabled,
       staleTime: MAU_CACHE_CONFIG.STALE_TIME,
       gcTime: MAU_CACHE_CONFIG.GC_TIME,
+      placeholderData: keepPreviousData,
       select: (data: JsonNode[]): MauStatEntry[] => {
         const transformed = transformApiResponse(data)
         return augmentMauData(transformed, dateRange.startDate, dateRange.endDate)

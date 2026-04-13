@@ -1,447 +1,295 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
-import {
-  useGetAdminuiConf,
-  useEditAdminuiConf,
-  useSetRemotePolicyStoreAsDefault,
-  useSyncRoleToScopesMappings,
-  getGetAdminuiConfQueryKey,
-} from 'JansConfigApi'
+import { useSyncRoleToScopesMappings } from 'JansConfigApi'
 import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from '@/routes/Apps/Gluu/GluuViewWrapper'
-import GluuFormFooter from '@/routes/Apps/Gluu/GluuFormFooter'
-import type {
-  AppConfigResponse,
-  AppConfigResponseCedarlingPolicyStoreRetrievalPoint,
-} from 'JansConfigApi'
+import GluuUploadFile from '@/routes/Apps/Gluu/GluuUploadFile'
 import { updateToast } from '@/redux/features/toastSlice'
-import { getErrorMessage, type ApiError } from 'Plugins/schema/utils/errorHandler'
+import { getErrorMessage, type ApiError } from '@/utils/errorHandler'
 import { logAudit } from '@/utils/AuditLogger'
-import type { RootState as AuditRootState } from '@/redux/sagas/types/audit'
 import { UPDATE } from '@/audit/UserActionType'
-import {
-  Box,
-  Typography,
-  Paper,
-  TextField,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  IconButton,
-  Alert,
-  Stack,
-  FormControl,
-  FormLabel,
-  Link,
-  ThemeProvider,
-  createTheme,
-} from '@mui/material'
-import { RefreshOutlined, InfoOutlined } from '@mui/icons-material'
-import GluuTooltip from '@/routes/Apps/Gluu/GluuTooltip'
+import { Box, Link } from '@mui/material'
+import { InfoOutlined } from '@mui/icons-material'
+import { Form } from 'Components'
 import { ADMIN_UI_CEDARLING_CONFIG } from 'Plugins/admin/redux/audit/Resources'
-import { useQueryClient } from '@tanstack/react-query'
-import customColors from '@/customColors'
+import { GluuPageContent } from '@/components'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
+import { useTheme } from 'Context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
+import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { useStyles } from './CedarlingConfigPage.style'
+import { uploadPolicyStore, fetchPolicyStore } from '@/redux/api/backend-api'
 
-const isValidUrl = (url: string): boolean => {
-  if (!url.trim()) return true
-  try {
-    const parsed = new URL(url)
-    return parsed.protocol === 'http:' || parsed.protocol === 'https:'
-  } catch {
-    return false
-  }
+const SECURITY_RESOURCE_ID = ADMIN_UI_RESOURCES.Security
+const SECURITY_SCOPES = CEDAR_RESOURCE_SCOPES[SECURITY_RESOURCE_ID] ?? []
+
+const CJAR_ACCEPT = {
+  'application/zip': ['.cjar'],
 }
 
 const CedarlingConfigPage: React.FC = () => {
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
   const { t } = useTranslation()
+  const { navigateBack } = useAppNavigation()
   SetTitle(t('titles.cedarling_config'))
-  const [auiPolicyStoreUrl, setAuiPolicyStoreUrl] = useState('')
-  const [urlTouched, setUrlTouched] = useState(false)
-  const { data: auiConfig, isSuccess, isFetching } = useGetAdminuiConf()
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const queryClient = useQueryClient()
 
-  const muiTheme = useMemo(() => {
-    const primaryColor = customColors.logo
-    return createTheme({
-      palette: {
-        primary: {
-          main: primaryColor,
-        },
-      },
-    })
-  }, [])
+  const { state: themeState } = useTheme()
+  const currentTheme = themeState?.theme || DEFAULT_THEME
+  const isDark = currentTheme === THEME_DARK
 
-  const editAdminuiConfMutation = useEditAdminuiConf()
+  const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
+
+  const { classes } = useStyles({ themeColors, isDark })
+
   const syncRoleToScopesMappingsMutation = useSyncRoleToScopesMappings()
-  const setRemotePolicyStoreAsDefaultMutation = useSetRemotePolicyStoreAsDefault()
-  const userinfo: AuditRootState['authReducer']['userinfo'] | undefined = useSelector(
-    (state: AuditRootState) => state.authReducer?.userinfo,
-  )
-  const client_id: string | undefined = useSelector(
-    (state: AuditRootState) => state.authReducer?.config?.clientId,
-  )
-  const [cedarlingPolicyStoreRetrievalPoint, setCedarlingPolicyStoreRetrievalPoint] =
-    useState<AppConfigResponseCedarlingPolicyStoreRetrievalPoint>('remote')
+  const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
+  const client_id = useAppSelector((state) => state.authReducer?.config?.clientId)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
-  const urlError = useMemo(() => {
-    if (!urlTouched) return ''
-    if (!auiPolicyStoreUrl.trim()) return t('messages.is_required')
-    if (!isValidUrl(auiPolicyStoreUrl)) return t('messages.invalid_url_error')
-    return ''
-  }, [auiPolicyStoreUrl, urlTouched, t])
-
-  const handleSubmit = useCallback(
-    async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault()
-      setUrlTouched(true)
-      // when user tries to save default policy store with empty URL
-      if (
-        auiConfig?.cedarlingPolicyStoreRetrievalPoint === 'default' &&
-        cedarlingPolicyStoreRetrievalPoint === 'default' &&
-        auiPolicyStoreUrl.trim() === ''
-      ) {
-        const errorMessage = `${t('messages.default_policy_store_is_used')}`
-        dispatch(updateToast(true, 'error', errorMessage))
-        return
-      }
-      //when user tries to save remote policy store with empty URL
-      if (auiPolicyStoreUrl.trim() === '') {
-        const errorMessage = `${t('messages.error_in_saving')} field: ${t('fields.auiPolicyStoreUrl')} ${t('messages.is_required')}`
-        dispatch(updateToast(true, 'error', errorMessage))
-        return
-      }
-
-      if (!isValidUrl(auiPolicyStoreUrl)) {
-        const errorMessage = `${t('messages.error_in_saving')} field: ${t('fields.auiPolicyStoreUrl')} ${t('messages.invalid_url_error')}`
-        dispatch(updateToast(true, 'error', errorMessage))
-        return
-      }
-
-      const requestData = {
-        auiPolicyStoreUrl,
-        cedarlingPolicyStoreRetrievalPoint,
-      }
-
-      try {
-        setIsLoading(true)
-        const editAppConfigResponse: AppConfigResponse = await editAdminuiConfMutation.mutateAsync({
-          data: { ...auiConfig, ...requestData },
-        })
-        setAuiPolicyStoreUrl(editAppConfigResponse?.auiPolicyStoreUrl || '')
-        setCedarlingPolicyStoreRetrievalPoint(
-          editAppConfigResponse?.cedarlingPolicyStoreRetrievalPoint || 'remote',
-        )
-
-        let userMessage: string = 'Policy Store URL configuration updated'
-        await logAudit({
-          userinfo: userinfo ?? undefined,
-          action: UPDATE,
-          resource: ADMIN_UI_CEDARLING_CONFIG,
-          message: userMessage,
-          client_id: client_id,
-          payload: requestData,
-        })
-
-        await syncRoleToScopesMappingsMutation.mutateAsync()
-
-        userMessage = 'sync role to scopes mappings'
-        await logAudit({
-          userinfo: userinfo ?? undefined,
-          action: UPDATE,
-          resource: ADMIN_UI_CEDARLING_CONFIG,
-          message: userMessage,
-          client_id: client_id,
-          payload: requestData,
-        })
-        dispatch(updateToast(true, 'success'))
-      } catch (error) {
-        console.error('Error updating Cedarling configuration:', error)
-        const errorMessage = getErrorMessage(
-          error as Error | ApiError,
-          'messages.error_in_saving',
-          t,
-        )
-        dispatch(updateToast(true, 'error', errorMessage))
-      } finally {
-        queryClient.invalidateQueries({ queryKey: getGetAdminuiConfQueryKey() })
-        setIsLoading(false)
-      }
-    },
-    [
-      auiPolicyStoreUrl,
-      cedarlingPolicyStoreRetrievalPoint,
-      t,
-      dispatch,
-      editAdminuiConfMutation,
-      auiConfig,
-      userinfo,
-      client_id,
-      syncRoleToScopesMappingsMutation,
-      queryClient,
-    ],
-  )
-
-  const handleSetRemotePolicyStoreAsDefault = useCallback(
-    async (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.preventDefault()
-
-      try {
-        setIsLoading(true)
-        await setRemotePolicyStoreAsDefaultMutation.mutateAsync()
-
-        dispatch(updateToast(true, 'success'))
-
-        const userMessage: string = 'Set policy store as default'
-        await logAudit({
-          userinfo: userinfo ?? undefined,
-          action: UPDATE,
-          resource: ADMIN_UI_CEDARLING_CONFIG,
-          message: userMessage,
-          client_id: client_id,
-          payload: {},
-        })
-      } catch (error) {
-        console.error('Error updating Cedarling configuration:', error)
-        const errorMessage = getErrorMessage(
-          error as Error | ApiError,
-          'messages.error_in_saving',
-          t,
-        )
-        dispatch(updateToast(true, 'error', errorMessage))
-      } finally {
-        setIsLoading(false)
-      }
-    },
-    [dispatch, setRemotePolicyStoreAsDefaultMutation, userinfo, client_id, t],
-  )
-
-  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setAuiPolicyStoreUrl(e.target.value)
-  }, [])
-
-  const handleInputBlur = useCallback(() => {
-    setUrlTouched(true)
-  }, [])
-
-  const handleRadioChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setCedarlingPolicyStoreRetrievalPoint(
-      e.target.value as AppConfigResponseCedarlingPolicyStoreRetrievalPoint,
-    )
-  }, [])
-
-  const securityResourceId = useMemo(() => ADMIN_UI_RESOURCES.Security, [])
-  const securityScopes = useMemo(() => {
-    return CEDAR_RESOURCE_SCOPES[securityResourceId] || []
-  }, [securityResourceId])
   const canReadSecurity = useMemo(
-    () => hasCedarReadPermission(securityResourceId),
-    [hasCedarReadPermission, securityResourceId],
+    () => hasCedarReadPermission(SECURITY_RESOURCE_ID),
+    [hasCedarReadPermission],
   )
   const canWriteSecurity = useMemo(
-    () => hasCedarWritePermission(securityResourceId),
-    [hasCedarWritePermission, securityResourceId],
-  )
-
-  const isRefreshButtonHidden = useMemo(
-    () => cedarlingPolicyStoreRetrievalPoint === 'remote' || auiPolicyStoreUrl.trim() === '',
-    [cedarlingPolicyStoreRetrievalPoint, auiPolicyStoreUrl],
-  )
-
-  const isInputDisabled = useMemo(
-    () => !canWriteSecurity || isLoading,
-    [canWriteSecurity, isLoading],
+    () => hasCedarWritePermission(SECURITY_RESOURCE_ID),
+    [hasCedarWritePermission],
   )
 
   useEffect(() => {
-    if (securityScopes && securityScopes.length > 0) {
-      authorizeHelper(securityScopes)
+    if (SECURITY_SCOPES.length > 0) {
+      authorizeHelper(SECURITY_SCOPES)
     }
-  }, [authorizeHelper, securityScopes])
+  }, [authorizeHelper])
 
-  useEffect(() => {
-    if (isSuccess && auiConfig) {
-      setAuiPolicyStoreUrl(auiConfig?.auiPolicyStoreUrl || '')
-      setCedarlingPolicyStoreRetrievalPoint(
-        auiConfig?.cedarlingPolicyStoreRetrievalPoint || 'remote',
+  const handleFileDrop = useCallback((files: File[]) => {
+    const [file] = files
+    if (file) {
+      setSelectedFile(file)
+    }
+  }, [])
+
+  const handleClearFiles = useCallback(() => {
+    setSelectedFile(null)
+  }, [])
+
+  const handleUpload = useCallback(async () => {
+    if (!selectedFile) {
+      dispatch(updateToast(true, 'error', t('documentation.cedarlingConfig.selectFileFirst')))
+      return
+    }
+
+    try {
+      setIsLoading(true)
+
+      await uploadPolicyStore(selectedFile)
+
+      await logAudit({
+        userinfo: userinfo ?? undefined,
+        action: UPDATE,
+        resource: ADMIN_UI_CEDARLING_CONFIG,
+        message: t('documentation.cedarlingConfig.auditPolicyStoreUploaded'),
+        client_id: client_id,
+        payload: { fileName: selectedFile.name },
+      })
+
+      await syncRoleToScopesMappingsMutation.mutateAsync()
+
+      await logAudit({
+        userinfo: userinfo ?? undefined,
+        action: UPDATE,
+        resource: ADMIN_UI_CEDARLING_CONFIG,
+        message: t('documentation.cedarlingConfig.auditSyncRoleToScopesMappings'),
+        client_id: client_id,
+        payload: { fileName: selectedFile.name },
+      })
+
+      dispatch(updateToast(true, 'success', t('documentation.cedarlingConfig.policyStoreUploaded')))
+      setSelectedFile(null)
+    } catch (error) {
+      const errorMessage = getErrorMessage(
+        error as Error | ApiError,
+        'documentation.cedarlingConfig.uploadFailed',
+        t,
       )
+      dispatch(updateToast(true, 'error', errorMessage))
+    } finally {
+      setIsLoading(false)
     }
-  }, [isSuccess, auiConfig])
+  }, [selectedFile, dispatch, t, userinfo, client_id, syncRoleToScopesMappingsMutation])
+
+  const handleDownload = useCallback(async () => {
+    try {
+      setIsLoading(true)
+
+      const response = await fetchPolicyStore()
+      const responseBytes =
+        response.data && 'responseBytes' in response.data ? response.data.responseBytes : undefined
+
+      if (!responseBytes) {
+        dispatch(
+          updateToast(true, 'error', t('documentation.cedarlingConfig.noPolicyStoreToDownload')),
+        )
+        return
+      }
+
+      const bytes = Uint8Array.from(atob(responseBytes), (c) => c.charCodeAt(0))
+
+      const blob = new Blob([bytes], { type: 'application/zip' })
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = 'policy-store.cjar'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+
+      dispatch(
+        updateToast(true, 'success', t('documentation.cedarlingConfig.policyStoreDownloaded')),
+      )
+    } catch (error) {
+      const errorMessage = getErrorMessage(
+        error as Error | ApiError,
+        'documentation.cedarlingConfig.downloadFailed',
+        t,
+      )
+      dispatch(updateToast(true, 'error', errorMessage))
+    } finally {
+      setIsLoading(false)
+    }
+  }, [dispatch, t])
+
+  const handleBack = useCallback(() => {
+    navigateBack(ROUTES.HOME_DASHBOARD)
+  }, [navigateBack])
 
   return (
-    <GluuLoader blocking={isFetching || isLoading}>
+    <GluuLoader blocking={isLoading}>
       <GluuViewWrapper canShow={canReadSecurity}>
-        <Paper
-          elevation={1}
-          sx={{
-            p: 4,
-            borderRadius: 2,
-            minHeight: 500,
-          }}
-        >
-          <Box sx={{ maxWidth: 900, mx: 'auto' }}>
-            <Typography
-              variant="h5"
-              sx={{ fontWeight: 600, color: 'text.primary', textAlign: 'center', mb: 3 }}
-            >
-              {t('documentation.cedarlingConfig.title')}
-            </Typography>
-
-            <Alert
-              severity="info"
-              icon={<InfoOutlined />}
-              sx={{
-                'mb': 3,
-                '& .MuiAlert-message': { width: '100%' },
+        <GluuPageContent>
+          <Box className={classes.configCard}>
+            <Form
+              className={classes.form}
+              onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+                e.preventDefault()
               }}
             >
-              <Typography variant="body2" color="text.primary">
-                {t('documentation.cedarlingConfig.steps')}{' '}
-              </Typography>
-              <Typography variant="body2" sx={{ mb: 1 }}>
-                {t('documentation.cedarlingConfig.point1')}{' '}
-                <Link
-                  href="https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/tree/agama-lab-policy-designer"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  sx={{ fontWeight: 500 }}
-                >
-                  GluuFlexAdminUIPolicyStore
-                </Link>
-                .
-              </Typography>
-              <Typography variant="body2" sx={{ mb: 1 }}>
-                {t('documentation.cedarlingConfig.point2')}{' '}
-                <Link
-                  href="https://cloud.gluu.org/agama-lab"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  sx={{ fontWeight: 500 }}
-                >
-                  Agama Lab's Policy Designer
-                </Link>
-                .
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {t('documentation.cedarlingConfig.point3')}{' '}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {t('documentation.cedarlingConfig.point4')}{' '}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {t('documentation.cedarlingConfig.point5')}{' '}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {t('documentation.cedarlingConfig.point6')}{' '}
-              </Typography>
-            </Alert>
+              <Box className={classes.formMain}>
+                <Box className={classes.formContent}>
+                  <Box className={classes.alertWrapper}>
+                    <Box className={classes.alertBox}>
+                      <InfoOutlined
+                        className={classes.alertIcon}
+                        sx={{ color: themeColors.infoAlert.text }}
+                      />
+                      <GluuText variant="p" className={classes.alertStepTitle} disableThemeColor>
+                        {t('documentation.cedarlingConfig.steps')}
+                      </GluuText>
+                      <GluuText variant="p" className={classes.alertBody} disableThemeColor>
+                        {t('documentation.cedarlingConfig.point1')}{' '}
+                        <Link
+                          href="https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/tree/agama-lab-policy-designer"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={classes.alertLink}
+                        >
+                          {t('documentation.cedarlingConfig.gluuFlexAdminUiPolicyStoreDisplay')}
+                        </Link>
+                        .
+                      </GluuText>
+                      <GluuText variant="p" className={classes.alertBody} disableThemeColor>
+                        {t('documentation.cedarlingConfig.point2')}{' '}
+                        <Link
+                          href="https://cloud.gluu.org/agama-lab"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={classes.alertLink}
+                        >
+                          {t('documentation.cedarlingConfig.agamaLabPolicyDesigner')}
+                        </Link>
+                        .
+                      </GluuText>
+                      <GluuText variant="p" className={classes.alertBody} disableThemeColor>
+                        {t('documentation.cedarlingConfig.point3')}
+                      </GluuText>
+                      <GluuText variant="p" className={classes.alertBody} disableThemeColor>
+                        {t('documentation.cedarlingConfig.point4')}
+                      </GluuText>
+                      <GluuText variant="p" className={classes.alertBody} disableThemeColor>
+                        {t('documentation.cedarlingConfig.point5')}
+                      </GluuText>
+                      <GluuText variant="p" className={classes.alertBody} disableThemeColor>
+                        {t('documentation.cedarlingConfig.point6')}
+                      </GluuText>
 
-            <form onSubmit={handleSubmit}>
-              <Stack spacing={3}>
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
-                  <TextField
-                    id="auiPolicyStoreUrl"
-                    label={t('fields.auiPolicyStoreUrl')}
-                    placeholder="https://raw.githubusercontent.com/..."
-                    type="url"
-                    value={auiPolicyStoreUrl}
-                    onChange={handleInputChange}
-                    onBlur={handleInputBlur}
-                    disabled={isInputDisabled}
-                    error={!!urlError}
-                    helperText={urlError}
-                    fullWidth
-                    size="small"
-                    sx={{ flex: 1 }}
-                  />
-                  {!isRefreshButtonHidden && (
-                    <GluuTooltip
-                      doc_category={'cedarlingConfig'}
-                      doc_entry={'updateRemotePolicyStoreOnServer'}
-                    >
-                      <IconButton
-                        type="button"
-                        aria-label="refresh"
-                        onClick={handleSetRemotePolicyStoreAsDefault}
-                        disabled={isInputDisabled}
-                        sx={{
-                          'mt': 0.5,
-                          'color': customColors.logo,
-                          '&:hover': {
-                            backgroundColor: `${customColors.logo}14`,
-                          },
-                        }}
-                      >
-                        <RefreshOutlined />
-                      </IconButton>
-                    </GluuTooltip>
-                  )}
+                      <Box className={classes.uploadBox}>
+                        <GluuLabel
+                          label="documentation.cedarlingConfig.title"
+                          size={12}
+                          required={canWriteSecurity}
+                          isDark={isDark}
+                        />
+                        <GluuUploadFile
+                          accept={CJAR_ACCEPT}
+                          onDrop={handleFileDrop}
+                          placeholder={t('documentation.cedarlingConfig.selectCjarFile')}
+                          onClearFiles={handleClearFiles}
+                          disabled={!canWriteSecurity || isLoading}
+                          fileName={selectedFile?.name}
+                        />
+                        {canWriteSecurity && (
+                          <Box className={classes.requiredFooterNote}>
+                            <GluuText
+                              variant="span"
+                              className={classes.requiredAsterisk}
+                              aria-hidden
+                              disableThemeColor
+                            >
+                              *
+                            </GluuText>
+                            <GluuText
+                              variant="span"
+                              className={classes.requiredNoteText}
+                              disableThemeColor
+                            >
+                              {t('documentation.cedarlingConfig.requiredFieldNote')}
+                            </GluuText>
+                          </Box>
+                        )}
+                      </Box>
+                    </Box>
+                  </Box>
                 </Box>
+              </Box>
 
-                <FormControl component="fieldset">
-                  <FormLabel
-                    component="legend"
-                    sx={{
-                      'fontWeight': 500,
-                      'color': 'text.primary',
-                      'mb': 1,
-                      '&.Mui-focused': { color: 'text.primary' },
-                    }}
-                  >
-                    {t('fields.cedarlingPolicyStoreRetrievalPoint')}
-                  </FormLabel>
-                  <ThemeProvider theme={muiTheme}>
-                    <RadioGroup
-                      row
-                      name="cedarlingPolicyStoreRetrievalPoint"
-                      value={cedarlingPolicyStoreRetrievalPoint}
-                      onChange={handleRadioChange}
-                    >
-                      <FormControlLabel
-                        value="remote"
-                        control={<Radio color="primary" size="small" />}
-                        label={
-                          <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                            Remote
-                          </Typography>
-                        }
-                        disabled={isInputDisabled}
-                      />
-                      <FormControlLabel
-                        value="default"
-                        control={<Radio color="primary" size="small" />}
-                        label={
-                          <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                            Default
-                          </Typography>
-                        }
-                        disabled={isInputDisabled}
-                      />
-                    </RadioGroup>
-                  </ThemeProvider>
-                  <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5 }}>
-                    {t('documentation.cedarlingConfig.useRemotePolicyStore')}
-                  </Typography>
-                </FormControl>
-
-                <GluuFormFooter
-                  showBack={true}
-                  showApply={canWriteSecurity}
-                  disableApply={isLoading}
-                  isLoading={isLoading}
-                />
-              </Stack>
-            </form>
+              <GluuThemeFormFooter
+                showBack
+                onBack={handleBack}
+                showCancel
+                cancelButtonLabel={t('documentation.cedarlingConfig.downloadPolicyStore')}
+                onCancel={handleDownload}
+                disableCancel={isLoading}
+                showApply={canWriteSecurity}
+                applyButtonLabel={t('documentation.cedarlingConfig.uploadPolicyStore')}
+                onApply={handleUpload}
+                disableApply={!selectedFile || isLoading}
+                applyButtonType="button"
+                isLoading={isLoading}
+              />
+            </Form>
           </Box>
-        </Paper>
+        </GluuPageContent>
       </GluuViewWrapper>
     </GluuLoader>
   )

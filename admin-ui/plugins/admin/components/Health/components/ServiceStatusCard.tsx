@@ -1,12 +1,19 @@
-import React from 'react'
-import { Card, CardHeader, CardBody } from 'Components'
+import React, { useMemo, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
+import { GluuBadge } from 'Components'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
+import customColors from '@/customColors'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { DEFAULT_THEME } from '@/context/theme/constants'
+import { REGEX_TRAILING_PERIOD } from '@/utils/regex'
 import type { ServiceStatusCardProps, ServiceHealth } from '../types'
 import { formatServiceName } from '../utils'
-import HealthStatusBadge from './HealthStatusBadge'
+import { STATUS_LABEL_KEYS } from '../constants'
+import { useStyles } from './ServiceStatusCard.style'
 
-function getStatusMessage(service: ServiceHealth, t: TFunction): string {
+const getStatusMessage = (service: ServiceHealth, t: TFunction): string => {
   if (service.error) {
     return service.error
   }
@@ -22,26 +29,72 @@ function getStatusMessage(service: ServiceHealth, t: TFunction): string {
   }
 }
 
-const ServiceStatusCard: React.FC<ServiceStatusCardProps> = ({ service, themeColors }) => {
+const ServiceStatusCard: React.FC<ServiceStatusCardProps> = memo(({ service, isDark }) => {
   const { t } = useTranslation()
-  const displayName = formatServiceName(service.name)
-  const statusMessage = getStatusMessage(service, t)
+  const theme = useTheme()
+  const themeColors = useMemo(
+    () => getThemeColor(theme?.state?.theme ?? DEFAULT_THEME),
+    [theme?.state?.theme],
+  )
+  const { classes } = useStyles({ isDark })
+  const displayName = useMemo(() => formatServiceName(service.name), [service.name])
+  const statusMessage = useMemo(
+    () => getStatusMessage(service, t).replace(REGEX_TRAILING_PERIOD, ''),
+    [service, t],
+  )
+
+  const badgeColors = useMemo(() => {
+    switch (service.status) {
+      case 'up':
+        return {
+          bg: isDark ? themeColors.badges.filledBadgeBg : themeColors.badges.statusActiveBg,
+          text: isDark ? themeColors.badges.filledBadgeText : themeColors.badges.statusActive,
+        }
+      case 'down':
+        return {
+          bg: isDark ? customColors.statusInactive : customColors.statusInactiveBg,
+          text: isDark ? customColors.white : customColors.statusInactive,
+        }
+      case 'degraded':
+      case 'unknown':
+      default:
+        return {
+          bg: isDark ? customColors.statusInactive : customColors.statusInactiveBg,
+          text: isDark ? customColors.white : customColors.statusInactive,
+        }
+    }
+  }, [service.status, isDark, themeColors])
 
   return (
-    <Card className="mb-3">
-      <CardHeader
-        style={{ background: themeColors.background }}
-        tag="h6"
-        className="text-white d-flex justify-content-between align-items-center"
-      >
-        <span>{displayName}</span>
-        <HealthStatusBadge status={service.status} />
-      </CardHeader>
-      <CardBody>
-        <p className={service.error ? 'text-danger mb-0' : 'mb-0'}>{statusMessage}</p>
-      </CardBody>
-    </Card>
+    <div className={classes.card} data-testid={`service-card-${service.name}`}>
+      <div className={classes.content}>
+        <div className={classes.textContainer}>
+          <GluuText
+            variant="div"
+            className={classes.serviceName}
+            data-testid={`service-name-${service.name}`}
+          >
+            {displayName}
+          </GluuText>
+          <GluuText variant="div" className={classes.serviceMessage}>
+            {statusMessage}
+          </GluuText>
+        </div>
+        <div className={classes.statusBadge} data-testid={`service-status-${service.name}`}>
+          <GluuBadge
+            size="md"
+            backgroundColor={badgeColors.bg}
+            textColor={badgeColors.text}
+            borderColor={badgeColors.bg}
+          >
+            {t(STATUS_LABEL_KEYS[service.status])}
+          </GluuBadge>
+        </div>
+      </div>
+    </div>
   )
-}
+})
+
+ServiceStatusCard.displayName = 'ServiceStatusCard'
 
 export default ServiceStatusCard

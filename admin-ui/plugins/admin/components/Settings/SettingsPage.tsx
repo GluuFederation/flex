@@ -1,34 +1,21 @@
-import React, { useMemo, useCallback, useState, useContext, useEffect } from 'react'
+import React, { useMemo, useCallback, useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
-import { useDispatch, useSelector } from 'react-redux'
-import {
-  Card,
-  CardBody,
-  FormGroup,
-  Col,
-  Label,
-  Badge,
-  InputGroup,
-  CustomInput,
-  Form,
-  Alert,
-  Button,
-  Input,
-  Accordion,
-  AccordionHeader,
-  AccordionBody,
-} from 'Components'
+import { useAppSelector, useAppDispatch, type RootState } from '../../../../app/redux/hooks'
+import { FormGroup, Form, Alert, Input, GluuPageContent } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
+import GluuThemeFormFooter from '@/routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { SETTINGS } from 'Utils/ApiResources'
+import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import SetTitle from 'Utils/SetTitle'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
 import { SIMPLE_PASSWORD_AUTH } from 'Plugins/auth-server/common/Constants'
 import {
   CedarlingLogType,
@@ -36,10 +23,18 @@ import {
   ADMIN_UI_RESOURCES,
   CEDAR_RESOURCE_SCOPES,
 } from '@/cedarling'
-import { getPagingSize, savePagingSize as savePagingSizeToStorage } from 'Utils/pagingUtils'
+import {
+  getDefaultPagingSize,
+  savePagingSize as savePagingSizeToStorage,
+  ROWS_PER_PAGE_OPTIONS,
+} from 'Utils/pagingUtils'
 import packageJson from '../../../../package.json'
 import { getSettingsValidationSchema } from 'Plugins/admin/helper/validations/settingsValidation'
-import { buildSettingsInitialValues, type SettingsFormValues } from 'Plugins/admin/helper/settings'
+import {
+  buildSettingsInitialValues,
+  type SettingsFormValues,
+  type AdditionalParameterFormItem,
+} from 'Plugins/admin/helper/settings'
 import {
   useGetAdminuiConf,
   useEditAdminuiConf,
@@ -50,35 +45,31 @@ import {
 import { useQueryClient } from '@tanstack/react-query'
 import { updateToast } from '@/redux/features/toastSlice'
 import { getOAuth2ConfigResponse } from '@/redux/features/authSlice'
+import type { Config } from '@/redux/features/types/authTypes'
 import { logAudit } from '@/utils/AuditLogger'
 import { UPDATE } from '@/audit/UserActionType'
 import { ADMIN_UI_SETTINGS } from 'Plugins/admin/redux/audit/Resources'
-import { getErrorMessage } from 'Plugins/schema/utils/errorHandler'
-import type { RootState } from '@/redux/sagas/types/audit'
-import customColors from '@/customColors'
+import { getErrorMessage } from '@/utils/errorHandler'
+import { devLogger } from '@/utils/devLogger'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import { GluuButton } from '@/components/GluuButton'
+import { useStyles } from './SettingsPage.style'
 
-const PAGING_SIZE_OPTIONS = [1, 5, 10, 20] as const
-const DEFAULT_PAGING_SIZE = PAGING_SIZE_OPTIONS[2]
+const settingsResourceId = ADMIN_UI_RESOURCES.Settings
+const settingsScopes = CEDAR_RESOURCE_SCOPES[settingsResourceId] || []
 const SCRIPTS_FETCH_LIMIT = 200
-
-const FORM_GROUP_ROW_STYLE = { justifyContent: 'space-between' }
-const LABEL_CONTAINER_STYLE: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  paddingRight: '15px',
-}
 
 const SettingsPage: React.FC = () => {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
-  const theme = useContext(ThemeContext)
+  const dispatch = useAppDispatch()
+  const { state: themeState } = useTheme()
+  const isDark = (themeState?.theme ?? DEFAULT_THEME) === THEME_DARK
   const queryClient = useQueryClient()
 
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
 
-  const userinfo = useSelector((state: RootState) => state.authReducer?.userinfo)
-  const clientId = useSelector((state: RootState) => state.authReducer?.config?.clientId)
+  const userinfo = useAppSelector((state: RootState) => state.authReducer?.userinfo)
+  const clientId = useAppSelector((state: RootState) => state.authReducer?.config?.clientId)
 
   const {
     data: config,
@@ -98,18 +89,13 @@ const SettingsPage: React.FC = () => {
     refetch: refetchScripts,
   } = useGetConfigScriptsByType('person_authentication', { limit: SCRIPTS_FETCH_LIMIT })
 
-  const settingsResourceId = useMemo(() => ADMIN_UI_RESOURCES.Settings, [])
-  const settingsScopes = useMemo(
-    () => CEDAR_RESOURCE_SCOPES[settingsResourceId] || [],
-    [settingsResourceId],
-  )
   const canReadSettings = useMemo(
     () => hasCedarReadPermission(settingsResourceId),
-    [hasCedarReadPermission, settingsResourceId],
+    [hasCedarReadPermission],
   )
   const canWriteSettings = useMemo(
     () => hasCedarWritePermission(settingsResourceId),
-    [hasCedarWritePermission, settingsResourceId],
+    [hasCedarWritePermission],
   )
 
   const pageTitle = t('titles.application_settings')
@@ -119,16 +105,13 @@ const SettingsPage: React.FC = () => {
     if (settingsScopes.length > 0) {
       authorizeHelper(settingsScopes)
     }
-  }, [authorizeHelper, settingsScopes])
+  }, [authorizeHelper])
 
   const validationSchema = useMemo(() => getSettingsValidationSchema(t), [t])
-  const savedPagingSize = useMemo(() => {
-    const stored = getPagingSize(DEFAULT_PAGING_SIZE)
-    return PAGING_SIZE_OPTIONS.includes(stored as (typeof PAGING_SIZE_OPTIONS)[number])
-      ? stored
-      : DEFAULT_PAGING_SIZE
-  }, [])
-  const selectedTheme = useMemo(() => theme?.state?.theme || 'darkBlack', [theme?.state?.theme])
+  const savedPagingSize = useMemo(() => getDefaultPagingSize(), [])
+  const selectedTheme = useMemo(() => themeState?.theme || DEFAULT_THEME, [themeState?.theme])
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+  const { classes } = useStyles({ isDark, themeColors })
   const configApiUrl = useMemo(() => {
     if (typeof window === 'undefined') return 'N/A'
     const windowWithConfig = window as Window & { configApiBaseUrl?: string }
@@ -171,7 +154,7 @@ const SettingsPage: React.FC = () => {
 
       try {
         const updatePayload: AppConfigResponse = {
-          sessionTimeoutInMins: values.sessionTimeoutInMins,
+          sessionTimeoutInMins: values.sessionTimeoutInMins || undefined,
           acrValues: values.acrValues,
           cedarlingLogType: values.cedarlingLogType,
           additionalParameters: values.additionalParameters.map((param) => ({
@@ -185,7 +168,7 @@ const SettingsPage: React.FC = () => {
         })
 
         queryClient.invalidateQueries({ queryKey: getGetAdminuiConfQueryKey() })
-        dispatch(getOAuth2ConfigResponse({ config: updatedConfig }))
+        dispatch(getOAuth2ConfigResponse({ config: updatedConfig as Config }))
 
         await logAudit({
           userinfo: userinfo ?? undefined,
@@ -193,14 +176,16 @@ const SettingsPage: React.FC = () => {
           resource: ADMIN_UI_SETTINGS,
           message: 'Application settings updated',
           client_id: clientId,
-          payload: {
-            sessionTimeoutInMins: values.sessionTimeoutInMins,
-            acrValues: values.acrValues,
-            cedarlingLogType: values.cedarlingLogType,
-            additionalParameters: values.additionalParameters,
-          },
+          payload: JSON.parse(
+            JSON.stringify({
+              sessionTimeoutInMins: values.sessionTimeoutInMins,
+              acrValues: values.acrValues,
+              cedarlingLogType: values.cedarlingLogType,
+              additionalParameters: values.additionalParameters,
+            }),
+          ),
         }).catch((auditError) => {
-          console.error('Audit logging failed:', auditError)
+          devLogger.error('Audit logging failed:', auditError)
         })
 
         if (cedarlingLogTypeChanged) {
@@ -212,7 +197,8 @@ const SettingsPage: React.FC = () => {
         setBaselinePagingSize(currentPagingSize)
         formikHelpers.resetForm({ values })
       } catch (error) {
-        const errorMessage = getErrorMessage(error as Error, 'messages.error_in_saving', t)
+        const normalizedError = error instanceof Error ? error : new Error(String(error))
+        const errorMessage = getErrorMessage(normalizedError, 'messages.error_in_saving', t)
         dispatch(updateToast(true, 'error', errorMessage))
       }
     },
@@ -254,29 +240,28 @@ const SettingsPage: React.FC = () => {
     if (isScriptsError) refetchScripts()
   }, [isConfigError, isScriptsError, refetchConfig, refetchScripts])
 
+  const isAdditionalParamsEmpty = (formik.values.additionalParameters || []).length === 0
   const additionalParametersError = formik.errors?.additionalParameters
   const showAdditionalParametersError = Boolean(
     additionalParametersError && (formik.submitCount > 0 || formik.touched?.additionalParameters),
   )
 
-  const additionalParametersErrorText = useMemo((): string | null => {
-    const err = additionalParametersError
-    if (!err) return null
-    if (typeof err === 'string') return err
-    if (Array.isArray(err)) {
-      for (const item of err) {
-        if (!item) continue
-        if (typeof item === 'string') return item
-        if (typeof item === 'object') {
-          const maybeKey = (item as { key?: unknown }).key
-          const maybeValue = (item as { value?: unknown }).value
-          if (typeof maybeKey === 'string') return maybeKey
-          if (typeof maybeValue === 'string') return maybeValue
-        }
-      }
-      return null
+  const additionalParametersErrorText = useMemo(() => {
+    if (!additionalParametersError) return ''
+    if (typeof additionalParametersError === 'string') return additionalParametersError
+    if (Array.isArray(additionalParametersError)) {
+      return additionalParametersError
+        .filter((error) => error != null)
+        .map((error) => (typeof error === 'string' ? error : JSON.stringify(error)))
+        .join(', ')
     }
-    return null
+    if (typeof additionalParametersError === 'object') {
+      const errorValues = Object.values(additionalParametersError)
+        .filter((error) => error != null)
+        .map((error) => (typeof error === 'string' ? error : JSON.stringify(error)))
+      return errorValues.length > 0 ? errorValues.join(', ') : ''
+    }
+    return String(additionalParametersError)
   }, [additionalParametersError])
 
   const renderErrorAlert = () => {
@@ -284,14 +269,12 @@ const SettingsPage: React.FC = () => {
 
     const errorMessages: string[] = []
     if (isConfigError && configError) {
-      errorMessages.push(
-        getErrorMessage(configError as unknown as Error, 'messages.error_loading_config', t),
-      )
+      const err = configError instanceof Error ? configError : new Error(String(configError))
+      errorMessages.push(getErrorMessage(err, 'messages.error_loading_config', t))
     }
     if (isScriptsError && scriptsError) {
-      errorMessages.push(
-        getErrorMessage(scriptsError as unknown as Error, 'messages.error_loading_scripts', t),
-      )
+      const err = new Error(String(scriptsError))
+      errorMessages.push(getErrorMessage(err, 'messages.error_loading_scripts', t))
     }
 
     return (
@@ -302,9 +285,14 @@ const SettingsPage: React.FC = () => {
               <div key={`error-${idx}`}>{msg}</div>
             ))}
           </div>
-          <Button color="danger" size="sm" onClick={handleRetry}>
+          <GluuButton
+            size="sm"
+            backgroundColor={themeColors.errorColor}
+            textColor={themeColors.settings.errorButtonText}
+            onClick={handleRetry}
+          >
             {t('actions.retry')}
-          </Button>
+          </GluuButton>
         </div>
       </Alert>
     )
@@ -313,226 +301,225 @@ const SettingsPage: React.FC = () => {
   return (
     <GluuLoader blocking={loadingScripts || loadingConfig || isSubmitting}>
       <GluuViewWrapper canShow={canReadSettings}>
-        <Card style={applicationStyle.mainCard}>
-          <CardBody>
-            {renderErrorAlert()}
-            <Form onSubmit={formik.handleSubmit}>
-              <GluuInputRow
-                label="fields.gluuFlexVersion"
-                name="gluuFlexVersion"
-                type="text"
-                lsize={4}
-                rsize={8}
-                value={packageJson.version}
-                disabled={true}
-                doc_category={SETTINGS}
-                doc_entry="gluuCurrentVersion"
-              />
+        <GluuPageContent>
+          <div className={classes.settingsCard}>
+            <div className={`${classes.content} ${classes.settingsLabels}`}>
+              {renderErrorAlert()}
+              <Form onSubmit={formik.handleSubmit} className={classes.formSection}>
+                <div className={`${classes.formWithInputs} ${classes.fieldsGrid}`}>
+                  <div className={classes.fieldItem}>
+                    <GluuInputRow
+                      label="fields.gluuFlexVersion"
+                      name="gluuFlexVersion"
+                      type="text"
+                      lsize={12}
+                      rsize={12}
+                      value={packageJson.version}
+                      disabled={true}
+                      doc_category={SETTINGS}
+                      doc_entry="gluuCurrentVersion"
+                      isDark={isDark}
+                    />
+                  </div>
 
-              <FormGroup row style={FORM_GROUP_ROW_STYLE}>
-                <GluuLabel
-                  label={t('fields.config_api_url')}
-                  doc_category={SETTINGS}
-                  size={4}
-                  doc_entry="configApiUrl"
-                />
-                <Col sm={8}>
-                  <Label style={LABEL_CONTAINER_STYLE}>
-                    <h3>
-                      <Badge color={`primary-${selectedTheme}`}>{configApiUrl}</Badge>
-                    </h3>
-                  </Label>
-                </Col>
-              </FormGroup>
+                  <div className={classes.fieldItem}>
+                    <GluuInputRow
+                      label="fields.config_api_url"
+                      name="configApiUrl"
+                      type="text"
+                      lsize={12}
+                      rsize={12}
+                      value={configApiUrl}
+                      disabled={true}
+                      doc_category={SETTINGS}
+                      doc_entry="configApiUrl"
+                      isDark={isDark}
+                    />
+                  </div>
 
-              <FormGroup row>
-                <GluuLabel
-                  label={t('fields.list_paging_size')}
-                  size={4}
-                  doc_category={SETTINGS}
-                  doc_entry="pageSize"
-                />
-                <Col sm={8}>
-                  <InputGroup>
-                    <CustomInput
-                      type="select"
-                      id="pagingSize"
+                  <div className={classes.fieldItem}>
+                    <GluuSelectRow
+                      label="fields.list_paging_size"
                       name="pagingSize"
-                      value={String(currentPagingSize)}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        handlePagingSizeChange(Number.parseInt(e.target.value, 10))
-                      }
+                      value={currentPagingSize}
+                      formik={formik}
+                      values={ROWS_PER_PAGE_OPTIONS.map((n) => String(n))}
+                      lsize={12}
+                      rsize={12}
+                      doc_category={SETTINGS}
+                      doc_entry="pageSize"
                       disabled={!canWriteSettings}
-                    >
-                      {PAGING_SIZE_OPTIONS.map((option) => (
-                        <option value={String(option)} key={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </CustomInput>
-                  </InputGroup>
-                </Col>
-              </FormGroup>
+                      isDark={isDark}
+                      handleChange={(e) => {
+                        const n = Number.parseInt(e.target.value, 10)
+                        if (!Number.isNaN(n)) handlePagingSizeChange(n)
+                      }}
+                    />
+                  </div>
 
-              <GluuInputRow
-                label="fields.sessionTimeoutInMins"
-                name="sessionTimeoutInMins"
-                type="number"
-                formik={formik}
-                lsize={4}
-                rsize={8}
-                value={formik.values.sessionTimeoutInMins}
-                doc_category={SETTINGS}
-                doc_entry="sessionTimeoutInMins"
-                errorMessage={formik.errors.sessionTimeoutInMins}
-                showError={Boolean(
-                  formik.errors.sessionTimeoutInMins && formik.touched.sessionTimeoutInMins,
-                )}
-                disabled={!canWriteSettings}
-              />
+                  <div className={classes.fieldItem}>
+                    <GluuInputRow
+                      label="fields.sessionTimeoutInMins"
+                      name="sessionTimeoutInMins"
+                      type="number"
+                      formik={formik}
+                      lsize={12}
+                      rsize={12}
+                      value={formik.values.sessionTimeoutInMins}
+                      doc_category={SETTINGS}
+                      doc_entry="sessionTimeoutInMins"
+                      errorMessage={formik.errors.sessionTimeoutInMins}
+                      showError={Boolean(
+                        formik.errors.sessionTimeoutInMins && formik.touched.sessionTimeoutInMins,
+                      )}
+                      disabled={!canWriteSettings}
+                      isDark={isDark}
+                      placeholder={getFieldPlaceholder(t, 'fields.sessionTimeoutInMins')}
+                    />
+                  </div>
 
-              <FormGroup row>
-                <GluuLabel
-                  size={4}
-                  doc_category={SETTINGS}
-                  doc_entry="adminui_default_acr"
-                  label={t('fields.adminui_default_acr')}
-                />
-                <Col sm={8}>
-                  <InputGroup>
-                    <CustomInput
-                      type="select"
-                      data-testid="acrValues"
-                      id="acrValues"
+                  <div className={classes.fieldItem}>
+                    <GluuSelectRow
+                      label="fields.adminui_default_acr"
                       name="acrValues"
                       value={formik.values.acrValues}
-                      onChange={formik.handleChange}
+                      formik={formik}
+                      values={authScripts}
+                      lsize={12}
+                      rsize={12}
+                      doc_category={SETTINGS}
+                      doc_entry="adminui_default_acr"
                       disabled={!canWriteSettings}
-                    >
-                      <option value="">{t('actions.choose')}...</option>
-                      {authScripts.map((item) => (
-                        <option key={item} value={item}>
-                          {item}
-                        </option>
-                      ))}
-                    </CustomInput>
-                  </InputGroup>
-                </Col>
-              </FormGroup>
+                      isDark={isDark}
+                    />
+                  </div>
 
-              <FormGroup row>
-                <GluuLabel
-                  size={4}
-                  doc_category={SETTINGS}
-                  doc_entry="cedarSwitch"
-                  label={t('fields.showCedarLogs?')}
-                />
-                <Col sm={8}>
-                  <GluuToogleRow
-                    isLabelVisible={false}
-                    name={t('fields.showCedarLogs?')}
-                    formik={formik}
-                    value={formik.values.cedarlingLogType === CedarlingLogType.STD_OUT}
-                    doc_category={SETTINGS}
-                    doc_entry="cedarSwitch"
-                    lsize={4}
-                    rsize={8}
-                    disabled={!canWriteSettings}
-                    handler={(event: React.ChangeEvent<HTMLInputElement>) => {
-                      formik.setFieldValue(
-                        'cedarlingLogType',
-                        event.target.checked ? CedarlingLogType.STD_OUT : CedarlingLogType.OFF,
-                      )
-                    }}
-                  />
-                </Col>
-              </FormGroup>
+                  <div className={classes.fieldItem}>
+                    <FormGroup>
+                      <GluuLabel
+                        size={12}
+                        doc_category={SETTINGS}
+                        doc_entry="cedarSwitch"
+                        label="fields.showCedarLogs?"
+                        isDark={isDark}
+                      />
+                      <GluuToogleRow
+                        isLabelVisible={false}
+                        label="fields.showCedarLogs?"
+                        name="cedarlingLogType"
+                        formik={formik}
+                        value={formik.values.cedarlingLogType === CedarlingLogType.STD_OUT}
+                        doc_category={SETTINGS}
+                        doc_entry="cedarSwitch"
+                        lsize={12}
+                        rsize={12}
+                        disabled={!canWriteSettings}
+                        isDark={isDark}
+                        handler={(event: React.ChangeEvent<HTMLInputElement>) => {
+                          formik.setFieldValue(
+                            'cedarlingLogType',
+                            event.target.checked ? CedarlingLogType.STD_OUT : CedarlingLogType.OFF,
+                          )
+                        }}
+                      />
+                    </FormGroup>
+                  </div>
+                </div>
 
-              <Accordion className="mb-3 b-primary" initialOpen>
-                <AccordionHeader>
-                  <h5>{t('fields.custom_params_auth')}</h5>
-                </AccordionHeader>
-                <AccordionBody>
-                  <Button
-                    style={{ float: 'right' }}
-                    type="button"
-                    color={`primary-${selectedTheme}`}
-                    disabled={!canWriteSettings}
-                    onClick={() => {
-                      const currentParams = formik.values.additionalParameters || []
-                      formik.setFieldValue('additionalParameters', [
-                        ...currentParams,
-                        { key: '', value: '' },
-                      ])
-                    }}
+                <div
+                  className={`${classes.customParamsBox} ${isAdditionalParamsEmpty ? classes.customParamsBoxEmpty : ''}`.trim()}
+                >
+                  <div
+                    className={`${classes.customParamsHeader} ${isAdditionalParamsEmpty ? classes.customParamsHeaderEmpty : ''}`.trim()}
                   >
-                    <i className="fa fa-fw fa-plus me-2"></i>
-                    {t('actions.add_property')}
-                  </Button>
-                  <FormGroup row>
-                    <Col sm={12}>
-                      {(formik.values.additionalParameters || []).map(
-                        (param: { key?: string; value?: string }, index: number) => (
-                          <FormGroup row key={index}>
-                            <Col sm={4}>
-                              <Input
-                                name={`additionalParameters.${index}.key`}
-                                value={param.key || ''}
-                                onChange={formik.handleChange}
-                                placeholder={t('placeholders.enter_property_key')}
-                                disabled={!canWriteSettings}
-                              />
-                            </Col>
-                            <Col sm={6}>
-                              <Input
-                                name={`additionalParameters.${index}.value`}
-                                value={param.value || ''}
-                                onChange={formik.handleChange}
-                                placeholder={t('placeholders.enter_property_value')}
-                                disabled={!canWriteSettings}
-                              />
-                            </Col>
-                            <Col sm={2}>
-                              <Button
-                                type="button"
-                                color="danger"
-                                disabled={!canWriteSettings}
-                                onClick={() => {
-                                  const currentParams = [...formik.values.additionalParameters]
-                                  currentParams.splice(index, 1)
-                                  formik.setFieldValue('additionalParameters', currentParams)
-                                }}
-                              >
-                                <i className="fa fa-fw fa-trash me-2"></i>
-                                {t('actions.remove')}
-                              </Button>
-                            </Col>
-                          </FormGroup>
-                        ),
-                      )}
-                    </Col>
-                  </FormGroup>
-                  {showAdditionalParametersError && (
-                    <div style={{ color: customColors.accentRed }}>
-                      {additionalParametersErrorText || t('messages.field_required')}
-                    </div>
-                  )}
-                </AccordionBody>
-              </Accordion>
+                    <GluuText variant="h5" disableThemeColor>
+                      <span className={classes.customParamsTitle}>
+                        {t('fields.custom_params_auth')}
+                      </span>
+                    </GluuText>
+                    <GluuButton
+                      type="button"
+                      disabled={!canWriteSettings}
+                      backgroundColor={themeColors.settings.addPropertyButton.bg}
+                      textColor={themeColors.settings.addPropertyButton.text}
+                      useOpacityOnHover
+                      className={classes.customParamsActionBtn}
+                      onClick={() => {
+                        const currentParams = formik.values.additionalParameters || []
+                        formik.setFieldValue('additionalParameters', [
+                          ...currentParams,
+                          { id: crypto.randomUUID(), key: '', value: '' },
+                        ])
+                      }}
+                    >
+                      <i className="fa fa-fw fa-plus" />
+                      {t('actions.add_property')}
+                    </GluuButton>
+                  </div>
+                  <div className={classes.customParamsBody}>
+                    {(
+                      (formik.values.additionalParameters || []) as AdditionalParameterFormItem[]
+                    ).map((param, index) => (
+                      <div key={param.id} className={classes.customParamsRow}>
+                        <Input
+                          name={`additionalParameters.${index}.key`}
+                          value={param.key || ''}
+                          onChange={formik.handleChange}
+                          placeholder={t('placeholders.enter_property_key')}
+                          disabled={!canWriteSettings}
+                          className={classes.customParamsInput}
+                        />
+                        <Input
+                          name={`additionalParameters.${index}.value`}
+                          value={param.value || ''}
+                          onChange={formik.handleChange}
+                          placeholder={t('placeholders.enter_property_value')}
+                          disabled={!canWriteSettings}
+                          className={classes.customParamsInput}
+                        />
+                        <GluuButton
+                          type="button"
+                          disabled={!canWriteSettings}
+                          backgroundColor={themeColors.settings.removeButton.bg}
+                          textColor={themeColors.settings.removeButton.text}
+                          useOpacityOnHover
+                          className={classes.customParamsActionBtn}
+                          onClick={() => {
+                            const currentParams = (formik.values.additionalParameters ??
+                              []) as AdditionalParameterFormItem[]
+                            const newParams = currentParams.filter((p) => p.id !== param.id)
+                            formik.setFieldValue('additionalParameters', newParams)
+                          }}
+                        >
+                          <i className="fa fa-fw fa-trash" />
+                          {t('actions.remove')}
+                        </GluuButton>
+                      </div>
+                    ))}
+                  </div>
+                  {showAdditionalParametersError &&
+                    additionalParametersErrorText &&
+                    additionalParametersErrorText.trim() && (
+                      <div className={classes.customParamsError}>
+                        {additionalParametersErrorText}
+                      </div>
+                    )}
+                </div>
 
-              <GluuFormFooter
-                showBack
-                showCancel={canWriteSettings}
-                onCancel={handleCancel}
-                disableCancel={!isFormChanged}
-                showApply={canWriteSettings}
-                onApply={formik.handleSubmit}
-                disableApply={!isFormChanged || hasErrors || isSubmitting}
-                applyButtonType="button"
-              />
-            </Form>
-          </CardBody>
-        </Card>
+                <GluuThemeFormFooter
+                  showBack
+                  showCancel={canWriteSettings}
+                  onCancel={handleCancel}
+                  disableCancel={!isFormChanged}
+                  showApply={canWriteSettings}
+                  onApply={formik.handleSubmit}
+                  disableApply={!isFormChanged || hasErrors || isSubmitting}
+                  applyButtonType="button"
+                />
+              </Form>
+            </div>
+          </div>
+        </GluuPageContent>
       </GluuViewWrapper>
     </GluuLoader>
   )

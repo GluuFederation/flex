@@ -1,10 +1,12 @@
 import { AppConfiguration3, JsonPatch } from 'JansConfigApi'
+import type { TFunction } from 'i18next'
+import type { JsonValue, GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
+import { triggerWebhookForFeature } from '@/utils/triggerWebhookForFeature'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { ScimFormValues } from '../types'
+import { SCIM_FIELD_CONFIGS } from '../components/constants'
 
-/**
- * Converts boolean-like values to actual boolean type
- */
-const toBooleanValue = (value: unknown): boolean => {
+const toBooleanValue = (value: JsonValue | undefined): boolean => {
   if (typeof value === 'boolean') return value
   if (typeof value === 'string') {
     return value.toLowerCase() === 'true'
@@ -12,9 +14,6 @@ const toBooleanValue = (value: unknown): boolean => {
   return Boolean(value)
 }
 
-/**
- * Transforms API configuration to form-friendly values
- */
 export const transformToFormValues = (config: AppConfiguration3 | undefined): ScimFormValues => {
   return {
     baseDN: config?.baseDN || '',
@@ -29,6 +28,8 @@ export const transformToFormValues = (config: AppConfiguration3 | undefined): Sc
     userExtensionSchemaURI: config?.userExtensionSchemaURI || '',
     loggingLevel: config?.loggingLevel || '',
     loggingLayout: config?.loggingLayout || '',
+    externalLoggerConfiguration: config?.externalLoggerConfiguration || '',
+    disableExternalLoggerConfiguration: toBooleanValue(config?.disableExternalLoggerConfiguration),
     metricReporterInterval: config?.metricReporterInterval ?? '',
     metricReporterKeepDataDays: config?.metricReporterKeepDataDays ?? '',
     metricReporterEnabled: toBooleanValue(config?.metricReporterEnabled),
@@ -39,24 +40,25 @@ export const transformToFormValues = (config: AppConfiguration3 | undefined): Sc
   }
 }
 
-/**
- * Creates JSON Patch array from form value differences
- */
 export const createJsonPatchFromDifferences = (
   originalConfig: AppConfiguration3,
   formValues: ScimFormValues,
 ): JsonPatch[] => {
   const patches: JsonPatch[] = []
 
-  // Helper to compare and create patch
-  const addPatchIfDifferent = (path: string, originalValue: unknown, newValue: unknown): void => {
-    // Handle empty string vs undefined/null comparison
+  const addPatchIfDifferent = (
+    path: string,
+    originalValue: JsonValue | undefined,
+    newValue: JsonValue | undefined,
+  ): void => {
     const normalizedOriginal = originalValue === '' ? undefined : originalValue
     const normalizedNew = newValue === '' ? undefined : newValue
 
     if (normalizedOriginal !== normalizedNew) {
       if (normalizedNew === undefined || normalizedNew === null) {
-        // Don't send null/undefined values, just skip
+        if (normalizedOriginal !== undefined && normalizedOriginal !== null) {
+          patches.push({ op: 'remove', path: `/${path}` })
+        }
         return
       }
 
@@ -69,7 +71,6 @@ export const createJsonPatchFromDifferences = (
     }
   }
 
-  // Compare all fields
   addPatchIfDifferent('baseDN', originalConfig.baseDN, formValues.baseDN)
   addPatchIfDifferent('applicationUrl', originalConfig.applicationUrl, formValues.applicationUrl)
   addPatchIfDifferent('baseEndpoint', originalConfig.baseEndpoint, formValues.baseEndpoint)
@@ -102,6 +103,16 @@ export const createJsonPatchFromDifferences = (
   )
   addPatchIfDifferent('loggingLevel', originalConfig.loggingLevel, formValues.loggingLevel)
   addPatchIfDifferent('loggingLayout', originalConfig.loggingLayout, formValues.loggingLayout)
+  addPatchIfDifferent(
+    'externalLoggerConfiguration',
+    originalConfig.externalLoggerConfiguration,
+    formValues.externalLoggerConfiguration,
+  )
+  addPatchIfDifferent(
+    'disableExternalLoggerConfiguration',
+    originalConfig.disableExternalLoggerConfiguration,
+    formValues.disableExternalLoggerConfiguration,
+  )
   addPatchIfDifferent(
     'metricReporterInterval',
     originalConfig.metricReporterInterval,
@@ -139,6 +150,32 @@ export const createJsonPatchFromDifferences = (
   )
 
   return patches
+}
+
+export const buildScimChangedFieldOperations = (
+  initial: ScimFormValues,
+  current: ScimFormValues,
+  t: TFunction,
+): GluuCommitDialogOperation[] => {
+  const operations: GluuCommitDialogOperation[] = []
+
+  for (const { name, label, disabled } of SCIM_FIELD_CONFIGS) {
+    if (disabled) continue
+    const oldVal = initial[name]
+    const newVal = current[name]
+    if (String(oldVal ?? '') !== String(newVal ?? '')) {
+      operations.push({ path: t(label), value: (newVal as JsonValue) ?? null })
+    }
+  }
+
+  return operations
+}
+
+export const triggerScimWebhook = (
+  data: AppConfiguration3,
+  feature: string = adminUiFeatures.scim_configuration_edit,
+): void => {
+  triggerWebhookForFeature(data as Record<string, JsonValue>, feature)
 }
 
 export { toBooleanValue }

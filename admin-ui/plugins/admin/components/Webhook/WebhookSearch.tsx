@@ -13,19 +13,9 @@ import {
 } from '@mui/material'
 import { Search, ArrowUpward, ArrowDownward } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
+import type { WebhookSearchProps, WebhookSortBy } from './types'
 
-export type WebhookSortBy = 'displayName' | 'url' | 'httpMethod' | 'jansEnabled'
-
-interface WebhookSearchProps {
-  pattern: string
-  sortBy: WebhookSortBy
-  sortOrder: 'ascending' | 'descending'
-  limit: number
-  onPatternChange: (pattern: string) => void
-  onSortByChange: (sortBy: WebhookSortBy) => void
-  onSortOrderChange: (sortOrder: 'ascending' | 'descending') => void
-  onLimitChange: (limit: number) => void
-}
+export type { WebhookSortBy }
 
 const SORT_BY_OPTIONS: { value: WebhookSortBy; labelKey: string }[] = [
   { value: 'displayName', labelKey: 'fields.name' },
@@ -65,7 +55,7 @@ const WebhookSearch: React.FC<WebhookSearchProps> = ({
 
   const handleSortByChange = useCallback(
     (event: SelectChangeEvent<WebhookSortBy>) => {
-      onSortByChange(event.target.value)
+      onSortByChange(event.target.value as WebhookSortBy)
     },
     [onSortByChange],
   )

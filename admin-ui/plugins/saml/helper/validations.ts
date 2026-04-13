@@ -1,4 +1,5 @@
 import * as Yup from 'yup'
+import { REGEX_NO_WHITESPACE } from '@/utils/regex'
 import type { SamlConfigurationFormValues } from '../types'
 import type { TFunction } from 'i18next'
 import type {
@@ -37,7 +38,10 @@ const requiredWhenMetadataNotImported = (t: TFunction, fieldKey: string) =>
   })
 
 const noSpacesValidation = (t: TFunction, fieldKey: string) =>
-  Yup.string().matches(/^\S*$/, t('errors.cannot_contain_spaces', { field: t(fieldKey) }))
+  Yup.string().matches(
+    REGEX_NO_WHITESPACE,
+    t('errors.cannot_contain_spaces', { field: t(fieldKey) }),
+  )
 
 // Helper function to validate URL format
 const urlFormatTest = (t: TFunction, fieldKey: string) =>
@@ -131,13 +135,19 @@ export const websiteSsoIdentityProviderValidationSchema = (
     principalType: Yup.string().nullable().concat(noSpacesValidation(t, 'fields.principal_type')),
   }) as Yup.ObjectSchema<WebsiteSsoIdentityProviderFormValues>
 
-// Helper function to create required field when metadata source is manual
-const requiredWhenManual = (t: TFunction, fieldKey: string) =>
-  Yup.string().when('$spMetaDataSourceType', {
-    is: (val: string) => val === 'manual',
-    then: (s) => s.required(`${t(fieldKey)} is Required!`),
-    otherwise: (s) => s,
-  })
+// Helper to create required validation when spMetaDataSourceType is 'manual'
+const requiredWhenManualTest = (t: TFunction, fieldKey: string) =>
+  Yup.string()
+    .nullable()
+    .test('required-when-manual', `${t(fieldKey)} is Required!`, function (value) {
+      // Access parent form values through Yup's context
+      const parent = this.from?.[1]?.value as { spMetaDataSourceType?: string } | undefined
+      const isManual = parent?.spMetaDataSourceType?.toLowerCase() === 'manual'
+      if (isManual && (!value || value.trim() === '')) {
+        return false
+      }
+      return true
+    })
 
 export const websiteSsoServiceProviderValidationSchema = (
   t: TFunction,
@@ -171,10 +181,10 @@ export const websiteSsoServiceProviderValidationSchema = (
       otherwise: (s) => s.nullable(),
     }),
     samlMetadata: Yup.object().shape({
-      singleLogoutServiceUrl: requiredWhenManual(t, 'fields.single_logout_service_url').concat(
+      singleLogoutServiceUrl: requiredWhenManualTest(t, 'fields.single_logout_service_url').concat(
         urlValidation(t, 'fields.single_logout_service_url'),
       ),
-      entityId: requiredWhenManual(t, 'fields.entity_id')
+      entityId: requiredWhenManualTest(t, 'fields.entity_id')
         .test(
           'not-empty',
           t('errors.cannot_be_empty', { field: t('fields.entity_id') }),
@@ -184,12 +194,12 @@ export const websiteSsoServiceProviderValidationSchema = (
           },
         )
         .concat(noSpacesValidation(t, 'fields.entity_id')),
-      nameIDPolicyFormat: requiredWhenManual(t, 'fields.name_id_policy_format'),
-      jansAssertionConsumerServiceGetURL: requiredWhenManual(
+      nameIDPolicyFormat: requiredWhenManualTest(t, 'fields.name_id_policy_format'),
+      jansAssertionConsumerServiceGetURL: requiredWhenManualTest(
         t,
         'fields.jans_assertion_consumer_service_get_url',
       ).concat(urlValidation(t, 'fields.jans_assertion_consumer_service_get_url')),
-      jansAssertionConsumerServicePostURL: requiredWhenManual(
+      jansAssertionConsumerServicePostURL: requiredWhenManualTest(
         t,
         'fields.jans_assertion_consumer_service_post_url',
       ).concat(urlValidation(t, 'fields.jans_assertion_consumer_service_post_url')),

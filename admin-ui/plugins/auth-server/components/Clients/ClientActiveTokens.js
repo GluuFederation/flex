@@ -1,23 +1,22 @@
 import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
 import MaterialTable from '@material-table/core'
 import { Card, CardBody } from '../../../../app/components'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { GluuDatePicker } from '@/components/GluuDatePicker'
+import { formatDate, diffDate, createDate, DATE_FORMATS } from '@/utils/dayjsUtils'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { Box, Grid, MenuItem, Paper, TablePagination, TextField, Tooltip } from '@mui/material'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import getThemeColor from 'Context/theme/config'
-import moment from 'moment'
 import { deleteClientToken, getTokenByClient } from '../../redux/features/oidcSlice'
 import ClientActiveTokenDetailPage from './ClientActiveTokenDetailPage'
 import { Button } from 'Components'
-import dayjs from 'dayjs'
 import PropTypes from 'prop-types'
 import { Button as MaterialButton } from '@mui/material'
 import FilterListIcon from '@mui/icons-material/FilterList'
@@ -71,8 +70,8 @@ function ClientActiveTokens({ client }) {
       setPageNumber(page)
       let conditionquery = `clnId=${client.inum}`
       if (pattern.dateAfter && pattern.dateBefore) {
-        conditionquery += `,${searchFilter}>${dayjs(pattern.dateAfter).format('YYYY-MM-DD')}`
-        conditionquery += `,${searchFilter}<${dayjs(pattern.dateBefore).format('YYYY-MM-DD')}`
+        conditionquery += `,${searchFilter}>${formatDate(pattern.dateAfter, 'YYYY-MM-DD')}`
+        conditionquery += `,${searchFilter}<${formatDate(pattern.dateBefore, 'YYYY-MM-DD')}`
       }
 
       getTokens(startCount, limit, conditionquery)
@@ -114,8 +113,8 @@ function ClientActiveTokens({ client }) {
     const startCount = pageNumber * limit
     let conditionquery = `clnId=${client.inum}`
     if (pattern.dateAfter && pattern.dateBefore) {
-      conditionquery += `,${searchFilter}>${dayjs(pattern.dateAfter).format('YYYY-MM-DD')}`
-      conditionquery += `,${searchFilter}<${dayjs(pattern.dateBefore).format('YYYY-MM-DD')}`
+      conditionquery += `,${searchFilter}>${formatDate(pattern.dateAfter, 'YYYY-MM-DD')}`
+      conditionquery += `,${searchFilter}<${formatDate(pattern.dateBefore, 'YYYY-MM-DD')}`
     }
     getTokens(startCount, limit, conditionquery)
   }
@@ -132,8 +131,8 @@ function ClientActiveTokens({ client }) {
     const startCount = pageNumber * limit
     let conditionquery = `clnId=${client.inum}`
     if (pattern.dateAfter && pattern.dateBefore) {
-      conditionquery += `,${searchFilter}>${dayjs(pattern.dateAfter).format('YYYY-MM-DD')}`
-      conditionquery += `,${searchFilter}<${dayjs(pattern.dateBefore).format('YYYY-MM-DD')}`
+      conditionquery += `,${searchFilter}>${formatDate(pattern.dateAfter, 'YYYY-MM-DD')}`
+      conditionquery += `,${searchFilter}<${formatDate(pattern.dateBefore, 'YYYY-MM-DD')}`
     }
     getTokens(startCount, limit, conditionquery)
   }
@@ -202,6 +201,13 @@ function ClientActiveTokens({ client }) {
       const result = updatedToken?.items?.length
         ? updatedToken.items
             .map((item) => {
+              const expirationDate = item.expirationDate
+                ? formatDate(item.expirationDate, 'YYYY/DD/MM HH:mm:ss')
+                : ''
+              const creationDate = item.creationDate
+                ? formatDate(item.creationDate, 'YYYY/DD/MM HH:mm:ss')
+                : ''
+
               return {
                 id: item.tokenCode,
                 tokenCode: item.tokenCode,
@@ -210,15 +216,16 @@ function ClientActiveTokens({ client }) {
                 deletable: item.deletable,
                 attributes: item.attributes,
                 grantType: item.grantType,
-                expirationDate: moment(item.expirationDate).format('YYYY/DD/MM HH:mm:ss'),
-                creationDate: moment(item.creationDate).format('YYYY/DD/MM HH:mm:ss'),
+                expirationDate,
+                creationDate,
               }
             })
-            .sort((a, b) => {
-              return moment(b.creationDate, 'YYYY/DD/MM HH:mm:ss').diff(
-                moment(a.creationDate, 'YYYY/DD/MM HH:mm:ss'),
-              )
-            })
+            .sort((a, b) =>
+              diffDate(
+                createDate(b.creationDate, 'YYYY/DD/MM HH:mm:ss'),
+                createDate(a.creationDate, 'YYYY/DD/MM HH:mm:ss'),
+              ),
+            )
         : []
       setData(result)
     } else if (!updatedToken || (updatedToken && !updatedToken.items)) {
@@ -308,14 +315,14 @@ function ClientActiveTokens({ client }) {
                     {(searchFilter === 'expirationDate' || searchFilter === 'creationDate') && (
                       <Grid item xs={4}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <DatePicker
-                            format="MM/DD/YYYY"
+                          <GluuDatePicker
+                            format={DATE_FORMATS.DATE_PICKER_DISPLAY_US}
                             label={t('dashboard.start_date')}
                             value={pattern.dateAfter}
                             onChange={(val) => {
                               setPattern({ ...pattern, dateAfter: val })
                             }}
-                            renderInput={(params) => <TextField {...params} fullWidth />}
+                            maxDate={pattern.dateBefore}
                           />
                         </LocalizationProvider>
                       </Grid>
@@ -323,14 +330,14 @@ function ClientActiveTokens({ client }) {
                     {(searchFilter === 'expirationDate' || searchFilter === 'creationDate') && (
                       <Grid item xs={4}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <DatePicker
-                            format="MM/DD/YYYY"
+                          <GluuDatePicker
+                            format={DATE_FORMATS.DATE_PICKER_DISPLAY_US}
                             label={t('dashboard.end_date')}
                             value={pattern.dateBefore}
                             onChange={(val) => {
                               setPattern({ ...pattern, dateBefore: val })
                             }}
-                            renderInput={(params) => <TextField {...params} fullWidth />}
+                            minDate={pattern.dateAfter}
                           />
                         </LocalizationProvider>
                       </Grid>

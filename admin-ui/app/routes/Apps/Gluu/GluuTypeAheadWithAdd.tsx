@@ -1,13 +1,14 @@
-import { useState, useContext } from 'react'
+import { useState, useCallback } from 'react'
 import { FormGroup, Col, Row, Button, Input } from 'Components'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import GluuLabel from '../Gluu/GluuLabel'
-import applicationStyle from './styles/applicationstyle'
+import applicationStyle from './styles/applicationStyle'
 import { useTranslation } from 'react-i18next'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { useTheme } from '@/context/theme/themeContext'
 import customColors from '@/customColors'
+import type { GluuTypeAheadWithAddProps } from './types'
 
-function GluuTypeAheadWithAdd({
+const GluuTypeAheadWithAdd = ({
   label,
   name,
   value,
@@ -21,16 +22,18 @@ function GluuTypeAheadWithAdd({
   rsize = 8,
   disabled = false,
   handler = null,
-}: any) {
-  const [items, setItems] = useState(value)
-  const [opts, setOpts] = useState(options)
+  multiple = true,
+}: GluuTypeAheadWithAddProps) => {
+  const [items, setItems] = useState<string[]>(value ?? [])
+  const [opts, setOpts] = useState<string[]>(options ?? [])
   const { t } = useTranslation()
-  const theme: any = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const { state } = useTheme()
+  const selectedTheme = state.theme
 
-  const addItem = () => {
-    const newItem = (document.getElementById(inputId) as any).value
-    ;(document.getElementById(inputId) as any).value = ''
+  const addItem = useCallback(() => {
+    const input = document.getElementById(inputId) as HTMLInputElement | null
+    const newItem = input?.value ?? ''
+    if (input) input.value = ''
     if (validator(newItem)) {
       const updatedItems = items ? [...items] : []
       updatedItems.push(newItem)
@@ -46,13 +49,16 @@ function GluuTypeAheadWithAdd({
         handler(name, updatedItems)
       }
     }
-  }
+  }, [inputId, items, name, opts, formik, handler, validator])
 
-  const handleChange = (aName: any, selected: any) => {
-    setOpts(selected)
-    setItems(selected)
-    formik.setFieldValue(aName, selected)
-  }
+  const handleChange = useCallback(
+    (aName: string, selected: string[]) => {
+      setOpts(selected)
+      setItems(selected)
+      formik.setFieldValue(aName, selected)
+    },
+    [formik],
+  )
 
   return (
     <FormGroup row>
@@ -95,12 +101,10 @@ function GluuTypeAheadWithAdd({
           emptyLabel=""
           labelKey={name}
           disabled={disabled}
-          onChange={(selected) => {
-            handleChange(name, selected)
-          }}
+          onChange={(selected) => handleChange(name, selected as string[])}
           id={name}
           data-testid={name}
-          multiple={true}
+          multiple={multiple}
           selected={items}
           options={opts}
         />
@@ -109,4 +113,5 @@ function GluuTypeAheadWithAdd({
     </FormGroup>
   )
 }
+
 export default GluuTypeAheadWithAdd

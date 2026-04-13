@@ -17,12 +17,7 @@ export type {
 
 export { EMPTY_SCOPE } from './scopeTypes'
 
-export type {
-  ScopeFormValues,
-  ModifiedFields,
-  ScopeFormSubmitData,
-  UserActionPayload,
-} from './formTypes'
+export type { ScopeFormValues, ModifiedFields, ScopeFormSubmitData } from './formTypes'
 
 export type {
   ScopeDetailPageProps,
@@ -32,3 +27,7 @@ export type {
   ScopeFormProps,
   ScopeTableRow,
 } from './componentTypes'
+
+export type { ScopeAuthState, ScopeAuthUserInfo, ScopeRootState } from './stateTypes'
+export type { AttributeEntry, ConfigScriptEntry } from './apiTypes'
+export type { ScopePanelVisibility } from './helperTypes'

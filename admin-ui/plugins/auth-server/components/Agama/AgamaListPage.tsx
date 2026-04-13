@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppDispatch } from '@/redux/hooks'
 import { Card, Input } from 'Components'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { useTranslation } from 'react-i18next'
 import useSetTitle from 'Utils/SetTitle'
 import { useAgamaActions } from './hooks/useAgamaActions'
@@ -22,8 +22,8 @@ import CircularProgress from '@mui/material/CircularProgress'
 import InfoIcon from '@mui/icons-material/Info'
 import AgamaProjectConfigModal from './AgamaProjectConfigModal'
 import { updateToast } from 'Redux/features/toastSlice'
-import { isEmpty } from 'lodash'
-import { getJsonConfig } from 'Plugins/auth-server/redux/features/jsonConfigSlice'
+import { useAuthServerJsonPropertiesQuery } from 'Plugins/auth-server/hooks/useAuthServerJsonProperties'
+import { devLogger } from '@/utils/devLogger'
 import SettingsIcon from '@mui/icons-material/Settings'
 import Checkbox from '@mui/material/Checkbox'
 import FormGroup from '@mui/material/FormGroup'
@@ -41,23 +41,13 @@ import {
   useGetAgamaRepositories,
   type Deployment,
 } from 'JansConfigApi'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 import type {
   AgamaProject,
   AgamaRepository,
   AgamaRepositoriesResponse,
   AgamaTableRow,
 } from './types'
-
-interface RootState {
-  jsonConfigReducer: {
-    configuration: {
-      agamaConfiguration?: {
-        enabled?: boolean
-      }
-    }
-    loading: boolean
-  }
-}
 
 const dateTimeFormatOptions: Intl.DateTimeFormatOptions = {
   year: '2-digit',
@@ -67,7 +57,10 @@ const dateTimeFormatOptions: Intl.DateTimeFormatOptions = {
   minute: '2-digit',
 }
 
-function AgamaListPage(): React.ReactElement {
+const authResourceId = ADMIN_UI_RESOURCES.Authentication
+const authScopes = CEDAR_RESOURCE_SCOPES[authResourceId] || []
+
+const AgamaListPage: React.FC = () => {
   const {
     hasCedarReadPermission,
     hasCedarWritePermission,
@@ -75,7 +68,7 @@ function AgamaListPage(): React.ReactElement {
     authorizeHelper,
   } = useCedarling()
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { logAgamaCreation, logAgamaDeletion } = useAgamaActions()
   const [myActions, setMyActions] = useState<Action<AgamaTableRow>[]>([])
@@ -101,21 +94,25 @@ function AgamaListPage(): React.ReactElement {
   const [fileLoading, setFileLoading] = useState<boolean>(false)
   const [uploadLoading, setUploadLoading] = useState<boolean>(false)
 
-  const configuration = useSelector((state: RootState) => state.jsonConfigReducer.configuration)
-  const isAgamaEnabled = configuration?.agamaConfiguration?.enabled
-  const isConfigLoading = useSelector((state: RootState) => state.jsonConfigReducer.loading)
-
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'dark'
+  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
 
-  const authResourceId = useMemo(() => ADMIN_UI_RESOURCES.Authentication, [])
-  const authScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[authResourceId] || [], [authResourceId])
   const canReadAuth = useMemo(
     () => hasCedarReadPermission(authResourceId),
-    [hasCedarReadPermission, authResourceId],
+    [hasCedarReadPermission],
   )
+
+  const { data: configuration = {}, isLoading: isConfigLoading } = useAuthServerJsonPropertiesQuery(
+    {
+      enabled: canReadAuth,
+    },
+  )
+  const agamaConfig = configuration as {
+    agamaConfiguration?: { enabled?: boolean }
+  }
+  const isAgamaEnabled = agamaConfig.agamaConfiguration?.enabled
 
   const { data: projectsResponse, isLoading: loading } = useGetAgamaPrj(
     {
@@ -137,8 +134,8 @@ function AgamaListPage(): React.ReactElement {
         dispatch(updateToast(true, 'success'))
         await queryClient.invalidateQueries({ queryKey: getGetAgamaPrjQueryKey() })
       },
-      onError: (error: unknown) => {
-        const errorMessage = (error as Error)?.message || 'Failed to delete project'
+      onError: (error: Error) => {
+        const errorMessage = error.message || t('messages.error_in_saving')
         dispatch(updateToast(true, 'error', errorMessage))
       },
     },
@@ -164,24 +161,17 @@ function AgamaListPage(): React.ReactElement {
   )
 
   useEffect(() => {
-    if (authScopes && authScopes.length > 0) {
+    if (authScopes.length > 0) {
       authorizeHelper(authScopes)
     }
-  }, [authorizeHelper, authScopes])
-
-  useEffect(() => {
-    if (!canReadAuth) {
-      return
-    }
-    if (isEmpty(configuration)) {
-      dispatch(getJsonConfig())
-    }
-  }, [dispatch, configuration, canReadAuth])
+  }, [authorizeHelper])
 
   useEffect(() => {
     if (agamaRepositoriesData) {
       setAgamaRepositoriesList(
-        (agamaRepositoriesData as unknown as AgamaRepositoriesResponse) ?? { projects: [] },
+        (agamaRepositoriesData as ReturnType<typeof JSON.parse> as AgamaRepositoriesResponse) ?? {
+          projects: [],
+        },
       )
       setFileLoading(false)
     }
@@ -213,7 +203,7 @@ function AgamaListPage(): React.ReactElement {
       setSHAfile(null)
       setShaStatus(false)
     } catch (error) {
-      console.error('Error uploading project:', error)
+      devLogger.error('Error uploading project:', error)
       dispatch(updateToast(true, 'error', 'Failed to upload project'))
     } finally {
       setUploadLoading(false)
@@ -247,7 +237,7 @@ function AgamaListPage(): React.ReactElement {
               break // Stop after finding first project name
             }
           } catch (parseError) {
-            console.error(`Error parsing JSON from ${filename}:`, parseError)
+            devLogger.error(`Error parsing JSON from ${filename}:`, parseError)
           }
         }
       }
@@ -256,7 +246,7 @@ function AgamaListPage(): React.ReactElement {
         setGetProjectName(true)
       }
     } catch (error) {
-      console.error('Error reading zip file:', error)
+      devLogger.error('Error reading zip file:', error)
       toast.error('Failed to read zip file')
     }
   }, [])
@@ -377,7 +367,7 @@ function AgamaListPage(): React.ReactElement {
         tooltip: `${t('messages.see_project_details')}`,
         iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
         isFreeAction: false,
-        onClick: (_event: unknown, rowData: AgamaTableRow | AgamaTableRow[]) => {
+        onClick: (_event: React.MouseEvent, rowData: AgamaTableRow | AgamaTableRow[]) => {
           if (!Array.isArray(rowData)) {
             setSelectedRow(rowData)
             setShowConfigModal(true)
@@ -389,7 +379,7 @@ function AgamaListPage(): React.ReactElement {
         tooltip: `${t('messages.manage_configurations')}`,
         iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
         isFreeAction: false,
-        onClick: (_event: unknown, rowData: AgamaTableRow | AgamaTableRow[]) => {
+        onClick: (_event: React.MouseEvent, rowData: AgamaTableRow | AgamaTableRow[]) => {
           if (!Array.isArray(rowData)) {
             setSelectedRow(rowData)
             setShowConfigModal(true)
@@ -447,7 +437,7 @@ function AgamaListPage(): React.ReactElement {
     }
 
     reader.onerror = (error) => {
-      console.error('Error reading SHA256 file:', error)
+      devLogger.error('Error reading SHA256 file:', error)
       toast.error('Failed to read SHA256 file')
     }
 
@@ -552,7 +542,7 @@ function AgamaListPage(): React.ReactElement {
       setRepoName(null)
       setFileLoading(false)
     } catch (error) {
-      console.error('Error deploying project:', error)
+      devLogger.error('Error deploying project:', error)
       toast.error('File not found or deployment failed')
       setFileLoading(false)
     }
@@ -778,7 +768,7 @@ function AgamaListPage(): React.ReactElement {
         await deleteProjectMutation.mutateAsync({ name: projectName })
         await logAgamaDeletion(oldData as Deployment, `Deleted Agama project: ${projectName}`)
       } catch (error) {
-        console.error('Error deleting project:', error)
+        devLogger.error('Error deleting project:', error)
         throw error
       }
     },
@@ -869,6 +859,7 @@ function AgamaListPage(): React.ReactElement {
             headerStyle: {
               ...(applicationStyle.tableHeaderStyle as React.CSSProperties),
               ...bgThemeColor,
+              color: themeColors.fontColor,
             } as React.CSSProperties,
             actionsColumnIndex: -1,
           }}

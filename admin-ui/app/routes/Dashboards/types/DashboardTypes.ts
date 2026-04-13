@@ -1,6 +1,7 @@
 import type React from 'react'
 import type { LicenseResponse, Client, JansAttribute } from 'JansConfigApi'
 import type { MauStatEntry, MauDateRange } from 'Plugins/admin/components/MAU/types'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
 export type { LicenseResponse, MauStatEntry, MauDateRange }
 
@@ -54,12 +55,17 @@ export interface DashboardChartProps {
   statData: MauStatEntry[]
   startMonth: string
   endMonth: string
+  textColor?: string
+  gridColor?: string
+  tooltipBackgroundColor?: string
+  tooltipTextColor?: string
+  isDark?: boolean
 }
 
 export interface TooltipPayloadItem {
-  dataKey: string
-  value: number
-  payload: Record<string, number | string>
+  dataKey?: string | number
+  value?: number
+  payload?: Record<string, string | number | boolean | null>
   color?: string
   name?: string
 }
@@ -67,7 +73,16 @@ export interface TooltipPayloadItem {
 export interface TooltipDesignProps {
   payload?: TooltipPayloadItem[]
   active?: boolean
+  backgroundColor?: string
+  textColor?: string
+  isDark?: boolean
+  formatter?: (value: JsonValue) => string
 }
+
+export type ChartDataKey =
+  | 'client_credentials_access_token_count'
+  | 'authz_code_access_token_count'
+  | 'authz_code_idtoken_count'
 
 export type DashboardClient = Pick<Client, 'inum' | 'clientName' | 'disabled'>
 

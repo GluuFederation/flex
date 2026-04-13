@@ -2,12 +2,16 @@ import { FormikProps } from 'formik'
 import { CustomUser, PersonAttribute, CustomAttribute } from './UserApiTypes'
 import { UserFormValues } from './CommonTypes'
 
-export interface UserEditFormValues {
+export type UserEditFormValues = {
   userId?: string
   mail?: string
   displayName?: string
   status?: string
   givenName?: string
+  middleName?: string
+  sn?: string
+  userPassword?: string
+  userConfirmPassword?: string
   birthdate?: string | null
   [key: string]: string | string[] | boolean | null | undefined
 }
@@ -15,7 +19,14 @@ export interface UserEditFormValues {
 export type ModifiedFieldValue = string | string[] | boolean
 export type ModifiedFields = Record<string, ModifiedFieldValue>
 
-export interface UserClaimEntryProps {
+export type ValueExtractionRecord = {
+  role?: string
+  value?: string
+  label?: string
+  [key: string]: string | undefined
+}
+
+export type UserClaimEntryProps = {
   data: PersonAttribute
   entry: string | number
   formik: FormikProps<UserFormValues>
@@ -24,36 +35,36 @@ export interface UserClaimEntryProps {
   setModifiedFields: React.Dispatch<React.SetStateAction<ModifiedFields>>
 }
 
-export interface UserFormProps {
+export type UserFormProps = {
   onSubmitData: (
     values: UserEditFormValues,
     modifiedFields: ModifiedFields,
     usermessage: string,
-  ) => void
+  ) => void | Promise<void>
   userDetails?: CustomUser | null
+  personAttributes: PersonAttribute[]
   isSubmitting?: boolean
 }
 
-export interface UserEditPageState {
+export type UserEditPageState = {
   persistenceTypeReducer: {
     type: string
   }
 }
 
-export interface FormOperation {
+export type FormOperation = {
   path: string
   value: string | string[] | boolean
   op: 'add' | 'remove' | 'replace'
 }
 
-export interface UserDeviceDetailViewPageProps {
+export type UserDeviceDetailViewPageProps = {
   row: {
     rowData: DeviceData
   }
 }
 
-export interface UserTableRowData {
-  // Include all CustomUser properties explicitly
+export type UserTableRowData = {
   inum?: string
   userId?: string
   displayName?: string
@@ -69,7 +80,6 @@ export interface UserTableRowData {
   createdAt?: string
   updatedAt?: string
   baseDn?: string
-  // Additional properties specific to table data
   tableData?: {
     uuid: string
     id: number
@@ -77,7 +87,7 @@ export interface UserTableRowData {
   action_message?: string
 }
 
-export interface DeviceData {
+export type DeviceData = {
   id?: string
   nickName?: string
   modality?: string
@@ -86,9 +96,9 @@ export interface DeviceData {
   soft?: boolean
   addedOn?: number
   registrationData?: {
-    attenstationRequest?: string
+    attestationRequest?: string
     domain?: string
-    rpId?: string // Alternative property name for domain
+    rpId?: string
     type?: string
     status?: string
     createdBy?: string
@@ -97,21 +107,21 @@ export interface DeviceData {
     platform?: string
     name?: string
     os_name?: string
-    osName?: string // Alternative property name for os_name
+    osName?: string
     os_version?: string
-    osVersion?: string // Alternative property name for os_version
+    osVersion?: string
   }
   creationDate?: string
 }
 
-export interface OTPDevice {
+export type OTPDevice = {
   id?: string
   nickName?: string
   soft?: boolean
   addedOn?: number
 }
 
-export interface OTPDevicesData {
+export type OTPDevicesData = {
   devices: OTPDevice[]
 }
 

@@ -1,128 +1,149 @@
-import React from 'react'
-import { Container, Row, Col } from 'Components'
-import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
-import customColors from '@/customColors'
-import type { SessionDetailPageProps } from './types'
-import { DOC_CATEGORY } from './types'
+import React, { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
+import { GluuBadge } from '@/components/GluuBadge'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
+import { useStyles } from './styles/SessionListPage.style'
+import { formatDate } from '@/utils/dayjsUtils'
+import { AUTHENTICATED_SESSION_STATE, type SessionDetailPageProps } from './types'
+
+const JANS_ID_ATTRS = ['inum', 'jansid', 'jansuniqueid']
+
+const extractJansId = (userDn: string | undefined): string => {
+  if (!userDn) return '—'
+  try {
+    const parts = userDn.split(',')
+    for (const part of parts) {
+      const equalIndex = part.indexOf('=')
+      if (equalIndex === -1) continue
+      const attr = part.substring(0, equalIndex).trim().toLowerCase()
+      if (JANS_ID_ATTRS.includes(attr)) {
+        return part.substring(equalIndex + 1).trim()
+      }
+    }
+    return '—'
+  } catch {
+    return '—'
+  }
+}
+
+const safeStringify = (
+  obj: Record<string, string | boolean | undefined> | null | undefined,
+): string => {
+  if (!obj) return '—'
+  try {
+    return JSON.stringify(obj, null, 2)
+  } catch {
+    return '—'
+  }
+}
 
 const SessionDetailPage: React.FC<SessionDetailPageProps> = ({ row }) => {
-  // Helper function to safely format date
-  const formatDate = (date: Date | string | undefined): string => {
-    if (!date) return '-'
+  const { t } = useTranslation()
 
-    try {
-      const dateObj = typeof date === 'string' ? new Date(date) : date
-      return dateObj.toDateString()
-    } catch (error) {
-      console.warn('Error formatting date:', error)
-      return '-'
-    }
-  }
+  const { state: themeState } = useTheme()
+  const { themeColors, isDarkTheme } = useMemo(
+    () => ({
+      themeColors: getThemeColor(themeState.theme),
+      isDarkTheme: themeState.theme === THEME_DARK,
+    }),
+    [themeState.theme],
+  )
+  const { classes, badgeStyles } = useStyles({ isDark: isDarkTheme, themeColors })
 
-  // Helper function to extract Jans ID from userDn
-  const extractJansId = (userDn: string | undefined): string => {
-    if (!userDn) return '-'
-
-    try {
-      const parts = userDn.split(',')
-      if (parts.length > 0) {
-        const firstPart = parts[0]
-        const equalIndex = firstPart.indexOf('=')
-        if (equalIndex !== -1) {
-          return firstPart.substring(equalIndex + 1)
-        }
-      }
-      return '-'
-    } catch (error) {
-      console.warn('Error extracting Jans ID:', error)
-      return '-'
-    }
-  }
-
-  // Helper function to safely stringify objects
-  const safeStringify = (
-    obj:
-      | SessionDetailPageProps['row']['permissionGrantedMap']
-      | SessionDetailPageProps['row']['sessionAttributes']
-      | null,
-  ): string => {
-    if (!obj) return '-'
-
-    try {
-      return JSON.stringify(obj, null, 2)
-    } catch (error) {
-      console.warn('Error stringifying object:', error)
-      return '-'
-    }
-  }
+  const stateBadge = useMemo(
+    () =>
+      row.state === AUTHENTICATED_SESSION_STATE
+        ? badgeStyles.authenticatedBadge
+        : badgeStyles.unauthenticatedBadge,
+    [row.state, badgeStyles.authenticatedBadge, badgeStyles.unauthenticatedBadge],
+  )
+  const expirationText = useMemo(() => formatDate(row.expirationDate) || '—', [row.expirationDate])
+  const jansId = useMemo(() => extractJansId(row.userDn), [row.userDn])
+  const permissionGrantedMapText = useMemo(
+    () => safeStringify(row.permissionGrantedMap),
+    [row.permissionGrantedMap],
+  )
+  const sessionAttributesText = useMemo(
+    () => safeStringify(row.sessionAttributes),
+    [row.sessionAttributes],
+  )
 
   return (
-    <Container style={{ backgroundColor: customColors.whiteSmoke, minWidth: '100%' }}>
-      <Row>
-        <Col sm={4}>
-          <GluuFormDetailRow
-            label="fields.expiration"
-            value={formatDate(row.expirationDate)}
-            doc_category={DOC_CATEGORY}
-            doc_entry="expirationDate"
-          />
-        </Col>
-        <Col sm={4}>
-          <GluuFormDetailRow
-            label="fields.jans_id"
-            value={extractJansId(row.userDn)}
-            doc_category={DOC_CATEGORY}
-            doc_entry="jansId"
-          />
-        </Col>
-        <Col sm={4}>
-          <GluuFormDetailRow
-            label="fields.jans_state"
-            value={row.state ?? '-'}
-            doc_category={DOC_CATEGORY}
-            doc_entry="jansState"
-          />
-        </Col>
-      </Row>
+    <div className={classes.expandedGrid}>
+      <div className={classes.expandedField}>
+        <GluuText variant="span" disableThemeColor className={classes.expandedLabel}>
+          {t('fields.expiration')}:
+        </GluuText>
+        <GluuText variant="span" disableThemeColor className={classes.expandedValue}>
+          {expirationText}
+        </GluuText>
+      </div>
 
-      <Row>
-        <Col sm={4}>
-          <GluuFormDetailRow
-            label="fields.jans_sess_state"
-            value={row.sessionState ?? '-'}
-            doc_category={DOC_CATEGORY}
-            doc_entry="jansSessState"
-          />
-        </Col>
-        <Col sm={4}>
-          <GluuFormDetailRow
-            label="fields.jans_user_dn"
-            value={row.userDn ?? '-'}
-            doc_category={DOC_CATEGORY}
-            doc_entry="jansUsrDN"
-          />
-        </Col>
-        <Col sm={4}>
-          <GluuFormDetailRow
-            label="fields.permission_granted_map"
-            value={safeStringify(row.permissionGrantedMap)}
-            doc_category={DOC_CATEGORY}
-            doc_entry="permissionGrantedMap"
-          />
-        </Col>
-      </Row>
+      <div className={classes.expandedField}>
+        <GluuText variant="span" disableThemeColor className={classes.expandedLabel}>
+          {t('fields.jans_id')}:
+        </GluuText>
+        <GluuText variant="span" disableThemeColor className={classes.expandedValue}>
+          {jansId}
+        </GluuText>
+      </div>
 
-      <Row>
-        <Col sm={4}>
-          <GluuFormDetailRow
-            label="fields.jans_sess_attr"
-            value={safeStringify(row.sessionAttributes)}
-            doc_category={DOC_CATEGORY}
-            doc_entry="jansSessAttr"
-          />
-        </Col>
-      </Row>
-    </Container>
+      <div className={classes.expandedField}>
+        <GluuText variant="span" disableThemeColor className={classes.expandedLabel}>
+          {t('fields.jans_state')}:
+        </GluuText>
+        <div>
+          <GluuBadge
+            size="sm"
+            backgroundColor={stateBadge.backgroundColor}
+            textColor={stateBadge.textColor}
+            borderColor={stateBadge.borderColor}
+            borderRadius={6}
+          >
+            {row.state ?? '—'}
+          </GluuBadge>
+        </div>
+      </div>
+
+      <div className={classes.expandedField}>
+        <GluuText variant="span" disableThemeColor className={classes.expandedLabel}>
+          {t('fields.permission_granted_map')}:
+        </GluuText>
+        <GluuText variant="span" disableThemeColor className={classes.expandedValue}>
+          {permissionGrantedMapText}
+        </GluuText>
+      </div>
+
+      <div className={classes.expandedHalfField}>
+        <GluuText variant="span" disableThemeColor className={classes.expandedLabel}>
+          {t('fields.jans_sess_state')}:
+        </GluuText>
+        <GluuText variant="span" disableThemeColor className={classes.expandedValue}>
+          {row.sessionState ?? '—'}
+        </GluuText>
+      </div>
+
+      <div className={classes.expandedHalfField}>
+        <GluuText variant="span" disableThemeColor className={classes.expandedLabel}>
+          {t('fields.jans_user_dn')}:
+        </GluuText>
+        <GluuText variant="span" disableThemeColor className={classes.expandedValue}>
+          {row.userDn ?? '—'}
+        </GluuText>
+      </div>
+
+      <div className={classes.expandedFullField}>
+        <GluuText variant="span" disableThemeColor className={classes.expandedLabel}>
+          {t('fields.jans_sess_attr')}:
+        </GluuText>
+        <GluuText variant="span" disableThemeColor className={classes.expandedValue}>
+          {sessionAttributesText}
+        </GluuText>
+      </div>
+    </div>
   )
 }
 

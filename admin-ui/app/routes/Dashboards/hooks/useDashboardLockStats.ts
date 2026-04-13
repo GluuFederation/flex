@@ -1,11 +1,9 @@
 import { useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/redux/hooks'
 import { useGetLockStat, type JsonNode } from 'JansConfigApi'
-import type { RootState } from 'Redux/sagas/types/audit'
-import { DASHBOARD_CACHE_CONFIG } from '../constants'
 import type { LockStatEntry } from '../types'
 
-function transformLockStats(data: JsonNode[] | undefined): LockStatEntry[] {
+const transformLockStats = (data: JsonNode[] | undefined): LockStatEntry[] => {
   if (!data || !Array.isArray(data)) {
     return []
   }
@@ -21,15 +19,13 @@ interface UseDashboardLockStatsOptions {
   enabled?: boolean
 }
 
-export function useDashboardLockStats(options: UseDashboardLockStatsOptions = {}) {
+export const useDashboardLockStats = (options: UseDashboardLockStatsOptions = {}) => {
   const { enabled = true } = options
-  const hasSession = useSelector((state: RootState) => state.authReducer?.hasSession)
+  const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
   const query = useGetLockStat(undefined, {
     query: {
       enabled: hasSession === true && enabled,
-      staleTime: DASHBOARD_CACHE_CONFIG.STALE_TIME,
-      gcTime: DASHBOARD_CACHE_CONFIG.GC_TIME,
       select: transformLockStats,
       retry: false,
     },

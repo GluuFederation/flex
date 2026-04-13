@@ -1,16 +1,5 @@
-// @ts-nocheck
 import React from 'react'
-
-interface PageConfig {
-  sidebarCollapsed: boolean
-  screenSize: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | ''
-  toggleSidebar: () => void
-  sidebarSlim?: boolean
-  animationsDisabled?: boolean
-  setElementsVisibility?: (elements: { [key: string]: boolean }) => void
-  changeMeta?: (metaData: Partial<PageConfig>) => void
-  [key: string]: any // for other dynamic properties
-}
+import type { PageConfig } from './types'
 
 const defaultPageConfig: PageConfig = {
   sidebarCollapsed: false,

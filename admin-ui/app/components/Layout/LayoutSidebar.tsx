@@ -1,9 +1,9 @@
-// @ts-nocheck
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
+import type { LayoutSidebarProps } from './types'
 
-const LayoutSidebar = (props) => {
+const LayoutSidebar: React.FC<LayoutSidebarProps> & { layoutPartName: string } = (props) => {
   const sidebarClass = classNames('layout__sidebar', {
     'layout__sidebar--slim': props.sidebarSlim,
     'layout__sidebar--collapsed': props.sidebarCollapsed,
@@ -13,7 +13,7 @@ const LayoutSidebar = (props) => {
 }
 
 LayoutSidebar.propTypes = {
-  children: PropTypes.node,
+  children: PropTypes.node as React.Validator<React.ReactNode>,
   sidebarSlim: PropTypes.bool,
   sidebarCollapsed: PropTypes.bool,
 }

@@ -2,7 +2,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: {{ .Release.Name }}-istio-scim-config
+  name: {{ .Release.Name }}-istio-scim
   namespace: {{ .Release.Namespace }}
   labels:
     APP_NAME: scim
@@ -34,7 +34,7 @@ spec:
   - name: {{ .Release.Name }}-istio-scim-config
     match:
     - uri:
-        prefix: /.well-known/scim-configuration
+        exact: /.well-known/scim-configuration
     rewrite:
       uri: /jans-scim/restv1/scim-configuration
     route:

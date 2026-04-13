@@ -1,45 +1,30 @@
-import React, { useMemo, useCallback } from 'react'
-import {
-  Grid,
-  FormControl,
-  Select,
-  MenuItem,
-  FormHelperText,
-  SelectChangeEvent,
-} from '@mui/material'
+import React, { useCallback, useMemo } from 'react'
+import { FormGroup, Col, CustomInput, InputGroup } from 'Components'
+import Autocomplete from '@mui/material/Autocomplete'
+import TextField from '@mui/material/TextField'
+import { ChevronIcon } from '@/components/SVG'
 import GluuLabel from './GluuLabel'
+import GluuText from './GluuText'
 import { useTranslation } from 'react-i18next'
-import customColors from '@/customColors'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { DEFAULT_THEME } from '@/context/theme/constants'
+import { useStyles } from './styles/GluuSelectRow.style'
+import type { GluuSelectRowProps, SelectOption } from './types/GluuSelectRow.types'
 
-interface SelectOption {
-  value: string
-  label: string
+const deduplicateSelectValues = (
+  values: Array<string | SelectOption>,
+): Array<string | SelectOption> => {
+  const seen = new Set<string>()
+  return values.filter((item) => {
+    const val = typeof item === 'string' ? item : item.value
+    if (seen.has(val)) return false
+    seen.add(val)
+    return true
+  })
 }
 
-interface GluuSelectRowProps {
-  label: string
-  name: string
-  value: any
-  formik: {
-    handleChange: (
-      event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> | SelectChangeEvent,
-    ) => void
-  }
-  values?: Array<string | SelectOption>
-  lsize?: number
-  rsize?: number
-  doc_category?: string
-  disabled?: boolean
-  handleChange?: (
-    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> | SelectChangeEvent,
-  ) => void
-  required?: boolean
-  showError?: boolean
-  errorMessage?: string
-  doc_entry?: string
-}
-
-function GluuSelectRow({
+const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
   label,
   name,
   value,
@@ -54,29 +39,28 @@ function GluuSelectRow({
   showError = false,
   errorMessage,
   doc_entry,
-}: GluuSelectRowProps) {
+  isDark,
+  freeSolo,
+  onValueChange,
+  inputHeight,
+  inputPaddingTop,
+  inputPaddingBottom,
+}) => {
   const { t } = useTranslation()
-
-  const deduplicatedValues = useMemo(() => {
-    const seen = new Set<string>()
-    return values.filter((item) => {
-      const val = typeof item === 'string' ? item : item.value
-      if (seen.has(val)) return false
-      seen.add(val)
-      return true
-    })
-  }, [values])
-
-  const selectStyle = useMemo(
-    () => ({
-      height: '35px',
-      minHeight: '35px',
-    }),
-    [],
+  const { state: themeState } = useTheme()
+  const themeColors = useMemo(
+    () => getThemeColor(themeState?.theme ?? DEFAULT_THEME),
+    [themeState?.theme],
   )
+  const { classes } = useStyles({
+    themeColors,
+    inputHeight: inputHeight ?? 40,
+    inputPaddingTop: inputPaddingTop ?? 8,
+    inputPaddingBottom: inputPaddingBottom ?? 8,
+  })
 
   const handleSelectChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> | SelectChangeEvent) => {
+    (event: React.ChangeEvent<HTMLInputElement>) => {
       formik.handleChange(event)
       if (handleChange) {
         handleChange(event)
@@ -85,50 +69,108 @@ function GluuSelectRow({
     [formik.handleChange, handleChange],
   )
 
-  return (
-    <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-      <Grid item xs={lsize}>
-        <GluuLabel
-          label={label}
-          size={lsize}
-          doc_category={doc_category}
-          doc_entry={doc_entry || name}
-          required={required}
-        />
-      </Grid>
-      <Grid item xs={rsize}>
-        <FormControl fullWidth error={showError} disabled={disabled}>
-          <Select
-            labelId={`${name}-label`}
-            id={name}
-            data-testid={name}
-            size="small"
-            name={name}
-            value={value || ''}
-            onChange={handleSelectChange}
-            displayEmpty
-            sx={selectStyle}
-          >
-            <MenuItem value="">
-              <em>{t('actions.choose')}...</em>
-            </MenuItem>
-            {deduplicatedValues.map((item) => {
-              const optionValue = typeof item === 'string' ? item : item.value
-              const optionLabel = typeof item === 'string' ? item : item.label
-              return (
-                <MenuItem key={optionValue} value={optionValue}>
-                  {optionLabel}
-                </MenuItem>
-              )
-            })}
-          </Select>
-          {showError && (
-            <FormHelperText sx={{ color: customColors.accentRed }}>{errorMessage}</FormHelperText>
-          )}
-        </FormControl>
-      </Grid>
-    </Grid>
+  const displayValue = value != null ? String(value) : ''
+  const options = useMemo(
+    () =>
+      deduplicateSelectValues(values).map((item) =>
+        typeof item === 'string' ? item : (item.label ?? item.value),
+      ),
+    [values],
   )
+
+  const content = freeSolo ? (
+    <FormGroup row>
+      <GluuLabel
+        label={label}
+        size={lsize}
+        doc_category={doc_category}
+        doc_entry={doc_entry || name}
+        required={required}
+        isDark={isDark}
+      />
+      <Col sm={rsize} className={classes.colWrapper}>
+        <Autocomplete
+          id={name}
+          freeSolo
+          disableClearable
+          options={options}
+          value={displayValue || undefined}
+          onChange={(_event, newValue) => {
+            const value = newValue ? String(newValue) : ''
+            formik.handleChange({
+              target: { name, value },
+            } as React.ChangeEvent<HTMLInputElement>)
+            onValueChange?.(newValue ? String(newValue) : null)
+          }}
+          onBlur={() =>
+            formik.handleBlur?.({ target: { name } } as React.FocusEvent<HTMLInputElement>)
+          }
+          disabled={disabled}
+          className={classes.autocompleteRoot}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              name={name}
+              placeholder={`${t('actions.choose')}...`}
+              error={showError && Boolean(errorMessage)}
+              helperText={showError ? errorMessage : undefined}
+              size="small"
+              fullWidth
+            />
+          )}
+        />
+      </Col>
+    </FormGroup>
+  ) : (
+    <FormGroup row>
+      <GluuLabel
+        label={label}
+        size={lsize}
+        doc_category={doc_category}
+        doc_entry={doc_entry || name}
+        required={required}
+        isDark={isDark}
+      />
+      <Col sm={rsize} className={classes.colWrapper}>
+        <div className={classes.selectWrapper}>
+          <InputGroup>
+            <CustomInput
+              type="select"
+              id={name}
+              name={name}
+              data-testid={name}
+              value={displayValue}
+              onChange={handleSelectChange}
+              onBlur={formik.handleBlur}
+              disabled={disabled}
+              className={classes.select}
+            >
+              <option value="">{t('actions.choose')}...</option>
+              {deduplicateSelectValues(values).map((item) => {
+                const optionValue = typeof item === 'string' ? item : item.value
+                const optionLabel = typeof item === 'string' ? item : (item.label ?? item.value)
+                return (
+                  <option key={optionValue} value={optionValue}>
+                    {optionLabel}
+                  </option>
+                )
+              })}
+            </CustomInput>
+          </InputGroup>
+          <span className={classes.chevronWrapper} aria-hidden>
+            <ChevronIcon width={20} height={20} direction="down" />
+          </span>
+        </div>
+        {showError && errorMessage && (
+          <GluuText variant="span" className={classes.error} data-field-error disableThemeColor>
+            {errorMessage}
+          </GluuText>
+        )}
+      </Col>
+    </FormGroup>
+  )
+
+  return content
 }
 
 export default GluuSelectRow

@@ -1,32 +1,38 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react'
+import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useFormik } from 'formik'
 import { useTranslation } from 'react-i18next'
 
-import { Row, Col, Form, FormGroup } from 'Components'
+import { Form, Input } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
-import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
-import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
-import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
+import GluuWebhookCommitDialog from 'Routes/Apps/Gluu/GluuWebhookCommitDialog'
+import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
+import GluuMultiSelectRow from 'Routes/Apps/Gluu/GluuMultiSelectRow'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
+import { GluuButton } from '@/components/GluuButton'
+import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
 
 import {
   validationSchema,
   transformToFormValues,
+  buildChangedFieldOperations,
   fidoConstants,
-  getAvailableHintOptions,
-  getEmptyDropdownMessage,
+  LABEL_SIZE,
+  INPUT_SIZE,
+  HINT_OPTIONS,
+  ATTESTATION_MODE_OPTIONS,
+  isLastKeyValueComplete,
+  isLastStringEntryComplete,
+  isLastMetadataServerComplete,
 } from '../helper'
-import {
-  StaticConfigurationProps,
-  StaticConfigFormValues,
-  MinimalFormik,
-  FormikSetFieldValue,
-} from '../types/fido'
-import { AttestationMode } from '../types'
+import { StaticConfigurationProps, StaticConfigFormValues } from '../types/fido'
+import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
+import { useStyles } from './styles/FidoConfiguration.style'
 
 const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
   fidoConfiguration,
@@ -36,7 +42,18 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
 }) => {
   const { t } = useTranslation()
 
+  const { state: themeState } = useTheme()
+  const { themeColors, isDark } = useMemo(
+    () => ({
+      themeColors: getThemeColor(themeState.theme),
+      isDark: themeState.theme === THEME_DARK,
+    }),
+    [themeState.theme],
+  )
+  const { classes } = useStyles({ isDark, themeColors })
+
   const [modal, setModal] = useState(false)
+  const [commitOperations, setCommitOperations] = useState<GluuCommitDialogOperation[]>([])
 
   const toggle = useCallback(() => {
     setModal((prev) => !prev)
@@ -54,14 +71,20 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
     validateOnMount: true,
   })
 
+  const configSnapshot = useRef<string>('')
+
   useEffect(() => {
     if (fidoConfiguration?.fido2Configuration) {
-      formik.resetForm({
-        values: transformToFormValues(
-          fidoConfiguration.fido2Configuration,
-          fidoConstants.STATIC,
-        ) as StaticConfigFormValues,
-      })
+      const snapshot = JSON.stringify(fidoConfiguration.fido2Configuration)
+      if (snapshot !== configSnapshot.current) {
+        configSnapshot.current = snapshot
+        formik.resetForm({
+          values: transformToFormValues(
+            fidoConfiguration.fido2Configuration,
+            fidoConstants.STATIC,
+          ) as StaticConfigFormValues,
+        })
+      }
     }
   }, [fidoConfiguration])
 
@@ -70,70 +93,14 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
       if (readOnly) {
         return
       }
-      toggle()
       handleSubmit(formik.values, userMessage)
     },
-    [handleSubmit, toggle, formik.values, readOnly],
+    [handleSubmit, formik.values, readOnly],
   )
 
   const handleCancel = useCallback(() => {
     formik.resetForm()
   }, [formik])
-
-  const requestedPartiesOptions = useMemo(() => {
-    return (formik.values.requestedParties || []).map((item) => ({
-      key: item.key || '',
-      value: item.value || '',
-    }))
-  }, [formik.values.requestedParties])
-
-  const enabledFidoAlgorithmsOptions = useMemo(() => {
-    return (formik.values.enabledFidoAlgorithms || []).map((item) => ({
-      key: '',
-      value: item,
-    }))
-  }, [formik.values.enabledFidoAlgorithms])
-
-  const metadataServersOptions = useMemo(() => {
-    return (formik.values.metadataServers || []).map((server) => ({
-      key: server.url || '',
-      value: server.rootCert || '',
-    }))
-  }, [formik.values.metadataServers])
-
-  // Create a wrapper formik that transforms metadata servers between key/value and url/rootCert
-  const metadataServersFormik = useMemo<MinimalFormik<StaticConfigFormValues>>(() => {
-    const setFieldValueWrapper: FormikSetFieldValue<StaticConfigFormValues> = (
-      name,
-      value,
-      shouldValidate,
-    ) => {
-      if (name === fidoConstants.FORM_FIELDS.METADATA_SERVERS) {
-        // Transform {key, value} back to {url, rootCert}
-        const arr = Array.isArray(value) ? (value as Array<{ key?: string; value?: string }>) : []
-        const transformedValue = arr.map((item) => ({
-          url: item.key || '',
-          rootCert: item.value || '',
-        }))
-        formik.setFieldValue(name, transformedValue, shouldValidate)
-      } else {
-        formik.setFieldValue(name, value, shouldValidate)
-      }
-    }
-
-    return {
-      values: formik.values,
-      setFieldValue: setFieldValueWrapper,
-    }
-  }, [formik.values, formik.setFieldValue])
-
-  const availableHintOptions = useMemo(() => {
-    return getAvailableHintOptions(formik.values.hints)
-  }, [formik.values.hints])
-
-  const emptyDropdownMessage = useMemo(() => {
-    return getEmptyDropdownMessage(formik.values.hints)
-  }, [formik.values.hints])
 
   const handleFormSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
@@ -146,259 +113,484 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
     [formik, readOnly],
   )
 
+  const requestedParties = useMemo(
+    () => formik.values.requestedParties || [],
+    [formik.values.requestedParties],
+  )
+  const enabledFidoAlgorithms = useMemo(
+    () => formik.values.enabledFidoAlgorithms || [],
+    [formik.values.enabledFidoAlgorithms],
+  )
+  const metadataServers = useMemo(
+    () => formik.values.metadataServers || [],
+    [formik.values.metadataServers],
+  )
+
+  const addRequestedParty = useCallback(() => {
+    formik.setFieldValue('requestedParties', [...requestedParties, { key: '', value: '' }])
+  }, [formik, requestedParties])
+
+  const removeRequestedParty = useCallback(
+    (index: number) => {
+      const updated = [...requestedParties]
+      updated.splice(index, 1)
+      formik.setFieldValue('requestedParties', updated)
+    },
+    [formik, requestedParties],
+  )
+
+  const changeRequestedParty = useCallback(
+    (index: number, field: 'key' | 'value', val: string) => {
+      const updated = [...requestedParties]
+      updated[index] = { ...updated[index], [field]: val }
+      formik.setFieldValue('requestedParties', updated)
+    },
+    [formik, requestedParties],
+  )
+
+  const addAlgorithm = useCallback(() => {
+    formik.setFieldValue('enabledFidoAlgorithms', [...enabledFidoAlgorithms, ''])
+  }, [formik, enabledFidoAlgorithms])
+
+  const removeAlgorithm = useCallback(
+    (index: number) => {
+      const updated = [...enabledFidoAlgorithms]
+      updated.splice(index, 1)
+      formik.setFieldValue('enabledFidoAlgorithms', updated)
+    },
+    [formik, enabledFidoAlgorithms],
+  )
+
+  const changeAlgorithm = useCallback(
+    (index: number, val: string) => {
+      const updated = [...enabledFidoAlgorithms]
+      updated[index] = val
+      formik.setFieldValue('enabledFidoAlgorithms', updated)
+    },
+    [formik, enabledFidoAlgorithms],
+  )
+
+  const addMetadataServer = useCallback(() => {
+    formik.setFieldValue('metadataServers', [...metadataServers, { url: '', rootCert: '' }])
+  }, [formik, metadataServers])
+
+  const removeMetadataServer = useCallback(
+    (index: number) => {
+      const updated = [...metadataServers]
+      updated.splice(index, 1)
+      formik.setFieldValue('metadataServers', updated)
+    },
+    [formik, metadataServers],
+  )
+
+  const changeMetadataServer = useCallback(
+    (index: number, field: 'url' | 'rootCert', val: string) => {
+      const updated = [...metadataServers]
+      updated[index] = { ...updated[index], [field]: val }
+      formik.setFieldValue('metadataServers', updated)
+    },
+    [formik, metadataServers],
+  )
+
+  const canAddParty = useMemo(() => isLastKeyValueComplete(requestedParties), [requestedParties])
+  const canAddAlgorithm = useMemo(
+    () => isLastStringEntryComplete(enabledFidoAlgorithms),
+    [enabledFidoAlgorithms],
+  )
+  const canAddServer = useMemo(
+    () => isLastMetadataServerComplete(metadataServers),
+    [metadataServers],
+  )
+
+  const partiesError = formik.errors.requestedParties
+  const showPartiesError = typeof partiesError === 'string' && Boolean(partiesError)
+
+  const algorithmsError = formik.errors.enabledFidoAlgorithms
+  const showAlgorithmsError = typeof algorithmsError === 'string' && Boolean(algorithmsError)
+
+  const serversError = formik.errors.metadataServers
+  const showServersError = typeof serversError === 'string' && Boolean(serversError)
+
   return (
-    <Form onSubmit={handleFormSubmit} className="mt-4">
-      <FormGroup row>
-        <Col sm={8}>
-          <GluuInputRow
-            label={fidoConstants.LABELS.AUTHENTICATOR_CERTIFICATES_FOLDER}
-            name={fidoConstants.FORM_FIELDS.AUTHENTICATOR_CERTS_FOLDER}
-            value={formik.values.authenticatorCertsFolder || ''}
-            formik={formik}
-            lsize={4}
-            rsize={8}
-            required
-            showError={
-              !!(formik.errors.authenticatorCertsFolder && formik.touched.authenticatorCertsFolder)
-            }
-            errorMessage={formik.errors.authenticatorCertsFolder}
-          />
-        </Col>
-        <Col sm={8}>
-          <GluuInputRow
-            label={fidoConstants.LABELS.MDS_TOC_CERTIFICATES_FOLDER}
-            name="mdsCertsFolder"
-            value={formik.values.mdsCertsFolder || ''}
-            formik={formik}
-            lsize={4}
-            rsize={8}
-            required
-            showError={!!(formik.errors.mdsCertsFolder && formik.touched.mdsCertsFolder)}
-            errorMessage={formik.errors.mdsCertsFolder}
-          />
-        </Col>
-        <Col sm={8}>
-          <GluuInputRow
-            label={fidoConstants.LABELS.MDS_TOC_FILES_FOLDER}
-            name="mdsTocsFolder"
-            value={formik.values.mdsTocsFolder || ''}
-            formik={formik}
-            lsize={4}
-            rsize={8}
-            required
-            showError={!!(formik.errors.mdsTocsFolder && formik.touched.mdsTocsFolder)}
-            errorMessage={formik.errors.mdsTocsFolder}
-          />
-        </Col>
+    <Form onSubmit={handleFormSubmit}>
+      <div className={classes.formSection}>
+        <div className={`${classes.fieldsGrid} ${classes.formLabels} ${classes.formWithInputs}`}>
+          <div className={classes.fieldItem}>
+            <GluuInputRow
+              label={fidoConstants.LABELS.AUTHENTICATOR_CERTIFICATES_FOLDER}
+              name={fidoConstants.FORM_FIELDS.AUTHENTICATOR_CERTS_FOLDER}
+              value={formik.values.authenticatorCertsFolder || ''}
+              formik={formik}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
+              required
+              showError={!!formik.errors.authenticatorCertsFolder}
+              errorMessage={formik.errors.authenticatorCertsFolder}
+              placeholder={getFieldPlaceholder(
+                t,
+                fidoConstants.LABELS.AUTHENTICATOR_CERTIFICATES_FOLDER,
+              )}
+            />
+          </div>
 
-        <Col sm={8}>
-          <GluuInputRow
-            label={fidoConstants.LABELS.UNFINISHED_REQUEST_EXPIRATION}
-            name="unfinishedRequestExpiration"
-            type="number"
-            value={formik.values.unfinishedRequestExpiration ?? ''}
-            formik={formik}
-            lsize={4}
-            rsize={8}
-            required
-            showError={
-              !!(
-                formik.errors.unfinishedRequestExpiration &&
-                formik.touched.unfinishedRequestExpiration
-              )
-            }
-            errorMessage={formik.errors.unfinishedRequestExpiration}
-          />
-        </Col>
+          <div className={classes.fieldItem}>
+            <GluuInputRow
+              label={fidoConstants.LABELS.MDS_TOC_CERTIFICATES_FOLDER}
+              name={fidoConstants.FORM_FIELDS.MDS_CERTS_FOLDER}
+              value={formik.values.mdsCertsFolder || ''}
+              formik={formik}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
+              required
+              showError={!!formik.errors.mdsCertsFolder}
+              errorMessage={formik.errors.mdsCertsFolder}
+              placeholder={getFieldPlaceholder(t, fidoConstants.LABELS.MDS_TOC_CERTIFICATES_FOLDER)}
+            />
+          </div>
 
-        <Col sm={8}>
-          <GluuInputRow
-            label={fidoConstants.LABELS.AUTHENTICATION_HISTORY_EXPIRATION}
-            name="authenticationHistoryExpiration"
-            type="number"
-            value={formik.values.authenticationHistoryExpiration ?? ''}
-            formik={formik}
-            lsize={4}
-            rsize={8}
-            required
-            showError={
-              !!(
-                formik.errors.authenticationHistoryExpiration &&
-                formik.touched.authenticationHistoryExpiration
-              )
-            }
-            errorMessage={formik.errors.authenticationHistoryExpiration}
-          />
-        </Col>
+          <div className={classes.fieldItem}>
+            <GluuInputRow
+              label={fidoConstants.LABELS.MDS_TOC_FILES_FOLDER}
+              name={fidoConstants.FORM_FIELDS.MDS_TOCS_FOLDER}
+              value={formik.values.mdsTocsFolder || ''}
+              formik={formik}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
+              required
+              showError={!!formik.errors.mdsTocsFolder}
+              errorMessage={formik.errors.mdsTocsFolder}
+              placeholder={getFieldPlaceholder(t, fidoConstants.LABELS.MDS_TOC_FILES_FOLDER)}
+            />
+          </div>
 
-        <Col sm={8}>
-          <GluuInputRow
-            label={fidoConstants.LABELS.SERVER_METADATA_FOLDER}
-            name="serverMetadataFolder"
-            value={formik.values.serverMetadataFolder || ''}
-            formik={formik}
-            lsize={4}
-            rsize={8}
-            required
-            showError={
-              !!(formik.errors.serverMetadataFolder && formik.touched.serverMetadataFolder)
-            }
-            errorMessage={formik.errors.serverMetadataFolder}
-          />
-        </Col>
+          <div className={classes.fieldItem}>
+            <GluuInputRow
+              label={fidoConstants.LABELS.SERVER_METADATA_FOLDER}
+              name={fidoConstants.FORM_FIELDS.SERVER_METADATA_FOLDER}
+              value={formik.values.serverMetadataFolder || ''}
+              formik={formik}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
+              required
+              showError={!!formik.errors.serverMetadataFolder}
+              errorMessage={formik.errors.serverMetadataFolder}
+              placeholder={getFieldPlaceholder(t, fidoConstants.LABELS.SERVER_METADATA_FOLDER)}
+            />
+          </div>
 
-        <Col sm={8}>
-          <GluuToggleRow
-            label={fidoConstants.LABELS.USER_AUTO_ENROLLMENT}
-            name={fidoConstants.FORM_FIELDS.USER_AUTO_ENROLLMENT}
-            formik={formik}
-            lsize={4}
-            rsize={8}
-            required
-            doc_category={fidoConstants.DOC_CATEGORY}
-          />
-        </Col>
+          <div className={classes.fieldItem}>
+            <GluuInputRow
+              label={fidoConstants.LABELS.UNFINISHED_REQUEST_EXPIRATION}
+              name={fidoConstants.FORM_FIELDS.UNFINISHED_REQUEST_EXPIRATION}
+              type="number"
+              value={formik.values.unfinishedRequestExpiration ?? ''}
+              formik={formik}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
+              required
+              showError={!!formik.errors.unfinishedRequestExpiration}
+              errorMessage={formik.errors.unfinishedRequestExpiration}
+              placeholder={getFieldPlaceholder(
+                t,
+                fidoConstants.LABELS.UNFINISHED_REQUEST_EXPIRATION,
+              )}
+            />
+          </div>
 
-        <Col sm={8}>
-          <Row className="mt-2">
-            <GluuLabel label={fidoConstants.LABELS.REQUESTED_PARTIES_ID} size={4} />
-            <Col sm={8}>
-              <GluuProperties
-                compName={fidoConstants.FORM_FIELDS.REQUESTED_PARTIES}
-                isInputLables={true}
-                keyLabel={t('fields.name')}
-                valueLabel={t('fields.domain')}
-                formik={formik}
-                options={requestedPartiesOptions}
-                keyPlaceholder={t('placeholders.name')}
-                valuePlaceholder={t('placeholders.value')}
-                buttonText={fidoConstants.BUTTON_TEXT.ADD_PARTY}
-              />
-            </Col>
-          </Row>
-        </Col>
+          <div className={classes.fieldItem}>
+            <GluuInputRow
+              label={fidoConstants.LABELS.AUTHENTICATION_HISTORY_EXPIRATION}
+              name={fidoConstants.FORM_FIELDS.AUTHENTICATION_HISTORY_EXPIRATION}
+              type="number"
+              value={formik.values.authenticationHistoryExpiration ?? ''}
+              formik={formik}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
+              required
+              showError={!!formik.errors.authenticationHistoryExpiration}
+              errorMessage={formik.errors.authenticationHistoryExpiration}
+              placeholder={getFieldPlaceholder(
+                t,
+                fidoConstants.LABELS.AUTHENTICATION_HISTORY_EXPIRATION,
+              )}
+            />
+          </div>
 
-        <Col sm={8}>
-          <Row>
-            <GluuLabel label={fidoConstants.LABELS.ENABLED_FIDO_ALGORITHMS} size={4} />
-            <Col sm={8}>
-              <GluuProperties
-                compName={fidoConstants.FORM_FIELDS.ENABLED_FIDO_ALGORITHMS}
-                isInputLables={true}
-                formik={formik}
-                options={enabledFidoAlgorithmsOptions}
-                isKeys={false}
-                buttonText={fidoConstants.BUTTON_TEXT.ADD_ALGORITHM}
-              />
-            </Col>
-          </Row>
-        </Col>
+          <div className={classes.fieldItemFullWidth}>
+            <GluuSelectRow
+              label={fidoConstants.LABELS.ATTESTATION_MODE}
+              name={fidoConstants.FORM_FIELDS.ATTESTATION_MODE}
+              value={formik.values.attestationMode || ''}
+              formik={formik}
+              values={ATTESTATION_MODE_OPTIONS}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
+              required={true}
+              showError={!!formik.errors.attestationMode}
+              errorMessage={formik.errors.attestationMode}
+              handleChange={(_e) => {
+                formik.setFieldTouched(fidoConstants.FORM_FIELDS.ATTESTATION_MODE, true, false)
+              }}
+            />
+          </div>
 
-        <Col sm={8}>
-          <Row className="mt-2">
-            <GluuLabel label={fidoConstants.LABELS.METADATA_SERVERS} size={4} />
-            <Col sm={8}>
-              <GluuProperties
-                compName={fidoConstants.FORM_FIELDS.METADATA_SERVERS}
-                isInputLables={true}
-                keyLabel="URL"
-                valueLabel="Root Certificate"
-                formik={metadataServersFormik}
-                options={metadataServersOptions}
-                keyPlaceholder="Enter URL"
-                valuePlaceholder="Enter Root Certificate"
-                buttonText={fidoConstants.BUTTON_TEXT.ADD_METADATA_SERVER}
-              />
-            </Col>
-          </Row>
-        </Col>
+          <div className={classes.fieldItem}>
+            <GluuToggleRow
+              label={fidoConstants.LABELS.USER_AUTO_ENROLLMENT}
+              name={fidoConstants.FORM_FIELDS.USER_AUTO_ENROLLMENT}
+              formik={formik}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
+              doc_category={fidoConstants.DOC_CATEGORY}
+            />
+          </div>
 
-        <Col sm={8}>
-          <GluuToggleRow
-            label={fidoConstants.LABELS.DISABLE_METADATA_SERVICE}
-            name={fidoConstants.FORM_FIELDS.DISABLE_METADATA_SERVICE}
-            formik={formik}
-            lsize={4}
-            rsize={8}
-            doc_category={fidoConstants.DOC_CATEGORY}
-          />
-        </Col>
+          <div className={classes.fieldItem}>
+            <GluuToggleRow
+              label={fidoConstants.LABELS.DISABLE_METADATA_SERVICE}
+              name={fidoConstants.FORM_FIELDS.DISABLE_METADATA_SERVICE}
+              formik={formik}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
+              doc_category={fidoConstants.DOC_CATEGORY}
+            />
+          </div>
 
-        <Col sm={8}>
-          <GluuTypeAhead
-            name={fidoConstants.FORM_FIELDS.HINTS}
+          <div className={classes.fieldItem}>
+            <GluuToggleRow
+              label={fidoConstants.LABELS.ENTERPRISE_ATTESTATION}
+              name={fidoConstants.FORM_FIELDS.ENTERPRISE_ATTESTATION}
+              formik={formik}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
+              doc_category={fidoConstants.DOC_CATEGORY}
+            />
+          </div>
+        </div>
+
+        <div
+          className={`${classes.propsBox} ${classes.propsBoxWithMargin} mb-3 ${!requestedParties.length ? classes.propsBoxEmpty : ''}`.trim()}
+        >
+          <div
+            className={`${classes.propsHeader} ${!requestedParties.length ? classes.propsHeaderEmpty : ''}`.trim()}
+          >
+            <GluuText variant="h5" disableThemeColor>
+              <span className={classes.propsTitle}>
+                {t(fidoConstants.LABELS.REQUESTED_PARTIES_ID)}
+              </span>
+            </GluuText>
+            <GluuButton
+              type="button"
+              backgroundColor={themeColors.settings.addPropertyButton.bg}
+              textColor={themeColors.settings.addPropertyButton.text}
+              useOpacityOnHover
+              className={classes.propsActionBtn}
+              onClick={addRequestedParty}
+              disabled={!canAddParty}
+            >
+              <i className="fa fa-fw fa-plus" />
+              {t(fidoConstants.BUTTON_TEXT.ADD_PARTY)}
+            </GluuButton>
+          </div>
+          <div className={classes.propsBody}>
+            {requestedParties.map((item, index) => (
+              <div key={index} className={classes.propsRow}>
+                <Input
+                  value={item.key || ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    changeRequestedParty(index, 'key', e.target.value)
+                  }
+                  placeholder={t('placeholders.name')}
+                  className={classes.propsInput}
+                />
+                <Input
+                  value={item.value || ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    changeRequestedParty(index, 'value', e.target.value)
+                  }
+                  placeholder={t('placeholders.value')}
+                  className={classes.propsInput}
+                />
+                <GluuButton
+                  type="button"
+                  backgroundColor={themeColors.settings.removeButton.bg}
+                  textColor={themeColors.settings.removeButton.text}
+                  useOpacityOnHover
+                  className={classes.propsActionBtn}
+                  onClick={() => removeRequestedParty(index)}
+                >
+                  <i className="fa fa-fw fa-trash" />
+                  {t('actions.remove')}
+                </GluuButton>
+              </div>
+            ))}
+            {showPartiesError && (
+              <div className={classes.propsError}>{t(partiesError as string)}</div>
+            )}
+          </div>
+        </div>
+
+        <div
+          className={`${classes.propsBox} ${classes.propsBoxWithMargin} mb-3 ${!enabledFidoAlgorithms.length ? classes.propsBoxEmpty : ''}`.trim()}
+        >
+          <div
+            className={`${classes.propsHeader} ${!enabledFidoAlgorithms.length ? classes.propsHeaderEmpty : ''}`.trim()}
+          >
+            <GluuText variant="h5" disableThemeColor>
+              <span className={classes.propsTitle}>
+                {t(fidoConstants.LABELS.ENABLED_FIDO_ALGORITHMS)}
+              </span>
+            </GluuText>
+            <GluuButton
+              type="button"
+              backgroundColor={themeColors.settings.addPropertyButton.bg}
+              textColor={themeColors.settings.addPropertyButton.text}
+              useOpacityOnHover
+              className={classes.propsActionBtn}
+              onClick={addAlgorithm}
+              disabled={!canAddAlgorithm}
+            >
+              <i className="fa fa-fw fa-plus" />
+              {t(fidoConstants.BUTTON_TEXT.ADD_ALGORITHM)}
+            </GluuButton>
+          </div>
+          <div className={classes.propsBody}>
+            {enabledFidoAlgorithms.map((item, index) => (
+              <div key={index} className={classes.propsRow}>
+                <Input
+                  value={item || ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    changeAlgorithm(index, e.target.value)
+                  }
+                  placeholder={t('placeholders.value')}
+                  className={classes.propsInput}
+                />
+                <GluuButton
+                  type="button"
+                  backgroundColor={themeColors.settings.removeButton.bg}
+                  textColor={themeColors.settings.removeButton.text}
+                  useOpacityOnHover
+                  className={classes.propsActionBtn}
+                  onClick={() => removeAlgorithm(index)}
+                >
+                  <i className="fa fa-fw fa-trash" />
+                  {t('actions.remove')}
+                </GluuButton>
+              </div>
+            ))}
+            {showAlgorithmsError && (
+              <div className={classes.propsError}>{t(algorithmsError as string)}</div>
+            )}
+          </div>
+        </div>
+
+        <div
+          className={`${classes.propsBox} ${classes.propsBoxWithMargin} mb-3 ${!metadataServers.length ? classes.propsBoxEmpty : ''}`.trim()}
+        >
+          <div
+            className={`${classes.propsHeader} ${!metadataServers.length ? classes.propsHeaderEmpty : ''}`.trim()}
+          >
+            <GluuText variant="h5" disableThemeColor>
+              <span className={classes.propsTitle}>{t(fidoConstants.LABELS.METADATA_SERVERS)}</span>
+            </GluuText>
+            <GluuButton
+              type="button"
+              backgroundColor={themeColors.settings.addPropertyButton.bg}
+              textColor={themeColors.settings.addPropertyButton.text}
+              useOpacityOnHover
+              className={classes.propsActionBtn}
+              onClick={addMetadataServer}
+              disabled={!canAddServer}
+            >
+              <i className="fa fa-fw fa-plus" />
+              {t(fidoConstants.BUTTON_TEXT.ADD_METADATA_SERVER)}
+            </GluuButton>
+          </div>
+          <div className={classes.propsBody}>
+            {metadataServers.map((server, index) => (
+              <div key={index} className={classes.propsRow}>
+                <Input
+                  value={server.url || ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    changeMetadataServer(index, 'url', e.target.value)
+                  }
+                  placeholder={t('placeholders.enter_url')}
+                  className={classes.propsInput}
+                />
+                <Input
+                  value={server.rootCert || ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    changeMetadataServer(index, 'rootCert', e.target.value)
+                  }
+                  placeholder={t('placeholders.enter_root_certificate')}
+                  className={classes.propsInput}
+                />
+                <GluuButton
+                  type="button"
+                  backgroundColor={themeColors.settings.removeButton.bg}
+                  textColor={themeColors.settings.removeButton.text}
+                  useOpacityOnHover
+                  className={classes.propsActionBtn}
+                  onClick={() => removeMetadataServer(index)}
+                >
+                  <i className="fa fa-fw fa-trash" />
+                  {t('actions.remove')}
+                </GluuButton>
+              </div>
+            ))}
+            {showServersError && (
+              <div className={classes.propsError}>{t(serversError as string)}</div>
+            )}
+          </div>
+        </div>
+
+        <div className={`${classes.formLabels} ${classes.formWithInputs} ${classes.hintsSection}`}>
+          <GluuMultiSelectRow
             label={fidoConstants.LABELS.HINTS}
+            name={fidoConstants.FORM_FIELDS.HINTS}
             value={formik.values.hints || []}
-            options={availableHintOptions}
-            lsize={4}
-            rsize={8}
+            formik={formik}
+            options={HINT_OPTIONS}
+            lsize={LABEL_SIZE}
+            rsize={INPUT_SIZE}
             required
-            showError={!!(formik.errors.hints && formik.touched.hints)}
+            showError={!!formik.errors.hints}
             errorMessage={formik.errors.hints as string}
             doc_category={fidoConstants.DOC_CATEGORY}
-            emptyLabel={emptyDropdownMessage}
-            allowNew={false}
-            onChange={(selected) => {
-              const next = (selected || []).filter((v): v is string => typeof v === 'string')
-              formik.setFieldValue(fidoConstants.FORM_FIELDS.HINTS, next)
-            }}
+            helperText={t('messages.multi_select_hint')}
           />
-        </Col>
+        </div>
+      </div>
 
-        <Col sm={8}>
-          <GluuToggleRow
-            label={fidoConstants.LABELS.ENTERPRISE_ATTESTATION}
-            name={fidoConstants.FORM_FIELDS.ENTERPRISE_ATTESTATION}
-            formik={formik}
-            lsize={4}
-            rsize={8}
-            required
-            doc_category={fidoConstants.DOC_CATEGORY}
-          />
-        </Col>
+      <GluuThemeFormFooter
+        showBack
+        showCancel
+        showApply={!readOnly}
+        onApply={() => {
+          const ops = buildChangedFieldOperations(
+            initialValues,
+            formik.values,
+            fidoConstants.STATIC,
+            t,
+          )
+          setCommitOperations(ops)
+          toggle()
+        }}
+        onCancel={handleCancel}
+        disableCancel={!formik.dirty}
+        disableApply={!formik.isValid || !formik.dirty}
+        applyButtonType="button"
+        isLoading={isSubmitting ?? false}
+      />
 
-        <Col sm={8}>
-          <GluuSelectRow
-            label={fidoConstants.LABELS.ATTESTATION_MODE}
-            name={fidoConstants.FORM_FIELDS.ATTESTATION_MODE}
-            value={formik.values.attestationMode || ''}
-            formik={formik}
-            values={Object.values(AttestationMode).map((mode) => ({ label: mode, value: mode }))}
-            lsize={4}
-            rsize={8}
-            required={true}
-            showError={!!(formik.errors.attestationMode && formik.touched.attestationMode)}
-            errorMessage={formik.errors.attestationMode}
-            handleChange={(_e) => {
-              formik.setFieldTouched(fidoConstants.FORM_FIELDS.ATTESTATION_MODE, true, false)
-            }}
-          />
-        </Col>
-      </FormGroup>
-
-      <Row>
-        <Col>
-          <GluuFormFooter
-            showBack={true}
-            showCancel={true}
-            showApply={!readOnly}
-            onApply={toggle}
-            onCancel={handleCancel}
-            disableBack={false}
-            disableCancel={!formik.dirty}
-            disableApply={!formik.isValid || !formik.dirty}
-            applyButtonType="button"
-            isLoading={isSubmitting ?? false}
-          />
-        </Col>
-      </Row>
       {!readOnly && (
-        <GluuCommitDialog
+        <GluuWebhookCommitDialog
           handler={toggle}
           modal={modal}
-          feature={adminUiFeatures.fido_configuration_write}
           onAccept={submitForm}
           formik={formik}
+          operations={commitOperations}
+          webhookFeature={adminUiFeatures.fido_configuration_write}
         />
       )}
     </Form>
