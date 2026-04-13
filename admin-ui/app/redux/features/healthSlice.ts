@@ -1,47 +1,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
+import type {
+  HealthServerStatusResponsePayload,
+  HealthServiceKey,
+  HealthState,
+  HealthStatusResponse,
+  HealthStatusResponsePayload,
+} from './types'
 
-type HealthStatus = 'Running' | 'Not present' | 'Down'
-
-export type HealthServiceKey =
-  | 'jans-lock'
-  | 'jans-auth'
-  | 'jans-config-api'
-  | 'jans-casa'
-  | 'jans-fido2'
-  | 'jans-scim'
-  | 'jans-link'
-  | 'keycloak'
-
-type KnownHealthServices = Partial<Record<HealthServiceKey, HealthStatus>>
-
-export type HealthStatusResponse = KnownHealthServices & {
-  [serviceName: string]: HealthStatus
-}
-
-export interface HealthState {
-  serverStatus: HealthStatus | null
-  dbStatus: HealthStatus | null
-  health: HealthStatusResponse
-  loading: boolean
-}
+export type { HealthServiceKey, HealthStatusResponse, HealthState }
 
 const initialState: HealthState = {
   serverStatus: null,
   dbStatus: null,
   health: {},
   loading: false,
-}
-
-interface HealthStatusResponsePayload {
-  data?: {
-    status?: HealthStatus
-    db_status?: HealthStatus
-  }
-}
-
-interface HealthServerStatusResponsePayload {
-  data?: HealthStatusResponse
 }
 
 const healthSlice = createSlice({

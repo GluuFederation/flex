@@ -81,5 +81,5 @@ export const prepareMappingsForDelete = (
 }
 
 export const toActionData = (payload: AgamaJsonPatchRequestBody): ActionData => {
-  return payload as unknown as ActionData
+  return { requestBody: payload.requestBody }
 }

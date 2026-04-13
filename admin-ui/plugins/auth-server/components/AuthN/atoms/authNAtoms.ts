@@ -30,7 +30,6 @@ export interface AuthNItem {
   baseDn?: string
   dn?: string
   configurationProperties?: ConfigurationProperty[]
-  tableData?: unknown
 }
 
 export const currentAuthNItemAtom = atom<AuthNItem | null>(null)

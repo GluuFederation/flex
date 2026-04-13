@@ -79,3 +79,18 @@ type GluuSearchToolbarSelectProps = GluuSearchToolbarBaseProps & {
 }
 
 export type GluuSearchToolbarProps = GluuSearchToolbarInputProps | GluuSearchToolbarSelectProps
+
+export type GluuRefreshButtonProps = {
+  onClick: () => void
+  disabled?: boolean
+  label?: string
+  loading?: boolean
+  className?: string
+  variant?: 'primary' | 'outlined'
+  minHeight?: number
+  size?: 'sm' | 'md' | 'lg'
+  backgroundColor?: string
+  textColor?: string
+  borderColor?: string
+  useOpacityOnHover?: boolean
+}

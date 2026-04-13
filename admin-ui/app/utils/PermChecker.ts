@@ -1,5 +1,3 @@
-import type { JsonPatch } from 'JansConfigApi'
-
 export const BASE_URL = 'https://jans.io/oauth'
 
 export const PROPERTIES_READ = BASE_URL + '/jans-auth-server/config/properties.readonly'
@@ -91,10 +89,6 @@ export const CACHE_READ = BASE_URL + '/config/cache.readonly'
 export const CACHE_WRITE = BASE_URL + '/config/cache.write'
 export const CACHE_DELETE = BASE_URL + '/config/cache.delete'
 
-export const LDAP_READ = BASE_URL + '/config/database/ldap.readonly'
-export const LDAP_WRITE = BASE_URL + '/config/database/ldap.write'
-export const LDAP_DELETE = BASE_URL + '/config/database/ldap.delete'
-
 export const PERSISTENCE_DETAIL = BASE_URL + '/jans-auth-server/config/properties.readonly'
 
 export const STAT_READ = BASE_URL + '/config/stats.readonly'
@@ -129,22 +123,9 @@ export const ASSETS_DELETE = BASE_URL + '/config/jans_asset-delete'
 export const API_CONFIG_READ = BASE_URL + '/config/properties.readonly'
 export const API_CONFIG_WRITE = BASE_URL + '/config/properties.write'
 
-export interface UserAction {
-  action_message: string
-  action_data: ActionData | null
-  [key: string]: string | number | boolean | ActionData | string[] | number[] | boolean[] | null
-}
+import type { ActionData, UserAction } from './types'
 
-// Union type for the various payload types used across the codebase
-export type ActionData =
-  | Record<string, string | number | boolean | string[] | number[] | boolean[] | null> // Object payloads (most common)
-  | { requestBody: JsonPatch[] }
-  | string // ID strings (inum, jti, configId, etc.)
-  | number // Numeric IDs
-  | string[] // Array of strings
-  | number[] // Array of numbers
-  | boolean[] // Array of booleans
-  | null
+export type { ActionData, UserAction }
 
 export const buildPayload = (
   userAction: UserAction,

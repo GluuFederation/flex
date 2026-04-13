@@ -457,30 +457,6 @@ config:
     cnSecretKubernetesSecret: cn
     # -- Load balancer address for AWS if the FQDN is not registered.
     lbAddr: ""
-    # -- Quarkus transaction recovery. When using MySQL, there could be issue regarding XA_RECOVER_ADMIN; refer to https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_xa-recover-admin for details.
-    quarkusTransactionEnableRecovery: true
-    # -- Keycloak  admin UI password
-    kcAdminPassword: Test1234#
-    # -- Keycloak admin UI username
-    kcAdminUsername: admin
-    # -- Keycloak logging level
-    kcLogLevel: INFO
-    # -- Keycloak database vendor name (default to MySQL server). To use PostgreSQL server, change the value to postgres.
-    kcDbVendor: mysql
-    # -- Keycloak database username
-    kcDbUsername: keycloak
-    # -- Password for Keycloak database access
-    kcDbPassword: Test1234#
-    # -- Keycloak database schema name (note that PostgreSQL may be using "public" schema).
-    kcDbSchema: keycloak
-    # -- Keycloak database host uri
-    kcDbUrlHost: mysql.kc.svc.cluster.local
-    # -- Keycloak database port (default to port 3306 for mysql).
-    kcDbUrlPort: 3306
-    # -- Keycloak database name.
-    kcDbUrlDatabase: keycloak
-    # -- Keycloak database connection properties. If using postgresql, the value can be set to empty string.
-    kcDbUrlProperties: "?useUnicode=true&characterEncoding=UTF-8&character_set_server=utf8mb4"
     # -- Message type (one of POSTGRES, REDIS, or DISABLED)
     cnMessageType: DISABLED
   # -- Country code. Used for certificate creation.
@@ -893,9 +869,6 @@ global:
     # -- Add custom secret envs to the service.
     # variable1: value1
     secret: {}
-  alb:
-    # -- Activates ALB ingress
-    ingress: false
   admin-ui:
     # — Add custom annotations for kubernetes resources for the service
     customAnnotations:
@@ -968,6 +941,10 @@ global:
       lockLogTarget: "STDOUT"
       # -- jans-lock.log level
       lockLogLevel: "INFO"
+      # -- root log target (if set to FILE, logs will be redirected to jans-auth.log)
+      rootLogTarget: "STDOUT"
+      # -- root log level
+      rootLogLevel: "INFO"
     # -- space-separated key algorithm for signing (default to `RS256 RS384 RS512 ES256 ES384 ES512 PS256 PS384 PS512`)
     authSigKeys: "RS256 RS384 RS512 ES256 ES384 ES512 PS256 PS384 PS512"
     # -- space-separated key algorithm for encryption (default to `RSA1_5 RSA-OAEP`)
@@ -986,10 +963,6 @@ global:
       uma2ConfigEnabled: true
       # -- Enable endpoint /.well-known/webfinger
       webfingerEnabled: true
-      # -- Enable endpoint /.well-known/simple-web-discovery
-      webdiscoveryEnabled: true
-      # -- Enable endpoint /.well-known/fido-configuration
-      u2fConfigEnabled: true
       # -- Enable mTLS on Auth server endpoint /jans-auth/restv1/token.
       authServerProtectedToken: false
       # -- Enable mTLS on Auth server endpoint /jans-auth/restv1/register.
@@ -1026,14 +999,6 @@ global:
       webfingerLabels: { }
       # -- webfinger ingress resource additional annotations.
       webfingerAdditionalAnnotations: { }
-      # -- webdiscovery ingress resource labels. key app is taken
-      webdiscoveryLabels: { }
-      # -- webdiscovery ingress resource additional annotations.
-      webdiscoveryAdditionalAnnotations: { }
-      # -- u2f config ingress resource labels. key app is taken
-      u2fConfigLabels: { }
-      # -- u2f config ingress resource additional annotations.
-      u2fAdditionalAnnotations: { }
       # -- Enable endpoint /.well-known/authzen-configuration
       authzenConfigEnabled: true
       # -- authzen config ingress resource labels. key app is taken
@@ -1096,6 +1061,10 @@ global:
       timerLogTarget: "FILE"
       # -- casa timer log level
       timerLogLevel: "INFO"
+      # -- root log target (if set to FILE, logs will be redirected to casa.log)
+      rootLogTarget: "STDOUT"
+      # -- root log level
+      rootLogLevel: "INFO"
     # -- Name of the casa service. Please keep it as default.
     casaServiceName: casa
     # -- Boolean flag to enable/disable the casa chart.
@@ -1192,18 +1161,22 @@ global:
       configApiLogTarget: "STDOUT"
       # -- configapi.log level
       configApiLogLevel: "INFO"
-      # -- config-api_persistence.log target
+      # -- configapi_persistence.log target
       persistenceLogTarget: "FILE"
-      # -- config-api_persistence.log level
+      # -- configapi_persistence.log level
       persistenceLogLevel: "INFO"
-      # -- config-api_persistence_duration.log target
+      # -- configapi_persistence_duration.log target
       persistenceDurationLogTarget: "FILE"
-      # -- config-api_persistence_duration.log level
+      # -- configapi_persistence_duration.log level
       persistenceDurationLogLevel: "INFO"
-      # -- config-api_script.log target
+      # -- configapi_script.log target
       scriptLogTarget: "FILE"
-      # -- config-api_script.log level
+      # -- configapi_script.log level
       scriptLogLevel: "INFO"
+      # -- root log target (if set to FILE, logs will be redirected to configapi.log)
+      rootLogTarget: "STDOUT"
+      # -- root log level
+      rootLogLevel: "INFO"
     adminUiAppLoggers:
       # -- Enable log prefixing which enables prepending the STDOUT logs with the file name. i.e config-api_persistence ===> 2022-12-20 17:49:55,744 INFO
       enableStdoutLogPrefix: "true"
@@ -1223,7 +1196,7 @@ global:
       configApiLabels: { }
       # -- ConfigAPI ingress resource additional annotations.
       configApiAdditionalAnnotations: { }
-    # -- Comma-separated values of enabled plugins (supported plugins are "admin-ui","fido2","scim","user-mgt", "kc-saml")
+    # -- Comma-separated values of enabled plugins (supported plugins are "admin-ui","fido2","scim","user-mgt")
     plugins: "admin-ui,fido2,scim,user-mgt"
   # -- Fully qualified domain name to be used for Gluu installation. This address will be used to reach Gluu services.
   fqdn: demoexample.gluu.org
@@ -1264,6 +1237,10 @@ global:
       scriptLogTarget: "FILE"
       # -- fido2_script.log level
       scriptLogLevel: "INFO"
+      # -- root log target (if set to FILE, logs will be redirected to fido2.log)
+      rootLogTarget: "STDOUT"
+      # -- root log level
+      rootLogLevel: "INFO"
     # -- Enable endpoints in either istio or nginx ingress depending on users choice
     ingress:
       # -- Enable endpoint /.well-known/fido2-configuration
@@ -1343,22 +1320,26 @@ global:
     appLoggers:
       # -- Enable log prefixing which enables prepending the STDOUT logs with the file name. i.e jans-scim ===> 2022-12-20 17:49:55,744 INFO
       enableStdoutLogPrefix: "true"
-      # -- jans-scim.log target
+      # -- scim.log target
       scimLogTarget: "STDOUT"
-      # -- jans-scim.log level
+      # -- scim.log level
       scimLogLevel: "INFO"
-      # -- jans-scim_persistence.log target
+      # -- scim_persistence.log target
       persistenceLogTarget: "FILE"
-      # -- jans-scim_persistence.log level
+      # -- scim_persistence.log level
       persistenceLogLevel: "INFO"
-      # -- jans-scim_persistence_duration.log target
+      # -- scim_persistence_duration.log target
       persistenceDurationLogTarget: "FILE"
-      # -- jans-scim_persistence_duration.log level
+      # -- scim_persistence_duration.log level
       persistenceDurationLogLevel: "INFO"
-      # -- jans-scim_script.log target
+      # -- scim_script.log target
       scriptLogTarget: "FILE"
-      # -- jans-scim_script.log level
+      # -- scim_script.log level
       scriptLogLevel: "INFO"
+      # -- root log target (if set to FILE, logs will be redirected to scim.log)
+      rootLogTarget: "STDOUT"
+      # -- root log level
+      rootLogLevel: "INFO"
     # -- Enable endpoints in either istio or nginx ingress depending on users choice
     ingress:
       # -- Enable endpoint /.well-known/scim-configuration
@@ -1389,37 +1370,8 @@ global:
     provisioner: microk8s.io/hostpath
     reclaimPolicy: Retain
     volumeBindingMode: WaitForFirstConsumer
-  saml:
-    # — Add custom annotations for kubernetes resources for the service
-    customAnnotations:
-      destinationRule: {}
-      podDisruptionBudget: {}
-      virtualService: {}
-      pod: {}
-      deployment: {}
-      horizontalPodAutoscaler: {}
-      service: {}
-      secret: {}
-    # -- Name of the saml service. Please keep it as default.
-    samlServiceName: saml
-    # -- Boolean flag to enable/disable the saml chart.
-    enabled: false
-    # -- Enable endpoints in either istio or nginx ingress depending on users choice
-    ingress:
-      # Enable saml endpoints /kc
-      samlEnabled: false
-      # -- SAML ingress resource labels. key app is taken
-      samlLabels: { }
-      # -- SAML ingress resource additional annotations.
-      samlAdditionalAnnotations: { }
-    # -- passing custom java options to saml. DO NOT PASS JAVA_OPTIONS in envs.
-    cnCustomJavaOptions: ""
-
   # -- Path to SQL password file
   cnSqlPasswordFile: /etc/jans/conf/sql_password
-  kc-scheduler:
-    # -- Boolean flag to enable/disable the kc-scheduler cronjob chart.
-    enabled: false
   # -- Path to configuration schema file
   cnConfiguratorConfigurationFile: /etc/jans/conf/configuration.json
   # -- Path to dumped configuration schema file
@@ -1491,6 +1443,10 @@ gateway-api:
       # See https://docs.nginx.com/nginx-gateway-fabric/traffic-management/snippets#setup
       # The NginxProxy will be attached to gateway.infrastructure.parametersRef only if it's empty.
       enableClientCertSnippets: false
+      # -- Enable URL rewrite to forward audit gRPC requests `/io.jans.lock.audit.AuditService` to `/jans-auth/io.jans.lock.audit.AuditService`.
+      # Snippet support must be enabled during NGINX installation (otherwise endpoints will return HTTP status code 500).
+      # See https://docs.nginx.com/nginx-gateway-fabric/traffic-management/snippets#setup.
+      enableAuditGrpcRewriteSnippets: false
     # -- Configuration for Traefik.
     traefik: {}
     # -- Configuration for Istio.
@@ -1707,7 +1663,6 @@ scim:
   #     exec:
   #       command: ["sh", "-c", "mkdir /opt/jans/jetty/jans-auth/custom/static/stylesheet/"]
   lifecycle: {}
-
   # -- Additional labels that will be added across the gateway in the format of {mylabel: "myapp"}
   additionalLabels: { }
   # -- Additional annotations that will be added across the gateway in the format of {cert-manager.io/issuer: "letsencrypt-prod"}
@@ -1720,184 +1675,6 @@ scim:
   customCommand: []
   # -- Add nodeSelector (see https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector)
   nodeSelector: {}
-# -- SAML.
-saml:
-  # -- Add tolerations for the pods
-  tolerations: []
-  # -- Configure the topology spread constraints. Notice this is a map NOT a list as in the upstream API
-  # https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/
-  topologySpreadConstraints: {}
-    # -- Define below as many constraints as needed. The key name should follow the structure tsc1, tsc2...etc.
-    # Do not enter the key labelSelector in the entry/entries below as that is automatically injected by the chart
-    #tsc1:
-    #  maxSkew: 1
-    #  minDomains: 1 # optional; beta since v1.25
-    #  topologyKey: kubernetes.io/hostname
-    #  whenUnsatisfiable: DoNotSchedule
-    #  matchLabelKeys: [] # optional; alpha since v1.25
-    #  nodeAffinityPolicy: [] # optional; alpha since v1.25
-    #  nodeTaintsPolicy: [] # optional; alpha since v1.25
-    #tsc2:
-      #maxSkew: 1
-  # -- Configure the PodDisruptionBudget
-  pdb:
-    enabled: true
-    maxUnavailable: "90%"
-  # -- Configure the HorizontalPodAutoscaler
-  hpa:
-    enabled: true
-    minReplicas: 1
-    maxReplicas: 10
-    targetCPUUtilizationPercentage: 50
-    # -- metrics if targetCPUUtilizationPercentage is not set
-    metrics: []
-    # -- Scaling Policies
-    behavior: {}
-  # -- Add custom normal and secret envs to the service
-  usrEnvs:
-    # -- Add custom normal envs to the service
-    # variable1: value1
-    normal: {}
-    # -- Add custom secret envs to the service
-    # variable1: value1
-    secret: {}
-  # -- Add custom dns policy
-  dnsPolicy: ""
-  # -- Add custom dns config
-  dnsConfig: {}
-  image:
-    # -- Image pullPolicy to use for deploying.
-    pullPolicy: IfNotPresent
-    # -- Image  to use for deploying.
-    repository: ghcr.io/janssenproject/jans/saml
-    # -- Image  tag to use for deploying.
-    tag: 0.0.0-nightly
-    # -- Image Pull Secrets
-    pullSecrets: [ ]
-  # -- Service replica number.
-  replicas: 1
-  # -- Resource specs.
-  resources:
-    limits:
-      # -- CPU limit.
-      cpu: 500m
-      # -- Memory limit. This value is used to calculate memory allocation for Java. Currently it only supports `Mi`. Please refrain from using other units.
-      memory: 1200Mi
-    requests:
-      # -- CPU request.
-      cpu: 500m
-      # -- Memory request.
-      memory: 1200Mi
-  # -- Configure the liveness healthcheck for the auth server if needed.
-  livenessProbe:
-    # -- http liveness probe endpoint
-    exec:
-      command:
-        - python3
-        - /app/scripts/healthcheck.py
-    initialDelaySeconds: 30
-    periodSeconds: 30
-    timeoutSeconds: 5
-    failureThreshold: 10
-  readinessProbe:
-    # -- http readiness probe endpoint
-    exec:
-      command:
-        - python3
-        - /app/scripts/healthcheck.py
-    initialDelaySeconds: 25
-    periodSeconds: 25
-    timeoutSeconds: 5
-    failureThreshold: 10
-  # -- Configure any additional volumes that need to be attached to the pod
-  volumes: []
-  # -- Configure any additional volumesMounts that need to be attached to the containers
-  volumeMounts: []
-  # Actions on lifecycle events such as postStart and preStop
-  # Example
-  # lifecycle:
-  #   postStart:
-  #     exec:
-  #       command: ["sh", "-c", "mkdir /opt/jans/jetty/jans-auth/custom/static/stylesheet/"]
-  lifecycle: {}
-
-  # -- Additional labels that will be added across the gateway in the format of {mylabel: "myapp"}
-  additionalLabels: { }
-  # -- Additional annotations that will be added across the gateway in the format of {cert-manager.io/issuer: "letsencrypt-prod"}
-  additionalAnnotations: { }
-  # -- Add custom scripts that have been mounted to run before the entrypoint.
-  # - /tmp/custom.sh
-  # - /tmp/custom2.sh
-  customScripts: [ ]
-  # -- Add custom pod's command. If passed, it will override the default conditional command.
-  customCommand: []
-  # -- Add nodeSelector (see https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector)
-  nodeSelector: {}
-
-# -- Responsible for synchronizing Keycloak SAML clients
-kc-scheduler:
-  # -- Add tolerations for the pods
-  tolerations: []
-
-  # -- Add custom normal and secret envs to the service
-  usrEnvs:
-    # -- Add custom normal envs to the service
-    # variable1: value1
-    normal: {}
-    # -- Add custom secret envs to the service
-    # variable1: value1
-    secret: {}
-  # -- Add custom dns policy
-  dnsPolicy: ""
-  # -- Add custom dns config
-  dnsConfig: {}
-  image:
-    # -- Image pullPolicy to use for deploying.
-    pullPolicy: IfNotPresent
-    # -- Image  to use for deploying.
-    repository: ghcr.io/janssenproject/jans/cloudtools
-    # -- Image  tag to use for deploying.
-    tag: 0.0.0-nightly
-    # -- Image Pull Secrets
-    pullSecrets: [ ]
-  # -- Resource specs.
-  resources:
-    limits:
-      # -- CPU limit.
-      cpu: 300m
-      # -- Memory limit.
-      memory: 300Mi
-    requests:
-      # -- CPU request.
-      cpu: 300m
-      # -- Memory request.
-      memory: 300Mi
-  # -- Interval of running the scheduler (in minutes)
-  interval: 10
-  # -- Configure any additional volumes that need to be attached to the pod
-  volumes: []
-  # -- Configure any additional volumesMounts that need to be attached to the containers
-  volumeMounts: []
-  # Actions on lifecycle events such as postStart and preStop
-  # Example
-  # lifecycle:
-  #   postStart:
-  #     exec:
-  #       command: ["sh", "-c", "mkdir /opt/jans/jetty/jans-auth/custom/static/stylesheet/"]
-  lifecycle: {}
-  # -- Additional labels that will be added across the gateway in the format of {mylabel: "myapp"}
-  additionalLabels: { }
-  # -- Additional annotations that will be added across the gateway in the format of {cert-manager.io/issuer: "letsencrypt-prod"}
-  additionalAnnotations: {}
-  # -- Add custom scripts that have been mounted to run before the entrypoint.
-  # - /tmp/custom.sh
-  # - /tmp/custom2.sh
-  customScripts: []
-  # -- Add custom job's command. If passed, it will override the default conditional command.
-  customCommand: []
-  # -- Add nodeSelector (see https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector)
-  nodeSelector: {}
-
 # -- Cleanup expired entries in persistence
 cleanup:
   # -- Add tolerations for the pods

@@ -1,5 +1,6 @@
 import { JsonPatch } from 'JansConfigApi'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import type { FormikProps } from 'formik'
 
 export type JansLockConfigFormValues = {
   baseDN?: string
@@ -50,4 +51,19 @@ export type JansLockConfigurationProps = {
   isSubmitting?: boolean
   canWriteLock?: boolean
   classes: JansLockFormClasses
+}
+
+export type JansLockFieldRendererProps = {
+  config: FieldConfig
+  formik: FormikProps<JansLockConfigFormValues>
+  fieldItemClass: string
+  fieldItemFullWidthClass: string
+  viewOnly: boolean
+}
+
+export type CedarlingConfig = {
+  policySources?: Array<{
+    authorizationToken?: string
+    policyStoreUri?: string
+  }>
 }

@@ -8,14 +8,9 @@ import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import getThemeColor from '@/context/theme/config'
 import GluuText from './GluuText'
 import { GluuButton } from '@/components/GluuButton'
+import type { SessionTimeoutDialogProps } from './types'
 
-export interface SessionTimeoutDialogProps {
-  open: boolean
-  countdown: number
-  onLogout: () => void
-  onContinue: () => void
-  themeOverride?: 'light' | 'dark'
-}
+export type { SessionTimeoutDialogProps }
 
 const Transition = React.forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
   return <Slide direction="up" ref={ref} {...props} />

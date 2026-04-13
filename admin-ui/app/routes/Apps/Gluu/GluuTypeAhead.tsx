@@ -38,9 +38,10 @@ const GluuTypeAhead = memo(function GluuTypeAhead({
     if (value !== undefined) {
       return value
     }
-    const fieldValue = formik?.values?.[name]
-    return Array.isArray(fieldValue) ? (fieldValue as GluuTypeAheadOption[]) : []
-  }, [value, formik?.values?.[name], name])
+    const formikWithValues = formik as { values?: Record<string, GluuTypeAheadOption[]> } | null
+    const fieldValue = formikWithValues?.values?.[name]
+    return Array.isArray(fieldValue) ? fieldValue : []
+  }, [value, formik, name])
 
   const handleChange = useCallback(
     (selected: GluuTypeAheadOption[]) => {

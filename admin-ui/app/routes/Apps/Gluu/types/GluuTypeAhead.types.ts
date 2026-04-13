@@ -1,8 +1,12 @@
 import type { MutableRefObject } from 'react'
 import type { TypeaheadRef } from 'react-bootstrap-typeahead'
-import type { FormikContextType } from 'formik'
+import type { JsonObject } from './common'
 
-export type GluuTypeAheadOption = string | Record<string, unknown>
+export type GluuTypeAheadOption = string | JsonObject
+
+export type GluuTypeAheadFormik = {
+  setFieldValue(field: string, value: GluuTypeAheadOption[], shouldValidate?: boolean): void
+}
 
 export type GluuTypeAheadProps = {
   label: string
@@ -10,7 +14,7 @@ export type GluuTypeAheadProps = {
   name: string
   value?: GluuTypeAheadOption[]
   options: GluuTypeAheadOption[]
-  formik?: FormikContextType<Record<string, unknown>> | null
+  formik?: GluuTypeAheadFormik | null
   required?: boolean
   doc_category?: string
   doc_entry?: string

@@ -16,14 +16,12 @@ import LoggingPage from './components/Logging'
 import ConfigApiPage from './components/ConfigApiProperties'
 
 import { reducer as oidcReducer } from './redux/features/oidcSlice'
+
 import { reducer as scopeReducer } from './redux/features/scopeSlice'
 import { reducer as umaResourceReducer } from './redux/features/umaResourceSlice'
-import messageReducer from './redux/features/MessageSlice'
-
 import scopesSaga from './redux/sagas/OAuthScopeSaga'
 import oidcSaga from './redux/sagas/OIDCSaga'
 import umaResourceSaga from './redux/sagas/UMAResourceSaga'
-import messageSaga from './redux/sagas/MessageSaga'
 
 import {
   ACR_READ,
@@ -40,8 +38,8 @@ import {
   API_CONFIG_READ,
 } from 'Utils/PermChecker'
 import AuthNEditPage from './components/AuthN/AuthNEditPage'
-import SsaListPage from './components/Ssa/SsaListPage'
-import SsaAddPage from './components/Ssa/SsaAddPage'
+import SsaListPage from './components/Ssa/components/SsaListPage'
+import SsaAddPage from './components/Ssa/components/SsaAddPage'
 import AuthNPage from './components/AuthN'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { ROUTES } from '@/helpers/navigation'
@@ -221,9 +219,8 @@ const pluginMetadata = {
     { name: 'scopeReducer', reducer: scopeReducer },
     { name: 'oidcReducer', reducer: oidcReducer },
     { name: 'umaResourceReducer', reducer: umaResourceReducer },
-    { name: 'messageReducer', reducer: messageReducer },
   ],
-  sagas: [scopesSaga(), oidcSaga(), umaResourceSaga(), messageSaga()],
+  sagas: [scopesSaga(), oidcSaga(), umaResourceSaga()],
 }
 
 export default pluginMetadata

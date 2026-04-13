@@ -16,21 +16,17 @@ export default class JsonConfigApi {
     this.api = api
   }
 
-  fetchJsonConfig = async (): Promise<AppConfiguration> => {
-    const result = await new Promise((resolve, reject) => {
+  fetchJsonConfig = (): Promise<AppConfiguration> =>
+    new Promise<AppConfiguration>((resolve, reject) => {
       this.api.getProperties((error, data) => {
-        handleResponse(error, reject, resolve, data)
+        handleResponse<AppConfiguration>(error, reject, resolve, data)
       })
     })
-    return result as AppConfiguration
-  }
 
-  patchJsonConfig = async (patches: JsonPatch[]): Promise<AppConfiguration> => {
-    const result = await new Promise((resolve, reject) => {
+  patchJsonConfig = (patches: JsonPatch[]): Promise<AppConfiguration> =>
+    new Promise<AppConfiguration>((resolve, reject) => {
       this.api.patchProperties({ requestBody: patches }, (error, data) => {
-        handleResponse(error, reject, resolve, data)
+        handleResponse<AppConfiguration>(error, reject, resolve, data)
       })
     })
-    return result as AppConfiguration
-  }
 }

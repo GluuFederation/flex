@@ -1,3 +1,6 @@
+type JsonValue = string | number | boolean | null | { [key: string]: JsonValue } | JsonValue[]
+type JsonObject = { [key: string]: JsonValue }
+
 export interface PolicyEntry {
   description: string
   creation_date: string
@@ -10,7 +13,7 @@ export interface TrustedIssuerTokenMetadata {
   user_id: string
   token_id: string
   workload_id?: string
-  claim_mapping: Record<string, unknown>
+  claim_mapping: JsonObject
   required_claims: string[]
   principal_mapping: string[]
 }

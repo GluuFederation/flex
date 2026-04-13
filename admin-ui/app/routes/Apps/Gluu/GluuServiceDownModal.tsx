@@ -9,7 +9,7 @@ interface GluuServiceDownModalProps {
   statusCode?: number | string
 }
 
-function GluuServiceDownModal({ message = '', statusCode }: GluuServiceDownModalProps) {
+const GluuServiceDownModal = ({ message = '', statusCode }: GluuServiceDownModalProps) => {
   const { authServerHost } = useAppSelector((state) => state.authReducer.config)
 
   const handleRefresh = () => {

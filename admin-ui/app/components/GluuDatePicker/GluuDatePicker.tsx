@@ -1,6 +1,5 @@
 import React, { memo, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { SxProps, Theme } from '@mui/material/styles'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
@@ -14,6 +13,7 @@ import type {
   GluuDatePickerProps,
   GluuDatePickerSingleProps,
   GluuDatePickerRangeProps,
+  GluuDatePickerRangeInternalProps,
 } from './types'
 import { isGluuDatePickerRangeProps } from './types'
 import { useDatePickerStyles } from './GluuDatePicker.style'
@@ -113,16 +113,6 @@ const GluuDatePicker = memo(
 )
 
 GluuDatePicker.displayName = 'GluuDatePicker'
-
-type GluuDatePickerRangeInternalProps = GluuDatePickerRangeProps & {
-  displayFormat: string
-  slotProps: {
-    textField: { size: 'small'; InputLabelProps: { shrink: boolean }; sx: SxProps<Theme> }
-    popper: { sx: SxProps<Theme> }
-  }
-  datePickerSx: SxProps<Theme>
-  classes: ReturnType<typeof useDatePickerStyles>['classes']
-}
 
 const GluuDatePickerRange = memo(
   ({

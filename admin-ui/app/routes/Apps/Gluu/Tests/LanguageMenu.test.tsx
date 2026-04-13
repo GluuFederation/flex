@@ -6,12 +6,11 @@ import AppTestWrapper from './Components/AppTestWrapper'
 it('All supported languages will be visible', () => {
   render(
     <AppTestWrapper>
-      <LanguageMenu userInfo={{ inum: null }} />
+      <LanguageMenu userInfo={{ inum: undefined }} />
     </AppTestWrapper>,
   )
   expect(screen.getByTestId('ACTIVE_LANG')).toHaveTextContent('EN')
 
-  // Open the dropdown to reveal language options
   fireEvent.click(screen.getByRole('button', { name: /en/i }))
 
   expect(screen.getByText('French')).toBeInTheDocument()

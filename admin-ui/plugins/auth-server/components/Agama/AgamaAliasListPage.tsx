@@ -20,6 +20,8 @@ import getThemeColor from 'Context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import SetTitle from 'Utils/SetTitle'
 import { buildPayload, type UserAction } from 'Utils/PermChecker'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import { devLogger } from '@/utils/devLogger'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
@@ -42,7 +44,7 @@ import {
 const authResourceId = ADMIN_UI_RESOURCES.Authentication
 const authScopes = CEDAR_RESOURCE_SCOPES[authResourceId]
 
-function AliasesListPage(): React.ReactElement {
+const AliasesListPage = (): React.ReactElement => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
@@ -114,7 +116,7 @@ function AliasesListPage(): React.ReactElement {
         setSelectedRow(null)
         setShowAddModal(false)
       } catch (error) {
-        console.error(error)
+        devLogger.error(error)
       }
     },
     [acrConfig.acrMappings, isEdit, selectedRow, patchJsonMutation],
@@ -218,8 +220,8 @@ function AliasesListPage(): React.ReactElement {
         const updatedMappings = prepareMappingsForDelete(currentMappings, itemToDelete.mapping)
         const postBody = buildAcrMappingDeletePayload(updatedMappings, acrConfig.acrMappings)
 
-        const basePayload = toActionData(postBody) as Record<string, unknown>
-        const payloadWithDeleteInfo = {
+        const basePayload = toActionData(postBody) as Record<string, JsonValue>
+        const payloadWithDeleteInfo: Record<string, JsonValue> = {
           ...basePayload,
           deletedMapping: {
             mapping: itemToDelete.mapping,
@@ -227,16 +229,12 @@ function AliasesListPage(): React.ReactElement {
           },
         }
 
-        buildPayload(
-          userAction,
-          message,
-          payloadWithDeleteInfo as unknown as ReturnType<typeof toActionData>,
-        )
+        buildPayload(userAction, message, payloadWithDeleteInfo)
         await patchJsonMutation.mutateAsync(userAction)
         setDeleteModal(false)
         setItemToDelete(null)
       } catch (error) {
-        console.error(error)
+        devLogger.error(error)
       }
     },
     [itemToDelete, acrConfig.acrMappings, patchJsonMutation],

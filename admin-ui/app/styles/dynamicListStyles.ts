@@ -1,14 +1,6 @@
 import { SPACING, BORDER_RADIUS, CEDARLING_CONFIG_SPACING } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, letterSpacing } from '@/styles/fonts'
-
-interface DynamicListColorOptions {
-  boxBg: string
-  inputBg: string
-  borderColor: string
-  fontColor: string
-  textMuted: string
-  errorColor: string
-}
+import type { DynamicListColorOptions } from './types'
 
 const BOX_TOP_PADDING = 12
 const HEADER_MB = 16

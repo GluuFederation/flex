@@ -10,19 +10,17 @@ import {
 } from 'JansConfigApi'
 import { logAudit } from 'Utils/AuditLogger'
 import { fidoConstants, createFidoConfigPayload, getModifiedFields } from '../helper'
-import type {
-  DynamicConfigFormValues,
-  StaticConfigFormValues,
-  ApiErrorResponse,
-} from '../types/fido'
+import type { ApiErrorResponse } from '../types/fido'
+import type { UpdateFidoParams } from '../types'
 import { DEFAULT_STALE_TIME, DEFAULT_GC_TIME } from 'Utils/queryUtils'
+import { devLogger } from '@/utils/devLogger'
 
 const FIDO_CACHE_CONFIG = {
   STALE_TIME: DEFAULT_STALE_TIME,
   GC_TIME: DEFAULT_GC_TIME,
 }
 
-export function useFidoConfig() {
+export const useFidoConfig = () => {
   const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
   return useGetPropertiesFido2({
@@ -34,13 +32,7 @@ export function useFidoConfig() {
   })
 }
 
-interface UpdateFidoParams {
-  data: DynamicConfigFormValues | StaticConfigFormValues
-  type: string
-  userMessage?: string
-}
-
-export function useUpdateFidoConfig() {
+export const useUpdateFidoConfig = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
@@ -91,7 +83,7 @@ export function useUpdateFidoConfig() {
             ip_address: ipAddress,
             modifiedFields: modifiedFieldsOnly,
           }).catch((auditError) => {
-            console.error('Audit logging failed:', auditError)
+            devLogger.error('Audit logging failed:', auditError)
           })
         },
       })

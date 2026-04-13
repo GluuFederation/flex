@@ -1,4 +1,5 @@
 import * as Yup from 'yup'
+import { REGEX_NO_WHITESPACE_STRICT } from '@/utils/regex'
 import { useMemo } from 'react'
 import type { AttributeFormValues } from '../components/types/UserClaimsListPage.types'
 
@@ -6,7 +7,7 @@ const buildAttributeSchemaParts = (validationEnabled = true) => {
   return {
     name: Yup.string()
       .trim()
-      .matches(/^[^\s]+$/, 'errors.name_no_spaces')
+      .matches(REGEX_NO_WHITESPACE_STRICT, 'errors.name_no_spaces')
       .required('errors.name_required')
       .min(1, 'errors.name_required'),
     displayName: Yup.string()

@@ -22,7 +22,6 @@ export interface SamlIdentityConfig {
   postBindingAuthnRequest?: string
   wantAuthnRequestsSigned?: string
   addExtensionsElementWithKeyInfo?: string
-  [key: string]: unknown
 }
 
 export interface SamlIdentity {

@@ -9,6 +9,7 @@ import { GluuPageContent } from '@/components'
 import { fidoConstants } from '../helper'
 import { useFidoConfig, useUpdateFidoConfig } from '../hooks'
 import type { DynamicConfigFormValues, StaticConfigFormValues } from '../types/fido'
+import type { UpdateFidoParams } from '../types'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
@@ -55,15 +56,11 @@ const Fido: React.FC = () => {
   SetTitle(t('titles.fido_management'))
 
   const handleConfigSubmit = useCallback(
-    (
-      data: DynamicConfigFormValues | StaticConfigFormValues,
-      type: string,
-      userMessage?: string,
-    ) => {
+    (params: UpdateFidoParams) => {
       if (!canWriteFido) {
         return
       }
-      updateFidoMutation.mutate({ data, type, userMessage })
+      updateFidoMutation.mutate(params)
     },
     [canWriteFido, updateFidoMutation],
   )
@@ -81,7 +78,7 @@ const Fido: React.FC = () => {
           return (
             <StaticConfiguration
               handleSubmit={(data: StaticConfigFormValues, userMessage?: string) =>
-                handleConfigSubmit(data, fidoConstants.STATIC, userMessage)
+                handleConfigSubmit({ data, type: fidoConstants.STATIC, userMessage })
               }
               fidoConfiguration={fidoConfiguration}
               isSubmitting={isSubmitting}
@@ -92,7 +89,7 @@ const Fido: React.FC = () => {
           return (
             <DynamicConfiguration
               handleSubmit={(data: DynamicConfigFormValues, userMessage?: string) =>
-                handleConfigSubmit(data, fidoConstants.DYNAMIC, userMessage)
+                handleConfigSubmit({ data, type: fidoConstants.DYNAMIC, userMessage })
               }
               fidoConfiguration={fidoConfiguration}
               isSubmitting={isSubmitting}

@@ -10,18 +10,17 @@ import {
   getGetFeaturesByWebhookIdQueryKey,
 } from 'JansConfigApi'
 import queryUtils from '@/utils/queryUtils'
-import { isDevelopment } from '@/utils/env'
+import { devLogger } from '@/utils/devLogger'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useWebhookAudit, CREATE, UPDATE, DELETION } from './useWebhookAudit'
-import type { WebhookEntry, MutationCallbacks } from '../types'
+import type {
+  MutationCallbacks,
+  WebhookApiError,
+  WebhookEntry,
+  WebhookMutationError,
+} from '../types'
 
-interface WebhookApiError {
-  response?: { data?: { responseMessage?: string } }
-}
-
-type MutationError = Error | WebhookApiError
-
-const extractWebhookErrorMessage = (error: MutationError, fallback: string): string =>
+const extractWebhookErrorMessage = (error: WebhookMutationError, fallback: string): string =>
   (error as WebhookApiError)?.response?.data?.responseMessage ||
   (error as Error)?.message ||
   fallback
@@ -49,7 +48,7 @@ export const useCreateWebhookWithAudit = (callbacks?: MutationCallbacks) => {
           action_message: userMessage,
           action_data: data,
         }).catch((auditError) => {
-          if (isDevelopment) console.error('Audit logging failed:', auditError)
+          devLogger.error('Audit logging failed:', auditError)
         })
         dispatch(updateToast(true, 'success', t('messages.webhook_created_successfully')))
         queryUtils.invalidateQueriesByKey(queryClient, getGetAllWebhooksQueryKey())
@@ -57,7 +56,7 @@ export const useCreateWebhookWithAudit = (callbacks?: MutationCallbacks) => {
         callbacksRef.current?.onSuccess?.()
         return result
       } catch (error) {
-        const err = error as MutationError
+        const err = error as WebhookMutationError
         dispatch(
           updateToast(
             true,
@@ -97,7 +96,7 @@ export const useUpdateWebhookWithAudit = (callbacks?: MutationCallbacks) => {
           action_message: userMessage,
           action_data: data,
         }).catch((auditError) => {
-          if (isDevelopment) console.error('Audit logging failed:', auditError)
+          devLogger.error('Audit logging failed:', auditError)
         })
         dispatch(updateToast(true, 'success', t('messages.webhook_updated_successfully')))
         queryUtils.invalidateQueriesByKey(queryClient, getGetAllWebhooksQueryKey())
@@ -111,7 +110,7 @@ export const useUpdateWebhookWithAudit = (callbacks?: MutationCallbacks) => {
         callbacksRef.current?.onSuccess?.()
         return result
       } catch (error) {
-        const err = error as MutationError
+        const err = error as WebhookMutationError
         dispatch(
           updateToast(
             true,
@@ -151,7 +150,7 @@ export const useDeleteWebhookWithAudit = (callbacks?: MutationCallbacks) => {
           action_message: userMessage,
           action_data: { inum },
         }).catch((auditError) => {
-          if (isDevelopment) console.error('Audit logging failed:', auditError)
+          devLogger.error('Audit logging failed:', auditError)
         })
         dispatch(updateToast(true, 'success', t('messages.webhook_deleted_successfully')))
         queryUtils.invalidateQueriesByKey(queryClient, getGetAllWebhooksQueryKey())
@@ -159,7 +158,7 @@ export const useDeleteWebhookWithAudit = (callbacks?: MutationCallbacks) => {
         callbacksRef.current?.onSuccess?.()
         return result
       } catch (error) {
-        const err = error as MutationError
+        const err = error as WebhookMutationError
         dispatch(
           updateToast(
             true,

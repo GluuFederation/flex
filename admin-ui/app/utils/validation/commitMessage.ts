@@ -3,7 +3,7 @@ import type { TFunction } from 'i18next'
 const MIN_LENGTH = 10
 const MAX_LENGTH = 512
 
-export function getCommitMessageValidationError(messageLength: number, t: TFunction): string {
+export const getCommitMessageValidationError = (messageLength: number, t: TFunction): string => {
   if (messageLength < MIN_LENGTH) {
     const remaining = MIN_LENGTH - messageLength
     return t('placeholders.charRequiredMin', { count: remaining, min: MIN_LENGTH })

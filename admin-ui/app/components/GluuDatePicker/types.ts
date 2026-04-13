@@ -1,4 +1,6 @@
 import type { Dayjs } from '@/utils/dayjsUtils'
+import type { SxProps, Theme } from '@mui/material/styles'
+import type { useDatePickerStyles } from './GluuDatePicker.style'
 
 interface GluuDatePickerBase {
   format?: string
@@ -33,8 +35,16 @@ export interface GluuDatePickerRangeProps extends GluuDatePickerBase {
 
 export type GluuDatePickerProps = GluuDatePickerSingleProps | GluuDatePickerRangeProps
 
-export function isGluuDatePickerRangeProps(
+export const isGluuDatePickerRangeProps = (
   props: GluuDatePickerProps,
-): props is GluuDatePickerRangeProps {
-  return props.mode === 'range'
+): props is GluuDatePickerRangeProps => props.mode === 'range'
+
+export type GluuDatePickerRangeInternalProps = GluuDatePickerRangeProps & {
+  displayFormat: string
+  slotProps: {
+    textField: { size: 'small'; InputLabelProps: { shrink: boolean }; sx: SxProps<Theme> }
+    popper: { sx: SxProps<Theme> }
+  }
+  datePickerSx: SxProps<Theme>
+  classes: ReturnType<typeof useDatePickerStyles>['classes']
 }

@@ -2,18 +2,21 @@ import { makeStyles } from 'tss-react/mui'
 import { MAPPING_SPACING } from '@/constants'
 import customColors from '@/customColors'
 import type { ThemeConfig } from '@/context/theme/config'
+import { fontSizes, fontWeights } from '@/styles/fonts'
 
 interface GluuMultiSelectRowStyleParams {
   themeColors: ThemeConfig
   isDark: boolean
+  inputBackgroundColor?: string
 }
 
 export const useStyles = makeStyles<GluuMultiSelectRowStyleParams>()((
   _theme,
-  { themeColors, isDark },
+  { themeColors, isDark, inputBackgroundColor },
 ) => {
   const fontColor = themeColors.fontColor
-  const formInputBg = themeColors.settings?.formInputBackground ?? themeColors.inputBackground
+  const formInputBg =
+    inputBackgroundColor ?? themeColors.settings?.formInputBackground ?? themeColors.inputBackground
   const inputBorderColor = themeColors.settings?.inputBorder ?? themeColors.borderColor
   const textMuted = themeColors.textMuted ?? customColors.textSecondary
 
@@ -47,7 +50,7 @@ export const useStyles = makeStyles<GluuMultiSelectRowStyleParams>()((
     },
     placeholder: {
       color: fontColor,
-      fontSize: 14,
+      fontSize: fontSizes.base,
       userSelect: 'none',
     },
     chip: {
@@ -59,8 +62,8 @@ export const useStyles = makeStyles<GluuMultiSelectRowStyleParams>()((
       backgroundColor: themeColors.badges?.statusActiveBg ?? customColors.statusActiveBg,
       color: themeColors.badges?.statusActive ?? customColors.statusActive,
       border: `1px solid ${themeColors.badges?.statusActive ?? customColors.statusActive}`,
-      fontSize: 12,
-      fontWeight: 600,
+      fontSize: fontSizes.sm,
+      fontWeight: fontWeights.semiBold,
       lineHeight: '18px',
       whiteSpace: 'nowrap',
     },
@@ -114,7 +117,7 @@ export const useStyles = makeStyles<GluuMultiSelectRowStyleParams>()((
       'gap': 10,
       'padding': '10px 16px',
       'cursor': 'pointer',
-      'fontSize': 14,
+      'fontSize': fontSizes.base,
       'color': fontColor,
       'transition': 'background-color 0.15s ease',
       '&:hover': {
@@ -153,13 +156,13 @@ export const useStyles = makeStyles<GluuMultiSelectRowStyleParams>()((
       display: 'block',
       color: customColors.accentRed,
       marginTop: 4,
-      fontSize: 12,
+      fontSize: fontSizes.sm,
     },
     helperText: {
       display: 'block',
       color: textMuted,
       marginTop: 4,
-      fontSize: 12,
+      fontSize: fontSizes.sm,
     },
   }
 })

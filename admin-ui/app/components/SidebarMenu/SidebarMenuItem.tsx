@@ -1,31 +1,17 @@
-import React, {
-  ReactNode,
-  CSSProperties,
-  MouseEvent,
-  useEffect,
-  useId,
-  useContext,
-  useMemo,
-} from 'react'
+import React, { CSSProperties, MouseEvent, useEffect, useId, useContext, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
-import { MenuContext, type SidebarMenuContext } from './MenuContext'
+import { MenuContext } from './MenuContext'
 import customColors from '@/customColors'
 import { ThemeContext } from '@/context/theme/themeContext'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
 import { ChevronIcon } from '../SVG'
-
-interface SidebarMenuItemLinkProps {
-  to?: string | null
-  handleClick?: () => void
-  href?: string | null
-  active?: boolean
-  onToggle?: () => void
-  children?: ReactNode
-  classBase: string
-  textStyle?: CSSProperties
-  sidebarMenuActive?: string
-}
+import type {
+  SidebarMenuContext,
+  SidebarMenuEntry,
+  SidebarMenuItemLinkProps,
+  SidebarMenuItemProps,
+} from './types'
 
 /**
  * Renders a collapse trigger or a ReactRouter Link
@@ -76,38 +62,6 @@ const SidebarMenuItemLink: React.FC<SidebarMenuItemLinkProps> = (props) => {
   )
 }
 
-interface SidebarMenuEntry {
-  id: string
-  parentId?: string
-  exact: boolean
-  url?: string
-  open?: boolean
-  active?: boolean
-}
-
-interface SidebarMenuItemProps {
-  // Provided props
-  parentId?: string
-  children?: ReactNode
-  isSubNode?: boolean
-  currentUrl?: string
-  slim?: boolean
-  // User props
-  icon?: React.ReactElement
-  title?: string | ReactNode
-  to?: string
-  href?: string
-  exact?: boolean
-  noCaret?: boolean
-  textStyle?: CSSProperties
-  handleClick?: () => void
-  sidebarMenuActiveClass?: string
-  isEmptyNode?: boolean
-}
-
-/**
- * The main menu entry component
- */
 export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
   parentId,
   children,
@@ -181,7 +135,7 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
     return selectedTheme === THEME_DARK ? customColors.white : customColors.textSecondary
   }, [entry?.active, selectedTheme])
 
-  function getStyle(itemClass: string): CSSProperties {
+  const getStyle = (itemClass: string): CSSProperties => {
     if (
       itemClass.includes('active') &&
       itemClass.includes('submenu__entry') &&
@@ -192,7 +146,7 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
     return nonaActiveMenu
   }
 
-  function getTextStyle(itemClass: string): CSSProperties | null {
+  const getTextStyle = (itemClass: string): CSSProperties | null => {
     if (itemClass.includes('active') && itemClass.includes('submenu__entry')) {
       return { fontWeight: 'bold' }
     }

@@ -113,7 +113,18 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
     [formik, readOnly],
   )
 
-  const requestedParties = formik.values.requestedParties || []
+  const requestedParties = useMemo(
+    () => formik.values.requestedParties || [],
+    [formik.values.requestedParties],
+  )
+  const enabledFidoAlgorithms = useMemo(
+    () => formik.values.enabledFidoAlgorithms || [],
+    [formik.values.enabledFidoAlgorithms],
+  )
+  const metadataServers = useMemo(
+    () => formik.values.metadataServers || [],
+    [formik.values.metadataServers],
+  )
 
   const addRequestedParty = useCallback(() => {
     formik.setFieldValue('requestedParties', [...requestedParties, { key: '', value: '' }])
@@ -137,8 +148,6 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
     [formik, requestedParties],
   )
 
-  const enabledFidoAlgorithms = formik.values.enabledFidoAlgorithms || []
-
   const addAlgorithm = useCallback(() => {
     formik.setFieldValue('enabledFidoAlgorithms', [...enabledFidoAlgorithms, ''])
   }, [formik, enabledFidoAlgorithms])
@@ -160,8 +169,6 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
     },
     [formik, enabledFidoAlgorithms],
   )
-
-  const metadataServers = formik.values.metadataServers || []
 
   const addMetadataServer = useCallback(() => {
     formik.setFieldValue('metadataServers', [...metadataServers, { url: '', rootCert: '' }])
@@ -556,7 +563,6 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
       </div>
 
       <GluuThemeFormFooter
-        hideDivider
         showBack
         showCancel
         showApply={!readOnly}

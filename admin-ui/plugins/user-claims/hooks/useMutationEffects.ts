@@ -3,29 +3,11 @@ import { useAppDispatch } from '@/redux/hooks'
 import { useTranslation } from 'react-i18next'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import type { UseMutationResult } from '@tanstack/react-query'
-
-interface ApiErrorResponseData {
-  message: string
-}
-
-interface ApiErrorWithResponse {
-  response?: {
-    data?: string | ApiErrorResponseData
-  }
-}
-
-interface UseMutationEffectsOptions<
-  TData = object,
-  TError = Error,
-  TVariables = void,
-  TContext = void,
-> {
-  mutation: UseMutationResult<TData, TError, TVariables, TContext>
-  successMessage: string
-  errorMessage: string
-  navigateOnSuccess?: boolean
-}
+import type {
+  ApiErrorResponseData,
+  ApiErrorWithResponse,
+  UseMutationEffectsOptions,
+} from '../types'
 
 export const useMutationEffects = <
   TData = object,

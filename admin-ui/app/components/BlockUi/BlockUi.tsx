@@ -37,7 +37,7 @@ const safeActiveElement = (doc?: Document): Element => {
   return activeElement
 }
 
-export default function BlockUi(props: BlockUiProps) {
+const BlockUi = (props: BlockUiProps) => {
   const {
     tag: Tag = 'div',
     blocking,
@@ -176,7 +176,7 @@ export default function BlockUi(props: BlockUiProps) {
     }
   }
 
-  function handleScroll() {
+  const handleScroll = () => {
     keepInViewFunc()
   }
 
@@ -234,3 +234,5 @@ export default function BlockUi(props: BlockUiProps) {
     </Tag>
   )
 }
+
+export default BlockUi

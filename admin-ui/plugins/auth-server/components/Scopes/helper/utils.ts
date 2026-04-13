@@ -1,11 +1,22 @@
-import type { ScopeFormValues, ExtendedScope, ExtendedScopeAttributes } from '../types'
+import type {
+  Scope,
+  ScopeFormValues,
+  ExtendedScope,
+  ExtendedScopeAttributes,
+  ScopePanelVisibility,
+} from '../types'
+import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/GluuCommitDialog.types'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
-export interface ScopePanelVisibility {
-  showClaimsPanel: boolean
-  showDynamicPanel: boolean
-  showSpontaneousPanel: boolean
-  showUmaPanel: boolean
-}
+export type { ScopePanelVisibility }
+
+/**
+ * JSON-clones a Scope-like object into a plain Record<string, JsonValue>.
+ * Used to safely pass scope payloads into Redux actions and audit logs whose
+ * payload types only accept JSON-serializable values.
+ */
+export const toScopeJsonRecord = (value: Scope): Record<string, JsonValue> =>
+  JSON.parse(JSON.stringify(value)) as Record<string, JsonValue>
 
 const cloneScopeAttributes = (
   attributes?: ExtendedScopeAttributes,
@@ -112,4 +123,68 @@ export const hasActualChanges = (
     ) ||
     !compareAttributes(currentValues.attributes, initialFormValues.attributes)
   )
+}
+
+export const buildScopeChangedFieldOperations = (
+  initial: ScopeFormValues,
+  current: ScopeFormValues,
+  t: (key: string) => string,
+): GluuCommitDialogOperation[] => {
+  const operations: GluuCommitDialogOperation[] = []
+
+  const addIfChanged = (
+    path: string,
+    oldValue: string | boolean | undefined,
+    newValue: string | boolean | undefined,
+  ) => {
+    if (oldValue !== newValue) {
+      operations.push({ path, value: (newValue ?? null) as GluuCommitDialogOperation['value'] })
+    }
+  }
+
+  addIfChanged(t('fields.id'), initial.id, current.id)
+  addIfChanged(t('fields.displayname'), initial.displayName, current.displayName)
+  addIfChanged(t('fields.description'), initial.description, current.description)
+  addIfChanged(t('fields.scope_type'), initial.scopeType, current.scopeType)
+  addIfChanged(t('fields.default_scope'), initial.defaultScope, current.defaultScope)
+  addIfChanged(t('fields.iconUrl'), initial.iconUrl, current.iconUrl)
+
+  if (!compareArrays(initial.claims, current.claims)) {
+    operations.push({
+      path: t('fields.claims'),
+      value: (current.claims ?? null) as GluuCommitDialogOperation['value'],
+    })
+  }
+
+  if (!compareArrays(initial.dynamicScopeScripts, current.dynamicScopeScripts)) {
+    operations.push({
+      path: t('fields.dynamic_scope_scripts'),
+      value: (current.dynamicScopeScripts ?? null) as GluuCommitDialogOperation['value'],
+    })
+  }
+
+  if (!compareArrays(initial.umaAuthorizationPolicies, current.umaAuthorizationPolicies)) {
+    operations.push({
+      path: t('fields.umaAuthorizationPolicies'),
+      value: (current.umaAuthorizationPolicies ?? null) as GluuCommitDialogOperation['value'],
+    })
+  }
+
+  if (
+    initial.attributes?.showInConfigurationEndpoint !==
+    current.attributes?.showInConfigurationEndpoint
+  ) {
+    operations.push({
+      path: t('fields.show_in_configuration_endpoint'),
+      value: (current.attributes?.showInConfigurationEndpoint ??
+        null) as GluuCommitDialogOperation['value'],
+    })
+  }
+
+  // Note: spontaneousClientId and spontaneousClientScopes are intentionally not
+  // tracked here. They are read-only in the form (rendered as badges/links) and
+  // are explicitly preserved from the original scope on submit, so they can never
+  // appear as user-driven changes in the commit dialog.
+
+  return operations
 }

@@ -21,11 +21,11 @@ import {
   type TrustRelationship,
 } from './hooks'
 import { DEFAULT_THEME } from '@/context/theme/constants'
+import { devLogger } from '@/utils/devLogger'
 
 interface DeleteItem {
   inum: string
   displayName?: string
-  tableData?: Record<string, unknown>
 }
 
 const DeleteOutlinedIcon = () => <DeleteOutlined />
@@ -102,7 +102,7 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
           userMessage: userAction.action_message,
         })
       } catch (error) {
-        console.error('Failed to delete service provider:', error)
+        devLogger.error('Failed to delete service provider:', error)
       }
     },
     [deleteTrustRelationshipMutation, item.inum, toggle],
@@ -124,11 +124,7 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
           rowData: TrustRelationship | TrustRelationship[],
         ): void => {
           if (Array.isArray(rowData)) return
-          const { tableData, ...clean } = rowData as TrustRelationship & {
-            tableData?: unknown
-          }
-          void tableData
-          handleGoToEditPage(clean)
+          handleGoToEditPage(rowData)
         },
       })
       actions.push({
@@ -221,6 +217,7 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
           modal={modal}
           subject="saml website sso service provider"
           onAccept={onDeletionConfirmed}
+          feature="saml"
         />
       )}
     </GluuLoader>

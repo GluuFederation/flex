@@ -10,10 +10,10 @@ export type PropertiesStyleProps = {
   themeColors: ThemeConfig
 }
 
-export function createPropertiesPageStyles(
+export const createPropertiesPageStyles = (
   theme: Theme,
   { isDark, themeColors }: PropertiesStyleProps,
-) {
+) => {
   const cardBorderStyle = getCardBorderStyle({ isDark })
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   const formInputBg = themeColors.settings?.formInputBackground ?? themeColors.inputBackground

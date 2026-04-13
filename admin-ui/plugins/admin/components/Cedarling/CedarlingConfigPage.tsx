@@ -10,7 +10,7 @@ import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from '@/routes/Apps/Gluu/GluuViewWrapper'
 import GluuUploadFile from '@/routes/Apps/Gluu/GluuUploadFile'
 import { updateToast } from '@/redux/features/toastSlice'
-import { getErrorMessage, type ApiError } from 'Plugins/user-claims/utils/errorHandler'
+import { getErrorMessage, type ApiError } from '@/utils/errorHandler'
 import { logAudit } from '@/utils/AuditLogger'
 import { UPDATE } from '@/audit/UserActionType'
 import { Box, Link } from '@mui/material'
@@ -286,7 +286,6 @@ const CedarlingConfigPage: React.FC = () => {
                 disableApply={!selectedFile || isLoading}
                 applyButtonType="button"
                 isLoading={isLoading}
-                hideDivider
               />
             </Form>
           </Box>

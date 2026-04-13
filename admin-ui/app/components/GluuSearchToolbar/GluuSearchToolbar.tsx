@@ -23,8 +23,8 @@ import type { GluuSearchToolbarProps } from './types'
 
 const DEFAULT_LAYOUT = 'row' as const
 
-function useDateRangeValidation(startDate: Dayjs | null, endDate: Dayjs | null) {
-  return useMemo(() => {
+const useDateRangeValidation = (startDate: Dayjs | null, endDate: Dayjs | null) =>
+  useMemo(() => {
     const startValid = startDate != null && isValidDate(startDate)
     const endValid = endDate != null && isValidDate(endDate)
     const hasBoth = startValid && endValid
@@ -33,7 +33,6 @@ function useDateRangeValidation(startDate: Dayjs | null, endDate: Dayjs | null) 
     const invalid = !hasBoth || isStartAfterEnd
     return { hasBoth, hasOnlyOne, isStartAfterEnd, invalid }
   }, [startDate, endDate])
-}
 
 const PLACEHOLDER_KEY = 'placeholders.search_pattern'
 

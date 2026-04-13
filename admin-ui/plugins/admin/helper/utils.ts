@@ -7,10 +7,11 @@ import {
 } from '@/utils/regex'
 import { isValidDate as isValidDateUtil, isAfterDate, formatDate } from '@/utils/dayjsUtils'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import type { WebhookOutputItem, WebhookWithBody } from './types'
 
 export type DateLike = string | number | Date | Dayjs | null | undefined
 
-export type { JsonValue }
+export type { JsonValue, WebhookOutputItem }
 
 const getNestedValue = (obj: Record<string, JsonValue>, path: string): JsonValue | undefined => {
   return path.split('.').reduce<JsonValue | undefined>((acc, part) => {
@@ -44,18 +45,6 @@ export const clearControlledInput = (setValue: (v: string) => void): void => {
   setValue('')
 }
 export const auditListTimestampRegex = REGEX_AUDIT_LIST_TIMESTAMP
-
-export interface WebhookOutputItem {
-  webhookId: string
-  shortcodeValueMap: Record<string, JsonValue>
-  url: string
-}
-
-interface WebhookWithBody {
-  inum?: string
-  url?: string
-  httpRequestBody?: Record<string, JsonValue>
-}
 
 export const webhookOutputObject = (
   enabledFeatureWebhooks: WebhookWithBody[],

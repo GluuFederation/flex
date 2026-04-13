@@ -1,5 +1,5 @@
-import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { PagedResultEntriesItem, WebhookEntry } from 'JansConfigApi'
+import type { WebhookData, WebhookHeader } from './types'
 
 const HTTP_METHODS_WITH_BODY = new Set(['POST', 'PUT', 'PATCH'])
 
@@ -46,23 +46,6 @@ export const isLastHeaderComplete = (
   if (headers.length === 0) return true
   const last = headers[headers.length - 1]
   return Boolean((last.key ?? '').trim() && (last.value ?? '').trim())
-}
-
-interface WebhookHeader {
-  key?: string | null
-  value?: string | null
-  source?: string | null
-  destination?: string | null
-}
-
-interface WebhookData {
-  httpRequestBody?: JsonValue | object | string
-  httpMethod?: string | null
-  url?: string | null
-  displayName?: string | null
-  httpHeaders?: WebhookHeader[] | null
-  jansEnabled?: boolean | null
-  description?: string | null
 }
 
 export const sanitizeWebhookHeaders = (headers?: WebhookHeader[] | null) => {

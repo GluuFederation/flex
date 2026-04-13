@@ -1,13 +1,20 @@
-import type { FormikProps } from 'formik'
-
 export type KeyValueProperty = { key: string; value: string }
 export type SourceDestinationProperty = { source: string; destination: string }
 export type Property = KeyValueProperty | SourceDestinationProperty
 
+type PropertySetValue =
+  | string[]
+  | { value1: string; value2: string }[]
+  | SourceDestinationProperty[]
+
+export type GluuPropertiesFormik = {
+  setFieldValue(field: string, value: PropertySetValue, shouldValidate?: boolean): void
+}
+
 export type GluuPropertiesProps = {
   compName: string
   label: string
-  formik?: FormikProps<Record<string, Property[]>> | null
+  formik?: GluuPropertiesFormik | null
   keyPlaceholder?: string
   valuePlaceholder?: string
   options: Property[]

@@ -3,10 +3,9 @@ import { AccordionProps } from './Accordion.d'
 import Card from './../Card'
 import { Provider } from './context'
 
-export function Accordion(props: AccordionProps) {
+export const Accordion = (props: AccordionProps) => {
   const { className, children, initialOpen, open, onToggle, ...otherProps } = props
 
-  // Error check (mimics constructor logic)
   if (typeof open !== 'undefined' && typeof onToggle === 'undefined') {
     throw new Error(
       'Accordion: props.open has to be used combined with props.onToggle ' +
@@ -14,10 +13,8 @@ export function Accordion(props: AccordionProps) {
     )
   }
 
-  // Uncontrolled state
   const [isOpenState, setIsOpenState] = useState(!!initialOpen)
 
-  // Handler
   const toggleHandler = useCallback(() => {
     if (!onToggle) {
       setIsOpenState((prev) => !prev)
@@ -26,7 +23,6 @@ export function Accordion(props: AccordionProps) {
     }
   }, [onToggle, open])
 
-  // Determine open state
   const isOpen = onToggle ? (open ?? false) : isOpenState
 
   return (

@@ -1,37 +1,9 @@
 import { BasicQueryStringUtils, type LocationLike } from '@openid/appauth'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { AuditRecord } from 'Redux/sagas/types'
+import type { AdditionalPayload, AxiosErrorLike, DirectStatusError, HttpError } from './types'
 
-type AdditionalActionData = Record<string, JsonValue>
-
-export type AdditionalPayload = {
-  action?: {
-    action_message?: string
-    action_data?: AdditionalActionData
-  }
-  action_message?: string
-  message?: string
-  modifiedFields?: JsonValue
-  performedOn?: JsonValue
-  tableData?: JsonValue
-  omitPayload?: boolean
-  [key: string]:
-    | JsonValue
-    | { action_message?: string; action_data?: AdditionalActionData }
-    | undefined
-}
-
-type AxiosErrorLike = {
-  response?: {
-    status?: number
-  }
-}
-
-type DirectStatusError = {
-  status?: number
-}
-
-type HttpError = AxiosErrorLike | DirectStatusError | null | undefined
+export type { AdditionalPayload }
 
 export const isFourZeroThreeError = (error?: HttpError): boolean => {
   if (!error) return false

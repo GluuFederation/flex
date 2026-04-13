@@ -15,9 +15,6 @@ import {
   LICENSE_DETAILS_READ,
   LICENSE_DETAILS_WRITE,
   PERSISTENCE_DETAIL,
-  LDAP_READ,
-  LDAP_WRITE,
-  LDAP_DELETE,
   SCIM_CONFIG_READ,
   SCIM_CONFIG_WRITE,
   SCRIPT_DELETE,
@@ -109,9 +106,6 @@ export const CEDAR_RESOURCE_SCOPES: Record<AdminUiFeatureResource, ResourceScope
   ],
   [ADMIN_UI_RESOURCES.Persistence]: [
     { permission: PERSISTENCE_DETAIL, resourceId: ADMIN_UI_RESOURCES.Persistence },
-    { permission: LDAP_READ, resourceId: ADMIN_UI_RESOURCES.Persistence },
-    { permission: LDAP_WRITE, resourceId: ADMIN_UI_RESOURCES.Persistence },
-    { permission: LDAP_DELETE, resourceId: ADMIN_UI_RESOURCES.Persistence },
   ],
   [ADMIN_UI_RESOURCES.Lock]: [
     { permission: JANS_LOCK_READ, resourceId: ADMIN_UI_RESOURCES.Lock },

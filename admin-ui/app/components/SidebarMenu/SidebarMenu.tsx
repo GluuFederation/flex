@@ -13,18 +13,11 @@ import includes from 'lodash/includes'
 import mapValues from 'lodash/mapValues'
 import classNames from 'classnames'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import type { SidebarMenuEntry } from './types'
+import { REGEX_TRAILING_SLASH } from '@/utils/regex'
 import { PageConfigContext } from './../Layout/PageConfigContext'
 import { SideMenuAnimate } from './../../common'
 import { MenuContext } from './MenuContext'
-
-type SidebarMenuEntry = {
-  id: string
-  parentId?: string
-  exact: boolean
-  url?: string
-  open?: boolean
-  active?: boolean
-}
 
 type SidebarMenuItemInjectedProps = {
   currentUrl: string
@@ -101,7 +94,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ children, slim, disabled }) =
       const { pathname } = location
       const noTailSlashLocation =
         pathname[pathname.length - 1] === '/' && pathname.length > 1
-          ? pathname.replace(/\/$/, '')
+          ? pathname.replace(REGEX_TRAILING_SLASH, '')
           : pathname
       return entry.exact
         ? entry.url === noTailSlashLocation

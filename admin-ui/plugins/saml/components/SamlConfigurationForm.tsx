@@ -3,7 +3,7 @@ import React, { useState, useEffect, useMemo, useCallback, memo, useRef } from '
 import { useDispatch } from 'react-redux'
 import { Row, Col, Form, FormGroup, CustomInput } from 'Components'
 import GluuCommitDialogLegacy from 'Routes/Apps/Gluu/GluuCommitDialogLegacy'
-import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
+import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useCedarling } from '@/cedarling'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
@@ -128,7 +128,6 @@ const SamlConfigurationForm: React.FC = () => {
               lsize={4}
               rsize={8}
               label="fields.enable_saml"
-              isBoolean={true}
               handler={handleEnabledChange}
               value={formik.values.enabled}
               doc_category={DOC_SECTION}
@@ -165,7 +164,6 @@ const SamlConfigurationForm: React.FC = () => {
               lsize={4}
               rsize={8}
               label="fields.ignore_validation"
-              isBoolean={true}
               handler={handleIgnoreValidationChange}
               value={formik.values.ignoreValidation}
               doc_category={DOC_SECTION}
@@ -176,13 +174,12 @@ const SamlConfigurationForm: React.FC = () => {
         {canWriteConfig && (
           <Row>
             <Col>
-              <GluuFormFooter
-                showBack={true}
-                showCancel={true}
-                showApply={true}
+              <GluuThemeFormFooter
+                showBack
+                showCancel
+                showApply
                 onApply={toggle}
                 onCancel={handleCancel}
-                disableBack={false}
                 disableCancel={!formik.dirty}
                 disableApply={!formik.isValid || !formik.dirty}
                 applyButtonType="button"

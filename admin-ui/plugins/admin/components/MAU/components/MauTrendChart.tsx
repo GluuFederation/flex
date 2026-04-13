@@ -19,6 +19,7 @@ import { useMauStyles } from '../MauPage.style'
 import type { MauChartProps } from '../types'
 import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
 import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
+import type { JsonValue } from '@/routes/Apps/Gluu/types/common'
 import { getChartColors } from '../constants'
 import { formatMonth, formatNumber } from '../utils'
 
@@ -63,7 +64,7 @@ const MauTrendChart: React.FC<MauChartProps> = ({ data }) => {
                   backgroundColor={themeColors.dashboard.supportCard ?? themeColors.menu.background}
                   textColor={themeColors.fontColor}
                   isDark={isDark}
-                  formatter={(value: unknown) =>
+                  formatter={(value: JsonValue) =>
                     formatNumber(typeof value === 'number' && !Number.isNaN(value) ? value : 0)
                   }
                 />

@@ -36,10 +36,10 @@ export interface MauSummary {
   tokenChange: number
 }
 
-export interface MauSummaryCardProps {
+export type MauSummaryCardProps = {
   title: string
   value: number
-  change: number
+  change?: number
   color: string
 }
 

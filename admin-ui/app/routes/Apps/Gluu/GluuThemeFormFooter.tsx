@@ -2,7 +2,7 @@ import { useMemo, useCallback, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import { DEFAULT_THEME } from '@/context/theme/constants'
-import { Box, Divider } from '@mui/material'
+import { Box } from '@mui/material'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { GluuButton } from '@/components'
 import {
@@ -10,29 +10,7 @@ import {
   BUTTON_STYLES,
   getButtonColors,
 } from 'Routes/Apps/Gluu/styles/GluuThemeFormFooter.style'
-
-interface GluuThemeFormFooterBaseProps {
-  showBack?: boolean
-  backButtonLabel?: string
-  onBack?: () => void
-  disableBack?: boolean
-  showCancel?: boolean
-  cancelButtonLabel?: string
-  onCancel?: () => void
-  disableCancel?: boolean
-  showApply?: boolean
-  disableApply?: boolean
-  applyButtonLabel?: string
-  isLoading?: boolean
-  className?: string
-  hideDivider?: boolean
-}
-
-type GluuThemeFormFooterProps = GluuThemeFormFooterBaseProps &
-  (
-    | { applyButtonType?: 'submit'; onApply?: () => void }
-    | { applyButtonType: 'button'; onApply: () => void }
-  )
+import type { GluuThemeFormFooterProps } from './types'
 
 const COMMON_BUTTON_STYLE = {
   minHeight: BUTTON_STYLES.height,
@@ -65,7 +43,6 @@ const GluuThemeFormFooter = ({
   applyButtonLabel,
   isLoading = false,
   className = '',
-  hideDivider = false,
 }: GluuThemeFormFooterProps) => {
   const { t } = useTranslation()
   const { state } = useTheme()
@@ -130,7 +107,6 @@ const GluuThemeFormFooter = ({
 
   return (
     <>
-      {!hideDivider && <Divider />}
       <Box className={`${classes.footerWrapper} ${className}`} sx={{ my: 2 }}>
         <Box className={classes.leftGroup}>
           {buttonStates.showBack && (
