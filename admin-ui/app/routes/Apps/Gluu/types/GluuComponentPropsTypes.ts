@@ -11,12 +11,12 @@ export type GluuAlertProps = {
   show?: boolean
 }
 
-export type GluuBooleanSelectBoxProps = {
+export type GluuBooleanSelectBoxProps<T extends object = Record<string, JsonValue>> = {
   label: string
   name: string
   value?: boolean | string
-  formik: FormikProps<Record<string, JsonValue>>
-  handler?: () => void
+  formik: FormikProps<T>
+  handler?: (event: React.ChangeEvent<HTMLInputElement>) => void
   lsize?: number
   rsize?: number
   doc_category?: string

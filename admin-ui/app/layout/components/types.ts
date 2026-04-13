@@ -6,8 +6,8 @@ import type { ThemeValue } from '@/context/theme/constants'
 // Core Layout Component Types
 // ============================================================================
 
-// Base props interface for layout components
-export interface BaseLayoutComponentProps {
+// Base props type for layout components
+export type BaseLayoutComponentProps = {
   children?: React.ReactNode
   className?: string
   style?: React.CSSProperties
@@ -31,8 +31,8 @@ export type DefaultSidebarProps = EmptyComponentProps
 // Activity Feed Data Types
 // ============================================================================
 
-// Activity feed item interface
-export interface ActivityFeedItem {
+// Activity feed item type
+export type ActivityFeedItem = {
   id: string
   type: 'success' | 'danger' | 'warning' | 'info'
   title: string
@@ -48,7 +48,7 @@ export interface ActivityFeedItem {
 export type ActivityFeedIconType = 'success' | 'danger' | 'warning' | 'info'
 
 // Activity feed icon mapping
-export interface ActivityFeedIconMap {
+export type ActivityFeedIconMap = {
   success: React.ReactNode
   danger: React.ReactNode
   warning: React.ReactNode
@@ -59,8 +59,8 @@ export interface ActivityFeedIconMap {
 // Message Data Types
 // ============================================================================
 
-// Message item interface
-export interface MessageItem {
+// Message item type
+export type MessageItem = {
   id: string
   from: {
     name: string
@@ -84,8 +84,8 @@ export type MessageColorType = 'text-success' | 'text-danger' | 'text-warning'
 // Navigation Types
 // ============================================================================
 
-// Navigation item interface
-export interface NavigationItem {
+// Navigation item type
+export type NavigationItem = {
   id: string
   title: string
   icon?: React.ReactNode
@@ -96,8 +96,8 @@ export interface NavigationItem {
   permission?: string
 }
 
-// Navigation section interface
-export interface NavigationSection {
+// Navigation section type
+export type NavigationSection = {
   title: string
   items: NavigationItem[]
 }
@@ -155,7 +155,7 @@ export type MediaBodyProps = BaseLayoutComponentProps
 // ============================================================================
 
 // List group item props
-export interface ListGroupItemProps extends BaseLayoutComponentProps {
+export type ListGroupItemProps = BaseLayoutComponentProps & {
   action?: boolean
   tag?: React.ElementType
   to?: string
@@ -166,14 +166,14 @@ export interface ListGroupItemProps extends BaseLayoutComponentProps {
 // Badge and Icon Types
 // ============================================================================
 
-// Badge props interface
-export interface BadgeProps extends BaseLayoutComponentProps {
+// Badge props type
+export type BadgeProps = BaseLayoutComponentProps & {
   color?: BadgeColor
   pill?: boolean
 }
 
 // Icon with badge props
-export interface IconWithBadgeProps extends BaseLayoutComponentProps {
+export type IconWithBadgeProps = BaseLayoutComponentProps & {
   badge?: React.ReactNode
 }
 
@@ -185,7 +185,7 @@ export interface IconWithBadgeProps extends BaseLayoutComponentProps {
 export type InputGroupProps = BaseLayoutComponentProps
 
 // Input props
-export interface InputProps extends BaseLayoutComponentProps {
+export type InputProps = BaseLayoutComponentProps & {
   placeholder?: string
   value?: string
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
@@ -193,12 +193,12 @@ export interface InputProps extends BaseLayoutComponentProps {
 }
 
 // Input group addon props
-export interface InputGroupAddonProps extends BaseLayoutComponentProps {
+export type InputGroupAddonProps = BaseLayoutComponentProps & {
   addonType: 'prepend' | 'append'
 }
 
 // Button props
-export interface ButtonProps extends BaseLayoutComponentProps {
+export type ButtonProps = BaseLayoutComponentProps & {
   color?: ThemeColor
   outline?: boolean
   size?: 'sm' | 'md' | 'lg'
@@ -212,7 +212,7 @@ export interface ButtonProps extends BaseLayoutComponentProps {
 // ============================================================================
 
 // Avatar image props
-export interface AvatarImageProps extends BaseLayoutComponentProps {
+export type AvatarImageProps = BaseLayoutComponentProps & {
   src: string
   alt?: string
   size?: 'sm' | 'md' | 'lg'
@@ -226,7 +226,7 @@ export interface AvatarImageProps extends BaseLayoutComponentProps {
 export type CommonProps = BaseLayoutComponentProps
 
 // Navigation link props
-export interface NavigationLinkProps extends BaseLayoutComponentProps {
+export type NavigationLinkProps = BaseLayoutComponentProps & {
   to: RoutePath
   exact?: boolean
 }
@@ -236,7 +236,7 @@ export interface NavigationLinkProps extends BaseLayoutComponentProps {
 // ============================================================================
 
 // Audit log action payload
-export interface AuditLogAction {
+export type AuditLogAction = {
   message: string
   timestamp?: Date
   userId?: string
@@ -254,13 +254,13 @@ export type RoutePath = string
 // ============================================================================
 
 // Loading state
-export interface LoadingState {
+export type LoadingState = {
   isLoading: boolean
   error?: string | null
 }
 
 // Data with loading state
-export interface DataWithLoading<T> extends LoadingState {
+export type DataWithLoading<T> = LoadingState & {
   data?: T
 }
 
@@ -269,20 +269,20 @@ export interface DataWithLoading<T> extends LoadingState {
 // ============================================================================
 
 // Dropdown state
-export interface DropdownState {
+export type DropdownState = {
   isOpen: boolean
   toggle: () => void
 }
 
 // Sidebar state
-export interface SidebarState {
+export type SidebarState = {
   isCollapsed: boolean
   isSlim: boolean
   toggle: () => void
 }
 
 // Navbar state
-export interface NavbarState {
+export type NavbarState = {
   isOpen: boolean
   toggle: () => void
 }

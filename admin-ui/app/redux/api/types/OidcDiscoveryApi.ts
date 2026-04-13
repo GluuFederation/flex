@@ -1,5 +1,5 @@
 import type { OidcDiscoveryConfig } from 'Redux/types'
 
-export interface OidcDiscoveryApiClient {
+export type OidcDiscoveryApiClient = {
   getProperties: (callback: (error: Error | null, data: OidcDiscoveryConfig) => void) => void
 }

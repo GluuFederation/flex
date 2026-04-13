@@ -16,6 +16,8 @@
     "add_attribute_mapping": "Agregar mapeo de atributos",
     "finish": "Finalizar",
     "add": "Añadir",
+    "add_url": "Agregar URL",
+    "add_redirect_url": "Agregar URL de redirección",
     "add_ldap_configuration": "Agregar configuración LDAP",
     "add_mapping": "Agregar mapeo",
     "add_header": "Agregar encabezado",
@@ -72,7 +74,8 @@
     "copy_to_clipboard": "Copiar al portapapeles",
     "export_csv": "Exportar CSV",
     "add_custom_attributes": "Agregar atributos personalizados",
-    "refresh": "Actualizar"
+    "refresh": "Actualizar",
+    "view_current": "Ver actual"
   },
   "password": {
     "show": "Mostrar contraseña",
@@ -1333,7 +1336,12 @@
     "enter_policies_zip_uris": "Ingrese la URI de política ZIP",
     "enter_token_channels": "Ingrese los canales de token",
     "type_value": "Ingrese el valor de {{field}}",
-    "search_attribute_here": "Buscar atributo aquí"
+    "search_attribute_here": "Buscar atributo aquí",
+    "email_example": "Ej. sample@org.com",
+    "valid_origin_uri": "Ingrese un URI de origen válido (ej. https://...)",
+    "valid_request_uri": "Ingrese un URI de solicitud válido (ej. https://...)",
+    "valid_claim_uri": "Ingrese un URI de claims válido (ej. https://...)",
+    "valid_uri_pattern": "Ingrese un URI válido en formato (ej. https:// o schema://)"
   },
   "titles": {
     "smtp_test_result": "Resultado de la prueba SMTP",
@@ -1455,7 +1463,8 @@
     "create_identity_provider": "Crear Proveedor de Identidad",
     "view_identity_provider": "Ver Proveedor de Identidad",
     "delete_identity_provider": "Eliminar Proveedor de Identidad",
-    "search_filter": "Filtro de búsqueda"
+    "search_filter": "Filtro de búsqueda",
+    "uma_resource_detail": "Detalle del recurso UMA"
   },
   "links": {
     "support": "https://support.gluu.org/"
@@ -1507,7 +1516,9 @@
     "log_level_warn": "WARN",
     "log_level_error": "ERROR",
     "log_layout_text": "Texto",
-    "log_layout_json": "JSON"
+    "log_layout_json": "JSON",
+    "jwt": "JWT",
+    "reference": "Referencia"
   },
   "documentation": {
     "asset": {

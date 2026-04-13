@@ -4,7 +4,7 @@ import { useCallback, useMemo } from 'react'
 // Plugin Base Paths - Single source of truth
 const PLUGIN_BASE_PATHS = {
   SAML: '/saml',
-  ADMIN: '/adm',
+  HOME: '/home',
   USER_MANAGEMENT: '/user',
   AUTH_SERVER: '/auth-server',
   SERVICES: '/config',
@@ -20,7 +20,7 @@ const ROUTES = {
   PLUGIN_BASE_PATHS,
 
   // ========== Home & Dashboard ==========
-  HOME_DASHBOARD: `${PLUGIN_BASE_PATHS.ADMIN}/dashboard`,
+  HOME_DASHBOARD: `${PLUGIN_BASE_PATHS.HOME}/dashboard`,
 
   // ========== User Management Plugin ==========
   USER_MANAGEMENT: `${PLUGIN_BASE_PATHS.USER_MANAGEMENT}/usersmanagement`,
@@ -31,37 +31,37 @@ const ROUTES = {
 
   // ========== Admin Console Plugin ==========
   // Dashboard
-  ADMIN_DASHBOARD: `${PLUGIN_BASE_PATHS.ADMIN}/dashboard`,
-  ADMIN_HEALTH: `${PLUGIN_BASE_PATHS.ADMIN}/health`,
-  ADMIN_LICENSE_DETAILS: `${PLUGIN_BASE_PATHS.ADMIN}/licenseDetails`,
-  ADMIN_MAU_GRAPH: `${PLUGIN_BASE_PATHS.ADMIN}/maugraph`,
-  ADMIN_SETTINGS: `${PLUGIN_BASE_PATHS.ADMIN}/settings`,
-  ADMIN_MAPPING: `${PLUGIN_BASE_PATHS.ADMIN}/mapping`,
-  ADMIN_CEDARLING_CONFIG: `${PLUGIN_BASE_PATHS.ADMIN}/cedarlingconfig`,
-  ADMIN_AUDIT_LOGS: `${PLUGIN_BASE_PATHS.ADMIN}/audit-logs`,
+  ADMIN_DASHBOARD: `${PLUGIN_BASE_PATHS.HOME}/dashboard`,
+  ADMIN_HEALTH: `${PLUGIN_BASE_PATHS.HOME}/health`,
+  ADMIN_LICENSE_DETAILS: `${PLUGIN_BASE_PATHS.HOME}/licenseDetails`,
+  ADMIN_MAU_GRAPH: `${PLUGIN_BASE_PATHS.HOME}/maugraph`,
+  ADMIN_SETTINGS: `${PLUGIN_BASE_PATHS.HOME}/settings`,
+  ADMIN_MAPPING: `${PLUGIN_BASE_PATHS.HOME}/mapping`,
+  ADMIN_CEDARLING_CONFIG: `${PLUGIN_BASE_PATHS.HOME}/cedarlingconfig`,
+  ADMIN_AUDIT_LOGS: `${PLUGIN_BASE_PATHS.HOME}/audit-logs`,
 
   // Assets
-  ASSETS_LIST: `${PLUGIN_BASE_PATHS.ADMIN}/assets`,
-  ASSET_ADD: `${PLUGIN_BASE_PATHS.ADMIN}/asset/add`,
-  ASSET_EDIT: (inum: string) => `${PLUGIN_BASE_PATHS.ADMIN}/asset/edit/${encodeURIComponent(inum)}`,
-  ASSET_EDIT_TEMPLATE: `${PLUGIN_BASE_PATHS.ADMIN}/asset/edit/:id`,
+  ASSETS_LIST: `${PLUGIN_BASE_PATHS.HOME}/assets`,
+  ASSET_ADD: `${PLUGIN_BASE_PATHS.HOME}/asset/add`,
+  ASSET_EDIT: (inum: string) => `${PLUGIN_BASE_PATHS.HOME}/asset/edit/${encodeURIComponent(inum)}`,
+  ASSET_EDIT_TEMPLATE: `${PLUGIN_BASE_PATHS.HOME}/asset/edit/:id`,
 
   // Webhooks
-  WEBHOOK_LIST: `${PLUGIN_BASE_PATHS.ADMIN}/webhook`,
-  WEBHOOK_ADD: `${PLUGIN_BASE_PATHS.ADMIN}/webhook/add`,
+  WEBHOOK_LIST: `${PLUGIN_BASE_PATHS.HOME}/webhook`,
+  WEBHOOK_ADD: `${PLUGIN_BASE_PATHS.HOME}/webhook/add`,
   WEBHOOK_EDIT: (inum: string) =>
-    `${PLUGIN_BASE_PATHS.ADMIN}/webhook/edit/${encodeURIComponent(inum)}`,
-  WEBHOOK_EDIT_TEMPLATE: `${PLUGIN_BASE_PATHS.ADMIN}/webhook/edit/:id`,
+    `${PLUGIN_BASE_PATHS.HOME}/webhook/edit/${encodeURIComponent(inum)}`,
+  WEBHOOK_EDIT_TEMPLATE: `${PLUGIN_BASE_PATHS.HOME}/webhook/edit/:id`,
 
   // Custom Scripts (shares admin base path)
-  CUSTOM_SCRIPT_LIST: `${PLUGIN_BASE_PATHS.ADMIN}/scripts`,
-  CUSTOM_SCRIPT_ADD: `${PLUGIN_BASE_PATHS.ADMIN}/script/new`,
+  CUSTOM_SCRIPT_LIST: `${PLUGIN_BASE_PATHS.HOME}/scripts`,
+  CUSTOM_SCRIPT_ADD: `${PLUGIN_BASE_PATHS.HOME}/script/new`,
   CUSTOM_SCRIPT_VIEW: (inum: string) =>
-    `${PLUGIN_BASE_PATHS.ADMIN}/script/view/${encodeURIComponent(inum)}`,
-  CUSTOM_SCRIPT_VIEW_TEMPLATE: `${PLUGIN_BASE_PATHS.ADMIN}/script/view/:id`,
+    `${PLUGIN_BASE_PATHS.HOME}/script/view/${encodeURIComponent(inum)}`,
+  CUSTOM_SCRIPT_VIEW_TEMPLATE: `${PLUGIN_BASE_PATHS.HOME}/script/view/:id`,
   CUSTOM_SCRIPT_EDIT: (inum: string) =>
-    `${PLUGIN_BASE_PATHS.ADMIN}/script/edit/${encodeURIComponent(inum)}`,
-  CUSTOM_SCRIPT_EDIT_TEMPLATE: `${PLUGIN_BASE_PATHS.ADMIN}/script/edit/:id`,
+    `${PLUGIN_BASE_PATHS.HOME}/script/edit/${encodeURIComponent(inum)}`,
+  CUSTOM_SCRIPT_EDIT_TEMPLATE: `${PLUGIN_BASE_PATHS.HOME}/script/edit/:id`,
 
   // ========== Schema / User Claims Plugin ==========
   ATTRIBUTES_LIST: `${PLUGIN_BASE_PATHS.SCHEMA}`,

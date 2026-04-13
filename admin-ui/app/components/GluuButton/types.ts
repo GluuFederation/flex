@@ -3,7 +3,7 @@ import type { CSSProperties, ReactNode } from 'react'
 export type ButtonSize = 'sm' | 'md' | 'lg'
 export type ButtonTheme = 'light' | 'dark'
 
-export interface GluuButtonProps {
+export type GluuButtonProps = {
   'children': ReactNode
   'size'?: ButtonSize
   'outlined'?: boolean

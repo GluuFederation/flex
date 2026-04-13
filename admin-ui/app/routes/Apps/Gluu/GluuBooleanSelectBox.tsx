@@ -3,9 +3,10 @@ import GluuToogle from './GluuToogle'
 import { Col, FormGroup, CustomInput, InputGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
 import { useMemo } from 'react'
+import type { JsonValue } from './types/common'
 import type { GluuBooleanSelectBoxProps } from './types'
 
-const GluuBooleanSelectBox = ({
+const GluuBooleanSelectBox = <T extends object = Record<string, JsonValue>>({
   label,
   name,
   value,
@@ -16,7 +17,7 @@ const GluuBooleanSelectBox = ({
   doc_category,
   disabled,
   toToggle = true,
-}: GluuBooleanSelectBoxProps) => {
+}: GluuBooleanSelectBoxProps<T>): JSX.Element => {
   const { t } = useTranslation()
   const normalizedValue = useMemo(() => {
     return typeof value === 'string' ? value === 'true' : value

@@ -22,28 +22,7 @@ export type ScopeItem = {
 }
 
 export type ScopeState = {
-  items: ScopeItem[]
-  item: ScopeItem
-  loading: boolean
-  saveOperationFlag: boolean
-  errorInSaveOperationFlag: boolean
-  scopesByCreator: ScopeItem[]
-  totalItems: number
-  entriesCount: number
-  clientScopes: ScopeItem[]
-  loadingClientScopes: boolean
   selectedClientScopes: ScopeItem[]
-}
-
-export type UmaResourceItem = {
-  inum?: string
-  name?: string
-  [key: string]: JsonValue | undefined
-}
-
-export type UmaResourceState = {
-  items: UmaResourceItem[]
-  loading: boolean
 }
 
 export type MessageState = {
@@ -55,6 +34,5 @@ export type MessageState = {
 export type AuthServerPluginState = {
   oidcReducer: OidcState
   scopeReducer: ScopeState
-  umaResourceReducer: UmaResourceState
   messageReducer: MessageState
 }
