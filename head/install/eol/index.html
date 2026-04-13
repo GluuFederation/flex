@@ -12,13 +12,13 @@
         <meta name="author" content="Gluu, Inc.">
       
       
-        <link rel="canonical" href="https://docs.gluu.org/head/install/helm-install/">
+        <link rel="canonical" href="https://docs.gluu.org/head/install/eol/">
       
       
-        <link rel="prev" href="../flex/prerequisites/">
+        <link rel="prev" href="../vm-install/suse/">
       
       
-        <link rel="next" href="local/">
+        <link rel="next" href="../../admin/">
       
       
       <link rel="icon" href="../../assets/logo/favicon.ico">
@@ -26,7 +26,7 @@
     
     
       
-        <title>Helm Deployment - Gluu Flex Documentation</title>
+        <title>Version Support Policy - Gluu Flex Documentation</title>
       
     
     
@@ -84,7 +84,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#helm-deployment" class="md-skip">
+        <a href="#version-eol-policy" class="md-skip">
           Skip to content
         </a>
       
@@ -135,7 +135,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Helm Deployment
+              Version Support Policy
             
           </span>
         </div>
@@ -545,8 +545,6 @@
                 
   
   
-    
-  
   
   
     
@@ -573,15 +571,15 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="./" class="md-nav__link md-nav__link--active">
+            <a href="../helm-install/" class="md-nav__link ">
               
   
   
@@ -594,13 +592,13 @@
             </a>
             
               
-              <label class="md-nav__link md-nav__link--active" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2_3">
             <span class="md-nav__icon md-icon"></span>
             Helm Deployments
@@ -616,7 +614,7 @@
   
   
     <li class="md-nav__item">
-      <a href="local/" class="md-nav__link">
+      <a href="../helm-install/local/" class="md-nav__link">
         
   
   
@@ -639,7 +637,7 @@
   
   
     <li class="md-nav__item">
-      <a href="amazon-eks/" class="md-nav__link">
+      <a href="../helm-install/amazon-eks/" class="md-nav__link">
         
   
   
@@ -662,7 +660,7 @@
   
   
     <li class="md-nav__item">
-      <a href="google-gke/" class="md-nav__link">
+      <a href="../helm-install/google-gke/" class="md-nav__link">
         
   
   
@@ -685,7 +683,7 @@
   
   
     <li class="md-nav__item">
-      <a href="microsoft-azure/" class="md-nav__link">
+      <a href="../helm-install/microsoft-azure/" class="md-nav__link">
         
   
   
@@ -708,7 +706,7 @@
   
   
     <li class="md-nav__item">
-      <a href="rancher/" class="md-nav__link">
+      <a href="../helm-install/rancher/" class="md-nav__link">
         
   
   
@@ -988,10 +986,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../eol/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Version Support Policy
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1002,6 +1022,101 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-lifecycle-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Lifecycle Overview
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Lifecycle Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-milestones" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Milestones
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-version-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Version Status
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-support-scope-during-transition" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Support Scope During Transition
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-upgrade-migration-guidance" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Upgrade &amp; Migration Guidance
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Upgrade &amp; Migration Guidance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#migration-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      Migration Resources:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-documentation-archiving" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Documentation Archiving
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2602,9 +2717,75 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#looking-for-older-helm-charts" class="md-nav__link">
+  <a href="#1-lifecycle-overview" class="md-nav__link">
     <span class="md-ellipsis">
-      Looking for older helm charts?
+      1. Lifecycle Overview
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Lifecycle Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-milestones" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Milestones
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-version-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Version Status
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-support-scope-during-transition" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Support Scope During Transition
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-upgrade-migration-guidance" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Upgrade &amp; Migration Guidance
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Upgrade &amp; Migration Guidance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#migration-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      Migration Resources:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-documentation-archiving" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Documentation Archiving
     </span>
   </a>
   
@@ -2630,19 +2811,19 @@
       
       
       
-        <span class="md-tag">administration</span>
+        <span class="md-tag">EOL</span>
       
     
       
       
       
-        <span class="md-tag">helm</span>
+        <span class="md-tag">Supported versions</span>
       
     
       
       
       
-        <span class="md-tag">installation</span>
+        <span class="md-tag">Version lifecycle</span>
       
     
   </nav>
@@ -2652,23 +2833,96 @@
   
 
 
-<h1 id="helm-deployment">Helm Deployment<a class="headerlink" href="#helm-deployment" title="Permanent link">#</a></h1>
-<p>Gluu Flex enables organizations to build a scalable centralized authentication and authorization service using free open source software.</p>
-<p>The components of the project include client and server implementations of the OAuth, OpenID Connect, SCIM and FIDO standards.</p>
-<p>All these components are deployed using Gluu <a href="https://github.com/GluuFederation/flex/blob/main/charts/gluu">helm chart</a>.</p>
-<p>You can check the <a href="../../reference/kubernetes/helm-chart/">reference</a> guide to view the list of the chart components and values.</p>
-<h2 id="looking-for-older-helm-charts">Looking for older helm charts?<a class="headerlink" href="#looking-for-older-helm-charts" title="Permanent link">#</a></h2>
-<p>If you are looking for older helm charts, you need to build them from the <a href="https://github.com/GluuFederation/flex/tree/main/charts/gluu">Gluu Flex</a> repository. We only keep the last 5 versions of the chart up. We support auto-upgrade using helm upgrade and hence want everyone to stay up to date with our charts.</p>
-<p>To build older charts manually from the Gluu Flex repository, you can use the following example which assumes we are building for janssen version <code>v5.0.0</code>:</p>
-<div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>--filter<span class="w"> </span>blob:none<span class="w"> </span>--no-checkout<span class="w"> </span>https://github.com/GluuFederation/flex.git<span class="w"> </span>/tmp/flex<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>/tmp/flex<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>sparse-checkout<span class="w"> </span>init<span class="w"> </span>--cone<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>v5.0.0<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>sparse-checkout<span class="w"> </span>add<span class="w"> </span>charts/gluu<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>charts/gluu<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="o">&amp;&amp;</span><span class="w"> </span>helm<span class="w"> </span>dependency<span class="w"> </span>update<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="o">&amp;&amp;</span><span class="w"> </span>helm<span class="w"> </span>package<span class="w"> </span>.
-</code></pre></div>
+<h1 id="version-eol-policy">Version EOL Policy<a class="headerlink" href="#version-eol-policy" title="Permanent link">#</a></h1>
+<h2 id="1-lifecycle-overview">1. Lifecycle Overview<a class="headerlink" href="#1-lifecycle-overview" title="Permanent link">#</a></h2>
+<p>Our End of Life (EOL) policy is designed to provide a predictable schedule for support and upgrades. The lifecycle of any major version is calculated based on its original <strong>General Availability (GA)</strong> date.</p>
+<h3 id="key-milestones">Key Milestones<a class="headerlink" href="#key-milestones" title="Permanent link">#</a></h3>
+<p>The table below shows general cadence of the key release milestones. Applicable from version <code>6.0.0</code> onwards.</p>
+<table>
+<thead>
+<tr>
+<th>Milestone</th>
+<th>Calculation</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>General Availability (GA)</strong></td>
+<td>$T_0$</td>
+<td>The date the version was publicly released.</td>
+</tr>
+<tr>
+<td><strong>End of Maintenance (EOM)</strong></td>
+<td>$T_0 + 12$ Months</td>
+<td>End of full support and start of maintenance support.</td>
+</tr>
+<tr>
+<td><strong>End of Life (EOL)</strong></td>
+<td>$T_0 + 24$ Months</td>
+<td>End of maintenence support. Documentation moved to archives.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="2-version-status">2. Version Status<a class="headerlink" href="#2-version-status" title="Permanent link">#</a></h2>
+<p>Use the table below to determine the current status of your installed version.</p>
+<table>
+<thead>
+<tr>
+<th>Version</th>
+<th>Release Date (GA)</th>
+<th>End of Maintenance</th>
+<th>End of Life (Support)</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>v5.x.x</strong></td>
+<td>2024-03-15</td>
+<td>2025-03-15</td>
+<td>2026-11-01(Projected)</td>
+<td><strong>Active</strong></td>
+</tr>
+<tr>
+<td><strong>v5.0.x</strong></td>
+<td>2022-03-15</td>
+<td>2023-03-15</td>
+<td>2024-09-15</td>
+<td><strong>EOL</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3-support-scope-during-transition">3. Support Scope During Transition<a class="headerlink" href="#3-support-scope-during-transition" title="Permanent link">#</a></h2>
+<p>As a version approaches its EOL date, the level of support shifts:</p>
+<ul>
+<li><strong>Full Support:</strong> Covers "How-to" questions, bug fixes, and security vulnerabilities.</li>
+<li><strong>Maintenance Support:</strong> No new features. Only critical security patches and high-severity bug fixes are provided.</li>
+</ul>
+<hr />
+<h2 id="4-upgrade-migration-guidance">4. Upgrade &amp; Migration Guidance<a class="headerlink" href="#4-upgrade-migration-guidance" title="Permanent link">#</a></h2>
+<p>To maintain system integrity and security, we recommend upgrading to the latest Stable Release at least <strong>six months prior</strong> to your current version's EOL date.</p>
+<h3 id="migration-resources">Migration Resources:<a class="headerlink" href="#migration-resources" title="Permanent link">#</a></h3>
+<ul>
+<li><strong>Breaking Changes Log:</strong> Review our <a href="https://github.com/GluuFederation/flex/releases">Changelog</a> for API or configuration changes.</li>
+<li><strong>Compatibility Matrix:</strong> Ensure your OS and hardware meet the system requirements for your deployment platform for the new version. Refer to the <a href="../">installation</a> section for more details.</li>
+<li><strong>Automated Upgrade Scripts:</strong> Available for the last three releases to simplify upgrades.
+  For example, upgrading from 5.14.0 to 6.0.0 should follow: 5.14.0 → 5.15.0 → 5.16.0 → 6.0.0.</li>
+</ul>
+<blockquote>
+<p><strong>Warning:</strong> Running software past its EOL date may result in compatibility issues with newer OS updates and increased exposure to security threats.</p>
+</blockquote>
+<hr />
+<h2 id="5-documentation-archiving">5. Documentation Archiving<a class="headerlink" href="#5-documentation-archiving" title="Permanent link">#</a></h2>
+<p>Once a version reaches its EOL date:</p>
+<ol>
+<li>Online documentation will be moved to the <strong>Legacy Archive</strong>.</li>
+<li>Knowledge Base articles will remain searchable but will no longer be updated.</li>
+<li>Community forums for that version will be set to <strong>Read-Only</strong>.</li>
+</ol>
+<hr />
 
 
 
@@ -2691,7 +2945,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="January 6, 2026 11:07:54 UTC"><span class="timeago" datetime="2026-01-06T11:07:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="January 6, 2026 11:07:54 UTC">2026-01-06</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="April 13, 2026 08:37:11 UTC"><span class="timeago" datetime="2026-04-13T08:37:11+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="April 13, 2026 08:37:11 UTC">2026-04-13</span>
   </span>
 
     
@@ -2701,7 +2955,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="September 22, 2022 19:37:05 UTC"><span class="timeago" datetime="2022-09-22T19:37:05+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="September 22, 2022 19:37:05 UTC">2022-09-22</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="April 13, 2026 08:37:11 UTC"><span class="timeago" datetime="2026-04-13T08:37:11+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="April 13, 2026 08:37:11 UTC">2026-04-13</span>
   </span>
 
     
