@@ -419,7 +419,6 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
       </div>
 
       <GluuThemeFormFooter
-        hideDivider
         showBack
         showCancel
         showApply={!readOnly}

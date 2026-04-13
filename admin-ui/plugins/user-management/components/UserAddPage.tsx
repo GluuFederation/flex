@@ -24,6 +24,7 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './UserFormPage.style'
+import SetTitle from 'Utils/SetTitle'
 
 const UserAddPage = () => {
   const dispatch = useAppDispatch()
@@ -34,6 +35,8 @@ const UserAddPage = () => {
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
   const isDark = themeState.theme === THEME_DARK
   const { classes } = useStyles({ isDark, themeColors })
+
+  SetTitle(t('tooltips.add_user', { defaultValue: 'Add User' }))
 
   const { data: attributesData, isLoading: loadingAttributes } = useGetAttributes({
     limit: 200,

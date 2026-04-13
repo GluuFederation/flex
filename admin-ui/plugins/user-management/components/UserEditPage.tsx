@@ -41,6 +41,7 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './UserFormPage.style'
+import SetTitle from 'Utils/SetTitle'
 
 const UserEditPage = () => {
   const dispatch = useAppDispatch()
@@ -55,6 +56,8 @@ const UserEditPage = () => {
   )
   const isDark = (themeState?.theme ?? DEFAULT_THEME) === THEME_DARK
   const { classes } = useStyles({ isDark, themeColors })
+
+  SetTitle(t('tooltips.edit_user', { defaultValue: 'Edit User' }))
 
   const [userDetails] = useState<CustomUser | null>(location.state?.selectedUser ?? null)
   useEffect(() => {

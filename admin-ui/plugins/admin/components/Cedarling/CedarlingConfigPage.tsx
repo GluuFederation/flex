@@ -286,7 +286,6 @@ const CedarlingConfigPage: React.FC = () => {
                 disableApply={!selectedFile || isLoading}
                 applyButtonType="button"
                 isLoading={isLoading}
-                hideDivider
               />
             </Form>
           </Box>

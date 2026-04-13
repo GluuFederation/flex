@@ -91,12 +91,6 @@ jest.mock('Routes/Apps/Gluu/GluuCommitDialog', () => {
   }
 })
 
-jest.mock('Routes/Apps/Gluu/GluuFormFooter', () => {
-  return function MockGluuFormFooter() {
-    return <div data-testid="form-footer">Mock</div>
-  }
-})
-
 jest.mock('Routes/Apps/Gluu/GluuThemeFormFooter', () => {
   return function MockGluuThemeFormFooter() {
     return <div data-testid="theme-form-footer">Mock</div>

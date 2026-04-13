@@ -8,6 +8,9 @@ import { JANS_ADMIN_UI_ROLE_ATTR, COUNTRY_ATTR } from '../common/Constants'
 import { getClaimLabel, getClaimLabelKey } from '../utils/claimLabelUtils'
 import { useGetAllAdminuiRoles } from 'JansConfigApi'
 import { UserClaimEntryProps } from '../types/ComponentTypes'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 const UserClaimEntry = ({
   data,
   entry,
@@ -17,6 +20,11 @@ const UserClaimEntry = ({
   setModifiedFields,
 }: UserClaimEntryProps) => {
   const { t } = useTranslation()
+  const { state: themeState } = useTheme()
+  const themeColors = useMemo(
+    () => getThemeColor(themeState?.theme ?? DEFAULT_THEME),
+    [themeState?.theme],
+  )
 
   const claimLabelKey = useMemo(
     () => getClaimLabelKey(t, data.name, data.displayName),
@@ -43,6 +51,8 @@ const UserClaimEntry = ({
 
   const isRoleField = data.name === JANS_ADMIN_UI_ROLE_ATTR
   const isRolesUnavailable = isRoleField && (rolesLoading || rolesError)
+  const userManagementMultiSelectBg =
+    themeColors.settings?.formInputBackground ?? themeColors.inputBackground
 
   const multiValue = Array.isArray(formik.values[data.name])
     ? (formik.values[data.name] as string[]).filter((v): v is string => typeof v === 'string')
@@ -88,6 +98,7 @@ const UserClaimEntry = ({
                 : t('messages.failed_load_roles')
               : t('placeholders.search_here')
           }
+          inputBackgroundColor={userManagementMultiSelectBg}
           allowCustom={data.name !== JANS_ADMIN_UI_ROLE_ATTR}
           doc_category={data.description}
           onRemoveField={doHandle}
