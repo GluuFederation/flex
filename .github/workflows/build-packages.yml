@@ -100,9 +100,6 @@ jobs:
     - name: Getting build dependencies
       id: get_dependencies
       run: |
-    - name: Getting build dependencies
-      id: get_dependencies
-      run: |
         mkdir -p flex/flex-src/opt/
         cp -rp temp-flex/automation/packaging/${{ matrix.build_files }}/* flex/
         cp temp-flex/flex-linux-setup/flex_linux_setup/flex_setup.py flex/flex_setup.py
