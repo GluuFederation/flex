@@ -1,7 +1,7 @@
 import type { AdminPermission, LicenseRequest, LicenseResponse, SSARequest } from 'JansConfigApi'
 
 /** Callback-style API from jans_config_api AdminUILicenseApi (used by saga with getClientWithToken) */
-export interface AdminUILicenseApiInterface {
+export type AdminUILicenseApiInterface = {
   isLicenseActive: (callback: (error: Error | null, data: LicenseResponse | null) => void) => void
   checkAdminuiLicenseConfig: (
     callback: (error: Error | null, data: LicenseResponse | null) => void,
@@ -31,17 +31,17 @@ export interface AdminUILicenseApiInterface {
 }
 
 /** Payload for submitLicenseKey (saga passes { payload: LicenseRequest }) */
-export interface LicenseRequestPayload {
+export type LicenseRequestPayload = {
   payload: LicenseRequest
 }
 
 /** Payload for uploadSSAtoken (saga passes { payload: SSARequest }) */
-export interface SSARequestPayload {
+export type SSARequestPayload = {
   payload: SSARequest
 }
 
 /** Generic response shape from license API (success + responseObject). */
-export interface LicenseApiGenericResponse {
+export type LicenseApiGenericResponse = {
   success?: boolean
   responseObject?: Record<string, string> | Array<{ name?: string; value?: string }>
 }

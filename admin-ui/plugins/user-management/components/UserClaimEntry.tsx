@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import GluuRemovableInputRow from 'Routes/Apps/Gluu/GluuRemovableInputRow'
 import GluuRemovableSelectRow from 'Routes/Apps/Gluu/GluuRemovableSelectRow'
-import UserRoleAutocomplete from 'Routes/Apps/Gluu/UserRoleAutocomplete'
+import GluuAutocomplete from 'Routes/Apps/Gluu/GluuAutocomplete'
 import { countries } from 'Plugins/user-management/common/countries'
 import { JANS_ADMIN_UI_ROLE_ATTR, COUNTRY_ATTR } from '../common/Constants'
 import { getClaimLabel, getClaimLabelKey } from '../utils/claimLabelUtils'
@@ -84,7 +84,7 @@ const UserClaimEntry = ({
   if (data.oxMultiValuedAttribute) {
     return (
       <div key={entry}>
-        <UserRoleAutocomplete
+        <GluuAutocomplete
           label={claimLabel}
           name={data.name}
           value={multiValue}

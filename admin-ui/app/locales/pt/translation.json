@@ -153,6 +153,8 @@
     "add_attribute_mapping": "Adicionar mapeamento de atributos",
     "add_custom_attributes": "Adicionar atributos personalizados",
     "add": "Adicionar",
+    "add_url": "Adicionar URL",
+    "add_redirect_url": "Adicionar URL de redirecionamento",
     "reject": "Rejeitar",
     "configuration_copied": "Configuração copiada",
     "copy_configuration": "Copiar configuração",
@@ -204,7 +206,8 @@
     "add_source_ldap_server": "Adicionar servidor LDAP de origem",
     "remove_source_server": "Remover servidor de origem",
     "copy_to_clipboard": "Copiar para área de transferência",
-    "refresh": "Atualizar"
+    "refresh": "Atualizar",
+    "view_current": "Ver atual"
   },
   "serviceDownFallback": "Gluu Flex Admin UI não está recebendo resposta do backend (Jans Config Api).",
   "roleNotFoundMessage": "Usuário não autorizado",
@@ -768,7 +771,12 @@
     "configApiPolicyStoreUrl": "Política de armazenamento da API de configuração",
     "cedarlingPolicyStoreRetrievalPoint": "Ponto de Recuperação de Políticas",
     "log_entry": "Entrada de registro",
-    "page_size": "Tamanho da página"
+    "page_size": "Tamanho da página",
+    "idTokenTokenBindingCnf": "Método de confirmação de vinculação de token para id_token",
+    "authorizationSignedResponseAlg": "Algoritmo JWS para assinatura",
+    "authorizationEncryptedResponseAlg": "Algoritmo JWS para criptografia",
+    "authorizationEncryptedResponseEnc": "Criptografia JWE para autorização",
+    "scope": "Escopo"
   },
   "footer": {
     "copyright": "(C) {{year}} Todos os direitos reservados.",
@@ -1294,7 +1302,12 @@
     "sql_serverTimezone": "Enter server timezone.",
     "activate_sql_configuration": "Activate SQL configuration.",
     "iconUrl": "Icon URL",
-    "level": "Level"
+    "level": "Level",
+    "email_example": "Ex.: sample@org.com",
+    "valid_origin_uri": "Insira um URI de origem válido (ex.: https://...)",
+    "valid_request_uri": "Insira um URI de solicitação válido (ex.: https://...)",
+    "valid_claim_uri": "Insira um URI de reivindicação válido (ex.: https://...)",
+    "valid_uri_pattern": "Insira um URI válido no formato (ex.: https:// ou schema://)"
   },
   "titles": {
     "smtp_test_result": "Resultado do teste SMTP",
@@ -1417,7 +1430,8 @@
     "json_view": "JSON View",
     "add_alias": "Add New Mapping",
     "edit_alias": "Edit Mapping",
-    "creation_date": "Creation Date"
+    "creation_date": "Creation Date",
+    "uma_resource_detail": "Detalhe do recurso UMA"
   },
   "links": {
     "support": "https://support.gluu.org/"
@@ -1469,7 +1483,9 @@
     "log_level_warn": "WARN",
     "log_level_error": "ERROR",
     "log_layout_text": "Texto",
-    "log_layout_json": "JSON"
+    "log_layout_json": "JSON",
+    "jwt": "JWT",
+    "reference": "Referência"
   },
   "documentation": {
     "asset": {

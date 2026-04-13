@@ -16,6 +16,8 @@
     "add_attribute_mapping": "Add Attribute Mapping",
     "finish": "Finish",
     "add": "Add",
+    "add_url": "Add URL",
+    "add_redirect_url": "Add Redirect URL",
     "add_ldap_configuration": "Add LDAP Configuration",
     "add_mapping": "Add Mapping",
     "add_header": "Add Header",
@@ -72,7 +74,8 @@
     "copy_to_clipboard": "Copy To Clipboard",
     "export_csv": "Export CSV",
     "add_custom_attributes": "Add custom attributes",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "view_current": "View Current"
   },
   "password": {
     "show": "Show password",
@@ -1332,7 +1335,12 @@
     "enter_policies_zip_uris_authorization_token": "Enter the ZIP policy URI authorization token",
     "enter_policies_zip_uris": "Enter the ZIP policy URI",
     "enter_token_channels": "Enter the token channels",
-    "type_value": "Type {{field}} value"
+    "type_value": "Type {{field}} value",
+    "email_example": "E.g. sample@org.com",
+    "valid_origin_uri": "Enter a valid origin URI (e.g. https://...)",
+    "valid_request_uri": "Enter a valid request URI (e.g. https://...)",
+    "valid_claim_uri": "Enter a valid claim URI (e.g. https://...)",
+    "valid_uri_pattern": "Enter a valid URI in format (e.g. https:// or schema://)"
   },
   "titles": {
     "smtp_test_result": "SMTP Test Result",
@@ -1454,7 +1462,8 @@
     "create_identity_provider": "Create Identity Provider",
     "view_identity_provider": "View Identity Provider",
     "delete_identity_provider": "Delete Identity Provider",
-    "search_filter": "Search Filter"
+    "search_filter": "Search Filter",
+    "uma_resource_detail": "UMA Resource Detail"
   },
   "links": {
     "support": "https://support.gluu.org/"
@@ -1506,7 +1515,9 @@
     "log_level_warn": "WARN",
     "log_level_error": "ERROR",
     "log_layout_text": "Text",
-    "log_layout_json": "JSON"
+    "log_layout_json": "JSON",
+    "jwt": "JWT",
+    "reference": "Reference"
   },
   "documentation": {
     "asset": {

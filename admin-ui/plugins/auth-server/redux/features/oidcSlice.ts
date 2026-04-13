@@ -1,7 +1,9 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
-import type { OidcState } from 'Redux/types'
-import type { SetCurrentClientPayload, ViewOnlyPayload } from './types'
+import type { OidcState, OidcClientItem } from 'Redux/types'
+
+type SetCurrentClientPayload = { item: OidcClientItem }
+type ViewOnlyPayload = { view: boolean } | boolean
 
 const initialState: OidcState = {
   item: {},

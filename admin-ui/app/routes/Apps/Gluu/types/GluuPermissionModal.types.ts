@@ -1,4 +1,4 @@
-export interface GluuPermissionModalProps {
+export type GluuPermissionModalProps = {
   handler: () => void
   isOpen: boolean
 }

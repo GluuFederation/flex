@@ -2,7 +2,7 @@ import type { Dayjs } from '@/utils/dayjsUtils'
 import type { SxProps, Theme } from '@mui/material/styles'
 import type { useDatePickerStyles } from './GluuDatePicker.style'
 
-interface GluuDatePickerBase {
+type GluuDatePickerBase = {
   format?: string
   dateFormat?: string
   textColor?: string
@@ -10,7 +10,7 @@ interface GluuDatePickerBase {
   inputHeight?: number
 }
 
-export interface GluuDatePickerSingleProps extends GluuDatePickerBase {
+export type GluuDatePickerSingleProps = GluuDatePickerBase & {
   mode?: 'single'
   value?: Dayjs | null
   onChange: (date: Dayjs | null) => void
@@ -21,7 +21,7 @@ export interface GluuDatePickerSingleProps extends GluuDatePickerBase {
   labelShrink?: boolean
 }
 
-export interface GluuDatePickerRangeProps extends GluuDatePickerBase {
+export type GluuDatePickerRangeProps = GluuDatePickerBase & {
   mode: 'range'
   startDate: Dayjs
   endDate: Dayjs

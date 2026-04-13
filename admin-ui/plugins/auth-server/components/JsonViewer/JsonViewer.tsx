@@ -3,10 +3,9 @@ import { JsonView, allExpanded, defaultStyles } from 'react-json-view-lite'
 import 'react-json-view-lite/dist/index.css'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK, THEME_LIGHT } from '@/context/theme/constants'
-import type { JsonViewerProps } from './types'
+import type { JsonValue } from '@/routes/Apps/Gluu/types/common'
+import type { JsonViewerClasses, JsonViewerData, JsonViewerProps } from './types'
 import { useStyles } from './JsonViewer.style'
-
-type JsonViewerClasses = ReturnType<typeof useStyles>['classes']
 
 const joinClasses = (...classNames: Array<string | false>) => classNames.filter(Boolean).join(' ')
 
@@ -54,11 +53,11 @@ const JsonViewer: React.FC<JsonViewerProps> = ({
   const shouldExpand = expanded ? allExpanded : undefined
   const styles = getViewerStyles(classes, theme === THEME_DARK)
 
-  const isValidJsonData = (value: unknown): value is Record<string, unknown> | unknown[] => {
+  const isValidJsonData = (value: JsonValue): value is JsonViewerData => {
     return typeof value === 'object' && value !== null
   }
 
-  const jsonData = isValidJsonData(data) ? data : {}
+  const jsonData: JsonViewerData = isValidJsonData(data) ? data : {}
 
   return (
     <div

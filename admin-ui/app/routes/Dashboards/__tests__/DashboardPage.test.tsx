@@ -34,7 +34,7 @@ jest.mock('@/routes/License/hooks/useLicenseDetails', () => ({
   })),
 }))
 
-jest.mock('Plugins/auth-server/components/Clients/hooks', () => ({
+jest.mock('Plugins/auth-server/components/OidcClients/hooks', () => ({
   useClients: jest.fn(() => ({
     clients: [],
     totalCount: 5,

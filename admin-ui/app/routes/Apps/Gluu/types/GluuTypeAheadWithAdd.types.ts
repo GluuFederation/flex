@@ -1,5 +1,6 @@
-import type { FormikProps } from 'formik'
-import type { JsonObject } from './common'
+type GluuTypeAheadWithAddFormik = {
+  setFieldValue: (field: string, value: string[]) => void
+}
 
 export type GluuTypeAheadWithAddProps = {
   label: string
@@ -7,7 +8,7 @@ export type GluuTypeAheadWithAddProps = {
   value?: string[]
   placeholder?: string
   options?: string[]
-  formik: FormikProps<JsonObject>
+  formik: GluuTypeAheadWithAddFormik
   validator: (value: string) => boolean
   inputId: string
   doc_category?: string
