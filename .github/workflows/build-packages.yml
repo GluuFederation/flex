@@ -211,7 +211,7 @@ jobs:
         GH_TOKEN: ${{ secrets.MOWORKFLOWTOKEN }}
       run: |
         gh release upload ${{ steps.previoustag.outputs.tag }} \
-          ${{github.workspace}}/${{ matrix.asset_path }}/flex${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}${{ matrix.asset_suffix }}.sigstore.json \
+          ${{github.workspace}}/flex${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}${{ matrix.asset_suffix }}.sigstore.json \
           ${{github.workspace}}/cosign.bundle \
           ${{github.workspace}}/${{ matrix.asset_path }}/flex${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}${{ matrix.asset_suffix }}.sha256sum \
           ${{github.workspace}}/${{ matrix.asset_path }}/flex${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}${{ matrix.asset_suffix }}.asc \
