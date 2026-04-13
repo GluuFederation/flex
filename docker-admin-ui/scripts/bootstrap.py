@@ -36,7 +36,7 @@ def read_from_file(path):
         with open(path) as f:
             txt = f.read()
     except FileNotFoundError:
-        logger.warning(f"Unable to read {path} file; fallback to empty string")
+        logger.warning("Unable to read %s file; fallback to empty string", path)
     return txt.strip()
 
 
@@ -143,7 +143,7 @@ class PersistenceSetup:
 
     def import_ldif_files(self):
         for file_ in self.ldif_files:
-            logger.info(f"Importing {file_}")
+            logger.info("Importing %s", file_)
             self.client.create_from_ldif(file_, self.ctx)
 
     def save_config(self):

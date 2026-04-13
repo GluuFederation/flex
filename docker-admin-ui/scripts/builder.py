@@ -13,7 +13,7 @@ ADMIN_UI_DIR = "/opt/flex/admin-ui"
 def copy_admin_ui_dist():
     src = os.path.join(ADMIN_UI_DIR, "dist")
     dest = os.environ.get("GLUU_ADMIN_UI_PUBLIC_DIR", "/var/lib/nginx/html/admin")
-    logger.info(f"Copying admin-ui app from {src} to {dest}")
+    logger.info("Copying admin-ui app from %s to %s", src, dest)
     shutil.copytree(src, dest, dirs_exist_ok=True)
     logger.info("Finished copying admin-ui app")
 
