@@ -23,7 +23,7 @@ echo "RELEASE: $RELEASE"
 RPM_FILE="flex-${VERSION}-${RELEASE}.x86_64.rpm"
 if [ ! -f "$RPM_FILE" ]; then
         echo "ERROR: Expected RPM file $RPM_FILE not found"
-        ls -la *.rpm 2>/dev/null || echo "No RPM files in directory"
+        ls -la -- ./*.rpm 2>/dev/null || echo "No RPM files in directory"
         exit 1
 fi
 

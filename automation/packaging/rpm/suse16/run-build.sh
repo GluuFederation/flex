@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
 
 VERSION=$(echo "%VERSION%" | awk -F '-' '{print $1}')
 REL=$(echo "%VERSION%" | sed "s/^${VERSION}//g" | sed "s/^-//g")
