@@ -105,10 +105,17 @@ jobs:
         cp temp-flex/flex-linux-setup/flex_linux_setup/flex_setup.py flex/flex_setup.py
         sudo add-apt-repository -y ppa:deadsnakes/ppa
         sudo apt-get update
-        sudo apt-get install -y python${{ matrix.python_version }}
-        sudo apt install -y build-essential devscripts debhelper rpm python3-dev libpq-dev python${{ matrix.python_version }}-dev apache2 rsyslog postgresql postgresql-contrib
-        sudo apt install -y python${{ matrix.python_version }}-distutils 2>/dev/null || sudo apt install -y python3-distutils 2>/dev/null || echo "distutils not available (Python 3.12+ bundles it)"
-        sudo python${{ matrix.python_version }} -m pip install --break-system-packages cryptography urllib3 certifi requests ruamel.yaml pymysql psycopg2-binary || echo "pip install partially failed"
+        sudo apt-get install -y python${{ matrix.python_version }} python${{ matrix.python_version }}-dev python${{ matrix.python_version }}-distutils
+        sudo apt install -y build-essential devscripts debhelper rpm libpq-dev apache2 rsyslog postgresql postgresql-contrib
+        sudo python${{ matrix.python_version }} -m ensurepip || sudo apt-get install -y python3-pip
+        sudo python${{ matrix.python_version }} -m pip install --upgrade --force-reinstall \
+          cryptography \
+          urllib3 \
+          certifi \
+          requests \
+          ruamel.yaml \
+          pymysql \
+          psycopg2-binary
     - name: Get tag and version
       id: previoustag
       run: |
