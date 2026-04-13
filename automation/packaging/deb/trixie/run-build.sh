@@ -7,4 +7,4 @@ cp -a ../debian .
 tar cvfz ../flex_%VERSION%.orig.tar.gz *
 debuild -us -uc
 cd ..
-chmod a+w flex_%VERSION%~ubuntu20.04_amd64.deb
+chmod a+w flex_%VERSION%~debian13_amd64.deb
