@@ -189,9 +189,11 @@ jobs:
     - name: Sign package
       id: sign_package
       run: |
-        ls ${{github.workspace}}/${{ matrix.asset_path }}
+        OS="${{ matrix.name }}"
+        VERSION="${{ steps.previoustag.outputs.version }}"
+        SUFFIX="${{ matrix.asset_suffix }}"
         ARTIFACT="${{github.workspace}}/${{ matrix.asset_path }}/flex${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}${{ matrix.asset_suffix }}"
-        cosign sign-blob --yes --bundle cosign.bundle "${ARTIFACT}"
+        cosign sign-blob --yes --bundle flex-${OS}-${VERSION}.bundle "${ARTIFACT}"
 
     - name: Create checksum
       id: create_checksum
@@ -211,6 +213,6 @@ jobs:
         
         gh release upload ${{ steps.previoustag.outputs.tag }} \
           "${{github.workspace}}/${{ matrix.asset_path }}/flex${{ matrix.asset_prefix }}${VERSION}${SUFFIX}" \
-          "${{github.workspace}}/cosign.bundle#flex-${OS}-${VERSION}.bundle" \
+          "${{github.workspace}}/flex-${OS}-${VERSION}.bundle" \
           --repo ${{ github.repository }} \
           --clobber
