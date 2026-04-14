@@ -21,11 +21,12 @@ prepare_certs() {
     echo "[I] Generating self-signed certificates"
 
     fqdn=$1
-    ipaddr=$2
 
     if [[ ! -f "$demo_templates_dir/ca.key" ]]; then
         openssl genrsa -out "$demo_templates_dir/ca.key" 4096
-        chown 1000 "$demo_templates_dir/ca.key"
+        if [[ "$(id -u)" -eq 0 ]]; then
+            chown 1000:1000 "$demo_templates_dir/ca.key"
+        fi
     fi
 
     if [[ ! -f "$demo_templates_dir/ca.crt" ]]; then
@@ -35,7 +36,9 @@ prepare_certs() {
 
     if [[ ! -f "$demo_templates_dir/web_https.key" ]]; then
         openssl genrsa -out "$demo_templates_dir/web_https.key" 2048
-        chown 1000 "$demo_templates_dir/web_https.key"
+        if [[ "$(id -u)" -eq 0 ]]; then
+            chown 1000:1000 "$demo_templates_dir/web_https.key"
+        fi
     fi
 
     if [[ ! -f "$demo_templates_dir/web_https.csr" ]]; then
@@ -51,7 +54,6 @@ keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
 subjectAltName = @alt_names
 [alt_names]
 DNS.1 = $fqdn
-IP.1 = $ipaddr
 EOF
 
         openssl x509 -req -in "$demo_templates_dir/web_https.csr" \
@@ -219,7 +221,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 512M
+          memory: 128M
     ports:
       - "127.0.0.1:8500:8500"
 
@@ -249,7 +251,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1024M
+          memory: 768M
     ports:
       - "127.0.0.1:8200:8200"
 
@@ -275,7 +277,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 512M
+          memory: 128M
     ports:
       - "80:80"
       - "443:443"
@@ -309,7 +311,7 @@ EOF
     deploy:
       resources:
         limits:
-          memory: 1024M
+          memory: 768M
     ports:
       - "127.0.0.1:3306:3306"
 
@@ -320,7 +322,6 @@ EOF
     image: postgres:14
     container_name: postgresql
     environment:
-      - POSTGRES_ROOT_PASSWORD=Test1234#
       - POSTGRES_USER=gluu
       - POSTGRES_PASSWORD=Test1234#
       - POSTGRES_DB=gluu
@@ -329,7 +330,7 @@ EOF
     deploy:
       resources:
         limits:
-          memory: 1024M
+          memory: 768M
     ports:
       - "127.0.0.1:5432:5432"
 
@@ -376,7 +377,7 @@ EOF
     deploy:
       resources:
         limits:
-          memory: 8G
+          memory: 6G
     healthcheck:
       test: ["CMD", "python3", "/app/jans_aio/jans_auth/healthcheck.py"]
       interval: 30s
@@ -439,9 +440,7 @@ prepare_flex_configuration() {
         "ssl_ca_key": "$ssl_ca_key",
         "ssl_cert": "$ssl_cert",
         "ssl_key": "$ssl_key",
-        "ssl_csr": "$ssl_csr",
-        "vault_role_id": "$(cat $demo_templates_dir/vault_role_id)",
-        "vault_secret_id": "$(cat $demo_templates_dir/vault_secret_id)"
+        "ssl_csr": "$ssl_csr"
     },
     "_configmap": {
         "city": "Austin",
@@ -508,6 +507,7 @@ check_flex_readiness() {
 
     if [[ -z "$cid" ]]; then
         echo "[W] Flex unable to accept request after 30 retries, please check the logs for details"
+        exit 1
     fi
 }
 
@@ -552,19 +552,23 @@ if [[ -z $GLUU_CI_CD_RUN ]]; then
 fi
 
 if [[ -z $EXT_IP  ]]; then
-    EXT_IP=$(curl --silent ipinfo.io/ip)
+    EXT_IP=$(curl --silent --max-time 10 ipinfo.io/ip || true)
+    if [[ -z "$EXT_IP" ]]; then
+        echo "[E] Unable to determine external IP. Please provide it as the 4th argument."
+        exit 1
+    fi
 fi
 
 install_docker
 prepare_dirs
-prepare_certs "$GLUU_FQDN" "$EXT_IP"
+prepare_certs "$GLUU_FQDN"
 prepare_vault_files
 prepare_traefik_files
 prepare_flex_configuration "$GLUU_FQDN"
 prepare_compose_files "$GLUU_FQDN" "$GLUU_PERSISTENCE" "$GLUU_VERSION" "$EXT_IP" "$LOG_TARGET" "$LOG_LEVEL"
 
-docker compose up -d
+docker compose -f "$basedir/compose.yaml" up -d
 echo "[I] Flex is starting up!"
-echo "[I] Run 'docker compose logs -f' in separate terminal to check the progress"
+echo "[I] To check the progress, run 'docker compose -f $basedir/compose.yaml logs -f' in separate terminal"
 echo "[I] Checking if Flex is ready to accept request (this may take a while) ..."
 check_flex_readiness "$GLUU_FQDN"
