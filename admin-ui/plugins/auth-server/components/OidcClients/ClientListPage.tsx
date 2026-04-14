@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useMemo, useCallback, memo } from 'react'
+import React, { useState, useEffect, useMemo, useCallback, memo } from 'react'
 import { DeleteOutlined, Edit, Add, VisibilityOutlined } from '@mui/icons-material'
 import { useLocation } from 'react-router-dom'
 import { useAppSelector } from '@/redux/hooks'
@@ -11,7 +11,7 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import SetTitle from 'Utils/SetTitle'
@@ -25,7 +25,7 @@ import { useClients, useDeleteClient } from './hooks'
 import ClientDetailPage from './ClientDetailPage'
 import ClientShowScopes from './ClientShowScopes'
 import { findAndFilterScopeClients } from './ClientScopeUtils'
-import { useStyles } from './styles/ClientListPage.style'
+import { useStyles } from './components/styles/ClientListPage.style'
 import { BORDER_RADIUS } from '@/constants'
 import {
   CLIENT_ACTION_IDS,
@@ -69,7 +69,7 @@ const ClientListPage: React.FC = () => {
   SetTitle(t('titles.oidc_clients'))
   const { navigateToRoute } = useAppNavigation()
   const { search } = useLocation()
-  const themeCtx = useContext(ThemeContext) as { state?: { theme?: string } }
+  const { state } = useTheme()
 
   const {
     authorizeHelper,
@@ -79,9 +79,9 @@ const ClientListPage: React.FC = () => {
   } = useCedarling()
 
   const { themeColors, isDarkTheme } = useMemo(() => {
-    const selected = themeCtx?.state?.theme || DEFAULT_THEME
+    const selected = state?.theme || DEFAULT_THEME
     return { themeColors: getThemeColor(selected), isDarkTheme: selected === THEME_DARK }
-  }, [themeCtx?.state?.theme])
+  }, [state?.theme])
   const { classes, badgeStyles } = useStyles({ isDark: isDarkTheme, themeColors })
 
   const userinfo = useAppSelector((state) => state.authReducer?.userinfo)

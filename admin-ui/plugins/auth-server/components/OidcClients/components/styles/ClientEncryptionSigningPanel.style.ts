@@ -2,7 +2,6 @@ import { makeStyles } from 'tss-react/mui'
 import { alpha } from '@mui/material/styles'
 import type { Theme } from '@mui/material/styles'
 import { SPACING, BORDER_RADIUS, OPACITY } from '@/constants'
-import { fontSizes, fontWeights, lineHeights, letterSpacing } from '@/styles/fonts'
 import {
   createFormGroupOverrides,
   createFormLabelStyles,
@@ -47,14 +46,6 @@ export const useStyles = makeStyles<ClientEncryptionSigningPanelStyleParams>()((
       flexDirection: 'column',
       gap: SPACING.CARD_CONTENT_GAP,
       width: '100%',
-    },
-    sectionTitle: {
-      color: `${themeColors.fontColor} !important`,
-      fontSize: `${fontSizes.base} !important`,
-      fontWeight: `${fontWeights.semiBold} !important`,
-      lineHeight: `${lineHeights.normal} !important`,
-      letterSpacing: `${letterSpacing.normal} !important`,
-      margin: 0,
     },
     fieldsGrid: {
       display: 'grid',

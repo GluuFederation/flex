@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import { SPACING } from '@/constants'
-import type { ClientShowScopesStyleParams } from '../types'
+import type { ClientShowScopesStyleParams } from '../../types'
 
 const BODY_MAX_HEIGHT = '50vh'
 

@@ -1,12 +1,12 @@
-import React, { useCallback, useContext, useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { GluuBadge } from '@/components/GluuBadge'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useStyles as useCommitDialogStyles } from 'Routes/Apps/Gluu/styles/GluuCommitDialog.style'
-import { useStyles } from './styles/ClientShowScopes.style'
-import { ThemeContext } from '@/context/theme/themeContext'
+import { useStyles } from './components/styles/ClientShowScopes.style'
+import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { getClientScopeByInum } from '@/utils/Util'
@@ -20,8 +20,8 @@ const ClientShowScopes = ({
   isOpen,
 }: ClientShowScopesProps): React.ReactElement | null => {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state.theme ?? DEFAULT_THEME
+  const { state } = useTheme()
+  const selectedTheme = state?.theme ?? DEFAULT_THEME
   const isDark = selectedTheme === THEME_DARK
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { classes: commitClasses } = useCommitDialogStyles({ isDark, themeColors })

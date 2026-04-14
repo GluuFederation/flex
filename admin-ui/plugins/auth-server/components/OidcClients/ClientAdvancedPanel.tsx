@@ -1,38 +1,36 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import { Col, FormGroup } from 'Components'
-import GluuBooleanSelectBox from 'Routes/Apps/Gluu/GluuBooleanSelectBox'
-import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
-import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { Col, FormGroup, GluuDynamicList } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
-import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
-import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
-import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
+import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { useTranslation } from 'react-i18next'
-import ClientShowSpontaneousScopes from './ClientShowSpontaneousScopes'
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs, { type Dayjs } from 'dayjs'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
-import { DOC_CATEGORY } from './constants'
-import { useStyles } from './styles/ClientAdvancedPanel.style'
+import {
+  BOOLEAN_SELECT_OPTIONS,
+  CLIENT_ADVANCED_SECTION_GROUPS,
+  CLIENT_ADVANCED_MODIFIED_FIELDS,
+  CLIENT_SCRIPT_TYPES,
+  DOC_CATEGORY,
+} from './constants'
+import {
+  appendDynamicListItem,
+  createPassiveSelectFormik,
+  fromBooleanSelectValue,
+  getClientSectionFields,
+  mapDynamicListValues,
+  mapTranslatedOptions,
+  toBooleanSelectValue,
+} from 'Plugins/auth-server/utils'
+import { getFieldPlaceholder } from '@/utils/placeholderUtils'
+import { useStyles } from './components/styles/ClientAdvancedPanel.style'
+import type { GluuDynamicListItem } from '@/components/GluuDynamicList'
 import type { ClientAdvancedPanelProps } from './types'
 
-const REQUEST_URI_INPUT_ID = 'request_uri_id'
-
-const uriValidator = (_uri: string): boolean => {
-  return true
-}
-
-const getMapping = (partial: string[] | undefined, total: string[]): string[] => {
-  if (!partial) return []
-  return total.filter((item) => partial.includes(item))
-}
-
 const ClientAdvancedPanel = ({
-  client,
   scripts,
   formik,
   viewOnly,
@@ -47,17 +45,24 @@ const ClientAdvancedPanel = ({
   const { classes } = useStyles({ isDark, themeColors })
   const gridClass = `${classes.fieldsGrid} ${classes.formLabels} ${classes.formWithInputs}`
 
-  const [scopesModal, setScopesModal] = useState(false)
   const [expirationDate, setExpirationDate] = useState<Dayjs | undefined>(
     formik.values.expirationDate
       ? dayjs(formik.values.expirationDate as string | number | Date)
       : undefined,
   )
+  const [requestUriItems, setRequestUriItems] = useState<GluuDynamicListItem[]>([])
+  const [authorizedAcrItems, setAuthorizedAcrItems] = useState<GluuDynamicListItem[]>([])
 
   const filteredScripts = scripts
-    .filter((item) => item.scriptType === 'person_authentication')
+    .filter((item) => item.scriptType === CLIENT_SCRIPT_TYPES.PERSON_AUTHENTICATION)
     .filter((item) => item.enabled)
     .map((item) => item.name as string)
+
+  const passiveSelectFormik = useMemo(
+    () => createPassiveSelectFormik(formik.handleBlur),
+    [formik.handleBlur],
+  )
+  const booleanSelectOptions = useMemo(() => mapTranslatedOptions(BOOLEAN_SELECT_OPTIONS, t), [t])
 
   useEffect(() => {
     if (!formik.values.expirable) {
@@ -66,236 +71,361 @@ const ClientAdvancedPanel = ({
     }
   }, [formik.values.expirable])
 
+  useEffect(() => {
+    const nextUris = ((formik.values.requestUris as string[] | undefined) ?? []).filter(
+      (value): value is string => typeof value === 'string' && value.trim().length > 0,
+    )
+
+    setRequestUriItems((currentItems) => {
+      const currentUris = currentItems
+        .map((item) => item.value?.trim() ?? '')
+        .filter((value): value is string => value.length > 0)
+
+      if (JSON.stringify(nextUris) === JSON.stringify(currentUris)) return currentItems
+
+      return mapDynamicListValues(nextUris)
+    })
+  }, [formik.values.requestUris])
+
+  useEffect(() => {
+    const nextValues = (
+      (formik.values.attributes?.authorizedAcrValues as string[] | undefined) ?? []
+    ).filter((value): value is string => typeof value === 'string' && value.trim().length > 0)
+
+    setAuthorizedAcrItems((currentItems) => {
+      const currentValues = currentItems
+        .map((item) => item.value?.trim() ?? '')
+        .filter((value): value is string => value.length > 0)
+
+      if (JSON.stringify(nextValues) === JSON.stringify(currentValues)) return currentItems
+
+      return mapDynamicListValues(nextValues)
+    })
+  }, [formik.values.attributes?.authorizedAcrValues])
+
+  const syncRequestUris = useCallback(
+    (items: GluuDynamicListItem[]) => {
+      setRequestUriItems(items)
+      const nextUris = items
+        .map((item) => item.value?.trim() ?? '')
+        .filter((value): value is string => value.length > 0)
+      formik.setFieldValue('requestUris', nextUris)
+      setModifiedFields({
+        ...modifiedFields,
+        [CLIENT_ADVANCED_MODIFIED_FIELDS.REQUEST_URIS]: nextUris,
+      })
+    },
+    [formik, modifiedFields, setModifiedFields],
+  )
+
+  const handleAddRequestUri = useCallback(() => {
+    setRequestUriItems((current) => appendDynamicListItem(current))
+  }, [])
+
+  const handleChangeRequestUri = useCallback(
+    (index: number, _field: 'key' | 'value', value: string) => {
+      const nextItems = [...requestUriItems]
+      nextItems[index] = { ...nextItems[index], value }
+      syncRequestUris(nextItems)
+    },
+    [requestUriItems, syncRequestUris],
+  )
+
+  const handleRemoveRequestUri = useCallback(
+    (index: number) => {
+      const nextItems = requestUriItems.filter((_, itemIndex) => itemIndex !== index)
+      syncRequestUris(nextItems)
+    },
+    [requestUriItems, syncRequestUris],
+  )
+
+  const syncAuthorizedAcrValues = useCallback(
+    (items: GluuDynamicListItem[]) => {
+      setAuthorizedAcrItems(items)
+      const nextValues = items
+        .map((item) => item.value?.trim() ?? '')
+        .filter((value): value is string => value.length > 0)
+      formik.setFieldValue('attributes.authorizedAcrValues', nextValues)
+      setModifiedFields({
+        ...modifiedFields,
+        [CLIENT_ADVANCED_MODIFIED_FIELDS.AUTHORIZED_ACR_VALUES]: nextValues,
+      })
+    },
+    [formik, modifiedFields, setModifiedFields],
+  )
+
+  const handleAddAuthorizedAcr = useCallback(() => {
+    setAuthorizedAcrItems((current) => appendDynamicListItem(current))
+  }, [])
+
+  const handleChangeAuthorizedAcr = useCallback(
+    (index: number, _field: 'key' | 'value', value: string) => {
+      const nextItems = [...authorizedAcrItems]
+      nextItems[index] = { ...nextItems[index], value }
+      syncAuthorizedAcrValues(nextItems)
+    },
+    [authorizedAcrItems, syncAuthorizedAcrValues],
+  )
+
+  const handleRemoveAuthorizedAcr = useCallback(
+    (index: number) => {
+      const nextItems = authorizedAcrItems.filter((_, itemIndex) => itemIndex !== index)
+      syncAuthorizedAcrValues(nextItems)
+    },
+    [authorizedAcrItems, syncAuthorizedAcrValues],
+  )
+
+  const fieldMap = {
+    persistClientAuthorizations: (
+      <div className={classes.fieldItem}>
+        <GluuSelectRow
+          name="persistClientAuthorizations"
+          formik={passiveSelectFormik}
+          lsize={12}
+          rsize={12}
+          values={booleanSelectOptions}
+          value={toBooleanSelectValue(formik.values.persistClientAuthorizations)}
+          handleChange={(event) => {
+            const persistClientAuthorizations = fromBooleanSelectValue(event.target.value)
+            formik.setFieldValue('persistClientAuthorizations', persistClientAuthorizations)
+            setModifiedFields({
+              ...modifiedFields,
+              [CLIENT_ADVANCED_MODIFIED_FIELDS.PERSIST_CLIENT_AUTHORIZATIONS]:
+                persistClientAuthorizations,
+            })
+          }}
+          label="fields.persist_client_authorizations"
+          doc_category={DOC_CATEGORY}
+          disabled={viewOnly}
+        />
+      </div>
+    ),
+    defaultPromptLogin: (
+      <div className={classes.fieldItem}>
+        <GluuSelectRow
+          name="attributes.jansDefaultPromptLogin"
+          formik={passiveSelectFormik}
+          lsize={12}
+          rsize={12}
+          label="fields.defaultPromptLogin"
+          value={toBooleanSelectValue(formik.values.attributes?.jansDefaultPromptLogin)}
+          values={booleanSelectOptions}
+          handleChange={(event) => {
+            const defaultPromptLogin = fromBooleanSelectValue(event.target.value)
+            formik.setFieldValue('attributes.jansDefaultPromptLogin', defaultPromptLogin)
+            setModifiedFields({
+              ...modifiedFields,
+              [CLIENT_ADVANCED_MODIFIED_FIELDS.DEFAULT_PROMPT_LOGIN]: defaultPromptLogin,
+            })
+          }}
+          doc_category={DOC_CATEGORY}
+          disabled={viewOnly}
+        />
+      </div>
+    ),
+    allowSpontaneousScopes: (
+      <div className={classes.fieldItem}>
+        <GluuSelectRow
+          name="attributes.allowSpontaneousScopes"
+          label="fields.allow_spontaneous_scopes"
+          value={toBooleanSelectValue(formik.values?.attributes?.allowSpontaneousScopes)}
+          formik={passiveSelectFormik}
+          values={booleanSelectOptions}
+          lsize={12}
+          rsize={12}
+          doc_category={DOC_CATEGORY}
+          disabled={viewOnly}
+          handleChange={(event) => {
+            const allowSpontaneousScopes = fromBooleanSelectValue(event.target.value)
+            formik.setFieldValue('attributes.allowSpontaneousScopes', allowSpontaneousScopes)
+            setModifiedFields({
+              ...modifiedFields,
+              [CLIENT_ADVANCED_MODIFIED_FIELDS.ALLOW_SPONTANEOUS_SCOPES]: allowSpontaneousScopes,
+            })
+          }}
+        />
+      </div>
+    ),
+    spontaneousScopes: (
+      <div className={classes.fieldItem}>
+        <GluuInputRow
+          name="attributes.spontaneousScopes"
+          label="fields.spontaneousScopesREGEX"
+          formik={formik}
+          value={(formik.values?.attributes?.spontaneousScopes as string[] | undefined)?.[0] ?? ''}
+          placeholder={getFieldPlaceholder(t, 'fields.spontaneousScopesREGEX')}
+          lsize={12}
+          rsize={12}
+          doc_category={DOC_CATEGORY}
+          disabled={viewOnly}
+          handleChange={(event) => {
+            const arr = event.target.value ? [event.target.value] : []
+            formik.setFieldValue('attributes.spontaneousScopes', arr)
+            setModifiedFields({
+              ...modifiedFields,
+              [CLIENT_ADVANCED_MODIFIED_FIELDS.SPONTANEOUS_SCOPES]: arr,
+            })
+          }}
+        />
+      </div>
+    ),
+    initiateLoginUri: (
+      <div className={classes.fieldItem}>
+        <GluuInputRow
+          label="fields.initiateLoginUri"
+          name="initiateLoginUri"
+          formik={formik}
+          value={formik.values.initiateLoginUri as string | undefined}
+          placeholder={getFieldPlaceholder(t, 'fields.initiateLoginUri')}
+          doc_category={DOC_CATEGORY}
+          lsize={12}
+          rsize={12}
+          disabled={viewOnly}
+          handleChange={(e) => {
+            setModifiedFields({
+              ...modifiedFields,
+              [CLIENT_ADVANCED_MODIFIED_FIELDS.INITIATE_LOGIN_URI]: e.target.value,
+            })
+          }}
+        />
+      </div>
+    ),
+    requestUris: (
+      <div className={classes.fieldItem}>
+        <GluuDynamicList
+          label={`${t('fields.requestUris')}:`}
+          title={t('fields.requestUris')}
+          items={requestUriItems}
+          mode="single"
+          valuePlaceholder={t('placeholders.valid_request_uri')}
+          addButtonLabel={t('actions.add')}
+          removeButtonLabel={t('actions.remove')}
+          disabled={viewOnly}
+          onAdd={handleAddRequestUri}
+          onChange={handleChangeRequestUri}
+          onRemove={handleRemoveRequestUri}
+          className={classes.dynamicListSelectAlign}
+        />
+      </div>
+    ),
+    defaultAcrValues: (
+      <div className={classes.fieldItem}>
+        <GluuSelectRow
+          name="defaultAcrValues"
+          label="fields.defaultAcrValues"
+          formik={passiveSelectFormik}
+          value={(formik.values.defaultAcrValues as string[] | undefined)?.[0] ?? ''}
+          values={filteredScripts.map((s) => ({ value: s, label: s }))}
+          lsize={12}
+          rsize={12}
+          doc_category={DOC_CATEGORY}
+          disabled={viewOnly}
+          handleChange={(e) => {
+            const val = e.target.value ? [e.target.value] : []
+            formik.setFieldValue('defaultAcrValues', val)
+            setModifiedFields({
+              ...modifiedFields,
+              [CLIENT_ADVANCED_MODIFIED_FIELDS.DEFAULT_ACR_VALUES]: val,
+            })
+          }}
+        />
+      </div>
+    ),
+    authorizedAcrValues: (
+      <div className={classes.fieldItem}>
+        <GluuDynamicList
+          label={`${t('fields.authorizedAcrValues')}:`}
+          title={t('fields.authorizedAcrValues')}
+          items={authorizedAcrItems}
+          mode="single"
+          valuePlaceholder={t('fields.authorizedAcrValues')}
+          addButtonLabel={t('actions.add')}
+          removeButtonLabel={t('actions.remove')}
+          disabled={viewOnly}
+          onAdd={handleAddAuthorizedAcr}
+          onChange={handleChangeAuthorizedAcr}
+          onRemove={handleRemoveAuthorizedAcr}
+          className={classes.dynamicListSelectAlign}
+        />
+      </div>
+    ),
+    tlsClientAuthSubjectDn: (
+      <div className={classes.fieldItem}>
+        <GluuInputRow
+          label="fields.tls_client_auth_subject_dn"
+          name="attributes.tlsClientAuthSubjectDn"
+          formik={formik}
+          value={formik.values?.attributes?.tlsClientAuthSubjectDn as string | undefined}
+          placeholder={getFieldPlaceholder(t, 'fields.tls_client_auth_subject_dn')}
+          doc_category={DOC_CATEGORY}
+          lsize={12}
+          rsize={12}
+          disabled={viewOnly}
+          handleChange={(e) => {
+            setModifiedFields({
+              ...modifiedFields,
+              [CLIENT_ADVANCED_MODIFIED_FIELDS.TLS_CLIENT_AUTH_SUBJECT_DN]: e.target.value,
+            })
+          }}
+        />
+      </div>
+    ),
+    expirable: (
+      <div className={classes.fieldItem}>
+        <GluuSelectRow
+          name="expirable"
+          formik={passiveSelectFormik}
+          label="fields.is_expirable_client"
+          value={toBooleanSelectValue(formik.values.expirable)}
+          values={booleanSelectOptions}
+          doc_category={DOC_CATEGORY}
+          lsize={12}
+          rsize={12}
+          disabled={viewOnly}
+          handleChange={(event) => {
+            const isExpirable = fromBooleanSelectValue(event.target.value)
+            formik.setFieldValue('expirable', isExpirable)
+            setModifiedFields({
+              ...modifiedFields,
+              [CLIENT_ADVANCED_MODIFIED_FIELDS.IS_EXPIRABLE_CLIENT]: isExpirable,
+            })
+          }}
+        />
+      </div>
+    ),
+    expirationDate: formik.values.expirable ? (
+      <div className={classes.fieldItem}>
+        <FormGroup row>
+          <Col sm={12}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DateTimePicker
+                disablePast
+                value={expirationDate ?? null}
+                onChange={(date: Dayjs | null) => {
+                  if (!date) return
+                  formik.setFieldValue('expirationDate', new Date(date.toISOString()))
+                  setExpirationDate(date)
+                  setModifiedFields({
+                    ...modifiedFields,
+                    [CLIENT_ADVANCED_MODIFIED_FIELDS.EXPIRATION_DATE]: new Date(
+                      date.toISOString(),
+                    ).toDateString(),
+                  })
+                }}
+              />
+            </LocalizationProvider>
+          </Col>
+        </FormGroup>
+      </div>
+    ) : null,
+  } as const
+
   return (
     <div className={classes.root}>
-      <ClientShowSpontaneousScopes
-        handler={() => setScopesModal((v) => !v)}
-        isOpen={scopesModal}
-        clientInum={client.inum}
-      />
-
       <div className={gridClass}>
-        <div className={classes.fieldItem}>
-          <GluuToogleRow
-            name="persistClientAuthorizations"
-            lsize={12}
-            rsize={12}
-            handler={(e: React.ChangeEvent<HTMLInputElement>) => {
-              formik.setFieldValue('persistClientAuthorizations', e.target.checked)
-              setModifiedFields({
-                ...modifiedFields,
-                'Persist Client Authorizations': e.target.checked,
-              })
-            }}
-            label="fields.persist_client_authorizations"
-            value={formik.values.persistClientAuthorizations as boolean}
-            doc_category={DOC_CATEGORY}
-            disabled={viewOnly}
-          />
-        </div>
-        <div className={classes.fieldItem}>
-          <GluuToogleRow
-            name="attributes.jansDefaultPromptLogin"
-            lsize={12}
-            rsize={12}
-            label="fields.defaultPromptLogin"
-            value={formik.values.attributes?.jansDefaultPromptLogin as boolean}
-            handler={(e: React.ChangeEvent<HTMLInputElement>) => {
-              formik.setFieldValue('attributes.jansDefaultPromptLogin', e.target.checked)
-              setModifiedFields({ ...modifiedFields, 'Default Prompt Login': e.target.checked })
-            }}
-            doc_category={DOC_CATEGORY}
-            disabled={viewOnly}
-          />
-        </div>
-        <div className={classes.fieldItem}>
-          <GluuBooleanSelectBox
-            name="attributes.allowSpontaneousScopes"
-            label="fields.allow_spontaneous_scopes"
-            value={Boolean(formik.values?.attributes?.allowSpontaneousScopes)}
-            formik={formik}
-            lsize={12}
-            rsize={12}
-            doc_category={DOC_CATEGORY}
-            disabled={viewOnly}
-            handler={(e) => {
-              setModifiedFields({ ...modifiedFields, 'Allow Spontaneous Scopes': e.target.value })
-            }}
-          />
-        </div>
-        <div className={classes.fieldItem}>
-          <GluuTypeAheadForDn
-            name="attributes.spontaneousScopes"
-            label="fields.spontaneousScopesREGEX"
-            formik={formik}
-            value={((formik.values?.attributes?.spontaneousScopes as string[]) || []).map((s) => ({
-              dn: s,
-            }))}
-            options={((formik.values?.attributes?.spontaneousScopes as string[]) || []).map(
-              (s) => ({ dn: s }),
-            )}
-            haveLabelKey={false}
-            allowNew={true}
-            doc_category={DOC_CATEGORY}
-            lsize={12}
-            rsize={12}
-            disabled={viewOnly}
-            onChange={(selected) => {
-              setModifiedFields({
-                ...modifiedFields,
-                'Spontaneous Scopes': selected.map((s) => s.dn ?? ''),
-              })
-            }}
-          />
-        </div>
-        {client.inum ? (
-          <div className={classes.fieldItemFullWidth}>
-            <GluuTooltip doc_category={DOC_CATEGORY} doc_entry="spontaneousScopesViewContent">
-              <FormGroup row>
-                <GluuLabel label="fields.spontaneousScopes" size={12} />
-                <Col sm={12}>
-                  <a onClick={() => setScopesModal((v) => !v)} className="common-link">
-                    {t('actions.view_current')}
-                  </a>
-                </Col>
-              </FormGroup>
-            </GluuTooltip>
-          </div>
-        ) : null}
-        <div className={classes.fieldItem}>
-          <GluuInputRow
-            label="fields.initiateLoginUri"
-            name="initiateLoginUri"
-            formik={formik}
-            value={formik.values.initiateLoginUri as string | undefined}
-            doc_category={DOC_CATEGORY}
-            lsize={12}
-            rsize={12}
-            disabled={viewOnly}
-            handleChange={(e) => {
-              setModifiedFields({ ...modifiedFields, 'Initiate Login Uri': e.target.value })
-            }}
-          />
-        </div>
-        <div className={classes.fieldItem}>
-          <GluuTypeAheadWithAdd
-            name="requestUris"
-            label="fields.requestUris"
-            formik={formik}
-            placeholder={t('placeholders.valid_request_uri')}
-            value={(formik.values.requestUris as string[]) || []}
-            options={[]}
-            validator={uriValidator}
-            inputId={REQUEST_URI_INPUT_ID}
-            doc_category={DOC_CATEGORY}
-            lsize={12}
-            rsize={12}
-            disabled={viewOnly}
-            handler={(_name: string, items: string[]) => {
-              setModifiedFields({ ...modifiedFields, 'Request Uris': items })
-            }}
-          />
-        </div>
-        <div className={classes.fieldItem}>
-          <GluuTypeAhead
-            name="defaultAcrValues"
-            label="fields.defaultAcrValues"
-            formik={formik}
-            value={getMapping(
-              formik.values.defaultAcrValues as string[] | undefined,
-              filteredScripts,
-            )}
-            options={filteredScripts}
-            doc_category={DOC_CATEGORY}
-            lsize={12}
-            rsize={12}
-            disabled={viewOnly}
-            onChange={(selected) => {
-              setModifiedFields({
-                ...modifiedFields,
-                'Default Acr Values': selected.map((s) => String(s)),
-              })
-            }}
-          />
-        </div>
-        <div className={classes.fieldItem}>
-          <GluuTypeAhead
-            name="attributes.authorizedAcrValues"
-            label="fields.authorizedAcrValues"
-            formik={formik}
-            value={getMapping(
-              (formik.values?.attributes?.authorizedAcrValues as string[] | undefined) || [],
-              filteredScripts,
-            )}
-            options={filteredScripts}
-            doc_category={DOC_CATEGORY}
-            lsize={12}
-            rsize={12}
-            disabled={viewOnly}
-            onChange={(selected) => {
-              setModifiedFields({
-                ...modifiedFields,
-                'Authorized Acr Values': selected.map((s) => String(s)),
-              })
-            }}
-          />
-        </div>
-        <div className={classes.fieldItem}>
-          <GluuInputRow
-            label="fields.tls_client_auth_subject_dn"
-            name="attributes.tlsClientAuthSubjectDn"
-            formik={formik}
-            value={formik.values?.attributes?.tlsClientAuthSubjectDn as string | undefined}
-            doc_category={DOC_CATEGORY}
-            lsize={12}
-            rsize={12}
-            disabled={viewOnly}
-            handleChange={(e) => {
-              setModifiedFields({ ...modifiedFields, 'TLS Client Auth Subject Dn': e.target.value })
-            }}
-          />
-        </div>
-      </div>
-
-      <div className={gridClass}>
-        <div className={classes.fieldItem}>
-          <GluuToogleRow
-            name="expirable"
-            formik={formik}
-            label="fields.is_expirable_client"
-            value={formik.values.expirable as boolean}
-            doc_category={DOC_CATEGORY}
-            lsize={12}
-            rsize={12}
-            disabled={viewOnly}
-            handler={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setModifiedFields({ ...modifiedFields, 'Is Expirable Client': e.target.checked })
-            }}
-          />
-        </div>
-        <div className={classes.fieldItemFullWidth}>
-          {formik.values.expirable ? (
-            <FormGroup row>
-              <Col sm={12}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DateTimePicker
-                    disablePast
-                    value={expirationDate ?? null}
-                    onChange={(date: Dayjs | null) => {
-                      if (!date) return
-                      formik.setFieldValue('expirationDate', new Date(date.toISOString()))
-                      setExpirationDate(date)
-                      setModifiedFields({
-                        ...modifiedFields,
-                        'Expiration Date': new Date(date.toISOString()).toDateString(),
-                      })
-                    }}
-                  />
-                </LocalizationProvider>
-              </Col>
-            </FormGroup>
-          ) : null}
-        </div>
+        {CLIENT_ADVANCED_SECTION_GROUPS.flatMap((section) =>
+          getClientSectionFields(fieldMap, section),
+        )}
       </div>
     </div>
   )

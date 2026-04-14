@@ -65,6 +65,9 @@ export const useStyles = makeStyles<ClientSoftwarePanelStyleParams>()((
       boxSizing: 'border-box',
       ...formGroupBase,
     },
+    dynamicListPadding: {
+      paddingTop: `${SPACING.CARD_PADDING}px`,
+    },
     formLabels: createFormLabelStyles(themeColors.fontColor),
     formWithInputs: {
       '& input:not(.MuiInputBase-input):not(.gluu-dynamic-list-input), & select, & .custom-select, & textarea':

@@ -12,6 +12,7 @@ export type GluuDynamicListItem = {
 
 export type GluuDynamicListProps = {
   title: string
+  label?: string
   items: GluuDynamicListItem[]
   mode?: GluuDynamicListMode
   disabled?: boolean

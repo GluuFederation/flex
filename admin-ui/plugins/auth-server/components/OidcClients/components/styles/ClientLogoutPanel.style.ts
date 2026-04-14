@@ -2,7 +2,6 @@ import { makeStyles } from 'tss-react/mui'
 import { alpha } from '@mui/material/styles'
 import type { Theme } from '@mui/material/styles'
 import { SPACING, BORDER_RADIUS, OPACITY } from '@/constants'
-import { fontSizes, fontWeights, lineHeights, letterSpacing } from '@/styles/fonts'
 import {
   createFormGroupOverrides,
   createFormLabelStyles,
@@ -12,7 +11,7 @@ import {
 } from '@/styles/formStyles'
 import type { ThemeConfig } from '@/context/theme/config'
 
-type ClientCibaParUmaPanelStyleParams = {
+type ClientLogoutPanelStyleParams = {
   isDark: boolean
   themeColors: ThemeConfig
 }
@@ -21,7 +20,7 @@ const SELECT_ARROW_SPACE = 44
 const SELECT_NUDGE = -2
 const ERROR_SPACE = 20
 
-export const useStyles = makeStyles<ClientCibaParUmaPanelStyleParams>()((
+export const useStyles = makeStyles<ClientLogoutPanelStyleParams>()((
   theme: Theme,
   { themeColors },
 ) => {
@@ -41,20 +40,6 @@ export const useStyles = makeStyles<ClientCibaParUmaPanelStyleParams>()((
       flexDirection: 'column',
       gap: SPACING.SECTION_GAP,
       width: '100%',
-    },
-    section: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: SPACING.CARD_CONTENT_GAP,
-      width: '100%',
-    },
-    sectionTitle: {
-      color: `${themeColors.fontColor} !important`,
-      fontSize: `${fontSizes.base} !important`,
-      fontWeight: `${fontWeights.semiBold} !important`,
-      lineHeight: `${lineHeights.normal} !important`,
-      letterSpacing: `${letterSpacing.normal} !important`,
-      margin: 0,
     },
     fieldsGrid: {
       display: 'grid',
@@ -79,6 +64,9 @@ export const useStyles = makeStyles<ClientCibaParUmaPanelStyleParams>()((
       gridColumn: '1 / -1',
       boxSizing: 'border-box',
       ...formGroupBase,
+    },
+    dynamicListPadding: {
+      paddingTop: `${SPACING.CARD_PADDING}px`,
     },
     formLabels: createFormLabelStyles(themeColors.fontColor),
     formWithInputs: {
@@ -117,16 +105,6 @@ export const useStyles = makeStyles<ClientCibaParUmaPanelStyleParams>()((
           ...createFormInputAutofillStyles(inputColors),
           backgroundColor: `${formInputBg} !important`,
         },
-    },
-    radioGroupWrap: {
-      '& .MuiFormGroup-row': {
-        columnGap: SPACING.SECTION_GAP,
-        rowGap: SPACING.CARD_CONTENT_GAP,
-        margin: 0,
-      },
-      '& .MuiFormControlLabel-root': {
-        marginRight: 0,
-      },
     },
   }
 })

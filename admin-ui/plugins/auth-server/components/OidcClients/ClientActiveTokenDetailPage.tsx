@@ -1,24 +1,18 @@
 import { Container, Row, Col } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
-import customColors from '@/customColors'
-import { EM_DASH_PLACEHOLDER, TOKEN_DETAIL_DOC_SECTION } from './constants'
+import { EM_DASH_PLACEHOLDER, TOKEN_DETAIL_DOC_SECTION, TWO_DASH_PLACEHOLDER } from './constants'
+import { useStyles } from './components/styles/ClientActiveTokenDetailPage.style'
 import type { ClientActiveTokenDetailPageProps } from './types'
-
-const TWO_DASH_PLACEHOLDER = '--'
-
-const containerStyle = {
-  backgroundColor: customColors.whiteSmoke,
-  minWidth: '100%',
-} as const
 
 const formatDate = (value: string | number | Date | null | undefined): string =>
   value ? new Date(value).toLocaleString() : TWO_DASH_PLACEHOLDER
 
 const ClientActiveTokenDetailPage = ({ row }: ClientActiveTokenDetailPageProps): JSX.Element => {
   const { rowData } = row
+  const { classes } = useStyles()
 
   return (
-    <Container style={containerStyle}>
+    <Container className={classes.container}>
       <Row>
         <Col sm={6} xl={4}>
           <GluuFormDetailRow

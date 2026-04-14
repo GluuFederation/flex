@@ -8,46 +8,44 @@ import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuAutocomplete from 'Routes/Apps/Gluu/GluuAutocomplete'
 import { useTranslation } from 'react-i18next'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
-import { getClientScopeByInum, uuidv4 } from '../../../../app/utils/Util'
+import { getClientScopeByInum } from '../../../../app/utils/Util'
 import { useDebounce } from '@/utils/hooks/useDebounce'
 import { useGetOauthScopes } from 'JansConfigApi'
-import { FETCH_LIMITS } from './constants'
+import {
+  BOOLEAN_SELECT_OPTIONS,
+  CLIENT_BASIC_MODIFIED_FIELDS,
+  DOC_CATEGORY,
+  FETCH_LIMITS,
+  GRANT_TYPE_OPTIONS,
+  RESPONSE_TYPE_OPTIONS,
+  APPLICATION_TYPE_OPTIONS,
+  SUBJECT_TYPE_OPTIONS,
+  CLIENT_BASIC_SECTION_GROUPS,
+} from './constants'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
-import { useStyles } from './styles/ClientBasicPanel.style'
-import type { MultiSelectOption } from 'Routes/Apps/Gluu/types/GluuMultiSelectRow.types'
+import {
+  appendDynamicListItem,
+  createPassiveSelectFormik,
+  getClientSectionFields,
+  mapDynamicListValues,
+  mapTranslatedOptions,
+  fromBooleanSelectValue,
+  toBooleanSelectValue,
+} from 'Plugins/auth-server/utils'
+import { useStyles } from './components/styles/ClientBasicPanel.style'
 import type { GluuDynamicListItem } from '@/components/GluuDynamicList'
 import type { ClientBasicPanelProps } from './types'
 
-const DOC_CATEGORY = 'openid_client'
-
-const GRANT_TYPE_OPTIONS: MultiSelectOption[] = [
-  { value: 'authorization_code', label: 'authorization_code' },
-  { value: 'implicit', label: 'implicit' },
-  { value: 'refresh_token', label: 'refresh_token' },
-  { value: 'client_credentials', label: 'client_credentials' },
-  { value: 'password', label: 'password' },
-  { value: 'urn:ietf:params:oauth:grant-type:uma-ticket', label: 'uma-ticket' },
-]
-
-const RESPONSE_TYPE_OPTIONS: MultiSelectOption[] = [
-  { value: 'code', label: 'code' },
-  { value: 'token', label: 'token' },
-  { value: 'id_token', label: 'id_token' },
-]
-
-const APPLICATION_TYPE_OPTIONS = ['web', 'native']
-const SUBJECT_TYPE_OPTIONS = ['pairwise', 'public']
-
-function ClientBasicPanel({
+const ClientBasicPanel = ({
   client,
   formik,
   oidcConfiguration,
   viewOnly,
   modifiedFields,
   setModifiedFields,
-}: ClientBasicPanelProps) {
+}: ClientBasicPanelProps) => {
   const { t } = useTranslation()
   const { state } = useTheme()
   const selectedTheme = state?.theme ?? DEFAULT_THEME
@@ -124,7 +122,10 @@ function ClientBasicPanel({
         .map((name) => allScopeOptions.find((s) => s.name === name)?.dn)
         .filter((dn): dn is string => Boolean(dn))
       formik.setFieldValue('scopes', dns)
-      setModifiedFields({ ...modifiedFields, Scopes: selectedNames })
+      setModifiedFields({
+        ...modifiedFields,
+        [CLIENT_BASIC_MODIFIED_FIELDS.SCOPES]: selectedNames,
+      })
     },
     [allScopeOptions, formik, modifiedFields, setModifiedFields],
   )
@@ -134,30 +135,25 @@ function ClientBasicPanel({
     typeof redirectUrisRegexValue === 'string' || typeof redirectUrisRegexValue === 'number'
       ? redirectUrisRegexValue
       : undefined
-  const formErrors = formik.errors as Record<string, unknown>
-  const formTouched = formik.touched as Record<string, unknown>
+  const formErrors = formik.errors as Record<string, string | undefined> & {
+    attributes?: Record<string, string | undefined>
+  }
+  const formTouched = formik.touched as Record<string, boolean | undefined> & {
+    attributes?: Record<string, boolean | undefined>
+  }
   const attributeErrors =
     formErrors.attributes && typeof formErrors.attributes === 'object'
-      ? (formErrors.attributes as Record<string, unknown>)
+      ? (formErrors.attributes as Record<string, string | undefined>)
       : {}
   const attributeTouched =
     formTouched.attributes && typeof formTouched.attributes === 'object'
-      ? (formTouched.attributes as Record<string, unknown>)
+      ? (formTouched.attributes as Record<string, boolean | undefined>)
       : {}
   const passiveSelectFormik = useMemo(
-    () => ({
-      handleChange: (_event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => undefined,
-      handleBlur: formik.handleBlur,
-    }),
+    () => createPassiveSelectFormik(formik.handleBlur),
     [formik.handleBlur],
   )
-  const booleanSelectOptions = useMemo(
-    () => [
-      { value: 'true', label: t('options.true') },
-      { value: 'false', label: t('options.false') },
-    ],
-    [t],
-  )
+  const booleanSelectOptions = useMemo(() => mapTranslatedOptions(BOOLEAN_SELECT_OPTIONS, t), [t])
 
   const getFieldError = useCallback(
     (field: string) => {
@@ -190,7 +186,7 @@ function ClientBasicPanel({
         return currentItems
       }
 
-      return nextRedirectUris.map((value) => ({ id: uuidv4(), value }))
+      return mapDynamicListValues(nextRedirectUris)
     })
   }, [formik.values.redirectUris])
 
@@ -202,13 +198,16 @@ function ClientBasicPanel({
         .filter((value): value is string => value.length > 0)
       isRedirectUriSyncingRef.current = true
       formik.setFieldValue('redirectUris', nextRedirectUris)
-      setModifiedFields({ ...modifiedFields, 'Redirect URIs': nextRedirectUris })
+      setModifiedFields({
+        ...modifiedFields,
+        [CLIENT_BASIC_MODIFIED_FIELDS.REDIRECT_URIS]: nextRedirectUris,
+      })
     },
     [formik, modifiedFields, setModifiedFields],
   )
 
   const handleAddRedirectUri = useCallback(() => {
-    setRedirectUriItems((current) => [...current, { id: uuidv4(), value: '' }])
+    setRedirectUriItems((current) => appendDynamicListItem(current))
   }, [])
 
   const handleChangeRedirectUri = useCallback(
@@ -230,27 +229,8 @@ function ClientBasicPanel({
 
   const gridClass = `${classes.fieldsGrid} ${classes.formLabels} ${classes.formWithInputs}`
 
-  return (
-    <div className={gridClass}>
-      {client.inum && (
-        <div className={classes.fieldItemFullWidth}>
-          <GluuTooltip doc_category={DOC_CATEGORY} doc_entry="inum">
-            <FormGroup>
-              <GluuLabel label="fields.inum" size={12} />
-              <Input
-                className={classes.inumInput}
-                id="inum"
-                name="inum"
-                disabled
-                defaultValue={String(client.inum)}
-                readOnly
-                placeholder={t('placeholders.enter_here')}
-              />
-            </FormGroup>
-          </GluuTooltip>
-        </div>
-      )}
-
+  const fieldMap = {
+    clientName: (
       <div className={classes.fieldItem}>
         <GluuInputRow
           label="fields.client_name"
@@ -265,11 +245,15 @@ function ClientBasicPanel({
           showError={isFieldTouched('clientName') && Boolean(getFieldError('clientName'))}
           errorMessage={getFieldError('clientName')}
           handleChange={(event) => {
-            setModifiedFields({ ...modifiedFields, 'Client Name': event.target.value })
+            setModifiedFields({
+              ...modifiedFields,
+              [CLIENT_BASIC_MODIFIED_FIELDS.CLIENT_NAME]: event.target.value,
+            })
           }}
         />
       </div>
-
+    ),
+    clientSecret: (
       <div className={classes.fieldItem}>
         <GluuInputRow
           label="fields.client_secret"
@@ -287,11 +271,15 @@ function ClientBasicPanel({
           showError={isFieldTouched('clientSecret') && Boolean(getFieldError('clientSecret'))}
           errorMessage={getFieldError('clientSecret')}
           handleChange={(event) => {
-            setModifiedFields({ ...modifiedFields, 'Client Secret': event.target.value })
+            setModifiedFields({
+              ...modifiedFields,
+              [CLIENT_BASIC_MODIFIED_FIELDS.CLIENT_SECRET]: event.target.value,
+            })
           }}
         />
       </div>
-
+    ),
+    description: (
       <div className={classes.fieldItem}>
         <GluuInputRow
           label="fields.description"
@@ -306,51 +294,15 @@ function ClientBasicPanel({
           showError={isFieldTouched('description') && Boolean(getFieldError('description'))}
           errorMessage={getFieldError('description')}
           handleChange={(event) => {
-            setModifiedFields({ ...modifiedFields, Description: event.target.value })
+            setModifiedFields({
+              ...modifiedFields,
+              [CLIENT_BASIC_MODIFIED_FIELDS.DESCRIPTION]: event.target.value,
+            })
           }}
         />
       </div>
-
-      <div className={classes.fieldItem}>
-        <GluuSelectRow
-          label="fields.application_type"
-          name="applicationType"
-          formik={formik}
-          value={formik.values.applicationType as string | undefined}
-          values={APPLICATION_TYPE_OPTIONS}
-          lsize={12}
-          rsize={12}
-          doc_category={DOC_CATEGORY}
-          doc_entry="applicationType"
-          disabled={viewOnly}
-          showError={isFieldTouched('applicationType') && Boolean(getFieldError('applicationType'))}
-          errorMessage={getFieldError('applicationType')}
-          handleChange={(event) => {
-            setModifiedFields({ ...modifiedFields, 'Application Type': event.target.value })
-          }}
-        />
-      </div>
-
-      <div className={classes.fieldItem}>
-        <GluuSelectRow
-          label="fields.subject_type_basic"
-          name="subjectType"
-          formik={formik}
-          value={formik.values.subjectType as string | undefined}
-          values={SUBJECT_TYPE_OPTIONS}
-          lsize={12}
-          rsize={12}
-          doc_category={DOC_CATEGORY}
-          doc_entry="subjectType"
-          disabled={viewOnly}
-          showError={isFieldTouched('subjectType') && Boolean(getFieldError('subjectType'))}
-          errorMessage={getFieldError('subjectType')}
-          handleChange={(event) => {
-            setModifiedFields({ ...modifiedFields, 'Subject Type': event.target.value })
-          }}
-        />
-      </div>
-
+    ),
+    sectorIdentifierUri: (
       <div className={classes.fieldItem}>
         <GluuInputRow
           label="fields.sector_uri"
@@ -369,12 +321,61 @@ function ClientBasicPanel({
           handleChange={(event) => {
             setModifiedFields({
               ...modifiedFields,
-              'Sector Identifier URI': event.target.value || null,
+              [CLIENT_BASIC_MODIFIED_FIELDS.SECTOR_IDENTIFIER_URI]: event.target.value || null,
             })
           }}
         />
       </div>
-
+    ),
+    applicationType: (
+      <div className={classes.fieldItem}>
+        <GluuSelectRow
+          label="fields.application_type"
+          name="applicationType"
+          formik={formik}
+          value={formik.values.applicationType as string | undefined}
+          values={APPLICATION_TYPE_OPTIONS}
+          lsize={12}
+          rsize={12}
+          doc_category={DOC_CATEGORY}
+          doc_entry="applicationType"
+          disabled={viewOnly}
+          showError={isFieldTouched('applicationType') && Boolean(getFieldError('applicationType'))}
+          errorMessage={getFieldError('applicationType')}
+          handleChange={(event) => {
+            setModifiedFields({
+              ...modifiedFields,
+              [CLIENT_BASIC_MODIFIED_FIELDS.APPLICATION_TYPE]: event.target.value,
+            })
+          }}
+        />
+      </div>
+    ),
+    subjectType: (
+      <div className={classes.fieldItem}>
+        <GluuSelectRow
+          label="fields.subject_type_basic"
+          name="subjectType"
+          formik={formik}
+          value={formik.values.subjectType as string | undefined}
+          values={SUBJECT_TYPE_OPTIONS}
+          lsize={12}
+          rsize={12}
+          doc_category={DOC_CATEGORY}
+          doc_entry="subjectType"
+          disabled={viewOnly}
+          showError={isFieldTouched('subjectType') && Boolean(getFieldError('subjectType'))}
+          errorMessage={getFieldError('subjectType')}
+          handleChange={(event) => {
+            setModifiedFields({
+              ...modifiedFields,
+              [CLIENT_BASIC_MODIFIED_FIELDS.SUBJECT_TYPE]: event.target.value,
+            })
+          }}
+        />
+      </div>
+    ),
+    tokenEndpointAuthMethod: (
       <div className={classes.fieldItem}>
         <GluuSelectRow
           label="fields.token_endpoint_auth_method"
@@ -392,11 +393,15 @@ function ClientBasicPanel({
           }
           errorMessage={getFieldError('tokenEndpointAuthMethod')}
           handleChange={(e) => {
-            setModifiedFields({ ...modifiedFields, 'Token Endpoint AuthMethod': e.target.value })
+            setModifiedFields({
+              ...modifiedFields,
+              [CLIENT_BASIC_MODIFIED_FIELDS.TOKEN_ENDPOINT_AUTH_METHOD]: e.target.value,
+            })
           }}
         />
       </div>
-
+    ),
+    responseTypes: (
       <div className={classes.fieldItem}>
         <GluuMultiSelectRow
           name="responseTypes"
@@ -414,7 +419,73 @@ function ClientBasicPanel({
           helperText={isFieldTouched('responseTypes') ? t('messages.multi_select_hint') : undefined}
         />
       </div>
-
+    ),
+    grantTypes: (
+      <div className={classes.fieldItem}>
+        <GluuMultiSelectRow
+          name="grantTypes"
+          label="fields.grant_types"
+          formik={formik}
+          value={formik.values.grantTypes as string[] | undefined}
+          options={GRANT_TYPE_OPTIONS}
+          doc_category={DOC_CATEGORY}
+          lsize={12}
+          rsize={12}
+          disabled={viewOnly}
+          placeholder={getFieldPlaceholder(t, 'fields.grant_types')}
+          showError={isFieldTouched('grantTypes') && Boolean(getFieldError('grantTypes'))}
+          errorMessage={getFieldError('grantTypes')}
+          helperText={isFieldTouched('grantTypes') ? t('messages.multi_select_hint') : undefined}
+        />
+      </div>
+    ),
+    isActive: (
+      <div className={classes.fieldItem}>
+        <GluuSelectRow
+          label="fields.is_active"
+          name="disabled"
+          formik={passiveSelectFormik}
+          value={toBooleanSelectValue(!formik.values.disabled)}
+          values={booleanSelectOptions}
+          lsize={12}
+          rsize={12}
+          doc_category={DOC_CATEGORY}
+          disabled={viewOnly}
+          handleChange={(event) => {
+            const isActive = fromBooleanSelectValue(event.target.value)
+            formik.setFieldValue('disabled', !isActive)
+            setModifiedFields({
+              ...modifiedFields,
+              [CLIENT_BASIC_MODIFIED_FIELDS.IS_ACTIVE]: isActive,
+            })
+          }}
+        />
+      </div>
+    ),
+    trustedClient: (
+      <div className={classes.fieldItem}>
+        <GluuSelectRow
+          label="fields.is_trusted_client"
+          name="trustedClient"
+          formik={passiveSelectFormik}
+          value={toBooleanSelectValue(formik.values.trustedClient)}
+          values={booleanSelectOptions}
+          lsize={12}
+          rsize={12}
+          doc_category={DOC_CATEGORY}
+          disabled={viewOnly}
+          handleChange={(event) => {
+            const isTrustedClient = fromBooleanSelectValue(event.target.value)
+            formik.setFieldValue('trustedClient', isTrustedClient)
+            setModifiedFields({
+              ...modifiedFields,
+              [CLIENT_BASIC_MODIFIED_FIELDS.TRUST_CLIENT]: isTrustedClient,
+            })
+          }}
+        />
+      </div>
+    ),
+    redirectUrisRegex: (
       <div className={classes.fieldItem}>
         <GluuInputRow
           label="fields.redirectUrisRegex"
@@ -438,71 +509,16 @@ function ClientBasicPanel({
           handleChange={(event) => {
             setModifiedFields({
               ...modifiedFields,
-              'Redirect URIs Regex': event.target.value || null,
+              [CLIENT_BASIC_MODIFIED_FIELDS.REDIRECT_URIS_REGEX]: event.target.value || null,
             })
           }}
         />
       </div>
-
+    ),
+    scopes: (
       <div className={classes.fieldItem}>
-        <GluuMultiSelectRow
-          name="grantTypes"
-          label="fields.grant_types"
-          formik={formik}
-          value={formik.values.grantTypes as string[] | undefined}
-          options={GRANT_TYPE_OPTIONS}
-          doc_category={DOC_CATEGORY}
-          lsize={12}
-          rsize={12}
-          disabled={viewOnly}
-          placeholder={getFieldPlaceholder(t, 'fields.grant_types')}
-          showError={isFieldTouched('grantTypes') && Boolean(getFieldError('grantTypes'))}
-          errorMessage={getFieldError('grantTypes')}
-          helperText={isFieldTouched('grantTypes') ? t('messages.multi_select_hint') : undefined}
-        />
-      </div>
-
-      <div className={classes.fieldItem}>
-        <GluuSelectRow
-          label="fields.is_active"
-          name="disabled"
-          formik={passiveSelectFormik}
-          value={String(!formik.values.disabled)}
-          values={booleanSelectOptions}
-          lsize={12}
-          rsize={12}
-          doc_category={DOC_CATEGORY}
-          disabled={viewOnly}
-          handleChange={(event) => {
-            const isActive = event.target.value === 'true'
-            formik.setFieldValue('disabled', !isActive)
-            setModifiedFields({ ...modifiedFields, 'Is Active': isActive })
-          }}
-        />
-      </div>
-
-      <div className={classes.fieldItem}>
-        <GluuSelectRow
-          label="fields.is_trusted_client"
-          name="trustedClient"
-          formik={passiveSelectFormik}
-          value={String(Boolean(formik.values.trustedClient))}
-          values={booleanSelectOptions}
-          lsize={12}
-          rsize={12}
-          doc_category={DOC_CATEGORY}
-          disabled={viewOnly}
-          handleChange={(event) => {
-            const isTrustedClient = event.target.value === 'true'
-            formik.setFieldValue('trustedClient', isTrustedClient)
-            setModifiedFields({ ...modifiedFields, 'Trust Client': isTrustedClient })
-          }}
-        />
-      </div>
-
-      <div className={classes.fieldItem}>
+        <div className={classes.outerLabel}>{t('fields.scopes')}:</div>
         <div className={classes.scopeCard}>
-          <div className={classes.scopeCardTitle}>{t('fields.scopes')}:</div>
           <GluuAutocomplete
             name="scopes"
             label={t('fields.scopes')}
@@ -522,9 +538,11 @@ function ClientBasicPanel({
           />
         </div>
       </div>
-
+    ),
+    redirectUris: (
       <div className={classes.fieldItem}>
         <GluuDynamicList
+          label={`${t('fields.redirect_uris')}:`}
           title={t('fields.redirect_uris')}
           items={redirectUriItems}
           mode="single"
@@ -536,6 +554,34 @@ function ClientBasicPanel({
           onChange={handleChangeRedirectUri}
           onRemove={handleRemoveRedirectUri}
         />
+      </div>
+    ),
+  } as const
+
+  return (
+    <div className={classes.root}>
+      <div className={gridClass}>
+        {client.inum && (
+          <div className={classes.fieldItemFullWidth}>
+            <GluuTooltip doc_category={DOC_CATEGORY} doc_entry="inum">
+              <FormGroup>
+                <GluuLabel label="fields.inum" size={12} />
+                <Input
+                  className={classes.inumInput}
+                  id="inum"
+                  name="inum"
+                  disabled
+                  defaultValue={String(client.inum)}
+                  readOnly
+                  placeholder={t('placeholders.enter_here')}
+                />
+              </FormGroup>
+            </GluuTooltip>
+          </div>
+        )}
+        {CLIENT_BASIC_SECTION_GROUPS.flatMap((section) =>
+          getClientSectionFields(fieldMap, section),
+        )}
       </div>
     </div>
   )

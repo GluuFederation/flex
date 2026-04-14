@@ -2,6 +2,7 @@ import { makeStyles } from 'tss-react/mui'
 import customColors from '@/customColors'
 import type { ThemeConfig } from '@/context/theme/config'
 import { getDynamicListStyles } from '@/styles/dynamicListStyles'
+import { fontSizes, fontWeights, lineHeights, letterSpacing } from '@/styles/fonts'
 
 type GluuDynamicListStyleParams = {
   isDark: boolean
@@ -23,6 +24,20 @@ export const useStyles = makeStyles<GluuDynamicListStyleParams>()((
   })
 
   return {
+    wrapper: {
+      display: 'flex',
+      flexDirection: 'column' as const,
+      gap: 4,
+      width: '100%',
+    },
+    outerLabel: {
+      color: `${themeColors.fontColor} !important`,
+      fontSize: `${fontSizes.base} !important`,
+      fontWeight: `${fontWeights.semiBold} !important`,
+      lineHeight: `${lineHeights.normal} !important`,
+      letterSpacing: `${letterSpacing.normal} !important`,
+      margin: '0 !important',
+    },
     box: dl.listBox,
     boxEmpty: dl.listBoxEmpty,
     header: dl.listHeader,

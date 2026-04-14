@@ -5,6 +5,13 @@ import type { Dayjs } from 'dayjs'
 import type { ThemeConfig } from '@/context/theme/config'
 import type { JsonObject, JsonValue } from '@/routes/Apps/Gluu/types/common'
 
+export type ClientWizardFormStyleParams = {
+  themeColors: ThemeConfig
+  isDark: boolean
+}
+
+export type DisplayValue = string | number | boolean | null | undefined
+
 export type CustomAttribute = {
   name: string
   values: string[]
@@ -79,6 +86,11 @@ export type ClientFormInitialData = Omit<Client, 'attributes'> & {
 export type FilterClientsByScope = (scopeInum: string, scopeDn: string) => ClientRow[]
 
 export type AddOrgFn = (client: ClientRow) => ClientRow
+
+export type ClientShowSpontaneousScopesStyleParams = {
+  isDark: boolean
+  themeColors: ThemeConfig
+}
 
 export type ClientShowSpontaneousScopesProps = {
   handler: () => void
@@ -165,7 +177,6 @@ export type ClientScriptPanelProps = {
 }
 
 export type ClientAdvancedPanelProps = ClientPanelProps & {
-  client: ClientFormInitialData
   scripts: CustomScript[]
 }
 
