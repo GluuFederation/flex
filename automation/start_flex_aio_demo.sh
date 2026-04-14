@@ -489,11 +489,13 @@ EOF
 }
 
 check_flex_readiness() {
-    fqdn=$1
     cid=""
     retries=1
 
-    while [[ "$retries" -le 30 ]]; do
+    echo "[I] Waiting 120 seconds for services to initialize before starting health checks. Hang on..."
+    sleep 120
+
+    while [[ "$retries" -le 20 ]]; do
         cid=$(docker ps --filter network=flex-aio-demo --filter name=flex --filter health=healthy -q ||:)
         if [[ -n "$cid" ]]; then
             echo "[I] Flex is ready to accept request"
@@ -506,7 +508,7 @@ check_flex_readiness() {
     done
 
     if [[ -z "$cid" ]]; then
-        echo "[W] Flex unable to accept request after 30 retries, please check the logs for details"
+        echo "[W] Flex unable to accept request after 20 retries, please check the logs for details"
         exit 1
     fi
 }
@@ -570,5 +572,5 @@ prepare_compose_files "$GLUU_FQDN" "$GLUU_PERSISTENCE" "$GLUU_VERSION" "$EXT_IP"
 docker compose -f "$basedir/compose.yaml" up -d
 echo "[I] Flex is starting up!"
 echo "[I] To check the progress, run 'docker compose -f $basedir/compose.yaml logs -f' in separate terminal"
-echo "[I] Checking if Flex is ready to accept request (this may take a while) ..."
-check_flex_readiness "$GLUU_FQDN"
+echo "[I] Checking if Flex is ready to accept requests (expected time ~3–5 minutes) ..."
+check_flex_readiness
