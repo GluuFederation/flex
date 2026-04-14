@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react'
+import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { Card, CardBody, Wizard, WizardStep } from 'Components'
+import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import { Form } from 'reactstrap'
 import ClientBasic from './ClientBasicPanel'
 import ClientAdvanced from './ClientAdvancedPanel'
 import ClientScript from './ClientScriptPanel'
 import ClientActiveTokens from './ClientActiveTokens'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import { Formik, type FormikProps } from 'formik'
 import { useTranslation } from 'react-i18next'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
@@ -21,32 +22,24 @@ import ClientLogoutPanel from './ClientLogoutPanel'
 import ClientSoftwarePanel from './ClientSoftwarePanel'
 import ClientCibaParUmaPanel from './ClientCibaParUmaPanel'
 import ClientEncryptionSigningPanel from './ClientEncryptionSigningPanel'
+import ClientShowSpontaneousScopes from './ClientShowSpontaneousScopes'
 import { toast } from 'react-toastify'
 import { setClientSelectedScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
 import { cloneDeep, omit } from 'lodash'
-import { useAppDispatch, useAppSelector } from '@/redux/hooks'
+import { useAppDispatch } from '@/redux/hooks'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { GluuButton } from '@/components'
-import { useStyles } from './styles/ClientWizardForm.style'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
+import {
+  CLIENT_WIZARD_STEPS,
+  CLIENT_WIZARD_SEQUENCE,
+  CLIENT_ATTRIBUTES_KEY,
+  WIZARD_STEP_IDS,
+} from './constants'
+import { useStyles } from './components/styles/ClientWizardForm.style'
 import type { ClientWizardFormProps, ClientWizardFormValues } from './types'
 
-const CLIENT_WIZARD_STEPS = [
-  { id: 'Basic', labelKey: 'titles.client_basic' },
-  { id: 'Tokens', labelKey: 'titles.token' },
-  { id: 'Logout', labelKey: 'titles.log_out' },
-  { id: 'SoftwareInfo', labelKey: 'titles.software_info' },
-  { id: 'CIBA/PAR/UMA', labelKey: 'titles.CIBA_PAR_UMA' },
-  { id: 'Encryption/Signing', labelKey: 'titles.encryption_signing' },
-  { id: 'AdvancedClientProperties', labelKey: 'titles.client_advanced' },
-  { id: 'ClientScripts', labelKey: 'titles.client_scripts' },
-  { id: 'ClientActiveTokens', labelKey: 'titles.activeTokens' },
-]
-const CLIENT_WIZARD_SEQUENCE = CLIENT_WIZARD_STEPS.map((step) => step.id)
-
-const ATTRIBUTE = 'attributes'
-let commitMessage = ''
-
-function ClientWizardForm({
+const ClientWizardForm = ({
   client_data,
   viewOnly,
   scripts,
@@ -55,10 +48,11 @@ function ClientWizardForm({
   isEdit = false,
   modifiedFields,
   setModifiedFields,
-}: ClientWizardFormProps) {
+}: ClientWizardFormProps) => {
   const { hasCedarWritePermission, authorizeHelper } = useCedarling()
   const formRef = useRef<FormikProps<ClientWizardFormValues>>(null)
   const formTopRef = useRef<HTMLDivElement>(null)
+  const commitMessageRef = useRef('')
   const { t } = useTranslation()
   const { navigateToRoute } = useAppNavigation()
   const { state: themeState } = useTheme()
@@ -67,6 +61,7 @@ function ClientWizardForm({
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { classes } = useStyles({ themeColors, isDark })
   const [modal, setModal] = useState(false)
+  const [scopesModal, setScopesModal] = useState(false)
   const availableSteps = useMemo(
     () =>
       isEdit
@@ -80,7 +75,6 @@ function ClientWizardForm({
   )
   const [currentStep, setCurrentStep] = useState(CLIENT_WIZARD_SEQUENCE[0])
   const dispatch = useAppDispatch()
-  const { permissions: cedarPermissions } = useAppSelector((state) => state.cedarPermissions)
 
   const clientResourceId = ADMIN_UI_RESOURCES.Clients
   const clientScopes = useMemo(
@@ -97,87 +91,90 @@ function ClientWizardForm({
     authorizeHelper(clientScopes)
   }, [authorizeHelper, clientScopes])
 
-  const initialValues: ClientWizardFormValues = {
-    inum: client_data.inum,
-    dn: client_data.dn,
-    clientSecret: client_data.clientSecret,
-    displayName: client_data.displayName,
-    clientName: client_data.clientName,
-    description: client_data.description,
-    applicationType: client_data.applicationType,
-    subjectType: client_data.subjectType,
-    registrationAccessToken: client_data.registrationAccessToken,
-    clientIdIssuedAt: client_data.clientIdIssuedAt,
-    initiateLoginUri: client_data.initiateLoginUri,
-    logoUri: client_data.logoUri,
-    clientUri: client_data.clientUri,
-    tosUri: client_data.tosUri,
-    jwksUri: client_data.jwksUri,
-    jwks: client_data.jwks,
-    expirable: !!client_data.expirationDate,
-    expirationDate: client_data.expirationDate,
-    softwareStatement: client_data.softwareStatement,
-    softwareVersion: client_data.softwareVersion,
-    softwareId: client_data.softwareId,
-    idTokenSignedResponseAlg: client_data.idTokenSignedResponseAlg,
-    idTokenEncryptedResponseAlg: client_data.idTokenEncryptedResponseAlg,
-    tokenEndpointAuthMethod: client_data.tokenEndpointAuthMethod,
-    accessTokenSigningAlg: client_data.accessTokenSigningAlg,
-    idTokenEncryptedResponseEnc: client_data.idTokenEncryptedResponseEnc,
-    requestObjectEncryptionAlg: client_data.requestObjectEncryptionAlg,
-    requestObjectSigningAlg: client_data.requestObjectSigningAlg,
-    requestObjectEncryptionEnc: client_data.requestObjectEncryptionEnc,
-    userInfoEncryptedResponseAlg: client_data.userInfoEncryptedResponseAlg,
-    userInfoSignedResponseAlg: client_data.userInfoSignedResponseAlg,
-    userInfoEncryptedResponseEnc: client_data.userInfoEncryptedResponseEnc,
-    idTokenTokenBindingCnf: client_data.idTokenTokenBindingCnf,
-    backchannelUserCodeParameter: client_data.backchannelUserCodeParameter,
-    refreshTokenLifetime: client_data.refreshTokenLifetime,
-    defaultMaxAge: client_data.defaultMaxAge,
-    accessTokenLifetime: client_data.accessTokenLifetime,
-    backchannelTokenDeliveryMode: client_data.backchannelTokenDeliveryMode,
-    backchannelClientNotificationEndpoint: client_data.backchannelClientNotificationEndpoint,
-    frontChannelLogoutUri: client_data.frontChannelLogoutUri,
-    policyUri: client_data.policyUri,
-    sectorIdentifierUri: client_data.sectorIdentifierUri,
-    redirectUris: client_data.redirectUris,
-    claimRedirectUris: client_data.claimRedirectUris || [],
-    authorizedOrigins: client_data.authorizedOrigins || [],
-    requestUris: client_data.requestUris || [],
-    postLogoutRedirectUris: client_data.postLogoutRedirectUris,
-    responseTypes: client_data.responseTypes,
-    grantTypes: client_data.grantTypes,
-    contacts: client_data.contacts,
-    defaultAcrValues: client_data.defaultAcrValues,
-    scopes: client_data.scopes,
-    attributes: client_data.attributes,
-    frontChannelLogoutSessionRequired: client_data.frontChannelLogoutSessionRequired,
-    customObjectClasses: client_data.customObjectClasses || [],
-    trustedClient: client_data.trustedClient,
-    persistClientAuthorizations: client_data.persistClientAuthorizations,
-    includeClaimsInIdToken: client_data.includeClaimsInIdToken,
-    rptAsJwt: client_data.rptAsJwt,
-    accessTokenAsJwt: client_data.accessTokenAsJwt,
-    disabled: client_data.disabled,
-    deletable: client_data.deletable,
-  }
+  const initialValues: ClientWizardFormValues = useMemo(
+    () => ({
+      inum: client_data.inum,
+      dn: client_data.dn,
+      clientSecret: client_data.clientSecret,
+      displayName: client_data.displayName,
+      clientName: client_data.clientName,
+      description: client_data.description,
+      applicationType: client_data.applicationType,
+      subjectType: client_data.subjectType,
+      registrationAccessToken: client_data.registrationAccessToken,
+      clientIdIssuedAt: client_data.clientIdIssuedAt,
+      initiateLoginUri: client_data.initiateLoginUri,
+      logoUri: client_data.logoUri,
+      clientUri: client_data.clientUri,
+      tosUri: client_data.tosUri,
+      jwksUri: client_data.jwksUri,
+      jwks: client_data.jwks,
+      expirable: !!client_data.expirationDate,
+      expirationDate: client_data.expirationDate,
+      softwareStatement: client_data.softwareStatement,
+      softwareVersion: client_data.softwareVersion,
+      softwareId: client_data.softwareId,
+      idTokenSignedResponseAlg: client_data.idTokenSignedResponseAlg,
+      idTokenEncryptedResponseAlg: client_data.idTokenEncryptedResponseAlg,
+      tokenEndpointAuthMethod: client_data.tokenEndpointAuthMethod,
+      accessTokenSigningAlg: client_data.accessTokenSigningAlg,
+      idTokenEncryptedResponseEnc: client_data.idTokenEncryptedResponseEnc,
+      requestObjectEncryptionAlg: client_data.requestObjectEncryptionAlg,
+      requestObjectSigningAlg: client_data.requestObjectSigningAlg,
+      requestObjectEncryptionEnc: client_data.requestObjectEncryptionEnc,
+      userInfoEncryptedResponseAlg: client_data.userInfoEncryptedResponseAlg,
+      userInfoSignedResponseAlg: client_data.userInfoSignedResponseAlg,
+      userInfoEncryptedResponseEnc: client_data.userInfoEncryptedResponseEnc,
+      idTokenTokenBindingCnf: client_data.idTokenTokenBindingCnf,
+      backchannelUserCodeParameter: client_data.backchannelUserCodeParameter ?? false,
+      refreshTokenLifetime: client_data.refreshTokenLifetime,
+      defaultMaxAge: client_data.defaultMaxAge,
+      accessTokenLifetime: client_data.accessTokenLifetime,
+      backchannelTokenDeliveryMode: client_data.backchannelTokenDeliveryMode,
+      backchannelClientNotificationEndpoint: client_data.backchannelClientNotificationEndpoint,
+      frontChannelLogoutUri: client_data.frontChannelLogoutUri,
+      policyUri: client_data.policyUri,
+      sectorIdentifierUri: client_data.sectorIdentifierUri,
+      redirectUris: client_data.redirectUris ?? [],
+      claimRedirectUris: client_data.claimRedirectUris ?? [],
+      authorizedOrigins: client_data.authorizedOrigins ?? [],
+      requestUris: client_data.requestUris ?? [],
+      postLogoutRedirectUris: client_data.postLogoutRedirectUris ?? [],
+      responseTypes: client_data.responseTypes ?? [],
+      grantTypes: client_data.grantTypes ?? [],
+      contacts: client_data.contacts,
+      defaultAcrValues: client_data.defaultAcrValues,
+      scopes: client_data.scopes,
+      attributes: client_data.attributes,
+      frontChannelLogoutSessionRequired: client_data.frontChannelLogoutSessionRequired ?? false,
+      customObjectClasses: client_data.customObjectClasses ?? [],
+      trustedClient: client_data.trustedClient ?? false,
+      persistClientAuthorizations: client_data.persistClientAuthorizations ?? false,
+      includeClaimsInIdToken: client_data.includeClaimsInIdToken ?? false,
+      rptAsJwt: client_data.rptAsJwt ?? false,
+      accessTokenAsJwt: client_data.accessTokenAsJwt ?? false,
+      disabled: client_data.disabled ?? false,
+      deletable: client_data.deletable,
+    }),
+    [client_data],
+  )
 
-  const [client] = useState<ClientWizardFormValues>(initialValues)
+  const client = initialValues
 
   const scrollWizardToTop = useCallback(() => {
     formTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }, [])
 
-  function changeStep(stepId: string) {
+  const changeStep = (stepId: string) => {
     setCurrentStep(stepId)
     scrollWizardToTop()
   }
 
-  function toggle() {
+  const toggle = () => {
     setModal(!modal)
   }
 
-  function validateFinish() {
+  const validateFinish = () => {
     const grantTypes = formRef.current?.values?.grantTypes ?? []
     const redirectUris = formRef.current?.values?.redirectUris ?? []
     if (
@@ -195,33 +192,17 @@ function ClientWizardForm({
     }
   }
 
-  function prevStep() {
+  const prevStep = () => {
     setCurrentStep(availableSteps[availableSteps.indexOf(currentStep) - 1])
     scrollWizardToTop()
   }
 
-  function nextStep() {
-    const grantTypes = formRef.current?.values?.grantTypes ?? []
-    const redirectUris = formRef.current?.values?.redirectUris ?? []
-    if (grantTypes.includes('authorization_code') || grantTypes.includes('implicit')) {
-      if (redirectUris.length > 0) {
-        setCurrentStep(availableSteps[availableSteps.indexOf(currentStep) + 1])
-        scrollWizardToTop()
-      } else {
-        toast.info('Please add atleast 1 redirect URL')
-      }
-    } else {
-      setCurrentStep(availableSteps[availableSteps.indexOf(currentStep) + 1])
-      scrollWizardToTop()
-    }
-  }
-
-  function isComplete(stepId: string) {
+  const isComplete = (stepId: string) => {
     return availableSteps.indexOf(stepId) < availableSteps.indexOf(currentStep)
   }
 
-  function submitForm(message: string) {
-    commitMessage = message
+  const submitForm = (message: string) => {
+    commitMessageRef.current = message
     toggle()
     const btn = document.getElementsByClassName('UserActionSubmitButton')[0]
     if (btn instanceof HTMLElement) btn.click()
@@ -232,7 +213,6 @@ function ClientWizardForm({
       dispatch(setClientSelectedScopes([]))
     }
   }, [])
-  useEffect(() => {}, [cedarPermissions])
 
   const activeClientStep = (formik: FormikProps<ClientWizardFormValues>) => {
     switch (currentStep) {
@@ -313,7 +293,6 @@ function ClientWizardForm({
         return (
           <div>
             <ClientAdvanced
-              client={cloneDeep(client)}
               scripts={scripts}
               formik={formik}
               viewOnly={viewOnly}
@@ -369,6 +348,7 @@ function ClientWizardForm({
         <Formik<ClientWizardFormValues>
           innerRef={formRef}
           initialValues={initialValues}
+          enableReinitialize
           onSubmit={(values) => {
             const { attributes, accessTokenAsJwt, rptAsJwt, ...rest } = omit(values, 'expirable')
             const submitPayload = {
@@ -377,8 +357,8 @@ function ClientWizardForm({
                 ? JSON.parse(String(accessTokenAsJwt))
                 : accessTokenAsJwt,
               rptAsJwt: rptAsJwt ? JSON.parse(String(rptAsJwt)) : rptAsJwt,
-              [ATTRIBUTE]: attributes ? { ...attributes } : attributes,
-              action_message: commitMessage,
+              [CLIENT_ATTRIBUTES_KEY]: attributes ? { ...attributes } : attributes,
+              action_message: commitMessageRef.current,
               modifiedFields,
             }
             customOnSubmit(JSON.parse(JSON.stringify(submitPayload)))
@@ -386,8 +366,29 @@ function ClientWizardForm({
         >
           {(formik) => (
             <Form onSubmit={formik.handleSubmit} onKeyDown={onKeyDown}>
+              <ClientShowSpontaneousScopes
+                handler={() => setScopesModal((v) => !v)}
+                isOpen={scopesModal}
+                clientInum={client_data.inum}
+              />
               <Card className={classes.pageCard}>
                 <div className={classes.downloadRow}>
+                  {currentStep === WIZARD_STEP_IDS.ADVANCED_CLIENT_PROPERTIES &&
+                    client_data.inum && (
+                      <GluuButton
+                        type="button"
+                        onClick={() => setScopesModal(true)}
+                        title={t('fields.view_spontaneous_scopes')}
+                        backgroundColor={themeColors.formFooter.apply.backgroundColor}
+                        textColor={themeColors.formFooter.apply.textColor}
+                        borderColor={themeColors.formFooter.apply.borderColor}
+                        useOpacityOnHover
+                        className={classes.downloadButton}
+                      >
+                        <i className="fa fa-eye" aria-hidden />
+                        {t('fields.view_spontaneous_scopes')}
+                      </GluuButton>
+                    )}
                   <GluuButton
                     type="button"
                     onClick={() => downloadClientData(formik.values)}
@@ -410,17 +411,23 @@ function ClientWizardForm({
                       initialActiveStep={availableSteps[0]}
                     >
                       {visibleSteps.map((step, index) => (
-                        <WizardStep
+                        <GluuTooltip
                           key={step.id}
-                          data-testid={step.id}
-                          id={step.id}
-                          icon={<span className={classes.stepNumber}>{index + 1}</span>}
-                          successIcon={<span className={classes.stepNumber}>{index + 1}</span>}
-                          complete={isComplete(step.id)}
-                          onClick={() => changeStep(step.id)}
+                          doc_entry={step.id}
+                          content={t(step.tooltipKey)}
+                          place="bottom"
                         >
-                          {t(step.labelKey)}
-                        </WizardStep>
+                          <WizardStep
+                            data-testid={step.id}
+                            id={step.id}
+                            icon={<span className={classes.stepNumber}>{index + 1}</span>}
+                            successIcon={<span className={classes.stepNumber}>{index + 1}</span>}
+                            complete={isComplete(step.id)}
+                            onClick={() => changeStep(step.id)}
+                          >
+                            <GluuText>{t(step.labelKey)}</GluuText>
+                          </WizardStep>
+                        </GluuTooltip>
                       ))}
                     </Wizard>
                   </div>
@@ -429,32 +436,23 @@ function ClientWizardForm({
                 <div className={classes.footer}>
                   <GluuThemeFormFooter
                     showBack
-                    backButtonLabel={
-                      currentStep === availableSteps[0]
-                        ? t('actions.cancel')
-                        : t('actions.previous')
-                    }
+                    backButtonLabel={t('actions.back')}
                     onBack={
                       currentStep === availableSteps[0]
                         ? () => navigateToRoute(ROUTES.AUTH_SERVER_CLIENTS_LIST)
                         : prevStep
                     }
+                    showCancel
+                    cancelButtonLabel={t('actions.cancel')}
+                    onCancel={() => navigateToRoute(ROUTES.AUTH_SERVER_CLIENTS_LIST)}
                     showApply={
-                      currentStep !== availableSteps[availableSteps.length - 1] ||
-                      (!viewOnly && canWriteClient)
+                      currentStep === availableSteps[availableSteps.length - 1] &&
+                      !viewOnly &&
+                      canWriteClient
                     }
                     applyButtonType="button"
-                    applyButtonLabel={
-                      currentStep === availableSteps[availableSteps.length - 1]
-                        ? t('actions.finish')
-                        : t('actions.next')
-                    }
-                    onApply={
-                      currentStep === availableSteps[availableSteps.length - 1]
-                        ? validateFinish
-                        : nextStep
-                    }
-                    hideDivider
+                    applyButtonLabel={t('actions.finish')}
+                    onApply={validateFinish}
                   />
                 </div>
                 <button

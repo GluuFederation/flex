@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import MaterialTable from '@material-table/core'
 import { useTranslation } from 'react-i18next'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
@@ -20,7 +20,7 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { GluuDatePicker } from '@/components/GluuDatePicker'
 import { DATE_FORMATS } from '@/utils/dayjsUtils'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import customColors from '@/customColors'
@@ -33,6 +33,7 @@ import {
   TOKEN_FILTER_CREATION_DATE,
   TOKEN_FILTER_EXPIRATION_DATE,
 } from './constants'
+import { useStyles } from './components/styles/ClientActiveTokens.style'
 import type {
   ClientActiveTokensProps,
   ClientTokenRow,
@@ -45,24 +46,14 @@ const INITIAL_PATTERN: TokenSearchPattern = {
   dateBefore: null,
 }
 
-const FILTER_PANEL_STYLE = {
-  p: 2,
-  mt: 2,
-  borderRadius: 1,
-  position: 'absolute' as const,
-  top: '50%',
-  zIndex: 2,
-  backgroundColor: customColors.white,
-  width: '500px',
-}
-
 const ClientActiveTokens = ({ client }: ClientActiveTokensProps): JSX.Element => {
   const { t } = useTranslation()
-  const themeCtx = useContext(ThemeContext) as { state?: { theme?: string } }
-  const selectedTheme = themeCtx?.state?.theme || DEFAULT_THEME
+  const { state } = useTheme()
+  const selectedTheme = state?.theme || DEFAULT_THEME
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
-  const bgThemeColor = useMemo(
-    () => ({ background: themeColors.background }),
+  const { classes } = useStyles({ themeColors })
+  const tableHeaderStyle = useMemo(
+    () => ({ ...applicationStyle.tableHeaderStyle, background: themeColors.background }),
     [themeColors.background],
   )
 
@@ -163,8 +154,8 @@ const ClientActiveTokens = ({ client }: ClientActiveTokensProps): JSX.Element =>
       <Card style={applicationStyle.mainCard}>
         <CardBody>
           <GluuViewWrapper canShow={true}>
-            <Box position="relative" display="flex" justifyContent="flex-end">
-              <Box display="flex" justifyContent="flex-end" alignItems="center" p={2} width="500px">
+            <Box className={classes.filterToolbar}>
+              <Box className={classes.actionRow}>
                 <MaterialButton
                   startIcon={<FilterListIcon />}
                   onClick={() => setShowFilter((prev) => !prev)}
@@ -177,7 +168,7 @@ const ClientActiveTokens = ({ client }: ClientActiveTokensProps): JSX.Element =>
                       onClick={handleDownloadCSV}
                       startIcon={<GetAppIcon />}
                       disabled={isDataEmpty}
-                      sx={{ ml: 2 }}
+                      className={classes.exportButton}
                     >
                       {t('titles.export_csv')}
                     </MaterialButton>
@@ -187,11 +178,10 @@ const ClientActiveTokens = ({ client }: ClientActiveTokensProps): JSX.Element =>
 
               {showFilter && (
                 <Box
-                  sx={FILTER_PANEL_STYLE}
+                  className={classes.filterPanel}
                   display="flex"
                   flexDirection="column"
                   alignItems="center"
-                  border={`1px solid ${customColors.lightGray}`}
                 >
                   <Grid container spacing={2} alignItems="center">
                     <Grid item xs={4}>
@@ -286,10 +276,7 @@ const ClientActiveTokens = ({ client }: ClientActiveTokensProps): JSX.Element =>
                 rowStyle: (rowData: ClientTokenRow) => ({
                   backgroundColor: rowData.enabled ? customColors.logo : customColors.white,
                 }),
-                headerStyle: {
-                  ...applicationStyle.tableHeaderStyle,
-                  ...bgThemeColor,
-                },
+                headerStyle: tableHeaderStyle,
                 actionsColumnIndex: -1,
               }}
               editable={{

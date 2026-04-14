@@ -2,6 +2,9 @@ import { makeStyles } from 'tss-react/mui'
 import { alpha } from '@mui/material/styles'
 import type { Theme } from '@mui/material/styles'
 import { SPACING, BORDER_RADIUS, OPACITY } from '@/constants'
+import customColors from '@/customColors'
+import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
+import type { ThemeConfig } from '@/context/theme/config'
 import {
   createFormGroupOverrides,
   createFormLabelStyles,
@@ -9,9 +12,8 @@ import {
   createFormInputFocusStyles,
   createFormInputAutofillStyles,
 } from '@/styles/formStyles'
-import type { ThemeConfig } from '@/context/theme/config'
 
-type ClientLogoutPanelStyleParams = {
+type ClientBasicPanelStyleParams = {
   isDark: boolean
   themeColors: ThemeConfig
 }
@@ -19,14 +21,16 @@ type ClientLogoutPanelStyleParams = {
 const SELECT_ARROW_SPACE = 44
 const SELECT_NUDGE = -2
 const ERROR_SPACE = 20
+const formGroupBase = createFormGroupOverrides()
 
-export const useStyles = makeStyles<ClientLogoutPanelStyleParams>()((
+export const useStyles = makeStyles<ClientBasicPanelStyleParams>()((
   theme: Theme,
-  { themeColors },
+  { isDark, themeColors },
 ) => {
+  const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   const formInputBg = themeColors.settings?.formInputBackground ?? themeColors.inputBackground
   const inputBorderColor = themeColors.settings?.inputBorder ?? themeColors.borderColor
-  const formGroupBase = createFormGroupOverrides({ columnPaddingBottom: ERROR_SPACE })
+  const panelBorderColor = isDark ? customColors.darkBorder : customColors.borderInput
   const inputColors = {
     inputBg: formInputBg,
     inputBorderColor,
@@ -53,17 +57,30 @@ export const useStyles = makeStyles<ClientLogoutPanelStyleParams>()((
       },
     },
     fieldItem: {
-      width: '100%',
-      minWidth: 0,
-      boxSizing: 'border-box',
+      'width': '100%',
+      'minWidth': 0,
+      'boxSizing': 'border-box' as const,
       ...formGroupBase,
+      '& .form-group [class*="col"]': {
+        ...formGroupBase['& .form-group [class*="col"]'],
+        position: 'relative',
+        paddingBottom: ERROR_SPACE,
+      },
+      '& [data-field-error]': {
+        position: 'absolute',
+        fontSize: `${fontSizes.sm} !important`,
+      },
     },
     fieldItemFullWidth: {
-      width: '100%',
-      minWidth: 0,
-      gridColumn: '1 / -1',
-      boxSizing: 'border-box',
+      'width': '100%',
+      'gridColumn': '1 / -1',
+      'boxSizing': 'border-box' as const,
       ...formGroupBase,
+      '& .form-group [class*="col"]': {
+        ...formGroupBase['& .form-group [class*="col"]'],
+        position: 'relative',
+        paddingBottom: ERROR_SPACE,
+      },
     },
     formLabels: createFormLabelStyles(themeColors.fontColor),
     formWithInputs: {
@@ -102,6 +119,42 @@ export const useStyles = makeStyles<ClientLogoutPanelStyleParams>()((
           ...createFormInputAutofillStyles(inputColors),
           backgroundColor: `${formInputBg} !important`,
         },
+    },
+    inumInput: {
+      backgroundColor: `${isDark ? cardBg : formInputBg} !important`,
+      color: `${themeColors.fontColor} !important`,
+      cursor: 'default',
+    },
+    outerLabel: {
+      color: `${themeColors.fontColor} !important`,
+      fontFamily: `${fontFamily} !important`,
+      fontWeight: `${fontWeights.semiBold} !important`,
+      fontSize: `${fontSizes.base} !important`,
+      lineHeight: `${lineHeights.normal} !important`,
+      letterSpacing: letterSpacing.normal,
+      marginBottom: 4,
+      display: 'block',
+    },
+    scopeCard: {
+      backgroundColor: formInputBg,
+      borderRadius: BORDER_RADIUS.SMALL,
+      border: `1px solid ${panelBorderColor}`,
+      padding: `${SPACING.CARD_PADDING}px`,
+      width: '100%',
+      height: '100%',
+      boxSizing: 'border-box' as const,
+    },
+    dynamicListPadding: {
+      paddingTop: `${SPACING.CARD_PADDING}px`,
+    },
+    scopeCardTitle: {
+      color: `${themeColors.fontColor} !important`,
+      fontFamily: `${fontFamily} !important`,
+      fontWeight: `${fontWeights.semiBold} !important`,
+      fontSize: `${fontSizes.description} !important`,
+      lineHeight: `${lineHeights.normal} !important`,
+      letterSpacing: letterSpacing.normal,
+      marginBottom: SPACING.CARD_CONTENT_GAP * 2,
     },
   }
 })

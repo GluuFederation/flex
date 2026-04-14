@@ -53,7 +53,7 @@ export const convertTokensToCSV = (rows: ClientTokenRow[]): string => {
 }
 
 export const getClientAttributeValue = <T extends JsonValue = JsonValue>(
-  values: Record<string, unknown>,
+  values: { attributes?: Record<string, JsonValue | undefined> | null | undefined },
   key: string,
   fallback?: T,
 ): T | undefined => {

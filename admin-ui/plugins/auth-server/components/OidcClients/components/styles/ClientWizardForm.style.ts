@@ -1,17 +1,13 @@
 import { makeStyles } from 'tss-react/mui'
-import type { ThemeConfig } from '@/context/theme/config'
 import { BORDER_RADIUS, SPACING } from '@/constants'
 import { fontSizes, fontWeights, lineHeights } from '@/styles/fonts'
 import { getLoadingOverlayRgba } from '@/customColors'
+import { getHoverOpacity } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
-
-type ClientWizardFormStyleParams = {
-  themeColors: ThemeConfig
-  isDark: boolean
-}
+import type { ClientWizardFormStyleParams } from 'Plugins/auth-server/components/OidcClients/types'
 
 const WIZARD_STEP_ICON_SIZE = 32
-const HEADER_TOP_PADDING = SPACING.CARD_CONTENT_GAP * 2
+const WIZARD_SECTION_GAP = SPACING.SECTION_GAP
 
 export const useStyles = makeStyles<ClientWizardFormStyleParams>()((_, { themeColors, isDark }) => {
   const cardBorderStyle = getCardBorderStyle({ isDark })
@@ -22,12 +18,8 @@ export const useStyles = makeStyles<ClientWizardFormStyleParams>()((_, { themeCo
   const completeStepIconColor = themeColors.badges.filledBadgeText
   const mutedStepColor = themeColors.lightBackground
   const mutedStepIconColor = isDark
-    ? getLoadingOverlayRgba(themeColors.fontColor, 0.78)
+    ? getLoadingOverlayRgba(themeColors.fontColor, getHoverOpacity(isDark))
     : themeColors.textMuted
-  const mutedStepLabelColor = isDark
-    ? getLoadingOverlayRgba(themeColors.fontColor, 0.72)
-    : themeColors.textMuted
-
   return {
     pageCard: {
       'backgroundColor': cardBackground,
@@ -43,7 +35,8 @@ export const useStyles = makeStyles<ClientWizardFormStyleParams>()((_, { themeCo
     downloadRow: {
       display: 'flex',
       justifyContent: 'flex-end',
-      padding: `${HEADER_TOP_PADDING}px ${SPACING.CARD_PADDING}px ${SPACING.CARD_CONTENT_GAP}px`,
+      gap: SPACING.CARD_BUTTON_GAP,
+      padding: `${WIZARD_SECTION_GAP}px ${SPACING.CARD_PADDING}px ${WIZARD_SECTION_GAP}px`,
     },
     downloadButton: {
       display: 'inline-flex',
@@ -61,16 +54,22 @@ export const useStyles = makeStyles<ClientWizardFormStyleParams>()((_, { themeCo
       lineHeight: lineHeights.normal,
     },
     wizardSection: {
-      padding: `0 ${SPACING.CARD_PADDING}px 0`,
+      padding: `0 ${SPACING.CARD_PADDING}px ${WIZARD_SECTION_GAP}px`,
     },
     wizardNav: {
       'overflowX': 'auto',
       'paddingBottom': 4,
       '& .wizard': {
-        gap: SPACING.CARD_CONTENT_GAP,
+        gap: 0,
+      },
+      '& .wizard > div': {
+        flex: 1,
+        display: 'flex',
+        justifyContent: 'center',
       },
       '& .wizard-step': {
         flex: '0 0 auto',
+        marginLeft: '0 !important',
       },
       '& .wizard-step__icon': {
         width: WIZARD_STEP_ICON_SIZE,
@@ -83,9 +82,7 @@ export const useStyles = makeStyles<ClientWizardFormStyleParams>()((_, { themeCo
         color: `${mutedStepIconColor} !important`,
       },
       '& .wizard-step__content': {
-        color: mutedStepLabelColor,
-        fontSize: fontSizes.base,
-        fontWeight: fontWeights.medium,
+        display: 'none',
       },
       '& .wizard-step--active .wizard-step__icon': {
         backgroundColor: activeStepColor,
@@ -108,7 +105,7 @@ export const useStyles = makeStyles<ClientWizardFormStyleParams>()((_, { themeCo
     },
     contentSection: {
       'color': themeColors.fontColor,
-      'padding': `${SPACING.CARD_CONTENT_GAP}px ${SPACING.CARD_PADDING}px 0`,
+      'padding': `0 ${SPACING.CARD_PADDING}px ${SPACING.CARD_PADDING}px`,
       '& label, & label h5, & label span, & h5, & h4, & .MuiSvgIcon-root, & .fa': {
         color: `${themeColors.fontColor} !important`,
       },

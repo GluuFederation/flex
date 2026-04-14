@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Box from '@mui/material/Box'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
@@ -7,37 +7,46 @@ import { useTranslation } from 'react-i18next'
 import { useAppDispatch } from '@/redux/hooks'
 import { formatDate } from '@/utils/dayjsUtils'
 import AceEditor from 'react-ace'
-import { Card, Col, FormGroup } from 'Components'
+import { Card, Col, FormGroup, GluuDynamicList } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
-import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
-import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
-import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
+import GluuAutocomplete from 'Routes/Apps/Gluu/GluuAutocomplete'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import { FormControlLabel, Link, Radio, RadioGroup } from '@mui/material'
 import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { setCurrentItem as setCurrentItemClient } from 'Plugins/auth-server/redux/features/oidcSlice'
 import 'ace-builds/src-noconflict/mode-json'
 import 'ace-builds/src-noconflict/ext-language_tools'
-import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useClientUmaResources } from './hooks'
-import { DOC_CATEGORY } from './constants'
-import { useStyles } from './styles/ClientCibaParUmaPanel.style'
+import {
+  BOOLEAN_SELECT_OPTIONS,
+  CIBA_DELIVERY_MODES,
+  CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS,
+  CLIENT_SCRIPT_TYPES,
+  DOC_CATEGORY,
+  RPT_TOKEN_TYPE_OPTIONS,
+} from './constants'
+import { getFieldPlaceholder } from '@/utils/placeholderUtils'
+import { useStyles } from './components/styles/ClientCibaParUmaPanel.style'
+import {
+  appendDynamicListItem,
+  createPassiveSelectFormik,
+  extractDnInum,
+  fromBooleanSelectValue,
+  mapDynamicListValues,
+  mapTranslatedOptions,
+  toBooleanSelectValue,
+} from 'Plugins/auth-server/utils'
+import type { GluuDynamicListItem } from '@/components/GluuDynamicList'
 import type { UmaResource } from 'JansConfigApi'
 import type { OidcClientItem } from 'Redux/types'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { ClientCibaParUmaPanelProps } from './types'
-
-const CLAIM_URI_INPUT_ID = 'claim_uri_id'
-const CIBA_DELIVERY_MODES = ['poll', 'push', 'ping']
-
-function uriValidator(_uri: string): boolean {
-  return true
-}
 
 const ClientCibaParUmaPanel = ({
   client,
@@ -63,15 +72,30 @@ const ClientCibaParUmaPanel = ({
 
   const [open, setOpen] = useState(false)
   const [selectedUMA, setSelectedUMA] = useState<UmaResource | undefined>()
-  const [scopeExpression, setScopeExpression] = useState<unknown>()
+  const [scopeExpression, setScopeExpression] = useState<JsonValue>()
   const [showScopeSection, setShowScopeSection] = useState<'scope' | 'expression'>('scope')
   const [confirmModal, setConfirmModal] = useState(false)
   const [scopeInums, setScopeInums] = useState<string[]>([])
+  const [claimRedirectUriItems, setClaimRedirectUriItems] = useState<GluuDynamicListItem[]>([])
+  const isClaimRedirectUriSyncingRef = useRef(false)
 
   const rptScripts = scripts
-    .filter((item) => item.scriptType === 'uma_rpt_claims')
+    .filter((item) => item.scriptType === CLIENT_SCRIPT_TYPES.UMA_RPT_CLAIMS)
     .filter((item) => item.enabled)
     .map((item) => ({ dn: String(item.dn ?? ''), name: String(item.name ?? '') }))
+
+  const passiveSelectFormik = useMemo(
+    () => createPassiveSelectFormik(formik.handleBlur),
+    [formik.handleBlur],
+  )
+  const booleanSelectOptions = useMemo(() => mapTranslatedOptions(BOOLEAN_SELECT_OPTIONS, t), [t])
+
+  const rptTokenTypeOptions = useMemo(() => mapTranslatedOptions(RPT_TOKEN_TYPE_OPTIONS, t), [t])
+
+  const rptScriptNameOptions = rptScripts.map((s) => s.name)
+  const selectedRptScriptNames = (
+    (formik.values.attributes?.rptClaimsScripts as string[] | undefined) ?? []
+  ).map((dn) => rptScripts.find((s) => s.dn === dn)?.name ?? dn)
 
   const handleUMADetail = (uma: UmaResource) => {
     if (!isEmpty(uma)) {
@@ -110,19 +134,74 @@ const ClientCibaParUmaPanel = ({
   useEffect(() => {
     const rawScopes = selectedUMA?.scopes
     if (!isEmpty(selectedUMA) && Array.isArray(rawScopes) && rawScopes.length > 0) {
-      const inums = (rawScopes as string[]).map(
-        (scopeDn) => scopeDn.split(',')[0]?.split('=')[1] ?? '',
-      )
+      const inums = (rawScopes as string[]).map((scopeDn) => extractDnInum(scopeDn) ?? '')
       setScopeInums(inums.filter(Boolean))
     } else {
       setScopeInums([])
     }
   }, [selectedUMA])
 
+  useEffect(() => {
+    const nextUris = ((formik.values.claimRedirectUris as string[] | undefined) ?? []).filter(
+      (value): value is string => typeof value === 'string' && value.trim().length > 0,
+    )
+
+    setClaimRedirectUriItems((currentItems) => {
+      const currentUris = currentItems
+        .map((item) => item.value?.trim() ?? '')
+        .filter((value): value is string => value.length > 0)
+
+      if (isClaimRedirectUriSyncingRef.current) {
+        isClaimRedirectUriSyncingRef.current = false
+        if (JSON.stringify(nextUris) === JSON.stringify(currentUris)) return currentItems
+      }
+
+      if (JSON.stringify(nextUris) === JSON.stringify(currentUris)) return currentItems
+
+      return mapDynamicListValues(nextUris)
+    })
+  }, [formik.values.claimRedirectUris])
+
+  const syncClaimRedirectUris = useCallback(
+    (items: GluuDynamicListItem[]) => {
+      setClaimRedirectUriItems(items)
+      const nextUris = items
+        .map((item) => item.value?.trim() ?? '')
+        .filter((value): value is string => value.length > 0)
+      isClaimRedirectUriSyncingRef.current = true
+      formik.setFieldValue('claimRedirectUris', nextUris)
+      setModifiedFields({
+        ...modifiedFields,
+        [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.CLAIM_REDIRECT_URIS]: nextUris,
+      })
+    },
+    [formik, modifiedFields, setModifiedFields],
+  )
+
+  const handleAddClaimRedirectUri = useCallback(() => {
+    setClaimRedirectUriItems((current) => appendDynamicListItem(current))
+  }, [])
+
+  const handleChangeClaimRedirectUri = useCallback(
+    (index: number, _field: 'key' | 'value', value: string) => {
+      const nextItems = [...claimRedirectUriItems]
+      nextItems[index] = { ...nextItems[index], value }
+      syncClaimRedirectUris(nextItems)
+    },
+    [claimRedirectUriItems, syncClaimRedirectUris],
+  )
+
+  const handleRemoveClaimRedirectUri = useCallback(
+    (index: number) => {
+      const nextItems = claimRedirectUriItems.filter((_, itemIndex) => itemIndex !== index)
+      syncClaimRedirectUris(nextItems)
+    },
+    [claimRedirectUriItems, syncClaimRedirectUris],
+  )
+
   return (
     <div className={classes.root}>
       <div className={classes.section}>
-        <h2 className={classes.sectionTitle}>{t('titles.CIBA')}</h2>
         <div className={gridClass}>
           <div className={classes.fieldItem}>
             <GluuSelectRow
@@ -136,7 +215,93 @@ const ClientCibaParUmaPanel = ({
               rsize={12}
               disabled={viewOnly}
               handleChange={(e) => {
-                setModifiedFields({ ...modifiedFields, 'Token Delivery Mode': e.target.value })
+                setModifiedFields({
+                  ...modifiedFields,
+                  [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.TOKEN_DELIVERY_MODE]: e.target.value,
+                })
+              }}
+            />
+          </div>
+          <div className={classes.fieldItem}>
+            <GluuSelectRow
+              name="attributes.requirePar"
+              label="fields.requirePar"
+              formik={passiveSelectFormik}
+              value={toBooleanSelectValue(formik.values.attributes?.requirePar)}
+              values={booleanSelectOptions}
+              doc_category={DOC_CATEGORY}
+              lsize={12}
+              rsize={12}
+              disabled={viewOnly}
+              handleChange={(event) => {
+                const requirePar = fromBooleanSelectValue(event.target.value)
+                formik.setFieldValue('attributes.requirePar', requirePar)
+                setModifiedFields({
+                  ...modifiedFields,
+                  [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.REQUIRE_PAR]: requirePar,
+                })
+              }}
+            />
+          </div>
+          <div className={classes.fieldItem}>
+            <GluuSelectRow
+              name="rptAsJwt"
+              label="fields.rptAsJwt"
+              formik={passiveSelectFormik}
+              value={toBooleanSelectValue(formik.values.rptAsJwt)}
+              values={rptTokenTypeOptions}
+              doc_category={DOC_CATEGORY}
+              lsize={12}
+              rsize={12}
+              disabled={viewOnly}
+              handleChange={(event) => {
+                const val = fromBooleanSelectValue(event.target.value)
+                formik.setFieldValue('rptAsJwt', val)
+                setModifiedFields({
+                  ...modifiedFields,
+                  [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.RPT_AS_JWT]: val,
+                })
+              }}
+            />
+          </div>
+          <div className={classes.fieldItem}>
+            <GluuSelectRow
+              name="backchannelUserCodeParameter"
+              label="fields.backchannelUserCodeParameter"
+              formik={passiveSelectFormik}
+              value={toBooleanSelectValue(formik.values.backchannelUserCodeParameter)}
+              values={booleanSelectOptions}
+              doc_category={DOC_CATEGORY}
+              lsize={12}
+              rsize={12}
+              handleChange={(event) => {
+                const hasUserCode = fromBooleanSelectValue(event.target.value)
+                formik.setFieldValue('backchannelUserCodeParameter', hasUserCode)
+                setModifiedFields({
+                  ...modifiedFields,
+                  [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.USER_CODE_PARAMETER]: hasUserCode,
+                })
+              }}
+              disabled={viewOnly}
+            />
+          </div>
+          <div className={classes.fieldItem}>
+            <GluuInputRow
+              label="fields.parLifetime"
+              name="attributes.parLifetime"
+              type="number"
+              formik={formik}
+              value={formik.values.attributes?.parLifetime as number | undefined}
+              placeholder={getFieldPlaceholder(t, 'fields.parLifetime')}
+              doc_category={DOC_CATEGORY}
+              lsize={12}
+              rsize={12}
+              disabled={viewOnly}
+              handleChange={(e) => {
+                setModifiedFields({
+                  ...modifiedFields,
+                  [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.PAR_LIFETIME]: e.target.value,
+                })
               }}
             />
           </div>
@@ -146,6 +311,7 @@ const ClientCibaParUmaPanel = ({
               name="backchannelClientNotificationEndpoint"
               formik={formik}
               value={formik.values.backchannelClientNotificationEndpoint as string | undefined}
+              placeholder={getFieldPlaceholder(t, 'fields.backchannelClientNotificationEndpoint')}
               doc_category={DOC_CATEGORY}
               lsize={12}
               rsize={12}
@@ -153,60 +319,9 @@ const ClientCibaParUmaPanel = ({
               handleChange={(e) => {
                 setModifiedFields({
                   ...modifiedFields,
-                  'Client Notification Endpoint': e.target.value,
+                  [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.CLIENT_NOTIFICATION_ENDPOINT]:
+                    e.target.value,
                 })
-              }}
-            />
-          </div>
-          <div className={classes.fieldItem}>
-            <GluuToogleRow
-              name="backchannelUserCodeParameter"
-              label="fields.backchannelUserCodeParameter"
-              value={formik.values.backchannelUserCodeParameter as boolean}
-              doc_category={DOC_CATEGORY}
-              lsize={12}
-              rsize={12}
-              handler={(e: React.ChangeEvent<HTMLInputElement>) => {
-                formik.setFieldValue('backchannelUserCodeParameter', e.target.checked)
-                setModifiedFields({ ...modifiedFields, 'User Code Parameter': e.target.checked })
-              }}
-              disabled={viewOnly}
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className={classes.section}>
-        <h2 className={classes.sectionTitle}>{t('titles.PAR')}</h2>
-        <div className={gridClass}>
-          <div className={classes.fieldItem}>
-            <GluuInputRow
-              label="fields.parLifetime"
-              name="attributes.parLifetime"
-              type="number"
-              formik={formik}
-              value={formik.values.attributes?.parLifetime as number | undefined}
-              doc_category={DOC_CATEGORY}
-              lsize={12}
-              rsize={12}
-              disabled={viewOnly}
-              handleChange={(e) => {
-                setModifiedFields({ ...modifiedFields, 'PAR Lifetime': e.target.value })
-              }}
-            />
-          </div>
-          <div className={classes.fieldItem}>
-            <GluuToogleRow
-              name="attributes.requirePar"
-              label="fields.requirePar"
-              value={formik.values.attributes?.requirePar as boolean}
-              doc_category={DOC_CATEGORY}
-              lsize={12}
-              rsize={12}
-              disabled={viewOnly}
-              handler={(e: React.ChangeEvent<HTMLInputElement>) => {
-                formik.setFieldValue('attributes.requirePar', e.target.checked)
-                setModifiedFields({ ...modifiedFields, 'Require Par': e.target.checked })
               }}
             />
           </div>
@@ -214,87 +329,60 @@ const ClientCibaParUmaPanel = ({
       </div>
 
       <div className={classes.section}>
-        <h2 className={classes.sectionTitle}>{t('titles.UMA')}</h2>
         <div className={gridClass}>
-          <div className={`${classes.fieldItem} ${classes.radioGroupWrap}`}>
-            <GluuTooltip doc_category={DOC_CATEGORY} doc_entry="rptAsJwt">
-              <FormGroup row>
-                <GluuLabel label="fields.rptAsJwt" size={12} />
-                <Col sm={12}>
-                  <RadioGroup
-                    row
-                    name="rptAsJwt"
-                    value={formik.values.rptAsJwt?.toString() || 'true'}
-                    onChange={(e) => {
-                      formik.setFieldValue('rptAsJwt', e.target.value === 'true' ? 'true' : 'false')
-                      setModifiedFields({ ...modifiedFields, 'RPT as JWT': e.target.value })
-                    }}
-                  >
-                    <FormControlLabel
-                      value={'true'}
-                      control={<Radio color="primary" />}
-                      label={t('options.jwt')}
-                      disabled={viewOnly}
-                    />
-                    <FormControlLabel
-                      value={'false'}
-                      control={<Radio color="primary" />}
-                      label={t('options.reference')}
-                      disabled={viewOnly}
-                    />
-                  </RadioGroup>
-                </Col>
-              </FormGroup>
-            </GluuTooltip>
+          <div className={classes.fieldItem}>
+            <div className={classes.dynamicFieldCard}>
+              <label className={classes.dynamicFieldCardLabel}>{t('fields.rpt_scripts')}:</label>
+              <div className={classes.dynamicFieldCardBox}>
+                <GluuAutocomplete
+                  label={t('fields.rpt_scripts')}
+                  name="attributes.rptClaimsScripts"
+                  value={selectedRptScriptNames}
+                  options={rptScriptNameOptions}
+                  disabled={viewOnly}
+                  hideLabel
+                  withWrapper={false}
+                  placeholder={t('placeholders.search_here')}
+                  cardBackgroundColor={themeColors.inputBackground}
+                  inputBackgroundColor={
+                    themeColors.settings?.cardBackground ?? themeColors.card.background
+                  }
+                  onChange={(selectedNames) => {
+                    const dns = selectedNames
+                      .map((name) => rptScripts.find((s) => s.name === name)?.dn)
+                      .filter((dn): dn is string => Boolean(dn))
+                    formik.setFieldValue('attributes.rptClaimsScripts', dns)
+                    setModifiedFields({
+                      ...modifiedFields,
+                      [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.RPT_CLAIMS_SCRIPTS]: dns,
+                    })
+                  }}
+                />
+              </div>
+            </div>
           </div>
 
           <div className={classes.fieldItem}>
-            <GluuTypeAheadWithAdd
-              name="claimRedirectUris"
-              label="fields.claimRedirectURIs"
-              formik={formik}
-              placeholder={t('placeholders.valid_claim_uri')}
-              value={(formik.values.claimRedirectUris as string[]) || []}
-              options={[]}
-              validator={uriValidator}
-              inputId={CLAIM_URI_INPUT_ID}
-              doc_category={DOC_CATEGORY}
-              lsize={12}
-              rsize={12}
+            <GluuDynamicList
+              label={`${t('fields.claimRedirectURIs')}:`}
+              title={t('fields.claimRedirectURIs')}
+              items={claimRedirectUriItems}
+              mode="single"
+              valuePlaceholder={t('placeholders.valid_claim_uri')}
+              addButtonLabel={t('actions.add')}
+              removeButtonLabel={t('actions.remove')}
               disabled={viewOnly}
-              handler={(_name: string, items: string[]) => {
-                setModifiedFields({ ...modifiedFields, 'Claim Redirect URIs': items })
-              }}
+              onAdd={handleAddClaimRedirectUri}
+              onChange={handleChangeClaimRedirectUri}
+              onRemove={handleRemoveClaimRedirectUri}
             />
           </div>
+        </div>
+      </div>
 
-          <div className={classes.fieldItem}>
-            <GluuTypeAheadForDn
-              name="attributes.rptClaimsScripts"
-              label="fields.rpt_scripts"
-              formik={formik}
-              value={((formik.values.attributes?.rptClaimsScripts as string[]) || []).map((dn) => ({
-                dn,
-              }))}
-              options={rptScripts}
-              doc_category={DOC_CATEGORY}
-              doc_entry="rptClaimsScripts"
-              lsize={12}
-              rsize={12}
-              disabled={viewOnly}
-              defaultSelected={((formik.values.attributes?.rptClaimsScripts as string[]) || []).map(
-                (dn) => ({ dn }),
-              )}
-              onChange={(_items) => {
-                setModifiedFields({
-                  ...modifiedFields,
-                  'RPT Claims Scripts': _items.map((i) => i.dn ?? ''),
-                })
-              }}
-            />
-          </div>
-
-          {!isEmpty(umaResources) && (
+      {!isEmpty(umaResources) && (
+        <div className={classes.section}>
+          <div className={gridClass}>
             <div className={classes.fieldItemFullWidth}>
               <FormGroup row>
                 <GluuLabel label="fields.resources" size={3} />
@@ -324,9 +412,9 @@ const ClientCibaParUmaPanel = ({
                 </Col>
               </FormGroup>
             </div>
-          )}
+          </div>
         </div>
-      </div>
+      )}
 
       <Modal
         isOpen={open}
@@ -431,7 +519,7 @@ const ClientCibaParUmaPanel = ({
               <Col sm={9} className="top-5">
                 {!isEmpty(selectedUMA) &&
                   (selectedUMA?.clients as string[] | undefined)?.map((clientDn, key) => {
-                    const inum = clientDn.split(',')[0]?.split('=')[1] ?? null
+                    const inum = extractDnInum(clientDn)
                     return (
                       <Box key={key}>
                         <Box display="flex">

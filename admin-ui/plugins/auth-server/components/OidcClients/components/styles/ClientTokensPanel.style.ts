@@ -11,7 +11,7 @@ import {
 } from '@/styles/formStyles'
 import type { ThemeConfig } from '@/context/theme/config'
 
-type ClientAdvancedPanelStyleParams = {
+type ClientTokensPanelStyleParams = {
   isDark: boolean
   themeColors: ThemeConfig
 }
@@ -20,7 +20,7 @@ const SELECT_ARROW_SPACE = 44
 const SELECT_NUDGE = -2
 const ERROR_SPACE = 20
 
-export const useStyles = makeStyles<ClientAdvancedPanelStyleParams>()((
+export const useStyles = makeStyles<ClientTokensPanelStyleParams>()((
   theme: Theme,
   { themeColors },
 ) => {
@@ -64,6 +64,14 @@ export const useStyles = makeStyles<ClientAdvancedPanelStyleParams>()((
       gridColumn: '1 / -1',
       boxSizing: 'border-box',
       ...formGroupBase,
+    },
+    dynamicListPadding: {
+      paddingTop: `${SPACING.CARD_PADDING}px`,
+    },
+    dynamicListSelectAlign: {
+      '& > label': {
+        paddingTop: '7px !important',
+      },
     },
     formLabels: createFormLabelStyles(themeColors.fontColor),
     formWithInputs: {

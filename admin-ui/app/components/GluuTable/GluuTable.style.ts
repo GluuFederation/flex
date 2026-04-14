@@ -1,6 +1,12 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, getHoverOpacity, OPACITY, SPACING } from '@/constants'
+import {
+  BORDER_RADIUS,
+  getHoverOpacity,
+  getLoadingOverlayOpacity,
+  OPACITY,
+  SPACING,
+} from '@/constants'
 import customColors, { getLoadingOverlayRgba } from '@/customColors'
 import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
 
@@ -26,7 +32,10 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
   const headerColor = themeColors.table.headerColor
   const paginationAccent =
     themeColors.formFooter?.back?.backgroundColor ?? customColors.statusActive
-  const loadingOverlayBg = getLoadingOverlayRgba(themeColors.background, isDark ? 0.4 : 0.6)
+  const loadingOverlayBg = getLoadingOverlayRgba(
+    themeColors.background,
+    getLoadingOverlayOpacity(isDark),
+  )
 
   return {
     root: {

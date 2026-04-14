@@ -64,24 +64,21 @@ const ClientEditPage = (): JSX.Element => {
   )
 
   const blocking = isUpdating || isOidcLoading || isClientLoading || isScriptsLoading
-  const isReady = !isOidcLoading && !isClientLoading && !!clientData
 
   return (
     <GluuLoader blocking={blocking}>
       <GluuPageContent>
-        {isReady && (
-          <ClientWizardForm
-            client_data={formClientData}
-            viewOnly={viewOnly}
-            scripts={scripts}
-            permissions={permissions}
-            oidcConfiguration={oidcConfiguration}
-            customOnSubmit={handleSubmit}
-            isEdit={true}
-            modifiedFields={modifiedFields}
-            setModifiedFields={setModifiedFields}
-          />
-        )}
+        <ClientWizardForm
+          client_data={formClientData}
+          viewOnly={viewOnly}
+          scripts={scripts}
+          permissions={permissions}
+          oidcConfiguration={oidcConfiguration}
+          customOnSubmit={handleSubmit}
+          isEdit={true}
+          modifiedFields={modifiedFields}
+          setModifiedFields={setModifiedFields}
+        />
       </GluuPageContent>
     </GluuLoader>
   )

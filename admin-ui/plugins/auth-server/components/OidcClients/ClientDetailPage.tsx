@@ -1,13 +1,12 @@
-import React, { useContext, useMemo, useCallback, memo } from 'react'
+import React, { useMemo, useCallback, memo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import { GluuDetailGrid, type GluuDetailGridField } from '@/components/GluuDetailGrid'
 import { DOC_CATEGORY, LABELS, DOC_ENTRIES } from './constants'
-import type { ClientRow, ScopeItem } from './types'
+import type { ClientRow, ScopeItem, DisplayValue } from './types'
 
-type DisplayValue = string | number | boolean | null | undefined
 const displayOrDash = (value: DisplayValue): string =>
   value === null || value === undefined || value === '' ? '—' : String(value)
 
@@ -18,8 +17,8 @@ interface ClientDetailPageProps {
 
 const ClientDetailPage: React.FC<ClientDetailPageProps> = ({ row, scopes }) => {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext) as { state?: { theme?: string } }
-  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
+  const { state } = useTheme()
+  const selectedTheme = state?.theme || DEFAULT_THEME
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const labelStyle = useMemo(() => ({ color: themeColors.fontColor }), [themeColors.fontColor])
 

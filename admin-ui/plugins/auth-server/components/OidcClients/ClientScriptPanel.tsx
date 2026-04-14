@@ -5,57 +5,17 @@ import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import GluuAutocomplete from 'Routes/Apps/Gluu/GluuAutocomplete'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
-import { useStyles } from './styles/ClientScriptPanel.style'
+import { DOC_CATEGORY, CLIENT_SCRIPT_FIELDS } from './constants'
+import { useStyles } from './components/styles/ClientScriptPanel.style'
 import type { ClientScriptPanelProps, ClientScriptField } from './types'
 
-const DOC_CATEGORY = 'openid_client'
-
-const CLIENT_SCRIPT_FIELDS: ClientScriptField[] = [
-  {
-    name: 'attributes.spontaneousScopeScriptDns',
-    labelKey: 'fields.spontaneous_scopes',
-    scriptType: 'spontaneous_scope',
-    modifiedField: 'Spontaneous Scope Script Dns',
-  },
-  {
-    name: 'attributes.updateTokenScriptDns',
-    labelKey: 'fields.updateTokenScriptDns',
-    scriptType: 'update_token',
-    modifiedField: 'Update Token Script Dns',
-  },
-  {
-    name: 'attributes.postAuthnScripts',
-    labelKey: 'fields.post_authn_scripts',
-    scriptType: 'post_authn',
-    modifiedField: 'Post Authn Script',
-  },
-  {
-    name: 'attributes.introspectionScripts',
-    labelKey: 'fields.introspection_scripts',
-    scriptType: 'introspection',
-    modifiedField: 'Introspection Scripts',
-  },
-  {
-    name: 'attributes.ropcScripts',
-    labelKey: 'fields.ropcScripts',
-    scriptType: 'resource_owner_password_credentials',
-    modifiedField: 'ROPC Scripts',
-  },
-  {
-    name: 'attributes.consentGatheringScripts',
-    labelKey: 'fields.consent_gathering_scripts',
-    scriptType: 'consent_gathering',
-    modifiedField: 'Consent Gathering Scripts',
-  },
-]
-
-function ClientScriptPanel({
+const ClientScriptPanel = ({
   scripts,
   formik,
   viewOnly,
   modifiedFields: _modifiedFields,
   setModifiedFields,
-}: ClientScriptPanelProps) {
+}: ClientScriptPanelProps) => {
   const { t } = useTranslation()
   const { state } = useTheme()
   const selectedTheme = state?.theme ?? DEFAULT_THEME
@@ -128,11 +88,11 @@ function ClientScriptPanel({
           </div>
         )
       })}
-      {scripts.length === 0 && (
+      {Object.values(scriptOptionsByType).every((opts) => opts.length === 0) && (
         <div className={classes.emptyState}>
-          <GluuText variant="p" secondary>
-            {t('messages.no_data_found')}
-          </GluuText>
+          <i className={`fa fa-puzzle-piece ${classes.emptyStateIcon}`} aria-hidden="true" />
+          <p className={classes.emptyStateTitle}>{t('messages.no_scripts_found')}</p>
+          <p className={classes.emptyStateDescription}>{t('messages.no_scripts_for_client')}</p>
         </div>
       )}
     </div>

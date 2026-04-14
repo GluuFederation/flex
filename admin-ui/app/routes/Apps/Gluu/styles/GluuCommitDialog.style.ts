@@ -16,8 +16,8 @@ interface StylesParams {
   themeColors: ThemeConfig
 }
 
-const OVERLAY_BG_LIGHT = getLoadingOverlayRgba(customColors.black, 0.8)
-const OVERLAY_BG_DARK = getLoadingOverlayRgba(customColors.darkCardBg, 0.8)
+const OVERLAY_BG_LIGHT = getLoadingOverlayRgba(customColors.black, OPACITY.OVERLAY)
+const OVERLAY_BG_DARK = getLoadingOverlayRgba(customColors.darkCardBg, OPACITY.OVERLAY)
 
 const CONTENT_WIDTH = 898
 const CONTENT_GAP = 16

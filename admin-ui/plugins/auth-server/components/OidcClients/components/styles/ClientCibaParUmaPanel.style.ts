@@ -2,7 +2,6 @@ import { makeStyles } from 'tss-react/mui'
 import { alpha } from '@mui/material/styles'
 import type { Theme } from '@mui/material/styles'
 import { SPACING, BORDER_RADIUS, OPACITY } from '@/constants'
-import { fontSizes, fontWeights, lineHeights, letterSpacing } from '@/styles/fonts'
 import {
   createFormGroupOverrides,
   createFormLabelStyles,
@@ -10,9 +9,10 @@ import {
   createFormInputFocusStyles,
   createFormInputAutofillStyles,
 } from '@/styles/formStyles'
+import { fontSizes, fontWeights, lineHeights, letterSpacing } from '@/styles/fonts'
 import type { ThemeConfig } from '@/context/theme/config'
 
-type ClientTokensPanelStyleParams = {
+type ClientCibaParUmaPanelStyleParams = {
   isDark: boolean
   themeColors: ThemeConfig
 }
@@ -21,7 +21,7 @@ const SELECT_ARROW_SPACE = 44
 const SELECT_NUDGE = -2
 const ERROR_SPACE = 20
 
-export const useStyles = makeStyles<ClientTokensPanelStyleParams>()((
+export const useStyles = makeStyles<ClientCibaParUmaPanelStyleParams>()((
   theme: Theme,
   { themeColors },
 ) => {
@@ -40,6 +40,12 @@ export const useStyles = makeStyles<ClientTokensPanelStyleParams>()((
       display: 'flex',
       flexDirection: 'column',
       gap: SPACING.SECTION_GAP,
+      width: '100%',
+    },
+    section: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: SPACING.CARD_CONTENT_GAP,
       width: '100%',
     },
     fieldsGrid: {
@@ -65,6 +71,33 @@ export const useStyles = makeStyles<ClientTokensPanelStyleParams>()((
       gridColumn: '1 / -1',
       boxSizing: 'border-box',
       ...formGroupBase,
+    },
+    dynamicListPadding: {
+      paddingTop: `${SPACING.CARD_PADDING}px`,
+    },
+    dynamicFieldCard: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 4,
+      width: '100%',
+    },
+    dynamicFieldCardBox: {
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%',
+      backgroundColor: formInputBg,
+      border: `1px solid ${inputBorderColor}`,
+      borderRadius: BORDER_RADIUS.SMALL,
+      padding: SPACING.CARD_PADDING,
+      boxSizing: 'border-box',
+    },
+    dynamicFieldCardLabel: {
+      color: `${themeColors.fontColor} !important`,
+      fontSize: `${fontSizes.base} !important`,
+      fontWeight: `${fontWeights.semiBold} !important`,
+      lineHeight: `${lineHeights.normal} !important`,
+      letterSpacing: `${letterSpacing.normal} !important`,
+      margin: `0 0 ${SPACING.CARD_CONTENT_GAP}px 0 !important`,
     },
     formLabels: createFormLabelStyles(themeColors.fontColor),
     formWithInputs: {
@@ -112,13 +145,6 @@ export const useStyles = makeStyles<ClientTokensPanelStyleParams>()((
       },
       '& .MuiFormControlLabel-root': {
         marginRight: 0,
-      },
-      '& .MuiFormControlLabel-label': {
-        color: `${themeColors.fontColor} !important`,
-        fontSize: `${fontSizes.base} !important`,
-        fontWeight: `${fontWeights.medium} !important`,
-        lineHeight: `${lineHeights.normal} !important`,
-        letterSpacing: `${letterSpacing.normal} !important`,
       },
     },
   }

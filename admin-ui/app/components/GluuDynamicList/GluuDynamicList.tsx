@@ -13,6 +13,7 @@ const joinClasses = (...classNames: Array<string | false | undefined>) =>
 
 export const GluuDynamicList: React.FC<GluuDynamicListProps> = ({
   title,
+  label,
   items,
   mode = 'pair',
   disabled = false,
@@ -37,75 +38,83 @@ export const GluuDynamicList: React.FC<GluuDynamicListProps> = ({
   const isEmpty = items.length === 0
 
   return (
-    <div className={joinClasses(classes.box, isEmpty && classes.boxEmpty, className)} style={style}>
-      <div className={joinClasses(classes.header, isEmpty && classes.headerEmpty)}>
-        <GluuText variant="h5" disableThemeColor>
-          <span className={classes.title}>{title}</span>
-        </GluuText>
-        <GluuButton
-          type="button"
-          disabled={disabled}
-          backgroundColor={themeColors.settings.addPropertyButton.bg}
-          textColor={themeColors.settings.addPropertyButton.text}
-          useOpacityOnHover
-          className={classes.headerActionBtn}
-          style={{ outline: 'none', boxShadow: 'none' }}
-          onClick={onAdd}
+    <div className={joinClasses(classes.wrapper, className)} style={style}>
+      {label && <label className={classes.outerLabel}>{label}</label>}
+      <div className={joinClasses(classes.box, isEmpty && classes.boxEmpty)}>
+        <div
+          className={joinClasses(classes.header, isEmpty && classes.headerEmpty)}
+          style={label ? { justifyContent: 'flex-end' } : undefined}
         >
-          <i className="fa fa-fw fa-plus" />
-          {addButtonLabel}
-        </GluuButton>
-      </div>
-
-      <div className={classes.body}>
-        {items.map((item, index) => (
-          <div
-            key={getItemKey ? getItemKey(item, index) : (item.id ?? index)}
-            className={joinClasses(classes.row, mode === 'single' && classes.singleRow)}
+          {!label && (
+            <GluuText variant="h5" disableThemeColor>
+              <span className={classes.title}>{title}</span>
+            </GluuText>
+          )}
+          <GluuButton
+            type="button"
+            disabled={disabled}
+            backgroundColor={themeColors.settings.addPropertyButton.bg}
+            textColor={themeColors.settings.addPropertyButton.text}
+            useOpacityOnHover
+            className={classes.headerActionBtn}
+            style={{ outline: 'none', boxShadow: 'none' }}
+            onClick={onAdd}
           >
-            {mode === 'pair' && (
+            <i className="fa fa-fw fa-plus" />
+            {addButtonLabel}
+          </GluuButton>
+        </div>
+
+        <div className={classes.body}>
+          {items.map((item, index) => (
+            <div
+              key={getItemKey ? getItemKey(item, index) : (item.id ?? index)}
+              className={joinClasses(classes.row, mode === 'single' && classes.singleRow)}
+            >
+              {mode === 'pair' && (
+                <Input
+                  value={item.key ?? ''}
+                  disabled={disabled}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                    onChange(index, 'key', event.target.value)
+                  }
+                  placeholder={keyPlaceholder}
+                  className={joinClasses(classes.input, 'gluu-dynamic-list-input')}
+                />
+              )}
+
               <Input
-                value={item.key ?? ''}
+                value={item.value ?? ''}
                 disabled={disabled}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                  onChange(index, 'key', event.target.value)
+                  onChange(index, 'value', event.target.value)
                 }
-                placeholder={keyPlaceholder}
-                className={joinClasses(classes.input, 'gluu-dynamic-list-input')}
+                placeholder={valuePlaceholder}
+                className={joinClasses(
+                  classes.input,
+                  mode === 'single' && classes.singleInput,
+                  'gluu-dynamic-list-input',
+                )}
               />
-            )}
 
-            <Input
-              value={item.value ?? ''}
-              disabled={disabled}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                onChange(index, 'value', event.target.value)
-              }
-              placeholder={valuePlaceholder}
-              className={joinClasses(
-                classes.input,
-                mode === 'single' && classes.singleInput,
-                'gluu-dynamic-list-input',
-              )}
-            />
+              <GluuButton
+                type="button"
+                disabled={disabled}
+                backgroundColor={themeColors.settings.removeButton.bg}
+                textColor={themeColors.settings.removeButton.text}
+                useOpacityOnHover
+                className={classes.actionBtn}
+                onClick={() => onRemove(index)}
+              >
+                <i className="fa fa-fw fa-trash" />
+                {removeButtonLabel}
+              </GluuButton>
+            </div>
+          ))}
+        </div>
 
-            <GluuButton
-              type="button"
-              disabled={disabled}
-              backgroundColor={themeColors.settings.removeButton.bg}
-              textColor={themeColors.settings.removeButton.text}
-              useOpacityOnHover
-              className={classes.actionBtn}
-              onClick={() => onRemove(index)}
-            >
-              <i className="fa fa-fw fa-trash" />
-              {removeButtonLabel}
-            </GluuButton>
-          </div>
-        ))}
+        {showError && errorMessage?.trim() && <div className={classes.error}>{errorMessage}</div>}
       </div>
-
-      {showError && errorMessage?.trim() && <div className={classes.error}>{errorMessage}</div>}
     </div>
   )
 }
