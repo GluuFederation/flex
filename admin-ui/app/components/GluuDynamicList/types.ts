@@ -20,6 +20,7 @@ export type GluuDynamicListProps = {
   valuePlaceholder: string
   addButtonLabel: string
   removeButtonLabel: string
+  validateItem?: (item: GluuDynamicListItem, mode: GluuDynamicListMode) => boolean
   onAdd: () => void
   onRemove: (index: number) => void
   onChange: (index: number, field: GluuDynamicListField, value: string) => void

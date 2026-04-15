@@ -23,21 +23,34 @@ import ClientSoftwarePanel from './ClientSoftwarePanel'
 import ClientCibaParUmaPanel from './ClientCibaParUmaPanel'
 import ClientEncryptionSigningPanel from './ClientEncryptionSigningPanel'
 import ClientShowSpontaneousScopes from './ClientShowSpontaneousScopes'
-import { toast } from 'react-toastify'
 import { setClientSelectedScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
 import { cloneDeep, omit } from 'lodash'
 import { useAppDispatch } from '@/redux/hooks'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { GluuButton } from '@/components'
+import { GluuFilterPopover } from '@/components/GluuFilterPopover'
+import FilterListIcon from '@mui/icons-material/FilterList'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
+import { ICON_SIZE } from '@/constants'
 import {
   CLIENT_WIZARD_STEPS,
   CLIENT_WIZARD_SEQUENCE,
   CLIENT_ATTRIBUTES_KEY,
   WIZARD_STEP_IDS,
+  TOKEN_FILTER_EXPIRATION_DATE,
+  TOKEN_FILTER_CREATION_DATE,
 } from './constants'
+import { getClientValidationSchema } from './helper/validations'
 import { useStyles } from './components/styles/ClientWizardForm.style'
-import type { ClientWizardFormProps, ClientWizardFormValues } from './types'
+import type {
+  ClientWizardFormProps,
+  ClientWizardFormValues,
+  TokenSearchPattern,
+  TokenSearchFilterField,
+} from './types'
+import type { FilterField } from '@/components/GluuFilterPopover'
+
+const INITIAL_TOKEN_PATTERN: TokenSearchPattern = { dateAfter: null, dateBefore: null }
 
 const ClientWizardForm = ({
   client_data,
@@ -53,6 +66,46 @@ const ClientWizardForm = ({
   const formRef = useRef<FormikProps<ClientWizardFormValues>>(null)
   const formTopRef = useRef<HTMLDivElement>(null)
   const commitMessageRef = useRef('')
+  const exportTokensFnRef = useRef<(() => void) | null>(null)
+
+  const handleExportReady = useCallback((fn: () => void) => {
+    exportTokensFnRef.current = fn
+  }, [])
+
+  const [tokenShowFilter, setTokenShowFilter] = useState(false)
+  const [tokenSearchFilter, setTokenSearchFilter] = useState<TokenSearchFilterField>(
+    TOKEN_FILTER_EXPIRATION_DATE,
+  )
+  const [tokenPattern, setTokenPattern] = useState<TokenSearchPattern>(INITIAL_TOKEN_PATTERN)
+  const [tokenActivePattern, setTokenActivePattern] =
+    useState<TokenSearchPattern>(INITIAL_TOKEN_PATTERN)
+  const [tokenHasData, setTokenHasData] = useState(false)
+  const [isExporting, setIsExporting] = useState(false)
+
+  const handleTokenHasDataChange = useCallback((hasData: boolean) => {
+    setTokenHasData(hasData)
+  }, [])
+
+  const handleTokenFilterApply = useCallback(() => {
+    setTokenActivePattern(tokenPattern)
+    setTokenShowFilter(false)
+  }, [tokenPattern])
+
+  const handleTokenFilterCancel = useCallback(() => {
+    setTokenPattern(INITIAL_TOKEN_PATTERN)
+    setTokenActivePattern(INITIAL_TOKEN_PATTERN)
+    setTokenShowFilter(false)
+  }, [])
+
+  const handleExportCSVClick = useCallback(() => {
+    if (!exportTokensFnRef.current || !tokenHasData) return
+    setIsExporting(true)
+    setTimeout(() => {
+      exportTokensFnRef.current?.()
+      setIsExporting(false)
+    }, 0)
+  }, [tokenHasData])
+
   const { t } = useTranslation()
   const { navigateToRoute } = useAppNavigation()
   const { state: themeState } = useTheme()
@@ -60,6 +113,43 @@ const ClientWizardForm = ({
   const isDark = selectedTheme === THEME_DARK
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { classes } = useStyles({ themeColors, isDark })
+
+  const tokenFilterFields = useMemo<FilterField[]>(
+    () => [
+      {
+        key: 'searchFilter',
+        label: t('fields.search_filter'),
+        value: tokenSearchFilter,
+        type: 'select',
+        fullWidth: true,
+        options: [
+          { value: TOKEN_FILTER_EXPIRATION_DATE, label: t('titles.expiration_date') },
+          { value: TOKEN_FILTER_CREATION_DATE, label: t('titles.creation_date') },
+        ],
+        onChange: (val) => setTokenSearchFilter(val as TokenSearchFilterField),
+      },
+      {
+        key: 'dateAfter',
+        label: t('dashboard.start_date'),
+        value: '',
+        type: 'date',
+        dateValue: tokenPattern.dateAfter,
+        onDateChange: (val) => setTokenPattern((prev) => ({ ...prev, dateAfter: val })),
+        onChange: () => {},
+      },
+      {
+        key: 'dateBefore',
+        label: t('dashboard.end_date'),
+        value: '',
+        type: 'date',
+        dateValue: tokenPattern.dateBefore,
+        onDateChange: (val) => setTokenPattern((prev) => ({ ...prev, dateBefore: val })),
+        minDate: tokenPattern.dateAfter ?? undefined,
+        onChange: () => {},
+      },
+    ],
+    [t, tokenSearchFilter, tokenPattern.dateAfter, tokenPattern.dateBefore],
+  )
   const [modal, setModal] = useState(false)
   const [scopesModal, setScopesModal] = useState(false)
   const availableSteps = useMemo(
@@ -161,6 +251,8 @@ const ClientWizardForm = ({
 
   const client = initialValues
 
+  const validationSchema = useMemo(() => getClientValidationSchema(t), [t])
+
   const scrollWizardToTop = useCallback(() => {
     formTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }, [])
@@ -174,23 +266,31 @@ const ClientWizardForm = ({
     setModal(!modal)
   }
 
-  const validateFinish = () => {
-    const grantTypes = formRef.current?.values?.grantTypes ?? []
-    const redirectUris = formRef.current?.values?.redirectUris ?? []
-    if (
-      grantTypes.includes('authorization_code') ||
-      grantTypes.includes('implicit') ||
-      grantTypes.length === 0
-    ) {
-      if (redirectUris.length > 0) {
-        toggle()
-      } else {
-        toast.info('Please add atleast 1 redirect URL')
-      }
-    } else {
-      toggle()
+  const validateFinish = useCallback(async () => {
+    const formikRef = formRef.current
+    if (!formikRef) return
+    const errors = await formikRef.validateForm()
+    if (Object.keys(errors).length > 0) {
+      const touched = Object.keys(errors).reduce<Record<string, boolean | Record<string, boolean>>>(
+        (acc, key) => {
+          const value = errors[key as keyof typeof errors]
+          if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+            acc[key] = Object.keys(value).reduce<Record<string, boolean>>((nested, nestedKey) => {
+              nested[nestedKey] = true
+              return nested
+            }, {})
+          } else {
+            acc[key] = true
+          }
+          return acc
+        },
+        {},
+      )
+      void formikRef.setTouched(touched)
+      return
     }
-  }
+    toggle()
+  }, [toggle])
 
   const prevStep = () => {
     setCurrentStep(availableSteps[availableSteps.indexOf(currentStep) - 1])
@@ -316,7 +416,13 @@ const ClientWizardForm = ({
       case 'ClientActiveTokens':
         return (
           <div>
-            <ClientActiveTokens client={cloneDeep(client)} />
+            <ClientActiveTokens
+              client={cloneDeep(client)}
+              onExportReady={handleExportReady}
+              onHasDataChange={handleTokenHasDataChange}
+              activePattern={tokenActivePattern}
+              filterField={tokenSearchFilter}
+            />
           </div>
         )
     }
@@ -348,6 +454,9 @@ const ClientWizardForm = ({
         <Formik<ClientWizardFormValues>
           innerRef={formRef}
           initialValues={initialValues}
+          validationSchema={validationSchema}
+          validateOnBlur
+          validateOnChange={false}
           enableReinitialize
           onSubmit={(values) => {
             const { attributes, accessTokenAsJwt, rptAsJwt, ...rest } = omit(values, 'expirable')
@@ -389,6 +498,49 @@ const ClientWizardForm = ({
                         {t('fields.view_spontaneous_scopes')}
                       </GluuButton>
                     )}
+                  {currentStep === WIZARD_STEP_IDS.CLIENT_ACTIVE_TOKENS && (
+                    <>
+                      <div style={{ position: 'relative' }}>
+                        <GluuButton
+                          type="button"
+                          onClick={() => setTokenShowFilter((prev) => !prev)}
+                          title={t('titles.filters')}
+                          backgroundColor={themeColors.formFooter.apply.backgroundColor}
+                          textColor={themeColors.formFooter.apply.textColor}
+                          borderColor={themeColors.formFooter.apply.borderColor}
+                          useOpacityOnHover
+                          className={classes.downloadButton}
+                        >
+                          <FilterListIcon sx={{ fontSize: ICON_SIZE.SM, mr: 0.5 }} />
+                          {t('titles.filters')}
+                        </GluuButton>
+                        <GluuFilterPopover
+                          open={tokenShowFilter}
+                          fields={tokenFilterFields}
+                          onApply={handleTokenFilterApply}
+                          onCancel={handleTokenFilterCancel}
+                          applyDisabled={!tokenPattern.dateAfter || !tokenPattern.dateBefore}
+                        />
+                      </div>
+                      <GluuButton
+                        type="button"
+                        onClick={handleExportCSVClick}
+                        title={t('titles.export_csv')}
+                        backgroundColor={themeColors.formFooter.apply.backgroundColor}
+                        textColor={themeColors.formFooter.apply.textColor}
+                        borderColor={themeColors.formFooter.apply.borderColor}
+                        useOpacityOnHover
+                        disabled={!tokenHasData || isExporting}
+                        className={classes.downloadButton}
+                      >
+                        <i
+                          className={isExporting ? 'fa fa-spinner fa-spin' : 'fa fa-download'}
+                          aria-hidden
+                        />
+                        {t('titles.export_csv')}
+                      </GluuButton>
+                    </>
+                  )}
                   <GluuButton
                     type="button"
                     onClick={() => downloadClientData(formik.values)}
@@ -403,7 +555,16 @@ const ClientWizardForm = ({
                     {t('fields.download_summary')}
                   </GluuButton>
                 </div>
-                <CardBody className={classes.wizardSection}>
+                <CardBody
+                  className={[
+                    classes.wizardSection,
+                    currentStep === WIZARD_STEP_IDS.CLIENT_ACTIVE_TOKENS
+                      ? classes.wizardSectionCompact
+                      : '',
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
+                >
                   <div className={classes.wizardNav}>
                     <Wizard
                       activeStep={currentStep}
@@ -415,13 +576,31 @@ const ClientWizardForm = ({
                           key={step.id}
                           doc_entry={step.id}
                           content={t(step.tooltipKey)}
-                          place="bottom"
+                          place={index === 0 ? 'bottom-start' : 'bottom'}
+                          positionStrategy="fixed"
                         >
                           <WizardStep
                             data-testid={step.id}
                             id={step.id}
-                            icon={<span className={classes.stepNumber}>{index + 1}</span>}
-                            successIcon={<span className={classes.stepNumber}>{index + 1}</span>}
+                            icon={
+                              <GluuText
+                                variant="span"
+                                className={classes.stepNumber}
+                                disableThemeColor
+                              >
+                                {index + 1}
+                              </GluuText>
+                            }
+                            successIcon={
+                              <GluuText
+                                variant="span"
+                                className={classes.stepNumber}
+                                disableThemeColor
+                              >
+                                {index + 1}
+                              </GluuText>
+                            }
+                            active={currentStep === step.id}
                             complete={isComplete(step.id)}
                             onClick={() => changeStep(step.id)}
                           >
@@ -432,7 +611,18 @@ const ClientWizardForm = ({
                     </Wizard>
                   </div>
                 </CardBody>
-                <CardBody className={classes.contentSection}>{activeClientStep(formik)}</CardBody>
+                <CardBody
+                  className={[
+                    classes.contentSection,
+                    currentStep === WIZARD_STEP_IDS.CLIENT_ACTIVE_TOKENS
+                      ? classes.contentSectionCompact
+                      : '',
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
+                >
+                  {activeClientStep(formik)}
+                </CardBody>
                 <div className={classes.footer}>
                   <GluuThemeFormFooter
                     showBack

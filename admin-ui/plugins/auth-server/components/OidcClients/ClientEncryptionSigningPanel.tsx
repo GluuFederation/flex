@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
@@ -25,6 +25,16 @@ const ClientEncryptionSigningPanel = ({
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { classes } = useStyles({ isDark, themeColors })
   const gridClass = `${classes.fieldsGrid} ${classes.formLabels} ${classes.formWithInputs}`
+  const formErrors = formik.errors as Record<string, string | undefined>
+  const formTouched = formik.touched as Record<string, boolean | undefined>
+  const getFieldError = useCallback(
+    (field: string) => {
+      const error = formErrors[field]
+      return typeof error === 'string' ? error : ''
+    },
+    [formErrors],
+  )
+  const isFieldTouched = useCallback((field: string) => Boolean(formTouched[field]), [formTouched])
 
   const accessTokenSigningAlg = toStringArray(
     oidcConfiguration?.tokenEndpointAuthSigningAlgValuesSupported,
@@ -71,6 +81,8 @@ const ClientEncryptionSigningPanel = ({
             lsize={12}
             rsize={12}
             disabled={viewOnly}
+            showError={isFieldTouched('jwksUri') && Boolean(getFieldError('jwksUri'))}
+            errorMessage={getFieldError('jwksUri')}
             handleChange={(e) => {
               setModifiedFields({
                 ...modifiedFields,
@@ -90,6 +102,8 @@ const ClientEncryptionSigningPanel = ({
             lsize={12}
             rsize={12}
             disabled={viewOnly}
+            showError={isFieldTouched('jwks') && Boolean(getFieldError('jwks'))}
+            errorMessage={getFieldError('jwks')}
             handleChange={(e) => {
               setModifiedFields({
                 ...modifiedFields,

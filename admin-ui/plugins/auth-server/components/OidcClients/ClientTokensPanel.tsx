@@ -9,6 +9,7 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import {
+  CLIENT_DYNAMIC_LIST_I18N,
   DOC_CATEGORY,
   ACCESS_TOKEN_TYPE_OPTIONS,
   CLIENT_STEP_TWO_TOKEN_ROWS,
@@ -21,6 +22,7 @@ import type { ClientPanelProps } from './types'
 import type { SelectOption } from 'Routes/Apps/Gluu/types/GluuSelectRow.types'
 import {
   appendDynamicListItem,
+  getDynamicListValidationMessage,
   mapDynamicListValues,
   mapTranslatedOptions,
 } from 'Plugins/auth-server/utils'
@@ -38,6 +40,16 @@ const ClientTokensPanel = ({
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { classes } = useStyles({ isDark, themeColors })
   const gridClass = `${classes.fieldsGrid} ${classes.formLabels} ${classes.formWithInputs}`
+  const formErrors = formik.errors as Record<string, string | undefined>
+  const formTouched = formik.touched as Record<string, boolean | undefined>
+  const getFieldError = useCallback(
+    (field: string) => {
+      const error = formErrors[field]
+      return typeof error === 'string' ? error : ''
+    },
+    [formErrors],
+  )
+  const isFieldTouched = useCallback((field: string) => Boolean(formTouched[field]), [formTouched])
   const [audienceItems, setAudienceItems] = useState<GluuDynamicListItem[]>([])
   const isAudienceSyncingRef = useRef(false)
 
@@ -46,6 +58,14 @@ const ClientTokensPanel = ({
     [t],
   )
   const orderedFieldKeys = useMemo(() => CLIENT_STEP_TWO_TOKEN_ROWS.flat(), [])
+  const additionalAudienceError = useMemo(
+    () =>
+      getDynamicListValidationMessage({
+        items: audienceItems,
+        t,
+      }),
+    [audienceItems, t],
+  )
 
   useEffect(() => {
     const nextAudiences = (
@@ -144,6 +164,10 @@ const ClientTokensPanel = ({
           lsize={12}
           rsize={12}
           disabled={viewOnly}
+          showError={
+            isFieldTouched('accessTokenLifetime') && Boolean(getFieldError('accessTokenLifetime'))
+          }
+          errorMessage={getFieldError('accessTokenLifetime')}
           handleChange={(e) => {
             setModifiedFields({
               ...modifiedFields,
@@ -166,6 +190,10 @@ const ClientTokensPanel = ({
           lsize={12}
           rsize={12}
           disabled={viewOnly}
+          showError={
+            isFieldTouched('refreshTokenLifetime') && Boolean(getFieldError('refreshTokenLifetime'))
+          }
+          errorMessage={getFieldError('refreshTokenLifetime')}
           handleChange={(e) => {
             setModifiedFields({
               ...modifiedFields,
@@ -188,6 +216,8 @@ const ClientTokensPanel = ({
           lsize={12}
           rsize={12}
           disabled={viewOnly}
+          showError={isFieldTouched('defaultMaxAge') && Boolean(getFieldError('defaultMaxAge'))}
+          errorMessage={getFieldError('defaultMaxAge')}
           handleChange={(e) => {
             setModifiedFields({
               ...modifiedFields,
@@ -209,6 +239,11 @@ const ClientTokensPanel = ({
           lsize={12}
           rsize={12}
           disabled={viewOnly}
+          showError={
+            isFieldTouched('idTokenTokenBindingCnf') &&
+            Boolean(getFieldError('idTokenTokenBindingCnf'))
+          }
+          errorMessage={getFieldError('idTokenTokenBindingCnf')}
           handleChange={(e) => {
             setModifiedFields({
               ...modifiedFields,
@@ -262,13 +297,18 @@ const ClientTokensPanel = ({
     additionalAudience: (
       <div className={classes.fieldItem}>
         <GluuDynamicList
-          label={`${t('fields.additionalAudience')}:`}
-          title={t('fields.additionalAudience')}
+          label={`${t(CLIENT_DYNAMIC_LIST_I18N.ADDITIONAL_AUDIENCE.fieldKey)}:`}
+          title={t(CLIENT_DYNAMIC_LIST_I18N.ADDITIONAL_AUDIENCE.fieldKey)}
           items={audienceItems}
           mode="single"
-          valuePlaceholder={t('placeholders.enter_here')}
+          valuePlaceholder={getFieldPlaceholder(
+            t,
+            CLIENT_DYNAMIC_LIST_I18N.ADDITIONAL_AUDIENCE.fieldKey,
+          )}
           addButtonLabel={t('actions.add')}
           removeButtonLabel={t('actions.remove')}
+          showError={!viewOnly && Boolean(additionalAudienceError)}
+          errorMessage={additionalAudienceError}
           disabled={viewOnly}
           onAdd={handleAddAudience}
           onChange={handleChangeAudience}

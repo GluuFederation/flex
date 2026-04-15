@@ -777,7 +777,8 @@
     "authorizationSignedResponseAlg": "Algoritmo JWS para assinatura",
     "authorizationEncryptedResponseAlg": "Algoritmo JWS para criptografia",
     "authorizationEncryptedResponseEnc": "Criptografia JWE para autorização",
-    "scope": "Escopo"
+    "scope": "Escopo",
+    "search_filter": "Filtro de pesquisa"
   },
   "footer": {
     "copyright": "(C) {{year}} Todos os direitos reservados.",
@@ -1109,7 +1110,8 @@
     "no_scope_in_spontaneous_client": "Nenhum dado de escopo espontâneo para este cliente",
     "ssa_entity": "SSA",
     "no_attributes_found": "No attributes found",
-    "all_attributes_added": "All attributes have been added"
+    "all_attributes_added": "All attributes have been added",
+    "error_uma_resources_unauthorized": "Não foi possível carregar os recursos UMA: permissões de escopo insuficientes."
   },
   "errors": {
     "attribute_create_failed": "Erro ao criar atributo",
@@ -1135,9 +1137,9 @@
     "fido_empty_row_value": "O valor é obrigatório para cada entrada.",
     "fido_empty_row_metadata_server": "URL e certificado raiz são obrigatórios para cada servidor de metadados.",
     "scope_id_required": "O ID do escopo é obrigatório",
-    "scope_id_min_length": "O ID do escopo deve ter pelo menos 2 caracteres",
+    "scope_id_min_length": "O ID do escopo deve ter pelo menos 5 caracteres",
     "scope_display_name_required": "O nome de exibição é obrigatório",
-    "scope_display_name_min_length": "O nome de exibição deve ter pelo menos 2 caracteres",
+    "scope_display_name_min_length": "O nome de exibição deve ter pelo menos 5 caracteres",
     "scope_type_required": "O tipo de escopo é obrigatório",
     "scope_dynamic_scripts_required": "Selecione pelo menos um script de escopo dinâmico",
     "scope_claims_required": "Selecione pelo menos uma reivindicação",
@@ -1150,6 +1152,9 @@
     "must_be_non_negative": "Deve ser não-negativo",
     "required_field": "Este campo é obrigatório",
     "invalid_number": "Deve ser um número válido",
+    "client_name_required": "O nome do cliente é obrigatório",
+    "redirect_uri_required": "Pelo menos uma URI de redirecionamento é necessária para os tipos de concessão authorization_code e implicit",
+    "must_be_at_least_one": "Deve ser pelo menos 1",
     "invalid_email": "Deve ser um endereço de e-mail válido",
     "invalid_json": "Deve ser um JSON válido",
     "invalid_pattern": "Formato inválido",
@@ -1176,7 +1181,16 @@
     "expiration_date_future": "Expiration date must be in the future",
     "software_id_min_length": "O ID do software deve ter pelo menos 3 caracteres",
     "org_id_min_length": "O ID da organização deve ter pelo menos 3 caracteres",
-    "description_min_length": "A descrição deve ter pelo menos 10 caracteres"
+    "description_min_length": "A descrição deve ter pelo menos 10 caracteres",
+    "min_length": "Deve ter pelo menos {{min}} caracteres",
+    "max_length": "Deve ter no máximo {{max}} caracteres",
+    "invalid_regex": "Deve ser uma expressão regular válida",
+    "field_min_length": "{{field}} deve ter pelo menos {{min}} caracteres",
+    "field_max_length": "{{field}} deve ter no máximo {{max}} caracteres",
+    "field_invalid_url": "{{field}} deve ser uma URL válida",
+    "field_invalid_number": "{{field}} deve ser um número inteiro válido",
+    "field_must_be_positive": "{{field}} deve ser pelo menos 1",
+    "field_invalid_regex": "{{field}} deve ser uma expressão regular válida"
   },
   "tooltips": {
     "insert_shortcode": "Inserir código de atalho",
@@ -1658,7 +1672,13 @@
       "INUM": "INUM",
       "middleName": "Nome do Meio",
       "sn": "Sobrenome",
-      "userConfirmPassword": "Confirmar Senha"
+      "userConfirmPassword": "Confirmar Senha",
+      "creationDate": "A data e hora em que o token foi criado",
+      "expirationDate": "A data e hora em que o token expira",
+      "token_type": "O tipo do token (ex.: access_token, refresh_token)",
+      "scope": "Os escopos concedidos a este token",
+      "deletable": "Se este token pode ser excluído/revogado",
+      "attributes": "Atributos adicionais associados a este token"
     },
     "saml": {
       "name": "O ID alfanumérico usado para identificar a Relação de Confiança",

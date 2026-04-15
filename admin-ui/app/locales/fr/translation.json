@@ -788,7 +788,8 @@
     "authorizationSignedResponseAlg": "Algorithme JWS pour la signature",
     "authorizationEncryptedResponseAlg": "Algorithme JWS pour le chiffrement",
     "authorizationEncryptedResponseEnc": "Chiffrement JWE pour l’autorisation",
-    "scope": "Portée"
+    "scope": "Portée",
+    "search_filter": "Filtre de recherche"
   },
   "footer": {
     "copyright": "(C) {{year}} Tous droits réservés.",
@@ -1120,7 +1121,8 @@
     "no_scope_in_spontaneous_client": "Aucune donnée de portée spontanée pour ce client",
     "ssa_entity": "SSA",
     "no_attributes_found": "No attributes found",
-    "all_attributes_added": "All attributes have been added"
+    "all_attributes_added": "All attributes have been added",
+    "error_uma_resources_unauthorized": "Impossible de charger les ressources UMA : autorisations de portée insuffisantes."
   },
   "errors": {
     "attribute_create_failed": "Erreur lors de la création de l'attribut",
@@ -1146,9 +1148,9 @@
     "fido_empty_row_value": "La valeur est requise pour chaque entrée.",
     "fido_empty_row_metadata_server": "L'URL et le certificat racine sont requis pour chaque serveur de métadonnées.",
     "scope_id_required": "L'identifiant de la portée est obligatoire",
-    "scope_id_min_length": "L'identifiant de la portée doit comporter au moins 2 caractères",
+    "scope_id_min_length": "L'identifiant de la portée doit comporter au moins 5 caractères",
     "scope_display_name_required": "Le nom d'affichage est obligatoire",
-    "scope_display_name_min_length": "Le nom d'affichage doit comporter au moins 2 caractères",
+    "scope_display_name_min_length": "Le nom d'affichage doit comporter au moins 5 caractères",
     "scope_type_required": "Le type de portée est obligatoire",
     "scope_dynamic_scripts_required": "Sélectionnez au moins un script de portée dynamique",
     "scope_claims_required": "Sélectionnez au moins une revendication",
@@ -1161,6 +1163,9 @@
     "must_be_non_negative": "Doit être non-négatif",
     "required_field": "Ce champ est obligatoire",
     "invalid_number": "Doit être un nombre valide",
+    "client_name_required": "Le nom du client est obligatoire",
+    "redirect_uri_required": "Au moins une URI de redirection est requise pour les types d'octroi authorization_code et implicit",
+    "must_be_at_least_one": "Doit être au moins 1",
     "invalid_email": "Doit être une adresse e-mail valide",
     "invalid_json": "Doit être du JSON valide",
     "invalid_pattern": "Format invalide",
@@ -1187,7 +1192,16 @@
     "expiration_date_future": "Expiration date must be in the future",
     "software_id_min_length": "L'ID du logiciel doit comporter au moins 3 caractères",
     "org_id_min_length": "L'ID de l'organisation doit comporter au moins 3 caractères",
-    "description_min_length": "La description doit comporter au moins 10 caractères"
+    "description_min_length": "La description doit comporter au moins 10 caractères",
+    "min_length": "Doit contenir au moins {{min}} caractères",
+    "max_length": "Doit contenir au plus {{max}} caractères",
+    "invalid_regex": "Doit être une expression régulière valide",
+    "field_min_length": "{{field}} doit contenir au moins {{min}} caractères",
+    "field_max_length": "{{field}} doit contenir au plus {{max}} caractères",
+    "field_invalid_url": "{{field}} doit être une URL valide",
+    "field_invalid_number": "{{field}} doit être un entier valide",
+    "field_must_be_positive": "{{field}} doit être au moins 1",
+    "field_invalid_regex": "{{field}} doit être une expression régulière valide"
   },
   "tooltips": {
     "insert_shortcode": "Insérer un shortcode",
@@ -1316,6 +1330,7 @@
     "search_here": "Search Here",
     "search_attribute_here": "Search Attribute Here",
     "search_date": "Search by creation date",
+    "search_filter": "Filtre de recherche",
     "sql_config_name": "Enter the sql configuration name.",
     "sql_username": "Enter the Username.",
     "sql_password": "Enter the Password.",
@@ -1573,7 +1588,13 @@
       "INUM": "INUM",
       "middleName": "Deuxième prénom",
       "sn": "Nom de famille",
-      "userConfirmPassword": "Confirmer le mot de passe"
+      "userConfirmPassword": "Confirmer le mot de passe",
+      "creationDate": "La date et l'heure de création du jeton",
+      "expirationDate": "La date et l'heure d'expiration du jeton",
+      "token_type": "Le type du jeton (p. ex. access_token, refresh_token)",
+      "scope": "Les portées accordées à ce jeton",
+      "deletable": "Si ce jeton peut être supprimé/révoqué",
+      "attributes": "Attributs supplémentaires associés à ce jeton"
     },
     "saml": {
       "name": "L'ID alphanumérique utilisé pour identifier la Relation de Confiance",

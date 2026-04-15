@@ -8,6 +8,7 @@ import { GluuBadge } from '@/components/GluuBadge'
 import { GluuTable } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
@@ -295,16 +296,20 @@ const ClientListPage: React.FC = () => {
         key: 'inum',
         label: t('fields.client_id'),
         sortable: true,
-        render: (_value, row) => <span className={classes.cellText}>{row.inum}</span>,
+        render: (_value, row) => (
+          <GluuText variant="span" className={classes.cellText} disableThemeColor>
+            {row.inum}
+          </GluuText>
+        ),
       },
       {
         key: 'clientName',
         label: t('fields.client_name'),
         sortable: true,
         render: (_value, row) => (
-          <span className={classes.cellText}>
+          <GluuText variant="span" className={classes.cellText} disableThemeColor>
             {row.clientName || row.displayName || EM_DASH_PLACEHOLDER}
-          </span>
+          </GluuText>
         ),
       },
       {
@@ -375,7 +380,9 @@ const ClientListPage: React.FC = () => {
         label: t('fields.organization'),
         sortable: true,
         render: (_value, row) => (
-          <span className={classes.cellText}>{row.organization || EM_DASH_PLACEHOLDER}</span>
+          <GluuText variant="span" className={classes.cellText} disableThemeColor>
+            {row.organization || EM_DASH_PLACEHOLDER}
+          </GluuText>
         ),
       })
     }

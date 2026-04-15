@@ -68,8 +68,8 @@ const GluuFormDetailRow = ({
 
   return (
     <FormGroup {...formGroupProps}>
-      <Label for={label} style={appliedLabelStyle} sm={layout === 'row' ? lsize : 12}>
-        <span data-tooltip-id={doc_entry || label} style={{ cursor: 'help' }}>
+      <Label for={label} sm={layout === 'row' ? lsize : 12}>
+        <span data-tooltip-id={doc_entry || label} style={{ cursor: 'help', ...appliedLabelStyle }}>
           {t(label)}:
         </span>
       </Label>

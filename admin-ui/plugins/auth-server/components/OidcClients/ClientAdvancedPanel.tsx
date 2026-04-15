@@ -11,6 +11,7 @@ import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import {
   BOOLEAN_SELECT_OPTIONS,
+  CLIENT_DYNAMIC_LIST_I18N,
   CLIENT_ADVANCED_SECTION_GROUPS,
   CLIENT_ADVANCED_MODIFIED_FIELDS,
   CLIENT_SCRIPT_TYPES,
@@ -20,10 +21,12 @@ import {
   appendDynamicListItem,
   createPassiveSelectFormik,
   fromBooleanSelectValue,
+  getDynamicListValidationMessage,
   getClientSectionFields,
   mapDynamicListValues,
   mapTranslatedOptions,
   toBooleanSelectValue,
+  uriValidator,
 } from 'Plugins/auth-server/utils'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import { useStyles } from './components/styles/ClientAdvancedPanel.style'
@@ -44,6 +47,28 @@ const ClientAdvancedPanel = ({
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { classes } = useStyles({ isDark, themeColors })
   const gridClass = `${classes.fieldsGrid} ${classes.formLabels} ${classes.formWithInputs}`
+  const formErrors = formik.errors as Record<string, string | undefined> & {
+    attributes?: Record<string, string | undefined>
+  }
+  const formTouched = formik.touched as Record<string, boolean | undefined> & {
+    attributes?: Record<string, boolean | undefined>
+  }
+  const getFieldError = useCallback(
+    (field: string) => {
+      const error = formErrors[field]
+      return typeof error === 'string' ? error : ''
+    },
+    [formErrors],
+  )
+  const isFieldTouched = useCallback((field: string) => Boolean(formTouched[field]), [formTouched])
+  const attributeErrors =
+    formErrors.attributes && typeof formErrors.attributes === 'object'
+      ? formErrors.attributes
+      : ({} as Record<string, string | undefined>)
+  const attributeTouched =
+    formTouched.attributes && typeof formTouched.attributes === 'object'
+      ? formTouched.attributes
+      : ({} as Record<string, boolean | undefined>)
 
   const [expirationDate, setExpirationDate] = useState<Dayjs | undefined>(
     formik.values.expirationDate
@@ -63,6 +88,24 @@ const ClientAdvancedPanel = ({
     [formik.handleBlur],
   )
   const booleanSelectOptions = useMemo(() => mapTranslatedOptions(BOOLEAN_SELECT_OPTIONS, t), [t])
+  const requestUrisError = useMemo(
+    () =>
+      getDynamicListValidationMessage({
+        items: requestUriItems,
+        t,
+        validateItem: (item) => uriValidator(item.value ?? ''),
+        invalidMessage: t('validation_messages.invalid_url_format'),
+      }),
+    [requestUriItems, t],
+  )
+  const authorizedAcrValuesError = useMemo(
+    () =>
+      getDynamicListValidationMessage({
+        items: authorizedAcrItems,
+        t,
+      }),
+    [authorizedAcrItems, t],
+  )
 
   useEffect(() => {
     if (!formik.values.expirable) {
@@ -258,6 +301,15 @@ const ClientAdvancedPanel = ({
           rsize={12}
           doc_category={DOC_CATEGORY}
           disabled={viewOnly}
+          showError={
+            Boolean(attributeTouched.spontaneousScopes) &&
+            typeof attributeErrors.spontaneousScopes === 'string'
+          }
+          errorMessage={
+            typeof attributeErrors.spontaneousScopes === 'string'
+              ? attributeErrors.spontaneousScopes
+              : ''
+          }
           handleChange={(event) => {
             const arr = event.target.value ? [event.target.value] : []
             formik.setFieldValue('attributes.spontaneousScopes', arr)
@@ -281,6 +333,10 @@ const ClientAdvancedPanel = ({
           lsize={12}
           rsize={12}
           disabled={viewOnly}
+          showError={
+            isFieldTouched('initiateLoginUri') && Boolean(getFieldError('initiateLoginUri'))
+          }
+          errorMessage={getFieldError('initiateLoginUri')}
           handleChange={(e) => {
             setModifiedFields({
               ...modifiedFields,
@@ -293,13 +349,16 @@ const ClientAdvancedPanel = ({
     requestUris: (
       <div className={classes.fieldItem}>
         <GluuDynamicList
-          label={`${t('fields.requestUris')}:`}
-          title={t('fields.requestUris')}
+          label={`${t(CLIENT_DYNAMIC_LIST_I18N.REQUEST_URIS.fieldKey)}:`}
+          title={t(CLIENT_DYNAMIC_LIST_I18N.REQUEST_URIS.fieldKey)}
           items={requestUriItems}
           mode="single"
-          valuePlaceholder={t('placeholders.valid_request_uri')}
+          valuePlaceholder={t(CLIENT_DYNAMIC_LIST_I18N.REQUEST_URIS.placeholderKey)}
           addButtonLabel={t('actions.add')}
           removeButtonLabel={t('actions.remove')}
+          validateItem={(item) => uriValidator(item.value ?? '')}
+          showError={!viewOnly && Boolean(requestUrisError)}
+          errorMessage={requestUrisError}
           disabled={viewOnly}
           onAdd={handleAddRequestUri}
           onChange={handleChangeRequestUri}
@@ -334,13 +393,18 @@ const ClientAdvancedPanel = ({
     authorizedAcrValues: (
       <div className={classes.fieldItem}>
         <GluuDynamicList
-          label={`${t('fields.authorizedAcrValues')}:`}
-          title={t('fields.authorizedAcrValues')}
+          label={`${t(CLIENT_DYNAMIC_LIST_I18N.AUTHORIZED_ACR_VALUES.fieldKey)}:`}
+          title={t(CLIENT_DYNAMIC_LIST_I18N.AUTHORIZED_ACR_VALUES.fieldKey)}
           items={authorizedAcrItems}
           mode="single"
-          valuePlaceholder={t('fields.authorizedAcrValues')}
+          valuePlaceholder={getFieldPlaceholder(
+            t,
+            CLIENT_DYNAMIC_LIST_I18N.AUTHORIZED_ACR_VALUES.fieldKey,
+          )}
           addButtonLabel={t('actions.add')}
           removeButtonLabel={t('actions.remove')}
+          showError={!viewOnly && Boolean(authorizedAcrValuesError)}
+          errorMessage={authorizedAcrValuesError}
           disabled={viewOnly}
           onAdd={handleAddAuthorizedAcr}
           onChange={handleChangeAuthorizedAcr}
@@ -361,6 +425,15 @@ const ClientAdvancedPanel = ({
           lsize={12}
           rsize={12}
           disabled={viewOnly}
+          showError={
+            Boolean(attributeTouched.tlsClientAuthSubjectDn) &&
+            typeof attributeErrors.tlsClientAuthSubjectDn === 'string'
+          }
+          errorMessage={
+            typeof attributeErrors.tlsClientAuthSubjectDn === 'string'
+              ? attributeErrors.tlsClientAuthSubjectDn
+              : ''
+          }
           handleChange={(e) => {
             setModifiedFields({
               ...modifiedFields,

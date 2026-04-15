@@ -5,6 +5,21 @@ import type { Dayjs } from 'dayjs'
 import type { ThemeConfig } from '@/context/theme/config'
 import type { JsonObject, JsonValue } from '@/routes/Apps/Gluu/types/common'
 
+export type UmaResourceApiError = string | { message?: string }
+
+export interface ClientDetailPageProps {
+  row: ClientRow
+  scopes: ScopeItem[]
+}
+
+export type UseClientTokensParams = {
+  clientInum: string | undefined
+  pattern: TokenSearchPattern
+  filterField: TokenSearchFilterField
+  pageNumber: number
+  limit: number
+}
+
 export type ClientWizardFormStyleParams = {
   themeColors: ThemeConfig
   isDark: boolean
@@ -115,6 +130,10 @@ export type ClientActiveTokenDetailPageProps = {
 
 export type ClientActiveTokensProps = {
   client: { inum?: string }
+  onExportReady?: (exportFn: () => void) => void
+  onHasDataChange?: (hasData: boolean) => void
+  activePattern?: TokenSearchPattern
+  filterField?: TokenSearchFilterField
 }
 
 export type TokenSearchFilterField = 'expirationDate' | 'creationDate'

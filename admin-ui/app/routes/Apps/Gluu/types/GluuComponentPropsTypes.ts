@@ -325,7 +325,19 @@ export type GluuTooltipProps = {
   children?: ReactNode
   tooltipOnly?: boolean
   zIndex?: number
-  place?: 'top' | 'right' | 'bottom' | 'left'
+  place?:
+    | 'top'
+    | 'top-start'
+    | 'top-end'
+    | 'right'
+    | 'right-start'
+    | 'right-end'
+    | 'bottom'
+    | 'bottom-start'
+    | 'bottom-end'
+    | 'left'
+    | 'left-start'
+    | 'left-end'
   content?: ReactNode
   positionStrategy?: 'absolute' | 'fixed'
   offset?: number
