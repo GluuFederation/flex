@@ -5,15 +5,10 @@ import getThemeColor from 'Context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import { GluuDetailGrid, type GluuDetailGridField } from '@/components/GluuDetailGrid'
 import { DOC_CATEGORY, LABELS, DOC_ENTRIES } from './constants'
-import type { ClientRow, ScopeItem, DisplayValue } from './types'
+import type { DisplayValue, ClientDetailPageProps } from './types'
 
 const displayOrDash = (value: DisplayValue): string =>
   value === null || value === undefined || value === '' ? '—' : String(value)
-
-interface ClientDetailPageProps {
-  row: ClientRow
-  scopes: ScopeItem[]
-}
 
 const ClientDetailPage: React.FC<ClientDetailPageProps> = ({ row, scopes }) => {
   const { t } = useTranslation()

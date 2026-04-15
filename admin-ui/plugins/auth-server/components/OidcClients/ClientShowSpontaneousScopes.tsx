@@ -134,9 +134,9 @@ const ClientShowSpontaneousScopes = ({
                 </div>
               ))
             ) : (
-              <p className={commitClasses.description}>
+              <GluuText variant="p" className={commitClasses.description} disableThemeColor>
                 {t('messages.no_scope_in_spontaneous_client')}
-              </p>
+              </GluuText>
             )}
           </div>
         </div>

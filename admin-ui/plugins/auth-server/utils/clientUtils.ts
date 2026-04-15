@@ -1,7 +1,9 @@
+import { cloneElement, isValidElement } from 'react'
 import type { ChangeEvent, ReactNode } from 'react'
+import type { TFunction } from 'i18next'
 import { REGEX_EMAIL } from '@/utils/regex'
 import { uuidv4 } from '../../../app/utils/Util'
-import type { GluuDynamicListItem } from '@/components/GluuDynamicList'
+import type { GluuDynamicListItem, GluuDynamicListMode } from '@/components/GluuDynamicList'
 import type { SelectOption } from 'Routes/Apps/Gluu/types/GluuSelectRow.types'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
@@ -23,14 +25,70 @@ export const getClientSectionFields = <FieldKey extends string>(
   section: ClientFieldSection<FieldKey>,
 ): ReactNode[] =>
   section.fieldKeys
-    .map((fieldKey) => fieldMap[fieldKey])
-    .filter((field): field is ReactNode => field != null)
+    .map((fieldKey) => {
+      const field = fieldMap[fieldKey]
+      if (field == null) return null
+      return isValidElement(field) ? cloneElement(field, { key: fieldKey }) : field
+    })
+    .filter((field) => field != null)
 
-export const uriValidator = (_uri: string): boolean => true
+export const uriValidator = (uri: string): boolean => {
+  const value = uri.trim()
+  if (!value) return false
 
-export const audienceValidator = (_aud: string): boolean => true
+  try {
+    const parsed = new URL(value)
+    return Boolean(parsed.protocol)
+  } catch {
+    return false
+  }
+}
+
+export const audienceValidator = (aud: string): boolean => aud.trim().length > 0
 
 export const emailValidator = (email: string): boolean => REGEX_EMAIL.test(email)
+
+type DynamicListValidationOptions = {
+  items: GluuDynamicListItem[]
+  t: TFunction
+  mode?: GluuDynamicListMode
+  validateItem?: (item: GluuDynamicListItem, mode: GluuDynamicListMode) => boolean
+  invalidMessage?: string
+  requiredMessage?: string
+}
+
+export const getDynamicListValidationMessage = ({
+  items,
+  t,
+  mode = 'single',
+  validateItem,
+  invalidMessage,
+  requiredMessage,
+}: DynamicListValidationOptions): string | undefined => {
+  if (items.length === 0) return undefined
+
+  const hasIncompleteItem = items.some((item) => {
+    const value = item.value?.trim() ?? ''
+    if (mode === 'single') return value.length === 0
+
+    const key = item.key?.trim() ?? ''
+    return key.length === 0 || value.length === 0
+  })
+
+  if (hasIncompleteItem) {
+    if (requiredMessage) return requiredMessage
+    return mode === 'single'
+      ? t('errors.fido_empty_row_value')
+      : t('errors.fido_empty_row_key_value')
+  }
+
+  if (!validateItem) return undefined
+
+  const hasInvalidItem = items.some((item) => !validateItem(item, mode))
+  if (!hasInvalidItem) return undefined
+
+  return invalidMessage ?? t('validation_messages.invalid_pattern')
+}
 
 export const toStringArray = (val: string[] | undefined): string[] =>
   Array.isArray(val) ? val : []

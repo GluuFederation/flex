@@ -82,17 +82,18 @@ const ClientScriptPanel = ({
               disabled={viewOnly}
               doc_category={DOC_CATEGORY}
             />
-            <GluuText variant="p" className={classes.helperText} secondary>
-              {t('messages.multi_select_hint')}
-            </GluuText>
           </div>
         )
       })}
       {Object.values(scriptOptionsByType).every((opts) => opts.length === 0) && (
         <div className={classes.emptyState}>
           <i className={`fa fa-puzzle-piece ${classes.emptyStateIcon}`} aria-hidden="true" />
-          <p className={classes.emptyStateTitle}>{t('messages.no_scripts_found')}</p>
-          <p className={classes.emptyStateDescription}>{t('messages.no_scripts_for_client')}</p>
+          <GluuText variant="p" className={classes.emptyStateTitle} disableThemeColor>
+            {t('messages.no_scripts_found')}
+          </GluuText>
+          <GluuText variant="p" className={classes.emptyStateDescription} disableThemeColor>
+            {t('messages.no_scripts_for_client')}
+          </GluuText>
         </div>
       )}
     </div>

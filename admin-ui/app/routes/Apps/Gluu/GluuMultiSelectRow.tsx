@@ -162,37 +162,9 @@ const GluuMultiSelectRow: React.FC<GluuMultiSelectRowProps> = ({
             aria-haspopup="listbox"
             tabIndex={disabled ? -1 : 0}
           >
-            {selectedValues.length === 0 ? (
-              <GluuText variant="span" className={classes.placeholder} disableThemeColor>
-                {placeholderText}
-              </GluuText>
-            ) : (
-              selectedValues.map((val, idx) => (
-                <GluuText
-                  key={`${val}-${idx}`}
-                  variant="span"
-                  className={classes.chip}
-                  disableThemeColor
-                >
-                  {getOptionLabel(val)}
-                  {!disabled && (
-                    <button
-                      type="button"
-                      className={classes.chipRemove}
-                      onClick={(e) => handleRemoveChip(e, val)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.stopPropagation()
-                        }
-                      }}
-                      aria-label={`Remove ${getOptionLabel(val)}`}
-                    >
-                      &times;
-                    </button>
-                  )}
-                </GluuText>
-              ))
-            )}
+            <GluuText variant="span" className={classes.placeholder} disableThemeColor>
+              {placeholderText}
+            </GluuText>
             <GluuText
               variant="span"
               className={classes.chevronWrapper}
@@ -202,6 +174,33 @@ const GluuMultiSelectRow: React.FC<GluuMultiSelectRowProps> = ({
               <ChevronIcon width={20} height={20} direction={isOpen ? 'up' : 'down'} />
             </GluuText>
           </div>
+
+          {selectedValues.length > 0 && (
+            <div className={classes.tags}>
+              {selectedValues.map((val, idx) => (
+                <span key={`${val}-${idx}`} className={classes.tag} title={getOptionLabel(val)}>
+                  <GluuText variant="span" className={classes.tagLabel} disableThemeColor>
+                    {getOptionLabel(val)}
+                  </GluuText>
+                  {!disabled && (
+                    <button
+                      type="button"
+                      className={classes.tagRemove}
+                      onClick={(e) => handleRemoveChip(e, val)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.stopPropagation()
+                        }
+                      }}
+                      aria-label={`Remove ${getOptionLabel(val)}`}
+                    >
+                      <i className="fa fa-fw fa-close" />
+                    </button>
+                  )}
+                </span>
+              ))}
+            </div>
+          )}
 
           {isOpen && (
             <div className={classes.dropdownList} role="listbox" aria-multiselectable="true">

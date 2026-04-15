@@ -21,6 +21,7 @@ export const GluuDynamicList: React.FC<GluuDynamicListProps> = ({
   valuePlaceholder,
   addButtonLabel,
   removeButtonLabel,
+  validateItem,
   onAdd,
   onRemove,
   onChange,
@@ -36,6 +37,24 @@ export const GluuDynamicList: React.FC<GluuDynamicListProps> = ({
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { classes } = useStyles({ isDark, themeColors })
   const isEmpty = items.length === 0
+  const hasIncompleteItem = items.some((item) => {
+    const value = item.value?.trim() ?? ''
+    if (mode === 'single') return value.length === 0
+
+    const key = item.key?.trim() ?? ''
+    return key.length === 0 || value.length === 0
+  })
+  const hasInvalidItem = Boolean(
+    validateItem &&
+    items.some((item) => {
+      const value = item.value?.trim() ?? ''
+      const key = item.key?.trim() ?? ''
+      const isComplete = mode === 'single' ? value.length > 0 : key.length > 0 && value.length > 0
+
+      return isComplete && !validateItem(item, mode)
+    }),
+  )
+  const isAddDisabled = disabled || hasIncompleteItem || hasInvalidItem
 
   return (
     <div className={joinClasses(classes.wrapper, className)} style={style}>
@@ -52,7 +71,7 @@ export const GluuDynamicList: React.FC<GluuDynamicListProps> = ({
           )}
           <GluuButton
             type="button"
-            disabled={disabled}
+            disabled={isAddDisabled}
             backgroundColor={themeColors.settings.addPropertyButton.bg}
             textColor={themeColors.settings.addPropertyButton.text}
             useOpacityOnHover
@@ -112,9 +131,13 @@ export const GluuDynamicList: React.FC<GluuDynamicListProps> = ({
             </div>
           ))}
         </div>
-
-        {showError && errorMessage?.trim() && <div className={classes.error}>{errorMessage}</div>}
       </div>
+
+      {showError && errorMessage?.trim() && (
+        <GluuText variant="span" className={classes.error} disableThemeColor>
+          {errorMessage}
+        </GluuText>
+      )}
     </div>
   )
 }

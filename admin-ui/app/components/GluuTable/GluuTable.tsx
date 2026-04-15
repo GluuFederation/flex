@@ -383,7 +383,9 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
                   />
                 )
               })}
-              {actions && actions.length > 0 && <col style={{ width: actions.length * 40 + 16 }} />}
+              {actions && actions.length > 0 && (
+                <col style={{ width: Math.max(100, actions.length * 40 + 16) }} />
+              )}
             </colgroup>
             <thead>
               <tr>
@@ -464,7 +466,7 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
                 {actions && actions.length > 0 && (
                   <th
                     className={`${classes.headerCell} ${classes.headerCellActions}`}
-                    style={{ width: actions.length * 40 + 16 }}
+                    style={{ width: Math.max(100, actions.length * 40 + 16) }}
                   >
                     <GluuText variant="span" disableThemeColor>
                       {t(T_KEYS.FIELDS_ACTIONS)}

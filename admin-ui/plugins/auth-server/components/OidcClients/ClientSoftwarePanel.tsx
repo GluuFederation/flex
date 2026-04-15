@@ -5,10 +5,20 @@ import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
-import { CLIENT_SOFTWARE_MODIFIED_FIELDS, DOC_CATEGORY } from './constants'
+import {
+  CLIENT_DYNAMIC_LIST_I18N,
+  CLIENT_SOFTWARE_MODIFIED_FIELDS,
+  DOC_CATEGORY,
+} from './constants'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import { useStyles } from './components/styles/ClientSoftwarePanel.style'
-import { appendDynamicListItem, mapDynamicListValues } from 'Plugins/auth-server/utils'
+import {
+  appendDynamicListItem,
+  emailValidator,
+  getDynamicListValidationMessage,
+  mapDynamicListValues,
+  uriValidator,
+} from 'Plugins/auth-server/utils'
 import type { GluuDynamicListItem } from '@/components/GluuDynamicList'
 import type { ClientPanelProps } from './types'
 
@@ -25,10 +35,40 @@ const ClientSoftwarePanel = ({
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { classes } = useStyles({ isDark, themeColors })
   const gridClass = `${classes.fieldsGrid} ${classes.formLabels} ${classes.formWithInputs}`
+  const formErrors = formik.errors as Record<string, string | undefined>
+  const formTouched = formik.touched as Record<string, boolean | undefined>
+  const getFieldError = useCallback(
+    (field: string) => {
+      const error = formErrors[field]
+      return typeof error === 'string' ? error : ''
+    },
+    [formErrors],
+  )
+  const isFieldTouched = useCallback((field: string) => Boolean(formTouched[field]), [formTouched])
   const [contactItems, setContactItems] = useState<GluuDynamicListItem[]>([])
   const [authorizedOriginItems, setAuthorizedOriginItems] = useState<GluuDynamicListItem[]>([])
   const isContactsSyncingRef = useRef(false)
   const isAuthorizedOriginsSyncingRef = useRef(false)
+  const authorizedOriginsError = useMemo(
+    () =>
+      getDynamicListValidationMessage({
+        items: authorizedOriginItems,
+        t,
+        validateItem: (item) => uriValidator(item.value ?? ''),
+        invalidMessage: t('validation_messages.invalid_url_format'),
+      }),
+    [authorizedOriginItems, t],
+  )
+  const contactsError = useMemo(
+    () =>
+      getDynamicListValidationMessage({
+        items: contactItems,
+        t,
+        validateItem: (item) => emailValidator(item.value?.trim() ?? ''),
+        invalidMessage: t('validation_messages.invalid_email'),
+      }),
+    [contactItems, t],
+  )
 
   useEffect(() => {
     const nextContacts = ((formik.values.contacts as string[] | undefined) ?? []).filter(
@@ -160,6 +200,8 @@ const ClientSoftwarePanel = ({
             lsize={12}
             rsize={12}
             disabled={viewOnly}
+            showError={isFieldTouched('clientUri') && Boolean(getFieldError('clientUri'))}
+            errorMessage={getFieldError('clientUri')}
             handleChange={(e) => {
               setModifiedFields({
                 ...modifiedFields,
@@ -180,6 +222,8 @@ const ClientSoftwarePanel = ({
             lsize={12}
             rsize={12}
             disabled={viewOnly}
+            showError={isFieldTouched('policyUri') && Boolean(getFieldError('policyUri'))}
+            errorMessage={getFieldError('policyUri')}
             handleChange={(e) => {
               setModifiedFields({
                 ...modifiedFields,
@@ -200,6 +244,8 @@ const ClientSoftwarePanel = ({
             lsize={12}
             rsize={12}
             disabled={viewOnly}
+            showError={isFieldTouched('logoUri') && Boolean(getFieldError('logoUri'))}
+            errorMessage={getFieldError('logoUri')}
             handleChange={(e) => {
               setModifiedFields({
                 ...modifiedFields,
@@ -220,6 +266,8 @@ const ClientSoftwarePanel = ({
             lsize={12}
             rsize={12}
             disabled={viewOnly}
+            showError={isFieldTouched('tosUri') && Boolean(getFieldError('tosUri'))}
+            errorMessage={getFieldError('tosUri')}
             handleChange={(e) => {
               setModifiedFields({
                 ...modifiedFields,
@@ -240,6 +288,8 @@ const ClientSoftwarePanel = ({
             lsize={12}
             rsize={12}
             disabled={viewOnly}
+            showError={isFieldTouched('softwareId') && Boolean(getFieldError('softwareId'))}
+            errorMessage={getFieldError('softwareId')}
             handleChange={(e) => {
               setModifiedFields({
                 ...modifiedFields,
@@ -260,6 +310,10 @@ const ClientSoftwarePanel = ({
             lsize={12}
             rsize={12}
             disabled={viewOnly}
+            showError={
+              isFieldTouched('softwareVersion') && Boolean(getFieldError('softwareVersion'))
+            }
+            errorMessage={getFieldError('softwareVersion')}
             handleChange={(e) => {
               setModifiedFields({
                 ...modifiedFields,
@@ -280,6 +334,10 @@ const ClientSoftwarePanel = ({
             lsize={12}
             rsize={12}
             disabled={viewOnly}
+            showError={
+              isFieldTouched('softwareStatement') && Boolean(getFieldError('softwareStatement'))
+            }
+            errorMessage={getFieldError('softwareStatement')}
             handleChange={(e) => {
               setModifiedFields({
                 ...modifiedFields,
@@ -293,13 +351,16 @@ const ClientSoftwarePanel = ({
 
         <div className={classes.fieldItem}>
           <GluuDynamicList
-            label={`${t('fields.authorizedOrigins')}:`}
-            title={t('fields.authorizedOrigins')}
+            label={`${t(CLIENT_DYNAMIC_LIST_I18N.AUTHORIZED_ORIGINS.fieldKey)}:`}
+            title={t(CLIENT_DYNAMIC_LIST_I18N.AUTHORIZED_ORIGINS.fieldKey)}
             items={authorizedOriginItems}
             mode="single"
-            valuePlaceholder={t('placeholders.valid_origin_uri')}
+            valuePlaceholder={t(CLIENT_DYNAMIC_LIST_I18N.AUTHORIZED_ORIGINS.placeholderKey)}
             addButtonLabel={t('actions.add')}
             removeButtonLabel={t('actions.remove')}
+            validateItem={(item) => uriValidator(item.value ?? '')}
+            showError={!viewOnly && Boolean(authorizedOriginsError)}
+            errorMessage={authorizedOriginsError}
             disabled={viewOnly}
             onAdd={handleAddAuthorizedOrigin}
             onChange={handleChangeAuthorizedOrigin}
@@ -309,13 +370,16 @@ const ClientSoftwarePanel = ({
 
         <div className={classes.fieldItem}>
           <GluuDynamicList
-            label={`${t('fields.contacts')}:`}
-            title={t('fields.contacts')}
+            label={`${t(CLIENT_DYNAMIC_LIST_I18N.CONTACTS.fieldKey)}:`}
+            title={t(CLIENT_DYNAMIC_LIST_I18N.CONTACTS.fieldKey)}
             items={contactItems}
             mode="single"
-            valuePlaceholder={t('placeholders.email_example')}
+            valuePlaceholder={t(CLIENT_DYNAMIC_LIST_I18N.CONTACTS.placeholderKey)}
             addButtonLabel={t('actions.add')}
             removeButtonLabel={t('actions.remove')}
+            validateItem={(item) => emailValidator(item.value?.trim() ?? '')}
+            showError={!viewOnly && Boolean(contactsError)}
+            errorMessage={contactsError}
             disabled={viewOnly}
             onAdd={handleAddContact}
             onChange={handleChangeContact}

@@ -712,7 +712,8 @@
     "nothingToShowInTheList": "Nothing to show in the list",
     "auiPolicyStoreUrl": "Admin UI Remote Policy Store",
     "configApiPolicyStoreUrl": "Config API Policy Store",
-    "cedarlingPolicyStoreRetrievalPoint": "Policy Retrieval Point"
+    "cedarlingPolicyStoreRetrievalPoint": "Policy Retrieval Point",
+    "search_filter": "Search Filter"
   },
   "languages": {
     "french": "French",
@@ -1142,7 +1143,8 @@
     "auth_error_no_code": "Unable to get authorization code",
     "mau_loading": "Loading statistics...",
     "vs_previous_period": "vs previous period",
-    "no_valid_role_logout": "The logged-in user does not have a valid role. You will be logged out in {{seconds}} seconds."
+    "no_valid_role_logout": "The logged-in user does not have a valid role. You will be logged out in {{seconds}} seconds.",
+    "error_uma_resources_unauthorized": "Unable to load UMA resources: insufficient scope permissions."
   },
   "errors": {
     "attribute_create_failed": "Error creating attribute",
@@ -1168,9 +1170,9 @@
     "fido_empty_row_value": "Value is required for each entry.",
     "fido_empty_row_metadata_server": "Both URL and root certificate are required for each metadata server.",
     "scope_id_required": "Scope ID is required",
-    "scope_id_min_length": "Scope ID must be at least 2 characters",
+    "scope_id_min_length": "Scope ID must be at least 5 characters",
     "scope_display_name_required": "Display Name is required",
-    "scope_display_name_min_length": "Display Name must be at least 2 characters",
+    "scope_display_name_min_length": "Display Name must be at least 5 characters",
     "scope_type_required": "Scope Type is required",
     "scope_dynamic_scripts_required": "Select at least one dynamic scope script",
     "scope_claims_required": "Select at least one claim",
@@ -1183,6 +1185,9 @@
     "must_be_non_negative": "Must be non-negative",
     "required_field": "This field is required",
     "invalid_number": "Must be a valid number",
+    "client_name_required": "Client name is required",
+    "redirect_uri_required": "At least one redirect URI is required for authorization_code and implicit grant types",
+    "must_be_at_least_one": "Must be at least 1",
     "invalid_email": "Must be a valid email address",
     "invalid_json": "Must be valid JSON",
     "invalid_pattern": "Invalid format",
@@ -1209,7 +1214,16 @@
     "expiration_date_future": "Expiration date must be in the future",
     "software_id_min_length": "Software ID must be at least 3 characters",
     "org_id_min_length": "Organization ID must be at least 3 characters",
-    "description_min_length": "Description must be at least 10 characters"
+    "description_min_length": "Description must be at least 10 characters",
+    "min_length": "Must be at least {{min}} characters",
+    "max_length": "Must be at most {{max}} characters",
+    "invalid_regex": "Must be a valid regular expression",
+    "field_min_length": "{{field}} must be at least {{min}} characters",
+    "field_max_length": "{{field}} must be at most {{max}} characters",
+    "field_invalid_url": "{{field}} must be a valid URL",
+    "field_invalid_number": "{{field}} must be a valid integer",
+    "field_must_be_positive": "{{field}} must be at least 1",
+    "field_invalid_regex": "{{field}} must be a valid regular expression"
   },
   "tooltips": {
     "insert_shortcode": "Insert shortcode",
@@ -1306,6 +1320,7 @@
     "search_scope": "Search by scope",
     "search_token": "Search by token code",
     "search_date": "Search by creation date",
+    "search_filter": "Search Filter",
     "sector_uri": "Enter the sector URI",
     "sender_email": "Enter the sender email",
     "sender_name": "Enter the sender name",
@@ -2182,7 +2197,13 @@
       "platform": "Platform",
       "createdBy": "Created By",
       "type": "Type",
-      "domain": "Domain"
+      "domain": "Domain",
+      "creationDate": "The date and time the token was created",
+      "expirationDate": "The date and time the token expires",
+      "token_type": "The type of the token (e.g. access_token, refresh_token)",
+      "scope": "The scopes granted to this token",
+      "deletable": "Whether this token can be deleted/revoked",
+      "attributes": "Additional attributes associated with this token"
     },
     "sessions": {
       "expirationDate": "Expiration Date",

@@ -17,7 +17,7 @@ export const CLIENT_VIEW_QUERY_VALUE = '1'
 
 export const FETCH_LIMITS = {
   CLIENT_LIST: 100,
-  SCOPES: 100,
+  SCOPES: 200,
   SCRIPTS: 200,
 } as const
 
@@ -42,6 +42,43 @@ export const BACKCHANNEL_URI_ID = 'backchannel_uri_id'
 export const REQUEST_URI_INPUT_ID = 'request_uri_id'
 export const ORIGIN_INPUT_ID = 'origin_uri_id'
 export const CONTACT_INPUT_ID = 'contact_uri_id'
+
+export const CLIENT_DYNAMIC_LIST_I18N = {
+  REDIRECT_URIS: {
+    fieldKey: 'fields.redirect_uris',
+    placeholderKey: 'placeholders.redirect_uris',
+  },
+  ADDITIONAL_AUDIENCE: {
+    fieldKey: 'fields.additionalAudience',
+  },
+  REQUEST_URIS: {
+    fieldKey: 'fields.requestUris',
+    placeholderKey: 'placeholders.valid_request_uri',
+  },
+  AUTHORIZED_ACR_VALUES: {
+    fieldKey: 'fields.authorizedAcrValues',
+  },
+  BACKCHANNEL_LOGOUT_URI: {
+    fieldKey: 'fields.backchannelLogoutUri',
+    placeholderKey: 'placeholders.valid_uri_pattern',
+  },
+  POST_LOGOUT_REDIRECT_URIS: {
+    fieldKey: 'fields.post_logout_redirect_uris',
+    placeholderKey: 'placeholders.post_logout_redirect_uris',
+  },
+  AUTHORIZED_ORIGINS: {
+    fieldKey: 'fields.authorizedOrigins',
+    placeholderKey: 'placeholders.valid_origin_uri',
+  },
+  CONTACTS: {
+    fieldKey: 'fields.contacts',
+    placeholderKey: 'placeholders.email_example',
+  },
+  CLAIM_REDIRECT_URIS: {
+    fieldKey: 'fields.claimRedirectURIs',
+    placeholderKey: 'placeholders.valid_claim_uri',
+  },
+} as const
 
 export const CLIENT_SCRIPT_TYPES = {
   SPONTANEOUS_SCOPE: 'spontaneous_scope',
@@ -346,6 +383,10 @@ export const CLIENT_SCRIPT_FIELDS: ClientScriptField[] = [
     modifiedField: 'Consent Gathering Scripts',
   },
 ]
+
+export const UMA_I18N_KEYS = {
+  ERROR_UNAUTHORIZED: 'messages.error_uma_resources_unauthorized',
+} as const
 
 export const ORG_ATTR_NAME = 'o'
 export const ORG_ATTR_NAME_FULL = 'organization'

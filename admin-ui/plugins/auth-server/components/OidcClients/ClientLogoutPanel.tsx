@@ -6,7 +6,12 @@ import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
-import { BOOLEAN_SELECT_OPTIONS, CLIENT_LOGOUT_MODIFIED_FIELDS, DOC_CATEGORY } from './constants'
+import {
+  BOOLEAN_SELECT_OPTIONS,
+  CLIENT_DYNAMIC_LIST_I18N,
+  CLIENT_LOGOUT_MODIFIED_FIELDS,
+  DOC_CATEGORY,
+} from './constants'
 import { getClientAttributeValue } from './helper/utils'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import { useStyles } from './components/styles/ClientLogoutPanel.style'
@@ -14,9 +19,11 @@ import {
   appendDynamicListItem,
   createPassiveSelectFormik,
   fromBooleanSelectValue,
+  getDynamicListValidationMessage,
   mapDynamicListValues,
   mapTranslatedOptions,
   toBooleanSelectValue,
+  uriValidator,
 } from 'Plugins/auth-server/utils'
 import type { GluuDynamicListItem } from '@/components/GluuDynamicList'
 import type { ClientPanelProps } from './types'
@@ -34,6 +41,16 @@ const ClientLogoutPanel = ({
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { classes } = useStyles({ isDark, themeColors })
   const gridClass = `${classes.fieldsGrid} ${classes.formLabels} ${classes.formWithInputs}`
+  const formErrors = formik.errors as Record<string, string | undefined>
+  const formTouched = formik.touched as Record<string, boolean | undefined>
+  const getFieldError = useCallback(
+    (field: string) => {
+      const error = formErrors[field]
+      return typeof error === 'string' ? error : ''
+    },
+    [formErrors],
+  )
+  const isFieldTouched = useCallback((field: string) => Boolean(formTouched[field]), [formTouched])
   const [backchannelLogoutUriItems, setBackchannelLogoutUriItems] = useState<GluuDynamicListItem[]>(
     [],
   )
@@ -57,6 +74,26 @@ const ClientLogoutPanel = ({
     [formik.handleBlur],
   )
   const booleanSelectOptions = useMemo(() => mapTranslatedOptions(BOOLEAN_SELECT_OPTIONS, t), [t])
+  const backchannelLogoutUriError = useMemo(
+    () =>
+      getDynamicListValidationMessage({
+        items: backchannelLogoutUriItems,
+        t,
+        validateItem: (item) => uriValidator(item.value ?? ''),
+        invalidMessage: t('validation_messages.invalid_url_format'),
+      }),
+    [backchannelLogoutUriItems, t],
+  )
+  const postLogoutRedirectUriError = useMemo(
+    () =>
+      getDynamicListValidationMessage({
+        items: postLogoutRedirectUriItems,
+        t,
+        validateItem: (item) => uriValidator(item.value ?? ''),
+        invalidMessage: t('validation_messages.invalid_url_format'),
+      }),
+    [postLogoutRedirectUriItems, t],
+  )
 
   useEffect(() => {
     const nextUris = (backchannelLogoutUri ?? []).filter(
@@ -230,6 +267,11 @@ const ClientLogoutPanel = ({
             lsize={12}
             rsize={12}
             disabled={viewOnly}
+            showError={
+              isFieldTouched('frontChannelLogoutUri') &&
+              Boolean(getFieldError('frontChannelLogoutUri'))
+            }
+            errorMessage={getFieldError('frontChannelLogoutUri')}
             handleChange={(e) => {
               setModifiedFields({
                 ...modifiedFields,
@@ -241,13 +283,16 @@ const ClientLogoutPanel = ({
         <div className={classes.fieldItem} />
         <div className={classes.fieldItem}>
           <GluuDynamicList
-            label={`${t('fields.backchannelLogoutUri')}:`}
-            title={t('fields.backchannelLogoutUri')}
+            label={`${t(CLIENT_DYNAMIC_LIST_I18N.BACKCHANNEL_LOGOUT_URI.fieldKey)}:`}
+            title={t(CLIENT_DYNAMIC_LIST_I18N.BACKCHANNEL_LOGOUT_URI.fieldKey)}
             items={backchannelLogoutUriItems}
             mode="single"
-            valuePlaceholder={t('placeholders.valid_uri_pattern')}
+            valuePlaceholder={t(CLIENT_DYNAMIC_LIST_I18N.BACKCHANNEL_LOGOUT_URI.placeholderKey)}
             addButtonLabel={t('actions.add')}
             removeButtonLabel={t('actions.remove')}
+            validateItem={(item) => uriValidator(item.value ?? '')}
+            showError={!viewOnly && Boolean(backchannelLogoutUriError)}
+            errorMessage={backchannelLogoutUriError}
             disabled={viewOnly}
             onAdd={handleAddBackchannelLogoutUri}
             onChange={handleChangeBackchannelLogoutUri}
@@ -256,13 +301,16 @@ const ClientLogoutPanel = ({
         </div>
         <div className={classes.fieldItem}>
           <GluuDynamicList
-            label={`${t('fields.post_logout_redirect_uris')}:`}
-            title={t('fields.post_logout_redirect_uris')}
+            label={`${t(CLIENT_DYNAMIC_LIST_I18N.POST_LOGOUT_REDIRECT_URIS.fieldKey)}:`}
+            title={t(CLIENT_DYNAMIC_LIST_I18N.POST_LOGOUT_REDIRECT_URIS.fieldKey)}
             items={postLogoutRedirectUriItems}
             mode="single"
-            valuePlaceholder={t('placeholders.post_logout_redirect_uris')}
+            valuePlaceholder={t(CLIENT_DYNAMIC_LIST_I18N.POST_LOGOUT_REDIRECT_URIS.placeholderKey)}
             addButtonLabel={t('actions.add')}
             removeButtonLabel={t('actions.remove')}
+            validateItem={(item) => uriValidator(item.value ?? '')}
+            showError={!viewOnly && Boolean(postLogoutRedirectUriError)}
+            errorMessage={postLogoutRedirectUriError}
             disabled={viewOnly}
             onAdd={handleAddPostLogoutRedirectUri}
             onChange={handleChangePostLogoutRedirectUri}

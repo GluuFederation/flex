@@ -20,12 +20,6 @@ export const useStyles = makeStyles<ClientScriptPanelStyleParams>()((_, { themeC
   fieldWrap: {
     minWidth: 0,
   },
-  helperText: {
-    marginTop: SPACING.CARD_CONTENT_GAP / 2,
-    color: themeColors.textMuted,
-    fontSize: fontSizes.sm,
-    lineHeight: lineHeights.relaxed,
-  },
   emptyState: {
     gridColumn: '1 / -1',
     display: 'flex',
@@ -45,7 +39,7 @@ export const useStyles = makeStyles<ClientScriptPanelStyleParams>()((_, { themeC
     opacity: 0.5,
   },
   emptyStateTitle: {
-    color: themeColors.text,
+    color: themeColors.fontColor,
     fontSize: fontSizes.base,
     fontWeight: 600,
     margin: 0,

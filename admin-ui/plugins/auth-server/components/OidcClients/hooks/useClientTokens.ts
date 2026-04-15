@@ -10,15 +10,7 @@ import { devLogger } from '@/utils/devLogger'
 import { formatDate } from '@/utils/dayjsUtils'
 import { TOKEN_DATE_DISPLAY_FORMAT } from '../constants'
 import { buildClientTokenFieldValuePair } from '../helper/utils'
-import type { ClientTokenRow, TokenSearchFilterField, TokenSearchPattern } from '../types'
-
-type UseClientTokensParams = {
-  clientInum: string | undefined
-  pattern: TokenSearchPattern
-  filterField: TokenSearchFilterField
-  pageNumber: number
-  limit: number
-}
+import type { ClientTokenRow, UseClientTokensParams } from '../types'
 
 const formatTokenDate = (value: string | undefined): string =>
   value ? formatDate(value, TOKEN_DATE_DISPLAY_FORMAT) : ''

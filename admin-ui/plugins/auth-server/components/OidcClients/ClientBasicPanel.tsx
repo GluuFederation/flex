@@ -14,6 +14,7 @@ import { useGetOauthScopes } from 'JansConfigApi'
 import {
   BOOLEAN_SELECT_OPTIONS,
   CLIENT_BASIC_MODIFIED_FIELDS,
+  CLIENT_DYNAMIC_LIST_I18N,
   DOC_CATEGORY,
   FETCH_LIMITS,
   GRANT_TYPE_OPTIONS,
@@ -29,10 +30,12 @@ import {
   appendDynamicListItem,
   createPassiveSelectFormik,
   getClientSectionFields,
+  getDynamicListValidationMessage,
   mapDynamicListValues,
   mapTranslatedOptions,
   fromBooleanSelectValue,
   toBooleanSelectValue,
+  uriValidator,
 } from 'Plugins/auth-server/utils'
 import { useStyles } from './components/styles/ClientBasicPanel.style'
 import type { GluuDynamicListItem } from '@/components/GluuDynamicList'
@@ -68,7 +71,7 @@ const ClientBasicPanel = ({
 
   const { data: searchScopesData, isLoading: isSearchLoading } = useGetOauthScopes(
     { pattern: debouncedScopeQuery.trim(), limit: FETCH_LIMITS.SCOPES },
-    { query: { enabled: !!debouncedScopeQuery.trim() } },
+    { query: { enabled: true } },
   )
 
   const scopeLoading = isClientScopesLoading || isSearchLoading
@@ -228,6 +231,16 @@ const ClientBasicPanel = ({
   )
 
   const gridClass = `${classes.fieldsGrid} ${classes.formLabels} ${classes.formWithInputs}`
+  const redirectUrisError = useMemo(
+    () =>
+      getDynamicListValidationMessage({
+        items: redirectUriItems,
+        t,
+        validateItem: (item) => uriValidator(item.value ?? ''),
+        invalidMessage: t('validation_messages.invalid_url_format'),
+      }),
+    [redirectUriItems, t],
+  )
 
   const fieldMap = {
     clientName: (
@@ -240,6 +253,7 @@ const ClientBasicPanel = ({
           doc_category={DOC_CATEGORY}
           lsize={12}
           rsize={12}
+          required
           disabled={viewOnly}
           placeholder={t('placeholders.client_name')}
           showError={isFieldTouched('clientName') && Boolean(getFieldError('clientName'))}
@@ -542,13 +556,16 @@ const ClientBasicPanel = ({
     redirectUris: (
       <div className={classes.fieldItem}>
         <GluuDynamicList
-          label={`${t('fields.redirect_uris')}:`}
-          title={t('fields.redirect_uris')}
+          label={`${t(CLIENT_DYNAMIC_LIST_I18N.REDIRECT_URIS.fieldKey)}:`}
+          title={t(CLIENT_DYNAMIC_LIST_I18N.REDIRECT_URIS.fieldKey)}
           items={redirectUriItems}
           mode="single"
-          valuePlaceholder={t('placeholders.redirect_uris')}
+          valuePlaceholder={t(CLIENT_DYNAMIC_LIST_I18N.REDIRECT_URIS.placeholderKey)}
           addButtonLabel={t('actions.add_redirect_url')}
           removeButtonLabel={t('actions.remove')}
+          validateItem={(item) => uriValidator(item.value ?? '')}
+          showError={!viewOnly && Boolean(redirectUrisError)}
+          errorMessage={redirectUrisError}
           disabled={viewOnly}
           onAdd={handleAddRedirectUri}
           onChange={handleChangeRedirectUri}

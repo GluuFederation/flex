@@ -30,7 +30,7 @@ export const useStyles = makeStyles<GluuMultiSelectRowStyleParams>()((
       alignItems: 'center',
       flexWrap: 'wrap',
       gap: 6,
-      minHeight: 52,
+      minHeight: 44,
       padding: '8px 44px 8px 16px',
       backgroundColor: formInputBg,
       border: `1px solid ${inputBorderColor}`,
@@ -53,10 +53,16 @@ export const useStyles = makeStyles<GluuMultiSelectRowStyleParams>()((
       fontSize: fontSizes.base,
       userSelect: 'none',
     },
-    chip: {
+    tags: {
+      marginTop: 12,
+      display: 'flex',
+      gap: 10,
+      flexWrap: 'wrap',
+    },
+    tag: {
       display: 'inline-flex',
       alignItems: 'center',
-      gap: 4,
+      gap: 6,
       padding: '4px 4px 4px 10px',
       borderRadius: 999,
       backgroundColor: themeColors.badges?.statusActiveBg ?? customColors.statusActiveBg,
@@ -65,9 +71,16 @@ export const useStyles = makeStyles<GluuMultiSelectRowStyleParams>()((
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.semiBold,
       lineHeight: '18px',
-      whiteSpace: 'nowrap',
+      maxWidth: '100%',
+      overflow: 'hidden',
     },
-    chipRemove: {
+    tagLabel: {
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      color: 'inherit',
+    },
+    tagRemove: {
       'display': 'inline-flex',
       'alignItems': 'center',
       'justifyContent': 'center',
