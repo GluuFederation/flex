@@ -147,6 +147,7 @@ jansScope: https://jans.io/oauth/config/scripts.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/properties.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/webhook.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+jansScope: https://jans.io/oauth/config/uma.write
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -157,6 +158,7 @@ jansResource: clients
 jansScope: https://jans.io/oauth/config/openid/clients.delete
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/webhook.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+jansScope: https://jans.io/oauth/config/uma.admin
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
