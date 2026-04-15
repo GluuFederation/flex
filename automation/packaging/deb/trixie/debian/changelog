@@ -1,4 +1,4 @@
-flex (%VER%~ubuntu20.04) unstable; urgency=low
+flex (%VER%~debian13) unstable; urgency=low
 
   * Release Notes.
 

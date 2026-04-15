@@ -133,6 +133,7 @@ nav:
         - 'Ubuntu': 'install/vm-install/ubuntu.md'
         - 'RHEL': 'install/vm-install/rhel.md'
         - 'SUSE': 'install/vm-install/suse.md'
+    - 'Version Support Policy': 'install/eol.md'
 - 'Administration':
     - 'admin/README.md'
     - 'Configuration': 'admin/config.md'
