@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useFormik } from 'formik'
 import { useQueryClient } from '@tanstack/react-query'
 import { useCedarling } from '@/cedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
@@ -15,17 +16,23 @@ import {
   type AuthenticationMethod,
 } from 'JansConfigApi'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import { Button, Form } from 'Components'
+import { Form } from 'Components'
+import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
+import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 import { useTheme } from '@/context/theme/themeContext'
-import DefaultAcrInput from '../AuthServerProperties/DefaultAcrInput'
+import getThemeColor from '@/context/theme/config'
 import { getScripts } from 'Redux/features/initSlice'
-import { buildAgamaFlowsArray, buildDropdownOptions, type DropdownOption } from './helper/acrUtils'
+import {
+  buildAgamaFlowsArray,
+  buildDropdownOptions,
+  type DropdownOption,
+} from '../Acrs/helper/acrUtils'
 import { updateToast } from 'Redux/features/toastSlice'
-import { useAcrAudit } from './hooks'
+import { useAcrAudit } from '../Acrs/hooks'
 import { DEFAULT_THEME } from '@/context/theme/constants'
-import customColors from '@/customColors'
 import { devLogger } from '@/utils/devLogger'
+import { useStyles } from './DefaultAcr.style'
 
 interface CustomScript {
   name: string
@@ -40,8 +47,8 @@ interface RootState {
   }
 }
 
-interface PutData {
-  value: string | string[]
+interface DefaultAcrFormValues {
+  defaultAcr: string
 }
 
 const MAX_AGAMA_PROJECTS_FOR_ACR = 500
@@ -100,11 +107,12 @@ function DefaultAcr(): React.ReactElement {
   const { t } = useTranslation()
 
   const [modal, setModal] = useState<boolean>(false)
-  const [put, setPut] = useState<PutData | null>(null)
   SetTitle(t('titles.authentication'))
 
   const { state: themeState } = useTheme()
   const selectedTheme = themeState.theme || DEFAULT_THEME
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+  const { classes } = useStyles({ themeColors })
 
   const authResourceId = ADMIN_UI_RESOURCES.Authentication
   const authScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[authResourceId] || [], [authResourceId])
@@ -157,46 +165,62 @@ function DefaultAcr(): React.ReactElement {
     return dropdownOptions
   }, [scripts, projectsResponse])
 
-  const toggle = (): void => {
-    setModal(!modal)
-  }
+  const selectOptions = useMemo(
+    () =>
+      authScripts.map((item) =>
+        typeof item === 'object'
+          ? { value: item.value, label: item.label }
+          : { value: item, label: item },
+      ),
+    [authScripts],
+  )
 
-  const putHandler = (putData: PutData): void => {
-    setPut(putData)
-  }
+  const toggle = useCallback((): void => {
+    setModal((prev) => !prev)
+  }, [])
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
-    e.preventDefault()
-    setModal(true)
-  }
+  const initialValues: DefaultAcrFormValues = useMemo(
+    () => ({ defaultAcr: acrs?.defaultAcr ?? '' }),
+    [acrs?.defaultAcr],
+  )
 
-  const handleSaveClick = (): void => {
-    setModal(true)
-  }
+  const formik = useFormik<DefaultAcrFormValues>({
+    initialValues,
+    enableReinitialize: true,
+    onSubmit: () => {
+      setModal(true)
+    },
+  })
+
+  const handleCancel = useCallback((): void => {
+    formik.resetForm()
+  }, [formik])
 
   const submitForm = async (userMessage: string): Promise<void> => {
     toggle()
 
-    if (put?.value) {
-      const acrValue = Array.isArray(put.value) ? put.value[0] : put.value
-      const newAcr: AuthenticationMethod = { defaultAcr: acrValue }
+    const acrValue = formik.values.defaultAcr
+    if (!acrValue) {
+      return
+    }
+
+    const newAcr: AuthenticationMethod = { defaultAcr: acrValue }
+    try {
+      await putAcrsMutation.mutateAsync({ data: newAcr })
       try {
-        await putAcrsMutation.mutateAsync({ data: newAcr })
-        try {
-          await logAcrUpdate(newAcr, userMessage, { defaultAcr: acrValue })
-        } catch (auditError) {
-          devLogger.error('Failed to log ACR update:', auditError)
-          dispatch(
-            updateToast(
-              true,
-              'warning',
-              t('messages.audit_log_failed', 'Update succeeded, but audit logging failed'),
-            ),
-          )
-        }
-      } catch {
-        // Mutation error handling is done in onError callback
+        await logAcrUpdate(newAcr, userMessage, { defaultAcr: acrValue })
+      } catch (auditError) {
+        devLogger.error('Failed to log ACR update:', auditError)
+        dispatch(
+          updateToast(
+            true,
+            'warning',
+            t('messages.audit_log_failed', 'Update succeeded, but audit logging failed'),
+          ),
+        )
       }
+    } catch {
+      // Mutation error handling is done in onError callback
     }
   }
 
@@ -204,44 +228,40 @@ function DefaultAcr(): React.ReactElement {
     <GluuLoader
       blocking={loadingScripts || agamaLoading || acrLoading || putAcrsMutation.isPending}
     >
-      <Form onSubmit={handleSubmit}>
+      <Form onSubmit={formik.handleSubmit}>
         <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} />
-        <style>{`
-          .default-acr-labels-black label,
-          .default-acr-labels-black label h5,
-          .default-acr-labels-black label span,
-          .default-acr-labels-black h5,
-          .default-acr-labels-black .MuiSvgIcon-root { color: ${customColors.black} !important; }
-        `}</style>
-        <div className="default-acr-labels-black" style={{ padding: '3vh' }}>
+        <div
+          className={`${classes.defaultAcrSection} ${classes.formLabels} ${classes.formWithInputs}`}
+        >
           <GluuViewWrapper canShow={canReadAuth}>
-            <DefaultAcrInput
-              name="defaultAcr"
-              lsize={6}
-              rsize={6}
-              label={t('fields.default_acr')}
-              handler={putHandler}
-              value={acrs?.defaultAcr}
-              options={authScripts}
-              path="/ACR"
-              isArray={false}
-              showSaveButtons={false}
-            />
+            <div className={classes.fieldItem}>
+              <GluuSelectRow
+                name="defaultAcr"
+                label="fields.default_acr"
+                lsize={12}
+                rsize={12}
+                value={formik.values.defaultAcr}
+                formik={formik}
+                values={selectOptions}
+                doc_category="json_properties"
+                doc_entry="defaultAcr"
+              />
+            </div>
           </GluuViewWrapper>
-          {canWriteAuth && (
-            <Button
-              color={`primary-${selectedTheme}`}
-              onClick={handleSaveClick}
-              disabled={
-                !put?.value ||
-                (Array.isArray(put.value) ? put.value[0] : put.value) === acrs?.defaultAcr
-              }
-            >
-              <i className="fa fa-check-circle me-2"></i>
-              {t('actions.save')}
-            </Button>
-          )}
         </div>
+        {canWriteAuth && (
+          <GluuThemeFormFooter
+            hideDivider
+            showBack
+            showCancel
+            showApply
+            applyButtonType="submit"
+            onCancel={handleCancel}
+            disableCancel={!formik.dirty}
+            disableApply={!formik.dirty}
+            isLoading={putAcrsMutation.isPending}
+          />
+        )}
       </Form>
     </GluuLoader>
   )

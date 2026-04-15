@@ -28,6 +28,7 @@ export type ThemeConfig = {
   }
   checkbox: { uncheckedBorder: string }
   errorColor: string
+  requiredColor: string
   warningColor: string
   badges: {
     statusActiveBg: string

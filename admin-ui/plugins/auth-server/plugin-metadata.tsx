@@ -37,19 +37,19 @@ import {
   SSA_PORTAL,
   API_CONFIG_READ,
 } from 'Utils/PermChecker'
-import AuthNEditPage from './components/AuthN/AuthNEditPage'
+import AcrsEditPage from './components/Authentication/Acrs/AcrsEditPage'
 import SsaListPage from './components/Ssa/components/SsaListPage'
 import SsaAddPage from './components/Ssa/components/SsaAddPage'
-import AuthNPage from './components/AuthN'
+import AuthNPage from './components/Authentication'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { ROUTES } from '@/helpers/navigation'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 
-const AgamaListPage = lazy(() => import('./components/Agama/AgamaListPage'))
+const AgamaFlows = lazy(() => import('./components/Authentication/AgamaFlows/AgamaFlows'))
 const AgamaListPageWrapper = () => {
   return (
     <Suspense fallback={<GluuLoader blocking />}>
-      <AgamaListPage />
+      <AgamaFlows />
     </Suspense>
   )
 }
@@ -149,7 +149,7 @@ const pluginMetadata = {
       resourceKey: ADMIN_UI_RESOURCES.Scopes,
     },
     {
-      component: AuthNEditPage,
+      component: AcrsEditPage,
       path: ROUTES.AUTH_SERVER_AUTHN_EDIT_TEMPLATE,
       permission: SCOPE_READ,
       resourceKey: ADMIN_UI_RESOURCES.Authentication,

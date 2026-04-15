@@ -273,6 +273,9 @@ export type GluuTabsProps = {
   tabNames: TabItem[]
   tabToShow: (tabName: string) => ReactNode
   withNavigation?: boolean
+  defaultTab?: number
+  rightAction?: ReactNode
+  onTabChange?: (index: number) => void
 }
 
 export type GluuTextVariant =

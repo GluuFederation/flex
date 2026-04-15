@@ -46,6 +46,7 @@ const createLightTheme = (): ThemeConfig => {
       uncheckedBorder: customColors.sidebarHoverBg,
     },
     errorColor: customColors.accentRed,
+    requiredColor: customColors.accentRed,
     warningColor: customColors.orange,
     badges: {
       statusActiveBg: customColors.statusActiveBg,
@@ -139,6 +140,7 @@ const createDarkTheme = (): ThemeConfig => {
       uncheckedBorder: customColors.cedarCardBorderDark,
     },
     errorColor: customColors.accentRed,
+    requiredColor: customColors.statusInactive,
     warningColor: customColors.orange,
     badges: {
       statusActiveBg: customColors.statusActiveBg,

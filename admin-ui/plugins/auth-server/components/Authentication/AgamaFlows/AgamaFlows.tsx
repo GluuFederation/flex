@@ -1,39 +1,45 @@
-import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import { createPortal } from 'react-dom'
 import { useAppDispatch } from '@/redux/hooks'
-import { Card, Input } from 'Components'
-import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { useTranslation } from 'react-i18next'
 import useSetTitle from 'Utils/SetTitle'
 import { useAgamaActions } from './hooks/useAgamaActions'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
-import TablePagination from '@mui/material/TablePagination'
-import Paper from '@mui/material/Paper'
-import type { Column, Action } from '@material-table/core'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import MaterialTable from '@material-table/core'
-import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
+import GluuTabs from 'Routes/Apps/Gluu/GluuTabs'
+import {
+  GluuTable,
+  type ColumnDef,
+  type ActionDef,
+  type PaginationConfig,
+} from '@/components/GluuTable'
+import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
+import { GluuButton } from '@/components/GluuButton'
+import { Add, DeleteOutlined } from '@mui/icons-material'
+import InfoIcon from '@mui/icons-material/Info'
+import SettingsIcon from '@mui/icons-material/Settings'
+import { Divider } from '@mui/material'
+import Radio from '@mui/material/Radio'
+import FormGroup from '@mui/material/FormGroup'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import FormLabel from '@mui/material/FormLabel'
+import CircularProgress from '@mui/material/CircularProgress'
 import { useDropzone } from 'react-dropzone'
 import JSZip from 'jszip'
-import CircularProgress from '@mui/material/CircularProgress'
-import InfoIcon from '@mui/icons-material/Info'
 import AgamaProjectConfigModal from './AgamaProjectConfigModal'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useAuthServerJsonPropertiesQuery } from 'Plugins/auth-server/hooks/useAuthServerJsonProperties'
 import { devLogger } from '@/utils/devLogger'
-import SettingsIcon from '@mui/icons-material/Settings'
-import Checkbox from '@mui/material/Checkbox'
-import FormGroup from '@mui/material/FormGroup'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import FormLabel from '@mui/material/FormLabel'
-import GluuTabs from 'Routes/Apps/Gluu/GluuTabs'
 import { toast } from 'react-toastify'
-import customColors from '@/customColors'
 import { useQueryClient } from '@tanstack/react-query'
-import { AXIOS_INSTANCE } from '../../../../api-client'
+import { AXIOS_INSTANCE } from '../../../../../api-client'
 import {
   useGetAgamaPrj,
   useDeleteAgamaPrj,
@@ -41,7 +47,10 @@ import {
   useGetAgamaRepositories,
   type Deployment,
 } from 'JansConfigApi'
-import { DEFAULT_THEME } from '@/context/theme/constants'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import { useStyles } from './AgamaFlows.style'
+import { useStyles as useCommitDialogStyles } from 'Routes/Apps/Gluu/styles/GluuCommitDialog.style'
+import { BUTTON_STYLES } from 'Routes/Apps/Gluu/styles/GluuThemeFormFooter.style'
 import type {
   AgamaProject,
   AgamaRepository,
@@ -60,7 +69,7 @@ const dateTimeFormatOptions: Intl.DateTimeFormatOptions = {
 const authResourceId = ADMIN_UI_RESOURCES.Authentication
 const authScopes = CEDAR_RESOURCE_SCOPES[authResourceId] || []
 
-const AgamaListPage: React.FC = () => {
+const AgamaFlows: React.FC = () => {
   const {
     hasCedarReadPermission,
     hasCedarWritePermission,
@@ -71,12 +80,14 @@ const AgamaListPage: React.FC = () => {
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { logAgamaCreation, logAgamaDeletion } = useAgamaActions()
-  const [myActions, setMyActions] = useState<Action<AgamaTableRow>[]>([])
+
   const [limit, setLimit] = useState<number>(10)
   const [pageNumber, setPageNumber] = useState<number>(0)
   const [showAddModal, setShowAddModal] = useState<boolean>(false)
   const [showConfigModal, setShowConfigModal] = useState<boolean>(false)
   const [manageConfig, setManageConfig] = useState<boolean>(false)
+  const [deleteModal, setDeleteModal] = useState<boolean>(false)
+  const [projectToDelete, setProjectToDelete] = useState<AgamaTableRow | null>(null)
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [projectName, setProjectName] = useState<string>('')
@@ -93,11 +104,18 @@ const AgamaListPage: React.FC = () => {
   })
   const [fileLoading, setFileLoading] = useState<boolean>(false)
   const [uploadLoading, setUploadLoading] = useState<boolean>(false)
+  const [deployLoading, setDeployLoading] = useState<boolean>(false)
 
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
-  const themeColors = getThemeColor(selectedTheme)
-  const bgThemeColor = { background: themeColors.background }
+  const { state: themeState } = useTheme()
+  const { themeColors, isDark } = useMemo(
+    () => ({
+      themeColors: getThemeColor(themeState.theme || DEFAULT_THEME),
+      isDark: themeState.theme === THEME_DARK,
+    }),
+    [themeState.theme],
+  )
+  const { classes } = useStyles({ isDark, themeColors })
+  const { classes: commitClasses } = useCommitDialogStyles({ isDark, themeColors })
 
   const canReadAuth = useMemo(
     () => hasCedarReadPermission(authResourceId),
@@ -147,7 +165,7 @@ const AgamaListPage: React.FC = () => {
     refetch: refetchRepositories,
   } = useGetAgamaRepositories({
     query: {
-      enabled: false, // Only fetch when explicitly triggered
+      enabled: false,
     },
   })
 
@@ -169,7 +187,7 @@ const AgamaListPage: React.FC = () => {
   useEffect(() => {
     if (agamaRepositoriesData) {
       setAgamaRepositoriesList(
-        (agamaRepositoriesData as ReturnType<typeof JSON.parse> as AgamaRepositoriesResponse) ?? {
+        (agamaRepositoriesData as AgamaRepositoriesResponse) ?? {
           projects: [],
         },
       )
@@ -195,7 +213,7 @@ const AgamaListPage: React.FC = () => {
       )
       dispatch(updateToast(true, 'success'))
       await queryClient.invalidateQueries({ queryKey: getGetAgamaPrjQueryKey() })
-      await logAgamaCreation({} as Deployment, `Uploaded Agama project: ${projectName}`)
+      await logAgamaCreation({}, `Uploaded Agama project: ${projectName}`)
       setProjectName('')
       setShowAddModal(false)
       setSelectedFile(null)
@@ -221,7 +239,6 @@ const AgamaListPage: React.FC = () => {
 
     try {
       const zip = await JSZip.loadAsync(file)
-
       const jsonFiles = Object.keys(zip.files).filter((filename) => filename.endsWith('.json'))
 
       for (const filename of jsonFiles) {
@@ -234,7 +251,7 @@ const AgamaListPage: React.FC = () => {
               setProjectName(jsonData.projectName)
               foundProjectName = true
               setGetProjectName(true)
-              break // Stop after finding first project name
+              break
             }
           } catch (parseError) {
             devLogger.error(`Error parsing JSON from ${filename}:`, parseError)
@@ -269,7 +286,7 @@ const AgamaListPage: React.FC = () => {
       'application/octet-stream': ['.gama'],
       'application/x-zip-compressed': ['.zip'],
     },
-    maxSize: 50 * 1024 * 1024, // 50MB limit
+    maxSize: 50 * 1024 * 1024,
     onDropRejected: (fileRejections) => {
       const error = fileRejections[0]?.errors[0]
       if (error?.code === 'file-too-large') {
@@ -287,13 +304,13 @@ const AgamaListPage: React.FC = () => {
     accept: {
       'text/plain': ['.sha256sum'],
     },
-    maxSize: 1024 * 1024, // 1MB limit for SHA file
+    maxSize: 1024 * 1024,
     onDropRejected: () => {
       toast.error('SHA256 file size exceeds 1MB limit')
     },
   })
 
-  useSetTitle(t('titles.agama'))
+  useSetTitle(t('titles.authentication'))
 
   const formDeploymentDetailsData = useCallback((): void => {
     const data: AgamaProject[] = []
@@ -339,76 +356,6 @@ const AgamaListPage: React.FC = () => {
     setPageNumber(0)
     setLimit(count)
   }, [])
-
-  const myActionsComputed = useMemo(() => {
-    const newActions: Action<AgamaTableRow>[] = []
-
-    if (canWriteAuth) {
-      newActions.push({
-        icon: 'add',
-        tooltip: `${t('titles.add_new_agama_project')}`,
-        iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
-        isFreeAction: true,
-        onClick: () => {
-          setSelectedFile(null)
-          setSelectedFileName(null)
-          setGetProjectName(false)
-          setSHAfile(null)
-          refetchRepositories()
-          if (isAgamaEnabled) {
-            setShowAddModal(true)
-          } else {
-            dispatch(updateToast(true, 'error', t('messages.agama_is_not_enabled')))
-          }
-        },
-      })
-      newActions.push({
-        icon: () => <InfoIcon />,
-        tooltip: `${t('messages.see_project_details')}`,
-        iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
-        isFreeAction: false,
-        onClick: (_event: React.MouseEvent, rowData: AgamaTableRow | AgamaTableRow[]) => {
-          if (!Array.isArray(rowData)) {
-            setSelectedRow(rowData)
-            setShowConfigModal(true)
-          }
-        },
-      })
-      newActions.push({
-        icon: () => <SettingsIcon />,
-        tooltip: `${t('messages.manage_configurations')}`,
-        iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
-        isFreeAction: false,
-        onClick: (_event: React.MouseEvent, rowData: AgamaTableRow | AgamaTableRow[]) => {
-          if (!Array.isArray(rowData)) {
-            setSelectedRow(rowData)
-            setShowConfigModal(true)
-            setManageConfig(true)
-          }
-        },
-      })
-    }
-
-    return newActions
-  }, [
-    canWriteAuth,
-    t,
-    isAgamaEnabled,
-    dispatch,
-    refetchRepositories,
-    setShowAddModal,
-    setSelectedFile,
-    setSelectedFileName,
-    setGetProjectName,
-    setSHAfile,
-    setSelectedRow,
-    setShowConfigModal,
-    setManageConfig,
-  ])
-
-  useEffect(() => {
-    setMyActions(myActionsComputed)
-  }, [myActionsComputed])
 
   const getSHA256 = useCallback(
     async (sha256sum: string): Promise<void> => {
@@ -456,7 +403,7 @@ const AgamaListPage: React.FC = () => {
       const foundIndex = prevListData.findIndex((item) => item.dn === updatedData.dn)
 
       if (foundIndex === -1) {
-        return prevListData // No change if not found
+        return prevListData
       }
 
       const error =
@@ -472,22 +419,19 @@ const AgamaListPage: React.FC = () => {
           )
         : '-'
 
-      const updatedList = prevListData.map((project, index) => {
-        return index === foundIndex
+      return prevListData.map((project, index) =>
+        index === foundIndex
           ? {
               ...project,
               error: error as 'Yes' | 'No' | '',
               status: status as 'Processed' | 'Pending',
-              deployed_on: deployed_on,
+              deployed_on,
               details: { ...project.details, ...updatedData.details },
             }
-          : project
-      })
-      return updatedList
+          : project,
+      )
     })
   }, [])
-
-  const tabNames = [t('menus.upload_agama_project'), t('menus.add_community_project')]
 
   const handleDeploy = async (): Promise<void> => {
     if (!repoName) {
@@ -501,7 +445,7 @@ const AgamaListPage: React.FC = () => {
       return
     }
 
-    setFileLoading(true)
+    setDeployLoading(true)
     const downloadUrl = repo['download-link']
     const projectNameToUse = repo['repository-name']
     setProjectName(projectNameToUse)
@@ -533,20 +477,50 @@ const AgamaListPage: React.FC = () => {
 
       dispatch(updateToast(true, 'success'))
       await queryClient.invalidateQueries({ queryKey: getGetAgamaPrjQueryKey() })
-      await logAgamaCreation(
-        {} as Deployment,
-        `Deployed community Agama project: ${projectNameToUse}`,
-      )
+      await logAgamaCreation({}, `Deployed community Agama project: ${projectNameToUse}`)
       setShowConfigModal(false)
       setShowAddModal(false)
       setRepoName(null)
-      setFileLoading(false)
+      setDeployLoading(false)
     } catch (error) {
       devLogger.error('Error deploying project:', error)
       toast.error('File not found or deployment failed')
-      setFileLoading(false)
+      setDeployLoading(false)
     }
   }
+
+  const handleCloseAddModal = useCallback(() => {
+    setShowAddModal(false)
+    setRepoName(null)
+  }, [])
+
+  const handleDeleteClick = useCallback((row: AgamaTableRow) => {
+    setProjectToDelete(row)
+    setDeleteModal(true)
+  }, [])
+
+  const handleCloseDeleteModal = useCallback(() => {
+    setDeleteModal(false)
+    setProjectToDelete(null)
+  }, [])
+
+  const handleDeleteConfirm = useCallback(
+    async (message: string): Promise<void> => {
+      const projName = projectToDelete?.details?.projectMetadata?.projectName
+      if (!projName) return
+      try {
+        await deleteProjectMutation.mutateAsync({ name: projName })
+        await logAgamaDeletion(projectToDelete as Deployment, message)
+        setDeleteModal(false)
+        setProjectToDelete(null)
+      } catch (error) {
+        devLogger.error('Error deleting project:', error)
+      }
+    },
+    [projectToDelete, deleteProjectMutation, logAgamaDeletion],
+  )
+
+  const tabNames = [t('menus.upload_agama_project'), t('menus.add_community_project')]
 
   const tabToShow = useCallback(
     (tabName: string): React.ReactNode => {
@@ -554,84 +528,111 @@ const AgamaListPage: React.FC = () => {
         case t('menus.upload_agama_project'):
           return (
             <>
-              <ModalBody>
-                <div {...getRootProps1()} className={isDragActive1 ? 'active' : 'dropzone'}>
+              <div className={classes.modalBody}>
+                <div
+                  {...getRootProps1()}
+                  className={isDragActive1 ? classes.dropzoneActive : classes.dropzone}
+                >
                   <input {...getInputProps1()} />
                   {selectedFileName ? (
-                    <strong>Selected File : {selectedFileName}</strong>
+                    <p className={classes.dropzoneSelectedText}>
+                      {t('messages.selected_file')}: {selectedFileName}
+                    </p>
                   ) : (
-                    <p>{t('messages.drag_agama_file')}</p>
+                    <p className={classes.dropzoneText}>{t('messages.drag_agama_file')}</p>
                   )}
                 </div>
-                <div className="mt-2"></div>
-                <div {...getRootProps2()} className={isDragActive2 ? 'active' : 'dropzone'}>
+                <div
+                  {...getRootProps2()}
+                  className={isDragActive2 ? classes.dropzoneActive : classes.dropzone}
+                >
                   <input {...getInputProps2()} />
                   {shaFile ? (
-                    <strong>Selected File : {shaFileName}</strong>
+                    <p className={classes.dropzoneSelectedText}>
+                      {t('messages.selected_file')}: {shaFileName}
+                    </p>
                   ) : (
-                    <p>{t('messages.drag_sha_file')}</p>
+                    <p className={classes.dropzoneText}>{t('messages.drag_sha_file')}</p>
                   )}
                 </div>
-                <div className="mt-2"></div>
-                <div className="text-danger">
-                  {shaFile && selectedFileName && !shaStatus && 'SHA256 not verified'}
-                </div>
-                <div className="text-success">
-                  {shaFile && selectedFileName && shaStatus && 'SHA256 verified'}
-                </div>
-                {getProjectName && (
-                  <Input
-                    type="text"
-                    placeholder="Project name"
-                    value={projectName}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setProjectName(e.target.value)
-                    }
-                  />
+                {shaFile && selectedFileName && (
+                  <p className={shaStatus ? classes.shaStatusSuccess : classes.shaStatusError}>
+                    {shaStatus ? 'SHA256 verified' : 'SHA256 not verified'}
+                  </p>
                 )}
-              </ModalBody>
-              <ModalFooter>
-                <Button
-                  color={`primary-${selectedTheme}`}
-                  style={applicationStyle.buttonStyle}
+                {getProjectName && (
+                  <div className={classes.fieldGroup}>
+                    <label className={classes.fieldLabel}>{t('fields.project_name')}</label>
+                    <input
+                      type="text"
+                      className={classes.fieldInput}
+                      placeholder={t('placeholders.enter_project_name')}
+                      value={projectName}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setProjectName(e.target.value)
+                      }
+                    />
+                  </div>
+                )}
+              </div>
+              <Divider sx={{ mt: 2 }} />
+              <div className={classes.modalFooter}>
+                <GluuButton
+                  type="button"
                   onClick={() => submitData()}
                   disabled={
                     !(shaFile && selectedFileName && shaStatus && projectName !== '') ||
                     uploadLoading ||
                     isConfigLoading
                   }
+                  loading={uploadLoading}
+                  backgroundColor={themeColors.formFooter.apply.backgroundColor}
+                  textColor={themeColors.formFooter.apply.textColor}
+                  borderColor={themeColors.formFooter.apply.borderColor}
+                  useOpacityOnHover
+                  style={{
+                    minHeight: BUTTON_STYLES.height,
+                    padding: `${BUTTON_STYLES.paddingY}px ${BUTTON_STYLES.paddingX}px`,
+                    borderRadius: BUTTON_STYLES.borderRadius,
+                    fontSize: BUTTON_STYLES.fontSize,
+                    fontWeight: BUTTON_STYLES.fontWeight,
+                    letterSpacing: BUTTON_STYLES.letterSpacing,
+                  }}
                 >
-                  {uploadLoading || isConfigLoading ? (
-                    <>
-                      <CircularProgress size={12} /> &nbsp;
-                    </>
-                  ) : null}
                   {t('actions.add')}
-                </Button>
-                &nbsp;
-                <Button
-                  color={`primary-${selectedTheme}`}
-                  style={applicationStyle.buttonStyle}
-                  onClick={() => {
-                    setShowAddModal(false)
-                    setRepoName(null)
+                </GluuButton>
+                <GluuButton
+                  type="button"
+                  onClick={handleCloseAddModal}
+                  backgroundColor={themeColors.formFooter.cancel.backgroundColor}
+                  textColor={themeColors.formFooter.cancel.textColor}
+                  borderColor={themeColors.formFooter.cancel.borderColor}
+                  useOpacityOnHover
+                  style={{
+                    minHeight: BUTTON_STYLES.height,
+                    padding: `${BUTTON_STYLES.paddingY}px ${BUTTON_STYLES.paddingX}px`,
+                    borderRadius: BUTTON_STYLES.borderRadius,
+                    fontSize: BUTTON_STYLES.fontSize,
+                    fontWeight: BUTTON_STYLES.fontWeight,
+                    letterSpacing: BUTTON_STYLES.letterSpacing,
                   }}
                 >
                   {t('actions.cancel')}
-                </Button>
-              </ModalFooter>
+                </GluuButton>
+              </div>
             </>
           )
         case t('menus.add_community_project'):
           return (
             <>
-              <ModalBody style={{ maxHeight: '500px', height: 'auto' }}>
+              <div className={classes.modalBody} style={{ maxHeight: '400px', overflowY: 'auto' }}>
                 <FormGroup>
                   <FormLabel
                     style={{
                       marginBottom: '16px',
                       fontSize: '12px',
                       fontWeight: '400',
+                      color: themeColors.fontColor,
                     }}
                   >
                     {t('titles.select_project_deploy')}
@@ -641,8 +642,7 @@ const AgamaListPage: React.FC = () => {
                     style={{
                       display: 'flex',
                       flexDirection: 'column',
-                      padding: '0 10px',
-                      maxHeight: '400px',
+                      maxHeight: '320px',
                       overflowY: 'auto',
                       overflowX: 'hidden',
                     }}
@@ -654,46 +654,42 @@ const AgamaListPage: React.FC = () => {
                         <FormControlLabel
                           key={item['repository-name']}
                           control={
-                            <Checkbox
+                            <Radio
                               checked={repoName === item['repository-name']}
-                              onChange={() =>
-                                setRepoName(
-                                  repoName === item['repository-name']
-                                    ? null
-                                    : item['repository-name'],
-                                )
-                              }
+                              onChange={() => setRepoName(item['repository-name'])}
                               sx={{
-                                transform: 'scale(1.5)',
-                                paddingTop: '6px',
+                                'color': isDark ? '#3B638B' : undefined,
+                                '&.Mui-checked': {
+                                  color: themeColors.badges?.statusActive ?? '#00b875',
+                                },
                               }}
                             />
                           }
                           label={
                             <div>
-                              <div>{item['repository-name']}</div>
+                              <div style={{ color: themeColors.fontColor, fontWeight: 600 }}>
+                                {item['repository-name']}
+                              </div>
                               <div
                                 style={{
                                   fontSize: '12px',
-                                  color: customColors.darkGray,
-                                  marginTop: 6,
+                                  color: themeColors.textMuted,
+                                  marginTop: 4,
                                 }}
                               >
                                 {item.description}
                               </div>
                             </div>
                           }
-                          sx={{
-                            alignItems: 'flex-start',
-                            marginBottom: '16px',
-                          }}
+                          sx={{ alignItems: 'flex-start', marginBottom: '16px' }}
                         />
                       ))
                     ) : (
                       <div
                         style={{
                           fontSize: '15px',
-                          padding: '14px 0 ',
+                          padding: '14px 0',
+                          color: themeColors.fontColor,
                         }}
                       >
                         {t('messages.no_data_found')}
@@ -701,40 +697,58 @@ const AgamaListPage: React.FC = () => {
                     )}
                   </div>
                 </FormGroup>
-              </ModalBody>
-              <ModalFooter>
-                <Button
-                  color={`primary-${selectedTheme}`}
-                  style={applicationStyle.buttonStyle}
-                  disabled={repoName === null || fileLoading}
+              </div>
+              <Divider sx={{ mt: 2 }} />
+              <div className={classes.modalFooter}>
+                <GluuButton
+                  type="button"
+                  disabled={repoName === null || deployLoading}
+                  loading={deployLoading || isConfigLoading}
                   onClick={() => handleDeploy()}
+                  backgroundColor={themeColors.formFooter.apply.backgroundColor}
+                  textColor={themeColors.formFooter.apply.textColor}
+                  borderColor={themeColors.formFooter.apply.borderColor}
+                  useOpacityOnHover
+                  style={{
+                    minHeight: BUTTON_STYLES.height,
+                    padding: `${BUTTON_STYLES.paddingY}px ${BUTTON_STYLES.paddingX}px`,
+                    borderRadius: BUTTON_STYLES.borderRadius,
+                    fontSize: BUTTON_STYLES.fontSize,
+                    fontWeight: BUTTON_STYLES.fontWeight,
+                    letterSpacing: BUTTON_STYLES.letterSpacing,
+                  }}
                 >
-                  {fileLoading || isConfigLoading ? (
-                    <>
-                      <CircularProgress size={12} /> &nbsp;
-                    </>
-                  ) : null}
                   {t('actions.deploy')}
-                </Button>
-                &nbsp;
-                <Button
-                  color={`primary-${selectedTheme}`}
-                  style={applicationStyle.buttonStyle}
-                  onClick={() => {
-                    setShowAddModal(false)
-                    setRepoName(null)
+                </GluuButton>
+                <GluuButton
+                  type="button"
+                  onClick={handleCloseAddModal}
+                  backgroundColor={themeColors.formFooter.cancel.backgroundColor}
+                  textColor={themeColors.formFooter.cancel.textColor}
+                  borderColor={themeColors.formFooter.cancel.borderColor}
+                  useOpacityOnHover
+                  style={{
+                    minHeight: BUTTON_STYLES.height,
+                    padding: `${BUTTON_STYLES.paddingY}px ${BUTTON_STYLES.paddingX}px`,
+                    borderRadius: BUTTON_STYLES.borderRadius,
+                    fontSize: BUTTON_STYLES.fontSize,
+                    fontWeight: BUTTON_STYLES.fontWeight,
+                    letterSpacing: BUTTON_STYLES.letterSpacing,
                   }}
                 >
                   {t('actions.cancel')}
-                </Button>
-              </ModalFooter>
+                </GluuButton>
+              </div>
             </>
           )
+        default:
+          return undefined
       }
     },
     [
       t,
-      selectedTheme,
+      classes,
+      themeColors,
       getRootProps1,
       getInputProps1,
       isDragActive1,
@@ -751,64 +765,193 @@ const AgamaListPage: React.FC = () => {
       isConfigLoading,
       submitData,
       fileLoading,
+      deployLoading,
       agamaRepositoriesList,
       repoName,
       handleDeploy,
+      handleCloseAddModal,
     ],
   )
 
-  const handleDeleteProject = useCallback(
-    async (oldData: AgamaTableRow): Promise<void> => {
-      const projectName = oldData.details?.projectMetadata?.projectName
-      if (!projectName) {
-        throw new Error('Project name not found')
-      }
+  const totalItems = projectsResponse?.totalEntriesCount || 0
 
-      try {
-        await deleteProjectMutation.mutateAsync({ name: projectName })
-        await logAgamaDeletion(oldData as Deployment, `Deleted Agama project: ${projectName}`)
-      } catch (error) {
-        devLogger.error('Error deleting project:', error)
-        throw error
-      }
-    },
-    [deleteProjectMutation, logAgamaDeletion],
-  )
-
-  const tableColumns: Column<AgamaTableRow>[] = useMemo(
+  const columns: ColumnDef<AgamaTableRow>[] = useMemo(
     () => [
       {
-        title: `${t('fields.name')}`,
-        field: 'details.projectMetadata.projectName',
+        key: 'details' as const,
+        label: t('fields.name'),
+        render: (_value, row) => row.details?.projectMetadata?.projectName ?? '-',
       },
       {
-        title: `${t('fields.type')}`,
-        field: 'type',
+        key: 'type' as const,
+        label: t('fields.type'),
       },
       {
-        title: `${t('fields.author')}`,
-        field: 'details.projectMetadata.author',
+        key: 'details' as const,
+        id: 'author-col',
+        label: t('fields.author'),
+        render: (_value, row) => row.details?.projectMetadata?.author ?? '-',
       },
       {
-        title: `${t('fields.status')}`,
-        field: 'status',
+        key: 'status' as const,
+        label: t('fields.status'),
       },
       {
-        title: `${t('fields.deployed_on')}`,
-        field: 'deployed_on',
+        key: 'deployed_on' as const,
+        label: t('fields.deployed_on'),
       },
       {
-        title: `${t('fields.errors')}`,
-        field: 'error',
+        key: 'error' as const,
+        label: t('fields.errors'),
       },
     ],
     [t],
   )
 
-  const totalItems = projectsResponse?.totalEntriesCount || 0
+  const actions = useMemo<ActionDef<AgamaTableRow>[]>(() => {
+    if (!canWriteAuth) return []
+    const list: ActionDef<AgamaTableRow>[] = [
+      {
+        icon: <InfoIcon className={classes.infoIcon} />,
+        tooltip: t('messages.see_project_details'),
+        id: 'infoProject',
+        onClick: (row: AgamaTableRow) => {
+          setSelectedRow(row as AgamaProject)
+          setManageConfig(false)
+          setShowConfigModal(true)
+        },
+      },
+      {
+        icon: <SettingsIcon className={classes.settingsIcon} />,
+        tooltip: t('messages.manage_configurations'),
+        id: 'settingsProject',
+        onClick: (row: AgamaTableRow) => {
+          setSelectedRow(row as AgamaProject)
+          setManageConfig(true)
+          setShowConfigModal(true)
+        },
+      },
+    ]
+    if (canDeleteAuth) {
+      list.push({
+        icon: <DeleteOutlined className={classes.deleteIcon} />,
+        tooltip: t('actions.delete'),
+        id: 'deleteProject',
+        onClick: handleDeleteClick,
+      })
+    }
+    return list
+  }, [canWriteAuth, canDeleteAuth, t, classes, handleDeleteClick])
+
+  const pagination: PaginationConfig = useMemo(
+    () => ({
+      page: pageNumber,
+      rowsPerPage: limit,
+      totalItems,
+      onPageChange: onPageChangeClick,
+      onRowsPerPageChange: onRowCountChangeClick,
+    }),
+    [pageNumber, limit, totalItems, onPageChangeClick, onRowCountChangeClick],
+  )
+
+  const getRowKey = useCallback(
+    (row: AgamaTableRow, index: number) =>
+      row.dn ?? row.details?.projectMetadata?.projectName ?? `agama-${index}`,
+    [],
+  )
+
+  const primaryAction = useMemo(
+    () => ({
+      label: t('actions.new_project'),
+      icon: <Add className={classes.addIcon} />,
+      onClick: () => {
+        setSelectedFile(null)
+        setSelectedFileName(null)
+        setGetProjectName(false)
+        setSHAfile(null)
+        refetchRepositories()
+        if (isAgamaEnabled) {
+          setShowAddModal(true)
+        } else {
+          dispatch(updateToast(true, 'error', t('messages.agama_is_not_enabled')))
+        }
+      },
+      disabled: !canWriteAuth,
+    }),
+    [t, classes, canWriteAuth, isAgamaEnabled, dispatch, refetchRepositories],
+  )
+
+  const deleteDialogLabel = useMemo(
+    () =>
+      projectToDelete
+        ? `${t('messages.action_deletion_for')} ${t('titles.agama')} (${projectToDelete.details?.projectMetadata?.projectName ?? ''})`
+        : '',
+    [t, projectToDelete],
+  )
+
+  const handleAddModalKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        handleCloseAddModal()
+      }
+      e.stopPropagation()
+    },
+    [handleCloseAddModal],
+  )
+
+  const handleOverlayKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        handleCloseAddModal()
+      }
+    },
+    [handleCloseAddModal],
+  )
+
+  const addModalContent = showAddModal ? (
+    <GluuLoader blocking={uploadLoading || deployLoading}>
+      <button
+        type="button"
+        className={commitClasses.overlay}
+        onClick={handleCloseAddModal}
+        onKeyDown={handleOverlayKeyDown}
+        aria-label={t('actions.close')}
+      />
+      <div
+        className={`${commitClasses.modalContainer} ${classes.addModalContainer}`}
+        onClick={(e) => e.stopPropagation()}
+        onKeyDown={handleAddModalKeyDown}
+        role="dialog"
+        tabIndex={-1}
+        aria-labelledby="add-agama-modal-title"
+      >
+        <button
+          type="button"
+          onClick={handleCloseAddModal}
+          className={commitClasses.closeButton}
+          aria-label={t('actions.close')}
+          title={t('actions.close')}
+        >
+          <i className="fa fa-times" aria-hidden />
+        </button>
+        <div className={commitClasses.contentArea}>
+          <GluuText
+            variant="h2"
+            className={`${commitClasses.title} ${classes.modalTitle}`}
+            id="add-agama-modal-title"
+          >
+            {t('titles.add_new_agama_project')}
+          </GluuText>
+          <GluuTabs tabNames={tabNames} tabToShow={tabToShow} withNavigation={false} />
+        </div>
+      </div>
+    </GluuLoader>
+  ) : null
 
   return (
-    <>
+    <GluuLoader blocking={(loading && !showAddModal) || deleteProjectMutation.isPending}>
       {showConfigModal && selectedRow && (
         <AgamaProjectConfigModal
           isOpen={showConfigModal}
@@ -823,60 +966,47 @@ const AgamaListPage: React.FC = () => {
           }}
         />
       )}
+
       <GluuViewWrapper canShow={canReadAuth}>
-        <MaterialTable
-          key={limit}
-          components={{
-            Container: (props) => <Paper {...props} elevation={0} />,
-            Pagination: () => (
-              <TablePagination
-                count={totalItems}
-                page={pageNumber}
-                onPageChange={(_prop, page) => {
-                  onPageChangeClick(page)
-                }}
-                rowsPerPage={limit}
-                onRowsPerPageChange={(event) =>
-                  onRowCountChangeClick(parseInt(event.target.value, 10))
-                }
+        <div className={classes.page}>
+          <div className={classes.searchCard}>
+            <div className={classes.searchCardContent}>
+              <GluuSearchToolbar
+                onRefresh={canReadAuth ? () => {} : undefined}
+                primaryAction={primaryAction}
+                disabled={loading}
               />
-            ),
-          }}
-          columns={tableColumns}
-          data={listData}
-          isLoading={loading}
-          title=""
-          actions={myActions}
-          options={{
-            search: true,
-            idSynonym: 'inum',
-            searchFieldAlignment: 'left',
-            selection: false,
-            pageSize: limit,
-            rowStyle: () => ({
-              backgroundColor: customColors.white,
-            }),
-            headerStyle: {
-              ...(applicationStyle.tableHeaderStyle as React.CSSProperties),
-              ...bgThemeColor,
-              color: themeColors.fontColor,
-            } as React.CSSProperties,
-            actionsColumnIndex: -1,
-          }}
-          editable={{
-            isDeleteHidden: () => !canDeleteAuth,
-            onRowDelete: handleDeleteProject,
-          }}
-        />
+            </div>
+          </div>
+
+          <div className={classes.tableCard}>
+            <GluuTable<AgamaTableRow>
+              columns={columns}
+              data={listData}
+              loading={loading}
+              actions={actions}
+              getRowKey={getRowKey}
+              pagination={pagination}
+              emptyMessage={t('messages.no_data')}
+            />
+          </div>
+        </div>
       </GluuViewWrapper>
-      <Modal isOpen={showAddModal} size="lg" style={{ maxWidth: '700px', width: '100%' }}>
-        <ModalHeader>{t('titles.add_new_agama_project')}</ModalHeader>
-        <Card>
-          <GluuTabs tabNames={tabNames} tabToShow={tabToShow} withNavigation={false} />
-        </Card>
-      </Modal>
-    </>
+
+      {addModalContent !== null && createPortal(addModalContent, document.body)}
+
+      {projectToDelete && (
+        <GluuCommitDialog
+          handler={handleCloseDeleteModal}
+          modal={deleteModal}
+          onAccept={handleDeleteConfirm}
+          label={deleteDialogLabel}
+          feature=""
+          autoCloseOnAccept
+        />
+      )}
+    </GluuLoader>
   )
 }
 
-export default AgamaListPage
+export default AgamaFlows
