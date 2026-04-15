@@ -134,6 +134,7 @@ jansScope: https://jans.io/oauth/config/scopes.readonly
 jansScope: https://jans.io/oauth/config/scripts.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
 jansScope: https://jans.io/oauth/config/data.readonly
+jansScope: https://jans.io/oauth/config/uma.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
