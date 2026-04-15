@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useState, useMemo } from 'react'
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
-import { ThemeContext } from 'Context/theme/themeContext'
+import React, { useEffect, useState, useMemo, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
-import { Box } from '@mui/material'
+import { Box, Divider } from '@mui/material'
 import MaterialTable from '@material-table/core'
 import type { Column } from '@material-table/core'
 import { useDispatch } from 'react-redux'
@@ -12,7 +11,14 @@ import AceEditor from 'react-ace'
 import { useGetAgamaPrjByName, useGetAgamaPrjConfigs, usePutAgamaPrj } from 'JansConfigApi'
 import { DEFAULT_THEME, THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
 import { devLogger } from '@/utils/devLogger'
-import customColors from '@/customColors'
+import { GluuButton } from '@/components/GluuButton'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
+import { useStyles } from './AgamaProjectConfigModal.style'
+import { useStyles as useCommitDialogStyles } from 'Routes/Apps/Gluu/styles/GluuCommitDialog.style'
+import { BUTTON_STYLES } from 'Routes/Apps/Gluu/styles/GluuThemeFormFooter.style'
 import type {
   AgamaProjectConfigModalProps,
   FlowError,
@@ -21,12 +27,6 @@ import type {
   JsonObject,
   ApiError,
 } from './types'
-
-const buttonStyle = {
-  backgroundColor: customColors.primaryDark,
-  color: customColors.white,
-  border: 'none',
-}
 
 const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
   isOpen,
@@ -37,9 +37,21 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
 }) => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const theme = useContext(ThemeContext)
+
+  const { state: themeState } = useTheme()
+  const { themeColors, isDark, selectedTheme } = useMemo(
+    () => ({
+      themeColors: getThemeColor(themeState.theme || DEFAULT_THEME),
+      isDark: themeState.theme === THEME_DARK,
+      selectedTheme: themeState.theme || DEFAULT_THEME,
+    }),
+    [themeState.theme],
+  )
+
+  const { classes } = useStyles({ isDark, themeColors })
+  const { classes: commitClasses } = useCommitDialogStyles({ isDark, themeColors })
+
   const name = row.details?.projectMetadata?.projectName || ''
-  const selectedTheme = theme?.state?.theme || DEFAULT_THEME
 
   const aceTheme = useMemo(() => {
     const themeMap: Record<string, string> = {
@@ -48,6 +60,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
     }
     return themeMap[selectedTheme] || 'xcode'
   }, [selectedTheme])
+
   const [configDetails, setConfigDetails] = useState<ConfigDetailsState>({
     isLoading: false,
     data: {},
@@ -295,74 +308,140 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
     [t],
   )
 
-  return (
-    <Modal
-      centered
-      isOpen={isOpen}
-      style={{ minWidth: '45vw' }}
-      toggle={handler}
-      className="modal-outline-primary"
-    >
-      <ModalHeader
-        style={{ padding: '16px', width: '100%' }}
-        title={`project ${name}`}
-        toggle={handler}
-      >
-        {manageConfig ? `Manage Configuration for Project ${name}` : `Details of project ${name}`}
-      </ModalHeader>
-      <ModalBody style={{ overflowX: 'auto', maxHeight: '60vh' }}>
-        {projectDetails?.data?.statusCode === 204 && (
-          <p>
-            Project <b>{name}</b> is still being deployed. Try again in 1 minute.
-          </p>
-        )}
+  const handleModalKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        handler()
+      }
+      e.stopPropagation()
+    },
+    [handler],
+  )
 
-        {projectDetails.isLoading || configDetails.isLoading ? (
-          t('messages.fetching_project_details')
-        ) : (
-          <>
+  const handleOverlayKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        handler()
+      }
+    },
+    [handler],
+  )
+
+  const buttonStyle = {
+    minHeight: BUTTON_STYLES.height,
+    padding: `${BUTTON_STYLES.paddingY}px ${BUTTON_STYLES.paddingX}px`,
+    borderRadius: BUTTON_STYLES.borderRadius,
+    fontSize: BUTTON_STYLES.fontSize,
+    fontWeight: BUTTON_STYLES.fontWeight,
+    letterSpacing: BUTTON_STYLES.letterSpacing,
+  }
+
+  if (!isOpen) return null
+
+  return createPortal(
+    <GluuLoader blocking={projectDetails.isLoading || configDetails.isLoading}>
+      <button
+        type="button"
+        className={commitClasses.overlay}
+        onClick={handler}
+        onKeyDown={handleOverlayKeyDown}
+        aria-label={t('actions.close')}
+      />
+      <div
+        className={`${commitClasses.modalContainer} ${classes.configModalContainer}`}
+        onClick={(e) => e.stopPropagation()}
+        onKeyDown={handleModalKeyDown}
+        role="dialog"
+        tabIndex={-1}
+        aria-labelledby="agama-config-modal-title"
+      >
+        <button
+          type="button"
+          onClick={handler}
+          className={commitClasses.closeButton}
+          aria-label={t('actions.close')}
+          title={t('actions.close')}
+        >
+          <i className="fa fa-times" aria-hidden />
+        </button>
+        <div className={commitClasses.contentArea}>
+          <GluuText
+            variant="h2"
+            className={`${commitClasses.title} ${classes.modalTitle}`}
+            id="agama-config-modal-title"
+          >
+            {manageConfig
+              ? `Manage Configuration for Project ${name}`
+              : `Details of project ${name}`}
+          </GluuText>
+
+          <div className={classes.modalBody}>
+            {projectDetails?.data?.statusCode === 204 && (
+              <p>
+                Project <b>{name}</b> is still being deployed. Try again in 1 minute.
+              </p>
+            )}
+
             {projectDetails.data.statusCode === 200 && (
               <>
                 {manageConfig ? (
-                  <Box
-                    display="flex"
-                    flexDirection="column"
-                    justifyContent="center"
-                    sx={{ margin: '8px' }}
-                    style={{ gap: '12px' }}
-                  >
-                    <Button style={buttonStyle} onClick={handleExportSampleConfig}>
+                  <div className={classes.buttonGroup}>
+                    <GluuButton
+                      type="button"
+                      backgroundColor={themeColors.formFooter.apply.backgroundColor}
+                      textColor={themeColors.formFooter.apply.textColor}
+                      borderColor={themeColors.formFooter.apply.borderColor}
+                      useOpacityOnHover
+                      style={buttonStyle}
+                      onClick={handleExportSampleConfig}
+                    >
                       {t('fields.export_sample_config')}
-                    </Button>
-
-                    <Button style={buttonStyle} onClick={handleExportCurrentConfig}>
+                    </GluuButton>
+                    <GluuButton
+                      type="button"
+                      backgroundColor={themeColors.formFooter.apply.backgroundColor}
+                      textColor={themeColors.formFooter.apply.textColor}
+                      borderColor={themeColors.formFooter.apply.borderColor}
+                      useOpacityOnHover
+                      style={buttonStyle}
+                      onClick={handleExportCurrentConfig}
+                    >
                       {t('fields.export_current_config')}
-                    </Button>
-
-                    <Button style={buttonStyle} onClick={handleImportConfig}>
+                    </GluuButton>
+                    <GluuButton
+                      type="button"
+                      backgroundColor={themeColors.formFooter.apply.backgroundColor}
+                      textColor={themeColors.formFooter.apply.textColor}
+                      borderColor={themeColors.formFooter.apply.borderColor}
+                      useOpacityOnHover
+                      style={buttonStyle}
+                      onClick={handleImportConfig}
+                    >
                       {t('fields.import_configuration')}
-                    </Button>
-                  </Box>
+                    </GluuButton>
+                  </div>
                 ) : (
                   <>
-                    <Box>
+                    <Box className={classes.detailText}>
                       {t('fields.version')}:{' '}
                       {projectDetails.data?.details?.projectMetadata?.version ?? '-'}
                     </Box>
-                    <Box>
+                    <Box className={classes.detailText}>
                       {t('fields.description')}:{' '}
                       {projectDetails.data?.details?.projectMetadata?.description ?? '-'}
                     </Box>
-                    <Box>
+                    <Box className={classes.detailText}>
                       {t('fields.deployed_started_on')}: {projectDetails.data?.createdAt ?? '-'}
                     </Box>
-                    <Box>
+                    <Box className={classes.detailText}>
                       {t('fields.deployed_finished_on')}: {projectDetails.data?.finishedAt ?? '-'}
                     </Box>
-                    <Box>
+                    <Box className={classes.detailText}>
                       {t('fields.errors')}: {projectDetails.data?.details?.error ?? 'No'}
                     </Box>
-                    <Box mt={2}>
+                    <Box mt={2} className={classes.tableWrapper}>
                       <MaterialTable
                         components={{
                           Toolbar: () => null,
@@ -379,46 +458,60 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
                       />
                     </Box>
                     {projectConfigs ? (
-                      <>
-                        <Box mt={2}>
-                          <Box fontSize={16} mb={1}>
-                            {t('titles.project_configuration')}
-                          </Box>
-                          <AceEditor
-                            mode={'json'}
-                            readOnly={true}
-                            theme={aceTheme}
-                            fontSize={14}
-                            width="100%"
-                            height="300px"
-                            defaultValue={JSON.stringify(projectConfigs, null, 2)}
-                            editorProps={{ $blockScrolling: true }}
-                          />
+                      <Box mt={2}>
+                        <Box fontSize={16} mb={1} className={classes.detailText}>
+                          {t('titles.project_configuration')}
                         </Box>
-                      </>
+                        <AceEditor
+                          mode={'json'}
+                          readOnly={true}
+                          theme={aceTheme}
+                          fontSize={14}
+                          width="100%"
+                          height="300px"
+                          defaultValue={JSON.stringify(projectConfigs, null, 2)}
+                          editorProps={{ $blockScrolling: true }}
+                        />
+                      </Box>
                     ) : null}
                   </>
                 )}
               </>
             )}
-          </>
-        )}
-      </ModalBody>
-      <ModalFooter>
-        {!isEmpty(projectConfigs) && (
-          <Button style={buttonStyle} onClick={() => !isCopied && copyToClipboard()}>
-            {isCopied ? (
-              <>{t('actions.configuration_copied')}</>
-            ) : (
-              <>{t('actions.copy_configuration')}</>
+          </div>
+
+          <Divider sx={{ mt: 2 }} />
+
+          <div className={classes.modalFooter}>
+            {!isEmpty(projectConfigs) && (
+              <GluuButton
+                type="button"
+                backgroundColor={themeColors.formFooter.apply.backgroundColor}
+                textColor={themeColors.formFooter.apply.textColor}
+                borderColor={themeColors.formFooter.apply.borderColor}
+                useOpacityOnHover
+                style={buttonStyle}
+                onClick={() => !isCopied && copyToClipboard()}
+              >
+                {isCopied ? t('actions.configuration_copied') : t('actions.copy_configuration')}
+              </GluuButton>
             )}
-          </Button>
-        )}
-        <Button style={buttonStyle} onClick={handler}>
-          {t('actions.close')}
-        </Button>
-      </ModalFooter>
-    </Modal>
+            <GluuButton
+              type="button"
+              backgroundColor={themeColors.formFooter.cancel.backgroundColor}
+              textColor={themeColors.formFooter.cancel.textColor}
+              borderColor={themeColors.formFooter.cancel.borderColor}
+              useOpacityOnHover
+              style={buttonStyle}
+              onClick={handler}
+            >
+              {t('actions.close')}
+            </GluuButton>
+          </div>
+        </div>
+      </div>
+    </GluuLoader>,
+    document.body,
   )
 }
 

@@ -1,10 +1,9 @@
-import React, { useState, useCallback, useRef, useEffect, type ReactElement } from 'react'
-import { CardBody, Card } from 'Components'
+import { useMemo, useState, useCallback, useRef, useEffect, type ReactElement } from 'react'
 import { useAtomValue } from 'jotai'
-import AuthNForm from './AuthNForm'
+import AcrsForm from './AcrsForm'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
-import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import {
   usePutAcrs,
@@ -16,9 +15,15 @@ import {
 } from 'JansConfigApi'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useDispatch } from 'react-redux'
-import { currentAuthNItemAtom, type ConfigurationProperty } from './atoms'
-import { type AuthNFormValues } from './AuthNForm'
+import { currentAuthNItemAtom, type ConfigurationProperty } from '../atoms'
+import { type AcrsFormValues } from './AcrsForm'
 import { devLogger } from '@/utils/devLogger'
+import { GluuPageContent } from '@/components'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import { useStyles } from './AcrsForm.style'
+import { useLocation } from 'react-router-dom'
 
 const isDefaultAuthNMethod = (value: boolean | string): boolean =>
   value === 'true' || value === true
@@ -39,13 +44,26 @@ const transformConfigurationProperties = (
     }))
 }
 
-const AuthNEditPage = (): ReactElement => {
+const AcrsEditPage = (): ReactElement => {
   const dispatch = useDispatch()
   const { navigateToRoute } = useAppNavigation()
   const { t } = useTranslation()
+  const location = useLocation()
+  const authnTab: number = (location.state as { authnTab?: number } | null)?.authnTab ?? 0
   const atomItem = useAtomValue(currentAuthNItemAtom)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | undefined>()
   const navigationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const { state: themeState } = useTheme()
+  const { themeColors, isDark } = useMemo(
+    () => ({
+      themeColors: getThemeColor(themeState.theme || DEFAULT_THEME),
+      isDark: themeState.theme === THEME_DARK,
+    }),
+    [themeState.theme],
+  )
+  const { classes } = useStyles({ isDark, themeColors })
 
   useEffect(() => {
     return () => {
@@ -57,16 +75,18 @@ const AuthNEditPage = (): ReactElement => {
 
   const handleSuccess = useCallback(() => {
     setIsSubmitting(false)
+    setErrorMessage(undefined)
     dispatch(updateToast(true, 'success'))
     navigationTimeoutRef.current = setTimeout(() => {
-      navigateToRoute(ROUTES.AUTH_SERVER_AUTHN)
+      navigateToRoute(ROUTES.AUTH_SERVER_AUTHN, { state: { authnTab } })
     }, 2000)
-  }, [dispatch, navigateToRoute])
+  }, [dispatch, navigateToRoute, authnTab])
 
   const handleError = useCallback(
     (error: Error) => {
-      const errorMessage = error?.message || t('messages.error_in_saving')
-      dispatch(updateToast(true, 'error', errorMessage))
+      const msg = error?.message || t('messages.error_in_saving')
+      setErrorMessage(msg)
+      dispatch(updateToast(true, 'error', msg))
       setIsSubmitting(false)
     },
     [dispatch, t],
@@ -75,15 +95,11 @@ const AuthNEditPage = (): ReactElement => {
   const putAcrsMutation = usePutAcrs()
 
   const putLdapMutation = usePutConfigDatabaseLdap({
-    mutation: {
-      onError: handleError,
-    },
+    mutation: { onError: handleError },
   })
 
   const putScriptMutation = usePutConfigScripts({
-    mutation: {
-      onError: handleError,
-    },
+    mutation: { onError: handleError },
   })
 
   const isLoading =
@@ -92,13 +108,14 @@ const AuthNEditPage = (): ReactElement => {
     putLdapMutation.isPending ||
     putScriptMutation.isPending
 
-  async function handleSubmit(data: AuthNFormValues): Promise<void> {
+  async function handleSubmit(data: AcrsFormValues): Promise<void> {
     if (!atomItem?.name) {
       dispatch(updateToast(true, 'error', t('messages.error_in_saving')))
       return
     }
 
     setIsSubmitting(true)
+    setErrorMessage(undefined)
 
     try {
       if (atomItem.name === 'simple_password_auth') {
@@ -189,31 +206,28 @@ const AuthNEditPage = (): ReactElement => {
     } catch (error) {
       if (error instanceof Error && !('response' in error)) {
         devLogger.error('Unexpected error during form submission:', error)
-        dispatch(updateToast(true, 'error', error.message || t('messages.error_in_saving')))
+        handleError(error)
       }
       setIsSubmitting(false)
     }
   }
 
-  if (!atomItem) {
-    return (
-      <GluuLoader blocking={true}>
-        <Card className="mb-3" style={applicationStyle.mainCard}>
-          <CardBody>{t('messages.no_item_selected', 'No item selected')}</CardBody>
-        </Card>
-      </GluuLoader>
-    )
-  }
-
   return (
-    <GluuLoader blocking={isLoading}>
-      <Card className="mb-3" style={{ ...applicationStyle.mainCard, minHeight: 'unset' }}>
-        <CardBody>
-          <AuthNForm handleSubmit={handleSubmit} item={atomItem} isSubmitting={isLoading} />
-        </CardBody>
-      </Card>
-    </GluuLoader>
+    <GluuPageContent>
+      <GluuLoader blocking={isLoading}>
+        <GluuAlert severity="error" message={errorMessage} show={!!errorMessage} />
+        <div className={classes.formCard}>
+          <div className={classes.content}>
+            {atomItem ? (
+              <AcrsForm handleSubmit={handleSubmit} item={atomItem} isSubmitting={isLoading} />
+            ) : (
+              <span>{t('messages.no_item_selected', 'No item selected')}</span>
+            )}
+          </div>
+        </div>
+      </GluuLoader>
+    </GluuPageContent>
   )
 }
 
-export default AuthNEditPage
+export default AcrsEditPage

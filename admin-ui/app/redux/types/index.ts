@@ -367,7 +367,8 @@ export interface AuthServerPluginState {
 }
 
 export interface RootState
-  extends CoreAppState, Partial<AdminPluginState & AuthServerPluginState> {}
+  extends CoreAppState,
+    Partial<AdminPluginState & AuthServerPluginState> {}
 
 export type ReducerMap = {
   [K in keyof RootState]?: Reducer<RootState[K], UnknownAction>

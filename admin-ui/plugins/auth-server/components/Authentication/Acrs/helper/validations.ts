@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import { type AuthNItem } from '../atoms'
+import { type AuthNItem } from '../../atoms'
 
 export const getAuthNValidationSchema = (item: AuthNItem | null): Yup.ObjectSchema<any> => {
   const isBuiltIn = item?.name === 'simple_password_auth'
