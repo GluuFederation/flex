@@ -1,5 +1,6 @@
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { WebhookTriggerResponseItem } from 'Plugins/admin/redux/types'
+import type { AssetState } from 'Plugins/admin/redux/features/types/asset'
 
 export type { WebhookTriggerResponseItem }
 
@@ -20,7 +21,7 @@ export type MauState = {
   endMonth: string
 }
 
-export type WebhookEntry = {
+export type WebhookEntryBase = {
   inum?: string
   displayName?: string
   url?: string
@@ -28,6 +29,9 @@ export type WebhookEntry = {
   httpHeaders?: Record<string, string>
   httpRequestBody?: string
   jansEnabled?: boolean
+}
+
+export type WebhookEntry = WebhookEntryBase & {
   [key: string]: JsonValue | Record<string, string> | undefined
 }
 
@@ -52,31 +56,6 @@ export type WebhookState = {
   webhookTriggerErrors: WebhookTriggerResponseItem[]
   triggerPayload: StoredTriggerPayload
   featureToTrigger: string
-  showErrorModal: boolean
-}
-
-export type AssetDocument = {
-  inum?: string
-  displayName?: string
-  description?: string
-  document?: string
-  creationDate?: string
-  jansEnabled?: boolean
-  [key: string]: JsonValue | undefined
-}
-
-export type AssetState = {
-  assets: AssetDocument[]
-  services: string[]
-  fileTypes: string[]
-  loading: boolean
-  saveOperationFlag: boolean
-  errorInSaveOperationFlag: boolean
-  totalItems: number
-  entriesCount: number
-  selectedAsset: AssetDocument | Record<string, never>
-  loadingAssets: boolean
-  assetModal: boolean
   showErrorModal: boolean
 }
 

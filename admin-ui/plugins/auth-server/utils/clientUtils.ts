@@ -1,16 +1,13 @@
 import { cloneElement, isValidElement } from 'react'
 import type { ChangeEvent, ReactNode } from 'react'
-import type { TFunction } from 'i18next'
 import { REGEX_EMAIL } from '@/utils/regex'
 import { uuidv4 } from '../../../app/utils/Util'
-import type { GluuDynamicListItem, GluuDynamicListMode } from '@/components/GluuDynamicList'
+import type { GluuDynamicListItem } from '@/components/GluuDynamicList'
 import type { SelectOption } from 'Routes/Apps/Gluu/types/GluuSelectRow.types'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import type { ClientFieldSection, DynamicListValidationOptions } from './types'
 
-export type ClientFieldSection<FieldKey extends string = string> = {
-  titleKey: string
-  fieldKeys: readonly FieldKey[]
-}
+export type { ClientFieldSection, DynamicListValidationOptions }
 
 export const createClientFieldSection = <FieldKey extends string>(
   titleKey: string,
@@ -38,7 +35,7 @@ export const uriValidator = (uri: string): boolean => {
 
   try {
     const parsed = new URL(value)
-    return Boolean(parsed.protocol)
+    return (parsed.protocol === 'http:' || parsed.protocol === 'https:') && Boolean(parsed.hostname)
   } catch {
     return false
   }
@@ -47,15 +44,6 @@ export const uriValidator = (uri: string): boolean => {
 export const audienceValidator = (aud: string): boolean => aud.trim().length > 0
 
 export const emailValidator = (email: string): boolean => REGEX_EMAIL.test(email)
-
-type DynamicListValidationOptions = {
-  items: GluuDynamicListItem[]
-  t: TFunction
-  mode?: GluuDynamicListMode
-  validateItem?: (item: GluuDynamicListItem, mode: GluuDynamicListMode) => boolean
-  invalidMessage?: string
-  requiredMessage?: string
-}
 
 export const getDynamicListValidationMessage = ({
   items,

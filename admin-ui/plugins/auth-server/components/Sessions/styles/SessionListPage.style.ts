@@ -155,9 +155,9 @@ export function useStyles(params: { isDark: boolean; themeColors: ThemeConfig })
         borderColor: 'transparent',
       },
       unauthenticatedBadge: {
-        backgroundColor: themeColors.badges.disabledBg,
-        textColor: themeColors.badges.disabledText,
-        borderColor: 'transparent',
+        backgroundColor: themeColors.background,
+        textColor: themeColors.fontColor,
+        borderColor: themeColors.borderColor,
       },
     }),
     [themeColors],

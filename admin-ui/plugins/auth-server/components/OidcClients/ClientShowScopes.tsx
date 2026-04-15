@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { GluuBadge } from '@/components/GluuBadge'
@@ -26,6 +26,8 @@ const ClientShowScopes = ({
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { classes: commitClasses } = useCommitDialogStyles({ isDark, themeColors })
   const { classes } = useStyles({ isDark, themeColors })
+  const modalRef = useRef<HTMLDivElement | null>(null)
+  const triggerRef = useRef<HTMLElement | null>(null)
 
   const scopeInums = useMemo(() => {
     if (!data || data.length === 0) {
@@ -52,44 +54,39 @@ const ClientShowScopes = ({
   const loading = isLoading || isFetching
   const fetchedScopes: Scope[] = (scopesResponse?.entries as Scope[]) ?? []
 
-  const handleOverlayKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault()
-        handler()
-      }
-    },
-    [handler],
-  )
+  const handleModalKeyDown = useCallback((e: React.KeyboardEvent) => {
+    e.stopPropagation()
+  }, [])
 
-  const handleModalKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault()
+  useEffect(() => {
+    if (!isOpen) return undefined
+    triggerRef.current = document.activeElement as HTMLElement | null
+    modalRef.current?.focus()
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
         handler()
       }
-      e.stopPropagation()
-    },
-    [handler],
-  )
+    }
+    document.addEventListener('keydown', handleEscape)
+    return () => {
+      document.removeEventListener('keydown', handleEscape)
+      triggerRef.current?.focus()
+    }
+  }, [handler, isOpen])
 
   if (!isOpen) return null
 
   const modalContent = (
     <>
-      <button
-        type="button"
-        className={commitClasses.overlay}
-        onClick={handler}
-        onKeyDown={handleOverlayKeyDown}
-        aria-label={t('actions.close')}
-      />
+      <div className={commitClasses.overlay} onClick={handler} role="presentation" />
       <div
+        ref={modalRef}
         className={commitClasses.modalContainer}
         onClick={(e) => e.stopPropagation()}
         onKeyDown={handleModalKeyDown}
         role="dialog"
-        tabIndex={-1}
+        tabIndex={0}
         aria-labelledby="client-scopes-title"
       >
         <button

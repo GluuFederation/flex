@@ -107,7 +107,7 @@ export type HealthServiceKey =
   | 'keycloak'
 
 export type HealthStatusResponse = Partial<Record<HealthServiceKey, HealthStatus>> & {
-  [serviceName: string]: HealthStatus
+  [serviceName: string]: HealthStatus | undefined
 }
 
 export type HealthState = {

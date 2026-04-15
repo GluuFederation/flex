@@ -25,10 +25,10 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
 ) => {
   const rowBg = themeColors.table.background
   const rowBorder = themeColors.borderColor
-  const hoverBg = themeColors.table.rowHoverBg
-  const expandButtonBg = themeColors.table.expandButtonBg
+  const hoverBg = themeColors.background
+  const expandButtonBg = themeColors.background
   const expandButtonHoverBg = themeColors.table.expandButtonHoverBg
-  const headerBg = themeColors.table.headerBg
+  const headerBg = themeColors.background
   const headerColor = themeColors.table.headerColor
   const paginationAccent =
     themeColors.formFooter?.back?.backgroundColor ?? customColors.statusActive
@@ -135,7 +135,7 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       },
     },
     headerCellExpand: {
-      width: 40,
+      width: 72,
       padding: '14px 8px',
       verticalAlign: 'middle',
     },
@@ -221,7 +221,6 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       'transition': 'background-color 0.15s ease',
       'border': `1px solid ${rowBorder}`,
       'borderRadius': BORDER_RADIUS.CIRCLE,
-      'boxShadow': `0 0 0 1px ${rowBorder}`,
       'cursor': 'pointer',
       'padding': '6px',
       'display': 'inline-flex',

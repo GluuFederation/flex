@@ -1,11 +1,17 @@
 import { Container, Row, Col } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
-import { EM_DASH_PLACEHOLDER, TOKEN_DETAIL_DOC_SECTION, TWO_DASH_PLACEHOLDER } from './constants'
+import { formatDate as formatTokenDate } from '@/utils/dayjsUtils'
+import {
+  EM_DASH_PLACEHOLDER,
+  TOKEN_DATE_DISPLAY_FORMAT,
+  TOKEN_DETAIL_DOC_SECTION,
+  TWO_DASH_PLACEHOLDER,
+} from './constants'
 import { useStyles } from './components/styles/ClientActiveTokenDetailPage.style'
 import type { ClientActiveTokenDetailPageProps } from './types'
 
 const formatDate = (value: string | number | Date | null | undefined): string =>
-  value ? new Date(value).toLocaleString() : TWO_DASH_PLACEHOLDER
+  value ? formatTokenDate(value, TOKEN_DATE_DISPLAY_FORMAT) : TWO_DASH_PLACEHOLDER
 
 const ClientActiveTokenDetailPage = ({ row }: ClientActiveTokenDetailPageProps): JSX.Element => {
   const { rowData } = row

@@ -4,20 +4,19 @@ import type { UserActionPayload } from 'Redux/api/types/BackendApi'
 import { addAdditionalData } from 'Utils/TokenController'
 import { CREATE, UPDATE, DELETION, FETCH } from '@/audit/UserActionType'
 import { devLogger } from '@/utils/devLogger'
-import type { JsonValue, JsonObject } from 'Routes/Apps/Gluu/types/common'
+import type { JsonObject } from 'Routes/Apps/Gluu/types/common'
 import type {
   AssetAuditActionData,
   AssetAuditActionType,
   AssetAuditInit,
   AssetAuditLogActionPayload,
+  SanitizableValue,
+  SanitizedValue,
 } from '../types'
 import { useAppSelector } from '@/redux/hooks'
 
 const MAX_STRING_LENGTH = 500
 const MAX_DEPTH = 5
-
-type SanitizableValue = JsonValue | File | Blob | undefined
-type SanitizedValue = JsonValue | undefined
 
 const sanitizeValue = (value: SanitizableValue, depth: number): SanitizedValue => {
   if (depth > MAX_DEPTH) return '[REDACTED]'
@@ -54,9 +53,9 @@ const sanitizeActionData = (
 }
 
 export const useAssetAudit = () => {
-  const clientId = useAppSelector((state) => state.authReducer.config.clientId ?? '')
-  const ipAddress = useAppSelector((state) => state.authReducer.location.IPv4 ?? '')
-  const userinfo = useAppSelector((state) => state.authReducer.userinfo)
+  const clientId = useAppSelector((state) => state.authReducer?.config?.clientId ?? '')
+  const ipAddress = useAppSelector((state) => state.authReducer?.location?.IPv4 ?? '')
+  const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
 
   const initAudit = useCallback(
     (): AssetAuditInit => ({

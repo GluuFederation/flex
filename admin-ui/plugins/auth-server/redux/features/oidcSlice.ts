@@ -1,9 +1,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
-import type { OidcState, OidcClientItem } from 'Redux/types'
-
-type SetCurrentClientPayload = { item: OidcClientItem }
-type ViewOnlyPayload = { view: boolean } | boolean
+import type { OidcState } from 'Redux/types'
+import type { SetCurrentClientPayload, ViewOnlyPayload } from './types/oidcSlice'
 
 const initialState: OidcState = {
   item: {},
@@ -18,10 +16,7 @@ const oidcSlice = createSlice({
       state.item = action.payload?.item ?? {}
     },
     viewOnly: (state, action: PayloadAction<ViewOnlyPayload>) => {
-      const payload = action.payload
-      if (payload && typeof payload === 'object') {
-        state.view = payload.view
-      }
+      state.view = action.payload.view
     },
   },
 })

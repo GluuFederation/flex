@@ -175,8 +175,7 @@ const WebsiteSsoServiceProviderForm = ({
 
     if (selectedClientScopes?.length) {
       return selectedClientScopes.filter(
-        (s): s is typeof s & ScopeOption =>
-          typeof s['dn'] === 'string' && typeof s['name'] === 'string',
+        (s): s is ScopeOption => typeof s['dn'] === 'string' && typeof s['name'] === 'string',
       )
     }
     return defaultScopeValue

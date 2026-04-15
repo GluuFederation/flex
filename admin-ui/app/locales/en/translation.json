@@ -1400,7 +1400,7 @@
     "all_attributes": "Attributes/Claims",
     "all_user_claims": "User Claims",
     "all_custom_scripts": "Custom Scripts",
-    "all_oidc_clients": "OpenID Clients",
+    "all_oidc_clients": "OIDC Clients",
     "all_scopes": "OAuth/OpenID Scopes",
     "audit_logs": "Admin UI Audit Log",
     "webhooks": "Webhooks",

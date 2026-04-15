@@ -20,6 +20,7 @@ import { useCedarling } from '@/cedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { devLogger } from '@/utils/devLogger'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import { useGetOauthScopes, useGetOauthScopesByInum } from 'JansConfigApi'
 import { useClients, useDeleteClient } from './hooks'
@@ -57,7 +58,7 @@ const addOrg = (client: ClientRow): ClientRow => {
     const match = copy.customAttributes.find(
       (attr) => attr.name === ORG_ATTR_NAME || attr.name === ORG_ATTR_NAME_FULL,
     )
-    if (match) {
+    if (match && Array.isArray(match.values) && match.values.length > 0) {
       org = match.values[0]
     }
   }
@@ -234,13 +235,18 @@ const ClientListPage: React.FC = () => {
   const onDeletionConfirmed = useCallback(
     async (message: string) => {
       if (!itemToDelete) return
-      await deleteClient({
-        inum: itemToDelete.inum,
-        message,
-        client: itemToDelete,
-      })
-      setModal(false)
-      setItemToDelete(null)
+      try {
+        await deleteClient({
+          inum: itemToDelete.inum,
+          message,
+          client: itemToDelete,
+        })
+      } catch (error) {
+        devLogger.error('Failed to delete client', error)
+      } finally {
+        setModal(false)
+        setItemToDelete(null)
+      }
     },
     [itemToDelete, deleteClient],
   )
@@ -283,7 +289,7 @@ const ClientListPage: React.FC = () => {
 
   useEffect(() => {
     if (clientCedarScopes.length > 0) authorizeHelper(clientCedarScopes)
-  }, [authorizeHelper])
+  }, [authorizeHelper, clientCedarScopes])
 
   const shouldHideOrgColumn = useMemo(
     () => !clients.some((c) => c.organization !== EM_DASH_PLACEHOLDER),

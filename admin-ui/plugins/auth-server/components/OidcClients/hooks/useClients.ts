@@ -5,15 +5,16 @@ import type { UseClientsParams } from '../types'
 
 export const useClients = <T = Record<string, string>>(params?: UseClientsParams) => {
   const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
+  const serializedParams = JSON.stringify(params ?? {})
 
   const queryParams = useMemo(
     () => (params ? { ...params, pattern: params.pattern || undefined } : undefined),
-    [params],
+    [serializedParams],
   )
 
   const query = useGetOauthOpenidClients(queryParams, {
     query: {
-      enabled: hasSession === true && params !== undefined,
+      enabled: hasSession === true && queryParams !== undefined,
     },
   })
 
@@ -24,6 +25,7 @@ export const useClients = <T = Record<string, string>>(params?: UseClientsParams
     clients,
     totalCount,
     isLoading: query.isLoading,
+    isFetching: query.isFetching,
     refetch: query.refetch,
   }
 }

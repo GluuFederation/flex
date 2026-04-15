@@ -91,6 +91,7 @@ const ClientActiveTokens = ({
       {
         icon: 'fa fa-trash',
         tooltip: t('actions.revoke'),
+        show: (row) => row.deletable !== false,
         onClick: (row) => {
           void handleRevokeToken(row)
         },

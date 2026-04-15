@@ -19,7 +19,9 @@ const ClientDetailPage: React.FC<ClientDetailPageProps> = ({ row, scopes }) => {
 
   const clientScopes = useMemo(() => {
     const scopesDns = row.scopes ?? []
-    return scopes.filter((item) => scopesDns.includes(item.dn ?? '')).map((item) => item.id ?? '')
+    return scopes
+      .filter((item) => scopesDns.includes(item.dn ?? '') && Boolean(item.id))
+      .map((item) => item.id as string)
   }, [row.scopes, scopes])
 
   const description = useMemo(() => {

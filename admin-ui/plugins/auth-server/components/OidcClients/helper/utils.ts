@@ -22,8 +22,10 @@ export const buildClientTokenFieldValuePair = (
   filterField: TokenSearchFilterField,
 ): string => {
   let query = `clnId=${clientInum}`
-  if (pattern.dateAfter && pattern.dateBefore) {
+  if (pattern.dateAfter) {
     query += `,${filterField}>${formatDate(pattern.dateAfter, TOKEN_DATE_QUERY_FORMAT)}`
+  }
+  if (pattern.dateBefore) {
     query += `,${filterField}<${formatDate(pattern.dateBefore, TOKEN_DATE_QUERY_FORMAT)}`
   }
   return query
@@ -42,11 +44,18 @@ const TOKEN_CSV_KEYS: ReadonlyArray<keyof Omit<ClientTokenRow, 'attributes'>> = 
 
 export const convertTokensToCSV = (rows: ClientTokenRow[]): string => {
   if (!rows || rows.length === 0) return ''
-  const header = TOKEN_CSV_KEYS.map((key) => key.replace(/-/g, ' ').toUpperCase()).join(',')
+  const escapeCsvValue = (value: string): string => {
+    const escapedValue = value.replace(/"/g, '""')
+    return /[",\n\r]/.test(escapedValue) ? `"${escapedValue}"` : escapedValue
+  }
+
+  const header = TOKEN_CSV_KEYS.map((key) =>
+    escapeCsvValue(key.replace(/-/g, ' ').toUpperCase()),
+  ).join(',')
   const body = rows.map((row) =>
     TOKEN_CSV_KEYS.map((key) => {
       const value = row[key]
-      return value != null ? String(value) : ''
+      return escapeCsvValue(value != null ? String(value) : '')
     }).join(','),
   )
   return [header, ...body].join('\n')
