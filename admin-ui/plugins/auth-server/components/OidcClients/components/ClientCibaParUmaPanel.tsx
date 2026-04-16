@@ -7,9 +7,18 @@ import { useTranslation } from 'react-i18next'
 import { useAppDispatch } from '@/redux/hooks'
 import { formatDate } from '@/utils/dayjsUtils'
 import AceEditor from 'react-ace'
-import { Card, Col, FormGroup, GluuDynamicList } from 'Components'
+import {
+  Accordion,
+  AccordionHeader,
+  AccordionBody,
+  Card,
+  Col,
+  FormGroup,
+  GluuDynamicList,
+} from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
+import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuAutocomplete from 'Routes/Apps/Gluu/GluuAutocomplete'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
@@ -25,7 +34,6 @@ import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useClientUmaResources } from '../hooks'
 import {
-  BOOLEAN_SELECT_OPTIONS,
   CIBA_DELIVERY_MODES,
   CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS,
   CLIENT_DYNAMIC_LIST_I18N,
@@ -124,8 +132,6 @@ const ClientCibaParUmaPanel = ({
     () => createPassiveSelectFormik(formik.handleBlur),
     [formik.handleBlur],
   )
-  const booleanSelectOptions = useMemo(() => mapTranslatedOptions(BOOLEAN_SELECT_OPTIONS, t), [t])
-
   const rptTokenTypeOptions = useMemo(() => mapTranslatedOptions(RPT_TOKEN_TYPE_OPTIONS, t), [t])
 
   const rptScriptNameOptions = rptScripts.map((s) => s.name)
@@ -238,235 +244,243 @@ const ClientCibaParUmaPanel = ({
   return (
     <GluuLoader blocking={isLoading}>
       <div className={classes.root}>
-        <div className={classes.section}>
-          <div className={gridClass}>
-            <div className={classes.fieldItem}>
-              <GluuSelectRow
-                name="backchannelTokenDeliveryMode"
-                label="fields.backchannelTokenDeliveryMode"
-                formik={formik}
-                value={formik.values.backchannelTokenDeliveryMode as string | undefined}
-                values={CIBA_DELIVERY_MODES}
-                doc_category={DOC_CATEGORY}
-                lsize={12}
-                rsize={12}
-                disabled={viewOnly}
-                handleChange={(e) => {
-                  setModifiedFields({
-                    ...modifiedFields,
-                    [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.TOKEN_DELIVERY_MODE]: e.target.value,
-                  })
-                }}
-              />
+        {/* CIBA */}
+        <Accordion className="mb-2 b-primary" initialOpen>
+          <AccordionHeader>{t('titles.CIBA')}</AccordionHeader>
+          <AccordionBody>
+            <div className={gridClass}>
+              <div className={classes.fieldItem}>
+                <GluuSelectRow
+                  name="backchannelTokenDeliveryMode"
+                  label="fields.backchannelTokenDeliveryMode"
+                  formik={formik}
+                  value={formik.values.backchannelTokenDeliveryMode as string | undefined}
+                  values={CIBA_DELIVERY_MODES}
+                  doc_category={DOC_CATEGORY}
+                  lsize={12}
+                  rsize={12}
+                  disabled={viewOnly}
+                  handleChange={(e) => {
+                    setModifiedFields({
+                      ...modifiedFields,
+                      [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.TOKEN_DELIVERY_MODE]: e.target.value,
+                    })
+                  }}
+                />
+              </div>
+              <div className={classes.fieldItem}>
+                <GluuInputRow
+                  label="fields.backchannelClientNotificationEndpoint"
+                  name="backchannelClientNotificationEndpoint"
+                  formik={formik}
+                  value={formik.values.backchannelClientNotificationEndpoint as string | undefined}
+                  placeholder={getFieldPlaceholder(
+                    t,
+                    'fields.backchannelClientNotificationEndpoint',
+                  )}
+                  doc_category={DOC_CATEGORY}
+                  lsize={12}
+                  rsize={12}
+                  disabled={viewOnly}
+                  showError={
+                    isFieldTouched('backchannelClientNotificationEndpoint') &&
+                    Boolean(getFieldError('backchannelClientNotificationEndpoint'))
+                  }
+                  errorMessage={getFieldError('backchannelClientNotificationEndpoint')}
+                  handleChange={(e) => {
+                    setModifiedFields({
+                      ...modifiedFields,
+                      [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.CLIENT_NOTIFICATION_ENDPOINT]:
+                        e.target.value,
+                    })
+                  }}
+                />
+              </div>
+              <div className={classes.fieldItem}>
+                <GluuToogleRow
+                  name="backchannelUserCodeParameter"
+                  label="fields.backchannelUserCodeParameter"
+                  formik={formik}
+                  value={Boolean(formik.values.backchannelUserCodeParameter)}
+                  doc_category={DOC_CATEGORY}
+                  lsize={12}
+                  rsize={12}
+                  disabled={viewOnly}
+                  handler={(e) => {
+                    setModifiedFields({
+                      ...modifiedFields,
+                      [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.USER_CODE_PARAMETER]: e.target.checked,
+                    })
+                  }}
+                />
+              </div>
+              <div className={classes.fieldItem} />
             </div>
-            <div className={classes.fieldItem}>
-              <GluuSelectRow
-                name="attributes.requirePar"
-                label="fields.requirePar"
-                formik={passiveSelectFormik}
-                value={toBooleanSelectValue(formik.values.attributes?.requirePar)}
-                values={booleanSelectOptions}
-                doc_category={DOC_CATEGORY}
-                lsize={12}
-                rsize={12}
-                disabled={viewOnly}
-                handleChange={(event) => {
-                  const requirePar = fromBooleanSelectValue(event.target.value)
-                  formik.setFieldValue('attributes.requirePar', requirePar)
-                  setModifiedFields({
-                    ...modifiedFields,
-                    [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.REQUIRE_PAR]: requirePar,
-                  })
-                }}
-              />
-            </div>
-            <div className={classes.fieldItem}>
-              <GluuSelectRow
-                name="rptAsJwt"
-                label="fields.rptAsJwt"
-                formik={passiveSelectFormik}
-                value={toBooleanSelectValue(formik.values.rptAsJwt)}
-                values={rptTokenTypeOptions}
-                doc_category={DOC_CATEGORY}
-                lsize={12}
-                rsize={12}
-                disabled={viewOnly}
-                handleChange={(event) => {
-                  const val = fromBooleanSelectValue(event.target.value)
-                  formik.setFieldValue('rptAsJwt', val)
-                  setModifiedFields({
-                    ...modifiedFields,
-                    [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.RPT_AS_JWT]: val,
-                  })
-                }}
-              />
-            </div>
-            <div className={classes.fieldItem}>
-              <GluuSelectRow
-                name="backchannelUserCodeParameter"
-                label="fields.backchannelUserCodeParameter"
-                formik={passiveSelectFormik}
-                value={toBooleanSelectValue(formik.values.backchannelUserCodeParameter)}
-                values={booleanSelectOptions}
-                doc_category={DOC_CATEGORY}
-                lsize={12}
-                rsize={12}
-                handleChange={(event) => {
-                  const hasUserCode = fromBooleanSelectValue(event.target.value)
-                  formik.setFieldValue('backchannelUserCodeParameter', hasUserCode)
-                  setModifiedFields({
-                    ...modifiedFields,
-                    [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.USER_CODE_PARAMETER]: hasUserCode,
-                  })
-                }}
-                disabled={viewOnly}
-              />
-            </div>
-            <div className={classes.fieldItem}>
-              <GluuInputRow
-                label="fields.parLifetime"
-                name="attributes.parLifetime"
-                type="number"
-                formik={formik}
-                value={formik.values.attributes?.parLifetime as number | undefined}
-                placeholder={getFieldPlaceholder(t, 'fields.parLifetime')}
-                doc_category={DOC_CATEGORY}
-                lsize={12}
-                rsize={12}
-                disabled={viewOnly}
-                showError={
-                  Boolean(attributeTouched.parLifetime) &&
-                  typeof attributeErrors.parLifetime === 'string'
-                }
-                errorMessage={
-                  typeof attributeErrors.parLifetime === 'string' ? attributeErrors.parLifetime : ''
-                }
-                handleChange={(e) => {
-                  setModifiedFields({
-                    ...modifiedFields,
-                    [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.PAR_LIFETIME]: e.target.value,
-                  })
-                }}
-              />
-            </div>
-            <div className={classes.fieldItem}>
-              <GluuInputRow
-                label="fields.backchannelClientNotificationEndpoint"
-                name="backchannelClientNotificationEndpoint"
-                formik={formik}
-                value={formik.values.backchannelClientNotificationEndpoint as string | undefined}
-                placeholder={getFieldPlaceholder(t, 'fields.backchannelClientNotificationEndpoint')}
-                doc_category={DOC_CATEGORY}
-                lsize={12}
-                rsize={12}
-                disabled={viewOnly}
-                showError={
-                  isFieldTouched('backchannelClientNotificationEndpoint') &&
-                  Boolean(getFieldError('backchannelClientNotificationEndpoint'))
-                }
-                errorMessage={getFieldError('backchannelClientNotificationEndpoint')}
-                handleChange={(e) => {
-                  setModifiedFields({
-                    ...modifiedFields,
-                    [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.CLIENT_NOTIFICATION_ENDPOINT]:
-                      e.target.value,
-                  })
-                }}
-              />
-            </div>
-          </div>
-        </div>
+          </AccordionBody>
+        </Accordion>
 
-        <div className={classes.section}>
-          <div className={gridClass}>
-            <div className={classes.fieldItem}>
-              <div className={classes.dynamicFieldCard}>
-                <label className={classes.dynamicFieldCardLabel}>{t('fields.rpt_scripts')}:</label>
-                <div className={classes.dynamicFieldCardBox}>
-                  <GluuAutocomplete
-                    label={t('fields.rpt_scripts')}
-                    name="attributes.rptClaimsScripts"
-                    value={selectedRptScriptNames}
-                    options={rptScriptNameOptions}
-                    disabled={viewOnly}
-                    hideLabel
-                    withWrapper={false}
-                    placeholder={t('placeholders.search_here')}
-                    cardBackgroundColor={themeColors.inputBackground}
-                    inputBackgroundColor={
-                      themeColors.settings?.cardBackground ?? themeColors.card.background
-                    }
-                    onChange={(selectedNames) => {
-                      const dns = selectedNames
-                        .map((name) => rptScripts.find((s) => s.name === name)?.dn)
-                        .filter((dn): dn is string => Boolean(dn))
-                      formik.setFieldValue('attributes.rptClaimsScripts', dns)
-                      setModifiedFields({
-                        ...modifiedFields,
-                        [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.RPT_CLAIMS_SCRIPTS]: dns,
-                      })
-                    }}
-                  />
-                </div>
+        {/* PAR */}
+        <Accordion className="mb-2 b-primary" initialOpen>
+          <AccordionHeader>{t('titles.PAR')}</AccordionHeader>
+          <AccordionBody>
+            <div className={gridClass}>
+              <div className={classes.fieldItem}>
+                <GluuInputRow
+                  label="fields.parLifetime"
+                  name="attributes.parLifetime"
+                  type="number"
+                  formik={formik}
+                  value={formik.values.attributes?.parLifetime as number | undefined}
+                  placeholder={getFieldPlaceholder(t, 'fields.parLifetime')}
+                  doc_category={DOC_CATEGORY}
+                  lsize={12}
+                  rsize={12}
+                  disabled={viewOnly}
+                  showError={
+                    Boolean(attributeTouched.parLifetime) &&
+                    typeof attributeErrors.parLifetime === 'string'
+                  }
+                  errorMessage={
+                    typeof attributeErrors.parLifetime === 'string'
+                      ? attributeErrors.parLifetime
+                      : ''
+                  }
+                  handleChange={(e) => {
+                    setModifiedFields({
+                      ...modifiedFields,
+                      [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.PAR_LIFETIME]: e.target.value,
+                    })
+                  }}
+                />
+              </div>
+              <div className={classes.fieldItem}>
+                <GluuToogleRow
+                  name="attributes.requirePar"
+                  label="fields.requirePar"
+                  formik={formik}
+                  value={Boolean(formik.values.attributes?.requirePar)}
+                  doc_category={DOC_CATEGORY}
+                  lsize={12}
+                  rsize={12}
+                  disabled={viewOnly}
+                  handler={(e) => {
+                    setModifiedFields({
+                      ...modifiedFields,
+                      [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.REQUIRE_PAR]: e.target.checked,
+                    })
+                  }}
+                />
               </div>
             </div>
+          </AccordionBody>
+        </Accordion>
 
-            <div className={classes.fieldItem}>
-              <GluuDynamicList
-                label={`${t(CLIENT_DYNAMIC_LIST_I18N.CLAIM_REDIRECT_URIS.fieldKey)}:`}
-                title={t(CLIENT_DYNAMIC_LIST_I18N.CLAIM_REDIRECT_URIS.fieldKey)}
-                items={claimRedirectUriItems}
-                mode="single"
-                valuePlaceholder={t(CLIENT_DYNAMIC_LIST_I18N.CLAIM_REDIRECT_URIS.placeholderKey)}
-                addButtonLabel={t('actions.add')}
-                removeButtonLabel={t('actions.remove')}
-                validateItem={(item) => uriValidator(item.value ?? '')}
-                showError={!viewOnly && Boolean(claimRedirectUriError)}
-                errorMessage={claimRedirectUriError}
-                disabled={viewOnly}
-                onAdd={handleAddClaimRedirectUri}
-                onChange={handleChangeClaimRedirectUri}
-                onRemove={handleRemoveClaimRedirectUri}
-              />
-            </div>
-          </div>
-        </div>
-
-        {!isEmpty(umaResources) && (
-          <div className={classes.section}>
+        {/* UMA */}
+        <Accordion className="mb-2 b-primary" initialOpen>
+          <AccordionHeader>{t('titles.UMA')}</AccordionHeader>
+          <AccordionBody>
             <div className={gridClass}>
-              <div className={classes.fieldItemFullWidth}>
-                <FormGroup row>
-                  <GluuLabel label="fields.resources" size={3} />
-                  <Col sm={9}>
-                    {umaResources.map((uma) => (
-                      <Box key={uma.id as string} className="mb-2">
-                        <Box display="flex">
-                          <Box width="40%">
-                            <Link
-                              className="common-link cursor-pointer"
-                              onClick={() => handleUMADetail(uma)}
-                            >
-                              {uma.id as string}
-                            </Link>
-                          </Box>
-                          <Box width="50%" className="text-dark">
-                            {uma.name as string}
-                          </Box>
-                          <Box width="10%">
-                            <Button color="danger" size="sm" onClick={() => handleDeleteUMA(uma)}>
-                              <span className="fw-bold">X</span>
-                            </Button>
+              <div className={classes.fieldItem}>
+                <GluuSelectRow
+                  name="rptAsJwt"
+                  label="fields.rptAsJwt"
+                  formik={passiveSelectFormik}
+                  value={toBooleanSelectValue(formik.values.rptAsJwt)}
+                  values={rptTokenTypeOptions}
+                  doc_category={DOC_CATEGORY}
+                  lsize={12}
+                  rsize={12}
+                  disabled={viewOnly}
+                  handleChange={(event) => {
+                    const val = fromBooleanSelectValue(event.target.value)
+                    formik.setFieldValue('rptAsJwt', val)
+                    setModifiedFields({
+                      ...modifiedFields,
+                      [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.RPT_AS_JWT]: val,
+                    })
+                  }}
+                />
+              </div>
+              <div className={classes.fieldItem}>
+                <GluuAutocomplete
+                  label={t('fields.rpt_scripts')}
+                  name="attributes.rptClaimsScripts"
+                  value={selectedRptScriptNames}
+                  options={rptScriptNameOptions}
+                  disabled={viewOnly}
+                  withWrapper={false}
+                  placeholder={t('placeholders.search_here')}
+                  cardBackgroundColor={
+                    themeColors.settings?.cardBackground ?? themeColors.card.background
+                  }
+                  inputBackgroundColor={themeColors.inputBackground}
+                  onChange={(selectedNames) => {
+                    const dns = selectedNames
+                      .map((name) => rptScripts.find((s) => s.name === name)?.dn)
+                      .filter((dn): dn is string => Boolean(dn))
+                    formik.setFieldValue('attributes.rptClaimsScripts', dns)
+                    setModifiedFields({
+                      ...modifiedFields,
+                      [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.RPT_CLAIMS_SCRIPTS]: dns,
+                    })
+                  }}
+                />
+              </div>
+              <div className={classes.fieldItem}>
+                <GluuDynamicList
+                  label={`${t(CLIENT_DYNAMIC_LIST_I18N.CLAIM_REDIRECT_URIS.fieldKey)}:`}
+                  title={t(CLIENT_DYNAMIC_LIST_I18N.CLAIM_REDIRECT_URIS.fieldKey)}
+                  items={claimRedirectUriItems}
+                  mode="single"
+                  valuePlaceholder={t(CLIENT_DYNAMIC_LIST_I18N.CLAIM_REDIRECT_URIS.placeholderKey)}
+                  addButtonLabel={t('actions.add')}
+                  removeButtonLabel={t('actions.remove')}
+                  validateItem={(item) => uriValidator(item.value ?? '')}
+                  showError={!viewOnly && Boolean(claimRedirectUriError)}
+                  errorMessage={claimRedirectUriError}
+                  disabled={viewOnly}
+                  onAdd={handleAddClaimRedirectUri}
+                  onChange={handleChangeClaimRedirectUri}
+                  onRemove={handleRemoveClaimRedirectUri}
+                />
+              </div>
+              <div className={classes.fieldItem} />
+            </div>
+            {!isEmpty(umaResources) && (
+              <div className={gridClass}>
+                <div className={classes.fieldItemFullWidth}>
+                  <FormGroup row>
+                    <GluuLabel label="fields.resources" size={3} />
+                    <Col sm={9}>
+                      {umaResources.map((uma) => (
+                        <Box key={uma.id as string} className="mb-2">
+                          <Box display="flex">
+                            <Box width="40%">
+                              <Link
+                                className="common-link cursor-pointer"
+                                onClick={() => handleUMADetail(uma)}
+                              >
+                                {uma.id as string}
+                              </Link>
+                            </Box>
+                            <Box width="50%" className="text-dark">
+                              {uma.name as string}
+                            </Box>
+                            <Box width="10%">
+                              <Button color="danger" size="sm" onClick={() => handleDeleteUMA(uma)}>
+                                <span className="fw-bold">X</span>
+                              </Button>
+                            </Box>
                           </Box>
                         </Box>
-                      </Box>
-                    ))}
-                  </Col>
-                </FormGroup>
+                      ))}
+                    </Col>
+                  </FormGroup>
+                </div>
               </div>
-            </div>
-          </div>
-        )}
+            )}
+          </AccordionBody>
+        </Accordion>
 
         <Modal
           isOpen={open}

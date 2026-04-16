@@ -65,6 +65,17 @@ export const useStyles = makeStyles<ClientAdvancedPanelStyleParams>()((
       boxSizing: 'border-box',
       ...formGroupBase,
     },
+    datePickerField: {
+      'display': 'flex',
+      'flexDirection': 'column',
+      'gap': SPACING.CARD_CONTENT_GAP / 2,
+      '& .MuiOutlinedInput-root': {
+        borderRadius: `${BORDER_RADIUS.SMALL}px`,
+      },
+      '& .MuiOutlinedInput-notchedOutline': {
+        borderRadius: `${BORDER_RADIUS.SMALL}px`,
+      },
+    },
     dynamicListPadding: {
       paddingTop: `${SPACING.CARD_PADDING}px`,
     },

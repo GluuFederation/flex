@@ -1,6 +1,30 @@
 import type { Dayjs } from '@/utils/dayjsUtils'
 import type { SxProps, Theme } from '@mui/material/styles'
+import type { ThemeConfig } from '@/context/theme/config'
 import type { useDatePickerStyles } from './GluuDatePicker.style'
+
+export type PickerThemeColors = {
+  labelBackground: string
+  inputBackground: string
+  inputTextColor: string
+  labelColor: string
+  borderColor: string
+  popupBg: string
+  selectedBg: string
+  selectedText: string
+  hoverBg: string
+  placeholderColor: string
+  iconColor: string
+}
+
+export type GluuDatePickerStyleParams = {
+  themeColors: ThemeConfig
+  isDark: boolean
+  textColor?: string
+  backgroundColor?: string
+  inputHeight?: number
+  labelShrink?: boolean
+}
 
 type GluuDatePickerBase = {
   format?: string

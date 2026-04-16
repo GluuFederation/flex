@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Accordion, AccordionHeader, AccordionBody } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { useTheme } from '@/context/theme/themeContext'
@@ -69,6 +70,7 @@ const ClientEncryptionSigningPanel = ({
 
   return (
     <div className={classes.root}>
+      {/* JWKS fields — top level, outside accordions */}
       <div className={gridClass}>
         <div className={classes.fieldItem}>
           <GluuInputRow
@@ -112,324 +114,380 @@ const ClientEncryptionSigningPanel = ({
             }}
           />
         </div>
-        <div className={classes.fieldItem}>
-          <GluuSelectRow
-            label="fields.id_token_signed_response_alg"
-            formik={formik}
-            value={formik.values.idTokenSignedResponseAlg as string | undefined}
-            values={idTokenSignedResponseAlg}
-            lsize={12}
-            rsize={12}
-            name="idTokenSignedResponseAlg"
-            doc_category={DOC_CATEGORY}
-            disabled={viewOnly}
-            handleChange={(e) => {
-              setModifiedFields({
-                ...modifiedFields,
-                [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.ID_TOKEN_SIGNED_RESPONSE]:
-                  e.target.value,
-              })
-            }}
-          />
-        </div>
-        <div className={classes.fieldItem}>
-          <GluuSelectRow
-            label="fields.id_token_encrypted_response_alg"
-            formik={formik}
-            lsize={12}
-            rsize={12}
-            value={formik.values.idTokenEncryptedResponseAlg as string | undefined}
-            values={idTokenEncryptedResponseAlg}
-            name="idTokenEncryptedResponseAlg"
-            doc_category={DOC_CATEGORY}
-            disabled={viewOnly}
-            handleChange={(e) => {
-              setModifiedFields({
-                ...modifiedFields,
-                [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.ID_TOKEN_ENCRYPTED_RESPONSE_ALG]:
-                  e.target.value,
-              })
-            }}
-          />
-        </div>
-        <div className={classes.fieldItem}>
-          <GluuSelectRow
-            label="fields.id_token_encrypted_response_enc"
-            formik={formik}
-            value={formik.values.idTokenEncryptedResponseEnc as string | undefined}
-            values={idTokenEncryptedResponseEnc}
-            lsize={12}
-            rsize={12}
-            name="idTokenEncryptedResponseEnc"
-            doc_category={DOC_CATEGORY}
-            disabled={viewOnly}
-            handleChange={(e) => {
-              setModifiedFields({
-                ...modifiedFields,
-                [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.ID_TOKEN_ENCRYPTED_RESPONSE_ENC]:
-                  e.target.value,
-              })
-            }}
-          />
-        </div>
-        <div className={classes.fieldItem}>
-          <GluuSelectRow
-            label="fields.access_token_signing_alg"
-            formik={formik}
-            value={formik.values.accessTokenSigningAlg as string | undefined}
-            values={accessTokenSigningAlg}
-            lsize={12}
-            rsize={12}
-            name="accessTokenSigningAlg"
-            doc_category={DOC_CATEGORY}
-            disabled={viewOnly}
-            handleChange={(e) => {
-              setModifiedFields({
-                ...modifiedFields,
-                [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.ACCESS_TOKEN_SIGNING_ALG]:
-                  e.target.value,
-              })
-            }}
-          />
-        </div>
-        <div className={classes.fieldItem}>
-          <GluuSelectRow
-            label="fields.user_info_signed_response_alg"
-            formik={formik}
-            value={formik.values.userInfoSignedResponseAlg as string | undefined}
-            values={userInfoSignedResponseAlg}
-            lsize={12}
-            rsize={12}
-            name="userInfoSignedResponseAlg"
-            doc_category={DOC_CATEGORY}
-            disabled={viewOnly}
-            handleChange={(e) => {
-              setModifiedFields({
-                ...modifiedFields,
-                [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.USER_INFO_SIGNED_RESPONSE_ALG]:
-                  e.target.value,
-              })
-            }}
-          />
-        </div>
-        <div className={classes.fieldItem}>
-          <GluuSelectRow
-            label="fields.user_info_encrypted_response_alg"
-            formik={formik}
-            value={formik.values.userInfoEncryptedResponseAlg as string | undefined}
-            values={userInfoEncryptedResponseAlg}
-            lsize={12}
-            rsize={12}
-            name="userInfoEncryptedResponseAlg"
-            doc_category={DOC_CATEGORY}
-            disabled={viewOnly}
-            handleChange={(e) => {
-              setModifiedFields({
-                ...modifiedFields,
-                [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.USER_INFO_ENCRYPTED_RESPONSE_ALG]:
-                  e.target.value,
-              })
-            }}
-          />
-        </div>
-        <div className={classes.fieldItem}>
-          <GluuSelectRow
-            label="fields.user_info_encrypted_response_enc"
-            formik={formik}
-            value={formik.values.userInfoEncryptedResponseEnc as string | undefined}
-            values={userInfoEncryptedResponseEnc}
-            lsize={12}
-            rsize={12}
-            name="userInfoEncryptedResponseEnc"
-            doc_category={DOC_CATEGORY}
-            disabled={viewOnly}
-            handleChange={(e) => {
-              setModifiedFields({
-                ...modifiedFields,
-                [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.USER_INFO_ENCRYPTED_RESPONSE_ENC]:
-                  e.target.value,
-              })
-            }}
-          />
-        </div>
-        <div className={classes.fieldItem}>
-          <GluuSelectRow
-            label="fields.authorizationSignedResponseAlg"
-            formik={formik}
-            value={formik.values.attributes?.jansAuthSignedRespAlg as string | undefined}
-            values={idTokenSignedResponseAlg}
-            lsize={12}
-            rsize={12}
-            name="attributes.jansAuthSignedRespAlg"
-            doc_category={DOC_CATEGORY}
-            disabled={viewOnly}
-            handleChange={(e) => {
-              setModifiedFields({
-                ...modifiedFields,
-                [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.AUTHORIZATION_SIGNED_RESPONSE_ALG]:
-                  e.target.value,
-              })
-            }}
-          />
-        </div>
-        <div className={classes.fieldItem}>
-          <GluuSelectRow
-            label="fields.authorizationEncryptedResponseAlg"
-            formik={formik}
-            lsize={12}
-            rsize={12}
-            value={formik.values.attributes?.jansAuthEncRespAlg as string | undefined}
-            values={idTokenEncryptedResponseAlg}
-            name="attributes.jansAuthEncRespAlg"
-            doc_category={DOC_CATEGORY}
-            disabled={viewOnly}
-            handleChange={(e) => {
-              setModifiedFields({
-                ...modifiedFields,
-                [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.AUTHORIZATION_ENCRYPTED_RESPONSE_ALG]:
-                  e.target.value,
-              })
-            }}
-          />
-        </div>
-        <div className={classes.fieldItem}>
-          <GluuSelectRow
-            label="fields.authorizationEncryptedResponseEnc"
-            formik={formik}
-            value={formik.values.attributes?.jansAuthEncRespEnc as string | undefined}
-            values={idTokenEncryptedResponseEnc}
-            lsize={12}
-            rsize={12}
-            name="attributes.jansAuthEncRespEnc"
-            doc_category={DOC_CATEGORY}
-            disabled={viewOnly}
-            handleChange={(e) => {
-              setModifiedFields({
-                ...modifiedFields,
-                [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.AUTHORIZATION_ENCRYPTED_RESPONSE_ENC]:
-                  e.target.value,
-              })
-            }}
-          />
-        </div>
-        <div className={classes.fieldItem}>
-          <GluuSelectRow
-            label="fields.request_object_signing_alg"
-            formik={formik}
-            value={formik.values.requestObjectSigningAlg as string | undefined}
-            values={requestObjectSignedResponseAlg}
-            lsize={12}
-            rsize={12}
-            name="requestObjectSigningAlg"
-            doc_category={DOC_CATEGORY}
-            disabled={viewOnly}
-            handleChange={(e) => {
-              setModifiedFields({
-                ...modifiedFields,
-                [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.REQUEST_OBJECT_SIGNING_ALG]:
-                  e.target.value,
-              })
-            }}
-          />
-        </div>
-        <div className={classes.fieldItem}>
-          <GluuSelectRow
-            label="fields.request_object_encryption_alg"
-            formik={formik}
-            value={formik.values.requestObjectEncryptionAlg as string | undefined}
-            values={requestObjectEncryptedResponseAlg}
-            lsize={12}
-            rsize={12}
-            name="requestObjectEncryptionAlg"
-            doc_category={DOC_CATEGORY}
-            disabled={viewOnly}
-            handleChange={(e) => {
-              setModifiedFields({
-                ...modifiedFields,
-                [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.REQUEST_OBJECT_ENCRYPTION_ALG]:
-                  e.target.value,
-              })
-            }}
-          />
-        </div>
-        <div className={classes.fieldItem}>
-          <GluuSelectRow
-            label="fields.request_object_encryption_enc"
-            formik={formik}
-            value={formik.values.requestObjectEncryptionEnc as string | undefined}
-            values={requestObjectEncryptedResponseEnc}
-            lsize={12}
-            rsize={12}
-            name="requestObjectEncryptionEnc"
-            doc_category={DOC_CATEGORY}
-            disabled={viewOnly}
-            handleChange={(e) => {
-              setModifiedFields({
-                ...modifiedFields,
-                [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.REQUEST_OBJECT_ENCRYPTION_ENC]:
-                  e.target.value,
-              })
-            }}
-          />
-        </div>
-        <div className={classes.fieldItem}>
-          <GluuSelectRow
-            label="fields.introspection_signed_response_alg"
-            formik={formik}
-            value={formik.values.attributes?.introspectionSignedResponseAlg as string | undefined}
-            values={idTokenSignedResponseAlg}
-            lsize={12}
-            rsize={12}
-            name="attributes.introspectionSignedResponseAlg"
-            doc_category={DOC_CATEGORY}
-            disabled={viewOnly}
-          />
-        </div>
-        <div className={classes.fieldItem}>
-          <GluuSelectRow
-            label="fields.introspection_encrypted_response_alg"
-            formik={formik}
-            value={
-              formik.values.attributes?.introspectionEncryptedResponseAlg as string | undefined
-            }
-            values={idTokenEncryptedResponseAlg}
-            lsize={12}
-            rsize={12}
-            name="attributes.introspectionEncryptedResponseAlg"
-            doc_category={DOC_CATEGORY}
-            disabled={viewOnly}
-            handleChange={(e) => {
-              setModifiedFields({
-                ...modifiedFields,
-                [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.INTROSPECTION_ENCRYPTED_RESPONSE_ALG]:
-                  e.target.value,
-              })
-            }}
-          />
-        </div>
-        <div className={classes.fieldItem}>
-          <GluuSelectRow
-            label="fields.introspection_encrypted_response_enc"
-            formik={formik}
-            value={
-              formik.values.attributes?.introspectionEncryptedResponseEnc as string | undefined
-            }
-            values={idTokenEncryptedResponseEnc}
-            lsize={12}
-            rsize={12}
-            name="attributes.introspectionEncryptedResponseEnc"
-            doc_category={DOC_CATEGORY}
-            disabled={viewOnly}
-            handleChange={(e) => {
-              setModifiedFields({
-                ...modifiedFields,
-                [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.INTROSPECTION_ENCRYPTED_RESPONSE_ENC]:
-                  e.target.value,
-              })
-            }}
-          />
-        </div>
       </div>
+
+      {/* Id_token */}
+      <Accordion className="mb-2 b-primary" initialOpen>
+        <AccordionHeader>{t('titles.id_token')}</AccordionHeader>
+        <AccordionBody>
+          <div className={gridClass}>
+            <div className={classes.fieldItem}>
+              <GluuSelectRow
+                label="fields.id_token_signed_response_alg"
+                formik={formik}
+                value={formik.values.idTokenSignedResponseAlg as string | undefined}
+                values={idTokenSignedResponseAlg}
+                lsize={12}
+                rsize={12}
+                name="idTokenSignedResponseAlg"
+                doc_category={DOC_CATEGORY}
+                disabled={viewOnly}
+                handleChange={(e) => {
+                  setModifiedFields({
+                    ...modifiedFields,
+                    [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.ID_TOKEN_SIGNED_RESPONSE]:
+                      e.target.value,
+                  })
+                }}
+              />
+            </div>
+            <div className={classes.fieldItem}>
+              <GluuSelectRow
+                label="fields.id_token_encrypted_response_alg"
+                formik={formik}
+                lsize={12}
+                rsize={12}
+                value={formik.values.idTokenEncryptedResponseAlg as string | undefined}
+                values={idTokenEncryptedResponseAlg}
+                name="idTokenEncryptedResponseAlg"
+                doc_category={DOC_CATEGORY}
+                disabled={viewOnly}
+                handleChange={(e) => {
+                  setModifiedFields({
+                    ...modifiedFields,
+                    [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.ID_TOKEN_ENCRYPTED_RESPONSE_ALG]:
+                      e.target.value,
+                  })
+                }}
+              />
+            </div>
+            <div className={classes.fieldItem}>
+              <GluuSelectRow
+                label="fields.id_token_encrypted_response_enc"
+                formik={formik}
+                value={formik.values.idTokenEncryptedResponseEnc as string | undefined}
+                values={idTokenEncryptedResponseEnc}
+                lsize={12}
+                rsize={12}
+                name="idTokenEncryptedResponseEnc"
+                doc_category={DOC_CATEGORY}
+                disabled={viewOnly}
+                handleChange={(e) => {
+                  setModifiedFields({
+                    ...modifiedFields,
+                    [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.ID_TOKEN_ENCRYPTED_RESPONSE_ENC]:
+                      e.target.value,
+                  })
+                }}
+              />
+            </div>
+          </div>
+        </AccordionBody>
+      </Accordion>
+
+      {/* Access token */}
+      <Accordion className="mb-2 b-primary" initialOpen>
+        <AccordionHeader>{t('titles.access_token')}</AccordionHeader>
+        <AccordionBody>
+          <div className={gridClass}>
+            <div className={classes.fieldItem}>
+              <GluuSelectRow
+                label="fields.access_token_signing_alg"
+                formik={formik}
+                value={formik.values.accessTokenSigningAlg as string | undefined}
+                values={accessTokenSigningAlg}
+                lsize={12}
+                rsize={12}
+                name="accessTokenSigningAlg"
+                doc_category={DOC_CATEGORY}
+                disabled={viewOnly}
+                handleChange={(e) => {
+                  setModifiedFields({
+                    ...modifiedFields,
+                    [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.ACCESS_TOKEN_SIGNING_ALG]:
+                      e.target.value,
+                  })
+                }}
+              />
+            </div>
+          </div>
+        </AccordionBody>
+      </Accordion>
+
+      {/* User Info */}
+      <Accordion className="mb-2 b-primary" initialOpen>
+        <AccordionHeader>{t('titles.userinfo')}</AccordionHeader>
+        <AccordionBody>
+          <div className={gridClass}>
+            <div className={classes.fieldItem}>
+              <GluuSelectRow
+                label="fields.user_info_signed_response_alg"
+                formik={formik}
+                value={formik.values.userInfoSignedResponseAlg as string | undefined}
+                values={userInfoSignedResponseAlg}
+                lsize={12}
+                rsize={12}
+                name="userInfoSignedResponseAlg"
+                doc_category={DOC_CATEGORY}
+                disabled={viewOnly}
+                handleChange={(e) => {
+                  setModifiedFields({
+                    ...modifiedFields,
+                    [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.USER_INFO_SIGNED_RESPONSE_ALG]:
+                      e.target.value,
+                  })
+                }}
+              />
+            </div>
+            <div className={classes.fieldItem}>
+              <GluuSelectRow
+                label="fields.user_info_encrypted_response_alg"
+                formik={formik}
+                value={formik.values.userInfoEncryptedResponseAlg as string | undefined}
+                values={userInfoEncryptedResponseAlg}
+                lsize={12}
+                rsize={12}
+                name="userInfoEncryptedResponseAlg"
+                doc_category={DOC_CATEGORY}
+                disabled={viewOnly}
+                handleChange={(e) => {
+                  setModifiedFields({
+                    ...modifiedFields,
+                    [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.USER_INFO_ENCRYPTED_RESPONSE_ALG]:
+                      e.target.value,
+                  })
+                }}
+              />
+            </div>
+            <div className={classes.fieldItem}>
+              <GluuSelectRow
+                label="fields.user_info_encrypted_response_enc"
+                formik={formik}
+                value={formik.values.userInfoEncryptedResponseEnc as string | undefined}
+                values={userInfoEncryptedResponseEnc}
+                lsize={12}
+                rsize={12}
+                name="userInfoEncryptedResponseEnc"
+                doc_category={DOC_CATEGORY}
+                disabled={viewOnly}
+                handleChange={(e) => {
+                  setModifiedFields({
+                    ...modifiedFields,
+                    [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.USER_INFO_ENCRYPTED_RESPONSE_ENC]:
+                      e.target.value,
+                  })
+                }}
+              />
+            </div>
+          </div>
+        </AccordionBody>
+      </Accordion>
+
+      {/* JARM */}
+      <Accordion className="mb-2 b-primary" initialOpen>
+        <AccordionHeader>{t('titles.JARM')}</AccordionHeader>
+        <AccordionBody>
+          <div className={gridClass}>
+            <div className={classes.fieldItem}>
+              <GluuSelectRow
+                label="fields.authorizationSignedResponseAlg"
+                formik={formik}
+                value={formik.values.attributes?.jansAuthSignedRespAlg as string | undefined}
+                values={idTokenSignedResponseAlg}
+                lsize={12}
+                rsize={12}
+                name="attributes.jansAuthSignedRespAlg"
+                doc_category={DOC_CATEGORY}
+                disabled={viewOnly}
+                handleChange={(e) => {
+                  setModifiedFields({
+                    ...modifiedFields,
+                    [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.AUTHORIZATION_SIGNED_RESPONSE_ALG]:
+                      e.target.value,
+                  })
+                }}
+              />
+            </div>
+            <div className={classes.fieldItem}>
+              <GluuSelectRow
+                label="fields.authorizationEncryptedResponseAlg"
+                formik={formik}
+                lsize={12}
+                rsize={12}
+                value={formik.values.attributes?.jansAuthEncRespAlg as string | undefined}
+                values={idTokenEncryptedResponseAlg}
+                name="attributes.jansAuthEncRespAlg"
+                doc_category={DOC_CATEGORY}
+                disabled={viewOnly}
+                handleChange={(e) => {
+                  setModifiedFields({
+                    ...modifiedFields,
+                    [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.AUTHORIZATION_ENCRYPTED_RESPONSE_ALG]:
+                      e.target.value,
+                  })
+                }}
+              />
+            </div>
+            <div className={classes.fieldItem}>
+              <GluuSelectRow
+                label="fields.authorizationEncryptedResponseEnc"
+                formik={formik}
+                value={formik.values.attributes?.jansAuthEncRespEnc as string | undefined}
+                values={idTokenEncryptedResponseEnc}
+                lsize={12}
+                rsize={12}
+                name="attributes.jansAuthEncRespEnc"
+                doc_category={DOC_CATEGORY}
+                disabled={viewOnly}
+                handleChange={(e) => {
+                  setModifiedFields({
+                    ...modifiedFields,
+                    [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.AUTHORIZATION_ENCRYPTED_RESPONSE_ENC]:
+                      e.target.value,
+                  })
+                }}
+              />
+            </div>
+          </div>
+        </AccordionBody>
+      </Accordion>
+
+      {/* Request Object */}
+      <Accordion className="mb-2 b-primary" initialOpen>
+        <AccordionHeader>{t('titles.request_object')}</AccordionHeader>
+        <AccordionBody>
+          <div className={gridClass}>
+            <div className={classes.fieldItem}>
+              <GluuSelectRow
+                label="fields.request_object_signing_alg"
+                formik={formik}
+                value={formik.values.requestObjectSigningAlg as string | undefined}
+                values={requestObjectSignedResponseAlg}
+                lsize={12}
+                rsize={12}
+                name="requestObjectSigningAlg"
+                doc_category={DOC_CATEGORY}
+                disabled={viewOnly}
+                handleChange={(e) => {
+                  setModifiedFields({
+                    ...modifiedFields,
+                    [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.REQUEST_OBJECT_SIGNING_ALG]:
+                      e.target.value,
+                  })
+                }}
+              />
+            </div>
+            <div className={classes.fieldItem}>
+              <GluuSelectRow
+                label="fields.request_object_encryption_alg"
+                formik={formik}
+                value={formik.values.requestObjectEncryptionAlg as string | undefined}
+                values={requestObjectEncryptedResponseAlg}
+                lsize={12}
+                rsize={12}
+                name="requestObjectEncryptionAlg"
+                doc_category={DOC_CATEGORY}
+                disabled={viewOnly}
+                handleChange={(e) => {
+                  setModifiedFields({
+                    ...modifiedFields,
+                    [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.REQUEST_OBJECT_ENCRYPTION_ALG]:
+                      e.target.value,
+                  })
+                }}
+              />
+            </div>
+            <div className={classes.fieldItem}>
+              <GluuSelectRow
+                label="fields.request_object_encryption_enc"
+                formik={formik}
+                value={formik.values.requestObjectEncryptionEnc as string | undefined}
+                values={requestObjectEncryptedResponseEnc}
+                lsize={12}
+                rsize={12}
+                name="requestObjectEncryptionEnc"
+                doc_category={DOC_CATEGORY}
+                disabled={viewOnly}
+                handleChange={(e) => {
+                  setModifiedFields({
+                    ...modifiedFields,
+                    [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.REQUEST_OBJECT_ENCRYPTION_ENC]:
+                      e.target.value,
+                  })
+                }}
+              />
+            </div>
+          </div>
+        </AccordionBody>
+      </Accordion>
+
+      {/* Introspection Object */}
+      <Accordion className="mb-2 b-primary" initialOpen>
+        <AccordionHeader>{t('titles.introspection_object')}</AccordionHeader>
+        <AccordionBody>
+          <div className={gridClass}>
+            <div className={classes.fieldItem}>
+              <GluuSelectRow
+                label="fields.introspection_signed_response_alg"
+                formik={formik}
+                value={
+                  formik.values.attributes?.introspectionSignedResponseAlg as string | undefined
+                }
+                values={idTokenSignedResponseAlg}
+                lsize={12}
+                rsize={12}
+                name="attributes.introspectionSignedResponseAlg"
+                doc_category={DOC_CATEGORY}
+                disabled={viewOnly}
+              />
+            </div>
+            <div className={classes.fieldItem}>
+              <GluuSelectRow
+                label="fields.introspection_encrypted_response_alg"
+                formik={formik}
+                value={
+                  formik.values.attributes?.introspectionEncryptedResponseAlg as string | undefined
+                }
+                values={idTokenEncryptedResponseAlg}
+                lsize={12}
+                rsize={12}
+                name="attributes.introspectionEncryptedResponseAlg"
+                doc_category={DOC_CATEGORY}
+                disabled={viewOnly}
+                handleChange={(e) => {
+                  setModifiedFields({
+                    ...modifiedFields,
+                    [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.INTROSPECTION_ENCRYPTED_RESPONSE_ALG]:
+                      e.target.value,
+                  })
+                }}
+              />
+            </div>
+            <div className={classes.fieldItem}>
+              <GluuSelectRow
+                label="fields.introspection_encrypted_response_enc"
+                formik={formik}
+                value={
+                  formik.values.attributes?.introspectionEncryptedResponseEnc as string | undefined
+                }
+                values={idTokenEncryptedResponseEnc}
+                lsize={12}
+                rsize={12}
+                name="attributes.introspectionEncryptedResponseEnc"
+                doc_category={DOC_CATEGORY}
+                disabled={viewOnly}
+                handleChange={(e) => {
+                  setModifiedFields({
+                    ...modifiedFields,
+                    [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.INTROSPECTION_ENCRYPTED_RESPONSE_ENC]:
+                      e.target.value,
+                  })
+                }}
+              />
+            </div>
+          </div>
+        </AccordionBody>
+      </Accordion>
     </div>
   )
 }

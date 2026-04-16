@@ -305,10 +305,12 @@ export const CLIENT_BASIC_SECTION_GROUPS = [
     'subjectType',
     'tokenEndpointAuthMethod',
     'redirectUrisRegex',
+    'isActive',
+    'trustedClient',
     'responseTypes',
     'grantTypes',
   ]),
-  createClientFieldSection(['isActive', 'trustedClient', 'scopes', 'redirectUris']),
+  createClientFieldSection(['scopes', 'redirectUris']),
 ] as const
 
 export const CLIENT_STEP_TWO_TOKEN_ROWS = [
@@ -321,18 +323,17 @@ export const CLIENT_STEP_TWO_TOKEN_ROWS = [
 export const CLIENT_ADVANCED_SECTION_GROUPS = [
   createClientFieldSection([
     'allowSpontaneousScopes',
-    'spontaneousScopes',
     'persistClientAuthorizations',
-    'defaultPromptLogin',
-    'defaultAcrValues',
-  ]),
-  createClientFieldSection([
-    'expirable',
-    'expirationDate',
+    'spontaneousScopes',
     'initiateLoginUri',
+    'requestUris',
+    'defaultAcrValues',
+    'authorizedAcrValues',
+    'defaultPromptLogin',
+    'expirable',
     'tlsClientAuthSubjectDn',
+    'expirationDate',
   ]),
-  createClientFieldSection(['requestUris', 'authorizedAcrValues']),
 ] as const
 
 export const CLIENT_SCRIPT_FIELDS: ClientScriptField[] = [

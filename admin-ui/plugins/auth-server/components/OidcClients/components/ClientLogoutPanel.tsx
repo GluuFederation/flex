@@ -2,27 +2,18 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { GluuDynamicList } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
-import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
+import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
-import {
-  BOOLEAN_SELECT_OPTIONS,
-  CLIENT_DYNAMIC_LIST_I18N,
-  CLIENT_LOGOUT_MODIFIED_FIELDS,
-  DOC_CATEGORY,
-} from '../constants'
+import { CLIENT_DYNAMIC_LIST_I18N, CLIENT_LOGOUT_MODIFIED_FIELDS, DOC_CATEGORY } from '../constants'
 import { getClientAttributeValue } from '../helper/utils'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import { useStyles } from './styles/ClientLogoutPanel.style'
 import {
   appendDynamicListItem,
-  createPassiveSelectFormik,
-  fromBooleanSelectValue,
   getDynamicListValidationMessage,
   mapDynamicListValues,
-  mapTranslatedOptions,
-  toBooleanSelectValue,
   uriValidator,
 } from 'Plugins/auth-server/utils'
 import type { GluuDynamicListItem } from '@/components/GluuDynamicList'
@@ -69,11 +60,6 @@ const ClientLogoutPanel = ({
     formik.values,
     'backchannelLogoutSessionRequired',
   )
-  const passiveSelectFormik = useMemo(
-    () => createPassiveSelectFormik(formik.handleBlur),
-    [formik.handleBlur],
-  )
-  const booleanSelectOptions = useMemo(() => mapTranslatedOptions(BOOLEAN_SELECT_OPTIONS, t), [t])
   const backchannelLogoutUriError = useMemo(
     () =>
       getDynamicListValidationMessage({
@@ -215,48 +201,6 @@ const ClientLogoutPanel = ({
     <div className={classes.root}>
       <div className={gridClass}>
         <div className={classes.fieldItem}>
-          <GluuSelectRow
-            name="attributes.backchannelLogoutSessionRequired"
-            label="fields.backchannelLogoutSessionRequired"
-            formik={passiveSelectFormik}
-            value={toBooleanSelectValue(backchannelLogoutSessionRequired)}
-            values={booleanSelectOptions}
-            lsize={12}
-            rsize={12}
-            doc_category={DOC_CATEGORY}
-            disabled={viewOnly}
-            handleChange={(event) => {
-              const isRequired = fromBooleanSelectValue(event.target.value)
-              formik.setFieldValue('attributes.backchannelLogoutSessionRequired', isRequired)
-              setModifiedFields({
-                ...modifiedFields,
-                [CLIENT_LOGOUT_MODIFIED_FIELDS.LOGOUT_SESSION_REQUIRED]: isRequired,
-              })
-            }}
-          />
-        </div>
-        <div className={classes.fieldItem}>
-          <GluuSelectRow
-            label="fields.frontChannelLogoutSessionRequired"
-            name="frontChannelLogoutSessionRequired"
-            formik={passiveSelectFormik}
-            value={toBooleanSelectValue(formik.values.frontChannelLogoutSessionRequired)}
-            values={booleanSelectOptions}
-            lsize={12}
-            rsize={12}
-            doc_category={DOC_CATEGORY}
-            disabled={viewOnly}
-            handleChange={(event) => {
-              const isRequired = fromBooleanSelectValue(event.target.value)
-              formik.setFieldValue('frontChannelLogoutSessionRequired', isRequired)
-              setModifiedFields({
-                ...modifiedFields,
-                [CLIENT_LOGOUT_MODIFIED_FIELDS.FRONT_CHANNEL_LOGOUT_SESSION_REQUIRED]: isRequired,
-              })
-            }}
-          />
-        </div>
-        <div className={classes.fieldItem}>
           <GluuInputRow
             label="fields.frontChannelLogoutUri"
             name="frontChannelLogoutUri"
@@ -276,6 +220,43 @@ const ClientLogoutPanel = ({
               setModifiedFields({
                 ...modifiedFields,
                 [CLIENT_LOGOUT_MODIFIED_FIELDS.FRONT_CHANNEL_LOGOUT_URI]: e.target.value,
+              })
+            }}
+          />
+        </div>
+        <div className={classes.fieldItem}>
+          <GluuToogleRow
+            label="fields.frontChannelLogoutSessionRequired"
+            name="frontChannelLogoutSessionRequired"
+            formik={formik}
+            value={Boolean(formik.values.frontChannelLogoutSessionRequired)}
+            lsize={12}
+            rsize={12}
+            doc_category={DOC_CATEGORY}
+            disabled={viewOnly}
+            handler={(e) => {
+              setModifiedFields({
+                ...modifiedFields,
+                [CLIENT_LOGOUT_MODIFIED_FIELDS.FRONT_CHANNEL_LOGOUT_SESSION_REQUIRED]:
+                  e.target.checked,
+              })
+            }}
+          />
+        </div>
+        <div className={classes.fieldItem}>
+          <GluuToogleRow
+            name="attributes.backchannelLogoutSessionRequired"
+            label="fields.backchannelLogoutSessionRequired"
+            formik={formik}
+            value={Boolean(backchannelLogoutSessionRequired)}
+            lsize={12}
+            rsize={12}
+            doc_category={DOC_CATEGORY}
+            disabled={viewOnly}
+            handler={(e) => {
+              setModifiedFields({
+                ...modifiedFields,
+                [CLIENT_LOGOUT_MODIFIED_FIELDS.LOGOUT_SESSION_REQUIRED]: e.target.checked,
               })
             }}
           />

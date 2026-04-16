@@ -1,5 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
-import { MAPPING_SPACING } from '@/constants'
+import { alpha } from '@mui/material/styles'
+import { MAPPING_SPACING, OPACITY } from '@/constants'
 import customColors from '@/customColors'
 import type { ThemeConfig } from '@/context/theme/config'
 
@@ -31,6 +32,9 @@ export const useStyles = makeStyles<GluuSelectRowStyleParams>()((
       'MozAppearance': 'none',
       'appearance': 'none',
       'backgroundImage': 'none !important',
+      '&:has(option[value=""]:checked)': {
+        color: `${alpha(fontColor, OPACITY.PLACEHOLDER)} !important`,
+      },
       '&:focus': {
         backgroundImage: 'none !important',
         outline: 'none',

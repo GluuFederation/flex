@@ -5,6 +5,7 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuMultiSelectRow from 'Routes/Apps/Gluu/GluuMultiSelectRow'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
+import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuAutocomplete from 'Routes/Apps/Gluu/GluuAutocomplete'
 import { useTranslation } from 'react-i18next'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
@@ -12,7 +13,6 @@ import { getClientScopeByInum } from '../../../../../app/utils/Util'
 import { useDebounce } from '@/utils/hooks/useDebounce'
 import { useGetOauthScopes } from 'JansConfigApi'
 import {
-  BOOLEAN_SELECT_OPTIONS,
   CLIENT_BASIC_MODIFIED_FIELDS,
   CLIENT_DYNAMIC_LIST_I18N,
   DOC_CATEGORY,
@@ -28,13 +28,9 @@ import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import {
   appendDynamicListItem,
-  createPassiveSelectFormik,
   getClientSectionFields,
   getDynamicListValidationMessage,
   mapDynamicListValues,
-  mapTranslatedOptions,
-  fromBooleanSelectValue,
-  toBooleanSelectValue,
   uriValidator,
 } from 'Plugins/auth-server/utils'
 import { useStyles } from './styles/ClientBasicPanel.style'
@@ -152,12 +148,6 @@ const ClientBasicPanel = ({
     formTouched.attributes && typeof formTouched.attributes === 'object'
       ? (formTouched.attributes as Record<string, boolean | undefined>)
       : {}
-  const passiveSelectFormik = useMemo(
-    () => createPassiveSelectFormik(formik.handleBlur),
-    [formik.handleBlur],
-  )
-  const booleanSelectOptions = useMemo(() => mapTranslatedOptions(BOOLEAN_SELECT_OPTIONS, t), [t])
-
   const getFieldError = useCallback(
     (field: string) => {
       const error = formErrors[field]
@@ -455,18 +445,17 @@ const ClientBasicPanel = ({
     ),
     isActive: (
       <div className={classes.fieldItem}>
-        <GluuSelectRow
+        <GluuToogleRow
           label="fields.is_active"
           name="disabled"
-          formik={passiveSelectFormik}
-          value={toBooleanSelectValue(!formik.values.disabled)}
-          values={booleanSelectOptions}
+          formik={null}
+          value={!formik.values.disabled}
           lsize={12}
           rsize={12}
           doc_category={DOC_CATEGORY}
           disabled={viewOnly}
-          handleChange={(event) => {
-            const isActive = fromBooleanSelectValue(event.target.value)
+          handler={(e) => {
+            const isActive = e.target.checked
             formik.setFieldValue('disabled', !isActive)
             setModifiedFields({
               ...modifiedFields,
@@ -478,22 +467,19 @@ const ClientBasicPanel = ({
     ),
     trustedClient: (
       <div className={classes.fieldItem}>
-        <GluuSelectRow
+        <GluuToogleRow
           label="fields.is_trusted_client"
           name="trustedClient"
-          formik={passiveSelectFormik}
-          value={toBooleanSelectValue(formik.values.trustedClient)}
-          values={booleanSelectOptions}
+          formik={formik}
+          value={Boolean(formik.values.trustedClient)}
           lsize={12}
           rsize={12}
           doc_category={DOC_CATEGORY}
           disabled={viewOnly}
-          handleChange={(event) => {
-            const isTrustedClient = fromBooleanSelectValue(event.target.value)
-            formik.setFieldValue('trustedClient', isTrustedClient)
+          handler={(e) => {
             setModifiedFields({
               ...modifiedFields,
-              [CLIENT_BASIC_MODIFIED_FIELDS.TRUST_CLIENT]: isTrustedClient,
+              [CLIENT_BASIC_MODIFIED_FIELDS.TRUST_CLIENT]: e.target.checked,
             })
           }}
         />

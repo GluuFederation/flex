@@ -1,16 +1,17 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { Col, FormGroup, GluuDynamicList } from 'Components'
+import { GluuDynamicList } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
+import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { useTranslation } from 'react-i18next'
-import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import dayjs, { type Dayjs } from 'dayjs'
+import { type Dayjs, createDate } from '@/utils/dayjsUtils'
+import { GluuDatePicker } from '@/components/GluuDatePicker'
+import { CEDARLING_CONFIG_SPACING } from '@/constants'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import {
-  BOOLEAN_SELECT_OPTIONS,
   CLIENT_DYNAMIC_LIST_I18N,
   CLIENT_ADVANCED_SECTION_GROUPS,
   CLIENT_ADVANCED_MODIFIED_FIELDS,
@@ -20,12 +21,9 @@ import {
 import {
   appendDynamicListItem,
   createPassiveSelectFormik,
-  fromBooleanSelectValue,
   getDynamicListValidationMessage,
   getClientSectionFields,
   mapDynamicListValues,
-  mapTranslatedOptions,
-  toBooleanSelectValue,
   uriValidator,
 } from 'Plugins/auth-server/utils'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
@@ -45,48 +43,6 @@ const ClientAdvancedPanel = ({
   const selectedTheme = state?.theme ?? DEFAULT_THEME
   const isDark = selectedTheme === THEME_DARK
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
-  const datePickerSx = useMemo(
-    () => ({
-      'width': '100%',
-      '& .MuiOutlinedInput-root': {
-        'backgroundColor': themeColors.settings?.formInputBackground ?? themeColors.inputBackground,
-        'color': themeColors.fontColor,
-        '& fieldset': { borderColor: themeColors.settings?.inputBorder ?? themeColors.borderColor },
-        '&:hover fieldset': { borderColor: themeColors.fontColor },
-        '&.Mui-focused fieldset': { borderColor: themeColors.fontColor },
-      },
-      '& .MuiInputBase-input': { color: themeColors.fontColor },
-      '& .MuiIconButton-root': { color: themeColors.fontColor },
-    }),
-    [themeColors],
-  )
-  const datePickerPopperSx = useMemo(
-    () => ({
-      '& .MuiPaper-root': {
-        backgroundColor: themeColors.settings?.formInputBackground ?? themeColors.inputBackground,
-        color: themeColors.fontColor,
-      },
-      '& .MuiPickersDay-root': {
-        'backgroundColor': 'transparent',
-        'color': themeColors.fontColor,
-        '&:hover': { backgroundColor: themeColors.borderColor },
-        '&.Mui-selected': {
-          backgroundColor: themeColors.borderColor,
-          color: themeColors.fontColor,
-        },
-      },
-      '& .MuiDayCalendar-weekDayLabel': { color: themeColors.textMuted },
-      '& .MuiPickersCalendarHeader-label': { color: themeColors.fontColor },
-      '& .MuiPickersArrowSwitcher-button': { color: themeColors.fontColor },
-      '& .MuiMultiSectionDigitalClock-root': {
-        backgroundColor: themeColors.settings?.formInputBackground ?? themeColors.inputBackground,
-        color: themeColors.fontColor,
-      },
-      '& .MuiMultiSectionDigitalClockSection-item': { color: themeColors.fontColor },
-      '& .MuiDivider-root': { borderColor: themeColors.borderColor },
-    }),
-    [themeColors],
-  )
   const { classes } = useStyles({ isDark, themeColors })
   const gridClass = `${classes.fieldsGrid} ${classes.formLabels} ${classes.formWithInputs}`
   const formErrors = formik.errors as Record<string, string | undefined> & {
@@ -114,7 +70,7 @@ const ClientAdvancedPanel = ({
 
   const [expirationDate, setExpirationDate] = useState<Dayjs | undefined>(
     formik.values.expirationDate
-      ? dayjs(formik.values.expirationDate as string | number | Date)
+      ? createDate(formik.values.expirationDate as string | number | Date)
       : undefined,
   )
   const [requestUriItems, setRequestUriItems] = useState<GluuDynamicListItem[]>([])
@@ -129,7 +85,6 @@ const ClientAdvancedPanel = ({
     () => createPassiveSelectFormik(formik.handleBlur),
     [formik.handleBlur],
   )
-  const booleanSelectOptions = useMemo(() => mapTranslatedOptions(BOOLEAN_SELECT_OPTIONS, t), [t])
   const requestUrisError = useMemo(
     () =>
       getDynamicListValidationMessage({
@@ -263,20 +218,16 @@ const ClientAdvancedPanel = ({
   const fieldMap = {
     persistClientAuthorizations: (
       <div className={classes.fieldItem}>
-        <GluuSelectRow
+        <GluuToogleRow
           name="persistClientAuthorizations"
-          formik={passiveSelectFormik}
+          formik={formik}
           lsize={12}
           rsize={12}
-          values={booleanSelectOptions}
-          value={toBooleanSelectValue(formik.values.persistClientAuthorizations)}
-          handleChange={(event) => {
-            const persistClientAuthorizations = fromBooleanSelectValue(event.target.value)
-            formik.setFieldValue('persistClientAuthorizations', persistClientAuthorizations)
+          value={Boolean(formik.values.persistClientAuthorizations)}
+          handler={(e) => {
             setModifiedFields({
               ...modifiedFields,
-              [CLIENT_ADVANCED_MODIFIED_FIELDS.PERSIST_CLIENT_AUTHORIZATIONS]:
-                persistClientAuthorizations,
+              [CLIENT_ADVANCED_MODIFIED_FIELDS.PERSIST_CLIENT_AUTHORIZATIONS]: e.target.checked,
             })
           }}
           label="fields.persist_client_authorizations"
@@ -287,20 +238,17 @@ const ClientAdvancedPanel = ({
     ),
     defaultPromptLogin: (
       <div className={classes.fieldItem}>
-        <GluuSelectRow
+        <GluuToogleRow
           name="attributes.jansDefaultPromptLogin"
-          formik={passiveSelectFormik}
+          formik={formik}
           lsize={12}
           rsize={12}
           label="fields.defaultPromptLogin"
-          value={toBooleanSelectValue(formik.values.attributes?.jansDefaultPromptLogin)}
-          values={booleanSelectOptions}
-          handleChange={(event) => {
-            const defaultPromptLogin = fromBooleanSelectValue(event.target.value)
-            formik.setFieldValue('attributes.jansDefaultPromptLogin', defaultPromptLogin)
+          value={Boolean(formik.values.attributes?.jansDefaultPromptLogin)}
+          handler={(e) => {
             setModifiedFields({
               ...modifiedFields,
-              [CLIENT_ADVANCED_MODIFIED_FIELDS.DEFAULT_PROMPT_LOGIN]: defaultPromptLogin,
+              [CLIENT_ADVANCED_MODIFIED_FIELDS.DEFAULT_PROMPT_LOGIN]: e.target.checked,
             })
           }}
           doc_category={DOC_CATEGORY}
@@ -310,22 +258,19 @@ const ClientAdvancedPanel = ({
     ),
     allowSpontaneousScopes: (
       <div className={classes.fieldItem}>
-        <GluuSelectRow
+        <GluuToogleRow
           name="attributes.allowSpontaneousScopes"
           label="fields.allow_spontaneous_scopes"
-          value={toBooleanSelectValue(formik.values?.attributes?.allowSpontaneousScopes)}
-          formik={passiveSelectFormik}
-          values={booleanSelectOptions}
+          value={Boolean(formik.values?.attributes?.allowSpontaneousScopes)}
+          formik={formik}
           lsize={12}
           rsize={12}
           doc_category={DOC_CATEGORY}
           disabled={viewOnly}
-          handleChange={(event) => {
-            const allowSpontaneousScopes = fromBooleanSelectValue(event.target.value)
-            formik.setFieldValue('attributes.allowSpontaneousScopes', allowSpontaneousScopes)
+          handler={(e) => {
             setModifiedFields({
               ...modifiedFields,
-              [CLIENT_ADVANCED_MODIFIED_FIELDS.ALLOW_SPONTANEOUS_SCOPES]: allowSpontaneousScopes,
+              [CLIENT_ADVANCED_MODIFIED_FIELDS.ALLOW_SPONTANEOUS_SCOPES]: e.target.checked,
             })
           }}
         />
@@ -389,7 +334,7 @@ const ClientAdvancedPanel = ({
       </div>
     ),
     requestUris: (
-      <div className={classes.fieldItem}>
+      <div className={classes.fieldItemFullWidth}>
         <GluuDynamicList
           label={`${t(CLIENT_DYNAMIC_LIST_I18N.REQUEST_URIS.fieldKey)}:`}
           title={t(CLIENT_DYNAMIC_LIST_I18N.REQUEST_URIS.fieldKey)}
@@ -487,54 +432,43 @@ const ClientAdvancedPanel = ({
     ),
     expirable: (
       <div className={classes.fieldItem}>
-        <GluuSelectRow
+        <GluuToogleRow
           name="expirable"
-          formik={passiveSelectFormik}
+          formik={formik}
           label="fields.is_expirable_client"
-          value={toBooleanSelectValue(formik.values.expirable)}
-          values={booleanSelectOptions}
+          value={Boolean(formik.values.expirable)}
           doc_category={DOC_CATEGORY}
           lsize={12}
           rsize={12}
           disabled={viewOnly}
-          handleChange={(event) => {
-            const isExpirable = fromBooleanSelectValue(event.target.value)
-            formik.setFieldValue('expirable', isExpirable)
+          handler={(e) => {
             setModifiedFields({
               ...modifiedFields,
-              [CLIENT_ADVANCED_MODIFIED_FIELDS.IS_EXPIRABLE_CLIENT]: isExpirable,
+              [CLIENT_ADVANCED_MODIFIED_FIELDS.IS_EXPIRABLE_CLIENT]: e.target.checked,
             })
           }}
         />
       </div>
     ),
     expirationDate: formik.values.expirable ? (
-      <div className={classes.fieldItem}>
-        <FormGroup row>
-          <Col sm={12}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DateTimePicker
-                disablePast
-                value={expirationDate ?? null}
-                onChange={(date: Dayjs | null) => {
-                  if (!date) return
-                  formik.setFieldValue('expirationDate', new Date(date.toISOString()))
-                  setExpirationDate(date)
-                  setModifiedFields({
-                    ...modifiedFields,
-                    [CLIENT_ADVANCED_MODIFIED_FIELDS.EXPIRATION_DATE]: new Date(
-                      date.toISOString(),
-                    ).toDateString(),
-                  })
-                }}
-                slotProps={{
-                  textField: { sx: datePickerSx },
-                  popper: { sx: datePickerPopperSx },
-                }}
-              />
-            </LocalizationProvider>
-          </Col>
-        </FormGroup>
+      <div className={`${classes.fieldItem} ${classes.datePickerField}`}>
+        <GluuLabel label="fields.expiration_date" size={12} />
+        <GluuDatePicker
+          value={expirationDate ?? null}
+          minDate={createDate()}
+          inputHeight={CEDARLING_CONFIG_SPACING.INPUT_HEIGHT}
+          onChange={(date: Dayjs | null) => {
+            if (!date) return
+            formik.setFieldValue('expirationDate', new Date(date.toISOString()))
+            setExpirationDate(date)
+            setModifiedFields({
+              ...modifiedFields,
+              [CLIENT_ADVANCED_MODIFIED_FIELDS.EXPIRATION_DATE]: new Date(
+                date.toISOString(),
+              ).toDateString(),
+            })
+          }}
+        />
       </div>
     ) : null,
   } as const
