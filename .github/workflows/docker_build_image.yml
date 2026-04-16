@@ -185,7 +185,7 @@ jobs:
 
       - name: Set up QEMU
         if: steps.build_docker_image.outputs.build && steps.prep.outputs.build
-        uses: docker/setup-qemu-action@e77e8065d9f7ec6abdd9838668cd7b43924dd64d # master
+        uses: docker/setup-qemu-action@76c0984808678992dc9f24265d45acf8c8fc8a96 # master
         with:
           image: tonistiigi/binfmt:master
           platforms: all
