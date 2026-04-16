@@ -267,6 +267,33 @@ class Upgrade:
                     entry.attrs["jansScope"] = scopes
                 self.backend.modify_entry(entry.id, entry.attrs, **kwargs)
 
+        def add_scope(dn, new_scope):
+            kwargs = {"table_name": "adminUIResourceScopesMapping"}
+            id_ = doc_id_from_dn(dn)
+
+            entry = self.backend.get_entry(id_, **kwargs)
+
+            if not entry:
+                return
+
+            should_update = False
+
+            if not self.backend.client.use_simple_json:
+                scopes = entry.attrs["jansScope"]["v"]
+            else:
+                scopes = entry.attrs["jansScope"]
+
+            if new_scope not in scopes:
+                scopes.append(new_scope)
+                should_update = True
+
+            if should_update:
+                if not self.backend.client.use_simple_json:
+                    entry.attrs["jansScope"]["v"] = scopes
+                else:
+                    entry.attrs["jansScope"] = scopes
+                self.backend.modify_entry(entry.id, entry.attrs, **kwargs)
+
         # list of scope mappings that need to be adjusted
         for scope in [
             {
@@ -286,6 +313,23 @@ class Upgrade:
             },
         ]:
             update_scope(scope["dn"], scope["old_name"], scope["new_name"])
+
+        # list of scope that need to be added
+        for scope in [
+            {
+                "dn": "inum=35ed86f5-fde4-4502-aff3-c0250b841f33,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans",
+                "jansScope": "https://jans.io/oauth/config/uma.readonly",
+            },
+            {
+                "dn": "inum=7d9558b3-8bc3-4727-96c9-67afe41e833c,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans",
+                "jansScope": "https://jans.io/oauth/config/uma.write",
+            },
+            {
+                "dn": "inum=77aa2e0e-a67d-4f90-a28c-a9b6077c3a7d,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans",
+                "jansScope": "https://jans.io/oauth/config/uma.admin",
+            },
+        ]:
+            add_scope(scope["dn"], scope["jansScope"])
 
 
 def main():
