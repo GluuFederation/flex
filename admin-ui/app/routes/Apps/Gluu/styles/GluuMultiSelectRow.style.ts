@@ -49,7 +49,7 @@ export const useStyles = makeStyles<GluuMultiSelectRowStyleParams>()((
       cursor: 'not-allowed',
     },
     placeholder: {
-      color: fontColor,
+      color: textMuted,
       fontSize: fontSizes.base,
       userSelect: 'none',
     },

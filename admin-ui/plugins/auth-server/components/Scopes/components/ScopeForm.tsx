@@ -336,47 +336,6 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                   />
                 </div>
 
-                {!showSpontaneousPanel && (
-                  <div className={classes.toggleRow}>
-                    <GluuToogleRow
-                      label="fields.default_scope"
-                      name="defaultScope"
-                      formik={formikProps}
-                      lsize={12}
-                      rsize={12}
-                      value={formikProps.values.defaultScope}
-                      doc_category={SCOPE}
-                      handler={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        setModifiedFields({
-                          ...modifiedFields,
-                          'Default Scope': e.target.checked,
-                        })
-                      }}
-                    />
-                  </div>
-                )}
-                {showSpontaneousPanel && <div />}
-
-                {!showSpontaneousPanel && (
-                  <div className={classes.toggleRow}>
-                    <GluuToogleRow
-                      label="fields.show_in_configuration_endpoint"
-                      name="attributes.showInConfigurationEndpoint"
-                      formik={formikProps}
-                      lsize={12}
-                      rsize={12}
-                      value={formikProps.values.attributes?.showInConfigurationEndpoint}
-                      doc_category={SCOPE}
-                      handler={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        setModifiedFields({
-                          ...modifiedFields,
-                          'Show in Configuration Endpoint': e.target.checked,
-                        })
-                      }}
-                    />
-                  </div>
-                )}
-
                 {showSpontaneousPanel ? (
                   <div className={classes.fieldItem}>
                     <FormGroup row>
@@ -423,6 +382,47 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                     />
                   </div>
                 )}
+
+                {!showSpontaneousPanel && (
+                  <div className={classes.toggleRow}>
+                    <GluuToogleRow
+                      label="fields.show_in_configuration_endpoint"
+                      name="attributes.showInConfigurationEndpoint"
+                      formik={formikProps}
+                      lsize={12}
+                      rsize={12}
+                      value={formikProps.values.attributes?.showInConfigurationEndpoint}
+                      doc_category={SCOPE}
+                      handler={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        setModifiedFields({
+                          ...modifiedFields,
+                          'Show in Configuration Endpoint': e.target.checked,
+                        })
+                      }}
+                    />
+                  </div>
+                )}
+
+                {!showSpontaneousPanel && (
+                  <div className={classes.toggleRow}>
+                    <GluuToogleRow
+                      label="fields.default_scope"
+                      name="defaultScope"
+                      formik={formikProps}
+                      lsize={12}
+                      rsize={12}
+                      value={formikProps.values.defaultScope}
+                      doc_category={SCOPE}
+                      handler={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        setModifiedFields({
+                          ...modifiedFields,
+                          'Default Scope': e.target.checked,
+                        })
+                      }}
+                    />
+                  </div>
+                )}
+                {showSpontaneousPanel && <div />}
 
                 {showClaimsPanel && !showDynamicPanel && (
                   <div className={classes.fieldItem}>

@@ -328,9 +328,9 @@ export const CLIENT_ADVANCED_SECTION_GROUPS = [
   ]),
   createClientFieldSection([
     'expirable',
+    'expirationDate',
     'initiateLoginUri',
     'tlsClientAuthSubjectDn',
-    'expirationDate',
   ]),
   createClientFieldSection(['requestUris', 'authorizedAcrValues']),
 ] as const

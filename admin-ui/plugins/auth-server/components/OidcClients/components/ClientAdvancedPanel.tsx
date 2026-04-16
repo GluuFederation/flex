@@ -45,6 +45,48 @@ const ClientAdvancedPanel = ({
   const selectedTheme = state?.theme ?? DEFAULT_THEME
   const isDark = selectedTheme === THEME_DARK
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+  const datePickerSx = useMemo(
+    () => ({
+      'width': '100%',
+      '& .MuiOutlinedInput-root': {
+        'backgroundColor': themeColors.settings?.formInputBackground ?? themeColors.inputBackground,
+        'color': themeColors.fontColor,
+        '& fieldset': { borderColor: themeColors.settings?.inputBorder ?? themeColors.borderColor },
+        '&:hover fieldset': { borderColor: themeColors.fontColor },
+        '&.Mui-focused fieldset': { borderColor: themeColors.fontColor },
+      },
+      '& .MuiInputBase-input': { color: themeColors.fontColor },
+      '& .MuiIconButton-root': { color: themeColors.fontColor },
+    }),
+    [themeColors],
+  )
+  const datePickerPopperSx = useMemo(
+    () => ({
+      '& .MuiPaper-root': {
+        backgroundColor: themeColors.settings?.formInputBackground ?? themeColors.inputBackground,
+        color: themeColors.fontColor,
+      },
+      '& .MuiPickersDay-root': {
+        'backgroundColor': 'transparent',
+        'color': themeColors.fontColor,
+        '&:hover': { backgroundColor: themeColors.borderColor },
+        '&.Mui-selected': {
+          backgroundColor: themeColors.borderColor,
+          color: themeColors.fontColor,
+        },
+      },
+      '& .MuiDayCalendar-weekDayLabel': { color: themeColors.textMuted },
+      '& .MuiPickersCalendarHeader-label': { color: themeColors.fontColor },
+      '& .MuiPickersArrowSwitcher-button': { color: themeColors.fontColor },
+      '& .MuiMultiSectionDigitalClock-root': {
+        backgroundColor: themeColors.settings?.formInputBackground ?? themeColors.inputBackground,
+        color: themeColors.fontColor,
+      },
+      '& .MuiMultiSectionDigitalClockSection-item': { color: themeColors.fontColor },
+      '& .MuiDivider-root': { borderColor: themeColors.borderColor },
+    }),
+    [themeColors],
+  )
   const { classes } = useStyles({ isDark, themeColors })
   const gridClass = `${classes.fieldsGrid} ${classes.formLabels} ${classes.formWithInputs}`
   const formErrors = formik.errors as Record<string, string | undefined> & {
@@ -484,6 +526,10 @@ const ClientAdvancedPanel = ({
                       date.toISOString(),
                     ).toDateString(),
                   })
+                }}
+                slotProps={{
+                  textField: { sx: datePickerSx },
+                  popper: { sx: datePickerPopperSx },
                 }}
               />
             </LocalizationProvider>
