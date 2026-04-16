@@ -2,7 +2,7 @@ import { makeStyles } from 'tss-react/mui'
 import customColors from '@/customColors'
 import type { ThemeConfig } from '@/context/theme/config'
 import { getDynamicListStyles } from '@/styles/dynamicListStyles'
-import { fontSizes, fontWeights, lineHeights, letterSpacing } from '@/styles/fonts'
+import { fontSizes, fontWeights, lineHeights, letterSpacing, fontFamily } from '@/styles/fonts'
 
 type GluuDynamicListStyleParams = {
   isDark: boolean
@@ -63,13 +63,50 @@ export const useStyles = makeStyles<GluuDynamicListStyleParams>()((
         width: '100%',
       },
     },
-    actionBtn: dl.listActionBtn,
-    headerActionBtn: {
+    actionBtn: {
       ...dl.listActionBtn,
+      '&& i.fa-trash': {
+        color: `${themeColors.settings.removeButton.text} !important`,
+      },
+    },
+    addBtn: {
+      'position': 'relative' as const,
+      'display': 'flex' as const,
+      'alignItems': 'center' as const,
+      'justifyContent': 'center' as const,
+      'minWidth': 156,
+      'height': 44,
+      'padding': '0 36px',
+      fontFamily,
+      'fontSize': fontSizes.base,
+      'fontWeight': fontWeights.semiBold,
+      'lineHeight': 1.4,
+      'color': `${themeColors.settings.addPropertyButton.text} !important`,
+      'backgroundColor': themeColors.settings.addPropertyButton.bg,
+      'border': 'none' as const,
+      'borderRadius': 6,
+      'cursor': 'pointer' as const,
+      'flexShrink': 0,
+      'whiteSpace': 'nowrap' as const,
+      'transition': 'opacity 0.15s ease-in-out',
+      '&:disabled': {
+        opacity: 0.4,
+        cursor: 'not-allowed' as const,
+      },
+      '&:hover:not(:disabled)': {
+        opacity: 0.85,
+      },
       '&:focus, &:focus-visible, &:active': {
         outline: 'none !important',
         boxShadow: 'none !important',
       },
+    },
+    addBtnIcon: {
+      position: 'absolute' as const,
+      left: 14,
+      top: '50%',
+      transform: 'translateY(-50%)',
+      pointerEvents: 'none' as const,
     },
     error: dl.listError,
   }

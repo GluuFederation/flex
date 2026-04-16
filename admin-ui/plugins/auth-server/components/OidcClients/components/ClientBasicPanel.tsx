@@ -190,7 +190,7 @@ const ClientBasicPanel = ({
         .map((item) => item.value?.trim() ?? '')
         .filter((value): value is string => value.length > 0)
       isRedirectUriSyncingRef.current = true
-      formik.setFieldValue('redirectUris', nextRedirectUris)
+      formik.setFieldValue('redirectUris', nextRedirectUris, true)
       setModifiedFields({
         ...modifiedFields,
         [CLIENT_BASIC_MODIFIED_FIELDS.REDIRECT_URIS]: nextRedirectUris,

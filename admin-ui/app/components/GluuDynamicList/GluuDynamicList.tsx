@@ -64,7 +64,7 @@ export const GluuDynamicList: React.FC<GluuDynamicListProps> = ({
           {label}
           {required && (
             <GluuText variant="span" className="text-danger" disableThemeColor>
-              {' *'}
+              {'*'}
             </GluuText>
           )}
         </label>
@@ -79,19 +79,10 @@ export const GluuDynamicList: React.FC<GluuDynamicListProps> = ({
               <span className={classes.title}>{title}</span>
             </GluuText>
           )}
-          <GluuButton
-            type="button"
-            disabled={isAddDisabled}
-            backgroundColor={themeColors.settings.addPropertyButton.bg}
-            textColor={themeColors.settings.addPropertyButton.text}
-            useOpacityOnHover
-            className={classes.headerActionBtn}
-            style={{ outline: 'none', boxShadow: 'none' }}
-            onClick={onAdd}
-          >
-            <i className="fa fa-fw fa-plus" />
+          <button type="button" disabled={isAddDisabled} className={classes.addBtn} onClick={onAdd}>
+            <i className={joinClasses('fa fa-fw fa-plus', classes.addBtnIcon)} />
             {addButtonLabel}
-          </GluuButton>
+          </button>
         </div>
 
         <div className={classes.body}>
