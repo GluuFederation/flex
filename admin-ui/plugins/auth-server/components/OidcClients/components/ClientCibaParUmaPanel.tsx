@@ -67,7 +67,6 @@ const ClientCibaParUmaPanel = ({
   sequence,
   formik,
   viewOnly,
-  modifiedFields,
   setModifiedFields,
 }: ClientCibaParUmaPanelProps) => {
   const { t } = useTranslation()
@@ -212,12 +211,12 @@ const ClientCibaParUmaPanel = ({
         .filter((value): value is string => value.length > 0)
       isClaimRedirectUriSyncingRef.current = true
       formik.setFieldValue('claimRedirectUris', nextUris)
-      setModifiedFields({
-        ...modifiedFields,
+      setModifiedFields((prev) => ({
+        ...prev,
         [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.CLAIM_REDIRECT_URIS]: nextUris,
-      })
+      }))
     },
-    [formik, modifiedFields, setModifiedFields],
+    [formik, setModifiedFields],
   )
 
   const handleAddClaimRedirectUri = useCallback(() => {
@@ -261,10 +260,10 @@ const ClientCibaParUmaPanel = ({
                   rsize={12}
                   disabled={viewOnly}
                   handleChange={(e) => {
-                    setModifiedFields({
-                      ...modifiedFields,
+                    setModifiedFields((prev) => ({
+                      ...prev,
                       [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.TOKEN_DELIVERY_MODE]: e.target.value,
-                    })
+                    }))
                   }}
                 />
               </div>
@@ -288,11 +287,11 @@ const ClientCibaParUmaPanel = ({
                   }
                   errorMessage={getFieldError('backchannelClientNotificationEndpoint')}
                   handleChange={(e) => {
-                    setModifiedFields({
-                      ...modifiedFields,
+                    setModifiedFields((prev) => ({
+                      ...prev,
                       [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.CLIENT_NOTIFICATION_ENDPOINT]:
                         e.target.value,
-                    })
+                    }))
                   }}
                 />
               </div>
@@ -307,10 +306,10 @@ const ClientCibaParUmaPanel = ({
                   rsize={12}
                   disabled={viewOnly}
                   handler={(e) => {
-                    setModifiedFields({
-                      ...modifiedFields,
+                    setModifiedFields((prev) => ({
+                      ...prev,
                       [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.USER_CODE_PARAMETER]: e.target.checked,
-                    })
+                    }))
                   }}
                 />
               </div>
@@ -346,10 +345,10 @@ const ClientCibaParUmaPanel = ({
                       : ''
                   }
                   handleChange={(e) => {
-                    setModifiedFields({
-                      ...modifiedFields,
+                    setModifiedFields((prev) => ({
+                      ...prev,
                       [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.PAR_LIFETIME]: e.target.value,
-                    })
+                    }))
                   }}
                 />
               </div>
@@ -364,10 +363,10 @@ const ClientCibaParUmaPanel = ({
                   rsize={12}
                   disabled={viewOnly}
                   handler={(e) => {
-                    setModifiedFields({
-                      ...modifiedFields,
+                    setModifiedFields((prev) => ({
+                      ...prev,
                       [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.REQUIRE_PAR]: e.target.checked,
-                    })
+                    }))
                   }}
                 />
               </div>
@@ -394,10 +393,10 @@ const ClientCibaParUmaPanel = ({
                   handleChange={(event) => {
                     const val = fromBooleanSelectValue(event.target.value)
                     formik.setFieldValue('rptAsJwt', val)
-                    setModifiedFields({
-                      ...modifiedFields,
+                    setModifiedFields((prev) => ({
+                      ...prev,
                       [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.RPT_AS_JWT]: val,
-                    })
+                    }))
                   }}
                 />
               </div>
@@ -419,10 +418,10 @@ const ClientCibaParUmaPanel = ({
                       .map((name) => rptScripts.find((s) => s.name === name)?.dn)
                       .filter((dn): dn is string => Boolean(dn))
                     formik.setFieldValue('attributes.rptClaimsScripts', dns)
-                    setModifiedFields({
-                      ...modifiedFields,
+                    setModifiedFields((prev) => ({
+                      ...prev,
                       [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.RPT_CLAIMS_SCRIPTS]: dns,
-                    })
+                    }))
                   }}
                 />
               </div>

@@ -35,7 +35,6 @@ const ClientAdvancedPanel = ({
   scripts,
   formik,
   viewOnly,
-  modifiedFields,
   setModifiedFields,
 }: ClientAdvancedPanelProps) => {
   const { t } = useTranslation()
@@ -150,12 +149,12 @@ const ClientAdvancedPanel = ({
         .map((item) => item.value?.trim() ?? '')
         .filter((value): value is string => value.length > 0)
       formik.setFieldValue('requestUris', nextUris)
-      setModifiedFields({
-        ...modifiedFields,
+      setModifiedFields((prev) => ({
+        ...prev,
         [CLIENT_ADVANCED_MODIFIED_FIELDS.REQUEST_URIS]: nextUris,
-      })
+      }))
     },
-    [formik, modifiedFields, setModifiedFields],
+    [formik, setModifiedFields],
   )
 
   const handleAddRequestUri = useCallback(() => {
@@ -186,12 +185,12 @@ const ClientAdvancedPanel = ({
         .map((item) => item.value?.trim() ?? '')
         .filter((value): value is string => value.length > 0)
       formik.setFieldValue('attributes.authorizedAcrValues', nextValues)
-      setModifiedFields({
-        ...modifiedFields,
+      setModifiedFields((prev) => ({
+        ...prev,
         [CLIENT_ADVANCED_MODIFIED_FIELDS.AUTHORIZED_ACR_VALUES]: nextValues,
-      })
+      }))
     },
-    [formik, modifiedFields, setModifiedFields],
+    [formik, setModifiedFields],
   )
 
   const handleAddAuthorizedAcr = useCallback(() => {
@@ -225,10 +224,10 @@ const ClientAdvancedPanel = ({
           rsize={12}
           value={Boolean(formik.values.persistClientAuthorizations)}
           handler={(e) => {
-            setModifiedFields({
-              ...modifiedFields,
+            setModifiedFields((prev) => ({
+              ...prev,
               [CLIENT_ADVANCED_MODIFIED_FIELDS.PERSIST_CLIENT_AUTHORIZATIONS]: e.target.checked,
-            })
+            }))
           }}
           label="fields.persist_client_authorizations"
           doc_category={DOC_CATEGORY}
@@ -246,10 +245,10 @@ const ClientAdvancedPanel = ({
           label="fields.defaultPromptLogin"
           value={Boolean(formik.values.attributes?.jansDefaultPromptLogin)}
           handler={(e) => {
-            setModifiedFields({
-              ...modifiedFields,
+            setModifiedFields((prev) => ({
+              ...prev,
               [CLIENT_ADVANCED_MODIFIED_FIELDS.DEFAULT_PROMPT_LOGIN]: e.target.checked,
-            })
+            }))
           }}
           doc_category={DOC_CATEGORY}
           disabled={viewOnly}
@@ -268,10 +267,10 @@ const ClientAdvancedPanel = ({
           doc_category={DOC_CATEGORY}
           disabled={viewOnly}
           handler={(e) => {
-            setModifiedFields({
-              ...modifiedFields,
+            setModifiedFields((prev) => ({
+              ...prev,
               [CLIENT_ADVANCED_MODIFIED_FIELDS.ALLOW_SPONTANEOUS_SCOPES]: e.target.checked,
-            })
+            }))
           }}
         />
       </div>
@@ -300,10 +299,10 @@ const ClientAdvancedPanel = ({
           handleChange={(event) => {
             const arr = event.target.value ? [event.target.value] : []
             formik.setFieldValue('attributes.spontaneousScopes', arr)
-            setModifiedFields({
-              ...modifiedFields,
+            setModifiedFields((prev) => ({
+              ...prev,
               [CLIENT_ADVANCED_MODIFIED_FIELDS.SPONTANEOUS_SCOPES]: arr,
-            })
+            }))
           }}
         />
       </div>
@@ -325,10 +324,10 @@ const ClientAdvancedPanel = ({
           }
           errorMessage={getFieldError('initiateLoginUri')}
           handleChange={(e) => {
-            setModifiedFields({
-              ...modifiedFields,
+            setModifiedFields((prev) => ({
+              ...prev,
               [CLIENT_ADVANCED_MODIFIED_FIELDS.INITIATE_LOGIN_URI]: e.target.value,
-            })
+            }))
           }}
         />
       </div>
@@ -369,10 +368,10 @@ const ClientAdvancedPanel = ({
           handleChange={(e) => {
             const val = e.target.value ? [e.target.value] : []
             formik.setFieldValue('defaultAcrValues', val)
-            setModifiedFields({
-              ...modifiedFields,
+            setModifiedFields((prev) => ({
+              ...prev,
               [CLIENT_ADVANCED_MODIFIED_FIELDS.DEFAULT_ACR_VALUES]: val,
-            })
+            }))
           }}
         />
       </div>
@@ -422,10 +421,10 @@ const ClientAdvancedPanel = ({
               : ''
           }
           handleChange={(e) => {
-            setModifiedFields({
-              ...modifiedFields,
+            setModifiedFields((prev) => ({
+              ...prev,
               [CLIENT_ADVANCED_MODIFIED_FIELDS.TLS_CLIENT_AUTH_SUBJECT_DN]: e.target.value,
-            })
+            }))
           }}
         />
       </div>
@@ -442,10 +441,10 @@ const ClientAdvancedPanel = ({
           rsize={12}
           disabled={viewOnly}
           handler={(e) => {
-            setModifiedFields({
-              ...modifiedFields,
+            setModifiedFields((prev) => ({
+              ...prev,
               [CLIENT_ADVANCED_MODIFIED_FIELDS.IS_EXPIRABLE_CLIENT]: e.target.checked,
-            })
+            }))
           }}
         />
       </div>
@@ -461,12 +460,12 @@ const ClientAdvancedPanel = ({
             if (!date) return
             formik.setFieldValue('expirationDate', new Date(date.toISOString()))
             setExpirationDate(date)
-            setModifiedFields({
-              ...modifiedFields,
+            setModifiedFields((prev) => ({
+              ...prev,
               [CLIENT_ADVANCED_MODIFIED_FIELDS.EXPIRATION_DATE]: new Date(
                 date.toISOString(),
               ).toDateString(),
-            })
+            }))
           }}
         />
       </div>

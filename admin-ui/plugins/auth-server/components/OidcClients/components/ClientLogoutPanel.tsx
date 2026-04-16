@@ -22,7 +22,6 @@ import type { ClientPanelProps } from '../types'
 const ClientLogoutPanel = ({
   formik,
   viewOnly,
-  modifiedFields,
   setModifiedFields,
 }: ClientPanelProps): JSX.Element => {
   const { t } = useTranslation()
@@ -131,12 +130,12 @@ const ClientLogoutPanel = ({
         .filter((value): value is string => value.length > 0)
       isBackchannelLogoutUriSyncingRef.current = true
       formik.setFieldValue('attributes.backchannelLogoutUri', nextUris)
-      setModifiedFields({
-        ...modifiedFields,
+      setModifiedFields((prev) => ({
+        ...prev,
         [CLIENT_LOGOUT_MODIFIED_FIELDS.BACKCHANNEL_LOGOUT_URI]: nextUris,
-      })
+      }))
     },
-    [formik, modifiedFields, setModifiedFields],
+    [formik, setModifiedFields],
   )
 
   const syncPostLogoutRedirectUris = useCallback(
@@ -147,12 +146,12 @@ const ClientLogoutPanel = ({
         .filter((value): value is string => value.length > 0)
       isPostLogoutRedirectUriSyncingRef.current = true
       formik.setFieldValue('postLogoutRedirectUris', nextUris)
-      setModifiedFields({
-        ...modifiedFields,
+      setModifiedFields((prev) => ({
+        ...prev,
         [CLIENT_LOGOUT_MODIFIED_FIELDS.POST_LOGOUT_REDIRECT_URIS]: nextUris,
-      })
+      }))
     },
-    [formik, modifiedFields, setModifiedFields],
+    [formik, setModifiedFields],
   )
 
   const handleAddBackchannelLogoutUri = useCallback(() => {
@@ -217,10 +216,10 @@ const ClientLogoutPanel = ({
             }
             errorMessage={getFieldError('frontChannelLogoutUri')}
             handleChange={(e) => {
-              setModifiedFields({
-                ...modifiedFields,
+              setModifiedFields((prev) => ({
+                ...prev,
                 [CLIENT_LOGOUT_MODIFIED_FIELDS.FRONT_CHANNEL_LOGOUT_URI]: e.target.value,
-              })
+              }))
             }}
           />
         </div>
@@ -235,11 +234,11 @@ const ClientLogoutPanel = ({
             doc_category={DOC_CATEGORY}
             disabled={viewOnly}
             handler={(e) => {
-              setModifiedFields({
-                ...modifiedFields,
+              setModifiedFields((prev) => ({
+                ...prev,
                 [CLIENT_LOGOUT_MODIFIED_FIELDS.FRONT_CHANNEL_LOGOUT_SESSION_REQUIRED]:
                   e.target.checked,
-              })
+              }))
             }}
           />
         </div>
@@ -254,10 +253,10 @@ const ClientLogoutPanel = ({
             doc_category={DOC_CATEGORY}
             disabled={viewOnly}
             handler={(e) => {
-              setModifiedFields({
-                ...modifiedFields,
+              setModifiedFields((prev) => ({
+                ...prev,
                 [CLIENT_LOGOUT_MODIFIED_FIELDS.LOGOUT_SESSION_REQUIRED]: e.target.checked,
-              })
+              }))
             }}
           />
         </div>

@@ -22,12 +22,7 @@ import {
 import type { GluuDynamicListItem } from '@/components/GluuDynamicList'
 import type { ClientPanelProps } from '../types'
 
-const ClientSoftwarePanel = ({
-  formik,
-  viewOnly,
-  modifiedFields,
-  setModifiedFields,
-}: ClientPanelProps) => {
+const ClientSoftwarePanel = ({ formik, viewOnly, setModifiedFields }: ClientPanelProps) => {
   const { t } = useTranslation()
   const { state } = useTheme()
   const selectedTheme = state?.theme ?? DEFAULT_THEME
@@ -120,12 +115,12 @@ const ClientSoftwarePanel = ({
         .filter((value): value is string => value.length > 0)
       isContactsSyncingRef.current = true
       formik.setFieldValue('contacts', nextContacts)
-      setModifiedFields({
-        ...modifiedFields,
+      setModifiedFields((prev) => ({
+        ...prev,
         [CLIENT_SOFTWARE_MODIFIED_FIELDS.CONTACTS]: nextContacts,
-      })
+      }))
     },
-    [formik, modifiedFields, setModifiedFields],
+    [formik, setModifiedFields],
   )
 
   const syncAuthorizedOrigins = useCallback(
@@ -136,12 +131,12 @@ const ClientSoftwarePanel = ({
         .filter((value): value is string => value.length > 0)
       isAuthorizedOriginsSyncingRef.current = true
       formik.setFieldValue('authorizedOrigins', nextOrigins)
-      setModifiedFields({
-        ...modifiedFields,
+      setModifiedFields((prev) => ({
+        ...prev,
         [CLIENT_SOFTWARE_MODIFIED_FIELDS.AUTHORIZED_ORIGINS]: nextOrigins,
-      })
+      }))
     },
-    [formik, modifiedFields, setModifiedFields],
+    [formik, setModifiedFields],
   )
 
   const handleAddContact = useCallback(() => {
@@ -203,10 +198,10 @@ const ClientSoftwarePanel = ({
             showError={isFieldTouched('clientUri') && Boolean(getFieldError('clientUri'))}
             errorMessage={getFieldError('clientUri')}
             handleChange={(e) => {
-              setModifiedFields({
-                ...modifiedFields,
+              setModifiedFields((prev) => ({
+                ...prev,
                 [CLIENT_SOFTWARE_MODIFIED_FIELDS.CLIENT_URI]: e.target.value,
-              })
+              }))
             }}
           />
         </div>
@@ -225,10 +220,10 @@ const ClientSoftwarePanel = ({
             showError={isFieldTouched('policyUri') && Boolean(getFieldError('policyUri'))}
             errorMessage={getFieldError('policyUri')}
             handleChange={(e) => {
-              setModifiedFields({
-                ...modifiedFields,
+              setModifiedFields((prev) => ({
+                ...prev,
                 [CLIENT_SOFTWARE_MODIFIED_FIELDS.POLICY_URI]: e.target.value,
-              })
+              }))
             }}
           />
         </div>
@@ -247,10 +242,10 @@ const ClientSoftwarePanel = ({
             showError={isFieldTouched('logoUri') && Boolean(getFieldError('logoUri'))}
             errorMessage={getFieldError('logoUri')}
             handleChange={(e) => {
-              setModifiedFields({
-                ...modifiedFields,
+              setModifiedFields((prev) => ({
+                ...prev,
                 [CLIENT_SOFTWARE_MODIFIED_FIELDS.LOGO_URI]: e.target.value,
-              })
+              }))
             }}
           />
         </div>
@@ -269,10 +264,10 @@ const ClientSoftwarePanel = ({
             showError={isFieldTouched('tosUri') && Boolean(getFieldError('tosUri'))}
             errorMessage={getFieldError('tosUri')}
             handleChange={(e) => {
-              setModifiedFields({
-                ...modifiedFields,
+              setModifiedFields((prev) => ({
+                ...prev,
                 [CLIENT_SOFTWARE_MODIFIED_FIELDS.TOS_URI]: e.target.value,
-              })
+              }))
             }}
           />
         </div>
@@ -291,10 +286,10 @@ const ClientSoftwarePanel = ({
             showError={isFieldTouched('softwareId') && Boolean(getFieldError('softwareId'))}
             errorMessage={getFieldError('softwareId')}
             handleChange={(e) => {
-              setModifiedFields({
-                ...modifiedFields,
+              setModifiedFields((prev) => ({
+                ...prev,
                 [CLIENT_SOFTWARE_MODIFIED_FIELDS.SOFTWARE_ID]: e.target.value,
-              })
+              }))
             }}
           />
         </div>
@@ -315,10 +310,10 @@ const ClientSoftwarePanel = ({
             }
             errorMessage={getFieldError('softwareVersion')}
             handleChange={(e) => {
-              setModifiedFields({
-                ...modifiedFields,
+              setModifiedFields((prev) => ({
+                ...prev,
                 [CLIENT_SOFTWARE_MODIFIED_FIELDS.SOFTWARE_VERSION]: e.target.value,
-              })
+              }))
             }}
           />
         </div>
@@ -339,10 +334,10 @@ const ClientSoftwarePanel = ({
             }
             errorMessage={getFieldError('softwareStatement')}
             handleChange={(e) => {
-              setModifiedFields({
-                ...modifiedFields,
+              setModifiedFields((prev) => ({
+                ...prev,
                 [CLIENT_SOFTWARE_MODIFIED_FIELDS.SOFTWARE_STATEMENT]: e.target.value,
-              })
+              }))
             }}
           />
         </div>

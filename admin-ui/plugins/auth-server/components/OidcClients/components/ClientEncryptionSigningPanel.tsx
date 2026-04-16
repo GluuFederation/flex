@@ -16,7 +16,6 @@ const ClientEncryptionSigningPanel = ({
   formik,
   oidcConfiguration,
   viewOnly,
-  modifiedFields,
   setModifiedFields,
 }: ClientEncryptionSigningPanelProps) => {
   const { t } = useTranslation()
@@ -86,10 +85,10 @@ const ClientEncryptionSigningPanel = ({
             showError={isFieldTouched('jwksUri') && Boolean(getFieldError('jwksUri'))}
             errorMessage={getFieldError('jwksUri')}
             handleChange={(e) => {
-              setModifiedFields({
-                ...modifiedFields,
+              setModifiedFields((prev) => ({
+                ...prev,
                 [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.JWKS_URI]: e.target.value,
-              })
+              }))
             }}
           />
         </div>
@@ -107,10 +106,10 @@ const ClientEncryptionSigningPanel = ({
             showError={isFieldTouched('jwks') && Boolean(getFieldError('jwks'))}
             errorMessage={getFieldError('jwks')}
             handleChange={(e) => {
-              setModifiedFields({
-                ...modifiedFields,
+              setModifiedFields((prev) => ({
+                ...prev,
                 [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.JWKS]: e.target.value,
-              })
+              }))
             }}
           />
         </div>
@@ -133,11 +132,11 @@ const ClientEncryptionSigningPanel = ({
                 doc_category={DOC_CATEGORY}
                 disabled={viewOnly}
                 handleChange={(e) => {
-                  setModifiedFields({
-                    ...modifiedFields,
+                  setModifiedFields((prev) => ({
+                    ...prev,
                     [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.ID_TOKEN_SIGNED_RESPONSE]:
                       e.target.value,
-                  })
+                  }))
                 }}
               />
             </div>
@@ -153,11 +152,11 @@ const ClientEncryptionSigningPanel = ({
                 doc_category={DOC_CATEGORY}
                 disabled={viewOnly}
                 handleChange={(e) => {
-                  setModifiedFields({
-                    ...modifiedFields,
+                  setModifiedFields((prev) => ({
+                    ...prev,
                     [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.ID_TOKEN_ENCRYPTED_RESPONSE_ALG]:
                       e.target.value,
-                  })
+                  }))
                 }}
               />
             </div>
@@ -173,11 +172,11 @@ const ClientEncryptionSigningPanel = ({
                 doc_category={DOC_CATEGORY}
                 disabled={viewOnly}
                 handleChange={(e) => {
-                  setModifiedFields({
-                    ...modifiedFields,
+                  setModifiedFields((prev) => ({
+                    ...prev,
                     [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.ID_TOKEN_ENCRYPTED_RESPONSE_ENC]:
                       e.target.value,
-                  })
+                  }))
                 }}
               />
             </div>
@@ -202,11 +201,11 @@ const ClientEncryptionSigningPanel = ({
                 doc_category={DOC_CATEGORY}
                 disabled={viewOnly}
                 handleChange={(e) => {
-                  setModifiedFields({
-                    ...modifiedFields,
+                  setModifiedFields((prev) => ({
+                    ...prev,
                     [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.ACCESS_TOKEN_SIGNING_ALG]:
                       e.target.value,
-                  })
+                  }))
                 }}
               />
             </div>
@@ -231,11 +230,11 @@ const ClientEncryptionSigningPanel = ({
                 doc_category={DOC_CATEGORY}
                 disabled={viewOnly}
                 handleChange={(e) => {
-                  setModifiedFields({
-                    ...modifiedFields,
+                  setModifiedFields((prev) => ({
+                    ...prev,
                     [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.USER_INFO_SIGNED_RESPONSE_ALG]:
                       e.target.value,
-                  })
+                  }))
                 }}
               />
             </div>
@@ -251,11 +250,11 @@ const ClientEncryptionSigningPanel = ({
                 doc_category={DOC_CATEGORY}
                 disabled={viewOnly}
                 handleChange={(e) => {
-                  setModifiedFields({
-                    ...modifiedFields,
+                  setModifiedFields((prev) => ({
+                    ...prev,
                     [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.USER_INFO_ENCRYPTED_RESPONSE_ALG]:
                       e.target.value,
-                  })
+                  }))
                 }}
               />
             </div>
@@ -271,11 +270,11 @@ const ClientEncryptionSigningPanel = ({
                 doc_category={DOC_CATEGORY}
                 disabled={viewOnly}
                 handleChange={(e) => {
-                  setModifiedFields({
-                    ...modifiedFields,
+                  setModifiedFields((prev) => ({
+                    ...prev,
                     [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.USER_INFO_ENCRYPTED_RESPONSE_ENC]:
                       e.target.value,
-                  })
+                  }))
                 }}
               />
             </div>
@@ -300,11 +299,11 @@ const ClientEncryptionSigningPanel = ({
                 doc_category={DOC_CATEGORY}
                 disabled={viewOnly}
                 handleChange={(e) => {
-                  setModifiedFields({
-                    ...modifiedFields,
+                  setModifiedFields((prev) => ({
+                    ...prev,
                     [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.AUTHORIZATION_SIGNED_RESPONSE_ALG]:
                       e.target.value,
-                  })
+                  }))
                 }}
               />
             </div>
@@ -320,11 +319,11 @@ const ClientEncryptionSigningPanel = ({
                 doc_category={DOC_CATEGORY}
                 disabled={viewOnly}
                 handleChange={(e) => {
-                  setModifiedFields({
-                    ...modifiedFields,
+                  setModifiedFields((prev) => ({
+                    ...prev,
                     [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.AUTHORIZATION_ENCRYPTED_RESPONSE_ALG]:
                       e.target.value,
-                  })
+                  }))
                 }}
               />
             </div>
@@ -340,11 +339,11 @@ const ClientEncryptionSigningPanel = ({
                 doc_category={DOC_CATEGORY}
                 disabled={viewOnly}
                 handleChange={(e) => {
-                  setModifiedFields({
-                    ...modifiedFields,
+                  setModifiedFields((prev) => ({
+                    ...prev,
                     [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.AUTHORIZATION_ENCRYPTED_RESPONSE_ENC]:
                       e.target.value,
-                  })
+                  }))
                 }}
               />
             </div>
@@ -369,11 +368,11 @@ const ClientEncryptionSigningPanel = ({
                 doc_category={DOC_CATEGORY}
                 disabled={viewOnly}
                 handleChange={(e) => {
-                  setModifiedFields({
-                    ...modifiedFields,
+                  setModifiedFields((prev) => ({
+                    ...prev,
                     [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.REQUEST_OBJECT_SIGNING_ALG]:
                       e.target.value,
-                  })
+                  }))
                 }}
               />
             </div>
@@ -389,11 +388,11 @@ const ClientEncryptionSigningPanel = ({
                 doc_category={DOC_CATEGORY}
                 disabled={viewOnly}
                 handleChange={(e) => {
-                  setModifiedFields({
-                    ...modifiedFields,
+                  setModifiedFields((prev) => ({
+                    ...prev,
                     [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.REQUEST_OBJECT_ENCRYPTION_ALG]:
                       e.target.value,
-                  })
+                  }))
                 }}
               />
             </div>
@@ -409,11 +408,11 @@ const ClientEncryptionSigningPanel = ({
                 doc_category={DOC_CATEGORY}
                 disabled={viewOnly}
                 handleChange={(e) => {
-                  setModifiedFields({
-                    ...modifiedFields,
+                  setModifiedFields((prev) => ({
+                    ...prev,
                     [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.REQUEST_OBJECT_ENCRYPTION_ENC]:
                       e.target.value,
-                  })
+                  }))
                 }}
               />
             </div>
@@ -455,11 +454,11 @@ const ClientEncryptionSigningPanel = ({
                 doc_category={DOC_CATEGORY}
                 disabled={viewOnly}
                 handleChange={(e) => {
-                  setModifiedFields({
-                    ...modifiedFields,
+                  setModifiedFields((prev) => ({
+                    ...prev,
                     [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.INTROSPECTION_ENCRYPTED_RESPONSE_ALG]:
                       e.target.value,
-                  })
+                  }))
                 }}
               />
             </div>
@@ -477,11 +476,11 @@ const ClientEncryptionSigningPanel = ({
                 doc_category={DOC_CATEGORY}
                 disabled={viewOnly}
                 handleChange={(e) => {
-                  setModifiedFields({
-                    ...modifiedFields,
+                  setModifiedFields((prev) => ({
+                    ...prev,
                     [CLIENT_ENCRYPTION_SIGNING_MODIFIED_FIELDS.INTROSPECTION_ENCRYPTED_RESPONSE_ENC]:
                       e.target.value,
-                  })
+                  }))
                 }}
               />
             </div>

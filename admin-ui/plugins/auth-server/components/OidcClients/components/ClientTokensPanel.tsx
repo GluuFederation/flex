@@ -27,12 +27,7 @@ import {
   mapTranslatedOptions,
 } from 'Plugins/auth-server/utils'
 
-const ClientTokensPanel = ({
-  formik,
-  viewOnly,
-  modifiedFields,
-  setModifiedFields,
-}: ClientPanelProps) => {
+const ClientTokensPanel = ({ formik, viewOnly, setModifiedFields }: ClientPanelProps) => {
   const { t } = useTranslation()
   const { state } = useTheme()
   const selectedTheme = state?.theme ?? DEFAULT_THEME
@@ -100,12 +95,12 @@ const ClientTokensPanel = ({
         .filter((value): value is string => value.length > 0)
       isAudienceSyncingRef.current = true
       formik.setFieldValue('attributes.additionalAudience', nextAudiences)
-      setModifiedFields({
-        ...modifiedFields,
+      setModifiedFields((prev) => ({
+        ...prev,
         [CLIENT_TOKEN_MODIFIED_FIELDS.ADDITIONAL_AUDIENCE]: nextAudiences,
-      })
+      }))
     },
-    [formik, modifiedFields, setModifiedFields],
+    [formik, setModifiedFields],
   )
 
   const handleAddAudience = useCallback(() => {
@@ -143,10 +138,10 @@ const ClientTokensPanel = ({
           doc_category={DOC_CATEGORY}
           disabled={viewOnly}
           handleChange={(e) => {
-            setModifiedFields({
-              ...modifiedFields,
+            setModifiedFields((prev) => ({
+              ...prev,
               [CLIENT_TOKEN_MODIFIED_FIELDS.ACCESS_TOKEN_AS_JWT]: e.target.value,
-            })
+            }))
           }}
         />
       </div>
@@ -169,10 +164,10 @@ const ClientTokensPanel = ({
           }
           errorMessage={getFieldError('accessTokenLifetime')}
           handleChange={(e) => {
-            setModifiedFields({
-              ...modifiedFields,
+            setModifiedFields((prev) => ({
+              ...prev,
               [CLIENT_TOKEN_MODIFIED_FIELDS.ACCESS_TOKEN_LIFETIME]: e.target.value,
-            })
+            }))
           }}
         />
       </div>
@@ -195,10 +190,10 @@ const ClientTokensPanel = ({
           }
           errorMessage={getFieldError('refreshTokenLifetime')}
           handleChange={(e) => {
-            setModifiedFields({
-              ...modifiedFields,
+            setModifiedFields((prev) => ({
+              ...prev,
               [CLIENT_TOKEN_MODIFIED_FIELDS.REFRESH_TOKEN_LIFETIME]: e.target.value,
-            })
+            }))
           }}
         />
       </div>
@@ -219,10 +214,10 @@ const ClientTokensPanel = ({
           showError={isFieldTouched('defaultMaxAge') && Boolean(getFieldError('defaultMaxAge'))}
           errorMessage={getFieldError('defaultMaxAge')}
           handleChange={(e) => {
-            setModifiedFields({
-              ...modifiedFields,
+            setModifiedFields((prev) => ({
+              ...prev,
               [CLIENT_TOKEN_MODIFIED_FIELDS.DEFAULT_MAX_AGE]: e.target.value,
-            })
+            }))
           }}
         />
       </div>
@@ -245,10 +240,10 @@ const ClientTokensPanel = ({
           }
           errorMessage={getFieldError('idTokenTokenBindingCnf')}
           handleChange={(e) => {
-            setModifiedFields({
-              ...modifiedFields,
+            setModifiedFields((prev) => ({
+              ...prev,
               [CLIENT_TOKEN_MODIFIED_FIELDS.ID_TOKEN_TOKEN_BINDING_CNF]: e.target.value,
-            })
+            }))
           }}
         />
       </div>
@@ -265,10 +260,10 @@ const ClientTokensPanel = ({
           doc_category={DOC_CATEGORY}
           disabled={viewOnly}
           handler={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setModifiedFields({
-              ...modifiedFields,
+            setModifiedFields((prev) => ({
+              ...prev,
               [CLIENT_TOKEN_MODIFIED_FIELDS.INCLUDE_CLAIMS_IN_ID_TOKEN]: e.target.checked,
-            })
+            }))
           }}
         />
       </div>
@@ -285,11 +280,11 @@ const ClientTokensPanel = ({
           doc_category={DOC_CATEGORY}
           disabled={viewOnly}
           handler={(e) => {
-            setModifiedFields({
-              ...modifiedFields,
+            setModifiedFields((prev) => ({
+              ...prev,
               [CLIENT_TOKEN_MODIFIED_FIELDS.RUN_INTROSPECTION_SCRIPT_BEFORE_JWT_CREATION]:
                 e.target.value,
-            })
+            }))
           }}
         />
       </div>

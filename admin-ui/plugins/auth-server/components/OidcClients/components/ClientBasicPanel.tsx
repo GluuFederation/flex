@@ -42,7 +42,6 @@ const ClientBasicPanel = ({
   formik,
   oidcConfiguration,
   viewOnly,
-  modifiedFields,
   setModifiedFields,
 }: ClientBasicPanelProps) => {
   const { t } = useTranslation()
@@ -121,12 +120,12 @@ const ClientBasicPanel = ({
         .map((name) => allScopeOptions.find((s) => s.name === name)?.dn)
         .filter((dn): dn is string => Boolean(dn))
       formik.setFieldValue('scopes', dns)
-      setModifiedFields({
-        ...modifiedFields,
+      setModifiedFields((prev) => ({
+        ...prev,
         [CLIENT_BASIC_MODIFIED_FIELDS.SCOPES]: selectedNames,
-      })
+      }))
     },
-    [allScopeOptions, formik, modifiedFields, setModifiedFields],
+    [allScopeOptions, formik, setModifiedFields],
   )
 
   const redirectUrisRegexValue = formik.values?.attributes?.redirectUrisRegex
@@ -191,12 +190,12 @@ const ClientBasicPanel = ({
         .filter((value): value is string => value.length > 0)
       isRedirectUriSyncingRef.current = true
       formik.setFieldValue('redirectUris', nextRedirectUris, true)
-      setModifiedFields({
-        ...modifiedFields,
+      setModifiedFields((prev) => ({
+        ...prev,
         [CLIENT_BASIC_MODIFIED_FIELDS.REDIRECT_URIS]: nextRedirectUris,
-      })
+      }))
     },
-    [formik, modifiedFields, setModifiedFields],
+    [formik, setModifiedFields],
   )
 
   const handleAddRedirectUri = useCallback(() => {
@@ -249,10 +248,10 @@ const ClientBasicPanel = ({
           showError={isFieldTouched('clientName') && Boolean(getFieldError('clientName'))}
           errorMessage={getFieldError('clientName')}
           handleChange={(event) => {
-            setModifiedFields({
-              ...modifiedFields,
+            setModifiedFields((prev) => ({
+              ...prev,
               [CLIENT_BASIC_MODIFIED_FIELDS.CLIENT_NAME]: event.target.value,
-            })
+            }))
           }}
         />
       </div>
@@ -275,10 +274,10 @@ const ClientBasicPanel = ({
           showError={isFieldTouched('clientSecret') && Boolean(getFieldError('clientSecret'))}
           errorMessage={getFieldError('clientSecret')}
           handleChange={(event) => {
-            setModifiedFields({
-              ...modifiedFields,
+            setModifiedFields((prev) => ({
+              ...prev,
               [CLIENT_BASIC_MODIFIED_FIELDS.CLIENT_SECRET]: event.target.value,
-            })
+            }))
           }}
         />
       </div>
@@ -298,10 +297,10 @@ const ClientBasicPanel = ({
           showError={isFieldTouched('description') && Boolean(getFieldError('description'))}
           errorMessage={getFieldError('description')}
           handleChange={(event) => {
-            setModifiedFields({
-              ...modifiedFields,
+            setModifiedFields((prev) => ({
+              ...prev,
               [CLIENT_BASIC_MODIFIED_FIELDS.DESCRIPTION]: event.target.value,
-            })
+            }))
           }}
         />
       </div>
@@ -323,10 +322,10 @@ const ClientBasicPanel = ({
           }
           errorMessage={getFieldError('sectorIdentifierUri')}
           handleChange={(event) => {
-            setModifiedFields({
-              ...modifiedFields,
+            setModifiedFields((prev) => ({
+              ...prev,
               [CLIENT_BASIC_MODIFIED_FIELDS.SECTOR_IDENTIFIER_URI]: event.target.value || null,
-            })
+            }))
           }}
         />
       </div>
@@ -347,10 +346,10 @@ const ClientBasicPanel = ({
           showError={isFieldTouched('applicationType') && Boolean(getFieldError('applicationType'))}
           errorMessage={getFieldError('applicationType')}
           handleChange={(event) => {
-            setModifiedFields({
-              ...modifiedFields,
+            setModifiedFields((prev) => ({
+              ...prev,
               [CLIENT_BASIC_MODIFIED_FIELDS.APPLICATION_TYPE]: event.target.value,
-            })
+            }))
           }}
         />
       </div>
@@ -371,10 +370,10 @@ const ClientBasicPanel = ({
           showError={isFieldTouched('subjectType') && Boolean(getFieldError('subjectType'))}
           errorMessage={getFieldError('subjectType')}
           handleChange={(event) => {
-            setModifiedFields({
-              ...modifiedFields,
+            setModifiedFields((prev) => ({
+              ...prev,
               [CLIENT_BASIC_MODIFIED_FIELDS.SUBJECT_TYPE]: event.target.value,
-            })
+            }))
           }}
         />
       </div>
@@ -397,10 +396,10 @@ const ClientBasicPanel = ({
           }
           errorMessage={getFieldError('tokenEndpointAuthMethod')}
           handleChange={(e) => {
-            setModifiedFields({
-              ...modifiedFields,
+            setModifiedFields((prev) => ({
+              ...prev,
               [CLIENT_BASIC_MODIFIED_FIELDS.TOKEN_ENDPOINT_AUTH_METHOD]: e.target.value,
-            })
+            }))
           }}
         />
       </div>
@@ -457,10 +456,10 @@ const ClientBasicPanel = ({
           handler={(e) => {
             const isActive = e.target.checked
             formik.setFieldValue('disabled', !isActive)
-            setModifiedFields({
-              ...modifiedFields,
+            setModifiedFields((prev) => ({
+              ...prev,
               [CLIENT_BASIC_MODIFIED_FIELDS.IS_ACTIVE]: isActive,
-            })
+            }))
           }}
         />
       </div>
@@ -477,10 +476,10 @@ const ClientBasicPanel = ({
           doc_category={DOC_CATEGORY}
           disabled={viewOnly}
           handler={(e) => {
-            setModifiedFields({
-              ...modifiedFields,
+            setModifiedFields((prev) => ({
+              ...prev,
               [CLIENT_BASIC_MODIFIED_FIELDS.TRUST_CLIENT]: e.target.checked,
-            })
+            }))
           }}
         />
       </div>
@@ -507,10 +506,10 @@ const ClientBasicPanel = ({
               : ''
           }
           handleChange={(event) => {
-            setModifiedFields({
-              ...modifiedFields,
+            setModifiedFields((prev) => ({
+              ...prev,
               [CLIENT_BASIC_MODIFIED_FIELDS.REDIRECT_URIS_REGEX]: event.target.value || null,
-            })
+            }))
           }}
         />
       </div>

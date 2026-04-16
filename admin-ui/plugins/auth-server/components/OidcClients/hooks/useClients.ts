@@ -4,17 +4,16 @@ import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import { useGetOauthOpenidClients } from 'JansConfigApi'
 import { updateToast } from 'Redux/features/toastSlice'
 import { getQueryErrorMessage } from '@/utils/errorHandler'
-import type { UseClientsParams } from '../types'
+import type { UseClientsParams, ClientRow } from '../types'
 
-export const useClients = <T = Record<string, string>>(params?: UseClientsParams) => {
+export const useClients = <T = ClientRow>(params?: UseClientsParams) => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
-  const serializedParams = JSON.stringify(params ?? {})
 
   const queryParams = useMemo(
     () => (params ? { ...params, pattern: params.pattern || undefined } : undefined),
-    [serializedParams],
+    [params?.limit, params?.pattern, params?.startIndex],
   )
 
   const query = useGetOauthOpenidClients(queryParams, {

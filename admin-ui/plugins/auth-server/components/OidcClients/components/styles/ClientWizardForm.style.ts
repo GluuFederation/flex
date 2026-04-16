@@ -40,6 +40,9 @@ export const useStyles = makeStyles<ClientWizardFormStyleParams>()((_, { themeCo
       alignItems: 'center',
       gap: SPACING.CARD_CONTENT_GAP,
     },
+    filterButtonWrapper: {
+      position: 'relative' as const,
+    },
     stepNumber: {
       display: 'inline-flex',
       alignItems: 'center',

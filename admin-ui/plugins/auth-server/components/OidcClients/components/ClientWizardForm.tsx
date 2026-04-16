@@ -239,12 +239,14 @@ const ClientWizardForm = ({
     return availableSteps.indexOf(stepId) < availableSteps.indexOf(currentStep)
   }
 
-  const submitForm = (message: string) => {
-    commitMessageRef.current = message
-    toggle()
-    const btn = document.getElementsByClassName('UserActionSubmitButton')[0]
-    if (btn instanceof HTMLElement) btn.click()
-  }
+  const submitForm = useCallback(
+    (message: string) => {
+      commitMessageRef.current = message
+      toggle()
+      void formRef.current?.submitForm()
+    },
+    [toggle],
+  )
 
   useEffect(() => {
     return () => {
@@ -252,119 +254,137 @@ const ClientWizardForm = ({
     }
   }, [dispatch])
 
-  const activeClientStep = (formik: FormikProps<ClientWizardFormValues>) => {
-    switch (currentStep) {
-      case availableSteps[0]:
-        return (
-          <div>
-            <ClientBasic
-              client={clientSnapshot}
-              formik={formik}
-              viewOnly={viewOnly}
-              oidcConfiguration={oidcConfiguration}
-              modifiedFields={modifiedFields}
-              setModifiedFields={setModifiedFields}
-            />
-          </div>
-        )
-      case 'Tokens':
-        return (
-          <div>
-            <ClientTokensPanel
-              formik={formik}
-              viewOnly={viewOnly}
-              modifiedFields={modifiedFields}
-              setModifiedFields={setModifiedFields}
-            />
-          </div>
-        )
-      case 'Logout':
-        return (
-          <div>
-            <ClientLogoutPanel
-              formik={formik}
-              viewOnly={viewOnly}
-              modifiedFields={modifiedFields}
-              setModifiedFields={setModifiedFields}
-            />
-          </div>
-        )
-      case 'SoftwareInfo':
-        return (
-          <div>
-            <ClientSoftwarePanel
-              formik={formik}
-              viewOnly={viewOnly}
-              modifiedFields={modifiedFields}
-              setModifiedFields={setModifiedFields}
-            />
-          </div>
-        )
-      case 'CIBA/PAR/UMA':
-        return (
-          <div>
-            <ClientCibaParUmaPanel
-              client={clientSnapshot}
-              scripts={scripts}
-              setCurrentStep={setCurrentStep}
-              sequence={availableSteps}
-              formik={formik}
-              viewOnly={viewOnly}
-              modifiedFields={modifiedFields}
-              setModifiedFields={setModifiedFields}
-            />
-          </div>
-        )
-      case 'Encryption/Signing':
-        return (
-          <div>
-            <ClientEncryptionSigningPanel
-              formik={formik}
-              oidcConfiguration={oidcConfiguration}
-              viewOnly={viewOnly}
-              modifiedFields={modifiedFields}
-              setModifiedFields={setModifiedFields}
-            />
-          </div>
-        )
-      case 'AdvancedClientProperties':
-        return (
-          <div>
-            <ClientAdvanced
-              scripts={scripts}
-              formik={formik}
-              viewOnly={viewOnly}
-              modifiedFields={modifiedFields}
-              setModifiedFields={setModifiedFields}
-            />
-          </div>
-        )
-      case 'ClientScripts':
-        return (
-          <div>
-            <ClientScript
-              formik={formik}
-              scripts={scripts}
-              viewOnly={viewOnly}
-              modifiedFields={modifiedFields}
-              setModifiedFields={setModifiedFields}
-            />
-          </div>
-        )
-      case 'ClientActiveTokens':
-        return (
-          <div>
-            <ClientActiveTokens
-              client={clientSnapshot}
-              onExportReady={handleExportReady}
-              onHasDataChange={handleTokenHasDataChange}
-              activePattern={tokenActivePattern}
-              filterField={tokenSearchFilter}
-            />
-          </div>
-        )
-    }
-  }
+  const renderActiveClientStep = useCallback(
+    (formik: FormikProps<ClientWizardFormValues>) => {
+      switch (currentStep) {
+        case availableSteps[0]:
+          return (
+            <div>
+              <ClientBasic
+                client={clientSnapshot}
+                formik={formik}
+                viewOnly={viewOnly}
+                oidcConfiguration={oidcConfiguration}
+                modifiedFields={modifiedFields}
+                setModifiedFields={setModifiedFields}
+              />
+            </div>
+          )
+        case 'Tokens':
+          return (
+            <div>
+              <ClientTokensPanel
+                formik={formik}
+                viewOnly={viewOnly}
+                modifiedFields={modifiedFields}
+                setModifiedFields={setModifiedFields}
+              />
+            </div>
+          )
+        case 'Logout':
+          return (
+            <div>
+              <ClientLogoutPanel
+                formik={formik}
+                viewOnly={viewOnly}
+                modifiedFields={modifiedFields}
+                setModifiedFields={setModifiedFields}
+              />
+            </div>
+          )
+        case 'SoftwareInfo':
+          return (
+            <div>
+              <ClientSoftwarePanel
+                formik={formik}
+                viewOnly={viewOnly}
+                modifiedFields={modifiedFields}
+                setModifiedFields={setModifiedFields}
+              />
+            </div>
+          )
+        case 'CIBA/PAR/UMA':
+          return (
+            <div>
+              <ClientCibaParUmaPanel
+                client={clientSnapshot}
+                scripts={scripts}
+                setCurrentStep={setCurrentStep}
+                sequence={availableSteps}
+                formik={formik}
+                viewOnly={viewOnly}
+                modifiedFields={modifiedFields}
+                setModifiedFields={setModifiedFields}
+              />
+            </div>
+          )
+        case 'Encryption/Signing':
+          return (
+            <div>
+              <ClientEncryptionSigningPanel
+                formik={formik}
+                oidcConfiguration={oidcConfiguration}
+                viewOnly={viewOnly}
+                modifiedFields={modifiedFields}
+                setModifiedFields={setModifiedFields}
+              />
+            </div>
+          )
+        case 'AdvancedClientProperties':
+          return (
+            <div>
+              <ClientAdvanced
+                scripts={scripts}
+                formik={formik}
+                viewOnly={viewOnly}
+                modifiedFields={modifiedFields}
+                setModifiedFields={setModifiedFields}
+              />
+            </div>
+          )
+        case 'ClientScripts':
+          return (
+            <div>
+              <ClientScript
+                formik={formik}
+                scripts={scripts}
+                viewOnly={viewOnly}
+                modifiedFields={modifiedFields}
+                setModifiedFields={setModifiedFields}
+              />
+            </div>
+          )
+        case 'ClientActiveTokens':
+          return (
+            <div>
+              <ClientActiveTokens
+                client={clientSnapshot}
+                onExportReady={handleExportReady}
+                onHasDataChange={handleTokenHasDataChange}
+                activePattern={tokenActivePattern}
+                filterField={tokenSearchFilter}
+              />
+            </div>
+          )
+        default:
+          return null
+      }
+    },
+    [
+      currentStep,
+      availableSteps,
+      clientSnapshot,
+      viewOnly,
+      oidcConfiguration,
+      modifiedFields,
+      setModifiedFields,
+      scripts,
+      handleExportReady,
+      handleTokenHasDataChange,
+      tokenActivePattern,
+      tokenSearchFilter,
+    ],
+  )
 
   function onKeyDown(keyEvent: React.KeyboardEvent<HTMLFormElement>) {
     if ((keyEvent.charCode || keyEvent.keyCode) === 13) {
@@ -395,7 +415,7 @@ const ClientWizardForm = ({
           validationSchema={validationSchema}
           validateOnBlur
           validateOnChange={false}
-          validateOnMount
+          validateOnMount={isEdit}
           enableReinitialize
           onSubmit={(values) => {
             const { attributes, accessTokenAsJwt, rptAsJwt, ...rest } = omit(values, 'expirable')
@@ -439,7 +459,7 @@ const ClientWizardForm = ({
                     )}
                   {currentStep === WIZARD_STEP_IDS.CLIENT_ACTIVE_TOKENS && (
                     <>
-                      <div style={{ position: 'relative' }}>
+                      <div className={classes.filterButtonWrapper}>
                         <GluuButton
                           type="button"
                           onClick={() => setTokenShowFilter((prev) => !prev)}
@@ -560,7 +580,7 @@ const ClientWizardForm = ({
                     .filter(Boolean)
                     .join(' ')}
                 >
-                  {activeClientStep(formik)}
+                  {renderActiveClientStep(formik)}
                 </CardBody>
                 <div className={classes.footer}>
                   <GluuThemeFormFooter
@@ -587,13 +607,6 @@ const ClientWizardForm = ({
                     }}
                   />
                 </div>
-                <button
-                  type="submit"
-                  className="UserActionSubmitButton"
-                  style={{ display: 'none' }}
-                >
-                  {t('actions.submit')}
-                </button>
               </Card>
             </Form>
           )}
