@@ -12,7 +12,7 @@ import { BORDER_RADIUS, CEDARLING_CONFIG_SPACING, SPACING } from '@/constants'
 import { buildKeyCandidates } from '@/utils/stringUtils'
 import { REGEX_LEADING_SLASH, REGEX_FORWARD_SLASH } from '@/utils/regex'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
-import { useStyles } from '../../AuthServerProperties/components/styles/JsonPropertyBuilder.style'
+import { useStyles } from '../../../common/JsonPropertyBuilder.style'
 import type {
   MultiSelectOption,
   GluuMultiSelectRowFormik,

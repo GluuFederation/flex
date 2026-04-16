@@ -40,7 +40,7 @@ import type { FilterField } from '@/components/GluuFilterPopover'
 import { AUTHENTICATED_SESSION_STATE, type Session, type SessionState } from '../types'
 import { useStyles } from './styles/SessionListPage.style'
 import SessionDetailPage from './SessionDetailPage'
-import { useDeleteSessionWithAudit, useRevokeSessionWithAudit } from '../hooks/useSessionMutations'
+import { useDeleteSessionWithAudit, useRevokeSessionWithAudit } from '../hooks'
 import type { Dayjs } from 'dayjs'
 
 const LIMIT_OPTIONS = getRowsPerPageOptions()

@@ -16,7 +16,7 @@ import type {
   MultiSelectOption,
   GluuMultiSelectRowFormik,
 } from 'Routes/Apps/Gluu/types/GluuMultiSelectRow.types'
-import { useStyles } from './styles/JsonPropertyBuilder.style'
+import { useStyles } from '../../../common/JsonPropertyBuilder.style'
 import type {
   JsonPropertyBuilderProps,
   AccordionWithSubComponents,

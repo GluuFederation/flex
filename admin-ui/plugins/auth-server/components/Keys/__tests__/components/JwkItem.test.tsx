@@ -2,9 +2,9 @@ import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 import i18n from '@/i18n'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
-import JwkItem from './JwkItem'
-import { mockJwksConfig } from '../__tests__/fixtures/jwkTestData'
-import type { JSONWebKey } from '../types'
+import JwkItem from '../../components/JwkItem'
+import { mockJwksConfig } from '../fixtures/jwkTestData'
+import type { JSONWebKey } from '../../types'
 
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({

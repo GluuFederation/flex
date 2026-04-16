@@ -1,4 +1,4 @@
-import { DATE_FORMAT } from './constants'
+import { DATE_FORMAT } from '../constants'
 
 describe('Keys constants', () => {
   it('DATE_FORMAT matches expected pattern', () => {

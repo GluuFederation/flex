@@ -55,8 +55,13 @@ import {
   KEY_GROUP_ORDER,
   DEFAULT_AUTH_SERVER_CONFIG,
 } from '../constants'
-import { isRenamedKey, isScriptEntry, renamedFieldFromObject } from '../Properties/utils'
-import { DISCOVERY_DENY_KEYS_I18N } from '../Properties/utils/constants'
+import {
+  isRenamedKey,
+  isScriptEntry,
+  renamedFieldFromObject,
+  DISCOVERY_DENY_KEYS_I18N,
+  createAppConfigurationSchema,
+} from '../Properties/utils'
 import {
   toPairs,
   generateLabel,
@@ -64,7 +69,6 @@ import {
   formatPatchValue,
   formatPatchPath,
 } from 'Plugins/auth-server/common/propertiesUtils'
-import { createAppConfigurationSchema } from '../Properties/utils/validations'
 import type {
   AppConfiguration,
   JsonPatch,

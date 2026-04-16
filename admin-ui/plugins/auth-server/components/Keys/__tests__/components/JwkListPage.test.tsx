@@ -1,11 +1,11 @@
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
-import JwkListPage from './JwkListPage'
+import JwkListPage from '../../components/JwkListPage'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import { formatDate } from '@/utils/dayjsUtils'
-import { mockJwksConfig } from '../__tests__/fixtures/jwkTestData'
-import { DATE_FORMAT } from '../constants'
-import { useJwkApi } from '../hooks'
+import { mockJwksConfig } from '../fixtures/jwkTestData'
+import { DATE_FORMAT } from '../../constants'
+import { useJwkApi } from '../../hooks'
 
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({
@@ -23,7 +23,7 @@ jest.mock('@/cedarling/constants/resourceScopes', () => ({
   CEDAR_RESOURCE_SCOPES: { Keys: [], Lock: [], Webhooks: [] },
 }))
 
-jest.mock('../hooks', () => ({
+jest.mock('../../hooks', () => ({
   useJwkApi: jest.fn(() => ({
     jwks: mockJwksConfig,
     isLoading: false,

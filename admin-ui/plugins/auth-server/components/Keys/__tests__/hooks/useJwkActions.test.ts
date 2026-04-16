@@ -1,15 +1,13 @@
 import { renderHook, act } from '@testing-library/react'
-import { useJwkActions } from './useJwkActions'
+import { useJwkActions } from '../../hooks/useJwkActions'
 
 const mockNavigateToRoute = jest.fn()
 
 jest.mock('@/helpers/navigation', () => ({
+  ...jest.requireActual('@/helpers/navigation'),
   useAppNavigation: jest.fn(() => ({
     navigateToRoute: mockNavigateToRoute,
   })),
-  ROUTES: {
-    AUTH_SERVER_CONFIG_KEYS: '/auth-server/config/keys',
-  },
 }))
 
 describe('useJwkActions', () => {

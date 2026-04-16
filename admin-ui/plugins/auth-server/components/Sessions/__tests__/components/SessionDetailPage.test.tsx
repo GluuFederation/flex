@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import SessionDetailPage from 'Plugins/auth-server/components/Sessions/components/SessionDetailPage'
+import { SessionDetailPage } from 'Plugins/auth-server/components/Sessions'
 import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'

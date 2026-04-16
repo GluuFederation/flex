@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react'
-import { useJwkApi } from './useJwkApi'
-import { mockJwksConfig } from '../__tests__/fixtures/jwkTestData'
+import { useJwkApi } from '../../hooks/useJwkApi'
+import { mockJwksConfig } from '../fixtures/jwkTestData'
 
 const mockRefetch = jest.fn()
 const originalConsoleError = console.error
@@ -78,6 +78,6 @@ describe('useJwkApi', () => {
 
     const { result } = renderHook(() => useJwkApi())
 
-    expect(result.current.error).toBe(originalError)
+    expect(result.current.error).toStrictEqual(originalError)
   })
 })

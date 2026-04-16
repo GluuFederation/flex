@@ -1,11 +1,11 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import ScopeEditPage from 'Plugins/auth-server/components/Scopes/components/ScopeEditPage'
+import { ScopeEditPage } from 'Plugins/auth-server/components/Scopes'
 import { Provider } from 'react-redux'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import mockScopes from '../../fixtures/mockScopes'
+import mockScopes from '../fixtures/mockScopes'
 
 // Mock orval hooks
 jest.mock('JansConfigApi', () => {

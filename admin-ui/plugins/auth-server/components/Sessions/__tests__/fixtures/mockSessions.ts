@@ -1,4 +1,4 @@
-import { AUTHENTICATED_SESSION_STATE, type Session } from '../../components/Sessions/types'
+import { AUTHENTICATED_SESSION_STATE, type Session } from '../../types'
 
 export const mockSessions: Session[] = [
   {

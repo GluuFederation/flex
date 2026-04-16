@@ -1,11 +1,11 @@
 import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
-import AuthServerPropertiesPage from './components/AuthServerPropertiesPage'
+import AuthServerPropertiesPage from '../..'
 import { Provider } from 'react-redux'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { mockAuthServerJsonProperties as config } from './__tests__/authServerPropertiesTestData'
+import { mockAuthServerJsonProperties as config } from '../authServerPropertiesTestData'
 
 jest.mock('Routes/Apps/Gluu/GluuCommitDialog', () => ({
   __esModule: true,
@@ -20,8 +20,8 @@ jest.mock('JansConfigApi', () => ({
 
 jest.mock('Plugins/auth-server/services/jsonPropertiesService', () => {
   const { mockAuthServerJsonProperties } = jest.requireActual<
-    typeof import('./__tests__/authServerPropertiesTestData')
-  >('./__tests__/authServerPropertiesTestData')
+    typeof import('../authServerPropertiesTestData')
+  >('../authServerPropertiesTestData')
   return {
     fetchAuthServerJsonProperties: jest.fn(() => Promise.resolve(mockAuthServerJsonProperties)),
     patchAuthServerJsonProperties: jest.fn(),
@@ -50,7 +50,7 @@ jest.mock('@/cedarling/constants/resourceScopes', () => ({
   CEDAR_RESOURCE_SCOPES: { AuthenticationServerConfiguration: [] },
 }))
 
-jest.mock('../AuthN/hooks', () => ({
+jest.mock('../../../AuthN/hooks', () => ({
   useAcrAudit: () => ({
     logAcrUpdate: jest.fn().mockResolvedValue(undefined),
   }),

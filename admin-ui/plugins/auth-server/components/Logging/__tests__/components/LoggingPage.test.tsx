@@ -1,13 +1,13 @@
 import React from 'react'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import LoggingPage from './components/LoggingPage'
-import { useLoggingConfig, useUpdateLoggingConfig } from './hooks'
+import LoggingPage from '../..'
+import { useLoggingConfig, useUpdateLoggingConfig } from '../../hooks'
 import { Provider } from 'react-redux'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { mockLoggingConfig, AUTH_STATE_FOR_LOGGING } from './__tests__/fixtures/loggingTestData'
+import { mockLoggingConfig, AUTH_STATE_FOR_LOGGING } from '../fixtures/loggingTestData'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
 interface WrapperProps {
@@ -75,7 +75,7 @@ jest.mock('@/cedarling/constants/resourceScopes', () => ({
   CEDAR_RESOURCE_SCOPES: { Logging: [], Keys: [], Lock: [], Webhooks: [] },
 }))
 
-jest.mock('./hooks', () => ({
+jest.mock('../../hooks', () => ({
   useLoggingConfig: jest.fn(),
   useUpdateLoggingConfig: jest.fn(),
 }))
