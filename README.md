@@ -84,5 +84,5 @@ The Flex release schedule is closely tied to the upstream [Janssen Project](http
 - Flex Release = Janssen Project Release + 4 in the major version. For example, Flex 5.6.0 corresponds to Janssen Project release 1.6.0.
 - Flex releases typically occur 1-2 days after the corresponding Janssen Project release. 
 
-To stay informed about upcoming Flex releases, it's recommended to monitor the Janssen project [milestones](https://github.com/JanssenProject/jans/milestones) regularly. Please note that the QA team may update these milestones as testing progresses, so checking frequently is advised.
+To stay informed about upcoming Flex releases, it's recommended to monitor the Janssen project [milestones](https://github.com/JanssenProject/jans/milestones) and [Flex end-of-life guidelines](https://docs.gluu.org/nightly/install/eol/) regularly. Please note that the QA team may update these milestones as testing progresses, so checking frequently is advised.
 
