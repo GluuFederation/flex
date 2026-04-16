@@ -2,7 +2,6 @@ import type { TFunction } from 'i18next'
 import type { GluuDynamicListItem, GluuDynamicListMode } from '@/components/GluuDynamicList'
 
 export type ClientFieldSection<FieldKey extends string = string> = {
-  titleKey: string
   fieldKeys: readonly FieldKey[]
 }
 

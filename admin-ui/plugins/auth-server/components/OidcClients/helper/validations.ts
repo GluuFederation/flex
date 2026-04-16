@@ -74,13 +74,7 @@ export const getClientValidationSchema = (t: TFunction) =>
           },
         ),
       )
-      .when('grantTypes', {
-        is: (grantTypes: string[]) =>
-          Array.isArray(grantTypes) &&
-          (grantTypes.includes('authorization_code') || grantTypes.includes('implicit')),
-        then: (schema) => schema.min(1, t('validation_messages.redirect_uri_required')),
-        otherwise: (schema) => schema,
-      }),
+      .min(1, t('validation_messages.redirect_uri_required')),
 
     accessTokenLifetime: Yup.number()
       .transform((_v, orig) => (orig === '' || orig == null ? undefined : Number(orig)))

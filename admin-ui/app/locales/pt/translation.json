@@ -1153,7 +1153,7 @@
     "required_field": "Este campo é obrigatório",
     "invalid_number": "Deve ser um número válido",
     "client_name_required": "O nome do cliente é obrigatório",
-    "redirect_uri_required": "Pelo menos uma URI de redirecionamento é necessária para os tipos de concessão authorization_code e implicit",
+    "redirect_uri_required": "Pelo menos uma URI de redirecionamento é necessária",
     "must_be_at_least_one": "Deve ser pelo menos 1",
     "invalid_email": "Deve ser um endereço de e-mail válido",
     "invalid_json": "Deve ser um JSON válido",

@@ -558,6 +558,7 @@ const ClientBasicPanel = ({
         <GluuDynamicList
           label={`${t(CLIENT_DYNAMIC_LIST_I18N.REDIRECT_URIS.fieldKey)}:`}
           title={t(CLIENT_DYNAMIC_LIST_I18N.REDIRECT_URIS.fieldKey)}
+          required
           items={redirectUriItems}
           mode="single"
           valuePlaceholder={t(CLIENT_DYNAMIC_LIST_I18N.REDIRECT_URIS.placeholderKey)}

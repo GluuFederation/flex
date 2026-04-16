@@ -321,7 +321,11 @@ const ClientTokensPanel = ({
 
   return (
     <div className={classes.root}>
-      <div className={gridClass}>{orderedFieldKeys.map((fieldKey) => fieldMap[fieldKey])}</div>
+      <div className={gridClass}>
+        {orderedFieldKeys.map((fieldKey) => (
+          <div key={fieldKey}>{fieldMap[fieldKey]}</div>
+        ))}
+      </div>
     </div>
   )
 }

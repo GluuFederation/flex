@@ -1186,7 +1186,7 @@
     "required_field": "This field is required",
     "invalid_number": "Must be a valid number",
     "client_name_required": "Client name is required",
-    "redirect_uri_required": "At least one redirect URI is required for authorization_code and implicit grant types",
+    "redirect_uri_required": "At least one redirect URI is required",
     "must_be_at_least_one": "Must be at least 1",
     "invalid_email": "Must be a valid email address",
     "invalid_json": "Must be valid JSON",

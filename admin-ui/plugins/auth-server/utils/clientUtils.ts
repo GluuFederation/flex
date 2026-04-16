@@ -10,10 +10,8 @@ import type { ClientFieldSection, DynamicListValidationOptions } from './types'
 export type { ClientFieldSection, DynamicListValidationOptions }
 
 export const createClientFieldSection = <FieldKey extends string>(
-  titleKey: string,
   fieldKeys: readonly FieldKey[],
 ): ClientFieldSection<FieldKey> => ({
-  titleKey,
   fieldKeys,
 })
 

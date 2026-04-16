@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react'
-import { FormGroup, Col, CustomInput, InputGroup } from 'Components'
+import { FormGroup, Col, CustomInput } from 'Components'
 import Autocomplete from '@mui/material/Autocomplete'
 import TextField from '@mui/material/TextField'
 import { ChevronIcon } from '@/components/SVG'
@@ -133,30 +133,28 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
       />
       <Col sm={rsize} className={classes.colWrapper}>
         <div className={classes.selectWrapper}>
-          <InputGroup>
-            <CustomInput
-              type="select"
-              id={name}
-              name={name}
-              data-testid={name}
-              value={displayValue}
-              onChange={handleSelectChange}
-              onBlur={formik.handleBlur}
-              disabled={disabled}
-              className={classes.select}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              {deduplicateSelectValues(values).map((item) => {
-                const optionValue = typeof item === 'string' ? item : item.value
-                const optionLabel = typeof item === 'string' ? item : (item.label ?? item.value)
-                return (
-                  <option key={optionValue} value={optionValue}>
-                    {optionLabel}
-                  </option>
-                )
-              })}
-            </CustomInput>
-          </InputGroup>
+          <CustomInput
+            type="select"
+            id={name}
+            name={name}
+            data-testid={name}
+            value={displayValue}
+            onChange={handleSelectChange}
+            onBlur={formik.handleBlur}
+            disabled={disabled}
+            className={classes.select}
+          >
+            <option value="">{t('actions.choose')}...</option>
+            {deduplicateSelectValues(values).map((item) => {
+              const optionValue = typeof item === 'string' ? item : item.value
+              const optionLabel = typeof item === 'string' ? item : (item.label ?? item.value)
+              return (
+                <option key={optionValue} value={optionValue}>
+                  {optionLabel}
+                </option>
+              )
+            })}
+          </CustomInput>
           <span className={classes.chevronWrapper} aria-hidden>
             <ChevronIcon width={20} height={20} direction="down" />
           </span>

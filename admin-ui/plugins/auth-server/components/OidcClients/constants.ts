@@ -299,13 +299,8 @@ export const CLIENT_WIZARD_STEPS = [
 export const CLIENT_WIZARD_SEQUENCE = CLIENT_WIZARD_STEPS.map((step) => step.id)
 
 export const CLIENT_BASIC_SECTION_GROUPS = [
-  createClientFieldSection('titles.client_details', [
-    'clientName',
-    'clientSecret',
-    'description',
-    'sectorIdentifierUri',
-  ]),
-  createClientFieldSection('titles.protocol_settings', [
+  createClientFieldSection(['clientName', 'clientSecret', 'description', 'sectorIdentifierUri']),
+  createClientFieldSection([
     'applicationType',
     'subjectType',
     'tokenEndpointAuthMethod',
@@ -313,12 +308,7 @@ export const CLIENT_BASIC_SECTION_GROUPS = [
     'responseTypes',
     'grantTypes',
   ]),
-  createClientFieldSection('titles.access_and_redirects', [
-    'isActive',
-    'trustedClient',
-    'scopes',
-    'redirectUris',
-  ]),
+  createClientFieldSection(['isActive', 'trustedClient', 'scopes', 'redirectUris']),
 ] as const
 
 export const CLIENT_STEP_TWO_TOKEN_ROWS = [
@@ -329,20 +319,20 @@ export const CLIENT_STEP_TWO_TOKEN_ROWS = [
 ] as const
 
 export const CLIENT_ADVANCED_SECTION_GROUPS = [
-  createClientFieldSection('titles.authorization_controls', [
+  createClientFieldSection([
+    'allowSpontaneousScopes',
+    'spontaneousScopes',
     'persistClientAuthorizations',
     'defaultPromptLogin',
-    'allowSpontaneousScopes',
-    'expirable',
     'defaultAcrValues',
   ]),
-  createClientFieldSection('titles.login_and_acr', [
-    'spontaneousScopes',
+  createClientFieldSection([
+    'expirable',
     'initiateLoginUri',
     'tlsClientAuthSubjectDn',
     'expirationDate',
   ]),
-  createClientFieldSection('titles.scope_controls', ['requestUris', 'authorizedAcrValues']),
+  createClientFieldSection(['requestUris', 'authorizedAcrValues']),
 ] as const
 
 export const CLIENT_SCRIPT_FIELDS: ClientScriptField[] = [

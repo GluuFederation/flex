@@ -14,6 +14,7 @@ const joinClasses = (...classNames: Array<string | false | undefined>) =>
 export const GluuDynamicList: React.FC<GluuDynamicListProps> = ({
   title,
   label,
+  required = false,
   items,
   mode = 'pair',
   disabled = false,
@@ -58,7 +59,16 @@ export const GluuDynamicList: React.FC<GluuDynamicListProps> = ({
 
   return (
     <div className={joinClasses(classes.wrapper, className)} style={style}>
-      {label && <label className={classes.outerLabel}>{label}</label>}
+      {label && (
+        <label className={classes.outerLabel}>
+          {label}
+          {required && (
+            <GluuText variant="span" className="text-danger" disableThemeColor>
+              {' *'}
+            </GluuText>
+          )}
+        </label>
+      )}
       <div className={joinClasses(classes.box, isEmpty && classes.boxEmpty)}>
         <div
           className={joinClasses(classes.header, isEmpty && classes.headerEmpty)}

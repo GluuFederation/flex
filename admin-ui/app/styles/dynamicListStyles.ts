@@ -93,6 +93,9 @@ export const getDynamicListStyles = (colors: DynamicListColorOptions) => ({
   },
   listActionBtn: {
     '&&': {
+      display: 'inline-flex' as const,
+      alignItems: 'center' as const,
+      justifyContent: 'center' as const,
       minWidth: BTN_WIDTH,
       width: BTN_WIDTH,
       minHeight: BTN_HEIGHT,

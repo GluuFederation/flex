@@ -295,6 +295,13 @@ export type GluuTextProps = HTMLAttributes<HTMLElement> & {
   onLightSurface?: boolean
 }
 
+export type GluuThemeFormFooterStepNavigation = {
+  currentIndex: number
+  total: number
+  onPrev: () => void
+  onNextStep: () => void
+}
+
 export type GluuThemeFormFooterBaseProps = {
   showBack?: boolean
   backButtonLabel?: string
@@ -310,6 +317,7 @@ export type GluuThemeFormFooterBaseProps = {
   isLoading?: boolean
   className?: string
   hideDivider?: boolean
+  stepNavigation?: GluuThemeFormFooterStepNavigation
 }
 
 export type GluuThemeFormFooterProps = GluuThemeFormFooterBaseProps &

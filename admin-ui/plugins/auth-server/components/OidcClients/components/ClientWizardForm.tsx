@@ -41,6 +41,7 @@ import {
   TOKEN_FILTER_CREATION_DATE,
 } from '../constants'
 import { getClientValidationSchema } from '../helper/validations'
+import { buildClientInitialValues, getNextStep, getPrevStep } from '../helper/utils'
 import { useStyles } from './styles/ClientWizardForm.style'
 import type {
   ClientWizardFormProps,
@@ -49,7 +50,6 @@ import type {
   TokenSearchFilterField,
 } from '../types'
 import type { FilterField } from '@/components/GluuFilterPopover'
-
 const INITIAL_TOKEN_PATTERN: TokenSearchPattern = { dateAfter: null, dateBefore: null }
 
 const ClientWizardForm = ({
@@ -181,75 +181,8 @@ const ClientWizardForm = ({
     authorizeHelper(clientScopes)
   }, [authorizeHelper, clientScopes])
 
-  const initialValues: ClientWizardFormValues = useMemo(
-    () => ({
-      inum: client_data.inum,
-      dn: client_data.dn,
-      clientSecret: client_data.clientSecret,
-      displayName: client_data.displayName,
-      clientName: client_data.clientName,
-      description: client_data.description,
-      applicationType: client_data.applicationType,
-      subjectType: client_data.subjectType,
-      registrationAccessToken: client_data.registrationAccessToken,
-      clientIdIssuedAt: client_data.clientIdIssuedAt,
-      initiateLoginUri: client_data.initiateLoginUri,
-      logoUri: client_data.logoUri,
-      clientUri: client_data.clientUri,
-      tosUri: client_data.tosUri,
-      jwksUri: client_data.jwksUri,
-      jwks: client_data.jwks,
-      expirable: !!client_data.expirationDate,
-      expirationDate: client_data.expirationDate,
-      softwareStatement: client_data.softwareStatement,
-      softwareVersion: client_data.softwareVersion,
-      softwareId: client_data.softwareId,
-      idTokenSignedResponseAlg: client_data.idTokenSignedResponseAlg,
-      idTokenEncryptedResponseAlg: client_data.idTokenEncryptedResponseAlg,
-      tokenEndpointAuthMethod: client_data.tokenEndpointAuthMethod,
-      accessTokenSigningAlg: client_data.accessTokenSigningAlg,
-      idTokenEncryptedResponseEnc: client_data.idTokenEncryptedResponseEnc,
-      requestObjectEncryptionAlg: client_data.requestObjectEncryptionAlg,
-      requestObjectSigningAlg: client_data.requestObjectSigningAlg,
-      requestObjectEncryptionEnc: client_data.requestObjectEncryptionEnc,
-      userInfoEncryptedResponseAlg: client_data.userInfoEncryptedResponseAlg,
-      userInfoSignedResponseAlg: client_data.userInfoSignedResponseAlg,
-      userInfoEncryptedResponseEnc: client_data.userInfoEncryptedResponseEnc,
-      idTokenTokenBindingCnf: client_data.idTokenTokenBindingCnf,
-      backchannelUserCodeParameter: client_data.backchannelUserCodeParameter ?? false,
-      refreshTokenLifetime: client_data.refreshTokenLifetime,
-      defaultMaxAge: client_data.defaultMaxAge,
-      accessTokenLifetime: client_data.accessTokenLifetime,
-      backchannelTokenDeliveryMode: client_data.backchannelTokenDeliveryMode,
-      backchannelClientNotificationEndpoint: client_data.backchannelClientNotificationEndpoint,
-      frontChannelLogoutUri: client_data.frontChannelLogoutUri,
-      policyUri: client_data.policyUri,
-      sectorIdentifierUri: client_data.sectorIdentifierUri,
-      redirectUris: client_data.redirectUris ?? [],
-      claimRedirectUris: client_data.claimRedirectUris ?? [],
-      authorizedOrigins: client_data.authorizedOrigins ?? [],
-      requestUris: client_data.requestUris ?? [],
-      postLogoutRedirectUris: client_data.postLogoutRedirectUris ?? [],
-      responseTypes: client_data.responseTypes ?? [],
-      grantTypes: client_data.grantTypes ?? [],
-      contacts: client_data.contacts,
-      defaultAcrValues: client_data.defaultAcrValues,
-      scopes: client_data.scopes,
-      attributes: client_data.attributes,
-      frontChannelLogoutSessionRequired: client_data.frontChannelLogoutSessionRequired ?? false,
-      customObjectClasses: client_data.customObjectClasses ?? [],
-      trustedClient: client_data.trustedClient ?? false,
-      persistClientAuthorizations: client_data.persistClientAuthorizations ?? false,
-      includeClaimsInIdToken: client_data.includeClaimsInIdToken ?? false,
-      rptAsJwt: client_data.rptAsJwt ?? false,
-      accessTokenAsJwt: client_data.accessTokenAsJwt ?? false,
-      disabled: client_data.disabled ?? false,
-      deletable: client_data.deletable,
-    }),
-    [client_data],
-  )
-
-  const client = initialValues
+  const initialValues = useMemo(() => buildClientInitialValues(client_data), [client_data])
+  const clientSnapshot = useMemo(() => cloneDeep(initialValues), [initialValues])
 
   const validationSchema = useMemo(() => getClientValidationSchema(t), [t])
 
@@ -293,7 +226,12 @@ const ClientWizardForm = ({
   }, [toggle])
 
   const prevStep = () => {
-    setCurrentStep(availableSteps[availableSteps.indexOf(currentStep) - 1])
+    setCurrentStep(getPrevStep(availableSteps, currentStep))
+    scrollWizardToTop()
+  }
+
+  const nextStep = () => {
+    setCurrentStep(getNextStep(availableSteps, currentStep))
     scrollWizardToTop()
   }
 
@@ -309,10 +247,10 @@ const ClientWizardForm = ({
   }
 
   useEffect(() => {
-    return function cleanup() {
+    return () => {
       dispatch(setClientSelectedScopes([]))
     }
-  }, [])
+  }, [dispatch])
 
   const activeClientStep = (formik: FormikProps<ClientWizardFormValues>) => {
     switch (currentStep) {
@@ -320,7 +258,7 @@ const ClientWizardForm = ({
         return (
           <div>
             <ClientBasic
-              client={cloneDeep(client)}
+              client={clientSnapshot}
               formik={formik}
               viewOnly={viewOnly}
               oidcConfiguration={oidcConfiguration}
@@ -366,7 +304,7 @@ const ClientWizardForm = ({
         return (
           <div>
             <ClientCibaParUmaPanel
-              client={cloneDeep(client)}
+              client={clientSnapshot}
               scripts={scripts}
               setCurrentStep={setCurrentStep}
               sequence={availableSteps}
@@ -417,7 +355,7 @@ const ClientWizardForm = ({
         return (
           <div>
             <ClientActiveTokens
-              client={cloneDeep(client)}
+              client={clientSnapshot}
               onExportReady={handleExportReady}
               onHasDataChange={handleTokenHasDataChange}
               activePattern={tokenActivePattern}
@@ -457,6 +395,7 @@ const ClientWizardForm = ({
           validationSchema={validationSchema}
           validateOnBlur
           validateOnChange={false}
+          validateOnMount
           enableReinitialize
           onSubmit={(values) => {
             const { attributes, accessTokenAsJwt, rptAsJwt, ...rest } = omit(values, 'expirable')
@@ -634,15 +573,18 @@ const ClientWizardForm = ({
                     }
                     showCancel
                     cancelButtonLabel={t('actions.cancel')}
-                    onCancel={() => navigateToRoute(ROUTES.AUTH_SERVER_CLIENTS_LIST)}
-                    showApply={
-                      currentStep === availableSteps[availableSteps.length - 1] &&
-                      !viewOnly &&
-                      canWriteClient
-                    }
+                    onCancel={() => formik.resetForm()}
+                    showApply={!viewOnly && canWriteClient}
                     applyButtonType="button"
-                    applyButtonLabel={t('actions.finish')}
+                    applyButtonLabel={t('actions.apply')}
                     onApply={validateFinish}
+                    disableApply={!formik.isValid || !formik.dirty}
+                    stepNavigation={{
+                      currentIndex: availableSteps.indexOf(currentStep),
+                      total: availableSteps.length,
+                      onPrev: prevStep,
+                      onNextStep: nextStep,
+                    }}
                   />
                 </div>
                 <button
