@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
-import KeysPage from './KeysPage'
+import KeysPage from './components/KeysPage'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import { formatDate } from '@/utils/dayjsUtils'
 import {

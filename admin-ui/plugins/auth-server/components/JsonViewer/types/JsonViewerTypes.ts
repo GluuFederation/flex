@@ -1,7 +1,7 @@
 import type React from 'react'
 import type { ThemeValue } from '@/context/theme/constants'
 import type { JsonObject, JsonValue } from '@/routes/Apps/Gluu/types/common'
-import { useStyles } from '../JsonViewer.style'
+import { useStyles } from '../components/styles/JsonViewer.style'
 
 export type JsonViewerProps = {
   data: JsonValue

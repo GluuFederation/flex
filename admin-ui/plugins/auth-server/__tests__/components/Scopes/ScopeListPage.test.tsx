@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, screen, within } from '@testing-library/react'
-import ScopeListPage from 'Plugins/auth-server/components/Scopes/ScopeListPage'
+import ScopeListPage from 'Plugins/auth-server/components/Scopes/components/ScopeListPage'
 import { Provider } from 'react-redux'
 import mockScopes from '../../fixtures/mockScopes'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'

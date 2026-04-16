@@ -1,13 +1,7 @@
 import React, { Suspense, lazy } from 'react'
-import ScopeListPage from './components/Scopes/ScopeListPage'
-import ScopeAddPage from './components/Scopes/ScopeAddPage'
-import ScopeEditPage from './components/Scopes/ScopeEditPage'
-
-import ClientListPage from './components/OidcClients/ClientListPage'
-import ClientAddPage from './components/OidcClients/ClientAddPage'
-import ClientEditPage from './components/OidcClients/ClientEditPage'
-
-import SessionListPage from './components/Sessions/SessionListPage'
+import { ScopeListPage, ScopeAddPage, ScopeEditPage } from './components/Scopes'
+import { ClientListPage, ClientAddPage, ClientEditPage } from './components/OidcClients'
+import { SessionListPage } from './components/Sessions'
 
 import PropertiesPage from './components/AuthServerProperties'
 import KeysPage from './components/Keys'
@@ -34,8 +28,7 @@ import {
   API_CONFIG_READ,
 } from 'Utils/PermChecker'
 import AuthNEditPage from './components/AuthN/AuthNEditPage'
-import SsaListPage from './components/Ssa/components/SsaListPage'
-import SsaAddPage from './components/Ssa/components/SsaAddPage'
+import { SsaListPage, SsaAddPage } from './components/Ssa'
 import AuthNPage from './components/AuthN'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { ROUTES } from '@/helpers/navigation'

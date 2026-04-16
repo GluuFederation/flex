@@ -1,5 +1,7 @@
 import { useCallback } from 'react'
-import { useAppSelector } from '@/redux/hooks'
+import { useTranslation } from 'react-i18next'
+import { useAppSelector, useAppDispatch } from '@/redux/hooks'
+import { updateToast } from 'Redux/features/toastSlice'
 import { useQueryClient } from '@tanstack/react-query'
 import {
   useGetAttributes,
@@ -34,7 +36,6 @@ export const useAttributes = (params?: GetAttributesParams) => {
   })
 }
 
-/** Type-safe cast for PagedResult entries to JansAttribute[] */
 export const toAttributeList = (entries?: PagedResultEntriesItem[]): JansAttribute[] => {
   if (!entries) return []
   return entries.map((entry) => Object.assign({} as JansAttribute, entry))
@@ -54,10 +55,20 @@ export const useAttribute = (inum: string) => {
 }
 
 export const useCreateAttribute = () => {
+  const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { logAudit } = useSchemaAuditLogger()
   const { triggerAttributeWebhook } = useSchemaWebhook()
-  const baseMutation = usePostAttributes()
+  const baseMutation = usePostAttributes({
+    mutation: {
+      onError: (error: Error) => {
+        const err = error as { response?: { data?: { message?: string } } }
+        const errorMsg = err?.response?.data?.message || t('messages.error_in_saving')
+        dispatch(updateToast(true, 'error', errorMsg))
+      },
+    },
+  })
 
   const mutateAsync = useCallback(
     async (variables: { data: JansAttribute; userMessage?: string }) => {
@@ -89,10 +100,20 @@ export const useCreateAttribute = () => {
 }
 
 export const useUpdateAttribute = () => {
+  const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { logAudit } = useSchemaAuditLogger()
   const { triggerAttributeWebhook } = useSchemaWebhook()
-  const baseMutation = usePutAttributes()
+  const baseMutation = usePutAttributes({
+    mutation: {
+      onError: (error: Error) => {
+        const err = error as { response?: { data?: { message?: string } } }
+        const errorMsg = err?.response?.data?.message || t('messages.error_in_saving')
+        dispatch(updateToast(true, 'error', errorMsg))
+      },
+    },
+  })
 
   const mutateAsync = useCallback(
     async (variables: {
@@ -139,10 +160,20 @@ export const useUpdateAttribute = () => {
 }
 
 export const useDeleteAttribute = () => {
+  const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { logAudit } = useSchemaAuditLogger()
   const { triggerAttributeWebhook } = useSchemaWebhook()
-  const baseMutation = useDeleteAttributesByInum()
+  const baseMutation = useDeleteAttributesByInum({
+    mutation: {
+      onError: (error: Error) => {
+        const err = error as { response?: { data?: { message?: string } } }
+        const errorMsg = err?.response?.data?.message || t('messages.error_in_saving')
+        dispatch(updateToast(true, 'error', errorMsg))
+      },
+    },
+  })
 
   const deleteWithAudit = useCallback(
     async (variables: { inum: string; name?: string; userMessage?: string }) => {

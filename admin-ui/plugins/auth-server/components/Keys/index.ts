@@ -1,3 +1,3 @@
-import KeysPage from './KeysPage'
+import KeysPage from './components/KeysPage'
 
 export default KeysPage

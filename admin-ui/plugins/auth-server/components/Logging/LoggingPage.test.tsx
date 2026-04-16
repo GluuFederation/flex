@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import LoggingPage from './LoggingPage'
+import LoggingPage from './components/LoggingPage'
 import { useLoggingConfig, useUpdateLoggingConfig } from './hooks'
 import { Provider } from 'react-redux'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'

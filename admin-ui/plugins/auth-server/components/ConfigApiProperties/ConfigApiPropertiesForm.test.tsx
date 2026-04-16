@@ -1,6 +1,6 @@
 import { render, waitFor } from '@testing-library/react'
 import { useFormik } from 'formik'
-import ConfigApiPropertiesForm from './ConfigApiPropertiesForm'
+import ConfigApiPropertiesForm from './components/ConfigApiPropertiesForm'
 import type { ApiAppConfiguration, JsonPatch } from './types'
 import type { JsonPropertyBuilderConfigApiProps } from './types/componentTypes'
 
@@ -30,12 +30,10 @@ jest.mock('@/cedarling', () => ({
 }))
 
 jest.mock('@/helpers/navigation', () => ({
+  ...jest.requireActual('@/helpers/navigation'),
   useAppNavigation: () => ({
     navigateToRoute: jest.fn(),
   }),
-  ROUTES: {
-    HOME_DASHBOARD: '/home',
-  },
 }))
 
 jest.mock('./utils/useConfigApiActions', () => ({
@@ -44,7 +42,7 @@ jest.mock('./utils/useConfigApiActions', () => ({
   }),
 }))
 
-jest.mock('./styles/ConfigApiPropertiesForm.style', () => ({
+jest.mock('./components/styles/ConfigApiPropertiesForm.style', () => ({
   useStyles: () => ({
     classes: {
       form: '',
@@ -78,7 +76,7 @@ let capturedHandler: ((patch: JsonPatch) => void) | null = null
 
 type MockJsonPropertyBuilderConfigApiProps = JsonPropertyBuilderConfigApiProps
 
-jest.mock('./JsonPropertyBuilderConfigApi', () => {
+jest.mock('./components/JsonPropertyBuilderConfigApi', () => {
   return function MockJsonPropertyBuilderConfigApi(props: MockJsonPropertyBuilderConfigApiProps) {
     capturedHandler = props.handler
     return <div data-testid="json-property-builder">Mock</div>

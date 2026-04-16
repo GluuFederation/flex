@@ -1,3 +1,3 @@
-import ConfigApiPropertiesPage from './ConfigApiPropertiesPage'
+import ConfigApiPropertiesPage from './components/ConfigApiPropertiesPage'
 
 export default ConfigApiPropertiesPage

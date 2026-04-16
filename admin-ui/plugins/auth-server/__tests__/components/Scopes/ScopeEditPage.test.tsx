@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import ScopeEditPage from 'Plugins/auth-server/components/Scopes/ScopeEditPage'
+import ScopeEditPage from 'Plugins/auth-server/components/Scopes/components/ScopeEditPage'
 import { Provider } from 'react-redux'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
