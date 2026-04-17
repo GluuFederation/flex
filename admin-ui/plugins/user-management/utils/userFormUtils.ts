@@ -7,10 +7,8 @@ import {
 } from '@/utils/regex'
 import { CustomObjectAttribute, JansAttribute, PagedResultEntriesItem } from 'JansConfigApi'
 
-import { BIRTHDATE_ATTR, USER_PASSWORD_ATTR } from '../common/Constants'
-import { UserEditFormValues } from '../types/ComponentTypes'
-import { PersonAttribute } from '../types/UserApiTypes'
-import { ExtendedCustomUser } from '../types/UserFormTypes'
+import { BIRTHDATE_ATTR, USER_PASSWORD_ATTR } from '../common'
+import { UserEditFormValues, PersonAttribute, ExtendedCustomUser } from '../types'
 
 export const validatePassword = (password: string): boolean => {
   if (!password || password.length < 8) return false

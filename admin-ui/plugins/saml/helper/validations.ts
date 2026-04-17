@@ -6,14 +6,13 @@ import type {
   WebsiteSsoIdentityProviderFormValues,
   FileLikeObject,
   WebsiteSsoServiceProviderFormValues,
-} from '../types/formValues'
+} from '../types'
 
-// Re-export types for backward compatibility
 export type {
   WebsiteSsoIdentityProviderFormValues,
   FileLikeObject,
   WebsiteSsoServiceProviderFormValues,
-} from '../types/formValues'
+} from '../types'
 export const samlConfigurationValidationSchema: Yup.ObjectSchema<SamlConfigurationFormValues> =
   Yup.object({
     enabled: Yup.boolean().required('Enabled field is required.'),

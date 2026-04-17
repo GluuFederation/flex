@@ -18,6 +18,8 @@ export type {
   SamlIdentityConfig,
   WebsiteSsoServiceProvider,
   GetSamlIdentityProviderPayload,
+  IdentityProviderPayload,
+  WebsiteSsoServiceProviderPayload,
 } from './payloads'
 
 export { TrustRelationshipSpMetaDataSourceType } from './samlApi'

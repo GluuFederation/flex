@@ -6,8 +6,8 @@ import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { AuditLog, AuditPayload, CaughtError } from '../types'
 import { API_USERS } from '../../../app/audit/Resources'
-import { CustomUser } from '../types/UserApiTypes'
-import { USER_PASSWORD_ATTR } from '../common/Constants'
+import { CustomUser } from '../types'
+import { USER_PASSWORD_ATTR } from '../common'
 import { devLogger } from '@/utils/devLogger'
 
 export type { AuditLog, AuditPayload }

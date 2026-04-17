@@ -19,14 +19,14 @@ import UserClaimEntry from './UserClaimEntry'
 import PasswordChangeModal from './PasswordChangeModal'
 import AvailableClaimsPanel from './AvailableClaimsPanel'
 import { buildFormOperations, shouldDisableApplyButton, isEmptyValue } from '../utils'
-import type { FormFieldValue } from '../types/CommonTypes'
-import {
+import type {
+  FormFieldValue,
   UserFormProps,
   FormOperation,
   ModifiedFields,
   UserEditFormValues,
-} from '../types/ComponentTypes'
-import { PersonAttribute } from '../types/UserApiTypes'
+  PersonAttribute,
+} from '../types'
 import { setupCustomAttributes } from '../utils'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'

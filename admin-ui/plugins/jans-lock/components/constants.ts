@@ -1,4 +1,4 @@
-import { jansLockConstants } from '../helper/constants'
+import { jansLockConstants } from '../helper'
 import type { FieldConfig } from '../types'
 
 export const JANS_LOCK_FIELD_CONFIGS: FieldConfig[] = [

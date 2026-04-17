@@ -21,7 +21,7 @@ import {
   separateConfigFields,
   buildIdentityProviderPayload,
 } from '../helper'
-import type { WebsiteSsoIdentityProviderFormValues } from '../types/formValues'
+import type { WebsiteSsoIdentityProviderFormValues } from '../types'
 import SetTitle from 'Utils/SetTitle'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
